@@ -3,20 +3,21 @@ package android.telephony.data;
 import android.annotation.SystemApi;
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ThrottleStatus implements Parcelable {
     public static final Parcelable.Creator<ThrottleStatus> CREATOR = new Parcelable.Creator<ThrottleStatus>() { // from class: android.telephony.data.ThrottleStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ThrottleStatus createFromParcel(Parcel source) {
             return new ThrottleStatus(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ThrottleStatus[] newArray(int size) {
             return new ThrottleStatus[size];
@@ -34,20 +35,12 @@ public final class ThrottleStatus implements Parcelable {
     private final int mThrottleType;
     private final int mTransportType;
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface RetryType {
     }
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ThrottleType {
-    }
-
-    /* synthetic */ ThrottleStatus(int i, int i2, int i3, int i4, long j, int i5, ThrottleStatusIA throttleStatusIA) {
-        this(i, i2, i3, i4, j, i5);
-    }
-
-    /* synthetic */ ThrottleStatus(Parcel parcel, ThrottleStatusIA throttleStatusIA) {
-        this(parcel);
     }
 
     public int getSlotIndex() {
@@ -102,23 +95,6 @@ public final class ThrottleStatus implements Parcelable {
         dest.writeInt(this.mThrottleType);
     }
 
-    /* renamed from: android.telephony.data.ThrottleStatus$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ThrottleStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ThrottleStatus createFromParcel(Parcel source) {
-            return new ThrottleStatus(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ThrottleStatus[] newArray(int size) {
-            return new ThrottleStatus[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -140,7 +116,6 @@ public final class ThrottleStatus implements Parcelable {
         return "ThrottleStatus{mSlotIndex=" + this.mSlotIndex + ", mTransportType=" + this.mTransportType + ", mApnType=" + ApnSetting.getApnTypeString(this.mApnType) + ", mThrottleExpiryTimeMillis=" + this.mThrottleExpiryTimeMillis + ", mRetryType=" + this.mRetryType + ", mThrottleType=" + this.mThrottleType + '}';
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         public static final long NO_THROTTLE_EXPIRY_TIME = -1;
         private int mApnType;

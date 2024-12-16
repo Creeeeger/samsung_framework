@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class MultiResolutionStreamConfigurationMap {
     private final Map<String, StreamConfiguration[]> mConfigurations;
     private final Map<Integer, List<MultiResolutionStreamInfo>> mMultiResolutionOutputConfigs = new HashMap();
@@ -25,7 +25,7 @@ public final class MultiResolutionStreamConfigurationMap {
             throw new IllegalArgumentException("multi-resolution configurations must not be empty");
         }
         this.mConfigurations = configurations;
-        for (Map.Entry<String, StreamConfiguration[]> entry : configurations.entrySet()) {
+        for (Map.Entry<String, StreamConfiguration[]> entry : this.mConfigurations.entrySet()) {
             String cameraId = entry.getKey();
             StreamConfiguration[] configs = entry.getValue();
             for (StreamConfiguration config : configs) {
@@ -45,7 +45,6 @@ public final class MultiResolutionStreamConfigurationMap {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class SizeComparator implements Comparator<MultiResolutionStreamInfo> {
         @Override // java.util.Comparator
         public int compare(MultiResolutionStreamInfo lhs, MultiResolutionStreamInfo rhs) {

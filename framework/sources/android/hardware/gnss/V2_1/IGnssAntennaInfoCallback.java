@@ -104,7 +104,6 @@ public interface IGnssAntennaInfoCallback extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Row {
         public ArrayList<Double> row = new ArrayList<>();
 
@@ -190,7 +189,6 @@ public interface IGnssAntennaInfoCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Coord {
         public double x = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         public double xUncertainty = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
@@ -278,7 +276,6 @@ public interface IGnssAntennaInfoCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssAntennaInfo {
         public double carrierFrequencyMHz = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         public Coord phaseCenterOffsetCoordinateMillimeters = new Coord();
@@ -422,7 +419,6 @@ public interface IGnssAntennaInfoCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssAntennaInfoCallback {
         private IHwBinder mRemote;
 
@@ -608,7 +604,6 @@ public interface IGnssAntennaInfoCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssAntennaInfoCallback {
         @Override // android.hardware.gnss.V2_1.IGnssAntennaInfoCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -631,7 +626,7 @@ public interface IGnssAntennaInfoCallback extends IBase {
 
         @Override // android.hardware.gnss.V2_1.IGnssAntennaInfoCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{11, -61, -19, -105, -53, -61, -10, -85, -56, -100, 104, -12, -23, -12, -47, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -7, -9, 35, 67, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEIN, -105, -36, -120, -62, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, 108, -12, -46, -83, 71, -18}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{11, -61, -19, -105, -53, -61, -10, -85, -56, -100, 104, -12, -23, -12, -47, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -7, -9, 35, 67, 25, -105, -36, -120, -62, 24, 108, -12, -46, -83, 71, -18}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V2_1.IGnssAntennaInfoCallback, android.internal.hidl.base.V1_0.IBase

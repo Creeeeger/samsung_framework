@@ -2,6 +2,7 @@ package android.hardware;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Range;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +20,13 @@ public class CameraSessionStats implements Parcelable {
     public static final int CAMERA_STATE_OPENING = 100;
     public static final int CAMERA_STATE_OPENING_FAILED = 101;
     public static final Parcelable.Creator<CameraSessionStats> CREATOR = new Parcelable.Creator<CameraSessionStats>() { // from class: android.hardware.CameraSessionStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraSessionStats createFromParcel(Parcel in) {
             return new CameraSessionStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraSessionStats[] newArray(int size) {
             return new CameraSessionStats[size];
@@ -43,18 +43,17 @@ public class CameraSessionStats implements Parcelable {
     private int mLatencyMs;
     private long mLogId;
     private float mMaxPreviewFps;
+    private Range<Integer> mMostRequestedFpsRange;
     private int mNewCameraState;
     private long mRequestCount;
     private long mResultErrorCount;
     private int mSessionIndex;
     private int mSessionType;
     private ArrayList<CameraStreamStats> mStreamStats;
+    private boolean mUsedUltraWide;
+    private boolean mUsedZoomOverride;
     private String mUserTag;
     private int mVideoStabilizationMode;
-
-    /* synthetic */ CameraSessionStats(Parcel parcel, CameraSessionStatsIA cameraSessionStatsIA) {
-        this(parcel);
-    }
 
     public CameraSessionStats() {
         this.mFacing = -1;
@@ -71,6 +70,9 @@ public class CameraSessionStats implements Parcelable {
         this.mDeviceError = false;
         this.mStreamStats = new ArrayList<>();
         this.mVideoStabilizationMode = -1;
+        this.mUsedUltraWide = false;
+        this.mUsedZoomOverride = false;
+        this.mMostRequestedFpsRange = new Range<>(0, 0);
         this.mSessionIndex = 0;
         this.mCameraExtensionSessionStats = new CameraExtensionSessionStats();
     }
@@ -88,25 +90,12 @@ public class CameraSessionStats implements Parcelable {
         this.mSessionType = sessionType;
         this.mInternalReconfigure = internalReconfigure;
         this.mStreamStats = new ArrayList<>();
+        this.mVideoStabilizationMode = -1;
+        this.mUsedUltraWide = false;
+        this.mUsedZoomOverride = false;
+        this.mMostRequestedFpsRange = new Range<>(0, 0);
         this.mSessionIndex = sessionIdx;
         this.mCameraExtensionSessionStats = new CameraExtensionSessionStats();
-    }
-
-    /* renamed from: android.hardware.CameraSessionStats$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CameraSessionStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraSessionStats createFromParcel(Parcel in) {
-            return new CameraSessionStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraSessionStats[] newArray(int size) {
-            return new CameraSessionStats[size];
-        }
     }
 
     private CameraSessionStats(Parcel in) {
@@ -137,8 +126,12 @@ public class CameraSessionStats implements Parcelable {
         dest.writeTypedList(this.mStreamStats);
         dest.writeString(this.mUserTag);
         dest.writeInt(this.mVideoStabilizationMode);
+        dest.writeBoolean(this.mUsedUltraWide);
+        dest.writeBoolean(this.mUsedZoomOverride);
         dest.writeInt(this.mSessionIndex);
         this.mCameraExtensionSessionStats.writeToParcel(dest, 0);
+        dest.writeInt(this.mMostRequestedFpsRange.getLower().intValue());
+        dest.writeInt(this.mMostRequestedFpsRange.getUpper().intValue());
     }
 
     public void readFromParcel(Parcel in) {
@@ -161,8 +154,13 @@ public class CameraSessionStats implements Parcelable {
         this.mStreamStats = streamStats;
         this.mUserTag = in.readString();
         this.mVideoStabilizationMode = in.readInt();
+        this.mUsedUltraWide = in.readBoolean();
+        this.mUsedZoomOverride = in.readBoolean();
         this.mSessionIndex = in.readInt();
         this.mCameraExtensionSessionStats = CameraExtensionSessionStats.CREATOR.createFromParcel(in);
+        int minFps = in.readInt();
+        int maxFps = in.readInt();
+        this.mMostRequestedFpsRange = new Range<>(Integer.valueOf(minFps), Integer.valueOf(maxFps));
     }
 
     public String getCameraId() {
@@ -233,11 +231,23 @@ public class CameraSessionStats implements Parcelable {
         return this.mVideoStabilizationMode;
     }
 
+    public boolean getUsedUltraWide() {
+        return this.mUsedUltraWide;
+    }
+
+    public boolean getUsedZoomOverride() {
+        return this.mUsedZoomOverride;
+    }
+
     public int getSessionIndex() {
         return this.mSessionIndex;
     }
 
     public CameraExtensionSessionStats getExtensionSessionStats() {
         return this.mCameraExtensionSessionStats;
+    }
+
+    public Range<Integer> getMostRequestedFpsRange() {
+        return this.mMostRequestedFpsRange;
     }
 }

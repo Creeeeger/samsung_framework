@@ -15,7 +15,6 @@ public interface IInlineSuggestionUi extends IInterface {
 
     void releaseSurfaceControlViewHost() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IInlineSuggestionUi {
         @Override // android.service.autofill.IInlineSuggestionUi
         public void getSurfacePackage(ISurfacePackageResultCallback callback) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IInlineSuggestionUi extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IInlineSuggestionUi {
         static final int TRANSACTION_getSurfacePackage = 1;
         static final int TRANSACTION_releaseSurfaceControlViewHost = 2;
@@ -77,29 +75,25 @@ public interface IInlineSuggestionUi extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInlineSuggestionUi.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInlineSuggestionUi.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInlineSuggestionUi.DESCRIPTOR);
+                case 1:
+                    ISurfacePackageResultCallback _arg0 = ISurfacePackageResultCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getSurfacePackage(_arg0);
+                    return true;
+                case 2:
+                    releaseSurfaceControlViewHost();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISurfacePackageResultCallback _arg0 = ISurfacePackageResultCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getSurfacePackage(_arg0);
-                            return true;
-                        case 2:
-                            releaseSurfaceControlViewHost();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IInlineSuggestionUi {
+        private static class Proxy implements IInlineSuggestionUi {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

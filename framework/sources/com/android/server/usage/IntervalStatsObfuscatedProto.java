@@ -15,7 +15,6 @@ public final class IntervalStatsObfuscatedProto {
     public static final long PACKAGE_USAGE = 2246267895832L;
     public static final long PENDING_EVENTS = 2246267895831L;
 
-    /* loaded from: classes5.dex */
     public final class CountAndTime {
         public static final long COUNT = 1120986464257L;
         public static final long TIME_MS = 1112396529666L;
@@ -24,7 +23,6 @@ public final class IntervalStatsObfuscatedProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Configuration {
         public static final long ACTIVE = 1133871366149L;
         public static final long CONFIG = 1146756268033L;
@@ -36,7 +34,6 @@ public final class IntervalStatsObfuscatedProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class PackageUsage {
         public static final long PACKAGE_NAME = 1138166333441L;
         public static final long TIME_MS = 1112396529666L;

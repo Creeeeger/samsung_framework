@@ -19,7 +19,6 @@ public interface IControlsSubscriber extends IInterface {
 
     void onSubscribe(IBinder iBinder, IControlsSubscription iControlsSubscription) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IControlsSubscriber {
         @Override // android.service.controls.IControlsSubscriber
         public void onSubscribe(IBinder token, IControlsSubscription cs) throws RemoteException {
@@ -43,7 +42,6 @@ public interface IControlsSubscriber extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IControlsSubscriber {
         static final int TRANSACTION_onComplete = 4;
         static final int TRANSACTION_onError = 3;
@@ -95,44 +93,40 @@ public interface IControlsSubscriber extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IControlsSubscriber.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IControlsSubscriber.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IControlsSubscriber.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    IControlsSubscription _arg1 = IControlsSubscription.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSubscribe(_arg0, _arg1);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    Control _arg12 = (Control) data.readTypedObject(Control.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNext(_arg02, _arg12);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg03, _arg13);
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            IControlsSubscription _arg1 = IControlsSubscription.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSubscribe(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            Control _arg12 = (Control) data.readTypedObject(Control.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNext(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IControlsSubscriber {
+        private static class Proxy implements IControlsSubscriber {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

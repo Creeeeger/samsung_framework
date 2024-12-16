@@ -2,7 +2,7 @@ package com.android.framework.protobuf;
 
 import android.hardware.scontext.SContextConstants;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public enum JavaType {
     VOID(Void.class, Void.class, null),
     INT(Integer.TYPE, Integer.class, 0),

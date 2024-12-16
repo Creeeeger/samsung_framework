@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class CasSessionRequest implements Parcelable {
     public static final Parcelable.Creator<CasSessionRequest> CREATOR = new Parcelable.Creator<CasSessionRequest>() { // from class: android.media.tv.tunerresourcemanager.CasSessionRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CasSessionRequest createFromParcel(Parcel _aidl_source) {
             CasSessionRequest _aidl_out = new CasSessionRequest();
@@ -17,6 +15,7 @@ public class CasSessionRequest implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CasSessionRequest[] newArray(int _aidl_size) {
             return new CasSessionRequest[_aidl_size];
@@ -24,25 +23,6 @@ public class CasSessionRequest implements Parcelable {
     };
     public int clientId = 0;
     public int casSystemId = 0;
-
-    /* renamed from: android.media.tv.tunerresourcemanager.CasSessionRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CasSessionRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CasSessionRequest createFromParcel(Parcel _aidl_source) {
-            CasSessionRequest _aidl_out = new CasSessionRequest();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CasSessionRequest[] newArray(int _aidl_size) {
-            return new CasSessionRequest[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

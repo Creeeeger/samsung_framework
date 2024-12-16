@@ -42,7 +42,7 @@ public class IAFDDBManager {
     static final int JE_CALLSTACKTB_code = 4;
     static final int JE_CLASSNAMETB_code = 2;
     static final int JE_DETAILMSGTB_code = 3;
-    private static final int MAX_DBINIT_RETRY_CNT = 25;
+    private static final int MAX_DBINIT_RETRY_CNT = 100;
     static final int NE_CALLSTACKTB_code = 5;
     static final int NE_HEADERINFOTB_code = 6;
     private static final String TAG = "IAFDDBManager";
@@ -64,10 +64,6 @@ public class IAFDDBManager {
     static final Uri DB_IAFD_TB_URI_SM = Uri.parse("content://com.samsung.android.sm/IAFD_TB");
     static int mCurDBIndex = -1;
 
-    /* synthetic */ IAFDDBManager(IAFDDBManagerIA iAFDDBManagerIA) {
-        this();
-    }
-
     private IAFDDBManager() {
         this.mIfadDBData = new IAFDDiagnosis.IAFD_DATA[]{null, null, null};
         this.mRegisteredSmartManagerIAFDObserver = false;
@@ -78,8 +74,7 @@ public class IAFDDBManager {
         mCurDBIndex = -1;
     }
 
-    /* loaded from: classes6.dex */
-    public static class IAFDDBManagerHolder {
+    private static class IAFDDBManagerHolder {
         private static final IAFDDBManager INSTANCE = new IAFDDBManager();
 
         private IAFDDBManagerHolder() {
@@ -95,11 +90,10 @@ public class IAFDDBManager {
     }
 
     public IAFDDiagnosis.IAFD_DATA getData() {
-        int i = mCurDBIndex;
-        if (i < 0) {
+        if (mCurDBIndex < 0) {
             return null;
         }
-        return this.mIfadDBData[i];
+        return this.mIfadDBData[mCurDBIndex];
     }
 
     public void updateHotfixDB_IAFDDB() {
@@ -119,12 +113,11 @@ public class IAFDDBManager {
             syncDBType();
         }
         if (this.mIAFDDBManagerThread == null) {
-            IAFDDBManagerThread iAFDDBManagerThread = new IAFDDBManagerThread("IAFDDBManagerThread", 0);
-            this.mIAFDDBManagerThread = iAFDDBManagerThread;
-            iAFDDBManagerThread.start();
-            return;
+            this.mIAFDDBManagerThread = new IAFDDBManagerThread("IAFDDBManagerThread", 0);
+            this.mIAFDDBManagerThread.start();
+        } else {
+            this.mIAFDDBManagerHandler.obtainMessage(255).sendToTarget();
         }
-        this.mIAFDDBManagerHandler.obtainMessage(255).sendToTarget();
     }
 
     public void deInit() {
@@ -139,9 +132,7 @@ public class IAFDDBManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes6.dex */
-    public class IAFDDBManagerThread extends Thread {
+    private class IAFDDBManagerThread extends Thread {
         int mPriority;
 
         public IAFDDBManagerThread(String name) {
@@ -158,12 +149,13 @@ public class IAFDDBManager {
         public void run() {
             Process.setThreadPriority(this.mPriority);
             Looper.prepare();
-            IAFDDBManager.this.mIAFDDBManagerHandler = new IAFDDBManagerHandler();
+            IAFDDBManager.this.mIAFDDBManagerHandler = IAFDDBManager.this.new IAFDDBManagerHandler();
             IAFDDBManager.this.mIAFDDBManagerHandler.obtainMessage(255).sendToTarget();
             Looper.loop();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Removed duplicated region for block: B:96:0x0299  */
     /* JADX WARN: Removed duplicated region for block: B:98:? A[RETURN, SYNTHETIC] */
@@ -179,12 +171,12 @@ public class IAFDDBManager {
         throw new UnsupportedOperationException("Method not decompiled: com.sec.android.iaft.IAFDDBManager.initDBByURIOrFile(boolean, android.net.Uri, java.lang.String):com.sec.android.iaft.IAFDDiagnosis$IAFD_DATA");
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void syncDBType() {
         int curDBVer = -1;
         mCurDBIndex = -1;
         for (int i = 0; i < 3; i++) {
-            IAFDDiagnosis.IAFD_DATA iafd_data = this.mIfadDBData[i];
-            if (iafd_data != null && iafd_data.controlInfo.getDBVersion() >= curDBVer) {
+            if (this.mIfadDBData[i] != null && this.mIfadDBData[i].controlInfo.getDBVersion() >= curDBVer) {
                 curDBVer = this.mIfadDBData[i].controlInfo.getDBVersion();
                 mCurDBIndex = i;
             }
@@ -192,6 +184,7 @@ public class IAFDDBManager {
         Slog.d(TAG, "syncDBType(): mCurDBIndex=" + mCurDBIndex + ", curDBVer=" + curDBVer);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void initIAFDDBHotfix() {
         IAFDDiagnosis.IAFD_DATA iafddataTmp;
         try {
@@ -214,6 +207,7 @@ public class IAFDDBManager {
     private void initARDBHotfix() {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void initTBs() {
         if (this.mContext == null || isDBIniting) {
             return;
@@ -237,8 +231,7 @@ public class IAFDDBManager {
         isDBIniting = false;
     }
 
-    /* loaded from: classes6.dex */
-    public class IAFDDBManagerHandler extends Handler {
+    private class IAFDDBManagerHandler extends Handler {
         public IAFDDBManagerHandler() {
         }
 
@@ -262,7 +255,7 @@ public class IAFDDBManager {
                             IAFDDBManager.this.mIfadDBData[1] = iafddataTmp;
                         } else {
                             IAFDDBManager.mSMDBInitReTryCnt++;
-                            if (IAFDDBManager.this.mIAFDDBManagerHandler != null && IAFDDBManager.mSMDBInitReTryCnt < 25) {
+                            if (IAFDDBManager.this.mIAFDDBManagerHandler != null && IAFDDBManager.mSMDBInitReTryCnt < 100) {
                                 Slog.i(IAFDDBManager.TAG, "in update,  mSMDBInitReTryCnt=" + IAFDDBManager.mSMDBInitReTryCnt);
                                 IAFDDBManager.this.mIAFDDBManagerHandler.sendMessageDelayed(IAFDDBManager.this.mIAFDDBManagerHandler.obtainMessage(253), 5000L);
                             }
@@ -279,8 +272,7 @@ public class IAFDDBManager {
                 if (!IAFDDBManager.this.mRegisteredSmartManagerIAFDObserver) {
                     try {
                         if (IAFDDBManager.this.mIAFDDBObserver == null) {
-                            IAFDDBManager iAFDDBManager = IAFDDBManager.this;
-                            iAFDDBManager.mIAFDDBObserver = new IAFDDBObserver(iAFDDBManager.mIAFDDBManagerHandler);
+                            IAFDDBManager.this.mIAFDDBObserver = IAFDDBManager.this.new IAFDDBObserver(IAFDDBManager.this.mIAFDDBManagerHandler);
                         }
                         IAFDDBManager.this.mContext.getContentResolver().registerContentObserver(IAFDDBManager.DB_IAFD_TB_URI_SM, true, IAFDDBManager.this.mIAFDDBObserver);
                         IAFDDBManager.this.mRegisteredSmartManagerIAFDObserver = true;
@@ -290,7 +282,7 @@ public class IAFDDBManager {
                     } catch (Exception e2) {
                         IAFDDBManager.this.mRegisteredSmartManagerIAFDObserver = false;
                         IAFDDBManager.mSMDBInitReTryCnt++;
-                        if (IAFDDBManager.this.mIAFDDBManagerHandler != null && IAFDDBManager.mSMDBInitReTryCnt < 25) {
+                        if (IAFDDBManager.this.mIAFDDBManagerHandler != null && IAFDDBManager.mSMDBInitReTryCnt < 100) {
                             Slog.i(IAFDDBManager.TAG, "mSMDBInitReTryCnt=" + IAFDDBManager.mSMDBInitReTryCnt);
                             IAFDDBManager.this.mIAFDDBManagerHandler.sendMessageDelayed(IAFDDBManager.this.mIAFDDBManagerHandler.obtainMessage(254), 5000L);
                             return;
@@ -305,15 +297,14 @@ public class IAFDDBManager {
                 if (!IAFDDBManager.this.mRegisteredHotfixDBObserver) {
                     try {
                         if (IAFDDBManager.this.mIAFDDBObserver == null) {
-                            IAFDDBManager iAFDDBManager2 = IAFDDBManager.this;
-                            iAFDDBManager2.mIAFDDBObserver = new IAFDDBObserver(iAFDDBManager2.mIAFDDBManagerHandler);
+                            IAFDDBManager.this.mIAFDDBObserver = IAFDDBManager.this.new IAFDDBObserver(IAFDDBManager.this.mIAFDDBManagerHandler);
                         }
                         IAFDDBManager.this.mContext.getContentResolver().registerContentObserver(IAFDSocketFdServer.mUriHotfixIAFDDB_TB, true, IAFDDBManager.this.mIAFDDBObserver);
                         IAFDDBManager.this.mRegisteredHotfixDBObserver = true;
                     } catch (Exception e3) {
                         IAFDDBManager.this.mRegisteredHotfixDBObserver = false;
                         IAFDDBManager.mHotfixDBInitReTryCnt++;
-                        if (IAFDDBManager.this.mIAFDDBManagerHandler != null && IAFDDBManager.mHotfixDBInitReTryCnt < 25) {
+                        if (IAFDDBManager.this.mIAFDDBManagerHandler != null && IAFDDBManager.mHotfixDBInitReTryCnt < 100) {
                             Slog.i(IAFDDBManager.TAG, "mHotfixDBInitReTryCnt=" + IAFDDBManager.mHotfixDBInitReTryCnt);
                             IAFDDBManager.this.mIAFDDBManagerHandler.sendMessageDelayed(IAFDDBManager.this.mIAFDDBManagerHandler.obtainMessage(250), 5000L);
                             return;
@@ -326,7 +317,6 @@ public class IAFDDBManager {
         }
     }
 
-    /* loaded from: classes6.dex */
     private class IAFDDBObserver extends ContentObserver {
         public IAFDDBObserver(Handler handler) {
             super(handler);

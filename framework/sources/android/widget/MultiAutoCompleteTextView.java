@@ -13,7 +13,6 @@ import android.widget.AutoCompleteTextView;
 public class MultiAutoCompleteTextView extends AutoCompleteTextView {
     private Tokenizer mTokenizer;
 
-    /* loaded from: classes4.dex */
     public interface Tokenizer {
         int findTokenEnd(CharSequence charSequence, int i);
 
@@ -62,13 +61,12 @@ public class MultiAutoCompleteTextView extends AutoCompleteTextView {
 
     @Override // android.widget.AutoCompleteTextView
     public boolean enoughToFilter() {
-        Tokenizer tokenizer;
         Editable text = getText();
         int end = getSelectionEnd();
-        if (end < 0 || (tokenizer = this.mTokenizer) == null) {
+        if (end < 0 || this.mTokenizer == null) {
             return false;
         }
-        int start = tokenizer.findTokenStart(text, end);
+        int start = this.mTokenizer.findTokenStart(text, end);
         if (end - start < getThreshold()) {
             return false;
         }
@@ -116,7 +114,6 @@ public class MultiAutoCompleteTextView extends AutoCompleteTextView {
         return MultiAutoCompleteTextView.class.getName();
     }
 
-    /* loaded from: classes4.dex */
     public static class CommaTokenizer implements Tokenizer {
         @Override // android.widget.MultiAutoCompleteTextView.Tokenizer
         public int findTokenStart(CharSequence text, int cursor) {

@@ -3,21 +3,14 @@ package android.accounts;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.app.admin.DevicePolicyResources;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,7 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.android.internal.R;
 import com.google.android.collect.Sets;
-import com.samsung.android.util.SemViewUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -63,7 +55,6 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
     private LinkedHashMap<Account, Integer> mAccounts;
     private String mCallingPackage;
     private int mCallingUid;
-    private Button mCancelButton;
     private String mDescriptionOverride;
     private boolean mDisallowAddAccounts;
     private boolean mDontShowPicker;
@@ -79,17 +70,13 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
 
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
-        int i;
-        int i2;
-        int buttonTextColor;
         if (Log.isLoggable(TAG, 2)) {
             Log.v(TAG, "ChooseTypeAndAccountActivity.onCreate(savedInstanceState=" + savedInstanceState + NavigationBarInflaterView.KEY_CODE_END);
         }
         getWindow().addSystemFlags(524288);
         this.mCallingUid = getLaunchedFromUid();
-        String launchedFromPackage = getLaunchedFromPackage();
-        this.mCallingPackage = launchedFromPackage;
-        if (this.mCallingUid != 0 && launchedFromPackage != null) {
+        this.mCallingPackage = getLaunchedFromPackage();
+        if (this.mCallingUid != 0 && this.mCallingPackage != null) {
             Bundle restrictions = UserManager.get(this).getUserRestrictions(new UserHandle(UserHandle.getUserId(this.mCallingUid)));
             this.mDisallowAddAccounts = restrictions.getBoolean(UserManager.DISALLOW_MODIFY_ACCOUNTS, false);
         }
@@ -105,8 +92,8 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
             Parcelable[] accounts = savedInstanceState.getParcelableArray(KEY_INSTANCE_STATE_ACCOUNTS_LIST);
             ArrayList<Integer> visibility = savedInstanceState.getIntegerArrayList(KEY_INSTANCE_STATE_VISIBILITY_LIST);
             this.mAccounts = new LinkedHashMap<>();
-            for (int i3 = 0; i3 < accounts.length; i3++) {
-                this.mAccounts.put((Account) accounts[i3], visibility.get(i3));
+            for (int i = 0; i < accounts.length; i++) {
+                this.mAccounts.put((Account) accounts[i], visibility.get(i));
             }
         } else {
             this.mPendingRequest = 0;
@@ -135,7 +122,7 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
                     return lambda$onCreate$0;
                 }
             });
-            view.setText(text);
+            view.lambda$setTextAsync$0(text);
             this.mDontShowPicker = true;
         }
         if (this.mDontShowPicker) {
@@ -156,65 +143,17 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
         setContentView(R.layout.choose_type_and_account);
         overrideDescriptionIfSupplied(this.mDescriptionOverride);
         populateUIAccountList(listItems);
-        Button button = (Button) findViewById(16908314);
-        this.mOkButton = button;
-        button.setEnabled(this.mSelectedItemIndex != -1);
-        this.mCancelButton = (Button) findViewById(16908313);
-        if (SemViewUtils.isOpenThemeApplied(this)) {
-            TypedValue typedValue = new TypedValue();
-            Context wrapper = new ContextThemeWrapper(this, 16974120);
-            wrapper.getTheme().resolveAttribute(16843828, typedValue, true);
-            if (typedValue.resourceId != 0) {
-                buttonTextColor = wrapper.getResources().getColor(typedValue.resourceId);
-                Log.i(TAG, "onCreate: #1 buttonTextColor=0x" + Integer.toHexString(buttonTextColor));
-            } else {
-                buttonTextColor = typedValue.data;
-                Log.i(TAG, "onCreate: #2 buttonTextColor=0x" + Integer.toHexString(buttonTextColor));
-            }
-            this.mOkButton.setTextColor(buttonTextColor);
-            this.mCancelButton.setTextColor(buttonTextColor);
-        } else if (getResources().getConfiguration().semDesktopModeEnabled != 1 && Settings.System.getInt(getContentResolver(), "wallpapertheme_state", 0) != 0) {
-            Resources res = getResources();
-            boolean isNightMode = (res.getConfiguration().uiMode & 48) == 32;
-            if (isNightMode) {
-                i = R.color.tw_dialog_title_text_color_material_dark;
-            } else {
-                i = R.color.tw_dialog_title_text_color_material_light;
-            }
-            int titleColor = res.getColor(i, null);
-            View title = getWindow().getDecorView().findViewById(16908310);
-            if (title instanceof TextView) {
-                ((TextView) title).setTextColor(titleColor);
-            }
-            if (isNightMode) {
-                i2 = R.color.tw_dialog_button_text_color_material_dark;
-            } else {
-                i2 = R.color.tw_dialog_button_text_color_material_light;
-            }
-            int buttonTextColor2 = res.getColor(i2, null);
-            this.mOkButton.setTextColor(buttonTextColor2);
-            this.mCancelButton.setTextColor(buttonTextColor2);
-            Log.i(TAG, "onCreate: colorPalette=true isNightMode=" + isNightMode + " titleColor=0x" + Integer.toHexString(titleColor) + " buttonTextColor=0x" + Integer.toHexString(buttonTextColor2));
-        }
-        String[] themes = getTheme().getTheme();
-        StringBuilder sb = new StringBuilder();
-        for (String str : themes) {
-            sb.append(str);
-            sb.append(" ");
-        }
-        Log.i(TAG, "Theme=" + ((Object) sb));
-        ColorStateList okTextColors = this.mOkButton.getTextColors();
-        Log.i(TAG, "Ok textColors=" + okTextColors + " defaultColor=0x" + Integer.toHexString(okTextColors.getDefaultColor()));
-        ColorStateList cancelTextColors = this.mCancelButton.getTextColors();
-        Log.i(TAG, "Cancel textColors=" + cancelTextColors + " defaultColor=0x" + Integer.toHexString(cancelTextColors.getDefaultColor()));
+        this.mOkButton = (Button) findViewById(16908314);
+        this.mOkButton.setEnabled(this.mSelectedItemIndex != -1);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$onCreate$0() {
         return getString(R.string.error_message_change_not_allowed);
     }
 
     @Override // android.app.Activity
-    public void onDestroy() {
+    protected void onDestroy() {
         if (Log.isLoggable(TAG, 2)) {
             Log.v(TAG, "ChooseTypeAndAccountActivity.onDestroy()");
         }
@@ -222,15 +161,14 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
     }
 
     @Override // android.app.Activity
-    public void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_INSTANCE_STATE_PENDING_REQUEST, this.mPendingRequest);
         if (this.mPendingRequest == 2) {
             outState.putParcelableArray(KEY_INSTANCE_STATE_EXISTING_ACCOUNTS, this.mExistingAccounts);
         }
-        int i = this.mSelectedItemIndex;
-        if (i != -1) {
-            if (i == this.mPossiblyVisibleAccounts.size()) {
+        if (this.mSelectedItemIndex != -1) {
+            if (this.mSelectedItemIndex == this.mPossiblyVisibleAccounts.size()) {
                 outState.putBoolean(KEY_INSTANCE_STATE_SELECTED_ADD_ACCOUNT, true);
             } else {
                 outState.putBoolean(KEY_INSTANCE_STATE_SELECTED_ADD_ACCOUNT, false);
@@ -239,11 +177,11 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
         }
         Parcelable[] accounts = new Parcelable[this.mAccounts.size()];
         ArrayList<Integer> visibility = new ArrayList<>(this.mAccounts.size());
-        int i2 = 0;
+        int i = 0;
         for (Map.Entry<Account, Integer> e : this.mAccounts.entrySet()) {
-            accounts[i2] = e.getKey();
+            accounts[i] = e.getKey();
             visibility.add(e.getValue());
-            i2++;
+            i++;
         }
         outState.putParcelableArray(KEY_INSTANCE_STATE_ACCOUNTS_LIST, accounts);
         outState.putIntegerArrayList(KEY_INSTANCE_STATE_VISIBILITY_LIST, visibility);
@@ -256,16 +194,13 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
     public void onOkButtonClicked(View view) {
         if (this.mSelectedItemIndex == this.mPossiblyVisibleAccounts.size()) {
             startChooseAccountTypeActivity();
-            return;
-        }
-        int i = this.mSelectedItemIndex;
-        if (i != -1) {
-            onAccountSelected(this.mPossiblyVisibleAccounts.get(i));
+        } else if (this.mSelectedItemIndex != -1) {
+            onAccountSelected(this.mPossiblyVisibleAccounts.get(this.mSelectedItemIndex));
         }
     }
 
     @Override // android.app.Activity
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String accountType;
         if (Log.isLoggable(TAG, 2)) {
             if (data != null && data.getExtras() != null) {
@@ -440,13 +375,11 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
     }
 
     private LinkedHashMap<Account, Integer> getAcceptableAccountChoices(AccountManager accountManager) {
-        Set<String> set;
         Map<Account, Integer> accountsAndVisibilityForCaller = accountManager.getAccountsAndVisibilityForPackage(this.mCallingPackage, null);
         Account[] allAccounts = accountManager.getAccounts();
         LinkedHashMap<Account, Integer> accountsToPopulate = new LinkedHashMap<>(accountsAndVisibilityForCaller.size());
         for (Account account : allAccounts) {
-            Set<Account> set2 = this.mSetOfAllowableAccounts;
-            if ((set2 == null || set2.contains(account)) && (((set = this.mSetOfRelevantAccountTypes) == null || set.contains(account.type)) && accountsAndVisibilityForCaller.get(account) != null)) {
+            if ((this.mSetOfAllowableAccounts == null || this.mSetOfAllowableAccounts.contains(account)) && ((this.mSetOfRelevantAccountTypes == null || this.mSetOfRelevantAccountTypes.contains(account.type)) && accountsAndVisibilityForCaller.get(account) != null)) {
                 accountsToPopulate.put(account, accountsAndVisibilityForCaller.get(account));
             }
         }
@@ -485,7 +418,7 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
     private void overrideDescriptionIfSupplied(String descriptionOverride) {
         TextView descriptionView = (TextView) findViewById(R.id.description);
         if (!TextUtils.isEmpty(descriptionOverride)) {
-            descriptionView.setText(descriptionOverride);
+            descriptionView.lambda$setTextAsync$0(descriptionOverride);
         } else {
             descriptionView.setVisibility(8);
         }
@@ -493,56 +426,20 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
 
     private final void populateUIAccountList(String[] listItems) {
         ListView list = (ListView) findViewById(16908298);
-        list.setAdapter((ListAdapter) new ArrayAdapter(this, R.layout.sem_choose_type_and_account_dialog_item_layout, listItems));
+        list.setAdapter((ListAdapter) new ArrayAdapter(this, 17367055, listItems));
         list.setChoiceMode(1);
         list.setItemsCanFocus(false);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.accounts.ChooseTypeAndAccountActivity.1
-            AnonymousClass1() {
-            }
-
             @Override // android.widget.AdapterView.OnItemClickListener
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 ChooseTypeAndAccountActivity.this.mSelectedItemIndex = position;
                 ChooseTypeAndAccountActivity.this.mOkButton.setEnabled(true);
             }
         });
-        int i = this.mSelectedItemIndex;
-        if (i != -1) {
-            list.setItemChecked(i, true);
+        if (this.mSelectedItemIndex != -1) {
+            list.setItemChecked(this.mSelectedItemIndex, true);
             if (Log.isLoggable(TAG, 2)) {
                 Log.v(TAG, "List item " + this.mSelectedItemIndex + " should be selected");
-            }
-        }
-    }
-
-    /* renamed from: android.accounts.ChooseTypeAndAccountActivity$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements AdapterView.OnItemClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemClickListener
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            ChooseTypeAndAccountActivity.this.mSelectedItemIndex = position;
-            ChooseTypeAndAccountActivity.this.mOkButton.setEnabled(true);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    private static class CheckedTextView extends android.widget.CheckedTextView {
-        public CheckedTextView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            int i;
-            if (getResources().getConfiguration().semDesktopModeEnabled != 1 && Settings.System.getInt(context.getContentResolver(), "wallpapertheme_state", 0) != 0) {
-                boolean isNightMode = (getResources().getConfiguration().uiMode & 48) == 32;
-                Resources resources = getResources();
-                if (isNightMode) {
-                    i = R.color.sem_dialog_list_color_material_dark;
-                } else {
-                    i = R.color.sem_dialog_list_color_material_light;
-                }
-                int textColor = resources.getColor(i, null);
-                setTextColor(textColor);
             }
         }
     }

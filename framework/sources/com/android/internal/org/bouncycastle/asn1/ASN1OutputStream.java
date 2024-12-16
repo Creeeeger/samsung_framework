@@ -26,7 +26,7 @@ public class ASN1OutputStream {
         this.os = os;
     }
 
-    public final void writeLength(int length) throws IOException {
+    final void writeLength(int length) throws IOException {
         if (length > 127) {
             int size = 1;
             int val = length;
@@ -48,11 +48,11 @@ public class ASN1OutputStream {
         write((byte) length);
     }
 
-    public final void write(int b) throws IOException {
+    final void write(int b) throws IOException {
         this.os.write(b);
     }
 
-    public final void write(byte[] bytes, int off, int len) throws IOException {
+    final void write(byte[] bytes, int off, int len) throws IOException {
         this.os.write(bytes, off, len);
     }
 
@@ -63,14 +63,14 @@ public class ASN1OutputStream {
         }
     }
 
-    public final void writeElements(Enumeration elements) throws IOException {
+    final void writeElements(Enumeration elements) throws IOException {
         while (elements.hasMoreElements()) {
             ASN1Primitive primitive = ((ASN1Encodable) elements.nextElement()).toASN1Primitive();
             writePrimitive(primitive, true);
         }
     }
 
-    public final void writeEncoded(boolean withTag, int tag, byte contents) throws IOException {
+    final void writeEncoded(boolean withTag, int tag, byte contents) throws IOException {
         if (withTag) {
             write(tag);
         }
@@ -78,7 +78,7 @@ public class ASN1OutputStream {
         write(contents);
     }
 
-    public final void writeEncoded(boolean withTag, int tag, byte[] contents) throws IOException {
+    final void writeEncoded(boolean withTag, int tag, byte[] contents) throws IOException {
         if (withTag) {
             write(tag);
         }
@@ -86,7 +86,7 @@ public class ASN1OutputStream {
         write(contents, 0, contents.length);
     }
 
-    public final void writeEncoded(boolean withTag, int tag, byte[] contents, int contentsOff, int contentsLen) throws IOException {
+    final void writeEncoded(boolean withTag, int tag, byte[] contents, int contentsOff, int contentsLen) throws IOException {
         if (withTag) {
             write(tag);
         }
@@ -94,7 +94,7 @@ public class ASN1OutputStream {
         write(contents, contentsOff, contentsLen);
     }
 
-    public final void writeEncoded(boolean withTag, int tag, byte headByte, byte[] tailBytes) throws IOException {
+    final void writeEncoded(boolean withTag, int tag, byte headByte, byte[] tailBytes) throws IOException {
         if (withTag) {
             write(tag);
         }
@@ -103,7 +103,7 @@ public class ASN1OutputStream {
         write(tailBytes, 0, tailBytes.length);
     }
 
-    public final void writeEncoded(boolean withTag, int tag, byte headByte, byte[] body, int bodyOff, int bodyLen, byte tailByte) throws IOException {
+    final void writeEncoded(boolean withTag, int tag, byte headByte, byte[] body, int bodyOff, int bodyLen, byte tailByte) throws IOException {
         if (withTag) {
             write(tag);
         }
@@ -113,13 +113,13 @@ public class ASN1OutputStream {
         write(tailByte);
     }
 
-    public final void writeEncoded(boolean withTag, int flags, int tagNo, byte[] contents) throws IOException {
+    final void writeEncoded(boolean withTag, int flags, int tagNo, byte[] contents) throws IOException {
         writeTag(withTag, flags, tagNo);
         writeLength(contents.length);
         write(contents, 0, contents.length);
     }
 
-    public final void writeEncodedIndef(boolean withTag, int flags, int tagNo, byte[] contents) throws IOException {
+    final void writeEncodedIndef(boolean withTag, int flags, int tagNo, byte[] contents) throws IOException {
         writeTag(withTag, flags, tagNo);
         write(128);
         write(contents, 0, contents.length);
@@ -127,7 +127,7 @@ public class ASN1OutputStream {
         write(0);
     }
 
-    public final void writeEncodedIndef(boolean withTag, int tag, ASN1Encodable[] elements) throws IOException {
+    final void writeEncodedIndef(boolean withTag, int tag, ASN1Encodable[] elements) throws IOException {
         if (withTag) {
             write(tag);
         }
@@ -137,7 +137,7 @@ public class ASN1OutputStream {
         write(0);
     }
 
-    public final void writeEncodedIndef(boolean withTag, int tag, Enumeration elements) throws IOException {
+    final void writeEncodedIndef(boolean withTag, int tag, Enumeration elements) throws IOException {
         if (withTag) {
             write(tag);
         }
@@ -147,7 +147,7 @@ public class ASN1OutputStream {
         write(0);
     }
 
-    public final void writeTag(boolean withTag, int flags, int tagNo) throws IOException {
+    final void writeTag(boolean withTag, int flags, int tagNo) throws IOException {
         if (!withTag) {
             return;
         }
@@ -187,7 +187,7 @@ public class ASN1OutputStream {
         flushInternal();
     }
 
-    public void writePrimitive(ASN1Primitive primitive, boolean withTag) throws IOException {
+    void writePrimitive(ASN1Primitive primitive, boolean withTag) throws IOException {
         primitive.encode(this, withTag);
     }
 
@@ -199,14 +199,14 @@ public class ASN1OutputStream {
         this.os.flush();
     }
 
-    public void flushInternal() throws IOException {
+    void flushInternal() throws IOException {
     }
 
-    public DEROutputStream getDERSubStream() {
+    DEROutputStream getDERSubStream() {
         return new DEROutputStream(this.os);
     }
 
-    public ASN1OutputStream getDLSubStream() {
+    ASN1OutputStream getDLSubStream() {
         return new DLOutputStream(this.os);
     }
 }

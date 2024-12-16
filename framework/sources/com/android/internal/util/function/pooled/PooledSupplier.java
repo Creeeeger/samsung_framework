@@ -9,19 +9,16 @@ import java.util.function.Supplier;
 /* loaded from: classes5.dex */
 public interface PooledSupplier<T> extends PooledLambda, Supplier<T>, FunctionalUtils.ThrowingSupplier<T> {
 
-    /* loaded from: classes5.dex */
     public interface OfDouble extends DoubleSupplier, PooledLambda {
         @Override // 
         OfDouble recycleOnUse();
     }
 
-    /* loaded from: classes5.dex */
     public interface OfInt extends IntSupplier, PooledLambda {
         @Override // com.android.internal.util.function.pooled.PooledSupplier.OfLong, com.android.internal.util.function.pooled.PooledSupplier.OfDouble
         OfInt recycleOnUse();
     }
 
-    /* loaded from: classes5.dex */
     public interface OfLong extends LongSupplier, PooledLambda {
         @Override // com.android.internal.util.function.pooled.PooledSupplier.OfDouble
         OfLong recycleOnUse();

@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class AnalogFrontendSettings extends FrontendSettings {
     public static final int AFT_FLAG_FALSE = 2;
     public static final int AFT_FLAG_TRUE = 1;
@@ -44,22 +44,15 @@ public class AnalogFrontendSettings extends FrontendSettings {
     private final int mSignalType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AftFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SifStandard {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SignalType {
-    }
-
-    /* synthetic */ AnalogFrontendSettings(long j, int i, int i2, int i3, AnalogFrontendSettingsIA analogFrontendSettingsIA) {
-        this(j, i, i2, i3);
     }
 
     @Override // android.media.tv.tuner.frontend.FrontendSettings
@@ -90,16 +83,11 @@ public class AnalogFrontendSettings extends FrontendSettings {
         this.mAftFlag = aftFlag;
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mAftFlag;
         private long mFrequency;
         private int mSifStandard;
         private int mSignalType;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;

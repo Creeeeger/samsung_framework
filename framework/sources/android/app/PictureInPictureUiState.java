@@ -7,31 +7,41 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class PictureInPictureUiState implements Parcelable {
     public static final Parcelable.Creator<PictureInPictureUiState> CREATOR = new Parcelable.Creator<PictureInPictureUiState>() { // from class: android.app.PictureInPictureUiState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureUiState createFromParcel(Parcel in) {
             return new PictureInPictureUiState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureUiState[] newArray(int size) {
             return new PictureInPictureUiState[size];
         }
     };
-    private boolean mIsStashed;
+    private final boolean mIsStashed;
+    private final boolean mIsTransitioningToPip;
 
     PictureInPictureUiState(Parcel in) {
         this.mIsStashed = in.readBoolean();
+        this.mIsTransitioningToPip = in.readBoolean();
     }
 
     public PictureInPictureUiState(boolean isStashed) {
+        this(isStashed, false);
+    }
+
+    private PictureInPictureUiState(boolean isStashed, boolean isTransitioningToPip) {
         this.mIsStashed = isStashed;
+        this.mIsTransitioningToPip = isTransitioningToPip;
     }
 
     public boolean isStashed() {
         return this.mIsStashed;
+    }
+
+    public boolean isTransitioningToPip() {
+        return this.mIsTransitioningToPip;
     }
 
     public boolean equals(Object o) {
@@ -42,11 +52,11 @@ public final class PictureInPictureUiState implements Parcelable {
             return false;
         }
         PictureInPictureUiState that = (PictureInPictureUiState) o;
-        return Objects.equals(Boolean.valueOf(this.mIsStashed), Boolean.valueOf(that.mIsStashed));
+        return this.mIsStashed == that.mIsStashed && this.mIsTransitioningToPip == that.mIsTransitioningToPip;
     }
 
     public int hashCode() {
-        return Objects.hash(Boolean.valueOf(this.mIsStashed));
+        return Objects.hash(Boolean.valueOf(this.mIsStashed), Boolean.valueOf(this.mIsTransitioningToPip));
     }
 
     @Override // android.os.Parcelable
@@ -57,22 +67,25 @@ public final class PictureInPictureUiState implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeBoolean(this.mIsStashed);
+        out.writeBoolean(this.mIsTransitioningToPip);
     }
 
-    /* renamed from: android.app.PictureInPictureUiState$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PictureInPictureUiState> {
-        AnonymousClass1() {
+    public static final class Builder {
+        private boolean mIsStashed;
+        private boolean mIsTransitioningToPip;
+
+        public Builder setStashed(boolean isStashed) {
+            this.mIsStashed = isStashed;
+            return this;
         }
 
-        @Override // android.os.Parcelable.Creator
-        public PictureInPictureUiState createFromParcel(Parcel in) {
-            return new PictureInPictureUiState(in);
+        public Builder setTransitioningToPip(boolean isEnteringPip) {
+            this.mIsTransitioningToPip = isEnteringPip;
+            return this;
         }
 
-        @Override // android.os.Parcelable.Creator
-        public PictureInPictureUiState[] newArray(int size) {
-            return new PictureInPictureUiState[size];
+        public PictureInPictureUiState build() {
+            return new PictureInPictureUiState(this.mIsStashed, this.mIsTransitioningToPip);
         }
     }
 }

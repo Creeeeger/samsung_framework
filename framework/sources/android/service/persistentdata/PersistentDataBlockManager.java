@@ -5,17 +5,22 @@ import android.os.RemoteException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@SystemApi
 /* loaded from: classes3.dex */
 public class PersistentDataBlockManager {
+
+    @SystemApi
     public static final int FLASH_LOCK_LOCKED = 1;
+
+    @SystemApi
     public static final int FLASH_LOCK_UNKNOWN = -1;
+
+    @SystemApi
     public static final int FLASH_LOCK_UNLOCKED = 0;
     private static final String TAG = PersistentDataBlockManager.class.getSimpleName();
     private IPersistentDataBlockService sService;
 
+    @SystemApi
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface FlashLockState {
     }
 
@@ -23,6 +28,7 @@ public class PersistentDataBlockManager {
         this.sService = service;
     }
 
+    @SystemApi
     public int write(byte[] data) {
         try {
             return this.sService.write(data);
@@ -31,6 +37,7 @@ public class PersistentDataBlockManager {
         }
     }
 
+    @SystemApi
     public byte[] read() {
         try {
             return this.sService.read();
@@ -39,6 +46,7 @@ public class PersistentDataBlockManager {
         }
     }
 
+    @SystemApi
     public int getDataBlockSize() {
         try {
             return this.sService.getDataBlockSize();
@@ -47,6 +55,7 @@ public class PersistentDataBlockManager {
         }
     }
 
+    @SystemApi
     public long getMaximumDataBlockSize() {
         try {
             return this.sService.getMaximumDataBlockSize();
@@ -55,6 +64,7 @@ public class PersistentDataBlockManager {
         }
     }
 
+    @SystemApi
     public void wipe() {
         try {
             this.sService.wipe();
@@ -63,6 +73,8 @@ public class PersistentDataBlockManager {
         }
     }
 
+    @SystemApi
+    @Deprecated
     public void setOemUnlockEnabled(boolean enabled) {
         try {
             this.sService.setOemUnlockEnabled(enabled);
@@ -71,6 +83,8 @@ public class PersistentDataBlockManager {
         }
     }
 
+    @SystemApi
+    @Deprecated
     public boolean getOemUnlockEnabled() {
         try {
             return this.sService.getOemUnlockEnabled();
@@ -79,14 +93,7 @@ public class PersistentDataBlockManager {
         }
     }
 
-    public boolean isEnabled() {
-        try {
-            return this.sService.isEnabled();
-        } catch (RemoteException e) {
-            return false;
-        }
-    }
-
+    @SystemApi
     public int getFlashLockState() {
         try {
             return this.sService.getFlashLockState();
@@ -99,6 +106,32 @@ public class PersistentDataBlockManager {
     public String getPersistentDataPackageName() {
         try {
             return this.sService.getPersistentDataPackageName();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public boolean isFactoryResetProtectionActive() {
+        try {
+            return this.sService.isFactoryResetProtectionActive();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public boolean deactivateFactoryResetProtection(byte[] secret) {
+        try {
+            return this.sService.deactivateFactoryResetProtection(secret);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public boolean setFactoryResetProtectionSecret(byte[] secret) {
+        try {
+            return this.sService.setFactoryResetProtectionSecret(secret);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

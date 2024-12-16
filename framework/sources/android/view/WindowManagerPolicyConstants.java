@@ -12,6 +12,7 @@ public interface WindowManagerPolicyConstants {
     public static final int APPLICATION_MEDIA_SUBLAYER = -2;
     public static final int APPLICATION_PANEL_SUBLAYER = 1;
     public static final int APPLICATION_SUB_PANEL_SUBLAYER = 2;
+    public static final String EXTRA_FROM_BRIGHTNESS_KEY = "android.intent.extra.FROM_BRIGHTNESS_KEY";
     public static final String EXTRA_FROM_HOME_KEY = "android.intent.extra.FROM_HOME_KEY";
     public static final String EXTRA_HDMI_PLUGGED_STATE = "state";
     public static final String EXTRA_START_REASON = "android.intent.extra.EXTRA_START_REASON";
@@ -45,6 +46,7 @@ public interface WindowManagerPolicyConstants {
     public static final int NAV_BAR_RIGHT = 2;
     public static final int NAV_BAR_TOP = 8;
     public static final int OFF_BECAUSE_OF_ADMIN = 1;
+    public static final int OFF_BECAUSE_OF_FOLD = 4;
     public static final int OFF_BECAUSE_OF_LID_SWITCH = 4;
     public static final int OFF_BECAUSE_OF_TIMEOUT = 3;
     public static final int OFF_BECAUSE_OF_USER = 2;
@@ -63,16 +65,13 @@ public interface WindowManagerPolicyConstants {
     public static final int WINDOW_LAYER_MULTIPLIER = 5;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface OffReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface OnReason {
     }
 
-    /* loaded from: classes4.dex */
     public interface PointerEventListener {
         void onPointerEvent(MotionEvent motionEvent);
     }
@@ -84,6 +83,8 @@ public interface WindowManagerPolicyConstants {
             case 2:
             case 9:
                 return 3;
+            case 13:
+                return 4;
             default:
                 return 2;
         }
@@ -137,7 +138,7 @@ public interface WindowManagerPolicyConstants {
             case 3:
                 return "OFF_BECAUSE_OF_TIMEOUT";
             case 4:
-                return "OFF_BECAUSE_OF_LID_SWITCH";
+                return "OFF_BECAUSE_OF_FOLD";
             default:
                 return Integer.toString(why);
         }

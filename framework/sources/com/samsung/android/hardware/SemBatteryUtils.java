@@ -7,7 +7,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import com.sec.android.sdhms.ISamsungDeviceHealthManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemBatteryUtils {
 
     @Deprecated

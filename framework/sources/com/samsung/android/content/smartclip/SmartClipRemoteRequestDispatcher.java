@@ -3,7 +3,7 @@ package com.samsung.android.content.smartclip;
 import android.app.Activity;
 import android.app.ActivityThread;
 import android.content.Context;
-import android.graphics.Canvas;
+import android.content.res.CompatibilityInfo;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
@@ -18,10 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewRootImpl;
 import android.webkit.WebView;
-import android.widget.AbsListView;
-import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
-import android.widget.VideoView;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,14 +46,12 @@ public class SmartClipRemoteRequestDispatcher {
     private static final String KEY_VIEW_INFO_SCROLLY_SUPPORTED = "scrollYSupported";
     public static final String PERMISSION_EXTRACT_SMARTCLIP_DATA = "com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA";
     public static final String PERMISSION_INJECT_INPUT_EVENT = "android.permission.INJECT_EVENTS";
-    private static final String SBROWSER_VIEW_CLASS_NAME = "TinContentView";
     public static final String TAG = "SmartClipRemoteRequestDispatcher";
     private boolean DEBUG = false;
     private Context mContext;
     private Handler mHandler;
     private ViewRootImplGateway mViewRootImplGateway;
 
-    /* loaded from: classes5.dex */
     public interface ViewRootImplGateway {
         void enqueueInputEvent(InputEvent inputEvent, InputEventReceiver inputEventReceiver, int i, boolean z);
 
@@ -93,135 +87,52 @@ public class SmartClipRemoteRequestDispatcher {
         }
     }
 
-    public void dispatchSmartClipRemoteRequest(SmartClipRemoteRequestInfo request) {
+    public void dispatchSmartClipRemoteRequest(final SmartClipRemoteRequestInfo request) {
         switch (request.mRequestType) {
             case 2:
                 checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request.mCallerPid, request.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.1
-                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-                    AnonymousClass1(SmartClipRemoteRequestInfo request2) {
-                        request = request2;
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchAirCommandHitTest(request);
                     }
                 });
-                return;
+                break;
             case 3:
-                checkPermission("android.permission.INJECT_EVENTS", request2.mCallerPid, request2.mCallerUid);
+                checkPermission("android.permission.INJECT_EVENTS", request.mCallerPid, request.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.4
-                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-                    AnonymousClass4(SmartClipRemoteRequestInfo request2) {
-                        request = request2;
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchInputEventInjection(request);
                     }
                 });
-                return;
+                break;
             case 4:
-                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request2.mCallerPid, request2.mCallerUid);
+                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request.mCallerPid, request.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.2
-                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-                    AnonymousClass2(SmartClipRemoteRequestInfo request2) {
-                        request = request2;
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchScrollableAreaInfo(request);
                     }
                 });
-                return;
+                break;
             case 5:
-                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request2.mCallerPid, request2.mCallerUid);
+                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request.mCallerPid, request.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.3
-                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-                    AnonymousClass3(SmartClipRemoteRequestInfo request2) {
-                        request = request2;
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchScrollableViewInfo(request);
                     }
                 });
-                return;
+                break;
             default:
-                Log.e(TAG, "dispatchSmartClipRemoteRequest : Unknown request type(" + request2.mRequestType + NavigationBarInflaterView.KEY_CODE_END);
-                return;
+                Log.e(TAG, "dispatchSmartClipRemoteRequest : Unknown request type(" + request.mRequestType + NavigationBarInflaterView.KEY_CODE_END);
+                break;
         }
     }
 
-    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-        AnonymousClass1(SmartClipRemoteRequestInfo request2) {
-            request = request2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SmartClipRemoteRequestDispatcher.this.dispatchAirCommandHitTest(request);
-        }
-    }
-
-    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-        AnonymousClass2(SmartClipRemoteRequestInfo request2) {
-            request = request2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SmartClipRemoteRequestDispatcher.this.dispatchScrollableAreaInfo(request);
-        }
-    }
-
-    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 implements Runnable {
-        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-        AnonymousClass3(SmartClipRemoteRequestInfo request2) {
-            request = request2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SmartClipRemoteRequestDispatcher.this.dispatchScrollableViewInfo(request);
-        }
-    }
-
-    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 implements Runnable {
-        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-
-        AnonymousClass4(SmartClipRemoteRequestInfo request2) {
-            request = request2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SmartClipRemoteRequestDispatcher.this.dispatchInputEventInjection(request);
-        }
-    }
-
-    public void dispatchInputEventInjection(SmartClipRemoteRequestInfo request) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void dispatchInputEventInjection(final SmartClipRemoteRequestInfo request) {
         if (request.mRequestData != null) {
             if (request.mRequestData instanceof MotionEvent) {
                 MotionEvent motionEvent = (MotionEvent) request.mRequestData;
@@ -238,32 +149,20 @@ public class SmartClipRemoteRequestDispatcher {
             }
             if (request.mRequestData instanceof Bundle) {
                 Bundle reqData = (Bundle) request.mRequestData;
-                Parcelable[] events = reqData.getParcelableArray("events");
+                final Parcelable[] events = reqData.getParcelableArray("events");
                 if (events != null) {
-                    boolean waitUntilConsume = reqData.getBoolean(KEY_EVENT_INJECTION_WAIT_UNTIL_CONSUME);
+                    final boolean waitUntilConsume = reqData.getBoolean(KEY_EVENT_INJECTION_WAIT_UNTIL_CONSUME);
                     long firstEventTime = events.length > 0 ? ((InputEvent) events[0]).getEventTime() : -1L;
                     if (this.DEBUG) {
                         Log.d(TAG, "dispatchInputEventInjection : wait = " + waitUntilConsume + "  eventCount=" + events.length);
                     }
                     for (Parcelable parcelable : events) {
-                        InputEvent event = (InputEvent) parcelable;
+                        final InputEvent event = (InputEvent) parcelable;
                         if (event != null) {
                             if (event instanceof MotionEvent) {
                                 transformTouchPosition((MotionEvent) event);
                             }
                             Runnable runnable = new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.5
-                                final /* synthetic */ InputEvent val$event;
-                                final /* synthetic */ Parcelable[] val$events;
-                                final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-                                final /* synthetic */ boolean val$waitUntilConsume;
-
-                                AnonymousClass5(InputEvent event2, Parcelable[] events2, boolean waitUntilConsume2, SmartClipRemoteRequestInfo request2) {
-                                    event = event2;
-                                    events = events2;
-                                    waitUntilConsume = waitUntilConsume2;
-                                    request = request2;
-                                }
-
                                 @Override // java.lang.Runnable
                                 public void run() {
                                     long startTime = System.currentTimeMillis();
@@ -271,9 +170,7 @@ public class SmartClipRemoteRequestDispatcher {
                                         Log.d(SmartClipRemoteRequestDispatcher.TAG, "dispatchInputEventInjection : injecting.. " + event);
                                     }
                                     SmartClipRemoteRequestDispatcher.this.enqueueInputEvent(event, true);
-                                    InputEvent inputEvent2 = event;
-                                    Parcelable[] parcelableArr = events;
-                                    if (inputEvent2 == parcelableArr[parcelableArr.length - 1]) {
+                                    if (event == events[events.length - 1]) {
                                         if (waitUntilConsume) {
                                             SmartClipRemoteRequestDispatcher.this.sendResult(request, null);
                                         }
@@ -281,7 +178,7 @@ public class SmartClipRemoteRequestDispatcher {
                                     }
                                 }
                             };
-                            long delay = event2.getEventTime() - firstEventTime;
+                            long delay = event.getEventTime() - firstEventTime;
                             if (delay > 0) {
                                 this.mHandler.postDelayed(runnable, delay);
                             } else {
@@ -299,39 +196,7 @@ public class SmartClipRemoteRequestDispatcher {
         Log.e(TAG, "dispatchInputEventInjection : Empty input event!");
     }
 
-    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$5 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass5 implements Runnable {
-        final /* synthetic */ InputEvent val$event;
-        final /* synthetic */ Parcelable[] val$events;
-        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
-        final /* synthetic */ boolean val$waitUntilConsume;
-
-        AnonymousClass5(InputEvent event2, Parcelable[] events2, boolean waitUntilConsume2, SmartClipRemoteRequestInfo request2) {
-            event = event2;
-            events = events2;
-            waitUntilConsume = waitUntilConsume2;
-            request = request2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            long startTime = System.currentTimeMillis();
-            if (SmartClipRemoteRequestDispatcher.this.DEBUG) {
-                Log.d(SmartClipRemoteRequestDispatcher.TAG, "dispatchInputEventInjection : injecting.. " + event);
-            }
-            SmartClipRemoteRequestDispatcher.this.enqueueInputEvent(event, true);
-            InputEvent inputEvent2 = event;
-            Parcelable[] parcelableArr = events;
-            if (inputEvent2 == parcelableArr[parcelableArr.length - 1]) {
-                if (waitUntilConsume) {
-                    SmartClipRemoteRequestDispatcher.this.sendResult(request, null);
-                }
-                Log.d(SmartClipRemoteRequestDispatcher.TAG, "dispatchInputEventInjection : injection finished. Elapsed = " + (System.currentTimeMillis() - startTime));
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchScrollableAreaInfo(SmartClipRemoteRequestInfo request) {
         View rootView = this.mViewRootImplGateway.getRootView();
         if (rootView == null) {
@@ -366,7 +231,8 @@ public class SmartClipRemoteRequestDispatcher {
         resultData.putInt(KEY_SCROLLABLE_AREA_INFO_WINDOW_LAYER, request.mTargetWindowLayer);
         Rect displayFrame = new Rect();
         Rect visibleDisplayFrame = new Rect();
-        float dssScale = ActivityThread.currentActivityThread().getDssScale();
+        CompatibilityInfo compatInfo = ActivityThread.currentActivityThread().getCompatInfo();
+        float dssScale = compatInfo != null ? compatInfo.applicationDensityScale : 1.0f;
         rootView.getWindowDisplayFrame(displayFrame);
         rootView.getWindowVisibleDisplayFrame(visibleDisplayFrame);
         this.mViewRootImplGateway.getTranslatedRectIfNeeded(visibleDisplayFrame);
@@ -376,15 +242,15 @@ public class SmartClipRemoteRequestDispatcher {
         String pkgName = this.mContext.getPackageName();
         String activityName = null;
         resultData.putString("packageName", pkgName);
-        Context context = this.mContext;
-        if (context instanceof Activity) {
-            activityName = context.getClass().getName();
+        if (this.mContext instanceof Activity) {
+            activityName = this.mContext.getClass().getName();
             resultData.putString("activityName", activityName);
         }
         Log.d(TAG, "dispatchScrollableAreaInfo : Pkg=" + pkgName + " Activity=" + activityName);
         sendResult(request, resultData);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchScrollableViewInfo(SmartClipRemoteRequestInfo request) {
         View rootView = this.mViewRootImplGateway.getRootView();
         if (rootView != null) {
@@ -419,6 +285,7 @@ public class SmartClipRemoteRequestDispatcher {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchAirCommandHitTest(SmartClipRemoteRequestInfo request) {
         if (this.mContext != null) {
             Bundle resultData = new Bundle();
@@ -473,7 +340,7 @@ public class SmartClipRemoteRequestDispatcher {
 
     private void addBrowserInfoToBundle(View view, Bundle bundle) {
         Class<?> cls = view.getClass();
-        if (cls.getSimpleName().startsWith(SBROWSER_VIEW_CLASS_NAME)) {
+        if (cls.getSimpleName().equals("TinContentView")) {
             Rect visibleRect = null;
             try {
                 Object coreTinContentView = cls.getMethod("getTinContentViewCore", null).invoke(view, null);
@@ -499,147 +366,20 @@ public class SmartClipRemoteRequestDispatcher {
         return hierarchy;
     }
 
-    private void findScrollableViews(View view, Rect windowRect, ArrayList<View> scrollableViews, ArrayList<View> unscrollableViews) {
-        String str;
-        String str2;
-        String str3;
-        String str4;
-        boolean haveCustomTouchEventHandler;
-        boolean haveCustomDrawHandler;
-        boolean haveCustomTouchEventHandler2;
-        if (view == null || view.getVisibility() != 0 || view.getWidth() == 0) {
-            return;
-        }
-        if (view.getHeight() == 0) {
-            return;
-        }
-        String viewClassName = view.getClass().getName();
-        String parentClassName = view.getClass().getSuperclass().getName();
-        Rect screenRectOfView = getTranslatedViewBoundsOnScreen(view);
-        if (!Rect.intersects(windowRect, screenRectOfView)) {
-            if (this.DEBUG) {
-                Log.d(TAG, "findScrollableViews : Not in range - " + viewClassName + NavigationBarInflaterView.KEY_CODE_START + parentClassName + ") / Rect=" + screenRectOfView);
-                return;
-            }
-            return;
-        }
-        String hashCode = Integer.toHexString(view.hashCode()).toUpperCase();
-        String str5 = " H=";
-        if ((view instanceof ScrollView) || (view instanceof AbsListView)) {
-            str = " Rect=";
-            str2 = " H=";
-        } else {
-            if (!(view instanceof WebView)) {
-                if (!(view instanceof ViewGroup)) {
-                    str3 = " Rect=";
-                    str4 = " H=";
-                } else {
-                    ViewGroup viewGroup = (ViewGroup) view;
-                    int childCount = viewGroup.getChildCount();
-                    str3 = " Rect=";
-                    int i = childCount - 1;
-                    while (i >= 0) {
-                        String str6 = str5;
-                        View curView = viewGroup.getChildAt(i);
-                        findScrollableViews(curView, windowRect, scrollableViews, unscrollableViews);
-                        i--;
-                        str5 = str6;
-                    }
-                    str4 = str5;
-                }
-                if ((view instanceof VideoView) || (view instanceof HorizontalScrollView)) {
-                    if (this.DEBUG) {
-                        Log.d(TAG, "findScrollableViews : Unscrollable view = @" + hashCode + " " + viewClassName + NavigationBarInflaterView.KEY_CODE_START + parentClassName + ") / Rect=" + screenRectOfView + str4 + screenRectOfView.height() + str3 + screenRectOfView);
-                    }
-                    unscrollableViews.add(view);
-                    return;
-                }
-                boolean haveCustomTouchEventHandler3 = false;
-                boolean haveCustomDrawHandler2 = false;
-                Class<?> cls = view.getClass();
-                Class<?>[] paramEvent = {MotionEvent.class};
-                Class<?>[] paramCanvas = {Canvas.class};
-                while (true) {
-                    if (cls == null) {
-                        haveCustomTouchEventHandler = haveCustomTouchEventHandler3;
-                        haveCustomDrawHandler = haveCustomDrawHandler2;
-                        break;
-                    }
-                    String clsName = cls.getName();
-                    haveCustomTouchEventHandler = haveCustomTouchEventHandler3;
-                    if (clsName.startsWith("android.view.")) {
-                        haveCustomDrawHandler = haveCustomDrawHandler2;
-                        break;
-                    }
-                    if (clsName.startsWith("android.widget.")) {
-                        haveCustomDrawHandler = haveCustomDrawHandler2;
-                        break;
-                    }
-                    if (!clsName.startsWith("com.android.internal.")) {
-                        boolean haveCustomDrawHandler3 = haveCustomDrawHandler2;
-                        if (isMethodDeclared(cls, "dispatchTouchEvent", paramEvent)) {
-                            if (this.DEBUG) {
-                                haveCustomTouchEventHandler = true;
-                                Log.d(TAG, "findScrollableViews : @" + hashCode + " Have dispatchTouchEvent() " + viewClassName + " / " + cls.getName() + " / Rect=" + screenRectOfView);
-                            } else {
-                                haveCustomTouchEventHandler = true;
-                            }
-                        }
-                        if (isMethodDeclared(cls, "onTouchEvent", paramEvent)) {
-                            if (this.DEBUG) {
-                                haveCustomTouchEventHandler = true;
-                                Log.d(TAG, "findScrollableViews : @" + hashCode + " Have onTouchEvent() " + viewClassName + " / " + cls.getName() + " / Rect=" + screenRectOfView);
-                            } else {
-                                haveCustomTouchEventHandler = true;
-                            }
-                        }
-                        if (isMethodDeclared(cls, "onDraw", paramCanvas)) {
-                            if (this.DEBUG) {
-                                haveCustomDrawHandler3 = true;
-                                Log.d(TAG, "findScrollableViews : @" + hashCode + " Have onDraw() " + viewClassName + " / " + cls.getName() + " / Rect=" + screenRectOfView);
-                            } else {
-                                haveCustomDrawHandler3 = true;
-                            }
-                        }
-                        if (isMethodDeclared(cls, "draw", paramCanvas)) {
-                            haveCustomDrawHandler3 = true;
-                            if (this.DEBUG) {
-                                Log.d(TAG, "findScrollableViews : @" + hashCode + " Have draw() " + viewClassName + " / " + cls.getName() + " / Rect=" + screenRectOfView);
-                            }
-                        }
-                        if (!isMethodDeclared(cls, "dispatchDraw", paramCanvas)) {
-                            haveCustomDrawHandler2 = haveCustomDrawHandler3;
-                        } else {
-                            if (this.DEBUG) {
-                                Log.d(TAG, "findScrollableViews : @" + hashCode + " Have dispatchDraw() " + viewClassName + " / " + cls.getName() + " / Rect=" + screenRectOfView);
-                            }
-                            haveCustomDrawHandler2 = true;
-                        }
-                        if (haveCustomTouchEventHandler && haveCustomDrawHandler2) {
-                            haveCustomTouchEventHandler2 = haveCustomTouchEventHandler;
-                            break;
-                        } else {
-                            cls = cls.getSuperclass();
-                            haveCustomTouchEventHandler3 = haveCustomTouchEventHandler;
-                        }
-                    } else {
-                        haveCustomDrawHandler = haveCustomDrawHandler2;
-                        break;
-                    }
-                }
-                haveCustomTouchEventHandler2 = haveCustomTouchEventHandler;
-                if (haveCustomTouchEventHandler2) {
-                    scrollableViews.add(view);
-                }
-                return;
-            }
-            str = " Rect=";
-            str2 = " H=";
-        }
-        if (this.DEBUG) {
-            Log.d(TAG, "findScrollableViews : Scrollable view = @" + hashCode + " " + viewClassName + NavigationBarInflaterView.KEY_CODE_START + parentClassName + ") / Rect=" + screenRectOfView + str2 + screenRectOfView.height() + str + screenRectOfView);
-        }
-        scrollableViews.add(view);
+    /* JADX WARN: Code restructure failed: missing block: B:88:0x0258, code lost:
+    
+        r9 = r16;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    private void findScrollableViews(android.view.View r20, android.graphics.Rect r21, java.util.ArrayList<android.view.View> r22, java.util.ArrayList<android.view.View> r23) {
+        /*
+            Method dump skipped, instructions count: 821
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.findScrollableViews(android.view.View, android.graphics.Rect, java.util.ArrayList, java.util.ArrayList):void");
     }
 
     private boolean isMethodDeclared(Class<?> cls, String methodName, Class<?>[] paramTypes) {
@@ -675,19 +415,20 @@ public class SmartClipRemoteRequestDispatcher {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void enqueueInputEvent(InputEvent inputEvent, boolean processImmediately) {
-        ViewRootImplGateway viewRootImplGateway = this.mViewRootImplGateway;
-        if (viewRootImplGateway == null) {
+        if (this.mViewRootImplGateway == null) {
             Log.e(TAG, "enqueueInputEvent : Gateway is null!");
             return;
         }
         try {
-            viewRootImplGateway.enqueueInputEvent(inputEvent, null, 0, processImmediately);
+            this.mViewRootImplGateway.enqueueInputEvent(inputEvent, null, 0, processImmediately);
         } catch (Exception e) {
             Log.e(TAG, "enqueueInputEvent : Exception thrown. e = " + e);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendResult(SmartClipRemoteRequestInfo request, Parcelable resultData) {
         SpenGestureManager spenGestureManager = (SpenGestureManager) this.mContext.getSystemService(Context.SEM_SPEN_GESTURE_SERVICE);
         SmartClipRemoteRequestResult result = new SmartClipRemoteRequestResult(request.mRequestId, request.mRequestType, resultData);

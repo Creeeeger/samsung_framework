@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsConfigCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsConfigCallback";
 
@@ -14,7 +14,6 @@ public interface IImsConfigCallback extends IInterface {
 
     void onStringConfigChanged(int i, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsConfigCallback {
         @Override // android.telephony.ims.aidl.IImsConfigCallback
         public void onIntConfigChanged(int item, int value) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IImsConfigCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsConfigCallback {
         static final int TRANSACTION_onIntConfigChanged = 1;
         static final int TRANSACTION_onStringConfigChanged = 2;
@@ -76,32 +74,29 @@ public interface IImsConfigCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsConfigCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsConfigCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsConfigCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onIntConfigChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStringConfigChanged(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onIntConfigChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStringConfigChanged(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsConfigCallback {
+        private static class Proxy implements IImsConfigCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

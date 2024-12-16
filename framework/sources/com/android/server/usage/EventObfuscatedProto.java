@@ -6,6 +6,7 @@ public final class EventObfuscatedProto {
     public static final long CONFIG = 1146756268038L;
     public static final long FLAGS = 1120986464260L;
     public static final long INSTANCE_ID = 1120986464266L;
+    public static final long INTERACTION_EXTRAS = 1146756268046L;
     public static final long LOCUS_ID_TOKEN = 1120986464269L;
     public static final long NOTIFICATION_CHANNEL_ID_TOKEN = 1120986464265L;
     public static final long PACKAGE_TOKEN = 1120986464257L;

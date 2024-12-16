@@ -32,7 +32,6 @@ public class EnterpriseDeviceManager {
     private volatile RoamingPolicy mRoamingPolicy;
     private volatile WifiPolicy mWifiPolicy;
 
-    /* loaded from: classes3.dex */
     public static class EDMProxyServiceHelper {
         private static IEDMProxy mService;
 

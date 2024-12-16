@@ -16,7 +16,6 @@ public final class BluetoothManagerServiceDumpProto {
     public static final long STATE = 1120986464258L;
     public static final long STATE_NAME = 1138166333443L;
 
-    /* loaded from: classes5.dex */
     public final class ActiveLog {
         public static final long ENABLE = 1133871366146L;
         public static final long PACKAGE_NAME = 1138166333443L;

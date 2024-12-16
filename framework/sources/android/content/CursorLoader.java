@@ -21,6 +21,7 @@ public class CursorLoader extends AsyncTaskLoader<Cursor> {
     String mSortOrder;
     Uri mUri;
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.content.AsyncTaskLoader
     public Cursor loadInBackground() {
         synchronized (this) {
@@ -56,9 +57,8 @@ public class CursorLoader extends AsyncTaskLoader<Cursor> {
     public void cancelLoadInBackground() {
         super.cancelLoadInBackground();
         synchronized (this) {
-            CancellationSignal cancellationSignal = this.mCancellationSignal;
-            if (cancellationSignal != null) {
-                cancellationSignal.cancel();
+            if (this.mCancellationSignal != null) {
+                this.mCancellationSignal.cancel();
             }
         }
     }
@@ -99,9 +99,8 @@ public class CursorLoader extends AsyncTaskLoader<Cursor> {
 
     @Override // android.content.Loader
     protected void onStartLoading() {
-        Cursor cursor = this.mCursor;
-        if (cursor != null) {
-            deliverResult(cursor);
+        if (this.mCursor != null) {
+            deliverResult(this.mCursor);
         }
         if (takeContentChanged() || this.mCursor == null) {
             forceLoad();
@@ -121,11 +120,10 @@ public class CursorLoader extends AsyncTaskLoader<Cursor> {
     }
 
     @Override // android.content.Loader
-    public void onReset() {
+    protected void onReset() {
         super.onReset();
         onStopLoading();
-        Cursor cursor = this.mCursor;
-        if (cursor != null && !cursor.isClosed()) {
+        if (this.mCursor != null && !this.mCursor.isClosed()) {
             this.mCursor.close();
         }
         this.mCursor = null;

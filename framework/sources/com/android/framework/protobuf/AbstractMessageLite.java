@@ -12,11 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public abstract class AbstractMessageLite<MessageType extends AbstractMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> implements MessageLite {
     protected int memoizedHashCode = 0;
 
-    /* loaded from: classes4.dex */
     protected interface InternalOneOfEnum {
         int getNumber();
     }
@@ -71,7 +70,7 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
         throw new UnsupportedOperationException();
     }
 
-    public int getSerializedSize(Schema schema) {
+    int getSerializedSize(Schema schema) {
         int memoizedSerializedSize = getMemoizedSerializedSize();
         if (memoizedSerializedSize == -1) {
             int memoizedSerializedSize2 = schema.getSerializedSize(this);
@@ -81,7 +80,7 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
         return memoizedSerializedSize;
     }
 
-    public UninitializedMessageException newUninitializedMessageException() {
+    UninitializedMessageException newUninitializedMessageException() {
         return new UninitializedMessageException(this);
     }
 
@@ -100,15 +99,14 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
         Builder.addAll((Iterable) values, (List) list);
     }
 
-    public static <T> void addAll(Iterable<T> values, List<? super T> list) {
+    protected static <T> void addAll(Iterable<T> values, List<? super T> list) {
         Builder.addAll((Iterable) values, (List) list);
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Builder<MessageType extends AbstractMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> implements MessageLite.Builder {
         @Override // 
         /* renamed from: clone */
-        public abstract BuilderType mo7003clone();
+        public abstract BuilderType mo7416clone();
 
         protected abstract BuilderType internalMergeFrom(MessageType messagetype);
 
@@ -202,11 +200,10 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
             return this;
         }
 
-        /* loaded from: classes4.dex */
-        public static final class LimitedInputStream extends FilterInputStream {
+        static final class LimitedInputStream extends FilterInputStream {
             private int limit;
 
-            public LimitedInputStream(InputStream in, int limit) {
+            LimitedInputStream(InputStream in, int limit) {
                 super(in);
                 this.limit = limit;
             }
@@ -230,11 +227,10 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
 
             @Override // java.io.FilterInputStream, java.io.InputStream
             public int read(byte[] b, int off, int len) throws IOException {
-                int i = this.limit;
-                if (i <= 0) {
+                if (this.limit <= 0) {
                     return -1;
                 }
-                int result = super.read(b, off, Math.min(len, i));
+                int result = super.read(b, off, Math.min(len, this.limit));
                 if (result >= 0) {
                     this.limit -= result;
                 }
@@ -298,7 +294,7 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
             }
         }
 
-        public static UninitializedMessageException newUninitializedMessageException(MessageLite message) {
+        protected static UninitializedMessageException newUninitializedMessageException(MessageLite message) {
             return new UninitializedMessageException(message);
         }
 

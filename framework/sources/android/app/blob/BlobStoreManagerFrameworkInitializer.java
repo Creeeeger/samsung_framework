@@ -16,7 +16,7 @@ public class BlobStoreManagerFrameworkInitializer {
         });
     }
 
-    public static /* synthetic */ BlobStoreManager lambda$initialize$0(Context context, IBinder service) {
+    static /* synthetic */ BlobStoreManager lambda$initialize$0(Context context, IBinder service) {
         return new BlobStoreManager(context, IBlobStoreManager.Stub.asInterface(service));
     }
 }

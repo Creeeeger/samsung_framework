@@ -8,11 +8,10 @@ import android.os.RemoteException;
 
 /* loaded from: classes2.dex */
 public interface ICaptureStateListener extends IInterface {
-    public static final String DESCRIPTOR = "android$media$ICaptureStateListener".replace('$', '.');
+    public static final String DESCRIPTOR = "android.media.ICaptureStateListener";
 
     void setCaptureState(boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ICaptureStateListener {
         @Override // android.media.ICaptureStateListener
         public void setCaptureState(boolean active) throws RemoteException {
@@ -24,19 +23,18 @@ public interface ICaptureStateListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ICaptureStateListener {
         static final int TRANSACTION_setCaptureState = 1;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, ICaptureStateListener.DESCRIPTOR);
         }
 
         public static ICaptureStateListener asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(ICaptureStateListener.DESCRIPTOR);
             if (iin != null && (iin instanceof ICaptureStateListener)) {
                 return (ICaptureStateListener) iin;
             }
@@ -50,30 +48,25 @@ public interface ICaptureStateListener extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            String descriptor = DESCRIPTOR;
             if (code >= 1 && code <= 16777215) {
-                data.enforceInterface(descriptor);
+                data.enforceInterface(ICaptureStateListener.DESCRIPTOR);
+            }
+            if (code == 1598968902) {
+                reply.writeString(ICaptureStateListener.DESCRIPTOR);
+                return true;
             }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCaptureState(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCaptureState(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ICaptureStateListener {
+        private static class Proxy implements ICaptureStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -86,14 +79,14 @@ public interface ICaptureStateListener extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return ICaptureStateListener.DESCRIPTOR;
             }
 
             @Override // android.media.ICaptureStateListener
             public void setCaptureState(boolean active) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ICaptureStateListener.DESCRIPTOR);
                     _data.writeBoolean(active);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {

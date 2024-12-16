@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class FontWriter {
     public static final String NEW_FONT_DIRECTORY = "/data/app_fonts/";
     public static final String SANS_LOC_NAME = "sans.loc";
@@ -52,7 +52,7 @@ public class FontWriter {
         try {
             File newFontDir = new File(NEW_FONT_DIRECTORY + UserHandle.myUserId());
             setFileProperties(newFontDir, true);
-            fontFile = new File(newFontDir, fontName);
+            fontFile = new File(newFontDir, fontName.replaceAll("\\.\\./", "").replaceAll("/", ""));
             setFileProperties(fontFile, true);
             return fontFile;
         } catch (IOException e) {

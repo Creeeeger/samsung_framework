@@ -7,13 +7,11 @@ import com.android.internal.telephony.RILConstants;
 import com.samsung.android.vibrator.SemHapticFeedbackConstants;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class RadioAccessFamily implements Parcelable {
     private static final int CDMA = 72;
     public static final Parcelable.Creator<RadioAccessFamily> CREATOR = new Parcelable.Creator<RadioAccessFamily>() { // from class: android.telephony.RadioAccessFamily.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessFamily createFromParcel(Parcel in) {
             int phoneId = in.readInt();
@@ -21,6 +19,7 @@ public class RadioAccessFamily implements Parcelable {
             return new RadioAccessFamily(phoneId, radioAccessFamily);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessFamily[] newArray(int size) {
             return new RadioAccessFamily[size];
@@ -84,98 +83,10 @@ public class RadioAccessFamily implements Parcelable {
         outParcel.writeInt(this.mRadioAccessFamily);
     }
 
-    /* renamed from: android.telephony.RadioAccessFamily$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RadioAccessFamily> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioAccessFamily createFromParcel(Parcel in) {
-            int phoneId = in.readInt();
-            int radioAccessFamily = in.readInt();
-            return new RadioAccessFamily(phoneId, radioAccessFamily);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioAccessFamily[] newArray(int size) {
-            return new RadioAccessFamily[size];
-        }
-    }
-
     public static int getRafFromNetworkType(int type) {
         switch (type) {
-            case 0:
-                return SemHapticFeedbackConstants.EFFECT_CLICK_PICKER_MIN;
-            case 1:
-                return 32771;
-            case 2:
-                return WCDMA;
-            case 3:
-                return SemHapticFeedbackConstants.EFFECT_CLICK_PICKER_MIN;
-            case 4:
-                return 10360;
-            case 5:
-                return 72;
-            case 6:
-                return EVDO;
-            case 7:
-                return 60415;
-            case 8:
-                return 276600;
-            case 9:
-                return 316295;
-            case 10:
-                return 326655;
-            case 11:
-                return 266240;
-            case 12:
-                return 283524;
-            case 13:
-                return 65536;
-            case 14:
-                return 82820;
-            case 15:
-                return 331776;
-            case 16:
-                return 98307;
-            case 17:
-                return 364547;
-            case 18:
-                return 115591;
-            case 19:
-                return 349060;
-            case 20:
-                return 381831;
-            case 21:
-                return 125951;
-            case 22:
-                return 392191;
-            case 23:
-                return 524288;
-            case 24:
-                return 790528;
-            case 25:
-                return 800888;
-            case 26:
-                return 840583;
-            case 27:
-                return 850943;
-            case 28:
-                return 807812;
-            case 29:
-                return 856064;
-            case 30:
-                return 888835;
-            case 31:
-                return 873348;
-            case 32:
-                return 906119;
-            case 33:
-                return 916479;
-            default:
-                return 0;
         }
+        return SemHapticFeedbackConstants.EFFECT_CLICK_PICKER_MIN;
     }
 
     private static int getAdjustedRaf(int raf) {

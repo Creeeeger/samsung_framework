@@ -1,10 +1,12 @@
 package android.app;
 
+import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import java.io.IOException;
@@ -93,6 +95,10 @@ public interface SemWallpaperManager {
     }
 
     default void setStream(InputStream data, int simSlot) throws IOException {
+    }
+
+    default int setStream(InputStream bitmapData, Rect visibleCropHint, boolean allowBackup, int which, int type, boolean isPreloaded, Bundle extras) throws IOException {
+        return 0;
     }
 
     default boolean isSupportCMFFeature() {
@@ -318,5 +324,41 @@ public interface SemWallpaperManager {
 
     default boolean canBackup(int which) {
         return false;
+    }
+
+    default Bundle getWallpaperExtras(int which, int userId) {
+        return null;
+    }
+
+    default Bundle getWallpaperAssets(int which, int userId) {
+        return null;
+    }
+
+    default boolean isStockLiveWallpaper(int which) {
+        return false;
+    }
+
+    default ParcelFileDescriptor getWallpaperAssetFile(int which, int userId, String assetFilePath) {
+        return null;
+    }
+
+    default boolean isSystemAndLockPaired(int mode) {
+        return false;
+    }
+
+    default boolean isWallpaperDataExists(int which) {
+        return false;
+    }
+
+    default int getWallpaperOrientation(int which, int userId) {
+        return 0;
+    }
+
+    default ComponentName semGetWallpaperComponent(int which, int userId) {
+        return null;
+    }
+
+    default int setBitmap(Bitmap fullImage, Rect visibleCropHint, boolean allowBackup, int which, Bundle extras) throws IOException {
+        return 0;
     }
 }

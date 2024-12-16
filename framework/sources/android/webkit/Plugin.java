@@ -13,7 +13,6 @@ public class Plugin {
     private String mName;
     private String mPath;
 
-    /* loaded from: classes4.dex */
     public interface PreferencesClickHandler {
         void handleClickEvent(Context context);
     }
@@ -78,20 +77,14 @@ public class Plugin {
 
     @Deprecated
     public void dispatchClickEvent(Context context) {
-        PreferencesClickHandler preferencesClickHandler = this.mHandler;
-        if (preferencesClickHandler != null) {
-            preferencesClickHandler.handleClickEvent(context);
+        if (this.mHandler != null) {
+            this.mHandler.handleClickEvent(context);
         }
     }
 
     @Deprecated
-    /* loaded from: classes4.dex */
     private class DefaultClickHandler implements PreferencesClickHandler, DialogInterface.OnClickListener {
         private AlertDialog mDialog;
-
-        /* synthetic */ DefaultClickHandler(Plugin plugin, DefaultClickHandlerIA defaultClickHandlerIA) {
-            this();
-        }
 
         private DefaultClickHandler() {
         }

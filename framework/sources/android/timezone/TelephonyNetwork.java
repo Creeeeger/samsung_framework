@@ -2,11 +2,11 @@ package android.timezone;
 
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class TelephonyNetwork {
     private final com.android.i18n.timezone.TelephonyNetwork mDelegate;
 
-    public TelephonyNetwork(com.android.i18n.timezone.TelephonyNetwork delegate) {
+    TelephonyNetwork(com.android.i18n.timezone.TelephonyNetwork delegate) {
         this.mDelegate = (com.android.i18n.timezone.TelephonyNetwork) Objects.requireNonNull(delegate);
     }
 

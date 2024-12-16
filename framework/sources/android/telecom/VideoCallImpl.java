@@ -8,7 +8,6 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.telecom.InCallService;
 import android.telecom.VideoProfile;
-import android.telephony.Rlog;
 import android.view.Surface;
 import com.android.internal.os.SomeArgs;
 import com.android.internal.telecom.IVideoCallback;
@@ -17,7 +16,6 @@ import java.util.NoSuchElementException;
 
 /* loaded from: classes3.dex */
 public class VideoCallImpl extends InCallService.VideoCall {
-    private static final String LOG_TAG = "Telecom-VideoCallImpl";
     private final VideoCallListenerBinder mBinder;
     private InCallService.VideoCall.Callback mCallback;
     private final String mCallingPackageName;
@@ -27,9 +25,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
     private int mVideoQuality = 0;
     private int mVideoState = 0;
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() { // from class: android.telecom.VideoCallImpl.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.IBinder.DeathRecipient
         public void binderDied() {
             try {
@@ -39,34 +34,12 @@ public class VideoCallImpl extends InCallService.VideoCall {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.VideoCallImpl$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements IBinder.DeathRecipient {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            try {
-                VideoCallImpl.this.mVideoProvider.asBinder().unlinkToDeath(this, 0);
-            } catch (NoSuchElementException e) {
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class VideoCallListenerBinder extends IVideoCallback.Stub {
-        /* synthetic */ VideoCallListenerBinder(VideoCallImpl videoCallImpl, VideoCallListenerBinderIA videoCallListenerBinderIA) {
-            this();
-        }
-
+    private final class VideoCallListenerBinder extends IVideoCallback.Stub {
         private VideoCallListenerBinder() {
         }
 
         @Override // com.android.internal.telecom.IVideoCallback
         public void receiveSessionModifyRequest(VideoProfile videoProfile) {
-            Rlog.d(VideoCallImpl.LOG_TAG, "receiveSessionModifyRequest - videoProfile: " + videoProfile);
             if (VideoCallImpl.this.mHandler == null) {
                 return;
             }
@@ -75,7 +48,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
         @Override // com.android.internal.telecom.IVideoCallback
         public void receiveSessionModifyResponse(int status, VideoProfile requestProfile, VideoProfile responseProfile) {
-            Rlog.d(VideoCallImpl.LOG_TAG, "receiveSessionModifyResponse - status: " + status + ", request: " + requestProfile + ", response: " + responseProfile);
             if (VideoCallImpl.this.mHandler == null) {
                 return;
             }
@@ -88,7 +60,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
         @Override // com.android.internal.telecom.IVideoCallback
         public void handleCallSessionEvent(int event) {
-            Rlog.d(VideoCallImpl.LOG_TAG, "handleCallSessionEvent - event: " + event);
             if (VideoCallImpl.this.mHandler == null) {
                 return;
             }
@@ -116,7 +87,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
         @Override // com.android.internal.telecom.IVideoCallback
         public void changeCallDataUsage(long dataUsage) {
-            Rlog.d(VideoCallImpl.LOG_TAG, "changeCallDataUsage - dataUsage: " + dataUsage);
             if (VideoCallImpl.this.mHandler == null) {
                 return;
             }
@@ -125,7 +95,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
         @Override // com.android.internal.telecom.IVideoCallback
         public void changeCameraCapabilities(VideoProfile.CameraCapabilities cameraCapabilities) {
-            Rlog.d(VideoCallImpl.LOG_TAG, "changeCameraCapabilities - capabilities: " + cameraCapabilities);
             if (VideoCallImpl.this.mHandler == null) {
                 return;
             }
@@ -133,8 +102,7 @@ public class VideoCallImpl extends InCallService.VideoCall {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class MessageHandler extends Handler {
+    private final class MessageHandler extends Handler {
         private static final int MSG_CHANGE_CALL_DATA_USAGE = 5;
         private static final int MSG_CHANGE_CAMERA_CAPABILITIES = 6;
         private static final int MSG_CHANGE_PEER_DIMENSIONS = 4;
@@ -195,15 +163,13 @@ public class VideoCallImpl extends InCallService.VideoCall {
         }
     }
 
-    public VideoCallImpl(IVideoProvider videoProvider, String callingPackageName, int targetSdkVersion) throws RemoteException {
+    VideoCallImpl(IVideoProvider videoProvider, String callingPackageName, int targetSdkVersion) throws RemoteException {
         this.mVideoProvider = videoProvider;
-        videoProvider.asBinder().linkToDeath(this.mDeathRecipient, 0);
-        VideoCallListenerBinder videoCallListenerBinder = new VideoCallListenerBinder();
-        this.mBinder = videoCallListenerBinder;
-        videoProvider.addVideoCallback(videoCallListenerBinder);
+        this.mVideoProvider.asBinder().linkToDeath(this.mDeathRecipient, 0);
+        this.mBinder = new VideoCallListenerBinder();
+        this.mVideoProvider.addVideoCallback(this.mBinder);
         this.mCallingPackageName = callingPackageName;
         setTargetSdkVersion(targetSdkVersion);
-        Rlog.d(LOG_TAG, "New VideoCallImpl - videoProvider: " + videoProvider + ", binder: " + videoCallListenerBinder);
     }
 
     public void setTargetSdkVersion(int sdkVersion) {
@@ -212,7 +178,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
     @Override // android.telecom.InCallService.VideoCall
     public void destroy() {
-        Rlog.d(LOG_TAG, "destroy");
         unregisterCallback(this.mCallback);
         try {
             this.mVideoProvider.asBinder().unlinkToDeath(this.mDeathRecipient, 0);
@@ -233,16 +198,13 @@ public class VideoCallImpl extends InCallService.VideoCall {
         } else {
             this.mHandler = new MessageHandler(handler.getLooper());
         }
-        Rlog.d(LOG_TAG, "registerCallback - callback: " + this.mCallback + ", handler: " + this.mHandler);
     }
 
     @Override // android.telecom.InCallService.VideoCall
     public void unregisterCallback(InCallService.VideoCall.Callback callback) {
         if (callback != this.mCallback) {
-            Rlog.d(LOG_TAG, "unregisterCallback is ignored. callback is different. mCallback: " + this.mCallback + ", callback: " + callback);
             return;
         }
-        Rlog.d(LOG_TAG, "unregisterCallback - callback: " + callback);
         this.mCallback = null;
         try {
             this.mVideoProvider.removeVideoCallback(this.mBinder);
@@ -293,7 +255,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
     @Override // android.telecom.InCallService.VideoCall
     public void sendSessionModifyRequest(VideoProfile requestProfile) {
-        Rlog.d(LOG_TAG, "sendSessionModifyRequest - request: " + requestProfile);
         try {
             VideoProfile originalProfile = new VideoProfile(this.mVideoState, this.mVideoQuality);
             this.mVideoProvider.sendSessionModifyRequest(originalProfile, requestProfile);
@@ -303,7 +264,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
     @Override // android.telecom.InCallService.VideoCall
     public void sendSessionModifyResponse(VideoProfile responseProfile) {
-        Rlog.d(LOG_TAG, "sendSessionModifyResponse - response: " + responseProfile);
         try {
             this.mVideoProvider.sendSessionModifyResponse(responseProfile);
         } catch (RemoteException e) {
@@ -320,7 +280,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
     @Override // android.telecom.InCallService.VideoCall
     public void requestCallDataUsage() {
-        Rlog.d(LOG_TAG, "requestCallDataUsage");
         try {
             this.mVideoProvider.requestCallDataUsage();
         } catch (RemoteException e) {
@@ -329,7 +288,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
 
     @Override // android.telecom.InCallService.VideoCall
     public void setPauseImage(Uri uri) {
-        Rlog.d(LOG_TAG, "setPauseImage");
         try {
             this.mVideoProvider.setPauseImage(uri);
         } catch (RemoteException e) {
@@ -337,9 +295,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
     }
 
     public void setVideoState(int videoState) {
-        if (this.mVideoState != videoState) {
-            Rlog.d(LOG_TAG, "setVideoState - videoState: " + videoState);
-        }
         this.mVideoState = videoState;
     }
 

@@ -1,22 +1,21 @@
 package android.content;
 
+import android.app.backup.FullBackup;
 import android.hardware.gnss.GnssSignalType;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.samsung.android.share.SemShareConstants;
 
 /* loaded from: classes.dex */
 public final class SyncResult implements Parcelable {
     public static final SyncResult ALREADY_IN_PROGRESS = new SyncResult(true);
     public static final Parcelable.Creator<SyncResult> CREATOR = new Parcelable.Creator<SyncResult>() { // from class: android.content.SyncResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncResult createFromParcel(Parcel in) {
             return new SyncResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncResult[] newArray(int size) {
             return new SyncResult[size];
@@ -31,10 +30,6 @@ public final class SyncResult implements Parcelable {
     public final boolean syncAlreadyInProgress;
     public boolean tooManyDeletions;
     public boolean tooManyRetries;
-
-    /* synthetic */ SyncResult(Parcel parcel, SyncResultIA syncResultIA) {
-        this(parcel);
-    }
 
     public SyncResult() {
         this(false);
@@ -91,23 +86,6 @@ public final class SyncResult implements Parcelable {
         this.moreRecordsToGet = false;
         this.delayUntil = 0L;
         this.stats.clear();
-    }
-
-    /* renamed from: android.content.SyncResult$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SyncResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncResult createFromParcel(Parcel in) {
-            return new SyncResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncResult[] newArray(int size) {
-            return new SyncResult[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -171,13 +149,13 @@ public final class SyncResult implements Parcelable {
             sb.append("X1");
         }
         if (this.stats.numParseExceptions > 0) {
-            sb.append(SemShareConstants.DMA_SURVEY_DETAIL_SHAREVIA_VALUE_ALL_APPS).append(this.stats.numParseExceptions);
+            sb.append("e").append(this.stats.numParseExceptions);
         }
         if (this.stats.numConflictDetectedExceptions > 0) {
             sb.append("c").append(this.stats.numConflictDetectedExceptions);
         }
         if (this.stats.numAuthExceptions > 0) {
-            sb.append("a").append(this.stats.numAuthExceptions);
+            sb.append(FullBackup.APK_TREE_TOKEN).append(this.stats.numAuthExceptions);
         }
         if (this.tooManyDeletions) {
             sb.append("D1");

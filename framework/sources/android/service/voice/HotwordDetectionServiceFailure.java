@@ -11,14 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class HotwordDetectionServiceFailure implements Parcelable {
     public static final Parcelable.Creator<HotwordDetectionServiceFailure> CREATOR = new Parcelable.Creator<HotwordDetectionServiceFailure>() { // from class: android.service.voice.HotwordDetectionServiceFailure.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordDetectionServiceFailure[] newArray(int size) {
             return new HotwordDetectionServiceFailure[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordDetectionServiceFailure createFromParcel(Parcel in) {
             return new HotwordDetectionServiceFailure(in.readInt(), in.readString8());
@@ -31,12 +30,12 @@ public final class HotwordDetectionServiceFailure implements Parcelable {
     public static final int ERROR_CODE_ON_DETECTED_SECURITY_EXCEPTION = 5;
     public static final int ERROR_CODE_ON_DETECTED_STREAM_COPY_FAILURE = 6;
     public static final int ERROR_CODE_REMOTE_EXCEPTION = 7;
+    public static final int ERROR_CODE_SHUTDOWN_HDS_ON_VOICE_ACTIVATION_OP_DISABLED = 10;
     public static final int ERROR_CODE_UNKNOWN = 0;
     private int mErrorCode;
     private String mErrorMessage;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface HotwordDetectionServiceErrorCode {
     }
 
@@ -87,22 +86,5 @@ public final class HotwordDetectionServiceFailure implements Parcelable {
 
     public String toString() {
         return "HotwordDetectionServiceFailure { errorCode = " + this.mErrorCode + ", errorMessage = " + this.mErrorMessage + " }";
-    }
-
-    /* renamed from: android.service.voice.HotwordDetectionServiceFailure$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HotwordDetectionServiceFailure> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HotwordDetectionServiceFailure[] newArray(int size) {
-            return new HotwordDetectionServiceFailure[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HotwordDetectionServiceFailure createFromParcel(Parcel in) {
-            return new HotwordDetectionServiceFailure(in.readInt(), in.readString8());
-        }
     }
 }

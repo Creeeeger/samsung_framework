@@ -33,7 +33,6 @@ public abstract class SpellCheckerService extends Service {
         return this.mBinder;
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Session {
         private InternalISpellCheckerSession mInternalSession;
         private volatile SentenceLevelAdapter mSentenceLevelAdapter;
@@ -107,8 +106,7 @@ public abstract class SpellCheckerService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class InternalISpellCheckerSession extends ISpellCheckerSession.Stub {
+    private static class InternalISpellCheckerSession extends ISpellCheckerSession.Stub {
         private final Bundle mBundle;
         private ISpellCheckerSessionListener mListener;
         private final String mLocale;
@@ -182,7 +180,6 @@ public abstract class SpellCheckerService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class SpellCheckerServiceBinder extends ISpellCheckerService.Stub {
         private final WeakReference<SpellCheckerService> mInternalServiceRef;
 
@@ -209,13 +206,11 @@ public abstract class SpellCheckerService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class SentenceLevelAdapter {
+    private static class SentenceLevelAdapter {
         public static final SentenceSuggestionsInfo[] EMPTY_SENTENCE_SUGGESTIONS_INFOS = new SentenceSuggestionsInfo[0];
         private static final SuggestionsInfo EMPTY_SUGGESTIONS_INFO = new SuggestionsInfo(0, null);
         private final WordIterator mWordIterator;
 
-        /* loaded from: classes3.dex */
         public static class SentenceWordItem {
             public final int mLength;
             public final int mStart;
@@ -228,7 +223,6 @@ public abstract class SpellCheckerService extends Service {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static class SentenceTextInfoParams {
             final ArrayList<SentenceWordItem> mItems;
             final TextInfo mOriginalTextInfo;
@@ -245,6 +239,7 @@ public abstract class SpellCheckerService extends Service {
             this.mWordIterator = new WordIterator(locale);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public SentenceTextInfoParams getSplitWords(TextInfo originalTextInfo) {
             int beginning;
             WordIterator wordIterator = this.mWordIterator;

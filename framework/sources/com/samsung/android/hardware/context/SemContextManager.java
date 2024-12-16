@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextManager {
     private static final String TAG = "SemContextManager";
     private Map<Integer, Integer> mAvailableServiceMap;
@@ -370,11 +370,10 @@ public class SemContextManager {
         if (this.mAvailableServiceMap == null) {
             this.mAvailableServiceMap = getAvailableServiceMap();
         }
-        Map<Integer, Integer> map = this.mAvailableServiceMap;
-        if (map == null) {
+        if (this.mAvailableServiceMap == null) {
             return false;
         }
-        boolean res = map.containsKey(Integer.valueOf(service));
+        boolean res = this.mAvailableServiceMap.containsKey(Integer.valueOf(service));
         if (service == 47 && "BCM4773_SLOCATION_CORE".equals(SystemProperties.get("ro.gps.chip.vendor.slocation"))) {
             return false;
         }
@@ -433,42 +432,42 @@ public class SemContextManager {
                                 z = true;
                             }
                             boolean res2 = z;
-                            return res2;
+                            break;
                         }
-                        return false;
                     }
-                    return false;
+                    break;
                 case 39:
-                    if (!bundle.containsKey("luminance_config_data") || (luminanceConfigData = bundle.getByteArray("luminance_config_data")) == null) {
-                        return false;
+                    if (bundle.containsKey("luminance_config_data") && (luminanceConfigData = bundle.getByteArray("luminance_config_data")) != null) {
+                        boolean res3 = this.mSemContextService.setReferenceData(service, 0, luminanceConfigData);
+                        break;
                     }
-                    boolean res3 = this.mSemContextService.setReferenceData(service, 0, luminanceConfigData);
-                    return res3;
+                    break;
                 case 43:
                     if (!bundle.containsKey("display_status")) {
                         Log.d(TAG, "Bundle is not contained key data");
-                        return false;
+                        break;
+                    } else {
+                        byte[] hallSensorStatus = {(byte) bundle.getInt("display_status")};
+                        Log.d(TAG, "Hall Sensor Data : " + String.valueOf((int) hallSensorStatus[0]));
+                        boolean res4 = this.mSemContextService.setReferenceData(service, 43, hallSensorStatus);
+                        break;
                     }
-                    byte[] hallSensorStatus = {(byte) bundle.getInt("display_status")};
-                    Log.d(TAG, "Hall Sensor Data : " + String.valueOf((int) hallSensorStatus[0]));
-                    boolean res4 = this.mSemContextService.setReferenceData(service, 43, hallSensorStatus);
-                    return res4;
                 case 48:
                     if (!bundle.containsKey("interrupt_gyro")) {
                         Log.d(TAG, "Bundle is not contained key data");
-                        return false;
+                        break;
+                    } else {
+                        byte[] sysfsMode = {(byte) bundle.getInt("interrupt_gyro")};
+                        Log.d(TAG, "sysfs data : " + String.valueOf((int) sysfsMode[0]));
+                        boolean res5 = this.mSemContextService.setReferenceData(service, 48, sysfsMode);
+                        break;
                     }
-                    byte[] sysfsMode = {(byte) bundle.getInt("interrupt_gyro")};
-                    Log.d(TAG, "sysfs data : " + String.valueOf((int) sysfsMode[0]));
-                    boolean res5 = this.mSemContextService.setReferenceData(service, 48, sysfsMode);
-                    return res5;
-                default:
-                    return false;
             }
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in initializeSemContextService: ", e);
             return false;
         }
+        return false;
     }
 
     public void setClientInfo(String clientInfo) {
@@ -529,6 +528,7 @@ public class SemContextManager {
         return isAvailableService(service);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkHistoryMode(SemContextEvent event) {
         boolean z = false;
         Boolean res = false;
@@ -566,8 +566,7 @@ public class SemContextManager {
         return res.booleanValue();
     }
 
-    /* loaded from: classes5.dex */
-    public class ListenerDelegate extends ISemContextCallback.Stub {
+    private class ListenerDelegate extends ISemContextCallback.Stub {
         private boolean mDereisgeredListener;
         private Handler mHandler;
         private boolean mIsHistoryData;
@@ -589,10 +588,6 @@ public class SemContextManager {
             Looper mainLooper = looper != null ? looper : SemContextManager.this.mMainLooper;
             this.mIsHistoryData = isHistoryData;
             this.mHandler = new Handler(mainLooper) { // from class: com.samsung.android.hardware.context.SemContextManager.ListenerDelegate.1
-                AnonymousClass1(Looper mainLooper2) {
-                    super(mainLooper2);
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     SemContextEvent event;
@@ -622,43 +617,6 @@ public class SemContextManager {
                     }
                 }
             };
-        }
-
-        /* renamed from: com.samsung.android.hardware.context.SemContextManager$ListenerDelegate$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 extends Handler {
-            AnonymousClass1(Looper mainLooper2) {
-                super(mainLooper2);
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                SemContextEvent event;
-                SemContext context;
-                if (ListenerDelegate.this.mListener == null || (event = (SemContextEvent) msg.obj) == null || (context = event.semContext) == null) {
-                    return;
-                }
-                int type = context.getType();
-                if (ListenerDelegate.this.mIsHistoryData) {
-                    Log.d(SemContextManager.TAG, "History data is received. : type = " + SemContext.getServiceName(type));
-                    ListenerDelegate.this.mListener.onSemContextChanged(event);
-                    SemContextManager.this.unregisterListener(ListenerDelegate.this.mListener, type);
-                    ListenerDelegate.this.mIsHistoryData = false;
-                    return;
-                }
-                if (!SemContextManager.this.checkHistoryMode(event)) {
-                    if (type == 6) {
-                        SemContextAutoRotation autoRotation = event.getAutoRotationContext();
-                        Log.d(SemContextManager.TAG, "AutoRotationEvent : Angle = " + autoRotation.getAngle());
-                    } else if (type == 2) {
-                        SemContextPedometer pedometer = event.getPedometerContext();
-                        Log.d(SemContextManager.TAG, "[2] : " + pedometer.getTotalStepCount() + ", " + pedometer.getWalkStepCount() + ", " + pedometer.getRunStepCount());
-                    }
-                    if (!ListenerDelegate.this.mDereisgeredListener) {
-                        ListenerDelegate.this.mListener.onSemContextChanged(event);
-                    }
-                }
-            }
         }
 
         public void clear() {

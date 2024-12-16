@@ -9,7 +9,7 @@ import com.android.framework.protobuf.nano.MessageNano;
 import com.android.framework.protobuf.nano.WireFormatNano;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class MapParamsProto extends MessageNano {
     private static volatile MapParamsProto[] _emptyArray;
     public int cacheTileS2Level;
@@ -47,17 +47,14 @@ public final class MapParamsProto extends MessageNano {
 
     @Override // com.android.framework.protobuf.nano.MessageNano
     public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-        int i = this.mapS2Level;
-        if (i != 0) {
-            output.writeInt32(1, i);
+        if (this.mapS2Level != 0) {
+            output.writeInt32(1, this.mapS2Level);
         }
-        int i2 = this.cacheTileS2Level;
-        if (i2 != 0) {
-            output.writeInt32(2, i2);
+        if (this.cacheTileS2Level != 0) {
+            output.writeInt32(2, this.cacheTileS2Level);
         }
-        int i3 = this.diskTileS2Level;
-        if (i3 != 0) {
-            output.writeInt32(3, i3);
+        if (this.diskTileS2Level != 0) {
+            output.writeInt32(3, this.diskTileS2Level);
         }
         if (Double.doubleToLongBits(this.modelAMeters) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
             output.writeDouble(4, this.modelAMeters);
@@ -72,19 +69,16 @@ public final class MapParamsProto extends MessageNano {
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
-        int i = this.mapS2Level;
-        if (i != 0) {
-            size += CodedOutputByteBufferNano.computeInt32Size(1, i);
+        if (this.mapS2Level != 0) {
+            size += CodedOutputByteBufferNano.computeInt32Size(1, this.mapS2Level);
         }
-        int i2 = this.cacheTileS2Level;
-        if (i2 != 0) {
-            size += CodedOutputByteBufferNano.computeInt32Size(2, i2);
+        if (this.cacheTileS2Level != 0) {
+            size += CodedOutputByteBufferNano.computeInt32Size(2, this.cacheTileS2Level);
         }
-        int i3 = this.diskTileS2Level;
-        if (i3 != 0) {
-            size += CodedOutputByteBufferNano.computeInt32Size(3, i3);
+        if (this.diskTileS2Level != 0) {
+            size += CodedOutputByteBufferNano.computeInt32Size(3, this.diskTileS2Level);
         }
         if (Double.doubleToLongBits(this.modelAMeters) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
             size += CodedOutputByteBufferNano.computeDoubleSize(4, this.modelAMeters);

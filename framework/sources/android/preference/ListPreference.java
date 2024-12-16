@@ -83,13 +83,10 @@ public class ListPreference extends DialogPreference {
     @Override // android.preference.Preference
     public CharSequence getSummary() {
         CharSequence entry = getEntry();
-        String str = this.mSummary;
-        if (str == null) {
+        if (this.mSummary == null) {
             return super.getSummary();
         }
-        Object[] objArr = new Object[1];
-        objArr[0] = entry == null ? "" : entry;
-        return String.format(str, objArr);
+        return String.format(this.mSummary, entry == null ? "" : entry);
     }
 
     @Override // android.preference.Preference
@@ -103,9 +100,8 @@ public class ListPreference extends DialogPreference {
     }
 
     public void setValueIndex(int index) {
-        CharSequence[] charSequenceArr = this.mEntryValues;
-        if (charSequenceArr != null) {
-            setValue(charSequenceArr[index].toString());
+        if (this.mEntryValues != null) {
+            setValue(this.mEntryValues[index].toString());
         }
     }
 
@@ -114,18 +110,16 @@ public class ListPreference extends DialogPreference {
     }
 
     public CharSequence getEntry() {
-        CharSequence[] charSequenceArr;
         int index = getValueIndex();
-        if (index < 0 || (charSequenceArr = this.mEntries) == null) {
+        if (index < 0 || this.mEntries == null) {
             return null;
         }
-        return charSequenceArr[index];
+        return this.mEntries[index];
     }
 
     public int findIndexOfValue(String value) {
-        CharSequence[] charSequenceArr;
-        if (value != null && (charSequenceArr = this.mEntryValues) != null) {
-            for (int i = charSequenceArr.length - 1; i >= 0; i--) {
+        if (value != null && this.mEntryValues != null) {
+            for (int i = this.mEntryValues.length - 1; i >= 0; i--) {
                 if (this.mEntryValues[i].equals(value)) {
                     return i;
                 }
@@ -139,19 +133,14 @@ public class ListPreference extends DialogPreference {
         return findIndexOfValue(this.mValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
-    public void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         if (this.mEntries == null || this.mEntryValues == null) {
             throw new IllegalStateException("ListPreference requires an entries array and an entryValues array.");
         }
-        int valueIndex = getValueIndex();
-        this.mClickedDialogEntryIndex = valueIndex;
-        builder.setSingleChoiceItems(this.mEntries, valueIndex, new DialogInterface.OnClickListener() { // from class: android.preference.ListPreference.1
-            AnonymousClass1() {
-            }
-
+        this.mClickedDialogEntryIndex = getValueIndex();
+        builder.setSingleChoiceItems(this.mEntries, this.mClickedDialogEntryIndex, new DialogInterface.OnClickListener() { // from class: android.preference.ListPreference.1
             @Override // android.content.DialogInterface.OnClickListener
             public void onClick(DialogInterface dialog, int which) {
                 ListPreference.this.mClickedDialogEntryIndex = which;
@@ -162,28 +151,11 @@ public class ListPreference extends DialogPreference {
         builder.setPositiveButton((CharSequence) null, (DialogInterface.OnClickListener) null);
     }
 
-    /* renamed from: android.preference.ListPreference$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements DialogInterface.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.DialogInterface.OnClickListener
-        public void onClick(DialogInterface dialog, int which) {
-            ListPreference.this.mClickedDialogEntryIndex = which;
-            ListPreference.this.onClick(dialog, -1);
-            ListPreference.this.postDismiss();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
-    public void onDialogClosed(boolean positiveResult) {
-        int i;
-        CharSequence[] charSequenceArr;
+    protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
-        if (positiveResult && (i = this.mClickedDialogEntryIndex) >= 0 && (charSequenceArr = this.mEntryValues) != null) {
-            String value = charSequenceArr[i].toString();
+        if (positiveResult && this.mClickedDialogEntryIndex >= 0 && this.mEntryValues != null) {
+            String value = this.mEntryValues[this.mClickedDialogEntryIndex].toString();
             if (callChangeListener(value)) {
                 setValue(value);
             }
@@ -200,9 +172,8 @@ public class ListPreference extends DialogPreference {
         setValue(restoreValue ? getPersistedString(this.mValue) : (String) defaultValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         if (isPersistent()) {
             return superState;
@@ -212,9 +183,8 @@ public class ListPreference extends DialogPreference {
         return myState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
@@ -224,17 +194,15 @@ public class ListPreference extends DialogPreference {
         setValue(myState.value);
     }
 
-    /* loaded from: classes3.dex */
-    public static class SavedState extends Preference.BaseSavedState {
+    private static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.ListPreference.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -255,23 +223,6 @@ public class ListPreference extends DialogPreference {
 
         public SavedState(Parcelable superState) {
             super(superState);
-        }
-
-        /* renamed from: android.preference.ListPreference$SavedState$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 }

@@ -12,7 +12,6 @@ public final class WakeLockProto {
     public static final long UID = 1120986464263L;
     public static final long WORK_SOURCE = 1146756268041L;
 
-    /* loaded from: classes5.dex */
     public final class WakeLockFlagsProto {
         public static final long IS_ACQUIRE_CAUSES_WAKEUP = 1133871366145L;
         public static final long IS_ON_AFTER_RELEASE = 1133871366146L;

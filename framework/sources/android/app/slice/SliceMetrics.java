@@ -5,16 +5,15 @@ import android.metrics.LogMaker;
 import android.net.Uri;
 import com.android.internal.logging.MetricsLogger;
 
+@Deprecated
 /* loaded from: classes.dex */
 public class SliceMetrics {
     private static final String TAG = "SliceMetrics";
-    private LogMaker mLogMaker;
     private MetricsLogger mMetricsLogger = new MetricsLogger();
+    private LogMaker mLogMaker = new LogMaker(0);
 
     public SliceMetrics(Context context, Uri uri) {
-        LogMaker logMaker = new LogMaker(0);
-        this.mLogMaker = logMaker;
-        logMaker.addTaggedData(1402, uri.getAuthority());
+        this.mLogMaker.addTaggedData(1402, uri.getAuthority());
         this.mLogMaker.addTaggedData(1403, uri.getPath());
     }
 

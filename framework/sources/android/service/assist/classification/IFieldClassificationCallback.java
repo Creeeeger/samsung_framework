@@ -21,7 +21,6 @@ public interface IFieldClassificationCallback extends IInterface {
 
     void onSuccess(FieldClassificationResponse fieldClassificationResponse) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IFieldClassificationCallback {
         @Override // android.service.assist.classification.IFieldClassificationCallback
         public void onCancellable(ICancellationSignal cancellation) throws RemoteException {
@@ -50,7 +49,6 @@ public interface IFieldClassificationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IFieldClassificationCallback {
         static final int TRANSACTION_cancel = 5;
         static final int TRANSACTION_isCompleted = 4;
@@ -105,46 +103,42 @@ public interface IFieldClassificationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFieldClassificationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFieldClassificationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFieldClassificationCallback.DESCRIPTOR);
+                case 1:
+                    ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCancellable(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    FieldClassificationResponse _arg02 = (FieldClassificationResponse) data.readTypedObject(FieldClassificationResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    onFailure();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _result = isCompleted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 5:
+                    cancel();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCancellable(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            FieldClassificationResponse _arg02 = (FieldClassificationResponse) data.readTypedObject(FieldClassificationResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            onFailure();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _result = isCompleted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 5:
-                            cancel();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IFieldClassificationCallback {
+        private static class Proxy implements IFieldClassificationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

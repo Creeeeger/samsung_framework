@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IRemoteAnimationFinishedCallback extends IInterface {
     void onAnimationFinished() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IRemoteAnimationFinishedCallback {
         @Override // android.view.IRemoteAnimationFinishedCallback
         public void onAnimationFinished() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IRemoteAnimationFinishedCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IRemoteAnimationFinishedCallback {
         public static final String DESCRIPTOR = "android.view.IRemoteAnimationFinishedCallback";
         static final int TRANSACTION_onAnimationFinished = 1;
@@ -66,24 +64,20 @@ public interface IRemoteAnimationFinishedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onAnimationFinished();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onAnimationFinished();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IRemoteAnimationFinishedCallback {
+        private static class Proxy implements IRemoteAnimationFinishedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -31,7 +31,6 @@ public interface IGnss extends IInterface {
     public static final String HASH = "fc957f1d3d261d065ff5e5415f2d21caa79c310f";
     public static final int VERSION = 2;
 
-    /* loaded from: classes2.dex */
     public @interface GnssAidingData {
         public static final int ALL = 65535;
         public static final int ALMANAC = 2;
@@ -48,14 +47,12 @@ public interface IGnss extends IInterface {
         public static final int UTC = 32;
     }
 
-    /* loaded from: classes2.dex */
     public @interface GnssPositionMode {
         public static final int MS_ASSISTED = 2;
         public static final int MS_BASED = 1;
         public static final int STANDALONE = 0;
     }
 
-    /* loaded from: classes2.dex */
     public @interface GnssPositionRecurrence {
         public static final int RECURRENCE_PERIODIC = 0;
         public static final int RECURRENCE_SINGLE = 1;
@@ -117,7 +114,6 @@ public interface IGnss extends IInterface {
 
     void stopSvStatus() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnss {
         @Override // android.hardware.gnss.IGnss
         public void setCallback(IGnssCallback callback) throws RemoteException {
@@ -252,7 +248,6 @@ public interface IGnss extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnss {
         static final int TRANSACTION_close = 2;
         static final int TRANSACTION_deleteAidingData = 19;
@@ -378,158 +373,157 @@ public interface IGnss extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    IGnssCallback _arg0 = IGnssCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    close();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    IGnssPsds _result = getExtensionPsds();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 4:
+                    IGnssConfiguration _result2 = getExtensionGnssConfiguration();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 5:
+                    IGnssMeasurementInterface _result3 = getExtensionGnssMeasurement();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 6:
+                    IGnssPowerIndication _result4 = getExtensionGnssPowerIndication();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result4);
+                    return true;
+                case 7:
+                    IGnssBatching _result5 = getExtensionGnssBatching();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 8:
+                    IGnssGeofence _result6 = getExtensionGnssGeofence();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result6);
+                    return true;
+                case 9:
+                    IGnssNavigationMessageInterface _result7 = getExtensionGnssNavigationMessage();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result7);
+                    return true;
+                case 10:
+                    IAGnss _result8 = getExtensionAGnss();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result8);
+                    return true;
+                case 11:
+                    IAGnssRil _result9 = getExtensionAGnssRil();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result9);
+                    return true;
+                case 12:
+                    IGnssDebug _result10 = getExtensionGnssDebug();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result10);
+                    return true;
+                case 13:
+                    IGnssVisibilityControl _result11 = getExtensionGnssVisibilityControl();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result11);
+                    return true;
+                case 14:
+                    start();
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    stop();
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    long _arg02 = data.readLong();
+                    long _arg1 = data.readLong();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    injectTime(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    GnssLocation _arg03 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
+                    data.enforceNoDataAvail();
+                    injectLocation(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    GnssLocation _arg04 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
+                    data.enforceNoDataAvail();
+                    injectBestLocation(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteAidingData(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    PositionModeOptions _arg06 = (PositionModeOptions) data.readTypedObject(PositionModeOptions.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPositionMode(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    IGnssAntennaInfo _result12 = getExtensionGnssAntennaInfo();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result12);
+                    return true;
+                case 22:
+                    IMeasurementCorrectionsInterface _result13 = getExtensionMeasurementCorrections();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result13);
+                    return true;
+                case 23:
+                    startSvStatus();
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    stopSvStatus();
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    startNmea();
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    stopNmea();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGnssCallback _arg0 = IGnssCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IGnssPsds _result = getExtensionPsds();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 4:
-                            IGnssConfiguration _result2 = getExtensionGnssConfiguration();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 5:
-                            IGnssMeasurementInterface _result3 = getExtensionGnssMeasurement();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 6:
-                            IGnssPowerIndication _result4 = getExtensionGnssPowerIndication();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result4);
-                            return true;
-                        case 7:
-                            IGnssBatching _result5 = getExtensionGnssBatching();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 8:
-                            IGnssGeofence _result6 = getExtensionGnssGeofence();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result6);
-                            return true;
-                        case 9:
-                            IGnssNavigationMessageInterface _result7 = getExtensionGnssNavigationMessage();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result7);
-                            return true;
-                        case 10:
-                            IAGnss _result8 = getExtensionAGnss();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result8);
-                            return true;
-                        case 11:
-                            IAGnssRil _result9 = getExtensionAGnssRil();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result9);
-                            return true;
-                        case 12:
-                            IGnssDebug _result10 = getExtensionGnssDebug();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result10);
-                            return true;
-                        case 13:
-                            IGnssVisibilityControl _result11 = getExtensionGnssVisibilityControl();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result11);
-                            return true;
-                        case 14:
-                            start();
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            stop();
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            long _arg02 = data.readLong();
-                            long _arg1 = data.readLong();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            injectTime(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            GnssLocation _arg03 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
-                            data.enforceNoDataAvail();
-                            injectLocation(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            GnssLocation _arg04 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
-                            data.enforceNoDataAvail();
-                            injectBestLocation(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteAidingData(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            PositionModeOptions _arg06 = (PositionModeOptions) data.readTypedObject(PositionModeOptions.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPositionMode(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            IGnssAntennaInfo _result12 = getExtensionGnssAntennaInfo();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result12);
-                            return true;
-                        case 22:
-                            IMeasurementCorrectionsInterface _result13 = getExtensionMeasurementCorrections();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result13);
-                            return true;
-                        case 23:
-                            startSvStatus();
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            stopSvStatus();
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            startNmea();
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            stopNmea();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IGnss {
             private IBinder mRemote;
             private int mCachedVersion = -1;
@@ -1070,12 +1064,9 @@ public interface IGnss extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class PositionModeOptions implements Parcelable {
         public static final Parcelable.Creator<PositionModeOptions> CREATOR = new Parcelable.Creator<PositionModeOptions>() { // from class: android.hardware.gnss.IGnss.PositionModeOptions.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PositionModeOptions createFromParcel(Parcel _aidl_source) {
                 PositionModeOptions _aidl_out = new PositionModeOptions();
@@ -1083,6 +1074,7 @@ public interface IGnss extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PositionModeOptions[] newArray(int _aidl_size) {
                 return new PositionModeOptions[_aidl_size];
@@ -1094,25 +1086,6 @@ public interface IGnss extends IInterface {
         public int preferredAccuracyMeters = 0;
         public int preferredTimeMs = 0;
         public boolean lowPowerMode = false;
-
-        /* renamed from: android.hardware.gnss.IGnss$PositionModeOptions$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<PositionModeOptions> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PositionModeOptions createFromParcel(Parcel _aidl_source) {
-                PositionModeOptions _aidl_out = new PositionModeOptions();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PositionModeOptions[] newArray(int _aidl_size) {
-                return new PositionModeOptions[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

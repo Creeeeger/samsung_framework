@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class UrspRule implements Parcelable {
     public static final Parcelable.Creator<UrspRule> CREATOR = new Parcelable.Creator<UrspRule>() { // from class: android.telephony.data.UrspRule.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UrspRule createFromParcel(Parcel source) {
             return new UrspRule(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UrspRule[] newArray(int size) {
             return new UrspRule[size];
@@ -28,18 +27,12 @@ public final class UrspRule implements Parcelable {
     private final List<RouteSelectionDescriptor> mRouteSelectionDescriptor;
     private final List<TrafficDescriptor> mTrafficDescriptors;
 
-    /* synthetic */ UrspRule(Parcel parcel, UrspRuleIA urspRuleIA) {
-        this(parcel);
-    }
-
     public UrspRule(int precedence, List<TrafficDescriptor> trafficDescriptors, List<RouteSelectionDescriptor> routeSelectionDescriptor) {
         this.mPrecedence = precedence;
-        ArrayList arrayList = new ArrayList();
-        this.mTrafficDescriptors = arrayList;
-        arrayList.addAll(trafficDescriptors);
-        ArrayList arrayList2 = new ArrayList();
-        this.mRouteSelectionDescriptor = arrayList2;
-        arrayList2.addAll(routeSelectionDescriptor);
+        this.mTrafficDescriptors = new ArrayList();
+        this.mTrafficDescriptors.addAll(trafficDescriptors);
+        this.mRouteSelectionDescriptor = new ArrayList();
+        this.mRouteSelectionDescriptor.addAll(routeSelectionDescriptor);
     }
 
     private UrspRule(Parcel p) {
@@ -65,23 +58,6 @@ public final class UrspRule implements Parcelable {
         dest.writeInt(this.mPrecedence);
         dest.writeTypedList(this.mTrafficDescriptors, flags);
         dest.writeTypedList(this.mRouteSelectionDescriptor, flags);
-    }
-
-    /* renamed from: android.telephony.data.UrspRule$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UrspRule> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UrspRule createFromParcel(Parcel source) {
-            return new UrspRule(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UrspRule[] newArray(int size) {
-            return new UrspRule[size];
-        }
     }
 
     @Override // android.os.Parcelable

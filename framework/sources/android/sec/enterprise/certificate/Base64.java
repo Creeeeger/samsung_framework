@@ -50,10 +50,9 @@ public final class Base64 {
                 outputIndex++;
             }
             int outputIndex3 = outputIndex + 1;
-            byte[] bArr = BASE_64_ALPHABET;
-            output[outputIndex] = bArr[(byteTripletAsInt & THIRD_OUTPUT_BYTE_MASK) >>> 6];
+            output[outputIndex] = BASE_64_ALPHABET[(byteTripletAsInt & THIRD_OUTPUT_BYTE_MASK) >>> 6];
             outputIndex = outputIndex3 + 1;
-            output[outputIndex3] = bArr[byteTripletAsInt & 63];
+            output[outputIndex3] = BASE_64_ALPHABET[byteTripletAsInt & 63];
         }
         int i2 = len % 3;
         if (i2 > 0) {
@@ -136,12 +135,7 @@ public final class Base64 {
         return checkNoTrailingAndReturn(output, in, pos[0], inLength);
     }
 
-    /* loaded from: classes3.dex */
-    public static class InvalidBase64ByteException extends Exception {
-        /* synthetic */ InvalidBase64ByteException(InvalidBase64ByteExceptionIA invalidBase64ByteExceptionIA) {
-            this();
-        }
-
+    private static class InvalidBase64ByteException extends Exception {
         private InvalidBase64ByteException() {
         }
     }

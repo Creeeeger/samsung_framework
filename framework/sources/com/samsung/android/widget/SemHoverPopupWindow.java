@@ -4,11 +4,9 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.hardware.input.InputManager;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -22,6 +20,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.DisplayInfo;
 import android.view.MotionEvent;
+import android.view.PointerIcon;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -104,12 +103,10 @@ public class SemHoverPopupWindow {
     private Rect mDisplayFrame = null;
     private Runnable mShowPopupRunnable = null;
 
-    /* loaded from: classes6.dex */
     public interface HoverPopupPreShowListener {
         boolean onHoverPopupPreShow();
     }
 
-    /* loaded from: classes6.dex */
     public interface OnSetContentViewListener {
         boolean onSetContentView(View view, SemHoverPopupWindow semHoverPopupWindow);
     }
@@ -133,10 +130,6 @@ public class SemHoverPopupWindow {
             this.mHoverDetectTimeMS = 750;
         }
         this.mDismissHandler = new Handler(this.mContext.getMainLooper()) { // from class: com.samsung.android.widget.SemHoverPopupWindow.1
-            AnonymousClass1(Looper looper) {
-                super(looper);
-            }
-
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 if (SemHoverPopupWindow.this.mPopup != null && SemHoverPopupWindow.this.mPopup.isShowing() && msg.what == 1) {
@@ -145,23 +138,6 @@ public class SemHoverPopupWindow {
                 }
             }
         };
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$1 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            if (SemHoverPopupWindow.this.mPopup != null && SemHoverPopupWindow.this.mPopup.isShowing() && msg.what == 1) {
-                Log.d(SemHoverPopupWindow.TAG, "mDismissHandler handleMessage: Call dismiss");
-                SemHoverPopupWindow.this.dismiss();
-            }
-        }
     }
 
     private void initInstance() {
@@ -198,28 +174,24 @@ public class SemHoverPopupWindow {
 
     private void initCoverManager() {
         if (this.mCoverManager == null) {
-            ICoverManager asInterface = ICoverManager.Stub.asInterface(ServiceManager.getService(UnionConstants.SERVICE_COVER));
-            this.mCoverManager = asInterface;
-            if (asInterface == null) {
+            this.mCoverManager = ICoverManager.Stub.asInterface(ServiceManager.getService(UnionConstants.SERVICE_COVER));
+            if (this.mCoverManager == null) {
                 Log.e(TAG, "warning: no COVER_MANAGER_SERVICE");
             }
         }
     }
 
-    public void setInstanceByType(int type) {
+    protected void setInstanceByType(int type) {
     }
 
     public boolean isHoverPopupPossible() {
         switch (this.mPopupType) {
-            case 0:
-                return false;
             case 1:
-                return (this.mParentView == null || TextUtils.isEmpty(getTooltipText())) ? false : true;
-            case 2:
-                return false;
-            default:
-                return true;
+                if (this.mParentView == null || TextUtils.isEmpty(getTooltipText())) {
+                }
+                break;
         }
+        return false;
     }
 
     protected boolean isUspFeature() {
@@ -229,11 +201,6 @@ public class SemHoverPopupWindow {
     private boolean isFreeFormMode() {
         int windowMode = this.mContext.getResources().getConfiguration().windowConfiguration.getWindowingMode();
         return windowMode == 5;
-    }
-
-    public boolean isFullscreenMode() {
-        int windowMode = this.mContext.getResources().getConfiguration().windowConfiguration.getWindowingMode();
-        return windowMode == 1;
     }
 
     private DisplayMetrics getRealDisplayMetrics() {
@@ -258,9 +225,8 @@ public class SemHoverPopupWindow {
                     Log.d(TAG, "getRealDisplayMetrics :sRealDisplayMetricsInDexMode width:" + displayInfo.appWidth);
                     Log.d(TAG, "getRealDisplayMetrics :sRealDisplayMetricsInDexMode height:" + displayInfo.appHeight);
                 }
-                DisplayMetrics displayMetrics = sRealDisplayMetricsInDexMode;
-                displayMetrics.widthPixels = displayInfo.appWidth;
-                displayMetrics.heightPixels = displayInfo.appHeight;
+                sRealDisplayMetricsInDexMode.widthPixels = displayInfo.appWidth;
+                sRealDisplayMetricsInDexMode.heightPixels = displayInfo.appHeight;
             }
             return sRealDisplayMetricsInDexMode;
         }
@@ -287,9 +253,8 @@ public class SemHoverPopupWindow {
     }
 
     private boolean isMouseHoveringSettingsEnabled() {
-        View view = this.mParentView;
-        if (view != null) {
-            return view.semIsDesktopMode();
+        if (this.mParentView != null) {
+            return this.mParentView.semIsDesktopMode();
         }
         return false;
     }
@@ -312,8 +277,7 @@ public class SemHoverPopupWindow {
         CoverState coverState;
         boolean isCoverOpen = true;
         try {
-            ICoverManager iCoverManager = this.mCoverManager;
-            if (iCoverManager != null && (coverState = iCoverManager.getCoverState()) != null) {
+            if (this.mCoverManager != null && (coverState = this.mCoverManager.getCoverState()) != null) {
                 isCoverOpen = coverState.getSwitchState();
             }
         } catch (RemoteException e) {
@@ -362,8 +326,7 @@ public class SemHoverPopupWindow {
     }
 
     public boolean isShowing() {
-        PopupWindow popupWindow = this.mPopup;
-        return popupWindow != null && popupWindow.isShowing();
+        return this.mPopup != null && this.mPopup.isShowing();
     }
 
     public void setHoverDetectTime(int ms) {
@@ -375,7 +338,7 @@ public class SemHoverPopupWindow {
         this.mHoverPaddingRight = right;
         this.mHoverPaddingTop = top;
         this.mHoverPaddingBottom = bottom;
-        if (left != 0 || right != 0 || top != 0 || bottom != 0) {
+        if (this.mHoverPaddingLeft != 0 || this.mHoverPaddingRight != 0 || this.mHoverPaddingTop != 0 || this.mHoverPaddingBottom != 0) {
             this.mIsHoverPaddingEnabled = true;
         }
     }
@@ -412,17 +375,14 @@ public class SemHoverPopupWindow {
         if (localLOGV) {
             Log.d(TAG, "show :" + this.mParentView.toString());
         }
-        View anchorView = this.mAnchorView;
-        if (anchorView == null) {
-            anchorView = this.mParentView;
-        }
+        Log.d(TAG, "Toolkit porting remove this log after all feature included");
+        View anchorView = this.mAnchorView != null ? this.mAnchorView : this.mParentView;
         int type = anchorView.semGetHoverPopupType();
         if (type != this.mPopupType) {
             this.mPopupType = type;
             setInstanceByType(type);
         }
-        HoverPopupPreShowListener hoverPopupPreShowListener = this.mPreShowListener;
-        if ((hoverPopupPreShowListener == null || hoverPopupPreShowListener.onHoverPopupPreShow()) && this.mEnabled && type != 0 && type != 1 && !this.mIsShowMessageSent) {
+        if ((this.mPreShowListener == null || this.mPreShowListener.onHoverPopupPreShow()) && this.mEnabled && type != 0 && type != 1 && !this.mIsShowMessageSent) {
             if ((this.mIsHoverPaddingEnabled && !this.mIsTryingShowPopup) || !isHoverPopupPossible() || !isHoveringSettingEnabled() || isShowing() || this.mParentView.getHandler() == null || isViewCoverClose() || isLockScreenMode() || isTalkBackEnabledForDeX()) {
                 return;
             }
@@ -430,18 +390,18 @@ public class SemHoverPopupWindow {
             if (!this.mIsSkipPenPointEffect) {
                 showPenPointEffect(true);
             }
-            Runnable runnable = new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow$$ExternalSyntheticLambda0
+            this.mShowPopupRunnable = new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     SemHoverPopupWindow.this.showPopup();
                 }
             };
-            this.mShowPopupRunnable = runnable;
-            this.mParentView.postDelayed(runnable, this.mHoverDetectTimeMS);
+            this.mParentView.postDelayed(this.mShowPopupRunnable, this.mHoverDetectTimeMS);
             this.mIsShowMessageSent = true;
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void showPopup() {
         try {
             if (this.mHashCodeForViewState != getStateHashCode()) {
@@ -459,9 +419,8 @@ public class SemHoverPopupWindow {
                 showPenPointEffect(true);
             }
             this.mIsSkipPenPointEffect = false;
-            PopupWindow popupWindow = this.mPopup;
-            if (popupWindow != null) {
-                popupWindow.dismiss();
+            if (this.mPopup != null) {
+                this.mPopup.dismiss();
             }
             createPopupWindow();
             setPopupContent();
@@ -473,18 +432,14 @@ public class SemHoverPopupWindow {
 
     protected PopupWindow createPopupWindow() {
         if (this.mPopup == null) {
-            PopupWindow popupWindow = new PopupWindow(this.mParentView.getContext());
-            this.mPopup = popupWindow;
-            popupWindow.setWidth(-2);
+            this.mPopup = new PopupWindow(this.mParentView.getContext());
+            this.mPopup.setWidth(-2);
             this.mPopup.setHeight(-2);
             this.mPopup.setTouchable(this.mIsPopupTouchable);
             this.mPopup.setClippingEnabled(false);
             this.mPopup.setBackgroundDrawable(null);
             this.mPopup.setWindowLayoutType(1005);
-            View anchorView = this.mAnchorView;
-            if (anchorView == null) {
-                anchorView = this.mParentView;
-            }
+            View anchorView = this.mAnchorView != null ? this.mAnchorView : this.mParentView;
             if (anchorView.getApplicationWindowToken() != anchorView.getWindowToken()) {
                 this.mPopup.setIsLaidOutInScreen(true);
             }
@@ -510,9 +465,8 @@ public class SemHoverPopupWindow {
                 this.mContentView = null;
                 break;
         }
-        OnSetContentViewListener onSetContentViewListener = this.mListener;
-        if (onSetContentViewListener != null) {
-            onSetContentViewListener.onSetContentView(this.mParentView, this);
+        if (this.mListener != null) {
+            this.mListener.onSetContentView(this.mParentView, this);
         }
     }
 
@@ -525,13 +479,11 @@ public class SemHoverPopupWindow {
         if (this.mContentView == null) {
             return;
         }
-        ViewGroup.LayoutParams layoutParams = this.mContentLP;
-        if (layoutParams == null) {
+        if (this.mContentLP == null) {
             widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, Integer.MIN_VALUE);
             heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, Integer.MIN_VALUE);
         } else {
-            int widthMeasureSpec2 = layoutParams.width;
-            if (widthMeasureSpec2 < 0) {
+            if (this.mContentLP.width < 0) {
                 widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, Integer.MIN_VALUE);
             } else {
                 widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(this.mContentLP.width, 1073741824);
@@ -546,29 +498,28 @@ public class SemHoverPopupWindow {
         this.mNeedToMeasureContentView = false;
         this.mContentWidth = this.mContentView.getMeasuredWidth();
         this.mContentHeight = this.mContentView.getMeasuredHeight();
-        PopupWindow popupWindow = this.mPopup;
-        if (popupWindow != null) {
-            popupWindow.setWidth(this.mContentWidth);
+        if (this.mPopup != null) {
+            this.mPopup.setWidth(this.mContentWidth);
             this.mPopup.setHeight(this.mContentHeight);
             this.mPopup.setAnimationStyle(this.mAnimationStyle);
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:104:0x0229, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:105:0x0227, code lost:
     
-        if ((r6.top + r3[1]) != r2[1]) goto L193;
+        if ((r6.top + r3[1]) != r2[1]) goto L69;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:92:0x01f3, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:93:0x01f1, code lost:
     
-        if (r8.bottom == 10000) goto L184;
+        if (r8.bottom == 10000) goto L60;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private void computePopupPosition(android.view.View r29, int r30, int r31, int r32) {
+    private void computePopupPosition(android.view.View r28, int r29, int r30, int r31) {
         /*
-            Method dump skipped, instructions count: 1048
+            Method dump skipped, instructions count: 1046
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.widget.SemHoverPopupWindow.computePopupPosition(android.view.View, int, int, int):void");
@@ -581,14 +532,12 @@ public class SemHoverPopupWindow {
         int hGravity;
         int bottomBarHeight;
         int posX3;
-        int posX4;
         this.mAnchorRect = anchorRect;
         this.mDisplayFrame = displayFrame;
-        int posX5 = this.mPopupOffsetX;
+        int posX4 = this.mPopupOffsetX;
         int posY2 = this.mPopupOffsetY;
-        int i = this.mPopupGravity;
-        int hGravity2 = i & Gravity.HORIZONTAL_GRAVITY_MASK;
-        int vGravity = i & Gravity.VERTICAL_GRAVITY_MASK;
+        int hGravity2 = this.mPopupGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
+        int vGravity = this.mPopupGravity & Gravity.VERTICAL_GRAVITY_MASK;
         DisplayMetrics displayMetrics = this.mResources.getDisplayMetrics();
         DisplayMetrics realDisplayMetrics = getRealDisplayMetrics();
         View root = this.mParentView.getRootView();
@@ -605,40 +554,42 @@ public class SemHoverPopupWindow {
         int displayFrameWidth = displayFrame.right - displayFrame.left;
         int displayFrameHeight = displayFrame.bottom - displayFrame.top;
         if (this.mPopupGravity == 0) {
-            int i2 = this.mCoordinatesOfAnchorView;
-            if (i2 == 2) {
-                int posX6 = this.mPopupOffsetX + displayFrame.left;
-                int i3 = this.mPopupOffsetY;
-                int posX7 = displayFrame.top;
-                hGravity = posX7 + i3;
-                posX2 = posX6;
-            } else if (i2 != 1) {
+            if (this.mCoordinatesOfAnchorView == 2) {
+                int posX5 = this.mPopupOffsetX + displayFrame.left;
+                int i = this.mPopupOffsetY;
+                int posX6 = displayFrame.top;
+                hGravity = posX6 + i;
                 posX2 = posX5;
-                hGravity = posY2;
             } else {
-                posX2 = this.mPopupOffsetX;
-                hGravity = this.mPopupOffsetY;
+                int posY3 = this.mCoordinatesOfAnchorView;
+                if (posY3 != 1) {
+                    posX2 = posX4;
+                    hGravity = posY2;
+                } else {
+                    posX2 = this.mPopupOffsetX;
+                    hGravity = this.mPopupOffsetY;
+                }
             }
         } else {
             switch (hGravity2) {
                 case 1:
-                    int posX8 = anchorRect.centerX();
-                    posX = posX8 - (this.mContentWidth / 2);
+                    int posX7 = anchorRect.centerX();
+                    posX = posX7 - (this.mContentWidth / 2);
                     break;
                 case 3:
                     posX = anchorRect.left;
                     break;
                 case 5:
-                    int posX9 = anchorRect.right;
-                    posX = posX9 - this.mContentWidth;
+                    int posX8 = anchorRect.right;
+                    posX = posX8 - this.mContentWidth;
                     break;
                 case 257:
-                    int posX10 = displayFrame.centerX();
-                    posX = posX10 - (this.mContentWidth / 2);
+                    int posX9 = displayFrame.centerX();
+                    posX = posX9 - (this.mContentWidth / 2);
                     break;
                 case 259:
-                    int posX11 = anchorRect.centerX();
-                    posX = posX11 - this.mContentWidth;
+                    int posX10 = anchorRect.centerX();
+                    posX = posX10 - this.mContentWidth;
                     break;
                 case 261:
                     posX = anchorRect.centerX();
@@ -656,8 +607,8 @@ public class SemHoverPopupWindow {
                     }
                     break;
                 case 771:
-                    int posX12 = anchorRect.left;
-                    posX = posX12 - this.mContentWidth;
+                    int posX11 = anchorRect.left;
+                    posX = posX11 - this.mContentWidth;
                     break;
                 case 1285:
                     posX = anchorRect.right;
@@ -680,13 +631,13 @@ public class SemHoverPopupWindow {
                     posY = hGravity4 - this.mContentHeight;
                     break;
                 case Gravity.TOP_ABOVE /* 12336 */:
-                    int posY3 = anchorRect.top;
+                    int posY4 = anchorRect.top;
                     int hGravity5 = this.mContentHeight;
-                    posY = (posY3 - hGravity5) - 0;
+                    posY = (posY4 - hGravity5) - 0;
                     break;
                 case Gravity.BOTTOM_UNDER /* 20560 */:
-                    int posY4 = anchorRect.bottom;
-                    posY = posY4 + 0;
+                    int posY5 = anchorRect.bottom;
+                    posY = posY5 + 0;
                     break;
                 default:
                     posY = this.mPopupOffsetY;
@@ -694,8 +645,8 @@ public class SemHoverPopupWindow {
             }
             hGravity = this.mPopupOffsetY + posY;
         }
-        int posY5 = this.mCoordinatesOfAnchorView;
-        if (posY5 == 2) {
+        int posY6 = this.mCoordinatesOfAnchorView;
+        if (posY6 == 2) {
             if (this.mContentHeight + hGravity > displayMetrics.heightPixels) {
                 if (vGravity == 20560) {
                     if (anchorRect.top >= this.mContentHeight) {
@@ -711,135 +662,98 @@ public class SemHoverPopupWindow {
                 posX2 = Math.min(posX2, (realDisplayMetrics.widthPixels - this.mContentWidth) - fullTextXShift);
             }
             if (!localLOGV) {
-                posX4 = posX2;
+                posX3 = posX2;
             } else {
                 Log.d(TAG, "computePopupPositionInternal :realDisplayMetrics width:" + realDisplayMetrics.widthPixels);
-                posX4 = posX2;
+                posX3 = posX2;
                 Log.d(TAG, "computePopupPositionInternal :realDisplayMetrics height:" + realDisplayMetrics.heightPixels);
             }
             if (hGravity >= realStatusBarHeight) {
-                posX2 = posX4;
+                posX2 = posX3;
             } else if (vGravity == 12336) {
                 if (displayMetrics.heightPixels - anchorRect.bottom >= this.mContentHeight) {
                     hGravity = anchorRect.bottom + this.mPopupOffsetY;
-                    posX2 = posX4;
+                    posX2 = posX3;
                 } else if (displayMetrics.heightPixels - anchorRect.bottom > anchorRect.top - realStatusBarHeight) {
                     hGravity = anchorRect.bottom + 0;
-                    posX2 = posX4;
+                    posX2 = posX3;
                 } else {
                     hGravity = realStatusBarHeight;
-                    posX2 = posX4;
+                    posX2 = posX3;
                 }
             } else {
                 hGravity = Math.max(displayFrame.top, hGravity);
-                posX2 = posX4;
+                posX2 = posX3;
             }
-        } else if (posY5 == 1) {
+        } else if (this.mCoordinatesOfAnchorView == 1) {
             if (displayFrame.left + posX2 <= 0) {
-                int posX13 = Math.min(posX2, displayFrameWidth - this.mContentWidth);
-                if (this.mDeviceRotation == 3 && this.mNavigationBarHeight != 0) {
-                    int i4 = displayFrame.left + posX13;
-                    int i5 = this.mNavigationBarHeight;
-                    if (i4 < i5) {
-                        posX2 = Math.max(i5 + fullTextXShift, posX13);
-                    }
-                }
-                if (this.mDeviceRotation == 1 && statusBarHeight != 0 && displayFrame.left + posX13 < statusBarHeight) {
-                    posX2 = Math.max(statusBarHeight + fullTextXShift, posX13);
+                int posX12 = Math.min(posX2, displayFrameWidth - this.mContentWidth);
+                if (this.mDeviceRotation == 3 && this.mNavigationBarHeight != 0 && displayFrame.left + posX12 < this.mNavigationBarHeight) {
+                    posX2 = Math.max(this.mNavigationBarHeight + fullTextXShift, posX12);
+                } else if (this.mDeviceRotation == 1 && statusBarHeight != 0 && displayFrame.left + posX12 < statusBarHeight) {
+                    posX2 = Math.max(statusBarHeight + fullTextXShift, posX12);
                 } else {
-                    posX2 = Math.max((-displayFrame.left) + fullTextXShift, posX13);
+                    posX2 = Math.max((-displayFrame.left) + fullTextXShift, posX12);
                 }
             } else if (!isPopOver() && !isEmbeddedMode() && isAnchorViewInAppBounds(this.mAnchorRect.left, this.mAnchorRect.top) && displayFrame.left + posX2 + this.mContentWidth >= realDisplayMetrics.widthPixels) {
                 posX2 = Math.min(posX2, ((realDisplayMetrics.widthPixels - displayFrame.left) - this.mContentWidth) - fullTextXShift);
             } else if (displayFrame.left >= 0) {
-                int i6 = this.mContentWidth;
-                if (displayFrameWidth < i6) {
-                    int i7 = displayFrame.left + displayFrameWidth;
-                    int i8 = this.mContentWidth;
-                    if (i7 - i8 >= 0) {
-                        posX2 = Math.min(posX2, displayFrameWidth - i8);
+                if (displayFrameWidth < this.mContentWidth) {
+                    if ((displayFrame.left + displayFrameWidth) - this.mContentWidth >= 0) {
+                        posX2 = Math.min(posX2, displayFrameWidth - this.mContentWidth);
                     }
-                } else if (posX2 + i6 > displayFrameWidth) {
-                    if (displayFrameWidth >= i6 + fullTextXShift) {
-                        posX2 = Math.min(posX2, (displayFrameWidth - i6) - fullTextXShift);
-                    } else if (displayFrameWidth >= i6) {
-                        posX2 = Math.min(posX2, displayFrameWidth - i6);
+                } else if (this.mContentWidth + posX2 > displayFrameWidth) {
+                    if (displayFrameWidth >= this.mContentWidth + fullTextXShift) {
+                        posX2 = Math.min(posX2, (displayFrameWidth - this.mContentWidth) - fullTextXShift);
+                    } else if (displayFrameWidth >= this.mContentWidth) {
+                        posX2 = Math.min(posX2, displayFrameWidth - this.mContentWidth);
                     }
+                } else if (this.mDeviceRotation == 3 && this.mNavigationBarHeight != 0 && displayFrame.left + posX2 < this.mNavigationBarHeight) {
+                    posX2 = Math.max(posX2, this.mNavigationBarHeight + fullTextXShift);
                 } else {
-                    if (this.mDeviceRotation == 3 && this.mNavigationBarHeight != 0) {
-                        int i9 = displayFrame.left + posX2;
-                        int i10 = this.mNavigationBarHeight;
-                        if (i9 < i10) {
-                            posX2 = Math.max(posX2, i10 + fullTextXShift);
-                        }
-                    }
                     posX2 = Math.max(posX2, fullTextXShift);
                 }
             }
             if (displayFrame.top + hGravity >= statusBarHeight) {
-                int posX14 = posX2;
-                int displayFrameWidth2 = this.mContentHeight;
-                if (hGravity + displayFrameWidth2 > displayFrameHeight) {
+                if (this.mContentHeight + hGravity > displayFrameHeight) {
                     if (vGravity == 20560) {
                         if (anchorRect.top >= this.mContentHeight && ((displayFrame.top != statusBarHeight || this.mContentHeight + hGravity > displayFrame.bottom) && displayFrame.top + hGravity + this.mContentHeight > displayMetrics.heightPixels)) {
                             hGravity = (anchorRect.top - this.mContentHeight) - this.mPopupOffsetY;
-                            posX2 = posX14;
                         }
-                        posX2 = posX14;
-                    } else if (displayFrame.top == realStatusBarHeight) {
-                        hGravity = Math.min(displayFrame.bottom - this.mContentHeight, hGravity);
-                        posX2 = posX14;
-                    } else if (this.mDeviceRotation == 0 && this.mNavigationBarHeight != 0) {
-                        hGravity = Math.min(realDisplayMetrics.heightPixels - this.mContentHeight, hGravity);
-                        posX2 = posX14;
                     } else {
-                        hGravity = Math.min(displayFrameHeight - this.mContentHeight, hGravity);
-                        posX2 = posX14;
+                        hGravity = displayFrame.top != realStatusBarHeight ? (this.mDeviceRotation != 0 || this.mNavigationBarHeight == 0) ? Math.min(displayFrameHeight - this.mContentHeight, hGravity) : Math.min(realDisplayMetrics.heightPixels - this.mContentHeight, hGravity) : Math.min(displayFrame.bottom - this.mContentHeight, hGravity);
                     }
                 } else {
                     if (vGravity == 12336) {
-                        if (hGravity < statusBarHeight && displayFrameWidth2 + hGravity + statusBarHeight > anchorRect.top && displayFrame.top + anchorRect.bottom < realDisplayMetrics.heightPixels) {
+                        if (hGravity < statusBarHeight && this.mContentHeight + hGravity + statusBarHeight > anchorRect.top && displayFrame.top + anchorRect.bottom < realDisplayMetrics.heightPixels) {
                             hGravity = anchorRect.bottom + 0;
                         }
                     } else if (hGravity < statusBarHeight && displayFrame.top == statusBarHeight) {
                         hGravity = statusBarHeight;
                     }
-                    if (isFullscreenMode()) {
-                        if (isMouseHoveringSettingsEnabled()) {
-                            bottomBarHeight = this.mResources.getDimensionPixelSize(R.dimen.task_bar_height);
-                        } else {
-                            bottomBarHeight = this.mNavigationBarHeight;
-                        }
-                        if (bottomBarHeight != 0 && displayFrame.top + hGravity + this.mContentHeight > realDisplayMetrics.heightPixels) {
-                            hGravity = (realDisplayMetrics.heightPixels - displayFrame.top) - this.mContentHeight;
-                            posX2 = posX14;
-                        }
+                    if (isMouseHoveringSettingsEnabled()) {
+                        bottomBarHeight = 40;
+                    } else {
+                        bottomBarHeight = this.mNavigationBarHeight;
                     }
-                    posX2 = posX14;
+                    if (bottomBarHeight != 0 && displayFrame.top + hGravity + this.mContentHeight > realDisplayMetrics.heightPixels) {
+                        hGravity = (realDisplayMetrics.heightPixels - displayFrame.top) - this.mContentHeight;
+                    }
                 }
             } else if (vGravity == 12336) {
                 int comparingHeight = (displayFrameHeight - anchorRect.bottom) - statusBarHeight;
                 if (comparingHeight < this.mContentHeight) {
-                    posX3 = posX2;
                     if (comparingHeight > anchorRect.top || (displayMetrics.heightPixels - displayFrame.top) - anchorRect.bottom > this.mContentHeight) {
-                        int posY6 = anchorRect.bottom;
-                        hGravity = posY6 + 0;
+                        int posY7 = anchorRect.bottom;
+                        hGravity = posY7 + 0;
                     } else {
                         hGravity = statusBarHeight;
                     }
                 } else {
-                    int posY7 = anchorRect.bottom + 0;
-                    int posY8 = this.mPopupOffsetY;
-                    int displayFrameWidth3 = comparingHeight - posY8;
-                    posX3 = posX2;
-                    int posX15 = this.mContentHeight;
-                    if (displayFrameWidth3 < posX15) {
-                        hGravity = posY7;
-                    } else {
-                        hGravity = posY7 + posY8;
-                    }
+                    int posY8 = anchorRect.bottom + 0;
+                    int posY9 = this.mPopupOffsetY;
+                    hGravity = comparingHeight - posY9 >= this.mContentHeight ? posY8 + this.mPopupOffsetY : posY8;
                 }
-                posX2 = posX3;
             } else {
                 hGravity = Math.max(statusBarHeight, hGravity);
             }
@@ -849,21 +763,15 @@ public class SemHoverPopupWindow {
     }
 
     public void update() {
-        PopupWindow popupWindow;
-        if (!this.mNeedToMeasureContentView && (popupWindow = this.mPopup) != null && popupWindow.isShowing()) {
+        if (!this.mNeedToMeasureContentView && this.mPopup != null && this.mPopup.isShowing()) {
             computePopupPositionInternal(this.mAnchorRect, this.mDisplayFrame);
             this.mPopup.update(this.mPopupPosX, this.mPopupPosY, -1, -1);
         } else {
-            View view = this.mAnchorView;
-            if (view == null) {
-                view = this.mParentView;
-            }
-            updateHoverPopup(view, this.mPopupGravity, this.mPopupOffsetX, this.mPopupOffsetY);
+            updateHoverPopup(this.mAnchorView != null ? this.mAnchorView : this.mParentView, this.mPopupGravity, this.mPopupOffsetX, this.mPopupOffsetY);
         }
     }
 
     private void updateHoverPopup(View anchor, int gravity, int offsetX, int offsetY) {
-        TouchablePopupContainer touchablePopupContainer;
         if (this.mPopup == null) {
             Log.d(TAG, "updateHoverPopup(), returned due to mPopup == null  " + this.mParentView.toString());
             return;
@@ -872,8 +780,8 @@ public class SemHoverPopupWindow {
         if (this.mContentWidth == 0 && this.mContentHeight == 0) {
             return;
         }
-        if (this.mIsPopupTouchable && (touchablePopupContainer = this.mTouchableContainer) != null) {
-            this.mPopup.setContentView(touchablePopupContainer);
+        if (this.mIsPopupTouchable && this.mTouchableContainer != null) {
+            this.mPopup.setContentView(this.mTouchableContainer);
         } else {
             this.mPopup.setContentView(this.mContentView);
         }
@@ -894,17 +802,15 @@ public class SemHoverPopupWindow {
 
     public void setAnimationStyle(int aniStyle) {
         this.mAnimationStyle = aniStyle;
-        PopupWindow popupWindow = this.mPopup;
-        if (popupWindow != null) {
-            popupWindow.setAnimationStyle(aniStyle);
+        if (this.mPopup != null) {
+            this.mPopup.setAnimationStyle(this.mAnimationStyle);
         }
     }
 
     public void setTouchable(boolean isTouchable) {
         this.mIsPopupTouchable = isTouchable;
-        PopupWindow popupWindow = this.mPopup;
-        if (popupWindow != null) {
-            popupWindow.setTouchable(isTouchable);
+        if (this.mPopup != null) {
+            this.mPopup.setTouchable(this.mIsPopupTouchable);
         }
     }
 
@@ -951,8 +857,7 @@ public class SemHoverPopupWindow {
                 return false;
             case 10:
                 if (this.mIsPopupTouchable) {
-                    Handler handler = this.mDismissHandler;
-                    if (handler != null && handler.hasMessages(1)) {
+                    if (this.mDismissHandler != null && this.mDismissHandler.hasMessages(1)) {
                         this.mDismissHandler.removeMessages(1);
                     }
                     if (isShowing()) {
@@ -964,7 +869,7 @@ public class SemHoverPopupWindow {
     }
 
     protected void postDismiss(int ms) {
-        this.mParentView.postDelayed(new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow$$ExternalSyntheticLambda1
+        this.mParentView.postDelayed(new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 SemHoverPopupWindow.this.dismiss();
@@ -985,9 +890,8 @@ public class SemHoverPopupWindow {
             this.mShowPopupRunnable = null;
             this.mIsShowMessageSent = false;
         }
-        PopupWindow popupWindow = this.mPopup;
-        if (popupWindow != null) {
-            popupWindow.dismiss();
+        if (this.mPopup != null) {
+            this.mPopup.dismiss();
             this.mPopup = null;
             this.mIsCheckedRealDisplayMetricsInDexMode = false;
         }
@@ -996,10 +900,11 @@ public class SemHoverPopupWindow {
     protected void showPenPointEffect(boolean show) {
         if (this.mToolType == 2) {
             if (show) {
-                InputManager.getInstance().setPointerIconType(20010);
+                PointerIcon pointerIcon = PointerIcon.getSystemIcon(this.mContext, 20010);
+                this.mParentView.semSetPointerIcon(2, pointerIcon);
                 this.mIsSPenPointChanged = true;
             } else if (this.mIsSPenPointChanged) {
-                InputManager.getInstance().setPointerIconType(20001);
+                this.mParentView.semSetPointerIcon(2, null);
                 this.mIsSPenPointChanged = false;
             }
         }
@@ -1011,9 +916,8 @@ public class SemHoverPopupWindow {
 
     private int getStateHashCode() {
         int hashCode = this.mPopupType;
-        View view = this.mParentView;
-        if (view != null) {
-            int hashCode2 = hashCode | (view.getWindowVisibility() << 1) | (this.mParentView.getVisibility() << 2) | (this.mParentView.getLeft() << 4) | (this.mParentView.getRight() << 8) | (this.mParentView.getTop() << 12) | (this.mParentView.getBottom() << 16);
+        if (this.mParentView != null) {
+            int hashCode2 = hashCode | (this.mParentView.getWindowVisibility() << 1) | (this.mParentView.getVisibility() << 2) | (this.mParentView.getLeft() << 4) | (this.mParentView.getRight() << 8) | (this.mParentView.getTop() << 12) | (this.mParentView.getBottom() << 16);
             int[] location = new int[2];
             this.mParentView.getLocationOnScreen(location);
             return hashCode2 | (location[1] << 24) | (location[0] << 20);
@@ -1022,13 +926,11 @@ public class SemHoverPopupWindow {
     }
 
     private void resetTimeout() {
-        Handler handler = this.mDismissHandler;
-        if (handler != null) {
-            if (handler.hasMessages(1)) {
+        if (this.mDismissHandler != null) {
+            if (this.mDismissHandler.hasMessages(1)) {
                 this.mDismissHandler.removeMessages(1);
             }
-            Handler handler2 = this.mDismissHandler;
-            handler2.sendMessageDelayed(handler2.obtainMessage(1), 2000L);
+            this.mDismissHandler.sendMessageDelayed(this.mDismissHandler.obtainMessage(1), 2000L);
         }
     }
 
@@ -1047,7 +949,7 @@ public class SemHoverPopupWindow {
     }
 
     private boolean isPopOver() {
-        boolean isPopOver = this.mContext.getResources().getConfiguration().windowConfiguration.isPopOver();
+        boolean isPopOver = this.mContext.getResources().getConfiguration().semIsPopOver();
         return isPopOver;
     }
 
@@ -1061,7 +963,6 @@ public class SemHoverPopupWindow {
         return appBounds.contains(x, y);
     }
 
-    /* loaded from: classes6.dex */
     public static class QuintEaseOut implements Interpolator {
         @Override // android.animation.TimeInterpolator
         public float getInterpolation(float input) {
@@ -1070,8 +971,7 @@ public class SemHoverPopupWindow {
         }
     }
 
-    /* loaded from: classes6.dex */
-    public class TouchablePopupContainer extends FrameLayout {
+    protected class TouchablePopupContainer extends FrameLayout {
         private static final int MSG_TIMEOUT = 1;
         private static final int SLOP_FACTOR_POINT_IN_VIEW = -2;
         private static final int TIMEOUT_DELAY = 2000;
@@ -1086,14 +986,6 @@ public class SemHoverPopupWindow {
             this.mDismissPopupRunnable = null;
             this.mContainerDismissHandler = null;
             this.mContainerDismissHandler = new Handler(this.mContext.getMainLooper()) { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.1
-                final /* synthetic */ SemHoverPopupWindow val$this$0;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(Looper looper, SemHoverPopupWindow semHoverPopupWindow) {
-                    super(looper);
-                    r3 = semHoverPopupWindow;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     Log.d(SemHoverPopupWindow.TAG, "TouchablePopupContainer: ***** mContainerDismissHandler handleMessage *****");
@@ -1105,42 +997,16 @@ public class SemHoverPopupWindow {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$TouchablePopupContainer$1 */
-        /* loaded from: classes6.dex */
-        public class AnonymousClass1 extends Handler {
-            final /* synthetic */ SemHoverPopupWindow val$this$0;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(Looper looper, SemHoverPopupWindow semHoverPopupWindow) {
-                super(looper);
-                r3 = semHoverPopupWindow;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                Log.d(SemHoverPopupWindow.TAG, "TouchablePopupContainer: ***** mContainerDismissHandler handleMessage *****");
-                if (SemHoverPopupWindow.this.mPopup != null && SemHoverPopupWindow.this.mPopup.isShowing() && msg.what == 1) {
-                    Log.d(SemHoverPopupWindow.TAG, "TouchablePopupContainer: mContainerDismissHandler handleMessage: Call dismiss");
-                    SemHoverPopupWindow.this.dismiss();
-                }
-            }
-        }
-
         @Override // android.view.ViewGroup, android.view.View
         public boolean dispatchTouchEvent(MotionEvent event) {
-            Runnable runnable;
-            if (this.mIsHoverExitCalled && (runnable = this.mDismissPopupRunnable) != null) {
-                removeCallbacks(runnable);
+            if (this.mIsHoverExitCalled && this.mDismissPopupRunnable != null) {
+                removeCallbacks(this.mDismissPopupRunnable);
                 this.mDismissPopupRunnable = null;
                 this.mIsHoverExitCalled = false;
             }
             boolean superRet = super.dispatchTouchEvent(event);
             if (event.getAction() == 1 && SemHoverPopupWindow.this.mDismissTouchableHPWOnActionUp) {
                 postDelayed(new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.2
-                    AnonymousClass2() {
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         SemHoverPopupWindow.this.dismiss();
@@ -1150,20 +1016,8 @@ public class SemHoverPopupWindow {
             return superRet;
         }
 
-        /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$TouchablePopupContainer$2 */
-        /* loaded from: classes6.dex */
-        class AnonymousClass2 implements Runnable {
-            AnonymousClass2() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                SemHoverPopupWindow.this.dismiss();
-            }
-        }
-
         @Override // android.view.ViewGroup, android.view.View
-        public boolean dispatchHoverEvent(MotionEvent event) {
+        protected boolean dispatchHoverEvent(MotionEvent event) {
             int action = event.getAction();
             switch (action) {
                 case 7:
@@ -1175,17 +1029,13 @@ public class SemHoverPopupWindow {
                 case 10:
                     if (pointInView(event.getX(), event.getY(), -2.0f)) {
                         this.mIsHoverExitCalled = true;
-                        AnonymousClass3 anonymousClass3 = new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.3
-                            AnonymousClass3() {
-                            }
-
+                        this.mDismissPopupRunnable = new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.3
                             @Override // java.lang.Runnable
                             public void run() {
                                 SemHoverPopupWindow.this.dismiss();
                             }
                         };
-                        this.mDismissPopupRunnable = anonymousClass3;
-                        postDelayed(anonymousClass3, 100L);
+                        postDelayed(this.mDismissPopupRunnable, 100L);
                         break;
                     } else {
                         boolean superRet = super.dispatchHoverEvent(event);
@@ -1196,31 +1046,16 @@ public class SemHoverPopupWindow {
             return super.dispatchHoverEvent(event);
         }
 
-        /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$TouchablePopupContainer$3 */
-        /* loaded from: classes6.dex */
-        class AnonymousClass3 implements Runnable {
-            AnonymousClass3() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                SemHoverPopupWindow.this.dismiss();
-            }
-        }
-
         public void resetTimeout() {
-            Handler handler = this.mContainerDismissHandler;
-            if (handler != null) {
-                if (handler.hasMessages(1)) {
+            if (this.mContainerDismissHandler != null) {
+                if (this.mContainerDismissHandler.hasMessages(1)) {
                     this.mContainerDismissHandler.removeMessages(1);
                 }
-                Handler handler2 = this.mContainerDismissHandler;
-                handler2.sendMessageDelayed(handler2.obtainMessage(1), 2000L);
+                this.mContainerDismissHandler.sendMessageDelayed(this.mContainerDismissHandler.obtainMessage(1), 2000L);
             }
         }
     }
 
-    /* loaded from: classes6.dex */
     public static final class Gravity {
         public static final int BOTTOM = 80;
         public static final int BOTTOM_UNDER = 20560;

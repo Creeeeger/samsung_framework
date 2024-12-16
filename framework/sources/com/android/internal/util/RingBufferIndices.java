@@ -11,17 +11,14 @@ public class RingBufferIndices {
     }
 
     public int add() {
-        int i = this.mSize;
-        int i2 = this.mCapacity;
-        if (i < i2) {
+        if (this.mSize < this.mCapacity) {
             int pos = this.mSize;
-            this.mSize = i + 1;
+            this.mSize++;
             return pos;
         }
         int pos2 = this.mStart;
-        int i3 = this.mStart + 1;
-        this.mStart = i3;
-        if (i3 == i2) {
+        this.mStart++;
+        if (this.mStart == this.mCapacity) {
             this.mStart = 0;
         }
         return pos2;
@@ -38,9 +35,8 @@ public class RingBufferIndices {
 
     public int indexOf(int pos) {
         int index = this.mStart + pos;
-        int i = this.mCapacity;
-        if (index >= i) {
-            return index - i;
+        if (index >= this.mCapacity) {
+            return index - this.mCapacity;
         }
         return index;
     }

@@ -35,11 +35,9 @@ public class EnergyConsumerStats {
     private long mStateChangeTimestampMs;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface StandardPowerBucket {
     }
 
-    /* loaded from: classes5.dex */
     public static class Config {
         private final String[] mCustomBucketNames;
         private final String[] mStateNames;
@@ -48,9 +46,8 @@ public class EnergyConsumerStats {
 
         public Config(boolean[] supportedStandardBuckets, String[] customBucketNames, int[] supportedMultiStateBuckets, String[] stateNames) {
             this.mSupportedStandardBuckets = supportedStandardBuckets;
-            String[] strArr = customBucketNames != null ? customBucketNames : new String[0];
-            this.mCustomBucketNames = strArr;
-            this.mSupportedMultiStateBuckets = new boolean[supportedStandardBuckets.length + strArr.length];
+            this.mCustomBucketNames = customBucketNames != null ? customBucketNames : new String[0];
+            this.mSupportedMultiStateBuckets = new boolean[supportedStandardBuckets.length + this.mCustomBucketNames.length];
             for (int bucket : supportedMultiStateBuckets) {
                 if (this.mSupportedStandardBuckets[bucket]) {
                     this.mSupportedMultiStateBuckets[bucket] = true;
@@ -80,22 +77,15 @@ public class EnergyConsumerStats {
             }
             int[] supportedMultiStateBuckets = new int[multiStateBucketCount];
             int index = 0;
-            int bucket = 0;
-            while (true) {
-                boolean[] zArr = config.mSupportedMultiStateBuckets;
-                if (bucket < zArr.length) {
-                    if (zArr[bucket]) {
-                        supportedMultiStateBuckets[index] = bucket;
-                        index++;
-                    }
-                    bucket++;
-                } else {
-                    out.writeInt(multiStateBucketCount);
-                    out.writeIntArray(supportedMultiStateBuckets);
-                    out.writeStringArray(config.mStateNames);
-                    return;
+            for (int bucket = 0; bucket < config.mSupportedMultiStateBuckets.length; bucket++) {
+                if (config.mSupportedMultiStateBuckets[bucket]) {
+                    supportedMultiStateBuckets[index] = bucket;
+                    index++;
                 }
             }
+            out.writeInt(multiStateBucketCount);
+            out.writeIntArray(supportedMultiStateBuckets);
+            out.writeStringArray(config.mStateNames);
         }
 
         public static Config createFromParcel(Parcel in) {
@@ -113,6 +103,7 @@ public class EnergyConsumerStats {
             return new Config(supportedStandardBuckets, customBucketNames, supportedMultiStateBuckets, stateNames);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getNumberOfBuckets() {
             return this.mSupportedStandardBuckets.length + this.mCustomBucketNames.length;
         }
@@ -133,6 +124,7 @@ public class EnergyConsumerStats {
             return this.mStateNames;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public String getBucketName(int index) {
             if (EnergyConsumerStats.isValidStandardBucket(index)) {
                 return DebugUtils.valueToString(EnergyConsumerStats.class, "POWER_BUCKET_", index);
@@ -167,9 +159,8 @@ public class EnergyConsumerStats {
     public EnergyConsumerStats(Config config, Parcel in) {
         this.mConfig = config;
         int size = in.readInt();
-        long[] jArr = new long[size];
-        this.mAccumulatedChargeMicroCoulomb = jArr;
-        in.readLongArray(jArr);
+        this.mAccumulatedChargeMicroCoulomb = new long[size];
+        in.readLongArray(this.mAccumulatedChargeMicroCoulomb);
         if (in.readBoolean()) {
             this.mAccumulatedMultiStateChargeMicroCoulomb = new LongMultiStateCounter[size];
             for (int i = 0; i < size; i++) {
@@ -229,32 +220,24 @@ public class EnergyConsumerStats {
         int posOfNumWrittenEntries = out.dataPosition();
         out.writeInt(0);
         int numWrittenEntries = 0;
-        int index = 0;
-        while (true) {
-            long[] jArr = this.mAccumulatedChargeMicroCoulomb;
-            if (index < jArr.length) {
-                long charge = jArr[index];
-                if (charge > 0) {
-                    out.writeInt(index);
-                    out.writeLong(charge);
-                    LongMultiStateCounter[] longMultiStateCounterArr = this.mAccumulatedMultiStateChargeMicroCoulomb;
-                    if (longMultiStateCounterArr != null && longMultiStateCounterArr[index] != null) {
-                        out.writeBoolean(true);
-                        this.mAccumulatedMultiStateChargeMicroCoulomb[index].writeToParcel(out, 0);
-                    } else {
-                        out.writeBoolean(false);
-                    }
-                    numWrittenEntries++;
+        for (int index = 0; index < this.mAccumulatedChargeMicroCoulomb.length; index++) {
+            long charge = this.mAccumulatedChargeMicroCoulomb[index];
+            if (charge > 0) {
+                out.writeInt(index);
+                out.writeLong(charge);
+                if (this.mAccumulatedMultiStateChargeMicroCoulomb != null && this.mAccumulatedMultiStateChargeMicroCoulomb[index] != null) {
+                    out.writeBoolean(true);
+                    this.mAccumulatedMultiStateChargeMicroCoulomb[index].writeToParcel(out, 0);
+                } else {
+                    out.writeBoolean(false);
                 }
-                index++;
-            } else {
-                int currPos = out.dataPosition();
-                out.setDataPosition(posOfNumWrittenEntries);
-                out.writeInt(numWrittenEntries);
-                out.setDataPosition(currPos);
-                return;
+                numWrittenEntries++;
             }
         }
+        int currPos = out.dataPosition();
+        out.setDataPosition(posOfNumWrittenEntries);
+        out.writeInt(numWrittenEntries);
+        out.setDataPosition(currPos);
     }
 
     public void updateStandardBucket(int bucket, long chargeDeltaUC) {
@@ -280,10 +263,9 @@ public class EnergyConsumerStats {
     }
 
     private void updateEntry(int index, long chargeDeltaUC, long timestampMs) {
-        long[] jArr = this.mAccumulatedChargeMicroCoulomb;
-        long j = jArr[index];
-        if (j >= 0) {
-            jArr[index] = j + chargeDeltaUC;
+        if (this.mAccumulatedChargeMicroCoulomb[index] >= 0) {
+            long[] jArr = this.mAccumulatedChargeMicroCoulomb;
+            jArr[index] = jArr[index] + chargeDeltaUC;
             if (this.mState != -1 && this.mConfig.isSupportedMultiStateBucket(index)) {
                 if (this.mAccumulatedMultiStateChargeMicroCoulomb == null) {
                     this.mAccumulatedMultiStateChargeMicroCoulomb = new LongMultiStateCounter[this.mAccumulatedChargeMicroCoulomb.length];
@@ -309,22 +291,15 @@ public class EnergyConsumerStats {
         if (this.mAccumulatedMultiStateChargeMicroCoulomb == null) {
             this.mAccumulatedMultiStateChargeMicroCoulomb = new LongMultiStateCounter[this.mAccumulatedChargeMicroCoulomb.length];
         }
-        int i = 0;
-        while (true) {
-            LongMultiStateCounter[] longMultiStateCounterArr = this.mAccumulatedMultiStateChargeMicroCoulomb;
-            if (i < longMultiStateCounterArr.length) {
-                LongMultiStateCounter counter = longMultiStateCounterArr[i];
-                if (counter == null && this.mConfig.isSupportedMultiStateBucket(i)) {
-                    counter = new LongMultiStateCounter(this.mConfig.mStateNames.length);
-                    counter.updateValue(0L, timestampMs);
-                    this.mAccumulatedMultiStateChargeMicroCoulomb[i] = counter;
-                }
-                if (counter != null) {
-                    counter.setState(state, timestampMs);
-                }
-                i++;
-            } else {
-                return;
+        for (int i = 0; i < this.mAccumulatedMultiStateChargeMicroCoulomb.length; i++) {
+            LongMultiStateCounter counter = this.mAccumulatedMultiStateChargeMicroCoulomb[i];
+            if (counter == null && this.mConfig.isSupportedMultiStateBucket(i)) {
+                counter = new LongMultiStateCounter(this.mConfig.mStateNames.length);
+                counter.updateValue(0L, timestampMs);
+                this.mAccumulatedMultiStateChargeMicroCoulomb[i] = counter;
+            }
+            if (counter != null) {
+                counter.setState(state, timestampMs);
             }
         }
     }
@@ -339,8 +314,7 @@ public class EnergyConsumerStats {
         if (!this.mConfig.isSupportedMultiStateBucket(bucket)) {
             return -1L;
         }
-        LongMultiStateCounter[] longMultiStateCounterArr = this.mAccumulatedMultiStateChargeMicroCoulomb;
-        if (longMultiStateCounterArr == null || (counter = longMultiStateCounterArr[bucket]) == null) {
+        if (this.mAccumulatedMultiStateChargeMicroCoulomb == null || (counter = this.mAccumulatedMultiStateChargeMicroCoulomb[bucket]) == null) {
             return 0L;
         }
         return counter.getCount(state);
@@ -396,17 +370,12 @@ public class EnergyConsumerStats {
     }
 
     private boolean containsInterestingData() {
-        int index = 0;
-        while (true) {
-            long[] jArr = this.mAccumulatedChargeMicroCoulomb;
-            if (index >= jArr.length) {
-                return false;
-            }
-            if (jArr[index] > 0) {
+        for (int index = 0; index < this.mAccumulatedChargeMicroCoulomb.length; index++) {
+            if (this.mAccumulatedChargeMicroCoulomb[index] > 0) {
                 return true;
             }
-            index++;
         }
+        return false;
     }
 
     public static void writeSummaryToParcel(EnergyConsumerStats stats, Parcel dest) {
@@ -419,13 +388,11 @@ public class EnergyConsumerStats {
     }
 
     private void reset() {
-        LongMultiStateCounter longMultiStateCounter;
         int numIndices = this.mConfig.getNumberOfBuckets();
         for (int index = 0; index < numIndices; index++) {
             setValueIfSupported(index, 0L);
-            LongMultiStateCounter[] longMultiStateCounterArr = this.mAccumulatedMultiStateChargeMicroCoulomb;
-            if (longMultiStateCounterArr != null && (longMultiStateCounter = longMultiStateCounterArr[index]) != null) {
-                longMultiStateCounter.reset();
+            if (this.mAccumulatedMultiStateChargeMicroCoulomb != null && this.mAccumulatedMultiStateChargeMicroCoulomb[index] != null) {
+                this.mAccumulatedMultiStateChargeMicroCoulomb[index].reset();
             }
         }
     }
@@ -437,9 +404,8 @@ public class EnergyConsumerStats {
     }
 
     private void setValueIfSupported(int index, long value) {
-        long[] jArr = this.mAccumulatedChargeMicroCoulomb;
-        if (jArr[index] != -1) {
-            jArr[index] = value;
+        if (this.mAccumulatedChargeMicroCoulomb[index] != -1) {
+            this.mAccumulatedChargeMicroCoulomb[index] = value;
         }
     }
 
@@ -462,8 +428,7 @@ public class EnergyConsumerStats {
             if (!isIndexSupported(index)) {
                 pw.print(" (unsupported)");
             }
-            LongMultiStateCounter[] longMultiStateCounterArr = this.mAccumulatedMultiStateChargeMicroCoulomb;
-            if (longMultiStateCounterArr != null && (counter = longMultiStateCounterArr[index]) != null) {
+            if (this.mAccumulatedMultiStateChargeMicroCoulomb != null && (counter = this.mAccumulatedMultiStateChargeMicroCoulomb[index]) != null) {
                 pw.print(" [");
                 for (int i = 0; i < this.mConfig.mStateNames.length; i++) {
                     if (i != 0) {
@@ -490,6 +455,7 @@ public class EnergyConsumerStats {
         return customBucket + 10;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int indexToCustomBucket(int index) {
         return index - 10;
     }
@@ -500,6 +466,7 @@ public class EnergyConsumerStats {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidStandardBucket(int bucket) {
         return bucket >= 0 && bucket < 10;
     }

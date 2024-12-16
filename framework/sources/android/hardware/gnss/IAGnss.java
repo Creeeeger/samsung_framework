@@ -13,7 +13,6 @@ public interface IAGnss extends IInterface {
     public static final String HASH = "fc957f1d3d261d065ff5e5415f2d21caa79c310f";
     public static final int VERSION = 2;
 
-    /* loaded from: classes2.dex */
     public @interface ApnIpType {
         public static final int INVALID = 0;
         public static final int IPV4 = 1;
@@ -35,7 +34,6 @@ public interface IAGnss extends IInterface {
 
     void setServer(int i, String str, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAGnss {
         @Override // android.hardware.gnss.IAGnss
         public void setCallback(IAGnssCallback callback) throws RemoteException {
@@ -73,7 +71,6 @@ public interface IAGnss extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAGnss {
         static final int TRANSACTION_dataConnClosed = 2;
         static final int TRANSACTION_dataConnFailed = 3;
@@ -136,59 +133,57 @@ public interface IAGnss extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    IAGnssCallback _arg0 = IAGnssCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    dataConnClosed();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    dataConnFailed();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setServer(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    long _arg03 = data.readLong();
+                    String _arg12 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dataConnOpen(_arg03, _arg12, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IAGnssCallback _arg0 = IAGnssCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            dataConnClosed();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            dataConnFailed();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setServer(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            long _arg03 = data.readLong();
-                            String _arg12 = data.readString();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dataConnOpen(_arg03, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAGnss {
+        private static class Proxy implements IAGnss {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

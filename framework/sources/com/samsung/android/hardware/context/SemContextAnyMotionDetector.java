@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextAnyMotionDetector extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextAnyMotionDetector> CREATOR = new Parcelable.Creator<SemContextAnyMotionDetector>() { // from class: com.samsung.android.hardware.context.SemContextAnyMotionDetector.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAnyMotionDetector createFromParcel(Parcel in) {
             return new SemContextAnyMotionDetector(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAnyMotionDetector[] newArray(int size) {
             return new SemContextAnyMotionDetector[size];
@@ -24,24 +23,7 @@ public class SemContextAnyMotionDetector extends SemContextEventContext {
     public static final int STATUS_NONE = 0;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextAnyMotionDetector$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextAnyMotionDetector> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAnyMotionDetector createFromParcel(Parcel in) {
-            return new SemContextAnyMotionDetector(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAnyMotionDetector[] newArray(int size) {
-            return new SemContextAnyMotionDetector[size];
-        }
-    }
-
-    public SemContextAnyMotionDetector() {
+    SemContextAnyMotionDetector() {
         this.mContext = new Bundle();
     }
 

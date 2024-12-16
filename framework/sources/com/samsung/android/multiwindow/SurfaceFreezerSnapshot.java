@@ -7,17 +7,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SurfaceFreezerSnapshot implements Parcelable {
     public static final Parcelable.Creator<SurfaceFreezerSnapshot> CREATOR = new Parcelable.Creator<SurfaceFreezerSnapshot>() { // from class: com.samsung.android.multiwindow.SurfaceFreezerSnapshot.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SurfaceFreezerSnapshot createFromParcel(Parcel source) {
             return new SurfaceFreezerSnapshot(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SurfaceFreezerSnapshot[] newArray(int size) {
             return new SurfaceFreezerSnapshot[size];
@@ -31,10 +30,6 @@ public class SurfaceFreezerSnapshot implements Parcelable {
     private final Bitmap mSnapshotBitmap;
     private final int mTaskId;
     private final Bitmap mWallpaperBitmap;
-
-    /* synthetic */ SurfaceFreezerSnapshot(Parcel parcel, SurfaceFreezerSnapshotIA surfaceFreezerSnapshotIA) {
-        this(parcel);
-    }
 
     public SurfaceFreezerSnapshot(Bitmap snapshotBitmap, int taskId, boolean containsSecureLayer, boolean hasProtectedContent, Bitmap wallpaperBitmap) {
         this(snapshotBitmap, taskId, containsSecureLayer, hasProtectedContent, wallpaperBitmap, 0, 0);
@@ -68,23 +63,6 @@ public class SurfaceFreezerSnapshot implements Parcelable {
         this.mFreeformHeaderColor = in.readInt();
     }
 
-    /* renamed from: com.samsung.android.multiwindow.SurfaceFreezerSnapshot$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SurfaceFreezerSnapshot> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SurfaceFreezerSnapshot createFromParcel(Parcel source) {
-            return new SurfaceFreezerSnapshot(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SurfaceFreezerSnapshot[] newArray(int size) {
-            return new SurfaceFreezerSnapshot[size];
-        }
-    }
-
     public boolean containsSecureLayer() {
         return this.mContainsSecureLayer;
     }
@@ -106,17 +84,16 @@ public class SurfaceFreezerSnapshot implements Parcelable {
     }
 
     public Bitmap createSnapshotBitmapWithWallpaper(int splitBackgroundColor) {
-        Bitmap bitmap = this.mSnapshotBitmap;
-        if (bitmap == null || this.mWallpaperBitmap == null) {
+        if (this.mSnapshotBitmap == null || this.mWallpaperBitmap == null) {
             Log.e(TAG, "createSnapshotBitmapWithWallpaper: failed, snapshot=" + this.mSnapshotBitmap + ", wallpaper=" + this.mWallpaperBitmap);
             return null;
         }
-        Bitmap bitmap2 = Bitmap.createBitmap(bitmap.getWidth(), this.mSnapshotBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap2);
+        Bitmap bitmap = Bitmap.createBitmap(this.mSnapshotBitmap.getWidth(), this.mSnapshotBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
         canvas.drawBitmap(this.mWallpaperBitmap, 0.0f, 0.0f, (Paint) null);
         canvas.drawColor(splitBackgroundColor);
         canvas.drawBitmap(this.mSnapshotBitmap, 0.0f, 0.0f, (Paint) null);
-        return bitmap2;
+        return bitmap;
     }
 
     @Override // android.os.Parcelable

@@ -26,7 +26,7 @@ public abstract class RecommendationService extends Service {
     public abstract void onDisconnected();
 
     @Override // android.app.Service, android.content.ContextWrapper
-    public void attachBaseContext(Context base) {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         this.mHandler = new MyHandler();
     }
@@ -35,28 +35,9 @@ public abstract class RecommendationService extends Service {
         this.mHandler.obtainMessage(3, recommendations).sendToTarget();
     }
 
-    /* renamed from: android.printservice.recommendation.RecommendationService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IRecommendationService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.printservice.recommendation.IRecommendationService
-        public void registerCallbacks(IRecommendationServiceCallbacks callbacks) {
-            if (callbacks != null) {
-                RecommendationService.this.mHandler.obtainMessage(1, callbacks).sendToTarget();
-            } else {
-                RecommendationService.this.mHandler.obtainMessage(2).sendToTarget();
-            }
-        }
-    }
-
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         return new IRecommendationService.Stub() { // from class: android.printservice.recommendation.RecommendationService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.printservice.recommendation.IRecommendationService
             public void registerCallbacks(IRecommendationServiceCallbacks callbacks) {
                 if (callbacks != null) {
@@ -68,7 +49,6 @@ public abstract class RecommendationService extends Service {
         };
     }
 
-    /* loaded from: classes3.dex */
     private class MyHandler extends Handler {
         static final int MSG_CONNECT = 1;
         static final int MSG_DISCONNECT = 2;
@@ -84,24 +64,22 @@ public abstract class RecommendationService extends Service {
                 case 1:
                     RecommendationService.this.mCallbacks = (IRecommendationServiceCallbacks) msg.obj;
                     RecommendationService.this.onConnected();
-                    return;
+                    break;
                 case 2:
                     RecommendationService.this.onDisconnected();
                     RecommendationService.this.mCallbacks = null;
-                    return;
+                    break;
                 case 3:
                     if (RecommendationService.this.mCallbacks != null) {
                         try {
                             RecommendationService.this.mCallbacks.onRecommendationsUpdated((List) msg.obj);
-                            return;
+                            break;
                         } catch (RemoteException | NullPointerException e) {
                             Log.e(RecommendationService.LOG_TAG, "Could not update recommended services", e);
                             return;
                         }
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }

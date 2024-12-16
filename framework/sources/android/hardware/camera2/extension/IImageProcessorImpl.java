@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IImageProcessorImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IImageProcessorImpl";
 
     void onNextImageAvailable(OutputConfigId outputConfigId, ParcelImage parcelImage, String str) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IImageProcessorImpl {
         @Override // android.hardware.camera2.extension.IImageProcessorImpl
         public void onNextImageAvailable(OutputConfigId outputConfigId, ParcelImage image, String physicalCameraId) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IImageProcessorImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IImageProcessorImpl {
         static final int TRANSACTION_onNextImageAvailable = 1;
 
@@ -67,29 +65,25 @@ public interface IImageProcessorImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImageProcessorImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImageProcessorImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImageProcessorImpl.DESCRIPTOR);
+                case 1:
+                    OutputConfigId _arg0 = (OutputConfigId) data.readTypedObject(OutputConfigId.CREATOR);
+                    ParcelImage _arg1 = (ParcelImage) data.readTypedObject(ParcelImage.CREATOR);
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onNextImageAvailable(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            OutputConfigId _arg0 = (OutputConfigId) data.readTypedObject(OutputConfigId.CREATOR);
-                            ParcelImage _arg1 = (ParcelImage) data.readTypedObject(ParcelImage.CREATOR);
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onNextImageAvailable(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IImageProcessorImpl {
+        private static class Proxy implements IImageProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

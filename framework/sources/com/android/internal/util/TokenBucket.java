@@ -11,9 +11,8 @@ public class TokenBucket {
 
     public TokenBucket(int deltaMs, int capacity, int tokens) {
         this.mFillDelta = Preconditions.checkArgumentPositive(deltaMs, "deltaMs must be strictly positive");
-        int checkArgumentPositive = Preconditions.checkArgumentPositive(capacity, "capacity must be strictly positive");
-        this.mCapacity = checkArgumentPositive;
-        this.mAvailable = Math.min(Preconditions.checkArgumentNonnegative(tokens), checkArgumentPositive);
+        this.mCapacity = Preconditions.checkArgumentPositive(capacity, "capacity must be strictly positive");
+        this.mAvailable = Math.min(Preconditions.checkArgumentNonnegative(tokens), this.mCapacity);
         this.mLastFill = scaledTime();
     }
 
@@ -50,13 +49,12 @@ public class TokenBucket {
         if (n <= 0) {
             return 0;
         }
-        int got = this.mAvailable;
-        if (n > got) {
-            int got2 = this.mAvailable;
+        if (n > this.mAvailable) {
+            int got = this.mAvailable;
             this.mAvailable = 0;
-            return got2;
+            return got;
         }
-        this.mAvailable = got - n;
+        this.mAvailable -= n;
         return n;
     }
 

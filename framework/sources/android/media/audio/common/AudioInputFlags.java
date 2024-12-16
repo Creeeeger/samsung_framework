@@ -2,6 +2,7 @@ package android.media.audio.common;
 
 /* loaded from: classes2.dex */
 public @interface AudioInputFlags {
+    public static final int BCMGR = 12;
     public static final int DIRECT = 7;
     public static final int FAST = 0;
     public static final int HOTWORD_TAP = 9;
@@ -10,6 +11,8 @@ public @interface AudioInputFlags {
     public static final int HW_LOOKBACK = 10;
     public static final int MMAP_NOIRQ = 4;
     public static final int RAW = 2;
+    public static final int REMOTE_MIC = 11;
+    public static final int SMART_VIEW = 13;
     public static final int SYNC = 3;
     public static final int ULTRASOUND = 8;
     public static final int VOIP_TX = 5;

@@ -14,7 +14,6 @@ public final class IntervalStatsProto {
     public static final long PACKAGES = 2246267895828L;
     public static final long STRINGPOOL = 1146756268034L;
 
-    /* loaded from: classes5.dex */
     public final class StringPool {
         public static final long SIZE = 1120986464257L;
         public static final long STRINGS = 2237677961218L;
@@ -23,7 +22,6 @@ public final class IntervalStatsProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class CountAndTime {
         public static final long COUNT = 1120986464257L;
         public static final long TIME_MS = 1112396529666L;
@@ -32,7 +30,6 @@ public final class IntervalStatsProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class UsageStats {
         public static final long APP_LAUNCH_COUNT = 1120986464262L;
         public static final long CHOOSER_ACTIONS = 2246267895815L;
@@ -50,7 +47,6 @@ public final class IntervalStatsProto {
         public UsageStats() {
         }
 
-        /* loaded from: classes5.dex */
         public final class ChooserAction {
             public static final long COUNTS = 2246267895811L;
             public static final long NAME = 1138166333441L;
@@ -58,7 +54,6 @@ public final class IntervalStatsProto {
             public ChooserAction() {
             }
 
-            /* loaded from: classes5.dex */
             public final class CategoryCount {
                 public static final long COUNT = 1120986464259L;
                 public static final long NAME = 1138166333441L;
@@ -69,7 +64,6 @@ public final class IntervalStatsProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Configuration {
         public static final long ACTIVE = 1133871366149L;
         public static final long CONFIG = 1146756268033L;
@@ -81,7 +75,6 @@ public final class IntervalStatsProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Event {
         public static final long CLASS = 1138166333443L;
         public static final long CLASS_INDEX = 1120986464260L;

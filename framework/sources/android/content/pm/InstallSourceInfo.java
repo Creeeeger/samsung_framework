@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class InstallSourceInfo implements Parcelable {
     public static final Parcelable.Creator<InstallSourceInfo> CREATOR = new Parcelable.Creator<InstallSourceInfo>() { // from class: android.content.pm.InstallSourceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstallSourceInfo createFromParcel(Parcel source) {
             return new InstallSourceInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstallSourceInfo[] newArray(int size) {
             return new InstallSourceInfo[size];
@@ -25,10 +24,6 @@ public final class InstallSourceInfo implements Parcelable {
     private final String mOriginatingPackageName;
     private final int mPackageSource;
     private final String mUpdateOwnerPackageName;
-
-    /* synthetic */ InstallSourceInfo(Parcel parcel, InstallSourceInfoIA installSourceInfoIA) {
-        this(parcel);
-    }
 
     public InstallSourceInfo(String initiatingPackageName, SigningInfo initiatingPackageSigningInfo, String originatingPackageName, String installingPackageName) {
         this(initiatingPackageName, initiatingPackageSigningInfo, originatingPackageName, installingPackageName, null, 0);
@@ -45,11 +40,10 @@ public final class InstallSourceInfo implements Parcelable {
 
     @Override // android.os.Parcelable
     public int describeContents() {
-        SigningInfo signingInfo = this.mInitiatingPackageSigningInfo;
-        if (signingInfo == null) {
+        if (this.mInitiatingPackageSigningInfo == null) {
             return 0;
         }
-        return signingInfo.describeContents();
+        return this.mInitiatingPackageSigningInfo.describeContents();
     }
 
     @Override // android.os.Parcelable
@@ -93,22 +87,5 @@ public final class InstallSourceInfo implements Parcelable {
 
     public int getPackageSource() {
         return this.mPackageSource;
-    }
-
-    /* renamed from: android.content.pm.InstallSourceInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InstallSourceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstallSourceInfo createFromParcel(Parcel source) {
-            return new InstallSourceInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstallSourceInfo[] newArray(int size) {
-            return new InstallSourceInfo[size];
-        }
     }
 }

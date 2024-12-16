@@ -13,7 +13,7 @@ import android.telephony.ims.ImsStreamMediaProfile;
 import android.telephony.ims.ImsSuppServiceNotification;
 import com.android.ims.internal.IImsCallSession;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsCallSessionListener extends IInterface {
     void callQualityChanged(CallQuality callQuality) throws RemoteException;
 
@@ -93,7 +93,6 @@ public interface IImsCallSessionListener extends IInterface {
 
     void callSessionUssdMessageReceived(IImsCallSession iImsCallSession, int i, String str) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsCallSessionListener {
         @Override // com.android.ims.internal.IImsCallSessionListener
         public void callSessionProgressing(IImsCallSession session, ImsStreamMediaProfile profile) throws RemoteException {
@@ -257,7 +256,6 @@ public interface IImsCallSessionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsCallSessionListener {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsCallSessionListener";
         static final int TRANSACTION_callQualityChanged = 38;
@@ -415,293 +413,289 @@ public interface IImsCallSessionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IImsCallSession _arg0 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsStreamMediaProfile _arg1 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionProgressing(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IImsCallSession _arg02 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg12 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionStarted(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IImsCallSession _arg03 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg13 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionStartFailed(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IImsCallSession _arg04 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg14 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionTerminated(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IImsCallSession _arg05 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg15 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHeld(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IImsCallSession _arg06 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg16 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHoldFailed(_arg06, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    IImsCallSession _arg07 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg17 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHoldReceived(_arg07, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IImsCallSession _arg08 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg18 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionResumed(_arg08, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IImsCallSession _arg09 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg19 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionResumeFailed(_arg09, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    IImsCallSession _arg010 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg110 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionResumeReceived(_arg010, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    IImsCallSession _arg011 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    IImsCallSession _arg111 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg2 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionMergeStarted(_arg011, _arg111, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    IImsCallSession _arg012 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    callSessionMergeComplete(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    IImsCallSession _arg013 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg112 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionMergeFailed(_arg013, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IImsCallSession _arg014 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg113 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionUpdated(_arg014, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    IImsCallSession _arg015 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg114 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionUpdateFailed(_arg015, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    IImsCallSession _arg016 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg115 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionUpdateReceived(_arg016, _arg115);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    IImsCallSession _arg017 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    IImsCallSession _arg116 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg22 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceExtended(_arg017, _arg116, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    IImsCallSession _arg018 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg117 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceExtendFailed(_arg018, _arg117);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    IImsCallSession _arg019 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    IImsCallSession _arg118 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg23 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceExtendReceived(_arg019, _arg118, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    IImsCallSession _arg020 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    callSessionInviteParticipantsRequestDelivered(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    IImsCallSession _arg021 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg119 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionInviteParticipantsRequestFailed(_arg021, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    IImsCallSession _arg022 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    callSessionRemoveParticipantsRequestDelivered(_arg022);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    IImsCallSession _arg023 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsReasonInfo _arg120 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionRemoveParticipantsRequestFailed(_arg023, _arg120);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    IImsCallSession _arg024 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsConferenceState _arg121 = (ImsConferenceState) data.readTypedObject(ImsConferenceState.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceStateUpdated(_arg024, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    IImsCallSession _arg025 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    int _arg122 = data.readInt();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    callSessionUssdMessageReceived(_arg025, _arg122, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    IImsCallSession _arg026 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    int _arg123 = data.readInt();
+                    int _arg25 = data.readInt();
+                    ImsReasonInfo _arg3 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHandover(_arg026, _arg123, _arg25, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    IImsCallSession _arg027 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    int _arg124 = data.readInt();
+                    int _arg26 = data.readInt();
+                    ImsReasonInfo _arg32 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHandoverFailed(_arg027, _arg124, _arg26, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    IImsCallSession _arg028 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    int _arg125 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionMayHandover(_arg028, _arg125, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    IImsCallSession _arg029 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    int _arg126 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionTtyModeReceived(_arg029, _arg126);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    IImsCallSession _arg030 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg127 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    callSessionMultipartyStateChanged(_arg030, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    IImsCallSession _arg031 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsSuppServiceNotification _arg128 = (ImsSuppServiceNotification) data.readTypedObject(ImsSuppServiceNotification.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionSuppServiceReceived(_arg031, _arg128);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    IImsCallSession _arg032 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg129 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionRttModifyRequestReceived(_arg032, _arg129);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    int _arg033 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionRttModifyResponseReceived(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    String _arg034 = data.readString();
+                    data.enforceNoDataAvail();
+                    callSessionRttMessageReceived(_arg034);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    ImsStreamMediaProfile _arg035 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionRttAudioIndicatorChanged(_arg035);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    callSessionTransferred();
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    ImsReasonInfo _arg036 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionTransferFailed(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    CallQuality _arg037 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
+                    data.enforceNoDataAvail();
+                    callQualityChanged(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    int _arg038 = data.readInt();
+                    int _arg130 = data.readInt();
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionSendAnbrQuery(_arg038, _arg130, _arg28);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IImsCallSession _arg0 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsStreamMediaProfile _arg1 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionProgressing(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IImsCallSession _arg02 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg12 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionStarted(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IImsCallSession _arg03 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg13 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionStartFailed(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IImsCallSession _arg04 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg14 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionTerminated(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IImsCallSession _arg05 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg15 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHeld(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IImsCallSession _arg06 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg16 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHoldFailed(_arg06, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            IImsCallSession _arg07 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg17 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHoldReceived(_arg07, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IImsCallSession _arg08 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg18 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionResumed(_arg08, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IImsCallSession _arg09 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg19 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionResumeFailed(_arg09, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            IImsCallSession _arg010 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg110 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionResumeReceived(_arg010, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            IImsCallSession _arg011 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            IImsCallSession _arg111 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg2 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionMergeStarted(_arg011, _arg111, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            IImsCallSession _arg012 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            callSessionMergeComplete(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            IImsCallSession _arg013 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg112 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionMergeFailed(_arg013, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IImsCallSession _arg014 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg113 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionUpdated(_arg014, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            IImsCallSession _arg015 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg114 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionUpdateFailed(_arg015, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            IImsCallSession _arg016 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg115 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionUpdateReceived(_arg016, _arg115);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            IImsCallSession _arg017 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            IImsCallSession _arg116 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg22 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceExtended(_arg017, _arg116, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            IImsCallSession _arg018 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg117 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceExtendFailed(_arg018, _arg117);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            IImsCallSession _arg019 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            IImsCallSession _arg118 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg23 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceExtendReceived(_arg019, _arg118, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            IImsCallSession _arg020 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            callSessionInviteParticipantsRequestDelivered(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            IImsCallSession _arg021 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg119 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionInviteParticipantsRequestFailed(_arg021, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            IImsCallSession _arg022 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            callSessionRemoveParticipantsRequestDelivered(_arg022);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            IImsCallSession _arg023 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsReasonInfo _arg120 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionRemoveParticipantsRequestFailed(_arg023, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            IImsCallSession _arg024 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsConferenceState _arg121 = (ImsConferenceState) data.readTypedObject(ImsConferenceState.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceStateUpdated(_arg024, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            IImsCallSession _arg025 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            int _arg122 = data.readInt();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            callSessionUssdMessageReceived(_arg025, _arg122, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            IImsCallSession _arg026 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            int _arg123 = data.readInt();
-                            int _arg25 = data.readInt();
-                            ImsReasonInfo _arg3 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHandover(_arg026, _arg123, _arg25, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            IImsCallSession _arg027 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            int _arg124 = data.readInt();
-                            int _arg26 = data.readInt();
-                            ImsReasonInfo _arg32 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHandoverFailed(_arg027, _arg124, _arg26, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            IImsCallSession _arg028 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            int _arg125 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionMayHandover(_arg028, _arg125, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            IImsCallSession _arg029 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            int _arg126 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionTtyModeReceived(_arg029, _arg126);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            IImsCallSession _arg030 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg127 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            callSessionMultipartyStateChanged(_arg030, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            IImsCallSession _arg031 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsSuppServiceNotification _arg128 = (ImsSuppServiceNotification) data.readTypedObject(ImsSuppServiceNotification.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionSuppServiceReceived(_arg031, _arg128);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            IImsCallSession _arg032 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg129 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionRttModifyRequestReceived(_arg032, _arg129);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            int _arg033 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionRttModifyResponseReceived(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            String _arg034 = data.readString();
-                            data.enforceNoDataAvail();
-                            callSessionRttMessageReceived(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            ImsStreamMediaProfile _arg035 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionRttAudioIndicatorChanged(_arg035);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            callSessionTransferred();
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            ImsReasonInfo _arg036 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionTransferFailed(_arg036);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            CallQuality _arg037 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
-                            data.enforceNoDataAvail();
-                            callQualityChanged(_arg037);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            int _arg038 = data.readInt();
-                            int _arg130 = data.readInt();
-                            int _arg28 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionSendAnbrQuery(_arg038, _arg130, _arg28);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsCallSessionListener {
+        private static class Proxy implements IImsCallSessionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

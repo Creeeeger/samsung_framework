@@ -4,20 +4,33 @@ package com.android.server.os;
 public final class TombstoneProtos {
     public static final int ARM32 = 0;
     public static final int ARM64 = 1;
+    public static final int NONE = 5;
     public static final int RISCV64 = 4;
     public static final int X86 = 2;
     public static final int X86_64 = 3;
 
-    /* loaded from: classes5.dex */
+    public final class CrashDetail {
+        public static final long DATA = 1151051235330L;
+        public static final long NAME = 1151051235329L;
+
+        public CrashDetail() {
+        }
+    }
+
     public final class Tombstone {
         public static final long ABORT_MESSAGE = 1138166333454L;
         public static final long ARCH = 1159641169921L;
         public static final long BUILD_FINGERPRINT = 1138166333442L;
         public static final long CAUSES = 2246267895823L;
         public static final long COMMAND_LINE = 2237677961225L;
+        public static final long CRASH_DETAILS = 2246267895829L;
+        public static final long GUEST_ARCH = 1159641169944L;
+        public static final long GUEST_THREADS = 2246267895833L;
+        public static final long HAS_BEEN_16KB_MODE = 1133871366167L;
         public static final long LOG_BUFFERS = 2246267895826L;
         public static final long MEMORY_MAPPINGS = 2246267895825L;
         public static final long OPEN_FDS = 2246267895827L;
+        public static final long PAGE_SIZE = 1155346202646L;
         public static final long PID = 1155346202629L;
         public static final long PROCESS_UPTIME = 1155346202644L;
         public static final long REVISION = 1138166333443L;
@@ -31,7 +44,6 @@ public final class TombstoneProtos {
         public Tombstone() {
         }
 
-        /* loaded from: classes5.dex */
         public final class ThreadsEntry {
             public static final long KEY = 1155346202625L;
             public static final long VALUE = 1146756268034L;
@@ -39,9 +51,16 @@ public final class TombstoneProtos {
             public ThreadsEntry() {
             }
         }
+
+        public final class GuestThreadsEntry {
+            public static final long KEY = 1155346202625L;
+            public static final long VALUE = 1146756268034L;
+
+            public GuestThreadsEntry() {
+            }
+        }
     }
 
-    /* loaded from: classes5.dex */
     public final class Signal {
         public static final long CODE = 1120986464259L;
         public static final long CODE_NAME = 1138166333444L;
@@ -58,7 +77,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class HeapObject {
         public static final long ADDRESS = 1116691496961L;
         public static final long ALLOCATION_BACKTRACE = 2246267895812L;
@@ -71,7 +89,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class MemoryError {
         public static final int BUFFER_OVERFLOW = 4;
         public static final int BUFFER_UNDERFLOW = 5;
@@ -89,7 +106,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Cause {
         public static final long HUMAN_READABLE = 1138166333441L;
         public static final long MEMORY_ERROR = 1146756268034L;
@@ -98,7 +114,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Register {
         public static final long NAME = 1138166333441L;
         public static final long U64 = 1116691496962L;
@@ -107,7 +122,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Thread {
         public static final long BACKTRACE_NOTE = 2237677961223L;
         public static final long CURRENT_BACKTRACE = 2246267895812L;
@@ -123,7 +137,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class BacktraceFrame {
         public static final long BUILD_ID = 1138166333448L;
         public static final long FILE_MAP_OFFSET = 1116691496967L;
@@ -138,7 +151,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ArmMTEMetadata {
         public static final long MEMORY_TAGS = 1151051235329L;
 
@@ -146,7 +158,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class MemoryDump {
         public static final long ARM_MTE_METADATA = 1146756268038L;
         public static final long BEGIN_ADDRESS = 1116691496963L;
@@ -158,7 +169,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class MemoryMapping {
         public static final long BEGIN_ADDRESS = 1116691496961L;
         public static final long BUILD_ID = 1138166333448L;
@@ -174,7 +184,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class FD {
         public static final long FD = 1120986464257L;
         public static final long OWNER = 1138166333443L;
@@ -185,7 +194,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class LogBuffer {
         public static final long LOGS = 2246267895810L;
         public static final long NAME = 1138166333441L;
@@ -194,7 +202,6 @@ public final class TombstoneProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class LogMessage {
         public static final long MESSAGE = 1138166333446L;
         public static final long PID = 1155346202626L;

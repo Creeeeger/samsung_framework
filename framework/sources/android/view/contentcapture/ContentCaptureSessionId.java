@@ -7,14 +7,13 @@ import java.io.PrintWriter;
 /* loaded from: classes4.dex */
 public final class ContentCaptureSessionId implements Parcelable {
     public static final Parcelable.Creator<ContentCaptureSessionId> CREATOR = new Parcelable.Creator<ContentCaptureSessionId>() { // from class: android.view.contentcapture.ContentCaptureSessionId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureSessionId createFromParcel(Parcel parcel) {
             return new ContentCaptureSessionId(parcel.readInt());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureSessionId[] newArray(int size) {
             return new ContentCaptureSessionId[size];
@@ -65,22 +64,5 @@ public final class ContentCaptureSessionId implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(this.mValue);
-    }
-
-    /* renamed from: android.view.contentcapture.ContentCaptureSessionId$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContentCaptureSessionId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureSessionId createFromParcel(Parcel parcel) {
-            return new ContentCaptureSessionId(parcel.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureSessionId[] newArray(int size) {
-            return new ContentCaptureSessionId[size];
-        }
     }
 }

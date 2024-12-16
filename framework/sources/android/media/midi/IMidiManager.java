@@ -39,7 +39,6 @@ public interface IMidiManager extends IInterface {
 
     void updateTotalBytes(IMidiDeviceServer iMidiDeviceServer, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMidiManager {
         @Override // android.media.midi.IMidiManager
         public MidiDeviceInfo[] getDevices() throws RemoteException {
@@ -104,7 +103,6 @@ public interface IMidiManager extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMidiManager {
         public static final String DESCRIPTOR = "android.media.midi.IMidiManager";
         static final int TRANSACTION_closeDevice = 7;
@@ -184,120 +182,116 @@ public interface IMidiManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    MidiDeviceInfo[] _result = getDevices();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    MidiDeviceInfo[] _result2 = getDevicesForTransport(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result2, 1);
+                    return true;
+                case 3:
+                    IBinder _arg02 = data.readStrongBinder();
+                    IMidiDeviceListener _arg1 = IMidiDeviceListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerListener(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IBinder _arg03 = data.readStrongBinder();
+                    IMidiDeviceListener _arg12 = IMidiDeviceListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterListener(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IBinder _arg04 = data.readStrongBinder();
+                    MidiDeviceInfo _arg13 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
+                    IMidiDeviceOpenCallback _arg2 = IMidiDeviceOpenCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    openDevice(_arg04, _arg13, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IBinder _arg05 = data.readStrongBinder();
+                    BluetoothDevice _arg14 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
+                    IMidiDeviceOpenCallback _arg22 = IMidiDeviceOpenCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    openBluetoothDevice(_arg05, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    IBinder _arg06 = data.readStrongBinder();
+                    IBinder _arg15 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    closeDevice(_arg06, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IMidiDeviceServer _arg07 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
+                    int _arg16 = data.readInt();
+                    int _arg23 = data.readInt();
+                    String[] _arg3 = data.createStringArray();
+                    String[] _arg4 = data.createStringArray();
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg6 = data.readInt();
+                    int _arg7 = data.readInt();
+                    data.enforceNoDataAvail();
+                    MidiDeviceInfo _result3 = registerDeviceServer(_arg07, _arg16, _arg23, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 9:
+                    IMidiDeviceServer _arg08 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterDeviceServer(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    String _arg09 = data.readString();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    MidiDeviceInfo _result4 = getServiceDeviceInfo(_arg09, _arg17);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 11:
+                    MidiDeviceInfo _arg010 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    MidiDeviceStatus _result5 = getDeviceStatus(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 12:
+                    IMidiDeviceServer _arg011 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
+                    MidiDeviceStatus _arg18 = (MidiDeviceStatus) data.readTypedObject(MidiDeviceStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDeviceStatus(_arg011, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    IMidiDeviceServer _arg012 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
+                    int _arg19 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateTotalBytes(_arg012, _arg19, _arg24);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MidiDeviceInfo[] _result = getDevices();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            MidiDeviceInfo[] _result2 = getDevicesForTransport(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result2, 1);
-                            return true;
-                        case 3:
-                            IBinder _arg02 = data.readStrongBinder();
-                            IMidiDeviceListener _arg1 = IMidiDeviceListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerListener(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IBinder _arg03 = data.readStrongBinder();
-                            IMidiDeviceListener _arg12 = IMidiDeviceListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterListener(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IBinder _arg04 = data.readStrongBinder();
-                            MidiDeviceInfo _arg13 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
-                            IMidiDeviceOpenCallback _arg2 = IMidiDeviceOpenCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            openDevice(_arg04, _arg13, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IBinder _arg05 = data.readStrongBinder();
-                            BluetoothDevice _arg14 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
-                            IMidiDeviceOpenCallback _arg22 = IMidiDeviceOpenCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            openBluetoothDevice(_arg05, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            IBinder _arg06 = data.readStrongBinder();
-                            IBinder _arg15 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            closeDevice(_arg06, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IMidiDeviceServer _arg07 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
-                            int _arg16 = data.readInt();
-                            int _arg23 = data.readInt();
-                            String[] _arg3 = data.createStringArray();
-                            String[] _arg4 = data.createStringArray();
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg6 = data.readInt();
-                            int _arg7 = data.readInt();
-                            data.enforceNoDataAvail();
-                            MidiDeviceInfo _result3 = registerDeviceServer(_arg07, _arg16, _arg23, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 9:
-                            IMidiDeviceServer _arg08 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterDeviceServer(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            String _arg09 = data.readString();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            MidiDeviceInfo _result4 = getServiceDeviceInfo(_arg09, _arg17);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 11:
-                            MidiDeviceInfo _arg010 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            MidiDeviceStatus _result5 = getDeviceStatus(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 12:
-                            IMidiDeviceServer _arg011 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
-                            MidiDeviceStatus _arg18 = (MidiDeviceStatus) data.readTypedObject(MidiDeviceStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDeviceStatus(_arg011, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            IMidiDeviceServer _arg012 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
-                            int _arg19 = data.readInt();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateTotalBytes(_arg012, _arg19, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMidiManager {
+        private static class Proxy implements IMidiManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

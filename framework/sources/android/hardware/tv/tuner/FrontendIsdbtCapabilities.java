@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendIsdbtCapabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendIsdbtCapabilities> CREATOR = new Parcelable.Creator<FrontendIsdbtCapabilities>() { // from class: android.hardware.tv.tuner.FrontendIsdbtCapabilities.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbtCapabilities createFromParcel(Parcel _aidl_source) {
             FrontendIsdbtCapabilities _aidl_out = new FrontendIsdbtCapabilities();
@@ -17,6 +15,7 @@ public class FrontendIsdbtCapabilities implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbtCapabilities[] newArray(int _aidl_size) {
             return new FrontendIsdbtCapabilities[_aidl_size];
@@ -30,25 +29,6 @@ public class FrontendIsdbtCapabilities implements Parcelable {
     public int timeInterleaveCap = 0;
     public boolean isSegmentAuto = false;
     public boolean isFullSegment = false;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendIsdbtCapabilities$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendIsdbtCapabilities> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendIsdbtCapabilities createFromParcel(Parcel _aidl_source) {
-            FrontendIsdbtCapabilities _aidl_out = new FrontendIsdbtCapabilities();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendIsdbtCapabilities[] newArray(int _aidl_size) {
-            return new FrontendIsdbtCapabilities[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -29,6 +29,7 @@ import com.android.internal.statusbar.ISessionListener;
 import com.android.internal.statusbar.IStatusBar;
 import com.android.internal.statusbar.IUndoMediaTransferCallback;
 import com.samsung.android.globalactions.presentation.viewmodel.DefaultActionNames;
+import java.util.List;
 
 /* loaded from: classes5.dex */
 public interface IStatusBarService extends IInterface {
@@ -90,7 +91,7 @@ public interface IStatusBarService extends IInterface {
 
     void hideAuthenticationDialog(long j) throws RemoteException;
 
-    void hideCurrentInputMethodForBubbles() throws RemoteException;
+    void hideCurrentInputMethodForBubbles(int i) throws RemoteException;
 
     boolean isFOTAAvailableForGlobalActions() throws RemoteException;
 
@@ -119,6 +120,8 @@ public interface IStatusBarService extends IInterface {
     void onNotificationClear(String str, int i, String str2, int i2, int i3, NotificationVisibility notificationVisibility) throws RemoteException;
 
     void onNotificationClick(String str, NotificationVisibility notificationVisibility) throws RemoteException;
+
+    void onNotificationDataUpdateFromPDC(List<String> list) throws RemoteException;
 
     void onNotificationDirectReplied(String str) throws RemoteException;
 
@@ -222,7 +225,6 @@ public interface IStatusBarService extends IInterface {
 
     void updateMediaTapToTransferSenderDisplay(int i, MediaRoute2Info mediaRoute2Info, IUndoMediaTransferCallback iUndoMediaTransferCallback) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IStatusBarService {
         @Override // com.android.internal.statusbar.IStatusBarService
         public void expandNotificationsPanel() throws RemoteException {
@@ -347,7 +349,7 @@ public interface IStatusBarService extends IInterface {
         }
 
         @Override // com.android.internal.statusbar.IStatusBarService
-        public void hideCurrentInputMethodForBubbles() throws RemoteException {
+        public void hideCurrentInputMethodForBubbles(int displayId) throws RemoteException {
         }
 
         @Override // com.android.internal.statusbar.IStatusBarService
@@ -608,11 +610,15 @@ public interface IStatusBarService extends IInterface {
         }
 
         @Override // com.android.internal.statusbar.IStatusBarService
+        public void registerStatusBarForCarLife(IStatusBarCarLife callbacks) throws RemoteException {
+        }
+
+        @Override // com.android.internal.statusbar.IStatusBarService
         public void sendKeyEventToDesktopTaskbar(KeyEvent event) throws RemoteException {
         }
 
         @Override // com.android.internal.statusbar.IStatusBarService
-        public void registerStatusBarForCarLife(IStatusBarCarLife callbacks) throws RemoteException {
+        public void onNotificationDataUpdateFromPDC(List<String> importantContacts) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -621,7 +627,6 @@ public interface IStatusBarService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IStatusBarService {
         public static final String DESCRIPTOR = "com.android.internal.statusbar.IStatusBarService";
         static final int TRANSACTION_addTile = 41;
@@ -668,6 +673,7 @@ public interface IStatusBarService extends IInterface {
         static final int TRANSACTION_onNotificationBubbleChanged = 29;
         static final int TRANSACTION_onNotificationClear = 22;
         static final int TRANSACTION_onNotificationClick = 18;
+        static final int TRANSACTION_onNotificationDataUpdateFromPDC = 96;
         static final int TRANSACTION_onNotificationDirectReplied = 25;
         static final int TRANSACTION_onNotificationError = 20;
         static final int TRANSACTION_onNotificationExpansionChanged = 24;
@@ -686,14 +692,14 @@ public interface IStatusBarService extends IInterface {
         static final int TRANSACTION_registerSessionListener = 66;
         static final int TRANSACTION_registerStatusBar = 14;
         static final int TRANSACTION_registerStatusBarAsType = 80;
-        static final int TRANSACTION_registerStatusBarForCarLife = 95;
+        static final int TRANSACTION_registerStatusBarForCarLife = 94;
         static final int TRANSACTION_remTile = 42;
         static final int TRANSACTION_removeIcon = 11;
         static final int TRANSACTION_requestAddTile = 62;
         static final int TRANSACTION_requestTileServiceListeningState = 61;
         static final int TRANSACTION_resetScheduleAutoHide = 88;
         static final int TRANSACTION_restart = 40;
-        static final int TRANSACTION_sendKeyEventToDesktopTaskbar = 94;
+        static final int TRANSACTION_sendKeyEventToDesktopTaskbar = 95;
         static final int TRANSACTION_setBiometicContextListener = 53;
         static final int TRANSACTION_setBlueLightFilter = 90;
         static final int TRANSACTION_setIcon = 9;
@@ -929,9 +935,11 @@ public interface IStatusBarService extends IInterface {
                 case 93:
                     return "rebootByBixby";
                 case 94:
-                    return "sendKeyEventToDesktopTaskbar";
-                case 95:
                     return "registerStatusBarForCarLife";
+                case 95:
+                    return "sendKeyEventToDesktopTaskbar";
+                case 96:
+                    return "onNotificationDataUpdateFromPDC";
                 default:
                     return null;
             }
@@ -947,661 +955,666 @@ public interface IStatusBarService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    expandNotificationsPanel();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    collapsePanels();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    togglePanel();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg0 = data.readInt();
+                    IBinder _arg1 = data.readStrongBinder();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    disable(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg02 = data.readInt();
+                    IBinder _arg12 = data.readStrongBinder();
+                    String _arg22 = data.readString();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disableForUser(_arg02, _arg12, _arg22, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg03 = data.readInt();
+                    IBinder _arg13 = data.readStrongBinder();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    disable2(_arg03, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg04 = data.readInt();
+                    IBinder _arg14 = data.readStrongBinder();
+                    String _arg24 = data.readString();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disable2ForUser(_arg04, _arg14, _arg24, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IBinder _arg05 = data.readStrongBinder();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int[] _result = getDisableFlags(_arg05, _arg15);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result);
+                    return true;
+                case 9:
+                    String _arg06 = data.readString();
+                    String _arg16 = data.readString();
+                    int _arg25 = data.readInt();
+                    int _arg33 = data.readInt();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    setIcon(_arg06, _arg16, _arg25, _arg33, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    String _arg07 = data.readString();
+                    boolean _arg17 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setIconVisibility(_arg07, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeIcon(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg09 = data.readInt();
+                    IBinder _arg18 = data.readStrongBinder();
+                    int _arg26 = data.readInt();
+                    int _arg34 = data.readInt();
+                    boolean _arg42 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setImeWindowStatus(_arg09, _arg18, _arg26, _arg34, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    expandSettingsPanel(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IStatusBar _arg011 = IStatusBar.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    RegisterStatusBarResult _result2 = registerStatusBar(_arg011);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 15:
+                    boolean _arg012 = data.readBoolean();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPanelRevealed(_arg012, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    onPanelHidden();
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    clearNotificationEffects();
+                    return true;
+                case 18:
+                    String _arg013 = data.readString();
+                    NotificationVisibility _arg110 = (NotificationVisibility) data.readTypedObject(NotificationVisibility.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationClick(_arg013, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    String _arg014 = data.readString();
+                    int _arg111 = data.readInt();
+                    Notification.Action _arg27 = (Notification.Action) data.readTypedObject(Notification.Action.CREATOR);
+                    NotificationVisibility _arg35 = (NotificationVisibility) data.readTypedObject(NotificationVisibility.CREATOR);
+                    boolean _arg43 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onNotificationActionClick(_arg014, _arg111, _arg27, _arg35, _arg43);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    String _arg015 = data.readString();
+                    String _arg112 = data.readString();
+                    int _arg28 = data.readInt();
+                    int _arg36 = data.readInt();
+                    int _arg44 = data.readInt();
+                    String _arg5 = data.readString();
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNotificationError(_arg015, _arg112, _arg28, _arg36, _arg44, _arg5, _arg6);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onClearAllNotifications(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    String _arg017 = data.readString();
+                    int _arg113 = data.readInt();
+                    String _arg29 = data.readString();
+                    int _arg37 = data.readInt();
+                    int _arg45 = data.readInt();
+                    NotificationVisibility _arg52 = (NotificationVisibility) data.readTypedObject(NotificationVisibility.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationClear(_arg017, _arg113, _arg29, _arg37, _arg45, _arg52);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    NotificationVisibility[] _arg018 = (NotificationVisibility[]) data.createTypedArray(NotificationVisibility.CREATOR);
+                    NotificationVisibility[] _arg114 = (NotificationVisibility[]) data.createTypedArray(NotificationVisibility.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationVisibilityChanged(_arg018, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    String _arg019 = data.readString();
+                    boolean _arg115 = data.readBoolean();
+                    boolean _arg210 = data.readBoolean();
+                    int _arg38 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNotificationExpansionChanged(_arg019, _arg115, _arg210, _arg38);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    String _arg020 = data.readString();
+                    data.enforceNoDataAvail();
+                    onNotificationDirectReplied(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    String _arg021 = data.readString();
+                    int _arg116 = data.readInt();
+                    int _arg211 = data.readInt();
+                    boolean _arg39 = data.readBoolean();
+                    boolean _arg46 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onNotificationSmartSuggestionsAdded(_arg021, _arg116, _arg211, _arg39, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    String _arg022 = data.readString();
+                    int _arg117 = data.readInt();
+                    CharSequence _arg212 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg310 = data.readInt();
+                    boolean _arg47 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onNotificationSmartReplySent(_arg022, _arg117, _arg212, _arg310, _arg47);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    String _arg023 = data.readString();
+                    data.enforceNoDataAvail();
+                    onNotificationSettingsViewed(_arg023);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    String _arg024 = data.readString();
+                    boolean _arg118 = data.readBoolean();
+                    int _arg213 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNotificationBubbleChanged(_arg024, _arg118, _arg213);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    String _arg025 = data.readString();
+                    int _arg119 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBubbleMetadataFlagChanged(_arg025, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    hideCurrentInputMethodForBubbles(_arg026);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    String _arg027 = data.readString();
+                    Uri _arg120 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    UserHandle _arg214 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String _arg311 = data.readString();
+                    data.enforceNoDataAvail();
+                    grantInlineReplyUriPermission(_arg027, _arg120, _arg214, _arg311);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    String _arg028 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearInlineReplyUriPermissions(_arg028);
+                    return true;
+                case 34:
+                    String _arg029 = data.readString();
+                    Bundle _arg121 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationFeedbackReceived(_arg029, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    onGlobalActionsShown();
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    onGlobalActionsHidden();
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    shutdown();
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    boolean _arg030 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    reboot(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    boolean _result3 = isFOTAAvailableForGlobalActions();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 40:
+                    restart();
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    ComponentName _arg031 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    addTile(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    ComponentName _arg032 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    remTile(_arg032);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    ComponentName _arg033 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    clickTile(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    KeyEvent _arg034 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleSystemKey(_arg034);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    int _result4 = getLastSystemKey();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 46:
+                    boolean _arg035 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    showPinningEnterExitToast(_arg035);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    showPinningEscapeToast();
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    PromptInfo _arg036 = (PromptInfo) data.readTypedObject(PromptInfo.CREATOR);
+                    IBiometricSysuiReceiver _arg122 = IBiometricSysuiReceiver.Stub.asInterface(data.readStrongBinder());
+                    int[] _arg215 = data.createIntArray();
+                    boolean _arg312 = data.readBoolean();
+                    boolean _arg48 = data.readBoolean();
+                    int _arg53 = data.readInt();
+                    long _arg62 = data.readLong();
+                    String _arg7 = data.readString();
+                    long _arg8 = data.readLong();
+                    data.enforceNoDataAvail();
+                    showAuthenticationDialog(_arg036, _arg122, _arg215, _arg312, _arg48, _arg53, _arg62, _arg7, _arg8);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBiometricAuthenticated(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    int _arg038 = data.readInt();
+                    String _arg123 = data.readString();
+                    data.enforceNoDataAvail();
+                    onBiometricHelp(_arg038, _arg123);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    int _arg039 = data.readInt();
+                    int _arg124 = data.readInt();
+                    int _arg216 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBiometricError(_arg039, _arg124, _arg216);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    long _arg040 = data.readLong();
+                    data.enforceNoDataAvail();
+                    hideAuthenticationDialog(_arg040);
+                    reply.writeNoException();
+                    return true;
+                case 53:
+                    IBiometricContextListener _arg041 = IBiometricContextListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setBiometicContextListener(_arg041);
+                    reply.writeNoException();
+                    return true;
+                case 54:
+                    IUdfpsRefreshRateRequestCallback _arg042 = IUdfpsRefreshRateRequestCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setUdfpsRefreshRateCallback(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 55:
+                    showInattentiveSleepWarning();
+                    reply.writeNoException();
+                    return true;
+                case 56:
+                    boolean _arg043 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dismissInattentiveSleepWarning(_arg043);
+                    reply.writeNoException();
+                    return true;
+                case 57:
+                    startTracing();
+                    reply.writeNoException();
+                    return true;
+                case 58:
+                    stopTracing();
+                    reply.writeNoException();
+                    return true;
+                case 59:
+                    boolean _result5 = isTracing();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 60:
+                    boolean _arg044 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    suppressAmbientDisplay(_arg044);
+                    reply.writeNoException();
+                    return true;
+                case 61:
+                    ComponentName _arg045 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestTileServiceListeningState(_arg045, _arg125);
+                    reply.writeNoException();
+                    return true;
+                case 62:
+                    ComponentName _arg046 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    CharSequence _arg126 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    Icon _arg217 = (Icon) data.readTypedObject(Icon.CREATOR);
+                    int _arg313 = data.readInt();
+                    IAddTileResultCallback _arg49 = IAddTileResultCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    requestAddTile(_arg046, _arg126, _arg217, _arg313, _arg49);
+                    reply.writeNoException();
+                    return true;
+                case 63:
+                    String _arg047 = data.readString();
+                    data.enforceNoDataAvail();
+                    cancelRequestAddTile(_arg047);
+                    reply.writeNoException();
+                    return true;
+                case 64:
+                    int _arg048 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNavBarMode(_arg048);
+                    reply.writeNoException();
+                    return true;
+                case 65:
+                    int _result6 = getNavBarMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 66:
+                    int _arg049 = data.readInt();
+                    ISessionListener _arg127 = ISessionListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerSessionListener(_arg049, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 67:
+                    int _arg050 = data.readInt();
+                    ISessionListener _arg128 = ISessionListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterSessionListener(_arg050, _arg128);
+                    reply.writeNoException();
+                    return true;
+                case 68:
+                    int _arg051 = data.readInt();
+                    InstanceId _arg129 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSessionStarted(_arg051, _arg129);
+                    reply.writeNoException();
+                    return true;
+                case 69:
+                    int _arg052 = data.readInt();
+                    InstanceId _arg130 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSessionEnded(_arg052, _arg130);
+                    reply.writeNoException();
+                    return true;
+                case 70:
+                    int _arg053 = data.readInt();
+                    MediaRoute2Info _arg131 = (MediaRoute2Info) data.readTypedObject(MediaRoute2Info.CREATOR);
+                    IUndoMediaTransferCallback _arg218 = IUndoMediaTransferCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    updateMediaTapToTransferSenderDisplay(_arg053, _arg131, _arg218);
+                    reply.writeNoException();
+                    return true;
+                case 71:
+                    int _arg054 = data.readInt();
+                    MediaRoute2Info _arg132 = (MediaRoute2Info) data.readTypedObject(MediaRoute2Info.CREATOR);
+                    Icon _arg219 = (Icon) data.readTypedObject(Icon.CREATOR);
+                    CharSequence _arg314 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    updateMediaTapToTransferReceiverDisplay(_arg054, _arg132, _arg219, _arg314);
+                    reply.writeNoException();
+                    return true;
+                case 72:
+                    INearbyMediaDevicesProvider _arg055 = INearbyMediaDevicesProvider.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerNearbyMediaDevicesProvider(_arg055);
+                    reply.writeNoException();
+                    return true;
+                case 73:
+                    INearbyMediaDevicesProvider _arg056 = INearbyMediaDevicesProvider.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterNearbyMediaDevicesProvider(_arg056);
+                    reply.writeNoException();
+                    return true;
+                case 74:
+                    int _arg057 = data.readInt();
+                    data.enforceNoDataAvail();
+                    showRearDisplayDialog(_arg057);
+                    reply.writeNoException();
+                    return true;
+                case 75:
+                    int _arg058 = data.readInt();
+                    IBinder _arg133 = data.readStrongBinder();
+                    String _arg220 = data.readString();
+                    int _arg315 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disableToType(_arg058, _arg133, _arg220, _arg315);
+                    reply.writeNoException();
+                    return true;
+                case 76:
+                    int _arg059 = data.readInt();
+                    IBinder _arg134 = data.readStrongBinder();
+                    String _arg221 = data.readString();
+                    int _arg316 = data.readInt();
+                    int _arg410 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disableForUserToType(_arg059, _arg134, _arg221, _arg316, _arg410);
+                    reply.writeNoException();
+                    return true;
+                case 77:
+                    int _arg060 = data.readInt();
+                    IBinder _arg135 = data.readStrongBinder();
+                    String _arg222 = data.readString();
+                    int _arg317 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disable2ToType(_arg060, _arg135, _arg222, _arg317);
+                    reply.writeNoException();
+                    return true;
+                case 78:
+                    int _arg061 = data.readInt();
+                    IBinder _arg136 = data.readStrongBinder();
+                    String _arg223 = data.readString();
+                    int _arg318 = data.readInt();
+                    int _arg411 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disable2ForUserToType(_arg061, _arg136, _arg223, _arg318, _arg411);
+                    reply.writeNoException();
+                    return true;
+                case 79:
+                    IBinder _arg062 = data.readStrongBinder();
+                    int _arg137 = data.readInt();
+                    int _arg224 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int[] _result7 = getDisableFlagsToType(_arg062, _arg137, _arg224);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result7);
+                    return true;
+                case 80:
+                    IStatusBar _arg063 = IStatusBar.Stub.asInterface(data.readStrongBinder());
+                    int _arg138 = data.readInt();
+                    data.enforceNoDataAvail();
+                    RegisterStatusBarResult _result8 = registerStatusBarAsType(_arg063, _arg138);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 81:
+                    boolean _arg064 = data.readBoolean();
+                    int _arg139 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPanelExpandStateToType(_arg064, _arg139);
+                    reply.writeNoException();
+                    return true;
+                case 82:
+                    int _arg065 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = getPanelExpandStateToType(_arg065);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 83:
+                    int _arg066 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = getQuickSettingPanelExpandStateToType(_arg066);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 84:
+                    int _arg067 = data.readInt();
+                    data.enforceNoDataAvail();
+                    expandNotificationsPanelToType(_arg067);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    int _arg068 = data.readInt();
+                    data.enforceNoDataAvail();
+                    collapsePanelsToType(_arg068);
+                    reply.writeNoException();
+                    return true;
+                case 86:
+                    String _arg069 = data.readString();
+                    int _arg140 = data.readInt();
+                    data.enforceNoDataAvail();
+                    expandSettingsPanelToType(_arg069, _arg140);
+                    reply.writeNoException();
+                    return true;
+                case 87:
+                    String _arg070 = data.readString();
+                    RemoteViews _arg141 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
+                    int _arg225 = data.readInt();
+                    int _arg319 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNavigationBarShortcut(_arg070, _arg141, _arg225, _arg319);
+                    reply.writeNoException();
+                    return true;
+                case 88:
+                    resetScheduleAutoHide();
+                    reply.writeNoException();
+                    return true;
+                case 89:
+                    int _arg071 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setIndicatorBgColor(_arg071);
+                    reply.writeNoException();
+                    return true;
+                case 90:
+                    boolean _arg072 = data.readBoolean();
+                    int _arg142 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setBlueLightFilter(_arg072, _arg142);
+                    reply.writeNoException();
+                    return true;
+                case 91:
+                    boolean _result11 = isSysUiSafeModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 92:
+                    shutdownByBixby();
+                    reply.writeNoException();
+                    return true;
+                case 93:
+                    boolean _arg073 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    rebootByBixby(_arg073);
+                    reply.writeNoException();
+                    return true;
+                case 94:
+                    IStatusBarCarLife _arg074 = IStatusBarCarLife.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerStatusBarForCarLife(_arg074);
+                    reply.writeNoException();
+                    return true;
+                case 95:
+                    KeyEvent _arg075 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendKeyEventToDesktopTaskbar(_arg075);
+                    reply.writeNoException();
+                    return true;
+                case 96:
+                    List<String> _arg076 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    onNotificationDataUpdateFromPDC(_arg076);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            expandNotificationsPanel();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            collapsePanels();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            togglePanel();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg0 = data.readInt();
-                            IBinder _arg1 = data.readStrongBinder();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            disable(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg02 = data.readInt();
-                            IBinder _arg12 = data.readStrongBinder();
-                            String _arg22 = data.readString();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disableForUser(_arg02, _arg12, _arg22, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg03 = data.readInt();
-                            IBinder _arg13 = data.readStrongBinder();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            disable2(_arg03, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg04 = data.readInt();
-                            IBinder _arg14 = data.readStrongBinder();
-                            String _arg24 = data.readString();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disable2ForUser(_arg04, _arg14, _arg24, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IBinder _arg05 = data.readStrongBinder();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int[] _result = getDisableFlags(_arg05, _arg15);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result);
-                            return true;
-                        case 9:
-                            String _arg06 = data.readString();
-                            String _arg16 = data.readString();
-                            int _arg25 = data.readInt();
-                            int _arg33 = data.readInt();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            setIcon(_arg06, _arg16, _arg25, _arg33, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            String _arg07 = data.readString();
-                            boolean _arg17 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setIconVisibility(_arg07, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeIcon(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg09 = data.readInt();
-                            IBinder _arg18 = data.readStrongBinder();
-                            int _arg26 = data.readInt();
-                            int _arg34 = data.readInt();
-                            boolean _arg42 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setImeWindowStatus(_arg09, _arg18, _arg26, _arg34, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            expandSettingsPanel(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IStatusBar _arg011 = IStatusBar.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            RegisterStatusBarResult _result2 = registerStatusBar(_arg011);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 15:
-                            boolean _arg012 = data.readBoolean();
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPanelRevealed(_arg012, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            onPanelHidden();
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            clearNotificationEffects();
-                            return true;
-                        case 18:
-                            String _arg013 = data.readString();
-                            NotificationVisibility _arg110 = (NotificationVisibility) data.readTypedObject(NotificationVisibility.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationClick(_arg013, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            String _arg014 = data.readString();
-                            int _arg111 = data.readInt();
-                            Notification.Action _arg27 = (Notification.Action) data.readTypedObject(Notification.Action.CREATOR);
-                            NotificationVisibility _arg35 = (NotificationVisibility) data.readTypedObject(NotificationVisibility.CREATOR);
-                            boolean _arg43 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onNotificationActionClick(_arg014, _arg111, _arg27, _arg35, _arg43);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            String _arg015 = data.readString();
-                            String _arg112 = data.readString();
-                            int _arg28 = data.readInt();
-                            int _arg36 = data.readInt();
-                            int _arg44 = data.readInt();
-                            String _arg5 = data.readString();
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNotificationError(_arg015, _arg112, _arg28, _arg36, _arg44, _arg5, _arg6);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onClearAllNotifications(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            String _arg017 = data.readString();
-                            int _arg113 = data.readInt();
-                            String _arg29 = data.readString();
-                            int _arg37 = data.readInt();
-                            int _arg45 = data.readInt();
-                            NotificationVisibility _arg52 = (NotificationVisibility) data.readTypedObject(NotificationVisibility.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationClear(_arg017, _arg113, _arg29, _arg37, _arg45, _arg52);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            NotificationVisibility[] _arg018 = (NotificationVisibility[]) data.createTypedArray(NotificationVisibility.CREATOR);
-                            NotificationVisibility[] _arg114 = (NotificationVisibility[]) data.createTypedArray(NotificationVisibility.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationVisibilityChanged(_arg018, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            String _arg019 = data.readString();
-                            boolean _arg115 = data.readBoolean();
-                            boolean _arg210 = data.readBoolean();
-                            int _arg38 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNotificationExpansionChanged(_arg019, _arg115, _arg210, _arg38);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            String _arg020 = data.readString();
-                            data.enforceNoDataAvail();
-                            onNotificationDirectReplied(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            String _arg021 = data.readString();
-                            int _arg116 = data.readInt();
-                            int _arg211 = data.readInt();
-                            boolean _arg39 = data.readBoolean();
-                            boolean _arg46 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onNotificationSmartSuggestionsAdded(_arg021, _arg116, _arg211, _arg39, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            String _arg022 = data.readString();
-                            int _arg117 = data.readInt();
-                            CharSequence _arg212 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg310 = data.readInt();
-                            boolean _arg47 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onNotificationSmartReplySent(_arg022, _arg117, _arg212, _arg310, _arg47);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            String _arg023 = data.readString();
-                            data.enforceNoDataAvail();
-                            onNotificationSettingsViewed(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            String _arg024 = data.readString();
-                            boolean _arg118 = data.readBoolean();
-                            int _arg213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNotificationBubbleChanged(_arg024, _arg118, _arg213);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            String _arg025 = data.readString();
-                            int _arg119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBubbleMetadataFlagChanged(_arg025, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            hideCurrentInputMethodForBubbles();
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            String _arg026 = data.readString();
-                            Uri _arg120 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            UserHandle _arg214 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String _arg311 = data.readString();
-                            data.enforceNoDataAvail();
-                            grantInlineReplyUriPermission(_arg026, _arg120, _arg214, _arg311);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            String _arg027 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearInlineReplyUriPermissions(_arg027);
-                            return true;
-                        case 34:
-                            String _arg028 = data.readString();
-                            Bundle _arg121 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationFeedbackReceived(_arg028, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            onGlobalActionsShown();
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            onGlobalActionsHidden();
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            shutdown();
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            boolean _arg029 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            reboot(_arg029);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            boolean _result3 = isFOTAAvailableForGlobalActions();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 40:
-                            restart();
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            ComponentName _arg030 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            addTile(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            ComponentName _arg031 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            remTile(_arg031);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            ComponentName _arg032 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            clickTile(_arg032);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            KeyEvent _arg033 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleSystemKey(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            int _result4 = getLastSystemKey();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 46:
-                            boolean _arg034 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            showPinningEnterExitToast(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            showPinningEscapeToast();
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            PromptInfo _arg035 = (PromptInfo) data.readTypedObject(PromptInfo.CREATOR);
-                            IBiometricSysuiReceiver _arg122 = IBiometricSysuiReceiver.Stub.asInterface(data.readStrongBinder());
-                            int[] _arg215 = data.createIntArray();
-                            boolean _arg312 = data.readBoolean();
-                            boolean _arg48 = data.readBoolean();
-                            int _arg53 = data.readInt();
-                            long _arg62 = data.readLong();
-                            String _arg7 = data.readString();
-                            long _arg8 = data.readLong();
-                            data.enforceNoDataAvail();
-                            showAuthenticationDialog(_arg035, _arg122, _arg215, _arg312, _arg48, _arg53, _arg62, _arg7, _arg8);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            int _arg036 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBiometricAuthenticated(_arg036);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            int _arg037 = data.readInt();
-                            String _arg123 = data.readString();
-                            data.enforceNoDataAvail();
-                            onBiometricHelp(_arg037, _arg123);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            int _arg038 = data.readInt();
-                            int _arg124 = data.readInt();
-                            int _arg216 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBiometricError(_arg038, _arg124, _arg216);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            long _arg039 = data.readLong();
-                            data.enforceNoDataAvail();
-                            hideAuthenticationDialog(_arg039);
-                            reply.writeNoException();
-                            return true;
-                        case 53:
-                            IBiometricContextListener _arg040 = IBiometricContextListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setBiometicContextListener(_arg040);
-                            reply.writeNoException();
-                            return true;
-                        case 54:
-                            IUdfpsRefreshRateRequestCallback _arg041 = IUdfpsRefreshRateRequestCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setUdfpsRefreshRateCallback(_arg041);
-                            reply.writeNoException();
-                            return true;
-                        case 55:
-                            showInattentiveSleepWarning();
-                            reply.writeNoException();
-                            return true;
-                        case 56:
-                            boolean _arg042 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dismissInattentiveSleepWarning(_arg042);
-                            reply.writeNoException();
-                            return true;
-                        case 57:
-                            startTracing();
-                            reply.writeNoException();
-                            return true;
-                        case 58:
-                            stopTracing();
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            boolean _result5 = isTracing();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 60:
-                            boolean _arg043 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            suppressAmbientDisplay(_arg043);
-                            reply.writeNoException();
-                            return true;
-                        case 61:
-                            ComponentName _arg044 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg125 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestTileServiceListeningState(_arg044, _arg125);
-                            reply.writeNoException();
-                            return true;
-                        case 62:
-                            ComponentName _arg045 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            CharSequence _arg126 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            Icon _arg217 = (Icon) data.readTypedObject(Icon.CREATOR);
-                            int _arg313 = data.readInt();
-                            IAddTileResultCallback _arg49 = IAddTileResultCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            requestAddTile(_arg045, _arg126, _arg217, _arg313, _arg49);
-                            reply.writeNoException();
-                            return true;
-                        case 63:
-                            String _arg046 = data.readString();
-                            data.enforceNoDataAvail();
-                            cancelRequestAddTile(_arg046);
-                            reply.writeNoException();
-                            return true;
-                        case 64:
-                            int _arg047 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNavBarMode(_arg047);
-                            reply.writeNoException();
-                            return true;
-                        case 65:
-                            int _result6 = getNavBarMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 66:
-                            int _arg048 = data.readInt();
-                            ISessionListener _arg127 = ISessionListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerSessionListener(_arg048, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 67:
-                            int _arg049 = data.readInt();
-                            ISessionListener _arg128 = ISessionListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterSessionListener(_arg049, _arg128);
-                            reply.writeNoException();
-                            return true;
-                        case 68:
-                            int _arg050 = data.readInt();
-                            InstanceId _arg129 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSessionStarted(_arg050, _arg129);
-                            reply.writeNoException();
-                            return true;
-                        case 69:
-                            int _arg051 = data.readInt();
-                            InstanceId _arg130 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSessionEnded(_arg051, _arg130);
-                            reply.writeNoException();
-                            return true;
-                        case 70:
-                            int _arg052 = data.readInt();
-                            MediaRoute2Info _arg131 = (MediaRoute2Info) data.readTypedObject(MediaRoute2Info.CREATOR);
-                            IUndoMediaTransferCallback _arg218 = IUndoMediaTransferCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            updateMediaTapToTransferSenderDisplay(_arg052, _arg131, _arg218);
-                            reply.writeNoException();
-                            return true;
-                        case 71:
-                            int _arg053 = data.readInt();
-                            MediaRoute2Info _arg132 = (MediaRoute2Info) data.readTypedObject(MediaRoute2Info.CREATOR);
-                            Icon _arg219 = (Icon) data.readTypedObject(Icon.CREATOR);
-                            CharSequence _arg314 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            updateMediaTapToTransferReceiverDisplay(_arg053, _arg132, _arg219, _arg314);
-                            reply.writeNoException();
-                            return true;
-                        case 72:
-                            INearbyMediaDevicesProvider _arg054 = INearbyMediaDevicesProvider.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerNearbyMediaDevicesProvider(_arg054);
-                            reply.writeNoException();
-                            return true;
-                        case 73:
-                            INearbyMediaDevicesProvider _arg055 = INearbyMediaDevicesProvider.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterNearbyMediaDevicesProvider(_arg055);
-                            reply.writeNoException();
-                            return true;
-                        case 74:
-                            int _arg056 = data.readInt();
-                            data.enforceNoDataAvail();
-                            showRearDisplayDialog(_arg056);
-                            reply.writeNoException();
-                            return true;
-                        case 75:
-                            int _arg057 = data.readInt();
-                            IBinder _arg133 = data.readStrongBinder();
-                            String _arg220 = data.readString();
-                            int _arg315 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disableToType(_arg057, _arg133, _arg220, _arg315);
-                            reply.writeNoException();
-                            return true;
-                        case 76:
-                            int _arg058 = data.readInt();
-                            IBinder _arg134 = data.readStrongBinder();
-                            String _arg221 = data.readString();
-                            int _arg316 = data.readInt();
-                            int _arg410 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disableForUserToType(_arg058, _arg134, _arg221, _arg316, _arg410);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            int _arg059 = data.readInt();
-                            IBinder _arg135 = data.readStrongBinder();
-                            String _arg222 = data.readString();
-                            int _arg317 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disable2ToType(_arg059, _arg135, _arg222, _arg317);
-                            reply.writeNoException();
-                            return true;
-                        case 78:
-                            int _arg060 = data.readInt();
-                            IBinder _arg136 = data.readStrongBinder();
-                            String _arg223 = data.readString();
-                            int _arg318 = data.readInt();
-                            int _arg411 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disable2ForUserToType(_arg060, _arg136, _arg223, _arg318, _arg411);
-                            reply.writeNoException();
-                            return true;
-                        case 79:
-                            IBinder _arg061 = data.readStrongBinder();
-                            int _arg137 = data.readInt();
-                            int _arg224 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int[] _result7 = getDisableFlagsToType(_arg061, _arg137, _arg224);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result7);
-                            return true;
-                        case 80:
-                            IStatusBar _arg062 = IStatusBar.Stub.asInterface(data.readStrongBinder());
-                            int _arg138 = data.readInt();
-                            data.enforceNoDataAvail();
-                            RegisterStatusBarResult _result8 = registerStatusBarAsType(_arg062, _arg138);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 81:
-                            boolean _arg063 = data.readBoolean();
-                            int _arg139 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPanelExpandStateToType(_arg063, _arg139);
-                            reply.writeNoException();
-                            return true;
-                        case 82:
-                            int _arg064 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = getPanelExpandStateToType(_arg064);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 83:
-                            int _arg065 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = getQuickSettingPanelExpandStateToType(_arg065);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 84:
-                            int _arg066 = data.readInt();
-                            data.enforceNoDataAvail();
-                            expandNotificationsPanelToType(_arg066);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            int _arg067 = data.readInt();
-                            data.enforceNoDataAvail();
-                            collapsePanelsToType(_arg067);
-                            reply.writeNoException();
-                            return true;
-                        case 86:
-                            String _arg068 = data.readString();
-                            int _arg140 = data.readInt();
-                            data.enforceNoDataAvail();
-                            expandSettingsPanelToType(_arg068, _arg140);
-                            reply.writeNoException();
-                            return true;
-                        case 87:
-                            String _arg069 = data.readString();
-                            RemoteViews _arg141 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
-                            int _arg225 = data.readInt();
-                            int _arg319 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNavigationBarShortcut(_arg069, _arg141, _arg225, _arg319);
-                            reply.writeNoException();
-                            return true;
-                        case 88:
-                            resetScheduleAutoHide();
-                            reply.writeNoException();
-                            return true;
-                        case 89:
-                            int _arg070 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setIndicatorBgColor(_arg070);
-                            reply.writeNoException();
-                            return true;
-                        case 90:
-                            boolean _arg071 = data.readBoolean();
-                            int _arg142 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setBlueLightFilter(_arg071, _arg142);
-                            reply.writeNoException();
-                            return true;
-                        case 91:
-                            boolean _result11 = isSysUiSafeModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 92:
-                            shutdownByBixby();
-                            reply.writeNoException();
-                            return true;
-                        case 93:
-                            boolean _arg072 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            rebootByBixby(_arg072);
-                            reply.writeNoException();
-                            return true;
-                        case 94:
-                            KeyEvent _arg073 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendKeyEventToDesktopTaskbar(_arg073);
-                            reply.writeNoException();
-                            return true;
-                        case 95:
-                            IStatusBarCarLife _arg074 = IStatusBarCarLife.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerStatusBarForCarLife(_arg074);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IStatusBarService {
+        private static class Proxy implements IStatusBarService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -2121,11 +2134,12 @@ public interface IStatusBarService extends IInterface {
             }
 
             @Override // com.android.internal.statusbar.IStatusBarService
-            public void hideCurrentInputMethodForBubbles() throws RemoteException {
+            public void hideCurrentInputMethodForBubbles(int displayId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(displayId);
                     this.mRemote.transact(31, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -3188,12 +3202,12 @@ public interface IStatusBarService extends IInterface {
             }
 
             @Override // com.android.internal.statusbar.IStatusBarService
-            public void sendKeyEventToDesktopTaskbar(KeyEvent event) throws RemoteException {
+            public void registerStatusBarForCarLife(IStatusBarCarLife callbacks) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(event, 0);
+                    _data.writeStrongInterface(callbacks);
                     this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -3203,13 +3217,28 @@ public interface IStatusBarService extends IInterface {
             }
 
             @Override // com.android.internal.statusbar.IStatusBarService
-            public void registerStatusBarForCarLife(IStatusBarCarLife callbacks) throws RemoteException {
+            public void sendKeyEventToDesktopTaskbar(KeyEvent event) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeStrongInterface(callbacks);
+                    _data.writeTypedObject(event, 0);
                     this.mRemote.transact(95, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.statusbar.IStatusBarService
+            public void onNotificationDataUpdateFromPDC(List<String> importantContacts) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStringList(importantContacts);
+                    this.mRemote.transact(96, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3220,7 +3249,7 @@ public interface IStatusBarService extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 94;
+            return 95;
         }
     }
 }

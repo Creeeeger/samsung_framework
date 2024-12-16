@@ -15,21 +15,19 @@ public class NotificationVisibility implements Parcelable {
     public boolean visible;
     private static int sNexrId = 0;
     public static final Parcelable.Creator<NotificationVisibility> CREATOR = new Parcelable.Creator<NotificationVisibility>() { // from class: com.android.internal.statusbar.NotificationVisibility.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationVisibility createFromParcel(Parcel parcel) {
             return NotificationVisibility.obtain(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationVisibility[] newArray(int size) {
             return new NotificationVisibility[size];
         }
     };
 
-    /* loaded from: classes5.dex */
     public enum NotificationLocation {
         LOCATION_UNKNOWN(0),
         LOCATION_FIRST_HEADS_UP(1),
@@ -70,17 +68,16 @@ public class NotificationVisibility implements Parcelable {
         return "NotificationVisibility(id=" + this.id + " key=" + this.key + " rank=" + this.rank + " count=" + this.count + (this.visible ? " visible" : "") + " location=" + this.location.name() + " )";
     }
 
-    /* renamed from: clone */
-    public NotificationVisibility m7511clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public NotificationVisibility m7924clone() {
         return obtain(this.key, this.rank, this.count, this.visible, this.location);
     }
 
     public int hashCode() {
-        String str = this.key;
-        if (str == null) {
+        if (this.key == null) {
             return 0;
         }
-        return str.hashCode();
+        return this.key.hashCode();
     }
 
     public boolean equals(Object that) {
@@ -88,8 +85,7 @@ public class NotificationVisibility implements Parcelable {
             return false;
         }
         NotificationVisibility thatViz = (NotificationVisibility) that;
-        String str = this.key;
-        return (str == null && thatViz.key == null) || str.equals(thatViz.key);
+        return (this.key == null && thatViz.key == null) || this.key.equals(thatViz.key);
     }
 
     @Override // android.os.Parcelable
@@ -128,6 +124,7 @@ public class NotificationVisibility implements Parcelable {
         return vo;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static NotificationVisibility obtain(Parcel in) {
         NotificationVisibility vo = obtain();
         vo.readFromParcel(in);
@@ -139,22 +136,5 @@ public class NotificationVisibility implements Parcelable {
     }
 
     public void recycle() {
-    }
-
-    /* renamed from: com.android.internal.statusbar.NotificationVisibility$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NotificationVisibility> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationVisibility createFromParcel(Parcel parcel) {
-            return NotificationVisibility.obtain(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationVisibility[] newArray(int size) {
-            return new NotificationVisibility[size];
-        }
     }
 }

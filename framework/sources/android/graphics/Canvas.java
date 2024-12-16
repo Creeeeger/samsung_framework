@@ -18,28 +18,21 @@ public class Canvas extends BaseCanvas {
     public static final int FULL_COLOR_LAYER_SAVE_FLAG = 8;
     public static final int HAS_ALPHA_LAYER_SAVE_FLAG = 4;
     public static final int MATRIX_SAVE_FLAG = 1;
-    private static final int MAXMIMUM_BITMAP_SIZE = 32766;
+    private static final int MAXIMUM_BITMAP_SIZE = 32766;
     private Bitmap mBitmap;
     private DrawFilter mDrawFilter;
     private Runnable mFinalizer;
-    private static int sCompatiblityVersion = 0;
+    private static int sCompatibilityVersion = 0;
     private static boolean sCompatibilityRestore = false;
     private static boolean sCompatibilitySetBitmap = false;
 
-    /* loaded from: classes.dex */
     public enum EdgeType {
         BW,
         AA
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Saveflags {
-    }
-
-    /* renamed from: -$$Nest$smnGetNativeFinalizer */
-    static /* bridge */ /* synthetic */ long m1073$$Nest$smnGetNativeFinalizer() {
-        return nGetNativeFinalizer();
     }
 
     @CriticalNative
@@ -49,7 +42,13 @@ public class Canvas extends BaseCanvas {
     private static native boolean nClipRect(long j, float f, float f2, float f3, float f4, int i);
 
     @CriticalNative
+    private static native void nClipShader(long j, long j2, int i);
+
+    @CriticalNative
     private static native void nConcat(long j, long j2);
+
+    @FastNative
+    private static native void nConcat(long j, float[] fArr);
 
     private static native void nFreeCaches();
 
@@ -64,7 +63,8 @@ public class Canvas extends BaseCanvas {
     @CriticalNative
     private static native void nGetMatrix(long j, long j2);
 
-    private static native long nGetNativeFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nGetNativeFinalizer();
 
     @CriticalNative
     private static native int nGetSaveCount(long j);
@@ -74,6 +74,9 @@ public class Canvas extends BaseCanvas {
 
     @FastNative
     private static native long nInitRaster(long j);
+
+    @CriticalNative
+    private static native boolean nIsHighContrastText(long j);
 
     @CriticalNative
     private static native boolean nIsOpaque(long j);
@@ -132,10 +135,8 @@ public class Canvas extends BaseCanvas {
         return this.mNativeCanvasWrapper;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Canvas.class.getClassLoader(), Canvas.m1073$$Nest$smnGetNativeFinalizer());
+    private static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Canvas.class.getClassLoader(), Canvas.nGetNativeFinalizer());
 
         private NoImagePreloadHolder() {
         }
@@ -155,6 +156,7 @@ public class Canvas extends BaseCanvas {
             throw new IllegalStateException("Immutable bitmap passed to Canvas constructor");
         }
         throwIfCannotDraw(bitmap);
+        bitmap.setGainmap(null);
         this.mNativeCanvasWrapper = nInitRaster(bitmap.getNativeInstance());
         this.mFinalizer = NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, this.mNativeCanvasWrapper);
         this.mBitmap = bitmap;
@@ -175,6 +177,10 @@ public class Canvas extends BaseCanvas {
         return false;
     }
 
+    public boolean isHighContrastTextEnabled() {
+        return nIsHighContrastText(this.mNativeCanvasWrapper);
+    }
+
     public void setBitmap(Bitmap bitmap) {
         if (isHardwareAccelerated()) {
             throw new RuntimeException("Can't set a bitmap device on a HW accelerated canvas");
@@ -191,6 +197,7 @@ public class Canvas extends BaseCanvas {
                 throw new IllegalStateException();
             }
             throwIfCannotDraw(bitmap);
+            bitmap.setGainmap(null);
             nSetBitmap(this.mNativeCanvasWrapper, bitmap.getNativeInstance());
             this.mDensity = bitmap.mDensity;
         }
@@ -223,9 +230,8 @@ public class Canvas extends BaseCanvas {
     }
 
     public void setDensity(int density) {
-        Bitmap bitmap = this.mBitmap;
-        if (bitmap != null) {
-            bitmap.setDensity(density);
+        if (this.mBitmap != null) {
+            this.mBitmap.setDensity(density);
         }
         this.mDensity = density;
     }
@@ -243,7 +249,7 @@ public class Canvas extends BaseCanvas {
     }
 
     private static void checkValidSaveFlags(int saveFlags) {
-        if (sCompatiblityVersion >= 28 && saveFlags != 31) {
+        if (sCompatibilityVersion >= 28 && saveFlags != 31) {
             throw new IllegalArgumentException("Invalid Layer Save Flag - only ALL_SAVE_FLAGS is allowed");
         }
     }
@@ -380,6 +386,12 @@ public class Canvas extends BaseCanvas {
         }
     }
 
+    public void concat(Matrix44 m) {
+        if (m != null) {
+            nConcat(this.mNativeCanvasWrapper, m.mBackingArray);
+        }
+    }
+
     public void setMatrix(Matrix matrix) {
         nSetMatrix(this.mNativeCanvasWrapper, matrix == null ? 0L : matrix.ni());
     }
@@ -397,7 +409,7 @@ public class Canvas extends BaseCanvas {
     }
 
     private static void checkValidClipOp(Region.Op op) {
-        if (sCompatiblityVersion >= 28 && op != Region.Op.INTERSECT && op != Region.Op.DIFFERENCE) {
+        if (sCompatibilityVersion >= 28 && op != Region.Op.INTERSECT && op != Region.Op.DIFFERENCE) {
             throw new IllegalArgumentException("Invalid Region.Op - only INTERSECT and DIFFERENCE are allowed");
         }
     }
@@ -480,6 +492,14 @@ public class Canvas extends BaseCanvas {
         return false;
     }
 
+    public void clipShader(Shader shader) {
+        nClipShader(this.mNativeCanvasWrapper, shader.getNativeInstance(), Region.Op.INTERSECT.nativeInt);
+    }
+
+    public void clipOutShader(Shader shader) {
+        nClipShader(this.mNativeCanvasWrapper, shader.getNativeInstance(), Region.Op.DIFFERENCE.nativeInt);
+    }
+
     public DrawFilter getDrawFilter() {
         return this.mDrawFilter;
     }
@@ -557,7 +577,6 @@ public class Canvas extends BaseCanvas {
         restore();
     }
 
-    /* loaded from: classes.dex */
     public enum VertexMode {
         TRIANGLES(0),
         TRIANGLE_STRIP(1),
@@ -572,9 +591,8 @@ public class Canvas extends BaseCanvas {
 
     public void release() {
         this.mNativeCanvasWrapper = 0L;
-        Runnable runnable = this.mFinalizer;
-        if (runnable != null) {
-            runnable.run();
+        if (this.mFinalizer != null) {
+            this.mFinalizer.run();
             this.mFinalizer = null;
         }
     }
@@ -587,8 +605,8 @@ public class Canvas extends BaseCanvas {
         nFreeTextLayoutCaches();
     }
 
-    public static void setCompatibilityVersion(int apiLevel) {
-        sCompatiblityVersion = apiLevel;
+    static void setCompatibilityVersion(int apiLevel) {
+        sCompatibilityVersion = apiLevel;
         sCompatibilityRestore = apiLevel < 23;
         sCompatibilitySetBitmap = apiLevel < 26;
         nSetCompatibilityVersion(apiLevel);
@@ -718,6 +736,11 @@ public class Canvas extends BaseCanvas {
     @Override // android.graphics.BaseCanvas
     public void drawPath(Path path, Paint paint) {
         super.drawPath(path, paint);
+    }
+
+    @Override // android.graphics.BaseCanvas
+    public void drawRegion(Region region, Paint paint) {
+        super.drawRegion(region, paint);
     }
 
     @Override // android.graphics.BaseCanvas

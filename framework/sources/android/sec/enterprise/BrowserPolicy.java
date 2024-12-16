@@ -8,7 +8,6 @@ import android.util.Log;
 public class BrowserPolicy {
     private static String TAG = SecContentProviderURI.BROWSERPOLICY;
 
-    /* loaded from: classes3.dex */
     public class BrowserSetting {
         public static final int BROWSER_AUTOFILL_SETTING = 4;
         public static final int BROWSER_COOKIES_SETTING = 2;

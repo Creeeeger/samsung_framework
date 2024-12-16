@@ -4,7 +4,7 @@ import com.android.framework.protobuf.MapEntryLite;
 import java.util.Map;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 interface MapFieldSchema {
     Map<?, ?> forMapData(Object obj);
 

@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PhoneAccountSuggestion implements Parcelable {
     public static final Parcelable.Creator<PhoneAccountSuggestion> CREATOR = new Parcelable.Creator<PhoneAccountSuggestion>() { // from class: android.telecom.PhoneAccountSuggestion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneAccountSuggestion createFromParcel(Parcel in) {
             return new PhoneAccountSuggestion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneAccountSuggestion[] newArray(int size) {
             return new PhoneAccountSuggestion[size];
@@ -32,12 +31,7 @@ public final class PhoneAccountSuggestion implements Parcelable {
     private boolean mShouldAutoSelect;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SuggestionReason {
-    }
-
-    /* synthetic */ PhoneAccountSuggestion(Parcel parcel, PhoneAccountSuggestionIA phoneAccountSuggestionIA) {
-        this(parcel);
     }
 
     public PhoneAccountSuggestion(PhoneAccountHandle handle, int reason, boolean shouldAutoSelect) {
@@ -50,23 +44,6 @@ public final class PhoneAccountSuggestion implements Parcelable {
         this.mHandle = (PhoneAccountHandle) in.readParcelable(PhoneAccountHandle.class.getClassLoader(), PhoneAccountHandle.class);
         this.mReason = in.readInt();
         this.mShouldAutoSelect = in.readByte() != 0;
-    }
-
-    /* renamed from: android.telecom.PhoneAccountSuggestion$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhoneAccountSuggestion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneAccountSuggestion createFromParcel(Parcel in) {
-            return new PhoneAccountSuggestion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneAccountSuggestion[] newArray(int size) {
-            return new PhoneAccountSuggestion[size];
-        }
     }
 
     public PhoneAccountHandle getPhoneAccountHandle() {

@@ -10,7 +10,7 @@ import java.io.IOException;
 public abstract class X509NameEntryConverter {
     public abstract ASN1Primitive getConvertedValue(ASN1ObjectIdentifier aSN1ObjectIdentifier, String str);
 
-    public ASN1Primitive convertHexEncoded(String str, int off) throws IOException {
+    protected ASN1Primitive convertHexEncoded(String str, int off) throws IOException {
         return ASN1Primitive.fromByteArray(Hex.decodeStrict(str, off, str.length() - off));
     }
 

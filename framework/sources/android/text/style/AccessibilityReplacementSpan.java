@@ -6,17 +6,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.ParcelableSpan;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class AccessibilityReplacementSpan extends ReplacementSpan implements ParcelableSpan {
     public static final Parcelable.Creator<AccessibilityReplacementSpan> CREATOR = new Parcelable.Creator<AccessibilityReplacementSpan>() { // from class: android.text.style.AccessibilityReplacementSpan.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityReplacementSpan createFromParcel(Parcel parcel) {
             return new AccessibilityReplacementSpan(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityReplacementSpan[] newArray(int size) {
             return new AccessibilityReplacementSpan[size];
@@ -64,22 +63,5 @@ public class AccessibilityReplacementSpan extends ReplacementSpan implements Par
 
     @Override // android.text.style.ReplacementSpan
     public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-    }
-
-    /* renamed from: android.text.style.AccessibilityReplacementSpan$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccessibilityReplacementSpan> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityReplacementSpan createFromParcel(Parcel parcel) {
-            return new AccessibilityReplacementSpan(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityReplacementSpan[] newArray(int size) {
-            return new AccessibilityReplacementSpan[size];
-        }
     }
 }

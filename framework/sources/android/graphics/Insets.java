@@ -11,23 +11,18 @@ public final class Insets implements Parcelable {
     public final int top;
     public static final Insets NONE = new Insets(0, 0, 0, 0);
     public static final Parcelable.Creator<Insets> CREATOR = new Parcelable.Creator<Insets>() { // from class: android.graphics.Insets.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Insets createFromParcel(Parcel in) {
             return new Insets(in.readInt(), in.readInt(), in.readInt(), in.readInt());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Insets[] newArray(int size) {
             return new Insets[size];
         }
     };
-
-    /* synthetic */ Insets(int i, int i2, int i3, int i4, InsetsIA insetsIA) {
-        this(i, i2, i3, i4);
-    }
 
     private Insets(int left, int top, int right, int bottom) {
         this.left = left;
@@ -101,22 +96,5 @@ public final class Insets implements Parcelable {
         out.writeInt(this.top);
         out.writeInt(this.right);
         out.writeInt(this.bottom);
-    }
-
-    /* renamed from: android.graphics.Insets$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Insets> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Insets createFromParcel(Parcel in) {
-            return new Insets(in.readInt(), in.readInt(), in.readInt(), in.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Insets[] newArray(int size) {
-            return new Insets[size];
-        }
     }
 }

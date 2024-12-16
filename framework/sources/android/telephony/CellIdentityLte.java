@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellIdentityLte extends CellIdentity {
     private static final boolean DBG = false;
     private static final int MAX_BANDWIDTH = 20000;
@@ -30,15 +30,14 @@ public final class CellIdentityLte extends CellIdentity {
     private final int mTac;
     private static final String TAG = CellIdentityLte.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityLte> CREATOR = new Parcelable.Creator<CellIdentityLte>() { // from class: android.telephony.CellIdentityLte.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityLte createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityLte.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityLte[] newArray(int size) {
             return new CellIdentityLte[size];
@@ -64,7 +63,7 @@ public final class CellIdentityLte extends CellIdentity {
 
     public CellIdentityLte(int ci, int pci, int tac, int earfcn, int[] bands, int bandwidth, String mccStr, String mncStr, String alphal, String alphas, Collection<String> additionalPlmns, ClosedSubscriberGroupInfo csgInfo) {
         super(TAG, 3, mccStr, mncStr, alphal, alphas);
-        this.mCi = inRangeOrUnavailable(ci, 0, MAX_CI);
+        this.mCi = inRangeOrUnavailable(ci, 0, 268435455);
         this.mPci = inRangeOrUnavailable(pci, 0, 503);
         this.mTac = inRangeOrUnavailable(tac, 0, 65535);
         this.mEarfcn = inRangeOrUnavailable(earfcn, 0, 262143);
@@ -89,7 +88,7 @@ public final class CellIdentityLte extends CellIdentity {
         return new CellIdentityLte(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, this.mBands, Integer.MAX_VALUE, this.mMccStr, this.mMncStr, this.mAlphaLong, this.mAlphaShort, this.mAdditionalPlmns, null);
     }
 
-    public CellIdentityLte copy() {
+    CellIdentityLte copy() {
         return new CellIdentityLte(this);
     }
 
@@ -136,8 +135,7 @@ public final class CellIdentityLte extends CellIdentity {
     }
 
     public int[] getBands() {
-        int[] iArr = this.mBands;
-        return Arrays.copyOf(iArr, iArr.length);
+        return Arrays.copyOf(this.mBands, this.mBands.length);
     }
 
     public int getBandwidth() {
@@ -177,12 +175,8 @@ public final class CellIdentityLte extends CellIdentity {
     @Override // android.telephony.CellIdentity
     public GsmCellLocation asCellLocation() {
         GsmCellLocation cl = new GsmCellLocation();
-        int tac = this.mTac;
-        if (tac == Integer.MAX_VALUE) {
-            tac = -1;
-        }
-        int i = this.mCi;
-        int cid = i != Integer.MAX_VALUE ? i : -1;
+        int tac = this.mTac != Integer.MAX_VALUE ? this.mTac : -1;
+        int cid = this.mCi != Integer.MAX_VALUE ? this.mCi : -1;
         cl.setLacAndCid(tac, cid);
         cl.setPsc(0);
         return cl;
@@ -235,25 +229,7 @@ public final class CellIdentityLte extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* renamed from: android.telephony.CellIdentityLte$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentityLte> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityLte createFromParcel(Parcel in) {
-            in.readInt();
-            return CellIdentityLte.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityLte[] newArray(int size) {
-            return new CellIdentityLte[size];
-        }
-    }
-
-    public static CellIdentityLte createFromParcelBody(Parcel in) {
+    protected static CellIdentityLte createFromParcelBody(Parcel in) {
         return new CellIdentityLte(in);
     }
 

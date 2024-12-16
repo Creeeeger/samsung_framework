@@ -41,7 +41,6 @@ public interface IAccountAuthenticator extends IInterface {
 
     void updateCredentials(IAccountAuthenticatorResponse iAccountAuthenticatorResponse, Account account, String str, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAccountAuthenticator {
         @Override // android.accounts.IAccountAuthenticator
         public void addAccount(IAccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws RemoteException {
@@ -105,7 +104,6 @@ public interface IAccountAuthenticator extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAccountAuthenticator {
         public static final String DESCRIPTOR = "android.accounts.IAccountAuthenticator";
         static final int TRANSACTION_addAccount = 1;
@@ -198,120 +196,117 @@ public interface IAccountAuthenticator extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IAccountAuthenticatorResponse _arg0 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    String[] _arg3 = data.createStringArray();
+                    Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    addAccount(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    IAccountAuthenticatorResponse _arg02 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg12 = (Account) data.readTypedObject(Account.CREATOR);
+                    Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    confirmCredentials(_arg02, _arg12, _arg22);
+                    return true;
+                case 3:
+                    IAccountAuthenticatorResponse _arg03 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg13 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg23 = data.readString();
+                    Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAuthToken(_arg03, _arg13, _arg23, _arg32);
+                    return true;
+                case 4:
+                    IAccountAuthenticatorResponse _arg04 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    getAuthTokenLabel(_arg04, _arg14);
+                    return true;
+                case 5:
+                    IAccountAuthenticatorResponse _arg05 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg15 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg24 = data.readString();
+                    Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCredentials(_arg05, _arg15, _arg24, _arg33);
+                    return true;
+                case 6:
+                    IAccountAuthenticatorResponse _arg06 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    editProperties(_arg06, _arg16);
+                    return true;
+                case 7:
+                    IAccountAuthenticatorResponse _arg07 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg17 = (Account) data.readTypedObject(Account.CREATOR);
+                    String[] _arg25 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    hasFeatures(_arg07, _arg17, _arg25);
+                    return true;
+                case 8:
+                    IAccountAuthenticatorResponse _arg08 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg18 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAccountRemovalAllowed(_arg08, _arg18);
+                    return true;
+                case 9:
+                    IAccountAuthenticatorResponse _arg09 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg19 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAccountCredentialsForCloning(_arg09, _arg19);
+                    return true;
+                case 10:
+                    IAccountAuthenticatorResponse _arg010 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg110 = (Account) data.readTypedObject(Account.CREATOR);
+                    Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    addAccountFromCredentials(_arg010, _arg110, _arg26);
+                    return true;
+                case 11:
+                    IAccountAuthenticatorResponse _arg011 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg111 = data.readString();
+                    String _arg27 = data.readString();
+                    String[] _arg34 = data.createStringArray();
+                    Bundle _arg42 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startAddAccountSession(_arg011, _arg111, _arg27, _arg34, _arg42);
+                    return true;
+                case 12:
+                    IAccountAuthenticatorResponse _arg012 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg112 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg28 = data.readString();
+                    Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startUpdateCredentialsSession(_arg012, _arg112, _arg28, _arg35);
+                    return true;
+                case 13:
+                    IAccountAuthenticatorResponse _arg013 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg113 = data.readString();
+                    Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    finishSession(_arg013, _arg113, _arg29);
+                    return true;
+                case 14:
+                    IAccountAuthenticatorResponse _arg014 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg114 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg210 = data.readString();
+                    data.enforceNoDataAvail();
+                    isCredentialsUpdateSuggested(_arg014, _arg114, _arg210);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IAccountAuthenticatorResponse _arg0 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            String[] _arg3 = data.createStringArray();
-                            Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            addAccount(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            IAccountAuthenticatorResponse _arg02 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg12 = (Account) data.readTypedObject(Account.CREATOR);
-                            Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            confirmCredentials(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            IAccountAuthenticatorResponse _arg03 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg13 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg23 = data.readString();
-                            Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAuthToken(_arg03, _arg13, _arg23, _arg32);
-                            return true;
-                        case 4:
-                            IAccountAuthenticatorResponse _arg04 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            getAuthTokenLabel(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            IAccountAuthenticatorResponse _arg05 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg15 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg24 = data.readString();
-                            Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCredentials(_arg05, _arg15, _arg24, _arg33);
-                            return true;
-                        case 6:
-                            IAccountAuthenticatorResponse _arg06 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            editProperties(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            IAccountAuthenticatorResponse _arg07 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg17 = (Account) data.readTypedObject(Account.CREATOR);
-                            String[] _arg25 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            hasFeatures(_arg07, _arg17, _arg25);
-                            return true;
-                        case 8:
-                            IAccountAuthenticatorResponse _arg08 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg18 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAccountRemovalAllowed(_arg08, _arg18);
-                            return true;
-                        case 9:
-                            IAccountAuthenticatorResponse _arg09 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg19 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAccountCredentialsForCloning(_arg09, _arg19);
-                            return true;
-                        case 10:
-                            IAccountAuthenticatorResponse _arg010 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg110 = (Account) data.readTypedObject(Account.CREATOR);
-                            Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            addAccountFromCredentials(_arg010, _arg110, _arg26);
-                            return true;
-                        case 11:
-                            IAccountAuthenticatorResponse _arg011 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg111 = data.readString();
-                            String _arg27 = data.readString();
-                            String[] _arg34 = data.createStringArray();
-                            Bundle _arg42 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startAddAccountSession(_arg011, _arg111, _arg27, _arg34, _arg42);
-                            return true;
-                        case 12:
-                            IAccountAuthenticatorResponse _arg012 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg112 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg28 = data.readString();
-                            Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startUpdateCredentialsSession(_arg012, _arg112, _arg28, _arg35);
-                            return true;
-                        case 13:
-                            IAccountAuthenticatorResponse _arg013 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg113 = data.readString();
-                            Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            finishSession(_arg013, _arg113, _arg29);
-                            return true;
-                        case 14:
-                            IAccountAuthenticatorResponse _arg014 = IAccountAuthenticatorResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg114 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg210 = data.readString();
-                            data.enforceNoDataAvail();
-                            isCredentialsUpdateSuggested(_arg014, _arg114, _arg210);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IAccountAuthenticator {
             private IBinder mRemote;
 
@@ -528,59 +523,59 @@ public interface IAccountAuthenticator extends IInterface {
             }
         }
 
-        public void addAccount_enforcePermission() throws SecurityException {
+        protected void addAccount_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void confirmCredentials_enforcePermission() throws SecurityException {
+        protected void confirmCredentials_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void getAuthToken_enforcePermission() throws SecurityException {
+        protected void getAuthToken_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void getAuthTokenLabel_enforcePermission() throws SecurityException {
+        protected void getAuthTokenLabel_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void updateCredentials_enforcePermission() throws SecurityException {
+        protected void updateCredentials_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void editProperties_enforcePermission() throws SecurityException {
+        protected void editProperties_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void hasFeatures_enforcePermission() throws SecurityException {
+        protected void hasFeatures_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void getAccountRemovalAllowed_enforcePermission() throws SecurityException {
+        protected void getAccountRemovalAllowed_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void getAccountCredentialsForCloning_enforcePermission() throws SecurityException {
+        protected void getAccountCredentialsForCloning_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void addAccountFromCredentials_enforcePermission() throws SecurityException {
+        protected void addAccountFromCredentials_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void startAddAccountSession_enforcePermission() throws SecurityException {
+        protected void startAddAccountSession_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void startUpdateCredentialsSession_enforcePermission() throws SecurityException {
+        protected void startUpdateCredentialsSession_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void finishSession_enforcePermission() throws SecurityException {
+        protected void finishSession_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        public void isCredentialsUpdateSuggested_enforcePermission() throws SecurityException {
+        protected void isCredentialsUpdateSuggested_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 

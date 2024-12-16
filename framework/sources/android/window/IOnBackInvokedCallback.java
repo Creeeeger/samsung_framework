@@ -18,7 +18,8 @@ public interface IOnBackInvokedCallback extends IInterface {
 
     void onBackStarted(BackMotionEvent backMotionEvent) throws RemoteException;
 
-    /* loaded from: classes4.dex */
+    void setTriggerBack(boolean z) throws RemoteException;
+
     public static class Default implements IOnBackInvokedCallback {
         @Override // android.window.IOnBackInvokedCallback
         public void onBackStarted(BackMotionEvent backMotionEvent) throws RemoteException {
@@ -36,18 +37,22 @@ public interface IOnBackInvokedCallback extends IInterface {
         public void onBackInvoked() throws RemoteException {
         }
 
+        @Override // android.window.IOnBackInvokedCallback
+        public void setTriggerBack(boolean triggerBack) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IOnBackInvokedCallback {
         static final int TRANSACTION_onBackCancelled = 3;
         static final int TRANSACTION_onBackInvoked = 4;
         static final int TRANSACTION_onBackProgressed = 2;
         static final int TRANSACTION_onBackStarted = 1;
+        static final int TRANSACTION_setTriggerBack = 5;
 
         public Stub() {
             attachInterface(this, IOnBackInvokedCallback.DESCRIPTOR);
@@ -79,6 +84,8 @@ public interface IOnBackInvokedCallback extends IInterface {
                     return "onBackCancelled";
                 case 4:
                     return "onBackInvoked";
+                case 5:
+                    return "setTriggerBack";
                 default:
                     return null;
             }
@@ -94,36 +101,38 @@ public interface IOnBackInvokedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnBackInvokedCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnBackInvokedCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnBackInvokedCallback.DESCRIPTOR);
+                case 1:
+                    BackMotionEvent _arg0 = (BackMotionEvent) data.readTypedObject(BackMotionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onBackStarted(_arg0);
+                    return true;
+                case 2:
+                    BackMotionEvent _arg02 = (BackMotionEvent) data.readTypedObject(BackMotionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onBackProgressed(_arg02);
+                    return true;
+                case 3:
+                    onBackCancelled();
+                    return true;
+                case 4:
+                    onBackInvoked();
+                    return true;
+                case 5:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setTriggerBack(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            BackMotionEvent _arg0 = (BackMotionEvent) data.readTypedObject(BackMotionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onBackStarted(_arg0);
-                            return true;
-                        case 2:
-                            BackMotionEvent _arg02 = (BackMotionEvent) data.readTypedObject(BackMotionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onBackProgressed(_arg02);
-                            return true;
-                        case 3:
-                            onBackCancelled();
-                            return true;
-                        case 4:
-                            onBackInvoked();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IOnBackInvokedCallback {
+        private static class Proxy implements IOnBackInvokedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -184,11 +193,23 @@ public interface IOnBackInvokedCallback extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.window.IOnBackInvokedCallback
+            public void setTriggerBack(boolean triggerBack) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IOnBackInvokedCallback.DESCRIPTOR);
+                    _data.writeBoolean(triggerBack);
+                    this.mRemote.transact(5, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 3;
+            return 4;
         }
     }
 }

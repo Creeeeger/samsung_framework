@@ -12,6 +12,10 @@ public class AudioDevicePort extends AudioPort {
     private final int[] mEncapsulationModes;
     private final int mType;
 
+    public static AudioDevicePort createForTesting(int type, String name, String address) {
+        return new AudioDevicePort(new AudioHandle(0), name, null, null, null, null, null, type, address, null, null);
+    }
+
     AudioDevicePort(AudioHandle handle, String deviceName, int[] samplingRates, int[] channelMasks, int[] channelIndexMasks, int[] formats, AudioGain[] gains, int type, String address, int[] encapsulationModes, int[] encapsulationMetadataTypes) {
         super(handle, AudioManager.isInputDevice(type) ? 1 : 2, deviceName, samplingRates, channelMasks, channelIndexMasks, formats, gains);
         this.mType = type;
@@ -37,11 +41,10 @@ public class AudioDevicePort extends AudioPort {
     }
 
     public int[] encapsulationModes() {
-        int[] iArr = this.mEncapsulationModes;
-        if (iArr == null) {
+        if (this.mEncapsulationModes == null) {
             return new int[0];
         }
-        return Arrays.stream(iArr).boxed().filter(new Predicate() { // from class: android.media.AudioDevicePort$$ExternalSyntheticLambda0
+        return Arrays.stream(this.mEncapsulationModes).boxed().filter(new Predicate() { // from class: android.media.AudioDevicePort$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return AudioDevicePort.lambda$encapsulationModes$0((Integer) obj);
@@ -49,17 +52,16 @@ public class AudioDevicePort extends AudioPort {
         }).mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray();
     }
 
-    public static /* synthetic */ boolean lambda$encapsulationModes$0(Integer mode) {
+    static /* synthetic */ boolean lambda$encapsulationModes$0(Integer mode) {
         return mode.intValue() != 2;
     }
 
     public int[] encapsulationMetadataTypes() {
-        int[] iArr = this.mEncapsulationMetadataTypes;
-        if (iArr == null) {
+        if (this.mEncapsulationMetadataTypes == null) {
             return new int[0];
         }
-        int[] encapsulationMetadataTypes = new int[iArr.length];
-        System.arraycopy(iArr, 0, encapsulationMetadataTypes, 0, iArr.length);
+        int[] encapsulationMetadataTypes = new int[this.mEncapsulationMetadataTypes.length];
+        System.arraycopy(this.mEncapsulationMetadataTypes, 0, encapsulationMetadataTypes, 0, this.mEncapsulationMetadataTypes.length);
         return encapsulationMetadataTypes;
     }
 
@@ -91,6 +93,6 @@ public class AudioDevicePort extends AudioPort {
         } else {
             type = AudioSystem.getOutputDeviceName(this.mType);
         }
-        return "{" + super.toString() + ", mType: " + type + ", mAddress: " + this.mAddress + "}";
+        return "{" + super.toString() + ", mType: " + type + ", mAddress: " + Utils.anonymizeBluetoothAddress(this.mType, this.mAddress) + "}";
     }
 }

@@ -22,14 +22,14 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsMmTelManager implements RegistrationManager {
     private static final String TAG = "ImsMmTelManager";
     public static final int WIFI_MODE_CELLULAR_PREFERRED = 1;
     public static final int WIFI_MODE_UNKNOWN = -1;
     public static final int WIFI_MODE_WIFI_ONLY = 0;
     public static final int WIFI_MODE_WIFI_PREFERRED = 2;
-    private static final BinderCacheManager<ITelephony> sTelephonyCache = new BinderCacheManager<>(new BinderCacheManager.BinderInterfaceFactory() { // from class: android.telephony.ims.ImsMmTelManager$$ExternalSyntheticLambda3
+    private static final BinderCacheManager<ITelephony> sTelephonyCache = new BinderCacheManager<>(new BinderCacheManager.BinderInterfaceFactory() { // from class: android.telephony.ims.ImsMmTelManager$$ExternalSyntheticLambda0
         @Override // android.telephony.BinderCacheManager.BinderInterfaceFactory
         public final Object create() {
             ITelephony iTelephonyInterface;
@@ -42,13 +42,11 @@ public class ImsMmTelManager implements RegistrationManager {
     private final int mSubId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface WiFiCallingMode {
     }
 
     @SystemApi
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class RegistrationCallback extends RegistrationManager.RegistrationCallback {
         @Override // android.telephony.ims.RegistrationManager.RegistrationCallback
         public void onRegistered(int imsTransportType) {
@@ -67,12 +65,11 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class CapabilityCallback {
         private final CapabilityBinder mBinder = new CapabilityBinder(this);
 
-        /* loaded from: classes3.dex */
-        public static class CapabilityBinder extends IImsCapabilityCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class CapabilityBinder extends IImsCapabilityCallback.Stub {
             private Executor mExecutor;
             private final CapabilityCallback mLocalCallback;
 
@@ -99,6 +96,7 @@ public class ImsMmTelManager implements RegistrationManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onCapabilitiesStatusChanged$0(int config) {
                 this.mLocalCallback.onCapabilitiesStatusChanged(new MmTelFeature.MmTelCapabilities(config));
             }
@@ -111,6 +109,7 @@ public class ImsMmTelManager implements RegistrationManager {
             public void onChangeCapabilityConfigurationError(int capability, int radioTech, int reason) {
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }
@@ -228,6 +227,47 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
+    @SystemApi
+    public void registerImsEmergencyRegistrationCallback(Executor executor, RegistrationManager.RegistrationCallback c) throws ImsException {
+        if (c == null) {
+            throw new IllegalArgumentException("Must include a non-null RegistrationCallback.");
+        }
+        if (executor == null) {
+            throw new IllegalArgumentException("Must include a non-null Executor.");
+        }
+        c.setExecutor(executor);
+        ITelephony iTelephony = getITelephony();
+        if (iTelephony == null) {
+            throw new ImsException("Could not find Telephony Service.", 1);
+        }
+        try {
+            iTelephony.registerImsEmergencyRegistrationCallback(this.mSubId, c.getBinder());
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        } catch (ServiceSpecificException e2) {
+            throw new ImsException(e2.getMessage(), e2.errorCode);
+        } catch (IllegalStateException e3) {
+            throw new ImsException(e3.getMessage(), 1);
+        }
+    }
+
+    @SystemApi
+    public void unregisterImsEmergencyRegistrationCallback(RegistrationManager.RegistrationCallback c) {
+        if (c == null) {
+            throw new IllegalArgumentException("Must include a non-null RegistrationCallback.");
+        }
+        ITelephony iTelephony = getITelephony();
+        if (iTelephony == null) {
+            Log.w(TAG, "Could not find Telephony Service.");
+            return;
+        }
+        try {
+            iTelephony.unregisterImsEmergencyRegistrationCallback(this.mSubId, c.getBinder());
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        }
+    }
+
     @Override // android.telephony.ims.RegistrationManager
     @SystemApi
     public void getRegistrationState(Executor executor, final Consumer<Integer> stateCallback) {
@@ -254,8 +294,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$1, reason: invalid class name */
     class AnonymousClass1 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ Consumer val$stateCallback;
@@ -299,7 +338,7 @@ public class ImsMmTelManager implements RegistrationManager {
             iTelephony.getImsMmTelRegistrationTransportType(this.mSubId, new AnonymousClass2(executor, transportTypeCallback));
         } catch (RemoteException | ServiceSpecificException e) {
             Log.w(TAG, "Error getting transport type: " + e);
-            executor.execute(new Runnable() { // from class: android.telephony.ims.ImsMmTelManager$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: android.telephony.ims.ImsMmTelManager$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     transportTypeCallback.accept(-1);
@@ -308,8 +347,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$2 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$2, reason: invalid class name */
     class AnonymousClass2 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ Consumer val$transportTypeCallback;
@@ -458,8 +496,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$3 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$3, reason: invalid class name */
     class AnonymousClass3 extends IIntegerConsumer.Stub {
         final /* synthetic */ Consumer val$callback;
         final /* synthetic */ Executor val$executor;
@@ -769,8 +806,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$4 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$4, reason: invalid class name */
     class AnonymousClass4 extends IIntegerConsumer.Stub {
         final /* synthetic */ Consumer val$callback;
         final /* synthetic */ Executor val$executor;
@@ -804,7 +840,7 @@ public class ImsMmTelManager implements RegistrationManager {
         callback.init(executor);
         BinderCacheManager<ITelephony> binderCacheManager = this.mBinderCache;
         Objects.requireNonNull(callback);
-        ITelephony telephony = binderCacheManager.listenOnBinder(callback, new ImsMmTelManager$$ExternalSyntheticLambda2(callback));
+        ITelephony telephony = binderCacheManager.listenOnBinder(callback, new ImsMmTelManager$$ExternalSyntheticLambda3(callback));
         if (telephony == null) {
             throw new ImsException("Telephony server is down", 1);
         }
@@ -829,9 +865,8 @@ public class ImsMmTelManager implements RegistrationManager {
     }
 
     private String getOpPackageName() {
-        Context context = this.mContext;
-        if (context != null) {
-            return context.getOpPackageName();
+        if (this.mContext != null) {
+            return this.mContext.getOpPackageName();
         }
         return null;
     }
@@ -840,6 +875,7 @@ public class ImsMmTelManager implements RegistrationManager {
         return this.mBinderCache.getBinder();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ITelephony getITelephonyInterface() {
         ITelephony binder = ITelephony.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyServiceRegisterer().get());
         return binder;

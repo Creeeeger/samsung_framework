@@ -6,9 +6,7 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SmartClipRemoteRequestResult implements Parcelable {
     public static final Parcelable.Creator<SmartClipRemoteRequestResult> CREATOR = new Parcelable.Creator<SmartClipRemoteRequestResult>() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartClipRemoteRequestResult createFromParcel(Parcel in) {
             SmartClipRemoteRequestResult data = new SmartClipRemoteRequestResult(0, 0, null);
@@ -16,6 +14,7 @@ public class SmartClipRemoteRequestResult implements Parcelable {
             return data;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartClipRemoteRequestResult[] newArray(int size) {
             return new SmartClipRemoteRequestResult[size];
@@ -48,24 +47,5 @@ public class SmartClipRemoteRequestResult implements Parcelable {
         this.mRequestId = in.readInt();
         this.mRequestType = in.readInt();
         this.mResultData = in.readParcelable(null);
-    }
-
-    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestResult$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SmartClipRemoteRequestResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmartClipRemoteRequestResult createFromParcel(Parcel in) {
-            SmartClipRemoteRequestResult data = new SmartClipRemoteRequestResult(0, 0, null);
-            data.readFromParcel(in);
-            return data;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmartClipRemoteRequestResult[] newArray(int size) {
-            return new SmartClipRemoteRequestResult[size];
-        }
     }
 }

@@ -29,14 +29,13 @@ class DateUtil {
         return Locale.getDefault();
     }
 
-    public static Date epochAdjust(Date date) throws ParseException {
+    static Date epochAdjust(Date date) throws ParseException {
         Locale locale = Locale.getDefault();
         if (locale == null) {
             return date;
         }
-        Map map = localeCache;
-        synchronized (map) {
-            Long adj = (Long) map.get(locale);
+        synchronized (localeCache) {
+            Long adj = (Long) localeCache.get(locale);
             if (adj == null) {
                 SimpleDateFormat dateF = new SimpleDateFormat("yyyyMMddHHmmssz");
                 long v = dateF.parse("19700101000000GMT+00:00").getTime();
@@ -45,7 +44,7 @@ class DateUtil {
                 } else {
                     adj = longValueOf(v);
                 }
-                map.put(locale, adj);
+                localeCache.put(locale, adj);
             }
             if (adj == ZERO) {
                 return date;

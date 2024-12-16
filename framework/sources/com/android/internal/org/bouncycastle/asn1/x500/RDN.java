@@ -65,7 +65,7 @@ public class RDN extends ASN1Object {
         return tmp;
     }
 
-    public int collectAttributeTypes(ASN1ObjectIdentifier[] oids, int oidsOff) {
+    int collectAttributeTypes(ASN1ObjectIdentifier[] oids, int oidsOff) {
         int count = this.values.size();
         for (int i = 0; i < count; i++) {
             AttributeTypeAndValue attr = AttributeTypeAndValue.getInstance(this.values.getObjectAt(i));
@@ -74,7 +74,7 @@ public class RDN extends ASN1Object {
         return count;
     }
 
-    public boolean containsAttributeType(ASN1ObjectIdentifier attributeType) {
+    boolean containsAttributeType(ASN1ObjectIdentifier attributeType) {
         int count = this.values.size();
         for (int i = 0; i < count; i++) {
             AttributeTypeAndValue attr = AttributeTypeAndValue.getInstance(this.values.getObjectAt(i));

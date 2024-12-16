@@ -56,11 +56,9 @@ public class SemBiometricsManager {
     public static final int TYPE_STRONG_SECURITY = 17;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SecurityLevel {
     }
 
-    /* loaded from: classes5.dex */
     public static final class CryptoObject {
         private BiometricPrompt.CryptoObject mBioCryptoObject;
         private final byte[] mFidoRequestData;
@@ -123,9 +121,8 @@ public class SemBiometricsManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class AuthenticationResult {
-        private CryptoObject mCryptoObject;
+        private final CryptoObject mCryptoObject;
 
         public AuthenticationResult(CryptoObject crypto) {
             this.mCryptoObject = crypto;
@@ -136,7 +133,6 @@ public class SemBiometricsManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class AuthenticationCallback {
         public void onAuthenticationError(int errorCode, CharSequence errString) {
         }

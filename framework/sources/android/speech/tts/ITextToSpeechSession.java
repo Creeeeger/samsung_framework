@@ -13,7 +13,6 @@ public interface ITextToSpeechSession extends IInterface {
 
     void disconnect() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITextToSpeechSession {
         @Override // android.speech.tts.ITextToSpeechSession
         public void disconnect() throws RemoteException {
@@ -25,7 +24,6 @@ public interface ITextToSpeechSession extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITextToSpeechSession {
         static final int TRANSACTION_disconnect = 1;
 
@@ -68,24 +66,20 @@ public interface ITextToSpeechSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITextToSpeechSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITextToSpeechSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITextToSpeechSession.DESCRIPTOR);
+                case 1:
+                    disconnect();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            disconnect();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITextToSpeechSession {
+        private static class Proxy implements ITextToSpeechSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

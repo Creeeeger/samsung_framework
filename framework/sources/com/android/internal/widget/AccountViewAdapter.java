@@ -50,7 +50,6 @@ public class AccountViewAdapter extends BaseAdapter {
         return view;
     }
 
-    /* loaded from: classes5.dex */
     public static class AccountElements {
         private Drawable mDrawable;
         private int mIcon;

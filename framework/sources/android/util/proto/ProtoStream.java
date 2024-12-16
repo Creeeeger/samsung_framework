@@ -43,28 +43,21 @@ public class ProtoStream {
     public static final int WIRE_TYPE_VARINT = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface FieldCount {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface FieldType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface WireType {
     }
 
     public static String getFieldTypeString(long fieldType) {
         int index = ((int) ((FIELD_TYPE_MASK & fieldType) >>> 32)) - 1;
-        if (index < 0) {
-            return null;
-        }
-        String[] strArr = FIELD_TYPE_NAMES;
-        if (index < strArr.length) {
-            return strArr[index];
+        if (index >= 0 && index < FIELD_TYPE_NAMES.length) {
+            return FIELD_TYPE_NAMES[index];
         }
         return null;
     }
@@ -155,5 +148,8 @@ public class ProtoStream {
             return "Token(0)";
         }
         return "Token(val=0x" + Long.toHexString(token) + " depth=" + getDepthFromToken(token) + " object=" + convertObjectIdToOrdinal(getObjectIdFromToken(token)) + " tagSize=" + getTagSizeFromToken(token) + " offset=" + getOffsetFromToken(token) + ')';
+    }
+
+    protected ProtoStream() {
     }
 }

@@ -21,25 +21,25 @@ public class BluetoothDeviceFilterUtils {
     private BluetoothDeviceFilterUtils() {
     }
 
-    public static String patternToString(Pattern p) {
+    static String patternToString(Pattern p) {
         if (p == null) {
             return null;
         }
         return p.pattern();
     }
 
-    public static Pattern patternFromString(String s) {
+    static Pattern patternFromString(String s) {
         if (s == null) {
             return null;
         }
         return Pattern.compile(s);
     }
 
-    public static boolean matchesAddress(String deviceAddress, BluetoothDevice device) {
+    static boolean matchesAddress(String deviceAddress, BluetoothDevice device) {
         return deviceAddress == null || (device != null && deviceAddress.equals(device.getAddress()));
     }
 
-    public static boolean matchesServiceUuids(List<ParcelUuid> serviceUuids, List<ParcelUuid> serviceUuidMasks, BluetoothDevice device) {
+    static boolean matchesServiceUuids(List<ParcelUuid> serviceUuids, List<ParcelUuid> serviceUuidMasks, BluetoothDevice device) {
         for (int i = 0; i < serviceUuids.size(); i++) {
             ParcelUuid uuid = serviceUuids.get(i);
             ParcelUuid uuidMask = serviceUuidMasks.get(i);
@@ -65,7 +65,7 @@ public class BluetoothDeviceFilterUtils {
         return result;
     }
 
-    public static boolean matchesName(Pattern namePattern, BluetoothDevice device) {
+    static boolean matchesName(Pattern namePattern, BluetoothDevice device) {
         if (namePattern == null) {
             return true;
         }
@@ -77,7 +77,7 @@ public class BluetoothDeviceFilterUtils {
         return result;
     }
 
-    public static boolean matchesName(Pattern namePattern, ScanResult device) {
+    static boolean matchesName(Pattern namePattern, ScanResult device) {
         if (namePattern == null) {
             return true;
         }

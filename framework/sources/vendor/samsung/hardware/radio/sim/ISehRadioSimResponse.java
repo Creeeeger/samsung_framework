@@ -41,7 +41,6 @@ public interface ISehRadioSimResponse extends IInterface {
 
     void supplyNetworkDepersonalizationResponse(SehRadioResponseInfo sehRadioResponseInfo, int i) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioSimResponse {
         @Override // vendor.samsung.hardware.radio.sim.ISehRadioSimResponse
         public void getIccCardStatusResponse(SehRadioResponseInfo info, SehCardStatus cardStatus) throws RemoteException {
@@ -107,7 +106,6 @@ public interface ISehRadioSimResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioSimResponse {
         static final int TRANSACTION_accessPhonebookEntryResponse = 11;
         static final int TRANSACTION_changeIccPersonalizationResponse = 9;
@@ -151,97 +149,95 @@ public interface ISehRadioSimResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehCardStatus _arg1 = (SehCardStatus) data.readTypedObject(SehCardStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    getIccCardStatusResponse(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplyNetworkDepersonalizationResponse(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    SehRadioResponseInfo _arg03 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehPhonebookInfo _arg13 = (SehPhonebookInfo) data.readTypedObject(SehPhonebookInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getPhonebookStorageInfoResponse(_arg03, _arg13);
+                    return true;
+                case 4:
+                    SehRadioResponseInfo _arg04 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int[] _arg14 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    getUsimPhonebookCapabilityResponse(_arg04, _arg14);
+                    return true;
+                case 5:
+                    SehRadioResponseInfo _arg05 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSimOnOffResponse(_arg05);
+                    return true;
+                case 6:
+                    SehRadioResponseInfo _arg06 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSimInitEventResponse(_arg06);
+                    return true;
+                case 7:
+                    SehRadioResponseInfo _arg07 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehSimLockInfo _arg15 = (SehSimLockInfo) data.readTypedObject(SehSimLockInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSimLockInfoResponse(_arg07, _arg15);
+                    return true;
+                case 8:
+                    SehRadioResponseInfo _arg08 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    supplyIccPersonalizationResponse(_arg08);
+                    return true;
+                case 9:
+                    SehRadioResponseInfo _arg09 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    changeIccPersonalizationResponse(_arg09);
+                    return true;
+                case 10:
+                    SehRadioResponseInfo _arg010 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehSimPhonebookResponse _arg16 = (SehSimPhonebookResponse) data.readTypedObject(SehSimPhonebookResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    getPhonebookEntryResponse(_arg010, _arg16);
+                    return true;
+                case 11:
+                    SehRadioResponseInfo _arg011 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    accessPhonebookEntryResponse(_arg011, _arg17);
+                    return true;
+                case 12:
+                    SehRadioResponseInfo _arg012 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    String _arg18 = data.readString();
+                    data.enforceNoDataAvail();
+                    getAtrResponse(_arg012, _arg18);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehCardStatus _arg1 = (SehCardStatus) data.readTypedObject(SehCardStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            getIccCardStatusResponse(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplyNetworkDepersonalizationResponse(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            SehRadioResponseInfo _arg03 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehPhonebookInfo _arg13 = (SehPhonebookInfo) data.readTypedObject(SehPhonebookInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getPhonebookStorageInfoResponse(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            SehRadioResponseInfo _arg04 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int[] _arg14 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            getUsimPhonebookCapabilityResponse(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            SehRadioResponseInfo _arg05 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSimOnOffResponse(_arg05);
-                            return true;
-                        case 6:
-                            SehRadioResponseInfo _arg06 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSimInitEventResponse(_arg06);
-                            return true;
-                        case 7:
-                            SehRadioResponseInfo _arg07 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehSimLockInfo _arg15 = (SehSimLockInfo) data.readTypedObject(SehSimLockInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSimLockInfoResponse(_arg07, _arg15);
-                            return true;
-                        case 8:
-                            SehRadioResponseInfo _arg08 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            supplyIccPersonalizationResponse(_arg08);
-                            return true;
-                        case 9:
-                            SehRadioResponseInfo _arg09 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            changeIccPersonalizationResponse(_arg09);
-                            return true;
-                        case 10:
-                            SehRadioResponseInfo _arg010 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehSimPhonebookResponse _arg16 = (SehSimPhonebookResponse) data.readTypedObject(SehSimPhonebookResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            getPhonebookEntryResponse(_arg010, _arg16);
-                            return true;
-                        case 11:
-                            SehRadioResponseInfo _arg011 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            accessPhonebookEntryResponse(_arg011, _arg17);
-                            return true;
-                        case 12:
-                            SehRadioResponseInfo _arg012 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            getAtrResponse(_arg012, _arg18);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehRadioSimResponse {
+        private static class Proxy implements ISehRadioSimResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

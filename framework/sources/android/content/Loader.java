@@ -20,19 +20,16 @@ public class Loader<D> {
     boolean mProcessingChange = false;
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface OnLoadCanceledListener<D> {
         void onLoadCanceled(Loader<D> loader);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface OnLoadCompleteListener<D> {
         void onLoadComplete(Loader<D> loader, D d);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public final class ForceLoadContentObserver extends ContentObserver {
         public ForceLoadContentObserver() {
             super(new Handler());
@@ -54,16 +51,14 @@ public class Loader<D> {
     }
 
     public void deliverResult(D data) {
-        OnLoadCompleteListener<D> onLoadCompleteListener = this.mListener;
-        if (onLoadCompleteListener != null) {
-            onLoadCompleteListener.onLoadComplete(this, data);
+        if (this.mListener != null) {
+            this.mListener.onLoadComplete(this, data);
         }
     }
 
     public void deliverCancellation() {
-        OnLoadCanceledListener<D> onLoadCanceledListener = this.mOnLoadCanceledListener;
-        if (onLoadCanceledListener != null) {
-            onLoadCanceledListener.onLoadCanceled(this);
+        if (this.mOnLoadCanceledListener != null) {
+            this.mOnLoadCanceledListener.onLoadCanceled(this);
         }
     }
 
@@ -84,11 +79,10 @@ public class Loader<D> {
     }
 
     public void unregisterListener(OnLoadCompleteListener<D> listener) {
-        OnLoadCompleteListener<D> onLoadCompleteListener = this.mListener;
-        if (onLoadCompleteListener == null) {
+        if (this.mListener == null) {
             throw new IllegalStateException("No listener register");
         }
-        if (onLoadCompleteListener != listener) {
+        if (this.mListener != listener) {
             throw new IllegalArgumentException("Attempting to unregister the wrong listener");
         }
         this.mListener = null;
@@ -102,11 +96,10 @@ public class Loader<D> {
     }
 
     public void unregisterOnLoadCanceledListener(OnLoadCanceledListener<D> listener) {
-        OnLoadCanceledListener<D> onLoadCanceledListener = this.mOnLoadCanceledListener;
-        if (onLoadCanceledListener == null) {
+        if (this.mOnLoadCanceledListener == null) {
             throw new IllegalStateException("No listener register");
         }
-        if (onLoadCanceledListener != listener) {
+        if (this.mOnLoadCanceledListener != listener) {
             throw new IllegalArgumentException("Attempting to unregister the wrong listener");
         }
         this.mOnLoadCanceledListener = null;
@@ -146,7 +139,7 @@ public class Loader<D> {
         onForceLoad();
     }
 
-    public void onForceLoad() {
+    protected void onForceLoad() {
     }
 
     public void stopLoading() {
@@ -174,7 +167,7 @@ public class Loader<D> {
         this.mProcessingChange = false;
     }
 
-    public void onReset() {
+    protected void onReset() {
     }
 
     public boolean takeContentChanged() {

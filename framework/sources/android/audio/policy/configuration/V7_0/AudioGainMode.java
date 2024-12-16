@@ -16,7 +16,7 @@ public enum AudioGainMode {
         return this.rawName;
     }
 
-    public static AudioGainMode fromString(String rawString) {
+    static AudioGainMode fromString(String rawString) {
         for (AudioGainMode _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

@@ -56,7 +56,7 @@ public final class ApkSigningBlockUtils {
     private ApkSigningBlockUtils() {
     }
 
-    public static SignatureInfo findSignature(RandomAccessFile apk, int blockId) throws IOException, SignatureNotFoundException {
+    static SignatureInfo findSignature(RandomAccessFile apk, int blockId) throws IOException, SignatureNotFoundException {
         Pair<ByteBuffer, Long> eocdAndOffsetInFile = getEocd(apk);
         ByteBuffer eocd = eocdAndOffsetInFile.first;
         long eocdOffset = eocdAndOffsetInFile.second.longValue();
@@ -71,7 +71,7 @@ public final class ApkSigningBlockUtils {
         return new SignatureInfo(apkSignatureSchemeBlock, apkSigningBlockOffset, centralDirOffset, eocdOffset, eocd);
     }
 
-    public static void verifyIntegrity(Map<Integer, byte[]> expectedDigests, RandomAccessFile apk, SignatureInfo signatureInfo) throws SecurityException {
+    static void verifyIntegrity(Map<Integer, byte[]> expectedDigests, RandomAccessFile apk, SignatureInfo signatureInfo) throws SecurityException {
         if (expectedDigests.isEmpty()) {
             throw new SecurityException("No digests provided");
         }
@@ -100,7 +100,7 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    public static boolean isSupportedSignatureAlgorithm(int sigAlgorithm) {
+    static boolean isSupportedSignatureAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
             case 258:
@@ -109,7 +109,7 @@ public final class ApkSigningBlockUtils {
             case 513:
             case 514:
             case 769:
-            case SIGNATURE_VERITY_RSA_PKCS1_V1_5_WITH_SHA256 /* 1057 */:
+            case 1057:
             case SIGNATURE_VERITY_ECDSA_WITH_SHA256 /* 1059 */:
             case 1061:
                 return true;
@@ -173,7 +173,7 @@ public final class ApkSigningBlockUtils {
         throw new UnsupportedOperationException("Method not decompiled: android.util.apk.ApkSigningBlockUtils.computeContentDigestsPer1MbChunk(int[], android.util.apk.DataSource[]):byte[][]");
     }
 
-    public static byte[] parseVerityDigestAndVerifySourceLength(byte[] data, long fileSize, SignatureInfo signatureInfo) throws SecurityException {
+    static byte[] parseVerityDigestAndVerifySourceLength(byte[] data, long fileSize, SignatureInfo signatureInfo) throws SecurityException {
         if (data.length != 32 + 8) {
             throw new SecurityException("Verity digest size is wrong: " + data.length);
         }
@@ -191,9 +191,6 @@ public final class ApkSigningBlockUtils {
         try {
             byte[] expectedRootHash = parseVerityDigestAndVerifySourceLength(expectedDigest, apk.getChannel().size(), signatureInfo);
             VerityBuilder.VerityResult verity = VerityBuilder.generateApkVerityTree(apk, signatureInfo, new ByteBufferFactory() { // from class: android.util.apk.ApkSigningBlockUtils.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.util.apk.ByteBufferFactory
                 public ByteBuffer create(int capacity) {
                     return ByteBuffer.allocate(capacity);
@@ -204,18 +201,6 @@ public final class ApkSigningBlockUtils {
             }
         } catch (IOException | DigestException | NoSuchAlgorithmException e) {
             throw new SecurityException("Error during verification", e);
-        }
-    }
-
-    /* renamed from: android.util.apk.ApkSigningBlockUtils$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements ByteBufferFactory {
-        AnonymousClass1() {
-        }
-
-        @Override // android.util.apk.ByteBufferFactory
-        public ByteBuffer create(int capacity) {
-            return ByteBuffer.allocate(capacity);
         }
     }
 
@@ -243,7 +228,7 @@ public final class ApkSigningBlockUtils {
         return ((inputSizeBytes + 1048576) - 1) / 1048576;
     }
 
-    public static int compareSignatureAlgorithm(int sigAlgorithm1, int sigAlgorithm2) {
+    static int compareSignatureAlgorithm(int sigAlgorithm1, int sigAlgorithm2) {
         int digestAlgorithm1 = getSignatureAlgorithmContentDigestAlgorithm(sigAlgorithm1);
         int digestAlgorithm2 = getSignatureAlgorithmContentDigestAlgorithm(sigAlgorithm2);
         return compareContentDigestAlgorithm(digestAlgorithm1, digestAlgorithm2);
@@ -287,7 +272,7 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    public static int getSignatureAlgorithmContentDigestAlgorithm(int sigAlgorithm) {
+    static int getSignatureAlgorithmContentDigestAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
             case 259:
@@ -298,7 +283,7 @@ public final class ApkSigningBlockUtils {
             case 260:
             case 514:
                 return 2;
-            case SIGNATURE_VERITY_RSA_PKCS1_V1_5_WITH_SHA256 /* 1057 */:
+            case 1057:
             case SIGNATURE_VERITY_ECDSA_WITH_SHA256 /* 1059 */:
             case 1061:
                 return 3;
@@ -307,7 +292,7 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    public static String getContentDigestAlgorithmJcaDigestAlgorithm(int digestAlgorithm) {
+    static String getContentDigestAlgorithmJcaDigestAlgorithm(int digestAlgorithm) {
         switch (digestAlgorithm) {
             case 1:
             case 3:
@@ -331,13 +316,13 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    public static String getSignatureAlgorithmJcaKeyAlgorithm(int sigAlgorithm) {
+    static String getSignatureAlgorithmJcaKeyAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
             case 258:
             case 259:
             case 260:
-            case SIGNATURE_VERITY_RSA_PKCS1_V1_5_WITH_SHA256 /* 1057 */:
+            case 1057:
                 return "RSA";
             case 513:
             case 514:
@@ -351,14 +336,14 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    public static Pair<String, ? extends AlgorithmParameterSpec> getSignatureAlgorithmJcaSignatureAlgorithm(int sigAlgorithm) {
+    static Pair<String, ? extends AlgorithmParameterSpec> getSignatureAlgorithmJcaSignatureAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
                 return Pair.create("SHA256withRSA/PSS", new PSSParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, 32, 1));
             case 258:
                 return Pair.create("SHA512withRSA/PSS", new PSSParameterSpec(KeyProperties.DIGEST_SHA512, "MGF1", MGF1ParameterSpec.SHA512, 64, 1));
             case 259:
-            case SIGNATURE_VERITY_RSA_PKCS1_V1_5_WITH_SHA256 /* 1057 */:
+            case 1057:
                 return Pair.create("SHA256withRSA", null);
             case 260:
                 return Pair.create("SHA512withRSA", null);
@@ -423,7 +408,7 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    public static ByteBuffer getLengthPrefixedSlice(ByteBuffer source) throws IOException {
+    static ByteBuffer getLengthPrefixedSlice(ByteBuffer source) throws IOException {
         if (source.remaining() < 4) {
             throw new IOException("Remaining buffer too short to contain length of length-prefixed field. Remaining: " + source.remaining());
         }
@@ -437,7 +422,7 @@ public final class ApkSigningBlockUtils {
         return getByteBuffer(source, len);
     }
 
-    public static byte[] readLengthPrefixedByteArray(ByteBuffer buf) throws IOException {
+    static byte[] readLengthPrefixedByteArray(ByteBuffer buf) throws IOException {
         int len = buf.getInt();
         if (len < 0) {
             throw new IOException("Negative length");
@@ -521,8 +506,7 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class MultipleDigestDataDigester implements DataDigester {
+    private static class MultipleDigestDataDigester implements DataDigester {
         private final MessageDigest[] mMds;
 
         MultipleDigestDataDigester(MessageDigest[] mds) {
@@ -539,7 +523,7 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    public static VerifiedProofOfRotation verifyProofOfRotationStruct(ByteBuffer porBuf, CertificateFactory certFactory) throws SecurityException, IOException {
+    static VerifiedProofOfRotation verifyProofOfRotationStruct(ByteBuffer porBuf, CertificateFactory certFactory) throws SecurityException, IOException {
         int levelCount = 0;
         int lastSigAlgorithm = -1;
         X509Certificate lastCert = null;
@@ -605,7 +589,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class VerifiedProofOfRotation {
         public final List<X509Certificate> certs;
         public final List<Integer> flagsList;

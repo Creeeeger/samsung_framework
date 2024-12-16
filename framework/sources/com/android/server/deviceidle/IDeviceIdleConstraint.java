@@ -9,7 +9,6 @@ public interface IDeviceIdleConstraint {
     public static final int SENSING_OR_ABOVE = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface MinimumState {
     }
 

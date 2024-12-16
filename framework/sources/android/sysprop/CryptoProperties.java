@@ -55,15 +55,8 @@ public final class CryptoProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -202,7 +195,6 @@ public final class CryptoProperties {
         return joiner.toString();
     }
 
-    /* loaded from: classes3.dex */
     public enum type_values {
         BLOCK("block"),
         FILE("file"),
@@ -228,7 +220,6 @@ public final class CryptoProperties {
         SystemProperties.set("ro.crypto.type", value == null ? "" : value.getPropValue());
     }
 
-    /* loaded from: classes3.dex */
     public enum state_values {
         ENCRYPTED("encrypted"),
         UNENCRYPTED("unencrypted"),

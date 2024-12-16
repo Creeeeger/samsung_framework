@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioPreselectionLabel implements Parcelable {
     public static final Parcelable.Creator<AudioPreselectionLabel> CREATOR = new Parcelable.Creator<AudioPreselectionLabel>() { // from class: android.hardware.tv.tuner.AudioPreselectionLabel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPreselectionLabel createFromParcel(Parcel _aidl_source) {
             AudioPreselectionLabel _aidl_out = new AudioPreselectionLabel();
@@ -17,6 +15,7 @@ public class AudioPreselectionLabel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPreselectionLabel[] newArray(int _aidl_size) {
             return new AudioPreselectionLabel[_aidl_size];
@@ -24,25 +23,6 @@ public class AudioPreselectionLabel implements Parcelable {
     };
     public String language;
     public String text;
-
-    /* renamed from: android.hardware.tv.tuner.AudioPreselectionLabel$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioPreselectionLabel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPreselectionLabel createFromParcel(Parcel _aidl_source) {
-            AudioPreselectionLabel _aidl_out = new AudioPreselectionLabel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPreselectionLabel[] newArray(int _aidl_size) {
-            return new AudioPreselectionLabel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

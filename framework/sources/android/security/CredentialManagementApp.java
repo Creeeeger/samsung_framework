@@ -47,9 +47,8 @@ public class CredentialManagementApp {
 
     public void writeToXml(XmlSerializer out) throws IOException {
         out.attribute(null, "package_name", this.mPackageName);
-        AppUriAuthenticationPolicy appUriAuthenticationPolicy = this.mAuthenticationPolicy;
-        if (appUriAuthenticationPolicy != null) {
-            appUriAuthenticationPolicy.writeToXml(out);
+        if (this.mAuthenticationPolicy != null) {
+            this.mAuthenticationPolicy.writeToXml(out);
         }
     }
 }

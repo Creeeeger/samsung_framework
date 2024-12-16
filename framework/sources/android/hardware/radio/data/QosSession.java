@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class QosSession implements Parcelable {
     public static final Parcelable.Creator<QosSession> CREATOR = new Parcelable.Creator<QosSession>() { // from class: android.hardware.radio.data.QosSession.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosSession createFromParcel(Parcel _aidl_source) {
             QosSession _aidl_out = new QosSession();
@@ -20,6 +18,7 @@ public class QosSession implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosSession[] newArray(int _aidl_size) {
             return new QosSession[_aidl_size];
@@ -28,25 +27,6 @@ public class QosSession implements Parcelable {
     public Qos qos;
     public QosFilter[] qosFilters;
     public int qosSessionId = 0;
-
-    /* renamed from: android.hardware.radio.data.QosSession$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<QosSession> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QosSession createFromParcel(Parcel _aidl_source) {
-            QosSession _aidl_out = new QosSession();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QosSession[] newArray(int _aidl_size) {
-            return new QosSession[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -115,7 +95,7 @@ public class QosSession implements Parcelable {
         _aidl_sj.add("qosSessionId: " + this.qosSessionId);
         _aidl_sj.add("qos: " + Objects.toString(this.qos));
         _aidl_sj.add("qosFilters: " + Arrays.toString(this.qosFilters));
-        return "android.hardware.radio.data.QosSession" + _aidl_sj.toString();
+        return "QosSession" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

@@ -35,7 +35,7 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = key.getQInv();
     }
 
-    public BCRSAPrivateCrtKey(AlgorithmIdentifier algorithmIdentifier, RSAPrivateCrtKeyParameters key) {
+    BCRSAPrivateCrtKey(AlgorithmIdentifier algorithmIdentifier, RSAPrivateCrtKeyParameters key) {
         super(algorithmIdentifier, key);
         this.publicExponent = key.getPublicExponent();
         this.primeP = key.getP();
@@ -45,7 +45,7 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = key.getQInv();
     }
 
-    public BCRSAPrivateCrtKey(RSAPrivateCrtKeySpec spec) {
+    BCRSAPrivateCrtKey(RSAPrivateCrtKeySpec spec) {
         super(new RSAPrivateCrtKeyParameters(spec.getModulus(), spec.getPublicExponent(), spec.getPrivateExponent(), spec.getPrimeP(), spec.getPrimeQ(), spec.getPrimeExponentP(), spec.getPrimeExponentQ(), spec.getCrtCoefficient()));
         this.modulus = spec.getModulus();
         this.publicExponent = spec.getPublicExponent();
@@ -57,7 +57,7 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = spec.getCrtCoefficient();
     }
 
-    public BCRSAPrivateCrtKey(RSAPrivateCrtKey key) {
+    BCRSAPrivateCrtKey(RSAPrivateCrtKey key) {
         super(new RSAPrivateCrtKeyParameters(key.getModulus(), key.getPublicExponent(), key.getPrivateExponent(), key.getPrimeP(), key.getPrimeQ(), key.getPrimeExponentP(), key.getPrimeExponentQ(), key.getCrtCoefficient()));
         this.modulus = key.getModulus();
         this.publicExponent = key.getPublicExponent();
@@ -69,11 +69,11 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = key.getCrtCoefficient();
     }
 
-    public BCRSAPrivateCrtKey(PrivateKeyInfo info) throws IOException {
+    BCRSAPrivateCrtKey(PrivateKeyInfo info) throws IOException {
         this(info.getPrivateKeyAlgorithm(), RSAPrivateKey.getInstance(info.parsePrivateKey()));
     }
 
-    public BCRSAPrivateCrtKey(RSAPrivateKey key) {
+    BCRSAPrivateCrtKey(RSAPrivateKey key) {
         this(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER, key);
     }
 

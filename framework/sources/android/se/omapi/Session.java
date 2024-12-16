@@ -14,7 +14,7 @@ public final class Session {
     private final SEService mService;
     private final ISecureElementSession mSession;
 
-    public Session(SEService service, ISecureElementSession session, Reader reader) {
+    Session(SEService service, ISecureElementSession session, Reader reader) {
         if (service == null || reader == null || session == null) {
             throw new IllegalArgumentException("Parameters cannot be null");
         }

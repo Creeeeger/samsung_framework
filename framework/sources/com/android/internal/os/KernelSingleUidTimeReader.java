@@ -37,7 +37,7 @@ public class KernelSingleUidTimeReader {
         this.mBpfTimesAvailable = true;
         this.mInjector = injector;
         this.mCpuFreqsCount = cpuFreqsCount;
-        if (cpuFreqsCount == 0) {
+        if (this.mCpuFreqsCount == 0) {
             this.mSingleUidCpuTimesAvailable = false;
         }
     }
@@ -192,7 +192,6 @@ public class KernelSingleUidTimeReader {
         this.mInjector.addDelta(uid, counter, timestampMs, deltaContainer);
     }
 
-    /* loaded from: classes5.dex */
     public static class Injector {
         private static native boolean addDeltaForTest(int i, long j, long j2, long[][] jArr, long j3);
 

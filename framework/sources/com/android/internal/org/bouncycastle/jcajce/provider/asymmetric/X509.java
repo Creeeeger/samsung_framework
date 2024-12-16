@@ -6,7 +6,6 @@ import com.android.internal.org.bouncycastle.jcajce.provider.util.AsymmetricAlgo
 /* loaded from: classes5.dex */
 public class X509 {
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AsymmetricAlgorithmProvider {
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvider
         public void configure(ConfigurableProvider provider) {

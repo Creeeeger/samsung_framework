@@ -9,7 +9,7 @@ import android.telephony.mbms.MbmsDownloadReceiver;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class VendorUtils {
     public static final String ACTION_CLEANUP = "android.telephony.mbms.action.CLEANUP";
     public static final String ACTION_DOWNLOAD_RESULT_INTERNAL = "android.telephony.mbms.action.DOWNLOAD_RESULT_INTERNAL";

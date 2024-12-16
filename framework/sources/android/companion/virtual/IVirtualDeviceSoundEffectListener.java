@@ -12,7 +12,6 @@ public interface IVirtualDeviceSoundEffectListener extends IInterface {
 
     void onPlaySoundEffect(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IVirtualDeviceSoundEffectListener {
         @Override // android.companion.virtual.IVirtualDeviceSoundEffectListener
         public void onPlaySoundEffect(int effectType) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IVirtualDeviceSoundEffectListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IVirtualDeviceSoundEffectListener {
         static final int TRANSACTION_onPlaySoundEffect = 1;
 
@@ -67,26 +65,22 @@ public interface IVirtualDeviceSoundEffectListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVirtualDeviceSoundEffectListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVirtualDeviceSoundEffectListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVirtualDeviceSoundEffectListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPlaySoundEffect(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPlaySoundEffect(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IVirtualDeviceSoundEffectListener {
+        private static class Proxy implements IVirtualDeviceSoundEffectListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

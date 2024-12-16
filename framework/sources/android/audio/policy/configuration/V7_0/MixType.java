@@ -15,7 +15,7 @@ public enum MixType {
         return this.rawName;
     }
 
-    public static MixType fromString(String rawString) {
+    static MixType fromString(String rawString) {
         for (MixType _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

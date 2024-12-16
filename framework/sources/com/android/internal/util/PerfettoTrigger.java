@@ -15,14 +15,13 @@ public class PerfettoTrigger {
 
     public static void trigger(String triggerName) {
         synchronized (sLock) {
-            SparseLongArray sparseLongArray = sLastInvocationPerTrigger;
-            long lastTrigger = sparseLongArray.get(triggerName.hashCode());
+            long lastTrigger = sLastInvocationPerTrigger.get(triggerName.hashCode());
             long sinceLastTrigger = SystemClock.elapsedRealtime() - lastTrigger;
             if (sinceLastTrigger < 300000) {
                 Log.v(TAG, "Not triggering " + triggerName + " - not enough time since last trigger");
                 return;
             }
-            sparseLongArray.put(triggerName.hashCode(), SystemClock.elapsedRealtime());
+            sLastInvocationPerTrigger.put(triggerName.hashCode(), SystemClock.elapsedRealtime());
             try {
                 ProcessBuilder pb = new ProcessBuilder(TRIGGER_COMMAND, triggerName);
                 Log.v(TAG, "Triggering " + String.join(" ", pb.command()));

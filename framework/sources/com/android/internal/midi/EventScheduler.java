@@ -3,7 +3,7 @@ package com.android.internal.midi;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class EventScheduler {
     public static final long NANOS_PER_MILLI = 1000000;
     private boolean mClosed;
@@ -12,7 +12,6 @@ public class EventScheduler {
     private int mMaxPoolSize = 200;
     protected volatile SortedMap<Long, FastEventQueue> mEventBuffer = new TreeMap();
 
-    /* loaded from: classes4.dex */
     public static class FastEventQueue {
         volatile long mEventsAdded = 1;
         volatile long mEventsRemoved = 0;
@@ -44,7 +43,6 @@ public class EventScheduler {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class SchedulableEvent {
         private volatile SchedulableEvent mNext = null;
         private long mTimestamp;
@@ -63,8 +61,7 @@ public class EventScheduler {
     }
 
     public SchedulableEvent removeEventfromPool() {
-        FastEventQueue fastEventQueue = this.mEventPool;
-        if (fastEventQueue == null || fastEventQueue.size() <= 1) {
+        if (this.mEventPool == null || this.mEventPool.size() <= 1) {
             return null;
         }
         SchedulableEvent event = this.mEventPool.remove();
@@ -72,10 +69,9 @@ public class EventScheduler {
     }
 
     public void addEventToPool(SchedulableEvent event) {
-        FastEventQueue fastEventQueue = this.mEventPool;
-        if (fastEventQueue == null) {
+        if (this.mEventPool == null) {
             this.mEventPool = new FastEventQueue(event);
-        } else if (fastEventQueue.size() < this.mMaxPoolSize) {
+        } else if (this.mEventPool.size() < this.mMaxPoolSize) {
             this.mEventPool.add(event);
         }
     }
@@ -147,7 +143,7 @@ public class EventScheduler {
         return event;
     }
 
-    public void flush() {
+    protected void flush() {
         this.mEventBuffer = new TreeMap();
     }
 

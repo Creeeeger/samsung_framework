@@ -15,7 +15,6 @@ public abstract class HdmiRecordListener {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static class TimerStatusData {
         private int mDurationHour;
         private int mDurationMinute;
@@ -26,13 +25,12 @@ public abstract class HdmiRecordListener {
         private boolean mProgrammed;
         private int mProgrammedInfo;
 
-        public static TimerStatusData parseFrom(int result) {
+        static TimerStatusData parseFrom(int result) {
             TimerStatusData data = new TimerStatusData();
             data.mOverlapped = ((result >> 31) & 1) != 0;
             data.mMediaInfo = (result >> 29) & 3;
-            boolean z = ((result >> 28) & 1) != 0;
-            data.mProgrammed = z;
-            if (z) {
+            data.mProgrammed = ((result >> 28) & 1) != 0;
+            if (data.mProgrammed) {
                 data.mProgrammedInfo = (result >> 24) & 15;
                 data.mDurationHour = bcdByteToInt((byte) ((result >> 16) & 255));
                 data.mDurationMinute = bcdByteToInt((byte) ((result >> 8) & 255));

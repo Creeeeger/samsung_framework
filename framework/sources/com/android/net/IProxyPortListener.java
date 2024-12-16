@@ -12,7 +12,6 @@ public interface IProxyPortListener extends IInterface {
 
     void setProxyPort(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IProxyPortListener {
         @Override // com.android.net.IProxyPortListener
         public void setProxyPort(int port) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IProxyPortListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IProxyPortListener {
         static final int TRANSACTION_setProxyPort = 1;
 
@@ -67,24 +65,21 @@ public interface IProxyPortListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProxyPortListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProxyPortListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProxyPortListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setProxyPort(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setProxyPort(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IProxyPortListener {
             private IBinder mRemote;
 

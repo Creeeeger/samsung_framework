@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextFlatMotion extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextFlatMotion> CREATOR = new Parcelable.Creator<SemContextFlatMotion>() { // from class: com.samsung.android.hardware.context.SemContextFlatMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextFlatMotion createFromParcel(Parcel in) {
             return new SemContextFlatMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextFlatMotion[] newArray(int size) {
             return new SemContextFlatMotion[size];
@@ -25,24 +24,7 @@ public class SemContextFlatMotion extends SemContextEventContext {
     public static final int UNKNOWN = 0;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextFlatMotion$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextFlatMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextFlatMotion createFromParcel(Parcel in) {
-            return new SemContextFlatMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextFlatMotion[] newArray(int size) {
-            return new SemContextFlatMotion[size];
-        }
-    }
-
-    public SemContextFlatMotion() {
+    SemContextFlatMotion() {
         this.mContext = new Bundle();
     }
 

@@ -4,7 +4,7 @@ import android.hardware.camera2.utils.HashCodeHelpers;
 import android.util.Size;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class StreamConfiguration {
     protected int mFormat;
     protected int mHeight;
@@ -60,6 +60,6 @@ public class StreamConfiguration {
     }
 
     public int hashCode() {
-        return HashCodeHelpers.hashCode(this.mFormat, this.mWidth, this.mHeight, this.mInput ? 1 : 0);
+        return HashCodeHelpers.hashCode(this.mFormat, this.mWidth, this.mHeight, this.mInput);
     }
 }

@@ -3,15 +3,13 @@ package android.hardware.camera2;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class CameraOfflineSession extends CameraCaptureSession {
 
-    /* loaded from: classes.dex */
     public static abstract class CameraOfflineSessionCallback {
         public static final int STATUS_INTERNAL_ERROR = 0;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface StatusCode {
         }
 

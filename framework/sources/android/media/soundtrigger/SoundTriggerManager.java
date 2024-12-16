@@ -41,16 +41,13 @@ public final class SoundTriggerManager {
     public static final int FLAG_MESSAGE_TYPE_RECOGNITION_RESUMED = 3;
     public static final int FLAG_MESSAGE_TYPE_UNKNOWN = -1;
     private static final String TAG = "SoundTriggerManager";
-    private final IBinder mBinderToken;
     private final Context mContext;
-    private final HashMap<UUID, SoundTriggerDetector> mReceiverInstanceMap;
     private final ISoundTriggerService mSoundTriggerService;
     private final ISoundTriggerSession mSoundTriggerSession;
+    private final IBinder mBinderToken = new Binder();
+    private final HashMap<UUID, SoundTriggerDetector> mReceiverInstanceMap = new HashMap<>();
 
     public SoundTriggerManager(Context context, ISoundTriggerService soundTriggerService) {
-        Binder binder = new Binder();
-        this.mBinderToken = binder;
-        this.mReceiverInstanceMap = new HashMap<>();
         try {
             Identity originatorIdentity = new Identity();
             originatorIdentity.packageName = ActivityThread.currentOpPackageName();
@@ -63,7 +60,7 @@ public final class SoundTriggerManager {
                     }
                 }).findFirst().orElse(null);
                 if (moduleProperties != null) {
-                    this.mSoundTriggerSession = soundTriggerService.attachAsOriginator(originatorIdentity, moduleProperties, binder);
+                    this.mSoundTriggerSession = soundTriggerService.attachAsOriginator(originatorIdentity, moduleProperties, this.mBinderToken);
                 } else {
                     this.mSoundTriggerSession = null;
                 }
@@ -79,7 +76,7 @@ public final class SoundTriggerManager {
         }
     }
 
-    public static /* synthetic */ boolean lambda$new$0(SoundTrigger.ModuleProperties prop) {
+    static /* synthetic */ boolean lambda$new$0(SoundTrigger.ModuleProperties prop) {
         return !prop.getSupportedModelArch().equals("injection");
     }
 
@@ -107,15 +104,12 @@ public final class SoundTriggerManager {
     }
 
     private SoundTriggerManager(Context context, ISoundTriggerService soundTriggerService, SoundTrigger.ModuleProperties properties) {
-        Binder binder = new Binder();
-        this.mBinderToken = binder;
-        this.mReceiverInstanceMap = new HashMap<>();
         try {
             Identity originatorIdentity = new Identity();
             originatorIdentity.packageName = ActivityThread.currentOpPackageName();
             SafeCloseable ignored = ClearCallingIdentityContext.create();
             try {
-                this.mSoundTriggerSession = soundTriggerService.attachAsOriginator(originatorIdentity, (SoundTrigger.ModuleProperties) Objects.requireNonNull(properties), binder);
+                this.mSoundTriggerSession = soundTriggerService.attachAsOriginator(originatorIdentity, (SoundTrigger.ModuleProperties) Objects.requireNonNull(properties), this.mBinderToken);
                 if (ignored != null) {
                     ignored.close();
                 }
@@ -149,12 +143,11 @@ public final class SoundTriggerManager {
 
     @Deprecated
     public void updateModel(Model model) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            iSoundTriggerSession.updateSoundModel(model.getGenericSoundModel());
+            this.mSoundTriggerSession.updateSoundModel(model.getGenericSoundModel());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -162,12 +155,11 @@ public final class SoundTriggerManager {
 
     @Deprecated
     public Model getModel(UUID soundModelId) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            SoundTrigger.GenericSoundModel model = iSoundTriggerSession.getSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
+            SoundTrigger.GenericSoundModel model = this.mSoundTriggerSession.getSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
             if (model == null) {
                 return null;
             }
@@ -179,12 +171,11 @@ public final class SoundTriggerManager {
 
     @Deprecated
     public void deleteModel(UUID soundModelId) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            iSoundTriggerSession.deleteSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
+            this.mSoundTriggerSession.deleteSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -197,8 +188,7 @@ public final class SoundTriggerManager {
         }
         this.mReceiverInstanceMap.get(soundModelId);
         try {
-            ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-            SoundTriggerDetector newInstance = new SoundTriggerDetector(iSoundTriggerSession, iSoundTriggerSession.getSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId))), callback, handler);
+            SoundTriggerDetector newInstance = new SoundTriggerDetector(this.mSoundTriggerSession, this.mSoundTriggerSession.getSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId))), callback, handler);
             this.mReceiverInstanceMap.put(soundModelId, newInstance);
             return newInstance;
         } catch (RemoteException e) {
@@ -206,7 +196,6 @@ public final class SoundTriggerManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Model {
         private SoundTrigger.GenericSoundModel mGenericSoundModel;
 
@@ -272,48 +261,44 @@ public final class SoundTriggerManager {
         Objects.requireNonNull(soundModelId);
         Objects.requireNonNull(detectionService);
         Objects.requireNonNull(config);
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            return iSoundTriggerSession.startRecognitionForService(new ParcelUuid(soundModelId), params, detectionService, config);
+            return this.mSoundTriggerSession.startRecognitionForService(new ParcelUuid(soundModelId), params, detectionService, config);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int stopRecognition(UUID soundModelId) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            return iSoundTriggerSession.stopRecognitionForService(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
+            return this.mSoundTriggerSession.stopRecognitionForService(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int unloadSoundModel(UUID soundModelId) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            return iSoundTriggerSession.unloadSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
+            return this.mSoundTriggerSession.unloadSoundModel(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public boolean isRecognitionActive(UUID soundModelId) {
-        ISoundTriggerSession iSoundTriggerSession;
-        if (soundModelId == null || (iSoundTriggerSession = this.mSoundTriggerSession) == null) {
+        if (soundModelId == null || this.mSoundTriggerSession == null) {
             return false;
         }
         try {
-            return iSoundTriggerSession.isRecognitionActive(new ParcelUuid(soundModelId));
+            return this.mSoundTriggerSession.isRecognitionActive(new ParcelUuid(soundModelId));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -328,63 +313,58 @@ public final class SoundTriggerManager {
     }
 
     public int getModelState(UUID soundModelId) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         if (soundModelId == null) {
             return Integer.MIN_VALUE;
         }
         try {
-            return iSoundTriggerSession.getModelState(new ParcelUuid(soundModelId));
+            return this.mSoundTriggerSession.getModelState(new ParcelUuid(soundModelId));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public SoundTrigger.ModuleProperties getModuleProperties() {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             return null;
         }
         try {
-            return iSoundTriggerSession.getModuleProperties();
+            return this.mSoundTriggerSession.getModuleProperties();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int setParameter(UUID soundModelId, int modelParam, int value) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            return iSoundTriggerSession.setParameter(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)), modelParam, value);
+            return this.mSoundTriggerSession.setParameter(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)), modelParam, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getParameter(UUID soundModelId, int modelParam) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            return iSoundTriggerSession.getParameter(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)), modelParam);
+            return this.mSoundTriggerSession.getParameter(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)), modelParam);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public SoundTrigger.ModelParamRange queryParameter(UUID soundModelId, int modelParam) {
-        ISoundTriggerSession iSoundTriggerSession = this.mSoundTriggerSession;
-        if (iSoundTriggerSession == null) {
+        if (this.mSoundTriggerSession == null) {
             throw new IllegalStateException("No underlying SoundTriggerModule available");
         }
         try {
-            return iSoundTriggerSession.queryParameter(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)), modelParam);
+            return this.mSoundTriggerSession.queryParameter(new ParcelUuid((UUID) Objects.requireNonNull(soundModelId)), modelParam);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

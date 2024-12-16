@@ -37,12 +37,9 @@ public class Session {
     private boolean mIsExternal = false;
     private int mChildCounter = 0;
 
-    /* loaded from: classes3.dex */
     public static class Info implements Parcelable {
         public static final Parcelable.Creator<Info> CREATOR = new Parcelable.Creator<Info>() { // from class: android.telecom.Logging.Session.Info.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Info createFromParcel(Parcel source) {
                 String id = source.readString();
@@ -51,6 +48,7 @@ public class Session {
                 return new Info(id, methodName, ownerInfo);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Info[] newArray(int size) {
                 return new Info[size];
@@ -59,10 +57,6 @@ public class Session {
         public final String methodPath;
         public final String ownerInfo;
         public final String sessionId;
-
-        /* synthetic */ Info(String str, String str2, String str3, InfoIA infoIA) {
-            this(str, str2, str3);
-        }
 
         private Info(String id, String path, String owner) {
             this.sessionId = id;
@@ -82,26 +76,6 @@ public class Session {
                 newInfo = ownerInfo != null ? ownerInfo : s.getOwnerInfo();
             }
             return new Info(s.getFullSessionId(), s.getFullMethodPath(!Log.DEBUG && s.isSessionExternal()), newInfo);
-        }
-
-        /* renamed from: android.telecom.Logging.Session$Info$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Info> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Info createFromParcel(Parcel source) {
-                String id = source.readString();
-                String methodName = source.readString();
-                String ownerInfo = source.readString();
-                return new Info(id, methodName, ownerInfo);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Info[] newArray(int size) {
-                return new Info[size];
-            }
         }
 
         @Override // android.os.Parcelable
@@ -216,11 +190,10 @@ public class Session {
     }
 
     public long getLocalExecutionTime() {
-        long j = this.mExecutionEndTimeMs;
-        if (j == -1) {
+        if (this.mExecutionEndTimeMs == -1) {
             return -1L;
         }
-        return j - this.mExecutionStartTimeMs;
+        return this.mExecutionEndTimeMs - this.mExecutionStartTimeMs;
     }
 
     public synchronized String getNextChildId() {
@@ -230,6 +203,7 @@ public class Session {
         return String.valueOf(i);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public String getFullSessionId() {
         return getFullSessionId(0);
     }
@@ -334,25 +308,13 @@ public class Session {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isSessionExternal() {
         return getRootSession("isSessionExternal").isExternal();
     }
 
     public int hashCode() {
-        String str = this.mSessionId;
-        int hashCode = (str != null ? str.hashCode() : 0) * 31;
-        String str2 = this.mShortMethodName;
-        int hashCode2 = (hashCode + (str2 != null ? str2.hashCode() : 0)) * 31;
-        long j = this.mExecutionStartTimeMs;
-        int i = (hashCode2 + ((int) (j ^ (j >>> 32)))) * 31;
-        long j2 = this.mExecutionEndTimeMs;
-        int i2 = (i + ((int) (j2 ^ (j2 >>> 32)))) * 31;
-        Session session = this.mParentSession;
-        int hashCode3 = (i2 + (session != null ? session.hashCode() : 0)) * 31;
-        ArrayList<Session> arrayList = this.mChildSessions;
-        int hashCode4 = (((((((hashCode3 + (arrayList != null ? arrayList.hashCode() : 0)) * 31) + (this.mIsCompleted ? 1 : 0)) * 31) + this.mChildCounter) * 31) + (this.mIsStartedFromActiveSession ? 1 : 0)) * 31;
-        String str3 = this.mOwnerInfo;
-        return hashCode4 + (str3 != null ? str3.hashCode() : 0);
+        return ((((((((((((((((((this.mSessionId != null ? this.mSessionId.hashCode() : 0) * 31) + (this.mShortMethodName != null ? this.mShortMethodName.hashCode() : 0)) * 31) + ((int) (this.mExecutionStartTimeMs ^ (this.mExecutionStartTimeMs >>> 32)))) * 31) + ((int) (this.mExecutionEndTimeMs ^ (this.mExecutionEndTimeMs >>> 32)))) * 31) + (this.mParentSession != null ? this.mParentSession.hashCode() : 0)) * 31) + (this.mChildSessions != null ? this.mChildSessions.hashCode() : 0)) * 31) + (this.mIsCompleted ? 1 : 0)) * 31) + this.mChildCounter) * 31) + (this.mIsStartedFromActiveSession ? 1 : 0)) * 31) + (this.mOwnerInfo != null ? this.mOwnerInfo.hashCode() : 0);
     }
 
     public boolean equals(Object o) {
@@ -366,25 +328,20 @@ public class Session {
         if (this.mExecutionStartTimeMs != session.mExecutionStartTimeMs || this.mExecutionEndTimeMs != session.mExecutionEndTimeMs || this.mIsCompleted != session.mIsCompleted || this.mChildCounter != session.mChildCounter || this.mIsStartedFromActiveSession != session.mIsStartedFromActiveSession) {
             return false;
         }
-        String str = this.mSessionId;
-        if (str == null ? session.mSessionId != null : !str.equals(session.mSessionId)) {
+        if (this.mSessionId == null ? session.mSessionId != null : !this.mSessionId.equals(session.mSessionId)) {
             return false;
         }
-        String str2 = this.mShortMethodName;
-        if (str2 == null ? session.mShortMethodName != null : !str2.equals(session.mShortMethodName)) {
+        if (this.mShortMethodName == null ? session.mShortMethodName != null : !this.mShortMethodName.equals(session.mShortMethodName)) {
             return false;
         }
-        Session session2 = this.mParentSession;
-        if (session2 == null ? session.mParentSession != null : !session2.equals(session.mParentSession)) {
+        if (this.mParentSession == null ? session.mParentSession != null : !this.mParentSession.equals(session.mParentSession)) {
             return false;
         }
-        ArrayList<Session> arrayList = this.mChildSessions;
-        if (arrayList == null ? session.mChildSessions != null : !arrayList.equals(session.mChildSessions)) {
+        if (this.mChildSessions == null ? session.mChildSessions != null : !this.mChildSessions.equals(session.mChildSessions)) {
             return false;
         }
-        String str3 = this.mOwnerInfo;
-        if (str3 != null) {
-            return str3.equals(session.mOwnerInfo);
+        if (this.mOwnerInfo != null) {
+            return this.mOwnerInfo.equals(session.mOwnerInfo);
         }
         if (session.mOwnerInfo == null) {
             return true;

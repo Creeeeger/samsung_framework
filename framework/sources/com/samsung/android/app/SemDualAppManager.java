@@ -33,60 +33,58 @@ import java.util.Map;
 
 /* loaded from: classes5.dex */
 public class SemDualAppManager {
-    private static final String ACTION3_PACKAGE_NAME;
-    private static final String ADW_PACKAGE_NAME;
-    private static final String[] AFW_CAPABLE_LAUNCHER_APPS;
-    private static final String BLACKBERRYMESSENGER_PACKAGE_NAME;
-    private static final String[] CHINA_SALES_CODES;
     public static final String DA_PROFILE_ID_PROPERTY_NAME = "sys.dualapp.profile_id";
-    private static final String DCM_LIVEUX_PACKAGE_NAME;
-    static final String[] DUAL_APP_WHITELIST_PACKAGES;
-    static final String[] DUAL_APP_WHITELIST_PACKAGES_FOR_CHINA;
     public static final String DUAL_CALLER_PACKAGE_NAME = "callerPackage";
     public static final String DUAL_ORI_SHORTCUT_COMPONENT = "dual_shortcut_component";
-    private static final String FACEBOOKMESSENGER_PACKAGE_NAME;
-    private static final String FACEBOOK_PACKAGE_NAME;
-    private static final String GOOGLE_QUICKSEARCHBOX_PACKGE_NAME;
-    private static final String HIKE_PACKAGE_NAME;
-    private static final String HOLO_PACKAGE_NAME;
-    private static final String ICQ_PACKAGE_NAME;
-    private static final String KAKAOTALK_PACKAGE_NAME;
     private static final String KAKAOTALK_SETTINGS_THEME_URI = "kakaotalk://settings/theme/";
-    private static final String KIK_PACKAGE_NAME;
-    private static final String LINE_PACKAGE_NAME;
     public static final int MAX_DUALAPP_ID = 99;
-    private static final String MICROSOFT_PACKAGE_NAME;
     public static final int MIN_DUALAPP_ID = 95;
-    private static final String NOUGAT_PACKAGE_NAME;
-    private static final String NOVA_PACKAGE_NAME;
-    private static final String QQMOBILECHINA_PACKAGE_NAME;
-    private static final String QQMOBILEINTERNATIONAL_PACKAGE_NAME;
-    private static final String[] SAMSUNG_LAUNCHER_APPS;
-    private static final String SEC_DESKTOP_LAUNCHER_PACKGE_NAME;
-    private static final String SEC_EASY_LAUNCHER_PACKGE_NAME;
-    private static final String SEC_EMERGENCY_LAUNCHER_PACKGE_NAME;
-    private static final String SEC_LAUNCHER_PACKGE_NAME;
     private static final boolean SEC_PRODUCT_FEATURE_KNOX_SUPPORT_DUAL_APP = true;
-    private static final String SKYPE_PACKAGE_NAME;
-    private static final String SMART3_PACKAGE_NAME;
-    private static final String SNAPCHAT_PACKAGE_NAME;
     private static final String TAG = "SemDualAppManager";
-    private static final String TELEGRAM_PACKAGE_NAME;
-    private static final String VIBER_PACKAGE_NAME;
-    private static final String WECHAT_PACKAGE_NAME;
-    private static final String WEIBO_PACKAGE_NAME;
-    private static final String WHATSAPP_PACKAGE_NAME;
-    private static final String YAHOOMESSENGER_PACKAGE_NAME;
-    private static final String YANDEX_PACKAGE_NAME;
-    private static final String ZALO_PACKAGE_NAME;
-    private static Context mContext;
-    private static boolean mIsChinaModel;
-    private static String mSalesCode;
     private Map<ComponentName, Integer> mDuplicateInitialIntents = new HashMap();
     private static SemDualAppManager sDAInstance = null;
     private static ISemDualAppManager mService = null;
+    private static final String FACEBOOK_PACKAGE_NAME = decodeString("Y29tLmZhY2Vib29rLmthdGFuYQ==");
+    private static final String WHATSAPP_PACKAGE_NAME = decodeString("Y29tLndoYXRzYXBw");
+    private static final String FACEBOOKMESSENGER_PACKAGE_NAME = decodeString("Y29tLmZhY2Vib29rLm9yY2E=");
+    private static final String QQMOBILECHINA_PACKAGE_NAME = decodeString("Y29tLnRlbmNlbnQubW9iaWxlcXE=");
+    private static final String QQMOBILEINTERNATIONAL_PACKAGE_NAME = decodeString("Y29tLnRlbmNlbnQubW9iaWxlcXFp");
+    private static final String WECHAT_PACKAGE_NAME = decodeString("Y29tLnRlbmNlbnQubW0=");
+    private static final String SKYPE_PACKAGE_NAME = decodeString("Y29tLnNreXBlLnJhaWRlcg==");
+    private static final String VIBER_PACKAGE_NAME = decodeString("Y29tLnZpYmVyLnZvaXA=");
+    private static final String LINE_PACKAGE_NAME = decodeString("anAubmF2ZXIubGluZS5hbmRyb2lk");
+    private static final String BLACKBERRYMESSENGER_PACKAGE_NAME = decodeString("Y29tLmJibQ==");
+    private static final String TELEGRAM_PACKAGE_NAME = decodeString("b3JnLnRlbGVncmFtLm1lc3Nlbmdlcg==");
+    private static final String KAKAOTALK_PACKAGE_NAME = decodeString("Y29tLmtha2FvLnRhbGs=");
+    private static final String HIKE_PACKAGE_NAME = decodeString("Y29tLmJzYi5oaWtl");
+    private static final String ICQ_PACKAGE_NAME = decodeString("Y29tLmljcS5tb2JpbGUuY2xpZW50");
+    private static final String YAHOOMESSENGER_PACKAGE_NAME = decodeString("Y29tLnlhaG9vLm1vYmlsZS5jbGllbnQuYW5kcm9pZC5pbQ==");
+    private static final String ZALO_PACKAGE_NAME = decodeString("Y29tLnppbmcuemFsbw==");
+    private static final String SNAPCHAT_PACKAGE_NAME = decodeString("Y29tLnNuYXBjaGF0LmFuZHJvaWQ=");
+    private static final String WEIBO_PACKAGE_NAME = decodeString("Y29tLnNpbmEud2VpYm8=");
+    private static final String KIK_PACKAGE_NAME = decodeString("a2lrLmFuZHJvaWQ=");
+    private static final String SEC_LAUNCHER_PACKGE_NAME = decodeString("Y29tLnNlYy5hbmRyb2lkLmFwcC5sYXVuY2hlcg==");
+    private static final String SEC_EASY_LAUNCHER_PACKGE_NAME = decodeString("Y29tLnNlYy5hbmRyb2lkLmFwcC5lYXN5bGF1bmNoZXI=");
+    private static final String SEC_EMERGENCY_LAUNCHER_PACKGE_NAME = decodeString("Y29tLnNlYy5hbmRyb2lkLmVtZXJnZW5jeWxhdW5jaGVy");
+    private static final String SEC_DESKTOP_LAUNCHER_PACKGE_NAME = decodeString("Y29tLnNlYy5hbmRyb2lkLmFwcC5kZXNrdG9wbGF1bmNoZXI=");
+    private static final String GOOGLE_QUICKSEARCHBOX_PACKGE_NAME = decodeString("Y29tLmdvb2dsZS5hbmRyb2lkLmdvb2dsZXF1aWNrc2VhcmNoYm94");
+    private static final String NOVA_PACKAGE_NAME = decodeString("Y29tLnRlc2xhY29pbHN3LmxhdW5jaGVy");
+    private static final String MICROSOFT_PACKAGE_NAME = decodeString("Y29tLm1pY3Jvc29mdC5sYXVuY2hlcg==");
+    private static final String ADW_PACKAGE_NAME = decodeString("b3JnLmFkdy5sYXVuY2hlcg==");
+    private static final String ACTION3_PACKAGE_NAME = decodeString("Y29tLmFjdGlvbmxhdW5jaGVyLnBsYXlzdG9yZQ==");
+    private static final String HOLO_PACKAGE_NAME = decodeString("Y29tLm1vYmludC5ob2xvbGF1bmNoZXI=");
+    private static final String SMART3_PACKAGE_NAME = decodeString("Z2lubGVtb24uZmxvd2VyZnJlZQ==");
+    private static final String NOUGAT_PACKAGE_NAME = decodeString("Y29tLmNtbmxhdW5jaGVy");
+    private static final String YANDEX_PACKAGE_NAME = decodeString("Y29tLnlhbmRleC5sYXVuY2hlcg==");
+    private static final String DCM_LIVEUX_PACKAGE_NAME = decodeString("Y29tLm50dGRvY29tby5hbmRyb2lkLmRob21l");
+    private static String mSalesCode = SemSystemProperties.getSalesCode();
+    private static final String[] CHINA_SALES_CODES = {"CHN", "CHM", "CBK", "CTC", "CHU", "CHC"};
+    private static boolean mIsChinaModel = isChinaModel();
+    static final String[] DUAL_APP_WHITELIST_PACKAGES = {FACEBOOK_PACKAGE_NAME, WHATSAPP_PACKAGE_NAME, FACEBOOKMESSENGER_PACKAGE_NAME, QQMOBILECHINA_PACKAGE_NAME, QQMOBILEINTERNATIONAL_PACKAGE_NAME, WECHAT_PACKAGE_NAME, WEIBO_PACKAGE_NAME, SKYPE_PACKAGE_NAME, VIBER_PACKAGE_NAME, LINE_PACKAGE_NAME, BLACKBERRYMESSENGER_PACKAGE_NAME, TELEGRAM_PACKAGE_NAME, KAKAOTALK_PACKAGE_NAME, HIKE_PACKAGE_NAME, ICQ_PACKAGE_NAME, YAHOOMESSENGER_PACKAGE_NAME, ZALO_PACKAGE_NAME, SNAPCHAT_PACKAGE_NAME, KIK_PACKAGE_NAME};
+    static final String[] DUAL_APP_WHITELIST_PACKAGES_FOR_CHINA = {WECHAT_PACKAGE_NAME, QQMOBILECHINA_PACKAGE_NAME, WEIBO_PACKAGE_NAME};
+    private static final String[] AFW_CAPABLE_LAUNCHER_APPS = {SEC_LAUNCHER_PACKGE_NAME, SEC_EASY_LAUNCHER_PACKGE_NAME, SEC_EMERGENCY_LAUNCHER_PACKGE_NAME, SEC_DESKTOP_LAUNCHER_PACKGE_NAME, GOOGLE_QUICKSEARCHBOX_PACKGE_NAME, NOVA_PACKAGE_NAME, ACTION3_PACKAGE_NAME, HOLO_PACKAGE_NAME, SMART3_PACKAGE_NAME, NOUGAT_PACKAGE_NAME, YANDEX_PACKAGE_NAME, DCM_LIVEUX_PACKAGE_NAME, MICROSOFT_PACKAGE_NAME, ADW_PACKAGE_NAME};
+    private static final String[] SAMSUNG_LAUNCHER_APPS = {SEC_LAUNCHER_PACKGE_NAME, SEC_EASY_LAUNCHER_PACKGE_NAME, SEC_EMERGENCY_LAUNCHER_PACKGE_NAME, SEC_DESKTOP_LAUNCHER_PACKGE_NAME};
 
-    /* loaded from: classes5.dex */
     public interface DualAppVersion {
         public static final int DUAL_APP_VERSION_1_0_0 = 100;
         public static final int DUAL_APP_VERSION_1_1_0 = 110;
@@ -96,10 +94,10 @@ public class SemDualAppManager {
         public static final int DUAL_APP_VERSION_3_2_0 = 320;
         public static final int DUAL_APP_VERSION_3_3_0 = 330;
         public static final int DUAL_APP_VERSION_3_4_0 = 340;
+        public static final int DUAL_APP_VERSION_3_5_0 = 350;
         public static final int DUAL_APP_VERSION_NONE = 0;
     }
 
-    /* loaded from: classes5.dex */
     private interface SepVersionInt {
         public static final int SEP_VER_10_0_INT = 100000;
         public static final int SEP_VER_11_0_INT = 110000;
@@ -107,85 +105,10 @@ public class SemDualAppManager {
         public static final int SEP_VER_13_0_INT = 130000;
         public static final int SEP_VER_14_0_INT = 140000;
         public static final int SEP_VER_15_0_INT = 150000;
+        public static final int SEP_VER_16_0_INT = 160000;
         public static final int SEP_VER_8_1_INT = 80100;
         public static final int SEP_VER_8_5_INT = 80500;
         public static final int SEP_VER_9_0_INT = 90000;
-    }
-
-    static {
-        String decodeString = decodeString("Y29tLmZhY2Vib29rLmthdGFuYQ==");
-        FACEBOOK_PACKAGE_NAME = decodeString;
-        String decodeString2 = decodeString("Y29tLndoYXRzYXBw");
-        WHATSAPP_PACKAGE_NAME = decodeString2;
-        String decodeString3 = decodeString("Y29tLmZhY2Vib29rLm9yY2E=");
-        FACEBOOKMESSENGER_PACKAGE_NAME = decodeString3;
-        String decodeString4 = decodeString("Y29tLnRlbmNlbnQubW9iaWxlcXE=");
-        QQMOBILECHINA_PACKAGE_NAME = decodeString4;
-        String decodeString5 = decodeString("Y29tLnRlbmNlbnQubW9iaWxlcXFp");
-        QQMOBILEINTERNATIONAL_PACKAGE_NAME = decodeString5;
-        String decodeString6 = decodeString("Y29tLnRlbmNlbnQubW0=");
-        WECHAT_PACKAGE_NAME = decodeString6;
-        String decodeString7 = decodeString("Y29tLnNreXBlLnJhaWRlcg==");
-        SKYPE_PACKAGE_NAME = decodeString7;
-        String decodeString8 = decodeString("Y29tLnZpYmVyLnZvaXA=");
-        VIBER_PACKAGE_NAME = decodeString8;
-        String decodeString9 = decodeString("anAubmF2ZXIubGluZS5hbmRyb2lk");
-        LINE_PACKAGE_NAME = decodeString9;
-        String decodeString10 = decodeString("Y29tLmJibQ==");
-        BLACKBERRYMESSENGER_PACKAGE_NAME = decodeString10;
-        String decodeString11 = decodeString("b3JnLnRlbGVncmFtLm1lc3Nlbmdlcg==");
-        TELEGRAM_PACKAGE_NAME = decodeString11;
-        String decodeString12 = decodeString("Y29tLmtha2FvLnRhbGs=");
-        KAKAOTALK_PACKAGE_NAME = decodeString12;
-        String decodeString13 = decodeString("Y29tLmJzYi5oaWtl");
-        HIKE_PACKAGE_NAME = decodeString13;
-        String decodeString14 = decodeString("Y29tLmljcS5tb2JpbGUuY2xpZW50");
-        ICQ_PACKAGE_NAME = decodeString14;
-        String decodeString15 = decodeString("Y29tLnlhaG9vLm1vYmlsZS5jbGllbnQuYW5kcm9pZC5pbQ==");
-        YAHOOMESSENGER_PACKAGE_NAME = decodeString15;
-        String decodeString16 = decodeString("Y29tLnppbmcuemFsbw==");
-        ZALO_PACKAGE_NAME = decodeString16;
-        String decodeString17 = decodeString("Y29tLnNuYXBjaGF0LmFuZHJvaWQ=");
-        SNAPCHAT_PACKAGE_NAME = decodeString17;
-        String decodeString18 = decodeString("Y29tLnNpbmEud2VpYm8=");
-        WEIBO_PACKAGE_NAME = decodeString18;
-        String decodeString19 = decodeString("a2lrLmFuZHJvaWQ=");
-        KIK_PACKAGE_NAME = decodeString19;
-        String decodeString20 = decodeString("Y29tLnNlYy5hbmRyb2lkLmFwcC5sYXVuY2hlcg==");
-        SEC_LAUNCHER_PACKGE_NAME = decodeString20;
-        String decodeString21 = decodeString("Y29tLnNlYy5hbmRyb2lkLmFwcC5lYXN5bGF1bmNoZXI=");
-        SEC_EASY_LAUNCHER_PACKGE_NAME = decodeString21;
-        String decodeString22 = decodeString("Y29tLnNlYy5hbmRyb2lkLmVtZXJnZW5jeWxhdW5jaGVy");
-        SEC_EMERGENCY_LAUNCHER_PACKGE_NAME = decodeString22;
-        String decodeString23 = decodeString("Y29tLnNlYy5hbmRyb2lkLmFwcC5kZXNrdG9wbGF1bmNoZXI=");
-        SEC_DESKTOP_LAUNCHER_PACKGE_NAME = decodeString23;
-        String decodeString24 = decodeString("Y29tLmdvb2dsZS5hbmRyb2lkLmdvb2dsZXF1aWNrc2VhcmNoYm94");
-        GOOGLE_QUICKSEARCHBOX_PACKGE_NAME = decodeString24;
-        String decodeString25 = decodeString("Y29tLnRlc2xhY29pbHN3LmxhdW5jaGVy");
-        NOVA_PACKAGE_NAME = decodeString25;
-        String decodeString26 = decodeString("Y29tLm1pY3Jvc29mdC5sYXVuY2hlcg==");
-        MICROSOFT_PACKAGE_NAME = decodeString26;
-        String decodeString27 = decodeString("b3JnLmFkdy5sYXVuY2hlcg==");
-        ADW_PACKAGE_NAME = decodeString27;
-        String decodeString28 = decodeString("Y29tLmFjdGlvbmxhdW5jaGVyLnBsYXlzdG9yZQ==");
-        ACTION3_PACKAGE_NAME = decodeString28;
-        String decodeString29 = decodeString("Y29tLm1vYmludC5ob2xvbGF1bmNoZXI=");
-        HOLO_PACKAGE_NAME = decodeString29;
-        String decodeString30 = decodeString("Z2lubGVtb24uZmxvd2VyZnJlZQ==");
-        SMART3_PACKAGE_NAME = decodeString30;
-        String decodeString31 = decodeString("Y29tLmNtbmxhdW5jaGVy");
-        NOUGAT_PACKAGE_NAME = decodeString31;
-        String decodeString32 = decodeString("Y29tLnlhbmRleC5sYXVuY2hlcg==");
-        YANDEX_PACKAGE_NAME = decodeString32;
-        String decodeString33 = decodeString("Y29tLm50dGRvY29tby5hbmRyb2lkLmRob21l");
-        DCM_LIVEUX_PACKAGE_NAME = decodeString33;
-        mSalesCode = SemSystemProperties.getSalesCode();
-        CHINA_SALES_CODES = new String[]{"CHN", "CHM", "CBK", "CTC", "CHU", "CHC"};
-        mIsChinaModel = isChinaModel();
-        DUAL_APP_WHITELIST_PACKAGES = new String[]{decodeString, decodeString2, decodeString3, decodeString4, decodeString5, decodeString6, decodeString18, decodeString7, decodeString8, decodeString9, decodeString10, decodeString11, decodeString12, decodeString13, decodeString14, decodeString15, decodeString16, decodeString17, decodeString19};
-        DUAL_APP_WHITELIST_PACKAGES_FOR_CHINA = new String[]{decodeString6, decodeString4, decodeString18};
-        AFW_CAPABLE_LAUNCHER_APPS = new String[]{decodeString20, decodeString21, decodeString22, decodeString23, decodeString24, decodeString25, decodeString28, decodeString29, decodeString30, decodeString31, decodeString32, decodeString33, decodeString26, decodeString27};
-        SAMSUNG_LAUNCHER_APPS = new String[]{decodeString20, decodeString21, decodeString22, decodeString23};
     }
 
     private SemDualAppManager() {
@@ -203,7 +126,6 @@ public class SemDualAppManager {
             synchronized (SemDualAppManager.class) {
                 if (sDAInstance == null) {
                     sDAInstance = new SemDualAppManager();
-                    mContext = context;
                 }
             }
         }
@@ -332,21 +254,21 @@ public class SemDualAppManager {
         return true;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:38:0x00f8 A[Catch: Exception -> 0x0139, TryCatch #4 {Exception -> 0x0139, blocks: (B:3:0x0004, B:7:0x0010, B:10:0x0027, B:12:0x0044, B:14:0x004b, B:18:0x0057, B:26:0x006b, B:28:0x006f, B:31:0x0076, B:33:0x0088, B:36:0x0091, B:38:0x00f8, B:39:0x0103, B:52:0x00bf, B:50:0x00dd, B:53:0x009b), top: B:2:0x0004 }] */
+    /* JADX WARN: Removed duplicated region for block: B:35:0x00ec A[Catch: Exception -> 0x012b, TryCatch #0 {Exception -> 0x012b, blocks: (B:3:0x0006, B:7:0x0012, B:10:0x0027, B:12:0x0040, B:14:0x0047, B:18:0x0055, B:26:0x0070, B:28:0x0074, B:30:0x008a, B:33:0x0093, B:35:0x00ec, B:36:0x00f5, B:49:0x00b5, B:47:0x00d1, B:50:0x009d), top: B:2:0x0006 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void addDualAppAccounts(android.widget.LinearLayout r19, int r20, int r21) {
+    public void addDualAppAccounts(android.content.Context r20, android.widget.LinearLayout r21, int r22, int r23) {
         /*
-            Method dump skipped, instructions count: 339
+            Method dump skipped, instructions count: 325
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.app.SemDualAppManager.addDualAppAccounts(android.widget.LinearLayout, int, int):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.app.SemDualAppManager.addDualAppAccounts(android.content.Context, android.widget.LinearLayout, int, int):void");
     }
 
     public static int getDualAppVersion() {
-        return 340;
+        return 350;
     }
 
     public static boolean isDualAppVersionSupported(int dualAppVer) {
@@ -493,42 +415,8 @@ public class SemDualAppManager {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.app.SemDualAppManager.addResolveInfoFromOtherUser(android.content.pm.PackageManager, java.util.List, android.content.pm.ActivityInfo, android.content.Intent):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.app.SemDualAppManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ AppWidgetHostView val$view;
-
-        AnonymousClass1(AppWidgetHostView appWidgetHostView) {
-            view = appWidgetHostView;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            try {
-                ImageView dualAppBadge = new ImageView(Context.this);
-                int density = Context.this.getResources().getDisplayMetrics().densityDpi;
-                Drawable badgeicon = Resources.getSystem().getDrawableForDensity(R.drawable.ic_dualapp_widget_badge, density);
-                if (badgeicon != null) {
-                    dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
-                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
-                    params.gravity = 85;
-                    view.addView(dualAppBadge, params);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void drawDualAppBadge(Context context, AppWidgetHostView view, UserHandle user) {
+    public static void drawDualAppBadge(final Context context, final AppWidgetHostView view, UserHandle user) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // from class: com.samsung.android.app.SemDualAppManager.1
-            final /* synthetic */ AppWidgetHostView val$view;
-
-            AnonymousClass1(AppWidgetHostView view2) {
-                view = view2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -536,7 +424,7 @@ public class SemDualAppManager {
                     int density = Context.this.getResources().getDisplayMetrics().densityDpi;
                     Drawable badgeicon = Resources.getSystem().getDrawableForDensity(R.drawable.ic_dualapp_widget_badge, density);
                     if (badgeicon != null) {
-                        dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
+                        dualAppBadge.setImageDrawable(badgeicon);
                         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
                         params.gravity = 85;
                         view.addView(dualAppBadge, params);

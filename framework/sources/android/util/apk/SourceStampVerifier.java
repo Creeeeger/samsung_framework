@@ -101,10 +101,14 @@ public abstract class SourceStampVerifier {
     private static SourceStampVerificationResult verify(RandomAccessFile apk, byte[] sourceStampCertificateDigest, byte[] manifestBytes) {
         try {
             SignatureInfo signatureInfo = ApkSigningBlockUtils.findSignature(apk, SOURCE_STAMP_BLOCK_ID);
-            Map<Integer, Map<Integer, byte[]>> signatureSchemeApkContentDigests = getSignatureSchemeApkContentDigests(apk, manifestBytes);
-            return verify(signatureInfo, getSignatureSchemeDigests(signatureSchemeApkContentDigests), sourceStampCertificateDigest);
-        } catch (SignatureNotFoundException | IOException | RuntimeException e) {
-            return SourceStampVerificationResult.notVerified();
+            try {
+                Map<Integer, Map<Integer, byte[]>> signatureSchemeApkContentDigests = getSignatureSchemeApkContentDigests(apk, manifestBytes);
+                return verify(signatureInfo, getSignatureSchemeDigests(signatureSchemeApkContentDigests), sourceStampCertificateDigest);
+            } catch (IOException | RuntimeException e) {
+                return SourceStampVerificationResult.notVerified();
+            }
+        } catch (SignatureNotFoundException | IOException | RuntimeException e2) {
+            return SourceStampVerificationResult.notPresent();
         }
     }
 
@@ -271,7 +275,7 @@ public abstract class SourceStampVerifier {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public static /* synthetic */ Integer lambda$getApkDigests$0(Pair pair) {
+    static /* synthetic */ Integer lambda$getApkDigests$0(Pair pair) {
         return (Integer) pair.first;
     }
 

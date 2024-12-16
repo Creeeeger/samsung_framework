@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.ims.internal.IImsUtListener;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsUt extends IInterface {
     void close() throws RemoteException;
 
@@ -52,7 +52,6 @@ public interface IImsUt extends IInterface {
 
     int updateCallWaiting(boolean z, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsUt {
         @Override // com.android.ims.internal.IImsUt
         public void close() throws RemoteException {
@@ -163,7 +162,6 @@ public interface IImsUt extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsUt {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsUt";
         static final int TRANSACTION_close = 1;
@@ -267,167 +265,164 @@ public interface IImsUt extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    close();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = queryCallBarring(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = queryCallForward(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 4:
+                    int _result3 = queryCallWaiting();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 5:
+                    int _result4 = queryCLIR();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 6:
+                    int _result5 = queryCLIP();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 7:
+                    int _result6 = queryCOLR();
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 8:
+                    int _result7 = queryCOLP();
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 9:
+                    Bundle _arg03 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result8 = transact(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 10:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    String[] _arg2 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    int _result9 = updateCallBarring(_arg04, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 11:
+                    int _arg05 = data.readInt();
+                    int _arg13 = data.readInt();
+                    String _arg22 = data.readString();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result10 = updateCallForward(_arg05, _arg13, _arg22, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 12:
+                    boolean _arg06 = data.readBoolean();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result11 = updateCallWaiting(_arg06, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 13:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result12 = updateCLIR(_arg07);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 14:
+                    boolean _arg08 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result13 = updateCLIP(_arg08);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 15:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result14 = updateCOLR(_arg09);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 16:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result15 = updateCOLP(_arg010);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 17:
+                    IImsUtListener _arg011 = IImsUtListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setListener(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    int _arg012 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result16 = queryCallBarringForServiceClass(_arg012, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 19:
+                    int _arg013 = data.readInt();
+                    int _arg16 = data.readInt();
+                    String[] _arg23 = data.createStringArray();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result17 = updateCallBarringForServiceClass(_arg013, _arg16, _arg23, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    return true;
+                case 20:
+                    int _arg014 = data.readInt();
+                    int _arg17 = data.readInt();
+                    String[] _arg24 = data.createStringArray();
+                    int _arg33 = data.readInt();
+                    String _arg42 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result18 = updateCallBarringWithPassword(_arg014, _arg17, _arg24, _arg33, _arg42);
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 21:
+                    boolean _result19 = isUssdEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = queryCallBarring(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = queryCallForward(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 4:
-                            int _result3 = queryCallWaiting();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 5:
-                            int _result4 = queryCLIR();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 6:
-                            int _result5 = queryCLIP();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 7:
-                            int _result6 = queryCOLR();
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 8:
-                            int _result7 = queryCOLP();
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 9:
-                            Bundle _arg03 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result8 = transact(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 10:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            String[] _arg2 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            int _result9 = updateCallBarring(_arg04, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 11:
-                            int _arg05 = data.readInt();
-                            int _arg13 = data.readInt();
-                            String _arg22 = data.readString();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result10 = updateCallForward(_arg05, _arg13, _arg22, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 12:
-                            boolean _arg06 = data.readBoolean();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result11 = updateCallWaiting(_arg06, _arg14);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 13:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result12 = updateCLIR(_arg07);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 14:
-                            boolean _arg08 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result13 = updateCLIP(_arg08);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 15:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result14 = updateCOLR(_arg09);
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 16:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result15 = updateCOLP(_arg010);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 17:
-                            IImsUtListener _arg011 = IImsUtListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setListener(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            int _arg012 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result16 = queryCallBarringForServiceClass(_arg012, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 19:
-                            int _arg013 = data.readInt();
-                            int _arg16 = data.readInt();
-                            String[] _arg23 = data.createStringArray();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result17 = updateCallBarringForServiceClass(_arg013, _arg16, _arg23, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 20:
-                            int _arg014 = data.readInt();
-                            int _arg17 = data.readInt();
-                            String[] _arg24 = data.createStringArray();
-                            int _arg33 = data.readInt();
-                            String _arg42 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result18 = updateCallBarringWithPassword(_arg014, _arg17, _arg24, _arg33, _arg42);
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 21:
-                            boolean _result19 = isUssdEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsUt {
+        private static class Proxy implements IImsUt {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -29,27 +29,24 @@ public class RSTextureView extends TextureView implements TextureView.SurfaceTex
     @Override // android.view.TextureView.SurfaceTextureListener
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         this.mSurfaceTexture = surface;
-        RenderScriptGL renderScriptGL = this.mRS;
-        if (renderScriptGL != null) {
-            renderScriptGL.setSurfaceTexture(surface, width, height);
+        if (this.mRS != null) {
+            this.mRS.setSurfaceTexture(this.mSurfaceTexture, width, height);
         }
     }
 
     @Override // android.view.TextureView.SurfaceTextureListener
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         this.mSurfaceTexture = surface;
-        RenderScriptGL renderScriptGL = this.mRS;
-        if (renderScriptGL != null) {
-            renderScriptGL.setSurfaceTexture(surface, width, height);
+        if (this.mRS != null) {
+            this.mRS.setSurfaceTexture(this.mSurfaceTexture, width, height);
         }
     }
 
     @Override // android.view.TextureView.SurfaceTextureListener
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         this.mSurfaceTexture = surface;
-        RenderScriptGL renderScriptGL = this.mRS;
-        if (renderScriptGL != null) {
-            renderScriptGL.setSurfaceTexture(null, 0, 0);
+        if (this.mRS != null) {
+            this.mRS.setSurfaceTexture(null, 0, 0);
             return true;
         }
         return true;
@@ -61,25 +58,22 @@ public class RSTextureView extends TextureView implements TextureView.SurfaceTex
     }
 
     public void pause() {
-        RenderScriptGL renderScriptGL = this.mRS;
-        if (renderScriptGL != null) {
-            renderScriptGL.pause();
+        if (this.mRS != null) {
+            this.mRS.pause();
         }
     }
 
     public void resume() {
-        RenderScriptGL renderScriptGL = this.mRS;
-        if (renderScriptGL != null) {
-            renderScriptGL.resume();
+        if (this.mRS != null) {
+            this.mRS.resume();
         }
     }
 
     public RenderScriptGL createRenderScriptGL(RenderScriptGL.SurfaceConfig sc) {
         RenderScriptGL rs = new RenderScriptGL(getContext(), sc);
         setRenderScriptGL(rs);
-        SurfaceTexture surfaceTexture = this.mSurfaceTexture;
-        if (surfaceTexture != null) {
-            this.mRS.setSurfaceTexture(surfaceTexture, getWidth(), getHeight());
+        if (this.mSurfaceTexture != null) {
+            this.mRS.setSurfaceTexture(this.mSurfaceTexture, getWidth(), getHeight());
         }
         return rs;
     }
@@ -91,9 +85,8 @@ public class RSTextureView extends TextureView implements TextureView.SurfaceTex
 
     public void setRenderScriptGL(RenderScriptGL rs) {
         this.mRS = rs;
-        SurfaceTexture surfaceTexture = this.mSurfaceTexture;
-        if (surfaceTexture != null) {
-            rs.setSurfaceTexture(surfaceTexture, getWidth(), getHeight());
+        if (this.mSurfaceTexture != null) {
+            this.mRS.setSurfaceTexture(this.mSurfaceTexture, getWidth(), getHeight());
         }
     }
 

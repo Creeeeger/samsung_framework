@@ -26,9 +26,7 @@ public class WindowInfo implements Parcelable {
     public int type;
     private static final Pools.SynchronizedPool<WindowInfo> sPool = new Pools.SynchronizedPool<>(10);
     public static final Parcelable.Creator<WindowInfo> CREATOR = new Parcelable.Creator<WindowInfo>() { // from class: android.view.WindowInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowInfo createFromParcel(Parcel parcel) {
             WindowInfo window = WindowInfo.obtain();
@@ -36,6 +34,7 @@ public class WindowInfo implements Parcelable {
             return window;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowInfo[] newArray(int size) {
             return new WindowInfo[size];
@@ -75,22 +74,14 @@ public class WindowInfo implements Parcelable {
         window.accessibilityIdOfAnchor = other.accessibilityIdOfAnchor;
         window.inPictureInPicture = other.inPictureInPicture;
         window.hasFlagWatchOutsideTouch = other.hasFlagWatchOutsideTouch;
-        int i = 0;
-        while (true) {
-            float[] fArr = window.mTransformMatrix;
-            if (i >= fArr.length) {
-                break;
-            }
-            fArr[i] = other.mTransformMatrix[i];
-            i++;
+        for (int i = 0; i < window.mTransformMatrix.length; i++) {
+            window.mTransformMatrix[i] = other.mTransformMatrix[i];
         }
-        List<IBinder> list = other.childTokens;
-        if (list != null && !list.isEmpty()) {
-            List<IBinder> list2 = window.childTokens;
-            if (list2 == null) {
+        if (other.childTokens != null && !other.childTokens.isEmpty()) {
+            if (window.childTokens == null) {
                 window.childTokens = new ArrayList(other.childTokens);
             } else {
-                list2.addAll(other.childTokens);
+                window.childTokens.addAll(other.childTokens);
             }
         }
         window.mMagnificationSpec.setTo(other.mMagnificationSpec);
@@ -124,8 +115,7 @@ public class WindowInfo implements Parcelable {
         parcel.writeInt(this.inPictureInPicture ? 1 : 0);
         parcel.writeInt(this.hasFlagWatchOutsideTouch ? 1 : 0);
         parcel.writeFloatArray(this.mTransformMatrix);
-        List<IBinder> list = this.childTokens;
-        if (list != null && !list.isEmpty()) {
+        if (this.childTokens != null && !this.childTokens.isEmpty()) {
             parcel.writeInt(1);
             parcel.writeBinderList(this.childTokens);
         } else {
@@ -161,6 +151,7 @@ public class WindowInfo implements Parcelable {
         return builder.toString();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void initFromParcel(Parcel parcel) {
         this.displayId = parcel.readInt();
         this.taskId = parcel.readInt();
@@ -197,44 +188,17 @@ public class WindowInfo implements Parcelable {
         this.activityToken = null;
         this.focused = false;
         this.regionInScreen.setEmpty();
-        List<IBinder> list = this.childTokens;
-        if (list != null) {
-            list.clear();
+        if (this.childTokens != null) {
+            this.childTokens.clear();
         }
         this.inPictureInPicture = false;
         this.hasFlagWatchOutsideTouch = false;
-        int i = 0;
-        while (true) {
-            float[] fArr = this.mTransformMatrix;
-            if (i < fArr.length) {
-                fArr[i] = 0.0f;
-                i++;
-            } else {
-                this.mMagnificationSpec.clear();
-                this.title = null;
-                this.accessibilityIdOfAnchor = AccessibilityNodeInfo.UNDEFINED_NODE_ID;
-                this.locales = LocaleList.getEmptyLocaleList();
-                return;
-            }
+        for (int i = 0; i < this.mTransformMatrix.length; i++) {
+            this.mTransformMatrix[i] = 0.0f;
         }
-    }
-
-    /* renamed from: android.view.WindowInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WindowInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowInfo createFromParcel(Parcel parcel) {
-            WindowInfo window = WindowInfo.obtain();
-            window.initFromParcel(parcel);
-            return window;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowInfo[] newArray(int size) {
-            return new WindowInfo[size];
-        }
+        this.mMagnificationSpec.clear();
+        this.title = null;
+        this.accessibilityIdOfAnchor = AccessibilityNodeInfo.UNDEFINED_NODE_ID;
+        this.locales = LocaleList.getEmptyLocaleList();
     }
 }

@@ -67,7 +67,7 @@ public final class NavigationBarInflaterView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         inflateChildren();
         clearViews();
@@ -76,9 +76,8 @@ public final class NavigationBarInflaterView extends FrameLayout {
 
     private void inflateChildren() {
         removeAllViews();
-        FrameLayout frameLayout = (FrameLayout) this.mLayoutInflater.inflate(R.layout.input_method_navigation_layout, (ViewGroup) this, false);
-        this.mHorizontal = frameLayout;
-        addView(frameLayout);
+        this.mHorizontal = (FrameLayout) this.mLayoutInflater.inflate(R.layout.input_method_navigation_layout, (ViewGroup) this, false);
+        addView(this.mHorizontal);
         updateAlternativeOrder();
     }
 
@@ -86,14 +85,14 @@ public final class NavigationBarInflaterView extends FrameLayout {
         return CONFIG_NAV_BAR_LAYOUT_HANDLE;
     }
 
-    public void setButtonDispatchers(SparseArray<ButtonDispatcher> buttonDispatchers) {
+    void setButtonDispatchers(SparseArray<ButtonDispatcher> buttonDispatchers) {
         this.mButtonDispatchers = buttonDispatchers;
         for (int i = 0; i < buttonDispatchers.size(); i++) {
             initiallyFill(buttonDispatchers.valueAt(i));
         }
     }
 
-    public void updateButtonDispatchersCurrentView() {
+    void updateButtonDispatchersCurrentView() {
         if (this.mButtonDispatchers != null) {
             View view = this.mHorizontal;
             for (int i = 0; i < this.mButtonDispatchers.size(); i++) {
@@ -103,7 +102,7 @@ public final class NavigationBarInflaterView extends FrameLayout {
         }
     }
 
-    public void setAlternativeOrder(boolean alternativeOrder) {
+    void setAlternativeOrder(boolean alternativeOrder) {
         if (alternativeOrder != this.mAlternativeOrder) {
             this.mAlternativeOrder = alternativeOrder;
             updateAlternativeOrder();
@@ -282,9 +281,8 @@ public final class NavigationBarInflaterView extends FrameLayout {
     }
 
     private void addToDispatchers(View v) {
-        SparseArray<ButtonDispatcher> sparseArray = this.mButtonDispatchers;
-        if (sparseArray != null) {
-            int indexOfKey = sparseArray.indexOfKey(v.getId());
+        if (this.mButtonDispatchers != null) {
+            int indexOfKey = this.mButtonDispatchers.indexOfKey(v.getId());
             if (indexOfKey >= 0) {
                 this.mButtonDispatchers.valueAt(indexOfKey).addView(v);
             }

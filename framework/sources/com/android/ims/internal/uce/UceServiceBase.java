@@ -8,16 +8,11 @@ import com.android.ims.internal.uce.presence.IPresenceService;
 import com.android.ims.internal.uce.uceservice.IUceListener;
 import com.android.ims.internal.uce.uceservice.IUceService;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class UceServiceBase {
     private UceServiceBinder mBinder;
 
-    /* loaded from: classes4.dex */
     private final class UceServiceBinder extends IUceService.Stub {
-        /* synthetic */ UceServiceBinder(UceServiceBase uceServiceBase, UceServiceBinderIA uceServiceBinderIA) {
-            this();
-        }
-
         private UceServiceBinder() {
         }
 

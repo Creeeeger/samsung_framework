@@ -7,6 +7,7 @@ import com.android.internal.util.ArtBinaryXmlPullParser;
 import com.android.internal.util.ArtBinaryXmlSerializer;
 import com.android.internal.util.FastXmlSerializer;
 import com.android.internal.util.XmlUtils;
+import com.android.modules.utils.BinaryXmlPullParser;
 import com.android.modules.utils.BinaryXmlSerializer;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
@@ -20,6 +21,7 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import javax.xml.parsers.SAXParserFactory;
 import libcore.util.XmlObjectFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -27,19 +29,37 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
 /* loaded from: classes4.dex */
 public class Xml {
     public static String FEATURE_RELAXED = "http://xmlpull.org/v1/doc/features.html#relaxed";
-    public static final boolean ENABLE_BINARY_DEFAULT = SystemProperties.getBoolean("persist.sys.binary_xml", true);
+    public static final boolean ENABLE_BINARY_DEFAULT = shouldEnableBinaryDefault();
+    public static final boolean ENABLE_RESOLVE_OPTIMIZATIONS = shouldEnableResolveOptimizations();
 
     private Xml() {
     }
 
+    private static boolean shouldEnableBinaryDefault() {
+        return SystemProperties.getBoolean("persist.sys.binary_xml", true);
+    }
+
+    private static boolean shouldEnableBinaryDefault$ravenwood() {
+        return true;
+    }
+
+    private static boolean shouldEnableResolveOptimizations() {
+        return true;
+    }
+
+    private static boolean shouldEnableResolveOptimizations$ravenwood() {
+        return false;
+    }
+
     public static void parse(String xml, ContentHandler contentHandler) throws SAXException {
         try {
-            XMLReader reader = XmlObjectFactory.newXMLReader();
+            XMLReader reader = newXMLReader();
             reader.setContentHandler(contentHandler);
             reader.parse(new InputSource(new StringReader(xml)));
         } catch (IOException e) {
@@ -48,13 +68,13 @@ public class Xml {
     }
 
     public static void parse(Reader in, ContentHandler contentHandler) throws IOException, SAXException {
-        XMLReader reader = XmlObjectFactory.newXMLReader();
+        XMLReader reader = newXMLReader();
         reader.setContentHandler(contentHandler);
         reader.parse(new InputSource(in));
     }
 
     public static void parse(InputStream in, Encoding encoding, ContentHandler contentHandler) throws IOException, SAXException {
-        XMLReader reader = XmlObjectFactory.newXMLReader();
+        XMLReader reader = newXMLReader();
         reader.setContentHandler(contentHandler);
         InputSource source = new InputSource(in);
         source.setEncoding(encoding.expatName);
@@ -63,12 +83,22 @@ public class Xml {
 
     public static XmlPullParser newPullParser() {
         try {
-            XmlPullParser parser = XmlObjectFactory.newXmlPullParser();
+            XmlPullParser parser = newXmlPullParser();
             parser.setFeature("http://xmlpull.org/v1/doc/features.html#process-docdecl", true);
             parser.setFeature("http://xmlpull.org/v1/doc/features.html#process-namespaces", true);
             return parser;
         } catch (XmlPullParserException e) {
-            throw new AssertionError();
+            throw new AssertionError(e);
+        }
+    }
+
+    public static XmlPullParser newPullParser$ravenwood() {
+        try {
+            XmlPullParser parser = newXmlPullParser();
+            parser.setFeature("http://xmlpull.org/v1/doc/features.html#process-namespaces", true);
+            return parser;
+        } catch (XmlPullParserException e) {
+            throw new AssertionError(e);
         }
     }
 
@@ -80,10 +110,14 @@ public class Xml {
         return new ArtBinaryXmlPullParser();
     }
 
+    public static TypedXmlPullParser newBinaryPullParser$ravenwood() {
+        return new BinaryXmlPullParser();
+    }
+
     public static TypedXmlPullParser resolvePullParser(InputStream in) throws IOException {
         TypedXmlPullParser xml;
         byte[] magic = new byte[4];
-        if (in instanceof FileInputStream) {
+        if (ENABLE_RESOLVE_OPTIMIZATIONS && (in instanceof FileInputStream)) {
             try {
                 Os.pread(((FileInputStream) in).getFD(), magic, 0, magic.length, 0L);
             } catch (ErrnoException e) {
@@ -111,7 +145,7 @@ public class Xml {
     }
 
     public static XmlSerializer newSerializer() {
-        return XmlObjectFactory.newXmlSerializer();
+        return newXmlSerializer();
     }
 
     public static TypedXmlSerializer newFastSerializer() {
@@ -120,6 +154,10 @@ public class Xml {
 
     public static TypedXmlSerializer newBinarySerializer() {
         return new ArtBinaryXmlSerializer();
+    }
+
+    public static TypedXmlSerializer newBinarySerializer$ravenwood() {
+        return new BinaryXmlSerializer();
     }
 
     public static TypedXmlSerializer resolveSerializer(OutputStream out) throws IOException {
@@ -133,7 +171,12 @@ public class Xml {
         return xml;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:6:0x0016. Please report as an issue. */
+    public static TypedXmlSerializer resolveSerializer$ravenwood(OutputStream out) throws IOException {
+        TypedXmlSerializer xml = new BinaryXmlSerializer();
+        xml.setOutput(out, StandardCharsets.UTF_8.name());
+        return xml;
+    }
+
     public static void copy(XmlPullParser in, XmlSerializer out) throws XmlPullParserException, IOException {
         if (in.getEventType() == 0) {
             out.startDocument(in.getInputEncoding(), true);
@@ -143,6 +186,7 @@ public class Xml {
             switch (token) {
                 case 0:
                     out.startDocument(in.getInputEncoding(), true);
+                    break;
                 case 1:
                     out.endDocument();
                     return;
@@ -151,22 +195,31 @@ public class Xml {
                     for (int i = 0; i < in.getAttributeCount(); i++) {
                         out.attribute(normalizeNamespace(in.getAttributeNamespace(i)), in.getAttributeName(i), in.getAttributeValue(i));
                     }
+                    break;
                 case 3:
                     out.endTag(normalizeNamespace(in.getNamespace()), in.getName());
+                    break;
                 case 4:
                     out.text(in.getText());
+                    break;
                 case 5:
                     out.cdsect(in.getText());
+                    break;
                 case 6:
                     out.entityRef(in.getName());
+                    break;
                 case 7:
                     out.ignorableWhitespace(in.getText());
+                    break;
                 case 8:
                     out.processingInstruction(in.getText());
+                    break;
                 case 9:
                     out.comment(in.getText());
+                    break;
                 case 10:
                     out.docdecl(in.getText());
+                    break;
                 default:
                     throw new IllegalStateException("Unknown token " + token);
             }
@@ -180,7 +233,6 @@ public class Xml {
         return namespace;
     }
 
-    /* loaded from: classes4.dex */
     public enum Encoding {
         US_ASCII("US-ASCII"),
         UTF_8("UTF-8"),
@@ -211,5 +263,43 @@ public class Xml {
             return (AttributeSet) parser;
         }
         return new XmlPullAttributes(parser);
+    }
+
+    private static XmlSerializer newXmlSerializer() {
+        return XmlObjectFactory.newXmlSerializer();
+    }
+
+    private static XmlSerializer newXmlSerializer$ravenwood() {
+        try {
+            return XmlPullParserFactory.newInstance().newSerializer();
+        } catch (XmlPullParserException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    private static XmlPullParser newXmlPullParser() {
+        return XmlObjectFactory.newXmlPullParser();
+    }
+
+    private static XmlPullParser newXmlPullParser$ravenwood() {
+        try {
+            return XmlPullParserFactory.newInstance().newPullParser();
+        } catch (XmlPullParserException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    private static XMLReader newXMLReader() {
+        return XmlObjectFactory.newXMLReader();
+    }
+
+    private static XMLReader newXMLReader$ravenwood() {
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+            return factory.newSAXParser().getXMLReader();
+        } catch (Exception e) {
+            throw new UnsupportedOperationException(e);
+        }
     }
 }

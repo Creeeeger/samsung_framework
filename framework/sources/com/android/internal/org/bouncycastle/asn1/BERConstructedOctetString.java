@@ -57,11 +57,10 @@ public class BERConstructedOctetString extends BEROctetString {
 
     @Override // com.android.internal.org.bouncycastle.asn1.BEROctetString
     public Enumeration getObjects() {
-        Vector vector = this.octs;
-        if (vector == null) {
+        if (this.octs == null) {
             return generateOcts().elements();
         }
-        return vector.elements();
+        return this.octs.elements();
     }
 
     private Vector generateOcts() {

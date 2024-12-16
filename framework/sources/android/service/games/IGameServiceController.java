@@ -15,7 +15,6 @@ public interface IGameServiceController extends IInterface {
 
     void createGameSession(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGameServiceController {
         @Override // android.service.games.IGameServiceController
         public void createGameSession(int taskId) throws RemoteException {
@@ -27,7 +26,6 @@ public interface IGameServiceController extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGameServiceController {
         static final int TRANSACTION_createGameSession = 1;
         private final PermissionEnforcer mEnforcer;
@@ -80,26 +78,22 @@ public interface IGameServiceController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGameServiceController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGameServiceController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGameServiceController.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    createGameSession(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            createGameSession(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGameServiceController {
+        private static class Proxy implements IGameServiceController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

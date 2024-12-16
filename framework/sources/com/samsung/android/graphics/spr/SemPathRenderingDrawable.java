@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -43,7 +42,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemPathRenderingDrawable extends Drawable implements Animatable {
     private static final int MAX_CACHED_BITMAP_SIZE = 2048;
     private static final String NA_NAME = "n/a";
@@ -177,11 +176,9 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         this.mIdentityMatrix = null;
         this.mTmpMatrix = new Matrix();
         this.mTmpFloats = new float[9];
-        SprState sprState = new SprState(document);
-        this.mState = sprState;
-        SprDocument sprDocument = sprState.mDocument;
-        this.mDocument = sprDocument;
-        if (sprDocument != null) {
+        this.mState = new SprState(document);
+        this.mDocument = this.mState.mDocument;
+        if (this.mDocument != null) {
             float densityScale = this.mState.getDensityScale();
             super.setBounds(Math.round(this.mDocument.mLeft * densityScale), Math.round(this.mDocument.mTop * densityScale), Math.round(this.mDocument.mRight * densityScale), Math.round(this.mDocument.mBottom * densityScale));
         }
@@ -202,9 +199,8 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         this.mTmpMatrix = new Matrix();
         this.mTmpFloats = new float[9];
         this.mState = state;
-        SprDocument sprDocument = state.mDocument;
-        this.mDocument = sprDocument;
-        if (sprDocument != null) {
+        this.mDocument = this.mState.mDocument;
+        if (this.mDocument != null) {
             float densityScale = this.mState.getDensityScale();
             super.setBounds(Math.round(this.mDocument.mLeft * densityScale), Math.round(this.mDocument.mTop * densityScale), Math.round(this.mDocument.mRight * densityScale), Math.round(this.mDocument.mBottom * densityScale));
             this.mTintFilter = updateTintFilterInternal(this.mTintFilter, state.mTint, state.mTintMode);
@@ -223,191 +219,31 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         }
     }
 
+    /* JADX WARN: Can't wrap try/catch for region: R(8:103|104|(4:(3:129|130|(8:135|136|108|109|110|111|112|113))|111|112|113)|106|107|108|109|110) */
+    /* JADX WARN: Code restructure failed: missing block: B:126:0x0137, code lost:
+    
+        r0 = th;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:127:0x0138, code lost:
+    
+        r17 = r11;
+     */
     @Override // android.graphics.drawable.Drawable
-    public void draw(Canvas canvas) {
-        int scaledHeight;
-        int scaledHeight2;
-        SprDocument sprDocument;
-        Canvas tmpCanvas;
-        boolean clearColorFilter;
-        int scaledWidth;
-        int scaledHeight3;
-        if (this.mDstRect.width() <= 0 || this.mDstRect.height() <= 0 || this.mDocument == null) {
-            return;
-        }
-        if (this.mState.mTileModeX == null && this.mState.mTileModeY == null) {
-            canvas.getMatrix(this.mTmpMatrix);
-            this.mTmpMatrix.getValues(this.mTmpFloats);
-            float canvasScaleX = Math.abs(this.mTmpFloats[0]);
-            float canvasScaleY = Math.abs(this.mTmpFloats[4]);
-            float[] fArr = this.mTmpFloats;
-            if (fArr[1] == 0.0f && fArr[3] == 0.0f) {
-                int scaledWidth2 = (int) (this.mDstRect.width() * canvasScaleX);
-                int scaledHeight4 = (int) (this.mDstRect.height() * canvasScaleY);
-                scaledWidth = Math.min(2048, scaledWidth2);
-                scaledHeight3 = Math.min(2048, scaledHeight4);
-            } else {
-                Bitmap bitmap = this.mCacheBitmap;
-                if (bitmap != null) {
-                    scaledWidth = bitmap.getWidth();
-                    scaledHeight3 = this.mCacheBitmap.getHeight();
-                } else {
-                    scaledWidth = this.mDstRect.width();
-                    scaledHeight3 = this.mDstRect.height();
-                }
-            }
-            scaledHeight = scaledHeight3;
-            scaledHeight2 = scaledWidth;
-        } else {
-            int scaledWidth3 = getIntrinsicWidth();
-            int scaledHeight5 = getIntrinsicHeight();
-            scaledHeight = scaledHeight5;
-            scaledHeight2 = scaledWidth3;
-        }
-        if (scaledHeight2 <= 0 || scaledHeight <= 0) {
-            return;
-        }
-        boolean isRunning = isRunning();
-        Paint paint = this.mState.mBitmapPaint;
-        synchronized (this.mState) {
-            if (this.mState.mNinePatch) {
-                if (this.mState.mNinePatchRenderer == null) {
-                    this.mState.createNinePatchRenderer();
-                }
-            } else if (!isRunning) {
-                updateCachedBitmap(scaledHeight2, scaledHeight, this.mState.mDensityDpi);
-            } else {
-                int animationFrameIndex = this.mSprAnimation.getAnimationIndex();
-                SprDocument sprDocument2 = this.mDocument;
-                synchronized (sprDocument2) {
-                    try {
-                        this.mDocument.preDraw(animationFrameIndex);
-                        Bitmap bitmap2 = this.mAnimationBitmap;
-                        try {
-                            try {
-                                if (bitmap2 != null) {
-                                    try {
-                                        if (bitmap2.getWidth() == scaledHeight2 && this.mAnimationBitmap.getHeight() == scaledHeight) {
-                                            Canvas tmpCanvas2 = new Canvas(this.mAnimationBitmap);
-                                            tmpCanvas2.drawColor(0, PorterDuff.Mode.CLEAR);
-                                            tmpCanvas = tmpCanvas2;
-                                            sprDocument = sprDocument2;
-                                            this.mDocument.draw(tmpCanvas, scaledHeight2, scaledHeight, animationFrameIndex, this.mState.mDensityDpi);
-                                        }
-                                    } catch (Throwable th) {
-                                        th = th;
-                                        sprDocument = sprDocument2;
-                                        while (true) {
-                                            try {
-                                                break;
-                                            } catch (Throwable th2) {
-                                                th = th2;
-                                            }
-                                        }
-                                        throw th;
-                                    }
-                                }
-                                this.mDocument.draw(tmpCanvas, scaledHeight2, scaledHeight, animationFrameIndex, this.mState.mDensityDpi);
-                            } catch (Throwable th3) {
-                                th = th3;
-                                while (true) {
-                                    break;
-                                    break;
-                                }
-                                throw th;
-                            }
-                            sprDocument = sprDocument2;
-                        } catch (Throwable th4) {
-                            th = th4;
-                            sprDocument = sprDocument2;
-                        }
-                        this.mAnimationBitmap = Bitmap.createBitmap(scaledHeight2, scaledHeight, Bitmap.Config.ARGB_8888);
-                        tmpCanvas = new Canvas(this.mAnimationBitmap);
-                    } catch (Throwable th5) {
-                        th = th5;
-                        sprDocument = sprDocument2;
-                    }
-                }
-            }
-            if (this.mState.mRebuildShader || isRunning) {
-                if (this.mState.mTileModeX == null && this.mState.mTileModeY == null) {
-                    paint.setShader(null);
-                } else {
-                    Shader.TileMode tmx = this.mState.mTileModeX;
-                    Shader.TileMode tmy = this.mState.mTileModeY;
-                    Bitmap bitmap3 = this.mAnimationBitmap;
-                    if (bitmap3 == null) {
-                        bitmap3 = this.mCacheBitmap;
-                    }
-                    paint.setShader(new BitmapShader(bitmap3, tmx == null ? Shader.TileMode.CLAMP : tmx, tmy == null ? Shader.TileMode.CLAMP : tmy));
-                }
-                this.mState.mRebuildShader = false;
-            }
-        }
-        if (this.mTintFilter != null && paint.getColorFilter() == null) {
-            paint.setColorFilter(this.mTintFilter);
-            clearColorFilter = true;
-        } else {
-            clearColorFilter = false;
-        }
-        Shader shader = paint.getShader();
-        boolean needMirroring = needMirroring();
-        if (shader == null) {
-            synchronized (this.mState) {
-                if (this.mState.mNinePatch) {
-                    if (this.mState.mNinePatchRenderer != null) {
-                        this.mState.mNinePatchRenderer.draw(canvas, this.mDstRect, paint);
-                    }
-                } else {
-                    if (needMirroring) {
-                        canvas.save();
-                        canvas.translate(this.mDstRect.right - this.mDstRect.left, 0.0f);
-                        canvas.scale(-1.0f, 1.0f);
-                    }
-                    Bitmap bitmap4 = this.mCacheBitmap;
-                    if (bitmap4 != null) {
-                        Bitmap bitmap5 = this.mAnimationBitmap;
-                        if (bitmap5 != null) {
-                            bitmap4 = bitmap5;
-                        }
-                        canvas.drawBitmap(bitmap4, (Rect) null, this.mDstRect, paint);
-                    }
-                    if (isRunning) {
-                        this.mSprAnimation.update();
-                    }
-                    if (needMirroring) {
-                        canvas.restore();
-                    }
-                }
-            }
-        } else {
-            if (needMirroring) {
-                if (this.mMirrorMatrix == null) {
-                    this.mMirrorMatrix = new Matrix();
-                }
-                this.mMirrorMatrix.setTranslate(this.mDstRect.right - this.mDstRect.left, 0.0f);
-                this.mMirrorMatrix.preScale(-1.0f, 1.0f);
-                shader.setLocalMatrix(this.mMirrorMatrix);
-                paint.setShader(shader);
-            } else if (this.mMirrorMatrix != null) {
-                this.mMirrorMatrix = null;
-                if (this.mIdentityMatrix == null) {
-                    this.mIdentityMatrix = new Matrix();
-                }
-                shader.setLocalMatrix(this.mIdentityMatrix);
-                paint.setShader(shader);
-            }
-            canvas.drawRect(this.mDstRect, paint);
-        }
-        if (clearColorFilter) {
-            paint.setColorFilter(null);
-        }
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void draw(android.graphics.Canvas r20) {
+        /*
+            Method dump skipped, instructions count: 619
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.graphics.spr.SemPathRenderingDrawable.draw(android.graphics.Canvas):void");
     }
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        SprState sprState = this.mState;
-        return sprState != null && sprState.canApplyTheme();
+        return this.mState != null && this.mState.canApplyTheme();
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -453,7 +289,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         updateDstRectAndInsetsIfDirty();
     }
@@ -557,12 +393,11 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
 
     @Override // android.graphics.drawable.Drawable
     public boolean isStateful() {
-        SprState sprState;
-        return super.isStateful() || !((sprState = this.mState) == null || sprState.mTint == null || !this.mState.mTint.isStateful());
+        return super.isStateful() || !(this.mState == null || this.mState.mTint == null || !this.mState.mTint.isStateful());
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         SprState state = this.mState;
         if (state.mTint != null && state.mTintMode != null) {
             this.mTintFilter = updateTintFilterInternal(this.mTintFilter, state.mTint, state.mTintMode);
@@ -573,14 +408,13 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
     }
 
     PorterDuffColorFilter updateTintFilterInternal(PorterDuffColorFilter tintFilter, ColorStateList tint, PorterDuff.Mode tintMode) {
-        Method method = mUpdateTintFilter;
-        if (method == null) {
+        if (mUpdateTintFilter == null) {
             return updateTintFilter(tintFilter, tint, tintMode);
         }
         PorterDuffColorFilter result = null;
-        method.setAccessible(true);
+        mUpdateTintFilter.setAccessible(true);
         try {
-            result = (PorterDuffColorFilter) method.invoke(this, tintFilter, tint, tintMode);
+            result = (PorterDuffColorFilter) mUpdateTintFilter.invoke(this, tintFilter, tint, tintMode);
         } catch (Exception e) {
         }
         mUpdateTintFilter.setAccessible(false);
@@ -671,10 +505,6 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         object115.appendAttribute(fill);
         document.appendObject(object115);
         return new SemPathRenderingDrawable(document) { // from class: com.samsung.android.graphics.spr.SemPathRenderingDrawable.1
-            AnonymousClass1(SprDocument document2) {
-                super(document2);
-            }
-
             @Override // com.samsung.android.graphics.spr.SemPathRenderingDrawable, android.graphics.drawable.Drawable
             public void draw(Canvas canvas) {
                 super.draw(canvas);
@@ -693,32 +523,6 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
                 canvas.drawText(this.mDocument.mName, 5.0f, 40.0f, textPaint);
             }
         };
-    }
-
-    /* renamed from: com.samsung.android.graphics.spr.SemPathRenderingDrawable$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends SemPathRenderingDrawable {
-        AnonymousClass1(SprDocument document2) {
-            super(document2);
-        }
-
-        @Override // com.samsung.android.graphics.spr.SemPathRenderingDrawable, android.graphics.drawable.Drawable
-        public void draw(Canvas canvas) {
-            super.draw(canvas);
-            Paint textOutlinePaint = new Paint();
-            textOutlinePaint.setAntiAlias(true);
-            textOutlinePaint.setTextSize(20.0f);
-            textOutlinePaint.setStyle(Paint.Style.STROKE);
-            textOutlinePaint.setColor(-16777216);
-            textOutlinePaint.setStrokeWidth(4.0f);
-            Paint textPaint = new Paint();
-            textPaint.setAntiAlias(true);
-            textPaint.setTextSize(20.0f);
-            textPaint.setStyle(Paint.Style.FILL);
-            textPaint.setColor(-1);
-            canvas.drawText(this.mDocument.mName, 5.0f, 40.0f, textOutlinePaint);
-            canvas.drawText(this.mDocument.mName, 5.0f, 40.0f, textPaint);
-        }
     }
 
     @Deprecated
@@ -846,8 +650,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             this.mState.mTint = tint;
         }
         this.mState.mGravity = a.getInt(mBitmapDrawable_gravity, 119);
-        SprState sprState = this.mState;
-        sprState.mAutoMirrored = a.getBoolean(mBitmapDrawable_autoMirrored, sprState.mAutoMirrored);
+        this.mState.mAutoMirrored = a.getBoolean(mBitmapDrawable_autoMirrored, this.mState.mAutoMirrored);
         this.mState.mBitmapPaint.setAlpha((int) (a.getFloat(mBitmapDrawable_alpha, 1.0f) * 255.0f));
         int tileMode = a.getInt(mBitmapDrawable_tileMode, -2);
         if (tileMode != -2) {
@@ -865,96 +668,92 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         updateDensity(r);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x002a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0025, code lost:
     
-        if (r1 != null) goto L55;
+        if (r1 != null) goto L15;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0032, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x002d, code lost:
     
         r1.recycle();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0030, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x002b, code lost:
     
-        if (r1 == null) goto L74;
+        if (r1 == null) goto L35;
      */
     @Override // android.graphics.drawable.Drawable
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void applyTheme(android.content.res.Resources.Theme r8) {
+    public void applyTheme(android.content.res.Resources.Theme r6) {
         /*
-            r7 = this;
-            super.applyTheme(r8)
-            com.samsung.android.graphics.spr.SemPathRenderingDrawable$SprState r0 = r7.mState
+            r5 = this;
+            super.applyTheme(r6)
+            com.samsung.android.graphics.spr.SemPathRenderingDrawable$SprState r0 = r5.mState
             if (r0 != 0) goto L8
             return
         L8:
-            int[] r1 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8393$$Nest$fgetmThemeAttrs(r0)
-            r2 = 0
-            if (r1 == 0) goto L43
+            int[] r1 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8794$$Nest$fgetmThemeAttrs(r0)
+            if (r1 == 0) goto L3e
             r1 = 0
-            java.lang.reflect.Method r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mResolveAttributes     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            r4 = 2
-            java.lang.Object[] r4 = new java.lang.Object[r4]     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            int[] r5 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8393$$Nest$fgetmThemeAttrs(r0)     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            r4[r2] = r5     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            int[] r5 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mStyleableBitmapDrawable     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            r6 = 1
-            r4[r6] = r5     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            java.lang.Object r3 = r3.invoke(r8, r4)     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            android.content.res.TypedArray r3 = (android.content.res.TypedArray) r3     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            r1 = r3
-            r7.updateStateFromTypedArray(r1)     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            if (r1 == 0) goto L43
-            goto L32
+            java.lang.reflect.Method r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mResolveAttributes     // Catch: java.lang.Throwable -> L28 java.lang.Exception -> L2a org.xmlpull.v1.XmlPullParserException -> L31
+            int[] r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8794$$Nest$fgetmThemeAttrs(r0)     // Catch: java.lang.Throwable -> L28 java.lang.Exception -> L2a org.xmlpull.v1.XmlPullParserException -> L31
+            int[] r4 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mStyleableBitmapDrawable     // Catch: java.lang.Throwable -> L28 java.lang.Exception -> L2a org.xmlpull.v1.XmlPullParserException -> L31
+            java.lang.Object[] r3 = new java.lang.Object[]{r3, r4}     // Catch: java.lang.Throwable -> L28 java.lang.Exception -> L2a org.xmlpull.v1.XmlPullParserException -> L31
+            java.lang.Object r2 = r2.invoke(r6, r3)     // Catch: java.lang.Throwable -> L28 java.lang.Exception -> L2a org.xmlpull.v1.XmlPullParserException -> L31
+            android.content.res.TypedArray r2 = (android.content.res.TypedArray) r2     // Catch: java.lang.Throwable -> L28 java.lang.Exception -> L2a org.xmlpull.v1.XmlPullParserException -> L31
+            r1 = r2
+            r5.updateStateFromTypedArray(r1)     // Catch: java.lang.Throwable -> L28 java.lang.Exception -> L2a org.xmlpull.v1.XmlPullParserException -> L31
+            if (r1 == 0) goto L3e
+            goto L2d
+        L28:
+            r2 = move-exception
+            goto L38
+        L2a:
+            r2 = move-exception
+            if (r1 == 0) goto L3e
         L2d:
-            r2 = move-exception
-            goto L3d
-        L2f:
-            r3 = move-exception
-            if (r1 == 0) goto L43
-        L32:
             r1.recycle()
-            goto L43
-        L36:
+            goto L3e
+        L31:
             r2 = move-exception
-            java.lang.RuntimeException r3 = new java.lang.RuntimeException     // Catch: java.lang.Throwable -> L2d
-            r3.<init>(r2)     // Catch: java.lang.Throwable -> L2d
-            throw r3     // Catch: java.lang.Throwable -> L2d
+            java.lang.RuntimeException r3 = new java.lang.RuntimeException     // Catch: java.lang.Throwable -> L28
+            r3.<init>(r2)     // Catch: java.lang.Throwable -> L28
+            throw r3     // Catch: java.lang.Throwable -> L28
+        L38:
+            if (r1 == 0) goto L3d
+            r1.recycle()
         L3d:
-            if (r1 == 0) goto L42
-            r1.recycle()
-        L42:
             throw r2
-        L43:
-            java.lang.reflect.Method r1 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mCanApplyTheme     // Catch: java.lang.Exception -> L56
-            android.content.res.ColorStateList r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8396$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L56
-            java.lang.Object[] r2 = new java.lang.Object[r2]     // Catch: java.lang.Exception -> L56
-            java.lang.Object r1 = r1.invoke(r3, r2)     // Catch: java.lang.Exception -> L56
-            java.lang.Boolean r1 = (java.lang.Boolean) r1     // Catch: java.lang.Exception -> L56
-            boolean r1 = r1.booleanValue()     // Catch: java.lang.Exception -> L56
-            goto L59
-        L56:
+        L3e:
+            java.lang.reflect.Method r1 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mCanApplyTheme     // Catch: java.lang.Exception -> L52
+            android.content.res.ColorStateList r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8797$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L52
+            r3 = 0
+            java.lang.Object[] r3 = new java.lang.Object[r3]     // Catch: java.lang.Exception -> L52
+            java.lang.Object r1 = r1.invoke(r2, r3)     // Catch: java.lang.Exception -> L52
+            java.lang.Boolean r1 = (java.lang.Boolean) r1     // Catch: java.lang.Exception -> L52
+            boolean r1 = r1.booleanValue()     // Catch: java.lang.Exception -> L52
+            goto L55
+        L52:
             r1 = move-exception
             r2 = 0
             r1 = r2
-        L59:
-            android.content.res.ColorStateList r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8396$$Nest$fgetmTint(r0)
-            if (r2 == 0) goto L76
-            if (r1 == 0) goto L76
-            java.lang.reflect.Method r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mObtainForTheme     // Catch: java.lang.Exception -> L75
-            android.content.res.ColorStateList r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8396$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L75
-            java.lang.Object[] r4 = new java.lang.Object[]{r8}     // Catch: java.lang.Exception -> L75
-            java.lang.Object r2 = r2.invoke(r3, r4)     // Catch: java.lang.Exception -> L75
-            android.content.res.ColorStateList r2 = (android.content.res.ColorStateList) r2     // Catch: java.lang.Exception -> L75
-            com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8408$$Nest$fputmTint(r0, r2)     // Catch: java.lang.Exception -> L75
-            goto L76
-        L75:
+        L55:
+            android.content.res.ColorStateList r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8797$$Nest$fgetmTint(r0)
+            if (r2 == 0) goto L72
+            if (r1 == 0) goto L72
+            java.lang.reflect.Method r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mObtainForTheme     // Catch: java.lang.Exception -> L71
+            android.content.res.ColorStateList r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8797$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L71
+            java.lang.Object[] r4 = new java.lang.Object[]{r6}     // Catch: java.lang.Exception -> L71
+            java.lang.Object r2 = r2.invoke(r3, r4)     // Catch: java.lang.Exception -> L71
+            android.content.res.ColorStateList r2 = (android.content.res.ColorStateList) r2     // Catch: java.lang.Exception -> L71
+            com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8809$$Nest$fputmTint(r0, r2)     // Catch: java.lang.Exception -> L71
+            goto L72
+        L71:
             r2 = move-exception
-        L76:
-            android.content.res.Resources r2 = r8.getResources()
-            r7.updateLocalState(r2)
+        L72:
+            android.content.res.Resources r2 = r6.getResources()
+            r5.updateLocalState(r2)
             return
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.graphics.spr.SemPathRenderingDrawable.applyTheme(android.content.res.Resources$Theme):void");
@@ -962,7 +761,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
 
     /* JADX WARN: Code restructure failed: missing block: B:18:0x0015, code lost:
     
-        if (r0 == null) goto L32;
+        if (r0 == null) goto L11;
      */
     /* JADX WARN: Code restructure failed: missing block: B:6:0x0018, code lost:
     
@@ -1019,6 +818,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         return this.mDocument.mLeft + "," + this.mDocument.mTop + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + this.mDocument.mRight + "," + this.mDocument.mBottom + "\nLoading:" + this.mDocument.getLoadingTime() + "ms\nElement:" + this.mDocument.getTotalElementCount() + "\nSegment:" + this.mDocument.getTotalSegmentCount() + "\nAttribute:" + this.mDocument.getTotalAttributeCount();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int getDeviceDensityDpi(Resources res) {
         if (res == null) {
             return Resources.getSystem().getDisplayMetrics().densityDpi;
@@ -1027,9 +827,8 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
     }
 
     public void toSPR(OutputStream out) throws IOException {
-        SprDocument sprDocument = this.mDocument;
-        if (sprDocument != null) {
-            sprDocument.toSPR(out);
+        if (this.mDocument != null) {
+            this.mDocument.toSPR(out);
         }
     }
 
@@ -1065,8 +864,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static final class SprState extends Drawable.ConstantState {
+    static final class SprState extends Drawable.ConstantState {
         private boolean mAutoMirrored;
         private final Paint mBitmapPaint;
         private SprCacheManager mCacheManager;
@@ -1102,9 +900,8 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             this.mTileModeX = null;
             this.mTileModeY = null;
             setDocument(document);
-            Paint paint = new Paint();
-            this.mBitmapPaint = paint;
-            paint.setFilterBitmap(true);
+            this.mBitmapPaint = new Paint();
+            this.mBitmapPaint.setFilterBitmap(true);
         }
 
         SprState(SprState state) {
@@ -1149,10 +946,9 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             if (document == null) {
                 return;
             }
-            SprDocument sprDocument = this.mDocument;
-            if (sprDocument == null || (sprDocument.mName != null && !this.mDocument.mName.equals(document.mName))) {
+            if (this.mDocument == null || (this.mDocument.mName != null && !this.mDocument.mName.equals(document.mName))) {
                 this.mDocument = document;
-                this.mNinePatch = (document.mNinePatchLeft == 0.0f && this.mDocument.mNinePatchTop == 0.0f && this.mDocument.mNinePatchRight == 0.0f && this.mDocument.mNinePatchBottom == 0.0f) ? false : true;
+                this.mNinePatch = (this.mDocument.mNinePatchLeft == 0.0f && this.mDocument.mNinePatchTop == 0.0f && this.mDocument.mNinePatchRight == 0.0f && this.mDocument.mNinePatchBottom == 0.0f) ? false : true;
                 int c = 0;
                 while (true) {
                     if (c < this.mDocument.getFileAttributeSize()) {
@@ -1181,6 +977,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void createNinePatchRenderer() {
             if (this.mNinePatchRenderer == null && this.mDocument != null) {
                 int width = getIntrinsicWidth();
@@ -1189,9 +986,8 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
                     if (!this.mDocument.isPredraw()) {
                         this.mDocument.preDraw(0);
                     }
-                    Bitmap createBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                    this.mNinePatchBitmap = createBitmap;
-                    if (createBitmap != null) {
+                    this.mNinePatchBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                    if (this.mNinePatchBitmap != null) {
                         Canvas tmpCanvas = new Canvas(this.mNinePatchBitmap);
                         this.mDocument.draw(tmpCanvas, width, height, 0, this.mDensityDpi);
                     }
@@ -1213,25 +1009,22 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
 
         public int getIntrinsicWidth() {
             float densityScale = getDensityScale();
-            SprDocument sprDocument = this.mDocument;
-            if (sprDocument != null) {
-                return Math.round(sprDocument.mRight * densityScale) - Math.round(this.mDocument.mLeft * densityScale);
+            if (this.mDocument != null) {
+                return Math.round(this.mDocument.mRight * densityScale) - Math.round(this.mDocument.mLeft * densityScale);
             }
             return 0;
         }
 
         public int getIntrinsicHeight() {
             float densityScale = getDensityScale();
-            SprDocument sprDocument = this.mDocument;
-            if (sprDocument != null) {
-                return Math.round(sprDocument.mBottom * densityScale) - Math.round(this.mDocument.mTop * densityScale);
+            if (this.mDocument != null) {
+                return Math.round(this.mDocument.mBottom * densityScale) - Math.round(this.mDocument.mTop * densityScale);
             }
             return 0;
         }
 
         public float getDensityScale() {
-            SprDocument sprDocument = this.mDocument;
-            return sprDocument == null ? (this.mDensityDpi / 160.0f) / 3.0f : (this.mDensityDpi / 160.0f) / sprDocument.mDensity;
+            return this.mDocument == null ? (this.mDensityDpi / 160.0f) / 3.0f : (this.mDensityDpi / 160.0f) / this.mDocument.mDensity;
         }
 
         private ByteBuffer getNinePatchChunk(int left, int top, int right, int bottom) {
@@ -1333,9 +1126,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mTint;
-            return i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -1398,54 +1189,48 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
     @Override // android.graphics.drawable.Animatable
     public void start() {
         stop();
-        SprDocument sprDocument = this.mDocument;
-        if (sprDocument == null) {
+        if (this.mDocument == null) {
             return;
         }
-        if (sprDocument.getFrameAnimationCount() > 1) {
+        if (this.mDocument.getFrameAnimationCount() > 1) {
             this.mSprAnimation = new SprDrawableAnimationFrame(this, this.mDocument);
         } else if (this.mDocument.getValueAnimationObjects().size() > 0) {
             if (this.mDocument.isIntrinsic()) {
                 try {
-                    this.mDocument = this.mDocument.m8411clone();
+                    this.mDocument = this.mDocument.m8812clone();
                 } catch (CloneNotSupportedException e) {
                     throw new RuntimeException(e);
                 }
             }
             this.mSprAnimation = new SprDrawableAnimationValue(this, this.mDocument);
         }
-        SprDrawableAnimation sprDrawableAnimation = this.mSprAnimation;
-        if (sprDrawableAnimation != null) {
-            sprDrawableAnimation.start();
+        if (this.mSprAnimation != null) {
+            this.mSprAnimation.start();
         }
     }
 
     @Override // android.graphics.drawable.Animatable
     public void stop() {
-        SprDrawableAnimation sprDrawableAnimation = this.mSprAnimation;
-        if (sprDrawableAnimation != null) {
-            sprDrawableAnimation.stop();
+        if (this.mSprAnimation != null) {
+            this.mSprAnimation.stop();
             this.mSprAnimation = null;
         }
     }
 
     @Override // android.graphics.drawable.Animatable
     public boolean isRunning() {
-        SprDrawableAnimation sprDrawableAnimation = this.mSprAnimation;
-        if (sprDrawableAnimation != null && sprDrawableAnimation.isRunning()) {
+        if (this.mSprAnimation != null && this.mSprAnimation.isRunning()) {
             return true;
         }
         return false;
     }
 
     private void updateCachedBitmap(int width, int height, int dpi) {
-        SprDocument sprDocument = this.mDocument;
-        if (sprDocument == null) {
+        if (this.mDocument == null) {
             return;
         }
-        synchronized (sprDocument) {
-            Bitmap bitmap = this.mCacheBitmap;
-            if (bitmap != null && !bitmap.isMutable() && this.mCacheBitmap.getWidth() == width && this.mCacheBitmap.getHeight() == height && this.mCacheDensityDpi == dpi) {
+        synchronized (this.mDocument) {
+            if (this.mCacheBitmap != null && !this.mCacheBitmap.isMutable() && this.mCacheBitmap.getWidth() == width && this.mCacheBitmap.getHeight() == height && this.mCacheDensityDpi == dpi) {
                 return;
             }
             if (this.mCacheBitmap != null) {
@@ -1453,16 +1238,14 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
                 this.mCacheBitmap = null;
                 this.mCacheDensityDpi = 0;
             }
-            Bitmap cache = this.mState.mCacheManager.getCache(width, height, dpi);
-            this.mCacheBitmap = cache;
+            this.mCacheBitmap = this.mState.mCacheManager.getCache(width, height, dpi);
             this.mCacheDensityDpi = dpi;
-            if (cache == null) {
+            if (this.mCacheBitmap == null) {
                 if (!this.mDocument.isPredraw()) {
                     this.mDocument.preDraw(0);
                 }
-                Bitmap createBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                this.mCacheBitmap = createBitmap;
-                if (createBitmap != null) {
+                this.mCacheBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                if (this.mCacheBitmap != null) {
                     Canvas tmpCanvas = new Canvas(this.mCacheBitmap);
                     this.mDocument.draw(tmpCanvas, width, height, 0, this.mState.mDensityDpi);
                     this.mState.mCacheManager.addCache(this.mCacheBitmap, this.mCacheDensityDpi);

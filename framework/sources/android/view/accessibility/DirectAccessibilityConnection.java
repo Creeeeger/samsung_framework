@@ -8,14 +8,14 @@ import android.os.RemoteException;
 import android.view.accessibility.IAccessibilityManager;
 
 /* loaded from: classes4.dex */
-public class DirectAccessibilityConnection extends IAccessibilityServiceConnection.Default {
+class DirectAccessibilityConnection extends IAccessibilityServiceConnection.Default {
     private static final int FETCH_FLAGS = 384;
     private static final Region INTERACTIVE_REGION = null;
     private final IAccessibilityInteractionConnection mAccessibilityInteractionConnection;
     private final AccessibilityManager mAccessibilityManager;
     private final int mMyProcessId = Process.myPid();
 
-    public DirectAccessibilityConnection(IAccessibilityInteractionConnection accessibilityInteractionConnection, AccessibilityManager accessibilityManager) {
+    DirectAccessibilityConnection(IAccessibilityInteractionConnection accessibilityInteractionConnection, AccessibilityManager accessibilityManager) {
         this.mAccessibilityInteractionConnection = accessibilityInteractionConnection;
         this.mAccessibilityManager = accessibilityManager;
     }

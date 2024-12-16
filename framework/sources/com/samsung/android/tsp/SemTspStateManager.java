@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.ViewRootImpl;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemTspStateManager {
     public static final String DEAD_ZONE_DIRECTION = "dead_zone_direction";
     public static final String DEAD_ZONE_LAND_X1 = "dead_zone_land_x1";
@@ -29,8 +29,11 @@ public final class SemTspStateManager {
         if (decorView == null) {
             throw new IllegalArgumentException("The argument is null. decorView=" + decorView + ", deadZone=" + deadZone);
         }
-        String cmd = deadZone == null ? null : deadZone.getString("deadzone_v2");
-        Log.i(TAG, "setDeadZone() cmd=" + cmd);
+        if (deadZone != null) {
+            String v2 = deadZone.getString("deadzone_v2");
+            String v3 = deadZone.getString("deadzone_v3");
+            Log.i(TAG, "setDeadZone() v2=" + v2 + ", v3=" + v3);
+        }
         View rootView = decorView.getRootView();
         ViewParent parentView = rootView.getParent();
         if (parentView == null || !(parentView instanceof ViewRootImpl)) {

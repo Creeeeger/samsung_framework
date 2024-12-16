@@ -15,7 +15,6 @@ public interface IInputFilter extends IInterface {
 
     void uninstall() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputFilter {
         @Override // android.view.IInputFilter
         public void install(IInputFilterHost host) throws RemoteException {
@@ -35,7 +34,6 @@ public interface IInputFilter extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputFilter {
         public static final String DESCRIPTOR = "android.view.IInputFilter";
         static final int TRANSACTION_filterInputEvent = 3;
@@ -85,34 +83,31 @@ public interface IInputFilter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IInputFilterHost _arg0 = IInputFilterHost.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    install(_arg0);
+                    return true;
+                case 2:
+                    uninstall();
+                    return true;
+                case 3:
+                    InputEvent _arg02 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    filterInputEvent(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IInputFilterHost _arg0 = IInputFilterHost.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            install(_arg0);
-                            return true;
-                        case 2:
-                            uninstall();
-                            return true;
-                        case 3:
-                            InputEvent _arg02 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            filterInputEvent(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInputFilter {
+        private static class Proxy implements IInputFilter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

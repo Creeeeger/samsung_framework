@@ -12,7 +12,6 @@ public interface INotificationPlayerOnCompletionListener extends IInterface {
 
     void onCompletion() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements INotificationPlayerOnCompletionListener {
         @Override // android.app.INotificationPlayerOnCompletionListener
         public void onCompletion() throws RemoteException {
@@ -24,7 +23,6 @@ public interface INotificationPlayerOnCompletionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements INotificationPlayerOnCompletionListener {
         static final int TRANSACTION_onCompletion = 1;
 
@@ -67,25 +65,21 @@ public interface INotificationPlayerOnCompletionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(INotificationPlayerOnCompletionListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(INotificationPlayerOnCompletionListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(INotificationPlayerOnCompletionListener.DESCRIPTOR);
+                case 1:
+                    onCompletion();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onCompletion();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements INotificationPlayerOnCompletionListener {
+        private static class Proxy implements INotificationPlayerOnCompletionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

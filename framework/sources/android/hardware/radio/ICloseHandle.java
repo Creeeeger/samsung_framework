@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface ICloseHandle extends IInterface {
     void close() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ICloseHandle {
         @Override // android.hardware.radio.ICloseHandle
         public void close() throws RemoteException {
@@ -22,7 +21,6 @@ public interface ICloseHandle extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ICloseHandle {
         public static final String DESCRIPTOR = "android.hardware.radio.ICloseHandle";
         static final int TRANSACTION_close = 1;
@@ -66,25 +64,21 @@ public interface ICloseHandle extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    close();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ICloseHandle {
+        private static class Proxy implements ICloseHandle {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

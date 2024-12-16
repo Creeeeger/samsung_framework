@@ -28,6 +28,7 @@ public class FontListParser {
     public static final String ATTR_POSTSCRIPT_NAME = "postScriptName";
     public static final String ATTR_STYLE = "style";
     public static final String ATTR_STYLEVALUE = "stylevalue";
+    public static final String ATTR_SUPPORTED_AXES = "supportedAxes";
     public static final String ATTR_TAG = "tag";
     private static final String ATTR_VARIANT = "variant";
     public static final String ATTR_WEIGHT = "weight";
@@ -37,6 +38,8 @@ public class FontListParser {
     private static final String TAG = "FontListParser";
     public static final String TAG_AXIS = "axis";
     private static final String TAG_FONT = "font";
+    private static final String TAG_ITAL = "ital";
+    private static final String TAG_WGHT = "wght";
     private static final String VARIANT_COMPACT = "compact";
     private static final String VARIANT_ELEGANT = "elegant";
 
@@ -87,14 +90,14 @@ public class FontListParser {
         }
     }
 
-    /* JADX WARN: Incorrect condition in loop: B:3:0x002f */
+    /* JADX WARN: Incorrect condition in loop: B:3:0x0030 */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static android.text.FontConfig readFamilies(org.xmlpull.v1.XmlPullParser r19, java.lang.String r20, android.graphics.fonts.FontCustomizationParser.Result r21, java.util.Map<java.lang.String, java.io.File> r22, long r23, int r25, boolean r26) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
+    public static android.text.FontConfig readFamilies(org.xmlpull.v1.XmlPullParser r20, java.lang.String r21, android.graphics.fonts.FontCustomizationParser.Result r22, java.util.Map<java.lang.String, java.io.File> r23, long r24, int r26, boolean r27) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
         /*
-            Method dump skipped, instructions count: 269
+            Method dump skipped, instructions count: 276
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.graphics.FontListParser.readFamilies(org.xmlpull.v1.XmlPullParser, java.lang.String, android.graphics.fonts.FontCustomizationParser$Result, java.util.Map, long, int, boolean):android.text.FontConfig");
@@ -183,6 +186,7 @@ public class FontListParser {
     }
 
     private static FontConfig.Font readFont(XmlPullParser xmlPullParser, String str, Map<String, File> map, boolean z) throws XmlPullParserException, IOException {
+        int i;
         String str2;
         String str3;
         String str4;
@@ -195,6 +199,7 @@ public class FontListParser {
         boolean equals = STYLE_ITALIC.equals(xmlPullParser.getAttributeValue(null, "style"));
         String attributeValue3 = xmlPullParser.getAttributeValue(null, ATTR_FALLBACK_FOR);
         String attributeValue4 = xmlPullParser.getAttributeValue(null, ATTR_POSTSCRIPT_NAME);
+        String attributeValue5 = xmlPullParser.getAttributeValue(null, ATTR_SUPPORTED_AXES);
         StringBuilder sb = new StringBuilder();
         while (keepReading(xmlPullParser)) {
             if (xmlPullParser.getEventType() == 4) {
@@ -209,10 +214,30 @@ public class FontListParser {
             }
         }
         String replaceAll = FILENAME_WHITESPACE_PATTERN.matcher(sb).replaceAll("");
-        if (attributeValue4 == null) {
-            str2 = replaceAll.substring(0, replaceAll.length() - 4);
+        int i2 = 0;
+        if (attributeValue5 == null) {
+            i = 0;
         } else {
+            String[] split = attributeValue5.split(",");
+            int length = split.length;
+            int i3 = 0;
+            while (i3 < length) {
+                String strip = split[i3].strip();
+                String str5 = attributeValue;
+                if (strip.equals(TAG_WGHT)) {
+                    i2 |= 1;
+                } else if (strip.equals(TAG_ITAL)) {
+                    i2 |= 2;
+                }
+                i3++;
+                attributeValue = str5;
+            }
+            i = i2;
+        }
+        if (attributeValue4 != null) {
             str2 = attributeValue4;
+        } else {
+            str2 = replaceAll.substring(0, replaceAll.length() - 4);
         }
         String findUpdatedFontFile = findUpdatedFontFile(str2, map);
         if (findUpdatedFontFile != null) {
@@ -228,11 +253,10 @@ public class FontListParser {
             fontVariationSettings = FontVariationAxis.toFontVariationSettings((FontVariationAxis[]) arrayList.toArray(new FontVariationAxis[0]));
         }
         File file = new File(str3);
-        String str5 = str4;
         if (!z && !file.isFile()) {
             return null;
         }
-        return new FontConfig.Font(file, str5 != null ? new File(str5) : null, str2, new FontStyle(parseInt2, equals ? 1 : 0), parseInt, fontVariationSettings, attributeValue3);
+        return new FontConfig.Font(file, str4 == null ? null : new File(str4), str2, new FontStyle(parseInt2, equals ? 1 : 0), parseInt, fontVariationSettings, attributeValue3, i);
     }
 
     private static String findUpdatedFontFile(String psName, Map<String, File> updatableFontMap) {

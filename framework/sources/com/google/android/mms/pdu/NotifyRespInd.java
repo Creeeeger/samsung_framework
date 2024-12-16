@@ -11,7 +11,7 @@ public class NotifyRespInd extends GenericPdu {
         setStatus(status);
     }
 
-    public NotifyRespInd(PduHeaders headers) {
+    NotifyRespInd(PduHeaders headers) {
         super(headers);
     }
 

@@ -6,7 +6,7 @@ import android.os.UserHandle;
 import com.android.internal.app.ResolverActivity;
 import java.util.ArrayList;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class MultiDisplayResolveInfo extends DisplayResolveInfo {
     final DisplayResolveInfo mBaseInfo;
     private int mSelected;
@@ -14,11 +14,10 @@ public class MultiDisplayResolveInfo extends DisplayResolveInfo {
 
     public MultiDisplayResolveInfo(String packageName, DisplayResolveInfo firstInfo) {
         super(firstInfo);
-        ArrayList<DisplayResolveInfo> arrayList = new ArrayList<>();
-        this.mTargetInfos = arrayList;
+        this.mTargetInfos = new ArrayList<>();
         this.mSelected = -1;
         this.mBaseInfo = firstInfo;
-        arrayList.add(firstInfo);
+        this.mTargetInfos.add(firstInfo);
     }
 
     @Override // com.android.internal.app.chooser.DisplayResolveInfo, com.android.internal.app.chooser.TargetInfo

@@ -26,11 +26,9 @@ public class ArtManager {
     private final Context mContext;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProfileType {
     }
 
-    /* loaded from: classes.dex */
     public static abstract class SnapshotRuntimeProfileCallback {
         public abstract void onError(int i);
 
@@ -60,27 +58,24 @@ public class ArtManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class SnapshotRuntimeProfileCallbackDelegate extends ISnapshotRuntimeProfileCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class SnapshotRuntimeProfileCallbackDelegate extends ISnapshotRuntimeProfileCallback.Stub {
         private final SnapshotRuntimeProfileCallback mCallback;
         private final Executor mExecutor;
-
-        /* synthetic */ SnapshotRuntimeProfileCallbackDelegate(SnapshotRuntimeProfileCallback snapshotRuntimeProfileCallback, Executor executor, SnapshotRuntimeProfileCallbackDelegateIA snapshotRuntimeProfileCallbackDelegateIA) {
-            this(snapshotRuntimeProfileCallback, executor);
-        }
 
         private SnapshotRuntimeProfileCallbackDelegate(SnapshotRuntimeProfileCallback callback, Executor executor) {
             this.mCallback = callback;
             this.mExecutor = executor;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSuccess$0(ParcelFileDescriptor profileReadFd) {
             this.mCallback.onSuccess(profileReadFd);
         }
 
         @Override // android.content.pm.dex.ISnapshotRuntimeProfileCallback
         public void onSuccess(final ParcelFileDescriptor profileReadFd) {
-            this.mExecutor.execute(new Runnable() { // from class: android.content.pm.dex.ArtManager$SnapshotRuntimeProfileCallbackDelegate$$ExternalSyntheticLambda1
+            this.mExecutor.execute(new Runnable() { // from class: android.content.pm.dex.ArtManager$SnapshotRuntimeProfileCallbackDelegate$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     ArtManager.SnapshotRuntimeProfileCallbackDelegate.this.lambda$onSuccess$0(profileReadFd);
@@ -88,13 +83,14 @@ public class ArtManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$1(int errCode) {
             this.mCallback.onError(errCode);
         }
 
         @Override // android.content.pm.dex.ISnapshotRuntimeProfileCallback
         public void onError(final int errCode) {
-            this.mExecutor.execute(new Runnable() { // from class: android.content.pm.dex.ArtManager$SnapshotRuntimeProfileCallbackDelegate$$ExternalSyntheticLambda0
+            this.mExecutor.execute(new Runnable() { // from class: android.content.pm.dex.ArtManager$SnapshotRuntimeProfileCallbackDelegate$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     ArtManager.SnapshotRuntimeProfileCallbackDelegate.this.lambda$onError$1(errCode);

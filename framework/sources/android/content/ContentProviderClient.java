@@ -45,15 +45,14 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
 
     public ContentProviderClient(ContentResolver contentResolver, IContentProvider contentProvider, String authority, boolean stable) {
         this.mClosed = new AtomicBoolean();
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
+        this.mCloseGuard = CloseGuard.get();
         this.mContentResolver = contentResolver;
         this.mContentProvider = contentProvider;
         this.mPackageName = contentResolver.mPackageName;
         this.mAttributionSource = contentResolver.getAttributionSource();
         this.mAuthority = authority;
         this.mStable = stable;
-        closeGuard.open("ContentProviderClient.close");
+        this.mCloseGuard.open("ContentProviderClient.close");
     }
 
     @SystemApi
@@ -76,16 +75,14 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
     }
 
     private void beforeRemote() {
-        NotRespondingRunnable notRespondingRunnable = this.mAnrRunnable;
-        if (notRespondingRunnable != null) {
-            sAnrHandler.postDelayed(notRespondingRunnable, this.mAnrTimeout);
+        if (this.mAnrRunnable != null) {
+            sAnrHandler.postDelayed(this.mAnrRunnable, this.mAnrTimeout);
         }
     }
 
     private void afterRemote() {
-        NotRespondingRunnable notRespondingRunnable = this.mAnrRunnable;
-        if (notRespondingRunnable != null) {
-            sAnrHandler.removeCallbacks(notRespondingRunnable);
+        if (this.mAnrRunnable != null) {
+            sAnrHandler.removeCallbacks(this.mAnrRunnable);
         }
     }
 
@@ -487,9 +484,8 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             close();
         } finally {
@@ -511,12 +507,7 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
         IoUtils.closeQuietly(client);
     }
 
-    /* loaded from: classes.dex */
-    public class NotRespondingRunnable implements Runnable {
-        /* synthetic */ NotRespondingRunnable(ContentProviderClient contentProviderClient, NotRespondingRunnableIA notRespondingRunnableIA) {
-            this();
-        }
-
+    private class NotRespondingRunnable implements Runnable {
         private NotRespondingRunnable() {
         }
 
@@ -527,15 +518,13 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class CursorWrapperInner extends CrossProcessCursorWrapper {
+    private final class CursorWrapperInner extends CrossProcessCursorWrapper {
         private final CloseGuard mCloseGuard;
 
         CursorWrapperInner(Cursor cursor) {
             super(cursor);
-            CloseGuard closeGuard = CloseGuard.get();
-            this.mCloseGuard = closeGuard;
-            closeGuard.open("CursorWrapperInner.close");
+            this.mCloseGuard = CloseGuard.get();
+            this.mCloseGuard.open("CursorWrapperInner.close");
         }
 
         @Override // android.database.CursorWrapper, android.database.Cursor, java.io.Closeable, java.lang.AutoCloseable
@@ -546,9 +535,8 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
 
         protected void finalize() throws Throwable {
             try {
-                CloseGuard closeGuard = this.mCloseGuard;
-                if (closeGuard != null) {
-                    closeGuard.warnIfOpen();
+                if (this.mCloseGuard != null) {
+                    this.mCloseGuard.warnIfOpen();
                 }
                 close();
             } finally {

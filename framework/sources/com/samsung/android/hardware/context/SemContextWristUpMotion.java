@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 @Deprecated
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextWristUpMotion extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextWristUpMotion> CREATOR = new Parcelable.Creator<SemContextWristUpMotion>() { // from class: com.samsung.android.hardware.context.SemContextWristUpMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWristUpMotion createFromParcel(Parcel in) {
             return new SemContextWristUpMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWristUpMotion[] newArray(int size) {
             return new SemContextWristUpMotion[size];
@@ -29,24 +28,7 @@ public class SemContextWristUpMotion extends SemContextEventContext {
     public static final int NORMAL = 1;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextWristUpMotion$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextWristUpMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWristUpMotion createFromParcel(Parcel in) {
-            return new SemContextWristUpMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWristUpMotion[] newArray(int size) {
-            return new SemContextWristUpMotion[size];
-        }
-    }
-
-    public SemContextWristUpMotion() {
+    SemContextWristUpMotion() {
         this.mContext = new Bundle();
     }
 

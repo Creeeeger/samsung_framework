@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextAirMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextAirMotion> CREATOR = new Parcelable.Creator<SContextAirMotion>() { // from class: android.hardware.scontext.SContextAirMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAirMotion createFromParcel(Parcel in) {
             return new SContextAirMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAirMotion[] newArray(int size) {
             return new SContextAirMotion[size];
@@ -23,7 +22,7 @@ public class SContextAirMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextAirMotion() {
+    SContextAirMotion() {
         this.mContext = new Bundle();
     }
 
@@ -55,22 +54,5 @@ public class SContextAirMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextAirMotion$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextAirMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAirMotion createFromParcel(Parcel in) {
-            return new SContextAirMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAirMotion[] newArray(int size) {
-            return new SContextAirMotion[size];
-        }
     }
 }

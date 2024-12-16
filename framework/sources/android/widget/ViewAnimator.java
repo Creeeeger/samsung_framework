@@ -21,7 +21,6 @@ public class ViewAnimator extends FrameLayout {
     Animation mOutAnimation;
     int mWhichChild;
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<ViewAnimator> {
         private int mAnimateFirstViewId;
         private int mInAnimationId;
@@ -117,14 +116,13 @@ public class ViewAnimator extends FrameLayout {
         setDisplayedChild(this.mWhichChild - 1);
     }
 
-    public void showOnly(int childIndex, boolean animate) {
-        Animation animation;
+    void showOnly(int childIndex, boolean animate) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             if (i == childIndex) {
-                if (animate && (animation = this.mInAnimation) != null) {
-                    child.startAnimation(animation);
+                if (animate && this.mInAnimation != null) {
+                    child.startAnimation(this.mInAnimation);
                 }
                 child.setVisibility(0);
                 this.mFirstTime = false;
@@ -146,15 +144,14 @@ public class ViewAnimator extends FrameLayout {
 
     @Override // android.view.ViewGroup
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        int i;
         super.addView(child, index, params);
         if (getChildCount() == 1) {
             child.setVisibility(0);
         } else {
             child.setVisibility(8);
         }
-        if (index >= 0 && (i = this.mWhichChild) >= index) {
-            setDisplayedChild(i + 1);
+        if (index >= 0 && this.mWhichChild >= index) {
+            setDisplayedChild(this.mWhichChild + 1);
         }
     }
 
@@ -180,13 +177,10 @@ public class ViewAnimator extends FrameLayout {
         if (childCount == 0) {
             this.mWhichChild = 0;
             this.mFirstTime = true;
-            return;
-        }
-        int i = this.mWhichChild;
-        if (i >= childCount) {
+        } else if (this.mWhichChild >= childCount) {
             setDisplayedChild(childCount - 1);
-        } else if (i == index) {
-            setDisplayedChild(i);
+        } else if (this.mWhichChild == index) {
+            setDisplayedChild(this.mWhichChild);
         }
     }
 
@@ -201,11 +195,8 @@ public class ViewAnimator extends FrameLayout {
         if (getChildCount() == 0) {
             this.mWhichChild = 0;
             this.mFirstTime = true;
-            return;
-        }
-        int i = this.mWhichChild;
-        if (i >= start && i < start + count) {
-            setDisplayedChild(i);
+        } else if (this.mWhichChild >= start && this.mWhichChild < start + count) {
+            setDisplayedChild(this.mWhichChild);
         }
     }
 

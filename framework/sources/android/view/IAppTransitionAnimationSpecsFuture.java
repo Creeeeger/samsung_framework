@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IAppTransitionAnimationSpecsFuture extends IInterface {
     AppTransitionAnimationSpec[] get() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAppTransitionAnimationSpecsFuture {
         @Override // android.view.IAppTransitionAnimationSpecsFuture
         public AppTransitionAnimationSpec[] get() throws RemoteException {
@@ -23,7 +22,6 @@ public interface IAppTransitionAnimationSpecsFuture extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAppTransitionAnimationSpecsFuture {
         public static final String DESCRIPTOR = "android.view.IAppTransitionAnimationSpecsFuture";
         static final int TRANSACTION_get = 1;
@@ -67,25 +65,22 @@ public interface IAppTransitionAnimationSpecsFuture extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    AppTransitionAnimationSpec[] _result = get();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AppTransitionAnimationSpec[] _result = get();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAppTransitionAnimationSpecsFuture {
+        private static class Proxy implements IAppTransitionAnimationSpecsFuture {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

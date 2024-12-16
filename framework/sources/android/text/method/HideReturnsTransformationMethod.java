@@ -1,6 +1,6 @@
 package android.text.method;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class HideReturnsTransformationMethod extends ReplacementTransformationMethod {
     private static char[] ORIGINAL = {'\r'};
     private static char[] REPLACEMENT = {65279};
@@ -17,12 +17,10 @@ public class HideReturnsTransformationMethod extends ReplacementTransformationMe
     }
 
     public static HideReturnsTransformationMethod getInstance() {
-        HideReturnsTransformationMethod hideReturnsTransformationMethod = sInstance;
-        if (hideReturnsTransformationMethod != null) {
-            return hideReturnsTransformationMethod;
+        if (sInstance != null) {
+            return sInstance;
         }
-        HideReturnsTransformationMethod hideReturnsTransformationMethod2 = new HideReturnsTransformationMethod();
-        sInstance = hideReturnsTransformationMethod2;
-        return hideReturnsTransformationMethod2;
+        sInstance = new HideReturnsTransformationMethod();
+        return sInstance;
     }
 }

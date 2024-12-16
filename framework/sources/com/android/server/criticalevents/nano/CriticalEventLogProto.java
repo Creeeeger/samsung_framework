@@ -42,64 +42,44 @@ public final class CriticalEventLogProto extends MessageNano {
 
     @Override // com.android.framework.protobuf.nano.MessageNano
     public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-        long j = this.timestampMs;
-        if (j != 0) {
-            output.writeInt64(1, j);
+        if (this.timestampMs != 0) {
+            output.writeInt64(1, this.timestampMs);
         }
-        int i = this.windowMs;
-        if (i != 0) {
-            output.writeInt32(2, i);
+        if (this.windowMs != 0) {
+            output.writeInt32(2, this.windowMs);
         }
-        int i2 = this.capacity;
-        if (i2 != 0) {
-            output.writeInt32(3, i2);
+        if (this.capacity != 0) {
+            output.writeInt32(3, this.capacity);
         }
-        CriticalEventProto[] criticalEventProtoArr = this.events;
-        if (criticalEventProtoArr != null && criticalEventProtoArr.length > 0) {
-            int i3 = 0;
-            while (true) {
-                CriticalEventProto[] criticalEventProtoArr2 = this.events;
-                if (i3 >= criticalEventProtoArr2.length) {
-                    break;
-                }
-                CriticalEventProto element = criticalEventProtoArr2[i3];
+        if (this.events != null && this.events.length > 0) {
+            for (int i = 0; i < this.events.length; i++) {
+                CriticalEventProto element = this.events[i];
                 if (element != null) {
                     output.writeMessage(4, element);
                 }
-                i3++;
             }
         }
         super.writeTo(output);
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
-        long j = this.timestampMs;
-        if (j != 0) {
-            size += CodedOutputByteBufferNano.computeInt64Size(1, j);
+        if (this.timestampMs != 0) {
+            size += CodedOutputByteBufferNano.computeInt64Size(1, this.timestampMs);
         }
-        int i = this.windowMs;
-        if (i != 0) {
-            size += CodedOutputByteBufferNano.computeInt32Size(2, i);
+        if (this.windowMs != 0) {
+            size += CodedOutputByteBufferNano.computeInt32Size(2, this.windowMs);
         }
-        int i2 = this.capacity;
-        if (i2 != 0) {
-            size += CodedOutputByteBufferNano.computeInt32Size(3, i2);
+        if (this.capacity != 0) {
+            size += CodedOutputByteBufferNano.computeInt32Size(3, this.capacity);
         }
-        CriticalEventProto[] criticalEventProtoArr = this.events;
-        if (criticalEventProtoArr != null && criticalEventProtoArr.length > 0) {
-            int i3 = 0;
-            while (true) {
-                CriticalEventProto[] criticalEventProtoArr2 = this.events;
-                if (i3 >= criticalEventProtoArr2.length) {
-                    break;
-                }
-                CriticalEventProto element = criticalEventProtoArr2[i3];
+        if (this.events != null && this.events.length > 0) {
+            for (int i = 0; i < this.events.length; i++) {
+                CriticalEventProto element = this.events[i];
                 if (element != null) {
                     size += CodedOutputByteBufferNano.computeMessageSize(4, element);
                 }
-                i3++;
             }
         }
         return size;
@@ -124,11 +104,10 @@ public final class CriticalEventLogProto extends MessageNano {
                     break;
                 case 34:
                     int arrayLength2 = WireFormatNano.getRepeatedFieldArrayLength(input, 34);
-                    CriticalEventProto[] criticalEventProtoArr = this.events;
-                    int i = criticalEventProtoArr == null ? 0 : criticalEventProtoArr.length;
+                    int i = this.events == null ? 0 : this.events.length;
                     CriticalEventProto[] newArray = new CriticalEventProto[i + arrayLength2];
                     if (i != 0) {
-                        System.arraycopy(criticalEventProtoArr, 0, newArray, 0, i);
+                        System.arraycopy(this.events, 0, newArray, 0, i);
                     }
                     while (i < newArray.length - 1) {
                         newArray[i] = new CriticalEventProto();

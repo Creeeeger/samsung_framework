@@ -4,7 +4,6 @@ package android.graphics;
 /* loaded from: classes.dex */
 public class AvoidXfermode extends Xfermode {
 
-    /* loaded from: classes.dex */
     public enum Mode {
         AVOID(0),
         TARGET(1);

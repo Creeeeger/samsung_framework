@@ -9,12 +9,10 @@ import android.os.Parcelable;
 import java.util.Collection;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class ParcelTotalCaptureResult implements Parcelable {
     public static final Parcelable.Creator<ParcelTotalCaptureResult> CREATOR = new Parcelable.Creator<ParcelTotalCaptureResult>() { // from class: android.hardware.camera2.extension.ParcelTotalCaptureResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelTotalCaptureResult createFromParcel(Parcel _aidl_source) {
             ParcelTotalCaptureResult _aidl_out = new ParcelTotalCaptureResult();
@@ -22,6 +20,7 @@ public class ParcelTotalCaptureResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelTotalCaptureResult[] newArray(int _aidl_size) {
             return new ParcelTotalCaptureResult[_aidl_size];
@@ -35,25 +34,6 @@ public class ParcelTotalCaptureResult implements Parcelable {
     public int sequenceId = 0;
     public long frameNumber = 0;
     public int sessionId = 0;
-
-    /* renamed from: android.hardware.camera2.extension.ParcelTotalCaptureResult$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ParcelTotalCaptureResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelTotalCaptureResult createFromParcel(Parcel _aidl_source) {
-            ParcelTotalCaptureResult _aidl_out = new ParcelTotalCaptureResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelTotalCaptureResult[] newArray(int _aidl_size) {
-            return new ParcelTotalCaptureResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

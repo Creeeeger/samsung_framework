@@ -12,7 +12,6 @@ public interface IDeviceVolumeBehaviorDispatcher extends IInterface {
 
     void dispatchDeviceVolumeBehaviorChanged(AudioDeviceAttributes audioDeviceAttributes, int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDeviceVolumeBehaviorDispatcher {
         @Override // android.media.IDeviceVolumeBehaviorDispatcher
         public void dispatchDeviceVolumeBehaviorChanged(AudioDeviceAttributes device, int deviceVolumeBehavior) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDeviceVolumeBehaviorDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDeviceVolumeBehaviorDispatcher {
         static final int TRANSACTION_dispatchDeviceVolumeBehaviorChanged = 1;
 
@@ -67,26 +65,23 @@ public interface IDeviceVolumeBehaviorDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDeviceVolumeBehaviorDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDeviceVolumeBehaviorDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeviceVolumeBehaviorDispatcher.DESCRIPTOR);
+                case 1:
+                    AudioDeviceAttributes _arg0 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchDeviceVolumeBehaviorChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AudioDeviceAttributes _arg0 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchDeviceVolumeBehaviorChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IDeviceVolumeBehaviorDispatcher {
+        private static class Proxy implements IDeviceVolumeBehaviorDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -27,9 +27,8 @@ public class DHBasicAgreement implements BasicAgreement {
         if (!(kParam instanceof DHPrivateKeyParameters)) {
             throw new IllegalArgumentException("DHEngine expects DHPrivateKeyParameters");
         }
-        DHPrivateKeyParameters dHPrivateKeyParameters = (DHPrivateKeyParameters) kParam;
-        this.key = dHPrivateKeyParameters;
-        this.dhParams = dHPrivateKeyParameters.getParameters();
+        this.key = (DHPrivateKeyParameters) kParam;
+        this.dhParams = this.key.getParameters();
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.BasicAgreement
@@ -45,16 +44,13 @@ public class DHBasicAgreement implements BasicAgreement {
         }
         BigInteger p = this.dhParams.getP();
         BigInteger peerY = pub.getY();
-        if (peerY != null) {
-            BigInteger bigInteger = ONE;
-            if (peerY.compareTo(bigInteger) > 0 && peerY.compareTo(p.subtract(bigInteger)) < 0) {
-                BigInteger result = peerY.modPow(this.key.getX(), p);
-                if (result.equals(bigInteger)) {
-                    throw new IllegalStateException("Shared key can't be 1");
-                }
-                return result;
-            }
+        if (peerY == null || peerY.compareTo(ONE) <= 0 || peerY.compareTo(p.subtract(ONE)) >= 0) {
+            throw new IllegalArgumentException("Diffie-Hellman public key is weak");
         }
-        throw new IllegalArgumentException("Diffie-Hellman public key is weak");
+        BigInteger result = peerY.modPow(this.key.getX(), p);
+        if (result.equals(ONE)) {
+            throw new IllegalStateException("Shared key can't be 1");
+        }
+        return result;
     }
 }

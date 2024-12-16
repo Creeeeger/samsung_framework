@@ -1,6 +1,6 @@
 package android.hardware.camera2.utils;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class HashCodeHelpers {
     public static int hashCode(int... array) {
         if (array == null) {

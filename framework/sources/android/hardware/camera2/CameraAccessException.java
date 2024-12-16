@@ -4,7 +4,7 @@ import android.util.AndroidException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraAccessException extends AndroidException {
     public static final int CAMERA_DEPRECATED_HAL = 1000;
     public static final int CAMERA_DISABLED = 1;
@@ -16,7 +16,6 @@ public class CameraAccessException extends AndroidException {
     private final int mReason;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface AccessError {
     }
 

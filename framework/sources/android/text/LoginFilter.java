@@ -1,7 +1,7 @@
 package android.text;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class LoginFilter implements InputFilter {
     private boolean mAppendInvalid;
 
@@ -63,7 +63,6 @@ public abstract class LoginFilter implements InputFilter {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class UsernameFilterGMail extends LoginFilter {
         public UsernameFilterGMail() {
             super(false);
@@ -85,7 +84,6 @@ public abstract class LoginFilter implements InputFilter {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class UsernameFilterGeneric extends LoginFilter {
         private static final String mAllowed = "@_-+.";
 
@@ -110,7 +108,6 @@ public abstract class LoginFilter implements InputFilter {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class PasswordFilterGMail extends LoginFilter {
         public PasswordFilterGMail() {
             super(false);

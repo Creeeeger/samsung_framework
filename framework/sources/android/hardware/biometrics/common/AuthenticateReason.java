@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.ParcelableHolder;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class AuthenticateReason implements Parcelable {
     public static final Parcelable.Creator<AuthenticateReason> CREATOR = new Parcelable.Creator<AuthenticateReason>() { // from class: android.hardware.biometrics.common.AuthenticateReason.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticateReason createFromParcel(Parcel _aidl_source) {
             return new AuthenticateReason(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticateReason[] newArray(int _aidl_size) {
             return new AuthenticateReason[_aidl_size];
@@ -27,7 +26,6 @@ public final class AuthenticateReason implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes.dex */
     public @interface Face {
         public static final int ALTERNATE_BIOMETRIC_BOUNCER_SHOWN = 4;
         public static final int ASSISTANT_VISIBLE = 3;
@@ -42,20 +40,14 @@ public final class AuthenticateReason implements Parcelable {
         public static final int UNKNOWN = 0;
     }
 
-    /* loaded from: classes.dex */
     public @interface Fingerprint {
         public static final int UNKNOWN = 0;
     }
 
-    /* loaded from: classes.dex */
     public @interface Tag {
         public static final int faceAuthenticateReason = 1;
         public static final int fingerprintAuthenticateReason = 2;
         public static final int vendorAuthenticateReason = 0;
-    }
-
-    /* synthetic */ AuthenticateReason(Parcel parcel, AuthenticateReasonIA authenticateReasonIA) {
-        this(parcel);
     }
 
     public AuthenticateReason() {
@@ -120,38 +112,19 @@ public final class AuthenticateReason implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.biometrics.common.AuthenticateReason$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AuthenticateReason> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthenticateReason createFromParcel(Parcel _aidl_source) {
-            return new AuthenticateReason(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthenticateReason[] newArray(int _aidl_size) {
-            return new AuthenticateReason[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getVendorAuthenticateReason(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getFaceAuthenticateReason());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getFingerprintAuthenticateReason());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -217,12 +190,9 @@ public final class AuthenticateReason implements Parcelable {
         this._value = _value;
     }
 
-    /* loaded from: classes.dex */
     public static class Vendor implements Parcelable {
         public static final Parcelable.Creator<Vendor> CREATOR = new Parcelable.Creator<Vendor>() { // from class: android.hardware.biometrics.common.AuthenticateReason.Vendor.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Vendor createFromParcel(Parcel _aidl_source) {
                 Vendor _aidl_out = new Vendor();
@@ -230,31 +200,13 @@ public final class AuthenticateReason implements Parcelable {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Vendor[] newArray(int _aidl_size) {
                 return new Vendor[_aidl_size];
             }
         };
         public final ParcelableHolder extension = new ParcelableHolder(1);
-
-        /* renamed from: android.hardware.biometrics.common.AuthenticateReason$Vendor$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Vendor> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Vendor createFromParcel(Parcel _aidl_source) {
-                Vendor _aidl_out = new Vendor();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Vendor[] newArray(int _aidl_size) {
-                return new Vendor[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

@@ -4,7 +4,6 @@ package android.os;
 public interface ICancellationSignal extends IInterface {
     void cancel() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICancellationSignal {
         @Override // android.os.ICancellationSignal
         public void cancel() throws RemoteException {
@@ -16,7 +15,6 @@ public interface ICancellationSignal extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICancellationSignal {
         public static final String DESCRIPTOR = "android.os.ICancellationSignal";
         static final int TRANSACTION_cancel = 1;
@@ -60,24 +58,20 @@ public interface ICancellationSignal extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    cancel();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            cancel();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICancellationSignal {
+        private static class Proxy implements ICancellationSignal {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

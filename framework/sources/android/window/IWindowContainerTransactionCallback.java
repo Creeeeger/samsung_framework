@@ -13,7 +13,6 @@ public interface IWindowContainerTransactionCallback extends IInterface {
 
     void onTransactionReady(int i, SurfaceControl.Transaction transaction) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWindowContainerTransactionCallback {
         @Override // android.window.IWindowContainerTransactionCallback
         public void onTransactionReady(int id, SurfaceControl.Transaction t) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IWindowContainerTransactionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWindowContainerTransactionCallback {
         static final int TRANSACTION_onTransactionReady = 1;
 
@@ -68,27 +66,23 @@ public interface IWindowContainerTransactionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWindowContainerTransactionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWindowContainerTransactionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWindowContainerTransactionCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    SurfaceControl.Transaction _arg1 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTransactionReady(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            SurfaceControl.Transaction _arg1 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTransactionReady(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWindowContainerTransactionCallback {
+        private static class Proxy implements IWindowContainerTransactionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

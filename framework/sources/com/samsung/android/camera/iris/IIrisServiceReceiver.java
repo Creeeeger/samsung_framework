@@ -24,7 +24,6 @@ public interface IIrisServiceReceiver extends IInterface {
 
     void onRemoved(long j, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IIrisServiceReceiver {
         @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
         public void onEnrollResult(long deviceId, int irisId, int groupId, int remaining) throws RemoteException {
@@ -60,7 +59,6 @@ public interface IIrisServiceReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IIrisServiceReceiver {
         static final int TRANSACTION_onAcquired = 2;
         static final int TRANSACTION_onAuthenticationFailed = 4;
@@ -121,68 +119,64 @@ public interface IIrisServiceReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIrisServiceReceiver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIrisServiceReceiver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIrisServiceReceiver.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEnrollResult(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAcquired(_arg02, _arg12);
+                    return true;
+                case 3:
+                    long _arg03 = data.readLong();
+                    Iris _arg13 = (Iris) data.readTypedObject(Iris.CREATOR);
+                    byte[] _arg22 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onAuthenticationSucceeded(_arg03, _arg13, _arg22);
+                    return true;
+                case 4:
+                    long _arg04 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onAuthenticationFailed(_arg04);
+                    return true;
+                case 5:
+                    long _arg05 = data.readLong();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg05, _arg14);
+                    return true;
+                case 6:
+                    long _arg06 = data.readLong();
+                    int _arg15 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRemoved(_arg06, _arg15, _arg23);
+                    return true;
+                case 7:
+                    long _arg07 = data.readLong();
+                    byte[] _arg16 = data.createByteArray();
+                    int _arg24 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onIRImage(_arg07, _arg16, _arg24, _arg32);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEnrollResult(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAcquired(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            long _arg03 = data.readLong();
-                            Iris _arg13 = (Iris) data.readTypedObject(Iris.CREATOR);
-                            byte[] _arg22 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onAuthenticationSucceeded(_arg03, _arg13, _arg22);
-                            return true;
-                        case 4:
-                            long _arg04 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onAuthenticationFailed(_arg04);
-                            return true;
-                        case 5:
-                            long _arg05 = data.readLong();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            long _arg06 = data.readLong();
-                            int _arg15 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRemoved(_arg06, _arg15, _arg23);
-                            return true;
-                        case 7:
-                            long _arg07 = data.readLong();
-                            byte[] _arg16 = data.createByteArray();
-                            int _arg24 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onIRImage(_arg07, _arg16, _arg24, _arg32);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IIrisServiceReceiver {
+        private static class Proxy implements IIrisServiceReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

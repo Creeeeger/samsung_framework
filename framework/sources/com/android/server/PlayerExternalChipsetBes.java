@@ -76,6 +76,7 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         return this.mCurrentRssi;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public byte[] queryInfo() {
         int ret;
         byte[] buffer = new byte[12];
@@ -119,7 +120,7 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         return null;
     }
 
-    public void initEndpointBes() {
+    protected void initEndpointBes() {
         UsbInterface usbInterface;
         Log.d("FMRadioBestechnic", "interface Count - " + this.mUsbDevice.getInterfaceCount() + " End ID - " + this.mUsbDevice.getInterface(this.mUsbDevice.getInterfaceCount() - 1).getId());
         if (this.mUsbDevice.getInterface(this.mUsbDevice.getInterfaceCount() - 1).getId() == 4 && (usbInterface = this.mUsbDevice.getInterface(this.mUsbDevice.getInterfaceCount() - 1)) != null) {
@@ -152,26 +153,24 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    public void startNotifyThreadBes() {
+    protected void startNotifyThreadBes() {
         if (this.notifyWorkerThread == null && this.mUsbEndpoint != null) {
-            NotifyWorkerThread notifyWorkerThread = new NotifyWorkerThread();
-            this.notifyWorkerThread = notifyWorkerThread;
-            notifyWorkerThread.start();
+            this.notifyWorkerThread = new NotifyWorkerThread();
+            this.notifyWorkerThread.start();
             this.mIsRunning = true;
             Log.d("FMRadioBestechnic", "start Notify Thread");
         }
     }
 
-    public void stopNotifyThreadBes() {
-        NotifyWorkerThread notifyWorkerThread = this.notifyWorkerThread;
-        if (notifyWorkerThread != null) {
-            notifyWorkerThread.terminate();
+    protected void stopNotifyThreadBes() {
+        if (this.notifyWorkerThread != null) {
+            this.notifyWorkerThread.terminate();
             this.notifyWorkerThread = null;
             Log.d("FMRadioBestechnic", "Notify Thread is stopped");
         }
     }
 
-    public void releaseInterfaceBes() {
+    protected void releaseInterfaceBes() {
         Log.d("FMRadioBestechnic", "release()");
         if (this.mUsbDeviceConnection != null && this.mCDCInterface != null) {
             this.mUsbDeviceConnection.releaseInterface(this.mCDCInterface);
@@ -179,8 +178,7 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class NotifyWorkerThread extends Thread {
+    private class NotifyWorkerThread extends Thread {
         NotifyWorkerThread() {
             super("FMNotifyWorkerThread");
         }
@@ -286,7 +284,7 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    public boolean startsWith(byte[] data, byte[] param) {
+    protected boolean startsWith(byte[] data, byte[] param) {
         if (data == null) {
             return param == null;
         }
@@ -304,7 +302,7 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         return true;
     }
 
-    public void threadSleep(long ms) {
+    protected void threadSleep(long ms) {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException e) {
@@ -312,7 +310,7 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    public String toHex(byte[] data) {
+    protected String toHex(byte[] data) {
         StringBuffer buffer = new StringBuffer();
         for (byte b : data) {
             buffer.append(String.format("%02x", Byte.valueOf(b))).append(",");

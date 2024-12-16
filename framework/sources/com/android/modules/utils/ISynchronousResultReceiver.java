@@ -13,7 +13,6 @@ public interface ISynchronousResultReceiver extends IInterface {
 
     void send(SynchronousResultReceiver.Result result) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISynchronousResultReceiver {
         @Override // com.android.modules.utils.ISynchronousResultReceiver
         public void send(SynchronousResultReceiver.Result resultData) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISynchronousResultReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISynchronousResultReceiver {
         static final int TRANSACTION_send = 1;
 
@@ -68,24 +66,21 @@ public interface ISynchronousResultReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISynchronousResultReceiver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISynchronousResultReceiver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISynchronousResultReceiver.DESCRIPTOR);
+                case 1:
+                    SynchronousResultReceiver.Result _arg0 = (SynchronousResultReceiver.Result) data.readTypedObject(SynchronousResultReceiver.Result.CREATOR);
+                    send(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SynchronousResultReceiver.Result _arg0 = (SynchronousResultReceiver.Result) data.readTypedObject(SynchronousResultReceiver.Result.CREATOR);
-                            send(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISynchronousResultReceiver {
+        private static class Proxy implements ISynchronousResultReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

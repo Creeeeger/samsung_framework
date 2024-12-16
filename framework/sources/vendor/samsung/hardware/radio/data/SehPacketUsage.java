@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehPacketUsage implements Parcelable {
     public static final Parcelable.Creator<SehPacketUsage> CREATOR = new Parcelable.Creator<SehPacketUsage>() { // from class: vendor.samsung.hardware.radio.data.SehPacketUsage.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehPacketUsage createFromParcel(Parcel _aidl_source) {
             SehPacketUsage _aidl_out = new SehPacketUsage();
@@ -24,25 +21,6 @@ public class SehPacketUsage implements Parcelable {
     };
     public long rxBytes = 0;
     public long txBytes = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.data.SehPacketUsage$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehPacketUsage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehPacketUsage createFromParcel(Parcel _aidl_source) {
-            SehPacketUsage _aidl_out = new SehPacketUsage();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehPacketUsage[] newArray(int _aidl_size) {
-            return new SehPacketUsage[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

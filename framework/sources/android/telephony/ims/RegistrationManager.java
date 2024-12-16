@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface RegistrationManager {
     public static final Map<Integer, Integer> IMS_REG_TO_ACCESS_TYPE_MAP = Map.of(-1, -1, 0, 1, 3, 1, 1, 2, 2, 2);
     public static final int REGISTRATION_STATE_NOT_REGISTERED = 0;
@@ -24,18 +24,22 @@ public interface RegistrationManager {
     public static final int SUGGESTED_ACTION_NONE = 0;
 
     @SystemApi
+    public static final int SUGGESTED_ACTION_TRIGGER_CLEAR_RAT_BLOCKS = 4;
+
+    @SystemApi
     public static final int SUGGESTED_ACTION_TRIGGER_PLMN_BLOCK = 1;
 
     @SystemApi
     public static final int SUGGESTED_ACTION_TRIGGER_PLMN_BLOCK_WITH_TIMEOUT = 2;
 
+    @SystemApi
+    public static final int SUGGESTED_ACTION_TRIGGER_RAT_BLOCK = 3;
+
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ImsRegistrationState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SuggestedAction {
     }
 
@@ -61,20 +65,18 @@ public interface RegistrationManager {
     }
 
     static int getAccessType(int regtech) {
-        Map<Integer, Integer> map = IMS_REG_TO_ACCESS_TYPE_MAP;
-        if (!map.containsKey(Integer.valueOf(regtech))) {
+        if (!IMS_REG_TO_ACCESS_TYPE_MAP.containsKey(Integer.valueOf(regtech))) {
             Log.w("RegistrationManager", "getAccessType - invalid regType returned: " + regtech);
             return -1;
         }
-        return map.get(Integer.valueOf(regtech)).intValue();
+        return IMS_REG_TO_ACCESS_TYPE_MAP.get(Integer.valueOf(regtech)).intValue();
     }
 
-    /* loaded from: classes3.dex */
     public static class RegistrationCallback {
         private final RegistrationBinder mBinder = new RegistrationBinder(this);
 
-        /* loaded from: classes3.dex */
-        public static class RegistrationBinder extends IImsRegistrationCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class RegistrationBinder extends IImsRegistrationCallback.Stub {
             private Bundle mBundle = new Bundle();
             private Executor mExecutor;
             private final RegistrationCallback mLocalCallback;
@@ -90,7 +92,7 @@ public interface RegistrationManager {
                 }
                 long callingIdentity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda3
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             RegistrationManager.RegistrationCallback.RegistrationBinder.this.lambda$onRegistered$0(attr);
@@ -101,6 +103,7 @@ public interface RegistrationManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRegistered$0(ImsRegistrationAttributes attr) {
                 this.mLocalCallback.onRegistered(attr);
             }
@@ -112,7 +115,7 @@ public interface RegistrationManager {
                 }
                 long callingIdentity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda5
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             RegistrationManager.RegistrationCallback.RegistrationBinder.this.lambda$onRegistering$1(attr);
@@ -123,6 +126,7 @@ public interface RegistrationManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRegistering$1(ImsRegistrationAttributes attr) {
                 this.mLocalCallback.onRegistering(attr);
             }
@@ -145,6 +149,7 @@ public interface RegistrationManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDeregistered$2(ImsReasonInfo info, int suggestedAction, int imsRadioTech) {
                 this.mLocalCallback.onUnregistered(info, suggestedAction, imsRadioTech);
             }
@@ -156,13 +161,13 @@ public interface RegistrationManager {
                 }
                 long callingIdentity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda1
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda4
                         @Override // java.lang.Runnable
                         public final void run() {
                             RegistrationManager.RegistrationCallback.RegistrationBinder.this.lambda$onDeregisteredWithDetails$3(info, suggestedAction, imsRadioTech);
                         }
                     });
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda2
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda5
                         @Override // java.lang.Runnable
                         public final void run() {
                             RegistrationManager.RegistrationCallback.RegistrationBinder.this.lambda$onDeregisteredWithDetails$4(info, details);
@@ -173,10 +178,12 @@ public interface RegistrationManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDeregisteredWithDetails$3(ImsReasonInfo info, int suggestedAction, int imsRadioTech) {
                 this.mLocalCallback.onUnregistered(info, suggestedAction, imsRadioTech);
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDeregisteredWithDetails$4(ImsReasonInfo info, SipDetails details) {
                 this.mLocalCallback.onUnregistered(info, details);
             }
@@ -188,7 +195,7 @@ public interface RegistrationManager {
                 }
                 long callingIdentity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda0
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
                             RegistrationManager.RegistrationCallback.RegistrationBinder.this.lambda$onTechnologyChangeFailed$5(imsRadioTech, info);
@@ -199,6 +206,7 @@ public interface RegistrationManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onTechnologyChangeFailed$5(int imsRadioTech, ImsReasonInfo info) {
                 this.mLocalCallback.onTechnologyChangeFailed(RegistrationManager.getAccessType(imsRadioTech), info);
             }
@@ -210,7 +218,7 @@ public interface RegistrationManager {
                 }
                 long callingIdentity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda4
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.RegistrationManager$RegistrationCallback$RegistrationBinder$$ExternalSyntheticLambda3
                         @Override // java.lang.Runnable
                         public final void run() {
                             RegistrationManager.RegistrationCallback.RegistrationBinder.this.lambda$onSubscriberAssociatedUriChanged$6(uris);
@@ -221,10 +229,12 @@ public interface RegistrationManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onSubscriberAssociatedUriChanged$6(Uri[] uris) {
                 this.mLocalCallback.onSubscriberAssociatedUriChanged(uris);
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }

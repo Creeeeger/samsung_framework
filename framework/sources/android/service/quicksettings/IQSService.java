@@ -36,7 +36,6 @@ public interface IQSService extends IInterface {
 
     void updateStatusIcon(IBinder iBinder, Icon icon, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IQSService {
         @Override // android.service.quicksettings.IQSService
         public Tile getTile(IBinder tile) throws RemoteException {
@@ -99,7 +98,6 @@ public interface IQSService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IQSService {
         public static final String DESCRIPTOR = "android.service.quicksettings.IQSService";
         static final int TRANSACTION_getTile = 1;
@@ -179,104 +177,100 @@ public interface IQSService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    Tile _result = getTile(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    Tile _arg02 = (Tile) data.readTypedObject(Tile.CREATOR);
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    updateQsTile(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    Icon _arg12 = (Icon) data.readTypedObject(Icon.CREATOR);
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    updateStatusIcon(_arg03, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onShowDialog(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IBinder _arg05 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onStartActivity(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IBinder _arg06 = data.readStrongBinder();
+                    PendingIntent _arg13 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    startActivity(_arg06, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    boolean _result2 = isLocked();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 8:
+                    boolean _result3 = isSecure();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 9:
+                    IBinder _arg07 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    startUnlockAndRun(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    IBinder _arg08 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onDialogHidden(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    IBinder _arg09 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onStartSuccessful(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    IBinder _arg010 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    semUpdateDetailView(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    IBinder _arg011 = data.readStrongBinder();
+                    boolean _arg14 = data.readBoolean();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    semFireToggleStateChanged(_arg011, _arg14, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            Tile _result = getTile(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            Tile _arg02 = (Tile) data.readTypedObject(Tile.CREATOR);
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            updateQsTile(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            Icon _arg12 = (Icon) data.readTypedObject(Icon.CREATOR);
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            updateStatusIcon(_arg03, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onShowDialog(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IBinder _arg05 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onStartActivity(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IBinder _arg06 = data.readStrongBinder();
-                            PendingIntent _arg13 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            startActivity(_arg06, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            boolean _result2 = isLocked();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 8:
-                            boolean _result3 = isSecure();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 9:
-                            IBinder _arg07 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            startUnlockAndRun(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            IBinder _arg08 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onDialogHidden(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            IBinder _arg09 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onStartSuccessful(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            IBinder _arg010 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            semUpdateDetailView(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            IBinder _arg011 = data.readStrongBinder();
-                            boolean _arg14 = data.readBoolean();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            semFireToggleStateChanged(_arg011, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IQSService {
+        private static class Proxy implements IQSService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

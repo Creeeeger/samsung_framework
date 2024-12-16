@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ExtendedRegistrationInfo implements Parcelable {
     private final boolean mIsPsOnlyReg;
     private final int mMobileOptionalRadioTech;
@@ -70,7 +70,7 @@ public final class ExtendedRegistrationInfo implements Parcelable {
     }
 
     public String toString() {
-        return "ExtendedRegistrationInfo{ snapshotStatus=" + this.mSnapShotStatus + " unprocessedDataRegState=" + NetworkRegistrationInfo.registrationStateToString(this.mUnprocessedDataRegState) + " unprocessedDataRat=" + this.mUnprocessedDataRadioTechnology + " mobileOptionalRat=" + this.mMobileOptionalRadioTech + " unprocessedVoiceRegState=" + NetworkRegistrationInfo.registrationStateToString(this.mUnprocessedVoiceRegState) + " isPsOnlyReg=" + this.mIsPsOnlyReg + "}";
+        return new StringBuilder(256).append("ExtendedRegistrationInfo{ snapshotStatus=").append(this.mSnapShotStatus).append(" unprocessedDataRegState=").append(NetworkRegistrationInfo.registrationStateToString(this.mUnprocessedDataRegState)).append(" unprocessedDataRat=").append(this.mUnprocessedDataRadioTechnology).append(" mobileOptionalRat=").append(this.mMobileOptionalRadioTech).append(" unprocessedVoiceRegState=").append(NetworkRegistrationInfo.registrationStateToString(this.mUnprocessedVoiceRegState)).append(" isPsOnlyReg=").append(this.mIsPsOnlyReg).append("}").toString();
     }
 
     public int hashCode() {

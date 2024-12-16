@@ -2,11 +2,9 @@ package com.samsung.android.globalactions.util;
 
 import android.app.usage.IUsageStatsManager;
 import android.content.Context;
-import android.os.Binder;
-import android.os.Debug;
 import android.os.ServiceManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class UsageStatsWrapper {
     private static final String TAG = "UsageStatsWrapper";
     private IUsageStatsManager mAppUsageStats = IUsageStatsManager.Stub.asInterface(ServiceManager.getService(Context.USAGE_STATS_SERVICE));
@@ -27,8 +25,5 @@ public class UsageStatsWrapper {
     }
 
     private void dump(String prefix, String extraInfo) {
-        Binder.getCallingUserHandle().semGetIdentifier();
-        String callback = Debug.getCallers(9);
-        String str = callback + extraInfo;
     }
 }

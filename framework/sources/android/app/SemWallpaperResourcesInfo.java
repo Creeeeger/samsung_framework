@@ -3,20 +3,20 @@ package android.app;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Bundle;
+import android.os.Debug;
 import android.text.TextUtils;
 import android.util.Log;
 import com.samsung.android.wallpaper.utils.SemWallpaperProperties;
 import com.samsung.android.wallpaper.utils.WhichChecker;
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.FileDescriptor;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,653 +24,801 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /* loaded from: classes.dex */
 public class SemWallpaperResourcesInfo {
-    private static final int MAIN_SCREEN = 0;
-    private static final int SUB_SCREEN = 1;
-    private static final String TAG = "WallpaperResourcesInfo";
+    protected static final boolean DEBUG = Debug.semIsProductDev();
+    protected static final String TAG = "WallpaperResourcesInfo";
     private static final String WALLPAPER_PACKAGE = "com.samsung.android.wallpaper.res";
-    private static final int WALLPAPER_TYPE_PRELOADED_LIVE = 10;
-    private String mColorCode;
     private Context mContext;
-    private boolean mIsSupportCMF;
+    private Context mResPkgContext;
+    private ResourceData mResource;
     private int mVersion = 1;
-    private final ArrayList<Item> mImageItems = new ArrayList<>();
-    private final ArrayList<Item> mVideoItems = new ArrayList<>();
-    private final ArrayList<Item> mLiveItems = new ArrayList<>();
-    private final ArrayList<String> mBespokeCode = new ArrayList<>();
-    private final HashMap<Integer, Integer> mDefaultTypeMap = new HashMap<>();
-    private final HashMap<Integer, String> mDefaultMultipackStyle = new HashMap<>();
-    private final HashSet<String> mKnownColorCode = new HashSet<>();
 
-    /* loaded from: classes.dex */
-    public static class TypeParams {
-        public Bundle mExtras;
+    static class Item {
+        public Integer index = -1;
+        public int which = -1;
+        public String fileName = null;
+        public int type = -1;
+        public TypeParams typeParams = new TypeParams();
+        public int videoFrameInfo = -1;
+        public boolean isBlackFirstFrame = false;
+        public boolean isDefault = false;
+        public boolean isBespoke = false;
+        public ArrayList<String> cmfInfo = new ArrayList<>();
+
+        Item() {
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("type=" + this.type);
+            builder.append(", which=" + this.which);
+            builder.append(", index=" + this.index);
+            builder.append(", default=" + this.isDefault);
+            builder.append(", file=" + this.fileName);
+            switch (this.type) {
+                case 7:
+                    builder.append(", extra=" + this.typeParams);
+                    break;
+                case 8:
+                    builder.append(", frame=" + this.videoFrameInfo);
+                    builder.append(", isBlackFrame=" + this.isBlackFirstFrame);
+                    break;
+            }
+            builder.append(", bespoke=" + this.isBespoke);
+            builder.append(", cmf=");
+            Iterator<String> it = this.cmfInfo.iterator();
+            while (it.hasNext()) {
+                String cmf = it.next();
+                builder.append(cmf + " ");
+            }
+            return builder.toString();
+        }
+    }
+
+    static class TypeParams {
+        public Bundle mExtras = new Bundle();
         public String mServiceClassName;
         public String mServicePkgName;
 
-        /* synthetic */ TypeParams(TypeParamsIA typeParamsIA) {
-            this();
+        TypeParams() {
         }
 
-        private TypeParams() {
-            this.mExtras = new Bundle();
+        public String toString() {
+            return this.mServicePkgName + "/" + this.mServiceClassName;
         }
     }
 
-    public SemWallpaperResourcesInfo(Context context) {
-        this.mIsSupportCMF = false;
-        try {
-            Context createPackageContext = context.createPackageContext(WALLPAPER_PACKAGE, 0);
-            this.mContext = createPackageContext;
-            if (createPackageContext != null) {
-                parseJson();
-                ascendingSort();
+    static class ResourceData {
+        private boolean mIsSupportCMF;
+        private final HashMap<Integer, ArrayList<Item>> mItemsMap = new HashMap<>();
+        private final ArrayList<String> mBespokeCode = new ArrayList<>();
+        private final HashMap<Integer, Integer> mDefaultTypeMap = new HashMap<>();
+        private final HashMap<Integer, String> mDefaultMultipackStyle = new HashMap<>();
+        private final HashSet<String> mKnownColorCode = new HashSet<>();
+
+        ResourceData() {
+        }
+
+        public void addItem(Item item) {
+            ArrayList<Item> itemArray = this.mItemsMap.get(Integer.valueOf(item.type));
+            if (itemArray == null) {
+                itemArray = new ArrayList<>();
+                this.mItemsMap.put(Integer.valueOf(item.type), itemArray);
             }
-            this.mIsSupportCMF = checkCMF();
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            itemArray.add(item);
         }
-    }
 
-    public int getDefaultWallpaperType(int which, String colorCode) {
-        int screen = (which & 16) == 16 ? 1 : 0;
-        if (!TextUtils.isEmpty(colorCode) && isBespokeCode(colorCode) && this.mBespokeCode.size() > 0) {
-            Log.i(TAG, "getDefaultWallpaperType: colorCode = " + colorCode + " , screen = " + screen);
-            try {
-                Iterator<Item> it = this.mVideoItems.iterator();
+        public void setDefaultWallpaperType(int which, int type) {
+            this.mDefaultTypeMap.put(Integer.valueOf(which), Integer.valueOf(type));
+        }
+
+        public void setDefaultMultipackStyle(int which, String style) {
+            this.mDefaultMultipackStyle.put(Integer.valueOf(which), style);
+        }
+
+        public void addKnownColor(String colorCode) {
+            this.mKnownColorCode.add(colorCode);
+        }
+
+        public void addKnownColors(ArrayList<String> cmfArray) {
+            if (cmfArray == null) {
+                return;
+            }
+            Iterator<String> it = cmfArray.iterator();
+            while (it.hasNext()) {
+                String colorCode = it.next();
+                addKnownColor(colorCode);
+            }
+        }
+
+        public void addBespokeCode(String colorCode) {
+            this.mBespokeCode.add(colorCode);
+        }
+
+        public boolean isKnownColorCode(String colorCode) {
+            if (TextUtils.isEmpty(colorCode)) {
+                return false;
+            }
+            return this.mKnownColorCode.contains(colorCode);
+        }
+
+        public boolean isSupportCMF() {
+            return this.mIsSupportCMF;
+        }
+
+        public int getDefaultWallpaperType(int which, String colorCode) {
+            Item matchedItem = null;
+            boolean isBespokeDevice = isBespokeCode(colorCode);
+            if (this.mIsSupportCMF && isBespokeDevice) {
+                matchedItem = getFirstExactlyMatchedItemFromAllTypes(which, colorCode);
+            }
+            return matchedItem != null ? matchedItem.type : getDefaultWallpaperType(which);
+        }
+
+        private int getDefaultWallpaperType(int which) {
+            if (WhichChecker.isModeAbsent(which)) {
+                Log.w(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperType: mode is missing. which=" + which, new IllegalArgumentException());
+            }
+            return this.mDefaultTypeMap.getOrDefault(Integer.valueOf(which), 0).intValue();
+        }
+
+        public String getDefaultMultipackStyle(int which) {
+            if (isPhone(which)) {
+                which |= 4;
+            }
+            return this.mDefaultMultipackStyle.get(Integer.valueOf(which));
+        }
+
+        public Item getDefaultWallpaperItem(int which, String deviceColorCode, int wallpaperType) {
+            if (WhichChecker.isModeAbsent(which)) {
+                Log.w(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: mode is missing. which=" + which, new IllegalArgumentException());
+            }
+            Item matchedItem = null;
+            ArrayList<Item> candidateItems = this.mItemsMap.get(Integer.valueOf(wallpaperType));
+            if (candidateItems != null && !candidateItems.isEmpty()) {
+                matchedItem = chooseDefaultWallpaperItem(which, deviceColorCode, candidateItems);
+            }
+            if (matchedItem == null) {
+                Log.w(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: nothing matched. which=" + which);
+                return null;
+            }
+            if (WhichChecker.isSystemAndLock(matchedItem.which) && WhichChecker.isLock(which)) {
+                Log.i(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: paired lock. which=" + which + ", matched=[" + matchedItem + NavigationBarInflaterView.SIZE_MOD_END);
+                return null;
+            }
+            if (SemWallpaperResourcesInfo.DEBUG) {
+                Log.i(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: which=" + which + ", colorCode=" + deviceColorCode + ", matched=[" + matchedItem + NavigationBarInflaterView.SIZE_MOD_END);
+            }
+            return matchedItem;
+        }
+
+        private Item chooseDefaultWallpaperItem(int which, String deviceColorCode, ArrayList<Item> candidateItems) {
+            Item item;
+            if (candidateItems.isEmpty()) {
+                Log.w(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: empty item array");
+                return null;
+            }
+            if (this.mIsSupportCMF && !TextUtils.isEmpty(deviceColorCode) && (item = getFirstExactlyMatchedItem(which, deviceColorCode, candidateItems)) != null) {
+                if (SemWallpaperResourcesInfo.DEBUG) {
+                    Log.i(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: which & color matched. item=" + item);
+                }
+                return item;
+            }
+            boolean isBespokeDevice = isBespokeCode(deviceColorCode);
+            Item firstItem = null;
+            Iterator<Item> it = candidateItems.iterator();
+            while (it.hasNext()) {
+                Item item2 = it.next();
+                int itemWhich = item2.which;
+                if ((which & itemWhich) == which && (isBespokeDevice || !item2.isBespoke)) {
+                    if (firstItem == null) {
+                        firstItem = item2;
+                    }
+                    if (item2.isDefault) {
+                        if (SemWallpaperResourcesInfo.DEBUG) {
+                            Log.i(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: which & default matched. item=" + item2);
+                        }
+                        return item2;
+                    }
+                }
+            }
+            if (firstItem != null) {
+                if (SemWallpaperResourcesInfo.DEBUG) {
+                    Log.i(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: which matched. use first item. item=" + firstItem);
+                }
+                return firstItem;
+            }
+            Item firstItem2 = null;
+            Iterator<Item> it2 = candidateItems.iterator();
+            while (it2.hasNext()) {
+                Item item3 = it2.next();
+                if (isBespokeDevice || !item3.isBespoke) {
+                    if (firstItem2 == null) {
+                        firstItem2 = item3;
+                    }
+                    if (item3.isDefault) {
+                        if (SemWallpaperResourcesInfo.DEBUG) {
+                            Log.i(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: default matched. item=" + item3);
+                        }
+                        return item3;
+                    }
+                }
+            }
+            if (firstItem2 != null) {
+                if (SemWallpaperResourcesInfo.DEBUG) {
+                    Log.i(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: type matched. use first item. item=" + firstItem2);
+                }
+                return firstItem2;
+            }
+            Log.w(SemWallpaperResourcesInfo.TAG, "getDefaultWallpaperItem: could not find matched item. which=" + which + ", deviceColor=" + deviceColorCode);
+            return null;
+        }
+
+        private Item getFirstExactlyMatchedItemFromAllTypes(int which, String colorCode) {
+            ArrayList<Integer> keySet = new ArrayList<>(this.mItemsMap.keySet());
+            int videoTypeIndex = keySet.indexOf(8);
+            if (videoTypeIndex >= 0) {
+                keySet.remove(videoTypeIndex);
+                keySet.add(0, 8);
+            }
+            Iterator<Integer> it = keySet.iterator();
+            while (it.hasNext()) {
+                int key = it.next().intValue();
+                ArrayList<Item> candidateItems = this.mItemsMap.get(Integer.valueOf(key));
+                Item item = getFirstExactlyMatchedItem(which, colorCode, candidateItems);
+                if (item != null) {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        private Item getFirstExactlyMatchedItem(int which, String colorCode, ArrayList<Item> candidateItems) {
+            if (TextUtils.isEmpty(colorCode)) {
+                return null;
+            }
+            Iterator<Item> it = candidateItems.iterator();
+            while (it.hasNext()) {
+                Item item = it.next();
+                if (isDefaultResource(item, which, colorCode)) {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        public Item getVideoItemByFilename(String filename) {
+            if (TextUtils.isEmpty(filename)) {
+                Log.e(SemWallpaperResourcesInfo.TAG, "getVideoItemByFilename: fileName is null");
+                return null;
+            }
+            ArrayList<Item> itemArray = this.mItemsMap.get(8);
+            if (itemArray == null || itemArray.isEmpty()) {
+                Log.i(SemWallpaperResourcesInfo.TAG, "getVideoItemByFilename: video item array is empty");
+                return null;
+            }
+            Iterator<Item> it = itemArray.iterator();
+            while (it.hasNext()) {
+                Item item = it.next();
+                if (filename.equals(item.fileName)) {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        public void finalizeInternalState() {
+            sortAscending();
+            this.mIsSupportCMF = determineSupportsCmf();
+        }
+
+        public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
+            if (this.mDefaultTypeMap != null && this.mDefaultTypeMap.size() > 0) {
+                for (Map.Entry<Integer, Integer> entry : this.mDefaultTypeMap.entrySet()) {
+                    pw.println(String.format("\t[%5d: %5d]", entry.getKey(), entry.getValue()));
+                }
+            }
+        }
+
+        private void sortAscending() {
+            Comparator ascending = new Comparator<Item>() { // from class: android.app.SemWallpaperResourcesInfo.ResourceData.1
+                @Override // java.util.Comparator
+                public int compare(Item r1, Item r2) {
+                    return r1.index.compareTo(r2.index);
+                }
+            };
+            for (ArrayList<Item> itemArray : this.mItemsMap.values()) {
+                if (itemArray.size() > 1) {
+                    Collections.sort(itemArray, ascending);
+                }
+            }
+        }
+
+        private boolean determineSupportsCmf() {
+            for (ArrayList<Item> itemArray : this.mItemsMap.values()) {
+                Iterator<Item> it = itemArray.iterator();
                 while (it.hasNext()) {
                     Item item = it.next();
-                    if (isDefaultResource(item, which, screen, colorCode)) {
-                        Log.i(TAG, "getDefaultWallpaperType by color code: " + item.fileName + ", " + item.index + " , " + item.cmfInfo);
-                        return 8;
+                    if (isValidCode(item.cmfInfo)) {
+                        return true;
                     }
                 }
-                Iterator<Item> it2 = this.mImageItems.iterator();
-                while (it2.hasNext()) {
-                    Item item2 = it2.next();
-                    if (isDefaultResource(item2, which, screen, colorCode)) {
-                        Log.i(TAG, "getDefaultWallpaperType by color code: " + item2.fileName + ", " + item2.index + " , " + item2.cmfInfo);
-                        return 0;
-                    }
-                }
-                Iterator<Item> it3 = this.mLiveItems.iterator();
-                while (it3.hasNext()) {
-                    Item item3 = it3.next();
-                    if (isDefaultResource(item3, which, screen, colorCode)) {
-                        Log.i(TAG, "getDefaultWallpaperType by color code: " + item3.fileName + ", " + item3.index + " , " + item3.cmfInfo);
-                        return 7;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
-        int type = getDefaultWallpaperType(which);
-        if (type == 10) {
-            type = 7;
-        }
-        Log.i(TAG, "getDefaultWallpaperType: which = " + which + " , type = " + type);
-        return type;
-    }
-
-    private boolean isBespokeCode(String colorCode) {
-        if (this.mBespokeCode.size() <= 0) {
             return false;
         }
-        Iterator<String> it = this.mBespokeCode.iterator();
-        while (it.hasNext()) {
-            String code = it.next();
-            if (code.equals(colorCode)) {
-                return true;
+
+        private boolean isBespokeCode(String colorCode) {
+            if (TextUtils.isEmpty(colorCode)) {
+                return false;
             }
-        }
-        return false;
-    }
-
-    public InputStream getDefaultImageWallpaper(int which) {
-        ArrayList<Item> arrayList = this.mImageItems;
-        if (arrayList == null || arrayList.size() == 0) {
-            Log.i(TAG, "getDefaultWallpaper: mItem is null");
-            return null;
-        }
-        String resourceName = getDefaultImageFileName(which);
-        Log.i(TAG, "getDefaultImageWallpaper: resourceName = " + resourceName);
-        if (resourceName == null || resourceName.isEmpty()) {
-            return null;
-        }
-        int wallpaperResId = this.mContext.getResources().getIdentifier(resourceName.substring(0, resourceName.lastIndexOf(46)), "drawable", WALLPAPER_PACKAGE);
-        Log.i(TAG, "getDefaultImageWallpaper: wallpaperResId = " + wallpaperResId);
-        if (wallpaperResId <= 0) {
-            return null;
-        }
-        InputStream inputStream = this.mContext.getResources().openRawResource(wallpaperResId);
-        return inputStream;
-    }
-
-    public String getDefaultImageFileName(int which) {
-        Item defaultResource = getDefaultImageResource(which);
-        if (defaultResource == null) {
-            if (!WhichChecker.isLock(which)) {
-                return null;
-            }
-            Log.w(TAG, "getDefaultImageFileName: Failed to get default image resource for which[" + which + "]. Getting default for system.");
-            defaultResource = getDefaultImageResource(WhichChecker.getMode(which) | 1);
-            if (defaultResource == null) {
-                return null;
-            }
-        }
-        String resourceName = defaultResource.fileName;
-        return resourceName;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x006b, code lost:
-    
-        android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultItem by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x009d, code lost:
-    
-        r0 = r7;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.lang.String getDefaultVideoWallpaperFileName(int r10) {
-        /*
-            Method dump skipped, instructions count: 325
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.app.SemWallpaperResourcesInfo.getDefaultVideoWallpaperFileName(int):java.lang.String");
-    }
-
-    public int getDefaultVideoFrameInfo(String fileName) {
-        if (TextUtils.isEmpty(fileName)) {
-            Log.e(TAG, "getDefaultVideoFrameInfo: fileName is null");
-            return 0;
-        }
-        ArrayList<Item> arrayList = this.mVideoItems;
-        if (arrayList == null || arrayList.size() == 0) {
-            Log.i(TAG, "getDefaultVideoFrameInfo: mVideoItems is null");
-            return 0;
-        }
-        Iterator<Item> it = this.mVideoItems.iterator();
-        while (it.hasNext()) {
-            Item item = it.next();
-            if (item.fileName != null && item.fileName.equals(fileName)) {
-                return item.videoFrameInfo;
-            }
-        }
-        return 0;
-    }
-
-    public boolean isBlackFirstFrame(String fileName) {
-        if (TextUtils.isEmpty(fileName)) {
-            Log.e(TAG, "isBlackFirstFrame: fileName is null");
-            return false;
-        }
-        ArrayList<Item> arrayList = this.mVideoItems;
-        if (arrayList == null || arrayList.size() == 0) {
-            Log.i(TAG, "isBlackFirstFrame: mVideoItems is null");
-            return false;
-        }
-        Iterator<Item> it = this.mVideoItems.iterator();
-        while (it.hasNext()) {
-            Item item = it.next();
-            if (item.fileName != null && item.fileName.equals(fileName)) {
-                return item.isBlackFirstFrame;
-            }
-        }
-        return false;
-    }
-
-    public ComponentName getDefaultLiveWallpaperComponentName(int which) {
-        Item item = getDefaultLiveWallpaperResource(which);
-        if (item == null || TextUtils.isEmpty(item.typeParams.mServicePkgName) || TextUtils.isEmpty(item.typeParams.mServiceClassName)) {
-            return null;
-        }
-        return new ComponentName(item.typeParams.mServicePkgName, item.typeParams.mServiceClassName);
-    }
-
-    public Bundle getDefaultLiveWallpaperExtras(int which) {
-        TypeParams typeParams;
-        Item item = getDefaultLiveWallpaperResource(which);
-        if (item == null || (typeParams = item.typeParams) == null || typeParams.mExtras.isEmpty()) {
-            return null;
-        }
-        return new Bundle(typeParams.mExtras);
-    }
-
-    public boolean isKnownColorCode(String colorCode) {
-        if (TextUtils.isEmpty(colorCode)) {
-            return false;
-        }
-        boolean isKnown = this.mKnownColorCode.contains(colorCode.toLowerCase());
-        Log.d(TAG, "isKnownColorCode: code = " + colorCode + ", isKnown = " + isKnown);
-        return isKnown;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x006e, code lost:
-    
-        android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultLiveWallpaperResource by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x00a0, code lost:
-    
-        r0 = r7;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private android.app.SemWallpaperResourcesInfo.Item getDefaultLiveWallpaperResource(int r10) {
-        /*
-            Method dump skipped, instructions count: 340
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.app.SemWallpaperResourcesInfo.getDefaultLiveWallpaperResource(int):android.app.SemWallpaperResourcesInfo$Item");
-    }
-
-    private boolean isWhichMatched(int which, Item item) {
-        int targetItemScreen = (which & 16) == 16 ? 1 : 0;
-        int targetItemWhich = which & 3;
-        return item.which == targetItemWhich && item.screen == targetItemScreen;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x006b, code lost:
-    
-        android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultItem by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x009d, code lost:
-    
-        r0 = r7;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private android.app.SemWallpaperResourcesInfo.Item getDefaultImageResource(int r12) {
-        /*
-            Method dump skipped, instructions count: 338
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.app.SemWallpaperResourcesInfo.getDefaultImageResource(int):android.app.SemWallpaperResourcesInfo$Item");
-    }
-
-    private boolean isDefaultResource(Item item, int which, int screen, String colorCode) {
-        boolean isDefaultResource = false;
-        int resourceWhich = item.which;
-        if ((which & resourceWhich) == resourceWhich && item.cmfInfo.size() != 0 && screen == item.screen) {
-            Iterator it = item.cmfInfo.iterator();
+            Iterator<String> it = this.mBespokeCode.iterator();
             while (it.hasNext()) {
-                String cmfInfo = (String) it.next();
-                if (!TextUtils.isEmpty(cmfInfo) && cmfInfo.contains(colorCode)) {
-                    isDefaultResource = true;
+                String code = it.next();
+                if (code.equals(colorCode)) {
+                    return true;
                 }
             }
+            return false;
         }
-        return isDefaultResource;
+
+        private boolean isValidCode(ArrayList<String> list) {
+            Iterator<String> it = list.iterator();
+            while (it.hasNext()) {
+                String code = it.next();
+                if (!TextUtils.isEmpty(code)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean isPhone(int which) {
+            return ((which & 8) == 8 || (which & 16) == 16) ? false : true;
+        }
+
+        private boolean isDefaultResource(Item item, int which, String colorCode) {
+            if ((item.which & which) == which) {
+                Iterator<String> it = item.cmfInfo.iterator();
+                while (it.hasNext()) {
+                    String cmfInfo = it.next();
+                    if (!TextUtils.isEmpty(cmfInfo) && cmfInfo.equals(colorCode)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        }
     }
 
-    private void addItem(Item item) {
-        if (item.type == 8) {
-            this.mVideoItems.add(item);
-        } else if (item.type == 0) {
-            this.mImageItems.add(item);
-        } else if (item.type == 10) {
-            this.mLiveItems.add(item);
-        }
-    }
+    static class ResourceParser {
+        private static final int MAIN_SCREEN = 0;
+        private static final int SUB_SCREEN = 1;
+        private static final int WALLPAPER_TYPE_PRELOADED_LIVE = 10;
+        private Context mContext;
 
-    private void parseJson() {
-        Throwable th;
-        int resId = this.mContext.getResources().getIdentifier("resources_info", "raw", WALLPAPER_PACKAGE);
-        InputStream is = null;
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
-        try {
+        public ResourceParser(Context context) {
+            this.mContext = context;
+        }
+
+        public ResourceData parseJson(String wallpaperResPkgName) {
+            JSONException jSONException;
+            JSONObject jsonRoot;
+            JSONArray jsonArray;
+            int itemCount;
+            int i;
+            String str;
+            ResourceParser resourceParser = this;
+            ResourceData result = new ResourceData();
+            int resId = resourceParser.mContext.getResources().getIdentifier("resources_info", "raw", wallpaperResPkgName);
+            Writer writer = new StringWriter();
+            char[] buffer = new char[1024];
             try {
+                InputStream is = resourceParser.mContext.getResources().openRawResource(resId);
                 try {
-                    try {
-                        is = this.mContext.getResources().openRawResource(resId);
-                        Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                        while (true) {
-                            int n = reader.read(buffer);
-                            if (n == -1) {
-                                break;
-                            } else {
-                                writer.write(buffer, 0, n);
-                            }
+                    Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                    while (true) {
+                        int n = reader.read(buffer);
+                        if (n == -1) {
+                            break;
                         }
-                        if (is != null) {
-                            is.close();
-                        }
-                    } catch (Resources.NotFoundException e) {
                         try {
-                            Log.i(TAG, "parseJson: json file is not exist");
-                            e.printStackTrace();
-                            if (is != null) {
-                                is.close();
-                            }
-                        } catch (Throwable th2) {
-                            th = th2;
+                            writer.write(buffer, 0, n);
+                        } catch (Throwable th) {
+                            jSONException = th;
                             if (is == null) {
-                                throw th;
+                                throw jSONException;
                             }
                             try {
-                                is.close();
-                                throw th;
-                            } catch (IOException e2) {
-                                e2.printStackTrace();
-                                throw th;
+                                try {
+                                    is.close();
+                                    throw jSONException;
+                                } catch (Exception e) {
+                                    e = e;
+                                    Log.i(SemWallpaperResourcesInfo.TAG, "parseJson: e=" + e, e);
+                                    return result;
+                                }
+                            } catch (Throwable th2) {
+                                jSONException.addSuppressed(th2);
+                                throw jSONException;
                             }
                         }
-                    } catch (UnsupportedEncodingException e3) {
-                        Log.i(TAG, "parseJson: UnsupportedEncodingException");
-                        e3.printStackTrace();
-                        if (is != null) {
-                            is.close();
-                        }
                     }
-                } catch (IOException e4) {
-                    Log.i(TAG, "parseJson: IOException");
-                    e4.printStackTrace();
                     if (is != null) {
-                        is.close();
-                    }
-                }
-            } catch (IOException e5) {
-                e5.printStackTrace();
-            }
-            String jsonData = writer.toString();
-            int lastParseSuccessItemIndex = -1;
-            try {
-                JSONObject jsonRoot = new JSONObject(jsonData);
-                JSONArray jsonArray = jsonRoot.getJSONArray("phone");
-                int itemCount = jsonArray.length();
-                int i = 0;
-                while (i < itemCount) {
-                    try {
-                        Item item = new Item();
-                        JSONObject jsonItem = jsonArray.getJSONObject(i);
-                        int resId2 = resId;
                         try {
-                            InputStream is2 = is;
-                            try {
-                                item.isDefault = jsonItem.getBoolean("isDefault");
-                                item.index = Integer.valueOf(jsonItem.getInt("index"));
-                                item.type = jsonItem.getInt("type");
-                                item.which = jsonItem.optInt("which", -1);
-                                item.screen = jsonItem.optInt("screen", -1);
-                                item.isBespoke = jsonItem.optBoolean("isBespoke", false);
-                                item.fileName = jsonItem.optString("filename", null);
-                                item.videoFrameInfo = jsonItem.optInt("frame_no", -1);
-                                item.isBlackFirstFrame = jsonItem.optBoolean("isBlackFirstFrame", false);
-                                parseCmfInfo(jsonItem.getJSONArray("cmf_info"), item);
-                                parseTypeParams(jsonItem.optJSONObject("type_params"), item);
-                                addItem(item);
-                                lastParseSuccessItemIndex = item.index.intValue();
-                                i++;
-                                is = is2;
-                                resId = resId2;
-                            } catch (JSONException e6) {
-                                e = e6;
-                                Log.e(TAG, "parseJson: e=" + e, e);
-                                Log.e(TAG, "parseJson: last parse success item index=" + lastParseSuccessItemIndex);
-                                Log.e(TAG, "parseJson: " + jsonData);
-                                return;
-                            }
-                        } catch (JSONException e7) {
-                            e = e7;
+                            is.close();
+                        } catch (Exception e2) {
+                            e = e2;
+                            Log.i(SemWallpaperResourcesInfo.TAG, "parseJson: e=" + e, e);
+                            return result;
                         }
-                    } catch (JSONException e8) {
-                        e = e8;
                     }
-                }
-                try {
+                    String jsonData = writer.toString();
+                    int lastParseSuccessItemIndex = -1;
+                    try {
+                        jsonRoot = new JSONObject(jsonData);
+                        jsonArray = jsonRoot.getJSONArray("phone");
+                        itemCount = jsonArray.length();
+                        i = 0;
+                    } catch (JSONException e3) {
+                        e = e3;
+                    }
+                    while (true) {
+                        int resId2 = resId;
+                        str = "screen";
+                        if (i >= itemCount) {
+                            break;
+                        }
+                        try {
+                            Item item = new Item();
+                            JSONObject jsonItem = jsonArray.getJSONObject(i);
+                            Writer writer2 = writer;
+                            try {
+                                char[] buffer2 = buffer;
+                                try {
+                                    item.isDefault = jsonItem.getBoolean("isDefault");
+                                    item.index = Integer.valueOf(jsonItem.getInt("index"));
+                                    item.type = jsonItem.getInt("type");
+                                    if (item.type == 10) {
+                                        item.type = 7;
+                                    }
+                                    int which = jsonItem.optInt("which", -1);
+                                    int screen = jsonItem.optInt("screen", -1);
+                                    item.which = resourceParser.determineModeEnsuredWhich(which, screen);
+                                    item.isBespoke = jsonItem.optBoolean("isBespoke", false);
+                                    item.fileName = jsonItem.optString("filename", null);
+                                    item.videoFrameInfo = jsonItem.optInt("frame_no", -1);
+                                    item.isBlackFirstFrame = jsonItem.optBoolean("isBlackFirstFrame", false);
+                                    resourceParser.parseCmfInfo(jsonItem.getJSONArray("cmf_info"), item);
+                                    result.addKnownColors(item.cmfInfo);
+                                    resourceParser.parseTypeParams(jsonItem.optJSONObject("type_params"), item);
+                                    result.addItem(item);
+                                    lastParseSuccessItemIndex = item.index.intValue();
+                                    i++;
+                                    resId = resId2;
+                                    writer = writer2;
+                                    buffer = buffer2;
+                                } catch (JSONException e4) {
+                                    e = e4;
+                                }
+                            } catch (JSONException e5) {
+                                e = e5;
+                            }
+                        } catch (JSONException e6) {
+                            e = e6;
+                        }
+                        e = e4;
+                        Log.e(SemWallpaperResourcesInfo.TAG, "parseJson: e=" + e, e);
+                        Log.e(SemWallpaperResourcesInfo.TAG, "parseJson: last parse success item index=" + lastParseSuccessItemIndex);
+                        Log.e(SemWallpaperResourcesInfo.TAG, "parseJson: " + jsonData);
+                        return new ResourceData();
+                    }
                     JSONArray jsonArray2 = jsonRoot.optJSONArray("types");
                     if (jsonArray2 != null) {
                         int i2 = 0;
                         while (i2 < jsonArray2.length()) {
                             JSONObject object = jsonArray2.getJSONObject(i2);
-                            int screen = object.getInt("screen");
-                            int which = object.getInt("which");
+                            int screen2 = object.getInt(str);
+                            int which2 = resourceParser.determineModeEnsuredWhich(object.getInt("which"), screen2);
+                            String str2 = str;
                             int type = object.getInt("type");
-                            JSONArray jsonArray3 = jsonArray2;
-                            setDefaultWallpaperType(screen, which, type);
-                            Writer writer2 = writer;
+                            if (type == 10) {
+                                type = 7;
+                            }
+                            result.setDefaultWallpaperType(which2, type);
                             if (type == 3) {
-                                try {
-                                    String style = object.getString("style");
-                                    setDefaultMultipackStyle(screen, which, style);
-                                } catch (JSONException e9) {
-                                    e = e9;
-                                    Log.e(TAG, "parseJson: e=" + e, e);
-                                    Log.e(TAG, "parseJson: last parse success item index=" + lastParseSuccessItemIndex);
-                                    Log.e(TAG, "parseJson: " + jsonData);
-                                    return;
-                                }
+                                String style = object.getString("style");
+                                result.setDefaultMultipackStyle(which2, style);
                             }
                             i2++;
-                            jsonArray2 = jsonArray3;
-                            writer = writer2;
+                            resourceParser = this;
+                            str = str2;
                         }
                     }
                     JSONArray bespokeArray = jsonRoot.optJSONArray("bespoke");
                     if (bespokeArray != null) {
                         for (int i3 = 0; i3 < bespokeArray.length(); i3++) {
                             String colorCode = ((String) bespokeArray.get(i3)).toLowerCase();
-                            this.mBespokeCode.add(colorCode);
-                            this.mKnownColorCode.add(colorCode);
+                            if (!TextUtils.isEmpty(colorCode)) {
+                                result.addBespokeCode(colorCode);
+                                result.addKnownColor(colorCode);
+                            }
                         }
                     }
-                } catch (JSONException e10) {
-                    e = e10;
+                    result.finalizeInternalState();
+                    return result;
+                } catch (Throwable e7) {
+                    jSONException = e7;
                 }
-            } catch (JSONException e11) {
-                e = e11;
-            }
-        } catch (Throwable th3) {
-            th = th3;
-        }
-    }
-
-    private void parseTypeParams(JSONObject jsonTypeParams, Item outItem) {
-        if (jsonTypeParams == null || outItem == null) {
-            return;
-        }
-        TypeParams typeParams = outItem.typeParams;
-        typeParams.mServicePkgName = jsonTypeParams.optString("service_package_name", null);
-        typeParams.mServiceClassName = jsonTypeParams.optString("service_class_name", null);
-        String contentType = jsonTypeParams.optString("content_type", null);
-        if (!TextUtils.isEmpty(contentType)) {
-            typeParams.mExtras.putString("contentType", contentType);
-        }
-        JSONObject svcSettingsObj = jsonTypeParams.optJSONObject("service_settings");
-        if (svcSettingsObj != null) {
-            Bundle svcSettingBundle = convertJsonObjectToBundle(svcSettingsObj);
-            typeParams.mExtras.putBundle(SemWallpaperProperties.KEY_SERVICE_SETTINGS, svcSettingBundle);
-        }
-    }
-
-    private void parseCmfInfo(JSONArray cmfArray, Item outItem) {
-        if (cmfArray == null || outItem == null) {
-            return;
-        }
-        int cmfCount = cmfArray.length();
-        for (int j = 0; j < cmfCount; j++) {
-            String colorCode = cmfArray.optString(j, null);
-            if (TextUtils.isEmpty(colorCode)) {
-                Log.w(TAG, "parseCmfInfo: empty cmf detected. wp item index=" + outItem.index);
-            } else {
-                String colorCode2 = colorCode.toLowerCase();
-                outItem.cmfInfo.add(colorCode2);
-                this.mKnownColorCode.add(colorCode2);
+            } catch (Exception e8) {
+                e = e8;
             }
         }
+
+        private void parseTypeParams(JSONObject jsonTypeParams, Item outItem) {
+            if (jsonTypeParams == null || outItem == null) {
+                return;
+            }
+            TypeParams typeParams = outItem.typeParams;
+            typeParams.mServicePkgName = jsonTypeParams.optString("service_package_name", null);
+            typeParams.mServiceClassName = jsonTypeParams.optString("service_class_name", null);
+            String contentType = jsonTypeParams.optString("content_type", null);
+            if (!TextUtils.isEmpty(contentType)) {
+                typeParams.mExtras.putString("contentType", contentType);
+            }
+            JSONObject svcSettingsObj = jsonTypeParams.optJSONObject("service_settings");
+            if (svcSettingsObj != null) {
+                Bundle svcSettingBundle = convertJsonObjectToBundle(svcSettingsObj);
+                typeParams.mExtras.putBundle(SemWallpaperProperties.KEY_SERVICE_SETTINGS, svcSettingBundle);
+            }
+        }
+
+        private void parseCmfInfo(JSONArray cmfArray, Item outItem) {
+            if (cmfArray == null || outItem == null) {
+                return;
+            }
+            int cmfCount = cmfArray.length();
+            for (int j = 0; j < cmfCount; j++) {
+                String colorCode = getRefinedColorCode(cmfArray.optString(j, null));
+                if (TextUtils.isEmpty(colorCode)) {
+                    Log.w(SemWallpaperResourcesInfo.TAG, "parseCmfInfo: empty cmf detected. wp item index=" + outItem.index);
+                } else {
+                    outItem.cmfInfo.add(colorCode);
+                }
+            }
+        }
+
+        private Bundle convertJsonObjectToBundle(JSONObject jsonObject) {
+            Bundle bundle = new Bundle();
+            Iterator iterator = jsonObject.keys();
+            while (iterator.hasNext()) {
+                String key = iterator.next().toString();
+                try {
+                    Object value = jsonObject.get(key);
+                    if (value instanceof String) {
+                        bundle.putString(key, (String) value);
+                    } else if (value instanceof Integer) {
+                        bundle.putInt(key, ((Integer) value).intValue());
+                    } else if (value instanceof Boolean) {
+                        bundle.putBoolean(key, ((Boolean) value).booleanValue());
+                    } else if (value instanceof Double) {
+                        bundle.putDouble(key, ((Double) value).doubleValue());
+                    } else if (value instanceof JSONObject) {
+                        bundle.putBundle(key, convertJsonObjectToBundle((JSONObject) value));
+                    }
+                } catch (JSONException e) {
+                    Log.e(SemWallpaperResourcesInfo.TAG, "convertJsonObjectToBundle: failed to get value. key=" + key);
+                }
+            }
+            return bundle;
+        }
+
+        private String getRefinedColorCode(String colorCode) {
+            if (colorCode == null) {
+                return null;
+            }
+            return colorCode.toLowerCase().trim();
+        }
+
+        private int determineModeEnsuredWhich(int which, int screen) {
+            if (screen == 0) {
+                return WhichChecker.getType(which) | 4;
+            }
+            if (screen == 1) {
+                return WhichChecker.getType(which) | 16;
+            }
+            if (!WhichChecker.isModeAbsent(which)) {
+                return which;
+            }
+            Log.w(SemWallpaperResourcesInfo.TAG, "determineModeEnsuredWhich: screen is missing. which=" + which + ", screen=" + screen);
+            return which | 4;
+        }
     }
 
-    private Bundle convertJsonObjectToBundle(JSONObject jsonObject) {
-        Bundle bundle = new Bundle();
-        Iterator iterator = jsonObject.keys();
-        while (iterator.hasNext()) {
-            String key = iterator.next().toString();
+    public SemWallpaperResourcesInfo(Context context) {
+        try {
+            this.mResPkgContext = context.createPackageContext(WALLPAPER_PACKAGE, 0);
+            if (this.mResPkgContext != null) {
+                this.mResource = new ResourceParser(this.mResPkgContext).parseJson(WALLPAPER_PACKAGE);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "init: e=" + e);
+        }
+        if (this.mResource == null) {
+            this.mResource = new ResourceData();
+        }
+        this.mContext = context.getApplicationContext();
+        if (this.mContext == null) {
+            String pkgName = context.getPackageName();
+            Log.w(TAG, "init: failed to get app context. context=" + context + NavigationBarInflaterView.KEY_CODE_START + pkgName + "), resPkgContext=" + this.mResPkgContext);
             try {
-                Object value = jsonObject.get(key);
-                if (value instanceof String) {
-                    bundle.putString(key, (String) value);
-                } else if (value instanceof Integer) {
-                    bundle.putInt(key, ((Integer) value).intValue());
-                } else if (value instanceof Boolean) {
-                    bundle.putBoolean(key, ((Boolean) value).booleanValue());
-                } else if (value instanceof Double) {
-                    bundle.putDouble(key, ((Double) value).doubleValue());
-                } else if (value instanceof JSONObject) {
-                    bundle.putBundle(key, convertJsonObjectToBundle((JSONObject) value));
-                }
-            } catch (JSONException e) {
-                Log.e(TAG, "convertJsonObjectToBundle: failed to get value. key=" + key);
+                this.mContext = context.createPackageContext(pkgName, 0);
+            } catch (PackageManager.NameNotFoundException e2) {
             }
-        }
-        return bundle;
-    }
-
-    private void ascendingSort() {
-        Ascending ascending = new Ascending();
-        ArrayList<Item> arrayList = this.mImageItems;
-        if (arrayList != null && arrayList.size() > 1) {
-            Collections.sort(this.mImageItems, ascending);
-        }
-        ArrayList<Item> arrayList2 = this.mVideoItems;
-        if (arrayList2 != null && arrayList2.size() > 1) {
-            Collections.sort(this.mVideoItems, ascending);
-        }
-        ArrayList<Item> arrayList3 = this.mLiveItems;
-        if (arrayList3 != null && arrayList3.size() > 1) {
-            Collections.sort(this.mLiveItems, ascending);
-        }
-    }
-
-    private boolean checkCMF() {
-        boolean isCMF = false;
-        Iterator<Item> it = this.mImageItems.iterator();
-        while (it.hasNext()) {
-            Item item = it.next();
-            if (item.cmfInfo.size() > 0 && (isCMF = isValidCode(item.cmfInfo))) {
-                return true;
+            if (this.mContext == null) {
+                this.mContext = this.mResPkgContext != null ? this.mResPkgContext : context;
             }
+            Log.w(TAG, "init: mContext=" + this.mContext);
         }
-        if (!isCMF) {
-            Iterator<Item> it2 = this.mVideoItems.iterator();
-            while (it2.hasNext()) {
-                Item item2 = it2.next();
-                if (item2.cmfInfo.size() > 0 && (isCMF = isValidCode(item2.cmfInfo))) {
-                    return true;
-                }
-            }
-        }
-        if (!isCMF) {
-            Iterator<Item> it3 = this.mLiveItems.iterator();
-            while (it3.hasNext()) {
-                Item item3 = it3.next();
-                if (item3.cmfInfo.size() > 0 && (isCMF = isValidCode(item3.cmfInfo))) {
-                    return true;
-                }
-            }
-        }
-        return isCMF;
     }
 
-    private boolean isValidCode(ArrayList<String> list) {
-        Iterator<String> it = list.iterator();
-        while (it.hasNext()) {
-            String code = it.next();
-            if (!TextUtils.isEmpty(code)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isSupportCMF() {
-        return this.mIsSupportCMF;
-    }
-
-    private boolean isPhone(int which) {
-        return ((which & 8) == 8 || (which & 16) == 16) ? false : true;
-    }
-
-    private void setDefaultWallpaperType(int screen, int which, int type) {
-        int mode = screen == 1 ? 0 | 16 : 0;
-        if (screen == 0) {
-            mode |= 4;
-        }
-        this.mDefaultTypeMap.put(Integer.valueOf(which | mode), Integer.valueOf(type));
-    }
-
-    public int getDefaultWallpaperType(int which) {
-        if (isPhone(which)) {
-            which |= 4;
-        }
-        int type = this.mDefaultTypeMap.getOrDefault(Integer.valueOf(which), 0).intValue();
-        if (type == 10) {
-            return 7;
-        }
+    public int getDefaultWallpaperType(int which, String colorCode) {
+        int modeEnsuredWhich = getModeEnsuredWhich(which);
+        int type = this.mResource.getDefaultWallpaperType(modeEnsuredWhich, colorCode);
+        Log.i(TAG, "getDefaultWallpaperType: which = " + which + " , type = " + type);
         return type;
     }
 
-    private void setDefaultMultipackStyle(int screen, int which, String style) {
-        int mode = screen == 1 ? 0 | 16 : 0;
-        if (screen == 0) {
-            mode |= 4;
+    public InputStream getDefaultImageWallpaper(int which) {
+        if (this.mResPkgContext == null) {
+            Log.i(TAG, "getDefaultImageWallpaper: the resource context is not available");
+            return null;
         }
-        this.mDefaultMultipackStyle.put(Integer.valueOf(which | mode), style);
+        String resourceName = getDefaultImageFileName(which);
+        Log.i(TAG, "getDefaultImageWallpaper: resourceName = " + resourceName);
+        if (TextUtils.isEmpty(resourceName)) {
+            return null;
+        }
+        int wallpaperResId = this.mResPkgContext.getResources().getIdentifier(resourceName.substring(0, resourceName.lastIndexOf(46)), "drawable", WALLPAPER_PACKAGE);
+        Log.i(TAG, "getDefaultImageWallpaper: wallpaperResId = " + wallpaperResId);
+        if (wallpaperResId <= 0) {
+            return null;
+        }
+        InputStream inputStream = this.mResPkgContext.getResources().openRawResource(wallpaperResId);
+        return inputStream;
+    }
+
+    public String getDefaultImageFileName(int which) {
+        Item defaultResource = getDefaultWallpaperItem(which, 0);
+        if (defaultResource == null) {
+            return null;
+        }
+        return defaultResource.fileName;
+    }
+
+    public String getDefaultVideoWallpaperFileName(int which) {
+        String videoFileName = null;
+        Item defaultResource = getDefaultWallpaperItem(which, 8);
+        if (defaultResource != null) {
+            videoFileName = defaultResource.fileName;
+        }
+        Log.i(TAG, "getDefaultVideoWallpaperFileName: " + videoFileName);
+        return videoFileName;
+    }
+
+    public int getDefaultVideoFrameInfo(String fileName) {
+        Item videoItem = this.mResource.getVideoItemByFilename(fileName);
+        if (videoItem == null) {
+            return 0;
+        }
+        return videoItem.videoFrameInfo;
+    }
+
+    public boolean isBlackFirstFrame(String fileName) {
+        Item videoItem = this.mResource.getVideoItemByFilename(fileName);
+        if (videoItem == null) {
+            return false;
+        }
+        return videoItem.isBlackFirstFrame;
+    }
+
+    public ComponentName getDefaultLiveWallpaperComponentName(int which) {
+        Item item = getDefaultWallpaperItem(which, 7);
+        if (item == null) {
+            Log.w(TAG, "getDefaultLiveWallpaperComponentName: no matched item" + which);
+            return null;
+        }
+        if (item.typeParams == null || TextUtils.isEmpty(item.typeParams.mServicePkgName) || TextUtils.isEmpty(item.typeParams.mServiceClassName)) {
+            Log.w(TAG, "getDefaultLiveWallpaperComponentName: empty component name. which=" + which);
+            return null;
+        }
+        return new ComponentName(item.typeParams.mServicePkgName, item.typeParams.mServiceClassName);
+    }
+
+    public Bundle getDefaultLiveWallpaperExtras(int which) {
+        Item item = getDefaultWallpaperItem(which, 7);
+        if (item == null) {
+            Log.w(TAG, "getDefaultLiveWallpaperExtras: no matched item. which=" + which);
+            return null;
+        }
+        TypeParams typeParams = item.typeParams;
+        if (typeParams == null || typeParams.mExtras.isEmpty()) {
+            return null;
+        }
+        return new Bundle(typeParams.mExtras);
     }
 
     public String getDefaultMultipackStyle(int which) {
-        if (isPhone(which)) {
-            which |= 4;
-        }
-        return this.mDefaultMultipackStyle.get(Integer.valueOf(which));
+        return this.mResource.getDefaultMultipackStyle(which);
+    }
+
+    public boolean isKnownColorCode(String colorCode) {
+        String colorCode2 = getRefinedColorCode(colorCode);
+        boolean isKnown = this.mResource.isKnownColorCode(colorCode2);
+        Log.d(TAG, "isKnownColorCode: code = " + colorCode2 + ", isKnown = " + isKnown);
+        return isKnown;
+    }
+
+    public boolean isSupportCMF() {
+        return this.mResource.isSupportCMF();
     }
 
     public boolean isDefaultVideo(int which) {
-        return getDefaultWallpaperType(which) == 8;
+        String deviceColorCode = getDeviceColorCode();
+        return getDefaultWallpaperType(which, deviceColorCode) == 8;
     }
 
     public boolean isDefaultMultipack(int which) {
-        return getDefaultWallpaperType(which) == 3;
+        String deviceColorCode = getDeviceColorCode();
+        return getDefaultWallpaperType(which, deviceColorCode) == 3;
     }
 
-    /* loaded from: classes.dex */
-    public static class Ascending implements Comparator<Item>, Serializable {
-        Ascending() {
+    public boolean isDefaultWallpaperPaired(int modeOrWhich, int wallpaperType) {
+        int mode = WhichChecker.getMode(modeOrWhich);
+        Item item = getDefaultWallpaperItem(mode | 1, wallpaperType);
+        if (item == null) {
+            return false;
         }
-
-        @Override // java.util.Comparator
-        public int compare(Item r1, Item r2) {
-            return r1.index.compareTo(r2.index);
-        }
+        return WhichChecker.isSystemAndLock(item.which);
     }
 
-    /* loaded from: classes.dex */
-    public static class Item {
-        private Integer index = -1;
-        private int which = -1;
-        private String fileName = null;
-        private int type = -1;
-        private TypeParams typeParams = new TypeParams();
-        private int screen = 0;
-        private int videoFrameInfo = -1;
-        private boolean isBlackFirstFrame = false;
-        private boolean isDefault = false;
-        private boolean isBespoke = false;
-        private ArrayList<String> cmfInfo = new ArrayList<>();
+    public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
+        pw.println("[Default wallpaper type from json]");
+        this.mResource.dump(fd, pw, args);
+    }
 
-        Item() {
+    private Item getDefaultWallpaperItem(int which, int wallpaperType) {
+        int which2 = getModeEnsuredWhich(which);
+        String deviceColorCode = getDeviceColorCode();
+        return this.mResource.getDefaultWallpaperItem(which2, deviceColorCode, wallpaperType);
+    }
+
+    private int getModeEnsuredWhich(int which) {
+        if (WhichChecker.isModeAbsent(which)) {
+            Log.w(TAG, "getModeEnsuredWhich: mode is missing. which=" + which, new IllegalArgumentException());
+            return which | 4;
         }
+        return which;
+    }
+
+    private String getDeviceColorCode() {
+        String colorCode = WallpaperManager.getDeviceColor(this.mContext);
+        if (colorCode == null) {
+            return null;
+        }
+        return getRefinedColorCode(colorCode);
+    }
+
+    private String getRefinedColorCode(String colorCode) {
+        if (colorCode == null) {
+            return null;
+        }
+        return colorCode.toLowerCase().trim();
     }
 }

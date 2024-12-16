@@ -3,17 +3,16 @@ package com.samsung.android.hardware.context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContext implements Parcelable {
     public static final Parcelable.Creator<SemContext> CREATOR = new Parcelable.Creator<SemContext>() { // from class: com.samsung.android.hardware.context.SemContext.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContext createFromParcel(Parcel in) {
             return new SemContext(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContext[] newArray(int size) {
             return new SemContext[size];
@@ -85,24 +84,7 @@ public class SemContext implements Parcelable {
     public static final int TYPE_WRIST_UP_MOTION = 19;
     private int mType;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContext$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContext> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContext createFromParcel(Parcel in) {
-            return new SemContext(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContext[] newArray(int size) {
-            return new SemContext[size];
-        }
-    }
-
-    public SemContext() {
+    SemContext() {
         this.mType = 0;
     }
 
@@ -293,7 +275,7 @@ public class SemContext implements Parcelable {
         return this.mType;
     }
 
-    public void setType(int type) {
+    void setType(int type) {
         this.mType = type;
     }
 

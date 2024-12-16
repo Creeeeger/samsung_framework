@@ -52,11 +52,8 @@ public class AtomicFile {
 
     @Deprecated
     public FileOutputStream startWrite(long startTime) throws IOException {
-        SystemConfigFileCommitEventLogger systemConfigFileCommitEventLogger = this.mCommitEventLogger;
-        if (systemConfigFileCommitEventLogger != null) {
-            if (startTime != 0) {
-                systemConfigFileCommitEventLogger.setStartTime(startTime);
-            }
+        if (this.mCommitEventLogger != null) {
+            this.mCommitEventLogger.setStartTime(startTime);
             this.mCommitEventLogger.onStartWrite();
         }
         if (this.mLegacyBackupName.exists()) {
@@ -95,9 +92,8 @@ public class AtomicFile {
             Log.e(LOG_TAG, "Failed to close file output stream", e);
         }
         rename(this.mNewName, this.mBaseName);
-        SystemConfigFileCommitEventLogger systemConfigFileCommitEventLogger = this.mCommitEventLogger;
-        if (systemConfigFileCommitEventLogger != null) {
-            systemConfigFileCommitEventLogger.onFinishWrite();
+        if (this.mCommitEventLogger != null) {
+            this.mCommitEventLogger.onFinishWrite();
         }
     }
 

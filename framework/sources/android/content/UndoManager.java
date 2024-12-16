@@ -53,37 +53,34 @@ public class UndoManager {
         if (this.mUpdateCount > 0) {
             throw new IllegalStateException("Can't save state while updating");
         }
-        int i = this.mStateSeq + 1;
-        this.mStateSeq = i;
-        if (i <= 0) {
+        this.mStateSeq++;
+        if (this.mStateSeq <= 0) {
             this.mStateSeq = 0;
         }
         this.mNextSavedIdx = 0;
         p.writeInt(this.mHistorySize);
         p.writeInt(this.mOwners.size());
-        int i2 = this.mUndos.size();
-        while (i2 > 0) {
+        int i = this.mUndos.size();
+        while (i > 0) {
             p.writeInt(1);
-            i2--;
-            this.mUndos.get(i2).writeToParcel(p);
+            i--;
+            this.mUndos.get(i).writeToParcel(p);
         }
-        int i3 = this.mRedos.size();
-        while (i3 > 0) {
+        int i2 = this.mRedos.size();
+        while (i2 > 0) {
             p.writeInt(2);
-            i3--;
-            this.mRedos.get(i3).writeToParcel(p);
+            i2--;
+            this.mRedos.get(i2).writeToParcel(p);
         }
         p.writeInt(0);
     }
 
     void saveOwner(UndoOwner owner, Parcel out) {
-        int i = owner.mStateSeq;
-        int i2 = this.mStateSeq;
-        if (i == i2) {
+        if (owner.mStateSeq == this.mStateSeq) {
             out.writeInt(owner.mSavedIdx);
             return;
         }
-        owner.mStateSeq = i2;
+        owner.mStateSeq = this.mStateSeq;
         owner.mSavedIdx = this.mNextSavedIdx;
         out.writeInt(owner.mSavedIdx);
         out.writeString(owner.mTag);
@@ -131,7 +128,7 @@ public class UndoManager {
 
     public void setHistorySize(int size) {
         this.mHistorySize = size;
-        if (size >= 0 && countUndos(null) > this.mHistorySize) {
+        if (this.mHistorySize >= 0 && countUndos(null) > this.mHistorySize) {
             forgetUndos(null, countUndos(null) - this.mHistorySize);
         }
     }
@@ -309,19 +306,17 @@ public class UndoManager {
     }
 
     public void setUndoLabel(CharSequence label) {
-        UndoState undoState = this.mWorking;
-        if (undoState == null) {
+        if (this.mWorking == null) {
             throw new IllegalStateException("Must be called during an update");
         }
-        undoState.setLabel(label);
+        this.mWorking.setLabel(label);
     }
 
     public void suggestUndoLabel(CharSequence label) {
-        UndoState undoState = this.mWorking;
-        if (undoState == null) {
+        if (this.mWorking == null) {
             throw new IllegalStateException("Must be called during an update");
         }
-        undoState.updateLabel(label);
+        this.mWorking.updateLabel(label);
     }
 
     public int getUpdateNestingLevel() {
@@ -329,11 +324,10 @@ public class UndoManager {
     }
 
     public boolean hasOperation(UndoOwner owner) {
-        UndoState undoState = this.mWorking;
-        if (undoState == null) {
+        if (this.mWorking == null) {
             throw new IllegalStateException("Must be called during an update");
         }
-        return undoState.hasOperation(owner);
+        return this.mWorking.hasOperation(owner);
     }
 
     public UndoOperation<?> getLastOperation(int mergeMode) {
@@ -344,15 +338,14 @@ public class UndoManager {
         return getLastOperation(null, owner, mergeMode);
     }
 
-    /* JADX WARN: Type inference failed for: r1v4, types: [T extends android.content.UndoOperation, android.content.UndoOperation] */
+    /* JADX WARN: Type inference failed for: r1v3, types: [T extends android.content.UndoOperation, android.content.UndoOperation] */
     public <T extends UndoOperation> T getLastOperation(Class<T> cls, UndoOwner undoOwner, int i) {
         UndoState topUndo;
         ?? lastOperation;
-        UndoState undoState = this.mWorking;
-        if (undoState == null) {
+        if (this.mWorking == null) {
             throw new IllegalStateException("Must be called during an update");
         }
-        if (i != 0 && !this.mMerged && !undoState.hasData() && (topUndo = getTopUndo(null)) != null && ((i == 2 || !topUndo.hasMultipleOwners()) && topUndo.canMerge() && (lastOperation = topUndo.getLastOperation(cls, undoOwner)) != null && lastOperation.allowMerge())) {
+        if (i != 0 && !this.mMerged && !this.mWorking.hasData() && (topUndo = getTopUndo(null)) != null && ((i == 2 || !topUndo.hasMultipleOwners()) && topUndo.canMerge() && (lastOperation = topUndo.getLastOperation(cls, undoOwner)) != null && lastOperation.allowMerge())) {
             this.mWorking.destroy();
             this.mWorking = topUndo;
             this.mUndos.remove(topUndo);
@@ -384,9 +377,8 @@ public class UndoManager {
         if (this.mWorking == null) {
             throw new IllegalStateException("Must be called during an update");
         }
-        int i = this.mUpdateCount - 1;
-        this.mUpdateCount = i;
-        if (i == 0) {
+        this.mUpdateCount--;
+        if (this.mUpdateCount == 0) {
             pushWorkingState();
         }
     }
@@ -404,15 +396,13 @@ public class UndoManager {
             this.mWorking.destroy();
         }
         this.mWorking = null;
-        int i = this.mHistorySize;
-        if (i >= 0 && N > i) {
-            forgetUndos(null, N - i);
+        if (this.mHistorySize >= 0 && N > this.mHistorySize) {
+            forgetUndos(null, N - this.mHistorySize);
         }
     }
 
     public int commitState(UndoOwner owner) {
-        UndoState undoState = this.mWorking;
-        if (undoState != null && undoState.hasData()) {
+        if (this.mWorking != null && this.mWorking.hasData()) {
             if (owner == null || this.mWorking.hasOperation(owner)) {
                 this.mWorking.setCanMerge(false);
                 int commitId = this.mWorking.getCommitId();
@@ -435,8 +425,7 @@ public class UndoManager {
     }
 
     public boolean uncommitState(int commitId, UndoOwner owner) {
-        UndoState undoState = this.mWorking;
-        if (undoState != null && undoState.getCommitId() == commitId) {
+        if (this.mWorking != null && this.mWorking.getCommitId() == commitId) {
             if (owner == null || this.mWorking.hasOperation(owner)) {
                 return this.mWorking.setCanMerge(true);
             }
@@ -522,8 +511,7 @@ public class UndoManager {
         return -1;
     }
 
-    /* loaded from: classes.dex */
-    public static final class UndoState {
+    static final class UndoState {
         private boolean mCanMerge;
         private final int mCommitId;
         private boolean mExecuted;
@@ -644,9 +632,8 @@ public class UndoManager {
             }
             this.mOperations.add(op);
             if (this.mRecent == null) {
-                ArrayList<UndoOperation<?>> arrayList = new ArrayList<>();
-                this.mRecent = arrayList;
-                arrayList.add(op);
+                this.mRecent = new ArrayList<>();
+                this.mRecent.add(op);
             }
             op.mOwner.mOpCount++;
         }
@@ -690,8 +677,7 @@ public class UndoManager {
         }
 
         void commit() {
-            ArrayList<UndoOperation<?>> arrayList = this.mRecent;
-            int N = arrayList != null ? arrayList.size() : 0;
+            int N = this.mRecent != null ? this.mRecent.size() : 0;
             for (int i = 0; i < N; i++) {
                 this.mRecent.get(i).commit();
             }

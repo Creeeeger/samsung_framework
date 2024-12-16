@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioSimIndication extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$sim$IRadioSimIndication".replace('$', '.');
-    public static final String HASH = "4f348cc7aca716cc41c09ea95895c4b261231035";
-    public static final int VERSION = 2;
+    public static final String HASH = "ea7be3035be8d4869237a6478d2e0bb0efcc1e87";
+    public static final int VERSION = 3;
 
     void carrierInfoForImsiEncryption(int i) throws RemoteException;
 
@@ -38,7 +38,6 @@ public interface IRadioSimIndication extends IInterface {
 
     void uiccApplicationsEnablementChanged(int i, boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioSimIndication {
         @Override // android.hardware.radio.sim.IRadioSimIndication
         public void carrierInfoForImsiEncryption(int info) throws RemoteException {
@@ -100,7 +99,6 @@ public interface IRadioSimIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioSimIndication {
         static final int TRANSACTION_carrierInfoForImsiEncryption = 1;
         static final int TRANSACTION_cdmaSubscriptionSourceChanged = 2;
@@ -143,92 +141,90 @@ public interface IRadioSimIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    carrierInfoForImsiEncryption(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cdmaSubscriptionSourceChanged(_arg02, _arg1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    simPhonebookChanged(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    byte _arg12 = data.readByte();
+                    PhonebookRecordInfo[] _arg2 = (PhonebookRecordInfo[]) data.createTypedArray(PhonebookRecordInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    simPhonebookRecordsReceived(_arg04, _arg12, _arg2);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    SimRefreshResult _arg13 = (SimRefreshResult) data.readTypedObject(SimRefreshResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    simRefresh(_arg05, _arg13);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    simStatusChanged(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    stkEventNotify(_arg07, _arg14);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    stkProactiveCommand(_arg08, _arg15);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stkSessionEnd(_arg09);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    boolean _arg16 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    subscriptionStatusChanged(_arg010, _arg16);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    boolean _arg17 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    uiccApplicationsEnablementChanged(_arg011, _arg17);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            carrierInfoForImsiEncryption(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cdmaSubscriptionSourceChanged(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            simPhonebookChanged(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            byte _arg12 = data.readByte();
-                            PhonebookRecordInfo[] _arg2 = (PhonebookRecordInfo[]) data.createTypedArray(PhonebookRecordInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            simPhonebookRecordsReceived(_arg04, _arg12, _arg2);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            SimRefreshResult _arg13 = (SimRefreshResult) data.readTypedObject(SimRefreshResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            simRefresh(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            simStatusChanged(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            stkEventNotify(_arg07, _arg14);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            stkProactiveCommand(_arg08, _arg15);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stkSessionEnd(_arg09);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            subscriptionStatusChanged(_arg010, _arg16);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            boolean _arg17 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            uiccApplicationsEnablementChanged(_arg011, _arg17);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioSimIndication {
+        private static class Proxy implements IRadioSimIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

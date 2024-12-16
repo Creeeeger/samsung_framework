@@ -16,9 +16,7 @@ import java.util.Locale;
 /* loaded from: classes6.dex */
 public final class SemWifiSsid implements Parcelable {
     public static final Parcelable.Creator<SemWifiSsid> CREATOR = new Parcelable.Creator<SemWifiSsid>() { // from class: com.samsung.android.wifi.SemWifiSsid.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiSsid createFromParcel(Parcel in) {
             SemWifiSsid ssid = new SemWifiSsid();
@@ -29,6 +27,7 @@ public final class SemWifiSsid implements Parcelable {
             return ssid;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiSsid[] newArray(int size) {
             return new SemWifiSsid[size];
@@ -38,10 +37,6 @@ public final class SemWifiSsid implements Parcelable {
     public static final String NONE = "<unknown ssid>";
     private static final String TAG = "SemWifiSsid";
     public final ByteArrayOutputStream octets;
-
-    /* synthetic */ SemWifiSsid(SemWifiSsidIA semWifiSsidIA) {
-        this();
-    }
 
     private SemWifiSsid() {
         this.octets = new ByteArrayOutputStream(32);
@@ -235,27 +230,5 @@ public final class SemWifiSsid implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.octets.size());
         dest.writeByteArray(this.octets.toByteArray());
-    }
-
-    /* renamed from: com.samsung.android.wifi.SemWifiSsid$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemWifiSsid> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiSsid createFromParcel(Parcel in) {
-            SemWifiSsid ssid = new SemWifiSsid();
-            int length = in.readInt();
-            byte[] b = new byte[length];
-            in.readByteArray(b);
-            ssid.octets.write(b, 0, length);
-            return ssid;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiSsid[] newArray(int size) {
-            return new SemWifiSsid[size];
-        }
     }
 }

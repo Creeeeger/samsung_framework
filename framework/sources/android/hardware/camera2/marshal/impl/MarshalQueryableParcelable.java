@@ -7,24 +7,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableParcelable<T extends Parcelable> implements MarshalQueryable<T> {
     private static final boolean DEBUG = false;
     private static final String FIELD_CREATOR = "CREATOR";
     private static final String TAG = "MarshalParcelable";
 
-    /* loaded from: classes.dex */
     private class MarshalerParcelable extends Marshaler<T> {
         private final Class<T> mClass;
         private final Parcelable.Creator<T> mCreator;
 
         protected MarshalerParcelable(TypeReference<T> typeReference, int i) {
             super(MarshalQueryableParcelable.this, typeReference, i);
-            Class<? super T> rawType = typeReference.getRawType();
-            this.mClass = rawType;
+            this.mClass = typeReference.getRawType();
             try {
                 try {
-                    this.mCreator = (Parcelable.Creator) rawType.getDeclaredField(MarshalQueryableParcelable.FIELD_CREATOR).get(null);
+                    this.mCreator = (Parcelable.Creator) this.mClass.getDeclaredField(MarshalQueryableParcelable.FIELD_CREATOR).get(null);
                 } catch (IllegalAccessException e) {
                     throw new AssertionError(e);
                 } catch (IllegalArgumentException e2) {

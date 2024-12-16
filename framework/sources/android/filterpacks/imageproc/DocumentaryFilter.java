@@ -8,7 +8,6 @@ import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
-import android.os.BatteryManager;
 import java.util.Date;
 import java.util.Random;
 
@@ -80,17 +79,15 @@ public class DocumentaryFilter extends Filter {
     private void initParameters() {
         if (this.mProgram != null) {
             float[] scale = new float[2];
-            int i = this.mWidth;
-            int i2 = this.mHeight;
-            if (i > i2) {
+            if (this.mWidth > this.mHeight) {
                 scale[0] = 1.0f;
-                scale[1] = i2 / i;
+                scale[1] = this.mHeight / this.mWidth;
             } else {
-                scale[0] = i / i2;
+                scale[0] = this.mWidth / this.mHeight;
                 scale[1] = 1.0f;
             }
             float max_dist = ((float) Math.sqrt((scale[0] * scale[0]) + (scale[1] * scale[1]))) * 0.5f;
-            this.mProgram.setHostValue(BatteryManager.EXTRA_SCALE, scale);
+            this.mProgram.setHostValue("scale", scale);
             this.mProgram.setHostValue("inv_max_dist", Float.valueOf(1.0f / max_dist));
             this.mProgram.setHostValue("stepsize", Float.valueOf(0.003921569f));
             float[] seed = {this.mRandom.nextFloat(), this.mRandom.nextFloat()};

@@ -7,9 +7,7 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements Parcelable {
     public static final Parcelable.Creator<SemSmartClipExtendedMetaTag> CREATOR = new Parcelable.Creator<SemSmartClipExtendedMetaTag>() { // from class: com.samsung.android.content.smartclip.SemSmartClipExtendedMetaTag.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemSmartClipExtendedMetaTag createFromParcel(Parcel in) {
             Log.d(SemSmartClipExtendedMetaTag.TAG, "SemSmartClipExtendedMetaTag.createFromParcel called");
@@ -18,6 +16,7 @@ public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements 
             return data;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemSmartClipExtendedMetaTag[] newArray(int size) {
             return new SemSmartClipExtendedMetaTag[size];
@@ -57,9 +56,8 @@ public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements 
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(getType());
         out.writeString(getValue());
-        byte[] bArr = this.mExtraData;
-        if (bArr != null) {
-            out.writeInt(bArr.length);
+        if (this.mExtraData != null) {
+            out.writeInt(this.mExtraData.length);
             out.writeByteArray(this.mExtraData);
         } else {
             out.writeInt(-1);
@@ -79,9 +77,8 @@ public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements 
         setValue(value);
         int extraDataLen = in.readInt();
         if (extraDataLen >= 0) {
-            byte[] bArr = new byte[extraDataLen];
-            this.mExtraData = bArr;
-            in.readByteArray(bArr);
+            this.mExtraData = new byte[extraDataLen];
+            in.readByteArray(this.mExtraData);
         } else {
             this.mExtraData = null;
         }
@@ -90,26 +87,6 @@ public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements 
             this.mParcelableData = in.readParcelable(null);
         } else {
             this.mParcelableData = null;
-        }
-    }
-
-    /* renamed from: com.samsung.android.content.smartclip.SemSmartClipExtendedMetaTag$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemSmartClipExtendedMetaTag> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemSmartClipExtendedMetaTag createFromParcel(Parcel in) {
-            Log.d(SemSmartClipExtendedMetaTag.TAG, "SemSmartClipExtendedMetaTag.createFromParcel called");
-            SemSmartClipExtendedMetaTag data = new SemSmartClipExtendedMetaTag(null, null);
-            data.readFromParcel(in);
-            return data;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemSmartClipExtendedMetaTag[] newArray(int size) {
-            return new SemSmartClipExtendedMetaTag[size];
         }
     }
 }

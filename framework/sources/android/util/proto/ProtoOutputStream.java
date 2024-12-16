@@ -163,16 +163,16 @@ public final class ProtoOutputStream extends ProtoStream {
                 writeFloatImpl(id, val);
                 return;
             case 259:
-                writeInt64Impl(id, val);
+                writeInt64Impl(id, (long) val);
                 return;
             case 260:
-                writeUInt64Impl(id, val);
+                writeUInt64Impl(id, (long) val);
                 return;
             case 261:
                 writeInt32Impl(id, (int) val);
                 return;
             case 262:
-                writeFixed64Impl(id, val);
+                writeFixed64Impl(id, (long) val);
                 return;
             case 263:
                 writeFixed32Impl(id, (int) val);
@@ -190,13 +190,13 @@ public final class ProtoOutputStream extends ProtoStream {
                 writeSFixed32Impl(id, (int) val);
                 return;
             case 272:
-                writeSFixed64Impl(id, val);
+                writeSFixed64Impl(id, (long) val);
                 return;
             case 273:
                 writeSInt32Impl(id, (int) val);
                 return;
             case 274:
-                writeSInt64Impl(id, val);
+                writeSInt64Impl(id, (long) val);
                 return;
             case 513:
             case 1281:
@@ -208,11 +208,11 @@ public final class ProtoOutputStream extends ProtoStream {
                 return;
             case 515:
             case 1283:
-                writeRepeatedInt64Impl(id, val);
+                writeRepeatedInt64Impl(id, (long) val);
                 return;
             case 516:
             case 1284:
-                writeRepeatedUInt64Impl(id, val);
+                writeRepeatedUInt64Impl(id, (long) val);
                 return;
             case 517:
             case 1285:
@@ -220,7 +220,7 @@ public final class ProtoOutputStream extends ProtoStream {
                 return;
             case 518:
             case 1286:
-                writeRepeatedFixed64Impl(id, val);
+                writeRepeatedFixed64Impl(id, (long) val);
                 return;
             case 519:
             case 1287:
@@ -244,7 +244,7 @@ public final class ProtoOutputStream extends ProtoStream {
                 return;
             case 528:
             case MetricsProto.MetricsEvent.ACTION_OUTPUT_CHOOSER_CONNECT /* 1296 */:
-                writeRepeatedSFixed64Impl(id, val);
+                writeRepeatedSFixed64Impl(id, (long) val);
                 return;
             case 529:
             case MetricsProto.MetricsEvent.ACTION_OUTPUT_CHOOSER_DISCONNECT /* 1297 */:
@@ -252,7 +252,7 @@ public final class ProtoOutputStream extends ProtoStream {
                 return;
             case 530:
             case MetricsProto.MetricsEvent.SETTINGS_TV_HOME_THEATER_CONTROL_CATEGORY /* 1298 */:
-                writeRepeatedSInt64Impl(id, val);
+                writeRepeatedSInt64Impl(id, (long) val);
                 return;
             default:
                 throw new IllegalArgumentException("Attempt to call write(long, float) with " + getFieldIdString(fieldId));
@@ -374,7 +374,7 @@ public final class ProtoOutputStream extends ProtoStream {
                 writeDoubleImpl(id, val);
                 return;
             case 258:
-                writeFloatImpl(id, (float) val);
+                writeFloatImpl(id, val);
                 return;
             case 259:
                 writeInt64Impl(id, val);
@@ -418,7 +418,7 @@ public final class ProtoOutputStream extends ProtoStream {
                 return;
             case 514:
             case 1282:
-                writeRepeatedFloatImpl(id, (float) val);
+                writeRepeatedFloatImpl(id, val);
                 return;
             case 515:
             case 1283:
@@ -1229,9 +1229,8 @@ public final class ProtoOutputStream extends ProtoStream {
         this.mBuffer.writeRawFixed32((int) (this.mExpectedObjectToken >> 32));
         this.mBuffer.writeRawFixed32((int) this.mExpectedObjectToken);
         long j = this.mExpectedObjectToken;
-        long makeToken = makeToken(getTagSize(id), repeated, this.mDepth, this.mNextObjectId, sizePos);
-        this.mExpectedObjectToken = makeToken;
-        return makeToken;
+        this.mExpectedObjectToken = makeToken(getTagSize(id), repeated, this.mDepth, this.mNextObjectId, sizePos);
+        return this.mExpectedObjectToken;
     }
 
     private void endObjectImpl(long token, boolean repeated) {
@@ -1371,8 +1370,7 @@ public final class ProtoOutputStream extends ProtoStream {
 
     public byte[] getBytes() {
         compactIfNecessary();
-        EncodedBuffer encodedBuffer = this.mBuffer;
-        return encodedBuffer.getBytes(encodedBuffer.getReadableSize());
+        return this.mBuffer.getBytes(this.mBuffer.getReadableSize());
     }
 
     private void compactIfNecessary() {
@@ -1385,9 +1383,8 @@ public final class ProtoOutputStream extends ProtoStream {
             editEncodedSize(readableSize);
             this.mBuffer.rewindRead();
             compactSizes(readableSize);
-            int i = this.mCopyBegin;
-            if (i < readableSize) {
-                this.mBuffer.writeFromThisBuffer(i, readableSize - i);
+            if (this.mCopyBegin < readableSize) {
+                this.mBuffer.writeFromThisBuffer(this.mCopyBegin, readableSize - this.mCopyBegin);
             }
             this.mBuffer.startEditing();
             this.mCompacted = true;
@@ -1454,14 +1451,14 @@ public final class ProtoOutputStream extends ProtoStream {
                 int wireType = tag & 7;
                 switch (wireType) {
                     case 0:
-                        do {
-                        } while ((this.mBuffer.readRawByte() & 128) != 0);
+                        while ((this.mBuffer.readRawByte() & 128) != 0) {
+                        }
+                        break;
                     case 1:
                         this.mBuffer.skipRead(8);
                         break;
                     case 2:
-                        EncodedBuffer encodedBuffer = this.mBuffer;
-                        encodedBuffer.writeFromThisBuffer(this.mCopyBegin, encodedBuffer.getReadPos() - this.mCopyBegin);
+                        this.mBuffer.writeFromThisBuffer(this.mCopyBegin, this.mBuffer.getReadPos() - this.mCopyBegin);
                         int childRawSize = this.mBuffer.readRawFixed32();
                         int childEncodedSize = this.mBuffer.readRawFixed32();
                         this.mBuffer.writeRawVarint32(childEncodedSize);
@@ -1493,8 +1490,7 @@ public final class ProtoOutputStream extends ProtoStream {
             return;
         }
         compactIfNecessary();
-        EncodedBuffer encodedBuffer = this.mBuffer;
-        byte[] data = encodedBuffer.getBytes(encodedBuffer.getReadableSize());
+        byte[] data = this.mBuffer.getBytes(this.mBuffer.getReadableSize());
         try {
             this.mStream.write(data);
             this.mStream.flush();

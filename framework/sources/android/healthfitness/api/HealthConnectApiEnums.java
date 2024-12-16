@@ -4,6 +4,7 @@ package android.healthfitness.api;
 public final class HealthConnectApiEnums {
     public static final int ACTIVE_CALORIES_BURNED = 2;
     public static final int API_METHOD_UNKNOWN = 0;
+    public static final int BACKGROUND = 2;
     public static final int BASAL_BODY_TEMPERATURE = 3;
     public static final int BASAL_METABOLIC_RATE = 4;
     public static final int BLOOD_GLUCOSE = 5;
@@ -21,6 +22,7 @@ public final class HealthConnectApiEnums {
     public static final int ERROR = 2;
     public static final int EXERCISE_SESSION = 14;
     public static final int FLOORS_CLIMBED = 15;
+    public static final int FOREGROUND = 1;
     public static final int GET_CHANGES = 2;
     public static final int GET_CHANGES_TOKEN = 3;
     public static final int GET_GRANTED_PERMISSIONS = 4;
@@ -37,6 +39,7 @@ public final class HealthConnectApiEnums {
     public static final int OPERATION_UPSERT = 1;
     public static final int OVULATION_TEST = 22;
     public static final int OXYGEN_SATURATION = 23;
+    public static final int PLANNED_EXERCISE_SESSION = 36;
     public static final int POWER = 24;
     public static final int RATE_LIMIT_BACKGROUND_15_MIN_ABOVE_3000 = 11;
     public static final int RATE_LIMIT_BACKGROUND_15_MIN_BW_1000_TO_2000 = 9;
@@ -66,12 +69,14 @@ public final class HealthConnectApiEnums {
     public static final int RESTING_HEART_RATE = 26;
     public static final int REVOKE_ALL_PERMISSIONS = 8;
     public static final int SEXUAL_ACTIVITY = 27;
+    public static final int SKIN_TEMPERATURE = 35;
     public static final int SPEED = 28;
     public static final int STATUS_UNKNOWN = 0;
     public static final int STEPS = 29;
     public static final int STEPS_CADENCE = 30;
     public static final int SUCCESS = 1;
     public static final int TOTAL_CALORIES_BURNED = 31;
+    public static final int UNSPECIFIED = 0;
     public static final int UPDATE_DATA = 9;
     public static final int VO2_MAX = 32;
     public static final int WEIGHT = 33;

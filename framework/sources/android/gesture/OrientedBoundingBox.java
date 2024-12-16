@@ -12,7 +12,7 @@ public class OrientedBoundingBox {
     public final float squareness;
     public final float width;
 
-    public OrientedBoundingBox(float angle, float cx, float cy, float w, float h) {
+    OrientedBoundingBox(float angle, float cx, float cy, float w, float h) {
         this.orientation = angle;
         this.width = w;
         this.height = h;

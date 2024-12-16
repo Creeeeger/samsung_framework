@@ -2,7 +2,8 @@ package android.content.res;
 
 import android.animation.Animator;
 import android.animation.StateListAnimator;
-import android.content.Context;
+import android.app.ResourcesManager;
+import android.content.pm.ApplicationInfo;
 import android.content.res.ResourcesImpl;
 import android.content.res.XmlBlock;
 import android.content.res.loader.ResourcesLoader;
@@ -10,9 +11,10 @@ import android.graphics.Movie;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableInflater;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.TtmlUtils;
 import android.os.Bundle;
-import android.os.Process;
+import android.os.SystemClock;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.AttributeSet;
@@ -29,32 +31,17 @@ import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 import com.android.internal.util.Preconditions;
 import com.android.internal.util.XmlUtils;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.share.SemShareConstants;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import org.xmlpull.v1.XmlPullParserException;
@@ -62,10 +49,9 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public class Resources {
     public static final int ID_NULL = 0;
-    private static final int MAX_RESOURCES_TO_BE_OFFLOADED = 30;
     private static final int MAX_THEME_REFS_FLUSH_SIZE = 512;
     private static final int MIN_THEME_REFS_FLUSH_SIZE = 32;
-    private static final int RESOURCE_FUTURE_GET_TIMEOUT = 2;
+    private static final boolean PRELOAD_RESOURCES = true;
     static final String TAG = "Resources";
     public int mAppIconResId;
     private int mBaseApkAssetsSize;
@@ -76,7 +62,6 @@ public class Resources {
     private ResourcesImpl mResourcesImpl;
     private final ArrayList<WeakReference<Theme>> mThemeRefs;
     private int mThemeRefsNextFlushSize;
-    private ExecutorService mThreadExecutor;
     private TypedValue mTmpValue;
     private final Object mTmpValueLock;
     final Pools.SynchronizedPool<TypedArray> mTypedArrayPool;
@@ -84,24 +69,10 @@ public class Resources {
     public int mUserId;
     private static final Object sSync = new Object();
     static Resources mSystem = null;
-    private static Set<Resources> sResourcesHistory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap()));
-    private static List<String> sResourceList = new ArrayList();
-    private static boolean sIsAppLaunching = false;
-    private static Context sAppContext = null;
-    private static int sResourceCount = 0;
-    private static Object sFutureMapLock = new Object();
-    private static Object sRlistWriteLock = new Object();
-    private static final ConcurrentMap<Long, Integer> sFuturesKeyResourceIdMap = new ConcurrentHashMap();
-    private static final ConcurrentMap<Long, Boolean> sStartedRunnablesMap = new ConcurrentHashMap();
-    private static final LongSparseArray<WeakReference<Future<Drawable.ConstantState>>> sResourcesFutureMap = new LongSparseArray<>();
+    private static final Set<Resources> sResourcesHistory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap()));
 
-    /* loaded from: classes.dex */
     public interface UpdateCallbacks extends ResourcesLoader.UpdateCallbacks {
         void onLoadersChanged(Resources resources, List<ResourcesLoader> list);
-    }
-
-    public static /* synthetic */ Thread lambda$new$0(Runnable r) {
-        return new Thread(r, "queued-work-looper-data");
     }
 
     public static int selectDefaultTheme(int curTheme, int targetSdkVersion) {
@@ -136,7 +107,6 @@ public class Resources {
         return ret;
     }
 
-    /* loaded from: classes.dex */
     public static class NotFoundException extends RuntimeException {
         public NotFoundException() {
         }
@@ -150,7 +120,6 @@ public class Resources {
         }
     }
 
-    /* loaded from: classes.dex */
     public class AssetManagerUpdateHandler implements UpdateCallbacks {
         public AssetManagerUpdateHandler() {
         }
@@ -159,7 +128,6 @@ public class Resources {
         public void onLoadersChanged(Resources resources, List<ResourcesLoader> newLoaders) {
             Preconditions.checkArgument(Resources.this == resources);
             ResourcesImpl impl = Resources.this.mResourcesImpl;
-            Resources.this.clearFutureCaches();
             impl.clearAllCaches();
             impl.getAssets().setLoaders(newLoaders);
         }
@@ -169,7 +137,6 @@ public class Resources {
             ResourcesImpl impl = Resources.this.mResourcesImpl;
             AssetManager assets = impl.getAssets();
             if (assets.getLoaders().contains(loader)) {
-                Resources.this.clearFutureCaches();
                 impl.clearAllCaches();
                 assets.setLoaders(assets.getLoaders());
             }
@@ -193,18 +160,24 @@ public class Resources {
         this.mAppIconResId = 0;
         this.mUserId = 0;
         this.mThemeRefsNextFlushSize = 32;
-        this.mThreadExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() { // from class: android.content.res.Resources$$ExternalSyntheticLambda0
-            @Override // java.util.concurrent.ThreadFactory
-            public final Thread newThread(Runnable runnable) {
-                return Resources.lambda$new$0(runnable);
-            }
-        });
         this.mClassLoader = classLoader == null ? ClassLoader.getSystemClassLoader() : classLoader;
         sResourcesHistory.add(this);
+        ResourcesManager.getInstance().registerAllResourcesReference(this);
     }
 
     private Resources() {
-        this(null);
+        this.mUpdateLock = new Object();
+        this.mTypedArrayPool = new Pools.SynchronizedPool<>(5);
+        this.mTmpValueLock = new Object();
+        this.mTmpValue = new TypedValue();
+        this.mCallbacks = null;
+        this.mThemeRefs = new ArrayList<>();
+        this.mPackageName = null;
+        this.mAppIconResId = 0;
+        this.mUserId = 0;
+        this.mThemeRefsNextFlushSize = 32;
+        this.mClassLoader = ClassLoader.getSystemClassLoader();
+        sResourcesHistory.add(this);
         DisplayMetrics metrics = new DisplayMetrics();
         metrics.setToDefaults();
         Configuration config = new Configuration();
@@ -284,7 +257,7 @@ public class Resources {
         }
     }
 
-    public Typeface getFont(TypedValue value, int id) throws NotFoundException {
+    Typeface getFont(TypedValue value, int id) throws NotFoundException {
         return this.mResourcesImpl.loadFont(this, value, id);
     }
 
@@ -392,11 +365,18 @@ public class Resources {
     }
 
     public int getDimensionPixelSize(int id) throws NotFoundException {
+        return getDimensionPixelSize(id, null);
+    }
+
+    public int getDimensionPixelSize(int id, DisplayMetrics metrics) throws NotFoundException {
         TypedValue value = obtainTempTypedValue();
         try {
             ResourcesImpl impl = this.mResourcesImpl;
             impl.getValue(id, value, true);
             if (value.type == 5) {
+                if (metrics != null) {
+                    return TypedValue.complexToDimensionPixelSize(value.data, metrics);
+                }
                 return TypedValue.complexToDimensionPixelSize(value.data, impl.getDisplayMetrics());
             }
             throw new NotFoundException("Resource ID #0x" + Integer.toHexString(id) + " type #0x" + Integer.toHexString(value.type) + " is not valid");
@@ -447,20 +427,8 @@ public class Resources {
         }
     }
 
-    public Drawable loadDrawable(TypedValue value, int id, int density, Theme theme) throws NotFoundException {
-        Drawable dr = null;
-        boolean checkOffloadedResources = false;
-        if (sIsAppLaunching && (id >>> 24) != 1 && Process.isApplicationUid(Process.myUid()) && Process.myPid() == Process.myTid() && (density == 0 || value.density == this.mResourcesImpl.getDisplayMetrics().densityDpi)) {
-            checkOffloadedResources = true;
-            dr = fetchDrawableFromFutureCache(value, id, theme);
-        }
-        if (dr == null) {
-            dr = this.mResourcesImpl.loadDrawable(this, value, id, density, theme);
-        }
-        if (checkOffloadedResources && dr != null) {
-            this.mThreadExecutor.execute(new UpdateResourceList(id, value));
-        }
-        return dr;
+    Drawable loadDrawable(TypedValue value, int id, int density, Theme theme) throws NotFoundException {
+        return this.mResourcesImpl.loadDrawable(this, value, id, density, theme);
     }
 
     @Deprecated
@@ -517,7 +485,7 @@ public class Resources {
         }
     }
 
-    public ColorStateList loadColorStateList(TypedValue value, int id, Theme theme) throws NotFoundException {
+    ColorStateList loadColorStateList(TypedValue value, int id, Theme theme) throws NotFoundException {
         return this.mResourcesImpl.loadColorStateList(this, value, id, theme);
     }
 
@@ -585,12 +553,11 @@ public class Resources {
         }
     }
 
-    public TypedValue obtainTempTypedValue() {
+    private TypedValue obtainTempTypedValue() {
         TypedValue tmpValue = null;
         synchronized (this.mTmpValueLock) {
-            TypedValue typedValue = this.mTmpValue;
-            if (typedValue != null) {
-                tmpValue = typedValue;
+            if (this.mTmpValue != null) {
+                tmpValue = this.mTmpValue;
                 this.mTmpValue = null;
             }
         }
@@ -600,7 +567,7 @@ public class Resources {
         return tmpValue;
     }
 
-    public void releaseTempTypedValue(TypedValue value) {
+    private void releaseTempTypedValue(TypedValue value) {
         synchronized (this.mTmpValueLock) {
             if (this.mTmpValue == null) {
                 this.mTmpValue = value;
@@ -637,15 +604,10 @@ public class Resources {
         return ResourcesImpl.getAttributeSetSourceResId(set);
     }
 
-    /* loaded from: classes.dex */
     public final class Theme {
         private static final int MAX_NUMBER_OF_TRACING_PARENT_THEME = 100;
         private final Object mLock;
         private ResourcesImpl.ThemeImpl mThemeImpl;
-
-        /* synthetic */ Theme(Resources resources, ThemeIA themeIA) {
-            this();
-        }
 
         private Theme() {
             this.mLock = new Object();
@@ -878,12 +840,14 @@ public class Resources {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ThemeKey implements Cloneable {
+    static class ThemeKey implements Cloneable {
         int mCount;
         boolean[] mForce;
         private int mHashCode = 0;
         int[] mResId;
+
+        ThemeKey() {
+        }
 
         private int findValue(int resId, boolean force) {
             for (int i = 0; i < this.mCount; i++) {
@@ -895,19 +859,15 @@ public class Resources {
         }
 
         private void moveToLast(int index) {
-            if (index >= 0) {
-                if (index >= this.mCount - 1) {
-                    return;
-                }
-                int[] iArr = this.mResId;
-                int id = iArr[index];
-                boolean force = this.mForce[index];
-                System.arraycopy(iArr, index + 1, iArr, index, (r0 - index) - 1);
-                this.mResId[this.mCount - 1] = id;
-                boolean[] zArr = this.mForce;
-                System.arraycopy(zArr, index + 1, zArr, index, (r1 - index) - 1);
-                this.mForce[this.mCount - 1] = force;
+            if (index < 0 || index >= this.mCount - 1) {
+                return;
             }
+            int id = this.mResId[index];
+            boolean force = this.mForce[index];
+            System.arraycopy(this.mResId, index + 1, this.mResId, index, (this.mCount - index) - 1);
+            this.mResId[this.mCount - 1] = id;
+            System.arraycopy(this.mForce, index + 1, this.mForce, index, (this.mCount - index) - 1);
+            this.mForce[this.mCount - 1] = force;
         }
 
         public void append(int i, boolean z) {
@@ -929,10 +889,8 @@ public class Resources {
         }
 
         public void setTo(ThemeKey other) {
-            int[] iArr = other.mResId;
-            this.mResId = iArr == null ? null : (int[]) iArr.clone();
-            boolean[] zArr = other.mForce;
-            this.mForce = zArr != null ? (boolean[]) zArr.clone() : null;
+            this.mResId = other.mResId == null ? null : (int[]) other.mResId.clone();
+            this.mForce = other.mForce != null ? (boolean[]) other.mForce.clone() : null;
             this.mCount = other.mCount;
             this.mHashCode = other.mHashCode;
         }
@@ -961,8 +919,8 @@ public class Resources {
             return true;
         }
 
-        /* renamed from: clone */
-        public ThemeKey m937clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public ThemeKey m1009clone() {
             ThemeKey other = new ThemeKey();
             other.mResId = this.mResId;
             other.mForce = this.mForce;
@@ -981,7 +939,7 @@ public class Resources {
 
     private void cleanupThemeReferences() {
         if (this.mThemeRefs.size() > this.mThemeRefsNextFlushSize) {
-            this.mThemeRefs.removeIf(new Predicate() { // from class: android.content.res.Resources$$ExternalSyntheticLambda1
+            this.mThemeRefs.removeIf(new Predicate() { // from class: android.content.res.Resources$$ExternalSyntheticLambda0
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean refersTo;
@@ -1022,9 +980,8 @@ public class Resources {
     }
 
     public static void updateSystemConfiguration(Configuration config, DisplayMetrics metrics, CompatibilityInfo compat) {
-        Resources resources = mSystem;
-        if (resources != null) {
-            resources.updateConfiguration(config, metrics, compat);
+        if (mSystem != null) {
+            mSystem.updateConfiguration(config, metrics, compat);
         }
     }
 
@@ -1264,260 +1221,103 @@ public class Resources {
         }
     }
 
+    public static void preloadResources() {
+        try {
+            Resources sysRes = getSystem();
+            sysRes.startPreloading();
+            Log.i(TAG, "Preloading resources...");
+            long startTime = SystemClock.uptimeMillis();
+            TypedArray ar = sysRes.obtainTypedArray(R.array.preloaded_drawables);
+            int numberOfEntries = preloadDrawables(sysRes, ar);
+            ar.recycle();
+            Log.i(TAG, "...preloaded " + numberOfEntries + " resources in " + (SystemClock.uptimeMillis() - startTime) + "ms.");
+            long startTime2 = SystemClock.uptimeMillis();
+            TypedArray ar2 = sysRes.obtainTypedArray(R.array.preloaded_color_state_lists);
+            int numberOfEntries2 = preloadColorStateLists(sysRes, ar2);
+            ar2.recycle();
+            Log.i(TAG, "...preloaded " + numberOfEntries2 + " resources in " + (SystemClock.uptimeMillis() - startTime2) + "ms.");
+            sysRes.finishPreloading();
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Failure preloading resources", e);
+        }
+    }
+
+    private static int preloadColorStateLists(Resources resources, TypedArray ar) {
+        int numberOfEntries = ar.length();
+        for (int i = 0; i < numberOfEntries; i++) {
+            int id = ar.getResourceId(i, 0);
+            if (id != 0 && resources.getColorStateList(id, null) == null) {
+                throw new IllegalArgumentException("Unable to find preloaded color resource #0x" + Integer.toHexString(id) + " (" + ar.getString(i) + NavigationBarInflaterView.KEY_CODE_END);
+            }
+        }
+        return numberOfEntries;
+    }
+
+    private static int preloadDrawables(Resources resources, TypedArray ar) {
+        int numberOfEntries = ar.length();
+        for (int i = 0; i < numberOfEntries; i++) {
+            int id = ar.getResourceId(i, 0);
+            if (id != 0 && resources.getDrawable(id, null) == null) {
+                throw new IllegalArgumentException("Unable to find preloaded drawable resource #0x" + Integer.toHexString(id) + " (" + ar.getString(i) + NavigationBarInflaterView.KEY_CODE_END);
+            }
+        }
+        return numberOfEntries;
+    }
+
+    public static void resetPreloadDrawableStateCache() {
+        ResourcesImpl.resetDrawableStateCache();
+        preloadResources();
+    }
+
     public void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "class=" + getClass());
         pw.println(prefix + "resourcesImpl");
-        this.mResourcesImpl.dump(pw, prefix + "  ");
+        ResourcesImpl impl = this.mResourcesImpl;
+        if (impl != null) {
+            impl.dump(pw, prefix + "  ");
+        } else {
+            pw.println(prefix + "  null");
+        }
     }
 
     public static void dumpHistory(PrintWriter pw, String prefix) {
         pw.println(prefix + "history");
-        final Map<List<ApkAssets>, Resources> history = new ArrayMap<>();
+        final ArrayMap<List<ApkAssets>, Resources> history = new ArrayMap<>();
         try {
-            sResourcesHistory.forEach(new Consumer() { // from class: android.content.res.Resources$$ExternalSyntheticLambda2
+            sResourcesHistory.forEach(new Consumer() { // from class: android.content.res.Resources$$ExternalSyntheticLambda1
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    history.put(Arrays.asList(r2.mResourcesImpl.mAssets.getApkAssets()), (Resources) obj);
+                    Resources.lambda$dumpHistory$1(ArrayMap.this, (Resources) obj);
                 }
             });
             int i = 0;
             for (Resources r : history.values()) {
-                if (r != null) {
-                    int i2 = i + 1;
-                    pw.println(prefix + i);
-                    r.dump(pw, prefix + "  ");
-                    i = i2;
-                }
+                int i2 = i + 1;
+                pw.println(prefix + i);
+                r.dump(pw, prefix + "  ");
+                i = i2;
             }
         } catch (NullPointerException e) {
             Log.e(TAG, "NPE occurred, stop dumping : ", e);
         }
     }
 
-    public static void setApplicationContext(Context c) {
-        sAppContext = c;
-    }
-
-    public static void setIfAppLaunching(boolean IfAppLaunchingInProgress) {
-        sIsAppLaunching = IfAppLaunchingInProgress;
-    }
-
-    public void clearFutureCaches() {
-        sFuturesKeyResourceIdMap.clear();
-        synchronized (sFutureMapLock) {
-            sResourcesFutureMap.clear();
-        }
-        sStartedRunnablesMap.clear();
-    }
-
-    private Future<Drawable.ConstantState> getResourceFuture(int id, long key) {
-        WeakReference<Future<Drawable.ConstantState>> resourceFutureRef;
-        Integer futureResId = null;
-        ConcurrentMap<Long, Integer> concurrentMap = sFuturesKeyResourceIdMap;
-        if (concurrentMap != null) {
-            Integer futureResId2 = concurrentMap.get(Long.valueOf(key));
-            futureResId = futureResId2;
-        }
-        if (futureResId != null && futureResId.intValue() == id) {
-            synchronized (sFutureMapLock) {
-                LongSparseArray<WeakReference<Future<Drawable.ConstantState>>> longSparseArray = sResourcesFutureMap;
-                if (longSparseArray != null && (resourceFutureRef = longSparseArray.get(key)) != null) {
-                    return resourceFutureRef.get();
-                }
-                return null;
-            }
-        }
-        return null;
-    }
-
-    private boolean verifyOffloadedResourceConfig(int changingConfigurations) {
-        return ((-1073745921) & changingConfigurations) == 0;
-    }
-
-    private long calculateKey(TypedValue value) {
-        if (value.type >= 28 && value.type <= 31) {
-            long key = value.data;
-            return key;
-        }
-        long key2 = (value.assetCookie << 32) | value.data;
-        return key2;
-    }
-
-    private Drawable fetchDrawableFromFutureCache(TypedValue value, int id, Theme theme) throws NotFoundException {
-        Drawable dr;
-        try {
-            long key = calculateKey(value);
-            Future<Drawable.ConstantState> resourceFuture = getResourceFuture(id, key);
-            if (resourceFuture != null) {
-                if (sStartedRunnablesMap.get(Long.valueOf(key)) == null) {
-                    resourceFuture.cancel(true);
-                    return null;
-                }
-                Drawable.ConstantState cs = resourceFuture.get(2L, TimeUnit.SECONDS);
-                if (cs != null && verifyOffloadedResourceConfig(cs.getChangingConfigurations()) && (dr = cs.newDrawable(this, theme)) != null) {
-                    if (theme != null && dr.canApplyTheme()) {
-                        dr.applyTheme(theme);
-                    }
-                    dr.setChangingConfigurations(value.changingConfigurations);
-                    return dr;
-                }
-                return null;
-            }
-            return null;
-        } catch (InterruptedException | NullPointerException | CancellationException | ExecutionException | TimeoutException e) {
-            Log.e(TAG, "An exception occurred : ", e);
-            return null;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public static class UpdateResourceList implements Runnable {
-        int resourceId;
-        TypedValue value;
-
-        UpdateResourceList(int resourceId, TypedValue value) {
-            this.resourceId = resourceId;
-            this.value = value;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            String str;
-            StringBuilder sb;
-            FileOutputStream fos = null;
-            ObjectOutputStream oos = null;
-            try {
-                try {
-                    String filename = SemCapabilities.FEATURE_TAG_NULL;
-                    TypedValue typedValue = this.value;
-                    if (typedValue != null) {
-                        filename = String.valueOf(typedValue.string);
-                    }
-                    if (Resources.sResourceCount <= 30 && !filename.equals(SemCapabilities.FEATURE_TAG_NULL) && (filename.endsWith(".png") || filename.endsWith(".xml") || filename.endsWith(".webp"))) {
-                        synchronized (Resources.sRlistWriteLock) {
-                            Resources.sResourceList.add(String.valueOf(this.resourceId));
-                        }
-                        Resources.sResourceCount++;
-                        if (Resources.sAppContext != null) {
-                            Context context = Resources.sAppContext;
-                            Context unused = Resources.sAppContext;
-                            fos = context.openFileOutput("rList", 0);
-                            oos = new ObjectOutputStream(fos);
-                            synchronized (Resources.sRlistWriteLock) {
-                                oos.writeObject(Resources.sResourceList);
-                            }
-                            oos.flush();
-                        }
-                    }
-                    if (oos != null) {
-                        try {
-                            oos.close();
-                        } catch (IOException e) {
-                            Log.w(Resources.TAG, "IOException occured at : " + e.getMessage());
-                        }
-                    }
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (IOException e2) {
-                            e = e2;
-                            str = Resources.TAG;
-                            sb = new StringBuilder();
-                            Log.w(str, sb.append("IOException occured at : ").append(e.getMessage()).toString());
-                        }
-                    }
-                } catch (Exception e3) {
-                    Log.w(Resources.TAG, "An exception occurred : ", e3);
-                    if (0 != 0) {
-                        try {
-                            oos.close();
-                        } catch (IOException e4) {
-                            Log.w(Resources.TAG, "IOException occured at : " + e4.getMessage());
-                        }
-                    }
-                    if (0 != 0) {
-                        try {
-                            fos.close();
-                        } catch (IOException e5) {
-                            e = e5;
-                            str = Resources.TAG;
-                            sb = new StringBuilder();
-                            Log.w(str, sb.append("IOException occured at : ").append(e.getMessage()).toString());
-                        }
-                    }
-                }
-            } catch (Throwable th) {
-                if (0 != 0) {
-                    try {
-                        oos.close();
-                    } catch (IOException e6) {
-                        Log.w(Resources.TAG, "IOException occured at : " + e6.getMessage());
-                    }
-                }
-                if (0 != 0) {
-                    try {
-                        fos.close();
-                        throw th;
-                    } catch (IOException e7) {
-                        Log.w(Resources.TAG, "IOException occured at : " + e7.getMessage());
-                        throw th;
-                    }
-                }
-                throw th;
+    static /* synthetic */ void lambda$dumpHistory$1(ArrayMap history, Resources r) {
+        if (r != null) {
+            ResourcesImpl impl = r.mResourcesImpl;
+            if (impl != null) {
+                history.put(Arrays.asList(impl.mAssets.getApkAssets()), r);
+            } else {
+                history.put(null, r);
             }
         }
     }
 
-    public void offloadDrawable(int id, int density) {
-        TypedValue value = obtainTempTypedValue();
-        try {
-        } catch (Throwable th) {
-            th = th;
+    public static void registerResourcePaths(String uniqueId, ApplicationInfo appInfo) {
+        if (Flags.registerResourcePaths()) {
+            ResourcesManager.getInstance().registerResourcePaths(uniqueId, appInfo);
+            return;
         }
-        try {
-            this.mResourcesImpl.getValueForDensity(id, density, value, true);
-            long key = calculateKey(value);
-            sFuturesKeyResourceIdMap.put(Long.valueOf(key), Integer.valueOf(id));
-            synchronized (sFutureMapLock) {
-                sResourcesFutureMap.put(key, new WeakReference<>(this.mThreadExecutor.submit(new submitToFuture(id, density, key))));
-            }
-            releaseTempTypedValue(value);
-        } catch (Throwable th2) {
-            th = th2;
-            releaseTempTypedValue(value);
-            throw th;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public final class submitToFuture implements Callable<Drawable.ConstantState> {
-        private int density;
-        private int id;
-        private long key;
-
-        public submitToFuture(int id, int density, long key) {
-            this.id = id;
-            this.density = density;
-            this.key = key;
-        }
-
-        @Override // java.util.concurrent.Callable
-        public Drawable.ConstantState call() throws Exception {
-            Resources.sStartedRunnablesMap.put(Long.valueOf(this.key), true);
-            TypedValue value = Resources.this.obtainTempTypedValue();
-            try {
-                ResourcesImpl impl = Resources.this.mResourcesImpl;
-                impl.getValueForDensity(this.id, this.density, value, true);
-                Drawable dr = impl.loadDrawable(Resources.this, value, this.id, this.density);
-                if (dr != null) {
-                    return dr.getConstantState();
-                }
-                Resources.this.releaseTempTypedValue(value);
-                return null;
-            } finally {
-                Resources.this.releaseTempTypedValue(value);
-            }
-        }
+        throw new UnsupportedOperationException("Flag android.content.res.register_resource_paths is disabled.");
     }
 }

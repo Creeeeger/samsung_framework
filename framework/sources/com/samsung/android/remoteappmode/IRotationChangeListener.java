@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IRotationChangeListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.remoteappmode.IRotationChangeListener";
 
     void onRotationChanged(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRotationChangeListener {
         @Override // com.samsung.android.remoteappmode.IRotationChangeListener
         public void onRotationChanged(int displayId, int rotation) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IRotationChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRotationChangeListener {
         static final int TRANSACTION_onRotationChanged = 1;
 
@@ -67,27 +65,23 @@ public interface IRotationChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRotationChangeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRotationChangeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRotationChangeListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRotationChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRotationChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRotationChangeListener {
+        private static class Proxy implements IRotationChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -12,7 +12,6 @@ public interface IRequestFinishCallback extends IInterface {
 
     void requestFinish() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRequestFinishCallback {
         @Override // android.app.IRequestFinishCallback
         public void requestFinish() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IRequestFinishCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRequestFinishCallback {
         static final int TRANSACTION_requestFinish = 1;
 
@@ -67,24 +65,20 @@ public interface IRequestFinishCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRequestFinishCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRequestFinishCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRequestFinishCallback.DESCRIPTOR);
+                case 1:
+                    requestFinish();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            requestFinish();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRequestFinishCallback {
+        private static class Proxy implements IRequestFinishCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

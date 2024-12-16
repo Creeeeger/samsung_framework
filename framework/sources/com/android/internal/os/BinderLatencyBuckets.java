@@ -31,11 +31,10 @@ public class BinderLatencyBuckets {
     }
 
     public int sampleToBucket(int sample) {
-        int[] iArr = this.mBuckets;
-        if (sample >= iArr[iArr.length - 1]) {
-            return iArr.length;
+        if (sample >= this.mBuckets[this.mBuckets.length - 1]) {
+            return this.mBuckets.length;
         }
-        int searchResult = Arrays.binarySearch(iArr, sample);
+        int searchResult = Arrays.binarySearch(this.mBuckets, sample);
         int i = searchResult + 1;
         return searchResult < 0 ? -i : i;
     }

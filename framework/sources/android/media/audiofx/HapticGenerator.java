@@ -24,9 +24,8 @@ public class HapticGenerator extends AudioEffect implements AutoCloseable {
 
     @Override // android.media.audiofx.AudioEffect
     public int setEnabled(boolean enabled) {
-        AudioEffect audioEffect;
         int ret = super.setEnabled(enabled);
-        if (ret == 0 && ((audioEffect = this.mVolumeControlEffect) == null || audioEffect.setEnabled(enabled) != 0)) {
+        if (ret == 0 && (this.mVolumeControlEffect == null || this.mVolumeControlEffect.setEnabled(enabled) != 0)) {
             Log.w(TAG, "Failed to enable volume control effect for HapticGenerator");
         }
         return ret;
@@ -34,9 +33,8 @@ public class HapticGenerator extends AudioEffect implements AutoCloseable {
 
     @Override // android.media.audiofx.AudioEffect
     public void release() {
-        AudioEffect audioEffect = this.mVolumeControlEffect;
-        if (audioEffect != null) {
-            audioEffect.release();
+        if (this.mVolumeControlEffect != null) {
+            this.mVolumeControlEffect.release();
         }
         super.release();
     }

@@ -4,18 +4,17 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextAutoBrightness extends SemContextEventContext {
     public static final int CONFIG_DATA_DOWNLOADED = 1000;
     public static final Parcelable.Creator<SemContextAutoBrightness> CREATOR = new Parcelable.Creator<SemContextAutoBrightness>() { // from class: com.samsung.android.hardware.context.SemContextAutoBrightness.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoBrightness createFromParcel(Parcel in) {
             return new SemContextAutoBrightness(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoBrightness[] newArray(int size) {
             return new SemContextAutoBrightness[size];
@@ -26,24 +25,7 @@ public class SemContextAutoBrightness extends SemContextEventContext {
     public static final int UPDATE_MODE = 2;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextAutoBrightness$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextAutoBrightness> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoBrightness createFromParcel(Parcel in) {
-            return new SemContextAutoBrightness(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoBrightness[] newArray(int size) {
-            return new SemContextAutoBrightness[size];
-        }
-    }
-
-    public SemContextAutoBrightness() {
+    SemContextAutoBrightness() {
         this.mContext = new Bundle();
     }
 

@@ -13,7 +13,7 @@ import android.provider.Telephony;
 import com.android.internal.telephony.PhoneConstants;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class CellBroadcastIntents {
     public static final String ACTION_AREA_INFO_UPDATED = "android.telephony.action.AREA_INFO_UPDATED";
     private static final String EXTRA_MESSAGE = "message";

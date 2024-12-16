@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ModemActivityInfo implements Parcelable {
     private static final int TX_POWER_LEVELS = 5;
     public static final int TX_POWER_LEVEL_0 = 0;
@@ -25,11 +25,9 @@ public final class ModemActivityInfo implements Parcelable {
     private long mTimestamp;
     private int mTotalRxTimeMs;
     private int[] mTotalTxTimeMs;
-    private static final Range<Integer>[] TX_POWER_RANGES = {new Range(Integer.MIN_VALUE, 0), new Range(0, 5), new Range(5, 15), new Range(15, 20), new Range(20, Integer.MAX_VALUE)};
+    private static final Range<Integer>[] TX_POWER_RANGES = {new Range<>(Integer.MIN_VALUE, 0), new Range<>(0, 5), new Range<>(5, 15), new Range<>(15, 20), new Range<>(20, Integer.MAX_VALUE)};
     public static final Parcelable.Creator<ModemActivityInfo> CREATOR = new Parcelable.Creator<ModemActivityInfo>() { // from class: android.telephony.ModemActivityInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ModemActivityInfo createFromParcel(Parcel in) {
             long timestamp = in.readLong();
@@ -43,6 +41,7 @@ public final class ModemActivityInfo implements Parcelable {
             return new ModemActivityInfo(timestamp, sleepTimeMs, idleTimeMs, activityStatsTechSpecificInfo);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ModemActivityInfo[] newArray(int size) {
             return new ModemActivityInfo[size];
@@ -50,7 +49,6 @@ public final class ModemActivityInfo implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TxPowerLevel {
     }
 
@@ -68,9 +66,9 @@ public final class ModemActivityInfo implements Parcelable {
         this.mIdleTimeMs = idleTimeMs;
         this.mTotalTxTimeMs = txTimeMs;
         this.mTotalRxTimeMs = rxTimeMs;
-        this.mActivityStatsTechSpecificInfo = r0;
-        this.mSizeOfSpecificInfo = r0.length;
-        ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfoArr = {new ActivityStatsTechSpecificInfo(0, 0, txTimeMs, rxTimeMs)};
+        this.mActivityStatsTechSpecificInfo = new ActivityStatsTechSpecificInfo[1];
+        this.mSizeOfSpecificInfo = this.mActivityStatsTechSpecificInfo.length;
+        this.mActivityStatsTechSpecificInfo[0] = new ActivityStatsTechSpecificInfo(0, 0, txTimeMs, rxTimeMs);
     }
 
     public ModemActivityInfo(long timestamp, long sleepTimeMs, long idleTimeMs, int[] txTimeMs, long rxTimeMs) {
@@ -82,12 +80,11 @@ public final class ModemActivityInfo implements Parcelable {
         this.mSleepTimeMs = sleepTimeMs;
         this.mIdleTimeMs = idleTimeMs;
         this.mActivityStatsTechSpecificInfo = activityStatsTechSpecificInfo;
-        this.mSizeOfSpecificInfo = activityStatsTechSpecificInfo.length;
+        this.mSizeOfSpecificInfo = this.mActivityStatsTechSpecificInfo.length;
         this.mTotalTxTimeMs = new int[5];
         for (int i = 0; i < getNumTxPowerLevels(); i++) {
             for (int j = 0; j < getSpecificInfoLength(); j++) {
-                int[] iArr = this.mTotalTxTimeMs;
-                iArr[i] = iArr[i] + ((int) this.mActivityStatsTechSpecificInfo[j].getTransmitTimeMillis(i));
+                this.mTotalTxTimeMs[i] = this.mTotalTxTimeMs[i] + ((int) this.mActivityStatsTechSpecificInfo[j].getTransmitTimeMillis(i));
             }
         }
         this.mTotalRxTimeMs = 0;
@@ -107,31 +104,6 @@ public final class ModemActivityInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.ModemActivityInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ModemActivityInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ModemActivityInfo createFromParcel(Parcel in) {
-            long timestamp = in.readLong();
-            int sleepTimeMs = in.readInt();
-            int idleTimeMs = in.readInt();
-            Parcelable[] tempSpecifiers = (Parcelable[]) in.createTypedArray(ActivityStatsTechSpecificInfo.CREATOR);
-            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfo = new ActivityStatsTechSpecificInfo[tempSpecifiers.length];
-            for (int i = 0; i < tempSpecifiers.length; i++) {
-                activityStatsTechSpecificInfo[i] = (ActivityStatsTechSpecificInfo) tempSpecifiers[i];
-            }
-            return new ModemActivityInfo(timestamp, sleepTimeMs, idleTimeMs, activityStatsTechSpecificInfo);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ModemActivityInfo[] newArray(int size) {
-            return new ModemActivityInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -213,35 +185,21 @@ public final class ModemActivityInfo implements Parcelable {
     }
 
     public int[] getTransmitTimeMillis(int rat) {
-        int i = 0;
-        while (true) {
-            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfoArr = this.mActivityStatsTechSpecificInfo;
-            if (i < activityStatsTechSpecificInfoArr.length) {
-                if (activityStatsTechSpecificInfoArr[i].getRat() != rat) {
-                    i++;
-                } else {
-                    return this.mActivityStatsTechSpecificInfo[i].getTransmitTimeMillis();
-                }
-            } else {
-                return new int[5];
+        for (int i = 0; i < this.mActivityStatsTechSpecificInfo.length; i++) {
+            if (this.mActivityStatsTechSpecificInfo[i].getRat() == rat) {
+                return this.mActivityStatsTechSpecificInfo[i].getTransmitTimeMillis();
             }
         }
+        return new int[5];
     }
 
     public int[] getTransmitTimeMillis(int rat, int freq) {
-        int i = 0;
-        while (true) {
-            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfoArr = this.mActivityStatsTechSpecificInfo;
-            if (i < activityStatsTechSpecificInfoArr.length) {
-                if (activityStatsTechSpecificInfoArr[i].getRat() != rat || this.mActivityStatsTechSpecificInfo[i].getFrequencyRange() != freq) {
-                    i++;
-                } else {
-                    return this.mActivityStatsTechSpecificInfo[i].getTransmitTimeMillis();
-                }
-            } else {
-                return new int[5];
+        for (int i = 0; i < this.mActivityStatsTechSpecificInfo.length; i++) {
+            if (this.mActivityStatsTechSpecificInfo[i].getRat() == rat && this.mActivityStatsTechSpecificInfo[i].getFrequencyRange() == freq) {
+                return this.mActivityStatsTechSpecificInfo[i].getTransmitTimeMillis();
             }
         }
+        return new int[5];
     }
 
     public long getSleepTimeMillis() {
@@ -307,35 +265,21 @@ public final class ModemActivityInfo implements Parcelable {
     }
 
     public long getReceiveTimeMillis(int rat) {
-        int i = 0;
-        while (true) {
-            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfoArr = this.mActivityStatsTechSpecificInfo;
-            if (i < activityStatsTechSpecificInfoArr.length) {
-                if (activityStatsTechSpecificInfoArr[i].getRat() != rat) {
-                    i++;
-                } else {
-                    return this.mActivityStatsTechSpecificInfo[i].getReceiveTimeMillis();
-                }
-            } else {
-                return 0L;
+        for (int i = 0; i < this.mActivityStatsTechSpecificInfo.length; i++) {
+            if (this.mActivityStatsTechSpecificInfo[i].getRat() == rat) {
+                return this.mActivityStatsTechSpecificInfo[i].getReceiveTimeMillis();
             }
         }
+        return 0L;
     }
 
     public long getReceiveTimeMillis(int rat, int freq) {
-        int i = 0;
-        while (true) {
-            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfoArr = this.mActivityStatsTechSpecificInfo;
-            if (i < activityStatsTechSpecificInfoArr.length) {
-                if (activityStatsTechSpecificInfoArr[i].getRat() != rat || this.mActivityStatsTechSpecificInfo[i].getFrequencyRange() != freq) {
-                    i++;
-                } else {
-                    return this.mActivityStatsTechSpecificInfo[i].getReceiveTimeMillis();
-                }
-            } else {
-                return 0L;
+        for (int i = 0; i < this.mActivityStatsTechSpecificInfo.length; i++) {
+            if (this.mActivityStatsTechSpecificInfo[i].getRat() == rat && this.mActivityStatsTechSpecificInfo[i].getFrequencyRange() == freq) {
+                return this.mActivityStatsTechSpecificInfo[i].getReceiveTimeMillis();
             }
         }
+        return 0L;
     }
 
     public void setReceiveTimeMillis(int rxTimeMillis) {
@@ -347,31 +291,17 @@ public final class ModemActivityInfo implements Parcelable {
     }
 
     public void setReceiveTimeMillis(int rat, long receiveTimeMillis) {
-        int i = 0;
-        while (true) {
-            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfoArr = this.mActivityStatsTechSpecificInfo;
-            if (i < activityStatsTechSpecificInfoArr.length) {
-                if (activityStatsTechSpecificInfoArr[i].getRat() == rat) {
-                    this.mActivityStatsTechSpecificInfo[i].setReceiveTimeMillis(receiveTimeMillis);
-                }
-                i++;
-            } else {
-                return;
+        for (int i = 0; i < this.mActivityStatsTechSpecificInfo.length; i++) {
+            if (this.mActivityStatsTechSpecificInfo[i].getRat() == rat) {
+                this.mActivityStatsTechSpecificInfo[i].setReceiveTimeMillis(receiveTimeMillis);
             }
         }
     }
 
     public void setReceiveTimeMillis(int rat, int freq, long receiveTimeMillis) {
-        int i = 0;
-        while (true) {
-            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfoArr = this.mActivityStatsTechSpecificInfo;
-            if (i < activityStatsTechSpecificInfoArr.length) {
-                if (activityStatsTechSpecificInfoArr[i].getRat() == rat && this.mActivityStatsTechSpecificInfo[i].getFrequencyRange() == freq) {
-                    this.mActivityStatsTechSpecificInfo[i].setReceiveTimeMillis(receiveTimeMillis);
-                }
-                i++;
-            } else {
-                return;
+        for (int i = 0; i < this.mActivityStatsTechSpecificInfo.length; i++) {
+            if (this.mActivityStatsTechSpecificInfo[i].getRat() == rat && this.mActivityStatsTechSpecificInfo[i].getFrequencyRange() == freq) {
+                this.mActivityStatsTechSpecificInfo[i].setReceiveTimeMillis(receiveTimeMillis);
             }
         }
     }

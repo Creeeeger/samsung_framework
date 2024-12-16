@@ -6,13 +6,11 @@ import android.os.Binder;
 public class BinderUtils {
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingRunnable<T extends Exception> {
         void run() throws Exception;
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingSupplier<T, E extends Exception> {
         T get() throws Exception;
     }

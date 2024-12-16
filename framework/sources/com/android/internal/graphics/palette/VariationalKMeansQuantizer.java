@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class VariationalKMeansQuantizer implements Quantizer {
     private static final boolean DEBUG = false;
     private static final String TAG = "KMeansQuantizer";
@@ -34,47 +34,41 @@ public class VariationalKMeansQuantizer implements Quantizer {
     @Override // com.android.internal.graphics.palette.Quantizer
     public void quantize(int[] pixels, int maxColors) {
         float[] hsl;
-        int i;
         float[] hsl2 = {0.0f, 0.0f, 0.0f};
         float[][] hslPixels = (float[][]) Array.newInstance((Class<?>) Float.TYPE, pixels.length, 3);
-        for (int i2 = 0; i2 < pixels.length; i2++) {
-            ColorUtils.colorToHSL(pixels[i2], hsl2);
-            hslPixels[i2][0] = hsl2[0] / 360.0f;
-            hslPixels[i2][1] = hsl2[1];
-            hslPixels[i2][2] = hsl2[2];
+        for (int i = 0; i < pixels.length; i++) {
+            ColorUtils.colorToHSL(pixels[i], hsl2);
+            hslPixels[i][0] = hsl2[0] / 360.0f;
+            hslPixels[i][1] = hsl2[1];
+            hslPixels[i][2] = hsl2[2];
         }
         List<KMeans.Mean> optimalMeans = getOptimalKMeans(maxColors, hslPixels);
-        int i3 = 0;
-        while (i3 < optimalMeans.size()) {
-            KMeans.Mean current = optimalMeans.get(i3);
+        for (int i2 = 0; i2 < optimalMeans.size(); i2++) {
+            KMeans.Mean current = optimalMeans.get(i2);
             float[] currentCentroid = current.getCentroid();
-            int j = i3 + 1;
+            int j = i2 + 1;
             while (j < optimalMeans.size()) {
                 KMeans.Mean compareTo = optimalMeans.get(j);
                 float[] compareToCentroid = compareTo.getCentroid();
                 float sqDistance = KMeans.sqDistance(currentCentroid, compareToCentroid);
                 if (sqDistance >= this.mMinClusterSqDistance) {
                     hsl = hsl2;
-                    i = i3;
                 } else {
                     optimalMeans.remove(compareTo);
                     current.getItems().addAll(compareTo.getItems());
                     int k = 0;
                     while (k < currentCentroid.length) {
-                        currentCentroid[k] = (float) (currentCentroid[k] + ((compareToCentroid[k] - currentCentroid[k]) / 2.0d));
-                        k++;
+                        int k2 = k;
+                        currentCentroid[k2] = (float) (currentCentroid[k] + ((compareToCentroid[k] - currentCentroid[k]) / 2.0d));
+                        k = k2 + 1;
                         hsl2 = hsl2;
-                        i3 = i3;
                     }
                     hsl = hsl2;
-                    i = i3;
                     j--;
                 }
                 j++;
                 hsl2 = hsl;
-                i3 = i;
             }
-            i3++;
         }
         this.mQuantizedColors = new ArrayList();
         float[] mHsl = new float[3];

@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IStorageShutdownObserver extends IInterface {
     void onShutDownComplete(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IStorageShutdownObserver {
         @Override // android.os.storage.IStorageShutdownObserver
         public void onShutDownComplete(int statusCode) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IStorageShutdownObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IStorageShutdownObserver {
         public static final String DESCRIPTOR = "android.os.storage.IStorageShutdownObserver";
         static final int TRANSACTION_onShutDownComplete = 1;
@@ -66,27 +64,23 @@ public interface IStorageShutdownObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onShutDownComplete(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onShutDownComplete(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IStorageShutdownObserver {
+        private static class Proxy implements IStorageShutdownObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

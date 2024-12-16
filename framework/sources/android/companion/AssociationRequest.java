@@ -17,14 +17,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AssociationRequest implements Parcelable {
     public static final Parcelable.Creator<AssociationRequest> CREATOR = new Parcelable.Creator<AssociationRequest>() { // from class: android.companion.AssociationRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssociationRequest[] newArray(int size) {
             return new AssociationRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssociationRequest createFromParcel(Parcel in) {
             return new AssociationRequest(in);
@@ -50,12 +49,7 @@ public final class AssociationRequest implements Parcelable {
     private int mUserId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DeviceProfile {
-    }
-
-    /* synthetic */ AssociationRequest(boolean z, List list, String str, CharSequence charSequence, boolean z2, boolean z3, AssociationRequestIA associationRequestIA) {
-        this(z, list, str, charSequence, z2, z3);
     }
 
     private AssociationRequest(boolean singleDevice, List<DeviceFilter<?>> deviceFilters, String deviceProfile, CharSequence displayName, boolean selfManaged, boolean forceConfirmation) {
@@ -116,7 +110,6 @@ public final class AssociationRequest implements Parcelable {
         return this.mDeviceFilters;
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder extends OneTimeUseBuilder<AssociationRequest> {
         private String mDeviceProfile;
         private CharSequence mDisplayName;
@@ -163,6 +156,7 @@ public final class AssociationRequest implements Parcelable {
             return this;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.provider.OneTimeUseBuilder
         public AssociationRequest build() {
             markUsed();
@@ -249,26 +243,21 @@ public final class AssociationRequest implements Parcelable {
         }
         dest.writeInt(flg);
         dest.writeParcelableList(this.mDeviceFilters, flags);
-        String str = this.mDeviceProfile;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mDeviceProfile != null) {
+            dest.writeString(this.mDeviceProfile);
         }
-        CharSequence charSequence = this.mDisplayName;
-        if (charSequence != null) {
-            dest.writeCharSequence(charSequence);
+        if (this.mDisplayName != null) {
+            dest.writeCharSequence(this.mDisplayName);
         }
-        AssociatedDevice associatedDevice = this.mAssociatedDevice;
-        if (associatedDevice != null) {
-            dest.writeTypedObject(associatedDevice, flags);
+        if (this.mAssociatedDevice != null) {
+            dest.writeTypedObject(this.mAssociatedDevice, flags);
         }
-        String str2 = this.mPackageName;
-        if (str2 != null) {
-            dest.writeString(str2);
+        if (this.mPackageName != null) {
+            dest.writeString(this.mPackageName);
         }
         dest.writeInt(this.mUserId);
-        String str3 = this.mDeviceProfilePrivilegesDescription;
-        if (str3 != null) {
-            dest.writeString8(str3);
+        if (this.mDeviceProfilePrivilegesDescription != null) {
+            dest.writeString8(this.mDeviceProfilePrivilegesDescription);
         }
         dest.writeLong(this.mCreationTime);
     }
@@ -295,7 +284,7 @@ public final class AssociationRequest implements Parcelable {
         long creationTime = in.readLong();
         this.mSingleDevice = singleDevice;
         this.mDeviceFilters = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mDeviceFilters);
         this.mDeviceProfile = deviceProfile;
         this.mDisplayName = displayName;
         this.mAssociatedDevice = associatedDevice;
@@ -303,26 +292,9 @@ public final class AssociationRequest implements Parcelable {
         this.mForceConfirmation = forceConfirmation;
         this.mPackageName = packageName;
         this.mUserId = userId;
-        AnnotationValidations.validate((Class<UserIdInt>) UserIdInt.class, (UserIdInt) null, userId);
+        AnnotationValidations.validate((Class<UserIdInt>) UserIdInt.class, (UserIdInt) null, this.mUserId);
         this.mDeviceProfilePrivilegesDescription = deviceProfilePrivilegesDescription;
         this.mCreationTime = creationTime;
         this.mSkipPrompt = skipPrompt;
-    }
-
-    /* renamed from: android.companion.AssociationRequest$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AssociationRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AssociationRequest[] newArray(int size) {
-            return new AssociationRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AssociationRequest createFromParcel(Parcel in) {
-            return new AssociationRequest(in);
-        }
     }
 }

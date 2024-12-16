@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.ClientFlags;
 import android.text.TextFlags;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -85,20 +86,17 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         setBackgroundDrawable(this.mBackground);
-        TextView textView = (TextView) findViewById(16908310);
-        this.mTitleView = textView;
-        int i = this.mTextAppearance;
-        if (i != -1) {
-            textView.setTextAppearance(this.mTextAppearanceContext, i);
+        this.mTitleView = (TextView) findViewById(16908310);
+        if (this.mTextAppearance != -1) {
+            this.mTitleView.setTextAppearance(this.mTextAppearanceContext, this.mTextAppearance);
         }
         this.mShortcutView = (TextView) findViewById(R.id.shortcut);
-        ImageView imageView = (ImageView) findViewById(R.id.submenuarrow);
-        this.mSubMenuArrowView = imageView;
-        if (imageView != null) {
-            imageView.lambda$setImageURIAsync$2(this.mSubMenuArrow);
+        this.mSubMenuArrowView = (ImageView) findViewById(R.id.submenuarrow);
+        if (this.mSubMenuArrowView != null) {
+            this.mSubMenuArrowView.setImageDrawable(this.mSubMenuArrow);
         }
         this.mGroupDivider = (ImageView) findViewById(R.id.group_divider);
         this.mContent = (LinearLayout) findViewById(16908290);
@@ -117,9 +115,8 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
         setSubMenuArrowVisible(itemData.hasSubMenu());
         setContentDescription(itemData.getContentDescription());
         setBadgeText(itemData.getBadgeText());
-        int i = this.mTextAppearance;
-        if (i != -1) {
-            TypedArray a = this.mTextAppearanceContext.obtainStyledAttributes(i, R.styleable.TextAppearance);
+        if (this.mTextAppearance != -1) {
+            TypedArray a = this.mTextAppearanceContext.obtainStyledAttributes(this.mTextAppearance, R.styleable.TextAppearance);
             int textSize = a.getDimensionPixelSize(0, 0);
             if (textSize != 0) {
                 this.mTitleView.getPaint().setTextSize(textSize);
@@ -133,9 +130,8 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     }
 
     private void addContentView(View v, int index) {
-        LinearLayout linearLayout = this.mContent;
-        if (linearLayout != null) {
-            linearLayout.addView(v, index);
+        if (this.mContent != null) {
+            this.mContent.addView(v, index);
         } else {
             addView(v, index);
         }
@@ -149,7 +145,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     @Override // com.android.internal.view.menu.MenuView.ItemView
     public void setTitle(CharSequence title) {
         if (title != null) {
-            this.mTitleView.setText(title);
+            this.mTitleView.lambda$setTextAsync$0(title);
             if (this.mTitleView.getVisibility() != 0) {
                 this.mTitleView.setVisibility(0);
                 return;
@@ -199,13 +195,11 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
             }
             return;
         }
-        CheckBox checkBox = this.mCheckBox;
-        if (checkBox != null) {
-            checkBox.setVisibility(8);
+        if (this.mCheckBox != null) {
+            this.mCheckBox.setVisibility(8);
         }
-        RadioButton radioButton = this.mRadioButton;
-        if (radioButton != null) {
-            radioButton.setVisibility(8);
+        if (this.mRadioButton != null) {
+            this.mRadioButton.setVisibility(8);
         }
     }
 
@@ -228,9 +222,8 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     }
 
     private void setSubMenuArrowVisible(boolean hasSubmenu) {
-        ImageView imageView = this.mSubMenuArrowView;
-        if (imageView != null) {
-            imageView.setVisibility(hasSubmenu ? 0 : 8);
+        if (this.mSubMenuArrowView != null) {
+            this.mSubMenuArrowView.setVisibility(hasSubmenu ? 0 : 8);
         }
     }
 
@@ -238,7 +231,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     public void setShortcut(boolean showShortcut, char shortcutKey) {
         int newVisibility = (showShortcut && this.mItemData.shouldShowShortcut()) ? 0 : 8;
         if (newVisibility == 0) {
-            this.mShortcutView.setText(this.mItemData.getShortcutLabel());
+            this.mShortcutView.lambda$setTextAsync$0(this.mItemData.getShortcutLabel());
         }
         if (this.mShortcutView.getVisibility() != newVisibility) {
             this.mShortcutView.setVisibility(newVisibility);
@@ -251,15 +244,14 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
         if (!showIcon && !this.mPreserveIconSpacing) {
             return;
         }
-        ImageView imageView = this.mIconView;
-        if (imageView == null && icon == null && !this.mPreserveIconSpacing) {
+        if (this.mIconView == null && icon == null && !this.mPreserveIconSpacing) {
             return;
         }
-        if (imageView == null) {
+        if (this.mIconView == null) {
             insertIconView();
         }
         if (icon != null || this.mPreserveIconSpacing) {
-            this.mIconView.lambda$setImageURIAsync$2(showIcon ? icon : null);
+            this.mIconView.setImageDrawable(showIcon ? icon : null);
             if (this.mIconView.getVisibility() != 0) {
                 this.mIconView.setVisibility(0);
                 return;
@@ -270,7 +262,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (this.mIconView != null && this.mPreserveIconSpacing) {
             ViewGroup.LayoutParams lp = getLayoutParams();
             LinearLayout.LayoutParams iconLp = (LinearLayout.LayoutParams) this.mIconView.getLayoutParams();
@@ -282,18 +274,22 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     }
 
     private void insertIconView() {
+        int i;
         LayoutInflater inflater = getInflater();
-        ImageView imageView = (ImageView) inflater.inflate(this.mUseNewContextMenu ? R.layout.list_menu_item_fixed_size_icon : R.layout.list_menu_item_icon, (ViewGroup) this, false);
-        this.mIconView = imageView;
-        addContentView(imageView, 0);
+        if (this.mUseNewContextMenu && !ClientFlags.fixMisalignedContextMenu()) {
+            i = R.layout.list_menu_item_fixed_size_icon;
+        } else {
+            i = R.layout.list_menu_item_icon;
+        }
+        this.mIconView = (ImageView) inflater.inflate(i, (ViewGroup) this, false);
+        addContentView(this.mIconView, 0);
     }
 
     private void insertRadioButton() {
         LayoutInflater inflater = getInflater();
         if (this.mIsDeviceDefaultLight) {
-            RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.sem_list_menu_item_radio, (ViewGroup) this, false);
-            this.mRadioButton = radioButton;
-            radioButton.setBackground(null);
+            this.mRadioButton = (RadioButton) inflater.inflate(R.layout.sem_list_menu_item_radio, (ViewGroup) this, false);
+            this.mRadioButton.setBackground(null);
         } else {
             this.mRadioButton = (RadioButton) inflater.inflate(R.layout.list_menu_item_radio, (ViewGroup) this, false);
         }
@@ -303,9 +299,8 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     private void insertCheckBox() {
         LayoutInflater inflater = getInflater();
         if (this.mIsDeviceDefaultLight) {
-            CheckBox checkBox = (CheckBox) inflater.inflate(R.layout.sem_list_menu_item_checkbox, (ViewGroup) this, false);
-            this.mCheckBox = checkBox;
-            checkBox.setBackground(null);
+            this.mCheckBox = (CheckBox) inflater.inflate(R.layout.sem_list_menu_item_checkbox, (ViewGroup) this, false);
+            this.mCheckBox.setBackground(null);
         } else {
             this.mCheckBox = (CheckBox) inflater.inflate(R.layout.list_menu_item_checkbox, (ViewGroup) this, false);
         }
@@ -332,14 +327,11 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     @Override // android.view.ViewGroup, android.view.View
     public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfoInternal(info);
-        MenuItemImpl menuItemImpl = this.mItemData;
-        if (menuItemImpl != null && menuItemImpl.hasSubMenu()) {
+        if (this.mItemData != null && this.mItemData.hasSubMenu()) {
             info.setCanOpenPopup(true);
         }
-        TextView textView = this.mBadgeView;
-        if (textView != null && textView.getVisibility() == 0 && this.mBadgeView.getWidth() > 0) {
-            MenuItemImpl menuItemImpl2 = this.mItemData;
-            String customContentDescription = menuItemImpl2 != null ? menuItemImpl2.getTitle() : "";
+        if (this.mBadgeView != null && this.mBadgeView.getVisibility() == 0 && this.mBadgeView.getWidth() > 0) {
+            String customContentDescription = this.mItemData != null ? this.mItemData.getTitle() : "";
             if (!TextUtils.isEmpty(getContentDescription())) {
                 CharSequence customContentDescription2 = getContentDescription();
                 info.setContentDescription(customContentDescription2);
@@ -351,16 +343,14 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
     }
 
     public void setGroupDividerEnabled(boolean groupDividerEnabled) {
-        ImageView imageView = this.mGroupDivider;
-        if (imageView != null) {
-            imageView.setVisibility((this.mHasListDivider || !groupDividerEnabled) ? 8 : 0);
+        if (this.mGroupDivider != null) {
+            this.mGroupDivider.setVisibility((this.mHasListDivider || !groupDividerEnabled) ? 8 : 0);
         }
     }
 
     @Override // android.widget.AbsListView.SelectionBoundsAdjuster
     public void adjustListItemSelectionBounds(Rect rect) {
-        ImageView imageView = this.mGroupDivider;
-        if (imageView != null && imageView.getVisibility() == 0) {
+        if (this.mGroupDivider != null && this.mGroupDivider.getVisibility() == 0) {
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.mGroupDivider.getLayoutParams();
             rect.top += this.mGroupDivider.getHeight() + lp.topMargin + lp.bottomMargin;
         }
@@ -374,7 +364,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
         if (isNumericValue(text)) {
             int badgeNumber = Integer.parseInt(text);
             String localeFormattedNumber = this.mNumberFormat.format(Math.min(badgeNumber, 99));
-            this.mBadgeView.setText(localeFormattedNumber);
+            this.mBadgeView.lambda$setTextAsync$0(localeFormattedNumber);
             int badgeWidth = (int) (getResources().getDimension(R.dimen.sem_badge_default_width) + (localeFormattedNumber.length() * getResources().getDimension(R.dimen.sem_badge_additional_width)));
             int badgeHeight = (int) (getResources().getDimension(R.dimen.sem_badge_default_width) + getResources().getDimension(R.dimen.sem_badge_additional_width));
             lp.width = badgeWidth;
@@ -402,8 +392,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
 
     private void insertBadge() {
         LayoutInflater inflater = getInflater();
-        TextView textView = (TextView) inflater.inflate(R.layout.sem_list_menu_item_badge, (ViewGroup) this, false);
-        this.mBadgeView = textView;
-        addContentView(textView);
+        this.mBadgeView = (TextView) inflater.inflate(R.layout.sem_list_menu_item_badge, (ViewGroup) this, false);
+        addContentView(this.mBadgeView);
     }
 }

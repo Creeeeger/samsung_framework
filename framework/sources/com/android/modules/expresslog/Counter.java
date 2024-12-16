@@ -14,12 +14,12 @@ public final class Counter {
     }
 
     public static void logIncrement(String metricId, long amount) {
-        long metricIdHash = Utils.hashString(metricId);
+        long metricIdHash = MetricIds.getMetricIdHash(metricId, 1);
         StatsExpressLog.write(528, metricIdHash, amount);
     }
 
     public static void logIncrementWithUid(String metricId, int uid, long amount) {
-        long metricIdHash = Utils.hashString(metricId);
+        long metricIdHash = MetricIds.getMetricIdHash(metricId, 3);
         StatsExpressLog.write(644, metricIdHash, amount, uid);
     }
 }

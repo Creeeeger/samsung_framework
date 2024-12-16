@@ -34,22 +34,19 @@ public class Base64OutputStream extends FilterOutputStream {
         if (this.buffer == null) {
             this.buffer = new byte[1024];
         }
-        int i = this.bpos;
-        byte[] bArr = this.buffer;
-        if (i >= bArr.length) {
-            internalWrite(bArr, 0, i, false);
+        if (this.bpos >= this.buffer.length) {
+            internalWrite(this.buffer, 0, this.bpos, false);
             this.bpos = 0;
         }
-        byte[] bArr2 = this.buffer;
-        int i2 = this.bpos;
-        this.bpos = i2 + 1;
-        bArr2[i2] = (byte) b;
+        byte[] bArr = this.buffer;
+        int i = this.bpos;
+        this.bpos = i + 1;
+        bArr[i] = (byte) b;
     }
 
     private void flushBuffer() throws IOException {
-        int i = this.bpos;
-        if (i > 0) {
-            internalWrite(this.buffer, 0, i, false);
+        if (this.bpos > 0) {
+            internalWrite(this.buffer, 0, this.bpos, false);
             this.bpos = 0;
         }
     }
@@ -91,8 +88,7 @@ public class Base64OutputStream extends FilterOutputStream {
     }
 
     private void internalWrite(byte[] b, int off, int len, boolean finish) throws IOException {
-        Base64.Coder coder = this.coder;
-        coder.output = embiggen(coder.output, this.coder.maxOutputSize(len));
+        this.coder.output = embiggen(this.coder.output, this.coder.maxOutputSize(len));
         if (!this.coder.process(b, off, len, finish)) {
             throw new Base64DataException("bad base-64");
         }

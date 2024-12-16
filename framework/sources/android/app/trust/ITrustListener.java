@@ -20,7 +20,6 @@ public interface ITrustListener extends IInterface {
 
     void onTrustManagedChanged(boolean z, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITrustListener {
         @Override // android.app.trust.ITrustListener
         public void onEnabledTrustAgentsChanged(int userId) throws RemoteException {
@@ -48,7 +47,6 @@ public interface ITrustListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITrustListener {
         public static final String DESCRIPTOR = "android.app.trust.ITrustListener";
         static final int TRANSACTION_onEnabledTrustAgentsChanged = 1;
@@ -104,52 +102,48 @@ public interface ITrustListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEnabledTrustAgentsChanged(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    boolean _arg1 = data.readBoolean();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    List<String> _arg4 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    onTrustChanged(_arg02, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTrustManagedChanged(_arg03, _arg12);
+                    return true;
+                case 4:
+                    CharSequence _arg04 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    onTrustError(_arg04);
+                    return true;
+                case 5:
+                    boolean _arg05 = data.readBoolean();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onIsActiveUnlockRunningChanged(_arg05, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEnabledTrustAgentsChanged(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            boolean _arg1 = data.readBoolean();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            List<String> _arg4 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            onTrustChanged(_arg02, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTrustManagedChanged(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            CharSequence _arg04 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            onTrustError(_arg04);
-                            return true;
-                        case 5:
-                            boolean _arg05 = data.readBoolean();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onIsActiveUnlockRunningChanged(_arg05, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITrustListener {
+        private static class Proxy implements ITrustListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

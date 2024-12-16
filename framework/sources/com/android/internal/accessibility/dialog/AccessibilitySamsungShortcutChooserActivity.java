@@ -27,7 +27,7 @@ import com.samsung.android.emergencymode.SemEmergencyManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AccessibilitySamsungShortcutChooserActivity extends Activity {
     private AccessibilityManager mAccessibilityManager;
     private AlertDialog mMenuDialog;
@@ -36,9 +36,6 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
     private int mCurrentDisplayId = 0;
     private final List<AccessibilityTarget> mTargets = new ArrayList();
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity.1
-        AnonymousClass1() {
-        }
-
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction()) && AccessibilitySamsungShortcutChooserActivity.this.mMenuDialog != null) {
@@ -47,22 +44,8 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         }
     };
 
-    /* renamed from: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends BroadcastReceiver {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction()) && AccessibilitySamsungShortcutChooserActivity.this.mMenuDialog != null) {
-                AccessibilitySamsungShortcutChooserActivity.this.mMenuDialog.dismiss();
-            }
-        }
-    }
-
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TypedArray theme = getTheme().obtainStyledAttributes(R.styleable.Theme);
         if (!theme.getBoolean(38, false)) {
@@ -76,9 +59,8 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         }
         this.mTargets.addAll(AccessibilityTargetHelper.getTargets(this, this.mShortcutType));
         this.mTargetAdapter = new ShortcutTargetAdapter(this.mTargets);
-        AlertDialog createMenuDialog = createMenuDialog();
-        this.mMenuDialog = createMenuDialog;
-        createMenuDialog.setOnShowListener(new DialogInterface.OnShowListener() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$$ExternalSyntheticLambda3
+        this.mMenuDialog = createMenuDialog();
+        this.mMenuDialog.setOnShowListener(new DialogInterface.OnShowListener() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$$ExternalSyntheticLambda1
             @Override // android.content.DialogInterface.OnShowListener
             public final void onShow(DialogInterface dialogInterface) {
                 AccessibilitySamsungShortcutChooserActivity.this.lambda$onCreate$0(dialogInterface);
@@ -99,6 +81,7 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         this.mAccessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onCreate$0(DialogInterface dialog) {
         updateDialogListeners();
     }
@@ -106,9 +89,8 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
     @Override // android.app.Activity, android.content.ComponentCallbacks
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        AlertDialog alertDialog = this.mMenuDialog;
-        if (alertDialog != null) {
-            Window w = alertDialog.getWindow();
+        if (this.mMenuDialog != null) {
+            Window w = this.mMenuDialog.getWindow();
             WindowManager.LayoutParams attr = w.getAttributes();
             attr.gravity = getGravity();
             w.setAttributes(attr);
@@ -122,7 +104,7 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
     }
 
     @Override // android.app.Activity
-    public void onDestroy() {
+    protected void onDestroy() {
         unregisterReceiver(this.mReceiver);
         this.mMenuDialog.dismiss();
         super.onDestroy();
@@ -142,6 +124,7 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onTargetSelected(AdapterView<?> parent, View view, int position, long id) {
         AccessibilityTarget target = this.mTargets.get(position);
         String targetName = target.getId();
@@ -152,26 +135,26 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
             return;
         }
         Settings.Secure.putString(getContentResolver(), Settings.Secure.ACCESSIBILITY_BUTTON_TARGET_COMPONENT, targetName);
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager;
-        if (accessibilityManager != null) {
-            accessibilityManager.semPerformAccessibilityButtonClick(this.mCurrentDisplayId, this.mShortcutType, targetName);
+        if (this.mAccessibilityManager != null) {
+            this.mAccessibilityManager.semPerformAccessibilityButtonClick(this.mCurrentDisplayId, this.mShortcutType, targetName);
         }
         A11yLogger.insertShortcutSaLog(this, target.getShortcutType(), targetName);
         this.mMenuDialog.dismiss();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$updateDialogListeners$1(View view) {
         onEditShortcutClicked();
     }
 
     private void updateDialogListeners() {
-        this.mMenuDialog.getButton(-1).setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$$ExternalSyntheticLambda1
+        this.mMenuDialog.getButton(-1).setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$$ExternalSyntheticLambda2
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
                 AccessibilitySamsungShortcutChooserActivity.this.lambda$updateDialogListeners$1(view);
             }
         });
-        this.mMenuDialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$$ExternalSyntheticLambda2
+        this.mMenuDialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$$ExternalSyntheticLambda3
             @Override // android.widget.AdapterView.OnItemClickListener
             public final void onItemClick(AdapterView adapterView, View view, int i, long j) {
                 AccessibilitySamsungShortcutChooserActivity.this.onTargetSelected(adapterView, view, i, j);
@@ -185,12 +168,11 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
             return;
         }
         Intent intent = new Intent();
-        int i = this.mShortcutType;
-        if (i == 0) {
+        if (this.mShortcutType == 1) {
             intent.setClassName("com.android.settings", "com.android.settings.Settings$AccessibilityButtonPreferenceActivity");
-        } else if (i == 1) {
+        } else if (this.mShortcutType == 2) {
             intent.setClassName("com.android.settings", "com.android.settings.Settings$VolumeUpAndDownPreferenceActivity");
-        } else if (i == 2) {
+        } else if (this.mShortcutType == 512) {
             intent.setClassName("com.android.settings", "com.android.settings.Settings$SideAndVolumeUpPreferenceActivity");
         }
         intent.setFlags(268468224);
@@ -223,12 +205,13 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         return builder.create();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createMenuDialog$2(DialogInterface dialog) {
         finish();
     }
 
     private int getGravity() {
-        if (this.mShortcutType == 0) {
+        if (this.mShortcutType == 1) {
             if (getResources().getBoolean(com.android.internal.R.bool.sem_config_dialogLargeScreen) || AccessibilityUtils.isDexMode(this)) {
                 return 85;
             }

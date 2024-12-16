@@ -28,7 +28,6 @@ public interface IRollbackManager extends IInterface {
 
     void snapshotAndRestoreUserData(String str, int[] iArr, int i, long j, String str2, int i2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRollbackManager {
         @Override // android.content.rollback.IRollbackManager
         public ParceledListSlice getAvailableRollbacks() throws RemoteException {
@@ -71,7 +70,6 @@ public interface IRollbackManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRollbackManager {
         static final int TRANSACTION_blockRollbackManager = 8;
         static final int TRANSACTION_commitRollback = 3;
@@ -135,74 +133,70 @@ public interface IRollbackManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRollbackManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRollbackManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRollbackManager.DESCRIPTOR);
+                case 1:
+                    ParceledListSlice _result = getAvailableRollbacks();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    ParceledListSlice _result2 = getRecentlyCommittedRollbacks();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    int _arg0 = data.readInt();
+                    ParceledListSlice _arg1 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    String _arg2 = data.readString();
+                    IntentSender _arg3 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
+                    data.enforceNoDataAvail();
+                    commitRollback(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg02 = data.readString();
+                    int[] _arg12 = data.createIntArray();
+                    int _arg22 = data.readInt();
+                    long _arg32 = data.readLong();
+                    String _arg4 = data.readString();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    snapshotAndRestoreUserData(_arg02, _arg12, _arg22, _arg32, _arg4, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    reloadPersistedData();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    expireRollbackForPackage(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = notifyStagedSession(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 8:
+                    long _arg05 = data.readLong();
+                    data.enforceNoDataAvail();
+                    blockRollbackManager(_arg05);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParceledListSlice _result = getAvailableRollbacks();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            ParceledListSlice _result2 = getRecentlyCommittedRollbacks();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            ParceledListSlice _arg1 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            String _arg2 = data.readString();
-                            IntentSender _arg3 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
-                            data.enforceNoDataAvail();
-                            commitRollback(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg02 = data.readString();
-                            int[] _arg12 = data.createIntArray();
-                            int _arg22 = data.readInt();
-                            long _arg32 = data.readLong();
-                            String _arg4 = data.readString();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            snapshotAndRestoreUserData(_arg02, _arg12, _arg22, _arg32, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            reloadPersistedData();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            expireRollbackForPackage(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = notifyStagedSession(_arg04);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 8:
-                            long _arg05 = data.readLong();
-                            data.enforceNoDataAvail();
-                            blockRollbackManager(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRollbackManager {
+        private static class Proxy implements IRollbackManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

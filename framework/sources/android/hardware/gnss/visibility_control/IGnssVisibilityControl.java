@@ -21,7 +21,6 @@ public interface IGnssVisibilityControl extends IInterface {
 
     void setCallback(IGnssVisibilityControlCallback iGnssVisibilityControlCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssVisibilityControl {
         @Override // android.hardware.gnss.visibility_control.IGnssVisibilityControl
         public void enableNfwLocationAccess(String[] proxyApps) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IGnssVisibilityControl extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssVisibilityControl {
         static final int TRANSACTION_enableNfwLocationAccess = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -101,41 +99,39 @@ public interface IGnssVisibilityControl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    String[] _arg0 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    enableNfwLocationAccess(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    IGnssVisibilityControlCallback _arg02 = IGnssVisibilityControlCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String[] _arg0 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            enableNfwLocationAccess(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IGnssVisibilityControlCallback _arg02 = IGnssVisibilityControlCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssVisibilityControl {
+        private static class Proxy implements IGnssVisibilityControl {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -64,7 +64,6 @@ public interface INotificationListener extends IInterface {
 
     void onSuggestedReplySent(String str, CharSequence charSequence, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements INotificationListener {
         @Override // android.service.notification.INotificationListener
         public void onListenerConnected(NotificationRankingUpdate update) throws RemoteException {
@@ -168,7 +167,6 @@ public interface INotificationListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements INotificationListener {
         public static final String DESCRIPTOR = "android.service.notification.INotificationListener";
         static final int TRANSACTION_onActionClicked = 19;
@@ -281,163 +279,159 @@ public interface INotificationListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    NotificationRankingUpdate _arg0 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
+                    data.enforceNoDataAvail();
+                    onListenerConnected(_arg0);
+                    return true;
+                case 2:
+                    IStatusBarNotificationHolder _arg02 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
+                    NotificationRankingUpdate _arg1 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationPosted(_arg02, _arg1);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onStatusBarIconsBehaviorChanged(_arg03);
+                    return true;
+                case 4:
+                    IStatusBarNotificationHolder _arg04 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
+                    NotificationRankingUpdate _arg12 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
+                    NotificationStats _arg2 = (NotificationStats) data.readTypedObject(NotificationStats.CREATOR);
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNotificationRemoved(_arg04, _arg12, _arg2, _arg3);
+                    return true;
+                case 5:
+                    NotificationRankingUpdate _arg05 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationRankingUpdate(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onListenerHintsChanged(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onInterruptionFilterChanged(_arg07);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    UserHandle _arg13 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    NotificationChannel _arg22 = (NotificationChannel) data.readTypedObject(NotificationChannel.CREATOR);
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNotificationChannelModification(_arg08, _arg13, _arg22, _arg32);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    UserHandle _arg14 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    NotificationChannelGroup _arg23 = (NotificationChannelGroup) data.readTypedObject(NotificationChannelGroup.CREATOR);
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNotificationChannelGroupModification(_arg09, _arg14, _arg23, _arg33);
+                    return true;
+                case 10:
+                    IStatusBarNotificationHolder _arg010 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
+                    NotificationChannel _arg15 = (NotificationChannel) data.readTypedObject(NotificationChannel.CREATOR);
+                    NotificationRankingUpdate _arg24 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationEnqueuedWithChannel(_arg010, _arg15, _arg24);
+                    return true;
+                case 11:
+                    IStatusBarNotificationHolder _arg011 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    onNotificationSnoozedUntilContext(_arg011, _arg16);
+                    return true;
+                case 12:
+                    List<String> _arg012 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    onNotificationsSeen(_arg012);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPanelRevealed(_arg013);
+                    return true;
+                case 14:
+                    onPanelHidden();
+                    return true;
+                case 15:
+                    String _arg014 = data.readString();
+                    boolean _arg17 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onNotificationVisibilityChanged(_arg014, _arg17);
+                    return true;
+                case 16:
+                    String _arg015 = data.readString();
+                    boolean _arg18 = data.readBoolean();
+                    boolean _arg25 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onNotificationExpansionChanged(_arg015, _arg18, _arg25);
+                    return true;
+                case 17:
+                    String _arg016 = data.readString();
+                    data.enforceNoDataAvail();
+                    onNotificationDirectReply(_arg016);
+                    return true;
+                case 18:
+                    String _arg017 = data.readString();
+                    CharSequence _arg19 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSuggestedReplySent(_arg017, _arg19, _arg26);
+                    return true;
+                case 19:
+                    String _arg018 = data.readString();
+                    Notification.Action _arg110 = (Notification.Action) data.readTypedObject(Notification.Action.CREATOR);
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onActionClicked(_arg018, _arg110, _arg27);
+                    return true;
+                case 20:
+                    String _arg019 = data.readString();
+                    data.enforceNoDataAvail();
+                    onNotificationClicked(_arg019);
+                    return true;
+                case 21:
+                    onAllowedAdjustmentsChanged();
+                    return true;
+                case 22:
+                    String _arg020 = data.readString();
+                    NotificationRankingUpdate _arg111 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
+                    Bundle _arg28 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotificationFeedbackReceived(_arg020, _arg111, _arg28);
+                    return true;
+                case 23:
+                    String _arg021 = data.readString();
+                    int _arg112 = data.readInt();
+                    Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEdgeNotificationPosted(_arg021, _arg112, _arg29);
+                    return true;
+                case 24:
+                    String _arg022 = data.readString();
+                    int _arg113 = data.readInt();
+                    Bundle _arg210 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEdgeNotificationRemoved(_arg022, _arg113, _arg210);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            NotificationRankingUpdate _arg0 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
-                            data.enforceNoDataAvail();
-                            onListenerConnected(_arg0);
-                            return true;
-                        case 2:
-                            IStatusBarNotificationHolder _arg02 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
-                            NotificationRankingUpdate _arg1 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationPosted(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onStatusBarIconsBehaviorChanged(_arg03);
-                            return true;
-                        case 4:
-                            IStatusBarNotificationHolder _arg04 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
-                            NotificationRankingUpdate _arg12 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
-                            NotificationStats _arg2 = (NotificationStats) data.readTypedObject(NotificationStats.CREATOR);
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNotificationRemoved(_arg04, _arg12, _arg2, _arg3);
-                            return true;
-                        case 5:
-                            NotificationRankingUpdate _arg05 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationRankingUpdate(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onListenerHintsChanged(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onInterruptionFilterChanged(_arg07);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            UserHandle _arg13 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            NotificationChannel _arg22 = (NotificationChannel) data.readTypedObject(NotificationChannel.CREATOR);
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNotificationChannelModification(_arg08, _arg13, _arg22, _arg32);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            UserHandle _arg14 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            NotificationChannelGroup _arg23 = (NotificationChannelGroup) data.readTypedObject(NotificationChannelGroup.CREATOR);
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNotificationChannelGroupModification(_arg09, _arg14, _arg23, _arg33);
-                            return true;
-                        case 10:
-                            IStatusBarNotificationHolder _arg010 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
-                            NotificationChannel _arg15 = (NotificationChannel) data.readTypedObject(NotificationChannel.CREATOR);
-                            NotificationRankingUpdate _arg24 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationEnqueuedWithChannel(_arg010, _arg15, _arg24);
-                            return true;
-                        case 11:
-                            IStatusBarNotificationHolder _arg011 = IStatusBarNotificationHolder.Stub.asInterface(data.readStrongBinder());
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            onNotificationSnoozedUntilContext(_arg011, _arg16);
-                            return true;
-                        case 12:
-                            List<String> _arg012 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            onNotificationsSeen(_arg012);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPanelRevealed(_arg013);
-                            return true;
-                        case 14:
-                            onPanelHidden();
-                            return true;
-                        case 15:
-                            String _arg014 = data.readString();
-                            boolean _arg17 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onNotificationVisibilityChanged(_arg014, _arg17);
-                            return true;
-                        case 16:
-                            String _arg015 = data.readString();
-                            boolean _arg18 = data.readBoolean();
-                            boolean _arg25 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onNotificationExpansionChanged(_arg015, _arg18, _arg25);
-                            return true;
-                        case 17:
-                            String _arg016 = data.readString();
-                            data.enforceNoDataAvail();
-                            onNotificationDirectReply(_arg016);
-                            return true;
-                        case 18:
-                            String _arg017 = data.readString();
-                            CharSequence _arg19 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSuggestedReplySent(_arg017, _arg19, _arg26);
-                            return true;
-                        case 19:
-                            String _arg018 = data.readString();
-                            Notification.Action _arg110 = (Notification.Action) data.readTypedObject(Notification.Action.CREATOR);
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onActionClicked(_arg018, _arg110, _arg27);
-                            return true;
-                        case 20:
-                            String _arg019 = data.readString();
-                            data.enforceNoDataAvail();
-                            onNotificationClicked(_arg019);
-                            return true;
-                        case 21:
-                            onAllowedAdjustmentsChanged();
-                            return true;
-                        case 22:
-                            String _arg020 = data.readString();
-                            NotificationRankingUpdate _arg111 = (NotificationRankingUpdate) data.readTypedObject(NotificationRankingUpdate.CREATOR);
-                            Bundle _arg28 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotificationFeedbackReceived(_arg020, _arg111, _arg28);
-                            return true;
-                        case 23:
-                            String _arg021 = data.readString();
-                            int _arg112 = data.readInt();
-                            Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEdgeNotificationPosted(_arg021, _arg112, _arg29);
-                            return true;
-                        case 24:
-                            String _arg022 = data.readString();
-                            int _arg113 = data.readInt();
-                            Bundle _arg210 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEdgeNotificationRemoved(_arg022, _arg113, _arg210);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements INotificationListener {
+        private static class Proxy implements INotificationListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

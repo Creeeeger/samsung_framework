@@ -56,7 +56,7 @@ public final class Half extends Number implements Comparable<Half> {
 
     @Override // java.lang.Number
     public long longValue() {
-        return toFloat(this.mValue);
+        return (long) toFloat(this.mValue);
     }
 
     @Override // java.lang.Number

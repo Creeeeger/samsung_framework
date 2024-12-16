@@ -105,7 +105,6 @@ public interface IGnssVisibilityControlCallback extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class NfwProtocolStack {
         public static final byte CTRL_PLANE = 0;
         public static final byte IMS = 10;
@@ -159,7 +158,6 @@ public interface IGnssVisibilityControlCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class NfwRequestor {
         public static final byte AUTOMOBILE_CLIENT = 20;
         public static final byte CARRIER = 0;
@@ -229,7 +227,6 @@ public interface IGnssVisibilityControlCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class NfwResponseType {
         public static final byte ACCEPTED_LOCATION_PROVIDED = 2;
         public static final byte ACCEPTED_NO_LOCATION_PROVIDED = 1;
@@ -267,7 +264,6 @@ public interface IGnssVisibilityControlCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class NfwNotification {
         public String proxyAppPackageName = new String();
         public byte protocolStack = 0;
@@ -321,13 +317,13 @@ public interface IGnssVisibilityControlCallback extends IBase {
 
         public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
             this.proxyAppPackageName = _hidl_blob.getString(_hidl_offset + 0);
-            parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+            parcel.readEmbeddedBuffer(this.proxyAppPackageName.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
             this.protocolStack = _hidl_blob.getInt8(_hidl_offset + 16);
             this.otherProtocolStackName = _hidl_blob.getString(_hidl_offset + 24);
-            parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+            parcel.readEmbeddedBuffer(this.otherProtocolStackName.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
             this.requestor = _hidl_blob.getInt8(_hidl_offset + 40);
             this.requestorId = _hidl_blob.getString(_hidl_offset + 48);
-            parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
+            parcel.readEmbeddedBuffer(this.requestorId.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
             this.responseType = _hidl_blob.getInt8(_hidl_offset + 64);
             this.inEmergencyMode = _hidl_blob.getBool(_hidl_offset + 65);
             this.isCachedLocation = _hidl_blob.getBool(_hidl_offset + 66);
@@ -364,7 +360,6 @@ public interface IGnssVisibilityControlCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssVisibilityControlCallback {
         private IHwBinder mRemote;
 
@@ -566,7 +561,6 @@ public interface IGnssVisibilityControlCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssVisibilityControlCallback {
         @Override // android.hardware.gnss.visibility_control.V1_0.IGnssVisibilityControlCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -589,7 +583,7 @@ public interface IGnssVisibilityControlCallback extends IBase {
 
         @Override // android.hardware.gnss.visibility_control.V1_0.IGnssVisibilityControlCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{51, -90, -78, 12, 67, -81, 0, -3, -5, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 93, -8, -111, -68, 89, 17, MidiConstants.STATUS_PROGRAM_CHANGE, 109, -102, -111, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -71, SprAnimatorBase.INTERPOLATOR_TYPE_CIRCEASEINOUT, 117, -106, 73, -109, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 90, 74, 110, 109}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{51, -90, -78, 12, 67, -81, 0, -3, -5, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 93, -8, -111, -68, 89, 17, MidiConstants.STATUS_PROGRAM_CHANGE, 109, -102, -111, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -71, 18, 117, -106, 73, -109, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 90, 74, 110, 109}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.visibility_control.V1_0.IGnssVisibilityControlCallback, android.internal.hidl.base.V1_0.IBase

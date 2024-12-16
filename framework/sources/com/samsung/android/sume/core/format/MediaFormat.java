@@ -20,14 +20,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface MediaFormat extends Serializable, Cloneable {
     public static final int EXIF = 1;
     public static final int GAINMAP = 3;
     public static final int ICC = 2;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface MetadataKey {
     }
 
@@ -222,7 +221,7 @@ public interface MediaFormat extends Serializable, Cloneable {
                 throw new UnsupportedOperationException("not support yet for planar except yuv format");
             }
             return new ArrayList<MediaFormat>() { // from class: com.samsung.android.sume.core.format.MediaFormat.1
-                AnonymousClass1() {
+                {
                     add(MediaFormat.this);
                 }
             };
@@ -235,13 +234,5 @@ public interface MediaFormat extends Serializable, Cloneable {
             return it.toMediaFormat();
         }
         return it;
-    }
-
-    /* renamed from: com.samsung.android.sume.core.format.MediaFormat$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends ArrayList<MediaFormat> {
-        AnonymousClass1() {
-            add(MediaFormat.this);
-        }
     }
 }

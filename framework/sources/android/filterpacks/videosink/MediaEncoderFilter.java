@@ -86,7 +86,6 @@ public class MediaEncoderFilter extends Filter {
     @GenerateFieldPort(hasDefault = true, name = "width")
     private int mWidth;
 
-    /* loaded from: classes.dex */
     public interface OnRecordingDoneListener {
         void onRecordingDone();
     }
@@ -155,20 +154,16 @@ public class MediaEncoderFilter extends Filter {
     }
 
     private void updateMediaRecorderParams() {
-        int i;
-        int i2;
         this.mCaptureTimeLapse = this.mTimeBetweenTimeLapseFrameCaptureUs > 0;
         this.mMediaRecorder.setVideoSource(2);
-        if (!this.mCaptureTimeLapse && (i2 = this.mAudioSource) != -1) {
-            this.mMediaRecorder.setAudioSource(i2);
+        if (!this.mCaptureTimeLapse && this.mAudioSource != -1) {
+            this.mMediaRecorder.setAudioSource(this.mAudioSource);
         }
-        CamcorderProfile camcorderProfile = this.mProfile;
-        if (camcorderProfile != null) {
-            this.mMediaRecorder.setProfile(camcorderProfile);
+        if (this.mProfile != null) {
+            this.mMediaRecorder.setProfile(this.mProfile);
             this.mFps = this.mProfile.videoFrameRate;
-            int i3 = this.mWidth;
-            if (i3 > 0 && (i = this.mHeight) > 0) {
-                this.mMediaRecorder.setVideoSize(i3, i);
+            if (this.mWidth > 0 && this.mHeight > 0) {
+                this.mMediaRecorder.setVideoSize(this.mWidth, this.mHeight);
             }
         } else {
             this.mMediaRecorder.setOutputFormat(this.mOutputFormat);
@@ -179,9 +174,8 @@ public class MediaEncoderFilter extends Filter {
         this.mMediaRecorder.setOrientationHint(this.mOrientationHint);
         this.mMediaRecorder.setOnInfoListener(this.mInfoListener);
         this.mMediaRecorder.setOnErrorListener(this.mErrorListener);
-        FileDescriptor fileDescriptor = this.mFd;
-        if (fileDescriptor != null) {
-            this.mMediaRecorder.setOutputFile(fileDescriptor);
+        if (this.mFd != null) {
+            this.mMediaRecorder.setOutputFile(this.mFd);
         } else {
             this.mMediaRecorder.setOutputFile(this.mOutputFile);
         }
@@ -222,9 +216,8 @@ public class MediaEncoderFilter extends Filter {
         MutableFrameFormat screenFormat = new MutableFrameFormat(2, 3);
         screenFormat.setBytesPerSample(4);
         boolean widthHeightSpecified = this.mWidth > 0 && this.mHeight > 0;
-        CamcorderProfile camcorderProfile = this.mProfile;
-        if (camcorderProfile != null && !widthHeightSpecified) {
-            width = camcorderProfile.videoFrameWidth;
+        if (this.mProfile != null && !widthHeightSpecified) {
+            width = this.mProfile.videoFrameWidth;
             height = this.mProfile.videoFrameHeight;
         } else {
             width = this.mWidth;
@@ -253,8 +246,7 @@ public class MediaEncoderFilter extends Filter {
     }
 
     public boolean skipFrameAndModifyTimestamp(long timestampNs) {
-        int i = this.mNumFramesEncoded;
-        if (i == 0) {
+        if (this.mNumFramesEncoded == 0) {
             this.mLastTimeLapseFrameRealTimestampNs = timestampNs;
             this.mTimestampNs = timestampNs;
             if (this.mLogVerbose) {
@@ -262,7 +254,7 @@ public class MediaEncoderFilter extends Filter {
             }
             return false;
         }
-        if (i >= 2 && timestampNs < this.mLastTimeLapseFrameRealTimestampNs + (this.mTimeBetweenTimeLapseFrameCaptureUs * 1000)) {
+        if (this.mNumFramesEncoded >= 2 && timestampNs < this.mLastTimeLapseFrameRealTimestampNs + (this.mTimeBetweenTimeLapseFrameCaptureUs * 1000)) {
             if (this.mLogVerbose) {
                 Log.v(TAG, "timelapse: skipping intermediate frame");
                 return true;
@@ -323,9 +315,8 @@ public class MediaEncoderFilter extends Filter {
             this.mMediaRecorder = null;
             this.mScreen.release();
             this.mScreen = null;
-            OnRecordingDoneListener onRecordingDoneListener = this.mRecordingDoneListener;
-            if (onRecordingDoneListener != null) {
-                onRecordingDoneListener.onRecordingDone();
+            if (this.mRecordingDoneListener != null) {
+                this.mRecordingDoneListener.onRecordingDone();
             }
         } catch (RuntimeException e) {
             throw new MediaRecorderStopException("MediaRecorder.stop() failed!", e);
@@ -344,13 +335,11 @@ public class MediaEncoderFilter extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        MediaRecorder mediaRecorder = this.mMediaRecorder;
-        if (mediaRecorder != null) {
-            mediaRecorder.release();
+        if (this.mMediaRecorder != null) {
+            this.mMediaRecorder.release();
         }
-        GLFrame gLFrame = this.mScreen;
-        if (gLFrame != null) {
-            gLFrame.release();
+        if (this.mScreen != null) {
+            this.mScreen.release();
         }
     }
 }

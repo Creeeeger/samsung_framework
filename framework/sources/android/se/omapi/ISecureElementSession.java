@@ -29,7 +29,6 @@ public interface ISecureElementSession extends IInterface {
 
     ISecureElementChannel openLogicalChannel(byte[] bArr, byte b, ISecureElementListener iSecureElementListener) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISecureElementSession {
         @Override // android.se.omapi.ISecureElementSession
         public byte[] getAtr() throws RemoteException {
@@ -75,7 +74,6 @@ public interface ISecureElementSession extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISecureElementSession {
         public static final String DESCRIPTOR = "android$se$omapi$ISecureElementSession".replace('$', '.');
         static final int TRANSACTION_close = 2;
@@ -114,65 +112,63 @@ public interface ISecureElementSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    byte[] _result = getAtr();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeByteArray(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    close();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    closeChannels();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _result2 = isClosed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    byte[] _arg0 = data.createByteArray();
+                    byte _arg1 = data.readByte();
+                    ISecureElementListener _arg2 = ISecureElementListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ISecureElementChannel _result3 = openBasicChannel(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 6:
+                    byte[] _arg02 = data.createByteArray();
+                    byte _arg12 = data.readByte();
+                    ISecureElementListener _arg22 = ISecureElementListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ISecureElementChannel _result4 = openLogicalChannel(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _result = getAtr();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 2:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            closeChannels();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _result2 = isClosed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            byte[] _arg0 = data.createByteArray();
-                            byte _arg1 = data.readByte();
-                            ISecureElementListener _arg2 = ISecureElementListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ISecureElementChannel _result3 = openBasicChannel(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 6:
-                            byte[] _arg02 = data.createByteArray();
-                            byte _arg12 = data.readByte();
-                            ISecureElementListener _arg22 = ISecureElementListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ISecureElementChannel _result4 = openLogicalChannel(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISecureElementSession {
+        private static class Proxy implements ISecureElementSession {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

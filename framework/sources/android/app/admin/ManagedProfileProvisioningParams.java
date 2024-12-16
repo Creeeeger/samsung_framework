@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.Objects;
 
 @SystemApi
@@ -14,9 +13,7 @@ import java.util.Objects;
 public final class ManagedProfileProvisioningParams implements Parcelable {
     private static final String ACCOUNT_TO_MIGRATE_PROVIDED_PARAM = "ACCOUNT_TO_MIGRATE_PROVIDED";
     public static final Parcelable.Creator<ManagedProfileProvisioningParams> CREATOR = new Parcelable.Creator<ManagedProfileProvisioningParams>() { // from class: android.app.admin.ManagedProfileProvisioningParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ManagedProfileProvisioningParams createFromParcel(Parcel in) {
             ComponentName componentName = (ComponentName) in.readTypedObject(ComponentName.CREATOR);
@@ -30,6 +27,7 @@ public final class ManagedProfileProvisioningParams implements Parcelable {
             return new ManagedProfileProvisioningParams(componentName, ownerName, profileName, account, leaveAllSystemAppsEnabled, organizationOwnedProvisioning, keepAccountMigrated, adminExtras);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ManagedProfileProvisioningParams[] newArray(int size) {
             return new ManagedProfileProvisioningParams[size];
@@ -46,10 +44,6 @@ public final class ManagedProfileProvisioningParams implements Parcelable {
     private final String mOwnerName;
     private final ComponentName mProfileAdminComponentName;
     private final String mProfileName;
-
-    /* synthetic */ ManagedProfileProvisioningParams(ComponentName componentName, String str, String str2, Account account, boolean z, boolean z2, boolean z3, PersistableBundle persistableBundle, ManagedProfileProvisioningParamsIA managedProfileProvisioningParamsIA) {
-        this(componentName, str, str2, account, z, z2, z3, persistableBundle);
-    }
 
     private ManagedProfileProvisioningParams(ComponentName profileAdminComponentName, String ownerName, String profileName, Account accountToMigrate, boolean leaveAllSystemAppsEnabled, boolean organizationOwnedProvisioning, boolean keepAccountOnMigration, PersistableBundle adminExtras) {
         this.mProfileAdminComponentName = (ComponentName) Objects.requireNonNull(profileAdminComponentName);
@@ -106,7 +100,6 @@ public final class ManagedProfileProvisioningParams implements Parcelable {
         DevicePolicyEventLogger.createEvent(197).setStrings(callerPackage).setAdmin(this.mProfileAdminComponentName).setStrings(param).setBoolean(value).write();
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private Account mAccountToMigrate;
         private PersistableBundle mAdminExtras;
@@ -161,18 +154,7 @@ public final class ManagedProfileProvisioningParams implements Parcelable {
         }
 
         public ManagedProfileProvisioningParams build() {
-            ComponentName componentName = this.mProfileAdminComponentName;
-            String str = this.mOwnerName;
-            String str2 = this.mProfileName;
-            Account account = this.mAccountToMigrate;
-            boolean z = this.mLeaveAllSystemAppsEnabled;
-            boolean z2 = this.mOrganizationOwnedProvisioning;
-            boolean z3 = this.mKeepingAccountOnMigration;
-            PersistableBundle persistableBundle = this.mAdminExtras;
-            if (persistableBundle == null) {
-                persistableBundle = new PersistableBundle();
-            }
-            return new ManagedProfileProvisioningParams(componentName, str, str2, account, z, z2, z3, persistableBundle);
+            return new ManagedProfileProvisioningParams(this.mProfileAdminComponentName, this.mOwnerName, this.mProfileName, this.mAccountToMigrate, this.mLeaveAllSystemAppsEnabled, this.mOrganizationOwnedProvisioning, this.mKeepingAccountOnMigration, this.mAdminExtras != null ? this.mAdminExtras : new PersistableBundle());
         }
     }
 
@@ -182,18 +164,7 @@ public final class ManagedProfileProvisioningParams implements Parcelable {
     }
 
     public String toString() {
-        StringBuilder append = new StringBuilder().append("ManagedProfileProvisioningParams{mProfileAdminComponentName=").append(this.mProfileAdminComponentName).append(", mOwnerName=").append(this.mOwnerName).append(", mProfileName=");
-        String str = this.mProfileName;
-        Object obj = SemCapabilities.FEATURE_TAG_NULL;
-        if (str == null) {
-            str = SemCapabilities.FEATURE_TAG_NULL;
-        }
-        StringBuilder append2 = append.append(str).append(", mAccountToMigrate=");
-        Account account = this.mAccountToMigrate;
-        if (account != null) {
-            obj = account;
-        }
-        return append2.append(obj).append(", mLeaveAllSystemAppsEnabled=").append(this.mLeaveAllSystemAppsEnabled).append(", mOrganizationOwnedProvisioning=").append(this.mOrganizationOwnedProvisioning).append(", mKeepAccountOnMigration=").append(this.mKeepAccountOnMigration).append(", mAdminExtras=").append(this.mAdminExtras).append('}').toString();
+        return "ManagedProfileProvisioningParams{mProfileAdminComponentName=" + this.mProfileAdminComponentName + ", mOwnerName=" + this.mOwnerName + ", mProfileName=" + (this.mProfileName == null ? "null" : this.mProfileName) + ", mAccountToMigrate=" + (this.mAccountToMigrate != null ? this.mAccountToMigrate : "null") + ", mLeaveAllSystemAppsEnabled=" + this.mLeaveAllSystemAppsEnabled + ", mOrganizationOwnedProvisioning=" + this.mOrganizationOwnedProvisioning + ", mKeepAccountOnMigration=" + this.mKeepAccountOnMigration + ", mAdminExtras=" + this.mAdminExtras + '}';
     }
 
     @Override // android.os.Parcelable
@@ -206,30 +177,5 @@ public final class ManagedProfileProvisioningParams implements Parcelable {
         dest.writeBoolean(this.mOrganizationOwnedProvisioning);
         dest.writeBoolean(this.mKeepAccountOnMigration);
         dest.writePersistableBundle(this.mAdminExtras);
-    }
-
-    /* renamed from: android.app.admin.ManagedProfileProvisioningParams$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ManagedProfileProvisioningParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ManagedProfileProvisioningParams createFromParcel(Parcel in) {
-            ComponentName componentName = (ComponentName) in.readTypedObject(ComponentName.CREATOR);
-            String ownerName = in.readString();
-            String profileName = in.readString();
-            Account account = (Account) in.readTypedObject(Account.CREATOR);
-            boolean leaveAllSystemAppsEnabled = in.readBoolean();
-            boolean organizationOwnedProvisioning = in.readBoolean();
-            boolean keepAccountMigrated = in.readBoolean();
-            PersistableBundle adminExtras = in.readPersistableBundle();
-            return new ManagedProfileProvisioningParams(componentName, ownerName, profileName, account, leaveAllSystemAppsEnabled, organizationOwnedProvisioning, keepAccountMigrated, adminExtras);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ManagedProfileProvisioningParams[] newArray(int size) {
-            return new ManagedProfileProvisioningParams[size];
-        }
     }
 }

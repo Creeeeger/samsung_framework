@@ -14,7 +14,7 @@ class TranslationAnimationCreator {
     TranslationAnimationCreator() {
     }
 
-    public static Animator createAnimation(View view, TransitionValues values, int viewPosX, int viewPosY, float startX, float startY, float endX, float endY, TimeInterpolator interpolator, Transition transition) {
+    static Animator createAnimation(View view, TransitionValues values, int viewPosX, int viewPosY, float startX, float startY, float endX, float endY, TimeInterpolator interpolator, Transition transition) {
         float startX2;
         float startY2;
         float terminalX = view.getTranslationX();
@@ -47,9 +47,7 @@ class TranslationAnimationCreator {
         return anim;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static class TransitionPositionListener extends AnimatorListenerAdapter implements Transition.TransitionListener {
+    private static class TransitionPositionListener extends AnimatorListenerAdapter implements Transition.TransitionListener {
         private final View mMovingView;
         private float mPausedX;
         private float mPausedY;
@@ -60,21 +58,16 @@ class TranslationAnimationCreator {
         private int[] mTransitionPosition;
         private final View mViewInHierarchy;
 
-        /* synthetic */ TransitionPositionListener(View view, View view2, int i, int i2, float f, float f2, TransitionPositionListenerIA transitionPositionListenerIA) {
-            this(view, view2, i, i2, f, f2);
-        }
-
         private TransitionPositionListener(View movingView, View viewInHierarchy, int startX, int startY, float terminalX, float terminalY) {
             this.mMovingView = movingView;
             this.mViewInHierarchy = viewInHierarchy;
-            this.mStartX = startX - Math.round(movingView.getTranslationX());
-            this.mStartY = startY - Math.round(movingView.getTranslationY());
+            this.mStartX = startX - Math.round(this.mMovingView.getTranslationX());
+            this.mStartY = startY - Math.round(this.mMovingView.getTranslationY());
             this.mTerminalX = terminalX;
             this.mTerminalY = terminalY;
-            int[] iArr = (int[]) viewInHierarchy.getTag(R.id.transitionPosition);
-            this.mTransitionPosition = iArr;
-            if (iArr != null) {
-                viewInHierarchy.setTagInternal(R.id.transitionPosition, null);
+            this.mTransitionPosition = (int[]) this.mViewInHierarchy.getTag(R.id.transitionPosition);
+            if (this.mTransitionPosition != null) {
+                this.mViewInHierarchy.setTagInternal(R.id.transitionPosition, null);
             }
         }
 

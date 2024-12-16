@@ -15,12 +15,10 @@ import java.util.function.Predicate;
 public class TraceBuffer<P, S extends P, T extends P> {
     private final Queue<T> mBuffer;
     private int mBufferCapacity;
-    private final Object mBufferLock;
     private int mBufferUsedSize;
     private final Consumer mProtoDequeuedCallback;
     private final ProtoProvider<P, S, T> mProtoProvider;
 
-    /* loaded from: classes5.dex */
     public interface ProtoProvider<P, S extends P, T extends P> {
         byte[] getBytes(P p);
 
@@ -29,13 +27,7 @@ public class TraceBuffer<P, S extends P, T extends P> {
         void write(S s, Queue<T> queue, OutputStream outputStream) throws IOException;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class ProtoOutputStreamProvider implements ProtoProvider<ProtoOutputStream, ProtoOutputStream, ProtoOutputStream> {
-        /* synthetic */ ProtoOutputStreamProvider(ProtoOutputStreamProviderIA protoOutputStreamProviderIA) {
-            this();
-        }
-
+    private static class ProtoOutputStreamProvider implements ProtoProvider<ProtoOutputStream, ProtoOutputStream, ProtoOutputStream> {
         private ProtoOutputStreamProvider() {
         }
 
@@ -68,7 +60,6 @@ public class TraceBuffer<P, S extends P, T extends P> {
     }
 
     public TraceBuffer(int bufferCapacity, ProtoProvider protoProvider, Consumer<T> protoDequeuedCallback) {
-        this.mBufferLock = new Object();
         this.mBuffer = new ArrayDeque();
         this.mBufferCapacity = bufferCapacity;
         this.mProtoProvider = protoProvider;
@@ -76,32 +67,29 @@ public class TraceBuffer<P, S extends P, T extends P> {
         resetBuffer();
     }
 
-    public int getAvailableSpace() {
+    public synchronized int getAvailableSpace() {
         return this.mBufferCapacity - this.mBufferUsedSize;
     }
 
-    public int size() {
+    public synchronized int size() {
         return this.mBuffer.size();
     }
 
-    public void setCapacity(int capacity) {
+    public synchronized void setCapacity(int capacity) {
         this.mBufferCapacity = capacity;
     }
 
-    public void add(T proto) {
+    public synchronized void add(T proto) {
         int protoLength = this.mProtoProvider.getItemSize(proto);
         if (protoLength > this.mBufferCapacity) {
             throw new IllegalStateException("Trace object too large for the buffer. Buffer size:" + this.mBufferCapacity + " Object size: " + protoLength);
         }
-        synchronized (this.mBufferLock) {
-            discardOldest(protoLength);
-            this.mBuffer.add(proto);
-            this.mBufferUsedSize += protoLength;
-            this.mBufferLock.notify();
-        }
+        discardOldest(protoLength);
+        this.mBuffer.add(proto);
+        this.mBufferUsedSize += protoLength;
     }
 
-    public boolean contains(final byte[] other) {
+    public synchronized boolean contains(final byte[] other) {
         return this.mBuffer.stream().anyMatch(new Predicate() { // from class: com.android.internal.util.TraceBuffer$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
@@ -112,21 +100,20 @@ public class TraceBuffer<P, S extends P, T extends P> {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$contains$0(byte[] other, Object p) {
         return Arrays.equals(this.mProtoProvider.getBytes(p), other);
     }
 
-    public void writeTraceToFile(File traceFile, S encapsulatingProto) throws IOException {
-        synchronized (this.mBufferLock) {
-            traceFile.delete();
-            OutputStream os = new FileOutputStream(traceFile);
-            try {
-                traceFile.setReadable(true, false);
-                this.mProtoProvider.write(encapsulatingProto, this.mBuffer, os);
-                os.flush();
-                os.close();
-            } finally {
-            }
+    public synchronized void writeTraceToFile(File traceFile, S encapsulatingProto) throws IOException {
+        traceFile.delete();
+        OutputStream os = new FileOutputStream(traceFile);
+        try {
+            traceFile.setReadable(true, false);
+            this.mProtoProvider.write(encapsulatingProto, this.mBuffer, os);
+            os.flush();
+            os.close();
+        } finally {
         }
     }
 
@@ -139,34 +126,27 @@ public class TraceBuffer<P, S extends P, T extends P> {
             }
             this.mBufferUsedSize -= this.mProtoProvider.getItemSize(poll);
             availableSpace = getAvailableSpace();
-            Consumer consumer = this.mProtoDequeuedCallback;
-            if (consumer != null) {
-                consumer.accept(poll);
-            }
-        }
-    }
-
-    public void resetBuffer() {
-        synchronized (this.mBufferLock) {
             if (this.mProtoDequeuedCallback != null) {
-                for (T item : this.mBuffer) {
-                    this.mProtoDequeuedCallback.accept(item);
-                }
+                this.mProtoDequeuedCallback.accept(poll);
             }
-            this.mBuffer.clear();
-            this.mBufferUsedSize = 0;
         }
     }
 
-    public int getBufferSize() {
+    public synchronized void resetBuffer() {
+        if (this.mProtoDequeuedCallback != null) {
+            for (T item : this.mBuffer) {
+                this.mProtoDequeuedCallback.accept(item);
+            }
+        }
+        this.mBuffer.clear();
+        this.mBufferUsedSize = 0;
+    }
+
+    public synchronized int getBufferSize() {
         return this.mBufferUsedSize;
     }
 
-    public String getStatus() {
-        String str;
-        synchronized (this.mBufferLock) {
-            str = "Buffer size: " + this.mBufferCapacity + " bytes\nBuffer usage: " + this.mBufferUsedSize + " bytes\nElements in the buffer: " + this.mBuffer.size();
-        }
-        return str;
+    public synchronized String getStatus() {
+        return "Buffer size: " + this.mBufferCapacity + " bytes\nBuffer usage: " + this.mBufferUsedSize + " bytes\nElements in the buffer: " + this.mBuffer.size();
     }
 }

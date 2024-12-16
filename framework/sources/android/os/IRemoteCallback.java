@@ -4,7 +4,6 @@ package android.os;
 public interface IRemoteCallback extends IInterface {
     void sendResult(Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRemoteCallback {
         @Override // android.os.IRemoteCallback
         public void sendResult(Bundle data) throws RemoteException {
@@ -16,7 +15,6 @@ public interface IRemoteCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRemoteCallback {
         public static final String DESCRIPTOR = "android.os.IRemoteCallback";
         static final int TRANSACTION_sendResult = 1;
@@ -60,25 +58,22 @@ public interface IRemoteCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendResult(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendResult(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRemoteCallback {
+        private static class Proxy implements IRemoteCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,6 +1,6 @@
 package com.samsung.android.location;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemGeopointGeofence {
     private final double mLatitude;
     private final double mLongitude;

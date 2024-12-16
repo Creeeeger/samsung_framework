@@ -2,12 +2,13 @@ package android.internal.modules.utils.build;
 
 import android.hardware.gnss.GnssSignalType;
 import android.os.Build;
+import android.util.ArraySet;
 import android.util.SparseArray;
 import java.util.Set;
 
 /* loaded from: classes2.dex */
 public final class UnboundedSdkLevel {
-    private static final SparseArray<Set<String>> PREVIOUS_CODENAMES;
+    private static final SparseArray<Set<String>> PREVIOUS_CODENAMES = new SparseArray<>(4);
     private static final UnboundedSdkLevel sInstance;
     private final String mCodename;
     private final boolean mIsReleaseBuild;
@@ -24,20 +25,29 @@ public final class UnboundedSdkLevel {
 
     static {
         Set<String> set;
-        SparseArray<Set<String>> sparseArray = new SparseArray<>(4);
-        PREVIOUS_CODENAMES = sparseArray;
-        sparseArray.put(29, Set.of(GnssSignalType.CODE_TYPE_Q));
-        sparseArray.put(30, Set.of(GnssSignalType.CODE_TYPE_Q, "R"));
-        sparseArray.put(31, Set.of(GnssSignalType.CODE_TYPE_Q, "R", GnssSignalType.CODE_TYPE_S));
-        sparseArray.put(32, Set.of(GnssSignalType.CODE_TYPE_Q, "R", GnssSignalType.CODE_TYPE_S, "Sv2"));
+        PREVIOUS_CODENAMES.put(29, setOf(GnssSignalType.CODE_TYPE_Q));
+        PREVIOUS_CODENAMES.put(30, setOf(GnssSignalType.CODE_TYPE_Q, "R"));
+        PREVIOUS_CODENAMES.put(31, setOf(GnssSignalType.CODE_TYPE_Q, "R", GnssSignalType.CODE_TYPE_S));
+        PREVIOUS_CODENAMES.put(32, setOf(GnssSignalType.CODE_TYPE_Q, "R", GnssSignalType.CODE_TYPE_S, "Sv2"));
         int i = Build.VERSION.SDK_INT;
         String str = Build.VERSION.CODENAME;
         if (SdkLevel.isAtLeastT()) {
             set = Build.VERSION.KNOWN_CODENAMES;
         } else {
-            set = sparseArray.get(Build.VERSION.SDK_INT);
+            set = PREVIOUS_CODENAMES.get(Build.VERSION.SDK_INT);
         }
         sInstance = new UnboundedSdkLevel(i, str, set);
+    }
+
+    private static Set<String> setOf(String... contents) {
+        if (SdkLevel.isAtLeastR()) {
+            return Set.of((Object[]) contents);
+        }
+        Set<String> set = new ArraySet<>(contents.length);
+        for (String codename : contents) {
+            set.add(codename);
+        }
+        return set;
     }
 
     UnboundedSdkLevel(int sdkInt, String codename, Set<String> knownCodenames) {

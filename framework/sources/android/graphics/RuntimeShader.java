@@ -9,16 +9,12 @@ public class RuntimeShader extends Shader {
     private long mNativeInstanceRuntimeShaderBuilder;
     private ArrayMap<String, Shader> mShaderUniforms;
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer */
-    static /* bridge */ /* synthetic */ long m1148$$Nest$smnativeGetFinalizer() {
-        return nativeGetFinalizer();
-    }
-
     private static native long nativeCreateBuilder(String str);
 
     private static native long nativeCreateShader(long j, long j2);
 
-    private static native long nativeGetFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nativeGetFinalizer();
 
     private static native void nativeUpdateShader(long j, String str, long j2);
 
@@ -30,10 +26,8 @@ public class RuntimeShader extends Shader {
 
     private static native void nativeUpdateUniforms(long j, String str, int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(RuntimeShader.class.getClassLoader(), RuntimeShader.m1148$$Nest$smnativeGetFinalizer());
+    private static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(RuntimeShader.class.getClassLoader(), RuntimeShader.nativeGetFinalizer());
 
         private NoImagePreloadHolder() {
         }
@@ -169,7 +163,7 @@ public class RuntimeShader extends Shader {
         return nativeCreateShader(this.mNativeInstanceRuntimeShaderBuilder, nativeMatrix);
     }
 
-    public long getNativeShaderBuilder() {
+    protected long getNativeShaderBuilder() {
         return this.mNativeInstanceRuntimeShaderBuilder;
     }
 }

@@ -27,19 +27,17 @@ public class ScrollViewCaptureHelper implements ScrollCaptureViewHelper<ViewGrou
     @Override // com.android.internal.view.ScrollCaptureViewHelper
     public void onPrepareForStart(ViewGroup view, Rect scrollBounds) {
         this.mStartScrollY = view.getScrollY();
-        int overScrollMode = view.getOverScrollMode();
-        this.mOverScrollMode = overScrollMode;
-        if (overScrollMode != 2) {
+        this.mOverScrollMode = view.getOverScrollMode();
+        if (this.mOverScrollMode != 2) {
             view.setOverScrollMode(2);
         }
-        boolean isVerticalScrollBarEnabled = view.isVerticalScrollBarEnabled();
-        this.mScrollBarEnabled = isVerticalScrollBarEnabled;
-        if (isVerticalScrollBarEnabled) {
+        this.mScrollBarEnabled = view.isVerticalScrollBarEnabled();
+        if (this.mScrollBarEnabled) {
             view.setVerticalScrollBarEnabled(false);
         }
     }
 
-    /* renamed from: onScrollRequested */
+    /* renamed from: onScrollRequested, reason: avoid collision after fix types in other method */
     public void onScrollRequested2(ViewGroup view, Rect scrollBounds, Rect requestRect, CancellationSignal signal, Consumer<ScrollCaptureViewHelper.ScrollResult> resultConsumer) {
         int scrollDelta = view.getScrollY() - this.mStartScrollY;
         ScrollCaptureViewHelper.ScrollResult result = new ScrollCaptureViewHelper.ScrollResult();
@@ -83,9 +81,8 @@ public class ScrollViewCaptureHelper implements ScrollCaptureViewHelper<ViewGrou
     @Override // com.android.internal.view.ScrollCaptureViewHelper
     public void onPrepareForEnd(ViewGroup view) {
         view.scrollTo(0, this.mStartScrollY);
-        int i = this.mOverScrollMode;
-        if (i != 2) {
-            view.setOverScrollMode(i);
+        if (this.mOverScrollMode != 2) {
+            view.setOverScrollMode(this.mOverScrollMode);
         }
         if (this.mScrollBarEnabled) {
             view.setVerticalScrollBarEnabled(true);

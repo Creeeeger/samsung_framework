@@ -1,6 +1,5 @@
 package android.util.proto;
 
-import android.hardware.graphics.common.BufferUsage;
 import android.os.BatteryStats;
 import android.util.Log;
 import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
@@ -26,28 +25,22 @@ public final class EncodedBuffer {
     }
 
     public EncodedBuffer(int chunkSize) {
-        ArrayList<byte[]> arrayList = new ArrayList<>();
-        this.mBuffers = arrayList;
+        this.mBuffers = new ArrayList<>();
         this.mReadLimit = -1;
         this.mReadableSize = -1;
-        chunkSize = chunkSize <= 0 ? 8192 : chunkSize;
-        this.mChunkSize = chunkSize;
-        byte[] bArr = new byte[chunkSize];
-        this.mWriteBuffer = bArr;
-        arrayList.add(bArr);
+        this.mChunkSize = chunkSize <= 0 ? 8192 : chunkSize;
+        this.mWriteBuffer = new byte[this.mChunkSize];
+        this.mBuffers.add(this.mWriteBuffer);
         this.mBufferCount = 1;
     }
 
     public void startEditing() {
-        int i = this.mWriteBufIndex * this.mChunkSize;
-        int i2 = this.mWriteIndex;
-        this.mReadableSize = i + i2;
-        this.mReadLimit = i2;
-        byte[] bArr = this.mBuffers.get(0);
-        this.mWriteBuffer = bArr;
+        this.mReadableSize = (this.mWriteBufIndex * this.mChunkSize) + this.mWriteIndex;
+        this.mReadLimit = this.mWriteIndex;
+        this.mWriteBuffer = this.mBuffers.get(0);
         this.mWriteIndex = 0;
         this.mWriteBufIndex = 0;
-        this.mReadBuffer = bArr;
+        this.mReadBuffer = this.mWriteBuffer;
         this.mReadBufIndex = 0;
         this.mReadIndex = 0;
     }
@@ -77,40 +70,34 @@ public final class EncodedBuffer {
         if (amount == 0) {
             return;
         }
-        int i = this.mChunkSize;
-        int i2 = this.mReadIndex;
-        if (amount <= i - i2) {
-            this.mReadIndex = i2 + amount;
+        if (amount <= this.mChunkSize - this.mReadIndex) {
+            this.mReadIndex += amount;
             return;
         }
-        int amount2 = amount - (i - i2);
-        int i3 = amount2 % i;
-        this.mReadIndex = i3;
-        if (i3 == 0) {
-            this.mReadIndex = i;
-            this.mReadBufIndex += amount2 / i;
+        int amount2 = amount - (this.mChunkSize - this.mReadIndex);
+        this.mReadIndex = amount2 % this.mChunkSize;
+        if (this.mReadIndex == 0) {
+            this.mReadIndex = this.mChunkSize;
+            this.mReadBufIndex += amount2 / this.mChunkSize;
         } else {
-            this.mReadBufIndex += (amount2 / i) + 1;
+            this.mReadBufIndex += (amount2 / this.mChunkSize) + 1;
         }
         this.mReadBuffer = this.mBuffers.get(this.mReadBufIndex);
     }
 
     public byte readRawByte() {
-        int i = this.mReadBufIndex;
-        int i2 = this.mBufferCount;
-        if (i > i2 || (i == i2 - 1 && this.mReadIndex >= this.mReadLimit)) {
+        if (this.mReadBufIndex > this.mBufferCount || (this.mReadBufIndex == this.mBufferCount - 1 && this.mReadIndex >= this.mReadLimit)) {
             throw new IndexOutOfBoundsException("Trying to read too much data mReadBufIndex=" + this.mReadBufIndex + " mBufferCount=" + this.mBufferCount + " mReadIndex=" + this.mReadIndex + " mReadLimit=" + this.mReadLimit);
         }
         if (this.mReadIndex >= this.mChunkSize) {
-            int i3 = i + 1;
-            this.mReadBufIndex = i3;
-            this.mReadBuffer = this.mBuffers.get(i3);
+            this.mReadBufIndex++;
+            this.mReadBuffer = this.mBuffers.get(this.mReadBufIndex);
             this.mReadIndex = 0;
         }
         byte[] bArr = this.mReadBuffer;
-        int i4 = this.mReadIndex;
-        this.mReadIndex = i4 + 1;
-        return bArr[i4];
+        int i = this.mReadIndex;
+        this.mReadIndex = i + 1;
+        return bArr[i];
     }
 
     public long readRawUnsigned() {
@@ -132,15 +119,13 @@ public final class EncodedBuffer {
     }
 
     private void nextWriteBuffer() {
-        int i = this.mWriteBufIndex + 1;
-        this.mWriteBufIndex = i;
-        if (i >= this.mBufferCount) {
-            byte[] bArr = new byte[this.mChunkSize];
-            this.mWriteBuffer = bArr;
-            this.mBuffers.add(bArr);
+        this.mWriteBufIndex++;
+        if (this.mWriteBufIndex >= this.mBufferCount) {
+            this.mWriteBuffer = new byte[this.mChunkSize];
+            this.mBuffers.add(this.mWriteBuffer);
             this.mBufferCount++;
         } else {
-            this.mWriteBuffer = this.mBuffers.get(i);
+            this.mWriteBuffer = this.mBuffers.get(this.mWriteBufIndex);
         }
         this.mWriteIndex = 0;
     }
@@ -194,7 +179,7 @@ public final class EncodedBuffer {
         if (((-2097152) & val) == 0) {
             return 3;
         }
-        if ((BufferUsage.VENDOR_MASK & val) == 0) {
+        if (((-268435456) & val) == 0) {
             return 4;
         }
         if (((-34359738368L) & val) == 0) {
@@ -256,22 +241,16 @@ public final class EncodedBuffer {
         if (val == null) {
             return;
         }
-        int i = this.mChunkSize;
-        int i2 = this.mWriteIndex;
-        int amt = length < i - i2 ? length : i - i2;
+        int amt = length < this.mChunkSize - this.mWriteIndex ? length : this.mChunkSize - this.mWriteIndex;
         if (amt > 0) {
-            System.arraycopy(val, offset, this.mWriteBuffer, i2, amt);
+            System.arraycopy(val, offset, this.mWriteBuffer, this.mWriteIndex, amt);
             this.mWriteIndex += amt;
             length -= amt;
             offset += amt;
         }
         while (length > 0) {
             nextWriteBuffer();
-            int i3 = this.mChunkSize;
-            if (length < i3) {
-                i3 = length;
-            }
-            int amt2 = i3;
+            int amt2 = length < this.mChunkSize ? length : this.mChunkSize;
             System.arraycopy(val, offset, this.mWriteBuffer, this.mWriteIndex, amt2);
             this.mWriteIndex += amt2;
             length -= amt2;
@@ -292,27 +271,23 @@ public final class EncodedBuffer {
         if (size == 0) {
             return;
         }
-        int i = this.mWriteBufIndex;
-        int i2 = this.mChunkSize;
-        int i3 = this.mWriteIndex;
-        if (srcOffset == (i * i2) + i3) {
-            if (size <= i2 - i3) {
-                this.mWriteIndex = i3 + size;
+        if (srcOffset == (this.mWriteBufIndex * this.mChunkSize) + this.mWriteIndex) {
+            if (size <= this.mChunkSize - this.mWriteIndex) {
+                this.mWriteIndex += size;
                 return;
             }
-            int size2 = size - (i2 - i3);
-            int i4 = size2 % i2;
-            this.mWriteIndex = i4;
-            if (i4 == 0) {
-                this.mWriteIndex = i2;
-                this.mWriteBufIndex = i + (size2 / i2);
+            int size2 = size - (this.mChunkSize - this.mWriteIndex);
+            this.mWriteIndex = size2 % this.mChunkSize;
+            if (this.mWriteIndex == 0) {
+                this.mWriteIndex = this.mChunkSize;
+                this.mWriteBufIndex += size2 / this.mChunkSize;
             } else {
-                this.mWriteBufIndex = i + (size2 / i2) + 1;
+                this.mWriteBufIndex += (size2 / this.mChunkSize) + 1;
             }
             this.mWriteBuffer = this.mBuffers.get(this.mWriteBufIndex);
             return;
         }
-        int readBufIndex = srcOffset / i2;
+        int readBufIndex = srcOffset / this.mChunkSize;
         byte[] readBuffer = this.mBuffers.get(readBufIndex);
         int readIndex = srcOffset % this.mChunkSize;
         while (size > 0) {
@@ -325,9 +300,8 @@ public final class EncodedBuffer {
                 readBuffer = readBuffer2;
                 readIndex = 0;
             }
-            int i5 = this.mChunkSize;
-            int spaceInWriteBuffer = i5 - this.mWriteIndex;
-            int availableInReadBuffer = i5 - readIndex;
+            int spaceInWriteBuffer = this.mChunkSize - this.mWriteIndex;
+            int availableInReadBuffer = this.mChunkSize - readIndex;
             int amt = Math.min(size, Math.min(spaceInWriteBuffer, availableInReadBuffer));
             System.arraycopy(readBuffer, readIndex, this.mWriteBuffer, this.mWriteIndex, amt);
             this.mWriteIndex += amt;
@@ -344,41 +318,24 @@ public final class EncodedBuffer {
         if (writePos > getWritePos()) {
             throw new RuntimeException("rewindWriteTo only can go backwards" + writePos);
         }
-        int i = this.mChunkSize;
-        int i2 = writePos / i;
-        this.mWriteBufIndex = i2;
-        int i3 = writePos % i;
-        this.mWriteIndex = i3;
-        if (i3 == 0 && i2 != 0) {
-            this.mWriteIndex = i;
-            this.mWriteBufIndex = i2 - 1;
+        this.mWriteBufIndex = writePos / this.mChunkSize;
+        this.mWriteIndex = writePos % this.mChunkSize;
+        if (this.mWriteIndex == 0 && this.mWriteBufIndex != 0) {
+            this.mWriteIndex = this.mChunkSize;
+            this.mWriteBufIndex--;
         }
         this.mWriteBuffer = this.mBuffers.get(this.mWriteBufIndex);
     }
 
     public int getRawFixed32At(int pos) {
-        byte[] bArr = this.mBuffers.get(pos / this.mChunkSize);
-        int i = this.mChunkSize;
-        int i2 = bArr[pos % i] & 255;
-        byte[] bArr2 = this.mBuffers.get((pos + 1) / i);
-        int i3 = this.mChunkSize;
-        int i4 = i2 | ((bArr2[(pos + 1) % i3] & 255) << 8);
-        byte[] bArr3 = this.mBuffers.get((pos + 2) / i3);
-        int i5 = this.mChunkSize;
-        return i4 | ((bArr3[(pos + 2) % i5] & 255) << 16) | ((this.mBuffers.get((pos + 3) / i5)[(pos + 3) % this.mChunkSize] & 255) << 24);
+        return (this.mBuffers.get(pos / this.mChunkSize)[pos % this.mChunkSize] & 255) | ((this.mBuffers.get((pos + 1) / this.mChunkSize)[(pos + 1) % this.mChunkSize] & 255) << 8) | ((this.mBuffers.get((pos + 2) / this.mChunkSize)[(pos + 2) % this.mChunkSize] & 255) << 16) | ((this.mBuffers.get((pos + 3) / this.mChunkSize)[(pos + 3) % this.mChunkSize] & 255) << 24);
     }
 
     public void editRawFixed32(int pos, int val) {
-        byte[] bArr = this.mBuffers.get(pos / this.mChunkSize);
-        int i = this.mChunkSize;
-        bArr[pos % i] = (byte) val;
-        byte[] bArr2 = this.mBuffers.get((pos + 1) / i);
-        int i2 = this.mChunkSize;
-        bArr2[(pos + 1) % i2] = (byte) (val >> 8);
-        byte[] bArr3 = this.mBuffers.get((pos + 2) / i2);
-        int i3 = this.mChunkSize;
-        bArr3[(pos + 2) % i3] = (byte) (val >> 16);
-        this.mBuffers.get((pos + 3) / i3)[(pos + 3) % this.mChunkSize] = (byte) (val >> 24);
+        this.mBuffers.get(pos / this.mChunkSize)[pos % this.mChunkSize] = (byte) val;
+        this.mBuffers.get((pos + 1) / this.mChunkSize)[(pos + 1) % this.mChunkSize] = (byte) (val >> 8);
+        this.mBuffers.get((pos + 2) / this.mChunkSize)[(pos + 2) % this.mChunkSize] = (byte) (val >> 16);
+        this.mBuffers.get((pos + 3) / this.mChunkSize)[(pos + 3) % this.mChunkSize] = (byte) (val >> 24);
     }
 
     private static int zigZag32(int val) {

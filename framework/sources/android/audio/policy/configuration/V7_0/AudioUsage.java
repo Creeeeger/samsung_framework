@@ -31,7 +31,7 @@ public enum AudioUsage {
         return this.rawName;
     }
 
-    public static AudioUsage fromString(String rawString) {
+    static AudioUsage fromString(String rawString) {
         for (AudioUsage _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

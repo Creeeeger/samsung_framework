@@ -10,7 +10,7 @@ public final class VirtualDisplay {
     private Surface mSurface;
     private IVirtualDisplayCallback mToken;
 
-    public VirtualDisplay(DisplayManagerGlobal global, Display display, IVirtualDisplayCallback token, Surface surface) {
+    VirtualDisplay(DisplayManagerGlobal global, Display display, IVirtualDisplayCallback token, Surface surface) {
         this.mGlobal = global;
         this.mDisplay = display;
         this.mToken = token;
@@ -45,17 +45,15 @@ public final class VirtualDisplay {
     }
 
     public void release() {
-        IVirtualDisplayCallback iVirtualDisplayCallback = this.mToken;
-        if (iVirtualDisplayCallback != null) {
-            this.mGlobal.releaseVirtualDisplay(iVirtualDisplayCallback);
+        if (this.mToken != null) {
+            this.mGlobal.releaseVirtualDisplay(this.mToken);
             this.mToken = null;
         }
     }
 
     public void setDisplayState(boolean isOn) {
-        IVirtualDisplayCallback iVirtualDisplayCallback = this.mToken;
-        if (iVirtualDisplayCallback != null) {
-            this.mGlobal.setVirtualDisplayState(iVirtualDisplayCallback, isOn);
+        if (this.mToken != null) {
+            this.mGlobal.setVirtualDisplayState(this.mToken, isOn);
         }
     }
 
@@ -63,7 +61,6 @@ public final class VirtualDisplay {
         return "VirtualDisplay{display=" + this.mDisplay + ", token=" + this.mToken + ", surface=" + this.mSurface + "}";
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         public void onPaused() {
         }

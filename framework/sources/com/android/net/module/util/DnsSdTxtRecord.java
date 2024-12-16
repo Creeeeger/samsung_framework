@@ -8,9 +8,7 @@ import java.util.Arrays;
 /* loaded from: classes5.dex */
 public class DnsSdTxtRecord implements Parcelable {
     public static final Parcelable.Creator<DnsSdTxtRecord> CREATOR = new Parcelable.Creator<DnsSdTxtRecord>() { // from class: com.android.net.module.util.DnsSdTxtRecord.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DnsSdTxtRecord createFromParcel(Parcel in) {
             DnsSdTxtRecord info = new DnsSdTxtRecord();
@@ -18,6 +16,7 @@ public class DnsSdTxtRecord implements Parcelable {
             return info;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DnsSdTxtRecord[] newArray(int size) {
             return new DnsSdTxtRecord[size];
@@ -35,9 +34,8 @@ public class DnsSdTxtRecord implements Parcelable {
     }
 
     public DnsSdTxtRecord(DnsSdTxtRecord src) {
-        byte[] bArr;
-        if (src != null && (bArr = src.mData) != null) {
-            this.mData = (byte[]) bArr.clone();
+        if (src != null && src.mData != null) {
+            this.mData = (byte[]) src.mData.clone();
         }
     }
 
@@ -83,41 +81,32 @@ public class DnsSdTxtRecord implements Parcelable {
     public int remove(String key) {
         int avStart = 0;
         int i = 0;
-        while (true) {
-            byte[] bArr = this.mData;
-            if (avStart < bArr.length) {
-                int avLen = bArr[avStart];
-                if (key.length() <= avLen && (key.length() == avLen || this.mData[key.length() + avStart + 1] == 61)) {
-                    String s = new String(this.mData, avStart + 1, key.length());
-                    if (key.compareToIgnoreCase(s) == 0) {
-                        byte[] oldBytes = this.mData;
-                        byte[] bArr2 = new byte[(oldBytes.length - avLen) - 1];
-                        this.mData = bArr2;
-                        System.arraycopy(oldBytes, 0, bArr2, 0, avStart);
-                        System.arraycopy(oldBytes, avStart + avLen + 1, this.mData, avStart, ((oldBytes.length - avStart) - avLen) - 1);
-                        return i;
-                    }
+        while (avStart < this.mData.length) {
+            int avLen = this.mData[avStart];
+            if (key.length() <= avLen && (key.length() == avLen || this.mData[key.length() + avStart + 1] == 61)) {
+                String s = new String(this.mData, avStart + 1, key.length());
+                if (key.compareToIgnoreCase(s) == 0) {
+                    byte[] oldBytes = this.mData;
+                    this.mData = new byte[(oldBytes.length - avLen) - 1];
+                    System.arraycopy(oldBytes, 0, this.mData, 0, avStart);
+                    System.arraycopy(oldBytes, avStart + avLen + 1, this.mData, avStart, ((oldBytes.length - avStart) - avLen) - 1);
+                    return i;
                 }
-                avStart += (avLen + 1) & 255;
-                i++;
-            } else {
-                return -1;
             }
+            avStart += (avLen + 1) & 255;
+            i++;
         }
+        return -1;
     }
 
     public int keyCount() {
         int count = 0;
         int nextKey = 0;
-        while (true) {
-            byte[] bArr = this.mData;
-            if (nextKey < bArr.length) {
-                nextKey += (bArr[nextKey] + 1) & 255;
-                count++;
-            } else {
-                return count;
-            }
+        while (nextKey < this.mData.length) {
+            nextKey += (this.mData[nextKey] + 1) & 255;
+            count++;
         }
+        return count;
     }
 
     public boolean contains(String key) {
@@ -147,43 +136,31 @@ public class DnsSdTxtRecord implements Parcelable {
         byte[] oldBytes = this.mData;
         int valLen = value != null ? value.length : 0;
         int insertion = 0;
-        for (int i = 0; i < index; i++) {
-            byte[] bArr = this.mData;
-            if (insertion >= bArr.length) {
-                break;
-            }
-            insertion += (bArr[insertion] + 1) & 255;
+        for (int i = 0; i < index && insertion < this.mData.length; i++) {
+            insertion += (this.mData[insertion] + 1) & 255;
         }
         int i2 = keyBytes.length;
         int avLen = i2 + valLen + (value != null ? 1 : 0);
         int newLen = oldBytes.length + avLen + 1;
-        byte[] bArr2 = new byte[newLen];
-        this.mData = bArr2;
-        System.arraycopy(oldBytes, 0, bArr2, 0, insertion);
+        this.mData = new byte[newLen];
+        System.arraycopy(oldBytes, 0, this.mData, 0, insertion);
         int secondHalfLen = oldBytes.length - insertion;
         System.arraycopy(oldBytes, insertion, this.mData, newLen - secondHalfLen, secondHalfLen);
-        byte[] bArr3 = this.mData;
-        bArr3[insertion] = (byte) avLen;
-        System.arraycopy(keyBytes, 0, bArr3, insertion + 1, keyBytes.length);
+        this.mData[insertion] = (byte) avLen;
+        System.arraycopy(keyBytes, 0, this.mData, insertion + 1, keyBytes.length);
         if (value != null) {
-            byte[] bArr4 = this.mData;
-            bArr4[insertion + 1 + keyBytes.length] = mSeparator;
-            System.arraycopy(value, 0, bArr4, keyBytes.length + insertion + 2, valLen);
+            this.mData[insertion + 1 + keyBytes.length] = mSeparator;
+            System.arraycopy(value, 0, this.mData, keyBytes.length + insertion + 2, valLen);
         }
     }
 
     private String getKey(int index) {
         int avStart = 0;
-        for (int i = 0; i < index; i++) {
-            byte[] bArr = this.mData;
-            if (avStart >= bArr.length) {
-                break;
-            }
-            avStart += bArr[avStart] + 1;
+        for (int i = 0; i < index && avStart < this.mData.length; i++) {
+            avStart += this.mData[avStart] + 1;
         }
-        byte[] bArr2 = this.mData;
-        if (avStart < bArr2.length) {
-            int avLen = bArr2[avStart];
+        if (avStart < this.mData.length) {
+            int avLen = this.mData[avStart];
             int aLen = 0;
             while (aLen < avLen && this.mData[avStart + aLen + 1] != 61) {
                 aLen++;
@@ -195,23 +172,17 @@ public class DnsSdTxtRecord implements Parcelable {
 
     private byte[] getValue(int index) {
         int avStart = 0;
-        for (int i = 0; i < index; i++) {
-            byte[] bArr = this.mData;
-            if (avStart >= bArr.length) {
-                break;
-            }
-            avStart += bArr[avStart] + 1;
+        for (int i = 0; i < index && avStart < this.mData.length; i++) {
+            avStart += this.mData[avStart] + 1;
         }
-        byte[] bArr2 = this.mData;
-        if (avStart >= bArr2.length) {
+        if (avStart >= this.mData.length) {
             return null;
         }
-        int avLen = bArr2[avStart];
+        int avLen = this.mData[avStart];
         for (int aLen = 0; aLen < avLen; aLen++) {
-            byte[] bArr3 = this.mData;
-            if (bArr3[avStart + aLen + 1] == 61) {
+            if (this.mData[avStart + aLen + 1] == 61) {
                 byte[] value = new byte[(avLen - aLen) - 1];
-                System.arraycopy(bArr3, avStart + aLen + 2, value, 0, (avLen - aLen) - 1);
+                System.arraycopy(this.mData, avStart + aLen + 2, value, 0, (avLen - aLen) - 1);
                 return value;
             }
         }
@@ -286,24 +257,5 @@ public class DnsSdTxtRecord implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByteArray(this.mData);
-    }
-
-    /* renamed from: com.android.net.module.util.DnsSdTxtRecord$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DnsSdTxtRecord> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DnsSdTxtRecord createFromParcel(Parcel in) {
-            DnsSdTxtRecord info = new DnsSdTxtRecord();
-            in.readByteArray(info.mData);
-            return info;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DnsSdTxtRecord[] newArray(int size) {
-            return new DnsSdTxtRecord[size];
-        }
     }
 }

@@ -42,11 +42,9 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
     private Point mGlobalVisibleOffset = new Point();
 
     public FindActionModeCallback(Context context) {
-        View inflate = LayoutInflater.from(context).inflate(R.layout.webview_find, (ViewGroup) null);
-        this.mCustomView = inflate;
-        EditText editText = (EditText) inflate.findViewById(16908291);
-        this.mEditText = editText;
-        editText.setCustomSelectionActionModeCallback(new NoAction());
+        this.mCustomView = LayoutInflater.from(context).inflate(R.layout.webview_find, (ViewGroup) null);
+        this.mEditText = (EditText) this.mCustomView.findViewById(16908291);
+        this.mEditText.setCustomSelectionActionModeCallback(new NoAction());
         this.mEditText.setOnClickListener(this);
         setText("");
         this.mMatches = (TextView) this.mCustomView.findViewById(R.id.matches);
@@ -59,7 +57,7 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
     }
 
     public void setText(String text) {
-        this.mEditText.setText(text);
+        this.mEditText.lambda$setTextAsync$0(text);
         Spannable span = this.mEditText.getText();
         int length = span.length();
         Selection.setSelection(span, length, length);
@@ -72,7 +70,7 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
             throw new AssertionError("WebView supplied to FindActionModeCallback cannot be null");
         }
         this.mWebView = webView;
-        webView.setFindDialogFindListener(this);
+        this.mWebView.setFindDialogFindListener(this);
     }
 
     @Override // android.webkit.WebView.FindListener
@@ -83,8 +81,7 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
     }
 
     private void findNext(boolean next) {
-        WebView webView = this.mWebView;
-        if (webView == null) {
+        if (this.mWebView == null) {
             throw new AssertionError("No WebView for FindActionModeCallback::findNext");
         }
         if (!this.mMatchesFound) {
@@ -93,7 +90,7 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
             if (this.mNumberOfMatches == 0) {
                 return;
             }
-            webView.findNext(next);
+            this.mWebView.findNext(next);
             updateMatchesString();
         }
     }
@@ -140,7 +137,7 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
             Map<String, Object> arguments = new HashMap<>();
             arguments.put(Contract.Events.Projection.COUNT_ONLY, Integer.valueOf(this.mActiveMatchIndex + 1));
             arguments.put("total", Integer.valueOf(this.mNumberOfMatches));
-            this.mMatches.setText(PluralsMessageFormatter.format(this.mResources, arguments, R.string.matches_found));
+            this.mMatches.lambda$setTextAsync$0(PluralsMessageFormatter.format(this.mResources, arguments, R.string.matches_found));
         }
         this.mMatches.setVisibility(0);
     }
@@ -162,7 +159,7 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
         Selection.setSelection(edit, edit.length());
         this.mMatches.setVisibility(8);
         this.mMatchesFound = false;
-        this.mMatches.setText("0");
+        this.mMatches.lambda$setTextAsync$0("0");
         this.mEditText.requestFocus();
         return true;
     }
@@ -182,16 +179,15 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
 
     @Override // android.view.ActionMode.Callback
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        WebView webView = this.mWebView;
-        if (webView == null) {
+        if (this.mWebView == null) {
             throw new AssertionError("No WebView for FindActionModeCallback::onActionItemClicked");
         }
-        this.mInput.hideSoftInputFromWindow(webView.getWindowToken(), 0);
+        this.mInput.hideSoftInputFromWindow(this.mWebView.getWindowToken(), 0);
         switch (item.getItemId()) {
-            case R.id.find_next /* 16909048 */:
+            case R.id.find_next /* 16909055 */:
                 findNext(true);
                 return true;
-            case R.id.find_prev /* 16909049 */:
+            case R.id.find_prev /* 16909056 */:
                 findNext(false);
                 return true;
             default:
@@ -224,7 +220,6 @@ public class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
         return this.mGlobalVisibleRect.bottom;
     }
 
-    /* loaded from: classes4.dex */
     public static class NoAction implements ActionMode.Callback {
         @Override // android.view.ActionMode.Callback
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {

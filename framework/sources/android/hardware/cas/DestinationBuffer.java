@@ -4,17 +4,16 @@ import android.hardware.common.NativeHandle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class DestinationBuffer implements Parcelable {
     public static final Parcelable.Creator<DestinationBuffer> CREATOR = new Parcelable.Creator<DestinationBuffer>() { // from class: android.hardware.cas.DestinationBuffer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DestinationBuffer createFromParcel(Parcel _aidl_source) {
             return new DestinationBuffer(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DestinationBuffer[] newArray(int _aidl_size) {
             return new DestinationBuffer[_aidl_size];
@@ -25,14 +24,9 @@ public final class DestinationBuffer implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes.dex */
     public @interface Tag {
         public static final int nonsecureMemory = 0;
         public static final int secureMemory = 1;
-    }
-
-    /* synthetic */ DestinationBuffer(Parcel parcel, DestinationBufferIA destinationBufferIA) {
-        this(parcel);
     }
 
     public DestinationBuffer() {
@@ -84,35 +78,16 @@ public final class DestinationBuffer implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.cas.DestinationBuffer$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DestinationBuffer> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DestinationBuffer createFromParcel(Parcel _aidl_source) {
-            return new DestinationBuffer(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DestinationBuffer[] newArray(int _aidl_size) {
-            return new DestinationBuffer[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getNonsecureMemory(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getSecureMemory(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

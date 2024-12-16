@@ -8,10 +8,9 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public abstract class BinaryReader implements Reader {
+/* loaded from: classes3.dex */
+abstract class BinaryReader implements Reader {
     private static final int FIXED32_MULTIPLE_MASK = 3;
     private static final int FIXED64_MULTIPLE_MASK = 7;
 
@@ -36,7 +35,6 @@ public abstract class BinaryReader implements Reader {
         return false;
     }
 
-    /* loaded from: classes4.dex */
     private static final class SafeHeapReader extends BinaryReader {
         private final byte[] buffer;
         private final boolean bufferIsImmutable;
@@ -70,12 +68,11 @@ public abstract class BinaryReader implements Reader {
             if (isAtEnd()) {
                 return Integer.MAX_VALUE;
             }
-            int readVarint32 = readVarint32();
-            this.tag = readVarint32;
-            if (readVarint32 == this.endGroupTag) {
+            this.tag = readVarint32();
+            if (this.tag == this.endGroupTag) {
                 return Integer.MAX_VALUE;
             }
-            return WireFormat.getTagFieldNumber(readVarint32);
+            return WireFormat.getTagFieldNumber(this.tag);
         }
 
         @Override // com.android.framework.protobuf.Reader
@@ -85,11 +82,10 @@ public abstract class BinaryReader implements Reader {
 
         @Override // com.android.framework.protobuf.Reader
         public boolean skipField() throws IOException {
-            int i;
-            if (isAtEnd() || (i = this.tag) == this.endGroupTag) {
+            if (isAtEnd() || this.tag == this.endGroupTag) {
                 return false;
             }
-            switch (WireFormat.getTagWireType(i)) {
+            switch (WireFormat.getTagWireType(this.tag)) {
                 case 0:
                     skipVarint();
                     return true;
@@ -176,12 +172,8 @@ public abstract class BinaryReader implements Reader {
                 return "";
             }
             requireBytes(size);
-            if (requireUtf8) {
-                byte[] bArr = this.buffer;
-                int i = this.pos;
-                if (!Utf8.isValidUtf8(bArr, i, i + size)) {
-                    throw InvalidProtocolBufferException.invalidUtf8();
-                }
+            if (requireUtf8 && !Utf8.isValidUtf8(this.buffer, this.pos, this.pos + size)) {
+                throw InvalidProtocolBufferException.invalidUtf8();
             }
             String result = new String(this.buffer, this.pos, size, Internal.UTF_8);
             this.pos += size;
@@ -1247,7 +1239,6 @@ public abstract class BinaryReader implements Reader {
             this.pos = prevPos;
         }
 
-        /* JADX WARN: Failed to find 'out' block for switch in B:7:0x002a. Please report as an issue. */
         /* JADX WARN: Multi-variable type inference failed */
         @Override // com.android.framework.protobuf.Reader
         public <K, V> void readMap(Map<K, V> map, MapEntryLite.Metadata<K, V> metadata, ExtensionRegistryLite extensionRegistry) throws IOException {
@@ -1332,133 +1323,132 @@ public abstract class BinaryReader implements Reader {
         }
 
         private int readVarint32() throws IOException {
-            int i;
-            int i2 = this.pos;
-            int i3 = this.limit;
-            if (i3 == this.pos) {
+            int y;
+            int i = this.pos;
+            if (this.limit == this.pos) {
                 throw InvalidProtocolBufferException.truncatedMessage();
             }
-            byte[] bArr = this.buffer;
-            int i4 = i2 + 1;
-            int x = bArr[i2];
+            int i2 = i + 1;
+            int x = this.buffer[i];
             if (x >= 0) {
-                this.pos = i4;
+                this.pos = i2;
                 return x;
             }
-            if (i3 - i4 < 9) {
+            if (this.limit - i2 < 9) {
                 return (int) readVarint64SlowPath();
             }
-            int i5 = i4 + 1;
-            int x2 = (bArr[i4] << 7) ^ x;
+            int i3 = i2 + 1;
+            int x2 = (this.buffer[i2] << 7) ^ x;
             if (x2 < 0) {
-                i = x2 ^ (-128);
+                y = x2 ^ (-128);
             } else {
-                int x3 = i5 + 1;
-                int x4 = (bArr[i5] << 14) ^ x2;
-                if (x4 >= 0) {
-                    i = x4 ^ 16256;
-                    i5 = x3;
+                int i4 = i3 + 1;
+                int x3 = (this.buffer[i3] << 14) ^ x2;
+                if (x3 >= 0) {
+                    y = x3 ^ 16256;
+                    i3 = i4;
                 } else {
-                    i5 = x3 + 1;
-                    int x5 = (bArr[x3] << 21) ^ x4;
-                    if (x5 < 0) {
-                        i = (-2080896) ^ x5;
+                    i3 = i4 + 1;
+                    int x4 = (this.buffer[i4] << 21) ^ x3;
+                    if (x4 < 0) {
+                        y = (-2080896) ^ x4;
                     } else {
-                        int i6 = i5 + 1;
-                        int y = bArr[i5];
-                        int x6 = (x5 ^ (y << 28)) ^ 266354560;
-                        if (y < 0) {
-                            int i7 = i6 + 1;
-                            if (bArr[i6] < 0) {
-                                i6 = i7 + 1;
-                                if (bArr[i7] < 0) {
-                                    i7 = i6 + 1;
-                                    if (bArr[i6] < 0) {
-                                        i6 = i7 + 1;
-                                        if (bArr[i7] < 0) {
-                                            i7 = i6 + 1;
-                                            if (bArr[i6] < 0) {
+                        int i5 = i3 + 1;
+                        int y2 = this.buffer[i3];
+                        int x5 = (x4 ^ (y2 << 28)) ^ 266354560;
+                        if (y2 < 0) {
+                            int i6 = i5 + 1;
+                            if (this.buffer[i5] < 0) {
+                                i3 = i6 + 1;
+                                if (this.buffer[i6] < 0) {
+                                    i6 = i3 + 1;
+                                    if (this.buffer[i3] < 0) {
+                                        i3 = i6 + 1;
+                                        if (this.buffer[i6] < 0) {
+                                            i6 = i3 + 1;
+                                            if (this.buffer[i3] < 0) {
                                                 throw InvalidProtocolBufferException.malformedVarint();
                                             }
                                         }
                                     }
                                 }
+                                y = x5;
                             }
-                            i = x6;
-                            i5 = i7;
+                            y = x5;
+                            i3 = i6;
+                        } else {
+                            y = x5;
+                            i3 = i5;
                         }
-                        i5 = i6;
-                        i = x6;
                     }
                 }
             }
-            this.pos = i5;
-            return i;
+            this.pos = i3;
+            return y;
         }
 
         public long readVarint64() throws IOException {
             long x;
             int i = this.pos;
-            int i2 = this.limit;
-            if (i2 == i) {
+            if (this.limit == i) {
                 throw InvalidProtocolBufferException.truncatedMessage();
             }
             byte[] buffer = this.buffer;
-            int i3 = i + 1;
+            int i2 = i + 1;
             int y = buffer[i];
             if (y >= 0) {
-                this.pos = i3;
+                this.pos = i2;
                 return y;
             }
-            if (i2 - i3 < 9) {
+            if (this.limit - i2 < 9) {
                 return readVarint64SlowPath();
             }
-            int i4 = i3 + 1;
-            int y2 = (buffer[i3] << 7) ^ y;
+            int i3 = i2 + 1;
+            int y2 = (buffer[i2] << 7) ^ y;
             if (y2 < 0) {
                 x = y2 ^ (-128);
             } else {
-                int i5 = i4 + 1;
-                int y3 = (buffer[i4] << 14) ^ y2;
+                int i4 = i3 + 1;
+                int y3 = (buffer[i3] << 14) ^ y2;
                 if (y3 >= 0) {
                     x = y3 ^ 16256;
-                    i4 = i5;
+                    i3 = i4;
                 } else {
-                    i4 = i5 + 1;
-                    int y4 = (buffer[i5] << 21) ^ y3;
+                    i3 = i4 + 1;
+                    int y4 = (buffer[i4] << 21) ^ y3;
                     if (y4 < 0) {
                         x = (-2080896) ^ y4;
                     } else {
                         long x2 = y4;
-                        int i6 = i4 + 1;
-                        long x3 = x2 ^ (buffer[i4] << 28);
+                        int i5 = i3 + 1;
+                        long x3 = x2 ^ (buffer[i3] << 28);
                         if (x3 >= 0) {
                             x = 266354560 ^ x3;
-                            i4 = i6;
+                            i3 = i5;
                         } else {
-                            i4 = i6 + 1;
-                            long x4 = (buffer[i6] << 35) ^ x3;
+                            i3 = i5 + 1;
+                            long x4 = (buffer[i5] << 35) ^ x3;
                             if (x4 < 0) {
                                 x = (-34093383808L) ^ x4;
                             } else {
-                                int i7 = i4 + 1;
-                                long x5 = (buffer[i4] << 42) ^ x4;
+                                int i6 = i3 + 1;
+                                long x5 = (buffer[i3] << 42) ^ x4;
                                 if (x5 >= 0) {
                                     x = 4363953127296L ^ x5;
-                                    i4 = i7;
+                                    i3 = i6;
                                 } else {
-                                    i4 = i7 + 1;
-                                    long x6 = (buffer[i7] << 49) ^ x5;
+                                    i3 = i6 + 1;
+                                    long x6 = (buffer[i6] << 49) ^ x5;
                                     if (x6 < 0) {
                                         x = (-558586000294016L) ^ x6;
                                     } else {
-                                        int i8 = i4 + 1;
-                                        x = ((buffer[i4] << 56) ^ x6) ^ 71499008037633920L;
+                                        int i7 = i3 + 1;
+                                        x = ((buffer[i3] << 56) ^ x6) ^ 71499008037633920L;
                                         if (x >= 0) {
-                                            i4 = i8;
+                                            i3 = i7;
                                         } else {
-                                            i4 = i8 + 1;
-                                            if (buffer[i8] < 0) {
+                                            i3 = i7 + 1;
+                                            if (buffer[i7] < 0) {
                                                 throw InvalidProtocolBufferException.malformedVarint();
                                             }
                                         }
@@ -1469,7 +1459,7 @@ public abstract class BinaryReader implements Reader {
                     }
                 }
             }
-            this.pos = i4;
+            this.pos = i3;
             return x;
         }
 
@@ -1486,11 +1476,11 @@ public abstract class BinaryReader implements Reader {
         }
 
         private byte readByte() throws IOException {
-            int i = this.pos;
-            if (i == this.limit) {
+            if (this.pos == this.limit) {
                 throw InvalidProtocolBufferException.truncatedMessage();
             }
             byte[] bArr = this.buffer;
+            int i = this.pos;
             this.pos = i + 1;
             return bArr[i];
         }
@@ -1596,16 +1586,13 @@ public abstract class BinaryReader implements Reader {
         }
     }
 
-    /* renamed from: com.android.framework.protobuf.BinaryReader$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
+    /* renamed from: com.android.framework.protobuf.BinaryReader$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType = new int[WireFormat.FieldType.values().length];
 
         static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
             try {
-                iArr[WireFormat.FieldType.BOOL.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.BOOL.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {

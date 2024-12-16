@@ -8,7 +8,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ICoverManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.cover.ICoverManager";
 
@@ -60,7 +60,6 @@ public interface ICoverManager extends IInterface {
 
     boolean unregisterNfcTouchListenerCallback(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICoverManager {
         @Override // com.samsung.android.cover.ICoverManager
         public void registerCallback(IBinder binder, ComponentName component) throws RemoteException {
@@ -177,7 +176,6 @@ public interface ICoverManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICoverManager {
         static final int TRANSACTION_addLedNotification = 14;
         static final int TRANSACTION_disableCoverManager = 7;
@@ -289,181 +287,178 @@ public interface ICoverManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICoverManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICoverManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICoverManager.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    ComponentName _arg12 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerListenerCallback(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result = unregisterCallback(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    CoverState _result2 = getCoverState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    boolean _result3 = getCoverSwitchState();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    boolean _result4 = isCoverManagerDisabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 7:
+                    boolean _arg04 = data.readBoolean();
+                    IBinder _arg13 = data.readStrongBinder();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    disableCoverManager(_arg04, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _result5 = getVersion();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 9:
+                    int _arg05 = data.readInt();
+                    byte[] _arg14 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendDataToCover(_arg05, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    sendPowerKeyToCover();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg06 = data.readInt();
+                    IBinder _arg15 = data.readStrongBinder();
+                    ComponentName _arg23 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerNfcTouchListenerCallback(_arg06, _arg15, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    IBinder _arg07 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = unregisterNfcTouchListenerCallback(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 13:
+                    int _arg08 = data.readInt();
+                    byte[] _arg16 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendDataToNfcLedCover(_arg08, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    Bundle _arg09 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    addLedNotification(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    Bundle _arg010 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeLedNotification(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    Bundle _arg011 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSystemEvent(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    IBinder _arg012 = data.readStrongBinder();
+                    ComponentName _arg17 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result7 = disableLcdOffByCover(_arg012, _arg17);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 18:
+                    IBinder _arg013 = data.readStrongBinder();
+                    ComponentName _arg18 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result8 = enableLcdOffByCover(_arg013, _arg18);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 19:
+                    IBinder _arg014 = data.readStrongBinder();
+                    ComponentName _arg19 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result9 = requestCoverAuthentication(_arg014, _arg19);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 20:
+                    boolean _arg015 = data.readBoolean();
+                    IBinder _arg110 = data.readStrongBinder();
+                    ComponentName _arg24 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result10 = setFotaInProgress(_arg015, _arg110, _arg24);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 21:
+                    boolean _arg016 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result11 = onCoverAppCovered(_arg016);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 22:
+                    IBinder _arg017 = data.readStrongBinder();
+                    ComponentName _arg111 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerListenerCallbackForExternal(_arg017, _arg111, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    IBinder _arg018 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = unregisterCallbackForExternal(_arg018);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 24:
+                    CoverState _result13 = getCoverStateForExternal();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            ComponentName _arg12 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerListenerCallback(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result = unregisterCallback(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            CoverState _result2 = getCoverState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            boolean _result3 = getCoverSwitchState();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            boolean _result4 = isCoverManagerDisabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 7:
-                            boolean _arg04 = data.readBoolean();
-                            IBinder _arg13 = data.readStrongBinder();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            disableCoverManager(_arg04, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _result5 = getVersion();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 9:
-                            int _arg05 = data.readInt();
-                            byte[] _arg14 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendDataToCover(_arg05, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            sendPowerKeyToCover();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg06 = data.readInt();
-                            IBinder _arg15 = data.readStrongBinder();
-                            ComponentName _arg23 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerNfcTouchListenerCallback(_arg06, _arg15, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            IBinder _arg07 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = unregisterNfcTouchListenerCallback(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 13:
-                            int _arg08 = data.readInt();
-                            byte[] _arg16 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendDataToNfcLedCover(_arg08, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            Bundle _arg09 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            addLedNotification(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            Bundle _arg010 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeLedNotification(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            Bundle _arg011 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSystemEvent(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            IBinder _arg012 = data.readStrongBinder();
-                            ComponentName _arg17 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result7 = disableLcdOffByCover(_arg012, _arg17);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 18:
-                            IBinder _arg013 = data.readStrongBinder();
-                            ComponentName _arg18 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result8 = enableLcdOffByCover(_arg013, _arg18);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 19:
-                            IBinder _arg014 = data.readStrongBinder();
-                            ComponentName _arg19 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result9 = requestCoverAuthentication(_arg014, _arg19);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 20:
-                            boolean _arg015 = data.readBoolean();
-                            IBinder _arg110 = data.readStrongBinder();
-                            ComponentName _arg24 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result10 = setFotaInProgress(_arg015, _arg110, _arg24);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 21:
-                            boolean _arg016 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result11 = onCoverAppCovered(_arg016);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 22:
-                            IBinder _arg017 = data.readStrongBinder();
-                            ComponentName _arg111 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerListenerCallbackForExternal(_arg017, _arg111, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            IBinder _arg018 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = unregisterCallbackForExternal(_arg018);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 24:
-                            CoverState _result13 = getCoverStateForExternal();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICoverManager {
+        private static class Proxy implements ICoverManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

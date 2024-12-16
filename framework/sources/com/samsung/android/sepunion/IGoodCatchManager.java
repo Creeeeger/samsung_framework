@@ -8,7 +8,7 @@ import android.os.RemoteException;
 import com.samsung.android.sepunion.IGoodCatchDispatcher;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IGoodCatchManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IGoodCatchManager";
 
@@ -18,7 +18,6 @@ public interface IGoodCatchManager extends IInterface {
 
     void update(String[] strArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGoodCatchManager {
         @Override // com.samsung.android.sepunion.IGoodCatchManager
         public void registerListener(String module, String[] function, IGoodCatchDispatcher sd, IBinder cb) throws RemoteException {
@@ -39,7 +38,6 @@ public interface IGoodCatchManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGoodCatchManager {
         static final int TRANSACTION_getSelectedSettingKey = 3;
         static final int TRANSACTION_registerListener = 1;
@@ -88,41 +86,37 @@ public interface IGoodCatchManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGoodCatchManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGoodCatchManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGoodCatchManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String[] _arg1 = data.createStringArray();
+                    IGoodCatchDispatcher _arg2 = IGoodCatchDispatcher.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg3 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    registerListener(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String[] _arg02 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    update(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    List<String> _result = getSelectedSettingKey();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String[] _arg1 = data.createStringArray();
-                            IGoodCatchDispatcher _arg2 = IGoodCatchDispatcher.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg3 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            registerListener(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String[] _arg02 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            update(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            List<String> _result = getSelectedSettingKey();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IGoodCatchManager {
+        private static class Proxy implements IGoodCatchManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -41,7 +41,6 @@ public class SemCocktailBarManager {
     protected final String mPackageName;
     protected ICocktailBarService mService;
 
-    /* loaded from: classes5.dex */
     public interface CocktailBarStateChangedListener {
         void onCocktailBarStateChanged(SemCocktailBarStateInfo semCocktailBarStateInfo);
     }

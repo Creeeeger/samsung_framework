@@ -3,11 +3,11 @@ package android.media.tv.tuner.filter;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public abstract class Settings {
     private final int mType;
 
-    public Settings(int type) {
+    Settings(int type) {
         this.mType = type;
     }
 

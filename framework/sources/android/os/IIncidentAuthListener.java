@@ -8,7 +8,6 @@ public interface IIncidentAuthListener extends IInterface {
 
     void onReportDenied() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IIncidentAuthListener {
         @Override // android.os.IIncidentAuthListener
         public void onReportApproved() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IIncidentAuthListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IIncidentAuthListener {
         static final int TRANSACTION_onReportApproved = 1;
         static final int TRANSACTION_onReportDenied = 2;
@@ -70,27 +68,23 @@ public interface IIncidentAuthListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIncidentAuthListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIncidentAuthListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIncidentAuthListener.DESCRIPTOR);
+                case 1:
+                    onReportApproved();
+                    return true;
+                case 2:
+                    onReportDenied();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onReportApproved();
-                            return true;
-                        case 2:
-                            onReportDenied();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IIncidentAuthListener {
+        private static class Proxy implements IIncidentAuthListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

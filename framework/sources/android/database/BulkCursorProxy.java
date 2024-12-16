@@ -5,10 +5,9 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: BulkCursorNative.java */
 /* loaded from: classes.dex */
-public final class BulkCursorProxy implements IBulkCursor {
+final class BulkCursorProxy implements IBulkCursor {
     private Bundle mExtras = null;
     private IBinder mRemote;
 

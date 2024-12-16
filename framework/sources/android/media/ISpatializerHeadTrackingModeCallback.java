@@ -14,7 +14,6 @@ public interface ISpatializerHeadTrackingModeCallback extends IInterface {
 
     void dispatchSpatializerDesiredHeadTrackingModeChanged(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISpatializerHeadTrackingModeCallback {
         @Override // android.media.ISpatializerHeadTrackingModeCallback
         public void dispatchSpatializerActualHeadTrackingModeChanged(int mode) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISpatializerHeadTrackingModeCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISpatializerHeadTrackingModeCallback {
         static final int TRANSACTION_dispatchSpatializerActualHeadTrackingModeChanged = 1;
         static final int TRANSACTION_dispatchSpatializerDesiredHeadTrackingModeChanged = 2;
@@ -76,30 +74,27 @@ public interface ISpatializerHeadTrackingModeCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpatializerHeadTrackingModeCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpatializerHeadTrackingModeCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpatializerHeadTrackingModeCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchSpatializerActualHeadTrackingModeChanged(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchSpatializerDesiredHeadTrackingModeChanged(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchSpatializerActualHeadTrackingModeChanged(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchSpatializerDesiredHeadTrackingModeChanged(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISpatializerHeadTrackingModeCallback {
+        private static class Proxy implements ISpatializerHeadTrackingModeCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

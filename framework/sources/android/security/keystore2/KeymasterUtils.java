@@ -31,7 +31,7 @@ public abstract class KeymasterUtils {
     private KeymasterUtils() {
     }
 
-    public static int getDigestOutputSizeBits(int keymasterDigest) {
+    static int getDigestOutputSizeBits(int keymasterDigest) {
         switch (keymasterDigest) {
             case 0:
                 return -1;
@@ -52,7 +52,7 @@ public abstract class KeymasterUtils {
         }
     }
 
-    public static boolean isKeymasterBlockModeIndCpaCompatibleWithSymmetricCrypto(int keymasterBlockMode) {
+    static boolean isKeymasterBlockModeIndCpaCompatibleWithSymmetricCrypto(int keymasterBlockMode) {
         switch (keymasterBlockMode) {
             case 1:
                 return false;
@@ -65,7 +65,7 @@ public abstract class KeymasterUtils {
         }
     }
 
-    public static boolean isKeymasterPaddingSchemeIndCpaCompatibleWithAsymmetricCrypto(int keymasterPadding) {
+    static boolean isKeymasterPaddingSchemeIndCpaCompatibleWithAsymmetricCrypto(int keymasterPadding) {
         switch (keymasterPadding) {
             case 1:
                 return false;
@@ -102,7 +102,7 @@ public abstract class KeymasterUtils {
         }
     }
 
-    public static String getEcCurveFromKeymaster(int ecCurve) {
+    static String getEcCurveFromKeymaster(int ecCurve) {
         switch (ecCurve) {
             case 0:
                 return "secp224r1";
@@ -117,7 +117,7 @@ public abstract class KeymasterUtils {
         }
     }
 
-    public static int getKeymasterEcCurve(String ecCurveName) {
+    static int getKeymasterEcCurve(String ecCurveName) {
         if (ecCurveName.equals("secp224r1")) {
             return 0;
         }
@@ -133,13 +133,13 @@ public abstract class KeymasterUtils {
         return -1;
     }
 
-    public static ECParameterSpec getCurveSpec(String name) throws NoSuchAlgorithmException, InvalidParameterSpecException {
+    static ECParameterSpec getCurveSpec(String name) throws NoSuchAlgorithmException, InvalidParameterSpecException {
         AlgorithmParameters parameters = AlgorithmParameters.getInstance(KeyProperties.KEY_ALGORITHM_EC);
         parameters.init(new ECGenParameterSpec(name));
         return (ECParameterSpec) parameters.getParameterSpec(ECParameterSpec.class);
     }
 
-    public static String getCurveName(ECParameterSpec spec) {
+    static String getCurveName(ECParameterSpec spec) {
         if (isECParameterSpecOfCurve(spec, "secp224r1")) {
             return "secp224r1";
         }
@@ -184,16 +184,22 @@ public abstract class KeymasterUtils {
                         int currentTEEVersion = getKeyMintVersion(PackageManager.FEATURE_HARDWARE_KEYSTORE);
                         mIsTEEKeyMintDevice = currentTEEVersion >= 100 ? 2 : 1;
                     }
-                    return mIsTEEKeyMintDevice == 2;
+                    if (mIsTEEKeyMintDevice != 2) {
+                        break;
+                    }
+                    break;
                 case 2:
                     if (mIsStrongBoxKeyMintDevice == 0) {
                         int currentStrongboxVersion = getKeyMintVersion(PackageManager.FEATURE_STRONGBOX_KEYSTORE);
                         mIsStrongBoxKeyMintDevice = currentStrongboxVersion >= 100 ? 2 : 1;
                     }
-                    return mIsStrongBoxKeyMintDevice == 2;
-                default:
-                    return false;
+                    if (mIsStrongBoxKeyMintDevice != 2) {
+                        break;
+                    } else {
+                        break;
+                    }
             }
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

@@ -3,17 +3,16 @@ package android.hardware.camera2.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class LongParcelable implements Parcelable {
     public static final Parcelable.Creator<LongParcelable> CREATOR = new Parcelable.Creator<LongParcelable>() { // from class: android.hardware.camera2.utils.LongParcelable.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LongParcelable createFromParcel(Parcel in) {
             return new LongParcelable(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LongParcelable[] newArray(int size) {
             return new LongParcelable[size];
@@ -21,33 +20,12 @@ public class LongParcelable implements Parcelable {
     };
     private long number;
 
-    /* synthetic */ LongParcelable(Parcel parcel, LongParcelableIA longParcelableIA) {
-        this(parcel);
-    }
-
     public LongParcelable() {
         this.number = 0L;
     }
 
     public LongParcelable(long number) {
         this.number = number;
-    }
-
-    /* renamed from: android.hardware.camera2.utils.LongParcelable$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LongParcelable> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LongParcelable createFromParcel(Parcel in) {
-            return new LongParcelable(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LongParcelable[] newArray(int size) {
-            return new LongParcelable[size];
-        }
     }
 
     private LongParcelable(Parcel in) {

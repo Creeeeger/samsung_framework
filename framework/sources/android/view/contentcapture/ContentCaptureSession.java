@@ -1,10 +1,14 @@
 package android.view.contentcapture;
 
 import android.app.compat.CompatChanges;
+import android.content.ComponentName;
 import android.graphics.Insets;
+import android.graphics.Rect;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.IBinder;
 import android.util.DebugUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewStructure;
 import android.view.autofill.AutofillId;
@@ -21,6 +25,8 @@ import java.util.Objects;
 
 /* loaded from: classes4.dex */
 public abstract class ContentCaptureSession implements AutoCloseable {
+    public static final String EXTRA_BINDER = "binder";
+    public static final String EXTRA_ENABLED_STATE = "enabled";
     public static final int FLUSH_REASON_FORCE_FLUSH = 8;
     public static final int FLUSH_REASON_FULL = 1;
     public static final int FLUSH_REASON_IDLE_TIMEOUT = 5;
@@ -58,35 +64,50 @@ public abstract class ContentCaptureSession implements AutoCloseable {
     private static final SecureRandom ID_GENERATOR = new SecureRandom();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface FlushReason {
     }
 
-    public abstract void flush(int i);
+    abstract void flush(int i);
 
-    public abstract MainContentCaptureSession getMainCaptureSession();
+    abstract ContentCaptureSession getMainCaptureSession();
+
+    abstract void internalNotifyChildSessionFinished(int i, int i2);
+
+    abstract void internalNotifyChildSessionStarted(int i, int i2, ContentCaptureContext contentCaptureContext);
+
+    abstract void internalNotifyContextUpdated(int i, ContentCaptureContext contentCaptureContext);
 
     abstract void internalNotifySessionPaused();
 
     abstract void internalNotifySessionResumed();
 
-    abstract void internalNotifyViewAppeared(ViewNode.ViewStructureImpl viewStructureImpl);
+    abstract void internalNotifyViewAppeared(int i, ViewNode.ViewStructureImpl viewStructureImpl);
 
-    abstract void internalNotifyViewDisappeared(AutofillId autofillId);
+    abstract void internalNotifyViewDisappeared(int i, AutofillId autofillId);
 
-    abstract void internalNotifyViewInsetsChanged(Insets insets);
+    abstract void internalNotifyViewInsetsChanged(int i, Insets insets);
 
-    abstract void internalNotifyViewTextChanged(AutofillId autofillId, CharSequence charSequence);
+    abstract void internalNotifyViewTextChanged(int i, AutofillId autofillId, CharSequence charSequence);
 
-    public abstract void internalNotifyViewTreeEvent(boolean z);
+    abstract void internalNotifyViewTreeEvent(int i, boolean z);
+
+    abstract boolean isDisabled();
 
     abstract ContentCaptureSession newChild(ContentCaptureContext contentCaptureContext);
 
+    public abstract void notifyContentCaptureEvents(SparseArray<ArrayList<Object>> sparseArray);
+
+    public abstract void notifyWindowBoundsChanged(int i, Rect rect);
+
     abstract void onDestroy();
+
+    abstract boolean setDisabled(boolean z);
+
+    abstract void start(IBinder iBinder, IBinder iBinder2, ComponentName componentName, int i);
 
     abstract void updateContentCaptureContext(ContentCaptureContext contentCaptureContext);
 
-    public ContentCaptureSession() {
+    protected ContentCaptureSession() {
         this(getRandomSessionId());
     }
 
@@ -97,7 +118,7 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         this.mId = id;
     }
 
-    public ContentCaptureSession(ContentCaptureContext initialContext) {
+    ContentCaptureSession(ContentCaptureContext initialContext) {
         this();
         this.mClientContext = (ContentCaptureContext) Objects.requireNonNull(initialContext);
     }
@@ -150,9 +171,8 @@ public abstract class ContentCaptureSession implements AutoCloseable {
             if (ContentCaptureHelper.sVerbose) {
                 Log.v(TAG, "destroy(): state=" + getStateAsString(this.mState) + ", mId=" + this.mId);
             }
-            ArrayList<ContentCaptureSession> arrayList = this.mChildren;
-            if (arrayList != null) {
-                int numberChildren = arrayList.size();
+            if (this.mChildren != null) {
+                int numberChildren = this.mChildren.size();
                 if (ContentCaptureHelper.sVerbose) {
                     Log.v(TAG, "Destroying " + numberChildren + " children first");
                 }
@@ -180,14 +200,14 @@ public abstract class ContentCaptureSession implements AutoCloseable {
             if (!(node instanceof ViewNode.ViewStructureImpl)) {
                 throw new IllegalArgumentException("Invalid node class: " + node.getClass());
             }
-            internalNotifyViewAppeared((ViewNode.ViewStructureImpl) node);
+            internalNotifyViewAppeared(this.mId, (ViewNode.ViewStructureImpl) node);
         }
     }
 
     public final void notifyViewDisappeared(AutofillId id) {
         Objects.requireNonNull(id);
         if (isContentCaptureEnabled()) {
-            internalNotifyViewDisappeared(id);
+            internalNotifyViewDisappeared(this.mId, id);
         }
     }
 
@@ -200,11 +220,13 @@ public abstract class ContentCaptureSession implements AutoCloseable {
                     throw new IllegalArgumentException("Invalid class: " + v.getClass());
                 }
             }
-            internalNotifyViewTreeEvent(true);
-            for (int i2 = 0; i2 < appearedNodes.size(); i2++) {
-                internalNotifyViewAppeared((ViewNode.ViewStructureImpl) appearedNodes.get(i2));
+            int i2 = this.mId;
+            internalNotifyViewTreeEvent(i2, true);
+            for (int i3 = 0; i3 < appearedNodes.size(); i3++) {
+                internalNotifyViewAppeared(this.mId, (ViewNode.ViewStructureImpl) appearedNodes.get(i3));
             }
-            internalNotifyViewTreeEvent(false);
+            int i4 = this.mId;
+            internalNotifyViewTreeEvent(i4, false);
         }
     }
 
@@ -213,13 +235,13 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         Preconditions.checkArgument(!ArrayUtils.isEmpty(virtualIds), "virtual ids cannot be empty");
         if (isContentCaptureEnabled()) {
             if (CompatChanges.isChangeEnabled(NOTIFY_NODES_DISAPPEAR_NOW_SENDS_TREE_EVENTS)) {
-                internalNotifyViewTreeEvent(true);
+                internalNotifyViewTreeEvent(this.mId, true);
             }
             for (long id : virtualIds) {
-                internalNotifyViewDisappeared(new AutofillId(hostId, id, this.mId));
+                internalNotifyViewDisappeared(this.mId, new AutofillId(hostId, id, this.mId));
             }
             if (CompatChanges.isChangeEnabled(NOTIFY_NODES_DISAPPEAR_NOW_SENDS_TREE_EVENTS)) {
-                internalNotifyViewTreeEvent(false);
+                internalNotifyViewTreeEvent(this.mId, false);
             }
         }
     }
@@ -227,15 +249,19 @@ public abstract class ContentCaptureSession implements AutoCloseable {
     public final void notifyViewTextChanged(AutofillId id, CharSequence text) {
         Objects.requireNonNull(id);
         if (isContentCaptureEnabled()) {
-            internalNotifyViewTextChanged(id, text);
+            internalNotifyViewTextChanged(this.mId, id, text);
         }
     }
 
     public final void notifyViewInsetsChanged(Insets viewInsets) {
         Objects.requireNonNull(viewInsets);
         if (isContentCaptureEnabled()) {
-            internalNotifyViewInsetsChanged(viewInsets);
+            internalNotifyViewInsetsChanged(this.mId, viewInsets);
         }
+    }
+
+    public void notifyViewTreeEvent(boolean started) {
+        internalNotifyViewTreeEvent(this.mId, started);
     }
 
     public final void notifySessionResumed() {
@@ -264,7 +290,7 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         return new ViewNode.ViewStructureImpl(parentId, virtualId, this.mId);
     }
 
-    public boolean isContentCaptureEnabled() {
+    boolean isContentCaptureEnabled() {
         boolean z;
         synchronized (this.mLock) {
             z = !this.mDestroyed;
@@ -272,7 +298,7 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         return z;
     }
 
-    public void dump(String prefix, PrintWriter pw) {
+    void dump(String prefix, PrintWriter pw) {
         pw.print(prefix);
         pw.print("id: ");
         pw.println(this.mId);
@@ -285,8 +311,7 @@ public abstract class ContentCaptureSession implements AutoCloseable {
             pw.print(prefix);
             pw.print("destroyed: ");
             pw.println(this.mDestroyed);
-            ArrayList<ContentCaptureSession> arrayList = this.mChildren;
-            if (arrayList != null && !arrayList.isEmpty()) {
+            if (this.mChildren != null && !this.mChildren.isEmpty()) {
                 String prefix2 = prefix + "  ";
                 int numberChildren = this.mChildren.size();
                 pw.print(prefix);
@@ -307,7 +332,7 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         return Integer.toString(this.mId);
     }
 
-    public static String getStateAsString(int state) {
+    protected static String getStateAsString(int state) {
         return state + " (" + (state == 0 ? "UNKNOWN" : DebugUtils.flagsToString(ContentCaptureSession.class, "STATE_", state)) + NavigationBarInflaterView.KEY_CODE_END;
     }
 
@@ -334,7 +359,7 @@ public abstract class ContentCaptureSession implements AutoCloseable {
             case 10:
                 return "VIEW_TREE_APPEARED";
             default:
-                return "UNKOWN-" + reason;
+                return "UNKNOWN-" + reason;
         }
     }
 

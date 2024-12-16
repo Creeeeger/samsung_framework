@@ -9,16 +9,16 @@ import android.util.Log;
 import com.samsung.android.cover.CoverManager;
 import com.samsung.android.cover.ICoverManagerCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class CoverListenerDelegate extends ICoverManagerCallback.Stub {
     private static final String TAG = "CoverManager";
     private ListenerDelegateHandler mHandler;
     private final CoverManager.StateListener mListener;
 
-    public CoverListenerDelegate(CoverManager.StateListener listener, Handler handler, Context context) {
+    CoverListenerDelegate(CoverManager.StateListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
-        this.mHandler = new ListenerDelegateHandler(looper, listener);
+        this.mHandler = new ListenerDelegateHandler(looper, this.mListener);
     }
 
     public CoverManager.StateListener getListener() {
@@ -38,9 +38,7 @@ class CoverListenerDelegate extends ICoverManagerCallback.Stub {
         return this.mListener.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class ListenerDelegateHandler extends Handler {
+    private static class ListenerDelegateHandler extends Handler {
         private final CoverManager.StateListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.StateListener listener) {

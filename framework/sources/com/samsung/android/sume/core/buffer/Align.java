@@ -10,7 +10,7 @@ import com.samsung.android.sume.core.format.Copyable;
 import com.samsung.android.sume.core.format.MediaFormat;
 import java.io.Serializable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class Align implements Serializable, Parcelable, Copyable<Align>, Comparable<Align> {
     private int alignOfHeight;
     private int alignOfWidth;
@@ -18,28 +18,27 @@ public class Align implements Serializable, Parcelable, Copyable<Align>, Compara
     private int stride;
     private static final String TAG = Def.tagOf((Class<?>) Align.class);
     public static final Parcelable.Creator<Align> CREATOR = new Parcelable.Creator<Align>() { // from class: com.samsung.android.sume.core.buffer.Align.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Align createFromParcel(Parcel in) {
             return new Align(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Align[] newArray(int size) {
             return new Align[size];
         }
     };
 
-    public Align() {
+    protected Align() {
         this.stride = 0;
         this.scanline = 0;
         this.alignOfWidth = 0;
         this.alignOfHeight = 0;
     }
 
-    public Align(int stride, int scanline) {
+    protected Align(int stride, int scanline) {
         this.stride = stride;
         this.scanline = scanline;
         this.alignOfWidth = 0;
@@ -60,23 +59,6 @@ public class Align implements Serializable, Parcelable, Copyable<Align>, Compara
         this.alignOfHeight = in.readInt();
     }
 
-    /* renamed from: com.samsung.android.sume.core.buffer.Align$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Align> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Align createFromParcel(Parcel in) {
-            return new Align(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Align[] newArray(int size) {
-            return new Align[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -88,6 +70,7 @@ public class Align implements Serializable, Parcelable, Copyable<Align>, Compara
         dest.writeInt(this.scanline);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     public Align copy() {
         try {
@@ -98,6 +81,7 @@ public class Align implements Serializable, Parcelable, Copyable<Align>, Compara
         }
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     /* renamed from: deepCopy */
     public Align deepCopy2() {
@@ -118,15 +102,11 @@ public class Align implements Serializable, Parcelable, Copyable<Align>, Compara
     }
 
     public void adjustAlign() {
-        int i;
-        int i2;
-        int i3 = this.stride;
-        if (i3 > 0 && (i2 = this.alignOfWidth) > 0 && i3 % i2 != 0) {
-            this.stride = ((i3 + i2) - 1) & (~(i2 - 1));
+        if (this.stride > 0 && this.alignOfWidth > 0 && this.stride % this.alignOfWidth != 0) {
+            this.stride = ((this.stride + this.alignOfWidth) - 1) & (~(this.alignOfWidth - 1));
         }
-        int i4 = this.scanline;
-        if (i4 > 0 && (i = this.alignOfHeight) > 0 && i4 % i != 0) {
-            this.scanline = ((i4 + i) - 1) & (~(i - 1));
+        if (this.scanline > 0 && this.alignOfHeight > 0 && this.scanline % this.alignOfHeight != 0) {
+            this.scanline = ((this.scanline + this.alignOfHeight) - 1) & (~(this.alignOfHeight - 1));
         }
         Log.d(TAG, "adjust align to [" + this.stride + " , " + this.scanline + NavigationBarInflaterView.SIZE_MOD_END);
     }
@@ -152,12 +132,10 @@ public class Align implements Serializable, Parcelable, Copyable<Align>, Compara
     }
 
     public int getDimension() {
-        int i;
-        int i2 = this.stride;
-        if (i2 <= 0 || (i = this.scanline) <= 0) {
+        if (this.stride <= 0 || this.scanline <= 0) {
             return 0;
         }
-        return i2 * i;
+        return this.stride * this.scanline;
     }
 
     public Align setStride(int stride) {

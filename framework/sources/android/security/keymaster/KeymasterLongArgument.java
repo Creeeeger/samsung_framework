@@ -3,7 +3,7 @@ package android.security.keymaster;
 import android.os.Parcel;
 
 /* loaded from: classes3.dex */
-public class KeymasterLongArgument extends KeymasterArgument {
+class KeymasterLongArgument extends KeymasterArgument {
     public final long value;
 
     public KeymasterLongArgument(int tag, long value) {

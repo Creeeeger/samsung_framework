@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface IResourcesReclaimListener extends IInterface {
-    public static final String DESCRIPTOR = "android$media$tv$tunerresourcemanager$IResourcesReclaimListener".replace('$', '.');
+    public static final String DESCRIPTOR = "android.media.tv.tunerresourcemanager.IResourcesReclaimListener";
 
     void onReclaimResources() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IResourcesReclaimListener {
         @Override // android.media.tv.tunerresourcemanager.IResourcesReclaimListener
         public void onReclaimResources() throws RemoteException {
@@ -24,19 +23,18 @@ public interface IResourcesReclaimListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IResourcesReclaimListener {
         static final int TRANSACTION_onReclaimResources = 1;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, IResourcesReclaimListener.DESCRIPTOR);
         }
 
         public static IResourcesReclaimListener asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(IResourcesReclaimListener.DESCRIPTOR);
             if (iin != null && (iin instanceof IResourcesReclaimListener)) {
                 return (IResourcesReclaimListener) iin;
             }
@@ -50,29 +48,24 @@ public interface IResourcesReclaimListener extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            String descriptor = DESCRIPTOR;
             if (code >= 1 && code <= 16777215) {
-                data.enforceInterface(descriptor);
+                data.enforceInterface(IResourcesReclaimListener.DESCRIPTOR);
+            }
+            if (code == 1598968902) {
+                reply.writeString(IResourcesReclaimListener.DESCRIPTOR);
+                return true;
             }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 1:
+                    onReclaimResources();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onReclaimResources();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IResourcesReclaimListener {
+        private static class Proxy implements IResourcesReclaimListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -85,7 +78,7 @@ public interface IResourcesReclaimListener extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return IResourcesReclaimListener.DESCRIPTOR;
             }
 
             @Override // android.media.tv.tunerresourcemanager.IResourcesReclaimListener
@@ -93,7 +86,7 @@ public interface IResourcesReclaimListener extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IResourcesReclaimListener.DESCRIPTOR);
                     this.mRemote.transact(1, _data, _reply, 0);
                     _reply.readException();
                 } finally {

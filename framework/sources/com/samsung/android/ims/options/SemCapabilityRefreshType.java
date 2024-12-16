@@ -1,6 +1,6 @@
 package com.samsung.android.ims.options;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemCapabilityRefreshType {
     public static final int ALWAYS_FORCE_REFRESH = 2;
     public static final int DISABLED = 4;

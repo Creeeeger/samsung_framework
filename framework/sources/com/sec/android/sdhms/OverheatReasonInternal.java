@@ -10,14 +10,13 @@ public class OverheatReasonInternal implements Parcelable {
     public static final int CHARGER_TYPE_USB = 2;
     public static final int CHARGER_TYPE_WIRELESS = 4;
     public static final Parcelable.Creator<OverheatReasonInternal> CREATOR = new Parcelable.Creator<OverheatReasonInternal>() { // from class: com.sec.android.sdhms.OverheatReasonInternal.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverheatReasonInternal createFromParcel(Parcel in) {
             return new OverheatReasonInternal(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverheatReasonInternal[] newArray(int size) {
             return new OverheatReasonInternal[size];
@@ -101,23 +100,6 @@ public class OverheatReasonInternal implements Parcelable {
         this.networkApp = in.readString16NoHelper();
         this.processApp = in.readString16NoHelper();
         this.environmentType = in.readInt();
-    }
-
-    /* renamed from: com.sec.android.sdhms.OverheatReasonInternal$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OverheatReasonInternal> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OverheatReasonInternal createFromParcel(Parcel in) {
-            return new OverheatReasonInternal(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OverheatReasonInternal[] newArray(int size) {
-            return new OverheatReasonInternal[size];
-        }
     }
 
     @Override // android.os.Parcelable

@@ -9,7 +9,7 @@ import com.sec.android.sdhms.ISamsungDeviceHealthManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemTemperatureManager {
     private static String LOG_TAG = SemTemperatureManager.class.getSimpleName();
     private static final int SDHMS_VALUE_SIOP_LEVEL = 1;
@@ -17,12 +17,6 @@ public class SemTemperatureManager {
     private static ISamsungDeviceHealthManager mService;
     private static SparseArray<Thermistor> mThermistorList;
 
-    /* renamed from: -$$Nest$smgetService */
-    static /* bridge */ /* synthetic */ ISamsungDeviceHealthManager m8610$$Nest$smgetService() {
-        return getService();
-    }
-
-    /* loaded from: classes5.dex */
     public static class Thermistor {
         private static final int NUM_OF_TYPE = 12;
         public static final int TYPE_5G_MODEM = 6;
@@ -39,10 +33,6 @@ public class SemTemperatureManager {
         public static final int TYPE_WIFI = 4;
         private int mType;
 
-        /* synthetic */ Thermistor(int i, ThermistorIA thermistorIA) {
-            this(i);
-        }
-
         private Thermistor(int type) {
             this.mType = type;
         }
@@ -52,7 +42,7 @@ public class SemTemperatureManager {
         }
 
         public int getTemperature() {
-            ISamsungDeviceHealthManager svc = SemTemperatureManager.m8610$$Nest$smgetService();
+            ISamsungDeviceHealthManager svc = SemTemperatureManager.getService();
             if (svc != null) {
                 try {
                     return svc.getTemperature(this.mType);
@@ -68,19 +58,16 @@ public class SemTemperatureManager {
     private SemTemperatureManager() {
     }
 
-    private static synchronized ISamsungDeviceHealthManager getService() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static synchronized ISamsungDeviceHealthManager getService() {
         ISamsungDeviceHealthManager iSamsungDeviceHealthManager;
         IBinder b;
         synchronized (SemTemperatureManager.class) {
             if (mService == null && (b = ServiceManager.getService("sdhms")) != null) {
-                ISamsungDeviceHealthManager asInterface = ISamsungDeviceHealthManager.Stub.asInterface(b);
-                mService = asInterface;
-                if (asInterface != null) {
+                mService = ISamsungDeviceHealthManager.Stub.asInterface(b);
+                if (mService != null) {
                     try {
                         b.linkToDeath(new IBinder.DeathRecipient() { // from class: com.samsung.android.os.SemTemperatureManager.1
-                            AnonymousClass1() {
-                            }
-
                             @Override // android.os.IBinder.DeathRecipient
                             public void binderDied() {
                                 SemTemperatureManager.mService = null;
@@ -94,18 +81,6 @@ public class SemTemperatureManager {
             iSamsungDeviceHealthManager = mService;
         }
         return iSamsungDeviceHealthManager;
-    }
-
-    /* renamed from: com.samsung.android.os.SemTemperatureManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements IBinder.DeathRecipient {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            SemTemperatureManager.mService = null;
-        }
     }
 
     private static synchronized void initThermistorList() {
@@ -151,8 +126,7 @@ public class SemTemperatureManager {
     }
 
     public static List<Thermistor> getThermistorList() {
-        SparseArray<Thermistor> sparseArray = mThermistorList;
-        if (sparseArray == null || sparseArray.size() == 0) {
+        if (mThermistorList == null || mThermistorList.size() == 0) {
             initThermistorList();
         }
         ArrayList<Thermistor> list = new ArrayList<>(mThermistorList.size());
@@ -165,8 +139,7 @@ public class SemTemperatureManager {
     }
 
     public static Thermistor getThermistor(int thermistorType) {
-        SparseArray<Thermistor> sparseArray = mThermistorList;
-        if (sparseArray == null || sparseArray.size() == 0) {
+        if (mThermistorList == null || mThermistorList.size() == 0) {
             initThermistorList();
         }
         return mThermistorList.get(thermistorType);

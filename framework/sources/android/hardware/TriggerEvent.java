@@ -6,7 +6,7 @@ public final class TriggerEvent {
     public long timestamp;
     public final float[] values;
 
-    public TriggerEvent(int size) {
+    TriggerEvent(int size) {
         this.values = new float[size];
     }
 }

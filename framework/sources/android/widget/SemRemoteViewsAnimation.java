@@ -12,7 +12,8 @@ public abstract class SemRemoteViewsAnimation implements Parcelable {
     protected boolean mIsExpired;
     protected int mViewId;
 
-    /* renamed from: endAnimation */
+    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: endAnimation, reason: merged with bridge method [inline-methods] */
     public abstract void lambda$play$0(View view);
 
     protected abstract void startAnimation(View view);
@@ -21,7 +22,7 @@ public abstract class SemRemoteViewsAnimation implements Parcelable {
         this.mViewId = viewId;
     }
 
-    public SemRemoteViewsAnimation(Parcel parcel) {
+    protected SemRemoteViewsAnimation(Parcel parcel) {
         this.mViewId = parcel.readInt();
         this.mIsExpired = parcel.readBoolean();
     }

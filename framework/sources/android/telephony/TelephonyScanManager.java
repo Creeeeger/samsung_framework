@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class TelephonyScanManager {
     public static final int CALLBACK_RESTRICTED_SCAN_RESULTS = 4;
     public static final int CALLBACK_SCAN_COMPLETE = 3;
@@ -36,7 +36,6 @@ public final class TelephonyScanManager {
     private final Messenger mMessenger;
     private final SparseArray<NetworkScanInfo> mScanInfo = new SparseArray<>();
 
-    /* loaded from: classes3.dex */
     public static abstract class NetworkScanCallback {
         public void onResults(List<CellInfo> results) {
         }
@@ -48,8 +47,7 @@ public final class TelephonyScanManager {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class NetworkScanInfo {
+    private static class NetworkScanInfo {
         private final NetworkScanCallback mCallback;
         private final Executor mExecutor;
         private final NetworkScanRequest mRequest;
@@ -64,15 +62,10 @@ public final class TelephonyScanManager {
     public TelephonyScanManager() {
         HandlerThread thread = new HandlerThread(TAG);
         thread.start();
-        Looper looper = thread.getLooper();
-        this.mLooper = looper;
-        AnonymousClass1 anonymousClass1 = new AnonymousClass1(looper);
-        this.mHandler = anonymousClass1;
-        this.mMessenger = new Messenger(anonymousClass1);
+        this.mLooper = thread.getLooper();
+        this.mHandler = new AnonymousClass1(this.mLooper);
+        this.mMessenger = new Messenger(this.mHandler);
         this.mDeathRecipient = new IBinder.DeathRecipient() { // from class: android.telephony.TelephonyScanManager.2
-            AnonymousClass2() {
-            }
-
             @Override // android.os.IBinder.DeathRecipient
             public void binderDied() {
                 TelephonyScanManager.this.mHandler.obtainMessage(5).sendToTarget();
@@ -80,10 +73,8 @@ public final class TelephonyScanManager {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyScanManager$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends Handler {
+    /* renamed from: android.telephony.TelephonyScanManager$1, reason: invalid class name */
+    class AnonymousClass1 extends Handler {
         AnonymousClass1(Looper looper) {
             super(looper);
         }
@@ -185,32 +176,19 @@ public final class TelephonyScanManager {
             }
         }
 
-        public static /* synthetic */ void lambda$handleMessage$1(CellInfo[] ci, NetworkScanCallback callback) {
+        static /* synthetic */ void lambda$handleMessage$1(CellInfo[] ci, NetworkScanCallback callback) {
             com.android.telephony.Rlog.d(TelephonyScanManager.TAG, "onResults: " + Arrays.toString(ci));
             callback.onResults(Arrays.asList(ci));
         }
 
-        public static /* synthetic */ void lambda$handleMessage$2(int errorCode, NetworkScanCallback callback) {
+        static /* synthetic */ void lambda$handleMessage$2(int errorCode, NetworkScanCallback callback) {
             com.android.telephony.Rlog.d(TelephonyScanManager.TAG, "onError: " + errorCode);
             callback.onError(errorCode);
         }
 
-        public static /* synthetic */ void lambda$handleMessage$3(NetworkScanCallback callback) {
+        static /* synthetic */ void lambda$handleMessage$3(NetworkScanCallback callback) {
             com.android.telephony.Rlog.d(TelephonyScanManager.TAG, "onComplete");
             callback.onComplete();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyScanManager$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements IBinder.DeathRecipient {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            TelephonyScanManager.this.mHandler.obtainMessage(5).sendToTarget();
         }
     }
 

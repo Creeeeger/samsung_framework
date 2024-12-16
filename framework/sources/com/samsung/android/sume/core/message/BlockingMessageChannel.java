@@ -5,7 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class BlockingMessageChannel implements MessageChannel {
     private String id;
     protected BlockingQueue<Message> queue;
@@ -34,6 +34,7 @@ public class BlockingMessageChannel implements MessageChannel {
         }
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.channel.Channel
     public Message receive() {
         try {

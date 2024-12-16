@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class Filter implements AutoCloseable {
     public static final int MONITOR_EVENT_IP_CID_CHANGE = 2;
     public static final int MONITOR_EVENT_SCRAMBLING_STATUS = 1;
@@ -60,27 +60,22 @@ public class Filter implements AutoCloseable {
     private final Object mLock = new Object();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MonitorEventMask {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScramblingStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Status {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Subtype {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Type {
     }
 
@@ -117,10 +112,9 @@ public class Filter implements AutoCloseable {
     }
 
     private void onFilterStatus(final int status) {
-        Executor executor;
         synchronized (this.mCallbackLock) {
-            if (this.mCallback != null && (executor = this.mExecutor) != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.Filter$$ExternalSyntheticLambda1
+            if (this.mCallback != null && this.mExecutor != null) {
+                this.mExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.Filter$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         Filter.this.lambda$onFilterStatus$0(status);
@@ -130,30 +124,34 @@ public class Filter implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFilterStatus$0(int status) {
+        FilterCallback callback;
         synchronized (this.mCallbackLock) {
-            FilterCallback filterCallback = this.mCallback;
-            if (filterCallback != null) {
-                try {
-                    filterCallback.onFilterStatusChanged(this, status);
-                } catch (NullPointerException e) {
-                    Log.d(TAG, "catch exception:" + e);
-                }
+            callback = this.mCallback;
+        }
+        if (callback != null) {
+            try {
+                callback.onFilterStatusChanged(this, status);
+            } catch (NullPointerException e) {
+                Log.d(TAG, "catch exception:" + e);
             }
+        }
+        if (callback != null) {
+            callback.onFilterStatusChanged(this, status);
         }
     }
 
     private void onFilterEvent(final FilterEvent[] events) {
-        Executor executor;
         synchronized (this.mCallbackLock) {
-            if (this.mCallback == null || (executor = this.mExecutor) == null) {
+            if (this.mCallback == null || this.mExecutor == null) {
                 for (FilterEvent event : events) {
                     if (event instanceof MediaEvent) {
                         ((MediaEvent) event).release();
                     }
                 }
             } else {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.Filter$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.Filter$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         Filter.this.lambda$onFilterEvent$1(events);
@@ -163,21 +161,24 @@ public class Filter implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFilterEvent$1(FilterEvent[] events) {
+        FilterCallback callback;
         synchronized (this.mCallbackLock) {
-            FilterCallback filterCallback = this.mCallback;
-            if (filterCallback != null) {
-                try {
-                    filterCallback.onFilterEvent(this, events);
-                } catch (NullPointerException e) {
-                    Log.d(TAG, "catch exception:" + e);
-                }
-            } else {
-                for (FilterEvent event : events) {
-                    if (event instanceof MediaEvent) {
-                        ((MediaEvent) event).release();
-                    }
-                }
+            callback = this.mCallback;
+        }
+        if (callback != null) {
+            try {
+                callback.onFilterEvent(this, events);
+                return;
+            } catch (NullPointerException e) {
+                Log.d(TAG, "catch exception:" + e);
+                return;
+            }
+        }
+        for (FilterEvent event : events) {
+            if (event instanceof MediaEvent) {
+                ((MediaEvent) event).release();
             }
         }
     }

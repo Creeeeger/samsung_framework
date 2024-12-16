@@ -21,14 +21,13 @@ public final class LogSwitcher {
         isShowingSecELog = false;
         isShowingSecWtfLog = false;
         try {
-            boolean equals = "1".equals(SystemProperties.get("persist.log.seclevel", "0"));
-            isShowingGlobalLog = equals;
-            isShowingSecVLog = equals;
-            isShowingSecDLog = equals;
-            isShowingSecILog = equals;
-            isShowingSecWLog = equals;
-            isShowingSecELog = equals;
-            isShowingSecWtfLog = equals;
+            isShowingGlobalLog = "1".equals(SystemProperties.get("persist.log.seclevel", "0"));
+            isShowingSecVLog = isShowingGlobalLog;
+            isShowingSecDLog = isShowingGlobalLog;
+            isShowingSecILog = isShowingGlobalLog;
+            isShowingSecWLog = isShowingGlobalLog;
+            isShowingSecELog = isShowingGlobalLog;
+            isShowingSecWtfLog = isShowingGlobalLog;
         } catch (Exception e) {
         }
     }

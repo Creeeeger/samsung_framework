@@ -17,7 +17,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import java.lang.ref.WeakReference;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
     static final int AUTO_CAP = 1;
     static final int AUTO_PERIOD = 4;
@@ -35,7 +35,6 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
     static final Object INHIBIT_REPLACEMENT = new NoCopySpan.Concrete();
     static final Object LAST_TYPED = new NoCopySpan.Concrete();
 
-    /* loaded from: classes3.dex */
     public enum Capitalize {
         NONE,
         SENTENCES,
@@ -50,9 +49,8 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
 
     public static TextKeyListener getInstance(boolean z, Capitalize capitalize) {
         int ordinal = (capitalize.ordinal() * 2) + (z ? 1 : 0);
-        TextKeyListener[] textKeyListenerArr = sInstance;
-        if (textKeyListenerArr[ordinal] == null) {
-            textKeyListenerArr[ordinal] = new TextKeyListener(capitalize, z);
+        if (sInstance[ordinal] == null) {
+            sInstance[ordinal] = new TextKeyListener(capitalize, z);
         }
         return sInstance[ordinal];
     }
@@ -136,8 +134,7 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         return NullKeyListener.getInstance();
     }
 
-    /* loaded from: classes3.dex */
-    public static class NullKeyListener implements KeyListener {
+    private static class NullKeyListener implements KeyListener {
         private static NullKeyListener sInstance;
 
         private NullKeyListener() {
@@ -168,20 +165,17 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         }
 
         public static NullKeyListener getInstance() {
-            NullKeyListener nullKeyListener = sInstance;
-            if (nullKeyListener != null) {
-                return nullKeyListener;
+            if (sInstance != null) {
+                return sInstance;
             }
-            NullKeyListener nullKeyListener2 = new NullKeyListener();
-            sInstance = nullKeyListener2;
-            return nullKeyListener2;
+            sInstance = new NullKeyListener();
+            return sInstance;
         }
     }
 
     public void release() {
-        WeakReference<ContentResolver> weakReference = this.mResolver;
-        if (weakReference != null) {
-            ContentResolver contentResolver = weakReference.get();
+        if (this.mResolver != null) {
+            ContentResolver contentResolver = this.mResolver.get();
             if (contentResolver != null) {
                 contentResolver.unregisterContentObserver(this.mObserver);
                 this.mResolver.clear();
@@ -203,8 +197,7 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         this.mPrefsInited = true;
     }
 
-    /* loaded from: classes3.dex */
-    public class SettingsObserver extends ContentObserver {
+    private class SettingsObserver extends ContentObserver {
         public SettingsObserver() {
             super(new Handler());
         }
@@ -225,6 +218,7 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updatePrefs(ContentResolver resolver) {
         boolean cap = Settings.System.getInt(resolver, Settings.System.TEXT_AUTO_CAPS, 1) > 0;
         boolean text = Settings.System.getInt(resolver, Settings.System.TEXT_AUTO_REPLACE, 1) > 0;
@@ -233,7 +227,7 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         this.mPrefs = (cap ? 1 : 0) | (text ? 2 : 0) | (period ? 4 : 0) | (pw ? 8 : 0);
     }
 
-    public int getPrefs(Context context) {
+    int getPrefs(Context context) {
         synchronized (this) {
             if (!this.mPrefsInited || this.mResolver.refersTo(null)) {
                 initPrefs(context);

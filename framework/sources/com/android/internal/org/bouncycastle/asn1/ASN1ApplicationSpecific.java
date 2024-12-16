@@ -11,7 +11,7 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
     protected final byte[] octets;
     protected final int tag;
 
-    public ASN1ApplicationSpecific(boolean isConstructed, int tag, byte[] octets) {
+    ASN1ApplicationSpecific(boolean isConstructed, int tag, byte[] octets) {
         this.isConstructed = isConstructed;
         this.tag = tag;
         this.octets = Arrays.clone(octets);
@@ -31,7 +31,7 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
         throw new IllegalArgumentException("unknown object in getInstance: " + obj.getClass().getName());
     }
 
-    public static int getLengthOfHeader(byte[] data) {
+    protected static int getLengthOfHeader(byte[] data) {
         int length = data[1] & 255;
         if (length == 128 || length <= 127) {
             return 2;
@@ -73,12 +73,12 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         return StreamUtil.calculateTagLength(this.tag) + StreamUtil.calculateBodyLength(this.octets.length) + this.octets.length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         int flags = 64;
         if (this.isConstructed) {
             flags = 64 | 32;
@@ -87,7 +87,7 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1ApplicationSpecific)) {
             return false;
         }

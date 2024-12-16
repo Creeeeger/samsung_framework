@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 
 /* loaded from: classes.dex */
 public class StatusBarManager {
+    public static final String ACTION_KEYGUARD_PRIVATE_NOTIFICATIONS_CHANGED = "android.app.action.KEYGUARD_PRIVATE_NOTIFICATIONS_CHANGED";
     public static final Set<Integer> ALL_SESSIONS = Set.of(1, 2);
     public static final int CAMERA_LAUNCH_SOURCE_LIFT_TRIGGER = 2;
     public static final int CAMERA_LAUNCH_SOURCE_POWER_DOUBLE_TAP = 1;
@@ -73,6 +74,7 @@ public class StatusBarManager {
     public static final int DISABLE_RECENT = 16777216;
     public static final int DISABLE_SEARCH = 33554432;
     public static final int DISABLE_SYSTEM_INFO = 1048576;
+    public static final String EXTRA_KM_PRIVATE_NOTIFS_ALLOWED = "android.app.extra.KM_PRIVATE_NOTIFS_ALLOWED";
     private static final long MEDIA_CONTROL_BLANK_TITLE = 274775190;
     private static final long MEDIA_CONTROL_SESSION_ACTIONS = 203800354;
 
@@ -152,59 +154,49 @@ public class StatusBarManager {
     private final IPlatformCompat mPlatformCompat = IPlatformCompat.Stub.asInterface(ServiceManager.getService(Context.PLATFORM_COMPAT_SERVICE));
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Disable2Flags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DisableFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MediaTransferReceiverState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MediaTransferSenderState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NavBarMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RequestResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SessionFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface WindowType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface WindowVisibleState {
     }
 
-    public StatusBarManager(Context context) {
+    StatusBarManager(Context context) {
         this.mContext = context;
     }
 
     private synchronized IStatusBarService getService() {
         if (this.mService == null) {
-            IStatusBarService asInterface = IStatusBarService.Stub.asInterface(ServiceManager.getService(Context.STATUS_BAR_SERVICE));
-            this.mService = asInterface;
-            if (asInterface == null) {
+            this.mService = IStatusBarService.Stub.asInterface(ServiceManager.getService(Context.STATUS_BAR_SERVICE));
+            if (this.mService == null) {
                 Slog.w(TAG, "warning: no STATUS_BAR_SERVICE");
             }
         }
@@ -631,7 +623,6 @@ public class StatusBarManager {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class DisableInfo {
         private boolean mClock;
         private boolean mNavigateHome;
@@ -807,8 +798,7 @@ public class StatusBarManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class RequestResultCallback extends IAddTileResultCallback.Stub {
+    static final class RequestResultCallback extends IAddTileResultCallback.Stub {
         private final Consumer<Integer> mCallback;
         private final Executor mExecutor;
 
@@ -817,6 +807,7 @@ public class StatusBarManager {
             this.mCallback = callback;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTileRequest$0(int userResponse) {
             this.mCallback.accept(Integer.valueOf(userResponse));
         }
@@ -832,7 +823,6 @@ public class StatusBarManager {
         }
     }
 
-    /* loaded from: classes.dex */
     static final class UndoCallback extends IUndoMediaTransferCallback.Stub {
         private final Runnable mCallback;
         private final Executor mExecutor;
@@ -853,9 +843,7 @@ public class StatusBarManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public static final class NearbyMediaDevicesProviderWrapper extends INearbyMediaDevicesProvider.Stub {
+    static final class NearbyMediaDevicesProviderWrapper extends INearbyMediaDevicesProvider.Stub {
         private final NearbyMediaDevicesProvider mProvider;
         private final Map<INearbyMediaDevicesUpdateCallback, Consumer<List<NearbyDevice>>> mRegisteredCallbacks = new HashMap();
 
@@ -875,7 +863,7 @@ public class StatusBarManager {
             this.mProvider.registerNearbyDevicesCallback(callbackAsConsumer);
         }
 
-        public static /* synthetic */ void lambda$registerNearbyDevicesCallback$0(INearbyMediaDevicesUpdateCallback callback, List nearbyDevices) {
+        static /* synthetic */ void lambda$registerNearbyDevicesCallback$0(INearbyMediaDevicesUpdateCallback callback, List nearbyDevices) {
             try {
                 callback.onDevicesUpdated(nearbyDevices);
             } catch (RemoteException ex) {

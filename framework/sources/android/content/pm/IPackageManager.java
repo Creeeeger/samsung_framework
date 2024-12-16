@@ -1,5 +1,7 @@
 package android.content.pm;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,10 +23,13 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.os.IRemoteCallback;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
+import android.os.PermissionEnforcer;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,15 +63,9 @@ public interface IPackageManager extends IInterface {
 
     boolean canRequestPackageInstalls(String str, int i) throws RemoteException;
 
-    void cancelEMPHandlerSendPendingBroadcast() throws RemoteException;
-
     String[] canonicalToCurrentPackageNames(String[] strArr) throws RemoteException;
 
     void changeMonetizationBadgeState(String str, String str2) throws RemoteException;
-
-    String[] checkASKSTarget(int i) throws RemoteException;
-
-    void checkDeletableListForASKS() throws RemoteException;
 
     void checkPackageStartable(String str, int i) throws RemoteException;
 
@@ -77,6 +76,8 @@ public interface IPackageManager extends IInterface {
     int checkUidPermission(String str, int i) throws RemoteException;
 
     int checkUidSignatures(int i, int i2) throws RemoteException;
+
+    void clearAppCategoryHintUser(String str) throws RemoteException;
 
     void clearApplicationProfileData(String str) throws RemoteException;
 
@@ -129,7 +130,13 @@ public interface IPackageManager extends IInterface {
 
     List<String> getAllPackages() throws RemoteException;
 
+    Map<String, String> getAppCategoryHintUserMap() throws RemoteException;
+
+    Map<String, String[]> getAppCategoryInfos(String str) throws RemoteException;
+
     ParcelFileDescriptor getAppMetadataFd(String str, int i) throws RemoteException;
+
+    int getAppMetadataSource(String str, int i) throws RemoteException;
 
     String[] getAppOpPermissionPackages(String str, int i) throws RemoteException;
 
@@ -140,6 +147,10 @@ public interface IPackageManager extends IInterface {
     boolean getApplicationHiddenSettingAsUser(String str, int i) throws RemoteException;
 
     ApplicationInfo getApplicationInfo(String str, long j, int i) throws RemoteException;
+
+    Bitmap getArchivedAppIcon(String str, UserHandle userHandle, String str2) throws RemoteException;
+
+    ArchivedPackageParcel getArchivedPackage(String str, int i) throws RemoteException;
 
     IArtManager getArtManager() throws RemoteException;
 
@@ -156,6 +167,8 @@ public interface IPackageManager extends IInterface {
     byte[] getDefaultAppsBackup(int i) throws RemoteException;
 
     String getDefaultTextClassifierPackageName() throws RemoteException;
+
+    ComponentName getDomainVerificationAgent(int i) throws RemoteException;
 
     byte[] getDomainVerificationBackup(int i) throws RemoteException;
 
@@ -259,8 +272,6 @@ public interface IPackageManager extends IInterface {
 
     int getPrivateFlagsForUid(int i) throws RemoteException;
 
-    int getProgressionOfPackageChanged() throws RemoteException;
-
     PackageManager.Property getPropertyAsUser(String str, String str2, String str3, int i) throws RemoteException;
 
     ProviderInfo getProviderInfo(ComponentName componentName, long j, int i) throws RemoteException;
@@ -291,23 +302,28 @@ public interface IPackageManager extends IInterface {
 
     Bundle getSuspendedPackageAppExtras(String str, int i) throws RemoteException;
 
+    String getSuspendingPackage(String str, int i) throws RemoteException;
+
     ParceledListSlice getSystemAvailableFeatures() throws RemoteException;
 
     String getSystemCaptionsServicePackageName() throws RemoteException;
 
+    @Deprecated
     String[] getSystemSharedLibraryNames() throws RemoteException;
+
+    Map<String, String> getSystemSharedLibraryNamesAndPaths() throws RemoteException;
 
     String getSystemTextClassifierPackageName() throws RemoteException;
 
     int getTargetSdkVersion(String str) throws RemoteException;
-
-    String getUNvalueForASKS() throws RemoteException;
 
     int getUidForSharedUser(String str) throws RemoteException;
 
     ParceledListSlice getUnknownSourcePackagesAsUser(long j, int i) throws RemoteException;
 
     String[] getUnsuspendablePackagesForUser(String[] strArr, int i) throws RemoteException;
+
+    int getUserMinAspectRatio(String str, int i) throws RemoteException;
 
     VerifierDeviceIdentity getVerifierDeviceIdentity() throws RemoteException;
 
@@ -327,6 +343,8 @@ public interface IPackageManager extends IInterface {
 
     int installExistingPackageAsUser(String str, int i, int i2, int i3, List<String> list) throws RemoteException;
 
+    boolean isAppArchivable(String str, UserHandle userHandle) throws RemoteException;
+
     boolean isAutoRevokeWhitelisted(String str) throws RemoteException;
 
     boolean isDeviceUpgrading() throws RemoteException;
@@ -341,11 +359,15 @@ public interface IPackageManager extends IInterface {
 
     boolean isPackageDeviceAdminOnAnyUser(String str) throws RemoteException;
 
+    boolean isPackageQuarantinedForUser(String str, int i) throws RemoteException;
+
     boolean isPackageSignedByKeySet(String str, KeySet keySet) throws RemoteException;
 
     boolean isPackageSignedByKeySetExactly(String str, KeySet keySet) throws RemoteException;
 
     boolean isPackageStateProtected(String str, int i) throws RemoteException;
+
+    boolean isPackageStoppedForUser(String str, int i) throws RemoteException;
 
     boolean isPackageSuspendedForUser(String str, int i) throws RemoteException;
 
@@ -409,6 +431,8 @@ public interface IPackageManager extends IInterface {
 
     void registerMoveCallback(IPackageMoveObserver iPackageMoveObserver) throws RemoteException;
 
+    void registerPackageMonitorCallback(IRemoteCallback iRemoteCallback, int i) throws RemoteException;
+
     void relinquishUpdateOwnership(String str) throws RemoteException;
 
     boolean removeCrossProfileIntentFilter(IntentFilter intentFilter, String str, int i, int i2, int i3) throws RemoteException;
@@ -443,11 +467,11 @@ public interface IPackageManager extends IInterface {
 
     void sendDeviceCustomizationReadyBroadcast() throws RemoteException;
 
+    void setAppCategoryHintUser(String str, int i) throws RemoteException;
+
     void setApplicationCategoryHint(String str, int i, String str2) throws RemoteException;
 
     void setApplicationEnabledSetting(String str, int i, int i2, int i3, String str2) throws RemoteException;
-
-    void setApplicationEnabledSettingWithList(List<String> list, int i, int i2, boolean z, boolean z2, int i3, String str) throws RemoteException;
 
     boolean setApplicationHiddenSettingAsUser(String str, boolean z, int i) throws RemoteException;
 
@@ -479,7 +503,7 @@ public interface IPackageManager extends IInterface {
 
     void setPackageStoppedState(String str, boolean z, int i) throws RemoteException;
 
-    String[] setPackagesSuspendedAsUser(String[] strArr, boolean z, PersistableBundle persistableBundle, PersistableBundle persistableBundle2, SuspendDialogInfo suspendDialogInfo, String str, int i) throws RemoteException;
+    String[] setPackagesSuspendedAsUser(String[] strArr, boolean z, PersistableBundle persistableBundle, PersistableBundle persistableBundle2, SuspendDialogInfo suspendDialogInfo, int i, String str, int i2, int i3) throws RemoteException;
 
     boolean setRequiredForSystemUser(String str, boolean z) throws RemoteException;
 
@@ -491,13 +515,15 @@ public interface IPackageManager extends IInterface {
 
     boolean setSystemAppInstallState(String str, boolean z, int i) throws RemoteException;
 
-    void setTrustTimebyStatusChanged() throws RemoteException;
-
     void setUpdateAvailable(String str, boolean z) throws RemoteException;
+
+    void setUserMinAspectRatio(String str, int i, int i2) throws RemoteException;
 
     boolean shouldAppSupportBadgeIcon(String str) throws RemoteException;
 
     void unregisterMoveCallback(IPackageMoveObserver iPackageMoveObserver) throws RemoteException;
+
+    void unregisterPackageMonitorCallback(IRemoteCallback iRemoteCallback) throws RemoteException;
 
     @Deprecated
     boolean updateIntentVerificationStatus(String str, int i, int i2) throws RemoteException;
@@ -509,7 +535,6 @@ public interface IPackageManager extends IInterface {
 
     boolean waitForHandler(long j, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPackageManager {
         @Override // android.content.pm.IPackageManager
         public void checkPackageStartable(String packageName, int userId) throws RemoteException {
@@ -833,7 +858,7 @@ public interface IPackageManager extends IInterface {
         }
 
         @Override // android.content.pm.IPackageManager
-        public String[] setPackagesSuspendedAsUser(String[] packageNames, boolean suspended, PersistableBundle appExtras, PersistableBundle launcherExtras, SuspendDialogInfo dialogInfo, String callingPackage, int userId) throws RemoteException {
+        public String[] setPackagesSuspendedAsUser(String[] packageNames, boolean suspended, PersistableBundle appExtras, PersistableBundle launcherExtras, SuspendDialogInfo dialogInfo, int flags, String suspendingPackage, int suspendingUserId, int targetUserId) throws RemoteException {
             return null;
         }
 
@@ -848,7 +873,22 @@ public interface IPackageManager extends IInterface {
         }
 
         @Override // android.content.pm.IPackageManager
+        public boolean isPackageQuarantinedForUser(String packageName, int userId) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public boolean isPackageStoppedForUser(String packageName, int userId) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.content.pm.IPackageManager
         public Bundle getSuspendedPackageAppExtras(String packageName, int userId) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public String getSuspendingPackage(String packageName, int userId) throws RemoteException {
             return null;
         }
 
@@ -960,6 +1000,11 @@ public interface IPackageManager extends IInterface {
 
         @Override // android.content.pm.IPackageManager
         public String[] getSystemSharedLibraryNames() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public Map<String, String> getSystemSharedLibraryNamesAndPaths() throws RemoteException {
             return null;
         }
 
@@ -1438,6 +1483,15 @@ public interface IPackageManager extends IInterface {
         }
 
         @Override // android.content.pm.IPackageManager
+        public int getUserMinAspectRatio(String packageName, int userId) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public void setUserMinAspectRatio(String packageName, int userId, int aspectRatio) throws RemoteException {
+        }
+
+        @Override // android.content.pm.IPackageManager
         public List<String> getMimeGroup(String packageName, String group) throws RemoteException {
             return null;
         }
@@ -1523,6 +1577,59 @@ public interface IPackageManager extends IInterface {
         }
 
         @Override // android.content.pm.IPackageManager
+        public void registerPackageMonitorCallback(IRemoteCallback callback, int userId) throws RemoteException {
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public void unregisterPackageMonitorCallback(IRemoteCallback callback) throws RemoteException {
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public ArchivedPackageParcel getArchivedPackage(String packageName, int userId) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public Bitmap getArchivedAppIcon(String packageName, UserHandle user, String callingPackageName) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public boolean isAppArchivable(String packageName, UserHandle user) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public int getAppMetadataSource(String packageName, int userId) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public ComponentName getDomainVerificationAgent(int userId) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public List<String> getPackageListForDualDarPolicy(String packageType) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public boolean createEncAppData(String packageName, int userId) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public boolean removeEncUserDir(int userId) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public boolean removeEncPkgDir(int userId, String pkgName) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.content.pm.IPackageManager
         public boolean getMetadataForIconTray(String packageName, String metadata, int userId, List<String> feature) throws RemoteException {
             return false;
         }
@@ -1543,59 +1650,8 @@ public interface IPackageManager extends IInterface {
         }
 
         @Override // android.content.pm.IPackageManager
-        public List<String> getPackageListForDualDarPolicy(String packageType) throws RemoteException {
-            return null;
-        }
-
-        @Override // android.content.pm.IPackageManager
         public boolean isPackageAutoDisabled(String packageName, int uid) throws RemoteException {
             return false;
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public boolean createEncAppData(String packageName, int userId) throws RemoteException {
-            return false;
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public boolean removeEncUserDir(int userId) throws RemoteException {
-            return false;
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public boolean removeEncPkgDir(int userId, String pkgName) throws RemoteException {
-            return false;
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public void setApplicationEnabledSettingWithList(List<String> listPackageName, int newState, int flags, boolean usePending, boolean startNow, int userId, String callingPackage) throws RemoteException {
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public int getProgressionOfPackageChanged() throws RemoteException {
-            return 0;
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public void cancelEMPHandlerSendPendingBroadcast() throws RemoteException {
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public void checkDeletableListForASKS() throws RemoteException {
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public void setTrustTimebyStatusChanged() throws RemoteException {
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public String getUNvalueForASKS() throws RemoteException {
-            return null;
-        }
-
-        @Override // android.content.pm.IPackageManager
-        public String[] checkASKSTarget(int type) throws RemoteException {
-            return null;
         }
 
         @Override // android.content.pm.IPackageManager
@@ -1612,189 +1668,214 @@ public interface IPackageManager extends IInterface {
             return false;
         }
 
+        @Override // android.content.pm.IPackageManager
+        public void setAppCategoryHintUser(String pkgName, int category) throws RemoteException {
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public void clearAppCategoryHintUser(String pkgName) throws RemoteException {
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public Map<String, String> getAppCategoryHintUserMap() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.IPackageManager
+        public Map<String, String[]> getAppCategoryInfos(String pkgName) throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPackageManager {
         public static final String DESCRIPTOR = "android.content.pm.IPackageManager";
         static final int TRANSACTION_activitySupportsIntentAsUser = 12;
         static final int TRANSACTION_addCrossProfileIntentFilter = 65;
-        static final int TRANSACTION_addPermission = 189;
-        static final int TRANSACTION_addPermissionAsync = 190;
+        static final int TRANSACTION_addPermission = 193;
+        static final int TRANSACTION_addPermissionAsync = 194;
         static final int TRANSACTION_addPersistentPreferredActivity = 62;
         static final int TRANSACTION_addPreferredActivity = 58;
-        static final int TRANSACTION_applyRuntimePermissionsForAllApplicationsForMDM = 212;
-        static final int TRANSACTION_applyRuntimePermissionsForMDM = 211;
+        static final int TRANSACTION_applyRuntimePermissionsForAllApplicationsForMDM = 218;
+        static final int TRANSACTION_applyRuntimePermissionsForMDM = 217;
         static final int TRANSACTION_canForwardTo = 29;
-        static final int TRANSACTION_canPackageQuery = 214;
-        static final int TRANSACTION_canRequestPackageInstalls = 158;
-        static final int TRANSACTION_cancelEMPHandlerSendPendingBroadcast = 227;
+        static final int TRANSACTION_canPackageQuery = 220;
+        static final int TRANSACTION_canRequestPackageInstalls = 162;
         static final int TRANSACTION_canonicalToCurrentPackageNames = 8;
-        static final int TRANSACTION_changeMonetizationBadgeState = 233;
-        static final int TRANSACTION_checkASKSTarget = 231;
-        static final int TRANSACTION_checkDeletableListForASKS = 228;
+        static final int TRANSACTION_changeMonetizationBadgeState = 239;
         static final int TRANSACTION_checkPackageStartable = 1;
-        static final int TRANSACTION_checkPermission = 192;
+        static final int TRANSACTION_checkPermission = 196;
         static final int TRANSACTION_checkSignatures = 17;
-        static final int TRANSACTION_checkUidPermission = 194;
+        static final int TRANSACTION_checkUidPermission = 198;
         static final int TRANSACTION_checkUidSignatures = 18;
-        static final int TRANSACTION_clearApplicationProfileData = 96;
-        static final int TRANSACTION_clearApplicationUserData = 95;
+        static final int TRANSACTION_clearAppCategoryHintUser = 242;
+        static final int TRANSACTION_clearApplicationProfileData = 99;
+        static final int TRANSACTION_clearApplicationUserData = 98;
         static final int TRANSACTION_clearCrossProfileIntentFilters = 67;
         static final int TRANSACTION_clearPackagePersistentPreferredActivities = 63;
         static final int TRANSACTION_clearPackagePreferredActivities = 60;
-        static final int TRANSACTION_clearPackagePreferredActivitiesAsUserForMDM = 210;
+        static final int TRANSACTION_clearPackagePreferredActivitiesAsUserForMDM = 216;
         static final int TRANSACTION_clearPersistentPreferredActivity = 64;
-        static final int TRANSACTION_createEncAppData = 222;
+        static final int TRANSACTION_createEncAppData = 230;
         static final int TRANSACTION_currentToCanonicalPackageNames = 7;
-        static final int TRANSACTION_deleteApplicationCacheFiles = 93;
-        static final int TRANSACTION_deleteApplicationCacheFilesAsUser = 94;
+        static final int TRANSACTION_deleteApplicationCacheFiles = 96;
+        static final int TRANSACTION_deleteApplicationCacheFilesAsUser = 97;
         static final int TRANSACTION_deleteExistingPackageAsUser = 52;
         static final int TRANSACTION_deletePackageAsUser = 50;
         static final int TRANSACTION_deletePackageVersioned = 51;
-        static final int TRANSACTION_deletePreloadsFileCache = 159;
-        static final int TRANSACTION_enterSafeMode = 102;
-        static final int TRANSACTION_extendVerificationTimeout = 121;
+        static final int TRANSACTION_deletePreloadsFileCache = 163;
+        static final int TRANSACTION_enterSafeMode = 106;
+        static final int TRANSACTION_extendVerificationTimeout = 125;
         static final int TRANSACTION_findPersistentPreferredActivity = 28;
         static final int TRANSACTION_finishPackageInstall = 46;
-        static final int TRANSACTION_flushPackageRestrictionsAsUser = 89;
-        static final int TRANSACTION_freeStorage = 92;
-        static final int TRANSACTION_freeStorageAndNotify = 91;
+        static final int TRANSACTION_flushPackageRestrictionsAsUser = 92;
+        static final int TRANSACTION_freeStorage = 95;
+        static final int TRANSACTION_freeStorageAndNotify = 94;
         static final int TRANSACTION_getActivityInfo = 11;
-        static final int TRANSACTION_getAllIntentFilters = 126;
+        static final int TRANSACTION_getAllIntentFilters = 130;
         static final int TRANSACTION_getAllPackages = 19;
+        static final int TRANSACTION_getAppCategoryHintUserMap = 243;
+        static final int TRANSACTION_getAppCategoryInfos = 244;
         static final int TRANSACTION_getAppMetadataFd = 37;
-        static final int TRANSACTION_getAppOpPermissionPackages = 187;
-        static final int TRANSACTION_getAppPredictionServicePackageName = 174;
-        static final int TRANSACTION_getApplicationEnabledSetting = 87;
-        static final int TRANSACTION_getApplicationHiddenSettingAsUser = 132;
+        static final int TRANSACTION_getAppMetadataSource = 227;
+        static final int TRANSACTION_getAppOpPermissionPackages = 191;
+        static final int TRANSACTION_getAppPredictionServicePackageName = 178;
+        static final int TRANSACTION_getApplicationEnabledSetting = 90;
+        static final int TRANSACTION_getApplicationHiddenSettingAsUser = 136;
         static final int TRANSACTION_getApplicationInfo = 9;
-        static final int TRANSACTION_getArtManager = 164;
-        static final int TRANSACTION_getAttentionServicePackageName = 171;
-        static final int TRANSACTION_getBlockUninstallForUser = 137;
-        static final int TRANSACTION_getChangedPackages = 153;
-        static final int TRANSACTION_getComponentEnabledSetting = 85;
-        static final int TRANSACTION_getDeclaredSharedLibraries = 157;
-        static final int TRANSACTION_getDefaultAppsBackup = 75;
-        static final int TRANSACTION_getDefaultTextClassifierPackageName = 169;
-        static final int TRANSACTION_getDomainVerificationBackup = 77;
+        static final int TRANSACTION_getArchivedAppIcon = 225;
+        static final int TRANSACTION_getArchivedPackage = 224;
+        static final int TRANSACTION_getArtManager = 168;
+        static final int TRANSACTION_getAttentionServicePackageName = 175;
+        static final int TRANSACTION_getBlockUninstallForUser = 141;
+        static final int TRANSACTION_getChangedPackages = 157;
+        static final int TRANSACTION_getComponentEnabledSetting = 88;
+        static final int TRANSACTION_getDeclaredSharedLibraries = 161;
+        static final int TRANSACTION_getDefaultAppsBackup = 78;
+        static final int TRANSACTION_getDefaultTextClassifierPackageName = 173;
+        static final int TRANSACTION_getDomainVerificationAgent = 228;
+        static final int TRANSACTION_getDomainVerificationBackup = 80;
         static final int TRANSACTION_getFlagsForUid = 24;
-        static final int TRANSACTION_getGrantedPermissionsForMDM = 209;
-        static final int TRANSACTION_getHarmfulAppWarning = 166;
-        static final int TRANSACTION_getHoldLockToken = 202;
-        static final int TRANSACTION_getHomeActivities = 79;
-        static final int TRANSACTION_getIncidentReportApproverPackageName = 177;
-        static final int TRANSACTION_getInitialNonStoppedSystemPackages = 101;
-        static final int TRANSACTION_getInstallLocation = 118;
-        static final int TRANSACTION_getInstallReason = 155;
+        static final int TRANSACTION_getGrantedPermissionsForMDM = 215;
+        static final int TRANSACTION_getHarmfulAppWarning = 170;
+        static final int TRANSACTION_getHoldLockToken = 208;
+        static final int TRANSACTION_getHomeActivities = 82;
+        static final int TRANSACTION_getIncidentReportApproverPackageName = 181;
+        static final int TRANSACTION_getInitialNonStoppedSystemPackages = 105;
+        static final int TRANSACTION_getInstallLocation = 122;
+        static final int TRANSACTION_getInstallReason = 159;
         static final int TRANSACTION_getInstallSourceInfo = 54;
         static final int TRANSACTION_getInstalledApplications = 39;
-        static final int TRANSACTION_getInstalledModules = 180;
+        static final int TRANSACTION_getInstalledModules = 184;
         static final int TRANSACTION_getInstalledPackages = 36;
         static final int TRANSACTION_getInstallerPackageName = 53;
-        static final int TRANSACTION_getInstantAppAndroidId = 163;
-        static final int TRANSACTION_getInstantAppCookie = 145;
-        static final int TRANSACTION_getInstantAppIcon = 147;
-        static final int TRANSACTION_getInstantAppInstallerComponent = 162;
-        static final int TRANSACTION_getInstantAppResolverComponent = 160;
-        static final int TRANSACTION_getInstantAppResolverSettingsComponent = 161;
-        static final int TRANSACTION_getInstantApps = 144;
+        static final int TRANSACTION_getInstantAppAndroidId = 167;
+        static final int TRANSACTION_getInstantAppCookie = 149;
+        static final int TRANSACTION_getInstantAppIcon = 151;
+        static final int TRANSACTION_getInstantAppInstallerComponent = 166;
+        static final int TRANSACTION_getInstantAppResolverComponent = 164;
+        static final int TRANSACTION_getInstantAppResolverSettingsComponent = 165;
+        static final int TRANSACTION_getInstantApps = 148;
         static final int TRANSACTION_getInstrumentationInfoAsUser = 44;
-        static final int TRANSACTION_getIntentFilterVerifications = 125;
-        static final int TRANSACTION_getIntentVerificationStatus = 123;
-        static final int TRANSACTION_getKeySetByAlias = 138;
+        static final int TRANSACTION_getIntentFilterVerifications = 129;
+        static final int TRANSACTION_getIntentVerificationStatus = 127;
+        static final int TRANSACTION_getKeySetByAlias = 142;
         static final int TRANSACTION_getLastChosenActivity = 56;
-        static final int TRANSACTION_getLaunchIntentSenderForPackage = 186;
-        static final int TRANSACTION_getMetadataForIconTray = 216;
-        static final int TRANSACTION_getMimeGroup = 198;
-        static final int TRANSACTION_getModuleInfo = 181;
-        static final int TRANSACTION_getMoveStatus = 111;
+        static final int TRANSACTION_getLaunchIntentSenderForPackage = 190;
+        static final int TRANSACTION_getMetadataForIconTray = 233;
+        static final int TRANSACTION_getMimeGroup = 204;
+        static final int TRANSACTION_getModuleInfo = 185;
+        static final int TRANSACTION_getMoveStatus = 115;
         static final int TRANSACTION_getNameForUid = 21;
         static final int TRANSACTION_getNamesForUids = 22;
         static final int TRANSACTION_getPackageGids = 6;
-        static final int TRANSACTION_getPackageGrantedPermissionsForMDM = 208;
+        static final int TRANSACTION_getPackageGrantedPermissionsForMDM = 214;
         static final int TRANSACTION_getPackageInfo = 3;
         static final int TRANSACTION_getPackageInfoVersioned = 4;
-        static final int TRANSACTION_getPackageInstaller = 135;
-        static final int TRANSACTION_getPackageListForDualDarPolicy = 220;
-        static final int TRANSACTION_getPackageSizeInfo = 97;
+        static final int TRANSACTION_getPackageInstaller = 139;
+        static final int TRANSACTION_getPackageListForDualDarPolicy = 229;
+        static final int TRANSACTION_getPackageSizeInfo = 100;
         static final int TRANSACTION_getPackageUid = 5;
         static final int TRANSACTION_getPackagesForUid = 20;
         static final int TRANSACTION_getPackagesHoldingPermissions = 38;
-        static final int TRANSACTION_getPermissionControllerPackageName = 142;
-        static final int TRANSACTION_getPermissionGroupInfo = 188;
+        static final int TRANSACTION_getPermissionControllerPackageName = 146;
+        static final int TRANSACTION_getPermissionGroupInfo = 192;
         static final int TRANSACTION_getPersistentApplications = 40;
         static final int TRANSACTION_getPreferredActivities = 61;
-        static final int TRANSACTION_getPreferredActivityBackup = 73;
+        static final int TRANSACTION_getPreferredActivityBackup = 76;
         static final int TRANSACTION_getPrivateFlagsForUid = 25;
-        static final int TRANSACTION_getProgressionOfPackageChanged = 226;
-        static final int TRANSACTION_getPropertyAsUser = 204;
+        static final int TRANSACTION_getPropertyAsUser = 210;
         static final int TRANSACTION_getProviderInfo = 15;
         static final int TRANSACTION_getReceiverInfo = 13;
-        static final int TRANSACTION_getRequestedRuntimePermissionsForMDM = 213;
-        static final int TRANSACTION_getRotationResolverPackageName = 172;
-        static final int TRANSACTION_getRuntimePermissionsVersion = 182;
-        static final int TRANSACTION_getSdkSandboxPackageName = 143;
+        static final int TRANSACTION_getRequestedRuntimePermissionsForMDM = 219;
+        static final int TRANSACTION_getRotationResolverPackageName = 176;
+        static final int TRANSACTION_getRuntimePermissionsVersion = 186;
+        static final int TRANSACTION_getSdkSandboxPackageName = 147;
         static final int TRANSACTION_getServiceInfo = 14;
-        static final int TRANSACTION_getServicesSystemSharedLibraryPackageName = 151;
-        static final int TRANSACTION_getSetupWizardPackageName = 176;
-        static final int TRANSACTION_getSharedLibraries = 156;
-        static final int TRANSACTION_getSharedSystemSharedLibraryPackageName = 152;
-        static final int TRANSACTION_getSigningKeySet = 139;
-        static final int TRANSACTION_getSplashScreenTheme = 196;
-        static final int TRANSACTION_getSuspendedPackageAppExtras = 72;
-        static final int TRANSACTION_getSystemAvailableFeatures = 99;
-        static final int TRANSACTION_getSystemCaptionsServicePackageName = 175;
-        static final int TRANSACTION_getSystemSharedLibraryNames = 98;
-        static final int TRANSACTION_getSystemTextClassifierPackageName = 170;
+        static final int TRANSACTION_getServicesSystemSharedLibraryPackageName = 155;
+        static final int TRANSACTION_getSetupWizardPackageName = 180;
+        static final int TRANSACTION_getSharedLibraries = 160;
+        static final int TRANSACTION_getSharedSystemSharedLibraryPackageName = 156;
+        static final int TRANSACTION_getSigningKeySet = 143;
+        static final int TRANSACTION_getSplashScreenTheme = 200;
+        static final int TRANSACTION_getSuspendedPackageAppExtras = 74;
+        static final int TRANSACTION_getSuspendingPackage = 75;
+        static final int TRANSACTION_getSystemAvailableFeatures = 103;
+        static final int TRANSACTION_getSystemCaptionsServicePackageName = 179;
+        static final int TRANSACTION_getSystemSharedLibraryNames = 101;
+        static final int TRANSACTION_getSystemSharedLibraryNamesAndPaths = 102;
+        static final int TRANSACTION_getSystemTextClassifierPackageName = 174;
         static final int TRANSACTION_getTargetSdkVersion = 10;
-        static final int TRANSACTION_getUNvalueForASKS = 230;
         static final int TRANSACTION_getUidForSharedUser = 23;
-        static final int TRANSACTION_getUnknownSourcePackagesAsUser = 219;
+        static final int TRANSACTION_getUnknownSourcePackagesAsUser = 236;
         static final int TRANSACTION_getUnsuspendablePackagesForUser = 70;
-        static final int TRANSACTION_getVerifierDeviceIdentity = 127;
-        static final int TRANSACTION_getWellbeingPackageName = 173;
-        static final int TRANSACTION_grantRuntimePermission = 193;
-        static final int TRANSACTION_hasSigningCertificate = 167;
-        static final int TRANSACTION_hasSystemFeature = 100;
-        static final int TRANSACTION_hasSystemUidErrors = 104;
-        static final int TRANSACTION_hasUidSigningCertificate = 168;
-        static final int TRANSACTION_holdLock = 203;
-        static final int TRANSACTION_installExistingPackageAsUser = 119;
-        static final int TRANSACTION_isAutoRevokeWhitelisted = 199;
-        static final int TRANSACTION_isDeviceUpgrading = 129;
-        static final int TRANSACTION_isFirstBoot = 128;
-        static final int TRANSACTION_isInstantApp = 148;
-        static final int TRANSACTION_isPackageAutoDisabled = 221;
+        static final int TRANSACTION_getUserMinAspectRatio = 202;
+        static final int TRANSACTION_getVerifierDeviceIdentity = 131;
+        static final int TRANSACTION_getWellbeingPackageName = 177;
+        static final int TRANSACTION_grantRuntimePermission = 197;
+        static final int TRANSACTION_hasSigningCertificate = 171;
+        static final int TRANSACTION_hasSystemFeature = 104;
+        static final int TRANSACTION_hasSystemUidErrors = 108;
+        static final int TRANSACTION_hasUidSigningCertificate = 172;
+        static final int TRANSACTION_holdLock = 209;
+        static final int TRANSACTION_installExistingPackageAsUser = 123;
+        static final int TRANSACTION_isAppArchivable = 226;
+        static final int TRANSACTION_isAutoRevokeWhitelisted = 205;
+        static final int TRANSACTION_isDeviceUpgrading = 133;
+        static final int TRANSACTION_isFirstBoot = 132;
+        static final int TRANSACTION_isInstantApp = 152;
+        static final int TRANSACTION_isPackageAutoDisabled = 237;
         static final int TRANSACTION_isPackageAvailable = 2;
-        static final int TRANSACTION_isPackageDeviceAdminOnAnyUser = 154;
-        static final int TRANSACTION_isPackageSignedByKeySet = 140;
-        static final int TRANSACTION_isPackageSignedByKeySetExactly = 141;
-        static final int TRANSACTION_isPackageStateProtected = 178;
+        static final int TRANSACTION_isPackageDeviceAdminOnAnyUser = 158;
+        static final int TRANSACTION_isPackageQuarantinedForUser = 72;
+        static final int TRANSACTION_isPackageSignedByKeySet = 144;
+        static final int TRANSACTION_isPackageSignedByKeySetExactly = 145;
+        static final int TRANSACTION_isPackageStateProtected = 182;
+        static final int TRANSACTION_isPackageStoppedForUser = 73;
         static final int TRANSACTION_isPackageSuspendedForUser = 71;
         static final int TRANSACTION_isProtectedBroadcast = 16;
-        static final int TRANSACTION_isSafeMode = 103;
-        static final int TRANSACTION_isStorageLow = 130;
-        static final int TRANSACTION_isSystemCompressedPackage = 232;
+        static final int TRANSACTION_isSafeMode = 107;
+        static final int TRANSACTION_isStorageLow = 134;
+        static final int TRANSACTION_isSystemCompressedPackage = 238;
         static final int TRANSACTION_isUidPrivileged = 26;
-        static final int TRANSACTION_isUnknownSourcePackage = 218;
-        static final int TRANSACTION_logAppProcessStartIfNeeded = 88;
-        static final int TRANSACTION_makeProviderVisible = 200;
-        static final int TRANSACTION_makeUidVisible = 201;
-        static final int TRANSACTION_movePackage = 114;
-        static final int TRANSACTION_movePackageToSd = 115;
-        static final int TRANSACTION_movePrimaryStorage = 116;
-        static final int TRANSACTION_notifyDexLoad = 106;
-        static final int TRANSACTION_notifyPackageUse = 105;
-        static final int TRANSACTION_notifyPackagesReplacedReceived = 184;
-        static final int TRANSACTION_overrideLabelAndIcon = 81;
-        static final int TRANSACTION_performDexOptForADCP = 110;
-        static final int TRANSACTION_performDexOptMode = 108;
-        static final int TRANSACTION_performDexOptSecondary = 109;
+        static final int TRANSACTION_isUnknownSourcePackage = 235;
+        static final int TRANSACTION_logAppProcessStartIfNeeded = 91;
+        static final int TRANSACTION_makeProviderVisible = 206;
+        static final int TRANSACTION_makeUidVisible = 207;
+        static final int TRANSACTION_movePackage = 118;
+        static final int TRANSACTION_movePackageToSd = 119;
+        static final int TRANSACTION_movePrimaryStorage = 120;
+        static final int TRANSACTION_notifyDexLoad = 110;
+        static final int TRANSACTION_notifyPackageUse = 109;
+        static final int TRANSACTION_notifyPackagesReplacedReceived = 188;
+        static final int TRANSACTION_overrideLabelAndIcon = 84;
+        static final int TRANSACTION_performDexOptForADCP = 114;
+        static final int TRANSACTION_performDexOptMode = 112;
+        static final int TRANSACTION_performDexOptSecondary = 113;
         static final int TRANSACTION_queryContentProviders = 43;
         static final int TRANSACTION_queryInstrumentationAsUser = 45;
         static final int TRANSACTION_queryIntentActivities = 30;
@@ -1802,62 +1883,74 @@ public interface IPackageManager extends IInterface {
         static final int TRANSACTION_queryIntentContentProviders = 35;
         static final int TRANSACTION_queryIntentReceivers = 32;
         static final int TRANSACTION_queryIntentServices = 34;
-        static final int TRANSACTION_queryProperty = 205;
+        static final int TRANSACTION_queryProperty = 211;
         static final int TRANSACTION_querySyncProviders = 42;
-        static final int TRANSACTION_registerDexModule = 107;
-        static final int TRANSACTION_registerMoveCallback = 112;
+        static final int TRANSACTION_registerDexModule = 111;
+        static final int TRANSACTION_registerMoveCallback = 116;
+        static final int TRANSACTION_registerPackageMonitorCallback = 222;
         static final int TRANSACTION_relinquishUpdateOwnership = 48;
         static final int TRANSACTION_removeCrossProfileIntentFilter = 66;
-        static final int TRANSACTION_removeEncPkgDir = 224;
-        static final int TRANSACTION_removeEncUserDir = 223;
-        static final int TRANSACTION_removePermission = 191;
+        static final int TRANSACTION_removeEncPkgDir = 232;
+        static final int TRANSACTION_removeEncUserDir = 231;
+        static final int TRANSACTION_removePermission = 195;
         static final int TRANSACTION_replacePreferredActivity = 59;
-        static final int TRANSACTION_requestPackageChecksums = 185;
+        static final int TRANSACTION_requestPackageChecksums = 189;
         static final int TRANSACTION_resetApplicationPreferences = 55;
         static final int TRANSACTION_resolveContentProvider = 41;
         static final int TRANSACTION_resolveIntent = 27;
         static final int TRANSACTION_resolveService = 33;
-        static final int TRANSACTION_restoreDefaultApps = 76;
-        static final int TRANSACTION_restoreDomainVerification = 78;
-        static final int TRANSACTION_restoreLabelAndIcon = 82;
-        static final int TRANSACTION_restorePreferredActivities = 74;
-        static final int TRANSACTION_semIsPermissionRevokedByUserFixed = 217;
-        static final int TRANSACTION_sendDeviceCustomizationReadyBroadcast = 179;
+        static final int TRANSACTION_restoreDefaultApps = 79;
+        static final int TRANSACTION_restoreDomainVerification = 81;
+        static final int TRANSACTION_restoreLabelAndIcon = 85;
+        static final int TRANSACTION_restorePreferredActivities = 77;
+        static final int TRANSACTION_semIsPermissionRevokedByUserFixed = 234;
+        static final int TRANSACTION_sendDeviceCustomizationReadyBroadcast = 183;
+        static final int TRANSACTION_setAppCategoryHintUser = 241;
         static final int TRANSACTION_setApplicationCategoryHint = 49;
-        static final int TRANSACTION_setApplicationEnabledSetting = 86;
-        static final int TRANSACTION_setApplicationEnabledSettingWithList = 225;
-        static final int TRANSACTION_setApplicationHiddenSettingAsUser = 131;
-        static final int TRANSACTION_setBlockUninstallForUser = 136;
-        static final int TRANSACTION_setComponentEnabledSetting = 83;
-        static final int TRANSACTION_setComponentEnabledSettings = 84;
+        static final int TRANSACTION_setApplicationEnabledSetting = 89;
+        static final int TRANSACTION_setApplicationHiddenSettingAsUser = 135;
+        static final int TRANSACTION_setBlockUninstallForUser = 140;
+        static final int TRANSACTION_setComponentEnabledSetting = 86;
+        static final int TRANSACTION_setComponentEnabledSettings = 87;
         static final int TRANSACTION_setDistractingPackageRestrictionsAsUser = 68;
-        static final int TRANSACTION_setHarmfulAppWarning = 165;
-        static final int TRANSACTION_setHomeActivity = 80;
-        static final int TRANSACTION_setInstallLocation = 117;
+        static final int TRANSACTION_setHarmfulAppWarning = 169;
+        static final int TRANSACTION_setHomeActivity = 83;
+        static final int TRANSACTION_setInstallLocation = 121;
         static final int TRANSACTION_setInstallerPackageName = 47;
-        static final int TRANSACTION_setInstantAppCookie = 146;
-        static final int TRANSACTION_setKeepUninstalledPackages = 206;
+        static final int TRANSACTION_setInstantAppCookie = 150;
+        static final int TRANSACTION_setKeepUninstalledPackages = 212;
         static final int TRANSACTION_setLastChosenActivity = 57;
-        static final int TRANSACTION_setLicensePermissionsForMDM = 207;
-        static final int TRANSACTION_setMimeGroup = 195;
-        static final int TRANSACTION_setPackageStoppedState = 90;
+        static final int TRANSACTION_setLicensePermissionsForMDM = 213;
+        static final int TRANSACTION_setMimeGroup = 199;
+        static final int TRANSACTION_setPackageStoppedState = 93;
         static final int TRANSACTION_setPackagesSuspendedAsUser = 69;
-        static final int TRANSACTION_setRequiredForSystemUser = 149;
-        static final int TRANSACTION_setRuntimePermissionsVersion = 183;
-        static final int TRANSACTION_setSplashScreenTheme = 197;
-        static final int TRANSACTION_setSystemAppHiddenUntilInstalled = 133;
-        static final int TRANSACTION_setSystemAppInstallState = 134;
-        static final int TRANSACTION_setTrustTimebyStatusChanged = 229;
-        static final int TRANSACTION_setUpdateAvailable = 150;
-        static final int TRANSACTION_shouldAppSupportBadgeIcon = 234;
-        static final int TRANSACTION_unregisterMoveCallback = 113;
-        static final int TRANSACTION_updateIntentVerificationStatus = 124;
-        static final int TRANSACTION_verifyIntentFilter = 122;
-        static final int TRANSACTION_verifyPendingInstall = 120;
-        static final int TRANSACTION_waitForHandler = 215;
+        static final int TRANSACTION_setRequiredForSystemUser = 153;
+        static final int TRANSACTION_setRuntimePermissionsVersion = 187;
+        static final int TRANSACTION_setSplashScreenTheme = 201;
+        static final int TRANSACTION_setSystemAppHiddenUntilInstalled = 137;
+        static final int TRANSACTION_setSystemAppInstallState = 138;
+        static final int TRANSACTION_setUpdateAvailable = 154;
+        static final int TRANSACTION_setUserMinAspectRatio = 203;
+        static final int TRANSACTION_shouldAppSupportBadgeIcon = 240;
+        static final int TRANSACTION_unregisterMoveCallback = 117;
+        static final int TRANSACTION_unregisterPackageMonitorCallback = 223;
+        static final int TRANSACTION_updateIntentVerificationStatus = 128;
+        static final int TRANSACTION_verifyIntentFilter = 126;
+        static final int TRANSACTION_verifyPendingInstall = 124;
+        static final int TRANSACTION_waitForHandler = 221;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IPackageManager asInterface(IBinder obj) {
@@ -2021,331 +2114,351 @@ public interface IPackageManager extends IInterface {
                 case 71:
                     return "isPackageSuspendedForUser";
                 case 72:
-                    return "getSuspendedPackageAppExtras";
+                    return "isPackageQuarantinedForUser";
                 case 73:
-                    return "getPreferredActivityBackup";
+                    return "isPackageStoppedForUser";
                 case 74:
-                    return "restorePreferredActivities";
+                    return "getSuspendedPackageAppExtras";
                 case 75:
-                    return "getDefaultAppsBackup";
+                    return "getSuspendingPackage";
                 case 76:
-                    return "restoreDefaultApps";
+                    return "getPreferredActivityBackup";
                 case 77:
-                    return "getDomainVerificationBackup";
+                    return "restorePreferredActivities";
                 case 78:
-                    return "restoreDomainVerification";
+                    return "getDefaultAppsBackup";
                 case 79:
-                    return "getHomeActivities";
+                    return "restoreDefaultApps";
                 case 80:
-                    return "setHomeActivity";
+                    return "getDomainVerificationBackup";
                 case 81:
-                    return "overrideLabelAndIcon";
+                    return "restoreDomainVerification";
                 case 82:
-                    return "restoreLabelAndIcon";
+                    return "getHomeActivities";
                 case 83:
-                    return "setComponentEnabledSetting";
+                    return "setHomeActivity";
                 case 84:
-                    return "setComponentEnabledSettings";
+                    return "overrideLabelAndIcon";
                 case 85:
-                    return "getComponentEnabledSetting";
+                    return "restoreLabelAndIcon";
                 case 86:
-                    return "setApplicationEnabledSetting";
+                    return "setComponentEnabledSetting";
                 case 87:
-                    return "getApplicationEnabledSetting";
+                    return "setComponentEnabledSettings";
                 case 88:
-                    return "logAppProcessStartIfNeeded";
+                    return "getComponentEnabledSetting";
                 case 89:
-                    return "flushPackageRestrictionsAsUser";
+                    return "setApplicationEnabledSetting";
                 case 90:
-                    return "setPackageStoppedState";
+                    return "getApplicationEnabledSetting";
                 case 91:
-                    return "freeStorageAndNotify";
+                    return "logAppProcessStartIfNeeded";
                 case 92:
-                    return "freeStorage";
+                    return "flushPackageRestrictionsAsUser";
                 case 93:
-                    return "deleteApplicationCacheFiles";
+                    return "setPackageStoppedState";
                 case 94:
-                    return "deleteApplicationCacheFilesAsUser";
+                    return "freeStorageAndNotify";
                 case 95:
-                    return "clearApplicationUserData";
+                    return "freeStorage";
                 case 96:
-                    return "clearApplicationProfileData";
+                    return "deleteApplicationCacheFiles";
                 case 97:
-                    return "getPackageSizeInfo";
+                    return "deleteApplicationCacheFilesAsUser";
                 case 98:
-                    return "getSystemSharedLibraryNames";
+                    return "clearApplicationUserData";
                 case 99:
-                    return "getSystemAvailableFeatures";
+                    return "clearApplicationProfileData";
                 case 100:
-                    return "hasSystemFeature";
+                    return "getPackageSizeInfo";
                 case 101:
-                    return "getInitialNonStoppedSystemPackages";
+                    return "getSystemSharedLibraryNames";
                 case 102:
-                    return "enterSafeMode";
+                    return "getSystemSharedLibraryNamesAndPaths";
                 case 103:
-                    return "isSafeMode";
+                    return "getSystemAvailableFeatures";
                 case 104:
-                    return "hasSystemUidErrors";
+                    return "hasSystemFeature";
                 case 105:
-                    return "notifyPackageUse";
+                    return "getInitialNonStoppedSystemPackages";
                 case 106:
-                    return "notifyDexLoad";
+                    return "enterSafeMode";
                 case 107:
-                    return "registerDexModule";
+                    return "isSafeMode";
                 case 108:
-                    return "performDexOptMode";
+                    return "hasSystemUidErrors";
                 case 109:
-                    return "performDexOptSecondary";
+                    return "notifyPackageUse";
                 case 110:
-                    return "performDexOptForADCP";
+                    return "notifyDexLoad";
                 case 111:
-                    return "getMoveStatus";
+                    return "registerDexModule";
                 case 112:
-                    return "registerMoveCallback";
+                    return "performDexOptMode";
                 case 113:
-                    return "unregisterMoveCallback";
+                    return "performDexOptSecondary";
                 case 114:
-                    return "movePackage";
+                    return "performDexOptForADCP";
                 case 115:
-                    return "movePackageToSd";
+                    return "getMoveStatus";
                 case 116:
-                    return "movePrimaryStorage";
+                    return "registerMoveCallback";
                 case 117:
-                    return "setInstallLocation";
+                    return "unregisterMoveCallback";
                 case 118:
-                    return "getInstallLocation";
+                    return "movePackage";
                 case 119:
-                    return "installExistingPackageAsUser";
+                    return "movePackageToSd";
                 case 120:
-                    return "verifyPendingInstall";
+                    return "movePrimaryStorage";
                 case 121:
-                    return "extendVerificationTimeout";
+                    return "setInstallLocation";
                 case 122:
-                    return "verifyIntentFilter";
+                    return "getInstallLocation";
                 case 123:
-                    return "getIntentVerificationStatus";
+                    return "installExistingPackageAsUser";
                 case 124:
-                    return "updateIntentVerificationStatus";
+                    return "verifyPendingInstall";
                 case 125:
-                    return "getIntentFilterVerifications";
+                    return "extendVerificationTimeout";
                 case 126:
-                    return "getAllIntentFilters";
+                    return "verifyIntentFilter";
                 case 127:
-                    return "getVerifierDeviceIdentity";
+                    return "getIntentVerificationStatus";
                 case 128:
-                    return "isFirstBoot";
+                    return "updateIntentVerificationStatus";
                 case 129:
-                    return "isDeviceUpgrading";
+                    return "getIntentFilterVerifications";
                 case 130:
-                    return "isStorageLow";
+                    return "getAllIntentFilters";
                 case 131:
-                    return "setApplicationHiddenSettingAsUser";
+                    return "getVerifierDeviceIdentity";
                 case 132:
-                    return "getApplicationHiddenSettingAsUser";
+                    return "isFirstBoot";
                 case 133:
-                    return "setSystemAppHiddenUntilInstalled";
+                    return "isDeviceUpgrading";
                 case 134:
-                    return "setSystemAppInstallState";
+                    return "isStorageLow";
                 case 135:
-                    return "getPackageInstaller";
+                    return "setApplicationHiddenSettingAsUser";
                 case 136:
-                    return "setBlockUninstallForUser";
+                    return "getApplicationHiddenSettingAsUser";
                 case 137:
-                    return "getBlockUninstallForUser";
+                    return "setSystemAppHiddenUntilInstalled";
                 case 138:
-                    return "getKeySetByAlias";
+                    return "setSystemAppInstallState";
                 case 139:
-                    return "getSigningKeySet";
+                    return "getPackageInstaller";
                 case 140:
-                    return "isPackageSignedByKeySet";
+                    return "setBlockUninstallForUser";
                 case 141:
-                    return "isPackageSignedByKeySetExactly";
+                    return "getBlockUninstallForUser";
                 case 142:
-                    return "getPermissionControllerPackageName";
+                    return "getKeySetByAlias";
                 case 143:
-                    return "getSdkSandboxPackageName";
+                    return "getSigningKeySet";
                 case 144:
-                    return "getInstantApps";
+                    return "isPackageSignedByKeySet";
                 case 145:
-                    return "getInstantAppCookie";
+                    return "isPackageSignedByKeySetExactly";
                 case 146:
-                    return "setInstantAppCookie";
+                    return "getPermissionControllerPackageName";
                 case 147:
-                    return "getInstantAppIcon";
+                    return "getSdkSandboxPackageName";
                 case 148:
-                    return "isInstantApp";
+                    return "getInstantApps";
                 case 149:
-                    return "setRequiredForSystemUser";
+                    return "getInstantAppCookie";
                 case 150:
-                    return "setUpdateAvailable";
+                    return "setInstantAppCookie";
                 case 151:
-                    return "getServicesSystemSharedLibraryPackageName";
+                    return "getInstantAppIcon";
                 case 152:
-                    return "getSharedSystemSharedLibraryPackageName";
+                    return "isInstantApp";
                 case 153:
-                    return "getChangedPackages";
+                    return "setRequiredForSystemUser";
                 case 154:
-                    return "isPackageDeviceAdminOnAnyUser";
+                    return "setUpdateAvailable";
                 case 155:
-                    return "getInstallReason";
+                    return "getServicesSystemSharedLibraryPackageName";
                 case 156:
-                    return "getSharedLibraries";
+                    return "getSharedSystemSharedLibraryPackageName";
                 case 157:
-                    return "getDeclaredSharedLibraries";
+                    return "getChangedPackages";
                 case 158:
-                    return "canRequestPackageInstalls";
+                    return "isPackageDeviceAdminOnAnyUser";
                 case 159:
-                    return "deletePreloadsFileCache";
+                    return "getInstallReason";
                 case 160:
-                    return "getInstantAppResolverComponent";
+                    return "getSharedLibraries";
                 case 161:
-                    return "getInstantAppResolverSettingsComponent";
+                    return "getDeclaredSharedLibraries";
                 case 162:
-                    return "getInstantAppInstallerComponent";
+                    return "canRequestPackageInstalls";
                 case 163:
-                    return "getInstantAppAndroidId";
+                    return "deletePreloadsFileCache";
                 case 164:
-                    return "getArtManager";
+                    return "getInstantAppResolverComponent";
                 case 165:
-                    return "setHarmfulAppWarning";
+                    return "getInstantAppResolverSettingsComponent";
                 case 166:
-                    return "getHarmfulAppWarning";
+                    return "getInstantAppInstallerComponent";
                 case 167:
-                    return "hasSigningCertificate";
+                    return "getInstantAppAndroidId";
                 case 168:
-                    return "hasUidSigningCertificate";
+                    return "getArtManager";
                 case 169:
-                    return "getDefaultTextClassifierPackageName";
+                    return "setHarmfulAppWarning";
                 case 170:
-                    return "getSystemTextClassifierPackageName";
+                    return "getHarmfulAppWarning";
                 case 171:
-                    return "getAttentionServicePackageName";
+                    return "hasSigningCertificate";
                 case 172:
-                    return "getRotationResolverPackageName";
+                    return "hasUidSigningCertificate";
                 case 173:
-                    return "getWellbeingPackageName";
+                    return "getDefaultTextClassifierPackageName";
                 case 174:
-                    return "getAppPredictionServicePackageName";
+                    return "getSystemTextClassifierPackageName";
                 case 175:
-                    return "getSystemCaptionsServicePackageName";
+                    return "getAttentionServicePackageName";
                 case 176:
-                    return "getSetupWizardPackageName";
+                    return "getRotationResolverPackageName";
                 case 177:
-                    return "getIncidentReportApproverPackageName";
+                    return "getWellbeingPackageName";
                 case 178:
-                    return "isPackageStateProtected";
+                    return "getAppPredictionServicePackageName";
                 case 179:
-                    return "sendDeviceCustomizationReadyBroadcast";
+                    return "getSystemCaptionsServicePackageName";
                 case 180:
-                    return "getInstalledModules";
+                    return "getSetupWizardPackageName";
                 case 181:
-                    return "getModuleInfo";
+                    return "getIncidentReportApproverPackageName";
                 case 182:
-                    return "getRuntimePermissionsVersion";
+                    return "isPackageStateProtected";
                 case 183:
-                    return "setRuntimePermissionsVersion";
+                    return "sendDeviceCustomizationReadyBroadcast";
                 case 184:
-                    return "notifyPackagesReplacedReceived";
+                    return "getInstalledModules";
                 case 185:
-                    return "requestPackageChecksums";
+                    return "getModuleInfo";
                 case 186:
-                    return "getLaunchIntentSenderForPackage";
+                    return "getRuntimePermissionsVersion";
                 case 187:
-                    return "getAppOpPermissionPackages";
+                    return "setRuntimePermissionsVersion";
                 case 188:
-                    return "getPermissionGroupInfo";
+                    return "notifyPackagesReplacedReceived";
                 case 189:
-                    return "addPermission";
+                    return "requestPackageChecksums";
                 case 190:
-                    return "addPermissionAsync";
+                    return "getLaunchIntentSenderForPackage";
                 case 191:
-                    return "removePermission";
+                    return "getAppOpPermissionPackages";
                 case 192:
-                    return "checkPermission";
+                    return "getPermissionGroupInfo";
                 case 193:
-                    return "grantRuntimePermission";
+                    return "addPermission";
                 case 194:
-                    return "checkUidPermission";
+                    return "addPermissionAsync";
                 case 195:
-                    return "setMimeGroup";
+                    return "removePermission";
                 case 196:
-                    return "getSplashScreenTheme";
+                    return "checkPermission";
                 case 197:
-                    return "setSplashScreenTheme";
+                    return "grantRuntimePermission";
                 case 198:
-                    return "getMimeGroup";
+                    return "checkUidPermission";
                 case 199:
-                    return "isAutoRevokeWhitelisted";
+                    return "setMimeGroup";
                 case 200:
-                    return "makeProviderVisible";
+                    return "getSplashScreenTheme";
                 case 201:
-                    return "makeUidVisible";
+                    return "setSplashScreenTheme";
                 case 202:
-                    return "getHoldLockToken";
+                    return "getUserMinAspectRatio";
                 case 203:
-                    return "holdLock";
+                    return "setUserMinAspectRatio";
                 case 204:
-                    return "getPropertyAsUser";
+                    return "getMimeGroup";
                 case 205:
-                    return "queryProperty";
+                    return "isAutoRevokeWhitelisted";
                 case 206:
-                    return "setKeepUninstalledPackages";
+                    return "makeProviderVisible";
                 case 207:
-                    return "setLicensePermissionsForMDM";
+                    return "makeUidVisible";
                 case 208:
-                    return "getPackageGrantedPermissionsForMDM";
+                    return "getHoldLockToken";
                 case 209:
-                    return "getGrantedPermissionsForMDM";
+                    return "holdLock";
                 case 210:
-                    return "clearPackagePreferredActivitiesAsUserForMDM";
+                    return "getPropertyAsUser";
                 case 211:
-                    return "applyRuntimePermissionsForMDM";
+                    return "queryProperty";
                 case 212:
-                    return "applyRuntimePermissionsForAllApplicationsForMDM";
+                    return "setKeepUninstalledPackages";
                 case 213:
-                    return "getRequestedRuntimePermissionsForMDM";
+                    return "setLicensePermissionsForMDM";
                 case 214:
-                    return "canPackageQuery";
+                    return "getPackageGrantedPermissionsForMDM";
                 case 215:
-                    return "waitForHandler";
+                    return "getGrantedPermissionsForMDM";
                 case 216:
-                    return "getMetadataForIconTray";
+                    return "clearPackagePreferredActivitiesAsUserForMDM";
                 case 217:
-                    return "semIsPermissionRevokedByUserFixed";
+                    return "applyRuntimePermissionsForMDM";
                 case 218:
-                    return "isUnknownSourcePackage";
+                    return "applyRuntimePermissionsForAllApplicationsForMDM";
                 case 219:
-                    return "getUnknownSourcePackagesAsUser";
+                    return "getRequestedRuntimePermissionsForMDM";
                 case 220:
-                    return "getPackageListForDualDarPolicy";
+                    return "canPackageQuery";
                 case 221:
-                    return "isPackageAutoDisabled";
+                    return "waitForHandler";
                 case 222:
-                    return "createEncAppData";
+                    return "registerPackageMonitorCallback";
                 case 223:
-                    return "removeEncUserDir";
+                    return "unregisterPackageMonitorCallback";
                 case 224:
-                    return "removeEncPkgDir";
+                    return "getArchivedPackage";
                 case 225:
-                    return "setApplicationEnabledSettingWithList";
+                    return "getArchivedAppIcon";
                 case 226:
-                    return "getProgressionOfPackageChanged";
+                    return "isAppArchivable";
                 case 227:
-                    return "cancelEMPHandlerSendPendingBroadcast";
+                    return "getAppMetadataSource";
                 case 228:
-                    return "checkDeletableListForASKS";
+                    return "getDomainVerificationAgent";
                 case 229:
-                    return "setTrustTimebyStatusChanged";
+                    return "getPackageListForDualDarPolicy";
                 case 230:
-                    return "getUNvalueForASKS";
+                    return "createEncAppData";
                 case 231:
-                    return "checkASKSTarget";
+                    return "removeEncUserDir";
                 case 232:
-                    return "isSystemCompressedPackage";
+                    return "removeEncPkgDir";
                 case 233:
-                    return "changeMonetizationBadgeState";
+                    return "getMetadataForIconTray";
                 case 234:
+                    return "semIsPermissionRevokedByUserFixed";
+                case 235:
+                    return "isUnknownSourcePackage";
+                case 236:
+                    return "getUnknownSourcePackagesAsUser";
+                case 237:
+                    return "isPackageAutoDisabled";
+                case 238:
+                    return "isSystemCompressedPackage";
+                case 239:
+                    return "changeMonetizationBadgeState";
+                case 240:
                     return "shouldAppSupportBadgeIcon";
+                case 241:
+                    return "setAppCategoryHintUser";
+                case 242:
+                    return "clearAppCategoryHintUser";
+                case 243:
+                    return "getAppCategoryHintUserMap";
+                case 244:
+                    return "getAppCategoryInfos";
                 default:
                     return null;
             }
@@ -2357,1825 +2470,1952 @@ public interface IPackageManager extends IInterface {
         }
 
         @Override // android.os.Binder
-        public boolean onTransact(int code, final Parcel data, Parcel reply, int flags) throws RemoteException {
+        public boolean onTransact(int code, final Parcel data, final Parcel reply, int flags) throws RemoteException {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    checkPackageStartable(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = isPackageAvailable(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    long _arg13 = data.readLong();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PackageInfo _result2 = getPackageInfo(_arg03, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    VersionedPackage _arg04 = (VersionedPackage) data.readTypedObject(VersionedPackage.CREATOR);
+                    long _arg14 = data.readLong();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PackageInfo _result3 = getPackageInfoVersioned(_arg04, _arg14, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    long _arg15 = data.readLong();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = getPackageUid(_arg05, _arg15, _arg23);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    long _arg16 = data.readLong();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int[] _result5 = getPackageGids(_arg06, _arg16, _arg24);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result5);
+                    return true;
+                case 7:
+                    String[] _arg07 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    String[] _result6 = currentToCanonicalPackageNames(_arg07);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result6);
+                    return true;
+                case 8:
+                    String[] _arg08 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    String[] _result7 = canonicalToCurrentPackageNames(_arg08);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result7);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    long _arg17 = data.readLong();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ApplicationInfo _result8 = getApplicationInfo(_arg09, _arg17, _arg25);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result9 = getTargetSdkVersion(_arg010);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 11:
+                    ComponentName _arg011 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    long _arg18 = data.readLong();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ActivityInfo _result10 = getActivityInfo(_arg011, _arg18, _arg26);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 12:
+                    ComponentName _arg012 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Intent _arg19 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg27 = data.readString();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = activitySupportsIntentAsUser(_arg012, _arg19, _arg27, _arg3);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 13:
+                    ComponentName _arg013 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    long _arg110 = data.readLong();
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ActivityInfo _result12 = getReceiverInfo(_arg013, _arg110, _arg28);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 14:
+                    ComponentName _arg014 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    long _arg111 = data.readLong();
+                    int _arg29 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ServiceInfo _result13 = getServiceInfo(_arg014, _arg111, _arg29);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 15:
+                    ComponentName _arg015 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    long _arg112 = data.readLong();
+                    int _arg210 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ProviderInfo _result14 = getProviderInfo(_arg015, _arg112, _arg210);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result14, 1);
+                    return true;
+                case 16:
+                    String _arg016 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = isProtectedBroadcast(_arg016);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 17:
+                    String _arg017 = data.readString();
+                    String _arg113 = data.readString();
+                    int _arg211 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result16 = checkSignatures(_arg017, _arg113, _arg211);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    int _arg114 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result17 = checkUidSignatures(_arg018, _arg114);
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    return true;
+                case 19:
+                    List<String> _result18 = getAllPackages();
+                    reply.writeNoException();
+                    reply.writeStringList(_result18);
+                    return true;
+                case 20:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result19 = getPackagesForUid(_arg019);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result19);
+                    return true;
+                case 21:
+                    int _arg020 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result20 = getNameForUid(_arg020);
+                    reply.writeNoException();
+                    reply.writeString(_result20);
+                    return true;
+                case 22:
+                    int[] _arg021 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    String[] _result21 = getNamesForUids(_arg021);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result21);
+                    return true;
+                case 23:
+                    String _arg022 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result22 = getUidForSharedUser(_arg022);
+                    reply.writeNoException();
+                    reply.writeInt(_result22);
+                    return true;
+                case 24:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result23 = getFlagsForUid(_arg023);
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    return true;
+                case 25:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result24 = getPrivateFlagsForUid(_arg024);
+                    reply.writeNoException();
+                    reply.writeInt(_result24);
+                    return true;
+                case 26:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result25 = isUidPrivileged(_arg025);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result25);
+                    return true;
+                case 27:
+                    Intent _arg026 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg115 = data.readString();
+                    long _arg212 = data.readLong();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ResolveInfo _result26 = resolveIntent(_arg026, _arg115, _arg212, _arg32);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result26, 1);
+                    return true;
+                case 28:
+                    Intent _arg027 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg116 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ResolveInfo _result27 = findPersistentPreferredActivity(_arg027, _arg116);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result27, 1);
+                    return true;
+                case 29:
+                    Intent _arg028 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg117 = data.readString();
+                    int _arg213 = data.readInt();
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result28 = canForwardTo(_arg028, _arg117, _arg213, _arg33);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result28);
+                    return true;
+                case 30:
+                    Intent _arg029 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg118 = data.readString();
+                    long _arg214 = data.readLong();
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result29 = queryIntentActivities(_arg029, _arg118, _arg214, _arg34);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result29, 1);
+                    return true;
+                case 31:
+                    ComponentName _arg030 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Intent[] _arg119 = (Intent[]) data.createTypedArray(Intent.CREATOR);
+                    String[] _arg215 = data.createStringArray();
+                    Intent _arg35 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg4 = data.readString();
+                    long _arg5 = data.readLong();
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result30 = queryIntentActivityOptions(_arg030, _arg119, _arg215, _arg35, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result30, 1);
+                    return true;
+                case 32:
+                    Intent _arg031 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg120 = data.readString();
+                    long _arg216 = data.readLong();
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result31 = queryIntentReceivers(_arg031, _arg120, _arg216, _arg36);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result31, 1);
+                    return true;
+                case 33:
+                    Intent _arg032 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg121 = data.readString();
+                    long _arg217 = data.readLong();
+                    int _arg37 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ResolveInfo _result32 = resolveService(_arg032, _arg121, _arg217, _arg37);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result32, 1);
+                    return true;
+                case 34:
+                    Intent _arg033 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg122 = data.readString();
+                    long _arg218 = data.readLong();
+                    int _arg38 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result33 = queryIntentServices(_arg033, _arg122, _arg218, _arg38);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result33, 1);
+                    return true;
+                case 35:
+                    Intent _arg034 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg123 = data.readString();
+                    long _arg219 = data.readLong();
+                    int _arg39 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result34 = queryIntentContentProviders(_arg034, _arg123, _arg219, _arg39);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result34, 1);
+                    return true;
+                case 36:
+                    long _arg035 = data.readLong();
+                    int _arg124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result35 = getInstalledPackages(_arg035, _arg124);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result35, 1);
+                    return true;
+                case 37:
+                    String _arg036 = data.readString();
+                    int _arg125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result36 = getAppMetadataFd(_arg036, _arg125);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result36, 1);
+                    return true;
+                case 38:
+                    String[] _arg037 = data.createStringArray();
+                    long _arg126 = data.readLong();
+                    int _arg220 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result37 = getPackagesHoldingPermissions(_arg037, _arg126, _arg220);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result37, 1);
+                    return true;
+                case 39:
+                    long _arg038 = data.readLong();
+                    int _arg127 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result38 = getInstalledApplications(_arg038, _arg127);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result38, 1);
+                    return true;
+                case 40:
+                    int _arg039 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result39 = getPersistentApplications(_arg039);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result39, 1);
+                    return true;
+                case 41:
+                    String _arg040 = data.readString();
+                    long _arg128 = data.readLong();
+                    int _arg221 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ProviderInfo _result40 = resolveContentProvider(_arg040, _arg128, _arg221);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result40, 1);
+                    return true;
+                case 42:
+                    List<String> _arg041 = data.createStringArrayList();
+                    ArrayList createTypedArrayList = data.createTypedArrayList(ProviderInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    querySyncProviders(_arg041, createTypedArrayList);
+                    reply.writeNoException();
+                    reply.writeStringList(_arg041);
+                    reply.writeTypedList(createTypedArrayList, 1);
+                    return true;
+                case 43:
+                    String _arg042 = data.readString();
+                    int _arg129 = data.readInt();
+                    long _arg222 = data.readLong();
+                    String _arg310 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result41 = queryContentProviders(_arg042, _arg129, _arg222, _arg310);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result41, 1);
+                    return true;
+                case 44:
+                    ComponentName _arg043 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg130 = data.readInt();
+                    int _arg223 = data.readInt();
+                    data.enforceNoDataAvail();
+                    InstrumentationInfo _result42 = getInstrumentationInfoAsUser(_arg043, _arg130, _arg223);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result42, 1);
+                    return true;
+                case 45:
+                    String _arg044 = data.readString();
+                    int _arg131 = data.readInt();
+                    int _arg224 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result43 = queryInstrumentationAsUser(_arg044, _arg131, _arg224);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result43, 1);
+                    return true;
+                case 46:
+                    int _arg045 = data.readInt();
+                    boolean _arg132 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    finishPackageInstall(_arg045, _arg132);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    String _arg046 = data.readString();
+                    String _arg133 = data.readString();
+                    data.enforceNoDataAvail();
+                    setInstallerPackageName(_arg046, _arg133);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    String _arg047 = data.readString();
+                    data.enforceNoDataAvail();
+                    relinquishUpdateOwnership(_arg047);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    String _arg048 = data.readString();
+                    int _arg134 = data.readInt();
+                    String _arg225 = data.readString();
+                    data.enforceNoDataAvail();
+                    setApplicationCategoryHint(_arg048, _arg134, _arg225);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    String _arg049 = data.readString();
+                    int _arg135 = data.readInt();
+                    IPackageDeleteObserver _arg226 = IPackageDeleteObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg311 = data.readInt();
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deletePackageAsUser(_arg049, _arg135, _arg226, _arg311, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    VersionedPackage _arg050 = (VersionedPackage) data.readTypedObject(VersionedPackage.CREATOR);
+                    IPackageDeleteObserver2 _arg136 = IPackageDeleteObserver2.Stub.asInterface(data.readStrongBinder());
+                    int _arg227 = data.readInt();
+                    int _arg312 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deletePackageVersioned(_arg050, _arg136, _arg227, _arg312);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    VersionedPackage _arg051 = (VersionedPackage) data.readTypedObject(VersionedPackage.CREATOR);
+                    IPackageDeleteObserver2 _arg137 = IPackageDeleteObserver2.Stub.asInterface(data.readStrongBinder());
+                    int _arg228 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteExistingPackageAsUser(_arg051, _arg137, _arg228);
+                    reply.writeNoException();
+                    return true;
+                case 53:
+                    String _arg052 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result44 = getInstallerPackageName(_arg052);
+                    reply.writeNoException();
+                    reply.writeString(_result44);
+                    return true;
+                case 54:
+                    String _arg053 = data.readString();
+                    int _arg138 = data.readInt();
+                    data.enforceNoDataAvail();
+                    InstallSourceInfo _result45 = getInstallSourceInfo(_arg053, _arg138);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result45, 1);
+                    return true;
+                case 55:
+                    int _arg054 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetApplicationPreferences(_arg054);
+                    reply.writeNoException();
+                    return true;
+                case 56:
+                    Intent _arg055 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg139 = data.readString();
+                    int _arg229 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ResolveInfo _result46 = getLastChosenActivity(_arg055, _arg139, _arg229);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result46, 1);
+                    return true;
+                case 57:
+                    Intent _arg056 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg140 = data.readString();
+                    int _arg230 = data.readInt();
+                    IntentFilter _arg313 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    int _arg43 = data.readInt();
+                    ComponentName _arg52 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    setLastChosenActivity(_arg056, _arg140, _arg230, _arg313, _arg43, _arg52);
+                    reply.writeNoException();
+                    return true;
+                case 58:
+                    IntentFilter _arg057 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    int _arg141 = data.readInt();
+                    ComponentName[] _arg231 = (ComponentName[]) data.createTypedArray(ComponentName.CREATOR);
+                    ComponentName _arg314 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg44 = data.readInt();
+                    boolean _arg53 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    addPreferredActivity(_arg057, _arg141, _arg231, _arg314, _arg44, _arg53);
+                    reply.writeNoException();
+                    return true;
+                case 59:
+                    IntentFilter _arg058 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    int _arg142 = data.readInt();
+                    ComponentName[] _arg232 = (ComponentName[]) data.createTypedArray(ComponentName.CREATOR);
+                    ComponentName _arg315 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg45 = data.readInt();
+                    data.enforceNoDataAvail();
+                    replacePreferredActivity(_arg058, _arg142, _arg232, _arg315, _arg45);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    String _arg059 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearPackagePreferredActivities(_arg059);
+                    reply.writeNoException();
+                    return true;
+                case 61:
+                    ArrayList arrayList = new ArrayList();
+                    ArrayList arrayList2 = new ArrayList();
+                    String _arg233 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result47 = getPreferredActivities(arrayList, arrayList2, _arg233);
+                    reply.writeNoException();
+                    reply.writeInt(_result47);
+                    reply.writeTypedList(arrayList, 1);
+                    reply.writeTypedList(arrayList2, 1);
+                    return true;
+                case 62:
+                    IntentFilter _arg060 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    ComponentName _arg143 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg234 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addPersistentPreferredActivity(_arg060, _arg143, _arg234);
+                    reply.writeNoException();
+                    return true;
+                case 63:
+                    String _arg061 = data.readString();
+                    int _arg144 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearPackagePersistentPreferredActivities(_arg061, _arg144);
+                    reply.writeNoException();
+                    return true;
+                case 64:
+                    IntentFilter _arg062 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    int _arg145 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearPersistentPreferredActivity(_arg062, _arg145);
+                    reply.writeNoException();
+                    return true;
+                case 65:
+                    IntentFilter _arg063 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    String _arg146 = data.readString();
+                    int _arg235 = data.readInt();
+                    int _arg316 = data.readInt();
+                    int _arg46 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addCrossProfileIntentFilter(_arg063, _arg146, _arg235, _arg316, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 66:
+                    IntentFilter _arg064 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    String _arg147 = data.readString();
+                    int _arg236 = data.readInt();
+                    int _arg317 = data.readInt();
+                    int _arg47 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result48 = removeCrossProfileIntentFilter(_arg064, _arg147, _arg236, _arg317, _arg47);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result48);
+                    return true;
+                case 67:
+                    int _arg065 = data.readInt();
+                    String _arg148 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearCrossProfileIntentFilters(_arg065, _arg148);
+                    reply.writeNoException();
+                    return true;
+                case 68:
+                    String[] _arg066 = data.createStringArray();
+                    int _arg149 = data.readInt();
+                    int _arg237 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result49 = setDistractingPackageRestrictionsAsUser(_arg066, _arg149, _arg237);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result49);
+                    return true;
+                case 69:
+                    String[] _arg067 = data.createStringArray();
+                    boolean _arg150 = data.readBoolean();
+                    PersistableBundle _arg238 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    PersistableBundle _arg318 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    SuspendDialogInfo _arg48 = (SuspendDialogInfo) data.readTypedObject(SuspendDialogInfo.CREATOR);
+                    int _arg54 = data.readInt();
+                    String _arg62 = data.readString();
+                    int _arg7 = data.readInt();
+                    int _arg8 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result50 = setPackagesSuspendedAsUser(_arg067, _arg150, _arg238, _arg318, _arg48, _arg54, _arg62, _arg7, _arg8);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result50);
+                    return true;
+                case 70:
+                    String[] _arg068 = data.createStringArray();
+                    int _arg151 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result51 = getUnsuspendablePackagesForUser(_arg068, _arg151);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result51);
+                    return true;
+                case 71:
+                    String _arg069 = data.readString();
+                    int _arg152 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result52 = isPackageSuspendedForUser(_arg069, _arg152);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result52);
+                    return true;
+                case 72:
+                    String _arg070 = data.readString();
+                    int _arg153 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result53 = isPackageQuarantinedForUser(_arg070, _arg153);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result53);
+                    return true;
+                case 73:
+                    String _arg071 = data.readString();
+                    int _arg154 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result54 = isPackageStoppedForUser(_arg071, _arg154);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result54);
+                    return true;
+                case 74:
+                    String _arg072 = data.readString();
+                    int _arg155 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result55 = getSuspendedPackageAppExtras(_arg072, _arg155);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result55, 1);
+                    return true;
+                case 75:
+                    String _arg073 = data.readString();
+                    int _arg156 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result56 = getSuspendingPackage(_arg073, _arg156);
+                    reply.writeNoException();
+                    reply.writeString(_result56);
+                    return true;
+                case 76:
+                    int _arg074 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result57 = getPreferredActivityBackup(_arg074);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result57);
+                    return true;
+                case 77:
+                    byte[] _arg075 = data.createByteArray();
+                    int _arg157 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restorePreferredActivities(_arg075, _arg157);
+                    reply.writeNoException();
+                    return true;
+                case 78:
+                    int _arg076 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result58 = getDefaultAppsBackup(_arg076);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result58);
+                    return true;
+                case 79:
+                    byte[] _arg077 = data.createByteArray();
+                    int _arg158 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restoreDefaultApps(_arg077, _arg158);
+                    reply.writeNoException();
+                    return true;
+                case 80:
+                    int _arg078 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result59 = getDomainVerificationBackup(_arg078);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result59);
+                    return true;
+                case 81:
+                    byte[] _arg079 = data.createByteArray();
+                    int _arg159 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restoreDomainVerification(_arg079, _arg159);
+                    reply.writeNoException();
+                    return true;
+                case 82:
+                    ArrayList arrayList3 = new ArrayList();
+                    data.enforceNoDataAvail();
+                    ComponentName _result60 = getHomeActivities(arrayList3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result60, 1);
+                    reply.writeTypedList(arrayList3, 1);
+                    return true;
+                case 83:
+                    ComponentName _arg080 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg160 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setHomeActivity(_arg080, _arg160);
+                    reply.writeNoException();
+                    return true;
+                case 84:
+                    ComponentName _arg081 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg161 = data.readString();
+                    int _arg239 = data.readInt();
+                    int _arg319 = data.readInt();
+                    data.enforceNoDataAvail();
+                    overrideLabelAndIcon(_arg081, _arg161, _arg239, _arg319);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    ComponentName _arg082 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg162 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restoreLabelAndIcon(_arg082, _arg162);
+                    reply.writeNoException();
+                    return true;
+                case 86:
+                    ComponentName _arg083 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg163 = data.readInt();
+                    int _arg240 = data.readInt();
+                    int _arg320 = data.readInt();
+                    String _arg49 = data.readString();
+                    data.enforceNoDataAvail();
+                    setComponentEnabledSetting(_arg083, _arg163, _arg240, _arg320, _arg49);
+                    reply.writeNoException();
+                    return true;
+                case 87:
+                    List<PackageManager.ComponentEnabledSetting> _arg084 = data.createTypedArrayList(PackageManager.ComponentEnabledSetting.CREATOR);
+                    int _arg164 = data.readInt();
+                    String _arg241 = data.readString();
+                    data.enforceNoDataAvail();
+                    setComponentEnabledSettings(_arg084, _arg164, _arg241);
+                    reply.writeNoException();
+                    return true;
+                case 88:
+                    ComponentName _arg085 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg165 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result61 = getComponentEnabledSetting(_arg085, _arg165);
+                    reply.writeNoException();
+                    reply.writeInt(_result61);
+                    return true;
+                case 89:
+                    String _arg086 = data.readString();
+                    int _arg166 = data.readInt();
+                    int _arg242 = data.readInt();
+                    int _arg321 = data.readInt();
+                    String _arg410 = data.readString();
+                    data.enforceNoDataAvail();
+                    setApplicationEnabledSetting(_arg086, _arg166, _arg242, _arg321, _arg410);
+                    reply.writeNoException();
+                    return true;
+                case 90:
+                    String _arg087 = data.readString();
+                    int _arg167 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result62 = getApplicationEnabledSetting(_arg087, _arg167);
+                    reply.writeNoException();
+                    reply.writeInt(_result62);
+                    return true;
+                case 91:
+                    String _arg088 = data.readString();
+                    String _arg168 = data.readString();
+                    int _arg243 = data.readInt();
+                    String _arg322 = data.readString();
+                    String _arg411 = data.readString();
+                    int _arg55 = data.readInt();
+                    data.enforceNoDataAvail();
+                    logAppProcessStartIfNeeded(_arg088, _arg168, _arg243, _arg322, _arg411, _arg55);
+                    reply.writeNoException();
+                    return true;
+                case 92:
+                    int _arg089 = data.readInt();
+                    data.enforceNoDataAvail();
+                    flushPackageRestrictionsAsUser(_arg089);
+                    reply.writeNoException();
+                    return true;
+                case 93:
+                    String _arg090 = data.readString();
+                    boolean _arg169 = data.readBoolean();
+                    int _arg244 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPackageStoppedState(_arg090, _arg169, _arg244);
+                    reply.writeNoException();
+                    return true;
+                case 94:
+                    String _arg091 = data.readString();
+                    long _arg170 = data.readLong();
+                    int _arg245 = data.readInt();
+                    IPackageDataObserver _arg323 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    freeStorageAndNotify(_arg091, _arg170, _arg245, _arg323);
+                    reply.writeNoException();
+                    return true;
+                case 95:
+                    String _arg092 = data.readString();
+                    long _arg171 = data.readLong();
+                    int _arg246 = data.readInt();
+                    IntentSender _arg324 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
+                    data.enforceNoDataAvail();
+                    freeStorage(_arg092, _arg171, _arg246, _arg324);
+                    reply.writeNoException();
+                    return true;
+                case 96:
+                    String _arg093 = data.readString();
+                    IPackageDataObserver _arg172 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    deleteApplicationCacheFiles(_arg093, _arg172);
+                    reply.writeNoException();
+                    return true;
+                case 97:
+                    String _arg094 = data.readString();
+                    int _arg173 = data.readInt();
+                    IPackageDataObserver _arg247 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    deleteApplicationCacheFilesAsUser(_arg094, _arg173, _arg247);
+                    reply.writeNoException();
+                    return true;
+                case 98:
+                    String _arg095 = data.readString();
+                    IPackageDataObserver _arg174 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg248 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearApplicationUserData(_arg095, _arg174, _arg248);
+                    reply.writeNoException();
+                    return true;
+                case 99:
+                    String _arg096 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearApplicationProfileData(_arg096);
+                    reply.writeNoException();
+                    return true;
+                case 100:
+                    String _arg097 = data.readString();
+                    int _arg175 = data.readInt();
+                    IPackageStatsObserver _arg249 = IPackageStatsObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getPackageSizeInfo(_arg097, _arg175, _arg249);
+                    reply.writeNoException();
+                    return true;
+                case 101:
+                    String[] _result63 = getSystemSharedLibraryNames();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result63);
+                    return true;
+                case 102:
+                    Map<String, String> _result64 = getSystemSharedLibraryNamesAndPaths();
+                    reply.writeNoException();
+                    if (_result64 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result64.size());
+                        _result64.forEach(new BiConsumer() { // from class: android.content.pm.IPackageManager$Stub$$ExternalSyntheticLambda0
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                IPackageManager.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (String) obj2);
+                            }
+                        });
+                    }
+                    return true;
+                case 103:
+                    ParceledListSlice _result65 = getSystemAvailableFeatures();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result65, 1);
+                    return true;
+                case 104:
+                    String _arg098 = data.readString();
+                    int _arg176 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result66 = hasSystemFeature(_arg098, _arg176);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result66);
+                    return true;
+                case 105:
+                    List<String> _result67 = getInitialNonStoppedSystemPackages();
+                    reply.writeNoException();
+                    reply.writeStringList(_result67);
+                    return true;
+                case 106:
+                    enterSafeMode();
+                    reply.writeNoException();
+                    return true;
+                case 107:
+                    boolean _result68 = isSafeMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result68);
+                    return true;
+                case 108:
+                    boolean _result69 = hasSystemUidErrors();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result69);
+                    return true;
+                case 109:
+                    String _arg099 = data.readString();
+                    int _arg177 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyPackageUse(_arg099, _arg177);
+                    return true;
+                case 110:
+                    String _arg0100 = data.readString();
+                    int N = data.readInt();
+                    final Map<String, String> _arg178 = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.content.pm.IPackageManager$Stub$$ExternalSyntheticLambda1
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            IPackageManager.Stub.lambda$onTransact$1(Parcel.this, _arg178, i);
+                        }
+                    });
+                    String _arg250 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyDexLoad(_arg0100, _arg178, _arg250);
+                    return true;
+                case 111:
+                    String _arg0101 = data.readString();
+                    String _arg179 = data.readString();
+                    boolean _arg251 = data.readBoolean();
+                    IDexModuleRegisterCallback _arg325 = IDexModuleRegisterCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerDexModule(_arg0101, _arg179, _arg251, _arg325);
+                    return true;
+                case 112:
+                    String _arg0102 = data.readString();
+                    boolean _arg180 = data.readBoolean();
+                    String _arg252 = data.readString();
+                    boolean _arg326 = data.readBoolean();
+                    boolean _arg412 = data.readBoolean();
+                    String _arg56 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result70 = performDexOptMode(_arg0102, _arg180, _arg252, _arg326, _arg412, _arg56);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result70);
+                    return true;
+                case 113:
+                    String _arg0103 = data.readString();
+                    String _arg181 = data.readString();
+                    boolean _arg253 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result71 = performDexOptSecondary(_arg0103, _arg181, _arg253);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result71);
+                    return true;
+                case 114:
+                    String _arg0104 = data.readString();
+                    boolean _arg182 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result72 = performDexOptForADCP(_arg0104, _arg182);
+                    reply.writeNoException();
+                    reply.writeInt(_result72);
+                    return true;
+                case 115:
+                    int _arg0105 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result73 = getMoveStatus(_arg0105);
+                    reply.writeNoException();
+                    reply.writeInt(_result73);
+                    return true;
+                case 116:
+                    IPackageMoveObserver _arg0106 = IPackageMoveObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerMoveCallback(_arg0106);
+                    reply.writeNoException();
+                    return true;
+                case 117:
+                    IPackageMoveObserver _arg0107 = IPackageMoveObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterMoveCallback(_arg0107);
+                    reply.writeNoException();
+                    return true;
+                case 118:
+                    String _arg0108 = data.readString();
+                    String _arg183 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result74 = movePackage(_arg0108, _arg183);
+                    reply.writeNoException();
+                    reply.writeInt(_result74);
+                    return true;
+                case 119:
+                    String _arg0109 = data.readString();
+                    String _arg184 = data.readString();
+                    IMemorySaverPackageMoveObserver _arg254 = IMemorySaverPackageMoveObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result75 = movePackageToSd(_arg0109, _arg184, _arg254);
+                    reply.writeNoException();
+                    reply.writeInt(_result75);
+                    return true;
+                case 120:
+                    String _arg0110 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result76 = movePrimaryStorage(_arg0110);
+                    reply.writeNoException();
+                    reply.writeInt(_result76);
+                    return true;
+                case 121:
+                    int _arg0111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result77 = setInstallLocation(_arg0111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result77);
+                    return true;
+                case 122:
+                    int _result78 = getInstallLocation();
+                    reply.writeNoException();
+                    reply.writeInt(_result78);
+                    return true;
+                case 123:
+                    String _arg0112 = data.readString();
+                    int _arg185 = data.readInt();
+                    int _arg255 = data.readInt();
+                    int _arg327 = data.readInt();
+                    List<String> _arg413 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    int _result79 = installExistingPackageAsUser(_arg0112, _arg185, _arg255, _arg327, _arg413);
+                    reply.writeNoException();
+                    reply.writeInt(_result79);
+                    return true;
+                case 124:
+                    int _arg0113 = data.readInt();
+                    int _arg186 = data.readInt();
+                    data.enforceNoDataAvail();
+                    verifyPendingInstall(_arg0113, _arg186);
+                    reply.writeNoException();
+                    return true;
+                case 125:
+                    int _arg0114 = data.readInt();
+                    int _arg187 = data.readInt();
+                    long _arg256 = data.readLong();
+                    data.enforceNoDataAvail();
+                    extendVerificationTimeout(_arg0114, _arg187, _arg256);
+                    reply.writeNoException();
+                    return true;
+                case 126:
+                    int _arg0115 = data.readInt();
+                    int _arg188 = data.readInt();
+                    List<String> _arg257 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    verifyIntentFilter(_arg0115, _arg188, _arg257);
+                    reply.writeNoException();
+                    return true;
+                case 127:
+                    String _arg0116 = data.readString();
+                    int _arg189 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result80 = getIntentVerificationStatus(_arg0116, _arg189);
+                    reply.writeNoException();
+                    reply.writeInt(_result80);
+                    return true;
+                case 128:
+                    String _arg0117 = data.readString();
+                    int _arg190 = data.readInt();
+                    int _arg258 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result81 = updateIntentVerificationStatus(_arg0117, _arg190, _arg258);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result81);
+                    return true;
+                case 129:
+                    String _arg0118 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result82 = getIntentFilterVerifications(_arg0118);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result82, 1);
+                    return true;
+                case 130:
+                    String _arg0119 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result83 = getAllIntentFilters(_arg0119);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result83, 1);
+                    return true;
+                case 131:
+                    VerifierDeviceIdentity _result84 = getVerifierDeviceIdentity();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result84, 1);
+                    return true;
+                case 132:
+                    boolean _result85 = isFirstBoot();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result85);
+                    return true;
+                case 133:
+                    boolean _result86 = isDeviceUpgrading();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result86);
+                    return true;
+                case 134:
+                    boolean _result87 = isStorageLow();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result87);
+                    return true;
+                case 135:
+                    String _arg0120 = data.readString();
+                    boolean _arg191 = data.readBoolean();
+                    int _arg259 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result88 = setApplicationHiddenSettingAsUser(_arg0120, _arg191, _arg259);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result88);
+                    return true;
+                case 136:
+                    String _arg0121 = data.readString();
+                    int _arg192 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result89 = getApplicationHiddenSettingAsUser(_arg0121, _arg192);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result89);
+                    return true;
+                case 137:
+                    String _arg0122 = data.readString();
+                    boolean _arg193 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSystemAppHiddenUntilInstalled(_arg0122, _arg193);
+                    reply.writeNoException();
+                    return true;
+                case 138:
+                    String _arg0123 = data.readString();
+                    boolean _arg194 = data.readBoolean();
+                    int _arg260 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result90 = setSystemAppInstallState(_arg0123, _arg194, _arg260);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result90);
+                    return true;
+                case 139:
+                    IPackageInstaller _result91 = getPackageInstaller();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result91);
+                    return true;
+                case 140:
+                    String _arg0124 = data.readString();
+                    boolean _arg195 = data.readBoolean();
+                    int _arg261 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result92 = setBlockUninstallForUser(_arg0124, _arg195, _arg261);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result92);
+                    return true;
+                case 141:
+                    String _arg0125 = data.readString();
+                    int _arg196 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result93 = getBlockUninstallForUser(_arg0125, _arg196);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result93);
+                    return true;
+                case 142:
+                    String _arg0126 = data.readString();
+                    String _arg197 = data.readString();
+                    data.enforceNoDataAvail();
+                    KeySet _result94 = getKeySetByAlias(_arg0126, _arg197);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result94, 1);
+                    return true;
+                case 143:
+                    String _arg0127 = data.readString();
+                    data.enforceNoDataAvail();
+                    KeySet _result95 = getSigningKeySet(_arg0127);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result95, 1);
+                    return true;
+                case 144:
+                    String _arg0128 = data.readString();
+                    KeySet _arg198 = (KeySet) data.readTypedObject(KeySet.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result96 = isPackageSignedByKeySet(_arg0128, _arg198);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result96);
+                    return true;
+                case 145:
+                    String _arg0129 = data.readString();
+                    KeySet _arg199 = (KeySet) data.readTypedObject(KeySet.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result97 = isPackageSignedByKeySetExactly(_arg0129, _arg199);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result97);
+                    return true;
+                case 146:
+                    String _result98 = getPermissionControllerPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result98);
+                    return true;
+                case 147:
+                    String _result99 = getSdkSandboxPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result99);
+                    return true;
+                case 148:
+                    int _arg0130 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result100 = getInstantApps(_arg0130);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result100, 1);
+                    return true;
+                case 149:
+                    String _arg0131 = data.readString();
+                    int _arg1100 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result101 = getInstantAppCookie(_arg0131, _arg1100);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result101);
+                    return true;
+                case 150:
+                    String _arg0132 = data.readString();
+                    byte[] _arg1101 = data.createByteArray();
+                    int _arg262 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result102 = setInstantAppCookie(_arg0132, _arg1101, _arg262);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result102);
+                    return true;
+                case 151:
+                    String _arg0133 = data.readString();
+                    int _arg1102 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bitmap _result103 = getInstantAppIcon(_arg0133, _arg1102);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result103, 1);
+                    return true;
+                case 152:
+                    String _arg0134 = data.readString();
+                    int _arg1103 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result104 = isInstantApp(_arg0134, _arg1103);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result104);
+                    return true;
+                case 153:
+                    String _arg0135 = data.readString();
+                    boolean _arg1104 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result105 = setRequiredForSystemUser(_arg0135, _arg1104);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result105);
+                    return true;
+                case 154:
+                    String _arg0136 = data.readString();
+                    boolean _arg1105 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setUpdateAvailable(_arg0136, _arg1105);
+                    reply.writeNoException();
+                    return true;
+                case 155:
+                    String _result106 = getServicesSystemSharedLibraryPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result106);
+                    return true;
+                case 156:
+                    String _result107 = getSharedSystemSharedLibraryPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result107);
+                    return true;
+                case 157:
+                    int _arg0137 = data.readInt();
+                    int _arg1106 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ChangedPackages _result108 = getChangedPackages(_arg0137, _arg1106);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result108, 1);
+                    return true;
+                case 158:
+                    String _arg0138 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result109 = isPackageDeviceAdminOnAnyUser(_arg0138);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result109);
+                    return true;
+                case 159:
+                    String _arg0139 = data.readString();
+                    int _arg1107 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result110 = getInstallReason(_arg0139, _arg1107);
+                    reply.writeNoException();
+                    reply.writeInt(_result110);
+                    return true;
+                case 160:
+                    String _arg0140 = data.readString();
+                    long _arg1108 = data.readLong();
+                    int _arg263 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result111 = getSharedLibraries(_arg0140, _arg1108, _arg263);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result111, 1);
+                    return true;
+                case 161:
+                    String _arg0141 = data.readString();
+                    long _arg1109 = data.readLong();
+                    int _arg264 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result112 = getDeclaredSharedLibraries(_arg0141, _arg1109, _arg264);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result112, 1);
+                    return true;
+                case 162:
+                    String _arg0142 = data.readString();
+                    int _arg1110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result113 = canRequestPackageInstalls(_arg0142, _arg1110);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result113);
+                    return true;
+                case 163:
+                    deletePreloadsFileCache();
+                    reply.writeNoException();
+                    return true;
+                case 164:
+                    ComponentName _result114 = getInstantAppResolverComponent();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result114, 1);
+                    return true;
+                case 165:
+                    ComponentName _result115 = getInstantAppResolverSettingsComponent();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result115, 1);
+                    return true;
+                case 166:
+                    ComponentName _result116 = getInstantAppInstallerComponent();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result116, 1);
+                    return true;
+                case 167:
+                    String _arg0143 = data.readString();
+                    int _arg1111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result117 = getInstantAppAndroidId(_arg0143, _arg1111);
+                    reply.writeNoException();
+                    reply.writeString(_result117);
+                    return true;
+                case 168:
+                    IArtManager _result118 = getArtManager();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result118);
+                    return true;
+                case 169:
+                    String _arg0144 = data.readString();
+                    CharSequence _arg1112 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg265 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setHarmfulAppWarning(_arg0144, _arg1112, _arg265);
+                    reply.writeNoException();
+                    return true;
+                case 170:
+                    String _arg0145 = data.readString();
+                    int _arg1113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CharSequence _result119 = getHarmfulAppWarning(_arg0145, _arg1113);
+                    reply.writeNoException();
+                    if (_result119 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result119, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 171:
+                    String _arg0146 = data.readString();
+                    byte[] _arg1114 = data.createByteArray();
+                    int _arg266 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result120 = hasSigningCertificate(_arg0146, _arg1114, _arg266);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result120);
+                    return true;
+                case 172:
+                    int _arg0147 = data.readInt();
+                    byte[] _arg1115 = data.createByteArray();
+                    int _arg267 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result121 = hasUidSigningCertificate(_arg0147, _arg1115, _arg267);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result121);
+                    return true;
+                case 173:
+                    String _result122 = getDefaultTextClassifierPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result122);
+                    return true;
+                case 174:
+                    String _result123 = getSystemTextClassifierPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result123);
+                    return true;
+                case 175:
+                    String _result124 = getAttentionServicePackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result124);
+                    return true;
+                case 176:
+                    String _result125 = getRotationResolverPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result125);
+                    return true;
+                case 177:
+                    String _result126 = getWellbeingPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result126);
+                    return true;
+                case 178:
+                    String _result127 = getAppPredictionServicePackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result127);
+                    return true;
+                case 179:
+                    String _result128 = getSystemCaptionsServicePackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result128);
+                    return true;
+                case 180:
+                    String _result129 = getSetupWizardPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result129);
+                    return true;
+                case 181:
+                    String _result130 = getIncidentReportApproverPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result130);
+                    return true;
+                case 182:
+                    String _arg0148 = data.readString();
+                    int _arg1116 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result131 = isPackageStateProtected(_arg0148, _arg1116);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result131);
+                    return true;
+                case 183:
+                    sendDeviceCustomizationReadyBroadcast();
+                    reply.writeNoException();
+                    return true;
+                case 184:
+                    int _arg0149 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<ModuleInfo> _result132 = getInstalledModules(_arg0149);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result132, 1);
+                    return true;
+                case 185:
+                    String _arg0150 = data.readString();
+                    int _arg1117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ModuleInfo _result133 = getModuleInfo(_arg0150, _arg1117);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result133, 1);
+                    return true;
+                case 186:
+                    int _arg0151 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result134 = getRuntimePermissionsVersion(_arg0151);
+                    reply.writeNoException();
+                    reply.writeInt(_result134);
+                    return true;
+                case 187:
+                    int _arg0152 = data.readInt();
+                    int _arg1118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRuntimePermissionsVersion(_arg0152, _arg1118);
+                    reply.writeNoException();
+                    return true;
+                case 188:
+                    String[] _arg0153 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    notifyPackagesReplacedReceived(_arg0153);
+                    reply.writeNoException();
+                    return true;
+                case 189:
+                    String _arg0154 = data.readString();
+                    boolean _arg1119 = data.readBoolean();
+                    int _arg268 = data.readInt();
+                    int _arg328 = data.readInt();
+                    ClassLoader cl = getClass().getClassLoader();
+                    List _arg414 = data.readArrayList(cl);
+                    IOnChecksumsReadyListener _arg57 = IOnChecksumsReadyListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg63 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestPackageChecksums(_arg0154, _arg1119, _arg268, _arg328, _arg414, _arg57, _arg63);
+                    reply.writeNoException();
+                    return true;
+                case 190:
+                    String _arg0155 = data.readString();
+                    String _arg1120 = data.readString();
+                    String _arg269 = data.readString();
+                    int _arg329 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IntentSender _result135 = getLaunchIntentSenderForPackage(_arg0155, _arg1120, _arg269, _arg329);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result135, 1);
+                    return true;
+                case 191:
+                    String _arg0156 = data.readString();
+                    int _arg1121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result136 = getAppOpPermissionPackages(_arg0156, _arg1121);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result136);
+                    return true;
+                case 192:
+                    String _arg0157 = data.readString();
+                    int _arg1122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PermissionGroupInfo _result137 = getPermissionGroupInfo(_arg0157, _arg1122);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result137, 1);
+                    return true;
+                case 193:
+                    PermissionInfo _arg0158 = (PermissionInfo) data.readTypedObject(PermissionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result138 = addPermission(_arg0158);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result138);
+                    return true;
+                case 194:
+                    PermissionInfo _arg0159 = (PermissionInfo) data.readTypedObject(PermissionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result139 = addPermissionAsync(_arg0159);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result139);
+                    return true;
+                case 195:
+                    String _arg0160 = data.readString();
+                    data.enforceNoDataAvail();
+                    removePermission(_arg0160);
+                    reply.writeNoException();
+                    return true;
+                case 196:
+                    String _arg0161 = data.readString();
+                    String _arg1123 = data.readString();
+                    int _arg270 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result140 = checkPermission(_arg0161, _arg1123, _arg270);
+                    reply.writeNoException();
+                    reply.writeInt(_result140);
+                    return true;
+                case 197:
+                    String _arg0162 = data.readString();
+                    String _arg1124 = data.readString();
+                    int _arg271 = data.readInt();
+                    data.enforceNoDataAvail();
+                    grantRuntimePermission(_arg0162, _arg1124, _arg271);
+                    reply.writeNoException();
+                    return true;
+                case 198:
+                    String _arg0163 = data.readString();
+                    int _arg1125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result141 = checkUidPermission(_arg0163, _arg1125);
+                    reply.writeNoException();
+                    reply.writeInt(_result141);
+                    return true;
+                case 199:
+                    String _arg0164 = data.readString();
+                    String _arg1126 = data.readString();
+                    List<String> _arg272 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    setMimeGroup(_arg0164, _arg1126, _arg272);
+                    reply.writeNoException();
+                    return true;
+                case 200:
+                    String _arg0165 = data.readString();
+                    int _arg1127 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result142 = getSplashScreenTheme(_arg0165, _arg1127);
+                    reply.writeNoException();
+                    reply.writeString(_result142);
+                    return true;
+                case 201:
+                    String _arg0166 = data.readString();
+                    String _arg1128 = data.readString();
+                    int _arg273 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSplashScreenTheme(_arg0166, _arg1128, _arg273);
+                    reply.writeNoException();
+                    return true;
+                case 202:
+                    String _arg0167 = data.readString();
+                    int _arg1129 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result143 = getUserMinAspectRatio(_arg0167, _arg1129);
+                    reply.writeNoException();
+                    reply.writeInt(_result143);
+                    return true;
+                case 203:
+                    String _arg0168 = data.readString();
+                    int _arg1130 = data.readInt();
+                    int _arg274 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setUserMinAspectRatio(_arg0168, _arg1130, _arg274);
+                    reply.writeNoException();
+                    return true;
+                case 204:
+                    String _arg0169 = data.readString();
+                    String _arg1131 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result144 = getMimeGroup(_arg0169, _arg1131);
+                    reply.writeNoException();
+                    reply.writeStringList(_result144);
+                    return true;
+                case 205:
+                    String _arg0170 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result145 = isAutoRevokeWhitelisted(_arg0170);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result145);
+                    return true;
+                case 206:
+                    int _arg0171 = data.readInt();
+                    String _arg1132 = data.readString();
+                    data.enforceNoDataAvail();
+                    makeProviderVisible(_arg0171, _arg1132);
+                    reply.writeNoException();
+                    return true;
+                case 207:
+                    int _arg0172 = data.readInt();
+                    int _arg1133 = data.readInt();
+                    data.enforceNoDataAvail();
+                    makeUidVisible(_arg0172, _arg1133);
+                    reply.writeNoException();
+                    return true;
+                case 208:
+                    IBinder _result146 = getHoldLockToken();
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result146);
+                    return true;
+                case 209:
+                    IBinder _arg0173 = data.readStrongBinder();
+                    int _arg1134 = data.readInt();
+                    data.enforceNoDataAvail();
+                    holdLock(_arg0173, _arg1134);
+                    reply.writeNoException();
+                    return true;
+                case 210:
+                    String _arg0174 = data.readString();
+                    String _arg1135 = data.readString();
+                    String _arg275 = data.readString();
+                    int _arg330 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PackageManager.Property _result147 = getPropertyAsUser(_arg0174, _arg1135, _arg275, _arg330);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result147, 1);
+                    return true;
+                case 211:
+                    String _arg0175 = data.readString();
+                    int _arg1136 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result148 = queryProperty(_arg0175, _arg1136);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result148, 1);
+                    return true;
+                case 212:
+                    List<String> _arg0176 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    setKeepUninstalledPackages(_arg0176);
+                    reply.writeNoException();
+                    return true;
+                case 213:
+                    String _arg0177 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result149 = setLicensePermissionsForMDM(_arg0177);
+                    reply.writeNoException();
+                    reply.writeInt(_result149);
+                    return true;
+                case 214:
+                    String _arg0178 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result150 = getPackageGrantedPermissionsForMDM(_arg0178);
+                    reply.writeNoException();
+                    reply.writeStringList(_result150);
+                    return true;
+                case 215:
+                    String _arg0179 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result151 = getGrantedPermissionsForMDM(_arg0179);
+                    reply.writeNoException();
+                    reply.writeStringList(_result151);
+                    return true;
+                case 216:
+                    String _arg0180 = data.readString();
+                    int _arg1137 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearPackagePreferredActivitiesAsUserForMDM(_arg0180, _arg1137);
+                    reply.writeNoException();
+                    return true;
+                case 217:
+                    String _arg0181 = data.readString();
+                    List<String> _arg1138 = data.createStringArrayList();
+                    int _arg276 = data.readInt();
+                    int _arg331 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result152 = applyRuntimePermissionsForMDM(_arg0181, _arg1138, _arg276, _arg331);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result152);
+                    return true;
+                case 218:
+                    int _arg0182 = data.readInt();
+                    int _arg1139 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result153 = applyRuntimePermissionsForAllApplicationsForMDM(_arg0182, _arg1139);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result153);
+                    return true;
+                case 219:
+                    String _arg0183 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result154 = getRequestedRuntimePermissionsForMDM(_arg0183);
+                    reply.writeNoException();
+                    reply.writeStringList(_result154);
+                    return true;
+                case 220:
+                    String _arg0184 = data.readString();
+                    String[] _arg1140 = data.createStringArray();
+                    int _arg277 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean[] _result155 = canPackageQuery(_arg0184, _arg1140, _arg277);
+                    reply.writeNoException();
+                    reply.writeBooleanArray(_result155);
+                    return true;
+                case 221:
+                    long _arg0185 = data.readLong();
+                    boolean _arg1141 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result156 = waitForHandler(_arg0185, _arg1141);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result156);
+                    return true;
+                case 222:
+                    IRemoteCallback _arg0186 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg1142 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerPackageMonitorCallback(_arg0186, _arg1142);
+                    reply.writeNoException();
+                    return true;
+                case 223:
+                    IRemoteCallback _arg0187 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterPackageMonitorCallback(_arg0187);
+                    reply.writeNoException();
+                    return true;
+                case 224:
+                    String _arg0188 = data.readString();
+                    int _arg1143 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ArchivedPackageParcel _result157 = getArchivedPackage(_arg0188, _arg1143);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result157, 1);
+                    return true;
+                case 225:
+                    String _arg0189 = data.readString();
+                    UserHandle _arg1144 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String _arg278 = data.readString();
+                    data.enforceNoDataAvail();
+                    Bitmap _result158 = getArchivedAppIcon(_arg0189, _arg1144, _arg278);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result158, 1);
+                    return true;
+                case 226:
+                    String _arg0190 = data.readString();
+                    UserHandle _arg1145 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result159 = isAppArchivable(_arg0190, _arg1145);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result159);
+                    return true;
+                case 227:
+                    String _arg0191 = data.readString();
+                    int _arg1146 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result160 = getAppMetadataSource(_arg0191, _arg1146);
+                    reply.writeNoException();
+                    reply.writeInt(_result160);
+                    return true;
+                case 228:
+                    int _arg0192 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ComponentName _result161 = getDomainVerificationAgent(_arg0192);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result161, 1);
+                    return true;
+                case 229:
+                    String _arg0193 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result162 = getPackageListForDualDarPolicy(_arg0193);
+                    reply.writeNoException();
+                    reply.writeStringList(_result162);
+                    return true;
+                case 230:
+                    String _arg0194 = data.readString();
+                    int _arg1147 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result163 = createEncAppData(_arg0194, _arg1147);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result163);
+                    return true;
+                case 231:
+                    int _arg0195 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result164 = removeEncUserDir(_arg0195);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result164);
+                    return true;
+                case 232:
+                    int _arg0196 = data.readInt();
+                    String _arg1148 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result165 = removeEncPkgDir(_arg0196, _arg1148);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result165);
+                    return true;
+                case 233:
+                    String _arg0197 = data.readString();
+                    String _arg1149 = data.readString();
+                    int _arg279 = data.readInt();
+                    List<String> _arg332 = new ArrayList<>();
+                    data.enforceNoDataAvail();
+                    boolean _result166 = getMetadataForIconTray(_arg0197, _arg1149, _arg279, _arg332);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result166);
+                    reply.writeStringList(_arg332);
+                    return true;
+                case 234:
+                    String _arg0198 = data.readString();
+                    String _arg1150 = data.readString();
+                    int _arg280 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result167 = semIsPermissionRevokedByUserFixed(_arg0198, _arg1150, _arg280);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result167);
+                    return true;
+                case 235:
+                    String _arg0199 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result168 = isUnknownSourcePackage(_arg0199);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result168);
+                    return true;
+                case 236:
+                    long _arg0200 = data.readLong();
+                    int _arg1151 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result169 = getUnknownSourcePackagesAsUser(_arg0200, _arg1151);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result169, 1);
+                    return true;
+                case 237:
+                    String _arg0201 = data.readString();
+                    int _arg1152 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result170 = isPackageAutoDisabled(_arg0201, _arg1152);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result170);
+                    return true;
+                case 238:
+                    String _arg0202 = data.readString();
+                    int _arg1153 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result171 = isSystemCompressedPackage(_arg0202, _arg1153);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result171);
+                    return true;
+                case 239:
+                    String _arg0203 = data.readString();
+                    String _arg1154 = data.readString();
+                    data.enforceNoDataAvail();
+                    changeMonetizationBadgeState(_arg0203, _arg1154);
+                    reply.writeNoException();
+                    return true;
+                case 240:
+                    String _arg0204 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result172 = shouldAppSupportBadgeIcon(_arg0204);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result172);
+                    return true;
+                case 241:
+                    String _arg0205 = data.readString();
+                    int _arg1155 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAppCategoryHintUser(_arg0205, _arg1155);
+                    reply.writeNoException();
+                    return true;
+                case 242:
+                    String _arg0206 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearAppCategoryHintUser(_arg0206);
+                    reply.writeNoException();
+                    return true;
+                case 243:
+                    Map<String, String> _result173 = getAppCategoryHintUserMap();
+                    reply.writeNoException();
+                    if (_result173 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result173.size());
+                        _result173.forEach(new BiConsumer() { // from class: android.content.pm.IPackageManager$Stub$$ExternalSyntheticLambda2
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                IPackageManager.Stub.lambda$onTransact$2(Parcel.this, (String) obj, (String) obj2);
+                            }
+                        });
+                    }
+                    return true;
+                case 244:
+                    String _arg0207 = data.readString();
+                    data.enforceNoDataAvail();
+                    Map<String, String[]> _result174 = getAppCategoryInfos(_arg0207);
+                    reply.writeNoException();
+                    if (_result174 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result174.size());
+                        _result174.forEach(new BiConsumer() { // from class: android.content.pm.IPackageManager$Stub$$ExternalSyntheticLambda3
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                IPackageManager.Stub.lambda$onTransact$3(Parcel.this, (String) obj, (String[]) obj2);
+                            }
+                        });
+                    }
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            checkPackageStartable(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = isPackageAvailable(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            long _arg13 = data.readLong();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PackageInfo _result2 = getPackageInfo(_arg03, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            VersionedPackage _arg04 = (VersionedPackage) data.readTypedObject(VersionedPackage.CREATOR);
-                            long _arg14 = data.readLong();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PackageInfo _result3 = getPackageInfoVersioned(_arg04, _arg14, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            long _arg15 = data.readLong();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = getPackageUid(_arg05, _arg15, _arg23);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            long _arg16 = data.readLong();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int[] _result5 = getPackageGids(_arg06, _arg16, _arg24);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result5);
-                            return true;
-                        case 7:
-                            String[] _arg07 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            String[] _result6 = currentToCanonicalPackageNames(_arg07);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result6);
-                            return true;
-                        case 8:
-                            String[] _arg08 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            String[] _result7 = canonicalToCurrentPackageNames(_arg08);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result7);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            long _arg17 = data.readLong();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ApplicationInfo _result8 = getApplicationInfo(_arg09, _arg17, _arg25);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result9 = getTargetSdkVersion(_arg010);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 11:
-                            ComponentName _arg011 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            long _arg18 = data.readLong();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ActivityInfo _result10 = getActivityInfo(_arg011, _arg18, _arg26);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 12:
-                            ComponentName _arg012 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Intent _arg19 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg27 = data.readString();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = activitySupportsIntentAsUser(_arg012, _arg19, _arg27, _arg3);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 13:
-                            ComponentName _arg013 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            long _arg110 = data.readLong();
-                            int _arg28 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ActivityInfo _result12 = getReceiverInfo(_arg013, _arg110, _arg28);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 14:
-                            ComponentName _arg014 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            long _arg111 = data.readLong();
-                            int _arg29 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ServiceInfo _result13 = getServiceInfo(_arg014, _arg111, _arg29);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        case 15:
-                            ComponentName _arg015 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            long _arg112 = data.readLong();
-                            int _arg210 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ProviderInfo _result14 = getProviderInfo(_arg015, _arg112, _arg210);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result14, 1);
-                            return true;
-                        case 16:
-                            String _arg016 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = isProtectedBroadcast(_arg016);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 17:
-                            String _arg017 = data.readString();
-                            String _arg113 = data.readString();
-                            int _arg211 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result16 = checkSignatures(_arg017, _arg113, _arg211);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            int _arg114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result17 = checkUidSignatures(_arg018, _arg114);
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 19:
-                            List<String> _result18 = getAllPackages();
-                            reply.writeNoException();
-                            reply.writeStringList(_result18);
-                            return true;
-                        case 20:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result19 = getPackagesForUid(_arg019);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result19);
-                            return true;
-                        case 21:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result20 = getNameForUid(_arg020);
-                            reply.writeNoException();
-                            reply.writeString(_result20);
-                            return true;
-                        case 22:
-                            int[] _arg021 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            String[] _result21 = getNamesForUids(_arg021);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result21);
-                            return true;
-                        case 23:
-                            String _arg022 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result22 = getUidForSharedUser(_arg022);
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 24:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result23 = getFlagsForUid(_arg023);
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            return true;
-                        case 25:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result24 = getPrivateFlagsForUid(_arg024);
-                            reply.writeNoException();
-                            reply.writeInt(_result24);
-                            return true;
-                        case 26:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result25 = isUidPrivileged(_arg025);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result25);
-                            return true;
-                        case 27:
-                            Intent _arg026 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg115 = data.readString();
-                            long _arg212 = data.readLong();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ResolveInfo _result26 = resolveIntent(_arg026, _arg115, _arg212, _arg32);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result26, 1);
-                            return true;
-                        case 28:
-                            Intent _arg027 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg116 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ResolveInfo _result27 = findPersistentPreferredActivity(_arg027, _arg116);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result27, 1);
-                            return true;
-                        case 29:
-                            Intent _arg028 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg117 = data.readString();
-                            int _arg213 = data.readInt();
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result28 = canForwardTo(_arg028, _arg117, _arg213, _arg33);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result28);
-                            return true;
-                        case 30:
-                            Intent _arg029 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg118 = data.readString();
-                            long _arg214 = data.readLong();
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result29 = queryIntentActivities(_arg029, _arg118, _arg214, _arg34);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result29, 1);
-                            return true;
-                        case 31:
-                            ComponentName _arg030 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Intent[] _arg119 = (Intent[]) data.createTypedArray(Intent.CREATOR);
-                            String[] _arg215 = data.createStringArray();
-                            Intent _arg35 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg4 = data.readString();
-                            long _arg5 = data.readLong();
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result30 = queryIntentActivityOptions(_arg030, _arg119, _arg215, _arg35, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result30, 1);
-                            return true;
-                        case 32:
-                            Intent _arg031 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg120 = data.readString();
-                            long _arg216 = data.readLong();
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result31 = queryIntentReceivers(_arg031, _arg120, _arg216, _arg36);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result31, 1);
-                            return true;
-                        case 33:
-                            Intent _arg032 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg121 = data.readString();
-                            long _arg217 = data.readLong();
-                            int _arg37 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ResolveInfo _result32 = resolveService(_arg032, _arg121, _arg217, _arg37);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result32, 1);
-                            return true;
-                        case 34:
-                            Intent _arg033 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg122 = data.readString();
-                            long _arg218 = data.readLong();
-                            int _arg38 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result33 = queryIntentServices(_arg033, _arg122, _arg218, _arg38);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result33, 1);
-                            return true;
-                        case 35:
-                            Intent _arg034 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg123 = data.readString();
-                            long _arg219 = data.readLong();
-                            int _arg39 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result34 = queryIntentContentProviders(_arg034, _arg123, _arg219, _arg39);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result34, 1);
-                            return true;
-                        case 36:
-                            long _arg035 = data.readLong();
-                            int _arg124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result35 = getInstalledPackages(_arg035, _arg124);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result35, 1);
-                            return true;
-                        case 37:
-                            String _arg036 = data.readString();
-                            int _arg125 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result36 = getAppMetadataFd(_arg036, _arg125);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result36, 1);
-                            return true;
-                        case 38:
-                            String[] _arg037 = data.createStringArray();
-                            long _arg126 = data.readLong();
-                            int _arg220 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result37 = getPackagesHoldingPermissions(_arg037, _arg126, _arg220);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result37, 1);
-                            return true;
-                        case 39:
-                            long _arg038 = data.readLong();
-                            int _arg127 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result38 = getInstalledApplications(_arg038, _arg127);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result38, 1);
-                            return true;
-                        case 40:
-                            int _arg039 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result39 = getPersistentApplications(_arg039);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result39, 1);
-                            return true;
-                        case 41:
-                            String _arg040 = data.readString();
-                            long _arg128 = data.readLong();
-                            int _arg221 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ProviderInfo _result40 = resolveContentProvider(_arg040, _arg128, _arg221);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result40, 1);
-                            return true;
-                        case 42:
-                            List<String> _arg041 = data.createStringArrayList();
-                            ArrayList createTypedArrayList = data.createTypedArrayList(ProviderInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            querySyncProviders(_arg041, createTypedArrayList);
-                            reply.writeNoException();
-                            reply.writeStringList(_arg041);
-                            reply.writeTypedList(createTypedArrayList, 1);
-                            return true;
-                        case 43:
-                            String _arg042 = data.readString();
-                            int _arg129 = data.readInt();
-                            long _arg222 = data.readLong();
-                            String _arg310 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result41 = queryContentProviders(_arg042, _arg129, _arg222, _arg310);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result41, 1);
-                            return true;
-                        case 44:
-                            ComponentName _arg043 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg130 = data.readInt();
-                            int _arg223 = data.readInt();
-                            data.enforceNoDataAvail();
-                            InstrumentationInfo _result42 = getInstrumentationInfoAsUser(_arg043, _arg130, _arg223);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result42, 1);
-                            return true;
-                        case 45:
-                            String _arg044 = data.readString();
-                            int _arg131 = data.readInt();
-                            int _arg224 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result43 = queryInstrumentationAsUser(_arg044, _arg131, _arg224);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result43, 1);
-                            return true;
-                        case 46:
-                            int _arg045 = data.readInt();
-                            boolean _arg132 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            finishPackageInstall(_arg045, _arg132);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            String _arg046 = data.readString();
-                            String _arg133 = data.readString();
-                            data.enforceNoDataAvail();
-                            setInstallerPackageName(_arg046, _arg133);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            String _arg047 = data.readString();
-                            data.enforceNoDataAvail();
-                            relinquishUpdateOwnership(_arg047);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            String _arg048 = data.readString();
-                            int _arg134 = data.readInt();
-                            String _arg225 = data.readString();
-                            data.enforceNoDataAvail();
-                            setApplicationCategoryHint(_arg048, _arg134, _arg225);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            String _arg049 = data.readString();
-                            int _arg135 = data.readInt();
-                            IPackageDeleteObserver _arg226 = IPackageDeleteObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg311 = data.readInt();
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deletePackageAsUser(_arg049, _arg135, _arg226, _arg311, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            VersionedPackage _arg050 = (VersionedPackage) data.readTypedObject(VersionedPackage.CREATOR);
-                            IPackageDeleteObserver2 _arg136 = IPackageDeleteObserver2.Stub.asInterface(data.readStrongBinder());
-                            int _arg227 = data.readInt();
-                            int _arg312 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deletePackageVersioned(_arg050, _arg136, _arg227, _arg312);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            VersionedPackage _arg051 = (VersionedPackage) data.readTypedObject(VersionedPackage.CREATOR);
-                            IPackageDeleteObserver2 _arg137 = IPackageDeleteObserver2.Stub.asInterface(data.readStrongBinder());
-                            int _arg228 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteExistingPackageAsUser(_arg051, _arg137, _arg228);
-                            reply.writeNoException();
-                            return true;
-                        case 53:
-                            String _arg052 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result44 = getInstallerPackageName(_arg052);
-                            reply.writeNoException();
-                            reply.writeString(_result44);
-                            return true;
-                        case 54:
-                            String _arg053 = data.readString();
-                            int _arg138 = data.readInt();
-                            data.enforceNoDataAvail();
-                            InstallSourceInfo _result45 = getInstallSourceInfo(_arg053, _arg138);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result45, 1);
-                            return true;
-                        case 55:
-                            int _arg054 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetApplicationPreferences(_arg054);
-                            reply.writeNoException();
-                            return true;
-                        case 56:
-                            Intent _arg055 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg139 = data.readString();
-                            int _arg229 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ResolveInfo _result46 = getLastChosenActivity(_arg055, _arg139, _arg229);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result46, 1);
-                            return true;
-                        case 57:
-                            Intent _arg056 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg140 = data.readString();
-                            int _arg230 = data.readInt();
-                            IntentFilter _arg313 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            int _arg43 = data.readInt();
-                            ComponentName _arg52 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            setLastChosenActivity(_arg056, _arg140, _arg230, _arg313, _arg43, _arg52);
-                            reply.writeNoException();
-                            return true;
-                        case 58:
-                            IntentFilter _arg057 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            int _arg141 = data.readInt();
-                            ComponentName[] _arg231 = (ComponentName[]) data.createTypedArray(ComponentName.CREATOR);
-                            ComponentName _arg314 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg44 = data.readInt();
-                            boolean _arg53 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            addPreferredActivity(_arg057, _arg141, _arg231, _arg314, _arg44, _arg53);
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            IntentFilter _arg058 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            int _arg142 = data.readInt();
-                            ComponentName[] _arg232 = (ComponentName[]) data.createTypedArray(ComponentName.CREATOR);
-                            ComponentName _arg315 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg45 = data.readInt();
-                            data.enforceNoDataAvail();
-                            replacePreferredActivity(_arg058, _arg142, _arg232, _arg315, _arg45);
-                            reply.writeNoException();
-                            return true;
-                        case 60:
-                            String _arg059 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearPackagePreferredActivities(_arg059);
-                            reply.writeNoException();
-                            return true;
-                        case 61:
-                            ArrayList arrayList = new ArrayList();
-                            ArrayList arrayList2 = new ArrayList();
-                            String _arg233 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result47 = getPreferredActivities(arrayList, arrayList2, _arg233);
-                            reply.writeNoException();
-                            reply.writeInt(_result47);
-                            reply.writeTypedList(arrayList, 1);
-                            reply.writeTypedList(arrayList2, 1);
-                            return true;
-                        case 62:
-                            IntentFilter _arg060 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            ComponentName _arg143 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg234 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addPersistentPreferredActivity(_arg060, _arg143, _arg234);
-                            reply.writeNoException();
-                            return true;
-                        case 63:
-                            String _arg061 = data.readString();
-                            int _arg144 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearPackagePersistentPreferredActivities(_arg061, _arg144);
-                            reply.writeNoException();
-                            return true;
-                        case 64:
-                            IntentFilter _arg062 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            int _arg145 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearPersistentPreferredActivity(_arg062, _arg145);
-                            reply.writeNoException();
-                            return true;
-                        case 65:
-                            IntentFilter _arg063 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            String _arg146 = data.readString();
-                            int _arg235 = data.readInt();
-                            int _arg316 = data.readInt();
-                            int _arg46 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addCrossProfileIntentFilter(_arg063, _arg146, _arg235, _arg316, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 66:
-                            IntentFilter _arg064 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            String _arg147 = data.readString();
-                            int _arg236 = data.readInt();
-                            int _arg317 = data.readInt();
-                            int _arg47 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result48 = removeCrossProfileIntentFilter(_arg064, _arg147, _arg236, _arg317, _arg47);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result48);
-                            return true;
-                        case 67:
-                            int _arg065 = data.readInt();
-                            String _arg148 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearCrossProfileIntentFilters(_arg065, _arg148);
-                            reply.writeNoException();
-                            return true;
-                        case 68:
-                            String[] _arg066 = data.createStringArray();
-                            int _arg149 = data.readInt();
-                            int _arg237 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result49 = setDistractingPackageRestrictionsAsUser(_arg066, _arg149, _arg237);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result49);
-                            return true;
-                        case 69:
-                            String[] _arg067 = data.createStringArray();
-                            boolean _arg150 = data.readBoolean();
-                            PersistableBundle _arg238 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            PersistableBundle _arg318 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            SuspendDialogInfo _arg48 = (SuspendDialogInfo) data.readTypedObject(SuspendDialogInfo.CREATOR);
-                            String _arg54 = data.readString();
-                            int _arg62 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result50 = setPackagesSuspendedAsUser(_arg067, _arg150, _arg238, _arg318, _arg48, _arg54, _arg62);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result50);
-                            return true;
-                        case 70:
-                            String[] _arg068 = data.createStringArray();
-                            int _arg151 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result51 = getUnsuspendablePackagesForUser(_arg068, _arg151);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result51);
-                            return true;
-                        case 71:
-                            String _arg069 = data.readString();
-                            int _arg152 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result52 = isPackageSuspendedForUser(_arg069, _arg152);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result52);
-                            return true;
-                        case 72:
-                            String _arg070 = data.readString();
-                            int _arg153 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result53 = getSuspendedPackageAppExtras(_arg070, _arg153);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result53, 1);
-                            return true;
-                        case 73:
-                            int _arg071 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result54 = getPreferredActivityBackup(_arg071);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result54);
-                            return true;
-                        case 74:
-                            byte[] _arg072 = data.createByteArray();
-                            int _arg154 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restorePreferredActivities(_arg072, _arg154);
-                            reply.writeNoException();
-                            return true;
-                        case 75:
-                            int _arg073 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result55 = getDefaultAppsBackup(_arg073);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result55);
-                            return true;
-                        case 76:
-                            byte[] _arg074 = data.createByteArray();
-                            int _arg155 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restoreDefaultApps(_arg074, _arg155);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            int _arg075 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result56 = getDomainVerificationBackup(_arg075);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result56);
-                            return true;
-                        case 78:
-                            byte[] _arg076 = data.createByteArray();
-                            int _arg156 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restoreDomainVerification(_arg076, _arg156);
-                            reply.writeNoException();
-                            return true;
-                        case 79:
-                            ArrayList arrayList3 = new ArrayList();
-                            data.enforceNoDataAvail();
-                            ComponentName _result57 = getHomeActivities(arrayList3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result57, 1);
-                            reply.writeTypedList(arrayList3, 1);
-                            return true;
-                        case 80:
-                            ComponentName _arg077 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg157 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setHomeActivity(_arg077, _arg157);
-                            reply.writeNoException();
-                            return true;
-                        case 81:
-                            ComponentName _arg078 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg158 = data.readString();
-                            int _arg239 = data.readInt();
-                            int _arg319 = data.readInt();
-                            data.enforceNoDataAvail();
-                            overrideLabelAndIcon(_arg078, _arg158, _arg239, _arg319);
-                            reply.writeNoException();
-                            return true;
-                        case 82:
-                            ComponentName _arg079 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg159 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restoreLabelAndIcon(_arg079, _arg159);
-                            reply.writeNoException();
-                            return true;
-                        case 83:
-                            ComponentName _arg080 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg160 = data.readInt();
-                            int _arg240 = data.readInt();
-                            int _arg320 = data.readInt();
-                            String _arg49 = data.readString();
-                            data.enforceNoDataAvail();
-                            setComponentEnabledSetting(_arg080, _arg160, _arg240, _arg320, _arg49);
-                            reply.writeNoException();
-                            return true;
-                        case 84:
-                            List<PackageManager.ComponentEnabledSetting> _arg081 = data.createTypedArrayList(PackageManager.ComponentEnabledSetting.CREATOR);
-                            int _arg161 = data.readInt();
-                            String _arg241 = data.readString();
-                            data.enforceNoDataAvail();
-                            setComponentEnabledSettings(_arg081, _arg161, _arg241);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            ComponentName _arg082 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg162 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result58 = getComponentEnabledSetting(_arg082, _arg162);
-                            reply.writeNoException();
-                            reply.writeInt(_result58);
-                            return true;
-                        case 86:
-                            String _arg083 = data.readString();
-                            int _arg163 = data.readInt();
-                            int _arg242 = data.readInt();
-                            int _arg321 = data.readInt();
-                            String _arg410 = data.readString();
-                            data.enforceNoDataAvail();
-                            setApplicationEnabledSetting(_arg083, _arg163, _arg242, _arg321, _arg410);
-                            reply.writeNoException();
-                            return true;
-                        case 87:
-                            String _arg084 = data.readString();
-                            int _arg164 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result59 = getApplicationEnabledSetting(_arg084, _arg164);
-                            reply.writeNoException();
-                            reply.writeInt(_result59);
-                            return true;
-                        case 88:
-                            String _arg085 = data.readString();
-                            String _arg165 = data.readString();
-                            int _arg243 = data.readInt();
-                            String _arg322 = data.readString();
-                            String _arg411 = data.readString();
-                            int _arg55 = data.readInt();
-                            data.enforceNoDataAvail();
-                            logAppProcessStartIfNeeded(_arg085, _arg165, _arg243, _arg322, _arg411, _arg55);
-                            reply.writeNoException();
-                            return true;
-                        case 89:
-                            int _arg086 = data.readInt();
-                            data.enforceNoDataAvail();
-                            flushPackageRestrictionsAsUser(_arg086);
-                            reply.writeNoException();
-                            return true;
-                        case 90:
-                            String _arg087 = data.readString();
-                            boolean _arg166 = data.readBoolean();
-                            int _arg244 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPackageStoppedState(_arg087, _arg166, _arg244);
-                            reply.writeNoException();
-                            return true;
-                        case 91:
-                            String _arg088 = data.readString();
-                            long _arg167 = data.readLong();
-                            int _arg245 = data.readInt();
-                            IPackageDataObserver _arg323 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            freeStorageAndNotify(_arg088, _arg167, _arg245, _arg323);
-                            reply.writeNoException();
-                            return true;
-                        case 92:
-                            String _arg089 = data.readString();
-                            long _arg168 = data.readLong();
-                            int _arg246 = data.readInt();
-                            IntentSender _arg324 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
-                            data.enforceNoDataAvail();
-                            freeStorage(_arg089, _arg168, _arg246, _arg324);
-                            reply.writeNoException();
-                            return true;
-                        case 93:
-                            String _arg090 = data.readString();
-                            IPackageDataObserver _arg169 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            deleteApplicationCacheFiles(_arg090, _arg169);
-                            reply.writeNoException();
-                            return true;
-                        case 94:
-                            String _arg091 = data.readString();
-                            int _arg170 = data.readInt();
-                            IPackageDataObserver _arg247 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            deleteApplicationCacheFilesAsUser(_arg091, _arg170, _arg247);
-                            reply.writeNoException();
-                            return true;
-                        case 95:
-                            String _arg092 = data.readString();
-                            IPackageDataObserver _arg171 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg248 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearApplicationUserData(_arg092, _arg171, _arg248);
-                            reply.writeNoException();
-                            return true;
-                        case 96:
-                            String _arg093 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearApplicationProfileData(_arg093);
-                            reply.writeNoException();
-                            return true;
-                        case 97:
-                            String _arg094 = data.readString();
-                            int _arg172 = data.readInt();
-                            IPackageStatsObserver _arg249 = IPackageStatsObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getPackageSizeInfo(_arg094, _arg172, _arg249);
-                            reply.writeNoException();
-                            return true;
-                        case 98:
-                            String[] _result60 = getSystemSharedLibraryNames();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result60);
-                            return true;
-                        case 99:
-                            ParceledListSlice _result61 = getSystemAvailableFeatures();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result61, 1);
-                            return true;
-                        case 100:
-                            String _arg095 = data.readString();
-                            int _arg173 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result62 = hasSystemFeature(_arg095, _arg173);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result62);
-                            return true;
-                        case 101:
-                            List<String> _result63 = getInitialNonStoppedSystemPackages();
-                            reply.writeNoException();
-                            reply.writeStringList(_result63);
-                            return true;
-                        case 102:
-                            enterSafeMode();
-                            reply.writeNoException();
-                            return true;
-                        case 103:
-                            boolean _result64 = isSafeMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result64);
-                            return true;
-                        case 104:
-                            boolean _result65 = hasSystemUidErrors();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result65);
-                            return true;
-                        case 105:
-                            String _arg096 = data.readString();
-                            int _arg174 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyPackageUse(_arg096, _arg174);
-                            return true;
-                        case 106:
-                            String _arg097 = data.readString();
-                            int N = data.readInt();
-                            final Map<String, String> _arg175 = N < 0 ? null : new HashMap<>();
-                            IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.content.pm.IPackageManager$Stub$$ExternalSyntheticLambda0
-                                @Override // java.util.function.IntConsumer
-                                public final void accept(int i) {
-                                    IPackageManager.Stub.lambda$onTransact$0(Parcel.this, _arg175, i);
-                                }
-                            });
-                            String _arg250 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyDexLoad(_arg097, _arg175, _arg250);
-                            return true;
-                        case 107:
-                            String _arg098 = data.readString();
-                            String _arg176 = data.readString();
-                            boolean _arg251 = data.readBoolean();
-                            IDexModuleRegisterCallback _arg325 = IDexModuleRegisterCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerDexModule(_arg098, _arg176, _arg251, _arg325);
-                            return true;
-                        case 108:
-                            String _arg099 = data.readString();
-                            boolean _arg177 = data.readBoolean();
-                            String _arg252 = data.readString();
-                            boolean _arg326 = data.readBoolean();
-                            boolean _arg412 = data.readBoolean();
-                            String _arg56 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result66 = performDexOptMode(_arg099, _arg177, _arg252, _arg326, _arg412, _arg56);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result66);
-                            return true;
-                        case 109:
-                            String _arg0100 = data.readString();
-                            String _arg178 = data.readString();
-                            boolean _arg253 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result67 = performDexOptSecondary(_arg0100, _arg178, _arg253);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result67);
-                            return true;
-                        case 110:
-                            String _arg0101 = data.readString();
-                            boolean _arg179 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result68 = performDexOptForADCP(_arg0101, _arg179);
-                            reply.writeNoException();
-                            reply.writeInt(_result68);
-                            return true;
-                        case 111:
-                            int _arg0102 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result69 = getMoveStatus(_arg0102);
-                            reply.writeNoException();
-                            reply.writeInt(_result69);
-                            return true;
-                        case 112:
-                            IPackageMoveObserver _arg0103 = IPackageMoveObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerMoveCallback(_arg0103);
-                            reply.writeNoException();
-                            return true;
-                        case 113:
-                            IPackageMoveObserver _arg0104 = IPackageMoveObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterMoveCallback(_arg0104);
-                            reply.writeNoException();
-                            return true;
-                        case 114:
-                            String _arg0105 = data.readString();
-                            String _arg180 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result70 = movePackage(_arg0105, _arg180);
-                            reply.writeNoException();
-                            reply.writeInt(_result70);
-                            return true;
-                        case 115:
-                            String _arg0106 = data.readString();
-                            String _arg181 = data.readString();
-                            IMemorySaverPackageMoveObserver _arg254 = IMemorySaverPackageMoveObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result71 = movePackageToSd(_arg0106, _arg181, _arg254);
-                            reply.writeNoException();
-                            reply.writeInt(_result71);
-                            return true;
-                        case 116:
-                            String _arg0107 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result72 = movePrimaryStorage(_arg0107);
-                            reply.writeNoException();
-                            reply.writeInt(_result72);
-                            return true;
-                        case 117:
-                            int _arg0108 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result73 = setInstallLocation(_arg0108);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result73);
-                            return true;
-                        case 118:
-                            int _result74 = getInstallLocation();
-                            reply.writeNoException();
-                            reply.writeInt(_result74);
-                            return true;
-                        case 119:
-                            String _arg0109 = data.readString();
-                            int _arg182 = data.readInt();
-                            int _arg255 = data.readInt();
-                            int _arg327 = data.readInt();
-                            List<String> _arg413 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            int _result75 = installExistingPackageAsUser(_arg0109, _arg182, _arg255, _arg327, _arg413);
-                            reply.writeNoException();
-                            reply.writeInt(_result75);
-                            return true;
-                        case 120:
-                            int _arg0110 = data.readInt();
-                            int _arg183 = data.readInt();
-                            data.enforceNoDataAvail();
-                            verifyPendingInstall(_arg0110, _arg183);
-                            reply.writeNoException();
-                            return true;
-                        case 121:
-                            int _arg0111 = data.readInt();
-                            int _arg184 = data.readInt();
-                            long _arg256 = data.readLong();
-                            data.enforceNoDataAvail();
-                            extendVerificationTimeout(_arg0111, _arg184, _arg256);
-                            reply.writeNoException();
-                            return true;
-                        case 122:
-                            int _arg0112 = data.readInt();
-                            int _arg185 = data.readInt();
-                            List<String> _arg257 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            verifyIntentFilter(_arg0112, _arg185, _arg257);
-                            reply.writeNoException();
-                            return true;
-                        case 123:
-                            String _arg0113 = data.readString();
-                            int _arg186 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result76 = getIntentVerificationStatus(_arg0113, _arg186);
-                            reply.writeNoException();
-                            reply.writeInt(_result76);
-                            return true;
-                        case 124:
-                            String _arg0114 = data.readString();
-                            int _arg187 = data.readInt();
-                            int _arg258 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result77 = updateIntentVerificationStatus(_arg0114, _arg187, _arg258);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result77);
-                            return true;
-                        case 125:
-                            String _arg0115 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result78 = getIntentFilterVerifications(_arg0115);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result78, 1);
-                            return true;
-                        case 126:
-                            String _arg0116 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result79 = getAllIntentFilters(_arg0116);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result79, 1);
-                            return true;
-                        case 127:
-                            VerifierDeviceIdentity _result80 = getVerifierDeviceIdentity();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result80, 1);
-                            return true;
-                        case 128:
-                            boolean _result81 = isFirstBoot();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result81);
-                            return true;
-                        case 129:
-                            boolean _result82 = isDeviceUpgrading();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result82);
-                            return true;
-                        case 130:
-                            boolean _result83 = isStorageLow();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result83);
-                            return true;
-                        case 131:
-                            String _arg0117 = data.readString();
-                            boolean _arg188 = data.readBoolean();
-                            int _arg259 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result84 = setApplicationHiddenSettingAsUser(_arg0117, _arg188, _arg259);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result84);
-                            return true;
-                        case 132:
-                            String _arg0118 = data.readString();
-                            int _arg189 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result85 = getApplicationHiddenSettingAsUser(_arg0118, _arg189);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result85);
-                            return true;
-                        case 133:
-                            String _arg0119 = data.readString();
-                            boolean _arg190 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSystemAppHiddenUntilInstalled(_arg0119, _arg190);
-                            reply.writeNoException();
-                            return true;
-                        case 134:
-                            String _arg0120 = data.readString();
-                            boolean _arg191 = data.readBoolean();
-                            int _arg260 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result86 = setSystemAppInstallState(_arg0120, _arg191, _arg260);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result86);
-                            return true;
-                        case 135:
-                            IPackageInstaller _result87 = getPackageInstaller();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result87);
-                            return true;
-                        case 136:
-                            String _arg0121 = data.readString();
-                            boolean _arg192 = data.readBoolean();
-                            int _arg261 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result88 = setBlockUninstallForUser(_arg0121, _arg192, _arg261);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result88);
-                            return true;
-                        case 137:
-                            String _arg0122 = data.readString();
-                            int _arg193 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result89 = getBlockUninstallForUser(_arg0122, _arg193);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result89);
-                            return true;
-                        case 138:
-                            String _arg0123 = data.readString();
-                            String _arg194 = data.readString();
-                            data.enforceNoDataAvail();
-                            KeySet _result90 = getKeySetByAlias(_arg0123, _arg194);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result90, 1);
-                            return true;
-                        case 139:
-                            String _arg0124 = data.readString();
-                            data.enforceNoDataAvail();
-                            KeySet _result91 = getSigningKeySet(_arg0124);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result91, 1);
-                            return true;
-                        case 140:
-                            String _arg0125 = data.readString();
-                            KeySet _arg195 = (KeySet) data.readTypedObject(KeySet.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result92 = isPackageSignedByKeySet(_arg0125, _arg195);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result92);
-                            return true;
-                        case 141:
-                            String _arg0126 = data.readString();
-                            KeySet _arg196 = (KeySet) data.readTypedObject(KeySet.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result93 = isPackageSignedByKeySetExactly(_arg0126, _arg196);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result93);
-                            return true;
-                        case 142:
-                            String _result94 = getPermissionControllerPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result94);
-                            return true;
-                        case 143:
-                            String _result95 = getSdkSandboxPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result95);
-                            return true;
-                        case 144:
-                            int _arg0127 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result96 = getInstantApps(_arg0127);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result96, 1);
-                            return true;
-                        case 145:
-                            String _arg0128 = data.readString();
-                            int _arg197 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result97 = getInstantAppCookie(_arg0128, _arg197);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result97);
-                            return true;
-                        case 146:
-                            String _arg0129 = data.readString();
-                            byte[] _arg198 = data.createByteArray();
-                            int _arg262 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result98 = setInstantAppCookie(_arg0129, _arg198, _arg262);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result98);
-                            return true;
-                        case 147:
-                            String _arg0130 = data.readString();
-                            int _arg199 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bitmap _result99 = getInstantAppIcon(_arg0130, _arg199);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result99, 1);
-                            return true;
-                        case 148:
-                            String _arg0131 = data.readString();
-                            int _arg1100 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result100 = isInstantApp(_arg0131, _arg1100);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result100);
-                            return true;
-                        case 149:
-                            String _arg0132 = data.readString();
-                            boolean _arg1101 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result101 = setRequiredForSystemUser(_arg0132, _arg1101);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result101);
-                            return true;
-                        case 150:
-                            String _arg0133 = data.readString();
-                            boolean _arg1102 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setUpdateAvailable(_arg0133, _arg1102);
-                            reply.writeNoException();
-                            return true;
-                        case 151:
-                            String _result102 = getServicesSystemSharedLibraryPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result102);
-                            return true;
-                        case 152:
-                            String _result103 = getSharedSystemSharedLibraryPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result103);
-                            return true;
-                        case 153:
-                            int _arg0134 = data.readInt();
-                            int _arg1103 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ChangedPackages _result104 = getChangedPackages(_arg0134, _arg1103);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result104, 1);
-                            return true;
-                        case 154:
-                            String _arg0135 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result105 = isPackageDeviceAdminOnAnyUser(_arg0135);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result105);
-                            return true;
-                        case 155:
-                            String _arg0136 = data.readString();
-                            int _arg1104 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result106 = getInstallReason(_arg0136, _arg1104);
-                            reply.writeNoException();
-                            reply.writeInt(_result106);
-                            return true;
-                        case 156:
-                            String _arg0137 = data.readString();
-                            long _arg1105 = data.readLong();
-                            int _arg263 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result107 = getSharedLibraries(_arg0137, _arg1105, _arg263);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result107, 1);
-                            return true;
-                        case 157:
-                            String _arg0138 = data.readString();
-                            long _arg1106 = data.readLong();
-                            int _arg264 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result108 = getDeclaredSharedLibraries(_arg0138, _arg1106, _arg264);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result108, 1);
-                            return true;
-                        case 158:
-                            String _arg0139 = data.readString();
-                            int _arg1107 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result109 = canRequestPackageInstalls(_arg0139, _arg1107);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result109);
-                            return true;
-                        case 159:
-                            deletePreloadsFileCache();
-                            reply.writeNoException();
-                            return true;
-                        case 160:
-                            ComponentName _result110 = getInstantAppResolverComponent();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result110, 1);
-                            return true;
-                        case 161:
-                            ComponentName _result111 = getInstantAppResolverSettingsComponent();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result111, 1);
-                            return true;
-                        case 162:
-                            ComponentName _result112 = getInstantAppInstallerComponent();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result112, 1);
-                            return true;
-                        case 163:
-                            String _arg0140 = data.readString();
-                            int _arg1108 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result113 = getInstantAppAndroidId(_arg0140, _arg1108);
-                            reply.writeNoException();
-                            reply.writeString(_result113);
-                            return true;
-                        case 164:
-                            IArtManager _result114 = getArtManager();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result114);
-                            return true;
-                        case 165:
-                            String _arg0141 = data.readString();
-                            CharSequence _arg1109 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg265 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setHarmfulAppWarning(_arg0141, _arg1109, _arg265);
-                            reply.writeNoException();
-                            return true;
-                        case 166:
-                            String _arg0142 = data.readString();
-                            int _arg1110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CharSequence _result115 = getHarmfulAppWarning(_arg0142, _arg1110);
-                            reply.writeNoException();
-                            if (_result115 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result115, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 167:
-                            String _arg0143 = data.readString();
-                            byte[] _arg1111 = data.createByteArray();
-                            int _arg266 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result116 = hasSigningCertificate(_arg0143, _arg1111, _arg266);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result116);
-                            return true;
-                        case 168:
-                            int _arg0144 = data.readInt();
-                            byte[] _arg1112 = data.createByteArray();
-                            int _arg267 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result117 = hasUidSigningCertificate(_arg0144, _arg1112, _arg267);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result117);
-                            return true;
-                        case 169:
-                            String _result118 = getDefaultTextClassifierPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result118);
-                            return true;
-                        case 170:
-                            String _result119 = getSystemTextClassifierPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result119);
-                            return true;
-                        case 171:
-                            String _result120 = getAttentionServicePackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result120);
-                            return true;
-                        case 172:
-                            String _result121 = getRotationResolverPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result121);
-                            return true;
-                        case 173:
-                            String _result122 = getWellbeingPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result122);
-                            return true;
-                        case 174:
-                            String _result123 = getAppPredictionServicePackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result123);
-                            return true;
-                        case 175:
-                            String _result124 = getSystemCaptionsServicePackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result124);
-                            return true;
-                        case 176:
-                            String _result125 = getSetupWizardPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result125);
-                            return true;
-                        case 177:
-                            String _result126 = getIncidentReportApproverPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result126);
-                            return true;
-                        case 178:
-                            String _arg0145 = data.readString();
-                            int _arg1113 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result127 = isPackageStateProtected(_arg0145, _arg1113);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result127);
-                            return true;
-                        case 179:
-                            sendDeviceCustomizationReadyBroadcast();
-                            reply.writeNoException();
-                            return true;
-                        case 180:
-                            int _arg0146 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<ModuleInfo> _result128 = getInstalledModules(_arg0146);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result128, 1);
-                            return true;
-                        case 181:
-                            String _arg0147 = data.readString();
-                            int _arg1114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ModuleInfo _result129 = getModuleInfo(_arg0147, _arg1114);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result129, 1);
-                            return true;
-                        case 182:
-                            int _arg0148 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result130 = getRuntimePermissionsVersion(_arg0148);
-                            reply.writeNoException();
-                            reply.writeInt(_result130);
-                            return true;
-                        case 183:
-                            int _arg0149 = data.readInt();
-                            int _arg1115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRuntimePermissionsVersion(_arg0149, _arg1115);
-                            reply.writeNoException();
-                            return true;
-                        case 184:
-                            String[] _arg0150 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            notifyPackagesReplacedReceived(_arg0150);
-                            reply.writeNoException();
-                            return true;
-                        case 185:
-                            String _arg0151 = data.readString();
-                            boolean _arg1116 = data.readBoolean();
-                            int _arg268 = data.readInt();
-                            int _arg328 = data.readInt();
-                            ClassLoader cl = getClass().getClassLoader();
-                            List _arg414 = data.readArrayList(cl);
-                            IOnChecksumsReadyListener _arg57 = IOnChecksumsReadyListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg63 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestPackageChecksums(_arg0151, _arg1116, _arg268, _arg328, _arg414, _arg57, _arg63);
-                            reply.writeNoException();
-                            return true;
-                        case 186:
-                            String _arg0152 = data.readString();
-                            String _arg1117 = data.readString();
-                            String _arg269 = data.readString();
-                            int _arg329 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IntentSender _result131 = getLaunchIntentSenderForPackage(_arg0152, _arg1117, _arg269, _arg329);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result131, 1);
-                            return true;
-                        case 187:
-                            String _arg0153 = data.readString();
-                            int _arg1118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result132 = getAppOpPermissionPackages(_arg0153, _arg1118);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result132);
-                            return true;
-                        case 188:
-                            String _arg0154 = data.readString();
-                            int _arg1119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PermissionGroupInfo _result133 = getPermissionGroupInfo(_arg0154, _arg1119);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result133, 1);
-                            return true;
-                        case 189:
-                            PermissionInfo _arg0155 = (PermissionInfo) data.readTypedObject(PermissionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result134 = addPermission(_arg0155);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result134);
-                            return true;
-                        case 190:
-                            PermissionInfo _arg0156 = (PermissionInfo) data.readTypedObject(PermissionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result135 = addPermissionAsync(_arg0156);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result135);
-                            return true;
-                        case 191:
-                            String _arg0157 = data.readString();
-                            data.enforceNoDataAvail();
-                            removePermission(_arg0157);
-                            reply.writeNoException();
-                            return true;
-                        case 192:
-                            String _arg0158 = data.readString();
-                            String _arg1120 = data.readString();
-                            int _arg270 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result136 = checkPermission(_arg0158, _arg1120, _arg270);
-                            reply.writeNoException();
-                            reply.writeInt(_result136);
-                            return true;
-                        case 193:
-                            String _arg0159 = data.readString();
-                            String _arg1121 = data.readString();
-                            int _arg271 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantRuntimePermission(_arg0159, _arg1121, _arg271);
-                            reply.writeNoException();
-                            return true;
-                        case 194:
-                            String _arg0160 = data.readString();
-                            int _arg1122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result137 = checkUidPermission(_arg0160, _arg1122);
-                            reply.writeNoException();
-                            reply.writeInt(_result137);
-                            return true;
-                        case 195:
-                            String _arg0161 = data.readString();
-                            String _arg1123 = data.readString();
-                            List<String> _arg272 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            setMimeGroup(_arg0161, _arg1123, _arg272);
-                            reply.writeNoException();
-                            return true;
-                        case 196:
-                            String _arg0162 = data.readString();
-                            int _arg1124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result138 = getSplashScreenTheme(_arg0162, _arg1124);
-                            reply.writeNoException();
-                            reply.writeString(_result138);
-                            return true;
-                        case 197:
-                            String _arg0163 = data.readString();
-                            String _arg1125 = data.readString();
-                            int _arg273 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSplashScreenTheme(_arg0163, _arg1125, _arg273);
-                            reply.writeNoException();
-                            return true;
-                        case 198:
-                            String _arg0164 = data.readString();
-                            String _arg1126 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result139 = getMimeGroup(_arg0164, _arg1126);
-                            reply.writeNoException();
-                            reply.writeStringList(_result139);
-                            return true;
-                        case 199:
-                            String _arg0165 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result140 = isAutoRevokeWhitelisted(_arg0165);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result140);
-                            return true;
-                        case 200:
-                            int _arg0166 = data.readInt();
-                            String _arg1127 = data.readString();
-                            data.enforceNoDataAvail();
-                            makeProviderVisible(_arg0166, _arg1127);
-                            reply.writeNoException();
-                            return true;
-                        case 201:
-                            int _arg0167 = data.readInt();
-                            int _arg1128 = data.readInt();
-                            data.enforceNoDataAvail();
-                            makeUidVisible(_arg0167, _arg1128);
-                            reply.writeNoException();
-                            return true;
-                        case 202:
-                            IBinder _result141 = getHoldLockToken();
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result141);
-                            return true;
-                        case 203:
-                            IBinder _arg0168 = data.readStrongBinder();
-                            int _arg1129 = data.readInt();
-                            data.enforceNoDataAvail();
-                            holdLock(_arg0168, _arg1129);
-                            reply.writeNoException();
-                            return true;
-                        case 204:
-                            String _arg0169 = data.readString();
-                            String _arg1130 = data.readString();
-                            String _arg274 = data.readString();
-                            int _arg330 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PackageManager.Property _result142 = getPropertyAsUser(_arg0169, _arg1130, _arg274, _arg330);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result142, 1);
-                            return true;
-                        case 205:
-                            String _arg0170 = data.readString();
-                            int _arg1131 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result143 = queryProperty(_arg0170, _arg1131);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result143, 1);
-                            return true;
-                        case 206:
-                            List<String> _arg0171 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            setKeepUninstalledPackages(_arg0171);
-                            reply.writeNoException();
-                            return true;
-                        case 207:
-                            String _arg0172 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result144 = setLicensePermissionsForMDM(_arg0172);
-                            reply.writeNoException();
-                            reply.writeInt(_result144);
-                            return true;
-                        case 208:
-                            String _arg0173 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result145 = getPackageGrantedPermissionsForMDM(_arg0173);
-                            reply.writeNoException();
-                            reply.writeStringList(_result145);
-                            return true;
-                        case 209:
-                            String _arg0174 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result146 = getGrantedPermissionsForMDM(_arg0174);
-                            reply.writeNoException();
-                            reply.writeStringList(_result146);
-                            return true;
-                        case 210:
-                            String _arg0175 = data.readString();
-                            int _arg1132 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearPackagePreferredActivitiesAsUserForMDM(_arg0175, _arg1132);
-                            reply.writeNoException();
-                            return true;
-                        case 211:
-                            String _arg0176 = data.readString();
-                            List<String> _arg1133 = data.createStringArrayList();
-                            int _arg275 = data.readInt();
-                            int _arg331 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result147 = applyRuntimePermissionsForMDM(_arg0176, _arg1133, _arg275, _arg331);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result147);
-                            return true;
-                        case 212:
-                            int _arg0177 = data.readInt();
-                            int _arg1134 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result148 = applyRuntimePermissionsForAllApplicationsForMDM(_arg0177, _arg1134);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result148);
-                            return true;
-                        case 213:
-                            String _arg0178 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result149 = getRequestedRuntimePermissionsForMDM(_arg0178);
-                            reply.writeNoException();
-                            reply.writeStringList(_result149);
-                            return true;
-                        case 214:
-                            String _arg0179 = data.readString();
-                            String[] _arg1135 = data.createStringArray();
-                            int _arg276 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean[] _result150 = canPackageQuery(_arg0179, _arg1135, _arg276);
-                            reply.writeNoException();
-                            reply.writeBooleanArray(_result150);
-                            return true;
-                        case 215:
-                            long _arg0180 = data.readLong();
-                            boolean _arg1136 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result151 = waitForHandler(_arg0180, _arg1136);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result151);
-                            return true;
-                        case 216:
-                            String _arg0181 = data.readString();
-                            String _arg1137 = data.readString();
-                            int _arg277 = data.readInt();
-                            List<String> _arg332 = new ArrayList<>();
-                            data.enforceNoDataAvail();
-                            boolean _result152 = getMetadataForIconTray(_arg0181, _arg1137, _arg277, _arg332);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result152);
-                            reply.writeStringList(_arg332);
-                            return true;
-                        case 217:
-                            String _arg0182 = data.readString();
-                            String _arg1138 = data.readString();
-                            int _arg278 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result153 = semIsPermissionRevokedByUserFixed(_arg0182, _arg1138, _arg278);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result153);
-                            return true;
-                        case 218:
-                            String _arg0183 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result154 = isUnknownSourcePackage(_arg0183);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result154);
-                            return true;
-                        case 219:
-                            long _arg0184 = data.readLong();
-                            int _arg1139 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result155 = getUnknownSourcePackagesAsUser(_arg0184, _arg1139);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result155, 1);
-                            return true;
-                        case 220:
-                            String _arg0185 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result156 = getPackageListForDualDarPolicy(_arg0185);
-                            reply.writeNoException();
-                            reply.writeStringList(_result156);
-                            return true;
-                        case 221:
-                            String _arg0186 = data.readString();
-                            int _arg1140 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result157 = isPackageAutoDisabled(_arg0186, _arg1140);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result157);
-                            return true;
-                        case 222:
-                            String _arg0187 = data.readString();
-                            int _arg1141 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result158 = createEncAppData(_arg0187, _arg1141);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result158);
-                            return true;
-                        case 223:
-                            int _arg0188 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result159 = removeEncUserDir(_arg0188);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result159);
-                            return true;
-                        case 224:
-                            int _arg0189 = data.readInt();
-                            String _arg1142 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result160 = removeEncPkgDir(_arg0189, _arg1142);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result160);
-                            return true;
-                        case 225:
-                            List<String> _arg0190 = data.createStringArrayList();
-                            int _arg1143 = data.readInt();
-                            int _arg279 = data.readInt();
-                            boolean _arg333 = data.readBoolean();
-                            boolean _arg415 = data.readBoolean();
-                            int _arg58 = data.readInt();
-                            String _arg64 = data.readString();
-                            data.enforceNoDataAvail();
-                            setApplicationEnabledSettingWithList(_arg0190, _arg1143, _arg279, _arg333, _arg415, _arg58, _arg64);
-                            reply.writeNoException();
-                            return true;
-                        case 226:
-                            int _result161 = getProgressionOfPackageChanged();
-                            reply.writeNoException();
-                            reply.writeInt(_result161);
-                            return true;
-                        case 227:
-                            cancelEMPHandlerSendPendingBroadcast();
-                            reply.writeNoException();
-                            return true;
-                        case 228:
-                            checkDeletableListForASKS();
-                            reply.writeNoException();
-                            return true;
-                        case 229:
-                            setTrustTimebyStatusChanged();
-                            reply.writeNoException();
-                            return true;
-                        case 230:
-                            String _result162 = getUNvalueForASKS();
-                            reply.writeNoException();
-                            reply.writeString(_result162);
-                            return true;
-                        case 231:
-                            int _arg0191 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result163 = checkASKSTarget(_arg0191);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result163);
-                            return true;
-                        case 232:
-                            String _arg0192 = data.readString();
-                            int _arg1144 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result164 = isSystemCompressedPackage(_arg0192, _arg1144);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result164);
-                            return true;
-                        case 233:
-                            String _arg0193 = data.readString();
-                            String _arg1145 = data.readString();
-                            data.enforceNoDataAvail();
-                            changeMonetizationBadgeState(_arg0193, _arg1145);
-                            reply.writeNoException();
-                            return true;
-                        case 234:
-                            String _arg0194 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result165 = shouldAppSupportBadgeIcon(_arg0194);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result165);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg1, int i) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, String v) {
+            reply.writeString(k);
+            reply.writeString(v);
+        }
+
+        static /* synthetic */ void lambda$onTransact$1(Parcel data, Map _arg1, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg1.put(k, v);
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPackageManager {
+        static /* synthetic */ void lambda$onTransact$2(Parcel reply, String k, String v) {
+            reply.writeString(k);
+            reply.writeString(v);
+        }
+
+        static /* synthetic */ void lambda$onTransact$3(Parcel reply, String k, String[] v) {
+            reply.writeString(k);
+            reply.writeStringArray(v);
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        static class Proxy implements IPackageManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -5427,7 +5667,7 @@ public interface IPackageManager extends IInterface {
             }
 
             @Override // android.content.pm.IPackageManager
-            public String[] setPackagesSuspendedAsUser(String[] packageNames, boolean suspended, PersistableBundle appExtras, PersistableBundle launcherExtras, SuspendDialogInfo dialogInfo, String callingPackage, int userId) throws RemoteException {
+            public String[] setPackagesSuspendedAsUser(String[] packageNames, boolean suspended, PersistableBundle appExtras, PersistableBundle launcherExtras, SuspendDialogInfo dialogInfo, int flags, String suspendingPackage, int suspendingUserId, int targetUserId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -5437,8 +5677,10 @@ public interface IPackageManager extends IInterface {
                     _data.writeTypedObject(appExtras, 0);
                     _data.writeTypedObject(launcherExtras, 0);
                     _data.writeTypedObject(dialogInfo, 0);
-                    _data.writeString(callingPackage);
-                    _data.writeInt(userId);
+                    _data.writeInt(flags);
+                    _data.writeString(suspendingPackage);
+                    _data.writeInt(suspendingUserId);
+                    _data.writeInt(targetUserId);
                     this.mRemote.transact(69, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
@@ -5486,7 +5728,7 @@ public interface IPackageManager extends IInterface {
             }
 
             @Override // android.content.pm.IPackageManager
-            public Bundle getSuspendedPackageAppExtras(String packageName, int userId) throws RemoteException {
+            public boolean isPackageQuarantinedForUser(String packageName, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -5495,7 +5737,61 @@ public interface IPackageManager extends IInterface {
                     _data.writeInt(userId);
                     this.mRemote.transact(72, _data, _reply, 0);
                     _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public boolean isPackageStoppedForUser(String packageName, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(73, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public Bundle getSuspendedPackageAppExtras(String packageName, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(74, _data, _reply, 0);
+                    _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public String getSuspendingPackage(String packageName, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(75, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -5510,7 +5806,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(73, _data, _reply, 0);
+                    this.mRemote.transact(76, _data, _reply, 0);
                     _reply.readException();
                     byte[] _result = _reply.createByteArray();
                     return _result;
@@ -5528,7 +5824,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(backup);
                     _data.writeInt(userId);
-                    this.mRemote.transact(74, _data, _reply, 0);
+                    this.mRemote.transact(77, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5543,7 +5839,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(75, _data, _reply, 0);
+                    this.mRemote.transact(78, _data, _reply, 0);
                     _reply.readException();
                     byte[] _result = _reply.createByteArray();
                     return _result;
@@ -5561,7 +5857,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(backup);
                     _data.writeInt(userId);
-                    this.mRemote.transact(76, _data, _reply, 0);
+                    this.mRemote.transact(79, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5576,7 +5872,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(77, _data, _reply, 0);
+                    this.mRemote.transact(80, _data, _reply, 0);
                     _reply.readException();
                     byte[] _result = _reply.createByteArray();
                     return _result;
@@ -5594,7 +5890,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(backup);
                     _data.writeInt(userId);
-                    this.mRemote.transact(78, _data, _reply, 0);
+                    this.mRemote.transact(81, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5608,7 +5904,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(79, _data, _reply, 0);
+                    this.mRemote.transact(82, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     _reply.readTypedList(outHomeCandidates, ResolveInfo.CREATOR);
@@ -5627,7 +5923,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(className, 0);
                     _data.writeInt(userId);
-                    this.mRemote.transact(80, _data, _reply, 0);
+                    this.mRemote.transact(83, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5645,7 +5941,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(nonLocalizedLabel);
                     _data.writeInt(icon);
                     _data.writeInt(userId);
-                    this.mRemote.transact(81, _data, _reply, 0);
+                    this.mRemote.transact(84, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5661,7 +5957,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(componentName, 0);
                     _data.writeInt(userId);
-                    this.mRemote.transact(82, _data, _reply, 0);
+                    this.mRemote.transact(85, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5680,7 +5976,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInt(flags);
                     _data.writeInt(userId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(83, _data, _reply, 0);
+                    this.mRemote.transact(86, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5697,7 +5993,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeTypedList(settings, 0);
                     _data.writeInt(userId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(84, _data, _reply, 0);
+                    this.mRemote.transact(87, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5713,7 +6009,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(componentName, 0);
                     _data.writeInt(userId);
-                    this.mRemote.transact(85, _data, _reply, 0);
+                    this.mRemote.transact(88, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5734,7 +6030,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInt(flags);
                     _data.writeInt(userId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(86, _data, _reply, 0);
+                    this.mRemote.transact(89, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5750,7 +6046,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(87, _data, _reply, 0);
+                    this.mRemote.transact(90, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5772,7 +6068,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(seinfo);
                     _data.writeString(apkFile);
                     _data.writeInt(pid);
-                    this.mRemote.transact(88, _data, _reply, 0);
+                    this.mRemote.transact(91, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5787,7 +6083,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(89, _data, _reply, 0);
+                    this.mRemote.transact(92, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5804,7 +6100,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeBoolean(stopped);
                     _data.writeInt(userId);
-                    this.mRemote.transact(90, _data, _reply, 0);
+                    this.mRemote.transact(93, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5822,7 +6118,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeLong(freeStorageSize);
                     _data.writeInt(storageFlags);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(91, _data, _reply, 0);
+                    this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5840,7 +6136,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeLong(freeStorageSize);
                     _data.writeInt(storageFlags);
                     _data.writeTypedObject(pi, 0);
-                    this.mRemote.transact(92, _data, _reply, 0);
+                    this.mRemote.transact(95, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5856,7 +6152,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(93, _data, _reply, 0);
+                    this.mRemote.transact(96, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5873,7 +6169,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(userId);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(94, _data, _reply, 0);
+                    this.mRemote.transact(97, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5890,7 +6186,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeStrongInterface(observer);
                     _data.writeInt(userId);
-                    this.mRemote.transact(95, _data, _reply, 0);
+                    this.mRemote.transact(98, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5905,7 +6201,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(96, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5922,7 +6218,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(userHandle);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(97, _data, _reply, 0);
+                    this.mRemote.transact(100, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5936,7 +6232,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(101, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -5947,12 +6243,41 @@ public interface IPackageManager extends IInterface {
             }
 
             @Override // android.content.pm.IPackageManager
+            public Map<String, String> getSystemSharedLibraryNamesAndPaths() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                final Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(102, _data, _reply, 0);
+                    _reply.readException();
+                    int N = _reply.readInt();
+                    final Map<String, String> _result = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.content.pm.IPackageManager$Stub$Proxy$$ExternalSyntheticLambda0
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            IPackageManager.Stub.Proxy.lambda$getSystemSharedLibraryNamesAndPaths$0(Parcel.this, _result, i);
+                        }
+                    });
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            static /* synthetic */ void lambda$getSystemSharedLibraryNamesAndPaths$0(Parcel _reply, Map _result, int i) {
+                String k = _reply.readString();
+                String v = _reply.readString();
+                _result.put(k, v);
+            }
+
+            @Override // android.content.pm.IPackageManager
             public ParceledListSlice getSystemAvailableFeatures() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(99, _data, _reply, 0);
+                    this.mRemote.transact(103, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -5970,7 +6295,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(name);
                     _data.writeInt(version);
-                    this.mRemote.transact(100, _data, _reply, 0);
+                    this.mRemote.transact(104, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5986,7 +6311,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(101, _data, _reply, 0);
+                    this.mRemote.transact(105, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -6002,7 +6327,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(102, _data, _reply, 0);
+                    this.mRemote.transact(106, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6016,7 +6341,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(103, _data, _reply, 0);
+                    this.mRemote.transact(107, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6032,7 +6357,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(104, _data, _reply, 0);
+                    this.mRemote.transact(108, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6049,7 +6374,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(reason);
-                    this.mRemote.transact(105, _data, null, 1);
+                    this.mRemote.transact(109, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6065,21 +6390,21 @@ public interface IPackageManager extends IInterface {
                         _data.writeInt(-1);
                     } else {
                         _data.writeInt(classLoaderContextMap.size());
-                        classLoaderContextMap.forEach(new BiConsumer() { // from class: android.content.pm.IPackageManager$Stub$Proxy$$ExternalSyntheticLambda0
+                        classLoaderContextMap.forEach(new BiConsumer() { // from class: android.content.pm.IPackageManager$Stub$Proxy$$ExternalSyntheticLambda3
                             @Override // java.util.function.BiConsumer
                             public final void accept(Object obj, Object obj2) {
-                                IPackageManager.Stub.Proxy.lambda$notifyDexLoad$0(Parcel.this, (String) obj, (String) obj2);
+                                IPackageManager.Stub.Proxy.lambda$notifyDexLoad$1(Parcel.this, (String) obj, (String) obj2);
                             }
                         });
                     }
                     _data.writeString(loaderIsa);
-                    this.mRemote.transact(106, _data, null, 1);
+                    this.mRemote.transact(110, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
             }
 
-            public static /* synthetic */ void lambda$notifyDexLoad$0(Parcel _data, String k, String v) {
+            static /* synthetic */ void lambda$notifyDexLoad$1(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);
             }
@@ -6093,7 +6418,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(dexModulePath);
                     _data.writeBoolean(isSharedModule);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(107, _data, null, 1);
+                    this.mRemote.transact(111, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6111,7 +6436,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeBoolean(force);
                     _data.writeBoolean(bootComplete);
                     _data.writeString(splitName);
-                    this.mRemote.transact(108, _data, _reply, 0);
+                    this.mRemote.transact(112, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6130,7 +6455,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(targetCompilerFilter);
                     _data.writeBoolean(force);
-                    this.mRemote.transact(109, _data, _reply, 0);
+                    this.mRemote.transact(113, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6148,7 +6473,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeBoolean(force);
-                    this.mRemote.transact(110, _data, _reply, 0);
+                    this.mRemote.transact(114, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6165,7 +6490,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(moveId);
-                    this.mRemote.transact(111, _data, _reply, 0);
+                    this.mRemote.transact(115, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6182,7 +6507,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(112, _data, _reply, 0);
+                    this.mRemote.transact(116, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6197,7 +6522,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(113, _data, _reply, 0);
+                    this.mRemote.transact(117, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6213,7 +6538,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeString(volumeUuid);
-                    this.mRemote.transact(114, _data, _reply, 0);
+                    this.mRemote.transact(118, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6232,7 +6557,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(volumeUuid);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(115, _data, _reply, 0);
+                    this.mRemote.transact(119, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6249,7 +6574,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(volumeUuid);
-                    this.mRemote.transact(116, _data, _reply, 0);
+                    this.mRemote.transact(120, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6266,7 +6591,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(loc);
-                    this.mRemote.transact(117, _data, _reply, 0);
+                    this.mRemote.transact(121, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6282,7 +6607,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(118, _data, _reply, 0);
+                    this.mRemote.transact(122, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6303,7 +6628,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInt(installFlags);
                     _data.writeInt(installReason);
                     _data.writeStringList(whiteListedPermissions);
-                    this.mRemote.transact(119, _data, _reply, 0);
+                    this.mRemote.transact(123, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6321,7 +6646,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(id);
                     _data.writeInt(verificationCode);
-                    this.mRemote.transact(120, _data, _reply, 0);
+                    this.mRemote.transact(124, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6338,7 +6663,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInt(id);
                     _data.writeInt(verificationCodeAtTimeout);
                     _data.writeLong(millisecondsToDelay);
-                    this.mRemote.transact(121, _data, _reply, 0);
+                    this.mRemote.transact(125, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6355,7 +6680,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInt(id);
                     _data.writeInt(verificationCode);
                     _data.writeStringList(failedDomains);
-                    this.mRemote.transact(122, _data, _reply, 0);
+                    this.mRemote.transact(126, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6371,7 +6696,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(123, _data, _reply, 0);
+                    this.mRemote.transact(127, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6390,7 +6715,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(status);
                     _data.writeInt(userId);
-                    this.mRemote.transact(124, _data, _reply, 0);
+                    this.mRemote.transact(128, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6407,7 +6732,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(125, _data, _reply, 0);
+                    this.mRemote.transact(129, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -6424,7 +6749,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(126, _data, _reply, 0);
+                    this.mRemote.transact(130, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -6440,7 +6765,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(127, _data, _reply, 0);
+                    this.mRemote.transact(131, _data, _reply, 0);
                     _reply.readException();
                     VerifierDeviceIdentity _result = (VerifierDeviceIdentity) _reply.readTypedObject(VerifierDeviceIdentity.CREATOR);
                     return _result;
@@ -6456,7 +6781,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(128, _data, _reply, 0);
+                    this.mRemote.transact(132, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6472,7 +6797,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(129, _data, _reply, 0);
+                    this.mRemote.transact(133, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6488,7 +6813,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(130, _data, _reply, 0);
+                    this.mRemote.transact(134, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6507,7 +6832,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeBoolean(hidden);
                     _data.writeInt(userId);
-                    this.mRemote.transact(131, _data, _reply, 0);
+                    this.mRemote.transact(135, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6525,7 +6850,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(132, _data, _reply, 0);
+                    this.mRemote.transact(136, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6543,7 +6868,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeBoolean(hidden);
-                    this.mRemote.transact(133, _data, _reply, 0);
+                    this.mRemote.transact(137, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6560,7 +6885,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeBoolean(installed);
                     _data.writeInt(userId);
-                    this.mRemote.transact(134, _data, _reply, 0);
+                    this.mRemote.transact(138, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6576,7 +6901,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(135, _data, _reply, 0);
+                    this.mRemote.transact(139, _data, _reply, 0);
                     _reply.readException();
                     IPackageInstaller _result = IPackageInstaller.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -6595,7 +6920,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeBoolean(blockUninstall);
                     _data.writeInt(userId);
-                    this.mRemote.transact(136, _data, _reply, 0);
+                    this.mRemote.transact(140, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6613,7 +6938,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(137, _data, _reply, 0);
+                    this.mRemote.transact(141, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6631,7 +6956,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeString(alias);
-                    this.mRemote.transact(138, _data, _reply, 0);
+                    this.mRemote.transact(142, _data, _reply, 0);
                     _reply.readException();
                     KeySet _result = (KeySet) _reply.readTypedObject(KeySet.CREATOR);
                     return _result;
@@ -6648,7 +6973,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(139, _data, _reply, 0);
+                    this.mRemote.transact(143, _data, _reply, 0);
                     _reply.readException();
                     KeySet _result = (KeySet) _reply.readTypedObject(KeySet.CREATOR);
                     return _result;
@@ -6666,7 +6991,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeTypedObject(ks, 0);
-                    this.mRemote.transact(140, _data, _reply, 0);
+                    this.mRemote.transact(144, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6684,7 +7009,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeTypedObject(ks, 0);
-                    this.mRemote.transact(141, _data, _reply, 0);
+                    this.mRemote.transact(145, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6700,7 +7025,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(142, _data, _reply, 0);
+                    this.mRemote.transact(146, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6716,7 +7041,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(143, _data, _reply, 0);
+                    this.mRemote.transact(147, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6733,7 +7058,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(144, _data, _reply, 0);
+                    this.mRemote.transact(148, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -6751,7 +7076,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(145, _data, _reply, 0);
+                    this.mRemote.transact(149, _data, _reply, 0);
                     _reply.readException();
                     byte[] _result = _reply.createByteArray();
                     return _result;
@@ -6770,7 +7095,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeByteArray(cookie);
                     _data.writeInt(userId);
-                    this.mRemote.transact(146, _data, _reply, 0);
+                    this.mRemote.transact(150, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6788,7 +7113,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(147, _data, _reply, 0);
+                    this.mRemote.transact(151, _data, _reply, 0);
                     _reply.readException();
                     Bitmap _result = (Bitmap) _reply.readTypedObject(Bitmap.CREATOR);
                     return _result;
@@ -6806,7 +7131,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(148, _data, _reply, 0);
+                    this.mRemote.transact(152, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6824,7 +7149,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeBoolean(systemUserApp);
-                    this.mRemote.transact(149, _data, _reply, 0);
+                    this.mRemote.transact(153, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6842,7 +7167,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeBoolean(updateAvaialble);
-                    this.mRemote.transact(150, _data, _reply, 0);
+                    this.mRemote.transact(154, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6856,7 +7181,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(151, _data, _reply, 0);
+                    this.mRemote.transact(155, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6872,7 +7197,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(152, _data, _reply, 0);
+                    this.mRemote.transact(156, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6890,7 +7215,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(sequenceNumber);
                     _data.writeInt(userId);
-                    this.mRemote.transact(153, _data, _reply, 0);
+                    this.mRemote.transact(157, _data, _reply, 0);
                     _reply.readException();
                     ChangedPackages _result = (ChangedPackages) _reply.readTypedObject(ChangedPackages.CREATOR);
                     return _result;
@@ -6907,7 +7232,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(154, _data, _reply, 0);
+                    this.mRemote.transact(158, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6925,7 +7250,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(155, _data, _reply, 0);
+                    this.mRemote.transact(159, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6944,7 +7269,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeLong(flags);
                     _data.writeInt(userId);
-                    this.mRemote.transact(156, _data, _reply, 0);
+                    this.mRemote.transact(160, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -6963,7 +7288,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeLong(flags);
                     _data.writeInt(userId);
-                    this.mRemote.transact(157, _data, _reply, 0);
+                    this.mRemote.transact(161, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -6981,7 +7306,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(158, _data, _reply, 0);
+                    this.mRemote.transact(162, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6997,7 +7322,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(159, _data, _reply, 0);
+                    this.mRemote.transact(163, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7011,7 +7336,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(160, _data, _reply, 0);
+                    this.mRemote.transact(164, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     return _result;
@@ -7027,7 +7352,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(161, _data, _reply, 0);
+                    this.mRemote.transact(165, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     return _result;
@@ -7043,7 +7368,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(162, _data, _reply, 0);
+                    this.mRemote.transact(166, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     return _result;
@@ -7061,7 +7386,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(163, _data, _reply, 0);
+                    this.mRemote.transact(167, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7077,7 +7402,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(164, _data, _reply, 0);
+                    this.mRemote.transact(168, _data, _reply, 0);
                     _reply.readException();
                     IArtManager _result = IArtManager.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -7101,7 +7426,7 @@ public interface IPackageManager extends IInterface {
                         _data.writeInt(0);
                     }
                     _data.writeInt(userId);
-                    this.mRemote.transact(165, _data, _reply, 0);
+                    this.mRemote.transact(169, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7117,7 +7442,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(166, _data, _reply, 0);
+                    this.mRemote.transact(170, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -7136,7 +7461,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeByteArray(signingCertificate);
                     _data.writeInt(flags);
-                    this.mRemote.transact(167, _data, _reply, 0);
+                    this.mRemote.transact(171, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7155,7 +7480,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInt(uid);
                     _data.writeByteArray(signingCertificate);
                     _data.writeInt(flags);
-                    this.mRemote.transact(168, _data, _reply, 0);
+                    this.mRemote.transact(172, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7171,7 +7496,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(169, _data, _reply, 0);
+                    this.mRemote.transact(173, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7187,7 +7512,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(170, _data, _reply, 0);
+                    this.mRemote.transact(174, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7203,7 +7528,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(171, _data, _reply, 0);
+                    this.mRemote.transact(175, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7219,7 +7544,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(172, _data, _reply, 0);
+                    this.mRemote.transact(176, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7235,7 +7560,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(173, _data, _reply, 0);
+                    this.mRemote.transact(177, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7251,7 +7576,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(174, _data, _reply, 0);
+                    this.mRemote.transact(178, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7267,7 +7592,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(175, _data, _reply, 0);
+                    this.mRemote.transact(179, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7283,7 +7608,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(176, _data, _reply, 0);
+                    this.mRemote.transact(180, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7299,7 +7624,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(177, _data, _reply, 0);
+                    this.mRemote.transact(181, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7317,7 +7642,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(178, _data, _reply, 0);
+                    this.mRemote.transact(182, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7333,7 +7658,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(179, _data, _reply, 0);
+                    this.mRemote.transact(183, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7348,7 +7673,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(flags);
-                    this.mRemote.transact(180, _data, _reply, 0);
+                    this.mRemote.transact(184, _data, _reply, 0);
                     _reply.readException();
                     List<ModuleInfo> _result = _reply.createTypedArrayList(ModuleInfo.CREATOR);
                     return _result;
@@ -7366,7 +7691,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(flags);
-                    this.mRemote.transact(181, _data, _reply, 0);
+                    this.mRemote.transact(185, _data, _reply, 0);
                     _reply.readException();
                     ModuleInfo _result = (ModuleInfo) _reply.readTypedObject(ModuleInfo.CREATOR);
                     return _result;
@@ -7383,7 +7708,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(182, _data, _reply, 0);
+                    this.mRemote.transact(186, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7401,7 +7726,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(version);
                     _data.writeInt(userId);
-                    this.mRemote.transact(183, _data, _reply, 0);
+                    this.mRemote.transact(187, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7416,7 +7741,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStringArray(packages);
-                    this.mRemote.transact(184, _data, _reply, 0);
+                    this.mRemote.transact(188, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7437,7 +7762,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeList(trustedInstallers);
                     _data.writeStrongInterface(onChecksumsReadyListener);
                     _data.writeInt(userId);
-                    this.mRemote.transact(185, _data, _reply, 0);
+                    this.mRemote.transact(189, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7455,7 +7780,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeString(featureId);
                     _data.writeInt(userId);
-                    this.mRemote.transact(186, _data, _reply, 0);
+                    this.mRemote.transact(190, _data, _reply, 0);
                     _reply.readException();
                     IntentSender _result = (IntentSender) _reply.readTypedObject(IntentSender.CREATOR);
                     return _result;
@@ -7473,7 +7798,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(permissionName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(187, _data, _reply, 0);
+                    this.mRemote.transact(191, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -7491,7 +7816,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(name);
                     _data.writeInt(flags);
-                    this.mRemote.transact(188, _data, _reply, 0);
+                    this.mRemote.transact(192, _data, _reply, 0);
                     _reply.readException();
                     PermissionGroupInfo _result = (PermissionGroupInfo) _reply.readTypedObject(PermissionGroupInfo.CREATOR);
                     return _result;
@@ -7508,7 +7833,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(info, 0);
-                    this.mRemote.transact(189, _data, _reply, 0);
+                    this.mRemote.transact(193, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7525,7 +7850,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(info, 0);
-                    this.mRemote.transact(190, _data, _reply, 0);
+                    this.mRemote.transact(194, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7542,7 +7867,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(name);
-                    this.mRemote.transact(191, _data, _reply, 0);
+                    this.mRemote.transact(195, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7559,7 +7884,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(permName);
                     _data.writeString(pkgName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(192, _data, _reply, 0);
+                    this.mRemote.transact(196, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7578,7 +7903,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(permissionName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(193, _data, _reply, 0);
+                    this.mRemote.transact(197, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7594,7 +7919,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(permName);
                     _data.writeInt(uid);
-                    this.mRemote.transact(194, _data, _reply, 0);
+                    this.mRemote.transact(198, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7613,7 +7938,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(group);
                     _data.writeStringList(mimeTypes);
-                    this.mRemote.transact(195, _data, _reply, 0);
+                    this.mRemote.transact(199, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7629,7 +7954,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(196, _data, _reply, 0);
+                    this.mRemote.transact(200, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7648,7 +7973,42 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(themeName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(197, _data, _reply, 0);
+                    this.mRemote.transact(201, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public int getUserMinAspectRatio(String packageName, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(202, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public void setUserMinAspectRatio(String packageName, int userId, int aspectRatio) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    _data.writeInt(aspectRatio);
+                    this.mRemote.transact(203, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7664,7 +8024,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeString(group);
-                    this.mRemote.transact(198, _data, _reply, 0);
+                    this.mRemote.transact(204, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -7681,7 +8041,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(199, _data, _reply, 0);
+                    this.mRemote.transact(205, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7699,7 +8059,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(recipientAppId);
                     _data.writeString(visibleAuthority);
-                    this.mRemote.transact(200, _data, _reply, 0);
+                    this.mRemote.transact(206, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7715,7 +8075,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(recipientAppId);
                     _data.writeInt(visibleUid);
-                    this.mRemote.transact(201, _data, _reply, 0);
+                    this.mRemote.transact(207, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7729,7 +8089,7 @@ public interface IPackageManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(202, _data, _reply, 0);
+                    this.mRemote.transact(208, _data, _reply, 0);
                     _reply.readException();
                     IBinder _result = _reply.readStrongBinder();
                     return _result;
@@ -7747,7 +8107,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeInt(durationMs);
-                    this.mRemote.transact(203, _data, _reply, 0);
+                    this.mRemote.transact(209, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7765,7 +8125,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(className);
                     _data.writeInt(userId);
-                    this.mRemote.transact(204, _data, _reply, 0);
+                    this.mRemote.transact(210, _data, _reply, 0);
                     _reply.readException();
                     PackageManager.Property _result = (PackageManager.Property) _reply.readTypedObject(PackageManager.Property.CREATOR);
                     return _result;
@@ -7783,7 +8143,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(propertyName);
                     _data.writeInt(componentType);
-                    this.mRemote.transact(205, _data, _reply, 0);
+                    this.mRemote.transact(211, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -7800,7 +8160,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStringList(packageList);
-                    this.mRemote.transact(206, _data, _reply, 0);
+                    this.mRemote.transact(212, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7815,7 +8175,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(207, _data, _reply, 0);
+                    this.mRemote.transact(213, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7832,7 +8192,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(208, _data, _reply, 0);
+                    this.mRemote.transact(214, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -7849,7 +8209,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(pkgName);
-                    this.mRemote.transact(209, _data, _reply, 0);
+                    this.mRemote.transact(215, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -7867,7 +8227,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(210, _data, _reply, 0);
+                    this.mRemote.transact(216, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7885,7 +8245,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeStringList(permissions);
                     _data.writeInt(permState);
                     _data.writeInt(userId);
-                    this.mRemote.transact(211, _data, _reply, 0);
+                    this.mRemote.transact(217, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7903,7 +8263,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(permState);
                     _data.writeInt(userId);
-                    this.mRemote.transact(212, _data, _reply, 0);
+                    this.mRemote.transact(218, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7920,7 +8280,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(pkgName);
-                    this.mRemote.transact(213, _data, _reply, 0);
+                    this.mRemote.transact(219, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -7939,7 +8299,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(sourcePackageName);
                     _data.writeStringArray(targetPackageNames);
                     _data.writeInt(userId);
-                    this.mRemote.transact(214, _data, _reply, 0);
+                    this.mRemote.transact(220, _data, _reply, 0);
                     _reply.readException();
                     boolean[] _result = _reply.createBooleanArray();
                     return _result;
@@ -7957,7 +8317,198 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(timeoutMillis);
                     _data.writeBoolean(forBackgroundHandler);
-                    this.mRemote.transact(215, _data, _reply, 0);
+                    this.mRemote.transact(221, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public void registerPackageMonitorCallback(IRemoteCallback callback, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(222, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public void unregisterPackageMonitorCallback(IRemoteCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(223, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public ArchivedPackageParcel getArchivedPackage(String packageName, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(224, _data, _reply, 0);
+                    _reply.readException();
+                    ArchivedPackageParcel _result = (ArchivedPackageParcel) _reply.readTypedObject(ArchivedPackageParcel.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public Bitmap getArchivedAppIcon(String packageName, UserHandle user, String callingPackageName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeTypedObject(user, 0);
+                    _data.writeString(callingPackageName);
+                    this.mRemote.transact(225, _data, _reply, 0);
+                    _reply.readException();
+                    Bitmap _result = (Bitmap) _reply.readTypedObject(Bitmap.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public boolean isAppArchivable(String packageName, UserHandle user) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeTypedObject(user, 0);
+                    this.mRemote.transact(226, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public int getAppMetadataSource(String packageName, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(227, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public ComponentName getDomainVerificationAgent(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(228, _data, _reply, 0);
+                    _reply.readException();
+                    ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public List<String> getPackageListForDualDarPolicy(String packageType) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageType);
+                    this.mRemote.transact(229, _data, _reply, 0);
+                    _reply.readException();
+                    List<String> _result = _reply.createStringArrayList();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public boolean createEncAppData(String packageName, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(230, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public boolean removeEncUserDir(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(231, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public boolean removeEncPkgDir(int userId, String pkgName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    _data.writeString(pkgName);
+                    this.mRemote.transact(232, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7976,7 +8527,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(metadata);
                     _data.writeInt(userId);
-                    this.mRemote.transact(216, _data, _reply, 0);
+                    this.mRemote.transact(233, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     _reply.readStringList(feature);
@@ -7996,7 +8547,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeString(permName);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(217, _data, _reply, 0);
+                    this.mRemote.transact(234, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8013,7 +8564,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(218, _data, _reply, 0);
+                    this.mRemote.transact(235, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8031,26 +8582,9 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(flags);
                     _data.writeInt(userId);
-                    this.mRemote.transact(219, _data, _reply, 0);
+                    this.mRemote.transact(236, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public List<String> getPackageListForDualDarPolicy(String packageType) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(packageType);
-                    this.mRemote.transact(220, _data, _reply, 0);
-                    _reply.readException();
-                    List<String> _result = _reply.createStringArrayList();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -8066,174 +8600,9 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(uid);
-                    this.mRemote.transact(221, _data, _reply, 0);
+                    this.mRemote.transact(237, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public boolean createEncAppData(String packageName, int userId) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(packageName);
-                    _data.writeInt(userId);
-                    this.mRemote.transact(222, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public boolean removeEncUserDir(int userId) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(userId);
-                    this.mRemote.transact(223, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public boolean removeEncPkgDir(int userId, String pkgName) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(userId);
-                    _data.writeString(pkgName);
-                    this.mRemote.transact(224, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public void setApplicationEnabledSettingWithList(List<String> listPackageName, int newState, int flags, boolean usePending, boolean startNow, int userId, String callingPackage) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeStringList(listPackageName);
-                    _data.writeInt(newState);
-                    _data.writeInt(flags);
-                    _data.writeBoolean(usePending);
-                    _data.writeBoolean(startNow);
-                    _data.writeInt(userId);
-                    _data.writeString(callingPackage);
-                    this.mRemote.transact(225, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public int getProgressionOfPackageChanged() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(226, _data, _reply, 0);
-                    _reply.readException();
-                    int _result = _reply.readInt();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public void cancelEMPHandlerSendPendingBroadcast() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(227, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public void checkDeletableListForASKS() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(228, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public void setTrustTimebyStatusChanged() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(229, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public String getUNvalueForASKS() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(230, _data, _reply, 0);
-                    _reply.readException();
-                    String _result = _reply.readString();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.content.pm.IPackageManager
-            public String[] checkASKSTarget(int type) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(type);
-                    this.mRemote.transact(231, _data, _reply, 0);
-                    _reply.readException();
-                    String[] _result = _reply.createStringArray();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -8249,7 +8618,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(232, _data, _reply, 0);
+                    this.mRemote.transact(238, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8267,7 +8636,7 @@ public interface IPackageManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(value);
                     _data.writeString(packageName);
-                    this.mRemote.transact(233, _data, _reply, 0);
+                    this.mRemote.transact(239, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8282,7 +8651,7 @@ public interface IPackageManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(234, _data, _reply, 0);
+                    this.mRemote.transact(240, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8291,11 +8660,185 @@ public interface IPackageManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.content.pm.IPackageManager
+            public void setAppCategoryHintUser(String pkgName, int category) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(pkgName);
+                    _data.writeInt(category);
+                    this.mRemote.transact(241, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public void clearAppCategoryHintUser(String pkgName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(pkgName);
+                    this.mRemote.transact(242, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public Map<String, String> getAppCategoryHintUserMap() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                final Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(243, _data, _reply, 0);
+                    _reply.readException();
+                    int N = _reply.readInt();
+                    final Map<String, String> _result = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.content.pm.IPackageManager$Stub$Proxy$$ExternalSyntheticLambda1
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            IPackageManager.Stub.Proxy.lambda$getAppCategoryHintUserMap$2(Parcel.this, _result, i);
+                        }
+                    });
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            static /* synthetic */ void lambda$getAppCategoryHintUserMap$2(Parcel _reply, Map _result, int i) {
+                String k = _reply.readString();
+                String v = _reply.readString();
+                _result.put(k, v);
+            }
+
+            @Override // android.content.pm.IPackageManager
+            public Map<String, String[]> getAppCategoryInfos(String pkgName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                final Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(pkgName);
+                    this.mRemote.transact(244, _data, _reply, 0);
+                    _reply.readException();
+                    int N = _reply.readInt();
+                    final Map<String, String[]> _result = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.content.pm.IPackageManager$Stub$Proxy$$ExternalSyntheticLambda2
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            IPackageManager.Stub.Proxy.lambda$getAppCategoryInfos$3(Parcel.this, _result, i);
+                        }
+                    });
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            static /* synthetic */ void lambda$getAppCategoryInfos$3(Parcel _reply, Map _result, int i) {
+                String k = _reply.readString();
+                String[] v = _reply.createStringArray();
+                _result.put(k, v);
+            }
+        }
+
+        protected void getAppMetadataFd_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.GET_APP_METADATA, getCallingPid(), getCallingUid());
+        }
+
+        protected void removeCrossProfileIntentFilter_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.INTERACT_ACROSS_USERS_FULL, getCallingPid(), getCallingUid());
+        }
+
+        protected void clearCrossProfileIntentFilters_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.INTERACT_ACROSS_USERS_FULL, getCallingPid(), getCallingUid());
+        }
+
+        protected void freeStorageAndNotify_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CLEAR_APP_CACHE, getCallingPid(), getCallingUid());
+        }
+
+        protected void freeStorage_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CLEAR_APP_CACHE, getCallingPid(), getCallingUid());
+        }
+
+        protected void clearApplicationUserData_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CLEAR_APP_USER_DATA, getCallingPid(), getCallingUid());
+        }
+
+        protected void getMoveStatus_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS, getCallingPid(), getCallingUid());
+        }
+
+        protected void registerMoveCallback_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS, getCallingPid(), getCallingUid());
+        }
+
+        protected void unregisterMoveCallback_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS, getCallingPid(), getCallingUid());
+        }
+
+        protected void movePackage_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MOVE_PACKAGE, getCallingPid(), getCallingUid());
+        }
+
+        protected void movePackageToSd_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MOVE_PACKAGE, getCallingPid(), getCallingUid());
+        }
+
+        protected void movePrimaryStorage_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MOVE_PACKAGE, getCallingPid(), getCallingUid());
+        }
+
+        protected void setInstallLocation_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.WRITE_SECURE_SETTINGS, getCallingPid(), getCallingUid());
+        }
+
+        protected void getVerifierDeviceIdentity_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.PACKAGE_VERIFICATION_AGENT, getCallingPid(), getCallingUid());
+        }
+
+        protected void setApplicationHiddenSettingAsUser_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_USERS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setBlockUninstallForUser_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.DELETE_PACKAGES, getCallingPid(), getCallingUid());
+        }
+
+        protected void setUpdateAvailable_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.INSTALL_PACKAGES, getCallingPid(), getCallingUid());
+        }
+
+        protected void getInstantAppAndroidId_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.ACCESS_INSTANT_APPS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setUserMinAspectRatio_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.INSTALL_PACKAGES, getCallingPid(), getCallingUid());
+        }
+
+        protected void makeUidVisible_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MAKE_UID_VISIBLE, getCallingPid(), getCallingUid());
+        }
+
+        protected void getAppMetadataSource_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.GET_APP_METADATA, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 233;
+            return 243;
         }
     }
 }

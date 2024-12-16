@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioHalVolumeGroup implements Parcelable {
     public static final Parcelable.Creator<AudioHalVolumeGroup> CREATOR = new Parcelable.Creator<AudioHalVolumeGroup>() { // from class: android.media.audio.common.AudioHalVolumeGroup.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalVolumeGroup createFromParcel(Parcel _aidl_source) {
             AudioHalVolumeGroup _aidl_out = new AudioHalVolumeGroup();
@@ -20,6 +18,7 @@ public class AudioHalVolumeGroup implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalVolumeGroup[] newArray(int _aidl_size) {
             return new AudioHalVolumeGroup[_aidl_size];
@@ -30,25 +29,6 @@ public class AudioHalVolumeGroup implements Parcelable {
     public AudioHalVolumeCurve[] volumeCurves;
     public int minIndex = 0;
     public int maxIndex = 0;
-
-    /* renamed from: android.media.audio.common.AudioHalVolumeGroup$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioHalVolumeGroup> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalVolumeGroup createFromParcel(Parcel _aidl_source) {
-            AudioHalVolumeGroup _aidl_out = new AudioHalVolumeGroup();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalVolumeGroup[] newArray(int _aidl_size) {
-            return new AudioHalVolumeGroup[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -127,7 +107,7 @@ public class AudioHalVolumeGroup implements Parcelable {
         _aidl_sj.add("minIndex: " + this.minIndex);
         _aidl_sj.add("maxIndex: " + this.maxIndex);
         _aidl_sj.add("volumeCurves: " + Arrays.toString(this.volumeCurves));
-        return "android.media.audio.common.AudioHalVolumeGroup" + _aidl_sj.toString();
+        return "AudioHalVolumeGroup" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

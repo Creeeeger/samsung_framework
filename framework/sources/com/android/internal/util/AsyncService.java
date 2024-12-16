@@ -18,7 +18,6 @@ public abstract class AsyncService extends Service {
     Handler mHandler;
     protected Messenger mMessenger;
 
-    /* loaded from: classes5.dex */
     public static final class AsyncServiceInfo {
         public Handler mHandler;
         public int mRestartFlags;
@@ -33,9 +32,8 @@ public abstract class AsyncService extends Service {
     @Override // android.app.Service
     public void onCreate() {
         super.onCreate();
-        AsyncServiceInfo createHandler = createHandler();
-        this.mAsyncServiceInfo = createHandler;
-        this.mHandler = createHandler.mHandler;
+        this.mAsyncServiceInfo = createHandler();
+        this.mHandler = this.mAsyncServiceInfo.mHandler;
         this.mMessenger = new Messenger(this.mHandler);
     }
 

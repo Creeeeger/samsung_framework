@@ -7,13 +7,12 @@ import android.view.accessibility.AccessibilityEvent;
 import com.android.internal.widget.RecyclerView;
 import com.android.internal.widget.RecyclerViewAccessibilityDelegate;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes4.dex */
-public class ChooserRecyclerViewAccessibilityDelegate extends RecyclerViewAccessibilityDelegate {
+/* loaded from: classes5.dex */
+class ChooserRecyclerViewAccessibilityDelegate extends RecyclerViewAccessibilityDelegate {
     private final int[] mConsumed;
     private final Rect mTempRect;
 
-    public ChooserRecyclerViewAccessibilityDelegate(RecyclerView recyclerView) {
+    ChooserRecyclerViewAccessibilityDelegate(RecyclerView recyclerView) {
         super(recyclerView);
         this.mTempRect = new Rect();
         this.mConsumed = new int[2];

@@ -4,18 +4,17 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class StreamEventRequest extends BroadcastInfoRequest implements Parcelable {
     public static final Parcelable.Creator<StreamEventRequest> CREATOR = new Parcelable.Creator<StreamEventRequest>() { // from class: android.media.tv.StreamEventRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StreamEventRequest createFromParcel(Parcel source) {
             source.readInt();
             return StreamEventRequest.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StreamEventRequest[] newArray(int size) {
             return new StreamEventRequest[size];
@@ -25,25 +24,7 @@ public final class StreamEventRequest extends BroadcastInfoRequest implements Pa
     private final String mEventName;
     private final Uri mTargetUri;
 
-    /* renamed from: android.media.tv.StreamEventRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StreamEventRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StreamEventRequest createFromParcel(Parcel source) {
-            source.readInt();
-            return StreamEventRequest.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StreamEventRequest[] newArray(int size) {
-            return new StreamEventRequest[size];
-        }
-    }
-
-    public static StreamEventRequest createFromParcelBody(Parcel in) {
+    static StreamEventRequest createFromParcelBody(Parcel in) {
         return new StreamEventRequest(in);
     }
 
@@ -76,8 +57,7 @@ public final class StreamEventRequest extends BroadcastInfoRequest implements Pa
     @Override // android.media.tv.BroadcastInfoRequest, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        Uri uri = this.mTargetUri;
-        String uriString = uri == null ? null : uri.toString();
+        String uriString = this.mTargetUri == null ? null : this.mTargetUri.toString();
         dest.writeString(uriString);
         dest.writeString(this.mEventName);
     }

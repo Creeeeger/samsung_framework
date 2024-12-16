@@ -57,7 +57,7 @@ public final class CdmaNumberInfoRecord {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.number = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.number.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.numberType = _hidl_blob.getInt8(16 + _hidl_offset);
         this.numberPlan = _hidl_blob.getInt8(17 + _hidl_offset);
         this.pi = _hidl_blob.getInt8(18 + _hidl_offset);

@@ -9,13 +9,12 @@ import android.os.RemoteException;
 import com.samsung.android.cover.CoverManager;
 import com.samsung.android.cover.INfcLedCoverTouchListenerCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class CoverPowerKeyListenerDelegate extends INfcLedCoverTouchListenerCallback.Stub {
     private static final int MSG_SYSTEM_COVER_EVENT = 0;
     private ListenerDelegateHandler mHandler;
     private CoverManager.CoverPowerKeyListener mListener;
 
-    /* loaded from: classes5.dex */
     private static final class SystemEvents {
         private static final String KEY_DISABLE_LCD_OFF_BY_COVER = "lcd_off_disabled_by_cover";
         private static final int LCD_OFF_DISABLED_BY_COVER = 4;
@@ -28,7 +27,7 @@ class CoverPowerKeyListenerDelegate extends INfcLedCoverTouchListenerCallback.St
         }
     }
 
-    public CoverPowerKeyListenerDelegate(CoverManager.CoverPowerKeyListener listener, Handler handler, Context context) {
+    CoverPowerKeyListenerDelegate(CoverManager.CoverPowerKeyListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
         this.mHandler = new ListenerDelegateHandler(looper, this.mListener);
@@ -65,9 +64,7 @@ class CoverPowerKeyListenerDelegate extends INfcLedCoverTouchListenerCallback.St
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class ListenerDelegateHandler extends Handler {
+    private static class ListenerDelegateHandler extends Handler {
         private final CoverManager.CoverPowerKeyListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.CoverPowerKeyListener listener) {
@@ -77,9 +74,8 @@ class CoverPowerKeyListenerDelegate extends INfcLedCoverTouchListenerCallback.St
 
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
-            CoverManager.CoverPowerKeyListener coverPowerKeyListener;
-            if (msg.what == 0 && (coverPowerKeyListener = this.mListener) != null) {
-                coverPowerKeyListener.onPowerKeyPress();
+            if (msg.what == 0 && this.mListener != null) {
+                this.mListener.onPowerKeyPress();
             }
         }
     }

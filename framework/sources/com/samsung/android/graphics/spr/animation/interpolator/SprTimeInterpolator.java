@@ -1,10 +1,9 @@
 package com.samsung.android.graphics.spr.animation.interpolator;
 
 import android.animation.TimeInterpolator;
-import android.app.admin.DevicePolicyManager;
 import java.util.TimeZone;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprTimeInterpolator implements TimeInterpolator {
     static final int DAY_MILLISECONDS = 86400000;
     public static final int DAY_TYPE = 1;
@@ -49,14 +48,12 @@ public class SprTimeInterpolator implements TimeInterpolator {
         if (this.mPeriodType == 1) {
             now = now2 % 86400000;
         } else {
-            now = (now2 - DevicePolicyManager.DEFAULT_STRONG_AUTH_TIMEOUT_MS) % 604800000;
+            now = (now2 - 259200000) % 604800000;
         }
-        int i = this.mDuration;
-        long tick = now % i;
-        int i2 = this.mQuotient;
-        if (i2 > 1) {
-            tick = (tick / i2) * i2;
+        long tick = now % this.mDuration;
+        if (this.mQuotient > 1) {
+            tick = (tick / this.mQuotient) * this.mQuotient;
         }
-        return ((float) tick) / i;
+        return tick / this.mDuration;
     }
 }

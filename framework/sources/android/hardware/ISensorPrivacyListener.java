@@ -12,10 +12,15 @@ public interface ISensorPrivacyListener extends IInterface {
 
     void onSensorPrivacyChanged(int i, int i2, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
+    void onSensorPrivacyStateChanged(int i, int i2, int i3) throws RemoteException;
+
     public static class Default implements ISensorPrivacyListener {
         @Override // android.hardware.ISensorPrivacyListener
         public void onSensorPrivacyChanged(int toggleType, int sensor, boolean enabled) throws RemoteException {
+        }
+
+        @Override // android.hardware.ISensorPrivacyListener
+        public void onSensorPrivacyStateChanged(int toggleType, int sensor, int state) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -24,9 +29,9 @@ public interface ISensorPrivacyListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISensorPrivacyListener {
         static final int TRANSACTION_onSensorPrivacyChanged = 1;
+        static final int TRANSACTION_onSensorPrivacyStateChanged = 2;
 
         public Stub() {
             attachInterface(this, ISensorPrivacyListener.DESCRIPTOR);
@@ -52,6 +57,8 @@ public interface ISensorPrivacyListener extends IInterface {
             switch (transactionCode) {
                 case 1:
                     return "onSensorPrivacyChanged";
+                case 2:
+                    return "onSensorPrivacyStateChanged";
                 default:
                     return null;
             }
@@ -67,28 +74,31 @@ public interface ISensorPrivacyListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISensorPrivacyListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISensorPrivacyListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISensorPrivacyListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onSensorPrivacyChanged(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSensorPrivacyStateChanged(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onSensorPrivacyChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISensorPrivacyListener {
+        private static class Proxy implements ISensorPrivacyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -117,11 +127,25 @@ public interface ISensorPrivacyListener extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.hardware.ISensorPrivacyListener
+            public void onSensorPrivacyStateChanged(int toggleType, int sensor, int state) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISensorPrivacyListener.DESCRIPTOR);
+                    _data.writeInt(toggleType);
+                    _data.writeInt(sensor);
+                    _data.writeInt(state);
+                    this.mRemote.transact(2, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 0;
+            return 1;
         }
     }
 }

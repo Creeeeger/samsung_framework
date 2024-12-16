@@ -52,19 +52,15 @@ public class PemWriter extends BufferedWriter {
     }
 
     private void writeEncoded(byte[] bytes) throws IOException {
-        char[] cArr;
         byte[] bytes2 = Base64.encode(bytes);
         int i = 0;
         while (i < bytes2.length) {
             int index = 0;
-            while (true) {
-                cArr = this.buf;
-                if (index != cArr.length && i + index < bytes2.length) {
-                    cArr[index] = (char) bytes2[i + index];
-                    index++;
-                }
+            while (index != this.buf.length && i + index < bytes2.length) {
+                this.buf[index] = (char) bytes2[i + index];
+                index++;
             }
-            write(cArr, 0, index);
+            write(this.buf, 0, index);
             newLine();
             i += this.buf.length;
         }

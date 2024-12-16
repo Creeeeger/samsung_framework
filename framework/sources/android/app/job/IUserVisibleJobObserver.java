@@ -12,7 +12,6 @@ public interface IUserVisibleJobObserver extends IInterface {
 
     void onUserVisibleJobStateChanged(UserVisibleJobSummary userVisibleJobSummary, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IUserVisibleJobObserver {
         @Override // android.app.job.IUserVisibleJobObserver
         public void onUserVisibleJobStateChanged(UserVisibleJobSummary summary, boolean isRunning) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IUserVisibleJobObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IUserVisibleJobObserver {
         static final int TRANSACTION_onUserVisibleJobStateChanged = 1;
 
@@ -67,27 +65,23 @@ public interface IUserVisibleJobObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUserVisibleJobObserver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUserVisibleJobObserver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUserVisibleJobObserver.DESCRIPTOR);
+                case 1:
+                    UserVisibleJobSummary _arg0 = (UserVisibleJobSummary) data.readTypedObject(UserVisibleJobSummary.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUserVisibleJobStateChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            UserVisibleJobSummary _arg0 = (UserVisibleJobSummary) data.readTypedObject(UserVisibleJobSummary.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUserVisibleJobStateChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IUserVisibleJobObserver {
+        private static class Proxy implements IUserVisibleJobObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

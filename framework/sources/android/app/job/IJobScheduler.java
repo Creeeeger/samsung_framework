@@ -55,7 +55,6 @@ public interface IJobScheduler extends IInterface {
 
     void unregisterUserVisibleJobObserver(IUserVisibleJobObserver iUserVisibleJobObserver) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IJobScheduler {
         @Override // android.app.job.IJobScheduler
         public int schedule(String namespace, JobInfo job) throws RemoteException {
@@ -142,7 +141,6 @@ public interface IJobScheduler extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IJobScheduler {
         public static final String DESCRIPTOR = "android.app.job.IJobScheduler";
         static final int TRANSACTION_canRunUserInitiatedJobs = 11;
@@ -247,154 +245,151 @@ public interface IJobScheduler extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    JobInfo _arg1 = (JobInfo) data.readTypedObject(JobInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result = schedule(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    JobInfo _arg12 = (JobInfo) data.readTypedObject(JobInfo.CREATOR);
+                    JobWorkItem _arg2 = (JobWorkItem) data.readTypedObject(JobWorkItem.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result2 = enqueue(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    JobInfo _arg13 = (JobInfo) data.readTypedObject(JobInfo.CREATOR);
+                    String _arg22 = data.readString();
+                    int _arg3 = data.readInt();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result3 = scheduleAsPackage(_arg03, _arg13, _arg22, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancel(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    cancelAll();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    cancelAllInNamespace(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    Map<String, ParceledListSlice<JobInfo>> _result4 = getAllPendingJobs();
+                    reply.writeNoException();
+                    if (_result4 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result4.size());
+                        _result4.forEach(new BiConsumer() { // from class: android.app.job.IJobScheduler$Stub$$ExternalSyntheticLambda0
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                IJobScheduler.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (ParceledListSlice) obj2);
+                            }
+                        });
+                    }
+                    return true;
+                case 8:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice<JobInfo> _result5 = getAllPendingJobsInNamespace(_arg06);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 9:
+                    String _arg07 = data.readString();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    JobInfo _result6 = getPendingJob(_arg07, _arg15);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 10:
+                    String _arg08 = data.readString();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result7 = getPendingJobReason(_arg08, _arg16);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 11:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = canRunUserInitiatedJobs(_arg09);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 12:
+                    String _arg010 = data.readString();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = hasRunUserInitiatedJobsPermission(_arg010, _arg17);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 13:
+                    List<JobInfo> _result10 = getStartedJobs();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result10, 1);
+                    return true;
+                case 14:
+                    ParceledListSlice _result11 = getAllJobSnapshots();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 15:
+                    IUserVisibleJobObserver _arg011 = IUserVisibleJobObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerUserVisibleJobObserver(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    IUserVisibleJobObserver _arg012 = IUserVisibleJobObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterUserVisibleJobObserver(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    String _arg013 = data.readString();
+                    int _arg18 = data.readInt();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    notePendingUserRequestedAppStop(_arg013, _arg18, _arg23);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            JobInfo _arg1 = (JobInfo) data.readTypedObject(JobInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result = schedule(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            JobInfo _arg12 = (JobInfo) data.readTypedObject(JobInfo.CREATOR);
-                            JobWorkItem _arg2 = (JobWorkItem) data.readTypedObject(JobWorkItem.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result2 = enqueue(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            JobInfo _arg13 = (JobInfo) data.readTypedObject(JobInfo.CREATOR);
-                            String _arg22 = data.readString();
-                            int _arg3 = data.readInt();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result3 = scheduleAsPackage(_arg03, _arg13, _arg22, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancel(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            cancelAll();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            cancelAllInNamespace(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            Map<String, ParceledListSlice<JobInfo>> _result4 = getAllPendingJobs();
-                            reply.writeNoException();
-                            if (_result4 == null) {
-                                reply.writeInt(-1);
-                            } else {
-                                reply.writeInt(_result4.size());
-                                _result4.forEach(new BiConsumer() { // from class: android.app.job.IJobScheduler$Stub$$ExternalSyntheticLambda0
-                                    @Override // java.util.function.BiConsumer
-                                    public final void accept(Object obj, Object obj2) {
-                                        IJobScheduler.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (ParceledListSlice) obj2);
-                                    }
-                                });
-                            }
-                            return true;
-                        case 8:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice<JobInfo> _result5 = getAllPendingJobsInNamespace(_arg06);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 9:
-                            String _arg07 = data.readString();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            JobInfo _result6 = getPendingJob(_arg07, _arg15);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 10:
-                            String _arg08 = data.readString();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result7 = getPendingJobReason(_arg08, _arg16);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 11:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = canRunUserInitiatedJobs(_arg09);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 12:
-                            String _arg010 = data.readString();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = hasRunUserInitiatedJobsPermission(_arg010, _arg17);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 13:
-                            List<JobInfo> _result10 = getStartedJobs();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result10, 1);
-                            return true;
-                        case 14:
-                            ParceledListSlice _result11 = getAllJobSnapshots();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result11, 1);
-                            return true;
-                        case 15:
-                            IUserVisibleJobObserver _arg011 = IUserVisibleJobObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerUserVisibleJobObserver(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            IUserVisibleJobObserver _arg012 = IUserVisibleJobObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterUserVisibleJobObserver(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            String _arg013 = data.readString();
-                            int _arg18 = data.readInt();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            notePendingUserRequestedAppStop(_arg013, _arg18, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, ParceledListSlice v) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, ParceledListSlice v) {
             reply.writeString(k);
             reply.writeTypedObject(v, 1);
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IJobScheduler {
+        static class Proxy implements IJobScheduler {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -536,7 +531,7 @@ public interface IJobScheduler extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$getAllPendingJobs$0(Parcel _reply, Map _result, int i) {
+            static /* synthetic */ void lambda$getAllPendingJobs$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 ParceledListSlice<JobInfo> v = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                 _result.put(k, v);

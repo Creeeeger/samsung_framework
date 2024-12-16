@@ -43,7 +43,6 @@ public interface IFaceServiceReceiver extends IInterface {
 
     void onSemStatusUpdate(int i, String str) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IFaceServiceReceiver {
         @Override // android.hardware.face.IFaceServiceReceiver
         public void onEnrollResult(Face face, int remaining) throws RemoteException {
@@ -115,7 +114,6 @@ public interface IFaceServiceReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFaceServiceReceiver {
         static final int TRANSACTION_onAcquired = 2;
         static final int TRANSACTION_onAuthenticationFailed = 5;
@@ -203,124 +201,120 @@ public interface IFaceServiceReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFaceServiceReceiver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFaceServiceReceiver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFaceServiceReceiver.DESCRIPTOR);
+                case 1:
+                    Face _arg0 = (Face) data.readTypedObject(Face.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEnrollResult(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAcquired(_arg02, _arg12);
+                    return true;
+                case 3:
+                    Face _arg03 = (Face) data.readTypedObject(Face.CREATOR);
+                    int _arg13 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onAuthenticationSucceeded(_arg03, _arg13, _arg2);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onFaceDetected(_arg04, _arg14, _arg22);
+                    return true;
+                case 5:
+                    onAuthenticationFailed();
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg05, _arg15);
+                    return true;
+                case 7:
+                    Face _arg06 = (Face) data.readTypedObject(Face.CREATOR);
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRemoved(_arg06, _arg16);
+                    return true;
+                case 8:
+                    boolean _arg07 = data.readBoolean();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFeatureSet(_arg07, _arg17);
+                    return true;
+                case 9:
+                    boolean _arg08 = data.readBoolean();
+                    int[] _arg18 = data.createIntArray();
+                    boolean[] _arg23 = data.createBooleanArray();
+                    data.enforceNoDataAvail();
+                    onFeatureGet(_arg08, _arg18, _arg23);
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    int _arg19 = data.readInt();
+                    long _arg24 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onChallengeGenerated(_arg09, _arg19, _arg24);
+                    return true;
+                case 11:
+                    FaceAuthenticationFrame _arg010 = (FaceAuthenticationFrame) data.readTypedObject(FaceAuthenticationFrame.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAuthenticationFrame(_arg010);
+                    return true;
+                case 12:
+                    FaceEnrollFrame _arg011 = (FaceEnrollFrame) data.readTypedObject(FaceEnrollFrame.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEnrollmentFrame(_arg011);
+                    return true;
+                case 13:
+                    Face _arg012 = (Face) data.readTypedObject(Face.CREATOR);
+                    int _arg110 = data.readInt();
+                    boolean _arg25 = data.readBoolean();
+                    byte[] _arg3 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onSemAuthenticationSucceeded(_arg012, _arg110, _arg25, _arg3);
+                    return true;
+                case 14:
+                    Face _arg013 = (Face) data.readTypedObject(Face.CREATOR);
+                    int _arg111 = data.readInt();
+                    boolean _arg26 = data.readBoolean();
+                    Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSemAuthenticationSucceededWithBundle(_arg013, _arg111, _arg26, _arg32);
+                    return true;
+                case 15:
+                    byte[] _arg014 = data.createByteArray();
+                    int _arg112 = data.readInt();
+                    int _arg27 = data.readInt();
+                    int _arg33 = data.readInt();
+                    int _arg4 = data.readInt();
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSemImageProcessed(_arg014, _arg112, _arg27, _arg33, _arg4, _arg5);
+                    return true;
+                case 16:
+                    int _arg015 = data.readInt();
+                    String _arg113 = data.readString();
+                    data.enforceNoDataAvail();
+                    onSemStatusUpdate(_arg015, _arg113);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Face _arg0 = (Face) data.readTypedObject(Face.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEnrollResult(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAcquired(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            Face _arg03 = (Face) data.readTypedObject(Face.CREATOR);
-                            int _arg13 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onAuthenticationSucceeded(_arg03, _arg13, _arg2);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onFaceDetected(_arg04, _arg14, _arg22);
-                            return true;
-                        case 5:
-                            onAuthenticationFailed();
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg05, _arg15);
-                            return true;
-                        case 7:
-                            Face _arg06 = (Face) data.readTypedObject(Face.CREATOR);
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRemoved(_arg06, _arg16);
-                            return true;
-                        case 8:
-                            boolean _arg07 = data.readBoolean();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFeatureSet(_arg07, _arg17);
-                            return true;
-                        case 9:
-                            boolean _arg08 = data.readBoolean();
-                            int[] _arg18 = data.createIntArray();
-                            boolean[] _arg23 = data.createBooleanArray();
-                            data.enforceNoDataAvail();
-                            onFeatureGet(_arg08, _arg18, _arg23);
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            int _arg19 = data.readInt();
-                            long _arg24 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onChallengeGenerated(_arg09, _arg19, _arg24);
-                            return true;
-                        case 11:
-                            FaceAuthenticationFrame _arg010 = (FaceAuthenticationFrame) data.readTypedObject(FaceAuthenticationFrame.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAuthenticationFrame(_arg010);
-                            return true;
-                        case 12:
-                            FaceEnrollFrame _arg011 = (FaceEnrollFrame) data.readTypedObject(FaceEnrollFrame.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEnrollmentFrame(_arg011);
-                            return true;
-                        case 13:
-                            Face _arg012 = (Face) data.readTypedObject(Face.CREATOR);
-                            int _arg110 = data.readInt();
-                            boolean _arg25 = data.readBoolean();
-                            byte[] _arg3 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onSemAuthenticationSucceeded(_arg012, _arg110, _arg25, _arg3);
-                            return true;
-                        case 14:
-                            Face _arg013 = (Face) data.readTypedObject(Face.CREATOR);
-                            int _arg111 = data.readInt();
-                            boolean _arg26 = data.readBoolean();
-                            Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSemAuthenticationSucceededWithBundle(_arg013, _arg111, _arg26, _arg32);
-                            return true;
-                        case 15:
-                            byte[] _arg014 = data.createByteArray();
-                            int _arg112 = data.readInt();
-                            int _arg27 = data.readInt();
-                            int _arg33 = data.readInt();
-                            int _arg4 = data.readInt();
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSemImageProcessed(_arg014, _arg112, _arg27, _arg33, _arg4, _arg5);
-                            return true;
-                        case 16:
-                            int _arg015 = data.readInt();
-                            String _arg113 = data.readString();
-                            data.enforceNoDataAvail();
-                            onSemStatusUpdate(_arg015, _arg113);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFaceServiceReceiver {
+        private static class Proxy implements IFaceServiceReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

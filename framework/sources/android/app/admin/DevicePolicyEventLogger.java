@@ -16,6 +16,7 @@ public class DevicePolicyEventLogger {
     private boolean mBooleanValue;
     private final int mEventId;
     private int mIntValue;
+    private Bundle mKnoxBundleValue = new Bundle();
     private String[] mStringArrayValue;
     private long mTimePeriodMs;
 
@@ -65,29 +66,26 @@ public class DevicePolicyEventLogger {
 
     public DevicePolicyEventLogger setStrings(String value, String[] values) {
         Objects.requireNonNull(values, "values parameter cannot be null");
-        String[] strArr = new String[values.length + 1];
-        this.mStringArrayValue = strArr;
-        strArr[0] = value;
-        System.arraycopy(values, 0, strArr, 1, values.length);
+        this.mStringArrayValue = new String[values.length + 1];
+        this.mStringArrayValue[0] = value;
+        System.arraycopy(values, 0, this.mStringArrayValue, 1, values.length);
         return this;
     }
 
     public DevicePolicyEventLogger setStrings(String value1, String value2, String[] values) {
         Objects.requireNonNull(values, "values parameter cannot be null");
-        String[] strArr = new String[values.length + 2];
-        this.mStringArrayValue = strArr;
-        strArr[0] = value1;
-        strArr[1] = value2;
-        System.arraycopy(values, 0, strArr, 2, values.length);
+        this.mStringArrayValue = new String[values.length + 2];
+        this.mStringArrayValue[0] = value1;
+        this.mStringArrayValue[1] = value2;
+        System.arraycopy(values, 0, this.mStringArrayValue, 2, values.length);
         return this;
     }
 
     public String[] getStringArray() {
-        String[] strArr = this.mStringArrayValue;
-        if (strArr == null) {
+        if (this.mStringArrayValue == null) {
             return null;
         }
-        return (String[]) Arrays.copyOf(strArr, strArr.length);
+        return (String[]) Arrays.copyOf(this.mStringArrayValue, this.mStringArrayValue.length);
     }
 
     public DevicePolicyEventLogger setAdmin(String packageName) {
@@ -104,23 +102,34 @@ public class DevicePolicyEventLogger {
         return this.mAdminPackageName;
     }
 
+    public DevicePolicyEventLogger setKnoxBundleValue(Bundle value) {
+        this.mKnoxBundleValue.putAll(value);
+        return this;
+    }
+
+    public Bundle getKnoxBundleValue() {
+        return this.mKnoxBundleValue;
+    }
+
     public void write() {
         byte[] bytes = stringArrayValueToBytes(this.mStringArrayValue);
         FrameworkStatsLog.write(103, this.mEventId, this.mAdminPackageName, this.mIntValue, this.mBooleanValue, this.mTimePeriodMs, bytes);
-        Bundle b = new Bundle();
-        b.putInt("aN", this.mEventId);
-        b.putInt("iV", this.mIntValue);
-        b.putBoolean("bV", this.mBooleanValue);
-        b.putLong("tpms", this.mTimePeriodMs);
-        String[] strArr = this.mStringArrayValue;
-        if (strArr != null && strArr.length > 0) {
-            b.putStringArrayList("saV", new ArrayList<>(Arrays.asList(this.mStringArrayValue)));
+        Bundle bundle = new Bundle();
+        bundle.putInt("aN", this.mEventId);
+        bundle.putInt("iV", this.mIntValue);
+        bundle.putBoolean("bV", this.mBooleanValue);
+        bundle.putLong("tpms", this.mTimePeriodMs);
+        bundle.putBundle("kB", this.mKnoxBundleValue);
+        if (this.mStringArrayValue != null && this.mStringArrayValue.length > 0) {
+            bundle.putStringArrayList("saV", new ArrayList<>(Arrays.asList(this.mStringArrayValue)));
         }
-        String str = this.mAdminPackageName;
-        if (str != null && !str.isEmpty()) {
-            b.putString("apN", this.mAdminPackageName);
+        if (this.mKnoxBundleValue.containsKey("targetPackageName")) {
+            bundle.getStringArrayList("saV").add(this.mKnoxBundleValue.getCharSequence("targetPackageName").toString());
         }
-        SemPersonaManager.logDpmsKA(b);
+        if (this.mAdminPackageName != null && !this.mAdminPackageName.isEmpty()) {
+            bundle.putString("apN", this.mAdminPackageName);
+        }
+        SemPersonaManager.logDpmsKA(bundle);
     }
 
     private static byte[] stringArrayValueToBytes(String[] array) {

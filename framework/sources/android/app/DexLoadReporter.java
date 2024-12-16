@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 /* loaded from: classes.dex */
-public class DexLoadReporter implements BaseDexClassLoader.Reporter {
+class DexLoadReporter implements BaseDexClassLoader.Reporter {
     private static final boolean DEBUG = false;
     private static final DexLoadReporter INSTANCE = new DexLoadReporter();
     private static final String TAG = "DexLoadReporter";
@@ -22,11 +22,11 @@ public class DexLoadReporter implements BaseDexClassLoader.Reporter {
     private DexLoadReporter() {
     }
 
-    public static DexLoadReporter getInstance() {
+    static DexLoadReporter getInstance() {
         return INSTANCE;
     }
 
-    public void registerAppDataDir(String packageName, String dataDir) {
+    void registerAppDataDir(String packageName, String dataDir) {
         if (dataDir != null) {
             synchronized (this.mDataDirs) {
                 this.mDataDirs.add(dataDir);

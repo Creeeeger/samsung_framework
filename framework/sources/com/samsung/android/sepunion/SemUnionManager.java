@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemUnionManager {
     private static final boolean DEBUG = false;
     private static final String TAG = SemUnionManager.class.getSimpleName();
@@ -88,16 +88,12 @@ public class SemUnionManager {
             Constructor t = sConstructorMap.get(name);
             obj = null;
             try {
-                try {
-                    try {
-                        obj = t.newInstance(this.mContext);
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    }
-                } catch (InvocationTargetException e2) {
-                    e2.printStackTrace();
-                }
-            } catch (IllegalAccessException e3) {
+                obj = t.newInstance(this.mContext);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e2) {
+                e2.printStackTrace();
+            } catch (InvocationTargetException e3) {
                 e3.printStackTrace();
             }
         }

@@ -5,7 +5,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-/* loaded from: classes5.dex */
+@Deprecated
+/* loaded from: classes6.dex */
 public class CompatTranslator {
     private final CompatTranslator mParent;
     private Point mBoundsPosition = new Point();
@@ -13,14 +14,6 @@ public class CompatTranslator {
 
     public CompatTranslator(CompatTranslator parent) {
         this.mParent = parent;
-    }
-
-    public boolean savePositionInBounds(int left, int top) {
-        if (left != this.mBoundsPosition.x || top != this.mBoundsPosition.y) {
-            this.mBoundsPosition.set(left, top);
-            return true;
-        }
-        return false;
     }
 
     private boolean shouldSavePositionInBounds() {
@@ -56,17 +49,15 @@ public class CompatTranslator {
     }
 
     private int getWindowPositionX() {
-        CompatTranslator compatTranslator = this.mParent;
-        if (compatTranslator != null) {
-            return compatTranslator.getWindowPositionX();
+        if (this.mParent != null) {
+            return this.mParent.getWindowPositionX();
         }
         return (shouldSavePositionInBounds() ? this.mBoundsPosition : this.mWindowPosition).x;
     }
 
     private int getWindowPositionY() {
-        CompatTranslator compatTranslator = this.mParent;
-        if (compatTranslator != null) {
-            return compatTranslator.getWindowPositionY();
+        if (this.mParent != null) {
+            return this.mParent.getWindowPositionY();
         }
         return (shouldSavePositionInBounds() ? this.mBoundsPosition : this.mWindowPosition).y;
     }

@@ -68,7 +68,6 @@ public class DeviceTypes {
     public static final int TYPE_WINDOW = 43;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeviceType {
     }
 

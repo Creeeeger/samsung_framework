@@ -14,7 +14,6 @@ public interface ISaveCallback extends IInterface {
 
     void onSuccess(IntentSender intentSender) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISaveCallback {
         @Override // android.service.autofill.ISaveCallback
         public void onSuccess(IntentSender intentSender) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISaveCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISaveCallback {
         public static final String DESCRIPTOR = "android.service.autofill.ISaveCallback";
         static final int TRANSACTION_onFailure = 2;
@@ -77,33 +75,29 @@ public interface ISaveCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IntentSender _arg0 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    CharSequence _arg02 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    onFailure(_arg02);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IntentSender _arg0 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            CharSequence _arg02 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            onFailure(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISaveCallback {
+        private static class Proxy implements ISaveCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

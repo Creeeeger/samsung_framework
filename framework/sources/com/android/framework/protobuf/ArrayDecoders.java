@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.util.List;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class ArrayDecoders {
+/* loaded from: classes3.dex */
+final class ArrayDecoders {
     private ArrayDecoders() {
     }
 
-    /* loaded from: classes4.dex */
-    public static final class Registers {
+    static final class Registers {
         public final ExtensionRegistryLite extensionRegistry;
         public int int1;
         public long long1;
@@ -24,7 +23,7 @@ public final class ArrayDecoders {
             this.extensionRegistry = ExtensionRegistryLite.getEmptyRegistry();
         }
 
-        public Registers(ExtensionRegistryLite extensionRegistry) {
+        Registers(ExtensionRegistryLite extensionRegistry) {
             if (extensionRegistry == null) {
                 throw new NullPointerException();
             }
@@ -32,7 +31,7 @@ public final class ArrayDecoders {
         }
     }
 
-    public static int decodeVarint32(byte[] data, int position, Registers registers) {
+    static int decodeVarint32(byte[] data, int position, Registers registers) {
         int position2 = position + 1;
         int value = data[position];
         if (value >= 0) {
@@ -42,7 +41,7 @@ public final class ArrayDecoders {
         return decodeVarint32(value, data, position2, registers);
     }
 
-    public static int decodeVarint32(int firstByte, byte[] data, int position, Registers registers) {
+    static int decodeVarint32(int firstByte, byte[] data, int position, Registers registers) {
         int value = firstByte & 127;
         int position2 = position + 1;
         byte b2 = data[position];
@@ -61,7 +60,7 @@ public final class ArrayDecoders {
         int position4 = position3 + 1;
         byte b4 = data[position3];
         if (b4 >= 0) {
-            registers.int1 = (b4 << SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT) | value3;
+            registers.int1 = (b4 << 21) | value3;
             return position4;
         }
         int value4 = value3 | ((b4 & Byte.MAX_VALUE) << 21);
@@ -82,7 +81,7 @@ public final class ArrayDecoders {
         }
     }
 
-    public static int decodeVarint64(byte[] data, int position, Registers registers) {
+    static int decodeVarint64(byte[] data, int position, Registers registers) {
         int position2 = position + 1;
         long value = data[position];
         if (value >= 0) {
@@ -108,23 +107,23 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeFixed32(byte[] data, int position) {
+    static int decodeFixed32(byte[] data, int position) {
         return (data[position] & 255) | ((data[position + 1] & 255) << 8) | ((data[position + 2] & 255) << 16) | ((data[position + 3] & 255) << 24);
     }
 
-    public static long decodeFixed64(byte[] data, int position) {
+    static long decodeFixed64(byte[] data, int position) {
         return (data[position] & 255) | ((data[position + 1] & 255) << 8) | ((data[position + 2] & 255) << 16) | ((data[position + 3] & 255) << 24) | ((data[position + 4] & 255) << 32) | ((data[position + 5] & 255) << 40) | ((data[position + 6] & 255) << 48) | ((255 & data[position + 7]) << 56);
     }
 
-    public static double decodeDouble(byte[] data, int position) {
+    static double decodeDouble(byte[] data, int position) {
         return Double.longBitsToDouble(decodeFixed64(data, position));
     }
 
-    public static float decodeFloat(byte[] data, int position) {
+    static float decodeFloat(byte[] data, int position) {
         return Float.intBitsToFloat(decodeFixed32(data, position));
     }
 
-    public static int decodeString(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
+    static int decodeString(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
         if (length < 0) {
@@ -138,7 +137,7 @@ public final class ArrayDecoders {
         return position2 + length;
     }
 
-    public static int decodeStringRequireUtf8(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
+    static int decodeStringRequireUtf8(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
         if (length < 0) {
@@ -152,7 +151,7 @@ public final class ArrayDecoders {
         return position2 + length;
     }
 
-    public static int decodeBytes(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
+    static int decodeBytes(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
         if (length < 0) {
@@ -169,7 +168,7 @@ public final class ArrayDecoders {
         return position2 + length;
     }
 
-    public static int decodeMessageField(Schema schema, byte[] data, int position, int limit, Registers registers) throws IOException {
+    static int decodeMessageField(Schema schema, byte[] data, int position, int limit, Registers registers) throws IOException {
         Object msg = schema.newInstance();
         int offset = mergeMessageField(msg, schema, data, position, limit, registers);
         schema.makeImmutable(msg);
@@ -185,7 +184,7 @@ public final class ArrayDecoders {
         return offset;
     }
 
-    public static int mergeMessageField(Object msg, Schema schema, byte[] bArr, int position, int limit, Registers registers) throws IOException {
+    static int mergeMessageField(Object msg, Schema schema, byte[] bArr, int position, int limit, Registers registers) throws IOException {
         int position2;
         int position3 = position + 1;
         int i = bArr[position];
@@ -204,14 +203,14 @@ public final class ArrayDecoders {
         return position2 + i;
     }
 
-    public static int mergeGroupField(Object msg, Schema schema, byte[] data, int position, int limit, int endGroup, Registers registers) throws IOException {
+    static int mergeGroupField(Object msg, Schema schema, byte[] data, int position, int limit, int endGroup, Registers registers) throws IOException {
         MessageSchema messageSchema = (MessageSchema) schema;
         int endPosition = messageSchema.parseProto2Message(msg, data, position, limit, endGroup, registers);
         registers.object1 = msg;
         return endPosition;
     }
 
-    public static int decodeVarint32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeVarint32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         output.addInt(registers.int1);
@@ -226,7 +225,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeVarint64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeVarint64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint64(data, position, registers);
         output.addLong(registers.long1);
@@ -241,7 +240,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeFixed32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeFixed32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         IntArrayList output = (IntArrayList) list;
         output.addInt(decodeFixed32(data, position));
         int position2 = position + 4;
@@ -256,7 +255,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeFixed64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeFixed64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         LongArrayList output = (LongArrayList) list;
         output.addLong(decodeFixed64(data, position));
         int position2 = position + 8;
@@ -271,7 +270,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeFloatList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeFloatList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         FloatArrayList output = (FloatArrayList) list;
         output.addFloat(decodeFloat(data, position));
         int position2 = position + 4;
@@ -286,7 +285,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeDoubleList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeDoubleList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         DoubleArrayList output = (DoubleArrayList) list;
         output.addDouble(decodeDouble(data, position));
         int position2 = position + 8;
@@ -301,7 +300,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeBoolList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeBoolList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         BooleanArrayList output = (BooleanArrayList) list;
         int position2 = decodeVarint64(data, position, registers);
         output.addBoolean(registers.long1 != 0);
@@ -316,7 +315,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeSInt32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeSInt32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         output.addInt(CodedInputStream.decodeZigZag32(registers.int1));
@@ -331,7 +330,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeSInt64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
+    static int decodeSInt64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint64(data, position, registers);
         output.addLong(CodedInputStream.decodeZigZag64(registers.long1));
@@ -346,7 +345,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedVarint32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedVarint32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -360,7 +359,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedVarint64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedVarint64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -374,7 +373,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedFixed32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedFixed32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -388,7 +387,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedFixed64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedFixed64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -402,7 +401,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedFloatList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedFloatList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         FloatArrayList output = (FloatArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -416,7 +415,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedDoubleList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedDoubleList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         DoubleArrayList output = (DoubleArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -430,7 +429,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedBoolList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedBoolList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         BooleanArrayList output = (BooleanArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -444,7 +443,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedSInt32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedSInt32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -458,7 +457,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodePackedSInt64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodePackedSInt64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
         int fieldLimit = registers.int1 + position2;
@@ -472,7 +471,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeStringList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
+    static int decodeStringList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
         if (length < 0) {
@@ -506,7 +505,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeStringListRequireUtf8(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
+    static int decodeStringListRequireUtf8(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
         if (length < 0) {
@@ -546,7 +545,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeBytesList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
+    static int decodeBytesList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
         if (length < 0) {
@@ -584,7 +583,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeMessageList(Schema<?> schema, int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodeMessageList(Schema<?> schema, int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         int position2 = decodeMessageField(schema, data, position, limit, registers);
         list.add(registers.object1);
         while (position2 < limit) {
@@ -598,7 +597,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeGroupList(Schema schema, int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws IOException {
+    static int decodeGroupList(Schema schema, int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         int endgroup = (tag & (-8)) | 4;
         int position2 = decodeGroupField(schema, data, position, limit, endgroup, registers);
         list.add(registers.object1);
@@ -613,7 +612,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    public static int decodeExtensionOrUnknownField(int tag, byte[] data, int position, int limit, Object message, MessageLite defaultInstance, UnknownFieldSchema<UnknownFieldSetLite, UnknownFieldSetLite> unknownFieldSchema, Registers registers) throws IOException {
+    static int decodeExtensionOrUnknownField(int tag, byte[] data, int position, int limit, Object message, MessageLite defaultInstance, UnknownFieldSchema<UnknownFieldSetLite, UnknownFieldSetLite> unknownFieldSchema, Registers registers) throws IOException {
         int number = tag >>> 3;
         GeneratedMessageLite.GeneratedExtension extension = registers.extensionRegistry.findLiteExtensionByNumber(defaultInstance, number);
         if (extension == null) {
@@ -630,57 +629,57 @@ public final class ArrayDecoders {
         FieldSet<GeneratedMessageLite.ExtensionDescriptor> extensions = message.extensions;
         int fieldNumber = tag >>> 3;
         if (extension.descriptor.isRepeated() && extension.descriptor.isPacked()) {
-            switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$FieldType[extension.getLiteType().ordinal()]) {
-                case 1:
+            switch (extension.getLiteType()) {
+                case WireFormat.FieldType.DOUBLE:
                     DoubleArrayList list = new DoubleArrayList();
                     int position3 = decodePackedDoubleList(data, position, list, registers);
                     extensions.setField(extension.descriptor, list);
                     return position3;
-                case 2:
+                case WireFormat.FieldType.FLOAT:
                     FloatArrayList list2 = new FloatArrayList();
                     int position4 = decodePackedFloatList(data, position, list2, registers);
                     extensions.setField(extension.descriptor, list2);
                     return position4;
-                case 3:
-                case 4:
+                case WireFormat.FieldType.INT64:
+                case WireFormat.FieldType.UINT64:
                     LongArrayList list3 = new LongArrayList();
                     int position5 = decodePackedVarint64List(data, position, list3, registers);
                     extensions.setField(extension.descriptor, list3);
                     return position5;
-                case 5:
-                case 6:
+                case WireFormat.FieldType.INT32:
+                case WireFormat.FieldType.UINT32:
                     IntArrayList list4 = new IntArrayList();
                     int position6 = decodePackedVarint32List(data, position, list4, registers);
                     extensions.setField(extension.descriptor, list4);
                     return position6;
-                case 7:
-                case 8:
+                case WireFormat.FieldType.FIXED64:
+                case WireFormat.FieldType.SFIXED64:
                     LongArrayList list5 = new LongArrayList();
                     int position7 = decodePackedFixed64List(data, position, list5, registers);
                     extensions.setField(extension.descriptor, list5);
                     return position7;
-                case 9:
-                case 10:
+                case WireFormat.FieldType.FIXED32:
+                case WireFormat.FieldType.SFIXED32:
                     IntArrayList list6 = new IntArrayList();
                     int position8 = decodePackedFixed32List(data, position, list6, registers);
                     extensions.setField(extension.descriptor, list6);
                     return position8;
-                case 11:
+                case WireFormat.FieldType.BOOL:
                     BooleanArrayList list7 = new BooleanArrayList();
                     int position9 = decodePackedBoolList(data, position, list7, registers);
                     extensions.setField(extension.descriptor, list7);
                     return position9;
-                case 12:
+                case WireFormat.FieldType.SINT32:
                     IntArrayList list8 = new IntArrayList();
                     int position10 = decodePackedSInt32List(data, position, list8, registers);
                     extensions.setField(extension.descriptor, list8);
                     return position10;
-                case 13:
+                case WireFormat.FieldType.SINT64:
                     LongArrayList list9 = new LongArrayList();
                     int position11 = decodePackedSInt64List(data, position, list9, registers);
                     extensions.setField(extension.descriptor, list9);
                     return position11;
-                case 14:
+                case WireFormat.FieldType.ENUM:
                     IntArrayList list10 = new IntArrayList();
                     int position12 = decodePackedVarint32List(data, position, list10, registers);
                     SchemaUtil.filterUnknownEnumList((Object) message, fieldNumber, (List<Integer>) list10, extension.descriptor.getEnumType(), (Object) null, (UnknownFieldSchema<UT, Object>) unknownFieldSchema);
@@ -700,58 +699,58 @@ public final class ArrayDecoders {
             }
             value = Integer.valueOf(registers.int1);
         } else {
-            switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$FieldType[extension.getLiteType().ordinal()]) {
-                case 1:
+            switch (extension.getLiteType()) {
+                case WireFormat.FieldType.DOUBLE:
                     value = Double.valueOf(decodeDouble(data, position));
                     position2 = position + 8;
                     break;
-                case 2:
+                case WireFormat.FieldType.FLOAT:
                     value = Float.valueOf(decodeFloat(data, position));
                     position2 = position + 4;
                     break;
-                case 3:
-                case 4:
+                case WireFormat.FieldType.INT64:
+                case WireFormat.FieldType.UINT64:
                     position2 = decodeVarint64(data, position, registers);
                     value = Long.valueOf(registers.long1);
                     break;
-                case 5:
-                case 6:
+                case WireFormat.FieldType.INT32:
+                case WireFormat.FieldType.UINT32:
                     position2 = decodeVarint32(data, position, registers);
                     value = Integer.valueOf(registers.int1);
                     break;
-                case 7:
-                case 8:
+                case WireFormat.FieldType.FIXED64:
+                case WireFormat.FieldType.SFIXED64:
                     value = Long.valueOf(decodeFixed64(data, position));
                     position2 = position + 8;
                     break;
-                case 9:
-                case 10:
+                case WireFormat.FieldType.FIXED32:
+                case WireFormat.FieldType.SFIXED32:
                     value = Integer.valueOf(decodeFixed32(data, position));
                     position2 = position + 4;
                     break;
-                case 11:
+                case WireFormat.FieldType.BOOL:
                     position2 = decodeVarint64(data, position, registers);
                     value = Boolean.valueOf(registers.long1 != 0);
                     break;
-                case 12:
+                case WireFormat.FieldType.SINT32:
                     position2 = decodeVarint32(data, position, registers);
                     value = Integer.valueOf(CodedInputStream.decodeZigZag32(registers.int1));
                     break;
-                case 13:
+                case WireFormat.FieldType.SINT64:
                     position2 = decodeVarint64(data, position, registers);
                     value = Long.valueOf(CodedInputStream.decodeZigZag64(registers.long1));
                     break;
-                case 14:
+                case WireFormat.FieldType.ENUM:
                     throw new IllegalStateException("Shouldn't reach here.");
-                case 15:
+                case WireFormat.FieldType.BYTES:
                     position2 = decodeBytes(data, position, registers);
                     value = registers.object1;
                     break;
-                case 16:
+                case WireFormat.FieldType.STRING:
                     position2 = decodeString(data, position, registers);
                     value = registers.object1;
                     break;
-                case 17:
+                case WireFormat.FieldType.GROUP:
                     int endTag = (fieldNumber << 3) | 4;
                     Schema fieldSchema = Protobuf.getInstance().schemaFor((Class) extension.getMessageDefaultInstance().getClass());
                     if (extension.isRepeated()) {
@@ -768,7 +767,7 @@ public final class ArrayDecoders {
                         oldValue = oldValue4;
                     }
                     return mergeGroupField(oldValue, fieldSchema, data, position, limit, endTag, registers);
-                case 18:
+                case WireFormat.FieldType.MESSAGE:
                     Schema fieldSchema2 = Protobuf.getInstance().schemaFor((Class) extension.getMessageDefaultInstance().getClass());
                     if (extension.isRepeated()) {
                         int position14 = decodeMessageField(fieldSchema2, data, position, limit, registers);
@@ -797,90 +796,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* renamed from: com.android.framework.protobuf.ArrayDecoders$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
-
-        static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
-            try {
-                iArr[WireFormat.FieldType.DOUBLE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.FLOAT.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.INT64.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.UINT64.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.INT32.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.UINT32.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.FIXED64.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.SFIXED64.ordinal()] = 8;
-            } catch (NoSuchFieldError e8) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.FIXED32.ordinal()] = 9;
-            } catch (NoSuchFieldError e9) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.SFIXED32.ordinal()] = 10;
-            } catch (NoSuchFieldError e10) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.BOOL.ordinal()] = 11;
-            } catch (NoSuchFieldError e11) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.SINT32.ordinal()] = 12;
-            } catch (NoSuchFieldError e12) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.SINT64.ordinal()] = 13;
-            } catch (NoSuchFieldError e13) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.ENUM.ordinal()] = 14;
-            } catch (NoSuchFieldError e14) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.BYTES.ordinal()] = 15;
-            } catch (NoSuchFieldError e15) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.STRING.ordinal()] = 16;
-            } catch (NoSuchFieldError e16) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.GROUP.ordinal()] = 17;
-            } catch (NoSuchFieldError e17) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.MESSAGE.ordinal()] = 18;
-            } catch (NoSuchFieldError e18) {
-            }
-        }
-    }
-
-    public static int decodeUnknownField(int tag, byte[] data, int position, int limit, UnknownFieldSetLite unknownFields, Registers registers) throws InvalidProtocolBufferException {
+    static int decodeUnknownField(int tag, byte[] data, int position, int limit, UnknownFieldSetLite unknownFields, Registers registers) throws InvalidProtocolBufferException {
         if (WireFormat.getTagFieldNumber(tag) == 0) {
             throw InvalidProtocolBufferException.invalidTag();
         }
@@ -937,7 +853,7 @@ public final class ArrayDecoders {
         }
     }
 
-    public static int skipField(int tag, byte[] data, int position, int limit, Registers registers) throws InvalidProtocolBufferException {
+    static int skipField(int tag, byte[] data, int position, int limit, Registers registers) throws InvalidProtocolBufferException {
         if (WireFormat.getTagFieldNumber(tag) == 0) {
             throw InvalidProtocolBufferException.invalidTag();
         }

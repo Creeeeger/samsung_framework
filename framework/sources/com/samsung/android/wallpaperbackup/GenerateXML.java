@@ -4,7 +4,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class GenerateXML {
     public static final String BOTTOM = "bottom";
     public static final String COMPONENT = "component";
@@ -57,7 +57,7 @@ public class GenerateXML {
         generate(file, wallpaperUser);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:68:0x0260 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:68:0x0252 A[EXC_TOP_SPLITTER, SYNTHETIC] */
     /* JADX WARN: Removed duplicated region for block: B:75:? A[SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -65,7 +65,7 @@ public class GenerateXML {
     */
     private static void generate(java.io.File r26, com.samsung.android.wallpaperbackup.WallpaperUser r27) {
         /*
-            Method dump skipped, instructions count: 622
+            Method dump skipped, instructions count: 608
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.wallpaperbackup.GenerateXML.generate(java.io.File, com.samsung.android.wallpaperbackup.WallpaperUser):void");

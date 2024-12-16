@@ -23,7 +23,6 @@ public final class FrameMetrics {
     public final long[] mTimingData;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Index {
         public static final int ANIMATION_START = 6;
         public static final int COMMAND_SUBMISSION_COMPLETED = 22;
@@ -52,14 +51,12 @@ public final class FrameMetrics {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Metric {
     }
 
     public FrameMetrics(FrameMetrics other) {
-        long[] jArr = new long[23];
-        this.mTimingData = jArr;
-        System.arraycopy(other.mTimingData, 0, jArr, 0, jArr.length);
+        this.mTimingData = new long[23];
+        System.arraycopy(other.mTimingData, 0, this.mTimingData, 0, this.mTimingData.length);
     }
 
     public FrameMetrics() {
@@ -67,21 +64,19 @@ public final class FrameMetrics {
     }
 
     public long getMetric(int id) {
-        long[] jArr;
-        if (id < 0 || id > 13 || (jArr = this.mTimingData) == null) {
+        if (id < 0 || id > 13 || this.mTimingData == null) {
             return -1L;
         }
         if (id == 9) {
-            return (jArr[0] & 1) != 0 ? 1L : 0L;
+            return (this.mTimingData[0] & 1) != 0 ? 1L : 0L;
         }
         if (id == 10) {
-            return jArr[2];
+            return this.mTimingData[2];
         }
         if (id == 11) {
-            return jArr[3];
+            return this.mTimingData[3];
         }
         int durationsIdx = id * 2;
-        int[] iArr = DURATIONS;
-        return jArr[iArr[durationsIdx + 1]] - jArr[iArr[durationsIdx]];
+        return this.mTimingData[DURATIONS[durationsIdx + 1]] - this.mTimingData[DURATIONS[durationsIdx]];
     }
 }

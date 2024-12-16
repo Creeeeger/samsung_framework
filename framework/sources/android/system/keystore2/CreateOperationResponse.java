@@ -8,9 +8,7 @@ import android.system.keystore2.IKeystoreOperation;
 /* loaded from: classes3.dex */
 public class CreateOperationResponse implements Parcelable {
     public static final Parcelable.Creator<CreateOperationResponse> CREATOR = new Parcelable.Creator<CreateOperationResponse>() { // from class: android.system.keystore2.CreateOperationResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateOperationResponse createFromParcel(Parcel _aidl_source) {
             CreateOperationResponse _aidl_out = new CreateOperationResponse();
@@ -18,6 +16,7 @@ public class CreateOperationResponse implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateOperationResponse[] newArray(int _aidl_size) {
             return new CreateOperationResponse[_aidl_size];
@@ -27,25 +26,6 @@ public class CreateOperationResponse implements Parcelable {
     public OperationChallenge operationChallenge;
     public KeyParameters parameters;
     public byte[] upgradedBlob;
-
-    /* renamed from: android.system.keystore2.CreateOperationResponse$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CreateOperationResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CreateOperationResponse createFromParcel(Parcel _aidl_source) {
-            CreateOperationResponse _aidl_out = new CreateOperationResponse();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CreateOperationResponse[] newArray(int _aidl_size) {
-            return new CreateOperationResponse[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

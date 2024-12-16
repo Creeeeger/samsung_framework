@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class PenSelectionController {
     private static final String TAG = "PenSelectController";
     private static PenSelectionController sInstance;
 
-    /* loaded from: classes5.dex */
-    public static class PenSelectionContents {
+    static class PenSelectionContents {
         public String mContentStr;
 
         PenSelectionContents() {

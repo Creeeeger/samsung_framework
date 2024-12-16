@@ -45,123 +45,14 @@ public final class SatsService extends ISatsService.Stub {
     private static Context mContext;
     private static final Object mLockUEvent = new Object();
     private EngModesCmdHelper mEmCmdHelper;
-    private int mErrorCode;
-    private final BroadcastReceiver mReceiver;
     private Thread mThreadUart;
     private Thread mThreadUsb;
-    private final UEventObserver mUEventObserver;
     private boolean mThreadUartGoWait = true;
     private ArrayList<IWorkOnAt> serviceInterfaces = new ArrayList<>();
     private ArrayList<String> cmdList = new ArrayList<>();
     private IWorkOnAt mDrkAtCommander = null;
     private IWorkOnAt mHermesAtCommander = null;
-
-    public native byte[] commandForESS(Context context, String str);
-
-    public SatsService(Context context) {
-        this.mEmCmdHelper = null;
-        AnonymousClass1 anonymousClass1 = new UEventObserver() { // from class: com.android.server.SatsService.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.UEventObserver
-            public void onUEvent(UEventObserver.UEvent event) {
-                synchronized (SatsService.mLockUEvent) {
-                    if (event.toString().indexOf(SatsService.JIG_STATE) != -1) {
-                        try {
-                            String switchName = event.get(SatsService.JIG_STATE);
-                            if ("uart3".equalsIgnoreCase(switchName)) {
-                                String switchState = event.get("SWITCH_STATE");
-                                int state = Integer.parseInt(switchState);
-                                switch (state) {
-                                    case 0:
-                                        Slog.i(SatsService.TAG, "SATServiceAt will wait.");
-                                        SatsService.this.mThreadUartGoWait = true;
-                                        break;
-                                    case 1:
-                                        Slog.i(SatsService.TAG, "SATServiceAt will wake up.");
-                                        SatsService.this.mThreadUartGoWait = false;
-                                        synchronized (SatsService.this.mThreadUart) {
-                                            SatsService.this.mThreadUart.notifyAll();
-                                        }
-                                        break;
-                                    default:
-                                        Slog.e(SatsService.TAG, "Unknown state[" + state + NavigationBarInflaterView.SIZE_MOD_END);
-                                        break;
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        };
-        this.mUEventObserver = anonymousClass1;
-        this.mReceiver = new BroadcastReceiver() { // from class: com.android.server.SatsService.2
-            AnonymousClass2() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                Slog.i(SatsService.TAG, "Broadcast received:" + action);
-                try {
-                    if (SatsService.ACTION_EM_AT_REQUEST_RECONNECT.equals(action) || SatsService.ACTION_EM_AT_ACTIVATION_REQUEST.equals(action) || SatsService.ACTION_HMT_REQUEST_RECONNECT.equals(action) || SatsService.ACTION_FACM_REQUEST_FTCLIENT_START.equals(action)) {
-                        Slog.i(SatsService.TAG, "onReceive:" + action);
-                        Slog.i(SatsService.TAG, "SATServiceAt will wake up through received intent...");
-                        Thread.sleep(500L);
-                        SatsService.this.mThreadUartGoWait = false;
-                        synchronized (SatsService.this.mThreadUart) {
-                            SatsService.this.mThreadUart.notifyAll();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        this.mErrorCode = 0;
-        setContext(context);
-        try {
-            this.serviceInterfaces.add(new ReactiveATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+REACTIVE");
-            this.serviceInterfaces.add(new AuthUnlockATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+FRPUNLCK");
-            this.serviceInterfaces.add(new HdcptestATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+HDCPTEST");
-            this.serviceInterfaces.add(new SamsungAttestationATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+DEVROOTK");
-            this.serviceInterfaces.add(new HermesATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+ISOSECHW");
-            this.serviceInterfaces.add(new QRNGATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+QRNGTEST");
-            this.serviceInterfaces.add(new UserDeviceATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+URDEVICE");
-            this.serviceInterfaces.add(new AutoBlockATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+ABSTACHK");
-            this.mEmCmdHelper = new EngModesCmdHelper();
-            this.cmdList.add("AT+ENGMODES");
-            this.serviceInterfaces.add(new CassATCmd(context.getApplicationContext()));
-            this.cmdList.add("AT+MGRTCASS");
-            this.mThreadUart = new Thread(new AtCmdHandler(0), "SATServiceAt");
-            this.mThreadUsb = new Thread(new AtCmdHandler(1), "SATServiceData");
-            this.mThreadUart.start();
-            this.mThreadUsb.start();
-            anonymousClass1.startObserving(JIG_STATE);
-            registerForBroadcasts();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        System.loadLibrary(".engmodejni.samsung");
-    }
-
-    /* renamed from: com.android.server.SatsService$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends UEventObserver {
-        AnonymousClass1() {
-        }
-
+    private final UEventObserver mUEventObserver = new UEventObserver() { // from class: com.android.server.SatsService.1
         @Override // android.os.UEventObserver
         public void onUEvent(UEventObserver.UEvent event) {
             synchronized (SatsService.mLockUEvent) {
@@ -194,16 +85,10 @@ public final class SatsService extends ISatsService.Stub {
                 }
             }
         }
-    }
-
-    /* renamed from: com.android.server.SatsService$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 extends BroadcastReceiver {
-        AnonymousClass2() {
-        }
-
+    };
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.server.SatsService.2
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context2, Intent intent) {
+        public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Slog.i(SatsService.TAG, "Broadcast received:" + action);
             try {
@@ -220,6 +105,41 @@ public final class SatsService extends ISatsService.Stub {
                 e.printStackTrace();
             }
         }
+    };
+    private int mErrorCode = 0;
+
+    public native byte[] commandForESS(Context context, String str);
+
+    public SatsService(Context context) {
+        this.mEmCmdHelper = null;
+        setContext(context);
+        try {
+            this.serviceInterfaces.add(new AuthUnlockATCmd(context.getApplicationContext()));
+            this.cmdList.add("AT+FRPUNLCK");
+            this.serviceInterfaces.add(new HdcptestATCmd(context.getApplicationContext()));
+            this.cmdList.add("AT+HDCPTEST");
+            this.serviceInterfaces.add(new SamsungAttestationATCmd(context.getApplicationContext()));
+            this.cmdList.add("AT+DEVROOTK");
+            this.serviceInterfaces.add(new HermesATCmd(context.getApplicationContext()));
+            this.cmdList.add("AT+ISOSECHW");
+            this.serviceInterfaces.add(new AutoBlockATCmd(context.getApplicationContext()));
+            this.cmdList.add("AT+ABSTACHK");
+            this.serviceInterfaces.add(new UserDeviceATCmd(context.getApplicationContext()));
+            this.cmdList.add("AT+URDEVICE");
+            this.mEmCmdHelper = new EngModesCmdHelper();
+            this.cmdList.add("AT+ENGMODES");
+            this.serviceInterfaces.add(new CassATCmd(context.getApplicationContext()));
+            this.cmdList.add("AT+MGRTCASS");
+            this.mThreadUart = new Thread(new AtCmdHandler(0), "SATServiceAt");
+            this.mThreadUsb = new Thread(new AtCmdHandler(1), "SATServiceData");
+            this.mThreadUart.start();
+            this.mThreadUsb.start();
+            this.mUEventObserver.startObserving(JIG_STATE);
+            registerForBroadcasts();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        System.loadLibrary(".engmodejni.samsung");
     }
 
     private static void setContext(Context context) {
@@ -232,10 +152,9 @@ public final class SatsService extends ISatsService.Stub {
         intentFilter.addAction(ACTION_EM_AT_ACTIVATION_REQUEST);
         intentFilter.addAction(ACTION_HMT_REQUEST_RECONNECT);
         intentFilter.addAction(ACTION_FACM_REQUEST_FTCLIENT_START);
-        mContext.registerReceiver(this.mReceiver, intentFilter);
+        mContext.registerReceiver(this.mReceiver, intentFilter, 2);
     }
 
-    /* loaded from: classes5.dex */
     public final class AtCmdHandler implements Runnable {
         private static final String AT_COMMAND_HEADER = "AT";
         private static final String AT_RESPONSE_END = "\r\n\r\nOK\r\n";
@@ -262,15 +181,15 @@ public final class SatsService extends ISatsService.Stub {
                     Slog.i(UART_SOCKET_NAME, "connect at distributor");
                     this.mLocalSocketAddress = new LocalSocketAddress(UART_SOCKET_NAME, LocalSocketAddress.Namespace.ABSTRACT);
                     this.THREAD_TAG = "SatsServiceAt";
-                    return;
+                    break;
                 case 1:
                     Slog.i(UART_SOCKET_NAME, "connect data distributor");
                     this.mLocalSocketAddress = new LocalSocketAddress(USB_SOCKET_NAME, LocalSocketAddress.Namespace.FILESYSTEM);
                     this.THREAD_TAG = "SatsServiceData";
-                    return;
+                    break;
                 default:
                     Slog.e(UART_SOCKET_NAME, "Invalid target : [" + connectTarget + NavigationBarInflaterView.SIZE_MOD_END);
-                    return;
+                    break;
             }
         }
 
@@ -571,8 +490,7 @@ public final class SatsService extends ISatsService.Stub {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public final class EngModesCmdHelper {
+    private final class EngModesCmdHelper {
         private static final int AT_CMD_EM_SEQ_NO = 3;
         private static final String AT_CMD_EM_WRITING_END = "FFF";
         private static final String AT_RESPONSE_END = "\r\n\r\nOK\r\n";

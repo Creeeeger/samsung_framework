@@ -8,14 +8,13 @@ import java.util.UUID;
 /* loaded from: classes3.dex */
 public final class PrintJobId implements Parcelable {
     public static final Parcelable.Creator<PrintJobId> CREATOR = new Parcelable.Creator<PrintJobId>() { // from class: android.print.PrintJobId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintJobId createFromParcel(Parcel parcel) {
             return new PrintJobId((String) Preconditions.checkNotNull(parcel.readString()));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintJobId[] newArray(int size) {
             return new PrintJobId[size];
@@ -66,22 +65,5 @@ public final class PrintJobId implements Parcelable {
 
     public static PrintJobId unflattenFromString(String string) {
         return new PrintJobId(string);
-    }
-
-    /* renamed from: android.print.PrintJobId$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrintJobId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintJobId createFromParcel(Parcel parcel) {
-            return new PrintJobId((String) Preconditions.checkNotNull(parcel.readString()));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintJobId[] newArray(int size) {
-            return new PrintJobId[size];
-        }
     }
 }

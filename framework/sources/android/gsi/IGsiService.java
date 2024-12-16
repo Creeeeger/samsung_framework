@@ -73,7 +73,6 @@ public interface IGsiService extends IInterface {
 
     int zeroPartition(String str) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IGsiService {
         @Override // android.gsi.IGsiService
         public boolean commitGsiChunkFromStream(ParcelFileDescriptor stream, long bytes) throws RemoteException {
@@ -209,7 +208,6 @@ public interface IGsiService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IGsiService {
         static final int TRANSACTION_cancelGsiInstall = 8;
         static final int TRANSACTION_closeInstall = 19;
@@ -327,175 +325,172 @@ public interface IGsiService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGsiService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGsiService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGsiService.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result = commitGsiChunkFromStream(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    GsiProgress _result2 = getInstallProgress();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg12 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = setGsiAshmem(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    long _arg03 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = commitGsiChunkFromAshmem(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    boolean _arg04 = data.readBoolean();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result5 = enableGsi(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    boolean _arg05 = data.readBoolean();
+                    String _arg14 = data.readString();
+                    IGsiServiceCallback _arg2 = IGsiServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    enableGsiAsync(_arg05, _arg14, _arg2);
+                    return true;
+                case 7:
+                    boolean _result6 = isGsiEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 8:
+                    boolean _result7 = cancelGsiInstall();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 9:
+                    boolean _result8 = isGsiInstallInProgress();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 10:
+                    boolean _result9 = removeGsi();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 11:
+                    IGsiServiceCallback _arg06 = IGsiServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeGsiAsync(_arg06);
+                    return true;
+                case 12:
+                    boolean _result10 = disableGsi();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 13:
+                    boolean _result11 = isGsiInstalled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 14:
+                    boolean _result12 = isGsiRunning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 15:
+                    String _result13 = getActiveDsuSlot();
+                    reply.writeNoException();
+                    reply.writeString(_result13);
+                    return true;
+                case 16:
+                    String _result14 = getInstalledGsiImageDir();
+                    reply.writeNoException();
+                    reply.writeString(_result14);
+                    return true;
+                case 17:
+                    List<String> _result15 = getInstalledDsuSlots();
+                    reply.writeNoException();
+                    reply.writeStringList(_result15);
+                    return true;
+                case 18:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result16 = openInstall(_arg07);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 19:
+                    int _result17 = closeInstall();
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    return true;
+                case 20:
+                    String _arg08 = data.readString();
+                    long _arg15 = data.readLong();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result18 = createPartition(_arg08, _arg15, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 21:
+                    int _result19 = closePartition();
+                    reply.writeNoException();
+                    reply.writeInt(_result19);
+                    return true;
+                case 22:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result20 = zeroPartition(_arg09);
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 23:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    IImageService _result21 = openImageService(_arg010);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result21);
+                    return true;
+                case 24:
+                    String _result22 = dumpDeviceMapperDevices();
+                    reply.writeNoException();
+                    reply.writeString(_result22);
+                    return true;
+                case 25:
+                    AvbPublicKey _arg011 = new AvbPublicKey();
+                    data.enforceNoDataAvail();
+                    int _result23 = getAvbPublicKey(_arg011);
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    reply.writeTypedObject(_arg011, 1);
+                    return true;
+                case 26:
+                    long _result24 = suggestScratchSize();
+                    reply.writeNoException();
+                    reply.writeLong(_result24);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result = commitGsiChunkFromStream(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            GsiProgress _result2 = getInstallProgress();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg12 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = setGsiAshmem(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            long _arg03 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = commitGsiChunkFromAshmem(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            boolean _arg04 = data.readBoolean();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result5 = enableGsi(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            boolean _arg05 = data.readBoolean();
-                            String _arg14 = data.readString();
-                            IGsiServiceCallback _arg2 = IGsiServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            enableGsiAsync(_arg05, _arg14, _arg2);
-                            return true;
-                        case 7:
-                            boolean _result6 = isGsiEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 8:
-                            boolean _result7 = cancelGsiInstall();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 9:
-                            boolean _result8 = isGsiInstallInProgress();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 10:
-                            boolean _result9 = removeGsi();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 11:
-                            IGsiServiceCallback _arg06 = IGsiServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeGsiAsync(_arg06);
-                            return true;
-                        case 12:
-                            boolean _result10 = disableGsi();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 13:
-                            boolean _result11 = isGsiInstalled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 14:
-                            boolean _result12 = isGsiRunning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 15:
-                            String _result13 = getActiveDsuSlot();
-                            reply.writeNoException();
-                            reply.writeString(_result13);
-                            return true;
-                        case 16:
-                            String _result14 = getInstalledGsiImageDir();
-                            reply.writeNoException();
-                            reply.writeString(_result14);
-                            return true;
-                        case 17:
-                            List<String> _result15 = getInstalledDsuSlots();
-                            reply.writeNoException();
-                            reply.writeStringList(_result15);
-                            return true;
-                        case 18:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result16 = openInstall(_arg07);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 19:
-                            int _result17 = closeInstall();
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 20:
-                            String _arg08 = data.readString();
-                            long _arg15 = data.readLong();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result18 = createPartition(_arg08, _arg15, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 21:
-                            int _result19 = closePartition();
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            return true;
-                        case 22:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result20 = zeroPartition(_arg09);
-                            reply.writeNoException();
-                            reply.writeInt(_result20);
-                            return true;
-                        case 23:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            IImageService _result21 = openImageService(_arg010);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result21);
-                            return true;
-                        case 24:
-                            String _result22 = dumpDeviceMapperDevices();
-                            reply.writeNoException();
-                            reply.writeString(_result22);
-                            return true;
-                        case 25:
-                            AvbPublicKey _arg011 = new AvbPublicKey();
-                            data.enforceNoDataAvail();
-                            int _result23 = getAvbPublicKey(_arg011);
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            reply.writeTypedObject(_arg011, 1);
-                            return true;
-                        case 26:
-                            long _result24 = suggestScratchSize();
-                            reply.writeNoException();
-                            reply.writeLong(_result24);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IGsiService {
             private IBinder mRemote;
 

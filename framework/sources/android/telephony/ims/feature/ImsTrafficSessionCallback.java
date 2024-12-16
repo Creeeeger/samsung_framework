@@ -1,6 +1,6 @@
 package android.telephony.ims.feature;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ImsTrafficSessionCallback {
     void onError(ConnectionFailureInfo connectionFailureInfo);
 

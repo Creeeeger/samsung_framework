@@ -8,18 +8,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class LteVopsSupportInfo extends VopsSupportInfo {
     public static final Parcelable.Creator<LteVopsSupportInfo> CREATOR = new Parcelable.Creator<LteVopsSupportInfo>() { // from class: android.telephony.LteVopsSupportInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LteVopsSupportInfo createFromParcel(Parcel in) {
             in.readInt();
             return new LteVopsSupportInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LteVopsSupportInfo[] newArray(int size) {
             return new LteVopsSupportInfo[size];
@@ -34,12 +33,7 @@ public final class LteVopsSupportInfo extends VopsSupportInfo {
     private final int mVopsSupport;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface LteVopsStatus {
-    }
-
-    /* synthetic */ LteVopsSupportInfo(Parcel parcel, LteVopsSupportInfoIA lteVopsSupportInfoIA) {
-        this(parcel);
     }
 
     public LteVopsSupportInfo(int vops, int emergency) {
@@ -106,25 +100,7 @@ public final class LteVopsSupportInfo extends VopsSupportInfo {
         return "LteVopsSupportInfo :  mVopsSupport = " + this.mVopsSupport + " mEmcBearerSupport = " + this.mEmcBearerSupport;
     }
 
-    /* renamed from: android.telephony.LteVopsSupportInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LteVopsSupportInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LteVopsSupportInfo createFromParcel(Parcel in) {
-            in.readInt();
-            return new LteVopsSupportInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LteVopsSupportInfo[] newArray(int size) {
-            return new LteVopsSupportInfo[size];
-        }
-    }
-
-    public static LteVopsSupportInfo createFromParcelBody(Parcel in) {
+    protected static LteVopsSupportInfo createFromParcelBody(Parcel in) {
         return new LteVopsSupportInfo(in);
     }
 

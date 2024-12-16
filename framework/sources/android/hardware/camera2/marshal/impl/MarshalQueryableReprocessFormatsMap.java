@@ -8,10 +8,9 @@ import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableReprocessFormatsMap implements MarshalQueryable<ReprocessFormatsMap> {
 
-    /* loaded from: classes.dex */
     private class MarshalerReprocessFormatsMap extends Marshaler<ReprocessFormatsMap> {
         protected MarshalerReprocessFormatsMap(TypeReference<ReprocessFormatsMap> typeReference, int nativeType) {
             super(MarshalQueryableReprocessFormatsMap.this, typeReference, nativeType);
@@ -30,6 +29,7 @@ public class MarshalQueryableReprocessFormatsMap implements MarshalQueryable<Rep
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public ReprocessFormatsMap unmarshal(ByteBuffer buffer) {
             int len = buffer.remaining() / 4;

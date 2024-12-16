@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendIsdbs3Settings implements Parcelable {
     public static final Parcelable.Creator<FrontendIsdbs3Settings> CREATOR = new Parcelable.Creator<FrontendIsdbs3Settings>() { // from class: android.hardware.tv.tuner.FrontendIsdbs3Settings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbs3Settings createFromParcel(Parcel _aidl_source) {
             FrontendIsdbs3Settings _aidl_out = new FrontendIsdbs3Settings();
@@ -17,6 +15,7 @@ public class FrontendIsdbs3Settings implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbs3Settings[] newArray(int _aidl_size) {
             return new FrontendIsdbs3Settings[_aidl_size];
@@ -30,25 +29,6 @@ public class FrontendIsdbs3Settings implements Parcelable {
     public int coderate = 0;
     public int symbolRate = 0;
     public int rolloff = 0;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendIsdbs3Settings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendIsdbs3Settings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendIsdbs3Settings createFromParcel(Parcel _aidl_source) {
-            FrontendIsdbs3Settings _aidl_out = new FrontendIsdbs3Settings();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendIsdbs3Settings[] newArray(int _aidl_size) {
-            return new FrontendIsdbs3Settings[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class WhitelistHelper {
     private static final String TAG = "WhitelistHelper";
     private ArrayMap<String, ArraySet<ComponentName>> mWhitelistedPackages;
@@ -63,8 +63,7 @@ public final class WhitelistHelper {
 
     public boolean isWhitelisted(String packageName) {
         Objects.requireNonNull(packageName);
-        ArrayMap<String, ArraySet<ComponentName>> arrayMap = this.mWhitelistedPackages;
-        return arrayMap != null && arrayMap.containsKey(packageName) && this.mWhitelistedPackages.get(packageName) == null;
+        return this.mWhitelistedPackages != null && this.mWhitelistedPackages.containsKey(packageName) && this.mWhitelistedPackages.get(packageName) == null;
     }
 
     public boolean isWhitelisted(ComponentName componentName) {
@@ -79,11 +78,10 @@ public final class WhitelistHelper {
 
     public ArraySet<ComponentName> getWhitelistedComponents(String packageName) {
         Objects.requireNonNull(packageName);
-        ArrayMap<String, ArraySet<ComponentName>> arrayMap = this.mWhitelistedPackages;
-        if (arrayMap == null) {
+        if (this.mWhitelistedPackages == null) {
             return null;
         }
-        return arrayMap.get(packageName);
+        return this.mWhitelistedPackages.get(packageName);
     }
 
     public ArraySet<String> getWhitelistedPackages() {
@@ -98,8 +96,7 @@ public final class WhitelistHelper {
     }
 
     public void dump(String prefix, String message, PrintWriter pw) {
-        ArrayMap<String, ArraySet<ComponentName>> arrayMap = this.mWhitelistedPackages;
-        if (arrayMap == null || arrayMap.size() == 0) {
+        if (this.mWhitelistedPackages == null || this.mWhitelistedPackages.size() == 0) {
             pw.print(prefix);
             pw.print(message);
             pw.println(": (no whitelisted packages)");

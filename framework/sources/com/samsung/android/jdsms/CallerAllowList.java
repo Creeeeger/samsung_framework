@@ -4,9 +4,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 final class CallerAllowList {
     private static final Set<String> mAllowList;
+
+    CallerAllowList() {
+    }
 
     static {
         HashSet<String> modifiableSet = new HashSet<>();
@@ -17,7 +20,7 @@ final class CallerAllowList {
         mAllowList = Collections.unmodifiableSet(modifiableSet);
     }
 
-    public boolean contains(String caller) {
+    boolean contains(String caller) {
         return mAllowList.contains(caller);
     }
 }

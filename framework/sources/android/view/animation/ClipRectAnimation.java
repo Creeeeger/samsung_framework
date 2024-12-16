@@ -97,7 +97,7 @@ public class ClipRectAnimation extends Animation {
     }
 
     @Override // android.view.animation.Animation
-    public void applyTransformation(float it, Transformation tr) {
+    protected void applyTransformation(float it, Transformation tr) {
         int l = this.mFromRect.left + ((int) ((this.mToRect.left - this.mFromRect.left) * it));
         int t = this.mFromRect.top + ((int) ((this.mToRect.top - this.mFromRect.top) * it));
         int r = this.mFromRect.right + ((int) ((this.mToRect.right - this.mFromRect.right) * it));

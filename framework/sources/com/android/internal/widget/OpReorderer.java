@@ -3,23 +3,21 @@ package com.android.internal.widget;
 import com.android.internal.widget.AdapterHelper;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class OpReorderer {
+class OpReorderer {
     final Callback mCallback;
 
-    /* loaded from: classes5.dex */
-    public interface Callback {
+    interface Callback {
         AdapterHelper.UpdateOp obtainUpdateOp(int i, int i2, int i3, Object obj);
 
         void recycleUpdateOp(AdapterHelper.UpdateOp updateOp);
     }
 
-    public OpReorderer(Callback callback) {
+    OpReorderer(Callback callback) {
         this.mCallback = callback;
     }
 
-    public void reorderOps(List<AdapterHelper.UpdateOp> ops) {
+    void reorderOps(List<AdapterHelper.UpdateOp> ops) {
         while (true) {
             int badMove = getLastMoveOutOfOrder(ops);
             if (badMove != -1) {
@@ -36,16 +34,13 @@ public class OpReorderer {
         switch (nextOp.cmd) {
             case 1:
                 swapMoveAdd(list, badMove, moveOp, next, nextOp);
-                return;
+                break;
             case 2:
                 swapMoveRemove(list, badMove, moveOp, next, nextOp);
-                return;
-            case 3:
-            default:
-                return;
+                break;
             case 4:
                 swapMoveUpdate(list, badMove, moveOp, next, nextOp);
-                return;
+                break;
         }
     }
 

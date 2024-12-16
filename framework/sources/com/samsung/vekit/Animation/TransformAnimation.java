@@ -14,14 +14,29 @@ public class TransformAnimation extends Animation<Matrix4> {
         super(context, AnimationType.TRANSFORM, id, name);
     }
 
+    /* JADX WARN: Multi-variable type inference failed */
+    @Override // com.samsung.vekit.Animation.Animation
+    public void rollback() {
+        if (isEnableRollback()) {
+            this.firstTarget.getPanel().setMatrix((Matrix4) this.rollbackValue);
+            this.firstTarget.update();
+        }
+        this.enableRollback = false;
+    }
+
     @Override // com.samsung.vekit.Animation.Animation
     public TransformAnimation setKeyFrameList(ArrayList<KeyFrame<Matrix4>> keyFrameList) {
         return (TransformAnimation) super.setKeyFrameList((ArrayList) keyFrameList);
     }
 
     @Override // com.samsung.vekit.Animation.Animation
-    public TransformAnimation setKeyFrame(KeyFrame<Matrix4> keyFrame) {
-        return (TransformAnimation) super.setKeyFrame((KeyFrame) keyFrame);
+    public TransformAnimation setKeyFrame(KeyFrame<Matrix4> firstKeyFrame, KeyFrame<Matrix4> secondKeyFrame) {
+        return (TransformAnimation) super.setKeyFrame((KeyFrame) firstKeyFrame, (KeyFrame) secondKeyFrame);
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    public TransformAnimation addKeyFrame(KeyFrame<Matrix4> keyFrame) {
+        return (TransformAnimation) super.addKeyFrame((KeyFrame) keyFrame);
     }
 
     @Override // com.samsung.vekit.Animation.Animation
@@ -77,5 +92,11 @@ public class TransformAnimation extends Animation<Matrix4> {
         float[] data = (float[]) interpolatedValue;
         Matrix4 matrix = new Matrix4(data);
         this.firstTarget.getPanel().setMatrix(matrix);
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public TransformAnimation setKeyFrame(KeyFrame<Matrix4> keyFrame) {
+        return (TransformAnimation) super.setKeyFrame((KeyFrame) keyFrame);
     }
 }

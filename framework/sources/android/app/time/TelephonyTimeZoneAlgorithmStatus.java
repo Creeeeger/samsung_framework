@@ -7,15 +7,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TelephonyTimeZoneAlgorithmStatus implements Parcelable {
     public static final Parcelable.Creator<TelephonyTimeZoneAlgorithmStatus> CREATOR = new Parcelable.Creator<TelephonyTimeZoneAlgorithmStatus>() { // from class: android.app.time.TelephonyTimeZoneAlgorithmStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyTimeZoneAlgorithmStatus createFromParcel(Parcel in) {
             int algorithmStatus = in.readInt();
             return new TelephonyTimeZoneAlgorithmStatus(algorithmStatus);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyTimeZoneAlgorithmStatus[] newArray(int size) {
             return new TelephonyTimeZoneAlgorithmStatus[size];
@@ -33,24 +32,6 @@ public final class TelephonyTimeZoneAlgorithmStatus implements Parcelable {
 
     public String toString() {
         return "TelephonyTimeZoneAlgorithmStatus{mAlgorithmStatus=" + DetectorStatusTypes.detectionAlgorithmStatusToString(this.mAlgorithmStatus) + '}';
-    }
-
-    /* renamed from: android.app.time.TelephonyTimeZoneAlgorithmStatus$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TelephonyTimeZoneAlgorithmStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyTimeZoneAlgorithmStatus createFromParcel(Parcel in) {
-            int algorithmStatus = in.readInt();
-            return new TelephonyTimeZoneAlgorithmStatus(algorithmStatus);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyTimeZoneAlgorithmStatus[] newArray(int size) {
-            return new TelephonyTimeZoneAlgorithmStatus[size];
-        }
     }
 
     @Override // android.os.Parcelable

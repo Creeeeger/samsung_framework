@@ -9,17 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TvRecordingInfo implements Parcelable {
     public static final Parcelable.Creator<TvRecordingInfo> CREATOR = new Parcelable.Creator<TvRecordingInfo>() { // from class: android.media.tv.TvRecordingInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvRecordingInfo createFromParcel(Parcel in) {
             return new TvRecordingInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvRecordingInfo[] newArray(int size) {
             return new TvRecordingInfo[size];
@@ -51,17 +50,11 @@ public final class TvRecordingInfo implements Parcelable {
     private long mStartPaddingMillis;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DaysOfWeek {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TvRecordingListType {
-    }
-
-    /* synthetic */ TvRecordingInfo(Parcel parcel, TvRecordingInfoIA tvRecordingInfoIA) {
-        this(parcel);
     }
 
     public TvRecordingInfo(String recordingId, long startPadding, long endPadding, int repeatDays, String name, String description, long scheduledStartTime, long scheduledDuration, Uri channelUri, Uri programUri, List<TvContentRating> contentRatings, Uri recordingUri, long recordingStartTime, long recordingDuration) {
@@ -160,12 +153,10 @@ public final class TvRecordingInfo implements Parcelable {
         dest.writeString(this.mDescription);
         dest.writeLong(this.mScheduledStartTimeMillis);
         dest.writeLong(this.mScheduledDurationMillis);
-        Uri uri = this.mChannelUri;
-        dest.writeString(uri == null ? null : uri.toString());
-        Uri uri2 = this.mProgramUri;
-        dest.writeString(uri2 == null ? null : uri2.toString());
+        dest.writeString(this.mChannelUri == null ? null : this.mChannelUri.toString());
+        dest.writeString(this.mProgramUri == null ? null : this.mProgramUri.toString());
         final List<String> flattenedContentRatings = new ArrayList<>();
-        this.mContentRatings.forEach(new Consumer() { // from class: android.media.tv.TvRecordingInfo$$ExternalSyntheticLambda1
+        this.mContentRatings.forEach(new Consumer() { // from class: android.media.tv.TvRecordingInfo$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 flattenedContentRatings.add(((TvContentRating) obj).flattenToString());
@@ -191,7 +182,7 @@ public final class TvRecordingInfo implements Parcelable {
         this.mContentRatings = new ArrayList();
         List<String> flattenedContentRatings = new ArrayList<>();
         in.readStringList(flattenedContentRatings);
-        flattenedContentRatings.forEach(new Consumer() { // from class: android.media.tv.TvRecordingInfo$$ExternalSyntheticLambda0
+        flattenedContentRatings.forEach(new Consumer() { // from class: android.media.tv.TvRecordingInfo$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 TvRecordingInfo.this.lambda$new$1((String) obj);
@@ -202,24 +193,8 @@ public final class TvRecordingInfo implements Parcelable {
         this.mRecordingStartTimeMillis = in.readLong();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$1(String rating) {
         this.mContentRatings.add(TvContentRating.unflattenFromString(rating));
-    }
-
-    /* renamed from: android.media.tv.TvRecordingInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TvRecordingInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvRecordingInfo createFromParcel(Parcel in) {
-            return new TvRecordingInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvRecordingInfo[] newArray(int size) {
-            return new TvRecordingInfo[size];
-        }
     }
 }

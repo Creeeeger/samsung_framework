@@ -18,13 +18,12 @@ public class Tables8kGCMMultiplier implements GCMMultiplier {
         }
         this.H = Arrays.clone(H);
         for (int i = 0; i < 32; i++) {
-            long[][][] jArr = this.T;
-            long[][] t = jArr[i];
+            long[][] t = this.T[i];
             if (i == 0) {
                 GCMUtil.asLongs(this.H, t[1]);
                 GCMUtil.multiplyP3(t[1], t[1]);
             } else {
-                GCMUtil.multiplyP4(jArr[i - 1][1], t[1]);
+                GCMUtil.multiplyP4(this.T[i - 1][1], t[1]);
             }
             for (int n = 2; n < 16; n += 2) {
                 GCMUtil.divideP(t[n >> 1], t[n]);
@@ -38,9 +37,8 @@ public class Tables8kGCMMultiplier implements GCMMultiplier {
         long z0 = 0;
         long z1 = 0;
         for (int i = 15; i >= 0; i--) {
-            long[][][] jArr = this.T;
-            long[] u = jArr[i + i + 1][x[i] & 15];
-            long[] v = jArr[i + i][(x[i] & 240) >>> 4];
+            long[] u = this.T[i + i + 1][x[i] & 15];
+            long[] v = this.T[i + i][(x[i] & 240) >>> 4];
             z0 ^= u[0] ^ v[0];
             z1 ^= u[1] ^ v[1];
         }

@@ -9,17 +9,16 @@ import com.android.internal.util.MessageUtils;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class IpReachabilityEvent implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<IpReachabilityEvent> CREATOR = new Parcelable.Creator<IpReachabilityEvent>() { // from class: android.net.metrics.IpReachabilityEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IpReachabilityEvent createFromParcel(Parcel in) {
             return new IpReachabilityEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IpReachabilityEvent[] newArray(int size) {
             return new IpReachabilityEvent[size];
@@ -31,10 +30,6 @@ public final class IpReachabilityEvent implements IpConnectivityLog.Event {
     public static final int PROVISIONING_LOST = 768;
     public static final int PROVISIONING_LOST_ORGANIC = 1280;
     public final int eventType;
-
-    /* synthetic */ IpReachabilityEvent(Parcel parcel, IpReachabilityEventIA ipReachabilityEventIA) {
-        this(parcel);
-    }
 
     public IpReachabilityEvent(int eventType) {
         this.eventType = eventType;
@@ -54,27 +49,9 @@ public final class IpReachabilityEvent implements IpConnectivityLog.Event {
         return 0;
     }
 
-    /* renamed from: android.net.metrics.IpReachabilityEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IpReachabilityEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IpReachabilityEvent createFromParcel(Parcel in) {
-            return new IpReachabilityEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IpReachabilityEvent[] newArray(int size) {
-            return new IpReachabilityEvent[size];
-        }
-    }
-
     public String toString() {
-        int i = this.eventType;
-        int hi = 65280 & i;
-        int lo = i & 255;
+        int hi = this.eventType & 65280;
+        int lo = this.eventType & 255;
         String eventName = Decoder.constants.get(hi);
         return String.format("IpReachabilityEvent(%s:%02x)", eventName, Integer.valueOf(lo));
     }
@@ -87,7 +64,6 @@ public final class IpReachabilityEvent implements IpConnectivityLog.Event {
         return this.eventType == other.eventType;
     }
 
-    /* loaded from: classes2.dex */
     static final class Decoder {
         static final SparseArray<String> constants = MessageUtils.findMessageNames(new Class[]{IpReachabilityEvent.class}, new String[]{"PROBE", "PROVISIONING_", "NUD_"});
 

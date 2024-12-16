@@ -14,7 +14,6 @@ public interface IMemorySaverPackageMoveObserver extends IInterface {
 
     void onStatusChanged(int i, int i2, long j) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IMemorySaverPackageMoveObserver {
         @Override // android.content.pm.IMemorySaverPackageMoveObserver
         public void onCreated(String packageName) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IMemorySaverPackageMoveObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IMemorySaverPackageMoveObserver {
         static final int TRANSACTION_onCreated = 1;
         static final int TRANSACTION_onStatusChanged = 2;
@@ -76,34 +74,31 @@ public interface IMemorySaverPackageMoveObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMemorySaverPackageMoveObserver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMemorySaverPackageMoveObserver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMemorySaverPackageMoveObserver.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onCreated(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onStatusChanged(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onCreated(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onStatusChanged(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IMemorySaverPackageMoveObserver {
+        private static class Proxy implements IMemorySaverPackageMoveObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

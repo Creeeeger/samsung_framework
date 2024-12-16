@@ -7,7 +7,7 @@ import com.samsung.android.graphics.spr.document.attribute.impl.SprRadialGradien
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SprAttributeColor extends SprAttributeBase {
     public static final byte TYPE_ARGB = 1;
     public static final byte TYPE_LINEAR_GRADIENT = 3;
@@ -71,9 +71,8 @@ public abstract class SprAttributeColor extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     public void fromSPR(SprInputStream in) throws IOException {
-        byte readByte = in.readByte();
-        this.colorType = readByte;
-        switch (readByte) {
+        this.colorType = in.readByte();
+        switch (this.colorType) {
             case 0:
                 in.readInt();
                 return;
@@ -131,11 +130,10 @@ public abstract class SprAttributeColor extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeColor mo8412clone() throws CloneNotSupportedException {
-        SprAttributeColor attribute = (SprAttributeColor) super.mo8412clone();
-        SprGradientBase sprGradientBase = this.gradient;
-        if (sprGradientBase != null) {
-            attribute.gradient = sprGradientBase.m8413clone();
+    public SprAttributeColor mo8813clone() throws CloneNotSupportedException {
+        SprAttributeColor attribute = (SprAttributeColor) super.mo8813clone();
+        if (this.gradient != null) {
+            attribute.gradient = this.gradient.m8814clone();
         }
         return attribute;
     }

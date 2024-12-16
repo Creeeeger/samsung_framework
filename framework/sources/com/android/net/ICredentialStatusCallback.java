@@ -14,7 +14,6 @@ public interface ICredentialStatusCallback extends IInterface {
 
     void onSuccess() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICredentialStatusCallback {
         @Override // com.android.net.ICredentialStatusCallback
         public void onSuccess() throws RemoteException {
@@ -30,7 +29,6 @@ public interface ICredentialStatusCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICredentialStatusCallback {
         static final int TRANSACTION_onFail = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -76,29 +74,26 @@ public interface ICredentialStatusCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICredentialStatusCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICredentialStatusCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICredentialStatusCallback.DESCRIPTOR);
+                case 1:
+                    onSuccess();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFail(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onSuccess();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFail(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICredentialStatusCallback {
             private IBinder mRemote;
 

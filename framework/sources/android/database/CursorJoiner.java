@@ -13,7 +13,6 @@ public final class CursorJoiner implements Iterator<Result>, Iterable<Result> {
     private Cursor mCursorRight;
     private String[] mValues;
 
-    /* loaded from: classes.dex */
     public enum Result {
         RIGHT,
         LEFT,
@@ -26,7 +25,7 @@ public final class CursorJoiner implements Iterator<Result>, Iterable<Result> {
         }
         this.mCursorLeft = cursorLeft;
         this.mCursorRight = cursorRight;
-        cursorLeft.moveToFirst();
+        this.mCursorLeft.moveToFirst();
         this.mCursorRight.moveToFirst();
         this.mCompareResultIsValid = false;
         this.mColumnsLeft = buildColumnIndiciesArray(cursorLeft, columnNamesLeft);
@@ -47,46 +46,24 @@ public final class CursorJoiner implements Iterator<Result>, Iterable<Result> {
         return columns;
     }
 
-    /* renamed from: android.database.CursorJoiner$1 */
-    /* loaded from: classes.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$database$CursorJoiner$Result;
-
-        static {
-            int[] iArr = new int[Result.values().length];
-            $SwitchMap$android$database$CursorJoiner$Result = iArr;
-            try {
-                iArr[Result.BOTH.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$database$CursorJoiner$Result[Result.LEFT.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$database$CursorJoiner$Result[Result.RIGHT.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-        }
-    }
-
     @Override // java.util.Iterator
     public boolean hasNext() {
         if (!this.mCompareResultIsValid) {
             return (this.mCursorLeft.isAfterLast() && this.mCursorRight.isAfterLast()) ? false : true;
         }
-        switch (AnonymousClass1.$SwitchMap$android$database$CursorJoiner$Result[this.mCompareResult.ordinal()]) {
-            case 1:
-                return (this.mCursorLeft.isLast() && this.mCursorRight.isLast()) ? false : true;
-            case 2:
-                return (this.mCursorLeft.isLast() && this.mCursorRight.isAfterLast()) ? false : true;
-            case 3:
+        switch (this.mCompareResult) {
+            case RIGHT:
                 return (this.mCursorLeft.isAfterLast() && this.mCursorRight.isLast()) ? false : true;
+            case LEFT:
+                return (this.mCursorLeft.isLast() && this.mCursorRight.isAfterLast()) ? false : true;
+            case BOTH:
+                return (this.mCursorLeft.isLast() && this.mCursorRight.isLast()) ? false : true;
             default:
                 throw new IllegalStateException("bad value for mCompareResult, " + this.mCompareResult);
         }
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.Iterator
     public Result next() {
         if (!hasNext()) {
@@ -131,15 +108,15 @@ public final class CursorJoiner implements Iterator<Result>, Iterable<Result> {
 
     private void incrementCursors() {
         if (this.mCompareResultIsValid) {
-            switch (AnonymousClass1.$SwitchMap$android$database$CursorJoiner$Result[this.mCompareResult.ordinal()]) {
-                case 1:
-                    this.mCursorLeft.moveToNext();
+            switch (this.mCompareResult) {
+                case RIGHT:
                     this.mCursorRight.moveToNext();
                     break;
-                case 2:
+                case LEFT:
                     this.mCursorLeft.moveToNext();
                     break;
-                case 3:
+                case BOTH:
+                    this.mCursorLeft.moveToNext();
                     this.mCursorRight.moveToNext();
                     break;
             }

@@ -12,7 +12,7 @@ public class SemAppLockManager {
 
     public SemAppLockManager(Context context) {
         this.mContext = context;
-        this.mActivityManager = (ActivityManager) context.getSystemService("activity");
+        this.mActivityManager = (ActivityManager) this.mContext.getSystemService("activity");
     }
 
     private ActivityManager getActivityManager() {

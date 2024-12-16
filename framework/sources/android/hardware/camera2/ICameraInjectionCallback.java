@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICameraInjectionCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.ICameraInjectionCallback";
     public static final int ERROR_INJECTION_INVALID_ERROR = -1;
@@ -16,7 +16,6 @@ public interface ICameraInjectionCallback extends IInterface {
 
     void onInjectionError(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraInjectionCallback {
         @Override // android.hardware.camera2.ICameraInjectionCallback
         public void onInjectionError(int errorCode) throws RemoteException {
@@ -28,7 +27,6 @@ public interface ICameraInjectionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraInjectionCallback {
         static final int TRANSACTION_onInjectionError = 1;
 
@@ -71,25 +69,22 @@ public interface ICameraInjectionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICameraInjectionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICameraInjectionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICameraInjectionCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onInjectionError(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onInjectionError(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraInjectionCallback {
+        private static class Proxy implements ICameraInjectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

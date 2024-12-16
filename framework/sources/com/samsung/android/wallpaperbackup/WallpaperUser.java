@@ -2,7 +2,7 @@ package com.samsung.android.wallpaperbackup;
 
 import android.net.Uri;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class WallpaperUser {
     private String mComponent;
     private String mComponentName;
@@ -223,14 +223,15 @@ public class WallpaperUser {
         return buffer.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes5.dex */
-    public static class WallpaperData {
+    static class WallpaperData {
         int left = 0;
         int top = 0;
         int right = 0;
         int bottom = 0;
         int rotation = 0;
+
+        WallpaperData() {
+        }
 
         public String toString() {
             return "left = " + this.left + ", top = " + this.top + ", right = " + this.right + ", bottom = " + this.bottom + ", rotatioin = " + this.rotation;

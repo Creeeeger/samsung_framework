@@ -10,5 +10,6 @@ public enum ElementType {
     MANAGER,
     FILTER,
     CONTEXT,
-    CONTROLLER
+    CONTROLLER,
+    ANALYZER
 }

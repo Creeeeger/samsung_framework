@@ -18,7 +18,7 @@ import com.samsung.android.remoteappmode.IStartActivityInterceptListener;
 import com.samsung.android.remoteappmode.ITaskChangeListener;
 import com.samsung.android.remoteappmode.IVirtualDisplayAliveChecker;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IRemoteAppMode extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.remoteappmode.IRemoteAppMode";
 
@@ -88,7 +88,6 @@ public interface IRemoteAppMode extends IInterface {
 
     boolean unregisterTaskChangeListener(ITaskChangeListener iTaskChangeListener) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRemoteAppMode {
         @Override // com.samsung.android.remoteappmode.IRemoteAppMode
         public int createVirtualDisplay(String name, int width, int height, int densityDpi, Surface surface, IVirtualDisplayAliveChecker checker) throws RemoteException {
@@ -245,7 +244,6 @@ public interface IRemoteAppMode extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRemoteAppMode {
         static final int TRANSACTION_clearAll = 17;
         static final int TRANSACTION_createVirtualDisplay = 1;
@@ -384,245 +382,242 @@ public interface IRemoteAppMode extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteAppMode.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteAppMode.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteAppMode.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    Surface _arg4 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    IVirtualDisplayAliveChecker _arg5 = IVirtualDisplayAliveChecker.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result = createVirtualDisplay(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    releaseVirtualDisplay(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    Surface _arg42 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    data.enforceNoDataAvail();
+                    resizeVirtualDisplay(_arg03, _arg12, _arg22, _arg32, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    moveDisplayToTop(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    String _arg13 = data.readString();
+                    Intent _arg23 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    launchApplication(_arg05, _arg13, _arg23, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    boolean _result2 = isAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 7:
+                    ISecureAppChangedListener _arg06 = ISecureAppChangedListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = registerSecureAppChangedListener(_arg06, _arg14);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 8:
+                    ISecureAppChangedListener _arg07 = ISecureAppChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result4 = unregisterSecureAppChangedListener(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 9:
+                    ITaskChangeListener _arg08 = ITaskChangeListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = registerTaskChangeListener(_arg08, _arg15);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 10:
+                    ITaskChangeListener _arg09 = ITaskChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result6 = unregisterTaskChangeListener(_arg09);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 11:
+                    IRotationChangeListener _arg010 = IRotationChangeListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg16 = data.readString();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = registerRotationChangeListener(_arg010, _arg16, _arg24);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 12:
+                    IRotationChangeListener _arg011 = IRotationChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result8 = unregisterRotationChangeListener(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 13:
+                    IStartActivityInterceptListener _arg012 = IStartActivityInterceptListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = registerStartActivityInterceptListener(_arg012, _arg17);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 14:
+                    IStartActivityInterceptListener _arg013 = IStartActivityInterceptListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result10 = unregisterStartActivityInterceptListener(_arg013);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 15:
+                    IRemoteAppModeListener _arg014 = IRemoteAppModeListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg18 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = registerRemoteAppModeListener(_arg014, _arg18);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 16:
+                    IRemoteAppModeListener _arg015 = IRemoteAppModeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result12 = unregisterRemoteAppModeListener(_arg015);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 17:
+                    clearAll();
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    PendingIntent _arg016 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendPendingIntent(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int _result13 = getProtocolVersion();
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 20:
+                    StatusBarNotification _arg017 = (StatusBarNotification) data.readTypedObject(StatusBarNotification.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result14 = sendNotificationContent(_arg017);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 21:
+                    StatusBarNotification _arg018 = (StatusBarNotification) data.readTypedObject(StatusBarNotification.CREATOR);
+                    int _arg19 = data.readInt();
+                    Intent _arg25 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result15 = sendNotificationAction(_arg018, _arg19, _arg25);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 22:
+                    String _arg019 = data.readString();
+                    data.enforceNoDataAvail();
+                    forceStopPackage(_arg019);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    int _arg020 = data.readInt();
+                    int _arg110 = data.readInt();
+                    Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    transferTaskWithoutIntercept(_arg020, _arg110, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    int _arg021 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLTWProtocolVersion(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    startRFCommService();
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    stopRFCommService();
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    String _arg022 = data.readString();
+                    ParcelFileDescriptor _arg111 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    getLastAnr(_arg022, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    String _arg023 = data.readString();
+                    data.enforceNoDataAvail();
+                    enableSendingUserPresentIntent(_arg023);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    disableSendingUserPresentIntent();
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    boolean _result16 = isSendingUserPresentEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 31:
+                    long _arg024 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setSendingUserPresentExpiredTime(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    long _result17 = getSendingUserPresentExpiredTime();
+                    reply.writeNoException();
+                    reply.writeLong(_result17);
+                    return true;
+                case 33:
+                    Intent _arg025 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg112 = data.readInt();
+                    int _arg27 = data.readInt();
+                    Bundle _arg34 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    transferTaskUsingIntent(_arg025, _arg112, _arg27, _arg34);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            Surface _arg4 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            IVirtualDisplayAliveChecker _arg5 = IVirtualDisplayAliveChecker.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result = createVirtualDisplay(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            releaseVirtualDisplay(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            Surface _arg42 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            data.enforceNoDataAvail();
-                            resizeVirtualDisplay(_arg03, _arg12, _arg22, _arg32, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            moveDisplayToTop(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            String _arg13 = data.readString();
-                            Intent _arg23 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            launchApplication(_arg05, _arg13, _arg23, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            boolean _result2 = isAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 7:
-                            ISecureAppChangedListener _arg06 = ISecureAppChangedListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = registerSecureAppChangedListener(_arg06, _arg14);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 8:
-                            ISecureAppChangedListener _arg07 = ISecureAppChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result4 = unregisterSecureAppChangedListener(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 9:
-                            ITaskChangeListener _arg08 = ITaskChangeListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = registerTaskChangeListener(_arg08, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 10:
-                            ITaskChangeListener _arg09 = ITaskChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result6 = unregisterTaskChangeListener(_arg09);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 11:
-                            IRotationChangeListener _arg010 = IRotationChangeListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg16 = data.readString();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = registerRotationChangeListener(_arg010, _arg16, _arg24);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 12:
-                            IRotationChangeListener _arg011 = IRotationChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result8 = unregisterRotationChangeListener(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 13:
-                            IStartActivityInterceptListener _arg012 = IStartActivityInterceptListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = registerStartActivityInterceptListener(_arg012, _arg17);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 14:
-                            IStartActivityInterceptListener _arg013 = IStartActivityInterceptListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result10 = unregisterStartActivityInterceptListener(_arg013);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 15:
-                            IRemoteAppModeListener _arg014 = IRemoteAppModeListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = registerRemoteAppModeListener(_arg014, _arg18);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 16:
-                            IRemoteAppModeListener _arg015 = IRemoteAppModeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result12 = unregisterRemoteAppModeListener(_arg015);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 17:
-                            clearAll();
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            PendingIntent _arg016 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendPendingIntent(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int _result13 = getProtocolVersion();
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 20:
-                            StatusBarNotification _arg017 = (StatusBarNotification) data.readTypedObject(StatusBarNotification.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result14 = sendNotificationContent(_arg017);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 21:
-                            StatusBarNotification _arg018 = (StatusBarNotification) data.readTypedObject(StatusBarNotification.CREATOR);
-                            int _arg19 = data.readInt();
-                            Intent _arg25 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result15 = sendNotificationAction(_arg018, _arg19, _arg25);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 22:
-                            String _arg019 = data.readString();
-                            data.enforceNoDataAvail();
-                            forceStopPackage(_arg019);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            int _arg020 = data.readInt();
-                            int _arg110 = data.readInt();
-                            Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            transferTaskWithoutIntercept(_arg020, _arg110, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLTWProtocolVersion(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            startRFCommService();
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            stopRFCommService();
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            String _arg022 = data.readString();
-                            ParcelFileDescriptor _arg111 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            getLastAnr(_arg022, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            String _arg023 = data.readString();
-                            data.enforceNoDataAvail();
-                            enableSendingUserPresentIntent(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            disableSendingUserPresentIntent();
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            boolean _result16 = isSendingUserPresentEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 31:
-                            long _arg024 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setSendingUserPresentExpiredTime(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            long _result17 = getSendingUserPresentExpiredTime();
-                            reply.writeNoException();
-                            reply.writeLong(_result17);
-                            return true;
-                        case 33:
-                            Intent _arg025 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg112 = data.readInt();
-                            int _arg27 = data.readInt();
-                            Bundle _arg34 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            transferTaskUsingIntent(_arg025, _arg112, _arg27, _arg34);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRemoteAppMode {
+        private static class Proxy implements IRemoteAppMode {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

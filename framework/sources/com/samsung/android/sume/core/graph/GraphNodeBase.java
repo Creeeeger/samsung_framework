@@ -3,12 +3,12 @@ package com.samsung.android.sume.core.graph;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.util.Log;
 import com.samsung.android.sume.core.Def;
-import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda12;
+import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda3;
 import com.samsung.android.sume.core.channel.BufferChannel;
 import com.samsung.android.sume.core.channel.ReceiveChannelRouter;
 import com.samsung.android.sume.core.channel.SendChannelRouter;
-import com.samsung.android.sume.core.channel.SendChannelRouter$$ExternalSyntheticLambda1;
-import com.samsung.android.sume.core.channel.SendChannelRouter$$ExternalSyntheticLambda2;
+import com.samsung.android.sume.core.channel.SendChannelRouter$$ExternalSyntheticLambda8;
+import com.samsung.android.sume.core.channel.SendChannelRouter$$ExternalSyntheticLambda9;
 import com.samsung.android.sume.core.channel.VoidBufferChannel;
 import com.samsung.android.sume.core.descriptor.MFDescriptor;
 import com.samsung.android.sume.core.descriptor.nn.NNFWDescriptor;
@@ -39,7 +39,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements GraphNode<T> {
     private static final String TAG = Def.tagOf((Class<?>) GraphNodeBase.class);
     private Function<Exception, Boolean> exceptionHandler;
@@ -72,7 +72,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
             }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda1
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.PredicateHandler
                 public final void onPredicate(MediaFilter mediaFilter2, MediaFilter mediaFilter3) {
-                    GraphNodeBase.this.m8792lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(mediaFilter2, mediaFilter3);
+                    GraphNodeBase.this.m9180lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(mediaFilter2, mediaFilter3);
                 }
             });
             mediaFilterRetriever.retrieve(mediaFilter);
@@ -87,12 +87,12 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         };
     }
 
-    public static /* synthetic */ boolean lambda$new$0(MediaFilter filter) {
+    static /* synthetic */ boolean lambda$new$0(MediaFilter filter) {
         return true;
     }
 
-    /* renamed from: lambda$new$1$com-samsung-android-sume-core-graph-GraphNodeBase */
-    public /* synthetic */ void m8792lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(MediaFilter filter, MediaFilter parent) {
+    /* renamed from: lambda$new$1$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
+    /* synthetic */ void m9180lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(MediaFilter filter, MediaFilter parent) {
         addMessageConsumer(filter);
     }
 
@@ -108,12 +108,11 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
 
     @Override // com.samsung.android.sume.core.graph.GraphNode
     public MFDescriptor getDescriptor() {
-        T t = this.impl;
-        if (t instanceof MFDescriptor) {
-            return (MFDescriptor) t;
+        if (this.impl instanceof MFDescriptor) {
+            return (MFDescriptor) this.impl;
         }
-        if (t instanceof MediaFilter) {
-            return ((MediaFilter) t).getDescriptor();
+        if (this.impl instanceof MediaFilter) {
+            return ((MediaFilter) this.impl).getDescriptor();
         }
         throw new IllegalStateException("type is not MediaFilter either MFDescriptor");
     }
@@ -152,88 +151,86 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
 
     @Override // com.samsung.android.sume.core.graph.GraphNode
     public void prepare(Graph.Option option) {
-        String str = TAG;
-        Log.d(str, "prepare[" + this.nodeId + "]: " + this.impl);
-        T t = this.impl;
-        if (t instanceof MediaFilter) {
-            MediaFilter mediaFilter = (MediaFilter) t;
+        Log.d(TAG, "prepare[" + this.nodeId + "]: " + this.impl);
+        if (this.impl instanceof MediaFilter) {
+            MediaFilter mediaFilter = (MediaFilter) this.impl;
             applyGraphOption(option);
             MediaFilter.Option filterOption = getDescriptor().getOption();
             if (mediaFilter instanceof MediaInputStreamFilter) {
                 if (this.inputEdges.size() > 1) {
-                    final Map<Enum<?>, BufferChannel> map = (Map) this.inputEdges.stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda8
+                    final Map<Enum<?>, BufferChannel> map = (Map) this.inputEdges.stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda3
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
                             return GraphNodeBase.lambda$prepare$2((GraphEdge) obj);
                         }
-                    }, new SendChannelRouter$$ExternalSyntheticLambda2()));
+                    }, new SendChannelRouter$$ExternalSyntheticLambda9()));
                     Objects.requireNonNull(map);
-                    ((MediaInputStreamFilter) mediaFilter).setReceiveChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda9
+                    ((MediaInputStreamFilter) mediaFilter).setReceiveChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda4
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
                             return (BufferChannel) map.get((Enum) obj);
                         }
                     }, map.size());
                 } else {
-                    ((MediaInputStreamFilter) mediaFilter).setReceiveChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda10
+                    ((MediaInputStreamFilter) mediaFilter).setReceiveChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda5
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
-                            return GraphNodeBase.this.m8793x49a0da5f((Enum) obj);
+                            return GraphNodeBase.this.m9181x49a0da5f((Enum) obj);
                         }
                     }, 1);
                 }
                 this.receiveRouter = new VoidBufferChannel();
             } else {
-                this.receiveRouter = new ReceiveChannelRouter((Map<Evaluator, BufferChannel>) this.inputEdges.stream().collect(Collectors.toMap(new SendChannelRouter$$ExternalSyntheticLambda1(), new SendChannelRouter$$ExternalSyntheticLambda2())), filterOption.isWaitToReceiveAll() ? ReceiveChannelRouter.Type.ALL : ReceiveChannelRouter.Type.ANY);
+                this.receiveRouter = new ReceiveChannelRouter((Map<Evaluator, BufferChannel>) this.inputEdges.stream().collect(Collectors.toMap(new SendChannelRouter$$ExternalSyntheticLambda8(), new SendChannelRouter$$ExternalSyntheticLambda9())), filterOption.isWaitToReceiveAll() ? ReceiveChannelRouter.Type.ALL : ReceiveChannelRouter.Type.ANY);
             }
             if (mediaFilter instanceof MediaOutputStreamFilter) {
                 if (this.outputEdges.size() > 1) {
-                    final Map<Enum<?>, BufferChannel> map2 = (Map) this.outputEdges.stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda11
+                    final Map<Enum<?>, BufferChannel> map2 = (Map) this.outputEdges.stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda6
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
                             return GraphNodeBase.lambda$prepare$4((GraphEdge) obj);
                         }
-                    }, new SendChannelRouter$$ExternalSyntheticLambda2()));
+                    }, new SendChannelRouter$$ExternalSyntheticLambda9()));
                     Objects.requireNonNull(map2);
-                    ((MediaOutputStreamFilter) mediaFilter).setSendChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda9
+                    ((MediaOutputStreamFilter) mediaFilter).setSendChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda4
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
                             return (BufferChannel) map2.get((Enum) obj);
                         }
                     }, map2.size());
                 } else {
-                    ((MediaOutputStreamFilter) mediaFilter).setSendChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda12
+                    ((MediaOutputStreamFilter) mediaFilter).setSendChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda7
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
-                            return GraphNodeBase.this.m8794xd0b715e1((Enum) obj);
+                            return GraphNodeBase.this.m9182xd0b715e1((Enum) obj);
                         }
                     }, 1);
                 }
                 this.sendRouter = new VoidBufferChannel();
             } else {
-                this.sendRouter = new SendChannelRouter((Map<Evaluator, BufferChannel>) this.outputEdges.stream().collect(Collectors.toMap(new SendChannelRouter$$ExternalSyntheticLambda1(), new SendChannelRouter$$ExternalSyntheticLambda2())), filterOption.isAllowPartialConnection() ? SendChannelRouter.Type.ANY : SendChannelRouter.Type.ALL);
+                this.sendRouter = new SendChannelRouter((Map<Evaluator, BufferChannel>) this.outputEdges.stream().collect(Collectors.toMap(new SendChannelRouter$$ExternalSyntheticLambda8(), new SendChannelRouter$$ExternalSyntheticLambda9())), filterOption.isAllowPartialConnection() ? SendChannelRouter.Type.ANY : SendChannelRouter.Type.ALL);
             }
             mediaFilter.prepare();
         }
-        Log.i(str, "success to prepare MediaFilter");
+        Log.i(TAG, "success to prepare MediaFilter");
     }
 
-    public static /* synthetic */ Enum lambda$prepare$2(GraphEdge e) {
+    static /* synthetic */ Enum lambda$prepare$2(GraphEdge e) {
         return (Enum) e.getEvaluator().getValue();
     }
 
-    /* renamed from: lambda$prepare$3$com-samsung-android-sume-core-graph-GraphNodeBase */
-    public /* synthetic */ BufferChannel m8793x49a0da5f(Enum type) {
-        return (BufferChannel) this.inputEdges.stream().findFirst().map(new SendChannelRouter$$ExternalSyntheticLambda2()).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+    /* renamed from: lambda$prepare$3$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
+    /* synthetic */ BufferChannel m9181x49a0da5f(Enum type) {
+        return (BufferChannel) this.inputEdges.stream().findFirst().map(new SendChannelRouter$$ExternalSyntheticLambda9()).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
     }
 
-    public static /* synthetic */ Enum lambda$prepare$4(GraphEdge it) {
+    static /* synthetic */ Enum lambda$prepare$4(GraphEdge it) {
         return (Enum) it.getEvaluator().getValue();
     }
 
-    /* renamed from: lambda$prepare$5$com-samsung-android-sume-core-graph-GraphNodeBase */
-    public /* synthetic */ BufferChannel m8794xd0b715e1(Enum type) {
-        return (BufferChannel) this.outputEdges.stream().findFirst().map(new SendChannelRouter$$ExternalSyntheticLambda2()).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+    /* renamed from: lambda$prepare$5$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
+    /* synthetic */ BufferChannel m9182xd0b715e1(Enum type) {
+        return (BufferChannel) this.outputEdges.stream().findFirst().map(new SendChannelRouter$$ExternalSyntheticLambda9()).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
     }
 
     void applyGraphOption(Graph.Option option) {
@@ -241,42 +238,42 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         final MediaFilterRetriever mediaFilterRetriever = new MediaFilterRetriever();
         if (option.isIgnoreFilterException()) {
             List<Object> keyOfFilterToIgnoreException = (List) option.getIgnoreFilterException();
-            keyOfFilterToIgnoreException.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda3
+            keyOfFilterToIgnoreException.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda8
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    GraphNodeBase.this.m8791x9e96944c(mediaFilterRetriever, obj);
+                    GraphNodeBase.this.m9179x9e96944c(mediaFilterRetriever, obj);
                 }
             });
         }
         if (option.isTraceMediaFilter()) {
-            mediaFilterRetriever.addPredicateHandler(new MediaFilterRetriever.Predictor() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda4
+            mediaFilterRetriever.addPredicateHandler(new MediaFilterRetriever.Predictor() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda9
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.Predictor
                 public final boolean predicate(MediaFilter mediaFilter) {
                     return GraphNodeBase.lambda$applyGraphOption$9(mediaFilter);
                 }
-            }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda5
+            }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda10
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.PredicateHandler
                 public final void onPredicate(MediaFilter mediaFilter, MediaFilter mediaFilter2) {
-                    GraphNodeBase.this.m8789x2d42a2d7(mediaFilter, mediaFilter2);
+                    GraphNodeBase.this.m9177x2d42a2d7(mediaFilter, mediaFilter2);
                 }
             });
         }
         mediaFilterRetriever.retrieve((MediaFilter) get());
     }
 
-    /* renamed from: lambda$applyGraphOption$8$com-samsung-android-sume-core-graph-GraphNodeBase */
-    public /* synthetic */ void m8791x9e96944c(MediaFilterRetriever mediaFilterRetriever, Object key) {
+    /* renamed from: lambda$applyGraphOption$8$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
+    /* synthetic */ void m9179x9e96944c(MediaFilterRetriever mediaFilterRetriever, Object key) {
         if (key instanceof NNFW) {
             final NNFW fw = (NNFW) key;
-            mediaFilterRetriever.addPredicateHandler(new MediaFilterRetriever.Predictor() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda6
+            mediaFilterRetriever.addPredicateHandler(new MediaFilterRetriever.Predictor() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda14
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.Predictor
                 public final boolean predicate(MediaFilter mediaFilter) {
                     return GraphNodeBase.lambda$applyGraphOption$6(NNFW.this, mediaFilter);
                 }
-            }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda7
+            }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda15
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.PredicateHandler
                 public final void onPredicate(MediaFilter mediaFilter, MediaFilter mediaFilter2) {
-                    GraphNodeBase.this.m8790x5b0b768b(mediaFilter, mediaFilter2);
+                    GraphNodeBase.this.m9178x5b0b768b(mediaFilter, mediaFilter2);
                 }
             });
             return;
@@ -284,25 +281,24 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         throw new UnsupportedOperationException("unknown key: " + key);
     }
 
-    public static /* synthetic */ boolean lambda$applyGraphOption$6(NNFW fw, MediaFilter filter) {
+    static /* synthetic */ boolean lambda$applyGraphOption$6(NNFW fw, MediaFilter filter) {
         return (filter instanceof NNFWFilter) && ((NNFWDescriptor) filter.getDescriptor()).getFw() == fw;
     }
 
-    /* renamed from: lambda$applyGraphOption$7$com-samsung-android-sume-core-graph-GraphNodeBase */
-    public /* synthetic */ void m8790x5b0b768b(MediaFilter filter, MediaFilter parent) {
+    /* renamed from: lambda$applyGraphOption$7$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
+    /* synthetic */ void m9178x5b0b768b(MediaFilter filter, MediaFilter parent) {
         ((ArrayList) getOption(6, new ArrayList())).add(filter.getDescriptor().getFilterId());
     }
 
-    public static /* synthetic */ boolean lambda$applyGraphOption$9(MediaFilter filter) {
+    static /* synthetic */ boolean lambda$applyGraphOption$9(MediaFilter filter) {
         return ((filter instanceof DecorateFilter) || (filter instanceof MediaFilterGroup)) ? false : true;
     }
 
-    /* renamed from: lambda$applyGraphOption$10$com-samsung-android-sume-core-graph-GraphNodeBase */
-    public /* synthetic */ void m8789x2d42a2d7(MediaFilter filter, MediaFilter parent) {
-        String str = TAG;
-        Log.d(str, "found leaf filter=" + filter + ", parent=" + parent);
+    /* renamed from: lambda$applyGraphOption$10$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
+    /* synthetic */ void m9177x2d42a2d7(MediaFilter filter, MediaFilter parent) {
+        Log.d(TAG, "found leaf filter=" + filter + ", parent=" + parent);
         if (filter instanceof MediaFilterPlaceHolder) {
-            Log.d(str, "skip to trace MediaFilterPlaceHolder");
+            Log.d(TAG, "skip to trace MediaFilterPlaceHolder");
             return;
         }
         MediaFilter mediaFilterTracer = null;
@@ -336,41 +332,38 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
     public void setMessagePublisher(MessagePublisher messagePublisher) {
         messagePublisher.setName(this.nodeId);
         this.messagePublisher = messagePublisher;
-        T t = this.impl;
-        if (t instanceof MediaFilter) {
-            MediaFilter mediaFilter = (MediaFilter) t;
+        if (this.impl instanceof MediaFilter) {
+            MediaFilter mediaFilter = (MediaFilter) this.impl;
             mediaFilter.setMessageProducer(messagePublisher.getMessageProducer());
         }
     }
 
     @Override // com.samsung.android.sume.core.message.MessageSubscriberBase
     public void release() {
-        String str = TAG;
-        Log.d(str, "release...E: " + this.nodeId);
+        Log.d(TAG, "release...E: " + this.nodeId);
         super.release();
-        Stream.concat(this.inputEdges.stream(), this.outputEdges.stream()).filter(new Predicate() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda13
+        Stream.concat(this.inputEdges.stream(), this.outputEdges.stream()).filter(new Predicate() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda12
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return GraphNodeBase.lambda$release$11((GraphEdge) obj);
             }
-        }).forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda14
+        }).forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda13
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 GraphNodeBase.lambda$release$12((GraphEdge) obj);
             }
         });
-        T t = this.impl;
-        if (t instanceof MediaFilter) {
-            ((MediaFilter) t).release();
+        if (this.impl instanceof MediaFilter) {
+            ((MediaFilter) this.impl).release();
         }
-        Log.d(str, "release...X: " + this.nodeId);
+        Log.d(TAG, "release...X: " + this.nodeId);
     }
 
-    public static /* synthetic */ boolean lambda$release$11(GraphEdge it) {
+    static /* synthetic */ boolean lambda$release$11(GraphEdge it) {
         return it.getBufferChannel() != null;
     }
 
-    public static /* synthetic */ void lambda$release$12(GraphEdge it) {
+    static /* synthetic */ void lambda$release$12(GraphEdge it) {
         BufferChannel bufferChannel = it.getBufferChannel();
         Log.d(TAG, NavigationBarInflaterView.SIZE_MOD_START + it.getBeginNode() + " => " + it.getEndNode() + "]cancel buffer channel" + bufferChannel);
         try {
@@ -423,6 +416,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         this.quit = quit;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean parseException(Exception exception) {
         try {
             String msg = exception.getMessage();
@@ -430,7 +424,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
             final String filterId = tokens[0].substring(2);
             List<String> filters = (List) getOption(6);
             if (filters != null) {
-                return filters.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda15
+                return filters.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda11
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         boolean equals;

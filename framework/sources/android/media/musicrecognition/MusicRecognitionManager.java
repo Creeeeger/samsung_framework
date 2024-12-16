@@ -23,7 +23,6 @@ public class MusicRecognitionManager {
     public static final int RECOGNITION_FAILED_UNKNOWN = -1;
     private final IMusicRecognitionManager mService;
 
-    /* loaded from: classes2.dex */
     public interface RecognitionCallback {
         void onAudioStreamClosed();
 
@@ -33,7 +32,6 @@ public class MusicRecognitionManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RecognitionFailureCode {
     }
 
@@ -50,8 +48,8 @@ public class MusicRecognitionManager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class MusicRecognitionCallbackWrapper extends IMusicRecognitionManagerCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    final class MusicRecognitionCallbackWrapper extends IMusicRecognitionManagerCallback.Stub {
         private final RecognitionCallback mCallback;
         private final Executor mCallbackExecutor;
         private final RecognitionRequest mRecognitionRequest;
@@ -64,7 +62,7 @@ public class MusicRecognitionManager {
 
         @Override // android.media.musicrecognition.IMusicRecognitionManagerCallback
         public void onRecognitionSucceeded(final MediaMetadata result, final Bundle extras) {
-            this.mCallbackExecutor.execute(new Runnable() { // from class: android.media.musicrecognition.MusicRecognitionManager$MusicRecognitionCallbackWrapper$$ExternalSyntheticLambda1
+            this.mCallbackExecutor.execute(new Runnable() { // from class: android.media.musicrecognition.MusicRecognitionManager$MusicRecognitionCallbackWrapper$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     MusicRecognitionManager.MusicRecognitionCallbackWrapper.this.lambda$onRecognitionSucceeded$0(result, extras);
@@ -72,13 +70,14 @@ public class MusicRecognitionManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRecognitionSucceeded$0(MediaMetadata result, Bundle extras) {
             this.mCallback.onRecognitionSucceeded(this.mRecognitionRequest, result, extras);
         }
 
         @Override // android.media.musicrecognition.IMusicRecognitionManagerCallback
         public void onRecognitionFailed(final int failureCode) {
-            this.mCallbackExecutor.execute(new Runnable() { // from class: android.media.musicrecognition.MusicRecognitionManager$MusicRecognitionCallbackWrapper$$ExternalSyntheticLambda0
+            this.mCallbackExecutor.execute(new Runnable() { // from class: android.media.musicrecognition.MusicRecognitionManager$MusicRecognitionCallbackWrapper$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     MusicRecognitionManager.MusicRecognitionCallbackWrapper.this.lambda$onRecognitionFailed$1(failureCode);
@@ -86,6 +85,7 @@ public class MusicRecognitionManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRecognitionFailed$1(int failureCode) {
             this.mCallback.onRecognitionFailed(this.mRecognitionRequest, failureCode);
         }
@@ -95,7 +95,7 @@ public class MusicRecognitionManager {
             Executor executor = this.mCallbackExecutor;
             final RecognitionCallback recognitionCallback = this.mCallback;
             Objects.requireNonNull(recognitionCallback);
-            executor.execute(new Runnable() { // from class: android.media.musicrecognition.MusicRecognitionManager$MusicRecognitionCallbackWrapper$$ExternalSyntheticLambda2
+            executor.execute(new Runnable() { // from class: android.media.musicrecognition.MusicRecognitionManager$MusicRecognitionCallbackWrapper$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     MusicRecognitionManager.RecognitionCallback.this.onAudioStreamClosed();

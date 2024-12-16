@@ -2,7 +2,6 @@ package android.inputmethodservice;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.proto.ProtoOutputStream;
@@ -13,12 +12,10 @@ import android.view.inputmethod.InputMethodManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-public final class SoftInputWindow extends Dialog {
+final class SoftInputWindow extends Dialog {
     private static final boolean DEBUG = false;
     private static final String TAG = "SoftInputWindow";
-    private final Rect mBounds;
     private final KeyEvent.DispatcherState mDispatcherState;
     InputMethodManager mImm;
     private boolean mMinimizeFlag;
@@ -26,7 +23,6 @@ public final class SoftInputWindow extends Dialog {
     private int mWindowState;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     private @interface WindowState {
         public static final int DESTROYED = 4;
         public static final int REJECTED_AT_LEAST_ONCE = 3;
@@ -35,7 +31,12 @@ public final class SoftInputWindow extends Dialog {
         public static final int TOKEN_SET = 1;
     }
 
-    public void setToken(IBinder token) {
+    @Override // android.app.Dialog
+    protected boolean allowsRegisterDefaultOnBackInvokedCallback() {
+        return false;
+    }
+
+    void setToken(IBinder token) {
         switch (this.mWindowState) {
             case 0:
                 WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -57,9 +58,8 @@ public final class SoftInputWindow extends Dialog {
         }
     }
 
-    public SoftInputWindow(Context service, int theme, KeyEvent.DispatcherState dispatcherState) {
+    SoftInputWindow(Context service, int theme, KeyEvent.DispatcherState dispatcherState) {
         super(service, theme);
-        this.mBounds = new Rect();
         this.mWindowState = 0;
         this.mMinimizeFlag = false;
         this.mService = service;
@@ -73,23 +73,6 @@ public final class SoftInputWindow extends Dialog {
         this.mDispatcherState.reset();
     }
 
-    @Override // android.app.Dialog, android.view.Window.Callback
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        getWindow().getDecorView().getHitRect(this.mBounds);
-        if (this.mMinimizeFlag) {
-            this.mMinimizeFlag = false;
-            this.mImm.undoMinimizeSoftInput();
-            return true;
-        }
-        if (ev.isWithinBoundsNoHistory(this.mBounds.left, this.mBounds.top, this.mBounds.right - 1, this.mBounds.bottom - 1)) {
-            return super.dispatchTouchEvent(ev);
-        }
-        MotionEvent temp = ev.clampNoHistory(this.mBounds.left, this.mBounds.top, this.mBounds.right - 1, this.mBounds.bottom - 1);
-        boolean handled = super.dispatchTouchEvent(temp);
-        temp.recycle();
-        return handled;
-    }
-
     @Override // android.app.Dialog
     public void show() {
         switch (this.mWindowState) {
@@ -101,12 +84,8 @@ public final class SoftInputWindow extends Dialog {
                     super.show();
                     updateWindowState(2);
                     return;
-                } catch (WindowManager.BadTokenException e) {
+                } catch (WindowManager.BadTokenException | WindowManager.InvalidDisplayException e) {
                     Log.i(TAG, "Probably the IME window token is already invalidated. show() does nothing.");
-                    updateWindowState(3);
-                    return;
-                } catch (WindowManager.InvalidDisplayException e2) {
-                    Log.i(TAG, "Probably the specified display can not be found. show() does nothing.");
                     updateWindowState(3);
                     return;
                 }
@@ -121,7 +100,7 @@ public final class SoftInputWindow extends Dialog {
         }
     }
 
-    public void dismissForDestroyIfNecessary() {
+    void dismissForDestroyIfNecessary() {
         switch (this.mWindowState) {
             case 0:
             case 1:
@@ -168,11 +147,20 @@ public final class SoftInputWindow extends Dialog {
         }
     }
 
-    public void dumpDebug(ProtoOutputStream proto, long fieldId) {
+    void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
-        this.mBounds.dumpDebug(proto, 1146756268037L);
         proto.write(1120986464262L, this.mWindowState);
         proto.end(token);
+    }
+
+    @Override // android.app.Dialog, android.view.Window.Callback
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (this.mMinimizeFlag) {
+            this.mMinimizeFlag = false;
+            this.mImm.undoMinimizeSoftInput();
+            return true;
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     public void setMinimizeFlag(boolean flag) {

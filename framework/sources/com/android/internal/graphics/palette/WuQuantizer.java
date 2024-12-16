@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class WuQuantizer implements Quantizer {
     static final /* synthetic */ boolean $assertionsDisabled = false;
     private static final int BITS = 5;
@@ -26,8 +26,7 @@ public final class WuQuantizer implements Quantizer {
     private Palette mPalette;
     private int[] mWeights;
 
-    /* loaded from: classes4.dex */
-    public enum Direction {
+    private enum Direction {
         RED,
         GREEN,
         BLUE
@@ -42,9 +41,8 @@ public final class WuQuantizer implements Quantizer {
     public void quantize(int[] pixels, int colorCount) {
         QuantizerMap quantizerMap = new QuantizerMap();
         quantizerMap.quantize(pixels, colorCount);
-        Map<Integer, Integer> colorToCount = quantizerMap.getColorToCount();
-        this.mInputPixelToCount = colorToCount;
-        Set<Integer> uniqueColors = colorToCount.keySet();
+        this.mInputPixelToCount = quantizerMap.getColorToCount();
+        Set<Integer> uniqueColors = this.mInputPixelToCount.keySet();
         if (uniqueColors.size() <= colorCount) {
             this.mColors = new int[this.mInputPixelToCount.keySet().size()];
             int index = 0;
@@ -132,28 +130,24 @@ public final class WuQuantizer implements Quantizer {
                     while (b < i) {
                         int index = getIndex(r, g, b);
                         int line3 = line + this.mWeights[index];
-                        lineR += this.mMomentsR[index];
+                        int lineR2 = lineR + this.mMomentsR[index];
                         lineG += this.mMomentsG[index];
                         lineB += this.mMomentsB[index];
                         line2 += this.mMoments[index];
                         area[b] = area[b] + line3;
-                        areaR[b] = areaR[b] + lineR;
+                        areaR[b] = areaR[b] + lineR2;
                         areaG[b] = areaG[b] + lineG;
                         areaB[b] = areaB[b] + lineB;
                         area2[b] = area2[b] + line2;
                         int previousIndex = getIndex(r - 1, g, b);
-                        int[] iArr = this.mWeights;
-                        iArr[index] = iArr[previousIndex] + area[b];
-                        int[] iArr2 = this.mMomentsR;
-                        iArr2[index] = iArr2[previousIndex] + areaR[b];
-                        int[] iArr3 = this.mMomentsG;
-                        iArr3[index] = iArr3[previousIndex] + areaG[b];
-                        int[] iArr4 = this.mMomentsB;
-                        iArr4[index] = iArr4[previousIndex] + areaB[b];
-                        double[] dArr = this.mMoments;
-                        dArr[index] = dArr[previousIndex] + area2[b];
+                        this.mWeights[index] = this.mWeights[previousIndex] + area[b];
+                        this.mMomentsR[index] = this.mMomentsR[previousIndex] + areaR[b];
+                        this.mMomentsG[index] = this.mMomentsG[previousIndex] + areaG[b];
+                        this.mMomentsB[index] = this.mMomentsB[previousIndex] + areaB[b];
+                        this.mMoments[index] = this.mMoments[previousIndex] + area2[b];
                         b++;
                         line = line3;
+                        lineR = lineR2;
                         i = 33;
                     }
                     g++;
@@ -180,8 +174,7 @@ public final class WuQuantizer implements Quantizer {
         int next = 0;
         int i2 = 1;
         while (i2 < maxColorCount) {
-            Box[] boxArr = this.mCubes;
-            if (cut(boxArr[next], boxArr[i2])) {
+            if (cut(this.mCubes[next], this.mCubes[i2])) {
                 volumeVariance[next] = this.mCubes[next].vol > 1 ? variance(this.mCubes[next]) : 0.0d;
                 volumeVariance[i2] = this.mCubes[i2].vol > 1 ? variance(this.mCubes[i2]) : 0.0d;
             } else {
@@ -263,20 +256,20 @@ public final class WuQuantizer implements Quantizer {
         two.r1 = one.r1;
         two.g1 = one.g1;
         two.b1 = one.b1;
-        switch (AnonymousClass1.$SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction[cutDirection.ordinal()]) {
-            case 1:
+        switch (cutDirection) {
+            case RED:
                 one.r1 = maxRResult.mCutLocation;
                 two.r0 = one.r1;
                 two.g0 = one.g0;
                 two.b0 = one.b0;
                 break;
-            case 2:
+            case GREEN:
                 one.g1 = maxGResult.mCutLocation;
                 two.r0 = one.r0;
                 two.g0 = one.g1;
                 two.b0 = one.b0;
                 break;
-            case 3:
+            case BLUE:
                 one.b1 = maxBResult.mCutLocation;
                 two.r0 = one.r0;
                 two.g0 = one.g0;
@@ -288,29 +281,6 @@ public final class WuQuantizer implements Quantizer {
         one.vol = (one.r1 - one.r0) * (one.g1 - one.g0) * (one.b1 - one.b0);
         two.vol = (two.r1 - two.r0) * (two.g1 - two.g0) * (two.b1 - two.b0);
         return true;
-    }
-
-    /* renamed from: com.android.internal.graphics.palette.WuQuantizer$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction;
-
-        static {
-            int[] iArr = new int[Direction.values().length];
-            $SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction = iArr;
-            try {
-                iArr[Direction.RED.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction[Direction.GREEN.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction[Direction.BLUE.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-        }
     }
 
     private MaximizeResult maximize(Box cube, Direction direction, int first, int last, int wholeR, int wholeG, int wholeB, int wholeW) {
@@ -365,12 +335,12 @@ public final class WuQuantizer implements Quantizer {
     }
 
     private static int bottom(Box cube, Direction direction, int[] moment) {
-        switch (AnonymousClass1.$SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction[direction.ordinal()]) {
-            case 1:
+        switch (direction) {
+            case RED:
                 return (((-moment[getIndex(cube.r0, cube.g1, cube.b1)]) + moment[getIndex(cube.r0, cube.g1, cube.b0)]) + moment[getIndex(cube.r0, cube.g0, cube.b1)]) - moment[getIndex(cube.r0, cube.g0, cube.b0)];
-            case 2:
+            case GREEN:
                 return (((-moment[getIndex(cube.r1, cube.g0, cube.b1)]) + moment[getIndex(cube.r1, cube.g0, cube.b0)]) + moment[getIndex(cube.r0, cube.g0, cube.b1)]) - moment[getIndex(cube.r0, cube.g0, cube.b0)];
-            case 3:
+            case BLUE:
                 return (((-moment[getIndex(cube.r1, cube.g1, cube.b0)]) + moment[getIndex(cube.r1, cube.g0, cube.b0)]) + moment[getIndex(cube.r0, cube.g1, cube.b0)]) - moment[getIndex(cube.r0, cube.g0, cube.b0)];
             default:
                 throw new IllegalArgumentException("unexpected direction " + direction);
@@ -378,20 +348,19 @@ public final class WuQuantizer implements Quantizer {
     }
 
     private static int top(Box cube, Direction direction, int position, int[] moment) {
-        switch (AnonymousClass1.$SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction[direction.ordinal()]) {
-            case 1:
+        switch (direction) {
+            case RED:
                 return ((moment[getIndex(position, cube.g1, cube.b1)] - moment[getIndex(position, cube.g1, cube.b0)]) - moment[getIndex(position, cube.g0, cube.b1)]) + moment[getIndex(position, cube.g0, cube.b0)];
-            case 2:
+            case GREEN:
                 return ((moment[getIndex(cube.r1, position, cube.b1)] - moment[getIndex(cube.r1, position, cube.b0)]) - moment[getIndex(cube.r0, position, cube.b1)]) + moment[getIndex(cube.r0, position, cube.b0)];
-            case 3:
+            case BLUE:
                 return ((moment[getIndex(cube.r1, cube.g1, position)] - moment[getIndex(cube.r1, cube.g0, position)]) - moment[getIndex(cube.r0, cube.g1, position)]) + moment[getIndex(cube.r0, cube.g0, position)];
             default:
                 throw new IllegalArgumentException("unexpected direction " + direction);
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class MaximizeResult {
+    private static class MaximizeResult {
         final int mCutLocation;
         final double mMaximum;
 
@@ -401,8 +370,7 @@ public final class WuQuantizer implements Quantizer {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class CreateBoxesResult {
+    private static class CreateBoxesResult {
         final int mRequestedCount;
         final int mResultCount;
 
@@ -412,8 +380,7 @@ public final class WuQuantizer implements Quantizer {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class Box {
+    private static class Box {
         public int b0;
         public int b1;
         public int g0;
@@ -421,10 +388,6 @@ public final class WuQuantizer implements Quantizer {
         public int r0;
         public int r1;
         public int vol;
-
-        /* synthetic */ Box(BoxIA boxIA) {
-            this();
-        }
 
         private Box() {
             this.r0 = 0;

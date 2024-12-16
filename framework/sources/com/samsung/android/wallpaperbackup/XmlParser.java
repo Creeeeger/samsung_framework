@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class XmlParser extends DefaultHandler {
     private final String TAG = "XmlParser";
     private boolean mCurrentElement = false;
@@ -24,7 +24,7 @@ public class XmlParser extends DefaultHandler {
     private WallpaperUser mItem = null;
     private ArrayList<WallpaperUser> mItemsList = new ArrayList<>();
 
-    public XmlParser(String fileName) {
+    XmlParser(String fileName) {
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         FileInputStream fis = null;
         try {
@@ -43,45 +43,39 @@ public class XmlParser extends DefaultHandler {
                             } else {
                                 Log.d("XmlParser", "xml file is not exists. " + fileName);
                             }
+                            if (fis != null) {
+                                fis.close();
+                            }
                         } catch (SAXException e) {
                             e.printStackTrace();
-                            if (0 == 0) {
-                                return;
-                            } else {
+                            if (0 != 0) {
                                 fis.close();
                             }
                         }
-                    } catch (IOException e2) {
+                    } catch (ParserConfigurationException e2) {
                         e2.printStackTrace();
-                        if (0 == 0) {
-                            return;
-                        } else {
+                        if (0 != 0) {
                             fis.close();
                         }
                     }
-                } catch (ParserConfigurationException e3) {
+                } catch (IOException e3) {
                     e3.printStackTrace();
-                    if (0 == 0) {
-                        return;
-                    } else {
+                    if (0 != 0) {
                         fis.close();
                     }
                 }
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Throwable th) {
-                if (0 != 0) {
-                    try {
-                        fis.close();
-                    } catch (IOException e4) {
-                        e4.printStackTrace();
-                    }
-                }
-                throw th;
+            } catch (IOException e4) {
+                e4.printStackTrace();
             }
-        } catch (IOException e5) {
-            e5.printStackTrace();
+        } catch (Throwable th) {
+            if (0 != 0) {
+                try {
+                    fis.close();
+                } catch (IOException e5) {
+                    e5.printStackTrace();
+                }
+            }
+            throw th;
         }
     }
 
@@ -98,9 +92,8 @@ public class XmlParser extends DefaultHandler {
         this.mCurrentElement = true;
         this.mCurrentValue = "";
         if (localName.equalsIgnoreCase(GenerateXML.OBJECT_LIST_TAG)) {
-            WallpaperUser wallpaperUser = new WallpaperUser();
-            this.mItem = wallpaperUser;
-            this.mItemsList.add(wallpaperUser);
+            this.mItem = new WallpaperUser();
+            this.mItemsList.add(this.mItem);
         }
     }
 

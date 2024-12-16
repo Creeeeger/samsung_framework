@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.WeakHashMap;
 
 /* loaded from: classes4.dex */
-public class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickListener {
+class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickListener {
     private static final boolean DBG = false;
     private static final long DELETE_KEY_POST_DELAY = 500;
     static final int INVALID_INDEX = -1;
@@ -67,14 +67,11 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
         this.mSearchView = searchView;
         this.mSearchable = searchable;
         this.mCommitIconResId = searchView.getSuggestionCommitIconResId();
-        Context activityContext = searchable.getActivityContext(this.mContext);
-        this.mProviderContext = searchable.getProviderContext(this.mContext, activityContext);
+        Context activityContext = this.mSearchable.getActivityContext(this.mContext);
+        this.mProviderContext = this.mSearchable.getProviderContext(this.mContext, activityContext);
         this.mOutsideDrawablesCache = outsideDrawablesCache;
         getFilter().setDelayer(new Filter.Delayer() { // from class: android.widget.SuggestionsAdapter.1
             private int mPreviousLength = 0;
-
-            AnonymousClass1() {
-            }
 
             @Override // android.widget.Filter.Delayer
             public long getPostingDelay(CharSequence constraint) {
@@ -86,26 +83,6 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
                 return delay;
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SuggestionsAdapter$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Filter.Delayer {
-        private int mPreviousLength = 0;
-
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.Filter.Delayer
-        public long getPostingDelay(CharSequence constraint) {
-            if (constraint == null) {
-                return 0L;
-            }
-            long delay = constraint.length() < this.mPreviousLength ? SuggestionsAdapter.DELETE_KEY_POST_DELAY : 0L;
-            this.mPreviousLength = constraint.length();
-            return delay;
-        }
     }
 
     public void setQueryRefinement(int refineWhat) {
@@ -197,8 +174,7 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
         return v;
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ChildViewCache {
+    private static final class ChildViewCache {
         public final ImageView mIcon1;
         public final ImageView mIcon2;
         public final ImageView mIconRefine;
@@ -219,9 +195,8 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
         CharSequence text2;
         ChildViewCache views = (ChildViewCache) view.getTag();
         int flags = 0;
-        int i = this.mFlagsCol;
-        if (i != -1) {
-            flags = cursor.getInt(i);
+        if (this.mFlagsCol != -1) {
+            flags = cursor.getInt(this.mFlagsCol);
         }
         if (views.mText1 != null) {
             String text1 = getStringOrNull(cursor, this.mText1Col);
@@ -251,8 +226,7 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
         if (views.mIcon2 != null) {
             setViewDrawable(views.mIcon2, getIcon2(cursor), 8);
         }
-        int i2 = this.mQueryRefinement;
-        if (i2 == 2 || (i2 == 1 && (flags & 1) != 0)) {
+        if (this.mQueryRefinement == 2 || (this.mQueryRefinement == 1 && (flags & 1) != 0)) {
             views.mIconRefine.setVisibility(0);
             views.mIconRefine.setTag(views.mText1.getText());
             views.mIconRefine.setOnClickListener(this);
@@ -281,7 +255,7 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
     }
 
     private void setViewText(TextView v, CharSequence text) {
-        v.setText(text);
+        v.lambda$setTextAsync$0(text);
         if (TextUtils.isEmpty(text)) {
             v.setVisibility(8);
         } else {
@@ -290,11 +264,10 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
     }
 
     private Drawable getIcon1(Cursor cursor) {
-        int i = this.mIconName1Col;
-        if (i == -1) {
+        if (this.mIconName1Col == -1) {
             return null;
         }
-        String value = cursor.getString(i);
+        String value = cursor.getString(this.mIconName1Col);
         Drawable drawable = getDrawableFromResourceValue(value);
         if (drawable != null) {
             return drawable;
@@ -303,16 +276,15 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
     }
 
     private Drawable getIcon2(Cursor cursor) {
-        int i = this.mIconName2Col;
-        if (i == -1) {
+        if (this.mIconName2Col == -1) {
             return null;
         }
-        String value = cursor.getString(i);
+        String value = cursor.getString(this.mIconName2Col);
         return getDrawableFromResourceValue(value);
     }
 
     private void setViewDrawable(ImageView v, Drawable drawable, int nullVisibility) {
-        v.lambda$setImageURIAsync$2(drawable);
+        v.lambda$setImageURIAsync$0(drawable);
         if (drawable == null) {
             v.setVisibility(nullVisibility);
             return;
@@ -352,7 +324,7 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
             if (v != null) {
                 ChildViewCache views = (ChildViewCache) v.getTag();
                 TextView tv = views.mText1;
-                tv.setText(e.toString());
+                tv.lambda$setTextAsync$0(e.toString());
             }
             return v;
         }
@@ -369,7 +341,7 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
             if (v != null) {
                 ChildViewCache views = (ChildViewCache) v.getTag();
                 TextView tv = views.mText1;
-                tv.setText(e.toString());
+                tv.lambda$setTextAsync$0(e.toString());
             }
             return v;
         }

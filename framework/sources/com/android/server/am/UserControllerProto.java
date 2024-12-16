@@ -9,7 +9,6 @@ public final class UserControllerProto {
     public static final long USER_LRU = 2220498092035L;
     public static final long USER_PROFILE_GROUP_IDS = 2246267895812L;
 
-    /* loaded from: classes5.dex */
     public final class User {
         public static final long ID = 1120986464257L;
         public static final long STATE = 1146756268034L;
@@ -18,7 +17,6 @@ public final class UserControllerProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class UserProfile {
         public static final long PROFILE = 1120986464258L;
         public static final long USER = 1120986464257L;

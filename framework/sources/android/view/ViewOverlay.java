@@ -11,11 +11,11 @@ import java.util.Iterator;
 public class ViewOverlay {
     OverlayViewGroup mOverlayViewGroup;
 
-    public ViewOverlay(Context context, View hostView) {
+    ViewOverlay(Context context, View hostView) {
         this.mOverlayViewGroup = new OverlayViewGroup(context, hostView);
     }
 
-    public ViewGroup getOverlayView() {
+    ViewGroup getOverlayView() {
         return this.mOverlayViewGroup;
     }
 
@@ -31,12 +31,11 @@ public class ViewOverlay {
         this.mOverlayViewGroup.clear();
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return this.mOverlayViewGroup.isEmpty();
     }
 
-    /* loaded from: classes4.dex */
-    public static class OverlayViewGroup extends ViewGroup {
+    static class OverlayViewGroup extends ViewGroup {
         ArrayList<Drawable> mDrawables;
         final View mHostView;
 
@@ -44,7 +43,7 @@ public class ViewOverlay {
             super(context);
             this.mDrawables = null;
             this.mHostView = hostView;
-            this.mAttachInfo = hostView.mAttachInfo;
+            this.mAttachInfo = this.mHostView.mAttachInfo;
             this.mRight = hostView.getWidth();
             this.mBottom = hostView.getHeight();
             this.mRenderNode.setLeftTopRightBottom(0, 0, this.mRight, this.mBottom);
@@ -68,18 +67,16 @@ public class ViewOverlay {
             if (drawable == null) {
                 throw new IllegalArgumentException("drawable must be non-null");
             }
-            ArrayList<Drawable> arrayList = this.mDrawables;
-            if (arrayList != null) {
-                arrayList.remove(drawable);
+            if (this.mDrawables != null) {
+                this.mDrawables.remove(drawable);
                 invalidate(drawable.getBounds());
                 drawable.setCallback(null);
             }
         }
 
         @Override // android.view.View
-        public boolean verifyDrawable(Drawable who) {
-            ArrayList<Drawable> arrayList;
-            return super.verifyDrawable(who) || ((arrayList = this.mDrawables) != null && arrayList.contains(who));
+        protected boolean verifyDrawable(Drawable who) {
+            return super.verifyDrawable(who) || (this.mDrawables != null && this.mDrawables.contains(who));
         }
 
         public void add(View child) {
@@ -116,9 +113,8 @@ public class ViewOverlay {
 
         public void clear() {
             removeAllViews();
-            ArrayList<Drawable> arrayList = this.mDrawables;
-            if (arrayList != null) {
-                Iterator<Drawable> it = arrayList.iterator();
+            if (this.mDrawables != null) {
+                Iterator<Drawable> it = this.mDrawables.iterator();
                 while (it.hasNext()) {
                     Drawable drawable = it.next();
                     drawable.setCallback(null);
@@ -129,8 +125,7 @@ public class ViewOverlay {
 
         boolean isEmpty() {
             if (getChildCount() == 0) {
-                ArrayList<Drawable> arrayList = this.mDrawables;
-                if (arrayList == null || arrayList.size() == 0) {
+                if (this.mDrawables == null || this.mDrawables.size() == 0) {
                     return true;
                 }
                 return false;
@@ -144,90 +139,81 @@ public class ViewOverlay {
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public void dispatchDraw(Canvas canvas) {
+        protected void dispatchDraw(Canvas canvas) {
             canvas.enableZ();
             super.dispatchDraw(canvas);
             canvas.disableZ();
-            ArrayList<Drawable> arrayList = this.mDrawables;
-            int numDrawables = arrayList == null ? 0 : arrayList.size();
+            int numDrawables = this.mDrawables == null ? 0 : this.mDrawables.size();
             for (int i = 0; i < numDrawables; i++) {
                 this.mDrawables.get(i).draw(canvas);
             }
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public void onLayout(boolean changed, int l, int t, int r, int b) {
+        protected void onLayout(boolean changed, int l, int t, int r, int b) {
         }
 
         @Override // android.view.View
         public void invalidate(Rect dirty) {
             super.invalidate(dirty);
-            View view = this.mHostView;
-            if (view != null) {
-                view.invalidate(dirty);
+            if (this.mHostView != null) {
+                this.mHostView.invalidate(dirty);
             }
         }
 
         @Override // android.view.View
         public void invalidate(int l, int t, int r, int b) {
             super.invalidate(l, t, r, b);
-            View view = this.mHostView;
-            if (view != null) {
-                view.invalidate(l, t, r, b);
+            if (this.mHostView != null) {
+                this.mHostView.invalidate(l, t, r, b);
             }
         }
 
         @Override // android.view.View
         public void invalidate() {
             super.invalidate();
-            View view = this.mHostView;
-            if (view != null) {
-                view.invalidate();
+            if (this.mHostView != null) {
+                this.mHostView.invalidate();
             }
         }
 
         @Override // android.view.View
         public void invalidate(boolean invalidateCache) {
             super.invalidate(invalidateCache);
-            View view = this.mHostView;
-            if (view != null) {
-                view.invalidate(invalidateCache);
+            if (this.mHostView != null) {
+                this.mHostView.invalidate(invalidateCache);
             }
         }
 
         @Override // android.view.View
-        public void invalidateViewProperty(boolean invalidateParent, boolean forceRedraw) {
+        void invalidateViewProperty(boolean invalidateParent, boolean forceRedraw) {
             super.invalidateViewProperty(invalidateParent, forceRedraw);
-            View view = this.mHostView;
-            if (view != null) {
-                view.invalidateViewProperty(invalidateParent, forceRedraw);
+            if (this.mHostView != null) {
+                this.mHostView.invalidateViewProperty(invalidateParent, forceRedraw);
             }
         }
 
         @Override // android.view.View
-        public void invalidateParentCaches() {
+        protected void invalidateParentCaches() {
             super.invalidateParentCaches();
-            View view = this.mHostView;
-            if (view != null) {
-                view.invalidateParentCaches();
+            if (this.mHostView != null) {
+                this.mHostView.invalidateParentCaches();
             }
         }
 
         @Override // android.view.View
-        public void invalidateParentIfNeeded() {
+        protected void invalidateParentIfNeeded() {
             super.invalidateParentIfNeeded();
-            View view = this.mHostView;
-            if (view != null) {
-                view.invalidateParentIfNeeded();
+            if (this.mHostView != null) {
+                this.mHostView.invalidateParentIfNeeded();
             }
         }
 
         @Override // android.view.ViewGroup, android.view.ViewParent
         public void onDescendantInvalidated(View child, View target) {
-            View view = this.mHostView;
-            if (view != null) {
-                if (view instanceof ViewGroup) {
-                    ((ViewGroup) view).onDescendantInvalidated(view, target);
+            if (this.mHostView != null) {
+                if (this.mHostView instanceof ViewGroup) {
+                    ((ViewGroup) this.mHostView).onDescendantInvalidated(this.mHostView, target);
                     super.onDescendantInvalidated(child, target);
                 } else {
                     invalidate();
@@ -249,6 +235,14 @@ public class ViewOverlay {
                 return null;
             }
             return null;
+        }
+
+        @Override // android.view.View
+        public float getFrameContentVelocity() {
+            if (this.mHostView != null) {
+                return this.mHostView.getFrameContentVelocity();
+            }
+            return super.getFrameContentVelocity();
         }
     }
 }

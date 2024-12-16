@@ -2,6 +2,7 @@ package android.widget;
 
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -116,8 +117,7 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         this.mPreviousViews = new ArrayList<>();
     }
 
-    /* loaded from: classes4.dex */
-    public class ViewAndMetaData {
+    class ViewAndMetaData {
         int adapterPosition;
         long itemId;
         int relativeIndex;
@@ -131,7 +131,7 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         }
     }
 
-    public void configureViewAnimator(int numVisibleViews, int activeOffset) {
+    void configureViewAnimator(int numVisibleViews, int activeOffset) {
         this.mMaxNumActiveViews = numVisibleViews;
         this.mActiveOffset = activeOffset;
         this.mPreviousViews.clear();
@@ -226,14 +226,14 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         setDisplayedChild(this.mWhichChild - 1);
     }
 
-    public int modulo(int pos, int size) {
+    int modulo(int pos, int size) {
         if (size > 0) {
             return ((pos % size) + size) % size;
         }
         return 0;
     }
 
-    public View getViewAtRelativeIndex(int relativeIndex) {
+    View getViewAtRelativeIndex(int relativeIndex) {
         if (relativeIndex >= 0 && relativeIndex <= getNumActiveViews() - 1 && this.mAdapter != null) {
             int i = modulo(this.mCurrentWindowStartUnbounded + relativeIndex, getWindowSize());
             if (this.mViewsMap.get(Integer.valueOf(i)) != null) {
@@ -244,14 +244,14 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         return null;
     }
 
-    public int getNumActiveViews() {
+    int getNumActiveViews() {
         if (this.mAdapter != null) {
             return Math.min(getCount() + 1, this.mMaxNumActiveViews);
         }
         return this.mMaxNumActiveViews;
     }
 
-    public int getWindowSize() {
+    int getWindowSize() {
         if (this.mAdapter != null) {
             int adapterCount = getCount();
             if (adapterCount <= getNumActiveViews() && this.mLoopViews) {
@@ -306,7 +306,7 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         return new FrameLayout(this.mContext);
     }
 
-    public void showOnly(int childIndex, boolean animate) {
+    void showOnly(int childIndex, boolean animate) {
         int adapterCount;
         int newWindowStart;
         int newWindowEnd;
@@ -424,7 +424,7 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
             this.mCurrentWindowEnd = newWindowEnd;
             this.mCurrentWindowStartUnbounded = newWindowStartUnbounded2;
             if (this.mRemoteViewsAdapter != null) {
-                int adapterStart = modulo(newWindowStart, adapterCount3);
+                int adapterStart = modulo(this.mCurrentWindowStart, adapterCount3);
                 int adapterEnd = modulo(this.mCurrentWindowEnd, adapterCount3);
                 this.mRemoteViewsAdapter.setVisibleRangeHint(adapterStart, adapterEnd);
             }
@@ -451,7 +451,7 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         v.setPressed(false);
     }
 
-    public void cancelHandleClick() {
+    void cancelHandleClick() {
         View v = getCurrentView();
         if (v != null) {
             hideTapFeedback(v);
@@ -459,9 +459,7 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         this.mTouchMode = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public final class CheckForTap implements Runnable {
+    final class CheckForTap implements Runnable {
         CheckForTap() {
         }
 
@@ -564,53 +562,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         throw new UnsupportedOperationException("Method not decompiled: android.widget.AdapterViewAnimator.onTouchEvent(android.view.MotionEvent):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.AdapterViewAnimator$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ View val$v;
-        final /* synthetic */ ViewAndMetaData val$viewData;
-
-        AnonymousClass1(View view, ViewAndMetaData viewAndMetaData) {
-            r2 = view;
-            r3 = viewAndMetaData;
-        }
-
-        /* renamed from: android.widget.AdapterViewAnimator$1$1 */
-        /* loaded from: classes4.dex */
-        class RunnableC00121 implements Runnable {
-            RunnableC00121() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (r3 != null) {
-                    AdapterViewAnimator.this.performItemClick(r2, r3.adapterPosition, r3.itemId);
-                } else {
-                    AdapterViewAnimator.this.performItemClick(r2, 0, 0L);
-                }
-            }
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            AdapterViewAnimator.this.hideTapFeedback(r2);
-            AdapterViewAnimator.this.post(new Runnable() { // from class: android.widget.AdapterViewAnimator.1.1
-                RunnableC00121() {
-                }
-
-                @Override // java.lang.Runnable
-                public void run() {
-                    if (r3 != null) {
-                        AdapterViewAnimator.this.performItemClick(r2, r3.adapterPosition, r3.itemId);
-                    } else {
-                        AdapterViewAnimator.this.performItemClick(r2, 0, 0L);
-                    }
-                }
-            });
-        }
-    }
-
     private void measureChildren() {
         int count = getChildCount();
         int childWidth = (getMeasuredWidth() - this.mPaddingLeft) - this.mPaddingRight;
@@ -622,7 +573,7 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSpecSize = View.MeasureSpec.getSize(widthMeasureSpec);
         int heightSpecSize = View.MeasureSpec.getSize(heightMeasureSpec);
         int widthSpecMode = View.MeasureSpec.getMode(widthMeasureSpec);
@@ -644,23 +595,18 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         measureChildren();
     }
 
-    public void checkForAndHandleDataChanged() {
+    void checkForAndHandleDataChanged() {
         boolean dataChanged = this.mDataChanged;
         if (dataChanged) {
             post(new Runnable() { // from class: android.widget.AdapterViewAnimator.2
-                AnonymousClass2() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     AdapterViewAnimator.this.handleDataChanged();
                     if (AdapterViewAnimator.this.mWhichChild >= AdapterViewAnimator.this.getWindowSize()) {
                         AdapterViewAnimator.this.mWhichChild = 0;
-                        AdapterViewAnimator adapterViewAnimator = AdapterViewAnimator.this;
-                        adapterViewAnimator.showOnly(adapterViewAnimator.mWhichChild, false);
+                        AdapterViewAnimator.this.showOnly(AdapterViewAnimator.this.mWhichChild, false);
                     } else if (AdapterViewAnimator.this.mOldItemCount != AdapterViewAnimator.this.getCount()) {
-                        AdapterViewAnimator adapterViewAnimator2 = AdapterViewAnimator.this;
-                        adapterViewAnimator2.showOnly(adapterViewAnimator2.mWhichChild, false);
+                        AdapterViewAnimator.this.showOnly(AdapterViewAnimator.this.mWhichChild, false);
                     }
                     AdapterViewAnimator.this.refreshChildren();
                     AdapterViewAnimator.this.requestLayout();
@@ -670,30 +616,8 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         this.mDataChanged = false;
     }
 
-    /* renamed from: android.widget.AdapterViewAnimator$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            AdapterViewAnimator.this.handleDataChanged();
-            if (AdapterViewAnimator.this.mWhichChild >= AdapterViewAnimator.this.getWindowSize()) {
-                AdapterViewAnimator.this.mWhichChild = 0;
-                AdapterViewAnimator adapterViewAnimator = AdapterViewAnimator.this;
-                adapterViewAnimator.showOnly(adapterViewAnimator.mWhichChild, false);
-            } else if (AdapterViewAnimator.this.mOldItemCount != AdapterViewAnimator.this.getCount()) {
-                AdapterViewAnimator adapterViewAnimator2 = AdapterViewAnimator.this;
-                adapterViewAnimator2.showOnly(adapterViewAnimator2.mWhichChild, false);
-            }
-            AdapterViewAnimator.this.refreshChildren();
-            AdapterViewAnimator.this.requestLayout();
-        }
-    }
-
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         checkForAndHandleDataChanged();
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -704,27 +628,21 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.AdapterViewAnimator.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
         int whichChild;
-
-        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
-            this(parcel);
-        }
 
         SavedState(Parcelable superState, int whichChild) {
             super(superState);
@@ -745,31 +663,13 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         public String toString() {
             return "AdapterViewAnimator.SavedState{ whichChild = " + this.whichChild + " }";
         }
-
-        /* renamed from: android.widget.AdapterViewAnimator$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-        RemoteViewsAdapter remoteViewsAdapter = this.mRemoteViewsAdapter;
-        if (remoteViewsAdapter != null) {
-            remoteViewsAdapter.saveRemoteViewsCache();
+        if (this.mRemoteViewsAdapter != null) {
+            this.mRemoteViewsAdapter.saveRemoteViewsCache();
         }
         return new SavedState(superState, this.mWhichChild);
     }
@@ -778,12 +678,11 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
-        int i = ss.whichChild;
-        this.mWhichChild = i;
+        this.mWhichChild = ss.whichChild;
         if (this.mRemoteViewsAdapter != null && this.mAdapter == null) {
-            this.mRestoreWhichChild = i;
+            this.mRestoreWhichChild = this.mWhichChild;
         } else {
-            setDisplayedChild(i, false);
+            setDisplayedChild(this.mWhichChild, false);
         }
     }
 
@@ -831,22 +730,19 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
 
     @Override // android.widget.AdapterView
     public void setAdapter(Adapter adapter) {
-        AdapterView<Adapter>.AdapterDataSetObserver adapterDataSetObserver;
-        Adapter adapter2 = this.mAdapter;
-        if (adapter2 != null && (adapterDataSetObserver = this.mDataSetObserver) != null) {
-            adapter2.unregisterDataSetObserver(adapterDataSetObserver);
+        if (this.mAdapter != null && this.mDataSetObserver != null) {
+            this.mAdapter.unregisterDataSetObserver(this.mDataSetObserver);
         }
         this.mAdapter = adapter;
         checkFocus();
         if (this.mAdapter != null) {
-            AdapterView<Adapter>.AdapterDataSetObserver adapterDataSetObserver2 = new AdapterView.AdapterDataSetObserver();
-            this.mDataSetObserver = adapterDataSetObserver2;
-            this.mAdapter.registerDataSetObserver(adapterDataSetObserver2);
+            this.mDataSetObserver = new AdapterView.AdapterDataSetObserver();
+            this.mAdapter.registerDataSetObserver(this.mDataSetObserver);
             this.mItemCount = this.mAdapter.getCount();
         }
         setFocusable(true);
         this.mWhichChild = 0;
-        showOnly(0, false);
+        showOnly(this.mWhichChild, false);
     }
 
     @RemotableViewMethod(asyncImpl = "setRemoteViewsAdapterAsync")
@@ -868,17 +764,15 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
             }
         }
         this.mDeferNotifyDataSetChanged = false;
-        RemoteViewsAdapter remoteViewsAdapter = new RemoteViewsAdapter(getContext(), intent, this, isAsync);
-        this.mRemoteViewsAdapter = remoteViewsAdapter;
-        if (remoteViewsAdapter.isDataReady()) {
+        this.mRemoteViewsAdapter = new RemoteViewsAdapter(getContext(), intent, this, isAsync);
+        if (this.mRemoteViewsAdapter.isDataReady()) {
             setAdapter(this.mRemoteViewsAdapter);
         }
     }
 
     public void setRemoteViewsOnClickHandler(RemoteViews.InteractionHandler handler) {
-        RemoteViewsAdapter remoteViewsAdapter = this.mRemoteViewsAdapter;
-        if (remoteViewsAdapter != null) {
-            remoteViewsAdapter.setRemoteViewsInteractionHandler(handler);
+        if (this.mRemoteViewsAdapter != null) {
+            this.mRemoteViewsAdapter.setRemoteViewsInteractionHandler(handler);
         }
     }
 
@@ -899,9 +793,8 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
 
     @Override // android.widget.RemoteViewsAdapter.RemoteAdapterConnectionCallback
     public boolean onRemoteAdapterConnected() {
-        RemoteViewsAdapter remoteViewsAdapter = this.mRemoteViewsAdapter;
-        if (remoteViewsAdapter != this.mAdapter) {
-            setAdapter(remoteViewsAdapter);
+        if (this.mRemoteViewsAdapter != this.mAdapter) {
+            setAdapter(this.mRemoteViewsAdapter);
             if (this.mDeferNotifyDataSetChanged) {
                 this.mRemoteViewsAdapter.notifyDataSetChanged();
                 this.mDeferNotifyDataSetChanged = false;
@@ -910,17 +803,16 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
                 setDisplayedChild(this.mDeferSetDisplayedChildIndex);
                 this.mDeferSetDisplayedChild = false;
             }
-            int i = this.mRestoreWhichChild;
-            if (i > -1) {
-                setDisplayedChild(i, false);
+            if (this.mRestoreWhichChild > -1) {
+                setDisplayedChild(this.mRestoreWhichChild, false);
                 this.mRestoreWhichChild = -1;
             }
             return false;
         }
-        if (remoteViewsAdapter == null) {
+        if (this.mRemoteViewsAdapter == null) {
             return false;
         }
-        remoteViewsAdapter.superNotifyDataSetChanged();
+        this.mRemoteViewsAdapter.superNotifyDataSetChanged();
         return true;
     }
 
@@ -957,23 +849,27 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
 
     private void semSendBroadcastPosition(int position, int type) {
         if (position < 0) {
-            return;
         }
         switch (type) {
             case 1:
                 if (!this.mAppWidgetGetCurrentDisplayedPosition.isEmpty()) {
                     Intent intent = new Intent(APPWIDGET_CURRENT_DISPLAYED_POSITION_ACTION);
                     intent.putExtra(APPWIDGET_EXTRA_CURRENT_DISPLAYED_POSITION, position);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, this.mAppWidgetId);
                     semSendBroadcastPositionInternal(this.mAppWidgetGetCurrentDisplayedPosition, intent);
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
     public void semSetAppWidgetGetCurrentDisplayedPosition(String component) {
         this.mAppWidgetGetCurrentDisplayedPosition = component;
+    }
+
+    public void semUsePreloadPositionIndices(boolean use) {
+        if (this.mRemoteViewsAdapter != null) {
+            this.mRemoteViewsAdapter.semUsePreloadPositionIndices(use);
+        }
     }
 }

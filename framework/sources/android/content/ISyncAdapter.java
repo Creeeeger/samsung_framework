@@ -18,7 +18,6 @@ public interface ISyncAdapter extends IInterface {
 
     void startSync(ISyncContext iSyncContext, String str, Account account, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISyncAdapter {
         @Override // android.content.ISyncAdapter
         public void onUnsyncableAccount(ISyncAdapterUnsyncableAccountCallback cb) throws RemoteException {
@@ -38,7 +37,6 @@ public interface ISyncAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISyncAdapter {
         public static final String DESCRIPTOR = "android.content.ISyncAdapter";
         static final int TRANSACTION_cancelSync = 3;
@@ -88,37 +86,34 @@ public interface ISyncAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ISyncAdapterUnsyncableAccountCallback _arg0 = ISyncAdapterUnsyncableAccountCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onUnsyncableAccount(_arg0);
+                    return true;
+                case 2:
+                    ISyncContext _arg02 = ISyncContext.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    Account _arg2 = (Account) data.readTypedObject(Account.CREATOR);
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startSync(_arg02, _arg1, _arg2, _arg3);
+                    return true;
+                case 3:
+                    ISyncContext _arg03 = ISyncContext.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelSync(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISyncAdapterUnsyncableAccountCallback _arg0 = ISyncAdapterUnsyncableAccountCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onUnsyncableAccount(_arg0);
-                            return true;
-                        case 2:
-                            ISyncContext _arg02 = ISyncContext.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            Account _arg2 = (Account) data.readTypedObject(Account.CREATOR);
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startSync(_arg02, _arg1, _arg2, _arg3);
-                            return true;
-                        case 3:
-                            ISyncContext _arg03 = ISyncContext.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelSync(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements ISyncAdapter {
             private IBinder mRemote;
 

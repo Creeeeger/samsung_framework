@@ -33,7 +33,7 @@ public class CheckBoxPreference extends TwoStatePreference {
     }
 
     @Override // android.preference.Preference
-    public void onBindView(View view) {
+    protected void onBindView(View view) {
         super.onBindView(view);
         KeyEvent.Callback findViewById = view.findViewById(16908289);
         if (findViewById != null && (findViewById instanceof Checkable)) {

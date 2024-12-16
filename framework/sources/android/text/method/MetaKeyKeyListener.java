@@ -7,7 +7,7 @@ import android.text.Spanned;
 import android.view.KeyEvent;
 import android.view.View;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class MetaKeyKeyListener {
     private static final int LOCKED = 67108881;
     private static final int LOCKED_RETURN_VALUE = 2;
@@ -122,7 +122,7 @@ public abstract class MetaKeyKeyListener {
         }
     }
 
-    public static void resetLockedMeta(Spannable content) {
+    protected static void resetLockedMeta(Spannable content) {
         resetLock(content, CAP);
         resetLock(content, ALT);
         resetLock(content, SYM);
@@ -197,17 +197,15 @@ public abstract class MetaKeyKeyListener {
             case 1:
                 if (current == USED) {
                     content.removeSpan(what);
-                    return;
-                } else {
-                    if (current == PRESSED) {
-                        content.setSpan(what, 0, 0, RELEASED);
-                        return;
-                    }
-                    return;
+                    break;
+                } else if (current == PRESSED) {
+                    content.setSpan(what, 0, 0, RELEASED);
+                    break;
                 }
+                break;
             default:
                 content.removeSpan(what);
-                return;
+                break;
         }
     }
 

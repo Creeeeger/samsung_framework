@@ -39,29 +39,25 @@ public class DialerFilter extends RelativeLayout {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         this.mInputFilters = new InputFilter[]{new InputFilter.AllCaps()};
-        EditText editText = (EditText) findViewById(16908293);
-        this.mHint = editText;
-        if (editText == null) {
+        this.mHint = (EditText) findViewById(16908293);
+        if (this.mHint == null) {
             throw new IllegalStateException("DialerFilter must have a child EditText named hint");
         }
-        editText.setFilters(this.mInputFilters);
-        EditText editText2 = this.mHint;
-        this.mLetters = editText2;
-        editText2.setKeyListener(TextKeyListener.getInstance());
+        this.mHint.setFilters(this.mInputFilters);
+        this.mLetters = this.mHint;
+        this.mLetters.setKeyListener(TextKeyListener.getInstance());
         this.mLetters.setMovementMethod(null);
         this.mLetters.setFocusable(false);
-        EditText editText3 = (EditText) findViewById(16908300);
-        this.mPrimary = editText3;
-        if (editText3 == null) {
+        this.mPrimary = (EditText) findViewById(16908300);
+        if (this.mPrimary == null) {
             throw new IllegalStateException("DialerFilter must have a child EditText named primary");
         }
-        editText3.setFilters(this.mInputFilters);
-        EditText editText4 = this.mPrimary;
-        this.mDigits = editText4;
-        editText4.setKeyListener(DialerKeyListener.getInstance());
+        this.mPrimary.setFilters(this.mInputFilters);
+        this.mDigits = this.mPrimary;
+        this.mDigits.setKeyListener(DialerKeyListener.getInstance());
         this.mDigits.setMovementMethod(null);
         this.mDigits.setFocusable(false);
         this.mIcon = (ImageView) findViewById(16908294);
@@ -71,11 +67,10 @@ public class DialerFilter extends RelativeLayout {
     }
 
     @Override // android.view.View
-    public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
-        ImageView imageView = this.mIcon;
-        if (imageView != null) {
-            imageView.setVisibility(focused ? 0 : 8);
+        if (this.mIcon != null) {
+            this.mIcon.setVisibility(focused ? 0 : 8);
         }
     }
 
@@ -227,11 +222,11 @@ public class DialerFilter extends RelativeLayout {
             this.mDigits = this.mPrimary;
         }
         this.mLetters.setKeyListener(lettersInput);
-        this.mLetters.setText(lettersText);
+        this.mLetters.lambda$setTextAsync$0(lettersText);
         Editable lettersText2 = this.mLetters.getText();
         Selection.setSelection(lettersText2, lettersText2.length());
         this.mDigits.setKeyListener(digitsInput);
-        this.mDigits.setText(digitsText);
+        this.mDigits.lambda$setTextAsync$0(digitsText);
         Editable digitsText2 = this.mDigits.getText();
         Selection.setSelection(digitsText2, digitsText2.length());
         this.mPrimary.setFilters(this.mInputFilters);
@@ -264,17 +259,15 @@ public class DialerFilter extends RelativeLayout {
             case 1:
                 this.mDigits.getText().append((CharSequence) text);
                 this.mLetters.getText().append((CharSequence) text);
-                return;
+                break;
             case 2:
             case 5:
                 this.mLetters.getText().append((CharSequence) text);
-                return;
+                break;
             case 3:
             case 4:
                 this.mDigits.getText().append((CharSequence) text);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

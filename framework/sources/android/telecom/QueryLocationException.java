@@ -10,14 +10,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class QueryLocationException extends RuntimeException implements Parcelable {
     public static final Parcelable.Creator<QueryLocationException> CREATOR = new Parcelable.Creator<QueryLocationException>() { // from class: android.telecom.QueryLocationException.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QueryLocationException createFromParcel(Parcel source) {
             return new QueryLocationException(source.readString8(), source.readInt());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QueryLocationException[] newArray(int size) {
             return new QueryLocationException[size];
@@ -34,7 +33,6 @@ public final class QueryLocationException extends RuntimeException implements Pa
     private final String mMessage;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface QueryLocationErrorCode {
     }
 
@@ -47,23 +45,6 @@ public final class QueryLocationException extends RuntimeException implements Pa
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString8(this.mMessage);
         dest.writeInt(this.mCode);
-    }
-
-    /* renamed from: android.telecom.QueryLocationException$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<QueryLocationException> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QueryLocationException createFromParcel(Parcel source) {
-            return new QueryLocationException(source.readString8(), source.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QueryLocationException[] newArray(int size) {
-            return new QueryLocationException[size];
-        }
     }
 
     public QueryLocationException(String message) {

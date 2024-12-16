@@ -21,16 +21,13 @@ import android.telecom.CallScreeningService;
 import android.telecom.Conference;
 import android.telecom.Connection;
 import android.telecom.VideoProfile;
-import android.telephony.Rlog;
 import android.text.format.DateFormat;
 import android.util.ArraySet;
 import android.view.Surface;
 import com.android.internal.os.SomeArgs;
 import com.android.internal.telecom.IVideoCallback;
 import com.android.internal.telecom.IVideoProvider;
-import com.android.internal.telephony.SemTelephonyUtils;
 import com.android.internal.transition.EpicenterTranslateClipReveal;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -111,6 +108,8 @@ public abstract class Connection extends Conferenceable {
     public static final String EVENT_CALL_HOLD_FAILED = "android.telecom.event.CALL_HOLD_FAILED";
     public static final String EVENT_CALL_MERGE_FAILED = "android.telecom.event.CALL_MERGE_FAILED";
     public static final String EVENT_CALL_PULL_FAILED = "android.telecom.event.CALL_PULL_FAILED";
+
+    @SystemApi
     public static final String EVENT_CALL_QUALITY_REPORT = "android.telecom.event.CALL_QUALITY_REPORT";
     public static final String EVENT_CALL_REMOTELY_HELD = "android.telecom.event.CALL_REMOTELY_HELD";
     public static final String EVENT_CALL_REMOTELY_UNHELD = "android.telecom.event.CALL_REMOTELY_UNHELD";
@@ -118,8 +117,6 @@ public abstract class Connection extends Conferenceable {
 
     @SystemApi
     public static final String EVENT_DEVICE_TO_DEVICE_MESSAGE = "android.telecom.event.DEVICE_TO_DEVICE_MESSAGE";
-    public static final String EVENT_HANDOVER_COMPLETE = "android.telecom.event.HANDOVER_COMPLETE";
-    public static final String EVENT_HANDOVER_FAILED = "android.telecom.event.HANDOVER_FAILED";
     public static final String EVENT_MERGE_COMPLETE = "android.telecom.event.MERGE_COMPLETE";
     public static final String EVENT_MERGE_START = "android.telecom.event.MERGE_START";
     public static final String EVENT_ON_HOLD_TONE_END = "android.telecom.event.ON_HOLD_TONE_END";
@@ -132,6 +129,8 @@ public abstract class Connection extends Conferenceable {
     public static final String EXTRA_AUDIO_CODEC_BANDWIDTH_KHZ = "android.telecom.extra.AUDIO_CODEC_BANDWIDTH_KHZ";
     public static final String EXTRA_AUDIO_CODEC_BITRATE_KBPS = "android.telecom.extra.AUDIO_CODEC_BITRATE_KBPS";
     public static final String EXTRA_CALLER_NUMBER_VERIFICATION_STATUS = "android.telecom.extra.CALLER_NUMBER_VERIFICATION_STATUS";
+
+    @SystemApi
     public static final String EXTRA_CALL_QUALITY_REPORT = "android.telecom.extra.CALL_QUALITY_REPORT";
     public static final String EXTRA_CALL_SUBJECT = "android.telecom.extra.CALL_SUBJECT";
     public static final String EXTRA_CHILD_ADDRESS = "android.telecom.extra.CHILD_ADDRESS";
@@ -153,7 +152,6 @@ public abstract class Connection extends Conferenceable {
     public static final String EXTRA_REMOTE_CONNECTION_ORIGINATING_PACKAGE_NAME = "android.telecom.extra.REMOTE_CONNECTION_ORIGINATING_PACKAGE_NAME";
     public static final String EXTRA_REMOTE_PHONE_ACCOUNT_HANDLE = "android.telecom.extra.REMOTE_PHONE_ACCOUNT_HANDLE";
     public static final String EXTRA_SIP_INVITE = "android.telecom.extra.SIP_INVITE";
-    private static final String LOG_TAG = "Telecom-Connection";
     private static final boolean PII_DEBUG;
     public static final int PROPERTY_ASSISTED_DIALING = 512;
     public static final int PROPERTY_CROSS_SIM = 8192;
@@ -193,35 +191,23 @@ public abstract class Connection extends Conferenceable {
     private int mAddressPresentation;
     private boolean mAudioModeIsVoip;
     private CallAudioState mCallAudioState;
-    private int mCallDirection;
     private CallEndpoint mCallEndpoint;
     private String mCallerDisplayName;
     private int mCallerDisplayNamePresentation;
     private int mCallerNumberVerificationStatus;
     private Conference mConference;
-    private final List<Conferenceable> mConferenceables;
-    private long mConnectElapsedTimeMillis;
-    private long mConnectTimeMillis;
     private int mConnectionCapabilities;
     private int mConnectionProperties;
     private ConnectionService mConnectionService;
     private DisconnectCause mDisconnectCause;
     private Bundle mExtras;
-    private final Object mExtrasLock;
     private PhoneAccountHandle mPhoneAccountHandle;
     private Set<String> mPreviousExtraKeys;
-    private boolean mRingbackRequested;
-    private int mState;
     private StatusHints mStatusHints;
-    private int mSupportedAudioRoutes;
     private String mTelecomCallId;
-    private final List<Conferenceable> mUnmodifiableConferenceables;
     private VideoProvider mVideoProvider;
     private int mVideoState;
     private final Listener mConnectionDeathListener = new Listener() { // from class: android.telecom.Connection.1
-        AnonymousClass1() {
-        }
-
         @Override // android.telecom.Connection.Listener
         public void onDestroyed(Connection c) {
             if (Connection.this.mConferenceables.remove(c)) {
@@ -230,9 +216,6 @@ public abstract class Connection extends Conferenceable {
         }
     };
     private final Conference.Listener mConferenceDeathListener = new Conference.Listener() { // from class: android.telecom.Connection.2
-        AnonymousClass2() {
-        }
-
         @Override // android.telecom.Conference.Listener
         public void onDestroyed(Conference c) {
             if (Connection.this.mConferenceables.remove(c)) {
@@ -241,24 +224,30 @@ public abstract class Connection extends Conferenceable {
         }
     };
     private final Set<Listener> mListeners = Collections.newSetFromMap(new ConcurrentHashMap(8, 0.9f, 1));
+    private final List<Conferenceable> mConferenceables = new ArrayList();
+    private final List<Conferenceable> mUnmodifiableConferenceables = Collections.unmodifiableList(this.mConferenceables);
+    private int mState = 1;
+    private boolean mRingbackRequested = false;
+    private int mSupportedAudioRoutes = 31;
+    private long mConnectTimeMillis = 0;
+    private long mConnectElapsedTimeMillis = 0;
+    private final Object mExtrasLock = new Object();
+    private int mCallDirection = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AudioCodec {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ConnectionState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface VerificationStatus {
     }
 
     static {
-        PII_DEBUG = !SemTelephonyUtils.SHIP_BUILD && Log.isLoggable(3);
+        PII_DEBUG = !Log.SHIP_BUILD && Log.isLoggable(3);
     }
 
     public static String capabilitiesToString(int capabilities) {
@@ -408,8 +397,10 @@ public abstract class Connection extends Conferenceable {
         return builder.toString();
     }
 
-    /* loaded from: classes3.dex */
-    public static abstract class Listener {
+    static abstract class Listener {
+        Listener() {
+        }
+
         public void onStateChanged(Connection c, int state) {
         }
 
@@ -501,7 +492,6 @@ public abstract class Connection extends Conferenceable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class RttTextStream {
         private static final int READ_BUFFER_SIZE = 1000;
         private final ParcelFileDescriptor mFdFromInCall;
@@ -514,9 +504,8 @@ public abstract class Connection extends Conferenceable {
         public RttTextStream(ParcelFileDescriptor toInCall, ParcelFileDescriptor fromInCall) {
             this.mFdFromInCall = fromInCall;
             this.mFdToInCall = toInCall;
-            FileInputStream fileInputStream = new FileInputStream(fromInCall.getFileDescriptor());
-            this.mFromInCallFileInputStream = fileInputStream;
-            this.mPipeFromInCall = new InputStreamReader(Channels.newInputStream(Channels.newChannel(fileInputStream)));
+            this.mFromInCallFileInputStream = new FileInputStream(fromInCall.getFileDescriptor());
+            this.mPipeFromInCall = new InputStreamReader(Channels.newInputStream(Channels.newChannel(this.mFromInCallFileInputStream)));
             this.mPipeToInCall = new OutputStreamWriter(new FileOutputStream(toInCall.getFileDescriptor()));
         }
 
@@ -549,7 +538,6 @@ public abstract class Connection extends Conferenceable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class RttModifyStatus {
         public static final int SESSION_MODIFY_REQUEST_FAIL = 2;
         public static final int SESSION_MODIFY_REQUEST_INVALID = 3;
@@ -558,7 +546,6 @@ public abstract class Connection extends Conferenceable {
         public static final int SESSION_MODIFY_REQUEST_TIMED_OUT = 4;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface RttSessionModifyStatus {
         }
 
@@ -566,7 +553,6 @@ public abstract class Connection extends Conferenceable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class VideoProvider {
         private static final int MSG_ADD_VIDEO_CALLBACK = 1;
         private static final int MSG_REMOVE_VIDEO_CALLBACK = 12;
@@ -624,8 +610,7 @@ public abstract class Connection extends Conferenceable {
 
         public abstract void onSetZoom(float f);
 
-        /* loaded from: classes3.dex */
-        public final class VideoProviderHandler extends Handler {
+        private final class VideoProviderHandler extends Handler {
             public VideoProviderHandler() {
             }
 
@@ -642,15 +627,12 @@ public abstract class Connection extends Conferenceable {
                         IVideoCallback callback = IVideoCallback.Stub.asInterface((IBinder) msg.obj);
                         if (callback == null) {
                             Log.w(this, "addVideoProvider - skipped; callback is null.", new Object[0]);
-                            Rlog.d(Connection.LOG_TAG, "MSG_ADD_VIDEO_CALLBACK - skipped; callback is null.");
                             return;
                         } else if (VideoProvider.this.mVideoCallbacks.containsKey(binder)) {
                             Log.i(this, "addVideoProvider - skipped; already present.", new Object[0]);
-                            Rlog.d(Connection.LOG_TAG, "MSG_ADD_VIDEO_CALLBACK - skipped; already present.");
                             return;
                         } else {
                             VideoProvider.this.mVideoCallbacks.put(binder, callback);
-                            Rlog.d(Connection.LOG_TAG, "MSG_ADD_VIDEO_CALLBACK - binder: " + binder + ", callback: " + callback + ", size: " + VideoProvider.this.mVideoCallbacks.size());
                             return;
                         }
                     case 2:
@@ -676,13 +658,11 @@ public abstract class Connection extends Conferenceable {
                     case 7:
                         args = (SomeArgs) msg.obj;
                         try {
-                            Rlog.d(Connection.LOG_TAG, "MSG_SEND_SESSION_MODIFY_REQUEST - from: " + ((VideoProfile) args.arg1) + ", to: " + ((VideoProfile) args.arg2));
                             VideoProvider.this.onSendSessionModifyRequest((VideoProfile) args.arg1, (VideoProfile) args.arg2);
                             return;
                         } finally {
                         }
                     case 8:
-                        Rlog.d(Connection.LOG_TAG, "MSG_SEND_SESSION_MODIFY_RESPONSE - response: " + ((VideoProfile) msg.obj));
                         VideoProvider.this.onSendSessionModifyResponse((VideoProfile) msg.obj);
                         return;
                     case 9:
@@ -699,11 +679,9 @@ public abstract class Connection extends Conferenceable {
                         IVideoCallback.Stub.asInterface((IBinder) msg.obj);
                         if (!VideoProvider.this.mVideoCallbacks.containsKey(binder2)) {
                             Log.i(this, "removeVideoProvider - skipped; not present.", new Object[0]);
-                            Rlog.d(Connection.LOG_TAG, "MSG_REMOVE_VIDEO_CALLBACK - skipped; not present.");
                             return;
                         } else {
                             VideoProvider.this.mVideoCallbacks.remove(binder2);
-                            Rlog.d(Connection.LOG_TAG, "MSG_REMOVE_VIDEO_CALLBACK - binder: " + binder2 + ", size: " + VideoProvider.this.mVideoCallbacks.size());
                             return;
                         }
                     default:
@@ -713,20 +691,17 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void close() {
-            VideoProviderBinder videoProviderBinder = this.mBinder;
-            if (videoProviderBinder != null) {
-                videoProviderBinder.reset();
+            if (this.mBinder != null) {
+                this.mBinder.reset();
                 this.mBinder = null;
             }
-            VideoProviderHandler videoProviderHandler = this.mMessageHandler;
-            if (videoProviderHandler != null) {
-                videoProviderHandler.removeCallbacksAndMessages(null);
+            if (this.mMessageHandler != null) {
+                this.mMessageHandler.removeCallbacksAndMessages(null);
                 this.mMessageHandler = null;
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static final class VideoProviderBinder extends IVideoProvider.Stub {
+        private static final class VideoProviderBinder extends IVideoProvider.Stub {
             VideoProviderHandler mMessageHandler;
 
             public VideoProviderBinder(VideoProviderHandler handler) {
@@ -739,13 +714,11 @@ public abstract class Connection extends Conferenceable {
 
             @Override // com.android.internal.telecom.IVideoProvider
             public void addVideoCallback(IBinder videoCallbackBinder) {
-                Rlog.d(Connection.LOG_TAG, "addVideoCallback - videoCallbackBinder: " + videoCallbackBinder);
                 this.mMessageHandler.obtainMessage(1, videoCallbackBinder).sendToTarget();
             }
 
             @Override // com.android.internal.telecom.IVideoProvider
             public void removeVideoCallback(IBinder videoCallbackBinder) {
-                Rlog.d(Connection.LOG_TAG, "removeVideoCallback - videoCallbackBinder: " + videoCallbackBinder);
                 this.mMessageHandler.obtainMessage(12, videoCallbackBinder).sendToTarget();
             }
 
@@ -782,7 +755,6 @@ public abstract class Connection extends Conferenceable {
 
             @Override // com.android.internal.telecom.IVideoProvider
             public void sendSessionModifyRequest(VideoProfile fromProfile, VideoProfile toProfile) {
-                Rlog.d(Connection.LOG_TAG, "sendSessionModifyRequest - from: " + fromProfile + ", to: " + toProfile);
                 SomeArgs args = SomeArgs.obtain();
                 args.arg1 = fromProfile;
                 args.arg2 = toProfile;
@@ -791,7 +763,6 @@ public abstract class Connection extends Conferenceable {
 
             @Override // com.android.internal.telecom.IVideoProvider
             public void sendSessionModifyResponse(VideoProfile responseProfile) {
-                Rlog.d(Connection.LOG_TAG, "sendSessionModifyResponse - reponse: " + responseProfile);
                 this.mMessageHandler.obtainMessage(8, responseProfile).sendToTarget();
             }
 
@@ -815,14 +786,12 @@ public abstract class Connection extends Conferenceable {
             this.mVideoCallbacks = new ConcurrentHashMap<>(8, 0.9f, 1);
             this.mMessageHandler = new VideoProviderHandler(Looper.getMainLooper());
             this.mBinder = new VideoProviderBinder(this.mMessageHandler);
-            Rlog.d(Connection.LOG_TAG, "New Connection.VideoProvider - this: " + this + ", binder: " + this.mBinder);
         }
 
         public VideoProvider(Looper looper) {
             this.mVideoCallbacks = new ConcurrentHashMap<>(8, 0.9f, 1);
             this.mMessageHandler = new VideoProviderHandler(looper);
             this.mBinder = new VideoProviderBinder(this.mMessageHandler);
-            Rlog.d(Connection.LOG_TAG, "New Connection.VideoProvider with looper - this: " + this + ", binder: " + this.mBinder);
         }
 
         public final IVideoProvider getInterface() {
@@ -833,9 +802,8 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void receiveSessionModifyRequest(VideoProfile videoProfile) {
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap = this.mVideoCallbacks;
-            if (concurrentHashMap != null) {
-                for (IVideoCallback callback : concurrentHashMap.values()) {
+            if (this.mVideoCallbacks != null) {
+                for (IVideoCallback callback : this.mVideoCallbacks.values()) {
                     try {
                         callback.receiveSessionModifyRequest(videoProfile);
                     } catch (RemoteException ignored) {
@@ -846,9 +814,8 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void receiveSessionModifyResponse(int status, VideoProfile requestedProfile, VideoProfile responseProfile) {
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap = this.mVideoCallbacks;
-            if (concurrentHashMap != null) {
-                for (IVideoCallback callback : concurrentHashMap.values()) {
+            if (this.mVideoCallbacks != null) {
+                for (IVideoCallback callback : this.mVideoCallbacks.values()) {
                     try {
                         callback.receiveSessionModifyResponse(status, requestedProfile, responseProfile);
                     } catch (RemoteException ignored) {
@@ -859,9 +826,8 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void handleCallSessionEvent(int event) {
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap = this.mVideoCallbacks;
-            if (concurrentHashMap != null) {
-                for (IVideoCallback callback : concurrentHashMap.values()) {
+            if (this.mVideoCallbacks != null) {
+                for (IVideoCallback callback : this.mVideoCallbacks.values()) {
                     try {
                         callback.handleCallSessionEvent(event);
                     } catch (RemoteException ignored) {
@@ -872,9 +838,8 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void changePeerDimensions(int width, int height) {
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap = this.mVideoCallbacks;
-            if (concurrentHashMap != null) {
-                for (IVideoCallback callback : concurrentHashMap.values()) {
+            if (this.mVideoCallbacks != null) {
+                for (IVideoCallback callback : this.mVideoCallbacks.values()) {
                     try {
                         callback.changePeerDimensions(width, height);
                     } catch (RemoteException ignored) {
@@ -885,9 +850,8 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void setCallDataUsage(long dataUsage) {
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap = this.mVideoCallbacks;
-            if (concurrentHashMap != null) {
-                for (IVideoCallback callback : concurrentHashMap.values()) {
+            if (this.mVideoCallbacks != null) {
+                for (IVideoCallback callback : this.mVideoCallbacks.values()) {
                     try {
                         callback.changeCallDataUsage(dataUsage);
                     } catch (RemoteException ignored) {
@@ -902,12 +866,8 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void changeCameraCapabilities(VideoProfile.CameraCapabilities cameraCapabilities) {
-            StringBuilder append = new StringBuilder().append("changeCameraCapabilities - callback size: ");
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap = this.mVideoCallbacks;
-            Rlog.d(Connection.LOG_TAG, append.append(concurrentHashMap != null ? Integer.valueOf(concurrentHashMap.size()) : SemCapabilities.FEATURE_TAG_NULL).append(", capabilities: ").append(cameraCapabilities).toString());
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap2 = this.mVideoCallbacks;
-            if (concurrentHashMap2 != null) {
-                for (IVideoCallback callback : concurrentHashMap2.values()) {
+            if (this.mVideoCallbacks != null) {
+                for (IVideoCallback callback : this.mVideoCallbacks.values()) {
                     try {
                         callback.changeCameraCapabilities(cameraCapabilities);
                     } catch (RemoteException ignored) {
@@ -918,9 +878,8 @@ public abstract class Connection extends Conferenceable {
         }
 
         public void changeVideoQuality(int videoQuality) {
-            ConcurrentHashMap<IBinder, IVideoCallback> concurrentHashMap = this.mVideoCallbacks;
-            if (concurrentHashMap != null) {
-                for (IVideoCallback callback : concurrentHashMap.values()) {
+            if (this.mVideoCallbacks != null) {
+                for (IVideoCallback callback : this.mVideoCallbacks.values()) {
                     try {
                         callback.changeVideoQuality(videoQuality);
                     } catch (RemoteException ignored) {
@@ -950,49 +909,6 @@ public abstract class Connection extends Conferenceable {
                     return "UNKNOWN " + event;
             }
         }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.Connection$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends Listener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.telecom.Connection.Listener
-        public void onDestroyed(Connection c) {
-            if (Connection.this.mConferenceables.remove(c)) {
-                Connection.this.fireOnConferenceableConnectionsChanged();
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.Connection$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 extends Conference.Listener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.telecom.Conference.Listener
-        public void onDestroyed(Conference c) {
-            if (Connection.this.mConferenceables.remove(c)) {
-                Connection.this.fireOnConferenceableConnectionsChanged();
-            }
-        }
-    }
-
-    public Connection() {
-        ArrayList arrayList = new ArrayList();
-        this.mConferenceables = arrayList;
-        this.mUnmodifiableConferenceables = Collections.unmodifiableList(arrayList);
-        this.mState = 1;
-        this.mRingbackRequested = false;
-        this.mSupportedAudioRoutes = 31;
-        this.mConnectTimeMillis = 0L;
-        this.mConnectElapsedTimeMillis = 0L;
-        this.mExtrasLock = new Object();
-        this.mCallDirection = -1;
     }
 
     @SystemApi
@@ -1074,12 +990,12 @@ public abstract class Connection extends Conferenceable {
         return extras;
     }
 
-    public final Connection addConnectionListener(Listener l) {
+    final Connection addConnectionListener(Listener l) {
         this.mListeners.add(l);
         return this;
     }
 
-    public final Connection removeConnectionListener(Listener l) {
+    final Connection removeConnectionListener(Listener l) {
         if (l != null) {
             this.mListeners.remove(l);
         }
@@ -1095,7 +1011,7 @@ public abstract class Connection extends Conferenceable {
         this.mTelecomCallId = callId;
     }
 
-    public final void setCallAudioState(CallAudioState state) {
+    final void setCallAudioState(CallAudioState state) {
         checkImmutable();
         Log.d(this, "setAudioState %s", state);
         this.mCallAudioState = state;
@@ -1103,20 +1019,20 @@ public abstract class Connection extends Conferenceable {
         onCallAudioStateChanged(state);
     }
 
-    public final void setCallEndpoint(CallEndpoint endpoint) {
+    final void setCallEndpoint(CallEndpoint endpoint) {
         checkImmutable();
         Log.d(this, "setCallEndpoint %s", endpoint);
         this.mCallEndpoint = endpoint;
         onCallEndpointChanged(endpoint);
     }
 
-    public final void setAvailableCallEndpoints(List<CallEndpoint> availableEndpoints) {
+    final void setAvailableCallEndpoints(List<CallEndpoint> availableEndpoints) {
         checkImmutable();
         Log.d(this, "setAvailableCallEndpoints", new Object[0]);
         onAvailableCallEndpointsChanged(availableEndpoints);
     }
 
-    public final void setMuteState(boolean isMuted) {
+    final void setMuteState(boolean isMuted) {
         checkImmutable();
         Log.d(this, "setMuteState %s", Boolean.valueOf(isMuted));
         onMuteStateChanged(isMuted);
@@ -1159,6 +1075,7 @@ public abstract class Connection extends Conferenceable {
     }
 
     public final void setAddress(Uri address, int presentation) {
+        Log.d(this, "setAddress %s", Log.maskPii(address));
         this.mAddress = address;
         this.mAddressPresentation = presentation;
         for (Listener l : this.mListeners) {
@@ -1218,11 +1135,6 @@ public abstract class Connection extends Conferenceable {
         setState(3);
     }
 
-    public final void setDialingForcedUpdate() {
-        checkImmutable();
-        setState(3, true);
-    }
-
     public final void setPulling() {
         checkImmutable();
         setState(7);
@@ -1235,7 +1147,6 @@ public abstract class Connection extends Conferenceable {
 
     public final void setVideoProvider(VideoProvider videoProvider) {
         checkImmutable();
-        Rlog.d(LOG_TAG, "setVideoProvider - videoProvider: " + this.mVideoProvider + " -> " + videoProvider);
         this.mVideoProvider = videoProvider;
         for (Listener l : this.mListeners) {
             l.onVideoProviderChanged(this, videoProvider);
@@ -1409,8 +1320,7 @@ public abstract class Connection extends Conferenceable {
         checkImmutable();
         if (this.mConference == null) {
             this.mConference = conference;
-            ConnectionService connectionService = this.mConnectionService;
-            if (connectionService != null && connectionService.containsConference(conference)) {
+            if (this.mConnectionService != null && this.mConnectionService.containsConference(conference)) {
                 fireConferenceChanged();
                 return true;
             }
@@ -1510,12 +1420,13 @@ public abstract class Connection extends Conferenceable {
         return this.mCallEndpoint;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRttInitiationSuccess$0(Listener l) {
         l.onRttInitiationSuccess(this);
     }
 
     public final void sendRttInitiationSuccess() {
-        this.mListeners.forEach(new Consumer() { // from class: android.telecom.Connection$$ExternalSyntheticLambda3
+        this.mListeners.forEach(new Consumer() { // from class: android.telecom.Connection$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 Connection.this.lambda$sendRttInitiationSuccess$0((Connection.Listener) obj);
@@ -1523,12 +1434,13 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRttInitiationFailure$1(int reason, Listener l) {
         l.onRttInitiationFailure(this, reason);
     }
 
     public final void sendRttInitiationFailure(final int reason) {
-        this.mListeners.forEach(new Consumer() { // from class: android.telecom.Connection$$ExternalSyntheticLambda0
+        this.mListeners.forEach(new Consumer() { // from class: android.telecom.Connection$$ExternalSyntheticLambda4
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 Connection.this.lambda$sendRttInitiationFailure$1(reason, (Connection.Listener) obj);
@@ -1536,12 +1448,13 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRttSessionRemotelyTerminated$2(Listener l) {
         l.onRttSessionRemotelyTerminated(this);
     }
 
     public final void sendRttSessionRemotelyTerminated() {
-        this.mListeners.forEach(new Consumer() { // from class: android.telecom.Connection$$ExternalSyntheticLambda4
+        this.mListeners.forEach(new Consumer() { // from class: android.telecom.Connection$$ExternalSyntheticLambda3
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 Connection.this.lambda$sendRttSessionRemotelyTerminated$2((Connection.Listener) obj);
@@ -1549,6 +1462,7 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRemoteRttRequest$3(Listener l) {
         l.onRemoteRttRequest(this);
     }
@@ -1577,6 +1491,7 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$queryLocationForEmergency$4(long timeoutMillis, String provider, Executor executor, OutcomeReceiver callback, Listener l) {
         l.onQueryLocation(this, timeoutMillis, provider, executor, callback);
     }
@@ -1615,9 +1530,6 @@ public abstract class Connection extends Conferenceable {
     }
 
     public void onDisconnect() {
-    }
-
-    public void onDisconnectConferenceParticipant(Uri endpoint) {
     }
 
     public void onSeparate() {
@@ -1691,17 +1603,15 @@ public abstract class Connection extends Conferenceable {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class CallFilteringCompletionInfo implements Parcelable {
         public static final Parcelable.Creator<CallFilteringCompletionInfo> CREATOR = new Parcelable.Creator<CallFilteringCompletionInfo>() { // from class: android.telecom.Connection.CallFilteringCompletionInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CallFilteringCompletionInfo createFromParcel(Parcel in) {
                 return new CallFilteringCompletionInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CallFilteringCompletionInfo[] newArray(int size) {
                 return new CallFilteringCompletionInfo[size];
@@ -1725,23 +1635,6 @@ public abstract class Connection extends Conferenceable {
             CallScreeningService.ParcelableCallResponse response = (CallScreeningService.ParcelableCallResponse) in.readParcelable(CallScreeningService.class.getClassLoader(), CallScreeningService.ParcelableCallResponse.class);
             this.mCallResponse = response == null ? null : response.toCallResponse();
             this.mCallScreeningComponent = (ComponentName) in.readParcelable(ComponentName.class.getClassLoader(), ComponentName.class);
-        }
-
-        /* renamed from: android.telecom.Connection$CallFilteringCompletionInfo$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<CallFilteringCompletionInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public CallFilteringCompletionInfo createFromParcel(Parcel in) {
-                return new CallFilteringCompletionInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public CallFilteringCompletionInfo[] newArray(int size) {
-                return new CallFilteringCompletionInfo[size];
-            }
         }
 
         public boolean isBlocked() {
@@ -1773,8 +1666,7 @@ public abstract class Connection extends Conferenceable {
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeByte(this.mIsBlocked ? (byte) 1 : (byte) 0);
             parcel.writeByte(this.mIsInContacts ? (byte) 1 : (byte) 0);
-            CallScreeningService.CallResponse callResponse = this.mCallResponse;
-            parcel.writeParcelable(callResponse == null ? null : callResponse.toParcelable(), 0);
+            parcel.writeParcelable(this.mCallResponse == null ? null : this.mCallResponse.toParcelable(), 0);
             parcel.writeParcelable(this.mCallScreeningComponent, 0);
         }
     }
@@ -1783,7 +1675,7 @@ public abstract class Connection extends Conferenceable {
     public void onCallFilteringCompleted(CallFilteringCompletionInfo callFilteringCompletionInfo) {
     }
 
-    public static String toLogSafePhoneNumber(String number) {
+    static String toLogSafePhoneNumber(String number) {
         if (number == null) {
             return "";
         }
@@ -1803,20 +1695,12 @@ public abstract class Connection extends Conferenceable {
     }
 
     private void setState(int state) {
-        setState(state, false);
-    }
-
-    private void setState(int state, boolean forcedUpdate) {
-        if (forcedUpdate) {
-            Log.d(this, "setState(forced)", new Object[0]);
-        }
         checkImmutable();
-        int i = this.mState;
-        if (i == 6 && i != state) {
+        if (this.mState == 6 && this.mState != state) {
             Log.d(this, "Connection already DISCONNECTED; cannot transition out of this state.", new Object[0]);
             return;
         }
-        if (i != state || forcedUpdate) {
+        if (this.mState != state) {
             Log.d(this, "setState: %s", stateToString(state));
             this.mState = state;
             onStateChanged(state);
@@ -1826,8 +1710,7 @@ public abstract class Connection extends Conferenceable {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class FailureSignalingConnection extends Connection {
+    private static class FailureSignalingConnection extends Connection {
         private boolean mImmutable;
 
         public FailureSignalingConnection(DisconnectCause disconnectCause) {
@@ -1855,6 +1738,7 @@ public abstract class Connection extends Conferenceable {
         return new FailureSignalingConnection(new DisconnectCause(4));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final void fireOnConferenceableConnectionsChanged() {
         for (Listener l : this.mListeners) {
             l.onConferenceablesChanged(this, getConferenceables());
@@ -1880,11 +1764,11 @@ public abstract class Connection extends Conferenceable {
         this.mConferenceables.clear();
     }
 
-    public final void handleExtrasChanged(Bundle extras) {
+    final void handleExtrasChanged(Bundle extras) {
         Bundle b = null;
         synchronized (this.mExtrasLock) {
             this.mExtras = extras;
-            if (extras != null) {
+            if (this.mExtras != null) {
                 b = new Bundle(this.mExtras);
             }
         }
@@ -1922,6 +1806,7 @@ public abstract class Connection extends Conferenceable {
         }
     }
 
+    @SystemApi
     public final int getCallDirection() {
         return this.mCallDirection;
     }

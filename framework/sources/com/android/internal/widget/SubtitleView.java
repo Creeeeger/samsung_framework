@@ -90,16 +90,13 @@ public class SubtitleView extends View {
         this.mCornerRadius = res.getDimensionPixelSize(com.android.internal.R.dimen.subtitle_corner_radius);
         this.mOutlineWidth = res.getDimensionPixelSize(com.android.internal.R.dimen.subtitle_outline_width);
         this.mShadowRadius = res.getDimensionPixelSize(com.android.internal.R.dimen.subtitle_shadow_radius);
-        float dimensionPixelSize = res.getDimensionPixelSize(com.android.internal.R.dimen.subtitle_shadow_offset);
-        this.mShadowOffsetX = dimensionPixelSize;
-        this.mShadowOffsetY = dimensionPixelSize;
-        TextPaint textPaint = new TextPaint();
-        this.mTextPaint = textPaint;
-        textPaint.setAntiAlias(true);
+        this.mShadowOffsetX = res.getDimensionPixelSize(com.android.internal.R.dimen.subtitle_shadow_offset);
+        this.mShadowOffsetY = this.mShadowOffsetX;
+        this.mTextPaint = new TextPaint();
+        this.mTextPaint.setAntiAlias(true);
         this.mTextPaint.setSubpixelText(true);
-        Paint paint = new Paint();
-        this.mPaint = paint;
-        paint.setAntiAlias(true);
+        this.mPaint = new Paint();
+        this.mPaint.setAntiAlias(true);
         setText(text);
         setTextSize(textSize);
     }
@@ -167,7 +164,7 @@ public class SubtitleView extends View {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSpec = View.MeasureSpec.getSize(widthMeasureSpec);
         if (computeMeasurements(widthSpec)) {
             StaticLayout layout = this.mLayout;
@@ -197,8 +194,7 @@ public class SubtitleView extends View {
         }
         this.mHasMeasurements = true;
         this.mLastMeasuredWidth = maxWidth2;
-        SpannableStringBuilder spannableStringBuilder = this.mText;
-        this.mLayout = StaticLayout.Builder.obtain(spannableStringBuilder, 0, spannableStringBuilder.length(), this.mTextPaint, maxWidth2).setAlignment(this.mAlignment).setLineSpacing(this.mSpacingAdd, this.mSpacingMult).setUseLineSpacingFromFallbacks(true).build();
+        this.mLayout = StaticLayout.Builder.obtain(this.mText, 0, this.mText.length(), this.mTextPaint, maxWidth2).setAlignment(this.mAlignment).setLineSpacing(this.mSpacingAdd, this.mSpacingMult).setUseLineSpacingFromFallbacks(true).build();
         return true;
     }
 
@@ -223,7 +219,7 @@ public class SubtitleView extends View {
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas c) {
+    protected void onDraw(Canvas c) {
         int colorUp;
         StaticLayout layout = this.mLayout;
         if (layout == null) {

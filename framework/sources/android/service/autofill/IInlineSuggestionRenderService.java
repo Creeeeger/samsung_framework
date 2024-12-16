@@ -18,7 +18,6 @@ public interface IInlineSuggestionRenderService extends IInterface {
 
     void renderSuggestion(IInlineSuggestionUiCallback iInlineSuggestionUiCallback, InlinePresentation inlinePresentation, int i, int i2, IBinder iBinder, int i3, int i4, int i5) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IInlineSuggestionRenderService {
         @Override // android.service.autofill.IInlineSuggestionRenderService
         public void renderSuggestion(IInlineSuggestionUiCallback callback, InlinePresentation presentation, int width, int height, IBinder hostInputToken, int displayId, int userId, int sessionId) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IInlineSuggestionRenderService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IInlineSuggestionRenderService {
         static final int TRANSACTION_destroySuggestionViews = 3;
         static final int TRANSACTION_getInlineSuggestionsRendererInfo = 2;
@@ -87,42 +85,39 @@ public interface IInlineSuggestionRenderService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInlineSuggestionRenderService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInlineSuggestionRenderService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInlineSuggestionRenderService.DESCRIPTOR);
+                case 1:
+                    IInlineSuggestionUiCallback _arg0 = IInlineSuggestionUiCallback.Stub.asInterface(data.readStrongBinder());
+                    InlinePresentation _arg1 = (InlinePresentation) data.readTypedObject(InlinePresentation.CREATOR);
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    IBinder _arg4 = data.readStrongBinder();
+                    int _arg5 = data.readInt();
+                    int _arg6 = data.readInt();
+                    int _arg7 = data.readInt();
+                    data.enforceNoDataAvail();
+                    renderSuggestion(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    return true;
+                case 2:
+                    RemoteCallback _arg02 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    getInlineSuggestionsRendererInfo(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    destroySuggestionViews(_arg03, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IInlineSuggestionUiCallback _arg0 = IInlineSuggestionUiCallback.Stub.asInterface(data.readStrongBinder());
-                            InlinePresentation _arg1 = (InlinePresentation) data.readTypedObject(InlinePresentation.CREATOR);
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            IBinder _arg4 = data.readStrongBinder();
-                            int _arg5 = data.readInt();
-                            int _arg6 = data.readInt();
-                            int _arg7 = data.readInt();
-                            data.enforceNoDataAvail();
-                            renderSuggestion(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            return true;
-                        case 2:
-                            RemoteCallback _arg02 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            getInlineSuggestionsRendererInfo(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            destroySuggestionViews(_arg03, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IInlineSuggestionRenderService {
             private IBinder mRemote;
 

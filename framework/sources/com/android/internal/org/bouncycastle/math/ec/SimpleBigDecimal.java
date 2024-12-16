@@ -3,9 +3,8 @@ package com.android.internal.org.bouncycastle.math.ec;
 import android.media.MediaMetrics;
 import java.math.BigInteger;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class SimpleBigDecimal {
+class SimpleBigDecimal {
     private static final long serialVersionUID = 1;
     private final BigInteger bigInt;
     private final int scale;
@@ -32,11 +31,10 @@ public class SimpleBigDecimal {
         if (newScale < 0) {
             throw new IllegalArgumentException("scale may not be negative");
         }
-        int i = this.scale;
-        if (newScale == i) {
+        if (newScale == this.scale) {
             return this;
         }
-        return new SimpleBigDecimal(this.bigInt.shiftLeft(newScale - i), newScale);
+        return new SimpleBigDecimal(this.bigInt.shiftLeft(newScale - this.scale), newScale);
     }
 
     public SimpleBigDecimal add(SimpleBigDecimal b) {
@@ -62,9 +60,7 @@ public class SimpleBigDecimal {
 
     public SimpleBigDecimal multiply(SimpleBigDecimal b) {
         checkScale(b);
-        BigInteger multiply = this.bigInt.multiply(b.bigInt);
-        int i = this.scale;
-        return new SimpleBigDecimal(multiply, i + i);
+        return new SimpleBigDecimal(this.bigInt.multiply(b.bigInt), this.scale + this.scale);
     }
 
     public SimpleBigDecimal multiply(BigInteger b) {

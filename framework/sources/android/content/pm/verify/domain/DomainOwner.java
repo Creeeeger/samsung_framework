@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class DomainOwner implements Parcelable {
     public static final Parcelable.Creator<DomainOwner> CREATOR = new Parcelable.Creator<DomainOwner>() { // from class: android.content.pm.verify.domain.DomainOwner.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DomainOwner[] newArray(int size) {
             return new DomainOwner[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DomainOwner createFromParcel(Parcel in) {
             return new DomainOwner(in);
@@ -29,7 +28,7 @@ public final class DomainOwner implements Parcelable {
 
     public DomainOwner(String packageName, boolean overrideable) {
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mOverrideable = overrideable;
     }
 
@@ -81,25 +80,8 @@ public final class DomainOwner implements Parcelable {
         boolean overrideable = (flg & 2) != 0;
         String packageName = in.readString();
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mOverrideable = overrideable;
-    }
-
-    /* renamed from: android.content.pm.verify.domain.DomainOwner$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DomainOwner> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DomainOwner[] newArray(int size) {
-            return new DomainOwner[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DomainOwner createFromParcel(Parcel in) {
-            return new DomainOwner(in);
-        }
     }
 
     @Deprecated

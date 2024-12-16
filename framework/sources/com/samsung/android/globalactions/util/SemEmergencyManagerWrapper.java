@@ -3,7 +3,7 @@ package com.samsung.android.globalactions.util;
 import android.content.Context;
 import com.samsung.android.emergencymode.SemEmergencyManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEmergencyManagerWrapper {
     private final Context mContext;
     private SemEmergencyManager mSemEmergencyManager;

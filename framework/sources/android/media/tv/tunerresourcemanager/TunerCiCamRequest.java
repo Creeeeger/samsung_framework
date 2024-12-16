@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class TunerCiCamRequest implements Parcelable {
     public static final Parcelable.Creator<TunerCiCamRequest> CREATOR = new Parcelable.Creator<TunerCiCamRequest>() { // from class: android.media.tv.tunerresourcemanager.TunerCiCamRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunerCiCamRequest createFromParcel(Parcel _aidl_source) {
             TunerCiCamRequest _aidl_out = new TunerCiCamRequest();
@@ -17,6 +15,7 @@ public class TunerCiCamRequest implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunerCiCamRequest[] newArray(int _aidl_size) {
             return new TunerCiCamRequest[_aidl_size];
@@ -24,25 +23,6 @@ public class TunerCiCamRequest implements Parcelable {
     };
     public int clientId = 0;
     public int ciCamId = 0;
-
-    /* renamed from: android.media.tv.tunerresourcemanager.TunerCiCamRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TunerCiCamRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunerCiCamRequest createFromParcel(Parcel _aidl_source) {
-            TunerCiCamRequest _aidl_out = new TunerCiCamRequest();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunerCiCamRequest[] newArray(int _aidl_size) {
-            return new TunerCiCamRequest[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

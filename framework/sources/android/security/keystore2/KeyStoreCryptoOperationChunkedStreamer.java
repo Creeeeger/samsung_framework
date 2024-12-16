@@ -17,18 +17,17 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
     private final Stream mKeyStoreStream;
     private long mProducedOutputSizeBytes;
 
-    /* loaded from: classes3.dex */
-    public interface Stream {
+    interface Stream {
         byte[] finish(byte[] bArr, byte[] bArr2) throws KeyStoreException;
 
         byte[] update(byte[] bArr) throws KeyStoreException;
     }
 
-    public KeyStoreCryptoOperationChunkedStreamer(Stream operation) {
+    KeyStoreCryptoOperationChunkedStreamer(Stream operation) {
         this(operation, 2048, 32768);
     }
 
-    public KeyStoreCryptoOperationChunkedStreamer(Stream operation, int chunkSizeThreshold) {
+    KeyStoreCryptoOperationChunkedStreamer(Stream operation, int chunkSizeThreshold) {
         this(operation, chunkSizeThreshold, 32768);
     }
 
@@ -46,7 +45,7 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
         } else {
             this.mChunkSizeThreshold = chunkSizeThreshold;
         }
-        this.mChunk = new byte[chunkSizeMax];
+        this.mChunk = new byte[this.mChunkSizeMax];
     }
 
     @Override // android.security.keystore2.KeyStoreCryptoOperationStreamer
@@ -58,14 +57,12 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
             throw new KeyStoreException(-1000, "Input offset and length out of bounds of input array");
         }
         byte[] output = EmptyArray.BYTE;
-        int i = this.mChunkLength;
-        if (i > 0) {
-            int inputConsumed = ArrayUtils.copy(input, inputOffset, this.mChunk, i, inputLength);
+        if (this.mChunkLength > 0) {
+            int inputConsumed = ArrayUtils.copy(input, inputOffset, this.mChunk, this.mChunkLength, inputLength);
             inputLength -= inputConsumed;
             inputOffset += inputConsumed;
-            int i2 = this.mChunkLength + inputConsumed;
-            this.mChunkLength = i2;
-            if (i2 < this.mChunkSizeMax) {
+            this.mChunkLength += inputConsumed;
+            if (this.mChunkLength < this.mChunkSizeMax) {
                 return output;
             }
             byte[] o = this.mKeyStoreStream.update(this.mChunk);
@@ -76,10 +73,7 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
             this.mChunkLength = 0;
         }
         while (inputLength >= this.mChunkSizeThreshold) {
-            int nextChunkSize = this.mChunkSizeMax;
-            if (inputLength < nextChunkSize) {
-                nextChunkSize = inputLength;
-            }
+            int nextChunkSize = inputLength < this.mChunkSizeMax ? inputLength : this.mChunkSizeMax;
             byte[] o2 = this.mKeyStoreStream.update(ArrayUtils.subarray(input, inputOffset, nextChunkSize));
             inputLength -= nextChunkSize;
             inputOffset += nextChunkSize;
@@ -121,11 +115,10 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
         return this.mProducedOutputSizeBytes;
     }
 
-    /* loaded from: classes3.dex */
     public static class MainDataStream implements Stream {
         private final KeyStoreOperation mOperation;
 
-        public MainDataStream(KeyStoreOperation operation) {
+        MainDataStream(KeyStoreOperation operation) {
             this.mOperation = operation;
         }
 

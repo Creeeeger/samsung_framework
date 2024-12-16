@@ -14,14 +14,13 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class CapabilityParams implements Parcelable {
     public static final Parcelable.Creator<CapabilityParams> CREATOR = new Parcelable.Creator<CapabilityParams>() { // from class: android.content.pm.CapabilityParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CapabilityParams[] newArray(int size) {
             return new CapabilityParams[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CapabilityParams createFromParcel(Parcel in) {
             return new CapabilityParams(in);
@@ -30,14 +29,6 @@ public final class CapabilityParams implements Parcelable {
     private final List<String> mAliases;
     private final String mName;
     private final String mPrimaryValue;
-
-    /* synthetic */ CapabilityParams(Builder builder, CapabilityParamsIA capabilityParamsIA) {
-        this(builder);
-    }
-
-    /* synthetic */ CapabilityParams(Parcel parcel, CapabilityParamsIA capabilityParamsIA) {
-        this(parcel);
-    }
 
     private CapabilityParams(String name, String primaryValue, Collection<String> aliases) {
         Objects.requireNonNull(name);
@@ -75,7 +66,7 @@ public final class CapabilityParams implements Parcelable {
         return new ArrayList(this.mAliases);
     }
 
-    public List<String> getValues() {
+    List<String> getValues() {
         if (this.mAliases == null) {
             return new ArrayList(Collections.singletonList(this.mPrimaryValue));
         }
@@ -109,28 +100,10 @@ public final class CapabilityParams implements Parcelable {
         dest.writeStringList(this.mAliases);
     }
 
-    /* renamed from: android.content.pm.CapabilityParams$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CapabilityParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CapabilityParams[] newArray(int size) {
-            return new CapabilityParams[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CapabilityParams createFromParcel(Parcel in) {
-            return new CapabilityParams(in);
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private Set<String> mAliases;
         private final String mKey;
-        private String mPrimaryValue;
+        private final String mPrimaryValue;
 
         public Builder(String key, String value) {
             Objects.requireNonNull(key);

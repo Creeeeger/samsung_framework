@@ -26,7 +26,6 @@ public final class FontStyle {
     private final int mWeight;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FontSlant {
     }
 

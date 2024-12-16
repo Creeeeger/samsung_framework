@@ -26,14 +26,13 @@ public final class InstantAppResolveInfo implements Parcelable {
     private final long mVersionCode;
     private static final byte[] EMPTY_DIGEST = new byte[0];
     public static final Parcelable.Creator<InstantAppResolveInfo> CREATOR = new Parcelable.Creator<InstantAppResolveInfo>() { // from class: android.content.pm.InstantAppResolveInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppResolveInfo createFromParcel(Parcel in) {
             return new InstantAppResolveInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppResolveInfo[] newArray(int size) {
             return new InstantAppResolveInfo[size];
@@ -62,9 +61,8 @@ public final class InstantAppResolveInfo implements Parcelable {
         }
         this.mDigest = digest;
         if (filters != null) {
-            ArrayList arrayList = new ArrayList(filters.size());
-            this.mFilters = arrayList;
-            arrayList.addAll(filters);
+            this.mFilters = new ArrayList(filters.size());
+            this.mFilters.addAll(filters);
         } else {
             this.mFilters = null;
         }
@@ -75,22 +73,20 @@ public final class InstantAppResolveInfo implements Parcelable {
     }
 
     InstantAppResolveInfo(Parcel in) {
-        boolean readBoolean = in.readBoolean();
-        this.mShouldLetInstallerDecide = readBoolean;
+        this.mShouldLetInstallerDecide = in.readBoolean();
         this.mExtras = in.readBundle();
-        if (!readBoolean) {
-            this.mDigest = (InstantAppDigest) in.readParcelable(null, InstantAppDigest.class);
-            this.mPackageName = in.readString();
-            ArrayList arrayList = new ArrayList();
-            this.mFilters = arrayList;
-            in.readTypedList(arrayList, InstantAppIntentFilter.CREATOR);
-            this.mVersionCode = in.readLong();
+        if (this.mShouldLetInstallerDecide) {
+            this.mDigest = InstantAppDigest.UNDEFINED;
+            this.mPackageName = null;
+            this.mFilters = Collections.emptyList();
+            this.mVersionCode = -1L;
             return;
         }
-        this.mDigest = InstantAppDigest.UNDEFINED;
-        this.mPackageName = null;
-        this.mFilters = Collections.emptyList();
-        this.mVersionCode = -1L;
+        this.mDigest = (InstantAppDigest) in.readParcelable(null, InstantAppDigest.class);
+        this.mPackageName = in.readString();
+        this.mFilters = new ArrayList();
+        in.readTypedList(this.mFilters, InstantAppIntentFilter.CREATOR);
+        this.mVersionCode = in.readLong();
     }
 
     public boolean shouldLetInstallerDecide() {
@@ -144,29 +140,11 @@ public final class InstantAppResolveInfo implements Parcelable {
         out.writeLong(this.mVersionCode);
     }
 
-    /* renamed from: android.content.pm.InstantAppResolveInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InstantAppResolveInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstantAppResolveInfo createFromParcel(Parcel in) {
-            return new InstantAppResolveInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstantAppResolveInfo[] newArray(int size) {
-            return new InstantAppResolveInfo[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class InstantAppDigest implements Parcelable {
         public static final Parcelable.Creator<InstantAppDigest> CREATOR;
         static final int DIGEST_MASK = -4096;
-        public static final InstantAppDigest UNDEFINED = new InstantAppDigest(new byte[0], new int[0]);
+        public static final InstantAppDigest UNDEFINED = new InstantAppDigest(new byte[0][], new int[0]);
         private static Random sRandom;
         private final byte[][] mDigestBytes;
         private final int[] mDigestPrefix;
@@ -180,9 +158,7 @@ public final class InstantAppResolveInfo implements Parcelable {
                 sRandom = new Random();
             }
             CREATOR = new Parcelable.Creator<InstantAppDigest>() { // from class: android.content.pm.InstantAppResolveInfo.InstantAppDigest.1
-                AnonymousClass1() {
-                }
-
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public InstantAppDigest createFromParcel(Parcel in) {
                     if (in.readBoolean()) {
@@ -191,6 +167,7 @@ public final class InstantAppResolveInfo implements Parcelable {
                     return new InstantAppDigest(in);
                 }
 
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public InstantAppDigest[] newArray(int size) {
                     return new InstantAppDigest[size];
@@ -206,20 +183,10 @@ public final class InstantAppResolveInfo implements Parcelable {
             if (hostName == null) {
                 throw new IllegalArgumentException();
             }
-            byte[][] generateDigest = generateDigest(hostName.toLowerCase(Locale.ENGLISH), maxDigests);
-            this.mDigestBytes = generateDigest;
-            this.mDigestPrefix = new int[generateDigest.length];
-            int i = 0;
-            while (true) {
-                byte[][] bArr = this.mDigestBytes;
-                if (i < bArr.length) {
-                    int[] iArr = this.mDigestPrefix;
-                    byte[] bArr2 = bArr[i];
-                    iArr[i] = (((bArr2[3] & 255) << 0) | ((bArr2[0] & 255) << 24) | ((bArr2[1] & 255) << 16) | ((bArr2[2] & 255) << 8)) & DIGEST_MASK;
-                    i++;
-                } else {
-                    return;
-                }
+            this.mDigestBytes = generateDigest(hostName.toLowerCase(Locale.ENGLISH), maxDigests);
+            this.mDigestPrefix = new int[this.mDigestBytes.length];
+            for (int i = 0; i < this.mDigestBytes.length; i++) {
+                this.mDigestPrefix[i] = (((this.mDigestBytes[i][0] & 255) << 24) | ((this.mDigestBytes[i][1] & 255) << 16) | ((this.mDigestBytes[i][2] & 255) << 8) | ((this.mDigestBytes[i][3] & 255) << 0)) & DIGEST_MASK;
             }
         }
 
@@ -249,7 +216,7 @@ public final class InstantAppResolveInfo implements Parcelable {
                         }
                     }
                 }
-                return (byte[][]) digests.toArray(new byte[digests.size()]);
+                return (byte[][]) digests.toArray(new byte[digests.size()][]);
             } catch (NoSuchAlgorithmException e) {
                 throw new IllegalStateException("could not find digest algorithm");
             }
@@ -260,7 +227,7 @@ public final class InstantAppResolveInfo implements Parcelable {
             if (digestCount == -1) {
                 this.mDigestBytes = null;
             } else {
-                this.mDigestBytes = new byte[digestCount];
+                this.mDigestBytes = new byte[digestCount][];
                 for (int i = 0; i < digestCount; i++) {
                     this.mDigestBytes[i] = in.createByteArray();
                 }
@@ -305,43 +272,16 @@ public final class InstantAppResolveInfo implements Parcelable {
             if (isUndefined) {
                 return;
             }
-            byte[][] bArr = this.mDigestBytes;
-            if (bArr == null) {
+            if (this.mDigestBytes == null) {
                 out.writeInt(-1);
             } else {
-                out.writeInt(bArr.length);
-                int i = 0;
-                while (true) {
-                    byte[][] bArr2 = this.mDigestBytes;
-                    if (i >= bArr2.length) {
-                        break;
-                    }
-                    out.writeByteArray(bArr2[i]);
-                    i++;
+                out.writeInt(this.mDigestBytes.length);
+                for (int i = 0; i < this.mDigestBytes.length; i++) {
+                    out.writeByteArray(this.mDigestBytes[i]);
                 }
             }
             out.writeIntArray(this.mDigestPrefix);
             out.writeIntArray(this.mDigestPrefixSecure);
-        }
-
-        /* renamed from: android.content.pm.InstantAppResolveInfo$InstantAppDigest$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<InstantAppDigest> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InstantAppDigest createFromParcel(Parcel in) {
-                if (in.readBoolean()) {
-                    return InstantAppDigest.UNDEFINED;
-                }
-                return new InstantAppDigest(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InstantAppDigest[] newArray(int size) {
-                return new InstantAppDigest[size];
-            }
         }
     }
 }

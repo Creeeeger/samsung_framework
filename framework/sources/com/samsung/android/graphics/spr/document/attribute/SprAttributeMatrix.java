@@ -6,7 +6,7 @@ import com.samsung.android.graphics.spr.document.attribute.impl.SprMatrix;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprAttributeMatrix extends SprAttributeBase {
     private final SprAttributeMatrix mIntrinsic;
     public Matrix matrix;
@@ -46,8 +46,8 @@ public class SprAttributeMatrix extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeMatrix mo8412clone() throws CloneNotSupportedException {
-        SprAttributeMatrix attribute = (SprAttributeMatrix) super.mo8412clone();
+    public SprAttributeMatrix mo8813clone() throws CloneNotSupportedException {
+        SprAttributeMatrix attribute = (SprAttributeMatrix) super.mo8813clone();
         attribute.matrix = new Matrix(this.matrix);
         return attribute;
     }

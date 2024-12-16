@@ -48,17 +48,14 @@ public class IncidentManager {
     private Object mLock = new Object();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PendingReportFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PrivacyPolicy {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static class PendingReport {
         private final int mFlags;
         private final String mRequestingPackage;
@@ -119,12 +116,8 @@ public class IncidentManager {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static class IncidentReport implements Parcelable, Closeable {
         public static final Parcelable.Creator<IncidentReport> CREATOR = new Parcelable.Creator() { // from class: android.os.IncidentManager.IncidentReport.1
-            AnonymousClass1() {
-            }
-
             @Override // android.os.Parcelable.Creator
             public IncidentReport[] newArray(int size) {
                 return new IncidentReport[size];
@@ -152,9 +145,8 @@ public class IncidentManager {
         @Override // java.io.Closeable, java.lang.AutoCloseable
         public void close() {
             try {
-                ParcelFileDescriptor parcelFileDescriptor = this.mFileDescriptor;
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
+                if (this.mFileDescriptor != null) {
+                    this.mFileDescriptor.close();
                     this.mFileDescriptor = null;
                 }
             } catch (IOException e) {
@@ -192,40 +184,21 @@ public class IncidentManager {
                 out.writeInt(0);
             }
         }
-
-        /* renamed from: android.os.IncidentManager$IncidentReport$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public IncidentReport[] newArray(int size) {
-                return new IncidentReport[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public IncidentReport createFromParcel(Parcel in) {
-                return new IncidentReport(in);
-            }
-        }
     }
 
-    /* loaded from: classes3.dex */
     public static class AuthListener {
         IIncidentAuthListener.Stub mBinder = new AnonymousClass1();
         Executor mExecutor;
 
-        /* renamed from: android.os.IncidentManager$AuthListener$1 */
-        /* loaded from: classes3.dex */
-        public class AnonymousClass1 extends IIncidentAuthListener.Stub {
+        /* renamed from: android.os.IncidentManager$AuthListener$1, reason: invalid class name */
+        class AnonymousClass1 extends IIncidentAuthListener.Stub {
             AnonymousClass1() {
             }
 
             @Override // android.os.IIncidentAuthListener
             public void onReportApproved() {
                 if (AuthListener.this.mExecutor != null) {
-                    AuthListener.this.mExecutor.execute(new Runnable() { // from class: android.os.IncidentManager$AuthListener$1$$ExternalSyntheticLambda0
+                    AuthListener.this.mExecutor.execute(new Runnable() { // from class: android.os.IncidentManager$AuthListener$1$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             IncidentManager.AuthListener.AnonymousClass1.this.lambda$onReportApproved$0();
@@ -236,6 +209,7 @@ public class IncidentManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onReportApproved$0() {
                 AuthListener.this.onReportApproved();
             }
@@ -243,7 +217,7 @@ public class IncidentManager {
             @Override // android.os.IIncidentAuthListener
             public void onReportDenied() {
                 if (AuthListener.this.mExecutor != null) {
-                    AuthListener.this.mExecutor.execute(new Runnable() { // from class: android.os.IncidentManager$AuthListener$1$$ExternalSyntheticLambda1
+                    AuthListener.this.mExecutor.execute(new Runnable() { // from class: android.os.IncidentManager$AuthListener$1$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             IncidentManager.AuthListener.AnonymousClass1.this.lambda$onReportDenied$1();
@@ -254,6 +228,7 @@ public class IncidentManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onReportDenied$1() {
                 AuthListener.this.onReportDenied();
             }
@@ -266,15 +241,13 @@ public class IncidentManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class DumpCallback {
         IIncidentDumpCallback.Stub mBinder = new AnonymousClass1();
         private Executor mExecutor;
         private int mId;
 
-        /* renamed from: android.os.IncidentManager$DumpCallback$1 */
-        /* loaded from: classes3.dex */
-        public class AnonymousClass1 extends IIncidentDumpCallback.Stub {
+        /* renamed from: android.os.IncidentManager$DumpCallback$1, reason: invalid class name */
+        class AnonymousClass1 extends IIncidentDumpCallback.Stub {
             AnonymousClass1() {
             }
 
@@ -288,14 +261,13 @@ public class IncidentManager {
                         }
                     });
                 } else {
-                    DumpCallback dumpCallback = DumpCallback.this;
-                    dumpCallback.onDumpSection(dumpCallback.mId, new ParcelFileDescriptor.AutoCloseOutputStream(pfd));
+                    DumpCallback.this.onDumpSection(DumpCallback.this.mId, new ParcelFileDescriptor.AutoCloseOutputStream(pfd));
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDumpSection$0(ParcelFileDescriptor pfd) {
-                DumpCallback dumpCallback = DumpCallback.this;
-                dumpCallback.onDumpSection(dumpCallback.mId, new ParcelFileDescriptor.AutoCloseOutputStream(pfd));
+                DumpCallback.this.onDumpSection(DumpCallback.this.mId, new ParcelFileDescriptor.AutoCloseOutputStream(pfd));
             }
         }
 
@@ -474,19 +446,16 @@ public class IncidentManager {
     }
 
     private IIncidentManager getIIncidentManagerLocked() throws RemoteException {
-        IIncidentManager iIncidentManager = this.mIncidentService;
-        if (iIncidentManager != null) {
-            return iIncidentManager;
+        if (this.mIncidentService != null) {
+            return this.mIncidentService;
         }
         synchronized (this.mLock) {
-            IIncidentManager iIncidentManager2 = this.mIncidentService;
-            if (iIncidentManager2 != null) {
-                return iIncidentManager2;
+            if (this.mIncidentService != null) {
+                return this.mIncidentService;
             }
-            IIncidentManager asInterface = IIncidentManager.Stub.asInterface(ServiceManager.getService(Context.INCIDENT_SERVICE));
-            this.mIncidentService = asInterface;
-            if (asInterface != null) {
-                asInterface.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.os.IncidentManager$$ExternalSyntheticLambda0
+            this.mIncidentService = IIncidentManager.Stub.asInterface(ServiceManager.getService(Context.INCIDENT_SERVICE));
+            if (this.mIncidentService != null) {
+                this.mIncidentService.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.os.IncidentManager$$ExternalSyntheticLambda1
                     @Override // android.os.IBinder.DeathRecipient
                     public final void binderDied() {
                         IncidentManager.this.lambda$getIIncidentManagerLocked$0();
@@ -497,6 +466,7 @@ public class IncidentManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getIIncidentManagerLocked$0() {
         synchronized (this.mLock) {
             this.mIncidentService = null;
@@ -504,19 +474,16 @@ public class IncidentManager {
     }
 
     private IIncidentCompanion getCompanionServiceLocked() throws RemoteException {
-        IIncidentCompanion iIncidentCompanion = this.mCompanionService;
-        if (iIncidentCompanion != null) {
-            return iIncidentCompanion;
+        if (this.mCompanionService != null) {
+            return this.mCompanionService;
         }
         synchronized (this) {
-            IIncidentCompanion iIncidentCompanion2 = this.mCompanionService;
-            if (iIncidentCompanion2 != null) {
-                return iIncidentCompanion2;
+            if (this.mCompanionService != null) {
+                return this.mCompanionService;
             }
-            IIncidentCompanion asInterface = IIncidentCompanion.Stub.asInterface(ServiceManager.getService(Context.INCIDENT_COMPANION_SERVICE));
-            this.mCompanionService = asInterface;
-            if (asInterface != null) {
-                asInterface.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.os.IncidentManager$$ExternalSyntheticLambda1
+            this.mCompanionService = IIncidentCompanion.Stub.asInterface(ServiceManager.getService(Context.INCIDENT_COMPANION_SERVICE));
+            if (this.mCompanionService != null) {
+                this.mCompanionService.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.os.IncidentManager$$ExternalSyntheticLambda0
                     @Override // android.os.IBinder.DeathRecipient
                     public final void binderDied() {
                         IncidentManager.this.lambda$getCompanionServiceLocked$1();
@@ -527,6 +494,7 @@ public class IncidentManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getCompanionServiceLocked$1() {
         synchronized (this.mLock) {
             this.mCompanionService = null;

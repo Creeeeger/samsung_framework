@@ -24,14 +24,17 @@ public class SamsungThemeUtils {
         if (overlayPaths != null && overlayPaths.length > 0) {
             ArrayList<String> filteredOverlayPaths = new ArrayList<>();
             for (String overlay : overlayPaths) {
-                if (overlay != null && overlay.startsWith(SamsungThemeConstants.PATH_OVERLAY_CURRENT_STYLE) && hasAllowPostfixforCover(overlay)) {
-                    return overlayPaths;
-                }
-                if (overlay != null && overlay.startsWith(SamsungThemeConstants.PATH_OVERLAY_CURRENT_STYLE) && hasAllowSystemUIforCover(overlay)) {
-                    return removeOnlySystemUIOverlay(overlayPaths);
-                }
-                if (overlay != null && !overlay.startsWith(SamsungThemeConstants.PATH_OVERLAY_CURRENT_STYLE)) {
-                    filteredOverlayPaths.add(overlay);
+                if (overlay != null) {
+                    boolean hasPrefix = overlay.startsWith(SamsungThemeConstants.PATH_OVERLAY_CURRENT_STYLE);
+                    if (hasPrefix && hasAllowPostfixforCover(overlay)) {
+                        return overlayPaths;
+                    }
+                    if (hasPrefix && hasAllowSystemUIforCover(overlay)) {
+                        return removeOnlySystemUIOverlay(overlayPaths);
+                    }
+                    if (!hasPrefix) {
+                        filteredOverlayPaths.add(overlay);
+                    }
                 }
             }
             return (String[]) filteredOverlayPaths.toArray(new String[0]);

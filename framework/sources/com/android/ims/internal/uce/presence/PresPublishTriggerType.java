@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.presence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresPublishTriggerType implements Parcelable {
     public static final Parcelable.Creator<PresPublishTriggerType> CREATOR = new Parcelable.Creator<PresPublishTriggerType>() { // from class: com.android.ims.internal.uce.presence.PresPublishTriggerType.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresPublishTriggerType createFromParcel(Parcel source) {
             return new PresPublishTriggerType(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresPublishTriggerType[] newArray(int size) {
             return new PresPublishTriggerType[size];
@@ -32,10 +31,6 @@ public class PresPublishTriggerType implements Parcelable {
     public static final int UCE_PRES_PUBLISH_TRIGGER_MOVE_TO_WLAN = 7;
     public static final int UCE_PRES_PUBLISH_TRIGGER_UNKNOWN = 9;
     private int mPublishTriggerType;
-
-    /* synthetic */ PresPublishTriggerType(Parcel parcel, PresPublishTriggerTypeIA presPublishTriggerTypeIA) {
-        this(parcel);
-    }
 
     public int getPublishTrigeerType() {
         return this.mPublishTriggerType;
@@ -57,23 +52,6 @@ public class PresPublishTriggerType implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mPublishTriggerType);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresPublishTriggerType$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresPublishTriggerType> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresPublishTriggerType createFromParcel(Parcel source) {
-            return new PresPublishTriggerType(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresPublishTriggerType[] newArray(int size) {
-            return new PresPublishTriggerType[size];
-        }
     }
 
     private PresPublishTriggerType(Parcel source) {

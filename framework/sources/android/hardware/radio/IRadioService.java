@@ -20,7 +20,6 @@ public interface IRadioService extends IInterface {
 
     ITuner openTuner(int i, RadioManager.BandConfig bandConfig, boolean z, ITunerCallback iTunerCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioService {
         @Override // android.hardware.radio.IRadioService
         public List<RadioManager.ModuleProperties> listModules() throws RemoteException {
@@ -43,7 +42,6 @@ public interface IRadioService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioService {
         public static final String DESCRIPTOR = "android.hardware.radio.IRadioService";
         static final int TRANSACTION_addAnnouncementListener = 3;
@@ -93,44 +91,40 @@ public interface IRadioService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<RadioManager.ModuleProperties> _result = listModules();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    RadioManager.BandConfig _arg1 = (RadioManager.BandConfig) data.readTypedObject(RadioManager.BandConfig.CREATOR);
+                    boolean _arg2 = data.readBoolean();
+                    ITunerCallback _arg3 = ITunerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ITuner _result2 = openTuner(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 3:
+                    int[] _arg02 = data.createIntArray();
+                    IAnnouncementListener _arg12 = IAnnouncementListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ICloseHandle _result3 = addAnnouncementListener(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<RadioManager.ModuleProperties> _result = listModules();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            RadioManager.BandConfig _arg1 = (RadioManager.BandConfig) data.readTypedObject(RadioManager.BandConfig.CREATOR);
-                            boolean _arg2 = data.readBoolean();
-                            ITunerCallback _arg3 = ITunerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ITuner _result2 = openTuner(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            int[] _arg02 = data.createIntArray();
-                            IAnnouncementListener _arg12 = IAnnouncementListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ICloseHandle _result3 = addAnnouncementListener(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioService {
+        private static class Proxy implements IRadioService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

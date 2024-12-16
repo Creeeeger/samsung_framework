@@ -19,10 +19,6 @@ public abstract class CallRedirectionService extends Service {
     public static final String SERVICE_INTERFACE = "android.telecom.CallRedirectionService";
     private ICallRedirectionAdapter mCallRedirectionAdapter;
     private final Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: android.telecom.CallRedirectionService.1
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -51,11 +47,10 @@ public abstract class CallRedirectionService extends Service {
 
     public final void placeCallUnmodified() {
         try {
-            ICallRedirectionAdapter iCallRedirectionAdapter = this.mCallRedirectionAdapter;
-            if (iCallRedirectionAdapter == null) {
+            if (this.mCallRedirectionAdapter == null) {
                 throw new IllegalStateException("Can only be called from onPlaceCall.");
             }
-            iCallRedirectionAdapter.placeCallUnmodified();
+            this.mCallRedirectionAdapter.placeCallUnmodified();
         } catch (RemoteException e) {
             e.rethrowAsRuntimeException();
         }
@@ -63,11 +58,10 @@ public abstract class CallRedirectionService extends Service {
 
     public final void redirectCall(Uri gatewayUri, PhoneAccountHandle targetPhoneAccount, boolean confirmFirst) {
         try {
-            ICallRedirectionAdapter iCallRedirectionAdapter = this.mCallRedirectionAdapter;
-            if (iCallRedirectionAdapter == null) {
+            if (this.mCallRedirectionAdapter == null) {
                 throw new IllegalStateException("Can only be called from onPlaceCall.");
             }
-            iCallRedirectionAdapter.redirectCall(gatewayUri, targetPhoneAccount, confirmFirst);
+            this.mCallRedirectionAdapter.redirectCall(gatewayUri, targetPhoneAccount, confirmFirst);
         } catch (RemoteException e) {
             e.rethrowAsRuntimeException();
         }
@@ -75,50 +69,16 @@ public abstract class CallRedirectionService extends Service {
 
     public final void cancelCall() {
         try {
-            ICallRedirectionAdapter iCallRedirectionAdapter = this.mCallRedirectionAdapter;
-            if (iCallRedirectionAdapter == null) {
+            if (this.mCallRedirectionAdapter == null) {
                 throw new IllegalStateException("Can only be called from onPlaceCall.");
             }
-            iCallRedirectionAdapter.cancelCall();
+            this.mCallRedirectionAdapter.cancelCall();
         } catch (RemoteException e) {
             e.rethrowAsRuntimeException();
         }
     }
 
-    /* renamed from: android.telecom.CallRedirectionService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    SomeArgs args = (SomeArgs) msg.obj;
-                    try {
-                        CallRedirectionService.this.mCallRedirectionAdapter = (ICallRedirectionAdapter) args.arg1;
-                        CallRedirectionService.this.onPlaceCall((Uri) args.arg2, (PhoneAccountHandle) args.arg3, ((Boolean) args.arg4).booleanValue());
-                        return;
-                    } finally {
-                        args.recycle();
-                    }
-                case 2:
-                    CallRedirectionService.this.onRedirectionTimeout();
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
     private final class CallRedirectionBinder extends ICallRedirectionService.Stub {
-        /* synthetic */ CallRedirectionBinder(CallRedirectionService callRedirectionService, CallRedirectionBinderIA callRedirectionBinderIA) {
-            this();
-        }
-
         private CallRedirectionBinder() {
         }
 

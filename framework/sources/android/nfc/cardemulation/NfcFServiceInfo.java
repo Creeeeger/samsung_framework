@@ -1,5 +1,6 @@
 package android.nfc.cardemulation;
 
+import android.annotation.SystemApi;
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -10,23 +11,23 @@ import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 import android.util.proto.ProtoOutputStream;
 import com.android.internal.R;
-import java.io.FileDescriptor;
+import com.android.server.SecureKeyConst;
 import java.io.IOException;
 import java.io.PrintWriter;
 import org.xmlpull.v1.XmlPullParserException;
 
+@SystemApi
 /* loaded from: classes3.dex */
 public final class NfcFServiceInfo implements Parcelable {
     public static final Parcelable.Creator<NfcFServiceInfo> CREATOR = new Parcelable.Creator<NfcFServiceInfo>() { // from class: android.nfc.cardemulation.NfcFServiceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NfcFServiceInfo createFromParcel(Parcel source) {
             String dynamicSystemCode;
@@ -53,6 +54,7 @@ public final class NfcFServiceInfo implements Parcelable {
             return service;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NfcFServiceInfo[] newArray(int size) {
             return new NfcFServiceInfo[size];
@@ -60,14 +62,14 @@ public final class NfcFServiceInfo implements Parcelable {
     };
     private static final String DEFAULT_T3T_PMM = "FFFFFFFFFFFFFFFF";
     static final String TAG = "NfcFServiceInfo";
-    final String mDescription;
-    String mDynamicNfcid2;
-    String mDynamicSystemCode;
-    final String mNfcid2;
-    final ResolveInfo mService;
-    final String mSystemCode;
-    final String mT3tPmm;
-    final int mUid;
+    private final String mDescription;
+    private String mDynamicNfcid2;
+    private String mDynamicSystemCode;
+    private final String mNfcid2;
+    private final ResolveInfo mService;
+    private final String mSystemCode;
+    private final String mT3tPmm;
+    private final int mUid;
 
     public NfcFServiceInfo(ResolveInfo info, String description, String systemCode, String dynamicSystemCode, String nfcid2, String dynamicNfcid2, int uid, String t3tPmm) {
         this.mService = info;
@@ -87,7 +89,7 @@ public final class NfcFServiceInfo implements Parcelable {
         XmlResourceParser parser = null;
         try {
             try {
-                parser = si.loadXmlMetaData(pm, HostNfcFService.SERVICE_META_DATA);
+                parser = si.loadXmlMetaData(pm, "android.nfc.cardemulation.host_nfcf_service");
                 if (parser == null) {
                     throw new XmlPullParserException("No android.nfc.cardemulation.host_nfcf_service meta-data");
                 }
@@ -126,7 +128,7 @@ public final class NfcFServiceInfo implements Parcelable {
                     if (eventType2 == 2 && "system-code-filter".equals(tagName) && systemCode == null) {
                         TypedArray a = res.obtainAttributes(attrs, R.styleable.SystemCodeFilter);
                         String systemCode2 = a.getString(0).toUpperCase();
-                        if (!NfcFCardEmulation.isValidSystemCode(systemCode2) && !systemCode2.equalsIgnoreCase("NULL")) {
+                        if (!isValidSystemCode(systemCode2) && !systemCode2.equalsIgnoreCase("NULL")) {
                             Log.e(TAG, "Invalid System Code: " + systemCode2);
                             systemCode = null;
                         } else {
@@ -137,7 +139,7 @@ public final class NfcFServiceInfo implements Parcelable {
                     } else if (eventType2 == 2 && "nfcid2-filter".equals(tagName) && nfcid2 == null) {
                         TypedArray a2 = res.obtainAttributes(attrs, R.styleable.Nfcid2Filter);
                         String nfcid22 = a2.getString(0).toUpperCase();
-                        if (!nfcid22.equalsIgnoreCase("RANDOM") && !nfcid22.equalsIgnoreCase("NULL") && !NfcFCardEmulation.isValidNfcid2(nfcid22)) {
+                        if (!nfcid22.equalsIgnoreCase("RANDOM") && !nfcid22.equalsIgnoreCase("NULL") && !isValidNfcid2(nfcid22)) {
                             Log.e(TAG, "Invalid NFCID2: " + nfcid22);
                             nfcid2 = null;
                         } else {
@@ -176,20 +178,18 @@ public final class NfcFServiceInfo implements Parcelable {
     }
 
     public String getSystemCode() {
-        String str = this.mDynamicSystemCode;
-        return str == null ? this.mSystemCode : str;
+        return this.mDynamicSystemCode == null ? this.mSystemCode : this.mDynamicSystemCode;
     }
 
-    public void setOrReplaceDynamicSystemCode(String systemCode) {
+    public void setDynamicSystemCode(String systemCode) {
         this.mDynamicSystemCode = systemCode;
     }
 
     public String getNfcid2() {
-        String str = this.mDynamicNfcid2;
-        return str == null ? this.mNfcid2 : str;
+        return this.mDynamicNfcid2 == null ? this.mNfcid2 : this.mDynamicNfcid2;
     }
 
-    public void setOrReplaceDynamicNfcid2(String nfcid2) {
+    public void setDynamicNfcid2(String nfcid2) {
         this.mDynamicNfcid2 = nfcid2;
     }
 
@@ -256,59 +256,19 @@ public final class NfcFServiceInfo implements Parcelable {
         dest.writeString(this.mDescription);
         dest.writeString(this.mSystemCode);
         dest.writeInt(this.mDynamicSystemCode != null ? 1 : 0);
-        String str = this.mDynamicSystemCode;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mDynamicSystemCode != null) {
+            dest.writeString(this.mDynamicSystemCode);
         }
         dest.writeString(this.mNfcid2);
         dest.writeInt(this.mDynamicNfcid2 == null ? 0 : 1);
-        String str2 = this.mDynamicNfcid2;
-        if (str2 != null) {
-            dest.writeString(str2);
+        if (this.mDynamicNfcid2 != null) {
+            dest.writeString(this.mDynamicNfcid2);
         }
         dest.writeInt(this.mUid);
         dest.writeString(this.mT3tPmm);
     }
 
-    /* renamed from: android.nfc.cardemulation.NfcFServiceInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NfcFServiceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NfcFServiceInfo createFromParcel(Parcel source) {
-            String dynamicSystemCode;
-            String dynamicNfcid2;
-            ResolveInfo info = ResolveInfo.CREATOR.createFromParcel(source);
-            String description = source.readString();
-            String systemCode = source.readString();
-            if (source.readInt() == 0) {
-                dynamicSystemCode = null;
-            } else {
-                String dynamicSystemCode2 = source.readString();
-                dynamicSystemCode = dynamicSystemCode2;
-            }
-            String nfcid2 = source.readString();
-            if (source.readInt() == 0) {
-                dynamicNfcid2 = null;
-            } else {
-                String dynamicNfcid22 = source.readString();
-                dynamicNfcid2 = dynamicNfcid22;
-            }
-            int uid = source.readInt();
-            String t3tPmm = source.readString();
-            NfcFServiceInfo service = new NfcFServiceInfo(info, description, systemCode, dynamicSystemCode, nfcid2, dynamicNfcid2, uid, t3tPmm);
-            return service;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NfcFServiceInfo[] newArray(int size) {
-            return new NfcFServiceInfo[size];
-        }
-    }
-
-    public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
+    public void dump(ParcelFileDescriptor fd, PrintWriter pw, String[] args) {
         pw.println("    " + getComponent() + " (Description: " + getDescription() + ") (UID: " + getUid() + NavigationBarInflaterView.KEY_CODE_END);
         pw.println("    System Code: " + getSystemCode());
         pw.println("    NFCID2: " + getNfcid2());
@@ -316,10 +276,52 @@ public final class NfcFServiceInfo implements Parcelable {
     }
 
     public void dumpDebug(ProtoOutputStream proto) {
-        Utils.dumpDebugComponentName(getComponent(), proto, 1146756268033L);
+        getComponent().dumpDebug(proto, 1146756268033L);
         proto.write(1138166333442L, getDescription());
         proto.write(1138166333443L, getSystemCode());
         proto.write(1138166333444L, getNfcid2());
         proto.write(1138166333445L, getT3tPmm());
+    }
+
+    private static boolean isValidSystemCode(String systemCode) {
+        if (systemCode == null) {
+            return false;
+        }
+        if (systemCode.length() != 4) {
+            Log.e(TAG, "System Code " + systemCode + " is not a valid System Code.");
+            return false;
+        }
+        if (!systemCode.startsWith("4") || systemCode.toUpperCase().endsWith(SecureKeyConst.AT_CMD_DRK_V1_WRITING_END)) {
+            Log.e(TAG, "System Code " + systemCode + " is not a valid System Code.");
+            return false;
+        }
+        try {
+            Integer.parseInt(systemCode, 16);
+            return true;
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "System Code " + systemCode + " is not a valid System Code.");
+            return false;
+        }
+    }
+
+    private static boolean isValidNfcid2(String nfcid2) {
+        if (nfcid2 == null) {
+            return false;
+        }
+        if (nfcid2.length() != 16) {
+            Log.e(TAG, "NFCID2 " + nfcid2 + " is not a valid NFCID2.");
+            return false;
+        }
+        if (!nfcid2.toUpperCase().startsWith("02FE")) {
+            Log.e(TAG, "NFCID2 " + nfcid2 + " is not a valid NFCID2.");
+            return false;
+        }
+        try {
+            Long.parseLong(nfcid2, 16);
+            return true;
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "NFCID2 " + nfcid2 + " is not a valid NFCID2.");
+            return false;
+        }
     }
 }

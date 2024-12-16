@@ -14,14 +14,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public class InsetsFrameProvider implements Parcelable {
     public static final Parcelable.Creator<InsetsFrameProvider> CREATOR = new Parcelable.Creator<InsetsFrameProvider>() { // from class: android.view.InsetsFrameProvider.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InsetsFrameProvider createFromParcel(Parcel in) {
             return new InsetsFrameProvider(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InsetsFrameProvider[] newArray(int size) {
             return new InsetsFrameProvider[size];
@@ -32,6 +31,7 @@ public class InsetsFrameProvider implements Parcelable {
     public static final int SOURCE_DISPLAY = 0;
     public static final int SOURCE_FRAME = 2;
     private Rect mArbitraryRectangle;
+    private Rect[] mBoundingRects;
     private int mFlags;
     private final int mId;
     private Insets mInsetsSize;
@@ -44,6 +44,7 @@ public class InsetsFrameProvider implements Parcelable {
         this.mInsetsSize = null;
         this.mInsetsSizeOverrides = null;
         this.mMinimalInsetsSizeInDisplayCutoutSafe = null;
+        this.mBoundingRects = null;
         this.mId = InsetsSource.createId(owner, index, type);
     }
 
@@ -68,6 +69,11 @@ public class InsetsFrameProvider implements Parcelable {
         return this.mSource;
     }
 
+    public InsetsFrameProvider setFlags(int flags) {
+        this.mFlags = flags;
+        return this;
+    }
+
     public InsetsFrameProvider setFlags(int flags, int mask) {
         this.mFlags = (this.mFlags & (~mask)) | (flags & mask);
         return this;
@@ -75,6 +81,10 @@ public class InsetsFrameProvider implements Parcelable {
 
     public int getFlags() {
         return this.mFlags;
+    }
+
+    public boolean hasFlags(int mask) {
+        return (this.mFlags & mask) == mask;
     }
 
     public InsetsFrameProvider setInsetsSize(Insets insetsSize) {
@@ -113,6 +123,15 @@ public class InsetsFrameProvider implements Parcelable {
         return this.mMinimalInsetsSizeInDisplayCutoutSafe;
     }
 
+    public InsetsFrameProvider setBoundingRects(Rect[] boundingRects) {
+        this.mBoundingRects = boundingRects == null ? null : (Rect[]) boundingRects.clone();
+        return this;
+    }
+
+    public Rect[] getBoundingRects() {
+        return this.mBoundingRects;
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -136,6 +155,9 @@ public class InsetsFrameProvider implements Parcelable {
         }
         if (this.mMinimalInsetsSizeInDisplayCutoutSafe != null) {
             sb.append(", mMinimalInsetsSizeInDisplayCutoutSafe=").append(this.mMinimalInsetsSizeInDisplayCutoutSafe);
+        }
+        if (this.mBoundingRects != null) {
+            sb.append(", mBoundingRects=").append(Arrays.toString(this.mBoundingRects));
         }
         sb.append("}");
         return sb.toString();
@@ -161,6 +183,7 @@ public class InsetsFrameProvider implements Parcelable {
         this.mInsetsSize = null;
         this.mInsetsSizeOverrides = null;
         this.mMinimalInsetsSizeInDisplayCutoutSafe = null;
+        this.mBoundingRects = null;
         this.mId = in.readInt();
         this.mSource = in.readInt();
         this.mFlags = in.readInt();
@@ -168,6 +191,7 @@ public class InsetsFrameProvider implements Parcelable {
         this.mInsetsSizeOverrides = (InsetsSizeOverride[]) in.createTypedArray(InsetsSizeOverride.CREATOR);
         this.mArbitraryRectangle = (Rect) in.readTypedObject(Rect.CREATOR);
         this.mMinimalInsetsSizeInDisplayCutoutSafe = (Insets) in.readTypedObject(Insets.CREATOR);
+        this.mBoundingRects = (Rect[]) in.createTypedArray(Rect.CREATOR);
     }
 
     @Override // android.os.Parcelable
@@ -179,6 +203,7 @@ public class InsetsFrameProvider implements Parcelable {
         out.writeTypedArray(this.mInsetsSizeOverrides, flags);
         out.writeTypedObject(this.mArbitraryRectangle, flags);
         out.writeTypedObject(this.mMinimalInsetsSizeInDisplayCutoutSafe, flags);
+        out.writeTypedArray(this.mBoundingRects, flags);
     }
 
     public boolean idEquals(InsetsFrameProvider o) {
@@ -193,44 +218,25 @@ public class InsetsFrameProvider implements Parcelable {
             return false;
         }
         InsetsFrameProvider other = (InsetsFrameProvider) o;
-        if (this.mId == other.mId && this.mSource == other.mSource && this.mFlags == other.mFlags && Objects.equals(this.mInsetsSize, other.mInsetsSize) && Arrays.equals(this.mInsetsSizeOverrides, other.mInsetsSizeOverrides) && Objects.equals(this.mArbitraryRectangle, other.mArbitraryRectangle) && Objects.equals(this.mMinimalInsetsSizeInDisplayCutoutSafe, other.mMinimalInsetsSizeInDisplayCutoutSafe)) {
+        if (this.mId == other.mId && this.mSource == other.mSource && this.mFlags == other.mFlags && Objects.equals(this.mInsetsSize, other.mInsetsSize) && Arrays.equals(this.mInsetsSizeOverrides, other.mInsetsSizeOverrides) && Objects.equals(this.mArbitraryRectangle, other.mArbitraryRectangle) && Objects.equals(this.mMinimalInsetsSizeInDisplayCutoutSafe, other.mMinimalInsetsSizeInDisplayCutoutSafe) && Arrays.equals(this.mBoundingRects, other.mBoundingRects)) {
             return true;
         }
         return false;
     }
 
     public int hashCode() {
-        return Objects.hash(Integer.valueOf(this.mId), Integer.valueOf(this.mSource), Integer.valueOf(this.mFlags), this.mInsetsSize, Integer.valueOf(Arrays.hashCode(this.mInsetsSizeOverrides)), this.mArbitraryRectangle, this.mMinimalInsetsSizeInDisplayCutoutSafe);
+        return Objects.hash(Integer.valueOf(this.mId), Integer.valueOf(this.mSource), Integer.valueOf(this.mFlags), this.mInsetsSize, Integer.valueOf(Arrays.hashCode(this.mInsetsSizeOverrides)), this.mArbitraryRectangle, this.mMinimalInsetsSizeInDisplayCutoutSafe, Integer.valueOf(Arrays.hashCode(this.mBoundingRects)));
     }
 
-    /* renamed from: android.view.InsetsFrameProvider$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InsetsFrameProvider> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InsetsFrameProvider createFromParcel(Parcel in) {
-            return new InsetsFrameProvider(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InsetsFrameProvider[] newArray(int size) {
-            return new InsetsFrameProvider[size];
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static class InsetsSizeOverride implements Parcelable {
         public static final Parcelable.Creator<InsetsSizeOverride> CREATOR = new Parcelable.Creator<InsetsSizeOverride>() { // from class: android.view.InsetsFrameProvider.InsetsSizeOverride.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InsetsSizeOverride createFromParcel(Parcel in) {
                 return new InsetsSizeOverride(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InsetsSizeOverride[] newArray(int size) {
                 return new InsetsSizeOverride[size];
@@ -255,23 +261,6 @@ public class InsetsFrameProvider implements Parcelable {
 
         public Insets getInsetsSize() {
             return this.mInsetsSize;
-        }
-
-        /* renamed from: android.view.InsetsFrameProvider$InsetsSizeOverride$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<InsetsSizeOverride> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InsetsSizeOverride createFromParcel(Parcel in) {
-                return new InsetsSizeOverride(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InsetsSizeOverride[] newArray(int size) {
-                return new InsetsSizeOverride[size];
-            }
         }
 
         @Override // android.os.Parcelable

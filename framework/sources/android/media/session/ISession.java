@@ -51,7 +51,6 @@ public interface ISession extends IInterface {
 
     void setRatingType(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISession {
         @Override // android.media.session.ISession
         public void sendEvent(String event, Bundle data) throws RemoteException {
@@ -133,7 +132,6 @@ public interface ISession extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISession {
         public static final String DESCRIPTOR = "android.media.session.ISession";
         static final int TRANSACTION_destroySession = 8;
@@ -228,128 +226,124 @@ public interface ISession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendEvent(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ISessionController _result = getController();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setFlags(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setActive(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    PendingIntent _arg04 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    setMediaButtonReceiver(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    ComponentName _arg05 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    setMediaButtonBroadcastReceiver(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    PendingIntent _arg06 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    setLaunchPendingIntent(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    destroySession();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    MediaMetadata _arg07 = (MediaMetadata) data.readTypedObject(MediaMetadata.CREATOR);
+                    long _arg12 = data.readLong();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    setMetadata(_arg07, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    PlaybackState _arg08 = (PlaybackState) data.readTypedObject(PlaybackState.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPlaybackState(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    resetQueue();
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    IBinder _result2 = getBinderForSetQueue();
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result2);
+                    return true;
+                case 13:
+                    CharSequence _arg09 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setQueueTitle(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    Bundle _arg010 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setExtras(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRatingType(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    AudioAttributes _arg012 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPlaybackToLocal(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg013 = data.readInt();
+                    int _arg13 = data.readInt();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPlaybackToRemote(_arg013, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCurrentVolume(_arg014);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendEvent(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ISessionController _result = getController();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setFlags(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setActive(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            PendingIntent _arg04 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            setMediaButtonReceiver(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            ComponentName _arg05 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            setMediaButtonBroadcastReceiver(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            PendingIntent _arg06 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            setLaunchPendingIntent(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            destroySession();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            MediaMetadata _arg07 = (MediaMetadata) data.readTypedObject(MediaMetadata.CREATOR);
-                            long _arg12 = data.readLong();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            setMetadata(_arg07, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            PlaybackState _arg08 = (PlaybackState) data.readTypedObject(PlaybackState.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPlaybackState(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            resetQueue();
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            IBinder _result2 = getBinderForSetQueue();
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result2);
-                            return true;
-                        case 13:
-                            CharSequence _arg09 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setQueueTitle(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            Bundle _arg010 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            setExtras(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRatingType(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            AudioAttributes _arg012 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPlaybackToLocal(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg013 = data.readInt();
-                            int _arg13 = data.readInt();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPlaybackToRemote(_arg013, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCurrentVolume(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISession {
+        private static class Proxy implements ISession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

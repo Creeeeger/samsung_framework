@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IVoiceInteractionSessionListener extends IInterface {
     void onSetUiHints(Bundle bundle) throws RemoteException;
 
@@ -17,7 +17,6 @@ public interface IVoiceInteractionSessionListener extends IInterface {
 
     void onVoiceSessionWindowVisibilityChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IVoiceInteractionSessionListener {
         @Override // com.android.internal.app.IVoiceInteractionSessionListener
         public void onVoiceSessionShown() throws RemoteException {
@@ -41,7 +40,6 @@ public interface IVoiceInteractionSessionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractionSessionListener {
         public static final String DESCRIPTOR = "com.android.internal.app.IVoiceInteractionSessionListener";
         static final int TRANSACTION_onSetUiHints = 4;
@@ -94,36 +92,33 @@ public interface IVoiceInteractionSessionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onVoiceSessionShown();
+                    return true;
+                case 2:
+                    onVoiceSessionHidden();
+                    return true;
+                case 3:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onVoiceSessionWindowVisibilityChanged(_arg0);
+                    return true;
+                case 4:
+                    Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSetUiHints(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onVoiceSessionShown();
-                            return true;
-                        case 2:
-                            onVoiceSessionHidden();
-                            return true;
-                        case 3:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onVoiceSessionWindowVisibilityChanged(_arg0);
-                            return true;
-                        case 4:
-                            Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSetUiHints(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IVoiceInteractionSessionListener {
+        private static class Proxy implements IVoiceInteractionSessionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

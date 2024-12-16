@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioMessagingIndication extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$messaging$IRadioMessagingIndication".replace('$', '.');
-    public static final String HASH = "50aefda34c9dd40090c8d5925e71d5b84530c3d0";
-    public static final int VERSION = 2;
+    public static final String HASH = "30b0bc0e84679bc3b5ccb3a52da34c47cda6b7eb";
+    public static final int VERSION = 3;
 
     void cdmaNewSms(int i, CdmaSmsMessage cdmaSmsMessage) throws RemoteException;
 
@@ -30,7 +30,6 @@ public interface IRadioMessagingIndication extends IInterface {
 
     void simSmsStorageFull(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioMessagingIndication {
         @Override // android.hardware.radio.messaging.IRadioMessagingIndication
         public void cdmaNewSms(int type, CdmaSmsMessage msg) throws RemoteException {
@@ -76,7 +75,6 @@ public interface IRadioMessagingIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioMessagingIndication {
         static final int TRANSACTION_cdmaNewSms = 1;
         static final int TRANSACTION_cdmaRuimSmsStorageFull = 2;
@@ -115,69 +113,67 @@ public interface IRadioMessagingIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    CdmaSmsMessage _arg1 = (CdmaSmsMessage) data.readTypedObject(CdmaSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    cdmaNewSms(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cdmaRuimSmsStorageFull(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    byte[] _arg12 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    newBroadcastSms(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    byte[] _arg13 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    newSms(_arg04, _arg13);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    newSmsOnSim(_arg05, _arg14);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    byte[] _arg15 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    newSmsStatusReport(_arg06, _arg15);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    simSmsStorageFull(_arg07);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            CdmaSmsMessage _arg1 = (CdmaSmsMessage) data.readTypedObject(CdmaSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            cdmaNewSms(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cdmaRuimSmsStorageFull(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            byte[] _arg12 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            newBroadcastSms(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            byte[] _arg13 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            newSms(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            newSmsOnSim(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            byte[] _arg15 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            newSmsStatusReport(_arg06, _arg15);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            simSmsStorageFull(_arg07);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioMessagingIndication {
+        private static class Proxy implements IRadioMessagingIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

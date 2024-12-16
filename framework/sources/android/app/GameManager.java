@@ -23,11 +23,10 @@ public final class GameManager {
     private final IGameManagerService mService = IGameManagerService.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.GAME_SERVICE));
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface GameMode {
     }
 
-    public GameManager(Context context, Handler handler) throws ServiceManager.ServiceNotFoundException {
+    GameManager(Context context, Handler handler) throws ServiceManager.ServiceNotFoundException {
         this.mContext = context;
     }
 

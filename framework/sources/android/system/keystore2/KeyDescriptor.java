@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class KeyDescriptor implements Parcelable {
     public static final Parcelable.Creator<KeyDescriptor> CREATOR = new Parcelable.Creator<KeyDescriptor>() { // from class: android.system.keystore2.KeyDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyDescriptor createFromParcel(Parcel _aidl_source) {
             KeyDescriptor _aidl_out = new KeyDescriptor();
@@ -17,6 +15,7 @@ public class KeyDescriptor implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyDescriptor[] newArray(int _aidl_size) {
             return new KeyDescriptor[_aidl_size];
@@ -26,25 +25,6 @@ public class KeyDescriptor implements Parcelable {
     public byte[] blob;
     public int domain = 0;
     public long nspace = 0;
-
-    /* renamed from: android.system.keystore2.KeyDescriptor$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyDescriptor createFromParcel(Parcel _aidl_source) {
-            KeyDescriptor _aidl_out = new KeyDescriptor();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyDescriptor[] newArray(int _aidl_size) {
-            return new KeyDescriptor[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

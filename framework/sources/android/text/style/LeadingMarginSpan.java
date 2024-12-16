@@ -6,10 +6,9 @@ import android.os.Parcel;
 import android.text.Layout;
 import android.text.ParcelableSpan;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface LeadingMarginSpan extends ParagraphStyle {
 
-    /* loaded from: classes3.dex */
     public interface LeadingMarginSpan2 extends LeadingMarginSpan, WrapTogetherSpan {
         int getLeadingMarginLineCount();
     }
@@ -18,7 +17,6 @@ public interface LeadingMarginSpan extends ParagraphStyle {
 
     int getLeadingMargin(boolean z);
 
-    /* loaded from: classes3.dex */
     public static class Standard implements LeadingMarginSpan, ParcelableSpan {
         private final int mFirst;
         private final int mRest;

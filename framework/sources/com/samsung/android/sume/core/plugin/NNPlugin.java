@@ -8,7 +8,7 @@ import com.samsung.android.sume.core.functional.ModelSelector;
 import com.samsung.android.sume.core.types.nn.NNFileDescriptor;
 import java.util.Optional;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class NNPlugin extends PluginFixture<NNPlugin> {
     private ExecuteDelegator executeDelegator;
     private ModelLoader<NNFileDescriptor> modelLoader;

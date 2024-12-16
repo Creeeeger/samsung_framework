@@ -3,7 +3,7 @@ package com.samsung.android.wallpaper.legibilitycolors.utils.image;
 import android.hardware.scontext.SContextConstants;
 import android.util.SparseArray;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ConvolutionMatrixPresets {
     public static double[][] HIGHPASS_3_FILTER = {new double[]{-0.125d, -0.125d, -0.125d}, new double[]{-0.125d, 1.0d, -0.125d}, new double[]{-0.125d, -0.125d, -0.125d}};
     public static double[][] HIGHPASS_5_FILTER = {new double[]{SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, -0.03571428571428571d, -0.03571428571428571d, -0.03571428571428571d, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN}, new double[]{-0.03571428571428571d, 0.10714285714285714d, -0.14285714285714285d, 0.10714285714285714d, -0.03571428571428571d}, new double[]{-0.03571428571428571d, -0.14285714285714285d, 0.5714285714285714d, -0.14285714285714285d, -0.03571428571428571d}, new double[]{-0.03571428571428571d, 0.10714285714285714d, -0.14285714285714285d, 0.10714285714285714d, -0.03571428571428571d}, new double[]{SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, -0.03571428571428571d, -0.03571428571428571d, -0.03571428571428571d, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN}};
@@ -15,7 +15,7 @@ public class ConvolutionMatrixPresets {
             return filter;
         }
         int half = size / 2;
-        double[][] kernel = new double[size];
+        double[][] kernel = new double[size][];
         double negativeKernelSum = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         double positiveKernelSum = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         double maxDistance = Math.sqrt(half * half * 2);

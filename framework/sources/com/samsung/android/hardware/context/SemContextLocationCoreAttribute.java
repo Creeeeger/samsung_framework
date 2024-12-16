@@ -7,17 +7,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextLocationCoreAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextLocationCoreAttribute> CREATOR = new Parcelable.Creator<SemContextLocationCoreAttribute>() { // from class: com.samsung.android.hardware.context.SemContextLocationCoreAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextLocationCoreAttribute createFromParcel(Parcel in) {
             return new SemContextLocationCoreAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextLocationCoreAttribute[] newArray(int size) {
             return new SemContextLocationCoreAttribute[size];
@@ -43,28 +42,7 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
     private long mTimeStamp;
     private int mTotalGpsCnt;
 
-    /* synthetic */ SemContextLocationCoreAttribute(Parcel parcel, SemContextLocationCoreAttributeIA semContextLocationCoreAttributeIA) {
-        this(parcel);
-    }
-
-    /* renamed from: com.samsung.android.hardware.context.SemContextLocationCoreAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextLocationCoreAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextLocationCoreAttribute createFromParcel(Parcel in) {
-            return new SemContextLocationCoreAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextLocationCoreAttribute[] newArray(int size) {
-            return new SemContextLocationCoreAttribute[size];
-        }
-    }
-
-    public SemContextLocationCoreAttribute() {
+    SemContextLocationCoreAttribute() {
         this.mMode = -1;
         this.mAction = -1;
         this.mFenceId = 0;
@@ -183,12 +161,12 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
         this.mLocation = null;
         this.mMode = mode;
         this.mAction = action;
-        if (mode == 0) {
+        if (this.mMode == 0) {
             this.mFenceId = val;
-        } else if (mode == 3) {
-            if (action == 18) {
+        } else if (this.mMode == 3) {
+            if (this.mAction == 18) {
                 this.mRequestId = val;
-            } else if (action == 19) {
+            } else if (this.mAction == 19) {
                 this.mBatchingSize = val;
             }
         }
@@ -348,38 +326,33 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
         this.mLocation = null;
         this.mMode = mode;
         this.mAction = action;
-        int[] iArr = new int[rawData.length];
-        this.mRawData = iArr;
-        System.arraycopy(rawData, 0, iArr, 0, rawData.length);
+        this.mRawData = new int[rawData.length];
+        System.arraycopy(rawData, 0, this.mRawData, 0, rawData.length);
         setAttribute();
     }
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mMode;
-        if (i < -1 || i > 3) {
+        if (this.mMode < -1 || this.mMode > 3) {
             Log.d(TAG, "Mode value is wrong!!");
             return false;
         }
-        if (i == 0) {
-            int i2 = this.mAction;
-            if ((i2 < -1 || i2 > 10) && i2 != 23) {
+        if (this.mMode == 0) {
+            if ((this.mAction < -1 || this.mAction > 10) && this.mAction != 23) {
                 Log.d(TAG, "Action value is wrong!!");
                 return false;
             }
-        } else if (i == 1) {
-            int i3 = this.mAction;
-            if (i3 < -1 || i3 > 14) {
+        } else if (this.mMode == 1) {
+            if (this.mAction < -1 || this.mAction > 14) {
                 Log.d(TAG, "Action value is wrong!!");
                 return false;
             }
-        } else if (i == 3) {
-            int i4 = this.mAction;
-            if (i4 < 16 || i4 > 22) {
+        } else if (this.mMode == 3) {
+            if (this.mAction < 16 || this.mAction > 22) {
                 Log.d(TAG, "Action value is wrong!!");
                 return false;
             }
-            if ((i4 == 16 || i4 == 17) && !this.mFusedBatchOption.isValid()) {
+            if ((this.mAction == 16 || this.mAction == 17) && !this.mFusedBatchOption.isValid()) {
                 Log.d(TAG, "FusedBatchOption is wrong");
                 return false;
             }
@@ -420,13 +393,11 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
             Log.d(TAG, "Timestamp is wrong");
             return false;
         }
-        double d = this.mLongitude;
-        if (d < -180.0d || d > 180.0d) {
+        if (this.mLongitude < -180.0d || this.mLongitude > 180.0d) {
             Log.d(TAG, "Longitude is wrong");
             return false;
         }
-        double d2 = this.mLatitude;
-        if (d2 < -90.0d || d2 > 90.0d) {
+        if (this.mLatitude < -90.0d || this.mLatitude > 90.0d) {
             Log.d(TAG, "Latitude is wrong");
             return false;
         }
@@ -445,25 +416,23 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
         Bundle attribute = new Bundle();
         switch (this.mMode) {
             case 0:
-                int i = this.mAction;
-                if (i == 1) {
+                if (this.mAction == 1) {
                     double[] doubleType = {this.mLatitude, this.mLongitude};
                     attribute.putIntArray("IntType", new int[]{this.mFenceId, this.mRadius, this.mTotalGpsCnt, this.mSuccessGpsCnt});
                     attribute.putDoubleArray("DoubleType", doubleType);
                     break;
-                } else if (i == 2) {
+                } else if (this.mAction == 2) {
                     attribute.putIntArray("IntType", new int[]{this.mFenceId});
                     break;
-                } else if (i == 7) {
+                } else if (this.mAction == 7) {
                     attribute.putIntArray("IntType", new int[]{this.mFenceId, this.mRadius, this.mStatus});
                     break;
-                } else if (i == 9) {
+                } else if (this.mAction == 9) {
                     attribute.putIntArray("IntType", new int[]{this.mMinDistance, this.mMinTime});
                     break;
-                } else if (i == 23) {
-                    int[] iArr = this.mRawData;
-                    int[] intType = new int[iArr.length];
-                    System.arraycopy(iArr, 0, intType, 0, iArr.length);
+                } else if (this.mAction == 23) {
+                    int[] intType = new int[this.mRawData.length];
+                    System.arraycopy(this.mRawData, 0, intType, 0, this.mRawData.length);
                     attribute.putIntArray("IntType", intType);
                     break;
                 } else {
@@ -484,8 +453,7 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
                     break;
                 }
             case 3:
-                int i2 = this.mAction;
-                if (i2 == 16 || i2 == 17) {
+                if (this.mAction == 16 || this.mAction == 17) {
                     int[] intType3 = {this.mRequestId, this.mFusedBatchOption.user_info, this.mFusedBatchOption.flags};
                     long[] longType2 = {this.mFusedBatchOption.period};
                     double[] doubleType3 = {this.mFusedBatchOption.max_power};
@@ -495,13 +463,13 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
                     attribute.putDoubleArray("DoubleType", doubleType3);
                     attribute.putFloatArray("FloatType", floatType);
                     break;
-                } else if (i2 == 18) {
+                } else if (this.mAction == 18) {
                     attribute.putIntArray("IntType", new int[]{this.mRequestId});
                     break;
-                } else if (i2 == 19) {
+                } else if (this.mAction == 19) {
                     attribute.putIntArray("IntType", new int[]{this.mBatchingSize});
                     break;
-                } else if (i2 == 21) {
+                } else if (this.mAction == 21) {
                     String stringType = this.mLocation.getProvider();
                     long[] longType3 = {this.mLocation.getTime()};
                     double[] doubleType4 = {this.mLocation.getLatitude(), this.mLocation.getLongitude(), this.mLocation.getAltitude()};
@@ -523,8 +491,7 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
         super.setAttribute(47, attribute);
     }
 
-    /* loaded from: classes5.dex */
-    public static class FusedBatchOption {
+    private static class FusedBatchOption {
         final float distance_thrs;
         final int flags;
         final double max_power;

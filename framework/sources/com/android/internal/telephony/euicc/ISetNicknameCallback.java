@@ -12,7 +12,6 @@ public interface ISetNicknameCallback extends IInterface {
 
     void onComplete(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISetNicknameCallback {
         @Override // com.android.internal.telephony.euicc.ISetNicknameCallback
         public void onComplete(int resultCode) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISetNicknameCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISetNicknameCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,26 +65,22 @@ public interface ISetNicknameCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISetNicknameCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISetNicknameCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISetNicknameCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISetNicknameCallback {
+        private static class Proxy implements ISetNicknameCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -24,6 +24,7 @@ import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.SemHorizontalAbsListView;
+import android.widget.SemHorizontalListView;
 import android.widget.TextView;
 import com.android.internal.R;
 import com.samsung.android.wallpaperbackup.GenerateXML;
@@ -87,10 +88,6 @@ public class SemHorizontalFastScroller {
     private boolean mUpdatingLayout;
     private static final long TAP_TIMEOUT = ViewConfiguration.getTapTimeout();
     private static Property<View, Integer> LEFT = new IntProperty<View>("left") { // from class: com.samsung.android.widget.SemHorizontalFastScroller.3
-        AnonymousClass3(String name) {
-            super(name);
-        }
-
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setLeft(value);
@@ -102,10 +99,6 @@ public class SemHorizontalFastScroller {
         }
     };
     private static Property<View, Integer> TOP = new IntProperty<View>(GenerateXML.TOP) { // from class: com.samsung.android.widget.SemHorizontalFastScroller.4
-        AnonymousClass4(String name) {
-            super(name);
-        }
-
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setTop(value);
@@ -117,10 +110,6 @@ public class SemHorizontalFastScroller {
         }
     };
     private static Property<View, Integer> RIGHT = new IntProperty<View>("right") { // from class: com.samsung.android.widget.SemHorizontalFastScroller.5
-        AnonymousClass5(String name) {
-            super(name);
-        }
-
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setRight(value);
@@ -132,10 +121,6 @@ public class SemHorizontalFastScroller {
         }
     };
     private static Property<View, Integer> BOTTOM = new IntProperty<View>(GenerateXML.BOTTOM) { // from class: com.samsung.android.widget.SemHorizontalFastScroller.6
-        AnonymousClass6(String name) {
-            super(name);
-        }
-
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setBottom(value);
@@ -154,49 +139,17 @@ public class SemHorizontalFastScroller {
     private int mScrollbarPosition = -1;
     private long mPendingDrag = -1;
     private final Runnable mDeferHide = new Runnable() { // from class: com.samsung.android.widget.SemHorizontalFastScroller.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             SemHorizontalFastScroller.this.setState(0);
         }
     };
     private final Animator.AnimatorListener mSwitchPrimaryListener = new AnimatorListenerAdapter() { // from class: com.samsung.android.widget.SemHorizontalFastScroller.2
-        AnonymousClass2() {
-        }
-
         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
         public void onAnimationEnd(Animator animation) {
-            SemHorizontalFastScroller.this.mShowingPrimary = !r0.mShowingPrimary;
+            SemHorizontalFastScroller.this.mShowingPrimary = !SemHorizontalFastScroller.this.mShowingPrimary;
         }
     };
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$1 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SemHorizontalFastScroller.this.setState(0);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$2 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass2 extends AnimatorListenerAdapter {
-        AnonymousClass2() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            SemHorizontalFastScroller.this.mShowingPrimary = !r0.mShowingPrimary;
-        }
-    }
 
     public SemHorizontalFastScroller(SemHorizontalAbsListView listView, int styleResId) {
         this.mList = listView;
@@ -208,27 +161,22 @@ public class SemHorizontalFastScroller {
         this.mScrollCompleted = true;
         this.mState = 1;
         this.mMatchDragPosition = context.getApplicationInfo().targetSdkVersion >= 11;
-        ImageView imageView = new ImageView(context);
-        this.mTrackImage = imageView;
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        ImageView imageView2 = new ImageView(context);
-        this.mThumbImage = imageView2;
-        imageView2.setScaleType(ImageView.ScaleType.FIT_XY);
-        View view = new View(context);
-        this.mPreviewImage = view;
-        view.setAlpha(0.0f);
-        TextView createPreviewTextView = createPreviewTextView(context);
-        this.mPrimaryText = createPreviewTextView;
-        TextView createPreviewTextView2 = createPreviewTextView(context);
-        this.mSecondaryText = createPreviewTextView2;
+        this.mTrackImage = new ImageView(context);
+        this.mTrackImage.setScaleType(ImageView.ScaleType.FIT_XY);
+        this.mThumbImage = new ImageView(context);
+        this.mThumbImage.setScaleType(ImageView.ScaleType.FIT_XY);
+        this.mPreviewImage = new View(context);
+        this.mPreviewImage.setAlpha(0.0f);
+        this.mPrimaryText = createPreviewTextView(context);
+        this.mSecondaryText = createPreviewTextView(context);
         setStyle(styleResId);
         ViewGroupOverlay overlay = listView.getOverlay();
         this.mOverlay = overlay;
-        overlay.add(imageView);
-        overlay.add(imageView2);
-        overlay.add(view);
-        overlay.add(createPreviewTextView);
-        overlay.add(createPreviewTextView2);
+        overlay.add(this.mTrackImage);
+        overlay.add(this.mThumbImage);
+        overlay.add(this.mPreviewImage);
+        overlay.add(this.mPrimaryText);
+        overlay.add(this.mSecondaryText);
         getSectionsFromIndexer();
         updateLongList(this.mOldChildCount, this.mOldItemCount);
         setScrollbarPosition(listView.semGetHorizontalScrollbarPosition());
@@ -237,33 +185,28 @@ public class SemHorizontalFastScroller {
 
     private void updateAppearance() {
         Context context = this.mList.getContext();
-        this.mTrackImage.lambda$setImageURIAsync$2(this.mTrackDrawable);
-        Drawable drawable = this.mTrackDrawable;
-        int height = drawable != null ? Math.max(0, drawable.getIntrinsicHeight()) : 0;
-        this.mThumbImage.lambda$setImageURIAsync$2(this.mThumbDrawable);
+        this.mTrackImage.lambda$setImageURIAsync$0(this.mTrackDrawable);
+        int height = this.mTrackDrawable != null ? Math.max(0, this.mTrackDrawable.getIntrinsicHeight()) : 0;
+        this.mThumbImage.lambda$setImageURIAsync$0(this.mThumbDrawable);
         this.mThumbImage.setMinimumWidth(this.mThumbMinWidth);
         this.mThumbImage.setMinimumHeight(this.mThumbMinHeight);
         this.mThumbImage.setRotation(270.0f);
-        Drawable drawable2 = this.mThumbDrawable;
-        if (drawable2 != null) {
-            height = Math.max(height, drawable2.getIntrinsicWidth());
+        if (this.mThumbDrawable != null) {
+            height = Math.max(height, this.mThumbDrawable.getIntrinsicWidth());
         }
         this.mHeight = Math.max(height, this.mThumbMinHeight);
         this.mPreviewImage.setMinimumWidth(this.mPreviewMinWidth);
         this.mPreviewImage.setMinimumHeight(this.mPreviewMinHeight);
-        int i = this.mTextAppearance;
-        if (i != 0) {
-            this.mPrimaryText.setTextAppearance(context, i);
+        if (this.mTextAppearance != 0) {
+            this.mPrimaryText.setTextAppearance(context, this.mTextAppearance);
             this.mSecondaryText.setTextAppearance(context, this.mTextAppearance);
         }
-        ColorStateList colorStateList = this.mTextColor;
-        if (colorStateList != null) {
-            this.mPrimaryText.setTextColor(colorStateList);
+        if (this.mTextColor != null) {
+            this.mPrimaryText.setTextColor(this.mTextColor);
             this.mSecondaryText.setTextColor(this.mTextColor);
         }
-        float f = this.mTextSize;
-        if (f > 0.0f) {
-            this.mPrimaryText.setTextSize(0, f);
+        if (this.mTextSize > 0.0f) {
+            this.mPrimaryText.setTextSize(0, this.mTextSize);
             this.mSecondaryText.setTextSize(0, this.mTextSize);
         }
         int textMinSize = Math.max(0, this.mPreviewMinWidth);
@@ -385,26 +328,20 @@ public class SemHorizontalFastScroller {
         setState(0);
     }
 
-    /* JADX WARN: Type inference failed for: r0v0 */
-    /* JADX WARN: Type inference failed for: r0v1, types: [boolean] */
-    /* JADX WARN: Type inference failed for: r0v3 */
-    public void setScrollbarPosition(int position) {
-        if (position == 0) {
-            position = this.mList.isLayoutRtl() ? 1 : 2;
+    public void setScrollbarPosition(int i) {
+        if (i == 0) {
+            i = this.mList.isLayoutRtl() ? 1 : 2;
         }
-        if (this.mScrollbarPosition != position) {
-            this.mScrollbarPosition = position;
-            ?? r0 = position == 1 ? 0 : 1;
-            this.mLayoutFromBottom = r0;
-            int previewResId = this.mPreviewResId[r0];
-            this.mPreviewImage.setBackgroundResource(previewResId);
+        if (this.mScrollbarPosition != i) {
+            this.mScrollbarPosition = i;
+            this.mLayoutFromBottom = i != 1;
+            this.mPreviewImage.setBackgroundResource(this.mPreviewResId[this.mLayoutFromBottom ? 1 : 0]);
             Drawable background = this.mPreviewImage.getBackground();
             if (background != null) {
-                Rect padding = this.mTempBounds;
-                background.getPadding(padding);
-                int i = this.mPreviewPadding;
-                padding.offset(i, i);
-                this.mPreviewImage.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+                Rect rect = this.mTempBounds;
+                background.getPadding(rect);
+                rect.offset(this.mPreviewPadding, this.mPreviewPadding);
+                this.mPreviewImage.setPadding(rect.left, rect.top, rect.right, rect.bottom);
             }
             updateLayout();
         }
@@ -609,6 +546,7 @@ public class SemHorizontalFastScroller {
         track.layout(left, top, right, bottom);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setState(int state) {
         this.mList.removeCallbacks(this.mDeferHide);
         if (this.mAlwaysShow && state == 0) {
@@ -644,45 +582,39 @@ public class SemHorizontalFastScroller {
     }
 
     private void transitionToHidden() {
-        AnimatorSet animatorSet = this.mDecorAnimation;
-        if (animatorSet != null) {
-            animatorSet.cancel();
+        if (this.mDecorAnimation != null) {
+            this.mDecorAnimation.cancel();
         }
         Animator fadeOut = groupAnimatorOfFloat(View.ALPHA, 0.0f, this.mThumbImage, this.mTrackImage, this.mPreviewImage, this.mPrimaryText, this.mSecondaryText).setDuration(300L);
         float offset = this.mLayoutFromBottom ? this.mThumbImage.getHeight() : -this.mThumbImage.getHeight();
         Animator slideOut = groupAnimatorOfFloat(View.TRANSLATION_Y, offset, this.mThumbImage, this.mTrackImage).setDuration(300L);
-        AnimatorSet animatorSet2 = new AnimatorSet();
-        this.mDecorAnimation = animatorSet2;
-        animatorSet2.playTogether(fadeOut, slideOut);
+        this.mDecorAnimation = new AnimatorSet();
+        this.mDecorAnimation.playTogether(fadeOut, slideOut);
         this.mDecorAnimation.start();
         this.mShowingPreview = false;
     }
 
     private void transitionToVisible() {
-        AnimatorSet animatorSet = this.mDecorAnimation;
-        if (animatorSet != null) {
-            animatorSet.cancel();
+        if (this.mDecorAnimation != null) {
+            this.mDecorAnimation.cancel();
         }
         Animator fadeIn = groupAnimatorOfFloat(View.ALPHA, 1.0f, this.mThumbImage, this.mTrackImage).setDuration(150L);
         Animator fadeOut = groupAnimatorOfFloat(View.ALPHA, 0.0f, this.mPreviewImage, this.mPrimaryText, this.mSecondaryText).setDuration(300L);
         Animator slideIn = groupAnimatorOfFloat(View.TRANSLATION_Y, 0.0f, this.mThumbImage, this.mTrackImage).setDuration(150L);
-        AnimatorSet animatorSet2 = new AnimatorSet();
-        this.mDecorAnimation = animatorSet2;
-        animatorSet2.playTogether(fadeIn, fadeOut, slideIn);
+        this.mDecorAnimation = new AnimatorSet();
+        this.mDecorAnimation.playTogether(fadeIn, fadeOut, slideIn);
         this.mDecorAnimation.start();
         this.mShowingPreview = false;
     }
 
     private void transitionToDragging() {
-        AnimatorSet animatorSet = this.mDecorAnimation;
-        if (animatorSet != null) {
-            animatorSet.cancel();
+        if (this.mDecorAnimation != null) {
+            this.mDecorAnimation.cancel();
         }
         Animator fadeIn = groupAnimatorOfFloat(View.ALPHA, 1.0f, this.mThumbImage, this.mTrackImage, this.mPreviewImage).setDuration(150L);
         Animator slideIn = groupAnimatorOfFloat(View.TRANSLATION_Y, 0.0f, this.mThumbImage, this.mTrackImage).setDuration(150L);
-        AnimatorSet animatorSet2 = new AnimatorSet();
-        this.mDecorAnimation = animatorSet2;
-        animatorSet2.playTogether(fadeIn, slideIn);
+        this.mDecorAnimation = new AnimatorSet();
+        this.mDecorAnimation.playTogether(fadeIn, slideIn);
         this.mDecorAnimation.start();
         this.mShowingPreview = true;
     }
@@ -720,126 +652,91 @@ public class SemHorizontalFastScroller {
         }
         if (adapter instanceof SectionIndexer) {
             this.mListAdapter = adapter;
-            SectionIndexer sectionIndexer = (SectionIndexer) adapter;
-            this.mSectionIndexer = sectionIndexer;
-            this.mSections = sectionIndexer.getSections();
-            return;
+            this.mSectionIndexer = (SectionIndexer) adapter;
+            this.mSections = this.mSectionIndexer.getSections();
+        } else {
+            this.mListAdapter = adapter;
+            this.mSections = null;
         }
-        this.mListAdapter = adapter;
-        this.mSections = null;
     }
 
     public void onSectionsChanged() {
         this.mListAdapter = null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x003a, code lost:
-    
-        if (r9 == r7) goto L76;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x003c, code lost:
-    
-        if (r6 <= 0) goto L118;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x003e, code lost:
-    
-        r6 = r6 - 1;
-        r10 = r19.mSectionIndexer.getPositionForSection(r6);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0046, code lost:
-    
-        if (r10 == r7) goto L80;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x004b, code lost:
-    
-        if (r6 != 0) goto L119;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x004d, code lost:
-    
-        r8 = 0;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0048, code lost:
-    
-        r11 = r6;
-        r8 = r6;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x004f, code lost:
-    
-        r13 = r12 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0051, code lost:
-    
-        if (r13 >= r4) goto L120;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0059, code lost:
-    
-        if (r19.mSectionIndexer.getPositionForSection(r13) != r9) goto L121;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x005b, code lost:
-    
-        r13 = r13 + 1;
-        r12 = r12 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0060, code lost:
-    
-        r14 = r11 / r4;
-        r15 = r12 / r4;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0066, code lost:
-    
-        if (r2 != 0) goto L90;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0068, code lost:
-    
-        r1 = Float.MAX_VALUE;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0074, code lost:
-    
-        if (r11 != r5) goto L95;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x007a, code lost:
-    
-        if ((r20 - r14) >= r1) goto L95;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x007c, code lost:
-    
-        r3 = r10;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x008b, code lost:
-    
-        r3 = android.util.MathUtils.constrain(r3, 0, r2 - 1);
-        r7 = r19.mList;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0098, code lost:
-    
-        if ((r7 instanceof android.widget.SemHorizontalListView) == false) goto L99;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x009a, code lost:
-    
-        ((android.widget.SemHorizontalListView) r7).setSelectionFromStart(r19.mHeaderCount + r3, 0);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x00a6, code lost:
-    
-        r7.setSelection(r19.mHeaderCount + r3);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x007e, code lost:
-    
-        r3 = ((int) (((r9 - r10) * (r20 - r14)) / (r15 - r14))) + r10;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x006e, code lost:
-    
-        r1 = 0.125f / r2;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void scrollTo(float r20) {
-        /*
-            Method dump skipped, instructions count: 240
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.widget.SemHorizontalFastScroller.scrollTo(float):void");
+    private void scrollTo(float position) {
+        int sectionIndex;
+        int targetIndex;
+        this.mScrollCompleted = false;
+        int count = this.mList.getCount();
+        Object[] sections = this.mSections;
+        int sectionCount = sections == null ? 0 : sections.length;
+        if (sections != null && sectionCount > 1) {
+            int exactSection = MathUtils.constrain((int) (sectionCount * position), 0, sectionCount - 1);
+            int targetSection = exactSection;
+            int targetIndex2 = this.mSectionIndexer.getPositionForSection(targetSection);
+            sectionIndex = targetSection;
+            int nextIndex = count;
+            int prevIndex = targetIndex2;
+            int prevSection = targetSection;
+            int nextSection = targetSection + 1;
+            if (targetSection < sectionCount - 1) {
+                nextIndex = this.mSectionIndexer.getPositionForSection(targetSection + 1);
+            }
+            if (nextIndex == targetIndex2) {
+                while (true) {
+                    if (targetSection <= 0) {
+                        break;
+                    }
+                    targetSection--;
+                    prevIndex = this.mSectionIndexer.getPositionForSection(targetSection);
+                    if (prevIndex != targetIndex2) {
+                        prevSection = targetSection;
+                        sectionIndex = targetSection;
+                        break;
+                    } else if (targetSection == 0) {
+                        sectionIndex = 0;
+                        break;
+                    }
+                }
+            }
+            int nextNextSection = nextSection + 1;
+            while (nextNextSection < sectionCount && this.mSectionIndexer.getPositionForSection(nextNextSection) == nextIndex) {
+                nextNextSection++;
+                nextSection++;
+            }
+            float prevPosition = prevSection / sectionCount;
+            float nextPosition = nextSection / sectionCount;
+            float snapThreshold = count == 0 ? Float.MAX_VALUE : 0.125f / count;
+            if (prevSection == exactSection && position - prevPosition < snapThreshold) {
+                targetIndex = prevIndex;
+            } else {
+                targetIndex = ((int) (((nextIndex - prevIndex) * (position - prevPosition)) / (nextPosition - prevPosition))) + prevIndex;
+            }
+            int targetIndex3 = MathUtils.constrain(targetIndex, 0, count - 1);
+            if (!(this.mList instanceof SemHorizontalListView)) {
+                this.mList.setSelection(this.mHeaderCount + targetIndex3);
+            } else {
+                ((SemHorizontalListView) this.mList).setSelectionFromStart(this.mHeaderCount + targetIndex3, 0);
+            }
+        } else {
+            int index = MathUtils.constrain((int) (count * position), 0, count - 1);
+            if (this.mList instanceof SemHorizontalListView) {
+                ((SemHorizontalListView) this.mList).setSelectionFromStart(this.mHeaderCount + index, 0);
+            } else {
+                this.mList.setSelection(this.mHeaderCount + index);
+            }
+            sectionIndex = -1;
+        }
+        if (this.mCurrentSection != sectionIndex) {
+            this.mCurrentSection = sectionIndex;
+            boolean hasPreview = transitionPreviewLayout(sectionIndex);
+            if (!this.mShowingPreview && hasPreview) {
+                transitionToDragging();
+            } else if (this.mShowingPreview && !hasPreview) {
+                transitionToVisible();
+            }
+        }
     }
 
     private boolean transitionPreviewLayout(int sectionIndex) {
@@ -860,12 +757,11 @@ public class SemHorizontalFastScroller {
             showing = this.mSecondaryText;
             target = this.mPrimaryText;
         }
-        target.setText(text);
+        target.lambda$setTextAsync$0(text);
         measurePreview(target, bounds);
         applyLayout(target, bounds);
-        AnimatorSet animatorSet = this.mPreviewAnimation;
-        if (animatorSet != null) {
-            animatorSet.cancel();
+        if (this.mPreviewAnimation != null) {
+            this.mPreviewAnimation.cancel();
         }
         Animator showTarget = animateAlpha(target, 1.0f).setDuration(50L);
         Animator hideShowing = animateAlpha(showing, 0.0f).setDuration(50L);
@@ -876,9 +772,8 @@ public class SemHorizontalFastScroller {
         bounds.bottom += preview.getPaddingBottom();
         Animator resizePreview = animateBounds(preview, bounds);
         resizePreview.setDuration(100L);
-        AnimatorSet animatorSet2 = new AnimatorSet();
-        this.mPreviewAnimation = animatorSet2;
-        AnimatorSet.Builder builder = animatorSet2.play(hideShowing).with(showTarget);
+        this.mPreviewAnimation = new AnimatorSet();
+        AnimatorSet.Builder builder = this.mPreviewAnimation.play(hideShowing).with(showTarget);
         builder.with(resizePreview);
         int previewHeight = (preview.getHeight() - preview.getPaddingTop()) - preview.getPaddingBottom();
         int targetHeight = target.getHeight();
@@ -951,20 +846,18 @@ public class SemHorizontalFastScroller {
         int maxSize;
         int currentVisibleSize;
         int nextSectionPos2;
-        Object[] objArr;
         if (this.mSectionIndexer == null || this.mListAdapter == null) {
             getSectionsFromIndexer();
         }
-        boolean hasSections = (this.mSectionIndexer == null || (objArr = this.mSections) == null || objArr.length <= 0) ? false : true;
+        boolean hasSections = (this.mSectionIndexer == null || this.mSections == null || this.mSections.length <= 0) ? false : true;
         if (!hasSections || !this.mMatchDragPosition) {
             return firstVisibleItem / (totalItemCount - visibleItemCount);
         }
-        int i = this.mHeaderCount;
-        int firstVisibleItem2 = firstVisibleItem - i;
+        int firstVisibleItem2 = firstVisibleItem - this.mHeaderCount;
         if (firstVisibleItem2 < 0) {
             return 0.0f;
         }
-        int totalItemCount2 = totalItemCount - i;
+        int totalItemCount2 = totalItemCount - this.mHeaderCount;
         View child = this.mList.getChildAt(0);
         if (child == null || child.getWidth() == 0) {
             incrementalPos = 0.0f;
@@ -1058,14 +951,11 @@ public class SemHorizontalFastScroller {
             case 2:
                 if (!isPointInside(ev.getX(), ev.getY())) {
                     cancelPendingDrag();
-                } else {
-                    long j = this.mPendingDrag;
-                    if (j >= 0 && j <= SystemClock.uptimeMillis()) {
-                        beginDrag();
-                        float pos = getPosFromMotionEvent(this.mInitialTouchX);
-                        scrollTo(pos);
-                        return onTouchEvent(ev);
-                    }
+                } else if (this.mPendingDrag >= 0 && this.mPendingDrag <= SystemClock.uptimeMillis()) {
+                    beginDrag();
+                    float pos = getPosFromMotionEvent(this.mInitialTouchX);
+                    scrollTo(pos);
+                    return onTouchEvent(ev);
                 }
                 return false;
             default:
@@ -1172,78 +1062,6 @@ public class SemHorizontalFastScroller {
 
     private static Animator animateAlpha(View v, float alpha) {
         return ObjectAnimator.ofFloat(v, View.ALPHA, alpha);
-    }
-
-    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$3 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass3 extends IntProperty<View> {
-        AnonymousClass3(String name) {
-            super(name);
-        }
-
-        @Override // android.util.IntProperty
-        public void setValue(View object, int value) {
-            object.setLeft(value);
-        }
-
-        @Override // android.util.Property
-        public Integer get(View object) {
-            return Integer.valueOf(object.getLeft());
-        }
-    }
-
-    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$4 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass4 extends IntProperty<View> {
-        AnonymousClass4(String name) {
-            super(name);
-        }
-
-        @Override // android.util.IntProperty
-        public void setValue(View object, int value) {
-            object.setTop(value);
-        }
-
-        @Override // android.util.Property
-        public Integer get(View object) {
-            return Integer.valueOf(object.getTop());
-        }
-    }
-
-    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$5 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass5 extends IntProperty<View> {
-        AnonymousClass5(String name) {
-            super(name);
-        }
-
-        @Override // android.util.IntProperty
-        public void setValue(View object, int value) {
-            object.setRight(value);
-        }
-
-        @Override // android.util.Property
-        public Integer get(View object) {
-            return Integer.valueOf(object.getRight());
-        }
-    }
-
-    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$6 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass6 extends IntProperty<View> {
-        AnonymousClass6(String name) {
-            super(name);
-        }
-
-        @Override // android.util.IntProperty
-        public void setValue(View object, int value) {
-            object.setBottom(value);
-        }
-
-        @Override // android.util.Property
-        public Integer get(View object) {
-            return Integer.valueOf(object.getBottom());
-        }
     }
 
     private static Animator animateBounds(View v, Rect bounds) {

@@ -34,16 +34,15 @@ public final class AccessibilityShortcutInfo {
 
     public AccessibilityShortcutInfo(Context context, ActivityInfo activityInfo) throws XmlPullParserException, IOException {
         PackageManager packageManager = context.getPackageManager();
-        ComponentName componentName = activityInfo.getComponentName();
-        this.mComponentName = componentName;
+        this.mComponentName = activityInfo.getComponentName();
         this.mActivityInfo = activityInfo;
         long startTime = SystemClock.elapsedRealtime();
         try {
-            XmlResourceParser parser = activityInfo.loadXmlMetaData(packageManager, META_DATA);
+            XmlResourceParser parser = this.mActivityInfo.loadXmlMetaData(packageManager, META_DATA);
             try {
                 long elapsedTime = SystemClock.elapsedRealtime() - startTime;
                 if (elapsedTime > 100) {
-                    Log.i("AccessibilityShortcutInfo", "took more than 100ms mComponentName : " + componentName + ", elapsedTime : " + elapsedTime);
+                    Log.i("AccessibilityShortcutInfo", "took more than 100ms mComponentName : " + this.mComponentName + ", elapsedTime : " + elapsedTime);
                 }
                 if (parser == null) {
                     throw new XmlPullParserException("Meta-data accessibility-shortcut-target does not exist");
@@ -131,8 +130,7 @@ public final class AccessibilityShortcutInfo {
     }
 
     public int hashCode() {
-        ComponentName componentName = this.mComponentName;
-        return (componentName == null ? 0 : componentName.hashCode()) + 31;
+        return (this.mComponentName == null ? 0 : this.mComponentName.hashCode()) + 31;
     }
 
     public boolean equals(Object obj) {
@@ -143,12 +141,11 @@ public final class AccessibilityShortcutInfo {
             return false;
         }
         AccessibilityShortcutInfo other = (AccessibilityShortcutInfo) obj;
-        ComponentName componentName = this.mComponentName;
-        if (componentName == null) {
+        if (this.mComponentName == null) {
             if (other.mComponentName != null) {
                 return false;
             }
-        } else if (!componentName.equals(other.mComponentName)) {
+        } else if (!this.mComponentName.equals(other.mComponentName)) {
             return false;
         }
         return true;

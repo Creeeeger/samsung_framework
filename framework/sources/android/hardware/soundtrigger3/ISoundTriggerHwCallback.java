@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface ISoundTriggerHwCallback extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$soundtrigger3$ISoundTriggerHwCallback".replace('$', '.');
-    public static final String HASH = "7d8d63478cd50e766d2072140c8aa3457f9fb585";
-    public static final int VERSION = 1;
+    public static final String HASH = "6b24e60ad261e3ff56106efd86ce6aa7ef5621b0";
+    public static final int VERSION = 2;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -24,7 +24,6 @@ public interface ISoundTriggerHwCallback extends IInterface {
 
     void recognitionCallback(int i, RecognitionEvent recognitionEvent) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISoundTriggerHwCallback {
         @Override // android.hardware.soundtrigger3.ISoundTriggerHwCallback
         public void modelUnloaded(int model) throws RemoteException {
@@ -54,7 +53,6 @@ public interface ISoundTriggerHwCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISoundTriggerHwCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -89,49 +87,47 @@ public interface ISoundTriggerHwCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    modelUnloaded(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    PhraseRecognitionEvent _arg1 = (PhraseRecognitionEvent) data.readTypedObject(PhraseRecognitionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    phraseRecognitionCallback(_arg02, _arg1);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    RecognitionEvent _arg12 = (RecognitionEvent) data.readTypedObject(RecognitionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    recognitionCallback(_arg03, _arg12);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            modelUnloaded(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            PhraseRecognitionEvent _arg1 = (PhraseRecognitionEvent) data.readTypedObject(PhraseRecognitionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            phraseRecognitionCallback(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            RecognitionEvent _arg12 = (RecognitionEvent) data.readTypedObject(RecognitionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            recognitionCallback(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISoundTriggerHwCallback {
+        private static class Proxy implements ISoundTriggerHwCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

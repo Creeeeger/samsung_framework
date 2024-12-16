@@ -43,7 +43,6 @@ public class OverlayManagerExt {
     public static final boolean DEBUG = Build.IS_ENG;
     private static final String[] CATEGORY_PATH = {SamsungThemeConstants.PATH_OVERLAY_CURRENT_STYLE, SamsungThemeConstants.PATH_OVERLAY_CURRENT_LOCALE_APKS};
 
-    /* loaded from: classes.dex */
     public static class OverlayParseFailedException extends Throwable {
     }
 
@@ -57,7 +56,7 @@ public class OverlayManagerExt {
     }
 
     public static boolean hasOverlayInfoExts(final int category, Context context) {
-        return Arrays.stream(context.getResources().getAssets().getApkAssets()).anyMatch(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda8
+        return Arrays.stream(context.getResources().getAssets().getApkAssets()).anyMatch(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda5
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean startsWith;
@@ -75,14 +74,14 @@ public class OverlayManagerExt {
         if (request.paths == null) {
             request.paths = new String[0];
         }
-        List<OverlayInfoExt> overlaysToAdd = (List) ((List) ((Stream) Arrays.stream(request.paths).filter(new OverlayManagerExt$$ExternalSyntheticLambda2()).parallel()).map(new Function() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda3
+        List<OverlayInfoExt> overlaysToAdd = (List) ((List) ((Stream) Arrays.stream(request.paths).filter(new OverlayManagerExt$$ExternalSyntheticLambda0()).parallel()).map(new Function() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda7
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 OverlayInfoExt lambda$replaceOverlays$1;
                 lambda$replaceOverlays$1 = OverlayManagerExt.this.lambda$replaceOverlays$1(request, (String) obj);
                 return lambda$replaceOverlays$1;
             }
-        }).collect(Collectors.toList())).stream().filter(new OverlayManagerExt$$ExternalSyntheticLambda4()).collect(Collectors.toList());
+        }).collect(Collectors.toList())).stream().filter(new OverlayManagerExt$$ExternalSyntheticLambda2()).collect(Collectors.toList());
         String[] strArr = request.paths;
         int length = strArr.length;
         int i2 = 0;
@@ -93,7 +92,7 @@ public class OverlayManagerExt {
             }
             String path = strArr[i2];
             final String normalizedPath = path != null ? path.replaceAll("/+", "/") : null;
-            boolean isExists = overlaysToAdd.stream().anyMatch(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda5
+            boolean isExists = overlaysToAdd.stream().anyMatch(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda8
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     return OverlayManagerExt.lambda$replaceOverlays$2(normalizedPath, (OverlayInfoExt) obj);
@@ -168,6 +167,7 @@ public class OverlayManagerExt {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ OverlayInfoExt lambda$replaceOverlays$1(OverlayStateChangeRequest request, String path) {
         try {
             return parsePathToOverlayInfo(request.category, path, request.opsFlags, request.userId);
@@ -176,7 +176,7 @@ public class OverlayManagerExt {
         }
     }
 
-    public static /* synthetic */ boolean lambda$replaceOverlays$2(String normalizedPath, OverlayInfoExt infoExt) {
+    static /* synthetic */ boolean lambda$replaceOverlays$2(String normalizedPath, OverlayInfoExt infoExt) {
         return normalizedPath != null && normalizedPath.equals(infoExt.info.baseCodePath);
     }
 
@@ -184,21 +184,21 @@ public class OverlayManagerExt {
         if (request.paths == null || request.paths.length == 0) {
             return new ArrayList();
         }
-        List<OverlayInfoExt> overlayInfoExts = (List) ((Stream) Arrays.stream(request.paths).filter(new OverlayManagerExt$$ExternalSyntheticLambda2()).parallel()).map(new Function() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda6
+        List<OverlayInfoExt> overlayInfoExts = (List) ((Stream) Arrays.stream(request.paths).filter(new OverlayManagerExt$$ExternalSyntheticLambda0()).parallel()).map(new Function() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 OverlayInfoExt lambda$addOverlayPaths$3;
                 lambda$addOverlayPaths$3 = OverlayManagerExt.this.lambda$addOverlayPaths$3(request, (String) obj);
                 return lambda$addOverlayPaths$3;
             }
-        }).filter(new OverlayManagerExt$$ExternalSyntheticLambda4()).collect(Collectors.toList());
+        }).filter(new OverlayManagerExt$$ExternalSyntheticLambda2()).collect(Collectors.toList());
         if (request.callback != null) {
             String[] strArr = request.paths;
             int length = strArr.length;
             for (int i = 0; i < length; i++) {
                 String path = strArr[i];
                 final String normalizedPath = path != null ? path.replaceAll("/+", "/") : null;
-                boolean isExists = overlayInfoExts.stream().anyMatch(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda7
+                boolean isExists = overlayInfoExts.stream().anyMatch(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda3
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         return OverlayManagerExt.lambda$addOverlayPaths$4(normalizedPath, (OverlayInfoExt) obj);
@@ -221,6 +221,7 @@ public class OverlayManagerExt {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ OverlayInfoExt lambda$addOverlayPaths$3(OverlayStateChangeRequest request, String path) {
         try {
             return parsePathToOverlayInfo(request.category, path, request.opsFlags, request.userId);
@@ -229,7 +230,7 @@ public class OverlayManagerExt {
         }
     }
 
-    public static /* synthetic */ boolean lambda$addOverlayPaths$4(String normalizedPath, OverlayInfoExt infoExt) {
+    static /* synthetic */ boolean lambda$addOverlayPaths$4(String normalizedPath, OverlayInfoExt infoExt) {
         return normalizedPath != null && normalizedPath.equals(infoExt.info.baseCodePath);
     }
 
@@ -241,7 +242,7 @@ public class OverlayManagerExt {
         if (request.paths == null) {
             request.paths = new String[0];
         }
-        List<OverlayInfoExt> overlayInfoExts = (List) Arrays.stream(allOverlays).filter(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda0
+        List<OverlayInfoExt> overlayInfoExts = (List) Arrays.stream(allOverlays).filter(new Predicate() { // from class: android.content.om.OverlayManagerExt$$ExternalSyntheticLambda6
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return OverlayManagerExt.lambda$removeOverlayPaths$5(OverlayManagerExt.OverlayStateChangeRequest.this, (OverlayInfoExt) obj);
@@ -254,11 +255,11 @@ public class OverlayManagerExt {
         }
     }
 
-    public static /* synthetic */ boolean lambda$removeOverlayPaths$5(OverlayStateChangeRequest request, OverlayInfoExt overlay) {
+    static /* synthetic */ boolean lambda$removeOverlayPaths$5(OverlayStateChangeRequest request, OverlayInfoExt overlay) {
         Stream stream = Arrays.stream(request.paths);
         String str = overlay.info.baseCodePath;
         Objects.requireNonNull(str);
-        return stream.anyMatch(new OverlayManagerExt$$ExternalSyntheticLambda1(str));
+        return stream.anyMatch(new OverlayManagerExt$$ExternalSyntheticLambda4(str));
     }
 
     public OverlayInfoExt[] getAllOverlays(int category, int userId) {
@@ -302,9 +303,8 @@ public class OverlayManagerExt {
         if (this.mPackageManager == null) {
             this.mPackageManager = ActivityThread.currentApplication() != null ? ActivityThread.currentApplication().getPackageManager() : null;
         }
-        PackageManager packageManager = this.mPackageManager;
-        if (packageManager != null) {
-            PackageInfo packageInfo = packageManager.getPackageArchiveInfo(path, PackageManager.PackageInfoFlags.of(0L));
+        if (this.mPackageManager != null) {
+            PackageInfo packageInfo = this.mPackageManager.getPackageArchiveInfo(path, PackageManager.PackageInfoFlags.of(0L));
             if (packageInfo != null) {
                 String overlayTargetPackageName2 = packageInfo.overlayTarget;
                 if ((category == 0 || category == 2) && SamsungThemeConstants.overlayTargetMap.containsKey(packageInfo.overlayTarget)) {
@@ -330,7 +330,6 @@ public class OverlayManagerExt {
         return null;
     }
 
-    /* loaded from: classes.dex */
     public static class OverlayStateChangeRequest {
         public ISamsungOverlayCallback callback;
         public int category;

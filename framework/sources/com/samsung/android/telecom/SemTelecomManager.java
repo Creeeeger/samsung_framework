@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemTelecomManager {
     public static final String CALLER = "caller";
     public static final int CALL_FILTER_ALL = 3;
@@ -35,11 +35,9 @@ public class SemTelecomManager {
     private static final DeathRecipient SERVICE_DEATH = new DeathRecipient();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface CallFilter {
     }
 
-    /* loaded from: classes5.dex */
     public static final class Event {
         public static final String SEM_EVENT_ADD_CALL = "com.samsung.telecom.CALL_EVENT_ADD_CALL";
         public static final String SEM_EVENT_ANSWER = "com.samsung.telecom.Call.EVENT_ANSWER";
@@ -62,7 +60,6 @@ public class SemTelecomManager {
         public static final String SEM_EVENT_UPDATE_CALL = "com.samsung.server.telecom.event.UPDATE_CALL";
     }
 
-    /* loaded from: classes5.dex */
     public static final class Extra {
         public static final String SEM_EXTRA_AUTOMATIC_ANSWERING_MACHINE_MODE = "com.samsung.telecom.extra.AUTOMATIC_ANSWERING_MACHINE_MODE";
         public static final String SEM_EXTRA_CALL_BACKGROUND_SOUND = "com.samsung.telecom.extra.CALL_BACKGROUND_SOUND";
@@ -365,9 +362,8 @@ public class SemTelecomManager {
     }
 
     private ISamsungTelecomService getSamsungTelecomService() {
-        ISamsungTelecomService iSamsungTelecomService = this.mSamsungTelecomServiceOverride;
-        if (iSamsungTelecomService != null) {
-            return iSamsungTelecomService;
+        if (this.mSamsungTelecomServiceOverride != null) {
+            return this.mSamsungTelecomServiceOverride;
         }
         if (sSamsungTelecomService == null) {
             ISamsungTelecomService temp = ISamsungTelecomService.Stub.asInterface(ServiceManager.getService(Context.SEM_TELECOM_SERVICE));
@@ -375,7 +371,7 @@ public class SemTelecomManager {
                 if (sSamsungTelecomService == null && temp != null) {
                     try {
                         sSamsungTelecomService = temp;
-                        temp.asBinder().linkToDeath(SERVICE_DEATH, 0);
+                        sSamsungTelecomService.asBinder().linkToDeath(SERVICE_DEATH, 0);
                     } catch (Exception e) {
                         sSamsungTelecomService = null;
                     }
@@ -385,12 +381,7 @@ public class SemTelecomManager {
         return sSamsungTelecomService;
     }
 
-    /* loaded from: classes5.dex */
-    public static class DeathRecipient implements IBinder.DeathRecipient {
-        /* synthetic */ DeathRecipient(DeathRecipientIA deathRecipientIA) {
-            this();
-        }
-
+    private static class DeathRecipient implements IBinder.DeathRecipient {
         private DeathRecipient() {
         }
 
@@ -400,11 +391,11 @@ public class SemTelecomManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void resetServiceCache() {
         synchronized (CACHE_LOCK) {
-            ISamsungTelecomService iSamsungTelecomService = sSamsungTelecomService;
-            if (iSamsungTelecomService != null) {
-                iSamsungTelecomService.asBinder().unlinkToDeath(SERVICE_DEATH, 0);
+            if (sSamsungTelecomService != null) {
+                sSamsungTelecomService.asBinder().unlinkToDeath(SERVICE_DEATH, 0);
                 sSamsungTelecomService = null;
             }
         }

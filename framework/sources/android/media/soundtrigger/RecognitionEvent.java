@@ -11,9 +11,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RecognitionEvent implements Parcelable {
     public static final Parcelable.Creator<RecognitionEvent> CREATOR = new Parcelable.Creator<RecognitionEvent>() { // from class: android.media.soundtrigger.RecognitionEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionEvent createFromParcel(Parcel _aidl_source) {
             RecognitionEvent _aidl_out = new RecognitionEvent();
@@ -21,6 +19,7 @@ public class RecognitionEvent implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionEvent[] newArray(int _aidl_size) {
             return new RecognitionEvent[_aidl_size];
@@ -35,25 +34,6 @@ public class RecognitionEvent implements Parcelable {
     public int capturePreambleMs = 0;
     public boolean triggerInData = false;
     public boolean recognitionStillActive = false;
-
-    /* renamed from: android.media.soundtrigger.RecognitionEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecognitionEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionEvent createFromParcel(Parcel _aidl_source) {
-            RecognitionEvent _aidl_out = new RecognitionEvent();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionEvent[] newArray(int _aidl_size) {
-            return new RecognitionEvent[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -182,7 +162,7 @@ public class RecognitionEvent implements Parcelable {
         _aidl_sj.add("audioConfig: " + Objects.toString(this.audioConfig));
         _aidl_sj.add("data: " + Arrays.toString(this.data));
         _aidl_sj.add("recognitionStillActive: " + this.recognitionStillActive);
-        return "android.media.soundtrigger.RecognitionEvent" + _aidl_sj.toString();
+        return "RecognitionEvent" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

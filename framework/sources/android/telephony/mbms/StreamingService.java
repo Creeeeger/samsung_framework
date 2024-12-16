@@ -8,7 +8,7 @@ import android.util.Log;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class StreamingService implements AutoCloseable {
     public static final int BROADCAST_METHOD = 1;
     private static final String LOG_TAG = "MbmsStreamingService";
@@ -30,12 +30,10 @@ public class StreamingService implements AutoCloseable {
     private final int mSubscriptionId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StreamingState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StreamingStateChangeReason {
     }
 
@@ -48,12 +46,11 @@ public class StreamingService implements AutoCloseable {
     }
 
     public Uri getPlaybackUri() {
-        IMbmsStreamingService iMbmsStreamingService = this.mService;
-        if (iMbmsStreamingService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("No streaming service attached");
         }
         try {
-            return iMbmsStreamingService.getPlaybackUri(this.mSubscriptionId, this.mServiceInfo.getServiceId());
+            return this.mService.getPlaybackUri(this.mSubscriptionId, this.mServiceInfo.getServiceId());
         } catch (RemoteException e) {
             Log.w(LOG_TAG, "Remote process died");
             this.mService = null;
@@ -69,13 +66,12 @@ public class StreamingService implements AutoCloseable {
 
     @Override // java.lang.AutoCloseable
     public void close() {
-        IMbmsStreamingService iMbmsStreamingService = this.mService;
         try {
-            if (iMbmsStreamingService == null) {
+            if (this.mService == null) {
                 throw new IllegalStateException("No streaming service attached");
             }
             try {
-                iMbmsStreamingService.stopStreaming(this.mSubscriptionId, this.mServiceInfo.getServiceId());
+                this.mService.stopStreaming(this.mSubscriptionId, this.mServiceInfo.getServiceId());
             } catch (RemoteException e) {
                 Log.w(LOG_TAG, "Remote process died");
                 this.mService = null;

@@ -4,23 +4,33 @@ import android.content.res.Configuration;
 import java.nio.CharBuffer;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TextDirectionHeuristics {
+    public static final TextDirectionHeuristic ANYRTL_LTR;
+    public static final TextDirectionHeuristic FIRSTSTRONG_LTR;
+    public static final TextDirectionHeuristic FIRSTSTRONG_RTL;
+    public static final TextDirectionHeuristic LOCALE = TextDirectionHeuristicLocale.INSTANCE;
+    public static final TextDirectionHeuristic LTR;
+    public static final TextDirectionHeuristic RTL;
     private static final int STATE_FALSE = 1;
     private static final int STATE_TRUE = 0;
     private static final int STATE_UNKNOWN = 2;
-    public static final TextDirectionHeuristic LTR = new TextDirectionHeuristicInternal(null, false);
-    public static final TextDirectionHeuristic RTL = new TextDirectionHeuristicInternal(null, true);
-    public static final TextDirectionHeuristic FIRSTSTRONG_LTR = new TextDirectionHeuristicInternal(FirstStrong.INSTANCE, false);
-    public static final TextDirectionHeuristic FIRSTSTRONG_RTL = new TextDirectionHeuristicInternal(FirstStrong.INSTANCE, true);
-    public static final TextDirectionHeuristic ANYRTL_LTR = new TextDirectionHeuristicInternal(AnyStrong.INSTANCE_RTL, false);
-    public static final TextDirectionHeuristic LOCALE = TextDirectionHeuristicLocale.INSTANCE;
 
-    /* loaded from: classes3.dex */
-    public interface TextDirectionAlgorithm {
+    private interface TextDirectionAlgorithm {
         int checkRtl(CharSequence charSequence, int i, int i2);
     }
 
+    static {
+        boolean z = false;
+        LTR = new TextDirectionHeuristicInternal(null, z);
+        boolean z2 = true;
+        RTL = new TextDirectionHeuristicInternal(0 == true ? 1 : 0, z2);
+        FIRSTSTRONG_LTR = new TextDirectionHeuristicInternal(FirstStrong.INSTANCE, z);
+        FIRSTSTRONG_RTL = new TextDirectionHeuristicInternal(FirstStrong.INSTANCE, z2);
+        ANYRTL_LTR = new TextDirectionHeuristicInternal(AnyStrong.INSTANCE_RTL, z);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public static int isRtlCodePoint(int codePoint) {
         switch (Character.getDirectionality(codePoint)) {
             case -1:
@@ -38,9 +48,7 @@ public class TextDirectionHeuristics {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static abstract class TextDirectionHeuristicImpl implements TextDirectionHeuristic {
+    private static abstract class TextDirectionHeuristicImpl implements TextDirectionHeuristic {
         private final TextDirectionAlgorithm mAlgorithm;
 
         protected abstract boolean defaultIsRtl();
@@ -77,13 +85,8 @@ public class TextDirectionHeuristics {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class TextDirectionHeuristicInternal extends TextDirectionHeuristicImpl {
         private final boolean mDefaultIsRtl;
-
-        /* synthetic */ TextDirectionHeuristicInternal(TextDirectionAlgorithm textDirectionAlgorithm, boolean z, TextDirectionHeuristicInternalIA textDirectionHeuristicInternalIA) {
-            this(textDirectionAlgorithm, z);
-        }
 
         private TextDirectionHeuristicInternal(TextDirectionAlgorithm algorithm, boolean defaultIsRtl) {
             super(algorithm);
@@ -96,7 +99,6 @@ public class TextDirectionHeuristics {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class FirstStrong implements TextDirectionAlgorithm {
         public static final FirstStrong INSTANCE = new FirstStrong();
 
@@ -126,7 +128,6 @@ public class TextDirectionHeuristics {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class AnyStrong implements TextDirectionAlgorithm {
         private final boolean mLookForRtl;
         public static final AnyStrong INSTANCE_RTL = new AnyStrong(true);
@@ -165,7 +166,7 @@ public class TextDirectionHeuristics {
                 goto L39
             L1f:
                 if (r1 != 0) goto L39
-                int r5 = android.text.TextDirectionHeuristics.m4895$$Nest$smisRtlCodePoint(r4)
+                int r5 = android.text.TextDirectionHeuristics.m5175$$Nest$smisRtlCodePoint(r4)
                 switch(r5) {
                     case 0: goto L31;
                     case 1: goto L29;
@@ -208,7 +209,6 @@ public class TextDirectionHeuristics {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class TextDirectionHeuristicLocale extends TextDirectionHeuristicImpl {
         public static final TextDirectionHeuristicLocale INSTANCE = new TextDirectionHeuristicLocale();
 

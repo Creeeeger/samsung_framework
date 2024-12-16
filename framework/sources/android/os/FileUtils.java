@@ -1,7 +1,8 @@
 package android.os;
 
 import android.app.AppGlobals;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
+import android.app.backup.FullBackup;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
@@ -19,6 +20,7 @@ import android.system.StructStat;
 import android.telecom.Logging.Session;
 import android.text.TextUtils;
 import android.util.DataUnit;
+import android.util.EmptyArray;
 import android.util.Log;
 import android.util.Slog;
 import android.webkit.MimeTypeMap;
@@ -48,7 +50,6 @@ import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import libcore.io.IoUtils;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes3.dex */
 public final class FileUtils {
@@ -66,12 +67,10 @@ public final class FileUtils {
     public static final int S_IXOTH = 1;
     public static final int S_IXUSR = 64;
     private static final String TAG = "FileUtils";
-    private static final String CAMERA_DIR_LOWER_CASE = "/storage/emulated/" + UserHandle.myUserId() + "/dcim/camera";
-    private static boolean sEnableCopyOptimizations = true;
+    private static boolean sEnableCopyOptimizations;
     private static volatile int sMediaProviderAppId = -1;
     private static volatile int sSecMediaProviderAppId = -1;
 
-    /* loaded from: classes3.dex */
     public interface ProgressListener {
         void onProgress(long j);
     }
@@ -79,12 +78,24 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    /* loaded from: classes3.dex */
     private static class NoImagePreloadHolder {
         public static final Pattern SAFE_FILENAME_PATTERN = Pattern.compile("[\\w%+,./=_-]+");
 
         private NoImagePreloadHolder() {
         }
+    }
+
+    static {
+        sEnableCopyOptimizations = true;
+        sEnableCopyOptimizations = shouldEnableCopyOptimizations();
+    }
+
+    private static boolean shouldEnableCopyOptimizations() {
+        return true;
+    }
+
+    private static boolean shouldEnableCopyOptimizations$ravenwood() {
+        return false;
     }
 
     public static int setPermissions(File path, int mode, int uid, int gid) {
@@ -204,19 +215,15 @@ public final class FileUtils {
         FileOutputStream out = new FileOutputStream(destFile);
         try {
             copy(in, out);
-            try {
-                Os.fsync(out.getFD());
-                out.close();
-            } catch (ErrnoException e) {
-                throw e.rethrowAsIOException();
-            }
-        } catch (Throwable e2) {
+            sync(out);
+            out.close();
+        } catch (Throwable th) {
             try {
                 out.close();
-            } catch (Throwable th) {
-                e2.addSuppressed(th);
+            } catch (Throwable th2) {
+                th.addSuppressed(th2);
             }
-            throw e2;
+            throw th;
         }
     }
 
@@ -280,6 +287,9 @@ public final class FileUtils {
                     }
                 }
                 if (!OsConstants.S_ISFIFO(st_in.st_mode) && !OsConstants.S_ISFIFO(st_out.st_mode)) {
+                    if (!OsConstants.S_ISSOCK(st_in.st_mode) && !OsConstants.S_ISSOCK(st_out.st_mode)) {
+                    }
+                    return copyInternalSpliceSocket(in, out, count, signal, executor, listener);
                 }
                 return copyInternalSplice(in, out, count, signal, executor, listener);
             } catch (ErrnoException e2) {
@@ -328,6 +338,84 @@ public final class FileUtils {
         return progress;
     }
 
+    public static long copyInternalSpliceSocket(FileDescriptor in, FileDescriptor out, long count, CancellationSignal signal, Executor executor, final ProgressListener listener) throws ErrnoException {
+        String str;
+        String str2;
+        long progress = 0;
+        long checkpoint = 0;
+        long countToRead = count;
+        long countInPipe = 0;
+        FileDescriptor[] pipes = Os.pipe();
+        while (true) {
+            if (countToRead <= 0 && countInPipe <= 0) {
+                break;
+            }
+            long checkpoint2 = checkpoint;
+            if (countToRead <= 0) {
+                str = ", read:";
+                str2 = ", copied:";
+            } else {
+                long t = Os.splice(in, null, pipes[1], null, Math.min(countToRead, 524288L), OsConstants.SPLICE_F_MOVE | OsConstants.SPLICE_F_MORE);
+                if (t < 0) {
+                    Slog.e(TAG, "splice error, fdIn --> pipe, copy size:" + count + ", copied:" + progress + ", read:" + (count - countToRead) + ", in pipe:" + countInPipe);
+                    break;
+                }
+                if (t == 0) {
+                    str = ", read:";
+                    str2 = ", copied:";
+                    Slog.w(TAG, "Reached the end of the input file. The size to be copied exceeds the actual size, copy size:" + count + ", copied:" + progress + ", read:" + (count - countToRead) + ", in pipe:" + countInPipe);
+                    countToRead = 0;
+                } else {
+                    str = ", read:";
+                    str2 = ", copied:";
+                    countInPipe += t;
+                    countToRead -= t;
+                }
+            }
+            if (countInPipe > 0) {
+                long t2 = Os.splice(pipes[0], null, out, null, Math.min(countInPipe, 524288L), OsConstants.SPLICE_F_MOVE | OsConstants.SPLICE_F_MORE);
+                if (t2 <= 0) {
+                    Slog.e(TAG, "splice error, pipe --> fdOut, copy size:" + count + str2 + progress + str + (count - countToRead) + ", in pipe: " + countInPipe);
+                    Os.close(pipes[0]);
+                    Os.close(pipes[1]);
+                    throw new ErrnoException("splice, pipe --> fdOut", OsConstants.EIO);
+                }
+                progress += t2;
+                checkpoint = checkpoint2 + t2;
+                countInPipe -= t2;
+            } else {
+                checkpoint = checkpoint2;
+            }
+            if (checkpoint >= 524288) {
+                if (signal != null) {
+                    signal.throwIfCanceled();
+                }
+                if (executor != null && listener != null) {
+                    final long progressSnapshot = progress;
+                    executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda6
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            FileUtils.ProgressListener.this.onProgress(progressSnapshot);
+                        }
+                    });
+                }
+                checkpoint = 0;
+            }
+        }
+        if (executor != null && listener != null) {
+            final long progressSnapshot2 = progress;
+            executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda7
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FileUtils.ProgressListener.this.onProgress(progressSnapshot2);
+                }
+            });
+        }
+        Os.close(pipes[0]);
+        Os.close(pipes[1]);
+        return progress;
+    }
+
     public static long copyInternalSendfile(FileDescriptor in, FileDescriptor out, long count, CancellationSignal signal, Executor executor, final ProgressListener listener) throws ErrnoException {
         long checkpoint = 0;
         final long progress = 0;
@@ -345,7 +433,7 @@ public final class FileUtils {
                     signal.throwIfCanceled();
                 }
                 if (executor != null && listener != null) {
-                    executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda2
+                    executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             FileUtils.ProgressListener.this.onProgress(progress);
@@ -357,7 +445,7 @@ public final class FileUtils {
         }
         if (executor != null && listener != null) {
             final long progressSnapshot = progress;
-            executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda3
+            executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     FileUtils.ProgressListener.this.onProgress(progressSnapshot);
@@ -369,7 +457,7 @@ public final class FileUtils {
 
     @Deprecated
     public static long copyInternalUserspace(FileDescriptor in, FileDescriptor out, ProgressListener listener, CancellationSignal signal, long count) throws IOException {
-        return copyInternalUserspace(in, out, count, signal, new PendingIntent$$ExternalSyntheticLambda1(), listener);
+        return copyInternalUserspace(in, out, count, signal, new PendingIntent$$ExternalSyntheticLambda0(), listener);
     }
 
     public static long copyInternalUserspace(FileDescriptor in, FileDescriptor out, long count, CancellationSignal signal, Executor executor, ProgressListener listener) throws IOException {
@@ -396,7 +484,7 @@ public final class FileUtils {
                     signal.throwIfCanceled();
                 }
                 if (executor != null && listener != null) {
-                    executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda0
+                    executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
                             FileUtils.ProgressListener.this.onProgress(progress);
@@ -408,7 +496,7 @@ public final class FileUtils {
         }
         if (executor != null && listener != null) {
             final long progressSnapshot = progress;
-            executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda1
+            executor.execute(new Runnable() { // from class: android.os.FileUtils$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     FileUtils.ProgressListener.this.onProgress(progressSnapshot);
@@ -528,8 +616,8 @@ public final class FileUtils {
         try {
             cis = new CheckedInputStream(new FileInputStream(file), checkSummer);
             byte[] buf = new byte[128];
-            do {
-            } while (cis.read(buf) >= 0);
+            while (cis.read(buf) >= 0) {
+            }
             long value = checkSummer.getValue();
             try {
                 cis.close();
@@ -599,9 +687,6 @@ public final class FileUtils {
             return false;
         }
         Arrays.sort(files, new Comparator<File>() { // from class: android.os.FileUtils.1
-            AnonymousClass1() {
-            }
-
             @Override // java.util.Comparator
             public int compare(File lhs, File rhs) {
                 return Long.compare(rhs.lastModified(), lhs.lastModified());
@@ -617,18 +702,6 @@ public final class FileUtils {
             }
         }
         return deleted;
-    }
-
-    /* renamed from: android.os.FileUtils$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Comparator<File> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(File lhs, File rhs) {
-            return Long.compare(rhs.lastModified(), lhs.lastModified());
-        }
     }
 
     public static boolean contains(File[] dirs, File file) {
@@ -734,10 +807,9 @@ public final class FileUtils {
                 case '\\':
                 case '|':
                 case 127:
-                    return false;
-                default:
-                    return true;
+                    break;
             }
+            return false;
         }
         return false;
     }
@@ -1055,7 +1127,7 @@ public final class FileUtils {
             res = res + "t";
         }
         if ((OsConstants.O_APPEND & mode) == OsConstants.O_APPEND) {
-            return res + "a";
+            return res + FullBackup.APK_TREE_TOKEN;
         }
         return res;
     }
@@ -1169,7 +1241,6 @@ public final class FileUtils {
         return sMediaProviderAppId;
     }
 
-    /* loaded from: classes3.dex */
     public static class MemoryPipe extends Thread implements AutoCloseable {
         private final byte[] data;
         private final FileDescriptor[] pipe;
@@ -1206,25 +1277,25 @@ public final class FileUtils {
             return this.sink ? this.pipe[0] : this.pipe[1];
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:18:0x0022, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:18:0x002a, code lost:
         
-            if (r6.sink != false) goto L57;
+            if (r6.sink != false) goto L23;
          */
-        /* JADX WARN: Code restructure failed: missing block: B:19:0x0045, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:19:0x004d, code lost:
         
             libcore.io.IoUtils.closeQuietly(r0);
          */
-        /* JADX WARN: Code restructure failed: missing block: B:20:0x0049, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:20:0x0051, code lost:
         
             return;
          */
-        /* JADX WARN: Code restructure failed: missing block: B:22:0x003c, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:22:0x0044, code lost:
         
             android.os.SystemClock.sleep(java.util.concurrent.TimeUnit.SECONDS.toMillis(1));
          */
-        /* JADX WARN: Code restructure failed: missing block: B:26:0x003a, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:26:0x0042, code lost:
         
-            if (r6.sink == false) goto L58;
+            if (r6.sink == false) goto L24;
          */
         @Override // java.lang.Thread, java.lang.Runnable
         /*
@@ -1238,45 +1309,49 @@ public final class FileUtils {
                 r1 = 0
             L5:
                 r2 = 1
-                byte[] r4 = r6.data     // Catch: java.lang.Throwable -> L25 java.lang.Throwable -> L37
-                int r5 = r4.length     // Catch: java.lang.Throwable -> L25 java.lang.Throwable -> L37
-                if (r1 >= r5) goto L20
-                boolean r5 = r6.sink     // Catch: java.lang.Throwable -> L25 java.lang.Throwable -> L37
-                if (r5 == 0) goto L18
-                int r5 = r4.length     // Catch: java.lang.Throwable -> L25 java.lang.Throwable -> L37
+                byte[] r4 = r6.data     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
+                int r4 = r4.length     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
+                if (r1 >= r4) goto L28
+                boolean r4 = r6.sink     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
+                if (r4 == 0) goto L1c
+                byte[] r4 = r6.data     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
+                byte[] r5 = r6.data     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
+                int r5 = r5.length     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
                 int r5 = r5 - r1
-                int r2 = android.system.Os.read(r0, r4, r1, r5)     // Catch: java.lang.Throwable -> L25 java.lang.Throwable -> L37
+                int r2 = android.system.Os.read(r0, r4, r1, r5)     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
                 int r1 = r1 + r2
                 goto L5
-            L18:
-                int r5 = r4.length     // Catch: java.lang.Throwable -> L25 java.lang.Throwable -> L37
+            L1c:
+                byte[] r4 = r6.data     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
+                byte[] r5 = r6.data     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
+                int r5 = r5.length     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
                 int r5 = r5 - r1
-                int r2 = android.system.Os.write(r0, r4, r1, r5)     // Catch: java.lang.Throwable -> L25 java.lang.Throwable -> L37
+                int r2 = android.system.Os.write(r0, r4, r1, r5)     // Catch: java.lang.Throwable -> L2d java.lang.Throwable -> L3f
                 int r1 = r1 + r2
                 goto L5
-            L20:
+            L28:
                 boolean r1 = r6.sink
-                if (r1 == 0) goto L45
-                goto L3c
-            L25:
+                if (r1 == 0) goto L4d
+                goto L44
+            L2d:
                 r1 = move-exception
                 boolean r4 = r6.sink
-                if (r4 == 0) goto L33
+                if (r4 == 0) goto L3b
                 java.util.concurrent.TimeUnit r4 = java.util.concurrent.TimeUnit.SECONDS
                 long r2 = r4.toMillis(r2)
                 android.os.SystemClock.sleep(r2)
-            L33:
+            L3b:
                 libcore.io.IoUtils.closeQuietly(r0)
                 throw r1
-            L37:
+            L3f:
                 r1 = move-exception
                 boolean r1 = r6.sink
-                if (r1 == 0) goto L45
-            L3c:
+                if (r1 == 0) goto L4d
+            L44:
                 java.util.concurrent.TimeUnit r1 = java.util.concurrent.TimeUnit.SECONDS
                 long r1 = r1.toMillis(r2)
                 android.os.SystemClock.sleep(r1)
-            L45:
+            L4d:
                 libcore.io.IoUtils.closeQuietly(r0)
                 return
             */

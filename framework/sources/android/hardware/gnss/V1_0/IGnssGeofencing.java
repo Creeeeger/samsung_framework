@@ -111,7 +111,6 @@ public interface IGnssGeofencing extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssGeofencing {
         private IHwBinder mRemote;
 
@@ -365,7 +364,6 @@ public interface IGnssGeofencing extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssGeofencing {
         @Override // android.hardware.gnss.V1_0.IGnssGeofencing, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -388,7 +386,7 @@ public interface IGnssGeofencing extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IGnssGeofencing, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-7, 14, 77, -36, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 6, 41, -99, -114, 61, -117, -95, -114, 7, 69, -61, -70, -23, -65, 77, 27, -26, -67, 6, -39, -63, -11, 14, -56, -46, -118}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-7, 14, 77, -36, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 6, 41, -99, -114, 61, -117, -95, -114, 7, 69, -61, -70, -23, -65, 77, 27, -26, -67, 6, -39, -63, -11, 14, -56, -46, -118}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IGnssGeofencing, android.internal.hidl.base.V1_0.IBase

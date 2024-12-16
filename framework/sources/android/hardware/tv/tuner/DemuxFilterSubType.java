@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxFilterSubType implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterSubType> CREATOR = new Parcelable.Creator<DemuxFilterSubType>() { // from class: android.hardware.tv.tuner.DemuxFilterSubType.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterSubType createFromParcel(Parcel _aidl_source) {
             return new DemuxFilterSubType(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterSubType[] newArray(int _aidl_size) {
             return new DemuxFilterSubType[_aidl_size];
@@ -27,17 +26,12 @@ public final class DemuxFilterSubType implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int alpFilterType = 4;
         public static final int ipFilterType = 2;
         public static final int mmtpFilterType = 1;
         public static final int tlvFilterType = 3;
         public static final int tsFilterType = 0;
-    }
-
-    /* synthetic */ DemuxFilterSubType(Parcel parcel, DemuxFilterSubTypeIA demuxFilterSubTypeIA) {
-        this(parcel);
     }
 
     public DemuxFilterSubType() {
@@ -128,44 +122,25 @@ public final class DemuxFilterSubType implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.DemuxFilterSubType$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterSubType> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterSubType createFromParcel(Parcel _aidl_source) {
-            return new DemuxFilterSubType(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterSubType[] newArray(int _aidl_size) {
-            return new DemuxFilterSubType[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getTsFilterType());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getMmtpFilterType());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getIpFilterType());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getTlvFilterType());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeInt(getAlpFilterType());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

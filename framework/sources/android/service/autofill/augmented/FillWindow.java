@@ -57,7 +57,7 @@ public final class FillWindow implements AutoCloseable {
             this.mProxy = area.proxy;
             this.mWm = (WindowManager) rootView.getContext().getSystemService(WindowManager.class);
             this.mFillView = rootView;
-            rootView.setOnTouchListener(new View.OnTouchListener() { // from class: android.service.autofill.augmented.FillWindow$$ExternalSyntheticLambda0
+            this.mFillView.setOnTouchListener(new View.OnTouchListener() { // from class: android.service.autofill.augmented.FillWindow$$ExternalSyntheticLambda0
                 @Override // android.view.View.OnTouchListener
                 public final boolean onTouch(View view, MotionEvent motionEvent) {
                     boolean lambda$update$0;
@@ -77,6 +77,7 @@ public final class FillWindow implements AutoCloseable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$update$0(View view, MotionEvent motionEvent) {
         if (motionEvent.getAction() == 4) {
             if (AugmentedAutofillService.sVerbose) {
@@ -88,7 +89,7 @@ public final class FillWindow implements AutoCloseable {
         return false;
     }
 
-    public void show() {
+    void show() {
         if (AugmentedAutofillService.sDebug) {
             Log.d(TAG, "show()");
         }
@@ -97,10 +98,9 @@ public final class FillWindow implements AutoCloseable {
             if (this.mWm == null || this.mFillView == null) {
                 throw new IllegalStateException("update() not called yet, or already destroyed()");
             }
-            AugmentedAutofillService.AutofillProxy autofillProxy = this.mProxy;
-            if (autofillProxy != null) {
+            if (this.mProxy != null) {
                 try {
-                    autofillProxy.requestShowFillUi(this.mBounds.right - this.mBounds.left, this.mBounds.bottom - this.mBounds.top, null, new FillWindowPresenter(this));
+                    this.mProxy.requestShowFillUi(this.mBounds.right - this.mBounds.left, this.mBounds.bottom - this.mBounds.top, null, new FillWindowPresenter(this));
                 } catch (RemoteException e) {
                     Log.w(TAG, "Error requesting to show fill window", e);
                 }
@@ -118,10 +118,9 @@ public final class FillWindow implements AutoCloseable {
             if (this.mWm == null || this.mFillView == null) {
                 throw new IllegalStateException("update() not called yet, or already destroyed()");
             }
-            AugmentedAutofillService.AutofillProxy autofillProxy = this.mProxy;
-            if (autofillProxy != null && this.mShowing) {
+            if (this.mProxy != null && this.mShowing) {
                 try {
-                    autofillProxy.requestHideFillUi();
+                    this.mProxy.requestHideFillUi();
                 } catch (RemoteException e) {
                     Log.w(TAG, "Error requesting to hide fill window", e);
                 }
@@ -129,6 +128,7 @@ public final class FillWindow implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleShow(WindowManager.LayoutParams p) {
         if (AugmentedAutofillService.sDebug) {
             Log.d(TAG, "handleShow()");
@@ -156,16 +156,15 @@ public final class FillWindow implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleHide() {
-        View view;
         if (AugmentedAutofillService.sDebug) {
             Log.d(TAG, "handleHide()");
         }
         synchronized (this.mLock) {
-            WindowManager windowManager = this.mWm;
-            if (windowManager != null && (view = this.mFillView) != null && this.mShowing) {
+            if (this.mWm != null && this.mFillView != null && this.mShowing) {
                 try {
-                    windowManager.removeView(view);
+                    this.mWm.removeView(this.mFillView);
                     this.mShowing = false;
                 } catch (IllegalStateException e) {
                     if (AugmentedAutofillService.sDebug) {
@@ -240,8 +239,7 @@ public final class FillWindow implements AutoCloseable {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static final class FillWindowPresenter extends IAutofillWindowPresenter.Stub {
+    static final class FillWindowPresenter extends IAutofillWindowPresenter.Stub {
         private final WeakReference<FillWindow> mFillWindowReference;
 
         FillWindowPresenter(FillWindow fillWindow) {

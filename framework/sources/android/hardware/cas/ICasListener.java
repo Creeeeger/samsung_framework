@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICasListener extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$cas$ICasListener".replace('$', '.');
     public static final String HASH = "bc51d8d70a55ec4723d3f73d0acf7003306bf69f";
@@ -22,7 +22,6 @@ public interface ICasListener extends IInterface {
 
     void onStatusUpdate(byte b, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICasListener {
         @Override // android.hardware.cas.ICasListener
         public void onEvent(int event, int arg, byte[] data) throws RemoteException {
@@ -52,7 +51,6 @@ public interface ICasListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICasListener {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -87,53 +85,51 @@ public interface ICasListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    byte[] _arg2 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onEvent(_arg0, _arg1, _arg2);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    byte[] _arg02 = data.createByteArray();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    byte[] _arg3 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onSessionEvent(_arg02, _arg12, _arg22, _arg3);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    byte _arg03 = data.readByte();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStatusUpdate(_arg03, _arg13);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            byte[] _arg2 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onEvent(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            byte[] _arg02 = data.createByteArray();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            byte[] _arg3 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onSessionEvent(_arg02, _arg12, _arg22, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            byte _arg03 = data.readByte();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStatusUpdate(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICasListener {
+        private static class Proxy implements ICasListener {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

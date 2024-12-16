@@ -61,7 +61,6 @@ public class Keyboard {
     private int mTotalWidth;
     private ArrayList<Row> rows;
 
-    /* loaded from: classes2.dex */
     public static class Row {
         public int defaultHeight;
         public int defaultHorizontalGap;
@@ -91,7 +90,6 @@ public class Keyboard {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Key {
         public int[] codes;
         public int edgeFlags;
@@ -145,23 +143,20 @@ public class Keyboard {
             } else if (codesValue.type == 3) {
                 this.codes = parseCSV(codesValue.string.toString());
             }
-            Drawable drawable = a2.getDrawable(7);
-            this.iconPreview = drawable;
-            if (drawable != null) {
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), this.iconPreview.getIntrinsicHeight());
+            this.iconPreview = a2.getDrawable(7);
+            if (this.iconPreview != null) {
+                this.iconPreview.setBounds(0, 0, this.iconPreview.getIntrinsicWidth(), this.iconPreview.getIntrinsicHeight());
             }
             this.popupCharacters = a2.getText(2);
             this.popupResId = a2.getResourceId(1, 0);
             this.repeatable = a2.getBoolean(6, false);
             this.modifier = a2.getBoolean(4, false);
             this.sticky = a2.getBoolean(5, false);
-            int i = a2.getInt(3, 0);
-            this.edgeFlags = i;
-            this.edgeFlags = i | parent.rowEdgeFlags;
-            Drawable drawable2 = a2.getDrawable(10);
-            this.icon = drawable2;
-            if (drawable2 != null) {
-                drawable2.setBounds(0, 0, drawable2.getIntrinsicWidth(), this.icon.getIntrinsicHeight());
+            this.edgeFlags = a2.getInt(3, 0);
+            this.edgeFlags |= parent.rowEdgeFlags;
+            this.icon = a2.getDrawable(10);
+            if (this.icon != null) {
+                this.icon.setBounds(0, 0, this.icon.getIntrinsicWidth(), this.icon.getIntrinsicHeight());
             }
             this.label = a2.getText(9);
             this.text = a2.getText(8);
@@ -209,14 +204,11 @@ public class Keyboard {
         }
 
         public boolean isInside(int x, int y) {
-            int i;
-            int i2 = this.edgeFlags;
-            boolean leftEdge = (i2 & 1) > 0;
-            boolean rightEdge = (i2 & 2) > 0;
-            boolean topEdge = (i2 & 4) > 0;
-            boolean bottomEdge = (i2 & 8) > 0;
-            int i3 = this.x;
-            return (x >= i3 || (leftEdge && x <= this.width + i3)) && (x < this.width + i3 || (rightEdge && x >= i3)) && ((y >= (i = this.y) || (topEdge && y <= this.height + i)) && (y < this.height + i || (bottomEdge && y >= i)));
+            boolean leftEdge = (this.edgeFlags & 1) > 0;
+            boolean rightEdge = (this.edgeFlags & 2) > 0;
+            boolean topEdge = (this.edgeFlags & 4) > 0;
+            boolean bottomEdge = (this.edgeFlags & 8) > 0;
+            return (x >= this.x || (leftEdge && x <= this.x + this.width)) && (x < this.x + this.width || (rightEdge && x >= this.x)) && ((y >= this.y || (topEdge && y <= this.y + this.height)) && (y < this.y + this.height || (bottomEdge && y >= this.y)));
         }
 
         public int squaredDistanceFrom(int x, int y) {
@@ -262,10 +254,9 @@ public class Keyboard {
         this.mDisplayWidth = width;
         this.mDisplayHeight = height;
         this.mDefaultHorizontalGap = 0;
-        int i = width / 10;
-        this.mDefaultWidth = i;
+        this.mDefaultWidth = this.mDisplayWidth / 10;
         this.mDefaultVerticalGap = 0;
-        this.mDefaultHeight = i;
+        this.mDefaultHeight = this.mDefaultWidth;
         this.mKeys = new ArrayList();
         this.mModifierKeys = new ArrayList();
         this.mKeyboardMode = modeId;
@@ -280,10 +271,9 @@ public class Keyboard {
         this.mDisplayWidth = dm.widthPixels;
         this.mDisplayHeight = dm.heightPixels;
         this.mDefaultHorizontalGap = 0;
-        int i = this.mDisplayWidth / 10;
-        this.mDefaultWidth = i;
+        this.mDefaultWidth = this.mDisplayWidth / 10;
         this.mDefaultVerticalGap = 0;
-        this.mDefaultHeight = i;
+        this.mDefaultHeight = this.mDefaultWidth;
         this.mKeys = new ArrayList();
         this.mModifierKeys = new ArrayList();
         this.mKeyboardMode = modeId;
@@ -329,7 +319,7 @@ public class Keyboard {
         this.rows.add(row);
     }
 
-    public final void resize(int newWidth, int newHeight) {
+    final void resize(int newWidth, int newHeight) {
         int numRows = this.rows.size();
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
             Row row = this.rows.get(rowIndex);
@@ -434,7 +424,7 @@ public class Keyboard {
     private void computeNearestNeighbors() {
         this.mCellWidth = ((getMinWidth() + 10) - 1) / 10;
         this.mCellHeight = ((getHeight() + 5) - 1) / 5;
-        this.mGridNeighbors = new int[50];
+        this.mGridNeighbors = new int[50][];
         int[] indices = new int[this.mKeys.size()];
         int gridWidth = this.mCellWidth * 10;
         int gridHeight = this.mCellHeight * 5;
@@ -452,10 +442,9 @@ public class Keyboard {
                 }
                 int[] cell = new int[count];
                 System.arraycopy(indices, 0, cell, 0, count);
-                int[][] iArr = this.mGridNeighbors;
-                int i2 = this.mCellHeight;
-                iArr[((y / i2) * 10) + (x / this.mCellWidth)] = cell;
-                y += i2;
+                this.mGridNeighbors[((y / this.mCellHeight) * 10) + (x / this.mCellWidth)] = cell;
+                int count2 = this.mCellHeight;
+                y += count2;
             }
             int y2 = this.mCellWidth;
             x += y2;
@@ -548,12 +537,11 @@ public class Keyboard {
                             if (key.codes[0] == -1) {
                                 int i = 0;
                                 while (true) {
-                                    Key[] keyArr = this.mShiftKeys;
-                                    if (i >= keyArr.length) {
+                                    if (i >= this.mShiftKeys.length) {
                                         break;
                                     }
-                                    if (keyArr[i] == null) {
-                                        keyArr[i] = key;
+                                    if (this.mShiftKeys[i] == null) {
+                                        this.mShiftKeys[i] = key;
                                         this.mShiftKeyIndices[i] = this.mKeys.size() - 1;
                                         break;
                                     }
@@ -660,14 +648,12 @@ public class Keyboard {
 
     private void parseKeyboardAttributes(Resources res, XmlResourceParser parser) {
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.Keyboard);
-        int i = this.mDisplayWidth;
-        this.mDefaultWidth = getDimensionOrFraction(a, 0, i, i / 10);
+        this.mDefaultWidth = getDimensionOrFraction(a, 0, this.mDisplayWidth, this.mDisplayWidth / 10);
         this.mDefaultHeight = getDimensionOrFraction(a, 1, this.mDisplayHeight, 50);
         this.mDefaultHorizontalGap = getDimensionOrFraction(a, 2, this.mDisplayWidth, 0);
         this.mDefaultVerticalGap = getDimensionOrFraction(a, 3, this.mDisplayHeight, 0);
-        int i2 = (int) (this.mDefaultWidth * SEARCH_DISTANCE);
-        this.mProximityThreshold = i2;
-        this.mProximityThreshold = i2 * i2;
+        this.mProximityThreshold = (int) (this.mDefaultWidth * SEARCH_DISTANCE);
+        this.mProximityThreshold *= this.mProximityThreshold;
         a.recycle();
     }
 

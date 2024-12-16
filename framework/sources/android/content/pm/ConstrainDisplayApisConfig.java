@@ -28,6 +28,7 @@ public final class ConstrainDisplayApisConfig {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(DeviceConfig.Properties properties) {
         updateCache();
     }

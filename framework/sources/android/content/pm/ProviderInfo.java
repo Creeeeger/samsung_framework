@@ -8,20 +8,20 @@ import android.util.Printer;
 /* loaded from: classes.dex */
 public final class ProviderInfo extends ComponentInfo implements Parcelable {
     public static final Parcelable.Creator<ProviderInfo> CREATOR = new Parcelable.Creator<ProviderInfo>() { // from class: android.content.pm.ProviderInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProviderInfo createFromParcel(Parcel in) {
             return new ProviderInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProviderInfo[] newArray(int size) {
             return new ProviderInfo[size];
         }
     };
     public static final int FLAG_SINGLE_USER = 1073741824;
+    public static final int FLAG_SYSTEM_USER_ONLY = 536870912;
     public static final int FLAG_VISIBLE_TO_INSTANT_APP = 1048576;
     public String authority;
     public int flags;
@@ -36,10 +36,6 @@ public final class ProviderInfo extends ComponentInfo implements Parcelable {
     public String readPermission;
     public PatternMatcher[] uriPermissionPatterns;
     public String writePermission;
-
-    /* synthetic */ ProviderInfo(Parcel parcel, ProviderInfoIA providerInfoIA) {
-        this(parcel);
-    }
 
     public ProviderInfo() {
         this.authority = null;
@@ -111,23 +107,6 @@ public final class ProviderInfo extends ComponentInfo implements Parcelable {
         parcel.writeInt(this.initOrder);
         parcel.writeInt(this.flags);
         parcel.writeInt(this.isSyncable ? 1 : 0);
-    }
-
-    /* renamed from: android.content.pm.ProviderInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ProviderInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ProviderInfo createFromParcel(Parcel in) {
-            return new ProviderInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ProviderInfo[] newArray(int size) {
-            return new ProviderInfo[size];
-        }
     }
 
     public String toString() {

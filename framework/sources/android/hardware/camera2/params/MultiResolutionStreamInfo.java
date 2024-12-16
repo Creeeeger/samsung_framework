@@ -2,7 +2,7 @@ package android.hardware.camera2.params;
 
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MultiResolutionStreamInfo {
     private String mPhysicalCameraId;
     private int mStreamHeight;

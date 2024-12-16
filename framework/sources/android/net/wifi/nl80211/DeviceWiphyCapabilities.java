@@ -10,9 +10,7 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class DeviceWiphyCapabilities implements Parcelable {
     public static final Parcelable.Creator<DeviceWiphyCapabilities> CREATOR = new Parcelable.Creator<DeviceWiphyCapabilities>() { // from class: android.net.wifi.nl80211.DeviceWiphyCapabilities.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceWiphyCapabilities createFromParcel(Parcel in) {
             DeviceWiphyCapabilities capabilities = new DeviceWiphyCapabilities();
@@ -25,9 +23,11 @@ public final class DeviceWiphyCapabilities implements Parcelable {
             capabilities.mChannelWidth320MhzSupported = in.readBoolean();
             capabilities.mMaxNumberTxSpatialStreams = in.readInt();
             capabilities.mMaxNumberRxSpatialStreams = in.readInt();
+            capabilities.mMaxNumberAkms = in.readInt();
             return capabilities;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceWiphyCapabilities[] newArray(int size) {
             return new DeviceWiphyCapabilities[size];
@@ -43,6 +43,7 @@ public final class DeviceWiphyCapabilities implements Parcelable {
     private boolean mChannelWidth320MhzSupported = false;
     private int mMaxNumberTxSpatialStreams = 1;
     private int mMaxNumberRxSpatialStreams = 1;
+    private int mMaxNumberAkms = 1;
 
     public boolean isWifiStandardSupported(int standard) {
         switch (standard) {
@@ -69,20 +70,20 @@ public final class DeviceWiphyCapabilities implements Parcelable {
         switch (standard) {
             case 4:
                 this.m80211nSupported = support;
-                return;
+                break;
             case 5:
                 this.m80211acSupported = support;
-                return;
+                break;
             case 6:
                 this.m80211axSupported = support;
-                return;
+                break;
             case 7:
             default:
                 Log.e(TAG, "setWifiStandardSupport called with invalid standard: " + standard);
-                return;
+                break;
             case 8:
                 this.m80211beSupported = support;
-                return;
+                break;
         }
     }
 
@@ -110,16 +111,16 @@ public final class DeviceWiphyCapabilities implements Parcelable {
         switch (chWidth) {
             case 3:
                 this.mChannelWidth160MhzSupported = support;
-                return;
+                break;
             case 4:
                 this.mChannelWidth80p80MhzSupported = support;
-                return;
+                break;
             case 5:
                 this.mChannelWidth320MhzSupported = support;
-                return;
+                break;
             default:
                 Log.e(TAG, "setChannelWidthSupported called with Invalid channel width: " + chWidth);
-                return;
+                break;
         }
     }
 
@@ -135,6 +136,14 @@ public final class DeviceWiphyCapabilities implements Parcelable {
         return this.mMaxNumberRxSpatialStreams;
     }
 
+    public int getMaxNumberAkms() {
+        return this.mMaxNumberAkms;
+    }
+
+    public void setMaxNumberAkms(int akms) {
+        this.mMaxNumberAkms = akms;
+    }
+
     public void setMaxNumberRxSpatialStreams(int streams) {
         this.mMaxNumberRxSpatialStreams = streams;
     }
@@ -147,11 +156,11 @@ public final class DeviceWiphyCapabilities implements Parcelable {
             return false;
         }
         DeviceWiphyCapabilities capa = (DeviceWiphyCapabilities) rhs;
-        return this.m80211nSupported == capa.m80211nSupported && this.m80211acSupported == capa.m80211acSupported && this.m80211axSupported == capa.m80211axSupported && this.m80211beSupported == capa.m80211beSupported && this.mChannelWidth160MhzSupported == capa.mChannelWidth160MhzSupported && this.mChannelWidth80p80MhzSupported == capa.mChannelWidth80p80MhzSupported && this.mChannelWidth320MhzSupported == capa.mChannelWidth320MhzSupported && this.mMaxNumberTxSpatialStreams == capa.mMaxNumberTxSpatialStreams && this.mMaxNumberRxSpatialStreams == capa.mMaxNumberRxSpatialStreams;
+        return this.m80211nSupported == capa.m80211nSupported && this.m80211acSupported == capa.m80211acSupported && this.m80211axSupported == capa.m80211axSupported && this.m80211beSupported == capa.m80211beSupported && this.mChannelWidth160MhzSupported == capa.mChannelWidth160MhzSupported && this.mChannelWidth80p80MhzSupported == capa.mChannelWidth80p80MhzSupported && this.mChannelWidth320MhzSupported == capa.mChannelWidth320MhzSupported && this.mMaxNumberTxSpatialStreams == capa.mMaxNumberTxSpatialStreams && this.mMaxNumberRxSpatialStreams == capa.mMaxNumberRxSpatialStreams && this.mMaxNumberAkms == capa.mMaxNumberAkms;
     }
 
     public int hashCode() {
-        return Objects.hash(Boolean.valueOf(this.m80211nSupported), Boolean.valueOf(this.m80211acSupported), Boolean.valueOf(this.m80211axSupported), Boolean.valueOf(this.m80211beSupported), Boolean.valueOf(this.mChannelWidth160MhzSupported), Boolean.valueOf(this.mChannelWidth80p80MhzSupported), Boolean.valueOf(this.mChannelWidth320MhzSupported), Integer.valueOf(this.mMaxNumberTxSpatialStreams), Integer.valueOf(this.mMaxNumberRxSpatialStreams));
+        return Objects.hash(Boolean.valueOf(this.m80211nSupported), Boolean.valueOf(this.m80211acSupported), Boolean.valueOf(this.m80211axSupported), Boolean.valueOf(this.m80211beSupported), Boolean.valueOf(this.mChannelWidth160MhzSupported), Boolean.valueOf(this.mChannelWidth80p80MhzSupported), Boolean.valueOf(this.mChannelWidth320MhzSupported), Integer.valueOf(this.mMaxNumberTxSpatialStreams), Integer.valueOf(this.mMaxNumberRxSpatialStreams), Integer.valueOf(this.mMaxNumberAkms));
     }
 
     @Override // android.os.Parcelable
@@ -170,6 +179,7 @@ public final class DeviceWiphyCapabilities implements Parcelable {
         out.writeBoolean(this.mChannelWidth320MhzSupported);
         out.writeInt(this.mMaxNumberTxSpatialStreams);
         out.writeInt(this.mMaxNumberRxSpatialStreams);
+        out.writeInt(this.mMaxNumberAkms);
     }
 
     public String toString() {
@@ -183,33 +193,7 @@ public final class DeviceWiphyCapabilities implements Parcelable {
         sb.append("mChannelWidth320MhzSupported: ").append(this.mChannelWidth320MhzSupported ? "Yes" : "No");
         sb.append("mMaxNumberTxSpatialStreams: ").append(this.mMaxNumberTxSpatialStreams);
         sb.append("mMaxNumberRxSpatialStreams: ").append(this.mMaxNumberRxSpatialStreams);
+        sb.append("mMaxNumberAkms: ").append(this.mMaxNumberAkms);
         return sb.toString();
-    }
-
-    /* renamed from: android.net.wifi.nl80211.DeviceWiphyCapabilities$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DeviceWiphyCapabilities> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceWiphyCapabilities createFromParcel(Parcel in) {
-            DeviceWiphyCapabilities capabilities = new DeviceWiphyCapabilities();
-            capabilities.m80211nSupported = in.readBoolean();
-            capabilities.m80211acSupported = in.readBoolean();
-            capabilities.m80211axSupported = in.readBoolean();
-            capabilities.m80211beSupported = in.readBoolean();
-            capabilities.mChannelWidth160MhzSupported = in.readBoolean();
-            capabilities.mChannelWidth80p80MhzSupported = in.readBoolean();
-            capabilities.mChannelWidth320MhzSupported = in.readBoolean();
-            capabilities.mMaxNumberTxSpatialStreams = in.readInt();
-            capabilities.mMaxNumberRxSpatialStreams = in.readInt();
-            return capabilities;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceWiphyCapabilities[] newArray(int size) {
-            return new DeviceWiphyCapabilities[size];
-        }
     }
 }

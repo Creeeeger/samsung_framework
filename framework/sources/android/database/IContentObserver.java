@@ -13,7 +13,6 @@ public interface IContentObserver extends IInterface {
 
     void onChangeEtc(boolean z, Uri[] uriArr, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IContentObserver {
         @Override // android.database.IContentObserver
         public void onChange(boolean selfUpdate, Uri uri, int userId) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IContentObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IContentObserver {
         public static final String DESCRIPTOR = "android.database.IContentObserver";
         static final int TRANSACTION_onChange = 1;
@@ -76,36 +74,32 @@ public interface IContentObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onChange(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    Uri[] _arg12 = (Uri[]) data.createTypedArray(Uri.CREATOR);
+                    int _arg22 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onChangeEtc(_arg02, _arg12, _arg22, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onChange(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            Uri[] _arg12 = (Uri[]) data.createTypedArray(Uri.CREATOR);
-                            int _arg22 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onChangeEtc(_arg02, _arg12, _arg22, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IContentObserver {
+        private static class Proxy implements IContentObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -12,7 +12,6 @@ public interface IIncrementalServiceConnector extends IInterface {
 
     int setStorageParams(boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IIncrementalServiceConnector {
         @Override // android.os.incremental.IIncrementalServiceConnector
         public int setStorageParams(boolean enableReadLogs) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IIncrementalServiceConnector extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IIncrementalServiceConnector {
         static final int TRANSACTION_setStorageParams = 1;
 
@@ -68,27 +66,24 @@ public interface IIncrementalServiceConnector extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIncrementalServiceConnector.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIncrementalServiceConnector.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIncrementalServiceConnector.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result = setStorageParams(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result = setStorageParams(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IIncrementalServiceConnector {
+        private static class Proxy implements IIncrementalServiceConnector {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -26,7 +26,6 @@ public class SearchRecentSuggestions {
     public static final String[] QUERIES_PROJECTION_2LINE = {"_id", "date", "query", SuggestionColumns.DISPLAY1, SuggestionColumns.DISPLAY2};
     private static final Semaphore sWritesInProgress = new Semaphore(0);
 
-    /* loaded from: classes3.dex */
     private static class SuggestionColumns implements BaseColumns {
         public static final String DATE = "date";
         public static final String DISPLAY1 = "display1";
@@ -43,12 +42,12 @@ public class SearchRecentSuggestions {
         }
         this.mTwoLineDisplay = (mode & 2) != 0;
         this.mContext = context;
-        String str = new String(authority);
-        this.mAuthority = str;
-        this.mSuggestionsUri = Uri.parse(SecContentProviderURI.CONTENT + str + "/suggestions");
+        this.mAuthority = new String(authority);
+        this.mSuggestionsUri = Uri.parse(SecContentProviderURI.CONTENT + this.mAuthority + "/suggestions");
     }
 
-    public void saveRecentQuery(String queryString, String line2) {
+    /* JADX WARN: Type inference failed for: r0v2, types: [android.provider.SearchRecentSuggestions$1] */
+    public void saveRecentQuery(final String queryString, final String line2) {
         if (TextUtils.isEmpty(queryString)) {
             return;
         }
@@ -56,16 +55,6 @@ public class SearchRecentSuggestions {
             throw new IllegalArgumentException();
         }
         new Thread("saveRecentQuery") { // from class: android.provider.SearchRecentSuggestions.1
-            final /* synthetic */ String val$line2;
-            final /* synthetic */ String val$queryString;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(String name, String queryString2, String line22) {
-                super(name);
-                queryString = queryString2;
-                line2 = line22;
-            }
-
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 SearchRecentSuggestions.this.saveRecentQueryBlocking(queryString, line2);
@@ -74,34 +63,13 @@ public class SearchRecentSuggestions {
         }.start();
     }
 
-    /* renamed from: android.provider.SearchRecentSuggestions$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends Thread {
-        final /* synthetic */ String val$line2;
-        final /* synthetic */ String val$queryString;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass1(String name, String queryString2, String line22) {
-            super(name);
-            queryString = queryString2;
-            line2 = line22;
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            SearchRecentSuggestions.this.saveRecentQueryBlocking(queryString, line2);
-            SearchRecentSuggestions.sWritesInProgress.release();
-        }
-    }
-
     void waitForSave() {
-        Semaphore semaphore;
         do {
-            semaphore = sWritesInProgress;
-            semaphore.acquireUninterruptibly();
-        } while (semaphore.availablePermits() > 0);
+            sWritesInProgress.acquireUninterruptibly();
+        } while (sWritesInProgress.availablePermits() > 0);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void saveRecentQueryBlocking(String queryString, String line2) {
         ContentResolver cr = this.mContext.getContentResolver();
         long now = System.currentTimeMillis();

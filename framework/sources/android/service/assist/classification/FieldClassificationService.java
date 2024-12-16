@@ -25,12 +25,7 @@ public abstract class FieldClassificationService extends Service {
 
     public abstract void onClassificationRequest(FieldClassificationRequest fieldClassificationRequest, CancellationSignal cancellationSignal, OutcomeReceiver<FieldClassificationResponse, Exception> outcomeReceiver);
 
-    /* loaded from: classes3.dex */
     private final class FieldClassificationServiceImpl extends IFieldClassificationService.Stub {
-        /* synthetic */ FieldClassificationServiceImpl(FieldClassificationService fieldClassificationService, FieldClassificationServiceImplIA fieldClassificationServiceImplIA) {
-            this();
-        }
-
         private FieldClassificationServiceImpl() {
         }
 
@@ -72,6 +67,7 @@ public abstract class FieldClassificationService extends Service {
     public void onDisconnected() {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnConnected(boolean debug, boolean verbose) {
         if (sDebug || debug) {
             Log.d(TAG, "handleOnConnected(): debug=" + debug + ", verbose=" + verbose);
@@ -81,20 +77,16 @@ public abstract class FieldClassificationService extends Service {
         onConnected();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnDisconnected() {
         onDisconnected();
     }
 
-    public void handleOnClassificationRequest(FieldClassificationRequest request, IFieldClassificationCallback callback) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void handleOnClassificationRequest(FieldClassificationRequest request, final IFieldClassificationCallback callback) {
         ICancellationSignal transport = CancellationSignal.createTransport();
         CancellationSignal cancellationSignal = CancellationSignal.fromTransport(transport);
         onClassificationRequest(request, cancellationSignal, new OutcomeReceiver<FieldClassificationResponse, Exception>() { // from class: android.service.assist.classification.FieldClassificationService.1
-            final /* synthetic */ IFieldClassificationCallback val$callback;
-
-            AnonymousClass1(IFieldClassificationCallback callback2) {
-                callback = callback2;
-            }
-
             @Override // android.os.OutcomeReceiver
             public void onResult(FieldClassificationResponse result) {
                 try {
@@ -113,33 +105,5 @@ public abstract class FieldClassificationService extends Service {
                 }
             }
         });
-    }
-
-    /* renamed from: android.service.assist.classification.FieldClassificationService$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements OutcomeReceiver<FieldClassificationResponse, Exception> {
-        final /* synthetic */ IFieldClassificationCallback val$callback;
-
-        AnonymousClass1(IFieldClassificationCallback callback2) {
-            callback = callback2;
-        }
-
-        @Override // android.os.OutcomeReceiver
-        public void onResult(FieldClassificationResponse result) {
-            try {
-                callback.onSuccess(result);
-            } catch (RemoteException e) {
-                e.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.os.OutcomeReceiver
-        public void onError(Exception e) {
-            try {
-                callback.onFailure();
-            } catch (RemoteException ex) {
-                ex.rethrowFromSystemServer();
-            }
-        }
     }
 }

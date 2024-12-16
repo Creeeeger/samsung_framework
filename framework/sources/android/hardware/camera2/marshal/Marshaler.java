@@ -4,7 +4,7 @@ import android.hardware.camera2.utils.TypeReference;
 import com.android.internal.util.Preconditions;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class Marshaler<T> {
     public static int NATIVE_SIZE_DYNAMIC = -1;
     protected final int mNativeType;
@@ -16,7 +16,7 @@ public abstract class Marshaler<T> {
 
     public abstract T unmarshal(ByteBuffer byteBuffer);
 
-    public Marshaler(MarshalQueryable<T> query, TypeReference<T> typeReference, int nativeType) {
+    protected Marshaler(MarshalQueryable<T> query, TypeReference<T> typeReference, int nativeType) {
         this.mTypeReference = (TypeReference) Preconditions.checkNotNull(typeReference, "typeReference must not be null");
         this.mNativeType = MarshalHelpers.checkNativeType(nativeType);
         if (!query.isTypeMappingSupported(typeReference, nativeType)) {

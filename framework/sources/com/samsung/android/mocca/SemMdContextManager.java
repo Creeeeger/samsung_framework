@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemMdContextManager {
     public static final String CONTEXT_TYPE_ALL = "all-context type";
     public static final String CONTEXT_TYPE_CAR_CRASH = "ccd";
@@ -21,14 +21,12 @@ public class SemMdContextManager {
     private HashMap<ContextEventCallback, MoccaListenerTransport> mContextEventCallbacks = new HashMap<>();
     private IMoccaService mService;
 
-    /* loaded from: classes5.dex */
     public interface AvailabilityCallback {
         void onContextAvailable(String str);
 
         void onContextUnavailable(String str);
     }
 
-    /* loaded from: classes5.dex */
     public interface ContextEventCallback {
         void onContextChanged(SemMdContextEvent semMdContextEvent);
 
@@ -40,13 +38,12 @@ public class SemMdContextManager {
     }
 
     public List<String> getSupportedTypes() {
-        IMoccaService iMoccaService = this.mService;
-        if (iMoccaService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SemMdContextService is not supported");
             return Collections.EMPTY_LIST;
         }
         try {
-            List<String> supportedTypes = iMoccaService.getSupportedTypes();
+            List<String> supportedTypes = this.mService.getSupportedTypes();
             return supportedTypes == null ? Collections.EMPTY_LIST : supportedTypes;
         } catch (RemoteException e) {
             Log.e(TAG, "getSupportedTypes : RemoteException :" + e.getMessage(), e);
@@ -86,7 +83,7 @@ public class SemMdContextManager {
         }
     }
 
-    public static /* synthetic */ MoccaListenerTransport lambda$registerAvailabilityCallback$0(AvailabilityCallback cb) {
+    static /* synthetic */ MoccaListenerTransport lambda$registerAvailabilityCallback$0(AvailabilityCallback cb) {
         return new MoccaListenerTransport(cb, null);
     }
 
@@ -153,7 +150,7 @@ public class SemMdContextManager {
         return true;
     }
 
-    public static /* synthetic */ MoccaListenerTransport lambda$registerContextEventCallback$1(ContextEventCallback cb) {
+    static /* synthetic */ MoccaListenerTransport lambda$registerContextEventCallback$1(ContextEventCallback cb) {
         return new MoccaListenerTransport(null, cb);
     }
 
@@ -187,8 +184,8 @@ public class SemMdContextManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class MoccaListenerTransport extends IMoccaEventListener.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class MoccaListenerTransport extends IMoccaEventListener.Stub {
         private static final int MSG_CONTEXT_AVAILABLE = 3;
         private static final int MSG_CONTEXT_CHANGED = 1;
         private static final int MSG_CONTEXT_STOPPED = 2;
@@ -196,9 +193,6 @@ public class SemMdContextManager {
         private AvailabilityCallback mAvailabilityCallback;
         private ContextEventCallback mContextEventCallback;
         private final Handler mListenerHandler = new Handler() { // from class: com.samsung.android.mocca.SemMdContextManager.MoccaListenerTransport.1
-            AnonymousClass1() {
-            }
-
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 MoccaListenerTransport.this._handleMessage(msg);
@@ -208,19 +202,6 @@ public class SemMdContextManager {
         MoccaListenerTransport(AvailabilityCallback availabilityCallback, ContextEventCallback contextEventCallback) {
             this.mAvailabilityCallback = availabilityCallback;
             this.mContextEventCallback = contextEventCallback;
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.mocca.SemMdContextManager$MoccaListenerTransport$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 extends Handler {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                MoccaListenerTransport.this._handleMessage(msg);
-            }
         }
 
         @Override // com.samsung.android.mocca.IMoccaEventListener
@@ -243,38 +224,34 @@ public class SemMdContextManager {
             this.mListenerHandler.obtainMessage(4, contextType).sendToTarget();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void _handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     if (this.mContextEventCallback != null) {
                         ContextEvent evt = (ContextEvent) msg.obj;
                         this.mContextEventCallback.onContextChanged(new SemMdContextEvent(evt.timestamp, evt.type, evt.data));
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 2:
-                    ContextEventCallback contextEventCallback = this.mContextEventCallback;
-                    if (contextEventCallback != null) {
-                        contextEventCallback.onContextStopped((String) msg.obj);
-                        return;
+                    if (this.mContextEventCallback != null) {
+                        this.mContextEventCallback.onContextStopped((String) msg.obj);
+                        break;
                     }
-                    return;
+                    break;
                 case 3:
-                    AvailabilityCallback availabilityCallback = this.mAvailabilityCallback;
-                    if (availabilityCallback != null) {
-                        availabilityCallback.onContextAvailable((String) msg.obj);
-                        return;
+                    if (this.mAvailabilityCallback != null) {
+                        this.mAvailabilityCallback.onContextAvailable((String) msg.obj);
+                        break;
                     }
-                    return;
+                    break;
                 case 4:
-                    AvailabilityCallback availabilityCallback2 = this.mAvailabilityCallback;
-                    if (availabilityCallback2 != null) {
-                        availabilityCallback2.onContextUnavailable((String) msg.obj);
-                        return;
+                    if (this.mAvailabilityCallback != null) {
+                        this.mAvailabilityCallback.onContextUnavailable((String) msg.obj);
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }

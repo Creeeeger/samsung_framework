@@ -8,7 +8,7 @@ public class DeliveryInd extends GenericPdu {
         setMessageType(134);
     }
 
-    public DeliveryInd(PduHeaders headers) {
+    DeliveryInd(PduHeaders headers) {
         super(headers);
     }
 

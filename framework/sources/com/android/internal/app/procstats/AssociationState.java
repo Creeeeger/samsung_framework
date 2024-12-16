@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class AssociationState {
     private static final boolean DEBUG = false;
     private static final String TAG = "ProcessStats";
@@ -44,7 +44,6 @@ public final class AssociationState {
         }
     };
 
-    /* loaded from: classes4.dex */
     public static final class SourceState implements Parcelable {
         int mActiveCount;
         long mActiveDuration;
@@ -66,7 +65,7 @@ public final class AssociationState {
         int mProcState = -1;
         int mActiveProcState = -1;
 
-        public SourceState(ProcessStats processStats, AssociationState associationState, ProcessState targetProcess, SourceKey key) {
+        SourceState(ProcessStats processStats, AssociationState associationState, ProcessState targetProcess, SourceKey key) {
             this.mProcessStats = processStats;
             this.mAssociationState = associationState;
             this.mTargetProcess = targetProcess;
@@ -123,9 +122,8 @@ public final class AssociationState {
         }
 
         long start(long now) {
-            int i = this.mNesting + 1;
-            this.mNesting = i;
-            if (i == 1) {
+            this.mNesting++;
+            if (this.mNesting == 1) {
                 if (now < 0) {
                     now = SystemClock.uptimeMillis();
                 }
@@ -144,9 +142,8 @@ public final class AssociationState {
         }
 
         long stop(long now) {
-            int i = this.mNesting - 1;
-            this.mNesting = i;
-            if (i == 0) {
+            this.mNesting--;
+            if (this.mNesting == 0) {
                 if (now < 0) {
                     now = SystemClock.uptimeMillis();
                 }
@@ -156,7 +153,7 @@ public final class AssociationState {
             return now;
         }
 
-        public void startActive(long now) {
+        void startActive(long now) {
             SourceState commonSource;
             boolean startActive = false;
             if (this.mInTrackingList) {
@@ -165,9 +162,8 @@ public final class AssociationState {
                     this.mActiveNesting++;
                     this.mActiveCount++;
                     startActive = true;
-                    AssociationState associationState = this.mAssociationState;
-                    if (associationState != null) {
-                        associationState.mTotalActiveNesting++;
+                    if (this.mAssociationState != null) {
+                        this.mAssociationState.mTotalActiveNesting++;
                         if (this.mAssociationState.mTotalActiveNesting == 1) {
                             this.mAssociationState.mTotalActiveCount++;
                             this.mAssociationState.mTotalActiveStartUptime = now;
@@ -176,9 +172,8 @@ public final class AssociationState {
                 } else if (this.mAssociationState == null) {
                     this.mActiveNesting++;
                 }
-                int i = this.mActiveProcState;
-                if (i != this.mProcState) {
-                    if (i != -1) {
+                if (this.mActiveProcState != this.mProcState) {
+                    if (this.mActiveProcState != -1) {
                         long addedDuration = (this.mActiveDuration + now) - this.mActiveStartUptime;
                         this.mActiveStartUptime = now;
                         if (this.mAssociationState != null) {
@@ -202,28 +197,24 @@ public final class AssociationState {
             }
         }
 
-        public void stopActive(long now) {
+        void stopActive(long now) {
             SourceState commonSource;
             boolean stopActive = false;
             if (this.mActiveStartUptime != 0) {
                 if (!this.mInTrackingList && this.mAssociationState != null) {
                     Slog.wtf("ProcessStats", "stopActive while not tracking: " + this);
                 }
-                int i = this.mActiveNesting - 1;
-                this.mActiveNesting = i;
+                this.mActiveNesting--;
                 long addedDuration = now - this.mActiveStartUptime;
-                long j = (this.mAssociationState != null || i == 0) ? 0L : now;
-                this.mActiveStartUptime = j;
-                stopActive = j == 0;
-                DurationsTable durationsTable = this.mActiveDurations;
-                if (durationsTable != null) {
-                    durationsTable.addDuration(this.mActiveProcState, addedDuration);
+                this.mActiveStartUptime = (this.mAssociationState != null || this.mActiveNesting == 0) ? 0L : now;
+                stopActive = this.mActiveStartUptime == 0;
+                if (this.mActiveDurations != null) {
+                    this.mActiveDurations.addDuration(this.mActiveProcState, addedDuration);
                 } else {
                     this.mActiveDuration += addedDuration;
                 }
-                AssociationState associationState = this.mAssociationState;
-                if (associationState != null) {
-                    associationState.mTotalActiveNesting--;
+                if (this.mAssociationState != null) {
+                    this.mAssociationState.mTotalActiveNesting--;
                     if (this.mAssociationState.mTotalActiveNesting == 0) {
                         this.mAssociationState.mTotalActiveDuration += now - this.mAssociationState.mTotalActiveStartUptime;
                         this.mAssociationState.mTotalActiveStartUptime = 0L;
@@ -235,7 +226,7 @@ public final class AssociationState {
             }
         }
 
-        public boolean stopActiveIfNecessary(int curSeq, long now) {
+        boolean stopActiveIfNecessary(int curSeq, long now) {
             if (this.mProcStateSeq != curSeq || this.mProcState >= 12) {
                 stopActive(now);
                 stopTrackingProcState();
@@ -253,11 +244,11 @@ public final class AssociationState {
             }
         }
 
-        public boolean isInUse() {
+        boolean isInUse() {
             return this.mNesting > 0;
         }
 
-        public void resetSafely(long now) {
+        void resetSafely(long now) {
             SourceState commonSource;
             if (isInUse()) {
                 this.mCount = 1;
@@ -278,18 +269,16 @@ public final class AssociationState {
             }
         }
 
-        public void commitStateTime(long nowUptime) {
+        void commitStateTime(long nowUptime) {
             if (this.mNesting > 0) {
                 this.mDuration += nowUptime - this.mStartUptime;
                 this.mStartUptime = nowUptime;
             }
-            long j = this.mActiveStartUptime;
-            if (j > 0) {
-                long addedDuration = nowUptime - j;
+            if (this.mActiveStartUptime > 0) {
+                long addedDuration = nowUptime - this.mActiveStartUptime;
                 this.mActiveStartUptime = nowUptime;
-                DurationsTable durationsTable = this.mActiveDurations;
-                if (durationsTable != null) {
-                    durationsTable.addDuration(this.mActiveProcState, addedDuration);
+                if (this.mActiveDurations != null) {
+                    this.mActiveDurations.addDuration(this.mActiveProcState, addedDuration);
                 } else {
                     this.mActiveDuration += addedDuration;
                 }
@@ -302,7 +291,8 @@ public final class AssociationState {
 
         private void stopTracking(long now) {
             if (this.mAssociationState != null) {
-                r0.mTotalNesting--;
+                AssociationState associationState = this.mAssociationState;
+                associationState.mTotalNesting--;
                 if (this.mAssociationState.mTotalNesting == 0) {
                     this.mAssociationState.mTotalDuration += now - this.mAssociationState.mTotalStartUptime;
                 }
@@ -324,39 +314,34 @@ public final class AssociationState {
             }
         }
 
-        public void add(SourceState otherSrc) {
+        void add(SourceState otherSrc) {
             this.mCount += otherSrc.mCount;
             this.mDuration += otherSrc.mDuration;
             this.mActiveCount += otherSrc.mActiveCount;
-            long j = otherSrc.mActiveDuration;
-            if (j != 0 || otherSrc.mActiveDurations != null) {
-                DurationsTable durationsTable = this.mActiveDurations;
-                if (durationsTable != null) {
-                    DurationsTable durationsTable2 = otherSrc.mActiveDurations;
-                    if (durationsTable2 != null) {
-                        durationsTable.addDurations(durationsTable2);
+            if (otherSrc.mActiveDuration != 0 || otherSrc.mActiveDurations != null) {
+                if (this.mActiveDurations != null) {
+                    if (otherSrc.mActiveDurations != null) {
+                        this.mActiveDurations.addDurations(otherSrc.mActiveDurations);
                         return;
                     } else {
-                        durationsTable.addDuration(otherSrc.mActiveProcState, j);
+                        this.mActiveDurations.addDuration(otherSrc.mActiveProcState, otherSrc.mActiveDuration);
                         return;
                     }
                 }
                 if (otherSrc.mActiveDurations != null) {
                     makeDurations();
                     this.mActiveDurations.addDurations(otherSrc.mActiveDurations);
-                    long j2 = this.mActiveDuration;
-                    if (j2 != 0) {
-                        this.mActiveDurations.addDuration(this.mActiveProcState, j2);
+                    if (this.mActiveDuration != 0) {
+                        this.mActiveDurations.addDuration(this.mActiveProcState, this.mActiveDuration);
                         this.mActiveDuration = 0L;
                         this.mActiveProcState = -1;
                         return;
                     }
                     return;
                 }
-                long j3 = this.mActiveDuration;
-                if (j3 != 0) {
+                if (this.mActiveDuration != 0) {
                     if (this.mActiveProcState == otherSrc.mActiveProcState) {
-                        this.mActiveDuration = j3 + j;
+                        this.mActiveDuration += otherSrc.mActiveDuration;
                         return;
                     }
                     makeDurations();
@@ -367,7 +352,7 @@ public final class AssociationState {
                     return;
                 }
                 this.mActiveProcState = otherSrc.mActiveProcState;
-                this.mActiveDuration = j;
+                this.mActiveDuration = otherSrc.mActiveDuration;
             }
         }
 
@@ -391,7 +376,7 @@ public final class AssociationState {
             return 0;
         }
 
-        public String readFromParcel(Parcel in) {
+        String readFromParcel(Parcel in) {
             this.mCount = in.readInt();
             this.mDuration = in.readLong();
             this.mActiveCount = in.readInt();
@@ -418,8 +403,7 @@ public final class AssociationState {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SourceDumpContainer {
+    static final class SourceDumpContainer {
         public long mActiveTime;
         public final SourceState mState;
         public long mTotalTime;
@@ -429,7 +413,6 @@ public final class AssociationState {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class SourceKey {
         String mPackage;
         String mProcess;
@@ -441,13 +424,13 @@ public final class AssociationState {
             this.mPackage = pkg;
         }
 
-        public SourceKey(ProcessStats stats, Parcel in, int parcelVersion) {
+        SourceKey(ProcessStats stats, Parcel in, int parcelVersion) {
             this.mUid = in.readInt();
             this.mProcess = stats.readCommonString(in, parcelVersion);
             this.mPackage = stats.readCommonString(in, parcelVersion);
         }
 
-        public void writeToParcel(ProcessStats stats, Parcel out) {
+        void writeToParcel(ProcessStats stats, Parcel out) {
             out.writeInt(this.mUid);
             stats.writeCommonString(out, this.mProcess);
             stats.writeCommonString(out, this.mPackage);
@@ -462,11 +445,7 @@ public final class AssociationState {
         }
 
         public int hashCode() {
-            int hashCode = Integer.hashCode(this.mUid);
-            String str = this.mProcess;
-            int hashCode2 = hashCode ^ (str == null ? 0 : str.hashCode());
-            String str2 = this.mPackage;
-            return hashCode2 ^ (str2 != null ? str2.hashCode() * 33 : 0);
+            return (Integer.hashCode(this.mUid) ^ (this.mProcess == null ? 0 : this.mProcess.hashCode())) ^ (this.mPackage != null ? this.mPackage.hashCode() * 33 : 0);
         }
 
         public String toString() {
@@ -524,12 +503,11 @@ public final class AssociationState {
 
     public SourceState startSource(int uid, String processName, String packageName) {
         SourceState src;
-        SourceKey sourceKey = sTmpSourceKey;
-        synchronized (sourceKey) {
-            sourceKey.mUid = uid;
-            sourceKey.mProcess = processName;
-            sourceKey.mPackage = packageName;
-            src = this.mSources.get(sourceKey);
+        synchronized (sTmpSourceKey) {
+            sTmpSourceKey.mUid = uid;
+            sTmpSourceKey.mProcess = processName;
+            sTmpSourceKey.mPackage = packageName;
+            src = this.mSources.get(sTmpSourceKey);
         }
         if (src == null) {
             SourceKey key = new SourceKey(uid, processName, packageName);
@@ -538,9 +516,8 @@ public final class AssociationState {
         }
         long now = src.start();
         if (now > 0) {
-            int i = this.mTotalNesting + 1;
-            this.mTotalNesting = i;
-            if (i == 1) {
+            this.mTotalNesting++;
+            if (this.mTotalNesting == 1) {
                 this.mTotalCount++;
                 this.mTotalStartUptime = now;
             }
@@ -666,7 +643,7 @@ public final class AssociationState {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public static /* synthetic */ int lambda$static$0(Pair o1, Pair o2) {
+    static /* synthetic */ int lambda$static$0(Pair o1, Pair o2) {
         int diff;
         if (((SourceDumpContainer) o1.second).mActiveTime != ((SourceDumpContainer) o2.second).mActiveTime) {
             return ((SourceDumpContainer) o1.second).mActiveTime > ((SourceDumpContainer) o2.second).mActiveTime ? -1 : 1;
@@ -683,7 +660,7 @@ public final class AssociationState {
         return 0;
     }
 
-    public static ArrayList<Pair<SourceKey, SourceDumpContainer>> createSortedAssociations(long now, long totalTime, ArrayMap<SourceKey, SourceState> inSources) {
+    static ArrayList<Pair<SourceKey, SourceDumpContainer>> createSortedAssociations(long now, long totalTime, ArrayMap<SourceKey, SourceState> inSources) {
         long duration;
         int numOfSources = inSources.size();
         ArrayList<Pair<SourceKey, SourceDumpContainer>> sources = new ArrayList<>(numOfSources);
@@ -776,7 +753,7 @@ public final class AssociationState {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static void dumpSources(java.io.PrintWriter r21, java.lang.String r22, java.lang.String r23, java.lang.String r24, java.util.ArrayList<android.util.Pair<com.android.internal.app.procstats.AssociationState.SourceKey, com.android.internal.app.procstats.AssociationState.SourceDumpContainer>> r25, long r26, long r28, java.lang.String r30, boolean r31, boolean r32) {
+    static void dumpSources(java.io.PrintWriter r21, java.lang.String r22, java.lang.String r23, java.lang.String r24, java.util.ArrayList<android.util.Pair<com.android.internal.app.procstats.AssociationState.SourceKey, com.android.internal.app.procstats.AssociationState.SourceDumpContainer>> r25, long r26, long r28, java.lang.String r30, boolean r31, boolean r32) {
         /*
             Method dump skipped, instructions count: 485
             To view this dump change 'Code comments level' option to 'DEBUG'
@@ -784,7 +761,7 @@ public final class AssociationState {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.app.procstats.AssociationState.dumpSources(java.io.PrintWriter, java.lang.String, java.lang.String, java.lang.String, java.util.ArrayList, long, long, java.lang.String, boolean, boolean):void");
     }
 
-    public static void dumpActiveDurationSummary(PrintWriter pw, SourceState src, long totalTime, long now, boolean dumpAll) {
+    static void dumpActiveDurationSummary(PrintWriter pw, SourceState src, long totalTime, long now, boolean dumpAll) {
         long duration = dumpTime(null, null, src, totalTime, now, false, false);
         boolean isRunning = duration < 0;
         if (isRunning) {
@@ -928,9 +905,8 @@ public final class AssociationState {
         proto.write(1138166333441L, this.mName);
         proto.write(1120986464259L, this.mTotalCount);
         proto.write(1112396529668L, getTotalDuration(j2));
-        int i = this.mTotalActiveCount;
-        if (i != 0) {
-            proto.write(1120986464261L, i);
+        if (this.mTotalActiveCount != 0) {
+            proto.write(1120986464261L, this.mTotalActiveCount);
             proto.write(1112396529670L, getActiveDuration(j2));
         }
         int NSRC3 = this.mSources.size();
@@ -961,9 +937,9 @@ public final class AssociationState {
             if (src.mActiveDurations != null) {
                 int N = src.mActiveDurations.getKeyCount();
                 long sourceToken4 = sourceToken3;
-                int i2 = 0;
-                while (i2 < N) {
-                    int dkey = src.mActiveDurations.getKeyAt(i2);
+                int i = 0;
+                while (i < N) {
+                    int dkey = src.mActiveDurations.getKeyAt(i);
                     long duration2 = src.mActiveDurations.getValue(dkey);
                     if (dkey == src.mActiveProcState) {
                         duration2 += timeNow;
@@ -973,7 +949,7 @@ public final class AssociationState {
                     DumpUtils.printProto(proto, 1159641169921L, DumpUtils.STATE_PROTO_ENUMS, procState, 1);
                     proto.write(1112396529666L, duration2);
                     proto.end(stateToken);
-                    i2++;
+                    i++;
                     N = N;
                     src = src;
                     sourceToken4 = sourceToken4;

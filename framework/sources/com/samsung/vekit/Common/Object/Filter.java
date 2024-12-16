@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,7 +20,14 @@ public class Filter extends Element {
     private static final int NOISE_TYPE_GRAY = 1;
     private static final int NOISE_TYPE_NONE = 0;
     private static final int NOISE_TYPE_RGB = 3;
+    private int aiGrainInitialPower;
+    private float aiGrainIntensity;
+    private float aiGrainRadius;
+    private int aiGrainStyle;
+    private ArrayList<String> aiGrainTextureList;
+    private IntensityInfo aiIntensityInfo;
     private String auxPath;
+    private boolean enableAiGrain;
     private boolean enableGrain;
     private boolean enableVignette;
     private FilterType filterType;
@@ -40,10 +48,20 @@ public class Filter extends Element {
         this.noiseIntensity = 0.0f;
         this.enableVignette = false;
         this.enableGrain = false;
+        this.enableAiGrain = false;
+        this.aiGrainTextureList = new ArrayList<>();
+        this.aiIntensityInfo = new IntensityInfo();
+        this.aiGrainRadius = 0.7f;
+        this.aiGrainStyle = 1;
+        this.aiGrainInitialPower = 52;
+        this.aiGrainIntensity = 4.0f;
+        this.TAG = getClass().getSimpleName();
         this.id = id;
         this.name = name;
+        this.aiGrainTextureList.add("/system/cameradata/preloadfilters/grain_patch_weak_1.png");
+        this.aiGrainTextureList.add("/system/cameradata/preloadfilters/grain_patch_strong_4.png");
+        this.aiGrainTextureList.add("/system/cameradata/preloadfilters/grain_patch_strong_6.png");
         setPath(filterPath);
-        this.TAG = getClass().getSimpleName();
     }
 
     private void setPath(String filterPath) {
@@ -57,9 +75,13 @@ public class Filter extends Element {
             Log.e(this.TAG, "filterPath doesn't exist.");
             return;
         }
-        String str = filterPath.substring(0, filterPath.lastIndexOf(46)) + ".json";
-        this.jsonPath = str;
-        if (!parseJson(str)) {
+        if (!this.aiGrainTextureList.isEmpty()) {
+            this.grainPath = this.aiGrainTextureList.get(0);
+            File grainFile = new File(this.grainPath);
+            this.enableAiGrain = grainFile.exists();
+        }
+        this.jsonPath = filterPath.substring(0, filterPath.lastIndexOf(46)) + ".json";
+        if (!parseJson(this.jsonPath)) {
             Log.e(this.TAG, "Parse failed");
         }
     }
@@ -72,9 +94,7 @@ public class Filter extends Element {
             BufferedReader buffer = new BufferedReader(reader);
             while (true) {
                 String line = buffer.readLine();
-                if (line != null) {
-                    json.append(line);
-                } else {
+                if (line == null) {
                     try {
                         break;
                     } catch (JSONException e) {
@@ -82,6 +102,7 @@ public class Filter extends Element {
                         return false;
                     }
                 }
+                json.append(line);
             }
             JSONObject obj = new JSONObject(json.toString());
             String filterData = obj.getString("filter_type");
@@ -96,7 +117,9 @@ public class Filter extends Element {
                 } else {
                     this.noiseType = 0;
                 }
-            } else if ("myfilter_effect".equals(filterData)) {
+                return true;
+            }
+            if ("myfilter_effect".equals(filterData)) {
                 this.filterType = FilterType.MY_FILTER;
                 String filePath = jsonPath.substring(0, jsonPath.lastIndexOf(46));
                 this.auxPath = filePath + ".aux";
@@ -107,7 +130,34 @@ public class Filter extends Element {
                 this.enableGrain = grainFile.exists();
                 this.grainPower = (float) obj.getDouble("grain_power");
                 this.grainRadius = (float) obj.getDouble("grain_radius");
+                return true;
             }
+            if ("ai_myfilter_effect".equals(filterData)) {
+                this.filterType = FilterType.AI_MY_FILTER;
+                String filePath2 = jsonPath.substring(0, jsonPath.lastIndexOf(46));
+                this.auxPath = filePath2 + ".aux";
+                File auxFile2 = new File(this.auxPath);
+                this.enableVignette = auxFile2.exists();
+                JSONObject grainPowerObject = obj.getJSONObject("ai_grain_power");
+                this.aiIntensityInfo.setMin(grainPowerObject.getInt("min"));
+                this.aiIntensityInfo.setMax(grainPowerObject.getInt("max"));
+                this.aiIntensityInfo.setBase(grainPowerObject.getInt("default"));
+                this.aiIntensityInfo.setStep(grainPowerObject.getInt("step"));
+                this.aiGrainRadius = (float) obj.getDouble("ai_grain_radius");
+                this.aiGrainStyle = obj.getInt("ai_grain_style");
+                this.aiGrainInitialPower = obj.getInt("ai_grain_initial_power");
+                this.aiGrainIntensity = obj.getInt("ai_grain_intensity");
+                return true;
+            }
+            this.filterType = FilterType.LUT;
+            JSONObject grainPowerObject2 = obj.getJSONObject("ai_grain_power");
+            this.aiIntensityInfo.setMin(grainPowerObject2.getInt("min"));
+            this.aiIntensityInfo.setMax(grainPowerObject2.getInt("max"));
+            this.aiIntensityInfo.setBase(grainPowerObject2.getInt("default"));
+            this.aiIntensityInfo.setStep(grainPowerObject2.getInt("step"));
+            this.aiGrainRadius = (float) obj.getDouble("ai_grain_radius");
+            this.aiGrainStyle = obj.getInt("ai_grain_style");
+            this.aiGrainInitialPower = obj.getInt("ai_grain_initial_power");
             return true;
         } catch (IOException e2) {
             Log.e(this.TAG, e2.getMessage(), e2);
@@ -157,5 +207,53 @@ public class Filter extends Element {
 
     public boolean isEnableGrain() {
         return this.enableGrain;
+    }
+
+    public boolean isEnableAiGrain() {
+        return this.enableAiGrain;
+    }
+
+    public void setEnableAiGrain(boolean enableAiGrain) {
+        this.enableAiGrain = enableAiGrain;
+    }
+
+    public IntensityInfo getAiGrainPower() {
+        return this.aiIntensityInfo;
+    }
+
+    public void setAiGrainPower(IntensityInfo aiIntensityInfo) {
+        this.aiIntensityInfo = aiIntensityInfo;
+    }
+
+    public float getAiGrainRadius() {
+        return this.aiGrainRadius;
+    }
+
+    public void setAiGrainRadius(float aiGrainRadius) {
+        this.aiGrainRadius = aiGrainRadius;
+    }
+
+    public int getAiGrainStyle() {
+        return this.aiGrainStyle;
+    }
+
+    public void setAiGrainStyle(int aiGrainStyle) {
+        this.aiGrainStyle = aiGrainStyle;
+    }
+
+    public int getAiGrainInitialPower() {
+        return this.aiGrainInitialPower;
+    }
+
+    public void setAiGrainInitialPower(int aiGrainInitialPower) {
+        this.aiGrainInitialPower = aiGrainInitialPower;
+    }
+
+    public float getAiGrainIntensity() {
+        return this.aiGrainIntensity;
+    }
+
+    public void setAiGrainIntensity(float aiGrainIntensity) {
+        this.aiGrainIntensity = aiGrainIntensity;
     }
 }

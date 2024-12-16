@@ -12,7 +12,6 @@ public interface IWindowFocusObserver extends IInterface {
 
     void focusLost(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWindowFocusObserver {
         @Override // android.view.IWindowFocusObserver
         public void focusGained(IBinder inputToken) throws RemoteException {
@@ -28,7 +27,6 @@ public interface IWindowFocusObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWindowFocusObserver {
         public static final String DESCRIPTOR = "android.view.IWindowFocusObserver";
         static final int TRANSACTION_focusGained = 1;
@@ -75,31 +73,27 @@ public interface IWindowFocusObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    focusGained(_arg0);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    focusLost(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            focusGained(_arg0);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            focusLost(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWindowFocusObserver {
+        private static class Proxy implements IWindowFocusObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

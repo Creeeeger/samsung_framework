@@ -17,14 +17,14 @@ public class GhostView extends View {
     private GhostView(View view) {
         super(view.getContext());
         this.mView = view;
-        view.mGhostView = this;
-        ViewGroup parent = (ViewGroup) view.getParent();
-        view.setTransitionVisibility(4);
+        this.mView.mGhostView = this;
+        ViewGroup parent = (ViewGroup) this.mView.getParent();
+        this.mView.setTransitionVisibility(4);
         parent.invalidate();
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         if (canvas instanceof RecordingCanvas) {
             RecordingCanvas dlCanvas = (RecordingCanvas) canvas;
             this.mView.mRecreateDisplayList = true;
@@ -51,7 +51,7 @@ public class GhostView extends View {
     }
 
     @Override // android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (!this.mBeingMoved) {
             this.mView.setTransitionVisibility(0);
@@ -118,9 +118,8 @@ public class GhostView extends View {
     public static void removeGhost(View view) {
         GhostView ghostView = view.mGhostView;
         if (ghostView != null) {
-            int i = ghostView.mReferences - 1;
-            ghostView.mReferences = i;
-            if (i == 0) {
+            ghostView.mReferences--;
+            if (ghostView.mReferences == 0) {
                 ViewGroup parent = (ViewGroup) ghostView.getParent();
                 ViewGroup grandParent = (ViewGroup) parent.getParent();
                 grandParent.removeView(parent);

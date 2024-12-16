@@ -5,14 +5,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class StatsBootstrapAtomValue implements Parcelable {
     public static final Parcelable.Creator<StatsBootstrapAtomValue> CREATOR = new Parcelable.Creator<StatsBootstrapAtomValue>() { // from class: android.os.StatsBootstrapAtomValue.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StatsBootstrapAtomValue createFromParcel(Parcel _aidl_source) {
             return new StatsBootstrapAtomValue(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StatsBootstrapAtomValue[] newArray(int _aidl_size) {
             return new StatsBootstrapAtomValue[_aidl_size];
@@ -27,7 +26,6 @@ public final class StatsBootstrapAtomValue implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes3.dex */
     public @interface Tag {
         public static final int boolValue = 0;
         public static final int bytesValue = 5;
@@ -35,10 +33,6 @@ public final class StatsBootstrapAtomValue implements Parcelable {
         public static final int intValue = 1;
         public static final int longValue = 2;
         public static final int stringValue = 4;
-    }
-
-    /* synthetic */ StatsBootstrapAtomValue(Parcel parcel, StatsBootstrapAtomValueIA statsBootstrapAtomValueIA) {
-        this(parcel);
     }
 
     public StatsBootstrapAtomValue() {
@@ -137,47 +131,28 @@ public final class StatsBootstrapAtomValue implements Parcelable {
         _set(5, _value);
     }
 
-    /* renamed from: android.os.StatsBootstrapAtomValue$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StatsBootstrapAtomValue> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StatsBootstrapAtomValue createFromParcel(Parcel _aidl_source) {
-            return new StatsBootstrapAtomValue(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StatsBootstrapAtomValue[] newArray(int _aidl_size) {
-            return new StatsBootstrapAtomValue[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getBoolValue());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getIntValue());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeLong(getLongValue());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeFloat(getFloatValue());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeString(getStringValue());
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeByteArray(getBytesValue());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

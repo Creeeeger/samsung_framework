@@ -9,13 +9,13 @@ import java.nio.ByteBuffer;
 public class SimpleFrame extends Frame {
     private Object mObject;
 
-    public SimpleFrame(FrameFormat format, FrameManager frameManager) {
+    SimpleFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         initWithFormat(format);
         setReusable(false);
     }
 
-    public static SimpleFrame wrapObject(Object object, FrameManager frameManager) {
+    static SimpleFrame wrapObject(Object object, FrameManager frameManager) {
         FrameFormat format = ObjectFormat.fromObject(object, 1);
         SimpleFrame result = new SimpleFrame(format, frameManager);
         result.setObjectValue(object);
@@ -28,32 +28,32 @@ public class SimpleFrame extends Frame {
         switch (baseType) {
             case 2:
                 this.mObject = new byte[count];
-                return;
+                break;
             case 3:
                 this.mObject = new short[count];
-                return;
+                break;
             case 4:
                 this.mObject = new int[count];
-                return;
+                break;
             case 5:
                 this.mObject = new float[count];
-                return;
+                break;
             case 6:
                 this.mObject = new double[count];
-                return;
+                break;
             default:
                 this.mObject = null;
-                return;
+                break;
         }
     }
 
     @Override // android.filterfw.core.Frame
-    public boolean hasNativeAllocation() {
+    protected boolean hasNativeAllocation() {
         return false;
     }
 
     @Override // android.filterfw.core.Frame
-    public void releaseNativeAllocation() {
+    protected void releaseNativeAllocation() {
     }
 
     @Override // android.filterfw.core.Frame
@@ -69,9 +69,8 @@ public class SimpleFrame extends Frame {
 
     @Override // android.filterfw.core.Frame
     public int[] getInts() {
-        Object obj = this.mObject;
-        if (obj instanceof int[]) {
-            return (int[]) obj;
+        if (this.mObject instanceof int[]) {
+            return (int[]) this.mObject;
         }
         return null;
     }
@@ -84,9 +83,8 @@ public class SimpleFrame extends Frame {
 
     @Override // android.filterfw.core.Frame
     public float[] getFloats() {
-        Object obj = this.mObject;
-        if (obj instanceof float[]) {
-            return (float[]) obj;
+        if (this.mObject instanceof float[]) {
+            return (float[]) this.mObject;
         }
         return null;
     }
@@ -99,9 +97,8 @@ public class SimpleFrame extends Frame {
 
     @Override // android.filterfw.core.Frame
     public ByteBuffer getData() {
-        Object obj = this.mObject;
-        if (obj instanceof ByteBuffer) {
-            return (ByteBuffer) obj;
+        if (this.mObject instanceof ByteBuffer) {
+            return (ByteBuffer) this.mObject;
         }
         return null;
     }
@@ -114,9 +111,8 @@ public class SimpleFrame extends Frame {
 
     @Override // android.filterfw.core.Frame
     public Bitmap getBitmap() {
-        Object obj = this.mObject;
-        if (obj instanceof Bitmap) {
-            return (Bitmap) obj;
+        if (this.mObject instanceof Bitmap) {
+            return (Bitmap) this.mObject;
         }
         return null;
     }

@@ -3,17 +3,16 @@ package android.hardware.camera2.impl;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class PhysicalCaptureResultInfo implements Parcelable {
     public static final Parcelable.Creator<PhysicalCaptureResultInfo> CREATOR = new Parcelable.Creator<PhysicalCaptureResultInfo>() { // from class: android.hardware.camera2.impl.PhysicalCaptureResultInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalCaptureResultInfo createFromParcel(Parcel in) {
             return new PhysicalCaptureResultInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalCaptureResultInfo[] newArray(int size) {
             return new PhysicalCaptureResultInfo[size];
@@ -21,27 +20,6 @@ public class PhysicalCaptureResultInfo implements Parcelable {
     };
     private String cameraId;
     private CameraMetadataNative cameraMetadata;
-
-    /* synthetic */ PhysicalCaptureResultInfo(Parcel parcel, PhysicalCaptureResultInfoIA physicalCaptureResultInfoIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.hardware.camera2.impl.PhysicalCaptureResultInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhysicalCaptureResultInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhysicalCaptureResultInfo createFromParcel(Parcel in) {
-            return new PhysicalCaptureResultInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhysicalCaptureResultInfo[] newArray(int size) {
-            return new PhysicalCaptureResultInfo[size];
-        }
-    }
 
     private PhysicalCaptureResultInfo(Parcel in) {
         readFromParcel(in);
@@ -65,9 +43,8 @@ public class PhysicalCaptureResultInfo implements Parcelable {
 
     public void readFromParcel(Parcel in) {
         this.cameraId = in.readString();
-        CameraMetadataNative cameraMetadataNative = new CameraMetadataNative();
-        this.cameraMetadata = cameraMetadataNative;
-        cameraMetadataNative.readFromParcel(in);
+        this.cameraMetadata = new CameraMetadataNative();
+        this.cameraMetadata.readFromParcel(in);
     }
 
     public String getCameraId() {

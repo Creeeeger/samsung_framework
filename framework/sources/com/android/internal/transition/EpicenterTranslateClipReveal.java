@@ -154,7 +154,7 @@ public class EpicenterTranslateClipReveal extends Visibility {
         return clipRect;
     }
 
-    private static Animator createRectAnimator(View view, State startX, State startY, float startZ, State endX, State endY, float endZ, TransitionValues endValues, TimeInterpolator interpolatorX, TimeInterpolator interpolatorY, TimeInterpolator interpolatorZ) {
+    private static Animator createRectAnimator(final View view, State startX, State startY, float startZ, State endX, State endY, float endZ, TransitionValues endValues, TimeInterpolator interpolatorX, TimeInterpolator interpolatorY, TimeInterpolator interpolatorZ) {
         StateEvaluator evaluator = new StateEvaluator();
         ObjectAnimator animZ = ObjectAnimator.ofFloat(view, View.TRANSLATION_Z, startZ, endZ);
         if (interpolatorZ != null) {
@@ -170,14 +170,8 @@ public class EpicenterTranslateClipReveal extends Visibility {
         if (interpolatorY != null) {
             animY.setInterpolator(interpolatorY);
         }
-        Rect terminalClip = (Rect) endValues.values.get(PROPNAME_CLIP);
+        final Rect terminalClip = (Rect) endValues.values.get(PROPNAME_CLIP);
         AnimatorListenerAdapter animatorListener = new AnimatorListenerAdapter() { // from class: com.android.internal.transition.EpicenterTranslateClipReveal.1
-            final /* synthetic */ Rect val$terminalClip;
-
-            AnonymousClass1(Rect terminalClip2) {
-                terminalClip = terminalClip2;
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 View.this.setClipBounds(terminalClip);
@@ -189,23 +183,7 @@ public class EpicenterTranslateClipReveal extends Visibility {
         return animSet;
     }
 
-    /* renamed from: com.android.internal.transition.EpicenterTranslateClipReveal$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends AnimatorListenerAdapter {
-        final /* synthetic */ Rect val$terminalClip;
-
-        AnonymousClass1(Rect terminalClip2) {
-            terminalClip = terminalClip2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            View.this.setClipBounds(terminalClip);
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static class State {
+    private static class State {
         int lower;
         float trans;
         int upper;
@@ -220,13 +198,8 @@ public class EpicenterTranslateClipReveal extends Visibility {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class StateEvaluator implements TypeEvaluator<State> {
+    private static class StateEvaluator implements TypeEvaluator<State> {
         private final State mTemp;
-
-        /* synthetic */ StateEvaluator(StateEvaluatorIA stateEvaluatorIA) {
-            this();
-        }
 
         private StateEvaluator() {
             this.mTemp = new State();
@@ -241,8 +214,7 @@ public class EpicenterTranslateClipReveal extends Visibility {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class StateProperty extends Property<View, State> {
+    private static class StateProperty extends Property<View, State> {
         public static final char TARGET_X = 'x';
         public static final char TARGET_Y = 'y';
         private final int mTargetDimension;

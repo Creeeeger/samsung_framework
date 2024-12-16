@@ -2,12 +2,11 @@ package com.samsung.android.wallpaper.legibilitycolors;
 
 import com.samsung.android.wallpaper.legibilitycolors.LegibilityLogic;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class LegibilityAutoDim {
     static float mMinimumComplexityForAutoDim = 0.8f;
     static float mMaximumComplexityForAutoDim = 1.0f;
 
-    /* loaded from: classes5.dex */
     public static class AutoDimResult {
         public int color;
         public float maxComplexity;

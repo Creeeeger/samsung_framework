@@ -36,7 +36,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ChooserTargetActionsDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
     public static final String INTENT_FILTER_KEY = "intent_filter";
     public static final String IS_SHORTCUT_PINNED_KEY = "is_shortcut_pinned";
@@ -112,17 +112,17 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
         ImageView icon = (ImageView) v.findViewById(16908294);
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.listContainer);
         ResolverListAdapter.ResolveInfoPresentationGetter pg = getProvidingAppPresentationGetter();
-        title.setText(isShortcutTarget() ? this.mShortcutTitle : pg.getLabel());
-        icon.lambda$setImageURIAsync$2(pg.getIcon(this.mUserHandle));
+        title.lambda$setTextAsync$0(isShortcutTarget() ? this.mShortcutTitle : pg.getLabel());
+        icon.lambda$setImageURIAsync$0(pg.getIcon(this.mUserHandle));
         rv.setAdapter(new VHAdapter(items));
         return v;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Pair lambda$onCreateView$1(DisplayResolveInfo dri) {
         return new Pair(getItemIcon(dri), getItemLabel(dri));
     }
 
-    /* loaded from: classes4.dex */
     class VHAdapter extends RecyclerView.Adapter<VH> {
         List<Pair<Drawable, CharSequence>> mItems;
 
@@ -130,9 +130,10 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
             this.mItems = items;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.widget.RecyclerView.Adapter
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new VH(LayoutInflater.from(parent.getContext()).inflate(R.layout.chooser_dialog_item, parent, false));
+            return ChooserTargetActionsDialogFragment.this.new VH(LayoutInflater.from(parent.getContext()).inflate(R.layout.chooser_dialog_item, parent, false));
         }
 
         @Override // com.android.internal.widget.RecyclerView.Adapter
@@ -146,8 +147,7 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class VH extends RecyclerView.ViewHolder {
+    class VH extends RecyclerView.ViewHolder {
         ImageView mIcon;
         TextView mLabel;
 
@@ -158,12 +158,12 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
         }
 
         public void bind(Pair<Drawable, CharSequence> item, final int position) {
-            this.mLabel.setText(item.second);
+            this.mLabel.lambda$setTextAsync$0(item.second);
             if (item.first == null) {
                 this.mIcon.setVisibility(8);
             } else {
                 this.mIcon.setVisibility(0);
-                this.mIcon.lambda$setImageURIAsync$2(item.first);
+                this.mIcon.lambda$setImageURIAsync$0(item.first);
             }
             this.itemView.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.app.ChooserTargetActionsDialogFragment$VH$$ExternalSyntheticLambda0
                 @Override // android.view.View.OnClickListener
@@ -173,9 +173,9 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$bind$0(int position, View v) {
-            ChooserTargetActionsDialogFragment chooserTargetActionsDialogFragment = ChooserTargetActionsDialogFragment.this;
-            chooserTargetActionsDialogFragment.onClick(chooserTargetActionsDialogFragment.getDialog(), position);
+            ChooserTargetActionsDialogFragment.this.onClick(ChooserTargetActionsDialogFragment.this.getDialog(), position);
         }
     }
 
@@ -223,7 +223,7 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
         }).collect(Collectors.toList());
     }
 
-    public static /* synthetic */ boolean lambda$getPinnedShortcutsFromPackageAsUser$2(String packageName, ShortcutInfo s) {
+    static /* synthetic */ boolean lambda$getPinnedShortcutsFromPackageAsUser$2(String packageName, ShortcutInfo s) {
         return s.isPinned() && s.getPackage().equals(packageName);
     }
 

@@ -33,13 +33,12 @@ public final class SomeArgs {
 
     public static SomeArgs obtain() {
         synchronized (sPoolLock) {
-            int i = sPoolSize;
-            if (i > 0) {
+            if (sPoolSize > 0) {
                 SomeArgs args = sPool;
-                sPool = args.mNext;
+                sPool = sPool.mNext;
                 args.mNext = null;
                 args.mInPool = false;
-                sPoolSize = i - 1;
+                sPoolSize--;
                 return args;
             }
             return new SomeArgs();
@@ -65,12 +64,11 @@ public final class SomeArgs {
         }
         synchronized (sPoolLock) {
             clear();
-            int i = sPoolSize;
-            if (i < 10) {
+            if (sPoolSize < 10) {
                 this.mNext = sPool;
                 this.mInPool = true;
                 sPool = this;
-                sPoolSize = i + 1;
+                sPoolSize++;
             }
         }
     }

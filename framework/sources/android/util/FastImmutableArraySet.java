@@ -29,7 +29,6 @@ public final class FastImmutableArraySet<T> extends AbstractSet<T> {
         return this.mContents.length;
     }
 
-    /* loaded from: classes4.dex */
     private static final class FastIterator<T> implements Iterator<T> {
         private final T[] mContents;
         int mIndex;

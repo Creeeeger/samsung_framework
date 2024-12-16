@@ -33,16 +33,15 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
     @Override // com.android.internal.view.menu.MenuPresenter
     public void initForMenu(Context context, MenuBuilder menu) {
         this.mContext = context;
-        this.mInflater = LayoutInflater.from(context);
+        this.mInflater = LayoutInflater.from(this.mContext);
         this.mMenu = menu;
     }
 
     @Override // com.android.internal.view.menu.MenuPresenter
     public MenuView getMenuView(ViewGroup root) {
         if (this.mMenuView == null) {
-            MenuView menuView = (MenuView) this.mSystemInflater.inflate(this.mMenuLayoutRes, root, false);
-            this.mMenuView = menuView;
-            menuView.initialize(this.mMenu);
+            this.mMenuView = (MenuView) this.mSystemInflater.inflate(this.mMenuLayoutRes, root, false);
+            this.mMenuView.initialize(this.mMenu);
             updateMenuView(true);
         }
         return this.mMenuView;
@@ -56,9 +55,8 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
             return;
         }
         int childIndex = 0;
-        MenuBuilder menuBuilder = this.mMenu;
-        if (menuBuilder != null) {
-            menuBuilder.flagActionItems();
+        if (this.mMenu != null) {
+            this.mMenu.flagActionItems();
             ArrayList<MenuItemImpl> visibleItems = this.mMenu.getVisibleItems();
             int itemCount = visibleItems.size();
             for (int i = 0; i < itemCount; i++) {
@@ -85,7 +83,7 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
         }
     }
 
-    public void addItemView(View itemView, int childIndex) {
+    protected void addItemView(View itemView, int childIndex) {
         ViewGroup currentParent = (ViewGroup) itemView.getParent();
         if (currentParent != null) {
             currentParent.removeView(itemView);
@@ -93,7 +91,7 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
         ((ViewGroup) this.mMenuView).addView(itemView, childIndex);
     }
 
-    public boolean filterLeftoverView(ViewGroup parent, int childIndex) {
+    protected boolean filterLeftoverView(ViewGroup parent, int childIndex) {
         parent.removeViewAt(childIndex);
         return true;
     }
@@ -129,17 +127,15 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
 
     @Override // com.android.internal.view.menu.MenuPresenter
     public void onCloseMenu(MenuBuilder menu, boolean allMenusAreClosing) {
-        MenuPresenter.Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onCloseMenu(menu, allMenusAreClosing);
+        if (this.mCallback != null) {
+            this.mCallback.onCloseMenu(menu, allMenusAreClosing);
         }
     }
 
     @Override // com.android.internal.view.menu.MenuPresenter
     public boolean onSubMenuSelected(SubMenuBuilder menu) {
-        MenuPresenter.Callback callback = this.mCallback;
-        if (callback != null) {
-            return callback.onOpenSubMenu(menu);
+        if (this.mCallback != null) {
+            return this.mCallback.onOpenSubMenu(menu);
         }
         return false;
     }
@@ -168,7 +164,7 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
         this.mId = id;
     }
 
-    public void setMenuLayoutResources(int menuLayoutRes, int itemLayoutRes) {
+    protected void setMenuLayoutResources(int menuLayoutRes, int itemLayoutRes) {
         this.mMenuLayoutRes = menuLayoutRes;
         this.mItemLayoutRes = itemLayoutRes;
     }

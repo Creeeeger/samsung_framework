@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehTemperature implements Parcelable {
     public static final Parcelable.Creator<SehTemperature> CREATOR = new Parcelable.Creator<SehTemperature>() { // from class: vendor.samsung.hardware.thermal.SehTemperature.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehTemperature createFromParcel(Parcel _aidl_source) {
             SehTemperature _aidl_out = new SehTemperature();
@@ -25,25 +22,6 @@ public class SehTemperature implements Parcelable {
     public String name;
     public int type;
     public float value = 0.0f;
-
-    /* renamed from: vendor.samsung.hardware.thermal.SehTemperature$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehTemperature> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehTemperature createFromParcel(Parcel _aidl_source) {
-            SehTemperature _aidl_out = new SehTemperature();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehTemperature[] newArray(int _aidl_size) {
-            return new SehTemperature[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

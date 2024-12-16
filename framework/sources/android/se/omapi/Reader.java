@@ -14,7 +14,7 @@ public final class Reader {
     private ISecureElementReader mReader;
     private final SEService mService;
 
-    public Reader(SEService service, String name, ISecureElementReader reader) {
+    Reader(SEService service, String name, ISecureElementReader reader) {
         if (reader == null || service == null || name == null) {
             throw new IllegalArgumentException("Parameters cannot be null");
         }

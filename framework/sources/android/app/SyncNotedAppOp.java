@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SyncNotedAppOp implements Parcelable {
     public static final Parcelable.Creator<SyncNotedAppOp> CREATOR = new Parcelable.Creator<SyncNotedAppOp>() { // from class: android.app.SyncNotedAppOp.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncNotedAppOp[] newArray(int size) {
             return new SyncNotedAppOp[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncNotedAppOp createFromParcel(Parcel in) {
             return new SyncNotedAppOp(in);
@@ -29,7 +28,7 @@ public final class SyncNotedAppOp implements Parcelable {
 
     public SyncNotedAppOp(int opMode, int opCode, String attributionTag, String packageName) {
         this.mOpCode = opCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, opCode, "from", 0L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOpCode, "from", 0L, "to", 148L);
         this.mAttributionTag = attributionTag;
         this.mOpMode = opMode;
         this.mPackageName = packageName;
@@ -95,13 +94,11 @@ public final class SyncNotedAppOp implements Parcelable {
         dest.writeByte(flg);
         dest.writeInt(this.mOpMode);
         dest.writeInt(this.mOpCode);
-        String str = this.mAttributionTag;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mAttributionTag != null) {
+            dest.writeString(this.mAttributionTag);
         }
-        String str2 = this.mPackageName;
-        if (str2 != null) {
-            dest.writeString(str2);
+        if (this.mPackageName != null) {
+            dest.writeString(this.mPackageName);
         }
     }
 
@@ -118,26 +115,9 @@ public final class SyncNotedAppOp implements Parcelable {
         String packageName = (flg & 8) != 0 ? in.readString() : null;
         this.mOpMode = opMode;
         this.mOpCode = opCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, opCode, "from", 0L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOpCode, "from", 0L, "to", 148L);
         this.mAttributionTag = attributionTag;
         this.mPackageName = packageName;
-    }
-
-    /* renamed from: android.app.SyncNotedAppOp$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SyncNotedAppOp> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncNotedAppOp[] newArray(int size) {
-            return new SyncNotedAppOp[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncNotedAppOp createFromParcel(Parcel in) {
-            return new SyncNotedAppOp(in);
-        }
     }
 
     @Deprecated

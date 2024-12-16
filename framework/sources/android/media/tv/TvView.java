@@ -37,16 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class TvView extends ViewGroup {
     private static final boolean DEBUG = false;
-    private static final WeakReference<TvView> NULL_TV_VIEW;
     private static final String TAG = "TvView";
     private static final int ZORDER_MEDIA = 0;
     private static final int ZORDER_MEDIA_OVERLAY = 1;
     private static final int ZORDER_ON_TOP = 2;
-    private static WeakReference<TvView> sMainTvView;
-    private static final Object sMainTvViewLock;
     private final AttributeSet mAttrs;
     private TvInputCallback mCallback;
     private Boolean mCaptionEnabled;
@@ -77,69 +74,12 @@ public class TvView extends ViewGroup {
     private final TvInputManager mTvInputManager;
     private boolean mUseRequestedSurfaceLayout;
     private int mWindowZOrder;
+    private static final WeakReference<TvView> NULL_TV_VIEW = new WeakReference<>(null);
+    private static final Object sMainTvViewLock = new Object();
+    private static WeakReference<TvView> sMainTvView = NULL_TV_VIEW;
 
-    /* loaded from: classes2.dex */
     public interface OnUnhandledInputEventListener {
         boolean onUnhandledInputEvent(InputEvent inputEvent);
-    }
-
-    static {
-        WeakReference<TvView> weakReference = new WeakReference<>(null);
-        NULL_TV_VIEW = weakReference;
-        sMainTvViewLock = new Object();
-        sMainTvView = weakReference;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.tv.TvView$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements SurfaceHolder.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.SurfaceHolder.Callback
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            TvView.this.mSurfaceFormat = format;
-            TvView.this.mSurfaceWidth = width;
-            TvView.this.mSurfaceHeight = height;
-            TvView.this.mSurfaceChanged = true;
-            TvView tvView = TvView.this;
-            tvView.dispatchSurfaceChanged(tvView.mSurfaceFormat, TvView.this.mSurfaceWidth, TvView.this.mSurfaceHeight);
-        }
-
-        @Override // android.view.SurfaceHolder.Callback
-        public void surfaceCreated(SurfaceHolder holder) {
-            TvView.this.mSurface = holder.getSurface();
-            TvView tvView = TvView.this;
-            tvView.setSessionSurface(tvView.mSurface);
-        }
-
-        @Override // android.view.SurfaceHolder.Callback
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            TvView.this.mSurface = null;
-            TvView.this.mSurfaceChanged = false;
-            TvView.this.setSessionSurface(null);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.tv.TvView$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 implements TvInputManager.Session.FinishedInputEventCallback {
-        AnonymousClass2() {
-        }
-
-        @Override // android.media.tv.TvInputManager.Session.FinishedInputEventCallback
-        public void onFinishedInputEvent(Object token, boolean handled) {
-            ViewRootImpl viewRootImpl;
-            if (handled) {
-                return;
-            }
-            InputEvent event = (InputEvent) token;
-            if (!TvView.this.dispatchUnhandledInputEvent(event) && (viewRootImpl = TvView.this.getViewRootImpl()) != null) {
-                viewRootImpl.dispatchUnhandledInputEvent(event);
-            }
-        }
     }
 
     public TvView(Context context) {
@@ -155,24 +95,19 @@ public class TvView extends ViewGroup {
         this.mHandler = new Handler();
         this.mPendingAppPrivateCommands = new ArrayDeque();
         this.mSurfaceHolderCallback = new SurfaceHolder.Callback() { // from class: android.media.tv.TvView.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.SurfaceHolder.Callback
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 TvView.this.mSurfaceFormat = format;
                 TvView.this.mSurfaceWidth = width;
                 TvView.this.mSurfaceHeight = height;
                 TvView.this.mSurfaceChanged = true;
-                TvView tvView = TvView.this;
-                tvView.dispatchSurfaceChanged(tvView.mSurfaceFormat, TvView.this.mSurfaceWidth, TvView.this.mSurfaceHeight);
+                TvView.this.dispatchSurfaceChanged(TvView.this.mSurfaceFormat, TvView.this.mSurfaceWidth, TvView.this.mSurfaceHeight);
             }
 
             @Override // android.view.SurfaceHolder.Callback
             public void surfaceCreated(SurfaceHolder holder) {
                 TvView.this.mSurface = holder.getSurface();
-                TvView tvView = TvView.this;
-                tvView.setSessionSurface(tvView.mSurface);
+                TvView.this.setSessionSurface(TvView.this.mSurface);
             }
 
             @Override // android.view.SurfaceHolder.Callback
@@ -183,9 +118,6 @@ public class TvView extends ViewGroup {
             }
         };
         this.mFinishedInputEventCallback = new TvInputManager.Session.FinishedInputEventCallback() { // from class: android.media.tv.TvView.2
-            AnonymousClass2() {
-            }
-
             @Override // android.media.tv.TvInputManager.Session.FinishedInputEventCallback
             public void onFinishedInputEvent(Object token, boolean handled) {
                 ViewRootImpl viewRootImpl;
@@ -201,9 +133,8 @@ public class TvView extends ViewGroup {
         int sourceResId = Resources.getAttributeSetSourceResId(attrs);
         if (sourceResId != 0) {
             Log.d(TAG, "Build local AttributeSet");
-            XmlResourceParser xml = context.getResources().getXml(sourceResId);
-            this.mParser = xml;
-            this.mAttrs = Xml.asAttributeSet(xml);
+            this.mParser = context.getResources().getXml(sourceResId);
+            this.mAttrs = Xml.asAttributeSet(this.mParser);
         } else {
             Log.d(TAG, "Use passed in AttributeSet");
             this.mParser = null;
@@ -225,11 +156,10 @@ public class TvView extends ViewGroup {
 
     @SystemApi
     public void setMain() {
-        TvInputManager.Session session;
         synchronized (sMainTvViewLock) {
             sMainTvView = new WeakReference<>(this);
-            if (hasWindowFocus() && (session = this.mSession) != null) {
-                session.setMain();
+            if (hasWindowFocus() && this.mSession != null) {
+                this.mSession.setMain();
             }
         }
     }
@@ -242,9 +172,8 @@ public class TvView extends ViewGroup {
             this.mWindowZOrder = 0;
             createSessionOverlayView();
         }
-        SurfaceView surfaceView = this.mSurfaceView;
-        if (surfaceView != null) {
-            surfaceView.setZOrderOnTop(false);
+        if (this.mSurfaceView != null) {
+            this.mSurfaceView.setZOrderOnTop(false);
             this.mSurfaceView.setZOrderMediaOverlay(isMediaOverlay);
         }
     }
@@ -257,20 +186,18 @@ public class TvView extends ViewGroup {
             this.mWindowZOrder = 0;
             createSessionOverlayView();
         }
-        SurfaceView surfaceView = this.mSurfaceView;
-        if (surfaceView != null) {
-            surfaceView.setZOrderMediaOverlay(false);
+        if (this.mSurfaceView != null) {
+            this.mSurfaceView.setZOrderMediaOverlay(false);
             this.mSurfaceView.setZOrderOnTop(onTop);
         }
     }
 
     public void setStreamVolume(float volume) {
         this.mStreamVolume = Float.valueOf(volume);
-        TvInputManager.Session session = this.mSession;
-        if (session == null) {
+        if (this.mSession == null) {
             return;
         }
-        session.setStreamVolume(volume);
+        this.mSession.setStreamVolume(volume);
     }
 
     public void overrideTvAppAttributionSource(AttributionSource tvAppAttributionSource) {
@@ -292,11 +219,9 @@ public class TvView extends ViewGroup {
                 sMainTvView = new WeakReference<>(this);
             }
         }
-        MySessionCallback mySessionCallback = this.mSessionCallback;
-        if (mySessionCallback != null && TextUtils.equals(mySessionCallback.mInputId, inputId)) {
-            TvInputManager.Session session = this.mSession;
-            if (session != null) {
-                session.tune(channelUri, params);
+        if (this.mSessionCallback != null && TextUtils.equals(this.mSessionCallback.mInputId, inputId)) {
+            if (this.mSession != null) {
+                this.mSession.tune(channelUri, params);
                 return;
             } else {
                 this.mSessionCallback.mChannelUri = channelUri;
@@ -305,11 +230,9 @@ public class TvView extends ViewGroup {
             }
         }
         resetInternal();
-        MySessionCallback mySessionCallback2 = new MySessionCallback(inputId, channelUri, params);
-        this.mSessionCallback = mySessionCallback2;
-        TvInputManager tvInputManager = this.mTvInputManager;
-        if (tvInputManager != null) {
-            tvInputManager.createSession(inputId, this.mTvAppAttributionSource, mySessionCallback2, this.mHandler);
+        this.mSessionCallback = new MySessionCallback(inputId, channelUri, params);
+        if (this.mTvInputManager != null) {
+            this.mTvInputManager.createSession(inputId, this.mTvAppAttributionSource, this.mSessionCallback, this.mHandler);
         }
     }
 
@@ -324,7 +247,9 @@ public class TvView extends ViewGroup {
 
     private void resetInternal() {
         this.mSessionCallback = null;
-        this.mPendingAppPrivateCommands.clear();
+        synchronized (this.mPendingAppPrivateCommands) {
+            this.mPendingAppPrivateCommands.clear();
+        }
         if (this.mSession != null) {
             setSessionSurface(null);
             removeSessionOverlayView();
@@ -341,62 +266,54 @@ public class TvView extends ViewGroup {
 
     @SystemApi
     public void unblockContent(TvContentRating unblockedRating) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.unblockContent(unblockedRating);
+        if (this.mSession != null) {
+            this.mSession.unblockContent(unblockedRating);
         }
     }
 
     public void setCaptionEnabled(boolean enabled) {
         this.mCaptionEnabled = Boolean.valueOf(enabled);
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.setCaptionEnabled(enabled);
+        if (this.mSession != null) {
+            this.mSession.setCaptionEnabled(enabled);
         }
     }
 
     public void selectAudioPresentation(int presentationId, int programId) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.selectAudioPresentation(presentationId, programId);
+        if (this.mSession != null) {
+            this.mSession.selectAudioPresentation(presentationId, programId);
         }
     }
 
     public List<AudioPresentation> getAudioPresentations() {
-        TvInputManager.Session session = this.mSession;
-        if (session == null) {
+        if (this.mSession == null) {
             return new ArrayList();
         }
-        return session.getAudioPresentations();
+        return this.mSession.getAudioPresentations();
     }
 
     public void selectTrack(int type, String trackId) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.selectTrack(type, trackId);
+        if (this.mSession != null) {
+            this.mSession.selectTrack(type, trackId);
         }
     }
 
     public List<TvTrackInfo> getTracks(int type) {
-        TvInputManager.Session session = this.mSession;
-        if (session == null) {
+        if (this.mSession == null) {
             return null;
         }
-        return session.getTracks(type);
+        return this.mSession.getTracks(type);
     }
 
     public String getSelectedTrack(int type) {
-        TvInputManager.Session session = this.mSession;
-        if (session == null) {
+        if (this.mSession == null) {
             return null;
         }
-        return session.getSelectedTrack(type);
+        return this.mSession.getSelectedTrack(type);
     }
 
     public void setInteractiveAppNotificationEnabled(boolean enabled) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.setInteractiveAppNotificationEnabled(enabled);
+        if (this.mSession != null) {
+            this.mSession.setInteractiveAppNotificationEnabled(enabled);
         }
     }
 
@@ -409,11 +326,9 @@ public class TvView extends ViewGroup {
                 sMainTvView = new WeakReference<>(this);
             }
         }
-        MySessionCallback mySessionCallback = this.mSessionCallback;
-        if (mySessionCallback != null && TextUtils.equals(mySessionCallback.mInputId, inputId)) {
-            TvInputManager.Session session = this.mSession;
-            if (session != null) {
-                session.timeShiftPlay(recordedProgramUri);
+        if (this.mSessionCallback != null && TextUtils.equals(this.mSessionCallback.mInputId, inputId)) {
+            if (this.mSession != null) {
+                this.mSession.timeShiftPlay(recordedProgramUri);
                 return;
             } else {
                 this.mSessionCallback.mRecordedProgramUri = recordedProgramUri;
@@ -421,53 +336,63 @@ public class TvView extends ViewGroup {
             }
         }
         resetInternal();
-        MySessionCallback mySessionCallback2 = new MySessionCallback(inputId, recordedProgramUri);
-        this.mSessionCallback = mySessionCallback2;
-        TvInputManager tvInputManager = this.mTvInputManager;
-        if (tvInputManager != null) {
-            tvInputManager.createSession(inputId, this.mTvAppAttributionSource, mySessionCallback2, this.mHandler);
+        this.mSessionCallback = new MySessionCallback(inputId, recordedProgramUri);
+        if (this.mTvInputManager != null) {
+            this.mTvInputManager.createSession(inputId, this.mTvAppAttributionSource, this.mSessionCallback, this.mHandler);
         }
     }
 
     public void timeShiftPause() {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.timeShiftPause();
+        if (this.mSession != null) {
+            this.mSession.timeShiftPause();
         }
     }
 
     public void timeShiftResume() {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.timeShiftResume();
+        if (this.mSession != null) {
+            this.mSession.timeShiftResume();
         }
     }
 
     public void timeShiftSeekTo(long timeMs) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.timeShiftSeekTo(timeMs);
+        if (this.mSession != null) {
+            this.mSession.timeShiftSeekTo(timeMs);
         }
     }
 
     public void timeShiftSetPlaybackParams(PlaybackParams params) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.timeShiftSetPlaybackParams(params);
+        if (this.mSession != null) {
+            this.mSession.timeShiftSetPlaybackParams(params);
         }
     }
 
     public void timeShiftSetMode(int mode) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.timeShiftSetMode(mode);
+        if (this.mSession != null) {
+            this.mSession.timeShiftSetMode(mode);
+        }
+    }
+
+    public void stopPlayback(int mode) {
+        if (this.mSession != null) {
+            this.mSession.stopPlayback(mode);
+        }
+    }
+
+    public void resumePlayback() {
+        if (this.mSession != null) {
+            this.mSession.resumePlayback();
+        }
+    }
+
+    public void setVideoFrozen(boolean isFrozen) {
+        if (this.mSession != null) {
+            this.mSession.setVideoFrozen(isFrozen);
         }
     }
 
     public void notifyTvMessage(int type, Bundle data) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.notifyTvMessage(type, data);
+        if (this.mSession != null) {
+            this.mSession.notifyTvMessage(type, data);
         }
     }
 
@@ -476,30 +401,30 @@ public class TvView extends ViewGroup {
         ensurePositionTracking();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void ensurePositionTracking() {
-        TvInputManager.Session session = this.mSession;
-        if (session == null) {
+        if (this.mSession == null) {
             return;
         }
-        session.timeShiftEnablePositionTracking(this.mTimeShiftPositionCallback != null);
+        this.mSession.timeShiftEnablePositionTracking(this.mTimeShiftPositionCallback != null);
     }
 
     public void sendAppPrivateCommand(String action, Bundle data) {
         if (TextUtils.isEmpty(action)) {
             throw new IllegalArgumentException("action cannot be null or an empty string");
         }
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.sendAppPrivateCommand(action, data);
-        } else {
-            Log.w(TAG, "sendAppPrivateCommand - session not yet created (action \"" + action + "\" pending)");
+        if (this.mSession != null) {
+            this.mSession.sendAppPrivateCommand(action, data);
+            return;
+        }
+        Log.w(TAG, "sendAppPrivateCommand - session not yet created (action \"" + action + "\" pending)");
+        synchronized (this.mPendingAppPrivateCommands) {
             this.mPendingAppPrivateCommands.add(Pair.create(action, data));
         }
     }
 
     public boolean dispatchUnhandledInputEvent(InputEvent event) {
-        OnUnhandledInputEventListener onUnhandledInputEventListener = this.mOnUnhandledInputEventListener;
-        if (onUnhandledInputEventListener != null && onUnhandledInputEventListener.onUnhandledInputEvent(event)) {
+        if (this.mOnUnhandledInputEventListener != null && this.mOnUnhandledInputEventListener.onUnhandledInputEvent(event)) {
             return true;
         }
         return onUnhandledInputEvent(event);
@@ -514,9 +439,8 @@ public class TvView extends ViewGroup {
     }
 
     public void setTvMessageEnabled(int type, boolean enabled) {
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.setTvMessageEnabled(type, enabled);
+        if (this.mSession != null) {
+            this.mSession.setTvMessageEnabled(type, enabled);
         }
     }
 
@@ -585,19 +509,19 @@ public class TvView extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         createSessionOverlayView();
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         removeSessionOverlayView();
         super.onDetachedFromWindow();
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (this.mUseRequestedSurfaceLayout) {
             this.mSurfaceView.layout(this.mSurfaceViewLeft, this.mSurfaceViewTop, this.mSurfaceViewRight, this.mSurfaceViewBottom);
         } else {
@@ -606,7 +530,7 @@ public class TvView extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         this.mSurfaceView.measure(widthMeasureSpec, heightMeasureSpec);
         int width = this.mSurfaceView.getMeasuredWidth();
         int height = this.mSurfaceView.getMeasuredHeight();
@@ -639,7 +563,7 @@ public class TvView extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         if (this.mWindowZOrder != 2) {
             canvas.drawColor(0, PorterDuff.Mode.CLEAR);
         }
@@ -647,7 +571,7 @@ public class TvView extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onVisibilityChanged(View changedView, int visibility) {
+    protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         this.mSurfaceView.setVisibility(visibility);
         if (visibility == 0) {
@@ -658,85 +582,64 @@ public class TvView extends ViewGroup {
     }
 
     private void resetSurfaceView() {
-        SurfaceView surfaceView = this.mSurfaceView;
-        if (surfaceView != null) {
-            surfaceView.getHolder().removeCallback(this.mSurfaceHolderCallback);
+        if (this.mSurfaceView != null) {
+            this.mSurfaceView.getHolder().removeCallback(this.mSurfaceHolderCallback);
             removeView(this.mSurfaceView);
         }
         this.mSurface = null;
-        AnonymousClass3 anonymousClass3 = new SurfaceView(getContext(), this.mAttrs, this.mDefStyleAttr) { // from class: android.media.tv.TvView.3
-            AnonymousClass3(Context context, AttributeSet attrs, int defStyleAttr) {
-                super(context, attrs, defStyleAttr);
-            }
-
+        this.mSurfaceView = new SurfaceView(getContext(), this.mAttrs, this.mDefStyleAttr) { // from class: android.media.tv.TvView.3
             @Override // android.view.SurfaceView
-            public void updateSurface() {
+            protected void updateSurface() {
                 super.updateSurface();
                 TvView.this.relayoutSessionOverlayView();
             }
         };
-        this.mSurfaceView = anonymousClass3;
-        anonymousClass3.setSecure(true);
+        this.mSurfaceView.setSecure(true);
         this.mSurfaceView.getHolder().addCallback(this.mSurfaceHolderCallback);
-        int i = this.mWindowZOrder;
-        if (i == 1) {
+        if (this.mWindowZOrder == 1) {
             this.mSurfaceView.setZOrderMediaOverlay(true);
-        } else if (i == 2) {
+        } else if (this.mWindowZOrder == 2) {
             this.mSurfaceView.setZOrderOnTop(true);
         }
         addView(this.mSurfaceView);
     }
 
-    /* renamed from: android.media.tv.TvView$3 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass3 extends SurfaceView {
-        AnonymousClass3(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-        }
-
-        @Override // android.view.SurfaceView
-        public void updateSurface() {
-            super.updateSurface();
-            TvView.this.relayoutSessionOverlayView();
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void setSessionSurface(Surface surface) {
-        TvInputManager.Session session = this.mSession;
-        if (session == null) {
+        if (this.mSession == null) {
             return;
         }
-        session.setSurface(surface);
+        this.mSession.setSurface(surface);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchSurfaceChanged(int format, int width, int height) {
-        TvInputManager.Session session = this.mSession;
-        if (session == null) {
+        if (this.mSession == null) {
             return;
         }
-        session.dispatchSurfaceChanged(format, width, height);
+        this.mSession.dispatchSurfaceChanged(format, width, height);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void createSessionOverlayView() {
         if (this.mSession == null || !isAttachedToWindow() || this.mOverlayViewCreated || this.mWindowZOrder != 0) {
             return;
         }
-        Rect viewFrameOnScreen = getViewFrameOnScreen();
-        this.mOverlayViewFrame = viewFrameOnScreen;
-        this.mSession.createOverlayView(this, viewFrameOnScreen);
+        this.mOverlayViewFrame = getViewFrameOnScreen();
+        this.mSession.createOverlayView(this, this.mOverlayViewFrame);
         this.mOverlayViewCreated = true;
     }
 
     private void removeSessionOverlayView() {
-        TvInputManager.Session session = this.mSession;
-        if (session == null || !this.mOverlayViewCreated) {
+        if (this.mSession == null || !this.mOverlayViewCreated) {
             return;
         }
-        session.removeOverlayView();
+        this.mSession.removeOverlayView();
         this.mOverlayViewCreated = false;
         this.mOverlayViewFrame = null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void relayoutSessionOverlayView() {
         if (this.mSession == null || !isAttachedToWindow() || !this.mOverlayViewCreated || this.mWindowZOrder != 0) {
             return;
@@ -758,11 +661,11 @@ public class TvView extends ViewGroup {
         return frame;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkChangeHdmiCecActiveSourcePermission() {
         return getContext().checkSelfPermission(Manifest.permission.CHANGE_HDMI_CEC_ACTIVE_SOURCE) == 0;
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class TimeShiftPositionCallback {
         public void onTimeShiftStartPositionChanged(String inputId, long timeMs) {
         }
@@ -771,7 +674,6 @@ public class TvView extends ViewGroup {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class TvInputCallback {
         public void onConnectionFailed(String inputId) {
         }
@@ -836,10 +738,12 @@ public class TvView extends ViewGroup {
 
         public void onTvMessage(String inputId, int type, Bundle data) {
         }
+
+        public void onVideoFreezeUpdated(String inputId, boolean isFrozen) {
+        }
     }
 
-    /* loaded from: classes2.dex */
-    public class MySessionCallback extends TvInputManager.SessionCallback {
+    private class MySessionCallback extends TvInputManager.SessionCallback {
         Uri mChannelUri;
         final String mInputId;
         Uri mRecordedProgramUri;
@@ -868,21 +772,21 @@ public class TvView extends ViewGroup {
             }
             TvView.this.mSession = session;
             if (session != null) {
-                for (Pair<String, Bundle> command : TvView.this.mPendingAppPrivateCommands) {
-                    TvView.this.mSession.sendAppPrivateCommand(command.first, command.second);
+                synchronized (TvView.this.mPendingAppPrivateCommands) {
+                    for (Pair<String, Bundle> command : TvView.this.mPendingAppPrivateCommands) {
+                        TvView.this.mSession.sendAppPrivateCommand(command.first, command.second);
+                    }
+                    TvView.this.mPendingAppPrivateCommands.clear();
                 }
-                TvView.this.mPendingAppPrivateCommands.clear();
                 synchronized (TvView.sMainTvViewLock) {
                     if (TvView.this.hasWindowFocus() && TvView.this == TvView.sMainTvView.get() && TvView.this.checkChangeHdmiCecActiveSourcePermission()) {
                         TvView.this.mSession.setMain();
                     }
                 }
                 if (TvView.this.mSurface != null) {
-                    TvView tvView = TvView.this;
-                    tvView.setSessionSurface(tvView.mSurface);
+                    TvView.this.setSessionSurface(TvView.this.mSurface);
                     if (TvView.this.mSurfaceChanged) {
-                        TvView tvView2 = TvView.this;
-                        tvView2.dispatchSurfaceChanged(tvView2.mSurfaceFormat, TvView.this.mSurfaceWidth, TvView.this.mSurfaceHeight);
+                        TvView.this.dispatchSurfaceChanged(TvView.this.mSurfaceFormat, TvView.this.mSurfaceWidth, TvView.this.mSurfaceHeight);
                     }
                 }
                 TvView.this.createSessionOverlayView();
@@ -1121,6 +1025,15 @@ public class TvView extends ViewGroup {
                 Log.w(TvView.TAG, "onTvMessage - session not created");
             } else if (TvView.this.mCallback != null) {
                 TvView.this.mCallback.onTvMessage(this.mInputId, type, data);
+            }
+        }
+
+        @Override // android.media.tv.TvInputManager.SessionCallback
+        public void onVideoFreezeUpdated(TvInputManager.Session session, boolean isFrozen) {
+            if (this != TvView.this.mSessionCallback) {
+                Log.w(TvView.TAG, "onVideoFreezeUpdated - session not created");
+            } else if (TvView.this.mCallback != null) {
+                TvView.this.mCallback.onVideoFreezeUpdated(this.mInputId, isFrozen);
             }
         }
     }

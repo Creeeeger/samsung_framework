@@ -1,5 +1,6 @@
 package com.sec.rll;
 
+import android.graphics.rendererpolicy.ScpmApiContract;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
@@ -14,7 +15,6 @@ public interface IExtControlDeviceService extends IInterface {
 
     void setStatus(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements IExtControlDeviceService {
         @Override // com.sec.rll.IExtControlDeviceService
         public void setStatus(int deviceType, int status) throws RemoteException {
@@ -31,7 +31,6 @@ public interface IExtControlDeviceService extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements IExtControlDeviceService {
         static final int TRANSACTION_getStatus = 2;
         static final int TRANSACTION_setStatus = 1;
@@ -61,7 +60,7 @@ public interface IExtControlDeviceService extends IInterface {
                 case 1:
                     return "setStatus";
                 case 2:
-                    return "getStatus";
+                    return ScpmApiContract.Method.GET_STATUS;
                 default:
                     return null;
             }
@@ -77,33 +76,30 @@ public interface IExtControlDeviceService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IExtControlDeviceService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IExtControlDeviceService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IExtControlDeviceService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setStatus(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getStatus(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setStatus(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getStatus(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements IExtControlDeviceService {
             private IBinder mRemote;
 

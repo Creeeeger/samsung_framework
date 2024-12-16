@@ -3,8 +3,8 @@ package com.samsung.android.wifi;
 import android.os.Build;
 import android.os.Debug;
 import android.os.SystemProperties;
+import android.text.TextUtils;
 import android.util.Log;
-import com.samsung.android.feature.SemCscFeature;
 import com.samsung.android.hardware.secinputdev.SemInputDeviceManager;
 import com.samsung.android.wallpaperbackup.BnRConstants;
 import java.io.File;
@@ -14,11 +14,13 @@ public class SemWifiApCust {
     public static boolean DBG = false;
     public static final String TAG = "SemWifiApCust";
     public static String mMHSCustomer;
+    public static String mSalescode;
     private static SemWifiApCust sInstance;
 
     static {
         DBG = !"user".equals(Build.TYPE) || Debug.semIsProductDev();
-        mMHSCustomer = SemCscFeature.getInstance().getString("CscFeature_Wifi_ConfigOpBrandingForMobileAp", SemInputDeviceManager.MOTION_CONTROL_TYPE_ALL);
+        mSalescode = readSalesCode();
+        mMHSCustomer = setMHSCustomer();
         sInstance = null;
     }
 
@@ -27,31 +29,58 @@ public class SemWifiApCust {
     }
 
     public static SemWifiApCust getInstance() {
-        SemWifiApCust semWifiApCust = sInstance;
-        if (semWifiApCust == null) {
+        if (sInstance == null) {
             sInstance = new SemWifiApCust();
             if (DBG) {
                 Log.d(TAG, "new mMHSCustomer:" + mMHSCustomer);
             }
             return sInstance;
         }
-        return semWifiApCust;
+        return sInstance;
+    }
+
+    public static String setMHSCustomer() {
+        if (mSalescode.equals("ATT") || mSalescode.equals("APP")) {
+            return "ATT";
+        }
+        if (mSalescode.equals("DSH") || mSalescode.equals("TMB")) {
+            return "TMO";
+        }
+        if (mSalescode.equals("LUC")) {
+            return "LGT";
+        }
+        if (mSalescode.equals("TMK") || mSalescode.equals("ASR") || mSalescode.equals("TMB")) {
+            return "NEWCO";
+        }
+        return mSalescode.equals("USC") ? "USC" : (mSalescode.equals("VZW") || mSalescode.equals("VPP")) ? "VZW" : SemInputDeviceManager.MOTION_CONTROL_TYPE_ALL;
+    }
+
+    public static String readSalesCode() {
+        String sales_code = "";
+        try {
+            sales_code = SystemProperties.get("ro.csc.sales_code");
+            if (TextUtils.isEmpty(sales_code)) {
+                sales_code = SystemProperties.get("ro.boot.sales_code");
+            }
+        } catch (Exception e) {
+        }
+        Log.d(TAG, "readSalesCode:" + sales_code);
+        return sales_code;
     }
 
     public static boolean isProvisioningNeeded() {
-        String CONFIGOPBRANDINGFORMOBILEAP = SystemProperties.get("ro.csc.sales_code");
-        if (isTablet() && !"ATT".equals(CONFIGOPBRANDINGFORMOBILEAP)) {
-            Log.d(TAG, "isProvisioningNeeded: false, isTablet: true, operator:" + CONFIGOPBRANDINGFORMOBILEAP);
+        if (isTablet() && !"ATT".equals(mSalescode)) {
+            Log.d(TAG, "isProvisioningNeeded: false, isTablet: true, operator:" + mSalescode);
             return false;
         }
-        String[] provisioningSalesCodes = {"VZW", "ATT", "AIO", "XAR", "TFV", "TFA", "TFN", "LLA", "DSA", "APP", "XAA"};
+        String[] provisioningSalesCodes = {"VZW", "ATT", "AIO", "XAR", "TFV", "TFA", "TFN", "LLA", "DSA", "APP", "XAA", "VPP", "SBM"};
         for (String str : provisioningSalesCodes) {
-            if (str.equals(CONFIGOPBRANDINGFORMOBILEAP)) {
-                Log.d(TAG, "isProvisioningNeeded: true, operator:" + CONFIGOPBRANDINGFORMOBILEAP);
+            if (str.equals(mSalescode)) {
+                Log.d(TAG, "isProvisioningNeeded: true, operator:" + mSalescode);
                 return true;
             }
         }
-        Log.d(TAG, "isProvisioningNeeded: false, operator:" + CONFIGOPBRANDINGFORMOBILEAP);
+        Log.d(TAG, "isProvisioningNeeded: false, operator:" + mSalescode);
         return false;
     }
 

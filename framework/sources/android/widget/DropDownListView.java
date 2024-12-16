@@ -27,15 +27,14 @@ public class DropDownListView extends ListView {
     }
 
     @Override // android.widget.AbsListView
-    public boolean shouldShowSelector() {
+    boolean shouldShowSelector() {
         return isHovered() || super.shouldShowSelector();
     }
 
     @Override // android.widget.ListView, android.widget.AbsListView, android.view.View
     public boolean onTouchEvent(MotionEvent ev) {
-        ResolveHoverRunnable resolveHoverRunnable = this.mResolveHoverRunnable;
-        if (resolveHoverRunnable != null) {
-            resolveHoverRunnable.cancel();
+        if (this.mResolveHoverRunnable != null) {
+            this.mResolveHoverRunnable.cancel();
         }
         return super.onTouchEvent(ev);
     }
@@ -44,9 +43,8 @@ public class DropDownListView extends ListView {
     public boolean onHoverEvent(MotionEvent ev) {
         int action = ev.getActionMasked();
         if (action == 10 && this.mResolveHoverRunnable == null) {
-            ResolveHoverRunnable resolveHoverRunnable = new ResolveHoverRunnable();
-            this.mResolveHoverRunnable = resolveHoverRunnable;
-            resolveHoverRunnable.post();
+            this.mResolveHoverRunnable = new ResolveHoverRunnable();
+            this.mResolveHoverRunnable.post();
         }
         boolean handled = super.onHoverEvent(ev);
         if (action == 9 || action == 7) {
@@ -79,7 +77,7 @@ public class DropDownListView extends ListView {
     }
 
     @Override // android.widget.AbsListView, android.view.ViewGroup, android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         if (this.mResolveHoverRunnable == null) {
             super.drawableStateChanged();
         }
@@ -131,11 +129,8 @@ public class DropDownListView extends ListView {
             }
             this.mScrollHelper.setEnabled(true);
             this.mScrollHelper.onTouch(this, event);
-        } else {
-            AutoScrollHelper.AbsListViewAutoScroller absListViewAutoScroller = this.mScrollHelper;
-            if (absListViewAutoScroller != null) {
-                absListViewAutoScroller.setEnabled(false);
-            }
+        } else if (this.mScrollHelper != null) {
+            this.mScrollHelper.setEnabled(false);
         }
         return handledEvent;
     }
@@ -180,12 +175,12 @@ public class DropDownListView extends ListView {
     }
 
     @Override // android.widget.AbsListView
-    public boolean touchModeDrawsInPressedState() {
+    boolean touchModeDrawsInPressedState() {
         return this.mDrawsInPressedState || super.touchModeDrawsInPressedState();
     }
 
     @Override // android.widget.AbsListView
-    public View obtainView(int position, boolean[] isScrap) {
+    View obtainView(int position, boolean[] isScrap) {
         View view = super.obtainView(position, isScrap);
         if (view instanceof TextView) {
             ((TextView) view).setHorizontallyScrolling(true);
@@ -213,12 +208,7 @@ public class DropDownListView extends ListView {
         return this.mHijackFocus || super.hasFocus();
     }
 
-    /* loaded from: classes4.dex */
-    public class ResolveHoverRunnable implements Runnable {
-        /* synthetic */ ResolveHoverRunnable(DropDownListView dropDownListView, ResolveHoverRunnableIA resolveHoverRunnableIA) {
-            this();
-        }
-
+    private class ResolveHoverRunnable implements Runnable {
         private ResolveHoverRunnable() {
         }
 

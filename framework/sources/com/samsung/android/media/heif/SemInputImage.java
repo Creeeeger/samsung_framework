@@ -3,7 +3,7 @@ package com.samsung.android.media.heif;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemInputImage {
     private ByteBuffer mBuffer;
     private final int mColorFormat;
@@ -31,9 +31,8 @@ public class SemInputImage {
 
     public SemInputImage(byte[] buffer, int offset, int bufferLength, int width, int height, int format) {
         this(width, height, format);
-        ByteBuffer allocateDirect = ByteBuffer.allocateDirect(bufferLength);
-        this.mBuffer = allocateDirect;
-        allocateDirect.put(buffer, offset, bufferLength);
+        this.mBuffer = ByteBuffer.allocateDirect(bufferLength);
+        this.mBuffer.put(buffer, offset, bufferLength);
         this.mBuffer.flip();
     }
 
@@ -42,11 +41,11 @@ public class SemInputImage {
         this.mBuffer = buffer;
     }
 
-    public FileDescriptor getFileDescriptor() {
+    FileDescriptor getFileDescriptor() {
         return this.mFd;
     }
 
-    public ByteBuffer getBuffer() {
+    ByteBuffer getBuffer() {
         return this.mBuffer;
     }
 
@@ -58,11 +57,11 @@ public class SemInputImage {
         return this.mHeight;
     }
 
-    public int getStride() {
+    int getStride() {
         return this.mStride;
     }
 
-    public int getSliceHeight() {
+    int getSliceHeight() {
         return this.mSliceHeight;
     }
 

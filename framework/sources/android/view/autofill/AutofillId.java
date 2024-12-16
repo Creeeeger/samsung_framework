@@ -3,7 +3,6 @@ package android.view.autofill;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
-import com.android.internal.accessibility.common.ShortcutConstants;
 import java.util.Objects;
 
 /* loaded from: classes4.dex */
@@ -19,9 +18,7 @@ public final class AutofillId implements Parcelable {
     private final long mVirtualLongId;
     public static final AutofillId NO_AUTOFILL_ID = new AutofillId(0);
     public static final Parcelable.Creator<AutofillId> CREATOR = new Parcelable.Creator<AutofillId>() { // from class: android.view.autofill.AutofillId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AutofillId createFromParcel(Parcel source) {
             int viewId = source.readInt();
@@ -36,15 +33,12 @@ public final class AutofillId implements Parcelable {
             return new AutofillId(flags, viewId, -1L, sessionId);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AutofillId[] newArray(int size) {
             return new AutofillId[size];
         }
     };
-
-    /* synthetic */ AutofillId(int i, int i2, long j, int i3, AutofillIdIA autofillIdIA) {
-        this(i, i2, j, i3);
-    }
 
     public AutofillId(int id) {
         this(0, id, -1L, 0);
@@ -56,6 +50,10 @@ public final class AutofillId implements Parcelable {
 
     public AutofillId(int hostId, int virtualChildId) {
         this(1, hostId, virtualChildId, 0);
+    }
+
+    public AutofillId(AutofillId hostId, int virtualChildId, int sessionId) {
+        this(5, hostId.mViewId, virtualChildId, sessionId);
     }
 
     public AutofillId(AutofillId hostId, long virtualChildId, int sessionId) {
@@ -76,9 +74,8 @@ public final class AutofillId implements Parcelable {
     }
 
     public static AutofillId withoutSession(AutofillId id) {
-        int i = id.mFlags;
-        int flags = i & (-5);
-        long virtualChildId = (i & 2) != 0 ? id.mVirtualLongId : id.mVirtualIntId;
+        int flags = id.mFlags & (-5);
+        long virtualChildId = (id.mFlags & 2) != 0 ? id.mVirtualLongId : id.mVirtualIntId;
         return new AutofillId(flags, id.mViewId, virtualChildId, 0);
     }
 
@@ -126,9 +123,7 @@ public final class AutofillId implements Parcelable {
 
     public int hashCode() {
         int result = (1 * 31) + this.mViewId;
-        int result2 = ((result * 31) + this.mVirtualIntId) * 31;
-        long j = this.mVirtualLongId;
-        return ((result2 + ((int) (j ^ (j >>> 32)))) * 31) + this.mSessionId;
+        return (((((result * 31) + this.mVirtualIntId) * 31) + ((int) (this.mVirtualLongId ^ (this.mVirtualLongId >>> 32)))) * 31) + this.mSessionId;
     }
 
     public boolean equals(Object obj) {
@@ -158,9 +153,9 @@ public final class AutofillId implements Parcelable {
     public String toString() {
         StringBuilder builder = new StringBuilder().append(this.mViewId);
         if (isVirtualInt()) {
-            builder.append(ShortcutConstants.SERVICES_SEPARATOR).append(this.mVirtualIntId);
+            builder.append(":i").append(this.mVirtualIntId);
         } else if (isVirtualLong()) {
-            builder.append(ShortcutConstants.SERVICES_SEPARATOR).append(this.mVirtualLongId);
+            builder.append(":l").append(this.mVirtualLongId);
         }
         if (hasSession()) {
             builder.append('@').append(this.mSessionId);
@@ -184,32 +179,6 @@ public final class AutofillId implements Parcelable {
             parcel.writeInt(this.mVirtualIntId);
         } else if (isVirtualLong()) {
             parcel.writeLong(this.mVirtualLongId);
-        }
-    }
-
-    /* renamed from: android.view.autofill.AutofillId$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AutofillId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AutofillId createFromParcel(Parcel source) {
-            int viewId = source.readInt();
-            int flags = source.readInt();
-            int sessionId = (flags & 4) != 0 ? source.readInt() : 0;
-            if ((flags & 1) != 0) {
-                return new AutofillId(flags, viewId, source.readInt(), sessionId);
-            }
-            if ((flags & 2) != 0) {
-                return new AutofillId(flags, viewId, source.readLong(), sessionId);
-            }
-            return new AutofillId(flags, viewId, -1L, sessionId);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AutofillId[] newArray(int size) {
-            return new AutofillId[size];
         }
     }
 }

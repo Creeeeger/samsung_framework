@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IBiometricServiceReceiver extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.IBiometricServiceReceiver";
 
@@ -24,7 +24,6 @@ public interface IBiometricServiceReceiver extends IInterface {
 
     void onSystemEvent(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBiometricServiceReceiver {
         @Override // android.hardware.biometrics.IBiometricServiceReceiver
         public void onAuthenticationSucceeded(int authenticationType) throws RemoteException {
@@ -60,7 +59,6 @@ public interface IBiometricServiceReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBiometricServiceReceiver {
         static final int TRANSACTION_onAcquired = 4;
         static final int TRANSACTION_onAuthenticationFailed = 2;
@@ -121,59 +119,55 @@ public interface IBiometricServiceReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBiometricServiceReceiver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBiometricServiceReceiver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBiometricServiceReceiver.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAuthenticationSucceeded(_arg0);
+                    return true;
+                case 2:
+                    onAuthenticationFailed();
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02, _arg1, _arg2);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    onAcquired(_arg03, _arg12);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDialogDismissed(_arg04);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSystemEvent(_arg05);
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    int _arg13 = data.readInt();
+                    byte[] _arg22 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onSemAuthenticationSucceeded(_arg06, _arg13, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAuthenticationSucceeded(_arg0);
-                            return true;
-                        case 2:
-                            onAuthenticationFailed();
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02, _arg1, _arg2);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            onAcquired(_arg03, _arg12);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDialogDismissed(_arg04);
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSystemEvent(_arg05);
-                            return true;
-                        case 7:
-                            int _arg06 = data.readInt();
-                            int _arg13 = data.readInt();
-                            byte[] _arg22 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onSemAuthenticationSucceeded(_arg06, _arg13, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBiometricServiceReceiver {
+        private static class Proxy implements IBiometricServiceReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

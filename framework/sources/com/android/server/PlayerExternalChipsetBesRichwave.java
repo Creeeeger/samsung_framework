@@ -90,15 +90,8 @@ public class PlayerExternalChipsetBesRichwave extends PlayerExternalChipsetBes i
     }
 
     private void printFMICInfo() {
-        int i = 0;
-        while (true) {
-            int[] iArr = this.registerList;
-            if (i < iArr.length) {
-                getFMICDebugInfo(iArr[i]);
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 0; i < this.registerList.length; i++) {
+            getFMICDebugInfo(this.registerList[i]);
         }
     }
 

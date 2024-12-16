@@ -9,6 +9,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemProperties;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Printer;
 import com.android.internal.util.FastPrintWriter;
 import java.io.PrintWriter;
@@ -19,14 +20,13 @@ import java.lang.Thread;
 /* loaded from: classes.dex */
 public class ApplicationErrorReport implements Parcelable {
     public static final Parcelable.Creator<ApplicationErrorReport> CREATOR = new Parcelable.Creator<ApplicationErrorReport>() { // from class: android.app.ApplicationErrorReport.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationErrorReport createFromParcel(Parcel source) {
             return new ApplicationErrorReport(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationErrorReport[] newArray(int size) {
             return new ApplicationErrorReport[size];
@@ -35,7 +35,6 @@ public class ApplicationErrorReport implements Parcelable {
     static final String DEFAULT_ERROR_RECEIVER_PROPERTY = "ro.error.receiver.default";
     private static final String PLAY_STORE_ERROR_RECEIVER_PACKAGE_NAME = "com.android.vending";
     private static final String SAMSUNG_MEMBERS_ERROR_RECEIVER_PACKAGE_NAME = "com.samsung.android.voc";
-    private static final String SAMSUNG_PLUS_ERROR_RECEIVER_PACKAGE_NAME = "com.samsung.oh";
     private static final String START_WITH_SAMSUNG = "com.samsung.";
     private static final String START_WITH_SEC = "com.sec.";
     static final String SYSTEM_APPS_ERROR_RECEIVER_PROPERTY = "ro.error.receiver.system.apps";
@@ -64,6 +63,7 @@ public class ApplicationErrorReport implements Parcelable {
 
     public static ComponentName getErrorReportReceiver(Context context, String packageName, int appFlags) {
         ComponentName result;
+        ComponentName errorReportReceiver;
         int enabled = Settings.Global.getInt(context.getContentResolver(), Settings.Global.SEND_ACTION_APP_ERROR, 0);
         boolean samsungPackage = isSamsungPackage(packageName);
         if (enabled == 0 && !samsungPackage) {
@@ -77,15 +77,8 @@ public class ApplicationErrorReport implements Parcelable {
         }
         if (samsungPackage && !PLAY_STORE_ERROR_RECEIVER_PACKAGE_NAME.equals(candidate)) {
             int provisioned = Settings.Global.getInt(context.getContentResolver(), "device_provisioned", 0);
-            if (provisioned != 0) {
-                ComponentName errorReportReceiver = getErrorReportReceiver(pm, packageName, SAMSUNG_MEMBERS_ERROR_RECEIVER_PACKAGE_NAME);
-                if (errorReportReceiver != null) {
-                    return errorReportReceiver;
-                }
-                ComponentName errorReportReceiver2 = getErrorReportReceiver(pm, packageName, SAMSUNG_PLUS_ERROR_RECEIVER_PACKAGE_NAME);
-                if (errorReportReceiver2 != null) {
-                    return errorReportReceiver2;
-                }
+            if (provisioned != 0 && (errorReportReceiver = getErrorReportReceiver(pm, packageName, SAMSUNG_MEMBERS_ERROR_RECEIVER_PACKAGE_NAME)) != null) {
+                return errorReportReceiver;
             }
         }
         if (enabled == 0) {
@@ -118,10 +111,6 @@ public class ApplicationErrorReport implements Parcelable {
         return new ComponentName(receiverPackage, info.activityInfo.name);
     }
 
-    private static boolean isSamsungPackage(String packageName) {
-        return packageName != null && (packageName.startsWith(START_WITH_SEC) || packageName.startsWith(START_WITH_SAMSUNG));
-    }
-
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(this.type);
@@ -133,24 +122,20 @@ public class ApplicationErrorReport implements Parcelable {
         parcel.writeInt(this.crashInfo != null ? 1 : 0);
         switch (this.type) {
             case 1:
-                CrashInfo crashInfo = this.crashInfo;
-                if (crashInfo != null) {
-                    crashInfo.writeToParcel(parcel, i);
-                    return;
+                if (this.crashInfo != null) {
+                    this.crashInfo.writeToParcel(parcel, i);
+                    break;
                 }
-                return;
+                break;
             case 2:
                 this.anrInfo.writeToParcel(parcel, i);
-                return;
+                break;
             case 3:
                 this.batteryInfo.writeToParcel(parcel, i);
-                return;
-            case 4:
-            default:
-                return;
+                break;
             case 5:
                 this.runningServiceInfo.writeToParcel(parcel, i);
-                return;
+                break;
         }
     }
 
@@ -168,32 +153,28 @@ public class ApplicationErrorReport implements Parcelable {
                 this.anrInfo = null;
                 this.batteryInfo = null;
                 this.runningServiceInfo = null;
-                return;
+                break;
             case 2:
                 this.anrInfo = new AnrInfo(in);
                 this.crashInfo = null;
                 this.batteryInfo = null;
                 this.runningServiceInfo = null;
-                return;
+                break;
             case 3:
                 this.batteryInfo = new BatteryInfo(in);
                 this.anrInfo = null;
                 this.crashInfo = null;
                 this.runningServiceInfo = null;
-                return;
-            case 4:
-            default:
-                return;
+                break;
             case 5:
                 this.batteryInfo = null;
                 this.anrInfo = null;
                 this.crashInfo = null;
                 this.runningServiceInfo = new RunningServiceInfo(in);
-                return;
+                break;
         }
     }
 
-    /* loaded from: classes.dex */
     public static class CrashInfo {
         public String crashTag;
         public String exceptionClassName;
@@ -303,17 +284,15 @@ public class ApplicationErrorReport implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class ParcelableCrashInfo extends CrashInfo implements Parcelable {
         public static final Parcelable.Creator<ParcelableCrashInfo> CREATOR = new Parcelable.Creator<ParcelableCrashInfo>() { // from class: android.app.ApplicationErrorReport.ParcelableCrashInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ParcelableCrashInfo createFromParcel(Parcel in) {
                 return new ParcelableCrashInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ParcelableCrashInfo[] newArray(int size) {
                 return new ParcelableCrashInfo[size];
@@ -335,26 +314,8 @@ public class ApplicationErrorReport implements Parcelable {
         public int describeContents() {
             return 0;
         }
-
-        /* renamed from: android.app.ApplicationErrorReport$ParcelableCrashInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ParcelableCrashInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ParcelableCrashInfo createFromParcel(Parcel in) {
-                return new ParcelableCrashInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ParcelableCrashInfo[] newArray(int size) {
-                return new ParcelableCrashInfo[size];
-            }
-        }
     }
 
-    /* loaded from: classes.dex */
     public static class AnrInfo {
         public String activity;
         public String cause;
@@ -382,7 +343,6 @@ public class ApplicationErrorReport implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class BatteryInfo {
         public String checkinDetails;
         public long durationMicros;
@@ -414,7 +374,6 @@ public class ApplicationErrorReport implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class RunningServiceInfo {
         public long durationMillis;
         public String serviceDetails;
@@ -438,23 +397,6 @@ public class ApplicationErrorReport implements Parcelable {
         }
     }
 
-    /* renamed from: android.app.ApplicationErrorReport$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ApplicationErrorReport> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApplicationErrorReport createFromParcel(Parcel source) {
-            return new ApplicationErrorReport(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApplicationErrorReport[] newArray(int size) {
-            return new ApplicationErrorReport[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -470,19 +412,23 @@ public class ApplicationErrorReport implements Parcelable {
         switch (this.type) {
             case 1:
                 this.crashInfo.dump(pw, prefix);
-                return;
+                break;
             case 2:
                 this.anrInfo.dump(pw, prefix);
-                return;
+                break;
             case 3:
                 this.batteryInfo.dump(pw, prefix);
-                return;
-            case 4:
-            default:
-                return;
+                break;
             case 5:
                 this.runningServiceInfo.dump(pw, prefix);
-                return;
+                break;
         }
+    }
+
+    private static boolean isSamsungPackage(String packageName) {
+        if (TextUtils.isEmpty(packageName)) {
+            return false;
+        }
+        return packageName.startsWith(START_WITH_SEC) || packageName.startsWith(START_WITH_SAMSUNG);
     }
 }

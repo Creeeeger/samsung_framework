@@ -16,10 +16,10 @@ import com.android.internal.R;
 import com.android.internal.widget.ViewPager;
 
 /* loaded from: classes4.dex */
-public class DayPickerView extends ViewGroup {
+class DayPickerView extends ViewGroup {
     private static final int[] ATTRS_TEXT_COLOR = {16842904};
     private static final int DEFAULT_END_YEAR = 2100;
-    private static final int DEFAULT_LAYOUT = 17367163;
+    private static final int DEFAULT_LAYOUT = 17367165;
     private static final int DEFAULT_START_YEAR = 1900;
     private final AccessibilityManager mAccessibilityManager;
     private final DayPickerPagerAdapter mAdapter;
@@ -34,7 +34,6 @@ public class DayPickerView extends ViewGroup {
     private Calendar mTempCalendar;
     private final ViewPager mViewPager;
 
-    /* loaded from: classes4.dex */
     public interface OnDaySelectedListener {
         void onDaySelected(DayPickerView dayPickerView, Calendar calendar);
     }
@@ -57,9 +56,6 @@ public class DayPickerView extends ViewGroup {
         this.mMinDate = Calendar.getInstance();
         this.mMaxDate = Calendar.getInstance();
         this.mOnPageChangedListener = new ViewPager.OnPageChangeListener() { // from class: android.widget.DayPickerView.2
-            AnonymousClass2() {
-            }
-
             @Override // com.android.internal.widget.ViewPager.OnPageChangeListener
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 float alpha = Math.abs(0.5f - positionOffset) * 2.0f;
@@ -77,9 +73,6 @@ public class DayPickerView extends ViewGroup {
             }
         };
         this.mOnClickListener = new View.OnClickListener() { // from class: android.widget.DayPickerView.3
-            AnonymousClass3() {
-            }
-
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 int direction;
@@ -106,15 +99,14 @@ public class DayPickerView extends ViewGroup {
         int dayTextAppearanceResId = a.getResourceId(12, R.style.TextAppearance_Material_Widget_Calendar_Day);
         ColorStateList daySelectorColor = a.getColorStateList(15);
         a.recycle();
-        DayPickerPagerAdapter dayPickerPagerAdapter = new DayPickerPagerAdapter(context, R.layout.date_picker_month_item_material, R.id.month_view);
-        this.mAdapter = dayPickerPagerAdapter;
-        dayPickerPagerAdapter.setMonthTextAppearance(monthTextAppearanceResId);
-        dayPickerPagerAdapter.setDayOfWeekTextAppearance(dayOfWeekTextAppearanceResId);
-        dayPickerPagerAdapter.setDayTextAppearance(dayTextAppearanceResId);
-        dayPickerPagerAdapter.setDaySelectorColor(daySelectorColor);
+        this.mAdapter = new DayPickerPagerAdapter(context, R.layout.date_picker_month_item_material, R.id.month_view);
+        this.mAdapter.setMonthTextAppearance(monthTextAppearanceResId);
+        this.mAdapter.setDayOfWeekTextAppearance(dayOfWeekTextAppearanceResId);
+        this.mAdapter.setDayTextAppearance(dayTextAppearanceResId);
+        this.mAdapter.setDaySelectorColor(daySelectorColor);
         LayoutInflater inflater = LayoutInflater.from(context);
         int i = 0;
-        ViewGroup content = (ViewGroup) inflater.inflate(17367163, (ViewGroup) this, false);
+        ViewGroup content = (ViewGroup) inflater.inflate(17367165, (ViewGroup) this, false);
         while (content.getChildCount() > 0) {
             LayoutInflater inflater2 = inflater;
             View child = content.getChildAt(i);
@@ -123,22 +115,19 @@ public class DayPickerView extends ViewGroup {
             inflater = inflater2;
             i = 0;
         }
-        ImageButton imageButton = (ImageButton) findViewById(R.id.prev);
-        this.mPrevButton = imageButton;
-        imageButton.setOnClickListener(this.mOnClickListener);
-        ImageButton imageButton2 = (ImageButton) findViewById(R.id.next);
-        this.mNextButton = imageButton2;
-        imageButton2.setOnClickListener(this.mOnClickListener);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.day_picker_view_pager);
-        this.mViewPager = viewPager;
-        viewPager.setAdapter(this.mAdapter);
-        viewPager.setOnPageChangeListener(this.mOnPageChangedListener);
+        this.mPrevButton = (ImageButton) findViewById(R.id.prev);
+        this.mPrevButton.setOnClickListener(this.mOnClickListener);
+        this.mNextButton = (ImageButton) findViewById(R.id.next);
+        this.mNextButton.setOnClickListener(this.mOnClickListener);
+        this.mViewPager = (ViewPager) findViewById(R.id.day_picker_view_pager);
+        this.mViewPager.setAdapter(this.mAdapter);
+        this.mViewPager.setOnPageChangeListener(this.mOnPageChangedListener);
         if (monthTextAppearanceResId != 0) {
             TypedArray ta = this.mContext.obtainStyledAttributes(null, ATTRS_TEXT_COLOR, 0, monthTextAppearanceResId);
             ColorStateList monthColor = ta.getColorStateList(0);
             if (monthColor != null) {
-                imageButton.setImageTintList(monthColor);
-                imageButton2.setImageTintList(monthColor);
+                this.mPrevButton.setImageTintList(monthColor);
+                this.mNextButton.setImageTintList(monthColor);
             }
             ta.recycle();
         }
@@ -160,9 +149,6 @@ public class DayPickerView extends ViewGroup {
         setMaxDate(maxDateMillis);
         setDate(setDateMillis, false);
         this.mAdapter.setOnDaySelectedListener(new DayPickerPagerAdapter.OnDaySelectedListener() { // from class: android.widget.DayPickerView.1
-            AnonymousClass1() {
-            }
-
             @Override // android.widget.DayPickerPagerAdapter.OnDaySelectedListener
             public void onDaySelected(DayPickerPagerAdapter adapter, Calendar day) {
                 if (DayPickerView.this.mOnDaySelectedListener != null) {
@@ -172,21 +158,7 @@ public class DayPickerView extends ViewGroup {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DayPickerView$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements DayPickerPagerAdapter.OnDaySelectedListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.DayPickerPagerAdapter.OnDaySelectedListener
-        public void onDaySelected(DayPickerPagerAdapter adapter, Calendar day) {
-            if (DayPickerView.this.mOnDaySelectedListener != null) {
-                DayPickerView.this.mOnDaySelectedListener.onDaySelected(DayPickerView.this, day);
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateButtonVisibility(int position) {
         boolean hasPrev = position > 0;
         boolean hasNext = position < this.mAdapter.getCount() - 1;
@@ -195,7 +167,7 @@ public class DayPickerView extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         ViewPager viewPager = this.mViewPager;
         measureChild(viewPager, widthMeasureSpec, heightMeasureSpec);
         int measuredWidthAndState = viewPager.getMeasuredWidthAndState();
@@ -216,7 +188,7 @@ public class DayPickerView extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         ImageButton leftButton;
         ImageButton rightButton;
         if (isLayoutRtl()) {
@@ -362,52 +334,5 @@ public class DayPickerView extends ViewGroup {
 
     public void setPosition(int position) {
         this.mViewPager.setCurrentItem(position, false);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DayPickerView$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements ViewPager.OnPageChangeListener {
-        AnonymousClass2() {
-        }
-
-        @Override // com.android.internal.widget.ViewPager.OnPageChangeListener
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            float alpha = Math.abs(0.5f - positionOffset) * 2.0f;
-            DayPickerView.this.mPrevButton.setAlpha(alpha);
-            DayPickerView.this.mNextButton.setAlpha(alpha);
-        }
-
-        @Override // com.android.internal.widget.ViewPager.OnPageChangeListener
-        public void onPageScrollStateChanged(int state) {
-        }
-
-        @Override // com.android.internal.widget.ViewPager.OnPageChangeListener
-        public void onPageSelected(int position) {
-            DayPickerView.this.updateButtonVisibility(position);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DayPickerView$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements View.OnClickListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            int direction;
-            if (v == DayPickerView.this.mPrevButton) {
-                direction = -1;
-            } else if (v == DayPickerView.this.mNextButton) {
-                direction = 1;
-            } else {
-                return;
-            }
-            boolean animate = !DayPickerView.this.mAccessibilityManager.isEnabled();
-            int nextItem = DayPickerView.this.mViewPager.getCurrentItem() + direction;
-            DayPickerView.this.mViewPager.setCurrentItem(nextItem, animate);
-        }
     }
 }

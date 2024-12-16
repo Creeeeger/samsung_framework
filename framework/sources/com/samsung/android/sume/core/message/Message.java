@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class Message {
     public static final int BLOCK_DONE = 506;
     public static final int BLOCK_START = 505;
@@ -121,18 +121,15 @@ public class Message {
     protected int type;
 
     @FunctionalInterface
-    /* loaded from: classes4.dex */
     public interface BundledDataHandler {
         void accept(Bundle bundle);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface MessageType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface RequestType {
     }
 
@@ -166,9 +163,8 @@ public class Message {
     public android.os.Message toAndroidMessage() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("data", (Serializable) this.data);
-        Exception exc = this.exception;
-        if (exc != null) {
-            bundle.putSerializable("exception", exc);
+        if (this.exception != null) {
+            bundle.putSerializable("exception", this.exception);
         }
         android.os.Message message = new android.os.Message();
         message.what = this.code;
@@ -176,25 +172,24 @@ public class Message {
         message.arg2 = this.extra;
         message.replyTo = this.replyTo;
         message.setData(bundle);
-        BundledDataHandler bundledDataHandler = this.bundledDataHandler;
-        if (bundledDataHandler != null) {
-            bundledDataHandler.accept(bundle);
+        if (this.bundledDataHandler != null) {
+            this.bundledDataHandler.accept(bundle);
         }
         return message;
     }
 
-    public Message(int code) {
+    Message(int code) {
         this(typeOf(code), code);
     }
 
-    public Message(int type, int code) {
+    Message(int type, int code) {
         this.data = new HashMap();
         Def.require(isValidCode(type, code), "invalid code(" + code + ") for message(" + type + NavigationBarInflaterView.KEY_CODE_END, new Object[0]);
         this.type = type;
         this.code = code;
     }
 
-    public Message(Message other) {
+    Message(Message other) {
         this.data = new HashMap();
         this.type = other.type;
         this.code = other.code;
@@ -228,11 +223,11 @@ public class Message {
         }
     }
 
-    public static /* synthetic */ boolean lambda$isValidCode$0(int typeOfCode, Integer it) {
+    static /* synthetic */ boolean lambda$isValidCode$0(int typeOfCode, Integer it) {
         return it.intValue() == typeOfCode;
     }
 
-    public static /* synthetic */ boolean lambda$isValidCode$1(int typeOfCode, Integer it) {
+    static /* synthetic */ boolean lambda$isValidCode$1(int typeOfCode, Integer it) {
         return it.intValue() == typeOfCode;
     }
 
@@ -249,16 +244,16 @@ public class Message {
     }
 
     public boolean containsAll(String... keys) {
-        return Arrays.stream(keys).allMatch(new Predicate() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda2
+        return Arrays.stream(keys).allMatch(new Predicate() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return Message.this.m8799xc0a52838((String) obj);
+                return Message.this.m9187xc0a52838((String) obj);
             }
         });
     }
 
-    /* renamed from: lambda$containsAll$2$com-samsung-android-sume-core-message-Message */
-    public /* synthetic */ boolean m8799xc0a52838(String it) {
+    /* renamed from: lambda$containsAll$2$com-samsung-android-sume-core-message-Message, reason: not valid java name */
+    /* synthetic */ boolean m9187xc0a52838(String it) {
         return this.data.containsKey(it);
     }
 
@@ -266,13 +261,13 @@ public class Message {
         return Arrays.stream(keys).anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return Message.this.m8800x136f6cc4((String) obj);
+                return Message.this.m9188x136f6cc4((String) obj);
             }
         });
     }
 
-    /* renamed from: lambda$containsAny$3$com-samsung-android-sume-core-message-Message */
-    public /* synthetic */ boolean m8800x136f6cc4(String it) {
+    /* renamed from: lambda$containsAny$3$com-samsung-android-sume-core-message-Message, reason: not valid java name */
+    /* synthetic */ boolean m9188x136f6cc4(String it) {
         return this.data.containsKey(it);
     }
 
@@ -324,18 +319,18 @@ public class Message {
     public Message post() {
         MessagePublisher publisher = this.messagePublisher.get();
         if (publisher != null) {
-            publisher.getChannels(this.code).forEach(new Consumer() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda0
+            publisher.getChannels(this.code).forEach(new Consumer() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda2
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    Message.this.m8801lambda$post$4$comsamsungandroidsumecoremessageMessage((MessageChannel) obj);
+                    Message.this.m9189lambda$post$4$comsamsungandroidsumecoremessageMessage((MessageChannel) obj);
                 }
             });
         }
         return this;
     }
 
-    /* renamed from: lambda$post$4$com-samsung-android-sume-core-message-Message */
-    public /* synthetic */ void m8801lambda$post$4$comsamsungandroidsumecoremessageMessage(MessageChannel it) {
+    /* renamed from: lambda$post$4$com-samsung-android-sume-core-message-Message, reason: not valid java name */
+    /* synthetic */ void m9189lambda$post$4$comsamsungandroidsumecoremessageMessage(MessageChannel it) {
         Log.d(TAG, "post: " + this.code + " to channel[" + it.getId() + "]: " + it);
         it.send(this);
     }
@@ -350,16 +345,14 @@ public class Message {
     }
 
     public void reply(String key, Object data) {
-        Consumer<Message> consumer = this.responseListener;
-        if (consumer != null) {
-            consumer.accept(new Message(992, 0).put(key, data));
+        if (this.responseListener != null) {
+            this.responseListener.accept(new Message(992, 0).put(key, data));
         }
     }
 
     public void reply(Map<String, Object> data) {
-        Consumer<Message> consumer = this.responseListener;
-        if (consumer != null) {
-            consumer.accept(new Message(992, 0).put(data));
+        if (this.responseListener != null) {
+            this.responseListener.accept(new Message(992, 0).put(data));
         }
     }
 
@@ -409,7 +402,7 @@ public class Message {
         if (Def.isRangeIn(code, 500, 699)) {
             return 994;
         }
-        if (Def.isRangeIn(code, 0, _END_OF_EVENT_TYPE_)) {
+        if (Def.isRangeIn(code, 0, 499)) {
             return 990;
         }
         if (Def.isRangeIn(code, 900, 989)) {

@@ -35,16 +35,17 @@ public abstract class BulkCursorNative extends Binder implements IBulkCursor {
                     reply.writeNoException();
                     if (window == null) {
                         reply.writeInt(0);
+                        break;
                     } else {
                         reply.writeInt(1);
                         window.writeToParcel(reply, 1);
+                        break;
                     }
-                    return true;
                 case 2:
                     data.enforceInterface(IBulkCursor.descriptor);
                     deactivate();
                     reply.writeNoException();
-                    return true;
+                    break;
                 case 3:
                     data.enforceInterface(IBulkCursor.descriptor);
                     IContentObserver observer = IContentObserver.Stub.asInterface(data.readStrongBinder());
@@ -52,34 +53,33 @@ public abstract class BulkCursorNative extends Binder implements IBulkCursor {
                     reply.writeNoException();
                     reply.writeInt(count);
                     reply.writeBundle(getExtras());
-                    return true;
+                    break;
                 case 4:
                     data.enforceInterface(IBulkCursor.descriptor);
                     int position = data.readInt();
                     onMove(position);
                     reply.writeNoException();
-                    return true;
+                    break;
                 case 5:
                     data.enforceInterface(IBulkCursor.descriptor);
                     Bundle extras = getExtras();
                     reply.writeNoException();
                     reply.writeBundle(extras);
-                    return true;
+                    break;
                 case 6:
                     data.enforceInterface(IBulkCursor.descriptor);
                     Bundle extras2 = data.readBundle();
                     Bundle returnExtras = respond(extras2);
                     reply.writeNoException();
                     reply.writeBundle(returnExtras);
-                    return true;
+                    break;
                 case 7:
                     data.enforceInterface(IBulkCursor.descriptor);
                     close();
                     reply.writeNoException();
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+                    break;
             }
+            return true;
         } catch (Exception e) {
             DatabaseUtils.writeExceptionToParcel(reply, e);
             return true;

@@ -30,7 +30,7 @@ public final class ScriptIntrinsic3DLUT extends ScriptIntrinsic {
             throw new RSIllegalArgumentException("LUT element type must match.");
         }
         this.mLUT = lut;
-        setVar(0, lut);
+        setVar(0, this.mLUT);
     }
 
     public void forEach(Allocation ain, Allocation aout) {

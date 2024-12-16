@@ -13,8 +13,9 @@ import com.sec.android.sdhms.ISamsungDeviceHealthManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
+import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SemDvfsManager {
     private static final int ACQUIRE_PAIR_SIZE = 2;
     public static final int FREQUENCY_LIST_ALL = 0;
@@ -236,12 +237,10 @@ public abstract class SemDvfsManager {
     String mName = null;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface HintType {
     }
 
-    /* loaded from: classes5.dex */
-    public interface RequestFunc {
+    interface RequestFunc {
         void acquire(int i, int i2, String str, int i3, int[] iArr);
 
         boolean checkHintExist(int i);
@@ -260,30 +259,34 @@ public abstract class SemDvfsManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface TypeResource {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeAcquire(int i, int i2, String str, int i3, int[] iArr);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native boolean nativeCheckHintExist(int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native boolean nativeCheckResourceExist(int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native boolean nativeCheckSysfsIdExist(int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native int[] nativeGetSupportedFrequency(int i, int i2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeRelease(int i, int i2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native String nativeSysfsRead(int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSysfsWrite(int i, String str);
 
     public abstract void acquire();
-
-    @Deprecated
-    public abstract void clearDvfsValue();
 
     @Deprecated
     public abstract void setDvfsValue(int i);
@@ -295,7 +298,7 @@ public abstract class SemDvfsManager {
         boolean z;
         isSystemUid = false;
         mUid = -999;
-        isGpisEnableChip = "SM8450".equals(SystemProperties.get("ro.soc.model", "chipname")) || "SM8475".equals(SystemProperties.get("ro.soc.model", "chipname")) || "SM8550".equals(SystemProperties.get("ro.soc.model", "chipname")) || "SM8650".equals(SystemProperties.get("ro.soc.model", "chipname")) || "s5e9945".equals(SystemProperties.get("ro.soc.model", "chipname")) || "MT6989".equals(SystemProperties.get("ro.soc.model", "chipname"));
+        isGpisEnableChip = "SM8450".equals(SystemProperties.get("ro.soc.model", "chipname")) || "SM8475".equals(SystemProperties.get("ro.soc.model", "chipname")) || "SM8550".equals(SystemProperties.get("ro.soc.model", "chipname")) || "SM8650".equals(SystemProperties.get("ro.soc.model", "chipname")) || "s5e9945".equals(SystemProperties.get("ro.soc.model", "chipname")) || "s5e9955".equals(SystemProperties.get("ro.soc.model", "chipname"));
         if (!"6:2".equals(SystemProperties.get("sys.perf.hmp", "4:4"))) {
             z = false;
         } else {
@@ -350,9 +353,8 @@ public abstract class SemDvfsManager {
         resourceHash.put(31, Integer.valueOf(TYPE_RESOURCE_CPU_DELAYED_LOW_POWER_MODE));
         resourceHash.put(32, Integer.valueOf(TYPE_RESOURCE_CPU_MIN_LITTLE_CORE));
         resourceHash.put(26, 1610612736);
-        int myUid = Process.myUid();
-        mUid = myUid;
-        isSystemUid = myUid == 1000;
+        mUid = Process.myUid();
+        isSystemUid = mUid == 1000;
     }
 
     public static SemDvfsManager createInstance(Context context, String tagName) {
@@ -379,12 +381,7 @@ public abstract class SemDvfsManager {
         return new SemDvfsHyPerManager(context, tagName, type);
     }
 
-    @Deprecated
-    public static SemDvfsManager createInstance(Context context, String tagName, int type, int isIntent) {
-        return createInstance(context, tagName, type);
-    }
-
-    public SemDvfsManager(Context context, String tagName, int type) {
+    protected SemDvfsManager(Context context, String tagName, int type) {
         this.mToken = -999;
         this.mContext = null;
         this.mCustomFreqManager = null;
@@ -395,12 +392,11 @@ public abstract class SemDvfsManager {
             return;
         }
         this.mContext = context;
-        this.mProcName = context.getPackageName();
+        this.mProcName = this.mContext.getPackageName();
         this.mType = type;
         synchronized (mLock) {
-            int i = nextToken;
-            this.mToken = i;
-            nextToken = (i + 1) % 1000;
+            this.mToken = nextToken;
+            nextToken = (nextToken + 1) % 1000;
             this.mTagName = tagName + "/" + pid + "@" + this.mToken;
         }
         this.mCustomFreqManager = (CustomFrequencyManager) this.mContext.getSystemService(Context.CFMS_SERVICE);
@@ -430,9 +426,8 @@ public abstract class SemDvfsManager {
         if (this.mDvfsRequester == null) {
             return;
         }
-        int i = this.mRequestedHint;
-        if (i != -999) {
-            setHint(i);
+        if (this.mRequestedHint != -999) {
+            setHint(this.mRequestedHint);
         }
         Log.i(this.LOG_TAG, "acquire hyper - " + this.mTagName + ", type = " + this.mType);
         boolean timeoutExist = timeout != -999 && timeout > 0;
@@ -453,11 +448,10 @@ public abstract class SemDvfsManager {
         }
         int[] list = new int[listSize];
         int idx = 0;
-        for (Integer key : this.acquireHash.keySet()) {
-            Integer value = this.acquireHash.get(key);
-            if (value != null && idx + 1 < list.length) {
-                list[idx] = key.intValue();
-                list[idx + 1] = value.intValue();
+        for (Map.Entry<Integer, Integer> entry : this.acquireHash.entrySet()) {
+            if (idx + 1 < list.length) {
+                list[idx] = entry.getKey().intValue();
+                list[idx + 1] = entry.getValue().intValue();
                 idx += 2;
             }
         }
@@ -467,12 +461,11 @@ public abstract class SemDvfsManager {
             idx = idx2 + 1;
             list[idx2] = timeout;
         }
-        int i2 = mUid;
-        if (i2 != -999 && idx + 1 < list.length) {
+        if (mUid != -999 && idx + 1 < list.length) {
             int idx3 = idx + 1;
             list[idx] = -15728640;
-            int i3 = idx3 + 1;
-            list[idx3] = i2;
+            int i = idx3 + 1;
+            list[idx3] = mUid;
         }
         this.mDvfsRequester.acquire(pid, this.mToken, this.mProcName, hintId, list);
         String appStartValue = getAppStartValue(this.mHint);
@@ -491,24 +484,18 @@ public abstract class SemDvfsManager {
         acquire(-999);
     }
 
-    @Deprecated
-    public void update(Context context, String hint) {
-    }
-
     public void release() {
-        DvfsRequester dvfsRequester = this.mDvfsRequester;
-        if (dvfsRequester != null) {
-            dvfsRequester.release(pid, this.mToken);
+        if (this.mDvfsRequester != null) {
+            this.mDvfsRequester.release(pid, this.mToken);
         }
     }
 
     @Deprecated
     public int[] getSupportedFrequency() {
-        int i = this.mType;
-        if (i == -999) {
+        if (this.mType == -999) {
             return null;
         }
-        return getSupportedFrequency(i, 1);
+        return getSupportedFrequency(this.mType, 1);
     }
 
     public int[] getSupportedFrequency(int type) {
@@ -521,9 +508,8 @@ public abstract class SemDvfsManager {
 
     public int[] getSupportedFrequency(int type, int level) {
         int[] supportedFrequency = null;
-        DvfsRequester dvfsRequester = this.mDvfsRequester;
-        if (dvfsRequester != null) {
-            supportedFrequency = dvfsRequester.getSupportedFrequency(type, level);
+        if (this.mDvfsRequester != null) {
+            supportedFrequency = this.mDvfsRequester.getSupportedFrequency(type, level);
         }
         if (supportedFrequency != null && supportedFrequency.length <= 0) {
             supportedFrequency = null;
@@ -539,24 +525,21 @@ public abstract class SemDvfsManager {
     }
 
     public void sysfsWrite(int sysfsId, String value) {
-        DvfsRequester dvfsRequester;
-        if (value != null && (dvfsRequester = this.mDvfsRequester) != null) {
-            dvfsRequester.sysfsWrite(sysfsId, value);
+        if (value != null && this.mDvfsRequester != null) {
+            this.mDvfsRequester.sysfsWrite(sysfsId, value);
         }
     }
 
     public String sysfsRead(int sysfsId) {
-        DvfsRequester dvfsRequester = this.mDvfsRequester;
-        if (dvfsRequester != null) {
-            return dvfsRequester.sysfsRead(sysfsId);
+        if (this.mDvfsRequester != null) {
+            return this.mDvfsRequester.sysfsRead(sysfsId);
         }
         return "";
     }
 
     public boolean checkSysfsIdExist(int sysfsId) {
-        DvfsRequester dvfsRequester = this.mDvfsRequester;
-        if (dvfsRequester != null) {
-            return dvfsRequester.checkSysfsIdExist(sysfsId);
+        if (this.mDvfsRequester != null) {
+            return this.mDvfsRequester.checkSysfsIdExist(sysfsId);
         }
         return false;
     }
@@ -575,20 +558,18 @@ public abstract class SemDvfsManager {
     }
 
     public boolean checkResourceSupported(int resourceType) {
-        DvfsRequester dvfsRequester = this.mDvfsRequester;
-        if (dvfsRequester != null) {
-            return dvfsRequester.checkResourceExist(resourceType);
+        if (this.mDvfsRequester != null) {
+            return this.mDvfsRequester.checkResourceExist(resourceType);
         }
         return false;
     }
 
     @Deprecated
     public int[] getSupportedFrequencyForSsrm() {
-        int i = this.mType;
-        if (i == -999) {
+        if (this.mType == -999) {
             return null;
         }
-        return getSupportedFrequency(i, 0);
+        return getSupportedFrequency(this.mType, 0);
     }
 
     private int getApproximateFrequency(int freq, int type, int level, int[] supportedFrequency) {
@@ -646,15 +627,7 @@ public abstract class SemDvfsManager {
         return getApproximateFrequencyByPercent(percent, this.mType, 0);
     }
 
-    @Deprecated
-    public int getApproximateFrequencyForSsrm(int freq) {
-        return getApproximateFrequency(freq, this.mType, 0);
-    }
-
     public void addResourceValue(int type, int value) {
-        if (this.acquireHash.get(Integer.valueOf(type)) != null) {
-            this.acquireHash.remove(Integer.valueOf(type));
-        }
         this.acquireHash.put(Integer.valueOf(type), Integer.valueOf(value));
     }
 
@@ -685,14 +658,13 @@ public abstract class SemDvfsManager {
     }
 
     private boolean checkHyPerConnected() {
-        DvfsRequester dvfsRequester = this.mDvfsRequester;
-        if (dvfsRequester == null) {
+        if (this.mDvfsRequester == null) {
             return false;
         }
         if (isHyPerConnected) {
             return true;
         }
-        if (dvfsRequester.checkHintExist(32)) {
+        if (this.mDvfsRequester.checkHintExist(32)) {
             isHyPerConnected = true;
         }
         return isHyPerConnected;
@@ -727,8 +699,7 @@ public abstract class SemDvfsManager {
         if (value == null || value.isEmpty()) {
             return;
         }
-        String str = this.acquirePkg;
-        if (str != null && !str.isEmpty()) {
+        if (this.acquirePkg != null && !this.acquirePkg.isEmpty()) {
             value = value + "/" + this.acquirePkg;
         }
         IBinder binder = ServiceManager.getService("sdhms");
@@ -753,10 +724,9 @@ public abstract class SemDvfsManager {
     }
 
     private void setGpisHint(boolean flag) {
-        CustomFrequencyManager customFrequencyManager = this.mCustomFreqManager;
-        if (customFrequencyManager != null) {
+        if (this.mCustomFreqManager != null) {
             try {
-                customFrequencyManager.setGpisHint(flag);
+                this.mCustomFreqManager.setGpisHint(flag);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -769,8 +739,7 @@ public abstract class SemDvfsManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class DvfsRequester {
+    static class DvfsRequester {
         RequestFunc func;
 
         public DvfsRequester(RequestFunc requestFunc) {
@@ -779,120 +748,62 @@ public abstract class SemDvfsManager {
         }
 
         public void acquire(int pid, int token, String procName, int hint, int[] list) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                requestFunc.acquire(pid, token, procName, hint, list);
+            if (this.func != null) {
+                this.func.acquire(pid, token, procName, hint, list);
             }
         }
 
         public void release(int pid, int token) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                requestFunc.release(pid, token);
+            if (this.func != null) {
+                this.func.release(pid, token);
             }
         }
 
         public int[] getSupportedFrequency(int type, int level) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                return requestFunc.getSupportedFrequency(type, level);
+            if (this.func != null) {
+                return this.func.getSupportedFrequency(type, level);
             }
             return null;
         }
 
         public void sysfsWrite(int sysfsId, String value) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                requestFunc.sysfsWrite(sysfsId, value);
+            if (this.func != null) {
+                this.func.sysfsWrite(sysfsId, value);
             }
         }
 
         public String sysfsRead(int sysfsId) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                return requestFunc.sysfsRead(sysfsId);
+            if (this.func != null) {
+                return this.func.sysfsRead(sysfsId);
             }
             return "";
         }
 
         public boolean checkSysfsIdExist(int sysfsId) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                return requestFunc.checkSysfsIdExist(sysfsId);
+            if (this.func != null) {
+                return this.func.checkSysfsIdExist(sysfsId);
             }
             return false;
         }
 
         public boolean checkHintExist(int hint) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                return requestFunc.checkHintExist(hint);
+            if (this.func != null) {
+                return this.func.checkHintExist(hint);
             }
             return false;
         }
 
         public boolean checkResourceExist(int resource) {
-            RequestFunc requestFunc = this.func;
-            if (requestFunc != null) {
-                return requestFunc.checkResourceExist(resource);
+            if (this.func != null) {
+                return this.func.checkResourceExist(resource);
             }
             return false;
-        }
-    }
-
-    /* renamed from: com.samsung.android.os.SemDvfsManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements RequestFunc {
-        AnonymousClass1() {
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public void acquire(int pid, int token, String procName, int hint, int[] list) {
-            SemDvfsManager.nativeAcquire(pid, token, procName, hint, list);
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public void release(int pid, int token) {
-            SemDvfsManager.nativeRelease(pid, token);
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public int[] getSupportedFrequency(int type, int level) {
-            return SemDvfsManager.nativeGetSupportedFrequency(type, level);
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public void sysfsWrite(int sysfsId, String value) {
-            SemDvfsManager.nativeSysfsWrite(sysfsId, value);
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public String sysfsRead(int sysfsId) {
-            return SemDvfsManager.nativeSysfsRead(sysfsId);
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public boolean checkSysfsIdExist(int sysfsId) {
-            return SemDvfsManager.nativeCheckSysfsIdExist(sysfsId);
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public boolean checkHintExist(int hint) {
-            return SemDvfsManager.nativeCheckHintExist(hint);
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public boolean checkResourceExist(int resource) {
-            return SemDvfsManager.nativeCheckResourceExist(resource);
         }
     }
 
     private DvfsRequester createRequester(boolean isSystemUid2) {
         if (isSystemUid2) {
             return new DvfsRequester(new RequestFunc() { // from class: com.samsung.android.os.SemDvfsManager.1
-                AnonymousClass1() {
-                }
-
                 @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
                 public void acquire(int pid2, int token, String procName, int hint, int[] list) {
                     SemDvfsManager.nativeAcquire(pid2, token, procName, hint, list);
@@ -936,9 +847,6 @@ public abstract class SemDvfsManager {
         }
         if (this.mCustomFreqManager != null) {
             return new DvfsRequester(new RequestFunc() { // from class: com.samsung.android.os.SemDvfsManager.2
-                AnonymousClass2() {
-                }
-
                 @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
                 public void acquire(int pid2, int token, String procName, int hint, int[] list) {
                     try {
@@ -1018,90 +926,6 @@ public abstract class SemDvfsManager {
             });
         }
         return null;
-    }
-
-    /* renamed from: com.samsung.android.os.SemDvfsManager$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements RequestFunc {
-        AnonymousClass2() {
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public void acquire(int pid2, int token, String procName, int hint, int[] list) {
-            try {
-                SemDvfsManager.this.mCustomFreqManager.acquire(pid2, token, procName, hint, list);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public void release(int pid2, int token) {
-            try {
-                SemDvfsManager.this.mCustomFreqManager.release(pid2, token);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public int[] getSupportedFrequency(int type, int level) {
-            try {
-                return SemDvfsManager.this.mCustomFreqManager.getSupportedFrequency(type, level);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public void sysfsWrite(int sysfsId, String value) {
-            try {
-                SemDvfsManager.this.mCustomFreqManager.writeSysfs(sysfsId, value);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public String sysfsRead(int sysfsId) {
-            try {
-                return SemDvfsManager.this.mCustomFreqManager.readSysfs(sysfsId);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                return "";
-            }
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public boolean checkSysfsIdExist(int sysfsId) {
-            try {
-                return SemDvfsManager.this.mCustomFreqManager.checkSysfsIdExist(sysfsId);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public boolean checkHintExist(int hint) {
-            try {
-                return SemDvfsManager.this.mCustomFreqManager.checkHintExist(hint);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override // com.samsung.android.os.SemDvfsManager.RequestFunc
-        public boolean checkResourceExist(int resource) {
-            try {
-                return SemDvfsManager.this.mCustomFreqManager.checkResourceExist(resource);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
     }
 
     private static String x(int[] e) {

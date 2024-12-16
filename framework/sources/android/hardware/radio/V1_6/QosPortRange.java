@@ -26,7 +26,7 @@ public final class QosPortRange {
         }
         if ((o & (-1)) == -1) {
             list.add("MAX");
-            flipped = (short) (flipped | (-1));
+            flipped = (short) (-1);
         }
         if (o != flipped) {
             list.add("0x" + Integer.toHexString(Short.toUnsignedInt((short) ((~flipped) & o))));

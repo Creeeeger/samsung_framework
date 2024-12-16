@@ -14,24 +14,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/* loaded from: classes4.dex */
-public final class MessageLiteToString {
+/* loaded from: classes3.dex */
+final class MessageLiteToString {
     private static final String BUILDER_LIST_SUFFIX = "OrBuilderList";
     private static final String BYTES_SUFFIX = "Bytes";
-    private static final char[] INDENT_BUFFER;
+    private static final char[] INDENT_BUFFER = new char[80];
     private static final String LIST_SUFFIX = "List";
     private static final String MAP_SUFFIX = "Map";
 
     static {
-        char[] cArr = new char[80];
-        INDENT_BUFFER = cArr;
-        Arrays.fill(cArr, ' ');
+        Arrays.fill(INDENT_BUFFER, ' ');
     }
 
     private MessageLiteToString() {
     }
 
-    public static String toString(MessageLite messageLite, String commentString) {
+    static String toString(MessageLite messageLite, String commentString) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("# ").append(commentString);
         reflectivePrintWithIndent(messageLite, buffer, 0);
@@ -145,7 +143,7 @@ public final class MessageLiteToString {
         return o instanceof MessageLite ? o == ((MessageLite) o).getDefaultInstanceForType() : (o instanceof Enum) && ((Enum) o).ordinal() == 0;
     }
 
-    public static void printField(StringBuilder buffer, int indent, String name, Object object) {
+    static void printField(StringBuilder buffer, int indent, String name, Object object) {
         if (object instanceof List) {
             List<?> list = (List) object;
             Iterator<?> it = list.iterator();
@@ -197,11 +195,10 @@ public final class MessageLiteToString {
     private static void indent(int indent, StringBuilder buffer) {
         while (indent > 0) {
             int partialIndent = indent;
-            char[] cArr = INDENT_BUFFER;
-            if (partialIndent > cArr.length) {
-                partialIndent = cArr.length;
+            if (partialIndent > INDENT_BUFFER.length) {
+                partialIndent = INDENT_BUFFER.length;
             }
-            buffer.append(cArr, 0, partialIndent);
+            buffer.append(INDENT_BUFFER, 0, partialIndent);
             indent -= partialIndent;
         }
     }

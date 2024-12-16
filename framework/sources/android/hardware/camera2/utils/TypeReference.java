@@ -8,23 +8,18 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class TypeReference<T> {
     private final int mHash;
     private final Type mType;
 
-    /* synthetic */ TypeReference(Type type, TypeReferenceIA typeReferenceIA) {
-        this(type);
-    }
-
-    public TypeReference() {
+    protected TypeReference() {
         ParameterizedType thisType = (ParameterizedType) getClass().getGenericSuperclass();
-        Type type = thisType.getActualTypeArguments()[0];
-        this.mType = type;
-        if (containsTypeVariable(type)) {
+        this.mType = thisType.getActualTypeArguments()[0];
+        if (containsTypeVariable(this.mType)) {
             throw new IllegalArgumentException("Including a type variable in a type reference is not allowed");
         }
-        this.mHash = type.hashCode();
+        this.mHash = this.mType.hashCode();
     }
 
     public Type getType() {
@@ -33,22 +28,19 @@ public abstract class TypeReference<T> {
 
     private TypeReference(Type type) {
         this.mType = type;
-        if (containsTypeVariable(type)) {
+        if (containsTypeVariable(this.mType)) {
             throw new IllegalArgumentException("Including a type variable in a type reference is not allowed");
         }
-        this.mHash = type.hashCode();
+        this.mHash = this.mType.hashCode();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class SpecializedTypeReference<T> extends TypeReference<T> {
+    private static class SpecializedTypeReference<T> extends TypeReference<T> {
         public SpecializedTypeReference(Class<T> klass) {
             super(klass);
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class SpecializedBaseTypeReference extends TypeReference {
+    private static class SpecializedBaseTypeReference extends TypeReference {
         public SpecializedBaseTypeReference(Type type) {
             super(type);
         }

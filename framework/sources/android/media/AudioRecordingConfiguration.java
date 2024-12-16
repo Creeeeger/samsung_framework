@@ -29,14 +29,13 @@ public final class AudioRecordingConfiguration implements Parcelable {
     private final int mPatchHandle;
     private static final String TAG = new String("AudioRecordingConfiguration");
     public static final Parcelable.Creator<AudioRecordingConfiguration> CREATOR = new Parcelable.Creator<AudioRecordingConfiguration>() { // from class: android.media.AudioRecordingConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioRecordingConfiguration createFromParcel(Parcel p) {
             return new AudioRecordingConfiguration(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioRecordingConfiguration[] newArray(int size) {
             return new AudioRecordingConfiguration[size];
@@ -44,12 +43,7 @@ public final class AudioRecordingConfiguration implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioSource {
-    }
-
-    /* synthetic */ AudioRecordingConfiguration(Parcel parcel, AudioRecordingConfigurationIA audioRecordingConfigurationIA) {
-        this(parcel);
     }
 
     public AudioRecordingConfiguration(int uid, int session, int source, AudioFormat clientFormat, AudioFormat devFormat, int patchHandle, String packageName, int clientPortId, boolean clientSilenced, int deviceSource, AudioEffect.Descriptor[] clientEffects, AudioEffect.Descriptor[] deviceEffects) {
@@ -113,11 +107,10 @@ public final class AudioRecordingConfiguration implements Parcelable {
 
     @SystemApi
     public int getClientUid() {
-        int i = this.mClientUid;
-        if (i == -1) {
+        if (this.mClientUid == -1) {
             throw new SecurityException("MODIFY_AUDIO_ROUTING permission is missing");
         }
-        return i;
+        return this.mClientUid;
     }
 
     public AudioDeviceInfo getAudioDevice() {
@@ -166,23 +159,6 @@ public final class AudioRecordingConfiguration implements Parcelable {
         return new ArrayList(Arrays.asList(this.mDeviceEffects));
     }
 
-    /* renamed from: android.media.AudioRecordingConfiguration$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioRecordingConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioRecordingConfiguration createFromParcel(Parcel p) {
-            return new AudioRecordingConfiguration(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioRecordingConfiguration[] newArray(int size) {
-            return new AudioRecordingConfiguration[size];
-        }
-    }
-
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mClientSessionId), Integer.valueOf(this.mClientSource));
     }
@@ -205,25 +181,12 @@ public final class AudioRecordingConfiguration implements Parcelable {
         dest.writeBoolean(this.mClientSilenced);
         dest.writeInt(this.mDeviceSource);
         dest.writeInt(this.mClientEffects.length);
-        int i = 0;
-        while (true) {
-            AudioEffect.Descriptor[] descriptorArr = this.mClientEffects;
-            if (i >= descriptorArr.length) {
-                break;
-            }
-            descriptorArr[i].writeToParcel(dest);
-            i++;
+        for (int i = 0; i < this.mClientEffects.length; i++) {
+            this.mClientEffects[i].writeToParcel(dest);
         }
         dest.writeInt(this.mDeviceEffects.length);
-        int i2 = 0;
-        while (true) {
-            AudioEffect.Descriptor[] descriptorArr2 = this.mDeviceEffects;
-            if (i2 < descriptorArr2.length) {
-                descriptorArr2[i2].writeToParcel(dest);
-                i2++;
-            } else {
-                return;
-            }
+        for (int i2 = 0; i2 < this.mDeviceEffects.length; i2++) {
+            this.mDeviceEffects[i2].writeToParcel(dest);
         }
     }
 
@@ -239,26 +202,13 @@ public final class AudioRecordingConfiguration implements Parcelable {
         this.mClientSilenced = in.readBoolean();
         this.mDeviceSource = in.readInt();
         this.mClientEffects = new AudioEffect.Descriptor[in.readInt()];
-        int i = 0;
-        while (true) {
-            AudioEffect.Descriptor[] descriptorArr = this.mClientEffects;
-            if (i >= descriptorArr.length) {
-                break;
-            }
-            descriptorArr[i] = new AudioEffect.Descriptor(in);
-            i++;
+        for (int i = 0; i < this.mClientEffects.length; i++) {
+            this.mClientEffects[i] = new AudioEffect.Descriptor(in);
         }
         int i2 = in.readInt();
         this.mDeviceEffects = new AudioEffect.Descriptor[i2];
-        int i3 = 0;
-        while (true) {
-            AudioEffect.Descriptor[] descriptorArr2 = this.mDeviceEffects;
-            if (i3 < descriptorArr2.length) {
-                descriptorArr2[i3] = new AudioEffect.Descriptor(in);
-                i3++;
-            } else {
-                return;
-            }
+        for (int i3 = 0; i3 < this.mDeviceEffects.length; i3++) {
+            this.mDeviceEffects[i3] = new AudioEffect.Descriptor(in);
         }
     }
 

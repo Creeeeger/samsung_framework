@@ -23,7 +23,7 @@ class FileBackupHelperBase {
 
     private static native int writeSnapshot_native(long j, FileDescriptor fileDescriptor);
 
-    public FileBackupHelperBase(Context context) {
+    FileBackupHelperBase(Context context) {
         this.mContext = context;
     }
 
@@ -35,7 +35,7 @@ class FileBackupHelperBase {
         }
     }
 
-    public static void performBackup_checked(ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState, String[] files, String[] keys) {
+    static void performBackup_checked(ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState, String[] files, String[] keys) {
         if (files.length == 0) {
             return;
         }
@@ -58,7 +58,7 @@ class FileBackupHelperBase {
         }
     }
 
-    public boolean writeFile(File f, BackupDataInputStream in) {
+    boolean writeFile(File f, BackupDataInputStream in) {
         File parent = f.getParentFile();
         parent.mkdirs();
         int result = writeFile_native(this.mPtr, f.getAbsolutePath(), in.mData.mBackupReader);
@@ -73,7 +73,7 @@ class FileBackupHelperBase {
         writeSnapshot_native(this.mPtr, fd.getFileDescriptor());
     }
 
-    public boolean isKeyInList(String key, String[] list) {
+    boolean isKeyInList(String key, String[] list) {
         for (String s : list) {
             if (s.equals(key)) {
                 return true;

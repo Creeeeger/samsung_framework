@@ -30,7 +30,7 @@ public final class MediaTimestamp {
         this.clockRate = clockRate;
     }
 
-    public MediaTimestamp() {
+    MediaTimestamp() {
         this.mediaTimeUs = 0L;
         this.nanoTime = 0L;
         this.clockRate = 1.0f;

@@ -1,6 +1,8 @@
 package android.hardware;
 
 import android.app.ActivityThread;
+import android.companion.virtual.VirtualDeviceManager;
+import android.companion.virtual.flags.Flags;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -15,11 +17,6 @@ import android.os.Message;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RSIllegalArgumentException;
-import android.renderscript.RenderScript;
-import android.renderscript.Type;
 import android.system.OsConstants;
 import android.text.TextUtils;
 import android.util.Log;
@@ -88,19 +85,16 @@ public class Camera {
     private boolean mShutterSoundEnabledFromApp = true;
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface AutoFocusCallback {
         void onAutoFocus(boolean z, Camera camera);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface AutoFocusMoveCallback {
         void onAutoFocusMoving(boolean z, Camera camera);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public static class CameraInfo {
         public static final int CAMERA_FACING_BACK = 0;
         public static final int CAMERA_FACING_FRONT = 1;
@@ -110,13 +104,11 @@ public class Camera {
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface ErrorCallback {
         void onError(int i, Camera camera);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public static class Face {
         public Rect rect;
         public int score;
@@ -127,42 +119,37 @@ public class Camera {
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface FaceDetectionListener {
         void onFaceDetection(Face[] faceArr, Camera camera);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface OnZoomChangeListener {
         void onZoomChange(int i, boolean z, Camera camera);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface PictureCallback {
         void onPictureTaken(byte[] bArr, Camera camera);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface PreviewCallback {
         void onPreviewFrame(byte[] bArr, Camera camera);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface ShutterCallback {
         void onShutter();
     }
 
     private final native void _addCallbackBuffer(byte[] bArr, int i);
 
-    private final native boolean _enableRecordingSound(boolean z);
-
     private final native boolean _enableShutterSound(boolean z);
 
-    private static native void _getCameraInfo(int i, boolean z, CameraInfo cameraInfo);
+    private static native void _getCameraInfo(int i, int i2, int i3, int i4, CameraInfo cameraInfo);
+
+    private static native int _getNumberOfCameras(int i, int i2);
 
     private final native void _startFaceDetection(int i);
 
@@ -171,8 +158,6 @@ public class Camera {
     private final native void _stopPreview();
 
     private native void enableFocusMoveCallback(int i);
-
-    public static native int getNumberOfCameras();
 
     private final native void native_autoFocus();
 
@@ -184,10 +169,11 @@ public class Camera {
 
     private final native void native_setParameters(String str);
 
-    private native int native_setup(Object obj, int i, String str, boolean z, boolean z2);
+    private native int native_setup(Object obj, int i, String str, int i2, boolean z, int i3, int i4);
 
     private final native void native_takePicture(int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final native void setHasPreviewCallback(boolean z, boolean z2);
 
     private final native void setPreviewCallbackSurface(Surface surface);
@@ -216,9 +202,22 @@ public class Camera {
 
     public final native void unlock();
 
+    public static int getNumberOfCameras() {
+        return getNumberOfCameras(ActivityThread.currentApplication().getApplicationContext());
+    }
+
+    public static int getNumberOfCameras(Context context) {
+        return _getNumberOfCameras(context.getDeviceId(), getDevicePolicyFromContext(context));
+    }
+
     public static void getCameraInfo(int cameraId, CameraInfo cameraInfo) {
-        boolean overrideToPortrait = CameraManager.shouldOverrideToPortrait(ActivityThread.currentApplication().getApplicationContext());
-        _getCameraInfo(cameraId, overrideToPortrait, cameraInfo);
+        Context context = ActivityThread.currentApplication().getApplicationContext();
+        int rotationOverride = CameraManager.getRotationOverride(context);
+        getCameraInfo(cameraId, context, rotationOverride, cameraInfo);
+    }
+
+    public static void getCameraInfo(int cameraId, Context context, int rotationOverride, CameraInfo cameraInfo) {
+        _getCameraInfo(cameraId, rotationOverride, context.getDeviceId(), getDevicePolicyFromContext(context), cameraInfo);
         IBinder b = ServiceManager.getService("audio");
         IAudioService audioService = IAudioService.Stub.asInterface(b);
         try {
@@ -230,8 +229,22 @@ public class Camera {
         }
     }
 
+    private static int getDevicePolicyFromContext(Context context) {
+        if (context.getDeviceId() == 0 || !Flags.virtualCamera()) {
+            return 0;
+        }
+        VirtualDeviceManager virtualDeviceManager = (VirtualDeviceManager) context.getSystemService(VirtualDeviceManager.class);
+        return virtualDeviceManager.getDevicePolicy(context.getDeviceId(), 5);
+    }
+
     public static Camera open(int cameraId) {
-        return new Camera(cameraId);
+        Context context = ActivityThread.currentApplication().getApplicationContext();
+        int rotationOverride = CameraManager.getRotationOverride(context);
+        return open(cameraId, context, rotationOverride);
+    }
+
+    public static Camera open(int cameraId, Context context, int rotationOverride) {
+        return new Camera(cameraId, context, rotationOverride);
     }
 
     public static Camera open() {
@@ -240,7 +253,7 @@ public class Camera {
         for (int i = 0; i < numberOfCameras; i++) {
             getCameraInfo(i, cameraInfo);
             if (cameraInfo.facing == 0) {
-                return new Camera(i);
+                return open(i);
             }
         }
         return null;
@@ -250,10 +263,10 @@ public class Camera {
         if (halVersion < 768) {
             throw new IllegalArgumentException("Unsupported HAL version " + halVersion);
         }
-        return new Camera(cameraId);
+        return open(cameraId);
     }
 
-    private int cameraInit(int cameraId) {
+    private int cameraInit(int cameraId, Context context, int rotationOverride) {
         this.mShutterCallback = null;
         this.mRawImageCallback = null;
         this.mJpegCallback = null;
@@ -272,9 +285,8 @@ public class Camera {
                 this.mEventHandler = null;
             }
         }
-        boolean overrideToPortrait = CameraManager.shouldOverrideToPortrait(ActivityThread.currentApplication().getApplicationContext());
         boolean forceSlowJpegMode = shouldForceSlowJpegMode();
-        return native_setup(new WeakReference(this), cameraId, ActivityThread.currentOpPackageName(), overrideToPortrait, forceSlowJpegMode);
+        return native_setup(new WeakReference(this), cameraId, ActivityThread.currentOpPackageName(), rotationOverride, forceSlowJpegMode, context.getDeviceId(), getDevicePolicyFromContext(context));
     }
 
     private boolean shouldForceSlowJpegMode() {
@@ -289,8 +301,9 @@ public class Camera {
         return false;
     }
 
-    Camera(int cameraId) {
-        int err = cameraInit(cameraId);
+    Camera(int cameraId, Context context, int rotationOverride) {
+        Objects.requireNonNull(context);
+        int err = cameraInit(cameraId, context, rotationOverride);
         if (checkInitErrors(err)) {
             if (err == (-OsConstants.EACCES)) {
                 throw new RuntimeException("Fail to connect to camera service");
@@ -329,9 +342,8 @@ public class Camera {
 
     private void releaseAppOps() {
         try {
-            IAppOpsService iAppOpsService = this.mAppOps;
-            if (iAppOpsService != null) {
-                iAppOpsService.stopWatchingMode(this.mAppOpsCallback);
+            if (this.mAppOps != null) {
+                this.mAppOps.stopWatchingMode(this.mAppOpsCallback);
             }
         } catch (Exception e) {
         }
@@ -421,41 +433,7 @@ public class Camera {
         _addCallbackBuffer(callbackBuffer, msgType);
     }
 
-    public final Allocation createPreviewAllocation(RenderScript rs, int usage) throws RSIllegalArgumentException {
-        Parameters p = getParameters();
-        Size previewSize = p.getPreviewSize();
-        Type.Builder yuvBuilder = new Type.Builder(rs, Element.createPixel(rs, Element.DataType.UNSIGNED_8, Element.DataKind.PIXEL_YUV));
-        yuvBuilder.setYuvFormat(842094169);
-        yuvBuilder.setX(previewSize.width);
-        yuvBuilder.setY(previewSize.height);
-        Allocation a = Allocation.createTyped(rs, yuvBuilder.create(), usage | 32);
-        return a;
-    }
-
-    public final void setPreviewCallbackAllocation(Allocation previewAllocation) throws IOException {
-        Surface previewSurface = null;
-        if (previewAllocation != null) {
-            Parameters p = getParameters();
-            Size previewSize = p.getPreviewSize();
-            if (previewSize.width != previewAllocation.getType().getX() || previewSize.height != previewAllocation.getType().getY()) {
-                throw new IllegalArgumentException("Allocation dimensions don't match preview dimensions: Allocation is " + previewAllocation.getType().getX() + ", " + previewAllocation.getType().getY() + ". Preview is " + previewSize.width + ", " + previewSize.height);
-            }
-            if ((previewAllocation.getUsage() & 32) == 0) {
-                throw new IllegalArgumentException("Allocation usage does not include USAGE_IO_INPUT");
-            }
-            if (previewAllocation.getType().getElement().getDataKind() != Element.DataKind.PIXEL_YUV) {
-                throw new IllegalArgumentException("Allocation is not of a YUV type");
-            }
-            previewSurface = previewAllocation.getSurface();
-            this.mUsingPreviewAllocation = true;
-        } else {
-            this.mUsingPreviewAllocation = false;
-        }
-        setPreviewCallbackSurface(previewSurface);
-    }
-
-    /* loaded from: classes.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         private final Camera mCamera;
 
         public EventHandler(Camera c, Looper looper) {
@@ -562,10 +540,9 @@ public class Camera {
     }
 
     private static void postEventFromNative(Object camera_ref, int what, int arg1, int arg2, Object obj) {
-        EventHandler eventHandler;
         Camera c = (Camera) ((WeakReference) camera_ref).get();
-        if (c != null && (eventHandler = c.mEventHandler) != null) {
-            Message m = eventHandler.obtainMessage(what, arg1, arg2, obj);
+        if (c != null && c.mEventHandler != null) {
+            Message m = c.mEventHandler.obtainMessage(what, arg1, arg2, obj);
             c.mEventHandler.sendMessage(m);
         }
     }
@@ -587,7 +564,7 @@ public class Camera {
 
     public void setAutoFocusMoveCallback(AutoFocusMoveCallback cb) {
         this.mAutoFocusMoveCallback = cb;
-        enableFocusMoveCallback(cb != null ? 1 : 0);
+        enableFocusMoveCallback(this.mAutoFocusMoveCallback != null ? 1 : 0);
     }
 
     public final void takePicture(ShutterCallback shutter, PictureCallback raw, PictureCallback jpeg) {
@@ -600,16 +577,16 @@ public class Camera {
         this.mPostviewCallback = postview;
         this.mJpegCallback = jpeg;
         int msgType = 0;
-        if (shutter != null) {
+        if (this.mShutterCallback != null) {
             msgType = 0 | 2;
         }
-        if (raw != null) {
+        if (this.mRawImageCallback != null) {
             msgType |= 128;
         }
-        if (postview != null) {
+        if (this.mPostviewCallback != null) {
             msgType |= 64;
         }
-        if (jpeg != null) {
+        if (this.mJpegCallback != null) {
             msgType |= 256;
         }
         native_takePicture(msgType);
@@ -644,16 +621,11 @@ public class Camera {
         return ret;
     }
 
-    public final boolean enableRecordingSound(boolean enabled) {
-        return _enableRecordingSound(enabled);
-    }
-
     public final boolean disableShutterSound() {
         return _enableShutterSound(false);
     }
 
-    /* loaded from: classes.dex */
-    public static class IAppOpsCallbackWrapper extends IAppOpsCallback.Stub {
+    private static class IAppOpsCallbackWrapper extends IAppOpsCallback.Stub {
         private final WeakReference<Camera> mWeakCamera;
 
         IAppOpsCallbackWrapper(Camera camera) {
@@ -661,7 +633,7 @@ public class Camera {
         }
 
         @Override // com.android.internal.app.IAppOpsCallback
-        public void opChanged(int op, int uid, String packageName) {
+        public void opChanged(int op, int uid, String packageName, String persistentDeviceId) {
             Camera camera;
             if (op == 28 && (camera = this.mWeakCamera.get()) != null) {
                 camera.updateAppOpsPlayAudio();
@@ -669,23 +641,22 @@ public class Camera {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateAppOpsPlayAudio() {
         synchronized (this.mShutterSoundLock) {
             boolean oldHasAppOpsPlayAudio = this.mHasAppOpsPlayAudio;
             int mode = 1;
             try {
-                IAppOpsService iAppOpsService = this.mAppOps;
-                if (iAppOpsService != null) {
-                    mode = iAppOpsService.checkAudioOperation(28, 13, Process.myUid(), ActivityThread.currentPackageName());
+                if (this.mAppOps != null) {
+                    mode = this.mAppOps.checkAudioOperation(28, 13, Process.myUid(), ActivityThread.currentPackageName());
                 }
                 this.mHasAppOpsPlayAudio = mode == 0;
             } catch (RemoteException e) {
                 Log.e("Camera", "AppOpsService check audio operation failed");
                 this.mHasAppOpsPlayAudio = false;
             }
-            boolean z = this.mHasAppOpsPlayAudio;
-            if (oldHasAppOpsPlayAudio != z) {
-                if (!z) {
+            if (oldHasAppOpsPlayAudio != this.mHasAppOpsPlayAudio) {
+                if (!this.mHasAppOpsPlayAudio) {
                     IBinder b = ServiceManager.getService("audio");
                     IAudioService audioService = IAudioService.Stub.asInterface(b);
                     try {
@@ -768,7 +739,6 @@ public class Camera {
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public class Size {
         public int height;
         public int width;
@@ -792,7 +762,6 @@ public class Camera {
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public static class Area {
         public Rect rect;
         public int weight;
@@ -807,12 +776,11 @@ public class Camera {
                 return false;
             }
             Area a = (Area) obj;
-            Rect rect = this.rect;
-            if (rect == null) {
+            if (this.rect == null) {
                 if (a.rect != null) {
                     return false;
                 }
-            } else if (!rect.equals(a.rect)) {
+            } else if (!this.rect.equals(a.rect)) {
                 return false;
             }
             return this.weight == a.weight;
@@ -820,7 +788,6 @@ public class Camera {
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public class Parameters {
         public static final String ANTIBANDING_50HZ = "50hz";
         public static final String ANTIBANDING_60HZ = "60hz";
@@ -941,10 +908,6 @@ public class Camera {
         public static final String WHITE_BALANCE_WARM_FLUORESCENT = "warm-fluorescent";
         private final LinkedHashMap<String, String> mMap;
 
-        /* synthetic */ Parameters(Camera camera, ParametersIA parametersIA) {
-            this();
-        }
-
         private Parameters() {
             this.mMap = new LinkedHashMap<>(64);
         }
@@ -956,6 +919,7 @@ public class Camera {
             this.mMap.putAll(other.mMap);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Camera getOuter() {
             return Camera.this;
         }
@@ -1090,7 +1054,7 @@ public class Camera {
         }
 
         public Size getJpegThumbnailSize() {
-            return new Size(getInt(KEY_JPEG_THUMBNAIL_WIDTH), getInt(KEY_JPEG_THUMBNAIL_HEIGHT));
+            return Camera.this.new Size(getInt(KEY_JPEG_THUMBNAIL_WIDTH), getInt(KEY_JPEG_THUMBNAIL_HEIGHT));
         }
 
         public List<Size> getSupportedJpegThumbnailSizes() {
@@ -1618,7 +1582,7 @@ public class Camera {
             if (pos != -1) {
                 String width = str.substring(0, pos);
                 String height = str.substring(pos + 1);
-                return new Size(Integer.parseInt(width), Integer.parseInt(height));
+                return Camera.this.new Size(Integer.parseInt(width), Integer.parseInt(height));
             }
             Log.e("Camera", "Invalid size parameter string=" + str);
             return null;

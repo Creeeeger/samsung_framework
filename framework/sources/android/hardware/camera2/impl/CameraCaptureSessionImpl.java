@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraCaptureSessionImpl extends CameraCaptureSession implements CameraCaptureSessionCore {
     private static final boolean DEBUG = false;
     private static final String TAG = "CameraCaptureSession";
@@ -43,32 +43,28 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
     private final CameraCaptureSession.StateCallback mStateCallback;
     private final Executor mStateExecutor;
 
-    public CameraCaptureSessionImpl(int id, Surface input, CameraCaptureSession.StateCallback callback, Executor stateExecutor, CameraDeviceImpl deviceImpl, Executor deviceStateExecutor, boolean configureSuccess) {
+    CameraCaptureSessionImpl(int i, Surface surface, CameraCaptureSession.StateCallback stateCallback, Executor executor, CameraDeviceImpl cameraDeviceImpl, Executor executor2, boolean z) {
         this.mClosed = false;
-        if (callback == null) {
+        if (stateCallback == null) {
             throw new IllegalArgumentException("callback must not be null");
         }
-        this.mId = id;
-        String format = String.format("Session %d: ", Integer.valueOf(id));
-        this.mIdString = format;
-        this.mInput = input;
-        Executor executor = (Executor) Preconditions.checkNotNull(stateExecutor, "stateExecutor must not be null");
-        this.mStateExecutor = executor;
-        CameraCaptureSession.StateCallback createUserStateCallbackProxy = createUserStateCallbackProxy(executor, callback);
-        this.mStateCallback = createUserStateCallbackProxy;
-        Executor executor2 = (Executor) Preconditions.checkNotNull(deviceStateExecutor, "deviceStateExecutor must not be null");
-        this.mDeviceExecutor = executor2;
-        this.mDeviceImpl = (CameraDeviceImpl) Preconditions.checkNotNull(deviceImpl, "deviceImpl must not be null");
-        this.mSequenceDrainer = new TaskDrainer<>(executor2, new SequenceDrainListener(), "seq");
-        this.mIdleDrainer = new TaskSingleDrainer(executor2, new IdleDrainListener(), "idle");
-        this.mAbortDrainer = new TaskSingleDrainer(executor2, new AbortDrainListener(), "abort");
-        if (configureSuccess) {
-            createUserStateCallbackProxy.onConfigured(this);
+        this.mId = i;
+        this.mIdString = String.format("Session %d: ", Integer.valueOf(this.mId));
+        this.mInput = surface;
+        this.mStateExecutor = (Executor) Preconditions.checkNotNull(executor, "stateExecutor must not be null");
+        this.mStateCallback = createUserStateCallbackProxy(this.mStateExecutor, stateCallback);
+        this.mDeviceExecutor = (Executor) Preconditions.checkNotNull(executor2, "deviceStateExecutor must not be null");
+        this.mDeviceImpl = (CameraDeviceImpl) Preconditions.checkNotNull(cameraDeviceImpl, "deviceImpl must not be null");
+        this.mSequenceDrainer = new TaskDrainer<>(this.mDeviceExecutor, new SequenceDrainListener(), "seq");
+        this.mIdleDrainer = new TaskSingleDrainer(this.mDeviceExecutor, new IdleDrainListener(), "idle");
+        this.mAbortDrainer = new TaskSingleDrainer(this.mDeviceExecutor, new AbortDrainListener(), "abort");
+        if (z) {
+            this.mStateCallback.onConfigured(this);
             this.mConfigureSuccess = true;
         } else {
-            createUserStateCallbackProxy.onConfigureFailed(this);
+            this.mStateCallback.onConfigureFailed(this);
             this.mClosed = true;
-            Log.e(TAG, format + "Failed to create capture session; configuration failed");
+            Log.e(TAG, this.mIdString + "Failed to create capture session; configuration failed");
             this.mConfigureSuccess = false;
         }
     }
@@ -348,9 +344,8 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
             this.mClosed = true;
             this.mStateCallback.onClosed(this);
-            Surface surface = this.mInput;
-            if (surface != null) {
-                surface.release();
+            if (this.mInput != null) {
+                this.mInput.release();
             }
         }
     }
@@ -363,19 +358,16 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
             this.mClosed = true;
             try {
-                try {
-                    this.mDeviceImpl.stopRepeating();
-                } catch (IllegalStateException e) {
-                    this.mStateCallback.onClosed(this);
-                    return;
-                }
-            } catch (CameraAccessException e2) {
-                Log.e(TAG, this.mIdString + "Exception while stopping repeating: ", e2);
+                this.mDeviceImpl.stopRepeating();
+            } catch (CameraAccessException e) {
+                Log.e(TAG, this.mIdString + "Exception while stopping repeating: ", e);
+            } catch (IllegalStateException e2) {
+                this.mStateCallback.onClosed(this);
+                return;
             }
             this.mSequenceDrainer.beginDrain();
-            Surface surface = this.mInput;
-            if (surface != null) {
-                surface.release();
+            if (this.mInput != null) {
+                this.mInput.release();
             }
         }
     }
@@ -394,9 +386,8 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
         return createCaptureCallbackProxyWithExecutor(executor, callback);
     }
 
-    /* renamed from: android.hardware.camera2.impl.CameraCaptureSessionImpl$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends CaptureCallback {
+    /* renamed from: android.hardware.camera2.impl.CameraCaptureSessionImpl$1, reason: invalid class name */
+    class AnonymousClass1 extends CaptureCallback {
         final /* synthetic */ CameraCaptureSession.CaptureCallback val$callback;
         final /* synthetic */ Executor val$executor;
 
@@ -414,7 +405,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
                 try {
                     Executor executor = this.val$executor;
                     final CameraCaptureSession.CaptureCallback captureCallback = this.val$callback;
-                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda6
+                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda8
                         @Override // java.lang.Runnable
                         public final void run() {
                             CameraCaptureSessionImpl.AnonymousClass1.this.lambda$onCaptureStarted$0(captureCallback, request, timestamp, frameNumber);
@@ -426,6 +417,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureStarted$0(CameraCaptureSession.CaptureCallback callback, CaptureRequest request, long timestamp, long frameNumber) {
             callback.onCaptureStarted(CameraCaptureSessionImpl.this, request, timestamp, frameNumber);
         }
@@ -437,7 +429,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
                 try {
                     Executor executor = this.val$executor;
                     final CameraCaptureSession.CaptureCallback captureCallback = this.val$callback;
-                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda4
+                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             CameraCaptureSessionImpl.AnonymousClass1.this.lambda$onReadoutStarted$1(captureCallback, request, timestamp, frameNumber);
@@ -449,6 +441,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReadoutStarted$1(CameraCaptureSession.CaptureCallback callback, CaptureRequest request, long timestamp, long frameNumber) {
             callback.onReadoutStarted(CameraCaptureSessionImpl.this, request, timestamp, frameNumber);
         }
@@ -472,6 +465,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCapturePartial$2(CameraCaptureSession.CaptureCallback callback, CaptureRequest request, CaptureResult result) {
             callback.onCapturePartial(CameraCaptureSessionImpl.this, request, result);
         }
@@ -495,6 +489,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureProgressed$3(CameraCaptureSession.CaptureCallback callback, CaptureRequest request, CaptureResult partialResult) {
             callback.onCaptureProgressed(CameraCaptureSessionImpl.this, request, partialResult);
         }
@@ -506,7 +501,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
                 try {
                     Executor executor = this.val$executor;
                     final CameraCaptureSession.CaptureCallback captureCallback = this.val$callback;
-                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda1
+                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
                             CameraCaptureSessionImpl.AnonymousClass1.this.lambda$onCaptureCompleted$4(captureCallback, request, result);
@@ -518,6 +513,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureCompleted$4(CameraCaptureSession.CaptureCallback callback, CaptureRequest request, TotalCaptureResult result) {
             callback.onCaptureCompleted(CameraCaptureSessionImpl.this, request, result);
         }
@@ -529,7 +525,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
                 try {
                     Executor executor = this.val$executor;
                     final CameraCaptureSession.CaptureCallback captureCallback = this.val$callback;
-                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda7
+                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda3
                         @Override // java.lang.Runnable
                         public final void run() {
                             CameraCaptureSessionImpl.AnonymousClass1.this.lambda$onCaptureFailed$5(captureCallback, request, failure);
@@ -541,6 +537,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureFailed$5(CameraCaptureSession.CaptureCallback callback, CaptureRequest request, CaptureFailure failure) {
             callback.onCaptureFailed(CameraCaptureSessionImpl.this, request, failure);
         }
@@ -552,7 +549,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
                 try {
                     Executor executor = this.val$executor;
                     final CameraCaptureSession.CaptureCallback captureCallback = this.val$callback;
-                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda8
+                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda4
                         @Override // java.lang.Runnable
                         public final void run() {
                             CameraCaptureSessionImpl.AnonymousClass1.this.lambda$onCaptureSequenceCompleted$6(captureCallback, sequenceId, frameNumber);
@@ -565,6 +562,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             CameraCaptureSessionImpl.this.finishPendingSequence(sequenceId);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureSequenceCompleted$6(CameraCaptureSession.CaptureCallback callback, int sequenceId, long frameNumber) {
             callback.onCaptureSequenceCompleted(CameraCaptureSessionImpl.this, sequenceId, frameNumber);
         }
@@ -576,7 +574,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
                 try {
                     Executor executor = this.val$executor;
                     final CameraCaptureSession.CaptureCallback captureCallback = this.val$callback;
-                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda3
+                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda6
                         @Override // java.lang.Runnable
                         public final void run() {
                             CameraCaptureSessionImpl.AnonymousClass1.this.lambda$onCaptureSequenceAborted$7(captureCallback, sequenceId);
@@ -589,6 +587,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             CameraCaptureSessionImpl.this.finishPendingSequence(sequenceId);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureSequenceAborted$7(CameraCaptureSession.CaptureCallback callback, int sequenceId) {
             callback.onCaptureSequenceAborted(CameraCaptureSessionImpl.this, sequenceId);
         }
@@ -600,7 +599,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
                 try {
                     Executor executor = this.val$executor;
                     final CameraCaptureSession.CaptureCallback captureCallback = this.val$callback;
-                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda2
+                    executor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl$1$$ExternalSyntheticLambda7
                         @Override // java.lang.Runnable
                         public final void run() {
                             CameraCaptureSessionImpl.AnonymousClass1.this.lambda$onCaptureBufferLost$8(captureCallback, request, target, frameNumber);
@@ -612,6 +611,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureBufferLost$8(CameraCaptureSession.CaptureCallback callback, CaptureRequest request, Surface target, long frameNumber) {
             callback.onCaptureBufferLost(CameraCaptureSessionImpl.this, request, target, frameNumber);
         }
@@ -623,17 +623,10 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
 
     @Override // android.hardware.camera2.impl.CameraCaptureSessionCore
     public CameraDeviceImpl.StateCallbackKK getDeviceStateCallback() {
-        Object interfaceLock = this.mDeviceImpl.mInterfaceLock;
+        final Object interfaceLock = this.mDeviceImpl.mInterfaceLock;
         return new CameraDeviceImpl.StateCallbackKK() { // from class: android.hardware.camera2.impl.CameraCaptureSessionImpl.2
-            final /* synthetic */ Object val$interfaceLock;
-            final /* synthetic */ CameraCaptureSession val$session;
             private boolean mBusy = false;
             private boolean mActive = false;
-
-            AnonymousClass2(CameraCaptureSession this, Object interfaceLock2) {
-                this = this;
-                interfaceLock = interfaceLock2;
-            }
 
             @Override // android.hardware.camera2.CameraDevice.StateCallback
             public void onOpened(CameraDevice camera) {
@@ -698,82 +691,6 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraCaptureSessionImpl$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends CameraDeviceImpl.StateCallbackKK {
-        final /* synthetic */ Object val$interfaceLock;
-        final /* synthetic */ CameraCaptureSession val$session;
-        private boolean mBusy = false;
-        private boolean mActive = false;
-
-        AnonymousClass2(CameraCaptureSession this, Object interfaceLock2) {
-            this = this;
-            interfaceLock = interfaceLock2;
-        }
-
-        @Override // android.hardware.camera2.CameraDevice.StateCallback
-        public void onOpened(CameraDevice camera) {
-            throw new AssertionError("Camera must already be open before creating a session");
-        }
-
-        @Override // android.hardware.camera2.CameraDevice.StateCallback
-        public void onDisconnected(CameraDevice camera) {
-            CameraCaptureSessionImpl.this.close();
-        }
-
-        @Override // android.hardware.camera2.CameraDevice.StateCallback
-        public void onError(CameraDevice camera, int error) {
-            Log.wtf(CameraCaptureSessionImpl.TAG, CameraCaptureSessionImpl.this.mIdString + "Got device error " + error);
-        }
-
-        @Override // android.hardware.camera2.impl.CameraDeviceImpl.StateCallbackKK
-        public void onActive(CameraDevice camera) {
-            CameraCaptureSessionImpl.this.mIdleDrainer.taskStarted();
-            this.mActive = true;
-            CameraCaptureSessionImpl.this.mStateCallback.onActive(this);
-        }
-
-        @Override // android.hardware.camera2.impl.CameraDeviceImpl.StateCallbackKK
-        public void onIdle(CameraDevice camera) {
-            boolean isAborting;
-            synchronized (interfaceLock) {
-                isAborting = CameraCaptureSessionImpl.this.mAborting;
-            }
-            if (this.mBusy && isAborting) {
-                CameraCaptureSessionImpl.this.mAbortDrainer.taskFinished();
-                synchronized (interfaceLock) {
-                    CameraCaptureSessionImpl.this.mAborting = false;
-                }
-            }
-            if (this.mActive) {
-                CameraCaptureSessionImpl.this.mIdleDrainer.taskFinished();
-            }
-            this.mBusy = false;
-            this.mActive = false;
-            CameraCaptureSessionImpl.this.mStateCallback.onReady(this);
-        }
-
-        @Override // android.hardware.camera2.impl.CameraDeviceImpl.StateCallbackKK
-        public void onBusy(CameraDevice camera) {
-            this.mBusy = true;
-        }
-
-        @Override // android.hardware.camera2.impl.CameraDeviceImpl.StateCallbackKK
-        public void onUnconfigured(CameraDevice camera) {
-        }
-
-        @Override // android.hardware.camera2.impl.CameraDeviceImpl.StateCallbackKK
-        public void onRequestQueueEmpty() {
-            CameraCaptureSessionImpl.this.mStateCallback.onCaptureQueueEmpty(this);
-        }
-
-        @Override // android.hardware.camera2.impl.CameraDeviceImpl.StateCallbackKK
-        public void onSurfacePrepared(Surface surface) {
-            CameraCaptureSessionImpl.this.mStateCallback.onSurfacePrepared(this, surface);
-        }
-    }
-
     protected void finalize() throws Throwable {
         try {
             close();
@@ -793,6 +710,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
         return sequenceId;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void finishPendingSequence(int sequenceId) {
         try {
             this.mSequenceDrainer.taskFinished(Integer.valueOf(sequenceId));
@@ -801,13 +719,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class SequenceDrainListener implements TaskDrainer.DrainListener {
-        /* synthetic */ SequenceDrainListener(CameraCaptureSessionImpl cameraCaptureSessionImpl, SequenceDrainListenerIA sequenceDrainListenerIA) {
-            this();
-        }
-
+    private class SequenceDrainListener implements TaskDrainer.DrainListener {
         private SequenceDrainListener() {
         }
 
@@ -821,13 +733,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class AbortDrainListener implements TaskDrainer.DrainListener {
-        /* synthetic */ AbortDrainListener(CameraCaptureSessionImpl cameraCaptureSessionImpl, AbortDrainListenerIA abortDrainListenerIA) {
-            this();
-        }
-
+    private class AbortDrainListener implements TaskDrainer.DrainListener {
         private AbortDrainListener() {
         }
 
@@ -842,13 +748,7 @@ public class CameraCaptureSessionImpl extends CameraCaptureSession implements Ca
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class IdleDrainListener implements TaskDrainer.DrainListener {
-        /* synthetic */ IdleDrainListener(CameraCaptureSessionImpl cameraCaptureSessionImpl, IdleDrainListenerIA idleDrainListenerIA) {
-            this();
-        }
-
+    private class IdleDrainListener implements TaskDrainer.DrainListener {
         private IdleDrainListener() {
         }
 

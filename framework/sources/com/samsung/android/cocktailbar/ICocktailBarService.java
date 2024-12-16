@@ -120,7 +120,6 @@ public interface ICocktailBarService extends IInterface {
 
     void updateWakeupGesture(int i, boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICocktailBarService {
         @Override // com.samsung.android.cocktailbar.ICocktailBarService
         public void setCocktailHostCallbacks(ICocktailHost host, String packageName, int category) throws RemoteException {
@@ -354,7 +353,6 @@ public interface ICocktailBarService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICocktailBarService {
         static final int TRANSACTION_activateCocktailBar = 37;
         static final int TRANSACTION_bindRemoteViewsService = 21;
@@ -547,357 +545,354 @@ public interface ICocktailBarService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICocktailBarService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICocktailBarService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICocktailBarService.DESCRIPTOR);
+                case 1:
+                    ICocktailHost _arg0 = ICocktailHost.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCocktailHostCallbacks(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ICocktailHost _arg02 = ICocktailHost.Stub.asInterface(data.readStrongBinder());
+                    String _arg12 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startListening(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    stopListening(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int[] _arg04 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    setEnabledCocktailIds(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int[] _result = getEnabledCocktailIds();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result);
+                    return true;
+                case 6:
+                    int[] _result2 = getAllCocktailIds();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result2);
+                    return true;
+                case 7:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Cocktail _result3 = getCocktail(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 8:
+                    String _arg06 = data.readString();
+                    CocktailInfo _arg13 = (CocktailInfo) data.readTypedObject(CocktailInfo.CREATOR);
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateCocktail(_arg06, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg07 = data.readString();
+                    RemoteViews _arg14 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    partiallyUpdateCocktail(_arg07, _arg14, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    String _arg08 = data.readString();
+                    RemoteViews _arg15 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    partiallyUpdateHelpView(_arg08, _arg15, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    String _arg09 = data.readString();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    showCocktail(_arg09, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    String _arg010 = data.readString();
+                    int _arg17 = data.readInt();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    closeCocktail(_arg010, _arg17, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg011 = data.readString();
+                    ComponentName _arg18 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result4 = getCocktailId(_arg011, _arg18);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 14:
+                    String _arg012 = data.readString();
+                    ComponentName _arg19 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    disableCocktail(_arg012, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    String _arg013 = data.readString();
+                    ComponentName _arg110 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int[] _result5 = getCocktailIds(_arg013, _arg110);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result5);
+                    return true;
+                case 16:
+                    String _arg014 = data.readString();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = isBoundCocktailPackage(_arg014, _arg111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 17:
+                    String _arg015 = data.readString();
+                    ComponentName _arg112 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result7 = isEnabledCocktail(_arg015, _arg112);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 18:
+                    String _arg016 = data.readString();
+                    ComponentName _arg113 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result8 = isCocktailEnabled(_arg016, _arg113);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 19:
+                    String _arg017 = data.readString();
+                    int _arg114 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyCocktailViewDataChanged(_arg017, _arg114, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    String _arg018 = data.readString();
+                    int _arg115 = data.readInt();
+                    int _arg28 = data.readInt();
+                    PendingIntent _arg3 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    setOnPullPendingIntent(_arg018, _arg115, _arg28, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    String _arg019 = data.readString();
+                    int _arg116 = data.readInt();
+                    Intent _arg29 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    IApplicationThread _arg32 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg4 = data.readStrongBinder();
+                    IServiceConnection _arg5 = IServiceConnection.Stub.asInterface(data.readStrongBinder());
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = bindRemoteViewsService(_arg019, _arg116, _arg29, _arg32, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 22:
+                    String _arg020 = data.readString();
+                    int _arg117 = data.readInt();
+                    Intent _arg210 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    unbindRemoteViewsService(_arg020, _arg117, _arg210);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    int _arg021 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = requestToUpdateCocktail(_arg021);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 24:
+                    int _arg022 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = requestToDisableCocktail(_arg022);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 25:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = requestToUpdateCocktailByCategory(_arg023);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 26:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = requestToDisableCocktailByCategory(_arg024);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 27:
+                    boolean _arg025 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyKeyguardState(_arg025);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    int _arg026 = data.readInt();
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyCocktailVisibiltyChanged(_arg026, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateCocktailBarVisibility(_arg027);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    int _arg028 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateCocktailBarPosition(_arg028);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    IBinder _arg029 = data.readStrongBinder();
+                    ComponentName _arg119 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerCocktailBarStateListenerCallback(_arg029, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    IBinder _arg030 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unregisterCocktailBarStateListenerCallback(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    int _result14 = getCocktailBarVisibility();
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 34:
+                    CocktailBarStateInfo _result15 = getCocktailBarStateInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result15, 1);
+                    return true;
+                case 35:
+                    String _arg031 = data.readString();
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateCocktailBarWindowType(_arg031, _arg120);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    int _result16 = getWindowType();
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 37:
+                    activateCocktailBar();
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    deactivateCocktailBar();
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    IBinder _arg032 = data.readStrongBinder();
+                    ComponentName _arg121 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerSystemUiVisibilityListenerCallback(_arg032, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    IBinder _arg033 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unregisterSystemUiVisibilityListenerCallback(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    int _arg034 = data.readInt();
+                    boolean _arg122 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    updateWakeupGesture(_arg034, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int _arg035 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateWakeupArea(_arg035);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    boolean _arg036 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCocktailBarWakeUpState(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    boolean _result17 = getCocktaiBarWakeUpState();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 45:
+                    Bundle _arg037 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendExtraDataToCocktailBar(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    removeCocktailUIService();
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    int _result18 = getConfigVersion();
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 48:
+                    int _result19 = getPreferWidth();
+                    reply.writeNoException();
+                    reply.writeInt(_result19);
+                    return true;
+                case 49:
+                    String _result20 = getCategoryFilterStr();
+                    reply.writeNoException();
+                    reply.writeString(_result20);
+                    return true;
+                case 50:
+                    int _result21 = getSystemBarAppearance();
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    return true;
+                case 51:
+                    String _result22 = getHideEdgeListStr();
+                    reply.writeNoException();
+                    reply.writeString(_result22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICocktailHost _arg0 = ICocktailHost.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCocktailHostCallbacks(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ICocktailHost _arg02 = ICocktailHost.Stub.asInterface(data.readStrongBinder());
-                            String _arg12 = data.readString();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startListening(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            stopListening(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int[] _arg04 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            setEnabledCocktailIds(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int[] _result = getEnabledCocktailIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result);
-                            return true;
-                        case 6:
-                            int[] _result2 = getAllCocktailIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result2);
-                            return true;
-                        case 7:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Cocktail _result3 = getCocktail(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 8:
-                            String _arg06 = data.readString();
-                            CocktailInfo _arg13 = (CocktailInfo) data.readTypedObject(CocktailInfo.CREATOR);
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateCocktail(_arg06, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg07 = data.readString();
-                            RemoteViews _arg14 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            partiallyUpdateCocktail(_arg07, _arg14, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            String _arg08 = data.readString();
-                            RemoteViews _arg15 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            partiallyUpdateHelpView(_arg08, _arg15, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            String _arg09 = data.readString();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            showCocktail(_arg09, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            String _arg010 = data.readString();
-                            int _arg17 = data.readInt();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            closeCocktail(_arg010, _arg17, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            String _arg011 = data.readString();
-                            ComponentName _arg18 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result4 = getCocktailId(_arg011, _arg18);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 14:
-                            String _arg012 = data.readString();
-                            ComponentName _arg19 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            disableCocktail(_arg012, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            String _arg013 = data.readString();
-                            ComponentName _arg110 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int[] _result5 = getCocktailIds(_arg013, _arg110);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result5);
-                            return true;
-                        case 16:
-                            String _arg014 = data.readString();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = isBoundCocktailPackage(_arg014, _arg111);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 17:
-                            String _arg015 = data.readString();
-                            ComponentName _arg112 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result7 = isEnabledCocktail(_arg015, _arg112);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 18:
-                            String _arg016 = data.readString();
-                            ComponentName _arg113 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result8 = isCocktailEnabled(_arg016, _arg113);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 19:
-                            String _arg017 = data.readString();
-                            int _arg114 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyCocktailViewDataChanged(_arg017, _arg114, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            String _arg018 = data.readString();
-                            int _arg115 = data.readInt();
-                            int _arg28 = data.readInt();
-                            PendingIntent _arg3 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            setOnPullPendingIntent(_arg018, _arg115, _arg28, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            String _arg019 = data.readString();
-                            int _arg116 = data.readInt();
-                            Intent _arg29 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            IApplicationThread _arg32 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg4 = data.readStrongBinder();
-                            IServiceConnection _arg5 = IServiceConnection.Stub.asInterface(data.readStrongBinder());
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = bindRemoteViewsService(_arg019, _arg116, _arg29, _arg32, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 22:
-                            String _arg020 = data.readString();
-                            int _arg117 = data.readInt();
-                            Intent _arg210 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            unbindRemoteViewsService(_arg020, _arg117, _arg210);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = requestToUpdateCocktail(_arg021);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 24:
-                            int _arg022 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = requestToDisableCocktail(_arg022);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 25:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = requestToUpdateCocktailByCategory(_arg023);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 26:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = requestToDisableCocktailByCategory(_arg024);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 27:
-                            boolean _arg025 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyKeyguardState(_arg025);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            int _arg026 = data.readInt();
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyCocktailVisibiltyChanged(_arg026, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateCocktailBarVisibility(_arg027);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            int _arg028 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateCocktailBarPosition(_arg028);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            IBinder _arg029 = data.readStrongBinder();
-                            ComponentName _arg119 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerCocktailBarStateListenerCallback(_arg029, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            IBinder _arg030 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unregisterCocktailBarStateListenerCallback(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            int _result14 = getCocktailBarVisibility();
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 34:
-                            CocktailBarStateInfo _result15 = getCocktailBarStateInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 35:
-                            String _arg031 = data.readString();
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateCocktailBarWindowType(_arg031, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            int _result16 = getWindowType();
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 37:
-                            activateCocktailBar();
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            deactivateCocktailBar();
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            IBinder _arg032 = data.readStrongBinder();
-                            ComponentName _arg121 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerSystemUiVisibilityListenerCallback(_arg032, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            IBinder _arg033 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unregisterSystemUiVisibilityListenerCallback(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _arg034 = data.readInt();
-                            boolean _arg122 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            updateWakeupGesture(_arg034, _arg122);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            int _arg035 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateWakeupArea(_arg035);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            boolean _arg036 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCocktailBarWakeUpState(_arg036);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            boolean _result17 = getCocktaiBarWakeUpState();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 45:
-                            Bundle _arg037 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendExtraDataToCocktailBar(_arg037);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            removeCocktailUIService();
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            int _result18 = getConfigVersion();
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 48:
-                            int _result19 = getPreferWidth();
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            return true;
-                        case 49:
-                            String _result20 = getCategoryFilterStr();
-                            reply.writeNoException();
-                            reply.writeString(_result20);
-                            return true;
-                        case 50:
-                            int _result21 = getSystemBarAppearance();
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            return true;
-                        case 51:
-                            String _result22 = getHideEdgeListStr();
-                            reply.writeNoException();
-                            reply.writeString(_result22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICocktailBarService {
+        private static class Proxy implements ICocktailBarService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

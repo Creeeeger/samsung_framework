@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.IBinder;
 import com.samsung.android.sepunion.ITipsManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class TipsManager {
     public static final String FOTA_READY_ACTION = "android.samsung.tips.FOTA_READY";
     private static final String TAG = TipsManager.class.getSimpleName();

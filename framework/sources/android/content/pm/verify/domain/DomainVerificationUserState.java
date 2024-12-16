@@ -28,7 +28,6 @@ public final class DomainVerificationUserState implements Parcelable {
     private final UserHandle mUser;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DomainState {
     }
 
@@ -60,15 +59,15 @@ public final class DomainVerificationUserState implements Parcelable {
 
     public DomainVerificationUserState(UUID identifier, String packageName, UserHandle user, boolean linkHandlingAllowed, Map<String, Integer> hostToStateMap) {
         this.mIdentifier = identifier;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) identifier);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mIdentifier);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mUser = user;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) user);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mUser);
         this.mLinkHandlingAllowed = linkHandlingAllowed;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) Boolean.valueOf(linkHandlingAllowed));
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) Boolean.valueOf(this.mLinkHandlingAllowed));
         this.mHostToStateMap = hostToStateMap;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hostToStateMap);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHostToStateMap);
     }
 
     public String getPackageName() {
@@ -111,20 +110,18 @@ public final class DomainVerificationUserState implements Parcelable {
     }
 
     static {
-        Parcelling<UUID> parcelling = Parcelling.Cache.get(Parcelling.BuiltIn.ForUUID.class);
-        sParcellingForIdentifier = parcelling;
-        if (parcelling == null) {
+        sParcellingForIdentifier = Parcelling.Cache.get(Parcelling.BuiltIn.ForUUID.class);
+        if (sParcellingForIdentifier == null) {
             sParcellingForIdentifier = Parcelling.Cache.put(new Parcelling.BuiltIn.ForUUID());
         }
         CREATOR = new Parcelable.Creator<DomainVerificationUserState>() { // from class: android.content.pm.verify.domain.DomainVerificationUserState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DomainVerificationUserState[] newArray(int size) {
                 return new DomainVerificationUserState[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DomainVerificationUserState createFromParcel(Parcel in) {
                 return new DomainVerificationUserState(in);
@@ -155,32 +152,15 @@ public final class DomainVerificationUserState implements Parcelable {
         UserHandle user = (UserHandle) in.readTypedObject(UserHandle.CREATOR);
         Map<String, Integer> hostToStateMap = unparcelHostToStateMap(in);
         this.mIdentifier = identifier;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) identifier);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mIdentifier);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mUser = user;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) user);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mUser);
         this.mLinkHandlingAllowed = linkHandlingAllowed;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) Boolean.valueOf(linkHandlingAllowed));
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) Boolean.valueOf(this.mLinkHandlingAllowed));
         this.mHostToStateMap = hostToStateMap;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hostToStateMap);
-    }
-
-    /* renamed from: android.content.pm.verify.domain.DomainVerificationUserState$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DomainVerificationUserState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DomainVerificationUserState[] newArray(int size) {
-            return new DomainVerificationUserState[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DomainVerificationUserState createFromParcel(Parcel in) {
-            return new DomainVerificationUserState(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHostToStateMap);
     }
 
     @Deprecated

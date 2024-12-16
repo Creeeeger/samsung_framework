@@ -12,7 +12,6 @@ public interface IOnMessageReceivedListener extends IInterface {
 
     void onMessageReceived(int i, byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IOnMessageReceivedListener {
         @Override // android.companion.IOnMessageReceivedListener
         public void onMessageReceived(int associationId, byte[] data) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IOnMessageReceivedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IOnMessageReceivedListener {
         static final int TRANSACTION_onMessageReceived = 1;
 
@@ -67,27 +65,23 @@ public interface IOnMessageReceivedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnMessageReceivedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnMessageReceivedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnMessageReceivedListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onMessageReceived(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onMessageReceived(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IOnMessageReceivedListener {
+        private static class Proxy implements IOnMessageReceivedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

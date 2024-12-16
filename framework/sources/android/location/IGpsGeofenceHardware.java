@@ -18,7 +18,6 @@ public interface IGpsGeofenceHardware extends IInterface {
 
     boolean resumeHardwareGeofence(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGpsGeofenceHardware {
         @Override // android.location.IGpsGeofenceHardware
         public boolean isHardwareGeofenceSupported() throws RemoteException {
@@ -51,7 +50,6 @@ public interface IGpsGeofenceHardware extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGpsGeofenceHardware {
         public static final String DESCRIPTOR = "android.location.IGpsGeofenceHardware";
         static final int TRANSACTION_addCircularHardwareGeofence = 2;
@@ -107,62 +105,58 @@ public interface IGpsGeofenceHardware extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _result = isHardwareGeofenceSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    double _arg1 = data.readDouble();
+                    double _arg2 = data.readDouble();
+                    double _arg3 = data.readDouble();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    int _arg6 = data.readInt();
+                    int _arg7 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = addCircularHardwareGeofence(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = removeHardwareGeofence(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = pauseHardwareGeofence(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = resumeHardwareGeofence(_arg04, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isHardwareGeofenceSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            double _arg1 = data.readDouble();
-                            double _arg2 = data.readDouble();
-                            double _arg3 = data.readDouble();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            int _arg6 = data.readInt();
-                            int _arg7 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = addCircularHardwareGeofence(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = removeHardwareGeofence(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = pauseHardwareGeofence(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = resumeHardwareGeofence(_arg04, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGpsGeofenceHardware {
+        private static class Proxy implements IGpsGeofenceHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

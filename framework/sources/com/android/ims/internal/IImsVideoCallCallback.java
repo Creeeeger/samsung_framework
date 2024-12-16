@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telecom.VideoProfile;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsVideoCallCallback extends IInterface {
     void changeCallDataUsage(long j) throws RemoteException;
 
@@ -23,7 +23,6 @@ public interface IImsVideoCallCallback extends IInterface {
 
     void receiveSessionModifyResponse(int i, VideoProfile videoProfile, VideoProfile videoProfile2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsVideoCallCallback {
         @Override // com.android.ims.internal.IImsVideoCallCallback
         public void receiveSessionModifyRequest(VideoProfile videoProfile) throws RemoteException {
@@ -59,7 +58,6 @@ public interface IImsVideoCallCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsVideoCallCallback {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsVideoCallCallback";
         static final int TRANSACTION_changeCallDataUsage = 5;
@@ -121,59 +119,55 @@ public interface IImsVideoCallCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    VideoProfile _arg0 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    receiveSessionModifyRequest(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    VideoProfile _arg1 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
+                    VideoProfile _arg2 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    receiveSessionModifyResponse(_arg02, _arg1, _arg2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    handleCallSessionEvent(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    changePeerDimensions(_arg04, _arg12);
+                    return true;
+                case 5:
+                    long _arg05 = data.readLong();
+                    data.enforceNoDataAvail();
+                    changeCallDataUsage(_arg05);
+                    return true;
+                case 6:
+                    VideoProfile.CameraCapabilities _arg06 = (VideoProfile.CameraCapabilities) data.readTypedObject(VideoProfile.CameraCapabilities.CREATOR);
+                    data.enforceNoDataAvail();
+                    changeCameraCapabilities(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    changeVideoQuality(_arg07);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            VideoProfile _arg0 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            receiveSessionModifyRequest(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            VideoProfile _arg1 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
-                            VideoProfile _arg2 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            receiveSessionModifyResponse(_arg02, _arg1, _arg2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            handleCallSessionEvent(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            changePeerDimensions(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            long _arg05 = data.readLong();
-                            data.enforceNoDataAvail();
-                            changeCallDataUsage(_arg05);
-                            return true;
-                        case 6:
-                            VideoProfile.CameraCapabilities _arg06 = (VideoProfile.CameraCapabilities) data.readTypedObject(VideoProfile.CameraCapabilities.CREATOR);
-                            data.enforceNoDataAvail();
-                            changeCameraCapabilities(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            changeVideoQuality(_arg07);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsVideoCallCallback {
+        private static class Proxy implements IImsVideoCallCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

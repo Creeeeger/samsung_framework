@@ -13,43 +13,20 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class ExternalTimeSuggestion implements Parcelable {
     public static final Parcelable.Creator<ExternalTimeSuggestion> CREATOR = new Parcelable.Creator<ExternalTimeSuggestion>() { // from class: android.app.time.ExternalTimeSuggestion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExternalTimeSuggestion createFromParcel(Parcel in) {
             TimeSuggestionHelper helper = TimeSuggestionHelper.handleCreateFromParcel(ExternalTimeSuggestion.class, in);
             return new ExternalTimeSuggestion(helper);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExternalTimeSuggestion[] newArray(int size) {
             return new ExternalTimeSuggestion[size];
         }
     };
     private final TimeSuggestionHelper mTimeSuggestionHelper;
-
-    /* synthetic */ ExternalTimeSuggestion(TimeSuggestionHelper timeSuggestionHelper, ExternalTimeSuggestionIA externalTimeSuggestionIA) {
-        this(timeSuggestionHelper);
-    }
-
-    /* renamed from: android.app.time.ExternalTimeSuggestion$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ExternalTimeSuggestion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExternalTimeSuggestion createFromParcel(Parcel in) {
-            TimeSuggestionHelper helper = TimeSuggestionHelper.handleCreateFromParcel(ExternalTimeSuggestion.class, in);
-            return new ExternalTimeSuggestion(helper);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExternalTimeSuggestion[] newArray(int size) {
-            return new ExternalTimeSuggestion[size];
-        }
-    }
 
     public ExternalTimeSuggestion(long elapsedRealtimeMillis, long suggestionMillis) {
         this.mTimeSuggestionHelper = new TimeSuggestionHelper(ExternalTimeSuggestion.class, new UnixEpochTime(elapsedRealtimeMillis, suggestionMillis));

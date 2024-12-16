@@ -14,7 +14,7 @@ import java.time.ZoneId;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 class TimeFormatter {
     private static final int DAYSPERLYEAR = 366;
     private static final int DAYSPERNYEAR = 365;
@@ -41,8 +41,7 @@ class TimeFormatter {
     public TimeFormatter() {
         synchronized (TimeFormatter.class) {
             Locale locale = Locale.getDefault();
-            Locale locale2 = sLocale;
-            if (locale2 == null || !locale.equals(locale2)) {
+            if (sLocale == null || !locale.equals(sLocale)) {
                 sLocale = locale;
                 sDateFormatSymbols = DateFormat.getIcuDateFormatSymbols(locale);
                 sDecimalFormatSymbols = DecimalFormatSymbols.getInstance(locale);
@@ -59,7 +58,7 @@ class TimeFormatter {
         }
     }
 
-    public String formatMillisWithFixedFormat(long timeMillis) {
+    String formatMillisWithFixedFormat(long timeMillis) {
         Instant instant = Instant.ofEpochMilli(timeMillis);
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         StringBuilder stringBuilder = new StringBuilder(19);
@@ -408,7 +407,7 @@ class TimeFormatter {
                 for (int i = 0; i < str.length(); i++) {
                     this.outputBuilder.append(brokenToLower(str.charAt(i)));
                 }
-                return;
+                break;
             case 35:
                 for (int i2 = 0; i2 < str.length(); i2++) {
                     char c = str.charAt(i2);
@@ -419,15 +418,15 @@ class TimeFormatter {
                     }
                     this.outputBuilder.append(c);
                 }
-                return;
+                break;
             case 94:
                 for (int i3 = 0; i3 < str.length(); i3++) {
                     this.outputBuilder.append(brokenToUpper(str.charAt(i3)));
                 }
-                return;
+                break;
             default:
                 this.outputBuilder.append(str);
-                return;
+                break;
         }
     }
 

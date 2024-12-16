@@ -7,13 +7,17 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.aidl.IImsRegistrationCallback;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsRegistration extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsRegistration";
+
+    void addEmergencyRegistrationCallback(IImsRegistrationCallback iImsRegistrationCallback) throws RemoteException;
 
     void addRegistrationCallback(IImsRegistrationCallback iImsRegistrationCallback) throws RemoteException;
 
     int getRegistrationTechnology() throws RemoteException;
+
+    void removeEmergencyRegistrationCallback(IImsRegistrationCallback iImsRegistrationCallback) throws RemoteException;
 
     void removeRegistrationCallback(IImsRegistrationCallback iImsRegistrationCallback) throws RemoteException;
 
@@ -25,7 +29,6 @@ public interface IImsRegistration extends IInterface {
 
     void triggerUpdateSipDelegateRegistration() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsRegistration {
         @Override // android.telephony.ims.aidl.IImsRegistration
         public int getRegistrationTechnology() throws RemoteException {
@@ -38,6 +41,14 @@ public interface IImsRegistration extends IInterface {
 
         @Override // android.telephony.ims.aidl.IImsRegistration
         public void removeRegistrationCallback(IImsRegistrationCallback c) throws RemoteException {
+        }
+
+        @Override // android.telephony.ims.aidl.IImsRegistration
+        public void addEmergencyRegistrationCallback(IImsRegistrationCallback c) throws RemoteException {
+        }
+
+        @Override // android.telephony.ims.aidl.IImsRegistration
+        public void removeEmergencyRegistrationCallback(IImsRegistrationCallback c) throws RemoteException {
         }
 
         @Override // android.telephony.ims.aidl.IImsRegistration
@@ -62,15 +73,16 @@ public interface IImsRegistration extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsRegistration {
+        static final int TRANSACTION_addEmergencyRegistrationCallback = 4;
         static final int TRANSACTION_addRegistrationCallback = 2;
         static final int TRANSACTION_getRegistrationTechnology = 1;
+        static final int TRANSACTION_removeEmergencyRegistrationCallback = 5;
         static final int TRANSACTION_removeRegistrationCallback = 3;
-        static final int TRANSACTION_triggerDeregistration = 7;
-        static final int TRANSACTION_triggerFullNetworkRegistration = 4;
-        static final int TRANSACTION_triggerSipDelegateDeregistration = 6;
-        static final int TRANSACTION_triggerUpdateSipDelegateRegistration = 5;
+        static final int TRANSACTION_triggerDeregistration = 9;
+        static final int TRANSACTION_triggerFullNetworkRegistration = 6;
+        static final int TRANSACTION_triggerSipDelegateDeregistration = 8;
+        static final int TRANSACTION_triggerUpdateSipDelegateRegistration = 7;
 
         public Stub() {
             attachInterface(this, IImsRegistration.DESCRIPTOR);
@@ -101,12 +113,16 @@ public interface IImsRegistration extends IInterface {
                 case 3:
                     return "removeRegistrationCallback";
                 case 4:
-                    return "triggerFullNetworkRegistration";
+                    return "addEmergencyRegistrationCallback";
                 case 5:
-                    return "triggerUpdateSipDelegateRegistration";
+                    return "removeEmergencyRegistrationCallback";
                 case 6:
-                    return "triggerSipDelegateDeregistration";
+                    return "triggerFullNetworkRegistration";
                 case 7:
+                    return "triggerUpdateSipDelegateRegistration";
+                case 8:
+                    return "triggerSipDelegateDeregistration";
+                case 9:
                     return "triggerDeregistration";
                 default:
                     return null;
@@ -123,52 +139,59 @@ public interface IImsRegistration extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsRegistration.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsRegistration.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsRegistration.DESCRIPTOR);
+                case 1:
+                    int _result = getRegistrationTechnology();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    IImsRegistrationCallback _arg0 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addRegistrationCallback(_arg0);
+                    return true;
+                case 3:
+                    IImsRegistrationCallback _arg02 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeRegistrationCallback(_arg02);
+                    return true;
+                case 4:
+                    IImsRegistrationCallback _arg03 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addEmergencyRegistrationCallback(_arg03);
+                    return true;
+                case 5:
+                    IImsRegistrationCallback _arg04 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeEmergencyRegistrationCallback(_arg04);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    triggerFullNetworkRegistration(_arg05, _arg1);
+                    return true;
+                case 7:
+                    triggerUpdateSipDelegateRegistration();
+                    return true;
+                case 8:
+                    triggerSipDelegateDeregistration();
+                    return true;
+                case 9:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    triggerDeregistration(_arg06);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = getRegistrationTechnology();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            IImsRegistrationCallback _arg0 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addRegistrationCallback(_arg0);
-                            return true;
-                        case 3:
-                            IImsRegistrationCallback _arg02 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeRegistrationCallback(_arg02);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            triggerFullNetworkRegistration(_arg03, _arg1);
-                            return true;
-                        case 5:
-                            triggerUpdateSipDelegateRegistration();
-                            return true;
-                        case 6:
-                            triggerSipDelegateDeregistration();
-                            return true;
-                        case 7:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            triggerDeregistration(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsRegistration {
+        private static class Proxy implements IImsRegistration {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -225,13 +248,37 @@ public interface IImsRegistration extends IInterface {
             }
 
             @Override // android.telephony.ims.aidl.IImsRegistration
+            public void addEmergencyRegistrationCallback(IImsRegistrationCallback c) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IImsRegistration.DESCRIPTOR);
+                    _data.writeStrongInterface(c);
+                    this.mRemote.transact(4, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.telephony.ims.aidl.IImsRegistration
+            public void removeEmergencyRegistrationCallback(IImsRegistrationCallback c) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IImsRegistration.DESCRIPTOR);
+                    _data.writeStrongInterface(c);
+                    this.mRemote.transact(5, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.telephony.ims.aidl.IImsRegistration
             public void triggerFullNetworkRegistration(int sipCode, String sipReason) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IImsRegistration.DESCRIPTOR);
                     _data.writeInt(sipCode);
                     _data.writeString(sipReason);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(6, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -242,7 +289,7 @@ public interface IImsRegistration extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IImsRegistration.DESCRIPTOR);
-                    this.mRemote.transact(5, _data, null, 1);
+                    this.mRemote.transact(7, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -253,7 +300,7 @@ public interface IImsRegistration extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IImsRegistration.DESCRIPTOR);
-                    this.mRemote.transact(6, _data, null, 1);
+                    this.mRemote.transact(8, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -265,7 +312,7 @@ public interface IImsRegistration extends IInterface {
                 try {
                     _data.writeInterfaceToken(IImsRegistration.DESCRIPTOR);
                     _data.writeInt(reason);
-                    this.mRemote.transact(7, _data, null, 1);
+                    this.mRemote.transact(9, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -274,7 +321,7 @@ public interface IImsRegistration extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 6;
+            return 8;
         }
     }
 }

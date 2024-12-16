@@ -14,7 +14,6 @@ public interface ITelecomLoader extends IInterface {
 
     ITelecomService createTelecomService(IInternalServiceRetriever iInternalServiceRetriever) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ITelecomLoader {
         @Override // com.android.internal.telecom.ITelecomLoader
         public ITelecomService createTelecomService(IInternalServiceRetriever retriever) throws RemoteException {
@@ -27,7 +26,6 @@ public interface ITelecomLoader extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ITelecomLoader {
         static final int TRANSACTION_createTelecomService = 1;
 
@@ -70,26 +68,23 @@ public interface ITelecomLoader extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITelecomLoader.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITelecomLoader.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITelecomLoader.DESCRIPTOR);
+                case 1:
+                    IInternalServiceRetriever _arg0 = IInternalServiceRetriever.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ITelecomService _result = createTelecomService(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IInternalServiceRetriever _arg0 = IInternalServiceRetriever.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ITelecomService _result = createTelecomService(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ITelecomLoader {
             private IBinder mRemote;
 

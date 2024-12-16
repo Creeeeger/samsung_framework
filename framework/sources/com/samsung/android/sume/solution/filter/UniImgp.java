@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class UniImgp {
     public static final int INTER_AREA = 3;
     public static final int INTER_CUBIC = 2;
@@ -45,31 +45,26 @@ public class UniImgp {
     private Option option;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface InterpolationType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface OptionType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface QualityMetricType {
     }
 
-    /* loaded from: classes4.dex */
     public static class Option extends OptionBase {
         public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() { // from class: com.samsung.android.sume.solution.filter.UniImgp.Option.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Option createFromParcel(Parcel in) {
                 return new Option(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Option[] newArray(int size) {
                 return new Option[size];
@@ -163,23 +158,6 @@ public class UniImgp {
         public OptionBase set(int option, Object data) {
             return super.set(option, data);
         }
-
-        /* renamed from: com.samsung.android.sume.solution.filter.UniImgp$Option$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Option> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Option createFromParcel(Parcel in) {
-                return new Option(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Option[] newArray(int size) {
-                return new Option[size];
-            }
-        }
     }
 
     public static PluginStore getGlobalStore() {
@@ -208,9 +186,8 @@ public class UniImgp {
     }
 
     private void configDescriptorByOption(ImgpDescriptor descriptor) {
-        Option option = this.option;
-        if (option != null) {
-            descriptor.setUsePersistentFormat(option.isUsePersistentFormat());
+        if (this.option != null) {
+            descriptor.setUsePersistentFormat(this.option.isUsePersistentFormat());
             descriptor.setLatestPluginsOrder(this.option.isLatestPluginsOrder());
         }
     }

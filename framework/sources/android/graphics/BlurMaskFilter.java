@@ -4,7 +4,6 @@ package android.graphics;
 public class BlurMaskFilter extends MaskFilter {
     private static native long nativeConstructor(float f, int i);
 
-    /* loaded from: classes.dex */
     public enum Blur {
         NORMAL(0),
         SOLID(1),

@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioDeviceAddress implements Parcelable {
     public static final Parcelable.Creator<AudioDeviceAddress> CREATOR = new Parcelable.Creator<AudioDeviceAddress>() { // from class: android.media.audio.common.AudioDeviceAddress.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAddress createFromParcel(Parcel _aidl_source) {
             return new AudioDeviceAddress(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAddress[] newArray(int _aidl_size) {
             return new AudioDeviceAddress[_aidl_size];
@@ -30,17 +29,12 @@ public final class AudioDeviceAddress implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int alsa = 4;
         public static final int id = 0;
         public static final int ipv4 = 2;
         public static final int ipv6 = 3;
         public static final int mac = 1;
-    }
-
-    /* synthetic */ AudioDeviceAddress(Parcel parcel, AudioDeviceAddressIA audioDeviceAddressIA) {
-        this(parcel);
     }
 
     public AudioDeviceAddress() {
@@ -131,44 +125,25 @@ public final class AudioDeviceAddress implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.media.audio.common.AudioDeviceAddress$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioDeviceAddress> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioDeviceAddress createFromParcel(Parcel _aidl_source) {
-            return new AudioDeviceAddress(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioDeviceAddress[] newArray(int _aidl_size) {
-            return new AudioDeviceAddress[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeString(getId());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeByteArray(getMac());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeByteArray(getIpv4());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeIntArray(getIpv6());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeIntArray(getAlsa());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -209,15 +184,15 @@ public final class AudioDeviceAddress implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.media.audio.common.AudioDeviceAddress.id(" + Objects.toString(getId()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioDeviceAddress.id(" + Objects.toString(getId()) + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.media.audio.common.AudioDeviceAddress.mac(" + Arrays.toString(getMac()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioDeviceAddress.mac(" + Arrays.toString(getMac()) + NavigationBarInflaterView.KEY_CODE_END;
             case 2:
-                return "android.media.audio.common.AudioDeviceAddress.ipv4(" + Arrays.toString(getIpv4()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioDeviceAddress.ipv4(" + Arrays.toString(getIpv4()) + NavigationBarInflaterView.KEY_CODE_END;
             case 3:
-                return "android.media.audio.common.AudioDeviceAddress.ipv6(" + Arrays.toString(getIpv6()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioDeviceAddress.ipv6(" + Arrays.toString(getIpv6()) + NavigationBarInflaterView.KEY_CODE_END;
             case 4:
-                return "android.media.audio.common.AudioDeviceAddress.alsa(" + Arrays.toString(getAlsa()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioDeviceAddress.alsa(" + Arrays.toString(getAlsa()) + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

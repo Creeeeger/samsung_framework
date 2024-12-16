@@ -6,13 +6,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 /* loaded from: classes6.dex */
 public class SemWifiApContentProvider extends ContentProvider {
@@ -28,34 +34,70 @@ public class SemWifiApContentProvider extends ContentProvider {
     private static final String TAG = "SemWifiApContentProvider";
     static final String VALUE = "value";
     static final String _ID = "_id";
-    static final UriMatcher uriMatcher;
-    private SQLiteDatabase db;
+    private static SQLiteDatabase db;
+    private static DatabaseHelper dbHelper;
+    private static Context mContext;
+    private static List<String> mMHSDumpLogs;
     static final String URL = "content://com.samsung.android.wifi.softap/softapInfo";
     static final Uri CONTENT_URI = Uri.parse(URL);
+    static final UriMatcher uriMatcher = new UriMatcher(-1);
 
     static {
-        UriMatcher uriMatcher2 = new UriMatcher(-1);
-        uriMatcher = uriMatcher2;
-        uriMatcher2.addURI(PROVIDER_NAME, "softapInfo", 1);
-        uriMatcher2.addURI(PROVIDER_NAME, "softapInfo/#", 2);
+        uriMatcher.addURI(PROVIDER_NAME, "softapInfo", 1);
+        uriMatcher.addURI(PROVIDER_NAME, "softapInfo/#", 2);
+        mMHSDumpLogs = new ArrayList();
     }
 
-    /* loaded from: classes6.dex */
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, SemWifiApContentProvider.DATABASE_NAME, (SQLiteDatabase.CursorFactory) null, 1);
+            SemWifiApContentProvider.addMHSDumpLog("DatabaseHelper constructor");
+            SemWifiApContentProvider.mContext = context;
         }
 
         @Override // android.database.sqlite.SQLiteOpenHelper
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(SemWifiApContentProvider.CREATE_DB_TABLE);
+            SemWifiApContentProvider.addMHSDumpLog("DatabaseHelper onCreate");
+            createTable(db);
         }
 
         @Override // android.database.sqlite.SQLiteOpenHelper
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS SemWifiApContentProvider");
+            SemWifiApContentProvider.addMHSDumpLog("DatabaseHelper onUpgrade");
+            dropTable(db);
             onCreate(db);
         }
+
+        SQLiteDatabase getDatabase(boolean writable) {
+            if (writable) {
+                return getWritableDatabase();
+            }
+            return getReadableDatabase();
+        }
+
+        public void createTable(SQLiteDatabase db) {
+            SemWifiApContentProvider.addMHSDumpLog("createTable");
+            try {
+                db.execSQL(SemWifiApContentProvider.CREATE_DB_TABLE);
+            } catch (SQLException e) {
+                Log.e("SemWifiApContentProvider", "couldn't create table in  database");
+                SemWifiApContentProvider.addMHSDumpLog("couldn't create table in  database");
+            }
+        }
+
+        public void dropTable(SQLiteDatabase db) {
+            SemWifiApContentProvider.addMHSDumpLog("dropTable");
+            try {
+                db.execSQL("DROP TABLE IF EXISTS SemWifiApContentProvider");
+            } catch (SQLException e) {
+                Log.e("SemWifiApContentProvider", "couldn't drop table in  database");
+                SemWifiApContentProvider.addMHSDumpLog("couldn't drop table in  database");
+            }
+        }
+    }
+
+    public SemWifiApContentProvider() {
+        addMHSDumpLog("SemWifiApContentProvider constructor");
     }
 
     @Override // android.content.ContentProvider, android.content.ContentInterface
@@ -65,7 +107,7 @@ public class SemWifiApContentProvider extends ContentProvider {
 
     @Override // android.content.ContentProvider
     public Uri insert(Uri uri, ContentValues values) {
-        long rowID = this.db.insert("SemWifiApContentProvider", "", values);
+        long rowID = db.insert("SemWifiApContentProvider", "", values);
         if (rowID > 0) {
             Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
             Log.i("SemWifiApContentProvider", "inserted" + _uri);
@@ -77,15 +119,15 @@ public class SemWifiApContentProvider extends ContentProvider {
 
     @Override // android.content.ContentProvider
     public boolean onCreate() {
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        Log.d("SemWifiApContentProvider", "OnCreate");
-        SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
-        this.db = writableDatabase;
-        return writableDatabase != null;
+        dbHelper = new DatabaseHelper(getContext());
+        db = dbHelper.getWritableDatabase();
+        addMHSDumpLog("SemWifiApContentProvider onCreate,db created?" + (db != null));
+        return db != null;
     }
 
     @Override // android.content.ContentProvider
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public synchronized Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Cursor c;
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables("SemWifiApContentProvider");
         switch (uriMatcher.match(uri)) {
@@ -96,35 +138,38 @@ public class SemWifiApContentProvider extends ContentProvider {
                 qb.appendWhere("_id=" + uri.getPathSegments().get(1));
                 break;
         }
-        Cursor c = qb.query(this.db, projection, selection, selectionArgs, null, null, sortOrder);
+        c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         return c;
     }
 
     @Override // android.content.ContentProvider
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public synchronized int delete(Uri uri, String selection, String[] selectionArgs) {
+        int count;
+        count = 0;
         switch (uriMatcher.match(uri)) {
             case 1:
-                int count = this.db.delete("SemWifiApContentProvider", selection, selectionArgs);
-                return count;
+                count = db.delete("SemWifiApContentProvider", selection, selectionArgs);
+                break;
             case 2:
                 String id = uri.getPathSegments().get(1);
-                int count2 = this.db.delete("SemWifiApContentProvider", "_id = " + id + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
-                return count2;
+                count = db.delete("SemWifiApContentProvider", "_id = " + id + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                break;
             default:
                 Log.d("SemWifiApContentProvider", "delete Unknown URI " + uri);
-                return 0;
+                break;
         }
+        return count;
     }
 
     @Override // android.content.ContentProvider
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public synchronized int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count;
         switch (uriMatcher.match(uri)) {
             case 1:
-                count = this.db.update("SemWifiApContentProvider", values, selection, selectionArgs);
+                count = db.update("SemWifiApContentProvider", values, selection, selectionArgs);
                 break;
             case 2:
-                count = this.db.update("SemWifiApContentProvider", values, "_id = " + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count = db.update("SemWifiApContentProvider", values, "_id = " + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
                 Log.e("SemWifiApContentProvider", "Could not update" + uri);
@@ -134,23 +179,23 @@ public class SemWifiApContentProvider extends ContentProvider {
         return count;
     }
 
-    public static void insert(Context mContext, String key, String val) {
+    public static void insert(Context mContext2, String key, String val) {
         ContentValues values = new ContentValues();
         if (val == null) {
             val = "";
         }
         values.put("name", key);
         values.put("value", val);
-        if (isKeypresent(mContext, key)) {
-            mContext.getContentResolver().update(CONTENT_URI, values, null, null);
+        if (isKeypresent(mContext2, key)) {
+            mContext2.getContentResolver().update(CONTENT_URI, values, null, null);
         } else {
-            mContext.getContentResolver().insert(CONTENT_URI, values);
+            mContext2.getContentResolver().insert(CONTENT_URI, values);
         }
     }
 
-    public static String get(Context mContext, String key) {
+    public static String get(Context mContext2, String key) {
         String[] selectionArgs = {key};
-        Cursor c = mContext.getContentResolver().query(Uri.parse("content://com.samsung.android.wifi.softap"), null, "name = ?", selectionArgs, null);
+        Cursor c = mContext2.getContentResolver().query(Uri.parse("content://com.samsung.android.wifi.softap"), null, "name = ?", selectionArgs, null);
         String returnValue = "";
         if (c != null) {
             try {
@@ -164,9 +209,9 @@ public class SemWifiApContentProvider extends ContentProvider {
         return returnValue;
     }
 
-    private static boolean isKeypresent(Context mContext, String key) {
+    private static boolean isKeypresent(Context mContext2, String key) {
         String[] selectionArgs = {key};
-        Cursor c = mContext.getContentResolver().query(Uri.parse("content://com.samsung.android.wifi.softap"), null, "name = ?", selectionArgs, null);
+        Cursor c = mContext2.getContentResolver().query(Uri.parse("content://com.samsung.android.wifi.softap"), null, "name = ?", selectionArgs, null);
         if (c == null) {
             return false;
         }
@@ -176,5 +221,51 @@ public class SemWifiApContentProvider extends ContentProvider {
         } finally {
             c.close();
         }
+    }
+
+    public static synchronized void reCreateDB() {
+        synchronized (SemWifiApContentProvider.class) {
+            File semWifiApContentProviderFile = null;
+            try {
+                if (db != null) {
+                    String dbPath = db.getPath();
+                    Log.i("SemWifiApContentProvider", "reCreateDB: dbPath " + dbPath);
+                    semWifiApContentProviderFile = new File(dbPath);
+                }
+                if (db == null || !semWifiApContentProviderFile.exists() || !db.isDatabaseIntegrityOk()) {
+                    addMHSDumpLog("databaseIntegrity is not Ok");
+                    mContext.deleteDatabase(DATABASE_NAME);
+                    if (db != null && db.isOpen()) {
+                        addMHSDumpLog("databaseIntegrity is not Ok,closing DB");
+                        db.close();
+                    }
+                    db = dbHelper.getWritableDatabase();
+                    addMHSDumpLog("SemWifiApContentProvider query,db created?" + (db != null));
+                }
+            } catch (SQLException | IllegalStateException e) {
+                e.printStackTrace();
+                Log.e("SemWifiApContentProvider", "reCreateDB: exception");
+            }
+        }
+    }
+
+    public static synchronized void addMHSDumpLog(String log) {
+        synchronized (SemWifiApContentProvider.class) {
+            StringBuffer value = new StringBuffer();
+            value.append(new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US).format(Long.valueOf(System.currentTimeMillis())) + " " + log + "\n");
+            Log.i("SemWifiApContentProvider", log);
+            if (mMHSDumpLogs.size() > 100) {
+                mMHSDumpLogs.remove(0);
+            }
+            mMHSDumpLogs.add(value.toString());
+        }
+    }
+
+    public static String getDumpLogs() {
+        StringBuffer retValue = new StringBuffer();
+        retValue.append("====== SemWifiApContentProvider dump =======  \n");
+        retValue.append(mMHSDumpLogs.toString());
+        retValue.append("\n");
+        return retValue.toString();
     }
 }

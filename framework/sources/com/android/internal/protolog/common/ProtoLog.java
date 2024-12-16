@@ -39,4 +39,18 @@ public class ProtoLog {
             throw new UnsupportedOperationException("ProtoLog calls MUST be processed with ProtoLogTool");
         }
     }
+
+    public static boolean isEnabled(IProtoLogGroup group, LogLevel level) {
+        if (REQUIRE_PROTOLOGTOOL) {
+            throw new UnsupportedOperationException("ProtoLog calls MUST be processed with ProtoLogTool");
+        }
+        return false;
+    }
+
+    public static IProtoLog getSingleInstance() {
+        if (REQUIRE_PROTOLOGTOOL) {
+            throw new UnsupportedOperationException("ProtoLog calls MUST be processed with ProtoLogTool");
+        }
+        return null;
+    }
 }

@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FaceEnrollCell implements Parcelable {
     public static final Parcelable.Creator<FaceEnrollCell> CREATOR = new Parcelable.Creator<FaceEnrollCell>() { // from class: android.hardware.face.FaceEnrollCell.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceEnrollCell createFromParcel(Parcel source) {
             return new FaceEnrollCell(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceEnrollCell[] newArray(int size) {
             return new FaceEnrollCell[size];
@@ -22,10 +21,6 @@ public final class FaceEnrollCell implements Parcelable {
     private final int mX;
     private final int mY;
     private final int mZ;
-
-    /* synthetic */ FaceEnrollCell(Parcel parcel, FaceEnrollCellIA faceEnrollCellIA) {
-        this(parcel);
-    }
 
     public FaceEnrollCell(int x, int y, int z) {
         this.mX = x;
@@ -61,22 +56,5 @@ public final class FaceEnrollCell implements Parcelable {
         dest.writeInt(this.mX);
         dest.writeInt(this.mY);
         dest.writeInt(this.mZ);
-    }
-
-    /* renamed from: android.hardware.face.FaceEnrollCell$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FaceEnrollCell> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceEnrollCell createFromParcel(Parcel source) {
-            return new FaceEnrollCell(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceEnrollCell[] newArray(int size) {
-            return new FaceEnrollCell[size];
-        }
     }
 }

@@ -4,10 +4,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.util.NtpTrustedTime;
 import android.view.View;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.StringJoiner;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InputMethodDebug {
     private InputMethodDebug() {
     }
@@ -134,6 +133,8 @@ public final class InputMethodDebug {
 
     public static String softInputDisplayReasonToString(int reason) {
         switch (reason) {
+            case 0:
+                return "NOT_SET";
             case 1:
                 return "SHOW_SOFT_INPUT";
             case 2:
@@ -210,14 +211,50 @@ public final class InputMethodDebug {
             case 37:
                 return "HIDE_WHEN_INPUT_TARGET_INVISIBLE";
             case 38:
-                return "HIDE_HW_KEYBOARD_CONNECTED";
+                return "HIDE_SOFT_INPUT_CLOSE_CURRENT_SESSION";
             case 39:
-                return "HIDE_STATUS_BAR_ANIMATION";
+                return "HIDE_SOFT_INPUT_FROM_VIEW";
             case 40:
-                return "HIDE_SETTINGS_BUTTON_CLICKED";
+                return "SHOW_SOFT_INPUT_LEGACY_DIRECT";
             case 41:
-                return "HIDE_SCREEN_OFF_SECURE_LOCK_SCREEN_STATE";
+                return "HIDE_SOFT_INPUT_LEGACY_DIRECT";
             case 42:
+                return "SHOW_WINDOW_LEGACY_DIRECT";
+            case 43:
+                return "HIDE_WINDOW_LEGACY_DIRECT";
+            case 44:
+                return "RESET_NEW_CONFIGURATION";
+            case 45:
+                return "UPDATE_CANDIDATES_VIEW_VISIBILITY";
+            case 46:
+                return "CONTROLS_CHANGED";
+            case 47:
+                return "DISPLAY_CONFIGURATION_CHANGED";
+            case 48:
+                return "DISPLAY_INSETS_CHANGED";
+            case 49:
+                return "DISPLAY_CONTROLS_CHANGED";
+            case 50:
+                return "UNBIND_CURRENT_METHOD";
+            case 51:
+                return "HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED";
+            case 52:
+                return "HIDE_SOFT_INPUT_REQUEST_HIDE_WITH_CONTROL";
+            case 53:
+                return "SHOW_SOFT_INPUT_IME_TOGGLE_SOFT_INPUT";
+            case 54:
+                return "SHOW_SOFT_INPUT_IMM_DEPRECATION";
+            case 55:
+                return "CONTROL_WINDOW_INSETS_ANIMATION";
+            case 56:
+                return "HIDE_HW_KEYBOARD_CONNECTED";
+            case 57:
+                return "HIDE_STATUS_BAR_ANIMATION";
+            case 58:
+                return "HIDE_SETTINGS_BUTTON_CLICKED";
+            case 59:
+                return "HIDE_SCREEN_OFF_SECURE_LOCK_SCREEN_STATE";
+            case 60:
                 return "FORCE_HIDE_SOFT_INPUT";
         }
     }
@@ -250,7 +287,7 @@ public final class InputMethodDebug {
 
     public static String dumpViewInfo(View view) {
         if (view == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         StringBuilder sb = new StringBuilder();
         sb.append(view);

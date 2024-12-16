@@ -31,23 +31,18 @@ public final class NanoAppBinary implements Parcelable {
     private byte mTargetChreApiMinorVersion;
     private static final ByteOrder HEADER_ORDER = ByteOrder.LITTLE_ENDIAN;
     public static final Parcelable.Creator<NanoAppBinary> CREATOR = new Parcelable.Creator<NanoAppBinary>() { // from class: android.hardware.location.NanoAppBinary.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppBinary createFromParcel(Parcel in) {
             return new NanoAppBinary(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppBinary[] newArray(int size) {
             return new NanoAppBinary[size];
         }
     };
-
-    /* synthetic */ NanoAppBinary(Parcel parcel, NanoAppBinaryIA nanoAppBinaryIA) {
-        this(parcel);
-    }
 
     public NanoAppBinary(byte[] appBinary) {
         this.mHasValidHeader = false;
@@ -59,9 +54,8 @@ public final class NanoAppBinary implements Parcelable {
         ByteBuffer buf = ByteBuffer.wrap(this.mNanoAppBinary).order(HEADER_ORDER);
         this.mHasValidHeader = false;
         try {
-            int i = buf.getInt();
-            this.mHeaderVersion = i;
-            if (i != 1) {
+            this.mHeaderVersion = buf.getInt();
+            if (this.mHeaderVersion != 1) {
                 Log.e(TAG, "Unexpected header version " + this.mHeaderVersion + " while parsing header (expected 1" + NavigationBarInflaterView.KEY_CODE_END);
                 return;
             }
@@ -87,11 +81,10 @@ public final class NanoAppBinary implements Parcelable {
     }
 
     public byte[] getBinaryNoHeader() {
-        byte[] bArr = this.mNanoAppBinary;
-        if (bArr.length < 40) {
+        if (this.mNanoAppBinary.length < 40) {
             throw new IndexOutOfBoundsException("NanoAppBinary binary byte size (" + this.mNanoAppBinary.length + ") is less than header size (40" + NavigationBarInflaterView.KEY_CODE_END);
         }
-        return Arrays.copyOfRange(bArr, 40, bArr.length);
+        return Arrays.copyOfRange(this.mNanoAppBinary, 40, this.mNanoAppBinary.length);
     }
 
     public boolean hasValidHeader() {
@@ -137,9 +130,8 @@ public final class NanoAppBinary implements Parcelable {
     private NanoAppBinary(Parcel in) {
         this.mHasValidHeader = false;
         int binaryLength = in.readInt();
-        byte[] bArr = new byte[binaryLength];
-        this.mNanoAppBinary = bArr;
-        in.readByteArray(bArr);
+        this.mNanoAppBinary = new byte[binaryLength];
+        in.readByteArray(this.mNanoAppBinary);
         parseBinaryHeader();
     }
 
@@ -152,22 +144,5 @@ public final class NanoAppBinary implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.mNanoAppBinary.length);
         out.writeByteArray(this.mNanoAppBinary);
-    }
-
-    /* renamed from: android.hardware.location.NanoAppBinary$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NanoAppBinary> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoAppBinary createFromParcel(Parcel in) {
-            return new NanoAppBinary(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoAppBinary[] newArray(int size) {
-            return new NanoAppBinary[size];
-        }
     }
 }

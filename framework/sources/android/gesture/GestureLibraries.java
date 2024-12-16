@@ -36,8 +36,7 @@ public final class GestureLibraries {
         return new ResourceGestureLibrary(context, resourceId);
     }
 
-    /* loaded from: classes.dex */
-    public static class FileGestureLibrary extends GestureLibrary {
+    private static class FileGestureLibrary extends GestureLibrary {
         private final FileDescriptor mFd;
         private final File mPath;
 
@@ -54,7 +53,7 @@ public final class GestureLibraries {
         @Override // android.gesture.GestureLibrary
         public boolean isReadOnly() {
             if (this.mPath != null) {
-                return !r0.canWrite();
+                return !this.mPath.canWrite();
             }
             return false;
         }
@@ -113,7 +112,6 @@ public final class GestureLibraries {
         }
     }
 
-    /* loaded from: classes.dex */
     private static class ResourceGestureLibrary extends GestureLibrary {
         private final WeakReference<Context> mContext;
         private final int mResourceId;

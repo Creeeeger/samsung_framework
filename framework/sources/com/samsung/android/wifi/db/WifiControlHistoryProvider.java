@@ -15,7 +15,6 @@ import android.database.sqlite.SQLiteReadOnlyDatabaseException;
 import android.net.Uri;
 import android.os.Debug;
 import android.util.Log;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ public final class WifiControlHistoryProvider extends ContentProvider {
     private DatabaseHelper mDbHelper;
     private final UriMatcher mUriMatcher = new UriMatcher(-1);
 
-    /* loaded from: classes6.dex */
     public static final class DatabaseHelper extends SQLiteOpenHelper {
         public static final String CONTROL_ID = "conrol_id";
         private static final String DB_NAME = "WifiHistory.db";
@@ -179,13 +177,7 @@ public final class WifiControlHistoryProvider extends ContentProvider {
         if (DBG) {
             Log.v(TAG, "query uri " + uri.toSafeString());
         }
-        StringBuilder append = new StringBuilder().append("query table ").append(this.mDbHelper.getTableName()).append(" where ").append(selection).append(" arg length ");
-        Object obj = SemCapabilities.FEATURE_TAG_NULL;
-        StringBuilder append2 = append.append(selectionArgs != null ? Integer.valueOf(selectionArgs.length) : SemCapabilities.FEATURE_TAG_NULL).append(" projection length ");
-        if (projection != null) {
-            obj = Integer.valueOf(projection.length);
-        }
-        Log.v(TAG, append2.append(obj).append(" sortOrder ").append(sortOrder).toString());
+        Log.v(TAG, "query table " + this.mDbHelper.getTableName() + " where " + selection + " arg length " + (selectionArgs != null ? Integer.valueOf(selectionArgs.length) : "null") + " projection length " + (projection != null ? Integer.valueOf(projection.length) : "null") + " sortOrder " + sortOrder);
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(this.mDbHelper.getTableName());
         qb.setStrict(true);
@@ -232,7 +224,7 @@ public final class WifiControlHistoryProvider extends ContentProvider {
         return Uri.parse("content://com.samsung.server.wifi/control/" + index);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:12:0x00a4 A[Catch: SQLiteException -> 0x00b3, TRY_ENTER, TRY_LEAVE, TryCatch #1 {SQLiteException -> 0x00b3, blocks: (B:8:0x004d, B:12:0x00a4, B:24:0x00b2, B:29:0x00af, B:31:0x0060, B:33:0x0066, B:10:0x0082, B:26:0x00aa), top: B:7:0x004d, inners: #0, #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:12:0x00a4 A[Catch: SQLiteException -> 0x00b3, TRY_ENTER, TRY_LEAVE, TryCatch #1 {SQLiteException -> 0x00b3, blocks: (B:8:0x004c, B:12:0x00a4, B:24:0x00b2, B:29:0x00af, B:31:0x0060, B:33:0x0066, B:10:0x0082, B:26:0x00aa), top: B:7:0x004c, inners: #0, #2 }] */
     /* JADX WARN: Removed duplicated region for block: B:14:0x00cc  */
     /* JADX WARN: Removed duplicated region for block: B:19:0x00e1 A[RETURN] */
     /*
@@ -270,10 +262,10 @@ public final class WifiControlHistoryProvider extends ContentProvider {
             java.lang.StringBuilder r6 = r6.append(r12)
             java.lang.String r6 = r6.toString()
             android.util.Log.v(r3, r6)
-            r8 = 0
             java.lang.String[] r10 = new java.lang.String[]{r12}     // Catch: android.database.sqlite.SQLiteException -> Lb3
             com.samsung.android.wifi.db.WifiControlHistoryProvider$DatabaseHelper r6 = r13.mDbHelper     // Catch: android.database.sqlite.SQLiteException -> Lb3
             java.lang.String r11 = r6.getDefaultSortOrder()     // Catch: android.database.sqlite.SQLiteException -> Lb3
+            r8 = 0
             r6 = r13
             r7 = r14
             r9 = r5

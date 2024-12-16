@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInputServiceCallback extends IInterface {
     void addHardwareInput(int i, TvInputInfo tvInputInfo) throws RemoteException;
 
@@ -14,7 +14,6 @@ public interface ITvInputServiceCallback extends IInterface {
 
     void removeHardwareInput(String str) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInputServiceCallback {
         @Override // android.media.tv.ITvInputServiceCallback
         public void addHardwareInput(int deviceId, TvInputInfo inputInfo) throws RemoteException {
@@ -34,7 +33,6 @@ public interface ITvInputServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInputServiceCallback {
         public static final String DESCRIPTOR = "android.media.tv.ITvInputServiceCallback";
         static final int TRANSACTION_addHardwareInput = 1;
@@ -84,38 +82,34 @@ public interface ITvInputServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    TvInputInfo _arg1 = (TvInputInfo) data.readTypedObject(TvInputInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    addHardwareInput(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    TvInputInfo _arg12 = (TvInputInfo) data.readTypedObject(TvInputInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    addHdmiInput(_arg02, _arg12);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeHardwareInput(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            TvInputInfo _arg1 = (TvInputInfo) data.readTypedObject(TvInputInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            addHardwareInput(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            TvInputInfo _arg12 = (TvInputInfo) data.readTypedObject(TvInputInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            addHdmiInput(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeHardwareInput(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITvInputServiceCallback {
+        private static class Proxy implements ITvInputServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

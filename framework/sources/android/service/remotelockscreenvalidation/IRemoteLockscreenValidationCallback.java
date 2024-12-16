@@ -15,7 +15,6 @@ public interface IRemoteLockscreenValidationCallback extends IInterface {
 
     void onSuccess(RemoteLockscreenValidationResult remoteLockscreenValidationResult) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRemoteLockscreenValidationCallback {
         @Override // android.service.remotelockscreenvalidation.IRemoteLockscreenValidationCallback
         public void onSuccess(RemoteLockscreenValidationResult result) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IRemoteLockscreenValidationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRemoteLockscreenValidationCallback {
         static final int TRANSACTION_onFailure = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -77,31 +75,27 @@ public interface IRemoteLockscreenValidationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteLockscreenValidationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteLockscreenValidationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteLockscreenValidationCallback.DESCRIPTOR);
+                case 1:
+                    RemoteLockscreenValidationResult _arg0 = (RemoteLockscreenValidationResult) data.readTypedObject(RemoteLockscreenValidationResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onFailure(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RemoteLockscreenValidationResult _arg0 = (RemoteLockscreenValidationResult) data.readTypedObject(RemoteLockscreenValidationResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onFailure(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRemoteLockscreenValidationCallback {
+        private static class Proxy implements IRemoteLockscreenValidationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -2,10 +2,12 @@ package android.hardware.camera2;
 
 import android.graphics.Rect;
 import android.hardware.Sensor;
+import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.impl.CameraMetadataNative;
+import android.hardware.camera2.impl.ExtensionKey;
 import android.hardware.camera2.impl.PublicKey;
 import android.hardware.camera2.impl.SyntheticKey;
 import android.hardware.camera2.params.BlackLevelPattern;
@@ -30,16 +32,22 @@ import android.util.Rational;
 import android.util.Size;
 import android.util.SizeF;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
     private static final String TAG = "CameraCharacteristics";
     private List<CaptureRequest.Key<?>> mAvailablePhysicalRequestKeys;
     private List<CaptureRequest.Key<?>> mAvailableRequestKeys;
     private List<CaptureResult.Key<?>> mAvailableResultKeys;
+    private List<Key<?>> mAvailableSessionCharacteristicsKeys;
     private List<CaptureRequest.Key<?>> mAvailableSessionKeys;
     private CameraManager.DeviceStateListener mFoldStateListener;
     private boolean mFoldedDeviceState;
@@ -60,14 +68,10 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Integer>[]> CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES = new Key<>("android.control.aeAvailableTargetFpsRanges", new TypeReference<Range<Integer>[]>() { // from class: android.hardware.camera2.CameraCharacteristics.2
-        AnonymousClass2() {
-        }
     });
 
     @PublicKey
     public static final Key<Range<Integer>> CONTROL_AE_COMPENSATION_RANGE = new Key<>("android.control.aeCompensationRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CameraCharacteristics.3
-        AnonymousClass3() {
-        }
     });
 
     @PublicKey
@@ -113,8 +117,6 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Integer>> CONTROL_POST_RAW_SENSITIVITY_BOOST_RANGE = new Key<>("android.control.postRawSensitivityBoostRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CameraCharacteristics.4
-        AnonymousClass4() {
-        }
     });
     public static final Key<int[]> CONTROL_AVAILABLE_EXTENDED_SCENE_MODE_MAX_SIZES = new Key<>("android.control.availableExtendedSceneModeMaxSizes", int[].class);
     public static final Key<float[]> CONTROL_AVAILABLE_EXTENDED_SCENE_MODE_ZOOM_RATIO_RANGES = new Key<>("android.control.availableExtendedSceneModeZoomRatioRanges", float[].class);
@@ -125,8 +127,6 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Float>> CONTROL_ZOOM_RATIO_RANGE = new Key<>("android.control.zoomRatioRange", new TypeReference<Range<Float>>() { // from class: android.hardware.camera2.CameraCharacteristics.5
-        AnonymousClass5() {
-        }
     });
     public static final Key<HighSpeedVideoConfiguration[]> CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION = new Key<>("android.control.availableHighSpeedVideoConfigurationsMaximumResolution", HighSpeedVideoConfiguration[].class);
 
@@ -135,6 +135,10 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Boolean> CONTROL_AUTOFRAMING_AVAILABLE = new Key<>("android.control.autoframingAvailable", Boolean.TYPE);
+
+    @PublicKey
+    public static final Key<Range<Float>> CONTROL_LOW_LIGHT_BOOST_INFO_LUMINANCE_RANGE = new Key<>("android.control.lowLightBoostInfoLuminanceRange", new TypeReference<Range<Float>>() { // from class: android.hardware.camera2.CameraCharacteristics.6
+    });
 
     @PublicKey
     public static final Key<int[]> EDGE_AVAILABLE_EDGE_MODES = new Key<>("android.edge.availableEdgeModes", int[].class);
@@ -147,6 +151,18 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Integer> FLASH_INFO_STRENGTH_DEFAULT_LEVEL = new Key<>("android.flash.info.strengthDefaultLevel", Integer.TYPE);
+
+    @PublicKey
+    public static final Key<Integer> FLASH_SINGLE_STRENGTH_MAX_LEVEL = new Key<>("android.flash.singleStrengthMaxLevel", Integer.TYPE);
+
+    @PublicKey
+    public static final Key<Integer> FLASH_SINGLE_STRENGTH_DEFAULT_LEVEL = new Key<>("android.flash.singleStrengthDefaultLevel", Integer.TYPE);
+
+    @PublicKey
+    public static final Key<Integer> FLASH_TORCH_STRENGTH_MAX_LEVEL = new Key<>("android.flash.torchStrengthMaxLevel", Integer.TYPE);
+
+    @PublicKey
+    public static final Key<Integer> FLASH_TORCH_STRENGTH_DEFAULT_LEVEL = new Key<>("android.flash.torchStrengthDefaultLevel", Integer.TYPE);
 
     @PublicKey
     public static final Key<int[]> HOT_PIXEL_AVAILABLE_HOT_PIXEL_MODES = new Key<>("android.hotPixel.availableHotPixelModes", int[].class);
@@ -336,18 +352,14 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
     public static final Key<Rect> SENSOR_INFO_ACTIVE_ARRAY_SIZE = new Key<>("android.sensor.info.activeArraySize", Rect.class);
 
     @PublicKey
-    public static final Key<Range<Integer>> SENSOR_INFO_SENSITIVITY_RANGE = new Key<>("android.sensor.info.sensitivityRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CameraCharacteristics.6
-        AnonymousClass6() {
-        }
+    public static final Key<Range<Integer>> SENSOR_INFO_SENSITIVITY_RANGE = new Key<>("android.sensor.info.sensitivityRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CameraCharacteristics.7
     });
 
     @PublicKey
     public static final Key<Integer> SENSOR_INFO_COLOR_FILTER_ARRANGEMENT = new Key<>("android.sensor.info.colorFilterArrangement", Integer.TYPE);
 
     @PublicKey
-    public static final Key<Range<Long>> SENSOR_INFO_EXPOSURE_TIME_RANGE = new Key<>("android.sensor.info.exposureTimeRange", new TypeReference<Range<Long>>() { // from class: android.hardware.camera2.CameraCharacteristics.7
-        AnonymousClass7() {
-        }
+    public static final Key<Range<Long>> SENSOR_INFO_EXPOSURE_TIME_RANGE = new Key<>("android.sensor.info.exposureTimeRange", new TypeReference<Range<Long>>() { // from class: android.hardware.camera2.CameraCharacteristics.8
     });
 
     @PublicKey
@@ -462,6 +474,10 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
     public static final Key<long[]> INFO_DEVICE_STATE_ORIENTATIONS = new Key<>("android.info.deviceStateOrientations", long[].class);
 
     @PublicKey
+    public static final Key<Integer> INFO_SESSION_CONFIGURATION_QUERY_VERSION = new Key<>("android.info.sessionConfigurationQueryVersion", Integer.TYPE);
+    public static final Key<Integer> INFO_DEVICE_ID = new Key<>("android.info.deviceId", Integer.TYPE);
+
+    @PublicKey
     public static final Key<Integer> SYNC_MAX_LATENCY = new Key<>("android.sync.maxLatency", Integer.TYPE);
 
     @PublicKey
@@ -508,7 +524,11 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
     public static final Key<StreamConfigurationDuration[]> JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION = new Key<>("android.jpegr.availableJpegRMinFrameDurationsMaximumResolution", StreamConfigurationDuration[].class);
     public static final Key<StreamConfigurationDuration[]> JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS_MAXIMUM_RESOLUTION = new Key<>("android.jpegr.availableJpegRStallDurationsMaximumResolution", StreamConfigurationDuration[].class);
 
-    /* loaded from: classes.dex */
+    @ExtensionKey
+    public static final Key<Range<Float>> EFV_PADDING_ZOOM_FACTOR_RANGE = new Key<>("android.efv.paddingZoomFactorRange", new TypeReference<Range<Float>>() { // from class: android.hardware.camera2.CameraCharacteristics.9
+    });
+    private static final Map<Integer, Key<?>[]> AVAILABLE_SESSION_CHARACTERISTICS_KEYS_MAP = Map.ofEntries(Map.entry(35, new Key[]{CONTROL_ZOOM_RATIO_RANGE, SCALER_AVAILABLE_MAX_DIGITAL_ZOOM}));
+
     public static final class Key<T> {
         private final CameraMetadataNative.Key<T> mKey;
 
@@ -559,35 +579,17 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
     }
 
     public CameraCharacteristics(CameraMetadataNative properties) {
-        CameraMetadataNative move = CameraMetadataNative.move(properties);
-        this.mProperties = move;
-        setNativeInstance(move);
+        this.mProperties = CameraMetadataNative.move(properties);
+        setNativeInstance(this.mProperties);
     }
 
     public CameraMetadataNative getNativeCopy() {
         return new CameraMetadataNative(this.mProperties);
     }
 
-    /* renamed from: android.hardware.camera2.CameraCharacteristics$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements CameraManager.DeviceStateListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.hardware.camera2.CameraManager.DeviceStateListener
-        public final void onDeviceStateChanged(boolean folded) {
-            synchronized (CameraCharacteristics.this.mLock) {
-                CameraCharacteristics.this.mFoldedDeviceState = folded;
-            }
-        }
-    }
-
-    public CameraManager.DeviceStateListener getDeviceStateListener() {
+    CameraManager.DeviceStateListener getDeviceStateListener() {
         if (this.mFoldStateListener == null) {
             this.mFoldStateListener = new CameraManager.DeviceStateListener() { // from class: android.hardware.camera2.CameraCharacteristics.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.hardware.camera2.CameraManager.DeviceStateListener
                 public final void onDeviceStateChanged(boolean folded) {
                     synchronized (CameraCharacteristics.this.mLock) {
@@ -620,6 +622,7 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
         return t != null ? t : (T) this.mProperties.get(key);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.hardware.camera2.CameraMetadata
     public <T> T getProtected(Key<?> key) {
         return (T) this.mProperties.get(key);
@@ -632,26 +635,23 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @Override // android.hardware.camera2.CameraMetadata
     public List<Key<?>> getKeys() {
-        List<Key<?>> list = this.mKeys;
-        if (list != null) {
-            return list;
+        if (this.mKeys != null) {
+            return this.mKeys;
         }
         int[] filterTags = (int[]) get(REQUEST_AVAILABLE_CHARACTERISTICS_KEYS);
         if (filterTags == null) {
             throw new AssertionError("android.request.availableCharacteristicsKeys must be non-null in the characteristics");
         }
-        List<Key<?>> unmodifiableList = Collections.unmodifiableList(getKeys(getClass(), getKeyClass(), this, filterTags, true));
-        this.mKeys = unmodifiableList;
-        return unmodifiableList;
+        this.mKeys = Collections.unmodifiableList(getKeys(getClass(), getKeyClass(), this, filterTags, true));
+        return this.mKeys;
     }
 
     public List<Key<?>> getKeysNeedingPermission() {
         if (this.mKeysNeedingPermission == null) {
             int[] filterTags = (int[]) get(REQUEST_CHARACTERISTIC_KEYS_NEEDING_PERMISSION);
             if (filterTags == null) {
-                List<Key<?>> unmodifiableList = Collections.unmodifiableList(new ArrayList());
-                this.mKeysNeedingPermission = unmodifiableList;
-                return unmodifiableList;
+                this.mKeysNeedingPermission = Collections.unmodifiableList(new ArrayList());
+                return this.mKeysNeedingPermission;
             }
             this.mKeysNeedingPermission = getAvailableKeyList(CameraCharacteristics.class, crKeyTyped, filterTags, false);
         }
@@ -661,9 +661,8 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
     public RecommendedStreamConfigurationMap getRecommendedStreamConfigurationMap(int usecase) {
         if ((usecase >= 0 && usecase <= 8) || (usecase >= 24 && usecase < 32)) {
             if (this.mRecommendedConfigurations == null) {
-                ArrayList<RecommendedStreamConfigurationMap> recommendedStreamConfigurations = this.mProperties.getRecommendedStreamConfigurations();
-                this.mRecommendedConfigurations = recommendedStreamConfigurations;
-                if (recommendedStreamConfigurations == null) {
+                this.mRecommendedConfigurations = this.mProperties.getRecommendedStreamConfigurations();
+                if (this.mRecommendedConfigurations == null) {
                     return null;
                 }
             }
@@ -681,6 +680,38 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
             this.mAvailableSessionKeys = getAvailableKeyList(CaptureRequest.class, crKeyTyped, filterTags, false);
         }
         return this.mAvailableSessionKeys;
+    }
+
+    public List<Key<?>> getAvailableSessionCharacteristicsKeys() {
+        if (this.mAvailableSessionCharacteristicsKeys != null) {
+            return this.mAvailableSessionCharacteristicsKeys;
+        }
+        final Integer queryVersion = (Integer) get(INFO_SESSION_CONFIGURATION_QUERY_VERSION);
+        if (queryVersion == null) {
+            this.mAvailableSessionCharacteristicsKeys = List.of();
+            return this.mAvailableSessionCharacteristicsKeys;
+        }
+        this.mAvailableSessionCharacteristicsKeys = (List) AVAILABLE_SESSION_CHARACTERISTICS_KEYS_MAP.entrySet().stream().filter(new Predicate() { // from class: android.hardware.camera2.CameraCharacteristics$$ExternalSyntheticLambda0
+            @Override // java.util.function.Predicate
+            public final boolean test(Object obj) {
+                return CameraCharacteristics.lambda$getAvailableSessionCharacteristicsKeys$0(queryVersion, (Map.Entry) obj);
+            }
+        }).map(new Function() { // from class: android.hardware.camera2.CameraCharacteristics$$ExternalSyntheticLambda1
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return (CameraCharacteristics.Key[]) ((Map.Entry) obj).getValue();
+            }
+        }).flatMap(new Function() { // from class: android.hardware.camera2.CameraCharacteristics$$ExternalSyntheticLambda2
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return Arrays.stream((CameraCharacteristics.Key[]) obj);
+            }
+        }).collect(Collectors.toUnmodifiableList());
+        return this.mAvailableSessionCharacteristicsKeys;
+    }
+
+    static /* synthetic */ boolean lambda$getAvailableSessionCharacteristicsKeys$0(Integer queryVersion, Map.Entry e) {
+        return ((Integer) e.getKey()).intValue() <= queryVersion.intValue();
     }
 
     public List<CaptureRequest.Key<?>> getAvailablePhysicalCameraRequestKeys() {
@@ -725,7 +756,7 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
         return availableSamsungKeys;
     }
 
-    public <TKey> List<TKey> getAvailableKeyList(Class<?> metadataClass, Class<TKey> keyClass, int[] filterTags, boolean includeSynthetic) {
+    <TKey> List<TKey> getAvailableKeyList(Class<?> metadataClass, Class<TKey> keyClass, int[] filterTags, boolean includeSynthetic) {
         if (metadataClass.equals(CameraMetadata.class)) {
             throw new AssertionError("metadataClass must be a strict subclass of CameraMetadata");
         }
@@ -738,47 +769,5 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     public Set<String> getPhysicalCameraIds() {
         return this.mProperties.getPhysicalCameraIds();
-    }
-
-    /* renamed from: android.hardware.camera2.CameraCharacteristics$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 extends TypeReference<Range<Integer>[]> {
-        AnonymousClass2() {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.CameraCharacteristics$3 */
-    /* loaded from: classes.dex */
-    class AnonymousClass3 extends TypeReference<Range<Integer>> {
-        AnonymousClass3() {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.CameraCharacteristics$4 */
-    /* loaded from: classes.dex */
-    class AnonymousClass4 extends TypeReference<Range<Integer>> {
-        AnonymousClass4() {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.CameraCharacteristics$5 */
-    /* loaded from: classes.dex */
-    class AnonymousClass5 extends TypeReference<Range<Float>> {
-        AnonymousClass5() {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.CameraCharacteristics$6 */
-    /* loaded from: classes.dex */
-    class AnonymousClass6 extends TypeReference<Range<Integer>> {
-        AnonymousClass6() {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.CameraCharacteristics$7 */
-    /* loaded from: classes.dex */
-    class AnonymousClass7 extends TypeReference<Range<Long>> {
-        AnonymousClass7() {
-        }
     }
 }

@@ -30,13 +30,12 @@ public class CompactExtractEditLayout extends LinearLayout {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         this.mInputExtractEditText = findViewById(16908325);
         this.mInputExtractAccessories = findViewById(16908378);
-        View findViewById = findViewById(16908377);
-        this.mInputExtractAction = findViewById;
-        if (this.mInputExtractEditText != null && this.mInputExtractAccessories != null && findViewById != null) {
+        this.mInputExtractAction = findViewById(16908377);
+        if (this.mInputExtractEditText != null && this.mInputExtractAccessories != null && this.mInputExtractAction != null) {
             this.mPerformLayoutChanges = true;
         }
     }
@@ -68,7 +67,7 @@ public class CompactExtractEditLayout extends LinearLayout {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (this.mPerformLayoutChanges) {
             Resources res = getResources();

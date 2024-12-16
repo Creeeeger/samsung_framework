@@ -7,16 +7,15 @@ import android.os.Parcelable;
 import android.util.Log;
 
 /* loaded from: classes.dex */
-public final class FragmentState implements Parcelable {
+final class FragmentState implements Parcelable {
     public static final Parcelable.Creator<FragmentState> CREATOR = new Parcelable.Creator<FragmentState>() { // from class: android.app.FragmentState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FragmentState createFromParcel(Parcel in) {
             return new FragmentState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FragmentState[] newArray(int size) {
             return new FragmentState[size];
@@ -35,7 +34,7 @@ public final class FragmentState implements Parcelable {
     Bundle mSavedFragmentState;
     final String mTag;
 
-    public FragmentState(Fragment frag) {
+    FragmentState(Fragment frag) {
         this.mClassName = frag.getClass().getName();
         this.mIndex = frag.mIndex;
         this.mFromLayout = frag.mFromLayout;
@@ -65,18 +64,16 @@ public final class FragmentState implements Parcelable {
     public Fragment instantiate(FragmentHostCallback host, FragmentContainer container, Fragment parent, FragmentManagerNonConfig childNonConfig) {
         if (this.mInstance == null) {
             Context context = host.getContext();
-            Bundle bundle = this.mArguments;
-            if (bundle != null) {
-                bundle.setClassLoader(context.getClassLoader());
+            if (this.mArguments != null) {
+                this.mArguments.setClassLoader(context.getClassLoader());
             }
             if (container != null) {
                 this.mInstance = container.instantiate(context, this.mClassName, this.mArguments);
             } else {
                 this.mInstance = Fragment.instantiate(context, this.mClassName, this.mArguments);
             }
-            Bundle bundle2 = this.mSavedFragmentState;
-            if (bundle2 != null) {
-                bundle2.setClassLoader(context.getClassLoader());
+            if (this.mSavedFragmentState != null) {
+                this.mSavedFragmentState.setClassLoader(context.getClassLoader());
                 this.mInstance.mSavedFragmentState = this.mSavedFragmentState;
             }
             this.mInstance.setIndex(this.mIndex, parent);
@@ -115,22 +112,5 @@ public final class FragmentState implements Parcelable {
         parcel.writeBundle(this.mArguments);
         parcel.writeInt(this.mHidden ? 1 : 0);
         parcel.writeBundle(this.mSavedFragmentState);
-    }
-
-    /* renamed from: android.app.FragmentState$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FragmentState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FragmentState createFromParcel(Parcel in) {
-            return new FragmentState(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FragmentState[] newArray(int size) {
-            return new FragmentState[size];
-        }
     }
 }

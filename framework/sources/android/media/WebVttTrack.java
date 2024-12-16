@@ -19,12 +19,11 @@ class WebVttTrack extends SubtitleTrack implements WebVttCueListener {
     private final Vector<Long> mTimestamps;
     private final Tokenizer mTokenizer;
 
-    public WebVttTrack(WebVttRenderingWidget renderingWidget, MediaFormat format) {
+    WebVttTrack(WebVttRenderingWidget renderingWidget, MediaFormat format) {
         super(format);
         this.mParser = new WebVttParser(this);
-        UnstyledTextExtractor unstyledTextExtractor = new UnstyledTextExtractor();
-        this.mExtractor = unstyledTextExtractor;
-        this.mTokenizer = new Tokenizer(unstyledTextExtractor);
+        this.mExtractor = new UnstyledTextExtractor();
+        this.mTokenizer = new Tokenizer(this.mExtractor);
         this.mTimestamps = new Vector<>();
         this.mRegions = new HashMap();
         this.mRenderingWidget = renderingWidget;
@@ -40,8 +39,7 @@ class WebVttTrack extends SubtitleTrack implements WebVttCueListener {
         try {
             String str = new String(data, "UTF-8");
             synchronized (this.mParser) {
-                Long l = this.mCurrentRunID;
-                if (l != null && runID != l.longValue()) {
+                if (this.mCurrentRunID != null && runID != this.mCurrentRunID.longValue()) {
                     throw new IllegalStateException("Run #" + this.mCurrentRunID + " in progress.  Cannot process run #" + runID);
                 }
                 this.mCurrentRunID = Long.valueOf(runID);
@@ -115,9 +113,8 @@ class WebVttTrack extends SubtitleTrack implements WebVttCueListener {
                 Log.d(TAG, "at (illegal state) the active cues are:");
             }
         }
-        WebVttRenderingWidget webVttRenderingWidget = this.mRenderingWidget;
-        if (webVttRenderingWidget != null) {
-            webVttRenderingWidget.setActiveCues(activeCues);
+        if (this.mRenderingWidget != null) {
+            this.mRenderingWidget.setActiveCues(activeCues);
         }
     }
 }

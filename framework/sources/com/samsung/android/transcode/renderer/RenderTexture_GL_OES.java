@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class RenderTexture_GL_OES {
     private static final String A_POSITION = "a_Position";
     private static final String A_TEXTURE_COORDINATES = "a_TextureCoordinates";
@@ -35,8 +35,6 @@ public class RenderTexture_GL_OES {
     private float mHeight;
     private int mProgram;
     private int mTextureId;
-    private final float[] mVerticesData;
-    private FloatBuffer mVerticesFloatBuffer;
     private float mWidth;
     private int ma_PositionHandle;
     private int ma_TextureCoordinatesHandle;
@@ -45,17 +43,15 @@ public class RenderTexture_GL_OES {
     private int mu_MVPMatrixHandle;
     private int mu_STMatrixHandle;
     private int mu_TextureUnitHandle;
+    private final float[] mVerticesData = {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
     private final float[] mMVPMatrix = new float[16];
     private final float[] mSTMatrix = new float[16];
     private boolean mMMSMode = false;
     private boolean mCallFinish = true;
+    private FloatBuffer mVerticesFloatBuffer = ByteBuffer.allocateDirect(this.mVerticesData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(this.mVerticesData);
 
     public RenderTexture_GL_OES() {
-        float[] fArr = {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
-        this.mVerticesData = fArr;
-        FloatBuffer put = ByteBuffer.allocateDirect(fArr.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(fArr);
-        this.mVerticesFloatBuffer = put;
-        put.position(0);
+        this.mVerticesFloatBuffer.position(0);
     }
 
     public int createProgram(boolean isBlurMode) {
@@ -64,11 +60,10 @@ public class RenderTexture_GL_OES {
         } else {
             this.mProgram = OpenGlHelper.createProgram(TEXTURE_VERTEX_SHADER_CODE, TEXTURE_FRAGMENT_SHADER_CODE);
         }
-        int i = this.mProgram;
-        if (i == 0) {
+        if (this.mProgram == 0) {
             return 0;
         }
-        this.mu_MVPMatrixHandle = GLES20.glGetUniformLocation(i, U_MVPMATRIX);
+        this.mu_MVPMatrixHandle = GLES20.glGetUniformLocation(this.mProgram, U_MVPMATRIX);
         this.mu_STMatrixHandle = GLES20.glGetUniformLocation(this.mProgram, U_STMATRIX);
         this.ma_PositionHandle = GLES20.glGetAttribLocation(this.mProgram, A_POSITION);
         this.ma_TextureCoordinatesHandle = GLES20.glGetAttribLocation(this.mProgram, A_TEXTURE_COORDINATES);
@@ -139,9 +134,8 @@ public class RenderTexture_GL_OES {
         if (this.mTextureId != 0) {
             deleteTexture();
         }
-        int loadTextureOES = OpenGlHelper.loadTextureOES();
-        this.mTextureId = loadTextureOES;
-        if (loadTextureOES == 0) {
+        this.mTextureId = OpenGlHelper.loadTextureOES();
+        if (this.mTextureId == 0) {
             LogS.d("TranscodeLib", "not able to load new texture");
         }
         Matrix.setIdentityM(this.mMVPMatrix, 0);

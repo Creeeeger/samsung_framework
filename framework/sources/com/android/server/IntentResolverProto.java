@@ -9,7 +9,6 @@ public final class IntentResolverProto {
     public static final long SCHEMES = 2246267895812L;
     public static final long WILD_MIME_TYPES = 2246267895811L;
 
-    /* loaded from: classes5.dex */
     public final class ArrayMapEntry {
         public static final long KEY = 1138166333441L;
         public static final long VALUES = 2237677961218L;

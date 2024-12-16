@@ -8,14 +8,13 @@ import android.os.UserHandle;
 /* loaded from: classes.dex */
 public class LauncherActivityInfoInternal implements Parcelable {
     public static final Parcelable.Creator<LauncherActivityInfoInternal> CREATOR = new Parcelable.Creator<LauncherActivityInfoInternal>() { // from class: android.content.pm.LauncherActivityInfoInternal.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LauncherActivityInfoInternal createFromParcel(Parcel source) {
             return new LauncherActivityInfoInternal(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LauncherActivityInfoInternal[] newArray(int size) {
             return new LauncherActivityInfoInternal[size];
@@ -66,22 +65,5 @@ public class LauncherActivityInfoInternal implements Parcelable {
         dest.writeTypedObject(this.mActivityInfo, flags);
         dest.writeTypedObject(this.mIncrementalStatesInfo, flags);
         dest.writeTypedObject(this.mUser, flags);
-    }
-
-    /* renamed from: android.content.pm.LauncherActivityInfoInternal$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LauncherActivityInfoInternal> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LauncherActivityInfoInternal createFromParcel(Parcel source) {
-            return new LauncherActivityInfoInternal(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LauncherActivityInfoInternal[] newArray(int size) {
-            return new LauncherActivityInfoInternal[size];
-        }
     }
 }

@@ -27,7 +27,6 @@ public interface ISecureElementChannel extends IInterface {
 
     byte[] transmit(byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISecureElementChannel {
         @Override // android.se.omapi.ISecureElementChannel
         public void close() throws RemoteException {
@@ -74,7 +73,6 @@ public interface ISecureElementChannel extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISecureElementChannel {
         public static final String DESCRIPTOR = "android$se$omapi$ISecureElementChannel".replace('$', '.');
         static final int TRANSACTION_close = 1;
@@ -113,60 +111,58 @@ public interface ISecureElementChannel extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    close();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    boolean _result = isClosed();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeBoolean(_result);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    boolean _result2 = isBasicChannel();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    byte[] _result3 = getSelectResponse();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result3);
+                    return true;
+                case 5:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result4 = transmit(_arg0);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    return true;
+                case 6:
+                    boolean _result5 = selectNext();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            boolean _result = isClosed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 3:
-                            boolean _result2 = isBasicChannel();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            byte[] _result3 = getSelectResponse();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result3);
-                            return true;
-                        case 5:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result4 = transmit(_arg0);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            return true;
-                        case 6:
-                            boolean _result5 = selectNext();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISecureElementChannel {
+        private static class Proxy implements ISecureElementChannel {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

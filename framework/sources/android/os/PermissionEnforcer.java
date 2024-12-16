@@ -29,9 +29,17 @@ public class PermissionEnforcer {
         return 2;
     }
 
+    private static int permissionToOpCode(String permission) {
+        return AppOpsManager.permissionToOpCode(permission);
+    }
+
+    private static int permissionToOpCode$ravenwood(String permission) {
+        return -1;
+    }
+
     private boolean anyAppOps(String[] permissions) {
         for (String permission : permissions) {
-            if (AppOpsManager.permissionToOpCode(permission) != -1) {
+            if (permissionToOpCode(permission) != -1) {
                 return true;
             }
         }
@@ -46,7 +54,7 @@ public class PermissionEnforcer {
     }
 
     public void enforcePermission(String permission, int pid, int uid) throws SecurityException {
-        if (AppOpsManager.permissionToOpCode(permission) != -1) {
+        if (permissionToOpCode(permission) != -1) {
             AttributionSource source = new AttributionSource(uid, null, null);
             enforcePermission(permission, source);
         } else {
@@ -106,6 +114,6 @@ public class PermissionEnforcer {
     }
 
     public static PermissionEnforcer fromContext(Context context) {
-        return (PermissionEnforcer) context.getSystemService(PermissionEnforcer.class);
+        return (PermissionEnforcer) context.getSystemService(Context.PERMISSION_ENFORCER_SERVICE);
     }
 }

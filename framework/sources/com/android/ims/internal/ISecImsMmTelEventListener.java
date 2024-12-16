@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ISecImsMmTelEventListener extends IInterface {
     public static final String DESCRIPTOR = "com.android.ims.internal.ISecImsMmTelEventListener";
 
@@ -15,7 +15,6 @@ public interface ISecImsMmTelEventListener extends IInterface {
 
     void onIncomingCall(int i, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ISecImsMmTelEventListener {
         @Override // com.android.ims.internal.ISecImsMmTelEventListener
         public void onIncomingCall(int callId, Bundle extras) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ISecImsMmTelEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ISecImsMmTelEventListener {
         static final int TRANSACTION_onCdpnInfo = 2;
         static final int TRANSACTION_onIncomingCall = 1;
@@ -77,35 +75,31 @@ public interface ISecImsMmTelEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISecImsMmTelEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISecImsMmTelEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISecImsMmTelEventListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onIncomingCall(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCdpnInfo(_arg02, _arg12);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onIncomingCall(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCdpnInfo(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ISecImsMmTelEventListener {
+        private static class Proxy implements ISecImsMmTelEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

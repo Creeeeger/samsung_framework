@@ -3,7 +3,7 @@ package com.samsung.android.allshare;
 import android.media.MediaMetrics;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public final class DLog {
     private static final String MAIN_DEV_TAG = "AllShare(ASF-API)";
     private static final String PREFIX = "* catched :: * ";
@@ -13,8 +13,7 @@ public final class DLog {
     private static boolean SECURE_ON = false;
 
     public static void setAPIVersionTag() {
-        String str = DEV_DATE;
-        if (str == null || str.length() == 0) {
+        if (DEV_DATE == null || DEV_DATE.length() == 0) {
             TAG_API = "L-";
         } else {
             TAG_API = "L-d" + DEV_DATE + " / ";

@@ -1,16 +1,17 @@
 package com.samsung.ucm.keystore;
 
 import android.security.keystore.KeyProperties;
+import java.io.ByteArrayOutputStream;
 import java.security.Key;
 import javax.crypto.IllegalBlockSizeException;
 
 /* loaded from: classes6.dex */
 public class UcmKeyStoreAESCipherSpi extends UcmKeyStoreGenericCipher {
-    private byte[] mBuffer;
+    private ByteArrayOutputStream mStream;
 
     public UcmKeyStoreAESCipherSpi(int padding) {
         super(padding);
-        this.mBuffer = null;
+        this.mStream = new ByteArrayOutputStream();
     }
 
     @Override // com.samsung.ucm.keystore.UcmKeyStoreGenericCipher
@@ -53,24 +54,25 @@ public class UcmKeyStoreAESCipherSpi extends UcmKeyStoreGenericCipher {
 
     @Override // com.samsung.ucm.keystore.UcmKeyStoreGenericCipher
     public UcmKeyStoreKey initInternal(Key key) {
-        this.mBuffer = new byte[0];
+        this.mStream.reset();
         return (UcmKeyStoreSecretKey) key;
     }
 
     @Override // com.samsung.ucm.keystore.UcmKeyStoreGenericCipher
     public void update(byte[] input, int inputOffset, int inputLen) {
-        byte[] bArr = this.mBuffer;
-        byte[] auxBuffer = new byte[bArr.length];
-        System.arraycopy(bArr, 0, auxBuffer, 0, bArr.length);
-        byte[] bArr2 = new byte[this.mBuffer.length + inputLen];
-        this.mBuffer = bArr2;
-        System.arraycopy(auxBuffer, 0, bArr2, 0, auxBuffer.length);
-        System.arraycopy(input, inputOffset, this.mBuffer, auxBuffer.length, inputLen);
+        this.mStream.write(input, inputOffset, inputLen);
     }
 
     @Override // com.samsung.ucm.keystore.UcmKeyStoreGenericCipher
     public byte[] doFinalInternal(int padding) throws IllegalBlockSizeException {
-        return this.mBuffer;
+        try {
+            if (this.mStream.size() == 0) {
+                throw new IllegalBlockSizeException("Invalid input data");
+            }
+            return this.mStream.toByteArray();
+        } finally {
+            this.mStream.reset();
+        }
     }
 
     @Override // com.samsung.ucm.keystore.UcmKeyStoreGenericCipher

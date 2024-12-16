@@ -6,7 +6,6 @@ import android.os.HidlSupport;
 import android.os.HwBlob;
 import android.os.HwParcel;
 import android.security.keystore.KeyProperties;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -16,7 +15,6 @@ public final class BarringInfo {
     public int barringType = 0;
     public BarringTypeSpecificInfo barringTypeSpecificInfo = new BarringTypeSpecificInfo();
 
-    /* loaded from: classes2.dex */
     public static final class ServiceType {
         public static final int CS_FALLBACK = 5;
         public static final int CS_SERVICE = 0;
@@ -366,7 +364,6 @@ public final class BarringInfo {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class BarringType {
         public static final int CONDITIONAL = 1;
         public static final int NONE = 0;
@@ -404,12 +401,10 @@ public final class BarringInfo {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class BarringTypeSpecificInfo {
         private byte hidl_d = 0;
         private Object hidl_o;
 
-        /* loaded from: classes2.dex */
         public static final class Conditional {
             public int factor = 0;
             public int timeSeconds = 0;
@@ -493,7 +488,6 @@ public final class BarringInfo {
             this.hidl_o = new Monostate();
         }
 
-        /* loaded from: classes2.dex */
         public static final class hidl_discriminator {
             public static final byte conditional = 1;
             public static final byte noinit = 0;
@@ -520,12 +514,10 @@ public final class BarringInfo {
 
         public Monostate noinit() {
             if (this.hidl_d != 0) {
-                Object obj = this.hidl_o;
-                String className = obj != null ? obj.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL;
+                String className = this.hidl_o != null ? this.hidl_o.getClass().getName() : "null";
                 throw new IllegalStateException("Read access to inactive union components is disallowed. Discriminator value is " + ((int) this.hidl_d) + " (corresponding to " + hidl_discriminator.getName(this.hidl_d) + "), and hidl_o is of type " + className + MediaMetrics.SEPARATOR);
             }
-            Object obj2 = this.hidl_o;
-            if (obj2 != null && !Monostate.class.isInstance(obj2)) {
+            if (this.hidl_o != null && !Monostate.class.isInstance(this.hidl_o)) {
                 throw new Error("Union is in a corrupted state.");
             }
             return (Monostate) this.hidl_o;
@@ -538,12 +530,10 @@ public final class BarringInfo {
 
         public Conditional conditional() {
             if (this.hidl_d != 1) {
-                Object obj = this.hidl_o;
-                String className = obj != null ? obj.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL;
+                String className = this.hidl_o != null ? this.hidl_o.getClass().getName() : "null";
                 throw new IllegalStateException("Read access to inactive union components is disallowed. Discriminator value is " + ((int) this.hidl_d) + " (corresponding to " + hidl_discriminator.getName(this.hidl_d) + "), and hidl_o is of type " + className + MediaMetrics.SEPARATOR);
             }
-            Object obj2 = this.hidl_o;
-            if (obj2 != null && !Conditional.class.isInstance(obj2)) {
+            if (this.hidl_o != null && !Conditional.class.isInstance(this.hidl_o)) {
                 throw new Error("Union is in a corrupted state.");
             }
             return (Conditional) this.hidl_o;
@@ -610,18 +600,15 @@ public final class BarringInfo {
         }
 
         public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
-            byte int8 = _hidl_blob.getInt8(0 + _hidl_offset);
-            this.hidl_d = int8;
-            switch (int8) {
+            this.hidl_d = _hidl_blob.getInt8(0 + _hidl_offset);
+            switch (this.hidl_d) {
                 case 0:
-                    Monostate monostate = new Monostate();
-                    this.hidl_o = monostate;
-                    monostate.readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
+                    this.hidl_o = new Monostate();
+                    ((Monostate) this.hidl_o).readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
                     return;
                 case 1:
-                    Conditional conditional = new Conditional();
-                    this.hidl_o = conditional;
-                    conditional.readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
+                    this.hidl_o = new Conditional();
+                    ((Conditional) this.hidl_o).readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
                     return;
                 default:
                     throw new IllegalStateException("Unknown union discriminator (value: " + ((int) this.hidl_d) + ").");

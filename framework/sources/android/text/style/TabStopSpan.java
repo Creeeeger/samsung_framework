@@ -1,10 +1,9 @@
 package android.text.style;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface TabStopSpan extends ParagraphStyle {
     int getTabStop();
 
-    /* loaded from: classes3.dex */
     public static class Standard implements TabStopSpan {
         private int mTabOffset;
 

@@ -12,7 +12,6 @@ public interface IProxyCredentialsCallback extends IInterface {
 
     void onAuthenticationResult(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IProxyCredentialsCallback {
         @Override // android.sec.enterprise.proxy.IProxyCredentialsCallback
         public void onAuthenticationResult(int result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IProxyCredentialsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IProxyCredentialsCallback {
         static final int TRANSACTION_onAuthenticationResult = 1;
 
@@ -67,27 +65,23 @@ public interface IProxyCredentialsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProxyCredentialsCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProxyCredentialsCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProxyCredentialsCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAuthenticationResult(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAuthenticationResult(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IProxyCredentialsCallback {
+        private static class Proxy implements IProxyCredentialsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ActivityStatsInfo implements Parcelable {
     public static final Parcelable.Creator<ActivityStatsInfo> CREATOR = new Parcelable.Creator<ActivityStatsInfo>() { // from class: android.hardware.radio.modem.ActivityStatsInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityStatsInfo createFromParcel(Parcel _aidl_source) {
             ActivityStatsInfo _aidl_out = new ActivityStatsInfo();
@@ -19,6 +17,7 @@ public class ActivityStatsInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityStatsInfo[] newArray(int _aidl_size) {
             return new ActivityStatsInfo[_aidl_size];
@@ -27,25 +26,6 @@ public class ActivityStatsInfo implements Parcelable {
     public ActivityStatsTechSpecificInfo[] techSpecificInfo;
     public int sleepModeTimeMs = 0;
     public int idleModeTimeMs = 0;
-
-    /* renamed from: android.hardware.radio.modem.ActivityStatsInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ActivityStatsInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityStatsInfo createFromParcel(Parcel _aidl_source) {
-            ActivityStatsInfo _aidl_out = new ActivityStatsInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityStatsInfo[] newArray(int _aidl_size) {
-            return new ActivityStatsInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +94,7 @@ public class ActivityStatsInfo implements Parcelable {
         _aidl_sj.add("sleepModeTimeMs: " + this.sleepModeTimeMs);
         _aidl_sj.add("idleModeTimeMs: " + this.idleModeTimeMs);
         _aidl_sj.add("techSpecificInfo: " + Arrays.toString(this.techSpecificInfo));
-        return "android.hardware.radio.modem.ActivityStatsInfo" + _aidl_sj.toString();
+        return "ActivityStatsInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

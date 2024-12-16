@@ -5,34 +5,27 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.ArrayMap;
-import android.util.Log;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-/* loaded from: classes5.dex */
-public final class ContextParam implements Serializable, Parcelable {
+/* loaded from: classes6.dex */
+public final class ContextParam implements Parcelable {
     public static final Parcelable.Creator<ContextParam> CREATOR = new Parcelable.Creator<ContextParam>() { // from class: com.samsung.android.mocca.ContextParam.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContextParam createFromParcel(Parcel in) {
             return new ContextParam(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContextParam[] newArray(int size) {
             return new ContextParam[size];
         }
     };
     private static final String TAG = "ContextParam";
-    private static final long serialVersionUID = -3026284218292166456L;
     private final ArrayMap<String, Object> mParams = new ArrayMap<>();
 
     public ContextParam() {
@@ -64,7 +57,7 @@ public final class ContextParam implements Serializable, Parcelable {
         });
     }
 
-    public static /* synthetic */ void lambda$writeToParcel$0(Parcel dest, String k, Object v) {
+    static /* synthetic */ void lambda$writeToParcel$0(Parcel dest, String k, Object v) {
         dest.writeString(k);
         dest.writeValue(v);
     }
@@ -72,23 +65,6 @@ public final class ContextParam implements Serializable, Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.samsung.android.mocca.ContextParam$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContextParam> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContextParam createFromParcel(Parcel in) {
-            return new ContextParam(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContextParam[] newArray(int size) {
-            return new ContextParam[size];
-        }
     }
 
     public boolean isEmpty() {
@@ -196,52 +172,30 @@ public final class ContextParam implements Serializable, Parcelable {
     }
 
     public void putByteArray(String key, byte[] value) {
-        try {
-            ByteArrayInputStream valueIn = new ByteArrayInputStream(value);
-            try {
-                ObjectInputStream ois = new ObjectInputStream(valueIn);
-                try {
-                    Object obj = ois.readObject();
-                    this.mParams.put(key, obj);
-                    ois.close();
-                    valueIn.close();
-                } finally {
-                }
-            } catch (Throwable th) {
-                try {
-                    valueIn.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-                throw th;
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            Log.e(TAG, "putByteArray - " + e.getMessage(), e);
-        }
+        this.mParams.put(key, value);
     }
 
     public byte[] getByteArray(String key) {
-        Object obj = this.mParams.get(key);
-        if (obj == null) {
+        try {
+            return (byte[]) this.mParams.get(key);
+        } catch (ClassCastException e) {
             return new byte[0];
         }
+    }
+
+    public void putIntArray(String key, int[] value) {
+        this.mParams.put(key, value);
+    }
+
+    public int[] getIntArray(String key) {
         try {
-            ByteArrayOutputStream valueOut = new ByteArrayOutputStream();
-            try {
-                ObjectOutputStream os = new ObjectOutputStream(valueOut);
-                try {
-                    os.writeObject(obj);
-                    byte[] byteArray = valueOut.toByteArray();
-                    os.close();
-                    valueOut.close();
-                    return byteArray;
-                } finally {
-                }
-            } finally {
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "getByteArray - " + e.getMessage(), e);
-            return null;
+            return (int[]) this.mParams.get(key);
+        } catch (ClassCastException e) {
+            return new int[0];
         }
+    }
+
+    public Map<String, Object> getAsMap() {
+        return Collections.unmodifiableMap(this.mParams);
     }
 }

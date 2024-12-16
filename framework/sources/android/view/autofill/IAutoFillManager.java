@@ -15,7 +15,7 @@ import java.util.List;
 
 /* loaded from: classes4.dex */
 public interface IAutoFillManager extends IInterface {
-    void addClient(IAutoFillManagerClient iAutoFillManagerClient, ComponentName componentName, int i, IResultReceiver iResultReceiver) throws RemoteException;
+    void addClient(IAutoFillManagerClient iAutoFillManagerClient, ComponentName componentName, int i, IResultReceiver iResultReceiver, boolean z) throws RemoteException;
 
     void cancelSession(int i, int i2) throws RemoteException;
 
@@ -57,14 +57,15 @@ public interface IAutoFillManager extends IInterface {
 
     void setUserData(UserData userData) throws RemoteException;
 
+    void setViewAutofilled(int i, AutofillId autofillId, int i2) throws RemoteException;
+
     void startSession(IBinder iBinder, IBinder iBinder2, AutofillId autofillId, Rect rect, AutofillValue autofillValue, int i, boolean z, int i2, ComponentName componentName, boolean z2, IResultReceiver iResultReceiver) throws RemoteException;
 
     void updateSession(int i, AutofillId autofillId, Rect rect, AutofillValue autofillValue, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAutoFillManager {
         @Override // android.view.autofill.IAutoFillManager
-        public void addClient(IAutoFillManagerClient client, ComponentName componentName, int userId, IResultReceiver result) throws RemoteException {
+        public void addClient(IAutoFillManagerClient client, ComponentName componentName, int userId, IResultReceiver result, boolean credmanRequested) throws RemoteException {
         }
 
         @Override // android.view.autofill.IAutoFillManager
@@ -89,6 +90,10 @@ public interface IAutoFillManager extends IInterface {
 
         @Override // android.view.autofill.IAutoFillManager
         public void setAutofillFailure(int sessionId, List<AutofillId> ids, int userId) throws RemoteException {
+        }
+
+        @Override // android.view.autofill.IAutoFillManager
+        public void setViewAutofilled(int sessionId, AutofillId id, int userId) throws RemoteException {
         }
 
         @Override // android.view.autofill.IAutoFillManager
@@ -161,30 +166,30 @@ public interface IAutoFillManager extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAutoFillManager {
         public static final String DESCRIPTOR = "android.view.autofill.IAutoFillManager";
         static final int TRANSACTION_addClient = 1;
-        static final int TRANSACTION_cancelSession = 9;
-        static final int TRANSACTION_disableOwnedAutofillServices = 12;
-        static final int TRANSACTION_finishSession = 8;
-        static final int TRANSACTION_getAutofillServiceComponentName = 20;
-        static final int TRANSACTION_getAvailableFieldClassificationAlgorithms = 21;
-        static final int TRANSACTION_getDefaultFieldClassificationAlgorithm = 22;
+        static final int TRANSACTION_cancelSession = 10;
+        static final int TRANSACTION_disableOwnedAutofillServices = 13;
+        static final int TRANSACTION_finishSession = 9;
+        static final int TRANSACTION_getAutofillServiceComponentName = 21;
+        static final int TRANSACTION_getAvailableFieldClassificationAlgorithms = 22;
+        static final int TRANSACTION_getDefaultFieldClassificationAlgorithm = 23;
         static final int TRANSACTION_getFillEventHistory = 4;
-        static final int TRANSACTION_getUserData = 16;
-        static final int TRANSACTION_getUserDataId = 17;
-        static final int TRANSACTION_isFieldClassificationEnabled = 19;
-        static final int TRANSACTION_isServiceEnabled = 14;
-        static final int TRANSACTION_isServiceSupported = 13;
-        static final int TRANSACTION_onPendingSaveUi = 15;
+        static final int TRANSACTION_getUserData = 17;
+        static final int TRANSACTION_getUserDataId = 18;
+        static final int TRANSACTION_isFieldClassificationEnabled = 20;
+        static final int TRANSACTION_isServiceEnabled = 15;
+        static final int TRANSACTION_isServiceSupported = 14;
+        static final int TRANSACTION_onPendingSaveUi = 16;
         static final int TRANSACTION_removeClient = 2;
         static final int TRANSACTION_restoreSession = 5;
-        static final int TRANSACTION_setAugmentedAutofillWhitelist = 23;
-        static final int TRANSACTION_setAuthenticationResult = 10;
+        static final int TRANSACTION_setAugmentedAutofillWhitelist = 24;
+        static final int TRANSACTION_setAuthenticationResult = 11;
         static final int TRANSACTION_setAutofillFailure = 7;
-        static final int TRANSACTION_setHasCallback = 11;
-        static final int TRANSACTION_setUserData = 18;
+        static final int TRANSACTION_setHasCallback = 12;
+        static final int TRANSACTION_setUserData = 19;
+        static final int TRANSACTION_setViewAutofilled = 8;
         static final int TRANSACTION_startSession = 3;
         static final int TRANSACTION_updateSession = 6;
 
@@ -225,36 +230,38 @@ public interface IAutoFillManager extends IInterface {
                 case 7:
                     return "setAutofillFailure";
                 case 8:
-                    return "finishSession";
+                    return "setViewAutofilled";
                 case 9:
-                    return "cancelSession";
+                    return "finishSession";
                 case 10:
-                    return "setAuthenticationResult";
+                    return "cancelSession";
                 case 11:
-                    return "setHasCallback";
+                    return "setAuthenticationResult";
                 case 12:
-                    return "disableOwnedAutofillServices";
+                    return "setHasCallback";
                 case 13:
-                    return "isServiceSupported";
+                    return "disableOwnedAutofillServices";
                 case 14:
-                    return "isServiceEnabled";
+                    return "isServiceSupported";
                 case 15:
-                    return "onPendingSaveUi";
+                    return "isServiceEnabled";
                 case 16:
-                    return "getUserData";
+                    return "onPendingSaveUi";
                 case 17:
-                    return "getUserDataId";
+                    return "getUserData";
                 case 18:
-                    return "setUserData";
+                    return "getUserDataId";
                 case 19:
-                    return "isFieldClassificationEnabled";
+                    return "setUserData";
                 case 20:
-                    return "getAutofillServiceComponentName";
+                    return "isFieldClassificationEnabled";
                 case 21:
-                    return "getAvailableFieldClassificationAlgorithms";
+                    return "getAutofillServiceComponentName";
                 case 22:
-                    return "getDefaultFieldClassificationAlgorithm";
+                    return "getAvailableFieldClassificationAlgorithms";
                 case 23:
+                    return "getDefaultFieldClassificationAlgorithm";
+                case 24:
                     return "setAugmentedAutofillWhitelist";
                 default:
                     return null;
@@ -271,174 +278,179 @@ public interface IAutoFillManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IAutoFillManagerClient _arg0 = IAutoFillManagerClient.Stub.asInterface(data.readStrongBinder());
+                    ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg2 = data.readInt();
+                    IResultReceiver _arg3 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg4 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    addClient(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    IAutoFillManagerClient _arg02 = IAutoFillManagerClient.Stub.asInterface(data.readStrongBinder());
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeClient(_arg02, _arg12);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    IBinder _arg13 = data.readStrongBinder();
+                    AutofillId _arg22 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    Rect _arg32 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    AutofillValue _arg42 = (AutofillValue) data.readTypedObject(AutofillValue.CREATOR);
+                    int _arg5 = data.readInt();
+                    boolean _arg6 = data.readBoolean();
+                    int _arg7 = data.readInt();
+                    ComponentName _arg8 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg9 = data.readBoolean();
+                    IResultReceiver _arg10 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startSession(_arg03, _arg13, _arg22, _arg32, _arg42, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10);
+                    return true;
+                case 4:
+                    IResultReceiver _arg04 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getFillEventHistory(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    IBinder _arg14 = data.readStrongBinder();
+                    IBinder _arg23 = data.readStrongBinder();
+                    IResultReceiver _arg33 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    restoreSession(_arg05, _arg14, _arg23, _arg33);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    AutofillId _arg15 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    Rect _arg24 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    AutofillValue _arg34 = (AutofillValue) data.readTypedObject(AutofillValue.CREATOR);
+                    int _arg43 = data.readInt();
+                    int _arg52 = data.readInt();
+                    int _arg62 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateSession(_arg06, _arg15, _arg24, _arg34, _arg43, _arg52, _arg62);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    List<AutofillId> _arg16 = data.createTypedArrayList(AutofillId.CREATOR);
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAutofillFailure(_arg07, _arg16, _arg25);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    AutofillId _arg17 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setViewAutofilled(_arg08, _arg17, _arg26);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    int _arg18 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    finishSession(_arg09, _arg18, _arg27);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancelSession(_arg010, _arg19);
+                    return true;
+                case 11:
+                    Bundle _arg011 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg110 = data.readInt();
+                    int _arg28 = data.readInt();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAuthenticationResult(_arg011, _arg110, _arg28, _arg35);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    int _arg111 = data.readInt();
+                    boolean _arg29 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setHasCallback(_arg012, _arg111, _arg29);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disableOwnedAutofillServices(_arg013);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    IResultReceiver _arg112 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    isServiceSupported(_arg014, _arg112);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    String _arg113 = data.readString();
+                    IResultReceiver _arg210 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    isServiceEnabled(_arg015, _arg113, _arg210);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    IBinder _arg114 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onPendingSaveUi(_arg016, _arg114);
+                    return true;
+                case 17:
+                    IResultReceiver _arg017 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getUserData(_arg017);
+                    return true;
+                case 18:
+                    IResultReceiver _arg018 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getUserDataId(_arg018);
+                    return true;
+                case 19:
+                    UserData _arg019 = (UserData) data.readTypedObject(UserData.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUserData(_arg019);
+                    return true;
+                case 20:
+                    IResultReceiver _arg020 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    isFieldClassificationEnabled(_arg020);
+                    return true;
+                case 21:
+                    IResultReceiver _arg021 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getAutofillServiceComponentName(_arg021);
+                    return true;
+                case 22:
+                    IResultReceiver _arg022 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getAvailableFieldClassificationAlgorithms(_arg022);
+                    return true;
+                case 23:
+                    IResultReceiver _arg023 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getDefaultFieldClassificationAlgorithm(_arg023);
+                    return true;
+                case 24:
+                    List<String> _arg024 = data.createStringArrayList();
+                    List<ComponentName> _arg115 = data.createTypedArrayList(ComponentName.CREATOR);
+                    IResultReceiver _arg211 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setAugmentedAutofillWhitelist(_arg024, _arg115, _arg211);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IAutoFillManagerClient _arg0 = IAutoFillManagerClient.Stub.asInterface(data.readStrongBinder());
-                            ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg2 = data.readInt();
-                            IResultReceiver _arg3 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addClient(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            IAutoFillManagerClient _arg02 = IAutoFillManagerClient.Stub.asInterface(data.readStrongBinder());
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeClient(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            IBinder _arg13 = data.readStrongBinder();
-                            AutofillId _arg22 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            Rect _arg32 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            AutofillValue _arg4 = (AutofillValue) data.readTypedObject(AutofillValue.CREATOR);
-                            int _arg5 = data.readInt();
-                            boolean _arg6 = data.readBoolean();
-                            int _arg7 = data.readInt();
-                            ComponentName _arg8 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg9 = data.readBoolean();
-                            IResultReceiver _arg10 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startSession(_arg03, _arg13, _arg22, _arg32, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10);
-                            return true;
-                        case 4:
-                            IResultReceiver _arg04 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getFillEventHistory(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            IBinder _arg14 = data.readStrongBinder();
-                            IBinder _arg23 = data.readStrongBinder();
-                            IResultReceiver _arg33 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            restoreSession(_arg05, _arg14, _arg23, _arg33);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            AutofillId _arg15 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            Rect _arg24 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            AutofillValue _arg34 = (AutofillValue) data.readTypedObject(AutofillValue.CREATOR);
-                            int _arg42 = data.readInt();
-                            int _arg52 = data.readInt();
-                            int _arg62 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateSession(_arg06, _arg15, _arg24, _arg34, _arg42, _arg52, _arg62);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            List<AutofillId> _arg16 = data.createTypedArrayList(AutofillId.CREATOR);
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAutofillFailure(_arg07, _arg16, _arg25);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            finishSession(_arg08, _arg17, _arg26);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            int _arg18 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancelSession(_arg09, _arg18);
-                            return true;
-                        case 10:
-                            Bundle _arg010 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg19 = data.readInt();
-                            int _arg27 = data.readInt();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAuthenticationResult(_arg010, _arg19, _arg27, _arg35);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            int _arg110 = data.readInt();
-                            boolean _arg28 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setHasCallback(_arg011, _arg110, _arg28);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disableOwnedAutofillServices(_arg012);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            IResultReceiver _arg111 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            isServiceSupported(_arg013, _arg111);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            String _arg112 = data.readString();
-                            IResultReceiver _arg29 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            isServiceEnabled(_arg014, _arg112, _arg29);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            IBinder _arg113 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onPendingSaveUi(_arg015, _arg113);
-                            return true;
-                        case 16:
-                            IResultReceiver _arg016 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getUserData(_arg016);
-                            return true;
-                        case 17:
-                            IResultReceiver _arg017 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getUserDataId(_arg017);
-                            return true;
-                        case 18:
-                            UserData _arg018 = (UserData) data.readTypedObject(UserData.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUserData(_arg018);
-                            return true;
-                        case 19:
-                            IResultReceiver _arg019 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            isFieldClassificationEnabled(_arg019);
-                            return true;
-                        case 20:
-                            IResultReceiver _arg020 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getAutofillServiceComponentName(_arg020);
-                            return true;
-                        case 21:
-                            IResultReceiver _arg021 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getAvailableFieldClassificationAlgorithms(_arg021);
-                            return true;
-                        case 22:
-                            IResultReceiver _arg022 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getDefaultFieldClassificationAlgorithm(_arg022);
-                            return true;
-                        case 23:
-                            List<String> _arg023 = data.createStringArrayList();
-                            List<ComponentName> _arg114 = data.createTypedArrayList(ComponentName.CREATOR);
-                            IResultReceiver _arg210 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setAugmentedAutofillWhitelist(_arg023, _arg114, _arg210);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAutoFillManager {
+        private static class Proxy implements IAutoFillManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -455,7 +467,7 @@ public interface IAutoFillManager extends IInterface {
             }
 
             @Override // android.view.autofill.IAutoFillManager
-            public void addClient(IAutoFillManagerClient client, ComponentName componentName, int userId, IResultReceiver result) throws RemoteException {
+            public void addClient(IAutoFillManagerClient client, ComponentName componentName, int userId, IResultReceiver result, boolean credmanRequested) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
@@ -463,6 +475,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeTypedObject(componentName, 0);
                     _data.writeInt(userId);
                     _data.writeStrongInterface(result);
+                    _data.writeBoolean(credmanRequested);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -629,6 +642,20 @@ public interface IAutoFillManager extends IInterface {
             }
 
             @Override // android.view.autofill.IAutoFillManager
+            public void setViewAutofilled(int sessionId, AutofillId id, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(sessionId);
+                    _data.writeTypedObject(id, 0);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(8, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.view.autofill.IAutoFillManager
             public void finishSession(int sessionId, int userId, int commitReason) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
@@ -636,7 +663,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeInt(sessionId);
                     _data.writeInt(userId);
                     _data.writeInt(commitReason);
-                    this.mRemote.transact(8, _data, null, 1);
+                    this.mRemote.transact(9, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -649,7 +676,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(sessionId);
                     _data.writeInt(userId);
-                    this.mRemote.transact(9, _data, null, 1);
+                    this.mRemote.transact(10, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -664,7 +691,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeInt(sessionId);
                     _data.writeInt(authenticationId);
                     _data.writeInt(userId);
-                    this.mRemote.transact(10, _data, null, 1);
+                    this.mRemote.transact(11, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -678,7 +705,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeInt(sessionId);
                     _data.writeInt(userId);
                     _data.writeBoolean(hasIt);
-                    this.mRemote.transact(11, _data, null, 1);
+                    this.mRemote.transact(12, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -690,7 +717,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(12, _data, null, 1);
+                    this.mRemote.transact(13, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -703,7 +730,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(13, _data, null, 1);
+                    this.mRemote.transact(14, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -717,7 +744,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeInt(userId);
                     _data.writeString(packageName);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(14, _data, null, 1);
+                    this.mRemote.transact(15, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -730,7 +757,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(operation);
                     _data.writeStrongBinder(token);
-                    this.mRemote.transact(15, _data, null, 1);
+                    this.mRemote.transact(16, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -742,7 +769,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(16, _data, null, 1);
+                    this.mRemote.transact(17, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -754,7 +781,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(17, _data, null, 1);
+                    this.mRemote.transact(18, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -766,7 +793,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(userData, 0);
-                    this.mRemote.transact(18, _data, null, 1);
+                    this.mRemote.transact(19, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -778,7 +805,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(19, _data, null, 1);
+                    this.mRemote.transact(20, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -790,7 +817,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(20, _data, null, 1);
+                    this.mRemote.transact(21, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -802,7 +829,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(21, _data, null, 1);
+                    this.mRemote.transact(22, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -814,7 +841,7 @@ public interface IAutoFillManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(22, _data, null, 1);
+                    this.mRemote.transact(23, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -828,7 +855,7 @@ public interface IAutoFillManager extends IInterface {
                     _data.writeStringList(packages);
                     _data.writeTypedList(activities, 0);
                     _data.writeStrongInterface(result);
-                    this.mRemote.transact(23, _data, null, 1);
+                    this.mRemote.transact(24, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -837,7 +864,7 @@ public interface IAutoFillManager extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 22;
+            return 23;
         }
     }
 }

@@ -71,19 +71,14 @@ public abstract class ForegroundServiceTypePolicy {
     public static final ForegroundServiceTypePolicyInfo FGS_TYPE_POLICY_SYSTEM_EXEMPTED = new ForegroundServiceTypePolicyInfo(1024, 0, 0, new ForegroundServiceTypePermissions(new ForegroundServiceTypePermission[]{new RegularPermission(Manifest.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED)}, true), new ForegroundServiceTypePermissions(new ForegroundServiceTypePermission[]{new RegularPermission(Manifest.permission.SCHEDULE_EXACT_ALARM), new RegularPermission(Manifest.permission.USE_EXACT_ALARM), new AppOpPermission(47)}, false), FGS_TYPE_PERM_ENFORCEMENT_FLAG_SYSTEM_EXEMPTED, true, false);
     public static final ForegroundServiceTypePolicyInfo FGS_TYPE_POLICY_SHORT_SERVICE = new ForegroundServiceTypePolicyInfo(2048, 0, 0, null, null, null, false, false);
     public static final ForegroundServiceTypePolicyInfo FGS_TYPE_POLICY_FILE_MANAGEMENT = new ForegroundServiceTypePolicyInfo(4096, 0, 0, new ForegroundServiceTypePermissions(new ForegroundServiceTypePermission[]{new RegularPermission(Manifest.permission.FOREGROUND_SERVICE_FILE_MANAGEMENT)}, true), null, null, false, false);
+    public static final ForegroundServiceTypePolicyInfo FGS_TYPE_POLICY_MEDIA_PROCESSING = new ForegroundServiceTypePolicyInfo(8192, 0, 0, new ForegroundServiceTypePermissions(new ForegroundServiceTypePermission[]{new RegularPermission(Manifest.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING)}, true), null, null, true, false);
     private static final String FGS_TYPE_PERM_ENFORCEMENT_FLAG_SPECIAL_USE = "fgs_type_perm_enforcement_flag_special_use";
     public static final ForegroundServiceTypePolicyInfo FGS_TYPE_POLICY_SPECIAL_USE = new ForegroundServiceTypePolicyInfo(1073741824, 0, 0, new ForegroundServiceTypePermissions(new ForegroundServiceTypePermission[]{new RegularPermission(Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE)}, true), null, FGS_TYPE_PERM_ENFORCEMENT_FLAG_SPECIAL_USE, true, false);
     private static ForegroundServiceTypePolicy sDefaultForegroundServiceTypePolicy = null;
     private static final Object sLock = new Object();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ForegroundServicePolicyCheckCode {
-    }
-
-    /* renamed from: -$$Nest$smisFgsTypeFgPermissionEnforcementEnabled */
-    static /* bridge */ /* synthetic */ boolean m290$$Nest$smisFgsTypeFgPermissionEnforcementEnabled() {
-        return isFgsTypeFgPermissionEnforcementEnabled();
     }
 
     public abstract int checkForegroundServiceTypePolicy(Context context, String str, int i, int i2, boolean z, ForegroundServiceTypePolicyInfo foregroundServiceTypePolicyInfo);
@@ -103,11 +98,11 @@ public abstract class ForegroundServiceTypePolicy {
         return foregroundServiceTypePolicy;
     }
 
-    private static boolean isFgsTypeFgPermissionEnforcementEnabled() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean isFgsTypeFgPermissionEnforcementEnabled() {
         return DeviceConfig.getBoolean("activity_manager", FGS_TYPE_FG_PERM_ENFORCEMENT_FLAG, true);
     }
 
-    /* loaded from: classes.dex */
     public static final class ForegroundServiceTypePolicyInfo {
         private static final long INVALID_CHANGE_ID = 0;
         final ForegroundServiceTypePermissions mAllOfPermissions;
@@ -172,9 +167,9 @@ public abstract class ForegroundServiceTypePolicy {
             return sb;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void updatePermissionEnforcementFlagIfNecessary(String flagName) {
-            String str = this.mPermissionEnforcementFlag;
-            if (str == null || !TextUtils.equals(flagName, str)) {
+            if (this.mPermissionEnforcementFlag == null || !TextUtils.equals(flagName, this.mPermissionEnforcementFlag)) {
                 return;
             }
             this.mPermissionEnforcementFlagValue = DeviceConfig.getBoolean("activity_manager", this.mPermissionEnforcementFlag, this.mPermissionEnforcementFlagDefaultValue);
@@ -185,19 +180,17 @@ public abstract class ForegroundServiceTypePolicy {
         }
 
         public Optional<String[]> getRequiredAllOfPermissionsForTest(Context context) {
-            ForegroundServiceTypePermissions foregroundServiceTypePermissions = this.mAllOfPermissions;
-            if (foregroundServiceTypePermissions == null) {
+            if (this.mAllOfPermissions == null) {
                 return Optional.empty();
             }
-            return Optional.of(foregroundServiceTypePermissions.toStringArray(context));
+            return Optional.of(this.mAllOfPermissions.toStringArray(context));
         }
 
         public Optional<String[]> getRequiredAnyOfPermissionsForTest(Context context) {
-            ForegroundServiceTypePermissions foregroundServiceTypePermissions = this.mAnyOfPermissions;
-            if (foregroundServiceTypePermissions == null) {
+            if (this.mAnyOfPermissions == null) {
                 return Optional.empty();
             }
-            return Optional.of(foregroundServiceTypePermissions.toStringArray(context));
+            return Optional.of(this.mAnyOfPermissions.toStringArray(context));
         }
 
         public boolean isTypeDisabled(int callerUid) {
@@ -246,7 +239,6 @@ public abstract class ForegroundServiceTypePolicy {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class ForegroundServiceTypePermissions {
         final boolean mAllOf;
         final ForegroundServiceTypePermission[] mPermissions;
@@ -304,21 +296,14 @@ public abstract class ForegroundServiceTypePolicy {
 
         String[] toStringArray(Context context) {
             ArrayList<String> list = new ArrayList<>();
-            int i = 0;
-            while (true) {
-                ForegroundServiceTypePermission[] foregroundServiceTypePermissionArr = this.mPermissions;
-                if (i < foregroundServiceTypePermissionArr.length) {
-                    foregroundServiceTypePermissionArr[i].addToList(context, list);
-                    i++;
-                } else {
-                    int i2 = list.size();
-                    return (String[]) list.toArray(new String[i2]);
-                }
+            for (int i = 0; i < this.mPermissions.length; i++) {
+                this.mPermissions[i].addToList(context, list);
             }
+            int i2 = list.size();
+            return (String[]) list.toArray(new String[i2]);
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class ForegroundServiceTypePermission {
         protected final String mName;
 
@@ -337,7 +322,6 @@ public abstract class ForegroundServiceTypePolicy {
         }
     }
 
-    /* loaded from: classes.dex */
     static class RegularPermission extends ForegroundServiceTypePermission {
         RegularPermission(String name) {
             super(name);
@@ -370,12 +354,11 @@ public abstract class ForegroundServiceTypePolicy {
                 case 3:
                     return result == 0 ? 0 : -1;
                 case 4:
-                    return (!ForegroundServiceTypePolicy.m290$$Nest$smisFgsTypeFgPermissionEnforcementEnabled() || allowWhileInUse) ? 0 : -1;
+                    return (!ForegroundServiceTypePolicy.isFgsTypeFgPermissionEnforcementEnabled() || allowWhileInUse) ? 0 : -1;
             }
         }
     }
 
-    /* loaded from: classes.dex */
     static class AppOpPermission extends ForegroundServiceTypePermission {
         final int mOpCode;
 
@@ -392,7 +375,6 @@ public abstract class ForegroundServiceTypePolicy {
         }
     }
 
-    /* loaded from: classes.dex */
     static class RolePermission extends ForegroundServiceTypePermission {
         final String mRole;
 
@@ -409,7 +391,6 @@ public abstract class ForegroundServiceTypePolicy {
         }
     }
 
-    /* loaded from: classes.dex */
     static class UsbDevicePermission extends ForegroundServiceTypePermission {
         UsbDevicePermission() {
             super("USB Device");
@@ -431,7 +412,6 @@ public abstract class ForegroundServiceTypePolicy {
         }
     }
 
-    /* loaded from: classes.dex */
     static class UsbAccessoryPermission extends ForegroundServiceTypePermission {
         UsbAccessoryPermission() {
             super("USB Accessory");
@@ -453,31 +433,28 @@ public abstract class ForegroundServiceTypePolicy {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class DefaultForegroundServiceTypePolicy extends ForegroundServiceTypePolicy {
-        private final SparseArray<ForegroundServiceTypePolicyInfo> mForegroundServiceTypePolicies;
-        private final ArrayMap<String, ForegroundServiceTypePolicyInfo> mPermissionEnforcementToPolicyInfoMap;
+        private final SparseArray<ForegroundServiceTypePolicyInfo> mForegroundServiceTypePolicies = new SparseArray<>();
+        private final ArrayMap<String, ForegroundServiceTypePolicyInfo> mPermissionEnforcementToPolicyInfoMap = new ArrayMap<>();
 
         public DefaultForegroundServiceTypePolicy() {
-            SparseArray<ForegroundServiceTypePolicyInfo> sparseArray = new SparseArray<>();
-            this.mForegroundServiceTypePolicies = sparseArray;
-            this.mPermissionEnforcementToPolicyInfoMap = new ArrayMap<>();
-            sparseArray.put(-1, FGS_TYPE_POLICY_MANIFEST);
-            sparseArray.put(0, FGS_TYPE_POLICY_NONE);
-            sparseArray.put(1, FGS_TYPE_POLICY_DATA_SYNC);
-            sparseArray.put(2, FGS_TYPE_POLICY_MEDIA_PLAYBACK);
-            sparseArray.put(4, FGS_TYPE_POLICY_PHONE_CALL);
-            sparseArray.put(8, FGS_TYPE_POLICY_LOCATION);
-            sparseArray.put(16, FGS_TYPE_POLICY_CONNECTED_DEVICE);
-            sparseArray.put(32, FGS_TYPE_POLICY_MEDIA_PROJECTION);
-            sparseArray.put(64, FGS_TYPE_POLICY_CAMERA);
-            sparseArray.put(128, FGS_TYPE_POLICY_MICROPHONE);
-            sparseArray.put(256, FGS_TYPE_POLICY_HEALTH);
-            sparseArray.put(512, FGS_TYPE_POLICY_REMOTE_MESSAGING);
-            sparseArray.put(1024, FGS_TYPE_POLICY_SYSTEM_EXEMPTED);
-            sparseArray.put(2048, FGS_TYPE_POLICY_SHORT_SERVICE);
-            sparseArray.put(1073741824, FGS_TYPE_POLICY_SPECIAL_USE);
-            int size = sparseArray.size();
+            this.mForegroundServiceTypePolicies.put(-1, FGS_TYPE_POLICY_MANIFEST);
+            this.mForegroundServiceTypePolicies.put(0, FGS_TYPE_POLICY_NONE);
+            this.mForegroundServiceTypePolicies.put(1, FGS_TYPE_POLICY_DATA_SYNC);
+            this.mForegroundServiceTypePolicies.put(2, FGS_TYPE_POLICY_MEDIA_PLAYBACK);
+            this.mForegroundServiceTypePolicies.put(4, FGS_TYPE_POLICY_PHONE_CALL);
+            this.mForegroundServiceTypePolicies.put(8, FGS_TYPE_POLICY_LOCATION);
+            this.mForegroundServiceTypePolicies.put(16, FGS_TYPE_POLICY_CONNECTED_DEVICE);
+            this.mForegroundServiceTypePolicies.put(32, FGS_TYPE_POLICY_MEDIA_PROJECTION);
+            this.mForegroundServiceTypePolicies.put(64, FGS_TYPE_POLICY_CAMERA);
+            this.mForegroundServiceTypePolicies.put(128, FGS_TYPE_POLICY_MICROPHONE);
+            this.mForegroundServiceTypePolicies.put(256, FGS_TYPE_POLICY_HEALTH);
+            this.mForegroundServiceTypePolicies.put(512, FGS_TYPE_POLICY_REMOTE_MESSAGING);
+            this.mForegroundServiceTypePolicies.put(1024, FGS_TYPE_POLICY_SYSTEM_EXEMPTED);
+            this.mForegroundServiceTypePolicies.put(2048, FGS_TYPE_POLICY_SHORT_SERVICE);
+            this.mForegroundServiceTypePolicies.put(8192, FGS_TYPE_POLICY_MEDIA_PROCESSING);
+            this.mForegroundServiceTypePolicies.put(1073741824, FGS_TYPE_POLICY_SPECIAL_USE);
+            int size = this.mForegroundServiceTypePolicies.size();
             for (int i = 0; i < size; i++) {
                 ForegroundServiceTypePolicyInfo info = this.mForegroundServiceTypePolicies.valueAt(i);
                 this.mPermissionEnforcementToPolicyInfoMap.put(info.mPermissionEnforcementFlag, info);

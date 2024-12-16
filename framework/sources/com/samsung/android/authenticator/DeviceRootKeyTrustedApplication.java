@@ -5,7 +5,7 @@ final class DeviceRootKeyTrustedApplication implements TrustedApplication {
     private static final String TAG = "DRTA";
     private final int mHandle;
 
-    public DeviceRootKeyTrustedApplication(int handle) {
+    DeviceRootKeyTrustedApplication(int handle) {
         this.mHandle = handle;
     }
 

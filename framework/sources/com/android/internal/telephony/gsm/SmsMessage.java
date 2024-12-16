@@ -1,10 +1,12 @@
 package com.android.internal.telephony.gsm;
 
-import android.app.settings.SettingsEnums;
+import android.app.ActivityThread;
+import android.content.Context;
 import android.content.res.Resources;
 import android.drm.DrmManagerClient;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.SystemProperties;
+import android.provider.Settings;
 import android.security.keystore.KeyProperties;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
@@ -19,6 +21,7 @@ import com.android.internal.telephony.SmsAddress;
 import com.android.internal.telephony.SmsConstants;
 import com.android.internal.telephony.SmsHeader;
 import com.android.internal.telephony.SmsMessageBase;
+import com.android.internal.telephony.TelephonyFeatures;
 import com.android.internal.telephony.uicc.IccUtils;
 import com.android.telephony.Rlog;
 import com.google.android.mms.pdu.CharacterSets;
@@ -52,7 +55,6 @@ public class SmsMessage extends SmsMessageBase {
     private boolean mIsStatusReportMessage = false;
     private int mVoiceMailCount = 0;
 
-    /* loaded from: classes5.dex */
     public static class SubmitPdu extends SmsMessageBase.SubmitPduBase {
     }
 
@@ -477,8 +479,7 @@ public class SmsMessage extends SmsMessageBase {
         return null;
     }
 
-    /* loaded from: classes5.dex */
-    public static class PduParser {
+    private static class PduParser {
         byte[] mPdu;
         byte[] mUserData;
         SmsHeader mUserDataHeader;
@@ -564,7 +565,7 @@ public class SmsMessage extends SmsMessageBase {
             int timezoneOffset = IccUtils.gsmBcdByteToInt((byte) (tzByte & (-9)));
             int timezoneOffset2 = (tzByte & 8) == 0 ? timezoneOffset : -timezoneOffset;
             Time time = new Time(Time.TIMEZONE_UTC);
-            time.year = year >= 90 ? year + SettingsEnums.ACCESSIBILITY_MENU : year + 2000;
+            time.year = year >= 90 ? year + 1900 : year + 2000;
             time.month = month - 1;
             time.monthDay = day;
             time.hour = hour;
@@ -585,16 +586,15 @@ public class SmsMessage extends SmsMessageBase {
                     offset++;
                     break;
             }
-            byte[] bArr = this.mPdu;
             int offset2 = offset + 1;
-            int userDataLength = bArr[offset] & 255;
+            int userDataLength = this.mPdu[offset] & 255;
             int headerSeptets = 0;
             int userDataHeaderLength = 0;
             if (hasUserDataHeader) {
                 int offset3 = offset2 + 1;
-                userDataHeaderLength = bArr[offset2] & 255;
+                userDataHeaderLength = this.mPdu[offset2] & 255;
                 byte[] udh = new byte[userDataHeaderLength];
-                System.arraycopy(bArr, offset3, udh, 0, userDataHeaderLength);
+                System.arraycopy(this.mPdu, offset3, udh, 0, userDataHeaderLength);
                 this.mUserDataHeader = SmsHeader.semFromByteArray(this.mSubId, udh);
                 int offset4 = offset3 + userDataHeaderLength;
                 int headerBits = (userDataHeaderLength + 1) * 8;
@@ -613,9 +613,7 @@ public class SmsMessage extends SmsMessageBase {
             }
             this.mUserData = new byte[bufferLen];
             if (!SmsMessage.mUnsupportedDatacodingScheme || hasUserDataHeader) {
-                byte[] bArr2 = this.mPdu;
-                byte[] bArr3 = this.mUserData;
-                System.arraycopy(bArr2, offset2, bArr3, 0, bArr3.length);
+                System.arraycopy(this.mPdu, offset2, this.mUserData, 0, this.mUserData.length);
             } else {
                 Rlog.e(SmsMessage.LOG_TAG, "array copy skip! if dataCodingScheme is unsupporting,\n encodingType is Unknown and messageBody is null");
             }
@@ -743,8 +741,7 @@ public class SmsMessage extends SmsMessageBase {
 
     @Override // com.android.internal.telephony.SmsMessageBase
     public boolean isReplace() {
-        int i = this.mProtocolIdentifier;
-        return (i & 192) == 64 && (i & 63) > 0 && (i & 63) < 8;
+        return (this.mProtocolIdentifier & 192) == 64 && (this.mProtocolIdentifier & 63) > 0 && (this.mProtocolIdentifier & 63) < 8;
     }
 
     @Override // com.android.internal.telephony.SmsMessageBase
@@ -778,9 +775,8 @@ public class SmsMessage extends SmsMessageBase {
                 if (" ".equals(getMessageBody())) {
                     return true;
                 }
-                String str = SALES_CODE;
-                if ("RWC".equals(str) || SSLSocketFactory.TLS.equals(str) || "MTA".equals(str)) {
-                    Rlog.d(LOG_TAG, "CPHS MWI messages in Canada " + str + " don't store");
+                if ("RWC".equals(SALES_CODE) || SSLSocketFactory.TLS.equals(SALES_CODE) || "MTA".equals(SALES_CODE)) {
+                    Rlog.d(LOG_TAG, "CPHS MWI messages in Canada " + SALES_CODE + " don't store");
                     return true;
                 }
             } else {
@@ -910,27 +906,27 @@ public class SmsMessage extends SmsMessageBase {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0250, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0269, code lost:
     
-        if ((r14 & 240) != 224) goto L349;
+        if ((r18.mDataCodingScheme & 240) != 224) goto L107;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0259, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x0276, code lost:
     
-        r19.mMwiDontStore = true;
+        r18.mMwiDontStore = true;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x0257, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0274, code lost:
     
-        if ((r14 & 3) != 0) goto L349;
+        if ((r18.mDataCodingScheme & 3) != 0) goto L107;
      */
-    /* JADX WARN: Removed duplicated region for block: B:185:0x00a1  */
-    /* JADX WARN: Removed duplicated region for block: B:187:0x00a3  */
+    /* JADX WARN: Removed duplicated region for block: B:185:0x00aa  */
+    /* JADX WARN: Removed duplicated region for block: B:187:0x00ac  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private void parseUserData(com.android.internal.telephony.gsm.SmsMessage.PduParser r20, boolean r21) {
+    private void parseUserData(com.android.internal.telephony.gsm.SmsMessage.PduParser r19, boolean r20) {
         /*
-            Method dump skipped, instructions count: 1306
+            Method dump skipped, instructions count: 1334
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.telephony.gsm.SmsMessage.parseUserData(com.android.internal.telephony.gsm.SmsMessage$PduParser, boolean):void");
@@ -942,8 +938,7 @@ public class SmsMessage extends SmsMessageBase {
     }
 
     boolean isUsimDataDownload() {
-        int i;
-        return this.messageClass == SmsConstants.MessageClass.CLASS_2 && ((i = this.mProtocolIdentifier) == 127 || i == 124);
+        return this.messageClass == SmsConstants.MessageClass.CLASS_2 && (this.mProtocolIdentifier == 127 || this.mProtocolIdentifier == 124);
     }
 
     public int getNumOfVoicemails() {
@@ -1071,19 +1066,18 @@ public class SmsMessage extends SmsMessageBase {
         return getSubmitPdu(subId, scAddress, destinationAddress, message, statusReportRequested, null, replyPath, expiry, serviceType, encodingType, a, b);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:48:0x0181  */
-    /* JADX WARN: Removed duplicated region for block: B:58:0x01b2  */
-    /* JADX WARN: Removed duplicated region for block: B:61:0x01d0 A[RETURN] */
-    /* JADX WARN: Removed duplicated region for block: B:62:0x01d2  */
-    /* JADX WARN: Removed duplicated region for block: B:71:0x01ca  */
-    /* JADX WARN: Removed duplicated region for block: B:78:0x01a4  */
+    /* JADX WARN: Removed duplicated region for block: B:47:0x017a  */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x01a9  */
+    /* JADX WARN: Removed duplicated region for block: B:60:0x01cb A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x01cd  */
+    /* JADX WARN: Removed duplicated region for block: B:70:0x01c3  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public static com.android.internal.telephony.gsm.SmsMessage.SubmitPdu getSubmitPdu(int r17, java.lang.String r18, java.lang.String r19, java.lang.String r20, boolean r21, byte[] r22, boolean r23, int r24, int r25, int r26, int r27, int r28) {
         /*
-            Method dump skipped, instructions count: 552
+            Method dump skipped, instructions count: 545
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.telephony.gsm.SmsMessage.getSubmitPdu(int, java.lang.String, java.lang.String, java.lang.String, boolean, byte[], boolean, int, int, int, int, int):com.android.internal.telephony.gsm.SmsMessage$SubmitPdu");
@@ -1120,6 +1114,25 @@ public class SmsMessage extends SmsMessageBase {
             Rlog.e(LOG_TAG, "Implausible UnsupportedEncodingException ", ex);
             return null;
         }
+    }
+
+    private static boolean useValidityPeriod(int subId) {
+        Context context;
+        if (SmsManager.getSmsManagerForContextAndSubscriptionId(null, subId).getSmsSetting(SmsConstants.SMS_NOT_USED_VALIDITY_PERIOD_FORMAT)) {
+            return false;
+        }
+        if (TelephonyFeatures.isSupportTiantong() && (context = ActivityThread.currentApplication().getApplicationContext()) != null) {
+            try {
+                if (Settings.Global.getInt(context.getContentResolver(), Settings.Global.SATELLITE_MODE_ENABLED, 0) != 0) {
+                    Rlog.d(LOG_TAG, "Do not use TP-VP for Tiantong");
+                    return false;
+                }
+            } catch (SecurityException e) {
+                Rlog.e(LOG_TAG, "SecurityException during get setting DB" + e);
+                return true;
+            }
+        }
+        return true;
     }
 
     public static GsmAlphabet.TextEncodingDetails calculateLengthWithEncodingType(CharSequence msgBody, boolean use7bitOnly, int encodingType) {

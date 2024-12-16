@@ -29,7 +29,7 @@ public class Layer extends Element implements HierarchyInterface<Item> {
     Panel panel;
     protected ArrayList<TransitionAnimation> transitionAnimationList;
 
-    public Layer(VEContext context, LayerType type, int id, String name) {
+    protected Layer(VEContext context, LayerType type, int id, String name) {
         super(context, ElementType.LAYER, id, name);
         this.itemList = new ArrayList<>();
         this.isVisible = true;
@@ -50,7 +50,7 @@ public class Layer extends Element implements HierarchyInterface<Item> {
     }
 
     public Layer setPanel(Panel panel) {
-        this.panel = panel.m8985clone();
+        this.panel = panel.m9389clone();
         return this;
     }
 
@@ -153,6 +153,7 @@ public class Layer extends Element implements HierarchyInterface<Item> {
         return this.itemList.indexOf(element);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.vekit.Interface.HierarchyInterface
     public Item getChild(int index) {
         return this.itemList.get(index);
@@ -184,6 +185,7 @@ public class Layer extends Element implements HierarchyInterface<Item> {
             checkValidAnimation(animation);
             this.context.getNativeInterface().detachAnimation(this, animation.getId());
             this.animationList.remove(animation);
+            animation.rollback();
             animation.setTarget(null);
         } catch (Exception e) {
             Log.e(this.TAG, "detachAnimation: ", e);
@@ -204,6 +206,7 @@ public class Layer extends Element implements HierarchyInterface<Item> {
         Iterator<Animation<?>> it = this.animationList.iterator();
         while (it.hasNext()) {
             Animation animation = it.next();
+            animation.rollback();
             animation.setTarget(null);
         }
         this.animationList.clear();
@@ -297,11 +300,10 @@ public class Layer extends Element implements HierarchyInterface<Item> {
     }
 
     public void checkValidItem(final Item item) throws Exception {
-        ItemType[] itemTypeArr = this.availableTypes;
-        if (itemTypeArr == null) {
+        if (this.availableTypes == null) {
             return;
         }
-        boolean valid = Arrays.stream(itemTypeArr).anyMatch(new Predicate() { // from class: com.samsung.vekit.Layer.Layer$$ExternalSyntheticLambda0
+        boolean valid = Arrays.stream(this.availableTypes).anyMatch(new Predicate() { // from class: com.samsung.vekit.Layer.Layer$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return Layer.lambda$checkValidItem$0(Item.this, (ItemType) obj);
@@ -312,7 +314,7 @@ public class Layer extends Element implements HierarchyInterface<Item> {
         }
     }
 
-    public static /* synthetic */ boolean lambda$checkValidItem$0(Item item, ItemType type) {
+    static /* synthetic */ boolean lambda$checkValidItem$0(Item item, ItemType type) {
         return type == item.getItemType();
     }
 

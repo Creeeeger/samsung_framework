@@ -17,9 +17,7 @@ import java.util.regex.Pattern;
 /* loaded from: classes3.dex */
 public final class TimeZoneProviderStatus implements Parcelable {
     public static final Parcelable.Creator<TimeZoneProviderStatus> CREATOR = new Parcelable.Creator<TimeZoneProviderStatus>() { // from class: android.service.timezone.TimeZoneProviderStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderStatus createFromParcel(Parcel in) {
             int locationDetectionStatus = in.readInt();
@@ -28,6 +26,7 @@ public final class TimeZoneProviderStatus implements Parcelable {
             return new TimeZoneProviderStatus(locationDetectionStatus, connectivityStatus, timeZoneResolutionStatus);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderStatus[] newArray(int size) {
             return new TimeZoneProviderStatus[size];
@@ -50,18 +49,12 @@ public final class TimeZoneProviderStatus implements Parcelable {
 
     @Target({ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DependencyStatus {
     }
 
     @Target({ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface OperationStatus {
-    }
-
-    /* synthetic */ TimeZoneProviderStatus(int i, int i2, int i3, TimeZoneProviderStatusIA timeZoneProviderStatusIA) {
-        this(i, i2, i3);
     }
 
     private TimeZoneProviderStatus(int locationDetectionStatus, int connectivityStatus, int timeZoneResolutionStatus) {
@@ -98,26 +91,6 @@ public final class TimeZoneProviderStatus implements Parcelable {
         return new TimeZoneProviderStatus(locationDependencyStatus, connectivityDependencyStatus, timeZoneResolutionOperationStatus);
     }
 
-    /* renamed from: android.service.timezone.TimeZoneProviderStatus$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimeZoneProviderStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneProviderStatus createFromParcel(Parcel in) {
-            int locationDetectionStatus = in.readInt();
-            int connectivityStatus = in.readInt();
-            int timeZoneResolutionStatus = in.readInt();
-            return new TimeZoneProviderStatus(locationDetectionStatus, connectivityStatus, timeZoneResolutionStatus);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneProviderStatus[] newArray(int size) {
-            return new TimeZoneProviderStatus[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -149,12 +122,9 @@ public final class TimeZoneProviderStatus implements Parcelable {
     }
 
     public boolean couldEnableTelephonyFallback() {
-        int i;
-        int i2 = this.mLocationDetectionDependencyStatus;
-        return i2 == 4 || i2 == 6 || (i = this.mConnectivityDependencyStatus) == 4 || i == 6;
+        return this.mLocationDetectionDependencyStatus == 4 || this.mLocationDetectionDependencyStatus == 6 || this.mConnectivityDependencyStatus == 4 || this.mConnectivityDependencyStatus == 6;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mConnectivityDependencyStatus;
         private int mLocationDetectionDependencyStatus;
@@ -195,6 +165,7 @@ public final class TimeZoneProviderStatus implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int requireValidOperationStatus(int operationStatus) {
         if (operationStatus < 0 || operationStatus > 3) {
             throw new IllegalArgumentException(Integer.toString(operationStatus));
@@ -270,6 +241,7 @@ public final class TimeZoneProviderStatus implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int requireValidDependencyStatus(int dependencyStatus) {
         if (dependencyStatus < 0 || dependencyStatus > 6) {
             throw new IllegalArgumentException(Integer.toString(dependencyStatus));

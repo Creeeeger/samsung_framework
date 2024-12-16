@@ -11,7 +11,7 @@ public class UndoOwner {
     int mStateSeq;
     final String mTag;
 
-    public UndoOwner(String tag, UndoManager manager) {
+    UndoOwner(String tag, UndoManager manager) {
         if (tag == null) {
             throw new NullPointerException("tag can't be null");
         }

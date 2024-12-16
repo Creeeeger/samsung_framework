@@ -23,7 +23,7 @@ public class XmlWriter implements Closeable {
         this.startLine = false;
     }
 
-    public void print(String code) {
+    void print(String code) {
         String[] lines = code.split("\n", -1);
         for (int i = 0; i < lines.length; i++) {
             if (this.startLine && !lines[i].isEmpty()) {
@@ -37,11 +37,11 @@ public class XmlWriter implements Closeable {
         }
     }
 
-    public void increaseIndent() {
+    void increaseIndent() {
         this.indent++;
     }
 
-    public void decreaseIndent() {
+    void decreaseIndent() {
         this.indent--;
     }
 
@@ -51,9 +51,8 @@ public class XmlWriter implements Closeable {
 
     @Override // java.io.Closeable, java.lang.AutoCloseable
     public void close() {
-        PrintWriter printWriter = this.out;
-        if (printWriter != null) {
-            printWriter.close();
+        if (this.out != null) {
+            this.out.close();
         }
     }
 

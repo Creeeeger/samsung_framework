@@ -1,15 +1,13 @@
 package com.samsung.android.knoxguard;
 
-import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.UserHandle;
 import android.util.Log;
 import com.samsung.android.knoxguard.IKnoxGuardManager;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxGuardManager {
     private static final String KNOXGUARD_SERVICE = "knoxguard_service";
     private static String TAG = "KnoxGuardManager";
@@ -37,16 +35,6 @@ public class KnoxGuardManager {
         return this.mService;
     }
 
-    public void callKGsv() {
-        if (getService() != null) {
-            try {
-                this.mService.callKGsv();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-            }
-        }
-    }
-
     public void registerIntent(String preFix, List<String> actionList) {
         if (getService() != null) {
             try {
@@ -57,136 +45,12 @@ public class KnoxGuardManager {
         }
     }
 
-    public boolean setAdminRemovable(boolean removable) {
-        if (getService() != null) {
-            try {
-                return this.mService.setAdminRemovable(removable);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean allowFirmwareRecovery(boolean allow) {
-        if (getService() != null) {
-            try {
-                return this.mService.allowFirmwareRecovery(allow);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean allowOTAUpgrade(boolean allow) {
-        if (getService() != null) {
-            try {
-                return this.mService.allowOTAUpgrade(allow);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean allowSafeMode(boolean allow) {
-        if (getService() != null) {
-            try {
-                return this.mService.allowSafeMode(allow);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean addPackagesToForceStopBlockList(List<String> packageList) {
-        if (getService() != null) {
-            try {
-                return this.mService.addPackagesToForceStopBlockList(packageList);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean addPackagesToClearCacheBlockList(List<String> packageList) {
-        if (getService() != null) {
-            try {
-                return this.mService.addPackagesToClearCacheBlockList(packageList);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean setApplicationUninstallationDisabled(String packageName) {
-        if (getService() != null) {
-            try {
-                return this.mService.setApplicationUninstallationDisabled(packageName);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with Knox Guard service", e);
-                return false;
-            }
-        }
-        return false;
-    }
-
     public void setAirplaneMode(boolean enabled) {
         if (getService() != null) {
             try {
                 this.mService.setAirplaneMode(enabled);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with Knox Guard service", e);
-            }
-        }
-    }
-
-    public void setActiveAdmin(ComponentName adminReceiver) {
-        if (getService() != null) {
-            try {
-                this.mService.setActiveAdmin(adminReceiver);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with KnoxGuard service", e);
-            }
-        }
-    }
-
-    public void removeActiveAdmin(ComponentName adminReceiver) {
-        if (getService() != null) {
-            try {
-                this.mService.removeActiveAdmin(adminReceiver);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with KnoxGuard service", e);
-            }
-        }
-    }
-
-    public void setRuntimePermission(String packageName, String permission, UserHandle userhandle) {
-        if (getService() != null) {
-            try {
-                this.mService.setRuntimePermission(packageName, permission, userhandle);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with KnoxGuard service", e);
-            }
-        }
-    }
-
-    public void revokeRuntimePermission(String packageName, String permission, UserHandle userhandle) {
-        if (getService() != null) {
-            try {
-                this.mService.revokeRuntimePermission(packageName, permission, userhandle);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with KnoxGuard service", e);
             }
         }
     }
@@ -259,19 +123,6 @@ public class KnoxGuardManager {
         return false;
     }
 
-    public void setKnoxGuardExemptRule(boolean add) {
-        if (getService() != null) {
-            try {
-                this.mService.setKnoxGuardExemptRule(add);
-                return;
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with KnoxGuard service", e);
-                return;
-            }
-        }
-        Log.w(TAG, "No Knox Guard Service found");
-    }
-
     public void bindToLockScreen() {
         if (getService() != null) {
             try {
@@ -315,19 +166,6 @@ public class KnoxGuardManager {
             Log.w(TAG, "Failed talking with Knox Guard service", e);
             return "";
         }
-    }
-
-    public int verifyHOTPsecret(String s) {
-        if (getService() != null) {
-            try {
-                return this.mService.verifyHOTPsecret(s);
-            } catch (RemoteException e) {
-                Log.w(TAG, "failed talking with KnoxGuard KGTA processcommand", e);
-                return -1000;
-            }
-        }
-        Log.w(TAG, "failed talking with KnoxGuard KGTA, service not exist");
-        return -1000;
     }
 
     public int verifyHOTPDHChallenge(String hub, String sigature, String challenge) {
@@ -531,18 +369,6 @@ public class KnoxGuardManager {
         return -1;
     }
 
-    public int resetRPMB2(String optional) {
-        if (getService() != null) {
-            try {
-                return this.mService.resetRPMB2(optional);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with KnoxGuard KGTA processCommand", e);
-                return -1;
-            }
-        }
-        return -1;
-    }
-
     public int setCheckingState() {
         if (getService() != null) {
             try {
@@ -626,16 +452,6 @@ public class KnoxGuardManager {
         return false;
     }
 
-    public void setClientHealthOK() {
-        if (getService() != null) {
-            try {
-                this.mService.setClientHealthOK();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with KnoxGuard KGTA processCommand", e);
-            }
-        }
-    }
-
     public Bundle getKGServiceInfo() {
         if (getService() != null) {
             try {
@@ -646,5 +462,53 @@ public class KnoxGuardManager {
             }
         }
         return null;
+    }
+
+    public int verifySfPolicy(String sfPolicy, String signature) {
+        if (getService() != null) {
+            try {
+                return this.mService.verifySfPolicy(sfPolicy, signature);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed talking with KnoxGuard service", e);
+                return -1;
+            }
+        }
+        return -1;
+    }
+
+    public String getSfPolicy() {
+        if (getService() != null) {
+            try {
+                return this.mService.getSfPolicy();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed talking with KnoxGuard service", e);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public boolean isKGAllowDO() {
+        if (getService() != null) {
+            try {
+                return this.mService.isKGAllowDO();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed talking with KnoxGuard service", e);
+                return true;
+            }
+        }
+        return true;
+    }
+
+    public boolean isKGAllowADB() {
+        if (getService() != null) {
+            try {
+                return this.mService.isKGAllowADB();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed talking with KnoxGuard service", e);
+                return true;
+            }
+        }
+        return true;
     }
 }

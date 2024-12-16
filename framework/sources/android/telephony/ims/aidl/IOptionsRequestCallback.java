@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.RcsContactUceCapability;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IOptionsRequestCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IOptionsRequestCallback";
 
@@ -15,7 +15,6 @@ public interface IOptionsRequestCallback extends IInterface {
 
     void respondToCapabilityRequestWithError(int i, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IOptionsRequestCallback {
         @Override // android.telephony.ims.aidl.IOptionsRequestCallback
         public void respondToCapabilityRequest(RcsContactUceCapability ownCapabilities, boolean isBlocked) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IOptionsRequestCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IOptionsRequestCallback {
         static final int TRANSACTION_respondToCapabilityRequest = 1;
         static final int TRANSACTION_respondToCapabilityRequestWithError = 2;
@@ -77,33 +75,29 @@ public interface IOptionsRequestCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOptionsRequestCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOptionsRequestCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOptionsRequestCallback.DESCRIPTOR);
+                case 1:
+                    RcsContactUceCapability _arg0 = (RcsContactUceCapability) data.readTypedObject(RcsContactUceCapability.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    respondToCapabilityRequest(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    respondToCapabilityRequestWithError(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RcsContactUceCapability _arg0 = (RcsContactUceCapability) data.readTypedObject(RcsContactUceCapability.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            respondToCapabilityRequest(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            respondToCapabilityRequestWithError(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IOptionsRequestCallback {
+        private static class Proxy implements IOptionsRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

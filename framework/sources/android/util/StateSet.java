@@ -12,7 +12,7 @@ public class StateSet {
     public static final int VIEW_STATE_ENABLED = 8;
     public static final int VIEW_STATE_FOCUSED = 4;
     public static final int VIEW_STATE_HOVERED = 128;
-    static final int[] VIEW_STATE_IDS;
+    static final int[] VIEW_STATE_IDS = {16842909, 1, 16842913, 2, 16842908, 4, 16842910, 8, 16842919, 16, 16843518, 32, 16843547, 64, 16843623, 128, 16843624, 256, 16843625, 512, R.attr.zzz_state_spen_hovered, 1024};
     public static final int VIEW_STATE_PRESSED = 16;
     public static final int VIEW_STATE_SELECTED = 2;
     private static final int[][] VIEW_STATE_SETS;
@@ -21,28 +21,21 @@ public class StateSet {
     public static final int[] WILD_CARD;
 
     static {
-        int[] iArr = {16842909, 1, 16842913, 2, 16842908, 4, 16842910, 8, 16842919, 16, 16843518, 32, 16843547, 64, 16843623, 128, 16843624, 256, 16843625, 512, R.attr.zzz_state_spen_hovered, 1024};
-        VIEW_STATE_IDS = iArr;
-        if (iArr.length / 2 != R.styleable.ViewDrawableStates.length) {
+        if (VIEW_STATE_IDS.length / 2 != R.styleable.ViewDrawableStates.length) {
             throw new IllegalStateException("VIEW_STATE_IDs array length does not match ViewDrawableStates style array");
         }
-        int[] orderedIds = new int[iArr.length];
+        int[] orderedIds = new int[VIEW_STATE_IDS.length];
         for (int i = 0; i < R.styleable.ViewDrawableStates.length; i++) {
             int viewState = R.styleable.ViewDrawableStates[i];
-            int j = 0;
-            while (true) {
-                int[] iArr2 = VIEW_STATE_IDS;
-                if (j < iArr2.length) {
-                    if (iArr2[j] == viewState) {
-                        orderedIds[i * 2] = viewState;
-                        orderedIds[(i * 2) + 1] = iArr2[j + 1];
-                    }
-                    j += 2;
+            for (int j = 0; j < VIEW_STATE_IDS.length; j += 2) {
+                if (VIEW_STATE_IDS[j] == viewState) {
+                    orderedIds[i * 2] = viewState;
+                    orderedIds[(i * 2) + 1] = VIEW_STATE_IDS[j + 1];
                 }
             }
         }
         int NUM_BITS = VIEW_STATE_IDS.length / 2;
-        VIEW_STATE_SETS = new int[1 << NUM_BITS];
+        VIEW_STATE_SETS = new int[1 << NUM_BITS][];
         for (int i2 = 0; i2 < VIEW_STATE_SETS.length; i2++) {
             int numBits = Integer.bitCount(i2);
             int[] set = new int[numBits];
@@ -60,11 +53,10 @@ public class StateSet {
     }
 
     public static int[] get(int mask) {
-        int[][] iArr = VIEW_STATE_SETS;
-        if (mask >= iArr.length) {
+        if (mask >= VIEW_STATE_SETS.length) {
             throw new IllegalArgumentException("Invalid state set mask");
         }
-        return iArr[mask];
+        return VIEW_STATE_SETS[mask];
     }
 
     public static boolean isWildCard(int[] stateSetOrSpec) {

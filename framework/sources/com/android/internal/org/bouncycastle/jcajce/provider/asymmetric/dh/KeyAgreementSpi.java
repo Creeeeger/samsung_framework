@@ -77,26 +77,22 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
             throw new InvalidKeyException("DHPublicKey not for this KeyAgreement!");
         }
         BigInteger peerY = ((DHPublicKey) key).getY();
-        if (peerY != null && peerY.compareTo(TWO) >= 0) {
-            BigInteger bigInteger = this.p;
-            BigInteger bigInteger2 = ONE;
-            if (peerY.compareTo(bigInteger.subtract(bigInteger2)) < 0) {
-                BigInteger res = peerY.modPow(this.x, this.p);
-                if (res.compareTo(bigInteger2) == 0) {
-                    throw new InvalidKeyException("Shared key can't be 1");
-                }
-                this.result = bigIntToBytes(res);
-                if (lastPhase) {
-                    return null;
-                }
-                return new BCDHPublicKey(res, pubKey.getParams());
-            }
+        if (peerY == null || peerY.compareTo(TWO) < 0 || peerY.compareTo(this.p.subtract(ONE)) >= 0) {
+            throw new InvalidKeyException("Invalid DH PublicKey");
         }
-        throw new InvalidKeyException("Invalid DH PublicKey");
+        BigInteger res = peerY.modPow(this.x, this.p);
+        if (res.compareTo(ONE) == 0) {
+            throw new InvalidKeyException("Shared key can't be 1");
+        }
+        this.result = bigIntToBytes(res);
+        if (lastPhase) {
+            return null;
+        }
+        return new BCDHPublicKey(res, pubKey.getParams());
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseAgreementSpi, javax.crypto.KeyAgreementSpi
-    public byte[] engineGenerateSecret() throws IllegalStateException {
+    protected byte[] engineGenerateSecret() throws IllegalStateException {
         if (this.x == null) {
             throw new IllegalStateException("Diffie-Hellman not initialised.");
         }
@@ -104,7 +100,7 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseAgreementSpi, javax.crypto.KeyAgreementSpi
-    public int engineGenerateSecret(byte[] sharedSecret, int offset) throws IllegalStateException, ShortBufferException {
+    protected int engineGenerateSecret(byte[] sharedSecret, int offset) throws IllegalStateException, ShortBufferException {
         if (this.x == null) {
             throw new IllegalStateException("Diffie-Hellman not initialised.");
         }
@@ -112,7 +108,7 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseAgreementSpi, javax.crypto.KeyAgreementSpi
-    public SecretKey engineGenerateSecret(String algorithm) throws NoSuchAlgorithmException {
+    protected SecretKey engineGenerateSecret(String algorithm) throws NoSuchAlgorithmException {
         if (this.x == null) {
             throw new IllegalStateException("Diffie-Hellman not initialised.");
         }
@@ -148,9 +144,8 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
             this.p = privKey.getParams().getP();
             this.g = privKey.getParams().getG();
         }
-        BigInteger x = privKey.getX();
-        this.x = x;
-        this.result = bigIntToBytes(x);
+        this.x = privKey.getX();
+        this.result = bigIntToBytes(this.x);
     }
 
     @Override // javax.crypto.KeyAgreementSpi
@@ -161,9 +156,8 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
         DHPrivateKey privKey = (DHPrivateKey) key;
         this.p = privKey.getParams().getP();
         this.g = privKey.getParams().getG();
-        BigInteger x = privKey.getX();
-        this.x = x;
-        this.result = bigIntToBytes(x);
+        this.x = privKey.getX();
+        this.result = bigIntToBytes(this.x);
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseAgreementSpi

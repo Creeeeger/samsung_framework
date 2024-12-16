@@ -5,23 +5,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* loaded from: classes4.dex */
-public final class IntArrayList extends AbstractProtobufList<Integer> implements Internal.IntList, RandomAccess, PrimitiveNonBoxingCollection {
-    private static final IntArrayList EMPTY_LIST;
+/* loaded from: classes3.dex */
+final class IntArrayList extends AbstractProtobufList<Integer> implements Internal.IntList, RandomAccess, PrimitiveNonBoxingCollection {
+    private static final IntArrayList EMPTY_LIST = new IntArrayList(new int[0], 0);
     private int[] array;
     private int size;
 
     static {
-        IntArrayList intArrayList = new IntArrayList(new int[0], 0);
-        EMPTY_LIST = intArrayList;
-        intArrayList.makeImmutable();
+        EMPTY_LIST.makeImmutable();
     }
 
     public static IntArrayList emptyList() {
         return EMPTY_LIST;
     }
 
-    public IntArrayList() {
+    IntArrayList() {
         this(new int[10], 0);
     }
 
@@ -36,8 +34,7 @@ public final class IntArrayList extends AbstractProtobufList<Integer> implements
         if (toIndex < fromIndex) {
             throw new IndexOutOfBoundsException("toIndex < fromIndex");
         }
-        int[] iArr = this.array;
-        System.arraycopy(iArr, toIndex, iArr, fromIndex, this.size - toIndex);
+        System.arraycopy(this.array, toIndex, this.array, fromIndex, this.size - toIndex);
         this.size -= toIndex - fromIndex;
         this.modCount++;
     }
@@ -126,9 +123,8 @@ public final class IntArrayList extends AbstractProtobufList<Integer> implements
     public int setInt(int index, int element) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        int[] iArr = this.array;
-        int previousValue = iArr[index];
-        iArr[index] = element;
+        int previousValue = this.array[index];
+        this.array[index] = element;
         return previousValue;
     }
 
@@ -146,33 +142,29 @@ public final class IntArrayList extends AbstractProtobufList<Integer> implements
     @Override // com.android.framework.protobuf.Internal.IntList
     public void addInt(int element) {
         ensureIsMutable();
-        int i = this.size;
-        int[] iArr = this.array;
-        if (i == iArr.length) {
-            int length = ((i * 3) / 2) + 1;
+        if (this.size == this.array.length) {
+            int length = ((this.size * 3) / 2) + 1;
             int[] newArray = new int[length];
-            System.arraycopy(iArr, 0, newArray, 0, i);
+            System.arraycopy(this.array, 0, newArray, 0, this.size);
             this.array = newArray;
         }
-        int[] iArr2 = this.array;
-        int i2 = this.size;
-        this.size = i2 + 1;
-        iArr2[i2] = element;
+        int[] iArr = this.array;
+        int i = this.size;
+        this.size = i + 1;
+        iArr[i] = element;
     }
 
     private void addInt(int index, int element) {
-        int i;
         ensureIsMutable();
-        if (index < 0 || index > (i = this.size)) {
+        if (index < 0 || index > this.size) {
             throw new IndexOutOfBoundsException(makeOutOfBoundsExceptionMessage(index));
         }
-        int[] iArr = this.array;
-        if (i < iArr.length) {
-            System.arraycopy(iArr, index, iArr, index + 1, i - index);
+        if (this.size < this.array.length) {
+            System.arraycopy(this.array, index, this.array, index + 1, this.size - index);
         } else {
-            int length = ((i * 3) / 2) + 1;
+            int length = ((this.size * 3) / 2) + 1;
             int[] newArray = new int[length];
-            System.arraycopy(iArr, 0, newArray, 0, index);
+            System.arraycopy(this.array, 0, newArray, 0, index);
             System.arraycopy(this.array, index, newArray, index + 1, this.size - index);
             this.array = newArray;
         }
@@ -189,19 +181,16 @@ public final class IntArrayList extends AbstractProtobufList<Integer> implements
             return super.addAll(collection);
         }
         IntArrayList list = (IntArrayList) collection;
-        int i = list.size;
-        if (i == 0) {
+        if (list.size == 0) {
             return false;
         }
-        int i2 = this.size;
-        int overflow = Integer.MAX_VALUE - i2;
-        if (overflow < i) {
+        int overflow = Integer.MAX_VALUE - this.size;
+        if (overflow < list.size) {
             throw new OutOfMemoryError();
         }
-        int newSize = i2 + i;
-        int[] iArr = this.array;
-        if (newSize > iArr.length) {
-            this.array = Arrays.copyOf(iArr, newSize);
+        int newSize = this.size + list.size;
+        if (newSize > this.array.length) {
+            this.array = Arrays.copyOf(this.array, newSize);
         }
         System.arraycopy(list.array, 0, this.array, this.size, list.size);
         this.size = newSize;
@@ -213,10 +202,9 @@ public final class IntArrayList extends AbstractProtobufList<Integer> implements
     public Integer remove(int index) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        int[] iArr = this.array;
-        int value = iArr[index];
+        int value = this.array[index];
         if (index < this.size - 1) {
-            System.arraycopy(iArr, index + 1, iArr, index, (r2 - index) - 1);
+            System.arraycopy(this.array, index + 1, this.array, index, (this.size - index) - 1);
         }
         this.size--;
         this.modCount++;

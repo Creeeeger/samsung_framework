@@ -11,7 +11,7 @@ import android.os.Parcel;
 import android.os.ParcelUuid;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ISoundTriggerSession extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.app.ISoundTriggerSession";
 
@@ -47,7 +47,6 @@ public interface ISoundTriggerSession extends IInterface {
 
     void updateSoundModel(SoundTrigger.GenericSoundModel genericSoundModel) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ISoundTriggerSession {
         @Override // com.android.internal.app.ISoundTriggerSession
         public SoundTrigger.GenericSoundModel getSoundModel(ParcelUuid soundModelId) throws RemoteException {
@@ -133,7 +132,6 @@ public interface ISoundTriggerSession extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ISoundTriggerSession {
         static final int TRANSACTION_deleteSoundModel = 3;
         static final int TRANSACTION_getModelState = 12;
@@ -221,140 +219,136 @@ public interface ISoundTriggerSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISoundTriggerSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISoundTriggerSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISoundTriggerSession.DESCRIPTOR);
+                case 1:
+                    ParcelUuid _arg0 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    data.enforceNoDataAvail();
+                    SoundTrigger.GenericSoundModel _result = getSoundModel(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    SoundTrigger.GenericSoundModel _arg02 = (SoundTrigger.GenericSoundModel) data.readTypedObject(SoundTrigger.GenericSoundModel.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateSoundModel(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ParcelUuid _arg03 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    data.enforceNoDataAvail();
+                    deleteSoundModel(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    SoundTrigger.GenericSoundModel _arg04 = (SoundTrigger.GenericSoundModel) data.readTypedObject(SoundTrigger.GenericSoundModel.CREATOR);
+                    IRecognitionStatusCallback _arg1 = IRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    SoundTrigger.RecognitionConfig _arg2 = (SoundTrigger.RecognitionConfig) data.readTypedObject(SoundTrigger.RecognitionConfig.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result2 = startRecognition(_arg04, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 5:
+                    ParcelUuid _arg05 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    IRecognitionStatusCallback _arg12 = IRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result3 = stopRecognition(_arg05, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 6:
+                    SoundTrigger.GenericSoundModel _arg06 = (SoundTrigger.GenericSoundModel) data.readTypedObject(SoundTrigger.GenericSoundModel.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result4 = loadGenericSoundModel(_arg06);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 7:
+                    SoundTrigger.KeyphraseSoundModel _arg07 = (SoundTrigger.KeyphraseSoundModel) data.readTypedObject(SoundTrigger.KeyphraseSoundModel.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result5 = loadKeyphraseSoundModel(_arg07);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 8:
+                    ParcelUuid _arg08 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ComponentName _arg22 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    SoundTrigger.RecognitionConfig _arg32 = (SoundTrigger.RecognitionConfig) data.readTypedObject(SoundTrigger.RecognitionConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result6 = startRecognitionForService(_arg08, _arg13, _arg22, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 9:
+                    ParcelUuid _arg09 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result7 = stopRecognitionForService(_arg09);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 10:
+                    ParcelUuid _arg010 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result8 = unloadSoundModel(_arg010);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 11:
+                    ParcelUuid _arg011 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result9 = isRecognitionActive(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 12:
+                    ParcelUuid _arg012 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result10 = getModelState(_arg012);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 13:
+                    SoundTrigger.ModuleProperties _result11 = getModuleProperties();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 14:
+                    ParcelUuid _arg013 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    int _arg14 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result12 = setParameter(_arg013, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 15:
+                    ParcelUuid _arg014 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result13 = getParameter(_arg014, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 16:
+                    ParcelUuid _arg015 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SoundTrigger.ModelParamRange _result14 = queryParameter(_arg015, _arg16);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result14, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelUuid _arg0 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            data.enforceNoDataAvail();
-                            SoundTrigger.GenericSoundModel _result = getSoundModel(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            SoundTrigger.GenericSoundModel _arg02 = (SoundTrigger.GenericSoundModel) data.readTypedObject(SoundTrigger.GenericSoundModel.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateSoundModel(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ParcelUuid _arg03 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            data.enforceNoDataAvail();
-                            deleteSoundModel(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            SoundTrigger.GenericSoundModel _arg04 = (SoundTrigger.GenericSoundModel) data.readTypedObject(SoundTrigger.GenericSoundModel.CREATOR);
-                            IRecognitionStatusCallback _arg1 = IRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            SoundTrigger.RecognitionConfig _arg2 = (SoundTrigger.RecognitionConfig) data.readTypedObject(SoundTrigger.RecognitionConfig.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result2 = startRecognition(_arg04, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            ParcelUuid _arg05 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            IRecognitionStatusCallback _arg12 = IRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result3 = stopRecognition(_arg05, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 6:
-                            SoundTrigger.GenericSoundModel _arg06 = (SoundTrigger.GenericSoundModel) data.readTypedObject(SoundTrigger.GenericSoundModel.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result4 = loadGenericSoundModel(_arg06);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 7:
-                            SoundTrigger.KeyphraseSoundModel _arg07 = (SoundTrigger.KeyphraseSoundModel) data.readTypedObject(SoundTrigger.KeyphraseSoundModel.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result5 = loadKeyphraseSoundModel(_arg07);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 8:
-                            ParcelUuid _arg08 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ComponentName _arg22 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            SoundTrigger.RecognitionConfig _arg32 = (SoundTrigger.RecognitionConfig) data.readTypedObject(SoundTrigger.RecognitionConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result6 = startRecognitionForService(_arg08, _arg13, _arg22, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 9:
-                            ParcelUuid _arg09 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result7 = stopRecognitionForService(_arg09);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 10:
-                            ParcelUuid _arg010 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result8 = unloadSoundModel(_arg010);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 11:
-                            ParcelUuid _arg011 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result9 = isRecognitionActive(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 12:
-                            ParcelUuid _arg012 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result10 = getModelState(_arg012);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 13:
-                            SoundTrigger.ModuleProperties _result11 = getModuleProperties();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result11, 1);
-                            return true;
-                        case 14:
-                            ParcelUuid _arg013 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            int _arg14 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result12 = setParameter(_arg013, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 15:
-                            ParcelUuid _arg014 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result13 = getParameter(_arg014, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 16:
-                            ParcelUuid _arg015 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SoundTrigger.ModelParamRange _result14 = queryParameter(_arg015, _arg16);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result14, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ISoundTriggerSession {
+        private static class Proxy implements ISoundTriggerSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

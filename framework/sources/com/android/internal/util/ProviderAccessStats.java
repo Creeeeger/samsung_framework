@@ -27,20 +27,16 @@ public class ProviderAccessStats {
         }
     });
 
-    /* loaded from: classes5.dex */
-    public static class PerThreadData {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class PerThreadData {
         public int nestCount;
         public long startUptimeMillis;
-
-        /* synthetic */ PerThreadData(PerThreadDataIA perThreadDataIA) {
-            this();
-        }
 
         private PerThreadData() {
         }
     }
 
-    public static /* synthetic */ PerThreadData lambda$new$0() {
+    static /* synthetic */ PerThreadData lambda$new$0() {
         return new PerThreadData();
     }
 
@@ -86,26 +82,29 @@ public class ProviderAccessStats {
         if (data.nestCount == 0) {
             long duration = Math.max(1L, SystemClock.uptimeMillis() - data.startUptimeMillis);
             synchronized (this.mLock) {
-                SparseLongArray sparseLongArray = this.mOperationDurationMillis;
-                sparseLongArray.put(callingUid, sparseLongArray.get(callingUid) + duration);
+                this.mOperationDurationMillis.put(callingUid, this.mOperationDurationMillis.get(callingUid) + duration);
             }
         }
     }
 
     public void dump(PrintWriter pw, String prefix) {
-        synchronized (this.mLock) {
+        ProviderAccessStats providerAccessStats = this;
+        synchronized (providerAccessStats.mLock) {
             pw.print("  Process uptime: ");
-            pw.print((SystemClock.uptimeMillis() - this.mStartUptime) / 60000);
+            pw.print((SystemClock.uptimeMillis() - providerAccessStats.mStartUptime) / 60000);
             pw.println(" minutes");
             pw.println();
             pw.print(prefix);
             pw.println("Client activities:");
             pw.print(prefix);
             pw.println("  UID        Query  Insert Update Delete   Batch Insert Update Delete          Sec");
-            for (int i = 0; i < this.mAllCallingUids.size(); i++) {
-                int uid = this.mAllCallingUids.keyAt(i);
+            int i = 0;
+            while (i < providerAccessStats.mAllCallingUids.size()) {
+                int uid = providerAccessStats.mAllCallingUids.keyAt(i);
                 pw.print(prefix);
-                pw.println(String.format("  %-9d %6d  %6d %6d %6d  %6d %6d %6d %6d %12.3f", Integer.valueOf(uid), Long.valueOf(this.mQueryStats.get(uid)), Long.valueOf(this.mInsertStats.get(uid)), Long.valueOf(this.mUpdateStats.get(uid)), Long.valueOf(this.mDeleteStats.get(uid)), Long.valueOf(this.mBatchStats.get(uid)), Long.valueOf(this.mInsertInBatchStats.get(uid)), Long.valueOf(this.mUpdateInBatchStats.get(uid)), Long.valueOf(this.mDeleteInBatchStats.get(uid)), Double.valueOf(this.mOperationDurationMillis.get(uid) / 1000.0d)));
+                pw.println(String.format("  %-9d %6d  %6d %6d %6d  %6d %6d %6d %6d %12.3f", Integer.valueOf(uid), Long.valueOf(providerAccessStats.mQueryStats.get(uid)), Long.valueOf(providerAccessStats.mInsertStats.get(uid)), Long.valueOf(providerAccessStats.mUpdateStats.get(uid)), Long.valueOf(providerAccessStats.mDeleteStats.get(uid)), Long.valueOf(providerAccessStats.mBatchStats.get(uid)), Long.valueOf(providerAccessStats.mInsertInBatchStats.get(uid)), Long.valueOf(providerAccessStats.mUpdateInBatchStats.get(uid)), Long.valueOf(providerAccessStats.mDeleteInBatchStats.get(uid)), Double.valueOf(providerAccessStats.mOperationDurationMillis.get(uid) / 1000.0d)));
+                i++;
+                providerAccessStats = this;
             }
             pw.println();
         }

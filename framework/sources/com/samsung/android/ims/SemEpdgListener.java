@@ -1,6 +1,6 @@
 package com.samsung.android.ims;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SemEpdgListener {
     void onEpdgAvailable(int i, boolean z, int i2);
 

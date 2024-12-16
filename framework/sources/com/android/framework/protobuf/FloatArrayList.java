@@ -5,23 +5,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* loaded from: classes4.dex */
-public final class FloatArrayList extends AbstractProtobufList<Float> implements Internal.FloatList, RandomAccess, PrimitiveNonBoxingCollection {
-    private static final FloatArrayList EMPTY_LIST;
+/* loaded from: classes3.dex */
+final class FloatArrayList extends AbstractProtobufList<Float> implements Internal.FloatList, RandomAccess, PrimitiveNonBoxingCollection {
+    private static final FloatArrayList EMPTY_LIST = new FloatArrayList(new float[0], 0);
     private float[] array;
     private int size;
 
     static {
-        FloatArrayList floatArrayList = new FloatArrayList(new float[0], 0);
-        EMPTY_LIST = floatArrayList;
-        floatArrayList.makeImmutable();
+        EMPTY_LIST.makeImmutable();
     }
 
     public static FloatArrayList emptyList() {
         return EMPTY_LIST;
     }
 
-    public FloatArrayList() {
+    FloatArrayList() {
         this(new float[10], 0);
     }
 
@@ -36,8 +34,7 @@ public final class FloatArrayList extends AbstractProtobufList<Float> implements
         if (toIndex < fromIndex) {
             throw new IndexOutOfBoundsException("toIndex < fromIndex");
         }
-        float[] fArr = this.array;
-        System.arraycopy(fArr, toIndex, fArr, fromIndex, this.size - toIndex);
+        System.arraycopy(this.array, toIndex, this.array, fromIndex, this.size - toIndex);
         this.size -= toIndex - fromIndex;
         this.modCount++;
     }
@@ -126,9 +123,8 @@ public final class FloatArrayList extends AbstractProtobufList<Float> implements
     public float setFloat(int index, float element) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        float[] fArr = this.array;
-        float previousValue = fArr[index];
-        fArr[index] = element;
+        float previousValue = this.array[index];
+        this.array[index] = element;
         return previousValue;
     }
 
@@ -146,33 +142,29 @@ public final class FloatArrayList extends AbstractProtobufList<Float> implements
     @Override // com.android.framework.protobuf.Internal.FloatList
     public void addFloat(float element) {
         ensureIsMutable();
-        int i = this.size;
-        float[] fArr = this.array;
-        if (i == fArr.length) {
-            int length = ((i * 3) / 2) + 1;
+        if (this.size == this.array.length) {
+            int length = ((this.size * 3) / 2) + 1;
             float[] newArray = new float[length];
-            System.arraycopy(fArr, 0, newArray, 0, i);
+            System.arraycopy(this.array, 0, newArray, 0, this.size);
             this.array = newArray;
         }
-        float[] fArr2 = this.array;
-        int i2 = this.size;
-        this.size = i2 + 1;
-        fArr2[i2] = element;
+        float[] fArr = this.array;
+        int i = this.size;
+        this.size = i + 1;
+        fArr[i] = element;
     }
 
     private void addFloat(int index, float element) {
-        int i;
         ensureIsMutable();
-        if (index < 0 || index > (i = this.size)) {
+        if (index < 0 || index > this.size) {
             throw new IndexOutOfBoundsException(makeOutOfBoundsExceptionMessage(index));
         }
-        float[] fArr = this.array;
-        if (i < fArr.length) {
-            System.arraycopy(fArr, index, fArr, index + 1, i - index);
+        if (this.size < this.array.length) {
+            System.arraycopy(this.array, index, this.array, index + 1, this.size - index);
         } else {
-            int length = ((i * 3) / 2) + 1;
+            int length = ((this.size * 3) / 2) + 1;
             float[] newArray = new float[length];
-            System.arraycopy(fArr, 0, newArray, 0, index);
+            System.arraycopy(this.array, 0, newArray, 0, index);
             System.arraycopy(this.array, index, newArray, index + 1, this.size - index);
             this.array = newArray;
         }
@@ -189,19 +181,16 @@ public final class FloatArrayList extends AbstractProtobufList<Float> implements
             return super.addAll(collection);
         }
         FloatArrayList list = (FloatArrayList) collection;
-        int i = list.size;
-        if (i == 0) {
+        if (list.size == 0) {
             return false;
         }
-        int i2 = this.size;
-        int overflow = Integer.MAX_VALUE - i2;
-        if (overflow < i) {
+        int overflow = Integer.MAX_VALUE - this.size;
+        if (overflow < list.size) {
             throw new OutOfMemoryError();
         }
-        int newSize = i2 + i;
-        float[] fArr = this.array;
-        if (newSize > fArr.length) {
-            this.array = Arrays.copyOf(fArr, newSize);
+        int newSize = this.size + list.size;
+        if (newSize > this.array.length) {
+            this.array = Arrays.copyOf(this.array, newSize);
         }
         System.arraycopy(list.array, 0, this.array, this.size, list.size);
         this.size = newSize;
@@ -213,10 +202,9 @@ public final class FloatArrayList extends AbstractProtobufList<Float> implements
     public Float remove(int index) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        float[] fArr = this.array;
-        float value = fArr[index];
+        float value = this.array[index];
         if (index < this.size - 1) {
-            System.arraycopy(fArr, index + 1, fArr, index, (r2 - index) - 1);
+            System.arraycopy(this.array, index + 1, this.array, index, (this.size - index) - 1);
         }
         this.size--;
         this.modCount++;

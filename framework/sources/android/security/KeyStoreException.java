@@ -27,14 +27,8 @@ public class KeyStoreException extends Exception {
     public static final int ERROR_PERMISSION_DENIED = 5;
     public static final int ERROR_UNIMPLEMENTED = 12;
     public static final int ERROR_USER_AUTHENTICATION_REQUIRED = 2;
-    private static final PublicErrorInformation GENERAL_KEYMINT_ERROR;
-    private static final PublicErrorInformation GENERAL_KEYSTORE_ERROR;
     private static final int IS_SYSTEM_ERROR = 2;
     private static final int IS_TRANSIENT_ERROR = 4;
-    private static final PublicErrorInformation KEYMINT_INCORRECT_USAGE_ERROR;
-    private static final PublicErrorInformation KEYMINT_RETRYABLE_ERROR;
-    private static final PublicErrorInformation KEYMINT_TEMPORAL_VALIDITY_ERROR;
-    private static final PublicErrorInformation KEYMINT_UNIMPLEMENTED_ERROR;
     private static final int REQUIRES_USER_AUTHENTICATION = 8;
     public static final int RETRY_AFTER_NEXT_REBOOT = 4;
     public static final int RETRY_NEVER = 1;
@@ -46,17 +40,21 @@ public class KeyStoreException extends Exception {
     public static final int RKP_SUCCESS = 0;
     public static final int RKP_TEMPORARILY_UNAVAILABLE = 1;
     private static final String TAG = "KeyStoreException";
-    private static final Map<Integer, PublicErrorInformation> sErrorCodeToFailureInfo;
     private final int mErrorCode;
     private final int mRkpStatus;
+    private static final PublicErrorInformation GENERAL_KEYMINT_ERROR = new PublicErrorInformation(0, 10);
+    private static final PublicErrorInformation GENERAL_KEYSTORE_ERROR = new PublicErrorInformation(0, 11);
+    private static final PublicErrorInformation KEYMINT_UNIMPLEMENTED_ERROR = new PublicErrorInformation(2, 12);
+    private static final PublicErrorInformation KEYMINT_RETRYABLE_ERROR = new PublicErrorInformation(6, 10);
+    private static final PublicErrorInformation KEYMINT_INCORRECT_USAGE_ERROR = new PublicErrorInformation(0, 13);
+    private static final PublicErrorInformation KEYMINT_TEMPORAL_VALIDITY_ERROR = new PublicErrorInformation(0, 14);
+    private static final Map<Integer, PublicErrorInformation> sErrorCodeToFailureInfo = new HashMap();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PublicErrorCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RetryPolicy {
     }
 
@@ -84,7 +82,7 @@ public class KeyStoreException extends Exception {
         super(message);
         this.mErrorCode = errorCode;
         this.mRkpStatus = rkpStatus;
-        if (errorCode != 22) {
+        if (this.mErrorCode != 22) {
             Log.e(TAG, "Providing RKP status for error code " + errorCode + " has no effect.");
         }
     }
@@ -100,11 +98,10 @@ public class KeyStoreException extends Exception {
 
     public boolean isTransientFailure() {
         PublicErrorInformation failureInfo = getErrorInformation(this.mErrorCode);
-        int i = this.mRkpStatus;
-        if (i == 0 || this.mErrorCode != 22) {
+        if (this.mRkpStatus == 0 || this.mErrorCode != 22) {
             return (failureInfo.indicators & 4) != 0;
         }
-        switch (i) {
+        switch (this.mRkpStatus) {
             case 1:
             case 3:
             case 4:
@@ -127,8 +124,7 @@ public class KeyStoreException extends Exception {
 
     public int getRetryPolicy() {
         PublicErrorInformation failureInfo = getErrorInformation(this.mErrorCode);
-        int i = this.mRkpStatus;
-        if (i == 0) {
+        if (this.mRkpStatus == 0) {
             switch (this.mErrorCode) {
                 case 23:
                     return 4;
@@ -138,7 +134,7 @@ public class KeyStoreException extends Exception {
                     return (failureInfo.indicators & 4) != 0 ? 2 : 1;
             }
         }
-        switch (i) {
+        switch (this.mRkpStatus) {
             case 1:
                 return 2;
             case 2:
@@ -169,8 +165,7 @@ public class KeyStoreException extends Exception {
         return GENERAL_KEYMINT_ERROR;
     }
 
-    /* loaded from: classes3.dex */
-    public static final class PublicErrorInformation {
+    private static final class PublicErrorInformation {
         public final int errorCode;
         public final int indicators;
 
@@ -181,109 +176,107 @@ public class KeyStoreException extends Exception {
     }
 
     static {
-        PublicErrorInformation publicErrorInformation = new PublicErrorInformation(0, 10);
-        GENERAL_KEYMINT_ERROR = publicErrorInformation;
-        GENERAL_KEYSTORE_ERROR = new PublicErrorInformation(0, 11);
-        PublicErrorInformation publicErrorInformation2 = new PublicErrorInformation(2, 12);
-        KEYMINT_UNIMPLEMENTED_ERROR = publicErrorInformation2;
-        PublicErrorInformation publicErrorInformation3 = new PublicErrorInformation(6, 10);
-        KEYMINT_RETRYABLE_ERROR = publicErrorInformation3;
-        PublicErrorInformation publicErrorInformation4 = new PublicErrorInformation(0, 13);
-        KEYMINT_INCORRECT_USAGE_ERROR = publicErrorInformation4;
-        PublicErrorInformation publicErrorInformation5 = new PublicErrorInformation(0, 14);
-        KEYMINT_TEMPORAL_VALIDITY_ERROR = publicErrorInformation5;
-        HashMap hashMap = new HashMap();
-        sErrorCodeToFailureInfo = hashMap;
-        hashMap.put(0, publicErrorInformation);
-        hashMap.put(-1, publicErrorInformation);
-        hashMap.put(-2, publicErrorInformation4);
-        hashMap.put(-3, publicErrorInformation4);
-        hashMap.put(-4, publicErrorInformation2);
-        hashMap.put(-5, publicErrorInformation4);
-        hashMap.put(-6, publicErrorInformation2);
-        hashMap.put(-7, publicErrorInformation2);
-        hashMap.put(-8, publicErrorInformation4);
-        hashMap.put(-9, publicErrorInformation2);
-        hashMap.put(-10, publicErrorInformation4);
-        hashMap.put(-11, publicErrorInformation4);
-        hashMap.put(-12, publicErrorInformation2);
-        hashMap.put(-13, publicErrorInformation4);
-        hashMap.put(-14, publicErrorInformation4);
-        hashMap.put(-15, publicErrorInformation);
-        hashMap.put(-16, publicErrorInformation4);
-        hashMap.put(-17, publicErrorInformation4);
-        hashMap.put(-18, publicErrorInformation4);
-        hashMap.put(-19, publicErrorInformation2);
-        hashMap.put(-20, publicErrorInformation2);
-        hashMap.put(-21, publicErrorInformation4);
-        hashMap.put(-22, publicErrorInformation4);
-        hashMap.put(-23, publicErrorInformation);
-        hashMap.put(-24, publicErrorInformation5);
-        hashMap.put(-25, publicErrorInformation5);
-        hashMap.put(-26, new PublicErrorInformation(8, 2));
-        hashMap.put(-27, publicErrorInformation);
-        hashMap.put(-28, new PublicErrorInformation(6, 15));
-        hashMap.put(-29, publicErrorInformation);
-        hashMap.put(-30, publicErrorInformation);
-        hashMap.put(-31, publicErrorInformation);
-        hashMap.put(-32, publicErrorInformation);
-        hashMap.put(-33, publicErrorInformation);
-        hashMap.put(-34, publicErrorInformation4);
-        hashMap.put(-35, publicErrorInformation4);
-        hashMap.put(-36, publicErrorInformation4);
-        hashMap.put(-37, publicErrorInformation4);
-        hashMap.put(-38, publicErrorInformation);
-        hashMap.put(-39, publicErrorInformation2);
-        hashMap.put(-40, publicErrorInformation4);
-        hashMap.put(-41, publicErrorInformation);
-        hashMap.put(-44, publicErrorInformation);
-        hashMap.put(-45, publicErrorInformation);
-        hashMap.put(-46, publicErrorInformation);
-        hashMap.put(-47, publicErrorInformation);
-        hashMap.put(-48, publicErrorInformation3);
-        hashMap.put(-49, publicErrorInformation3);
-        hashMap.put(-50, publicErrorInformation2);
-        hashMap.put(-51, publicErrorInformation4);
-        hashMap.put(-52, publicErrorInformation4);
-        hashMap.put(-53, publicErrorInformation4);
-        hashMap.put(-54, publicErrorInformation3);
-        hashMap.put(-55, publicErrorInformation);
-        hashMap.put(-56, publicErrorInformation);
-        hashMap.put(-57, publicErrorInformation4);
-        hashMap.put(-58, publicErrorInformation4);
-        hashMap.put(-59, publicErrorInformation4);
-        hashMap.put(-60, publicErrorInformation2);
-        hashMap.put(-61, publicErrorInformation2);
-        hashMap.put(-63, publicErrorInformation4);
-        hashMap.put(-64, new PublicErrorInformation(2, 10));
-        hashMap.put(-65, publicErrorInformation3);
-        hashMap.put(-66, new PublicErrorInformation(2, 8));
-        hashMap.put(-67, publicErrorInformation2);
-        hashMap.put(-68, publicErrorInformation2);
-        hashMap.put(-72, new PublicErrorInformation(10, 2));
-        hashMap.put(-77, publicErrorInformation2);
-        hashMap.put(-78, publicErrorInformation4);
-        hashMap.put(-79, publicErrorInformation2);
-        hashMap.put(-80, publicErrorInformation4);
-        hashMap.put(-81, publicErrorInformation4);
-        hashMap.put(-85, publicErrorInformation);
-        hashMap.put(-100, publicErrorInformation2);
-        hashMap.put(-1000, new PublicErrorInformation(2, 10));
-        hashMap.put(-101, publicErrorInformation);
-        hashMap.put(Integer.valueOf(KeymasterDefs.KM_ERROR_SAK_NOT_EXIST), publicErrorInformation2);
-        hashMap.put(Integer.valueOf(KeymasterDefs.KM_ERROR_GAK_NOT_EXIST), publicErrorInformation2);
-        hashMap.put(2, new PublicErrorInformation(8, 2));
-        hashMap.put(3, new PublicErrorInformation(2, 3));
-        hashMap.put(4, new PublicErrorInformation(2, 4));
-        hashMap.put(6, new PublicErrorInformation(0, 5));
-        hashMap.put(7, new PublicErrorInformation(0, 6));
-        hashMap.put(8, new PublicErrorInformation(0, 7));
-        hashMap.put(17, new PublicErrorInformation(0, 6));
-        hashMap.put(22, new PublicErrorInformation(2, 16));
-        hashMap.put(23, new PublicErrorInformation(6, 17));
-        hashMap.put(24, new PublicErrorInformation(6, 16));
-        hashMap.put(25, new PublicErrorInformation(6, 16));
-        hashMap.put(26, new PublicErrorInformation(2, 16));
+        sErrorCodeToFailureInfo.put(0, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-1, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-2, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-3, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-4, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-5, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-6, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-7, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-8, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-9, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-10, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-11, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-12, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-13, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-14, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-15, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-16, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-17, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-18, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-19, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-20, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-21, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-22, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-23, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-24, KEYMINT_TEMPORAL_VALIDITY_ERROR);
+        sErrorCodeToFailureInfo.put(-25, KEYMINT_TEMPORAL_VALIDITY_ERROR);
+        sErrorCodeToFailureInfo.put(-26, new PublicErrorInformation(8, 2));
+        sErrorCodeToFailureInfo.put(-27, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-28, new PublicErrorInformation(6, 15));
+        sErrorCodeToFailureInfo.put(-29, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-30, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-31, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-32, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-33, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-34, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-35, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-36, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-37, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-38, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-39, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-40, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-41, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-44, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-45, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-46, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-47, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-48, KEYMINT_RETRYABLE_ERROR);
+        sErrorCodeToFailureInfo.put(-49, KEYMINT_RETRYABLE_ERROR);
+        sErrorCodeToFailureInfo.put(-50, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-51, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-52, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-53, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-54, KEYMINT_RETRYABLE_ERROR);
+        sErrorCodeToFailureInfo.put(-55, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-56, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-57, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-58, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-59, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-60, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-61, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-63, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-64, new PublicErrorInformation(2, 10));
+        sErrorCodeToFailureInfo.put(-65, KEYMINT_RETRYABLE_ERROR);
+        sErrorCodeToFailureInfo.put(-66, new PublicErrorInformation(2, 8));
+        sErrorCodeToFailureInfo.put(-67, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-68, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-69, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-70, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-71, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-72, new PublicErrorInformation(10, 2));
+        sErrorCodeToFailureInfo.put(-73, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-74, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-75, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-76, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-77, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-78, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-79, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-80, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-81, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-82, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-83, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-84, KEYMINT_INCORRECT_USAGE_ERROR);
+        sErrorCodeToFailureInfo.put(-85, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(-100, KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(-1000, new PublicErrorInformation(2, 10));
+        sErrorCodeToFailureInfo.put(-101, GENERAL_KEYMINT_ERROR);
+        sErrorCodeToFailureInfo.put(Integer.valueOf(KeymasterDefs.KM_ERROR_SAK_NOT_EXIST), KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(Integer.valueOf(KeymasterDefs.KM_ERROR_GAK_NOT_EXIST), KEYMINT_UNIMPLEMENTED_ERROR);
+        sErrorCodeToFailureInfo.put(2, new PublicErrorInformation(8, 2));
+        sErrorCodeToFailureInfo.put(3, new PublicErrorInformation(2, 3));
+        sErrorCodeToFailureInfo.put(4, new PublicErrorInformation(2, 4));
+        sErrorCodeToFailureInfo.put(6, new PublicErrorInformation(0, 5));
+        sErrorCodeToFailureInfo.put(7, new PublicErrorInformation(0, 6));
+        sErrorCodeToFailureInfo.put(8, new PublicErrorInformation(0, 7));
+        sErrorCodeToFailureInfo.put(17, new PublicErrorInformation(0, 6));
+        sErrorCodeToFailureInfo.put(22, new PublicErrorInformation(2, 16));
+        sErrorCodeToFailureInfo.put(23, new PublicErrorInformation(6, 17));
+        sErrorCodeToFailureInfo.put(27, new PublicErrorInformation(6, 4));
+        sErrorCodeToFailureInfo.put(24, new PublicErrorInformation(6, 16));
+        sErrorCodeToFailureInfo.put(25, new PublicErrorInformation(6, 16));
+        sErrorCodeToFailureInfo.put(26, new PublicErrorInformation(2, 16));
     }
 
     public static boolean hasFailureInfoForError(int internalErrorCode) {

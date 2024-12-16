@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /* loaded from: classes5.dex */
-public class ConstructedOctetStream extends InputStream {
+class ConstructedOctetStream extends InputStream {
     private InputStream _currentStream;
     private boolean _first = true;
     private final ASN1StreamParser _parser;
 
-    public ConstructedOctetStream(ASN1StreamParser parser) {
+    ConstructedOctetStream(ASN1StreamParser parser) {
         this._parser = parser;
     }
 

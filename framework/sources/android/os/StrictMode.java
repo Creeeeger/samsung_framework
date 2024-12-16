@@ -101,7 +101,6 @@ public final class StrictMode {
     private static final int DETECT_VM_UNTAGGED_SOCKET = 256;
     private static final boolean DISABLE = false;
     public static final String DISABLE_PROPERTY = "persist.sys.strictmode.disable";
-    private static final ViolationLogger LOGCAT_LOGGER;
     private static final int MAX_OFFENSES_PER_LOOP = 10;
     private static final int MAX_SPAN_TAGS = 20;
     private static final long MIN_DIALOG_INTERVAL_MS = 30000;
@@ -111,7 +110,6 @@ public final class StrictMode {
     public static final int NETWORK_POLICY_ACCEPT = 0;
     public static final int NETWORK_POLICY_LOG = 1;
     public static final int NETWORK_POLICY_REJECT = 2;
-    private static final Span NO_OP_SPAN;
     public static final int PENALTY_ALL = -65536;
     public static final int PENALTY_DEATH = 268435456;
     public static final int PENALTY_DEATH_ON_CLEARTEXT_NETWORK = 16777216;
@@ -122,193 +120,145 @@ public final class StrictMode {
     public static final int PENALTY_FLASH = 134217728;
     public static final int PENALTY_GATHER = Integer.MIN_VALUE;
     public static final int PENALTY_LOG = 1073741824;
-    private static final ThreadLocal<AndroidBlockGuardPolicy> THREAD_ANDROID_POLICY;
-    private static final ThreadLocal<Handler> THREAD_HANDLER;
     public static final String VISUAL_PROPERTY = "persist.sys.strictmode.visual";
-    private static final BlockGuard.VmPolicy VM_ANDROID_POLICY;
-    private static final ThreadLocal<ArrayList<ViolationInfo>> gatheredViolations;
-    private static final AtomicInteger sDropboxCallsInFlight;
-    private static final HashMap<Class, Integer> sExpectedActivityInstanceCount;
-    private static boolean sIsIdlerRegistered;
-    private static long sLastInstanceCountCheckMillis;
-    private static final HashMap<Integer, Long> sLastVmViolationTime;
-    private static volatile ViolationLogger sLogger;
-    private static final Consumer<String> sNonSdkApiUsageConsumer;
-    private static final MessageQueue.IdleHandler sProcessIdleHandler;
-    private static final SparseLongArray sRealLastVmViolationTime;
-    private static final ThreadLocal<ThreadSpanState> sThisThreadSpanState;
-    private static final ThreadLocal<Executor> sThreadViolationExecutor;
-    private static final ThreadLocal<OnThreadViolationListener> sThreadViolationListener;
-    private static volatile boolean sUserKeyUnlocked;
-    private static Singleton<IWindowManager> sWindowManager;
-    private static final ThreadLocal<ArrayList<ViolationInfo>> violationsBeingTimed;
+    private static volatile IStorageManager sStorageManager;
+    private static volatile UnsafeIntentStrictModeCallback sUnsafeIntentCallback;
     private static final String TAG = "StrictMode";
     private static final boolean LOG_V = Log.isLoggable(TAG, 2);
     private static final HashMap<Class, Integer> EMPTY_CLASS_LIMIT_MAP = new HashMap<>();
     private static volatile VmPolicy sVmPolicy = VmPolicy.LAX;
+    private static final ViolationLogger LOGCAT_LOGGER = new ViolationLogger() { // from class: android.os.StrictMode$$ExternalSyntheticLambda1
+        @Override // android.os.StrictMode.ViolationLogger
+        public final void log(StrictMode.ViolationInfo violationInfo) {
+            StrictMode.lambda$static$0(violationInfo);
+        }
+    };
+    private static volatile ViolationLogger sLogger = LOGCAT_LOGGER;
+    private static final ThreadLocal<OnThreadViolationListener> sThreadViolationListener = new ThreadLocal<>();
+    private static final ThreadLocal<Executor> sThreadViolationExecutor = new ThreadLocal<>();
+    private static final AtomicInteger sDropboxCallsInFlight = new AtomicInteger(0);
+    private static final Consumer<String> sNonSdkApiUsageConsumer = new Consumer() { // from class: android.os.StrictMode$$ExternalSyntheticLambda2
+        @Override // java.util.function.Consumer
+        public final void accept(Object obj) {
+            StrictMode.onVmPolicyViolation(new NonSdkApiUsedViolation((String) obj));
+        }
+    };
+    private static final ThreadLocal<ArrayList<ViolationInfo>> gatheredViolations = new ThreadLocal<ArrayList<ViolationInfo>>() { // from class: android.os.StrictMode.1
+        /* JADX INFO: Access modifiers changed from: protected */
+        @Override // java.lang.ThreadLocal
+        public ArrayList<ViolationInfo> initialValue() {
+            return null;
+        }
+    };
+    private static final ThreadLocal<ArrayList<ViolationInfo>> violationsBeingTimed = new ThreadLocal<ArrayList<ViolationInfo>>() { // from class: android.os.StrictMode.2
+        /* JADX INFO: Access modifiers changed from: protected */
+        @Override // java.lang.ThreadLocal
+        public ArrayList<ViolationInfo> initialValue() {
+            return new ArrayList<>();
+        }
+    };
+    private static final ThreadLocal<Handler> THREAD_HANDLER = new ThreadLocal<Handler>() { // from class: android.os.StrictMode.3
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // java.lang.ThreadLocal
+        public Handler initialValue() {
+            return new Handler();
+        }
+    };
+    private static final ThreadLocal<AndroidBlockGuardPolicy> THREAD_ANDROID_POLICY = new ThreadLocal<AndroidBlockGuardPolicy>() { // from class: android.os.StrictMode.4
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // java.lang.ThreadLocal
+        public AndroidBlockGuardPolicy initialValue() {
+            return new AndroidBlockGuardPolicy(0);
+        }
+    };
+    private static final BlockGuard.VmPolicy VM_ANDROID_POLICY = new BlockGuard.VmPolicy() { // from class: android.os.StrictMode.5
+        public void onPathAccess(String path) {
+            if (path == null) {
+                return;
+            }
+            if (path.startsWith("/data/user/") || path.startsWith("/data/media/") || path.startsWith("/data/system_ce/") || path.startsWith("/data/misc_ce/") || path.startsWith("/data/vendor_ce/") || path.startsWith("/storage/emulated/")) {
+                int second = path.indexOf(47, 1);
+                int third = path.indexOf(47, second + 1);
+                int fourth = path.indexOf(47, third + 1);
+                if (fourth == -1) {
+                    return;
+                }
+                try {
+                    int userId = Integer.parseInt(path.substring(third + 1, fourth));
+                    StrictMode.onCredentialProtectedPathAccess(path, userId);
+                    return;
+                } catch (NumberFormatException e) {
+                    return;
+                }
+            }
+            if (path.startsWith("/data/data/")) {
+                StrictMode.onCredentialProtectedPathAccess(path, 0);
+            }
+        }
+    };
+    private static long sLastInstanceCountCheckMillis = 0;
+    private static boolean sIsIdlerRegistered = false;
+    private static final MessageQueue.IdleHandler sProcessIdleHandler = new MessageQueue.IdleHandler() { // from class: android.os.StrictMode.6
+        @Override // android.os.MessageQueue.IdleHandler
+        public boolean queueIdle() {
+            long now = SystemClock.uptimeMillis();
+            if (now - StrictMode.sLastInstanceCountCheckMillis > 30000) {
+                StrictMode.sLastInstanceCountCheckMillis = now;
+                StrictMode.conditionallyCheckInstanceCounts();
+                return true;
+            }
+            return true;
+        }
+    };
+    private static volatile boolean sCeStorageUnlocked = false;
+    private static final HashMap<Integer, Long> sLastVmViolationTime = new HashMap<>();
+    private static final SparseLongArray sRealLastVmViolationTime = new SparseLongArray();
+    private static final Span NO_OP_SPAN = new Span() { // from class: android.os.StrictMode.7
+        @Override // android.os.StrictMode.Span
+        public void finish() {
+        }
+    };
+    private static final ThreadLocal<ThreadSpanState> sThisThreadSpanState = new ThreadLocal<ThreadSpanState>() { // from class: android.os.StrictMode.8
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // java.lang.ThreadLocal
+        public ThreadSpanState initialValue() {
+            return new ThreadSpanState();
+        }
+    };
+    private static Singleton<IWindowManager> sWindowManager = new Singleton<IWindowManager>() { // from class: android.os.StrictMode.9
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.util.Singleton
+        public IWindowManager create() {
+            return IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
+        }
+    };
+    private static final HashMap<Class, Integer> sExpectedActivityInstanceCount = new HashMap<>();
 
-    /* loaded from: classes3.dex */
     public interface OnThreadViolationListener {
         void onThreadViolation(Violation violation);
     }
 
-    /* loaded from: classes3.dex */
     public interface OnVmViolationListener {
         void onVmViolation(Violation violation);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ThreadPolicyMask {
     }
 
-    /* loaded from: classes3.dex */
     public interface ViolationLogger {
         void log(ViolationInfo violationInfo);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface VmPolicyMask {
     }
 
-    /* renamed from: -$$Nest$smtooManyViolationsThisLoop */
-    static /* bridge */ /* synthetic */ boolean m3218$$Nest$smtooManyViolationsThisLoop() {
-        return tooManyViolationsThisLoop();
-    }
-
-    static {
-        ViolationLogger violationLogger = new ViolationLogger() { // from class: android.os.StrictMode$$ExternalSyntheticLambda1
-            @Override // android.os.StrictMode.ViolationLogger
-            public final void log(StrictMode.ViolationInfo violationInfo) {
-                StrictMode.lambda$static$0(violationInfo);
-            }
-        };
-        LOGCAT_LOGGER = violationLogger;
-        sLogger = violationLogger;
-        sThreadViolationListener = new ThreadLocal<>();
-        sThreadViolationExecutor = new ThreadLocal<>();
-        sDropboxCallsInFlight = new AtomicInteger(0);
-        sNonSdkApiUsageConsumer = new Consumer() { // from class: android.os.StrictMode$$ExternalSyntheticLambda2
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                StrictMode.onVmPolicyViolation(new NonSdkApiUsedViolation((String) obj));
-            }
-        };
-        gatheredViolations = new ThreadLocal<ArrayList<ViolationInfo>>() { // from class: android.os.StrictMode.1
-            AnonymousClass1() {
-            }
-
-            @Override // java.lang.ThreadLocal
-            public ArrayList<ViolationInfo> initialValue() {
-                return null;
-            }
-        };
-        violationsBeingTimed = new ThreadLocal<ArrayList<ViolationInfo>>() { // from class: android.os.StrictMode.2
-            AnonymousClass2() {
-            }
-
-            @Override // java.lang.ThreadLocal
-            public ArrayList<ViolationInfo> initialValue() {
-                return new ArrayList<>();
-            }
-        };
-        THREAD_HANDLER = new ThreadLocal<Handler>() { // from class: android.os.StrictMode.3
-            AnonymousClass3() {
-            }
-
-            @Override // java.lang.ThreadLocal
-            public Handler initialValue() {
-                return new Handler();
-            }
-        };
-        THREAD_ANDROID_POLICY = new ThreadLocal<AndroidBlockGuardPolicy>() { // from class: android.os.StrictMode.4
-            AnonymousClass4() {
-            }
-
-            @Override // java.lang.ThreadLocal
-            public AndroidBlockGuardPolicy initialValue() {
-                return new AndroidBlockGuardPolicy(0);
-            }
-        };
-        VM_ANDROID_POLICY = new BlockGuard.VmPolicy() { // from class: android.os.StrictMode.5
-            AnonymousClass5() {
-            }
-
-            public void onPathAccess(String path) {
-                if (path == null) {
-                    return;
-                }
-                if (path.startsWith("/data/user/") || path.startsWith("/data/media/") || path.startsWith("/data/system_ce/") || path.startsWith("/data/misc_ce/") || path.startsWith("/data/vendor_ce/") || path.startsWith("/storage/emulated/")) {
-                    int second = path.indexOf(47, 1);
-                    int third = path.indexOf(47, second + 1);
-                    int fourth = path.indexOf(47, third + 1);
-                    if (fourth == -1) {
-                        return;
-                    }
-                    try {
-                        int userId = Integer.parseInt(path.substring(third + 1, fourth));
-                        StrictMode.onCredentialProtectedPathAccess(path, userId);
-                        return;
-                    } catch (NumberFormatException e) {
-                        return;
-                    }
-                }
-                if (path.startsWith("/data/data/")) {
-                    StrictMode.onCredentialProtectedPathAccess(path, 0);
-                }
-            }
-        };
-        sLastInstanceCountCheckMillis = 0L;
-        sIsIdlerRegistered = false;
-        sProcessIdleHandler = new MessageQueue.IdleHandler() { // from class: android.os.StrictMode.6
-            AnonymousClass6() {
-            }
-
-            @Override // android.os.MessageQueue.IdleHandler
-            public boolean queueIdle() {
-                long now = SystemClock.uptimeMillis();
-                if (now - StrictMode.sLastInstanceCountCheckMillis > 30000) {
-                    StrictMode.sLastInstanceCountCheckMillis = now;
-                    StrictMode.conditionallyCheckInstanceCounts();
-                    return true;
-                }
-                return true;
-            }
-        };
-        sUserKeyUnlocked = false;
-        sLastVmViolationTime = new HashMap<>();
-        sRealLastVmViolationTime = new SparseLongArray();
-        NO_OP_SPAN = new Span() { // from class: android.os.StrictMode.7
-            AnonymousClass7() {
-            }
-
-            @Override // android.os.StrictMode.Span
-            public void finish() {
-            }
-        };
-        sThisThreadSpanState = new ThreadLocal<ThreadSpanState>() { // from class: android.os.StrictMode.8
-            AnonymousClass8() {
-            }
-
-            @Override // java.lang.ThreadLocal
-            public ThreadSpanState initialValue() {
-                return new ThreadSpanState();
-            }
-        };
-        sWindowManager = new Singleton<IWindowManager>() { // from class: android.os.StrictMode.9
-            AnonymousClass9() {
-            }
-
-            @Override // android.util.Singleton
-            public IWindowManager create() {
-                return IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
-            }
-        };
-        sExpectedActivityInstanceCount = new HashMap<>();
-    }
-
-    public static /* synthetic */ void lambda$static$0(ViolationInfo info) {
+    static /* synthetic */ void lambda$static$0(ViolationInfo info) {
         String msg;
         if (info.durationMillis != -1) {
             msg = "StrictMode policy violation; ~duration=" + info.durationMillis + " ms:";
@@ -328,16 +278,11 @@ public final class StrictMode {
     private StrictMode() {
     }
 
-    /* loaded from: classes3.dex */
     public static final class ThreadPolicy {
         public static final ThreadPolicy LAX = new ThreadPolicy(0, null, null);
         final Executor mCallbackExecutor;
         final OnThreadViolationListener mListener;
         final int mask;
-
-        /* synthetic */ ThreadPolicy(int i, OnThreadViolationListener onThreadViolationListener, Executor executor, ThreadPolicyIA threadPolicyIA) {
-            this(i, onThreadViolationListener, executor);
-        }
 
         private ThreadPolicy(int mask, OnThreadViolationListener listener, Executor executor) {
             this.mask = mask;
@@ -349,7 +294,6 @@ public final class StrictMode {
             return "[StrictMode.ThreadPolicy; mask=" + this.mask + NavigationBarInflaterView.SIZE_MOD_END;
         }
 
-        /* loaded from: classes3.dex */
         public static final class Builder {
             private Executor mExecutor;
             private OnThreadViolationListener mListener;
@@ -495,8 +439,7 @@ public final class StrictMode {
             }
 
             public ThreadPolicy build() {
-                int i;
-                if (this.mListener == null && (i = this.mMask) != 0 && (i & 1946157056) == 0) {
+                if (this.mListener == null && this.mMask != 0 && (this.mMask & 1946157056) == 0) {
                     penaltyLog();
                 }
                 return new ThreadPolicy(this.mMask, this.mListener, this.mExecutor);
@@ -504,17 +447,12 @@ public final class StrictMode {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class VmPolicy {
         public static final VmPolicy LAX = new VmPolicy(0, StrictMode.EMPTY_CLASS_LIMIT_MAP, null, null);
         final HashMap<Class, Integer> classInstanceLimit;
         final Executor mCallbackExecutor;
         final OnVmViolationListener mListener;
         final int mask;
-
-        /* synthetic */ VmPolicy(int i, HashMap hashMap, OnVmViolationListener onVmViolationListener, Executor executor, VmPolicyIA vmPolicyIA) {
-            this(i, hashMap, onVmViolationListener, executor);
-        }
 
         private VmPolicy(int mask, HashMap<Class, Integer> classInstanceLimit, OnVmViolationListener listener, Executor executor) {
             if (classInstanceLimit == null) {
@@ -530,7 +468,6 @@ public final class StrictMode {
             return "[StrictMode.VmPolicy; mask=" + this.mask + NavigationBarInflaterView.SIZE_MOD_END;
         }
 
-        /* loaded from: classes3.dex */
         public static final class Builder {
             private HashMap<Class, Integer> mClassInstanceLimit;
             private boolean mClassInstanceLimitNeedCow;
@@ -729,29 +666,11 @@ public final class StrictMode {
             }
 
             public VmPolicy build() {
-                int i;
-                if (this.mListener == null && (i = this.mMask) != 0 && (i & 1946157056) == 0) {
+                if (this.mListener == null && this.mMask != 0 && (this.mMask & 1946157056) == 0) {
                     penaltyLog();
                 }
-                int i2 = this.mMask;
-                HashMap<Class, Integer> hashMap = this.mClassInstanceLimit;
-                if (hashMap == null) {
-                    hashMap = StrictMode.EMPTY_CLASS_LIMIT_MAP;
-                }
-                return new VmPolicy(i2, hashMap, this.mListener, this.mExecutor);
+                return new VmPolicy(this.mMask, this.mClassInstanceLimit != null ? this.mClassInstanceLimit : StrictMode.EMPTY_CLASS_LIMIT_MAP, this.mListener, this.mExecutor);
             }
-        }
-    }
-
-    /* renamed from: android.os.StrictMode$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends ThreadLocal<ArrayList<ViolationInfo>> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public ArrayList<ViolationInfo> initialValue() {
-            return null;
         }
     }
 
@@ -802,6 +721,10 @@ public final class StrictMode {
         if (policy instanceof AndroidBlockGuardPolicy) {
             return ((AndroidBlockGuardPolicy) policy).getThreadPolicyMask();
         }
+        return 0;
+    }
+
+    public static int getThreadPolicyMask$ravenwood() {
         return 0;
     }
 
@@ -864,13 +787,9 @@ public final class StrictMode {
             builder.detectNetwork();
             builder.penaltyDeathOnNetwork();
         }
-        if (!Build.IS_USER && !SystemProperties.getBoolean(DISABLE_PROPERTY, false)) {
-            if (Build.IS_USERDEBUG) {
-                if (isBundledSystemApp(ai)) {
-                    builder.detectAll();
-                }
-            } else if (Build.IS_ENG && isBundledSystemApp(ai)) {
-                builder.detectAll();
+        if (!Build.IS_USER && !SystemProperties.getBoolean(DISABLE_PROPERTY, false) && ((Build.IS_USERDEBUG || Build.IS_ENG) && isBundledSystemApp(ai))) {
+            builder.detectAll();
+            if (Build.IS_ENG) {
                 builder.penaltyLog();
             }
         }
@@ -906,48 +825,13 @@ public final class StrictMode {
         sVmPolicy = new VmPolicy((-8388641) & sVmPolicy.mask, sVmPolicy.classInstanceLimit, sVmPolicy.mListener, sVmPolicy.mCallbackExecutor);
     }
 
-    /* renamed from: android.os.StrictMode$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 extends ThreadLocal<ArrayList<ViolationInfo>> {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public ArrayList<ViolationInfo> initialValue() {
-            return new ArrayList<>();
-        }
-    }
-
-    /* renamed from: android.os.StrictMode$3 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass3 extends ThreadLocal<Handler> {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public Handler initialValue() {
-            return new Handler();
-        }
-    }
-
-    /* renamed from: android.os.StrictMode$4 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass4 extends ThreadLocal<AndroidBlockGuardPolicy> {
-        AnonymousClass4() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public AndroidBlockGuardPolicy initialValue() {
-            return new AndroidBlockGuardPolicy(0);
-        }
-    }
-
-    private static boolean tooManyViolationsThisLoop() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean tooManyViolationsThisLoop() {
         return violationsBeingTimed.get().size() >= 10;
     }
 
-    /* loaded from: classes3.dex */
-    public static class AndroidBlockGuardPolicy implements BlockGuard.Policy {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class AndroidBlockGuardPolicy implements BlockGuard.Policy {
         private ArrayMap<Integer, Long> mLastViolationTime;
         private SparseLongArray mRealLastViolationTime;
         private int mThreadPolicyMask;
@@ -965,56 +849,55 @@ public final class StrictMode {
         }
 
         public void onWriteToDisk() {
-            if ((this.mThreadPolicyMask & 1) == 0 || StrictMode.m3218$$Nest$smtooManyViolationsThisLoop()) {
+            if ((this.mThreadPolicyMask & 1) == 0 || StrictMode.tooManyViolationsThisLoop()) {
                 return;
             }
             startHandlingViolationException(new DiskWriteViolation());
         }
 
         void onCustomSlowCall(String name) {
-            if ((this.mThreadPolicyMask & 8) == 0 || StrictMode.m3218$$Nest$smtooManyViolationsThisLoop()) {
+            if ((this.mThreadPolicyMask & 8) == 0 || StrictMode.tooManyViolationsThisLoop()) {
                 return;
             }
             startHandlingViolationException(new CustomViolation(name));
         }
 
         void onResourceMismatch(Object tag) {
-            if ((this.mThreadPolicyMask & 16) == 0 || StrictMode.m3218$$Nest$smtooManyViolationsThisLoop()) {
+            if ((this.mThreadPolicyMask & 16) == 0 || StrictMode.tooManyViolationsThisLoop()) {
                 return;
             }
             startHandlingViolationException(new ResourceMismatchViolation(tag));
         }
 
         public void onUnbufferedIO() {
-            if ((this.mThreadPolicyMask & 32) == 0 || StrictMode.m3218$$Nest$smtooManyViolationsThisLoop()) {
+            if ((this.mThreadPolicyMask & 32) == 0 || StrictMode.tooManyViolationsThisLoop()) {
                 return;
             }
             startHandlingViolationException(new UnbufferedIoViolation());
         }
 
         public void onReadFromDisk() {
-            if ((this.mThreadPolicyMask & 2) == 0 || StrictMode.m3218$$Nest$smtooManyViolationsThisLoop()) {
+            if ((this.mThreadPolicyMask & 2) == 0 || StrictMode.tooManyViolationsThisLoop()) {
                 return;
             }
             startHandlingViolationException(new DiskReadViolation());
         }
 
         public void onNetwork() {
-            int i = this.mThreadPolicyMask;
-            if ((i & 4) == 0) {
+            if ((this.mThreadPolicyMask & 4) == 0) {
                 return;
             }
-            if ((i & 33554432) != 0) {
+            if ((this.mThreadPolicyMask & 33554432) != 0) {
                 throw new NetworkOnMainThreadException();
             }
-            if (StrictMode.m3218$$Nest$smtooManyViolationsThisLoop()) {
+            if (StrictMode.tooManyViolationsThisLoop()) {
                 return;
             }
             startHandlingViolationException(new NetworkViolation());
         }
 
         public void onExplicitGc() {
-            if ((this.mThreadPolicyMask & 64) == 0 || StrictMode.m3218$$Nest$smtooManyViolationsThisLoop()) {
+            if ((this.mThreadPolicyMask & 64) == 0 || StrictMode.tooManyViolationsThisLoop()) {
                 return;
             }
             startHandlingViolationException(new ExplicitGcViolation());
@@ -1065,6 +948,7 @@ public final class StrictMode {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleViolationWithTimingAttempt$0(IWindowManager windowManager, ArrayList records) {
             long loopFinishTime = SystemClock.uptimeMillis();
             if (windowManager != null) {
@@ -1109,9 +993,8 @@ public final class StrictMode {
             long lastViolationTime = 0;
             long now = SystemClock.uptimeMillis();
             if (StrictMode.sLogger == StrictMode.LOGCAT_LOGGER) {
-                SparseLongArray sparseLongArray = this.mRealLastViolationTime;
-                if (sparseLongArray != null) {
-                    Long vtime = Long.valueOf(sparseLongArray.get(crashFingerprint2.intValue()));
+                if (this.mRealLastViolationTime != null) {
+                    Long vtime = Long.valueOf(this.mRealLastViolationTime.get(crashFingerprint2.intValue()));
                     if (vtime != null) {
                         lastViolationTime = vtime.longValue();
                     }
@@ -1170,7 +1053,7 @@ public final class StrictMode {
             }
         }
 
-        public static /* synthetic */ void lambda$onThreadPolicyViolation$1(OnThreadViolationListener listener, Violation violation) {
+        static /* synthetic */ void lambda$onThreadPolicyViolation$1(OnThreadViolationListener listener, Violation violation) {
             ThreadPolicy oldPolicy = StrictMode.allowThreadViolations();
             try {
                 listener.onThreadViolation(violation);
@@ -1180,48 +1063,17 @@ public final class StrictMode {
         }
     }
 
-    /* renamed from: android.os.StrictMode$5 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass5 implements BlockGuard.VmPolicy {
-        AnonymousClass5() {
-        }
-
-        public void onPathAccess(String path) {
-            if (path == null) {
-                return;
-            }
-            if (path.startsWith("/data/user/") || path.startsWith("/data/media/") || path.startsWith("/data/system_ce/") || path.startsWith("/data/misc_ce/") || path.startsWith("/data/vendor_ce/") || path.startsWith("/storage/emulated/")) {
-                int second = path.indexOf(47, 1);
-                int third = path.indexOf(47, second + 1);
-                int fourth = path.indexOf(47, third + 1);
-                if (fourth == -1) {
-                    return;
-                }
-                try {
-                    int userId = Integer.parseInt(path.substring(third + 1, fourth));
-                    StrictMode.onCredentialProtectedPathAccess(path, userId);
-                    return;
-                } catch (NumberFormatException e) {
-                    return;
-                }
-            }
-            if (path.startsWith("/data/data/")) {
-                StrictMode.onCredentialProtectedPathAccess(path, 0);
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static void dropboxViolationAsync(final int penaltyMask, final ViolationInfo info) {
-        AtomicInteger atomicInteger = sDropboxCallsInFlight;
-        int outstanding = atomicInteger.incrementAndGet();
+        int outstanding = sDropboxCallsInFlight.incrementAndGet();
         if (outstanding > 20) {
-            atomicInteger.decrementAndGet();
+            sDropboxCallsInFlight.decrementAndGet();
             return;
         }
         if (LOG_V) {
             Log.d(TAG, "Dropboxing async; in-flight=" + outstanding);
         }
-        BackgroundThread.getHandler().post(new Runnable() { // from class: android.os.StrictMode$$ExternalSyntheticLambda0
+        BackgroundThread.getHandler().post(new Runnable() { // from class: android.os.StrictMode$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable
             public final void run() {
                 StrictMode.lambda$dropboxViolationAsync$2(penaltyMask, info);
@@ -1229,7 +1081,7 @@ public final class StrictMode {
         });
     }
 
-    public static /* synthetic */ void lambda$dropboxViolationAsync$2(int penaltyMask, ViolationInfo info) {
+    static /* synthetic */ void lambda$dropboxViolationAsync$2(int penaltyMask, ViolationInfo info) {
         handleApplicationStrictModeViolation(penaltyMask, info);
         int outstandingInner = sDropboxCallsInFlight.decrementAndGet();
         if (LOG_V) {
@@ -1237,6 +1089,7 @@ public final class StrictMode {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void handleApplicationStrictModeViolation(int penaltyMask, ViolationInfo info) {
         int oldMask = getThreadPolicyMask();
         try {
@@ -1258,12 +1111,7 @@ public final class StrictMode {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class AndroidCloseGuardReporter implements CloseGuard.Reporter {
-        /* synthetic */ AndroidCloseGuardReporter(AndroidCloseGuardReporterIA androidCloseGuardReporterIA) {
-            this();
-        }
-
+    private static class AndroidCloseGuardReporter implements CloseGuard.Reporter {
         private AndroidCloseGuardReporter() {
         }
 
@@ -1276,11 +1124,11 @@ public final class StrictMode {
         }
     }
 
-    public static boolean hasGatheredViolations() {
+    static boolean hasGatheredViolations() {
         return gatheredViolations.get() != null;
     }
 
-    public static void clearGatheredViolations() {
+    static void clearGatheredViolations() {
         gatheredViolations.set(null);
     }
 
@@ -1290,9 +1138,12 @@ public final class StrictMode {
         if (policySize == 0) {
             return;
         }
+        int oldMask = getThreadPolicyMask();
+        setThreadPolicyMask(0);
         System.gc();
         System.runFinalization();
         System.gc();
+        setThreadPolicyMask(oldMask);
         Class[] classes = (Class[]) policy.classInstanceLimit.keySet().toArray(new Class[policySize]);
         long[] instanceCounts = VMDebug.countInstancesOfClasses(classes, false);
         for (int i = 0; i < classes.length; i++) {
@@ -1302,24 +1153,6 @@ public final class StrictMode {
             if (instances > limit) {
                 onVmPolicyViolation(new InstanceCountViolation(klass, instances, limit));
             }
-        }
-    }
-
-    /* renamed from: android.os.StrictMode$6 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass6 implements MessageQueue.IdleHandler {
-        AnonymousClass6() {
-        }
-
-        @Override // android.os.MessageQueue.IdleHandler
-        public boolean queueIdle() {
-            long now = SystemClock.uptimeMillis();
-            if (now - StrictMode.sLastInstanceCountCheckMillis > 30000) {
-                StrictMode.sLastInstanceCountCheckMillis = now;
-                StrictMode.conditionallyCheckInstanceCounts();
-                return true;
-            }
-            return true;
         }
     }
 
@@ -1369,29 +1202,24 @@ public final class StrictMode {
         }
     }
 
-    private static void registerIntentMatchingRestrictionCallback() {
-        try {
-            ActivityManager.getService().registerStrictModeCallback(new UnsafeIntentStrictModeCallback());
-        } catch (RemoteException e) {
-            if (!(e instanceof DeadObjectException)) {
-                Log.e(TAG, "RemoteException handling StrictMode violation", e);
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public static final class UnsafeIntentStrictModeCallback extends IUnsafeIntentStrictModeCallback.Stub {
-        /* synthetic */ UnsafeIntentStrictModeCallback(UnsafeIntentStrictModeCallbackIA unsafeIntentStrictModeCallbackIA) {
-            this();
-        }
-
+    private static final class UnsafeIntentStrictModeCallback extends IUnsafeIntentStrictModeCallback.Stub {
         private UnsafeIntentStrictModeCallback() {
         }
 
         @Override // android.app.IUnsafeIntentStrictModeCallback
-        public void onImplicitIntentMatchedInternalComponent(Intent intent) {
+        public void onUnsafeIntent(int type, Intent intent) {
             if (StrictMode.vmUnsafeIntentLaunchEnabled()) {
-                StrictMode.onUnsafeIntentLaunch(intent, "Launch of unsafe implicit intent: " + intent);
+                StrictMode.onUnsafeIntentLaunch(type, intent);
+            }
+        }
+    }
+
+    private static void registerIntentMatchingRestrictionCallback() {
+        if (sUnsafeIntentCallback == null) {
+            sUnsafeIntentCallback = new UnsafeIntentStrictModeCallback();
+            try {
+                ActivityManager.getService().registerStrictModeCallback(sUnsafeIntentCallback);
+            } catch (RemoteException e) {
             }
         }
     }
@@ -1541,37 +1369,58 @@ public final class StrictMode {
         onVmPolicyViolation(new UnsafeIntentLaunchViolation(intent));
     }
 
-    public static void onUnsafeIntentLaunch(Intent intent, String message) {
-        onVmPolicyViolation(new UnsafeIntentLaunchViolation(intent, message));
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void onUnsafeIntentLaunch(int type, Intent intent) {
+        String msg;
+        switch (type) {
+            case 1:
+                msg = "Launch of intent with null action: ";
+                break;
+            case 2:
+                msg = "Implicit intent matching internal non-exported component: ";
+                break;
+            case 3:
+                msg = "Intent mismatch target component intent filter: ";
+                break;
+            default:
+                return;
+        }
+        onVmPolicyViolation(new UnsafeIntentLaunchViolation(intent, msg + intent));
     }
 
-    private static boolean isUserKeyUnlocked(int userId) {
-        IStorageManager storage = IStorageManager.Stub.asInterface(ServiceManager.getService(AudioParameter.VALUE_MOUNT));
+    private static boolean isCeStorageUnlocked(int userId) {
+        IStorageManager storage = sStorageManager;
+        if (storage == null && (storage = IStorageManager.Stub.asInterface(ServiceManager.getService(AudioParameter.VALUE_MOUNT))) != null) {
+            sStorageManager = storage;
+        }
         if (storage != null) {
             try {
-                return storage.isUserKeyUnlocked(userId);
+                return storage.isCeStorageUnlocked(userId);
             } catch (RemoteException e) {
+                sStorageManager = null;
                 return false;
             }
         }
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void onCredentialProtectedPathAccess(String path, int userId) {
         if (userId == UserHandle.myUserId()) {
-            if (sUserKeyUnlocked) {
+            if (sCeStorageUnlocked) {
                 return;
             }
-            if (isUserKeyUnlocked(userId)) {
-                sUserKeyUnlocked = true;
+            if (isCeStorageUnlocked(userId)) {
+                sCeStorageUnlocked = true;
                 return;
             }
-        } else if (isUserKeyUnlocked(userId)) {
+        } else if (isCeStorageUnlocked(userId)) {
             return;
         }
         onVmPolicyViolation(new CredentialProtectedWhileLockedViolation("Accessed credential protected path " + path + " while user " + userId + " was locked"));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void clampViolationTimeMap(SparseLongArray violationTime, long retainSince) {
         int i = 0;
         while (i < violationTime.size()) {
@@ -1588,11 +1437,11 @@ public final class StrictMode {
     }
 
     public static void onVmPolicyViolation(final Violation violation, boolean forceDeath) {
-        boolean penaltyLog;
-        boolean penaltyDropbox = (sVmPolicy.mask & 67108864) != 0;
-        boolean penaltyDeath = (sVmPolicy.mask & 268435456) != 0 || forceDeath;
-        boolean penaltyLog2 = (sVmPolicy.mask & 1073741824) != 0;
-        int penaltyMask = (-65536) & sVmPolicy.mask;
+        VmPolicy vmPolicy = getVmPolicy();
+        boolean penaltyDropbox = (vmPolicy.mask & 67108864) != 0;
+        boolean penaltyDeath = (vmPolicy.mask & 268435456) != 0 || forceDeath;
+        boolean penaltyLog = (vmPolicy.mask & 1073741824) != 0;
+        int penaltyMask = (-65536) & vmPolicy.mask;
         ViolationInfo info = new ViolationInfo(violation, penaltyMask);
         info.numAnimationsRunning = 0;
         info.tags = null;
@@ -1600,39 +1449,23 @@ public final class StrictMode {
         Integer fingerprint = Integer.valueOf(info.hashCode());
         long now = SystemClock.uptimeMillis();
         long timeSinceLastViolationMillis = Long.MAX_VALUE;
-        if (sLogger != LOGCAT_LOGGER) {
-            penaltyLog = penaltyLog2;
-        } else {
-            SparseLongArray sparseLongArray = sRealLastVmViolationTime;
-            synchronized (sparseLongArray) {
-                try {
-                    try {
-                        if (sparseLongArray.indexOfKey(fingerprint.intValue()) >= 0) {
-                            try {
-                                long lastViolationTime = sparseLongArray.get(fingerprint.intValue());
-                                timeSinceLastViolationMillis = now - lastViolationTime;
-                            } catch (Throwable th) {
-                                th = th;
-                                throw th;
-                            }
-                        }
-                        if (timeSinceLastViolationMillis > 1000) {
-                            sparseLongArray.put(fingerprint.intValue(), now);
-                        }
-                        penaltyLog = penaltyLog2;
-                        clampViolationTimeMap(sparseLongArray, now - Math.max(1000L, 1000L));
-                    } catch (Throwable th2) {
-                        th = th2;
-                    }
-                } catch (Throwable th3) {
-                    th = th3;
+        boolean penaltyLog2 = penaltyLog;
+        if (sLogger == LOGCAT_LOGGER) {
+            synchronized (sRealLastVmViolationTime) {
+                if (sRealLastVmViolationTime.indexOfKey(fingerprint.intValue()) >= 0) {
+                    long lastViolationTime = sRealLastVmViolationTime.get(fingerprint.intValue());
+                    timeSinceLastViolationMillis = now - lastViolationTime;
                 }
+                if (timeSinceLastViolationMillis > 1000) {
+                    sRealLastVmViolationTime.put(fingerprint.intValue(), now);
+                }
+                clampViolationTimeMap(sRealLastVmViolationTime, now - Math.max(1000L, 1000L));
             }
         }
         if (timeSinceLastViolationMillis <= 1000) {
             return;
         }
-        if (penaltyLog && sLogger != null && timeSinceLastViolationMillis > 1000) {
+        if (penaltyLog2 && sLogger != null && timeSinceLastViolationMillis > 1000) {
             sLogger.log(info);
         }
         if (penaltyDropbox) {
@@ -1647,10 +1480,10 @@ public final class StrictMode {
             Process.killProcess(Process.myPid());
             System.exit(10);
         }
-        if (sVmPolicy.mListener != null && sVmPolicy.mCallbackExecutor != null) {
-            final OnVmViolationListener listener = sVmPolicy.mListener;
+        if (vmPolicy.mListener != null && vmPolicy.mCallbackExecutor != null) {
+            final OnVmViolationListener listener = vmPolicy.mListener;
             try {
-                sVmPolicy.mCallbackExecutor.execute(new Runnable() { // from class: android.os.StrictMode$$ExternalSyntheticLambda3
+                vmPolicy.mCallbackExecutor.execute(new Runnable() { // from class: android.os.StrictMode$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         StrictMode.lambda$onVmPolicyViolation$3(StrictMode.OnVmViolationListener.this, violation);
@@ -1662,7 +1495,7 @@ public final class StrictMode {
         }
     }
 
-    public static /* synthetic */ void lambda$onVmPolicyViolation$3(OnVmViolationListener listener, Violation violation) {
+    static /* synthetic */ void lambda$onVmPolicyViolation$3(OnVmViolationListener listener, Violation violation) {
         VmPolicy oldPolicy = allowVmViolations();
         try {
             listener.onVmViolation(violation);
@@ -1671,7 +1504,7 @@ public final class StrictMode {
         }
     }
 
-    public static void writeGatheredViolationsToParcel(Parcel p) {
+    static void writeGatheredViolationsToParcel(Parcel p) {
         ArrayList<ViolationInfo> violations = gatheredViolations.get();
         if (violations == null) {
             p.writeInt(0);
@@ -1685,7 +1518,7 @@ public final class StrictMode {
         gatheredViolations.set(null);
     }
 
-    public static void readAndHandleBinderCallViolations(Parcel p) {
+    static void readAndHandleBinderCallViolations(Parcel p) {
         Throwable localCallSite = new Throwable();
         int policyMask = getThreadPolicyMask();
         boolean currentlyGathering = (Integer.MIN_VALUE & policyMask) != 0;
@@ -1704,7 +1537,6 @@ public final class StrictMode {
         setBlockGuardPolicy(newPolicy);
     }
 
-    /* loaded from: classes3.dex */
     public static class Span {
         private final ThreadSpanState mContainerState;
         private long mCreateMillis;
@@ -1726,13 +1558,11 @@ public final class StrictMode {
                 if (this.mName == null) {
                     return;
                 }
-                Span span = this.mPrev;
-                if (span != null) {
-                    span.mNext = this.mNext;
+                if (this.mPrev != null) {
+                    this.mPrev.mNext = this.mNext;
                 }
-                Span span2 = this.mNext;
-                if (span2 != null) {
-                    span2.mPrev = span;
+                if (this.mNext != null) {
+                    this.mNext.mPrev = this.mPrev;
                 }
                 if (state.mActiveHead == this) {
                     state.mActiveHead = this.mNext;
@@ -1754,53 +1584,13 @@ public final class StrictMode {
         }
     }
 
-    /* renamed from: android.os.StrictMode$7 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass7 extends Span {
-        AnonymousClass7() {
-        }
-
-        @Override // android.os.StrictMode.Span
-        public void finish() {
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public static class ThreadSpanState {
+    private static class ThreadSpanState {
         public Span mActiveHead;
         public int mActiveSize;
         public Span mFreeListHead;
         public int mFreeListSize;
 
-        /* synthetic */ ThreadSpanState(ThreadSpanStateIA threadSpanStateIA) {
-            this();
-        }
-
         private ThreadSpanState() {
-        }
-    }
-
-    /* renamed from: android.os.StrictMode$8 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass8 extends ThreadLocal<ThreadSpanState> {
-        AnonymousClass8() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public ThreadSpanState initialValue() {
-            return new ThreadSpanState();
-        }
-    }
-
-    /* renamed from: android.os.StrictMode$9 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass9 extends Singleton<IWindowManager> {
-        AnonymousClass9() {
-        }
-
-        @Override // android.util.Singleton
-        public IWindowManager create() {
-            return IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
         }
     }
 
@@ -1896,94 +1686,93 @@ public final class StrictMode {
             if ((sVmPolicy.mask & 4) == 0) {
                 return;
             }
-            HashMap<Class, Integer> hashMap = sExpectedActivityInstanceCount;
-            Integer expected = hashMap.get(klass);
+            Integer expected = sExpectedActivityInstanceCount.get(klass);
             Integer newExpected = Integer.valueOf(expected == null ? InstanceTracker.getInstanceCount(klass) + 1 : expected.intValue() + 1);
-            hashMap.put(klass, newExpected);
+            sExpectedActivityInstanceCount.put(klass, newExpected);
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:18:0x002c A[Catch: all -> 0x005c, TryCatch #0 {, blocks: (B:7:0x0006, B:9:0x000e, B:11:0x0010, B:13:0x001b, B:16:0x0022, B:18:0x002c, B:19:0x0037, B:20:0x0039, B:29:0x0030), top: B:6:0x0006 }] */
-    /* JADX WARN: Removed duplicated region for block: B:23:0x0040 A[RETURN] */
-    /* JADX WARN: Removed duplicated region for block: B:24:0x0041  */
-    /* JADX WARN: Removed duplicated region for block: B:29:0x0030 A[Catch: all -> 0x005c, TryCatch #0 {, blocks: (B:7:0x0006, B:9:0x000e, B:11:0x0010, B:13:0x001b, B:16:0x0022, B:18:0x002c, B:19:0x0037, B:20:0x0039, B:29:0x0030), top: B:6:0x0006 }] */
+    /* JADX WARN: Removed duplicated region for block: B:18:0x002c A[Catch: all -> 0x0060, TryCatch #0 {, blocks: (B:7:0x0006, B:9:0x000e, B:11:0x0010, B:13:0x001b, B:16:0x0022, B:18:0x002c, B:19:0x003b, B:20:0x003d, B:29:0x0032), top: B:6:0x0006 }] */
+    /* JADX WARN: Removed duplicated region for block: B:23:0x0044 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x0045  */
+    /* JADX WARN: Removed duplicated region for block: B:29:0x0032 A[Catch: all -> 0x0060, TryCatch #0 {, blocks: (B:7:0x0006, B:9:0x000e, B:11:0x0010, B:13:0x001b, B:16:0x0022, B:18:0x002c, B:19:0x003b, B:20:0x003d, B:29:0x0032), top: B:6:0x0006 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static void decrementExpectedActivityCount(java.lang.Class r7) {
+    public static void decrementExpectedActivityCount(java.lang.Class r6) {
         /*
-            if (r7 != 0) goto L3
+            if (r6 != 0) goto L3
             return
         L3:
             java.lang.Class<android.os.StrictMode> r0 = android.os.StrictMode.class
             monitor-enter(r0)
-            android.os.StrictMode$VmPolicy r1 = android.os.StrictMode.sVmPolicy     // Catch: java.lang.Throwable -> L5c
-            int r1 = r1.mask     // Catch: java.lang.Throwable -> L5c
+            android.os.StrictMode$VmPolicy r1 = android.os.StrictMode.sVmPolicy     // Catch: java.lang.Throwable -> L60
+            int r1 = r1.mask     // Catch: java.lang.Throwable -> L60
             r1 = r1 & 4
             if (r1 != 0) goto L10
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> L5c
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> L60
             return
         L10:
-            java.util.HashMap<java.lang.Class, java.lang.Integer> r1 = android.os.StrictMode.sExpectedActivityInstanceCount     // Catch: java.lang.Throwable -> L5c
-            java.lang.Object r2 = r1.get(r7)     // Catch: java.lang.Throwable -> L5c
-            java.lang.Integer r2 = (java.lang.Integer) r2     // Catch: java.lang.Throwable -> L5c
-            r3 = 0
-            if (r2 == 0) goto L29
-            int r4 = r2.intValue()     // Catch: java.lang.Throwable -> L5c
-            if (r4 != 0) goto L22
+            java.util.HashMap<java.lang.Class, java.lang.Integer> r1 = android.os.StrictMode.sExpectedActivityInstanceCount     // Catch: java.lang.Throwable -> L60
+            java.lang.Object r1 = r1.get(r6)     // Catch: java.lang.Throwable -> L60
+            java.lang.Integer r1 = (java.lang.Integer) r1     // Catch: java.lang.Throwable -> L60
+            r2 = 0
+            if (r1 == 0) goto L29
+            int r3 = r1.intValue()     // Catch: java.lang.Throwable -> L60
+            if (r3 != 0) goto L22
             goto L29
         L22:
-            int r4 = r2.intValue()     // Catch: java.lang.Throwable -> L5c
-            int r4 = r4 + (-1)
+            int r3 = r1.intValue()     // Catch: java.lang.Throwable -> L60
+            int r3 = r3 + (-1)
             goto L2a
         L29:
-            r4 = r3
+            r3 = r2
         L2a:
-            if (r4 != 0) goto L30
-            r1.remove(r7)     // Catch: java.lang.Throwable -> L5c
-            goto L37
-        L30:
-            java.lang.Integer r5 = java.lang.Integer.valueOf(r4)     // Catch: java.lang.Throwable -> L5c
-            r1.put(r7, r5)     // Catch: java.lang.Throwable -> L5c
-        L37:
-            int r4 = r4 + 1
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> L5c
-            int r0 = android.os.StrictMode.InstanceTracker.getInstanceCount(r7)
-            if (r0 > r4) goto L41
+            if (r3 != 0) goto L32
+            java.util.HashMap<java.lang.Class, java.lang.Integer> r4 = android.os.StrictMode.sExpectedActivityInstanceCount     // Catch: java.lang.Throwable -> L60
+            r4.remove(r6)     // Catch: java.lang.Throwable -> L60
+            goto L3b
+        L32:
+            java.util.HashMap<java.lang.Class, java.lang.Integer> r4 = android.os.StrictMode.sExpectedActivityInstanceCount     // Catch: java.lang.Throwable -> L60
+            java.lang.Integer r5 = java.lang.Integer.valueOf(r3)     // Catch: java.lang.Throwable -> L60
+            r4.put(r6, r5)     // Catch: java.lang.Throwable -> L60
+        L3b:
+            int r3 = r3 + 1
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> L60
+            int r0 = android.os.StrictMode.InstanceTracker.getInstanceCount(r6)
+            if (r0 > r3) goto L45
             return
-        L41:
+        L45:
             java.lang.System.gc()
             java.lang.System.runFinalization()
             java.lang.System.gc()
-            long r1 = dalvik.system.VMDebug.countInstancesOfClass(r7, r3)
-            long r5 = (long) r4
-            int r3 = (r1 > r5 ? 1 : (r1 == r5 ? 0 : -1))
-            if (r3 <= 0) goto L5b
-            android.os.strictmode.InstanceCountViolation r3 = new android.os.strictmode.InstanceCountViolation
-            r3.<init>(r7, r1, r4)
-            onVmPolicyViolation(r3)
-        L5b:
+            long r1 = dalvik.system.VMDebug.countInstancesOfClass(r6, r2)
+            long r4 = (long) r3
+            int r4 = (r1 > r4 ? 1 : (r1 == r4 ? 0 : -1))
+            if (r4 <= 0) goto L5f
+            android.os.strictmode.InstanceCountViolation r4 = new android.os.strictmode.InstanceCountViolation
+            r4.<init>(r6, r1, r3)
+            onVmPolicyViolation(r4)
+        L5f:
             return
-        L5c:
+        L60:
             r1 = move-exception
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> L5c
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> L60
             throw r1
         */
         throw new UnsupportedOperationException("Method not decompiled: android.os.StrictMode.decrementExpectedActivityCount(java.lang.Class):void");
     }
 
-    /* loaded from: classes3.dex */
     public static final class ViolationInfo implements Parcelable {
         public static final Parcelable.Creator<ViolationInfo> CREATOR = new Parcelable.Creator<ViolationInfo>() { // from class: android.os.StrictMode.ViolationInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ViolationInfo createFromParcel(Parcel in) {
                 return new ViolationInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ViolationInfo[] newArray(int size) {
                 return new ViolationInfo[size];
@@ -2070,20 +1859,17 @@ public final class StrictMode {
 
         public int hashCode() {
             int result = 17;
-            Violation violation = this.mViolation;
-            if (violation != null) {
-                result = (17 * 37) + violation.hashCode();
+            if (this.mViolation != null) {
+                result = (17 * 37) + this.mViolation.hashCode();
             }
             if (this.numAnimationsRunning != 0) {
                 result *= 37;
             }
-            String str = this.broadcastIntentAction;
-            if (str != null) {
-                result = (result * 37) + str.hashCode();
+            if (this.broadcastIntentAction != null) {
+                result = (result * 37) + this.broadcastIntentAction.hashCode();
             }
-            String[] strArr = this.tags;
-            if (strArr != null) {
-                for (String tag : strArr) {
+            if (this.tags != null) {
+                for (String tag : this.tags) {
                     result = (result * 37) + tag.hashCode();
                 }
             }
@@ -2168,9 +1954,9 @@ public final class StrictMode {
             if (this.broadcastIntentAction != null) {
                 pw.println(prefix + "broadcastIntentAction: " + this.broadcastIntentAction);
             }
-            String[] strArr = this.tags;
-            if (strArr != null) {
+            if (this.tags != null) {
                 int index = 0;
+                String[] strArr = this.tags;
                 int length = strArr.length;
                 int i = 0;
                 while (i < length) {
@@ -2186,52 +1972,31 @@ public final class StrictMode {
         public int describeContents() {
             return 0;
         }
-
-        /* renamed from: android.os.StrictMode$ViolationInfo$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ViolationInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ViolationInfo createFromParcel(Parcel in) {
-                return new ViolationInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ViolationInfo[] newArray(int size) {
-                return new ViolationInfo[size];
-            }
-        }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class InstanceTracker {
+    private static final class InstanceTracker {
         private static final HashMap<Class<?>, Integer> sInstanceCounts = new HashMap<>();
         private final Class<?> mKlass;
 
         public InstanceTracker(Object instance) {
-            Class<?> cls = instance.getClass();
-            this.mKlass = cls;
-            HashMap<Class<?>, Integer> hashMap = sInstanceCounts;
-            synchronized (hashMap) {
-                Integer value = hashMap.get(cls);
+            this.mKlass = instance.getClass();
+            synchronized (sInstanceCounts) {
+                Integer value = sInstanceCounts.get(this.mKlass);
                 int newValue = value != null ? 1 + value.intValue() : 1;
-                hashMap.put(cls, Integer.valueOf(newValue));
+                sInstanceCounts.put(this.mKlass, Integer.valueOf(newValue));
             }
         }
 
         protected void finalize() throws Throwable {
             try {
-                HashMap<Class<?>, Integer> hashMap = sInstanceCounts;
-                synchronized (hashMap) {
-                    Integer value = hashMap.get(this.mKlass);
+                synchronized (sInstanceCounts) {
+                    Integer value = sInstanceCounts.get(this.mKlass);
                     if (value != null) {
                         int newValue = value.intValue() - 1;
                         if (newValue > 0) {
-                            hashMap.put(this.mKlass, Integer.valueOf(newValue));
+                            sInstanceCounts.put(this.mKlass, Integer.valueOf(newValue));
                         } else {
-                            hashMap.remove(this.mKlass);
+                            sInstanceCounts.remove(this.mKlass);
                         }
                     }
                 }
@@ -2242,9 +2007,8 @@ public final class StrictMode {
 
         public static int getInstanceCount(Class<?> klass) {
             int intValue;
-            HashMap<Class<?>, Integer> hashMap = sInstanceCounts;
-            synchronized (hashMap) {
-                Integer value = hashMap.get(klass);
+            synchronized (sInstanceCounts) {
+                Integer value = sInstanceCounts.get(klass);
                 intValue = value != null ? value.intValue() : 0;
             }
             return intValue;

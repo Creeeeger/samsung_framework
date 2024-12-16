@@ -21,12 +21,10 @@ public class HardwarePropertiesManager {
     private final IHardwarePropertiesManager mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeviceTemperatureType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TemperatureSource {
     }
 

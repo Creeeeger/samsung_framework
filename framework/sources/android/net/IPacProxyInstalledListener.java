@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface IPacProxyInstalledListener extends IInterface {
     public static final String DESCRIPTOR = "android.net.IPacProxyInstalledListener";
 
     void onPacProxyInstalled(Network network, ProxyInfo proxyInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IPacProxyInstalledListener {
         @Override // android.net.IPacProxyInstalledListener
         public void onPacProxyInstalled(Network network, ProxyInfo proxy) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IPacProxyInstalledListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IPacProxyInstalledListener {
         static final int TRANSACTION_onPacProxyInstalled = 1;
 
@@ -67,27 +65,23 @@ public interface IPacProxyInstalledListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPacProxyInstalledListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPacProxyInstalledListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPacProxyInstalledListener.DESCRIPTOR);
+                case 1:
+                    Network _arg0 = (Network) data.readTypedObject(Network.CREATOR);
+                    ProxyInfo _arg1 = (ProxyInfo) data.readTypedObject(ProxyInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPacProxyInstalled(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Network _arg0 = (Network) data.readTypedObject(Network.CREATOR);
-                            ProxyInfo _arg1 = (ProxyInfo) data.readTypedObject(ProxyInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPacProxyInstalled(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IPacProxyInstalledListener {
+        private static class Proxy implements IPacProxyInstalledListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

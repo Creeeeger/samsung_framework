@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.sec.enterprise.auditlog.AuditComponents;
 import android.util.Slog;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
@@ -29,11 +30,9 @@ public final class ParcelableResource implements Parcelable {
     private final int mResourceId;
     private final String mResourceName;
     private final int mResourceType;
-    private static String TAG = "DevicePolicyManager";
+    private static String TAG = AuditComponents.DEVICE_POLICY_MANAGER;
     public static final Parcelable.Creator<ParcelableResource> CREATOR = new Parcelable.Creator<ParcelableResource>() { // from class: android.app.admin.ParcelableResource.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableResource createFromParcel(Parcel in) {
             int resourceId = in.readInt();
@@ -43,6 +42,7 @@ public final class ParcelableResource implements Parcelable {
             return new ParcelableResource(resourceId, packageName, resourceName, resourceType);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableResource[] newArray(int size) {
             return new ParcelableResource[size];
@@ -50,12 +50,7 @@ public final class ParcelableResource implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ResourceType {
-    }
-
-    /* synthetic */ ParcelableResource(int i, String str, String str2, int i2, ParcelableResourceIA parcelableResourceIA) {
-        this(i, str, str2, i2);
     }
 
     public ParcelableResource(Context context, int resourceId, int resourceType) throws IllegalStateException, IllegalArgumentException {
@@ -224,26 +219,5 @@ public final class ParcelableResource implements Parcelable {
         dest.writeString(this.mPackageName);
         dest.writeString(this.mResourceName);
         dest.writeInt(this.mResourceType);
-    }
-
-    /* renamed from: android.app.admin.ParcelableResource$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ParcelableResource> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableResource createFromParcel(Parcel in) {
-            int resourceId = in.readInt();
-            String packageName = in.readString();
-            String resourceName = in.readString();
-            int resourceType = in.readInt();
-            return new ParcelableResource(resourceId, packageName, resourceName, resourceType);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableResource[] newArray(int size) {
-            return new ParcelableResource[size];
-        }
     }
 }

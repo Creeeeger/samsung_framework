@@ -12,7 +12,7 @@ import android.telephony.ims.SipDelegateImsConfiguration;
 import android.telephony.ims.aidl.ISipDelegate;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISipDelegateStateCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.ISipDelegateStateCallback";
 
@@ -26,7 +26,6 @@ public interface ISipDelegateStateCallback extends IInterface {
 
     void onImsConfigurationChanged(SipDelegateImsConfiguration sipDelegateImsConfiguration) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISipDelegateStateCallback {
         @Override // android.telephony.ims.aidl.ISipDelegateStateCallback
         public void onCreated(ISipDelegate c, List<FeatureTagState> deniedFeatureTags) throws RemoteException {
@@ -54,7 +53,6 @@ public interface ISipDelegateStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISipDelegateStateCallback {
         static final int TRANSACTION_onConfigurationChanged = 4;
         static final int TRANSACTION_onCreated = 1;
@@ -109,46 +107,43 @@ public interface ISipDelegateStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISipDelegateStateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISipDelegateStateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISipDelegateStateCallback.DESCRIPTOR);
+                case 1:
+                    ISipDelegate _arg0 = ISipDelegate.Stub.asInterface(data.readStrongBinder());
+                    List<FeatureTagState> _arg1 = data.createTypedArrayList(FeatureTagState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCreated(_arg0, _arg1);
+                    return true;
+                case 2:
+                    DelegateRegistrationState _arg02 = (DelegateRegistrationState) data.readTypedObject(DelegateRegistrationState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onFeatureTagRegistrationChanged(_arg02);
+                    return true;
+                case 3:
+                    SipDelegateImsConfiguration _arg03 = (SipDelegateImsConfiguration) data.readTypedObject(SipDelegateImsConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onImsConfigurationChanged(_arg03);
+                    return true;
+                case 4:
+                    SipDelegateConfiguration _arg04 = (SipDelegateConfiguration) data.readTypedObject(SipDelegateConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConfigurationChanged(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDestroyed(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISipDelegate _arg0 = ISipDelegate.Stub.asInterface(data.readStrongBinder());
-                            List<FeatureTagState> _arg1 = data.createTypedArrayList(FeatureTagState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCreated(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            DelegateRegistrationState _arg02 = (DelegateRegistrationState) data.readTypedObject(DelegateRegistrationState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onFeatureTagRegistrationChanged(_arg02);
-                            return true;
-                        case 3:
-                            SipDelegateImsConfiguration _arg03 = (SipDelegateImsConfiguration) data.readTypedObject(SipDelegateImsConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onImsConfigurationChanged(_arg03);
-                            return true;
-                        case 4:
-                            SipDelegateConfiguration _arg04 = (SipDelegateConfiguration) data.readTypedObject(SipDelegateConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConfigurationChanged(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDestroyed(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISipDelegateStateCallback {
+        private static class Proxy implements ISipDelegateStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

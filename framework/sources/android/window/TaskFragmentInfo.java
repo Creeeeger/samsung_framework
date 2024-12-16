@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TaskFragmentInfo implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentInfo> CREATOR = new Parcelable.Creator<TaskFragmentInfo>() { // from class: android.window.TaskFragmentInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentInfo createFromParcel(Parcel in) {
             return new TaskFragmentInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentInfo[] newArray(int size) {
             return new TaskFragmentInfo[size];
@@ -38,33 +37,24 @@ public final class TaskFragmentInfo implements Parcelable {
     private final int mRunningActivityCount;
     private final WindowContainerToken mToken;
 
-    /* synthetic */ TaskFragmentInfo(Parcel parcel, TaskFragmentInfoIA taskFragmentInfoIA) {
-        this(parcel);
-    }
-
     public TaskFragmentInfo(IBinder fragmentToken, WindowContainerToken token, Configuration configuration, int runningActivityCount, boolean isVisible, List<IBinder> activities, List<IBinder> inRequestedTaskFragmentActivities, Point positionInParent, boolean isTaskClearedForReuse, boolean isTaskFragmentClearedForPip, boolean isClearedForReorderActivityToFront, Point minimumDimensions) {
-        Configuration configuration2 = new Configuration();
-        this.mConfiguration = configuration2;
-        ArrayList arrayList = new ArrayList();
-        this.mActivities = arrayList;
-        ArrayList arrayList2 = new ArrayList();
-        this.mInRequestedTaskFragmentActivities = arrayList2;
-        Point point = new Point();
-        this.mPositionInParent = point;
-        Point point2 = new Point();
-        this.mMinimumDimensions = point2;
+        this.mConfiguration = new Configuration();
+        this.mActivities = new ArrayList();
+        this.mInRequestedTaskFragmentActivities = new ArrayList();
+        this.mPositionInParent = new Point();
+        this.mMinimumDimensions = new Point();
         this.mFragmentToken = (IBinder) Objects.requireNonNull(fragmentToken);
         this.mToken = (WindowContainerToken) Objects.requireNonNull(token);
-        configuration2.setTo(configuration);
+        this.mConfiguration.setTo(configuration);
         this.mRunningActivityCount = runningActivityCount;
         this.mIsVisible = isVisible;
-        arrayList.addAll(activities);
-        arrayList2.addAll(inRequestedTaskFragmentActivities);
-        point.set(positionInParent);
+        this.mActivities.addAll(activities);
+        this.mInRequestedTaskFragmentActivities.addAll(inRequestedTaskFragmentActivities);
+        this.mPositionInParent.set(positionInParent);
         this.mIsTaskClearedForReuse = isTaskClearedForReuse;
         this.mIsTaskFragmentClearedForPip = isTaskFragmentClearedForPip;
         this.mIsClearedForReorderActivityToFront = isClearedForReorderActivityToFront;
-        point2.set(minimumDimensions);
+        this.mMinimumDimensions.set(minimumDimensions);
     }
 
     public IBinder getFragmentToken() {
@@ -136,28 +126,23 @@ public final class TaskFragmentInfo implements Parcelable {
     }
 
     private TaskFragmentInfo(Parcel in) {
-        Configuration configuration = new Configuration();
-        this.mConfiguration = configuration;
-        ArrayList arrayList = new ArrayList();
-        this.mActivities = arrayList;
-        ArrayList arrayList2 = new ArrayList();
-        this.mInRequestedTaskFragmentActivities = arrayList2;
-        Point point = new Point();
-        this.mPositionInParent = point;
-        Point point2 = new Point();
-        this.mMinimumDimensions = point2;
+        this.mConfiguration = new Configuration();
+        this.mActivities = new ArrayList();
+        this.mInRequestedTaskFragmentActivities = new ArrayList();
+        this.mPositionInParent = new Point();
+        this.mMinimumDimensions = new Point();
         this.mFragmentToken = in.readStrongBinder();
         this.mToken = (WindowContainerToken) in.readTypedObject(WindowContainerToken.CREATOR);
-        configuration.readFromParcel(in);
+        this.mConfiguration.readFromParcel(in);
         this.mRunningActivityCount = in.readInt();
         this.mIsVisible = in.readBoolean();
-        in.readBinderList(arrayList);
-        in.readBinderList(arrayList2);
-        point.readFromParcel(in);
+        in.readBinderList(this.mActivities);
+        in.readBinderList(this.mInRequestedTaskFragmentActivities);
+        this.mPositionInParent.readFromParcel(in);
         this.mIsTaskClearedForReuse = in.readBoolean();
         this.mIsTaskFragmentClearedForPip = in.readBoolean();
         this.mIsClearedForReorderActivityToFront = in.readBoolean();
-        point2.readFromParcel(in);
+        this.mMinimumDimensions.readFromParcel(in);
     }
 
     @Override // android.os.Parcelable
@@ -174,23 +159,6 @@ public final class TaskFragmentInfo implements Parcelable {
         dest.writeBoolean(this.mIsTaskFragmentClearedForPip);
         dest.writeBoolean(this.mIsClearedForReorderActivityToFront);
         this.mMinimumDimensions.writeToParcel(dest, flags);
-    }
-
-    /* renamed from: android.window.TaskFragmentInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentInfo createFromParcel(Parcel in) {
-            return new TaskFragmentInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentInfo[] newArray(int size) {
-            return new TaskFragmentInfo[size];
-        }
     }
 
     public String toString() {

@@ -72,20 +72,18 @@ public class Time extends ASN1Object implements ASN1Choice {
     }
 
     public String getTime() {
-        ASN1Primitive aSN1Primitive = this.time;
-        if (aSN1Primitive instanceof ASN1UTCTime) {
-            return ((ASN1UTCTime) aSN1Primitive).getAdjustedTime();
+        if (this.time instanceof ASN1UTCTime) {
+            return ((ASN1UTCTime) this.time).getAdjustedTime();
         }
-        return ((ASN1GeneralizedTime) aSN1Primitive).getTime();
+        return ((ASN1GeneralizedTime) this.time).getTime();
     }
 
     public Date getDate() {
         try {
-            ASN1Primitive aSN1Primitive = this.time;
-            if (aSN1Primitive instanceof ASN1UTCTime) {
-                return ((ASN1UTCTime) aSN1Primitive).getAdjustedDate();
+            if (this.time instanceof ASN1UTCTime) {
+                return ((ASN1UTCTime) this.time).getAdjustedDate();
             }
-            return ((ASN1GeneralizedTime) aSN1Primitive).getDate();
+            return ((ASN1GeneralizedTime) this.time).getDate();
         } catch (ParseException e) {
             throw new IllegalStateException("invalid date string: " + e.getMessage());
         }

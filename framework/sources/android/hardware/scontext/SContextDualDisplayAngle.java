@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextDualDisplayAngle extends SContextEventContext {
     public static final Parcelable.Creator<SContextDualDisplayAngle> CREATOR = new Parcelable.Creator<SContextDualDisplayAngle>() { // from class: android.hardware.scontext.SContextDualDisplayAngle.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextDualDisplayAngle createFromParcel(Parcel in) {
             return new SContextDualDisplayAngle(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextDualDisplayAngle[] newArray(int size) {
             return new SContextDualDisplayAngle[size];
@@ -55,22 +54,5 @@ public class SContextDualDisplayAngle extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextDualDisplayAngle$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextDualDisplayAngle> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextDualDisplayAngle createFromParcel(Parcel in) {
-            return new SContextDualDisplayAngle(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextDualDisplayAngle[] newArray(int size) {
-            return new SContextDualDisplayAngle[size];
-        }
     }
 }

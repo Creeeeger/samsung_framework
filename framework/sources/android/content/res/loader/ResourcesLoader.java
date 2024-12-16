@@ -17,7 +17,6 @@ public class ResourcesLoader {
     private final Object mLock = new Object();
     private ArrayMap<WeakReference<Object>, UpdateCallbacks> mChangeCallbacks = new ArrayMap<>();
 
-    /* loaded from: classes.dex */
     public interface UpdateCallbacks {
         void onLoaderUpdated(ResourcesLoader resourcesLoader);
     }
@@ -25,8 +24,7 @@ public class ResourcesLoader {
     public List<ResourcesProvider> getProviders() {
         List<ResourcesProvider> emptyList;
         synchronized (this.mLock) {
-            ResourcesProvider[] resourcesProviderArr = this.mProviders;
-            emptyList = resourcesProviderArr == null ? Collections.emptyList() : Arrays.asList(resourcesProviderArr);
+            emptyList = this.mProviders == null ? Collections.emptyList() : Arrays.asList(this.mProviders);
         }
         return emptyList;
     }
@@ -61,11 +59,10 @@ public class ResourcesLoader {
 
     public List<ApkAssets> getApkAssets() {
         synchronized (this.mLock) {
-            ApkAssets[] apkAssetsArr = this.mApkAssets;
-            if (apkAssetsArr == null) {
+            if (this.mApkAssets == null) {
                 return Collections.emptyList();
             }
-            return Arrays.asList(apkAssetsArr);
+            return Arrays.asList(this.mApkAssets);
         }
     }
 
@@ -109,20 +106,18 @@ public class ResourcesLoader {
         if (arrayEquals(this.mPreviousProviders, this.mProviders)) {
             return;
         }
-        ResourcesProvider[] resourcesProviderArr = this.mProviders;
-        if (resourcesProviderArr == null || resourcesProviderArr.length == 0) {
+        if (this.mProviders == null || this.mProviders.length == 0) {
             this.mApkAssets = null;
         } else {
-            this.mApkAssets = new ApkAssets[resourcesProviderArr.length];
-            int n = resourcesProviderArr.length;
+            this.mApkAssets = new ApkAssets[this.mProviders.length];
+            int n = this.mProviders.length;
             for (int i = 0; i < n; i++) {
                 this.mProviders[i].incrementRefCount();
                 this.mApkAssets[i] = this.mProviders[i].getApkAssets();
             }
         }
-        ResourcesProvider[] resourcesProviderArr2 = this.mPreviousProviders;
-        if (resourcesProviderArr2 != null) {
-            for (ResourcesProvider provider : resourcesProviderArr2) {
+        if (this.mPreviousProviders != null) {
+            for (ResourcesProvider provider : this.mPreviousProviders) {
                 provider.decrementRefCount();
             }
         }

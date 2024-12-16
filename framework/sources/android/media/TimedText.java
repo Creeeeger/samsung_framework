@@ -57,7 +57,6 @@ public final class TimedText {
     private String mTextChars;
     private int mWrapText;
 
-    /* loaded from: classes2.dex */
     public static final class CharPos {
         public final int endChar;
         public final int startChar;
@@ -68,7 +67,6 @@ public final class TimedText {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Justification {
         public final int horizontalJustification;
         public final int verticalJustification;
@@ -79,7 +77,6 @@ public final class TimedText {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Style {
         public final int colorRGBA;
         public final int endChar;
@@ -102,7 +99,6 @@ public final class TimedText {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Font {
         public final int ID;
         public final String name;
@@ -113,7 +109,6 @@ public final class TimedText {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Karaoke {
         public final int endChar;
         public final int endTimeMs;
@@ -128,7 +123,6 @@ public final class TimedText {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class HyperText {
         public final String URL;
         public final String altString;
@@ -145,8 +139,7 @@ public final class TimedText {
 
     public TimedText(Parcel parcel) {
         this.mParcel = Parcel.obtain();
-        HashMap<Integer, Object> hashMap = new HashMap<>();
-        this.mKeyObjectMap = hashMap;
+        this.mKeyObjectMap = new HashMap<>();
         this.mDisplayFlags = -1;
         this.mBackgroundColorRGBA = -1;
         this.mHighlightColorRGBA = -1;
@@ -163,7 +156,7 @@ public final class TimedText {
         byte[] tmp = parcel.marshall();
         this.mParcel.unmarshall(tmp, 0, tmp.length);
         if (!parseParcel(this.mParcel)) {
-            hashMap.clear();
+            this.mKeyObjectMap.clear();
             Log.w(TAG, "parseParcel() fails");
         }
     }
@@ -203,18 +196,115 @@ public final class TimedText {
         return this.mTextBounds;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:51:0x0154 A[Catch: all -> 0x017c, TryCatch #0 {, blocks: (B:4:0x0002, B:9:0x000d, B:11:0x0015, B:14:0x0031, B:19:0x003b, B:24:0x0057, B:26:0x0061, B:29:0x0065, B:31:0x0090, B:33:0x0096, B:59:0x00a0, B:37:0x00c0, B:38:0x00d2, B:39:0x00eb, B:40:0x00f3, B:41:0x00fa, B:42:0x0101, B:43:0x0108, B:44:0x010f, B:45:0x0116, B:46:0x0122, B:47:0x012e, B:48:0x013a, B:49:0x0146, B:51:0x0154, B:53:0x0160, B:54:0x0169, B:63:0x0174, B:66:0x006d, B:69:0x0075), top: B:3:0x0002 }] */
-    /* JADX WARN: Removed duplicated region for block: B:57:0x0172 A[SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private synchronized boolean parseParcel(android.os.Parcel r11) {
-        /*
-            Method dump skipped, instructions count: 418
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.media.TimedText.parseParcel(android.os.Parcel):boolean");
+    private synchronized boolean parseParcel(Parcel parcel) {
+        int mTextIndex;
+        parcel.setDataPosition(0);
+        if (parcel.dataAvail() == 0) {
+            return false;
+        }
+        int textType = parcel.readInt();
+        if (textType == 3017) {
+            int mTextIndex2 = parcel.readInt();
+            this.mKeyObjectMap.put(Integer.valueOf(textType), Integer.valueOf(mTextIndex2));
+            mTextIndex = parcel.readInt();
+        } else {
+            mTextIndex = textType;
+        }
+        if (mTextIndex == 102) {
+            int type = parcel.readInt();
+            if (type != 7) {
+                return false;
+            }
+            int mStartTimeMs = parcel.readInt();
+            this.mKeyObjectMap.put(Integer.valueOf(type), Integer.valueOf(mStartTimeMs));
+            if (parcel.readInt() != 16) {
+                return false;
+            }
+            parcel.readInt();
+            byte[] text = parcel.createByteArray();
+            if (text != null && text.length != 0) {
+                this.mTextChars = new String(text);
+            }
+            this.mTextChars = null;
+        } else if (mTextIndex != 101) {
+            Log.w(TAG, "Invalid timed text key found: " + mTextIndex);
+            return false;
+        }
+        while (parcel.dataAvail() > 0) {
+            int key = parcel.readInt();
+            if (!isValidKey(key)) {
+                Log.w(TAG, "Invalid timed text key found: " + key);
+                return false;
+            }
+            Object object = null;
+            switch (key) {
+                case 1:
+                    this.mDisplayFlags = parcel.readInt();
+                    object = Integer.valueOf(this.mDisplayFlags);
+                    break;
+                case 3:
+                    this.mBackgroundColorRGBA = parcel.readInt();
+                    object = Integer.valueOf(this.mBackgroundColorRGBA);
+                    break;
+                case 4:
+                    this.mHighlightColorRGBA = parcel.readInt();
+                    object = Integer.valueOf(this.mHighlightColorRGBA);
+                    break;
+                case 5:
+                    this.mScrollDelay = parcel.readInt();
+                    object = Integer.valueOf(this.mScrollDelay);
+                    break;
+                case 6:
+                    this.mWrapText = parcel.readInt();
+                    object = Integer.valueOf(this.mWrapText);
+                    break;
+                case 8:
+                    readBlinkingText(parcel);
+                    object = this.mBlinkingPosList;
+                    break;
+                case 9:
+                    readFont(parcel);
+                    object = this.mFontList;
+                    break;
+                case 10:
+                    readHighlight(parcel);
+                    object = this.mHighlightPosList;
+                    break;
+                case 11:
+                    readHyperText(parcel);
+                    object = this.mHyperTextList;
+                    break;
+                case 12:
+                    readKaraoke(parcel);
+                    object = this.mKaraokeList;
+                    break;
+                case 13:
+                    readStyle(parcel);
+                    object = this.mStyleList;
+                    break;
+                case 14:
+                    int top = parcel.readInt();
+                    int left = parcel.readInt();
+                    int bottom = parcel.readInt();
+                    int right = parcel.readInt();
+                    this.mTextBounds = new Rect(left, top, right, bottom);
+                    break;
+                case 15:
+                    int horizontal = parcel.readInt();
+                    int vertical = parcel.readInt();
+                    this.mJustification = new Justification(horizontal, vertical);
+                    object = this.mJustification;
+                    break;
+            }
+            if (object != null) {
+                if (this.mKeyObjectMap.containsKey(Integer.valueOf(key))) {
+                    this.mKeyObjectMap.remove(Integer.valueOf(key));
+                }
+                this.mKeyObjectMap.put(Integer.valueOf(key), object);
+            }
+        }
+        this.mParcel.recycle();
+        return true;
     }
 
     private void readStyle(Parcel parcel) {

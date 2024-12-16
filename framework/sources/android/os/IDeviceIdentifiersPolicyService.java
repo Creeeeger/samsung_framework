@@ -6,7 +6,6 @@ public interface IDeviceIdentifiersPolicyService extends IInterface {
 
     String getSerialForPackage(String str, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDeviceIdentifiersPolicyService {
         @Override // android.os.IDeviceIdentifiersPolicyService
         public String getSerial() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDeviceIdentifiersPolicyService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDeviceIdentifiersPolicyService {
         public static final String DESCRIPTOR = "android.os.IDeviceIdentifiersPolicyService";
         static final int TRANSACTION_getSerial = 1;
@@ -71,33 +69,30 @@ public interface IDeviceIdentifiersPolicyService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _result = getSerial();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result2 = getSerialForPackage(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeString(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _result = getSerial();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result2 = getSerialForPackage(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDeviceIdentifiersPolicyService {
+        private static class Proxy implements IDeviceIdentifiersPolicyService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -34,7 +34,6 @@ public interface IPrintService extends IInterface {
 
     void validatePrinters(List<PrinterId> list) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintService {
         @Override // android.printservice.IPrintService
         public void setClient(IPrintServiceClient client) throws RemoteException {
@@ -86,7 +85,6 @@ public interface IPrintService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintService {
         public static final String DESCRIPTOR = "android.printservice.IPrintService";
         static final int TRANSACTION_createPrinterDiscoverySession = 4;
@@ -160,68 +158,65 @@ public interface IPrintService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IPrintServiceClient _arg0 = IPrintServiceClient.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setClient(_arg0);
+                    return true;
+                case 2:
+                    PrintJobInfo _arg02 = (PrintJobInfo) data.readTypedObject(PrintJobInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestCancelPrintJob(_arg02);
+                    return true;
+                case 3:
+                    PrintJobInfo _arg03 = (PrintJobInfo) data.readTypedObject(PrintJobInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrintJobQueued(_arg03);
+                    return true;
+                case 4:
+                    createPrinterDiscoverySession();
+                    return true;
+                case 5:
+                    List<PrinterId> _arg04 = data.createTypedArrayList(PrinterId.CREATOR);
+                    data.enforceNoDataAvail();
+                    startPrinterDiscovery(_arg04);
+                    return true;
+                case 6:
+                    stopPrinterDiscovery();
+                    return true;
+                case 7:
+                    List<PrinterId> _arg05 = data.createTypedArrayList(PrinterId.CREATOR);
+                    data.enforceNoDataAvail();
+                    validatePrinters(_arg05);
+                    return true;
+                case 8:
+                    PrinterId _arg06 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    data.enforceNoDataAvail();
+                    startPrinterStateTracking(_arg06);
+                    return true;
+                case 9:
+                    PrinterId _arg07 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestCustomPrinterIcon(_arg07);
+                    return true;
+                case 10:
+                    PrinterId _arg08 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    data.enforceNoDataAvail();
+                    stopPrinterStateTracking(_arg08);
+                    return true;
+                case 11:
+                    destroyPrinterDiscoverySession();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IPrintServiceClient _arg0 = IPrintServiceClient.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setClient(_arg0);
-                            return true;
-                        case 2:
-                            PrintJobInfo _arg02 = (PrintJobInfo) data.readTypedObject(PrintJobInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestCancelPrintJob(_arg02);
-                            return true;
-                        case 3:
-                            PrintJobInfo _arg03 = (PrintJobInfo) data.readTypedObject(PrintJobInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrintJobQueued(_arg03);
-                            return true;
-                        case 4:
-                            createPrinterDiscoverySession();
-                            return true;
-                        case 5:
-                            List<PrinterId> _arg04 = data.createTypedArrayList(PrinterId.CREATOR);
-                            data.enforceNoDataAvail();
-                            startPrinterDiscovery(_arg04);
-                            return true;
-                        case 6:
-                            stopPrinterDiscovery();
-                            return true;
-                        case 7:
-                            List<PrinterId> _arg05 = data.createTypedArrayList(PrinterId.CREATOR);
-                            data.enforceNoDataAvail();
-                            validatePrinters(_arg05);
-                            return true;
-                        case 8:
-                            PrinterId _arg06 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            data.enforceNoDataAvail();
-                            startPrinterStateTracking(_arg06);
-                            return true;
-                        case 9:
-                            PrinterId _arg07 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestCustomPrinterIcon(_arg07);
-                            return true;
-                        case 10:
-                            PrinterId _arg08 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            data.enforceNoDataAvail();
-                            stopPrinterStateTracking(_arg08);
-                            return true;
-                        case 11:
-                            destroyPrinterDiscoverySession();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IPrintService {
             private IBinder mRemote;
 

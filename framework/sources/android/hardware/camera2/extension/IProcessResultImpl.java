@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IProcessResultImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IProcessResultImpl";
 
@@ -15,7 +15,6 @@ public interface IProcessResultImpl extends IInterface {
 
     void onCaptureProcessProgressed(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IProcessResultImpl {
         @Override // android.hardware.camera2.extension.IProcessResultImpl
         public void onCaptureCompleted(long shutterTimestamp, CameraMetadataNative results) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IProcessResultImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IProcessResultImpl {
         static final int TRANSACTION_onCaptureCompleted = 1;
         static final int TRANSACTION_onCaptureProcessProgressed = 2;
@@ -77,34 +75,30 @@ public interface IProcessResultImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProcessResultImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProcessResultImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProcessResultImpl.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    CameraMetadataNative _arg1 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCaptureCompleted(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureProcessProgressed(_arg02);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            CameraMetadataNative _arg1 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCaptureCompleted(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureProcessProgressed(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IProcessResultImpl {
+        private static class Proxy implements IProcessResultImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

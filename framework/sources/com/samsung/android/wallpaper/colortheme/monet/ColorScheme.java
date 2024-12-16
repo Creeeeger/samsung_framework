@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ColorScheme {
     public static final float ACCENT1_CHROMA = 48.0f;
     public static final int GOOGLE_BLUE = -14979341;
@@ -356,26 +356,11 @@ public class ColorScheme {
     private static <K, V extends Comparable<? super V>> List<Map.Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
         List<Map.Entry<K, V>> sortedEntries = new ArrayList<>(map.entrySet());
         Collections.sort(sortedEntries, new Comparator<Map.Entry<K, V>>() { // from class: com.samsung.android.wallpaper.colortheme.monet.ColorScheme.1
-            AnonymousClass1() {
-            }
-
             @Override // java.util.Comparator
             public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
                 return ((Comparable) e2.getValue()).compareTo(e1.getValue());
             }
         });
         return sortedEntries;
-    }
-
-    /* renamed from: com.samsung.android.wallpaper.colortheme.monet.ColorScheme$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1<K, V> implements Comparator<Map.Entry<K, V>> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
-            return ((Comparable) e2.getValue()).compareTo(e1.getValue());
-        }
     }
 }

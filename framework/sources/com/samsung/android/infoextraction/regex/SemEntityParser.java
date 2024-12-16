@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEntityParser {
     private static final boolean DEBUG = true;
     private static final String DELIMITER = "＃";
@@ -40,9 +40,8 @@ public class SemEntityParser {
         mLevel = level;
         mWorkStr = " " + str + " ";
         mWorkStrForMillis = " " + str + " ";
-        Calendar calendar = Calendar.getInstance();
-        today = calendar;
-        yearOfToday = calendar.get(1);
+        today = Calendar.getInstance();
+        yearOfToday = today.get(1);
         monthOfToday = today.get(2);
         dayOfToday = today.get(5);
         parsingEmailInfo();
@@ -364,9 +363,8 @@ public class SemEntityParser {
     }
 
     private static void clear() {
-        SemEntityInfo semEntityInfo = mInfo;
-        if (semEntityInfo != null) {
-            semEntityInfo.clear();
+        if (mInfo != null) {
+            mInfo.clear();
             mInfo = null;
         }
     }

@@ -51,7 +51,6 @@ public interface IWificond extends IInterface {
 
     void unregisterWificondEventCallback(IWificondEventCallback iWificondEventCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWificond {
         @Override // android.net.wifi.nl80211.IWificond
         public IApInterface createApInterface(String iface_name) throws RemoteException {
@@ -143,7 +142,6 @@ public interface IWificond extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWificond {
         static final int TRANSACTION_GetApInterfaces = 7;
         static final int TRANSACTION_GetClientInterfaces = 6;
@@ -237,118 +235,114 @@ public interface IWificond extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWificond.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWificond.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWificond.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    IApInterface _result = createApInterface(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    IClientInterface _result2 = createClientInterface(_arg02);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = tearDownApInterface(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = tearDownClientInterface(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    tearDownInterfaces();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    List<IBinder> _result5 = GetClientInterfaces();
+                    reply.writeNoException();
+                    reply.writeBinderList(_result5);
+                    return true;
+                case 7:
+                    List<IBinder> _result6 = GetApInterfaces();
+                    reply.writeNoException();
+                    reply.writeBinderList(_result6);
+                    return true;
+                case 8:
+                    int[] _result7 = getAvailable2gChannels();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result7);
+                    return true;
+                case 9:
+                    int[] _result8 = getAvailable5gNonDFSChannels();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result8);
+                    return true;
+                case 10:
+                    int[] _result9 = getAvailableDFSChannels();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result9);
+                    return true;
+                case 11:
+                    int[] _result10 = getAvailable6gChannels();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result10);
+                    return true;
+                case 12:
+                    int[] _result11 = getAvailable60gChannels();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result11);
+                    return true;
+                case 13:
+                    IInterfaceEventCallback _arg05 = IInterfaceEventCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    RegisterCallback(_arg05);
+                    return true;
+                case 14:
+                    IInterfaceEventCallback _arg06 = IInterfaceEventCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    UnregisterCallback(_arg06);
+                    return true;
+                case 15:
+                    IWificondEventCallback _arg07 = IWificondEventCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerWificondEventCallback(_arg07);
+                    return true;
+                case 16:
+                    IWificondEventCallback _arg08 = IWificondEventCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterWificondEventCallback(_arg08);
+                    return true;
+                case 17:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    DeviceWiphyCapabilities _result12 = getDeviceWiphyCapabilities(_arg09);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 18:
+                    notifyCountryCodeChanged();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            IApInterface _result = createApInterface(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            IClientInterface _result2 = createClientInterface(_arg02);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = tearDownApInterface(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = tearDownClientInterface(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            tearDownInterfaces();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            List<IBinder> _result5 = GetClientInterfaces();
-                            reply.writeNoException();
-                            reply.writeBinderList(_result5);
-                            return true;
-                        case 7:
-                            List<IBinder> _result6 = GetApInterfaces();
-                            reply.writeNoException();
-                            reply.writeBinderList(_result6);
-                            return true;
-                        case 8:
-                            int[] _result7 = getAvailable2gChannels();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result7);
-                            return true;
-                        case 9:
-                            int[] _result8 = getAvailable5gNonDFSChannels();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result8);
-                            return true;
-                        case 10:
-                            int[] _result9 = getAvailableDFSChannels();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result9);
-                            return true;
-                        case 11:
-                            int[] _result10 = getAvailable6gChannels();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result10);
-                            return true;
-                        case 12:
-                            int[] _result11 = getAvailable60gChannels();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result11);
-                            return true;
-                        case 13:
-                            IInterfaceEventCallback _arg05 = IInterfaceEventCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            RegisterCallback(_arg05);
-                            return true;
-                        case 14:
-                            IInterfaceEventCallback _arg06 = IInterfaceEventCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            UnregisterCallback(_arg06);
-                            return true;
-                        case 15:
-                            IWificondEventCallback _arg07 = IWificondEventCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerWificondEventCallback(_arg07);
-                            return true;
-                        case 16:
-                            IWificondEventCallback _arg08 = IWificondEventCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterWificondEventCallback(_arg08);
-                            return true;
-                        case 17:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            DeviceWiphyCapabilities _result12 = getDeviceWiphyCapabilities(_arg09);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 18:
-                            notifyCountryCodeChanged();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IWificond {
+        private static class Proxy implements IWificond {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

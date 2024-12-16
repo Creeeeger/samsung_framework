@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class FrontendStatus {
     public static final int FRONTEND_STATUS_TYPE_AGC = 14;
     public static final int FRONTEND_STATUS_TYPE_ATSC3_ALL_PLP_INFO = 41;
@@ -107,37 +107,30 @@ public class FrontendStatus {
     private Integer mUec;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendBandwidth {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendGuardInterval {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendInterleaveMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendModulation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendRollOff {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendStatusType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendTransmissionMode {
     }
 
@@ -145,147 +138,129 @@ public class FrontendStatus {
     }
 
     public boolean isDemodLocked() {
-        Boolean bool = this.mIsDemodLocked;
-        if (bool == null) {
+        if (this.mIsDemodLocked == null) {
             throw new IllegalStateException("DemodLocked status is empty");
         }
-        return bool.booleanValue();
+        return this.mIsDemodLocked.booleanValue();
     }
 
     public int getSnr() {
-        Integer num = this.mSnr;
-        if (num == null) {
+        if (this.mSnr == null) {
             throw new IllegalStateException("Snr status is empty");
         }
-        return num.intValue();
+        return this.mSnr.intValue();
     }
 
     public int getBer() {
-        Integer num = this.mBer;
-        if (num == null) {
+        if (this.mBer == null) {
             throw new IllegalStateException("Ber status is empty");
         }
-        return num.intValue();
+        return this.mBer.intValue();
     }
 
     public int getPer() {
-        Integer num = this.mPer;
-        if (num == null) {
+        if (this.mPer == null) {
             throw new IllegalStateException("Per status is empty");
         }
-        return num.intValue();
+        return this.mPer.intValue();
     }
 
     public int getPerBer() {
-        Integer num = this.mPerBer;
-        if (num == null) {
+        if (this.mPerBer == null) {
             throw new IllegalStateException("PerBer status is empty");
         }
-        return num.intValue();
+        return this.mPerBer.intValue();
     }
 
     public int getSignalQuality() {
-        Integer num = this.mSignalQuality;
-        if (num == null) {
+        if (this.mSignalQuality == null) {
             throw new IllegalStateException("SignalQuality status is empty");
         }
-        return num.intValue();
+        return this.mSignalQuality.intValue();
     }
 
     public int getSignalStrength() {
-        Integer num = this.mSignalStrength;
-        if (num == null) {
+        if (this.mSignalStrength == null) {
             throw new IllegalStateException("SignalStrength status is empty");
         }
-        return num.intValue();
+        return this.mSignalStrength.intValue();
     }
 
     public int getSymbolRate() {
-        Integer num = this.mSymbolRate;
-        if (num == null) {
+        if (this.mSymbolRate == null) {
             throw new IllegalStateException("SymbolRate status is empty");
         }
-        return num.intValue();
+        return this.mSymbolRate.intValue();
     }
 
     public long getInnerFec() {
-        Long l = this.mInnerFec;
-        if (l == null) {
+        if (this.mInnerFec == null) {
             throw new IllegalStateException("InnerFec status is empty");
         }
-        return l.longValue();
+        return this.mInnerFec.longValue();
     }
 
     public int getModulation() {
-        Integer num = this.mModulation;
-        if (num == null) {
+        if (this.mModulation == null) {
             throw new IllegalStateException("Modulation status is empty");
         }
-        return num.intValue();
+        return this.mModulation.intValue();
     }
 
     public int getSpectralInversion() {
-        Integer num = this.mInversion;
-        if (num == null) {
+        if (this.mInversion == null) {
             throw new IllegalStateException("SpectralInversion status is empty");
         }
-        return num.intValue();
+        return this.mInversion.intValue();
     }
 
     public int getLnbVoltage() {
-        Integer num = this.mLnbVoltage;
-        if (num == null) {
+        if (this.mLnbVoltage == null) {
             throw new IllegalStateException("LnbVoltage status is empty");
         }
-        return num.intValue();
+        return this.mLnbVoltage.intValue();
     }
 
     public int getPlpId() {
-        Integer num = this.mPlpId;
-        if (num == null) {
+        if (this.mPlpId == null) {
             throw new IllegalStateException("PlpId status is empty");
         }
-        return num.intValue();
+        return this.mPlpId.intValue();
     }
 
     public boolean isEwbs() {
-        Boolean bool = this.mIsEwbs;
-        if (bool == null) {
+        if (this.mIsEwbs == null) {
             throw new IllegalStateException("Ewbs status is empty");
         }
-        return bool.booleanValue();
+        return this.mIsEwbs.booleanValue();
     }
 
     public int getAgc() {
-        Integer num = this.mAgc;
-        if (num == null) {
+        if (this.mAgc == null) {
             throw new IllegalStateException("Agc status is empty");
         }
-        return num.intValue();
+        return this.mAgc.intValue();
     }
 
     public boolean isLnaOn() {
-        Boolean bool = this.mIsLnaOn;
-        if (bool == null) {
+        if (this.mIsLnaOn == null) {
             throw new IllegalStateException("LnaOn status is empty");
         }
-        return bool.booleanValue();
+        return this.mIsLnaOn.booleanValue();
     }
 
     public boolean[] getLayerErrors() {
-        boolean[] zArr = this.mIsLayerErrors;
-        if (zArr == null) {
+        if (this.mIsLayerErrors == null) {
             throw new IllegalStateException("LayerErrors status is empty");
         }
-        return zArr;
+        return this.mIsLayerErrors;
     }
 
     public int getMer() {
-        Integer num = this.mMer;
-        if (num == null) {
+        if (this.mMer == null) {
             throw new IllegalStateException("Mer status is empty");
         }
-        return num.intValue();
+        return this.mMer.intValue();
     }
 
     @Deprecated
@@ -294,220 +269,195 @@ public class FrontendStatus {
     }
 
     public long getFreqOffsetLong() {
-        Long l = this.mFreqOffset;
-        if (l == null) {
+        if (this.mFreqOffset == null) {
             throw new IllegalStateException("FreqOffset status is empty");
         }
-        return l.longValue();
+        return this.mFreqOffset.longValue();
     }
 
     public int getHierarchy() {
-        Integer num = this.mHierarchy;
-        if (num == null) {
+        if (this.mHierarchy == null) {
             throw new IllegalStateException("Hierarchy status is empty");
         }
-        return num.intValue();
+        return this.mHierarchy.intValue();
     }
 
     public boolean isRfLocked() {
-        Boolean bool = this.mIsRfLocked;
-        if (bool == null) {
+        if (this.mIsRfLocked == null) {
             throw new IllegalStateException("isRfLocked status is empty");
         }
-        return bool.booleanValue();
+        return this.mIsRfLocked.booleanValue();
     }
 
     public Atsc3PlpTuningInfo[] getAtsc3PlpTuningInfo() {
-        Atsc3PlpTuningInfo[] atsc3PlpTuningInfoArr = this.mPlpInfo;
-        if (atsc3PlpTuningInfoArr == null) {
+        if (this.mPlpInfo == null) {
             throw new IllegalStateException("Atsc3PlpTuningInfo status is empty");
         }
-        return atsc3PlpTuningInfoArr;
+        return this.mPlpInfo;
     }
 
     public int[] getBers() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getBers status");
-        int[] iArr = this.mBers;
-        if (iArr == null) {
+        if (this.mBers == null) {
             throw new IllegalStateException("Bers status is empty");
         }
-        return iArr;
+        return this.mBers;
     }
 
     public int[] getCodeRates() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getCodeRates status");
-        int[] iArr = this.mCodeRates;
-        if (iArr == null) {
+        if (this.mCodeRates == null) {
             throw new IllegalStateException("CodeRates status is empty");
         }
-        return iArr;
+        return this.mCodeRates;
     }
 
     public int getBandwidth() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getBandwidth status");
-        Integer num = this.mBandwidth;
-        if (num == null) {
+        if (this.mBandwidth == null) {
             throw new IllegalStateException("Bandwidth status is empty");
         }
-        return num.intValue();
+        return this.mBandwidth.intValue();
     }
 
     public int getGuardInterval() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getGuardInterval status");
-        Integer num = this.mGuardInterval;
-        if (num == null) {
+        if (this.mGuardInterval == null) {
             throw new IllegalStateException("GuardInterval status is empty");
         }
-        return num.intValue();
+        return this.mGuardInterval.intValue();
     }
 
     public int getTransmissionMode() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getTransmissionMode status");
-        Integer num = this.mTransmissionMode;
-        if (num == null) {
+        if (this.mTransmissionMode == null) {
             throw new IllegalStateException("TransmissionMode status is empty");
         }
-        return num.intValue();
+        return this.mTransmissionMode.intValue();
     }
 
     public int getUec() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getUec status");
-        Integer num = this.mUec;
-        if (num == null) {
+        if (this.mUec == null) {
             throw new IllegalStateException("Uec status is empty");
         }
-        return num.intValue();
+        return this.mUec.intValue();
     }
 
     public int getSystemId() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getSystemId status");
-        Integer num = this.mSystemId;
-        if (num == null) {
+        if (this.mSystemId == null) {
             throw new IllegalStateException("SystemId status is empty");
         }
-        return num.intValue();
+        return this.mSystemId.intValue();
     }
 
     public int[] getInterleaving() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getInterleaving status");
-        int[] iArr = this.mInterleaving;
-        if (iArr == null) {
+        if (this.mInterleaving == null) {
             throw new IllegalStateException("Interleaving status is empty");
         }
-        return iArr;
+        return this.mInterleaving;
     }
 
     public int[] getIsdbtSegment() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getIsdbtSegment status");
-        int[] iArr = this.mIsdbtSegment;
-        if (iArr == null) {
+        if (this.mIsdbtSegment == null) {
             throw new IllegalStateException("IsdbtSegment status is empty");
         }
-        return iArr;
+        return this.mIsdbtSegment;
     }
 
     public int[] getTsDataRate() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getTsDataRate status");
-        int[] iArr = this.mTsDataRate;
-        if (iArr == null) {
+        if (this.mTsDataRate == null) {
             throw new IllegalStateException("TsDataRate status is empty");
         }
-        return iArr;
+        return this.mTsDataRate;
     }
 
     public int[] getExtendedModulations() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getExtendedModulations status");
-        int[] iArr = this.mModulationsExt;
-        if (iArr == null) {
+        if (this.mModulationsExt == null) {
             throw new IllegalStateException("ExtendedModulations status is empty");
         }
-        return iArr;
+        return this.mModulationsExt;
     }
 
     public int getRollOff() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "getRollOff status");
-        Integer num = this.mRollOff;
-        if (num == null) {
+        if (this.mRollOff == null) {
             throw new IllegalStateException("RollOff status is empty");
         }
-        return num.intValue();
+        return this.mRollOff.intValue();
     }
 
     public boolean isMisoEnabled() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "isMisoEnabled status");
-        Boolean bool = this.mIsMisoEnabled;
-        if (bool == null) {
+        if (this.mIsMisoEnabled == null) {
             throw new IllegalStateException("isMisoEnabled status is empty");
         }
-        return bool.booleanValue();
+        return this.mIsMisoEnabled.booleanValue();
     }
 
     public boolean isLinear() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "isLinear status");
-        Boolean bool = this.mIsLinear;
-        if (bool == null) {
+        if (this.mIsLinear == null) {
             throw new IllegalStateException("isLinear status is empty");
         }
-        return bool.booleanValue();
+        return this.mIsLinear.booleanValue();
     }
 
     public boolean isShortFramesEnabled() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "isShortFramesEnabled status");
-        Boolean bool = this.mIsShortFrames;
-        if (bool == null) {
+        if (this.mIsShortFrames == null) {
             throw new IllegalStateException("isShortFramesEnabled status is empty");
         }
-        return bool.booleanValue();
+        return this.mIsShortFrames.booleanValue();
     }
 
     public int getIsdbtMode() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(131072, "IsdbtMode status");
-        Integer num = this.mIsdbtMode;
-        if (num == null) {
+        if (this.mIsdbtMode == null) {
             throw new IllegalStateException("IsdbtMode status is empty");
         }
-        return num.intValue();
+        return this.mIsdbtMode.intValue();
     }
 
     public int getIsdbtPartialReceptionFlag() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(131072, "IsdbtPartialReceptionFlag status");
-        Integer num = this.mIsdbtPartialReceptionFlag;
-        if (num == null) {
+        if (this.mIsdbtPartialReceptionFlag == null) {
             throw new IllegalStateException("IsdbtPartialReceptionFlag status is empty");
         }
-        return num.intValue();
+        return this.mIsdbtPartialReceptionFlag.intValue();
     }
 
     public int[] getStreamIds() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(131072, "stream ids status");
-        int[] iArr = this.mStreamIds;
-        if (iArr == null) {
+        if (this.mStreamIds == null) {
             throw new IllegalStateException("stream ids are empty");
         }
-        return iArr;
+        return this.mStreamIds;
     }
 
     public int[] getDvbtCellIds() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(131072, "dvbt cell ids status");
-        int[] iArr = this.mDvbtCellIds;
-        if (iArr == null) {
+        if (this.mDvbtCellIds == null) {
             throw new IllegalStateException("dvbt cell ids are empty");
         }
-        return iArr;
+        return this.mDvbtCellIds;
     }
 
     public List<Atsc3PlpInfo> getAllAtsc3PlpInfo() {
         if (!TunerVersionChecker.checkHigherOrEqualVersionTo(131072, "Atsc3PlpInfo all status")) {
             throw new UnsupportedOperationException("Atsc3PlpInfo all status is empty");
         }
-        Atsc3PlpInfo[] atsc3PlpInfoArr = this.mAllPlpInfo;
-        if (atsc3PlpInfoArr == null) {
+        if (this.mAllPlpInfo == null) {
             return Collections.EMPTY_LIST;
         }
-        return Arrays.asList(atsc3PlpInfoArr);
+        return Arrays.asList(this.mAllPlpInfo);
     }
 
-    /* loaded from: classes2.dex */
     public static class Atsc3PlpTuningInfo {
         private final boolean mIsLocked;
         private final int mPlpId;
@@ -534,46 +484,41 @@ public class FrontendStatus {
 
     public String getIptvContentUrl() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(196608, "IptvContentUrl status");
-        String str = this.mIptvContentUrl;
-        if (str == null) {
+        if (this.mIptvContentUrl == null) {
             throw new IllegalStateException("IptvContentUrl status is empty");
         }
-        return str;
+        return this.mIptvContentUrl;
     }
 
     public long getIptvPacketsLost() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(196608, "IptvPacketsLost status");
-        Long l = this.mIptvPacketsLost;
-        if (l == null) {
+        if (this.mIptvPacketsLost == null) {
             throw new IllegalStateException("IptvPacketsLost status is empty");
         }
-        return l.longValue();
+        return this.mIptvPacketsLost.longValue();
     }
 
     public long getIptvPacketsReceived() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(196608, "IptvPacketsReceived status");
-        Long l = this.mIptvPacketsReceived;
-        if (l == null) {
+        if (this.mIptvPacketsReceived == null) {
             throw new IllegalStateException("IptvPacketsReceived status is empty");
         }
-        return l.longValue();
+        return this.mIptvPacketsReceived.longValue();
     }
 
     public int getIptvWorstJitterMillis() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(196608, "IptvWorstJitterMs status");
-        Integer num = this.mIptvWorstJitterMs;
-        if (num == null) {
+        if (this.mIptvWorstJitterMs == null) {
             throw new IllegalStateException("IptvWorstJitterMs status is empty");
         }
-        return num.intValue();
+        return this.mIptvWorstJitterMs.intValue();
     }
 
     public int getIptvAverageJitterMillis() {
         TunerVersionChecker.checkHigherOrEqualVersionTo(196608, "IptvAverageJitterMs status");
-        Integer num = this.mIptvAverageJitterMs;
-        if (num == null) {
+        if (this.mIptvAverageJitterMs == null) {
             throw new IllegalStateException("IptvAverageJitterMs status is empty");
         }
-        return num.intValue();
+        return this.mIptvAverageJitterMs.intValue();
     }
 }

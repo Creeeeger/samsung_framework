@@ -48,7 +48,6 @@ public interface IInCallService extends IInterface {
 
     void updateCall(ParcelableCall parcelableCall) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInCallService {
         @Override // com.android.internal.telecom.IInCallService
         public void setInCallAdapter(IInCallAdapter inCallAdapter) throws RemoteException {
@@ -124,7 +123,6 @@ public interface IInCallService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInCallService {
         public static final String DESCRIPTOR = "com.android.internal.telecom.IInCallService";
         static final int TRANSACTION_addCall = 2;
@@ -216,109 +214,106 @@ public interface IInCallService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IInCallAdapter _arg0 = IInCallAdapter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setInCallAdapter(_arg0);
+                    return true;
+                case 2:
+                    ParcelableCall _arg02 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    addCall(_arg02);
+                    return true;
+                case 3:
+                    ParcelableCall _arg03 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCall(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPostDial(_arg04, _arg1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPostDialWait(_arg05, _arg12);
+                    return true;
+                case 6:
+                    CallAudioState _arg06 = (CallAudioState) data.readTypedObject(CallAudioState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallAudioStateChanged(_arg06);
+                    return true;
+                case 7:
+                    CallEndpoint _arg07 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallEndpointChanged(_arg07);
+                    return true;
+                case 8:
+                    List<CallEndpoint> _arg08 = data.createTypedArrayList(CallEndpoint.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAvailableCallEndpointsChanged(_arg08);
+                    return true;
+                case 9:
+                    boolean _arg09 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onMuteStateChanged(_arg09);
+                    return true;
+                case 10:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    bringToForeground(_arg010);
+                    return true;
+                case 11:
+                    boolean _arg011 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCanAddCallChanged(_arg011);
+                    return true;
+                case 12:
+                    silenceRinger();
+                    return true;
+                case 13:
+                    String _arg012 = data.readString();
+                    String _arg13 = data.readString();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConnectionEvent(_arg012, _arg13, _arg2);
+                    return true;
+                case 14:
+                    String _arg013 = data.readString();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRttUpgradeRequest(_arg013, _arg14);
+                    return true;
+                case 15:
+                    String _arg014 = data.readString();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRttInitiationFailure(_arg014, _arg15);
+                    return true;
+                case 16:
+                    String _arg015 = data.readString();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onHandoverFailed(_arg015, _arg16);
+                    return true;
+                case 17:
+                    String _arg016 = data.readString();
+                    data.enforceNoDataAvail();
+                    onHandoverComplete(_arg016);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IInCallAdapter _arg0 = IInCallAdapter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setInCallAdapter(_arg0);
-                            return true;
-                        case 2:
-                            ParcelableCall _arg02 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            addCall(_arg02);
-                            return true;
-                        case 3:
-                            ParcelableCall _arg03 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCall(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPostDial(_arg04, _arg1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPostDialWait(_arg05, _arg12);
-                            return true;
-                        case 6:
-                            CallAudioState _arg06 = (CallAudioState) data.readTypedObject(CallAudioState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallAudioStateChanged(_arg06);
-                            return true;
-                        case 7:
-                            CallEndpoint _arg07 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallEndpointChanged(_arg07);
-                            return true;
-                        case 8:
-                            List<CallEndpoint> _arg08 = data.createTypedArrayList(CallEndpoint.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAvailableCallEndpointsChanged(_arg08);
-                            return true;
-                        case 9:
-                            boolean _arg09 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onMuteStateChanged(_arg09);
-                            return true;
-                        case 10:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            bringToForeground(_arg010);
-                            return true;
-                        case 11:
-                            boolean _arg011 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCanAddCallChanged(_arg011);
-                            return true;
-                        case 12:
-                            silenceRinger();
-                            return true;
-                        case 13:
-                            String _arg012 = data.readString();
-                            String _arg13 = data.readString();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConnectionEvent(_arg012, _arg13, _arg2);
-                            return true;
-                        case 14:
-                            String _arg013 = data.readString();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRttUpgradeRequest(_arg013, _arg14);
-                            return true;
-                        case 15:
-                            String _arg014 = data.readString();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRttInitiationFailure(_arg014, _arg15);
-                            return true;
-                        case 16:
-                            String _arg015 = data.readString();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onHandoverFailed(_arg015, _arg16);
-                            return true;
-                        case 17:
-                            String _arg016 = data.readString();
-                            data.enforceNoDataAvail();
-                            onHandoverComplete(_arg016);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IInCallService {
             private IBinder mRemote;
 

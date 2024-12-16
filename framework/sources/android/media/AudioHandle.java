@@ -1,15 +1,14 @@
 package android.media;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-public class AudioHandle {
+class AudioHandle {
     private final int mId;
 
     AudioHandle(int id) {
         this.mId = id;
     }
 
-    public int id() {
+    int id() {
         return this.mId;
     }
 

@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISdpListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.dar.sdp.ISdpListener";
 
@@ -14,7 +14,6 @@ public interface ISdpListener extends IInterface {
 
     void onStateChange(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISdpListener {
         @Override // com.samsung.android.knox.dar.sdp.ISdpListener
         public void onStateChange(int state) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISdpListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISdpListener {
         static final int TRANSACTION_onEngineRemoved = 2;
         static final int TRANSACTION_onStateChange = 1;
@@ -76,31 +74,27 @@ public interface ISdpListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISdpListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISdpListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISdpListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStateChange(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    onEngineRemoved();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStateChange(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            onEngineRemoved();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISdpListener {
+        private static class Proxy implements ISdpListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

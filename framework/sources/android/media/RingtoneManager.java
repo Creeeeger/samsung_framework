@@ -17,11 +17,9 @@ import android.media.IAudioService;
 import android.media.VolumeShaper;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.FileUtils;
 import android.os.IBinder;
-import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
@@ -33,9 +31,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.R;
 import com.android.internal.database.SortCursor;
+import com.google.android.mms.ContentType;
 import com.samsung.android.audio.Rune;
 import com.samsung.android.common.AsPackageName;
 import com.samsung.android.common.AsProperty;
+import com.samsung.android.wallpaperbackup.BnRConstants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -82,8 +82,8 @@ public class RingtoneManager {
     private Ringtone mPreviousRingtone;
     private boolean mStopPreviousRingtone;
     private int mType;
-    private static final String[] INTERNAL_COLUMNS = {"_id", "title", "title", "title_key", "volume_name", "bucket_display_name", "is_ringtone", "is_notification", "is_alarm", "bookmark"};
-    private static final String[] MEDIA_COLUMNS = {"_id", "title", "title", "title_key", "volume_name", "bucket_display_name", "is_ringtone", "is_notification", "is_alarm", "bookmark"};
+    private static final String[] INTERNAL_COLUMNS = {"_id", "title", "title", "title_key", "volume_name", "bucket_display_name", "is_ringtone", "is_notification", "is_alarm", "bookmark", "mime_type"};
+    private static final String[] MEDIA_COLUMNS = {"_id", "title", "title", "title_key", "volume_name", "bucket_display_name", "is_ringtone", "is_notification", "is_alarm", "bookmark", "mime_type"};
     protected static String PREFIX_OPEN_THEME = "theme_";
     private static String OPEN_THEME_DIRECTORY = "/data/overlays/media/";
     private static Uri mDefaultRingtoneUri = null;
@@ -132,14 +132,13 @@ public class RingtoneManager {
     }
 
     public int inferStreamType() {
-        int i = this.mType;
-        switch (i) {
+        switch (this.mType) {
             case 128:
                 return 2;
             case 256:
                 return 5;
             default:
-                switch (i) {
+                switch (this.mType) {
                     case 2:
                         return 5;
                     case 3:
@@ -160,9 +159,8 @@ public class RingtoneManager {
     }
 
     public void stopPreviousRingtone() {
-        Ringtone ringtone = this.mPreviousRingtone;
-        if (ringtone != null) {
-            ringtone.stop();
+        if (this.mPreviousRingtone != null) {
+            this.mPreviousRingtone.stop();
         }
     }
 
@@ -180,8 +178,7 @@ public class RingtoneManager {
 
     public Cursor getCursor() {
         Cursor parentRingtonesCursor;
-        Cursor cursor = this.mCursor;
-        if (cursor != null && cursor.requery()) {
+        if (this.mCursor != null && this.mCursor.requery()) {
             return this.mCursor;
         }
         ArrayList<Cursor> ringtoneCursors = new ArrayList<>();
@@ -211,20 +208,17 @@ public class RingtoneManager {
     }
 
     public Ringtone getRingtone(int position) {
-        Ringtone ringtone;
-        if (this.mStopPreviousRingtone && (ringtone = this.mPreviousRingtone) != null) {
-            ringtone.stop();
+        if (this.mStopPreviousRingtone && this.mPreviousRingtone != null) {
+            this.mPreviousRingtone.stop();
         }
-        Ringtone ringtone2 = getRingtone(this.mContext, getRingtoneUri(position), inferStreamType(), true);
-        this.mPreviousRingtone = ringtone2;
-        return ringtone2;
+        this.mPreviousRingtone = getRingtone(this.mContext, getRingtoneUri(position), inferStreamType(), true);
+        return this.mPreviousRingtone;
     }
 
     public Uri getRingtoneUri(int position) {
         try {
-            Cursor cursor = this.mCursor;
-            if (cursor != null) {
-                if (cursor.moveToPosition(position)) {
+            if (this.mCursor != null) {
+                if (this.mCursor.moveToPosition(position)) {
                     return getUriFromCursor(this.mContext, this.mCursor);
                 }
             }
@@ -232,6 +226,61 @@ public class RingtoneManager {
         } catch (StaleDataException | IllegalStateException e) {
             Log.e(TAG, "Unexpected Exception has been catched.", e);
             return null;
+        }
+    }
+
+    public static Uri getRingtoneUriForRestore(ContentResolver contentResolver, String value, int ringtoneType) throws FileNotFoundException, IllegalArgumentException {
+        String ringtoneTypeSelection;
+        if (value == null) {
+            return null;
+        }
+        Uri canonicalUri = Uri.parse(value);
+        Uri ringtoneUri = contentResolver.uncanonicalize(canonicalUri);
+        if (ringtoneUri != null) {
+            return contentResolver.canonicalize(ringtoneUri);
+        }
+        String title = canonicalUri.getQueryParameter("title");
+        Uri baseUri = ContentUris.removeId(canonicalUri).buildUpon().clearQuery().build();
+        switch (ringtoneType) {
+            case 1:
+                ringtoneTypeSelection = "is_ringtone";
+                break;
+            case 2:
+                ringtoneTypeSelection = "is_notification";
+                break;
+            case 3:
+            default:
+                throw new IllegalArgumentException("Unknown ringtone type: " + ringtoneType);
+            case 4:
+                ringtoneTypeSelection = "is_alarm";
+                break;
+        }
+        String selection = ringtoneTypeSelection + "=1 AND title=?";
+        try {
+            Cursor cursor = contentResolver.query(baseUri, new String[]{"_id"}, selection, new String[]{title}, null, null);
+            if (cursor == null) {
+                throw new FileNotFoundException("Missing cursor for " + baseUri);
+            }
+            if (cursor.getCount() == 0) {
+                FileUtils.closeQuietly(cursor);
+                throw new FileNotFoundException("No item found for " + baseUri);
+            }
+            if (cursor.getCount() > 1) {
+                int resultCount = cursor.getCount();
+                FileUtils.closeQuietly(cursor);
+                throw new FileNotFoundException("Find multiple ringtone candidates by title+ringtone_type query: count: " + resultCount);
+            }
+            if (cursor.moveToFirst()) {
+                Uri ringtoneUri2 = ContentUris.withAppendedId(baseUri, cursor.getLong(0));
+                FileUtils.closeQuietly(cursor);
+                Uri ringtoneUri3 = contentResolver.canonicalize(ringtoneUri2);
+                Log.v(TAG, "Find a valid result: " + ringtoneUri3);
+                return ringtoneUri3;
+            }
+            FileUtils.closeQuietly(cursor);
+            throw new FileNotFoundException("Failed to read row from the result.");
+        } catch (IllegalArgumentException e) {
+            throw new FileNotFoundException("Volume not found for " + baseUri);
         }
     }
 
@@ -334,6 +383,9 @@ public class RingtoneManager {
             sb.setLength(sb.length() - 4);
         }
         sb.append(NavigationBarInflaterView.KEY_CODE_END);
+        sb.append("AND (");
+        sb.append("mime_type");
+        sb.append(" NOT LIKE 'audio/x-ms-wma')");
         return sb.toString();
     }
 
@@ -342,9 +394,8 @@ public class RingtoneManager {
     }
 
     private Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder, Context context) {
-        Activity activity = this.mActivity;
-        if (activity != null) {
-            return activity.managedQuery(uri, projection, selection, selectionArgs, sortOrder);
+        if (this.mActivity != null) {
+            return this.mActivity.managedQuery(uri, projection, selection, selectionArgs, sortOrder);
         }
         return context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
     }
@@ -433,47 +484,24 @@ public class RingtoneManager {
             return;
         }
         Settings.System.putStringForUser(resolver, getSettingKeyForAbsolutePath(type), null, context.getUserId());
-        if (!isInternalRingtoneUri(ringtoneUri)) {
-            ringtoneUri = ContentProvider.maybeAddUserId(ringtoneUri, context.getUserId());
-        }
-        if (ringtoneUri != null) {
-            String mimeType = resolver.getType(ringtoneUri);
+        Uri ringtoneUri2 = maybeAddUserId(ringtoneUri, context.getUserId());
+        if (ringtoneUri2 != null) {
+            String mimeType = resolver.getType(ringtoneUri2);
             if (mimeType == null) {
-                Log.e(TAG, "setActualDefaultRingtoneUri for URI:" + ringtoneUri + " ignored: failure to find mimeType (no access from this context?)");
+                Log.e(TAG, "setActualDefaultRingtoneUri for URI:" + ringtoneUri2 + " ignored: failure to find mimeType (no access from this context?)");
                 return;
-            } else if (!mimeType.startsWith("audio/") && !mimeType.equals("application/ogg")) {
-                Log.e(TAG, "setActualDefaultRingtoneUri for URI:" + ringtoneUri + " ignored: associated mimeType:" + mimeType + " is not an audio type");
+            } else if (!mimeType.startsWith("audio/") && !mimeType.equals("application/ogg") && !mimeType.equals(ContentType.AUDIO_X_FLAC) && !mimeType.startsWith(BnRConstants.VIDEO_DIR_PATH) && !mimeType.equals("application/mp4")) {
+                Log.e(TAG, "setActualDefaultRingtoneUri for URI:" + ringtoneUri2 + " ignored: associated MIME type:" + mimeType + " is not a recognized audio or video type");
                 return;
             }
         }
-        Settings.System.putStringForUser(resolver, setting, ringtoneUri != null ? ringtoneUri.toString() : null, context.getUserId());
-        if (ringtoneUri != null) {
-            Uri cacheUri = getCacheForType(type, context.getUserId());
-            try {
-                InputStream in = openRingtone(context, ringtoneUri);
-                try {
-                    OutputStream out = resolver.openOutputStream(cacheUri, "wt");
-                    try {
-                        FileUtils.copy(in, out);
-                        if (out != null) {
-                            out.close();
-                        }
-                        if (in != null) {
-                            in.close();
-                        }
-                    } finally {
-                    }
-                } finally {
-                }
-            } catch (IOException e) {
-                Log.w(TAG, "Failed to cache ringtone: " + e);
-            }
-        }
-        if (ringtoneUri != null) {
-            saveAbsolutePath(context, type, ringtoneUri);
+        Settings.System.putStringForUser(resolver, setting, ringtoneUri2 != null ? ringtoneUri2.toString() : null, context.getUserId());
+        logCallStackDetails(context, type, ringtoneUri2);
+        if (ringtoneUri2 != null) {
+            saveAbsolutePath(context, type, ringtoneUri2);
         }
         if (Rune.SEC_AUDIO_SUPPORT_ACH_RINGTONE) {
-            turnOffSyncHapticOnCscSounds(context, ringtoneUri, setting);
+            turnOffSyncHapticOnCscSounds(context, ringtoneUri2, setting);
         }
         int enabledSim2Only = Settings.System.getInt(resolver, Settings.System.ENABLED_SIM2_ONLY, 0);
         Log.d(TAG, "setActualDefaultRingtoneUri :: enabled sim2 only =  " + enabledSim2Only);
@@ -486,44 +514,14 @@ public class RingtoneManager {
             } else if (type == 256) {
                 typeforSync = 2;
             }
-            String settingforSync = getSettingForType(typeforSync);
-            Settings.System.putStringForUser(resolver, settingforSync, ringtoneUri != null ? ringtoneUri.toString() : null, context.getUserId());
-            dumpCallStack(context, "setRingtone", typeforSync, ringtoneUri);
-            if (ringtoneUri != null) {
-                Uri cacheUri2 = getCacheForType(typeforSync, context.getUserId());
-                try {
-                    InputStream in2 = openRingtone(context, ringtoneUri);
-                    try {
-                        OutputStream out2 = resolver.openOutputStream(cacheUri2);
-                        try {
-                            FileUtils.copy(in2, out2);
-                            if (out2 != null) {
-                                out2.close();
-                            }
-                            if (in2 != null) {
-                                in2.close();
-                            }
-                        } finally {
-                        }
-                    } catch (Throwable th) {
-                        if (in2 != null) {
-                            try {
-                                in2.close();
-                            } catch (Throwable th2) {
-                                th.addSuppressed(th2);
-                            }
-                        }
-                        throw th;
-                    }
-                } catch (IOException | SecurityException e2) {
-                    Log.w(TAG, "Failed to cache ringtone: " + e2);
-                }
-            }
-            if (ringtoneUri != null) {
-                saveAbsolutePath(context, typeforSync, ringtoneUri);
+            String settingForSync = getSettingForType(typeforSync);
+            Settings.System.putStringForUser(resolver, settingForSync, ringtoneUri2 != null ? ringtoneUri2.toString() : null, context.getUserId());
+            logCallStackDetails(context, typeforSync, ringtoneUri2);
+            if (ringtoneUri2 != null) {
+                saveAbsolutePath(context, typeforSync, ringtoneUri2);
             }
             if (Rune.SEC_AUDIO_SUPPORT_ACH_RINGTONE) {
-                turnOffSyncHapticOnCscSounds(context, ringtoneUri, settingforSync);
+                turnOffSyncHapticOnCscSounds(context, ringtoneUri2, settingForSync);
             }
         }
     }
@@ -553,8 +551,7 @@ public class RingtoneManager {
             throw new IllegalArgumentException("Ringtone file must have MIME type \"audio/*\". Given file has MIME type \"" + mimeType + "\"");
         }
         String subdirectory = getExternalDirectoryForType(type);
-        Context context = this.mContext;
-        File outFile = Utils.getUniqueExternalFile(context, subdirectory, FileUtils.buildValidFatFilename(Utils.getFileDisplayNameFromUri(context, fileUri)), mimeType);
+        File outFile = Utils.getUniqueExternalFile(this.mContext, subdirectory, FileUtils.buildValidFatFilename(Utils.getFileDisplayNameFromUri(this.mContext, fileUri)), mimeType);
         InputStream input = this.mContext.getContentResolver().openInputStream(fileUri);
         try {
             OutputStream output = new FileOutputStream(outFile);
@@ -594,22 +591,7 @@ public class RingtoneManager {
         }
     }
 
-    private static InputStream openRingtone(Context context, Uri uri) throws IOException {
-        ContentResolver resolver = context.getContentResolver();
-        try {
-            return resolver.openInputStream(uri);
-        } catch (IOException | SecurityException e) {
-            Log.w(TAG, "Failed to open directly; attempting failover: " + e);
-            IRingtonePlayer player = ((AudioManager) context.getSystemService(AudioManager.class)).getRingtonePlayer();
-            try {
-                return new ParcelFileDescriptor.AutoCloseInputStream(player.openRingtone(uri));
-            } catch (Exception e2) {
-                throw new IOException(e2);
-            }
-        }
-    }
-
-    protected static String getSettingForType(int type) {
+    private static String getSettingForType(int type) {
         if ((type & 1) != 0) {
             return Settings.System.RINGTONE;
         }
@@ -739,21 +721,14 @@ public class RingtoneManager {
 
     @SystemApi
     public static void ensureDefaultRingtones(Context context) {
-        Log.d(TAG, "ensureDefaultRingtones()");
+        Uri ringtoneUri;
         int[] iArr = {1, 2, 4, 128, 256};
         for (int i = 0; i < 5; i++) {
             int type = iArr[i];
             String setting = getDefaultRingtoneSetting(type);
-            if (Settings.System.getInt(context.getContentResolver(), setting, 0) != 0) {
-                Log.d(TAG, "ensureDefaultRingtones( [ type : " + type + " ] continue )");
-            } else {
-                Uri ringtoneUri = computeDefaultRingtoneUri(context, type);
-                if (ringtoneUri != null) {
-                    setActualDefaultRingtoneUri(context, type, ringtoneUri);
-                    Settings.System.putInt(context.getContentResolver(), setting, 1);
-                } else {
-                    Log.d(TAG, "ensureDefaultRingtones( [ type : " + type + " ] ringtoneUri is null )");
-                }
+            if (Settings.System.getInt(context.getContentResolver(), setting, 0) == 0 && (ringtoneUri = computeDefaultRingtoneUri(context, type)) != null) {
+                setActualDefaultRingtoneUri(context, type, ringtoneUri);
+                Settings.System.putInt(context.getContentResolver(), setting, 1);
             }
         }
     }
@@ -964,21 +939,21 @@ public class RingtoneManager {
         return null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:49:0x016e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x0177, code lost:
     
-        if (r3 != null) goto L165;
+        if (r3 != null) goto L77;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x0170, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x0179, code lost:
     
         r3.close();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x0180, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x0189, code lost:
     
         return r5;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x017d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x0186, code lost:
     
-        if (r3 == null) goto L172;
+        if (r3 == null) goto L84;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -986,7 +961,7 @@ public class RingtoneManager {
     */
     public static android.net.Uri getDefaultSoundUri(android.content.Context r14, int r15) {
         /*
-            Method dump skipped, instructions count: 392
+            Method dump skipped, instructions count: 401
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.media.RingtoneManager.getDefaultSoundUri(android.content.Context, int):android.net.Uri");
@@ -1060,13 +1035,11 @@ public class RingtoneManager {
     }
 
     public Ringtone semGetRingtone(int position, int seek) {
-        Ringtone ringtone;
-        if (this.mStopPreviousRingtone && (ringtone = this.mPreviousRingtone) != null) {
-            ringtone.stop();
+        if (this.mStopPreviousRingtone && this.mPreviousRingtone != null) {
+            this.mPreviousRingtone.stop();
         }
-        Ringtone ringtone2 = getRingtone(this.mContext, getRingtoneUri(position), inferStreamType(), seek);
-        this.mPreviousRingtone = ringtone2;
-        return ringtone2;
+        this.mPreviousRingtone = getRingtone(this.mContext, getRingtoneUri(position), inferStreamType(), seek);
+        return this.mPreviousRingtone;
     }
 
     private List<String> getExcludedRingtoneTitles() {
@@ -1134,10 +1107,9 @@ public class RingtoneManager {
         return EXTRA_RINGTONE_AUDIO_ATTRIBUTES_FLAGS;
     }
 
-    private static void dumpCallStack(Context context, String msg, int type, Uri uri) {
-        String caller = Debug.getCallers(1, 3);
-        StringBuilder builder = new StringBuilder(msg);
-        builder.append(" u/pid:").append(Binder.getCallingUid()).append("/").append(Binder.getCallingPid()).append(" URI:").append(uri).append(" type:").append(type).append(" user:").append(context.getUserId()).append(" ").append(caller);
+    private static void logCallStackDetails(Context context, int type, Uri uri) {
+        StringBuilder builder = new StringBuilder(context.getPackageName());
+        builder.append(" uid/pid: ").append(Binder.getCallingUid()).append("/").append(Binder.getCallingPid()).append(" type: ").append(type).append(" user: ").append(context.getUserId()).append(" uri: ").append(uri);
         IBinder b = ServiceManager.getService("audio");
         IAudioService service = IAudioService.Stub.asInterface(b);
         try {
@@ -1155,31 +1127,27 @@ public class RingtoneManager {
         String column;
         MatrixCursor themeCursor = null;
         String themeTitle = this.mContext.getString(R.string.sec_ringtone_category_open_theme);
-        int i = this.mType;
-        if (i == 2 || i == 256) {
+        if (this.mType == 2 || this.mType == 256) {
             column = "is_notification";
-        } else if (i == 4) {
+        } else if (this.mType == 4) {
             column = "is_alarm";
         } else {
             column = "is_ringtone";
         }
         String dbWhere = "(_display_name like '" + PREFIX_OPEN_THEME + "%') and " + column + "=1";
         try {
-            ContentResolver contentResolver = this.mContext.getContentResolver();
-            Uri uri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI;
-            String[] strArr = INTERNAL_COLUMNS;
-            Cursor tempCursor = contentResolver.query(uri, strArr, dbWhere, null, null);
+            Cursor tempCursor = this.mContext.getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, INTERNAL_COLUMNS, dbWhere, null, null);
             if (tempCursor != null) {
                 try {
                     if (tempCursor.getCount() != 0) {
                         tempCursor.moveToFirst();
-                        themeCursor = new MatrixCursor(strArr);
-                        String[] themeColumns = new String[strArr.length];
-                        for (int i2 = 0; i2 < INTERNAL_COLUMNS.length; i2++) {
-                            if (i2 == 1) {
-                                themeColumns[i2] = themeTitle;
+                        themeCursor = new MatrixCursor(INTERNAL_COLUMNS);
+                        String[] themeColumns = new String[INTERNAL_COLUMNS.length];
+                        for (int i = 0; i < INTERNAL_COLUMNS.length; i++) {
+                            if (i == 1) {
+                                themeColumns[i] = themeTitle;
                             } else {
-                                themeColumns[i2] = tempCursor.getString(i2);
+                                themeColumns[i] = tempCursor.getString(i);
                             }
                         }
                         themeCursor.addRow(themeColumns);
@@ -1290,5 +1258,24 @@ public class RingtoneManager {
             return Settings.System.SYNC_VIBRATION_WITH_NOTIFICATION;
         }
         return null;
+    }
+
+    private static Uri maybeAddUserId(Uri uri, int userId) {
+        if (uri == null) {
+            return null;
+        }
+        if ("content".equals(uri.getScheme()) && !uriHasUserId(uri)) {
+            Uri.Builder builder = uri.buildUpon();
+            builder.encodedAuthority("" + userId + "@" + uri.getEncodedAuthority());
+            return builder.build();
+        }
+        return uri;
+    }
+
+    private static boolean uriHasUserId(Uri uri) {
+        if (uri == null) {
+            return false;
+        }
+        return !TextUtils.isEmpty(uri.getUserInfo());
     }
 }

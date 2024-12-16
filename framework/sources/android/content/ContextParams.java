@@ -13,15 +13,13 @@ public final class ContextParams {
     private final String mAttributionTag;
     private final AttributionSource mNext;
     private final Set<String> mRenouncedPermissions;
+    private final boolean mShouldRegisterAttributionSource;
 
-    /* synthetic */ ContextParams(String str, AttributionSource attributionSource, Set set, ContextParamsIA contextParamsIA) {
-        this(str, attributionSource, set);
-    }
-
-    private ContextParams(String attributionTag, AttributionSource next, Set<String> renouncedPermissions) {
+    private ContextParams(String attributionTag, AttributionSource next, Set<String> renouncedPermissions, boolean shouldRegister) {
         this.mAttributionTag = attributionTag;
         this.mNext = next;
         this.mRenouncedPermissions = renouncedPermissions != null ? renouncedPermissions : Collections.emptySet();
+        this.mShouldRegisterAttributionSource = shouldRegister;
     }
 
     public String getAttributionTag() {
@@ -41,11 +39,15 @@ public final class ContextParams {
         return this.mNext;
     }
 
-    /* loaded from: classes.dex */
+    public boolean shouldRegisterAttributionSource() {
+        return this.mShouldRegisterAttributionSource;
+    }
+
     public static final class Builder {
         private String mAttributionTag;
         private AttributionSource mNext;
         private Set<String> mRenouncedPermissions;
+        private boolean mShouldRegisterAttributionSource;
 
         public Builder() {
             this.mRenouncedPermissions = Collections.emptySet();
@@ -69,6 +71,11 @@ public final class ContextParams {
             return this;
         }
 
+        public Builder setShouldRegisterAttributionSource(boolean shouldRegister) {
+            this.mShouldRegisterAttributionSource = shouldRegister;
+            return this;
+        }
+
         @SystemApi
         public Builder setRenouncedPermissions(Set<String> renouncedPermissions) {
             if (renouncedPermissions != null && !renouncedPermissions.isEmpty() && ActivityThread.currentApplication().checkSelfPermission(Manifest.permission.RENOUNCE_PERMISSIONS) != 0) {
@@ -79,7 +86,7 @@ public final class ContextParams {
         }
 
         public ContextParams build() {
-            return new ContextParams(this.mAttributionTag, this.mNext, this.mRenouncedPermissions);
+            return new ContextParams(this.mAttributionTag, this.mNext, this.mRenouncedPermissions, this.mShouldRegisterAttributionSource);
         }
     }
 }

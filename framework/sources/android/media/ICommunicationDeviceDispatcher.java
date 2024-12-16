@@ -12,7 +12,6 @@ public interface ICommunicationDeviceDispatcher extends IInterface {
 
     void dispatchCommunicationDeviceChanged(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ICommunicationDeviceDispatcher {
         @Override // android.media.ICommunicationDeviceDispatcher
         public void dispatchCommunicationDeviceChanged(int portId) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICommunicationDeviceDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ICommunicationDeviceDispatcher {
         static final int TRANSACTION_dispatchCommunicationDeviceChanged = 1;
 
@@ -67,25 +65,22 @@ public interface ICommunicationDeviceDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICommunicationDeviceDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICommunicationDeviceDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICommunicationDeviceDispatcher.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchCommunicationDeviceChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchCommunicationDeviceChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ICommunicationDeviceDispatcher {
+        private static class Proxy implements ICommunicationDeviceDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

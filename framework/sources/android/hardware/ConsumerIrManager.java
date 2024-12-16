@@ -17,32 +17,29 @@ public final class ConsumerIrManager {
     }
 
     public boolean hasIrEmitter() {
-        IConsumerIrService iConsumerIrService = this.mService;
-        if (iConsumerIrService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "no consumer ir service.");
             return false;
         }
         try {
-            return iConsumerIrService.hasIrEmitter();
+            return this.mService.hasIrEmitter();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void transmit(int carrierFrequency, int[] pattern) {
-        IConsumerIrService iConsumerIrService = this.mService;
-        if (iConsumerIrService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "failed to transmit; no consumer ir service.");
             return;
         }
         try {
-            iConsumerIrService.transmit(this.mPackageName, carrierFrequency, pattern);
+            this.mService.transmit(this.mPackageName, carrierFrequency, pattern);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    /* loaded from: classes.dex */
     public final class CarrierFrequencyRange {
         private final int mMaxFrequency;
         private final int mMinFrequency;
@@ -62,13 +59,12 @@ public final class ConsumerIrManager {
     }
 
     public CarrierFrequencyRange[] getCarrierFrequencies() {
-        IConsumerIrService iConsumerIrService = this.mService;
-        if (iConsumerIrService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "no consumer ir service.");
             return null;
         }
         try {
-            int[] freqs = iConsumerIrService.getCarrierFrequencies();
+            int[] freqs = this.mService.getCarrierFrequencies();
             if (freqs.length % 2 != 0) {
                 Log.w(TAG, "consumer ir service returned an uneven number of frequencies.");
                 return null;

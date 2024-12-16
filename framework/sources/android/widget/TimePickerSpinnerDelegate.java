@@ -1,5 +1,6 @@
 package android.widget;
 
+import android.app.backup.FullBackup;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcelable;
@@ -17,7 +18,7 @@ import com.android.internal.R;
 import java.util.Calendar;
 
 /* loaded from: classes4.dex */
-public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDelegate {
+class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDelegate {
     private static final boolean DEFAULT_ENABLED_STATE = true;
     private static final int HOURS_IN_HALF_DAY = 12;
     private final Button mAmPmButton;
@@ -45,40 +46,30 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         LayoutInflater inflater = LayoutInflater.from(this.mContext);
         View view = inflater.inflate(layoutResourceId, (ViewGroup) this.mDelegator, true);
         view.setSaveFromParentEnabled(false);
-        NumberPicker numberPicker = (NumberPicker) delegator.findViewById(R.id.hour);
-        this.mHourSpinner = numberPicker;
-        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.1
-            AnonymousClass1() {
-            }
-
+        this.mHourSpinner = (NumberPicker) delegator.findViewById(R.id.hour);
+        this.mHourSpinner.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.1
             @Override // android.widget.NumberPicker.OnValueChangeListener
             public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
                 TimePickerSpinnerDelegate.this.updateInputState();
                 if (!TimePickerSpinnerDelegate.this.is24Hour() && ((oldVal == 11 && newVal == 12) || (oldVal == 12 && newVal == 11))) {
-                    TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
+                    TimePickerSpinnerDelegate.this.mIsAm = !TimePickerSpinnerDelegate.this.mIsAm;
                     TimePickerSpinnerDelegate.this.updateAmPmControl();
                 }
                 TimePickerSpinnerDelegate.this.onTimeChanged();
             }
         });
-        EditText editText = (EditText) numberPicker.findViewById(R.id.numberpicker_input);
-        this.mHourSpinnerInput = editText;
-        editText.setImeOptions(5);
-        TextView textView = (TextView) this.mDelegator.findViewById(R.id.divider);
-        this.mDivider = textView;
-        if (textView != null) {
+        this.mHourSpinnerInput = (EditText) this.mHourSpinner.findViewById(R.id.numberpicker_input);
+        this.mHourSpinnerInput.setImeOptions(5);
+        this.mDivider = (TextView) this.mDelegator.findViewById(R.id.divider);
+        if (this.mDivider != null) {
             setDividerText();
         }
-        NumberPicker numberPicker2 = (NumberPicker) this.mDelegator.findViewById(R.id.minute);
-        this.mMinuteSpinner = numberPicker2;
-        numberPicker2.setMinValue(0);
-        numberPicker2.setMaxValue(59);
-        numberPicker2.setOnLongPressUpdateInterval(100L);
-        numberPicker2.setFormatter(NumberPicker.getTwoDigitFormatter());
-        numberPicker2.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.2
-            AnonymousClass2() {
-            }
-
+        this.mMinuteSpinner = (NumberPicker) this.mDelegator.findViewById(R.id.minute);
+        this.mMinuteSpinner.setMinValue(0);
+        this.mMinuteSpinner.setMaxValue(59);
+        this.mMinuteSpinner.setOnLongPressUpdateInterval(100L);
+        this.mMinuteSpinner.setFormatter(NumberPicker.getTwoDigitFormatter());
+        this.mMinuteSpinner.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.2
             @Override // android.widget.NumberPicker.OnValueChangeListener
             public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
                 TimePickerSpinnerDelegate.this.updateInputState();
@@ -87,14 +78,14 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
                 if (oldVal == maxValue && newVal == minValue) {
                     int newHour = TimePickerSpinnerDelegate.this.mHourSpinner.getValue() + 1;
                     if (!TimePickerSpinnerDelegate.this.is24Hour() && newHour == 12) {
-                        TimePickerSpinnerDelegate.this.mIsAm = !r3.mIsAm;
+                        TimePickerSpinnerDelegate.this.mIsAm = !TimePickerSpinnerDelegate.this.mIsAm;
                         TimePickerSpinnerDelegate.this.updateAmPmControl();
                     }
                     TimePickerSpinnerDelegate.this.mHourSpinner.setValue(newHour);
                 } else if (oldVal == minValue && newVal == maxValue) {
                     int newHour2 = TimePickerSpinnerDelegate.this.mHourSpinner.getValue() - 1;
                     if (!TimePickerSpinnerDelegate.this.is24Hour() && newHour2 == 11) {
-                        TimePickerSpinnerDelegate.this.mIsAm = !r3.mIsAm;
+                        TimePickerSpinnerDelegate.this.mIsAm = !TimePickerSpinnerDelegate.this.mIsAm;
                         TimePickerSpinnerDelegate.this.updateAmPmControl();
                     }
                     TimePickerSpinnerDelegate.this.mHourSpinner.setValue(newHour2);
@@ -102,52 +93,41 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
                 TimePickerSpinnerDelegate.this.onTimeChanged();
             }
         });
-        EditText editText2 = (EditText) numberPicker2.findViewById(R.id.numberpicker_input);
-        this.mMinuteSpinnerInput = editText2;
-        editText2.setImeOptions(5);
-        String[] amPmStrings = TimePicker.getAmPmStrings(context);
-        this.mAmPmStrings = amPmStrings;
+        this.mMinuteSpinnerInput = (EditText) this.mMinuteSpinner.findViewById(R.id.numberpicker_input);
+        this.mMinuteSpinnerInput.setImeOptions(5);
+        this.mAmPmStrings = TimePicker.getAmPmStrings(context);
         View amPmView = this.mDelegator.findViewById(R.id.amPm);
         if (amPmView instanceof Button) {
             this.mAmPmSpinner = null;
             this.mAmPmSpinnerInput = null;
-            Button button = (Button) amPmView;
-            this.mAmPmButton = button;
-            button.setOnClickListener(new View.OnClickListener() { // from class: android.widget.TimePickerSpinnerDelegate.3
-                AnonymousClass3() {
-                }
-
+            this.mAmPmButton = (Button) amPmView;
+            this.mAmPmButton.setOnClickListener(new View.OnClickListener() { // from class: android.widget.TimePickerSpinnerDelegate.3
                 @Override // android.view.View.OnClickListener
-                public void onClick(View button2) {
-                    button2.requestFocus();
-                    TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
+                public void onClick(View button) {
+                    button.requestFocus();
+                    TimePickerSpinnerDelegate.this.mIsAm = !TimePickerSpinnerDelegate.this.mIsAm;
                     TimePickerSpinnerDelegate.this.updateAmPmControl();
                     TimePickerSpinnerDelegate.this.onTimeChanged();
                 }
             });
         } else {
             this.mAmPmButton = null;
-            NumberPicker numberPicker3 = (NumberPicker) amPmView;
-            this.mAmPmSpinner = numberPicker3;
-            numberPicker3.setMinValue(0);
-            numberPicker3.setMaxValue(1);
-            numberPicker3.setDisplayedValues(amPmStrings);
-            numberPicker3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.4
-                AnonymousClass4() {
-                }
-
+            this.mAmPmSpinner = (NumberPicker) amPmView;
+            this.mAmPmSpinner.setMinValue(0);
+            this.mAmPmSpinner.setMaxValue(1);
+            this.mAmPmSpinner.setDisplayedValues(this.mAmPmStrings);
+            this.mAmPmSpinner.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.4
                 @Override // android.widget.NumberPicker.OnValueChangeListener
                 public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                     TimePickerSpinnerDelegate.this.updateInputState();
                     picker.requestFocus();
-                    TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
+                    TimePickerSpinnerDelegate.this.mIsAm = !TimePickerSpinnerDelegate.this.mIsAm;
                     TimePickerSpinnerDelegate.this.updateAmPmControl();
                     TimePickerSpinnerDelegate.this.onTimeChanged();
                 }
             });
-            EditText editText3 = (EditText) numberPicker3.findViewById(R.id.numberpicker_input);
-            this.mAmPmSpinnerInput = editText3;
-            editText3.setImeOptions(6);
+            this.mAmPmSpinnerInput = (EditText) this.mAmPmSpinner.findViewById(R.id.numberpicker_input);
+            this.mAmPmSpinnerInput.setImeOptions(6);
         }
         if (isAmPmAtStart()) {
             ViewGroup amPmParent = (ViewGroup) delegator.findViewById(R.id.timePickerLayout);
@@ -165,98 +145,15 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         updateHourControl();
         updateMinuteControl();
         updateAmPmControl();
-        Calendar calendar = Calendar.getInstance(this.mLocale);
-        this.mTempCalendar = calendar;
-        setHour(calendar.get(11));
-        setMinute(calendar.get(12));
+        this.mTempCalendar = Calendar.getInstance(this.mLocale);
+        setHour(this.mTempCalendar.get(11));
+        setMinute(this.mTempCalendar.get(12));
         if (!isEnabled()) {
             setEnabled(false);
         }
         setContentDescriptions();
         if (this.mDelegator.getImportantForAccessibility() == 0) {
             this.mDelegator.setImportantForAccessibility(1);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerSpinnerDelegate$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements NumberPicker.OnValueChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.NumberPicker.OnValueChangeListener
-        public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
-            TimePickerSpinnerDelegate.this.updateInputState();
-            if (!TimePickerSpinnerDelegate.this.is24Hour() && ((oldVal == 11 && newVal == 12) || (oldVal == 12 && newVal == 11))) {
-                TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
-                TimePickerSpinnerDelegate.this.updateAmPmControl();
-            }
-            TimePickerSpinnerDelegate.this.onTimeChanged();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerSpinnerDelegate$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements NumberPicker.OnValueChangeListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.NumberPicker.OnValueChangeListener
-        public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
-            TimePickerSpinnerDelegate.this.updateInputState();
-            int minValue = TimePickerSpinnerDelegate.this.mMinuteSpinner.getMinValue();
-            int maxValue = TimePickerSpinnerDelegate.this.mMinuteSpinner.getMaxValue();
-            if (oldVal == maxValue && newVal == minValue) {
-                int newHour = TimePickerSpinnerDelegate.this.mHourSpinner.getValue() + 1;
-                if (!TimePickerSpinnerDelegate.this.is24Hour() && newHour == 12) {
-                    TimePickerSpinnerDelegate.this.mIsAm = !r3.mIsAm;
-                    TimePickerSpinnerDelegate.this.updateAmPmControl();
-                }
-                TimePickerSpinnerDelegate.this.mHourSpinner.setValue(newHour);
-            } else if (oldVal == minValue && newVal == maxValue) {
-                int newHour2 = TimePickerSpinnerDelegate.this.mHourSpinner.getValue() - 1;
-                if (!TimePickerSpinnerDelegate.this.is24Hour() && newHour2 == 11) {
-                    TimePickerSpinnerDelegate.this.mIsAm = !r3.mIsAm;
-                    TimePickerSpinnerDelegate.this.updateAmPmControl();
-                }
-                TimePickerSpinnerDelegate.this.mHourSpinner.setValue(newHour2);
-            }
-            TimePickerSpinnerDelegate.this.onTimeChanged();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerSpinnerDelegate$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements View.OnClickListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View button2) {
-            button2.requestFocus();
-            TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
-            TimePickerSpinnerDelegate.this.updateAmPmControl();
-            TimePickerSpinnerDelegate.this.onTimeChanged();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerSpinnerDelegate$4 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass4 implements NumberPicker.OnValueChangeListener {
-        AnonymousClass4() {
-        }
-
-        @Override // android.widget.NumberPicker.OnValueChangeListener
-        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            TimePickerSpinnerDelegate.this.updateInputState();
-            picker.requestFocus();
-            TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
-            TimePickerSpinnerDelegate.this.updateAmPmControl();
-            TimePickerSpinnerDelegate.this.onTimeChanged();
         }
     }
 
@@ -284,7 +181,7 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
 
     private boolean isAmPmAtStart() {
         String bestDateTimePattern = DateFormat.getBestDateTimePattern(this.mLocale, "hm");
-        return bestDateTimePattern.startsWith("a");
+        return bestDateTimePattern.startsWith(FullBackup.APK_TREE_TOKEN);
     }
 
     private void setDividerText() {
@@ -305,7 +202,7 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
                 separatorText = bestDateTimePattern.substring(hourIndex + 1, minuteIndex);
             }
         }
-        this.mDivider.setText(separatorText);
+        this.mDivider.lambda$setTextAsync$0(separatorText);
     }
 
     @Override // android.widget.TimePicker.TimePickerDelegate
@@ -400,14 +297,12 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
     @Override // android.widget.TimePicker.TimePickerDelegate
     public void setEnabled(boolean enabled) {
         this.mMinuteSpinner.setEnabled(enabled);
-        TextView textView = this.mDivider;
-        if (textView != null) {
-            textView.setEnabled(enabled);
+        if (this.mDivider != null) {
+            this.mDivider.setEnabled(enabled);
         }
         this.mHourSpinner.setEnabled(enabled);
-        NumberPicker numberPicker = this.mAmPmSpinner;
-        if (numberPicker != null) {
-            numberPicker.setEnabled(enabled);
+        if (this.mAmPmSpinner != null) {
+            this.mAmPmSpinner.setEnabled(enabled);
         } else {
             this.mAmPmButton.setEnabled(enabled);
         }
@@ -478,44 +373,45 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         return this.mAmPmSpinnerInput;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateInputState() {
         InputMethodManager inputMethodManager = (InputMethodManager) this.mContext.getSystemService(InputMethodManager.class);
         if (inputMethodManager != null) {
-            if (inputMethodManager.isActive(this.mHourSpinnerInput)) {
+            if (this.mHourSpinnerInput.hasFocus()) {
+                inputMethodManager.hideSoftInputFromView(this.mHourSpinnerInput, 0);
                 this.mHourSpinnerInput.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(this.mDelegator.getWindowToken(), 0);
-            } else if (inputMethodManager.isActive(this.mMinuteSpinnerInput)) {
+            } else if (this.mMinuteSpinnerInput.hasFocus()) {
+                inputMethodManager.hideSoftInputFromView(this.mMinuteSpinnerInput, 0);
                 this.mMinuteSpinnerInput.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(this.mDelegator.getWindowToken(), 0);
-            } else if (inputMethodManager.isActive(this.mAmPmSpinnerInput)) {
+            } else if (this.mAmPmSpinnerInput.hasFocus()) {
+                inputMethodManager.hideSoftInputFromView(this.mAmPmSpinnerInput, 0);
                 this.mAmPmSpinnerInput.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(this.mDelegator.getWindowToken(), 0);
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateAmPmControl() {
         if (is24Hour()) {
-            NumberPicker numberPicker = this.mAmPmSpinner;
-            if (numberPicker != null) {
-                numberPicker.setVisibility(8);
+            if (this.mAmPmSpinner != null) {
+                this.mAmPmSpinner.setVisibility(8);
             } else {
                 this.mAmPmButton.setVisibility(8);
             }
         } else {
             int i = !this.mIsAm ? 1 : 0;
-            NumberPicker numberPicker2 = this.mAmPmSpinner;
-            if (numberPicker2 != null) {
-                numberPicker2.setValue(i);
+            if (this.mAmPmSpinner != null) {
+                this.mAmPmSpinner.setValue(i);
                 this.mAmPmSpinner.setVisibility(0);
             } else {
-                this.mAmPmButton.setText(this.mAmPmStrings[i]);
+                this.mAmPmButton.lambda$setTextAsync$0(this.mAmPmStrings[i]);
                 this.mAmPmButton.setVisibility(0);
             }
         }
         this.mDelegator.sendAccessibilityEvent(4);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onTimeChanged() {
         this.mDelegator.sendAccessibilityEvent(4);
         if (this.mOnTimeChangedListener != null) {
@@ -558,9 +454,8 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         trySetContentDescription(this.mMinuteSpinner, R.id.decrement, R.string.time_picker_decrement_minute_button);
         trySetContentDescription(this.mHourSpinner, R.id.increment, R.string.time_picker_increment_hour_button);
         trySetContentDescription(this.mHourSpinner, R.id.decrement, R.string.time_picker_decrement_hour_button);
-        NumberPicker numberPicker = this.mAmPmSpinner;
-        if (numberPicker != null) {
-            trySetContentDescription(numberPicker, R.id.increment, R.string.time_picker_increment_set_pm_button);
+        if (this.mAmPmSpinner != null) {
+            trySetContentDescription(this.mAmPmSpinner, R.id.increment, R.string.time_picker_increment_set_pm_button);
             trySetContentDescription(this.mAmPmSpinner, R.id.decrement, R.string.time_picker_decrement_set_am_button);
         }
     }

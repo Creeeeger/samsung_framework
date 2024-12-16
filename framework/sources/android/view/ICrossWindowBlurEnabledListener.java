@@ -12,7 +12,6 @@ public interface ICrossWindowBlurEnabledListener extends IInterface {
 
     void onCrossWindowBlurEnabledChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ICrossWindowBlurEnabledListener {
         @Override // android.view.ICrossWindowBlurEnabledListener
         public void onCrossWindowBlurEnabledChanged(boolean enabled) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICrossWindowBlurEnabledListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ICrossWindowBlurEnabledListener {
         static final int TRANSACTION_onCrossWindowBlurEnabledChanged = 1;
 
@@ -67,25 +65,22 @@ public interface ICrossWindowBlurEnabledListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICrossWindowBlurEnabledListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICrossWindowBlurEnabledListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICrossWindowBlurEnabledListener.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCrossWindowBlurEnabledChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCrossWindowBlurEnabledChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ICrossWindowBlurEnabledListener {
+        private static class Proxy implements ICrossWindowBlurEnabledListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

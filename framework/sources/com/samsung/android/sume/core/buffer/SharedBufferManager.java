@@ -10,13 +10,12 @@ import java.nio.ByteBuffer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public final class SharedBufferManager {
     private static volatile SharedBufferManager sInstance;
 
-    /* renamed from: com.samsung.android.sume.core.buffer.SharedBufferManager$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
+    /* renamed from: com.samsung.android.sume.core.buffer.SharedBufferManager$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$ColorFormat = new int[ColorFormat.values().length];
     }
 

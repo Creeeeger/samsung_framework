@@ -44,33 +44,22 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
     private boolean mIsMetaDataInActivity = View.sIsSamsungBasicInteraction;
     private int mLayoutResId = R.layout.preference_list_fragment;
     private Handler mHandler = new Handler() { // from class: android.preference.PreferenceFragment.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     PreferenceFragment.this.bindPreferences();
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     };
     private final Runnable mRequestFocus = new Runnable() { // from class: android.preference.PreferenceFragment.2
-        AnonymousClass2() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             PreferenceFragment.this.mList.focusableViewAvailable(PreferenceFragment.this.mList);
         }
     };
     private View.OnKeyListener mListOnKeyListener = new View.OnKeyListener() { // from class: android.preference.PreferenceFragment.3
-        AnonymousClass3() {
-        }
-
         @Override // android.view.View.OnKeyListener
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             Object selectedItem = PreferenceFragment.this.mList.getSelectedItem();
@@ -83,46 +72,14 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
     };
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface OnPreferenceStartFragmentCallback {
         boolean onPreferenceStartFragment(PreferenceFragment preferenceFragment, Preference preference);
     }
 
-    /* renamed from: android.preference.PreferenceFragment$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends Handler {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    PreferenceFragment.this.bindPreferences();
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
-    /* renamed from: android.preference.PreferenceFragment$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            PreferenceFragment.this.mList.focusableViewAvailable(PreferenceFragment.this.mList);
-        }
-    }
-
     @Override // android.app.Fragment, android.content.ComponentCallbacks
     public void onConfigurationChanged(Configuration newConfig) {
-        ListView listView = this.mList;
-        if (listView != null) {
-            Adapter adapter = listView.getAdapter();
+        if (this.mList != null) {
+            Adapter adapter = this.mList.getAdapter();
             int isLargeLayout = ((newConfig.screenWidthDp > 320 || newConfig.fontScale < FONT_SCALE_MEDIUM) && (newConfig.screenWidthDp >= 411 || newConfig.fontScale < FONT_SCALE_LARGE)) ? 2 : 1;
             if (this.mIsMetaDataInActivity && (adapter instanceof PreferenceGroupAdapter) && isLargeLayout != this.mIsLargeLayout) {
                 this.mIsLargeLayout = isLargeLayout;
@@ -132,13 +89,13 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
                     int currentLayoutId = preference.getLayoutResource();
                     if (preference instanceof SwitchPreference) {
                         hasSwitchPreference = true;
-                        if (currentLayoutId == 17367496) {
+                        if (currentLayoutId == 17367504) {
                             preference.setLayoutResource(R.layout.tw_switch_preference_screen_material);
-                        } else if (currentLayoutId == 17367497) {
+                        } else if (currentLayoutId == 17367505) {
                             preference.setLayoutResource(R.layout.tw_switch_preference_screen_large);
-                        } else if (currentLayoutId == 17367486) {
+                        } else if (currentLayoutId == 17367494) {
                             preference.setLayoutResource(R.layout.tw_preference_material);
-                        } else if (currentLayoutId == 17367485) {
+                        } else if (currentLayoutId == 17367493) {
                             preference.setLayoutResource(R.layout.tw_preference_switch_large);
                         }
                     }
@@ -155,9 +112,8 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
     public void onCreate(Bundle savedInstanceState) {
         ActivityInfo ai;
         super.onCreate(savedInstanceState);
-        PreferenceManager preferenceManager = new PreferenceManager(getActivity(), 100);
-        this.mPreferenceManager = preferenceManager;
-        preferenceManager.setFragment(this);
+        this.mPreferenceManager = new PreferenceManager(getActivity(), 100);
+        this.mPreferenceManager.setFragment(this);
         Activity activity = getActivityContext(getContext());
         Configuration configuration = getResources().getConfiguration();
         boolean z = true;
@@ -219,9 +175,8 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
 
     @Override // android.app.Fragment
     public void onDestroyView() {
-        ListView listView = this.mList;
-        if (listView != null) {
-            listView.setOnKeyListener(null);
+        if (this.mList != null) {
+            this.mList.setOnKeyListener(null);
         }
         this.mList = null;
         this.mHandler.removeCallbacks(this.mRequestFocus);
@@ -289,11 +244,10 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
     }
 
     public Preference findPreference(CharSequence key) {
-        PreferenceManager preferenceManager = this.mPreferenceManager;
-        if (preferenceManager == null) {
+        if (this.mPreferenceManager == null) {
             return null;
         }
-        return preferenceManager.findPreference(key);
+        return this.mPreferenceManager.findPreference(key);
     }
 
     private void requirePreferenceManager() {
@@ -309,6 +263,7 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
         this.mHandler.obtainMessage(1).sendToTarget();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void bindPreferences() {
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
@@ -320,7 +275,7 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
                     if (TextUtils.isEmpty(title)) {
                         titleView.setVisibility(8);
                     } else {
-                        ((TextView) titleView).setText(title);
+                        ((TextView) titleView).lambda$setTextAsync$0(title);
                         titleView.setVisibility(0);
                     }
                 }
@@ -357,9 +312,8 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
         if (!(rawListView instanceof ListView)) {
             return false;
         }
-        ListView listView = (ListView) rawListView;
-        this.mList = listView;
-        return listView != null;
+        this.mList = (ListView) rawListView;
+        return this.mList != null;
     }
 
     private void ensureList() {
@@ -374,30 +328,12 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
         if (!(rawListView instanceof ListView)) {
             throw new RuntimeException("Content has view with id attribute 'android.R.id.list' that is not a ListView class");
         }
-        ListView listView = (ListView) rawListView;
-        this.mList = listView;
-        if (listView == null) {
+        this.mList = (ListView) rawListView;
+        if (this.mList == null) {
             throw new RuntimeException("Your content must have a ListView whose id attribute is 'android.R.id.list'");
         }
-        listView.setOnKeyListener(this.mListOnKeyListener);
+        this.mList.setOnKeyListener(this.mListOnKeyListener);
         this.mHandler.post(this.mRequestFocus);
-    }
-
-    /* renamed from: android.preference.PreferenceFragment$3 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass3 implements View.OnKeyListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.view.View.OnKeyListener
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            Object selectedItem = PreferenceFragment.this.mList.getSelectedItem();
-            if (selectedItem instanceof Preference) {
-                View selectedView = PreferenceFragment.this.mList.getSelectedView();
-                return ((Preference) selectedItem).onKey(selectedView, keyCode, event);
-            }
-            return false;
-        }
     }
 
     private Activity getActivityContext(Context context) {

@@ -11,7 +11,6 @@ public class MessageUtils {
     private static final String TAG = MessageUtils.class.getSimpleName();
     public static final String[] DEFAULT_PREFIXES = {"CMD_", "EVENT_"};
 
-    /* loaded from: classes5.dex */
     public static class DuplicateConstantError extends Error {
         private DuplicateConstantError() {
         }
@@ -27,7 +26,7 @@ public class MessageUtils {
         SparseArray<String> messageNames = new SparseArray<>();
         int length = clsArr.length;
         int i = 0;
-        loop0: while (i < length) {
+        while (i < length) {
             Class c = clsArr[i];
             String className = c.getName();
             try {
@@ -51,7 +50,6 @@ public class MessageUtils {
                                         String previousName = messageNames.get(value);
                                         if (previousName != null && !previousName.equals(name)) {
                                             throw new DuplicateConstantError(name, previousName, value);
-                                            break loop0;
                                         }
                                         messageNames.put(value, name);
                                     } catch (ExceptionInInitializerError | IllegalArgumentException e) {

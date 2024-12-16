@@ -1,7 +1,6 @@
 package com.samsung.android.allshare;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.StringTokenizer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public abstract class Item implements Parcelable {
     public abstract String getAlbumTitle();
 
@@ -33,9 +32,6 @@ public abstract class Item implements Parcelable {
 
     public abstract ContentBuildType getContentBuildType();
 
-    @Deprecated
-    public abstract Date getDate();
-
     public abstract long getDuration();
 
     public abstract String getExtension();
@@ -44,16 +40,7 @@ public abstract class Item implements Parcelable {
 
     public abstract String getGenre();
 
-    @Deprecated
-    public abstract Location getLocation();
-
     public abstract String getMimetype();
-
-    @Deprecated
-    public abstract String getResolution();
-
-    @Deprecated
-    public abstract ArrayList<Resource> getResourceList();
 
     public abstract SeekMode getSeekMode();
 
@@ -65,19 +52,13 @@ public abstract class Item implements Parcelable {
 
     public abstract String getTitle();
 
-    @Deprecated
-    public abstract MediaType getType();
-
     public abstract Uri getURI();
-
-    public abstract WebContentBuilder.DeliveryMode getWebContentDeliveryMode();
-
-    @Deprecated
-    public abstract WebContentBuilder.PlayMode getWebContentPlayMode();
 
     public abstract boolean isRootFolder();
 
-    /* loaded from: classes5.dex */
+    protected Item() {
+    }
+
     public enum MediaType {
         ITEM_FOLDER("ITEM_FOLDER"),
         ITEM_AUDIO("ITEM_AUDIO"),
@@ -118,7 +99,6 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum ContentAttributeType {
         CONTENT_360_VIEW("360View"),
         CONTENT_UNKNOWN("UNKNOWN");
@@ -147,7 +127,6 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum ContentBuildType {
         LOCAL(CalendarContract.ACCOUNT_TYPE_LOCAL),
         PROVIDER("PROVIDER"),
@@ -165,7 +144,6 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum SeekMode {
         BYTE("BYTE"),
         TIME("TIME"),
@@ -206,7 +184,6 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* loaded from: classes5.dex */
     public abstract class Resource implements Parcelable {
         public abstract int getBitrate();
 
@@ -216,9 +193,6 @@ public abstract class Item implements Parcelable {
 
         public abstract String getMimetype();
 
-        @Deprecated
-        public abstract String getResolution();
-
         public abstract SeekMode getSeekMode();
 
         public abstract MediaType getType();
@@ -226,11 +200,10 @@ public abstract class Item implements Parcelable {
         @Deprecated
         public abstract Uri getURI();
 
-        public Resource() {
+        protected Resource() {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class LocalContentBuilder {
         private String mFilepath;
         private String mMimetype;
@@ -274,7 +247,7 @@ public abstract class Item implements Parcelable {
                 return new BuilderGeneratedItem(ItemCreator.ConstructorType.LOCAL_CONTENT, this.mFilepath, this.mTitle, this.mSubtitlePath, this.mCaptionList, this.mContentAttribute, this.mMimetype);
             }
             MediaType type = Item.convertItemTypeFromMimeType(this.mMimetype);
-            switch (AnonymousClass1.$SwitchMap$com$samsung$android$allshare$Item$MediaType[type.ordinal()]) {
+            switch (type.ordinal()) {
                 case 1:
                 case 2:
                 case 3:
@@ -285,7 +258,7 @@ public abstract class Item implements Parcelable {
             }
         }
 
-        public static boolean checkFilePathValid(String filePath) {
+        protected static boolean checkFilePathValid(String filePath) {
             String absoluteFilePath;
             if (filePath == null || filePath.length() == 0) {
                 DLog.e_api("Item", "[checkFilePathValid] filePath is null or length is 0");
@@ -307,17 +280,15 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class BuilderGeneratedItem extends Item implements IBundleHolder {
+    static class BuilderGeneratedItem extends Item implements IBundleHolder {
         public static final Parcelable.Creator<BuilderGeneratedItem> CREATOR = new Parcelable.Creator<BuilderGeneratedItem>() { // from class: com.samsung.android.allshare.Item.BuilderGeneratedItem.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BuilderGeneratedItem createFromParcel(Parcel source) {
                 return new BuilderGeneratedItem(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BuilderGeneratedItem[] newArray(int size) {
                 return new BuilderGeneratedItem[size];
@@ -336,18 +307,6 @@ public abstract class Item implements Parcelable {
         private String mItemMimetype;
         private String mItemTitle;
         private String mSubtitlePath;
-
-        /* synthetic */ BuilderGeneratedItem(Parcel parcel, BuilderGeneratedItemIA builderGeneratedItemIA) {
-            this(parcel);
-        }
-
-        /* synthetic */ BuilderGeneratedItem(ItemCreator.ConstructorType constructorType, Uri uri, String str, String str2, String str3, ArrayList arrayList, ContentAttributeType contentAttributeType, WebContentBuilder.DeliveryMode deliveryMode, String str4, String str5, String str6, Date date, long j, BuilderGeneratedItemIA builderGeneratedItemIA) {
-            this(constructorType, uri, str, str2, str3, arrayList, contentAttributeType, deliveryMode, str4, str5, str6, date, j);
-        }
-
-        /* synthetic */ BuilderGeneratedItem(ItemCreator.ConstructorType constructorType, String str, String str2, String str3, ArrayList arrayList, ContentAttributeType contentAttributeType, String str4, BuilderGeneratedItemIA builderGeneratedItemIA) {
-            this(constructorType, str, str2, str3, arrayList, contentAttributeType, str4);
-        }
 
         private BuilderGeneratedItem(ItemCreator.ConstructorType conType, String filepath, String title, String subtitlePath, ArrayList<Caption> captionList, ContentAttributeType contentAttr, String mimeType) {
             this.mConType = ItemCreator.ConstructorType.UNKNOWN;
@@ -414,56 +373,18 @@ public abstract class Item implements Parcelable {
             this.mDuration = duration;
         }
 
-        @Deprecated
-        private BuilderGeneratedItem(ItemCreator.ConstructorType conType, Uri uri, String title, String mimeType, String subtitlePath, ArrayList<Caption> captionList, ContentAttributeType contentAttr, WebContentBuilder.PlayMode playMode) {
-            this.mConType = ItemCreator.ConstructorType.UNKNOWN;
-            this.mDeliveryMode = WebContentBuilder.DeliveryMode.UNKNOWN;
-            this.mCaptionList = null;
-            this.mContentAttribute = null;
-            this.mArtist = null;
-            this.mAlbumTitle = null;
-            this.mGenre = null;
-            this.mDate = null;
-            this.mDuration = -1L;
-            this.mItemFilepath = uri.toString();
-            this.mItemMimetype = mimeType;
-            this.mItemTitle = title;
-            this.mConType = conType;
-            this.mSubtitlePath = subtitlePath;
-            this.mCaptionList = captionList;
-            this.mContentAttribute = contentAttr;
-            if (playMode == WebContentBuilder.PlayMode.REDIRECT) {
-                this.mDeliveryMode = WebContentBuilder.DeliveryMode.REDIRECT;
-            } else if (playMode == WebContentBuilder.PlayMode.RELAY) {
-                this.mDeliveryMode = WebContentBuilder.DeliveryMode.RELAY;
-            } else {
-                this.mDeliveryMode = WebContentBuilder.DeliveryMode.UNKNOWN;
-            }
-        }
-
-        @Override // com.samsung.android.allshare.Item
-        public Date getDate() {
-            return this.mDate;
-        }
-
         @Override // com.samsung.android.allshare.Item
         public String getTitle() {
             return this.mItemTitle;
         }
 
         @Override // com.samsung.android.allshare.Item
-        public MediaType getType() {
-            return Item.convertItemTypeFromMimeType(this.mItemMimetype);
-        }
-
-        @Override // com.samsung.android.allshare.Item
         public Uri getURI() {
-            String str = this.mItemFilepath;
-            if (str == null) {
+            if (this.mItemFilepath == null) {
                 return null;
             }
             try {
-                Uri uri = Uri.parse(str);
+                Uri uri = Uri.parse(this.mItemFilepath);
                 String scheme = uri.getScheme();
                 if (scheme != null && !scheme.isEmpty()) {
                     return uri;
@@ -477,7 +398,6 @@ public abstract class Item implements Parcelable {
         @Override // com.sec.android.allshare.iface.IBundleHolder
         public Bundle getBundle() {
             Bundle bundle = new Bundle();
-            bundle.putString(AllShareKey.BUNDLE_STRING_ITEM_TYPE, getType().enumToString());
             bundle.putString(AllShareKey.BUNDLE_STRING_ITEM_TITLE, this.mItemTitle);
             bundle.putString(AllShareKey.BUNDLE_STRING_FILEPATH, this.mItemFilepath);
             bundle.putParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM_URI, getURI());
@@ -490,28 +410,24 @@ public abstract class Item implements Parcelable {
             bundle.putString(AllShareKey.BUNDLE_STRING_ITEM_ARTIST, this.mArtist);
             bundle.putString(AllShareKey.BUNDLE_STRING_ITEM_ALBUM_TITLE, this.mAlbumTitle);
             bundle.putString(AllShareKey.BUNDLE_STRING_ITEM_GENRE, this.mGenre);
-            Date date = this.mDate;
-            bundle.putLong(AllShareKey.BUNDLE_DATE_ITEM_DATE, date != null ? date.getTime() : 0L);
+            bundle.putLong(AllShareKey.BUNDLE_DATE_ITEM_DATE, this.mDate != null ? this.mDate.getTime() : 0L);
             bundle.putLong(AllShareKey.BUNDLE_LONG_ITEM_DURATION, this.mDuration);
             return bundle;
         }
 
         @Override // com.samsung.android.allshare.Item
         public String getAlbumTitle() {
-            String str = this.mAlbumTitle;
-            return str == null ? "" : str;
+            return this.mAlbumTitle == null ? "" : this.mAlbumTitle;
         }
 
         @Override // com.samsung.android.allshare.Item
         public String getArtist() {
-            String str = this.mArtist;
-            return str == null ? "" : str;
+            return this.mArtist == null ? "" : this.mArtist;
         }
 
         @Override // com.samsung.android.allshare.Item
         public String getGenre() {
-            String str = this.mGenre;
-            return str == null ? "" : str;
+            return this.mGenre == null ? "" : this.mGenre;
         }
 
         @Override // com.samsung.android.allshare.Item
@@ -530,31 +446,19 @@ public abstract class Item implements Parcelable {
         }
 
         @Override // com.samsung.android.allshare.Item
-        public String getResolution() {
-            return "";
-        }
-
-        @Override // com.samsung.android.allshare.Item
-        public Location getLocation() {
-            return null;
-        }
-
-        @Override // com.samsung.android.allshare.Item
         public Uri getSubtitle() {
-            String str = this.mSubtitlePath;
-            if (str == null) {
+            if (this.mSubtitlePath == null) {
                 return null;
             }
-            return Uri.parse(str);
+            return Uri.parse(this.mSubtitlePath);
         }
 
         @Override // com.samsung.android.allshare.Item
         public ArrayList<Caption> getCaptionList() {
-            ArrayList<Caption> arrayList = this.mCaptionList;
-            if (arrayList == null) {
+            if (this.mCaptionList == null) {
                 return new ArrayList<>();
             }
-            return arrayList;
+            return this.mCaptionList;
         }
 
         @Override // com.samsung.android.allshare.Item
@@ -598,23 +502,6 @@ public abstract class Item implements Parcelable {
             this.mDeliveryMode = WebContentBuilder.DeliveryMode.stringToEnum(deliveryMode);
         }
 
-        /* renamed from: com.samsung.android.allshare.Item$BuilderGeneratedItem$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<BuilderGeneratedItem> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BuilderGeneratedItem createFromParcel(Parcel source) {
-                return new BuilderGeneratedItem(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BuilderGeneratedItem[] newArray(int size) {
-                return new BuilderGeneratedItem[size];
-            }
-        }
-
         private BuilderGeneratedItem(Parcel src) {
             this.mConType = ItemCreator.ConstructorType.UNKNOWN;
             this.mDeliveryMode = WebContentBuilder.DeliveryMode.UNKNOWN;
@@ -654,35 +541,9 @@ public abstract class Item implements Parcelable {
 
         @Override // com.samsung.android.allshare.Item
         public ContentBuildType getContentBuildType() {
-            switch (AnonymousClass1.$SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType[this.mConType.ordinal()]) {
-                case 1:
-                    return ContentBuildType.LOCAL;
-                case 2:
-                    return ContentBuildType.PROVIDER;
-                case 3:
-                    return ContentBuildType.WEB;
-                case 4:
-                    return ContentBuildType.UNKNOWN;
-                default:
-                    return ContentBuildType.UNKNOWN;
+            switch (this.mConType) {
             }
-        }
-
-        @Override // com.samsung.android.allshare.Item
-        public WebContentBuilder.DeliveryMode getWebContentDeliveryMode() {
-            return this.mDeliveryMode;
-        }
-
-        @Override // com.samsung.android.allshare.Item
-        @Deprecated
-        public WebContentBuilder.PlayMode getWebContentPlayMode() {
-            if (this.mDeliveryMode == WebContentBuilder.DeliveryMode.REDIRECT) {
-                return WebContentBuilder.PlayMode.REDIRECT;
-            }
-            if (this.mDeliveryMode == WebContentBuilder.DeliveryMode.RELAY) {
-                return WebContentBuilder.PlayMode.RELAY;
-            }
-            return WebContentBuilder.PlayMode.UNKNOWN;
+            return ContentBuildType.UNKNOWN;
         }
 
         @Override // com.samsung.android.allshare.Item
@@ -701,60 +562,11 @@ public abstract class Item implements Parcelable {
         }
 
         @Override // com.samsung.android.allshare.Item
-        public ArrayList<Resource> getResourceList() {
-            return new ArrayList<>();
-        }
-
-        @Override // com.samsung.android.allshare.Item
         public String getChannelNr() {
             return "";
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.Item$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType;
-
-        static {
-            int[] iArr = new int[ItemCreator.ConstructorType.values().length];
-            $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType = iArr;
-            try {
-                iArr[ItemCreator.ConstructorType.LOCAL_CONTENT.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType[ItemCreator.ConstructorType.MEDIA_SERVER.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType[ItemCreator.ConstructorType.WEB_CONTENT.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType[ItemCreator.ConstructorType.UNKNOWN.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            int[] iArr2 = new int[MediaType.values().length];
-            $SwitchMap$com$samsung$android$allshare$Item$MediaType = iArr2;
-            try {
-                iArr2[MediaType.ITEM_AUDIO.ordinal()] = 1;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[MediaType.ITEM_IMAGE.ordinal()] = 2;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[MediaType.ITEM_VIDEO.ordinal()] = 3;
-            } catch (NoSuchFieldError e7) {
-            }
-        }
-    }
-
-    /* loaded from: classes5.dex */
     public static class WebContentBuilder {
         private String mMimetype;
         private Uri mUri;
@@ -769,7 +581,6 @@ public abstract class Item implements Parcelable {
         private Date mDate = null;
         private long mDuration = -1;
 
-        /* loaded from: classes5.dex */
         public enum DeliveryMode {
             RELAY("RELAY"),
             REDIRECT("REDIRECT"),
@@ -786,30 +597,6 @@ public abstract class Item implements Parcelable {
             }
 
             public static DeliveryMode stringToEnum(String enumStr) {
-                if (enumStr == null) {
-                    return UNKNOWN;
-                }
-                if (enumStr.equals("REDIRECT")) {
-                    return REDIRECT;
-                }
-                if (enumStr.equals("RELAY")) {
-                    return RELAY;
-                }
-                if (enumStr.equals("UNKNOWN")) {
-                    return UNKNOWN;
-                }
-                return UNKNOWN;
-            }
-        }
-
-        @Deprecated
-        /* loaded from: classes5.dex */
-        public enum PlayMode {
-            RELAY,
-            REDIRECT,
-            UNKNOWN;
-
-            public static PlayMode stringToEnum(String enumStr) {
                 if (enumStr == null) {
                     return UNKNOWN;
                 }
@@ -858,18 +645,6 @@ public abstract class Item implements Parcelable {
             return this;
         }
 
-        @Deprecated
-        public WebContentBuilder setPlayMode(PlayMode playmode) {
-            if (playmode == PlayMode.REDIRECT) {
-                this.mDeliveryMode = DeliveryMode.REDIRECT;
-            } else if (playmode == PlayMode.RELAY) {
-                this.mDeliveryMode = DeliveryMode.RELAY;
-            } else {
-                this.mDeliveryMode = DeliveryMode.UNKNOWN;
-            }
-            return this;
-        }
-
         public Item build() {
             if (this.mUri != null && this.mMimetype != null) {
                 if (!checkSubtitlePathValid(this.mSubtitlePath)) {
@@ -886,7 +661,7 @@ public abstract class Item implements Parcelable {
                 if (scheme != null && !scheme.contains("content")) {
                     if (!scheme.contains("file")) {
                         MediaType type = Item.convertItemTypeFromMimeType(this.mMimetype);
-                        switch (AnonymousClass1.$SwitchMap$com$samsung$android$allshare$Item$MediaType[type.ordinal()]) {
+                        switch (type.ordinal()) {
                             case 1:
                             case 2:
                             case 3:
@@ -949,6 +724,7 @@ public abstract class Item implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static MediaType convertItemTypeFromMimeType(String type) {
         if (type == null) {
             return MediaType.ITEM_UNKNOWN;

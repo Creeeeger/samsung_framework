@@ -12,7 +12,6 @@ public interface IScrollCaptureResponseListener extends IInterface {
 
     void onScrollCaptureResponse(ScrollCaptureResponse scrollCaptureResponse) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IScrollCaptureResponseListener {
         @Override // android.view.IScrollCaptureResponseListener
         public void onScrollCaptureResponse(ScrollCaptureResponse response) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IScrollCaptureResponseListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IScrollCaptureResponseListener {
         static final int TRANSACTION_onScrollCaptureResponse = 1;
 
@@ -67,25 +65,22 @@ public interface IScrollCaptureResponseListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IScrollCaptureResponseListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IScrollCaptureResponseListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IScrollCaptureResponseListener.DESCRIPTOR);
+                case 1:
+                    ScrollCaptureResponse _arg0 = (ScrollCaptureResponse) data.readTypedObject(ScrollCaptureResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onScrollCaptureResponse(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ScrollCaptureResponse _arg0 = (ScrollCaptureResponse) data.readTypedObject(ScrollCaptureResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onScrollCaptureResponse(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IScrollCaptureResponseListener {
+        private static class Proxy implements IScrollCaptureResponseListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,5 +1,6 @@
 package android.app;
 
+import android.app.ActivityOptions;
 import android.app.IInstrumentationWatcher;
 import android.app.IUiAutomationConnection;
 import android.app.servertransaction.ClientTransaction;
@@ -30,6 +31,8 @@ import android.os.SharedMemory;
 import android.view.autofill.AutofillId;
 import android.view.translation.TranslationSpec;
 import android.view.translation.UiTranslationSpec;
+import android.window.ITaskFragmentOrganizer;
+import android.window.TaskFragmentTransaction;
 import com.android.internal.app.IVoiceInteractor;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +43,7 @@ public interface IApplicationThread extends IInterface {
 
     void attachStartupAgents(String str) throws RemoteException;
 
-    void bindApplication(String str, ApplicationInfo applicationInfo, String str2, String str3, ProviderInfoList providerInfoList, ComponentName componentName, ProfilerInfo profilerInfo, Bundle bundle, IInstrumentationWatcher iInstrumentationWatcher, IUiAutomationConnection iUiAutomationConnection, int i, boolean z, boolean z2, boolean z3, boolean z4, Configuration configuration, CompatibilityInfo compatibilityInfo, Map map, Bundle bundle2, float f, String str4, AutofillOptions autofillOptions, ContentCaptureOptions contentCaptureOptions, long[] jArr, SharedMemory sharedMemory, long j, long j2, int i2, boolean z5) throws RemoteException;
+    void bindApplication(String str, ApplicationInfo applicationInfo, String str2, String str3, boolean z, ProviderInfoList providerInfoList, ComponentName componentName, ProfilerInfo profilerInfo, Bundle bundle, IInstrumentationWatcher iInstrumentationWatcher, IUiAutomationConnection iUiAutomationConnection, int i, boolean z2, boolean z3, boolean z4, boolean z5, Configuration configuration, CompatibilityInfo compatibilityInfo, Map map, Bundle bundle2, String str4, AutofillOptions autofillOptions, ContentCaptureOptions contentCaptureOptions, long[] jArr, long[] jArr2, SharedMemory sharedMemory, long j, long j2, boolean z6) throws RemoteException;
 
     void clearDnsCache() throws RemoteException;
 
@@ -56,9 +59,9 @@ public interface IApplicationThread extends IInterface {
 
     void dumpGfxInfo(ParcelFileDescriptor parcelFileDescriptor, String[] strArr) throws RemoteException;
 
-    void dumpHeap(boolean z, boolean z2, boolean z3, String str, ParcelFileDescriptor parcelFileDescriptor, RemoteCallback remoteCallback) throws RemoteException;
+    void dumpHeap(boolean z, boolean z2, boolean z3, String str, String str2, ParcelFileDescriptor parcelFileDescriptor, RemoteCallback remoteCallback) throws RemoteException;
 
-    void dumpMemInfo(ParcelFileDescriptor parcelFileDescriptor, Debug.MemoryInfo memoryInfo, boolean z, boolean z2, boolean z3, boolean z4, boolean z5, String[] strArr) throws RemoteException;
+    void dumpMemInfo(ParcelFileDescriptor parcelFileDescriptor, Debug.MemoryInfo memoryInfo, boolean z, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, String[] strArr) throws RemoteException;
 
     void dumpMemInfoProto(ParcelFileDescriptor parcelFileDescriptor, Debug.MemoryInfo memoryInfo, boolean z, boolean z2, boolean z3, boolean z4, String[] strArr) throws RemoteException;
 
@@ -67,8 +70,6 @@ public interface IApplicationThread extends IInterface {
     void dumpResources(ParcelFileDescriptor parcelFileDescriptor, RemoteCallback remoteCallback) throws RemoteException;
 
     void dumpService(ParcelFileDescriptor parcelFileDescriptor, IBinder iBinder, String[] strArr) throws RemoteException;
-
-    void forceGc() throws RemoteException;
 
     void getProfileLength(String str) throws RemoteException;
 
@@ -85,6 +86,8 @@ public interface IApplicationThread extends IInterface {
     void processInBackground() throws RemoteException;
 
     void profilerControl(boolean z, ProfilerInfo profilerInfo, int i) throws RemoteException;
+
+    void relaunchActivityIfWebViewAttached(IBinder iBinder) throws RemoteException;
 
     void requestAssistContextExtras(IBinder iBinder, IBinder iBinder2, int i, int i2, int i3) throws RemoteException;
 
@@ -114,7 +117,7 @@ public interface IApplicationThread extends IInterface {
 
     void scheduleLowMemory() throws RemoteException;
 
-    void scheduleOnNewActivityOptions(IBinder iBinder, Bundle bundle) throws RemoteException;
+    void scheduleOnNewSceneTransitionInfo(IBinder iBinder, ActivityOptions.SceneTransitionInfo sceneTransitionInfo) throws RemoteException;
 
     void schedulePing(RemoteCallback remoteCallback) throws RemoteException;
 
@@ -130,7 +133,11 @@ public interface IApplicationThread extends IInterface {
 
     void scheduleSuicide() throws RemoteException;
 
+    void scheduleTaskFragmentTransaction(ITaskFragmentOrganizer iTaskFragmentOrganizer, TaskFragmentTransaction taskFragmentTransaction) throws RemoteException;
+
     void scheduleTimeoutService(IBinder iBinder, int i) throws RemoteException;
+
+    void scheduleTimeoutServiceForType(IBinder iBinder, int i, int i2) throws RemoteException;
 
     void scheduleTransaction(ClientTransaction clientTransaction) throws RemoteException;
 
@@ -170,7 +177,6 @@ public interface IApplicationThread extends IInterface {
 
     void updateUiTranslationState(IBinder iBinder, int i, TranslationSpec translationSpec, TranslationSpec translationSpec2, List<AutofillId> list, UiTranslationSpec uiTranslationSpec) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IApplicationThread {
         @Override // android.app.IApplicationThread
         public void scheduleReceiver(Intent intent, ActivityInfo info, CompatibilityInfo compatInfo, int resultCode, String data, Bundle extras, boolean ordered, boolean assumeDelivered, int sendingUser, int processState, int sentFromUid, String sentFromPackage) throws RemoteException {
@@ -189,7 +195,7 @@ public interface IApplicationThread extends IInterface {
         }
 
         @Override // android.app.IApplicationThread
-        public void bindApplication(String packageName, ApplicationInfo info, String sdkSandboxClientAppVolumeUuid, String sdkSandboxClientAppPackage, ProviderInfoList providerList, ComponentName testName, ProfilerInfo profilerInfo, Bundle testArguments, IInstrumentationWatcher testWatcher, IUiAutomationConnection uiAutomationConnection, int debugMode, boolean enableBinderTracking, boolean trackAllocation, boolean restrictedBackupMode, boolean persistent, Configuration config, CompatibilityInfo compatInfo, Map services, Bundle coreSettings, float dssScale, String buildSerial, AutofillOptions autofillOptions, ContentCaptureOptions contentCaptureOptions, long[] disabledCompatChanges, SharedMemory serializedSystemFontMap, long startRequestedElapsedTime, long startRequestedUptime, int processDisplayId, boolean fixedAppContextDisplay) throws RemoteException {
+        public void bindApplication(String packageName, ApplicationInfo info, String sdkSandboxClientAppVolumeUuid, String sdkSandboxClientAppPackage, boolean isSdkInSandbox, ProviderInfoList providerList, ComponentName testName, ProfilerInfo profilerInfo, Bundle testArguments, IInstrumentationWatcher testWatcher, IUiAutomationConnection uiAutomationConnection, int debugMode, boolean enableBinderTracking, boolean trackAllocation, boolean restrictedBackupMode, boolean persistent, Configuration config, CompatibilityInfo compatInfo, Map services, Bundle coreSettings, String buildSerial, AutofillOptions autofillOptions, ContentCaptureOptions contentCaptureOptions, long[] disabledCompatChanges, long[] loggableCompatChanges, SharedMemory serializedSystemFontMap, long startRequestedElapsedTime, long startRequestedUptime, boolean fixedAppContextDisplay) throws RemoteException {
         }
 
         @Override // android.app.IApplicationThread
@@ -249,7 +255,7 @@ public interface IApplicationThread extends IInterface {
         }
 
         @Override // android.app.IApplicationThread
-        public void scheduleOnNewActivityOptions(IBinder token, Bundle options) throws RemoteException {
+        public void scheduleOnNewSceneTransitionInfo(IBinder token, ActivityOptions.SceneTransitionInfo info) throws RemoteException {
         }
 
         @Override // android.app.IApplicationThread
@@ -265,7 +271,7 @@ public interface IApplicationThread extends IInterface {
         }
 
         @Override // android.app.IApplicationThread
-        public void dumpHeap(boolean managed, boolean mallocInfo, boolean runGc, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
+        public void dumpHeap(boolean managed, boolean mallocInfo, boolean runGc, String dumpBitmaps, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
         }
 
         @Override // android.app.IApplicationThread
@@ -301,7 +307,7 @@ public interface IApplicationThread extends IInterface {
         }
 
         @Override // android.app.IApplicationThread
-        public void dumpMemInfo(ParcelFileDescriptor fd, Debug.MemoryInfo mem, boolean checkin, boolean dumpInfo, boolean dumpDalvik, boolean dumpSummaryOnly, boolean dumpUnreachable, String[] args) throws RemoteException {
+        public void dumpMemInfo(ParcelFileDescriptor fd, Debug.MemoryInfo mem, boolean checkin, boolean dumpInfo, boolean dumpDalvik, boolean dumpSummaryOnly, boolean dumpUnreachable, boolean dumpAllocatorLogs, String[] args) throws RemoteException {
         }
 
         @Override // android.app.IApplicationThread
@@ -397,6 +403,10 @@ public interface IApplicationThread extends IInterface {
         }
 
         @Override // android.app.IApplicationThread
+        public void scheduleTaskFragmentTransaction(ITaskFragmentOrganizer organizer, TaskFragmentTransaction transaction) throws RemoteException {
+        }
+
+        @Override // android.app.IApplicationThread
         public void requestDirectActions(IBinder activityToken, IVoiceInteractor intractor, RemoteCallback cancellationCallback, RemoteCallback callback) throws RemoteException {
         }
 
@@ -421,11 +431,11 @@ public interface IApplicationThread extends IInterface {
         }
 
         @Override // android.app.IApplicationThread
-        public void schedulePing(RemoteCallback pong) throws RemoteException {
+        public void scheduleTimeoutServiceForType(IBinder token, int startId, int fgsType) throws RemoteException {
         }
 
         @Override // android.app.IApplicationThread
-        public void forceGc() throws RemoteException {
+        public void schedulePing(RemoteCallback pong) throws RemoteException {
         }
 
         @Override // android.app.IApplicationThread
@@ -440,20 +450,23 @@ public interface IApplicationThread extends IInterface {
         public void clearIdsTrainingData(boolean flag) throws RemoteException {
         }
 
+        @Override // android.app.IApplicationThread
+        public void relaunchActivityIfWebViewAttached(IBinder token) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IApplicationThread {
         public static final String DESCRIPTOR = "android.app.IApplicationThread";
         static final int TRANSACTION_attachAgent = 52;
         static final int TRANSACTION_attachStartupAgents = 53;
         static final int TRANSACTION_bindApplication = 5;
         static final int TRANSACTION_clearDnsCache = 27;
-        static final int TRANSACTION_clearIdsTrainingData = 67;
+        static final int TRANSACTION_clearIdsTrainingData = 68;
         static final int TRANSACTION_dispatchPackageBroadcast = 22;
         static final int TRANSACTION_dumpActivity = 25;
         static final int TRANSACTION_dumpCacheInfo = 36;
@@ -465,17 +478,17 @@ public interface IApplicationThread extends IInterface {
         static final int TRANSACTION_dumpProvider = 37;
         static final int TRANSACTION_dumpResources = 26;
         static final int TRANSACTION_dumpService = 13;
-        static final int TRANSACTION_forceGc = 64;
-        static final int TRANSACTION_getProfileLength = 65;
+        static final int TRANSACTION_getProfileLength = 66;
         static final int TRANSACTION_handleTrustStorageUpdate = 51;
-        static final int TRANSACTION_instrumentWithoutRestart = 60;
+        static final int TRANSACTION_instrumentWithoutRestart = 61;
         static final int TRANSACTION_notifyCleartextNetwork = 46;
-        static final int TRANSACTION_notifyContentProviderPublishStatus = 59;
-        static final int TRANSACTION_performDirectAction = 58;
+        static final int TRANSACTION_notifyContentProviderPublishStatus = 60;
+        static final int TRANSACTION_performDirectAction = 59;
         static final int TRANSACTION_processInBackground = 10;
         static final int TRANSACTION_profilerControl = 16;
+        static final int TRANSACTION_relaunchActivityIfWebViewAttached = 69;
         static final int TRANSACTION_requestAssistContextExtras = 40;
-        static final int TRANSACTION_requestDirectActions = 57;
+        static final int TRANSACTION_requestDirectActions = 58;
         static final int TRANSACTION_runIsolatedEntryPoint = 6;
         static final int TRANSACTION_scheduleApplicationInfoChanged = 54;
         static final int TRANSACTION_scheduleBindService = 11;
@@ -488,21 +501,23 @@ public interface IApplicationThread extends IInterface {
         static final int TRANSACTION_scheduleInstallProvider = 43;
         static final int TRANSACTION_scheduleLocalVoiceInteractionStarted = 50;
         static final int TRANSACTION_scheduleLowMemory = 15;
-        static final int TRANSACTION_scheduleOnNewActivityOptions = 20;
-        static final int TRANSACTION_schedulePing = 63;
+        static final int TRANSACTION_scheduleOnNewSceneTransitionInfo = 20;
+        static final int TRANSACTION_schedulePing = 65;
         static final int TRANSACTION_scheduleReceiver = 1;
         static final int TRANSACTION_scheduleReceiverList = 2;
         static final int TRANSACTION_scheduleRegisteredReceiver = 14;
         static final int TRANSACTION_scheduleServiceArgs = 8;
         static final int TRANSACTION_scheduleStopService = 4;
         static final int TRANSACTION_scheduleSuicide = 21;
-        static final int TRANSACTION_scheduleTimeoutService = 62;
+        static final int TRANSACTION_scheduleTaskFragmentTransaction = 57;
+        static final int TRANSACTION_scheduleTimeoutService = 63;
+        static final int TRANSACTION_scheduleTimeoutServiceForType = 64;
         static final int TRANSACTION_scheduleTransaction = 56;
         static final int TRANSACTION_scheduleTranslucentConversionComplete = 41;
         static final int TRANSACTION_scheduleTrimMemory = 32;
         static final int TRANSACTION_scheduleUnbindService = 12;
         static final int TRANSACTION_setCoreSettings = 30;
-        static final int TRANSACTION_setFlingerFlag = 66;
+        static final int TRANSACTION_setFlingerFlag = 67;
         static final int TRANSACTION_setHttpProxyInfo = 29;
         static final int TRANSACTION_setNetworkBlockSeq = 55;
         static final int TRANSACTION_setProcessState = 42;
@@ -515,7 +530,7 @@ public interface IApplicationThread extends IInterface {
         static final int TRANSACTION_updatePackageCompatibilityInfo = 31;
         static final int TRANSACTION_updateTimePrefs = 44;
         static final int TRANSACTION_updateTimeZone = 9;
-        static final int TRANSACTION_updateUiTranslationState = 61;
+        static final int TRANSACTION_updateUiTranslationState = 62;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
@@ -578,7 +593,7 @@ public interface IApplicationThread extends IInterface {
                 case 19:
                     return "scheduleDestroyBackupAgent";
                 case 20:
-                    return "scheduleOnNewActivityOptions";
+                    return "scheduleOnNewSceneTransitionInfo";
                 case 21:
                     return "scheduleSuicide";
                 case 22:
@@ -652,27 +667,31 @@ public interface IApplicationThread extends IInterface {
                 case 56:
                     return "scheduleTransaction";
                 case 57:
-                    return "requestDirectActions";
+                    return "scheduleTaskFragmentTransaction";
                 case 58:
-                    return "performDirectAction";
+                    return "requestDirectActions";
                 case 59:
-                    return "notifyContentProviderPublishStatus";
+                    return "performDirectAction";
                 case 60:
-                    return "instrumentWithoutRestart";
+                    return "notifyContentProviderPublishStatus";
                 case 61:
-                    return "updateUiTranslationState";
+                    return "instrumentWithoutRestart";
                 case 62:
-                    return "scheduleTimeoutService";
+                    return "updateUiTranslationState";
                 case 63:
-                    return "schedulePing";
+                    return "scheduleTimeoutService";
                 case 64:
-                    return "forceGc";
+                    return "scheduleTimeoutServiceForType";
                 case 65:
-                    return "getProfileLength";
+                    return "schedulePing";
                 case 66:
-                    return "setFlingerFlag";
+                    return "getProfileLength";
                 case 67:
+                    return "setFlingerFlag";
+                case 68:
                     return "clearIdsTrainingData";
+                case 69:
+                    return "relaunchActivityIfWebViewAttached";
                 default:
                     return null;
             }
@@ -688,466 +707,481 @@ public interface IApplicationThread extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    ActivityInfo _arg1 = (ActivityInfo) data.readTypedObject(ActivityInfo.CREATOR);
+                    CompatibilityInfo _arg2 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
+                    int _arg3 = data.readInt();
+                    String _arg4 = data.readString();
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    boolean _arg6 = data.readBoolean();
+                    boolean _arg7 = data.readBoolean();
+                    int _arg8 = data.readInt();
+                    int _arg9 = data.readInt();
+                    int _arg10 = data.readInt();
+                    String _arg11 = data.readString();
+                    data.enforceNoDataAvail();
+                    scheduleReceiver(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10, _arg11);
+                    return true;
+                case 2:
+                    List<ReceiverInfo> _arg02 = data.createTypedArrayList(ReceiverInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleReceiverList(_arg02);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    ServiceInfo _arg12 = (ServiceInfo) data.readTypedObject(ServiceInfo.CREATOR);
+                    CompatibilityInfo _arg22 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleCreateService(_arg03, _arg12, _arg22, _arg32);
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    scheduleStopService(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    ApplicationInfo _arg13 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
+                    String _arg23 = data.readString();
+                    String _arg33 = data.readString();
+                    boolean _arg42 = data.readBoolean();
+                    ProviderInfoList _arg52 = (ProviderInfoList) data.readTypedObject(ProviderInfoList.CREATOR);
+                    ComponentName _arg62 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    ProfilerInfo _arg72 = (ProfilerInfo) data.readTypedObject(ProfilerInfo.CREATOR);
+                    Bundle _arg82 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    IInstrumentationWatcher _arg92 = IInstrumentationWatcher.Stub.asInterface(data.readStrongBinder());
+                    IUiAutomationConnection _arg102 = IUiAutomationConnection.Stub.asInterface(data.readStrongBinder());
+                    int _arg112 = data.readInt();
+                    boolean _arg122 = data.readBoolean();
+                    boolean _arg132 = data.readBoolean();
+                    boolean _arg14 = data.readBoolean();
+                    boolean _arg15 = data.readBoolean();
+                    Configuration _arg16 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    CompatibilityInfo _arg17 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
+                    ClassLoader cl = getClass().getClassLoader();
+                    Map _arg18 = data.readHashMap(cl);
+                    Bundle _arg19 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg20 = data.readString();
+                    AutofillOptions _arg21 = (AutofillOptions) data.readTypedObject(AutofillOptions.CREATOR);
+                    ContentCaptureOptions _arg222 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
+                    long[] _arg232 = data.createLongArray();
+                    long[] _arg24 = data.createLongArray();
+                    SharedMemory _arg25 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
+                    long _arg26 = data.readLong();
+                    long _arg27 = data.readLong();
+                    boolean _arg28 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    bindApplication(_arg05, _arg13, _arg23, _arg33, _arg42, _arg52, _arg62, _arg72, _arg82, _arg92, _arg102, _arg112, _arg122, _arg132, _arg14, _arg15, _arg16, _arg17, _arg18, _arg19, _arg20, _arg21, _arg222, _arg232, _arg24, _arg25, _arg26, _arg27, _arg28);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String[] _arg110 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    runIsolatedEntryPoint(_arg06, _arg110);
+                    return true;
+                case 7:
+                    scheduleExit();
+                    return true;
+                case 8:
+                    IBinder _arg07 = data.readStrongBinder();
+                    ParceledListSlice _arg111 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleServiceArgs(_arg07, _arg111);
+                    return true;
+                case 9:
+                    updateTimeZone();
+                    return true;
+                case 10:
+                    processInBackground();
+                    return true;
+                case 11:
+                    IBinder _arg08 = data.readStrongBinder();
+                    Intent _arg113 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    boolean _arg29 = data.readBoolean();
+                    int _arg34 = data.readInt();
+                    long _arg43 = data.readLong();
+                    data.enforceNoDataAvail();
+                    scheduleBindService(_arg08, _arg113, _arg29, _arg34, _arg43);
+                    return true;
+                case 12:
+                    IBinder _arg09 = data.readStrongBinder();
+                    Intent _arg114 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleUnbindService(_arg09, _arg114);
+                    return true;
+                case 13:
+                    ParcelFileDescriptor _arg010 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    IBinder _arg115 = data.readStrongBinder();
+                    String[] _arg210 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpService(_arg010, _arg115, _arg210);
+                    return true;
+                case 14:
+                    IIntentReceiver _arg011 = IIntentReceiver.Stub.asInterface(data.readStrongBinder());
+                    Intent _arg116 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg211 = data.readInt();
+                    String _arg35 = data.readString();
+                    Bundle _arg44 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    boolean _arg53 = data.readBoolean();
+                    boolean _arg63 = data.readBoolean();
+                    boolean _arg73 = data.readBoolean();
+                    int _arg83 = data.readInt();
+                    int _arg93 = data.readInt();
+                    int _arg103 = data.readInt();
+                    String _arg117 = data.readString();
+                    data.enforceNoDataAvail();
+                    scheduleRegisteredReceiver(_arg011, _arg116, _arg211, _arg35, _arg44, _arg53, _arg63, _arg73, _arg83, _arg93, _arg103, _arg117);
+                    return true;
+                case 15:
+                    scheduleLowMemory();
+                    return true;
+                case 16:
+                    boolean _arg012 = data.readBoolean();
+                    ProfilerInfo _arg118 = (ProfilerInfo) data.readTypedObject(ProfilerInfo.CREATOR);
+                    int _arg212 = data.readInt();
+                    data.enforceNoDataAvail();
+                    profilerControl(_arg012, _arg118, _arg212);
+                    return true;
+                case 17:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSchedulingGroup(_arg013);
+                    return true;
+                case 18:
+                    ApplicationInfo _arg014 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
+                    int _arg119 = data.readInt();
+                    int _arg213 = data.readInt();
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleCreateBackupAgent(_arg014, _arg119, _arg213, _arg36);
+                    return true;
+                case 19:
+                    ApplicationInfo _arg015 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleDestroyBackupAgent(_arg015, _arg120);
+                    return true;
+                case 20:
+                    IBinder _arg016 = data.readStrongBinder();
+                    ActivityOptions.SceneTransitionInfo _arg121 = (ActivityOptions.SceneTransitionInfo) data.readTypedObject(ActivityOptions.SceneTransitionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleOnNewSceneTransitionInfo(_arg016, _arg121);
+                    return true;
+                case 21:
+                    scheduleSuicide();
+                    return true;
+                case 22:
+                    int _arg017 = data.readInt();
+                    String[] _arg123 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dispatchPackageBroadcast(_arg017, _arg123);
+                    return true;
+                case 23:
+                    String _arg018 = data.readString();
+                    int _arg124 = data.readInt();
+                    Bundle _arg214 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleCrash(_arg018, _arg124, _arg214);
+                    return true;
+                case 24:
+                    boolean _arg019 = data.readBoolean();
+                    boolean _arg125 = data.readBoolean();
+                    boolean _arg215 = data.readBoolean();
+                    String _arg37 = data.readString();
+                    String _arg45 = data.readString();
+                    ParcelFileDescriptor _arg54 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    RemoteCallback _arg64 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    dumpHeap(_arg019, _arg125, _arg215, _arg37, _arg45, _arg54, _arg64);
+                    return true;
+                case 25:
+                    ParcelFileDescriptor _arg020 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    IBinder _arg126 = data.readStrongBinder();
+                    String _arg216 = data.readString();
+                    String[] _arg38 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpActivity(_arg020, _arg126, _arg216, _arg38);
+                    return true;
+                case 26:
+                    ParcelFileDescriptor _arg021 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    RemoteCallback _arg127 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    dumpResources(_arg021, _arg127);
+                    return true;
+                case 27:
+                    clearDnsCache();
+                    return true;
+                case 28:
+                    updateHttpProxy();
+                    return true;
+                case 29:
+                    ProxyInfoWrapper _arg022 = (ProxyInfoWrapper) data.readTypedObject(ProxyInfoWrapper.CREATOR);
+                    data.enforceNoDataAvail();
+                    setHttpProxyInfo(_arg022);
+                    return true;
+                case 30:
+                    Bundle _arg023 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCoreSettings(_arg023);
+                    return true;
+                case 31:
+                    String _arg024 = data.readString();
+                    CompatibilityInfo _arg128 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updatePackageCompatibilityInfo(_arg024, _arg128);
+                    return true;
+                case 32:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleTrimMemory(_arg025);
+                    return true;
+                case 33:
+                    ParcelFileDescriptor _arg026 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    Debug.MemoryInfo _arg129 = (Debug.MemoryInfo) data.readTypedObject(Debug.MemoryInfo.CREATOR);
+                    boolean _arg217 = data.readBoolean();
+                    boolean _arg39 = data.readBoolean();
+                    boolean _arg46 = data.readBoolean();
+                    boolean _arg55 = data.readBoolean();
+                    boolean _arg65 = data.readBoolean();
+                    boolean _arg74 = data.readBoolean();
+                    String[] _arg84 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpMemInfo(_arg026, _arg129, _arg217, _arg39, _arg46, _arg55, _arg65, _arg74, _arg84);
+                    return true;
+                case 34:
+                    ParcelFileDescriptor _arg027 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    Debug.MemoryInfo _arg130 = (Debug.MemoryInfo) data.readTypedObject(Debug.MemoryInfo.CREATOR);
+                    boolean _arg218 = data.readBoolean();
+                    boolean _arg310 = data.readBoolean();
+                    boolean _arg47 = data.readBoolean();
+                    boolean _arg56 = data.readBoolean();
+                    String[] _arg66 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpMemInfoProto(_arg027, _arg130, _arg218, _arg310, _arg47, _arg56, _arg66);
+                    return true;
+                case 35:
+                    ParcelFileDescriptor _arg028 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    String[] _arg131 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpGfxInfo(_arg028, _arg131);
+                    return true;
+                case 36:
+                    ParcelFileDescriptor _arg029 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    String[] _arg133 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpCacheInfo(_arg029, _arg133);
+                    return true;
+                case 37:
+                    ParcelFileDescriptor _arg030 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    IBinder _arg134 = data.readStrongBinder();
+                    String[] _arg219 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpProvider(_arg030, _arg134, _arg219);
+                    return true;
+                case 38:
+                    ParcelFileDescriptor _arg031 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    String[] _arg135 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    dumpDbInfo(_arg031, _arg135);
+                    return true;
+                case 39:
+                    IBinder _arg032 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unstableProviderDied(_arg032);
+                    return true;
+                case 40:
+                    IBinder _arg033 = data.readStrongBinder();
+                    IBinder _arg136 = data.readStrongBinder();
+                    int _arg220 = data.readInt();
+                    int _arg311 = data.readInt();
+                    int _arg48 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestAssistContextExtras(_arg033, _arg136, _arg220, _arg311, _arg48);
+                    return true;
+                case 41:
+                    IBinder _arg034 = data.readStrongBinder();
+                    boolean _arg137 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    scheduleTranslucentConversionComplete(_arg034, _arg137);
+                    return true;
+                case 42:
+                    int _arg035 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setProcessState(_arg035);
+                    return true;
+                case 43:
+                    ProviderInfo _arg036 = (ProviderInfo) data.readTypedObject(ProviderInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleInstallProvider(_arg036);
+                    return true;
+                case 44:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateTimePrefs(_arg037);
+                    return true;
+                case 45:
+                    IBinder _arg038 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    scheduleEnterAnimationComplete(_arg038);
+                    return true;
+                case 46:
+                    byte[] _arg039 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    notifyCleartextNetwork(_arg039);
+                    return true;
+                case 47:
+                    startBinderTracking();
+                    return true;
+                case 48:
+                    ParcelFileDescriptor _arg040 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    stopBinderTrackingAndDump(_arg040);
+                    return true;
+                case 49:
+                    ParcelFileDescriptor _arg041 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    String _arg138 = data.readString();
+                    String _arg221 = data.readString();
+                    int _arg312 = data.readInt();
+                    int _arg49 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopBinderTrackingAndDumpSystemServer(_arg041, _arg138, _arg221, _arg312, _arg49);
+                    return true;
+                case 50:
+                    IBinder _arg042 = data.readStrongBinder();
+                    IVoiceInteractor _arg139 = IVoiceInteractor.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    scheduleLocalVoiceInteractionStarted(_arg042, _arg139);
+                    return true;
+                case 51:
+                    handleTrustStorageUpdate();
+                    return true;
+                case 52:
+                    String _arg043 = data.readString();
+                    data.enforceNoDataAvail();
+                    attachAgent(_arg043);
+                    return true;
+                case 53:
+                    String _arg044 = data.readString();
+                    data.enforceNoDataAvail();
+                    attachStartupAgents(_arg044);
+                    return true;
+                case 54:
+                    ApplicationInfo _arg045 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleApplicationInfoChanged(_arg045);
+                    return true;
+                case 55:
+                    long _arg046 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setNetworkBlockSeq(_arg046);
+                    return true;
+                case 56:
+                    ClientTransaction _arg047 = (ClientTransaction) data.readTypedObject(ClientTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleTransaction(_arg047);
+                    return true;
+                case 57:
+                    IBinder _arg048 = data.readStrongBinder();
+                    ITaskFragmentOrganizer _arg049 = ITaskFragmentOrganizer.Stub.asInterface(_arg048);
+                    TaskFragmentTransaction _arg140 = (TaskFragmentTransaction) data.readTypedObject(TaskFragmentTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    scheduleTaskFragmentTransaction(_arg049, _arg140);
+                    return true;
+                case 58:
+                    IBinder _arg050 = data.readStrongBinder();
+                    IVoiceInteractor _arg141 = IVoiceInteractor.Stub.asInterface(data.readStrongBinder());
+                    RemoteCallback _arg223 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    RemoteCallback _arg313 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestDirectActions(_arg050, _arg141, _arg223, _arg313);
+                    return true;
+                case 59:
+                    IBinder _arg051 = data.readStrongBinder();
+                    String _arg142 = data.readString();
+                    Bundle _arg224 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    RemoteCallback _arg314 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    RemoteCallback _arg410 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    performDirectAction(_arg051, _arg142, _arg224, _arg314, _arg410);
+                    return true;
+                case 60:
+                    ContentProviderHolder _arg052 = (ContentProviderHolder) data.readTypedObject(ContentProviderHolder.CREATOR);
+                    String _arg143 = data.readString();
+                    int _arg225 = data.readInt();
+                    boolean _arg315 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyContentProviderPublishStatus(_arg052, _arg143, _arg225, _arg315);
+                    return true;
+                case 61:
+                    ComponentName _arg053 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Bundle _arg144 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    IInstrumentationWatcher _arg226 = IInstrumentationWatcher.Stub.asInterface(data.readStrongBinder());
+                    IUiAutomationConnection _arg316 = IUiAutomationConnection.Stub.asInterface(data.readStrongBinder());
+                    ApplicationInfo _arg411 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    instrumentWithoutRestart(_arg053, _arg144, _arg226, _arg316, _arg411);
+                    return true;
+                case 62:
+                    IBinder _arg054 = data.readStrongBinder();
+                    int _arg145 = data.readInt();
+                    TranslationSpec _arg227 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
+                    TranslationSpec _arg317 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
+                    List<AutofillId> _arg412 = data.createTypedArrayList(AutofillId.CREATOR);
+                    UiTranslationSpec _arg57 = (UiTranslationSpec) data.readTypedObject(UiTranslationSpec.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateUiTranslationState(_arg054, _arg145, _arg227, _arg317, _arg412, _arg57);
+                    return true;
+                case 63:
+                    IBinder _arg055 = data.readStrongBinder();
+                    int _arg146 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleTimeoutService(_arg055, _arg146);
+                    return true;
+                case 64:
+                    IBinder _arg056 = data.readStrongBinder();
+                    int _arg147 = data.readInt();
+                    int _arg228 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleTimeoutServiceForType(_arg056, _arg147, _arg228);
+                    return true;
+                case 65:
+                    RemoteCallback _arg057 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    schedulePing(_arg057);
+                    return true;
+                case 66:
+                    String _arg058 = data.readString();
+                    data.enforceNoDataAvail();
+                    getProfileLength(_arg058);
+                    return true;
+                case 67:
+                    String _arg059 = data.readString();
+                    data.enforceNoDataAvail();
+                    setFlingerFlag(_arg059);
+                    return true;
+                case 68:
+                    boolean _arg060 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    clearIdsTrainingData(_arg060);
+                    return true;
+                case 69:
+                    IBinder _arg061 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    relaunchActivityIfWebViewAttached(_arg061);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            ActivityInfo _arg1 = (ActivityInfo) data.readTypedObject(ActivityInfo.CREATOR);
-                            CompatibilityInfo _arg2 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
-                            int _arg3 = data.readInt();
-                            String _arg4 = data.readString();
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            boolean _arg6 = data.readBoolean();
-                            boolean _arg7 = data.readBoolean();
-                            int _arg8 = data.readInt();
-                            int _arg9 = data.readInt();
-                            int _arg10 = data.readInt();
-                            String _arg11 = data.readString();
-                            data.enforceNoDataAvail();
-                            scheduleReceiver(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10, _arg11);
-                            return true;
-                        case 2:
-                            List<ReceiverInfo> _arg02 = data.createTypedArrayList(ReceiverInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleReceiverList(_arg02);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            ServiceInfo _arg12 = (ServiceInfo) data.readTypedObject(ServiceInfo.CREATOR);
-                            CompatibilityInfo _arg22 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scheduleCreateService(_arg03, _arg12, _arg22, _arg32);
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            scheduleStopService(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            ApplicationInfo _arg13 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
-                            String _arg23 = data.readString();
-                            String _arg33 = data.readString();
-                            ProviderInfoList _arg42 = (ProviderInfoList) data.readTypedObject(ProviderInfoList.CREATOR);
-                            ComponentName _arg52 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            ProfilerInfo _arg62 = (ProfilerInfo) data.readTypedObject(ProfilerInfo.CREATOR);
-                            Bundle _arg72 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            IInstrumentationWatcher _arg82 = IInstrumentationWatcher.Stub.asInterface(data.readStrongBinder());
-                            IUiAutomationConnection _arg92 = IUiAutomationConnection.Stub.asInterface(data.readStrongBinder());
-                            int _arg102 = data.readInt();
-                            boolean _arg112 = data.readBoolean();
-                            boolean _arg122 = data.readBoolean();
-                            boolean _arg132 = data.readBoolean();
-                            boolean _arg14 = data.readBoolean();
-                            Configuration _arg15 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            CompatibilityInfo _arg16 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
-                            ClassLoader cl = getClass().getClassLoader();
-                            Map _arg17 = data.readHashMap(cl);
-                            Bundle _arg18 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            float _arg19 = data.readFloat();
-                            String _arg20 = data.readString();
-                            AutofillOptions _arg21 = (AutofillOptions) data.readTypedObject(AutofillOptions.CREATOR);
-                            ContentCaptureOptions _arg222 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
-                            long[] _arg232 = data.createLongArray();
-                            SharedMemory _arg24 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
-                            long _arg25 = data.readLong();
-                            long _arg26 = data.readLong();
-                            int _arg27 = data.readInt();
-                            boolean _arg28 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            bindApplication(_arg05, _arg13, _arg23, _arg33, _arg42, _arg52, _arg62, _arg72, _arg82, _arg92, _arg102, _arg112, _arg122, _arg132, _arg14, _arg15, _arg16, _arg17, _arg18, _arg19, _arg20, _arg21, _arg222, _arg232, _arg24, _arg25, _arg26, _arg27, _arg28);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String[] _arg110 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            runIsolatedEntryPoint(_arg06, _arg110);
-                            return true;
-                        case 7:
-                            scheduleExit();
-                            return true;
-                        case 8:
-                            IBinder _arg07 = data.readStrongBinder();
-                            ParceledListSlice _arg111 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleServiceArgs(_arg07, _arg111);
-                            return true;
-                        case 9:
-                            updateTimeZone();
-                            return true;
-                        case 10:
-                            processInBackground();
-                            return true;
-                        case 11:
-                            IBinder _arg08 = data.readStrongBinder();
-                            Intent _arg113 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            boolean _arg29 = data.readBoolean();
-                            int _arg34 = data.readInt();
-                            long _arg43 = data.readLong();
-                            data.enforceNoDataAvail();
-                            scheduleBindService(_arg08, _arg113, _arg29, _arg34, _arg43);
-                            return true;
-                        case 12:
-                            IBinder _arg09 = data.readStrongBinder();
-                            Intent _arg114 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleUnbindService(_arg09, _arg114);
-                            return true;
-                        case 13:
-                            ParcelFileDescriptor _arg010 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            IBinder _arg115 = data.readStrongBinder();
-                            String[] _arg210 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpService(_arg010, _arg115, _arg210);
-                            return true;
-                        case 14:
-                            IIntentReceiver _arg011 = IIntentReceiver.Stub.asInterface(data.readStrongBinder());
-                            Intent _arg116 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg211 = data.readInt();
-                            String _arg35 = data.readString();
-                            Bundle _arg44 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            boolean _arg53 = data.readBoolean();
-                            boolean _arg63 = data.readBoolean();
-                            boolean _arg73 = data.readBoolean();
-                            int _arg83 = data.readInt();
-                            int _arg93 = data.readInt();
-                            int _arg103 = data.readInt();
-                            String _arg117 = data.readString();
-                            data.enforceNoDataAvail();
-                            scheduleRegisteredReceiver(_arg011, _arg116, _arg211, _arg35, _arg44, _arg53, _arg63, _arg73, _arg83, _arg93, _arg103, _arg117);
-                            return true;
-                        case 15:
-                            scheduleLowMemory();
-                            return true;
-                        case 16:
-                            boolean _arg012 = data.readBoolean();
-                            ProfilerInfo _arg118 = (ProfilerInfo) data.readTypedObject(ProfilerInfo.CREATOR);
-                            int _arg212 = data.readInt();
-                            data.enforceNoDataAvail();
-                            profilerControl(_arg012, _arg118, _arg212);
-                            return true;
-                        case 17:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSchedulingGroup(_arg013);
-                            return true;
-                        case 18:
-                            ApplicationInfo _arg014 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
-                            int _arg119 = data.readInt();
-                            int _arg213 = data.readInt();
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scheduleCreateBackupAgent(_arg014, _arg119, _arg213, _arg36);
-                            return true;
-                        case 19:
-                            ApplicationInfo _arg015 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scheduleDestroyBackupAgent(_arg015, _arg120);
-                            return true;
-                        case 20:
-                            IBinder _arg016 = data.readStrongBinder();
-                            Bundle _arg121 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleOnNewActivityOptions(_arg016, _arg121);
-                            return true;
-                        case 21:
-                            scheduleSuicide();
-                            return true;
-                        case 22:
-                            int _arg017 = data.readInt();
-                            String[] _arg123 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dispatchPackageBroadcast(_arg017, _arg123);
-                            return true;
-                        case 23:
-                            String _arg018 = data.readString();
-                            int _arg124 = data.readInt();
-                            Bundle _arg214 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleCrash(_arg018, _arg124, _arg214);
-                            return true;
-                        case 24:
-                            boolean _arg019 = data.readBoolean();
-                            boolean _arg125 = data.readBoolean();
-                            boolean _arg215 = data.readBoolean();
-                            String _arg37 = data.readString();
-                            ParcelFileDescriptor _arg45 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            RemoteCallback _arg54 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            dumpHeap(_arg019, _arg125, _arg215, _arg37, _arg45, _arg54);
-                            return true;
-                        case 25:
-                            ParcelFileDescriptor _arg020 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            IBinder _arg126 = data.readStrongBinder();
-                            String _arg216 = data.readString();
-                            String[] _arg38 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpActivity(_arg020, _arg126, _arg216, _arg38);
-                            return true;
-                        case 26:
-                            ParcelFileDescriptor _arg021 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            RemoteCallback _arg127 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            dumpResources(_arg021, _arg127);
-                            return true;
-                        case 27:
-                            clearDnsCache();
-                            return true;
-                        case 28:
-                            updateHttpProxy();
-                            return true;
-                        case 29:
-                            ProxyInfoWrapper _arg022 = (ProxyInfoWrapper) data.readTypedObject(ProxyInfoWrapper.CREATOR);
-                            data.enforceNoDataAvail();
-                            setHttpProxyInfo(_arg022);
-                            return true;
-                        case 30:
-                            Bundle _arg023 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCoreSettings(_arg023);
-                            return true;
-                        case 31:
-                            String _arg024 = data.readString();
-                            CompatibilityInfo _arg128 = (CompatibilityInfo) data.readTypedObject(CompatibilityInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updatePackageCompatibilityInfo(_arg024, _arg128);
-                            return true;
-                        case 32:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scheduleTrimMemory(_arg025);
-                            return true;
-                        case 33:
-                            ParcelFileDescriptor _arg026 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            Debug.MemoryInfo _arg129 = (Debug.MemoryInfo) data.readTypedObject(Debug.MemoryInfo.CREATOR);
-                            boolean _arg217 = data.readBoolean();
-                            boolean _arg39 = data.readBoolean();
-                            boolean _arg46 = data.readBoolean();
-                            boolean _arg55 = data.readBoolean();
-                            boolean _arg64 = data.readBoolean();
-                            String[] _arg74 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpMemInfo(_arg026, _arg129, _arg217, _arg39, _arg46, _arg55, _arg64, _arg74);
-                            return true;
-                        case 34:
-                            ParcelFileDescriptor _arg027 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            Debug.MemoryInfo _arg130 = (Debug.MemoryInfo) data.readTypedObject(Debug.MemoryInfo.CREATOR);
-                            boolean _arg218 = data.readBoolean();
-                            boolean _arg310 = data.readBoolean();
-                            boolean _arg47 = data.readBoolean();
-                            boolean _arg56 = data.readBoolean();
-                            String[] _arg65 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpMemInfoProto(_arg027, _arg130, _arg218, _arg310, _arg47, _arg56, _arg65);
-                            return true;
-                        case 35:
-                            ParcelFileDescriptor _arg028 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            String[] _arg131 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpGfxInfo(_arg028, _arg131);
-                            return true;
-                        case 36:
-                            ParcelFileDescriptor _arg029 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            String[] _arg133 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpCacheInfo(_arg029, _arg133);
-                            return true;
-                        case 37:
-                            ParcelFileDescriptor _arg030 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            IBinder _arg134 = data.readStrongBinder();
-                            String[] _arg219 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpProvider(_arg030, _arg134, _arg219);
-                            return true;
-                        case 38:
-                            ParcelFileDescriptor _arg031 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            String[] _arg135 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            dumpDbInfo(_arg031, _arg135);
-                            return true;
-                        case 39:
-                            IBinder _arg032 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unstableProviderDied(_arg032);
-                            return true;
-                        case 40:
-                            IBinder _arg033 = data.readStrongBinder();
-                            IBinder _arg136 = data.readStrongBinder();
-                            int _arg220 = data.readInt();
-                            int _arg311 = data.readInt();
-                            int _arg48 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestAssistContextExtras(_arg033, _arg136, _arg220, _arg311, _arg48);
-                            return true;
-                        case 41:
-                            IBinder _arg034 = data.readStrongBinder();
-                            boolean _arg137 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            scheduleTranslucentConversionComplete(_arg034, _arg137);
-                            return true;
-                        case 42:
-                            int _arg035 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setProcessState(_arg035);
-                            return true;
-                        case 43:
-                            ProviderInfo _arg036 = (ProviderInfo) data.readTypedObject(ProviderInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleInstallProvider(_arg036);
-                            return true;
-                        case 44:
-                            int _arg037 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateTimePrefs(_arg037);
-                            return true;
-                        case 45:
-                            IBinder _arg038 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            scheduleEnterAnimationComplete(_arg038);
-                            return true;
-                        case 46:
-                            byte[] _arg039 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            notifyCleartextNetwork(_arg039);
-                            return true;
-                        case 47:
-                            startBinderTracking();
-                            return true;
-                        case 48:
-                            ParcelFileDescriptor _arg040 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            stopBinderTrackingAndDump(_arg040);
-                            return true;
-                        case 49:
-                            ParcelFileDescriptor _arg041 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            String _arg138 = data.readString();
-                            String _arg221 = data.readString();
-                            int _arg312 = data.readInt();
-                            int _arg49 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopBinderTrackingAndDumpSystemServer(_arg041, _arg138, _arg221, _arg312, _arg49);
-                            return true;
-                        case 50:
-                            IBinder _arg042 = data.readStrongBinder();
-                            IVoiceInteractor _arg139 = IVoiceInteractor.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            scheduleLocalVoiceInteractionStarted(_arg042, _arg139);
-                            return true;
-                        case 51:
-                            handleTrustStorageUpdate();
-                            return true;
-                        case 52:
-                            String _arg043 = data.readString();
-                            data.enforceNoDataAvail();
-                            attachAgent(_arg043);
-                            return true;
-                        case 53:
-                            String _arg044 = data.readString();
-                            data.enforceNoDataAvail();
-                            attachStartupAgents(_arg044);
-                            return true;
-                        case 54:
-                            ApplicationInfo _arg045 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleApplicationInfoChanged(_arg045);
-                            return true;
-                        case 55:
-                            long _arg046 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setNetworkBlockSeq(_arg046);
-                            return true;
-                        case 56:
-                            ClientTransaction _arg047 = (ClientTransaction) data.readTypedObject(ClientTransaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            scheduleTransaction(_arg047);
-                            return true;
-                        case 57:
-                            IBinder _arg048 = data.readStrongBinder();
-                            IVoiceInteractor _arg140 = IVoiceInteractor.Stub.asInterface(data.readStrongBinder());
-                            RemoteCallback _arg223 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            RemoteCallback _arg313 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestDirectActions(_arg048, _arg140, _arg223, _arg313);
-                            return true;
-                        case 58:
-                            IBinder _arg049 = data.readStrongBinder();
-                            String _arg141 = data.readString();
-                            Bundle _arg224 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            RemoteCallback _arg314 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            RemoteCallback _arg410 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            performDirectAction(_arg049, _arg141, _arg224, _arg314, _arg410);
-                            return true;
-                        case 59:
-                            ContentProviderHolder _arg050 = (ContentProviderHolder) data.readTypedObject(ContentProviderHolder.CREATOR);
-                            String _arg142 = data.readString();
-                            int _arg225 = data.readInt();
-                            boolean _arg315 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyContentProviderPublishStatus(_arg050, _arg142, _arg225, _arg315);
-                            return true;
-                        case 60:
-                            ComponentName _arg051 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Bundle _arg143 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            IInstrumentationWatcher _arg226 = IInstrumentationWatcher.Stub.asInterface(data.readStrongBinder());
-                            IUiAutomationConnection _arg316 = IUiAutomationConnection.Stub.asInterface(data.readStrongBinder());
-                            ApplicationInfo _arg411 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            instrumentWithoutRestart(_arg051, _arg143, _arg226, _arg316, _arg411);
-                            return true;
-                        case 61:
-                            IBinder _arg052 = data.readStrongBinder();
-                            int _arg144 = data.readInt();
-                            TranslationSpec _arg227 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
-                            TranslationSpec _arg317 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
-                            List<AutofillId> _arg412 = data.createTypedArrayList(AutofillId.CREATOR);
-                            UiTranslationSpec _arg57 = (UiTranslationSpec) data.readTypedObject(UiTranslationSpec.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateUiTranslationState(_arg052, _arg144, _arg227, _arg317, _arg412, _arg57);
-                            return true;
-                        case 62:
-                            IBinder _arg053 = data.readStrongBinder();
-                            int _arg145 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scheduleTimeoutService(_arg053, _arg145);
-                            return true;
-                        case 63:
-                            RemoteCallback _arg054 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            schedulePing(_arg054);
-                            return true;
-                        case 64:
-                            forceGc();
-                            return true;
-                        case 65:
-                            String _arg055 = data.readString();
-                            data.enforceNoDataAvail();
-                            getProfileLength(_arg055);
-                            return true;
-                        case 66:
-                            String _arg056 = data.readString();
-                            data.enforceNoDataAvail();
-                            setFlingerFlag(_arg056);
-                            return true;
-                        case 67:
-                            boolean _arg057 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            clearIdsTrainingData(_arg057);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IApplicationThread {
+        private static class Proxy implements IApplicationThread {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1297,7 +1331,7 @@ public interface IApplicationThread extends IInterface {
             }
 
             @Override // android.app.IApplicationThread
-            public void bindApplication(String packageName, ApplicationInfo info, String sdkSandboxClientAppVolumeUuid, String sdkSandboxClientAppPackage, ProviderInfoList providerList, ComponentName testName, ProfilerInfo profilerInfo, Bundle testArguments, IInstrumentationWatcher testWatcher, IUiAutomationConnection uiAutomationConnection, int debugMode, boolean enableBinderTracking, boolean trackAllocation, boolean restrictedBackupMode, boolean persistent, Configuration config, CompatibilityInfo compatInfo, Map services, Bundle coreSettings, float dssScale, String buildSerial, AutofillOptions autofillOptions, ContentCaptureOptions contentCaptureOptions, long[] disabledCompatChanges, SharedMemory serializedSystemFontMap, long startRequestedElapsedTime, long startRequestedUptime, int processDisplayId, boolean fixedAppContextDisplay) throws RemoteException {
+            public void bindApplication(String packageName, ApplicationInfo info, String sdkSandboxClientAppVolumeUuid, String sdkSandboxClientAppPackage, boolean isSdkInSandbox, ProviderInfoList providerList, ComponentName testName, ProfilerInfo profilerInfo, Bundle testArguments, IInstrumentationWatcher testWatcher, IUiAutomationConnection uiAutomationConnection, int debugMode, boolean enableBinderTracking, boolean trackAllocation, boolean restrictedBackupMode, boolean persistent, Configuration config, CompatibilityInfo compatInfo, Map services, Bundle coreSettings, String buildSerial, AutofillOptions autofillOptions, ContentCaptureOptions contentCaptureOptions, long[] disabledCompatChanges, long[] loggableCompatChanges, SharedMemory serializedSystemFontMap, long startRequestedElapsedTime, long startRequestedUptime, boolean fixedAppContextDisplay) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
@@ -1315,51 +1349,51 @@ public interface IApplicationThread extends IInterface {
                     throw th;
                 }
                 try {
-                    _data.writeTypedObject(providerList, 0);
+                    _data.writeBoolean(isSdkInSandbox);
                     try {
-                        _data.writeTypedObject(testName, 0);
+                        _data.writeTypedObject(providerList, 0);
                     } catch (Throwable th3) {
                         th = th3;
                         _data.recycle();
                         throw th;
                     }
                     try {
-                        _data.writeTypedObject(profilerInfo, 0);
+                        _data.writeTypedObject(testName, 0);
                     } catch (Throwable th4) {
                         th = th4;
                         _data.recycle();
                         throw th;
                     }
                     try {
-                        _data.writeTypedObject(testArguments, 0);
+                        _data.writeTypedObject(profilerInfo, 0);
                     } catch (Throwable th5) {
                         th = th5;
                         _data.recycle();
                         throw th;
                     }
                     try {
-                        _data.writeStrongInterface(testWatcher);
+                        _data.writeTypedObject(testArguments, 0);
                     } catch (Throwable th6) {
                         th = th6;
                         _data.recycle();
                         throw th;
                     }
                     try {
-                        _data.writeStrongInterface(uiAutomationConnection);
+                        _data.writeStrongInterface(testWatcher);
                     } catch (Throwable th7) {
                         th = th7;
                         _data.recycle();
                         throw th;
                     }
                     try {
-                        _data.writeInt(debugMode);
+                        _data.writeStrongInterface(uiAutomationConnection);
                     } catch (Throwable th8) {
                         th = th8;
                         _data.recycle();
                         throw th;
                     }
                     try {
-                        _data.writeBoolean(enableBinderTracking);
+                        _data.writeInt(debugMode);
                     } catch (Throwable th9) {
                         th = th9;
                         _data.recycle();
@@ -1371,23 +1405,23 @@ public interface IApplicationThread extends IInterface {
                     throw th;
                 }
                 try {
-                    _data.writeBoolean(trackAllocation);
+                    _data.writeBoolean(enableBinderTracking);
                     try {
+                        _data.writeBoolean(trackAllocation);
                         _data.writeBoolean(restrictedBackupMode);
                         _data.writeBoolean(persistent);
                         _data.writeTypedObject(config, 0);
                         _data.writeTypedObject(compatInfo, 0);
                         _data.writeMap(services);
                         _data.writeTypedObject(coreSettings, 0);
-                        _data.writeFloat(dssScale);
                         _data.writeString(buildSerial);
                         _data.writeTypedObject(autofillOptions, 0);
                         _data.writeTypedObject(contentCaptureOptions, 0);
                         _data.writeLongArray(disabledCompatChanges);
+                        _data.writeLongArray(loggableCompatChanges);
                         _data.writeTypedObject(serializedSystemFontMap, 0);
                         _data.writeLong(startRequestedElapsedTime);
                         _data.writeLong(startRequestedUptime);
-                        _data.writeInt(processDisplayId);
                         _data.writeBoolean(fixedAppContextDisplay);
                         this.mRemote.transact(5, _data, null, 1);
                         _data.recycle();
@@ -1659,12 +1693,12 @@ public interface IApplicationThread extends IInterface {
             }
 
             @Override // android.app.IApplicationThread
-            public void scheduleOnNewActivityOptions(IBinder token, Bundle options) throws RemoteException {
+            public void scheduleOnNewSceneTransitionInfo(IBinder token, ActivityOptions.SceneTransitionInfo info) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
-                    _data.writeTypedObject(options, 0);
+                    _data.writeTypedObject(info, 0);
                     this.mRemote.transact(20, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -1710,13 +1744,14 @@ public interface IApplicationThread extends IInterface {
             }
 
             @Override // android.app.IApplicationThread
-            public void dumpHeap(boolean managed, boolean mallocInfo, boolean runGc, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
+            public void dumpHeap(boolean managed, boolean mallocInfo, boolean runGc, String dumpBitmaps, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(managed);
                     _data.writeBoolean(mallocInfo);
                     _data.writeBoolean(runGc);
+                    _data.writeString(dumpBitmaps);
                     _data.writeString(path);
                     _data.writeTypedObject(fd, 0);
                     _data.writeTypedObject(finishCallback, 0);
@@ -1826,7 +1861,7 @@ public interface IApplicationThread extends IInterface {
             }
 
             @Override // android.app.IApplicationThread
-            public void dumpMemInfo(ParcelFileDescriptor fd, Debug.MemoryInfo mem, boolean checkin, boolean dumpInfo, boolean dumpDalvik, boolean dumpSummaryOnly, boolean dumpUnreachable, String[] args) throws RemoteException {
+            public void dumpMemInfo(ParcelFileDescriptor fd, Debug.MemoryInfo mem, boolean checkin, boolean dumpInfo, boolean dumpDalvik, boolean dumpSummaryOnly, boolean dumpUnreachable, boolean dumpAllocatorLogs, String[] args) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
@@ -1837,6 +1872,7 @@ public interface IApplicationThread extends IInterface {
                     _data.writeBoolean(dumpDalvik);
                     _data.writeBoolean(dumpSummaryOnly);
                     _data.writeBoolean(dumpUnreachable);
+                    _data.writeBoolean(dumpAllocatorLogs);
                     _data.writeStringArray(args);
                     this.mRemote.transact(33, _data, null, 1);
                 } finally {
@@ -2140,6 +2176,19 @@ public interface IApplicationThread extends IInterface {
             }
 
             @Override // android.app.IApplicationThread
+            public void scheduleTaskFragmentTransaction(ITaskFragmentOrganizer organizer, TaskFragmentTransaction transaction) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(organizer);
+                    _data.writeTypedObject(transaction, 0);
+                    this.mRemote.transact(57, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IApplicationThread
             public void requestDirectActions(IBinder activityToken, IVoiceInteractor intractor, RemoteCallback cancellationCallback, RemoteCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
@@ -2148,7 +2197,7 @@ public interface IApplicationThread extends IInterface {
                     _data.writeStrongInterface(intractor);
                     _data.writeTypedObject(cancellationCallback, 0);
                     _data.writeTypedObject(callback, 0);
-                    this.mRemote.transact(57, _data, null, 1);
+                    this.mRemote.transact(58, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2164,7 +2213,7 @@ public interface IApplicationThread extends IInterface {
                     _data.writeTypedObject(arguments, 0);
                     _data.writeTypedObject(cancellationCallback, 0);
                     _data.writeTypedObject(resultCallback, 0);
-                    this.mRemote.transact(58, _data, null, 1);
+                    this.mRemote.transact(59, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2179,7 +2228,7 @@ public interface IApplicationThread extends IInterface {
                     _data.writeString(authorities);
                     _data.writeInt(userId);
                     _data.writeBoolean(published);
-                    this.mRemote.transact(59, _data, null, 1);
+                    this.mRemote.transact(60, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2195,7 +2244,7 @@ public interface IApplicationThread extends IInterface {
                     _data.writeStrongInterface(instrumentationWatcher);
                     _data.writeStrongInterface(instrumentationUiConnection);
                     _data.writeTypedObject(targetInfo, 0);
-                    this.mRemote.transact(60, _data, null, 1);
+                    this.mRemote.transact(61, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2212,7 +2261,7 @@ public interface IApplicationThread extends IInterface {
                     _data.writeTypedObject(targetSpec, 0);
                     _data.writeTypedList(viewIds, 0);
                     _data.writeTypedObject(uiTranslationSpec, 0);
-                    this.mRemote.transact(61, _data, null, 1);
+                    this.mRemote.transact(62, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2225,7 +2274,21 @@ public interface IApplicationThread extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeInt(startId);
-                    this.mRemote.transact(62, _data, null, 1);
+                    this.mRemote.transact(63, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IApplicationThread
+            public void scheduleTimeoutServiceForType(IBinder token, int startId, int fgsType) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongBinder(token);
+                    _data.writeInt(startId);
+                    _data.writeInt(fgsType);
+                    this.mRemote.transact(64, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2237,18 +2300,7 @@ public interface IApplicationThread extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(pong, 0);
-                    this.mRemote.transact(63, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IApplicationThread
-            public void forceGc() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(64, _data, null, 1);
+                    this.mRemote.transact(65, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2260,7 +2312,7 @@ public interface IApplicationThread extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(pkgName);
-                    this.mRemote.transact(65, _data, null, 1);
+                    this.mRemote.transact(66, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2272,7 +2324,7 @@ public interface IApplicationThread extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(pkgName);
-                    this.mRemote.transact(66, _data, null, 1);
+                    this.mRemote.transact(67, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2284,7 +2336,19 @@ public interface IApplicationThread extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(flag);
-                    this.mRemote.transact(67, _data, null, 1);
+                    this.mRemote.transact(68, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IApplicationThread
+            public void relaunchActivityIfWebViewAttached(IBinder token) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongBinder(token);
+                    this.mRemote.transact(69, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2293,7 +2357,7 @@ public interface IApplicationThread extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 66;
+            return 68;
         }
     }
 }

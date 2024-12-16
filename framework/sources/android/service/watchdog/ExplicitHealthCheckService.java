@@ -31,7 +31,7 @@ public abstract class ExplicitHealthCheckService extends Service {
     private static final String TAG = "ExplicitHealthCheckService";
     private RemoteCallback mCallback;
     private final ExplicitHealthCheckServiceWrapper mWrapper = new ExplicitHealthCheckServiceWrapper();
-    private final Handler mHandler = new Handler(Looper.getMainLooper(), null, true);
+    private final Handler mHandler = Handler.createAsync(Looper.getMainLooper());
 
     public abstract void onCancelHealthCheck(String str);
 
@@ -59,6 +59,7 @@ public abstract class ExplicitHealthCheckService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyHealthCheckPassed$0(String packageName) {
         if (this.mCallback != null) {
             Objects.requireNonNull(packageName, "Package passing explicit health check must be non-null");
@@ -71,29 +72,23 @@ public abstract class ExplicitHealthCheckService extends Service {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class PackageConfig implements Parcelable {
         private final long mHealthCheckTimeoutMillis;
         private final String mPackageName;
         private static final long DEFAULT_HEALTH_CHECK_TIMEOUT_MILLIS = TimeUnit.HOURS.toMillis(1);
         public static final Parcelable.Creator<PackageConfig> CREATOR = new Parcelable.Creator<PackageConfig>() { // from class: android.service.watchdog.ExplicitHealthCheckService.PackageConfig.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PackageConfig createFromParcel(Parcel source) {
                 return new PackageConfig(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PackageConfig[] newArray(int size) {
                 return new PackageConfig[size];
             }
         };
-
-        /* synthetic */ PackageConfig(Parcel parcel, PackageConfigIA packageConfigIA) {
-            this(parcel);
-        }
 
         public PackageConfig(String packageName, long healthCheckTimeoutMillis) {
             this.mPackageName = (String) Preconditions.checkNotNull(packageName);
@@ -146,31 +141,10 @@ public abstract class ExplicitHealthCheckService extends Service {
             parcel.writeString(this.mPackageName);
             parcel.writeLong(this.mHealthCheckTimeoutMillis);
         }
-
-        /* renamed from: android.service.watchdog.ExplicitHealthCheckService$PackageConfig$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<PackageConfig> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PackageConfig createFromParcel(Parcel source) {
-                return new PackageConfig(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PackageConfig[] newArray(int size) {
-                return new PackageConfig[size];
-            }
-        }
     }
 
-    /* loaded from: classes3.dex */
-    public class ExplicitHealthCheckServiceWrapper extends IExplicitHealthCheckService.Stub {
-        /* synthetic */ ExplicitHealthCheckServiceWrapper(ExplicitHealthCheckService explicitHealthCheckService, ExplicitHealthCheckServiceWrapperIA explicitHealthCheckServiceWrapperIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class ExplicitHealthCheckServiceWrapper extends IExplicitHealthCheckService.Stub {
         private ExplicitHealthCheckServiceWrapper() {
         }
 
@@ -184,17 +158,19 @@ public abstract class ExplicitHealthCheckService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setCallback$0(RemoteCallback callback) {
             ExplicitHealthCheckService.this.mCallback = callback;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$request$1(String packageName) {
             ExplicitHealthCheckService.this.onRequestHealthCheck(packageName);
         }
 
         @Override // android.service.watchdog.IExplicitHealthCheckService
         public void request(final String packageName) throws RemoteException {
-            ExplicitHealthCheckService.this.mHandler.post(new Runnable() { // from class: android.service.watchdog.ExplicitHealthCheckService$ExplicitHealthCheckServiceWrapper$$ExternalSyntheticLambda1
+            ExplicitHealthCheckService.this.mHandler.post(new Runnable() { // from class: android.service.watchdog.ExplicitHealthCheckService$ExplicitHealthCheckServiceWrapper$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExplicitHealthCheckService.ExplicitHealthCheckServiceWrapper.this.lambda$request$1(packageName);
@@ -202,6 +178,7 @@ public abstract class ExplicitHealthCheckService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$cancel$2(String packageName) {
             ExplicitHealthCheckService.this.onCancelHealthCheck(packageName);
         }
@@ -218,7 +195,7 @@ public abstract class ExplicitHealthCheckService extends Service {
 
         @Override // android.service.watchdog.IExplicitHealthCheckService
         public void getSupportedPackages(final RemoteCallback callback) throws RemoteException {
-            ExplicitHealthCheckService.this.mHandler.post(new Runnable() { // from class: android.service.watchdog.ExplicitHealthCheckService$ExplicitHealthCheckServiceWrapper$$ExternalSyntheticLambda3
+            ExplicitHealthCheckService.this.mHandler.post(new Runnable() { // from class: android.service.watchdog.ExplicitHealthCheckService$ExplicitHealthCheckServiceWrapper$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExplicitHealthCheckService.ExplicitHealthCheckServiceWrapper.this.lambda$getSupportedPackages$3(callback);
@@ -226,6 +203,7 @@ public abstract class ExplicitHealthCheckService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getSupportedPackages$3(RemoteCallback callback) {
             List<PackageConfig> packages = ExplicitHealthCheckService.this.onGetSupportedPackages();
             Objects.requireNonNull(packages, "Supported package list must be non-null");
@@ -236,7 +214,7 @@ public abstract class ExplicitHealthCheckService extends Service {
 
         @Override // android.service.watchdog.IExplicitHealthCheckService
         public void getRequestedPackages(final RemoteCallback callback) throws RemoteException {
-            ExplicitHealthCheckService.this.mHandler.post(new Runnable() { // from class: android.service.watchdog.ExplicitHealthCheckService$ExplicitHealthCheckServiceWrapper$$ExternalSyntheticLambda4
+            ExplicitHealthCheckService.this.mHandler.post(new Runnable() { // from class: android.service.watchdog.ExplicitHealthCheckService$ExplicitHealthCheckServiceWrapper$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExplicitHealthCheckService.ExplicitHealthCheckServiceWrapper.this.lambda$getRequestedPackages$4(callback);
@@ -244,6 +222,7 @@ public abstract class ExplicitHealthCheckService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getRequestedPackages$4(RemoteCallback callback) {
             List<String> packages = ExplicitHealthCheckService.this.onGetRequestedPackages();
             Objects.requireNonNull(packages, "Requested  package list must be non-null");

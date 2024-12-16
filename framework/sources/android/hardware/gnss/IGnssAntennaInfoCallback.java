@@ -21,7 +21,6 @@ public interface IGnssAntennaInfoCallback extends IInterface {
 
     void gnssAntennaInfoCb(GnssAntennaInfo[] gnssAntennaInfoArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssAntennaInfoCallback {
         @Override // android.hardware.gnss.IGnssAntennaInfoCallback
         public void gnssAntennaInfoCb(GnssAntennaInfo[] gnssAntennaInfos) throws RemoteException {
@@ -43,7 +42,6 @@ public interface IGnssAntennaInfoCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssAntennaInfoCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -94,35 +92,32 @@ public interface IGnssAntennaInfoCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            GnssAntennaInfo[] _arg0 = (GnssAntennaInfo[]) data.createTypedArray(GnssAntennaInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssAntennaInfoCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    GnssAntennaInfo[] _arg0 = (GnssAntennaInfo[]) data.createTypedArray(GnssAntennaInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssAntennaInfoCb(_arg0);
+                    reply.writeNoException();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssAntennaInfoCallback {
+        private static class Proxy implements IGnssAntennaInfoCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -204,12 +199,9 @@ public interface IGnssAntennaInfoCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Row implements Parcelable {
         public static final Parcelable.Creator<Row> CREATOR = new Parcelable.Creator<Row>() { // from class: android.hardware.gnss.IGnssAntennaInfoCallback.Row.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Row createFromParcel(Parcel _aidl_source) {
                 Row _aidl_out = new Row();
@@ -217,31 +209,13 @@ public interface IGnssAntennaInfoCallback extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Row[] newArray(int _aidl_size) {
                 return new Row[_aidl_size];
             }
         };
         public double[] row;
-
-        /* renamed from: android.hardware.gnss.IGnssAntennaInfoCallback$Row$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Row> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Row createFromParcel(Parcel _aidl_source) {
-                Row _aidl_out = new Row();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Row[] newArray(int _aidl_size) {
-                return new Row[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {
@@ -293,12 +267,9 @@ public interface IGnssAntennaInfoCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Coord implements Parcelable {
         public static final Parcelable.Creator<Coord> CREATOR = new Parcelable.Creator<Coord>() { // from class: android.hardware.gnss.IGnssAntennaInfoCallback.Coord.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Coord createFromParcel(Parcel _aidl_source) {
                 Coord _aidl_out = new Coord();
@@ -306,6 +277,7 @@ public interface IGnssAntennaInfoCallback extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Coord[] newArray(int _aidl_size) {
                 return new Coord[_aidl_size];
@@ -317,25 +289,6 @@ public interface IGnssAntennaInfoCallback extends IInterface {
         public double yUncertainty = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         public double z = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         public double zUncertainty = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-
-        /* renamed from: android.hardware.gnss.IGnssAntennaInfoCallback$Coord$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Coord> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Coord createFromParcel(Parcel _aidl_source) {
-                Coord _aidl_out = new Coord();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Coord[] newArray(int _aidl_size) {
-                return new Coord[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {
@@ -432,12 +385,9 @@ public interface IGnssAntennaInfoCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class GnssAntennaInfo implements Parcelable {
         public static final Parcelable.Creator<GnssAntennaInfo> CREATOR = new Parcelable.Creator<GnssAntennaInfo>() { // from class: android.hardware.gnss.IGnssAntennaInfoCallback.GnssAntennaInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssAntennaInfo createFromParcel(Parcel _aidl_source) {
                 GnssAntennaInfo _aidl_out = new GnssAntennaInfo();
@@ -445,6 +395,7 @@ public interface IGnssAntennaInfoCallback extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssAntennaInfo[] newArray(int _aidl_size) {
                 return new GnssAntennaInfo[_aidl_size];
@@ -456,25 +407,6 @@ public interface IGnssAntennaInfoCallback extends IInterface {
         public Row[] phaseCenterVariationCorrectionUncertaintyMillimeters;
         public Row[] signalGainCorrectionDbi;
         public Row[] signalGainCorrectionUncertaintyDbi;
-
-        /* renamed from: android.hardware.gnss.IGnssAntennaInfoCallback$GnssAntennaInfo$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<GnssAntennaInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssAntennaInfo createFromParcel(Parcel _aidl_source) {
-                GnssAntennaInfo _aidl_out = new GnssAntennaInfo();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssAntennaInfo[] newArray(int _aidl_size) {
-                return new GnssAntennaInfo[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

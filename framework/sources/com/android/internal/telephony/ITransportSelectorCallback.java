@@ -7,7 +7,6 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.internal.telephony.IDomainSelector;
 import com.android.internal.telephony.ITransportSelectorResultCallback;
-import com.android.internal.telephony.IWwanSelectorCallback;
 
 /* loaded from: classes5.dex */
 public interface ITransportSelectorCallback extends IInterface {
@@ -19,11 +18,8 @@ public interface ITransportSelectorCallback extends IInterface {
 
     void onWlanSelected(boolean z) throws RemoteException;
 
-    IWwanSelectorCallback onWwanSelected() throws RemoteException;
-
     void onWwanSelectedAsync(ITransportSelectorResultCallback iTransportSelectorResultCallback) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ITransportSelectorCallback {
         @Override // com.android.internal.telephony.ITransportSelectorCallback
         public void onCreated(IDomainSelector selector) throws RemoteException {
@@ -31,11 +27,6 @@ public interface ITransportSelectorCallback extends IInterface {
 
         @Override // com.android.internal.telephony.ITransportSelectorCallback
         public void onWlanSelected(boolean useEmergencyPdn) throws RemoteException {
-        }
-
-        @Override // com.android.internal.telephony.ITransportSelectorCallback
-        public IWwanSelectorCallback onWwanSelected() throws RemoteException {
-            return null;
         }
 
         @Override // com.android.internal.telephony.ITransportSelectorCallback
@@ -52,13 +43,11 @@ public interface ITransportSelectorCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ITransportSelectorCallback {
         static final int TRANSACTION_onCreated = 1;
-        static final int TRANSACTION_onSelectionTerminated = 5;
+        static final int TRANSACTION_onSelectionTerminated = 4;
         static final int TRANSACTION_onWlanSelected = 2;
-        static final int TRANSACTION_onWwanSelected = 3;
-        static final int TRANSACTION_onWwanSelectedAsync = 4;
+        static final int TRANSACTION_onWwanSelectedAsync = 3;
 
         public Stub() {
             attachInterface(this, ITransportSelectorCallback.DESCRIPTOR);
@@ -87,10 +76,8 @@ public interface ITransportSelectorCallback extends IInterface {
                 case 2:
                     return "onWlanSelected";
                 case 3:
-                    return "onWwanSelected";
-                case 4:
                     return "onWwanSelectedAsync";
-                case 5:
+                case 4:
                     return "onSelectionTerminated";
                 default:
                     return null;
@@ -107,46 +94,37 @@ public interface ITransportSelectorCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITransportSelectorCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITransportSelectorCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITransportSelectorCallback.DESCRIPTOR);
+                case 1:
+                    IDomainSelector _arg0 = IDomainSelector.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCreated(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onWlanSelected(_arg02);
+                    return true;
+                case 3:
+                    ITransportSelectorResultCallback _arg03 = ITransportSelectorResultCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onWwanSelectedAsync(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSelectionTerminated(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IDomainSelector _arg0 = IDomainSelector.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCreated(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onWlanSelected(_arg02);
-                            return true;
-                        case 3:
-                            IWwanSelectorCallback _result = onWwanSelected();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 4:
-                            ITransportSelectorResultCallback _arg03 = ITransportSelectorResultCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onWwanSelectedAsync(_arg03);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSelectionTerminated(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ITransportSelectorCallback {
+        private static class Proxy implements ITransportSelectorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -187,28 +165,12 @@ public interface ITransportSelectorCallback extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITransportSelectorCallback
-            public IWwanSelectorCallback onWwanSelected() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ITransportSelectorCallback.DESCRIPTOR);
-                    this.mRemote.transact(3, _data, _reply, 0);
-                    _reply.readException();
-                    IWwanSelectorCallback _result = IWwanSelectorCallback.Stub.asInterface(_reply.readStrongBinder());
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.telephony.ITransportSelectorCallback
             public void onWwanSelectedAsync(ITransportSelectorResultCallback cb) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ITransportSelectorCallback.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(3, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -220,7 +182,7 @@ public interface ITransportSelectorCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(ITransportSelectorCallback.DESCRIPTOR);
                     _data.writeInt(cause);
-                    this.mRemote.transact(5, _data, null, 1);
+                    this.mRemote.transact(4, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -229,7 +191,7 @@ public interface ITransportSelectorCallback extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 4;
+            return 3;
         }
     }
 }

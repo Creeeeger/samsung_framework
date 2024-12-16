@@ -28,9 +28,8 @@ public class MediaRouteActionProvider extends ActionProvider {
     }
 
     public void setRouteTypes(int types) {
-        int i = this.mRouteTypes;
-        if (i != types) {
-            if (i != 0) {
+        if (this.mRouteTypes != types) {
+            if (this.mRouteTypes != 0) {
                 this.mRouter.removeCallback(this.mCallback);
             }
             this.mRouteTypes = types;
@@ -38,18 +37,16 @@ public class MediaRouteActionProvider extends ActionProvider {
                 this.mRouter.addCallback(types, this.mCallback, 8);
             }
             refreshRoute();
-            MediaRouteButton mediaRouteButton = this.mButton;
-            if (mediaRouteButton != null) {
-                mediaRouteButton.setRouteTypes(this.mRouteTypes);
+            if (this.mButton != null) {
+                this.mButton.setRouteTypes(this.mRouteTypes);
             }
         }
     }
 
     public void setExtendedSettingsClickListener(View.OnClickListener listener) {
         this.mExtendedSettingsListener = listener;
-        MediaRouteButton mediaRouteButton = this.mButton;
-        if (mediaRouteButton != null) {
-            mediaRouteButton.setExtendedSettingsClickListener(listener);
+        if (this.mButton != null) {
+            this.mButton.setExtendedSettingsClickListener(listener);
         }
     }
 
@@ -63,9 +60,8 @@ public class MediaRouteActionProvider extends ActionProvider {
         if (this.mButton != null) {
             Log.e(TAG, "onCreateActionView: this ActionProvider is already associated with a menu item. Don't reuse MediaRouteActionProvider instances! Abandoning the old one...");
         }
-        MediaRouteButton mediaRouteButton = new MediaRouteButton(this.mContext);
-        this.mButton = mediaRouteButton;
-        mediaRouteButton.setRouteTypes(this.mRouteTypes);
+        this.mButton = new MediaRouteButton(this.mContext);
+        this.mButton.setRouteTypes(this.mRouteTypes);
         this.mButton.setExtendedSettingsClickListener(this.mExtendedSettingsListener);
         this.mButton.setLayoutParams(new ViewGroup.LayoutParams(-2, -1));
         return this.mButton;
@@ -73,9 +69,8 @@ public class MediaRouteActionProvider extends ActionProvider {
 
     @Override // android.view.ActionProvider
     public boolean onPerformDefaultAction() {
-        MediaRouteButton mediaRouteButton = this.mButton;
-        if (mediaRouteButton != null) {
-            return mediaRouteButton.showDialogInternal();
+        if (this.mButton != null) {
+            return this.mButton.showDialogInternal();
         }
         return false;
     }
@@ -90,12 +85,12 @@ public class MediaRouteActionProvider extends ActionProvider {
         return this.mRouter.isRouteAvailable(this.mRouteTypes, 1);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void refreshRoute() {
         refreshVisibility();
     }
 
-    /* loaded from: classes.dex */
-    public static class MediaRouterCallback extends MediaRouter.SimpleCallback {
+    private static class MediaRouterCallback extends MediaRouter.SimpleCallback {
         private final WeakReference<MediaRouteActionProvider> mProviderWeak;
 
         public MediaRouterCallback(MediaRouteActionProvider provider) {

@@ -3,7 +3,7 @@ package android.speech.tts;
 import android.os.SystemClock;
 
 /* loaded from: classes3.dex */
-public abstract class AbstractEventLogger {
+abstract class AbstractEventLogger {
     protected final int mCallerPid;
     protected final int mCallerUid;
     protected final String mServiceApp;
@@ -18,7 +18,7 @@ public abstract class AbstractEventLogger {
 
     protected abstract void logSuccess(long j, long j2, long j3);
 
-    public AbstractEventLogger(int callerUid, int callerPid, String serviceApp) {
+    AbstractEventLogger(int callerUid, int callerPid, String serviceApp) {
         this.mCallerUid = callerUid;
         this.mCallerPid = callerPid;
         this.mServiceApp = serviceApp;

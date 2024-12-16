@@ -27,11 +27,7 @@ public class FrameFetch extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void setupPorts() {
-        FrameFormat frameFormat = this.mFormat;
-        if (frameFormat == null) {
-            frameFormat = FrameFormat.unspecified();
-        }
-        addOutputPort("frame", frameFormat);
+        addOutputPort("frame", this.mFormat == null ? FrameFormat.unspecified() : this.mFormat);
     }
 
     @Override // android.filterfw.core.Filter

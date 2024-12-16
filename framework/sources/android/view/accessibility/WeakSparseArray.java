@@ -5,11 +5,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-public final class WeakSparseArray<E> {
+final class WeakSparseArray<E> {
     private final ReferenceQueue<E> mRefQueue = new ReferenceQueue<>();
     private final SparseArray<WeakReferenceWithId<E>> mSparseArray = new SparseArray<>();
+
+    WeakSparseArray() {
+    }
 
     public void append(int key, E value) {
         removeUnreachableValues();
@@ -38,8 +40,7 @@ public final class WeakSparseArray<E> {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class WeakReferenceWithId<E> extends WeakReference<E> {
+    private static class WeakReferenceWithId<E> extends WeakReference<E> {
         final int mId;
 
         WeakReferenceWithId(E referent, ReferenceQueue<? super E> q, int id) {

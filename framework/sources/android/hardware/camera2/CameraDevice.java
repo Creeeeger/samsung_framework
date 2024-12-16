@@ -13,8 +13,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class CameraDevice implements AutoCloseable {
     public static final int AUDIO_RESTRICTION_NONE = 0;
     public static final int AUDIO_RESTRICTION_VIBRATION = 1;
@@ -36,17 +37,26 @@ public abstract class CameraDevice implements AutoCloseable {
     public static final int TEMPLATE_ZERO_SHUTTER_LAG = 5;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CAMERA_AUDIO_RESTRICTION {
     }
 
+    public static abstract class CameraDeviceSetup {
+        public abstract CaptureRequest.Builder createCaptureRequest(int i) throws CameraAccessException;
+
+        public abstract String getId();
+
+        public abstract CameraCharacteristics getSessionCharacteristics(SessionConfiguration sessionConfiguration) throws CameraAccessException;
+
+        public abstract boolean isSessionConfigurationSupported(SessionConfiguration sessionConfiguration) throws CameraAccessException;
+
+        public abstract void openCamera(Executor executor, StateCallback stateCallback) throws CameraAccessException;
+    }
+
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RequestTemplate {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SessionOperatingMode {
     }
 
@@ -96,7 +106,6 @@ public abstract class CameraDevice implements AutoCloseable {
         throw new UnsupportedOperationException("Subclasses must override this method");
     }
 
-    /* loaded from: classes.dex */
     public static abstract class StateCallback {
         public static final int ERROR_CAMERA_DEVICE = 4;
         public static final int ERROR_CAMERA_DISABLED = 3;
@@ -105,7 +114,6 @@ public abstract class CameraDevice implements AutoCloseable {
         public static final int ERROR_MAX_CAMERAS_IN_USE = 2;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface ErrorCode {
         }
 

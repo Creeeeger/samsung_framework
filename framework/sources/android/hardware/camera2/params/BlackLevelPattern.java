@@ -3,7 +3,7 @@ package android.hardware.camera2.params;
 import java.util.Arrays;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class BlackLevelPattern {
     public static final int COUNT = 4;
     private final int[] mCfaOffsets;

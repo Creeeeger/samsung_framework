@@ -10,14 +10,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes5.dex */
 public class AODToast implements Parcelable {
     public static final Parcelable.Creator<AODToast> CREATOR = new Parcelable.Creator<AODToast>() { // from class: com.samsung.android.aod.AODToast.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AODToast createFromParcel(Parcel in) {
             return new AODToast(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AODToast[] newArray(int size) {
             return new AODToast[size];
@@ -36,16 +35,7 @@ public class AODToast implements Parcelable {
     private int mY;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface Duration {
-    }
-
-    /* synthetic */ AODToast(Parcel parcel, AODToastIA aODToastIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ AODToast(Builder builder, AODToastIA aODToastIA) {
-        this(builder);
     }
 
     private AODToast(Builder builder) {
@@ -130,24 +120,6 @@ public class AODToast implements Parcelable {
         dest.writeFloat(this.mVerticalMargin);
     }
 
-    /* renamed from: com.samsung.android.aod.AODToast$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AODToast> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AODToast createFromParcel(Parcel in) {
-            return new AODToast(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AODToast[] newArray(int size) {
-            return new AODToast[size];
-        }
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         private int mDuration;
         private long mDurationMillis;

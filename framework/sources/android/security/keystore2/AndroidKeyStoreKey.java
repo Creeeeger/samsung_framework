@@ -21,11 +21,11 @@ public class AndroidKeyStoreKey implements Key {
         this.mSecurityLevel = securityLevel;
     }
 
-    public KeyDescriptor getUserKeyDescriptor() {
+    KeyDescriptor getUserKeyDescriptor() {
         return this.mDescriptor;
     }
 
-    public KeyDescriptor getKeyIdDescriptor() {
+    KeyDescriptor getKeyIdDescriptor() {
         KeyDescriptor descriptor = new KeyDescriptor();
         descriptor.nspace = this.mKeyId;
         descriptor.domain = 4;
@@ -34,11 +34,11 @@ public class AndroidKeyStoreKey implements Key {
         return descriptor;
     }
 
-    public Authorization[] getAuthorizations() {
+    Authorization[] getAuthorizations() {
         return this.mAuthorizations;
     }
 
-    public KeyStoreSecurityLevel getSecurityLevel() {
+    KeyStoreSecurityLevel getSecurityLevel() {
         return this.mSecurityLevel;
     }
 
@@ -59,8 +59,7 @@ public class AndroidKeyStoreKey implements Key {
 
     public int hashCode() {
         int result = (1 * 31) + getClass().hashCode();
-        long j = this.mKeyId;
-        return (((result * 31) + ((int) (j >>> 32))) * 31) + ((int) (j & (-1)));
+        return (((result * 31) + ((int) (this.mKeyId >>> 32))) * 31) + ((int) (this.mKeyId & (-1)));
     }
 
     public boolean equals(Object obj) {

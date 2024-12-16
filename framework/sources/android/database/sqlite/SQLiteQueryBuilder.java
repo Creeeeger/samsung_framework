@@ -367,6 +367,7 @@ public class SQLiteQueryBuilder {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public void enforceStrictToken(String token) {
         char c;
@@ -580,9 +581,8 @@ public class SQLiteQueryBuilder {
             }
             return projectionOut;
         }
-        Map<String, String> map = this.mProjectionMap;
-        if (map != null) {
-            Set<Map.Entry<String, String>> entrySet = map.entrySet();
+        if (this.mProjectionMap != null) {
+            Set<Map.Entry<String, String>> entrySet = this.mProjectionMap.entrySet();
             String[] projection = new String[entrySet.size()];
             int i2 = 0;
             for (Map.Entry<String, String> entry : entrySet) {
@@ -605,12 +605,11 @@ public class SQLiteQueryBuilder {
     }
 
     private String computeSingleProjection(String userColumn) {
-        Map<String, String> map = this.mProjectionMap;
-        if (map == null) {
+        if (this.mProjectionMap == null) {
             return userColumn;
         }
         String operator = null;
-        String column = map.get(userColumn);
+        String column = this.mProjectionMap.get(userColumn);
         if (column == null) {
             Matcher matcher = sAggregationPattern.matcher(userColumn);
             if (matcher.matches()) {
@@ -625,10 +624,9 @@ public class SQLiteQueryBuilder {
         if (this.mStrictFlags == 0 && (userColumn.contains(" AS ") || userColumn.contains(" as "))) {
             return maybeWithOperator(operator, userColumn);
         }
-        Collection<Pattern> collection = this.mProjectionGreylist;
-        if (collection != null) {
+        if (this.mProjectionGreylist != null) {
             boolean match = false;
-            Iterator<Pattern> it = collection.iterator();
+            Iterator<Pattern> it = this.mProjectionGreylist.iterator();
             while (true) {
                 if (!it.hasNext()) {
                     break;

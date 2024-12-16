@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public abstract class FrontendSettings {
     public static final long FEC_11_15 = 4194304;
     public static final long FEC_11_20 = 8388608;
@@ -65,23 +65,20 @@ public abstract class FrontendSettings {
     private int mSpectralInversion = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FrontendSpectralInversion {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface InnerFec {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Type {
     }
 
     public abstract int getType();
 
-    public FrontendSettings(long frequency) {
+    FrontendSettings(long frequency) {
         this.mFrequency = frequency;
     }
 

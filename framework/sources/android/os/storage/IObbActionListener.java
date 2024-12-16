@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IObbActionListener extends IInterface {
     void onObbResult(String str, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IObbActionListener {
         @Override // android.os.storage.IObbActionListener
         public void onObbResult(String filename, int nonce, int status) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IObbActionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IObbActionListener {
         public static final String DESCRIPTOR = "android.os.storage.IObbActionListener";
         static final int TRANSACTION_onObbResult = 1;
@@ -66,28 +64,24 @@ public interface IObbActionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onObbResult(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onObbResult(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IObbActionListener {
+        private static class Proxy implements IObbActionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

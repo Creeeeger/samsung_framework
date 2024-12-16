@@ -21,7 +21,6 @@ public class ImsConfig {
     private boolean DBG = true;
     private final IImsConfig miConfig;
 
-    /* loaded from: classes4.dex */
     public static class ConfigConstants {
 
         @Deprecated
@@ -229,7 +228,6 @@ public class ImsConfig {
         public static final int VOWT_B = 61;
     }
 
-    /* loaded from: classes4.dex */
     public static class FeatureConstants {
         public static final int FEATURE_TYPE_UNKNOWN = -1;
         public static final int FEATURE_TYPE_UT_OVER_LTE = 4;
@@ -240,14 +238,12 @@ public class ImsConfig {
         public static final int FEATURE_TYPE_VOICE_OVER_WIFI = 2;
     }
 
-    /* loaded from: classes4.dex */
     public static class FeatureValueConstants {
         public static final int ERROR = -1;
         public static final int OFF = 0;
         public static final int ON = 1;
     }
 
-    /* loaded from: classes4.dex */
     public static class OperationStatusConstants {
         public static final int FAILED = 1;
         public static final int SUCCESS = 0;
@@ -257,20 +253,17 @@ public class ImsConfig {
         public static final int UNSUPPORTED_CAUSE_RAT = 3;
     }
 
-    /* loaded from: classes4.dex */
     public static class OperationValuesConstants {
         public static final int VIDEO_QUALITY_HIGH = 1;
         public static final int VIDEO_QUALITY_LOW = 0;
         public static final int VIDEO_QUALITY_UNKNOWN = -1;
     }
 
-    /* loaded from: classes4.dex */
     public static class VideoQualityFeatureValuesConstants {
         public static final int HIGH = 1;
         public static final int LOW = 0;
     }
 
-    /* loaded from: classes4.dex */
     public static class WfcModeFeatureValueConstants {
         public static final int CELLULAR_PREFERRED = 1;
         public static final int WIFI_ONLY = 0;

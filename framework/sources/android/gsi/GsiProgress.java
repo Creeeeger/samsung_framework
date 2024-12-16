@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class GsiProgress implements Parcelable {
     public static final Parcelable.Creator<GsiProgress> CREATOR = new Parcelable.Creator<GsiProgress>() { // from class: android.gsi.GsiProgress.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GsiProgress createFromParcel(Parcel _aidl_source) {
             GsiProgress _aidl_out = new GsiProgress();
@@ -17,6 +15,7 @@ public class GsiProgress implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GsiProgress[] newArray(int _aidl_size) {
             return new GsiProgress[_aidl_size];
@@ -26,25 +25,6 @@ public class GsiProgress implements Parcelable {
     public int status = 0;
     public long bytes_processed = 0;
     public long total_bytes = 0;
-
-    /* renamed from: android.gsi.GsiProgress$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GsiProgress> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GsiProgress createFromParcel(Parcel _aidl_source) {
-            GsiProgress _aidl_out = new GsiProgress();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GsiProgress[] newArray(int _aidl_size) {
-            return new GsiProgress[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

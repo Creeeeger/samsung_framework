@@ -1,11 +1,17 @@
 package com.samsung.vekit.Content;
 
+import com.samsung.vekit.Common.Object.AudioSegment;
 import com.samsung.vekit.Common.Object.SlowVideoInfo;
 import com.samsung.vekit.Common.Type.ContentType;
 import com.samsung.vekit.Common.VEContext;
+import com.samsung.vekit.Interface.AudioSegmentInterface;
+import java.util.HashMap;
 
 /* loaded from: classes6.dex */
-public class Video extends Content {
+public class Video extends Content implements AudioSegmentInterface<Video> {
+    private HashMap<String, AudioSegment> audioSegmentMap;
+    private long fileLength;
+    private long fileOffset;
     protected String filePath;
     private int frameRate;
     protected boolean is360;
@@ -20,6 +26,9 @@ public class Video extends Content {
         this.isSlowMotion = false;
         this.recordingMode = 0;
         this.frameRate = 30;
+        this.audioSegmentMap = new HashMap<>();
+        this.fileOffset = 0L;
+        this.fileLength = 0L;
     }
 
     public Video setFilePath(String filePath) {
@@ -97,5 +106,58 @@ public class Video extends Content {
     public Video setFrameRate(int frameRate) {
         this.frameRate = frameRate;
         return this;
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public HashMap<String, AudioSegment> getAudioSegmentMap() {
+        return this.audioSegmentMap;
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void setAudioSegmentMap(HashMap<String, AudioSegment> audioSegmentMap) {
+        this.audioSegmentMap = audioSegmentMap;
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public AudioSegment getAudioSegment(String key) {
+        return this.audioSegmentMap.get(key);
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void addAudioSegment(String key, AudioSegment audioSegment) {
+        this.audioSegmentMap.put(key, audioSegment);
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void removeAudioSegment(String key) {
+        this.audioSegmentMap.remove(key);
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void clearAudioSegment() {
+        this.audioSegmentMap.clear();
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public int getAudioSegmentMapSize() {
+        return this.audioSegmentMap.size();
+    }
+
+    public Video setFileLength(long fileLength) {
+        this.fileLength = fileLength;
+        return this;
+    }
+
+    public Video setFileOffset(long fileOffset) {
+        this.fileOffset = fileOffset;
+        return this;
+    }
+
+    public long getFileLength() {
+        return this.fileLength;
+    }
+
+    public long getFileOffset() {
+        return this.fileOffset;
     }
 }

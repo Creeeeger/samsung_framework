@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IOptionsResponseCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IOptionsResponseCallback";
 
@@ -15,7 +15,6 @@ public interface IOptionsResponseCallback extends IInterface {
 
     void onNetworkResponse(int i, String str, List<String> list) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IOptionsResponseCallback {
         @Override // android.telephony.ims.aidl.IOptionsResponseCallback
         public void onCommandError(int code) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IOptionsResponseCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IOptionsResponseCallback {
         static final int TRANSACTION_onCommandError = 1;
         static final int TRANSACTION_onNetworkResponse = 2;
@@ -77,33 +75,29 @@ public interface IOptionsResponseCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOptionsResponseCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOptionsResponseCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOptionsResponseCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCommandError(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    List<String> _arg2 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    onNetworkResponse(_arg02, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCommandError(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            List<String> _arg2 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            onNetworkResponse(_arg02, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IOptionsResponseCallback {
+        private static class Proxy implements IOptionsResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

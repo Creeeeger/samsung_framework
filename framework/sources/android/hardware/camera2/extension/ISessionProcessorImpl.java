@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ISessionProcessorImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.ISessionProcessorImpl";
 
@@ -28,7 +28,7 @@ public interface ISessionProcessorImpl extends IInterface {
 
     void onCaptureSessionEnd() throws RemoteException;
 
-    void onCaptureSessionStart(IRequestProcessorImpl iRequestProcessorImpl) throws RemoteException;
+    void onCaptureSessionStart(IRequestProcessorImpl iRequestProcessorImpl, String str) throws RemoteException;
 
     void setParameters(CaptureRequest captureRequest) throws RemoteException;
 
@@ -40,7 +40,6 @@ public interface ISessionProcessorImpl extends IInterface {
 
     void stopRepeating() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISessionProcessorImpl {
         @Override // android.hardware.camera2.extension.ISessionProcessorImpl
         public CameraSessionConfig initSession(IBinder token, String cameraId, Map<String, CameraMetadataNative> charsMap, OutputSurface previewSurface, OutputSurface imageCaptureSurface, OutputSurface postviewSurface) throws RemoteException {
@@ -52,7 +51,7 @@ public interface ISessionProcessorImpl extends IInterface {
         }
 
         @Override // android.hardware.camera2.extension.ISessionProcessorImpl
-        public void onCaptureSessionStart(IRequestProcessorImpl requestProcessor) throws RemoteException {
+        public void onCaptureSessionStart(IRequestProcessorImpl requestProcessor, String statsKey) throws RemoteException {
         }
 
         @Override // android.hardware.camera2.extension.ISessionProcessorImpl
@@ -93,7 +92,6 @@ public interface ISessionProcessorImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISessionProcessorImpl {
         static final int TRANSACTION_deInitSession = 2;
         static final int TRANSACTION_getRealtimeCaptureLatency = 10;
@@ -163,100 +161,98 @@ public interface ISessionProcessorImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISessionProcessorImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISessionProcessorImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISessionProcessorImpl.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    String _arg1 = data.readString();
+                    int N = data.readInt();
+                    final Map<String, CameraMetadataNative> _arg2 = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.camera2.extension.ISessionProcessorImpl$Stub$$ExternalSyntheticLambda0
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            ISessionProcessorImpl.Stub.lambda$onTransact$0(Parcel.this, _arg2, i);
+                        }
+                    });
+                    OutputSurface _arg3 = (OutputSurface) data.readTypedObject(OutputSurface.CREATOR);
+                    OutputSurface _arg4 = (OutputSurface) data.readTypedObject(OutputSurface.CREATOR);
+                    OutputSurface _arg5 = (OutputSurface) data.readTypedObject(OutputSurface.CREATOR);
+                    data.enforceNoDataAvail();
+                    CameraSessionConfig _result = initSession(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    deInitSession(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IRequestProcessorImpl _arg03 = IRequestProcessorImpl.Stub.asInterface(data.readStrongBinder());
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    onCaptureSessionStart(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    onCaptureSessionEnd();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    ICaptureCallback _arg04 = ICaptureCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result2 = startRepeating(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 6:
+                    stopRepeating();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    ICaptureCallback _arg05 = ICaptureCallback.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result3 = startCapture(_arg05, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 8:
+                    CaptureRequest _arg06 = (CaptureRequest) data.readTypedObject(CaptureRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    setParameters(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    CaptureRequest _arg07 = (CaptureRequest) data.readTypedObject(CaptureRequest.CREATOR);
+                    ICaptureCallback _arg14 = ICaptureCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result4 = startTrigger(_arg07, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 10:
+                    LatencyPair _result5 = getRealtimeCaptureLatency();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            String _arg1 = data.readString();
-                            int N = data.readInt();
-                            final Map<String, CameraMetadataNative> _arg2 = N < 0 ? null : new HashMap<>();
-                            IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.camera2.extension.ISessionProcessorImpl$Stub$$ExternalSyntheticLambda0
-                                @Override // java.util.function.IntConsumer
-                                public final void accept(int i) {
-                                    ISessionProcessorImpl.Stub.lambda$onTransact$0(Parcel.this, _arg2, i);
-                                }
-                            });
-                            OutputSurface _arg3 = (OutputSurface) data.readTypedObject(OutputSurface.CREATOR);
-                            OutputSurface _arg4 = (OutputSurface) data.readTypedObject(OutputSurface.CREATOR);
-                            OutputSurface _arg5 = (OutputSurface) data.readTypedObject(OutputSurface.CREATOR);
-                            data.enforceNoDataAvail();
-                            CameraSessionConfig _result = initSession(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            deInitSession(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IRequestProcessorImpl _arg03 = IRequestProcessorImpl.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCaptureSessionStart(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            onCaptureSessionEnd();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            ICaptureCallback _arg04 = ICaptureCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result2 = startRepeating(_arg04);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 6:
-                            stopRepeating();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            ICaptureCallback _arg05 = ICaptureCallback.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result3 = startCapture(_arg05, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 8:
-                            CaptureRequest _arg06 = (CaptureRequest) data.readTypedObject(CaptureRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            setParameters(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            CaptureRequest _arg07 = (CaptureRequest) data.readTypedObject(CaptureRequest.CREATOR);
-                            ICaptureCallback _arg13 = ICaptureCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result4 = startTrigger(_arg07, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 10:
-                            LatencyPair _result5 = getRealtimeCaptureLatency();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg2, int i) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg2, int i) {
             String k = data.readString();
             CameraMetadataNative v = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
             _arg2.put(k, v);
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISessionProcessorImpl {
+        static class Proxy implements ISessionProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -304,7 +300,7 @@ public interface ISessionProcessorImpl extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$initSession$0(Parcel _data, String k, CameraMetadataNative v) {
+            static /* synthetic */ void lambda$initSession$0(Parcel _data, String k, CameraMetadataNative v) {
                 _data.writeString(k);
                 _data.writeTypedObject(v, 0);
             }
@@ -325,12 +321,13 @@ public interface ISessionProcessorImpl extends IInterface {
             }
 
             @Override // android.hardware.camera2.extension.ISessionProcessorImpl
-            public void onCaptureSessionStart(IRequestProcessorImpl requestProcessor) throws RemoteException {
+            public void onCaptureSessionStart(IRequestProcessorImpl requestProcessor, String statsKey) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISessionProcessorImpl.DESCRIPTOR);
                     _data.writeStrongInterface(requestProcessor);
+                    _data.writeString(statsKey);
                     this.mRemote.transact(3, _data, _reply, 0);
                     _reply.readException();
                 } finally {

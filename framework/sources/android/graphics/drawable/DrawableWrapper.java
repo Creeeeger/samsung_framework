@@ -23,7 +23,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
     private boolean mMutated;
     private DrawableWrapperState mState;
 
-    public DrawableWrapper(DrawableWrapperState state, Resources res) {
+    DrawableWrapper(DrawableWrapperState state, Resources res) {
         this.mState = state;
         updateLocalState(res);
     }
@@ -34,8 +34,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
     }
 
     private void updateLocalState(Resources res) {
-        DrawableWrapperState drawableWrapperState = this.mState;
-        if (drawableWrapperState != null && drawableWrapperState.mDrawableState != null) {
+        if (this.mState != null && this.mState.mDrawableState != null) {
             Drawable dr = this.mState.mDrawableState.newDrawable(res);
             setDrawable(dr);
         }
@@ -43,16 +42,14 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
 
     @Override // android.graphics.drawable.Drawable
     public void setXfermode(Xfermode mode) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setXfermode(mode);
+        if (this.mDrawable != null) {
+            this.mDrawable.setXfermode(mode);
         }
     }
 
     public void setDrawable(Drawable dr) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setCallback(null);
+        if (this.mDrawable != null) {
+            this.mDrawable.setCallback(null);
         }
         this.mDrawable = dr;
         if (dr != null) {
@@ -62,9 +59,8 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
             dr.setLevel(getLevel());
             dr.setBounds(getBounds());
             dr.setLayoutDirection(getLayoutDirection());
-            DrawableWrapperState drawableWrapperState = this.mState;
-            if (drawableWrapperState != null) {
-                drawableWrapperState.mDrawableState = dr.getConstantState();
+            if (this.mState != null) {
+                this.mState.mDrawableState = dr.getConstantState();
             }
         }
         invalidateSelf();
@@ -94,8 +90,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
     @Override // android.graphics.drawable.Drawable
     public void applyTheme(Resources.Theme t) {
         super.applyTheme(t);
-        Drawable drawable = this.mDrawable;
-        if (drawable != null && drawable.canApplyTheme()) {
+        if (this.mDrawable != null && this.mDrawable.canApplyTheme()) {
             this.mDrawable.applyTheme(t);
         }
         DrawableWrapperState state = this.mState;
@@ -126,8 +121,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        DrawableWrapperState drawableWrapperState = this.mState;
-        return (drawableWrapperState != null && drawableWrapperState.canApplyTheme()) || super.canApplyTheme();
+        return (this.mState != null && this.mState.canApplyTheme()) || super.canApplyTheme();
     }
 
     @Override // android.graphics.drawable.Drawable.Callback
@@ -156,52 +150,44 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
 
     @Override // android.graphics.drawable.Drawable
     public void draw(Canvas canvas) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.draw(canvas);
+        if (this.mDrawable != null) {
+            this.mDrawable.draw(canvas);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public int getChangingConfigurations() {
-        int changingConfigurations = super.getChangingConfigurations();
-        DrawableWrapperState drawableWrapperState = this.mState;
-        return changingConfigurations | (drawableWrapperState != null ? drawableWrapperState.getChangingConfigurations() : 0) | this.mDrawable.getChangingConfigurations();
+        return super.getChangingConfigurations() | (this.mState != null ? this.mState.getChangingConfigurations() : 0) | this.mDrawable.getChangingConfigurations();
     }
 
     @Override // android.graphics.drawable.Drawable
     public boolean getPadding(Rect padding) {
-        Drawable drawable = this.mDrawable;
-        return drawable != null && drawable.getPadding(padding);
+        return this.mDrawable != null && this.mDrawable.getPadding(padding);
     }
 
     @Override // android.graphics.drawable.Drawable
     public Insets getOpticalInsets() {
-        Drawable drawable = this.mDrawable;
-        return drawable != null ? drawable.getOpticalInsets() : Insets.NONE;
+        return this.mDrawable != null ? this.mDrawable.getOpticalInsets() : Insets.NONE;
     }
 
     @Override // android.graphics.drawable.Drawable
     public void setHotspot(float x, float y) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setHotspot(x, y);
+        if (this.mDrawable != null) {
+            this.mDrawable.setHotspot(x, y);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public void setHotspotBounds(int left, int top, int right, int bottom) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setHotspotBounds(left, top, right, bottom);
+        if (this.mDrawable != null) {
+            this.mDrawable.setHotspotBounds(left, top, right, bottom);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public void getHotspotBounds(Rect outRect) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.getHotspotBounds(outRect);
+        if (this.mDrawable != null) {
+            this.mDrawable.getHotspotBounds(outRect);
         } else {
             outRect.set(getBounds());
         }
@@ -210,33 +196,29 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
     @Override // android.graphics.drawable.Drawable
     public boolean setVisible(boolean visible, boolean restart) {
         boolean superChanged = super.setVisible(visible, restart);
-        Drawable drawable = this.mDrawable;
-        boolean changed = drawable != null && drawable.setVisible(visible, restart);
+        boolean changed = this.mDrawable != null && this.mDrawable.setVisible(visible, restart);
         return superChanged | changed;
     }
 
     @Override // android.graphics.drawable.Drawable
     public void setAlpha(int alpha) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setAlpha(alpha);
+        if (this.mDrawable != null) {
+            this.mDrawable.setAlpha(alpha);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public int getAlpha() {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            return drawable.getAlpha();
+        if (this.mDrawable != null) {
+            return this.mDrawable.getAlpha();
         }
         return 255;
     }
 
     @Override // android.graphics.drawable.Drawable
     public void setColorFilter(ColorFilter colorFilter) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setColorFilter(colorFilter);
+        if (this.mDrawable != null) {
+            this.mDrawable.setColorFilter(colorFilter);
         }
     }
 
@@ -251,51 +233,44 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
 
     @Override // android.graphics.drawable.Drawable
     public void setTintList(ColorStateList tint) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setTintList(tint);
+        if (this.mDrawable != null) {
+            this.mDrawable.setTintList(tint);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public void setTintBlendMode(BlendMode blendMode) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setTintBlendMode(blendMode);
+        if (this.mDrawable != null) {
+            this.mDrawable.setTintBlendMode(blendMode);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public boolean onLayoutDirectionChanged(int layoutDirection) {
-        Drawable drawable = this.mDrawable;
-        return drawable != null && drawable.setLayoutDirection(layoutDirection);
+        return this.mDrawable != null && this.mDrawable.setLayoutDirection(layoutDirection);
     }
 
     @Override // android.graphics.drawable.Drawable
     public int getOpacity() {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            return drawable.getOpacity();
+        if (this.mDrawable != null) {
+            return this.mDrawable.getOpacity();
         }
         return -2;
     }
 
     @Override // android.graphics.drawable.Drawable
     public boolean isStateful() {
-        Drawable drawable = this.mDrawable;
-        return drawable != null && drawable.isStateful();
+        return this.mDrawable != null && this.mDrawable.isStateful();
     }
 
     @Override // android.graphics.drawable.Drawable
     public boolean hasFocusStateSpecified() {
-        Drawable drawable = this.mDrawable;
-        return drawable != null && drawable.hasFocusStateSpecified();
+        return this.mDrawable != null && this.mDrawable.hasFocusStateSpecified();
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] state) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null && drawable.isStateful()) {
+    protected boolean onStateChange(int[] state) {
+        if (this.mDrawable != null && this.mDrawable.isStateful()) {
             boolean changed = this.mDrawable.setState(state);
             if (changed) {
                 onBoundsChange(getBounds());
@@ -307,49 +282,43 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
 
     @Override // android.graphics.drawable.Drawable
     public void jumpToCurrentState() {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.jumpToCurrentState();
+        if (this.mDrawable != null) {
+            this.mDrawable.jumpToCurrentState();
         }
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
-        Drawable drawable = this.mDrawable;
-        return drawable != null && drawable.setLevel(level);
+    protected boolean onLevelChange(int level) {
+        return this.mDrawable != null && this.mDrawable.setLevel(level);
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.setBounds(bounds);
+    protected void onBoundsChange(Rect bounds) {
+        if (this.mDrawable != null) {
+            this.mDrawable.setBounds(bounds);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public int getIntrinsicWidth() {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            return drawable.getIntrinsicWidth();
+        if (this.mDrawable != null) {
+            return this.mDrawable.getIntrinsicWidth();
         }
         return -1;
     }
 
     @Override // android.graphics.drawable.Drawable
     public int getIntrinsicHeight() {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            return drawable.getIntrinsicHeight();
+        if (this.mDrawable != null) {
+            return this.mDrawable.getIntrinsicHeight();
         }
         return -1;
     }
 
     @Override // android.graphics.drawable.Drawable
     public void getOutline(Outline outline) {
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.getOutline(outline);
+        if (this.mDrawable != null) {
+            this.mDrawable.getOutline(outline);
         } else {
             super.getOutline(outline);
         }
@@ -357,8 +326,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
 
     @Override // android.graphics.drawable.Drawable
     public Drawable.ConstantState getConstantState() {
-        DrawableWrapperState drawableWrapperState = this.mState;
-        if (drawableWrapperState != null && drawableWrapperState.canConstantState()) {
+        if (this.mState != null && this.mState.canConstantState()) {
             this.mState.mChangingConfigurations = getChangingConfigurations();
             return this.mState;
         }
@@ -369,14 +337,11 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
     public Drawable mutate() {
         if (!this.mMutated && super.mutate() == this) {
             this.mState = mutateConstantState();
-            Drawable drawable = this.mDrawable;
-            if (drawable != null) {
-                drawable.mutate();
+            if (this.mDrawable != null) {
+                this.mDrawable.mutate();
             }
-            DrawableWrapperState drawableWrapperState = this.mState;
-            if (drawableWrapperState != null) {
-                Drawable drawable2 = this.mDrawable;
-                drawableWrapperState.mDrawableState = drawable2 != null ? drawable2.getConstantState() : null;
+            if (this.mState != null) {
+                this.mState.mDrawableState = this.mDrawable != null ? this.mDrawable.getConstantState() : null;
             }
             this.mMutated = true;
         }
@@ -390,9 +355,8 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
     @Override // android.graphics.drawable.Drawable
     public void clearMutated() {
         super.clearMutated();
-        Drawable drawable = this.mDrawable;
-        if (drawable != null) {
-            drawable.clearMutated();
+        if (this.mDrawable != null) {
+            this.mDrawable.clearMutated();
         }
         this.mMutated = false;
     }
@@ -413,8 +377,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
         }
     }
 
-    /* loaded from: classes.dex */
-    public static abstract class DrawableWrapperState extends Drawable.ConstantState {
+    static abstract class DrawableWrapperState extends Drawable.ConstantState {
         int mChangingConfigurations;
         int mDensity;
         Drawable.ConstantState mDrawableState;
@@ -424,7 +387,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
         @Override // android.graphics.drawable.Drawable.ConstantState
         public abstract Drawable newDrawable(Resources resources);
 
-        public DrawableWrapperState(DrawableWrapperState orig, Resources res) {
+        DrawableWrapperState(DrawableWrapperState orig, Resources res) {
             int density;
             this.mDensity = 160;
             this.mSrcDensityOverride = 0;
@@ -452,13 +415,12 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
             }
         }
 
-        public void onDensityChanged(int sourceDensity, int targetDensity) {
+        void onDensityChanged(int sourceDensity, int targetDensity) {
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            Drawable.ConstantState constantState;
-            return this.mThemeAttrs != null || ((constantState = this.mDrawableState) != null && constantState.canApplyTheme()) || super.canApplyTheme();
+            return this.mThemeAttrs != null || (this.mDrawableState != null && this.mDrawableState.canApplyTheme()) || super.canApplyTheme();
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -468,9 +430,7 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            Drawable.ConstantState constantState = this.mDrawableState;
-            return i | (constantState != null ? constantState.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mDrawableState != null ? this.mDrawableState.getChangingConfigurations() : 0);
         }
 
         public boolean canConstantState() {

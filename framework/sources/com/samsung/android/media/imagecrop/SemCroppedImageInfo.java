@@ -4,14 +4,14 @@ import android.util.Log;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemCroppedImageInfo {
     private static final String TAG = "imagecrop";
     private ByteBuffer buffer;
     private int width = -1;
     private int height = -1;
 
-    public SemCroppedImageInfo(int size) {
+    SemCroppedImageInfo(int size) {
         this.buffer = NativeBuffer.allocNativeBuffer(size);
     }
 
@@ -27,7 +27,7 @@ public class SemCroppedImageInfo {
         return this.buffer;
     }
 
-    public void reAllocInJavaBuffer(int newSize) {
+    void reAllocInJavaBuffer(int newSize) {
         Log.d(TAG, "reAllocate : " + newSize);
         this.buffer.limit(newSize);
         this.buffer.rewind();

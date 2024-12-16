@@ -78,7 +78,7 @@ public final class AutofillClientController implements AutofillManager.AutofillC
     public void onActivityPerformResume(boolean followedByPause) {
         if (this.mAutoFillResetNeeded) {
             this.mAutoFillIgnoreFirstResumePause = followedByPause;
-            if (followedByPause && DEBUG) {
+            if (this.mAutoFillIgnoreFirstResumePause && DEBUG) {
                 Slog.v(TAG, "autofill will ignore first pause when relaunching " + this);
             }
         }
@@ -190,9 +190,8 @@ public final class AutofillClientController implements AutofillManager.AutofillC
         if (this.mLastAutofillId == 2147483646) {
             this.mLastAutofillId = View.LAST_APP_AUTOFILL_ID;
         }
-        int i = this.mLastAutofillId + 1;
-        this.mLastAutofillId = i;
-        return i;
+        this.mLastAutofillId++;
+        return this.mLastAutofillId;
     }
 
     @Override // android.view.autofill.AutofillManager.AutofillClient
@@ -294,17 +293,15 @@ public final class AutofillClientController implements AutofillManager.AutofillC
 
     @Override // android.view.autofill.AutofillManager.AutofillClient
     public boolean autofillClientIsFillUiShowing() {
-        AutofillPopupWindow autofillPopupWindow = this.mAutofillPopupWindow;
-        return autofillPopupWindow != null && autofillPopupWindow.isShowing();
+        return this.mAutofillPopupWindow != null && this.mAutofillPopupWindow.isShowing();
     }
 
     @Override // android.view.autofill.AutofillManager.AutofillClient
     public boolean autofillClientRequestHideFillUi() {
-        AutofillPopupWindow autofillPopupWindow = this.mAutofillPopupWindow;
-        if (autofillPopupWindow == null) {
+        if (this.mAutofillPopupWindow == null) {
             return false;
         }
-        autofillPopupWindow.dismiss();
+        this.mAutofillPopupWindow.dismiss();
         this.mAutofillPopupWindow = null;
         return true;
     }
@@ -312,12 +309,11 @@ public final class AutofillClientController implements AutofillManager.AutofillC
     @Override // android.view.autofill.AutofillManager.AutofillClient
     public boolean autofillClientRequestShowFillUi(View anchor, int width, int height, Rect anchorBounds, IAutofillWindowPresenter presenter) {
         boolean wasShowing;
-        AutofillPopupWindow autofillPopupWindow = this.mAutofillPopupWindow;
-        if (autofillPopupWindow == null) {
+        if (this.mAutofillPopupWindow == null) {
             wasShowing = false;
             this.mAutofillPopupWindow = new AutofillPopupWindow(presenter);
         } else {
-            wasShowing = autofillPopupWindow.isShowing();
+            wasShowing = this.mAutofillPopupWindow.isShowing();
         }
         this.mAutofillPopupWindow.update(anchor, 0, 0, width, height, anchorBounds);
         return !wasShowing && this.mAutofillPopupWindow.isShowing();

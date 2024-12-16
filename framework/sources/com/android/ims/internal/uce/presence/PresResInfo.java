@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.presence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresResInfo implements Parcelable {
     public static final Parcelable.Creator<PresResInfo> CREATOR = new Parcelable.Creator<PresResInfo>() { // from class: com.android.ims.internal.uce.presence.PresResInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresResInfo createFromParcel(Parcel source) {
             return new PresResInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresResInfo[] newArray(int size) {
             return new PresResInfo[size];
@@ -22,10 +21,6 @@ public class PresResInfo implements Parcelable {
     private String mDisplayName;
     private PresResInstanceInfo mInstanceInfo;
     private String mResUri;
-
-    /* synthetic */ PresResInfo(Parcel parcel, PresResInfoIA presResInfoIA) {
-        this(parcel);
-    }
 
     public PresResInstanceInfo getInstanceInfo() {
         return this.mInstanceInfo;
@@ -67,23 +62,6 @@ public class PresResInfo implements Parcelable {
         dest.writeString(this.mResUri);
         dest.writeString(this.mDisplayName);
         dest.writeParcelable(this.mInstanceInfo, flags);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresResInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresResInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresResInfo createFromParcel(Parcel source) {
-            return new PresResInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresResInfo[] newArray(int size) {
-            return new PresResInfo[size];
-        }
     }
 
     private PresResInfo(Parcel source) {

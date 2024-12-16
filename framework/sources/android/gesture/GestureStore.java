@@ -131,7 +131,6 @@ public class GestureStore {
         load(stream, false);
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:7:0x0019. Please report as an issue. */
     /* JADX WARN: Removed duplicated region for block: B:10:0x0022 A[DONT_GENERATE] */
     /* JADX WARN: Removed duplicated region for block: B:13:? A[RETURN, SYNTHETIC] */
     /*
@@ -196,7 +195,7 @@ public class GestureStore {
         }
     }
 
-    public Learner getLearner() {
+    Learner getLearner() {
         return this.mClassifier;
     }
 }

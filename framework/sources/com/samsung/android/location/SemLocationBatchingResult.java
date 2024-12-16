@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemLocationBatchingResult {
     private boolean isFlushed;
     private List<Location> locations;

@@ -56,13 +56,13 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         this.mExtras = null;
         this.mExcludeMimes = null;
         TypedArray styledAttributes = this.mContext.obtainStyledAttributes(R.styleable.Theme);
-        this.mOverlay = styledAttributes.getDrawable(390);
+        this.mOverlay = styledAttributes.getDrawable(411);
         styledAttributes.recycle();
         setOnClickListener(this);
     }
 
     @Override // android.widget.ImageView, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             this.mQueryHandler = new QueryHandler(this.mContext.getContentResolver());
@@ -70,7 +70,7 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
     }
 
     @Override // android.widget.ImageView, android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         super.drawableStateChanged();
         Drawable overlay = this.mOverlay;
         if (overlay != null && overlay.isStateful() && overlay.setState(getDrawableState())) {
@@ -81,9 +81,8 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
     @Override // android.widget.ImageView, android.view.View
     public void drawableHotspotChanged(float x, float y) {
         super.drawableHotspotChanged(x, y);
-        Drawable drawable = this.mOverlay;
-        if (drawable != null) {
-            drawable.setHotspot(x, y);
+        if (this.mOverlay != null) {
+            this.mOverlay.setHotspot(x, y);
         }
     }
 
@@ -95,10 +94,9 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
     }
 
     @Override // android.widget.ImageView, android.view.View
-    public void onDraw(Canvas canvas) {
-        Drawable drawable;
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!isEnabled() || (drawable = this.mOverlay) == null || drawable.getIntrinsicWidth() == 0 || this.mOverlay.getIntrinsicHeight() == 0) {
+        if (!isEnabled() || this.mOverlay == null || this.mOverlay.getIntrinsicWidth() == 0 || this.mOverlay.getIntrinsicHeight() == 0) {
             return;
         }
         this.mOverlay.setBounds(0, 0, getWidth(), getHeight());
@@ -136,11 +134,10 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
     }
 
     public void assignContactFromEmail(String emailAddress, boolean lazyLookup, Bundle extras) {
-        QueryHandler queryHandler;
         this.mContactEmail = emailAddress;
         this.mExtras = extras;
-        if (!lazyLookup && (queryHandler = this.mQueryHandler) != null) {
-            queryHandler.startQuery(0, null, Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_LOOKUP_URI, Uri.encode(this.mContactEmail)), EMAIL_LOOKUP_PROJECTION, null, null, null);
+        if (!lazyLookup && this.mQueryHandler != null) {
+            this.mQueryHandler.startQuery(0, null, Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_LOOKUP_URI, Uri.encode(this.mContactEmail)), EMAIL_LOOKUP_PROJECTION, null, null, null);
         } else {
             this.mContactUri = null;
             onContactUriChanged();
@@ -152,11 +149,10 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
     }
 
     public void assignContactFromPhone(String phoneNumber, boolean lazyLookup, Bundle extras) {
-        QueryHandler queryHandler;
         this.mContactPhone = phoneNumber;
         this.mExtras = extras;
-        if (!lazyLookup && (queryHandler = this.mQueryHandler) != null) {
-            queryHandler.startQuery(1, null, Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, this.mContactPhone), PHONE_LOOKUP_PROJECTION, null, null, null);
+        if (!lazyLookup && this.mQueryHandler != null) {
+            this.mQueryHandler.startQuery(1, null, Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, this.mContactPhone), PHONE_LOOKUP_PROJECTION, null, null, null);
         } else {
             this.mContactUri = null;
             onContactUriChanged();
@@ -167,29 +163,23 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         this.mOverlay = overlay;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onContactUriChanged() {
         setEnabled(isAssigned());
     }
 
     @Override // android.view.View.OnClickListener
     public void onClick(View v) {
-        Bundle extras = this.mExtras;
-        if (extras == null) {
-            extras = new Bundle();
-        }
+        Bundle extras = this.mExtras == null ? new Bundle() : this.mExtras;
         if (this.mContactUri != null) {
             ContactsContract.QuickContact.showQuickContact(getContext(), this, this.mContactUri, this.mExcludeMimes, this.mPrioritizedMimeType);
             return;
         }
-        String str = this.mContactEmail;
-        if (str != null && this.mQueryHandler != null) {
-            extras.putString(EXTRA_URI_CONTENT, str);
+        if (this.mContactEmail != null && this.mQueryHandler != null) {
+            extras.putString(EXTRA_URI_CONTENT, this.mContactEmail);
             this.mQueryHandler.startQuery(2, extras, Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_LOOKUP_URI, Uri.encode(this.mContactEmail)), EMAIL_LOOKUP_PROJECTION, null, null, null);
-            return;
-        }
-        String str2 = this.mContactPhone;
-        if (str2 != null && this.mQueryHandler != null) {
-            extras.putString(EXTRA_URI_CONTENT, str2);
+        } else if (this.mContactPhone != null && this.mQueryHandler != null) {
+            extras.putString(EXTRA_URI_CONTENT, this.mContactPhone);
             this.mQueryHandler.startQuery(3, extras, Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, this.mContactPhone), PHONE_LOOKUP_PROJECTION, null, null, null);
         }
     }
@@ -203,8 +193,7 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         this.mExcludeMimes = excludeMimes;
     }
 
-    /* loaded from: classes4.dex */
-    public class QueryHandler extends AsyncQueryHandler {
+    private class QueryHandler extends AsyncQueryHandler {
         public QueryHandler(ContentResolver cr) {
             super(cr);
         }
@@ -261,10 +250,10 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
                 QuickContactBadge.this.mContactUri = lookupUri;
                 QuickContactBadge.this.onContactUriChanged();
                 if (trigger && QuickContactBadge.this.mContactUri != null) {
-                    Context context = QuickContactBadge.this.getContext();
-                    QuickContactBadge quickContactBadge = QuickContactBadge.this;
-                    ContactsContract.QuickContact.showQuickContact(context, quickContactBadge, quickContactBadge.mContactUri, QuickContactBadge.this.mExcludeMimes, QuickContactBadge.this.mPrioritizedMimeType);
-                } else if (createUri != null) {
+                    ContactsContract.QuickContact.showQuickContact(QuickContactBadge.this.getContext(), QuickContactBadge.this, QuickContactBadge.this.mContactUri, QuickContactBadge.this.mExcludeMimes, QuickContactBadge.this.mPrioritizedMimeType);
+                    return;
+                }
+                if (createUri != null) {
                     Intent intent = new Intent("com.android.contacts.action.SHOW_OR_CREATE_CONTACT", createUri);
                     if (extras != null) {
                         Bundle bundle = new Bundle(extras);

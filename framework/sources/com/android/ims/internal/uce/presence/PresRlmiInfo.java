@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.presence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresRlmiInfo implements Parcelable {
     public static final Parcelable.Creator<PresRlmiInfo> CREATOR = new Parcelable.Creator<PresRlmiInfo>() { // from class: com.android.ims.internal.uce.presence.PresRlmiInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresRlmiInfo createFromParcel(Parcel source) {
             return new PresRlmiInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresRlmiInfo[] newArray(int size) {
             return new PresRlmiInfo[size];
@@ -27,10 +26,6 @@ public class PresRlmiInfo implements Parcelable {
     private String mSubscriptionTerminatedReason;
     private String mUri;
     private int mVersion;
-
-    /* synthetic */ PresRlmiInfo(Parcel parcel, PresRlmiInfoIA presRlmiInfoIA) {
-        this(parcel);
-    }
 
     public String getUri() {
         return this.mUri;
@@ -116,23 +111,6 @@ public class PresRlmiInfo implements Parcelable {
         parcel.writeParcelable(this.mPresSubscriptionState, i);
         parcel.writeInt(this.mSubscriptionExpireTime);
         parcel.writeString(this.mSubscriptionTerminatedReason);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresRlmiInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresRlmiInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresRlmiInfo createFromParcel(Parcel source) {
-            return new PresRlmiInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresRlmiInfo[] newArray(int size) {
-            return new PresRlmiInfo[size];
-        }
     }
 
     private PresRlmiInfo(Parcel source) {

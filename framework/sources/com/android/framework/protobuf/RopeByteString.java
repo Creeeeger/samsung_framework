@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/* loaded from: classes4.dex */
-public final class RopeByteString extends ByteString {
+/* loaded from: classes3.dex */
+final class RopeByteString extends ByteString {
     static final int[] minLengthByDepth = {1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, MetricsProto.MetricsEvent.FUELGAUGE_ANOMALY_DETAIL, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986, 102334155, 165580141, 267914296, 433494437, 701408733, 1134903170, 1836311903, Integer.MAX_VALUE};
     private static final long serialVersionUID = 1;
     private final ByteString left;
@@ -26,20 +26,15 @@ public final class RopeByteString extends ByteString {
     private final int totalLength;
     private final int treeDepth;
 
-    /* synthetic */ RopeByteString(ByteString x0, ByteString x1, AnonymousClass1 x2) {
-        this(x0, x1);
-    }
-
     private RopeByteString(ByteString left, ByteString right) {
         this.left = left;
         this.right = right;
-        int size = left.size();
-        this.leftLength = size;
-        this.totalLength = size + right.size();
+        this.leftLength = left.size();
+        this.totalLength = this.leftLength + right.size();
         this.treeDepth = Math.max(left.getTreeDepth(), right.getTreeDepth()) + 1;
     }
 
-    public static ByteString concatenate(ByteString left, ByteString right) {
+    static ByteString concatenate(ByteString left, ByteString right) {
         if (right.size() == 0) {
             return left;
         }
@@ -83,11 +78,10 @@ public final class RopeByteString extends ByteString {
     }
 
     static int minLength(int depth) {
-        int[] iArr = minLengthByDepth;
-        if (depth >= iArr.length) {
+        if (depth >= minLengthByDepth.length) {
             return Integer.MAX_VALUE;
         }
-        return iArr[depth];
+        return minLengthByDepth[depth];
     }
 
     @Override // com.android.framework.protobuf.ByteString
@@ -97,54 +91,16 @@ public final class RopeByteString extends ByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public byte internalByteAt(int index) {
-        int i = this.leftLength;
-        if (index < i) {
+    byte internalByteAt(int index) {
+        if (index < this.leftLength) {
             return this.left.internalByteAt(index);
         }
-        return this.right.internalByteAt(index - i);
+        return this.right.internalByteAt(index - this.leftLength);
     }
 
     @Override // com.android.framework.protobuf.ByteString
     public int size() {
         return this.totalLength;
-    }
-
-    /* renamed from: com.android.framework.protobuf.RopeByteString$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends ByteString.AbstractByteIterator {
-        ByteString.ByteIterator current = nextPiece();
-        final PieceIterator pieces;
-
-        AnonymousClass1() {
-            this.pieces = new PieceIterator(RopeByteString.this);
-        }
-
-        /* JADX WARN: Type inference failed for: r0v5, types: [com.android.framework.protobuf.ByteString$ByteIterator] */
-        private ByteString.ByteIterator nextPiece() {
-            if (this.pieces.hasNext()) {
-                return this.pieces.next().iterator2();
-            }
-            return null;
-        }
-
-        @Override // java.util.Iterator
-        public boolean hasNext() {
-            return this.current != null;
-        }
-
-        @Override // com.android.framework.protobuf.ByteString.ByteIterator
-        public byte nextByte() {
-            ByteString.ByteIterator byteIterator = this.current;
-            if (byteIterator == null) {
-                throw new NoSuchElementException();
-            }
-            byte b = byteIterator.nextByte();
-            if (!this.current.hasNext()) {
-                this.current = nextPiece();
-            }
-            return b;
-        }
     }
 
     @Override // com.android.framework.protobuf.ByteString, java.lang.Iterable
@@ -154,7 +110,7 @@ public final class RopeByteString extends ByteString {
             ByteString.ByteIterator current = nextPiece();
             final PieceIterator pieces;
 
-            AnonymousClass1() {
+            {
                 this.pieces = new PieceIterator(RopeByteString.this);
             }
 
@@ -173,11 +129,10 @@ public final class RopeByteString extends ByteString {
 
             @Override // com.android.framework.protobuf.ByteString.ByteIterator
             public byte nextByte() {
-                ByteString.ByteIterator byteIterator = this.current;
-                if (byteIterator == null) {
+                if (this.current == null) {
                     throw new NoSuchElementException();
                 }
-                byte b = byteIterator.nextByte();
+                byte b = this.current.nextByte();
                 if (!this.current.hasNext()) {
                     this.current = nextPiece();
                 }
@@ -187,12 +142,12 @@ public final class RopeByteString extends ByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public int getTreeDepth() {
+    protected int getTreeDepth() {
         return this.treeDepth;
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public boolean isBalanced() {
+    protected boolean isBalanced() {
         return this.totalLength >= minLength(this.treeDepth);
     }
 
@@ -205,12 +160,11 @@ public final class RopeByteString extends ByteString {
         if (length == this.totalLength) {
             return this;
         }
-        int i = this.leftLength;
-        if (endIndex <= i) {
+        if (endIndex <= this.leftLength) {
             return this.left.substring(beginIndex, endIndex);
         }
-        if (beginIndex >= i) {
-            return this.right.substring(beginIndex - i, endIndex - i);
+        if (beginIndex >= this.leftLength) {
+            return this.right.substring(beginIndex - this.leftLength, endIndex - this.leftLength);
         }
         ByteString leftSub = this.left.substring(beginIndex);
         ByteString rightSub = this.right.substring(0, endIndex - this.leftLength);
@@ -218,17 +172,15 @@ public final class RopeByteString extends ByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public void copyToInternal(byte[] target, int sourceOffset, int targetOffset, int numberToCopy) {
-        int i = sourceOffset + numberToCopy;
-        int i2 = this.leftLength;
-        if (i <= i2) {
+    protected void copyToInternal(byte[] target, int sourceOffset, int targetOffset, int numberToCopy) {
+        if (sourceOffset + numberToCopy <= this.leftLength) {
             this.left.copyToInternal(target, sourceOffset, targetOffset, numberToCopy);
         } else {
-            if (sourceOffset >= i2) {
-                this.right.copyToInternal(target, sourceOffset - i2, targetOffset, numberToCopy);
+            if (sourceOffset >= this.leftLength) {
+                this.right.copyToInternal(target, sourceOffset - this.leftLength, targetOffset, numberToCopy);
                 return;
             }
-            int leftLength = i2 - sourceOffset;
+            int leftLength = this.leftLength - sourceOffset;
             this.left.copyToInternal(target, sourceOffset, targetOffset, leftLength);
             this.right.copyToInternal(target, 0, targetOffset + leftLength, numberToCopy - leftLength);
         }
@@ -264,30 +216,28 @@ public final class RopeByteString extends ByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public void writeToInternal(OutputStream out, int sourceOffset, int numberToWrite) throws IOException {
-        int i = sourceOffset + numberToWrite;
-        int i2 = this.leftLength;
-        if (i <= i2) {
+    void writeToInternal(OutputStream out, int sourceOffset, int numberToWrite) throws IOException {
+        if (sourceOffset + numberToWrite <= this.leftLength) {
             this.left.writeToInternal(out, sourceOffset, numberToWrite);
         } else {
-            if (sourceOffset >= i2) {
-                this.right.writeToInternal(out, sourceOffset - i2, numberToWrite);
+            if (sourceOffset >= this.leftLength) {
+                this.right.writeToInternal(out, sourceOffset - this.leftLength, numberToWrite);
                 return;
             }
-            int numberToWriteInLeft = i2 - sourceOffset;
+            int numberToWriteInLeft = this.leftLength - sourceOffset;
             this.left.writeToInternal(out, sourceOffset, numberToWriteInLeft);
             this.right.writeToInternal(out, 0, numberToWrite - numberToWriteInLeft);
         }
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public void writeTo(ByteOutput output) throws IOException {
+    void writeTo(ByteOutput output) throws IOException {
         this.left.writeTo(output);
         this.right.writeTo(output);
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public void writeToReverse(ByteOutput output) throws IOException {
+    void writeToReverse(ByteOutput output) throws IOException {
         this.right.writeToReverse(output);
         this.left.writeToReverse(output);
     }
@@ -300,22 +250,20 @@ public final class RopeByteString extends ByteString {
     @Override // com.android.framework.protobuf.ByteString
     public boolean isValidUtf8() {
         int leftPartial = this.left.partialIsValidUtf8(0, 0, this.leftLength);
-        ByteString byteString = this.right;
-        int state = byteString.partialIsValidUtf8(leftPartial, 0, byteString.size());
+        int state = this.right.partialIsValidUtf8(leftPartial, 0, this.right.size());
         return state == 0;
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public int partialIsValidUtf8(int state, int offset, int length) {
+    protected int partialIsValidUtf8(int state, int offset, int length) {
         int toIndex = offset + length;
-        int i = this.leftLength;
-        if (toIndex <= i) {
+        if (toIndex <= this.leftLength) {
             return this.left.partialIsValidUtf8(state, offset, length);
         }
-        if (offset >= i) {
-            return this.right.partialIsValidUtf8(state, offset - i, length);
+        if (offset >= this.leftLength) {
+            return this.right.partialIsValidUtf8(state, offset - this.leftLength, length);
         }
-        int leftLength = i - offset;
+        int leftLength = this.leftLength - offset;
         int leftPartial = this.left.partialIsValidUtf8(state, offset, leftLength);
         return this.right.partialIsValidUtf8(leftPartial, 0, length - leftLength);
     }
@@ -365,9 +313,8 @@ public final class RopeByteString extends ByteString {
                 return false;
             }
             i3 += min;
-            int i4 = this.totalLength;
-            if (i3 >= i4) {
-                if (i3 == i4) {
+            if (i3 >= this.totalLength) {
+                if (i3 == this.totalLength) {
                     return true;
                 }
                 throw new IllegalStateException();
@@ -389,16 +336,15 @@ public final class RopeByteString extends ByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public int partialHash(int h, int offset, int length) {
+    protected int partialHash(int h, int offset, int length) {
         int toIndex = offset + length;
-        int i = this.leftLength;
-        if (toIndex <= i) {
+        if (toIndex <= this.leftLength) {
             return this.left.partialHash(h, offset, length);
         }
-        if (offset >= i) {
-            return this.right.partialHash(h, offset - i, length);
+        if (offset >= this.leftLength) {
+            return this.right.partialHash(h, offset - this.leftLength, length);
         }
-        int leftLength = i - offset;
+        int leftLength = this.leftLength - offset;
         int leftPartial = this.left.partialHash(h, offset, leftLength);
         return this.right.partialHash(leftPartial, 0, length - leftLength);
     }
@@ -413,18 +359,14 @@ public final class RopeByteString extends ByteString {
         return new RopeInputStream();
     }
 
-    /* loaded from: classes4.dex */
-    public static class Balancer {
+    private static class Balancer {
         private final ArrayDeque<ByteString> prefixesStack;
 
         private Balancer() {
             this.prefixesStack = new ArrayDeque<>();
         }
 
-        /* synthetic */ Balancer(AnonymousClass1 x0) {
-            this();
-        }
-
+        /* JADX INFO: Access modifiers changed from: private */
         public ByteString balance(ByteString left, ByteString right) {
             doBalance(left);
             doBalance(right);
@@ -459,7 +401,10 @@ public final class RopeByteString extends ByteString {
             }
             int binStart = RopeByteString.minLength(depthBin);
             ByteString newTree = this.prefixesStack.pop();
-            while (!this.prefixesStack.isEmpty() && this.prefixesStack.peek().size() < binStart) {
+            while (true) {
+                if (this.prefixesStack.isEmpty() || this.prefixesStack.peek().size() >= binStart) {
+                    break;
+                }
                 ByteString left = this.prefixesStack.pop();
                 newTree = new RopeByteString(left, newTree);
             }
@@ -485,21 +430,15 @@ public final class RopeByteString extends ByteString {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class PieceIterator implements Iterator<ByteString.LeafByteString> {
+    private static final class PieceIterator implements Iterator<ByteString.LeafByteString> {
         private final ArrayDeque<RopeByteString> breadCrumbs;
         private ByteString.LeafByteString next;
-
-        /* synthetic */ PieceIterator(ByteString x0, AnonymousClass1 x1) {
-            this(x0);
-        }
 
         private PieceIterator(ByteString root) {
             if (root instanceof RopeByteString) {
                 RopeByteString rbs = (RopeByteString) root;
-                ArrayDeque<RopeByteString> arrayDeque = new ArrayDeque<>(rbs.getTreeDepth());
-                this.breadCrumbs = arrayDeque;
-                arrayDeque.push(rbs);
+                this.breadCrumbs = new ArrayDeque<>(rbs.getTreeDepth());
+                this.breadCrumbs.push(rbs);
                 this.next = getLeafByLeft(rbs.left);
                 return;
             }
@@ -518,16 +457,13 @@ public final class RopeByteString extends ByteString {
         }
 
         private ByteString.LeafByteString getNextNonEmptyLeaf() {
-            ByteString.LeafByteString result;
-            do {
-                ArrayDeque<RopeByteString> arrayDeque = this.breadCrumbs;
-                if (arrayDeque != null && !arrayDeque.isEmpty()) {
-                    result = getLeafByLeft(this.breadCrumbs.pop().right);
-                } else {
-                    return null;
+            while (this.breadCrumbs != null && !this.breadCrumbs.isEmpty()) {
+                ByteString.LeafByteString result = getLeafByLeft(this.breadCrumbs.pop().right);
+                if (!result.isEmpty()) {
+                    return result;
                 }
-            } while (result.isEmpty());
-            return result;
+            }
+            return null;
         }
 
         @Override // java.util.Iterator
@@ -535,6 +471,7 @@ public final class RopeByteString extends ByteString {
             return this.next != null;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // java.util.Iterator
         public ByteString.LeafByteString next() {
             if (this.next == null) {
@@ -559,7 +496,6 @@ public final class RopeByteString extends ByteString {
         throw new InvalidObjectException("RopeByteStream instances are not to be serialized directly");
     }
 
-    /* loaded from: classes4.dex */
     private class RopeInputStream extends InputStream {
         private ByteString.LeafByteString currentPiece;
         private int currentPieceIndex;
@@ -620,10 +556,10 @@ public final class RopeByteString extends ByteString {
         @Override // java.io.InputStream
         public int read() throws IOException {
             advanceIfCurrentPieceFullyRead();
-            ByteString.LeafByteString leafByteString = this.currentPiece;
-            if (leafByteString == null) {
+            if (this.currentPiece == null) {
                 return -1;
             }
+            ByteString.LeafByteString leafByteString = this.currentPiece;
             int i = this.currentPieceIndex;
             this.currentPieceIndex = i + 1;
             return leafByteString.byteAt(i) & 255;
@@ -651,30 +587,23 @@ public final class RopeByteString extends ByteString {
         }
 
         private void initialize() {
-            PieceIterator pieceIterator = new PieceIterator(RopeByteString.this);
-            this.pieceIterator = pieceIterator;
-            ByteString.LeafByteString next = pieceIterator.next();
-            this.currentPiece = next;
-            this.currentPieceSize = next.size();
+            this.pieceIterator = new PieceIterator(RopeByteString.this);
+            this.currentPiece = this.pieceIterator.next();
+            this.currentPieceSize = this.currentPiece.size();
             this.currentPieceIndex = 0;
             this.currentPieceOffsetInRope = 0;
         }
 
         private void advanceIfCurrentPieceFullyRead() {
-            if (this.currentPiece != null) {
-                int i = this.currentPieceIndex;
-                int i2 = this.currentPieceSize;
-                if (i == i2) {
-                    this.currentPieceOffsetInRope += i2;
-                    this.currentPieceIndex = 0;
-                    if (this.pieceIterator.hasNext()) {
-                        ByteString.LeafByteString next = this.pieceIterator.next();
-                        this.currentPiece = next;
-                        this.currentPieceSize = next.size();
-                    } else {
-                        this.currentPiece = null;
-                        this.currentPieceSize = 0;
-                    }
+            if (this.currentPiece != null && this.currentPieceIndex == this.currentPieceSize) {
+                this.currentPieceOffsetInRope += this.currentPieceSize;
+                this.currentPieceIndex = 0;
+                if (this.pieceIterator.hasNext()) {
+                    this.currentPiece = this.pieceIterator.next();
+                    this.currentPieceSize = this.currentPiece.size();
+                } else {
+                    this.currentPiece = null;
+                    this.currentPieceSize = 0;
                 }
             }
         }

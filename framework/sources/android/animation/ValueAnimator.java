@@ -56,27 +56,23 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     ArrayList<AnimatorUpdateListener> mUpdateListeners = null;
     private float mDurationScale = -1.0f;
 
-    /* loaded from: classes.dex */
     public interface AnimatorUpdateListener {
         void onAnimationUpdate(ValueAnimator valueAnimator);
     }
 
-    /* loaded from: classes.dex */
     public interface DurationScaleChangeListener {
         void onChanged(float f);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RepeatMode {
     }
 
     public static void setDurationScale(float durationScale) {
         List<WeakReference<DurationScaleChangeListener>> listenerCopy;
         sDurationScale = durationScale;
-        ArrayList<WeakReference<DurationScaleChangeListener>> arrayList = sDurationScaleChangeListeners;
-        synchronized (arrayList) {
-            listenerCopy = new ArrayList<>(arrayList);
+        synchronized (sDurationScaleChangeListeners) {
+            listenerCopy = new ArrayList<>(sDurationScaleChangeListeners);
         }
         int listenersSize = listenerCopy.size();
         for (int i = 0; i < listenersSize; i++) {
@@ -94,36 +90,29 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     public static boolean registerDurationScaleChangeListener(DurationScaleChangeListener listener) {
         int posToReplace = -1;
         synchronized (sDurationScaleChangeListeners) {
-            int i = 0;
-            while (true) {
-                ArrayList<WeakReference<DurationScaleChangeListener>> arrayList = sDurationScaleChangeListeners;
-                if (i < arrayList.size()) {
-                    WeakReference<DurationScaleChangeListener> ref = arrayList.get(i);
-                    if (ref.get() == null) {
-                        if (posToReplace == -1) {
-                            posToReplace = i;
-                        }
-                    } else if (ref.get() == listener) {
-                        return false;
+            for (int i = 0; i < sDurationScaleChangeListeners.size(); i++) {
+                WeakReference<DurationScaleChangeListener> ref = sDurationScaleChangeListeners.get(i);
+                if (ref.get() == null) {
+                    if (posToReplace == -1) {
+                        posToReplace = i;
                     }
-                    i++;
-                } else {
-                    if (posToReplace != -1) {
-                        arrayList.set(posToReplace, new WeakReference<>(listener));
-                        return true;
-                    }
-                    return arrayList.add(new WeakReference<>(listener));
+                } else if (ref.get() == listener) {
+                    return false;
                 }
             }
+            if (posToReplace != -1) {
+                sDurationScaleChangeListeners.set(posToReplace, new WeakReference<>(listener));
+                return true;
+            }
+            return sDurationScaleChangeListeners.add(new WeakReference<>(listener));
         }
     }
 
     public static boolean unregisterDurationScaleChangeListener(DurationScaleChangeListener listener) {
         boolean remove;
-        ArrayList<WeakReference<DurationScaleChangeListener>> arrayList = sDurationScaleChangeListeners;
-        synchronized (arrayList) {
+        synchronized (sDurationScaleChangeListeners) {
             WeakReference<DurationScaleChangeListener> listenerRefToRemove = null;
-            Iterator<WeakReference<DurationScaleChangeListener>> it = arrayList.iterator();
+            Iterator<WeakReference<DurationScaleChangeListener>> it = sDurationScaleChangeListeners.iterator();
             while (true) {
                 if (!it.hasNext()) {
                     break;
@@ -179,11 +168,10 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         if (values == null || values.length == 0) {
             return;
         }
-        PropertyValuesHolder[] propertyValuesHolderArr = this.mValues;
-        if (propertyValuesHolderArr == null || propertyValuesHolderArr.length == 0) {
+        if (this.mValues == null || this.mValues.length == 0) {
             setValues(PropertyValuesHolder.ofInt("", values));
         } else {
-            PropertyValuesHolder valuesHolder = propertyValuesHolderArr[0];
+            PropertyValuesHolder valuesHolder = this.mValues[0];
             valuesHolder.setIntValues(values);
         }
         this.mInitialized = false;
@@ -193,11 +181,10 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         if (values == null || values.length == 0) {
             return;
         }
-        PropertyValuesHolder[] propertyValuesHolderArr = this.mValues;
-        if (propertyValuesHolderArr == null || propertyValuesHolderArr.length == 0) {
+        if (this.mValues == null || this.mValues.length == 0) {
             setValues(PropertyValuesHolder.ofFloat("", values));
         } else {
-            PropertyValuesHolder valuesHolder = propertyValuesHolderArr[0];
+            PropertyValuesHolder valuesHolder = this.mValues[0];
             valuesHolder.setFloatValues(values);
         }
         this.mInitialized = false;
@@ -207,11 +194,10 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         if (values == null || values.length == 0) {
             return;
         }
-        PropertyValuesHolder[] propertyValuesHolderArr = this.mValues;
-        if (propertyValuesHolderArr == null || propertyValuesHolderArr.length == 0) {
+        if (this.mValues == null || this.mValues.length == 0) {
             setValues(PropertyValuesHolder.ofObject("", (TypeEvaluator) null, values));
         } else {
-            PropertyValuesHolder valuesHolder = propertyValuesHolderArr[0];
+            PropertyValuesHolder valuesHolder = this.mValues[0];
             valuesHolder.setObjectValues(values);
         }
         this.mInitialized = false;
@@ -231,11 +217,10 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         return this.mValues;
     }
 
-    public void initAnimation() {
+    void initAnimation() {
         if (!this.mInitialized) {
-            PropertyValuesHolder[] propertyValuesHolderArr = this.mValues;
-            if (propertyValuesHolderArr != null) {
-                int numValues = propertyValuesHolderArr.length;
+            if (this.mValues != null) {
+                int numValues = this.mValues.length;
                 for (int i = 0; i < numValues; i++) {
                     this.mValues[i].init();
                 }
@@ -258,12 +243,11 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     }
 
     private float resolveDurationScale() {
-        float f = this.mDurationScale;
-        return f >= 0.0f ? f : sDurationScale;
+        return this.mDurationScale >= 0.0f ? this.mDurationScale : sDurationScale;
     }
 
     private long getScaledDuration() {
-        return ((float) this.mDuration) * resolveDurationScale();
+        return (long) (this.mDuration * resolveDurationScale());
     }
 
     @Override // android.animation.Animator
@@ -276,12 +260,11 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         if (this.mRepeatCount == -1) {
             return -1L;
         }
-        return this.mStartDelay + (this.mDuration * (r0 + 1));
+        return this.mStartDelay + (this.mDuration * (this.mRepeatCount + 1));
     }
 
     public void setCurrentPlayTime(long playTime) {
-        long j = this.mDuration;
-        float fraction = j > 0 ? ((float) playTime) / ((float) j) : 1.0f;
+        float fraction = this.mDuration > 0 ? playTime / this.mDuration : 1.0f;
         setCurrentFraction(fraction);
     }
 
@@ -290,7 +273,7 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         float fraction2 = clampFraction(fraction);
         this.mStartTimeCommitted = true;
         if (isPulsingInternal()) {
-            long seekTime = ((float) getScaledDuration()) * fraction2;
+            long seekTime = (long) (getScaledDuration() * fraction2);
             long currentTime = AnimationUtils.currentAnimationTimeMillis();
             this.mStartTime = currentTime - seekTime;
         } else {
@@ -322,19 +305,16 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
             return 0.0f;
         }
         if (this.mRepeatCount != -1) {
-            return Math.min(fraction, r0 + 1);
+            return Math.min(fraction, this.mRepeatCount + 1);
         }
         return fraction;
     }
 
     private boolean shouldPlayBackward(int iteration, boolean inReverse) {
-        if (iteration > 0 && this.mRepeatMode == 2) {
-            int i = this.mRepeatCount;
-            if (iteration < i + 1 || i == -1) {
-                return inReverse ? iteration % 2 == 0 : iteration % 2 != 0;
-            }
+        if (iteration <= 0 || this.mRepeatMode != 2 || (iteration >= this.mRepeatCount + 1 && this.mRepeatCount != -1)) {
+            return inReverse;
         }
-        return inReverse;
+        return inReverse ? iteration % 2 == 0 : iteration % 2 != 0;
     }
 
     public long getCurrentPlayTime() {
@@ -345,13 +325,13 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
             return 0L;
         }
         if (this.mSeekFraction >= 0.0f) {
-            return ((float) this.mDuration) * r0;
+            return (long) (this.mDuration * this.mSeekFraction);
         }
         float durationScale = resolveDurationScale();
         if (durationScale == 0.0f) {
             durationScale = 1.0f;
         }
-        return ((float) (AnimationUtils.currentAnimationTimeMillis() - this.mStartTime)) / durationScale;
+        return (long) ((AnimationUtils.currentAnimationTimeMillis() - this.mStartTime) / durationScale);
     }
 
     @Override // android.animation.Animator
@@ -379,9 +359,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     }
 
     public Object getAnimatedValue() {
-        PropertyValuesHolder[] propertyValuesHolderArr = this.mValues;
-        if (propertyValuesHolderArr != null && propertyValuesHolderArr.length > 0) {
-            return propertyValuesHolderArr[0].getAnimatedValue();
+        if (this.mValues != null && this.mValues.length > 0) {
+            return this.mValues[0].getAnimatedValue();
         }
         return null;
     }
@@ -418,20 +397,18 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     }
 
     public void removeAllUpdateListeners() {
-        ArrayList<AnimatorUpdateListener> arrayList = this.mUpdateListeners;
-        if (arrayList == null) {
+        if (this.mUpdateListeners == null) {
             return;
         }
-        arrayList.clear();
+        this.mUpdateListeners.clear();
         this.mUpdateListeners = null;
     }
 
     public void removeUpdateListener(AnimatorUpdateListener listener) {
-        ArrayList<AnimatorUpdateListener> arrayList = this.mUpdateListeners;
-        if (arrayList == null) {
+        if (this.mUpdateListeners == null) {
             return;
         }
-        arrayList.remove(listener);
+        this.mUpdateListeners.remove(listener);
         if (this.mUpdateListeners.size() == 0) {
             this.mUpdateListeners = null;
         }
@@ -452,9 +429,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     }
 
     public void setEvaluator(TypeEvaluator value) {
-        PropertyValuesHolder[] propertyValuesHolderArr;
-        if (value != null && (propertyValuesHolderArr = this.mValues) != null && propertyValuesHolderArr.length > 0) {
-            propertyValuesHolderArr[0].setEvaluator(value);
+        if (value != null && this.mValues != null && this.mValues.length > 0) {
+            this.mValues[0].setEvaluator(value);
         }
     }
 
@@ -464,15 +440,12 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         }
         this.mReversing = playBackwards;
         this.mSelfPulse = !this.mSuppressSelfPulseRequested;
-        if (playBackwards) {
-            float f = this.mSeekFraction;
-            if (f != -1.0f && f != 0.0f) {
-                if (this.mRepeatCount == -1) {
-                    float fraction = (float) (f - Math.floor(f));
-                    this.mSeekFraction = 1.0f - fraction;
-                } else {
-                    this.mSeekFraction = (r4 + 1) - f;
-                }
+        if (playBackwards && this.mSeekFraction != -1.0f && this.mSeekFraction != 0.0f) {
+            if (this.mRepeatCount == -1) {
+                float fraction = (float) (this.mSeekFraction - Math.floor(this.mSeekFraction));
+                this.mSeekFraction = 1.0f - fraction;
+            } else {
+                this.mSeekFraction = (this.mRepeatCount + 1) - this.mSeekFraction;
             }
         }
         this.mStarted = true;
@@ -485,18 +458,16 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         addAnimationCallback(0L);
         if (this.mStartDelay == 0 || this.mSeekFraction >= 0.0f || this.mReversing) {
             startAnimation();
-            float f2 = this.mSeekFraction;
-            if (f2 == -1.0f) {
+            if (this.mSeekFraction == -1.0f) {
                 setCurrentPlayTime(0L);
             } else {
-                setCurrentFraction(f2);
+                setCurrentFraction(this.mSeekFraction);
             }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    public void startWithoutPulsing(boolean inReverse) {
+    void startWithoutPulsing(boolean inReverse) {
         this.mSuppressSelfPulseRequested = true;
         if (inReverse) {
             reverse();
@@ -635,9 +606,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         this.mAnimationEndRequested = false;
         initAnimation();
         this.mRunning = true;
-        float f = this.mSeekFraction;
-        if (f >= 0.0f) {
-            this.mOverallFraction = f;
+        if (this.mSeekFraction >= 0.0f) {
+            this.mOverallFraction = this.mSeekFraction;
         } else {
             this.mOverallFraction = 0.0f;
         }
@@ -667,11 +637,10 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         boolean done = false;
         if (this.mRunning) {
             long scaledDuration = getScaledDuration();
-            float fraction = scaledDuration > 0 ? ((float) (currentTime - this.mStartTime)) / ((float) scaledDuration) : 1.0f;
+            float fraction = scaledDuration > 0 ? (currentTime - this.mStartTime) / scaledDuration : 1.0f;
             float lastFraction = this.mOverallFraction;
             boolean newIteration = ((int) fraction) > ((int) lastFraction);
-            int i = this.mRepeatCount;
-            boolean lastIterationFinished = fraction >= ((float) (i + 1)) && i != -1;
+            boolean lastIterationFinished = fraction >= ((float) (this.mRepeatCount + 1)) && this.mRepeatCount != -1;
             if (scaledDuration == 0) {
                 done = true;
             } else if (newIteration && !lastIterationFinished) {
@@ -679,17 +648,15 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
             } else if (lastIterationFinished) {
                 done = true;
             }
-            float clampFraction = clampFraction(fraction);
-            this.mOverallFraction = clampFraction;
-            float currentIterationFraction = getCurrentIterationFraction(clampFraction, this.mReversing);
+            this.mOverallFraction = clampFraction(fraction);
+            float currentIterationFraction = getCurrentIterationFraction(this.mOverallFraction, this.mReversing);
             animateValue(currentIterationFraction);
         }
         return done;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    public void animateValuesInRange(long currentPlayTime, long lastPlayTime) {
+    void animateValuesInRange(long currentPlayTime, long lastPlayTime) {
         if (currentPlayTime < 0 || lastPlayTime < -1) {
             throw new UnsupportedOperationException("Error: Play time should never be negative.");
         }
@@ -703,9 +670,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         if (duration >= 0) {
             lastPlayTime = Math.min(duration, lastPlayTime);
         }
-        long j = this.mStartDelay;
-        long lastPlayTime2 = lastPlayTime - j;
-        long currentPlayTime2 = currentPlayTime - j;
+        long lastPlayTime2 = lastPlayTime - this.mStartDelay;
+        long currentPlayTime2 = currentPlayTime - this.mStartDelay;
         if (this.mRepeatCount > 0) {
             int iteration = Math.max(0, (int) (currentPlayTime2 / this.mDuration));
             int lastIteration = Math.max(0, (int) (lastPlayTime2 / this.mDuration));
@@ -714,16 +680,15 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
             }
         }
         int iteration2 = this.mRepeatCount;
-        if (iteration2 != -1 && currentPlayTime2 > (iteration2 + 1) * this.mDuration) {
+        if (iteration2 != -1 && currentPlayTime2 > (this.mRepeatCount + 1) * this.mDuration) {
             throw new IllegalStateException("Can't animate a value outside of the duration");
         }
-        float fraction = ((float) Math.max(0L, currentPlayTime2)) / ((float) this.mDuration);
+        float fraction = Math.max(0L, currentPlayTime2) / this.mDuration;
         animateValue(getCurrentIterationFraction(fraction, false));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    public void animateSkipToEnds(long currentPlayTime, long lastPlayTime) {
+    void animateSkipToEnds(long currentPlayTime, long lastPlayTime) {
         boolean doSkip = true;
         boolean inReverse = currentPlayTime < lastPlayTime;
         if (currentPlayTime <= 0 && lastPlayTime > 0) {
@@ -741,9 +706,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    public void skipToEndValue(boolean inReverse) {
+    void skipToEndValue(boolean inReverse) {
         initAnimation();
         float endFraction = inReverse ? 0.0f : 1.0f;
         if (this.mRepeatCount % 2 == 1 && this.mRepeatMode == 2) {
@@ -752,9 +716,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         animateValue(endFraction);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    public boolean isInitialized() {
+    boolean isInitialized() {
         return this.mInitialized;
     }
 
@@ -765,7 +728,7 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
             if (this.mReversing) {
                 resolveDurationScale = frameTime;
             } else {
-                resolveDurationScale = (((float) this.mStartDelay) * resolveDurationScale()) + frameTime;
+                resolveDurationScale = ((long) (this.mStartDelay * resolveDurationScale())) + frameTime;
             }
             this.mStartTime = resolveDurationScale;
         }
@@ -776,9 +739,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         }
         if (this.mResumed) {
             this.mResumed = false;
-            long j = this.mPauseTime;
-            if (j > 0) {
-                this.mStartTime += frameTime - j;
+            if (this.mPauseTime > 0) {
+                this.mStartTime += frameTime - this.mPauseTime;
             }
         }
         if (!this.mRunning) {
@@ -790,7 +752,7 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         }
         if (this.mLastFrameTime < 0) {
             if (this.mSeekFraction >= 0.0f) {
-                long seekTime = ((float) getScaledDuration()) * this.mSeekFraction;
+                long seekTime = (long) (getScaledDuration() * this.mSeekFraction);
                 this.mStartTime = frameTime - seekTime;
                 this.mSeekFraction = -1.0f;
             }
@@ -805,9 +767,8 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         return finished;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    public boolean pulseAnimationFrame(long frameTime) {
+    boolean pulseAnimationFrame(long frameTime) {
         if (this.mSelfPulse) {
             return false;
         }
@@ -839,7 +800,7 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         return this.mCurrentFraction;
     }
 
-    public void animateValue(float fraction) {
+    void animateValue(float fraction) {
         if (TRACE_ANIMATION_FRACTION) {
             Trace.traceCounter(8L, getNameForTrace() + hashCode(), (int) (1000.0f * fraction));
         }
@@ -858,9 +819,9 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     }
 
     @Override // android.animation.Animator
-    /* renamed from: clone */
-    public ValueAnimator mo57clone() {
-        ValueAnimator anim = (ValueAnimator) super.mo57clone();
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public ValueAnimator mo77clone() {
+        ValueAnimator anim = (ValueAnimator) super.mo77clone();
         if (this.mUpdateListeners != null) {
             anim.mUpdateListeners = new ArrayList<>(this.mUpdateListeners);
         }
@@ -887,7 +848,7 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
             anim.mValues = new PropertyValuesHolder[numValues];
             anim.mValuesMap = new HashMap<>(numValues);
             for (int i = 0; i < numValues; i++) {
-                PropertyValuesHolder newValuesHolder = oldValues[i].mo102clone();
+                PropertyValuesHolder newValuesHolder = oldValues[i].mo122clone();
                 anim.mValues[i] = newValuesHolder;
                 anim.mValuesMap.put(newValuesHolder.getPropertyName(), newValuesHolder);
             }
@@ -914,8 +875,7 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     }
 
     public AnimationHandler getAnimationHandler() {
-        AnimationHandler animationHandler = this.mAnimationHandler;
-        return animationHandler != null ? animationHandler : AnimationHandler.getInstance();
+        return this.mAnimationHandler != null ? this.mAnimationHandler : AnimationHandler.getInstance();
     }
 
     public void setAnimationHandler(AnimationHandler animationHandler) {

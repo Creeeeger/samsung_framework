@@ -21,18 +21,14 @@ public class ExtRDSData {
         this.blerc = (raw_data[1] >> 2) & 3;
         this.blerd = raw_data[1] & 3;
         this.rssi = raw_data[2];
-        byte[] bArr = this.rdsa;
-        bArr[0] = raw_data[4];
-        bArr[1] = raw_data[3];
-        byte[] bArr2 = this.rdsb;
-        bArr2[0] = raw_data[6];
-        bArr2[1] = raw_data[5];
-        byte[] bArr3 = this.rdsc;
-        bArr3[0] = raw_data[8];
-        bArr3[1] = raw_data[7];
-        byte[] bArr4 = this.rdsd;
-        bArr4[0] = raw_data[10];
-        bArr4[1] = raw_data[9];
+        this.rdsa[0] = raw_data[4];
+        this.rdsa[1] = raw_data[3];
+        this.rdsb[0] = raw_data[6];
+        this.rdsb[1] = raw_data[5];
+        this.rdsc[0] = raw_data[8];
+        this.rdsc[1] = raw_data[7];
+        this.rdsd[0] = raw_data[10];
+        this.rdsd[1] = raw_data[9];
     }
 
     private void logPackage() {

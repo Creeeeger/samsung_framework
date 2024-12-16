@@ -31,8 +31,7 @@ public final class ImsConfigurationTracker {
         if (!this.mInitialized) {
             return;
         }
-        Configuration configuration = this.mLastKnownConfig;
-        int diff = configuration != null ? configuration.diffPublicOnly(newConfig) : -1;
+        int diff = this.mLastKnownConfig != null ? this.mLastKnownConfig.diffPublicOnly(newConfig) : -1;
         int unhandledDiff = (~this.mHandledConfigChanges) & diff;
         if (unhandledDiff != 0) {
             resetStateForNewConfigurationRunner.run();

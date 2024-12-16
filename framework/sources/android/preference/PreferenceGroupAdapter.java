@@ -3,10 +3,12 @@ package android.preference;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.preference.Preference;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import com.android.internal.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,9 +30,6 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
     private volatile boolean mIsSyncing = false;
     private Handler mHandler = new Handler();
     private Runnable mSyncRunnable = new Runnable() { // from class: android.preference.PreferenceGroupAdapter.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             PreferenceGroupAdapter.this.syncMyPreferences();
@@ -38,28 +37,10 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
     };
     private int mHighlightedPosition = -1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.PreferenceGroupAdapter$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            PreferenceGroupAdapter.this.syncMyPreferences();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public static class PreferenceLayout implements Comparable<PreferenceLayout> {
+    private static class PreferenceLayout implements Comparable<PreferenceLayout> {
         private String name;
         private int resId;
         private int widgetResId;
-
-        /* synthetic */ PreferenceLayout(PreferenceLayoutIA preferenceLayoutIA) {
-            this();
-        }
 
         private PreferenceLayout() {
         }
@@ -68,17 +49,13 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
         public int compareTo(PreferenceLayout other) {
             int compareNames = this.name.compareTo(other.name);
             if (compareNames == 0) {
-                int i = this.resId;
-                int i2 = other.resId;
-                if (i == i2) {
-                    int i3 = this.widgetResId;
-                    int i4 = other.widgetResId;
-                    if (i3 == i4) {
+                if (this.resId == other.resId) {
+                    if (this.widgetResId == other.widgetResId) {
                         return 0;
                     }
-                    return i3 - i4;
+                    return this.widgetResId - other.widgetResId;
                 }
-                return i - i2;
+                return this.resId - other.resId;
             }
             return compareNames;
         }
@@ -86,12 +63,13 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
 
     public PreferenceGroupAdapter(PreferenceGroup preferenceGroup) {
         this.mPreferenceGroup = preferenceGroup;
-        preferenceGroup.setOnPreferenceChangeInternalListener(this);
+        this.mPreferenceGroup.setOnPreferenceChangeInternalListener(this);
         this.mPreferenceList = new ArrayList();
         this.mPreferenceLayouts = new ArrayList<>();
         syncMyPreferences();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void syncMyPreferences() {
         synchronized (this) {
             if (this.mIsSyncing) {
@@ -112,20 +90,63 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0051, code lost:
-    
-        if (r6 != null) goto L104;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void flattenPreferenceGroup(java.util.List<android.preference.Preference> r9, android.preference.PreferenceGroup r10) {
-        /*
-            Method dump skipped, instructions count: 220
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.preference.PreferenceGroupAdapter.flattenPreferenceGroup(java.util.List, android.preference.PreferenceGroup):void");
+    private void flattenPreferenceGroup(List<Preference> preferences, PreferenceGroup group) {
+        group.sortPreferences();
+        int groupSize = group.getPreferenceCount();
+        for (int i = 0; i < groupSize; i++) {
+            Preference preference = group.getPreference(i);
+            if (preference != null) {
+                if (View.sIsSamsungBasicInteraction) {
+                    if (i == groupSize - 1) {
+                        this.mNextPreference = null;
+                        if (this.mIsCategoryAfter && preference == this.mNextGroupPreference) {
+                            this.mNextGroupPreference = null;
+                        }
+                    } else {
+                        this.mNextPreference = group.getPreference(i + 1);
+                        if (preference == this.mNextGroupPreference) {
+                            this.mNextGroupPreference = null;
+                        }
+                    }
+                    if (preference instanceof PreferenceCategory) {
+                        this.mIsCategoryAfter = true;
+                    } else if (this.mIsCategoryAfter && ((this.mNextPreference instanceof PreferenceCategory) || (this.mNextPreference == null && ((this.mNextGroupPreference instanceof PreferenceCategory) || this.mNextGroupPreference == null)))) {
+                        preference.setRoundCorner(15);
+                        this.mIsCategoryAfter = false;
+                    } else if (this.mIsCategoryAfter) {
+                        preference.setRoundCorner(3);
+                        this.mIsCategoryAfter = false;
+                    } else if ((this.mNextPreference instanceof PreferenceCategory) || ((this.mNextPreference == null && (this.mNextGroupPreference instanceof PreferenceCategory)) || preference == this.mNextGroupPreference || (this.mNextPreference == null && this.mNextGroupPreference == null))) {
+                        preference.setRoundCorner(12);
+                        this.mIsCategoryAfter = true;
+                    } else {
+                        preference.setRoundCorner(0);
+                    }
+                    if (group.mIsChangedCategoryBG) {
+                        preference.setCategoryBGColor(group.mCategoryBGColor);
+                    }
+                }
+                preferences.add(preference);
+                if (View.sIsSamsungBasicInteraction && (preference instanceof PreferenceCategory)) {
+                    if (TextUtils.isEmpty(preference.getTitle())) {
+                        preference.setLayoutResource(R.layout.tw_preference_category_material_empty);
+                    } else {
+                        preference.setLayoutResource(R.layout.tw_preference_category_material);
+                    }
+                }
+                if (!this.mHasReturnedViewTypeCount && preference != null && preference.isRecycleEnabled()) {
+                    addPreferenceClassName(preference);
+                }
+                if (preference instanceof PreferenceGroup) {
+                    PreferenceGroup preferenceAsGroup = (PreferenceGroup) preference;
+                    if (preferenceAsGroup.isOnSameScreenAsChildren()) {
+                        this.mNextGroupPreference = this.mNextPreference;
+                        flattenPreferenceGroup(preferences, preferenceAsGroup);
+                    }
+                }
+                preference.setOnPreferenceChangeInternalListener(this);
+            }
+        }
     }
 
     private PreferenceLayout createPreferenceLayout(Preference preference, PreferenceLayout in) {
@@ -176,9 +197,8 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
     @Override // android.widget.Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         Preference preference = getItem(position);
-        PreferenceLayout createPreferenceLayout = createPreferenceLayout(preference, this.mTempPreferenceLayout);
-        this.mTempPreferenceLayout = createPreferenceLayout;
-        if (Collections.binarySearch(this.mPreferenceLayouts, createPreferenceLayout) < 0 || getItemViewType(position) == getHighlightItemViewType()) {
+        this.mTempPreferenceLayout = createPreferenceLayout(preference, this.mTempPreferenceLayout);
+        if (Collections.binarySearch(this.mPreferenceLayouts, this.mTempPreferenceLayout) < 0 || getItemViewType(position) == getHighlightItemViewType()) {
             convertView = null;
         }
         View result = preference.getView(convertView, parent);
@@ -237,9 +257,8 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
         if (!preference.isRecycleEnabled()) {
             return -1;
         }
-        PreferenceLayout createPreferenceLayout = createPreferenceLayout(preference, this.mTempPreferenceLayout);
-        this.mTempPreferenceLayout = createPreferenceLayout;
-        int viewType = Collections.binarySearch(this.mPreferenceLayouts, createPreferenceLayout);
+        this.mTempPreferenceLayout = createPreferenceLayout(preference, this.mTempPreferenceLayout);
+        int viewType = Collections.binarySearch(this.mPreferenceLayouts, this.mTempPreferenceLayout);
         if (viewType < 0) {
             return -1;
         }

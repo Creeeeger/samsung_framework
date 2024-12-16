@@ -119,7 +119,6 @@ public class DownloadManager {
     private Uri mBaseUri = Downloads.Impl.CONTENT_URI;
     private Uri mSecBaseUri = Downloads.Impl.CONTENT_CDURI;
 
-    /* loaded from: classes.dex */
     public static class Request {
         static final /* synthetic */ boolean $assertionsDisabled = false;
 
@@ -217,7 +216,7 @@ public class DownloadManager {
                     } finally {
                     }
                 } catch (RemoteException e) {
-                    throw new IllegalStateException("Unable to create directory: " + file.getAbsolutePath());
+                    throw new IllegalStateException("Unable to create directory: " + file.getAbsolutePath(), e);
                 }
             } else if (file.exists()) {
                 if (!file.isDirectory()) {
@@ -357,9 +356,8 @@ public class DownloadManager {
             values.put("uri", this.mUri.toString());
             values.put(Downloads.Impl.COLUMN_IS_PUBLIC_API, (Boolean) true);
             values.put("notificationpackage", packageName);
-            Uri uri = this.mDestinationUri;
-            if (uri != null) {
-                values.put("hint", uri.toString());
+            if (this.mDestinationUri != null) {
+                values.put("hint", this.mDestinationUri.toString());
             }
             values.put(Downloads.Impl.COLUMN_MEDIA_SCANNED, Integer.valueOf(this.mScannable ? 0 : 2));
             if (!this.mRequestHeaders.isEmpty()) {
@@ -393,7 +391,6 @@ public class DownloadManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class SecQuery {
         public static final int ORDER_ASCENDING = 1;
         public static final int ORDER_DESCENDING = 2;
@@ -438,13 +435,12 @@ public class DownloadManager {
 
         Cursor runQuery(ContentResolver resolver, String[] projection, Uri baseUri) {
             List<String> selectionParts = new ArrayList<>();
-            long[] jArr = this.mIds;
-            int whereArgsCount = jArr == null ? 0 : jArr.length;
+            int whereArgsCount = this.mIds == null ? 0 : this.mIds.length;
             int whereArgsCount2 = this.mFilterString == null ? whereArgsCount : whereArgsCount + 1;
             String[] selectionArgs = new String[whereArgsCount2];
             if (whereArgsCount2 > 0) {
-                if (jArr != null) {
-                    selectionParts.add(DownloadManager.getWhereClauseForIds(jArr));
+                if (this.mIds != null) {
+                    selectionParts.add(DownloadManager.getWhereClauseForIds(this.mIds));
                     DownloadManager.getWhereArgsForIds(this.mIds, selectionArgs);
                 }
                 if (this.mFilterString != null) {
@@ -476,7 +472,6 @@ public class DownloadManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Query {
         public static final int ORDER_ASCENDING = 1;
         public static final int ORDER_DESCENDING = 2;
@@ -548,11 +543,10 @@ public class DownloadManager {
         Cursor runQuery(ContentResolver resolver, String[] projection, Uri baseUri) {
             String[] selectionArgs;
             List<String> selectionParts = new ArrayList<>();
-            long[] jArr = this.mIds;
-            if (jArr == null) {
+            if (this.mIds == null) {
                 selectionArgs = null;
             } else {
-                selectionParts.add(DownloadManager.getWhereClauseForIds(jArr));
+                selectionParts.add(DownloadManager.getWhereClauseForIds(this.mIds));
                 String[] selectionArgs2 = DownloadManager.getWhereArgsForIds(this.mIds);
                 selectionArgs = selectionArgs2;
             }
@@ -666,7 +660,7 @@ public class DownloadManager {
         ContentValues values = request.toContentValues(this.mPackageName);
         Uri downloadUri = this.mResolver.insert(Downloads.Impl.CONTENT_URI, values);
         if (downloadUri == null) {
-            return 0L;
+            return -1L;
         }
         long id = Long.parseLong(downloadUri.getLastPathSegment());
         return id;
@@ -1091,8 +1085,7 @@ public class DownloadManager {
         return args;
     }
 
-    /* loaded from: classes.dex */
-    public static class CursorTranslator extends CursorWrapper {
+    private static class CursorTranslator extends CursorWrapper {
         static final /* synthetic */ boolean $assertionsDisabled = false;
         private final boolean mAccessFilename;
         private final Uri mBaseUri;
@@ -1214,7 +1207,7 @@ public class DownloadManager {
                     return 1002L;
                 case 495:
                     return 1004L;
-                case Downloads.Impl.STATUS_TOO_MANY_REDIRECTS /* 497 */:
+                case 497:
                     return 1005L;
                 default:
                     return 1000L;
@@ -1223,41 +1216,12 @@ public class DownloadManager {
 
         private int translateStatus(int status) {
             switch (status) {
-                case 181:
-                case 183:
-                case 184:
-                case 185:
-                case 186:
-                case 188:
-                case 201:
-                    return 2;
-                case 182:
-                    return 65536;
-                case 187:
-                case 189:
-                case 191:
-                case 197:
-                case 198:
-                case 199:
-                default:
-                    return 16;
-                case 190:
-                    return 1;
-                case 192:
-                    return 2;
-                case 193:
-                case 194:
-                case 195:
-                case 196:
-                    return 4;
-                case 200:
-                    return 8;
             }
+            return 2;
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class SecCursorTranslator extends CursorWrapper {
+    private static class SecCursorTranslator extends CursorWrapper {
         static final /* synthetic */ boolean $assertionsDisabled = false;
         private Uri mBaseUri;
 
@@ -1468,21 +1432,20 @@ public class DownloadManager {
         }
 
         private long getErrorCode(int status) {
-            if ((400 <= status && status < 488) || (500 <= status && status < 700)) {
+            if ((400 > status || status >= 488) && (500 > status || status >= 700)) {
+                switch (status) {
+                    case 198:
+                        break;
+                    case 199:
+                        break;
+                    case 488:
+                        break;
+                    case 489:
+                        break;
+                }
                 return status;
             }
-            switch (status) {
-                case 198:
-                    return 1006L;
-                case 199:
-                    return 1007L;
-                case 488:
-                    return 1009L;
-                case 489:
-                    return 1008L;
-                default:
-                    return status;
-            }
+            return status;
         }
 
         private long getUnderlyingLong(String column) {
@@ -1495,38 +1458,8 @@ public class DownloadManager {
 
         public int translateStatus(int status) {
             switch (status) {
-                case 181:
-                case 183:
-                case 184:
-                case 185:
-                case 186:
-                case 188:
-                case 201:
-                    return 2;
-                case 182:
-                    return 65536;
-                case 187:
-                case 189:
-                case 191:
-                case 197:
-                case 198:
-                case 199:
-                default:
-                    return 16;
-                case 190:
-                    return 1;
-                case 192:
-                    return 2;
-                case 193:
-                case 194:
-                case 195:
-                case 196:
-                    return 4;
-                case 200:
-                case 202:
-                case 203:
-                    return 8;
             }
+            return 2;
         }
     }
 }

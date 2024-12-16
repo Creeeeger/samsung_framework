@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class InternalRegionDecoder {
     public static final int IMAGE_TYPE_COVER = 0;
     public static final int IMAGE_TYPE_GAINMAP = 2;
@@ -36,8 +36,6 @@ public class InternalRegionDecoder {
     private static native int nativeGetHeight(long j);
 
     private static native int nativeGetWidth(long j);
-
-    private static native byte[] nativeGetXmp(long j, int i);
 
     private static native InternalRegionDecoder nativeNewInstance(String str);
 
@@ -198,51 +196,22 @@ public class InternalRegionDecoder {
     public int getWidth() {
         synchronized (this.mNativeLock) {
             checkRecycled("getWidth called on recycled region decoder");
-            int i = this.mWidth;
-            if (i > 0) {
-                return i;
+            if (this.mWidth > 0) {
+                return this.mWidth;
             }
-            int nativeGetWidth = nativeGetWidth(this.mNativeBitmapRegionDecoder);
-            this.mWidth = nativeGetWidth;
-            return nativeGetWidth;
+            this.mWidth = nativeGetWidth(this.mNativeBitmapRegionDecoder);
+            return this.mWidth;
         }
     }
 
     public int getHeight() {
         synchronized (this.mNativeLock) {
             checkRecycled("getHeight called on recycled region decoder");
-            int i = this.mHeight;
-            if (i > 0) {
-                return i;
+            if (this.mHeight > 0) {
+                return this.mHeight;
             }
-            int nativeGetHeight = nativeGetHeight(this.mNativeBitmapRegionDecoder);
-            this.mHeight = nativeGetHeight;
-            return nativeGetHeight;
-        }
-    }
-
-    public byte[] getXmp(int imageType) {
-        synchronized (this.mNativeLock) {
-            checkRecycled("getHeight called on recycled region decoder");
-            if (imageType == 0) {
-                byte[] bArr = this.mXmpBuf;
-                if (bArr != null) {
-                    return bArr;
-                }
-                byte[] nativeGetXmp = nativeGetXmp(this.mNativeBitmapRegionDecoder, 0);
-                this.mXmpBuf = nativeGetXmp;
-                return nativeGetXmp;
-            }
-            if (imageType != 2) {
-                return null;
-            }
-            byte[] bArr2 = this.mGainXmpBuf;
-            if (bArr2 != null) {
-                return bArr2;
-            }
-            byte[] nativeGetXmp2 = nativeGetXmp(this.mNativeBitmapRegionDecoder, 2);
-            this.mGainXmpBuf = nativeGetXmp2;
-            return nativeGetXmp2;
+            this.mHeight = nativeGetHeight(this.mNativeBitmapRegionDecoder);
+            return this.mHeight;
         }
     }
 

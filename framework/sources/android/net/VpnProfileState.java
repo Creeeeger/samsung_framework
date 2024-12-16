@@ -7,17 +7,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class VpnProfileState implements Parcelable {
     public static final Parcelable.Creator<VpnProfileState> CREATOR = new Parcelable.Creator<VpnProfileState>() { // from class: android.net.VpnProfileState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VpnProfileState createFromParcel(Parcel in) {
             return new VpnProfileState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VpnProfileState[] newArray(int size) {
             return new VpnProfileState[size];
@@ -33,12 +32,7 @@ public final class VpnProfileState implements Parcelable {
     private final int mState;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface State {
-    }
-
-    /* synthetic */ VpnProfileState(Parcel parcel, VpnProfileStateIA vpnProfileStateIA) {
-        this(parcel);
     }
 
     public VpnProfileState(int state, String sessionKey, boolean alwaysOn, boolean lockdown) {
@@ -75,23 +69,6 @@ public final class VpnProfileState implements Parcelable {
         out.writeString(this.mSessionKey);
         out.writeBoolean(this.mAlwaysOn);
         out.writeBoolean(this.mLockdown);
-    }
-
-    /* renamed from: android.net.VpnProfileState$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VpnProfileState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VpnProfileState createFromParcel(Parcel in) {
-            return new VpnProfileState(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VpnProfileState[] newArray(int size) {
-            return new VpnProfileState[size];
-        }
     }
 
     private VpnProfileState(Parcel in) {

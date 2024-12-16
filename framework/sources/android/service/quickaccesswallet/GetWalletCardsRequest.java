@@ -6,9 +6,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class GetWalletCardsRequest implements Parcelable {
     public static final Parcelable.Creator<GetWalletCardsRequest> CREATOR = new Parcelable.Creator<GetWalletCardsRequest>() { // from class: android.service.quickaccesswallet.GetWalletCardsRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetWalletCardsRequest createFromParcel(Parcel source) {
             int cardWidthPx = source.readInt();
@@ -18,6 +16,7 @@ public final class GetWalletCardsRequest implements Parcelable {
             return new GetWalletCardsRequest(cardWidthPx, cardHeightPx, iconSizePx, maxCards);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetWalletCardsRequest[] newArray(int size) {
             return new GetWalletCardsRequest[size];
@@ -46,27 +45,6 @@ public final class GetWalletCardsRequest implements Parcelable {
         dest.writeInt(this.mCardHeightPx);
         dest.writeInt(this.mIconSizePx);
         dest.writeInt(this.mMaxCards);
-    }
-
-    /* renamed from: android.service.quickaccesswallet.GetWalletCardsRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GetWalletCardsRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetWalletCardsRequest createFromParcel(Parcel source) {
-            int cardWidthPx = source.readInt();
-            int cardHeightPx = source.readInt();
-            int iconSizePx = source.readInt();
-            int maxCards = source.readInt();
-            return new GetWalletCardsRequest(cardWidthPx, cardHeightPx, iconSizePx, maxCards);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetWalletCardsRequest[] newArray(int size) {
-            return new GetWalletCardsRequest[size];
-        }
     }
 
     public int getCardWidthPx() {

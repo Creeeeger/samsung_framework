@@ -11,7 +11,7 @@ public final class ToggleRangeTemplate extends ControlTemplate {
     private final ControlButton mControlButton;
     private final RangeTemplate mRangeTemplate;
 
-    public ToggleRangeTemplate(Bundle b) {
+    ToggleRangeTemplate(Bundle b) {
         super(b);
         this.mControlButton = (ControlButton) b.getParcelable(KEY_BUTTON, ControlButton.class);
         this.mRangeTemplate = new RangeTemplate(b.getBundle(KEY_RANGE));
@@ -29,9 +29,8 @@ public final class ToggleRangeTemplate extends ControlTemplate {
         this(templateId, new ControlButton(checked, actionDescription), range);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.templates.ControlTemplate
-    public Bundle getDataBundle() {
+    Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putParcelable(KEY_BUTTON, this.mControlButton);
         b.putBundle(KEY_RANGE, this.mRangeTemplate.getDataBundle());

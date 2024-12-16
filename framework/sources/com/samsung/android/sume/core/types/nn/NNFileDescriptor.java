@@ -6,17 +6,16 @@ import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class NNFileDescriptor implements Parcelable, Cloneable {
     public static final Parcelable.Creator<NNFileDescriptor> CREATOR = new Parcelable.Creator<NNFileDescriptor>() { // from class: com.samsung.android.sume.core.types.nn.NNFileDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NNFileDescriptor createFromParcel(Parcel in) {
             return new NNFileDescriptor(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NNFileDescriptor[] newArray(int size) {
             return new NNFileDescriptor[size];
@@ -28,23 +27,6 @@ public class NNFileDescriptor implements Parcelable, Cloneable {
     private long offset;
     private Uri pathUri;
     private String realPath;
-
-    /* renamed from: com.samsung.android.sume.core.types.nn.NNFileDescriptor$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NNFileDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NNFileDescriptor createFromParcel(Parcel in) {
-            return new NNFileDescriptor(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NNFileDescriptor[] newArray(int size) {
-            return new NNFileDescriptor[size];
-        }
-    }
 
     public NNFileDescriptor(String path) {
         this.realPath = path;
@@ -94,9 +76,8 @@ public class NNFileDescriptor implements Parcelable, Cloneable {
     public Object clone() throws CloneNotSupportedException {
         Object obj = super.clone();
         try {
-            ParcelFileDescriptor parcelFileDescriptor = this.fd;
-            if (parcelFileDescriptor != null) {
-                ((NNFileDescriptor) obj).fd = parcelFileDescriptor.dup();
+            if (this.fd != null) {
+                ((NNFileDescriptor) obj).fd = this.fd.dup();
             }
         } catch (IOException e) {
             e.printStackTrace();

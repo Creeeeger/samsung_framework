@@ -10,9 +10,9 @@ import android.os.RemoteException;
 public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface {
     public static final String DESCRIPTOR = "android.service.voice.IDetectorSessionVisualQueryDetectionCallback";
 
-    void onAttentionGained() throws RemoteException;
+    void onAttentionGained(VisualQueryAttentionResult visualQueryAttentionResult) throws RemoteException;
 
-    void onAttentionLost() throws RemoteException;
+    void onAttentionLost(int i) throws RemoteException;
 
     void onQueryDetected(String str) throws RemoteException;
 
@@ -20,18 +20,23 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
 
     void onQueryRejected() throws RemoteException;
 
-    /* loaded from: classes3.dex */
+    void onResultDetected(VisualQueryDetectedResult visualQueryDetectedResult) throws RemoteException;
+
     public static class Default implements IDetectorSessionVisualQueryDetectionCallback {
         @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
-        public void onAttentionGained() throws RemoteException {
+        public void onAttentionGained(VisualQueryAttentionResult attentionResult) throws RemoteException {
         }
 
         @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
-        public void onAttentionLost() throws RemoteException {
+        public void onAttentionLost(int interactionIntention) throws RemoteException {
         }
 
         @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
         public void onQueryDetected(String partialQuery) throws RemoteException {
+        }
+
+        @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
+        public void onResultDetected(VisualQueryDetectedResult partialResult) throws RemoteException {
         }
 
         @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
@@ -48,13 +53,13 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDetectorSessionVisualQueryDetectionCallback {
         static final int TRANSACTION_onAttentionGained = 1;
         static final int TRANSACTION_onAttentionLost = 2;
         static final int TRANSACTION_onQueryDetected = 3;
-        static final int TRANSACTION_onQueryFinished = 4;
-        static final int TRANSACTION_onQueryRejected = 5;
+        static final int TRANSACTION_onQueryFinished = 5;
+        static final int TRANSACTION_onQueryRejected = 6;
+        static final int TRANSACTION_onResultDetected = 4;
 
         public Stub() {
             attachInterface(this, IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
@@ -85,8 +90,10 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
                 case 3:
                     return "onQueryDetected";
                 case 4:
-                    return "onQueryFinished";
+                    return "onResultDetected";
                 case 5:
+                    return "onQueryFinished";
+                case 6:
                     return "onQueryRejected";
                 default:
                     return null;
@@ -103,38 +110,43 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
+                case 1:
+                    VisualQueryAttentionResult _arg0 = (VisualQueryAttentionResult) data.readTypedObject(VisualQueryAttentionResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAttentionGained(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAttentionLost(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    onQueryDetected(_arg03);
+                    return true;
+                case 4:
+                    VisualQueryDetectedResult _arg04 = (VisualQueryDetectedResult) data.readTypedObject(VisualQueryDetectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResultDetected(_arg04);
+                    return true;
+                case 5:
+                    onQueryFinished();
+                    return true;
+                case 6:
+                    onQueryRejected();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onAttentionGained();
-                            return true;
-                        case 2:
-                            onAttentionLost();
-                            return true;
-                        case 3:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onQueryDetected(_arg0);
-                            return true;
-                        case 4:
-                            onQueryFinished();
-                            return true;
-                        case 5:
-                            onQueryRejected();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDetectorSessionVisualQueryDetectionCallback {
+        private static class Proxy implements IDetectorSessionVisualQueryDetectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -151,10 +163,11 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
             }
 
             @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
-            public void onAttentionGained() throws RemoteException {
+            public void onAttentionGained(VisualQueryAttentionResult attentionResult) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
+                    _data.writeTypedObject(attentionResult, 0);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -162,10 +175,11 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
             }
 
             @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
-            public void onAttentionLost() throws RemoteException {
+            public void onAttentionLost(int interactionIntention) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
+                    _data.writeInt(interactionIntention);
                     this.mRemote.transact(2, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -185,11 +199,23 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
             }
 
             @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
+            public void onResultDetected(VisualQueryDetectedResult partialResult) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
+                    _data.writeTypedObject(partialResult, 0);
+                    this.mRemote.transact(4, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.service.voice.IDetectorSessionVisualQueryDetectionCallback
             public void onQueryFinished() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(5, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -200,7 +226,7 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IDetectorSessionVisualQueryDetectionCallback.DESCRIPTOR);
-                    this.mRemote.transact(5, _data, null, 1);
+                    this.mRemote.transact(6, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -209,7 +235,7 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 4;
+            return 5;
         }
     }
 }

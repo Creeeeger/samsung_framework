@@ -11,9 +11,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Double implements Parcelable {
     public static final Parcelable.Creator<Double> CREATOR = new Parcelable.Creator<Double>() { // from class: android.media.audio.common.Double.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Double createFromParcel(Parcel _aidl_source) {
             Double _aidl_out = new Double();
@@ -21,31 +19,13 @@ public class Double implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Double[] newArray(int _aidl_size) {
             return new Double[_aidl_size];
         }
     };
     public double value = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-
-    /* renamed from: android.media.audio.common.Double$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Double> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Double createFromParcel(Parcel _aidl_source) {
-            Double _aidl_out = new Double();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Double[] newArray(int _aidl_size) {
-            return new Double[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -94,7 +74,7 @@ public class Double implements Parcelable {
     public String toString() {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("value: " + this.value);
-        return "android.media.audio.common.Double" + _aidl_sj.toString();
+        return "Double" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

@@ -20,7 +20,6 @@ public interface IDomainSelectionServiceController extends IInterface {
 
     void updateServiceState(int i, int i2, ServiceState serviceState) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDomainSelectionServiceController {
         @Override // com.android.internal.telephony.IDomainSelectionServiceController
         public void selectDomain(DomainSelectionService.SelectionAttributes attr, ITransportSelectorCallback callback) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IDomainSelectionServiceController extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDomainSelectionServiceController {
         static final int TRANSACTION_selectDomain = 1;
         static final int TRANSACTION_updateBarringInfo = 3;
@@ -89,39 +87,36 @@ public interface IDomainSelectionServiceController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDomainSelectionServiceController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDomainSelectionServiceController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDomainSelectionServiceController.DESCRIPTOR);
+                case 1:
+                    DomainSelectionService.SelectionAttributes _arg0 = (DomainSelectionService.SelectionAttributes) data.readTypedObject(DomainSelectionService.SelectionAttributes.CREATOR);
+                    ITransportSelectorCallback _arg1 = ITransportSelectorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    selectDomain(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    ServiceState _arg2 = (ServiceState) data.readTypedObject(ServiceState.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateServiceState(_arg02, _arg12, _arg2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    BarringInfo _arg22 = (BarringInfo) data.readTypedObject(BarringInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateBarringInfo(_arg03, _arg13, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            DomainSelectionService.SelectionAttributes _arg0 = (DomainSelectionService.SelectionAttributes) data.readTypedObject(DomainSelectionService.SelectionAttributes.CREATOR);
-                            ITransportSelectorCallback _arg1 = ITransportSelectorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            selectDomain(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            ServiceState _arg2 = (ServiceState) data.readTypedObject(ServiceState.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateServiceState(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            BarringInfo _arg22 = (BarringInfo) data.readTypedObject(BarringInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateBarringInfo(_arg03, _arg13, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IDomainSelectionServiceController {
             private IBinder mRemote;
 

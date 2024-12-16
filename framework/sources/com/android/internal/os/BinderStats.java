@@ -14,14 +14,13 @@ import java.util.Iterator;
 /* loaded from: classes5.dex */
 public class BinderStats implements Parcelable {
     public static final Parcelable.Creator<BinderStats> CREATOR = new Parcelable.Creator<BinderStats>() { // from class: com.android.internal.os.BinderStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BinderStats createFromParcel(Parcel in) {
             return new BinderStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BinderStats[] newArray(int size) {
             return new BinderStats[size];
@@ -32,7 +31,6 @@ public class BinderStats implements Parcelable {
     private static final String TAG = "BinderStats";
     private final ArrayList<BinderStatsEntry> mData = new ArrayList<>();
 
-    /* loaded from: classes5.dex */
     public static class BinderStatsUnit {
         public String binderClass;
         public long callCount;
@@ -43,7 +41,6 @@ public class BinderStats implements Parcelable {
         public long recordedCallCount;
     }
 
-    /* loaded from: classes5.dex */
     public static class BinderStatsEntry {
         public long mEndTime;
         public long mStartTime;
@@ -60,23 +57,6 @@ public class BinderStats implements Parcelable {
     public BinderStats(Parcel in) {
         reset();
         readFromParcel(in);
-    }
-
-    /* renamed from: com.android.internal.os.BinderStats$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BinderStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BinderStats createFromParcel(Parcel in) {
-            return new BinderStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BinderStats[] newArray(int size) {
-            return new BinderStats[size];
-        }
     }
 
     @Override // android.os.Parcelable

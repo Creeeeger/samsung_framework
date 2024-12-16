@@ -8,7 +8,6 @@ public class BitwiseInputStream {
     private int mEnd;
     private int mPos = 0;
 
-    /* loaded from: classes5.dex */
     public static class AccessException extends Exception {
         public AccessException(String s) {
             super("BitwiseInputStream access failed: " + s);
@@ -25,19 +24,17 @@ public class BitwiseInputStream {
     }
 
     public int read(int bits) throws AccessException {
-        int i = this.mPos;
-        int index = i >>> 3;
-        int offset = (16 - (i & 7)) - bits;
-        if (bits < 0 || bits > 8 || i + bits > this.mEnd) {
+        int index = this.mPos >>> 3;
+        int offset = (16 - (this.mPos & 7)) - bits;
+        if (bits < 0 || bits > 8 || this.mPos + bits > this.mEnd) {
             throw new AccessException("illegal read (pos " + this.mPos + ", end " + this.mEnd + ", bits " + bits + NavigationBarInflaterView.KEY_CODE_END);
         }
-        byte[] bArr = this.mBuf;
-        int data = (bArr[index] & 255) << 8;
+        int data = (this.mBuf[index] & 255) << 8;
         if (offset < 8) {
-            data |= bArr[index + 1] & 255;
+            data |= this.mBuf[index + 1] & 255;
         }
         int data2 = (data >>> offset) & ((-1) >>> (32 - bits));
-        this.mPos = i + bits;
+        this.mPos += bits;
         return data2;
     }
 
@@ -52,10 +49,9 @@ public class BitwiseInputStream {
     }
 
     public void skip(int bits) throws AccessException {
-        int i = this.mPos;
-        if (i + bits > this.mEnd) {
+        if (this.mPos + bits > this.mEnd) {
             throw new AccessException("illegal skip (pos " + this.mPos + ", end " + this.mEnd + ", bits " + bits + NavigationBarInflaterView.KEY_CODE_END);
         }
-        this.mPos = i + bits;
+        this.mPos += bits;
     }
 }

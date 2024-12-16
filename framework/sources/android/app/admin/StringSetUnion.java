@@ -8,14 +8,13 @@ import java.util.Set;
 public final class StringSetUnion extends ResolutionMechanism<Set<String>> {
     public static final StringSetUnion STRING_SET_UNION = new StringSetUnion();
     public static final Parcelable.Creator<StringSetUnion> CREATOR = new Parcelable.Creator<StringSetUnion>() { // from class: android.app.admin.StringSetUnion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StringSetUnion createFromParcel(Parcel source) {
             return new StringSetUnion();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StringSetUnion[] newArray(int size) {
             return new StringSetUnion[size];
@@ -44,22 +43,5 @@ public final class StringSetUnion extends ResolutionMechanism<Set<String>> {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    /* renamed from: android.app.admin.StringSetUnion$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StringSetUnion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StringSetUnion createFromParcel(Parcel source) {
-            return new StringSetUnion();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StringSetUnion[] newArray(int size) {
-            return new StringSetUnion[size];
-        }
     }
 }

@@ -25,14 +25,12 @@ public final class VirtualAudioDevice implements Closeable {
     private final VirtualDisplay mVirtualDisplay;
 
     @SystemApi
-    /* loaded from: classes.dex */
     public interface AudioConfigurationChangeCallback {
         void onPlaybackConfigChanged(List<AudioPlaybackConfiguration> list);
 
         void onRecordingConfigChanged(List<AudioRecordingConfiguration> list);
     }
 
-    /* loaded from: classes.dex */
     public interface CloseListener {
         void onClosed();
     }
@@ -48,18 +46,14 @@ public final class VirtualAudioDevice implements Closeable {
 
     public AudioInjection startAudioInjection(AudioFormat injectionFormat) {
         Objects.requireNonNull(injectionFormat, "injectionFormat must not be null");
-        VirtualAudioSession virtualAudioSession = this.mOngoingSession;
-        if (virtualAudioSession != null && virtualAudioSession.getAudioInjection() != null) {
+        if (this.mOngoingSession != null && this.mOngoingSession.getAudioInjection() != null) {
             throw new IllegalStateException("Cannot start an audio injection while a session is ongoing. Call close() on this device first to end the previous session.");
         }
         if (this.mOngoingSession == null) {
             this.mOngoingSession = new VirtualAudioSession(this.mContext, this.mCallback, this.mExecutor);
         }
         try {
-            IVirtualDevice iVirtualDevice = this.mVirtualDevice;
-            int displayId = this.mVirtualDisplay.getDisplay().getDisplayId();
-            VirtualAudioSession virtualAudioSession2 = this.mOngoingSession;
-            iVirtualDevice.onAudioSessionStarting(displayId, virtualAudioSession2, virtualAudioSession2.getAudioConfigChangedListener());
+            this.mVirtualDevice.onAudioSessionStarting(this.mVirtualDisplay.getDisplay().getDisplayId(), this.mOngoingSession, this.mOngoingSession.getAudioConfigChangedListener());
             return this.mOngoingSession.startAudioInjection(injectionFormat);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -68,18 +62,14 @@ public final class VirtualAudioDevice implements Closeable {
 
     public AudioCapture startAudioCapture(AudioFormat captureFormat) {
         Objects.requireNonNull(captureFormat, "captureFormat must not be null");
-        VirtualAudioSession virtualAudioSession = this.mOngoingSession;
-        if (virtualAudioSession != null && virtualAudioSession.getAudioCapture() != null) {
+        if (this.mOngoingSession != null && this.mOngoingSession.getAudioCapture() != null) {
             throw new IllegalStateException("Cannot start an audio capture while a session is ongoing. Call close() on this device first to end the previous session.");
         }
         if (this.mOngoingSession == null) {
             this.mOngoingSession = new VirtualAudioSession(this.mContext, this.mCallback, this.mExecutor);
         }
         try {
-            IVirtualDevice iVirtualDevice = this.mVirtualDevice;
-            int displayId = this.mVirtualDisplay.getDisplay().getDisplayId();
-            VirtualAudioSession virtualAudioSession2 = this.mOngoingSession;
-            iVirtualDevice.onAudioSessionStarting(displayId, virtualAudioSession2, virtualAudioSession2.getAudioConfigChangedListener());
+            this.mVirtualDevice.onAudioSessionStarting(this.mVirtualDisplay.getDisplay().getDisplayId(), this.mOngoingSession, this.mOngoingSession.getAudioConfigChangedListener());
             return this.mOngoingSession.startAudioCapture(captureFormat);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -87,32 +77,28 @@ public final class VirtualAudioDevice implements Closeable {
     }
 
     public AudioCapture getAudioCapture() {
-        VirtualAudioSession virtualAudioSession = this.mOngoingSession;
-        if (virtualAudioSession != null) {
-            return virtualAudioSession.getAudioCapture();
+        if (this.mOngoingSession != null) {
+            return this.mOngoingSession.getAudioCapture();
         }
         return null;
     }
 
     public AudioInjection getAudioInjection() {
-        VirtualAudioSession virtualAudioSession = this.mOngoingSession;
-        if (virtualAudioSession != null) {
-            return virtualAudioSession.getAudioInjection();
+        if (this.mOngoingSession != null) {
+            return this.mOngoingSession.getAudioInjection();
         }
         return null;
     }
 
     @Override // java.io.Closeable, java.lang.AutoCloseable
     public void close() {
-        VirtualAudioSession virtualAudioSession = this.mOngoingSession;
-        if (virtualAudioSession != null) {
-            virtualAudioSession.close();
+        if (this.mOngoingSession != null) {
+            this.mOngoingSession.close();
             this.mOngoingSession = null;
             try {
                 this.mVirtualDevice.onAudioSessionEnded();
-                CloseListener closeListener = this.mListener;
-                if (closeListener != null) {
-                    closeListener.onClosed();
+                if (this.mListener != null) {
+                    this.mListener.onClosed();
                 }
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();

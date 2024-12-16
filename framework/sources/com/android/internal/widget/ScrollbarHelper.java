@@ -4,11 +4,11 @@ import android.view.View;
 import com.android.internal.widget.RecyclerView;
 
 /* loaded from: classes5.dex */
-public class ScrollbarHelper {
+class ScrollbarHelper {
     ScrollbarHelper() {
     }
 
-    public static int computeScrollOffset(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled, boolean reverseLayout) {
+    static int computeScrollOffset(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled, boolean reverseLayout) {
         int itemsBefore;
         if (lm.getChildCount() == 0 || state.getItemCount() == 0 || startChild == null || endChild == null) {
             return 0;
@@ -29,7 +29,7 @@ public class ScrollbarHelper {
         return Math.round((itemsBefore * avgSizePerRow) + (orientation.getStartAfterPadding() - orientation.getDecoratedStart(startChild)));
     }
 
-    public static int computeScrollExtent(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled) {
+    static int computeScrollExtent(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled) {
         if (lm.getChildCount() == 0 || state.getItemCount() == 0 || startChild == null || endChild == null) {
             return 0;
         }
@@ -40,7 +40,7 @@ public class ScrollbarHelper {
         return Math.min(orientation.getTotalSpace(), extend);
     }
 
-    public static int computeScrollRange(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled) {
+    static int computeScrollRange(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled) {
         if (lm.getChildCount() == 0 || state.getItemCount() == 0 || startChild == null || endChild == null) {
             return 0;
         }

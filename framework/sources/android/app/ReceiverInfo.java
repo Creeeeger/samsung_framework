@@ -12,9 +12,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ReceiverInfo implements Parcelable {
     public static final Parcelable.Creator<ReceiverInfo> CREATOR = new Parcelable.Creator<ReceiverInfo>() { // from class: android.app.ReceiverInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ReceiverInfo createFromParcel(Parcel _aidl_source) {
             ReceiverInfo _aidl_out = new ReceiverInfo();
@@ -22,6 +20,7 @@ public class ReceiverInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ReceiverInfo[] newArray(int _aidl_size) {
             return new ReceiverInfo[_aidl_size];
@@ -43,25 +42,6 @@ public class ReceiverInfo implements Parcelable {
     public boolean ordered = false;
     public boolean sticky = false;
     public boolean sync = false;
-
-    /* renamed from: android.app.ReceiverInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ReceiverInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ReceiverInfo createFromParcel(Parcel _aidl_source) {
-            ReceiverInfo _aidl_out = new ReceiverInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ReceiverInfo[] newArray(int _aidl_size) {
-            return new ReceiverInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

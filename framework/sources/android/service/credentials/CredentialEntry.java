@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CredentialEntry implements Parcelable {
     public static final Parcelable.Creator<CredentialEntry> CREATOR = new Parcelable.Creator<CredentialEntry>() { // from class: android.service.credentials.CredentialEntry.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialEntry createFromParcel(Parcel in) {
             return new CredentialEntry(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialEntry[] newArray(int size) {
             return new CredentialEntry[size];
@@ -25,10 +24,6 @@ public final class CredentialEntry implements Parcelable {
     private final String mBeginGetCredentialOptionId;
     private final Slice mSlice;
     private final String mType;
-
-    /* synthetic */ CredentialEntry(Parcel parcel, CredentialEntryIA credentialEntryIA) {
-        this(parcel);
-    }
 
     public CredentialEntry(String beginGetCredentialOptionId, String type, Slice slice) {
         this.mBeginGetCredentialOptionId = (String) Preconditions.checkStringNotEmpty(beginGetCredentialOptionId, "beginGetCredentialOptionId must not be null, or empty");
@@ -54,23 +49,6 @@ public final class CredentialEntry implements Parcelable {
         this.mType = in.readString8();
         this.mSlice = (Slice) in.readTypedObject(Slice.CREATOR);
         this.mBeginGetCredentialOptionId = in.readString8();
-    }
-
-    /* renamed from: android.service.credentials.CredentialEntry$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CredentialEntry> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialEntry createFromParcel(Parcel in) {
-            return new CredentialEntry(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialEntry[] newArray(int size) {
-            return new CredentialEntry[size];
-        }
     }
 
     @Override // android.os.Parcelable

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @SystemApi
 /* loaded from: classes2.dex */
 public final class HdmiControlManager {
+    public static final String ACTION_ON_ACTIVE_SOURCE_RECOVERED_DISMISS_UI = "android.hardware.hdmi.action.ON_ACTIVE_SOURCE_RECOVERED_DISMISS_UI";
     public static final String ACTION_OSD_MESSAGE = "android.hardware.hdmi.action.OSD_MESSAGE";
     public static final int AVR_VOLUME_MUTED = 101;
     public static final String CEC_SETTING_NAME_HDMI_CEC_ENABLED = "hdmi_cec_enabled";
@@ -200,113 +201,93 @@ public final class HdmiControlManager {
     private final ArrayMap<String, ArrayMap<CecSettingChangeListener, IHdmiCecSettingChangeListener>> mCecSettingChangeListeners = new ArrayMap<>();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ActiveSourceLostBehavior {
     }
 
-    /* loaded from: classes2.dex */
     public interface CecSettingChangeListener {
         void onChange(String str);
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface CecSettingSad {
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ControlCallbackResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface EarcFeature {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface HdmiCecControl {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface HdmiCecVersion {
     }
 
-    /* loaded from: classes2.dex */
     public interface HdmiCecVolumeControlFeatureListener {
         void onHdmiCecVolumeControlFeature(int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface HdmiControlStatusChangeListener {
         void onStatusChange(int i, boolean z);
     }
 
-    /* loaded from: classes2.dex */
     public interface HotplugEventListener {
         void onReceived(HdmiHotplugEvent hdmiHotplugEvent);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PowerControlMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RcProfileSourceHandlesMenu {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RcProfileTv {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RoutingControl {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SadPresenceInQuery {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SetMenuLanguage {
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SettingName {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SoundbarMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SystemAudioControl {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SystemAudioModeMuting {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TvSendStandbyOnSleep {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TvWakeOnOneTouchPlay {
     }
 
-    /* loaded from: classes2.dex */
     public interface VendorCommandListener {
         void onControlStateChanged(boolean z, int i);
 
@@ -314,10 +295,10 @@ public final class HdmiControlManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VolumeControl {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setLocalPhysicalAddress(int physicalAddress) {
         synchronized (this.mLock) {
             this.mLocalPhysicalAddress = physicalAddress;
@@ -335,9 +316,9 @@ public final class HdmiControlManager {
     public HdmiControlManager(IHdmiControlService service) {
         this.mService = service;
         int[] types = null;
-        if (service != null) {
+        if (this.mService != null) {
             try {
-                types = service.getSupportedTypes();
+                types = this.mService.getSupportedTypes();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -350,13 +331,7 @@ public final class HdmiControlManager {
         addHotplugEventListener(new ClientHotplugEventListener());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public final class ClientHotplugEventListener implements HotplugEventListener {
-        /* synthetic */ ClientHotplugEventListener(HdmiControlManager hdmiControlManager, ClientHotplugEventListenerIA clientHotplugEventListenerIA) {
-            this();
-        }
-
+    private final class ClientHotplugEventListener implements HotplugEventListener {
         private ClientHotplugEventListener() {
         }
 
@@ -404,14 +379,13 @@ public final class HdmiControlManager {
     }
 
     public HdmiClient getClient(int type) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             return null;
         }
         switch (type) {
             case 0:
                 if (this.mHasTvDevice) {
-                    return new HdmiTvClient(iHdmiControlService);
+                    return new HdmiTvClient(this.mService);
                 }
                 return null;
             case 1:
@@ -421,12 +395,12 @@ public final class HdmiControlManager {
                 return null;
             case 4:
                 if (this.mHasPlaybackDevice) {
-                    return new HdmiPlaybackClient(iHdmiControlService);
+                    return new HdmiPlaybackClient(this.mService);
                 }
                 return null;
             case 5:
                 try {
-                    if ((iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_SOUNDBAR_MODE) == 1 && this.mHasPlaybackDevice) || this.mHasAudioSystemDevice) {
+                    if ((this.mService.getCecSettingIntValue(CEC_SETTING_NAME_SOUNDBAR_MODE) == 1 && this.mHasPlaybackDevice) || this.mHasAudioSystemDevice) {
                         return new HdmiAudioSystemClient(this.mService);
                     }
                     return null;
@@ -435,7 +409,7 @@ public final class HdmiControlManager {
                 }
             case 6:
                 if (this.mHasSwitchDevice || this.mIsSwitchDevice) {
-                    return new HdmiSwitchClient(iHdmiControlService);
+                    return new HdmiSwitchClient(this.mService);
                 }
                 return null;
         }
@@ -645,9 +619,8 @@ public final class HdmiControlManager {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IHdmiHotplugEventListener.Stub {
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$1, reason: invalid class name */
+    class AnonymousClass1 extends IHdmiHotplugEventListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ HotplugEventListener val$listener;
 
@@ -717,9 +690,8 @@ public final class HdmiControlManager {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends IHdmiControlStatusChangeListener.Stub {
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$2, reason: invalid class name */
+    class AnonymousClass2 extends IHdmiControlStatusChangeListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ HdmiControlStatusChangeListener val$listener;
 
@@ -785,9 +757,8 @@ public final class HdmiControlManager {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$3 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass3 extends IHdmiCecVolumeControlFeatureListener.Stub {
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$3, reason: invalid class name */
+    class AnonymousClass3 extends IHdmiCecVolumeControlFeatureListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ HdmiCecVolumeControlFeatureListener val$listener;
 
@@ -856,9 +827,8 @@ public final class HdmiControlManager {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$4 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass4 extends IHdmiCecSettingChangeListener.Stub {
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$4, reason: invalid class name */
+    class AnonymousClass4 extends IHdmiCecSettingChangeListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ CecSettingChangeListener val$listener;
 
@@ -890,39 +860,36 @@ public final class HdmiControlManager {
     }
 
     public List<String> getUserCecSettings() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getUserCecSettings: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getUserCecSettings();
+            return this.mService.getUserCecSettings();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public List<String> getAllowedCecSettingStringValues(String name) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getAllowedCecSettingStringValues: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getAllowedCecSettingStringValues(name);
+            return this.mService.getAllowedCecSettingStringValues(name);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public List<Integer> getAllowedCecSettingIntValues(String name) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getAllowedCecSettingIntValues: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            int[] allowedValues = iHdmiControlService.getAllowedCecSettingIntValues(name);
+            int[] allowedValues = this.mService.getAllowedCecSettingIntValues(name);
             return (List) Arrays.stream(allowedValues).boxed().collect(Collectors.toList());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -930,26 +897,24 @@ public final class HdmiControlManager {
     }
 
     public void setHdmiCecEnabled(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setHdmiCecEnabled: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_ENABLED, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_ENABLED, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getHdmiCecEnabled() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getHdmiCecEnabled: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_ENABLED);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_ENABLED);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -968,247 +933,228 @@ public final class HdmiControlManager {
     }
 
     public void setHdmiCecVersion(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setHdmiCecVersion: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_VERSION, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_VERSION, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getHdmiCecVersion() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getHdmiCecVersion: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_VERSION);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_HDMI_CEC_VERSION);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setRoutingControl(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setRoutingControl: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_ROUTING_CONTROL, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_ROUTING_CONTROL, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getRoutingControl() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getRoutingControl: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_ROUTING_CONTROL);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_ROUTING_CONTROL);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setSoundbarMode(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setSoundbarMode: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_SOUNDBAR_MODE, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_SOUNDBAR_MODE, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getSoundbarMode() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getSoundbarMode: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_SOUNDBAR_MODE);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_SOUNDBAR_MODE);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setPowerControlMode(String value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setPowerControlMode: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingStringValue(CEC_SETTING_NAME_POWER_CONTROL_MODE, value);
+            this.mService.setCecSettingStringValue(CEC_SETTING_NAME_POWER_CONTROL_MODE, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public String getPowerControlMode() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getPowerControlMode: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingStringValue(CEC_SETTING_NAME_POWER_CONTROL_MODE);
+            return this.mService.getCecSettingStringValue(CEC_SETTING_NAME_POWER_CONTROL_MODE);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setPowerStateChangeOnActiveSourceLost(String value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setPowerStateChangeOnActiveSourceLost: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingStringValue(CEC_SETTING_NAME_POWER_STATE_CHANGE_ON_ACTIVE_SOURCE_LOST, value);
+            this.mService.setCecSettingStringValue(CEC_SETTING_NAME_POWER_STATE_CHANGE_ON_ACTIVE_SOURCE_LOST, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public String getPowerStateChangeOnActiveSourceLost() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getPowerStateChangeOnActiveSourceLost: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingStringValue(CEC_SETTING_NAME_POWER_STATE_CHANGE_ON_ACTIVE_SOURCE_LOST);
+            return this.mService.getCecSettingStringValue(CEC_SETTING_NAME_POWER_STATE_CHANGE_ON_ACTIVE_SOURCE_LOST);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setSystemAudioControl(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setSystemAudioControl: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_CONTROL, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_CONTROL, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getSystemAudioControl() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getSystemAudioControl: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_CONTROL);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_CONTROL);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setSystemAudioModeMuting(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setSystemAudioModeMuting: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_MODE_MUTING, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_MODE_MUTING, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getSystemAudioModeMuting() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getSystemAudioModeMuting: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_MODE_MUTING);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_SYSTEM_AUDIO_MODE_MUTING);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setTvWakeOnOneTouchPlay(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setTvWakeOnOneTouchPlay: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_TV_WAKE_ON_ONE_TOUCH_PLAY, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_TV_WAKE_ON_ONE_TOUCH_PLAY, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getTvWakeOnOneTouchPlay() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getTvWakeOnOneTouchPlay: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_TV_WAKE_ON_ONE_TOUCH_PLAY);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_TV_WAKE_ON_ONE_TOUCH_PLAY);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setTvSendStandbyOnSleep(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setTvSendStandbyOnSleep: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(CEC_SETTING_NAME_TV_SEND_STANDBY_ON_SLEEP, value);
+            this.mService.setCecSettingIntValue(CEC_SETTING_NAME_TV_SEND_STANDBY_ON_SLEEP, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getTvSendStandbyOnSleep() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getTvSendStandbyOnSleep: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(CEC_SETTING_NAME_TV_SEND_STANDBY_ON_SLEEP);
+            return this.mService.getCecSettingIntValue(CEC_SETTING_NAME_TV_SEND_STANDBY_ON_SLEEP);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setSadPresenceInQuery(String setting, int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setSadPresenceInQuery: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(setting, value);
+            this.mService.setCecSettingIntValue(setting, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1229,39 +1175,36 @@ public final class HdmiControlManager {
     }
 
     public int getSadPresenceInQuery(String setting) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getSadPresenceInQuery: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(setting);
+            return this.mService.getCecSettingIntValue(setting);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setEarcEnabled(int value) {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setEarcEnabled: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            iHdmiControlService.setCecSettingIntValue(SETTING_NAME_EARC_ENABLED, value);
+            this.mService.setCecSettingIntValue(SETTING_NAME_EARC_ENABLED, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getEarcEnabled() {
-        IHdmiControlService iHdmiControlService = this.mService;
-        if (iHdmiControlService == null) {
+        if (this.mService == null) {
             Log.e(TAG, "getEarcEnabled: HdmiControlService is not available");
             throw new RuntimeException("HdmiControlService is not available");
         }
         try {
-            return iHdmiControlService.getCecSettingIntValue(SETTING_NAME_EARC_ENABLED);
+            return this.mService.getCecSettingIntValue(SETTING_NAME_EARC_ENABLED);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

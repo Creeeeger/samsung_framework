@@ -24,7 +24,6 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
     public static final String kInterfaceName = "android.hardware.vibrator@1.1::IVibrator";
 
     @FunctionalInterface
-    /* loaded from: classes2.dex */
     public interface perform_1_1Callback {
         void onValues(int i, int i2);
     }
@@ -111,7 +110,6 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IVibrator {
         private IHwBinder mRemote;
 
@@ -386,7 +384,6 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IVibrator {
         @Override // android.hardware.vibrator.V1_1.IVibrator, android.hardware.vibrator.V1_0.IVibrator, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -409,7 +406,7 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
 
         @Override // android.hardware.vibrator.V1_1.IVibrator, android.hardware.vibrator.V1_0.IVibrator, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-7, 90, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, -123, SprAttributeBase.TYPE_ANIMATOR_SET, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 13, SprAttributeBase.TYPE_ANIMATOR_SET, 110, -84, -46, -21, 99, -59, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 16, -33, -88, -119, MidiConstants.STATUS_MIDI_TIME_CODE, 101, -33, 87, 105, 124, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -31, -12, 123, 71, -123}, new byte[]{6, -22, 100, -52, 53, 101, 119, Byte.MAX_VALUE, 59, 37, -98, 64, 15, -6, 113, 0, MidiConstants.STATUS_CHANNEL_PRESSURE, Byte.MAX_VALUE, 56, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -83, -109, 87, MidiConstants.STATUS_CONTROL_CHANGE, -59, -45, -58, 81, 56, 78, 85, 83}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-7, 90, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, -123, SprAttributeBase.TYPE_ANIMATOR_SET, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 13, SprAttributeBase.TYPE_ANIMATOR_SET, 110, -84, -46, -21, 99, -59, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 16, -33, -88, -119, MidiConstants.STATUS_MIDI_TIME_CODE, 101, -33, 87, 105, 124, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -31, -12, 123, 71, -123}, new byte[]{6, -22, 100, -52, 53, 101, 119, Byte.MAX_VALUE, 59, 37, -98, 64, 15, -6, 113, 0, MidiConstants.STATUS_CHANNEL_PRESSURE, Byte.MAX_VALUE, 56, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -83, -109, 87, MidiConstants.STATUS_CONTROL_CHANGE, -59, -45, -58, 81, 56, 78, 85, 83}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.vibrator.V1_1.IVibrator, android.hardware.vibrator.V1_0.IVibrator, android.internal.hidl.base.V1_0.IBase
@@ -461,7 +458,7 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
         }
 
         @Override // android.os.HwBinder
-        public void onTransact(int _hidl_code, HwParcel _hidl_request, HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
+        public void onTransact(int _hidl_code, HwParcel _hidl_request, final HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
             switch (_hidl_code) {
                 case 1:
                     _hidl_request.enforceInterface(android.hardware.vibrator.V1_0.IVibrator.kInterfaceName);
@@ -498,12 +495,6 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
                     int effect = _hidl_request.readInt32();
                     byte strength = _hidl_request.readInt8();
                     perform(effect, strength, new IVibrator.performCallback() { // from class: android.hardware.vibrator.V1_1.IVibrator.Stub.1
-                        final /* synthetic */ HwParcel val$_hidl_reply;
-
-                        AnonymousClass1(HwParcel _hidl_reply2) {
-                            _hidl_reply = _hidl_reply2;
-                        }
-
                         @Override // android.hardware.vibrator.V1_0.IVibrator.performCallback
                         public void onValues(int status, int lengthMs) {
                             _hidl_reply.writeStatus(0);
@@ -518,12 +509,6 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
                     int effect2 = _hidl_request.readInt32();
                     byte strength2 = _hidl_request.readInt8();
                     perform_1_1(effect2, strength2, new perform_1_1Callback() { // from class: android.hardware.vibrator.V1_1.IVibrator.Stub.2
-                        final /* synthetic */ HwParcel val$_hidl_reply;
-
-                        AnonymousClass2(HwParcel _hidl_reply2) {
-                            _hidl_reply = _hidl_reply2;
-                        }
-
                         @Override // android.hardware.vibrator.V1_1.IVibrator.perform_1_1Callback
                         public void onValues(int status, int lengthMs) {
                             _hidl_reply.writeStatus(0);
@@ -536,29 +521,29 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
                 case 256067662:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<String> _hidl_out_descriptors = interfaceChain();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeStringVector(_hidl_out_descriptors);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeStringVector(_hidl_out_descriptors);
+                    _hidl_reply.send();
                     return;
                 case 256131655:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     NativeHandle fd = _hidl_request.readNativeHandle();
                     ArrayList<String> options = _hidl_request.readStringVector();
                     debug(fd, options);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 256136003:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     String _hidl_out_descriptor = interfaceDescriptor();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeString(_hidl_out_descriptor);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeString(_hidl_out_descriptor);
+                    _hidl_reply.send();
                     return;
                 case 256398152:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<byte[]> _hidl_out_hashchain = getHashChain();
-                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply.writeStatus(0);
                     HwBlob _hidl_blob = new HwBlob(16);
                     int _hidl_vec_size = _hidl_out_hashchain.size();
                     _hidl_blob.putInt32(8L, _hidl_vec_size);
@@ -573,8 +558,8 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
                         childBlob.putInt8Array(_hidl_array_offset_1, _hidl_array_item_1);
                     }
                     _hidl_blob.putBlob(0L, childBlob);
-                    _hidl_reply2.writeBuffer(_hidl_blob);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeBuffer(_hidl_blob);
+                    _hidl_reply.send();
                     return;
                 case 256462420:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
@@ -586,56 +571,20 @@ public interface IVibrator extends android.hardware.vibrator.V1_0.IVibrator {
                 case 256921159:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ping();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 257049926:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     DebugInfo _hidl_out_info = getDebugInfo();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_out_info.writeToParcel(_hidl_reply2);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_out_info.writeToParcel(_hidl_reply);
+                    _hidl_reply.send();
                     return;
                 case 257120595:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     notifySyspropsChanged();
                     return;
-            }
-        }
-
-        /* renamed from: android.hardware.vibrator.V1_1.IVibrator$Stub$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements IVibrator.performCallback {
-            final /* synthetic */ HwParcel val$_hidl_reply;
-
-            AnonymousClass1(HwParcel _hidl_reply2) {
-                _hidl_reply = _hidl_reply2;
-            }
-
-            @Override // android.hardware.vibrator.V1_0.IVibrator.performCallback
-            public void onValues(int status, int lengthMs) {
-                _hidl_reply.writeStatus(0);
-                _hidl_reply.writeInt32(status);
-                _hidl_reply.writeInt32(lengthMs);
-                _hidl_reply.send();
-            }
-        }
-
-        /* renamed from: android.hardware.vibrator.V1_1.IVibrator$Stub$2 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass2 implements perform_1_1Callback {
-            final /* synthetic */ HwParcel val$_hidl_reply;
-
-            AnonymousClass2(HwParcel _hidl_reply2) {
-                _hidl_reply = _hidl_reply2;
-            }
-
-            @Override // android.hardware.vibrator.V1_1.IVibrator.perform_1_1Callback
-            public void onValues(int status, int lengthMs) {
-                _hidl_reply.writeStatus(0);
-                _hidl_reply.writeInt32(status);
-                _hidl_reply.writeInt32(lengthMs);
-                _hidl_reply.send();
             }
         }
     }

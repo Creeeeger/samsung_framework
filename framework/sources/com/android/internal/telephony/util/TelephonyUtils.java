@@ -2,7 +2,7 @@ package com.android.internal.telephony.util;
 
 import android.Manifest;
 import android.app.ActivityManager;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.app.role.RoleManager;
 import android.content.Context;
 import android.content.pm.ComponentInfo;
@@ -40,7 +40,7 @@ public final class TelephonyUtils {
 
     static {
         IS_DEBUGGABLE = SystemProperties.getInt("ro.debuggable", 0) == 1;
-        DIRECT_EXECUTOR = new PendingIntent$$ExternalSyntheticLambda1();
+        DIRECT_EXECUTOR = new PendingIntent$$ExternalSyntheticLambda0();
     }
 
     public static boolean checkDumpPermission(Context context, String tag, PrintWriter pw) {
@@ -161,6 +161,24 @@ public final class TelephonyUtils {
         }
     }
 
+    public static String apnEditedStatusToString(int apnEditStatus) {
+        switch (apnEditStatus) {
+            case 0:
+                return "UNEDITED";
+            case 1:
+                return "USER_EDITED";
+            case 2:
+                return "USER_DELETED";
+            case 3:
+            default:
+                return "UNKNOWN(" + apnEditStatus + NavigationBarInflaterView.KEY_CODE_END;
+            case 4:
+                return "CARRIER_EDITED";
+            case 5:
+                return "CARRIER_DELETED";
+        }
+    }
+
     public static UserHandle getSubscriptionUserHandle(Context context, int subId) {
         SubscriptionManager subManager = (SubscriptionManager) context.getSystemService(SubscriptionManager.class);
         if (subManager == null || !SubscriptionManager.isValidSubscriptionId(subId)) {
@@ -177,6 +195,10 @@ public final class TelephonyUtils {
             UserHandle callingUserHandle = UserHandle.getUserHandleForUid(callingUid);
             if (isUidForeground(context, callingUid) && isPackageSMSRoleHolderForUser(context, callingPackage, callingUserHandle)) {
                 SubscriptionManager subscriptionManager = (SubscriptionManager) context.getSystemService(SubscriptionManager.class);
+                if (!subscriptionManager.isActiveSubscriptionId(subId)) {
+                    Log.e(LOG_TAG, "Tried to send message with an inactive subscription " + subId);
+                    return;
+                }
                 UserHandle associatedUserHandle = subscriptionManager.getSubscriptionUserHandle(subId);
                 UserManager um = (UserManager) context.getSystemService(UserManager.class);
                 if (associatedUserHandle != null && um.isManagedProfile(associatedUserHandle.getIdentifier()) && (iTelephony = ITelephony.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyServiceRegisterer().get())) != null) {
@@ -203,13 +225,21 @@ public final class TelephonyUtils {
         return !smsRoleHolder.isEmpty() && callingPackage.equals(smsRoleHolder.get(0));
     }
 
-    public static boolean isValidPlmn(String plmn) {
-        if (TextUtils.isEmpty(plmn)) {
+    private static boolean isValidPattern(String input, String regex) {
+        if (TextUtils.isEmpty(input) || TextUtils.isEmpty(regex)) {
             return false;
         }
-        Pattern pattern = Pattern.compile("^(?:[0-9]{3})(?:[0-9]{2}|[0-9]{3})$");
-        Matcher matcher = pattern.matcher(plmn);
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
         return matcher.matches();
+    }
+
+    public static boolean isValidCountryCode(String countryCode) {
+        return isValidPattern(countryCode, "^[A-Za-z]{2}$");
+    }
+
+    public static boolean isValidPlmn(String plmn) {
+        return isValidPattern(plmn, "^(?:[0-9]{3})(?:[0-9]{2}|[0-9]{3})$");
     }
 
     public static boolean isValidService(int serviceType) {

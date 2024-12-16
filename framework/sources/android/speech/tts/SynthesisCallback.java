@@ -7,7 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 public interface SynthesisCallback {
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SupportedAudioFormat {
     }
 

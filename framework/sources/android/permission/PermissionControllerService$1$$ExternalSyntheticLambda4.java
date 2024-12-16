@@ -1,18 +1,15 @@
 package android.permission;
 
-import java.util.concurrent.CountDownLatch;
+import com.android.internal.infra.AndroidFuture;
+import java.util.function.IntConsumer;
 
 /* compiled from: D8$$SyntheticClass */
 /* loaded from: classes3.dex */
-public final /* synthetic */ class PermissionControllerService$1$$ExternalSyntheticLambda4 implements Runnable {
-    public final /* synthetic */ CountDownLatch f$0;
+public final /* synthetic */ class PermissionControllerService$1$$ExternalSyntheticLambda4 implements IntConsumer {
+    public final /* synthetic */ AndroidFuture f$0;
 
-    public /* synthetic */ PermissionControllerService$1$$ExternalSyntheticLambda4(CountDownLatch countDownLatch) {
-        this.f$0 = countDownLatch;
-    }
-
-    @Override // java.lang.Runnable
-    public final void run() {
-        this.f$0.countDown();
+    @Override // java.util.function.IntConsumer
+    public final void accept(int i) {
+        this.f$0.complete(Integer.valueOf(i));
     }
 }

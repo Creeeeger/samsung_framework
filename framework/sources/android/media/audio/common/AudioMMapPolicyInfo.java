@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioMMapPolicyInfo implements Parcelable {
     public static final Parcelable.Creator<AudioMMapPolicyInfo> CREATOR = new Parcelable.Creator<AudioMMapPolicyInfo>() { // from class: android.media.audio.common.AudioMMapPolicyInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMMapPolicyInfo createFromParcel(Parcel _aidl_source) {
             AudioMMapPolicyInfo _aidl_out = new AudioMMapPolicyInfo();
@@ -20,6 +18,7 @@ public class AudioMMapPolicyInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMMapPolicyInfo[] newArray(int _aidl_size) {
             return new AudioMMapPolicyInfo[_aidl_size];
@@ -27,25 +26,6 @@ public class AudioMMapPolicyInfo implements Parcelable {
     };
     public AudioDevice device;
     public int mmapPolicy = 0;
-
-    /* renamed from: android.media.audio.common.AudioMMapPolicyInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioMMapPolicyInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioMMapPolicyInfo createFromParcel(Parcel _aidl_source) {
-            AudioMMapPolicyInfo _aidl_out = new AudioMMapPolicyInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioMMapPolicyInfo[] newArray(int _aidl_size) {
-            return new AudioMMapPolicyInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -104,7 +84,7 @@ public class AudioMMapPolicyInfo implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("device: " + Objects.toString(this.device));
         _aidl_sj.add("mmapPolicy: " + this.mmapPolicy);
-        return "android.media.audio.common.AudioMMapPolicyInfo" + _aidl_sj.toString();
+        return "AudioMMapPolicyInfo" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

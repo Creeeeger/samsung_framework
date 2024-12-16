@@ -25,14 +25,13 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public final class WallpaperInfo implements Parcelable {
     public static final Parcelable.Creator<WallpaperInfo> CREATOR = new Parcelable.Creator<WallpaperInfo>() { // from class: android.app.WallpaperInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WallpaperInfo createFromParcel(Parcel source) {
             return new WallpaperInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WallpaperInfo[] newArray(int size) {
             return new WallpaperInfo[size];
@@ -57,10 +56,9 @@ public final class WallpaperInfo implements Parcelable {
         this.mService = service;
         ServiceInfo si = service.serviceInfo;
         PackageManager pm = context.getPackageManager();
-        XmlResourceParser parser = null;
         try {
+            XmlResourceParser parser = si.loadXmlMetaData(pm, WallpaperService.SERVICE_META_DATA);
             try {
-                parser = si.loadXmlMetaData(pm, WallpaperService.SERVICE_META_DATA);
                 if (parser == null) {
                     throw new XmlPullParserException("No android.service.wallpaper meta-data");
                 }
@@ -84,18 +82,19 @@ public final class WallpaperInfo implements Parcelable {
                 this.mContextUriResource = sa.getResourceId(4, -1);
                 this.mContextDescriptionResource = sa.getResourceId(5, -1);
                 this.mShowMetadataInPreview = sa.getBoolean(6, false);
-                this.mSupportsAmbientMode = sa.getBoolean(7, false);
+                boolean defSupportsAmbientMode = pm.hasSystemFeature(PackageManager.FEATURE_WATCH);
+                this.mSupportsAmbientMode = sa.getBoolean(7, defSupportsAmbientMode);
                 this.mShouldUseDefaultUnfoldTransition = sa.getBoolean(10, true);
                 this.mSettingsSliceUri = sa.getString(8);
                 this.mSupportMultipleDisplays = sa.getBoolean(9, false);
                 sa.recycle();
-            } catch (PackageManager.NameNotFoundException e) {
-                throw new XmlPullParserException("Unable to create context for: " + si.packageName);
+                if (parser != null) {
+                    parser.close();
+                }
+            } finally {
             }
-        } finally {
-            if (parser != null) {
-                parser.close();
-            }
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new XmlPullParserException("Unable to create context for: " + si.packageName);
         }
     }
 
@@ -168,11 +167,10 @@ public final class WallpaperInfo implements Parcelable {
         if (this.mService.serviceInfo.descriptionRes != 0) {
             return pm.getText(packageName, this.mService.serviceInfo.descriptionRes, applicationInfo);
         }
-        int i = this.mDescriptionResource;
-        if (i <= 0) {
+        if (this.mDescriptionResource <= 0) {
             throw new Resources.NotFoundException();
         }
-        return pm.getText(packageName, i, this.mService.serviceInfo.applicationInfo);
+        return pm.getText(packageName, this.mDescriptionResource, this.mService.serviceInfo.applicationInfo);
     }
 
     public Uri loadContextUri(PackageManager pm) throws Resources.NotFoundException {
@@ -219,11 +217,10 @@ public final class WallpaperInfo implements Parcelable {
     }
 
     public Uri getSettingsSliceUri() {
-        String str = this.mSettingsSliceUri;
-        if (str == null) {
+        if (this.mSettingsSliceUri == null) {
             return null;
         }
-        return Uri.parse(str);
+        return Uri.parse(this.mSettingsSliceUri);
     }
 
     public boolean supportsMultipleDisplays() {
@@ -258,23 +255,6 @@ public final class WallpaperInfo implements Parcelable {
         parcel.writeInt(this.mSupportMultipleDisplays ? 1 : 0);
         parcel.writeInt(this.mShouldUseDefaultUnfoldTransition ? 1 : 0);
         this.mService.writeToParcel(parcel, i);
-    }
-
-    /* renamed from: android.app.WallpaperInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WallpaperInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WallpaperInfo createFromParcel(Parcel source) {
-            return new WallpaperInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WallpaperInfo[] newArray(int size) {
-            return new WallpaperInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

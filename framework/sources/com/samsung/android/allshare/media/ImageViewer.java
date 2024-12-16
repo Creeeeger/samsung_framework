@@ -5,15 +5,13 @@ import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.ERROR;
 import com.samsung.android.allshare.Item;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public abstract class ImageViewer extends Device {
 
-    /* loaded from: classes5.dex */
     public interface IImageViewerEventListener {
         void onDeviceChanged(ImageViewerState imageViewerState, ERROR error);
     }
 
-    /* loaded from: classes5.dex */
     public interface IImageViewerResponseListener {
         void onGetStateResponseReceived(ImageViewerState imageViewerState, ERROR error);
 
@@ -35,9 +33,6 @@ public abstract class ImageViewer extends Device {
     public abstract String getIPAddress();
 
     @Override // com.samsung.android.allshare.Device
-    public abstract String getIPAdress();
-
-    @Override // com.samsung.android.allshare.Device
     public abstract Uri getIcon();
 
     @Override // com.samsung.android.allshare.Device
@@ -46,15 +41,7 @@ public abstract class ImageViewer extends Device {
     @Override // com.samsung.android.allshare.Device
     public abstract String getName();
 
-    public abstract PlaylistPlayer getPlaylistPlayer();
-
-    public abstract SlideShowPlayer getSlideShowPlayer();
-
     public abstract void getState();
-
-    public abstract ViewController getViewController();
-
-    public abstract ViewController2 getViewController2();
 
     public abstract ImageViewerState getViewerState();
 
@@ -62,9 +49,6 @@ public abstract class ImageViewer extends Device {
     public abstract boolean isRedirectSupportable();
 
     public abstract boolean isSupportRedirect();
-
-    @Deprecated
-    public abstract void prepare(Item item);
 
     public abstract void setEventListener(IImageViewerEventListener iImageViewerEventListener);
 
@@ -76,7 +60,9 @@ public abstract class ImageViewer extends Device {
 
     public abstract void zoom(int i, int i2, int i3, int i4);
 
-    /* loaded from: classes5.dex */
+    protected ImageViewer() {
+    }
+
     public enum ImageViewerState {
         STOPPED("STOPPED"),
         BUFFERING("BUFFERING"),

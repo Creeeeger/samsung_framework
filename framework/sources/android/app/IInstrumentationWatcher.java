@@ -14,7 +14,6 @@ public interface IInstrumentationWatcher extends IInterface {
 
     void instrumentationStatus(ComponentName componentName, int i, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IInstrumentationWatcher {
         @Override // android.app.IInstrumentationWatcher
         public void instrumentationStatus(ComponentName name, int resultCode, Bundle results) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IInstrumentationWatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IInstrumentationWatcher {
         public static final String DESCRIPTOR = "android.app.IInstrumentationWatcher";
         static final int TRANSACTION_instrumentationFinished = 2;
@@ -77,36 +75,33 @@ public interface IInstrumentationWatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg1 = data.readInt();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    instrumentationStatus(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg12 = data.readInt();
+                    Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    instrumentationFinished(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg1 = data.readInt();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            instrumentationStatus(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg12 = data.readInt();
-                            Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            instrumentationFinished(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IInstrumentationWatcher {
+        private static class Proxy implements IInstrumentationWatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

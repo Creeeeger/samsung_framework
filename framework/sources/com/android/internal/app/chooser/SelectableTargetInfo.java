@@ -24,7 +24,7 @@ import com.android.internal.app.SimpleIconFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class SelectableTargetInfo implements ChooserTargetInfo {
     private static final String TAG = "SelectableTargetInfo";
     private final ResolveInfo mBackupResolveInfo;
@@ -44,7 +44,6 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
     private ShortcutInfo mShortcutInfo;
     private final DisplayResolveInfo mSourceInfo;
 
-    /* loaded from: classes4.dex */
     public interface SelectableTargetInfoCommunicator {
         Intent getReferrerFillInIntent();
 
@@ -63,7 +62,7 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
         this.mSourceInfo = sourceInfo;
         this.mChooserTarget = chooserTarget;
         this.mModifiedScore = modifiedScore;
-        this.mPm = context.getPackageManager();
+        this.mPm = this.mContext.getPackageManager();
         this.mSelectableTargetInfoCommunicator = selectableTargetInfoComunicator;
         this.mShortcutInfo = shortcutInfo;
         if (shortcutInfo == null || !shortcutInfo.isPinned()) {
@@ -73,13 +72,13 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
         }
         this.mIsPinned = z;
         if (sourceInfo != null && (ri = sourceInfo.getResolveInfo()) != null && (ai = ri.activityInfo) != null && ai.applicationInfo != null) {
-            PackageManager pm = context.getPackageManager();
+            PackageManager pm = this.mContext.getPackageManager();
             this.mBadgeIcon = pm.getApplicationIcon(ai.applicationInfo);
             this.mBadgeContentDescription = pm.getApplicationLabel(ai.applicationInfo);
             this.mIsSuspended = (ai.applicationInfo.flags & 1073741824) != 0;
         }
         if (sourceInfo == null) {
-            this.mBackupResolveInfo = context.getPackageManager().resolveActivity(getResolvedIntent(), 0);
+            this.mBackupResolveInfo = this.mContext.getPackageManager().resolveActivity(getResolvedIntent(), 0);
         } else {
             this.mBackupResolveInfo = null;
         }
@@ -96,8 +95,7 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
         this.mSelectableTargetInfoCommunicator = other.mSelectableTargetInfoCommunicator;
         this.mSourceInfo = other.mSourceInfo;
         this.mBackupResolveInfo = other.mBackupResolveInfo;
-        ChooserTarget chooserTarget = other.mChooserTarget;
-        this.mChooserTarget = chooserTarget;
+        this.mChooserTarget = other.mChooserTarget;
         this.mBadgeIcon = other.mBadgeIcon;
         this.mBadgeContentDescription = other.mBadgeContentDescription;
         synchronized (other) {
@@ -108,7 +106,7 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
         this.mFillInFlags = flags;
         this.mModifiedScore = other.mModifiedScore;
         this.mIsPinned = other.mIsPinned;
-        this.mDisplayLabel = sanitizeDisplayLabel(chooserTarget.getTitle());
+        this.mDisplayLabel = sanitizeDisplayLabel(this.mChooserTarget.getTitle());
     }
 
     private String sanitizeDisplayLabel(CharSequence label) {
@@ -179,9 +177,8 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
 
     @Override // com.android.internal.app.chooser.TargetInfo
     public Intent getResolvedIntent() {
-        DisplayResolveInfo displayResolveInfo = this.mSourceInfo;
-        if (displayResolveInfo != null) {
-            return displayResolveInfo.getResolvedIntent();
+        if (this.mSourceInfo != null) {
+            return this.mSourceInfo.getResolvedIntent();
         }
         Intent targetIntent = new Intent(this.mSelectableTargetInfoCommunicator.getTargetIntent());
         targetIntent.setComponent(this.mChooserTarget.getComponentName());
@@ -191,9 +188,8 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
 
     @Override // com.android.internal.app.chooser.TargetInfo
     public ComponentName getResolvedComponentName() {
-        DisplayResolveInfo displayResolveInfo = this.mSourceInfo;
-        if (displayResolveInfo != null) {
-            return displayResolveInfo.getResolvedComponentName();
+        if (this.mSourceInfo != null) {
+            return this.mSourceInfo.getResolvedComponentName();
         }
         if (this.mBackupResolveInfo != null) {
             return new ComponentName(this.mBackupResolveInfo.activityInfo.packageName, this.mBackupResolveInfo.activityInfo.name);
@@ -207,9 +203,8 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
             Log.e(TAG, "ChooserTargetInfo: no base intent available to send");
         } else {
             result = new Intent(result);
-            Intent intent = this.mFillInIntent;
-            if (intent != null) {
-                result.fillIn(intent, this.mFillInFlags);
+            if (this.mFillInIntent != null) {
+                result.fillIn(this.mFillInIntent, this.mFillInFlags);
             }
             result.fillIn(this.mSelectableTargetInfoCommunicator.getReferrerFillInIntent(), 0);
         }
@@ -231,8 +226,7 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
         intent.setComponent(this.mChooserTarget.getComponentName());
         intent.putExtras(this.mChooserTarget.getIntentExtras());
         TargetInfo.prepareIntentForCrossProfileLaunch(intent, userId);
-        DisplayResolveInfo displayResolveInfo = this.mSourceInfo;
-        if (displayResolveInfo != null && displayResolveInfo.getResolvedComponentName().getPackageName().equals(this.mChooserTarget.getComponentName().getPackageName())) {
+        if (this.mSourceInfo != null && this.mSourceInfo.getResolvedComponentName().getPackageName().equals(this.mChooserTarget.getComponentName().getPackageName())) {
             ignoreTargetSecurity = true;
         }
         activity.startActivityAsCaller(intent, options, ignoreTargetSecurity, userId);
@@ -246,8 +240,7 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
 
     @Override // com.android.internal.app.chooser.TargetInfo
     public ResolveInfo getResolveInfo() {
-        DisplayResolveInfo displayResolveInfo = this.mSourceInfo;
-        return displayResolveInfo != null ? displayResolveInfo.getResolveInfo() : this.mBackupResolveInfo;
+        return this.mSourceInfo != null ? this.mSourceInfo.getResolveInfo() : this.mBackupResolveInfo;
     }
 
     @Override // com.android.internal.app.chooser.TargetInfo
@@ -282,9 +275,8 @@ public final class SelectableTargetInfo implements ChooserTargetInfo {
     @Override // com.android.internal.app.chooser.TargetInfo
     public List<Intent> getAllSourceIntents() {
         List<Intent> results = new ArrayList<>();
-        DisplayResolveInfo displayResolveInfo = this.mSourceInfo;
-        if (displayResolveInfo != null) {
-            results.add(displayResolveInfo.getAllSourceIntents().get(0));
+        if (this.mSourceInfo != null) {
+            results.add(this.mSourceInfo.getAllSourceIntents().get(0));
         }
         return results;
     }

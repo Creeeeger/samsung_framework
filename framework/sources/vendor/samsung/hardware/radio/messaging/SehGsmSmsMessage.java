@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehGsmSmsMessage implements Parcelable {
     public static final Parcelable.Creator<SehGsmSmsMessage> CREATOR = new Parcelable.Creator<SehGsmSmsMessage>() { // from class: vendor.samsung.hardware.radio.messaging.SehGsmSmsMessage.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehGsmSmsMessage createFromParcel(Parcel _aidl_source) {
             SehGsmSmsMessage _aidl_out = new SehGsmSmsMessage();
@@ -26,25 +23,6 @@ public class SehGsmSmsMessage implements Parcelable {
     };
     public String pdu;
     public String smscPdu;
-
-    /* renamed from: vendor.samsung.hardware.radio.messaging.SehGsmSmsMessage$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehGsmSmsMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehGsmSmsMessage createFromParcel(Parcel _aidl_source) {
-            SehGsmSmsMessage _aidl_out = new SehGsmSmsMessage();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehGsmSmsMessage[] newArray(int _aidl_size) {
-            return new SehGsmSmsMessage[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +81,7 @@ public class SehGsmSmsMessage implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("smscPdu: " + Objects.toString(this.smscPdu));
         _aidl_sj.add("pdu: " + Objects.toString(this.pdu));
-        return "vendor.samsung.hardware.radio.messaging.SehGsmSmsMessage" + _aidl_sj.toString();
+        return "SehGsmSmsMessage" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

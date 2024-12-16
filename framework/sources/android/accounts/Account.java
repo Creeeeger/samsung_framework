@@ -21,14 +21,13 @@ public class Account implements Parcelable {
     public final String type;
     private static final Set<Account> sAccessedAccounts = new ArraySet();
     public static final Parcelable.Creator<Account> CREATOR = new Parcelable.Creator<Account>() { // from class: android.accounts.Account.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Account createFromParcel(Parcel source) {
             return new Account(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Account[] newArray(int size) {
             return new Account[size];
@@ -72,31 +71,34 @@ public class Account implements Parcelable {
     }
 
     public Account(Parcel in) {
-        String readString = in.readString();
-        this.name = readString;
-        String readString2 = in.readString();
-        this.type = readString2;
-        if (TextUtils.isEmpty(readString)) {
-            throw new BadParcelableException("the name must not be empty: " + readString);
+        this.name = in.readString();
+        this.type = in.readString();
+        if (TextUtils.isEmpty(this.name)) {
+            throw new BadParcelableException("the name must not be empty: " + this.name);
         }
-        if (TextUtils.isEmpty(readString2)) {
-            throw new BadParcelableException("the type must not be empty: " + readString2);
+        if (TextUtils.isEmpty(this.type)) {
+            throw new BadParcelableException("the type must not be empty: " + this.type);
         }
-        String readString3 = in.readString();
-        this.accessId = readString3;
-        if (readString3 != null) {
-            Set<Account> set = sAccessedAccounts;
-            synchronized (set) {
-                if (set.add(this)) {
-                    try {
-                        IAccountManager accountManager = IAccountManager.Stub.asInterface(ServiceManager.getService("account"));
-                        accountManager.onAccountAccessed(readString3);
-                    } catch (RemoteException e) {
-                        Log.e(TAG, "Error noting account access", e);
-                    }
+        this.accessId = in.readString();
+        if (this.accessId != null) {
+            synchronized (sAccessedAccounts) {
+                if (sAccessedAccounts.add(this)) {
+                    onAccountAccessed(this.accessId);
                 }
             }
         }
+    }
+
+    private static void onAccountAccessed(String accessId) {
+        try {
+            IAccountManager accountManager = IAccountManager.Stub.asInterface(ServiceManager.getService("account"));
+            accountManager.onAccountAccessed(accessId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error noting account access", e);
+        }
+    }
+
+    private static void onAccountAccessed$ravenwood(String accessId) {
     }
 
     public String getAccessId() {
@@ -113,23 +115,6 @@ public class Account implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.type);
         dest.writeString(this.accessId);
-    }
-
-    /* renamed from: android.accounts.Account$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Account> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Account createFromParcel(Parcel source) {
-            return new Account(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Account[] newArray(int size) {
-            return new Account[size];
-        }
     }
 
     public String toString() {

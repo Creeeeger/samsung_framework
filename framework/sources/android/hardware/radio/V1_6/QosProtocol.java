@@ -35,7 +35,7 @@ public final class QosProtocol {
         byte flipped = 0;
         if ((o & (-1)) == -1) {
             list.add("UNSPECIFIED");
-            flipped = (byte) (0 | (-1));
+            flipped = (byte) (-1);
         }
         if ((o & 6) == 6) {
             list.add(SipDelegateImsConfiguration.SIP_TRANSPORT_TCP);

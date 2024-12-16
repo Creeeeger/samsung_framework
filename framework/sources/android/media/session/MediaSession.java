@@ -68,7 +68,6 @@ public final class MediaSession {
     private VolumeProvider mVolumeProvider;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SessionFlags {
     }
 
@@ -90,15 +89,12 @@ public final class MediaSession {
         }
         this.mContext = context;
         this.mMaxBitmapSize = context.getResources().getDimensionPixelSize(R.dimen.config_mediaMetadataBitmapMaxSize);
-        CallbackStub callbackStub = new CallbackStub(this);
-        this.mCbStub = callbackStub;
+        this.mCbStub = new CallbackStub(this);
         MediaSessionManager manager = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
         try {
-            ISession createSession = manager.createSession(callbackStub, tag, sessionInfo);
-            this.mBinder = createSession;
-            Token token = new Token(Process.myUid(), createSession.getController());
-            this.mSessionToken = token;
-            this.mController = new MediaController(context, token);
+            this.mBinder = manager.createSession(this.mCbStub, tag, sessionInfo);
+            this.mSessionToken = new Token(Process.myUid(), this.mBinder.getController());
+            this.mController = new MediaController(context, this.mSessionToken);
         } catch (RemoteException e) {
             throw new RuntimeException("Remote error creating session.", e);
         }
@@ -110,9 +106,8 @@ public final class MediaSession {
 
     public void setCallback(Callback callback, Handler handler) {
         synchronized (this.mLock) {
-            CallbackMessageHandler callbackMessageHandler = this.mCallback;
-            if (callbackMessageHandler != null) {
-                callbackMessageHandler.mCallback.mSession = null;
+            if (this.mCallback != null) {
+                this.mCallback.mCallback.mSession = null;
                 this.mCallback.removeCallbacksAndMessages(null);
             }
             if (callback == null) {
@@ -150,7 +145,7 @@ public final class MediaSession {
                     throw new IllegalArgumentException("broadcastReceiver should belong to the same package as the context given when creating MediaSession.");
                 }
             } catch (RemoteException e) {
-                Log.wtf(TAG, "Failure in setMediaButtonBroadcastReceiver.", e);
+                e.rethrowFromSystemServer();
                 return;
             }
         }
@@ -184,9 +179,6 @@ public final class MediaSession {
             this.mVolumeProvider = volumeProvider;
         }
         volumeProvider.setCallback(new VolumeProvider.Callback() { // from class: android.media.session.MediaSession.1
-            AnonymousClass1() {
-            }
-
             @Override // android.media.VolumeProvider.Callback
             public void onVolumeChanged(VolumeProvider volumeProvider2) {
                 MediaSession.this.notifyRemoteVolumeChanged(volumeProvider2);
@@ -197,19 +189,6 @@ public final class MediaSession {
             this.mBinder.setCurrentVolume(volumeProvider.getCurrentVolume());
         } catch (RemoteException e) {
             Log.wtf(TAG, "Failure in setPlaybackToRemote.", e);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.session.MediaSession$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends VolumeProvider.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.VolumeProvider.Callback
-        public void onVolumeChanged(VolumeProvider volumeProvider2) {
-            MediaSession.this.notifyRemoteVolumeChanged(volumeProvider2);
         }
     }
 
@@ -241,6 +220,7 @@ public final class MediaSession {
     }
 
     public void release() {
+        setCallback(null);
         try {
             this.mBinder.destroySession();
         } catch (RemoteException e) {
@@ -323,8 +303,7 @@ public final class MediaSession {
     }
 
     public final MediaSessionManager.RemoteUserInfo getCurrentControllerInfo() {
-        CallbackMessageHandler callbackMessageHandler = this.mCallback;
-        if (callbackMessageHandler == null || callbackMessageHandler.mCurrentControllerInfo == null) {
+        if (this.mCallback == null || this.mCallback.mCurrentControllerInfo == null) {
             throw new IllegalStateException("This should be called inside of MediaSession.Callback methods");
         }
         return this.mCallback.mCurrentControllerInfo;
@@ -348,14 +327,13 @@ public final class MediaSession {
     }
 
     public String getCallingPackage() {
-        CallbackMessageHandler callbackMessageHandler = this.mCallback;
-        if (callbackMessageHandler != null && callbackMessageHandler.mCurrentControllerInfo != null) {
+        if (this.mCallback != null && this.mCallback.mCurrentControllerInfo != null) {
             return this.mCallback.mCurrentControllerInfo.getPackageName();
         }
         return null;
     }
 
-    public static boolean hasCustomParcelable(Bundle bundle) {
+    static boolean hasCustomParcelable(Bundle bundle) {
         if (bundle == null) {
             return false;
         }
@@ -492,24 +470,21 @@ public final class MediaSession {
 
     void postToCallbackDelayed(MediaSessionManager.RemoteUserInfo caller, int what, Object obj, Bundle data, long delay) {
         synchronized (this.mLock) {
-            CallbackMessageHandler callbackMessageHandler = this.mCallback;
-            if (callbackMessageHandler != null) {
-                callbackMessageHandler.post(caller, what, obj, data, delay);
+            if (this.mCallback != null) {
+                this.mCallback.post(caller, what, obj, data, delay);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Token implements Parcelable {
         public static final Parcelable.Creator<Token> CREATOR = new Parcelable.Creator<Token>() { // from class: android.media.session.MediaSession.Token.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Token createFromParcel(Parcel in) {
                 return new Token(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Token[] newArray(int size) {
                 return new Token[size];
@@ -541,10 +516,7 @@ public final class MediaSession {
 
         public int hashCode() {
             int result = this.mUid;
-            int i = result * 31;
-            ISessionController iSessionController = this.mBinder;
-            int result2 = i + (iSessionController == null ? 0 : iSessionController.asBinder().hashCode());
-            return result2;
+            return (result * 31) + (this.mBinder == null ? 0 : this.mBinder.asBinder().hashCode());
         }
 
         public boolean equals(Object obj) {
@@ -558,14 +530,13 @@ public final class MediaSession {
             if (this.mUid != other.mUid) {
                 return false;
             }
-            ISessionController iSessionController = this.mBinder;
-            if (iSessionController == null || other.mBinder == null) {
-                if (iSessionController == other.mBinder) {
+            if (this.mBinder == null || other.mBinder == null) {
+                if (this.mBinder == other.mBinder) {
                     return true;
                 }
                 return false;
             }
-            return Objects.equals(iSessionController.asBinder(), other.mBinder.asBinder());
+            return Objects.equals(this.mBinder.asBinder(), other.mBinder.asBinder());
         }
 
         @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
@@ -576,26 +547,8 @@ public final class MediaSession {
         public ISessionController getBinder() {
             return this.mBinder;
         }
-
-        /* renamed from: android.media.session.MediaSession$Token$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Token> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Token createFromParcel(Parcel in) {
-                return new Token(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Token[] newArray(int size) {
-                return new Token[size];
-            }
-        }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         private CallbackMessageHandler mHandler;
         private boolean mMediaPlayPauseKeyPending;
@@ -623,8 +576,7 @@ public final class MediaSession {
                             }
                         } else {
                             this.mMediaPlayPauseKeyPending = true;
-                            MediaSession mediaSession = this.mSession;
-                            mediaSession.dispatchMediaButtonDelayed(mediaSession.getCurrentControllerInfo(), mediaButtonIntent, ViewConfiguration.getDoubleTapTimeout());
+                            this.mSession.dispatchMediaButtonDelayed(this.mSession.getCurrentControllerInfo(), mediaButtonIntent, ViewConfiguration.getDoubleTapTimeout());
                         }
                         return true;
                     default:
@@ -678,6 +630,7 @@ public final class MediaSession {
             return false;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void handleMediaPlayPauseKeySingleTapIfPending() {
             boolean isPlaying;
             boolean canPlay;
@@ -767,7 +720,6 @@ public final class MediaSession {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class CallbackStub extends ISessionCallback.Stub {
         private WeakReference<MediaSession> mMediaSession;
 
@@ -978,17 +930,15 @@ public final class MediaSession {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class QueueItem implements Parcelable {
         public static final Parcelable.Creator<QueueItem> CREATOR = new Parcelable.Creator<QueueItem>() { // from class: android.media.session.MediaSession.QueueItem.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public QueueItem createFromParcel(Parcel p) {
                 return new QueueItem(p);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public QueueItem[] newArray(int size) {
                 return new QueueItem[size];
@@ -997,10 +947,6 @@ public final class MediaSession {
         public static final int UNKNOWN_ID = -1;
         private final MediaDescription mDescription;
         private final long mId;
-
-        /* synthetic */ QueueItem(Parcel parcel, QueueItemIA queueItemIA) {
-            this(parcel);
-        }
 
         public QueueItem(MediaDescription description, long id) {
             if (description == null) {
@@ -1037,23 +983,6 @@ public final class MediaSession {
             return 0;
         }
 
-        /* renamed from: android.media.session.MediaSession$QueueItem$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<QueueItem> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public QueueItem createFromParcel(Parcel p) {
-                return new QueueItem(p);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public QueueItem[] newArray(int size) {
-                return new QueueItem[size];
-            }
-        }
-
         public String toString() {
             return "MediaSession.QueueItem {Description=" + this.mDescription + ", Id=" + this.mId + " }";
         }
@@ -1070,8 +999,7 @@ public final class MediaSession {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class Command {
+    private static final class Command {
         public final String command;
         public final Bundle extras;
         public final ResultReceiver stub;
@@ -1083,8 +1011,7 @@ public final class MediaSession {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class CallbackMessageHandler extends Handler {
+    private class CallbackMessageHandler extends Handler {
         private static final int MSG_ADJUST_VOLUME = 22;
         private static final int MSG_COMMAND = 1;
         private static final int MSG_CUSTOM_ACTION = 21;
@@ -1115,7 +1042,7 @@ public final class MediaSession {
         CallbackMessageHandler(Looper looper, Callback callback) {
             super(looper);
             this.mCallback = callback;
-            callback.mHandler = this;
+            this.mCallback.mHandler = this;
         }
 
         void post(MediaSessionManager.RemoteUserInfo caller, int what, Object obj, Bundle data, long delayMs) {

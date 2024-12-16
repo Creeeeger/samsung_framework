@@ -21,7 +21,6 @@ public interface ITranslationService extends IInterface {
 
     void onTranslationCapabilitiesRequest(int i, int i2, ResultReceiver resultReceiver) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITranslationService {
         @Override // android.service.translation.ITranslationService
         public void onConnected(IBinder callback) throws RemoteException {
@@ -45,7 +44,6 @@ public interface ITranslationService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITranslationService {
         static final int TRANSACTION_onConnected = 1;
         static final int TRANSACTION_onCreateTranslationSession = 3;
@@ -97,41 +95,38 @@ public interface ITranslationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITranslationService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITranslationService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITranslationService.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onConnected(_arg0);
+                    return true;
+                case 2:
+                    onDisconnected();
+                    return true;
+                case 3:
+                    TranslationContext _arg02 = (TranslationContext) data.readTypedObject(TranslationContext.CREATOR);
+                    int _arg1 = data.readInt();
+                    IResultReceiver _arg2 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCreateTranslationSession(_arg02, _arg1, _arg2);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    ResultReceiver _arg22 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTranslationCapabilitiesRequest(_arg03, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onConnected(_arg0);
-                            return true;
-                        case 2:
-                            onDisconnected();
-                            return true;
-                        case 3:
-                            TranslationContext _arg02 = (TranslationContext) data.readTypedObject(TranslationContext.CREATOR);
-                            int _arg1 = data.readInt();
-                            IResultReceiver _arg2 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCreateTranslationSession(_arg02, _arg1, _arg2);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            ResultReceiver _arg22 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTranslationCapabilitiesRequest(_arg03, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ITranslationService {
             private IBinder mRemote;
 

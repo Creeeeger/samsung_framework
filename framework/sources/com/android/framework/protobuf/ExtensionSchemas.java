@@ -1,7 +1,7 @@
 package com.android.framework.protobuf;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class ExtensionSchemas {
     private static final ExtensionSchema<?> LITE_SCHEMA = new ExtensionSchemaLite();
     private static final ExtensionSchema<?> FULL_SCHEMA = loadSchemaForFullRuntime();
@@ -18,15 +18,14 @@ final class ExtensionSchemas {
         }
     }
 
-    public static ExtensionSchema<?> lite() {
+    static ExtensionSchema<?> lite() {
         return LITE_SCHEMA;
     }
 
-    public static ExtensionSchema<?> full() {
-        ExtensionSchema<?> extensionSchema = FULL_SCHEMA;
-        if (extensionSchema == null) {
+    static ExtensionSchema<?> full() {
+        if (FULL_SCHEMA == null) {
             throw new IllegalStateException("Protobuf runtime is not correctly loaded.");
         }
-        return extensionSchema;
+        return FULL_SCHEMA;
     }
 }

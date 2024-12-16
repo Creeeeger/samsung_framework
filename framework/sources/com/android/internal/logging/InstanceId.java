@@ -3,17 +3,16 @@ package com.android.internal.logging;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InstanceId implements Parcelable {
     public static final Parcelable.Creator<InstanceId> CREATOR = new Parcelable.Creator<InstanceId>() { // from class: com.android.internal.logging.InstanceId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstanceId createFromParcel(Parcel in) {
             return new InstanceId(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstanceId[] newArray(int size) {
             return new InstanceId[size];
@@ -22,11 +21,7 @@ public final class InstanceId implements Parcelable {
     static final int INSTANCE_ID_MAX = 1048576;
     private final int mId;
 
-    /* synthetic */ InstanceId(Parcel parcel, InstanceIdIA instanceIdIA) {
-        this(parcel);
-    }
-
-    public InstanceId(int id) {
+    InstanceId(int id) {
         this.mId = Math.min(Math.max(0, id), 1048576);
     }
 
@@ -58,22 +53,5 @@ public final class InstanceId implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.mId);
-    }
-
-    /* renamed from: com.android.internal.logging.InstanceId$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InstanceId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstanceId createFromParcel(Parcel in) {
-            return new InstanceId(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstanceId[] newArray(int size) {
-            return new InstanceId[size];
-        }
     }
 }

@@ -16,16 +16,12 @@ public class Tables4kGCMMultiplier implements GCMMultiplier {
         } else if (Arrays.areEqual(this.H, H)) {
             return;
         }
-        byte[] clone = Arrays.clone(H);
-        this.H = clone;
-        GCMUtil.asLongs(clone, this.T[1]);
-        long[] jArr = this.T[1];
-        GCMUtil.multiplyP7(jArr, jArr);
+        this.H = Arrays.clone(H);
+        GCMUtil.asLongs(this.H, this.T[1]);
+        GCMUtil.multiplyP7(this.T[1], this.T[1]);
         for (int n = 2; n < 256; n += 2) {
-            long[][] jArr2 = this.T;
-            GCMUtil.divideP(jArr2[n >> 1], jArr2[n]);
-            long[][] jArr3 = this.T;
-            GCMUtil.xor(jArr3[n], jArr3[1], jArr3[n + 1]);
+            GCMUtil.divideP(this.T[n >> 1], this.T[n]);
+            GCMUtil.xor(this.T[n], this.T[1], this.T[n + 1]);
         }
     }
 

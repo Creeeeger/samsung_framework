@@ -19,17 +19,16 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHolder<MediaBuffer> {
     public static final Parcelable.Creator<MutableMediaBuffer> CREATOR = new Parcelable.Creator<MutableMediaBuffer>() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MutableMediaBuffer createFromParcel(Parcel in) {
             return new MutableMediaBuffer(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MutableMediaBuffer[] newArray(int size) {
             return new MutableMediaBuffer[size];
@@ -123,15 +122,15 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         return super.setStride(i);
     }
 
-    public MutableMediaBuffer() {
+    MutableMediaBuffer() {
         super(MediaFormat.of(MediaType.NONE, new Object[0]));
     }
 
-    public MutableMediaBuffer(MediaFormat format) {
+    MutableMediaBuffer(MediaFormat format) {
         super(format);
     }
 
-    public MutableMediaBuffer(MediaBuffer buffer) {
+    MutableMediaBuffer(MediaBuffer buffer) {
         super(buffer.getFormat());
         this.buffer = buffer;
     }
@@ -145,12 +144,11 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
             }
             instance = ((MutableMediaBuffer) instance).reset();
         }
-        MediaBuffer mediaBuffer = this.buffer;
-        if (instance == mediaBuffer) {
+        if (instance == this.buffer) {
             return;
         }
-        if (mediaBuffer != null) {
-            instance.addExtra(mediaBuffer.getExtra());
+        if (this.buffer != null) {
+            instance.addExtra(this.buffer.getExtra());
         }
         MediaFormat mediaFormat = this.format;
         if (this.extra != null) {
@@ -159,12 +157,12 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         this.buffer = instance;
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.functional.PlaceHolder
     public MediaBuffer reset() {
         MediaBuffer ret = this.buffer;
-        MediaBuffer mediaBuffer = this.buffer;
-        if (mediaBuffer != null) {
-            super.addExtra(mediaBuffer.getExtra());
+        if (this.buffer != null) {
+            super.addExtra(this.buffer.getExtra());
             this.buffer = null;
         }
         return ret;
@@ -196,7 +194,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public MediaFormat getFormat() {
-        return (MediaFormat) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda4
+        return (MediaFormat) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda8
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return ((MediaBuffer) obj).getFormat();
@@ -204,29 +202,29 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).orElse(super.getFormat());
     }
 
-    /* renamed from: lambda$stream$0$com-samsung-android-sume-core-buffer-MutableMediaBuffer */
-    public /* synthetic */ Stream m8726x681fd1b8() {
+    /* renamed from: lambda$stream$0$com-samsung-android-sume-core-buffer-MutableMediaBuffer, reason: not valid java name */
+    /* synthetic */ Stream m9115x681fd1b8() {
         return Stream.of(this);
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public Stream<MediaBuffer> stream() {
-        return (Stream) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda0
+        return (Stream) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda10
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return ((MediaBuffer) obj).stream();
             }
-        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda1
+        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda11
             @Override // java.util.function.Supplier
             public final Object get() {
-                return MutableMediaBuffer.this.m8726x681fd1b8();
+                return MutableMediaBuffer.this.m9115x681fd1b8();
             }
         });
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public <V> MediaBuffer convertTo(final Class<V> clazz) {
-        return (MediaBuffer) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda6
+        return (MediaBuffer) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda4
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 MediaBuffer convertTo;
@@ -238,7 +236,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public <V> V getData() {
-        return (V) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda10
+        return (V) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda9
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Object data;
@@ -250,7 +248,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public Class<?> getDataClass() {
-        return (Class) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda8
+        return (Class) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Class cls;
@@ -262,19 +260,19 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public <V> V getTypedData(final Class<V> cls) {
-        return (V) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda11
+        return (V) Optional.ofNullable(this.buffer).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Object typedData;
                 typedData = ((MediaBuffer) obj).getTypedData(cls);
                 return typedData;
             }
-        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public List<MediaBuffer> getMetaDataBuffers() {
-        return (List) this.buffer.asList().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda2
+        return (List) this.buffer.asList().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda12
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return MutableMediaBuffer.lambda$getMetaDataBuffers$4((MediaBuffer) obj);
@@ -282,7 +280,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).collect(Collectors.toList());
     }
 
-    public static /* synthetic */ boolean lambda$getMetaDataBuffers$4(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$getMetaDataBuffers$4(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META;
     }
 
@@ -296,13 +294,13 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).findAny().orElse(null);
     }
 
-    public static /* synthetic */ boolean lambda$getExifBuffer$5(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$getExifBuffer$5(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("exif");
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public MediaBuffer getIccBuffer() {
-        return this.buffer.asList().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda9
+        return this.buffer.asList().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return MutableMediaBuffer.lambda$getIccBuffer$6((MediaBuffer) obj);
@@ -310,7 +308,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).findAny().orElse(null);
     }
 
-    public static /* synthetic */ boolean lambda$getIccBuffer$6(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$getIccBuffer$6(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("icc");
     }
 
@@ -331,7 +329,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
     }
 
     public MediaBuffer setExifBuffer(MediaBuffer exifBuffer) {
-        List<MediaBuffer> newMediaBuffers = (List) this.buffer.asList().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda3
+        List<MediaBuffer> newMediaBuffers = (List) this.buffer.asList().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda6
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return MutableMediaBuffer.lambda$setExifBuffer$7((MediaBuffer) obj);
@@ -341,7 +339,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         return setMetaDataBuffer(newMediaBuffers);
     }
 
-    public static /* synthetic */ boolean lambda$setExifBuffer$7(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$setExifBuffer$7(MediaBuffer it) {
         return !it.getFormat().contains("exif");
     }
 
@@ -356,7 +354,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         return setMetaDataBuffer(newMediaBuffers);
     }
 
-    public static /* synthetic */ boolean lambda$setIccBuffer$8(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$setIccBuffer$8(MediaBuffer it) {
         return !it.getFormat().contains("icc");
     }
 
@@ -378,9 +376,8 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public void addExtra(Map<String, Object> other) {
-        MediaBuffer mediaBuffer = this.buffer;
-        if (mediaBuffer != null) {
-            mediaBuffer.addExtra(other);
+        if (this.buffer != null) {
+            this.buffer.addExtra(other);
         } else {
             super.addExtra(other);
         }
@@ -388,38 +385,32 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public Map<String, Object> getExtra() {
-        MediaBuffer mediaBuffer = this.buffer;
-        return mediaBuffer != null ? mediaBuffer.getExtra() : super.getExtra();
+        return this.buffer != null ? this.buffer.getExtra() : super.getExtra();
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public <V> V getExtra(String str) {
-        MediaBuffer mediaBuffer = this.buffer;
-        return mediaBuffer != null ? (V) mediaBuffer.getExtra(str) : (V) super.getExtra(str);
+        return this.buffer != null ? (V) this.buffer.getExtra(str) : (V) super.getExtra(str);
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public <V> V getExtra(String str, V v) {
-        MediaBuffer mediaBuffer = this.buffer;
-        return mediaBuffer != null ? (V) mediaBuffer.getExtra(str, v) : (V) super.getExtra(str, v);
+        return this.buffer != null ? (V) this.buffer.getExtra(str, v) : (V) super.getExtra(str, v);
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public boolean containsExtra(String key) {
-        MediaBuffer mediaBuffer = this.buffer;
-        return mediaBuffer != null ? mediaBuffer.containsExtra(key) : super.containsExtra(key);
+        return this.buffer != null ? this.buffer.containsExtra(key) : super.containsExtra(key);
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public boolean containsAnyExtra(String... keys) {
-        MediaBuffer mediaBuffer = this.buffer;
-        return mediaBuffer != null ? mediaBuffer.containsAnyExtra(keys) : super.containsAnyExtra(keys);
+        return this.buffer != null ? this.buffer.containsAnyExtra(keys) : super.containsAnyExtra(keys);
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public boolean containsAllExtra(String... keys) {
-        MediaBuffer mediaBuffer = this.buffer;
-        return mediaBuffer != null ? mediaBuffer.containsAllExtra(keys) : super.containsAllExtra(keys);
+        return this.buffer != null ? this.buffer.containsAllExtra(keys) : super.containsAllExtra(keys);
     }
 
     public String toString() {
@@ -428,11 +419,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public String contentToString(Object obj) {
-        StringBuilder append = new StringBuilder().append(Def.taglnOf(obj));
-        String[] strArr = new String[2];
-        strArr[0] = "format=" + (this.format != null ? this.format.contentToString() : "n/a");
-        strArr[1] = "data=" + this.buffer;
-        return append.append(Def.contentToStringln("    ", strArr)).toString();
+        return Def.taglnOf(obj) + Def.contentToStringln("    ", "format=" + (this.format != null ? this.format.contentToString() : "n/a"), "data=" + this.buffer);
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
@@ -442,9 +429,8 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public long size() {
-        MediaBuffer mediaBuffer = this.buffer;
-        if (mediaBuffer != null) {
-            return mediaBuffer.size();
+        if (this.buffer != null) {
+            return this.buffer.size();
         }
         return 0L;
     }
@@ -464,23 +450,6 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         super(in);
         if (in.readInt() != 0) {
             this.buffer = (MediaBuffer) in.readParcelable(MediaBuffer.class.getClassLoader());
-        }
-    }
-
-    /* renamed from: com.samsung.android.sume.core.buffer.MutableMediaBuffer$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MutableMediaBuffer> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MutableMediaBuffer createFromParcel(Parcel in) {
-            return new MutableMediaBuffer(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MutableMediaBuffer[] newArray(int size) {
-            return new MutableMediaBuffer[size];
         }
     }
 

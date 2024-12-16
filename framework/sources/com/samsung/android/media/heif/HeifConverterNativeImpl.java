@@ -11,13 +11,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 final class HeifConverterNativeImpl implements SemHeifConverter {
     private final HeifCaptureJNI mCaptureNative = new HeifCaptureJNI();
     private final int mFormat;
     private final int mQuality;
 
-    public HeifConverterNativeImpl(int format, int quality) {
+    HeifConverterNativeImpl(int format, int quality) {
         this.mFormat = format;
         this.mQuality = quality;
     }

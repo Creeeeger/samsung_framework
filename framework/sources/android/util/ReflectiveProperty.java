@@ -28,9 +28,8 @@ class ReflectiveProperty<T, V> extends Property<T, V> {
                 this.mGetter = propertyHolder.getMethod(getterName2, null);
             } catch (NoSuchMethodException e2) {
                 try {
-                    Field field = propertyHolder.getField(name);
-                    this.mField = field;
-                    Class fieldType = field.getType();
+                    this.mField = propertyHolder.getField(name);
+                    Class fieldType = this.mField.getType();
                     if (!typesMatch(valueType, fieldType)) {
                         throw new NoSuchPropertyException("Underlying type (" + fieldType + ") does not match Property type (" + valueType + NavigationBarInflaterView.KEY_CODE_END);
                     }
@@ -84,10 +83,9 @@ class ReflectiveProperty<T, V> extends Property<T, V> {
 
     @Override // android.util.Property
     public void set(T object, V value) {
-        Method method = this.mSetter;
-        if (method != null) {
+        if (this.mSetter != null) {
             try {
-                method.invoke(object, value);
+                this.mSetter.invoke(object, value);
                 return;
             } catch (IllegalAccessException e) {
                 throw new AssertionError();
@@ -95,10 +93,9 @@ class ReflectiveProperty<T, V> extends Property<T, V> {
                 throw new RuntimeException(e2.getCause());
             }
         }
-        Field field = this.mField;
-        if (field != null) {
+        if (this.mField != null) {
             try {
-                field.set(object, value);
+                this.mField.set(object, value);
                 return;
             } catch (IllegalAccessException e3) {
                 throw new AssertionError();
@@ -109,20 +106,18 @@ class ReflectiveProperty<T, V> extends Property<T, V> {
 
     @Override // android.util.Property
     public V get(T t) {
-        Method method = this.mGetter;
-        if (method != null) {
+        if (this.mGetter != null) {
             try {
-                return (V) method.invoke(t, null);
+                return (V) this.mGetter.invoke(t, null);
             } catch (IllegalAccessException e) {
                 throw new AssertionError();
             } catch (InvocationTargetException e2) {
                 throw new RuntimeException(e2.getCause());
             }
         }
-        Field field = this.mField;
-        if (field != null) {
+        if (this.mField != null) {
             try {
-                return (V) field.get(t);
+                return (V) this.mField.get(t);
             } catch (IllegalAccessException e3) {
                 throw new AssertionError();
             }

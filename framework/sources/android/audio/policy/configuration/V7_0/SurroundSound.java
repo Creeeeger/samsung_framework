@@ -24,7 +24,7 @@ public class SurroundSound {
         this.formats = formats;
     }
 
-    public static SurroundSound read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static SurroundSound read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         SurroundSound _instance = new SurroundSound();
         _parser.getDepth();

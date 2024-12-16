@@ -15,7 +15,7 @@ class DHKeyGeneratorHelper {
     private DHKeyGeneratorHelper() {
     }
 
-    public BigInteger calculatePrivate(DHParameters dhParams, SecureRandom random) {
+    BigInteger calculatePrivate(DHParameters dhParams, SecureRandom random) {
         BigInteger x;
         BigInteger x2;
         int limit = dhParams.getL();
@@ -43,7 +43,7 @@ class DHKeyGeneratorHelper {
         return x;
     }
 
-    public BigInteger calculatePublic(DHParameters dhParams, BigInteger x) {
+    BigInteger calculatePublic(DHParameters dhParams, BigInteger x) {
         return dhParams.getG().modPow(x, dhParams.getP());
     }
 }

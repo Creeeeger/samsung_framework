@@ -8,7 +8,7 @@ public class BCMessageDigest extends MessageDigest {
     protected Digest digest;
     protected int digestSize;
 
-    public BCMessageDigest(Digest digest) {
+    protected BCMessageDigest(Digest digest) {
         super(digest.getAlgorithmName());
         this.digest = digest;
         this.digestSize = digest.getDigestSize();

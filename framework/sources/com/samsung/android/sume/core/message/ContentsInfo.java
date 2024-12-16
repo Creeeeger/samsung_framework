@@ -4,8 +4,8 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.samsung.android.sume.core.Def;
-import com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda1;
-import com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda2;
+import com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda3;
+import com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda4;
 import com.samsung.android.sume.core.types.ColorFormat;
 import com.samsung.android.sume.core.types.DataType;
 import java.util.HashMap;
@@ -15,19 +15,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class ContentsInfo implements Parcelable {
     private final Map<String, Object> data;
     private static final String TAG = Def.tagOf((Class<?>) ContentsInfo.class);
     public static final Parcelable.Creator<ContentsInfo> CREATOR = new Parcelable.Creator<ContentsInfo>() { // from class: com.samsung.android.sume.core.message.ContentsInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentsInfo createFromParcel(Parcel in) {
             return new ContentsInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentsInfo[] newArray(int size) {
             return new ContentsInfo[size];
@@ -40,30 +39,13 @@ public class ContentsInfo implements Parcelable {
     }
 
     public ContentsInfo(ContentValues contentValues) {
-        this.data = (Map) contentValues.valueSet().stream().collect(Collectors.toMap(new MediaBufferBase$$ExternalSyntheticLambda1(), new MediaBufferBase$$ExternalSyntheticLambda2()));
+        this.data = (Map) contentValues.valueSet().stream().collect(Collectors.toMap(new MediaBufferBase$$ExternalSyntheticLambda3(), new MediaBufferBase$$ExternalSyntheticLambda4()));
         setStatusCode(0);
     }
 
     protected ContentsInfo(Parcel in) {
         this();
         in.readMap(this.data, null);
-    }
-
-    /* renamed from: com.samsung.android.sume.core.message.ContentsInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContentsInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentsInfo createFromParcel(Parcel in) {
-            return new ContentsInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentsInfo[] newArray(int size) {
-            return new ContentsInfo[size];
-        }
     }
 
     ContentsInfo(Message message) {
@@ -358,13 +340,13 @@ public class ContentsInfo implements Parcelable {
         return (String) this.data.keySet().stream().map(new Function() { // from class: com.samsung.android.sume.core.message.ContentsInfo$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return ContentsInfo.this.m8798x3d006615((String) obj);
+                return ContentsInfo.this.m9186x3d006615((String) obj);
             }
         }).collect(Collectors.joining(", ", "{", "}"));
     }
 
-    /* renamed from: lambda$toString$0$com-samsung-android-sume-core-message-ContentsInfo */
-    public /* synthetic */ String m8798x3d006615(String it) {
+    /* renamed from: lambda$toString$0$com-samsung-android-sume-core-message-ContentsInfo, reason: not valid java name */
+    /* synthetic */ String m9186x3d006615(String it) {
         return it + "=" + this.data.get(it);
     }
 }

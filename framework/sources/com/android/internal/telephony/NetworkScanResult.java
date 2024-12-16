@@ -10,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes5.dex */
 public final class NetworkScanResult implements Parcelable {
     public static final Parcelable.Creator<NetworkScanResult> CREATOR = new Parcelable.Creator<NetworkScanResult>() { // from class: com.android.internal.telephony.NetworkScanResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanResult createFromParcel(Parcel in) {
             return new NetworkScanResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanResult[] newArray(int size) {
             return new NetworkScanResult[size];
@@ -28,10 +27,6 @@ public final class NetworkScanResult implements Parcelable {
     public List<CellInfo> networkInfos;
     public int scanError;
     public int scanStatus;
-
-    /* synthetic */ NetworkScanResult(Parcel parcel, NetworkScanResultIA networkScanResultIA) {
-        this(parcel);
-    }
 
     public NetworkScanResult(int scanStatus, int scanError, List<CellInfo> networkInfos) {
         this.scanStatus = scanStatus;
@@ -74,22 +69,5 @@ public final class NetworkScanResult implements Parcelable {
 
     public int hashCode() {
         return (this.scanStatus * 31) + (this.scanError * 23) + (Objects.hashCode(this.networkInfos) * 37);
-    }
-
-    /* renamed from: com.android.internal.telephony.NetworkScanResult$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkScanResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanResult createFromParcel(Parcel in) {
-            return new NetworkScanResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanResult[] newArray(int size) {
-            return new NetworkScanResult[size];
-        }
     }
 }

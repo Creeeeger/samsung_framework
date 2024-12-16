@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SprObjectBase implements Cloneable {
     public static final byte TYPE_CIRCLE = 1;
     public static final byte TYPE_ELLIPSE = 2;
@@ -56,11 +56,11 @@ public abstract class SprObjectBase implements Cloneable {
 
     public abstract int getTotalSegmentCount();
 
-    public SprObjectBase(byte type) {
+    protected SprObjectBase(byte type) {
         this.mType = type;
     }
 
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         super.finalize();
         this.mAttributeList.clear();
     }
@@ -228,12 +228,10 @@ public abstract class SprObjectBase implements Cloneable {
     }
 
     public void preDraw(SprDocument document) {
-        Paint paint;
-        Paint paint2 = this.strokePaint;
-        if (paint2 == null || (paint = this.fillPaint) == null) {
+        if (this.strokePaint == null || this.fillPaint == null) {
             return;
         }
-        preDraw(document, paint2, paint, this.isVisibleStroke, this.isVisibleFill, this.shadow);
+        preDraw(document, this.strokePaint, this.fillPaint, this.isVisibleStroke, this.isVisibleFill, this.shadow);
     }
 
     public void preDraw(SprDocument document, Paint strokePaint, Paint fillPaint, boolean isVisibleStroke, boolean isVisibleFill, SprAttributeShadow shadow) {
@@ -333,13 +331,12 @@ public abstract class SprObjectBase implements Cloneable {
         }
     }
 
-    public void setShadowLayer() {
-        SprAttributeShadow sprAttributeShadow = this.shadow;
-        if (sprAttributeShadow == null) {
+    protected void setShadowLayer() {
+        if (this.shadow == null) {
             return;
         }
         if (this.isVisibleFill) {
-            float radius = sprAttributeShadow.radius;
+            float radius = this.shadow.radius;
             if (this.isVisibleStroke) {
                 radius += this.strokePaint.getStrokeWidth();
             }
@@ -347,13 +344,13 @@ public abstract class SprObjectBase implements Cloneable {
             return;
         }
         if (this.isVisibleStroke) {
-            float radius2 = sprAttributeShadow.radius;
+            float radius2 = this.shadow.radius;
             float f = radius2 <= 0.5f ? radius2 : (radius2 - 0.5f) / 0.57735f;
             this.strokePaint.setShadowLayer(this.shadow.radius, this.shadow.dx, this.shadow.dy, this.shadow.shadowColor);
         }
     }
 
-    public void clearShadowLayer() {
+    protected void clearShadowLayer() {
         if (this.shadow == null) {
             return;
         }
@@ -362,14 +359,14 @@ public abstract class SprObjectBase implements Cloneable {
     }
 
     @Override // 
-    /* renamed from: clone */
-    public SprObjectBase mo8415clone() throws CloneNotSupportedException {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SprObjectBase mo8816clone() throws CloneNotSupportedException {
         SprObjectBase object = (SprObjectBase) super.clone();
         object.mAttributeList = new ArrayList<>();
         Iterator<SprAttributeBase> it = this.mAttributeList.iterator();
         while (it.hasNext()) {
             SprAttributeBase attribute = it.next();
-            object.mAttributeList.add(attribute.mo8412clone());
+            object.mAttributeList.add(attribute.mo8813clone());
         }
         if (this.strokePaint != null) {
             object.strokePaint = new Paint(this.strokePaint);

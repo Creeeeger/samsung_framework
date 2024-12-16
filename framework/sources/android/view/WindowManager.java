@@ -1,9 +1,13 @@
 package android.view;
 
 import android.annotation.SystemApi;
+import android.app.ActivityTaskManager;
+import android.app.ActivityThread;
 import android.app.admin.DevicePolicyResources;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -11,6 +15,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemProperties;
@@ -24,12 +29,16 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.window.InputTransferToken;
 import android.window.TaskFpsCallback;
+import android.window.TrustedPresentationThresholds;
 import com.android.internal.transition.EpicenterTranslateClipReveal;
+import com.android.window.flags.Flags;
 import com.samsung.android.rune.CoreRune;
-import com.samsung.android.share.SemShareConstants;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,23 +50,34 @@ import java.util.function.IntConsumer;
 
 /* loaded from: classes4.dex */
 public interface WindowManager extends ViewManager {
+    public static final boolean ACTIVITY_EMBEDDING_GUARD_WITH_ANDROID_15;
+    public static final int COMPAT_SMALL_COVER_SCREEN_OPT_IN = 1;
+
+    @SystemApi
     public static final int DISPLAY_IME_POLICY_FALLBACK_DISPLAY = 1;
+
+    @SystemApi
     public static final int DISPLAY_IME_POLICY_HIDE = 2;
+
+    @SystemApi
     public static final int DISPLAY_IME_POLICY_LOCAL = 0;
     public static final int DOCKED_BOTTOM = 4;
     public static final int DOCKED_INVALID = -1;
     public static final int DOCKED_LEFT = 1;
     public static final int DOCKED_RIGHT = 3;
     public static final int DOCKED_TOP = 2;
+    public static final long ENABLE_ACTIVITY_EMBEDDING_FOR_ANDROID_15 = 306666082;
+    public static final boolean HAS_WINDOW_EXTENSIONS_ON_DEVICE;
     public static final String INPUT_CONSUMER_NAVIGATION = "nav_input_consumer";
     public static final String INPUT_CONSUMER_PIP = "pip_input_consumer";
     public static final String INPUT_CONSUMER_RECENTS_ANIMATION = "recents_animation_input_consumer";
     public static final String INPUT_CONSUMER_WALLPAPER = "wallpaper_input_consumer";
-    public static final int KEYGUARD_VISIBILITY_TRANSIT_FLAGS = 14592;
+    public static final int KEYGUARD_VISIBILITY_TRANSIT_FLAGS = 276736;
     public static final int LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP = 600;
     public static final String PARCEL_KEY_SHORTCUTS_ARRAY = "shortcuts_array";
     public static final String PROPERTY_ACTIVITY_EMBEDDING_ALLOW_SYSTEM_OVERRIDE = "android.window.PROPERTY_ACTIVITY_EMBEDDING_ALLOW_SYSTEM_OVERRIDE";
     public static final String PROPERTY_ACTIVITY_EMBEDDING_SPLITS_ENABLED = "android.window.PROPERTY_ACTIVITY_EMBEDDING_SPLITS_ENABLED";
+    public static final String PROPERTY_ALLOW_UNTRUSTED_ACTIVITY_EMBEDDING_STATE_SHARING = "android.window.PROPERTY_ALLOW_UNTRUSTED_ACTIVITY_EMBEDDING_STATE_SHARING";
     public static final String PROPERTY_CAMERA_COMPAT_ALLOW_FORCE_ROTATION = "android.window.PROPERTY_CAMERA_COMPAT_ALLOW_FORCE_ROTATION";
     public static final String PROPERTY_CAMERA_COMPAT_ALLOW_REFRESH = "android.window.PROPERTY_CAMERA_COMPAT_ALLOW_REFRESH";
     public static final String PROPERTY_CAMERA_COMPAT_ENABLE_REFRESH_VIA_PAUSE = "android.window.PROPERTY_CAMERA_COMPAT_ENABLE_REFRESH_VIA_PAUSE";
@@ -67,11 +87,17 @@ public interface WindowManager extends ViewManager {
     public static final String PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE = "android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE";
     public static final String PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES = "android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES";
     public static final String PROPERTY_COMPAT_ALLOW_SANDBOXING_VIEW_BOUNDS_APIS = "android.window.PROPERTY_COMPAT_ALLOW_SANDBOXING_VIEW_BOUNDS_APIS";
+    public static final String PROPERTY_COMPAT_ALLOW_SMALL_COVER_SCREEN = "android.window.PROPERTY_COMPAT_ALLOW_SMALL_COVER_SCREEN";
+    public static final String PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_FULLSCREEN_OVERRIDE = "android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_FULLSCREEN_OVERRIDE";
+    public static final String PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE = "android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE";
     public static final String PROPERTY_COMPAT_ENABLE_FAKE_FOCUS = "android.window.PROPERTY_COMPAT_ENABLE_FAKE_FOCUS";
     public static final String PROPERTY_COMPAT_IGNORE_REQUESTED_ORIENTATION = "android.window.PROPERTY_COMPAT_IGNORE_REQUESTED_ORIENTATION";
+    public static final String PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI = "android.window.PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI";
     public static final int REMOVE_CONTENT_MODE_DESTROY = 2;
     public static final int REMOVE_CONTENT_MODE_MOVE_TO_PRIMARY = 1;
     public static final int REMOVE_CONTENT_MODE_UNDEFINED = 0;
+    public static final int SCREEN_RECORDING_STATE_NOT_VISIBLE = 0;
+    public static final int SCREEN_RECORDING_STATE_VISIBLE = 1;
     public static final int SHELL_ROOT_LAYER_DIVIDER = 0;
     public static final int SHELL_ROOT_LAYER_PIP = 1;
     public static final int TAKE_SCREENSHOT_FULLSCREEN = 1;
@@ -82,9 +108,8 @@ public interface WindowManager extends ViewManager {
     public static final int TRANSIT_CHANGE = 6;
     public static final int TRANSIT_CLOSE = 2;
     public static final int TRANSIT_FIRST_CUSTOM = 1000;
-    public static final int TRANSIT_FIRST_MW = 100;
+    public static final int TRANSIT_FLAG_AOD_APPEARING = 262144;
     public static final int TRANSIT_FLAG_APP_CRASHED = 16;
-    public static final int TRANSIT_FLAG_FOLDING_OR_UNFOLDING = 16384;
     public static final int TRANSIT_FLAG_INVISIBLE = 1024;
     public static final int TRANSIT_FLAG_IS_RECENTS = 128;
     public static final int TRANSIT_FLAG_KEYGUARD_APPEARING = 2048;
@@ -97,15 +122,15 @@ public interface WindowManager extends ViewManager {
     public static final int TRANSIT_FLAG_KEYGUARD_LOCKED = 64;
     public static final int TRANSIT_FLAG_KEYGUARD_OCCLUDING = 4096;
     public static final int TRANSIT_FLAG_KEYGUARD_UNOCCLUDING = 8192;
-    public static final int TRANSIT_FLAG_KEYGUARD_WILL_BE_DISMISSED = 65536;
     public static final int TRANSIT_FLAG_KEYGUARD_WITH_APP_LAUNCH = 131072;
+    public static final int TRANSIT_FLAG_MINIMIZE = 524288;
     public static final int TRANSIT_FLAG_OPEN_BEHIND = 32;
+    public static final int TRANSIT_FLAG_PHYSICAL_DISPLAY_SWITCH = 16384;
 
     @Deprecated
     public static final int TRANSIT_KEYGUARD_GOING_AWAY = 7;
     public static final int TRANSIT_KEYGUARD_OCCLUDE = 8;
     public static final int TRANSIT_KEYGUARD_UNOCCLUDE = 9;
-    public static final int TRANSIT_MW_SPLIT_TO_FREEFORM = 102;
     public static final int TRANSIT_NONE = 0;
     public static final int TRANSIT_OLD_ACTIVITY_CLOSE = 7;
     public static final int TRANSIT_OLD_ACTIVITY_OPEN = 6;
@@ -142,22 +167,28 @@ public interface WindowManager extends ViewManager {
     public static final int TRANSIT_TO_BACK = 4;
     public static final int TRANSIT_TO_FRONT = 3;
     public static final int TRANSIT_WAKE = 11;
-    public static final boolean WINDOW_EXTENSIONS_ENABLED = SystemProperties.getBoolean("persist.wm.extensions.enabled", false);
 
-    /* loaded from: classes4.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface CompatSmallScreenPolicy {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface DisplayImePolicy {
     }
 
-    /* loaded from: classes4.dex */
     public interface KeyboardShortcutsReceiver {
         void onKeyboardShortcutsReceived(List<KeyboardShortcutGroup> list);
     }
 
-    /* loaded from: classes4.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface RemoveContentMode {
     }
 
-    /* loaded from: classes4.dex */
+    @Target({ElementType.TYPE_USE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ScreenRecordingState {
+    }
+
     public @interface ScreenshotSource {
         public static final int SCREENSHOT_ACCESSIBILITY_ACTIONS = 4;
         public static final int SCREENSHOT_GLOBAL_ACTIONS = 0;
@@ -168,27 +199,22 @@ public interface WindowManager extends ViewManager {
         public static final int SCREENSHOT_VENDOR_GESTURE = 6;
     }
 
-    /* loaded from: classes4.dex */
     public @interface ScreenshotType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ShellRootLayer {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface TransitionFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface TransitionOldType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface TransitionType {
     }
 
@@ -202,7 +228,6 @@ public interface WindowManager extends ViewManager {
 
     void requestAppKeyboardShortcuts(KeyboardShortcutsReceiver keyboardShortcutsReceiver, int i);
 
-    /* loaded from: classes4.dex */
     public static class BadTokenException extends RuntimeException {
         public BadTokenException() {
         }
@@ -212,7 +237,6 @@ public interface WindowManager extends ViewManager {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class InvalidDisplayException extends RuntimeException {
         public InvalidDisplayException() {
         }
@@ -234,8 +258,28 @@ public interface WindowManager extends ViewManager {
         throw new UnsupportedOperationException();
     }
 
+    static {
+        ACTIVITY_EMBEDDING_GUARD_WITH_ANDROID_15 = SystemProperties.getBoolean("persist.wm.extensions.activity_embedding_guard_with_android_15", !CoreRune.MW_EMBED_ACTIVITY);
+        HAS_WINDOW_EXTENSIONS_ON_DEVICE = SystemProperties.getBoolean("persist.wm.extensions.enabled", false);
+    }
+
     static boolean hasWindowExtensionsEnabled() {
-        return WINDOW_EXTENSIONS_ENABLED;
+        if ((!Flags.enableWmExtensionsForAllFlag() && ACTIVITY_EMBEDDING_GUARD_WITH_ANDROID_15) || !HAS_WINDOW_EXTENSIONS_ON_DEVICE) {
+            return false;
+        }
+        try {
+            Context context = ActivityThread.currentApplication();
+            if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+                return false;
+            }
+            return ActivityTaskManager.supportsMultiWindow(context);
+        } catch (Exception e) {
+            Log.e("WindowManager", "Unable to read if the device supports multi window", e);
+            return false;
+        }
+    }
+
+    default void requestImeKeyboardShortcuts(KeyboardShortcutsReceiver receiver, int deviceId) {
     }
 
     default void setShouldShowWithInsecureKeyguard(int displayId, boolean shouldShow) {
@@ -283,7 +327,7 @@ public interface WindowManager extends ViewManager {
             case 0:
                 return KeyProperties.DIGEST_NONE;
             case 1:
-                return SemShareConstants.DMA_SURVEY_FEATURE_OPEN;
+                return "OPEN";
             case 2:
                 return "CLOSE";
             case 3:
@@ -320,7 +364,6 @@ public interface WindowManager extends ViewManager {
         return Math.max(Math.min(scale, 20.0f), 0.0f);
     }
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends ViewGroup.LayoutParams implements Parcelable {
         public static final int ACCESSIBILITY_ANCHOR_CHANGED = 16777216;
         public static final int ACCESSIBILITY_TITLE_CHANGED = 33554432;
@@ -336,20 +379,6 @@ public interface WindowManager extends ViewManager {
         public static final int COVER_MODE_NONE = 0;
         public static final int COVER_MODE_SVIEW = 1;
         public static final int COVER_MODE_SVIEW_SUB_WINDOW = 10;
-        public static final Parcelable.Creator<LayoutParams> CREATOR = new Parcelable.Creator<LayoutParams>() { // from class: android.view.WindowManager.LayoutParams.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public LayoutParams createFromParcel(Parcel in) {
-                return new LayoutParams(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public LayoutParams[] newArray(int size) {
-                return new LayoutParams[size];
-            }
-        };
         public static final int DIM_AMOUNT_CHANGED = 32;
         public static final int DISPLAY_FLAGS_CHANGED = 4194304;
         public static final int DISPLAY_FLAG_DISABLE_HDR_CONVERSION = 1;
@@ -431,6 +460,7 @@ public interface WindowManager extends ViewManager {
         public static final int INPUT_FEATURES_CHANGED = 65536;
         public static final int INPUT_FEATURE_DISABLE_USER_ACTIVITY = 2;
         public static final int INPUT_FEATURE_NO_INPUT_CHANNEL = 1;
+        public static final int INPUT_FEATURE_SENSITIVE_FOR_PRIVACY = 8;
         public static final int INPUT_FEATURE_SPY = 4;
         public static final int INSET_FLAGS_CHANGED = 134217728;
         public static final int INVALID_WINDOW_TYPE = -1;
@@ -458,6 +488,8 @@ public interface WindowManager extends ViewManager {
         public static final int MINIMAL_POST_PROCESSING_PREFERENCE_CHANGED = 268435456;
         public static final int MULTI_WINDOW_FLAG_DIVIDER_RESIZE_LAYOUT = 64;
         public static final int MULTI_WINDOW_FLAG_EAVESDROP_DRAG_EVENT = 16;
+        public static final int MULTI_WINDOW_FLAG_FORCE_HIDE_FLOATING_WINDOW = 256;
+        public static final int MULTI_WINDOW_FLAG_FORCE_HIDE_FLOATING_WINDOW_WITHOUT_ANIMATION = 512;
         public static final int MULTI_WINDOW_FLAG_MENU = 1;
         public static final int MULTI_WINDOW_FLAG_MENU_POPUP = 2;
         public static final int MULTI_WINDOW_FLAG_MENU_TOOLTIP = 8;
@@ -467,17 +499,17 @@ public interface WindowManager extends ViewManager {
         public static final int PREFERRED_MIN_DISPLAY_REFRESH_RATE = 1073741824;
         public static final int PREFERRED_REFRESH_RATE_CHANGED = 2097152;
         public static final int PRIVATE_FLAGS_CHANGED = 131072;
-        public static final int PRIVATE_FLAG_APPEARANCE_CONTROLLED = 67108864;
-        public static final int PRIVATE_FLAG_BEHAVIOR_CONTROLLED = 134217728;
+        public static final int PRIVATE_FLAG_APP_PROGRESS_GENERATION_ALLOWED = 128;
         public static final int PRIVATE_FLAG_COLOR_SPACE_AGNOSTIC = 16777216;
-        public static final int PRIVATE_FLAG_COMPATIBLE_WINDOW = 128;
+        public static final int PRIVATE_FLAG_CONSUME_IME_INSETS = 33554432;
         public static final int PRIVATE_FLAG_DISABLE_WALLPAPER_TOUCH_EVENTS = 1024;
+        public static final int PRIVATE_FLAG_EDGE_TO_EDGE_ENFORCED = 2048;
         public static final int PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION = 2097152;
         public static final int PRIVATE_FLAG_FIT_INSETS_CONTROLLED = 268435456;
         public static final int PRIVATE_FLAG_FORCE_DECOR_VIEW_VISIBILITY = 8192;
         public static final int PRIVATE_FLAG_FORCE_DRAW_BAR_BACKGROUNDS = 32768;
         public static final int PRIVATE_FLAG_FORCE_HARDWARE_ACCELERATED = 2;
-        public static final int PRIVATE_FLAG_FORCE_SHOW_STATUS_BAR = 2048;
+        public static final int PRIVATE_FLAG_IMMERSIVE_CONFIRMATION_WINDOW = 131072;
         public static final int PRIVATE_FLAG_INSET_PARENT_FRAME_BY_IME = 1073741824;
         public static final int PRIVATE_FLAG_INTERCEPT_GLOBAL_DRAG_AND_DROP = Integer.MIN_VALUE;
         public static final int PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY = 1048576;
@@ -486,13 +518,12 @@ public interface WindowManager extends ViewManager {
         public static final int PRIVATE_FLAG_NOT_MAGNIFIABLE = 4194304;
         public static final int PRIVATE_FLAG_NO_MOVE_ANIMATION = 64;
         public static final int PRIVATE_FLAG_OPTIMIZE_MEASURE = 512;
-        public static final int PRIVATE_FLAG_STATUS_FORCE_SHOW_NAVIGATION = 8388608;
+        public static final int PRIVATE_FLAG_OVERRIDE_LAYOUT_IN_DISPLAY_CUTOUT_MODE = 262144;
         public static final int PRIVATE_FLAG_SUSTAINED_PERFORMANCE_MODE = 65536;
         public static final int PRIVATE_FLAG_SYSTEM_APPLICATION_OVERLAY = 8;
         public static final int PRIVATE_FLAG_SYSTEM_ERROR = 256;
         public static final int PRIVATE_FLAG_TRUSTED_OVERLAY = 536870912;
         public static final int PRIVATE_FLAG_UNRESTRICTED_GESTURE_EXCLUSION = 32;
-        public static final int PRIVATE_FLAG_USE_BLAST = 33554432;
         public static final int PRIVATE_FLAG_WANTS_OFFSET_NOTIFICATIONS = 4;
         public static final int ROTATION_ANIMATION_CHANGED = 4096;
         public static final int ROTATION_ANIMATION_CROSSFADE = 1;
@@ -501,6 +532,7 @@ public interface WindowManager extends ViewManager {
         public static final int ROTATION_ANIMATION_SEAMLESS = 3;
         public static final int ROTATION_ANIMATION_UNSPECIFIED = -1;
         public static final int SCREEN_BRIGHTNESS_CHANGED = 2048;
+        public static final int SCREEN_DIM_DURATION_CHANGED = 1;
         public static final int SCREEN_ORIENTATION_CHANGED = 1024;
         public static final int SEM_EXTENSION_FLAG_CHANGE_DIM_EFFECT_TO_BLUR = 64;
         public static final int SEM_EXTENSION_FLAG_CONTENT_RESIZE_ANIMATION = 16384;
@@ -548,6 +580,12 @@ public interface WindowManager extends ViewManager {
         public static final int SOFT_INPUT_STATE_UNSPECIFIED = 0;
         public static final int SOFT_INPUT_STATE_VISIBLE = 4;
         public static final int SURFACE_INSETS_CHANGED = 1048576;
+        public static final int SURFACE_TYPE_CAPTION_OF_TASK = 3;
+        public static final int SURFACE_TYPE_COLOR_FADE = 2;
+        public static final int SURFACE_TYPE_FP_ICON_VIEW = 5;
+        public static final int SURFACE_TYPE_FP_MASK_VIEW = 4;
+        public static final int SURFACE_TYPE_ROTATION_LAYER = 1;
+        public static final int SURFACE_TYPE_UNSUPPORTED = 0;
 
         @SystemApi
         public static final int SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS = 524288;
@@ -574,6 +612,7 @@ public interface WindowManager extends ViewManager {
         public static final int TYPE_BOOT_PROGRESS = 2021;
         public static final int TYPE_CHANGED = 2;
         public static final int TYPE_COVER_SCREEN_BASE = 2620;
+        public static final int TYPE_DIALOG_UNDER_INPUT_METHOD = 2624;
         public static final int TYPE_DISPLAY_CUTOUT_BACKGROUND = 2617;
         public static final int TYPE_DISPLAY_OVERLAY = 2026;
         public static final int TYPE_DOCK_DIVIDER = 2034;
@@ -591,9 +630,8 @@ public interface WindowManager extends ViewManager {
         public static final int TYPE_INPUT_METHOD_PANEL = 1100;
         public static final int TYPE_KEYGUARD = 2004;
         public static final int TYPE_KEYGUARD_DIALOG = 2009;
-        public static final int TYPE_LOCK_ONLY_LIVE_WALLPAPER = 2633;
         public static final int TYPE_MAGNIFICATION_OVERLAY = 2027;
-        public static final int TYPE_MULTIWINDOW_DISMISS_BUTTON = 2607;
+        public static final int TYPE_MULTIWINDOW_DISMISS_VIEW = 2606;
         public static final int TYPE_MULTIWINDOW_FLEX_FLOATING_ICON = 2605;
         public static final int TYPE_MULTIWINDOW_FLEX_FLOATING_ICON_MOVABLE = 2606;
         public static final int TYPE_MULTIWINDOW_MINIMIZE_CONTAINER = 2604;
@@ -665,6 +703,7 @@ public interface WindowManager extends ViewManager {
 
         @ViewDebug.ExportedProperty(flagMapping = {@ViewDebug.FlagToString(equals = 1, mask = 1, name = "ALLOW_LOCK_WHILE_SCREEN_ON"), @ViewDebug.FlagToString(equals = 2, mask = 2, name = "DIM_BEHIND"), @ViewDebug.FlagToString(equals = 4, mask = 4, name = "BLUR_BEHIND"), @ViewDebug.FlagToString(equals = 8, mask = 8, name = "NOT_FOCUSABLE"), @ViewDebug.FlagToString(equals = 16, mask = 16, name = "NOT_TOUCHABLE"), @ViewDebug.FlagToString(equals = 32, mask = 32, name = "NOT_TOUCH_MODAL"), @ViewDebug.FlagToString(equals = 64, mask = 64, name = "TOUCHABLE_WHEN_WAKING"), @ViewDebug.FlagToString(equals = 128, mask = 128, name = "KEEP_SCREEN_ON"), @ViewDebug.FlagToString(equals = 256, mask = 256, name = "LAYOUT_IN_SCREEN"), @ViewDebug.FlagToString(equals = 512, mask = 512, name = "LAYOUT_NO_LIMITS"), @ViewDebug.FlagToString(equals = 1024, mask = 1024, name = "FULLSCREEN"), @ViewDebug.FlagToString(equals = 2048, mask = 2048, name = "FORCE_NOT_FULLSCREEN"), @ViewDebug.FlagToString(equals = 4096, mask = 4096, name = "DITHER"), @ViewDebug.FlagToString(equals = 8192, mask = 8192, name = "SECURE"), @ViewDebug.FlagToString(equals = 16384, mask = 16384, name = "SCALED"), @ViewDebug.FlagToString(equals = 32768, mask = 32768, name = "IGNORE_CHEEK_PRESSES"), @ViewDebug.FlagToString(equals = 65536, mask = 65536, name = "LAYOUT_INSET_DECOR"), @ViewDebug.FlagToString(equals = 131072, mask = 131072, name = "ALT_FOCUSABLE_IM"), @ViewDebug.FlagToString(equals = 262144, mask = 262144, name = "WATCH_OUTSIDE_TOUCH"), @ViewDebug.FlagToString(equals = 524288, mask = 524288, name = "SHOW_WHEN_LOCKED"), @ViewDebug.FlagToString(equals = 1048576, mask = 1048576, name = "SHOW_WALLPAPER"), @ViewDebug.FlagToString(equals = 2097152, mask = 2097152, name = "TURN_SCREEN_ON"), @ViewDebug.FlagToString(equals = 4194304, mask = 4194304, name = "DISMISS_KEYGUARD"), @ViewDebug.FlagToString(equals = 8388608, mask = 8388608, name = "SPLIT_TOUCH"), @ViewDebug.FlagToString(equals = 16777216, mask = 16777216, name = "HARDWARE_ACCELERATED"), @ViewDebug.FlagToString(equals = 33554432, mask = 33554432, name = "LOCAL_FOCUS_MODE"), @ViewDebug.FlagToString(equals = 67108864, mask = 67108864, name = "TRANSLUCENT_STATUS"), @ViewDebug.FlagToString(equals = 134217728, mask = 134217728, name = "TRANSLUCENT_NAVIGATION"), @ViewDebug.FlagToString(equals = 268435456, mask = 268435456, name = "LOCAL_FOCUS_MODE"), @ViewDebug.FlagToString(equals = 536870912, mask = 536870912, name = "FLAG_SLIPPERY"), @ViewDebug.FlagToString(equals = 1073741824, mask = 1073741824, name = "FLAG_LAYOUT_ATTACHED_IN_DECOR"), @ViewDebug.FlagToString(equals = Integer.MIN_VALUE, mask = Integer.MIN_VALUE, name = "DRAWS_SYSTEM_BAR_BACKGROUNDS")}, formatToHexString = true)
         public int flags;
+        public int forciblyShownTypes;
         public int format;
         public int gravity;
         public boolean hasManualSurfaceInsets;
@@ -676,11 +715,11 @@ public interface WindowManager extends ViewManager {
         public float horizontalWeight;
         public int inputFeatures;
         public final InsetsFlags insetsFlags;
-        public boolean insetsRoundedCornerFrame;
         public int layoutInDisplayCutoutMode;
         private int mBlurBehindRadius;
         private int mColorMode;
         private int[] mCompatibilityParamsBackup;
+        private float mDesiredHdrHeadroom;
         private int mDisplayFlags;
         private boolean mFitInsetsIgnoringVisibility;
 
@@ -689,6 +728,8 @@ public interface WindowManager extends ViewManager {
 
         @ViewDebug.ExportedProperty(flagMapping = {@ViewDebug.FlagToString(equals = 1, mask = 1, name = "STATUS_BARS"), @ViewDebug.FlagToString(equals = 2, mask = 2, name = "NAVIGATION_BARS"), @ViewDebug.FlagToString(equals = 4, mask = 4, name = "CAPTION_BAR"), @ViewDebug.FlagToString(equals = 8, mask = 8, name = "IME"), @ViewDebug.FlagToString(equals = 16, mask = 16, name = "SYSTEM_GESTURES"), @ViewDebug.FlagToString(equals = 32, mask = 32, name = "MANDATORY_SYSTEM_GESTURES"), @ViewDebug.FlagToString(equals = 64, mask = 64, name = "TAPPABLE_ELEMENT"), @ViewDebug.FlagToString(equals = 256, mask = 256, name = "WINDOW_DECOR")})
         private int mFitInsetsTypes;
+        private boolean mFrameRateBoostOnTouch;
+        private boolean mIsFrameRatePowerSavingsBalanced;
         private CharSequence mTitle;
         private boolean mWallpaperTouchEventsEnabled;
         public IBinder mWindowContextToken;
@@ -696,8 +737,8 @@ public interface WindowManager extends ViewManager {
         @Deprecated
         public int memoryType;
 
-        @ViewDebug.ExportedProperty(flagMapping = {@ViewDebug.FlagToString(equals = 1, mask = 1, name = "MULTI_WINDOW_FLAG_MENU"), @ViewDebug.FlagToString(equals = 2, mask = 2, name = "MULTI_WINDOW_FLAG_MENU_POPUP"), @ViewDebug.FlagToString(equals = 8, mask = 8, name = "MULTI_WINDOW_FLAG_MENU_TOOLTIP"), @ViewDebug.FlagToString(equals = 4, mask = 4, name = "MULTI_WINDOW_FLAG_EAVESDROP_DRAG_EVENT"), @ViewDebug.FlagToString(equals = 16, mask = 16, name = "MULTI_WINDOW_FLAG_EAVESDROP_DRAG_EVENT"), @ViewDebug.FlagToString(equals = 64, mask = 64, name = "MULTI_WINDOW_FLAG_DIVIDER_RESIZE_LAYOUT")})
-        public int multiwindowFlags;
+        @ViewDebug.ExportedProperty(flagMapping = {@ViewDebug.FlagToString(equals = 1, mask = 1, name = "MULTI_WINDOW_FLAG_MENU"), @ViewDebug.FlagToString(equals = 2, mask = 2, name = "MULTI_WINDOW_FLAG_MENU_POPUP"), @ViewDebug.FlagToString(equals = 8, mask = 8, name = "MULTI_WINDOW_FLAG_MENU_TOOLTIP"), @ViewDebug.FlagToString(equals = 4, mask = 4, name = "MULTI_WINDOW_FLAG_NAVIGATION_BAR_TRANSPARENT"), @ViewDebug.FlagToString(equals = 16, mask = 16, name = "MULTI_WINDOW_FLAG_EAVESDROP_DRAG_EVENT"), @ViewDebug.FlagToString(equals = 256, mask = 256, name = "MULTI_WINDOW_FLAG_FORCE_HIDE_FLOATING_WINDOW"), @ViewDebug.FlagToString(equals = 512, mask = 512, name = "MULTI_WINDOW_FLAG_FORCE_HIDE_FLOATING_WINDOW_WITHOUT_ANIMATION")})
+        public int multiWindowFlags;
         public int navigationBarIconColor;
         public String packageName;
         public LayoutParams[] paramsForRotation;
@@ -708,7 +749,7 @@ public interface WindowManager extends ViewManager {
         public float preferredRefreshRate;
         public boolean preservePreviousSurfaceInsets;
 
-        @ViewDebug.ExportedProperty(flagMapping = {@ViewDebug.FlagToString(equals = 2, mask = 2, name = "FORCE_HARDWARE_ACCELERATED"), @ViewDebug.FlagToString(equals = 4, mask = 4, name = "WANTS_OFFSET_NOTIFICATIONS"), @ViewDebug.FlagToString(equals = 16, mask = 16, name = "SHOW_FOR_ALL_USERS"), @ViewDebug.FlagToString(equals = 32, mask = 32, name = "UNRESTRICTED_GESTURE_EXCLUSION"), @ViewDebug.FlagToString(equals = 64, mask = 64, name = "NO_MOVE_ANIMATION"), @ViewDebug.FlagToString(equals = 128, mask = 128, name = "COMPATIBLE_WINDOW"), @ViewDebug.FlagToString(equals = 256, mask = 256, name = "SYSTEM_ERROR"), @ViewDebug.FlagToString(equals = 512, mask = 512, name = "OPTIMIZE_MEASURE"), @ViewDebug.FlagToString(equals = 1024, mask = 1024, name = "DISABLE_WALLPAPER_TOUCH_EVENTS"), @ViewDebug.FlagToString(equals = 2048, mask = 2048, name = "FORCE_STATUS_BAR_VISIBLE"), @ViewDebug.FlagToString(equals = 4096, mask = 4096, name = "LAYOUT_SIZE_EXTENDED_BY_CUTOUT"), @ViewDebug.FlagToString(equals = 8192, mask = 8192, name = "FORCE_DECOR_VIEW_VISIBILITY"), @ViewDebug.FlagToString(equals = 16384, mask = 16384, name = "LAYOUT_CHILD_WINDOW_IN_PARENT_FRAME"), @ViewDebug.FlagToString(equals = 32768, mask = 32768, name = "FORCE_DRAW_STATUS_BAR_BACKGROUND"), @ViewDebug.FlagToString(equals = 65536, mask = 65536, name = "SUSTAINED_PERFORMANCE_MODE"), @ViewDebug.FlagToString(equals = 524288, mask = 524288, name = "HIDE_NON_SYSTEM_OVERLAY_WINDOWS"), @ViewDebug.FlagToString(equals = 1048576, mask = 1048576, name = "IS_ROUNDED_CORNERS_OVERLAY"), @ViewDebug.FlagToString(equals = 2097152, mask = 2097152, name = "EXCLUDE_FROM_SCREEN_MAGNIFICATION"), @ViewDebug.FlagToString(equals = 4194304, mask = 4194304, name = "NOT_MAGNIFIABLE"), @ViewDebug.FlagToString(equals = 8388608, mask = 8388608, name = "STATUS_FORCE_SHOW_NAVIGATION"), @ViewDebug.FlagToString(equals = 16777216, mask = 16777216, name = "COLOR_SPACE_AGNOSTIC"), @ViewDebug.FlagToString(equals = 33554432, mask = 33554432, name = "USE_BLAST"), @ViewDebug.FlagToString(equals = 67108864, mask = 67108864, name = "APPEARANCE_CONTROLLED"), @ViewDebug.FlagToString(equals = 134217728, mask = 134217728, name = "BEHAVIOR_CONTROLLED"), @ViewDebug.FlagToString(equals = 268435456, mask = 268435456, name = "FIT_INSETS_CONTROLLED"), @ViewDebug.FlagToString(equals = 536870912, mask = 536870912, name = "TRUSTED_OVERLAY"), @ViewDebug.FlagToString(equals = 1073741824, mask = 1073741824, name = "INSET_PARENT_FRAME_BY_IME"), @ViewDebug.FlagToString(equals = Integer.MIN_VALUE, mask = Integer.MIN_VALUE, name = "INTERCEPT_GLOBAL_DRAG_AND_DROP"), @ViewDebug.FlagToString(equals = 8, mask = 8, name = "PRIVATE_FLAG_SYSTEM_APPLICATION_OVERLAY")})
+        @ViewDebug.ExportedProperty(flagMapping = {@ViewDebug.FlagToString(equals = 2, mask = 2, name = "FORCE_HARDWARE_ACCELERATED"), @ViewDebug.FlagToString(equals = 4, mask = 4, name = "WANTS_OFFSET_NOTIFICATIONS"), @ViewDebug.FlagToString(equals = 16, mask = 16, name = "SHOW_FOR_ALL_USERS"), @ViewDebug.FlagToString(equals = 32, mask = 32, name = "UNRESTRICTED_GESTURE_EXCLUSION"), @ViewDebug.FlagToString(equals = 64, mask = 64, name = "NO_MOVE_ANIMATION"), @ViewDebug.FlagToString(equals = 256, mask = 256, name = "SYSTEM_ERROR"), @ViewDebug.FlagToString(equals = 512, mask = 512, name = "OPTIMIZE_MEASURE"), @ViewDebug.FlagToString(equals = 1024, mask = 1024, name = "DISABLE_WALLPAPER_TOUCH_EVENTS"), @ViewDebug.FlagToString(equals = 2048, mask = 2048, name = "EDGE_TO_EDGE_ENFORCED"), @ViewDebug.FlagToString(equals = 4096, mask = 4096, name = "LAYOUT_SIZE_EXTENDED_BY_CUTOUT"), @ViewDebug.FlagToString(equals = 8192, mask = 8192, name = "FORCE_DECOR_VIEW_VISIBILITY"), @ViewDebug.FlagToString(equals = 16384, mask = 16384, name = "LAYOUT_CHILD_WINDOW_IN_PARENT_FRAME"), @ViewDebug.FlagToString(equals = 32768, mask = 32768, name = "FORCE_DRAW_STATUS_BAR_BACKGROUND"), @ViewDebug.FlagToString(equals = 65536, mask = 65536, name = "SUSTAINED_PERFORMANCE_MODE"), @ViewDebug.FlagToString(equals = 131072, mask = 131072, name = "IMMERSIVE_CONFIRMATION_WINDOW"), @ViewDebug.FlagToString(equals = 262144, mask = 262144, name = "OVERRIDE_LAYOUT_IN_DISPLAY_CUTOUT_MODE"), @ViewDebug.FlagToString(equals = 524288, mask = 524288, name = "HIDE_NON_SYSTEM_OVERLAY_WINDOWS"), @ViewDebug.FlagToString(equals = 1048576, mask = 1048576, name = "IS_ROUNDED_CORNERS_OVERLAY"), @ViewDebug.FlagToString(equals = 2097152, mask = 2097152, name = "EXCLUDE_FROM_SCREEN_MAGNIFICATION"), @ViewDebug.FlagToString(equals = 4194304, mask = 4194304, name = "NOT_MAGNIFIABLE"), @ViewDebug.FlagToString(equals = 16777216, mask = 16777216, name = "COLOR_SPACE_AGNOSTIC"), @ViewDebug.FlagToString(equals = 33554432, mask = 33554432, name = "CONSUME_IME_INSETS"), @ViewDebug.FlagToString(equals = 268435456, mask = 268435456, name = "FIT_INSETS_CONTROLLED"), @ViewDebug.FlagToString(equals = 536870912, mask = 536870912, name = "TRUSTED_OVERLAY"), @ViewDebug.FlagToString(equals = 1073741824, mask = 1073741824, name = "INSET_PARENT_FRAME_BY_IME"), @ViewDebug.FlagToString(equals = Integer.MIN_VALUE, mask = Integer.MIN_VALUE, name = "INTERCEPT_GLOBAL_DRAG_AND_DROP"), @ViewDebug.FlagToString(equals = 8, mask = 8, name = "SYSTEM_APPLICATION_OVERLAY")})
         public int privateFlags;
         public InsetsFrameProvider[] providedInsets;
         public boolean receiveInsetsIgnoringZOrder;
@@ -723,11 +764,14 @@ public interface WindowManager extends ViewManager {
         public int subtreeSystemUiVisibility;
         public final Rect surfaceInsets;
 
+        @ViewDebug.ExportedProperty(mapping = {@ViewDebug.IntToString(from = 3, to = "CAPTION_OF_TASK"), @ViewDebug.IntToString(from = 4, to = "FP_MASK_VIEW"), @ViewDebug.IntToString(from = 5, to = "FP_ICON_VIEW")})
+        public int surfaceType;
+
         @Deprecated
         public int systemUiVisibility;
         public IBinder token;
 
-        @ViewDebug.ExportedProperty(mapping = {@ViewDebug.IntToString(from = 1, to = "BASE_APPLICATION"), @ViewDebug.IntToString(from = 2, to = "APPLICATION"), @ViewDebug.IntToString(from = 3, to = "APPLICATION_STARTING"), @ViewDebug.IntToString(from = 4, to = "DRAWN_APPLICATION"), @ViewDebug.IntToString(from = 1000, to = "APPLICATION_PANEL"), @ViewDebug.IntToString(from = 1001, to = "APPLICATION_MEDIA"), @ViewDebug.IntToString(from = 1002, to = "APPLICATION_SUB_PANEL"), @ViewDebug.IntToString(from = 1005, to = "APPLICATION_ABOVE_SUB_PANEL"), @ViewDebug.IntToString(from = 1003, to = "APPLICATION_ATTACHED_DIALOG"), @ViewDebug.IntToString(from = 1004, to = "APPLICATION_MEDIA_OVERLAY"), @ViewDebug.IntToString(from = 2000, to = DevicePolicyResources.Drawables.Source.STATUS_BAR), @ViewDebug.IntToString(from = 2001, to = "SEARCH_BAR"), @ViewDebug.IntToString(from = 2002, to = "PHONE"), @ViewDebug.IntToString(from = 2003, to = "SYSTEM_ALERT"), @ViewDebug.IntToString(from = 2005, to = "TOAST"), @ViewDebug.IntToString(from = 2006, to = "SYSTEM_OVERLAY"), @ViewDebug.IntToString(from = 2007, to = "PRIORITY_PHONE"), @ViewDebug.IntToString(from = 2008, to = "SYSTEM_DIALOG"), @ViewDebug.IntToString(from = 2009, to = "KEYGUARD_DIALOG"), @ViewDebug.IntToString(from = 2010, to = "SYSTEM_ERROR"), @ViewDebug.IntToString(from = 2011, to = "INPUT_METHOD"), @ViewDebug.IntToString(from = 2012, to = "INPUT_METHOD_DIALOG"), @ViewDebug.IntToString(from = 2013, to = "WALLPAPER"), @ViewDebug.IntToString(from = 2014, to = "STATUS_BAR_PANEL"), @ViewDebug.IntToString(from = 2015, to = "SECURE_SYSTEM_OVERLAY"), @ViewDebug.IntToString(from = 2016, to = "DRAG"), @ViewDebug.IntToString(from = 2017, to = "STATUS_BAR_SUB_PANEL"), @ViewDebug.IntToString(from = 2018, to = "POINTER"), @ViewDebug.IntToString(from = 2019, to = "NAVIGATION_BAR"), @ViewDebug.IntToString(from = 2020, to = "VOLUME_OVERLAY"), @ViewDebug.IntToString(from = 2021, to = "BOOT_PROGRESS"), @ViewDebug.IntToString(from = 2022, to = "INPUT_CONSUMER"), @ViewDebug.IntToString(from = 2024, to = "NAVIGATION_BAR_PANEL"), @ViewDebug.IntToString(from = 2026, to = "DISPLAY_OVERLAY"), @ViewDebug.IntToString(from = 2027, to = "MAGNIFICATION_OVERLAY"), @ViewDebug.IntToString(from = 2037, to = "PRESENTATION"), @ViewDebug.IntToString(from = 2030, to = "PRIVATE_PRESENTATION"), @ViewDebug.IntToString(from = 2031, to = "VOICE_INTERACTION"), @ViewDebug.IntToString(from = 2033, to = "VOICE_INTERACTION_STARTING"), @ViewDebug.IntToString(from = 2034, to = "DOCK_DIVIDER"), @ViewDebug.IntToString(from = 2035, to = "QS_DIALOG"), @ViewDebug.IntToString(from = 2036, to = "SCREENSHOT"), @ViewDebug.IntToString(from = 2038, to = "APPLICATION_OVERLAY"), @ViewDebug.IntToString(from = 2040, to = "NOTIFICATION_SHADE"), @ViewDebug.IntToString(from = TYPE_NOTIFICATION_SHADE_WIDGET, to = "NOTIFICATION_SHADE_WIDGET"), @ViewDebug.IntToString(from = TYPE_PENTASTIC_ICON, to = "PENTASTIC_ICON"), @ViewDebug.IntToString(from = TYPE_PENTASTIC_ANIM, to = "PENTASTIC_ANIM"), @ViewDebug.IntToString(from = TYPE_GAME_TOOL, to = "GAME_TOOL"), @ViewDebug.IntToString(from = TYPE_GAME_TOOL_OVERLAY, to = "GAME_TOOL_OVERLAY"), @ViewDebug.IntToString(from = TYPE_TRANSIENT_LAUNCH_OVERLAY, to = "TRANSIENT_LAUNCH_OVERLAY"), @ViewDebug.IntToString(from = TYPE_LOCK_ONLY_LIVE_WALLPAPER, to = "LOCK_ONLY_LIVE_WALLPAPER")})
+        @ViewDebug.ExportedProperty(mapping = {@ViewDebug.IntToString(from = 1, to = "BASE_APPLICATION"), @ViewDebug.IntToString(from = 2, to = "APPLICATION"), @ViewDebug.IntToString(from = 3, to = "APPLICATION_STARTING"), @ViewDebug.IntToString(from = 4, to = "DRAWN_APPLICATION"), @ViewDebug.IntToString(from = 1000, to = "APPLICATION_PANEL"), @ViewDebug.IntToString(from = 1001, to = "APPLICATION_MEDIA"), @ViewDebug.IntToString(from = 1002, to = "APPLICATION_SUB_PANEL"), @ViewDebug.IntToString(from = 1005, to = "APPLICATION_ABOVE_SUB_PANEL"), @ViewDebug.IntToString(from = 1003, to = "APPLICATION_ATTACHED_DIALOG"), @ViewDebug.IntToString(from = 1004, to = "APPLICATION_MEDIA_OVERLAY"), @ViewDebug.IntToString(from = 2000, to = DevicePolicyResources.Drawables.Source.STATUS_BAR), @ViewDebug.IntToString(from = 2001, to = "SEARCH_BAR"), @ViewDebug.IntToString(from = 2002, to = "PHONE"), @ViewDebug.IntToString(from = 2003, to = "SYSTEM_ALERT"), @ViewDebug.IntToString(from = 2004, to = "KEYGUARD"), @ViewDebug.IntToString(from = 2005, to = "TOAST"), @ViewDebug.IntToString(from = 2006, to = "SYSTEM_OVERLAY"), @ViewDebug.IntToString(from = 2007, to = "PRIORITY_PHONE"), @ViewDebug.IntToString(from = 2008, to = "SYSTEM_DIALOG"), @ViewDebug.IntToString(from = 2009, to = "KEYGUARD_DIALOG"), @ViewDebug.IntToString(from = 2010, to = "SYSTEM_ERROR"), @ViewDebug.IntToString(from = 2011, to = "INPUT_METHOD"), @ViewDebug.IntToString(from = 2012, to = "INPUT_METHOD_DIALOG"), @ViewDebug.IntToString(from = 2013, to = "WALLPAPER"), @ViewDebug.IntToString(from = 2014, to = "STATUS_BAR_PANEL"), @ViewDebug.IntToString(from = 2015, to = "SECURE_SYSTEM_OVERLAY"), @ViewDebug.IntToString(from = 2016, to = "DRAG"), @ViewDebug.IntToString(from = 2017, to = "STATUS_BAR_SUB_PANEL"), @ViewDebug.IntToString(from = 2018, to = "POINTER"), @ViewDebug.IntToString(from = 2019, to = "NAVIGATION_BAR"), @ViewDebug.IntToString(from = 2020, to = "VOLUME_OVERLAY"), @ViewDebug.IntToString(from = 2021, to = "BOOT_PROGRESS"), @ViewDebug.IntToString(from = 2022, to = "INPUT_CONSUMER"), @ViewDebug.IntToString(from = 2024, to = "NAVIGATION_BAR_PANEL"), @ViewDebug.IntToString(from = 2026, to = "DISPLAY_OVERLAY"), @ViewDebug.IntToString(from = 2027, to = "MAGNIFICATION_OVERLAY"), @ViewDebug.IntToString(from = 2037, to = "PRESENTATION"), @ViewDebug.IntToString(from = 2030, to = "PRIVATE_PRESENTATION"), @ViewDebug.IntToString(from = 2031, to = "VOICE_INTERACTION"), @ViewDebug.IntToString(from = 2032, to = "ACCESSIBILITY_OVERLAY"), @ViewDebug.IntToString(from = 2033, to = "VOICE_INTERACTION_STARTING"), @ViewDebug.IntToString(from = 2034, to = "DOCK_DIVIDER"), @ViewDebug.IntToString(from = 2035, to = "QS_DIALOG"), @ViewDebug.IntToString(from = 2036, to = "SCREENSHOT"), @ViewDebug.IntToString(from = 2038, to = "APPLICATION_OVERLAY"), @ViewDebug.IntToString(from = 2039, to = "ACCESSIBILITY_MAGNIFICATION_OVERLAY"), @ViewDebug.IntToString(from = 2040, to = "NOTIFICATION_SHADE"), @ViewDebug.IntToString(from = 2041, to = "STATUS_BAR_ADDITIONAL"), @ViewDebug.IntToString(from = 2040, to = "NOTIFICATION_SHADE"), @ViewDebug.IntToString(from = TYPE_NOTIFICATION_SHADE_WIDGET, to = "NOTIFICATION_SHADE_WIDGET"), @ViewDebug.IntToString(from = TYPE_PENTASTIC_ICON, to = "PENTASTIC_ICON"), @ViewDebug.IntToString(from = TYPE_PENTASTIC_ANIM, to = "PENTASTIC_ANIM"), @ViewDebug.IntToString(from = TYPE_TRANSIENT_LAUNCH_OVERLAY, to = "TRANSIENT_LAUNCH_OVERLAY"), @ViewDebug.IntToString(from = TYPE_GAME_TOOL, to = "GAME_TOOL"), @ViewDebug.IntToString(from = TYPE_GAME_TOOL_OVERLAY, to = "GAME_TOOL_OVERLAY")})
         public int type;
         public long userActivityTimeout;
         public float verticalMargin;
@@ -741,48 +785,53 @@ public interface WindowManager extends ViewManager {
 
         @ViewDebug.ExportedProperty
         public int y;
+        private static boolean sToolkitSetFrameRateReadOnlyFlagValue = android.view.flags.Flags.toolkitSetFrameRateReadOnly();
+        public static final Parcelable.Creator<LayoutParams> CREATOR = new Parcelable.Creator<LayoutParams>() { // from class: android.view.WindowManager.LayoutParams.1
+            /* JADX WARN: Can't rename method to resolve collision */
+            @Override // android.os.Parcelable.Creator
+            public LayoutParams createFromParcel(Parcel in) {
+                return new LayoutParams(in);
+            }
 
-        /* loaded from: classes4.dex */
+            /* JADX WARN: Can't rename method to resolve collision */
+            @Override // android.os.Parcelable.Creator
+            public LayoutParams[] newArray(int size) {
+                return new LayoutParams[size];
+            }
+        };
+
         public @interface DisplayFlags {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface Flags {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface InputFeatureFlags {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         @interface LayoutInDisplayCutoutMode {
         }
 
-        /* loaded from: classes4.dex */
+        @Retention(RetentionPolicy.SOURCE)
         public @interface PrivateFlags {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface SoftInputModeFlags {
         }
 
-        @SystemApi
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface SystemFlags {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface SystemUiVisibilityFlags {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface WindowType {
         }
 
@@ -870,11 +919,10 @@ public interface WindowManager extends ViewManager {
         }
 
         private void checkNonRecursiveParams() {
-            LayoutParams[] layoutParamsArr = this.paramsForRotation;
-            if (layoutParamsArr == null) {
+            if (this.paramsForRotation == null) {
                 return;
             }
-            for (int i = layoutParamsArr.length - 1; i >= 0; i--) {
+            for (int i = this.paramsForRotation.length - 1; i >= 0; i--) {
                 if (this.paramsForRotation[i].paramsForRotation != null) {
                     throw new IllegalArgumentException("Params cannot contain params recursively.");
                 }
@@ -882,12 +930,10 @@ public interface WindowManager extends ViewManager {
         }
 
         public LayoutParams forRotation(int rotation) {
-            LayoutParams layoutParams;
-            LayoutParams[] layoutParamsArr = this.paramsForRotation;
-            if (layoutParamsArr == null || layoutParamsArr.length <= rotation || (layoutParams = layoutParamsArr[rotation]) == null) {
+            if (this.paramsForRotation == null || this.paramsForRotation.length <= rotation || this.paramsForRotation[rotation] == null) {
                 return this;
             }
-            return layoutParams;
+            return this.paramsForRotation[rotation];
         }
 
         public LayoutParams() {
@@ -912,13 +958,16 @@ public interface WindowManager extends ViewManager {
             this.dimDuration = -1L;
             this.screenDimDuration = -1L;
             this.navigationBarIconColor = 0;
+            this.surfaceType = 0;
             this.coverMode = 0;
             this.mColorMode = 0;
+            this.mDesiredHdrHeadroom = 0.0f;
+            this.mFrameRateBoostOnTouch = true;
+            this.mIsFrameRatePowerSavingsBalanced = true;
             this.insetsFlags = new InsetsFlags();
             this.mFitInsetsTypes = WindowInsets.Type.systemBars();
             this.mFitInsetsSides = WindowInsets.Side.all();
             this.mFitInsetsIgnoringVisibility = false;
-            this.insetsRoundedCornerFrame = false;
             this.mWallpaperTouchEventsEnabled = true;
             this.mCompatibilityParamsBackup = null;
             this.mTitle = null;
@@ -948,13 +997,16 @@ public interface WindowManager extends ViewManager {
             this.dimDuration = -1L;
             this.screenDimDuration = -1L;
             this.navigationBarIconColor = 0;
+            this.surfaceType = 0;
             this.coverMode = 0;
             this.mColorMode = 0;
+            this.mDesiredHdrHeadroom = 0.0f;
+            this.mFrameRateBoostOnTouch = true;
+            this.mIsFrameRatePowerSavingsBalanced = true;
             this.insetsFlags = new InsetsFlags();
             this.mFitInsetsTypes = WindowInsets.Type.systemBars();
             this.mFitInsetsSides = WindowInsets.Side.all();
             this.mFitInsetsIgnoringVisibility = false;
-            this.insetsRoundedCornerFrame = false;
             this.mWallpaperTouchEventsEnabled = true;
             this.mCompatibilityParamsBackup = null;
             this.mTitle = null;
@@ -984,13 +1036,16 @@ public interface WindowManager extends ViewManager {
             this.dimDuration = -1L;
             this.screenDimDuration = -1L;
             this.navigationBarIconColor = 0;
+            this.surfaceType = 0;
             this.coverMode = 0;
             this.mColorMode = 0;
+            this.mDesiredHdrHeadroom = 0.0f;
+            this.mFrameRateBoostOnTouch = true;
+            this.mIsFrameRatePowerSavingsBalanced = true;
             this.insetsFlags = new InsetsFlags();
             this.mFitInsetsTypes = WindowInsets.Type.systemBars();
             this.mFitInsetsSides = WindowInsets.Side.all();
             this.mFitInsetsIgnoringVisibility = false;
-            this.insetsRoundedCornerFrame = false;
             this.mWallpaperTouchEventsEnabled = true;
             this.mCompatibilityParamsBackup = null;
             this.mTitle = null;
@@ -1021,13 +1076,16 @@ public interface WindowManager extends ViewManager {
             this.dimDuration = -1L;
             this.screenDimDuration = -1L;
             this.navigationBarIconColor = 0;
+            this.surfaceType = 0;
             this.coverMode = 0;
             this.mColorMode = 0;
+            this.mDesiredHdrHeadroom = 0.0f;
+            this.mFrameRateBoostOnTouch = true;
+            this.mIsFrameRatePowerSavingsBalanced = true;
             this.insetsFlags = new InsetsFlags();
             this.mFitInsetsTypes = WindowInsets.Type.systemBars();
             this.mFitInsetsSides = WindowInsets.Side.all();
             this.mFitInsetsIgnoringVisibility = false;
-            this.insetsRoundedCornerFrame = false;
             this.mWallpaperTouchEventsEnabled = true;
             this.mCompatibilityParamsBackup = null;
             this.mTitle = null;
@@ -1058,13 +1116,16 @@ public interface WindowManager extends ViewManager {
             this.dimDuration = -1L;
             this.screenDimDuration = -1L;
             this.navigationBarIconColor = 0;
+            this.surfaceType = 0;
             this.coverMode = 0;
             this.mColorMode = 0;
+            this.mDesiredHdrHeadroom = 0.0f;
+            this.mFrameRateBoostOnTouch = true;
+            this.mIsFrameRatePowerSavingsBalanced = true;
             this.insetsFlags = new InsetsFlags();
             this.mFitInsetsTypes = WindowInsets.Type.systemBars();
             this.mFitInsetsSides = WindowInsets.Side.all();
             this.mFitInsetsIgnoringVisibility = false;
-            this.insetsRoundedCornerFrame = false;
             this.mWallpaperTouchEventsEnabled = true;
             this.mCompatibilityParamsBackup = null;
             this.mTitle = null;
@@ -1095,13 +1156,16 @@ public interface WindowManager extends ViewManager {
             this.dimDuration = -1L;
             this.screenDimDuration = -1L;
             this.navigationBarIconColor = 0;
+            this.surfaceType = 0;
             this.coverMode = 0;
             this.mColorMode = 0;
+            this.mDesiredHdrHeadroom = 0.0f;
+            this.mFrameRateBoostOnTouch = true;
+            this.mIsFrameRatePowerSavingsBalanced = true;
             this.insetsFlags = new InsetsFlags();
             this.mFitInsetsTypes = WindowInsets.Type.systemBars();
             this.mFitInsetsSides = WindowInsets.Side.all();
             this.mFitInsetsIgnoringVisibility = false;
-            this.insetsRoundedCornerFrame = false;
             this.mWallpaperTouchEventsEnabled = true;
             this.mCompatibilityParamsBackup = null;
             this.mTitle = null;
@@ -1120,14 +1184,13 @@ public interface WindowManager extends ViewManager {
         }
 
         public final CharSequence getTitle() {
-            CharSequence charSequence = this.mTitle;
-            return charSequence != null ? charSequence : "";
+            return this.mTitle != null ? this.mTitle : "";
         }
 
         public final void setSurfaceInsets(View view, boolean manual, boolean preservePrevious) {
             float scaleFactor;
             Configuration config = view.getResources().getConfiguration();
-            if (config.windowConfiguration.isPopOver() || ((CoreRune.MW_CAPTION_SHELL && config.isDesktopModeEnabled()) || config.windowConfiguration.getWindowingMode() == 5)) {
+            if (config.windowConfiguration.isPopOver() || (CoreRune.MW_CAPTION_SHELL && (config.isDesktopModeEnabled() || config.windowConfiguration.getWindowingMode() == 5))) {
                 scaleFactor = 3.0f;
             } else {
                 scaleFactor = 2.0f;
@@ -1136,22 +1199,10 @@ public interface WindowManager extends ViewManager {
             if (surfaceInset == 0) {
                 this.surfaceInsets.set(0, 0, 0, 0);
             } else {
-                Rect rect = this.surfaceInsets;
-                rect.set(Math.max(surfaceInset, rect.left), Math.max(surfaceInset, this.surfaceInsets.top), Math.max(surfaceInset, this.surfaceInsets.right), Math.max(surfaceInset, this.surfaceInsets.bottom));
+                this.surfaceInsets.set(Math.max(surfaceInset, this.surfaceInsets.left), Math.max(surfaceInset, this.surfaceInsets.top), Math.max(surfaceInset, this.surfaceInsets.right), Math.max(surfaceInset, this.surfaceInsets.bottom));
             }
             this.hasManualSurfaceInsets = manual;
             this.preservePreviousSurfaceInsets = preservePrevious;
-        }
-
-        public final void setSurfaceInsets(View view, int surfaceInset) {
-            if (surfaceInset == 0) {
-                this.surfaceInsets.set(0, 0, 0, 0);
-            } else {
-                Rect rect = this.surfaceInsets;
-                rect.set(Math.max(surfaceInset, rect.left), Math.max(surfaceInset, this.surfaceInsets.top), Math.max(surfaceInset, this.surfaceInsets.right), Math.max(surfaceInset, this.surfaceInsets.bottom));
-            }
-            this.hasManualSurfaceInsets = true;
-            this.preservePreviousSurfaceInsets = false;
         }
 
         public boolean isHdrConversionEnabled() {
@@ -1172,6 +1223,46 @@ public interface WindowManager extends ViewManager {
 
         public int getColorMode() {
             return this.mColorMode;
+        }
+
+        public void setDesiredHdrHeadroom(float desiredHeadroom) {
+            if (!Float.isFinite(desiredHeadroom)) {
+                throw new IllegalArgumentException("desiredHeadroom must be finite: " + desiredHeadroom);
+            }
+            if (desiredHeadroom != 0.0f && (desiredHeadroom < 1.0f || desiredHeadroom > 10000.0f)) {
+                throw new IllegalArgumentException("desiredHeadroom must be 0.0 or in the range [1.0, 10000.0f], received: " + desiredHeadroom);
+            }
+            this.mDesiredHdrHeadroom = desiredHeadroom;
+        }
+
+        public float getDesiredHdrHeadroom() {
+            return this.mDesiredHdrHeadroom;
+        }
+
+        public void setFrameRateBoostOnTouchEnabled(boolean enabled) {
+            if (sToolkitSetFrameRateReadOnlyFlagValue) {
+                this.mFrameRateBoostOnTouch = enabled;
+            }
+        }
+
+        public boolean getFrameRateBoostOnTouchEnabled() {
+            if (sToolkitSetFrameRateReadOnlyFlagValue) {
+                return this.mFrameRateBoostOnTouch;
+            }
+            return true;
+        }
+
+        public void setFrameRatePowerSavingsBalanced(boolean enabled) {
+            if (sToolkitSetFrameRateReadOnlyFlagValue) {
+                this.mIsFrameRatePowerSavingsBalanced = enabled;
+            }
+        }
+
+        public boolean isFrameRatePowerSavingsBalanced() {
+            if (sToolkitSetFrameRateReadOnlyFlagValue) {
+                return this.mIsFrameRatePowerSavingsBalanced;
+            }
+            return true;
         }
 
         public void setBlurBehindRadius(int blurBehindRadius) {
@@ -1294,40 +1385,28 @@ public interface WindowManager extends ViewManager {
             out.writeBoolean(this.mFitInsetsIgnoringVisibility);
             out.writeBoolean(this.preferMinimalPostProcessing);
             out.writeInt(this.mBlurBehindRadius);
-            out.writeBoolean(this.insetsRoundedCornerFrame);
             out.writeBoolean(this.mWallpaperTouchEventsEnabled);
             out.writeTypedArray(this.providedInsets, 0);
+            out.writeInt(this.forciblyShownTypes);
             checkNonRecursiveParams();
             out.writeTypedArray(this.paramsForRotation, 0);
             out.writeInt(this.mDisplayFlags);
+            out.writeFloat(this.mDesiredHdrHeadroom);
+            if (sToolkitSetFrameRateReadOnlyFlagValue) {
+                out.writeBoolean(this.mFrameRateBoostOnTouch);
+                out.writeBoolean(this.mIsFrameRatePowerSavingsBalanced);
+            }
             out.writeLong(this.dimDuration);
             out.writeLong(this.screenDimDuration);
             out.writeInt(this.navigationBarIconColor);
             out.writeInt(this.samsungFlags);
-            out.writeInt(this.multiwindowFlags);
+            out.writeInt(this.surfaceType);
+            out.writeInt(this.multiWindowFlags);
             out.writeInt(this.coverMode);
         }
 
-        /* renamed from: android.view.WindowManager$LayoutParams$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<LayoutParams> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public LayoutParams createFromParcel(Parcel in) {
-                return new LayoutParams(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public LayoutParams[] newArray(int size) {
-                return new LayoutParams[size];
-            }
-        }
-
         public LayoutParams(Parcel in) {
-            Rect rect = new Rect();
-            this.surfaceInsets = rect;
+            this.surfaceInsets = new Rect();
             this.preservePreviousSurfaceInsets = true;
             this.alpha = 1.0f;
             this.dimAmount = 1.0f;
@@ -1347,14 +1426,16 @@ public interface WindowManager extends ViewManager {
             this.dimDuration = -1L;
             this.screenDimDuration = -1L;
             this.navigationBarIconColor = 0;
+            this.surfaceType = 0;
             this.coverMode = 0;
             this.mColorMode = 0;
-            InsetsFlags insetsFlags = new InsetsFlags();
-            this.insetsFlags = insetsFlags;
+            this.mDesiredHdrHeadroom = 0.0f;
+            this.mFrameRateBoostOnTouch = true;
+            this.mIsFrameRatePowerSavingsBalanced = true;
+            this.insetsFlags = new InsetsFlags();
             this.mFitInsetsTypes = WindowInsets.Type.systemBars();
             this.mFitInsetsSides = WindowInsets.Side.all();
             this.mFitInsetsIgnoringVisibility = false;
-            this.insetsRoundedCornerFrame = false;
             this.mWallpaperTouchEventsEnabled = true;
             this.mCompatibilityParamsBackup = null;
             this.mTitle = null;
@@ -1391,10 +1472,10 @@ public interface WindowManager extends ViewManager {
             this.hasSystemUiListeners = in.readBoolean();
             this.inputFeatures = in.readInt();
             this.userActivityTimeout = in.readLong();
-            rect.left = in.readInt();
-            rect.top = in.readInt();
-            rect.right = in.readInt();
-            rect.bottom = in.readInt();
+            this.surfaceInsets.left = in.readInt();
+            this.surfaceInsets.top = in.readInt();
+            this.surfaceInsets.right = in.readInt();
+            this.surfaceInsets.bottom = in.readInt();
             this.hasManualSurfaceInsets = in.readBoolean();
             this.receiveInsetsIgnoringZOrder = in.readBoolean();
             this.preservePreviousSurfaceInsets = in.readBoolean();
@@ -1402,29 +1483,33 @@ public interface WindowManager extends ViewManager {
             this.accessibilityTitle = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
             this.mColorMode = in.readInt();
             this.hideTimeoutMilliseconds = in.readLong();
-            insetsFlags.appearance = in.readInt();
-            insetsFlags.behavior = in.readInt();
+            this.insetsFlags.appearance = in.readInt();
+            this.insetsFlags.behavior = in.readInt();
             this.mFitInsetsTypes = in.readInt();
             this.mFitInsetsSides = in.readInt();
             this.mFitInsetsIgnoringVisibility = in.readBoolean();
             this.preferMinimalPostProcessing = in.readBoolean();
             this.mBlurBehindRadius = in.readInt();
-            this.insetsRoundedCornerFrame = in.readBoolean();
             this.mWallpaperTouchEventsEnabled = in.readBoolean();
             this.providedInsets = (InsetsFrameProvider[]) in.createTypedArray(InsetsFrameProvider.CREATOR);
+            this.forciblyShownTypes = in.readInt();
             this.paramsForRotation = (LayoutParams[]) in.createTypedArray(CREATOR);
             this.mDisplayFlags = in.readInt();
+            this.mDesiredHdrHeadroom = in.readFloat();
+            if (sToolkitSetFrameRateReadOnlyFlagValue) {
+                this.mFrameRateBoostOnTouch = in.readBoolean();
+                this.mIsFrameRatePowerSavingsBalanced = in.readBoolean();
+            }
             this.dimDuration = in.readLong();
             this.screenDimDuration = in.readLong();
             this.navigationBarIconColor = in.readInt();
             this.samsungFlags = in.readInt();
-            this.multiwindowFlags = in.readInt();
+            this.surfaceType = in.readInt();
+            this.multiWindowFlags = in.readInt();
             this.coverMode = in.readInt();
         }
 
         public final int copyFrom(LayoutParams o) {
-            CharSequence charSequence;
-            CharSequence charSequence2;
             int changes = 0;
             if (this.width != o.width) {
                 this.width = o.width;
@@ -1434,92 +1519,65 @@ public interface WindowManager extends ViewManager {
                 this.height = o.height;
                 changes |= 1;
             }
-            int i = this.x;
-            int i2 = o.x;
-            if (i != i2) {
-                this.x = i2;
+            if (this.x != o.x) {
+                this.x = o.x;
                 changes |= 1;
             }
-            int i3 = this.y;
-            int i4 = o.y;
-            if (i3 != i4) {
-                this.y = i4;
+            if (this.y != o.y) {
+                this.y = o.y;
                 changes |= 1;
             }
-            float f = this.horizontalWeight;
-            float f2 = o.horizontalWeight;
-            if (f != f2) {
-                this.horizontalWeight = f2;
+            if (this.horizontalWeight != o.horizontalWeight) {
+                this.horizontalWeight = o.horizontalWeight;
                 changes |= 1;
             }
-            float f3 = this.verticalWeight;
-            float f4 = o.verticalWeight;
-            if (f3 != f4) {
-                this.verticalWeight = f4;
+            if (this.verticalWeight != o.verticalWeight) {
+                this.verticalWeight = o.verticalWeight;
                 changes |= 1;
             }
-            float f5 = this.horizontalMargin;
-            float f6 = o.horizontalMargin;
-            if (f5 != f6) {
-                this.horizontalMargin = f6;
+            if (this.horizontalMargin != o.horizontalMargin) {
+                this.horizontalMargin = o.horizontalMargin;
                 changes |= 1;
             }
-            float f7 = this.verticalMargin;
-            float f8 = o.verticalMargin;
-            if (f7 != f8) {
-                this.verticalMargin = f8;
+            if (this.verticalMargin != o.verticalMargin) {
+                this.verticalMargin = o.verticalMargin;
                 changes |= 1;
             }
-            int i5 = this.type;
-            int i6 = o.type;
-            if (i5 != i6) {
-                this.type = i6;
+            if (this.type != o.type) {
+                this.type = o.type;
                 changes |= 2;
             }
-            int i7 = this.flags;
-            int i8 = o.flags;
-            if (i7 != i8) {
-                int diff = i7 ^ i8;
+            if (this.flags != o.flags) {
+                int diff = this.flags ^ o.flags;
                 if ((201326592 & diff) != 0) {
                     changes |= 524288;
                 }
-                this.flags = i8;
+                this.flags = o.flags;
                 changes |= 4;
             }
             int diff2 = this.privateFlags;
-            int i9 = o.privateFlags;
-            if (diff2 != i9) {
-                this.privateFlags = i9;
+            if (diff2 != o.privateFlags) {
+                this.privateFlags = o.privateFlags;
                 changes |= 131072;
             }
-            int i10 = this.softInputMode;
-            int i11 = o.softInputMode;
-            if (i10 != i11) {
-                this.softInputMode = i11;
+            if (this.softInputMode != o.softInputMode) {
+                this.softInputMode = o.softInputMode;
                 changes |= 512;
             }
-            int i12 = this.layoutInDisplayCutoutMode;
-            int i13 = o.layoutInDisplayCutoutMode;
-            if (i12 != i13) {
-                this.layoutInDisplayCutoutMode = i13;
+            if (this.layoutInDisplayCutoutMode != o.layoutInDisplayCutoutMode) {
+                this.layoutInDisplayCutoutMode = o.layoutInDisplayCutoutMode;
                 changes |= 1;
             }
-            int i14 = this.gravity;
-            int i15 = o.gravity;
-            if (i14 != i15) {
-                this.gravity = i15;
+            if (this.gravity != o.gravity) {
+                this.gravity = o.gravity;
                 changes |= 1;
             }
-            int i16 = this.format;
-            int i17 = o.format;
-            if (i16 != i17) {
-                this.format = i17;
+            if (this.format != o.format) {
+                this.format = o.format;
                 changes |= 8;
             }
-            int i18 = this.windowAnimations;
-            int i19 = o.windowAnimations;
-            if (i18 != i19) {
-                this.windowAnimations = i19;
+            if (this.windowAnimations != o.windowAnimations) {
+                this.windowAnimations = o.windowAnimations;
                 changes |= 16;
             }
             if (this.token == null) {
@@ -1531,149 +1589,109 @@ public interface WindowManager extends ViewManager {
             if (this.packageName == null) {
                 this.packageName = o.packageName;
             }
-            if (!Objects.equals(this.mTitle, o.mTitle) && (charSequence2 = o.mTitle) != null) {
-                this.mTitle = charSequence2;
+            if (!Objects.equals(this.mTitle, o.mTitle) && o.mTitle != null) {
+                this.mTitle = o.mTitle;
                 changes |= 64;
             }
-            float f9 = this.alpha;
-            float f10 = o.alpha;
-            if (f9 != f10) {
-                this.alpha = f10;
+            if (this.alpha != o.alpha) {
+                this.alpha = o.alpha;
                 changes |= 128;
             }
-            float f11 = this.dimAmount;
-            float f12 = o.dimAmount;
-            if (f11 != f12) {
-                this.dimAmount = f12;
+            if (this.dimAmount != o.dimAmount) {
+                this.dimAmount = o.dimAmount;
                 changes |= 32;
             }
-            float f13 = this.screenBrightness;
-            float f14 = o.screenBrightness;
-            if (f13 != f14) {
-                this.screenBrightness = f14;
+            if (this.screenBrightness != o.screenBrightness) {
+                this.screenBrightness = o.screenBrightness;
                 changes |= 2048;
             }
-            float f15 = this.buttonBrightness;
-            float f16 = o.buttonBrightness;
-            if (f15 != f16) {
-                this.buttonBrightness = f16;
+            if (this.buttonBrightness != o.buttonBrightness) {
+                this.buttonBrightness = o.buttonBrightness;
                 changes |= 8192;
             }
-            int i20 = this.rotationAnimation;
-            int i21 = o.rotationAnimation;
-            if (i20 != i21) {
-                this.rotationAnimation = i21;
+            if (this.rotationAnimation != o.rotationAnimation) {
+                this.rotationAnimation = o.rotationAnimation;
                 changes |= 4096;
             }
-            int i22 = this.screenOrientation;
-            int i23 = o.screenOrientation;
-            if (i22 != i23) {
-                this.screenOrientation = i23;
+            if (this.screenOrientation != o.screenOrientation) {
+                this.screenOrientation = o.screenOrientation;
                 changes |= 1024;
             }
-            float f17 = this.preferredRefreshRate;
-            float f18 = o.preferredRefreshRate;
-            if (f17 != f18) {
-                this.preferredRefreshRate = f18;
+            if (this.preferredRefreshRate != o.preferredRefreshRate) {
+                this.preferredRefreshRate = o.preferredRefreshRate;
                 changes |= 2097152;
             }
-            int i24 = this.preferredDisplayModeId;
-            int i25 = o.preferredDisplayModeId;
-            if (i24 != i25) {
-                this.preferredDisplayModeId = i25;
+            if (this.preferredDisplayModeId != o.preferredDisplayModeId) {
+                this.preferredDisplayModeId = o.preferredDisplayModeId;
                 changes |= 8388608;
             }
-            float f19 = this.preferredMinDisplayRefreshRate;
-            float f20 = o.preferredMinDisplayRefreshRate;
-            if (f19 != f20) {
-                this.preferredMinDisplayRefreshRate = f20;
+            if (this.preferredMinDisplayRefreshRate != o.preferredMinDisplayRefreshRate) {
+                this.preferredMinDisplayRefreshRate = o.preferredMinDisplayRefreshRate;
                 changes |= 1073741824;
             }
-            float f21 = this.preferredMaxDisplayRefreshRate;
-            float f22 = o.preferredMaxDisplayRefreshRate;
-            if (f21 != f22) {
-                this.preferredMaxDisplayRefreshRate = f22;
+            if (this.preferredMaxDisplayRefreshRate != o.preferredMaxDisplayRefreshRate) {
+                this.preferredMaxDisplayRefreshRate = o.preferredMaxDisplayRefreshRate;
                 changes |= Integer.MIN_VALUE;
             }
-            int i26 = this.mDisplayFlags;
-            int i27 = o.mDisplayFlags;
-            if (i26 != i27) {
-                this.mDisplayFlags = i27;
+            if (this.mDisplayFlags != o.mDisplayFlags) {
+                this.mDisplayFlags = o.mDisplayFlags;
                 changes |= 4194304;
             }
-            int i28 = this.systemUiVisibility;
-            int i29 = o.systemUiVisibility;
-            if (i28 != i29 || this.subtreeSystemUiVisibility != o.subtreeSystemUiVisibility) {
-                this.systemUiVisibility = i29;
+            if (this.systemUiVisibility != o.systemUiVisibility || this.subtreeSystemUiVisibility != o.subtreeSystemUiVisibility) {
+                this.systemUiVisibility = o.systemUiVisibility;
                 this.subtreeSystemUiVisibility = o.subtreeSystemUiVisibility;
                 changes |= 16384;
             }
-            boolean z = this.hasSystemUiListeners;
-            boolean z2 = o.hasSystemUiListeners;
-            if (z != z2) {
-                this.hasSystemUiListeners = z2;
+            if (this.hasSystemUiListeners != o.hasSystemUiListeners) {
+                this.hasSystemUiListeners = o.hasSystemUiListeners;
                 changes |= 32768;
             }
-            int i30 = this.inputFeatures;
-            int i31 = o.inputFeatures;
-            if (i30 != i31) {
-                this.inputFeatures = i31;
+            if (this.inputFeatures != o.inputFeatures) {
+                this.inputFeatures = o.inputFeatures;
                 changes |= 65536;
             }
-            long j = this.userActivityTimeout;
-            long j2 = o.userActivityTimeout;
-            if (j != j2) {
-                this.userActivityTimeout = j2;
+            if (this.userActivityTimeout != o.userActivityTimeout) {
+                this.userActivityTimeout = o.userActivityTimeout;
                 changes |= 262144;
             }
             if (!this.surfaceInsets.equals(o.surfaceInsets)) {
                 this.surfaceInsets.set(o.surfaceInsets);
                 changes |= 1048576;
             }
-            boolean z3 = this.hasManualSurfaceInsets;
-            boolean z4 = o.hasManualSurfaceInsets;
-            if (z3 != z4) {
-                this.hasManualSurfaceInsets = z4;
+            if (this.hasManualSurfaceInsets != o.hasManualSurfaceInsets) {
+                this.hasManualSurfaceInsets = o.hasManualSurfaceInsets;
                 changes |= 1048576;
             }
-            boolean z5 = this.receiveInsetsIgnoringZOrder;
-            boolean z6 = o.receiveInsetsIgnoringZOrder;
-            if (z5 != z6) {
-                this.receiveInsetsIgnoringZOrder = z6;
+            if (this.receiveInsetsIgnoringZOrder != o.receiveInsetsIgnoringZOrder) {
+                this.receiveInsetsIgnoringZOrder = o.receiveInsetsIgnoringZOrder;
                 changes |= 1048576;
             }
-            boolean z7 = this.preservePreviousSurfaceInsets;
-            boolean z8 = o.preservePreviousSurfaceInsets;
-            if (z7 != z8) {
-                this.preservePreviousSurfaceInsets = z8;
+            if (this.preservePreviousSurfaceInsets != o.preservePreviousSurfaceInsets) {
+                this.preservePreviousSurfaceInsets = o.preservePreviousSurfaceInsets;
                 changes |= 1048576;
             }
-            long j3 = this.accessibilityIdOfAnchor;
-            long j4 = o.accessibilityIdOfAnchor;
-            if (j3 != j4) {
-                this.accessibilityIdOfAnchor = j4;
+            if (this.accessibilityIdOfAnchor != o.accessibilityIdOfAnchor) {
+                this.accessibilityIdOfAnchor = o.accessibilityIdOfAnchor;
                 changes |= 16777216;
             }
-            if (!Objects.equals(this.accessibilityTitle, o.accessibilityTitle) && (charSequence = o.accessibilityTitle) != null) {
-                this.accessibilityTitle = charSequence;
+            if (!Objects.equals(this.accessibilityTitle, o.accessibilityTitle) && o.accessibilityTitle != null) {
+                this.accessibilityTitle = o.accessibilityTitle;
                 changes |= 33554432;
             }
-            int i32 = this.mColorMode;
-            int i33 = o.mColorMode;
-            if (i32 != i33) {
-                this.mColorMode = i33;
+            if (this.mColorMode != o.mColorMode) {
+                this.mColorMode = o.mColorMode;
                 changes |= 67108864;
             }
-            boolean z9 = this.preferMinimalPostProcessing;
-            boolean z10 = o.preferMinimalPostProcessing;
-            if (z9 != z10) {
-                this.preferMinimalPostProcessing = z10;
+            if (this.mDesiredHdrHeadroom != o.mDesiredHdrHeadroom) {
+                this.mDesiredHdrHeadroom = o.mDesiredHdrHeadroom;
+                changes |= 67108864;
+            }
+            if (this.preferMinimalPostProcessing != o.preferMinimalPostProcessing) {
+                this.preferMinimalPostProcessing = o.preferMinimalPostProcessing;
                 changes |= 268435456;
             }
-            int i34 = this.mBlurBehindRadius;
-            int i35 = o.mBlurBehindRadius;
-            if (i34 != i35) {
-                this.mBlurBehindRadius = i35;
+            if (this.mBlurBehindRadius != o.mBlurBehindRadius) {
+                this.mBlurBehindRadius = o.mBlurBehindRadius;
                 changes |= 536870912;
             }
             this.hideTimeoutMilliseconds = o.hideTimeoutMilliseconds;
@@ -1685,46 +1703,36 @@ public interface WindowManager extends ViewManager {
                 this.insetsFlags.behavior = o.insetsFlags.behavior;
                 changes |= 134217728;
             }
-            int i36 = this.mFitInsetsTypes;
-            int i37 = o.mFitInsetsTypes;
-            if (i36 != i37) {
-                this.mFitInsetsTypes = i37;
+            if (this.mFitInsetsTypes != o.mFitInsetsTypes) {
+                this.mFitInsetsTypes = o.mFitInsetsTypes;
                 changes |= 1;
             }
-            int i38 = this.mFitInsetsSides;
-            int i39 = o.mFitInsetsSides;
-            if (i38 != i39) {
-                this.mFitInsetsSides = i39;
+            if (this.mFitInsetsSides != o.mFitInsetsSides) {
+                this.mFitInsetsSides = o.mFitInsetsSides;
                 changes |= 1;
             }
-            boolean z11 = this.mFitInsetsIgnoringVisibility;
-            boolean z12 = o.mFitInsetsIgnoringVisibility;
-            if (z11 != z12) {
-                this.mFitInsetsIgnoringVisibility = z12;
+            if (this.mFitInsetsIgnoringVisibility != o.mFitInsetsIgnoringVisibility) {
+                this.mFitInsetsIgnoringVisibility = o.mFitInsetsIgnoringVisibility;
                 changes |= 1;
             }
             if (!Arrays.equals(this.providedInsets, o.providedInsets)) {
                 this.providedInsets = o.providedInsets;
                 changes |= 1;
             }
-            boolean z13 = this.insetsRoundedCornerFrame;
-            boolean z14 = o.insetsRoundedCornerFrame;
-            if (z13 != z14) {
-                this.insetsRoundedCornerFrame = z14;
-                changes |= 1;
+            if (this.forciblyShownTypes != o.forciblyShownTypes) {
+                this.forciblyShownTypes = o.forciblyShownTypes;
+                changes |= 131072;
             }
-            LayoutParams[] layoutParamsArr = this.paramsForRotation;
-            LayoutParams[] layoutParamsArr2 = o.paramsForRotation;
-            if (layoutParamsArr != layoutParamsArr2) {
+            if (this.paramsForRotation != o.paramsForRotation) {
                 if ((changes & 1) == 0) {
-                    if (layoutParamsArr != null && layoutParamsArr2 != null && layoutParamsArr.length == layoutParamsArr2.length) {
-                        int i40 = layoutParamsArr.length - 1;
+                    if (this.paramsForRotation != null && o.paramsForRotation != null && this.paramsForRotation.length == o.paramsForRotation.length) {
+                        int i = this.paramsForRotation.length - 1;
                         while (true) {
-                            if (i40 < 0) {
+                            if (i < 0) {
                                 break;
                             }
-                            if (!hasLayoutDiff(this.paramsForRotation[i40], o.paramsForRotation[i40])) {
-                                i40--;
+                            if (!hasLayoutDiff(this.paramsForRotation[i], o.paramsForRotation[i])) {
+                                i--;
                             } else {
                                 changes |= 1;
                                 break;
@@ -1737,45 +1745,46 @@ public interface WindowManager extends ViewManager {
                 this.paramsForRotation = o.paramsForRotation;
                 checkNonRecursiveParams();
             }
-            boolean z15 = this.mWallpaperTouchEventsEnabled;
-            boolean z16 = o.mWallpaperTouchEventsEnabled;
-            if (z15 != z16) {
-                this.mWallpaperTouchEventsEnabled = z16;
+            if (this.mWallpaperTouchEventsEnabled != o.mWallpaperTouchEventsEnabled) {
+                this.mWallpaperTouchEventsEnabled = o.mWallpaperTouchEventsEnabled;
                 changes |= 1;
             }
-            long j5 = this.dimDuration;
-            long j6 = o.dimDuration;
-            if (j5 != j6) {
-                this.dimDuration = j6;
+            if (sToolkitSetFrameRateReadOnlyFlagValue && this.mFrameRateBoostOnTouch != o.mFrameRateBoostOnTouch) {
+                this.mFrameRateBoostOnTouch = o.mFrameRateBoostOnTouch;
+                changes |= 1;
+            }
+            if (sToolkitSetFrameRateReadOnlyFlagValue && this.mIsFrameRatePowerSavingsBalanced != o.mIsFrameRatePowerSavingsBalanced) {
+                this.mIsFrameRatePowerSavingsBalanced = o.mIsFrameRatePowerSavingsBalanced;
+                changes |= 1;
+            }
+            if (this.dimDuration != o.dimDuration) {
+                this.dimDuration = o.dimDuration;
                 changes |= 32;
             }
-            long j7 = this.screenDimDuration;
-            long j8 = o.screenDimDuration;
-            if (j7 != j8) {
-                this.screenDimDuration = j8;
-                changes |= 32;
+            if (this.screenDimDuration != o.screenDimDuration) {
+                this.screenDimDuration = o.screenDimDuration;
+                changes |= 1;
             }
             this.navigationBarIconColor = o.navigationBarIconColor;
-            int i41 = this.samsungFlags;
-            int i42 = o.samsungFlags;
-            if (i41 != i42) {
-                this.samsungFlags = i42;
+            if (this.samsungFlags != o.samsungFlags) {
+                this.samsungFlags = o.samsungFlags;
                 changes |= 4;
             }
-            int i43 = this.multiwindowFlags;
-            int i44 = o.multiwindowFlags;
-            if (i43 != i44) {
-                this.multiwindowFlags = i44;
+            if (this.surfaceType != o.surfaceType) {
+                this.surfaceType = o.surfaceType;
+                changes |= 2;
+            }
+            if (this.multiWindowFlags != o.multiWindowFlags) {
+                this.multiWindowFlags = o.multiWindowFlags;
                 changes |= 4;
             }
-            int i45 = o.coverMode;
-            if (i45 > 0) {
-                this.coverMode = i45;
+            if (o.coverMode > 0) {
+                this.coverMode = o.coverMode;
             }
             return changes;
         }
 
-        public static boolean hasLayoutDiff(LayoutParams a, LayoutParams b) {
+        private static boolean hasLayoutDiff(LayoutParams a, LayoutParams b) {
             return (a.width == b.width && a.height == b.height && a.x == b.x && a.y == b.y && a.horizontalMargin == b.horizontalMargin && a.verticalMargin == b.verticalMargin && a.layoutInDisplayCutoutMode == b.layoutInDisplayCutoutMode && a.gravity == b.gravity && Arrays.equals(a.providedInsets, b.providedInsets) && a.mFitInsetsTypes == b.mFitInsetsTypes && a.mFitInsetsSides == b.mFitInsetsSides && a.mFitInsetsIgnoringVisibility == b.mFitInsetsIgnoringVisibility) ? false : true;
         }
 
@@ -1818,7 +1827,6 @@ public interface WindowManager extends ViewManager {
         }
 
         public String toString(String prefix) {
-            String flagsToString;
             StringBuilder sb = new StringBuilder(256);
             sb.append('{');
             dumpDimensions(sb);
@@ -1918,6 +1926,9 @@ public interface WindowManager extends ViewManager {
             if (this.mColorMode != 0) {
                 sb.append(" colorMode=").append(ActivityInfo.colorModeToString(this.mColorMode));
             }
+            if (this.mDesiredHdrHeadroom != 0.0f) {
+                sb.append(" desiredHdrHeadroom=").append(this.mDesiredHdrHeadroom);
+            }
             if (this.preferMinimalPostProcessing) {
                 sb.append(" preferMinimalPostProcessing=");
                 sb.append(this.preferMinimalPostProcessing);
@@ -1927,34 +1938,34 @@ public interface WindowManager extends ViewManager {
                 sb.append(this.mBlurBehindRadius);
             }
             sb.append(System.lineSeparator());
-            sb.append(prefix).append("  fl=").append(CoreRune.FW_FLAG_TO_HEX_STRING ? Integer.toHexString(this.flags) : ViewDebug.flagsToString(LayoutParams.class, "flags", this.flags));
+            sb.append(prefix).append("  fl=").append(Integer.toHexString(this.flags));
             if (this.privateFlags != 0) {
                 sb.append(System.lineSeparator());
-                sb.append(prefix).append("  pfl=").append(CoreRune.FW_FLAG_TO_HEX_STRING ? Integer.toHexString(this.privateFlags) : ViewDebug.flagsToString(LayoutParams.class, "privateFlags", this.privateFlags));
+                sb.append(prefix).append("  pfl=").append(Integer.toHexString(this.privateFlags));
             }
             if (this.systemUiVisibility != 0) {
                 sb.append(System.lineSeparator());
-                sb.append(prefix).append("  sysui=").append(CoreRune.FW_FLAG_TO_HEX_STRING ? Integer.toHexString(this.systemUiVisibility) : ViewDebug.flagsToString(View.class, "mSystemUiVisibility", this.systemUiVisibility));
+                sb.append(prefix).append("  sysui=").append(Integer.toHexString(this.systemUiVisibility));
             }
             if (this.subtreeSystemUiVisibility != 0) {
                 sb.append(System.lineSeparator());
-                sb.append(prefix).append("  vsysui=").append(CoreRune.FW_FLAG_TO_HEX_STRING ? Integer.toHexString(this.subtreeSystemUiVisibility) : ViewDebug.flagsToString(View.class, "mSystemUiVisibility", this.subtreeSystemUiVisibility));
+                sb.append(prefix).append("  vsysui=").append(Integer.toHexString(this.subtreeSystemUiVisibility));
             }
             if (this.insetsFlags.appearance != 0) {
                 sb.append(System.lineSeparator());
-                sb.append(prefix).append("  apr=").append(ViewDebug.flagsToString(InsetsFlags.class, "appearance", this.insetsFlags.appearance));
+                sb.append(prefix).append("  apr=").append(Integer.toHexString(this.insetsFlags.appearance));
             }
             if (this.insetsFlags.behavior != 0) {
                 sb.append(System.lineSeparator());
-                sb.append(prefix).append("  bhv=").append(ViewDebug.flagsToString(InsetsFlags.class, "behavior", this.insetsFlags.behavior));
+                sb.append(prefix).append("  bhv=").append(Integer.toHexString(this.insetsFlags.behavior));
             }
             if (this.mFitInsetsTypes != 0) {
                 sb.append(System.lineSeparator());
-                sb.append(prefix).append("  fitTypes=").append(ViewDebug.flagsToString(LayoutParams.class, "mFitInsetsTypes", this.mFitInsetsTypes));
+                sb.append(prefix).append("  fitTypes=").append(Integer.toHexString(this.mFitInsetsTypes));
             }
             if (this.mFitInsetsSides != WindowInsets.Side.all()) {
                 sb.append(System.lineSeparator());
-                sb.append(prefix).append("  fitSides=").append(ViewDebug.flagsToString(LayoutParams.class, "mFitInsetsSides", this.mFitInsetsSides));
+                sb.append(prefix).append("  fitSides=").append(Integer.toHexString(this.mFitInsetsSides));
             }
             if (this.mFitInsetsIgnoringVisibility) {
                 sb.append(System.lineSeparator());
@@ -1968,18 +1979,28 @@ public interface WindowManager extends ViewManager {
                     sb.append(prefix).append("    ").append(this.providedInsets[i]);
                 }
             }
-            if (this.insetsRoundedCornerFrame) {
-                sb.append(" insetsRoundedCornerFrame=");
-                sb.append(this.insetsRoundedCornerFrame);
+            int i2 = this.forciblyShownTypes;
+            if (i2 != 0) {
+                sb.append(System.lineSeparator());
+                sb.append(prefix).append("  forciblyShownTypes=").append(WindowInsets.Type.toString(this.forciblyShownTypes));
             }
-            LayoutParams[] layoutParamsArr = this.paramsForRotation;
-            if (layoutParamsArr != null && layoutParamsArr.length != 0) {
+            if (sToolkitSetFrameRateReadOnlyFlagValue && this.mFrameRateBoostOnTouch) {
+                sb.append(System.lineSeparator());
+                sb.append(prefix).append("  frameRateBoostOnTouch=");
+                sb.append(this.mFrameRateBoostOnTouch);
+            }
+            if (sToolkitSetFrameRateReadOnlyFlagValue && this.mIsFrameRatePowerSavingsBalanced) {
+                sb.append(System.lineSeparator());
+                sb.append(prefix).append("  dvrrWindowFrameRateHint=");
+                sb.append(this.mIsFrameRatePowerSavingsBalanced);
+            }
+            if (this.paramsForRotation != null && this.paramsForRotation.length != 0) {
                 sb.append(System.lineSeparator());
                 sb.append(prefix).append("  paramsForRotation:");
-                for (int i2 = 0; i2 < this.paramsForRotation.length; i2++) {
+                for (int i3 = 0; i3 < this.paramsForRotation.length; i3++) {
                     sb.append(System.lineSeparator()).append(prefix).append("    ");
-                    sb.append(Surface.rotationToString(i2)).append("=");
-                    sb.append(this.paramsForRotation[i2].toString(prefix + "    "));
+                    sb.append(Surface.rotationToString(i3)).append("=");
+                    sb.append(this.paramsForRotation[i3].toString(prefix + "    "));
                 }
             }
             if (this.dimAmount < 1.0f) {
@@ -1997,16 +2018,14 @@ public interface WindowManager extends ViewManager {
             }
             if (this.samsungFlags != 0) {
                 sb.append(System.lineSeparator());
-                StringBuilder append = sb.append(prefix).append("  sfl=");
-                if (CoreRune.FW_FLAG_TO_HEX_STRING) {
-                    flagsToString = Integer.toHexString(this.samsungFlags);
-                } else {
-                    flagsToString = ViewDebug.flagsToString(LayoutParams.class, "samsungFlags", this.samsungFlags);
-                }
-                append.append(flagsToString);
+                sb.append(prefix).append("  sfl=").append(Integer.toHexString(this.samsungFlags));
             }
-            if (this.multiwindowFlags != 0) {
-                sb.append(" mwfl=").append(Integer.toHexString(this.multiwindowFlags));
+            if (this.surfaceType != 0) {
+                sb.append(System.lineSeparator());
+                sb.append(prefix).append("  surfaceType=").append(ViewDebug.intToString(LayoutParams.class, "surfaceType", this.surfaceType));
+            }
+            if (this.multiWindowFlags != 0) {
+                sb.append(" mwfl=").append(Integer.toHexString(this.multiWindowFlags));
             }
             if (this.coverMode != 0) {
                 sb.append(" cm=").append(this.coverMode);
@@ -2029,10 +2048,10 @@ public interface WindowManager extends ViewManager {
             proto.write(1159641169930L, this.format);
             proto.write(1120986464267L, this.windowAnimations);
             proto.write(1108101562380L, this.alpha);
-            proto.write(WindowLayoutParamsProto.SCREEN_BRIGHTNESS, this.screenBrightness);
-            proto.write(WindowLayoutParamsProto.BUTTON_BRIGHTNESS, this.buttonBrightness);
+            proto.write(1108101562381L, this.screenBrightness);
+            proto.write(1108101562382L, this.buttonBrightness);
             proto.write(1159641169935L, this.rotationAnimation);
-            proto.write(WindowLayoutParamsProto.PREFERRED_REFRESH_RATE, this.preferredRefreshRate);
+            proto.write(1108101562384L, this.preferredRefreshRate);
             proto.write(1120986464273L, this.preferredDisplayModeId);
             proto.write(1133871366162L, this.hasSystemUiListeners);
             proto.write(WindowLayoutParamsProto.INPUT_FEATURE_FLAGS, this.inputFeatures);
@@ -2061,7 +2080,7 @@ public interface WindowManager extends ViewManager {
             }
         }
 
-        public void backup() {
+        void backup() {
             int[] backup = this.mCompatibilityParamsBackup;
             if (backup == null) {
                 int[] iArr = new int[4];
@@ -2074,7 +2093,7 @@ public interface WindowManager extends ViewManager {
             backup[3] = this.height;
         }
 
-        public void restore() {
+        void restore() {
             int[] backup = this.mCompatibilityParamsBackup;
             if (backup != null) {
                 this.x = backup[0];
@@ -2085,7 +2104,7 @@ public interface WindowManager extends ViewManager {
         }
 
         @Override // android.view.ViewGroup.LayoutParams
-        public void encodeProperties(ViewHierarchyEncoder encoder) {
+        protected void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
             encoder.addProperty("x", this.x);
             encoder.addProperty("y", this.y);
@@ -2099,7 +2118,7 @@ public interface WindowManager extends ViewManager {
             return this.x == 0 && this.y == 0 && this.width == -1 && this.height == -1;
         }
 
-        private static String layoutInDisplayCutoutModeToString(int mode) {
+        public static String layoutInDisplayCutoutModeToString(int mode) {
             switch (mode) {
                 case 0:
                     return "default";
@@ -2231,6 +2250,54 @@ public interface WindowManager extends ViewManager {
 
     @SystemApi
     default List<ComponentName> notifyScreenshotListeners(int displayId) {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean replaceContentOnDisplayWithMirror(int displayId, Window window) {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean replaceContentOnDisplayWithSc(int displayId, SurfaceControl sc) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void registerTrustedPresentationListener(IBinder window, TrustedPresentationThresholds thresholds, Executor executor, Consumer<Boolean> listener) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void unregisterTrustedPresentationListener(Consumer<Boolean> listener) {
+        throw new UnsupportedOperationException();
+    }
+
+    default InputTransferToken registerBatchedSurfaceControlInputReceiver(InputTransferToken hostInputTransferToken, SurfaceControl surfaceControl, Choreographer choreographer, SurfaceControlInputReceiver receiver) {
+        throw new UnsupportedOperationException("registerBatchedSurfaceControlInputReceiver is not implemented");
+    }
+
+    default InputTransferToken registerUnbatchedSurfaceControlInputReceiver(InputTransferToken hostInputTransferToken, SurfaceControl surfaceControl, Looper looper, SurfaceControlInputReceiver receiver) {
+        throw new UnsupportedOperationException("registerUnbatchedSurfaceControlInputReceiver is not implemented");
+    }
+
+    default void unregisterSurfaceControlInputReceiver(SurfaceControl surfaceControl) {
+        throw new UnsupportedOperationException("unregisterSurfaceControlInputReceiver is not implemented");
+    }
+
+    default IBinder getSurfaceControlInputClientToken(SurfaceControl surfaceControl) {
+        throw new UnsupportedOperationException("getSurfaceControlInputClientToken is not implemented");
+    }
+
+    default boolean transferTouchGesture(InputTransferToken transferFromToken, InputTransferToken transferToToken) {
+        throw new UnsupportedOperationException("transferTouchGesture is not implemented");
+    }
+
+    default IBinder getDefaultToken() {
+        throw new UnsupportedOperationException("getDefaultToken is not implemented");
+    }
+
+    default int addScreenRecordingCallback(Executor executor, Consumer<Integer> callback) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void removeScreenRecordingCallback(Consumer<Integer> callback) {
         throw new UnsupportedOperationException();
     }
 }

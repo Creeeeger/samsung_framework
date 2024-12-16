@@ -1,31 +1,24 @@
 package com.samsung.android.ims.settings;
 
 import android.content.ContentValues;
-import android.location.LocationManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.ArrayMap;
-import android.util.ArraySet;
-import android.util.Log;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemImsProfile implements Parcelable {
     public static final Parcelable.Creator<SemImsProfile> CREATOR = new Parcelable.Creator<SemImsProfile>() { // from class: com.samsung.android.ims.settings.SemImsProfile.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsProfile createFromParcel(Parcel in) {
             return new SemImsProfile(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsProfile[] newArray(int size) {
             return new SemImsProfile[size];
@@ -34,13 +27,11 @@ public class SemImsProfile implements Parcelable {
     private static final String LOG_TAG = "SemImsProfile";
     private JSONObject mBody;
 
-    /* loaded from: classes5.dex */
     public static class ImsCategory {
         public static final String RCS_SERVICE = "rcs";
         public static final String VOLTE_SERVICE = "volte";
     }
 
-    /* loaded from: classes5.dex */
     public static class RcsProfileType {
         public static final String RCS_PROFILE_NONE = "";
         public static final String RCS_PROFILE_TYPE_JOYN_BLACKBIRD = "joyn_blackbird";
@@ -57,23 +48,18 @@ public class SemImsProfile implements Parcelable {
         public static final String RCS_PROFILE_TYPE_UPT = "UP_T";
     }
 
-    /* synthetic */ SemImsProfile(Parcel parcel, SemImsProfileIA semImsProfileIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes5.dex */
     public static class ImsFeature {
         public static final String CDPN = "cdpn";
         public static final String IM = "im";
         public static final String MMTEL_VOICE = "mmtel";
         public static final String MMTEL_VOICE_VIDEO = "mmtel-video";
         public static final String OPTIONS = "options";
-        public static final String PRESENCE = "presence";
         public static final String PROFILE = "profile";
         public static final String SMSIP = "smsip";
         public static final String SS = "ss";
         public static final String MMTEL_CALL_COMPOSER = "mmtel-call-composer";
         protected static final String[] volteServices = {"mmtel", "mmtel-video", MMTEL_CALL_COMPOSER, "smsip", "ss", "cdpn"};
+        public static final String PRESENCE = "presence";
         public static final String FT = "ft";
         public static final String FT_HTTP = "ft_http";
         public static final String SLM = "slm";
@@ -85,9 +71,9 @@ public class SemImsProfile implements Parcelable {
         public static final String CHATBOT_COMMUNICATION = "chatbot-communication";
         public static final String PLUG_IN = "plug-in";
         public static final String LASTSEEN = "lastseen";
-        protected static final String[] rcsServices = {"options", "presence", "im", FT, FT_HTTP, SLM, IS, VS, EUC, GLS, "profile", EC, CHATBOT_COMMUNICATION, PLUG_IN, LASTSEEN};
+        protected static final String[] rcsServices = {"options", PRESENCE, "im", FT, FT_HTTP, SLM, IS, VS, EUC, GLS, "profile", EC, CHATBOT_COMMUNICATION, PLUG_IN, LASTSEEN};
         public static final String XDM = "xdm";
-        private static final String[] mImsFeatureList = {"mmtel-video", "mmtel", "smsip", SLM, "im", FT, FT_HTTP, IS, VS, "options", "presence", XDM, EUC};
+        private static final String[] mImsFeatureList = {"mmtel-video", "mmtel", "smsip", SLM, "im", FT, FT_HTTP, IS, VS, "options", PRESENCE, XDM, EUC};
 
         public static boolean isValidImsFeature(String queriedFeature) {
             for (String feature : mImsFeatureList) {
@@ -107,7 +93,6 @@ public class SemImsProfile implements Parcelable {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum NETWORK_TYPE {
         UNKNOWN(0),
         GPRS(1),
@@ -137,30 +122,12 @@ public class SemImsProfile implements Parcelable {
             this.mType = type;
         }
 
-        public static NETWORK_TYPE from(int type) {
-            for (NETWORK_TYPE n : values()) {
-                if (n.mType == type) {
-                    return n;
-                }
-            }
-            return UNKNOWN;
-        }
-
-        public static NETWORK_TYPE from(String typeName) {
-            for (NETWORK_TYPE n : values()) {
-                if (n.toString().equalsIgnoreCase(typeName)) {
-                    return n;
-                }
-            }
-            return UNKNOWN;
-        }
-
         @Override // java.lang.Enum
         public String toString() {
-            switch (AnonymousClass2.$SwitchMap$com$samsung$android$ims$settings$SemImsProfile$NETWORK_TYPE[ordinal()]) {
-                case 1:
+            switch (ordinal()) {
+                case 7:
                     return "1xrtt";
-                case 2:
+                case 14:
                     return "hspa+";
                 default:
                     String rtn = super.toString().toLowerCase(Locale.US);
@@ -177,51 +144,6 @@ public class SemImsProfile implements Parcelable {
                 }
             }
             return false;
-        }
-    }
-
-    /* renamed from: com.samsung.android.ims.settings.SemImsProfile$2 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass2 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$ims$settings$SemImsProfile$NETWORK_TYPE;
-
-        static {
-            int[] iArr = new int[NETWORK_TYPE.values().length];
-            $SwitchMap$com$samsung$android$ims$settings$SemImsProfile$NETWORK_TYPE = iArr;
-            try {
-                iArr[NETWORK_TYPE._1XRTT.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$ims$settings$SemImsProfile$NETWORK_TYPE[NETWORK_TYPE.HSPAP.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-        }
-    }
-
-    public boolean hasService(String service) {
-        for (Set<String> s : getAllServiceSet().values()) {
-            if (s.contains(service)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /* renamed from: com.samsung.android.ims.settings.SemImsProfile$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemImsProfile> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsProfile createFromParcel(Parcel in) {
-            return new SemImsProfile(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsProfile[] newArray(int size) {
-            return new SemImsProfile[size];
         }
     }
 
@@ -281,7 +203,7 @@ public class SemImsProfile implements Parcelable {
 
     protected void splitNetwork() throws JSONException {
         JSONArray newNetwork = new JSONArray();
-        JSONArray network = this.mBody.getJSONArray(LocationManager.NETWORK_PROVIDER);
+        JSONArray network = this.mBody.getJSONArray("network");
         if (network != null) {
             for (int i = 0; i < network.length(); i++) {
                 JSONObject obj = network.optJSONObject(i);
@@ -292,33 +214,8 @@ public class SemImsProfile implements Parcelable {
                     newNetwork.put(tmp);
                 }
             }
-            this.mBody.put(LocationManager.NETWORK_PROVIDER, newNetwork);
+            this.mBody.put("network", newNetwork);
         }
-    }
-
-    private static int getNetworkType(String name) {
-        return NETWORK_TYPE.from(name).mType;
-    }
-
-    private Map<Integer, Set<String>> getAllServiceSet() {
-        Map<Integer, Set<String>> result = new ArrayMap<>();
-        JSONArray network = this.mBody.optJSONArray(LocationManager.NETWORK_PROVIDER);
-        if (network != null) {
-            for (int i = 0; i < network.length(); i++) {
-                JSONObject n = network.optJSONObject(i);
-                JSONArray serviceArr = n.optJSONArray("services");
-                if (serviceArr == null) {
-                    Log.e(LOG_TAG, "getAllServiceSet: No services array in " + n.toString());
-                } else {
-                    Set<String> services = new ArraySet<>();
-                    for (int j = 0; j < serviceArr.length(); j++) {
-                        services.add(serviceArr.optString(j));
-                    }
-                    result.put(Integer.valueOf(getNetworkType(n.optString("type"))), services);
-                }
-            }
-        }
-        return result;
     }
 
     @Override // android.os.Parcelable

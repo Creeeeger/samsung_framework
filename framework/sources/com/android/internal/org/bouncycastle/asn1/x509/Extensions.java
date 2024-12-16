@@ -14,8 +14,8 @@ import java.util.Vector;
 
 /* loaded from: classes5.dex */
 public class Extensions extends ASN1Object {
-    private Hashtable extensions;
-    private Vector ordering;
+    private Hashtable extensions = new Hashtable();
+    private Vector ordering = new Vector();
 
     public static Extension getExtension(Extensions extensions, ASN1ObjectIdentifier oid) {
         if (extensions == null) {
@@ -46,8 +46,6 @@ public class Extensions extends ASN1Object {
     }
 
     private Extensions(ASN1Sequence seq) {
-        this.extensions = new Hashtable();
-        this.ordering = new Vector();
         Enumeration e = seq.getObjects();
         while (e.hasMoreElements()) {
             Extension ext = Extension.getInstance(e.nextElement());
@@ -60,16 +58,11 @@ public class Extensions extends ASN1Object {
     }
 
     public Extensions(Extension extension) {
-        this.extensions = new Hashtable();
-        Vector vector = new Vector();
-        this.ordering = vector;
-        vector.addElement(extension.getExtnId());
+        this.ordering.addElement(extension.getExtnId());
         this.extensions.put(extension.getExtnId(), extension);
     }
 
     public Extensions(Extension[] extensions) {
-        this.extensions = new Hashtable();
-        this.ordering = new Vector();
         for (int i = 0; i != extensions.length; i++) {
             Extension ext = extensions[i];
             this.ordering.addElement(ext.getExtnId());

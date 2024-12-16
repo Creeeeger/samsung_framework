@@ -129,12 +129,12 @@ public class SipMessageParsingUtils {
             int i = 2;
             if (splitParams.length >= 2) {
                 char c = 1;
-                Set<String> fts = (Set) Arrays.asList(splitParams).subList(1, splitParams.length).stream().map(new Function() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda1
+                Set<String> fts = (Set) Arrays.asList(splitParams).subList(1, splitParams.length).stream().map(new Function() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda3
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return ((String) obj).trim();
                     }
-                }).filter(new Predicate() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda2
+                }).filter(new Predicate() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda4
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         boolean startsWith;
@@ -229,7 +229,7 @@ public class SipMessageParsingUtils {
             } else {
                 if (headerKey != null) {
                     final String key = headerKey;
-                    if (matchingHeaderKeys == null || matchingHeaderKeys.length == 0 || Arrays.stream(matchingHeaderKeys).anyMatch(new Predicate() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda3
+                    if (matchingHeaderKeys == null || matchingHeaderKeys.length == 0 || Arrays.stream(matchingHeaderKeys).anyMatch(new Predicate() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda1
                         @Override // java.util.function.Predicate
                         public final boolean test(Object obj) {
                             boolean equalsIgnoreCase;
@@ -258,7 +258,7 @@ public class SipMessageParsingUtils {
         }
         if (headerKey != null) {
             final String key2 = headerKey;
-            if (matchingHeaderKeys == null || matchingHeaderKeys.length == 0 || Arrays.stream(matchingHeaderKeys).anyMatch(new Predicate() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda4
+            if (matchingHeaderKeys == null || matchingHeaderKeys.length == 0 || Arrays.stream(matchingHeaderKeys).anyMatch(new Predicate() { // from class: com.android.internal.telephony.SipMessageParsingUtils$$ExternalSyntheticLambda2
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean equalsIgnoreCase;

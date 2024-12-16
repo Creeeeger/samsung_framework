@@ -7,7 +7,6 @@ public final class PageTypeInfoProto {
     public static final long PAGES_PER_BLOCK = 1120986464258L;
     public static final long PAGE_BLOCK_ORDER = 1120986464257L;
 
-    /* loaded from: classes3.dex */
     public final class MigrateType {
         public static final long FREE_PAGES_COUNT = 2220498092036L;
         public static final long NODE = 1120986464257L;
@@ -18,7 +17,6 @@ public final class PageTypeInfoProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Block {
         public static final long CMA = 1120986464262L;
         public static final long HIGHATOMIC = 1120986464265L;

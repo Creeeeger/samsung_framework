@@ -27,7 +27,6 @@ public class MediaFile {
     private static final HashMap<Integer, String> sFormatToMimeTypeMap = new HashMap<>();
 
     @Deprecated
-    /* loaded from: classes2.dex */
     public static class MediaFileType {
         public final int fileType;
         public final String mimeType;
@@ -92,13 +91,11 @@ public class MediaFile {
     }
 
     private static void addFileType(int mtpFormatCode, String mimeType) {
-        HashMap<String, Integer> hashMap = sMimeTypeToFormatMap;
-        if (!hashMap.containsKey(mimeType)) {
-            hashMap.put(mimeType, Integer.valueOf(mtpFormatCode));
+        if (!sMimeTypeToFormatMap.containsKey(mimeType)) {
+            sMimeTypeToFormatMap.put(mimeType, Integer.valueOf(mtpFormatCode));
         }
-        HashMap<Integer, String> hashMap2 = sFormatToMimeTypeMap;
-        if (!hashMap2.containsKey(Integer.valueOf(mtpFormatCode))) {
-            hashMap2.put(Integer.valueOf(mtpFormatCode), mimeType);
+        if (!sFormatToMimeTypeMap.containsKey(Integer.valueOf(mtpFormatCode))) {
+            sFormatToMimeTypeMap.put(Integer.valueOf(mtpFormatCode), mimeType);
         }
     }
 
@@ -748,13 +745,12 @@ public class MediaFile {
         if (mimeType == null) {
             return 12288;
         }
-        HashMap<String, Integer> hashMap = sMimeTypeToFormatMap;
-        Integer value = hashMap.get(mimeType);
+        Integer value = sMimeTypeToFormatMap.get(mimeType);
         if (value != null) {
             return value.intValue();
         }
         String mimeType2 = normalizeMimeType(mimeType);
-        Integer value2 = hashMap.get(mimeType2);
+        Integer value2 = sMimeTypeToFormatMap.get(mimeType2);
         if (value2 != null) {
             return value2.intValue();
         }

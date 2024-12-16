@@ -23,7 +23,6 @@ public interface IRestrictionsManager extends IInterface {
 
     void requestPermission(String str, String str2, String str3, PersistableBundle persistableBundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRestrictionsManager {
         @Override // android.content.IRestrictionsManager
         public Bundle getApplicationRestrictions(String packageName) throws RemoteException {
@@ -59,7 +58,6 @@ public interface IRestrictionsManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRestrictionsManager {
         public static final String DESCRIPTOR = "android.content.IRestrictionsManager";
         static final int TRANSACTION_createLocalApprovalIntent = 6;
@@ -118,61 +116,58 @@ public interface IRestrictionsManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    Bundle _result = getApplicationRestrictions(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<Bundle> _result2 = getApplicationRestrictionsPerAdminForUser(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result2, 1);
+                    return true;
+                case 3:
+                    boolean _result3 = hasRestrictionsProvider();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    String _arg03 = data.readString();
+                    String _arg12 = data.readString();
+                    String _arg2 = data.readString();
+                    PersistableBundle _arg3 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestPermission(_arg03, _arg12, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    PersistableBundle _arg13 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyPermissionResponse(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    Intent _result4 = createLocalApprovalIntent();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            Bundle _result = getApplicationRestrictions(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<Bundle> _result2 = getApplicationRestrictionsPerAdminForUser(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result2, 1);
-                            return true;
-                        case 3:
-                            boolean _result3 = hasRestrictionsProvider();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            String _arg03 = data.readString();
-                            String _arg12 = data.readString();
-                            String _arg2 = data.readString();
-                            PersistableBundle _arg3 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestPermission(_arg03, _arg12, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            PersistableBundle _arg13 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyPermissionResponse(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            Intent _result4 = createLocalApprovalIntent();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRestrictionsManager {
+        private static class Proxy implements IRestrictionsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

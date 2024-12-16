@@ -3,7 +3,7 @@ package com.samsung.android.globalactions.util;
 import android.app.ActivityManager;
 import android.content.Context;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ActivityManagerWrapper {
     private final ActivityManager mActivityManager;
 
@@ -12,7 +12,6 @@ public class ActivityManagerWrapper {
     }
 
     public boolean isInLockTaskMode() {
-        ActivityManager activityManager = this.mActivityManager;
-        return (activityManager == null || activityManager.getLockTaskModeState() == 0) ? false : true;
+        return (this.mActivityManager == null || this.mActivityManager.getLockTaskModeState() == 0) ? false : true;
     }
 }

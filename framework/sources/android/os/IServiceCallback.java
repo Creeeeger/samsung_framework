@@ -6,7 +6,6 @@ public interface IServiceCallback extends IInterface {
 
     void onRegistration(String str, IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IServiceCallback {
         @Override // android.os.IServiceCallback
         public void onRegistration(String name, IBinder binder) throws RemoteException {
@@ -18,7 +17,6 @@ public interface IServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IServiceCallback {
         static final int TRANSACTION_onRegistration = 1;
 
@@ -61,27 +59,23 @@ public interface IServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IServiceCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onRegistration(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onRegistration(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IServiceCallback {
+        private static class Proxy implements IServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

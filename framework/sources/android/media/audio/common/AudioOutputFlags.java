@@ -15,6 +15,7 @@ public @interface AudioOutputFlags {
     public static final int IEC958_NONAUDIO = 10;
     public static final int IMPLICIT = 25;
     public static final int INCALL_MUSIC = 14;
+    public static final int MEDIA = 26;
     public static final int MMAP_NOIRQ = 12;
     public static final int MULTI_CH = 19;
     public static final int MUSIC = 23;

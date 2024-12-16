@@ -13,7 +13,6 @@ public interface IClipboardDataPasteEvent extends IInterface {
 
     void onPaste(SemClipData semClipData) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IClipboardDataPasteEvent {
         @Override // android.sec.clipboard.IClipboardDataPasteEvent
         public void onPaste(SemClipData data) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IClipboardDataPasteEvent extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IClipboardDataPasteEvent {
         static final int TRANSACTION_onPaste = 1;
 
@@ -68,27 +66,23 @@ public interface IClipboardDataPasteEvent extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IClipboardDataPasteEvent.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IClipboardDataPasteEvent.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IClipboardDataPasteEvent.DESCRIPTOR);
+                case 1:
+                    SemClipData _arg0 = (SemClipData) data.readTypedObject(SemClipData.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPaste(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SemClipData _arg0 = (SemClipData) data.readTypedObject(SemClipData.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPaste(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IClipboardDataPasteEvent {
+        private static class Proxy implements IClipboardDataPasteEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

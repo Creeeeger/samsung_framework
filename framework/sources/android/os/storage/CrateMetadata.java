@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class CrateMetadata implements Parcelable {
     public static final Parcelable.Creator<CrateMetadata> CREATOR = new Parcelable.Creator<CrateMetadata>() { // from class: android.os.storage.CrateMetadata.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CrateMetadata createFromParcel(Parcel _aidl_source) {
             CrateMetadata _aidl_out = new CrateMetadata();
@@ -17,6 +15,7 @@ public class CrateMetadata implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CrateMetadata[] newArray(int _aidl_size) {
             return new CrateMetadata[_aidl_size];
@@ -25,25 +24,6 @@ public class CrateMetadata implements Parcelable {
     public String id;
     public String packageName;
     public int uid = 0;
-
-    /* renamed from: android.os.storage.CrateMetadata$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CrateMetadata> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CrateMetadata createFromParcel(Parcel _aidl_source) {
-            CrateMetadata _aidl_out = new CrateMetadata();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CrateMetadata[] newArray(int _aidl_size) {
-            return new CrateMetadata[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

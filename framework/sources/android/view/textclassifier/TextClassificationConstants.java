@@ -5,7 +5,6 @@ import com.android.internal.util.IndentingPrintWriter;
 
 /* loaded from: classes4.dex */
 public final class TextClassificationConstants {
-    private static final String DEFAULT_TEXT_CLASSIFIER_SERVICE_PACKAGE_OVERRIDE = null;
     static final String GENERATE_LINKS_MAX_TEXT_LENGTH = "generate_links_max_text_length";
     private static final int GENERATE_LINKS_MAX_TEXT_LENGTH_DEFAULT = 100000;
     static final String LOCAL_TEXT_CLASSIFIER_ENABLED = "local_textclassifier_enabled";
@@ -27,13 +26,53 @@ public final class TextClassificationConstants {
     static final String SYSTEM_TEXT_CLASSIFIER_ENABLED = "system_textclassifier_enabled";
     private static final boolean SYSTEM_TEXT_CLASSIFIER_ENABLED_DEFAULT = true;
     static final String TEXT_CLASSIFIER_SERVICE_PACKAGE_OVERRIDE = "textclassifier_service_package_override";
+    private static int sGenerateLinksMaxTextLength;
+    private static boolean sLocalTextClassifierEnabled;
+    private static volatile boolean sMemoizedValuesInitialized;
+    private static boolean sModelDarkLaunchEnabled;
+    private static boolean sSmartLinkifyEnabled;
+    private static boolean sSmartSelectAnimationEnabled;
+    private static boolean sSmartSelectionEnabled;
+    private static int sSmartSelectionTrimDelta;
+    private static boolean sSmartTextShareEnabled;
+    private static long sSystemTextClassifierApiTimeoutInSecond;
+    private static boolean sSystemTextClassifierEnabled;
+    private static final String DEFAULT_TEXT_CLASSIFIER_SERVICE_PACKAGE_OVERRIDE = null;
+    private static final Object sLock = new Object();
+
+    private static void ensureMemoizedValues() {
+        if (sMemoizedValuesInitialized) {
+            return;
+        }
+        synchronized (sLock) {
+            if (sMemoizedValuesInitialized) {
+                return;
+            }
+            DeviceConfig.Properties properties = DeviceConfig.getProperties("textclassifier", new String[0]);
+            sLocalTextClassifierEnabled = properties.getBoolean(LOCAL_TEXT_CLASSIFIER_ENABLED, true);
+            sModelDarkLaunchEnabled = properties.getBoolean(MODEL_DARK_LAUNCH_ENABLED, false);
+            sSmartSelectionEnabled = properties.getBoolean(SMART_SELECTION_ENABLED, true);
+            sSmartTextShareEnabled = properties.getBoolean(SMART_TEXT_SHARE_ENABLED, true);
+            sSmartLinkifyEnabled = properties.getBoolean(SMART_LINKIFY_ENABLED, true);
+            sSmartSelectAnimationEnabled = properties.getBoolean(SMART_SELECT_ANIMATION_ENABLED, true);
+            sGenerateLinksMaxTextLength = properties.getInt(GENERATE_LINKS_MAX_TEXT_LENGTH, 100000);
+            sSystemTextClassifierApiTimeoutInSecond = properties.getLong(SYSTEM_TEXT_CLASSIFIER_API_TIMEOUT_IN_SECOND, SYSTEM_TEXT_CLASSIFIER_API_TIMEOUT_IN_SECOND_DEFAULT);
+            sSmartSelectionTrimDelta = properties.getInt(SMART_SELECTION_TRIM_DELTA, 120);
+            sMemoizedValuesInitialized = true;
+        }
+    }
+
+    public static void resetMemoizedValues() {
+        sMemoizedValuesInitialized = false;
+    }
 
     public String getTextClassifierServicePackageOverride() {
         return DeviceConfig.getString("textclassifier", TEXT_CLASSIFIER_SERVICE_PACKAGE_OVERRIDE, DEFAULT_TEXT_CLASSIFIER_SERVICE_PACKAGE_OVERRIDE);
     }
 
     public boolean isLocalTextClassifierEnabled() {
-        return DeviceConfig.getBoolean("textclassifier", LOCAL_TEXT_CLASSIFIER_ENABLED, true);
+        ensureMemoizedValues();
+        return sLocalTextClassifierEnabled;
     }
 
     public boolean isSystemTextClassifierEnabled() {
@@ -41,38 +80,46 @@ public final class TextClassificationConstants {
     }
 
     public boolean isModelDarkLaunchEnabled() {
-        return DeviceConfig.getBoolean("textclassifier", MODEL_DARK_LAUNCH_ENABLED, false);
+        ensureMemoizedValues();
+        return sModelDarkLaunchEnabled;
     }
 
     public boolean isSmartSelectionEnabled() {
-        return DeviceConfig.getBoolean("textclassifier", SMART_SELECTION_ENABLED, true);
+        ensureMemoizedValues();
+        return sSmartSelectionEnabled;
     }
 
     public boolean isSmartTextShareEnabled() {
-        return DeviceConfig.getBoolean("textclassifier", SMART_TEXT_SHARE_ENABLED, true);
+        ensureMemoizedValues();
+        return sSmartTextShareEnabled;
     }
 
     public boolean isSmartLinkifyEnabled() {
-        return DeviceConfig.getBoolean("textclassifier", SMART_LINKIFY_ENABLED, true);
+        ensureMemoizedValues();
+        return sSmartLinkifyEnabled;
     }
 
     public boolean isSmartSelectionAnimationEnabled() {
-        return DeviceConfig.getBoolean("textclassifier", SMART_SELECT_ANIMATION_ENABLED, true);
+        ensureMemoizedValues();
+        return sSmartSelectAnimationEnabled;
     }
 
     public int getGenerateLinksMaxTextLength() {
-        return DeviceConfig.getInt("textclassifier", GENERATE_LINKS_MAX_TEXT_LENGTH, 100000);
+        ensureMemoizedValues();
+        return sGenerateLinksMaxTextLength;
     }
 
     public long getSystemTextClassifierApiTimeoutInSecond() {
-        return DeviceConfig.getLong("textclassifier", SYSTEM_TEXT_CLASSIFIER_API_TIMEOUT_IN_SECOND, SYSTEM_TEXT_CLASSIFIER_API_TIMEOUT_IN_SECOND_DEFAULT);
+        ensureMemoizedValues();
+        return sSystemTextClassifierApiTimeoutInSecond;
     }
 
     public int getSmartSelectionTrimDelta() {
-        return DeviceConfig.getInt("textclassifier", SMART_SELECTION_TRIM_DELTA, 120);
+        ensureMemoizedValues();
+        return sSmartSelectionTrimDelta;
     }
 
-    public void dump(IndentingPrintWriter pw) {
+    void dump(IndentingPrintWriter pw) {
         pw.println("TextClassificationConstants:");
         pw.increaseIndent();
         pw.print(GENERATE_LINKS_MAX_TEXT_LENGTH, Integer.valueOf(getGenerateLinksMaxTextLength())).println();

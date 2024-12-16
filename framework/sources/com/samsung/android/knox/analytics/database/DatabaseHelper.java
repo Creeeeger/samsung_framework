@@ -14,7 +14,7 @@ import com.samsung.android.knox.analytics.database.Contract;
 import com.samsung.android.knox.analytics.util.Log;
 import java.io.File;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class DatabaseHelper extends SQLiteOpenHelper {
     private static final String B2C_FEATURE_CREATE_TABLE = "CREATE TABLE package_feature_b2c ( packageName TEXT PRIMARY KEY, feature_name TEXT)";
     public static final String B2C_FEATURE_FIELD_FEATURE = "feature_name";
@@ -163,12 +163,11 @@ class DatabaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, "addEvent() : Invalid content values");
             return -1L;
         }
-        String str = TAG;
-        Log.d(str, "addEvent()");
+        Log.d(TAG, "addEvent()");
         SQLiteDatabase db = getWritableDatabase();
         String[] content = getTableAndWhereClauseFromType(type);
         if (content == null || content.length <= 0 || content[0] == null || content[0].isEmpty()) {
-            Log.d(str, "addEvent(): Wrong log type");
+            Log.d(TAG, "addEvent(): Wrong log type");
             return -1L;
         }
         int eventsAmount = 1;
@@ -177,7 +176,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         }
         long lastId = db.insert(content[0], null, contentValues);
         if (lastId == -1) {
-            Log.e(str, "addEvent(): Couldn't add event");
+            Log.e(TAG, "addEvent(): Couldn't add event");
         } else {
             updateLastId((eventsAmount + lastId) - 1);
         }
@@ -249,13 +248,12 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void putLastIdDefaultValue(SQLiteDatabase db) {
-        String str = TAG;
-        Log.d(str, "putLastIdDefaultValue()");
+        Log.d(TAG, "putLastIdDefaultValue()");
         ContentValues cv = new ContentValues();
         cv.put(LAST_EVENT_ID_FIELD, (Integer) (-1));
         long id = db.insert(LAST_EVENT_ID_TABLE, null, cv);
         if (id == -1) {
-            Log.e(str, "putLastIdDefaultValue(): Error");
+            Log.e(TAG, "putLastIdDefaultValue(): Error");
         }
     }
 
@@ -266,20 +264,16 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getCompressedEventChunk(Integer limit) {
-        String sLimit;
-        String str = TAG;
-        Log.d(str, "getCompressedEventChunk()");
+    Cursor getCompressedEventChunk(Integer limit) {
+        Log.d(TAG, "getCompressedEventChunk()");
         SQLiteDatabase db = getReadableDatabase();
-        if (limit == null) {
-            sLimit = null;
-        } else {
-            String sLimit2 = String.valueOf(limit);
-            sLimit = sLimit2;
+        String sLimit = null;
+        if (limit != null) {
+            sLimit = String.valueOf(limit);
         }
         Cursor cursor = db.query("compressed_events", null, null, null, null, null, "id ASC", sLimit);
         if (cursor == null || cursor.getCount() <= 0) {
-            Log.d(str, "getCompressedEventChunk(): There is no compressed data");
+            Log.d(TAG, "getCompressedEventChunk(): There is no compressed data");
             if (cursor != null) {
                 cursor.close();
                 return null;
@@ -354,12 +348,11 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getTotalCompressedEventCursor(String limit) {
-        String str = TAG;
-        Log.d(str, "getTotalCompressedEventCursor(" + limit + NavigationBarInflaterView.KEY_CODE_END);
+        Log.d(TAG, "getTotalCompressedEventCursor(" + limit + NavigationBarInflaterView.KEY_CODE_END);
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query("compressed_events", new String[]{"bulk"}, null, null, null, null, null, limit);
         if (cursor == null || cursor.getCount() <= 0) {
-            Log.d(str, "getTotalCompressedEventCursor(): There is no compressed events");
+            Log.d(TAG, "getTotalCompressedEventCursor(): There is no compressed events");
             if (cursor != null) {
                 cursor.close();
                 return null;
@@ -370,15 +363,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long deleteEventChunk(long size, int type) {
-        String str = TAG;
-        Log.d(str, "deleteEventChunk(" + size + NavigationBarInflaterView.KEY_CODE_END);
+        Log.d(TAG, "deleteEventChunk(" + size + NavigationBarInflaterView.KEY_CODE_END);
         if (size < 1) {
-            Log.e(str, "deleteEventChunk(): invalid number");
+            Log.e(TAG, "deleteEventChunk(): invalid number");
             return 0L;
         }
         String[] content = getTableAndWhereClauseFromType(type);
         if (content == null || content.length <= 0 || content[0] == null || content[1] == null || content[0].isEmpty() || content[1].isEmpty()) {
-            Log.d(str, "deleteEventChunk(): Wrong log type");
+            Log.d(TAG, "deleteEventChunk(): Wrong log type");
             return -1L;
         }
         SQLiteDatabase db = getWritableDatabase();
@@ -484,15 +476,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int addVersioningBlob(ContentValues contentValues) {
-        String str = TAG;
-        Log.d(str, "addVersioningBlob()");
+        Log.d(TAG, "addVersioningBlob()");
         if (contentValues == null || !contentValues.containsKey("id") || !contentValues.containsKey("data") || !contentValues.containsKey(Contract.Versioning.AUX_FIELD_EVENT_ID) || contentValues.size() != 3) {
-            Log.e(str, "addVersioningBlob(): wrong fields!");
+            Log.e(TAG, "addVersioningBlob(): wrong fields!");
             return -1;
         }
         Integer newVersioningId = contentValues.getAsInteger("id");
         if (newVersioningId == null) {
-            Log.e(str, "addVersioningBlob(): versioning id is null!");
+            Log.e(TAG, "addVersioningBlob(): versioning id is null!");
             return -1;
         }
         Long eventId = contentValues.getAsLong(Contract.Versioning.AUX_FIELD_EVENT_ID);
@@ -503,7 +494,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
             id = db.insert("version", null, contentValues);
         }
         if (eventId == null || id == -1) {
-            Log.e(str, "addVersioningBlob(): error");
+            Log.e(TAG, "addVersioningBlob(): error");
             return -1;
         }
         updateLastId(eventId.longValue());
@@ -517,10 +508,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long addFeaturesBlacklist(ContentValues contentValues) {
-        String str = TAG;
-        Log.e(str, "addFeaturesBlacklist()");
+        Log.e(TAG, "addFeaturesBlacklist()");
         if (!contentValues.containsKey("feature") || TextUtils.isEmpty(contentValues.getAsString("feature")) || !contentValues.containsKey("event") || TextUtils.isEmpty(contentValues.getAsString("event")) || contentValues.size() != 2) {
-            Log.e(str, "addFeaturesBlacklist(): invalid fields!");
+            Log.e(TAG, "addFeaturesBlacklist(): invalid fields!");
             return -1L;
         }
         SQLiteDatabase db = getWritableDatabase();
@@ -543,7 +533,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete("feature_blocklist", null, null);
     }
 
-    public int getSyntheticRowId() {
+    int getSyntheticRowId() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query("synthetic_key", new String[]{"row_id"}, null, null, null, null, null);
         if (cursor != null) {
@@ -577,8 +567,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void setSyntheticRowId() {
-        String str = TAG;
-        Log.d(str, "setSyntheticRowId()");
+        Log.d(TAG, "setSyntheticRowId()");
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         Cursor cursor = getLastId();
@@ -587,7 +576,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
                 if (cursor.getCount() > 0) {
                     cv.put("row_id", Integer.valueOf(cursor.getInt(cursor.getColumnIndex(LAST_EVENT_ID_FIELD))));
                     long id = db.insert("synthetic_key", null, cv);
-                    Log.d(str, "setSyntheticRowId(): Marked event id = " + id);
+                    Log.d(TAG, "setSyntheticRowId(): Marked event id = " + id);
                     if (cursor != null) {
                         cursor.close();
                         return;
@@ -605,29 +594,27 @@ class DatabaseHelper extends SQLiteOpenHelper {
                 throw th;
             }
         }
-        Log.d(str, "setSyntheticRowId(): There is no data in events table.");
+        Log.d(TAG, "setSyntheticRowId(): There is no data in events table.");
         if (cursor != null) {
             cursor.close();
         }
     }
 
-    public long deleteCompressedEventChunk(long size) {
-        String str = TAG;
-        Log.d(str, "deleteCompressedEventChunk(" + size + NavigationBarInflaterView.KEY_CODE_END);
+    long deleteCompressedEventChunk(long size) {
+        Log.d(TAG, "deleteCompressedEventChunk(" + size + NavigationBarInflaterView.KEY_CODE_END);
         if (size <= 0) {
-            Log.e(str, "deleteCompressedEventChunk(): invalid number");
+            Log.e(TAG, "deleteCompressedEventChunk(): invalid number");
             return 0L;
         }
         SQLiteDatabase db = getWritableDatabase();
         return db.delete("compressed_events", COMPRESSED_EVENTS_DELETE, new String[]{String.valueOf(size)});
     }
 
-    public boolean performCompressedEventsTransaction(ContentValues values) {
+    boolean performCompressedEventsTransaction(ContentValues values) {
         boolean result;
-        String str = TAG;
-        Log.d(str, "performCompressedEventsTransaction()");
+        Log.d(TAG, "performCompressedEventsTransaction()");
         if (!values.containsKey("content") || TextUtils.isEmpty(values.getAsString("content")) || !values.containsKey("length") || values.getAsInteger("length") == null || !values.containsKey("original_length") || values.getAsInteger("original_length") == null || !values.containsKey("plainEventsSize") || values.getAsInteger("plainEventsSize") == null || !values.containsKey("bulk") || values.getAsInteger("bulk") == null || values.size() != 5) {
-            Log.e(str, "performCompressedEventsTransaction(): wrong fields!");
+            Log.e(TAG, "performCompressedEventsTransaction(): wrong fields!");
             return false;
         }
         SQLiteDatabase db = getWritableDatabase();
@@ -655,10 +642,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long addFeaturesWhitelist(ContentValues contentValues) {
-        String str = TAG;
-        Log.d(str, "addFeaturesWhitelist()");
+        Log.d(TAG, "addFeaturesWhitelist()");
         if (!contentValues.containsKey("feature") || contentValues.getAsString("feature") == null || contentValues.getAsString("feature").isEmpty() || contentValues.size() != 2) {
-            Log.e(str, "addFeaturesWhitelist(): missing feature field!");
+            Log.e(TAG, "addFeaturesWhitelist(): missing feature field!");
             return -1L;
         }
         if (!contentValues.containsKey("enable_type") || contentValues.getAsInteger("enable_type") == null) {

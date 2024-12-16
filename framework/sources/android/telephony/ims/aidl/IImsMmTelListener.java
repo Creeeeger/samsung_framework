@@ -13,7 +13,7 @@ import android.telephony.ims.aidl.IImsCallSessionListener;
 import android.telephony.ims.aidl.IImsTrafficSessionCallback;
 import com.android.ims.internal.IImsCallSession;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsMmTelListener extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsMmTelListener";
 
@@ -37,7 +37,6 @@ public interface IImsMmTelListener extends IInterface {
 
     void onVoiceMessageCountUpdate(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsMmTelListener {
         @Override // android.telephony.ims.aidl.IImsMmTelListener
         public IImsCallSessionListener onIncomingCall(IImsCallSession c, String callId, Bundle extras) throws RemoteException {
@@ -86,7 +85,6 @@ public interface IImsMmTelListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsMmTelListener {
         static final int TRANSACTION_onAudioModeIsVoipChanged = 5;
         static final int TRANSACTION_onCdpnReceived = 4;
@@ -156,84 +154,80 @@ public interface IImsMmTelListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsMmTelListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsMmTelListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsMmTelListener.DESCRIPTOR);
+                case 1:
+                    IImsCallSession _arg0 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IImsCallSessionListener _result = onIncomingCall(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    ImsCallProfile _arg02 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    ImsReasonInfo _arg12 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRejectedCall(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVoiceMessageCountUpdate(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCdpnReceived(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAudioModeIsVoipChanged(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTriggerEpsFallback(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg3 = data.readInt();
+                    IImsTrafficSessionCallback _arg4 = IImsTrafficSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onStartImsTrafficSession(_arg07, _arg14, _arg22, _arg3, _arg4);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onModifyImsTrafficSession(_arg08, _arg15);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStopImsTrafficSession(_arg09);
+                    return true;
+                case 10:
+                    MediaQualityStatus _arg010 = (MediaQualityStatus) data.readTypedObject(MediaQualityStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMediaQualityStatusChanged(_arg010);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IImsCallSession _arg0 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IImsCallSessionListener _result = onIncomingCall(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            ImsCallProfile _arg02 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            ImsReasonInfo _arg12 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRejectedCall(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onVoiceMessageCountUpdate(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCdpnReceived(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAudioModeIsVoipChanged(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTriggerEpsFallback(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg3 = data.readInt();
-                            IImsTrafficSessionCallback _arg4 = IImsTrafficSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onStartImsTrafficSession(_arg07, _arg14, _arg22, _arg3, _arg4);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onModifyImsTrafficSession(_arg08, _arg15);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStopImsTrafficSession(_arg09);
-                            return true;
-                        case 10:
-                            MediaQualityStatus _arg010 = (MediaQualityStatus) data.readTypedObject(MediaQualityStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMediaQualityStatusChanged(_arg010);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsMmTelListener {
+        private static class Proxy implements IImsMmTelListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

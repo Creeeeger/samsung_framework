@@ -17,7 +17,6 @@ public interface IDataShareReadAdapter extends IInterface {
 
     void start(ParcelFileDescriptor parcelFileDescriptor) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDataShareReadAdapter {
         @Override // android.service.contentcapture.IDataShareReadAdapter
         public void start(ParcelFileDescriptor fd) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IDataShareReadAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDataShareReadAdapter {
         static final int TRANSACTION_error = 2;
         static final int TRANSACTION_finish = 3;
@@ -86,34 +84,30 @@ public interface IDataShareReadAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDataShareReadAdapter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDataShareReadAdapter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDataShareReadAdapter.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    start(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    error(_arg02);
+                    return true;
+                case 3:
+                    finish();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            start(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            error(_arg02);
-                            return true;
-                        case 3:
-                            finish();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDataShareReadAdapter {
+        private static class Proxy implements IDataShareReadAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

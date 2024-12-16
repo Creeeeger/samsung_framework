@@ -11,14 +11,13 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class GetEuiccProfileInfoListResult implements Parcelable {
     public static final Parcelable.Creator<GetEuiccProfileInfoListResult> CREATOR = new Parcelable.Creator<GetEuiccProfileInfoListResult>() { // from class: android.service.euicc.GetEuiccProfileInfoListResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetEuiccProfileInfoListResult createFromParcel(Parcel in) {
             return new GetEuiccProfileInfoListResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetEuiccProfileInfoListResult[] newArray(int size) {
             return new GetEuiccProfileInfoListResult[size];
@@ -30,37 +29,15 @@ public final class GetEuiccProfileInfoListResult implements Parcelable {
     @Deprecated
     public final int result;
 
-    /* synthetic */ GetEuiccProfileInfoListResult(Parcel parcel, GetEuiccProfileInfoListResultIA getEuiccProfileInfoListResultIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.service.euicc.GetEuiccProfileInfoListResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GetEuiccProfileInfoListResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetEuiccProfileInfoListResult createFromParcel(Parcel in) {
-            return new GetEuiccProfileInfoListResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetEuiccProfileInfoListResult[] newArray(int size) {
-            return new GetEuiccProfileInfoListResult[size];
-        }
-    }
-
     public int getResult() {
         return this.result;
     }
 
     public List<EuiccProfileInfo> getProfiles() {
-        EuiccProfileInfo[] euiccProfileInfoArr = this.mProfiles;
-        if (euiccProfileInfoArr == null) {
+        if (this.mProfiles == null) {
             return null;
         }
-        return Arrays.asList(euiccProfileInfoArr);
+        return Arrays.asList(this.mProfiles);
     }
 
     public boolean getIsRemovable() {
@@ -70,7 +47,7 @@ public final class GetEuiccProfileInfoListResult implements Parcelable {
     public GetEuiccProfileInfoListResult(int result, EuiccProfileInfo[] profiles, boolean isRemovable) {
         this.result = result;
         this.mIsRemovable = isRemovable;
-        if (result == 0) {
+        if (this.result == 0) {
             this.mProfiles = profiles;
         } else {
             if (profiles != null && profiles.length > 0) {

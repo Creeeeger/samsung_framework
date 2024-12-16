@@ -38,7 +38,6 @@ public class KeyphraseEnrollmentInfo {
     private String mParseError;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ManageActions {
     }
 
@@ -86,7 +85,7 @@ public class KeyphraseEnrollmentInfo {
 
     /* JADX WARN: Code restructure failed: missing block: B:24:0x007e, code lost:
     
-        if (r1 != null) goto L60;
+        if (r1 != null) goto L23;
      */
     /* JADX WARN: Code restructure failed: missing block: B:25:0x0080, code lost:
     
@@ -98,7 +97,7 @@ public class KeyphraseEnrollmentInfo {
      */
     /* JADX WARN: Code restructure failed: missing block: B:34:0x00b8, code lost:
     
-        if (0 == 0) goto L67;
+        if (0 == 0) goto L30;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -256,8 +255,7 @@ public class KeyphraseEnrollmentInfo {
     public Intent getManageKeyphraseIntent(int action, String keyphrase, Locale locale) {
         Objects.requireNonNull(keyphrase);
         Objects.requireNonNull(locale);
-        Map<KeyphraseMetadata, String> map = this.mKeyphrasePackageMap;
-        if (map == null || map.isEmpty()) {
+        if (this.mKeyphrasePackageMap == null || this.mKeyphrasePackageMap.isEmpty()) {
             Slog.w(TAG, "No enrollment application exists");
             return null;
         }
@@ -271,9 +269,8 @@ public class KeyphraseEnrollmentInfo {
     public KeyphraseMetadata getKeyphraseMetadata(String keyphrase, Locale locale) {
         Objects.requireNonNull(keyphrase);
         Objects.requireNonNull(locale);
-        KeyphraseMetadata[] keyphraseMetadataArr = this.mKeyphrases;
-        if (keyphraseMetadataArr != null && keyphraseMetadataArr.length > 0) {
-            for (KeyphraseMetadata keyphraseMetadata : keyphraseMetadataArr) {
+        if (this.mKeyphrases != null && this.mKeyphrases.length > 0) {
+            for (KeyphraseMetadata keyphraseMetadata : this.mKeyphrases) {
                 if (keyphraseMetadata.supportsPhrase(keyphrase) && keyphraseMetadata.supportsLocale(locale)) {
                     return keyphraseMetadata;
                 }

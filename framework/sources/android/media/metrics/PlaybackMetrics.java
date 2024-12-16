@@ -19,14 +19,13 @@ public final class PlaybackMetrics implements Parcelable {
     public static final int CONTENT_TYPE_OTHER = 3;
     public static final int CONTENT_TYPE_UNKNOWN = 0;
     public static final Parcelable.Creator<PlaybackMetrics> CREATOR = new Parcelable.Creator<PlaybackMetrics>() { // from class: android.media.metrics.PlaybackMetrics.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PlaybackMetrics[] newArray(int size) {
             return new PlaybackMetrics[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PlaybackMetrics createFromParcel(Parcel in) {
             return new PlaybackMetrics(in);
@@ -72,27 +71,22 @@ public final class PlaybackMetrics implements Parcelable {
     private final int mVideoFramesPlayed;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ContentType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DrmType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PlaybackType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface StreamSource {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface StreamType {
     }
 
@@ -106,7 +100,7 @@ public final class PlaybackMetrics implements Parcelable {
         this.mPlayerName = playerName;
         this.mPlayerVersion = playerVersion;
         this.mExperimentIds = experimentIds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) experimentIds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mExperimentIds);
         this.mVideoFramesPlayed = videoFramesPlayed;
         this.mVideoFramesDropped = videoFramesDropped;
         this.mAudioUnderrunCount = audioUnderrunCount;
@@ -150,8 +144,7 @@ public final class PlaybackMetrics implements Parcelable {
     }
 
     public long[] getExperimentIds() {
-        long[] jArr = this.mExperimentIds;
-        return Arrays.copyOf(jArr, jArr.length);
+        return Arrays.copyOf(this.mExperimentIds, this.mExperimentIds.length);
     }
 
     public int getVideoFramesPlayed() {
@@ -221,13 +214,11 @@ public final class PlaybackMetrics implements Parcelable {
         dest.writeInt(this.mPlaybackType);
         dest.writeInt(this.mDrmType);
         dest.writeInt(this.mContentType);
-        String str = this.mPlayerName;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mPlayerName != null) {
+            dest.writeString(this.mPlayerName);
         }
-        String str2 = this.mPlayerVersion;
-        if (str2 != null) {
-            dest.writeString(str2);
+        if (this.mPlayerVersion != null) {
+            dest.writeString(this.mPlayerVersion);
         }
         dest.writeLongArray(this.mExperimentIds);
         dest.writeInt(this.mVideoFramesPlayed);
@@ -276,7 +267,7 @@ public final class PlaybackMetrics implements Parcelable {
         this.mPlayerName = playerName;
         this.mPlayerVersion = playerVersion;
         this.mExperimentIds = experimentIds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) experimentIds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mExperimentIds);
         this.mVideoFramesPlayed = videoFramesPlayed;
         this.mVideoFramesDropped = videoFramesDropped;
         this.mAudioUnderrunCount = audioUnderrunCount;
@@ -287,24 +278,6 @@ public final class PlaybackMetrics implements Parcelable {
         this.mMetricsBundle = extras;
     }
 
-    /* renamed from: android.media.metrics.PlaybackMetrics$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PlaybackMetrics> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PlaybackMetrics[] newArray(int size) {
-            return new PlaybackMetrics[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PlaybackMetrics createFromParcel(Parcel in) {
-            return new PlaybackMetrics(in);
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private String mPlayerName;
         private String mPlayerVersion;

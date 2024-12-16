@@ -32,7 +32,6 @@ public class LogDataType {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:14:0x0022. Please report as an issue. */
     public static List<Integer> parseFormatString(String messageString) {
         ArrayList<Integer> types = new ArrayList<>();
         int i = 0;

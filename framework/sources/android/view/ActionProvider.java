@@ -9,12 +9,10 @@ public abstract class ActionProvider {
     private SubUiVisibilityListener mSubUiVisibilityListener;
     private VisibilityListener mVisibilityListener;
 
-    /* loaded from: classes4.dex */
     public interface SubUiVisibilityListener {
         void onSubUiVisibilityChanged(boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public interface VisibilityListener {
         void onActionProviderVisibilityChanged(boolean z);
     }
@@ -55,9 +53,8 @@ public abstract class ActionProvider {
     }
 
     public void subUiVisibilityChanged(boolean isVisible) {
-        SubUiVisibilityListener subUiVisibilityListener = this.mSubUiVisibilityListener;
-        if (subUiVisibilityListener != null) {
-            subUiVisibilityListener.onSubUiVisibilityChanged(isVisible);
+        if (this.mSubUiVisibilityListener != null) {
+            this.mSubUiVisibilityListener.onSubUiVisibilityChanged(isVisible);
         }
     }
 

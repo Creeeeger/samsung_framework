@@ -17,9 +17,11 @@ public class SemWifiDisplayParameter implements Parcelable {
     public static final String KEY_MIRRORING_MODE = "wfd_sec_mirroring_mode";
     public static final String KEY_MIRRORING_UUID = "wfd_sec_mirroring_uuid";
     public static final String KEY_POINTER_ICON_INDEX = "wfd_sec_pointer_icon_idx";
+    public static final String KEY_SAMSUNG_ACCOUNT = "samsung_account";
     public static final String KEY_SCAMBLE_SUPPORT = "scramble_support";
     public static final String KEY_SOURCE_DISPLAY_ORIENTATION = "wfd_sec_source_display_orientation";
     public static final String KEY_TIZEN_VERSION = "tizenVer";
+    public static final String KEY_TV_BLE_IRK = "tv_ble_irk";
     public static final String KEY_TV_BLE_MAC = "wfd_sec_tv_ble_mac";
     public static final String KEY_TV_DEVICE_ID = "tv_device_id";
     public static final String KEY_VIEW_MODE = "wfd_sec_view_mode";
@@ -50,36 +52,18 @@ public class SemWifiDisplayParameter implements Parcelable {
     private String mValue;
     public static final SemWifiDisplayParameter[] EMPTY_ARRAY = new SemWifiDisplayParameter[0];
     public static final Parcelable.Creator<SemWifiDisplayParameter> CREATOR = new Parcelable.Creator<SemWifiDisplayParameter>() { // from class: android.hardware.display.SemWifiDisplayParameter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiDisplayParameter createFromParcel(Parcel in) {
             return new SemWifiDisplayParameter(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiDisplayParameter[] newArray(int size) {
             return size == 0 ? SemWifiDisplayParameter.EMPTY_ARRAY : new SemWifiDisplayParameter[size];
         }
     };
-
-    /* renamed from: android.hardware.display.SemWifiDisplayParameter$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemWifiDisplayParameter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiDisplayParameter createFromParcel(Parcel in) {
-            return new SemWifiDisplayParameter(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiDisplayParameter[] newArray(int size) {
-            return size == 0 ? SemWifiDisplayParameter.EMPTY_ARRAY : new SemWifiDisplayParameter[size];
-        }
-    }
 
     public SemWifiDisplayParameter() {
     }

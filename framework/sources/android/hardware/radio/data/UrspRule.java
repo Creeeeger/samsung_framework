@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class UrspRule implements Parcelable {
     public static final Parcelable.Creator<UrspRule> CREATOR = new Parcelable.Creator<UrspRule>() { // from class: android.hardware.radio.data.UrspRule.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UrspRule createFromParcel(Parcel _aidl_source) {
             UrspRule _aidl_out = new UrspRule();
@@ -19,6 +17,7 @@ public class UrspRule implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UrspRule[] newArray(int _aidl_size) {
             return new UrspRule[_aidl_size];
@@ -27,25 +26,6 @@ public class UrspRule implements Parcelable {
     public int precedence = 0;
     public RouteSelectionDescriptor[] routeSelectionDescriptor;
     public TrafficDescriptor[] trafficDescriptors;
-
-    /* renamed from: android.hardware.radio.data.UrspRule$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UrspRule> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UrspRule createFromParcel(Parcel _aidl_source) {
-            UrspRule _aidl_out = new UrspRule();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UrspRule[] newArray(int _aidl_size) {
-            return new UrspRule[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +94,7 @@ public class UrspRule implements Parcelable {
         _aidl_sj.add("precedence: " + this.precedence);
         _aidl_sj.add("trafficDescriptors: " + Arrays.toString(this.trafficDescriptors));
         _aidl_sj.add("routeSelectionDescriptor: " + Arrays.toString(this.routeSelectionDescriptor));
-        return "android.hardware.radio.data.UrspRule" + _aidl_sj.toString();
+        return "UrspRule" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

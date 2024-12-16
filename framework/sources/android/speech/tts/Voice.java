@@ -13,14 +13,13 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public class Voice implements Parcelable {
     public static final Parcelable.Creator<Voice> CREATOR = new Parcelable.Creator<Voice>() { // from class: android.speech.tts.Voice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Voice createFromParcel(Parcel in) {
             return new Voice(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Voice[] newArray(int size) {
             return new Voice[size];
@@ -43,10 +42,6 @@ public class Voice implements Parcelable {
     private final int mQuality;
     private final boolean mRequiresNetworkConnection;
 
-    /* synthetic */ Voice(Parcel parcel, VoiceIA voiceIA) {
-        this(parcel);
-    }
-
     public Voice(String name, Locale locale, int quality, int latency, boolean requiresNetworkConnection, Set<String> features) {
         this.mName = name;
         this.mLocale = locale;
@@ -62,9 +57,8 @@ public class Voice implements Parcelable {
         this.mQuality = in.readInt();
         this.mLatency = in.readInt();
         this.mRequiresNetworkConnection = in.readByte() == 1;
-        HashSet hashSet = new HashSet();
-        this.mFeatures = hashSet;
-        Collections.addAll(hashSet, in.readStringArray());
+        this.mFeatures = new HashSet();
+        Collections.addAll(this.mFeatures, in.readStringArray());
     }
 
     @Override // android.os.Parcelable
@@ -80,23 +74,6 @@ public class Voice implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.speech.tts.Voice$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Voice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Voice createFromParcel(Parcel in) {
-            return new Voice(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Voice[] newArray(int size) {
-            return new Voice[size];
-        }
     }
 
     public Locale getLocale() {
@@ -129,14 +106,8 @@ public class Voice implements Parcelable {
     }
 
     public int hashCode() {
-        int i = 1 * 31;
-        Set<String> set = this.mFeatures;
-        int result = i + (set == null ? 0 : set.hashCode());
-        int result2 = ((result * 31) + this.mLatency) * 31;
-        Locale locale = this.mLocale;
-        int result3 = (result2 + (locale == null ? 0 : locale.hashCode())) * 31;
-        String str = this.mName;
-        return ((((result3 + (str != null ? str.hashCode() : 0)) * 31) + this.mQuality) * 31) + (this.mRequiresNetworkConnection ? MetricsProto.MetricsEvent.AUTOFILL_SERVICE_DISABLED_APP : MetricsProto.MetricsEvent.ANOMALY_TYPE_UNOPTIMIZED_BT);
+        int result = (1 * 31) + (this.mFeatures == null ? 0 : this.mFeatures.hashCode());
+        return (((((((((result * 31) + this.mLatency) * 31) + (this.mLocale == null ? 0 : this.mLocale.hashCode())) * 31) + (this.mName != null ? this.mName.hashCode() : 0)) * 31) + this.mQuality) * 31) + (this.mRequiresNetworkConnection ? MetricsProto.MetricsEvent.AUTOFILL_SERVICE_DISABLED_APP : MetricsProto.MetricsEvent.ANOMALY_TYPE_UNOPTIMIZED_BT);
     }
 
     public boolean equals(Object obj) {
@@ -147,31 +118,28 @@ public class Voice implements Parcelable {
             return false;
         }
         Voice other = (Voice) obj;
-        Set<String> set = this.mFeatures;
-        if (set == null) {
+        if (this.mFeatures == null) {
             if (other.mFeatures != null) {
                 return false;
             }
-        } else if (!set.equals(other.mFeatures)) {
+        } else if (!this.mFeatures.equals(other.mFeatures)) {
             return false;
         }
         if (this.mLatency != other.mLatency) {
             return false;
         }
-        Locale locale = this.mLocale;
-        if (locale == null) {
+        if (this.mLocale == null) {
             if (other.mLocale != null) {
                 return false;
             }
-        } else if (!locale.equals(other.mLocale)) {
+        } else if (!this.mLocale.equals(other.mLocale)) {
             return false;
         }
-        String str = this.mName;
-        if (str == null) {
+        if (this.mName == null) {
             if (other.mName != null) {
                 return false;
             }
-        } else if (!str.equals(other.mName)) {
+        } else if (!this.mName.equals(other.mName)) {
             return false;
         }
         if (this.mQuality == other.mQuality && this.mRequiresNetworkConnection == other.mRequiresNetworkConnection) {

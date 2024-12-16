@@ -105,7 +105,6 @@ public interface IGnssMeasurementCallback extends android.hardware.gnss.V1_1.IGn
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssMeasurementState {
         public static final int STATE_2ND_CODE_LOCK = 65536;
         public static final int STATE_BDS_D2_BIT_SYNC = 256;
@@ -263,7 +262,6 @@ public interface IGnssMeasurementCallback extends android.hardware.gnss.V1_1.IGn
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssMeasurement {
         public int state;
         public IGnssMeasurementCallback.GnssMeasurement v1_1 = new IGnssMeasurementCallback.GnssMeasurement();
@@ -314,7 +312,7 @@ public interface IGnssMeasurementCallback extends android.hardware.gnss.V1_1.IGn
         public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
             this.v1_1.readEmbeddedFromParcel(parcel, _hidl_blob, _hidl_offset + 0);
             this.codeType = _hidl_blob.getString(_hidl_offset + 152);
-            parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 152 + 0, false);
+            parcel.readEmbeddedBuffer(this.codeType.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 152 + 0, false);
             this.state = _hidl_blob.getInt32(_hidl_offset + 168);
             this.constellation = _hidl_blob.getInt8(_hidl_offset + 172);
         }
@@ -346,7 +344,6 @@ public interface IGnssMeasurementCallback extends android.hardware.gnss.V1_1.IGn
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssData {
         public ArrayList<GnssMeasurement> measurements = new ArrayList<>();
         public IGnssMeasurementCallback.GnssClock clock = new IGnssMeasurementCallback.GnssClock();
@@ -439,7 +436,6 @@ public interface IGnssMeasurementCallback extends android.hardware.gnss.V1_1.IGn
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssMeasurementCallback {
         private IHwBinder mRemote;
 
@@ -655,7 +651,6 @@ public interface IGnssMeasurementCallback extends android.hardware.gnss.V1_1.IGn
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssMeasurementCallback {
         @Override // android.hardware.gnss.V2_0.IGnssMeasurementCallback, android.hardware.gnss.V1_1.IGnssMeasurementCallback, android.hardware.gnss.V1_0.IGnssMeasurementCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -678,7 +673,7 @@ public interface IGnssMeasurementCallback extends android.hardware.gnss.V1_1.IGn
 
         @Override // android.hardware.gnss.V2_0.IGnssMeasurementCallback, android.hardware.gnss.V1_1.IGnssMeasurementCallback, android.hardware.gnss.V1_0.IGnssMeasurementCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-35, 108, -39, -37, -92, -3, -23, -102, 27, -61, -53, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEOUT, 40, -40, 35, 9, -11, 9, -90, -26, -31, -103, 62, 80, 66, -33, -91, -1, -28, -81, 84, 66}, new byte[]{122, -30, 2, 86, 98, -29, 14, 105, 10, 63, -6, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, 101, -52, -105, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, 98, -105, -90, -122, 56, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEOUT, 64, 85, -61, 60, -65, 61, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 75, -67, -36}, new byte[]{-67, -92, -110, -20, 64, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -47, 56, 105, -34, 114, -67, 111, -116, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT, -59, -125, 123, 120, -42, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 107, -115, 83, -114, -2, -59, 50, 5, 115, -91, -20}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-35, 108, -39, -37, -92, -3, -23, -102, 27, -61, -53, 23, 40, -40, 35, 9, -11, 9, -90, -26, -31, -103, 62, 80, 66, -33, -91, -1, -28, -81, 84, 66}, new byte[]{122, -30, 2, 86, 98, -29, 14, 105, 10, 63, -6, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, 101, -52, -105, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, 98, -105, -90, -122, 56, 23, 64, 85, -61, 60, -65, 61, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 75, -67, -36}, new byte[]{-67, -92, -110, -20, 64, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -47, 56, 105, -34, 114, -67, 111, -116, 21, -59, -125, 123, 120, -42, 19, 107, -115, 83, -114, -2, -59, 50, 5, 115, -91, -20}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V2_0.IGnssMeasurementCallback, android.hardware.gnss.V1_1.IGnssMeasurementCallback, android.hardware.gnss.V1_0.IGnssMeasurementCallback, android.internal.hidl.base.V1_0.IBase

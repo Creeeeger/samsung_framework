@@ -14,23 +14,18 @@ public final class PhoneAccountHandle implements Parcelable {
     private final UserHandle mUserHandle;
     private static final ComponentName TELEPHONY_COMPONENT_NAME = new ComponentName("com.android.phone", "com.android.services.telephony.TelephonyConnectionService");
     public static final Parcelable.Creator<PhoneAccountHandle> CREATOR = new Parcelable.Creator<PhoneAccountHandle>() { // from class: android.telecom.PhoneAccountHandle.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneAccountHandle createFromParcel(Parcel in) {
             return new PhoneAccountHandle(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneAccountHandle[] newArray(int size) {
             return new PhoneAccountHandle[size];
         }
     };
-
-    /* synthetic */ PhoneAccountHandle(Parcel parcel, PhoneAccountHandleIA phoneAccountHandleIA) {
-        this(parcel);
-    }
 
     public PhoneAccountHandle(ComponentName componentName, String id) {
         this(componentName, id, Process.myUserHandle());
@@ -93,23 +88,6 @@ public final class PhoneAccountHandle implements Parcelable {
         }
         if (userHandle == null) {
             android.util.Log.w("PhoneAccountHandle", new Exception("PhoneAccountHandle has been created with null UserHandle!"));
-        }
-    }
-
-    /* renamed from: android.telecom.PhoneAccountHandle$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhoneAccountHandle> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneAccountHandle createFromParcel(Parcel in) {
-            return new PhoneAccountHandle(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneAccountHandle[] newArray(int size) {
-            return new PhoneAccountHandle[size];
         }
     }
 

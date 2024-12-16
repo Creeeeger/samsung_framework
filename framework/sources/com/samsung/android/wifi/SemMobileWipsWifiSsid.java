@@ -2,6 +2,7 @@ package com.samsung.android.wifi;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.android.mms.pdu.CharacterSets;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -18,9 +19,7 @@ public class SemMobileWipsWifiSsid implements Parcelable {
     private static final String CHARSET_CN = "gbk";
     private static final String CHARSET_KOR = "ksc5601";
     public static final Parcelable.Creator<SemMobileWipsWifiSsid> CREATOR = new Parcelable.Creator<SemMobileWipsWifiSsid>() { // from class: com.samsung.android.wifi.SemMobileWipsWifiSsid.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsWifiSsid createFromParcel(Parcel in) {
             SemMobileWipsWifiSsid ssid = new SemMobileWipsWifiSsid();
@@ -29,6 +28,7 @@ public class SemMobileWipsWifiSsid implements Parcelable {
             return ssid;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsWifiSsid[] newArray(int size) {
             return new SemMobileWipsWifiSsid[size];
@@ -40,33 +40,9 @@ public class SemMobileWipsWifiSsid implements Parcelable {
     private final String CONFIG_CHARSET;
     public final ByteArrayOutputStream octets;
 
-    /* synthetic */ SemMobileWipsWifiSsid(SemMobileWipsWifiSsidIA semMobileWipsWifiSsidIA) {
-        this();
-    }
-
-    /* renamed from: com.samsung.android.wifi.SemMobileWipsWifiSsid$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemMobileWipsWifiSsid> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemMobileWipsWifiSsid createFromParcel(Parcel in) {
-            SemMobileWipsWifiSsid ssid = new SemMobileWipsWifiSsid();
-            byte[] b = in.createByteArray();
-            ssid.octets.write(b, 0, b.length);
-            return ssid;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemMobileWipsWifiSsid[] newArray(int size) {
-            return new SemMobileWipsWifiSsid[size];
-        }
-    }
-
     private SemMobileWipsWifiSsid() {
         this.octets = new ByteArrayOutputStream(32);
-        this.CONFIG_CHARSET = SemOpBrandingLoader.getInstance().getSupportCharacterSet();
+        this.CONFIG_CHARSET = getCharacterSet();
     }
 
     public static SemMobileWipsWifiSsid createFromByteArray(byte[] ssid) {
@@ -101,6 +77,11 @@ public class SemMobileWipsWifiSsid implements Parcelable {
             a.octets.write(val);
         }
         return a;
+    }
+
+    private String getCharacterSet() {
+        String localeString = Locale.getDefault().toString();
+        return (localeString == null || !localeString.startsWith("zh")) ? "EUC-KR" : CharacterSets.MIMENAME_GBK;
     }
 
     static boolean isUTF8String(byte[] str, long length) {

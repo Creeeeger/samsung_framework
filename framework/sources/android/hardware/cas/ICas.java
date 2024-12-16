@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICas extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$cas$ICas".replace('$', '.');
     public static final String HASH = "bc51d8d70a55ec4723d3f73d0acf7003306bf69f";
@@ -40,7 +40,6 @@ public interface ICas extends IInterface {
 
     void setSessionPrivateData(byte[] bArr, byte[] bArr2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICas {
         @Override // android.hardware.cas.ICas
         public void closeSession(byte[] sessionId) throws RemoteException {
@@ -108,7 +107,6 @@ public interface ICas extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICas {
         static final int TRANSACTION_closeSession = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -152,108 +150,106 @@ public interface ICas extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    closeSession(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    byte[] _result = openSessionDefault();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeByteArray(_result);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result2 = openSession(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 4:
+                    byte[] _arg03 = data.createByteArray();
+                    byte[] _arg12 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    processEcm(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    byte[] _arg04 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    processEmm(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    provision(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    byte[] _arg13 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    refreshEntitlements(_arg06, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    release();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg07 = data.readInt();
+                    int _arg14 = data.readInt();
+                    byte[] _arg2 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendEvent(_arg07, _arg14, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    byte[] _arg08 = data.createByteArray();
+                    int _arg15 = data.readInt();
+                    int _arg22 = data.readInt();
+                    byte[] _arg3 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendSessionEvent(_arg08, _arg15, _arg22, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    byte[] _arg09 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setPrivateData(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    byte[] _arg010 = data.createByteArray();
+                    byte[] _arg16 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setSessionPrivateData(_arg010, _arg16);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            closeSession(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            byte[] _result = openSessionDefault();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result2 = openSession(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 4:
-                            byte[] _arg03 = data.createByteArray();
-                            byte[] _arg12 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            processEcm(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            byte[] _arg04 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            processEmm(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            provision(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg06 = data.readInt();
-                            byte[] _arg13 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            refreshEntitlements(_arg06, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            release();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg07 = data.readInt();
-                            int _arg14 = data.readInt();
-                            byte[] _arg2 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendEvent(_arg07, _arg14, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            byte[] _arg08 = data.createByteArray();
-                            int _arg15 = data.readInt();
-                            int _arg22 = data.readInt();
-                            byte[] _arg3 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendSessionEvent(_arg08, _arg15, _arg22, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            byte[] _arg09 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setPrivateData(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            byte[] _arg010 = data.createByteArray();
-                            byte[] _arg16 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setSessionPrivateData(_arg010, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICas {
+        private static class Proxy implements ICas {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

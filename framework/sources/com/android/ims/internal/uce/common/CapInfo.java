@@ -6,21 +6,20 @@ import android.os.Parcelable;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class CapInfo implements Parcelable {
     public static final String CALLCOMPOSER = "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gppservice.ims.icsi.gsma.callcomposer\"";
     public static final String CAPDISC_VIA_PRESENCE = "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcse.dp\"";
     public static final String CHATBOT = "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gppapplication.ims.iari.rcs.chatbot\"";
     public static final String CHATBOTROLE = "+g.gsma.rcs.isbot";
     public static final Parcelable.Creator<CapInfo> CREATOR = new Parcelable.Creator<CapInfo>() { // from class: com.android.ims.internal.uce.common.CapInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CapInfo createFromParcel(Parcel source) {
             return new CapInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CapInfo[] newArray(int size) {
             return new CapInfo[size];
@@ -83,10 +82,6 @@ public class CapInfo implements Parcelable {
     private boolean mSpSupported;
     private boolean mVsDuringCSSupported;
     private boolean mVsSupported;
-
-    /* synthetic */ CapInfo(Parcel parcel, CapInfoIA capInfoIA) {
-        this(parcel);
-    }
 
     public CapInfo() {
         this.mImSupported = false;
@@ -438,23 +433,6 @@ public class CapInfo implements Parcelable {
             bundle.putString(entry.getKey(), entry.getValue());
         }
         parcel.writeBundle(bundle);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.common.CapInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CapInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CapInfo createFromParcel(Parcel source) {
-            return new CapInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CapInfo[] newArray(int size) {
-            return new CapInfo[size];
-        }
     }
 
     private CapInfo(Parcel source) {

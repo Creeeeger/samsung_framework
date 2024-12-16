@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AlternativeSpans implements Parcelable {
     public static final Parcelable.Creator<AlternativeSpans> CREATOR = new Parcelable.Creator<AlternativeSpans>() { // from class: android.speech.AlternativeSpans.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AlternativeSpans[] newArray(int size) {
             return new AlternativeSpans[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AlternativeSpans createFromParcel(Parcel in) {
             return new AlternativeSpans(in);
@@ -28,7 +27,7 @@ public final class AlternativeSpans implements Parcelable {
 
     public AlternativeSpans(List<AlternativeSpan> spans) {
         this.mSpans = spans;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) spans);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSpans);
     }
 
     public List<AlternativeSpan> getSpans() {
@@ -69,24 +68,7 @@ public final class AlternativeSpans implements Parcelable {
         ArrayList arrayList = new ArrayList();
         in.readParcelableList(arrayList, AlternativeSpan.class.getClassLoader(), AlternativeSpan.class);
         this.mSpans = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
-    }
-
-    /* renamed from: android.speech.AlternativeSpans$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AlternativeSpans> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AlternativeSpans[] newArray(int size) {
-            return new AlternativeSpans[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AlternativeSpans createFromParcel(Parcel in) {
-            return new AlternativeSpans(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSpans);
     }
 
     @Deprecated

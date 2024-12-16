@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ImsSsData implements Parcelable {
     public static final int RESULT_SUCCESS = 0;
     public static final int SERVICE_CLASS_DATA = 2;
@@ -67,14 +67,13 @@ public final class ImsSsData implements Parcelable {
     public final int teleserviceType;
     private static final String TAG = ImsSsData.class.getCanonicalName();
     public static final Parcelable.Creator<ImsSsData> CREATOR = new Parcelable.Creator<ImsSsData>() { // from class: android.telephony.ims.ImsSsData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsSsData createFromParcel(Parcel in) {
             return new ImsSsData(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsSsData[] newArray(int size) {
             return new ImsSsData[size];
@@ -82,30 +81,21 @@ public final class ImsSsData implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RequestType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ServiceClassFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ServiceType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TeleserviceType {
     }
 
-    /* synthetic */ ImsSsData(Parcel parcel, ImsSsDataIA imsSsDataIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private ImsSsData mImsSsData;
 
@@ -145,23 +135,6 @@ public final class ImsSsData implements Parcelable {
         this.mSsInfo = in.createIntArray();
         this.mCfInfo = in.readParcelableList(new ArrayList(), getClass().getClassLoader(), ImsCallForwardInfo.class);
         this.mImsSsInfo = in.readParcelableList(new ArrayList(), getClass().getClassLoader(), ImsSsInfo.class);
-    }
-
-    /* renamed from: android.telephony.ims.ImsSsData$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsSsData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsSsData createFromParcel(Parcel in) {
-            return new ImsSsData(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsSsData[] newArray(int size) {
-            return new ImsSsData[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -262,13 +235,11 @@ public final class ImsSsData implements Parcelable {
     }
 
     public int[] getSuppServiceInfoCompat() {
-        int[] iArr = this.mSsInfo;
-        if (iArr != null) {
-            return iArr;
+        if (this.mSsInfo != null) {
+            return this.mSsInfo;
         }
         int[] result = new int[2];
-        List<ImsSsInfo> list = this.mImsSsInfo;
-        if (list == null || list.size() == 0) {
+        if (this.mImsSsInfo == null || this.mImsSsInfo.size() == 0) {
             Rlog.e(TAG, "getSuppServiceInfoCompat: Could not parse mImsSsInfo, returning empty int[]");
             return result;
         }

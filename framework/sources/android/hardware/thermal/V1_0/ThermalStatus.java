@@ -55,7 +55,7 @@ public final class ThermalStatus {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.code = _hidl_blob.getInt32(_hidl_offset + 0);
         this.debugMessage = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.debugMessage.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

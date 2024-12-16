@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AmbientBrightnessDayStats implements Parcelable {
     public static final Parcelable.Creator<AmbientBrightnessDayStats> CREATOR = new Parcelable.Creator<AmbientBrightnessDayStats>() { // from class: android.hardware.display.AmbientBrightnessDayStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientBrightnessDayStats createFromParcel(Parcel source) {
             return new AmbientBrightnessDayStats(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientBrightnessDayStats[] newArray(int size) {
             return new AmbientBrightnessDayStats[size];
@@ -29,10 +28,6 @@ public final class AmbientBrightnessDayStats implements Parcelable {
     private final float[] mBucketBoundaries;
     private final LocalDate mLocalDate;
     private final float[] mStats;
-
-    /* synthetic */ AmbientBrightnessDayStats(Parcel parcel, AmbientBrightnessDayStatsIA ambientBrightnessDayStatsIA) {
-        this(parcel);
-    }
 
     public AmbientBrightnessDayStats(LocalDate localDate, float[] bucketBoundaries) {
         this(localDate, bucketBoundaries, null);
@@ -75,23 +70,6 @@ public final class AmbientBrightnessDayStats implements Parcelable {
         this.mLocalDate = LocalDate.parse(source.readString());
         this.mBucketBoundaries = source.createFloatArray();
         this.mStats = source.createFloatArray();
-    }
-
-    /* renamed from: android.hardware.display.AmbientBrightnessDayStats$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AmbientBrightnessDayStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AmbientBrightnessDayStats createFromParcel(Parcel source) {
-            return new AmbientBrightnessDayStats(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AmbientBrightnessDayStats[] newArray(int size) {
-            return new AmbientBrightnessDayStats[size];
-        }
     }
 
     public boolean equals(Object obj) {
@@ -155,14 +133,12 @@ public final class AmbientBrightnessDayStats implements Parcelable {
         int high = this.mBucketBoundaries.length - 1;
         while (low < high) {
             int mid = (low + high) / 2;
-            float[] fArr = this.mBucketBoundaries;
-            float f = fArr[mid];
-            if (f <= ambientBrightness && ambientBrightness < fArr[mid + 1]) {
+            if (this.mBucketBoundaries[mid] <= ambientBrightness && ambientBrightness < this.mBucketBoundaries[mid + 1]) {
                 return mid;
             }
-            if (f < ambientBrightness) {
+            if (this.mBucketBoundaries[mid] < ambientBrightness) {
                 low = mid + 1;
-            } else if (f > ambientBrightness) {
+            } else if (this.mBucketBoundaries[mid] > ambientBrightness) {
                 high = mid - 1;
             }
         }

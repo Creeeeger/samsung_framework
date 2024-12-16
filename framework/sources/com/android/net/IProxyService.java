@@ -38,7 +38,6 @@ public interface IProxyService extends IInterface {
 
     void stopProxyServerForKnoxProfile(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IProxyService {
         @Override // com.android.net.IProxyService
         public String resolvePacFile(String host, String url) throws RemoteException {
@@ -112,7 +111,6 @@ public interface IProxyService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IProxyService {
         static final int TRANSACTION_getProxyPortForProfile = 9;
         static final int TRANSACTION_getProxythreadStatus = 13;
@@ -194,123 +192,119 @@ public interface IProxyService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface("com.android.net.IProxyService");
             }
+            if (code == 1598968902) {
+                reply.writeString("com.android.net.IProxyService");
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString("com.android.net.IProxyService");
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result = resolvePacFile(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPacFile(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = startPacSystemForKnoxProfile(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = stopPacSystemForKnoxProfile(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg12 = data.readInt();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    boolean _arg4 = data.readBoolean();
+                    String _arg5 = data.readString();
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = startProxyServerForKnoxProfile(_arg05, _arg12, _arg2, _arg3, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    stopProxyServerForKnoxProfile(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = setPacFileForKnoxProfile(_arg07, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg14 = data.readString();
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = setMiscValueForPacProfile(_arg08, _arg14, _arg22, _arg32);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result7 = getProxyPortForProfile(_arg09);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 10:
+                    handleScreenunlock();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    resetInterface(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = isProxyThreadRunning(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 13:
+                    String _arg012 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result9 = getProxythreadStatus(_arg012);
+                    reply.writeNoException();
+                    reply.writeString(_result9);
+                    return true;
+                case 14:
+                    String _arg013 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = isProxyThreadAlive(_arg013);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result = resolvePacFile(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPacFile(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = startPacSystemForKnoxProfile(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = stopPacSystemForKnoxProfile(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg12 = data.readInt();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            boolean _arg4 = data.readBoolean();
-                            String _arg5 = data.readString();
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = startProxyServerForKnoxProfile(_arg05, _arg12, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            stopProxyServerForKnoxProfile(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = setPacFileForKnoxProfile(_arg07, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg14 = data.readString();
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = setMiscValueForPacProfile(_arg08, _arg14, _arg22, _arg32);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result7 = getProxyPortForProfile(_arg09);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 10:
-                            handleScreenunlock();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            resetInterface(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = isProxyThreadRunning(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 13:
-                            String _arg012 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result9 = getProxythreadStatus(_arg012);
-                            reply.writeNoException();
-                            reply.writeString(_result9);
-                            return true;
-                        case 14:
-                            String _arg013 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = isProxyThreadAlive(_arg013);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IProxyService {
+        private static class Proxy implements IProxyService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

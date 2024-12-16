@@ -12,7 +12,6 @@ public final class TimeZoneRulesDataContract {
     private TimeZoneRulesDataContract() {
     }
 
-    /* loaded from: classes3.dex */
     public static final class Operation {
         public static final String COLUMN_DISTRO_MAJOR_VERSION = "distro_major_version";
         public static final String COLUMN_DISTRO_MINOR_VERSION = "distro_minor_version";

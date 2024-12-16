@@ -1,6 +1,5 @@
 package com.android.modules.utils;
 
-import dalvik.system.VMRuntime;
 import java.io.Closeable;
 import java.io.DataOutput;
 import java.io.Flushable;
@@ -17,18 +16,14 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
     protected final int mBufferCap;
     protected int mBufferPos;
     private OutputStream mOut;
-    protected final VMRuntime mRuntime;
     private final HashMap<String, Integer> mStringRefs = new HashMap<>();
 
     public FastDataOutput(OutputStream out, int bufferSize) {
-        VMRuntime runtime = VMRuntime.getRuntime();
-        this.mRuntime = runtime;
         if (bufferSize < 8) {
             throw new IllegalArgumentException();
         }
-        byte[] bArr = (byte[]) runtime.newNonMovableArray(Byte.TYPE, bufferSize);
-        this.mBuffer = bArr;
-        this.mBufferCap = bArr.length;
+        this.mBuffer = newByteArray(bufferSize);
+        this.mBufferCap = this.mBuffer.length;
         setOutput(out);
     }
 
@@ -45,7 +40,11 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         this.mStringRefs.clear();
     }
 
-    public void setOutput(OutputStream out) {
+    public byte[] newByteArray(int bufferSize) {
+        return new byte[bufferSize];
+    }
+
+    protected void setOutput(OutputStream out) {
         if (this.mOut != null) {
             throw new IllegalStateException("setOutput() called before calling release()");
         }
@@ -54,10 +53,9 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         this.mStringRefs.clear();
     }
 
-    public void drain() throws IOException {
-        int i = this.mBufferPos;
-        if (i > 0) {
-            this.mOut.write(this.mBuffer, 0, i);
+    protected void drain() throws IOException {
+        if (this.mBufferPos > 0) {
+            this.mOut.write(this.mBuffer, 0, this.mBufferPos);
             this.mBufferPos = 0;
         }
     }
@@ -86,12 +84,11 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
 
     @Override // java.io.DataOutput
     public void write(byte[] b, int off, int len) throws IOException {
-        int i = this.mBufferCap;
-        if (i < len) {
+        if (this.mBufferCap < len) {
             drain();
             this.mOut.write(b, off, len);
         } else {
-            if (i - this.mBufferPos < len) {
+            if (this.mBufferCap - this.mBufferPos < len) {
                 drain();
             }
             System.arraycopy(b, off, this.mBuffer, this.mBufferPos, len);
@@ -105,9 +102,8 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         if (len > 65535) {
             throw new IOException("Modified UTF-8 length too large: " + len);
         }
-        int i = this.mBufferCap;
-        if (i >= len + 2) {
-            if (i - this.mBufferPos < len + 2) {
+        if (this.mBufferCap >= len + 2) {
+            if (this.mBufferCap - this.mBufferPos < len + 2) {
                 drain();
             }
             writeShort(len);
@@ -115,7 +111,7 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
             this.mBufferPos += len;
             return;
         }
-        byte[] tmp = (byte[]) this.mRuntime.newNonMovableArray(Byte.TYPE, len + 1);
+        byte[] tmp = newByteArray(len + 1);
         ModifiedUtf8.encode(tmp, 0, s);
         writeShort(len);
         write(tmp, 0, len);
@@ -158,11 +154,12 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         }
         byte[] bArr = this.mBuffer;
         int i = this.mBufferPos;
-        int i2 = i + 1;
-        this.mBufferPos = i2;
+        this.mBufferPos = i + 1;
         bArr[i] = (byte) ((v >> 8) & 255);
+        byte[] bArr2 = this.mBuffer;
+        int i2 = this.mBufferPos;
         this.mBufferPos = i2 + 1;
-        bArr[i2] = (byte) ((v >> 0) & 255);
+        bArr2[i2] = (byte) ((v >> 0) & 255);
     }
 
     @Override // java.io.DataOutput
@@ -177,17 +174,20 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         }
         byte[] bArr = this.mBuffer;
         int i = this.mBufferPos;
-        int i2 = i + 1;
-        this.mBufferPos = i2;
+        this.mBufferPos = i + 1;
         bArr[i] = (byte) ((v >> 24) & 255);
-        int i3 = i2 + 1;
-        this.mBufferPos = i3;
-        bArr[i2] = (byte) ((v >> 16) & 255);
-        int i4 = i3 + 1;
-        this.mBufferPos = i4;
-        bArr[i3] = (byte) ((v >> 8) & 255);
+        byte[] bArr2 = this.mBuffer;
+        int i2 = this.mBufferPos;
+        this.mBufferPos = i2 + 1;
+        bArr2[i2] = (byte) ((v >> 16) & 255);
+        byte[] bArr3 = this.mBuffer;
+        int i3 = this.mBufferPos;
+        this.mBufferPos = i3 + 1;
+        bArr3[i3] = (byte) ((v >> 8) & 255);
+        byte[] bArr4 = this.mBuffer;
+        int i4 = this.mBufferPos;
         this.mBufferPos = i4 + 1;
-        bArr[i4] = (byte) ((v >> 0) & 255);
+        bArr4[i4] = (byte) ((v >> 0) & 255);
     }
 
     @Override // java.io.DataOutput
@@ -198,30 +198,37 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         int i = (int) (v >> 32);
         byte[] bArr = this.mBuffer;
         int i2 = this.mBufferPos;
-        int i3 = i2 + 1;
-        this.mBufferPos = i3;
+        this.mBufferPos = i2 + 1;
         bArr[i2] = (byte) ((i >> 24) & 255);
-        int i4 = i3 + 1;
-        this.mBufferPos = i4;
-        bArr[i3] = (byte) ((i >> 16) & 255);
-        int i5 = i4 + 1;
-        this.mBufferPos = i5;
-        bArr[i4] = (byte) ((i >> 8) & 255);
-        int i6 = i5 + 1;
-        this.mBufferPos = i6;
-        bArr[i5] = (byte) ((i >> 0) & 255);
-        int i7 = (int) v;
-        int i8 = i6 + 1;
-        this.mBufferPos = i8;
-        bArr[i6] = (byte) ((i7 >> 24) & 255);
-        int i9 = i8 + 1;
-        this.mBufferPos = i9;
-        bArr[i8] = (byte) ((i7 >> 16) & 255);
-        int i10 = i9 + 1;
-        this.mBufferPos = i10;
-        bArr[i9] = (byte) ((i7 >> 8) & 255);
+        byte[] bArr2 = this.mBuffer;
+        int i3 = this.mBufferPos;
+        this.mBufferPos = i3 + 1;
+        bArr2[i3] = (byte) ((i >> 16) & 255);
+        byte[] bArr3 = this.mBuffer;
+        int i4 = this.mBufferPos;
+        this.mBufferPos = i4 + 1;
+        bArr3[i4] = (byte) ((i >> 8) & 255);
+        byte[] bArr4 = this.mBuffer;
+        int i5 = this.mBufferPos;
+        this.mBufferPos = i5 + 1;
+        bArr4[i5] = (byte) ((i >> 0) & 255);
+        int i6 = (int) v;
+        byte[] bArr5 = this.mBuffer;
+        int i7 = this.mBufferPos;
+        this.mBufferPos = i7 + 1;
+        bArr5[i7] = (byte) ((i6 >> 24) & 255);
+        byte[] bArr6 = this.mBuffer;
+        int i8 = this.mBufferPos;
+        this.mBufferPos = i8 + 1;
+        bArr6[i8] = (byte) ((i6 >> 16) & 255);
+        byte[] bArr7 = this.mBuffer;
+        int i9 = this.mBufferPos;
+        this.mBufferPos = i9 + 1;
+        bArr7[i9] = (byte) ((i6 >> 8) & 255);
+        byte[] bArr8 = this.mBuffer;
+        int i10 = this.mBufferPos;
         this.mBufferPos = i10 + 1;
-        bArr[i10] = (byte) ((i7 >> 0) & 255);
+        bArr8[i10] = (byte) ((i6 >> 0) & 255);
     }
 
     @Override // java.io.DataOutput

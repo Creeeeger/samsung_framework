@@ -20,7 +20,6 @@ public interface Parcelling<T> {
 
     T unparcel(Parcel parcel);
 
-    /* loaded from: classes5.dex */
     public static class Cache {
         private static ArrayMap<Class, Parcelling> sCache = new ArrayMap<>();
 
@@ -49,10 +48,8 @@ public interface Parcelling<T> {
         }
     }
 
-    /* loaded from: classes5.dex */
     public interface BuiltIn {
 
-        /* loaded from: classes5.dex */
         public static class ForInternedString implements Parcelling<String> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(String item, Parcel dest, int parcelFlags) {
@@ -65,7 +62,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForInternedStringArray implements Parcelling<String[]> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(String[] item, Parcel dest, int parcelFlags) {
@@ -85,7 +81,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForInternedStringList implements Parcelling<List<String>> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(List<String> item, Parcel dest, int parcelFlags) {
@@ -105,7 +100,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForInternedStringValueMap implements Parcelling<Map<String, String>> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(Map<String, String> item, Parcel dest, int parcelFlags) {
@@ -123,7 +117,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForStringSet implements Parcelling<Set<String>> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(Set<String> item, Parcel dest, int parcelFlags) {
@@ -151,7 +144,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForInternedStringSet implements Parcelling<Set<String>> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(Set<String> item, Parcel dest, int parcelFlags) {
@@ -179,7 +171,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForInternedStringArraySet implements Parcelling<ArraySet<String>> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(ArraySet<String> item, Parcel dest, int parcelFlags) {
@@ -195,6 +186,7 @@ public interface Parcelling<T> {
                 }
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // com.android.internal.util.Parcelling
             public ArraySet<String> unparcel(Parcel source) {
                 int size = source.readInt();
@@ -209,7 +201,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForBoolean implements Parcelling<Boolean> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(Boolean item, Parcel dest, int parcelFlags) {
@@ -222,6 +213,7 @@ public interface Parcelling<T> {
                 }
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // com.android.internal.util.Parcelling
             public Boolean unparcel(Parcel source) {
                 switch (source.readInt()) {
@@ -237,7 +229,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForPattern implements Parcelling<Pattern> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(Pattern item, Parcel dest, int parcelFlags) {
@@ -254,7 +245,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForUUID implements Parcelling<UUID> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(UUID item, Parcel dest, int parcelFlags) {
@@ -271,7 +261,6 @@ public interface Parcelling<T> {
             }
         }
 
-        /* loaded from: classes5.dex */
         public static class ForInstant implements Parcelling<Instant> {
             @Override // com.android.internal.util.Parcelling
             public void parcel(Instant item, Parcel dest, int parcelFlags) {

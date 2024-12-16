@@ -5,21 +5,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemAudioSystem {
-    public static final int FORCE_EARPIECE = 10001;
-    public static final Set<Integer> MULTI_SOUND_PRIMARY_DEVICE_SET;
+    public static final Set<Integer> MULTI_SOUND_PRIMARY_DEVICE_SET = new HashSet();
     private static final int OFFSET_FOR_SAMSUNG_AUDIO = 10000;
     public static final int STREAM_MULTI_SOUND = 10003;
 
     static {
-        HashSet hashSet = new HashSet();
-        MULTI_SOUND_PRIMARY_DEVICE_SET = hashSet;
-        hashSet.add(2);
-        hashSet.add(4);
-        hashSet.add(8);
-        hashSet.add(16384);
-        hashSet.add(67108864);
+        MULTI_SOUND_PRIMARY_DEVICE_SET.add(2);
+        MULTI_SOUND_PRIMARY_DEVICE_SET.add(4);
+        MULTI_SOUND_PRIMARY_DEVICE_SET.add(8);
+        MULTI_SOUND_PRIMARY_DEVICE_SET.add(16384);
+        MULTI_SOUND_PRIMARY_DEVICE_SET.add(67108864);
     }
 
     public static String getEffectParameters(String keys) {

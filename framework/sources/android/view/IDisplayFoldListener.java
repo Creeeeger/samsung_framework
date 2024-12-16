@@ -12,7 +12,6 @@ public interface IDisplayFoldListener extends IInterface {
 
     void onDisplayFoldChanged(int i, boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDisplayFoldListener {
         @Override // android.view.IDisplayFoldListener
         public void onDisplayFoldChanged(int displayId, boolean folded) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDisplayFoldListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDisplayFoldListener {
         static final int TRANSACTION_onDisplayFoldChanged = 1;
 
@@ -67,26 +65,23 @@ public interface IDisplayFoldListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayFoldListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayFoldListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayFoldListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onDisplayFoldChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onDisplayFoldChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDisplayFoldListener {
+        private static class Proxy implements IDisplayFoldListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

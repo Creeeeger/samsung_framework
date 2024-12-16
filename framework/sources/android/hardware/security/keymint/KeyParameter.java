@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class KeyParameter implements Parcelable {
     public static final Parcelable.Creator<KeyParameter> CREATOR = new Parcelable.Creator<KeyParameter>() { // from class: android.hardware.security.keymint.KeyParameter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyParameter createFromParcel(Parcel _aidl_source) {
             KeyParameter _aidl_out = new KeyParameter();
@@ -17,6 +15,7 @@ public class KeyParameter implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyParameter[] newArray(int _aidl_size) {
             return new KeyParameter[_aidl_size];
@@ -24,25 +23,6 @@ public class KeyParameter implements Parcelable {
     };
     public int tag = 0;
     public KeyParameterValue value;
-
-    /* renamed from: android.hardware.security.keymint.KeyParameter$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyParameter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyParameter createFromParcel(Parcel _aidl_source) {
-            KeyParameter _aidl_out = new KeyParameter();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyParameter[] newArray(int _aidl_size) {
-            return new KeyParameter[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

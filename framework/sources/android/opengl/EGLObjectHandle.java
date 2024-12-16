@@ -9,17 +9,16 @@ public abstract class EGLObjectHandle {
         this.mHandle = handle;
     }
 
-    public EGLObjectHandle(long handle) {
+    protected EGLObjectHandle(long handle) {
         this.mHandle = handle;
     }
 
     @Deprecated
     public int getHandle() {
-        long j = this.mHandle;
-        if ((4294967295L & j) != j) {
+        if ((this.mHandle & 4294967295L) != this.mHandle) {
             throw new UnsupportedOperationException();
         }
-        return (int) j;
+        return (int) this.mHandle;
     }
 
     public long getNativeHandle() {
@@ -27,8 +26,7 @@ public abstract class EGLObjectHandle {
     }
 
     public int hashCode() {
-        long j = this.mHandle;
-        int result = (17 * 31) + ((int) (j ^ (j >>> 32)));
+        int result = (17 * 31) + ((int) (this.mHandle ^ (this.mHandle >>> 32)));
         return result;
     }
 }

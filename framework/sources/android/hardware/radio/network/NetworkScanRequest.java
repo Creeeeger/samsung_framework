@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class NetworkScanRequest implements Parcelable {
     public static final Parcelable.Creator<NetworkScanRequest> CREATOR = new Parcelable.Creator<NetworkScanRequest>() { // from class: android.hardware.radio.network.NetworkScanRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanRequest createFromParcel(Parcel _aidl_source) {
             NetworkScanRequest _aidl_out = new NetworkScanRequest();
@@ -19,6 +17,7 @@ public class NetworkScanRequest implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanRequest[] newArray(int _aidl_size) {
             return new NetworkScanRequest[_aidl_size];
@@ -40,25 +39,6 @@ public class NetworkScanRequest implements Parcelable {
     public int maxSearchTime = 0;
     public boolean incrementalResults = false;
     public int incrementalResultsPeriodicity = 0;
-
-    /* renamed from: android.hardware.radio.network.NetworkScanRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkScanRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanRequest createFromParcel(Parcel _aidl_source) {
-            NetworkScanRequest _aidl_out = new NetworkScanRequest();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanRequest[] newArray(int _aidl_size) {
-            return new NetworkScanRequest[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -167,7 +147,7 @@ public class NetworkScanRequest implements Parcelable {
         _aidl_sj.add("incrementalResults: " + this.incrementalResults);
         _aidl_sj.add("incrementalResultsPeriodicity: " + this.incrementalResultsPeriodicity);
         _aidl_sj.add("mccMncs: " + Arrays.toString(this.mccMncs));
-        return "android.hardware.radio.network.NetworkScanRequest" + _aidl_sj.toString();
+        return "NetworkScanRequest" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

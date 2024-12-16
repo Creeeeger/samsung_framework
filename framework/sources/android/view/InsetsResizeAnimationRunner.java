@@ -4,37 +4,48 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.Insets;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.SparseArray;
 import android.util.proto.ProtoOutputStream;
 import android.view.InsetsState;
+import android.view.SyncRtSurfaceTransactionApplier;
+import android.view.WindowInsets;
 import android.view.WindowInsetsAnimation;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.ImeTracker;
-import com.samsung.android.ims.options.SemCapabilities;
+import com.samsung.android.rune.CoreRune;
 
 /* loaded from: classes4.dex */
 public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner, InternalInsetsAnimationController, WindowInsetsAnimationControlListener {
+    private static final boolean DEBUG = false;
+    private static final String TAG = "InsetsResizeAnimRunner";
     private final WindowInsetsAnimation mAnimation;
     private ValueAnimator mAnimator;
     private boolean mCancelled;
     private final InsetsAnimationControlCallbacks mController;
     private boolean mFinished;
     private final InsetsState mFromState;
+    private InsetsSourceControl mImeSourceControl;
     private final InsetsState mToState;
     private final int mTypes;
+    private final Matrix mTmpMatrix = new Matrix();
+    private final float[] mTmpFloat9 = new float[9];
 
-    public InsetsResizeAnimationRunner(Rect frame, InsetsState fromState, InsetsState toState, Interpolator interpolator, long duration, int types, InsetsAnimationControlCallbacks controller) {
+    public InsetsResizeAnimationRunner(Rect frame, InsetsState fromState, InsetsState toState, Interpolator interpolator, long duration, int types, InsetsAnimationControlCallbacks controller, InsetsController insetsController) {
+        InsetsSourceControl control;
         this.mFromState = fromState;
         this.mToState = toState;
         this.mTypes = types;
         this.mController = controller;
-        WindowInsetsAnimation windowInsetsAnimation = new WindowInsetsAnimation(types, interpolator, duration);
-        this.mAnimation = windowInsetsAnimation;
-        windowInsetsAnimation.setAlpha(1.0f);
+        this.mAnimation = new WindowInsetsAnimation(types, interpolator, duration);
+        this.mAnimation.setAlpha(1.0f);
+        if (CoreRune.FW_MINIMIZED_IME_INSET_ANIM && (this.mTypes & WindowInsets.Type.ime()) != 0 && (control = insetsController.getImeSourceConsumer().getControl()) != null) {
+            this.mImeSourceControl = new InsetsSourceControl(control);
+        }
         Insets fromInsets = fromState.calculateInsets(frame, types, false);
         Insets toInsets = toState.calculateInsets(frame, types, false);
-        controller.startAnimation(this, this, types, windowInsetsAnimation, new WindowInsetsAnimation.Bounds(Insets.min(fromInsets, toInsets), Insets.max(fromInsets, toInsets)));
+        controller.startAnimation(this, this, types, this.mAnimation, new WindowInsetsAnimation.Bounds(Insets.min(fromInsets, toInsets), Insets.max(fromInsets, toInsets)));
     }
 
     @Override // android.view.InsetsAnimationControlRunner
@@ -68,9 +79,8 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
             return;
         }
         this.mCancelled = true;
-        ValueAnimator valueAnimator = this.mAnimator;
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
+        if (this.mAnimator != null) {
+            this.mAnimator.cancel();
         }
     }
 
@@ -84,9 +94,8 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
         if (this.mCancelled) {
             return;
         }
-        ValueAnimator ofFloat = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.mAnimator = ofFloat;
-        ofFloat.setDuration(this.mAnimation.getDurationMillis());
+        this.mAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        this.mAnimator.setDuration(this.mAnimation.getDurationMillis());
         this.mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.view.InsetsResizeAnimationRunner$$ExternalSyntheticLambda0
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
             public final void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -94,9 +103,6 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
             }
         });
         this.mAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.view.InsetsResizeAnimationRunner.1
-            AnonymousClass1() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 InsetsResizeAnimationRunner.this.mFinished = true;
@@ -106,39 +112,19 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
         this.mAnimator.start();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onReady$0(ValueAnimator animation) {
         this.mAnimation.setFraction(animation.getAnimatedFraction());
         this.mController.scheduleApplyChangeInsets(this);
     }
 
-    /* renamed from: android.view.InsetsResizeAnimationRunner$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends AnimatorListenerAdapter {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            InsetsResizeAnimationRunner.this.mFinished = true;
-            InsetsResizeAnimationRunner.this.mController.scheduleApplyChangeInsets(InsetsResizeAnimationRunner.this);
-        }
-    }
-
     @Override // android.view.InternalInsetsAnimationController
-    public boolean applyChangeInsets(InsetsState outState) {
+    public boolean applyChangeInsets(final InsetsState outState) {
         if (this.mCancelled) {
             return false;
         }
-        float fraction = this.mAnimation.getInterpolatedFraction();
+        final float fraction = this.mAnimation.getInterpolatedFraction();
         InsetsState.traverse(this.mFromState, this.mToState, new InsetsState.OnTraverseCallbacks() { // from class: android.view.InsetsResizeAnimationRunner.2
-            final /* synthetic */ float val$fraction;
-            final /* synthetic */ InsetsState val$outState;
-
-            AnonymousClass2(float fraction2, InsetsState outState2) {
-                fraction = fraction2;
-                outState = outState2;
-            }
-
             @Override // android.view.InsetsState.OnTraverseCallbacks
             public void onIdMatch(InsetsSource fromSource, InsetsSource toSource) {
                 Rect fromFrame = fromSource.getFrame();
@@ -148,6 +134,13 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
                 source.setFrame(frame);
                 source.setVisible(toSource.isVisible());
                 outState.addSource(source);
+                if (CoreRune.FW_MINIMIZED_IME_INSET_ANIM && toSource.getType() == WindowInsets.Type.ime() && fromSource.getType() == toSource.getType() && InsetsResizeAnimationRunner.this.mImeSourceControl != null) {
+                    SyncRtSurfaceTransactionApplier.SurfaceParams param = InsetsResizeAnimationRunner.this.getImeLeashSurfaceParam(fromSource, frame.top - fromFrame.top);
+                    if (param != null) {
+                        InsetsResizeAnimationRunner.this.mController.applySurfaceParams(param);
+                    }
+                    InsetsResizeAnimationRunner.this.mTmpMatrix.reset();
+                }
             }
         });
         if (this.mFinished) {
@@ -156,27 +149,16 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
         return this.mFinished;
     }
 
-    /* renamed from: android.view.InsetsResizeAnimationRunner$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 implements InsetsState.OnTraverseCallbacks {
-        final /* synthetic */ float val$fraction;
-        final /* synthetic */ InsetsState val$outState;
-
-        AnonymousClass2(float fraction2, InsetsState outState2) {
-            fraction = fraction2;
-            outState = outState2;
+    /* JADX INFO: Access modifiers changed from: private */
+    public SyncRtSurfaceTransactionApplier.SurfaceParams getImeLeashSurfaceParam(InsetsSource fromImeSource, int offset) {
+        SurfaceControl leash = this.mImeSourceControl.getLeash();
+        this.mTmpMatrix.setTranslate(this.mImeSourceControl.getSurfacePosition().x, this.mImeSourceControl.getSurfacePosition().y + fromImeSource.getMinimizedInsetHint().top);
+        this.mTmpMatrix.postTranslate(0.0f, offset);
+        this.mTmpMatrix.getValues(this.mTmpFloat9);
+        if (leash != null) {
+            return new SyncRtSurfaceTransactionApplier.SurfaceParams.Builder(leash).withMatrix(this.mTmpMatrix).build();
         }
-
-        @Override // android.view.InsetsState.OnTraverseCallbacks
-        public void onIdMatch(InsetsSource fromSource, InsetsSource toSource) {
-            Rect fromFrame = fromSource.getFrame();
-            Rect toFrame = toSource.getFrame();
-            Rect frame = new Rect((int) (fromFrame.left + (fraction * (toFrame.left - fromFrame.left))), (int) (fromFrame.top + (fraction * (toFrame.top - fromFrame.top))), (int) (fromFrame.right + (fraction * (toFrame.right - fromFrame.right))), (int) (fromFrame.bottom + (fraction * (toFrame.bottom - fromFrame.bottom))));
-            InsetsSource source = new InsetsSource(fromSource.getId(), fromSource.getType());
-            source.setFrame(frame);
-            source.setVisible(toSource.isVisible());
-            outState.addSource(source);
-        }
+        return null;
     }
 
     @Override // android.view.InsetsAnimationControlRunner
@@ -184,8 +166,8 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
         long token = proto.start(fieldId);
         proto.write(1133871366145L, this.mCancelled);
         proto.write(1133871366146L, this.mFinished);
-        proto.write(1138166333443L, SemCapabilities.FEATURE_TAG_NULL);
-        proto.write(1138166333444L, SemCapabilities.FEATURE_TAG_NULL);
+        proto.write(1138166333443L, "null");
+        proto.write(1138166333444L, "null");
         proto.write(1108101562373L, this.mAnimation.getInterpolatedFraction());
         proto.write(1133871366150L, true);
         proto.write(1108101562375L, 1.0f);
@@ -257,7 +239,6 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
     }
 
     @Override // android.view.InsetsAnimationControlRunner
-    public boolean isCancelRequested() {
-        return this.mCancelled;
+    public void updateLayoutInsetsDuringAnimation(int layoutInsetsDuringAnimation) {
     }
 }

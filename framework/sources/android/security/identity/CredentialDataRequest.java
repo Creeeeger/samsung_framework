@@ -45,7 +45,6 @@ public class CredentialDataRequest {
         return this.mReaderSignature;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private CredentialDataRequest mData = new CredentialDataRequest();
 

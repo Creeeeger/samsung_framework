@@ -6,11 +6,10 @@ import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableMeteringRectangle implements MarshalQueryable<MeteringRectangle> {
     private static final int SIZE = 20;
 
-    /* loaded from: classes.dex */
     private class MarshalerMeteringRectangle extends Marshaler<MeteringRectangle> {
         protected MarshalerMeteringRectangle(TypeReference<MeteringRectangle> typeReference, int nativeType) {
             super(MarshalQueryableMeteringRectangle.this, typeReference, nativeType);
@@ -30,6 +29,7 @@ public class MarshalQueryableMeteringRectangle implements MarshalQueryable<Meter
             buffer.putInt(weight);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public MeteringRectangle unmarshal(ByteBuffer buffer) {
             int xMin = buffer.getInt();

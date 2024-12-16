@@ -78,7 +78,6 @@ public interface IEuiccCardController extends IInterface {
 
     void switchToProfile(String str, String str2, String str3, int i, boolean z, ISwitchToProfileCallback iSwitchToProfileCallback) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEuiccCardController {
         @Override // com.android.internal.telephony.euicc.IEuiccCardController
         public void getAllProfiles(String callingPackage, String cardId, IGetAllProfilesCallback callback) throws RemoteException {
@@ -178,7 +177,6 @@ public interface IEuiccCardController extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEuiccCardController {
         static final int TRANSACTION_authenticateServer = 16;
         static final int TRANSACTION_cancelSession = 19;
@@ -287,209 +285,206 @@ public interface IEuiccCardController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEuiccCardController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEuiccCardController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEuiccCardController.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    IGetAllProfilesCallback _arg2 = IGetAllProfilesCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getAllProfiles(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    IGetProfileCallback _arg3 = IGetProfileCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getProfile(_arg02, _arg12, _arg22, _arg3);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    int _arg23 = data.readInt();
+                    IGetProfileCallback _arg32 = IGetProfileCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getEnabledProfile(_arg03, _arg13, _arg23, _arg32);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg14 = data.readString();
+                    String _arg24 = data.readString();
+                    boolean _arg33 = data.readBoolean();
+                    IDisableProfileCallback _arg4 = IDisableProfileCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    disableProfile(_arg04, _arg14, _arg24, _arg33, _arg4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg15 = data.readString();
+                    String _arg25 = data.readString();
+                    int _arg34 = data.readInt();
+                    boolean _arg42 = data.readBoolean();
+                    ISwitchToProfileCallback _arg5 = ISwitchToProfileCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    switchToProfile(_arg05, _arg15, _arg25, _arg34, _arg42, _arg5);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String _arg16 = data.readString();
+                    String _arg26 = data.readString();
+                    String _arg35 = data.readString();
+                    ISetNicknameCallback _arg43 = ISetNicknameCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setNickname(_arg06, _arg16, _arg26, _arg35, _arg43);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    String _arg17 = data.readString();
+                    String _arg27 = data.readString();
+                    IDeleteProfileCallback _arg36 = IDeleteProfileCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    deleteProfile(_arg07, _arg17, _arg27, _arg36);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    String _arg18 = data.readString();
+                    int _arg28 = data.readInt();
+                    IResetMemoryCallback _arg37 = IResetMemoryCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    resetMemory(_arg08, _arg18, _arg28, _arg37);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    String _arg19 = data.readString();
+                    IGetDefaultSmdpAddressCallback _arg29 = IGetDefaultSmdpAddressCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getDefaultSmdpAddress(_arg09, _arg19, _arg29);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    String _arg110 = data.readString();
+                    IGetSmdsAddressCallback _arg210 = IGetSmdsAddressCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getSmdsAddress(_arg010, _arg110, _arg210);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    String _arg111 = data.readString();
+                    String _arg211 = data.readString();
+                    ISetDefaultSmdpAddressCallback _arg38 = ISetDefaultSmdpAddressCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setDefaultSmdpAddress(_arg011, _arg111, _arg211, _arg38);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    String _arg112 = data.readString();
+                    IGetRulesAuthTableCallback _arg212 = IGetRulesAuthTableCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getRulesAuthTable(_arg012, _arg112, _arg212);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    String _arg113 = data.readString();
+                    IGetEuiccChallengeCallback _arg213 = IGetEuiccChallengeCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getEuiccChallenge(_arg013, _arg113, _arg213);
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    String _arg114 = data.readString();
+                    IGetEuiccInfo1Callback _arg214 = IGetEuiccInfo1Callback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getEuiccInfo1(_arg014, _arg114, _arg214);
+                    return true;
+                case 15:
+                    String _arg015 = data.readString();
+                    String _arg115 = data.readString();
+                    IGetEuiccInfo2Callback _arg215 = IGetEuiccInfo2Callback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getEuiccInfo2(_arg015, _arg115, _arg215);
+                    return true;
+                case 16:
+                    String _arg016 = data.readString();
+                    String _arg116 = data.readString();
+                    String _arg216 = data.readString();
+                    byte[] _arg39 = data.createByteArray();
+                    byte[] _arg44 = data.createByteArray();
+                    byte[] _arg52 = data.createByteArray();
+                    byte[] _arg6 = data.createByteArray();
+                    IAuthenticateServerCallback _arg7 = IAuthenticateServerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    authenticateServer(_arg016, _arg116, _arg216, _arg39, _arg44, _arg52, _arg6, _arg7);
+                    return true;
+                case 17:
+                    String _arg017 = data.readString();
+                    String _arg117 = data.readString();
+                    byte[] _arg217 = data.createByteArray();
+                    byte[] _arg310 = data.createByteArray();
+                    byte[] _arg45 = data.createByteArray();
+                    byte[] _arg53 = data.createByteArray();
+                    IPrepareDownloadCallback _arg62 = IPrepareDownloadCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    prepareDownload(_arg017, _arg117, _arg217, _arg310, _arg45, _arg53, _arg62);
+                    return true;
+                case 18:
+                    String _arg018 = data.readString();
+                    String _arg118 = data.readString();
+                    byte[] _arg218 = data.createByteArray();
+                    ILoadBoundProfilePackageCallback _arg311 = ILoadBoundProfilePackageCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    loadBoundProfilePackage(_arg018, _arg118, _arg218, _arg311);
+                    return true;
+                case 19:
+                    String _arg019 = data.readString();
+                    String _arg119 = data.readString();
+                    byte[] _arg219 = data.createByteArray();
+                    int _arg312 = data.readInt();
+                    ICancelSessionCallback _arg46 = ICancelSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelSession(_arg019, _arg119, _arg219, _arg312, _arg46);
+                    return true;
+                case 20:
+                    String _arg020 = data.readString();
+                    String _arg120 = data.readString();
+                    int _arg220 = data.readInt();
+                    IListNotificationsCallback _arg313 = IListNotificationsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    listNotifications(_arg020, _arg120, _arg220, _arg313);
+                    return true;
+                case 21:
+                    String _arg021 = data.readString();
+                    String _arg121 = data.readString();
+                    int _arg221 = data.readInt();
+                    IRetrieveNotificationListCallback _arg314 = IRetrieveNotificationListCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    retrieveNotificationList(_arg021, _arg121, _arg221, _arg314);
+                    return true;
+                case 22:
+                    String _arg022 = data.readString();
+                    String _arg122 = data.readString();
+                    int _arg222 = data.readInt();
+                    IRetrieveNotificationCallback _arg315 = IRetrieveNotificationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    retrieveNotification(_arg022, _arg122, _arg222, _arg315);
+                    return true;
+                case 23:
+                    String _arg023 = data.readString();
+                    String _arg123 = data.readString();
+                    int _arg223 = data.readInt();
+                    IRemoveNotificationFromListCallback _arg316 = IRemoveNotificationFromListCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeNotificationFromList(_arg023, _arg123, _arg223, _arg316);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            IGetAllProfilesCallback _arg2 = IGetAllProfilesCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getAllProfiles(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            IGetProfileCallback _arg3 = IGetProfileCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getProfile(_arg02, _arg12, _arg22, _arg3);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            int _arg23 = data.readInt();
-                            IGetProfileCallback _arg32 = IGetProfileCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getEnabledProfile(_arg03, _arg13, _arg23, _arg32);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg14 = data.readString();
-                            String _arg24 = data.readString();
-                            boolean _arg33 = data.readBoolean();
-                            IDisableProfileCallback _arg4 = IDisableProfileCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            disableProfile(_arg04, _arg14, _arg24, _arg33, _arg4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg15 = data.readString();
-                            String _arg25 = data.readString();
-                            int _arg34 = data.readInt();
-                            boolean _arg42 = data.readBoolean();
-                            ISwitchToProfileCallback _arg5 = ISwitchToProfileCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            switchToProfile(_arg05, _arg15, _arg25, _arg34, _arg42, _arg5);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String _arg16 = data.readString();
-                            String _arg26 = data.readString();
-                            String _arg35 = data.readString();
-                            ISetNicknameCallback _arg43 = ISetNicknameCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setNickname(_arg06, _arg16, _arg26, _arg35, _arg43);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            String _arg17 = data.readString();
-                            String _arg27 = data.readString();
-                            IDeleteProfileCallback _arg36 = IDeleteProfileCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            deleteProfile(_arg07, _arg17, _arg27, _arg36);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            String _arg18 = data.readString();
-                            int _arg28 = data.readInt();
-                            IResetMemoryCallback _arg37 = IResetMemoryCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            resetMemory(_arg08, _arg18, _arg28, _arg37);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            String _arg19 = data.readString();
-                            IGetDefaultSmdpAddressCallback _arg29 = IGetDefaultSmdpAddressCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getDefaultSmdpAddress(_arg09, _arg19, _arg29);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            String _arg110 = data.readString();
-                            IGetSmdsAddressCallback _arg210 = IGetSmdsAddressCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getSmdsAddress(_arg010, _arg110, _arg210);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            String _arg111 = data.readString();
-                            String _arg211 = data.readString();
-                            ISetDefaultSmdpAddressCallback _arg38 = ISetDefaultSmdpAddressCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setDefaultSmdpAddress(_arg011, _arg111, _arg211, _arg38);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            String _arg112 = data.readString();
-                            IGetRulesAuthTableCallback _arg212 = IGetRulesAuthTableCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getRulesAuthTable(_arg012, _arg112, _arg212);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            String _arg113 = data.readString();
-                            IGetEuiccChallengeCallback _arg213 = IGetEuiccChallengeCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getEuiccChallenge(_arg013, _arg113, _arg213);
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            String _arg114 = data.readString();
-                            IGetEuiccInfo1Callback _arg214 = IGetEuiccInfo1Callback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getEuiccInfo1(_arg014, _arg114, _arg214);
-                            return true;
-                        case 15:
-                            String _arg015 = data.readString();
-                            String _arg115 = data.readString();
-                            IGetEuiccInfo2Callback _arg215 = IGetEuiccInfo2Callback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getEuiccInfo2(_arg015, _arg115, _arg215);
-                            return true;
-                        case 16:
-                            String _arg016 = data.readString();
-                            String _arg116 = data.readString();
-                            String _arg216 = data.readString();
-                            byte[] _arg39 = data.createByteArray();
-                            byte[] _arg44 = data.createByteArray();
-                            byte[] _arg52 = data.createByteArray();
-                            byte[] _arg6 = data.createByteArray();
-                            IAuthenticateServerCallback _arg7 = IAuthenticateServerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            authenticateServer(_arg016, _arg116, _arg216, _arg39, _arg44, _arg52, _arg6, _arg7);
-                            return true;
-                        case 17:
-                            String _arg017 = data.readString();
-                            String _arg117 = data.readString();
-                            byte[] _arg217 = data.createByteArray();
-                            byte[] _arg310 = data.createByteArray();
-                            byte[] _arg45 = data.createByteArray();
-                            byte[] _arg53 = data.createByteArray();
-                            IPrepareDownloadCallback _arg62 = IPrepareDownloadCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            prepareDownload(_arg017, _arg117, _arg217, _arg310, _arg45, _arg53, _arg62);
-                            return true;
-                        case 18:
-                            String _arg018 = data.readString();
-                            String _arg118 = data.readString();
-                            byte[] _arg218 = data.createByteArray();
-                            ILoadBoundProfilePackageCallback _arg311 = ILoadBoundProfilePackageCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            loadBoundProfilePackage(_arg018, _arg118, _arg218, _arg311);
-                            return true;
-                        case 19:
-                            String _arg019 = data.readString();
-                            String _arg119 = data.readString();
-                            byte[] _arg219 = data.createByteArray();
-                            int _arg312 = data.readInt();
-                            ICancelSessionCallback _arg46 = ICancelSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelSession(_arg019, _arg119, _arg219, _arg312, _arg46);
-                            return true;
-                        case 20:
-                            String _arg020 = data.readString();
-                            String _arg120 = data.readString();
-                            int _arg220 = data.readInt();
-                            IListNotificationsCallback _arg313 = IListNotificationsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            listNotifications(_arg020, _arg120, _arg220, _arg313);
-                            return true;
-                        case 21:
-                            String _arg021 = data.readString();
-                            String _arg121 = data.readString();
-                            int _arg221 = data.readInt();
-                            IRetrieveNotificationListCallback _arg314 = IRetrieveNotificationListCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            retrieveNotificationList(_arg021, _arg121, _arg221, _arg314);
-                            return true;
-                        case 22:
-                            String _arg022 = data.readString();
-                            String _arg122 = data.readString();
-                            int _arg222 = data.readInt();
-                            IRetrieveNotificationCallback _arg315 = IRetrieveNotificationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            retrieveNotification(_arg022, _arg122, _arg222, _arg315);
-                            return true;
-                        case 23:
-                            String _arg023 = data.readString();
-                            String _arg123 = data.readString();
-                            int _arg223 = data.readInt();
-                            IRemoveNotificationFromListCallback _arg316 = IRemoveNotificationFromListCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeNotificationFromList(_arg023, _arg123, _arg223, _arg316);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IEuiccCardController {
+        private static class Proxy implements IEuiccCardController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

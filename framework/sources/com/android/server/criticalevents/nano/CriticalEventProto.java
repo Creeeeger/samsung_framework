@@ -12,19 +12,223 @@ import java.io.IOException;
 public final class CriticalEventProto extends MessageNano {
     public static final int ANR_FIELD_NUMBER = 4;
     public static final int DATA_APP = 1;
+    public static final int EXCESSIVE_BINDER_CALLS_FIELD_NUMBER = 9;
     public static final int HALF_WATCHDOG_FIELD_NUMBER = 3;
+    public static final int INSTALL_PACKAGES_FIELD_NUMBER = 8;
     public static final int JAVA_CRASH_FIELD_NUMBER = 5;
     public static final int NATIVE_CRASH_FIELD_NUMBER = 6;
     public static final int PROCESS_CLASS_UNKNOWN = 0;
     public static final int SYSTEM_APP = 2;
     public static final int SYSTEM_SERVER = 3;
+    public static final int SYSTEM_SERVER_STARTED_FIELD_NUMBER = 7;
     public static final int WATCHDOG_FIELD_NUMBER = 2;
     private static volatile CriticalEventProto[] _emptyArray;
     private int eventCase_ = 0;
     private Object event_;
     public long timestampMs;
 
-    /* loaded from: classes5.dex */
+    public static final class ExcessiveBinderCalls extends MessageNano {
+        private static volatile ExcessiveBinderCalls[] _emptyArray;
+        public int uid;
+
+        public static ExcessiveBinderCalls[] emptyArray() {
+            if (_emptyArray == null) {
+                synchronized (InternalNano.LAZY_INIT_LOCK) {
+                    if (_emptyArray == null) {
+                        _emptyArray = new ExcessiveBinderCalls[0];
+                    }
+                }
+            }
+            return _emptyArray;
+        }
+
+        public ExcessiveBinderCalls() {
+            clear();
+        }
+
+        public ExcessiveBinderCalls clear() {
+            this.uid = 0;
+            this.cachedSize = -1;
+            return this;
+        }
+
+        @Override // com.android.framework.protobuf.nano.MessageNano
+        public void writeTo(CodedOutputByteBufferNano output) throws IOException {
+            if (this.uid != 0) {
+                output.writeInt32(1, this.uid);
+            }
+            super.writeTo(output);
+        }
+
+        @Override // com.android.framework.protobuf.nano.MessageNano
+        protected int computeSerializedSize() {
+            int size = super.computeSerializedSize();
+            if (this.uid != 0) {
+                return size + CodedOutputByteBufferNano.computeInt32Size(1, this.uid);
+            }
+            return size;
+        }
+
+        @Override // com.android.framework.protobuf.nano.MessageNano
+        public ExcessiveBinderCalls mergeFrom(CodedInputByteBufferNano input) throws IOException {
+            while (true) {
+                int tag = input.readTag();
+                switch (tag) {
+                    case 0:
+                        return this;
+                    case 8:
+                        this.uid = input.readInt32();
+                        break;
+                    default:
+                        if (!WireFormatNano.parseUnknownField(input, tag)) {
+                            return this;
+                        }
+                        break;
+                }
+            }
+        }
+
+        public static ExcessiveBinderCalls parseFrom(byte[] data) throws InvalidProtocolBufferNanoException {
+            return (ExcessiveBinderCalls) MessageNano.mergeFrom(new ExcessiveBinderCalls(), data);
+        }
+
+        public static ExcessiveBinderCalls parseFrom(CodedInputByteBufferNano input) throws IOException {
+            return new ExcessiveBinderCalls().mergeFrom(input);
+        }
+    }
+
+    public static final class InstallPackages extends MessageNano {
+        private static volatile InstallPackages[] _emptyArray;
+
+        public static InstallPackages[] emptyArray() {
+            if (_emptyArray == null) {
+                synchronized (InternalNano.LAZY_INIT_LOCK) {
+                    if (_emptyArray == null) {
+                        _emptyArray = new InstallPackages[0];
+                    }
+                }
+            }
+            return _emptyArray;
+        }
+
+        public InstallPackages() {
+            clear();
+        }
+
+        public InstallPackages clear() {
+            this.cachedSize = -1;
+            return this;
+        }
+
+        /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
+            jadx.core.utils.exceptions.JadxRuntimeException: Failed to find switch 'out' block (already processed)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.calcSwitchOut(SwitchRegionMaker.java:202)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.process(SwitchRegionMaker.java:61)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:115)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.LoopRegionMaker.process(LoopRegionMaker.java:103)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:92)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeMthRegion(RegionMaker.java:49)
+            	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:25)
+            */
+        @Override // com.android.framework.protobuf.nano.MessageNano
+        public com.android.server.criticalevents.nano.CriticalEventProto.InstallPackages mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano r3) throws java.io.IOException {
+            /*
+                r2 = this;
+            L1:
+                int r0 = r3.readTag()
+                switch(r0) {
+                    case 0: goto Lf;
+                    default: goto L8;
+                }
+            L8:
+                boolean r1 = com.android.framework.protobuf.nano.WireFormatNano.parseUnknownField(r3, r0)
+                if (r1 != 0) goto L10
+                return r2
+            Lf:
+                return r2
+            L10:
+                goto L1
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.criticalevents.nano.CriticalEventProto.InstallPackages.mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano):com.android.server.criticalevents.nano.CriticalEventProto$InstallPackages");
+        }
+
+        public static InstallPackages parseFrom(byte[] data) throws InvalidProtocolBufferNanoException {
+            return (InstallPackages) MessageNano.mergeFrom(new InstallPackages(), data);
+        }
+
+        public static InstallPackages parseFrom(CodedInputByteBufferNano input) throws IOException {
+            return new InstallPackages().mergeFrom(input);
+        }
+    }
+
+    public static final class SystemServerStarted extends MessageNano {
+        private static volatile SystemServerStarted[] _emptyArray;
+
+        public static SystemServerStarted[] emptyArray() {
+            if (_emptyArray == null) {
+                synchronized (InternalNano.LAZY_INIT_LOCK) {
+                    if (_emptyArray == null) {
+                        _emptyArray = new SystemServerStarted[0];
+                    }
+                }
+            }
+            return _emptyArray;
+        }
+
+        public SystemServerStarted() {
+            clear();
+        }
+
+        public SystemServerStarted clear() {
+            this.cachedSize = -1;
+            return this;
+        }
+
+        /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
+            jadx.core.utils.exceptions.JadxRuntimeException: Failed to find switch 'out' block (already processed)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.calcSwitchOut(SwitchRegionMaker.java:202)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.process(SwitchRegionMaker.java:61)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:115)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.LoopRegionMaker.process(LoopRegionMaker.java:103)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:92)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeMthRegion(RegionMaker.java:49)
+            	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:25)
+            */
+        @Override // com.android.framework.protobuf.nano.MessageNano
+        public com.android.server.criticalevents.nano.CriticalEventProto.SystemServerStarted mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano r3) throws java.io.IOException {
+            /*
+                r2 = this;
+            L1:
+                int r0 = r3.readTag()
+                switch(r0) {
+                    case 0: goto Lf;
+                    default: goto L8;
+                }
+            L8:
+                boolean r1 = com.android.framework.protobuf.nano.WireFormatNano.parseUnknownField(r3, r0)
+                if (r1 != 0) goto L10
+                return r2
+            Lf:
+                return r2
+            L10:
+                goto L1
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.criticalevents.nano.CriticalEventProto.SystemServerStarted.mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano):com.android.server.criticalevents.nano.CriticalEventProto$SystemServerStarted");
+        }
+
+        public static SystemServerStarted parseFrom(byte[] data) throws InvalidProtocolBufferNanoException {
+            return (SystemServerStarted) MessageNano.mergeFrom(new SystemServerStarted(), data);
+        }
+
+        public static SystemServerStarted parseFrom(CodedInputByteBufferNano input) throws IOException {
+            return new SystemServerStarted().mergeFrom(input);
+        }
+    }
+
     public static final class Watchdog extends MessageNano {
         private static volatile Watchdog[] _emptyArray;
         public String subject;
@@ -64,7 +268,7 @@ public final class CriticalEventProto extends MessageNano {
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
             if (!this.subject.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(1, this.subject);
@@ -106,7 +310,6 @@ public final class CriticalEventProto extends MessageNano {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class HalfWatchdog extends MessageNano {
         private static volatile HalfWatchdog[] _emptyArray;
         public String subject;
@@ -141,7 +344,7 @@ public final class CriticalEventProto extends MessageNano {
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
             if (!this.subject.equals("")) {
                 return size + CodedOutputByteBufferNano.computeStringSize(1, this.subject);
@@ -177,7 +380,6 @@ public final class CriticalEventProto extends MessageNano {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class AppNotResponding extends MessageNano {
         private static volatile AppNotResponding[] _emptyArray;
         public int pid;
@@ -219,23 +421,20 @@ public final class CriticalEventProto extends MessageNano {
             if (!this.process.equals("")) {
                 output.writeString(2, this.process);
             }
-            int i = this.pid;
-            if (i != 0) {
-                output.writeInt32(3, i);
+            if (this.pid != 0) {
+                output.writeInt32(3, this.pid);
             }
-            int i2 = this.uid;
-            if (i2 != 0) {
-                output.writeInt32(4, i2);
+            if (this.uid != 0) {
+                output.writeInt32(4, this.uid);
             }
-            int i3 = this.processClass;
-            if (i3 != 0) {
-                output.writeInt32(5, i3);
+            if (this.processClass != 0) {
+                output.writeInt32(5, this.processClass);
             }
             super.writeTo(output);
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
             if (!this.subject.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(1, this.subject);
@@ -243,17 +442,14 @@ public final class CriticalEventProto extends MessageNano {
             if (!this.process.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(2, this.process);
             }
-            int i = this.pid;
-            if (i != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(3, i);
+            if (this.pid != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(3, this.pid);
             }
-            int i2 = this.uid;
-            if (i2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(4, i2);
+            if (this.uid != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(4, this.uid);
             }
-            int i3 = this.processClass;
-            if (i3 != 0) {
-                return size + CodedOutputByteBufferNano.computeInt32Size(5, i3);
+            if (this.processClass != 0) {
+                return size + CodedOutputByteBufferNano.computeInt32Size(5, this.processClass);
             }
             return size;
         }
@@ -305,7 +501,6 @@ public final class CriticalEventProto extends MessageNano {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class JavaCrash extends MessageNano {
         private static volatile JavaCrash[] _emptyArray;
         public String exceptionClass;
@@ -347,23 +542,20 @@ public final class CriticalEventProto extends MessageNano {
             if (!this.process.equals("")) {
                 output.writeString(2, this.process);
             }
-            int i = this.pid;
-            if (i != 0) {
-                output.writeInt32(3, i);
+            if (this.pid != 0) {
+                output.writeInt32(3, this.pid);
             }
-            int i2 = this.uid;
-            if (i2 != 0) {
-                output.writeInt32(4, i2);
+            if (this.uid != 0) {
+                output.writeInt32(4, this.uid);
             }
-            int i3 = this.processClass;
-            if (i3 != 0) {
-                output.writeInt32(5, i3);
+            if (this.processClass != 0) {
+                output.writeInt32(5, this.processClass);
             }
             super.writeTo(output);
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
             if (!this.exceptionClass.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(1, this.exceptionClass);
@@ -371,17 +563,14 @@ public final class CriticalEventProto extends MessageNano {
             if (!this.process.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(2, this.process);
             }
-            int i = this.pid;
-            if (i != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(3, i);
+            if (this.pid != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(3, this.pid);
             }
-            int i2 = this.uid;
-            if (i2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(4, i2);
+            if (this.uid != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(4, this.uid);
             }
-            int i3 = this.processClass;
-            if (i3 != 0) {
-                return size + CodedOutputByteBufferNano.computeInt32Size(5, i3);
+            if (this.processClass != 0) {
+                return size + CodedOutputByteBufferNano.computeInt32Size(5, this.processClass);
             }
             return size;
         }
@@ -433,7 +622,6 @@ public final class CriticalEventProto extends MessageNano {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class NativeCrash extends MessageNano {
         private static volatile NativeCrash[] _emptyArray;
         public int pid;
@@ -470,38 +658,32 @@ public final class CriticalEventProto extends MessageNano {
             if (!this.process.equals("")) {
                 output.writeString(1, this.process);
             }
-            int i = this.pid;
-            if (i != 0) {
-                output.writeInt32(2, i);
+            if (this.pid != 0) {
+                output.writeInt32(2, this.pid);
             }
-            int i2 = this.uid;
-            if (i2 != 0) {
-                output.writeInt32(3, i2);
+            if (this.uid != 0) {
+                output.writeInt32(3, this.uid);
             }
-            int i3 = this.processClass;
-            if (i3 != 0) {
-                output.writeInt32(4, i3);
+            if (this.processClass != 0) {
+                output.writeInt32(4, this.processClass);
             }
             super.writeTo(output);
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
             if (!this.process.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(1, this.process);
             }
-            int i = this.pid;
-            if (i != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(2, i);
+            if (this.pid != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(2, this.pid);
             }
-            int i2 = this.uid;
-            if (i2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(3, i2);
+            if (this.uid != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(3, this.uid);
             }
-            int i3 = this.processClass;
-            if (i3 != 0) {
-                return size + CodedOutputByteBufferNano.computeInt32Size(4, i3);
+            if (this.processClass != 0) {
+                return size + CodedOutputByteBufferNano.computeInt32Size(4, this.processClass);
             }
             return size;
         }
@@ -671,6 +853,66 @@ public final class CriticalEventProto extends MessageNano {
         return this;
     }
 
+    public boolean hasSystemServerStarted() {
+        return this.eventCase_ == 7;
+    }
+
+    public SystemServerStarted getSystemServerStarted() {
+        if (this.eventCase_ == 7) {
+            return (SystemServerStarted) this.event_;
+        }
+        return null;
+    }
+
+    public CriticalEventProto setSystemServerStarted(SystemServerStarted value) {
+        if (value == null) {
+            throw new NullPointerException();
+        }
+        this.eventCase_ = 7;
+        this.event_ = value;
+        return this;
+    }
+
+    public boolean hasInstallPackages() {
+        return this.eventCase_ == 8;
+    }
+
+    public InstallPackages getInstallPackages() {
+        if (this.eventCase_ == 8) {
+            return (InstallPackages) this.event_;
+        }
+        return null;
+    }
+
+    public CriticalEventProto setInstallPackages(InstallPackages value) {
+        if (value == null) {
+            throw new NullPointerException();
+        }
+        this.eventCase_ = 8;
+        this.event_ = value;
+        return this;
+    }
+
+    public boolean hasExcessiveBinderCalls() {
+        return this.eventCase_ == 9;
+    }
+
+    public ExcessiveBinderCalls getExcessiveBinderCalls() {
+        if (this.eventCase_ == 9) {
+            return (ExcessiveBinderCalls) this.event_;
+        }
+        return null;
+    }
+
+    public CriticalEventProto setExcessiveBinderCalls(ExcessiveBinderCalls value) {
+        if (value == null) {
+            throw new NullPointerException();
+        }
+        this.eventCase_ = 9;
+        this.event_ = value;
+        return this;
+    }
+
     public CriticalEventProto() {
         clear();
     }
@@ -684,9 +926,8 @@ public final class CriticalEventProto extends MessageNano {
 
     @Override // com.android.framework.protobuf.nano.MessageNano
     public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-        long j = this.timestampMs;
-        if (j != 0) {
-            output.writeInt64(1, j);
+        if (this.timestampMs != 0) {
+            output.writeInt64(1, this.timestampMs);
         }
         if (this.eventCase_ == 2) {
             output.writeMessage(2, (MessageNano) this.event_);
@@ -703,15 +944,23 @@ public final class CriticalEventProto extends MessageNano {
         if (this.eventCase_ == 6) {
             output.writeMessage(6, (MessageNano) this.event_);
         }
+        if (this.eventCase_ == 7) {
+            output.writeMessage(7, (MessageNano) this.event_);
+        }
+        if (this.eventCase_ == 8) {
+            output.writeMessage(8, (MessageNano) this.event_);
+        }
+        if (this.eventCase_ == 9) {
+            output.writeMessage(9, (MessageNano) this.event_);
+        }
         super.writeTo(output);
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
-        long j = this.timestampMs;
-        if (j != 0) {
-            size += CodedOutputByteBufferNano.computeInt64Size(1, j);
+        if (this.timestampMs != 0) {
+            size += CodedOutputByteBufferNano.computeInt64Size(1, this.timestampMs);
         }
         if (this.eventCase_ == 2) {
             size += CodedOutputByteBufferNano.computeMessageSize(2, (MessageNano) this.event_);
@@ -726,7 +975,16 @@ public final class CriticalEventProto extends MessageNano {
             size += CodedOutputByteBufferNano.computeMessageSize(5, (MessageNano) this.event_);
         }
         if (this.eventCase_ == 6) {
-            return size + CodedOutputByteBufferNano.computeMessageSize(6, (MessageNano) this.event_);
+            size += CodedOutputByteBufferNano.computeMessageSize(6, (MessageNano) this.event_);
+        }
+        if (this.eventCase_ == 7) {
+            size += CodedOutputByteBufferNano.computeMessageSize(7, (MessageNano) this.event_);
+        }
+        if (this.eventCase_ == 8) {
+            size += CodedOutputByteBufferNano.computeMessageSize(8, (MessageNano) this.event_);
+        }
+        if (this.eventCase_ == 9) {
+            return size + CodedOutputByteBufferNano.computeMessageSize(9, (MessageNano) this.event_);
         }
         return size;
     }
@@ -775,6 +1033,27 @@ public final class CriticalEventProto extends MessageNano {
                     }
                     input.readMessage((MessageNano) this.event_);
                     this.eventCase_ = 6;
+                    break;
+                case 58:
+                    if (this.eventCase_ != 7) {
+                        this.event_ = new SystemServerStarted();
+                    }
+                    input.readMessage((MessageNano) this.event_);
+                    this.eventCase_ = 7;
+                    break;
+                case 66:
+                    if (this.eventCase_ != 8) {
+                        this.event_ = new InstallPackages();
+                    }
+                    input.readMessage((MessageNano) this.event_);
+                    this.eventCase_ = 8;
+                    break;
+                case 74:
+                    if (this.eventCase_ != 9) {
+                        this.event_ = new ExcessiveBinderCalls();
+                    }
+                    input.readMessage((MessageNano) this.event_);
+                    this.eventCase_ = 9;
                     break;
                 default:
                     if (!WireFormatNano.parseUnknownField(input, tag)) {

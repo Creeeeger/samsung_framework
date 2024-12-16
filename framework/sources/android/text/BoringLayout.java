@@ -3,16 +3,19 @@ package android.text;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
+import android.graphics.text.LineBreakConfig;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.text.style.ParagraphStyle;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback {
     int mBottom;
     private int mBottomPadding;
     int mDesc;
     private String mDirect;
+    private final RectF mDrawingBounds;
     private int mEllipsizedCount;
     private int mEllipsizedStart;
     private int mEllipsizedWidth;
@@ -44,6 +47,10 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
     }
 
     public BoringLayout replaceOrMake(CharSequence source, TextPaint paint, int outerWidth, Layout.Alignment align, Metrics metrics, boolean includePad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, boolean useFallbackLineSpacing) {
+        return replaceOrMake(source, paint, outerWidth, align, 1.0f, 0.0f, metrics, includePad, ellipsize, ellipsizedWidth, useFallbackLineSpacing, false, null);
+    }
+
+    public BoringLayout replaceOrMake(CharSequence source, TextPaint paint, int outerWidth, Layout.Alignment align, float spacingMultiplier, float spacingAmount, Metrics metrics, boolean includePad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, boolean useFallbackLineSpacing, boolean useBoundsForWidth, Paint.FontMetrics minimumFontMetrics) {
         boolean trust;
         if (ellipsize == null || ellipsize == TextUtils.TruncateAt.MARQUEE) {
             replaceWith(source, paint, outerWidth, align, 1.0f, 0.0f);
@@ -52,7 +59,7 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             this.mEllipsizedCount = 0;
             trust = true;
         } else {
-            replaceWith(TextUtils.ellipsize(source, paint, ellipsizedWidth, ellipsize, true, this), paint, outerWidth, align, 1.0f, 0.0f);
+            replaceWith(TextUtils.ellipsize(source, paint, ellipsizedWidth, ellipsize, true, this), paint, outerWidth, align, spacingMultiplier, spacingAmount);
             this.mEllipsizedWidth = ellipsizedWidth;
             trust = false;
         }
@@ -66,7 +73,8 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
     }
 
     public BoringLayout(CharSequence source, TextPaint paint, int outerwidth, Layout.Alignment align, float spacingMult, float spacingAdd, Metrics metrics, boolean includePad) {
-        super(source, paint, outerwidth, align, spacingMult, spacingAdd);
+        super(source, paint, outerwidth, align, TextDirectionHeuristics.LTR, spacingMult, spacingAdd, includePad, false, outerwidth, null, 1, 0, 0, null, null, 0, LineBreakConfig.NONE, false, false, null);
+        this.mDrawingBounds = new RectF();
         this.mEllipsizedWidth = outerwidth;
         this.mEllipsizedStart = 0;
         this.mEllipsizedCount = 0;
@@ -79,25 +87,34 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
     }
 
     public BoringLayout(CharSequence source, TextPaint paint, int outerWidth, Layout.Alignment align, float spacingMult, float spacingAdd, Metrics metrics, boolean includePad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, boolean useFallbackLineSpacing) {
-        super(source, paint, outerWidth, align, spacingMult, spacingAdd);
+        this(source, paint, outerWidth, align, TextDirectionHeuristics.LTR, spacingMult, spacingAdd, includePad, useFallbackLineSpacing, ellipsizedWidth, ellipsize, 1, 0, 0, null, null, 0, LineBreakConfig.NONE, metrics, false, false, null);
+    }
+
+    public BoringLayout(CharSequence text, TextPaint paint, int width, Layout.Alignment align, float spacingMult, float spacingAdd, boolean includePad, boolean fallbackLineSpacing, int ellipsizedWidth, TextUtils.TruncateAt ellipsize, Metrics metrics, boolean useBoundsForWidth, boolean shiftDrawingOffsetForStartOverhang, Paint.FontMetrics minimumFontMetrics) {
+        this(text, paint, width, align, TextDirectionHeuristics.LTR, spacingMult, spacingAdd, includePad, fallbackLineSpacing, ellipsizedWidth, ellipsize, 1, 0, 0, null, null, 0, LineBreakConfig.NONE, metrics, useBoundsForWidth, shiftDrawingOffsetForStartOverhang, minimumFontMetrics);
+    }
+
+    BoringLayout(CharSequence text, TextPaint paint, int width, Layout.Alignment align, TextDirectionHeuristic textDir, float spacingMult, float spacingAdd, boolean includePad, boolean fallbackLineSpacing, int ellipsizedWidth, TextUtils.TruncateAt ellipsize, int maxLines, int breakStrategy, int hyphenationFrequency, int[] leftIndents, int[] rightIndents, int justificationMode, LineBreakConfig lineBreakConfig, Metrics metrics, boolean useBoundsForWidth, boolean shiftDrawingOffsetForStartOverhang, Paint.FontMetrics minimumFontMetrics) {
+        super(text, paint, width, align, textDir, spacingMult, spacingAdd, includePad, fallbackLineSpacing, ellipsizedWidth, ellipsize, maxLines, breakStrategy, hyphenationFrequency, leftIndents, rightIndents, justificationMode, lineBreakConfig, useBoundsForWidth, shiftDrawingOffsetForStartOverhang, minimumFontMetrics);
         boolean trust;
-        if (ellipsize == null || ellipsize == TextUtils.TruncateAt.MARQUEE) {
-            this.mEllipsizedWidth = outerWidth;
-            this.mEllipsizedStart = 0;
-            this.mEllipsizedCount = 0;
-            trust = true;
-        } else {
-            replaceWith(TextUtils.ellipsize(source, paint, ellipsizedWidth, ellipsize, true, this), paint, outerWidth, align, spacingMult, spacingAdd);
+        this.mDrawingBounds = new RectF();
+        if (ellipsize != null && ellipsize != TextUtils.TruncateAt.MARQUEE) {
+            replaceWith(TextUtils.ellipsize(text, paint, ellipsizedWidth, ellipsize, true, this), paint, width, align, spacingMult, spacingAdd);
             this.mEllipsizedWidth = ellipsizedWidth;
             trust = false;
+            this.mUseFallbackLineSpacing = fallbackLineSpacing;
+            init(getText(), paint, align, metrics, includePad, trust, fallbackLineSpacing);
         }
-        this.mUseFallbackLineSpacing = useFallbackLineSpacing;
-        init(getText(), paint, align, metrics, includePad, trust, useFallbackLineSpacing);
+        this.mEllipsizedWidth = width;
+        this.mEllipsizedStart = 0;
+        this.mEllipsizedCount = 0;
+        trust = true;
+        this.mUseFallbackLineSpacing = fallbackLineSpacing;
+        init(getText(), paint, align, metrics, includePad, trust, fallbackLineSpacing);
     }
 
     /* JADX WARN: Removed duplicated region for block: B:11:0x003b  */
-    /* JADX WARN: Removed duplicated region for block: B:13:0x0082  */
-    /* JADX WARN: Removed duplicated region for block: B:16:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:13:0x0088  */
     /* JADX WARN: Removed duplicated region for block: B:17:0x0043  */
     /* JADX WARN: Removed duplicated region for block: B:18:0x002d  */
     /* JADX WARN: Removed duplicated region for block: B:8:0x0022  */
@@ -105,29 +122,29 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    void init(java.lang.CharSequence r21, android.text.TextPaint r22, android.text.Layout.Alignment r23, android.text.BoringLayout.Metrics r24, boolean r25, boolean r26, boolean r27) {
+    void init(java.lang.CharSequence r22, android.text.TextPaint r23, android.text.Layout.Alignment r24, android.text.BoringLayout.Metrics r25, boolean r26, boolean r27, boolean r28) {
         /*
-            r20 = this;
-            r0 = r20
-            r1 = r24
-            r14 = r21
+            r21 = this;
+            r0 = r21
+            r1 = r25
+            r14 = r22
             boolean r2 = r14 instanceof java.lang.String
             r15 = 0
             if (r2 == 0) goto L18
             android.text.Layout$Alignment r2 = android.text.Layout.Alignment.ALIGN_NORMAL
-            r13 = r23
+            r13 = r24
             if (r13 != r2) goto L1a
-            java.lang.String r2 = r21.toString()
+            java.lang.String r2 = r22.toString()
             r0.mDirect = r2
             goto L1c
         L18:
-            r13 = r23
+            r13 = r24
         L1a:
             r0.mDirect = r15
         L1c:
-            r12 = r22
+            r12 = r23
             r0.mPaint = r12
-            if (r25 == 0) goto L2d
+            if (r26 == 0) goto L2d
             int r2 = r1.bottom
             int r3 = r1.top
             int r2 = r2 - r3
@@ -144,44 +161,47 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             r11 = r2
         L37:
             r0.mBottom = r11
-            if (r26 == 0) goto L43
+            if (r27 == 0) goto L43
             int r2 = r1.width
             float r2 = (float) r2
             r0.mMax = r2
-            r16 = r11
-            goto L80
+            r17 = r11
+            goto L86
         L43:
             android.text.TextLine r10 = android.text.TextLine.obtain()
-            r5 = 0
-            int r6 = r21.length()
-            r7 = 1
+            int r6 = r22.length()
             android.text.Layout$Directions r8 = android.text.Layout.DIRS_ALL_LEFT_TO_RIGHT
-            r9 = 0
-            r16 = 0
-            int r4 = r0.mEllipsizedStart
-            int r2 = r0.mEllipsizedCount
-            int r17 = r4 + r2
+            int r9 = r0.mEllipsizedStart
+            int r2 = r0.mEllipsizedStart
+            int r3 = r0.mEllipsizedCount
+            int r16 = r2 + r3
+            r5 = 0
+            r7 = 1
+            r17 = 0
+            r18 = 0
             r2 = r10
-            r3 = r22
-            r18 = r4
-            r4 = r21
-            r19 = r10
-            r10 = r16
-            r16 = r11
-            r11 = r18
-            r12 = r17
-            r13 = r27
+            r3 = r23
+            r4 = r22
+            r19 = r9
+            r9 = r17
+            r20 = r10
+            r10 = r18
+            r17 = r11
+            r11 = r19
+            r12 = r16
+            r13 = r28
             r2.set(r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13)
-            r2 = r19
-            float r3 = r2.metrics(r15)
-            double r3 = (double) r3
-            double r3 = java.lang.Math.ceil(r3)
-            int r3 = (int) r3
-            float r3 = (float) r3
-            r0.mMax = r3
-            android.text.TextLine.recycle(r2)
-        L80:
-            if (r25 == 0) goto L90
+            r2 = 0
+            r3 = r20
+            float r2 = r3.metrics(r15, r15, r2, r15)
+            double r4 = (double) r2
+            double r4 = java.lang.Math.ceil(r4)
+            int r2 = (int) r4
+            float r2 = (float) r2
+            r0.mMax = r2
+            android.text.TextLine.recycle(r3)
+        L86:
+            if (r26 == 0) goto L96
             int r2 = r1.top
             int r3 = r1.ascent
             int r2 = r2 - r3
@@ -190,7 +210,17 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             int r3 = r1.descent
             int r2 = r2 - r3
             r0.mBottomPadding = r2
-        L90:
+        L96:
+            android.graphics.RectF r2 = r0.mDrawingBounds
+            android.graphics.RectF r3 = android.text.BoringLayout.Metrics.m5107$$Nest$fgetmDrawingBounds(r25)
+            r2.set(r3)
+            android.graphics.RectF r2 = r0.mDrawingBounds
+            int r3 = r0.mBottom
+            int r4 = r0.mDesc
+            int r3 = r3 - r4
+            float r3 = (float) r3
+            r4 = 0
+            r2.offset(r4, r3)
             return
         */
         throw new UnsupportedOperationException("Method not decompiled: android.text.BoringLayout.init(java.lang.CharSequence, android.text.TextPaint, android.text.Layout$Alignment, android.text.BoringLayout$Metrics, boolean, boolean, boolean):void");
@@ -230,6 +260,10 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
     }
 
     public static Metrics isBoring(CharSequence text, TextPaint paint, TextDirectionHeuristic textDir, boolean useFallbackLineSpacing, Metrics metrics) {
+        return isBoring(text, paint, textDir, useFallbackLineSpacing, null, metrics);
+    }
+
+    public static Metrics isBoring(CharSequence text, TextPaint paint, TextDirectionHeuristic textDir, boolean useFallbackLineSpacing, Paint.FontMetrics minimumFontMetrics, Metrics metrics) {
         Metrics fm;
         int textLength = text.length();
         if (hasAnyInterestingChars(text, textLength)) {
@@ -253,11 +287,17 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             fm = metrics;
         }
         paint.set(paint);
+        if (ClientFlags.fixLineHeightForLocale() && minimumFontMetrics != null) {
+            fm.set(minimumFontMetrics);
+            fm.top = Math.min(fm.top, fm.ascent);
+            fm.bottom = Math.max(fm.bottom, fm.descent);
+        }
         TextLine line = TextLine.obtain();
+        Metrics fm3 = fm;
         line.set(paint, text, 0, textLength, 1, Layout.DIRS_ALL_LEFT_TO_RIGHT, false, null, 0, 0, useFallbackLineSpacing);
-        fm.width = (int) Math.ceil(line.metrics(fm));
+        fm3.width = (int) Math.ceil(line.metrics(fm3, fm3.mDrawingBounds, false, null));
         TextLine.recycle(line);
-        return fm;
+        return fm3;
     }
 
     @Override // android.text.Layout
@@ -303,11 +343,17 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
 
     @Override // android.text.Layout
     public float getLineMax(int line) {
+        if (getUseBoundsForWidth()) {
+            return super.getLineMax(line);
+        }
         return this.mMax;
     }
 
     @Override // android.text.Layout
     public float getLineWidth(int line) {
+        if (getUseBoundsForWidth()) {
+            return super.getLineWidth(line);
+        }
         if (line == 0) {
             return this.mMax;
         }
@@ -350,13 +396,29 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
     }
 
     @Override // android.text.Layout
+    public RectF computeDrawingBoundingBox() {
+        return this.mDrawingBounds;
+    }
+
+    @Override // android.text.Layout
     public void draw(Canvas c, Path highlight, Paint highlightpaint, int cursorOffset) {
-        String str = this.mDirect;
-        if (str != null && highlight == null) {
-            c.drawText(str, 0.0f, this.mBottom - this.mDesc, this.mPaint);
-        } else {
-            super.draw(c, highlight, highlightpaint, cursorOffset);
+        if (this.mDirect != null && highlight == null) {
+            float leftShift = 0.0f;
+            if (getUseBoundsForWidth() && getShiftDrawingOffsetForStartOverhang()) {
+                RectF drawingRect = computeDrawingBoundingBox();
+                if (drawingRect.left < 0.0f) {
+                    leftShift = -drawingRect.left;
+                    c.translate(leftShift, 0.0f);
+                }
+            }
+            c.drawText(this.mDirect, 0.0f, this.mBottom - this.mDesc, this.mPaint);
+            if (leftShift != 0.0f) {
+                c.translate(-leftShift, 0.0f);
+                return;
+            }
+            return;
         }
+        super.draw(c, highlight, highlightpaint, cursorOffset);
     }
 
     @Override // android.text.TextUtils.EllipsizeCallback
@@ -365,15 +427,20 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
         this.mEllipsizedCount = end - start;
     }
 
-    /* loaded from: classes3.dex */
     public static class Metrics extends Paint.FontMetricsInt {
+        private final RectF mDrawingBounds = new RectF();
         public int width;
+
+        public RectF getDrawingBoundingBox() {
+            return this.mDrawingBounds;
+        }
 
         @Override // android.graphics.Paint.FontMetricsInt
         public String toString() {
-            return super.toString() + " width=" + this.width;
+            return super.toString() + " width=" + this.width + ", drawingBounds = " + this.mDrawingBounds;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.top = 0;
             this.bottom = 0;
@@ -381,6 +448,7 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             this.descent = 0;
             this.width = 0;
             this.leading = 0;
+            this.mDrawingBounds.setEmpty();
         }
     }
 }

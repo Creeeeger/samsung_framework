@@ -10,6 +10,7 @@ import android.os.HandlerExecutor;
 import android.os.HandlerThread;
 import android.os.SystemClock;
 import android.provider.DeviceConfig;
+import android.telecom.Logging.Session;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -19,161 +20,242 @@ import android.view.View;
 import com.android.internal.jank.FrameTracker;
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.internal.util.PerfettoTrigger;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
-import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class InteractionJankMonitor {
-    private static final String ACTION_PREFIX;
-    public static final String ACTION_SESSION_CANCEL;
-    public static final String ACTION_SESSION_END;
+
+    @Deprecated
     public static final int CUJ_BIOMETRIC_PROMPT_TRANSITION = 56;
-    public static final int CUJ_IME_INSETS_ANIMATION = 69;
-    public static final int CUJ_LAUNCHER_ALL_APPS_SCROLL = 26;
-    public static final int CUJ_LAUNCHER_APP_CLOSE_TO_HOME = 9;
-    public static final int CUJ_LAUNCHER_APP_CLOSE_TO_PIP = 10;
-    public static final int CUJ_LAUNCHER_APP_LAUNCH_FROM_ICON = 8;
-    public static final int CUJ_LAUNCHER_APP_LAUNCH_FROM_RECENTS = 7;
-    public static final int CUJ_LAUNCHER_APP_LAUNCH_FROM_WIDGET = 27;
-    public static final int CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS = 66;
-    public static final int CUJ_LAUNCHER_CLOSE_ALL_APPS_SWIPE = 67;
-    public static final int CUJ_LAUNCHER_CLOSE_ALL_APPS_TO_HOME = 68;
-    public static final int CUJ_LAUNCHER_OPEN_ALL_APPS = 25;
-    public static final int CUJ_LAUNCHER_OPEN_SEARCH_RESULT = 71;
-    public static final int CUJ_LAUNCHER_QUICK_SWITCH = 11;
-    public static final int CUJ_LAUNCHER_UNLOCK_ENTRANCE_ANIMATION = 63;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_ALL_APPS_SEARCH_BACK = 95;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_TASKBAR = 92;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_WORKSPACE = 91;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_SAVE_APP_PAIR = 93;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_TASKBAR_ALL_APPS_CLOSE_BACK = 96;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_TASKBAR_ALL_APPS_SEARCH_BACK = 97;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_WIDGET_BOTTOM_SHEET_CLOSE_BACK = 100;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_WIDGET_EDU_SHEET_CLOSE_BACK = 101;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_WIDGET_PICKER_CLOSE_BACK = 98;
+
+    @Deprecated
+    public static final int CUJ_LAUNCHER_WIDGET_PICKER_SEARCH_BACK = 99;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_CLOCK_MOVE_ANIMATION = 70;
-    public static final int CUJ_LOCKSCREEN_LAUNCH_CAMERA = 51;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_OCCLUSION = 64;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_PASSWORD_APPEAR = 17;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_PASSWORD_DISAPPEAR = 20;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_PATTERN_APPEAR = 18;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_PATTERN_DISAPPEAR = 21;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_PIN_APPEAR = 19;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_PIN_DISAPPEAR = 22;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_TRANSITION_FROM_AOD = 23;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_TRANSITION_TO_AOD = 24;
+
+    @Deprecated
     public static final int CUJ_LOCKSCREEN_UNLOCK_ANIMATION = 29;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_ADD = 14;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_APP_START = 16;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_HEADS_UP_APPEAR = 12;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_HEADS_UP_DISAPPEAR = 13;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_REMOVE = 15;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_SHADE_EXPAND_COLLAPSE = 0;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_SHADE_QS_EXPAND_COLLAPSE = 5;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_SHADE_QS_SCROLL_SWIPE = 6;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_SHADE_ROW_EXPAND = 3;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_SHADE_ROW_SWIPE = 4;
+
+    @Deprecated
     public static final int CUJ_NOTIFICATION_SHADE_SCROLL_FLING = 2;
-    public static final int CUJ_ONE_HANDED_ENTER_TRANSITION = 42;
-    public static final int CUJ_ONE_HANDED_EXIT_TRANSITION = 43;
+
+    @Deprecated
     public static final int CUJ_PIP_TRANSITION = 35;
-    public static final int CUJ_RECENTS_SCROLLING = 65;
+
+    @Deprecated
+    public static final int CUJ_PREDICTIVE_BACK_CROSS_ACTIVITY = 84;
+
+    @Deprecated
+    public static final int CUJ_PREDICTIVE_BACK_CROSS_TASK = 85;
+
+    @Deprecated
+    public static final int CUJ_PREDICTIVE_BACK_HOME = 86;
+
+    @Deprecated
     public static final int CUJ_SCREEN_OFF = 40;
+
+    @Deprecated
     public static final int CUJ_SCREEN_OFF_SHOW_AOD = 41;
+
+    @Deprecated
     public static final int CUJ_SETTINGS_PAGE_SCROLL = 28;
+
+    @Deprecated
     public static final int CUJ_SETTINGS_SLIDER = 53;
+
+    @Deprecated
     public static final int CUJ_SETTINGS_TOGGLE = 57;
+
+    @Deprecated
     public static final int CUJ_SHADE_APP_LAUNCH_FROM_HISTORY_BUTTON = 30;
+
+    @Deprecated
     public static final int CUJ_SHADE_APP_LAUNCH_FROM_MEDIA_PLAYER = 31;
+
+    @Deprecated
     public static final int CUJ_SHADE_APP_LAUNCH_FROM_QS_TILE = 32;
+
+    @Deprecated
     public static final int CUJ_SHADE_APP_LAUNCH_FROM_SETTINGS_BUTTON = 33;
+
+    @Deprecated
     public static final int CUJ_SHADE_CLEAR_ALL = 62;
+
+    @Deprecated
     public static final int CUJ_SHADE_DIALOG_OPEN = 58;
+
+    @Deprecated
     public static final int CUJ_SPLASHSCREEN_AVD = 38;
+
+    @Deprecated
     public static final int CUJ_SPLASHSCREEN_EXIT_ANIM = 39;
-    public static final int CUJ_SPLIT_SCREEN_ENTER = 49;
-    public static final int CUJ_SPLIT_SCREEN_EXIT = 50;
+
+    @Deprecated
+    public static final int CUJ_SPLIT_SCREEN_DOUBLE_TAP_DIVIDER = 82;
+
+    @Deprecated
     public static final int CUJ_SPLIT_SCREEN_RESIZE = 52;
+
+    @Deprecated
     public static final int CUJ_STATUS_BAR_APP_LAUNCH_FROM_CALL_CHIP = 34;
+
+    @Deprecated
     public static final int CUJ_SUW_LOADING_SCREEN_FOR_STATUS = 48;
+
+    @Deprecated
     public static final int CUJ_SUW_LOADING_TO_NEXT_FLOW = 47;
+
+    @Deprecated
     public static final int CUJ_SUW_LOADING_TO_SHOW_INFO_WITH_ACTIONS = 45;
+
+    @Deprecated
     public static final int CUJ_SUW_SHOW_FUNCTION_SCREEN_WITH_ACTIONS = 46;
+
+    @Deprecated
     public static final int CUJ_TAKE_SCREENSHOT = 54;
+
+    @Deprecated
     public static final int CUJ_TASKBAR_COLLAPSE = 61;
+
+    @Deprecated
     public static final int CUJ_TASKBAR_EXPAND = 60;
-    public static final int[] CUJ_TO_STATSD_INTERACTION_TYPE;
+
+    @Deprecated
     public static final int CUJ_UNFOLD_ANIM = 44;
+
+    @Deprecated
     public static final int CUJ_USER_DIALOG_OPEN = 59;
+
+    @Deprecated
     public static final int CUJ_USER_SWITCH = 37;
+
+    @Deprecated
     public static final int CUJ_VOLUME_CONTROL = 55;
-    public static final int CUJ_WALLPAPER_TRANSITION = 36;
-    private static final boolean DEBUG = false;
     private static final boolean DEFAULT_DEBUG_OVERLAY_ENABLED = false;
-    private static final boolean DEFAULT_ENABLED;
     private static final int DEFAULT_SAMPLING_INTERVAL = 1;
-    private static final long DEFAULT_TIMEOUT_MS;
     private static final int DEFAULT_TRACE_THRESHOLD_FRAME_TIME_MILLIS = 64;
     private static final int DEFAULT_TRACE_THRESHOLD_MISSED_FRAMES = 3;
-    private static final String DEFAULT_WORKER_NAME;
     static final long EXECUTOR_TASK_TIMEOUT = 500;
-    private static final int LAST_CUJ = 71;
-    public static final int MAX_LENGTH_OF_CUJ_NAME = 80;
     private static final int MAX_LENGTH_SESSION_NAME = 100;
-    private static final int NO_STATSD_LOGGING = -1;
-    public static final int SEC_CUJ_EDGE_OPEN_PANEL = 10002;
-    public static final int SEC_CUJ_NOTIFICATION_SHADE_QS_SHOW_DETAIL = 10001;
-    public static final int SEC_CUJ_RESERVED3 = 10003;
-    public static final int SEC_CUJ_RESERVED4 = 10004;
-    public static final int[] SEC_CUJ_TO_STATSD_INTERACTION_TYPE;
-    public static final int SEC_CUJ_UNKNOWN = 10000;
     private static final String SETTINGS_DEBUG_OVERLAY_ENABLED_KEY = "debug_overlay_enabled";
     private static final String SETTINGS_ENABLED_KEY = "enabled";
     private static final String SETTINGS_SAMPLING_INTERVAL_KEY = "sampling_interval";
     private static final String SETTINGS_THRESHOLD_FRAME_TIME_MILLIS_KEY = "trace_threshold_frame_time_millis";
     private static final String SETTINGS_THRESHOLD_MISSED_FRAMES_KEY = "trace_threshold_missed_frames";
-    private static final String TAG;
     private InteractionMonitorDebugOverlay mDebugOverlay;
     private final DisplayResolutionTracker mDisplayResolutionTracker;
-    private volatile boolean mEnabled;
-    private final SparseArray<FrameTracker> mRunningTrackers;
-    private int mSamplingInterval;
-    private final SparseArray<Runnable> mTimeoutActions;
-    private int mTraceThresholdFrameTimeMillis;
-    private int mTraceThresholdMissedFrames;
-    private final HandlerThread mWorker;
-    private final DeviceConfig.OnPropertiesChangedListener mPropertiesChangedListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda1
-        public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-            InteractionJankMonitor.this.updateProperties(properties);
-        }
-    };
+    private final Handler mWorker;
+    private static final String TAG = InteractionJankMonitor.class.getSimpleName();
+    private static final String ACTION_PREFIX = InteractionJankMonitor.class.getCanonicalName();
+    private static final String DEFAULT_WORKER_NAME = TAG + "-Worker";
+    private static final long DEFAULT_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
+    private static final boolean DEFAULT_ENABLED = Build.IS_DEBUGGABLE;
+    public static final String ACTION_SESSION_END = ACTION_PREFIX + ".ACTION_SESSION_END";
+    public static final String ACTION_SESSION_CANCEL = ACTION_PREFIX + ".ACTION_SESSION_CANCEL";
+    private final SparseArray<RunningTracker> mRunningTrackers = new SparseArray<>();
     private final Object mLock = new Object();
     private int mDebugBgColor = Color.CYAN;
     private double mDebugYOffset = 0.1d;
+    private volatile boolean mEnabled = DEFAULT_ENABLED;
+    private int mSamplingInterval = 1;
+    private int mTraceThresholdMissedFrames = 3;
+    private int mTraceThresholdFrameTimeMillis = 64;
 
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
-    public @interface CujType {
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     @FunctionalInterface
-    /* loaded from: classes4.dex */
-    public interface TimeFunction {
+    interface TimeFunction {
         void invoke(long j, long j2, long j3);
     }
 
-    static {
-        String simpleName = InteractionJankMonitor.class.getSimpleName();
-        TAG = simpleName;
-        String canonicalName = InteractionJankMonitor.class.getCanonicalName();
-        ACTION_PREFIX = canonicalName;
-        DEFAULT_WORKER_NAME = simpleName + "-Worker";
-        DEFAULT_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2L);
-        DEFAULT_ENABLED = Build.IS_DEBUGGABLE;
-        ACTION_SESSION_END = canonicalName + ".ACTION_SESSION_END";
-        ACTION_SESSION_CANCEL = canonicalName + ".ACTION_SESSION_CANCEL";
-        CUJ_TO_STATSD_INTERACTION_TYPE = r1;
-        int[] iArr = {1, -1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72};
-        SEC_CUJ_TO_STATSD_INTERACTION_TYPE = new int[]{-1, 10001, 10002, -1, -1};
-    }
-
-    /* loaded from: classes4.dex */
-    public static class InstanceHolder {
+    private static class InstanceHolder {
         public static final InteractionJankMonitor INSTANCE = new InteractionJankMonitor(new HandlerThread(InteractionJankMonitor.DEFAULT_WORKER_NAME));
 
         private InstanceHolder() {
@@ -185,98 +267,94 @@ public class InteractionJankMonitor {
     }
 
     public InteractionJankMonitor(HandlerThread worker) {
-        boolean z = DEFAULT_ENABLED;
-        this.mEnabled = z;
-        this.mSamplingInterval = 1;
-        this.mTraceThresholdMissedFrames = 3;
-        this.mTraceThresholdFrameTimeMillis = 64;
-        this.mRunningTrackers = new SparseArray<>();
-        this.mTimeoutActions = new SparseArray<>();
-        this.mWorker = worker;
         worker.start();
-        this.mDisplayResolutionTracker = new DisplayResolutionTracker(worker.getThreadHandler());
-        this.mSamplingInterval = 1;
-        this.mEnabled = z;
+        this.mWorker = worker.getThreadHandler();
+        this.mDisplayResolutionTracker = new DisplayResolutionTracker(this.mWorker);
         final Context context = ActivityThread.currentApplication();
-        if (context.checkCallingOrSelfPermission(Manifest.permission.READ_DEVICE_CONFIG) != 0) {
-            return;
+        if (context == null || context.checkCallingOrSelfPermission(Manifest.permission.READ_DEVICE_CONFIG) != 0) {
+            Log.w(TAG, "Initializing without READ_DEVICE_CONFIG permission. enabled=" + this.mEnabled + ", interval=" + this.mSamplingInterval + ", missedFrameThreshold=" + this.mTraceThresholdMissedFrames + ", frameTimeThreshold=" + this.mTraceThresholdFrameTimeMillis + ", package=" + (context == null ? "null" : context.getPackageName()));
+        } else {
+            this.mWorker.post(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda7
+                @Override // java.lang.Runnable
+                public final void run() {
+                    InteractionJankMonitor.this.lambda$new$0(context);
+                }
+            });
         }
-        worker.getThreadHandler().post(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                InteractionJankMonitor.this.lambda$new$0(context);
-            }
-        });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(Context context) {
         try {
-            this.mPropertiesChangedListener.onPropertiesChanged(DeviceConfig.getProperties("interaction_jank_monitor", new String[0]));
-            DeviceConfig.addOnPropertiesChangedListener("interaction_jank_monitor", new HandlerExecutor(this.mWorker.getThreadHandler()), this.mPropertiesChangedListener);
+            updateProperties(DeviceConfig.getProperties("interaction_jank_monitor", new String[0]));
+            DeviceConfig.addOnPropertiesChangedListener("interaction_jank_monitor", new HandlerExecutor(this.mWorker), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda0
+                public final void onPropertiesChanged(DeviceConfig.Properties properties) {
+                    InteractionJankMonitor.this.updateProperties(properties);
+                }
+            });
         } catch (SecurityException e) {
             Log.d(TAG, "Can't get properties: READ_DEVICE_CONFIG granted=" + context.checkCallingOrSelfPermission(Manifest.permission.READ_DEVICE_CONFIG) + ", package=" + context.getPackageName());
         }
     }
 
-    public FrameTracker createFrameTracker(Configuration config, Session session) {
+    public FrameTracker createFrameTracker(Configuration config) {
         View view = config.mView;
-        if (!config.hasValidView()) {
-            boolean attached = false;
-            boolean hasViewRoot = false;
-            boolean hasRenderer = false;
-            if (view != null) {
-                attached = view.isAttachedToWindow();
-                hasViewRoot = view.getViewRootImpl() != null;
-                hasRenderer = view.getThreadedRenderer() != null;
-            }
-            Log.d(TAG, "create FrameTracker fails: view=" + view + ", attached=" + attached + ", hasViewRoot=" + hasViewRoot + ", hasRenderer=" + hasRenderer, new Throwable());
-            return null;
-        }
         FrameTracker.ThreadedRendererWrapper threadedRenderer = view == null ? null : new FrameTracker.ThreadedRendererWrapper(view.getThreadedRenderer());
-        FrameTracker.ViewRootWrapper viewRoot = view == null ? null : new FrameTracker.ViewRootWrapper(view.getViewRootImpl());
+        FrameTracker.ViewRootWrapper viewRoot = view != null ? new FrameTracker.ViewRootWrapper(view.getViewRootImpl()) : null;
         FrameTracker.SurfaceControlWrapper surfaceControl = new FrameTracker.SurfaceControlWrapper();
         FrameTracker.ChoreographerWrapper choreographer = new FrameTracker.ChoreographerWrapper(Choreographer.getInstance());
-        FrameTracker.FrameTrackerListener eventsListener = new FrameTracker.FrameTrackerListener() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda12
-            @Override // com.android.internal.jank.FrameTracker.FrameTrackerListener
-            public final void onCujEvents(InteractionJankMonitor.Session session2, String str) {
-                InteractionJankMonitor.this.lambda$createFrameTracker$1(session2, str);
-            }
-        };
+        FrameTracker.FrameTrackerListener eventsListener = new AnonymousClass1(config);
         FrameTracker.FrameMetricsWrapper frameMetrics = new FrameTracker.FrameMetricsWrapper();
-        return new FrameTracker(this, session, config.getHandler(), threadedRenderer, viewRoot, surfaceControl, choreographer, frameMetrics, new FrameTracker.StatsLogWrapper(this.mDisplayResolutionTracker), this.mTraceThresholdMissedFrames, this.mTraceThresholdFrameTimeMillis, eventsListener, config);
+        return new FrameTracker(config, threadedRenderer, viewRoot, surfaceControl, choreographer, frameMetrics, new FrameTracker.StatsLogWrapper(this.mDisplayResolutionTracker), this.mTraceThresholdMissedFrames, this.mTraceThresholdFrameTimeMillis, eventsListener);
     }
 
-    /* renamed from: handleCujEvents */
-    public void lambda$createFrameTracker$1(String action, final Session session) {
-        if (needRemoveTasks(action, session)) {
-            getTracker(session.getCuj()).getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda0
+    /* renamed from: com.android.internal.jank.InteractionJankMonitor$1, reason: invalid class name */
+    class AnonymousClass1 implements FrameTracker.FrameTrackerListener {
+        final /* synthetic */ Configuration val$config;
+
+        AnonymousClass1(Configuration configuration) {
+            this.val$config = configuration;
+        }
+
+        @Override // com.android.internal.jank.FrameTracker.FrameTrackerListener
+        public void onCujEvents(final FrameTracker tracker, final String action, final int reason) {
+            Handler handler = this.val$config.getHandler();
+            final Configuration configuration = this.val$config;
+            handler.runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$1$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
-                    InteractionJankMonitor.this.lambda$handleCujEvents$2(session);
+                    InteractionJankMonitor.AnonymousClass1.this.lambda$onCujEvents$0(configuration, tracker, action, reason);
                 }
-            }, EXECUTOR_TASK_TIMEOUT);
+            }, InteractionJankMonitor.EXECUTOR_TASK_TIMEOUT);
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onCujEvents$0(Configuration config, FrameTracker tracker, String action, int reason) {
+            InteractionJankMonitor.this.handleCujEvents(config.mCujType, tracker, action, reason);
+        }
+
+        @Override // com.android.internal.jank.FrameTracker.FrameTrackerListener
+        public void triggerPerfetto(final Configuration config) {
+            InteractionJankMonitor.this.mWorker.post(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$1$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    PerfettoTrigger.trigger(InteractionJankMonitor.Configuration.this.getPerfettoTrigger());
+                }
+            });
         }
     }
 
-    public /* synthetic */ void lambda$handleCujEvents$2(Session session) {
-        removeTimeout(session.getCuj());
-        removeTracker(session.getCuj(), session.getReason());
+    /* JADX INFO: Access modifiers changed from: private */
+    public void handleCujEvents(int cuj, FrameTracker tracker, String action, int reason) {
+        if (needRemoveTasks(action, reason)) {
+            removeTrackerIfCurrent(cuj, tracker, reason);
+        }
     }
 
-    private boolean needRemoveTasks(String action, Session session) {
-        boolean badEnd = action.equals(ACTION_SESSION_END) && session.getReason() != 0;
-        boolean badCancel = (!action.equals(ACTION_SESSION_CANCEL) || session.getReason() == 16 || session.getReason() == 19) ? false : true;
+    private static boolean needRemoveTasks(String action, int reason) {
+        boolean badEnd = action.equals(ACTION_SESSION_END) && reason != 0;
+        boolean badCancel = (!action.equals(ACTION_SESSION_CANCEL) || reason == 16 || reason == 19) ? false : true;
         return badEnd || badCancel;
-    }
-
-    private void removeTimeout(int cujType) {
-        synchronized (this.mLock) {
-            Runnable timeout = this.mTimeoutActions.get(cujType);
-            if (timeout != null) {
-                getTracker(cujType).getHandler().removeCallbacks(timeout);
-                this.mTimeoutActions.remove(cujType);
-            }
-        }
     }
 
     public boolean isInstrumenting(int cujType) {
@@ -299,21 +377,21 @@ public class InteractionJankMonitor {
     public boolean begin(Configuration.Builder builder) {
         try {
             final Configuration config = builder.build();
-            postEventLogToWorkerThread(new TimeFunction() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda6
+            postEventLogToWorkerThread(new TimeFunction() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda2
                 @Override // com.android.internal.jank.InteractionJankMonitor.TimeFunction
                 public final void invoke(long j, long j2, long j3) {
                     EventLogTags.writeJankCujEventsBeginRequest(r0.mCujType, j, j2, j3, InteractionJankMonitor.Configuration.this.mTag);
                 }
             });
             final TrackerResult result = new TrackerResult();
-            boolean success = config.getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda7
+            boolean success = config.getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
-                    InteractionJankMonitor.this.lambda$begin$4(result, config);
+                    InteractionJankMonitor.this.lambda$begin$2(result, config);
                 }
             }, EXECUTOR_TASK_TIMEOUT);
             if (!success) {
-                Log.d(TAG, "begin failed due to timeout, CUJ=" + getNameOfCuj(config.mCujType));
+                Log.d(TAG, "begin failed due to timeout, CUJ=" + Cuj.getNameOfCuj(config.mCujType));
                 return false;
             }
             return result.mResult;
@@ -323,64 +401,73 @@ public class InteractionJankMonitor {
         }
     }
 
-    public /* synthetic */ void lambda$begin$4(TrackerResult result, Configuration config) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$begin$2(TrackerResult result, Configuration config) {
         result.mResult = beginInternal(config);
     }
 
-    private boolean beginInternal(Configuration conf) {
-        FrameTracker tracker;
+    private boolean beginInternal(final Configuration conf) {
+        RunningTracker tracker;
         final int cujType = conf.mCujType;
-        if (!shouldMonitor(cujType) || getTracker(cujType) != null || (tracker = createFrameTracker(conf, new Session(cujType, conf.mTag))) == null) {
+        if (!shouldMonitor() || (tracker = putTrackerIfNoCurrent(cujType, new Supplier() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda4
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                InteractionJankMonitor.RunningTracker lambda$beginInternal$4;
+                lambda$beginInternal$4 = InteractionJankMonitor.this.lambda$beginInternal$4(conf, cujType);
+                return lambda$beginInternal$4;
+            }
+        })) == null) {
             return false;
         }
-        putTracker(cujType, tracker);
-        tracker.begin();
-        scheduleTimeoutAction(cujType, conf.mTimeout, new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                InteractionJankMonitor.this.lambda$beginInternal$5(cujType);
-            }
-        });
+        tracker.mTracker.begin();
+        scheduleTimeoutAction(tracker.mConfig, tracker.mTimeoutAction);
         return true;
     }
 
-    public /* synthetic */ void lambda$beginInternal$5(int cujType) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ RunningTracker lambda$beginInternal$4(Configuration conf, final int cujType) {
+        return new RunningTracker(conf, createFrameTracker(conf), new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda6
+            @Override // java.lang.Runnable
+            public final void run() {
+                InteractionJankMonitor.this.lambda$beginInternal$3(cujType);
+            }
+        });
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$beginInternal$3(int cujType) {
         cancel(cujType, 19);
     }
 
-    public boolean shouldMonitor(int cujType) {
-        boolean shouldSample = ThreadLocalRandom.current().nextInt() % this.mSamplingInterval == 0;
-        return this.mEnabled && shouldSample;
+    public boolean shouldMonitor() {
+        return this.mEnabled && ThreadLocalRandom.current().nextInt(this.mSamplingInterval) == 0;
     }
 
-    public void scheduleTimeoutAction(int cuj, long timeout, Runnable action) {
-        synchronized (this.mLock) {
-            this.mTimeoutActions.put(cuj, action);
-            getTracker(cuj).getHandler().postDelayed(action, timeout);
-        }
+    public void scheduleTimeoutAction(Configuration config, Runnable action) {
+        config.getHandler().postDelayed(action, config.mTimeout);
     }
 
     public boolean end(final int cujType) {
-        postEventLogToWorkerThread(new TimeFunction() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda9
+        postEventLogToWorkerThread(new TimeFunction() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda8
             @Override // com.android.internal.jank.InteractionJankMonitor.TimeFunction
             public final void invoke(long j, long j2, long j3) {
                 EventLogTags.writeJankCujEventsEndRequest(cujType, j, j2, j3);
             }
         });
-        FrameTracker tracker = getTracker(cujType);
+        final RunningTracker tracker = getTracker(cujType);
         if (tracker == null) {
             return false;
         }
         try {
             final TrackerResult result = new TrackerResult();
-            boolean success = tracker.getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda10
+            boolean success = tracker.mConfig.getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda9
                 @Override // java.lang.Runnable
                 public final void run() {
-                    InteractionJankMonitor.this.lambda$end$7(result, cujType);
+                    InteractionJankMonitor.this.lambda$end$6(result, tracker);
                 }
             }, EXECUTOR_TASK_TIMEOUT);
             if (!success) {
-                Log.d(TAG, "end failed due to timeout, CUJ=" + getNameOfCuj(cujType));
+                Log.d(TAG, "end failed due to timeout, CUJ=" + Cuj.getNameOfCuj(cujType));
                 return false;
             }
             return result.mResult;
@@ -390,25 +477,21 @@ public class InteractionJankMonitor {
         }
     }
 
-    public /* synthetic */ void lambda$end$7(TrackerResult result, int cujType) {
-        result.mResult = endInternal(cujType);
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$end$6(TrackerResult result, RunningTracker tracker) {
+        result.mResult = endInternal(tracker);
     }
 
-    private boolean endInternal(int cujType) {
-        removeTimeout(cujType);
-        FrameTracker tracker = getTracker(cujType);
-        if (tracker == null) {
+    private boolean endInternal(RunningTracker tracker) {
+        if (removeTrackerIfCurrent(tracker, 0)) {
             return false;
         }
-        if (tracker.end(0)) {
-            removeTracker(cujType, 0);
-            return true;
-        }
+        tracker.mTracker.end(0);
         return true;
     }
 
     public boolean cancel(final int cujType) {
-        postEventLogToWorkerThread(new TimeFunction() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda8
+        postEventLogToWorkerThread(new TimeFunction() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda5
             @Override // com.android.internal.jank.InteractionJankMonitor.TimeFunction
             public final void invoke(long j, long j2, long j3) {
                 EventLogTags.writeJankCujEventsCancelRequest(cujType, j, j2, j3);
@@ -417,21 +500,21 @@ public class InteractionJankMonitor {
         return cancel(cujType, 16);
     }
 
-    public boolean cancel(final int cujType, final int reason) {
-        FrameTracker tracker = getTracker(cujType);
+    public boolean cancel(int cujType, final int reason) {
+        final RunningTracker tracker = getTracker(cujType);
         if (tracker == null) {
             return false;
         }
         try {
             final TrackerResult result = new TrackerResult();
-            boolean success = tracker.getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda11
+            boolean success = tracker.mConfig.getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
-                    InteractionJankMonitor.this.lambda$cancel$9(result, cujType, reason);
+                    InteractionJankMonitor.this.lambda$cancel$8(result, tracker, reason);
                 }
             }, EXECUTOR_TASK_TIMEOUT);
             if (!success) {
-                Log.d(TAG, "cancel failed due to timeout, CUJ=" + getNameOfCuj(cujType));
+                Log.d(TAG, "cancel failed due to timeout, CUJ=" + Cuj.getNameOfCuj(cujType));
                 return false;
             }
             return result.mResult;
@@ -441,85 +524,150 @@ public class InteractionJankMonitor {
         }
     }
 
-    public /* synthetic */ void lambda$cancel$9(TrackerResult result, int cujType, int reason) {
-        result.mResult = cancelInternal(cujType, reason);
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$cancel$8(TrackerResult result, RunningTracker tracker, int reason) {
+        result.mResult = cancelInternal(tracker, reason);
     }
 
-    private boolean cancelInternal(int cujType, int reason) {
-        removeTimeout(cujType);
-        FrameTracker tracker = getTracker(cujType);
-        if (tracker == null) {
+    private boolean cancelInternal(RunningTracker tracker, int reason) {
+        if (removeTrackerIfCurrent(tracker, reason)) {
             return false;
         }
-        if (tracker.cancel(reason)) {
-            removeTracker(cujType, reason);
-            return true;
-        }
+        tracker.mTracker.cancel(reason);
         return true;
     }
 
-    private void putTracker(int cuj, FrameTracker tracker) {
+    private RunningTracker putTrackerIfNoCurrent(int cuj, Supplier<RunningTracker> supplier) {
         synchronized (this.mLock) {
+            if (this.mRunningTrackers.contains(cuj)) {
+                return null;
+            }
+            RunningTracker tracker = supplier.get();
+            if (tracker == null) {
+                return null;
+            }
             this.mRunningTrackers.put(cuj, tracker);
-            InteractionMonitorDebugOverlay interactionMonitorDebugOverlay = this.mDebugOverlay;
-            if (interactionMonitorDebugOverlay != null) {
-                interactionMonitorDebugOverlay.onTrackerAdded(cuj, tracker);
+            if (this.mDebugOverlay != null) {
+                this.mDebugOverlay.onTrackerAdded(cuj, tracker);
             }
+            return tracker;
         }
     }
 
-    private FrameTracker getTracker(int cuj) {
-        FrameTracker frameTracker;
+    private RunningTracker getTracker(int cuj) {
+        RunningTracker runningTracker;
         synchronized (this.mLock) {
-            frameTracker = this.mRunningTrackers.get(cuj);
+            runningTracker = this.mRunningTrackers.get(cuj);
         }
-        return frameTracker;
+        return runningTracker;
     }
 
-    private void removeTracker(int cuj, int reason) {
+    private boolean removeTrackerIfCurrent(RunningTracker tracker, int reason) {
+        return removeTrackerIfCurrent(tracker.mConfig.mCujType, tracker.mTracker, reason);
+    }
+
+    private boolean removeTrackerIfCurrent(int cuj, FrameTracker tracker, int reason) {
         synchronized (this.mLock) {
-            this.mRunningTrackers.remove(cuj);
-            InteractionMonitorDebugOverlay interactionMonitorDebugOverlay = this.mDebugOverlay;
-            if (interactionMonitorDebugOverlay != null) {
-                interactionMonitorDebugOverlay.onTrackerRemoved(cuj, reason, this.mRunningTrackers);
+            RunningTracker running = this.mRunningTrackers.get(cuj);
+            if (running != null && running.mTracker == tracker) {
+                running.mConfig.getHandler().removeCallbacks(running.mTimeoutAction);
+                this.mRunningTrackers.remove(cuj);
+                if (this.mDebugOverlay != null) {
+                    this.mDebugOverlay.onTrackerRemoved(cuj, reason, this.mRunningTrackers);
+                }
+                return false;
             }
+            return true;
         }
     }
 
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public void updateProperties(DeviceConfig.Properties properties) {
-        InteractionMonitorDebugOverlay interactionMonitorDebugOverlay;
-        this.mSamplingInterval = properties.getInt("sampling_interval", 1);
-        this.mTraceThresholdMissedFrames = properties.getInt(SETTINGS_THRESHOLD_MISSED_FRAMES_KEY, 3);
-        this.mTraceThresholdFrameTimeMillis = properties.getInt(SETTINGS_THRESHOLD_FRAME_TIME_MILLIS_KEY, 64);
-        boolean debugOverlayEnabled = Build.IS_DEBUGGABLE && properties.getBoolean(SETTINGS_DEBUG_OVERLAY_ENABLED_KEY, false);
-        if (debugOverlayEnabled && this.mDebugOverlay == null) {
-            this.mDebugOverlay = new InteractionMonitorDebugOverlay(this.mLock, this.mDebugBgColor, this.mDebugYOffset);
-        } else if (!debugOverlayEnabled && (interactionMonitorDebugOverlay = this.mDebugOverlay) != null) {
-            interactionMonitorDebugOverlay.dispose();
-            this.mDebugOverlay = null;
-        }
-        this.mEnabled = properties.getBoolean("enabled", DEFAULT_ENABLED);
-    }
-
-    public DeviceConfig.OnPropertiesChangedListener getPropertiesChangedListener() {
-        return this.mPropertiesChangedListener;
-    }
-
-    public void trigger(final Session session) {
-        this.mWorker.getThreadHandler().post(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                PerfettoTrigger.trigger(InteractionJankMonitor.Session.this.getPerfettoTrigger());
+        char c;
+        for (String property : properties.getKeyset()) {
+            boolean z = false;
+            switch (property.hashCode()) {
+                case -1609594047:
+                    if (property.equals("enabled")) {
+                        c = 3;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case -464409256:
+                    if (property.equals(SETTINGS_THRESHOLD_FRAME_TIME_MILLIS_KEY)) {
+                        c = 2;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case -94225891:
+                    if (property.equals("sampling_interval")) {
+                        c = 0;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 1147866214:
+                    if (property.equals(SETTINGS_DEBUG_OVERLAY_ENABLED_KEY)) {
+                        c = 4;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 1589403900:
+                    if (property.equals(SETTINGS_THRESHOLD_MISSED_FRAMES_KEY)) {
+                        c = 1;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
+                    break;
             }
-        });
+            switch (c) {
+                case 0:
+                    this.mSamplingInterval = properties.getInt(property, 1);
+                    break;
+                case 1:
+                    this.mTraceThresholdMissedFrames = properties.getInt(property, 3);
+                    break;
+                case 2:
+                    this.mTraceThresholdFrameTimeMillis = properties.getInt(property, 64);
+                    break;
+                case 3:
+                    this.mEnabled = properties.getBoolean(property, DEFAULT_ENABLED);
+                    break;
+                case 4:
+                    if (Build.IS_DEBUGGABLE && properties.getBoolean(property, false)) {
+                        z = true;
+                    }
+                    boolean debugOverlayEnabled = z;
+                    if (debugOverlayEnabled && this.mDebugOverlay == null) {
+                        this.mDebugOverlay = new InteractionMonitorDebugOverlay(this.mLock, this.mDebugBgColor, this.mDebugYOffset);
+                        break;
+                    } else if (!debugOverlayEnabled && this.mDebugOverlay != null) {
+                        this.mDebugOverlay.dispose();
+                        this.mDebugOverlay = null;
+                        break;
+                    }
+                    break;
+                default:
+                    Log.w(TAG, "Got a change event for an unknown property: " + property + " => " + properties.getString(property, ""));
+                    break;
+            }
+        }
     }
 
+    @Deprecated
     public static String getNameOfInteraction(int interactionType) {
-        return getNameOfCuj(getCujTypeFromInteraction(interactionType));
+        return Cuj.getNameOfInteraction(interactionType);
     }
 
-    private static int getCujTypeFromInteraction(int interactionType) {
-        return interactionType - 1;
+    @Deprecated
+    public static String getNameOfCuj(int cujType) {
+        return Cuj.getNameOfCuj(cujType);
     }
 
     public void configDebugOverlay(int bgColor, double yOffset) {
@@ -527,194 +675,41 @@ public class InteractionJankMonitor {
         this.mDebugYOffset = yOffset;
     }
 
-    private static String listNamesOfCujs(SparseArray<FrameTracker> trackers) {
-        return null;
+    private void postEventLogToWorkerThread(final TimeFunction logFunction) {
+        Instant now = Instant.now();
+        final long unixNanos = TimeUnit.NANOSECONDS.convert(now.getEpochSecond(), TimeUnit.SECONDS) + now.getNano();
+        final long elapsedNanos = SystemClock.elapsedRealtimeNanos();
+        final long realtimeNanos = SystemClock.uptimeNanos();
+        this.mWorker.post(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda1
+            @Override // java.lang.Runnable
+            public final void run() {
+                InteractionJankMonitor.TimeFunction.this.invoke(unixNanos, elapsedNanos, realtimeNanos);
+            }
+        });
     }
 
-    public static String getNameOfCuj(int cujType) {
-        switch (cujType) {
-            case 0:
-                return "NOTIFICATION_SHADE_EXPAND_COLLAPSE";
-            case 2:
-                return "NOTIFICATION_SHADE_SCROLL_FLING";
-            case 3:
-                return "NOTIFICATION_SHADE_ROW_EXPAND";
-            case 4:
-                return "NOTIFICATION_SHADE_ROW_SWIPE";
-            case 5:
-                return "NOTIFICATION_SHADE_QS_EXPAND_COLLAPSE";
-            case 6:
-                return "NOTIFICATION_SHADE_QS_SCROLL_SWIPE";
-            case 7:
-                return "LAUNCHER_APP_LAUNCH_FROM_RECENTS";
-            case 8:
-                return "LAUNCHER_APP_LAUNCH_FROM_ICON";
-            case 9:
-                return "LAUNCHER_APP_CLOSE_TO_HOME";
-            case 10:
-                return "LAUNCHER_APP_CLOSE_TO_PIP";
-            case 11:
-                return "LAUNCHER_QUICK_SWITCH";
-            case 12:
-                return "NOTIFICATION_HEADS_UP_APPEAR";
-            case 13:
-                return "NOTIFICATION_HEADS_UP_DISAPPEAR";
-            case 14:
-                return "NOTIFICATION_ADD";
-            case 15:
-                return "NOTIFICATION_REMOVE";
-            case 16:
-                return "NOTIFICATION_APP_START";
-            case 17:
-                return "LOCKSCREEN_PASSWORD_APPEAR";
-            case 18:
-                return "LOCKSCREEN_PATTERN_APPEAR";
-            case 19:
-                return "LOCKSCREEN_PIN_APPEAR";
-            case 20:
-                return "LOCKSCREEN_PASSWORD_DISAPPEAR";
-            case 21:
-                return "LOCKSCREEN_PATTERN_DISAPPEAR";
-            case 22:
-                return "LOCKSCREEN_PIN_DISAPPEAR";
-            case 23:
-                return "LOCKSCREEN_TRANSITION_FROM_AOD";
-            case 24:
-                return "LOCKSCREEN_TRANSITION_TO_AOD";
-            case 25:
-                return "LAUNCHER_OPEN_ALL_APPS";
-            case 26:
-                return "LAUNCHER_ALL_APPS_SCROLL";
-            case 27:
-                return "LAUNCHER_APP_LAUNCH_FROM_WIDGET";
-            case 28:
-                return "SETTINGS_PAGE_SCROLL";
-            case 29:
-                return "LOCKSCREEN_UNLOCK_ANIMATION";
-            case 30:
-                return "SHADE_APP_LAUNCH_FROM_HISTORY_BUTTON";
-            case 31:
-                return "SHADE_APP_LAUNCH_FROM_MEDIA_PLAYER";
-            case 32:
-                return "SHADE_APP_LAUNCH_FROM_QS_TILE";
-            case 33:
-                return "SHADE_APP_LAUNCH_FROM_SETTINGS_BUTTON";
-            case 34:
-                return "STATUS_BAR_APP_LAUNCH_FROM_CALL_CHIP";
-            case 35:
-                return "PIP_TRANSITION";
-            case 36:
-                return "WALLPAPER_TRANSITION";
-            case 37:
-                return "USER_SWITCH";
-            case 38:
-                return "SPLASHSCREEN_AVD";
-            case 39:
-                return "SPLASHSCREEN_EXIT_ANIM";
-            case 40:
-                return "SCREEN_OFF";
-            case 41:
-                return "SCREEN_OFF_SHOW_AOD";
-            case 42:
-                return "ONE_HANDED_ENTER_TRANSITION";
-            case 43:
-                return "ONE_HANDED_EXIT_TRANSITION";
-            case 44:
-                return "UNFOLD_ANIM";
-            case 45:
-                return "SUW_LOADING_TO_SHOW_INFO_WITH_ACTIONS";
-            case 46:
-                return "SUW_SHOW_FUNCTION_SCREEN_WITH_ACTIONS";
-            case 47:
-                return "SUW_LOADING_TO_NEXT_FLOW";
-            case 48:
-                return "SUW_LOADING_SCREEN_FOR_STATUS";
-            case 49:
-                return "SPLIT_SCREEN_ENTER";
-            case 50:
-                return "SPLIT_SCREEN_EXIT";
-            case 51:
-                return "LOCKSCREEN_LAUNCH_CAMERA";
-            case 52:
-                return "SPLIT_SCREEN_RESIZE";
-            case 53:
-                return "SETTINGS_SLIDER";
-            case 54:
-                return "TAKE_SCREENSHOT";
-            case 55:
-                return "VOLUME_CONTROL";
-            case 56:
-                return "BIOMETRIC_PROMPT_TRANSITION";
-            case 57:
-                return "SETTINGS_TOGGLE";
-            case 58:
-                return "SHADE_DIALOG_OPEN";
-            case 59:
-                return "USER_DIALOG_OPEN";
-            case 60:
-                return "TASKBAR_EXPAND";
-            case 61:
-                return "TASKBAR_COLLAPSE";
-            case 62:
-                return "SHADE_CLEAR_ALL";
-            case 63:
-                return "LAUNCHER_UNLOCK_ENTRANCE_ANIMATION";
-            case 64:
-                return "LOCKSCREEN_OCCLUSION";
-            case 65:
-                return "RECENTS_SCROLLING";
-            case 66:
-                return "LAUNCHER_APP_SWIPE_TO_RECENTS";
-            case 67:
-                return "LAUNCHER_CLOSE_ALL_APPS_SWIPE";
-            case 68:
-                return "LAUNCHER_CLOSE_ALL_APPS_TO_HOME";
-            case 69:
-                return "IME_INSETS_ANIMATION";
-            case 70:
-                return "LOCKSCREEN_CLOCK_MOVE_ANIMATION";
-            case 71:
-                return "LAUNCHER_OPEN_SEARCH_RESULT";
-            case 10001:
-                return "SHADE_QS_SHOW_DETAIL";
-            case 10002:
-                return "EDGE_OPEN_PANEL";
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public static class TrackerResult {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class TrackerResult {
         private boolean mResult;
-
-        /* synthetic */ TrackerResult(TrackerResultIA trackerResultIA) {
-            this();
-        }
 
         private TrackerResult() {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class Configuration {
         private final Context mContext;
         private final int mCujType;
         private final boolean mDeferMonitor;
         private final Handler mHandler;
+        private final String mSessionName;
         private final SurfaceControl mSurfaceControl;
         private final boolean mSurfaceOnly;
         private final String mTag;
         private final long mTimeout;
         private final View mView;
 
-        /* synthetic */ Configuration(int i, View view, String str, long j, boolean z, Context context, SurfaceControl surfaceControl, boolean z2, ConfigurationIA configurationIA) {
-            this(i, view, str, j, z, context, surfaceControl, z2);
-        }
-
-        /* loaded from: classes4.dex */
         public static class Builder {
-            private int mAttrCujType;
+            private final int mAttrCujType;
             private SurfaceControl mAttrSurfaceControl;
             private boolean mAttrSurfaceOnly;
             private View mAttrView = null;
@@ -779,6 +774,7 @@ public class InteractionJankMonitor {
             Context applicationContext;
             this.mCujType = cuj;
             this.mTag = tag;
+            this.mSessionName = generateSessionName(Cuj.getNameOfCuj(cuj), tag);
             this.mTimeout = timeout;
             this.mView = view;
             this.mSurfaceOnly = surfaceOnly;
@@ -791,7 +787,19 @@ public class InteractionJankMonitor {
             this.mSurfaceControl = surfaceControl;
             this.mDeferMonitor = deferMonitor;
             validate();
-            this.mHandler = surfaceOnly ? applicationContext.getMainThreadHandler() : view.getHandler();
+            this.mHandler = this.mSurfaceOnly ? this.mContext.getMainThreadHandler() : this.mView.getHandler();
+        }
+
+        public static String generateSessionName(String cujName, String cujPostfix) {
+            int remaining;
+            boolean hasPostfix = !TextUtils.isEmpty(cujPostfix);
+            if (hasPostfix && cujPostfix.length() > (remaining = 100 - cujName.length())) {
+                cujPostfix = cujPostfix.substring(0, remaining - 3).concat(Session.TRUNCATE_STRING);
+            }
+            if (hasPostfix) {
+                return TextUtils.formatSimple("J<%s::%s>", cujName, cujPostfix);
+            }
+            return TextUtils.formatSimple("J<%s>", cujName);
         }
 
         private void validate() {
@@ -810,8 +818,7 @@ public class InteractionJankMonitor {
                     shouldThrow = true;
                     msg.append("Must pass in a context if only instrument surface; ");
                 }
-                SurfaceControl surfaceControl = this.mSurfaceControl;
-                if (surfaceControl == null || !surfaceControl.isValid()) {
+                if (this.mSurfaceControl == null || !this.mSurfaceControl.isValid()) {
                     shouldThrow = true;
                     msg.append("Must pass in a valid surface control if only instrument surface; ");
                 }
@@ -820,9 +827,8 @@ public class InteractionJankMonitor {
                 boolean attached = false;
                 boolean hasViewRoot = false;
                 boolean hasRenderer = false;
-                View view = this.mView;
-                if (view != null) {
-                    attached = view.isAttachedToWindow();
+                if (this.mView != null) {
+                    attached = this.mView.isAttachedToWindow();
                     hasViewRoot = this.mView.getViewRootImpl() != null;
                     hasRenderer = this.mView.getThreadedRenderer() != null;
                 }
@@ -835,8 +841,7 @@ public class InteractionJankMonitor {
         }
 
         boolean hasValidView() {
-            View view;
-            return this.mSurfaceOnly || !((view = this.mView) == null || !view.isAttachedToWindow() || this.mView.getViewRootImpl() == null || this.mView.getThreadedRenderer() == null);
+            return this.mSurfaceOnly || !(this.mView == null || !this.mView.isAttachedToWindow() || this.mView.getViewRootImpl() == null || this.mView.getThreadedRenderer() == null);
         }
 
         public boolean isSurfaceOnly() {
@@ -862,78 +867,37 @@ public class InteractionJankMonitor {
         public int getDisplayId() {
             return (this.mSurfaceOnly ? this.mContext : this.mView.getContext()).getDisplayId();
         }
-    }
 
-    /* loaded from: classes4.dex */
-    public static class Session {
-        private final int mCujType;
-        private final String mName;
-        private int mReason = -1;
-        private final long mTimeStamp = System.nanoTime();
-
-        public Session(int cujType, String postfix) {
-            this.mCujType = cujType;
-            this.mName = generateSessionName(InteractionJankMonitor.getNameOfCuj(cujType), postfix);
-        }
-
-        private String generateSessionName(String cujName, String cujPostfix) {
-            int remaining;
-            boolean hasPostfix = !TextUtils.isEmpty(cujPostfix);
-            if (cujName.length() > 80) {
-                throw new IllegalArgumentException(TextUtils.formatSimple("The length of cuj name <%s> exceeds %d", cujName, 80));
-            }
-            if (hasPostfix && cujPostfix.length() > (remaining = 100 - cujName.length())) {
-                cujPostfix = cujPostfix.substring(0, remaining - 3).concat(android.telecom.Logging.Session.TRUNCATE_STRING);
-            }
-            if (hasPostfix) {
-                return TextUtils.formatSimple("J<%s::%s>", cujName, cujPostfix);
-            }
-            return TextUtils.formatSimple("J<%s>", cujName);
-        }
-
-        public int getCuj() {
-            return this.mCujType;
+        public String getSessionName() {
+            return this.mSessionName;
         }
 
         public int getStatsdInteractionType() {
-            return this.mCujType >= 10000 ? InteractionJankMonitor.SEC_CUJ_TO_STATSD_INTERACTION_TYPE[this.mCujType - 10000] : InteractionJankMonitor.CUJ_TO_STATSD_INTERACTION_TYPE[this.mCujType];
+            return Cuj.getStatsdInteractionType(this.mCujType);
         }
 
         public boolean logToStatsd() {
-            return getStatsdInteractionType() != -1;
+            return Cuj.logToStatsd(this.mCujType);
         }
 
         public String getPerfettoTrigger() {
-            return String.format(Locale.US, "com.android.telemetry.interaction-jank-monitor-%d", Integer.valueOf(this.mCujType));
+            return TextUtils.formatSimple("com.android.telemetry.interaction-jank-monitor-%d", Integer.valueOf(this.mCujType));
         }
 
-        public String getName() {
-            return this.mName;
-        }
-
-        public long getTimeStamp() {
-            return this.mTimeStamp;
-        }
-
-        public void setReason(int reason) {
-            this.mReason = reason;
-        }
-
-        public int getReason() {
-            return this.mReason;
+        public int getCujType() {
+            return this.mCujType;
         }
     }
 
-    private void postEventLogToWorkerThread(final TimeFunction logFunction) {
-        Instant now = Instant.now();
-        final long unixNanos = TimeUnit.NANOSECONDS.convert(now.getEpochSecond(), TimeUnit.SECONDS) + now.getNano();
-        final long elapsedNanos = SystemClock.elapsedRealtimeNanos();
-        final long realtimeNanos = SystemClock.uptimeNanos();
-        this.mWorker.getThreadHandler().post(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda5
-            @Override // java.lang.Runnable
-            public final void run() {
-                InteractionJankMonitor.TimeFunction.this.invoke(unixNanos, elapsedNanos, realtimeNanos);
-            }
-        });
+    static class RunningTracker {
+        public final Configuration mConfig;
+        public final Runnable mTimeoutAction;
+        public final FrameTracker mTracker;
+
+        RunningTracker(Configuration config, FrameTracker tracker, Runnable timeoutAction) {
+            this.mConfig = config;
+            this.mTracker = tracker;
+            this.mTimeoutAction = timeoutAction;
+        }
     }
 }

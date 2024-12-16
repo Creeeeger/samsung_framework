@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextStepCountAlert extends SContextEventContext {
     public static final Parcelable.Creator<SContextStepCountAlert> CREATOR = new Parcelable.Creator<SContextStepCountAlert>() { // from class: android.hardware.scontext.SContextStepCountAlert.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextStepCountAlert createFromParcel(Parcel in) {
             return new SContextStepCountAlert(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextStepCountAlert[] newArray(int size) {
             return new SContextStepCountAlert[size];
@@ -23,7 +22,7 @@ public class SContextStepCountAlert extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextStepCountAlert() {
+    SContextStepCountAlert() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextStepCountAlert extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextStepCountAlert$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextStepCountAlert> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextStepCountAlert createFromParcel(Parcel in) {
-            return new SContextStepCountAlert(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextStepCountAlert[] newArray(int size) {
-            return new SContextStepCountAlert[size];
-        }
     }
 }

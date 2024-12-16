@@ -1,11 +1,1 @@
-Error decode xml
-java.util.zip.ZipException: invalid END header (bad central directory offset)
-	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
-	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
-	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
-	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
-	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="A ChangeId indicating that this device supports camera and mic indicators. Will be &quot;false&quot; if present, because the CompatChanges#isChangeEnabled method returns true if the change id is not present." disabled="true" id="162547999" name="CAMERA_MIC_INDICATORS_NOT_PRESENT"><meta-data definedIn="android.permission.PermissionControllerService" sourcePosition="frameworks/base/core/java/android/permission/PermissionControllerService.java:99"/></compat-change></config>

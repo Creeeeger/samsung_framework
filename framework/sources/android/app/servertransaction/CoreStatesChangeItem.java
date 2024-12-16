@@ -2,7 +2,6 @@ package android.app.servertransaction;
 
 import android.app.ClientTransactionHandler;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Trace;
@@ -11,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class CoreStatesChangeItem extends ClientTransactionItem {
     public static final Parcelable.Creator<CoreStatesChangeItem> CREATOR = new Parcelable.Creator<CoreStatesChangeItem>() { // from class: android.app.servertransaction.CoreStatesChangeItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoreStatesChangeItem createFromParcel(Parcel in) {
             return new CoreStatesChangeItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoreStatesChangeItem[] newArray(int size) {
             return new CoreStatesChangeItem[size];
@@ -26,12 +24,8 @@ public class CoreStatesChangeItem extends ClientTransactionItem {
     };
     private Bundle mState;
 
-    /* synthetic */ CoreStatesChangeItem(Parcel parcel, CoreStatesChangeItemIA coreStatesChangeItemIA) {
-        this(parcel);
-    }
-
     @Override // android.app.servertransaction.BaseClientRequest
-    public void execute(ClientTransactionHandler client, IBinder token, PendingTransactionActions pendingActions) {
+    public void execute(ClientTransactionHandler client, PendingTransactionActions pendingActions) {
         Trace.traceBegin(64L, "coreStatesChanged");
         client.handleCoreStatesChanged(this.mState);
         Trace.traceEnd(64L);
@@ -62,23 +56,6 @@ public class CoreStatesChangeItem extends ClientTransactionItem {
 
     private CoreStatesChangeItem(Parcel in) {
         this.mState = (Bundle) in.readTypedObject(Bundle.CREATOR);
-    }
-
-    /* renamed from: android.app.servertransaction.CoreStatesChangeItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CoreStatesChangeItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CoreStatesChangeItem createFromParcel(Parcel in) {
-            return new CoreStatesChangeItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CoreStatesChangeItem[] newArray(int size) {
-            return new CoreStatesChangeItem[size];
-        }
     }
 
     public boolean equals(Object o) {

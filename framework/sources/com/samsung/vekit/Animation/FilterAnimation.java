@@ -3,6 +3,7 @@ package com.samsung.vekit.Animation;
 import android.util.Log;
 import com.samsung.vekit.Common.Object.Element;
 import com.samsung.vekit.Common.Object.Filter;
+import com.samsung.vekit.Common.Object.FilterInfo;
 import com.samsung.vekit.Common.Object.KeyFrame;
 import com.samsung.vekit.Common.Type.AnimationType;
 import com.samsung.vekit.Common.VEContext;
@@ -10,20 +11,20 @@ import com.samsung.vekit.Item.Item;
 import java.util.ArrayList;
 
 /* loaded from: classes6.dex */
-public class FilterAnimation extends Animation<Integer> {
-    protected Filter filter;
-
+public class FilterAnimation extends Animation<FilterInfo> {
     public FilterAnimation(VEContext context, int id, String name) {
         super(context, AnimationType.FILTER, id, name);
     }
 
-    public Filter getFilter() {
-        return this.filter;
-    }
-
-    public FilterAnimation setFilter(Filter filter) {
-        this.filter = filter;
-        return this;
+    /* JADX WARN: Multi-variable type inference failed */
+    @Override // com.samsung.vekit.Animation.Animation
+    public void rollback() {
+        if (isEnableRollback()) {
+            ((Item) this.firstTarget).setFilter(((FilterInfo) this.rollbackValue).getFilter());
+            ((Item) this.firstTarget).setFilterIntensity(((FilterInfo) this.rollbackValue).getIntensity());
+            this.firstTarget.update();
+        }
+        this.enableRollback = false;
     }
 
     @Override // com.samsung.vekit.Animation.Animation
@@ -42,13 +43,18 @@ public class FilterAnimation extends Animation<Integer> {
     }
 
     @Override // com.samsung.vekit.Animation.Animation
-    public FilterAnimation setKeyFrameList(ArrayList<KeyFrame<Integer>> keyFrameList) {
+    public FilterAnimation setKeyFrameList(ArrayList<KeyFrame<FilterInfo>> keyFrameList) {
         return (FilterAnimation) super.setKeyFrameList((ArrayList) keyFrameList);
     }
 
     @Override // com.samsung.vekit.Animation.Animation
-    public FilterAnimation setKeyFrame(KeyFrame<Integer> keyFrame) {
-        return (FilterAnimation) super.setKeyFrame((KeyFrame) keyFrame);
+    public FilterAnimation setKeyFrame(KeyFrame<FilterInfo> firstKeyFrame, KeyFrame<FilterInfo> secondKeyFrame) {
+        return (FilterAnimation) super.setKeyFrame((KeyFrame) firstKeyFrame, (KeyFrame) secondKeyFrame);
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    public FilterAnimation addKeyFrame(KeyFrame<FilterInfo> keyFrame) {
+        return (FilterAnimation) super.addKeyFrame((KeyFrame) keyFrame);
     }
 
     @Override // com.samsung.vekit.Animation.Animation, com.samsung.vekit.Listener.AnimationStatusListener
@@ -83,7 +89,17 @@ public class FilterAnimation extends Animation<Integer> {
         if (this.firstTarget == null || interpolatedValue == null) {
             return;
         }
-        float intensity = ((Float) interpolatedValue).floatValue();
+        float[] interpolatedFilterInfo = (float[]) interpolatedValue;
+        int filterId = (int) interpolatedFilterInfo[0];
+        Filter filter = this.context.getFilterManager().get(filterId);
+        ((Item) this.firstTarget).setFilter(filter);
+        float intensity = interpolatedFilterInfo[1];
         ((Item) this.firstTarget).setFilterIntensity(intensity);
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public FilterAnimation setKeyFrame(KeyFrame<FilterInfo> keyFrame) {
+        return (FilterAnimation) super.setKeyFrame((KeyFrame) keyFrame);
     }
 }

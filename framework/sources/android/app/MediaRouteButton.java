@@ -58,9 +58,8 @@ public class MediaRouteButton extends View {
     }
 
     public void setRouteTypes(int types) {
-        int i = this.mRouteTypes;
-        if (i != types) {
-            if (this.mAttachedToWindow && i != 0) {
+        if (this.mRouteTypes != types) {
+            if (this.mAttachedToWindow && this.mRouteTypes != 0) {
                 this.mRouter.removeCallback(this.mCallback);
             }
             this.mRouteTypes = types;
@@ -79,7 +78,7 @@ public class MediaRouteButton extends View {
         showDialogInternal();
     }
 
-    public boolean showDialogInternal() {
+    boolean showDialogInternal() {
         if (!this.mAttachedToWindow) {
             return false;
         }
@@ -112,7 +111,7 @@ public class MediaRouteButton extends View {
     }
 
     @Override // android.view.View
-    public int[] onCreateDrawableState(int extraSpace) {
+    protected int[] onCreateDrawableState(int extraSpace) {
         int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
         if (this.mIsConnecting) {
             mergeDrawableStates(drawableState, CHECKED_STATE_SET);
@@ -123,7 +122,7 @@ public class MediaRouteButton extends View {
     }
 
     @Override // android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         super.drawableStateChanged();
         Drawable remoteIndicator = this.mRemoteIndicator;
         if (remoteIndicator != null && remoteIndicator.isStateful() && remoteIndicator.setState(getDrawableState())) {
@@ -132,9 +131,8 @@ public class MediaRouteButton extends View {
     }
 
     private void setRemoteIndicatorDrawable(Drawable d) {
-        Drawable drawable = this.mRemoteIndicator;
-        if (drawable != null) {
-            drawable.setCallback(null);
+        if (this.mRemoteIndicator != null) {
+            this.mRemoteIndicator.setCallback(null);
             unscheduleDrawable(this.mRemoteIndicator);
         }
         this.mRemoteIndicator = d;
@@ -147,25 +145,23 @@ public class MediaRouteButton extends View {
     }
 
     @Override // android.view.View
-    public boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == this.mRemoteIndicator;
     }
 
     @Override // android.view.View
     public void jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState();
-        Drawable drawable = this.mRemoteIndicator;
-        if (drawable != null) {
-            drawable.jumpToCurrentState();
+        if (this.mRemoteIndicator != null) {
+            this.mRemoteIndicator.jumpToCurrentState();
         }
     }
 
     @Override // android.view.View
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        Drawable drawable = this.mRemoteIndicator;
-        if (drawable != null) {
-            drawable.setVisible(getVisibility() == 0, false);
+        if (this.mRemoteIndicator != null) {
+            this.mRemoteIndicator.setVisible(getVisibility() == 0, false);
         }
     }
 
@@ -173,9 +169,8 @@ public class MediaRouteButton extends View {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.mAttachedToWindow = true;
-        int i = this.mRouteTypes;
-        if (i != 0) {
-            this.mRouter.addCallback(i, this.mCallback, 8);
+        if (this.mRouteTypes != 0) {
+            this.mRouter.addCallback(this.mRouteTypes, this.mCallback, 8);
         }
         refreshRoute();
     }
@@ -190,19 +185,15 @@ public class MediaRouteButton extends View {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measuredWidth;
         int measuredHeight;
         int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = View.MeasureSpec.getSize(heightMeasureSpec);
         int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
-        int i = this.mMinWidth;
-        Drawable drawable = this.mRemoteIndicator;
-        int width = Math.max(i, drawable != null ? drawable.getIntrinsicWidth() + getPaddingLeft() + getPaddingRight() : 0);
-        int i2 = this.mMinHeight;
-        Drawable drawable2 = this.mRemoteIndicator;
-        int height = Math.max(i2, drawable2 != null ? drawable2.getIntrinsicHeight() + getPaddingTop() + getPaddingBottom() : 0);
+        int width = Math.max(this.mMinWidth, this.mRemoteIndicator != null ? this.mRemoteIndicator.getIntrinsicWidth() + getPaddingLeft() + getPaddingRight() : 0);
+        int height = Math.max(this.mMinHeight, this.mRemoteIndicator != null ? this.mRemoteIndicator.getIntrinsicHeight() + getPaddingTop() + getPaddingBottom() : 0);
         switch (widthMode) {
             case Integer.MIN_VALUE:
                 measuredWidth = Math.min(widthSize, width);
@@ -229,7 +220,7 @@ public class MediaRouteButton extends View {
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (this.mRemoteIndicator == null) {
             return;
@@ -246,6 +237,7 @@ public class MediaRouteButton extends View {
         this.mRemoteIndicator.draw(canvas);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void refreshRoute() {
         MediaRouter.RouteInfo route = this.mRouter.getSelectedRoute();
         boolean isConnecting = false;
@@ -268,8 +260,7 @@ public class MediaRouteButton extends View {
         if (this.mAttachedToWindow) {
             setEnabled(this.mRouter.isRouteAvailable(this.mRouteTypes, 1));
         }
-        Drawable drawable = this.mRemoteIndicator;
-        if (drawable != null && (drawable.getCurrent() instanceof AnimationDrawable)) {
+        if (this.mRemoteIndicator != null && (this.mRemoteIndicator.getCurrent() instanceof AnimationDrawable)) {
             AnimationDrawable curDrawable = (AnimationDrawable) this.mRemoteIndicator.getCurrent();
             if (this.mAttachedToWindow) {
                 if ((needsRefresh || isConnecting) && !curDrawable.isRunning()) {
@@ -287,12 +278,7 @@ public class MediaRouteButton extends View {
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class MediaRouterCallback extends MediaRouter.SimpleCallback {
-        /* synthetic */ MediaRouterCallback(MediaRouteButton mediaRouteButton, MediaRouterCallbackIA mediaRouterCallbackIA) {
-            this();
-        }
-
+    private final class MediaRouterCallback extends MediaRouter.SimpleCallback {
         private MediaRouterCallback() {
         }
 

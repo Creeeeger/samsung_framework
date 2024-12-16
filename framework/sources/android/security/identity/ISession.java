@@ -21,7 +21,6 @@ public interface ISession extends IInterface {
 
     void setSessionTranscript(byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISession {
         @Override // android.security.identity.ISession
         public byte[] getEphemeralKeyPair() throws RemoteException {
@@ -52,7 +51,6 @@ public interface ISession extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISession {
         static final int TRANSACTION_getAuthChallenge = 2;
         static final int TRANSACTION_getCredentialForPresentation = 5;
@@ -107,49 +105,46 @@ public interface ISession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISession.DESCRIPTOR);
+                case 1:
+                    byte[] _result = getEphemeralKeyPair();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result);
+                    return true;
+                case 2:
+                    long _result2 = getAuthChallenge();
+                    reply.writeNoException();
+                    reply.writeLong(_result2);
+                    return true;
+                case 3:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setReaderEphemeralPublicKey(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    byte[] _arg02 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setSessionTranscript(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    ICredential _result3 = getCredentialForPresentation(_arg03);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _result = getEphemeralKeyPair();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 2:
-                            long _result2 = getAuthChallenge();
-                            reply.writeNoException();
-                            reply.writeLong(_result2);
-                            return true;
-                        case 3:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setReaderEphemeralPublicKey(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            byte[] _arg02 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setSessionTranscript(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            ICredential _result3 = getCredentialForPresentation(_arg03);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISession {
+        private static class Proxy implements ISession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

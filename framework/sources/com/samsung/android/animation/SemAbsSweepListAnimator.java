@@ -15,7 +15,7 @@ import android.view.animation.Interpolator;
 import android.widget.ListView;
 
 /* loaded from: classes5.dex */
-public abstract class SemAbsSweepListAnimator {
+abstract class SemAbsSweepListAnimator {
     private static final float COSINE_VALUE_THESHOLD = 0.57f;
     private static final boolean DEBUGGABLE = false;
     private static final boolean DEBUGGABLE_LOW = true;
@@ -30,7 +30,6 @@ public abstract class SemAbsSweepListAnimator {
     protected int mForegroundViewResId;
     protected ListView mListView;
     protected VelocityTracker mVelocityTracker;
-    protected View mViewToRemoveFg;
     private float upX;
     private float upY;
     private static int INVALID_POINTER_ID = -1;
@@ -62,6 +61,9 @@ public abstract class SemAbsSweepListAnimator {
     abstract void onActionUp(MotionEvent motionEvent, View view, int i, boolean z);
 
     abstract void setForegroundViewResId(int i);
+
+    SemAbsSweepListAnimator() {
+    }
 
     private View findTouchedView(MotionEvent event) {
         int position = this.mListView.pointToPosition((int) event.getX(), (int) event.getY());
@@ -135,14 +137,12 @@ public abstract class SemAbsSweepListAnimator {
         if (this.mListView == null) {
             return false;
         }
-        View findTouchedView = findTouchedView(event);
-        this.mForegroundView = findTouchedView;
-        if (findTouchedView == null) {
+        this.mForegroundView = findTouchedView(event);
+        if (this.mForegroundView == null) {
             return false;
         }
-        int positionForView = this.mListView.getPositionForView(findTouchedView);
-        this.mCurrentPosition = positionForView;
-        if (positionForView == -1 || positionForView < this.mListView.getFirstVisiblePosition() || this.mCurrentPosition > this.mListView.getLastVisiblePosition()) {
+        this.mCurrentPosition = this.mListView.getPositionForView(this.mForegroundView);
+        if (this.mCurrentPosition == -1 || this.mCurrentPosition < this.mListView.getFirstVisiblePosition() || this.mCurrentPosition > this.mListView.getLastVisiblePosition()) {
             return false;
         }
         this.downX = event.getX();
@@ -152,23 +152,20 @@ public abstract class SemAbsSweepListAnimator {
     }
 
     private boolean handleTouchMoveEvent(MotionEvent event) {
-        ListView listView = this.mListView;
-        if (listView != null && (this.mCurrentPosition < listView.getFirstVisiblePosition() || this.mCurrentPosition > this.mListView.getLastVisiblePosition())) {
+        if (this.mListView != null && (this.mCurrentPosition < this.mListView.getFirstVisiblePosition() || this.mCurrentPosition > this.mListView.getLastVisiblePosition())) {
             return false;
         }
-        ListView listView2 = this.mListView;
-        if (listView2 != null) {
-            boolean fastScrollOpened = listView2.mSemFastScrollEffectState;
+        if (this.mListView != null) {
+            boolean fastScrollOpened = this.mListView.mSemFastScrollEffectState;
             boolean isScrollStateIdle = this.mListView.semGetLastScrollState() == 0;
             if (fastScrollOpened || !isScrollStateIdle) {
                 return false;
             }
         }
         this.upX = event.getX();
-        float y = event.getY();
-        this.upY = y;
+        this.upY = event.getY();
         float deltaX = this.downX - this.upX;
-        float deltaY = this.downY - y;
+        float deltaY = this.downY - this.upY;
         double sqrtValue = Math.sqrt(Math.abs(deltaX * deltaX) + Math.abs(deltaY * deltaY));
         double cosineValue = Math.cos(Math.abs(deltaX / sqrtValue));
         if (this.mSwiping) {
@@ -278,9 +275,8 @@ public abstract class SemAbsSweepListAnimator {
             Log.d(TAG, "trackSweepDistanceAndDirection : mSweepPrevPosX is set to mDownX, mSweepPrevPosX = " + this.mDownX);
             this.mSweepPrevPosX = this.mDownX;
         }
-        float f = this.mSweepPrevPosX;
-        if (f != -1.0f) {
-            if (f > event.getX()) {
+        if (this.mSweepPrevPosX != -1.0f) {
+            if (this.mSweepPrevPosX > event.getX()) {
                 Log.d(TAG, "trackSweepDistanceAndDirection : sweep to left");
                 this.mSweepDirection = 1;
                 this.mSweepLeftDistance += this.mSweepPrevPosX - event.getX();
@@ -290,27 +286,19 @@ public abstract class SemAbsSweepListAnimator {
                 this.mSweepRightDistance += event.getX() - this.mSweepPrevPosX;
             }
         }
-        int i = this.mPrevSweepDirection;
-        if (i != -1 && i != this.mSweepDirection) {
+        if (this.mPrevSweepDirection != -1 && this.mPrevSweepDirection != this.mSweepDirection) {
             Log.d(TAG, "trackSweepDistanceAndDirection : SweepDirection is changed");
             Log.d(TAG, "trackSweepDistanceAndDirection : changed direction = " + getCurrentSweepDirection(this.mSweepDirection));
-            int i2 = this.mSweepDirection;
-            if (i2 == 1) {
+            if (this.mSweepDirection == 1) {
                 Log.d(TAG, "trackSweepDistanceAndDirection : Set mSweepRightDistance = 0");
                 this.mSweepRightDistance = 0.0f;
-            } else if (i2 == 0) {
+            } else if (this.mSweepDirection == 0) {
                 Log.d(TAG, "trackSweepDistanceAndDirection : Set mSweepLeftDistance = 0");
                 this.mSweepLeftDistance = 0.0f;
             }
             this.mVelocityTracker.clear();
-            int i3 = 0;
-            while (true) {
-                float[] fArr = this.mHistoricalVelocities;
-                if (i3 >= fArr.length) {
-                    break;
-                }
-                fArr[i3] = 0.0f;
-                i3++;
+            for (int i = 0; i < this.mHistoricalVelocities.length; i++) {
+                this.mHistoricalVelocities[i] = 0.0f;
             }
             this.mHistoricalVelocityIndex = 0;
             Log.d(TAG, "trackSweepDistanceAndDirection : Clear velocityTracker");
@@ -336,47 +324,34 @@ public abstract class SemAbsSweepListAnimator {
         return true;
     }
 
-    public float getAdjustedVelocityX(float[] mHistoricalVelocities) {
+    protected float getAdjustedVelocityX(float[] mHistoricalVelocities) {
         if (this.mHistoricalVelocityIndex == 0) {
             return 0.0f;
         }
         float totalVelocity = 0.0f;
         int totalWeight = 0;
-        int i = 0;
-        while (true) {
-            int i2 = HISTORICAL_VELOCITY_COUNT;
-            if (i < i2) {
-                float vel = mHistoricalVelocities[((this.mHistoricalVelocityIndex - 1) + i) % i2];
-                if (vel != 0.0f) {
-                    totalVelocity += 1 * vel;
-                    totalWeight++;
-                }
-                i++;
-            } else {
-                return totalVelocity / totalWeight;
+        for (int i = 0; i < HISTORICAL_VELOCITY_COUNT; i++) {
+            float vel = mHistoricalVelocities[((this.mHistoricalVelocityIndex - 1) + i) % HISTORICAL_VELOCITY_COUNT];
+            if (vel != 0.0f) {
+                totalVelocity += 1 * vel;
+                totalWeight++;
             }
         }
+        return totalVelocity / totalWeight;
     }
 
-    public void resetTouchState() {
+    protected void resetTouchState() {
         this.mItemPressed = false;
         this.mActivePointerId = INVALID_POINTER_ID;
         this.mVelocityTracker.recycle();
         this.mVelocityTracker = null;
-        int i = 0;
-        while (true) {
-            float[] fArr = this.mHistoricalVelocities;
-            if (i < fArr.length) {
-                fArr[i] = 0.0f;
-                i++;
-            } else {
-                this.mHistoricalVelocityIndex = 0;
-                return;
-            }
+        for (int i = 0; i < this.mHistoricalVelocities.length; i++) {
+            this.mHistoricalVelocities[i] = 0.0f;
         }
+        this.mHistoricalVelocityIndex = 0;
     }
 
-    public void showForeground(View viewForeground) {
+    protected void showForeground(View viewForeground) {
         if (viewForeground == null) {
             return;
         }

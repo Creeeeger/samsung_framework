@@ -36,7 +36,6 @@ public interface IDvr extends IInterface {
 
     void stop() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDvr {
         @Override // android.hardware.tv.tuner.IDvr
         public void getQueueDesc(MQDescriptor<Byte, Byte> queue) throws RemoteException {
@@ -90,7 +89,6 @@ public interface IDvr extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDvr {
         static final int TRANSACTION_attachFilter = 3;
         static final int TRANSACTION_close = 8;
@@ -131,76 +129,74 @@ public interface IDvr extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    MQDescriptor<Byte, Byte> _arg0 = new MQDescriptor<>();
+                    data.enforceNoDataAvail();
+                    getQueueDesc(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeTypedObject(_arg0, 1);
                     return true;
-                case 16777215:
+                case 2:
+                    DvrSettings _arg02 = (DvrSettings) data.readTypedObject(DvrSettings.CREATOR);
+                    data.enforceNoDataAvail();
+                    configure(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    IFilter _arg03 = IFilter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    attachFilter(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IFilter _arg04 = IFilter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    detachFilter(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    start();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    stop();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    flush();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    close();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    long _arg05 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setStatusCheckIntervalHint(_arg05);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MQDescriptor<Byte, Byte> _arg0 = new MQDescriptor<>();
-                            data.enforceNoDataAvail();
-                            getQueueDesc(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg0, 1);
-                            return true;
-                        case 2:
-                            DvrSettings _arg02 = (DvrSettings) data.readTypedObject(DvrSettings.CREATOR);
-                            data.enforceNoDataAvail();
-                            configure(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IFilter _arg03 = IFilter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            attachFilter(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IFilter _arg04 = IFilter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            detachFilter(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            start();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            stop();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            flush();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            long _arg05 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setStatusCheckIntervalHint(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IDvr {
+        private static class Proxy implements IDvr {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

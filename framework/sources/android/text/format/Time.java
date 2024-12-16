@@ -5,12 +5,13 @@ import android.util.TimeFormatException;
 import com.android.i18n.timezone.WallTime;
 import com.android.i18n.timezone.ZoneInfoData;
 import com.android.i18n.timezone.ZoneInfoDb;
+import com.android.internal.accessibility.common.ShortcutConstants;
 import com.android.internal.content.NativeLibraryHelper;
 import java.util.Locale;
 import java.util.TimeZone;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Time {
     public static final int EPOCH_JULIAN_DAY = 2440588;
     public static final int FRIDAY = 5;
@@ -241,32 +242,85 @@ public class Time {
         return false;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x009d, code lost:
-    
-        if (r9 >= r0) goto L82;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x00a7, code lost:
-    
-        if (java.lang.Character.isDigit(r14.charAt(r9)) != false) goto L83;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x009a, code lost:
-    
-        if (r14.charAt(19) == '.') goto L52;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x009c, code lost:
-    
-        r9 = r9 + 1;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private boolean parse3339Internal(java.lang.String r14) {
-        /*
-            Method dump skipped, instructions count: 322
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.text.format.Time.parse3339Internal(java.lang.String):boolean");
+    private boolean parse3339Internal(String s) {
+        int len = s.length();
+        if (len < 10) {
+            throw new TimeFormatException("String too short --- expected at least 10 characters.");
+        }
+        boolean inUtc = false;
+        int n = getChar(s, 0, 1000);
+        this.year = n + getChar(s, 1, 100) + getChar(s, 2, 10) + getChar(s, 3, 1);
+        checkChar(s, 4, '-');
+        int n2 = getChar(s, 5, 10);
+        this.month = (n2 + getChar(s, 6, 1)) - 1;
+        checkChar(s, 7, '-');
+        int n3 = getChar(s, 8, 10);
+        this.monthDay = n3 + getChar(s, 9, 1);
+        if (len >= 19) {
+            checkChar(s, 10, 'T');
+            this.allDay = false;
+            int n4 = getChar(s, 11, 10);
+            int hour = n4 + getChar(s, 12, 1);
+            checkChar(s, 13, ShortcutConstants.SERVICES_SEPARATOR);
+            int n5 = getChar(s, 14, 10);
+            int minute = n5 + getChar(s, 15, 1);
+            checkChar(s, 16, ShortcutConstants.SERVICES_SEPARATOR);
+            int n6 = getChar(s, 17, 10);
+            this.second = n6 + getChar(s, 18, 1);
+            int tzIndex = 19;
+            if (19 < len && s.charAt(19) == '.') {
+                do {
+                    tzIndex++;
+                    if (tzIndex >= len) {
+                        break;
+                    }
+                } while (Character.isDigit(s.charAt(tzIndex)));
+            }
+            int offset = 0;
+            if (len > tzIndex) {
+                char c = s.charAt(tzIndex);
+                switch (c) {
+                    case '+':
+                        offset = -1;
+                        break;
+                    case '-':
+                        offset = 1;
+                        break;
+                    case 'Z':
+                        offset = 0;
+                        break;
+                    default:
+                        throw new TimeFormatException(String.format("Unexpected character 0x%02d at position %d.  Expected + or -", Integer.valueOf(c), Integer.valueOf(tzIndex)));
+                }
+                inUtc = true;
+                if (offset != 0) {
+                    if (len >= tzIndex + 6) {
+                        int n7 = getChar(s, tzIndex + 1, 10);
+                        hour += (n7 + getChar(s, tzIndex + 2, 1)) * offset;
+                        int n8 = getChar(s, tzIndex + 4, 10);
+                        int n9 = tzIndex + 5;
+                        minute += (n8 + getChar(s, n9, 1)) * offset;
+                    } else {
+                        throw new TimeFormatException(String.format("Unexpected length; should be %d characters", Integer.valueOf(tzIndex + 6)));
+                    }
+                }
+            }
+            this.hour = hour;
+            this.minute = minute;
+            if (offset != 0) {
+                normalize(false);
+            }
+        } else {
+            this.allDay = true;
+            this.hour = 0;
+            this.minute = 0;
+            this.second = 0;
+        }
+        this.weekDay = 0;
+        this.yearDay = 0;
+        this.isDst = -1;
+        this.gmtoff = 0L;
+        return inUtc;
     }
 
     public static String getCurrentTimezone() {
@@ -346,14 +400,12 @@ public class Time {
     }
 
     public int getWeekNumber() {
-        int i = this.yearDay;
-        int[] iArr = sThursdayOffset;
-        int closestThursday = i + iArr[this.weekDay];
+        int closestThursday = this.yearDay + sThursdayOffset[this.weekDay];
         if (closestThursday >= 0 && closestThursday <= 364) {
             return (closestThursday / 7) + 1;
         }
         Time temp = new Time(this);
-        temp.monthDay += iArr[this.weekDay];
+        temp.monthDay += sThursdayOffset[this.weekDay];
         temp.normalize(true);
         return (temp.yearDay / 7) + 1;
     }
@@ -366,9 +418,8 @@ public class Time {
             return format(Y_M_D_T_H_M_S_000_Z);
         }
         String base = format(Y_M_D_T_H_M_S_000);
-        long j = this.gmtoff;
-        String sign = j < 0 ? NativeLibraryHelper.CLEAR_ABI_OVERRIDE : "+";
-        int offset = (int) Math.abs(j);
+        String sign = this.gmtoff < 0 ? NativeLibraryHelper.CLEAR_ABI_OVERRIDE : "+";
+        int offset = (int) Math.abs(this.gmtoff);
         int minutes = (offset % 3600) / 60;
         int hours = offset / 3600;
         return String.format(Locale.US, "%s%s%02d:%02d", base, sign, Integer.valueOf(hours), Integer.valueOf(minutes));
@@ -415,8 +466,7 @@ public class Time {
         return (week * 7) + MONDAY_BEFORE_JULIAN_EPOCH;
     }
 
-    /* loaded from: classes3.dex */
-    public static class TimeCalculator {
+    private static class TimeCalculator {
         private ZoneInfoData mZoneInfoData;
         public String timezone;
         public final WallTime wallTime = new WallTime();

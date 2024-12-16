@@ -2,7 +2,7 @@ package android.mtp;
 
 import android.media.MediaMetrics;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class MtpEvent {
     public static final int EVENT_CANCEL_TRANSACTION = 16385;
     public static final int EVENT_CAPTURE_COMPLETE = 16397;
@@ -118,7 +118,6 @@ public class MtpEvent {
         }
     }
 
-    /* loaded from: classes2.dex */
     private static class IllegalParameterAccess extends UnsupportedOperationException {
         public IllegalParameterAccess(String propertyName, int eventCode) {
             super("Cannot obtain " + propertyName + " for the event: " + eventCode + MediaMetrics.SEPARATOR);

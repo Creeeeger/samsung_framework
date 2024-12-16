@@ -4,14 +4,10 @@ import android.annotation.SystemApi;
 import android.media.tv.tuner.TunerUtils;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class PesSettings extends Settings {
     private final boolean mIsRaw;
     private final int mStreamId;
-
-    /* synthetic */ PesSettings(int i, int i2, boolean z, PesSettingsIA pesSettingsIA) {
-        this(i, i2, z);
-    }
 
     private PesSettings(int mainType, int streamId, boolean isRaw) {
         super(TunerUtils.getFilterSubtype(mainType, 2));
@@ -31,15 +27,10 @@ public class PesSettings extends Settings {
         return new Builder(mainType);
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private boolean mIsRaw;
         private final int mMainType;
         private int mStreamId;
-
-        /* synthetic */ Builder(int i, BuilderIA builderIA) {
-            this(i);
-        }
 
         private Builder(int mainType) {
             this.mMainType = mainType;

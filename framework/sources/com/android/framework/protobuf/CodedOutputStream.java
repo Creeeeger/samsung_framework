@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public abstract class CodedOutputStream extends ByteOutput {
     public static final int DEFAULT_BUFFER_SIZE = 4096;
 
@@ -69,7 +69,7 @@ public abstract class CodedOutputStream extends ByteOutput {
 
     public abstract void writeMessage(int i, MessageLite messageLite) throws IOException;
 
-    public abstract void writeMessage(int i, MessageLite messageLite, Schema schema) throws IOException;
+    abstract void writeMessage(int i, MessageLite messageLite, Schema schema) throws IOException;
 
     public abstract void writeMessageNoTag(MessageLite messageLite) throws IOException;
 
@@ -95,11 +95,7 @@ public abstract class CodedOutputStream extends ByteOutput {
 
     public abstract void writeUInt64NoTag(long j) throws IOException;
 
-    /* synthetic */ CodedOutputStream(AnonymousClass1 x0) {
-        this();
-    }
-
-    public static int computePreferredBufferSize(int dataLength) {
+    static int computePreferredBufferSize(int dataLength) {
         if (dataLength > 4096) {
             return 4096;
         }
@@ -147,7 +143,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         this.serializationDeterministic = true;
     }
 
-    public boolean isSerializationDeterministic() {
+    boolean isSerializationDeterministic() {
         return this.serializationDeterministic;
     }
 
@@ -338,7 +334,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         return computeTagSize(fieldNumber) + computeMessageSizeNoTag(value);
     }
 
-    public static int computeMessageSize(int fieldNumber, MessageLite value, Schema schema) {
+    static int computeMessageSize(int fieldNumber, MessageLite value, Schema schema) {
         return computeTagSize(fieldNumber) + computeMessageSizeNoTag(value, schema);
     }
 
@@ -478,11 +474,11 @@ public abstract class CodedOutputStream extends ByteOutput {
         return computeLengthDelimitedFieldSize(value.getSerializedSize());
     }
 
-    public static int computeMessageSizeNoTag(MessageLite value, Schema schema) {
+    static int computeMessageSizeNoTag(MessageLite value, Schema schema) {
         return computeLengthDelimitedFieldSize(((AbstractMessageLite) value).getSerializedSize(schema));
     }
 
-    public static int computeLengthDelimitedFieldSize(int fieldLength) {
+    static int computeLengthDelimitedFieldSize(int fieldLength) {
         return computeUInt32SizeNoTag(fieldLength) + fieldLength;
     }
 
@@ -500,7 +496,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class OutOfSpaceException extends IOException {
         private static final String MESSAGE = "CodedOutputStream was writing to a flat byte array and ran out of space.";
         private static final long serialVersionUID = -6947486886997889499L;
@@ -541,7 +536,7 @@ public abstract class CodedOutputStream extends ByteOutput {
     }
 
     @Deprecated
-    public final void writeGroup(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+    final void writeGroup(int fieldNumber, MessageLite value, Schema schema) throws IOException {
         writeTag(fieldNumber, 3);
         writeGroupNoTag(value, schema);
         writeTag(fieldNumber, 4);
@@ -563,7 +558,7 @@ public abstract class CodedOutputStream extends ByteOutput {
     }
 
     @Deprecated
-    public static int computeGroupSize(int fieldNumber, MessageLite value, Schema schema) {
+    static int computeGroupSize(int fieldNumber, MessageLite value, Schema schema) {
         return (computeTagSize(fieldNumber) * 2) + computeGroupSizeNoTag(value, schema);
     }
 
@@ -607,8 +602,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         writeFixed64NoTag(value);
     }
 
-    /* loaded from: classes4.dex */
-    public static class ArrayEncoder extends CodedOutputStream {
+    private static class ArrayEncoder extends CodedOutputStream {
         private final byte[] buffer;
         private final int limit;
         private final int offset;
@@ -728,9 +722,8 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        public final void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        final void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeUInt32NoTag(((AbstractMessageLite) value).getSerializedSize(schema));
             schema.writeTo(value, this.wrapper);
@@ -809,17 +802,20 @@ public abstract class CodedOutputStream extends ByteOutput {
             try {
                 byte[] bArr = this.buffer;
                 int i = this.position;
-                int i2 = i + 1;
-                this.position = i2;
+                this.position = i + 1;
                 bArr[i] = (byte) (value & 255);
-                int i3 = i2 + 1;
-                this.position = i3;
-                bArr[i2] = (byte) ((value >> 8) & 255);
-                int i4 = i3 + 1;
-                this.position = i4;
-                bArr[i3] = (byte) ((value >> 16) & 255);
+                byte[] bArr2 = this.buffer;
+                int i2 = this.position;
+                this.position = i2 + 1;
+                bArr2[i2] = (byte) ((value >> 8) & 255);
+                byte[] bArr3 = this.buffer;
+                int i3 = this.position;
+                this.position = i3 + 1;
+                bArr3[i3] = (byte) ((value >> 16) & 255);
+                byte[] bArr4 = this.buffer;
+                int i4 = this.position;
                 this.position = i4 + 1;
-                bArr[i4] = (byte) ((value >> 24) & 255);
+                bArr4[i4] = (byte) ((value >> 24) & 255);
             } catch (IndexOutOfBoundsException e) {
                 throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Integer.valueOf(this.position), Integer.valueOf(this.limit), 1), e);
             }
@@ -863,29 +859,36 @@ public abstract class CodedOutputStream extends ByteOutput {
             try {
                 byte[] bArr = this.buffer;
                 int i = this.position;
-                int i2 = i + 1;
-                this.position = i2;
+                this.position = i + 1;
                 bArr[i] = (byte) (((int) value) & 255);
-                int i3 = i2 + 1;
-                this.position = i3;
-                bArr[i2] = (byte) (((int) (value >> 8)) & 255);
-                int i4 = i3 + 1;
-                this.position = i4;
-                bArr[i3] = (byte) (((int) (value >> 16)) & 255);
-                int i5 = i4 + 1;
-                this.position = i5;
-                bArr[i4] = (byte) (((int) (value >> 24)) & 255);
-                int i6 = i5 + 1;
-                this.position = i6;
-                bArr[i5] = (byte) (((int) (value >> 32)) & 255);
-                int i7 = i6 + 1;
-                this.position = i7;
-                bArr[i6] = (byte) (((int) (value >> 40)) & 255);
-                int i8 = i7 + 1;
-                this.position = i8;
-                bArr[i7] = (byte) (((int) (value >> 48)) & 255);
+                byte[] bArr2 = this.buffer;
+                int i2 = this.position;
+                this.position = i2 + 1;
+                bArr2[i2] = (byte) (((int) (value >> 8)) & 255);
+                byte[] bArr3 = this.buffer;
+                int i3 = this.position;
+                this.position = i3 + 1;
+                bArr3[i3] = (byte) (((int) (value >> 16)) & 255);
+                byte[] bArr4 = this.buffer;
+                int i4 = this.position;
+                this.position = i4 + 1;
+                bArr4[i4] = (byte) (((int) (value >> 24)) & 255);
+                byte[] bArr5 = this.buffer;
+                int i5 = this.position;
+                this.position = i5 + 1;
+                bArr5[i5] = (byte) (((int) (value >> 32)) & 255);
+                byte[] bArr6 = this.buffer;
+                int i6 = this.position;
+                this.position = i6 + 1;
+                bArr6[i6] = (byte) (((int) (value >> 40)) & 255);
+                byte[] bArr7 = this.buffer;
+                int i7 = this.position;
+                this.position = i7 + 1;
+                bArr7[i7] = (byte) (((int) (value >> 48)) & 255);
+                byte[] bArr8 = this.buffer;
+                int i8 = this.position;
                 this.position = i8 + 1;
-                bArr[i8] = (byte) (((int) (value >> 56)) & 255);
+                bArr8[i8] = (byte) (((int) (value >> 56)) & 255);
             } catch (IndexOutOfBoundsException e) {
                 throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Integer.valueOf(this.position), Integer.valueOf(this.limit), 1), e);
             }
@@ -930,9 +933,8 @@ public abstract class CodedOutputStream extends ByteOutput {
                 int maxLengthVarIntSize = computeUInt32SizeNoTag(maxLength);
                 int minLengthVarIntSize = computeUInt32SizeNoTag(value.length());
                 if (minLengthVarIntSize == maxLengthVarIntSize) {
-                    int i = oldPosition + minLengthVarIntSize;
-                    this.position = i;
-                    int newPosition = Utf8.encode(value, this.buffer, i, spaceLeft());
+                    this.position = oldPosition + minLengthVarIntSize;
+                    int newPosition = Utf8.encode(value, this.buffer, this.position, spaceLeft());
                     this.position = oldPosition;
                     int length = (newPosition - oldPosition) - minLengthVarIntSize;
                     writeUInt32NoTag(length);
@@ -965,8 +967,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class HeapNioEncoder extends ArrayEncoder {
+    private static final class HeapNioEncoder extends ArrayEncoder {
         private final ByteBuffer byteBuffer;
         private int initialPosition;
 
@@ -982,8 +983,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SafeDirectNioEncoder extends CodedOutputStream {
+    private static final class SafeDirectNioEncoder extends CodedOutputStream {
         private final ByteBuffer buffer;
         private final int initialPosition;
         private final ByteBuffer originalBuffer;
@@ -1072,9 +1072,8 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }
@@ -1274,8 +1273,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class UnsafeDirectNioEncoder extends CodedOutputStream {
+    private static final class UnsafeDirectNioEncoder extends CodedOutputStream {
         private final long address;
         private final ByteBuffer buffer;
         private final long initialPosition;
@@ -1288,14 +1286,11 @@ public abstract class CodedOutputStream extends ByteOutput {
             super();
             this.originalBuffer = buffer;
             this.buffer = buffer.duplicate().order(ByteOrder.LITTLE_ENDIAN);
-            long addressOffset = UnsafeUtil.addressOffset(buffer);
-            this.address = addressOffset;
-            long position = buffer.position() + addressOffset;
-            this.initialPosition = position;
-            long limit = addressOffset + buffer.limit();
-            this.limit = limit;
-            this.oneVarintLimit = limit - 10;
-            this.position = position;
+            this.address = UnsafeUtil.addressOffset(buffer);
+            this.initialPosition = this.address + buffer.position();
+            this.limit = this.address + buffer.limit();
+            this.oneVarintLimit = this.limit - 10;
+            this.position = this.initialPosition;
         }
 
         static boolean isSupported() {
@@ -1379,9 +1374,8 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }
@@ -1416,10 +1410,10 @@ public abstract class CodedOutputStream extends ByteOutput {
 
         @Override // com.android.framework.protobuf.CodedOutputStream, com.android.framework.protobuf.ByteOutput
         public void write(byte value) throws IOException {
-            long j = this.position;
-            if (j >= this.limit) {
+            if (this.position >= this.limit) {
                 throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Long.valueOf(this.position), Long.valueOf(this.limit), 1));
             }
+            long j = this.position;
             this.position = 1 + j;
             UnsafeUtil.putByte(j, value);
         }
@@ -1470,22 +1464,20 @@ public abstract class CodedOutputStream extends ByteOutput {
                 UnsafeUtil.putByte(j2, (byte) value);
                 return;
             }
-            while (true) {
-                long j3 = this.position;
-                if (j3 < this.limit) {
-                    if ((value & (-128)) == 0) {
-                        this.position = 1 + j3;
-                        UnsafeUtil.putByte(j3, (byte) value);
-                        return;
-                    } else {
-                        this.position = j3 + 1;
-                        UnsafeUtil.putByte(j3, (byte) ((value & 127) | 128));
-                        value >>>= 7;
-                    }
+            while (this.position < this.limit) {
+                if ((value & (-128)) == 0) {
+                    long j3 = this.position;
+                    this.position = 1 + j3;
+                    UnsafeUtil.putByte(j3, (byte) value);
+                    return;
                 } else {
-                    throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Long.valueOf(this.position), Long.valueOf(this.limit), 1));
+                    long j4 = this.position;
+                    this.position = j4 + 1;
+                    UnsafeUtil.putByte(j4, (byte) ((value & 127) | 128));
+                    value >>>= 7;
                 }
             }
+            throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Long.valueOf(this.position), Long.valueOf(this.limit), 1));
         }
 
         @Override // com.android.framework.protobuf.CodedOutputStream
@@ -1508,21 +1500,20 @@ public abstract class CodedOutputStream extends ByteOutput {
                 UnsafeUtil.putByte(j2, (byte) value);
                 return;
             }
-            while (true) {
-                long j3 = this.position;
-                if (j3 >= this.limit) {
-                    throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Long.valueOf(this.position), Long.valueOf(this.limit), 1));
-                }
+            while (this.position < this.limit) {
                 if ((value & (-128)) == 0) {
+                    long j3 = this.position;
                     this.position = 1 + j3;
                     UnsafeUtil.putByte(j3, (byte) value);
                     return;
                 } else {
-                    this.position = j3 + 1;
-                    UnsafeUtil.putByte(j3, (byte) ((((int) value) & 127) | 128));
+                    long j4 = this.position;
+                    this.position = j4 + 1;
+                    UnsafeUtil.putByte(j4, (byte) ((((int) value) & 127) | 128));
                     value >>>= 7;
                 }
             }
+            throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Long.valueOf(this.position), Long.valueOf(this.limit), 1));
         }
 
         @Override // com.android.framework.protobuf.CodedOutputStream
@@ -1533,19 +1524,14 @@ public abstract class CodedOutputStream extends ByteOutput {
 
         @Override // com.android.framework.protobuf.CodedOutputStream, com.android.framework.protobuf.ByteOutput
         public void write(byte[] value, int offset, int length) throws IOException {
-            if (value != null && offset >= 0 && length >= 0 && value.length - length >= offset) {
-                long j = this.limit - length;
-                long j2 = this.position;
-                if (j >= j2) {
-                    UnsafeUtil.copyMemory(value, offset, j2, length);
-                    this.position += length;
-                    return;
+            if (value == null || offset < 0 || length < 0 || value.length - length < offset || this.limit - length < this.position) {
+                if (value == null) {
+                    throw new NullPointerException("value");
                 }
+                throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Long.valueOf(this.position), Long.valueOf(this.limit), Integer.valueOf(length)));
             }
-            if (value == null) {
-                throw new NullPointerException("value");
-            }
-            throw new OutOfSpaceException(String.format("Pos: %d, limit: %d, len: %d", Long.valueOf(this.position), Long.valueOf(this.limit), Integer.valueOf(length)));
+            UnsafeUtil.copyMemory(value, offset, this.position, length);
+            this.position += length;
         }
 
         @Override // com.android.framework.protobuf.CodedOutputStream, com.android.framework.protobuf.ByteOutput
@@ -1593,7 +1579,7 @@ public abstract class CodedOutputStream extends ByteOutput {
                 }
             } catch (Utf8.UnpairedSurrogateException e) {
                 this.position = prevPos;
-                repositionBuffer(prevPos);
+                repositionBuffer(this.position);
                 inefficientWriteStringNoTag(value, e);
             } catch (IllegalArgumentException e2) {
                 throw new OutOfSpaceException(e2);
@@ -1626,8 +1612,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static abstract class AbstractBufferedEncoder extends CodedOutputStream {
+    private static abstract class AbstractBufferedEncoder extends CodedOutputStream {
         final byte[] buffer;
         final int limit;
         int position;
@@ -1638,9 +1623,8 @@ public abstract class CodedOutputStream extends ByteOutput {
             if (bufferSize < 0) {
                 throw new IllegalArgumentException("bufferSize must be >= 0");
             }
-            byte[] bArr = new byte[Math.max(bufferSize, 20)];
-            this.buffer = bArr;
-            this.limit = bArr.length;
+            this.buffer = new byte[Math.max(bufferSize, 20)];
+            this.limit = this.buffer.length;
         }
 
         @Override // com.android.framework.protobuf.CodedOutputStream
@@ -1791,51 +1775,60 @@ public abstract class CodedOutputStream extends ByteOutput {
         final void bufferFixed32NoTag(int value) {
             byte[] bArr = this.buffer;
             int i = this.position;
-            int i2 = i + 1;
-            this.position = i2;
+            this.position = i + 1;
             bArr[i] = (byte) (value & 255);
-            int i3 = i2 + 1;
-            this.position = i3;
-            bArr[i2] = (byte) ((value >> 8) & 255);
-            int i4 = i3 + 1;
-            this.position = i4;
-            bArr[i3] = (byte) ((value >> 16) & 255);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.position;
+            this.position = i2 + 1;
+            bArr2[i2] = (byte) ((value >> 8) & 255);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.position;
+            this.position = i3 + 1;
+            bArr3[i3] = (byte) ((value >> 16) & 255);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.position;
             this.position = i4 + 1;
-            bArr[i4] = (byte) ((value >> 24) & 255);
+            bArr4[i4] = (byte) ((value >> 24) & 255);
             this.totalBytesWritten += 4;
         }
 
         final void bufferFixed64NoTag(long value) {
             byte[] bArr = this.buffer;
             int i = this.position;
-            int i2 = i + 1;
-            this.position = i2;
+            this.position = i + 1;
             bArr[i] = (byte) (value & 255);
-            int i3 = i2 + 1;
-            this.position = i3;
-            bArr[i2] = (byte) ((value >> 8) & 255);
-            int i4 = i3 + 1;
-            this.position = i4;
-            bArr[i3] = (byte) ((value >> 16) & 255);
-            int i5 = i4 + 1;
-            this.position = i5;
-            bArr[i4] = (byte) (255 & (value >> 24));
-            int i6 = i5 + 1;
-            this.position = i6;
-            bArr[i5] = (byte) (((int) (value >> 32)) & 255);
-            int i7 = i6 + 1;
-            this.position = i7;
-            bArr[i6] = (byte) (((int) (value >> 40)) & 255);
-            int i8 = i7 + 1;
-            this.position = i8;
-            bArr[i7] = (byte) (((int) (value >> 48)) & 255);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.position;
+            this.position = i2 + 1;
+            bArr2[i2] = (byte) ((value >> 8) & 255);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.position;
+            this.position = i3 + 1;
+            bArr3[i3] = (byte) ((value >> 16) & 255);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.position;
+            this.position = i4 + 1;
+            bArr4[i4] = (byte) (255 & (value >> 24));
+            byte[] bArr5 = this.buffer;
+            int i5 = this.position;
+            this.position = i5 + 1;
+            bArr5[i5] = (byte) (((int) (value >> 32)) & 255);
+            byte[] bArr6 = this.buffer;
+            int i6 = this.position;
+            this.position = i6 + 1;
+            bArr6[i6] = (byte) (((int) (value >> 40)) & 255);
+            byte[] bArr7 = this.buffer;
+            int i7 = this.position;
+            this.position = i7 + 1;
+            bArr7[i7] = (byte) (((int) (value >> 48)) & 255);
+            byte[] bArr8 = this.buffer;
+            int i8 = this.position;
             this.position = i8 + 1;
-            bArr[i8] = (byte) (((int) (value >> 56)) & 255);
+            bArr8[i8] = (byte) (((int) (value >> 56)) & 255);
             this.totalBytesWritten += 8;
         }
     }
 
-    /* loaded from: classes4.dex */
     private static final class ByteOutputEncoder extends AbstractBufferedEncoder {
         private final ByteOutput out;
 
@@ -1953,9 +1946,8 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }
@@ -2118,8 +2110,7 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class OutputStreamEncoder extends AbstractBufferedEncoder {
+    private static final class OutputStreamEncoder extends AbstractBufferedEncoder {
         private final OutputStream out;
 
         OutputStreamEncoder(OutputStream out, int bufferSize) {
@@ -2236,9 +2227,8 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }

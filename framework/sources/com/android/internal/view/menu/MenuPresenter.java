@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 /* loaded from: classes5.dex */
 public interface MenuPresenter {
 
-    /* loaded from: classes5.dex */
     public interface Callback {
         void onCloseMenu(MenuBuilder menuBuilder, boolean z);
 

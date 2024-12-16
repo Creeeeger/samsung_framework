@@ -8,10 +8,13 @@ import com.samsung.android.os.SemCompanionDeviceBatteryInfo;
 
 /* loaded from: classes3.dex */
 public class BatteryManager {
+    public static final String ACTION_BATTERY_CONNECTION_STATE_CHANGED = "com.samsung.server.BatteryService.action.BATTERY_CONNECTION_STATE_CHANGED";
     public static final String ACTION_CHARGING = "android.os.action.CHARGING";
     public static final String ACTION_DISCHARGING = "android.os.action.DISCHARGING";
     public static final String ACTION_POPUP_BATTERY_DETERIORATION = "com.samsung.server.BatteryService.action.ACTION_POPUP_BATTERY_DETERIORATION";
+    public static final String ACTION_SEC_BATTERY_CURRENT_CHANGED = "com.samsung.server.BatteryService.action.SEC_BATTERY_CURRENT_CHANGED";
     public static final String ACTION_SEC_BATTERY_EVENT = "com.samsung.server.BatteryService.action.SEC_BATTERY_EVENT";
+    public static final String ACTION_SEC_BATTERY_REMAINING_CHARGING_TIME_CHANGED = "com.samsung.server.BatteryService.action.SEC_BATTERY_REMAINING_CHARGING_TIME_CHANGED";
     public static final String ACTION_SEC_BATTERY_WATER_IN_CONNECTOR = "com.samsung.server.BatteryService.action.SEC_BATTERY_WATER_IN_CONNECTOR";
     public static final String ACTION_SLEEP_CHARGING = "com.samsung.server.BatteryService.action.ACTION_SLEEP_CHARGING";
     public static final String ACTION_WIRELESS_POWER_SHARING_CONNECTED = "com.samsung.server.BatteryService.action.WIRELESS_POWER_SHARING_CONNECTED";
@@ -83,6 +86,10 @@ public class BatteryManager {
     public static final int BATTERY_PROPERTY_MANUFACTURING_DATE = 7;
 
     @SystemApi
+    public static final int BATTERY_PROPERTY_PART_STATUS = 12;
+
+    @SystemApi
+    public static final int BATTERY_PROPERTY_SERIAL_NUMBER = 11;
     public static final int BATTERY_PROPERTY_STATE_OF_HEALTH = 10;
     public static final int BATTERY_PROPERTY_STATUS = 6;
     public static final int BATTERY_STATUS_CHARGING = 2;
@@ -122,8 +129,9 @@ public class BatteryManager {
 
     @SystemApi
     public static final int CHARGING_POLICY_DEFAULT = 1;
+    public static final String EXTRA_ALL_BATTERY_CONNECTED = "all_battery_connected";
+    public static final String EXTRA_BATTERY_CONNECTION_STATUS = "battery_connection_status";
     public static final String EXTRA_BATTERY_LOW = "battery_low";
-    public static final String EXTRA_CAPACITY = "capacity";
     public static final String EXTRA_CHARGER_TYPE = "charger_type";
     public static final String EXTRA_CHARGE_COUNTER = "charge_counter";
     public static final String EXTRA_CHARGE_TYPE = "charge_type";
@@ -154,11 +162,12 @@ public class BatteryManager {
     public static final String EXTRA_POWER_SHARING = "power_sharing";
     public static final String EXTRA_POWER_SHARING_ENABLE = "power_sharing_enable";
     public static final String EXTRA_PRESENT = "present";
+    public static final String EXTRA_PROTECTION = "protection";
+    public static final String EXTRA_REMAINING_CHARGING_TIME = "remaining_charging_time";
     public static final String EXTRA_RX_CONNECTED = "connected";
     public static final String EXTRA_SCALE = "scale";
     public static final String EXTRA_SEC_CURRENT_EVENT = "current_event";
     public static final String EXTRA_SEC_PLUG_TYPE_SUMMARY = "sec_plug_type";
-    public static final String EXTRA_SELF_DISCHARGING = "self_discharging";
     public static final String EXTRA_SEQUENCE = "seq";
     public static final String EXTRA_SLEEP_CHARGING_EVENT = "sleep_charging_event";
     public static final String EXTRA_SLEEP_CHARGING_EXPECTED_FULL_CHARGE_TIME = "sleep_charging_expected_full_charge_time";
@@ -171,6 +180,15 @@ public class BatteryManager {
     public static final String EXTRA_VOLTAGE = "voltage";
     public static final String EXTRA_WATER = "water";
     public static final String EXTRA_WC_TX_ID = "wc_tx_id";
+
+    @SystemApi
+    public static final int PART_STATUS_ORIGINAL = 1;
+
+    @SystemApi
+    public static final int PART_STATUS_REPLACED = 2;
+
+    @SystemApi
+    public static final int PART_STATUS_UNSUPPORTED = 0;
     public static final String SEM_ACTION_BATTERY_INFO_ADDED = "com.samsung.battery.ACTION_BATTERY_INFO_ADDED";
     public static final String SEM_ACTION_BATTERY_INFO_CHANGED = "com.samsung.battery.ACTION_BATTERY_INFO_CHANGED";
     public static final String SEM_ACTION_BATTERY_INFO_REMOVED = "com.samsung.battery.ACTION_BATTERY_INFO_REMOVED";
@@ -183,10 +201,22 @@ public class BatteryManager {
     public static final int SEM_BATTERY_INFO_DEVICE_TYPE_SPEN_EXTERNAL = 12;
     public static final int SEM_BATTERY_INFO_DEVICE_TYPE_UNKNOWN = 1;
     public static final int SEM_BATTERY_INFO_DEVICE_TYPE_WATCH = 4;
+    public static final int SEM_BATTERY_PROPERTY_ASOC = 105;
+    public static final int SEM_BATTERY_PROPERTY_BSOH = 107;
+    public static final int SEM_BATTERY_PROPERTY_DISCHARGING_LEVEL = 103;
+    public static final int SEM_BATTERY_PROPERTY_FIRST_USE_DATE = 102;
+    public static final int SEM_BATTERY_PROPERTY_FULL_STATUS_USAGE = 104;
+    public static final int SEM_BATTERY_PROPERTY_HIGH_SWELLING_CNT = 108;
+    public static final int SEM_BATTERY_PROPERTY_IC_AUTHENTICATION_RESULT = 106;
+    public static final int SEM_BATTERY_PROPERTY_QR = 101;
     public static final String SEM_EXTRA_BATTERY_INFO = "com.samsung.battery.EXTRA_BATTERY_INFO";
     private final IBatteryPropertiesRegistrar mBatteryPropertiesRegistrar;
     private final IBatteryStats mBatteryStats;
     private final Context mContext;
+
+    public static boolean isAdaptiveChargingPolicy(int policy) {
+        return policy == 3 || policy == 2 || policy == 4;
+    }
 
     public BatteryManager() {
         this.mContext = null;
@@ -224,10 +254,24 @@ public class BatteryManager {
         }
     }
 
+    private String queryStringProperty(int id) {
+        if (this.mBatteryPropertiesRegistrar == null) {
+            return null;
+        }
+        try {
+            BatteryProperty prop = new BatteryProperty();
+            if (this.mBatteryPropertiesRegistrar.getProperty(id, prop) == 0) {
+                return prop.getString();
+            }
+            return null;
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     public int getIntProperty(int id) {
-        Context context;
         long value = queryProperty(id);
-        if (value == Long.MIN_VALUE && (context = this.mContext) != null && context.getApplicationInfo().targetSdkVersion >= 28) {
+        if (value == Long.MIN_VALUE && this.mContext != null && this.mContext.getApplicationInfo().targetSdkVersion >= 28) {
             return Integer.MIN_VALUE;
         }
         return (int) value;
@@ -235,6 +279,43 @@ public class BatteryManager {
 
     public long getLongProperty(int id) {
         return queryProperty(id);
+    }
+
+    public String getStringProperty(int id) {
+        return queryStringProperty(id);
+    }
+
+    public long[] semGetValuesAsLong(int id) {
+        if (this.mBatteryPropertiesRegistrar == null) {
+            return null;
+        }
+        try {
+            return this.mBatteryPropertiesRegistrar.semGetValuesAsLong(id);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public String[] semGetValuesAsString(int id) {
+        if (this.mBatteryPropertiesRegistrar == null) {
+            return null;
+        }
+        try {
+            return this.mBatteryPropertiesRegistrar.semGetValuesAsString(id);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public boolean semGetValueAsBoolean(int id) {
+        if (this.mBatteryPropertiesRegistrar == null) {
+            return false;
+        }
+        try {
+            return this.mBatteryPropertiesRegistrar.semGetValueAsBoolean(id);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     public static boolean isPlugWired(int plugType) {

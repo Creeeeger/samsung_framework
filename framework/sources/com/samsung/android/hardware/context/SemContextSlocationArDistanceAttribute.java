@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextSlocationArDistanceAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextSlocationArDistanceAttribute> CREATOR = new Parcelable.Creator<SemContextSlocationArDistanceAttribute>() { // from class: com.samsung.android.hardware.context.SemContextSlocationArDistanceAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSlocationArDistanceAttribute createFromParcel(Parcel in) {
             return new SemContextSlocationArDistanceAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSlocationArDistanceAttribute[] newArray(int size) {
             return new SemContextSlocationArDistanceAttribute[size];
@@ -25,28 +24,7 @@ public class SemContextSlocationArDistanceAttribute extends SemContextAttribute 
     private int[] mDistanceCmd;
     private int mMode;
 
-    /* synthetic */ SemContextSlocationArDistanceAttribute(Parcel parcel, SemContextSlocationArDistanceAttributeIA semContextSlocationArDistanceAttributeIA) {
-        this(parcel);
-    }
-
-    /* renamed from: com.samsung.android.hardware.context.SemContextSlocationArDistanceAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextSlocationArDistanceAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextSlocationArDistanceAttribute createFromParcel(Parcel in) {
-            return new SemContextSlocationArDistanceAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextSlocationArDistanceAttribute[] newArray(int size) {
-            return new SemContextSlocationArDistanceAttribute[size];
-        }
-    }
-
-    public SemContextSlocationArDistanceAttribute() {
+    SemContextSlocationArDistanceAttribute() {
         this.mMode = -1;
         this.mDistanceCmd = null;
         setAttribute();
@@ -62,16 +40,14 @@ public class SemContextSlocationArDistanceAttribute extends SemContextAttribute 
         this.mMode = -1;
         this.mDistanceCmd = null;
         this.mMode = mode;
-        int[] iArr = new int[data.length];
-        this.mDistanceCmd = iArr;
-        System.arraycopy(data, 0, iArr, 0, data.length);
+        this.mDistanceCmd = new int[data.length];
+        System.arraycopy(data, 0, this.mDistanceCmd, 0, data.length);
         setAttribute();
     }
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mMode;
-        if (i >= -1 && i <= 1) {
+        if (this.mMode >= -1 && this.mMode <= 1) {
             return true;
         }
         Log.d(TAG, "Mode value is wrong!!");
@@ -82,9 +58,8 @@ public class SemContextSlocationArDistanceAttribute extends SemContextAttribute 
         Bundle attribute = new Bundle();
         switch (this.mMode) {
             case 1:
-                int[] iArr = this.mDistanceCmd;
-                int[] intType = new int[iArr.length];
-                System.arraycopy(iArr, 0, intType, 0, iArr.length);
+                int[] intType = new int[this.mDistanceCmd.length];
+                System.arraycopy(this.mDistanceCmd, 0, intType, 0, this.mDistanceCmd.length);
                 attribute.putIntArray("distance_cmd_array", intType);
                 break;
         }

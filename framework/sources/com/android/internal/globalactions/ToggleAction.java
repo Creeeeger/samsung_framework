@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.internal.R;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class ToggleAction implements Action {
     private static final String TAG = "ToggleAction";
     protected int mDisabledIconResid;
@@ -21,7 +21,6 @@ public abstract class ToggleAction implements Action {
 
     public abstract void onToggle(boolean z);
 
-    /* loaded from: classes4.dex */
     public enum State {
         Off(false),
         TurningOn(true),
@@ -69,7 +68,7 @@ public abstract class ToggleAction implements Action {
         }
         boolean on = this.mState == State.On || this.mState == State.TurningOn;
         if (icon != null) {
-            icon.lambda$setImageURIAsync$2(context.getDrawable(on ? this.mEnabledIconResId : this.mDisabledIconResid));
+            icon.lambda$setImageURIAsync$0(context.getDrawable(on ? this.mEnabledIconResId : this.mDisabledIconResid));
             icon.setEnabled(enabled);
         }
         if (statusView != null) {

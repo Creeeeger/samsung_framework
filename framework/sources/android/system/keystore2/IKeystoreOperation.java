@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes3.dex */
 public interface IKeystoreOperation extends IInterface {
     public static final String DESCRIPTOR = "android$system$keystore2$IKeystoreOperation".replace('$', '.');
-    public static final String HASH = "4f1c704008e5687ed0d6f1590464aed39fc7f64e";
-    public static final int VERSION = 3;
+    public static final String HASH = "5648acc9b43590ef0a775b6f5c553831c20cccc4";
+    public static final int VERSION = 4;
 
     void abort() throws RemoteException;
 
@@ -24,7 +24,6 @@ public interface IKeystoreOperation extends IInterface {
 
     void updateAad(byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IKeystoreOperation {
         @Override // android.system.keystore2.IKeystoreOperation
         public void updateAad(byte[] aadInput) throws RemoteException {
@@ -60,7 +59,6 @@ public interface IKeystoreOperation extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IKeystoreOperation {
         static final int TRANSACTION_abort = 4;
         static final int TRANSACTION_finish = 3;
@@ -120,54 +118,52 @@ public interface IKeystoreOperation extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    updateAad(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    byte[] _arg02 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result = update(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeByteArray(_result);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    byte[] _arg03 = data.createByteArray();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result2 = finish(_arg03, _arg1);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 4:
+                    abort();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            updateAad(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            byte[] _arg02 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result = update(_arg02);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 3:
-                            byte[] _arg03 = data.createByteArray();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result2 = finish(_arg03, _arg1);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 4:
-                            abort();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IKeystoreOperation {
+        private static class Proxy implements IKeystoreOperation {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

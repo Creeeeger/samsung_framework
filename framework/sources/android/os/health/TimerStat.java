@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class TimerStat implements Parcelable {
     public static final Parcelable.Creator<TimerStat> CREATOR = new Parcelable.Creator<TimerStat>() { // from class: android.os.health.TimerStat.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimerStat createFromParcel(Parcel in) {
             return new TimerStat(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimerStat[] newArray(int size) {
             return new TimerStat[size];
@@ -21,23 +20,6 @@ public final class TimerStat implements Parcelable {
     };
     private int mCount;
     private long mTime;
-
-    /* renamed from: android.os.health.TimerStat$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimerStat> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimerStat createFromParcel(Parcel in) {
-            return new TimerStat(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimerStat[] newArray(int size) {
-            return new TimerStat[size];
-        }
-    }
 
     public TimerStat() {
     }

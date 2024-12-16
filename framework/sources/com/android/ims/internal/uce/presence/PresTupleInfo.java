@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.presence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresTupleInfo implements Parcelable {
     public static final Parcelable.Creator<PresTupleInfo> CREATOR = new Parcelable.Creator<PresTupleInfo>() { // from class: com.android.ims.internal.uce.presence.PresTupleInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresTupleInfo createFromParcel(Parcel source) {
             return new PresTupleInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresTupleInfo[] newArray(int size) {
             return new PresTupleInfo[size];
@@ -23,10 +22,6 @@ public class PresTupleInfo implements Parcelable {
     private String mFeatureTag;
     private String mTimestamp;
     private String mVersion;
-
-    /* synthetic */ PresTupleInfo(Parcel parcel, PresTupleInfoIA presTupleInfoIA) {
-        this(parcel);
-    }
 
     public String getFeatureTag() {
         return this.mFeatureTag;
@@ -78,23 +73,6 @@ public class PresTupleInfo implements Parcelable {
         dest.writeString(this.mContactUri);
         dest.writeString(this.mTimestamp);
         dest.writeString(this.mVersion);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresTupleInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresTupleInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresTupleInfo createFromParcel(Parcel source) {
-            return new PresTupleInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresTupleInfo[] newArray(int size) {
-            return new PresTupleInfo[size];
-        }
     }
 
     private PresTupleInfo(Parcel source) {

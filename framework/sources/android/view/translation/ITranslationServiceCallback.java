@@ -12,7 +12,6 @@ public interface ITranslationServiceCallback extends IInterface {
 
     void updateTranslationCapability(TranslationCapability translationCapability) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITranslationServiceCallback {
         @Override // android.view.translation.ITranslationServiceCallback
         public void updateTranslationCapability(TranslationCapability capability) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ITranslationServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITranslationServiceCallback {
         static final int TRANSACTION_updateTranslationCapability = 1;
 
@@ -67,26 +65,22 @@ public interface ITranslationServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITranslationServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITranslationServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITranslationServiceCallback.DESCRIPTOR);
+                case 1:
+                    TranslationCapability _arg0 = (TranslationCapability) data.readTypedObject(TranslationCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateTranslationCapability(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            TranslationCapability _arg0 = (TranslationCapability) data.readTypedObject(TranslationCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateTranslationCapability(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITranslationServiceCallback {
+        private static class Proxy implements ITranslationServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

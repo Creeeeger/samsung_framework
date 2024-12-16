@@ -25,12 +25,11 @@ public class StrictJarManifest implements Cloneable {
     private static final byte[] VALUE_SEPARATOR = {58, 32};
     static final Attributes.Name ATTRIBUTE_NAME_NAME = new Attributes.Name("Name");
 
-    /* loaded from: classes4.dex */
-    public static final class Chunk {
+    static final class Chunk {
         final int end;
         final int start;
 
-        public Chunk(int start, int end) {
+        Chunk(int start, int end) {
             this.start = start;
             this.end = end;
         }
@@ -51,7 +50,7 @@ public class StrictJarManifest implements Cloneable {
         this.entries = (HashMap) ((HashMap) man.getEntries()).clone();
     }
 
-    public StrictJarManifest(byte[] manifestBytes, boolean readChunks) throws IOException {
+    StrictJarManifest(byte[] manifestBytes, boolean readChunks) throws IOException {
         this();
         if (readChunks) {
             this.chunks = new HashMap<>();
@@ -108,7 +107,7 @@ public class StrictJarManifest implements Cloneable {
         return getEntries().equals(((StrictJarManifest) o).getEntries());
     }
 
-    public Chunk getChunk(String name) {
+    Chunk getChunk(String name) {
         return this.chunks.get(name);
     }
 
@@ -116,7 +115,7 @@ public class StrictJarManifest implements Cloneable {
         this.chunks = null;
     }
 
-    public int getMainAttributesEnd() {
+    int getMainAttributesEnd() {
         return this.mainEnd;
     }
 

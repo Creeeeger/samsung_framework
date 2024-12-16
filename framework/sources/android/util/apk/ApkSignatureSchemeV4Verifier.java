@@ -2,11 +2,16 @@ package android.util.apk;
 
 import android.os.incremental.IncrementalManager;
 import android.os.incremental.V4Signature;
+import android.security.Flags;
 import android.util.ArrayMap;
 import android.util.Pair;
+import com.android.internal.security.VerityUtils;
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.DigestException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -28,27 +33,72 @@ import java.util.Map;
 public class ApkSignatureSchemeV4Verifier {
     static final int APK_SIGNATURE_SCHEME_DEFAULT = -1;
 
-    public static VerifiedSigner extractCertificates(String apkFile) throws SignatureNotFoundException, SecurityException {
+    public static VerifiedSigner extractCertificates(String apkFile) throws SignatureNotFoundException, SignatureException, SecurityException {
         Pair<V4Signature.HashingInfo, V4Signature.SigningInfos> pair = extractSignature(apkFile);
         return verify(apkFile, pair.first, pair.second, -1);
     }
 
-    public static Pair<V4Signature.HashingInfo, V4Signature.SigningInfos> extractSignature(String apkFile) throws SignatureNotFoundException {
-        File apk = new File(apkFile);
-        byte[] signatureBytes = IncrementalManager.unsafeGetFileSignature(apk.getAbsolutePath());
-        if (signatureBytes == null || signatureBytes.length == 0) {
-            throw new SignatureNotFoundException("Failed to obtain signature bytes from IncFS.");
-        }
+    public static Pair<V4Signature.HashingInfo, V4Signature.SigningInfos> extractSignature(String apkFile) throws SignatureNotFoundException, SignatureException {
+        boolean needsConsistencyCheck;
+        V4Signature signature;
         try {
-            V4Signature signature = V4Signature.readFrom(signatureBytes);
-            if (!signature.isVersionSupported()) {
-                throw new SecurityException("v4 signature version " + signature.version + " is not supported");
+            try {
+                try {
+                    File apk = new File(apkFile);
+                    byte[] signatureBytes = IncrementalManager.unsafeGetFileSignature(apk.getAbsolutePath());
+                    if (signatureBytes != null && signatureBytes.length > 0) {
+                        needsConsistencyCheck = false;
+                        signature = V4Signature.readFrom(signatureBytes);
+                    } else {
+                        boolean needsConsistencyCheck2 = Flags.extendVbChainToUpdatedApk();
+                        if (needsConsistencyCheck2) {
+                            needsConsistencyCheck = true;
+                            File idsig = new File(apk.getAbsolutePath() + V4Signature.EXT);
+                            try {
+                                FileInputStream fis = new FileInputStream(idsig.getAbsolutePath());
+                                try {
+                                    V4Signature signature2 = V4Signature.readFrom(fis);
+                                    fis.close();
+                                    signature = signature2;
+                                } catch (Throwable th) {
+                                    try {
+                                        fis.close();
+                                    } catch (Throwable th2) {
+                                        th.addSuppressed(th2);
+                                    }
+                                    throw th;
+                                }
+                            } catch (IOException e) {
+                                throw new SignatureNotFoundException("Failed to obtain signature bytes from .idsig");
+                            }
+                        } else {
+                            throw new SignatureNotFoundException("Failed to obtain signature bytes from IncFS.");
+                        }
+                    }
+                    if (!signature.isVersionSupported()) {
+                        throw new SecurityException("v4 signature version " + signature.version + " is not supported");
+                    }
+                    V4Signature.HashingInfo hashingInfo = V4Signature.HashingInfo.fromByteArray(signature.hashingInfo);
+                    V4Signature.SigningInfos signingInfos = V4Signature.SigningInfos.fromByteArray(signature.signingInfos);
+                    if (needsConsistencyCheck) {
+                        byte[] actualDigest = VerityUtils.getFsverityDigest(apk.getAbsolutePath());
+                        if (actualDigest == null) {
+                            throw new SecurityException("The APK does not have fs-verity");
+                        }
+                        byte[] computedDigest = VerityUtils.generateFsVerityDigest(apk.length(), hashingInfo);
+                        if (!Arrays.equals(computedDigest, actualDigest)) {
+                            throw new SignatureException("Actual digest does not match the v4 signature");
+                        }
+                    }
+                    return Pair.create(hashingInfo, signingInfos);
+                } catch (DigestException | NoSuchAlgorithmException e2) {
+                    throw new SecurityException("Failed to calculate the digest", e2);
+                }
+            } catch (EOFException e3) {
+                throw new SignatureException("V4 signature is invalid.", e3);
             }
-            V4Signature.HashingInfo hashingInfo = V4Signature.HashingInfo.fromByteArray(signature.hashingInfo);
-            V4Signature.SigningInfos signingInfos = V4Signature.SigningInfos.fromByteArray(signature.signingInfos);
-            return Pair.create(hashingInfo, signingInfos);
-        } catch (IOException e) {
-            throw new SignatureNotFoundException("Failed to read V4 signature.", e);
+        } catch (IOException e4) {
+            throw new SignatureNotFoundException("Failed to read V4 signature.", e4);
         }
     }
 
@@ -128,7 +178,6 @@ public class ApkSignatureSchemeV4Verifier {
         throw new SecurityException("Unsupported hashAlgorithm: " + hashAlgorithm);
     }
 
-    /* loaded from: classes4.dex */
     public static class VerifiedSigner {
         public final byte[] apkDigest;
         public final Certificate[] certs;

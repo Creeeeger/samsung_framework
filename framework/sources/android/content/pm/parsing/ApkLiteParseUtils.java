@@ -33,7 +33,7 @@ public class ApkLiteParseUtils {
     public static final String ANDROID_MANIFEST_FILENAME = "AndroidManifest.xml";
     private static final String ANDROID_RES_NAMESPACE = "http://schemas.android.com/apk/res/android";
     public static final String APK_FILE_EXTENSION = ".apk";
-    private static final int DEFAULT_MIN_SDK_VERSION = 1;
+    public static final int DEFAULT_MIN_SDK_VERSION = 1;
     private static final int DEFAULT_TARGET_SDK_VERSION = 0;
     private static final int PARSE_COLLECT_CERTIFICATES = 32;
     private static final int PARSE_DEFAULT_INSTALL_LOCATION = -1;
@@ -43,6 +43,8 @@ public class ApkLiteParseUtils {
     private static final String TAG_MANIFEST = "manifest";
     private static final String TAG_OVERLAY = "overlay";
     private static final String TAG_PACKAGE_VERIFIER = "package-verifier";
+    private static final String TAG_PROCESS = "process";
+    private static final String TAG_PROCESSES = "processes";
     private static final String TAG_PROFILEABLE = "profileable";
     private static final String TAG_RECEIVER = "receiver";
     private static final String TAG_SDK_LIBRARY = "sdk-library";
@@ -218,154 +220,177 @@ public class ApkLiteParseUtils {
 
     private static ParseResult<ApkLite> parseApkLiteInner(ParseInput input, File apkFile, FileDescriptor fd, String debugPathName, int flags) {
         Exception e;
+        ApkAssets apkAssets;
         XmlResourceParser parser;
         SigningDetails signingDetails;
         long j;
         String apkPath = fd != null ? debugPathName : apkFile.getAbsolutePath();
         XmlResourceParser parser2 = null;
-        ApkAssets apkAssets = null;
+        ApkAssets apkAssets2 = null;
         try {
             try {
                 try {
-                    ApkAssets apkAssets2 = fd != null ? ApkAssets.loadFromFd(fd, debugPathName, 0, null) : ApkAssets.loadFromPath(apkPath);
+                    apkAssets = fd != null ? ApkAssets.loadFromFd(fd, debugPathName, 0, null) : ApkAssets.loadFromPath(apkPath);
                     try {
-                        parser = apkAssets2.openXml("AndroidManifest.xml");
+                        parser = apkAssets.openXml("AndroidManifest.xml");
                     } catch (IOException | RuntimeException | XmlPullParserException e2) {
                         e = e2;
-                        apkAssets = apkAssets2;
+                        apkAssets2 = apkAssets;
                     } catch (Throwable th) {
                         e = th;
-                        apkAssets = apkAssets2;
+                        apkAssets2 = apkAssets;
                     }
+                } catch (IOException | RuntimeException | XmlPullParserException e3) {
+                    e = e3;
+                }
+                try {
                     try {
-                        try {
-                            if ((flags & 32) != 0) {
-                                boolean skipVerify = (flags & 16) != 0;
-                                Trace.traceBegin(262144L, "collectCertificates");
-                                try {
-                                    j = 262144;
-                                } catch (Throwable th2) {
-                                    th = th2;
-                                    j = 262144;
-                                }
-                                try {
-                                    ParseResult<SigningDetails> result = FrameworkParsingPackageUtils.getSigningDetails(input, apkFile.getAbsolutePath(), skipVerify, false, SigningDetails.UNKNOWN, 0);
-                                    if (result.isError()) {
-                                        ParseResult<ApkLite> error = input.error(result);
-                                        Trace.traceEnd(262144L);
-                                        IoUtils.closeQuietly(parser);
-                                        if (apkAssets2 != null) {
-                                            try {
-                                                apkAssets2.close();
-                                            } catch (Throwable th3) {
-                                            }
-                                        }
-                                        return error;
-                                    }
-                                    SigningDetails signingDetails2 = result.getResult();
+                        if ((flags & 32) != 0) {
+                            boolean skipVerify = (flags & 16) != 0;
+                            Trace.traceBegin(262144L, "collectCertificates");
+                            try {
+                                j = 262144;
+                            } catch (Throwable th2) {
+                                th = th2;
+                                j = 262144;
+                            }
+                            try {
+                                ParseResult<SigningDetails> result = FrameworkParsingPackageUtils.getSigningDetails(input, apkFile.getAbsolutePath(), skipVerify, false, SigningDetails.UNKNOWN, 0);
+                                if (result.isError()) {
+                                    input.setPackageNameForAudit(getPackageNameForAudit(parser));
+                                    ParseResult<ApkLite> error = input.error(result);
                                     Trace.traceEnd(262144L);
-                                    signingDetails = signingDetails2;
-                                } catch (Throwable th4) {
-                                    th = th4;
-                                    Trace.traceEnd(j);
-                                    throw th;
+                                    IoUtils.closeQuietly(parser);
+                                    if (apkAssets != null) {
+                                        try {
+                                            apkAssets.close();
+                                        } catch (Throwable th3) {
+                                        }
+                                    }
+                                    return error;
                                 }
-                            } else {
-                                signingDetails = SigningDetails.UNKNOWN;
+                                SigningDetails signingDetails2 = result.getResult();
+                                Trace.traceEnd(262144L);
+                                signingDetails = signingDetails2;
+                            } catch (Throwable th4) {
+                                th = th4;
+                                Trace.traceEnd(j);
+                                throw th;
                             }
-                            ParseResult<ApkLite> parseApkLite = parseApkLite(input, apkPath, parser, signingDetails, flags);
-                            IoUtils.closeQuietly(parser);
-                            if (apkAssets2 != null) {
-                                try {
-                                    apkAssets2.close();
-                                } catch (Throwable th5) {
-                                }
-                            }
-                            return parseApkLite;
-                        } catch (IOException | RuntimeException | XmlPullParserException e3) {
-                            e = e3;
-                            apkAssets = apkAssets2;
-                            parser2 = parser;
-                            Exception e4 = e;
-                            Slog.w(TAG, "Failed to parse " + apkPath, e4);
-                            ParseResult<ApkLite> error2 = input.error(-102, "Failed to parse " + apkPath, e4);
-                            IoUtils.closeQuietly(parser2);
-                            if (apkAssets != null) {
-                                try {
-                                    apkAssets.close();
-                                } catch (Throwable th6) {
-                                }
-                            }
-                            return error2;
+                        } else {
+                            signingDetails = SigningDetails.UNKNOWN;
                         }
-                    } catch (Throwable th7) {
-                        e = th7;
-                        apkAssets = apkAssets2;
+                        ParseResult<ApkLite> parseApkLite = parseApkLite(input, apkPath, parser, signingDetails, flags);
+                        IoUtils.closeQuietly(parser);
+                        if (apkAssets != null) {
+                            try {
+                                apkAssets.close();
+                            } catch (Throwable th5) {
+                            }
+                        }
+                        return parseApkLite;
+                    } catch (Throwable th6) {
+                        e = th6;
+                        apkAssets2 = apkAssets;
                         parser2 = parser;
                         IoUtils.closeQuietly(parser2);
-                        if (apkAssets == null) {
+                        if (apkAssets2 == null) {
                             throw e;
                         }
                         try {
-                            apkAssets.close();
+                            apkAssets2.close();
                             throw e;
-                        } catch (Throwable th8) {
+                        } catch (Throwable th7) {
                             throw e;
                         }
                     }
-                } catch (IOException | RuntimeException | XmlPullParserException e5) {
-                    e = e5;
-                }
-            } catch (IOException e6) {
-                Slog.w(TAG, "Failed to parse " + apkPath, e6);
-                ParseResult<ApkLite> error3 = input.error(-100, "Failed to parse " + apkPath, e6);
-                IoUtils.closeQuietly((AutoCloseable) null);
-                if (0 != 0) {
-                    try {
-                        apkAssets.close();
-                    } catch (Throwable th9) {
+                } catch (IOException | RuntimeException | XmlPullParserException e4) {
+                    e = e4;
+                    apkAssets2 = apkAssets;
+                    parser2 = parser;
+                    Exception e5 = e;
+                    Slog.w(TAG, "Failed to parse " + apkPath, e5);
+                    ParseResult<ApkLite> error2 = input.error(-102, "Failed to parse " + apkPath, e5);
+                    IoUtils.closeQuietly(parser2);
+                    if (apkAssets2 != null) {
+                        try {
+                            apkAssets2.close();
+                        } catch (Throwable th8) {
+                        }
                     }
+                    return error2;
                 }
-                return error3;
+            } catch (Throwable th9) {
+                e = th9;
             }
-        } catch (Throwable th10) {
-            e = th10;
+        } catch (IOException e6) {
+            Slog.w(TAG, "Failed to parse " + apkPath, e6);
+            ParseResult<ApkLite> error3 = input.error(-100, "Failed to parse " + apkPath, e6);
+            IoUtils.closeQuietly((AutoCloseable) null);
+            if (0 != 0) {
+                try {
+                    apkAssets2.close();
+                } catch (Throwable th10) {
+                }
+            }
+            return error3;
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x035b, code lost:
+    private static String getPackageNameForAudit(XmlResourceParser parser) {
+        int type;
+        do {
+            try {
+                type = parser.next();
+                if (type == 2) {
+                    break;
+                }
+            } catch (IOException | RuntimeException | XmlPullParserException e) {
+                Slog.e(TAG, "Failed to get packageName ", e);
+                return null;
+            }
+        } while (type != 1);
+        if (type == 2 && parser.getName().equals("manifest")) {
+            String packageName = parser.getAttributeValue(null, "package");
+            return packageName;
+        }
+        return null;
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x03e9, code lost:
     
-        if ((r75 & 128) != 0) goto L282;
+        if ((r79 & 128) != 0) goto L154;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0361, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x03ef, code lost:
     
-        if (android.content.pm.parsing.FrameworkParsingPackageUtils.checkRequiredSystemProperties(r14, r11) != false) goto L281;
+        if (android.content.pm.parsing.FrameworkParsingPackageUtils.checkRequiredSystemProperties(r14, r11) != false) goto L153;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0363, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x03f1, code lost:
     
-        r0 = "Skipping target and overlay pair " + r15 + " and " + r72 + ": overlay ignored due to required system property: " + r14 + " with value: " + r11;
+        r0 = "Skipping target and overlay pair " + r15 + " and " + r76 + ": overlay ignored due to required system property: " + r14 + " with value: " + r11;
         android.util.Slog.i(android.content.pm.parsing.ApkLiteParseUtils.TAG, r0);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x039d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x042b, code lost:
     
-        return r71.skip(r0);
+        return r75.skip(r0);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x03a3, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0431, code lost:
     
         r12 = r5.first;
         r6 = r5.second;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0405, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0494, code lost:
     
-        return r71.success(new android.content.pm.parsing.ApkLite(r72, r12, r6, r49, r51, r62, r50, r44, r45, r46, r8, r21, r74, r47, r56, r57, r58, r59, r61, r60, r48, r15, r63, r64, r14, r11, r55, r54, r65, r7.first, r7.second, r66, r67));
+        return r75.success(new android.content.pm.parsing.ApkLite(r76, r12, r6, r53, r55, r66, r54, r47, r48, r49, r46, r22, r78, r50, r60, r61, r62, r63, r65, r64, r52, r15, r67, r68, r14, r11, r59, r58, r69, r7.first, r7.second, r70, r71, r51, r56));
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private static android.content.pm.parsing.result.ParseResult<android.content.pm.parsing.ApkLite> parseApkLite(android.content.pm.parsing.result.ParseInput r71, java.lang.String r72, android.content.res.XmlResourceParser r73, android.content.pm.SigningDetails r74, int r75) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException {
+    private static android.content.pm.parsing.result.ParseResult<android.content.pm.parsing.ApkLite> parseApkLite(android.content.pm.parsing.result.ParseInput r75, java.lang.String r76, android.content.res.XmlResourceParser r77, android.content.pm.SigningDetails r78, int r79) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException {
         /*
-            Method dump skipped, instructions count: 1030
+            Method dump skipped, instructions count: 1204
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.content.pm.parsing.ApkLiteParseUtils.parseApkLite(android.content.pm.parsing.result.ParseInput, java.lang.String, android.content.res.XmlResourceParser, android.content.pm.SigningDetails, int):android.content.pm.parsing.result.ParseResult");
@@ -482,12 +507,7 @@ public class ApkLiteParseUtils {
         return new VerifierInfo(packageName, publicKey);
     }
 
-    /* loaded from: classes.dex */
     private static class SplitNameComparator implements Comparator<String> {
-        /* synthetic */ SplitNameComparator(SplitNameComparatorIA splitNameComparatorIA) {
-            this();
-        }
-
         private SplitNameComparator() {
         }
 

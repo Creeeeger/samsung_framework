@@ -48,7 +48,6 @@ import java.util.function.Consumer;
 /* loaded from: classes4.dex */
 public interface WebViewProvider {
 
-    /* loaded from: classes4.dex */
     public interface ScrollDelegate {
         int computeHorizontalScrollOffset();
 
@@ -274,7 +273,6 @@ public interface WebViewProvider {
         return TextClassifier.NO_OP;
     }
 
-    /* loaded from: classes4.dex */
     public interface ViewDelegate {
         boolean dispatchKeyEvent(KeyEvent keyEvent);
 

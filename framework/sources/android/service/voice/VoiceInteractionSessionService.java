@@ -27,63 +27,24 @@ public abstract class VoiceInteractionSessionService extends Service {
     VoiceInteractionSession mSession;
     IVoiceInteractionManagerService mSystemService;
     IVoiceInteractionSessionService mInterface = new IVoiceInteractionSessionService.Stub() { // from class: android.service.voice.VoiceInteractionSessionService.1
-        AnonymousClass1() {
-        }
-
         @Override // android.service.voice.IVoiceInteractionSessionService
         public void newSession(IBinder token, Bundle args, int startFlags) {
             VoiceInteractionSessionService.this.mHandlerCaller.sendMessage(VoiceInteractionSessionService.this.mHandlerCaller.obtainMessageIOO(1, startFlags, token, args));
         }
     };
     final HandlerCaller.Callback mHandlerCallerCallback = new HandlerCaller.Callback() { // from class: android.service.voice.VoiceInteractionSessionService.2
-        AnonymousClass2() {
-        }
-
         @Override // com.android.internal.os.HandlerCaller.Callback
         public void executeMessage(Message msg) {
             SomeArgs args = (SomeArgs) msg.obj;
             switch (msg.what) {
                 case 1:
                     VoiceInteractionSessionService.this.doNewSession((IBinder) args.arg1, (Bundle) args.arg2, args.argi1);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     };
 
     public abstract VoiceInteractionSession onNewSession(Bundle bundle);
-
-    /* renamed from: android.service.voice.VoiceInteractionSessionService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IVoiceInteractionSessionService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.service.voice.IVoiceInteractionSessionService
-        public void newSession(IBinder token, Bundle args, int startFlags) {
-            VoiceInteractionSessionService.this.mHandlerCaller.sendMessage(VoiceInteractionSessionService.this.mHandlerCaller.obtainMessageIOO(1, startFlags, token, args));
-        }
-    }
-
-    /* renamed from: android.service.voice.VoiceInteractionSessionService$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements HandlerCaller.Callback {
-        AnonymousClass2() {
-        }
-
-        @Override // com.android.internal.os.HandlerCaller.Callback
-        public void executeMessage(Message msg) {
-            SomeArgs args = (SomeArgs) msg.obj;
-            switch (msg.what) {
-                case 1:
-                    VoiceInteractionSessionService.this.doNewSession((IBinder) args.arg1, (Bundle) args.arg2, args.argi1);
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
 
     @Override // android.app.Service
     public void onCreate() {
@@ -100,30 +61,28 @@ public abstract class VoiceInteractionSessionService extends Service {
     @Override // android.app.Service, android.content.ComponentCallbacks
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        VoiceInteractionSession voiceInteractionSession = this.mSession;
-        if (voiceInteractionSession != null) {
-            voiceInteractionSession.onConfigurationChanged(newConfig);
+        if (this.mSession != null) {
+            this.mSession.onConfigurationChanged(newConfig);
         }
     }
 
     @Override // android.app.Service, android.content.ComponentCallbacks
     public void onLowMemory() {
         super.onLowMemory();
-        VoiceInteractionSession voiceInteractionSession = this.mSession;
-        if (voiceInteractionSession != null) {
-            voiceInteractionSession.onLowMemory();
+        if (this.mSession != null) {
+            this.mSession.onLowMemory();
         }
     }
 
     @Override // android.app.Service, android.content.ComponentCallbacks2
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        VoiceInteractionSession voiceInteractionSession = this.mSession;
-        if (voiceInteractionSession != null) {
-            voiceInteractionSession.onTrimMemory(level);
+        if (this.mSession != null) {
+            this.mSession.onTrimMemory(level);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
         if (this.mSession == null) {
@@ -135,9 +94,8 @@ public abstract class VoiceInteractionSessionService extends Service {
     }
 
     void doNewSession(IBinder token, Bundle args, int startFlags) {
-        VoiceInteractionSession voiceInteractionSession = this.mSession;
-        if (voiceInteractionSession != null) {
-            voiceInteractionSession.doDestroy();
+        if (this.mSession != null) {
+            this.mSession.doDestroy();
             this.mSession = null;
         }
         this.mSession = onNewSession(args);

@@ -15,7 +15,6 @@ public interface IWifiDisplayConnectionCallback extends IInterface {
 
     void onSuccess(List<SemWifiDisplayParameter> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IWifiDisplayConnectionCallback {
         @Override // android.hardware.display.IWifiDisplayConnectionCallback
         public void onSuccess(List<SemWifiDisplayParameter> parameters) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IWifiDisplayConnectionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IWifiDisplayConnectionCallback {
         static final int TRANSACTION_onFailure = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -77,30 +75,27 @@ public interface IWifiDisplayConnectionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWifiDisplayConnectionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWifiDisplayConnectionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWifiDisplayConnectionCallback.DESCRIPTOR);
+                case 1:
+                    List<SemWifiDisplayParameter> _arg0 = data.createTypedArrayList(SemWifiDisplayParameter.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFailure(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SemWifiDisplayParameter> _arg0 = data.createTypedArrayList(SemWifiDisplayParameter.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFailure(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IWifiDisplayConnectionCallback {
+        private static class Proxy implements IWifiDisplayConnectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

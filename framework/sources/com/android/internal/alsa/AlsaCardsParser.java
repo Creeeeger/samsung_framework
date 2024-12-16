@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AlsaCardsParser {
     protected static final boolean DEBUG = true;
     public static final int SCANSTATUS_EMPTY = 2;
@@ -25,7 +25,6 @@ public class AlsaCardsParser {
     private ArrayList<AlsaCardRecord> mCardRecords = new ArrayList<>();
     private int mScanStatus = -1;
 
-    /* loaded from: classes4.dex */
     public class AlsaCardRecord {
         private static final String TAG = "AlsaCardRecord";
         private static final String kUsbCardKeyStr = "at usb-";
@@ -54,6 +53,7 @@ public class AlsaCardsParser {
             this.mUsbDeviceAddress = usbDeviceAddress;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean parse(String line, int lineIndex) {
             int tokenIndex;
             if (lineIndex == 0) {

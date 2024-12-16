@@ -9,7 +9,7 @@ public class SContextStepLevelMonitorAttribute extends SContextAttribute {
     private static final String TAG = "SContextStepLevelMonitorAttribute";
     private int mDuration;
 
-    public SContextStepLevelMonitorAttribute() {
+    SContextStepLevelMonitorAttribute() {
         this.mDuration = 300;
         setAttribute();
     }

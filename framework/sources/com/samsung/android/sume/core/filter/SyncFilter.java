@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class SyncFilter extends DecorateFilter {
     private static final String TAG = Def.tagOf((Class<?>) SyncFilter.class);
 
@@ -27,7 +27,7 @@ public class SyncFilter extends DecorateFilter {
         List<MediaBuffer> output = (List) ibuf.stream().map(new Function() { // from class: com.samsung.android.sume.core.filter.SyncFilter$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return SyncFilter.this.m8765lambda$run$0$comsamsungandroidsumecorefilterSyncFilter((MediaBuffer) obj);
+                return SyncFilter.this.m9153lambda$run$0$comsamsungandroidsumecorefilterSyncFilter((MediaBuffer) obj);
             }
         }).collect(Collectors.toList());
         if (output.size() == 1) {
@@ -39,8 +39,8 @@ public class SyncFilter extends DecorateFilter {
         return obuf;
     }
 
-    /* renamed from: lambda$run$0$com-samsung-android-sume-core-filter-SyncFilter */
-    public /* synthetic */ MediaBuffer m8765lambda$run$0$comsamsungandroidsumecorefilterSyncFilter(MediaBuffer it) {
+    /* renamed from: lambda$run$0$com-samsung-android-sume-core-filter-SyncFilter, reason: not valid java name */
+    /* synthetic */ MediaBuffer m9153lambda$run$0$comsamsungandroidsumecorefilterSyncFilter(MediaBuffer it) {
         MutableMediaBuffer buf = super.run(it, MediaBuffer.mutableOf());
         return buf.reset();
     }

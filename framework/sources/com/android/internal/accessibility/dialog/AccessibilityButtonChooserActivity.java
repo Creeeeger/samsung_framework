@@ -22,12 +22,12 @@ import com.android.internal.widget.ResolverDrawerLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AccessibilityButtonChooserActivity extends Activity {
     private final List<AccessibilityTarget> mTargets = new ArrayList();
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         int i;
         int i2;
         int displayId;
@@ -43,7 +43,7 @@ public class AccessibilityButtonChooserActivity extends Activity {
                 displayId = 0;
             }
             intent.setClassName("android", chooserClassName);
-            intent.putExtra("shortcutType", 0);
+            intent.putExtra("shortcutType", 1);
             intent.addFlags(805306368);
             Bundle bundle = ActivityOptions.makeBasic().setLaunchDisplayId(displayId).toBundle();
             startActivityAsUser(intent, bundle, UserHandle.CURRENT);
@@ -85,7 +85,7 @@ public class AccessibilityButtonChooserActivity extends Activity {
             }
             prompt.setVisibility(0);
         }
-        this.mTargets.addAll(AccessibilityTargetHelper.getTargets(this, 0));
+        this.mTargets.addAll(AccessibilityTargetHelper.getTargets(this, 1));
         GridView gridview = (GridView) findViewById(R.id.accessibility_button_chooser_grid);
         gridview.setAdapter((ListAdapter) new ButtonTargetAdapter(this.mTargets));
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityButtonChooserActivity$$ExternalSyntheticLambda1
@@ -96,6 +96,7 @@ public class AccessibilityButtonChooserActivity extends Activity {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onCreate$0(AdapterView parent, View view, int position, long id) {
         String name = this.mTargets.get(position).getId();
         if (name.equals("com.android.server.accessibility.MagnificationController")) {

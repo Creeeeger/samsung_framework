@@ -60,9 +60,8 @@ public class UsbRequest {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             close();
         } finally {
@@ -91,7 +90,7 @@ public class UsbRequest {
         return connection.queueRequest(this, buffer, length);
     }
 
-    public boolean queueIfConnectionOpen(ByteBuffer buffer, int length) {
+    boolean queueIfConnectionOpen(ByteBuffer buffer, int length) {
         int length2;
         boolean result;
         UsbDeviceConnection connection = this.mConnection;
@@ -138,7 +137,7 @@ public class UsbRequest {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean queueIfConnectionOpen(java.nio.ByteBuffer r10) {
+    boolean queueIfConnectionOpen(java.nio.ByteBuffer r10) {
         /*
             r9 = this;
             android.hardware.usb.UsbDeviceConnection r0 = r9.mConnection
@@ -246,24 +245,21 @@ public class UsbRequest {
         throw new UnsupportedOperationException("Method not decompiled: android.hardware.usb.UsbRequest.queueIfConnectionOpen(java.nio.ByteBuffer):boolean");
     }
 
-    public void dequeue(boolean useBufferOverflowInsteadOfIllegalArg) {
+    void dequeue(boolean useBufferOverflowInsteadOfIllegalArg) {
         int bytesTransferred;
         boolean isSend = this.mEndpoint.getDirection() == 0;
         synchronized (this.mLock) {
             if (this.mIsUsingNewQueue) {
                 int bytesTransferred2 = native_dequeue_direct();
                 this.mIsUsingNewQueue = false;
-                ByteBuffer byteBuffer = this.mBuffer;
-                if (byteBuffer != null) {
-                    ByteBuffer byteBuffer2 = this.mTempBuffer;
-                    if (byteBuffer2 == null) {
-                        byteBuffer.position(byteBuffer.position() + bytesTransferred2);
+                if (this.mBuffer != null) {
+                    if (this.mTempBuffer == null) {
+                        this.mBuffer.position(this.mBuffer.position() + bytesTransferred2);
                     } else {
-                        byteBuffer2.limit(bytesTransferred2);
+                        this.mTempBuffer.limit(bytesTransferred2);
                         try {
                             if (isSend) {
-                                ByteBuffer byteBuffer3 = this.mBuffer;
-                                byteBuffer3.position(byteBuffer3.position() + bytesTransferred2);
+                                this.mBuffer.position(this.mBuffer.position() + bytesTransferred2);
                             } else {
                                 this.mBuffer.put(this.mTempBuffer);
                             }
@@ -308,7 +304,7 @@ public class UsbRequest {
         return connection.cancelRequest(this);
     }
 
-    public boolean cancelIfOpen() {
+    boolean cancelIfOpen() {
         UsbDeviceConnection connection = this.mConnection;
         if (this.mNativeContext == 0 || (connection != null && !connection.isOpen())) {
             Log.w(TAG, "Detected attempt to cancel a request on a connection which isn't open");

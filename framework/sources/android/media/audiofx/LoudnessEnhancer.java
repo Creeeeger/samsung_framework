@@ -12,7 +12,6 @@ public class LoudnessEnhancer extends AudioEffect {
     private OnParameterChangeListener mParamListener;
     private final Object mParamListenerLock;
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(LoudnessEnhancer loudnessEnhancer, int i, int i2);
     }
@@ -47,12 +46,7 @@ public class LoudnessEnhancer extends AudioEffect {
         return value[0];
     }
 
-    /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
-        /* synthetic */ BaseParameterListener(LoudnessEnhancer loudnessEnhancer, BaseParameterListenerIA baseParameterListenerIA) {
-            this();
-        }
-
         private BaseParameterListener() {
         }
 
@@ -86,15 +80,13 @@ public class LoudnessEnhancer extends AudioEffect {
     public void setParameterListener(OnParameterChangeListener listener) {
         synchronized (this.mParamListenerLock) {
             if (this.mParamListener == null) {
-                BaseParameterListener baseParameterListener = new BaseParameterListener();
-                this.mBaseParamListener = baseParameterListener;
-                super.setParameterListener(baseParameterListener);
+                this.mBaseParamListener = new BaseParameterListener();
+                super.setParameterListener(this.mBaseParamListener);
             }
             this.mParamListener = listener;
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Settings {
         public int targetGainmB;
 

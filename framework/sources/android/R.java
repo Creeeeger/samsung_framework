@@ -5,7 +5,6 @@ import android.annotation.SystemApi;
 /* loaded from: classes.dex */
 public final class R {
 
-    /* loaded from: classes.dex */
     public static final class anim {
         public static final int accelerate_decelerate_interpolator = 0x010a0004;
         public static final int accelerate_interpolator = 0x010a0005;
@@ -22,13 +21,11 @@ public final class R {
         public static final int slide_out_right = 0x010a0003;
     }
 
-    /* loaded from: classes.dex */
     public static final class animator {
         public static final int fade_in = 0x010b0000;
         public static final int fade_out = 0x010b0001;
     }
 
-    /* loaded from: classes.dex */
     public static final class array {
 
         @SystemApi
@@ -43,7 +40,6 @@ public final class R {
         public static final int postalAddressTypes = 0x01070004;
     }
 
-    /* loaded from: classes.dex */
     public static final class attr {
         public static final int absListViewStyle = 0x0101006a;
         public static final int accessibilityDataSensitive = 0x01010677;
@@ -104,6 +100,7 @@ public final class R {
         public static final int alertDialogTheme = 0x01010309;
         public static final int alignmentMode = 0x0101037a;
         public static final int allContactsName = 0x010102cc;
+        public static final int allow = 0x0101068e;
         public static final int allowAudioPlaybackCapture = 0x01010601;
         public static final int allowBackup = 0x01010280;
         public static final int allowClearUserData = 0x01010005;
@@ -111,6 +108,7 @@ public final class R {
         @SystemApi
         public static final int allowClearUserDataOnFailedRestore = 0x01010600;
         public static final int allowClickWhenDisabled = 0x01010618;
+        public static final int allowCrossUidActivitySwitchFromBelow = 0x010106a1;
         public static final int allowEmbedded = 0x010103f5;
         public static final int allowGameAngleDriver = 0x01010658;
         public static final int allowGameDownscaling = 0x01010659;
@@ -175,6 +173,7 @@ public final class R {
 
         @Deprecated
         public static final int autoText = 0x0101016a;
+        public static final int autoTransact = 0x01010699;
         public static final int autoUrlDetect = 0x0101028c;
         public static final int autoVerify = 0x010104ee;
         public static final int autofillHints = 0x01010556;
@@ -329,6 +328,7 @@ public final class R {
         public static final int contentInsetRight = 0x01010456;
         public static final int contentInsetStart = 0x01010453;
         public static final int contentInsetStartWithNavigation = 0x01010522;
+        public static final int contentSensitivity = 0x0101069e;
         public static final int contextClickable = 0x010104e7;
         public static final int contextDescription = 0x0101052e;
         public static final int contextPopupMenuStyle = 0x01010501;
@@ -362,6 +362,7 @@ public final class R {
         public static final int debuggable = 0x0101000f;
         public static final int defaultFocusHighlightEnabled = 0x01010562;
         public static final int defaultHeight = 0x010104f5;
+        public static final int defaultLocale = 0x01010688;
         public static final int defaultToDeviceProtectedStorage = 0x01010504;
         public static final int defaultValue = 0x010101ed;
         public static final int defaultWidth = 0x010104f4;
@@ -450,6 +451,8 @@ public final class R {
         @Deprecated
         public static final int endYear = 0x0101017d;
         public static final int enforceNavigationBarContrast = 0x01010605;
+
+        @Deprecated
         public static final int enforceStatusBarContrast = 0x01010604;
         public static final int enterFadeDuration = 0x0101030c;
         public static final int entries = 0x010100b2;
@@ -490,6 +493,9 @@ public final class R {
         public static final int fastScrollTextColor = 0x01010359;
         public static final int fastScrollThumbDrawable = 0x01010336;
         public static final int fastScrollTrackDrawable = 0x01010339;
+
+        @SystemApi
+        public static final int featureFlag = 0x0101068c;
         public static final int fillAfter = 0x010101bd;
         public static final int fillAlpha = 0x010104cc;
         public static final int fillBefore = 0x010101bc;
@@ -547,6 +553,7 @@ public final class R {
         public static final int format24Hour = 0x010103cb;
         public static final int fraction = 0x010104d8;
         public static final int fragment = 0x010102e3;
+        public static final int fragmentAdvancedPattern = 0x01010696;
         public static final int fragmentAllowEnterTransitionOverlap = 0x010104c8;
         public static final int fragmentAllowReturnTransitionOverlap = 0x010104c9;
         public static final int fragmentCloseEnterAnimation = 0x010102e7;
@@ -557,10 +564,13 @@ public final class R {
         public static final int fragmentFadeExitAnimation = 0x010102ea;
         public static final int fragmentOpenEnterAnimation = 0x010102e5;
         public static final int fragmentOpenExitAnimation = 0x010102e6;
+        public static final int fragmentPattern = 0x01010695;
+        public static final int fragmentPrefix = 0x01010694;
         public static final int fragmentReenterTransition = 0x010104c7;
         public static final int fragmentReturnTransition = 0x010104c5;
         public static final int fragmentSharedElementEnterTransition = 0x010104c4;
         public static final int fragmentSharedElementReturnTransition = 0x010104c6;
+        public static final int fragmentSuffix = 0x01010697;
         public static final int freezesText = 0x0101016c;
         public static final int fromAlpha = 0x010101ca;
         public static final int fromDegrees = 0x010101b3;
@@ -739,6 +749,9 @@ public final class R {
 
         @Deprecated
         public static final int isSticky = 0x01010247;
+
+        @SystemApi
+        public static final int isVirtualDeviceOnly = 0x01010689;
 
         @SystemApi
         public static final int isVrOnly = 0x01010578;
@@ -954,7 +967,11 @@ public final class R {
         public static final int multiprocess = 0x01010013;
         public static final int name = 0x01010003;
         public static final int nativeHeapZeroInitialized = 0x01010625;
+
+        @Deprecated
         public static final int navigationBarColor = 0x01010452;
+
+        @Deprecated
         public static final int navigationBarDividerColor = 0x0101056d;
         public static final int navigationContentDescription = 0x010104c1;
         public static final int navigationIcon = 0x010104c0;
@@ -1112,10 +1129,15 @@ public final class R {
         public static final int propertyYName = 0x01010475;
         public static final int protectionLevel = 0x01010009;
         public static final int publicKey = 0x010103a6;
+        public static final int query = 0x0101068f;
         public static final int queryActionMsg = 0x010101db;
+        public static final int queryAdvancedPattern = 0x01010692;
         public static final int queryAfterZeroResults = 0x01010282;
         public static final int queryBackground = 0x01010487;
         public static final int queryHint = 0x01010358;
+        public static final int queryPattern = 0x01010691;
+        public static final int queryPrefix = 0x01010690;
+        public static final int querySuffix = 0x01010693;
         public static final int quickContactBadgeStyleSmallWindowLarge = 0x010102b3;
         public static final int quickContactBadgeStyleSmallWindowMedium = 0x010102b2;
         public static final int quickContactBadgeStyleSmallWindowSmall = 0x010102b1;
@@ -1145,6 +1167,7 @@ public final class R {
         public static final int requestForegroundServiceExemption = 0x0101064a;
         public static final int requestLegacyExternalStorage = 0x01010603;
         public static final int requestRawExternalStorageAccess = 0x01010645;
+        public static final int requireContentUriPermissionFromCaller = 0x0101069b;
         public static final int requireDeviceScreenOn = 0x0101061d;
         public static final int requireDeviceUnlock = 0x010103ec;
         public static final int required = 0x0101028e;
@@ -1283,10 +1306,12 @@ public final class R {
         public static final int sharedUserLabel = 0x01010261;
         public static final int sharedUserMaxSdkVersion = 0x0101064d;
         public static final int shell = 0x01010594;
+        public static final int shiftDrawingOffsetForStartOverhang = 0x010106a2;
         public static final int shortcutDisabledMessage = 0x0101052b;
         public static final int shortcutId = 0x01010528;
         public static final int shortcutLongLabel = 0x0101052a;
         public static final int shortcutShortLabel = 0x01010529;
+        public static final int shouldDefaultToObserveMode = 0x010106a0;
         public static final int shouldDisableView = 0x010101ee;
         public static final int shouldUseDefaultUnfoldTransition = 0x0101064c;
         public static final int showAsAction = 0x010102d9;
@@ -1378,6 +1403,8 @@ public final class R {
         public static final int state_single = 0x010100a3;
         public static final int state_window_focused = 0x0101009d;
         public static final int staticWallpaperPreview = 0x01010331;
+
+        @Deprecated
         public static final int statusBarColor = 0x01010451;
         public static final int stepSize = 0x01010146;
         public static final int stopWithTask = 0x0101036a;
@@ -1413,6 +1440,7 @@ public final class R {
         public static final int supportsAmbientMode = 0x0101058d;
         public static final int supportsAssist = 0x010104f0;
         public static final int supportsBatteryGameMode = 0x01010656;
+        public static final int supportsConnectionlessStylusHandwriting = 0x0101069f;
         public static final int supportsInlineSuggestions = 0x0101060d;
         public static final int supportsInlineSuggestionsWithTouchExploration = 0x0101066d;
         public static final int supportsLaunchVoiceAssistFromKeyguard = 0x010104f1;
@@ -1433,6 +1461,7 @@ public final class R {
         public static final int switchTextOff = 0x0101036c;
         public static final int switchTextOn = 0x0101036b;
         public static final int syncable = 0x01010019;
+        public static final int systemUserOnly = 0x0101068d;
         public static final int tabStripEnabled = 0x010102bd;
         public static final int tabStripLeft = 0x010102bb;
         public static final int tabStripRight = 0x010102bc;
@@ -1615,10 +1644,12 @@ public final class R {
         public static final int updatePeriodMillis = 0x01010250;
         public static final int use32bitAbi = 0x01010515;
         public static final int useAppZygote = 0x01010597;
+        public static final int useBoundsForWidth = 0x01010698;
         public static final int useDefaultMargins = 0x01010379;
         public static final int useEmbeddedDex = 0x0101059e;
         public static final int useIntrinsicSizeAsMinimum = 0x01010310;
         public static final int useLevel = 0x0101019f;
+        public static final int useLocalePreferredLineHeightForMinimum = 0x0101069d;
 
         @SystemApi
         public static final int userRestriction = 0x01010584;
@@ -1632,7 +1663,7 @@ public final class R {
         public static final int valueType = 0x010102e0;
         public static final int variablePadding = 0x01010195;
 
-        /* renamed from: vendor */
+        /* renamed from: vendor, reason: collision with root package name */
         public static final int f0vendor = 0x010103e7;
         public static final int version = 0x01010519;
         public static final int versionCode = 0x0101021b;
@@ -1714,6 +1745,7 @@ public final class R {
         public static final int windowFullscreen = 0x0101020d;
         public static final int windowHideAnimation = 0x010100b7;
         public static final int windowIsFloating = 0x01010057;
+        public static final int windowIsFrameRatePowerSavingsBalanced = 0x010106a3;
         public static final int windowIsTranslucent = 0x01010058;
         public static final int windowLayoutAffinity = 0x01010619;
         public static final int windowLayoutInDisplayCutoutMode = 0x01010586;
@@ -1724,6 +1756,7 @@ public final class R {
         public static final int windowNoDisplay = 0x0101021e;
         public static final int windowNoMoveAnimation = 0x01010685;
         public static final int windowNoTitle = 0x01010056;
+        public static final int windowOptOutEdgeToEdgeEnforcement = 0x0101069a;
 
         @Deprecated
         public static final int windowOverscan = 0x010103cf;
@@ -1770,9 +1803,12 @@ public final class R {
         public static final int yesNoPreferenceStyle = 0x01010090;
         public static final int zAdjustment = 0x010101c1;
         public static final int zygotePreloadName = 0x0101059d;
+        public static final int adServiceTypes = 28770305;
+        public static final int dreamCategory = 28770307;
+        public static final int languageSettingsActivity = 28770306;
+        public static final int optional = 28770304;
     }
 
-    /* loaded from: classes.dex */
     public static final class bool {
         public static final int config_assistantOnTopOfDream = 0x01110005;
 
@@ -1804,7 +1840,6 @@ public final class R {
         public static final int config_showDefaultHome = 0x01110003;
     }
 
-    /* loaded from: classes.dex */
     public static final class color {
         public static final int background_dark = 0x0106000e;
         public static final int background_light = 0x0106000f;
@@ -1891,6 +1926,19 @@ public final class R {
         public static final int system_control_highlight_light = 0x0106007e;
         public static final int system_control_normal_dark = 0x010600a8;
         public static final int system_control_normal_light = 0x0106007d;
+        public static final int system_error_0 = 0x010600c5;
+        public static final int system_error_10 = 0x010600c6;
+        public static final int system_error_100 = 0x010600c8;
+        public static final int system_error_1000 = 0x010600d1;
+        public static final int system_error_200 = 0x010600c9;
+        public static final int system_error_300 = 0x010600ca;
+        public static final int system_error_400 = 0x010600cb;
+        public static final int system_error_50 = 0x010600c7;
+        public static final int system_error_500 = 0x010600cc;
+        public static final int system_error_600 = 0x010600cd;
+        public static final int system_error_700 = 0x010600ce;
+        public static final int system_error_800 = 0x010600cf;
+        public static final int system_error_900 = 0x010600d0;
         public static final int system_error_container_dark = 0x010600a5;
         public static final int system_error_container_light = 0x0106007a;
         public static final int system_error_dark = 0x010600a3;
@@ -1943,6 +1991,7 @@ public final class R {
         public static final int system_on_secondary_fixed_variant = 0x010600bb;
         public static final int system_on_secondary_light = 0x01060065;
         public static final int system_on_surface_dark = 0x01060098;
+        public static final int system_on_surface_disabled = 0x010600c3;
         public static final int system_on_surface_light = 0x0106006d;
         public static final int system_on_surface_variant_dark = 0x010600a1;
         public static final int system_on_surface_variant_light = 0x01060076;
@@ -1953,6 +2002,7 @@ public final class R {
         public static final int system_on_tertiary_fixed_variant = 0x010600bf;
         public static final int system_on_tertiary_light = 0x01060069;
         public static final int system_outline_dark = 0x010600a2;
+        public static final int system_outline_disabled = 0x010600c4;
         public static final int system_outline_light = 0x01060077;
         public static final int system_outline_variant_dark = 0x010600c1;
         public static final int system_outline_variant_light = 0x010600c0;
@@ -1993,6 +2043,7 @@ public final class R {
         public static final int system_surface_dark = 0x01060097;
         public static final int system_surface_dim_dark = 0x0106009f;
         public static final int system_surface_dim_light = 0x01060074;
+        public static final int system_surface_disabled = 0x010600c2;
         public static final int system_surface_light = 0x0106006c;
         public static final int system_surface_variant_dark = 0x010600a0;
         public static final int system_surface_variant_light = 0x01060075;
@@ -2024,7 +2075,6 @@ public final class R {
         public static final int widget_edittext_dark = 0x0106000a;
     }
 
-    /* loaded from: classes.dex */
     public static final class dimen {
         public static final int app_icon_size = 0x01050000;
 
@@ -2043,7 +2093,6 @@ public final class R {
         public static final int thumbnail_width = 0x01050002;
     }
 
-    /* loaded from: classes.dex */
     public static final class drawable {
         public static final int alert_dark_frame = 0x01080000;
         public static final int alert_light_frame = 0x01080001;
@@ -2237,11 +2286,9 @@ public final class R {
         public static final int zoom_plate = 0x01080097;
     }
 
-    /* loaded from: classes.dex */
     public static final class fraction {
     }
 
-    /* loaded from: classes.dex */
     public static final class id {
         public static final int accessibilityActionContextClick = 0x0102003c;
         public static final int accessibilityActionDragCancel = 0x01020057;
@@ -2342,7 +2389,6 @@ public final class R {
         public static final int widget_frame = 0x01020018;
     }
 
-    /* loaded from: classes.dex */
     public static final class integer {
         public static final int config_longAnimTime = 0x010e0002;
         public static final int config_mediumAnimTime = 0x010e0001;
@@ -2350,7 +2396,6 @@ public final class R {
         public static final int status_bar_notification_info_maxnum = 0x010e0003;
     }
 
-    /* loaded from: classes.dex */
     public static final class interpolator {
         public static final int accelerate_cubic = 0x010c0002;
         public static final int accelerate_decelerate = 0x010c0006;
@@ -2371,7 +2416,6 @@ public final class R {
         public static final int overshoot = 0x010c0008;
     }
 
-    /* loaded from: classes.dex */
     public static final class layout {
         public static final int activity_list_item = 0x01090000;
         public static final int browser_link_context_header = 0x0109000e;
@@ -2399,20 +2443,16 @@ public final class R {
         public static final int two_line_list_item = 0x0109000d;
     }
 
-    /* loaded from: classes.dex */
     public static final class menu {
     }
 
-    /* loaded from: classes.dex */
     public static final class mipmap {
         public static final int sym_def_app_icon = 0x010d0000;
     }
 
-    /* loaded from: classes.dex */
     public static final class plurals {
     }
 
-    /* loaded from: classes.dex */
     public static final class raw {
 
         @SystemApi
@@ -2422,7 +2462,6 @@ public final class R {
         public static final int nodomain = 0x01100001;
     }
 
-    /* loaded from: classes.dex */
     public static final class string {
         public static final int VideoView_error_button = 0x01040010;
         public static final int VideoView_error_text_invalid_progressive_playback = 0x01040015;
@@ -2457,10 +2496,16 @@ public final class R {
 
         @SystemApi
         public static final int config_defaultNotes = 0x01040045;
+
+        @SystemApi
+        public static final int config_defaultRetailDemo = 0x01040048;
         public static final int config_defaultRingtoneVibrationSound = 0x0104003b;
 
         @SystemApi
         public static final int config_defaultSms = 0x01040024;
+
+        @SystemApi
+        public static final int config_defaultWallet = 0x01040049;
 
         @SystemApi
         public static final int config_devicePolicyManagement = 0x0104003d;
@@ -2588,7 +2633,6 @@ public final class R {
         public static final int yes = 0x01040013;
     }
 
-    /* loaded from: classes.dex */
     public static final class style {
         public static final int Animation = 0x01030000;
         public static final int Animation_Activity = 0x01030001;
@@ -3418,7 +3462,6 @@ public final class R {
         public static final int Widget_WebView = 0x01030033;
     }
 
-    /* loaded from: classes.dex */
     public static final class styleable {
         public static final int AbsListView_cacheColorHint = 0x00000006;
         public static final int AbsListView_choiceMode = 0x00000007;
@@ -3615,6 +3658,7 @@ public final class R {
         public static final int AndroidManifestActivity_process = 0x00000007;
         public static final int AndroidManifestActivity_recreateOnConfigChanges = 0x0000002f;
         public static final int AndroidManifestActivity_relinquishTaskIdentity = 0x00000024;
+        public static final int AndroidManifestActivity_requireContentUriPermissionFromCaller = 0x00000041;
         public static final int AndroidManifestActivity_requiredDisplayCategory = 0x0000003f;
         public static final int AndroidManifestActivity_resizeableActivity = 0x00000028;
         public static final int AndroidManifestActivity_resumeWhilePausing = 0x00000025;
@@ -3630,6 +3674,7 @@ public final class R {
         public static final int AndroidManifestActivity_splitName = 0x00000030;
         public static final int AndroidManifestActivity_stateNotNeeded = 0x0000000c;
         public static final int AndroidManifestActivity_supportsPictureInPicture = 0x00000029;
+        public static final int AndroidManifestActivity_systemUserOnly = 0x00000040;
         public static final int AndroidManifestActivity_taskAffinity = 0x00000008;
         public static final int AndroidManifestActivity_theme = 0x00000000;
         public static final int AndroidManifestActivity_turnScreenOn = 0x00000034;
@@ -3647,6 +3692,7 @@ public final class R {
         public static final int AndroidManifestApplication_allowBackup = 0x00000011;
         public static final int AndroidManifestApplication_allowClearUserData = 0x00000005;
         public static final int AndroidManifestApplication_allowClearUserDataOnFailedRestore = 0x00000036;
+        public static final int AndroidManifestApplication_allowCrossUidActivitySwitchFromBelow = 0x0000004a;
         public static final int AndroidManifestApplication_allowNativeHeapPointerTagging = 0x0000003b;
         public static final int AndroidManifestApplication_allowTaskReparenting = 0x0000000e;
         public static final int AndroidManifestApplication_appCategory = 0x0000002b;
@@ -3727,21 +3773,31 @@ public final class R {
         public static final int AndroidManifestCategory_name = 0x00000000;
         public static final int AndroidManifestCompatibleScreensScreen_screenDensity = 0x00000001;
         public static final int AndroidManifestCompatibleScreensScreen_screenSize = 0x00000000;
+        public static final int AndroidManifestData_fragment = 0x00000007;
+        public static final int AndroidManifestData_fragmentAdvancedPattern = 0x00000017;
+        public static final int AndroidManifestData_fragmentPattern = 0x00000016;
+        public static final int AndroidManifestData_fragmentPrefix = 0x00000015;
+        public static final int AndroidManifestData_fragmentSuffix = 0x00000018;
         public static final int AndroidManifestData_host = 0x00000002;
-        public static final int AndroidManifestData_mimeGroup = 0x0000000a;
+        public static final int AndroidManifestData_mimeGroup = 0x0000000b;
         public static final int AndroidManifestData_mimeType = 0x00000000;
         public static final int AndroidManifestData_path = 0x00000004;
-        public static final int AndroidManifestData_pathAdvancedPattern = 0x0000000d;
+        public static final int AndroidManifestData_pathAdvancedPattern = 0x0000000e;
         public static final int AndroidManifestData_pathPattern = 0x00000006;
         public static final int AndroidManifestData_pathPrefix = 0x00000005;
-        public static final int AndroidManifestData_pathSuffix = 0x0000000b;
+        public static final int AndroidManifestData_pathSuffix = 0x0000000c;
         public static final int AndroidManifestData_port = 0x00000003;
+        public static final int AndroidManifestData_query = 0x00000010;
+        public static final int AndroidManifestData_queryAdvancedPattern = 0x00000013;
+        public static final int AndroidManifestData_queryPattern = 0x00000012;
+        public static final int AndroidManifestData_queryPrefix = 0x00000011;
+        public static final int AndroidManifestData_querySuffix = 0x00000014;
         public static final int AndroidManifestData_scheme = 0x00000001;
-        public static final int AndroidManifestData_ssp = 0x00000007;
-        public static final int AndroidManifestData_sspAdvancedPattern = 0x0000000e;
-        public static final int AndroidManifestData_sspPattern = 0x00000009;
-        public static final int AndroidManifestData_sspPrefix = 0x00000008;
-        public static final int AndroidManifestData_sspSuffix = 0x0000000c;
+        public static final int AndroidManifestData_ssp = 0x00000008;
+        public static final int AndroidManifestData_sspAdvancedPattern = 0x0000000f;
+        public static final int AndroidManifestData_sspPattern = 0x0000000a;
+        public static final int AndroidManifestData_sspPrefix = 0x00000009;
+        public static final int AndroidManifestData_sspSuffix = 0x0000000d;
         public static final int AndroidManifestDenyPermission_name = 0x00000000;
         public static final int AndroidManifestExtensionSdk_minExtensionVersion = 0x00000001;
         public static final int AndroidManifestExtensionSdk_sdkVersion = 0x00000000;
@@ -3819,11 +3875,12 @@ public final class R {
         public static final int AndroidManifestPermission_permissionGroup = 0x00000004;
         public static final int AndroidManifestPermission_protectionLevel = 0x00000003;
         public static final int AndroidManifestPermission_roundIcon = 0x0000000a;
-        public static final int AndroidManifestProcess_gwpAsanMode = 0x00000002;
-        public static final int AndroidManifestProcess_memtagMode = 0x00000003;
+        public static final int AndroidManifestProcess_gwpAsanMode = 0x00000003;
+        public static final int AndroidManifestProcess_memtagMode = 0x00000004;
         public static final int AndroidManifestProcess_name = 0x00000000;
-        public static final int AndroidManifestProcess_nativeHeapZeroInitialized = 0x00000004;
+        public static final int AndroidManifestProcess_nativeHeapZeroInitialized = 0x00000005;
         public static final int AndroidManifestProcess_process = 0x00000001;
+        public static final int AndroidManifestProcess_useEmbeddedDex = 0x00000002;
         public static final int AndroidManifestProfileable_enabled = 0x00000000;
         public static final int AndroidManifestProfileable_shell = 0x00000001;
         public static final int AndroidManifestProperty_name = 0x00000000;
@@ -3852,6 +3909,7 @@ public final class R {
         public static final int AndroidManifestProvider_singleUser = 0x00000010;
         public static final int AndroidManifestProvider_splitName = 0x00000015;
         public static final int AndroidManifestProvider_syncable = 0x0000000b;
+        public static final int AndroidManifestProvider_systemUserOnly = 0x00000018;
         public static final int AndroidManifestProvider_visibleToInstantApps = 0x00000014;
         public static final int AndroidManifestProvider_writePermission = 0x00000005;
         public static final int AndroidManifestPublicKey_name = 0x00000000;
@@ -3905,6 +3963,7 @@ public final class R {
         public static final int AndroidManifestService_singleUser = 0x0000000b;
         public static final int AndroidManifestService_splitName = 0x00000011;
         public static final int AndroidManifestService_stopWithTask = 0x00000009;
+        public static final int AndroidManifestService_systemUserOnly = 0x00000016;
         public static final int AndroidManifestService_useAppZygote = 0x00000012;
         public static final int AndroidManifestService_visibleToInstantApps = 0x00000010;
         public static final int AndroidManifestStaticLibrary_name = 0x00000000;
@@ -3923,6 +3982,7 @@ public final class R {
         public static final int AndroidManifestSupportsScreens_smallScreens = 0x00000001;
         public static final int AndroidManifestSupportsScreens_xlargeScreens = 0x00000005;
         public static final int AndroidManifestUpgradeKeySet_name = 0x00000000;
+        public static final int AndroidManifestUriRelativeFilterGroup_allow = 0x00000000;
         public static final int AndroidManifestUsesConfiguration_reqFiveWayNav = 0x00000004;
         public static final int AndroidManifestUsesConfiguration_reqHardKeyboard = 0x00000002;
         public static final int AndroidManifestUsesConfiguration_reqKeyboardType = 0x00000001;
@@ -3949,6 +4009,7 @@ public final class R {
         public static final int AndroidManifestUsesPermission_usesPermissionFlags = 0x00000005;
         public static final int AndroidManifestUsesSdkLibrary_certDigest = 0x00000001;
         public static final int AndroidManifestUsesSdkLibrary_name = 0x00000000;
+        public static final int AndroidManifestUsesSdkLibrary_optional = 0x00000003;
         public static final int AndroidManifestUsesSdkLibrary_versionMajor = 0x00000002;
         public static final int AndroidManifestUsesSdk_maxSdkVersion = 0x00000002;
         public static final int AndroidManifestUsesSdk_minSdkVersion = 0x00000000;
@@ -4153,7 +4214,8 @@ public final class R {
         public static final int ContactsDataKind_summaryColumn = 0x00000002;
         public static final int ContentCaptureService_settingsActivity = 0x00000000;
         public static final int CredentialProvider_Capabilities_capability = 0x00000000;
-        public static final int CredentialProvider_settingsSubtitle = 0x00000000;
+        public static final int CredentialProvider_settingsActivity = 0x00000000;
+        public static final int CredentialProvider_settingsSubtitle = 0x00000001;
         public static final int CycleInterpolator_cycles = 0x00000000;
         public static final int DatePicker_calendarTextColor = 0x0000000f;
         public static final int DatePicker_calendarViewShown = 0x00000007;
@@ -4223,6 +4285,7 @@ public final class R {
         public static final int DrawableWrapper_drawable = 0x00000000;
         public static final int Drawable_autoMirrored = 0x00000001;
         public static final int Drawable_visible = 0x00000000;
+        public static final int Dream_dreamCategory = 0x00000003;
         public static final int Dream_previewImage = 0x00000001;
         public static final int Dream_settingsActivity = 0x00000000;
         public static final int Dream_showClockAndComplications = 0x00000002;
@@ -4404,6 +4467,7 @@ public final class R {
         public static final int HostApduService_requireDeviceScreenOn = 0x00000004;
         public static final int HostApduService_requireDeviceUnlock = 0x00000002;
         public static final int HostApduService_settingsActivity = 0x00000001;
+        public static final int HostApduService_shouldDefaultToObserveMode = 0x00000005;
         public static final int HostNfcFService_description = 0x00000000;
         public static final int IconDefault_icon = 0x00000000;
         public static final int IconMenuView_maxItemsPerRow = 0x00000002;
@@ -4441,10 +4505,13 @@ public final class R {
         public static final int InputMethod_Subtype_subtypeId = 0x00000007;
         public static final int InputMethod_configChanges = 0x00000000;
         public static final int InputMethod_isDefault = 0x00000001;
+        public static final int InputMethod_isVirtualDeviceOnly = 0x0000000b;
         public static final int InputMethod_isVrOnly = 0x00000004;
+        public static final int InputMethod_languageSettingsActivity = 0x0000000e;
         public static final int InputMethod_settingsActivity = 0x00000002;
         public static final int InputMethod_showInInputMethodPicker = 0x00000007;
         public static final int InputMethod_stylusHandwritingSettingsActivity = 0x0000000a;
+        public static final int InputMethod_supportsConnectionlessStylusHandwriting = 0x0000000c;
         public static final int InputMethod_supportsInlineSuggestions = 0x00000005;
         public static final int InputMethod_supportsInlineSuggestionsWithTouchExploration = 0x00000009;
         public static final int InputMethod_supportsStylusHandwriting = 0x00000008;
@@ -4617,6 +4684,7 @@ public final class R {
         public static final int ListView_overScrollFooter = 0x00000006;
         public static final int ListView_overScrollHeader = 0x00000005;
         public static final int LocaleConfig_Locale_name = 0x00000000;
+        public static final int LocaleConfig_defaultLocale = 0x00000000;
         public static final int MapView_apiKey = 0x00000000;
         public static final int MaterialProgressDrawable_color = 0x00000003;
         public static final int MaterialProgressDrawable_height = 0x00000000;
@@ -4692,6 +4760,7 @@ public final class R {
         public static final int OffHostApduService_requireDeviceUnlock = 0x00000002;
         public static final int OffHostApduService_secureElementName = 0x00000004;
         public static final int OffHostApduService_settingsActivity = 0x00000001;
+        public static final int OffHostApduService_shouldDefaultToObserveMode = 0x00000006;
         public static final int OnDeviceRecognitionService_settingsActivity = 0x00000000;
         public static final int OvershootInterpolator_tension = 0x00000000;
         public static final int PathInterpolator_controlX1 = 0x00000000;
@@ -4703,6 +4772,10 @@ public final class R {
         public static final int PointerIcon_bitmap = 0x00000000;
         public static final int PointerIcon_hotSpotX = 0x00000001;
         public static final int PointerIcon_hotSpotY = 0x00000002;
+        public static final int PollingLoopFilter_autoTransact = 0x00000001;
+        public static final int PollingLoopFilter_name = 0x00000000;
+        public static final int PollingLoopPatternFilter_autoTransact = 0x00000001;
+        public static final int PollingLoopPatternFilter_name = 0x00000000;
         public static final int PopupWindowBackgroundState_state_above_anchor = 0x00000000;
         public static final int PopupWindow_overlapAnchor = 0x00000002;
         public static final int PopupWindow_popupAnimationStyle = 0x00000001;
@@ -5136,6 +5209,7 @@ public final class R {
         public static final int TextView_shadowDx = 0x00000025;
         public static final int TextView_shadowDy = 0x00000026;
         public static final int TextView_shadowRadius = 0x00000027;
+        public static final int TextView_shiftDrawingOffsetForStartOverhang = 0x00000067;
 
         @Deprecated
         public static final int TextView_singleLine = 0x00000020;
@@ -5162,6 +5236,8 @@ public final class R {
         public static final int TextView_textSize = 0x00000002;
         public static final int TextView_textStyle = 0x00000004;
         public static final int TextView_typeface = 0x00000003;
+        public static final int TextView_useBoundsForWidth = 0x00000065;
+        public static final int TextView_useLocalePreferredLineHeightForMinimum = 0x00000066;
         public static final int TextView_width = 0x0000001c;
         public static final int Theme_absListViewStyle = 0x00000033;
         public static final int Theme_actionBarDivider = 0x000000cb;
@@ -5522,6 +5598,7 @@ public final class R {
         public static final int TrustAgent_settingsActivity = 0x00000002;
         public static final int TrustAgent_summary = 0x00000001;
         public static final int TrustAgent_title = 0x00000000;
+        public static final int TvAdService_adServiceTypes = 0x00000000;
         public static final int TvInputService_canPauseRecording = 0x00000004;
         public static final int TvInputService_canRecord = 0x00000002;
 
@@ -5631,6 +5708,7 @@ public final class R {
         public static final int View_clickable = 0x0000001e;
         public static final int View_clipToOutline = 0x00000069;
         public static final int View_contentDescription = 0x0000002c;
+        public static final int View_contentSensitivity = 0x00000072;
         public static final int View_contextClickable = 0x00000055;
         public static final int View_defaultFocusHighlightEnabled = 0x00000060;
         public static final int View_drawingCacheQuality = 0x00000021;
@@ -5792,9 +5870,17 @@ public final class R {
         public static final int Window_backgroundDimAmount = 0x00000000;
         public static final int Window_backgroundDimEnabled = 0x0000000b;
         public static final int Window_enforceNavigationBarContrast = 0x00000034;
+
+        @Deprecated
         public static final int Window_enforceStatusBarContrast = 0x00000033;
+
+        @Deprecated
         public static final int Window_navigationBarColor = 0x00000023;
+
+        @Deprecated
         public static final int Window_navigationBarDividerColor = 0x00000031;
+
+        @Deprecated
         public static final int Window_statusBarColor = 0x00000022;
         public static final int Window_textColor = 0x00000007;
         public static final int Window_windowActionBar = 0x0000000f;
@@ -5823,6 +5909,7 @@ public final class R {
         public static final int Window_windowFrame = 0x00000002;
         public static final int Window_windowFullscreen = 0x00000009;
         public static final int Window_windowIsFloating = 0x00000004;
+        public static final int Window_windowIsFrameRatePowerSavingsBalanced = 0x00000040;
         public static final int Window_windowIsTranslucent = 0x00000005;
         public static final int Window_windowLayoutInDisplayCutoutMode = 0x00000032;
         public static final int Window_windowLightNavigationBar = 0x00000030;
@@ -5832,6 +5919,7 @@ public final class R {
         public static final int Window_windowNoDisplay = 0x0000000a;
         public static final int Window_windowNoMoveAnimation = 0x0000003e;
         public static final int Window_windowNoTitle = 0x00000003;
+        public static final int Window_windowOptOutEdgeToEdgeEnforcement = 0x0000003f;
 
         @Deprecated
         public static final int Window_windowOverscan = 0x00000016;
@@ -5882,7 +5970,7 @@ public final class R {
         public static final int[] ActionBar_LayoutParams = {16842931};
         public static final int[] ActionMenuItemView = {16843071};
         public static final int[] ActionMode = {16842964, 16843093, 16843512, 16843513, 16843659, com.android.internal.R.attr.closeItemLayout};
-        public static final int[] ActivityChooserView = {17956939, 17956973};
+        public static final int[] ActivityChooserView = {17956962, 17956995};
         public static final int[] ActivityTaskDescription = {16842801, 16843827, 16843857, 16843858, 16844002, 16844292, 16844293};
         public static final int[] AdapterViewAnimator = {16843127, 16843128, 16843477, 16843527};
         public static final int[] AdapterViewFlipper = {16843129, 16843445};
@@ -5890,24 +5978,24 @@ public final class R {
         public static final int[] AidFilter = {16842755};
         public static final int[] AidGroup = {16842784, 16843752};
         public static final int[] AidPrefixFilter = {16842755};
-        public static final int[] AlertDialog = {16842950, 16842951, 16842952, 16842953, 16842954, 16842955, 16842956, 16842957, 16842958, 16842959, 16842994, 17956897, 17956916, 17956967, 17956997, 17956998, 17957063, 17957065, 17957168, 17957190, 17957215, 17957217};
+        public static final int[] AlertDialog = {16842950, 16842951, 16842952, 16842953, 16842954, 16842955, 16842956, 16842957, 16842958, 16842959, 16842994, 17956897, 17956916, 17956989, 17957020, 17957021, 17957087, 17957089, 17957194, 17957216, 17957245, 17957247};
         public static final int[] AlphaAnimation = {16843210, 16843211};
         public static final int[] AnalogClock = {16843010, 16843011, 16843012, 16843724, 16844323, 16844342, 16844343, 16844344, 16844345, 16844346, 16844347, 16844348, 16844349};
         public static final int[] AndroidManifest = {16842763, 16843291, 16843292, 16843361, 16843447, 16843989, 16844107, 16844108, 16844123, 16844146, 16844147, 16844150, 16844177, 16844365, 16844366, 16844367};
         public static final int[] AndroidManifestAction = {16842755};
-        public static final int[] AndroidManifestActivity = {16842752, 16842753, 16842754, 16842755, 16842758, 16842766, 16842768, 16842769, 16842770, 16842771, 16842772, 16842773, 16842774, 16842775, 16842781, 16842782, 16842783, 16842784, 16843267, 16843268, 16843307, 16843309, 16843431, 16843454, 16843456, 16843475, 16843672, 16843687, 16843711, 16843721, 16843762, 16843765, 16843821, 16843845, 16843846, 16843847, 16843894, 16843954, 16844013, 16844015, 16844022, 16844023, 16844037, 16844069, 16844076, 16844081, 16844090, 16844103, 16844105, 16844106, 16844128, 16844137, 16844138, 16844187, 16844188, 16844296, 16844300, 16844354, 16844358, 16844368, 16844393, 16844394, 16844396, 16844409, 17956883, 17957224};
+        public static final int[] AndroidManifestActivity = {16842752, 16842753, 16842754, 16842755, 16842758, 16842766, 16842768, 16842769, 16842770, 16842771, 16842772, 16842773, 16842774, 16842775, 16842781, 16842782, 16842783, 16842784, 16843267, 16843268, 16843307, 16843309, 16843431, 16843454, 16843456, 16843475, 16843672, 16843687, 16843711, 16843721, 16843762, 16843765, 16843821, 16843845, 16843846, 16843847, 16843894, 16843954, 16844013, 16844015, 16844022, 16844023, 16844037, 16844069, 16844076, 16844081, 16844090, 16844103, 16844105, 16844106, 16844128, 16844137, 16844138, 16844187, 16844188, 16844296, 16844300, 16844354, 16844358, 16844368, 16844393, 16844394, 16844396, 16844409, 16844429, 16844443, 17956883};
         public static final int[] AndroidManifestActivityAlias = {16842753, 16842754, 16842755, 16842758, 16842766, 16842768, 16842784, 16843266, 16843454, 16843687, 16843762, 16844076, 16844354, 16844393, 16844394};
         public static final int[] AndroidManifestAdditionalCertificate = {16844104};
         public static final int[] AndroidManifestAllowPermission = {16842755};
         public static final int[] AndroidManifestApexSystemService = {16842755, 16842778, 16842794, 16843276, 16843377};
 
         @Deprecated
-        public static final int[] AndroidManifestApplication = {16842752, 16842753, 16842754, 16842755, 16842756, 16842757, 16842758, 16842764, 16842765, 16842766, 16842767, 16842769, 16842770, 16842784, 16843268, 16843378, 16843391, 16843392, 16843420, 16843421, 16843448, 16843450, 16843454, 16843475, 16843610, 16843672, 16843695, 16843728, 16843733, 16843734, 16843762, 16843764, 16843891, 16843918, 16844010, 16844011, 16844012, 16844022, 16844036, 16844037, 16844058, 16844071, 16844076, 16844101, 16844128, 16844131, 16844139, 16844142, 16844154, 16844174, 16844186, 16844187, 16844189, 16844190, 16844288, 16844289, 16844291, 16844296, 16844302, 16844306, 16844307, 16844308, 16844310, 16844311, 16844324, 16844325, 16844350, 16844357, 16844362, 16844363, 16844370, 16844379, 16844394, 16844396, 17956880};
+        public static final int[] AndroidManifestApplication = {16842752, 16842753, 16842754, 16842755, 16842756, 16842757, 16842758, 16842764, 16842765, 16842766, 16842767, 16842769, 16842770, 16842784, 16843268, 16843378, 16843391, 16843392, 16843420, 16843421, 16843448, 16843450, 16843454, 16843475, 16843610, 16843672, 16843695, 16843728, 16843733, 16843734, 16843762, 16843764, 16843891, 16843918, 16844010, 16844011, 16844012, 16844022, 16844036, 16844037, 16844058, 16844071, 16844076, 16844101, 16844128, 16844131, 16844139, 16844142, 16844154, 16844174, 16844186, 16844187, 16844189, 16844190, 16844288, 16844289, 16844291, 16844296, 16844302, 16844306, 16844307, 16844308, 16844310, 16844311, 16844324, 16844325, 16844350, 16844357, 16844362, 16844363, 16844370, 16844379, 16844394, 16844396, 16844449, 17956880};
         public static final int[] AndroidManifestAttribution = {16842753, 16842961};
         public static final int[] AndroidManifestAttributionInheritFrom = {16842961};
         public static final int[] AndroidManifestCategory = {16842755};
         public static final int[] AndroidManifestCompatibleScreensScreen = {16843466, 16843467};
-        public static final int[] AndroidManifestData = {16842790, 16842791, 16842792, 16842793, 16842794, 16842795, 16842796, 16843747, 16843748, 16843749, 16844309, 16844318, 16844319, 16844320, 16844321};
+        public static final int[] AndroidManifestData = {16842790, 16842791, 16842792, 16842793, 16842794, 16842795, 16842796, 16843491, 16843747, 16843748, 16843749, 16844309, 16844318, 16844319, 16844320, 16844321, 16844431, 16844432, 16844433, 16844434, 16844435, 16844436, 16844437, 16844438, 16844439};
         public static final int[] AndroidManifestDenyPermission = {16842755};
         public static final int[] AndroidManifestExtensionSdk = {16844304, 16844305};
         public static final int[] AndroidManifestFeatureGroup = {16842753};
@@ -5923,15 +6011,15 @@ public final class R {
         public static final int[] AndroidManifestOriginalPackage = {16842755};
         public static final int[] AndroidManifestPackageVerifier = {16842755, 16843686};
         public static final int[] AndroidManifestPathPermission = {16842758, 16842759, 16842760, 16842794, 16842795, 16842796, 16844318, 16844320};
-        public static final int[] AndroidManifestPermission = {16842753, 16842754, 16842755, 16842761, 16842762, 16842784, 16843377, 16843454, 16843719, 16843762, 16844076, 16844330, 17956889, 17957174};
-        public static final int[] AndroidManifestPermissionGroup = {16842753, 16842754, 16842755, 16842780, 16842784, 16843454, 16843717, 16843762, 16844076, 17956890, 17956891, 17957174, 17957175};
+        public static final int[] AndroidManifestPermission = {16842753, 16842754, 16842755, 16842761, 16842762, 16842784, 16843377, 16843454, 16843719, 16843762, 16844076, 16844330, 17956889, 17957200};
+        public static final int[] AndroidManifestPermissionGroup = {16842753, 16842754, 16842755, 16842780, 16842784, 16843454, 16843717, 16843762, 16844076, 17956890, 17956891, 17957200, 17957201};
         public static final int[] AndroidManifestPermissionTree = {16842753, 16842754, 16842755, 16843454, 16843762, 16844076};
-        public static final int[] AndroidManifestProcess = {16842755, 16842769, 16844310, 16844324, 16844325};
+        public static final int[] AndroidManifestProcess = {16842755, 16842769, 16844190, 16844310, 16844324, 16844325};
         public static final int[] AndroidManifestProcesses = new int[0];
         public static final int[] AndroidManifestProfileable = {16842766, 16844180};
         public static final int[] AndroidManifestProperty = {16842755, 16842788, 16842789};
         public static final int[] AndroidManifestProtectedBroadcast = {16842755};
-        public static final int[] AndroidManifestProvider = {16842753, 16842754, 16842755, 16842758, 16842759, 16842760, 16842766, 16842768, 16842769, 16842771, 16842776, 16842777, 16842778, 16842779, 16842784, 16843454, 16843711, 16843762, 16844037, 16844076, 16844081, 16844105, 16844191, 16844354};
+        public static final int[] AndroidManifestProvider = {16842753, 16842754, 16842755, 16842758, 16842759, 16842760, 16842766, 16842768, 16842769, 16842771, 16842776, 16842777, 16842778, 16842779, 16842784, 16843454, 16843711, 16843762, 16844037, 16844076, 16844081, 16844105, 16844191, 16844354, 16844429};
         public static final int[] AndroidManifestPublicKey = {16842755, 16842788};
         public static final int[] AndroidManifestQueries = new int[0];
         public static final int[] AndroidManifestQueriesIntent = new int[0];
@@ -5943,11 +6031,12 @@ public final class R {
         public static final int[] AndroidManifestResourceOverlay = {16842780, 16842785, 16843752, 16843853, 16844122, 16844133, 16844134, 16844297};
         public static final int[] AndroidManifestRestrictUpdate = {16844070};
         public static final int[] AndroidManifestSdkLibrary = {16842755, 16844151};
-        public static final int[] AndroidManifestService = {16842753, 16842754, 16842755, 16842758, 16842766, 16842768, 16842769, 16842784, 16843454, 16843626, 16843689, 16843711, 16843762, 16844037, 16844046, 16844076, 16844081, 16844105, 16844183, 16844185, 16844354, 16844413};
+        public static final int[] AndroidManifestService = {16842753, 16842754, 16842755, 16842758, 16842766, 16842768, 16842769, 16842784, 16843454, 16843626, 16843689, 16843711, 16843762, 16844037, 16844046, 16844076, 16844081, 16844105, 16844183, 16844185, 16844354, 16844413, 16844429};
         public static final int[] AndroidManifestStaticLibrary = {16842755, 16844057, 16844151};
         public static final int[] AndroidManifestSupportsInputInputType = {16842755};
         public static final int[] AndroidManifestSupportsScreens = {16843372, 16843396, 16843397, 16843398, 16843405, 16843455, 16843620, 16843621, 16843622};
         public static final int[] AndroidManifestUpgradeKeySet = {16842755};
+        public static final int[] AndroidManifestUriRelativeFilterGroup = {16844430};
 
         @Deprecated
         public static final int[] AndroidManifestUsesConfiguration = {16843303, 16843304, 16843305, 16843306, 16843314};
@@ -5957,23 +6046,23 @@ public final class R {
         public static final int[] AndroidManifestUsesPackage = {16842755, 16844057, 16844104, 16844151, 16844167};
         public static final int[] AndroidManifestUsesPermission = {16842755, 16843276, 16843377, 16844116, 16844117, 16844356};
         public static final int[] AndroidManifestUsesSdk = {16843276, 16843376, 16843377};
-        public static final int[] AndroidManifestUsesSdkLibrary = {16842755, 16844104, 16844151};
+        public static final int[] AndroidManifestUsesSdkLibrary = {16842755, 16844104, 16844151, R.attr.optional};
         public static final int[] AndroidManifestUsesSplit = {16842755};
         public static final int[] AndroidManifestUsesStaticLibrary = {16842755, 16844057, 16844104};
         public static final int[] AnimatedImageDrawable = {16843033, 16843199, 16843445, 16843754};
-        public static final int[] AnimatedRotateDrawable = {16843156, 16843161, 16843189, 16843190, 17956954, 17956955};
+        public static final int[] AnimatedRotateDrawable = {16843156, 16843161, 16843189, 16843190, 17956976, 17956977};
         public static final int[] AnimatedStateListDrawable = {16843036, 16843156, 16843157, 16843158, 16843532, 16843533, 16843754};
         public static final int[] AnimatedStateListDrawableItem = {16842960, 16843161};
         public static final int[] AnimatedStateListDrawableTransition = {16843161, 16843849, 16843850, 16843851};
         public static final int[] AnimatedVectorDrawable = {16843161};
         public static final int[] AnimatedVectorDrawableTarget = {16842755, 16843213};
-        public static final int[] Animation = {16842964, 16843073, 16843160, 16843196, 16843197, 16843198, 16843199, 16843200, 16843201, 16843343, 16843430, 16844380, 16844402, 17956962, 17957216};
+        public static final int[] Animation = {16842964, 16843073, 16843160, 16843196, 16843197, 16843198, 16843199, 16843200, 16843201, 16843343, 16843430, 16844380, 16844402, 17956984, 17957246};
         public static final int[] AnimationDrawable = {16843156, 16843157, 16843159};
         public static final int[] AnimationDrawableItem = {16843160, 16843161};
         public static final int[] AnimationScaleListDrawable = new int[0];
         public static final int[] AnimationScaleListDrawableItem = {16843161};
         public static final int[] AnimationSet = {16843160, 16843195, 16843196, 16843197, 16843198, 16843200};
-        public static final int[] Animator = {16843073, 16843160, 16843198, 16843199, 16843200, 16843486, 16843487, 16843488, 17957173};
+        public static final int[] Animator = {16843073, 16843160, 16843198, 16843199, 16843200, 16843486, 16843487, 16843488, 17957199};
         public static final int[] AnimatorSet = {16843490};
         public static final int[] AnticipateInterpolator = {16843370};
         public static final int[] AnticipateOvershootInterpolator = {16843370, 16843371};
@@ -5988,14 +6077,14 @@ public final class R {
         public static final int[] CachingIconView = {16844400, 16844401};
 
         @Deprecated
-        public static final int[] CalendarView = {16843581, 16843582, 16843583, 16843584, 16843585, 16843586, 16843587, 16843588, 16843589, 16843590, 16843591, 16843592, 16843593, 17956898, 17956917, 17956918, 17957060};
+        public static final int[] CalendarView = {16843581, 16843582, 16843583, 16843584, 16843585, 16843586, 16843587, 16843588, 16843589, 16843590, 16843591, 16843592, 16843593, 17956898, 17956938, 17956939, 17957084};
         public static final int[] ChangeBounds = {16843983};
         public static final int[] ChangeTransform = {16843964, 16843965};
         public static final int[] CheckBoxPreference = {16843247, 16843248, 16843249};
         public static final int[] CheckedTextView = {16843014, 16843016, 16843943, 16843944, com.android.internal.R.attr.checkMarkGravity};
         public static final int[] Chronometer = {16843013, 16844059};
         public static final int[] ClipDrawable = {16842927, 16843161, 16843274};
-        public static final int[] ClipRectAnimation = {17956956, 17956957, 17956958, 17956959, 17957241, 17957242, 17957243, 17957244};
+        public static final int[] ClipRectAnimation = {17956978, 17956979, 17956980, 17956981, 17957270, 17957271, 17957272, 17957273};
         public static final int[] ColorDrawable = {16843173};
         public static final int[] ColorStateListItem = {16843173, 16843551, 16844359};
         public static final int[] CompoundButton = {16843014, 16843015, 16843887, 16843888};
@@ -6003,37 +6092,37 @@ public final class R {
 
         @SystemApi
         public static final int[] ContentCaptureService = {16843301};
-        public static final int[] CredentialProvider = {16844422};
+        public static final int[] CredentialProvider = {16843301, 16844422};
         public static final int[] CredentialProvider_Capabilities = {16844423};
         public static final int[] CycleInterpolator = {16843220};
-        public static final int[] DatePicker = {16843055, 16843132, 16843133, 16843581, 16843583, 16843584, 16843595, 16843596, 16843924, 16843925, 16843926, 16843927, 16843928, 16843929, 16843930, 16843931, 16843955, 17956921, 17956965, 17956974, 17956993, 17957263};
-        public static final int[] DateTimeView = {17957213};
+        public static final int[] DatePicker = {16843055, 16843132, 16843133, 16843581, 16843583, 16843584, 16843595, 16843596, 16843924, 16843925, 16843926, 16843927, 16843928, 16843929, 16843930, 16843931, 16843955, 17956942, 17956987, 17956996, 17957016, 17957293};
+        public static final int[] DateTimeView = {17957243};
         public static final int[] DecelerateInterpolator = {16843219};
         public static final int[] DeviceAdmin = {16843156};
-        public static final int[] DeviceDefault_Pointer = {17957089, 17957090, 17957091, 17957092, 17957093, 17957094, 17957095, 17957102, 17957103, 17957105, 17957106, 17957107, 17957108, 17957109, 17957110, 17957111, 17957112, 17957113, 17957114, 17957115, 17957116, 17957117, 17957118, 17957119, 17957120, 17957121, 17957122, 17957123, 17957124, 17957125, 17957126, 17957127, 17957128, 17957129, 17957130, 17957131, 17957134, 17957135, 17957136, 17957137, 17957138, 17957139, 17957140, 17957141, 17957142, 17957143, 17957144, 17957149};
+        public static final int[] DeviceDefault_Pointer = {17957113, 17957114, 17957115, 17957116, 17957117, 17957118, 17957119, 17957126, 17957127, 17957129, 17957130, 17957131, 17957132, 17957133, 17957134, 17957135, 17957136, 17957137, 17957138, 17957139, 17957140, 17957141, 17957142, 17957143, 17957144, 17957145, 17957146, 17957147, 17957148, 17957149, 17957150, 17957151, 17957152, 17957153, 17957154, 17957155, 17957158, 17957159, 17957160, 17957161, 17957162, 17957163, 17957164, 17957165, 17957166, 17957167, 17957168, 17957173};
         public static final int[] DialogPreference = {16843250, 16843251, 16843252, 16843253, 16843254, 16843255};
         public static final int[] Drawable = {16843156, 16843754};
         public static final int[] DrawableCorners = {16843176, 16843177, 16843178, 16843179, 16843180};
-        public static final int[] DrawableStates = {16842908, 16842909, 16842910, 16842911, 16842912, 16842913, 16842914, 16842915, 16842916, 16842917, 16842918, 16842919, 16843518, 16843547, 16843623, 16843624, 16843625, 17957220};
+        public static final int[] DrawableStates = {16842908, 16842909, 16842910, 16842911, 16842912, 16842913, 16842914, 16842915, 16842916, 16842917, 16842918, 16842919, 16843518, 16843547, 16843623, 16843624, 16843625, 17957250};
         public static final int[] DrawableWrapper = {16843161};
-        public static final int[] Dream = {16843301, 16843482, 16844372};
+        public static final int[] Dream = {16843301, 16843482, 16844372, R.attr.dreamCategory};
         public static final int[] EdgeEffect = {16843982};
         public static final int[] EditText = {16844408};
-        public static final int[] EpicenterTranslateClipReveal = {17956979, 17956980, 17956981};
+        public static final int[] EpicenterTranslateClipReveal = {17957001, 17957002, 17957003};
         public static final int[] ExpandableListChildIndicatorState = {16842918};
         public static final int[] ExpandableListGroupIndicatorState = {16842920, 16842921};
         public static final int[] ExpandableListView = {16843019, 16843020, 16843021, 16843022, 16843023, 16843024, 16843025, 16843729, 16843730, 16843731, 16843732};
         public static final int[] ExtendAnimation = {16844383, 16844384, 16844385, 16844386, 16844387, 16844388, 16844389, 16844390};
         public static final int[] Extra = {16842755, 16842788};
         public static final int[] Fade = {16843745};
-        public static final int[] FastScroll = {16842804, 16842901, 16842904, 16842965, 16843071, 16843072, 16844005, 17956888, 17956892, 17957156, 17957238, 17957239, 17957240, 17957249};
+        public static final int[] FastScroll = {16842804, 16842901, 16842904, 16842965, 16843071, 16843072, 16844005, 17956888, 17956892, 17957182, 17957267, 17957268, 17957269, 17957278};
 
         @Deprecated
         public static final int[] FontFamily = {16844112, 16844113, 16844119, 16844125, 16844322};
         public static final int[] FontFamilyFont = {16844082, 16844083, 16844095, 16844143, 16844144};
         public static final int[] Fragment = {16842755, 16842960, 16842961, 16843970, 16843971, 16843972, 16843973, 16843974, 16843975, 16843976, 16843977};
         public static final int[] FragmentAnimation = {16843493, 16843494, 16843495, 16843496, 16843497, 16843498};
-        public static final int[] FragmentBreadCrumbs = {16842927, 17956982, 17956983};
+        public static final int[] FragmentBreadCrumbs = {16842927, 17957004, 17957005};
         public static final int[] FrameLayout = {16843018};
         public static final int[] FrameLayout_Layout = {16842931};
         public static final int[] Gallery = {16842927, 16843026, 16843027, 16843278};
@@ -6054,16 +6143,16 @@ public final class R {
         public static final int[] GridLayout_Layout = {16842931, 16843084, 16843643, 16843644, 16843645, 16843864, 16843865};
         public static final int[] GridView = {16842927, 16843028, 16843029, 16843030, 16843031, 16843032};
         public static final int[] HorizontalScrollView = {16843130};
-        public static final int[] HostApduService = {16842784, 16843301, 16843756, 16843757, 16844317};
+        public static final int[] HostApduService = {16842784, 16843301, 16843756, 16843757, 16844317, 16844448};
         public static final int[] HostNfcFService = {16842784};
         public static final int[] Icon = {16842754, 16842790};
         public static final int[] IconDefault = {16842754};
-        public static final int[] IconMenuView = {16843058, 16843059, 16843060, 16843061, 17957057};
+        public static final int[] IconMenuView = {16843058, 16843059, 16843060, 16843061, 17957081};
         public static final int[] ImageSwitcher = new int[0];
-        public static final int[] ImageView = {16843033, 16843037, 16843038, 16843039, 16843040, 16843041, 16843042, 16843043, 16843548, 16843771, 17956928};
+        public static final int[] ImageView = {16843033, 16843037, 16843038, 16843039, 16843040, 16843041, 16843042, 16843043, 16843548, 16843771, 17956949};
         public static final int[] Include = {16842960, 16842972};
         public static final int[] InputExtras = new int[0];
-        public static final int[] InputMethod = {16842783, 16843297, 16843301, 16843755, 16844152, 16844301, 16844355, 16844360, 16844371, 16844397, 16844420, 17956866};
+        public static final int[] InputMethod = {16842783, 16843297, 16843301, 16843755, 16844152, 16844301, 16844355, 16844360, 16844371, 16844397, 16844420, 16844425, 16844447, 17956866, R.attr.languageSettingsActivity};
         public static final int[] InputMethodService = {16843308, 16843368, 16843369};
         public static final int[] InputMethod_Subtype = {16842753, 16842754, 16843500, 16843501, 16843502, 16843647, 16843682, 16843713, 16843753, 16844040, 16844411, 16844412};
         public static final int[] InsetDrawable = {16843156, 16843161, 16843191, 16843192, 16843193, 16843194, 16843957};
@@ -6072,7 +6161,7 @@ public final class R {
 
         @Deprecated
         public static final int[] Keyboard = {16843325, 16843326, 16843327, 16843328};
-        public static final int[] KeyboardLayout = {16842753, 16842755, 16843691, 16844414, 16844415, 17957166, 17957254};
+        public static final int[] KeyboardLayout = {16842753, 16842755, 16843691, 16844414, 16844415, 17957192, 17957284};
 
         @Deprecated
         public static final int[] KeyboardView = {16843105, 16843108, 16843315, 16843316, 16843317, 16843318, 16843319, 16843320, 16843321, 16843322, 16843323, com.android.internal.R.attr.keyboardViewStyle};
@@ -6086,7 +6175,7 @@ public final class R {
         @Deprecated
         public static final int[] Keyboard_Row = {16843329, 16843341};
         public static final int[] Keyframe = {16842788, 16843073, 16843488, 16843992};
-        public static final int[] KeyguardGlowStripView = {17956927, 17956961, 17956992, 17957070};
+        public static final int[] KeyguardGlowStripView = {17956948, 17956983, 17957015, 17957094};
         public static final int[] LayerDrawable = {16842966, 16842967, 16842968, 16842969, 16843550, 16843699, 16843700, 16843754, 16843863};
         public static final int[] LayerDrawableItem = {16842927, 16842960, 16843093, 16843097, 16843161, 16843181, 16843182, 16843183, 16843184, 16843995, 16843996};
         public static final int[] LayoutAnimation = {16843073, 16843212, 16843213, 16843214};
@@ -6097,8 +6186,9 @@ public final class R {
         public static final int[] ListPopupWindow = {16843436, 16843437};
         public static final int[] ListPreference = {16842930, 16843256};
         public static final int[] ListView = {16842930, 16843049, 16843050, 16843310, 16843311, 16843458, 16843459};
+        public static final int[] LocaleConfig = {16844424};
         public static final int[] LocaleConfig_Locale = {16842755};
-        public static final int[] LockPatternView = {17956884, 17956925, 17956926, 17956936, 17957081, 17957171, 17957223};
+        public static final int[] LockPatternView = {17956884, 17956946, 17956947, 17956958, 17956959, 17957006, 17957105, 17957197, 17957253};
         public static final int[] Magnifier = {com.android.internal.R.attr.magnifierColorOverlay, com.android.internal.R.attr.magnifierElevation, com.android.internal.R.attr.magnifierHeight, com.android.internal.R.attr.magnifierHorizontalOffset, com.android.internal.R.attr.magnifierVerticalOffset, com.android.internal.R.attr.magnifierWidth, com.android.internal.R.attr.magnifierZoom};
         public static final int[] MapView = {16843281};
         public static final int[] MaterialProgressDrawable = {16843093, 16843097, 16843156, 16843173, 16843359, 16843360};
@@ -6110,50 +6200,53 @@ public final class R {
         public static final int[] MenuItemCheckedState = {16842911, 16842912};
         public static final int[] MenuItemUncheckedFocusedState = {16842908, 16842911};
         public static final int[] MenuItemUncheckedState = {16842911};
-        public static final int[] MenuView = {16842926, 16843052, 16843053, 16843054, 16843055, 16843056, 16843057, 16844019, 17957164};
+        public static final int[] MenuView = {16842926, 16843052, 16843053, 16843054, 16843055, 16843056, 16843057, 16844019, 17957190};
         public static final int[] MessagingLinearLayout = {16843027};
         public static final int[] MultiSelectListPreference = {16842930, 16843256};
         public static final int[] Nfcid2Filter = {16842755};
         public static final int[] NinePatchDrawable = {16843033, 16843036, 16843041, 16843551, 16843754, 16843771};
-        public static final int[] NotificationTheme = {17957066, 17957067, 17957068, com.android.internal.R.attr.notificationHeaderTextAppearance};
-        public static final int[] NumberPicker = {16843594, 16844184, 17956966, 17956974, 17956975, 17956976, 17956977, 17956978, 17957188, 17957189, 17957256};
-        public static final int[] OffHostApduService = {16842784, 16843301, 16843756, 16843757, 16844290, 16844317};
+        public static final int[] NotificationTheme = {17957090, 17957091, 17957092, com.android.internal.R.attr.notificationHeaderTextAppearance};
+        public static final int[] NumberPicker = {16843594, 16844184, 17956988, 17956996, 17956997, 17956998, 17956999, 17957000, 17957214, 17957215, 17957286};
+        public static final int[] OffHostApduService = {16842784, 16843301, 16843756, 16843757, 16844290, 16844317, 16844448};
 
         @SystemApi
         public static final int[] OnDeviceRecognitionService = {16843301};
         public static final int[] OvershootInterpolator = {16843370};
-        public static final int[] PagedView = {17957074, 17957181, 17957182};
+        public static final int[] PagedView = {17957098, 17957207, 17957208};
         public static final int[] PathInterpolator = {16843772, 16843773, 16843774, 16843775, 16843781};
         public static final int[] PatternPathMotion = {16843978};
-        public static final int[] Pointer = {17957082, 17957083, 17957084, 17957085, 17957086, 17957087, 17957088, 17957096, 17957097, 17957098, 17957099, 17957100, 17957101, 17957104, 17957132, 17957133, 17957145, 17957146, 17957147, 17957148, 17957150, 17957151, 17957152, 17957153, 17957154};
+        public static final int[] Pointer = {17957106, 17957107, 17957108, 17957109, 17957110, 17957111, 17957112, 17957120, 17957121, 17957122, 17957123, 17957124, 17957125, 17957128, 17957156, 17957157, 17957169, 17957170, 17957171, 17957172, 17957176, 17957177, 17957178, 17957179, 17957180};
         public static final int[] PointerIcon = {16844054, 16844055, 16844056};
+        public static final int[] PointerIconVectorTheme = {com.android.internal.R.attr.pointerIconVectorFill, 17957175};
+        public static final int[] PollingLoopFilter = {16842755, 16844441};
+        public static final int[] PollingLoopPatternFilter = {16842755, 16844441};
         public static final int[] PopupWindow = {16843126, 16843465, 16843874, 16843916, 16844063, 16844064};
         public static final int[] PopupWindowBackgroundState = {16842922};
         public static final int[] Preference = {16842754, 16842765, 16842766, 16842994, 16843233, 16843238, 16843240, 16843241, 16843242, 16843243, 16843244, 16843245, 16843246, 16843491, 16844121, 16844124, 16844129};
-        public static final int[] PreferenceActivity = {16842994, 17956963, 17956964};
+        public static final int[] PreferenceActivity = {16842994, 17956985, 17956986};
         public static final int[] PreferenceFragment = {16842994, 16843049};
         public static final int[] PreferenceFrameLayout = {17956893, 17956894, 17956895, 17956896};
-        public static final int[] PreferenceFrameLayout_Layout = {17956991};
+        public static final int[] PreferenceFrameLayout_Layout = {17957014};
         public static final int[] PreferenceGroup = {16843239};
         public static final int[] PreferenceHeader = {16842754, 16842960, 16843233, 16843241, 16843491, 16843523, 16843524};
-        public static final int[] PreferenceScreen = {16843049, 17957179};
+        public static final int[] PreferenceScreen = {16843049, 17957205};
         public static final int[] PrintService = {16843301, 16843750, 16843751, 16843761};
         public static final int[] ProgressBar = {16843039, 16843040, 16843062, 16843063, 16843064, 16843065, 16843066, 16843067, 16843068, 16843069, 16843070, 16843071, 16843072, 16843073, 16843546, 16843726, 16843875, 16843876, 16843877, 16843878, 16843879, 16843880, 16843881, 16843882, 16843883, 16843884, 16844089};
         public static final int[] PropertyAnimator = {16843489, 16843781, 16843892, 16843893};
         public static final int[] PropertyValuesHolder = {16843486, 16843487, 16843488, 16843489};
         public static final int[] QuickAccessWalletService = {16843266, 16843301, 16844073, 16844074};
-        public static final int[] QuickContactBadge = {17957170};
+        public static final int[] QuickContactBadge = {17957196};
         public static final int[] RadioGroup = {16842948, 16843080};
         public static final int[] RatingBar = {16843076, 16843077, 16843078, 16843079};
         public static final int[] RatingDefinition = {16842755, 16842784, 16843233, 16843961};
         public static final int[] RatingSystemDefinition = {16842755, 16842784, 16843233, 16843962};
         public static final int[] RecognitionService = {16843301, 16844352};
-        public static final int[] RecycleListView = {17957072, 17957073};
-        public static final int[] RecyclerView = {16842948, 16842993, 17956985, 17957177, 17957218, 17957219};
+        public static final int[] RecycleListView = {17957096, 17957097};
+        public static final int[] RecyclerView = {16842948, 16842993, 17957008, 17957203, 17957248, 17957249};
         public static final int[] RelativeLayout = {16842927, 16843263};
         public static final int[] RelativeLayout_Layout = {16843138, 16843139, 16843140, 16843141, 16843142, 16843143, 16843144, 16843145, 16843146, 16843147, 16843148, 16843149, 16843150, 16843151, 16843152, 16843153, 16843154, 16843703, 16843704, 16843705, 16843706, 16843707, 16843708};
-        public static final int[] ResolverDrawerLayout = {16843039, 17956972, 17957054, 17957055, 17957212};
-        public static final int[] ResolverDrawerLayout_LayoutParams = {16842931, 17956986, 17956988, 17956989, 17956990};
+        public static final int[] ResolverDrawerLayout = {16843039, 17956994, 17957078, 17957079, 17957242};
+        public static final int[] ResolverDrawerLayout_LayoutParams = {16842931, 17957009, 17957011, 17957012, 17957013};
         public static final int[] RestrictionEntry = {16842784, 16842930, 16843233, 16843240, 16843245, 16843256, 16843923};
         public static final int[] RingtonePreference = {16843257, 16843258, 16843259};
         public static final int[] RippleDrawable = {16843173, 16843176, 16844361};
@@ -6162,15 +6255,16 @@ public final class R {
         public static final int[] ScaleAnimation = {16843189, 16843190, 16843202, 16843203, 16843204, 16843205};
         public static final int[] ScaleDrawable = {16843161, 16843260, 16843261, 16843262, 16843536, 16844032};
         public static final int[] ScrollView = {16843130};
-        public static final int[] SearchView = {16842994, 16843039, 16843296, 16843364, 16843514, 16843608, 16843905, 16843906, 16843907, 16843908, 16843909, 16843910, 16843911, 16843912, 16843988, 17956919};
+        public static final int[] SearchView = {16842994, 16843039, 16843296, 16843364, 16843514, 16843608, 16843905, 16843906, 16843907, 16843908, 16843909, 16843910, 16843911, 16843912, 16843988, 17956940};
         public static final int[] Searchable = {16842753, 16842754, 16843088, 16843221, 16843222, 16843223, 16843224, 16843225, 16843226, 16843269, 16843296, 16843346, 16843347, 16843348, 16843349, 16843350, 16843364, 16843373, 16843374, 16843394, 16843402, 16843404};
         public static final int[] SearchableActionKey = {16842949, 16843227, 16843228, 16843229};
         public static final int[] SearchableExtraAttr = {16842755, 16842788, 16842789};
-        public static final int[] SeekBar = {16843074, 16843075, 16843852, 16843889, 16843890, 16844042, 16844043, 16844044, 17957253};
-        public static final int[] SeekBarPreference = {16842994, 17956877, 17957214};
+        public static final int[] SeekBar = {16843074, 16843075, 16843852, 16843889, 16843890, 16844042, 16844043, 16844044, 17957283};
+        public static final int[] SeekBarPreference = {16842994, 17956877, 17957244};
         public static final int[] SelectionModeDrawables = {16843537, 16843538, 16843539, 16843646};
-        public static final int[] SemProgressBar = {17957198, 17957200, 17957205, 17957206, 17957207, 17957208, com.android.internal.R.attr.semUseHorizontalProgress};
-        public static final int[] SemTipPopup = {17957209, 17957210};
+        public static final int[] SemProgressBar = {17957225, 17957227, 17957235, 17957236, 17957237, 17957238, com.android.internal.R.attr.semUseHorizontalProgress};
+        public static final int[] SemRecoil = {17957228, 17957229, 17957230};
+        public static final int[] SemTipPopup = {17957239, 17957240};
         public static final int[] SettingInjectorService = {16842754, 16843233, 16843301, 16844164};
         public static final int[] ShapeDrawable = {16843036, 16843041, 16843093, 16843097, 16843173, 16843771};
         public static final int[] ShapeDrawablePadding = {16843181, 16843182, 16843183, 16843184};
@@ -6181,19 +6275,19 @@ public final class R {
         public static final int[] SlidingTab = {16842948};
         public static final int[] SpellChecker = {16842753, 16843301};
         public static final int[] SpellChecker_Subtype = {16842753, 16843673, 16843674, 16843713, 16844040};
-        public static final int[] Spinner = {16842927, 16843125, 16843126, 16843131, 16843362, 16843505, 16843916, 16843945, 17956924, 17957155};
-        public static final int[] StackView = {17956900, 17957176};
+        public static final int[] Spinner = {16842927, 16843125, 16843126, 16843131, 16843362, 16843505, 16843916, 16843945, 17956945, 17957181};
+        public static final int[] StackView = {17956900, 17957202};
         public static final int[] StateListAnimatorItem = {16843213};
         public static final int[] StateListDrawable = {16843036, 16843156, 16843157, 16843158, 16843532, 16843533, 16843754};
         public static final int[] StateListDrawableItem = {16843161};
-        public static final int[] Storage = {17956881, 17956933, 17957056, 17957061, 17957062, 17957165, 17957172, 17957222};
-        public static final int[] SuggestionSpan = {17957236, 17957237};
+        public static final int[] Storage = {17956881, 17956955, 17957080, 17957085, 17957086, 17957191, 17957198, 17957252};
+        public static final int[] SuggestionSpan = {17957265, 17957266};
         public static final int[] Switch = {16843044, 16843045, 16843074, 16843630, 16843631, 16843632, 16843633, 16843634, 16843852, 16843889, 16843890, 16843949, 16843993, 16843994};
         public static final int[] SwitchPreference = {16843247, 16843248, 16843249, 16843627, 16843628};
         public static final int[] SyncAdapter = {16843301, 16843407, 16843408, 16843409, 16843419, 16843570, 16843571};
         public static final int[] SystemCodeFilter = {16842755};
         public static final int[] T3tPmmFilter = {16842755};
-        public static final int[] TabWidget = {16843049, 16843451, 16843452, 16843453, 17957225};
+        public static final int[] TabWidget = {16843049, 16843451, 16843452, 16843453, 17957254};
         public static final int[] TableLayout = {16843081, 16843082, 16843083};
         public static final int[] TableRow = new int[0];
         public static final int[] TableRow_Cell = {16843084, 16843085};
@@ -6201,13 +6295,13 @@ public final class R {
         public static final int[] TextClock = {16843722, 16843723, 16843724};
         public static final int[] TextSwitcher = new int[0];
         public static final int[] TextToSpeechEngine = {16843301};
-        public static final int[] TextView = {16842766, 16842804, 16842901, 16842902, 16842903, 16842904, 16842905, 16842906, 16842907, 16842923, 16842927, 16842928, 16842929, 16843039, 16843040, 16843071, 16843072, 16843086, 16843087, 16843088, 16843089, 16843090, 16843091, 16843092, 16843093, 16843094, 16843095, 16843096, 16843097, 16843098, 16843099, 16843100, 16843101, 16843102, 16843103, 16843104, 16843105, 16843106, 16843107, 16843108, 16843109, 16843110, 16843111, 16843112, 16843113, 16843114, 16843115, 16843116, 16843117, 16843118, 16843119, 16843120, 16843121, 16843287, 16843288, 16843293, 16843296, 16843299, 16843300, 16843364, 16843365, 16843366, 16843461, 16843462, 16843463, 16843540, 16843541, 16843542, 16843614, 16843615, 16843618, 16843636, 16843660, 16843666, 16843667, 16843692, 16843869, 16843958, 16843959, 16843990, 16843991, 16843997, 16843998, 16843999, 16844085, 16844086, 16844087, 16844088, 16844102, 16844135, 16844144, 16844155, 16844157, 16844158, 16844159, 16844165, 16844178, 16844398, 16844399, 16844418, 16844419, 17957234, 17957235};
+        public static final int[] TextView = {16842766, 16842804, 16842901, 16842902, 16842903, 16842904, 16842905, 16842906, 16842907, 16842923, 16842927, 16842928, 16842929, 16843039, 16843040, 16843071, 16843072, 16843086, 16843087, 16843088, 16843089, 16843090, 16843091, 16843092, 16843093, 16843094, 16843095, 16843096, 16843097, 16843098, 16843099, 16843100, 16843101, 16843102, 16843103, 16843104, 16843105, 16843106, 16843107, 16843108, 16843109, 16843110, 16843111, 16843112, 16843113, 16843114, 16843115, 16843116, 16843117, 16843118, 16843119, 16843120, 16843121, 16843287, 16843288, 16843293, 16843296, 16843299, 16843300, 16843364, 16843365, 16843366, 16843461, 16843462, 16843463, 16843540, 16843541, 16843542, 16843614, 16843615, 16843618, 16843636, 16843660, 16843666, 16843667, 16843692, 16843869, 16843958, 16843959, 16843990, 16843991, 16843997, 16843998, 16843999, 16844085, 16844086, 16844087, 16844088, 16844102, 16844135, 16844144, 16844155, 16844157, 16844158, 16844159, 16844165, 16844178, 16844398, 16844399, 16844418, 16844419, 16844440, 16844445, 16844450, 17957263, 17957264};
         public static final int[] TextViewAppearance = {16842804};
         public static final int[] TextViewMultiLineBackgroundState = {16843597};
-        public static final int[] Theme = {16842800, 16842801, 16842802, 16842803, 16842804, 16842805, 16842806, 16842807, 16842808, 16842809, 16842810, 16842811, 16842812, 16842813, 16842814, 16842815, 16842816, 16842817, 16842818, 16842819, 16842820, 16842821, 16842822, 16842823, 16842824, 16842825, 16842826, 16842827, 16842828, 16842829, 16842830, 16842831, 16842832, 16842833, 16842834, 16842835, 16842836, 16842837, 16842838, 16842839, 16842840, 16842841, 16842842, 16842843, 16842844, 16842845, 16842846, 16842847, 16842848, 16842849, 16842850, 16842858, 16842859, 16842860, 16842861, 16842862, 16842863, 16842864, 16842865, 16842866, 16842867, 16842868, 16842869, 16842870, 16842871, 16842872, 16842873, 16842874, 16842875, 16842876, 16842877, 16842878, 16842880, 16842881, 16842882, 16842883, 16842884, 16842885, 16842886, 16842887, 16842888, 16842889, 16842890, 16842891, 16842892, 16842893, 16842894, 16842895, 16842896, 16842897, 16842898, 16842899, 16842900, 16842926, 16843270, 16843271, 16843272, 16843277, 16843279, 16843280, 16843282, 16843283, 16843284, 16843289, 16843290, 16843294, 16843295, 16843298, 16843307, 16843312, 16843399, 16843400, 16843401, 16843403, 16843410, 16843424, 16843425, 16843435, 16843438, 16843439, 16843440, 16843441, 16843442, 16843443, 16843446, 16843449, 16843461, 16843462, 16843463, 16843464, 16843469, 16843470, 16843478, 16843479, 16843480, 16843483, 16843484, 16843485, 16843492, 16843499, 16843504, 16843507, 16843508, 16843509, 16843510, 16843511, 16843517, 16843519, 16843520, 16843521, 16843522, 16843525, 16843526, 16843528, 16843529, 16843530, 16843531, 16843534, 16843537, 16843538, 16843539, 16843540, 16843541, 16843543, 16843563, 16843564, 16843566, 16843567, 16843568, 16843574, 16843575, 16843576, 16843577, 16843578, 16843598, 16843599, 16843600, 16843601, 16843602, 16843603, 16843605, 16843609, 16843611, 16843612, 16843613, 16843614, 16843615, 16843616, 16843617, 16843629, 16843635, 16843636, 16843646, 16843654, 16843655, 16843656, 16843661, 16843662, 16843663, 16843664, 16843665, 16843668, 16843671, 16843675, 16843676, 16843677, 16843678, 16843679, 16843683, 16843684, 16843693, 16843709, 16843710, 16843712, 16843720, 16843727, 16843759, 16843760, 16843763, 16843768, 16843769, 16843817, 16843818, 16843819, 16843820, 16843825, 16843826, 16843827, 16843828, 16843829, 16843831, 16843832, 16843833, 16843834, 16843835, 16843836, 16843838, 16843839, 16843844, 16843868, 16843873, 16843897, 16843898, 16843899, 16843904, 16843913, 16843914, 16843915, 16843917, 16843933, 16843934, 16843946, 16843948, 16843950, 16843951, 16843952, 16843953, 16843963, 16843966, 16843967, 16843981, 16843982, 16843987, 16844002, 16844008, 16844018, 16844033, 16844034, 16844035, 16844038, 16844068, 16844080, 16844099, 16844114, 16844115, 16844136, 16844145, 16844149, 16844172, 16844176, 16844315, 16844316, 16844331, 16844361, com.android.internal.R.attr.accessibilityFocusedDrawable, com.android.internal.R.attr.actionModePopupWindowStyle, com.android.internal.R.attr.actionModeRedoDrawable, com.android.internal.R.attr.actionModeUndoDrawable, 17956875, 17956878, com.android.internal.R.attr.alertDialogCenterButtons, com.android.internal.R.attr.autofillDatasetPickerMaxHeight, com.android.internal.R.attr.autofillDatasetPickerMaxWidth, com.android.internal.R.attr.autofillSaveCustomSubtitleMaxHeight, com.android.internal.R.attr.colorAccentPrimary, com.android.internal.R.attr.colorAccentPrimaryVariant, com.android.internal.R.attr.colorAccentSecondary, com.android.internal.R.attr.colorAccentSecondaryVariant, com.android.internal.R.attr.colorAccentTertiary, com.android.internal.R.attr.colorAccentTertiaryVariant, 17956908, 17956909, com.android.internal.R.attr.colorProgressBackgroundNormal, com.android.internal.R.attr.colorSurface, com.android.internal.R.attr.colorSurfaceHeader, com.android.internal.R.attr.colorSurfaceHighlight, com.android.internal.R.attr.colorSurfaceVariant, 17956915, com.android.internal.R.attr.dialogCustomTitleDecorLayout, com.android.internal.R.attr.dialogTitleDecorLayout, com.android.internal.R.attr.dialogTitleIconsDecorLayout, 17956932, 17956937, 17956938, 17956941, 17956942, 17956944, com.android.internal.R.attr.floatingToolbarDividerColor, 17956946, 17956947, 17956948, 17956949, 17956950, 17956951, com.android.internal.R.attr.fragmentBreadCrumbsStyle, com.android.internal.R.attr.gestureOverlayViewStyle, 17956968, com.android.internal.R.attr.lightRadius, com.android.internal.R.attr.lightY, com.android.internal.R.attr.lightZ, com.android.internal.R.attr.magnifierStyle, com.android.internal.R.attr.materialColorErrorContainer, com.android.internal.R.attr.materialColorOnBackground, com.android.internal.R.attr.materialColorOnError, com.android.internal.R.attr.materialColorOnErrorContainer, com.android.internal.R.attr.materialColorOnPrimary, com.android.internal.R.attr.materialColorOnPrimaryContainer, com.android.internal.R.attr.materialColorOnPrimaryFixed, com.android.internal.R.attr.materialColorOnPrimaryFixedVariant, com.android.internal.R.attr.materialColorOnSecondary, com.android.internal.R.attr.materialColorOnSecondaryContainer, com.android.internal.R.attr.materialColorOnSecondaryFixed, com.android.internal.R.attr.materialColorOnSecondaryFixedVariant, com.android.internal.R.attr.materialColorOnSurface, com.android.internal.R.attr.materialColorOnSurfaceInverse, com.android.internal.R.attr.materialColorOnSurfaceVariant, com.android.internal.R.attr.materialColorOnTertiary, com.android.internal.R.attr.materialColorOnTertiaryContainer, com.android.internal.R.attr.materialColorOnTertiaryFixed, com.android.internal.R.attr.materialColorOnTertiaryFixedVariant, com.android.internal.R.attr.materialColorOutline, com.android.internal.R.attr.materialColorOutlineVariant, com.android.internal.R.attr.materialColorPrimary, com.android.internal.R.attr.materialColorPrimaryContainer, com.android.internal.R.attr.materialColorPrimaryFixed, com.android.internal.R.attr.materialColorPrimaryFixedDim, com.android.internal.R.attr.materialColorPrimaryInverse, com.android.internal.R.attr.materialColorSecondary, com.android.internal.R.attr.materialColorSecondaryContainer, com.android.internal.R.attr.materialColorSecondaryFixed, com.android.internal.R.attr.materialColorSecondaryFixedDim, com.android.internal.R.attr.materialColorSurface, com.android.internal.R.attr.materialColorSurfaceBright, com.android.internal.R.attr.materialColorSurfaceContainer, com.android.internal.R.attr.materialColorSurfaceContainerHigh, com.android.internal.R.attr.materialColorSurfaceContainerHighest, com.android.internal.R.attr.materialColorSurfaceContainerLow, com.android.internal.R.attr.materialColorSurfaceContainerLowest, com.android.internal.R.attr.materialColorSurfaceDim, com.android.internal.R.attr.materialColorSurfaceInverse, com.android.internal.R.attr.materialColorSurfaceVariant, com.android.internal.R.attr.materialColorTertiary, com.android.internal.R.attr.materialColorTertiaryContainer, com.android.internal.R.attr.materialColorTertiaryFixed, com.android.internal.R.attr.materialColorTertiaryFixedDim, 17957071, 17957075, 17957076, 17957077, com.android.internal.R.attr.parentIsDarkActionBar, com.android.internal.R.attr.parentIsDeviceDefault, com.android.internal.R.attr.parentIsDeviceDefaultDark, com.android.internal.R.attr.preferenceActivityStyle, 17957158, 17957159, com.android.internal.R.attr.preferenceFrameLayoutStyle, 17957161, 17957162, 17957163, 17957167, 17957169, com.android.internal.R.attr.searchDialogTheme, 17957184, 17957185, com.android.internal.R.attr.seekBarDialogPreferenceStyle, com.android.internal.R.attr.seekBarPreferenceStyle, 17957191, 17957192, 17957193, 17957194, 17957195, com.android.internal.R.attr.semGoToTopStyle, 17957197, 17957199, com.android.internal.R.attr.textAppearanceAutoCorrectionSuggestion, com.android.internal.R.attr.textAppearanceEasyCorrectSuggestion, com.android.internal.R.attr.textAppearanceGrammarErrorSuggestion, com.android.internal.R.attr.textAppearanceMisspelledSuggestion, com.android.internal.R.attr.textColorOnAccent, 17957231, com.android.internal.R.attr.textColorSearchUrl, 17957233, 17957234, 17957235, 17957236, 17957237, 17957245, 17957246, 17957247, 17957248, com.android.internal.R.attr.twDragBlockImage, com.android.internal.R.attr.twListMultiSelectBackground, com.android.internal.R.attr.windowActionBarFullscreenDecorLayout, com.android.internal.R.attr.zzz_DeviceDefaultPointerStyle, com.android.internal.R.attr.zzz_state_spen_hovered};
-        public static final int[] TimePicker = {16843055, 16843935, 16843936, 16843937, 16843938, 16843939, 16843940, 16843941, 16843956, 16844001, 17956921, 17956965, 17956974, 17956993};
+        public static final int[] Theme = {16842800, 16842801, 16842802, 16842803, 16842804, 16842805, 16842806, 16842807, 16842808, 16842809, 16842810, 16842811, 16842812, 16842813, 16842814, 16842815, 16842816, 16842817, 16842818, 16842819, 16842820, 16842821, 16842822, 16842823, 16842824, 16842825, 16842826, 16842827, 16842828, 16842829, 16842830, 16842831, 16842832, 16842833, 16842834, 16842835, 16842836, 16842837, 16842838, 16842839, 16842840, 16842841, 16842842, 16842843, 16842844, 16842845, 16842846, 16842847, 16842848, 16842849, 16842850, 16842858, 16842859, 16842860, 16842861, 16842862, 16842863, 16842864, 16842865, 16842866, 16842867, 16842868, 16842869, 16842870, 16842871, 16842872, 16842873, 16842874, 16842875, 16842876, 16842877, 16842878, 16842880, 16842881, 16842882, 16842883, 16842884, 16842885, 16842886, 16842887, 16842888, 16842889, 16842890, 16842891, 16842892, 16842893, 16842894, 16842895, 16842896, 16842897, 16842898, 16842899, 16842900, 16842926, 16843270, 16843271, 16843272, 16843277, 16843279, 16843280, 16843282, 16843283, 16843284, 16843289, 16843290, 16843294, 16843295, 16843298, 16843307, 16843312, 16843399, 16843400, 16843401, 16843403, 16843410, 16843424, 16843425, 16843435, 16843438, 16843439, 16843440, 16843441, 16843442, 16843443, 16843446, 16843449, 16843461, 16843462, 16843463, 16843464, 16843469, 16843470, 16843478, 16843479, 16843480, 16843483, 16843484, 16843485, 16843492, 16843499, 16843504, 16843507, 16843508, 16843509, 16843510, 16843511, 16843517, 16843519, 16843520, 16843521, 16843522, 16843525, 16843526, 16843528, 16843529, 16843530, 16843531, 16843534, 16843537, 16843538, 16843539, 16843540, 16843541, 16843543, 16843563, 16843564, 16843566, 16843567, 16843568, 16843574, 16843575, 16843576, 16843577, 16843578, 16843598, 16843599, 16843600, 16843601, 16843602, 16843603, 16843605, 16843609, 16843611, 16843612, 16843613, 16843614, 16843615, 16843616, 16843617, 16843629, 16843635, 16843636, 16843646, 16843654, 16843655, 16843656, 16843661, 16843662, 16843663, 16843664, 16843665, 16843668, 16843671, 16843675, 16843676, 16843677, 16843678, 16843679, 16843683, 16843684, 16843693, 16843709, 16843710, 16843712, 16843720, 16843727, 16843759, 16843760, 16843763, 16843768, 16843769, 16843817, 16843818, 16843819, 16843820, 16843825, 16843826, 16843827, 16843828, 16843829, 16843831, 16843832, 16843833, 16843834, 16843835, 16843836, 16843838, 16843839, 16843844, 16843868, 16843873, 16843897, 16843898, 16843899, 16843904, 16843913, 16843914, 16843915, 16843917, 16843933, 16843934, 16843946, 16843948, 16843950, 16843951, 16843952, 16843953, 16843963, 16843966, 16843967, 16843981, 16843982, 16843987, 16844002, 16844008, 16844018, 16844033, 16844034, 16844035, 16844038, 16844068, 16844080, 16844099, 16844114, 16844115, 16844136, 16844145, 16844149, 16844172, 16844176, 16844315, 16844316, 16844331, 16844361, com.android.internal.R.attr.accessibilityFocusedDrawable, com.android.internal.R.attr.actionModePopupWindowStyle, com.android.internal.R.attr.actionModeRedoDrawable, com.android.internal.R.attr.actionModeUndoDrawable, 17956875, 17956878, com.android.internal.R.attr.alertDialogCenterButtons, com.android.internal.R.attr.autofillDatasetPickerMaxHeight, com.android.internal.R.attr.autofillDatasetPickerMaxWidth, com.android.internal.R.attr.autofillSaveCustomSubtitleMaxHeight, com.android.internal.R.attr.colorAccentPrimary, com.android.internal.R.attr.colorAccentPrimaryVariant, com.android.internal.R.attr.colorAccentSecondary, com.android.internal.R.attr.colorAccentSecondaryVariant, com.android.internal.R.attr.colorAccentTertiary, com.android.internal.R.attr.colorAccentTertiaryVariant, 17956908, 17956909, com.android.internal.R.attr.colorProgressBackgroundNormal, com.android.internal.R.attr.colorSurface, com.android.internal.R.attr.colorSurfaceHeader, com.android.internal.R.attr.colorSurfaceHighlight, com.android.internal.R.attr.colorSurfaceVariant, 17956915, com.android.internal.R.attr.customColorBrandA, com.android.internal.R.attr.customColorBrandB, com.android.internal.R.attr.customColorBrandC, com.android.internal.R.attr.customColorBrandD, com.android.internal.R.attr.customColorClockHour, com.android.internal.R.attr.customColorClockMinute, com.android.internal.R.attr.customColorClockSecond, com.android.internal.R.attr.customColorOnShadeActive, com.android.internal.R.attr.customColorOnShadeActiveVariant, com.android.internal.R.attr.customColorOnShadeInactive, com.android.internal.R.attr.customColorOnShadeInactiveVariant, com.android.internal.R.attr.customColorOnThemeApp, com.android.internal.R.attr.customColorOnThemeAppRing, com.android.internal.R.attr.customColorOverviewBackground, com.android.internal.R.attr.customColorShadeActive, com.android.internal.R.attr.customColorShadeDisabled, com.android.internal.R.attr.customColorShadeInactive, com.android.internal.R.attr.customColorThemeApp, com.android.internal.R.attr.customColorThemeAppRing, com.android.internal.R.attr.customColorUnderSurface, com.android.internal.R.attr.customColorWidgetBackground, com.android.internal.R.attr.dialogCustomTitleDecorLayout, com.android.internal.R.attr.dialogTitleDecorLayout, com.android.internal.R.attr.dialogTitleIconsDecorLayout, 17956953, 17956960, 17956961, 17956964, 17956965, 17956967, com.android.internal.R.attr.floatingToolbarDividerColor, 17956969, 17956970, 17956971, 17956972, 17956973, com.android.internal.R.attr.fragmentBreadCrumbsStyle, com.android.internal.R.attr.gestureOverlayViewStyle, 17956990, com.android.internal.R.attr.lightRadius, com.android.internal.R.attr.lightY, com.android.internal.R.attr.lightZ, com.android.internal.R.attr.magnifierStyle, com.android.internal.R.attr.materialColorError, com.android.internal.R.attr.materialColorErrorContainer, com.android.internal.R.attr.materialColorOnBackground, com.android.internal.R.attr.materialColorOnError, com.android.internal.R.attr.materialColorOnErrorContainer, com.android.internal.R.attr.materialColorOnPrimary, com.android.internal.R.attr.materialColorOnPrimaryContainer, com.android.internal.R.attr.materialColorOnPrimaryFixed, com.android.internal.R.attr.materialColorOnPrimaryFixedVariant, com.android.internal.R.attr.materialColorOnSecondary, com.android.internal.R.attr.materialColorOnSecondaryContainer, com.android.internal.R.attr.materialColorOnSecondaryFixed, com.android.internal.R.attr.materialColorOnSecondaryFixedVariant, com.android.internal.R.attr.materialColorOnSurface, com.android.internal.R.attr.materialColorOnSurfaceInverse, com.android.internal.R.attr.materialColorOnSurfaceVariant, com.android.internal.R.attr.materialColorOnTertiary, com.android.internal.R.attr.materialColorOnTertiaryContainer, com.android.internal.R.attr.materialColorOnTertiaryFixed, com.android.internal.R.attr.materialColorOnTertiaryFixedVariant, com.android.internal.R.attr.materialColorOutline, com.android.internal.R.attr.materialColorOutlineVariant, com.android.internal.R.attr.materialColorPrimary, com.android.internal.R.attr.materialColorPrimaryContainer, com.android.internal.R.attr.materialColorPrimaryFixed, com.android.internal.R.attr.materialColorPrimaryFixedDim, com.android.internal.R.attr.materialColorPrimaryInverse, com.android.internal.R.attr.materialColorSecondary, com.android.internal.R.attr.materialColorSecondaryContainer, com.android.internal.R.attr.materialColorSecondaryFixed, com.android.internal.R.attr.materialColorSecondaryFixedDim, com.android.internal.R.attr.materialColorSurface, com.android.internal.R.attr.materialColorSurfaceBright, com.android.internal.R.attr.materialColorSurfaceContainer, com.android.internal.R.attr.materialColorSurfaceContainerHigh, com.android.internal.R.attr.materialColorSurfaceContainerHighest, com.android.internal.R.attr.materialColorSurfaceContainerLow, com.android.internal.R.attr.materialColorSurfaceContainerLowest, com.android.internal.R.attr.materialColorSurfaceDim, com.android.internal.R.attr.materialColorSurfaceInverse, com.android.internal.R.attr.materialColorSurfaceVariant, com.android.internal.R.attr.materialColorTertiary, com.android.internal.R.attr.materialColorTertiaryContainer, com.android.internal.R.attr.materialColorTertiaryFixed, com.android.internal.R.attr.materialColorTertiaryFixedDim, 17957095, 17957099, 17957100, 17957101, com.android.internal.R.attr.parentIsDarkActionBar, com.android.internal.R.attr.parentIsDeviceDefault, com.android.internal.R.attr.parentIsDeviceDefaultDark, com.android.internal.R.attr.preferenceActivityStyle, 17957184, 17957185, com.android.internal.R.attr.preferenceFrameLayoutStyle, 17957187, 17957188, 17957189, 17957193, 17957195, com.android.internal.R.attr.searchDialogTheme, 17957210, 17957211, com.android.internal.R.attr.seekBarDialogPreferenceStyle, com.android.internal.R.attr.seekBarPreferenceStyle, 17957217, 17957218, 17957219, 17957220, 17957221, 17957222, com.android.internal.R.attr.semGoToTopStyle, 17957224, 17957226, com.android.internal.R.attr.textAppearanceAutoCorrectionSuggestion, com.android.internal.R.attr.textAppearanceEasyCorrectSuggestion, com.android.internal.R.attr.textAppearanceGrammarErrorSuggestion, com.android.internal.R.attr.textAppearanceMisspelledSuggestion, com.android.internal.R.attr.textColorOnAccent, 17957260, com.android.internal.R.attr.textColorSearchUrl, 17957262, 17957263, 17957264, 17957265, 17957266, 17957274, 17957275, 17957276, 17957277, com.android.internal.R.attr.twDragBlockImage, com.android.internal.R.attr.twListMultiSelectBackground, com.android.internal.R.attr.windowActionBarFullscreenDecorLayout, com.android.internal.R.attr.zzz_DeviceDefaultPointerStyle, com.android.internal.R.attr.zzz_state_spen_hovered};
+        public static final int[] TimePicker = {16843055, 16843935, 16843936, 16843937, 16843938, 16843939, 16843940, 16843941, 16843956, 16844001, 17956942, 17956987, 17956996, 17957016};
         public static final int[] ToggleButton = {16842803, 16843044, 16843045};
-        public static final int[] Toolbar = {16842927, 16843233, 16843454, 16843473, 16843822, 16843823, 16843859, 16843860, 16843861, 16843862, 16843945, 16843968, 16843969, 16843984, 16844003, 16844004, 16844009, 16844024, 16844025, 16844026, 16844027, 16844028, 16844029, 16844030, 16844031, 16844066, 16844067, 17957064};
+        public static final int[] Toolbar = {16842927, 16843233, 16843454, 16843473, 16843822, 16843823, 16843859, 16843860, 16843861, 16843862, 16843945, 16843968, 16843969, 16843984, 16844003, 16844004, 16844009, 16844024, 16844025, 16844026, 16844027, 16844028, 16844029, 16844030, 16844031, 16844066, 16844067, 17957088};
         public static final int[] Toolbar_LayoutParams = {16842931};
         public static final int[] Transition = {16843073, 16843160, 16843746, 16843855};
         public static final int[] TransitionManager = {16843741, 16843742, 16843743};
@@ -6217,7 +6311,8 @@ public final class R {
 
         @SystemApi
         public static final int[] TranslationService = {16843301};
-        public static final int[] TrustAgent = {16843233, 16843241, 16843301, 17957252};
+        public static final int[] TrustAgent = {16843233, 16843241, 16843301, 17957281};
+        public static final int[] TvAdService = {R.attr.adServiceTypes};
         public static final int[] TvInputService = {16843301, 16843766, 16844060, 16844061, 16844314};
         public static final int[] TvInteractiveAppService = {16844369};
         public static final int[] TwoLineListItem = {16843134};
@@ -6226,8 +6321,8 @@ public final class R {
         public static final int[] VectorDrawableGroup = {16842755, 16843189, 16843190, 16843556, 16843557, 16843558, 16843866, 16843867};
         public static final int[] VectorDrawablePath = {16842755, 16843780, 16843781, 16843782, 16843783, 16843784, 16843785, 16843786, 16843787, 16843788, 16843789, 16843979, 16843980, 16844062};
         public static final int[] VerticalSlider_Layout = {16843155};
-        public static final int[] VideoView2 = {17956934, 17956935, 17957255};
-        public static final int[] View = {16842752, 16842851, 16842852, 16842853, 16842854, 16842855, 16842856, 16842857, 16842879, 16842960, 16842961, 16842962, 16842963, 16842964, 16842965, 16842966, 16842967, 16842968, 16842969, 16842970, 16842971, 16842972, 16842973, 16842974, 16842975, 16842976, 16842977, 16842978, 16842979, 16842980, 16842981, 16842982, 16842983, 16842984, 16842985, 16843017, 16843071, 16843072, 16843264, 16843285, 16843286, 16843342, 16843358, 16843375, 16843379, 16843432, 16843433, 16843434, 16843457, 16843460, 16843551, 16843552, 16843553, 16843554, 16843555, 16843556, 16843557, 16843558, 16843559, 16843560, 16843572, 16843580, 16843604, 16843685, 16843690, 16843696, 16843697, 16843698, 16843699, 16843700, 16843718, 16843758, 16843770, 16843776, 16843830, 16843840, 16843848, 16843883, 16843884, 16843885, 16843886, 16843960, 16843985, 16843986, 16844006, 16844007, 16844041, 16844065, 16844084, 16844093, 16844094, 16844096, 16844098, 16844100, 16844118, 16844120, 16844130, 16844148, 16844156, 16844160, 16844161, 16844162, 16844172, 16844295, 16844312, 16844328, 16844381, 16844382, 16844403, 16844404, 16844405, 16844406, 16844407, 16844417, 17956864, 17956865, 17956867, 17956868, 17956869, 17956952, 17956969, 17957180};
+        public static final int[] VideoView2 = {17956956, 17956957, 17957285};
+        public static final int[] View = {16842752, 16842851, 16842852, 16842853, 16842854, 16842855, 16842856, 16842857, 16842879, 16842960, 16842961, 16842962, 16842963, 16842964, 16842965, 16842966, 16842967, 16842968, 16842969, 16842970, 16842971, 16842972, 16842973, 16842974, 16842975, 16842976, 16842977, 16842978, 16842979, 16842980, 16842981, 16842982, 16842983, 16842984, 16842985, 16843017, 16843071, 16843072, 16843264, 16843285, 16843286, 16843342, 16843358, 16843375, 16843379, 16843432, 16843433, 16843434, 16843457, 16843460, 16843551, 16843552, 16843553, 16843554, 16843555, 16843556, 16843557, 16843558, 16843559, 16843560, 16843572, 16843580, 16843604, 16843685, 16843690, 16843696, 16843697, 16843698, 16843699, 16843700, 16843718, 16843758, 16843770, 16843776, 16843830, 16843840, 16843848, 16843883, 16843884, 16843885, 16843886, 16843960, 16843985, 16843986, 16844006, 16844007, 16844041, 16844065, 16844084, 16844093, 16844094, 16844096, 16844098, 16844100, 16844118, 16844120, 16844130, 16844148, 16844156, 16844160, 16844161, 16844162, 16844172, 16844295, 16844312, 16844328, 16844381, 16844382, 16844403, 16844404, 16844405, 16844406, 16844407, 16844417, 16844446, 17956864, 17956865, 17956867, 17956868, 17956869, 17956974, 17956991, 17957206};
         public static final int[] ViewAnimator = {16843127, 16843128, 16843477};
         public static final int[] ViewDrawableStates = {16842908, 16842909, 16842910, 16842913, 16842919, 16843518, 16843547, 16843623, 16843624, 16843625, com.android.internal.R.attr.zzz_state_spen_hovered};
         public static final int[] ViewFlipper = {16843129, 16843445};
@@ -6244,16 +6339,15 @@ public final class R {
         public static final int[] VolumePreference = {16843273};
         public static final int[] Wallpaper = {16842784, 16843301, 16843429, 16843444, 16844077, 16844078, 16844079, 16844173, 16844179, 16844182, 16844364};
         public static final int[] WallpaperPreviewInfo = {16843569};
-        public static final int[] WeightedLinearLayout = {17957008, 17957009, 17957058, 17957059};
-        public static final int[] Window = {16842802, 16842836, 16842837, 16842838, 16842839, 16842840, 16842841, 16842904, 16842926, 16843277, 16843294, 16843295, 16843298, 16843307, 16843410, 16843469, 16843485, 16843492, 16843543, 16843606, 16843607, 16843611, 16843727, 16843759, 16843760, 16843768, 16843769, 16843831, 16843832, 16843833, 16843834, 16843835, 16843836, 16843856, 16843857, 16843858, 16843873, 16843920, 16843947, 16843950, 16843951, 16843952, 16843953, 16843963, 16843981, 16844000, 16844035, 16844132, 16844140, 16844141, 16844166, 16844292, 16844293, 16844315, 16844316, 16844331, 16844332, 16844333, 16844334, 16844335, 16844336, 16844392, 16844421, com.android.internal.R.attr.windowActionBarFullscreenDecorLayout, com.android.internal.R.attr.windowFixedHeightMajor, com.android.internal.R.attr.windowFixedHeightMinor, com.android.internal.R.attr.windowFixedWidthMajor, com.android.internal.R.attr.windowFixedWidthMinor, 17957262};
-        public static final int[] WindowAnimation = {16842932, 16842933, 16842934, 16842935, 16842936, 16842937, 16842938, 16842939, 16842940, 16842941, 16842942, 16842943, 16842944, 16842945, 16842946, 16842947, 16843411, 16843412, 16843413, 16843414, 16843415, 16843416, 16843417, 16843418, 16843921, 16843922, 17956876, 17956929, 17956930, 17956931};
+        public static final int[] WeightedLinearLayout = {17957031, 17957032, 17957082, 17957083};
+        public static final int[] Window = {16842802, 16842836, 16842837, 16842838, 16842839, 16842840, 16842841, 16842904, 16842926, 16843277, 16843294, 16843295, 16843298, 16843307, 16843410, 16843469, 16843485, 16843492, 16843543, 16843606, 16843607, 16843611, 16843727, 16843759, 16843760, 16843768, 16843769, 16843831, 16843832, 16843833, 16843834, 16843835, 16843836, 16843856, 16843857, 16843858, 16843873, 16843920, 16843947, 16843950, 16843951, 16843952, 16843953, 16843963, 16843981, 16844000, 16844035, 16844132, 16844140, 16844141, 16844166, 16844292, 16844293, 16844315, 16844316, 16844331, 16844332, 16844333, 16844334, 16844335, 16844336, 16844392, 16844421, 16844442, 16844451, com.android.internal.R.attr.windowActionBarFullscreenDecorLayout, com.android.internal.R.attr.windowFixedHeightMajor, com.android.internal.R.attr.windowFixedHeightMinor, com.android.internal.R.attr.windowFixedWidthMajor, com.android.internal.R.attr.windowFixedWidthMinor, 17957292};
+        public static final int[] WindowAnimation = {16842932, 16842933, 16842934, 16842935, 16842936, 16842937, 16842938, 16842939, 16842940, 16842941, 16842942, 16842943, 16842944, 16842945, 16842946, 16842947, 16843411, 16843412, 16843413, 16843414, 16843415, 16843416, 16843417, 16843418, 16843921, 16843922, 17956876, 17956950, 17956951, 17956952};
         public static final int[] command = {16842753, 16842754, 16842766, 16842961, 16843422};
         public static final int[] extrasCommand = {16842755, 16842788, 16843240};
-        public static final int[] runtime_manifests = {17956943};
-        public static final int[] runtimemanifest = {16842753, 16842754, 16842766, 16843454, 16843762, 17957178};
+        public static final int[] runtime_manifests = {17956966};
+        public static final int[] runtimemanifest = {16842753, 16842754, 16842766, 16843454, 16843762, 17957204};
     }
 
-    /* loaded from: classes.dex */
     public static final class transition {
         public static final int explode = 0x010f0003;
         public static final int fade = 0x010f0002;
@@ -6265,7 +6359,6 @@ public final class R {
         public static final int slide_top = 0x010f0005;
     }
 
-    /* loaded from: classes.dex */
     public static final class xml {
     }
 }

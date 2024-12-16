@@ -17,14 +17,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class PrinterInfo implements Parcelable {
     public static final Parcelable.Creator<PrinterInfo> CREATOR = new Parcelable.Creator<PrinterInfo>() { // from class: android.print.PrinterInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterInfo createFromParcel(Parcel parcel) {
             return new PrinterInfo(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterInfo[] newArray(int size) {
             return new PrinterInfo[size];
@@ -44,16 +43,7 @@ public final class PrinterInfo implements Parcelable {
     private final int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Status {
-    }
-
-    /* synthetic */ PrinterInfo(Parcel parcel, PrinterInfoIA printerInfoIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ PrinterInfo(PrinterId printerId, String str, int i, int i2, boolean z, String str2, PendingIntent pendingIntent, PrinterCapabilitiesInfo printerCapabilitiesInfo, int i3, PrinterInfoIA printerInfoIA) {
-        this(printerId, str, i, i2, z, str2, pendingIntent, printerCapabilitiesInfo, i3);
     }
 
     private PrinterInfo(PrinterId printerId, String name, int status, int iconResourceId, boolean hasCustomPrinterIcon, String description, PendingIntent infoIntent, PrinterCapabilitiesInfo capabilities, int customPrinterIconGen) {
@@ -87,9 +77,8 @@ public final class PrinterInfo implements Parcelable {
                 String packageName = this.mId.getServiceName().getPackageName();
                 PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
                 ApplicationInfo appInfo = packageInfo.applicationInfo;
-                int i = this.mIconResourceId;
-                if (i != 0) {
-                    drawable = packageManager.getDrawable(packageName, i, appInfo);
+                if (this.mIconResourceId != 0) {
+                    drawable = packageManager.getDrawable(packageName, this.mIconResourceId, appInfo);
                 }
                 if (drawable == null) {
                     return appInfo.loadIcon(packageManager);
@@ -126,10 +115,12 @@ public final class PrinterInfo implements Parcelable {
         return this.mCapabilities;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static PrinterId checkPrinterId(PrinterId printerId) {
         return (PrinterId) Preconditions.checkNotNull(printerId, "printerId cannot be null.");
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int checkStatus(int status) {
         if (status != 1 && status != 2 && status != 3) {
             throw new IllegalArgumentException("status is invalid.");
@@ -137,6 +128,7 @@ public final class PrinterInfo implements Parcelable {
         return status;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String checkName(String name) {
         return (String) Preconditions.checkStringNotEmpty(name, "name cannot be empty.");
     }
@@ -172,32 +164,24 @@ public final class PrinterInfo implements Parcelable {
     }
 
     public int hashCode() {
-        int hashCode = ((((((1 * 31) + this.mId.hashCode()) * 31) + this.mName.hashCode()) * 31) + this.mStatus) * 31;
-        String str = this.mDescription;
-        int hashCode2 = (hashCode + (str != null ? str.hashCode() : 0)) * 31;
-        PrinterCapabilitiesInfo printerCapabilitiesInfo = this.mCapabilities;
-        int hashCode3 = (((((((hashCode2 + (printerCapabilitiesInfo != null ? printerCapabilitiesInfo.hashCode() : 0)) * 31) + this.mIconResourceId) * 31) + (this.mHasCustomPrinterIcon ? 1 : 0)) * 31) + this.mCustomPrinterIconGen) * 31;
-        PendingIntent pendingIntent = this.mInfoIntent;
-        return hashCode3 + (pendingIntent != null ? pendingIntent.hashCode() : 0);
+        return (((((((((((((((((1 * 31) + this.mId.hashCode()) * 31) + this.mName.hashCode()) * 31) + this.mStatus) * 31) + (this.mDescription != null ? this.mDescription.hashCode() : 0)) * 31) + (this.mCapabilities != null ? this.mCapabilities.hashCode() : 0)) * 31) + this.mIconResourceId) * 31) + (this.mHasCustomPrinterIcon ? 1 : 0)) * 31) + this.mCustomPrinterIconGen) * 31) + (this.mInfoIntent != null ? this.mInfoIntent.hashCode() : 0);
     }
 
     public boolean equalsIgnoringStatus(PrinterInfo other) {
         if (!this.mId.equals(other.mId) || !this.mName.equals(other.mName) || !TextUtils.equals(this.mDescription, other.mDescription)) {
             return false;
         }
-        PrinterCapabilitiesInfo printerCapabilitiesInfo = this.mCapabilities;
-        if (printerCapabilitiesInfo == null) {
+        if (this.mCapabilities == null) {
             if (other.mCapabilities != null) {
                 return false;
             }
-        } else if (!printerCapabilitiesInfo.equals(other.mCapabilities)) {
+        } else if (!this.mCapabilities.equals(other.mCapabilities)) {
             return false;
         }
-        if (this.mIconResourceId != other.mIconResourceId || this.mHasCustomPrinterIcon != other.mHasCustomPrinterIcon || this.mCustomPrinterIconGen != other.mCustomPrinterIconGen) {
-            return false;
+        if (this.mIconResourceId == other.mIconResourceId && this.mHasCustomPrinterIcon == other.mHasCustomPrinterIcon && this.mCustomPrinterIconGen == other.mCustomPrinterIconGen) {
+            return this.mInfoIntent == null ? other.mInfoIntent == null : this.mInfoIntent.equals(other.mInfoIntent);
         }
-        PendingIntent pendingIntent = this.mInfoIntent;
-        return pendingIntent == null ? other.mInfoIntent == null : pendingIntent.equals(other.mInfoIntent);
+        return false;
     }
 
     public boolean equals(Object obj) {
@@ -230,7 +214,6 @@ public final class PrinterInfo implements Parcelable {
         return builder.toString();
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private PrinterCapabilitiesInfo mCapabilities;
         private int mCustomPrinterIconGen;
@@ -302,23 +285,6 @@ public final class PrinterInfo implements Parcelable {
         public Builder incCustomPrinterIconGen() {
             this.mCustomPrinterIconGen++;
             return this;
-        }
-    }
-
-    /* renamed from: android.print.PrinterInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrinterInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrinterInfo createFromParcel(Parcel parcel) {
-            return new PrinterInfo(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrinterInfo[] newArray(int size) {
-            return new PrinterInfo[size];
         }
     }
 }

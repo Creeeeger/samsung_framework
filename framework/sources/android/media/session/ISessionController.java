@@ -95,7 +95,6 @@ public interface ISessionController extends IInterface {
 
     void unregisterCallback(ISessionControllerCallback iSessionControllerCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISessionController {
         @Override // android.media.session.ISessionController
         public void sendCommand(String packageName, String command, Bundle args, ResultReceiver cb) throws RemoteException {
@@ -264,7 +263,6 @@ public interface ISessionController extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISessionController {
         public static final String DESCRIPTOR = "android.media.session.ISessionController";
         static final int TRANSACTION_adjustVolume = 11;
@@ -416,265 +414,262 @@ public interface ISessionController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ResultReceiver _arg3 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCommand(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    KeyEvent _arg12 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = sendMediaButton(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    ISessionControllerCallback _arg13 = ISessionControllerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    ISessionControllerCallback _arg04 = ISessionControllerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCallback(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _result2 = getPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 6:
+                    String _result3 = getTag();
+                    reply.writeNoException();
+                    reply.writeString(_result3);
+                    return true;
+                case 7:
+                    Bundle _result4 = getSessionInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 8:
+                    PendingIntent _result5 = getLaunchPendingIntent();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 9:
+                    long _result6 = getFlags();
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
+                    return true;
+                case 10:
+                    MediaController.PlaybackInfo _result7 = getVolumeAttributes();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 11:
+                    String _arg05 = data.readString();
+                    String _arg14 = data.readString();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    adjustVolume(_arg05, _arg14, _arg22, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    String _arg06 = data.readString();
+                    String _arg15 = data.readString();
+                    int _arg23 = data.readInt();
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVolumeTo(_arg06, _arg15, _arg23, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    prepare(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    String _arg08 = data.readString();
+                    String _arg16 = data.readString();
+                    Bundle _arg24 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    prepareFromMediaId(_arg08, _arg16, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    String _arg09 = data.readString();
+                    String _arg17 = data.readString();
+                    Bundle _arg25 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    prepareFromSearch(_arg09, _arg17, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    String _arg010 = data.readString();
+                    Uri _arg18 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    prepareFromUri(_arg010, _arg18, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    play(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    String _arg012 = data.readString();
+                    String _arg19 = data.readString();
+                    Bundle _arg27 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    playFromMediaId(_arg012, _arg19, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    String _arg013 = data.readString();
+                    String _arg110 = data.readString();
+                    Bundle _arg28 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    playFromSearch(_arg013, _arg110, _arg28);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    String _arg014 = data.readString();
+                    Uri _arg111 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    playFromUri(_arg014, _arg111, _arg29);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    String _arg015 = data.readString();
+                    long _arg112 = data.readLong();
+                    data.enforceNoDataAvail();
+                    skipToQueueItem(_arg015, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    String _arg016 = data.readString();
+                    data.enforceNoDataAvail();
+                    pause(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    String _arg017 = data.readString();
+                    data.enforceNoDataAvail();
+                    stop(_arg017);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    String _arg018 = data.readString();
+                    data.enforceNoDataAvail();
+                    next(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    String _arg019 = data.readString();
+                    data.enforceNoDataAvail();
+                    previous(_arg019);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    String _arg020 = data.readString();
+                    data.enforceNoDataAvail();
+                    fastForward(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    String _arg021 = data.readString();
+                    data.enforceNoDataAvail();
+                    rewind(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    String _arg022 = data.readString();
+                    long _arg113 = data.readLong();
+                    data.enforceNoDataAvail();
+                    seekTo(_arg022, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    String _arg023 = data.readString();
+                    Rating _arg114 = (Rating) data.readTypedObject(Rating.CREATOR);
+                    data.enforceNoDataAvail();
+                    rate(_arg023, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    String _arg024 = data.readString();
+                    float _arg115 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setPlaybackSpeed(_arg024, _arg115);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    String _arg025 = data.readString();
+                    String _arg116 = data.readString();
+                    Bundle _arg210 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCustomAction(_arg025, _arg116, _arg210);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    MediaMetadata _result8 = getMetadata();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 33:
+                    PlaybackState _result9 = getPlaybackState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 34:
+                    ParceledListSlice _result10 = getQueue();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 35:
+                    CharSequence _result11 = getQueueTitle();
+                    reply.writeNoException();
+                    if (_result11 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result11, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 36:
+                    Bundle _result12 = getExtras();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 37:
+                    int _result13 = getRatingType();
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ResultReceiver _arg3 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCommand(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            KeyEvent _arg12 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = sendMediaButton(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            ISessionControllerCallback _arg13 = ISessionControllerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            ISessionControllerCallback _arg04 = ISessionControllerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterCallback(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _result2 = getPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 6:
-                            String _result3 = getTag();
-                            reply.writeNoException();
-                            reply.writeString(_result3);
-                            return true;
-                        case 7:
-                            Bundle _result4 = getSessionInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 8:
-                            PendingIntent _result5 = getLaunchPendingIntent();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 9:
-                            long _result6 = getFlags();
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        case 10:
-                            MediaController.PlaybackInfo _result7 = getVolumeAttributes();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 11:
-                            String _arg05 = data.readString();
-                            String _arg14 = data.readString();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            adjustVolume(_arg05, _arg14, _arg22, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            String _arg06 = data.readString();
-                            String _arg15 = data.readString();
-                            int _arg23 = data.readInt();
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVolumeTo(_arg06, _arg15, _arg23, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            prepare(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            String _arg08 = data.readString();
-                            String _arg16 = data.readString();
-                            Bundle _arg24 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            prepareFromMediaId(_arg08, _arg16, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            String _arg09 = data.readString();
-                            String _arg17 = data.readString();
-                            Bundle _arg25 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            prepareFromSearch(_arg09, _arg17, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            String _arg010 = data.readString();
-                            Uri _arg18 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            prepareFromUri(_arg010, _arg18, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            play(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            String _arg012 = data.readString();
-                            String _arg19 = data.readString();
-                            Bundle _arg27 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            playFromMediaId(_arg012, _arg19, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            String _arg013 = data.readString();
-                            String _arg110 = data.readString();
-                            Bundle _arg28 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            playFromSearch(_arg013, _arg110, _arg28);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            String _arg014 = data.readString();
-                            Uri _arg111 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            playFromUri(_arg014, _arg111, _arg29);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            String _arg015 = data.readString();
-                            long _arg112 = data.readLong();
-                            data.enforceNoDataAvail();
-                            skipToQueueItem(_arg015, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            String _arg016 = data.readString();
-                            data.enforceNoDataAvail();
-                            pause(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            String _arg017 = data.readString();
-                            data.enforceNoDataAvail();
-                            stop(_arg017);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            String _arg018 = data.readString();
-                            data.enforceNoDataAvail();
-                            next(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            String _arg019 = data.readString();
-                            data.enforceNoDataAvail();
-                            previous(_arg019);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            String _arg020 = data.readString();
-                            data.enforceNoDataAvail();
-                            fastForward(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            String _arg021 = data.readString();
-                            data.enforceNoDataAvail();
-                            rewind(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            String _arg022 = data.readString();
-                            long _arg113 = data.readLong();
-                            data.enforceNoDataAvail();
-                            seekTo(_arg022, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            String _arg023 = data.readString();
-                            Rating _arg114 = (Rating) data.readTypedObject(Rating.CREATOR);
-                            data.enforceNoDataAvail();
-                            rate(_arg023, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            String _arg024 = data.readString();
-                            float _arg115 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setPlaybackSpeed(_arg024, _arg115);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            String _arg025 = data.readString();
-                            String _arg116 = data.readString();
-                            Bundle _arg210 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCustomAction(_arg025, _arg116, _arg210);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            MediaMetadata _result8 = getMetadata();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 33:
-                            PlaybackState _result9 = getPlaybackState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result9, 1);
-                            return true;
-                        case 34:
-                            ParceledListSlice _result10 = getQueue();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 35:
-                            CharSequence _result11 = getQueueTitle();
-                            reply.writeNoException();
-                            if (_result11 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result11, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 36:
-                            Bundle _result12 = getExtras();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 37:
-                            int _result13 = getRatingType();
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISessionController {
+        private static class Proxy implements ISessionController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

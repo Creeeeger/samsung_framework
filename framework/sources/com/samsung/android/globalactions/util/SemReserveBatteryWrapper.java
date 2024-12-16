@@ -2,9 +2,8 @@ package com.samsung.android.globalactions.util;
 
 import android.content.Context;
 import android.provider.Settings;
-import com.samsung.android.feature.SemCscFeature;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemReserveBatteryWrapper {
     private final Context mContext;
     private boolean mConfigYuvaFeature = initYuvaFeature();
@@ -15,18 +14,10 @@ public class SemReserveBatteryWrapper {
     }
 
     private boolean initYuvaFeature() {
-        String value = SemCscFeature.getInstance().getString("CscFeature_Common_ConfigYuva");
-        if (value.contains("powerplanning") && value.contains("reserve")) {
-            return true;
-        }
         return false;
     }
 
     private boolean initYuvaDownloadable() {
-        String value = SemCscFeature.getInstance().getString("CscFeature_Common_ConfigYuva");
-        if (value.contains("downloadable_spowerplanning") && this.mConfigYuvaFeature) {
-            return true;
-        }
         return false;
     }
 

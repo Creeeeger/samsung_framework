@@ -36,7 +36,6 @@ public interface ITrustAgentService extends IInterface {
 
     void setCallback(ITrustAgentServiceCallback iTrustAgentServiceCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITrustAgentService {
         @Override // android.service.trust.ITrustAgentService
         public void onUnlockAttempt(boolean successful) throws RemoteException {
@@ -92,7 +91,6 @@ public interface ITrustAgentService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITrustAgentService {
         public static final String DESCRIPTOR = "android.service.trust.ITrustAgentService";
         static final int TRANSACTION_onConfigure = 8;
@@ -169,76 +167,73 @@ public interface ITrustAgentService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUnlockAttempt(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUserRequestedUnlock(_arg02);
+                    return true;
+                case 3:
+                    onUserMayRequestUnlock();
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUnlockLockout(_arg03);
+                    return true;
+                case 5:
+                    onTrustTimeout();
+                    return true;
+                case 6:
+                    onDeviceLocked();
+                    return true;
+                case 7:
+                    onDeviceUnlocked();
+                    return true;
+                case 8:
+                    List<PersistableBundle> _arg04 = data.createTypedArrayList(PersistableBundle.CREATOR);
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onConfigure(_arg04, _arg1);
+                    return true;
+                case 9:
+                    ITrustAgentServiceCallback _arg05 = ITrustAgentServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg05);
+                    return true;
+                case 10:
+                    byte[] _arg06 = data.createByteArray();
+                    long _arg12 = data.readLong();
+                    UserHandle _arg2 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEscrowTokenAdded(_arg06, _arg12, _arg2);
+                    return true;
+                case 11:
+                    long _arg07 = data.readLong();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTokenStateReceived(_arg07, _arg13);
+                    return true;
+                case 12:
+                    long _arg08 = data.readLong();
+                    boolean _arg14 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onEscrowTokenRemoved(_arg08, _arg14);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUnlockAttempt(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUserRequestedUnlock(_arg02);
-                            return true;
-                        case 3:
-                            onUserMayRequestUnlock();
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUnlockLockout(_arg03);
-                            return true;
-                        case 5:
-                            onTrustTimeout();
-                            return true;
-                        case 6:
-                            onDeviceLocked();
-                            return true;
-                        case 7:
-                            onDeviceUnlocked();
-                            return true;
-                        case 8:
-                            List<PersistableBundle> _arg04 = data.createTypedArrayList(PersistableBundle.CREATOR);
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onConfigure(_arg04, _arg1);
-                            return true;
-                        case 9:
-                            ITrustAgentServiceCallback _arg05 = ITrustAgentServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg05);
-                            return true;
-                        case 10:
-                            byte[] _arg06 = data.createByteArray();
-                            long _arg12 = data.readLong();
-                            UserHandle _arg2 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEscrowTokenAdded(_arg06, _arg12, _arg2);
-                            return true;
-                        case 11:
-                            long _arg07 = data.readLong();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTokenStateReceived(_arg07, _arg13);
-                            return true;
-                        case 12:
-                            long _arg08 = data.readLong();
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onEscrowTokenRemoved(_arg08, _arg14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ITrustAgentService {
             private IBinder mRemote;
 

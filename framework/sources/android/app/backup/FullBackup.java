@@ -63,7 +63,6 @@ public class FullBackup {
     static final String TAG_XML_PARSER = "BackupXmlParserLogging";
     private static final Map<BackupSchemeId, BackupScheme> kPackageBackupSchemeMap = new ArrayMap();
 
-    /* loaded from: classes.dex */
     @interface ConfigSection {
         public static final String CLOUD_BACKUP = "cloud-backup";
         public static final String DEVICE_TRANSFER = "device-transfer";
@@ -71,9 +70,7 @@ public class FullBackup {
 
     public static native int backupToTar(String str, String str2, String str3, String str4, String str5, FullBackupDataOutput fullBackupDataOutput);
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class BackupSchemeId {
+    private static class BackupSchemeId {
         final int mBackupDestination;
         final String mPackageName;
 
@@ -101,15 +98,14 @@ public class FullBackup {
         }
     }
 
-    public static synchronized BackupScheme getBackupScheme(Context context, int backupDestination) {
+    static synchronized BackupScheme getBackupScheme(Context context, int backupDestination) {
         BackupScheme backupSchemeForPackage;
         synchronized (FullBackup.class) {
             BackupSchemeId backupSchemeId = new BackupSchemeId(context.getPackageName(), backupDestination);
-            Map<BackupSchemeId, BackupScheme> map = kPackageBackupSchemeMap;
-            backupSchemeForPackage = map.get(backupSchemeId);
+            backupSchemeForPackage = kPackageBackupSchemeMap.get(backupSchemeId);
             if (backupSchemeForPackage == null) {
                 backupSchemeForPackage = new BackupScheme(context, backupDestination);
-                map.put(backupSchemeId, backupSchemeForPackage);
+                kPackageBackupSchemeMap.put(backupSchemeId, backupSchemeForPackage);
             }
         }
         return backupSchemeForPackage;
@@ -141,7 +137,7 @@ public class FullBackup {
                     Log.e(TAG, "Unable to create/open file " + outFile.getPath(), e);
                 }
             }
-            byte[] buffer = new byte[32768];
+            byte[] buffer = new byte[65536];
             FileInputStream in = new FileInputStream(data.getFileDescriptor());
             long size2 = size;
             while (true) {
@@ -182,7 +178,6 @@ public class FullBackup {
         outFile.setLastModified(mtime);
     }
 
-    /* loaded from: classes.dex */
     public static class BackupScheme {
         private static final String TAG_EXCLUDE = "exclude";
         private static final String TAG_INCLUDE = "include";
@@ -212,7 +207,7 @@ public class FullBackup {
         private StorageVolume[] mVolumes = null;
         private boolean mDisableDataExtractionRules = false;
 
-        public String tokenToDirectoryPath(String domainToken) {
+        String tokenToDirectoryPath(String domainToken) {
             try {
                 if (domainToken.equals(FullBackup.FILES_TREE_TOKEN)) {
                     return this.FILES_DIR.getCanonicalPath();
@@ -251,9 +246,8 @@ public class FullBackup {
                     return this.DEVICE_NOBACKUP_DIR.getCanonicalPath();
                 }
                 if (domainToken.equals(FullBackup.MANAGED_EXTERNAL_TREE_TOKEN)) {
-                    File file = this.EXTERNAL_DIR;
-                    if (file != null) {
-                        return file.getCanonicalPath();
+                    if (this.EXTERNAL_DIR != null) {
+                        return this.EXTERNAL_DIR.getCanonicalPath();
                     }
                     return null;
                 }
@@ -287,10 +281,9 @@ public class FullBackup {
         }
 
         private StorageVolume[] getVolumeList() {
-            StorageManager storageManager = this.mStorageManager;
-            if (storageManager != null) {
+            if (this.mStorageManager != null) {
                 if (this.mVolumes == null) {
-                    this.mVolumes = storageManager.getVolumeList();
+                    this.mVolumes = this.mStorageManager.getVolumeList();
                 }
             } else {
                 Log.e(FullBackup.TAG, "Unable to access Storage Manager");
@@ -298,7 +291,6 @@ public class FullBackup {
             return this.mVolumes;
         }
 
-        /* loaded from: classes.dex */
         public static class PathWithRequiredFlags {
             private final String mPath;
             private final int mRequiredFlags;
@@ -346,7 +338,7 @@ public class FullBackup {
             }
         }
 
-        public boolean isFullBackupEnabled(int transportFlags) {
+        boolean isFullBackupEnabled(int transportFlags) {
             try {
                 if (isUsingNewScheme()) {
                     int requiredTransportFlags = getRequiredTransportFlags();
@@ -359,7 +351,7 @@ public class FullBackup {
             }
         }
 
-        public boolean isFullRestoreEnabled() {
+        boolean isFullRestoreEnabled() {
             try {
                 if (isUsingNewScheme()) {
                     return true;
@@ -389,7 +381,7 @@ public class FullBackup {
             return this.mIncludes;
         }
 
-        public void disableDataExtractionRule(boolean disable) {
+        void disableDataExtractionRule(boolean disable) {
             Log.d(FullBackup.TAG, "disableDataExtractionRule in FullBackup.java, disable = " + disable);
             this.mDisableDataExtractionRules = disable;
         }
@@ -443,9 +435,8 @@ public class FullBackup {
                 Slog.w(FullBackup.TAG, "Given backup destination isn't supported by backup scheme: " + backupDestination);
                 return;
             }
-            int i = this.mDataExtractionRules;
-            if (i != 0) {
-                parser = getParserForResource(i);
+            if (this.mDataExtractionRules != 0) {
+                parser = getParserForResource(this.mDataExtractionRules);
                 try {
                     boolean isSectionPresent = parseNewBackupSchemeFromXmlLocked(parser, configSection, this.mExcludes, this.mIncludes);
                     if (parser != null) {
@@ -462,9 +453,8 @@ public class FullBackup {
                 this.mIsUsingNewScheme = true;
                 return;
             }
-            int i2 = this.mFullBackupContent;
-            if (i2 != 0) {
-                parser = getParserForResource(i2);
+            if (this.mFullBackupContent != 0) {
+                parser = getParserForResource(this.mFullBackupContent);
                 try {
                     parseBackupSchemeFromXmlLocked(parser, this.mExcludes, this.mIncludes);
                     if (parser != null) {
@@ -630,7 +620,7 @@ public class FullBackup {
             }
         }
 
-        /* JADX WARN: Failed to find 'out' block for switch in B:12:0x003f. Please report as an issue. */
+        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         private int getRequiredFlagsFromString(String requiredFlags) {
             char c;
             int flags = 0;
@@ -645,34 +635,38 @@ public class FullBackup {
                             c = 2;
                             break;
                         }
+                        c = 65535;
                         break;
                     case 1499007205:
                         if (f.equals(FullBackup.FLAG_REQUIRED_CLIENT_SIDE_ENCRYPTION)) {
                             c = 0;
                             break;
                         }
+                        c = 65535;
                         break;
                     case 1935925810:
                         if (f.equals(FullBackup.FLAG_REQUIRED_DEVICE_TO_DEVICE_TRANSFER)) {
                             c = 1;
                             break;
                         }
+                        c = 65535;
+                        break;
+                    default:
+                        c = 65535;
                         break;
                 }
-                c = 65535;
                 switch (c) {
                     case 0:
                         flags |= 1;
-                        break;
+                        continue;
                     case 1:
                         flags |= 2;
-                        break;
+                        continue;
                     case 2:
                         flags |= Integer.MIN_VALUE;
-                    default:
-                        Log.w(FullBackup.TAG, "Unrecognized requiredFlag provided, value: \"" + f + "\"");
                         break;
                 }
+                Log.w(FullBackup.TAG, "Unrecognized requiredFlag provided, value: \"" + f + "\"");
             }
             return flags;
         }

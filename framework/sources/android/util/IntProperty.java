@@ -14,7 +14,7 @@ public abstract class IntProperty<T> extends Property<T, Integer> {
         super(Integer.class, name);
     }
 
-    /* renamed from: set */
+    /* renamed from: set, reason: avoid collision after fix types in other method */
     public final void set2(T object, Integer value) {
         setValue(object, value.intValue());
     }

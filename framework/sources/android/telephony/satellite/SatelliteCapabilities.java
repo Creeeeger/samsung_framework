@@ -11,17 +11,16 @@ import java.util.Objects;
 import java.util.Set;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SatelliteCapabilities implements Parcelable {
     public static final Parcelable.Creator<SatelliteCapabilities> CREATOR = new Parcelable.Creator<SatelliteCapabilities>() { // from class: android.telephony.satellite.SatelliteCapabilities.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SatelliteCapabilities createFromParcel(Parcel in) {
             return new SatelliteCapabilities(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SatelliteCapabilities[] newArray(int size) {
             return new SatelliteCapabilities[size];
@@ -31,10 +30,6 @@ public final class SatelliteCapabilities implements Parcelable {
     private boolean mIsPointingRequired;
     private int mMaxBytesPerOutgoingDatagram;
     private Set<Integer> mSupportedRadioTechnologies;
-
-    /* synthetic */ SatelliteCapabilities(Parcel parcel, SatelliteCapabilitiesIA satelliteCapabilitiesIA) {
-        this(parcel);
-    }
 
     public SatelliteCapabilities(Set<Integer> supportedRadioTechnologies, boolean isPointingRequired, int maxBytesPerOutgoingDatagram, Map<Integer, AntennaPosition> antennaPositionMap) {
         this.mSupportedRadioTechnologies = supportedRadioTechnologies == null ? new HashSet<>() : supportedRadioTechnologies;
@@ -54,8 +49,7 @@ public final class SatelliteCapabilities implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
-        Set<Integer> set = this.mSupportedRadioTechnologies;
-        if (set != null && !set.isEmpty()) {
+        if (this.mSupportedRadioTechnologies != null && !this.mSupportedRadioTechnologies.isEmpty()) {
             out.writeInt(this.mSupportedRadioTechnologies.size());
             Iterator<Integer> it = this.mSupportedRadioTechnologies.iterator();
             while (it.hasNext()) {
@@ -67,8 +61,7 @@ public final class SatelliteCapabilities implements Parcelable {
         }
         out.writeBoolean(this.mIsPointingRequired);
         out.writeInt(this.mMaxBytesPerOutgoingDatagram);
-        Map<Integer, AntennaPosition> map = this.mAntennaPositionMap;
-        if (map != null && !map.isEmpty()) {
+        if (this.mAntennaPositionMap != null && !this.mAntennaPositionMap.isEmpty()) {
             int size = this.mAntennaPositionMap.size();
             out.writeInt(size);
             for (Map.Entry<Integer, AntennaPosition> entry : this.mAntennaPositionMap.entrySet()) {
@@ -80,28 +73,10 @@ public final class SatelliteCapabilities implements Parcelable {
         out.writeInt(0);
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteCapabilities$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SatelliteCapabilities> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SatelliteCapabilities createFromParcel(Parcel in) {
-            return new SatelliteCapabilities(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SatelliteCapabilities[] newArray(int size) {
-            return new SatelliteCapabilities[size];
-        }
-    }
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("SupportedRadioTechnology:");
-        Set<Integer> set = this.mSupportedRadioTechnologies;
-        if (set != null && !set.isEmpty()) {
+        if (this.mSupportedRadioTechnologies != null && !this.mSupportedRadioTechnologies.isEmpty()) {
             Iterator<Integer> it = this.mSupportedRadioTechnologies.iterator();
             while (it.hasNext()) {
                 int technology = it.next().intValue();
@@ -150,6 +125,10 @@ public final class SatelliteCapabilities implements Parcelable {
 
     public int getMaxBytesPerOutgoingDatagram() {
         return this.mMaxBytesPerOutgoingDatagram;
+    }
+
+    public void setMaxBytesPerOutgoingDatagram(int maxBytesPerOutgoingDatagram) {
+        this.mMaxBytesPerOutgoingDatagram = maxBytesPerOutgoingDatagram;
     }
 
     public Map<Integer, AntennaPosition> getAntennaPositionMap() {

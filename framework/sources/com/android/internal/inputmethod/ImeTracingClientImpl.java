@@ -6,9 +6,9 @@ import android.view.inputmethod.InputMethodManagerGlobal;
 import com.android.internal.inputmethod.ImeTracing;
 import java.io.PrintWriter;
 
-/* loaded from: classes4.dex */
-public class ImeTracingClientImpl extends ImeTracing {
-    public ImeTracingClientImpl() {
+/* loaded from: classes5.dex */
+class ImeTracingClientImpl extends ImeTracing {
+    ImeTracingClientImpl() {
         sEnabled = InputMethodManagerGlobal.isImeTraceEnabled();
     }
 
@@ -57,7 +57,7 @@ public class ImeTracingClientImpl extends ImeTracing {
     }
 
     @Override // com.android.internal.inputmethod.ImeTracing
-    public void triggerManagerServiceDump(String where) {
+    public void triggerManagerServiceDump(String where, ImeTracing.ServiceDumper dumper) {
     }
 
     @Override // com.android.internal.inputmethod.ImeTracing

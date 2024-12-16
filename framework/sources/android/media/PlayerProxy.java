@@ -11,7 +11,7 @@ public class PlayerProxy {
     private static final String TAG = "PlayerProxy";
     private final AudioPlaybackConfiguration mConf;
 
-    public PlayerProxy(AudioPlaybackConfiguration apc) {
+    PlayerProxy(AudioPlaybackConfiguration apc) {
         if (apc == null) {
             throw new IllegalArgumentException("Illegal null AudioPlaybackConfiguration");
         }

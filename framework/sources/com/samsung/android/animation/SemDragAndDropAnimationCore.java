@@ -11,7 +11,7 @@ import android.view.animation.PathInterpolator;
 import android.view.animation.Transformation;
 
 /* loaded from: classes5.dex */
-public class SemDragAndDropAnimationCore {
+class SemDragAndDropAnimationCore {
     static final int SELECT_HIGHLIGHT_ANIM_DURATION = 150;
     private static final String TAG = "SemDragAndDropAnimationCore";
     static final int TRANSLATE_ITEM_ANIM_DURATION = 300;
@@ -19,40 +19,37 @@ public class SemDragAndDropAnimationCore {
     private ItemAnimationListener mItemAnimationListener;
     private View mView;
 
-    /* loaded from: classes5.dex */
-    public interface ItemAnimationListener {
+    interface ItemAnimationListener {
         void onItemAnimatorEnd();
     }
 
-    public SemDragAndDropAnimationCore(View view) {
+    SemDragAndDropAnimationCore(View view) {
         this.mView = view;
     }
 
-    public void setAnimationListener(ItemAnimationListener l) {
+    void setAnimationListener(ItemAnimationListener l) {
         this.mItemAnimationListener = l;
     }
 
-    /* loaded from: classes5.dex */
-    public static abstract class ItemAnimation {
+    static abstract class ItemAnimation {
         int mDuration;
         float mProgress;
         long mStartTime;
 
-        public abstract void getTransformation(Transformation transformation);
+        abstract void getTransformation(Transformation transformation);
 
         ItemAnimation() {
         }
 
         void computeAnimation(long curUpTime) {
             long elapsed = curUpTime - this.mStartTime;
-            float f = ((float) elapsed) / this.mDuration;
-            this.mProgress = f;
-            if (f > 1.0f) {
+            this.mProgress = elapsed / this.mDuration;
+            if (this.mProgress > 1.0f) {
                 this.mProgress = 1.0f;
             }
         }
 
-        public boolean isFinished() {
+        boolean isFinished() {
             long currentTime = SystemClock.uptimeMillis();
             return this.mStartTime + ((long) this.mDuration) <= currentTime;
         }
@@ -61,20 +58,22 @@ public class SemDragAndDropAnimationCore {
             return this.mDuration;
         }
 
-        public float getProgress() {
+        float getProgress() {
             return this.mProgress;
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class TranslateItemAnimation extends ItemAnimation {
+    static class TranslateItemAnimation extends ItemAnimation {
         private int mDeltaX;
         private int mDeltaY;
         private Interpolator mInterpolator = new PathInterpolator(0.33f, 0.0f, 0.3f, 1.0f);
         private int mOffsetXDest;
         private int mOffsetYDest;
 
-        public void translate(int offsetDestX, int deltaX, int offsetDestY, int deltaY) {
+        TranslateItemAnimation() {
+        }
+
+        void translate(int offsetDestX, int deltaX, int offsetDestY, int deltaY) {
             this.mOffsetXDest = offsetDestX;
             this.mDeltaX = deltaX;
             this.mOffsetYDest = offsetDestY;
@@ -82,7 +81,7 @@ public class SemDragAndDropAnimationCore {
         }
 
         @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimation
-        public void getTransformation(Transformation outTransform) {
+        void getTransformation(Transformation outTransform) {
             outTransform.setTransformationType(2);
             Matrix m = outTransform.getMatrix();
             m.reset();
@@ -92,25 +91,25 @@ public class SemDragAndDropAnimationCore {
             m.setTranslate(translateX, translateY);
         }
 
-        public int getDestOffsetY() {
+        int getDestOffsetY() {
             return this.mOffsetYDest;
         }
 
-        public int getDestOffsetX() {
+        int getDestOffsetX() {
             return this.mOffsetXDest;
         }
 
-        public float getCurrentTranslateX() {
+        float getCurrentTranslateX() {
             float interpolatedProgress = this.mInterpolator.getInterpolation(this.mProgress);
             return this.mOffsetXDest - (this.mDeltaX * (1.0f - interpolatedProgress));
         }
 
-        public float getCurrentTranslateY() {
+        float getCurrentTranslateY() {
             float interpolatedProgress = this.mInterpolator.getInterpolation(this.mProgress);
             return this.mOffsetYDest - (this.mDeltaY * (1.0f - interpolatedProgress));
         }
 
-        public void setStartAndDuration(int duration) {
+        void setStartAndDuration(int duration) {
             this.mStartTime = SystemClock.uptimeMillis();
             this.mDuration = duration;
             if (duration == 0) {
@@ -118,14 +117,13 @@ public class SemDragAndDropAnimationCore {
             }
         }
 
-        public void setStartAndDuration(float durationMultiplicator) {
+        void setStartAndDuration(float durationMultiplicator) {
             int duration = Math.round(300.0f * durationMultiplicator);
             setStartAndDuration(duration);
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class ItemSelectHighlightingAnimation extends ItemAnimation {
+    static class ItemSelectHighlightingAnimation extends ItemAnimation {
         private static final float DEFAULT_FROM_X = 1.0f;
         private static final float DEFAULT_FROM_Y = 1.0f;
         private static final float DEFAULT_TO_X = 1.08f;
@@ -139,7 +137,7 @@ public class SemDragAndDropAnimationCore {
         private float mFromY = 1.0f;
         private float mToY = 1.08f;
 
-        public ItemSelectHighlightingAnimation(Rect childHitRect) {
+        ItemSelectHighlightingAnimation(Rect childHitRect) {
             this.mPivotX = childHitRect.exactCenterX();
             this.mPivotY = childHitRect.exactCenterY();
         }
@@ -154,7 +152,7 @@ public class SemDragAndDropAnimationCore {
         }
 
         @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimation
-        public void getTransformation(Transformation outTransform) {
+        void getTransformation(Transformation outTransform) {
             outTransform.setTransformationType(2);
             Matrix m = outTransform.getMatrix();
             m.reset();
@@ -164,13 +162,11 @@ public class SemDragAndDropAnimationCore {
             float interpolatedProgress = this.mInterpolator.getInterpolation(this.mProgress);
             float sx = 1.0f;
             float sy = 1.0f;
-            float f = this.mFromX;
-            if (f != 1.0f || this.mToX != 1.0f) {
-                sx = f + ((this.mToX - f) * interpolatedProgress);
+            if (this.mFromX != 1.0f || this.mToX != 1.0f) {
+                sx = this.mFromX + ((this.mToX - this.mFromX) * interpolatedProgress);
             }
-            float f2 = this.mFromY;
-            if (f2 != 1.0f || this.mToY != 1.0f) {
-                sy = f2 + ((this.mToY - f2) * interpolatedProgress);
+            if (this.mFromY != 1.0f || this.mToY != 1.0f) {
+                sy = this.mFromY + ((this.mToY - this.mFromY) * interpolatedProgress);
             }
             m.setScale(sx, sy, this.mPivotX, this.mPivotY);
         }
@@ -193,7 +189,7 @@ public class SemDragAndDropAnimationCore {
             }
         }
 
-        public void setStartAndDuration(int duration) {
+        void setStartAndDuration(int duration) {
             this.mStartTime = SystemClock.uptimeMillis();
             this.mDuration = duration;
             if (duration == 0) {
@@ -202,19 +198,18 @@ public class SemDragAndDropAnimationCore {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class ItemAnimator implements Runnable {
+    class ItemAnimator implements Runnable {
         private SparseArray<ItemAnimation> mAnimations = new SparseArray<>();
         private boolean mIsAnimating;
 
         ItemAnimator() {
         }
 
-        public ItemAnimation getItemAnimation(int position) {
+        ItemAnimation getItemAnimation(int position) {
             return this.mAnimations.get(position, null);
         }
 
-        public void putItemAnimation(int position, ItemAnimation a) {
+        void putItemAnimation(int position, ItemAnimation a) {
             this.mAnimations.put(position, a);
         }
 
@@ -222,11 +217,11 @@ public class SemDragAndDropAnimationCore {
             this.mAnimations.delete(position);
         }
 
-        public void removeAll() {
+        void removeAll() {
             this.mAnimations.clear();
         }
 
-        public void start() {
+        void start() {
             this.mIsAnimating = true;
             SemDragAndDropAnimationCore.this.mView.removeCallbacks(this);
             run();

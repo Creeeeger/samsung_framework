@@ -9,11 +9,11 @@ import android.os.UserHandle;
 import android.sec.enterprise.EnterpriseDeviceManager;
 import android.sec.enterprise.IEDMProxy;
 import android.util.Log;
-import com.samsung.android.sm.iafdlib.IafdConstant;
+import com.sec.android.iaft.SmLib_IafdConstant;
 import java.util.HashMap;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxInfoImpl {
     static final long INTERVAL_NANO_SEC = 3000000000L;
     static final String TAG = "KnoxInfoImpl";
@@ -40,17 +40,7 @@ public class KnoxInfoImpl {
             if (mKnoxInfo == null) {
                 mKnoxInfo = new Bundle();
                 try {
-                    String version = SystemProperties.get("ro.config.knox");
-                    if (version != null && !version.isEmpty()) {
-                        if ("v30".equals(version)) {
-                            version = "2.0";
-                        } else if ("1".equals(version)) {
-                            version = "1.0";
-                        }
-                        mKnoxInfo.putString("version", version);
-                    } else {
-                        mKnoxInfo.putString("version", "");
-                    }
+                    mKnoxInfo.putString("version", "2.0");
                     mKnoxInfo.putString("isSupportCallerInfo", "false");
                 } catch (Exception e) {
                     Log.e(TAG, "failed to putString to mKnoxInfo", e);
@@ -81,7 +71,7 @@ public class KnoxInfoImpl {
             }
             int userid = UserHandle.myUserId();
             try {
-                mKnoxInfo.putInt(IafdConstant.KEY_USER_ID, userid);
+                mKnoxInfo.putInt(SmLib_IafdConstant.KEY_USER_ID, userid);
                 if (!m_bIsKnoxInfoInitialized) {
                     if (SemPersonaManager.isKnoxId(userid)) {
                         mKnoxInfo.putString("isKnoxMode", "true");
@@ -212,7 +202,6 @@ public class KnoxInfoImpl {
                                     mKnoxInfo.putInt("getContainerId_" + i2, containerId2);
                                     mKnoxInfo.putString("getContainerLabel_" + i2, containerName2);
                                     mKnoxInfo.putByteArray("getContainerAppIcon_" + i2, containerAppIcon2);
-                                    mKnoxInfo.putBoolean("isPremiumContainer_" + i2, SemPersonaManager.isPremiumContainer(containerId2));
                                     mKnoxInfo.putBoolean("isSecureFolder_" + i2, SemPersonaManager.isSecureFolderId(containerId2));
                                 }
                             }

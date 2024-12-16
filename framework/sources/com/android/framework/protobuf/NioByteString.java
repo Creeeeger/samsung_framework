@@ -13,11 +13,11 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
-/* loaded from: classes4.dex */
-public final class NioByteString extends ByteString.LeafByteString {
+/* loaded from: classes3.dex */
+final class NioByteString extends ByteString.LeafByteString {
     private final ByteBuffer buffer;
 
-    public NioByteString(ByteBuffer buffer) {
+    NioByteString(ByteBuffer buffer) {
         Internal.checkNotNull(buffer, "buffer");
         this.buffer = buffer.slice().order(ByteOrder.nativeOrder());
     }
@@ -64,7 +64,7 @@ public final class NioByteString extends ByteString.LeafByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public void copyToInternal(byte[] target, int sourceOffset, int targetOffset, int numberToCopy) {
+    protected void copyToInternal(byte[] target, int sourceOffset, int targetOffset, int numberToCopy) {
         ByteBuffer slice = this.buffer.slice();
         slice.position(sourceOffset);
         slice.get(target, targetOffset, numberToCopy);
@@ -81,12 +81,12 @@ public final class NioByteString extends ByteString.LeafByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString.LeafByteString
-    public boolean equalsRange(ByteString other, int offset, int length) {
+    boolean equalsRange(ByteString other, int offset, int length) {
         return substring(0, length).equals(other.substring(offset, offset + length));
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public void writeToInternal(OutputStream out, int sourceOffset, int numberToWrite) throws IOException {
+    void writeToInternal(OutputStream out, int sourceOffset, int numberToWrite) throws IOException {
         if (this.buffer.hasArray()) {
             int bufferOffset = this.buffer.arrayOffset() + this.buffer.position() + sourceOffset;
             out.write(this.buffer.array(), bufferOffset, numberToWrite);
@@ -97,7 +97,7 @@ public final class NioByteString extends ByteString.LeafByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public void writeTo(ByteOutput output) throws IOException {
+    void writeTo(ByteOutput output) throws IOException {
         output.writeLazy(this.buffer.slice());
     }
 
@@ -134,7 +134,7 @@ public final class NioByteString extends ByteString.LeafByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public int partialIsValidUtf8(int state, int offset, int length) {
+    protected int partialIsValidUtf8(int state, int offset, int length) {
         return Utf8.partialIsValidUtf8(state, this.buffer, offset, offset + length);
     }
 
@@ -163,63 +163,11 @@ public final class NioByteString extends ByteString.LeafByteString {
     }
 
     @Override // com.android.framework.protobuf.ByteString
-    public int partialHash(int h, int offset, int length) {
+    protected int partialHash(int h, int offset, int length) {
         for (int i = offset; i < offset + length; i++) {
             h = (h * 31) + this.buffer.get(i);
         }
         return h;
-    }
-
-    /* renamed from: com.android.framework.protobuf.NioByteString$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends InputStream {
-        private final ByteBuffer buf;
-
-        AnonymousClass1() {
-            this.buf = NioByteString.this.buffer.slice();
-        }
-
-        @Override // java.io.InputStream
-        public void mark(int readlimit) {
-            this.buf.mark();
-        }
-
-        @Override // java.io.InputStream
-        public boolean markSupported() {
-            return true;
-        }
-
-        @Override // java.io.InputStream
-        public void reset() throws IOException {
-            try {
-                this.buf.reset();
-            } catch (InvalidMarkException e) {
-                throw new IOException(e);
-            }
-        }
-
-        @Override // java.io.InputStream
-        public int available() throws IOException {
-            return this.buf.remaining();
-        }
-
-        @Override // java.io.InputStream
-        public int read() throws IOException {
-            if (!this.buf.hasRemaining()) {
-                return -1;
-            }
-            return this.buf.get() & 255;
-        }
-
-        @Override // java.io.InputStream
-        public int read(byte[] bytes, int off, int len) throws IOException {
-            if (!this.buf.hasRemaining()) {
-                return -1;
-            }
-            int len2 = Math.min(len, this.buf.remaining());
-            this.buf.get(bytes, off, len2);
-            return len2;
-        }
     }
 
     @Override // com.android.framework.protobuf.ByteString
@@ -227,7 +175,7 @@ public final class NioByteString extends ByteString.LeafByteString {
         return new InputStream() { // from class: com.android.framework.protobuf.NioByteString.1
             private final ByteBuffer buf;
 
-            AnonymousClass1() {
+            {
                 this.buf = NioByteString.this.buffer.slice();
             }
 

@@ -10,6 +10,9 @@ public abstract class AbstractCache<K, V> {
     private static final String TAG = "AbstractCache";
     private final HashMap<K, CacheEntry<V>> mCacheMap = new HashMap<>();
 
+    protected AbstractCache() {
+    }
+
     public boolean put(K key, V value) {
         if (this.mCacheMap.size() >= 500 || key == null) {
             return false;
@@ -45,15 +48,9 @@ public abstract class AbstractCache<K, V> {
         return this.mCacheMap.size();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class CacheEntry<V> {
+    private static class CacheEntry<V> {
         int hit;
         V value;
-
-        /* synthetic */ CacheEntry(CacheEntryIA cacheEntryIA) {
-            this();
-        }
 
         private CacheEntry() {
         }

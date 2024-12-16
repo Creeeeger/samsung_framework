@@ -25,7 +25,6 @@ public interface IKeyMintOperation extends IInterface {
 
     void updateAad(byte[] bArr, HardwareAuthToken hardwareAuthToken, TimeStampToken timeStampToken) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IKeyMintOperation {
         @Override // android.hardware.security.keymint.IKeyMintOperation
         public void updateAad(byte[] input, HardwareAuthToken authToken, TimeStampToken timeStampToken) throws RemoteException {
@@ -61,7 +60,6 @@ public interface IKeyMintOperation extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IKeyMintOperation {
         static final int TRANSACTION_abort = 4;
         static final int TRANSACTION_finish = 3;
@@ -121,61 +119,59 @@ public interface IKeyMintOperation extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    HardwareAuthToken _arg1 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    TimeStampToken _arg2 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateAad(_arg0, _arg1, _arg2);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    byte[] _arg02 = data.createByteArray();
+                    HardwareAuthToken _arg12 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    TimeStampToken _arg22 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    byte[] _result = update(_arg02, _arg12, _arg22);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeByteArray(_result);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    byte[] _arg03 = data.createByteArray();
+                    byte[] _arg13 = data.createByteArray();
+                    HardwareAuthToken _arg23 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    TimeStampToken _arg3 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
+                    byte[] _arg4 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result2 = finish(_arg03, _arg13, _arg23, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 4:
+                    abort();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            HardwareAuthToken _arg1 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            TimeStampToken _arg2 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateAad(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            byte[] _arg02 = data.createByteArray();
-                            HardwareAuthToken _arg12 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            TimeStampToken _arg22 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            byte[] _result = update(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 3:
-                            byte[] _arg03 = data.createByteArray();
-                            byte[] _arg13 = data.createByteArray();
-                            HardwareAuthToken _arg23 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            TimeStampToken _arg3 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
-                            byte[] _arg4 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result2 = finish(_arg03, _arg13, _arg23, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 4:
-                            abort();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IKeyMintOperation {
+        private static class Proxy implements IKeyMintOperation {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

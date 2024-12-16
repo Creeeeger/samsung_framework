@@ -53,9 +53,7 @@ public final class ContentCaptureEvent implements Parcelable {
     private final int mType;
     private static final String TAG = ContentCaptureEvent.class.getSimpleName();
     public static final Parcelable.Creator<ContentCaptureEvent> CREATOR = new Parcelable.Creator<ContentCaptureEvent>() { // from class: android.view.contentcapture.ContentCaptureEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureEvent createFromParcel(Parcel parcel) {
             int sessionId = parcel.readInt();
@@ -96,6 +94,7 @@ public final class ContentCaptureEvent implements Parcelable {
             return event;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureEvent[] newArray(int size) {
             return new ContentCaptureEvent[size];
@@ -103,7 +102,6 @@ public final class ContentCaptureEvent implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface EventType {
     }
 
@@ -135,13 +133,11 @@ public final class ContentCaptureEvent implements Parcelable {
     public ContentCaptureEvent addAutofillId(AutofillId id) {
         Objects.requireNonNull(id);
         if (this.mIds == null) {
-            ArrayList<AutofillId> arrayList = new ArrayList<>();
-            this.mIds = arrayList;
-            AutofillId autofillId = this.mId;
-            if (autofillId == null) {
+            this.mIds = new ArrayList<>();
+            if (this.mId == null) {
                 Log.w(TAG, "addAutofillId(" + id + ") called without an initial id");
             } else {
-                arrayList.add(autofillId);
+                this.mIds.add(this.mId);
                 this.mId = null;
             }
         }
@@ -197,11 +193,11 @@ public final class ContentCaptureEvent implements Parcelable {
         return this;
     }
 
-    public boolean hasSameComposingSpan(ContentCaptureEvent other) {
+    boolean hasSameComposingSpan(ContentCaptureEvent other) {
         return this.mComposingStart == other.mComposingStart && this.mComposingEnd == other.mComposingEnd;
     }
 
-    public boolean hasSameSelectionSpan(ContentCaptureEvent other) {
+    boolean hasSameSelectionSpan(ContentCaptureEvent other) {
         return this.mSelectionStartIndex == other.mSelectionStartIndex && this.mSelectionEndIndex == other.mSelectionEndIndex;
     }
 
@@ -221,33 +217,27 @@ public final class ContentCaptureEvent implements Parcelable {
         return this.mSelectionEndIndex;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void restoreComposingSpan() {
-        int i;
-        int i2 = this.mComposingStart;
-        if (i2 <= -1 || (i = this.mComposingEnd) <= -1) {
+        if (this.mComposingStart <= -1 || this.mComposingEnd <= -1) {
             return;
         }
-        CharSequence charSequence = this.mText;
-        if (charSequence instanceof Spannable) {
-            BaseInputConnection.setComposingSpans((Spannable) charSequence, i2, i);
+        if (this.mText instanceof Spannable) {
+            BaseInputConnection.setComposingSpans((Spannable) this.mText, this.mComposingStart, this.mComposingEnd);
         } else {
             Log.w(TAG, "Text is not a Spannable.");
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void restoreSelectionSpans() {
         if (this.mSelectionStartIndex <= -1 || this.mSelectionEndIndex <= -1) {
             return;
         }
-        CharSequence charSequence = this.mText;
-        if (charSequence instanceof SpannableString) {
-            SpannableString ss = (SpannableString) charSequence;
-            Object obj = Selection.SELECTION_START;
-            int i = this.mSelectionStartIndex;
-            ss.setSpan(obj, i, i, 0);
-            Object obj2 = Selection.SELECTION_END;
-            int i2 = this.mSelectionEndIndex;
-            ss.setSpan(obj2, i2, i2, 0);
+        if (this.mText instanceof SpannableString) {
+            SpannableString ss = (SpannableString) this.mText;
+            ss.setSpan(Selection.SELECTION_START, this.mSelectionStartIndex, this.mSelectionStartIndex, 0);
+            ss.setSpan(Selection.SELECTION_END, this.mSelectionEndIndex, this.mSelectionEndIndex, 0);
             return;
         }
         Log.w(TAG, "Text is not a SpannableString.");
@@ -399,9 +389,8 @@ public final class ContentCaptureEvent implements Parcelable {
         if (this.mIds != null) {
             string.append(", ids=").append(this.mIds);
         }
-        ViewNode viewNode = this.mNode;
-        if (viewNode != null) {
-            String className = viewNode.getClassName();
+        if (this.mNode != null) {
+            String className = this.mNode.getClassName();
             string.append(", class=").append(className);
             string.append(", id=").append(this.mNode.getAutofillId());
             if (this.mNode.getText() != null) {
@@ -443,12 +432,10 @@ public final class ContentCaptureEvent implements Parcelable {
         parcel.writeTypedList(this.mIds);
         ViewNode.writeToParcel(parcel, this.mNode, flags);
         parcel.writeCharSequence(this.mText);
-        int i = this.mType;
-        if (i == -1 || i == -2) {
+        if (this.mType == -1 || this.mType == -2) {
             parcel.writeInt(this.mParentSessionId);
         }
-        int i2 = this.mType;
-        if (i2 == -1 || i2 == 6) {
+        if (this.mType == -1 || this.mType == 6) {
             parcel.writeParcelable(this.mClientContext, flags);
         }
         if (this.mType == 9) {
@@ -462,58 +449,6 @@ public final class ContentCaptureEvent implements Parcelable {
             parcel.writeInt(this.mComposingEnd);
             parcel.writeInt(this.mSelectionStartIndex);
             parcel.writeInt(this.mSelectionEndIndex);
-        }
-    }
-
-    /* renamed from: android.view.contentcapture.ContentCaptureEvent$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContentCaptureEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureEvent createFromParcel(Parcel parcel) {
-            int sessionId = parcel.readInt();
-            int type = parcel.readInt();
-            long eventTime = parcel.readLong();
-            ContentCaptureEvent event = new ContentCaptureEvent(sessionId, type, eventTime);
-            AutofillId id = (AutofillId) parcel.readParcelable(null, AutofillId.class);
-            if (id != null) {
-                event.setAutofillId(id);
-            }
-            ArrayList<AutofillId> ids = parcel.createTypedArrayList(AutofillId.CREATOR);
-            if (ids != null) {
-                event.setAutofillIds(ids);
-            }
-            ViewNode node = ViewNode.readFromParcel(parcel);
-            if (node != null) {
-                event.setViewNode(node);
-            }
-            event.setText(parcel.readCharSequence());
-            if (type == -1 || type == -2) {
-                event.setParentSessionId(parcel.readInt());
-            }
-            if (type == -1 || type == 6) {
-                event.setClientContext((ContentCaptureContext) parcel.readParcelable(null, ContentCaptureContext.class));
-            }
-            if (type == 9) {
-                event.setInsets((Insets) parcel.readParcelable(null, Insets.class));
-            }
-            if (type == 10) {
-                event.setBounds((Rect) parcel.readParcelable(null, Rect.class));
-            }
-            if (type == 3) {
-                event.setComposingIndex(parcel.readInt(), parcel.readInt());
-                event.restoreComposingSpan();
-                event.setSelectionIndex(parcel.readInt(), parcel.readInt());
-                event.restoreSelectionSpans();
-            }
-            return event;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureEvent[] newArray(int size) {
-            return new ContentCaptureEvent[size];
         }
     }
 

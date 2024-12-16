@@ -6,11 +6,10 @@ import android.hardware.camera2.utils.TypeReference;
 import android.util.Size;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableSize implements MarshalQueryable<Size> {
     private static final int SIZE = 8;
 
-    /* loaded from: classes.dex */
     private class MarshalerSize extends Marshaler<Size> {
         protected MarshalerSize(TypeReference<Size> typeReference, int nativeType) {
             super(MarshalQueryableSize.this, typeReference, nativeType);
@@ -22,6 +21,7 @@ public class MarshalQueryableSize implements MarshalQueryable<Size> {
             buffer.putInt(value.getHeight());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public Size unmarshal(ByteBuffer buffer) {
             int width = buffer.getInt();

@@ -3,7 +3,7 @@ package android.hardware.biometrics;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface BiometricFingerprintConstants {
     public static final int BIOMETRIC_ERROR_NO_DEVICE_CREDENTIAL = 14;
     public static final int BIOMETRIC_ERROR_POWER_PRESSED = 19;
@@ -15,7 +15,8 @@ public interface BiometricFingerprintConstants {
     public static final int FINGERPRINT_ACQUIRED_INSUFFICIENT = 2;
     public static final int FINGERPRINT_ACQUIRED_PARTIAL = 1;
     public static final int FINGERPRINT_ACQUIRED_POWER_PRESSED = 11;
-    public static final int FINGERPRINT_ACQUIRED_RE_ENROLL = 12;
+    public static final int FINGERPRINT_ACQUIRED_RE_ENROLL_FORCED = 13;
+    public static final int FINGERPRINT_ACQUIRED_RE_ENROLL_OPTIONAL = 12;
     public static final int FINGERPRINT_ACQUIRED_START = 7;
     public static final int FINGERPRINT_ACQUIRED_TOO_BRIGHT = 10;
     public static final int FINGERPRINT_ACQUIRED_TOO_FAST = 5;
@@ -81,71 +82,63 @@ public interface BiometricFingerprintConstants {
     public static final int SEM_FINGERPRINT_EVENT_POINTER_UP = 70001;
     public static final int SEM_FINGERPRINT_EVENT_SPEN_CONTROL_OFF = 30002;
     public static final int SEM_FINGERPRINT_EVENT_SPEN_CONTROL_ON = 30001;
+    public static final int SEM_FINGERPRINT_EVENT_SWIPE_AUTHENTICATION = 10012;
+    public static final int SEM_FINGERPRINT_EVENT_TOUCH_ENROLLMENT = 10013;
     public static final int SEM_SENSOR_STATUS_CALIBRATION_ERROR = 100045;
     public static final int SEM_SENSOR_STATUS_ERROR = 100042;
     public static final int SEM_SENSOR_STATUS_OK = 100040;
     public static final int SEM_SENSOR_STATUS_WORKING = 100041;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FingerprintAcquired {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FingerprintError {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FingerprintEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FingerprintFeature {
     }
 
-    /* loaded from: classes.dex */
     public @interface FingerprintGestureEvent {
     }
 
-    /* loaded from: classes.dex */
     public @interface FingerprintInternalEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FingerprintSensorStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FingerprintVendorAcquired {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FingerprintVendorError {
     }
 
     static boolean shouldDisableUdfpsDisplayMode(int acquiredInfo) {
         switch (acquiredInfo) {
-            case 0:
+        }
+        return false;
+    }
+
+    static int reasonToMetric(int reason) {
+        switch (reason) {
             case 1:
+                return 3;
             case 2:
+                return 2;
             case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 9:
-            case 10:
-                return true;
-            case 7:
-                return false;
-            case 8:
+                return 1;
             default:
-                return false;
+                return 0;
         }
     }
 }

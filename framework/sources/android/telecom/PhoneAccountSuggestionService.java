@@ -16,9 +16,6 @@ import java.util.Map;
 public class PhoneAccountSuggestionService extends Service {
     public static final String SERVICE_INTERFACE = "android.telecom.PhoneAccountSuggestionService";
     private IPhoneAccountSuggestionService mInterface = new IPhoneAccountSuggestionService.Stub() { // from class: android.telecom.PhoneAccountSuggestionService.1
-        AnonymousClass1() {
-        }
-
         @Override // com.android.internal.telecom.IPhoneAccountSuggestionService
         public void onAccountSuggestionRequest(IPhoneAccountSuggestionCallback callback, String number) {
             PhoneAccountSuggestionService.this.mCallbackMap.put(number, callback);
@@ -26,19 +23,6 @@ public class PhoneAccountSuggestionService extends Service {
         }
     };
     private final Map<String, IPhoneAccountSuggestionCallback> mCallbackMap = new HashMap();
-
-    /* renamed from: android.telecom.PhoneAccountSuggestionService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IPhoneAccountSuggestionService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.internal.telecom.IPhoneAccountSuggestionService
-        public void onAccountSuggestionRequest(IPhoneAccountSuggestionCallback callback, String number) {
-            PhoneAccountSuggestionService.this.mCallbackMap.put(number, callback);
-            PhoneAccountSuggestionService.this.onAccountSuggestionRequest(number);
-        }
-    }
 
     @Override // android.app.Service
     public IBinder onBind(Intent intent) {

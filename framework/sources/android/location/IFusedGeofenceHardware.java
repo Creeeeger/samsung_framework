@@ -21,7 +21,6 @@ public interface IFusedGeofenceHardware extends IInterface {
 
     void resumeMonitoringGeofence(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IFusedGeofenceHardware {
         @Override // android.location.IFusedGeofenceHardware
         public boolean isSupported() throws RemoteException {
@@ -54,7 +53,6 @@ public interface IFusedGeofenceHardware extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFusedGeofenceHardware {
         public static final String DESCRIPTOR = "android.location.IFusedGeofenceHardware";
         static final int TRANSACTION_addGeofences = 2;
@@ -113,62 +111,58 @@ public interface IFusedGeofenceHardware extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _result = isSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    GeofenceHardwareRequestParcelable[] _arg0 = (GeofenceHardwareRequestParcelable[]) data.createTypedArray(GeofenceHardwareRequestParcelable.CREATOR);
+                    data.enforceNoDataAvail();
+                    addGeofences(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int[] _arg02 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    removeGeofences(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    pauseMonitoringGeofence(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resumeMonitoringGeofence(_arg04, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    modifyGeofenceOptions(_arg05, _arg12, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            GeofenceHardwareRequestParcelable[] _arg0 = (GeofenceHardwareRequestParcelable[]) data.createTypedArray(GeofenceHardwareRequestParcelable.CREATOR);
-                            data.enforceNoDataAvail();
-                            addGeofences(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int[] _arg02 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            removeGeofences(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            pauseMonitoringGeofence(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resumeMonitoringGeofence(_arg04, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            modifyGeofenceOptions(_arg05, _arg12, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFusedGeofenceHardware {
+        private static class Proxy implements IFusedGeofenceHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

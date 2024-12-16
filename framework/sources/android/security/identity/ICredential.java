@@ -48,7 +48,6 @@ public interface ICredential extends IInterface {
 
     IWritableCredential update() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICredential {
         @Override // android.security.identity.ICredential
         public byte[] createEphemeralKeyPair() throws RemoteException {
@@ -127,7 +126,6 @@ public interface ICredential extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICredential {
         static final int TRANSACTION_createEphemeralKeyPair = 1;
         static final int TRANSACTION_deleteCredential = 3;
@@ -212,121 +210,117 @@ public interface ICredential extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICredential.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICredential.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICredential.DESCRIPTOR);
+                case 1:
+                    byte[] _result = createEphemeralKeyPair();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result);
+                    return true;
+                case 2:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setReaderEphemeralPublicKey(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    byte[] _result2 = deleteCredential();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 4:
+                    byte[] _arg02 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result3 = deleteWithChallenge(_arg02);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result3);
+                    return true;
+                case 5:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result4 = proveOwnership(_arg03);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    return true;
+                case 6:
+                    byte[] _result5 = getCredentialKeyCertificateChain();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result5);
+                    return true;
+                case 7:
+                    boolean _arg04 = data.readBoolean();
+                    boolean _arg1 = data.readBoolean();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    long _result6 = selectAuthKey(_arg04, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
+                    return true;
+                case 8:
+                    byte[] _arg05 = data.createByteArray();
+                    RequestNamespaceParcel[] _arg12 = (RequestNamespaceParcel[]) data.createTypedArray(RequestNamespaceParcel.CREATOR);
+                    byte[] _arg22 = data.createByteArray();
+                    byte[] _arg3 = data.createByteArray();
+                    boolean _arg4 = data.readBoolean();
+                    boolean _arg5 = data.readBoolean();
+                    boolean _arg6 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    GetEntriesResultParcel _result7 = getEntries(_arg05, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 9:
+                    int _arg06 = data.readInt();
+                    int _arg13 = data.readInt();
+                    long _arg23 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setAvailableAuthenticationKeys(_arg06, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    AuthKeyParcel[] _result8 = getAuthKeysNeedingCertification();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result8, 1);
+                    return true;
+                case 11:
+                    AuthKeyParcel _arg07 = (AuthKeyParcel) data.readTypedObject(AuthKeyParcel.CREATOR);
+                    byte[] _arg14 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    storeStaticAuthenticationData(_arg07, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    AuthKeyParcel _arg08 = (AuthKeyParcel) data.readTypedObject(AuthKeyParcel.CREATOR);
+                    long _arg15 = data.readLong();
+                    byte[] _arg24 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    storeStaticAuthenticationDataWithExpiration(_arg08, _arg15, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int[] _result9 = getAuthenticationDataUsageCount();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result9);
+                    return true;
+                case 14:
+                    long[] _result10 = getAuthenticationDataExpirations();
+                    reply.writeNoException();
+                    reply.writeLongArray(_result10);
+                    return true;
+                case 15:
+                    IWritableCredential _result11 = update();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result11);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _result = createEphemeralKeyPair();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 2:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setReaderEphemeralPublicKey(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            byte[] _result2 = deleteCredential();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 4:
-                            byte[] _arg02 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result3 = deleteWithChallenge(_arg02);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result3);
-                            return true;
-                        case 5:
-                            byte[] _arg03 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result4 = proveOwnership(_arg03);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            return true;
-                        case 6:
-                            byte[] _result5 = getCredentialKeyCertificateChain();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result5);
-                            return true;
-                        case 7:
-                            boolean _arg04 = data.readBoolean();
-                            boolean _arg1 = data.readBoolean();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            long _result6 = selectAuthKey(_arg04, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        case 8:
-                            byte[] _arg05 = data.createByteArray();
-                            RequestNamespaceParcel[] _arg12 = (RequestNamespaceParcel[]) data.createTypedArray(RequestNamespaceParcel.CREATOR);
-                            byte[] _arg22 = data.createByteArray();
-                            byte[] _arg3 = data.createByteArray();
-                            boolean _arg4 = data.readBoolean();
-                            boolean _arg5 = data.readBoolean();
-                            boolean _arg6 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            GetEntriesResultParcel _result7 = getEntries(_arg05, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 9:
-                            int _arg06 = data.readInt();
-                            int _arg13 = data.readInt();
-                            long _arg23 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setAvailableAuthenticationKeys(_arg06, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            AuthKeyParcel[] _result8 = getAuthKeysNeedingCertification();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result8, 1);
-                            return true;
-                        case 11:
-                            AuthKeyParcel _arg07 = (AuthKeyParcel) data.readTypedObject(AuthKeyParcel.CREATOR);
-                            byte[] _arg14 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            storeStaticAuthenticationData(_arg07, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            AuthKeyParcel _arg08 = (AuthKeyParcel) data.readTypedObject(AuthKeyParcel.CREATOR);
-                            long _arg15 = data.readLong();
-                            byte[] _arg24 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            storeStaticAuthenticationDataWithExpiration(_arg08, _arg15, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int[] _result9 = getAuthenticationDataUsageCount();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result9);
-                            return true;
-                        case 14:
-                            long[] _result10 = getAuthenticationDataExpirations();
-                            reply.writeNoException();
-                            reply.writeLongArray(_result10);
-                            return true;
-                        case 15:
-                            IWritableCredential _result11 = update();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result11);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICredential {
+        private static class Proxy implements ICredential {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

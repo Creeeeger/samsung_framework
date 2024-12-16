@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehCardStatus implements Parcelable {
     public static final Parcelable.Creator<SehCardStatus> CREATOR = new Parcelable.Creator<SehCardStatus>() { // from class: vendor.samsung.hardware.radio.sim.SehCardStatus.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehCardStatus createFromParcel(Parcel _aidl_source) {
             SehCardStatus _aidl_out = new SehCardStatus();
@@ -33,25 +30,6 @@ public class SehCardStatus implements Parcelable {
     public int cdmaSubscriptionAppIndex = 0;
     public int imsSubscriptionAppIndex = 0;
     public int supportedMepMode = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.sim.SehCardStatus$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehCardStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCardStatus createFromParcel(Parcel _aidl_source) {
-            SehCardStatus _aidl_out = new SehCardStatus();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCardStatus[] newArray(int _aidl_size) {
-            return new SehCardStatus[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

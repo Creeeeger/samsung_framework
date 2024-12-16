@@ -59,9 +59,8 @@ public class NativeBuffer {
     }
 
     public NativeBuffer retain() {
-        Frame frame = this.mAttachedFrame;
-        if (frame != null) {
-            frame.retain();
+        if (this.mAttachedFrame != null) {
+            this.mAttachedFrame.retain();
         } else if (this.mOwnsData) {
             this.mRefCount++;
         }
@@ -70,13 +69,11 @@ public class NativeBuffer {
 
     public NativeBuffer release() {
         boolean doDealloc = false;
-        Frame frame = this.mAttachedFrame;
-        if (frame != null) {
-            doDealloc = frame.release() == null;
+        if (this.mAttachedFrame != null) {
+            doDealloc = this.mAttachedFrame.release() == null;
         } else if (this.mOwnsData) {
-            int i = this.mRefCount - 1;
-            this.mRefCount = i;
-            doDealloc = i == 0;
+            this.mRefCount--;
+            doDealloc = this.mRefCount == 0;
         }
         if (doDealloc) {
             deallocate(this.mOwnsData);
@@ -86,9 +83,8 @@ public class NativeBuffer {
     }
 
     public boolean isReadOnly() {
-        Frame frame = this.mAttachedFrame;
-        if (frame != null) {
-            return frame.isReadOnly();
+        if (this.mAttachedFrame != null) {
+            return this.mAttachedFrame.isReadOnly();
         }
         return false;
     }
@@ -97,13 +93,12 @@ public class NativeBuffer {
         System.loadLibrary("filterfw");
     }
 
-    public void attachToFrame(Frame frame) {
+    void attachToFrame(Frame frame) {
         this.mAttachedFrame = frame;
     }
 
     protected void assertReadable() {
-        Frame frame;
-        if (this.mDataPointer == 0 || this.mSize == 0 || ((frame = this.mAttachedFrame) != null && !frame.hasNativeAllocation())) {
+        if (this.mDataPointer == 0 || this.mSize == 0 || (this.mAttachedFrame != null && !this.mAttachedFrame.hasNativeAllocation())) {
             throw new NullPointerException("Attempting to read from null data frame!");
         }
     }

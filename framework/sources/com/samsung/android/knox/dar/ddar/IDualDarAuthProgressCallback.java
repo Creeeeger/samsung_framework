@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDualDarAuthProgressCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.dar.ddar.IDualDarAuthProgressCallback";
 
@@ -14,7 +14,6 @@ public interface IDualDarAuthProgressCallback extends IInterface {
 
     void onInnerLayerUnlocked() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDualDarAuthProgressCallback {
         @Override // com.samsung.android.knox.dar.ddar.IDualDarAuthProgressCallback
         public void onInnerLayerUnlocked() throws RemoteException {
@@ -30,7 +29,6 @@ public interface IDualDarAuthProgressCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDualDarAuthProgressCallback {
         static final int TRANSACTION_onInnerLayerUnlockFailed = 2;
         static final int TRANSACTION_onInnerLayerUnlocked = 1;
@@ -76,26 +74,23 @@ public interface IDualDarAuthProgressCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDualDarAuthProgressCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDualDarAuthProgressCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDualDarAuthProgressCallback.DESCRIPTOR);
+                case 1:
+                    onInnerLayerUnlocked();
+                    return true;
+                case 2:
+                    onInnerLayerUnlockFailed();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onInnerLayerUnlocked();
-                            return true;
-                        case 2:
-                            onInnerLayerUnlockFailed();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDualDarAuthProgressCallback {
+        private static class Proxy implements IDualDarAuthProgressCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

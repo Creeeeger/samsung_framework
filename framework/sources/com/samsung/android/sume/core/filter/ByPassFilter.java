@@ -6,7 +6,7 @@ import com.samsung.android.sume.core.buffer.MutableMediaBuffer;
 import com.samsung.android.sume.core.descriptor.MFDescriptor;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class ByPassFilter implements MediaFilter {
     private static final String TAG = Def.tagOf((Class<?>) ByPassFilter.class);
     private final MFDescriptor mfDescriptor;

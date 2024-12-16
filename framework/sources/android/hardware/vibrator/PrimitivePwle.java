@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class PrimitivePwle implements Parcelable {
     public static final Parcelable.Creator<PrimitivePwle> CREATOR = new Parcelable.Creator<PrimitivePwle>() { // from class: android.hardware.vibrator.PrimitivePwle.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrimitivePwle createFromParcel(Parcel _aidl_source) {
             return new PrimitivePwle(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrimitivePwle[] newArray(int _aidl_size) {
             return new PrimitivePwle[_aidl_size];
@@ -24,14 +23,9 @@ public final class PrimitivePwle implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int active = 0;
         public static final int braking = 1;
-    }
-
-    /* synthetic */ PrimitivePwle(Parcel parcel, PrimitivePwleIA primitivePwleIA) {
-        this(parcel);
     }
 
     public PrimitivePwle() {
@@ -83,35 +77,16 @@ public final class PrimitivePwle implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.vibrator.PrimitivePwle$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrimitivePwle> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrimitivePwle createFromParcel(Parcel _aidl_source) {
-            return new PrimitivePwle(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrimitivePwle[] newArray(int _aidl_size) {
-            return new PrimitivePwle[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getActive(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getBraking(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

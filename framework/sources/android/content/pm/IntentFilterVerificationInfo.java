@@ -28,14 +28,13 @@ public final class IntentFilterVerificationInfo implements Parcelable {
     private int mStatus;
     private static final String TAG = IntentFilterVerificationInfo.class.getName();
     public static final Parcelable.Creator<IntentFilterVerificationInfo> CREATOR = new Parcelable.Creator<IntentFilterVerificationInfo>() { // from class: android.content.pm.IntentFilterVerificationInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentFilterVerificationInfo createFromParcel(Parcel source) {
             return new IntentFilterVerificationInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentFilterVerificationInfo[] newArray(int size) {
             return new IntentFilterVerificationInfo[size];
@@ -105,10 +104,8 @@ public final class IntentFilterVerificationInfo implements Parcelable {
     String getStringFromXml(TypedXmlPullParser parser, String attribute, String defaultValue) {
         String value = parser.getAttributeValue(null, attribute);
         if (value == null) {
-            StringBuilder append = new StringBuilder().append("Missing element under ");
-            String str = TAG;
-            String msg = append.append(str).append(": ").append(attribute).append(" at ").append(parser.getPositionDescription()).toString();
-            Log.w(str, msg);
+            String msg = "Missing element under " + TAG + ": " + attribute + " at " + parser.getPositionDescription();
+            Log.w(TAG, msg);
             return defaultValue;
         }
         return value;
@@ -119,9 +116,8 @@ public final class IntentFilterVerificationInfo implements Parcelable {
     }
 
     public void readFromXml(TypedXmlPullParser parser) throws XmlPullParserException, IOException {
-        String stringFromXml = getStringFromXml(parser, "packageName", null);
-        this.mPackageName = stringFromXml;
-        if (stringFromXml == null) {
+        this.mPackageName = getStringFromXml(parser, "packageName", null);
+        if (this.mPackageName == null) {
             Log.e(TAG, "Package name cannot be null!");
         }
         int status = getIntFromXml(parser, "status", -1);
@@ -212,22 +208,5 @@ public final class IntentFilterVerificationInfo implements Parcelable {
         dest.writeString(this.mPackageName);
         dest.writeInt(this.mStatus);
         dest.writeStringList(new ArrayList(this.mDomains));
-    }
-
-    /* renamed from: android.content.pm.IntentFilterVerificationInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IntentFilterVerificationInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IntentFilterVerificationInfo createFromParcel(Parcel source) {
-            return new IntentFilterVerificationInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IntentFilterVerificationInfo[] newArray(int size) {
-            return new IntentFilterVerificationInfo[size];
-        }
     }
 }

@@ -13,7 +13,6 @@ public class SHA384 {
     private SHA384() {
     }
 
-    /* loaded from: classes5.dex */
     public static class Digest extends BCMessageDigest implements Cloneable {
         public Digest() {
             super(new SHA384Digest());
@@ -27,21 +26,18 @@ public class SHA384 {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class HashMac extends BaseMac {
         public HashMac() {
             super(new HMac(new SHA384Digest()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyGenerator extends BaseKeyGenerator {
         public KeyGenerator() {
             super("HMACSHA384", 384, new CipherKeyGenerator());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends DigestAlgorithmProvider {
         private static final String PREFIX = SHA384.class.getName();
 

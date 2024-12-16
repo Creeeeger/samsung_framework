@@ -5,6 +5,8 @@ import com.samsung.android.vibrator.SemHapticFeedbackConstants;
 /* loaded from: classes4.dex */
 public class HapticFeedbackConstants {
     public static final int ASSISTANT_BUTTON = 10002;
+    public static final int BIOMETRIC_CONFIRM = 10004;
+    public static final int BIOMETRIC_REJECT = 10005;
     public static final int CALENDAR_DATE = 5;
     public static final int CLOCK_TICK = 4;
     public static final int CONFIRM = 16;
@@ -13,7 +15,6 @@ public class HapticFeedbackConstants {
     public static final int DRAG_START = 25;
     public static final int EDGE_RELEASE = 15;
     public static final int EDGE_SQUEEZE = 14;
-    public static final int ENTRY_BUMP = 10;
 
     @Deprecated
     public static final int FLAG_IGNORE_GLOBAL_SETTING = 2;
@@ -30,10 +31,10 @@ public class HapticFeedbackConstants {
     public static final int LONG_PRESS_POWER_BUTTON = 10003;
     public static final int NO_HAPTICS = -1;
     public static final int REJECT = 17;
-    public static final int ROTARY_SCROLL_ITEM_FOCUS = 19;
-    public static final int ROTARY_SCROLL_LIMIT = 20;
-    public static final int ROTARY_SCROLL_TICK = 18;
     public static final int SAFE_MODE_ENABLED = 10001;
+    public static final int SCROLL_ITEM_FOCUS = 19;
+    public static final int SCROLL_LIMIT = 20;
+    public static final int SCROLL_TICK = 18;
     public static final int SEGMENT_FREQUENT_TICK = 27;
     public static final int SEGMENT_TICK = 26;
     public static final int TEXT_HANDLE_MOVE = 9;

@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendModulationStatus implements Parcelable {
     public static final Parcelable.Creator<FrontendModulationStatus> CREATOR = new Parcelable.Creator<FrontendModulationStatus>() { // from class: android.hardware.tv.tuner.FrontendModulationStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendModulationStatus createFromParcel(Parcel _aidl_source) {
             return new FrontendModulationStatus(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendModulationStatus[] newArray(int _aidl_size) {
             return new FrontendModulationStatus[_aidl_size];
@@ -27,17 +26,12 @@ public final class FrontendModulationStatus implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int dvbc = 0;
         public static final int dvbs = 1;
         public static final int isdbs = 2;
         public static final int isdbs3 = 3;
         public static final int isdbt = 4;
-    }
-
-    /* synthetic */ FrontendModulationStatus(Parcel parcel, FrontendModulationStatusIA frontendModulationStatusIA) {
-        this(parcel);
     }
 
     public FrontendModulationStatus() {
@@ -128,44 +122,25 @@ public final class FrontendModulationStatus implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.FrontendModulationStatus$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendModulationStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendModulationStatus createFromParcel(Parcel _aidl_source) {
-            return new FrontendModulationStatus(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendModulationStatus[] newArray(int _aidl_size) {
-            return new FrontendModulationStatus[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getDvbc());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getDvbs());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getIsdbs());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getIsdbs3());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeInt(getIsdbt());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

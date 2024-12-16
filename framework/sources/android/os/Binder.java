@@ -8,8 +8,10 @@ import android.util.Log;
 import android.util.Slog;
 import com.android.internal.os.BinderCallHeavyHitterWatcher;
 import com.android.internal.os.BinderInternal;
+import com.android.internal.os.SomeArgs;
 import com.android.internal.util.FastPrintWriter;
 import com.android.internal.util.FunctionalUtils;
+import com.android.internal.util.Preconditions;
 import dalvik.annotation.optimization.CriticalNative;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -29,6 +31,7 @@ public class Binder implements IBinder {
     static final String TAG = "Binder";
     private static final int TRANSACTION_TRACE_NAME_ID_LIMIT = 1024;
     public static final int UNSET_WORKSOURCE = -1;
+    private static volatile ThreadLocal<SomeArgs> sIdentity$ravenwood;
     private String mDescriptor;
     private final long mObject;
     private IInterface mOwner;
@@ -51,6 +54,8 @@ public class Binder implements IBinder {
             return valueOf;
         }
     });
+    private static boolean sIsHandlingBinderTransaction = false;
+    private static IBinderCallback sBinderCallback = null;
     private static volatile BinderInternal.WorkSourceProvider sWorkSourceProvider = new BinderInternal.WorkSourceProvider() { // from class: android.os.Binder$$ExternalSyntheticLambda1
         @Override // com.android.internal.os.BinderInternal.WorkSourceProvider
         public final int resolveWorkSourceUid(int i) {
@@ -59,11 +64,6 @@ public class Binder implements IBinder {
             return callingUid;
         }
     };
-
-    /* renamed from: -$$Nest$smgetNativeFinalizer */
-    static /* bridge */ /* synthetic */ long m3131$$Nest$smgetNativeFinalizer() {
-        return getNativeFinalizer();
-    }
 
     public static final native void blockUntilThreadAvailable();
 
@@ -86,7 +86,8 @@ public class Binder implements IBinder {
 
     private static native long getNativeBBinderHolder();
 
-    private static native long getNativeFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long getNativeFinalizer();
 
     @CriticalNative
     public static final native int getThreadStrictModePolicy();
@@ -95,7 +96,7 @@ public class Binder implements IBinder {
     private static native boolean hasExplicitIdentity();
 
     @CriticalNative
-    public static final native boolean isDirectlyHandlingTransaction();
+    public static final native boolean isDirectlyHandlingTransactionNative();
 
     @CriticalNative
     public static final native void restoreCallingIdentity(long j);
@@ -119,10 +120,8 @@ public class Binder implements IBinder {
 
     public final native void setExtension(IBinder iBinder);
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(Binder.class.getClassLoader(), Binder.m3131$$Nest$smgetNativeFinalizer(), 500);
+    private static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(Binder.class.getClassLoader(), Binder.getNativeFinalizer(), 500);
 
         private NoImagePreloadHolder() {
         }
@@ -196,6 +195,37 @@ public class Binder implements IBinder {
         sWarnOnBlockingOnCurrentThread.set(Boolean.valueOf(sWarnOnBlocking));
     }
 
+    private static class IdentitySupplier implements Supplier<SomeArgs> {
+        private IdentitySupplier() {
+        }
+
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // java.util.function.Supplier
+        public SomeArgs get() {
+            SomeArgs args = SomeArgs.obtain();
+            args.arg1 = Boolean.FALSE;
+            args.argi1 = Process.myUid();
+            args.argi2 = Process.myPid();
+            return args;
+        }
+    }
+
+    public static final boolean isDirectlyHandlingTransactionNative$ravenwood() {
+        return false;
+    }
+
+    public static final boolean isDirectlyHandlingTransaction() {
+        return sIsHandlingBinderTransaction || isDirectlyHandlingTransactionNative();
+    }
+
+    public static void setIsDirectlyHandlingTransactionOverride(boolean isInTransaction) {
+        sIsHandlingBinderTransaction = isInTransaction;
+    }
+
+    private static boolean hasExplicitIdentity$ravenwood() {
+        return ((SomeArgs) ((ThreadLocal) Preconditions.requireNonNullViaRavenwoodRule(sIdentity$ravenwood)).get()).arg1 == Boolean.TRUE;
+    }
+
     public static final int getCallingUidOrThrow() {
         if (!isDirectlyHandlingTransaction() && !hasExplicitIdentity()) {
             throw new IllegalStateException("Thread is not in a binder transaction, and the calling identity has not been explicitly set with clearCallingIdentity");
@@ -212,6 +242,28 @@ public class Binder implements IBinder {
 
     public static final UserHandle getCallingUserHandle() {
         return UserHandle.of(UserHandle.getUserId(getCallingUid()));
+    }
+
+    public static final long clearCallingIdentity$ravenwood() {
+        long res;
+        SomeArgs args = (SomeArgs) ((ThreadLocal) Preconditions.requireNonNullViaRavenwoodRule(sIdentity$ravenwood)).get();
+        long res2 = (args.argi1 << 32) | args.argi2;
+        if (args.arg1 == Boolean.TRUE) {
+            res = res2 | 1073741824;
+        } else {
+            res = res2 & (-1073741825);
+        }
+        args.arg1 = Boolean.TRUE;
+        args.argi1 = Process.myUid();
+        args.argi2 = Process.myPid();
+        return res;
+    }
+
+    public static final void restoreCallingIdentity$ravenwood(long token) {
+        SomeArgs args = (SomeArgs) ((ThreadLocal) Preconditions.requireNonNullViaRavenwoodRule(sIdentity$ravenwood)).get();
+        args.arg1 = (1073741824 & token) != 0 ? Boolean.TRUE : Boolean.FALSE;
+        args.argi1 = (int) (token >> 32);
+        args.argi2 = (int) ((-1073741825) & token);
     }
 
     public static final void withCleanCallingIdentity(FunctionalUtils.ThrowingRunnable action) {
@@ -243,12 +295,25 @@ public class Binder implements IBinder {
         }
     }
 
+    public static final void flushPendingCommands$ravenwood() {
+    }
+
     public static final void joinThreadPool() {
         BinderInternal.joinThreadPool();
     }
 
     public static final boolean isProxy(IInterface iface) {
         return iface.asBinder() != iface;
+    }
+
+    public static final void setTransactionCallback(IBinderCallback callback) {
+        sBinderCallback = callback;
+    }
+
+    public static final void transactionCallback(int pid, int code, int flags, int err) {
+        if (sBinderCallback != null) {
+            sBinderCallback.onTransactionError(pid, code, flags, err);
+        }
     }
 
     public Binder() {
@@ -258,9 +323,10 @@ public class Binder implements IBinder {
     public Binder(String descriptor) {
         this.mTransactionTraceNames = null;
         this.mSimpleDescriptor = null;
-        long nativeBBinderHolder = getNativeBBinderHolder();
-        this.mObject = nativeBBinderHolder;
-        NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, nativeBBinderHolder);
+        this.mObject = getNativeBBinderHolder();
+        if (this.mObject != 0) {
+            NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, this.mObject);
+        }
         this.mDescriptor = descriptor;
     }
 
@@ -286,8 +352,7 @@ public class Binder implements IBinder {
 
     @Override // android.os.IBinder
     public IInterface queryLocalInterface(String descriptor) {
-        String str = this.mDescriptor;
-        if (str != null && str.equals(descriptor)) {
+        if (this.mDescriptor != null && this.mDescriptor.equals(descriptor)) {
             return this.mOwner;
         }
         return null;
@@ -298,7 +363,6 @@ public class Binder implements IBinder {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public interface ProxyTransactListener {
         void onTransactEnded(Object obj);
 
@@ -309,7 +373,6 @@ public class Binder implements IBinder {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class PropagateWorkSourceTransactListener implements ProxyTransactListener {
         @Override // android.os.Binder.ProxyTransactListener
         public Object onTransactStarted(IBinder binder, int transactionCode) {
@@ -334,7 +397,7 @@ public class Binder implements IBinder {
         BinderProxy.setTransactListener(listener);
     }
 
-    public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+    protected boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
         FileDescriptor fileDescriptor;
         if (code != 1598968902) {
             if (code != 1598311760) {
@@ -417,16 +480,17 @@ public class Binder implements IBinder {
     }
 
     public final String getTransactionTraceName(int transactionCode) {
+        boolean isInterfaceUserDefined = getMaxTransactionId() == 0;
         if (this.mTransactionTraceNames == null) {
-            int highestId = Math.min(getMaxTransactionId(), 1024);
+            int highestId = isInterfaceUserDefined ? 1024 : Math.min(getMaxTransactionId(), 1024);
             this.mSimpleDescriptor = getSimpleDescriptor();
             this.mTransactionTraceNames = new AtomicReferenceArray<>(highestId + 1);
         }
-        int highestId2 = transactionCode - 1;
-        if (highestId2 < 0 || highestId2 >= this.mTransactionTraceNames.length()) {
-            return this.mSimpleDescriptor + "#" + transactionCode;
+        int index = isInterfaceUserDefined ? transactionCode : transactionCode - 1;
+        if (index >= this.mTransactionTraceNames.length() || index < 0) {
+            return null;
         }
-        String transactionTraceName = this.mTransactionTraceNames.getAcquire(highestId2);
+        String transactionTraceName = this.mTransactionTraceNames.getAcquire(index);
         if (transactionTraceName == null) {
             String transactionName = getTransactionName(transactionCode);
             StringBuffer buf = new StringBuffer();
@@ -438,7 +502,7 @@ public class Binder implements IBinder {
             }
             buf.append("::server");
             String transactionTraceName2 = buf.toString();
-            this.mTransactionTraceNames.setRelease(highestId2, transactionTraceName2);
+            this.mTransactionTraceNames.setRelease(index, transactionTraceName2);
             return transactionTraceName2;
         }
         return transactionTraceName;
@@ -471,7 +535,7 @@ public class Binder implements IBinder {
         }
     }
 
-    public void doDump(FileDescriptor fd, PrintWriter pw, String[] args) {
+    void doDump(FileDescriptor fd, PrintWriter pw, String[] args) {
         String disabled = sDumpDisabled;
         if (disabled == null) {
             try {
@@ -491,22 +555,10 @@ public class Binder implements IBinder {
     }
 
     @Override // android.os.IBinder
-    public void dumpAsync(FileDescriptor fd, String[] args) {
+    public void dumpAsync(final FileDescriptor fd, final String[] args) {
         FileOutputStream fout = new FileOutputStream(fd);
-        PrintWriter pw = new FastPrintWriter(fout);
+        final PrintWriter pw = new FastPrintWriter(fout);
         Thread thr = new Thread("Binder.dumpAsync") { // from class: android.os.Binder.1
-            final /* synthetic */ String[] val$args;
-            final /* synthetic */ FileDescriptor val$fd;
-            final /* synthetic */ PrintWriter val$pw;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(String name, FileDescriptor fd2, PrintWriter pw2, String[] args2) {
-                super(name);
-                fd = fd2;
-                pw = pw2;
-                args = args2;
-            }
-
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 try {
@@ -517,31 +569,6 @@ public class Binder implements IBinder {
             }
         };
         thr.start();
-    }
-
-    /* renamed from: android.os.Binder$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends Thread {
-        final /* synthetic */ String[] val$args;
-        final /* synthetic */ FileDescriptor val$fd;
-        final /* synthetic */ PrintWriter val$pw;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass1(String name, FileDescriptor fd2, PrintWriter pw2, String[] args2) {
-            super(name);
-            fd = fd2;
-            pw = pw2;
-            args = args2;
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            try {
-                Binder.this.dump(fd, pw, args);
-            } finally {
-                pw.flush();
-            }
-        }
     }
 
     protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
@@ -653,7 +680,11 @@ public class Binder implements IBinder {
         return true;
     }
 
-    public static void checkParcel(IBinder obj, int code, Parcel parcel, String msg) {
+    static void checkParcel(IBinder obj, int code, Parcel parcel, String msg) {
+    }
+
+    private static long getNativeBBinderHolder$ravenwood() {
+        return 0L;
     }
 
     public static void setWorkSourceProvider(BinderInternal.WorkSourceProvider workSourceProvider) {
@@ -680,30 +711,30 @@ public class Binder implements IBinder {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0076, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0067, code lost:
     
-        if (r6 != null) goto L116;
+        if (r6 != null) goto L36;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0078, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0069, code lost:
     
         r8 = android.os.Binder.sWorkSourceProvider.resolveWorkSourceUid(r18.readCallingWorkSourceUid());
         r6.callEnded(r7, r18.dataSize(), r19.dataSize(), r8);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x008d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x007e, code lost:
     
         checkParcel(r16, r17, r19, "Unreasonably large binder reply buffer");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x00cc, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x00bd, code lost:
     
         android.os.StrictMode.clearGatheredViolations();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x00cf, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x00c0, code lost:
     
         return r0;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00c9, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x00ba, code lost:
     
-        if (r6 != null) goto L116;
+        if (r6 != null) goto L36;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -711,8 +742,135 @@ public class Binder implements IBinder {
     */
     private boolean execTransactInternal(int r17, android.os.Parcel r18, android.os.Parcel r19, int r20, int r21) {
         /*
-            Method dump skipped, instructions count: 243
-            To view this dump change 'Code comments level' option to 'DEBUG'
+            r16 = this;
+            r1 = r16
+            r2 = r17
+            r3 = r19
+            r4 = r21
+            java.lang.String r5 = "Unreasonably large binder reply buffer"
+            com.android.internal.os.BinderInternal$Observer r6 = android.os.Binder.sObserver
+            r0 = -1
+            if (r6 == 0) goto L14
+            com.android.internal.os.BinderInternal$CallSession r7 = r6.callStarted(r1, r2, r0)
+            goto L15
+        L14:
+            r7 = 0
+        L15:
+            r8 = 16777216(0x1000000, double:8.289046E-317)
+            boolean r10 = android.os.Trace.isTagEnabled(r8)
+            int r11 = r16.getMaxTransactionId()
+            r12 = 1
+            if (r11 <= 0) goto L25
+            r11 = r12
+            goto L26
+        L25:
+            r11 = 0
+        L26:
+            if (r10 == 0) goto L2d
+            java.lang.String r14 = r16.getTransactionTraceName(r17)
+            goto L2e
+        L2d:
+            r14 = 0
+        L2e:
+            if (r10 == 0) goto L33
+            if (r14 == 0) goto L33
+            goto L34
+        L33:
+            r12 = 0
+        L34:
+            com.android.internal.os.BinderCallHeavyHitterWatcher r15 = android.os.Binder.sHeavyHitterWatcher     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84
+            if (r15 == 0) goto L41
+            if (r4 == r0) goto L41
+            java.lang.Class r13 = r16.getClass()     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84
+            r15.onTransaction(r4, r13, r2)     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84
+        L41:
+            if (r12 == 0) goto L46
+            android.os.Trace.traceBegin(r8, r14)     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84
+        L46:
+            r13 = r20 & 2
+            if (r13 == 0) goto L5e
+            if (r4 == r0) goto L5e
+            android.app.AppOpsManager.startNotedAppOpsCollection(r21)     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84
+            boolean r0 = r16.onTransact(r17, r18, r19, r20)     // Catch: java.lang.Throwable -> L57
+            android.app.AppOpsManager.finishNotedAppOpsCollection()     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84 java.lang.Throwable -> L84
+            goto L62
+        L57:
+            r0 = move-exception
+            r13 = r0
+            android.app.AppOpsManager.finishNotedAppOpsCollection()     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84 java.lang.Throwable -> L84
+            throw r13     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84 java.lang.Throwable -> L84
+        L5e:
+            boolean r0 = r16.onTransact(r17, r18, r19, r20)     // Catch: java.lang.Throwable -> L82 java.lang.Throwable -> L84 java.lang.Throwable -> L84
+        L62:
+            if (r12 == 0) goto L67
+            android.os.Trace.traceEnd(r8)
+        L67:
+            if (r6 == 0) goto L7e
+        L69:
+            com.android.internal.os.BinderInternal$WorkSourceProvider r8 = android.os.Binder.sWorkSourceProvider
+            int r9 = r18.readCallingWorkSourceUid()
+            int r8 = r8.resolveWorkSourceUid(r9)
+            int r9 = r18.dataSize()
+            int r13 = r19.dataSize()
+            r6.callEnded(r7, r9, r13, r8)
+        L7e:
+            checkParcel(r1, r2, r3, r5)
+            goto Lbd
+        L82:
+            r0 = move-exception
+            goto Lc1
+        L84:
+            r0 = move-exception
+            if (r6 == 0) goto L8a
+            r6.callThrewException(r7, r0)     // Catch: java.lang.Throwable -> L82
+        L8a:
+            boolean r13 = android.os.Binder.LOG_RUNTIME_EXCEPTION     // Catch: java.lang.Throwable -> L82
+            java.lang.String r15 = "Caught a RuntimeException from the binder stub implementation."
+            java.lang.String r8 = "Binder"
+            if (r13 == 0) goto L95
+            android.util.Log.w(r8, r15, r0)     // Catch: java.lang.Throwable -> L82
+        L95:
+            r9 = r20 & 1
+            if (r9 == 0) goto La7
+            boolean r9 = r0 instanceof android.os.RemoteException     // Catch: java.lang.Throwable -> L82
+            if (r9 == 0) goto La3
+            java.lang.String r9 = "Binder call failed."
+            android.util.Log.w(r8, r9, r0)     // Catch: java.lang.Throwable -> L82
+            goto Lb1
+        La3:
+            android.util.Log.w(r8, r15, r0)     // Catch: java.lang.Throwable -> L82
+            goto Lb1
+        La7:
+            r8 = 0
+            r3.setDataSize(r8)     // Catch: java.lang.Throwable -> L82
+            r3.setDataPosition(r8)     // Catch: java.lang.Throwable -> L82
+            r3.writeException(r0)     // Catch: java.lang.Throwable -> L82
+        Lb1:
+            r0 = 1
+            if (r12 == 0) goto Lba
+            r8 = 16777216(0x1000000, double:8.289046E-317)
+            android.os.Trace.traceEnd(r8)
+        Lba:
+            if (r6 == 0) goto L7e
+            goto L69
+        Lbd:
+            android.os.StrictMode.clearGatheredViolations()
+            return r0
+        Lc1:
+            if (r12 == 0) goto Lc9
+            r8 = 16777216(0x1000000, double:8.289046E-317)
+            android.os.Trace.traceEnd(r8)
+        Lc9:
+            if (r6 == 0) goto Le0
+            com.android.internal.os.BinderInternal$WorkSourceProvider r8 = android.os.Binder.sWorkSourceProvider
+            int r9 = r18.readCallingWorkSourceUid()
+            int r8 = r8.resolveWorkSourceUid(r9)
+            int r9 = r18.dataSize()
+            int r13 = r19.dataSize()
+            r6.callEnded(r7, r9, r13, r8)
+        Le0:
+            checkParcel(r1, r2, r3, r5)
+            throw r0
         */
         throw new UnsupportedOperationException("Method not decompiled: android.os.Binder.execTransactInternal(int, android.os.Parcel, android.os.Parcel, int, int):boolean");
     }

@@ -18,7 +18,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SmartFaceManager {
     public static final String FALSE = "false";
     public static final String FEATURE_SMART_STAY = "com.sec.android.smartface.smart_stay";
@@ -33,24 +33,22 @@ public class SmartFaceManager {
     public static final String SMART_STAY_FRAMECOUNT_RESET = "smart-stay-framecount-reset";
     private static final String TAG = "SmartFaceManager";
     public static final String TRUE = "true";
-    private final Condition complete;
-    private final Lock lock;
     private int mCallbackData;
-    private final SmartFaceClient mClient;
     private final Context mContext;
     private final EventHandler mEventHandler;
-    private final Object mEventHandlerLock;
     private ISmartFaceService mService = null;
     private SmartFaceInfoListener mListener = null;
     private final Object mListenerLock = new Object();
     private EventHandler mInternalEventHandler = null;
+    private final Object mEventHandlerLock = new Object();
+    private final Lock lock = new ReentrantLock();
+    private final Condition complete = this.lock.newCondition();
+    private final SmartFaceClient mClient = new SmartFaceClient();
 
-    /* loaded from: classes5.dex */
     public interface SmartFaceInfoListener {
         void onInfo(FaceInfo faceInfo, int i);
     }
 
-    /* loaded from: classes5.dex */
     public interface SmartFaceInfoListener2 extends SmartFaceInfoListener {
         void onRegistered(SmartFaceManager smartFaceManager, int i);
 
@@ -62,10 +60,9 @@ public class SmartFaceManager {
     }
 
     private synchronized boolean ensureServiceConnected() {
-        ISmartFaceService iSmartFaceService = this.mService;
-        if (iSmartFaceService != null) {
+        if (this.mService != null) {
             try {
-                iSmartFaceService.setValue(this.mClient, "empty key for ping", "empty value");
+                this.mService.setValue(this.mClient, "empty key for ping", "empty value");
             } catch (RemoteException e) {
                 if (e instanceof DeadObjectException) {
                     this.mService = null;
@@ -81,9 +78,8 @@ public class SmartFaceManager {
 
     private void waitForService() {
         for (int count = 1; count <= 3; count++) {
-            ISmartFaceService asInterface = ISmartFaceService.Stub.asInterface(ServiceManager.getService(SMARTFACE_SERVICE));
-            this.mService = asInterface;
-            if (asInterface != null) {
+            this.mService = ISmartFaceService.Stub.asInterface(ServiceManager.getService(SMARTFACE_SERVICE));
+            if (this.mService != null) {
                 Log.v(TAG, "Service connected!");
                 return;
             } else {
@@ -107,14 +103,8 @@ public class SmartFaceManager {
     }
 
     private SmartFaceManager(Context context) {
-        Object obj = new Object();
-        this.mEventHandlerLock = obj;
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.lock = reentrantLock;
-        this.complete = reentrantLock.newCondition();
         this.mContext = context;
-        this.mClient = new SmartFaceClient();
-        synchronized (obj) {
+        synchronized (this.mEventHandlerLock) {
             Looper looper = Looper.myLooper();
             if (looper != null) {
                 this.mEventHandler = new EventHandler(this, looper);
@@ -160,13 +150,11 @@ public class SmartFaceManager {
                 e.printStackTrace();
             }
             synchronized (this.mEventHandlerLock) {
-                EventHandler eventHandler = this.mEventHandler;
-                if (eventHandler != null) {
-                    eventHandler.removeCallbacksAndMessages(null);
+                if (this.mEventHandler != null) {
+                    this.mEventHandler.removeCallbacksAndMessages(null);
                 }
-                EventHandler eventHandler2 = this.mInternalEventHandler;
-                if (eventHandler2 != null) {
-                    eventHandler2.removeCallbacksAndMessages(null);
+                if (this.mInternalEventHandler != null) {
+                    this.mInternalEventHandler.removeCallbacksAndMessages(null);
                 }
             }
         }
@@ -180,13 +168,11 @@ public class SmartFaceManager {
                 e.printStackTrace();
             }
             synchronized (this.mEventHandlerLock) {
-                EventHandler eventHandler = this.mEventHandler;
-                if (eventHandler != null) {
-                    eventHandler.removeCallbacksAndMessages(null);
+                if (this.mEventHandler != null) {
+                    this.mEventHandler.removeCallbacksAndMessages(null);
                 }
-                EventHandler eventHandler2 = this.mInternalEventHandler;
-                if (eventHandler2 != null) {
-                    eventHandler2.removeCallbacksAndMessages(null);
+                if (this.mInternalEventHandler != null) {
+                    this.mInternalEventHandler.removeCallbacksAndMessages(null);
                 }
             }
         }
@@ -258,6 +244,7 @@ public class SmartFaceManager {
         return ret;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$checkForSmartStay$0(FaceInfo data, int service_type) {
         Log.e(TAG, "checkForSmartStay onInfo: " + Integer.toBinaryString(service_type) + ": " + data.needToStay);
         if ((service_type & 4) != 0) {
@@ -290,8 +277,7 @@ public class SmartFaceManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class SmartFaceClient extends ISmartFaceClient.Stub {
+    private class SmartFaceClient extends ISmartFaceClient.Stub {
         SmartFaceClient() {
             Log.e(SmartFaceManager.TAG, "New SmartFaceClient");
         }
@@ -325,8 +311,7 @@ public class SmartFaceManager {
         return ret;
     }
 
-    /* loaded from: classes5.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         private SmartFaceManager mManager;
 
         public EventHandler(SmartFaceManager manager, Looper looper) {

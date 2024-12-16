@@ -62,9 +62,10 @@ public class PhoneConstants {
     public static final String DATA_NETWORK_TYPE_KEY = "networkType";
     public static final int DEFAULT_SLOT_INDEX = 0;
     public static final int DOMAIN_NON_3GPP_PS = 4;
-    public static final String EXTRA_COMPARE_DOMAIN = "compare_domain";
     public static final String EXTRA_DIAL_DOMAIN = "dial_domain";
     public static final String EXTRA_EMERGENCY_SERVICE_CATEGORY = "emergency_service_category";
+    public static final String EXTRA_EMERGENCY_URNS = "emergency_urns";
+    public static final String EXTRA_USE_EMERGENCY_ROUTING = "use_emergency_routing";
     public static final String FEATURE_ENABLE_BIP = "enableBIP";
     public static final String FEATURE_ENABLE_CBS = "enableCBS";
     public static final String FEATURE_ENABLE_DUN_ALWAYS = "enableDUNAlways";
@@ -116,14 +117,12 @@ public class PhoneConstants {
     public static final String SUB_SETTING = "subSettings";
     public static final int UNSET_MTU = 0;
 
-    /* loaded from: classes5.dex */
     public enum CardUnavailableReason {
         REASON_CARD_REMOVED,
         REASON_RADIO_UNAVAILABLE,
         REASON_SIM_REFRESH_RESET
     }
 
-    /* loaded from: classes5.dex */
     public enum DataState {
         CONNECTED,
         CONNECTING,
@@ -132,7 +131,6 @@ public class PhoneConstants {
         DISCONNECTING
     }
 
-    /* loaded from: classes5.dex */
     public enum State {
         IDLE,
         RINGING,

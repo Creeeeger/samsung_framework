@@ -21,9 +21,8 @@ import java.util.Date;
 import java.util.Enumeration;
 import javax.security.auth.x500.X500Principal;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class X509CertificateObject extends X509CertificateImpl implements PKCS12BagAttributeCarrier {
+class X509CertificateObject extends X509CertificateImpl implements PKCS12BagAttributeCarrier {
     private PKCS12BagAttributeCarrier attrCarrier;
     private final Object cacheLock;
     private byte[] encoded;
@@ -35,7 +34,7 @@ public class X509CertificateObject extends X509CertificateImpl implements PKCS12
     private X500Principal subjectValue;
     private long[] validityValues;
 
-    public X509CertificateObject(JcaJceHelper bcHelper, Certificate c) throws CertificateParsingException {
+    X509CertificateObject(JcaJceHelper bcHelper, Certificate c) throws CertificateParsingException {
         super(bcHelper, c, createBasicConstraints(c), createKeyUsage(c), createSigAlgName(c), createSigAlgParams(c));
         this.cacheLock = new Object();
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
@@ -57,9 +56,8 @@ public class X509CertificateObject extends X509CertificateImpl implements PKCS12
     public X500Principal getIssuerX500Principal() {
         X500Principal x500Principal;
         synchronized (this.cacheLock) {
-            X500Principal x500Principal2 = this.issuerValue;
-            if (x500Principal2 != null) {
-                return x500Principal2;
+            if (this.issuerValue != null) {
+                return this.issuerValue;
             }
             X500Principal temp = super.getIssuerX500Principal();
             synchronized (this.cacheLock) {
@@ -76,9 +74,8 @@ public class X509CertificateObject extends X509CertificateImpl implements PKCS12
     public PublicKey getPublicKey() {
         PublicKey publicKey;
         synchronized (this.cacheLock) {
-            PublicKey publicKey2 = this.publicKeyValue;
-            if (publicKey2 != null) {
-                return publicKey2;
+            if (this.publicKeyValue != null) {
+                return this.publicKeyValue;
             }
             PublicKey temp = super.getPublicKey();
             if (temp == null) {
@@ -98,9 +95,8 @@ public class X509CertificateObject extends X509CertificateImpl implements PKCS12
     public X500Principal getSubjectX500Principal() {
         X500Principal x500Principal;
         synchronized (this.cacheLock) {
-            X500Principal x500Principal2 = this.subjectValue;
-            if (x500Principal2 != null) {
-                return x500Principal2;
+            if (this.subjectValue != null) {
+                return this.subjectValue;
             }
             X500Principal temp = super.getSubjectX500Principal();
             synchronized (this.cacheLock) {
@@ -116,9 +112,8 @@ public class X509CertificateObject extends X509CertificateImpl implements PKCS12
     public long[] getValidityValues() {
         long[] jArr;
         synchronized (this.cacheLock) {
-            long[] jArr2 = this.validityValues;
-            if (jArr2 != null) {
-                return jArr2;
+            if (this.validityValues != null) {
+                return this.validityValues;
             }
             long[] temp = {super.getNotBefore().getTime(), super.getNotAfter().getTime()};
             synchronized (this.cacheLock) {
@@ -203,9 +198,8 @@ public class X509CertificateObject extends X509CertificateImpl implements PKCS12
         byte[] encoding;
         X509CertificateInternal x509CertificateInternal;
         synchronized (this.cacheLock) {
-            X509CertificateInternal x509CertificateInternal2 = this.internalCertificateValue;
-            if (x509CertificateInternal2 != null) {
-                return x509CertificateInternal2;
+            if (this.internalCertificateValue != null) {
+                return this.internalCertificateValue;
             }
             try {
                 byte[] encoding2 = getEncoded();

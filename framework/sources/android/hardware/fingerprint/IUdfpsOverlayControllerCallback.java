@@ -12,7 +12,6 @@ public interface IUdfpsOverlayControllerCallback extends IInterface {
 
     void onUserCanceled() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IUdfpsOverlayControllerCallback {
         @Override // android.hardware.fingerprint.IUdfpsOverlayControllerCallback
         public void onUserCanceled() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IUdfpsOverlayControllerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IUdfpsOverlayControllerCallback {
         static final int TRANSACTION_onUserCanceled = 1;
 
@@ -67,24 +65,20 @@ public interface IUdfpsOverlayControllerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUdfpsOverlayControllerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUdfpsOverlayControllerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUdfpsOverlayControllerCallback.DESCRIPTOR);
+                case 1:
+                    onUserCanceled();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onUserCanceled();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IUdfpsOverlayControllerCallback {
+        private static class Proxy implements IUdfpsOverlayControllerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

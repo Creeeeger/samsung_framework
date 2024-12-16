@@ -15,8 +15,8 @@ import java.util.Map;
 
 /* loaded from: classes5.dex */
 public class DefaultCMSSignatureAlgorithmNameGenerator implements CMSSignatureAlgorithmNameGenerator {
-    private final Map digestAlgs;
-    private final Map encryptionAlgs;
+    private final Map encryptionAlgs = new HashMap();
+    private final Map digestAlgs = new HashMap();
 
     private void addEntries(ASN1ObjectIdentifier alias, String digest, String encryption) {
         this.digestAlgs.put(alias, digest);
@@ -24,10 +24,6 @@ public class DefaultCMSSignatureAlgorithmNameGenerator implements CMSSignatureAl
     }
 
     public DefaultCMSSignatureAlgorithmNameGenerator() {
-        HashMap hashMap = new HashMap();
-        this.encryptionAlgs = hashMap;
-        HashMap hashMap2 = new HashMap();
-        this.digestAlgs = hashMap2;
         addEntries(NISTObjectIdentifiers.dsa_with_sha224, "SHA224", "DSA");
         addEntries(NISTObjectIdentifiers.dsa_with_sha256, "SHA256", "DSA");
         addEntries(NISTObjectIdentifiers.dsa_with_sha384, "SHA384", "DSA");
@@ -56,17 +52,17 @@ public class DefaultCMSSignatureAlgorithmNameGenerator implements CMSSignatureAl
         addEntries(EACObjectIdentifiers.id_TA_RSA_v1_5_SHA_256, "SHA256", "RSA");
         addEntries(EACObjectIdentifiers.id_TA_RSA_PSS_SHA_1, "SHA1", "RSAandMGF1");
         addEntries(EACObjectIdentifiers.id_TA_RSA_PSS_SHA_256, "SHA256", "RSAandMGF1");
-        hashMap.put(X9ObjectIdentifiers.id_dsa, "DSA");
-        hashMap.put(PKCSObjectIdentifiers.rsaEncryption, "RSA");
-        hashMap.put(TeleTrusTObjectIdentifiers.teleTrusTRSAsignatureAlgorithm, "RSA");
-        hashMap.put(X509ObjectIdentifiers.id_ea_rsa, "RSA");
-        hashMap.put(PKCSObjectIdentifiers.id_RSASSA_PSS, "RSAandMGF1");
-        hashMap2.put(PKCSObjectIdentifiers.md5, KeyProperties.DIGEST_MD5);
-        hashMap2.put(OIWObjectIdentifiers.idSHA1, "SHA1");
-        hashMap2.put(NISTObjectIdentifiers.id_sha224, "SHA224");
-        hashMap2.put(NISTObjectIdentifiers.id_sha256, "SHA256");
-        hashMap2.put(NISTObjectIdentifiers.id_sha384, "SHA384");
-        hashMap2.put(NISTObjectIdentifiers.id_sha512, "SHA512");
+        this.encryptionAlgs.put(X9ObjectIdentifiers.id_dsa, "DSA");
+        this.encryptionAlgs.put(PKCSObjectIdentifiers.rsaEncryption, "RSA");
+        this.encryptionAlgs.put(TeleTrusTObjectIdentifiers.teleTrusTRSAsignatureAlgorithm, "RSA");
+        this.encryptionAlgs.put(X509ObjectIdentifiers.id_ea_rsa, "RSA");
+        this.encryptionAlgs.put(PKCSObjectIdentifiers.id_RSASSA_PSS, "RSAandMGF1");
+        this.digestAlgs.put(PKCSObjectIdentifiers.md5, KeyProperties.DIGEST_MD5);
+        this.digestAlgs.put(OIWObjectIdentifiers.idSHA1, "SHA1");
+        this.digestAlgs.put(NISTObjectIdentifiers.id_sha224, "SHA224");
+        this.digestAlgs.put(NISTObjectIdentifiers.id_sha256, "SHA256");
+        this.digestAlgs.put(NISTObjectIdentifiers.id_sha384, "SHA384");
+        this.digestAlgs.put(NISTObjectIdentifiers.id_sha512, "SHA512");
     }
 
     private String getDigestAlgName(ASN1ObjectIdentifier digestAlgOID) {

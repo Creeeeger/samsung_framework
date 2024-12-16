@@ -37,7 +37,7 @@ public class ButtonBarLayout extends LinearLayout {
     public void setAllowStacking(boolean allowStacking) {
         if (this.mAllowStacking != allowStacking) {
             this.mAllowStacking = allowStacking;
-            if (!allowStacking && getOrientation() == 1) {
+            if (!this.mAllowStacking && getOrientation() == 1) {
                 setStacked(false);
             }
             requestLayout();
@@ -45,7 +45,7 @@ public class ButtonBarLayout extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int initialWidthMeasureSpec;
         int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);
         if (this.mAllowStacking) {

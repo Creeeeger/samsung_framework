@@ -8,14 +8,13 @@ import com.android.internal.org.bouncycastle.cms.CMSAttributeTableGenerator;
 /* loaded from: classes2.dex */
 public final class KeyParameterValue implements Parcelable {
     public static final Parcelable.Creator<KeyParameterValue> CREATOR = new Parcelable.Creator<KeyParameterValue>() { // from class: android.hardware.security.keymint.KeyParameterValue.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyParameterValue createFromParcel(Parcel _aidl_source) {
             return new KeyParameterValue(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyParameterValue[] newArray(int _aidl_size) {
             return new KeyParameterValue[_aidl_size];
@@ -39,7 +38,6 @@ public final class KeyParameterValue implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int algorithm = 1;
         public static final int blob = 14;
@@ -56,10 +54,6 @@ public final class KeyParameterValue implements Parcelable {
         public static final int origin = 6;
         public static final int paddingMode = 3;
         public static final int securityLevel = 9;
-    }
-
-    /* synthetic */ KeyParameterValue(Parcel parcel, KeyParameterValueIA keyParameterValueIA) {
-        this(parcel);
     }
 
     public KeyParameterValue() {
@@ -280,74 +274,55 @@ public final class KeyParameterValue implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.security.keymint.KeyParameterValue$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyParameterValue> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyParameterValue createFromParcel(Parcel _aidl_source) {
-            return new KeyParameterValue(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyParameterValue[] newArray(int _aidl_size) {
-            return new KeyParameterValue[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getInvalid());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getAlgorithm());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getBlockMode());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getPaddingMode());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeInt(getDigest());
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeInt(getEcCurve());
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeInt(getOrigin());
-                return;
+                break;
             case 7:
                 _aidl_parcel.writeInt(getKeyPurpose());
-                return;
+                break;
             case 8:
                 _aidl_parcel.writeInt(getHardwareAuthenticatorType());
-                return;
+                break;
             case 9:
                 _aidl_parcel.writeInt(getSecurityLevel());
-                return;
+                break;
             case 10:
                 _aidl_parcel.writeBoolean(getBoolValue());
-                return;
+                break;
             case 11:
                 _aidl_parcel.writeInt(getInteger());
-                return;
+                break;
             case 12:
                 _aidl_parcel.writeLong(getLongInteger());
-                return;
+                break;
             case 13:
                 _aidl_parcel.writeLong(getDateTime());
-                return;
+                break;
             case 14:
                 _aidl_parcel.writeByteArray(getBlob());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

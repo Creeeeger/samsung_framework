@@ -16,7 +16,6 @@ public abstract class LightsManager {
     private static final String TAG = "LightsManager";
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface LightType {
     }
 
@@ -28,7 +27,6 @@ public abstract class LightsManager {
 
     public abstract LightsSession openSession(int i);
 
-    /* loaded from: classes2.dex */
     public static abstract class LightsSession implements AutoCloseable {
         private final IBinder mToken = new Binder();
 

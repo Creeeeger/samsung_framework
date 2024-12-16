@@ -12,7 +12,6 @@ public interface IUiModeManagerCallback extends IInterface {
 
     void notifyContrastChanged(float f) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IUiModeManagerCallback {
         @Override // android.app.IUiModeManagerCallback
         public void notifyContrastChanged(float contrast) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IUiModeManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IUiModeManagerCallback {
         static final int TRANSACTION_notifyContrastChanged = 1;
 
@@ -67,26 +65,22 @@ public interface IUiModeManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUiModeManagerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUiModeManagerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUiModeManagerCallback.DESCRIPTOR);
+                case 1:
+                    float _arg0 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    notifyContrastChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            float _arg0 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            notifyContrastChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IUiModeManagerCallback {
+        private static class Proxy implements IUiModeManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

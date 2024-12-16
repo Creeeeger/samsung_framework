@@ -39,14 +39,13 @@ public final class AudioChannelLayout implements Parcelable {
     public static final int CHANNEL_VOICE_DNLINK = 32768;
     public static final int CHANNEL_VOICE_UPLINK = 16384;
     public static final Parcelable.Creator<AudioChannelLayout> CREATOR = new Parcelable.Creator<AudioChannelLayout>() { // from class: android.media.audio.common.AudioChannelLayout.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioChannelLayout createFromParcel(Parcel _aidl_source) {
             return new AudioChannelLayout(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioChannelLayout[] newArray(int _aidl_size) {
             return new AudioChannelLayout[_aidl_size];
@@ -121,17 +120,12 @@ public final class AudioChannelLayout implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int indexMask = 2;
         public static final int invalid = 1;
         public static final int layoutMask = 3;
         public static final int none = 0;
         public static final int voiceMask = 4;
-    }
-
-    /* synthetic */ AudioChannelLayout(Parcel parcel, AudioChannelLayoutIA audioChannelLayoutIA) {
-        this(parcel);
     }
 
     public AudioChannelLayout() {
@@ -222,44 +216,25 @@ public final class AudioChannelLayout implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.media.audio.common.AudioChannelLayout$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioChannelLayout> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioChannelLayout createFromParcel(Parcel _aidl_source) {
-            return new AudioChannelLayout(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioChannelLayout[] newArray(int _aidl_size) {
-            return new AudioChannelLayout[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getNone());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getInvalid());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getIndexMask());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getLayoutMask());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeInt(getVoiceMask());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -300,15 +275,15 @@ public final class AudioChannelLayout implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.media.audio.common.AudioChannelLayout.none(" + getNone() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioChannelLayout.none(" + getNone() + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.media.audio.common.AudioChannelLayout.invalid(" + getInvalid() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioChannelLayout.invalid(" + getInvalid() + NavigationBarInflaterView.KEY_CODE_END;
             case 2:
-                return "android.media.audio.common.AudioChannelLayout.indexMask(" + getIndexMask() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioChannelLayout.indexMask(" + getIndexMask() + NavigationBarInflaterView.KEY_CODE_END;
             case 3:
-                return "android.media.audio.common.AudioChannelLayout.layoutMask(" + getLayoutMask() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioChannelLayout.layoutMask(" + getLayoutMask() + NavigationBarInflaterView.KEY_CODE_END;
             case 4:
-                return "android.media.audio.common.AudioChannelLayout.voiceMask(" + getVoiceMask() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioChannelLayout.voiceMask(" + getVoiceMask() + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

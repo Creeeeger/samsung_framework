@@ -12,7 +12,7 @@ public class UcmKeyStoreKey implements Key {
         this.mAlgorithm = algorithm;
     }
 
-    public String getAlias() {
+    String getAlias() {
         return this.mAlias;
     }
 
@@ -32,12 +32,8 @@ public class UcmKeyStoreKey implements Key {
     }
 
     public int hashCode() {
-        int i = 1 * 31;
-        String str = this.mAlgorithm;
-        int result = i + (str == null ? 0 : str.hashCode());
-        int result2 = result * 31;
-        String str2 = this.mAlias;
-        return result2 + (str2 != null ? str2.hashCode() : 0);
+        int result = (1 * 31) + (this.mAlgorithm == null ? 0 : this.mAlgorithm.hashCode());
+        return (result * 31) + (this.mAlias != null ? this.mAlias.hashCode() : 0);
     }
 
     public boolean equals(Object obj) {
@@ -48,20 +44,18 @@ public class UcmKeyStoreKey implements Key {
             return false;
         }
         UcmKeyStoreKey other = (UcmKeyStoreKey) obj;
-        String str = this.mAlgorithm;
-        if (str == null) {
+        if (this.mAlgorithm == null) {
             if (other.mAlgorithm != null) {
                 return false;
             }
-        } else if (!str.equals(other.mAlgorithm)) {
+        } else if (!this.mAlgorithm.equals(other.mAlgorithm)) {
             return false;
         }
-        String str2 = this.mAlias;
-        if (str2 == null) {
+        if (this.mAlias == null) {
             if (other.mAlias != null) {
                 return false;
             }
-        } else if (!str2.equals(other.mAlias)) {
+        } else if (!this.mAlias.equals(other.mAlias)) {
             return false;
         }
         return true;

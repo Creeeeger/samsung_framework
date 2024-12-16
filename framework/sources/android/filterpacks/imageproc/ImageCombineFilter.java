@@ -33,8 +33,7 @@ public abstract class ImageCombineFilter extends Filter {
         if (this.mParameterName != null) {
             try {
                 Field programField = ImageCombineFilter.class.getDeclaredField("mProgram");
-                String str = this.mParameterName;
-                addProgramPort(str, str, programField, Float.TYPE, false);
+                addProgramPort(this.mParameterName, this.mParameterName, programField, Float.TYPE, false);
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException("Internal Error: mProgram field not found!");
             }
@@ -62,8 +61,8 @@ public abstract class ImageCombineFilter extends Filter {
     @Override // android.filterfw.core.Filter
     public void process(FilterContext context) {
         int i = 0;
+        Frame[] inputs = new Frame[this.mInputNames.length];
         String[] strArr = this.mInputNames;
-        Frame[] inputs = new Frame[strArr.length];
         int length = strArr.length;
         int i2 = 0;
         while (i2 < length) {
@@ -92,11 +91,10 @@ public abstract class ImageCombineFilter extends Filter {
                     this.mProgram = null;
                     break;
             }
-            Program program = this.mProgram;
-            if (program == null) {
+            if (this.mProgram == null) {
                 throw new RuntimeException("Could not create a program for image filter " + this + "!");
             }
-            initProgramInputs(program, context);
+            initProgramInputs(this.mProgram, context);
             this.mCurrentTarget = target;
         }
     }

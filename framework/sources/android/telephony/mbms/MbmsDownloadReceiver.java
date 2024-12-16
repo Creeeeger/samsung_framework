@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class MbmsDownloadReceiver extends BroadcastReceiver {
     public static final String DOWNLOAD_TOKEN_SUFFIX = ".download_token";
     private static final String EMBMS_INTENT_PERMISSION = "android.permission.SEND_EMBMS_INTENTS";
@@ -287,14 +287,8 @@ public class MbmsDownloadReceiver extends BroadcastReceiver {
     private void cleanupTempFiles(Context context, Intent intent) {
         String serviceId = intent.getStringExtra(VendorUtils.EXTRA_SERVICE_ID);
         File tempFileDir = MbmsUtils.getEmbmsTempFileDirForService(context, serviceId);
-        List<Uri> filesInUse = intent.getParcelableArrayListExtra(VendorUtils.EXTRA_TEMP_FILES_IN_USE, Uri.class);
+        final List<Uri> filesInUse = intent.getParcelableArrayListExtra(VendorUtils.EXTRA_TEMP_FILES_IN_USE, Uri.class);
         File[] filesToDelete = tempFileDir.listFiles(new FileFilter() { // from class: android.telephony.mbms.MbmsDownloadReceiver.1
-            final /* synthetic */ List val$filesInUse;
-
-            AnonymousClass1(List filesInUse2) {
-                filesInUse = filesInUse2;
-            }
-
             @Override // java.io.FileFilter
             public boolean accept(File file) {
                 try {
@@ -312,31 +306,6 @@ public class MbmsDownloadReceiver extends BroadcastReceiver {
         });
         for (File fileToDelete : filesToDelete) {
             fileToDelete.delete();
-        }
-    }
-
-    /* renamed from: android.telephony.mbms.MbmsDownloadReceiver$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements FileFilter {
-        final /* synthetic */ List val$filesInUse;
-
-        AnonymousClass1(List filesInUse2) {
-            filesInUse = filesInUse2;
-        }
-
-        @Override // java.io.FileFilter
-        public boolean accept(File file) {
-            try {
-                File canonicalFile = file.getCanonicalFile();
-                if (!canonicalFile.getName().endsWith(MbmsDownloadReceiver.TEMP_FILE_SUFFIX)) {
-                    return false;
-                }
-                Uri fileInUseUri = Uri.fromFile(canonicalFile);
-                return !filesInUse.contains(fileInUseUri);
-            } catch (IOException e) {
-                Log.w(MbmsDownloadReceiver.LOG_TAG, "Got IOException canonicalizing " + file + ", not deleting.");
-                return false;
-            }
         }
     }
 
@@ -392,13 +361,11 @@ public class MbmsDownloadReceiver extends BroadcastReceiver {
     }
 
     private String getFileProviderAuthorityCached(Context context) {
-        String str = this.mFileProviderAuthorityCache;
-        if (str != null) {
-            return str;
+        if (this.mFileProviderAuthorityCache != null) {
+            return this.mFileProviderAuthorityCache;
         }
-        String fileProviderAuthority = getFileProviderAuthority(context);
-        this.mFileProviderAuthorityCache = fileProviderAuthority;
-        return fileProviderAuthority;
+        this.mFileProviderAuthorityCache = getFileProviderAuthority(context);
+        return this.mFileProviderAuthorityCache;
     }
 
     private static String getFileProviderAuthority(Context context) {

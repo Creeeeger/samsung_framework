@@ -7,23 +7,18 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class BooleanPolicyValue extends PolicyValue<Boolean> {
     public static final Parcelable.Creator<BooleanPolicyValue> CREATOR = new Parcelable.Creator<BooleanPolicyValue>() { // from class: android.app.admin.BooleanPolicyValue.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BooleanPolicyValue createFromParcel(Parcel source) {
             return new BooleanPolicyValue(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BooleanPolicyValue[] newArray(int size) {
             return new BooleanPolicyValue[size];
         }
     };
-
-    /* synthetic */ BooleanPolicyValue(Parcel parcel, BooleanPolicyValueIA booleanPolicyValueIA) {
-        this(parcel);
-    }
 
     public BooleanPolicyValue(boolean value) {
         super(Boolean.valueOf(value));
@@ -60,22 +55,5 @@ public final class BooleanPolicyValue extends PolicyValue<Boolean> {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBoolean(getValue().booleanValue());
-    }
-
-    /* renamed from: android.app.admin.BooleanPolicyValue$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BooleanPolicyValue> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BooleanPolicyValue createFromParcel(Parcel source) {
-            return new BooleanPolicyValue(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BooleanPolicyValue[] newArray(int size) {
-            return new BooleanPolicyValue[size];
-        }
     }
 }

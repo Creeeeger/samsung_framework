@@ -13,7 +13,6 @@ public interface ITransactionReadyCallback extends IInterface {
 
     void onTransactionReady(SurfaceControl.Transaction transaction) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITransactionReadyCallback {
         @Override // android.window.ITransactionReadyCallback
         public void onTransactionReady(SurfaceControl.Transaction t) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ITransactionReadyCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITransactionReadyCallback {
         static final int TRANSACTION_onTransactionReady = 1;
 
@@ -68,27 +66,23 @@ public interface ITransactionReadyCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITransactionReadyCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITransactionReadyCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITransactionReadyCallback.DESCRIPTOR);
+                case 1:
+                    SurfaceControl.Transaction _arg0 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTransactionReady(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SurfaceControl.Transaction _arg0 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTransactionReady(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITransactionReadyCallback {
+        private static class Proxy implements ITransactionReadyCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

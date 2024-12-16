@@ -20,7 +20,7 @@ final class AuthenticatorService {
         return sService;
     }
 
-    public static int getVersion() {
+    static int getVersion() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             int result = service.getVersion();
@@ -69,7 +69,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static boolean setChallenge(byte[] challenge) {
+    static boolean setChallenge(byte[] challenge) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             boolean result = service.setChallenge(challenge);
@@ -81,7 +81,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static byte[] getWrappedObject(byte[] challenge) {
+    static byte[] getWrappedObject(byte[] challenge) {
         byte[] result = new byte[0];
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -94,7 +94,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static boolean initializeDrk() {
+    static boolean initializeDrk() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             boolean result = service.initializeDrk();
@@ -106,7 +106,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static boolean terminateDrk() {
+    static boolean terminateDrk() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             boolean result = service.terminateDrk();
@@ -118,7 +118,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static byte[] getDrkKeyHandle() {
+    static byte[] getDrkKeyHandle() {
         byte[] result = new byte[0];
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -131,7 +131,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static boolean writeFile(byte[] data, String path) {
+    static boolean writeFile(byte[] data, String path) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             boolean result = service.writeFile(data, path);
@@ -143,7 +143,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static boolean deleteFile(String path) {
+    static boolean deleteFile(String path) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             boolean result = service.deleteFile(path);
@@ -168,7 +168,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static boolean initializeWithPreloadedTa() {
+    static boolean initializeWithPreloadedTa() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             boolean result = service.initializeWithPreloadedTa();
@@ -180,7 +180,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static boolean terminateWithPreloadedTa() {
+    static boolean terminateWithPreloadedTa() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             boolean result = service.terminateWithPreloadedTa();
@@ -192,7 +192,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static byte[] processWithPreloadedTa(byte[] command, String appId) {
+    static byte[] processWithPreloadedTa(byte[] command, String appId) {
         byte[] result = new byte[0];
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -205,7 +205,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static String readFile(String path) {
+    static String readFile(String path) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
             String result = service.readFile(path);
@@ -217,7 +217,7 @@ final class AuthenticatorService {
         }
     }
 
-    public static List<String> getMatchedFilePaths(String path, String filter) {
+    static List<String> getMatchedFilePaths(String path, String filter) {
         List<String> result = Collections.emptyList();
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {

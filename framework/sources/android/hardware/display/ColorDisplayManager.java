@@ -12,6 +12,7 @@ import android.provider.Settings;
 import com.android.internal.R;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto;
+import com.android.server.display.feature.flags.Flags;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.LocalTime;
@@ -50,17 +51,14 @@ public final class ColorDisplayManager {
     private MetricsLogger mMetricsLogger;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AutoMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface CapabilityType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ColorMode {
     }
 
@@ -201,7 +199,7 @@ public final class ColorDisplayManager {
     }
 
     public static boolean isReduceBrightColorsAvailable(Context context) {
-        return context.getResources().getBoolean(R.bool.config_reduceBrightColorsAvailable);
+        return context.getResources().getBoolean(R.bool.config_reduceBrightColorsAvailable) && !(Flags.evenDimmer() && context.getResources().getBoolean(R.bool.config_evenDimmerEnabled));
     }
 
     public static int getMinimumReduceBrightColorsStrength(Context context) {
@@ -233,8 +231,7 @@ public final class ColorDisplayManager {
         return this.mMetricsLogger;
     }
 
-    /* loaded from: classes2.dex */
-    public static class ColorDisplayManagerInternal {
+    private static class ColorDisplayManagerInternal {
         private static ColorDisplayManagerInternal sInstance;
         private final IColorDisplayManager mCdm;
 

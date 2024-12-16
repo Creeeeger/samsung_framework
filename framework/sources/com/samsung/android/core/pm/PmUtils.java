@@ -7,7 +7,7 @@ import com.samsung.android.desktopmode.DesktopModeFeature;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class PmUtils {
     private static final String TAG = "PmUtils";
     private static final List<String> sLiveIconPackages = Arrays.asList("com.sec.android.app.clockpackage", "com.android.calendar", "com.samsung.android.calendar", "com.sec.android.widgetapp.SPlannerAppWidget", "com.samsung.android.game.gamehome", "com.samsung.android.opencalendar", "com.android.deskclock");

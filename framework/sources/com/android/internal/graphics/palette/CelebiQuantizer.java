@@ -3,7 +3,7 @@ package com.android.internal.graphics.palette;
 import com.android.internal.graphics.palette.Palette;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class CelebiQuantizer implements Quantizer {
     private List<Palette.Swatch> mSwatches;
 

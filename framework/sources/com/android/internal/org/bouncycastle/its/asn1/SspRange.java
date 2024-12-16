@@ -86,9 +86,8 @@ public class SspRange extends ASN1Object {
         if (this.isAll) {
             return DERNull.INSTANCE;
         }
-        BitmapSspRange bitmapSspRange = this.bitmapSspRange;
-        if (bitmapSspRange != null) {
-            return bitmapSspRange.toASN1Primitive();
+        if (this.bitmapSspRange != null) {
+            return this.bitmapSspRange.toASN1Primitive();
         }
         return this.opaque.toASN1Primitive();
     }

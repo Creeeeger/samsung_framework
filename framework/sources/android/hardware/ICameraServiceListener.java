@@ -20,36 +20,35 @@ public interface ICameraServiceListener extends IInterface {
 
     void onCameraAccessPrioritiesChanged() throws RemoteException;
 
-    void onCameraClosed(String str) throws RemoteException;
+    void onCameraClosed(String str, int i) throws RemoteException;
 
-    void onCameraDeviceStateChanged(String str, int i, int i2, String str2, int i3, int i4) throws RemoteException;
+    void onCameraDeviceStateChanged(String str, int i, int i2, String str2, int i3, int i4, int i5) throws RemoteException;
 
-    void onCameraOpened(String str, String str2) throws RemoteException;
+    void onCameraOpened(String str, String str2, int i) throws RemoteException;
 
-    void onPhysicalCameraStatusChanged(int i, String str, String str2) throws RemoteException;
+    void onPhysicalCameraStatusChanged(int i, String str, String str2, int i2) throws RemoteException;
 
-    void onStatusChanged(int i, String str) throws RemoteException;
+    void onStatusChanged(int i, String str, int i2) throws RemoteException;
 
-    void onTorchStatusChanged(int i, String str) throws RemoteException;
+    void onTorchStatusChanged(int i, String str, int i2) throws RemoteException;
 
-    void onTorchStrengthLevelChanged(String str, int i) throws RemoteException;
+    void onTorchStrengthLevelChanged(String str, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraServiceListener {
         @Override // android.hardware.ICameraServiceListener
-        public void onStatusChanged(int status, String cameraId) throws RemoteException {
+        public void onStatusChanged(int status, String cameraId, int deviceId) throws RemoteException {
         }
 
         @Override // android.hardware.ICameraServiceListener
-        public void onPhysicalCameraStatusChanged(int status, String cameraId, String physicalCameraId) throws RemoteException {
+        public void onPhysicalCameraStatusChanged(int status, String cameraId, String physicalCameraId, int deviceId) throws RemoteException {
         }
 
         @Override // android.hardware.ICameraServiceListener
-        public void onTorchStatusChanged(int status, String cameraId) throws RemoteException {
+        public void onTorchStatusChanged(int status, String cameraId, int deviceId) throws RemoteException {
         }
 
         @Override // android.hardware.ICameraServiceListener
-        public void onTorchStrengthLevelChanged(String cameraId, int newTorchStrength) throws RemoteException {
+        public void onTorchStrengthLevelChanged(String cameraId, int newTorchStrength, int deviceId) throws RemoteException {
         }
 
         @Override // android.hardware.ICameraServiceListener
@@ -57,15 +56,15 @@ public interface ICameraServiceListener extends IInterface {
         }
 
         @Override // android.hardware.ICameraServiceListener
-        public void onCameraOpened(String cameraId, String clientPackageId) throws RemoteException {
+        public void onCameraOpened(String cameraId, String clientPackageId, int deviceId) throws RemoteException {
         }
 
         @Override // android.hardware.ICameraServiceListener
-        public void onCameraClosed(String cameraId) throws RemoteException {
+        public void onCameraClosed(String cameraId, int deviceId) throws RemoteException {
         }
 
         @Override // android.hardware.ICameraServiceListener
-        public void onCameraDeviceStateChanged(String cameraId, int facing, int newCameraState, String clientName, int apiLevel, int userId) throws RemoteException {
+        public void onCameraDeviceStateChanged(String cameraId, int facing, int newCameraState, String clientName, int apiLevel, int userId, int deviceId) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -74,7 +73,6 @@ public interface ICameraServiceListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraServiceListener {
         public static final String DESCRIPTOR = "android.hardware.ICameraServiceListener";
         static final int TRANSACTION_onCameraAccessPrioritiesChanged = 5;
@@ -139,69 +137,73 @@ public interface ICameraServiceListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStatusChanged(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPhysicalCameraStatusChanged(_arg02, _arg12, _arg22, _arg3);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTorchStatusChanged(_arg03, _arg13, _arg23);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTorchStrengthLevelChanged(_arg04, _arg14, _arg24);
+                    return true;
+                case 5:
+                    onCameraAccessPrioritiesChanged();
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    String _arg15 = data.readString();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCameraOpened(_arg05, _arg15, _arg25);
+                    return true;
+                case 7:
+                    String _arg06 = data.readString();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCameraClosed(_arg06, _arg16);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    int _arg17 = data.readInt();
+                    int _arg26 = data.readInt();
+                    String _arg32 = data.readString();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCameraDeviceStateChanged(_arg07, _arg17, _arg26, _arg32, _arg4, _arg5, _arg6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStatusChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onPhysicalCameraStatusChanged(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            onTorchStatusChanged(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTorchStrengthLevelChanged(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            onCameraAccessPrioritiesChanged();
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            onCameraOpened(_arg05, _arg15);
-                            return true;
-                        case 7:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            onCameraClosed(_arg06);
-                            return true;
-                        case 8:
-                            String _arg07 = data.readString();
-                            int _arg16 = data.readInt();
-                            int _arg22 = data.readInt();
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCameraDeviceStateChanged(_arg07, _arg16, _arg22, _arg3, _arg4, _arg5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraServiceListener {
+        private static class Proxy implements ICameraServiceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -218,12 +220,13 @@ public interface ICameraServiceListener extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceListener
-            public void onStatusChanged(int status, String cameraId) throws RemoteException {
+            public void onStatusChanged(int status, String cameraId, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(status);
                     _data.writeString(cameraId);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -231,13 +234,14 @@ public interface ICameraServiceListener extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceListener
-            public void onPhysicalCameraStatusChanged(int status, String cameraId, String physicalCameraId) throws RemoteException {
+            public void onPhysicalCameraStatusChanged(int status, String cameraId, String physicalCameraId, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(status);
                     _data.writeString(cameraId);
                     _data.writeString(physicalCameraId);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(2, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -245,12 +249,13 @@ public interface ICameraServiceListener extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceListener
-            public void onTorchStatusChanged(int status, String cameraId) throws RemoteException {
+            public void onTorchStatusChanged(int status, String cameraId, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(status);
                     _data.writeString(cameraId);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(3, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -258,12 +263,13 @@ public interface ICameraServiceListener extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceListener
-            public void onTorchStrengthLevelChanged(String cameraId, int newTorchStrength) throws RemoteException {
+            public void onTorchStrengthLevelChanged(String cameraId, int newTorchStrength, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(cameraId);
                     _data.writeInt(newTorchStrength);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(4, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -282,12 +288,13 @@ public interface ICameraServiceListener extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceListener
-            public void onCameraOpened(String cameraId, String clientPackageId) throws RemoteException {
+            public void onCameraOpened(String cameraId, String clientPackageId, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(cameraId);
                     _data.writeString(clientPackageId);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(6, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -295,11 +302,12 @@ public interface ICameraServiceListener extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceListener
-            public void onCameraClosed(String cameraId) throws RemoteException {
+            public void onCameraClosed(String cameraId, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(cameraId);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(7, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -307,7 +315,7 @@ public interface ICameraServiceListener extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceListener
-            public void onCameraDeviceStateChanged(String cameraId, int facing, int newCameraState, String clientName, int apiLevel, int userId) throws RemoteException {
+            public void onCameraDeviceStateChanged(String cameraId, int facing, int newCameraState, String clientName, int apiLevel, int userId, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
@@ -317,6 +325,7 @@ public interface ICameraServiceListener extends IInterface {
                     _data.writeString(clientName);
                     _data.writeInt(apiLevel);
                     _data.writeInt(userId);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(8, _data, null, 1);
                 } finally {
                     _data.recycle();

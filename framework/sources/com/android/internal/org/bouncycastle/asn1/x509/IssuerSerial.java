@@ -72,9 +72,8 @@ public class IssuerSerial extends ASN1Object {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
         v.add(this.issuer);
         v.add(this.serial);
-        DERBitString dERBitString = this.issuerUID;
-        if (dERBitString != null) {
-            v.add(dERBitString);
+        if (this.issuerUID != null) {
+            v.add(this.issuerUID);
         }
         return new DERSequence(v);
     }

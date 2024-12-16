@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IBiometricSysuiReceiver extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.IBiometricSysuiReceiver";
 
@@ -22,7 +22,6 @@ public interface IBiometricSysuiReceiver extends IInterface {
 
     void onTryAgainPressed() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBiometricSysuiReceiver {
         @Override // android.hardware.biometrics.IBiometricSysuiReceiver
         public void onDialogDismissed(int reason, byte[] credentialAttestation) throws RemoteException {
@@ -54,7 +53,6 @@ public interface IBiometricSysuiReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBiometricSysuiReceiver {
         static final int TRANSACTION_onDeviceCredentialPressed = 3;
         static final int TRANSACTION_onDialogAnimatedIn = 5;
@@ -112,46 +110,42 @@ public interface IBiometricSysuiReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBiometricSysuiReceiver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBiometricSysuiReceiver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBiometricSysuiReceiver.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onDialogDismissed(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onTryAgainPressed();
+                    return true;
+                case 3:
+                    onDeviceCredentialPressed();
+                    return true;
+                case 4:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSystemEvent(_arg02);
+                    return true;
+                case 5:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onDialogAnimatedIn(_arg03);
+                    return true;
+                case 6:
+                    onStartFingerprintNow();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onDialogDismissed(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onTryAgainPressed();
-                            return true;
-                        case 3:
-                            onDeviceCredentialPressed();
-                            return true;
-                        case 4:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSystemEvent(_arg02);
-                            return true;
-                        case 5:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onDialogAnimatedIn(_arg03);
-                            return true;
-                        case 6:
-                            onStartFingerprintNow();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBiometricSysuiReceiver {
+        private static class Proxy implements IBiometricSysuiReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -23,7 +23,6 @@ public interface IAudioPolicyCallback extends IInterface {
 
     void notifyVolumeAdjust(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAudioPolicyCallback {
         @Override // android.media.audiopolicy.IAudioPolicyCallback
         public void notifyAudioFocusGrant(AudioFocusInfo afi, int requestResult) throws RemoteException {
@@ -59,7 +58,6 @@ public interface IAudioPolicyCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAudioPolicyCallback {
         public static final String DESCRIPTOR = "android.media.audiopolicy.IAudioPolicyCallback";
         static final int TRANSACTION_notifyAudioFocusAbandon = 4;
@@ -121,57 +119,54 @@ public interface IAudioPolicyCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    AudioFocusInfo _arg0 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyAudioFocusGrant(_arg0, _arg1);
+                    return true;
+                case 2:
+                    AudioFocusInfo _arg02 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyAudioFocusLoss(_arg02, _arg12);
+                    return true;
+                case 3:
+                    AudioFocusInfo _arg03 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyAudioFocusRequest(_arg03, _arg13);
+                    return true;
+                case 4:
+                    AudioFocusInfo _arg04 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyAudioFocusAbandon(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyMixStateUpdate(_arg05, _arg14);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyVolumeAdjust(_arg06);
+                    return true;
+                case 7:
+                    notifyUnregistration();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AudioFocusInfo _arg0 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyAudioFocusGrant(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            AudioFocusInfo _arg02 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyAudioFocusLoss(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            AudioFocusInfo _arg03 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyAudioFocusRequest(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            AudioFocusInfo _arg04 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyAudioFocusAbandon(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyMixStateUpdate(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyVolumeAdjust(_arg06);
-                            return true;
-                        case 7:
-                            notifyUnregistration();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAudioPolicyCallback {
+        private static class Proxy implements IAudioPolicyCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

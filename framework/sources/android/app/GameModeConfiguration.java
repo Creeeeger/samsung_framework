@@ -9,14 +9,13 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes.dex */
 public final class GameModeConfiguration implements Parcelable {
     public static final Parcelable.Creator<GameModeConfiguration> CREATOR = new Parcelable.Creator<GameModeConfiguration>() { // from class: android.app.GameModeConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameModeConfiguration createFromParcel(Parcel in) {
             return new GameModeConfiguration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameModeConfiguration[] newArray(int size) {
             return new GameModeConfiguration[size];
@@ -26,25 +25,7 @@ public final class GameModeConfiguration implements Parcelable {
     private final int mFpsOverride;
     private final float mScalingFactor;
 
-    /* renamed from: android.app.GameModeConfiguration$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GameModeConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GameModeConfiguration createFromParcel(Parcel in) {
-            return new GameModeConfiguration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GameModeConfiguration[] newArray(int size) {
-            return new GameModeConfiguration[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private int mFpsOverride;
         private float mScalingFactor;

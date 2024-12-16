@@ -9,14 +9,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class Light implements Parcelable {
     public static final Parcelable.Creator<Light> CREATOR = new Parcelable.Creator<Light>() { // from class: android.hardware.lights.Light.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Light createFromParcel(Parcel in) {
             return new Light(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Light[] newArray(int size) {
             return new Light[size];
@@ -30,38 +29,39 @@ public final class Light implements Parcelable {
     public static final int LIGHT_TYPE_CAMERA = 9;
     public static final int LIGHT_TYPE_INPUT = 10001;
     public static final int LIGHT_TYPE_KEYBOARD_BACKLIGHT = 10003;
+    public static final int LIGHT_TYPE_KEYBOARD_MIC_MUTE = 10004;
     public static final int LIGHT_TYPE_MICROPHONE = 8;
     public static final int LIGHT_TYPE_PLAYER_ID = 10002;
     private final int mCapabilities;
     private final int mId;
     private final String mName;
     private final int mOrdinal;
+    private final int[] mPreferredBrightnessLevels;
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface LightCapability {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface LightType {
     }
 
-    /* synthetic */ Light(Parcel parcel, LightIA lightIA) {
-        this(parcel);
-    }
-
     public Light(int id, int ordinal, int type) {
-        this(id, "Light", ordinal, type, 0);
+        this(id, "Light", ordinal, type, 0, null);
     }
 
     public Light(int id, String name, int ordinal, int type, int capabilities) {
+        this(id, name, ordinal, type, capabilities, null);
+    }
+
+    public Light(int id, String name, int ordinal, int type, int capabilities, int[] preferredBrightnessLevels) {
         this.mId = id;
         this.mName = name;
         this.mOrdinal = ordinal;
         this.mType = type;
         this.mCapabilities = capabilities;
+        this.mPreferredBrightnessLevels = preferredBrightnessLevels;
     }
 
     private Light(Parcel in) {
@@ -70,6 +70,7 @@ public final class Light implements Parcelable {
         this.mOrdinal = in.readInt();
         this.mType = in.readInt();
         this.mCapabilities = in.readInt();
+        this.mPreferredBrightnessLevels = in.createIntArray();
     }
 
     @Override // android.os.Parcelable
@@ -79,28 +80,12 @@ public final class Light implements Parcelable {
         dest.writeInt(this.mOrdinal);
         dest.writeInt(this.mType);
         dest.writeInt(this.mCapabilities);
+        dest.writeIntArray(this.mPreferredBrightnessLevels);
     }
 
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.hardware.lights.Light$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Light> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Light createFromParcel(Parcel in) {
-            return new Light(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Light[] newArray(int size) {
-            return new Light[size];
-        }
     }
 
     public boolean equals(Object obj) {
@@ -145,5 +130,9 @@ public final class Light implements Parcelable {
 
     public boolean hasRgbControl() {
         return (this.mCapabilities & 2) == 2;
+    }
+
+    public int[] getPreferredBrightnessLevels() {
+        return this.mPreferredBrightnessLevels;
     }
 }

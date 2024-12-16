@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.database.DataSetObservable;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
@@ -42,34 +43,31 @@ public class ActivityChooserModel extends DataSetObservable {
     private static final String TAG_HISTORICAL_RECORD = "historical-record";
     private static final String TAG_HISTORICAL_RECORDS = "historical-records";
     private OnChooseActivityListener mActivityChoserModelPolicy;
-    private ActivitySorter mActivitySorter;
-    private boolean mCanReadHistoricalData;
     private final Context mContext;
-    private boolean mHistoricalRecordsChanged;
     private final String mHistoryFileName;
-    private int mHistoryMaxSize;
     private Intent mIntent;
-    private final PackageMonitor mPackageMonitor;
-    private boolean mReadShareHistoryCalled;
-    private boolean mReloadActivities;
     private static final String LOG_TAG = ActivityChooserModel.class.getSimpleName();
     private static final Object sRegistryLock = new Object();
     private static final Map<String, ActivityChooserModel> sDataModelRegistry = new HashMap();
     private final Object mInstanceLock = new Object();
     private final List<ActivityResolveInfo> mActivities = new ArrayList();
     private final List<HistoricalRecord> mHistoricalRecords = new ArrayList();
+    private final PackageMonitor mPackageMonitor = new DataModelPackageMonitor();
+    private ActivitySorter mActivitySorter = new DefaultSorter();
+    private int mHistoryMaxSize = 50;
+    private boolean mCanReadHistoricalData = true;
+    private boolean mReadShareHistoryCalled = false;
+    private boolean mHistoricalRecordsChanged = true;
+    private boolean mReloadActivities = false;
 
-    /* loaded from: classes4.dex */
     public interface ActivityChooserModelClient {
         void setActivityChooserModel(ActivityChooserModel activityChooserModel);
     }
 
-    /* loaded from: classes4.dex */
     public interface ActivitySorter {
         void sort(Intent intent, List<ActivityResolveInfo> list, List<HistoricalRecord> list2);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnChooseActivityListener {
         boolean onChooseActivity(ActivityChooserModel activityChooserModel, Intent intent);
     }
@@ -77,33 +75,23 @@ public class ActivityChooserModel extends DataSetObservable {
     public static ActivityChooserModel get(Context context, String historyFileName) {
         ActivityChooserModel dataModel;
         synchronized (sRegistryLock) {
-            Map<String, ActivityChooserModel> map = sDataModelRegistry;
-            dataModel = map.get(historyFileName);
+            dataModel = sDataModelRegistry.get(historyFileName);
             if (dataModel == null) {
                 dataModel = new ActivityChooserModel(context, historyFileName);
-                map.put(historyFileName, dataModel);
+                sDataModelRegistry.put(historyFileName, dataModel);
             }
         }
         return dataModel;
     }
 
-    private ActivityChooserModel(Context context, String historyFileName) {
-        DataModelPackageMonitor dataModelPackageMonitor = new DataModelPackageMonitor();
-        this.mPackageMonitor = dataModelPackageMonitor;
-        this.mActivitySorter = new DefaultSorter();
-        this.mHistoryMaxSize = 50;
-        this.mCanReadHistoricalData = true;
-        this.mReadShareHistoryCalled = false;
-        this.mHistoricalRecordsChanged = true;
-        this.mReloadActivities = false;
-        Context applicationContext = context.getApplicationContext();
-        this.mContext = applicationContext;
-        if (!TextUtils.isEmpty(historyFileName) && !historyFileName.endsWith(HISTORY_FILE_EXTENSION)) {
-            this.mHistoryFileName = historyFileName + HISTORY_FILE_EXTENSION;
+    private ActivityChooserModel(Context context, String str) {
+        this.mContext = context.getApplicationContext();
+        if (!TextUtils.isEmpty(str) && !str.endsWith(HISTORY_FILE_EXTENSION)) {
+            this.mHistoryFileName = str + HISTORY_FILE_EXTENSION;
         } else {
-            this.mHistoryFileName = historyFileName;
+            this.mHistoryFileName = str;
         }
-        dataModelPackageMonitor.register(applicationContext, null, true);
+        this.mPackageMonitor.register(this.mContext, (Looper) null, true);
     }
 
     public void setIntent(Intent intent) {
@@ -343,7 +331,6 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class HistoricalRecord {
         public final ComponentName activity;
         public final long time;
@@ -360,11 +347,8 @@ public class ActivityChooserModel extends DataSetObservable {
         }
 
         public int hashCode() {
-            int i = 1 * 31;
-            ComponentName componentName = this.activity;
-            int result = i + (componentName == null ? 0 : componentName.hashCode());
-            long j = this.time;
-            return (((result * 31) + ((int) (j ^ (j >>> 32)))) * 31) + Float.floatToIntBits(this.weight);
+            int result = (1 * 31) + (this.activity == null ? 0 : this.activity.hashCode());
+            return (((result * 31) + ((int) (this.time ^ (this.time >>> 32)))) * 31) + Float.floatToIntBits(this.weight);
         }
 
         public boolean equals(Object obj) {
@@ -375,12 +359,11 @@ public class ActivityChooserModel extends DataSetObservable {
                 return false;
             }
             HistoricalRecord other = (HistoricalRecord) obj;
-            ComponentName componentName = this.activity;
-            if (componentName == null) {
+            if (this.activity == null) {
                 if (other.activity != null) {
                     return false;
                 }
-            } else if (!componentName.equals(other.activity)) {
+            } else if (!this.activity.equals(other.activity)) {
                 return false;
             }
             if (this.time == other.time && Float.floatToIntBits(this.weight) == Float.floatToIntBits(other.weight)) {
@@ -400,7 +383,6 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class ActivityResolveInfo implements Comparable<ActivityResolveInfo> {
         public final ResolveInfo resolveInfo;
         public float weight;
@@ -442,15 +424,9 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public final class DefaultSorter implements ActivitySorter {
+    private final class DefaultSorter implements ActivitySorter {
         private static final float WEIGHT_DECAY_COEFFICIENT = 0.95f;
         private final Map<ComponentName, ActivityResolveInfo> mPackageNameToActivityMap;
-
-        /* synthetic */ DefaultSorter(ActivityChooserModel activityChooserModel, DefaultSorterIA defaultSorterIA) {
-            this();
-        }
 
         private DefaultSorter() {
             this.mPackageNameToActivityMap = new HashMap();
@@ -551,12 +527,7 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public final class PersistHistoryAsyncTask extends AsyncTask<Object, Void, Void> {
-        /* synthetic */ PersistHistoryAsyncTask(ActivityChooserModel activityChooserModel, PersistHistoryAsyncTaskIA persistHistoryAsyncTaskIA) {
-            this();
-        }
-
+    private final class PersistHistoryAsyncTask extends AsyncTask<Object, Void, Void> {
         private PersistHistoryAsyncTask() {
         }
 
@@ -576,13 +547,7 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public final class DataModelPackageMonitor extends PackageMonitor {
-        /* synthetic */ DataModelPackageMonitor(ActivityChooserModel activityChooserModel, DataModelPackageMonitorIA dataModelPackageMonitorIA) {
-            this();
-        }
-
+    private final class DataModelPackageMonitor extends PackageMonitor {
         private DataModelPackageMonitor() {
         }
 

@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.samsung.android.rune.CoreRune;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class TaskOrganizerInfo {
     private static final String KEY_ASSISTANT_ACTIVITY_INTENT = "assistant_activity_intent";
     private static final String KEY_CHANGE_SPLIT_LAYOUT_FOR_LAUNCH_ADJACENT = "change_split_layout_for_launch_adjacent";
+    private static final String KEY_CHANGE_TO_HORIZONTAL_SPLIT_LAYOUT = "change_to_horizontal_split_layout";
+    private static final String KEY_DEFER_SPLIT_ROTATION_IN_PORT = "defer_split_rotation_in_port";
     private static final String KEY_EXIT_SPLIT_SCREEN_STAGE_TYPE = "exit_split_screen_stage_type";
     private static final String KEY_EXIT_SPLIT_SCREEN_TOP_TASK_ID = "exit_split_screen_top_task_id";
     private static final String KEY_EXIT_SPLIT_TO_FREEFORM_TASK_ID = "split_to_freeform_task_id";
@@ -17,6 +19,8 @@ public class TaskOrganizerInfo {
     private static final String KEY_SPLIT_SCREEN_CREATE_MODE = "split_screen_create_mode";
     private Intent mAssistantActivityIntent;
     private boolean mChangeSplitLayoutForLaunchAdjacent;
+    private boolean mChangeToHorizontalSplitLayout;
+    private boolean mDeferSplitRotationInPort;
     private int mExitSplitScreenStageType;
     private int mExitSplitScreenTopTaskId;
     private float mRequestedSplitRatio;
@@ -25,27 +29,32 @@ public class TaskOrganizerInfo {
     private int mSplitToFreeformTaskId;
 
     public TaskOrganizerInfo() {
+        this.mChangeToHorizontalSplitLayout = false;
         this.mSplitScreenCreateMode = -1;
         this.mExitSplitScreenTopTaskId = -1;
         this.mSplitToFreeformTaskId = -1;
         this.mExitSplitScreenStageType = 0;
-        this.mSplitFeasibleMode = -1;
         this.mAssistantActivityIntent = null;
         this.mRequestedSplitRatio = 0.0f;
+        this.mDeferSplitRotationInPort = false;
+        this.mSplitFeasibleMode = -1;
     }
 
     private TaskOrganizerInfo(Bundle b) {
+        this.mChangeToHorizontalSplitLayout = false;
         this.mSplitScreenCreateMode = -1;
         this.mExitSplitScreenTopTaskId = -1;
         this.mSplitToFreeformTaskId = -1;
         this.mExitSplitScreenStageType = 0;
-        this.mSplitFeasibleMode = -1;
         this.mAssistantActivityIntent = null;
         this.mRequestedSplitRatio = 0.0f;
+        this.mDeferSplitRotationInPort = false;
+        this.mSplitFeasibleMode = -1;
         if (b == null) {
             return;
         }
         b.setDefusable(true);
+        this.mChangeToHorizontalSplitLayout = b.getBoolean(KEY_CHANGE_TO_HORIZONTAL_SPLIT_LAYOUT, false);
         this.mSplitScreenCreateMode = b.getInt(KEY_SPLIT_SCREEN_CREATE_MODE, -1);
         this.mChangeSplitLayoutForLaunchAdjacent = b.getBoolean(KEY_CHANGE_SPLIT_LAYOUT_FOR_LAUNCH_ADJACENT, false);
         this.mExitSplitScreenTopTaskId = b.getInt(KEY_EXIT_SPLIT_SCREEN_TOP_TASK_ID, -1);
@@ -53,10 +62,6 @@ public class TaskOrganizerInfo {
         this.mExitSplitScreenStageType = b.getInt(KEY_EXIT_SPLIT_SCREEN_STAGE_TYPE, 0);
         if (CoreRune.MW_MULTI_SPLIT_ENSURE_APP_SIZE) {
             this.mSplitFeasibleMode = b.getInt(KEY_SPLIT_FEASIBLE_MODE, -1);
-        }
-        if (CoreRune.MW_SUPPORT_ASSISTANT_HOT_KEY) {
-            this.mAssistantActivityIntent = (Intent) b.getParcelable(KEY_ASSISTANT_ACTIVITY_INTENT, Intent.class);
-            this.mRequestedSplitRatio = b.getFloat(KEY_REQUESTED_SPLIT_RATIO, 0.0f);
         }
     }
 
@@ -66,6 +71,9 @@ public class TaskOrganizerInfo {
 
     public Bundle toBundle() {
         Bundle b = new Bundle();
+        if (this.mChangeToHorizontalSplitLayout) {
+            b.putBoolean(KEY_CHANGE_TO_HORIZONTAL_SPLIT_LAYOUT, true);
+        }
         b.putInt(KEY_SPLIT_SCREEN_CREATE_MODE, this.mSplitScreenCreateMode);
         b.putBoolean(KEY_CHANGE_SPLIT_LAYOUT_FOR_LAUNCH_ADJACENT, this.mChangeSplitLayoutForLaunchAdjacent);
         b.putInt(KEY_EXIT_SPLIT_SCREEN_TOP_TASK_ID, this.mExitSplitScreenTopTaskId);
@@ -74,11 +82,15 @@ public class TaskOrganizerInfo {
         if (CoreRune.MW_MULTI_SPLIT_ENSURE_APP_SIZE) {
             b.putInt(KEY_SPLIT_FEASIBLE_MODE, this.mSplitFeasibleMode);
         }
-        if (CoreRune.MW_SUPPORT_ASSISTANT_HOT_KEY) {
-            b.putParcelable(KEY_ASSISTANT_ACTIVITY_INTENT, this.mAssistantActivityIntent);
-            b.putFloat(KEY_REQUESTED_SPLIT_RATIO, this.mRequestedSplitRatio);
-        }
         return b;
+    }
+
+    public void changeToHorizontalSplitLayout() {
+        this.mChangeToHorizontalSplitLayout = true;
+    }
+
+    public boolean isChangeToHorizontalSplitLayout() {
+        return this.mChangeToHorizontalSplitLayout;
     }
 
     public void setSplitScreenCreateModeForLaunchAdjacent(int splitScreenCreateMode) {
@@ -126,9 +138,10 @@ public class TaskOrganizerInfo {
         this.mSplitFeasibleMode = splitFeasibleMode;
     }
 
-    public void setAssistantActivityToSplit(Intent intent, float splitRatio) {
+    public void setAssistantActivityToSplit(Intent intent, float splitRatio, boolean deferSplitRotationInPort) {
         this.mAssistantActivityIntent = intent;
         this.mRequestedSplitRatio = splitRatio;
+        this.mDeferSplitRotationInPort = deferSplitRotationInPort;
     }
 
     public Intent getAssistantActivityIntent() {
@@ -137,6 +150,10 @@ public class TaskOrganizerInfo {
 
     public float getRequestedSplitRatio() {
         return this.mRequestedSplitRatio;
+    }
+
+    public boolean getDeferSplitRotationInPort() {
+        return this.mDeferSplitRotationInPort;
     }
 
     public String toString() {
@@ -158,16 +175,9 @@ public class TaskOrganizerInfo {
         if (this.mExitSplitScreenStageType != 0) {
             sb.append(" mExitSplitScreenStageType=").append(this.mExitSplitScreenStageType);
         }
+        sb.append(" mChangeToHorizontalSplitLayout=").append(this.mChangeToHorizontalSplitLayout);
         if (CoreRune.MW_MULTI_SPLIT_ENSURE_APP_SIZE && this.mSplitFeasibleMode != -1) {
             sb.append(" mSplitFeasibleMode=").append(this.mSplitFeasibleMode);
-        }
-        if (CoreRune.MW_SUPPORT_ASSISTANT_HOT_KEY) {
-            if (this.mAssistantActivityIntent != null) {
-                sb.append(" mAssistantActivityIntent=").append(this.mAssistantActivityIntent.getComponent());
-            }
-            if (this.mRequestedSplitRatio != 0.0f) {
-                sb.append(" mRequestedSplitRatio=").append(this.mRequestedSplitRatio);
-            }
         }
         sb.append("}");
         return sb.toString();

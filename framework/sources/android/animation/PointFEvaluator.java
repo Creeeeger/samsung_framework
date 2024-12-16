@@ -17,9 +17,8 @@ public class PointFEvaluator implements TypeEvaluator<PointF> {
     public PointF evaluate(float fraction, PointF startValue, PointF endValue) {
         float x = startValue.x + ((endValue.x - startValue.x) * fraction);
         float y = startValue.y + ((endValue.y - startValue.y) * fraction);
-        PointF pointF = this.mPoint;
-        if (pointF != null) {
-            pointF.set(x, y);
+        if (this.mPoint != null) {
+            this.mPoint.set(x, y);
             return this.mPoint;
         }
         return new PointF(x, y);

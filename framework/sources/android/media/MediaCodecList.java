@@ -42,16 +42,13 @@ public final class MediaCodecList {
 
     public static final MediaCodecInfo getCodecInfoAt(int index) {
         initCodecList();
-        if (index >= 0) {
-            MediaCodecInfo[] mediaCodecInfoArr = sRegularCodecInfos;
-            if (index <= mediaCodecInfoArr.length) {
-                return mediaCodecInfoArr[index];
-            }
+        if (index < 0 || index > sRegularCodecInfos.length) {
+            throw new IllegalArgumentException();
         }
-        throw new IllegalArgumentException();
+        return sRegularCodecInfos[index];
     }
 
-    public static final Map<String, Object> getGlobalSettings() {
+    static final Map<String, Object> getGlobalSettings() {
         synchronized (sInitLock) {
             if (sGlobalSettings == null) {
                 sGlobalSettings = native_getGlobalSettings();
@@ -123,8 +120,7 @@ public final class MediaCodecList {
     }
 
     public final MediaCodecInfo[] getCodecInfos() {
-        MediaCodecInfo[] mediaCodecInfoArr = this.mCodecInfos;
-        return (MediaCodecInfo[]) Arrays.copyOf(mediaCodecInfoArr, mediaCodecInfoArr.length);
+        return (MediaCodecInfo[]) Arrays.copyOf(this.mCodecInfos, this.mCodecInfos.length);
     }
 
     public final String findDecoderForFormat(MediaFormat format) {
@@ -136,7 +132,7 @@ public final class MediaCodecList {
     }
 
     private String findCodecForFormat(boolean encoder, MediaFormat format) {
-        String mime = format.getString(MediaFormat.KEY_MIME);
+        String mime = format.getString("mime");
         MediaCodecInfo[] mediaCodecInfoArr = this.mCodecInfos;
         int length = mediaCodecInfoArr.length;
         for (int i = 0; i < length; i++) {

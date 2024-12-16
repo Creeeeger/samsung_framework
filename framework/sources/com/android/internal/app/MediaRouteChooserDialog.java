@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.android.internal.R;
 import java.util.Comparator;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class MediaRouteChooserDialog extends AlertDialog {
     private RouteAdapter mAdapter;
     private boolean mAttachedToWindow;
@@ -69,7 +69,7 @@ public class MediaRouteChooserDialog extends AlertDialog {
     }
 
     @Override // android.app.AlertDialog, android.app.Dialog
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         int i;
         setView(LayoutInflater.from(getContext()).inflate(R.layout.media_route_chooser_dialog, (ViewGroup) null));
         if (this.mRouteTypes == 4) {
@@ -82,9 +82,8 @@ public class MediaRouteChooserDialog extends AlertDialog {
         super.onCreate(savedInstanceState);
         View emptyView = findViewById(16908292);
         this.mAdapter = new RouteAdapter(getContext());
-        ListView listView = (ListView) findViewById(R.id.media_route_list);
-        this.mListView = listView;
-        listView.setAdapter((ListAdapter) this.mAdapter);
+        this.mListView = (ListView) findViewById(R.id.media_route_list);
+        this.mListView.setAdapter((ListAdapter) this.mAdapter);
         this.mListView.setOnItemClickListener(this.mAdapter);
         this.mListView.setEmptyView(emptyView);
         this.mExtendedSettingsButton = (Button) findViewById(R.id.media_route_extended_settings_button);
@@ -98,9 +97,8 @@ public class MediaRouteChooserDialog extends AlertDialog {
     }
 
     private void updateExtendedSettingsButton() {
-        Button button = this.mExtendedSettingsButton;
-        if (button != null) {
-            button.setOnClickListener(this.mExtendedSettingsClickListener);
+        if (this.mExtendedSettingsButton != null) {
+            this.mExtendedSettingsButton.setOnClickListener(this.mExtendedSettingsClickListener);
             this.mExtendedSettingsButton.setVisibility(this.mExtendedSettingsClickListener != null ? 0 : 8);
         }
     }
@@ -126,13 +124,12 @@ public class MediaRouteChooserDialog extends AlertDialog {
         }
     }
 
-    public static boolean isLightTheme(Context context) {
+    static boolean isLightTheme(Context context) {
         TypedValue value = new TypedValue();
         return context.getTheme().resolveAttribute(16844176, value, true) && value.data != 0;
     }
 
-    /* loaded from: classes4.dex */
-    public final class RouteAdapter extends ArrayAdapter<MediaRouter.RouteInfo> implements AdapterView.OnItemClickListener {
+    private final class RouteAdapter extends ArrayAdapter<MediaRouter.RouteInfo> implements AdapterView.OnItemClickListener {
         private final LayoutInflater mInflater;
 
         public RouteAdapter(Context context) {
@@ -172,14 +169,14 @@ public class MediaRouteChooserDialog extends AlertDialog {
             MediaRouter.RouteInfo route = getItem(position);
             TextView text1 = (TextView) view.findViewById(16908308);
             TextView text2 = (TextView) view.findViewById(16908309);
-            text1.setText(route.getName());
+            text1.lambda$setTextAsync$0(route.getName());
             CharSequence description = route.getDescription();
             if (TextUtils.isEmpty(description)) {
                 text2.setVisibility(8);
-                text2.setText("");
+                text2.lambda$setTextAsync$0("");
             } else {
                 text2.setVisibility(0);
-                text2.setText(description);
+                text2.lambda$setTextAsync$0(description);
             }
             view.setEnabled(route.isEnabled());
             return view;
@@ -195,12 +192,7 @@ public class MediaRouteChooserDialog extends AlertDialog {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public final class MediaRouterCallback extends MediaRouter.SimpleCallback {
-        /* synthetic */ MediaRouterCallback(MediaRouteChooserDialog mediaRouteChooserDialog, MediaRouterCallbackIA mediaRouterCallbackIA) {
-            this();
-        }
-
+    private final class MediaRouterCallback extends MediaRouter.SimpleCallback {
         private MediaRouterCallback() {
         }
 
@@ -225,8 +217,7 @@ public class MediaRouteChooserDialog extends AlertDialog {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class RouteComparator implements Comparator<MediaRouter.RouteInfo> {
+    private static final class RouteComparator implements Comparator<MediaRouter.RouteInfo> {
         public static final RouteComparator sInstance = new RouteComparator();
 
         private RouteComparator() {

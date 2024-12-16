@@ -14,7 +14,6 @@ public interface IDeviceProductInfoConstants extends IInterface {
     public static final int CONNECTION_TO_SINK_UNKNOWN = 0;
     public static final String DESCRIPTOR = "android.hardware.display.IDeviceProductInfoConstants";
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDeviceProductInfoConstants {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -22,7 +21,6 @@ public interface IDeviceProductInfoConstants extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDeviceProductInfoConstants {
         public Stub() {
             attachInterface(this, IDeviceProductInfoConstants.DESCRIPTOR);
@@ -55,16 +53,13 @@ public interface IDeviceProductInfoConstants extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeviceProductInfoConstants.DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(IDeviceProductInfoConstants.DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IDeviceProductInfoConstants {
             private IBinder mRemote;
 

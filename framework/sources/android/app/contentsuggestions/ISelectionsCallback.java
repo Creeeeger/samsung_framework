@@ -13,7 +13,6 @@ public interface ISelectionsCallback extends IInterface {
 
     void onContentSelectionsAvailable(int i, List<ContentSelection> list) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISelectionsCallback {
         @Override // android.app.contentsuggestions.ISelectionsCallback
         public void onContentSelectionsAvailable(int statusCode, List<ContentSelection> selections) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISelectionsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISelectionsCallback {
         static final int TRANSACTION_onContentSelectionsAvailable = 1;
 
@@ -68,27 +66,23 @@ public interface ISelectionsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISelectionsCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISelectionsCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISelectionsCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    List<ContentSelection> _arg1 = data.createTypedArrayList(ContentSelection.CREATOR);
+                    data.enforceNoDataAvail();
+                    onContentSelectionsAvailable(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            List<ContentSelection> _arg1 = data.createTypedArrayList(ContentSelection.CREATOR);
-                            data.enforceNoDataAvail();
-                            onContentSelectionsAvailable(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISelectionsCallback {
+        private static class Proxy implements ISelectionsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

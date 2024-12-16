@@ -29,14 +29,13 @@ import java.util.zip.GZIPInputStream;
 /* loaded from: classes.dex */
 public final class ApplicationExitInfo implements Parcelable {
     public static final Parcelable.Creator<ApplicationExitInfo> CREATOR = new Parcelable.Creator<ApplicationExitInfo>() { // from class: android.app.ApplicationExitInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationExitInfo createFromParcel(Parcel in) {
             return new ApplicationExitInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationExitInfo[] newArray(int size) {
             return new ApplicationExitInfo[size];
@@ -49,6 +48,7 @@ public final class ApplicationExitInfo implements Parcelable {
     public static final int REASON_EXCESSIVE_RESOURCE_USAGE = 9;
     public static final int REASON_EXIT_SELF = 1;
     public static final int REASON_FREEZER = 14;
+    public static final int REASON_GENAI = 17;
     public static final int REASON_INITIALIZATION_FAILURE = 7;
     public static final int REASON_LOW_MEMORY = 3;
     public static final int REASON_OTHER = 13;
@@ -60,10 +60,14 @@ public final class ApplicationExitInfo implements Parcelable {
     public static final int REASON_USER_REQUESTED = 10;
     public static final int REASON_USER_STOPPED = 11;
     public static final int SUBREASON_CACHED_IDLE_FORCED_APP_STANDBY = 18;
+    public static final int SUBREASON_EXCESSIVE_BINDER_OBJECTS = 29;
     public static final int SUBREASON_EXCESSIVE_CPU = 7;
+    public static final int SUBREASON_EXCESSIVE_OUTGOING_BROADCASTS_WHILE_CACHED = 32;
     public static final int SUBREASON_FORCE_STOP = 21;
+    public static final int SUBREASON_FREEZER_BINDER_ASYNC_FULL = 31;
     public static final int SUBREASON_FREEZER_BINDER_IOCTL = 19;
     public static final int SUBREASON_FREEZER_BINDER_TRANSACTION = 20;
+    public static final int SUBREASON_GENAI_UNLOAD_POLICY = 1003;
     public static final int SUBREASON_IMPERCEPTIBLE = 15;
     public static final int SUBREASON_INVALID_START = 13;
     public static final int SUBREASON_INVALID_STATE = 14;
@@ -74,7 +78,10 @@ public final class ApplicationExitInfo implements Parcelable {
     public static final int SUBREASON_KILL_PID = 12;
     public static final int SUBREASON_KILL_UID = 11;
     public static final int SUBREASON_LARGE_CACHED = 5;
+    public static final int SUBREASON_MARS_FREEZER_BINDER_TRANSACTION = 1002;
+    public static final int SUBREASON_MARS_KILL = 1001;
     public static final int SUBREASON_MEMORY_PRESSURE = 6;
+    public static final int SUBREASON_OOM_KILL = 30;
     public static final int SUBREASON_PACKAGE_UPDATE = 25;
     public static final int SUBREASON_REMOVE_LRU = 16;
     public static final int SUBREASON_REMOVE_TASK = 22;
@@ -112,17 +119,11 @@ public final class ApplicationExitInfo implements Parcelable {
     private File mTraceFile;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Reason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SubReason {
-    }
-
-    /* synthetic */ ApplicationExitInfo(Parcel parcel, ApplicationExitInfoIA applicationExitInfoIA) {
-        this(parcel);
     }
 
     public int getPid() {
@@ -194,20 +195,18 @@ public final class ApplicationExitInfo implements Parcelable {
     }
 
     public InputStream getTraceInputStream() throws IOException {
-        IAppTraceRetriever iAppTraceRetriever = this.mAppTraceRetriever;
-        if (iAppTraceRetriever == null && this.mNativeTombstoneRetriever == null) {
+        if (this.mAppTraceRetriever == null && this.mNativeTombstoneRetriever == null) {
             return null;
         }
         try {
-            IParcelFileDescriptorRetriever iParcelFileDescriptorRetriever = this.mNativeTombstoneRetriever;
-            if (iParcelFileDescriptorRetriever != null) {
-                ParcelFileDescriptor pfd = iParcelFileDescriptorRetriever.getPfd();
+            if (this.mNativeTombstoneRetriever != null) {
+                ParcelFileDescriptor pfd = this.mNativeTombstoneRetriever.getPfd();
                 if (pfd == null) {
                     return null;
                 }
                 return new ParcelFileDescriptor.AutoCloseInputStream(pfd);
             }
-            ParcelFileDescriptor fd = iAppTraceRetriever.getTraceFileDescriptor(this.mPackageName, this.mPackageUid, this.mPid);
+            ParcelFileDescriptor fd = this.mAppTraceRetriever.getTraceFileDescriptor(this.mPackageName, this.mPackageUid, this.mPid);
             if (fd == null) {
                 return null;
             }
@@ -431,23 +430,6 @@ public final class ApplicationExitInfo implements Parcelable {
         return null;
     }
 
-    /* renamed from: android.app.ApplicationExitInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ApplicationExitInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApplicationExitInfo createFromParcel(Parcel in) {
-            return new ApplicationExitInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApplicationExitInfo[] newArray(int size) {
-            return new ApplicationExitInfo[size];
-        }
-    }
-
     public void dump(PrintWriter pw, String prefix, String seqSuffix, SimpleDateFormat sdf) {
         StringBuilder sb = new StringBuilder();
         sb.append(prefix).append("ApplicationExitInfo ").append(seqSuffix).append(ShortcutConstants.SERVICES_SEPARATOR).append('\n');
@@ -483,10 +465,6 @@ public final class ApplicationExitInfo implements Parcelable {
         sb.append(" state=").append(ArrayUtils.isEmpty(this.mState) ? "empty" : Integer.toString(this.mState.length) + " bytes");
         sb.append(" trace=").append(this.mTraceFile);
         return sb.toString();
-    }
-
-    public String getReasonsAsString() {
-        return "main=" + reasonCodeToString(this.mReason) + " sub=" + subreasonToString(this.mSubReason);
     }
 
     public static String reasonCodeToString(int reason) {
@@ -564,9 +542,6 @@ public final class ApplicationExitInfo implements Parcelable {
                 return "REMOVE LRU";
             case 17:
                 return "ISOLATED NOT NEEDED";
-            case 18:
-            default:
-                return "UNKNOWN";
             case 19:
                 return "FREEZER BINDER IOCTL";
             case 20:
@@ -583,6 +558,21 @@ public final class ApplicationExitInfo implements Parcelable {
                 return "PACKAGE UPDATE";
             case 26:
                 return "UNDELIVERED BROADCAST";
+            case 29:
+                return "EXCESSIVE BINDER OBJECTS";
+            case 30:
+                return "OOM KILL";
+            case 31:
+                return "FREEZER BINDER ASYNC FULL";
+            case 32:
+                return "EXCESSIVE_OUTGOING_BROADCASTS_WHILE_CACHED";
+            case 1001:
+            case 1002:
+                return "MARS KILL";
+            case 1003:
+                return "GENAI UNLOAD POLICY";
+            default:
+                return "UNKNOWN";
         }
     }
 
@@ -603,8 +593,7 @@ public final class ApplicationExitInfo implements Parcelable {
         proto.write(1112396529677L, this.mTimestamp);
         proto.write(1138166333454L, this.mDescription);
         proto.write(ApplicationExitInfoProto.STATE, this.mState);
-        File file = this.mTraceFile;
-        proto.write(1138166333456L, file == null ? null : file.getAbsolutePath());
+        proto.write(1138166333456L, this.mTraceFile == null ? null : this.mTraceFile.getAbsolutePath());
         proto.end(token);
     }
 

@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IHdmiInputChangeListener extends IInterface {
     void onChanged(HdmiDeviceInfo hdmiDeviceInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiInputChangeListener {
         @Override // android.hardware.hdmi.IHdmiInputChangeListener
         public void onChanged(HdmiDeviceInfo device) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IHdmiInputChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiInputChangeListener {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiInputChangeListener";
         static final int TRANSACTION_onChanged = 1;
@@ -66,25 +64,22 @@ public interface IHdmiInputChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    HdmiDeviceInfo _arg0 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            HdmiDeviceInfo _arg0 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiInputChangeListener {
+        private static class Proxy implements IHdmiInputChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

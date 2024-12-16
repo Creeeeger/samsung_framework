@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class IccIo implements Parcelable {
     public static final Parcelable.Creator<IccIo> CREATOR = new Parcelable.Creator<IccIo>() { // from class: android.hardware.radio.sim.IccIo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IccIo createFromParcel(Parcel _aidl_source) {
             IccIo _aidl_out = new IccIo();
@@ -19,6 +17,7 @@ public class IccIo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IccIo[] newArray(int _aidl_size) {
             return new IccIo[_aidl_size];
@@ -33,25 +32,6 @@ public class IccIo implements Parcelable {
     public int p1 = 0;
     public int p2 = 0;
     public int p3 = 0;
-
-    /* renamed from: android.hardware.radio.sim.IccIo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IccIo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IccIo createFromParcel(Parcel _aidl_source) {
-            IccIo _aidl_out = new IccIo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IccIo[] newArray(int _aidl_size) {
-            return new IccIo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -180,7 +160,7 @@ public class IccIo implements Parcelable {
         _aidl_sj.add("data: " + Objects.toString(this.data));
         _aidl_sj.add("pin2: " + Objects.toString(this.pin2));
         _aidl_sj.add("aid: " + Objects.toString(this.aid));
-        return "android.hardware.radio.sim.IccIo" + _aidl_sj.toString();
+        return "IccIo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

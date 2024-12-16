@@ -16,17 +16,14 @@ import java.util.HashMap;
 public class CancellationSignalBeamer {
     static final Cleaner sCleaner = SystemCleaner.cleaner();
 
-    /* loaded from: classes3.dex */
     public static abstract class Sender {
         private static final ThreadLocal<Pair<Sender, ArrayList<CloseableToken>>> sScope = new ThreadLocal<>();
 
-        /* loaded from: classes3.dex */
         public interface CloseableToken extends IBinder, MustClose {
             @Override // android.os.CancellationSignalBeamer.Sender.MustClose, java.lang.AutoCloseable
             void close();
         }
 
-        /* loaded from: classes3.dex */
         public interface MustClose extends AutoCloseable {
             @Override // java.lang.AutoCloseable
             void close();
@@ -56,10 +53,9 @@ public class CancellationSignalBeamer {
             };
         }
 
-        public static /* synthetic */ void lambda$beamScopeIfNeeded$0() {
-            ThreadLocal<Pair<Sender, ArrayList<CloseableToken>>> threadLocal = sScope;
-            ArrayList<CloseableToken> tokens = threadLocal.get().second;
-            threadLocal.remove();
+        static /* synthetic */ void lambda$beamScopeIfNeeded$0() {
+            ArrayList<CloseableToken> tokens = sScope.get().second;
+            sScope.remove();
             for (int i = tokens.size() - 1; i >= 0; i--) {
                 if (tokens.get(i) != null) {
                     tokens.get(i).close();
@@ -77,14 +73,9 @@ public class CancellationSignalBeamer {
             return null;
         }
 
-        /* loaded from: classes3.dex */
-        public static class Token extends Binder implements CloseableToken, Runnable {
+        private static class Token extends Binder implements CloseableToken, Runnable {
             private Preparer mPreparer;
             private final Sender mSender;
-
-            /* synthetic */ Token(Sender sender, CancellationSignal cancellationSignal, TokenIA tokenIA) {
-                this(sender, cancellationSignal);
-            }
 
             private Token(Sender sender, CancellationSignal signal) {
                 this.mSender = sender;
@@ -105,16 +96,10 @@ public class CancellationSignalBeamer {
                 this.mSender.onForget(this);
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
-            /* loaded from: classes3.dex */
-            public static class Preparer implements CancellationSignal.OnCancelListener {
+            private static class Preparer implements CancellationSignal.OnCancelListener {
                 private final Sender mSender;
                 private final CancellationSignal mSignal;
                 private final Token mToken;
-
-                /* synthetic */ Preparer(Sender sender, CancellationSignal cancellationSignal, Token token, PreparerIA preparerIA) {
-                    this(sender, cancellationSignal, token);
-                }
 
                 private Preparer(Sender sender, CancellationSignal signal, Token token) {
                     this.mSender = sender;
@@ -139,7 +124,6 @@ public class CancellationSignalBeamer {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Receiver implements IBinder.DeathRecipient {
         private final boolean mCancelOnSenderDeath;
         private final HashMap<IBinder, CancellationSignal> mTokenMap = new HashMap<>();

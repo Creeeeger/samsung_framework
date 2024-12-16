@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDsmsInfoService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.dsms.aidl.IDsmsInfoService";
 
     boolean isCommercializedDevice() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDsmsInfoService {
         @Override // com.samsung.android.dsms.aidl.IDsmsInfoService
         public boolean isCommercializedDevice() throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDsmsInfoService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDsmsInfoService {
         static final int TRANSACTION_isCommercializedDevice = 1;
 
@@ -68,26 +66,22 @@ public interface IDsmsInfoService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDsmsInfoService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDsmsInfoService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDsmsInfoService.DESCRIPTOR);
+                case 1:
+                    boolean _result = isCommercializedDevice();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isCommercializedDevice();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDsmsInfoService {
+        private static class Proxy implements IDsmsInfoService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

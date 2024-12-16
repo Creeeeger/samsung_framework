@@ -62,20 +62,17 @@ public final class FactoryTest {
             case 0:
                 int value = Settings.System.getInt(context.getContentResolver(), "OPTION_SCREEN_LOCK", 0);
                 Log.d(TAG, "checkAutomationTestOption() : mode_screenlock=" + value);
-                if (value != 1) {
-                    return false;
+                if (value == 1) {
                 }
-                return true;
+                break;
             case 1:
                 int value2 = Settings.System.getInt(context.getContentResolver(), "OPTION_FACTORY_APP", 0);
                 Log.d(TAG, "checkAutomationTestOption() : mode_factoryapp=" + value2);
-                if (value2 != 1) {
-                    return false;
+                if (value2 == 1) {
                 }
-                return true;
-            default:
-                return false;
+                break;
         }
+        return false;
     }
 
     public static boolean isFactoryMode() {

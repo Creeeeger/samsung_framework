@@ -10,6 +10,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.util.MathUtils;
 import android.util.Size;
 import com.android.internal.graphics.ColorUtils;
@@ -47,14 +48,13 @@ public final class WallpaperColors implements Parcelable {
     private static final float BRIGHT_IMAGE_MEAN_LUMINANCE = SystemProperties.getInt("persist.wallpapercolors.threshold", 70) / 100.0f;
     private static final float MAX_DARK_AREA = SystemProperties.getInt("persist.wallpapercolors.max_dark_area", 5) / 100.0f;
     public static final Parcelable.Creator<WallpaperColors> CREATOR = new Parcelable.Creator<WallpaperColors>() { // from class: android.app.WallpaperColors.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WallpaperColors createFromParcel(Parcel in) {
             return new WallpaperColors(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WallpaperColors[] newArray(int size) {
             return new WallpaperColors[size];
@@ -62,7 +62,6 @@ public final class WallpaperColors implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ColorsHints {
     }
 
@@ -89,6 +88,7 @@ public final class WallpaperColors implements Parcelable {
         if (drawable == null) {
             throw new IllegalArgumentException("Drawable cannot be null");
         }
+        Trace.beginSection("WallpaperColors#fromDrawable");
         Rect initialBounds = drawable.copyBounds();
         int width = drawable.getIntrinsicWidth();
         int height = drawable.getIntrinsicHeight();
@@ -104,6 +104,7 @@ public final class WallpaperColors implements Parcelable {
         WallpaperColors colors = fromBitmap(bitmap);
         bitmap.recycle();
         drawable.setBounds(initialBounds);
+        Trace.endSection();
         return colors;
     }
 
@@ -117,6 +118,7 @@ public final class WallpaperColors implements Parcelable {
     public static WallpaperColors fromBitmap(Bitmap bitmap, float dimAmount) {
         Palette palette;
         Objects.requireNonNull(bitmap, "Bitmap can't be null");
+        Trace.beginSection("WallpaperColors#fromBitmap");
         int bitmapArea = bitmap.getWidth() * bitmap.getHeight();
         boolean shouldRecycle = false;
         if (bitmapArea > MAX_WALLPAPER_EXTRACTION_AREA) {
@@ -148,10 +150,11 @@ public final class WallpaperColors implements Parcelable {
         if (shouldRecycle) {
             bitmap.recycle();
         }
+        Trace.endSection();
         return new WallpaperColors(populationByColor, hints | 4);
     }
 
-    public static /* synthetic */ int lambda$fromBitmap$0(Palette.Swatch a, Palette.Swatch b) {
+    static /* synthetic */ int lambda$fromBitmap$0(Palette.Swatch a, Palette.Swatch b) {
         return b.getPopulation() - a.getPopulation();
     }
 
@@ -169,22 +172,20 @@ public final class WallpaperColors implements Parcelable {
         if (primaryColor == null) {
             throw new IllegalArgumentException("Primary color should never be null.");
         }
-        ArrayList arrayList = new ArrayList(3);
-        this.mMainColors = arrayList;
-        HashMap hashMap = new HashMap();
-        this.mAllColors = hashMap;
-        arrayList.add(primaryColor);
-        hashMap.put(Integer.valueOf(primaryColor.toArgb()), 0);
+        this.mMainColors = new ArrayList(3);
+        this.mAllColors = new HashMap();
+        this.mMainColors.add(primaryColor);
+        this.mAllColors.put(Integer.valueOf(primaryColor.toArgb()), 0);
         if (secondaryColor != null) {
-            arrayList.add(secondaryColor);
-            hashMap.put(Integer.valueOf(secondaryColor.toArgb()), 0);
+            this.mMainColors.add(secondaryColor);
+            this.mAllColors.put(Integer.valueOf(secondaryColor.toArgb()), 0);
         }
         if (tertiaryColor != null) {
             if (secondaryColor == null) {
                 throw new IllegalArgumentException("tertiaryColor can't be specified when secondaryColor is null");
             }
-            arrayList.add(tertiaryColor);
-            hashMap.put(Integer.valueOf(tertiaryColor.toArgb()), 0);
+            this.mMainColors.add(tertiaryColor);
+            this.mAllColors.put(Integer.valueOf(tertiaryColor.toArgb()), 0);
         }
         this.mColorHints = colorHints;
     }
@@ -299,23 +300,6 @@ public final class WallpaperColors implements Parcelable {
         return proportions;
     }
 
-    /* renamed from: android.app.WallpaperColors$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WallpaperColors> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WallpaperColors createFromParcel(Parcel in) {
-            return new WallpaperColors(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WallpaperColors[] newArray(int size) {
-            return new WallpaperColors[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -388,6 +372,7 @@ public final class WallpaperColors implements Parcelable {
         if (source == null) {
             return 0;
         }
+        Trace.beginSection("WallpaperColors#calculateDarkHints");
         float dimAmount2 = MathUtils.saturate(dimAmount);
         int[] pixels = new int[source.getWidth() * source.getHeight()];
         double totalLuminance = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
@@ -414,8 +399,9 @@ public final class WallpaperColors implements Parcelable {
             hints = 0 | 1;
         }
         if (meanLuminance < 0.30000001192092896d) {
-            return hints | 2;
+            hints |= 2;
         }
+        Trace.endSection();
         return hints;
     }
 

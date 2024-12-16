@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ITaskChangeListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.remoteappmode.ITaskChangeListener";
 
@@ -20,7 +20,6 @@ public interface ITaskChangeListener extends IInterface {
 
     void onTaskTriedToGoToBackground(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ITaskChangeListener {
         @Override // com.samsung.android.remoteappmode.ITaskChangeListener
         public void onTaskRemoved(int taskId) throws RemoteException {
@@ -48,7 +47,6 @@ public interface ITaskChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ITaskChangeListener {
         static final int TRANSACTION_onRecentTaskListUpdated = 5;
         static final int TRANSACTION_onTaskDisplayChanged = 4;
@@ -103,47 +101,43 @@ public interface ITaskChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITaskChangeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITaskChangeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITaskChangeListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTaskRemoved(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTaskPlayed(_arg02, _arg1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTaskTriedToGoToBackground(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTaskDisplayChanged(_arg04, _arg13);
+                    return true;
+                case 5:
+                    onRecentTaskListUpdated();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTaskRemoved(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTaskPlayed(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTaskTriedToGoToBackground(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTaskDisplayChanged(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            onRecentTaskListUpdated();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ITaskChangeListener {
+        private static class Proxy implements ITaskChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

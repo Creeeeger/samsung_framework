@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.internal.inputmethod.IInputMethodSession;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IInputMethodSessionCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IInputMethodSessionCallback";
 
     void sessionCreated(IInputMethodSession iInputMethodSession) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputMethodSessionCallback {
         @Override // com.android.internal.inputmethod.IInputMethodSessionCallback
         public void sessionCreated(IInputMethodSession session) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IInputMethodSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputMethodSessionCallback {
         static final int TRANSACTION_sessionCreated = 1;
 
@@ -68,26 +66,22 @@ public interface IInputMethodSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputMethodSessionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputMethodSessionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputMethodSessionCallback.DESCRIPTOR);
+                case 1:
+                    IInputMethodSession _arg0 = IInputMethodSession.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    sessionCreated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IInputMethodSession _arg0 = IInputMethodSession.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            sessionCreated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInputMethodSessionCallback {
+        private static class Proxy implements IInputMethodSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

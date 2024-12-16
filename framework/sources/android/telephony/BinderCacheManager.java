@@ -10,25 +10,24 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.UnaryOperator;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class BinderCacheManager<T extends IInterface> {
     private final BinderInterfaceFactory<T> mBinderInterfaceFactory;
     private final AtomicReference<BinderCacheManager<T>.BinderDeathTracker> mCachedConnection = new AtomicReference<>();
 
-    /* loaded from: classes3.dex */
     public interface BinderInterfaceFactory<T> {
         T create();
     }
 
-    /* loaded from: classes3.dex */
-    public class BinderDeathTracker implements IBinder.DeathRecipient {
+    /* JADX INFO: Access modifiers changed from: private */
+    class BinderDeathTracker implements IBinder.DeathRecipient {
         private final T mConnection;
         private final HashMap<Object, Runnable> mListeners = new HashMap<>();
 
         BinderDeathTracker(T connection) {
             this.mConnection = connection;
             try {
-                connection.asBinder().linkToDeath(this, 0);
+                this.mConnection.asBinder().linkToDeath(this, 0);
             } catch (RemoteException e) {
             }
         }
@@ -112,6 +111,7 @@ public class BinderCacheManager<T extends IInterface> {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ BinderDeathTracker lambda$getTracker$0(BinderDeathTracker oldVal) {
         BinderDeathTracker binderDeathTracker = oldVal;
         if (binderDeathTracker == null || !binderDeathTracker.isAlive()) {

@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehPreferredNetworkInfo implements Parcelable {
     public static final Parcelable.Creator<SehPreferredNetworkInfo> CREATOR = new Parcelable.Creator<SehPreferredNetworkInfo>() { // from class: vendor.samsung.hardware.radio.network.SehPreferredNetworkInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehPreferredNetworkInfo createFromParcel(Parcel _aidl_source) {
             SehPreferredNetworkInfo _aidl_out = new SehPreferredNetworkInfo();
@@ -31,25 +28,6 @@ public class SehPreferredNetworkInfo implements Parcelable {
     public int gsmCompactAct = 0;
     public int utranAct = 0;
     public int mode = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehPreferredNetworkInfo$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehPreferredNetworkInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehPreferredNetworkInfo createFromParcel(Parcel _aidl_source) {
-            SehPreferredNetworkInfo _aidl_out = new SehPreferredNetworkInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehPreferredNetworkInfo[] newArray(int _aidl_size) {
-            return new SehPreferredNetworkInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -158,7 +136,7 @@ public class SehPreferredNetworkInfo implements Parcelable {
         _aidl_sj.add("gsmCompactAct: " + this.gsmCompactAct);
         _aidl_sj.add("utranAct: " + this.utranAct);
         _aidl_sj.add("mode: " + this.mode);
-        return "vendor.samsung.hardware.radio.network.SehPreferredNetworkInfo" + _aidl_sj.toString();
+        return "SehPreferredNetworkInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

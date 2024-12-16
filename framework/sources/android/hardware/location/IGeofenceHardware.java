@@ -35,7 +35,6 @@ public interface IGeofenceHardware extends IInterface {
 
     boolean unregisterForMonitorStateChangeCallback(int i, IGeofenceHardwareMonitorCallback iGeofenceHardwareMonitorCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGeofenceHardware {
         @Override // android.hardware.location.IGeofenceHardware
         public void setGpsGeofenceHardware(IGpsGeofenceHardware service) throws RemoteException {
@@ -91,7 +90,6 @@ public interface IGeofenceHardware extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGeofenceHardware {
         public static final String DESCRIPTOR = "android.hardware.location.IGeofenceHardware";
         static final int TRANSACTION_addCircularFence = 5;
@@ -172,95 +170,91 @@ public interface IGeofenceHardware extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IGpsGeofenceHardware _arg0 = IGpsGeofenceHardware.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setGpsGeofenceHardware(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IFusedGeofenceHardware _arg02 = IFusedGeofenceHardware.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setFusedGeofenceHardware(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int[] _result = getMonitoringTypes();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = getStatusOfMonitoringType(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    GeofenceHardwareRequestParcelable _arg1 = (GeofenceHardwareRequestParcelable) data.readTypedObject(GeofenceHardwareRequestParcelable.CREATOR);
+                    IGeofenceHardwareCallback _arg2 = IGeofenceHardwareCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result3 = addCircularFence(_arg04, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = removeGeofence(_arg05, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = pauseGeofence(_arg06, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    int _arg07 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = resumeGeofence(_arg07, _arg14, _arg22);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 9:
+                    int _arg08 = data.readInt();
+                    IGeofenceHardwareMonitorCallback _arg15 = IGeofenceHardwareMonitorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result7 = registerForMonitorStateChangeCallback(_arg08, _arg15);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    IGeofenceHardwareMonitorCallback _arg16 = IGeofenceHardwareMonitorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result8 = unregisterForMonitorStateChangeCallback(_arg09, _arg16);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGpsGeofenceHardware _arg0 = IGpsGeofenceHardware.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setGpsGeofenceHardware(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IFusedGeofenceHardware _arg02 = IFusedGeofenceHardware.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setFusedGeofenceHardware(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int[] _result = getMonitoringTypes();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = getStatusOfMonitoringType(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            GeofenceHardwareRequestParcelable _arg1 = (GeofenceHardwareRequestParcelable) data.readTypedObject(GeofenceHardwareRequestParcelable.CREATOR);
-                            IGeofenceHardwareCallback _arg2 = IGeofenceHardwareCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result3 = addCircularFence(_arg04, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = removeGeofence(_arg05, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 7:
-                            int _arg06 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = pauseGeofence(_arg06, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            int _arg07 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = resumeGeofence(_arg07, _arg14, _arg22);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            IGeofenceHardwareMonitorCallback _arg15 = IGeofenceHardwareMonitorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result7 = registerForMonitorStateChangeCallback(_arg08, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            IGeofenceHardwareMonitorCallback _arg16 = IGeofenceHardwareMonitorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result8 = unregisterForMonitorStateChangeCallback(_arg09, _arg16);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGeofenceHardware {
+        private static class Proxy implements IGeofenceHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -450,35 +444,35 @@ public interface IGeofenceHardware extends IInterface {
             }
         }
 
-        public void getMonitoringTypes_enforcePermission() throws SecurityException {
+        protected void getMonitoringTypes_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void getStatusOfMonitoringType_enforcePermission() throws SecurityException {
+        protected void getStatusOfMonitoringType_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void addCircularFence_enforcePermission() throws SecurityException {
+        protected void addCircularFence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void removeGeofence_enforcePermission() throws SecurityException {
+        protected void removeGeofence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void pauseGeofence_enforcePermission() throws SecurityException {
+        protected void pauseGeofence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void resumeGeofence_enforcePermission() throws SecurityException {
+        protected void resumeGeofence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void registerForMonitorStateChangeCallback_enforcePermission() throws SecurityException {
+        protected void registerForMonitorStateChangeCallback_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void unregisterForMonitorStateChangeCallback_enforcePermission() throws SecurityException {
+        protected void unregisterForMonitorStateChangeCallback_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 

@@ -18,7 +18,7 @@ public class ApexInfoList {
         return this.apexInfo;
     }
 
-    public static ApexInfoList read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static ApexInfoList read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         ApexInfoList _instance = new ApexInfoList();
         _parser.getDepth();
@@ -43,7 +43,7 @@ public class ApexInfoList {
         return _instance;
     }
 
-    public void write(XmlWriter _out, String _name) throws IOException {
+    void write(XmlWriter _out, String _name) throws IOException {
         _out.print("<" + _name);
         _out.print(">\n");
         _out.increaseIndent();

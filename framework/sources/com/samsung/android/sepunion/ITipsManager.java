@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ITipsManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.ITipsManager";
 
-    /* loaded from: classes5.dex */
     public static class Default implements ITipsManager {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -18,7 +17,6 @@ public interface ITipsManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ITipsManager {
         public Stub() {
             attachInterface(this, ITipsManager.DESCRIPTOR);
@@ -51,18 +49,14 @@ public interface ITipsManager extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITipsManager.DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(ITipsManager.DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ITipsManager {
+        private static class Proxy implements ITipsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

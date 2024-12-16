@@ -9,11 +9,9 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import com.android.internal.os.BackgroundThread;
-import com.samsung.android.ims.options.SemCapabilities;
-import com.samsung.android.rune.CoreRune;
 import java.util.HashMap;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CoreSaLogger {
     private static final String ADVANCED_TRACKING_ID = "408-399-975257";
     private static final String BASIC_TRACKING_ID = "4F4-399-995755";
@@ -55,7 +53,7 @@ public class CoreSaLogger {
     }
 
     public static void sendSaLoggingBroadcast(final Context context, final String trackingId, final String eventId, final String detail, final long value, final HashMap<String, String> customDimension, final String mode) {
-        BackgroundThread.getHandler().post(new Runnable() { // from class: com.samsung.android.core.CoreSaLogger$$ExternalSyntheticLambda2
+        BackgroundThread.getHandler().post(new Runnable() { // from class: com.samsung.android.core.CoreSaLogger$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 CoreSaLogger.lambda$sendSaLoggingBroadcast$0(eventId, detail, value, customDimension, mode, trackingId, context);
@@ -63,10 +61,7 @@ public class CoreSaLogger {
         });
     }
 
-    public static /* synthetic */ void lambda$sendSaLoggingBroadcast$0(String eventId, String detail, long value, HashMap customDimension, String mode, String trackingId, Context context) {
-        if (CoreRune.SAFE_DEBUG) {
-            Log.d(TAG, "sendSaLoggingBroadcast eventId : " + eventId + ", eventDetail : " + detail + ", value : " + (value != -1 ? Long.valueOf(value) : SemCapabilities.FEATURE_TAG_NULL) + ", customDimension : " + customDimension + ", mode : " + mode);
-        }
+    static /* synthetic */ void lambda$sendSaLoggingBroadcast$0(String eventId, String detail, long value, HashMap customDimension, String mode, String trackingId, Context context) {
         Bundle bundle = new Bundle();
         bundle.putString("tracking_id", trackingId);
         bundle.putString("feature", eventId);
@@ -80,9 +75,8 @@ public class CoreSaLogger {
             bundle.putSerializable("dimension", customDimension);
         }
         if (ADVANCED_TRACKING_ID.equals(trackingId) && !"None".equals(mode)) {
-            HashMap<String, String> hashMap = sCustomDimensionForMode;
-            hashMap.put("mode", mode);
-            bundle.putSerializable("dimension", hashMap);
+            sCustomDimensionForMode.put("mode", mode);
+            bundle.putSerializable("dimension", sCustomDimensionForMode);
         }
         bundle.putString("type", "ev");
         bundle.putString("pkg_name", "com.samsung.android.appcore");
@@ -94,14 +88,8 @@ public class CoreSaLogger {
             HashMap<String, String> dimension = new HashMap<>();
             dimension.put(DIMENSION_VALUE_KEY1, String.valueOf(value));
             bundle.putSerializable("dimension", dimension);
-            if (CoreRune.SAFE_DEBUG) {
-                Log.d(TAG, "Set value to dimension eventId : " + eventId + ", value : " + value);
-            }
         }
         context.sendBroadcastAsUser(new Intent("com.sec.android.diagmonagent.intent.USE_APP_FEATURE_SURVEY").setPackage("com.sec.android.diagmonagent").putExtras(bundle).addFlags(67108864), UserHandle.CURRENT_OR_SELF);
-        if (CoreRune.MW_SA_RUNESTONE_LOGGING) {
-            RunestoneLogger.interpretSaToRunestone(context, eventId, detail);
-        }
     }
 
     private static void sendSettingLogToServer(String trackingId, String settingId, String value) {
@@ -120,7 +108,7 @@ public class CoreSaLogger {
         if (trackingId == null || settingId == null) {
             Log.d(TAG, "Null trackingId or settingId");
         } else {
-            BackgroundThread.getHandler().post(new Runnable() { // from class: com.samsung.android.core.CoreSaLogger$$ExternalSyntheticLambda1
+            BackgroundThread.getHandler().post(new Runnable() { // from class: com.samsung.android.core.CoreSaLogger$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     CoreSaLogger.lambda$sendSaLoggingBroadcastForSetting$1(trackingId, settingId, value, context);
@@ -129,7 +117,7 @@ public class CoreSaLogger {
         }
     }
 
-    public static /* synthetic */ void lambda$sendSaLoggingBroadcastForSetting$1(String trackingId, String settingId, String value, Context context) {
+    static /* synthetic */ void lambda$sendSaLoggingBroadcastForSetting$1(String trackingId, String settingId, String value, Context context) {
         HashMap<String, String> setting = putToSettingMap(trackingId, settingId, value);
         if (setting == null) {
             Log.w(TAG, "Null setting");
@@ -139,7 +127,7 @@ public class CoreSaLogger {
     }
 
     public static void sendSaLoggingBroadcastForBasicSetting(final Context context, final HashMap<String, String> setting) {
-        BackgroundThread.getHandler().post(new Runnable() { // from class: com.samsung.android.core.CoreSaLogger$$ExternalSyntheticLambda0
+        BackgroundThread.getHandler().post(new Runnable() { // from class: com.samsung.android.core.CoreSaLogger$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 CoreSaLogger.lambda$sendSaLoggingBroadcastForBasicSetting$2(setting, context);
@@ -147,7 +135,7 @@ public class CoreSaLogger {
         });
     }
 
-    public static /* synthetic */ void lambda$sendSaLoggingBroadcastForBasicSetting$2(HashMap setting, Context context) {
+    static /* synthetic */ void lambda$sendSaLoggingBroadcastForBasicSetting$2(HashMap setting, Context context) {
         HashMap<String, String> settingMapForBasic = getSettingMap(BASIC_TRACKING_ID);
         if (settingMapForBasic != null) {
             settingMapForBasic.putAll(setting);
@@ -165,9 +153,6 @@ public class CoreSaLogger {
     }
 
     private static HashMap<String, String> putToSettingMap(String trackingId, String settingId, String value) {
-        if (CoreRune.SAFE_DEBUG) {
-            Log.d(TAG, "putSaLoggingSetting settingId : " + settingId + ", value : " + value);
-        }
         HashMap<String, String> setting = getSettingMap(trackingId);
         if (setting != null) {
             setting.put(settingId, value);

@@ -41,22 +41,19 @@ public class DESedeWrapEngine implements Wrapper {
         if (param instanceof KeyParameter) {
             this.param = (KeyParameter) param;
             if (this.forWrapping) {
-                byte[] bArr = new byte[8];
-                this.iv = bArr;
-                sr.nextBytes(bArr);
+                this.iv = new byte[8];
+                sr.nextBytes(this.iv);
                 this.paramPlusIV = new ParametersWithIV(this.param, this.iv);
                 return;
             }
             return;
         }
         if (param instanceof ParametersWithIV) {
-            ParametersWithIV parametersWithIV = (ParametersWithIV) param;
-            this.paramPlusIV = parametersWithIV;
-            this.iv = parametersWithIV.getIV();
+            this.paramPlusIV = (ParametersWithIV) param;
+            this.iv = this.paramPlusIV.getIV();
             this.param = (KeyParameter) this.paramPlusIV.getParameters();
             if (this.forWrapping) {
-                byte[] bArr2 = this.iv;
-                if (bArr2 == null || bArr2.length != 8) {
+                if (this.iv == null || this.iv.length != 8) {
                     throw new IllegalArgumentException("IV is not 8 octets");
                 }
                 return;
@@ -90,9 +87,8 @@ public class DESedeWrapEngine implements Wrapper {
         for (int currentBytePos = 0; currentBytePos != WKCKS.length; currentBytePos += blockSize) {
             this.engine.processBlock(WKCKS, currentBytePos, TEMP1, currentBytePos);
         }
-        byte[] bArr = this.iv;
-        byte[] TEMP2 = new byte[bArr.length + TEMP1.length];
-        System.arraycopy(bArr, 0, TEMP2, 0, bArr.length);
+        byte[] TEMP2 = new byte[this.iv.length + TEMP1.length];
+        System.arraycopy(this.iv, 0, TEMP2, 0, this.iv.length);
         System.arraycopy(TEMP1, 0, TEMP2, this.iv.length, TEMP1.length);
         byte[] TEMP3 = reverse(TEMP2);
         ParametersWithIV param2 = new ParametersWithIV(this.param, IV2);
@@ -122,14 +118,12 @@ public class DESedeWrapEngine implements Wrapper {
             this.engine.processBlock(in, inOff + currentBytePos, TEMP3, currentBytePos);
         }
         byte[] TEMP2 = reverse(TEMP3);
-        byte[] bArr = new byte[8];
-        this.iv = bArr;
+        this.iv = new byte[8];
         byte[] TEMP1 = new byte[TEMP2.length - 8];
-        System.arraycopy(TEMP2, 0, bArr, 0, 8);
+        System.arraycopy(TEMP2, 0, this.iv, 0, 8);
         System.arraycopy(TEMP2, 8, TEMP1, 0, TEMP2.length - 8);
-        ParametersWithIV parametersWithIV = new ParametersWithIV(this.param, this.iv);
-        this.paramPlusIV = parametersWithIV;
-        this.engine.init(false, parametersWithIV);
+        this.paramPlusIV = new ParametersWithIV(this.param, this.iv);
+        this.engine.init(false, this.paramPlusIV);
         byte[] WKCKS = new byte[TEMP1.length];
         for (int currentBytePos2 = 0; currentBytePos2 != WKCKS.length; currentBytePos2 += blockSize) {
             this.engine.processBlock(TEMP1, currentBytePos2, WKCKS, currentBytePos2);

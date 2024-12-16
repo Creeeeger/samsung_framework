@@ -59,12 +59,11 @@ public class X509CRLStoreSelector extends X509CRLSelector implements Selector {
             }
             if (this.issuingDistributionPointEnabled) {
                 byte[] idp = crl.getExtensionValue(Extension.issuingDistributionPoint.getId());
-                byte[] bArr = this.issuingDistributionPoint;
-                if (bArr == null) {
+                if (this.issuingDistributionPoint == null) {
                     if (idp != null) {
                         return false;
                     }
-                } else if (!Arrays.areEqual(idp, bArr)) {
+                } else if (!Arrays.areEqual(idp, this.issuingDistributionPoint)) {
                     return false;
                 }
             }

@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public interface MessageLite extends MessageLiteOrBuilder {
 
-    /* loaded from: classes4.dex */
     public interface Builder extends MessageLiteOrBuilder, Cloneable {
         MessageLite build();
 
@@ -16,7 +15,7 @@ public interface MessageLite extends MessageLiteOrBuilder {
         Builder clear();
 
         /* renamed from: clone */
-        Builder mo7003clone();
+        Builder mo7416clone();
 
         boolean mergeDelimitedFrom(InputStream inputStream) throws IOException;
 

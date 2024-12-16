@@ -35,6 +35,7 @@ public abstract class Animation implements Cloneable {
     private boolean mShowWallpaper;
     long mStartOffset;
     private int mZAdjustment;
+    private float mCornerRadius = Float.NaN;
     boolean mEnded = false;
     boolean mStarted = false;
     boolean mCycleFlip = false;
@@ -47,7 +48,6 @@ public abstract class Animation implements Cloneable {
     int mRepeated = 0;
     int mRepeatMode = 1;
     private float mScaleFactor = 1.0f;
-    private float mCornerRadius = Float.NaN;
     private boolean mMore = true;
     private boolean mOneMoreTime = true;
     RectF mPreviousRegion = new RectF();
@@ -56,7 +56,6 @@ public abstract class Animation implements Cloneable {
     Transformation mPreviousTransformation = new Transformation();
     private final CloseGuard guard = CloseGuard.get();
 
-    /* loaded from: classes4.dex */
     public interface AnimationListener {
         void onAnimationEnd(Animation animation);
 
@@ -65,8 +64,19 @@ public abstract class Animation implements Cloneable {
         void onAnimationStart(Animation animation);
     }
 
-    /* loaded from: classes4.dex */
-    public static class NoImagePreloadHolder {
+    public void setRoundedCornerRadius(float cornerRadius) {
+        this.mCornerRadius = cornerRadius;
+    }
+
+    public boolean hasRoundedCornerRadius() {
+        return !Float.isNaN(this.mCornerRadius);
+    }
+
+    public float getRoundedCornerRadius() {
+        return this.mCornerRadius;
+    }
+
+    private static class NoImagePreloadHolder {
         public static final boolean USE_CLOSEGUARD = SystemProperties.getBoolean("log.closeguard.Animation", false);
 
         private NoImagePreloadHolder() {
@@ -100,9 +110,10 @@ public abstract class Animation implements Cloneable {
         ensureInterpolator();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // 
-    /* renamed from: clone */
-    public Animation mo5539clone() throws CloneNotSupportedException {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public Animation mo5909clone() throws CloneNotSupportedException {
         Animation animation = (Animation) super.clone();
         animation.mPreviousRegion = new RectF();
         animation.mRegion = new RectF();
@@ -150,42 +161,21 @@ public abstract class Animation implements Cloneable {
         this.mInitialized = true;
     }
 
-    /* renamed from: android.view.animation.Animation$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Animation.this.dispatchAnimationStart();
-        }
-    }
-
     public void setListenerHandler(Handler handler) {
         if (this.mListenerHandler == null) {
             this.mOnStart = new Runnable() { // from class: android.view.animation.Animation.1
-                AnonymousClass1() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     Animation.this.dispatchAnimationStart();
                 }
             };
             this.mOnRepeat = new Runnable() { // from class: android.view.animation.Animation.2
-                AnonymousClass2() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     Animation.this.dispatchAnimationRepeat();
                 }
             };
             this.mOnEnd = new Runnable() { // from class: android.view.animation.Animation.3
-                AnonymousClass3() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     Animation.this.dispatchAnimationEnd();
@@ -193,30 +183,6 @@ public abstract class Animation implements Cloneable {
             };
         }
         this.mListenerHandler = handler;
-    }
-
-    /* renamed from: android.view.animation.Animation$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Animation.this.dispatchAnimationRepeat();
-        }
-    }
-
-    /* renamed from: android.view.animation.Animation$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Animation.this.dispatchAnimationEnd();
-        }
     }
 
     public void setInterpolator(Context context, int resID) {
@@ -239,36 +205,31 @@ public abstract class Animation implements Cloneable {
     }
 
     public void restrictDuration(long durationMillis) {
-        long j = this.mStartOffset;
-        if (j > durationMillis) {
+        if (this.mStartOffset > durationMillis) {
             this.mStartOffset = durationMillis;
             this.mDuration = 0L;
             this.mRepeatCount = 0;
             return;
         }
-        long dur = this.mDuration + j;
+        long dur = this.mDuration + this.mStartOffset;
         if (dur > durationMillis) {
-            this.mDuration = durationMillis - j;
+            this.mDuration = durationMillis - this.mStartOffset;
             dur = durationMillis;
         }
         if (this.mDuration <= 0) {
             this.mDuration = 0L;
             this.mRepeatCount = 0;
-            return;
-        }
-        int i = this.mRepeatCount;
-        if (i < 0 || i > durationMillis || i * dur > durationMillis) {
-            int i2 = ((int) (durationMillis / dur)) - 1;
-            this.mRepeatCount = i2;
-            if (i2 < 0) {
+        } else if (this.mRepeatCount < 0 || this.mRepeatCount > durationMillis || this.mRepeatCount * dur > durationMillis) {
+            this.mRepeatCount = ((int) (durationMillis / dur)) - 1;
+            if (this.mRepeatCount < 0) {
                 this.mRepeatCount = 0;
             }
         }
     }
 
     public void scaleCurrentDuration(float scale) {
-        this.mDuration = ((float) this.mDuration) * scale;
-        this.mStartOffset = ((float) this.mStartOffset) * scale;
+        this.mDuration = (long) (this.mDuration * scale);
+        this.mStartOffset = (long) (this.mStartOffset * scale);
     }
 
     public void setStartTime(long startTimeMillis) {
@@ -323,7 +284,7 @@ public abstract class Animation implements Cloneable {
     public void setBackgroundColor(int bg) {
     }
 
-    public float getScaleFactor() {
+    protected float getScaleFactor() {
         return this.mScaleFactor;
     }
 
@@ -337,18 +298,6 @@ public abstract class Animation implements Cloneable {
 
     public void setHasRoundedCorners(boolean hasRoundedCorners) {
         this.mHasRoundedCorners = hasRoundedCorners;
-    }
-
-    public void setRoundedCornerRadius(float cornerRadius) {
-        this.mCornerRadius = cornerRadius;
-    }
-
-    public boolean hasRoundedCornerRadius() {
-        return !Float.isNaN(this.mCornerRadius);
-    }
-
-    public float getRoundedCornerRadius() {
-        return this.mCornerRadius;
     }
 
     public void setShowBackdrop(boolean showBackdrop) {
@@ -441,7 +390,7 @@ public abstract class Animation implements Cloneable {
         this.mListener = listener;
     }
 
-    public void ensureInterpolator() {
+    protected void ensureInterpolator() {
         if (this.mInterpolator == null) {
             this.mInterpolator = new AccelerateDecelerateInterpolator();
         }
@@ -464,7 +413,7 @@ public abstract class Animation implements Cloneable {
         long startOffset = getStartOffset();
         long duration = this.mDuration;
         if (duration != 0) {
-            normalizedTime = ((float) (currentTime - (this.mStartTime + startOffset))) / ((float) duration);
+            normalizedTime = (currentTime - (this.mStartTime + startOffset)) / duration;
         } else {
             normalizedTime = currentTime < this.mStartTime ? 0.0f : 1.0f;
         }
@@ -508,12 +457,11 @@ public abstract class Animation implements Cloneable {
                 fireAnimationRepeat();
             }
         }
-        boolean z = this.mMore;
-        if (!z && this.mOneMoreTime) {
+        if (!this.mMore && this.mOneMoreTime) {
             this.mOneMoreTime = false;
             return true;
         }
-        return z;
+        return this.mMore;
     }
 
     private boolean isCanceled() {
@@ -522,9 +470,8 @@ public abstract class Animation implements Cloneable {
 
     private void fireAnimationStart() {
         if (hasAnimationListener()) {
-            Handler handler = this.mListenerHandler;
-            if (handler != null) {
-                handler.postAtFrontOfQueue(this.mOnStart);
+            if (this.mListenerHandler != null) {
+                this.mListenerHandler.postAtFrontOfQueue(this.mOnStart);
             } else {
                 dispatchAnimationStart();
             }
@@ -533,9 +480,8 @@ public abstract class Animation implements Cloneable {
 
     private void fireAnimationRepeat() {
         if (hasAnimationListener()) {
-            Handler handler = this.mListenerHandler;
-            if (handler != null) {
-                handler.postAtFrontOfQueue(this.mOnRepeat);
+            if (this.mListenerHandler != null) {
+                this.mListenerHandler.postAtFrontOfQueue(this.mOnRepeat);
             } else {
                 dispatchAnimationRepeat();
             }
@@ -544,33 +490,29 @@ public abstract class Animation implements Cloneable {
 
     private void fireAnimationEnd() {
         if (hasAnimationListener()) {
-            Handler handler = this.mListenerHandler;
-            if (handler != null) {
-                handler.postAtFrontOfQueue(this.mOnEnd);
+            if (this.mListenerHandler != null) {
+                this.mListenerHandler.postAtFrontOfQueue(this.mOnEnd);
             } else {
                 dispatchAnimationEnd();
             }
         }
     }
 
-    public void dispatchAnimationStart() {
-        AnimationListener animationListener = this.mListener;
-        if (animationListener != null) {
-            animationListener.onAnimationStart(this);
+    void dispatchAnimationStart() {
+        if (this.mListener != null) {
+            this.mListener.onAnimationStart(this);
         }
     }
 
     void dispatchAnimationRepeat() {
-        AnimationListener animationListener = this.mListener;
-        if (animationListener != null) {
-            animationListener.onAnimationRepeat(this);
+        if (this.mListener != null) {
+            this.mListener.onAnimationRepeat(this);
         }
     }
 
-    public void dispatchAnimationEnd() {
-        AnimationListener animationListener = this.mListener;
-        if (animationListener != null) {
-            animationListener.onAnimationEnd(this);
+    void dispatchAnimationEnd() {
+        if (this.mListener != null) {
+            this.mListener.onAnimationEnd(this);
         }
     }
 
@@ -587,10 +529,10 @@ public abstract class Animation implements Cloneable {
         return this.mEnded;
     }
 
-    public void applyTransformation(float interpolatedTime, Transformation t) {
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
     }
 
-    public float resolveSize(int type, float value, int size, int parentSize) {
+    protected float resolveSize(int type, float value, int size, int parentSize) {
         switch (type) {
             case 0:
                 return value;
@@ -631,9 +573,8 @@ public abstract class Animation implements Cloneable {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.guard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.guard != null) {
+                this.guard.warnIfOpen();
             }
         } finally {
             super.finalize();
@@ -644,15 +585,14 @@ public abstract class Animation implements Cloneable {
         return false;
     }
 
-    /* loaded from: classes4.dex */
-    public static class Description {
+    protected static class Description {
         public int type;
         public float value;
 
         protected Description() {
         }
 
-        public static Description parseValue(TypedValue value, Context context) {
+        static Description parseValue(TypedValue value, Context context) {
             Description d = new Description();
             if (value == null) {
                 d.type = 0;

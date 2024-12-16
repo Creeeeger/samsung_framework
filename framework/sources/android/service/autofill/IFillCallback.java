@@ -16,7 +16,6 @@ public interface IFillCallback extends IInterface {
 
     void onSuccess(FillResponse fillResponse) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IFillCallback {
         @Override // android.service.autofill.IFillCallback
         public void onCancellable(ICancellationSignal cancellation) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IFillCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IFillCallback {
         public static final String DESCRIPTOR = "android.service.autofill.IFillCallback";
         static final int TRANSACTION_onCancellable = 1;
@@ -86,37 +84,33 @@ public interface IFillCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCancellable(_arg0);
+                    return true;
+                case 2:
+                    FillResponse _arg02 = (FillResponse) data.readTypedObject(FillResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    CharSequence _arg1 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    onFailure(_arg03, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCancellable(_arg0);
-                            return true;
-                        case 2:
-                            FillResponse _arg02 = (FillResponse) data.readTypedObject(FillResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            CharSequence _arg1 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            onFailure(_arg03, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IFillCallback {
+        private static class Proxy implements IFillCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

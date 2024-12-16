@@ -15,7 +15,6 @@ public final class Telecom {
     public static final int UNKNOWN_CONTROL = 0;
     public static final int UNMUTE = 5;
 
-    /* loaded from: classes.dex */
     public final class Call {
         public static final int AUDIO_PROCESSING = 5;
         public static final long CONTROLS = 2259152797700L;
@@ -38,7 +37,6 @@ public final class Telecom {
         public Call() {
         }
 
-        /* loaded from: classes.dex */
         public final class Origin {
             public static final long APP_ICON = 1151051235330L;
             public static final long CALLER_ID = 1138166333441L;
@@ -49,7 +47,6 @@ public final class Telecom {
         }
     }
 
-    /* loaded from: classes.dex */
     public final class Request {
         public static final long CONTROL_ACTION = 1146756268034L;
         public static final long CREATE_ACTION = 1146756268033L;
@@ -57,7 +54,6 @@ public final class Telecom {
         public Request() {
         }
 
-        /* loaded from: classes.dex */
         public final class CreateAction {
             public static final long ADDRESS = 1138166333442L;
             public static final long FACILITATOR = 1146756268035L;
@@ -67,7 +63,6 @@ public final class Telecom {
             }
         }
 
-        /* loaded from: classes.dex */
         public final class ControlAction {
             public static final long CONTROL = 1159641169922L;
             public static final long ID = 1138166333441L;
@@ -77,7 +72,6 @@ public final class Telecom {
         }
     }
 
-    /* loaded from: classes.dex */
     public final class CallFacilitator {
         public static final long EXTENDED_IDENTIFIER = 1138166333443L;
         public static final long IDENTIFIER = 1138166333442L;

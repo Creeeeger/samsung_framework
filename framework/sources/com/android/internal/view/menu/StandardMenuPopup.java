@@ -1,8 +1,11 @@
 package com.android.internal.view.menu;
 
+import android.app.AppGlobals;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Parcelable;
+import android.text.ClientFlags;
+import android.text.TextFlags;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -22,9 +25,10 @@ import com.android.internal.view.menu.MenuPresenter;
 import java.util.Objects;
 
 /* loaded from: classes5.dex */
-public final class StandardMenuPopup extends MenuPopup implements PopupWindow.OnDismissListener, AdapterView.OnItemClickListener, MenuPresenter, View.OnKeyListener {
-    private static final int ITEM_LAYOUT = 17367282;
-    private static final int SEM_ITEM_LAYOUT = 17367405;
+final class StandardMenuPopup extends MenuPopup implements PopupWindow.OnDismissListener, AdapterView.OnItemClickListener, MenuPresenter, View.OnKeyListener {
+    private static final int ITEM_LAYOUT = 17367287;
+    private static final int ITEM_LAYOUT_MATERIAL = 17367288;
+    private static final int SEM_ITEM_LAYOUT = 17367413;
     private final MenuAdapter mAdapter;
     private View mAnchorView;
     private int mContentWidth;
@@ -44,9 +48,6 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
     private ViewTreeObserver mTreeObserver;
     private boolean mWasDismissed;
     private final ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.android.internal.view.menu.StandardMenuPopup.1
-        AnonymousClass1() {
-        }
-
         @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
         public void onGlobalLayout() {
             if (StandardMenuPopup.this.mIsParentThemeDeviceDefault && StandardMenuPopup.this.isShowing()) {
@@ -70,9 +71,6 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
         }
     };
     private final View.OnAttachStateChangeListener mAttachStateChangeListener = new View.OnAttachStateChangeListener() { // from class: com.android.internal.view.menu.StandardMenuPopup.2
-        AnonymousClass2() {
-        }
-
         @Override // android.view.View.OnAttachStateChangeListener
         public void onViewAttachedToWindow(View v) {
         }
@@ -91,68 +89,15 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
     private int mDropDownGravity = 0;
     private int mPopupWindowLayout = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.view.menu.StandardMenuPopup$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ViewTreeObserver.OnGlobalLayoutListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
-        public void onGlobalLayout() {
-            if (StandardMenuPopup.this.mIsParentThemeDeviceDefault && StandardMenuPopup.this.isShowing()) {
-                View anchor = StandardMenuPopup.this.mShownAnchorView;
-                if (anchor == null || !anchor.isShown()) {
-                    StandardMenuPopup.this.dismiss();
-                    return;
-                } else {
-                    StandardMenuPopup.this.mPopup.show();
-                    return;
-                }
-            }
-            if (StandardMenuPopup.this.isShowing() && !StandardMenuPopup.this.mPopup.isModal()) {
-                View anchor2 = StandardMenuPopup.this.mShownAnchorView;
-                if (anchor2 == null || !anchor2.isShown()) {
-                    StandardMenuPopup.this.dismiss();
-                } else {
-                    StandardMenuPopup.this.mPopup.show();
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.view.menu.StandardMenuPopup$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements View.OnAttachStateChangeListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewAttachedToWindow(View v) {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewDetachedFromWindow(View v) {
-            if (StandardMenuPopup.this.mTreeObserver != null) {
-                if (!StandardMenuPopup.this.mTreeObserver.isAlive()) {
-                    StandardMenuPopup.this.mTreeObserver = v.getViewTreeObserver();
-                }
-                StandardMenuPopup.this.mTreeObserver.removeGlobalOnLayoutListener(StandardMenuPopup.this.mGlobalLayoutListener);
-            }
-            v.removeOnAttachStateChangeListener(this);
-        }
-    }
-
     public StandardMenuPopup(Context context, MenuBuilder menu, View anchorView, int popupStyleAttr, int popupStyleRes, boolean overflowOnly) {
         this.mContext = (Context) Objects.requireNonNull(context);
+        boolean useNewContextMenu = AppGlobals.getIntCoreSetting(TextFlags.KEY_ENABLE_NEW_CONTEXT_MENU, 0) != 0;
         this.mMenu = menu;
         this.mOverflowOnly = overflowOnly;
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, outValue, false);
-        boolean z = outValue.data != 0;
-        this.mIsParentThemeDeviceDefault = z;
-        if (z) {
+        this.mIsParentThemeDeviceDefault = outValue.data != 0;
+        if (this.mIsParentThemeDeviceDefault) {
             context.getTheme().resolveAttribute(16843945, outValue, false);
             if (outValue.data != 0) {
                 this.mContext = new ContextThemeWrapper(context, outValue.data);
@@ -160,9 +105,9 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
         }
         LayoutInflater inflater = LayoutInflater.from(this.mContext);
         if (this.mIsParentThemeDeviceDefault) {
-            this.mAdapter = new MenuAdapter(menu, inflater, overflowOnly, 17367405);
+            this.mAdapter = new MenuAdapter(menu, inflater, this.mOverflowOnly, 17367413);
         } else {
-            this.mAdapter = new MenuAdapter(menu, inflater, overflowOnly, 17367282);
+            this.mAdapter = new MenuAdapter(menu, inflater, this.mOverflowOnly, (ClientFlags.fixMisalignedContextMenu() && useNewContextMenu) ? 17367288 : 17367287);
         }
         this.mPopupStyleAttr = popupStyleAttr;
         this.mPopupStyleRes = popupStyleRes;
@@ -173,7 +118,7 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
             this.mPopupMaxWidth = Math.max(res.getDisplayMetrics().widthPixels / 2, res.getDimensionPixelSize(R.dimen.config_prefDialogWidth));
         }
         this.mAnchorView = anchorView;
-        this.mPopup = new MenuPopupWindow(this.mContext, null, popupStyleAttr, popupStyleRes);
+        this.mPopup = new MenuPopupWindow(this.mContext, null, this.mPopupStyleAttr, this.mPopupStyleRes);
         menu.addMenuPresenter(this, this.mContext);
     }
 
@@ -188,25 +133,23 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
     }
 
     private boolean tryShow() {
-        View view;
         FrameLayout titleItemView;
         if (isShowing()) {
             return true;
         }
-        if (this.mWasDismissed || (view = this.mAnchorView) == null) {
+        if (this.mWasDismissed || this.mAnchorView == null) {
             return false;
         }
-        this.mShownAnchorView = view;
+        this.mShownAnchorView = this.mAnchorView;
         this.mPopup.setOnDismissListener(this);
         this.mPopup.setOnItemClickListener(this);
         this.mPopup.setAdapter(this.mAdapter);
         this.mPopup.setModal(true);
         View anchor = this.mShownAnchorView;
         boolean addGlobalListener = this.mTreeObserver == null;
-        ViewTreeObserver viewTreeObserver = anchor.getViewTreeObserver();
-        this.mTreeObserver = viewTreeObserver;
+        this.mTreeObserver = anchor.getViewTreeObserver();
         if (addGlobalListener) {
-            viewTreeObserver.addOnGlobalLayoutListener(this.mGlobalLayoutListener);
+            this.mTreeObserver.addOnGlobalLayoutListener(this.mGlobalLayoutListener);
         }
         anchor.addOnAttachStateChangeListener(this.mAttachStateChangeListener);
         this.mPopup.setAnchorView(anchor);
@@ -220,9 +163,8 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
         }
         this.mPopup.setContentWidth(this.mContentWidth);
         this.mPopup.setInputMethodMode(2);
-        int i = this.mPopupWindowLayout;
-        if (i != 0) {
-            this.mPopup.setWindowLayoutType(i);
+        if (this.mPopupWindowLayout != 0) {
+            this.mPopup.setWindowLayoutType(this.mPopupWindowLayout);
         }
         this.mPopup.setEpicenterBounds(getEpicenterBounds());
         this.mPopup.show();
@@ -236,7 +178,7 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
             }
             TextView titleView = (TextView) titleItemView.findViewById(16908310);
             if (titleView != null) {
-                titleView.setText(this.mMenu.getHeaderTitle());
+                titleView.lambda$setTextAsync$0(this.mMenu.getHeaderTitle());
             }
             titleItemView.setEnabled(false);
             listView.addHeaderView(titleItemView, null, false);
@@ -272,27 +214,24 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
     public void onDismiss() {
         this.mWasDismissed = true;
         this.mMenu.close();
-        ViewTreeObserver viewTreeObserver = this.mTreeObserver;
-        if (viewTreeObserver != null) {
-            if (!viewTreeObserver.isAlive()) {
+        if (this.mTreeObserver != null) {
+            if (!this.mTreeObserver.isAlive()) {
                 this.mTreeObserver = this.mShownAnchorView.getViewTreeObserver();
             }
             this.mTreeObserver.removeGlobalOnLayoutListener(this.mGlobalLayoutListener);
             this.mTreeObserver = null;
         }
         this.mShownAnchorView.removeOnAttachStateChangeListener(this.mAttachStateChangeListener);
-        PopupWindow.OnDismissListener onDismissListener = this.mOnDismissListener;
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss();
+        if (this.mOnDismissListener != null) {
+            this.mOnDismissListener.onDismiss();
         }
     }
 
     @Override // com.android.internal.view.menu.MenuPresenter
     public void updateMenuView(boolean cleared) {
         this.mHasContentWidth = false;
-        MenuAdapter menuAdapter = this.mAdapter;
-        if (menuAdapter != null) {
-            menuAdapter.notifyDataSetChanged();
+        if (this.mAdapter != null) {
+            this.mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -317,9 +256,8 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
                 horizontalOffset += this.mAnchorView.getWidth();
             }
             if (subPopup.tryShow(horizontalOffset, verticalOffset)) {
-                MenuPresenter.Callback callback = this.mPresenterCallback;
-                if (callback != null) {
-                    callback.onOpenSubMenu(subMenu);
+                if (this.mPresenterCallback != null) {
+                    this.mPresenterCallback.onOpenSubMenu(subMenu);
                     return true;
                 }
                 return true;
@@ -334,9 +272,8 @@ public final class StandardMenuPopup extends MenuPopup implements PopupWindow.On
             return;
         }
         dismiss();
-        MenuPresenter.Callback callback = this.mPresenterCallback;
-        if (callback != null) {
-            callback.onCloseMenu(menu, allMenusAreClosing);
+        if (this.mPresenterCallback != null) {
+            this.mPresenterCallback.onCloseMenu(menu, allMenusAreClosing);
         }
     }
 

@@ -30,7 +30,7 @@ public class DERUTF8String extends ASN1Primitive implements ASN1String {
         return new DERUTF8String(ASN1OctetString.getInstance(o).getOctets());
     }
 
-    public DERUTF8String(byte[] string) {
+    DERUTF8String(byte[] string) {
         this.string = string;
     }
 
@@ -53,7 +53,7 @@ public class DERUTF8String extends ASN1Primitive implements ASN1String {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof DERUTF8String)) {
             return false;
         }
@@ -62,17 +62,17 @@ public class DERUTF8String extends ASN1Primitive implements ASN1String {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         return StreamUtil.calculateBodyLength(this.string.length) + 1 + this.string.length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 12, this.string);
     }
 }

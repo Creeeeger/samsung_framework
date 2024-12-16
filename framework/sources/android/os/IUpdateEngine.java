@@ -31,7 +31,6 @@ public interface IUpdateEngine extends IInterface {
 
     boolean verifyPayloadApplicable(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IUpdateEngine {
         @Override // android.os.IUpdateEngine
         public void applyPayload(String url, long payload_offset, long payload_size, String[] headerKeyValuePairs) throws RemoteException {
@@ -95,7 +94,6 @@ public interface IUpdateEngine extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IUpdateEngine {
         public static final String DESCRIPTOR = "android.os.IUpdateEngine";
         static final int TRANSACTION_allocateSpaceForPayload = 12;
@@ -175,100 +173,96 @@ public interface IUpdateEngine extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    long _arg1 = data.readLong();
+                    long _arg2 = data.readLong();
+                    String[] _arg3 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    applyPayload(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg12 = data.readLong();
+                    long _arg22 = data.readLong();
+                    String[] _arg32 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    applyPayloadFd(_arg02, _arg12, _arg22, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IUpdateEngineCallback _arg03 = IUpdateEngineCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result = bind(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    IUpdateEngineCallback _arg04 = IUpdateEngineCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result2 = unbind(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    suspend();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    resume();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    cancel();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    resetStatus();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    setShouldSwitchSlotOnReboot(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    resetShouldSwitchSlotOnReboot();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = verifyPayloadApplicable(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 12:
+                    String _arg07 = data.readString();
+                    String[] _arg13 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    long _result4 = allocateSpaceForPayload(_arg07, _arg13);
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    return true;
+                case 13:
+                    IUpdateEngineCallback _arg08 = IUpdateEngineCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cleanupSuccessfulUpdate(_arg08);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            long _arg1 = data.readLong();
-                            long _arg2 = data.readLong();
-                            String[] _arg3 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            applyPayload(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg12 = data.readLong();
-                            long _arg22 = data.readLong();
-                            String[] _arg32 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            applyPayloadFd(_arg02, _arg12, _arg22, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IUpdateEngineCallback _arg03 = IUpdateEngineCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result = bind(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            IUpdateEngineCallback _arg04 = IUpdateEngineCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result2 = unbind(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            suspend();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            resume();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            cancel();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            resetStatus();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            setShouldSwitchSlotOnReboot(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            resetShouldSwitchSlotOnReboot();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = verifyPayloadApplicable(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 12:
-                            String _arg07 = data.readString();
-                            String[] _arg13 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            long _result4 = allocateSpaceForPayload(_arg07, _arg13);
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        case 13:
-                            IUpdateEngineCallback _arg08 = IUpdateEngineCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cleanupSuccessfulUpdate(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IUpdateEngine {
+        private static class Proxy implements IUpdateEngine {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

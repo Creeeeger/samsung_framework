@@ -11,7 +11,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.OverScroller;
 import com.android.internal.util.FrameworkStatsLog;
-import com.samsung.android.rune.CoreRune;
 
 /* loaded from: classes4.dex */
 public class GestureDetector {
@@ -53,6 +52,7 @@ public class GestureDetector {
     private boolean mStillDown;
     private int mTouchSlopSquare;
     private VelocityTracker mVelocityTracker;
+    private int mVelocityTrackerStrategy;
     private static final String TAG = GestureDetector.class.getSimpleName();
     private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
     private static final int TAP_TIMEOUT = ViewConfiguration.getTapTimeout();
@@ -60,12 +60,10 @@ public class GestureDetector {
     private static final int DOUBLE_TAP_MIN_TIME = ViewConfiguration.getDoubleTapMinTime();
     private static ICustomFrequencyManager sCfmsService = null;
 
-    /* loaded from: classes4.dex */
     public interface OnContextClickListener {
         boolean onContextClick(MotionEvent motionEvent);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnDoubleTapListener {
         boolean onDoubleTap(MotionEvent motionEvent);
 
@@ -74,7 +72,6 @@ public class GestureDetector {
         boolean onSingleTapConfirmed(MotionEvent motionEvent);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnGestureListener {
         boolean onDown(MotionEvent motionEvent);
 
@@ -89,7 +86,6 @@ public class GestureDetector {
         boolean onSingleTapUp(MotionEvent motionEvent);
     }
 
-    /* loaded from: classes4.dex */
     public static class SimpleOnGestureListener implements OnGestureListener, OnDoubleTapListener, OnContextClickListener {
         @Override // android.view.GestureDetector.OnGestureListener
         public boolean onSingleTapUp(MotionEvent e) {
@@ -140,9 +136,7 @@ public class GestureDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public class GestureHandler extends Handler {
+    private class GestureHandler extends Handler {
         GestureHandler() {
         }
 
@@ -160,11 +154,6 @@ public class GestureDetector {
                     Log.i(GestureDetector.TAG, "handleMessage LONG_PRESS");
                     GestureDetector.this.recordGestureClassification(msg.arg1);
                     GestureDetector.this.dispatchLongPress();
-                    if (CoreRune.SAFE_DEBUG) {
-                        boolean deep = msg.arg1 == 4;
-                        Log.d(GestureDetector.TAG, "onLP " + (deep ? 1 : 0));
-                        return;
-                    }
                     return;
                 case 3:
                     if (GestureDetector.this.mDoubleTapListener != null) {
@@ -172,10 +161,6 @@ public class GestureDetector {
                             Log.i(GestureDetector.TAG, "handleMessage TAP");
                             GestureDetector.this.recordGestureClassification(1);
                             GestureDetector.this.mDoubleTapListener.onSingleTapConfirmed(GestureDetector.this.mCurrentDownEvent);
-                            if (CoreRune.SAFE_DEBUG) {
-                                Log.d(GestureDetector.TAG, "onSTC#1");
-                                return;
-                            }
                             return;
                         }
                         GestureDetector.this.mDeferConfirmSingleTap = true;
@@ -203,6 +188,10 @@ public class GestureDetector {
     }
 
     public GestureDetector(Context context, OnGestureListener listener, Handler handler) {
+        this(context, listener, handler, -1);
+    }
+
+    public GestureDetector(Context context, OnGestureListener listener, Handler handler, int velocityTrackerStrategy) {
         this.mInputEventConsistencyVerifier = InputEventConsistencyVerifier.isInstrumentationEnabled() ? new InputEventConsistencyVerifier(this, 0) : null;
         if (handler != null) {
             this.mHandler = new GestureHandler(handler);
@@ -216,6 +205,7 @@ public class GestureDetector {
         if (listener instanceof OnContextClickListener) {
             setContextClickListener((OnContextClickListener) listener);
         }
+        this.mVelocityTrackerStrategy = velocityTrackerStrategy;
         init(context);
     }
 
@@ -274,15 +264,15 @@ public class GestureDetector {
         return this.mIsLongpressEnabled;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:163:0x044c  */
-    /* JADX WARN: Removed duplicated region for block: B:166:0x04a3  */
+    /* JADX WARN: Removed duplicated region for block: B:158:0x044c  */
+    /* JADX WARN: Removed duplicated region for block: B:161:0x04a7  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public boolean onTouchEvent(android.view.MotionEvent r40) {
         /*
-            Method dump skipped, instructions count: 1270
+            Method dump skipped, instructions count: 1278
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.view.GestureDetector.onTouchEvent(android.view.MotionEvent):boolean");
@@ -294,9 +284,8 @@ public class GestureDetector {
             if (sCfmsService == null && (b = ServiceManager.getService(Context.CFMS_SERVICE)) != null) {
                 sCfmsService = ICustomFrequencyManager.Stub.asInterface(b);
             }
-            ICustomFrequencyManager iCustomFrequencyManager = sCfmsService;
-            if (iCustomFrequencyManager != null) {
-                iCustomFrequencyManager.sendCommandToSSRM("GESTURE_DETECTED", mode + " " + duration);
+            if (sCfmsService != null) {
+                sCfmsService.sendCommandToSSRM("GESTURE_DETECTED", mode + " " + duration);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -305,15 +294,13 @@ public class GestureDetector {
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public boolean onGenericMotionEvent(MotionEvent ev) {
-        InputEventConsistencyVerifier inputEventConsistencyVerifier = this.mInputEventConsistencyVerifier;
-        if (inputEventConsistencyVerifier != null) {
-            inputEventConsistencyVerifier.onGenericMotionEvent(ev, 0);
+        if (this.mInputEventConsistencyVerifier != null) {
+            this.mInputEventConsistencyVerifier.onGenericMotionEvent(ev, 0);
         }
         int actionButton = ev.getActionButton();
         switch (ev.getActionMasked()) {
             case 11:
-                OnContextClickListener onContextClickListener = this.mContextClickListener;
-                if (onContextClickListener != null && !this.mInContextClick && !this.mInLongPress && ((actionButton == 32 || actionButton == 2) && onContextClickListener.onContextClick(ev))) {
+                if (this.mContextClickListener != null && !this.mInContextClick && !this.mInLongPress && ((actionButton == 32 || actionButton == 2) && this.mContextClickListener.onContextClick(ev))) {
                     this.mInContextClick = true;
                     this.mHandler.removeMessages(2);
                     this.mHandler.removeMessages(3);
@@ -335,8 +322,10 @@ public class GestureDetector {
         this.mHandler.removeMessages(1);
         this.mHandler.removeMessages(2);
         this.mHandler.removeMessages(3);
-        this.mVelocityTracker.recycle();
-        this.mVelocityTracker = null;
+        if (this.mVelocityTracker != null) {
+            this.mVelocityTracker.recycle();
+            this.mVelocityTracker = null;
+        }
         this.mIsDoubleTapping = false;
         this.mStillDown = false;
         this.mAlwaysInTapRegion = false;
@@ -375,6 +364,7 @@ public class GestureDetector {
         return (deltaX * deltaX) + (deltaY * deltaY) < slopSquare;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchLongPress() {
         this.mHandler.removeMessages(3);
         this.mDeferConfirmSingleTap = false;
@@ -382,6 +372,7 @@ public class GestureDetector {
         this.mListener.onLongPress(this.mCurrentDownEvent);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void recordGestureClassification(int classification) {
         if (this.mHasRecordedClassification || classification == 0) {
             return;

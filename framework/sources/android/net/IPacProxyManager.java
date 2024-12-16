@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface IPacProxyManager extends IInterface {
     public static final String DESCRIPTOR = "android.net.IPacProxyManager";
 
@@ -17,7 +17,6 @@ public interface IPacProxyManager extends IInterface {
 
     void setCurrentProxyScriptUrl(ProxyInfo proxyInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IPacProxyManager {
         @Override // android.net.IPacProxyManager
         public void addListener(IPacProxyInstalledListener listener) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IPacProxyManager extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IPacProxyManager {
         static final int TRANSACTION_addListener = 1;
         static final int TRANSACTION_removeListener = 2;
@@ -86,39 +84,35 @@ public interface IPacProxyManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPacProxyManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPacProxyManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPacProxyManager.DESCRIPTOR);
+                case 1:
+                    IPacProxyInstalledListener _arg0 = IPacProxyInstalledListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addListener(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IPacProxyInstalledListener _arg02 = IPacProxyInstalledListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeListener(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ProxyInfo _arg03 = (ProxyInfo) data.readTypedObject(ProxyInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCurrentProxyScriptUrl(_arg03);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IPacProxyInstalledListener _arg0 = IPacProxyInstalledListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addListener(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IPacProxyInstalledListener _arg02 = IPacProxyInstalledListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeListener(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ProxyInfo _arg03 = (ProxyInfo) data.readTypedObject(ProxyInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCurrentProxyScriptUrl(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IPacProxyManager {
+        private static class Proxy implements IPacProxyManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -6,7 +6,6 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
-import com.samsung.android.ims.options.SemCapabilities;
 
 /* loaded from: classes5.dex */
 public class SmartClipDataElementImpl implements SemSmartClipDataElement {
@@ -34,11 +33,10 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
 
     @Override // com.samsung.android.content.smartclip.SemSmartClipDataElement
     public SemSmartClipMetaTagArray getAllTags() {
-        SmartClipMetaTagArrayImpl smartClipMetaTagArrayImpl = this.mTags;
-        if (smartClipMetaTagArrayImpl == null) {
+        if (this.mTags == null) {
             return new SmartClipMetaTagArrayImpl();
         }
-        return smartClipMetaTagArrayImpl.getCopy();
+        return this.mTags.getCopy();
     }
 
     public SemSmartClipMetaTagArray getTagTable() {
@@ -63,21 +61,19 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
 
     @Override // com.samsung.android.content.smartclip.SemSmartClipDataElement
     public SemSmartClipMetaTagArray getTags(String tagType) {
-        SmartClipMetaTagArrayImpl smartClipMetaTagArrayImpl = this.mTags;
-        if (smartClipMetaTagArrayImpl == null) {
+        if (this.mTags == null) {
             return new SmartClipMetaTagArrayImpl();
         }
-        SemSmartClipMetaTagArray typedArray = smartClipMetaTagArrayImpl.getMetaTags(tagType);
+        SemSmartClipMetaTagArray typedArray = this.mTags.getMetaTags(tagType);
         return typedArray;
     }
 
     @Override // com.samsung.android.content.smartclip.SemSmartClipDataElement
     public int removeTags(String tagType) {
-        SmartClipMetaTagArrayImpl smartClipMetaTagArrayImpl = this.mTags;
-        if (smartClipMetaTagArrayImpl == null) {
+        if (this.mTags == null) {
             return 0;
         }
-        return smartClipMetaTagArrayImpl.removeMetaTags(tagType);
+        return this.mTags.removeMetaTags(tagType);
     }
 
     @Override // com.samsung.android.content.smartclip.SemSmartClipDataElement
@@ -173,8 +169,7 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
     @Override // com.samsung.android.content.smartclip.SemSmartClipDataElement
     public int getExtractionMode() {
         SmartClipDataCropperImpl cropper;
-        SemSmartClipDataRepository semSmartClipDataRepository = this.mRepository;
-        if (semSmartClipDataRepository == null || (cropper = (SmartClipDataCropperImpl) semSmartClipDataRepository.getSmartClipDataCropper()) == null) {
+        if (this.mRepository == null || (cropper = (SmartClipDataCropperImpl) this.mRepository.getSmartClipDataCropper()) == null) {
             return 0;
         }
         return cropper.getExtractionMode();
@@ -182,8 +177,7 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
 
     public int getExtractionLevel() {
         SmartClipDataCropperImpl cropper;
-        SemSmartClipDataRepository semSmartClipDataRepository = this.mRepository;
-        if (semSmartClipDataRepository == null || (cropper = (SmartClipDataCropperImpl) semSmartClipDataRepository.getSmartClipDataCropper()) == null) {
+        if (this.mRepository == null || (cropper = (SmartClipDataCropperImpl) this.mRepository.getSmartClipDataCropper()) == null) {
             return 0;
         }
         return cropper.getExtractionLevel();
@@ -204,13 +198,11 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
 
     public boolean isEmptyTag(boolean includeChild) {
         if (!includeChild) {
-            SmartClipMetaTagArrayImpl smartClipMetaTagArrayImpl = this.mTags;
-            return smartClipMetaTagArrayImpl == null || smartClipMetaTagArrayImpl.size() <= 0;
+            return this.mTags == null || this.mTags.size() <= 0;
         }
         SmartClipDataElementImpl element = this;
         while (element != null) {
-            SmartClipMetaTagArrayImpl smartClipMetaTagArrayImpl2 = element.mTags;
-            if (smartClipMetaTagArrayImpl2 != null && smartClipMetaTagArrayImpl2.size() > 0) {
+            if (element.mTags != null && element.mTags.size() > 0) {
                 return false;
             }
             element = element.traverseNextElement(this);
@@ -326,7 +318,7 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
         return parentCount;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0022, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0026, code lost:
     
         return r1.mNextSibling;
      */
@@ -338,33 +330,35 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
         /*
             r3 = this;
             com.samsung.android.content.smartclip.SmartClipDataElementImpl r0 = r3.mFirstChild
-            if (r0 == 0) goto L5
+            if (r0 == 0) goto L7
+            com.samsung.android.content.smartclip.SmartClipDataElementImpl r0 = r3.mFirstChild
             return r0
-        L5:
+        L7:
             r0 = 0
-            if (r3 != r4) goto L9
+            if (r3 != r4) goto Lb
             return r0
-        L9:
+        Lb:
             com.samsung.android.content.smartclip.SmartClipDataElementImpl r1 = r3.mNextSibling
-            if (r1 == 0) goto Le
-            return r1
-        Le:
+            if (r1 == 0) goto L12
+            com.samsung.android.content.smartclip.SmartClipDataElementImpl r0 = r3.mNextSibling
+            return r0
+        L12:
             r1 = r3
-        Lf:
-            if (r1 == 0) goto L1e
+        L13:
+            if (r1 == 0) goto L22
             com.samsung.android.content.smartclip.SmartClipDataElementImpl r2 = r1.mNextSibling
-            if (r2 != 0) goto L1e
-            if (r4 == 0) goto L1b
+            if (r2 != 0) goto L22
+            if (r4 == 0) goto L1f
             com.samsung.android.content.smartclip.SmartClipDataElementImpl r2 = r1.mParent
-            if (r2 == r4) goto L1e
-        L1b:
+            if (r2 == r4) goto L22
+        L1f:
             com.samsung.android.content.smartclip.SmartClipDataElementImpl r1 = r1.mParent
-            goto Lf
-        L1e:
-            if (r1 == 0) goto L23
+            goto L13
+        L22:
+            if (r1 == 0) goto L27
             com.samsung.android.content.smartclip.SmartClipDataElementImpl r0 = r1.mNextSibling
             return r0
-        L23:
+        L27:
             return r0
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.content.smartclip.SmartClipDataElementImpl.traverseNextElement(com.samsung.android.content.smartclip.SmartClipDataElementImpl):com.samsung.android.content.smartclip.SmartClipDataElementImpl");
@@ -383,9 +377,8 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
         } else {
             result.append("mRectOnScreen(NULL)\t");
         }
-        View view = this.mView;
-        if (view != null) {
-            result.append(view.getClass().getSimpleName());
+        if (this.mView != null) {
+            result.append(this.mView.getClass().getSimpleName());
             int resId = this.mView.getId();
             if (resId == -1 || resId < 0) {
                 result.append("@").append(Integer.toHexString(this.mView.hashCode())).append("\t");
@@ -402,16 +395,15 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
                 result.append("Opacity BG(" + background.getOpacity() + ")\t");
             }
         }
-        SmartClipMetaTagArrayImpl smartClipMetaTagArrayImpl = this.mTags;
-        if (smartClipMetaTagArrayImpl != null) {
-            int tagCount = smartClipMetaTagArrayImpl.size();
+        if (this.mTags != null) {
+            int tagCount = this.mTags.size();
             for (int i2 = 0; i2 < tagCount; i2++) {
                 SemSmartClipMetaTag tag = (SemSmartClipMetaTag) this.mTags.get(i2);
                 String type = tag.getType();
                 String value = tag.getValue();
                 String extra = "";
                 if (value == null) {
-                    value = SemCapabilities.FEATURE_TAG_NULL;
+                    value = "null";
                 }
                 if (tag instanceof SemSmartClipExtendedMetaTag) {
                     SemSmartClipExtendedMetaTag tagImpl = (SemSmartClipExtendedMetaTag) tag;

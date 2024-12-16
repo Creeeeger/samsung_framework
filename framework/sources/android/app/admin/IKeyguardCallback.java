@@ -15,7 +15,6 @@ public interface IKeyguardCallback extends IInterface {
 
     void onRemoteContentReady(SurfaceControlViewHost.SurfacePackage surfacePackage) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IKeyguardCallback {
         @Override // android.app.admin.IKeyguardCallback
         public void onRemoteContentReady(SurfaceControlViewHost.SurfacePackage surfacePackage) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IKeyguardCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IKeyguardCallback {
         static final int TRANSACTION_onDismiss = 2;
         static final int TRANSACTION_onRemoteContentReady = 1;
@@ -77,29 +75,25 @@ public interface IKeyguardCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKeyguardCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKeyguardCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKeyguardCallback.DESCRIPTOR);
+                case 1:
+                    SurfaceControlViewHost.SurfacePackage _arg0 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRemoteContentReady(_arg0);
+                    return true;
+                case 2:
+                    onDismiss();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SurfaceControlViewHost.SurfacePackage _arg0 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRemoteContentReady(_arg0);
-                            return true;
-                        case 2:
-                            onDismiss();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IKeyguardCallback {
+        private static class Proxy implements IKeyguardCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

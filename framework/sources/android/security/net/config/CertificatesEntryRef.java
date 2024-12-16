@@ -14,7 +14,7 @@ public final class CertificatesEntryRef {
         this.mOverridesPins = overridesPins;
     }
 
-    public boolean overridesPins() {
+    boolean overridesPins() {
         return this.mOverridesPins;
     }
 

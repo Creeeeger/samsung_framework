@@ -16,7 +16,7 @@ import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IBiometricService extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.IBiometricService";
 
@@ -33,6 +33,8 @@ public interface IBiometricService extends IInterface {
     int getCurrentModality(String str, int i, int i2, int i3) throws RemoteException;
 
     int getCurrentStrength(int i) throws RemoteException;
+
+    long getLastAuthenticationTime(int i, int i2) throws RemoteException;
 
     List<SensorPropertiesInternal> getSensorProperties(String str) throws RemoteException;
 
@@ -54,7 +56,6 @@ public interface IBiometricService extends IInterface {
 
     PromptInfo semGetPromptInfo(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBiometricService {
         @Override // android.hardware.biometrics.IBiometricService
         public ITestSession createTestSession(int sensorId, ITestSessionCallback callback, String opPackageName) throws RemoteException {
@@ -78,6 +79,11 @@ public interface IBiometricService extends IInterface {
         @Override // android.hardware.biometrics.IBiometricService
         public int canAuthenticate(String opPackageName, int userId, int callingUserId, int authenticators) throws RemoteException {
             return 0;
+        }
+
+        @Override // android.hardware.biometrics.IBiometricService
+        public long getLastAuthenticationTime(int userId, int authenticators) throws RemoteException {
+            return 0L;
         }
 
         @Override // android.hardware.biometrics.IBiometricService
@@ -140,25 +146,25 @@ public interface IBiometricService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBiometricService {
         static final int TRANSACTION_authenticate = 3;
         static final int TRANSACTION_canAuthenticate = 5;
         static final int TRANSACTION_cancelAuthentication = 4;
         static final int TRANSACTION_createTestSession = 1;
-        static final int TRANSACTION_getAuthenticatorIds = 11;
-        static final int TRANSACTION_getCurrentModality = 15;
-        static final int TRANSACTION_getCurrentStrength = 14;
+        static final int TRANSACTION_getAuthenticatorIds = 12;
+        static final int TRANSACTION_getCurrentModality = 16;
+        static final int TRANSACTION_getCurrentStrength = 15;
+        static final int TRANSACTION_getLastAuthenticationTime = 6;
         static final int TRANSACTION_getSensorProperties = 2;
-        static final int TRANSACTION_getSupportedModalities = 16;
-        static final int TRANSACTION_hasEnrolledBiometrics = 6;
-        static final int TRANSACTION_invalidateAuthenticatorIds = 10;
-        static final int TRANSACTION_onReadyForAuthentication = 9;
-        static final int TRANSACTION_registerAuthenticator = 7;
-        static final int TRANSACTION_registerEnabledOnKeyguardCallback = 8;
-        static final int TRANSACTION_resetLockout = 13;
-        static final int TRANSACTION_resetLockoutTimeBound = 12;
-        static final int TRANSACTION_semGetPromptInfo = 17;
+        static final int TRANSACTION_getSupportedModalities = 17;
+        static final int TRANSACTION_hasEnrolledBiometrics = 7;
+        static final int TRANSACTION_invalidateAuthenticatorIds = 11;
+        static final int TRANSACTION_onReadyForAuthentication = 10;
+        static final int TRANSACTION_registerAuthenticator = 8;
+        static final int TRANSACTION_registerEnabledOnKeyguardCallback = 9;
+        static final int TRANSACTION_resetLockout = 14;
+        static final int TRANSACTION_resetLockoutTimeBound = 13;
+        static final int TRANSACTION_semGetPromptInfo = 18;
         private final PermissionEnforcer mEnforcer;
 
         public Stub(PermissionEnforcer enforcer) {
@@ -203,28 +209,30 @@ public interface IBiometricService extends IInterface {
                 case 5:
                     return "canAuthenticate";
                 case 6:
-                    return "hasEnrolledBiometrics";
+                    return "getLastAuthenticationTime";
                 case 7:
-                    return "registerAuthenticator";
+                    return "hasEnrolledBiometrics";
                 case 8:
-                    return "registerEnabledOnKeyguardCallback";
+                    return "registerAuthenticator";
                 case 9:
-                    return "onReadyForAuthentication";
+                    return "registerEnabledOnKeyguardCallback";
                 case 10:
-                    return "invalidateAuthenticatorIds";
+                    return "onReadyForAuthentication";
                 case 11:
-                    return "getAuthenticatorIds";
+                    return "invalidateAuthenticatorIds";
                 case 12:
-                    return "resetLockoutTimeBound";
+                    return "getAuthenticatorIds";
                 case 13:
-                    return "resetLockout";
+                    return "resetLockoutTimeBound";
                 case 14:
-                    return "getCurrentStrength";
+                    return "resetLockout";
                 case 15:
-                    return "getCurrentModality";
+                    return "getCurrentStrength";
                 case 16:
-                    return "getSupportedModalities";
+                    return "getCurrentModality";
                 case 17:
+                    return "getSupportedModalities";
+                case 18:
                     return "semGetPromptInfo";
                 default:
                     return null;
@@ -241,158 +249,163 @@ public interface IBiometricService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBiometricService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBiometricService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBiometricService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    ITestSessionCallback _arg1 = ITestSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    ITestSession _result = createTestSession(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SensorPropertiesInternal> _result2 = getSensorProperties(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result2, 1);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    long _arg12 = data.readLong();
+                    int _arg22 = data.readInt();
+                    IBiometricServiceReceiver _arg3 = IBiometricServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg4 = data.readString();
+                    PromptInfo _arg5 = (PromptInfo) data.readTypedObject(PromptInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result3 = authenticate(_arg03, _arg12, _arg22, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeLong(_result3);
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    String _arg13 = data.readString();
+                    long _arg23 = data.readLong();
+                    data.enforceNoDataAvail();
+                    cancelAuthentication(_arg04, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg14 = data.readInt();
+                    int _arg24 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = canAuthenticate(_arg05, _arg14, _arg24, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long _result5 = getLastAuthenticationTime(_arg06, _arg15);
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = hasEnrolledBiometrics(_arg07, _arg16);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg25 = data.readInt();
+                    IBiometricAuthenticator _arg33 = IBiometricAuthenticator.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerAuthenticator(_arg08, _arg17, _arg25, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IBiometricEnabledOnKeyguardCallback _arg09 = IBiometricEnabledOnKeyguardCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerEnabledOnKeyguardCallback(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    long _arg010 = data.readLong();
+                    int _arg18 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onReadyForAuthentication(_arg010, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    int _arg19 = data.readInt();
+                    IInvalidationCallback _arg26 = IInvalidationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    invalidateAuthenticatorIds(_arg011, _arg19, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long[] _result7 = getAuthenticatorIds(_arg012);
+                    reply.writeNoException();
+                    reply.writeLongArray(_result7);
+                    return true;
+                case 13:
+                    IBinder _arg013 = data.readStrongBinder();
+                    String _arg110 = data.readString();
+                    int _arg27 = data.readInt();
+                    int _arg34 = data.readInt();
+                    byte[] _arg42 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    resetLockoutTimeBound(_arg013, _arg110, _arg27, _arg34, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    byte[] _arg111 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    resetLockout(_arg014, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result8 = getCurrentStrength(_arg015);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 16:
+                    String _arg016 = data.readString();
+                    int _arg112 = data.readInt();
+                    int _arg28 = data.readInt();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result9 = getCurrentModality(_arg016, _arg112, _arg28, _arg35);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result10 = getSupportedModalities(_arg017);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PromptInfo _result11 = semGetPromptInfo(_arg018);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            ITestSessionCallback _arg1 = ITestSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            ITestSession _result = createTestSession(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SensorPropertiesInternal> _result2 = getSensorProperties(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result2, 1);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            long _arg12 = data.readLong();
-                            int _arg22 = data.readInt();
-                            IBiometricServiceReceiver _arg3 = IBiometricServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg4 = data.readString();
-                            PromptInfo _arg5 = (PromptInfo) data.readTypedObject(PromptInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            long _result3 = authenticate(_arg03, _arg12, _arg22, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeLong(_result3);
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            String _arg13 = data.readString();
-                            long _arg23 = data.readLong();
-                            data.enforceNoDataAvail();
-                            cancelAuthentication(_arg04, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg14 = data.readInt();
-                            int _arg24 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = canAuthenticate(_arg05, _arg14, _arg24, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = hasEnrolledBiometrics(_arg06, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg25 = data.readInt();
-                            IBiometricAuthenticator _arg33 = IBiometricAuthenticator.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerAuthenticator(_arg07, _arg16, _arg25, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IBiometricEnabledOnKeyguardCallback _arg08 = IBiometricEnabledOnKeyguardCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerEnabledOnKeyguardCallback(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            long _arg09 = data.readLong();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onReadyForAuthentication(_arg09, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg18 = data.readInt();
-                            IInvalidationCallback _arg26 = IInvalidationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            invalidateAuthenticatorIds(_arg010, _arg18, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            long[] _result6 = getAuthenticatorIds(_arg011);
-                            reply.writeNoException();
-                            reply.writeLongArray(_result6);
-                            return true;
-                        case 12:
-                            IBinder _arg012 = data.readStrongBinder();
-                            String _arg19 = data.readString();
-                            int _arg27 = data.readInt();
-                            int _arg34 = data.readInt();
-                            byte[] _arg42 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            resetLockoutTimeBound(_arg012, _arg19, _arg27, _arg34, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            byte[] _arg110 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            resetLockout(_arg013, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result7 = getCurrentStrength(_arg014);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 15:
-                            String _arg015 = data.readString();
-                            int _arg111 = data.readInt();
-                            int _arg28 = data.readInt();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result8 = getCurrentModality(_arg015, _arg111, _arg28, _arg35);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result9 = getSupportedModalities(_arg016);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PromptInfo _result10 = semGetPromptInfo(_arg017);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IBiometricService {
             private IBinder mRemote;
 
@@ -505,6 +518,24 @@ public interface IBiometricService extends IInterface {
             }
 
             @Override // android.hardware.biometrics.IBiometricService
+            public long getLastAuthenticationTime(int userId, int authenticators) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    _data.writeInt(authenticators);
+                    this.mRemote.transact(6, _data, _reply, 0);
+                    _reply.readException();
+                    long _result = _reply.readLong();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.biometrics.IBiometricService
             public boolean hasEnrolledBiometrics(int userId, String opPackageName) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -512,7 +543,7 @@ public interface IBiometricService extends IInterface {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeString(opPackageName);
-                    this.mRemote.transact(6, _data, _reply, 0);
+                    this.mRemote.transact(7, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -532,7 +563,7 @@ public interface IBiometricService extends IInterface {
                     _data.writeInt(modality);
                     _data.writeInt(strength);
                     _data.writeStrongInterface(authenticator);
-                    this.mRemote.transact(7, _data, _reply, 0);
+                    this.mRemote.transact(8, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -547,7 +578,7 @@ public interface IBiometricService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(8, _data, _reply, 0);
+                    this.mRemote.transact(9, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -563,7 +594,7 @@ public interface IBiometricService extends IInterface {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeLong(requestId);
                     _data.writeInt(cookie);
-                    this.mRemote.transact(9, _data, _reply, 0);
+                    this.mRemote.transact(10, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -580,7 +611,7 @@ public interface IBiometricService extends IInterface {
                     _data.writeInt(userId);
                     _data.writeInt(fromSensorId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(10, _data, _reply, 0);
+                    this.mRemote.transact(11, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -595,7 +626,7 @@ public interface IBiometricService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeInt(callingUserId);
-                    this.mRemote.transact(11, _data, _reply, 0);
+                    this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
                     long[] _result = _reply.createLongArray();
                     return _result;
@@ -616,7 +647,7 @@ public interface IBiometricService extends IInterface {
                     _data.writeInt(fromSensorId);
                     _data.writeInt(userId);
                     _data.writeByteArray(hardwareAuthToken);
-                    this.mRemote.transact(12, _data, _reply, 0);
+                    this.mRemote.transact(13, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -632,7 +663,7 @@ public interface IBiometricService extends IInterface {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeByteArray(hardwareAuthToken);
-                    this.mRemote.transact(13, _data, _reply, 0);
+                    this.mRemote.transact(14, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -647,7 +678,7 @@ public interface IBiometricService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeInt(sensorId);
-                    this.mRemote.transact(14, _data, _reply, 0);
+                    this.mRemote.transact(15, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -667,7 +698,7 @@ public interface IBiometricService extends IInterface {
                     _data.writeInt(userId);
                     _data.writeInt(callingUserId);
                     _data.writeInt(authenticators);
-                    this.mRemote.transact(15, _data, _reply, 0);
+                    this.mRemote.transact(16, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -684,7 +715,7 @@ public interface IBiometricService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeInt(authenticators);
-                    this.mRemote.transact(16, _data, _reply, 0);
+                    this.mRemote.transact(17, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -701,7 +732,7 @@ public interface IBiometricService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IBiometricService.DESCRIPTOR);
                     _data.writeInt(cookie);
-                    this.mRemote.transact(17, _data, _reply, 0);
+                    this.mRemote.transact(18, _data, _reply, 0);
                     _reply.readException();
                     PromptInfo _result = (PromptInfo) _reply.readTypedObject(PromptInfo.CREATOR);
                     return _result;
@@ -729,6 +760,10 @@ public interface IBiometricService extends IInterface {
         }
 
         protected void canAuthenticate_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.USE_BIOMETRIC_INTERNAL, getCallingPid(), getCallingUid());
+        }
+
+        protected void getLastAuthenticationTime_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.USE_BIOMETRIC_INTERNAL, getCallingPid(), getCallingUid());
         }
 
@@ -782,7 +817,7 @@ public interface IBiometricService extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 16;
+            return 17;
         }
     }
 }

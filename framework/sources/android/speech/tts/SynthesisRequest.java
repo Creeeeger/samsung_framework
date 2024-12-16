@@ -65,25 +65,25 @@ public final class SynthesisRequest {
         return this.mCallerUid;
     }
 
-    public void setLanguage(String language, String country, String variant) {
+    void setLanguage(String language, String country, String variant) {
         this.mLanguage = language;
         this.mCountry = country;
         this.mVariant = variant;
     }
 
-    public void setVoiceName(String voiceName) {
+    void setVoiceName(String voiceName) {
         this.mVoiceName = voiceName;
     }
 
-    public void setSpeechRate(int speechRate) {
+    void setSpeechRate(int speechRate) {
         this.mSpeechRate = speechRate;
     }
 
-    public void setPitch(int pitch) {
+    void setPitch(int pitch) {
         this.mPitch = pitch;
     }
 
-    public void setCallerUid(int uid) {
+    void setCallerUid(int uid) {
         this.mCallerUid = uid;
     }
 }

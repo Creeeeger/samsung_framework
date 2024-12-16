@@ -21,7 +21,6 @@ public interface ISehRadioDataResponse extends IInterface {
 
     void setMobileDataSettingResponse(SehRadioResponseInfo sehRadioResponseInfo) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioDataResponse {
         @Override // vendor.samsung.hardware.radio.data.ISehRadioDataResponse
         public void setDataAllowedResponse(SehRadioResponseInfo info) throws RemoteException {
@@ -47,7 +46,6 @@ public interface ISehRadioDataResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioDataResponse {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -81,39 +79,37 @@ public interface ISehRadioDataResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDataAllowedResponse(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 2:
+                    SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setMobileDataSettingResponse(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDataAllowedResponse(_arg0);
-                            return true;
-                        case 2:
-                            SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setMobileDataSettingResponse(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehRadioDataResponse {
+        private static class Proxy implements ISehRadioDataResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

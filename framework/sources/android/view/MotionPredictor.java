@@ -9,12 +9,8 @@ public final class MotionPredictor {
     private final boolean mIsPredictionEnabled;
     private final long mPtr;
 
-    /* renamed from: -$$Nest$smnativeGetNativeMotionPredictorFinalizer */
-    static /* bridge */ /* synthetic */ long m5136$$Nest$smnativeGetNativeMotionPredictorFinalizer() {
-        return nativeGetNativeMotionPredictorFinalizer();
-    }
-
-    private static native long nativeGetNativeMotionPredictorFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nativeGetNativeMotionPredictorFinalizer();
 
     private static native long nativeInitialize(int i);
 
@@ -24,20 +20,21 @@ public final class MotionPredictor {
 
     private static native void nativeRecord(long j, MotionEvent motionEvent);
 
-    /* loaded from: classes4.dex */
     private static class RegistryHolder {
-        public static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(MotionPredictor.class.getClassLoader(), MotionPredictor.m5136$$Nest$smnativeGetNativeMotionPredictorFinalizer());
+        public static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(MotionPredictor.class.getClassLoader(), MotionPredictor.nativeGetNativeMotionPredictorFinalizer());
 
         private RegistryHolder() {
         }
     }
 
     public MotionPredictor(Context context) {
-        this.mIsPredictionEnabled = context.getResources().getBoolean(R.bool.config_enableMotionPrediction);
-        int offsetNanos = context.getResources().getInteger(R.integer.config_motionPredictionOffsetNanos);
-        long nativeInitialize = nativeInitialize(offsetNanos);
-        this.mPtr = nativeInitialize;
-        RegistryHolder.REGISTRY.registerNativeAllocation(this, nativeInitialize);
+        this(context.getResources().getBoolean(R.bool.config_enableMotionPrediction), context.getResources().getInteger(R.integer.config_motionPredictionOffsetNanos));
+    }
+
+    public MotionPredictor(boolean isPredictionEnabled, int motionPredictionOffsetNanos) {
+        this.mIsPredictionEnabled = isPredictionEnabled;
+        this.mPtr = nativeInitialize(motionPredictionOffsetNanos);
+        RegistryHolder.REGISTRY.registerNativeAllocation(this, this.mPtr);
     }
 
     public void record(MotionEvent event) {

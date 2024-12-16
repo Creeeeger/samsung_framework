@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import com.android.internal.widget.ViewPager;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ResolverViewPager extends ViewPager {
     private boolean mSwipingEnabled;
 
@@ -31,7 +31,7 @@ public class ResolverViewPager extends ViewPager {
     }
 
     @Override // com.android.internal.widget.ViewPager, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (View.MeasureSpec.getMode(heightMeasureSpec) != Integer.MIN_VALUE) {
             return;
@@ -52,7 +52,7 @@ public class ResolverViewPager extends ViewPager {
         super.onMeasure(widthMeasureSpec2, View.MeasureSpec.makeMeasureSpec(height, 1073741824));
     }
 
-    public void setSwipingEnabled(boolean swipingEnabled) {
+    void setSwipingEnabled(boolean swipingEnabled) {
         this.mSwipingEnabled = swipingEnabled;
     }
 

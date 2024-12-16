@@ -2,7 +2,7 @@ package com.samsung.android.media.heif;
 
 import java.nio.ByteBuffer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemHeifConfig {
     private ByteBuffer mCameraInfoBuffer;
     private ByteBuffer mExifBuffer;
@@ -18,30 +18,27 @@ public class SemHeifConfig {
     }
 
     public void setExifData(byte[] buffer, int offset, int length) {
-        ByteBuffer allocateDirect = ByteBuffer.allocateDirect(length);
-        this.mExifBuffer = allocateDirect;
-        allocateDirect.put(buffer, offset, length);
+        this.mExifBuffer = ByteBuffer.allocateDirect(length);
+        this.mExifBuffer.put(buffer, offset, length);
         this.mExifBuffer.flip();
     }
 
     public void setExifData(ByteBuffer exifBuffer) {
         if (exifBuffer.isDirect()) {
             this.mExifBuffer = exifBuffer;
-            return;
+        } else {
+            this.mExifBuffer = ByteBuffer.allocateDirect(exifBuffer.limit());
+            this.mExifBuffer.put(exifBuffer);
         }
-        ByteBuffer allocateDirect = ByteBuffer.allocateDirect(exifBuffer.limit());
-        this.mExifBuffer = allocateDirect;
-        allocateDirect.put(exifBuffer);
     }
 
     public void setCameraInfo(ByteBuffer info) {
         if (info.isDirect()) {
             this.mCameraInfoBuffer = info;
-            return;
+        } else {
+            this.mCameraInfoBuffer = ByteBuffer.allocateDirect(info.limit());
+            this.mCameraInfoBuffer.put(info);
         }
-        ByteBuffer allocateDirect = ByteBuffer.allocateDirect(info.limit());
-        this.mCameraInfoBuffer = allocateDirect;
-        allocateDirect.put(info);
     }
 
     public SemInputImage getMasterImage() {

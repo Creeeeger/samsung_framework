@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ListenerTransport<TListener> {
     TListener getListener();
 
@@ -23,6 +23,7 @@ public interface ListenerTransport<TListener> {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* synthetic */ default void lambda$execute$0(Consumer operation) {
         TListener listener = getListener();
         if (listener == null) {

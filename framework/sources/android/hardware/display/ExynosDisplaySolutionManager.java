@@ -23,25 +23,19 @@ public final class ExynosDisplaySolutionManager {
     }
 
     public void setDisplayFeature(String arg0, int arg1, int arg2, String arg3) {
-        IExynosDisplaySolutionManager iExynosDisplaySolutionManager = this.mService;
-        if (iExynosDisplaySolutionManager == null) {
-            Log.e(TAG, "ExynosDisplaySolutionManagerService is null");
-            return;
-        }
         try {
-            iExynosDisplaySolutionManager.setDisplayFeature(arg0, arg1, arg2, arg3);
+            this.mService.setDisplayFeature(arg0, arg1, arg2, arg3);
         } catch (RemoteException e) {
             onError(e);
         }
     }
 
     public String getColorEnhancementMode() {
-        IExynosDisplaySolutionManager iExynosDisplaySolutionManager = this.mService;
-        if (iExynosDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iExynosDisplaySolutionManager.getColorEnhancementMode();
+            return this.mService.getColorEnhancementMode();
         } catch (RemoteException e) {
             onError(e);
             return null;
@@ -56,9 +50,9 @@ public final class ExynosDisplaySolutionManager {
         }
     }
 
-    public void setColorTempSettingValue(int value) {
+    public void setColorTempSettingValue(int valueFrom, int valueTo) {
         try {
-            this.mService.setColorTempSettingValue(value);
+            this.mService.setColorTempSettingValue(valueFrom, valueTo);
         } catch (RemoteException e) {
             onError(e);
         }
@@ -104,6 +98,22 @@ public final class ExynosDisplaySolutionManager {
         }
     }
 
+    public void setRgbWeightSettingValue(float r, float g, float b) {
+        try {
+            this.mService.setRgbWeightSettingValue(r, g, b);
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
+    public void setRgbWeightSettingOn(int onoff) {
+        try {
+            this.mService.setRgbWeightSettingOn(onoff);
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
     public void setSkinColorSettingOn(int onoff) {
         try {
             this.mService.setSkinColorSettingOn(onoff);
@@ -133,27 +143,6 @@ public final class ExynosDisplaySolutionManager {
             this.mService.setWhitePointColorSettingOn(onoff);
         } catch (RemoteException e) {
             onError(e);
-        }
-    }
-
-    public void setRgbGain(float r, float g, float b) {
-        try {
-            this.mService.setRgbGain(r, g, b);
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public float[] getRgbGain() {
-        IExynosDisplaySolutionManager iExynosDisplaySolutionManager = this.mService;
-        if (iExynosDisplaySolutionManager == null) {
-            return null;
-        }
-        try {
-            return iExynosDisplaySolutionManager.getRgbGain();
-        } catch (RemoteException e) {
-            onError(e);
-            return null;
         }
     }
 

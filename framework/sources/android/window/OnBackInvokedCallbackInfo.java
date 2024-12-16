@@ -7,14 +7,13 @@ import android.window.IOnBackInvokedCallback;
 /* loaded from: classes4.dex */
 public final class OnBackInvokedCallbackInfo implements Parcelable {
     public static final Parcelable.Creator<OnBackInvokedCallbackInfo> CREATOR = new Parcelable.Creator<OnBackInvokedCallbackInfo>() { // from class: android.window.OnBackInvokedCallbackInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OnBackInvokedCallbackInfo createFromParcel(Parcel in) {
             return new OnBackInvokedCallbackInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OnBackInvokedCallbackInfo[] newArray(int size) {
             return new OnBackInvokedCallbackInfo[size];
@@ -23,10 +22,6 @@ public final class OnBackInvokedCallbackInfo implements Parcelable {
     private final IOnBackInvokedCallback mCallback;
     private final boolean mIsAnimationCallback;
     private int mPriority;
-
-    /* synthetic */ OnBackInvokedCallbackInfo(Parcel parcel, OnBackInvokedCallbackInfoIA onBackInvokedCallbackInfoIA) {
-        this(parcel);
-    }
 
     public OnBackInvokedCallbackInfo(IOnBackInvokedCallback callback, int priority, boolean isAnimationCallback) {
         this.mCallback = callback;
@@ -50,23 +45,6 @@ public final class OnBackInvokedCallbackInfo implements Parcelable {
         dest.writeStrongInterface(this.mCallback);
         dest.writeInt(this.mPriority);
         dest.writeBoolean(this.mIsAnimationCallback);
-    }
-
-    /* renamed from: android.window.OnBackInvokedCallbackInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OnBackInvokedCallbackInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OnBackInvokedCallbackInfo createFromParcel(Parcel in) {
-            return new OnBackInvokedCallbackInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OnBackInvokedCallbackInfo[] newArray(int size) {
-            return new OnBackInvokedCallbackInfo[size];
-        }
     }
 
     public boolean isSystemCallback() {

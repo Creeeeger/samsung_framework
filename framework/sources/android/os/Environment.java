@@ -7,7 +7,6 @@ import android.app.AppOpsManager;
 import android.compat.Compatibility;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageParser;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.text.TextUtils;
@@ -43,36 +42,14 @@ public class Environment {
     public static String DIRECTORY_RINGTONES = null;
     public static String DIRECTORY_SCREENSHOTS = null;
     public static final String DIR_ANDROID = "Android";
-    private static final File DIR_ANDROID_DATA;
-    private static final String DIR_ANDROID_DATA_PATH;
-    private static final File DIR_ANDROID_EXPAND;
-    private static final File DIR_ANDROID_STORAGE;
-    private static final File DIR_APEX_ROOT;
     private static final String DIR_CACHE = "cache";
     private static final String DIR_DATA = "data";
-    private static final File DIR_DOWNLOAD_CACHE;
     private static final String DIR_FILES = "files";
     private static final String DIR_MEDIA = "media";
-    private static final File DIR_METADATA;
     private static final String DIR_OBB = "obb";
-    private static final File DIR_ODM_ROOT;
-    private static final File DIR_OEM_ROOT;
-    private static final File DIR_PRODUCT_ROOT;
-    private static final File DIR_SYSTEM_EXT_ROOT;
     public static final String DIR_USER_CE = "user";
     public static final String DIR_USER_DE = "user_de";
-    private static final File DIR_VENDOR_ROOT;
-    private static final String ENV_ANDROID_DATA = "ANDROID_DATA";
-    private static final String ENV_ANDROID_EXPAND = "ANDROID_EXPAND";
-    private static final String ENV_ANDROID_STORAGE = "ANDROID_STORAGE";
-    private static final String ENV_APEX_ROOT = "APEX_ROOT";
-    private static final String ENV_DOWNLOAD_CACHE = "DOWNLOAD_CACHE";
     private static final String ENV_EXTERNAL_STORAGE = "EXTERNAL_STORAGE";
-    private static final String ENV_ODM_ROOT = "ODM_ROOT";
-    private static final String ENV_OEM_ROOT = "OEM_ROOT";
-    private static final String ENV_PRODUCT_ROOT = "PRODUCT_ROOT";
-    private static final String ENV_SYSTEM_EXT_ROOT = "SYSTEM_EXT_ROOT";
-    private static final String ENV_VENDOR_ROOT = "VENDOR_ROOT";
     private static final long FORCE_ENABLE_SCOPED_STORAGE = 132649864;
     public static final int HAS_ALARMS = 8;
     public static final int HAS_ANDROID = 65536;
@@ -105,21 +82,30 @@ public class Environment {
     private static boolean sUserRequired;
     private static final String ENV_ANDROID_ROOT = "ANDROID_ROOT";
     private static final File DIR_ANDROID_ROOT = getDirectory(ENV_ANDROID_ROOT, "/system");
+    private static final String ENV_ANDROID_DATA = "ANDROID_DATA";
+    private static final String DIR_ANDROID_DATA_PATH = getDirectoryPath(ENV_ANDROID_DATA, "/data");
+    private static final File DIR_ANDROID_DATA = new File(DIR_ANDROID_DATA_PATH);
+    private static final String ENV_ANDROID_EXPAND = "ANDROID_EXPAND";
+    private static final File DIR_ANDROID_EXPAND = getDirectory(ENV_ANDROID_EXPAND, "/mnt/expand");
+    private static final String ENV_ANDROID_STORAGE = "ANDROID_STORAGE";
+    private static final File DIR_ANDROID_STORAGE = getDirectory(ENV_ANDROID_STORAGE, "/storage");
+    private static final String ENV_DOWNLOAD_CACHE = "DOWNLOAD_CACHE";
+    private static final File DIR_DOWNLOAD_CACHE = getDirectory(ENV_DOWNLOAD_CACHE, "/cache");
+    private static final File DIR_METADATA = new File("/metadata");
+    private static final String ENV_OEM_ROOT = "OEM_ROOT";
+    private static final File DIR_OEM_ROOT = getDirectory(ENV_OEM_ROOT, "/oem");
+    private static final String ENV_ODM_ROOT = "ODM_ROOT";
+    private static final File DIR_ODM_ROOT = getDirectory(ENV_ODM_ROOT, "/odm");
+    private static final String ENV_VENDOR_ROOT = "VENDOR_ROOT";
+    private static final File DIR_VENDOR_ROOT = getDirectory(ENV_VENDOR_ROOT, "/vendor");
+    private static final String ENV_PRODUCT_ROOT = "PRODUCT_ROOT";
+    private static final File DIR_PRODUCT_ROOT = getDirectory(ENV_PRODUCT_ROOT, "/product");
+    private static final String ENV_SYSTEM_EXT_ROOT = "SYSTEM_EXT_ROOT";
+    private static final File DIR_SYSTEM_EXT_ROOT = getDirectory(ENV_SYSTEM_EXT_ROOT, "/system_ext");
+    private static final String ENV_APEX_ROOT = "APEX_ROOT";
+    private static final File DIR_APEX_ROOT = getDirectory(ENV_APEX_ROOT, "/apex");
 
     static {
-        String directoryPath = getDirectoryPath(ENV_ANDROID_DATA, "/data");
-        DIR_ANDROID_DATA_PATH = directoryPath;
-        DIR_ANDROID_DATA = new File(directoryPath);
-        DIR_ANDROID_EXPAND = getDirectory(ENV_ANDROID_EXPAND, "/mnt/expand");
-        DIR_ANDROID_STORAGE = getDirectory(ENV_ANDROID_STORAGE, "/storage");
-        DIR_DOWNLOAD_CACHE = getDirectory(ENV_DOWNLOAD_CACHE, "/cache");
-        DIR_METADATA = new File("/metadata");
-        DIR_OEM_ROOT = getDirectory(ENV_OEM_ROOT, "/oem");
-        DIR_ODM_ROOT = getDirectory(ENV_ODM_ROOT, "/odm");
-        DIR_VENDOR_ROOT = getDirectory(ENV_VENDOR_ROOT, "/vendor");
-        DIR_PRODUCT_ROOT = getDirectory(ENV_PRODUCT_ROOT, "/product");
-        DIR_SYSTEM_EXT_ROOT = getDirectory(ENV_SYSTEM_EXT_ROOT, "/system_ext");
-        DIR_APEX_ROOT = getDirectory(ENV_APEX_ROOT, "/apex");
         initForCurrentUser();
         DIRECTORY_MUSIC = "Music";
         DIRECTORY_PODCASTS = "Podcasts";
@@ -134,7 +120,7 @@ public class Environment {
         DIRECTORY_SCREENSHOTS = "Screenshots";
         DIRECTORY_AUDIOBOOKS = "Audiobooks";
         DIRECTORY_RECORDINGS = "Recordings";
-        STANDARD_DIRECTORIES = new String[]{"Music", "Podcasts", "Ringtones", "Alarms", SemPersonaManager.NOTIFICATIONS, "Pictures", "Movies", "Download", "DCIM", "Documents", "Audiobooks", "Recordings"};
+        STANDARD_DIRECTORIES = new String[]{DIRECTORY_MUSIC, DIRECTORY_PODCASTS, DIRECTORY_RINGTONES, DIRECTORY_ALARMS, DIRECTORY_NOTIFICATIONS, DIRECTORY_PICTURES, DIRECTORY_MOVIES, DIRECTORY_DOWNLOADS, DIRECTORY_DCIM, DIRECTORY_DOCUMENTS, DIRECTORY_AUDIOBOOKS, DIRECTORY_RECORDINGS};
     }
 
     public static void initForCurrentUser() {
@@ -142,7 +128,6 @@ public class Environment {
         sCurrentUser = new UserEnvironment(userId);
     }
 
-    /* loaded from: classes3.dex */
     public static class UserEnvironment {
         private final int mUserId;
 
@@ -265,7 +250,7 @@ public class Environment {
         if (TextUtils.isEmpty(volumeUuid)) {
             return DIR_ANDROID_DATA;
         }
-        return new File(PackageParser.MNT_EXPAND + volumeUuid);
+        return new File("/mnt/expand/" + volumeUuid);
     }
 
     public static String getDataDirectoryPath(String volumeUuid) {
@@ -283,6 +268,7 @@ public class Environment {
         return new File(getDataDirectory(), "system");
     }
 
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static File getDataSystemDeDirectory() {
         return buildPath(getDataDirectory(), "system_de");
     }

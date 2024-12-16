@@ -1,6 +1,5 @@
 package android.util.sysfwutil;
 
-import android.app.job.JobInfo;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.UEventObserver;
 import java.io.BufferedReader;
@@ -18,40 +17,12 @@ public class DexObserver {
     private static final String TAG = "DexObserverFW";
     private static final String USBPD_IDS_PATH = "/sys/class/sec/ccic/usbpd_ids";
     private static final String USBPD_TYPE_PATH = "/sys/class/sec/ccic/usbpd_type";
-    private final UEventObserver mDexUEventObserver;
     private volatile boolean mDexMode = false;
     private volatile boolean mSemiDexMode = false;
     private final Object mDexStateLock = new Object();
     private final BlockingDeque<DexConnectionListener> mListeners = new LinkedBlockingDeque();
     private boolean mTestModeOn = false;
-
-    public DexObserver() {
-        AnonymousClass1 anonymousClass1 = new UEventObserver() { // from class: android.util.sysfwutil.DexObserver.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.UEventObserver
-            public void onUEvent(UEventObserver.UEvent event) {
-                try {
-                    Slog.d(DexObserver.TAG, "UEventObserver, event : " + event);
-                    DexObserver.this.setDexState(Integer.parseInt(event.get("SWITCH_STATE")), event);
-                } catch (NumberFormatException e) {
-                    Slog.e(DexObserver.TAG, "Could not parse switch state from event " + event);
-                }
-            }
-        };
-        this.mDexUEventObserver = anonymousClass1;
-        Slog.d(TAG, "Started" + (this.mTestModeOn ? " TestModeOn" : ""));
-        checkDexStatebySysfs();
-        anonymousClass1.startObserving(CCIC_DOCK_UEVENT_MATCH);
-    }
-
-    /* renamed from: android.util.sysfwutil.DexObserver$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends UEventObserver {
-        AnonymousClass1() {
-        }
-
+    private final UEventObserver mDexUEventObserver = new UEventObserver() { // from class: android.util.sysfwutil.DexObserver.1
         @Override // android.os.UEventObserver
         public void onUEvent(UEventObserver.UEvent event) {
             try {
@@ -61,8 +32,15 @@ public class DexObserver {
                 Slog.e(DexObserver.TAG, "Could not parse switch state from event " + event);
             }
         }
+    };
+
+    public DexObserver() {
+        Slog.d(TAG, "Started" + (this.mTestModeOn ? " TestModeOn" : ""));
+        checkDexStatebySysfs();
+        this.mDexUEventObserver.startObserving(CCIC_DOCK_UEVENT_MATCH);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setDexState(int state, UEventObserver.UEvent event) {
         Slog.d(TAG, "setDockState() : " + state);
         switch (state) {
@@ -88,170 +66,88 @@ public class DexObserver {
     }
 
     private void checkDexStatebySysfs() {
-        StringBuilder sb;
+        FileReader fr1;
+        BufferedReader br1;
         String mVIDPID = null;
         String mUsbType = null;
-        FileReader fr1 = null;
-        FileReader fr2 = null;
-        BufferedReader br1 = null;
-        BufferedReader br2 = null;
         try {
-            try {
+            File usb_usbpd_ids_fd = new File(USBPD_IDS_PATH);
+            File usb_usbpd_type_fd = new File(USBPD_TYPE_PATH);
+            if (usb_usbpd_ids_fd.exists()) {
+                fr1 = new FileReader(USBPD_IDS_PATH);
                 try {
+                    br1 = new BufferedReader(fr1);
                     try {
-                        File usb_usbpd_ids_fd = new File(USBPD_IDS_PATH);
-                        File usb_usbpd_type_fd = new File(USBPD_TYPE_PATH);
-                        if (usb_usbpd_ids_fd.exists()) {
-                            fr1 = new FileReader(USBPD_IDS_PATH);
-                            br1 = new BufferedReader(fr1);
-                            mVIDPID = br1.readLine();
-                        } else {
-                            Slog.e(TAG, "USBPD IDS File does not exist");
-                        }
-                        if (usb_usbpd_type_fd.exists()) {
-                            fr2 = new FileReader(USBPD_TYPE_PATH);
-                            br2 = new BufferedReader(fr2);
-                            mUsbType = br2.readLine();
-                        } else {
-                            Slog.e(TAG, "USBPD TYPE File does not exist");
-                        }
-                        if (mVIDPID == null || mUsbType == null) {
-                            Slog.d(TAG, "checkDexStatebySysfs() USBPD_IDS or USBPD_TYPE is NULL!!");
-                        } else if (this.mTestModeOn) {
-                            Slog.d(TAG, "checkDexStatebySysfs() USBPD_IDS[" + mVIDPID + "], USBPD_TYPE[" + mUsbType + NavigationBarInflaterView.SIZE_MOD_END);
-                        }
-                        if (mUsbType == null || !"200".equals(mUsbType)) {
-                            if (mUsbType == null || !"114".equals(mUsbType)) {
-                                this.mDexMode = false;
-                                this.mSemiDexMode = false;
-                            } else {
-                                if (this.mTestModeOn) {
-                                    Slog.d(TAG, "checkDexStatebySysfs() : DEX MODE is ON");
-                                }
-                                this.mDexMode = true;
-                            }
-                        } else if (mVIDPID != null && "04e8:a027".equals(mVIDPID)) {
-                            if (this.mTestModeOn) {
-                                Slog.d(TAG, "checkDexStatebySysfs() : SEMI DEX MODE is ON");
-                            }
-                            this.mSemiDexMode = true;
-                        }
-                        if (this.mTestModeOn) {
-                            Slog.d(TAG, "checkDexStatebySysfs() : Update DeX Connection State");
-                        }
-                        onUpdateDexMode();
-                        if (fr1 != null) {
-                            try {
-                                fr1.close();
-                            } catch (IOException e) {
-                                ioex = e;
-                                sb = new StringBuilder();
-                                Slog.e(TAG, sb.append("IOException(iex): ").append(ioex.getMessage()).toString());
-                                return;
-                            }
-                        }
-                        if (br1 != null) {
-                            br1.close();
-                        }
-                        if (fr2 != null) {
-                            fr2.close();
-                        }
-                        if (br2 != null) {
-                            br2.close();
-                        }
-                    } catch (IOException ioe) {
-                        Slog.e(TAG, "IOException: " + ioe.getMessage());
-                        if (fr1 != null) {
-                            try {
-                                fr1.close();
-                            } catch (IOException e2) {
-                                ioex = e2;
-                                sb = new StringBuilder();
-                                Slog.e(TAG, sb.append("IOException(iex): ").append(ioex.getMessage()).toString());
-                                return;
-                            }
-                        }
-                        if (br1 != null) {
-                            br1.close();
-                        }
-                        if (fr2 != null) {
-                            fr2.close();
-                        }
-                        if (br2 != null) {
-                            br2.close();
-                        }
-                    }
-                } catch (FileNotFoundException fnfe) {
-                    Slog.e(TAG, "File not Found exception: " + fnfe.getMessage());
-                    if (fr1 != null) {
-                        try {
-                            fr1.close();
-                        } catch (IOException e3) {
-                            ioex = e3;
-                            sb = new StringBuilder();
-                            Slog.e(TAG, sb.append("IOException(iex): ").append(ioex.getMessage()).toString());
-                            return;
-                        }
-                    }
-                    if (br1 != null) {
+                        mVIDPID = br1.readLine();
                         br1.close();
-                    }
-                    if (fr2 != null) {
-                        fr2.close();
-                    }
-                    if (br2 != null) {
-                        br2.close();
-                    }
-                }
-            } catch (IllegalArgumentException iae) {
-                Slog.e(TAG, "IllegalArgumentException: " + iae.getMessage());
-                if (fr1 != null) {
-                    try {
                         fr1.close();
-                    } catch (IOException e4) {
-                        ioex = e4;
-                        sb = new StringBuilder();
-                        Slog.e(TAG, sb.append("IOException(iex): ").append(ioex.getMessage()).toString());
-                        return;
+                    } finally {
+                        try {
+                            br1.close();
+                        } catch (Throwable th) {
+                            th.addSuppressed(th);
+                        }
                     }
+                } finally {
                 }
-                if (br1 != null) {
-                    br1.close();
-                }
-                if (fr2 != null) {
-                    fr2.close();
-                }
-                if (br2 != null) {
-                    br2.close();
-                }
+            } else {
+                Slog.e(TAG, "USBPD IDS File does not exist");
             }
-        } catch (Throwable th) {
-            if (fr1 != null) {
+            if (usb_usbpd_type_fd.exists()) {
+                fr1 = new FileReader(USBPD_TYPE_PATH);
                 try {
-                    fr1.close();
-                } catch (IOException ioex) {
-                    Slog.e(TAG, "IOException(iex): " + ioex.getMessage());
-                    throw th;
+                    br1 = new BufferedReader(fr1);
+                    try {
+                        mUsbType = br1.readLine();
+                        br1.close();
+                        fr1.close();
+                    } finally {
+                    }
+                } finally {
                 }
+            } else {
+                Slog.e(TAG, "USBPD TYPE File does not exist");
             }
-            if (br1 != null) {
-                br1.close();
+            if (mVIDPID != null && mUsbType != null) {
+                if (this.mTestModeOn) {
+                    Slog.d(TAG, "checkDexStatebySysfs() USBPD_IDS[" + mVIDPID + "], USBPD_TYPE[" + mUsbType + NavigationBarInflaterView.SIZE_MOD_END);
+                }
+            } else {
+                Slog.d(TAG, "checkDexStatebySysfs() USBPD_IDS or USBPD_TYPE is NULL!!");
             }
-            if (fr2 != null) {
-                fr2.close();
+            if ("200".equals(mUsbType) && "04e8:a027".equals(mVIDPID)) {
+                if (this.mTestModeOn) {
+                    Slog.d(TAG, "checkDexStatebySysfs() : SEMI DEX MODE is ON");
+                }
+                this.mSemiDexMode = true;
+            } else if ("114".equals(mUsbType)) {
+                if (this.mTestModeOn) {
+                    Slog.d(TAG, "checkDexStatebySysfs() : DEX MODE is ON");
+                }
+                this.mDexMode = true;
+            } else {
+                this.mDexMode = false;
+                this.mSemiDexMode = false;
             }
-            if (br2 != null) {
-                br2.close();
+            if (this.mTestModeOn) {
+                Slog.d(TAG, "checkDexStatebySysfs() : Update DeX Connection State");
             }
-            throw th;
+            onUpdateDexMode();
+        } catch (FileNotFoundException fnfe) {
+            Slog.e(TAG, "File not Found exception: " + fnfe.getMessage());
+        } catch (IOException ioe) {
+            Slog.e(TAG, "IOException: " + ioe.getMessage());
+        } catch (IllegalArgumentException iae) {
+            Slog.e(TAG, "IllegalArgumentException: " + iae.getMessage());
         }
     }
 
+    /* JADX WARN: Type inference failed for: r1v3, types: [android.util.sysfwutil.DexObserver$2] */
     private void onUpdateDexMode() {
         if (this.mTestModeOn) {
             Slog.d(TAG, "setDexMode() : delay ++");
             try {
-                Thread.sleep(JobInfo.DEFAULT_INITIAL_BACKOFF_MILLIS);
+                Thread.sleep(30000L);
             } catch (InterruptedException e) {
             }
             Slog.d(TAG, "setDexMode() : delay --");
@@ -260,10 +156,6 @@ public class DexObserver {
             Slog.d(TAG, "setDexMode() : mDexMode " + this.mDexMode + " mSemiDexMode " + this.mSemiDexMode);
             if (this.mDexMode || this.mSemiDexMode) {
                 new Thread("notifyListeners") { // from class: android.util.sysfwutil.DexObserver.2
-                    AnonymousClass2(String name) {
-                        super(name);
-                    }
-
                     @Override // java.lang.Thread, java.lang.Runnable
                     public void run() {
                         for (DexConnectionListener li : DexObserver.this.mListeners) {
@@ -271,21 +163,6 @@ public class DexObserver {
                         }
                     }
                 }.start();
-            }
-        }
-    }
-
-    /* renamed from: android.util.sysfwutil.DexObserver$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 extends Thread {
-        AnonymousClass2(String name) {
-            super(name);
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            for (DexConnectionListener li : DexObserver.this.mListeners) {
-                li.onConnect();
             }
         }
     }

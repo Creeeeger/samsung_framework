@@ -36,6 +36,10 @@ public class GraphicsEnvironment {
     private static final String ANGLE_GL_DRIVER_CHOICE_DEFAULT = "default";
     private static final String ANGLE_GL_DRIVER_CHOICE_NATIVE = "native";
     private static final boolean DEBUG = false;
+    private static final String GPU_CONTROL_LAYER = "VK_LAYER_GPU_Control";
+    private static final String GPU_CONTROL_LAYER_APP = "com.samsung.gpuwatchapp";
+    private static final String GPU_CONTROL_LAYER_GLES = "libGLESLayer_GPU_Control.so";
+    private static final boolean GRAPHICS_SUPPORT_GPU_CONTROL = true;
     private static final String INTENT_KEY_A4A_TOAST_MESSAGE = "A4A Toast Message";
     private static final String METADATA_DEVELOPER_DRIVER_ENABLE = "com.android.graphics.developerdriver.enable";
     private static final String METADATA_DRIVER_BUILD_TIME = "com.android.graphics.driver.build_time";
@@ -43,6 +47,7 @@ public class GraphicsEnvironment {
     private static final String PROPERTY_GFX_DRIVER_BUILD_TIME = "ro.gfx.driver_build_time";
     private static final String PROPERTY_GFX_DRIVER_PRERELEASE = "ro.gfx.driver.1";
     private static final String PROPERTY_GFX_DRIVER_PRODUCTION = "ro.gfx.driver.0";
+    private static final String SYSTEM_ANGLE_STRING = "system";
     private static final String SYSTEM_DRIVER_NAME = "system";
     private static final long SYSTEM_DRIVER_VERSION_CODE = 0;
     private static final String SYSTEM_DRIVER_VERSION_NAME = "";
@@ -59,21 +64,18 @@ public class GraphicsEnvironment {
     private static final int VULKAN_1_3 = 4206592;
     private static final GraphicsEnvironment sInstance = new GraphicsEnvironment();
     private ClassLoader mClassLoader;
-    private GameManager mGameManager;
     private String mLibraryPermittedPaths;
     private String mLibrarySearchPaths;
     private int mAngleOptInIndex = -1;
-    private boolean mEnabledByGameMode = false;
-
-    private static native boolean getShouldUseAngle(String str);
+    private boolean mShouldUseAngle = false;
 
     public static native void hintActivityLaunch();
 
     private static native boolean isDebuggable();
 
-    private static native void nativeToggleAngleAsSystemDriver(boolean z);
+    private static native void nativeSetAngleInfo(String str, boolean z, String str2, String[] strArr);
 
-    private static native void setAngleInfo(String str, String str2, String str3, String[] strArr);
+    private static native void nativeToggleAngleAsSystemDriver(boolean z);
 
     private static native void setDebugLayers(String str);
 
@@ -91,144 +93,64 @@ public class GraphicsEnvironment {
         return sInstance;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:19:0x00ae  */
-    /* JADX WARN: Removed duplicated region for block: B:8:0x008b  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void setup(android.content.Context r23, android.os.Bundle r24) {
-        /*
-            r22 = this;
-            r6 = r22
-            r7 = r23
-            r8 = r24
-            android.content.pm.PackageManager r9 = r23.getPackageManager()
-            java.lang.String r14 = r23.getPackageName()
-            android.content.pm.ApplicationInfo r15 = getAppInfoWithMetadata(r7, r9, r14)
-            java.lang.Class<android.app.GameManager> r0 = android.app.GameManager.class
-            java.lang.Object r0 = r7.getSystemService(r0)
-            android.app.GameManager r0 = (android.app.GameManager) r0
-            r6.mGameManager = r0
-            java.lang.String r0 = "setupGpuLayers"
-            r12 = 2
-            android.os.Trace.traceBegin(r12, r0)
-            r0 = r22
-            r1 = r23
-            r2 = r24
-            r3 = r9
-            r4 = r14
-            r5 = r15
-            r0.setupGpuLayers(r1, r2, r3, r4, r5)
-            android.os.Trace.traceEnd(r12)
-            java.lang.String r0 = "setupAngle"
-            android.os.Trace.traceBegin(r12, r0)
-            r0 = 0
-            boolean r1 = r6.setupAngle(r7, r8, r9, r14)
-            if (r1 == 0) goto L69
-            boolean r1 = r6.shouldUseAngle(r7, r8, r14)
-            if (r1 == 0) goto L63
-            r0 = 1
-            java.lang.String r10 = "angle"
-            java.lang.String r11 = ""
-            r1 = 0
-            r3 = 0
-            int r17 = r6.getVulkanVersion(r9)
-            r18 = r12
-            r12 = r1
-            r20 = r14
-            r2 = r15
-            r14 = r3
-            r16 = r20
-            setGpuStats(r10, r11, r12, r14, r16, r17)
-            r21 = r0
-            goto L70
-        L63:
-            r18 = r12
-            r20 = r14
-            r2 = r15
-            goto L6e
-        L69:
-            r18 = r12
-            r20 = r14
-            r2 = r15
-        L6e:
-            r21 = r0
-        L70:
-            android.os.Trace.traceEnd(r18)
-            java.lang.String r0 = "chooseDriver"
-            r14 = r18
-            android.os.Trace.traceBegin(r14, r0)
-            r0 = r22
-            r1 = r23
-            r12 = r2
-            r2 = r24
-            r3 = r9
-            r4 = r20
-            r5 = r12
-            boolean r0 = r0.chooseDriver(r1, r2, r3, r4, r5)
-            if (r0 != 0) goto Lae
-            if (r21 != 0) goto Lab
-            java.lang.String r10 = "system"
-            java.lang.String r11 = ""
-            r0 = 0
-            java.lang.String r2 = "ro.gfx.driver_build_time"
-            r3 = 0
-            long r2 = android.os.SystemProperties.getLong(r2, r3)
-            int r17 = r6.getVulkanVersion(r9)
-            r4 = r12
-            r12 = r0
-            r0 = r14
-            r14 = r2
-            r16 = r20
-            setGpuStats(r10, r11, r12, r14, r16, r17)
-            goto Lb0
-        Lab:
-            r4 = r12
-            r0 = r14
-            goto Lb0
-        Lae:
-            r4 = r12
-            r0 = r14
-        Lb0:
-            android.os.Trace.traceEnd(r0)
-            java.lang.String r2 = "notifyGraphicsEnvironmentSetup"
-            android.os.Trace.traceBegin(r0, r2)
-            android.app.GameManager r2 = r6.mGameManager
-            if (r2 == 0) goto Lc6
-            int r2 = r4.category
-            if (r2 != 0) goto Lc6
-            android.app.GameManager r2 = r6.mGameManager
-            r2.notifyGraphicsEnvironmentSetup()
-        Lc6:
-            android.os.Trace.traceEnd(r0)
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.os.GraphicsEnvironment.setup(android.content.Context, android.os.Bundle):void");
+    public void setup(Context context, Bundle coreSettings) {
+        long j;
+        ApplicationInfo appInfoWithMetaData;
+        String packageName;
+        long j2;
+        ApplicationInfo appInfoWithMetaData2;
+        GameManager gameManager;
+        PackageManager pm = context.getPackageManager();
+        String packageName2 = context.getPackageName();
+        ApplicationInfo appInfoWithMetaData3 = getAppInfoWithMetadata(context, pm, packageName2);
+        Trace.traceBegin(2L, "setupGpuLayers");
+        setupGpuLayers(context, coreSettings, pm, packageName2, appInfoWithMetaData3);
+        Trace.traceEnd(2L);
+        Trace.traceBegin(2L, "setupAngle");
+        if (setupAngle(context, coreSettings, pm, packageName2)) {
+            this.mShouldUseAngle = true;
+            j = 2;
+            appInfoWithMetaData = appInfoWithMetaData3;
+            packageName = packageName2;
+            setGpuStats("angle", "", 0L, 0L, packageName2, getVulkanVersion(pm));
+        } else {
+            j = 2;
+            appInfoWithMetaData = appInfoWithMetaData3;
+            packageName = packageName2;
+        }
+        Trace.traceEnd(j);
+        long j3 = j;
+        Trace.traceBegin(j3, "chooseDriver");
+        ApplicationInfo appInfoWithMetaData4 = appInfoWithMetaData;
+        if (chooseDriver(context, coreSettings, pm, packageName, appInfoWithMetaData4)) {
+            j2 = j3;
+            appInfoWithMetaData2 = appInfoWithMetaData4;
+        } else if (this.mShouldUseAngle) {
+            j2 = j3;
+            appInfoWithMetaData2 = appInfoWithMetaData4;
+        } else {
+            j2 = j3;
+            appInfoWithMetaData2 = appInfoWithMetaData4;
+            setGpuStats("system", "", 0L, SystemProperties.getLong(PROPERTY_GFX_DRIVER_BUILD_TIME, 0L), packageName, getVulkanVersion(pm));
+        }
+        Trace.traceEnd(j2);
+        Trace.traceBegin(j2, "notifyGraphicsEnvironmentSetup");
+        if (appInfoWithMetaData2.category == 0 && (gameManager = (GameManager) context.getSystemService(GameManager.class)) != null) {
+            gameManager.notifyGraphicsEnvironmentSetup();
+        }
+        Trace.traceEnd(j2);
     }
 
     public void toggleAngleAsSystemDriver(boolean enabled) {
         nativeToggleAngleAsSystemDriver(enabled);
     }
 
-    private boolean isAngleEnabledByGameMode(Context context, String packageName) {
-        try {
-            GameManager gameManager = this.mGameManager;
-            boolean gameModeEnabledAngle = gameManager != null && gameManager.isAngleEnabled(packageName);
-            Log.v(TAG, "ANGLE GameManagerService for " + packageName + ": " + gameModeEnabledAngle);
-            return gameModeEnabledAngle;
-        } catch (SecurityException e) {
-            Log.e(TAG, "Caught exception while querying GameManagerService if ANGLE is enabled for package: " + packageName);
-            return false;
-        }
-    }
-
-    private boolean shouldUseAngle(Context context, Bundle coreSettings, String packageName) {
+    private String queryAngleChoice(Context context, Bundle coreSettings, String packageName) {
         if (TextUtils.isEmpty(packageName)) {
             Log.v(TAG, "No package name specified; use the system driver");
-            return false;
+            return "default";
         }
-        return shouldUseAngleInternal(context, coreSettings, packageName);
+        return queryAngleChoiceInternal(context, coreSettings, packageName);
     }
 
     private int getVulkanVersion(PackageManager pm) {
@@ -306,6 +228,23 @@ public class GraphicsEnvironment {
         return (packageName == null || gpuDebugApp.isEmpty() || packageName.isEmpty() || !gpuDebugApp.equals(packageName)) ? false : true;
     }
 
+    private String getGpuControlLayerAppPaths(PackageManager pm) {
+        try {
+            ApplicationInfo appInfo = pm.getApplicationInfo(GPU_CONTROL_LAYER_APP, 131072);
+            if (appInfo == null) {
+                Log.w(TAG, "Debug layer app 'com.samsung.gpuwatchapp' not installed");
+                return "";
+            }
+            String abi = chooseAbi(appInfo);
+            StringBuilder sb = new StringBuilder();
+            sb.append(appInfo.nativeLibraryDir).append(File.pathSeparator).append(appInfo.sourceDir).append("!/lib/").append(abi).append(File.pathSeparator);
+            String paths = sb.toString();
+            return paths;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "";
+        }
+    }
+
     private void setupGpuLayers(Context context, Bundle coreSettings, PackageManager pm, String packageName, ApplicationInfo ai) {
         boolean enabled = debugLayerEnabled(coreSettings, packageName, ai);
         String layerPaths = "";
@@ -320,6 +259,16 @@ public class GraphicsEnvironment {
             Log.i(TAG, "GLES debug layer list: " + layersGLES);
             if (layersGLES != null && !layersGLES.isEmpty()) {
                 setDebugLayersGLES(layersGLES);
+            }
+        } else if (!ai.isPrivilegedApp() && (!ai.isSystemApp() || ai.isUpdatedSystemApp())) {
+            ContentResolver contentResolver = context.getContentResolver();
+            if (getGlobalSettingsString(contentResolver, coreSettings, Settings.Global.GPU_CONTROL_LAYER_APPS).contains(packageName)) {
+                layerPaths = getGpuControlLayerAppPaths(pm);
+                if (!"".equals(layerPaths)) {
+                    Log.i(TAG, "GPU control app: " + packageName);
+                    setDebugLayers(GPU_CONTROL_LAYER);
+                    setDebugLayersGLES(GPU_CONTROL_LAYER_GLES);
+                }
             }
         }
         setLayerPaths(this.mClassLoader, layerPaths + this.mLibrarySearchPaths);
@@ -359,19 +308,19 @@ public class GraphicsEnvironment {
         }
     }
 
-    private boolean shouldUseAngleInternal(Context context, Bundle bundle, String packageName) {
+    private String queryAngleChoiceInternal(Context context, Bundle bundle, String packageName) {
         int allUseAngle;
         if (TextUtils.isEmpty(packageName)) {
-            return false;
+            return "default";
         }
-        if (bundle != null) {
-            allUseAngle = bundle.getInt(Settings.Global.ANGLE_GL_DRIVER_ALL_ANGLE);
-        } else {
+        if (bundle == null) {
             allUseAngle = Settings.Global.getInt(context.getContentResolver(), Settings.Global.ANGLE_GL_DRIVER_ALL_ANGLE, 0);
+        } else {
+            allUseAngle = bundle.getInt(Settings.Global.ANGLE_GL_DRIVER_ALL_ANGLE);
         }
         if (allUseAngle == 1) {
             Log.v(TAG, "Turn on ANGLE for all applications.");
-            return true;
+            return "angle";
         }
         ContentResolver contentResolver = context.getContentResolver();
         List<String> optInPackages = getGlobalSettingsString(contentResolver, bundle, Settings.Global.ANGLE_GL_DRIVER_SELECTION_PKGS);
@@ -379,36 +328,26 @@ public class GraphicsEnvironment {
         Log.v(TAG, "Currently set values for:");
         Log.v(TAG, "  angle_gl_driver_selection_pkgs=" + optInPackages);
         Log.v(TAG, "  angle_gl_driver_selection_values=" + optInValues);
-        this.mEnabledByGameMode = isAngleEnabledByGameMode(context, packageName);
-        if (optInPackages.size() != optInValues.size()) {
+        if (optInPackages.size() == 0 || optInPackages.size() != optInValues.size()) {
             Log.v(TAG, "Global.Settings values are invalid: number of packages: " + optInPackages.size() + ", number of values: " + optInValues.size());
-            return this.mEnabledByGameMode;
+            return "default";
         }
         int pkgIndex = getPackageIndex(packageName, optInPackages);
         if (pkgIndex < 0) {
             Log.v(TAG, packageName + " is not listed in per-application setting");
-            return this.mEnabledByGameMode;
+            return "default";
         }
         this.mAngleOptInIndex = pkgIndex;
         String optInValue = optInValues.get(pkgIndex);
         Log.v(TAG, "ANGLE Developer option for '" + packageName + "' set to: '" + optInValue + "'");
-        if (optInValue.equals("angle")) {
-            return true;
-        }
-        if (optInValue.equals(ANGLE_GL_DRIVER_CHOICE_NATIVE)) {
-            return false;
-        }
-        return this.mEnabledByGameMode;
+        return optInValue.equals("angle") ? "angle" : optInValue.equals(ANGLE_GL_DRIVER_CHOICE_NATIVE) ? ANGLE_GL_DRIVER_CHOICE_NATIVE : "default";
     }
 
     private String getAnglePackageName(PackageManager pm) {
         Intent intent = new Intent(ACTION_ANGLE_FOR_ANDROID);
         List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, 1048576);
         if (resolveInfos.size() != 1) {
-            Log.e(TAG, "Invalid number of ANGLE packages. Required: 1, Found: " + resolveInfos.size());
-            for (ResolveInfo resolveInfo : resolveInfos) {
-                Log.e(TAG, "Found ANGLE package: " + resolveInfo.activityInfo.packageName);
-            }
+            Log.v(TAG, "Invalid number of ANGLE packages. Required: 1, Found: " + resolveInfos.size());
             return "";
         }
         return resolveInfos.get(0).activityInfo.packageName;
@@ -428,30 +367,39 @@ public class GraphicsEnvironment {
         return TextUtils.isEmpty(debugPackage) ? "" : debugPackage;
     }
 
-    private boolean setupAngle(Context context, Bundle bundle, PackageManager pm, String packageName) {
-        if (!shouldUseAngle(context, bundle, packageName)) {
+    private boolean setupAngle(Context context, Bundle bundle, PackageManager packageManager, String packageName) {
+        String angleChoice = queryAngleChoice(context, bundle, packageName);
+        if (angleChoice.equals("default")) {
             return false;
         }
+        if (!angleChoice.equals(ANGLE_GL_DRIVER_CHOICE_NATIVE)) {
+            return setupAngleFromApk(context, bundle, packageManager, packageName) || setupAngleFromSystem(context, bundle, packageName);
+        }
+        nativeSetAngleInfo("", true, packageName, null);
+        return false;
+    }
+
+    private boolean setupAngleFromApk(Context context, Bundle bundle, PackageManager packageManager, String packageName) {
         ApplicationInfo angleInfo = null;
         String anglePkgName = getAngleDebugPackage(context, bundle);
         if (!anglePkgName.isEmpty()) {
             Log.v(TAG, "ANGLE debug package enabled: " + anglePkgName);
             try {
-                angleInfo = pm.getApplicationInfo(anglePkgName, 0);
+                angleInfo = packageManager.getApplicationInfo(anglePkgName, 0);
             } catch (PackageManager.NameNotFoundException e) {
                 Log.v(TAG, "ANGLE debug package '" + anglePkgName + "' not installed");
                 return false;
             }
         }
         if (angleInfo == null) {
-            String anglePkgName2 = getAnglePackageName(pm);
+            String anglePkgName2 = getAnglePackageName(packageManager);
             if (TextUtils.isEmpty(anglePkgName2)) {
                 Log.v(TAG, "Failed to find ANGLE package.");
                 return false;
             }
             Log.v(TAG, "ANGLE package enabled: " + anglePkgName2);
             try {
-                angleInfo = pm.getApplicationInfo(anglePkgName2, 1048576);
+                angleInfo = packageManager.getApplicationInfo(anglePkgName2, 1048576);
             } catch (PackageManager.NameNotFoundException e2) {
                 Log.v(TAG, "ANGLE package '" + anglePkgName2 + "' not installed");
                 return false;
@@ -460,7 +408,13 @@ public class GraphicsEnvironment {
         String abi = chooseAbi(angleInfo);
         String paths = angleInfo.nativeLibraryDir + File.pathSeparator + angleInfo.sourceDir + "!/lib/" + abi;
         String[] features = getAngleEglFeatures(context, bundle);
-        setAngleInfo(paths, packageName, "angle", features);
+        nativeSetAngleInfo(paths, false, packageName, features);
+        return true;
+    }
+
+    private boolean setupAngleFromSystem(Context context, Bundle bundle, String packageName) {
+        String[] features = getAngleEglFeatures(context, bundle);
+        nativeSetAngleInfo("system", false, packageName, features);
         return true;
     }
 
@@ -477,50 +431,25 @@ public class GraphicsEnvironment {
         }
     }
 
-    private boolean setupAndUseAngle(Context context, String packageName) {
-        if (!setupAngle(context, null, context.getPackageManager(), packageName)) {
-            Log.v(TAG, "Package '" + packageName + "' should not use ANGLE");
-            return false;
-        }
-        boolean useAngle = getShouldUseAngle(packageName);
-        Log.v(TAG, "Package '" + packageName + "' should use ANGLE = '" + useAngle + "'");
-        return useAngle;
-    }
-
     public void showAngleInUseDialogBox(Context context) {
-        String packageName = context.getPackageName();
-        if (shouldShowAngleInUseDialogBox(context) && setupAndUseAngle(context, packageName)) {
-            Intent intent = new Intent(ACTION_ANGLE_FOR_ANDROID_TOAST_MESSAGE);
-            String anglePkg = getAnglePackageName(context.getPackageManager());
-            intent.setPackage(anglePkg);
-            context.sendOrderedBroadcast(intent, null, new BroadcastReceiver() { // from class: android.os.GraphicsEnvironment.1
-                AnonymousClass1() {
-                }
-
-                @Override // android.content.BroadcastReceiver
-                public void onReceive(Context context2, Intent intent2) {
-                    Bundle results = getResultExtras(true);
-                    String toastMsg = results.getString(GraphicsEnvironment.INTENT_KEY_A4A_TOAST_MESSAGE);
-                    Toast toast = Toast.makeText(context2, toastMsg, 1);
-                    toast.show();
-                }
-            }, null, -1, null, null);
+        if (!shouldShowAngleInUseDialogBox(context) || !this.mShouldUseAngle) {
+            return;
         }
-    }
-
-    /* renamed from: android.os.GraphicsEnvironment$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        AnonymousClass1() {
+        Intent intent = new Intent(ACTION_ANGLE_FOR_ANDROID_TOAST_MESSAGE);
+        String anglePkg = getAnglePackageName(context.getPackageManager());
+        if (anglePkg.isEmpty()) {
+            return;
         }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context2, Intent intent2) {
-            Bundle results = getResultExtras(true);
-            String toastMsg = results.getString(GraphicsEnvironment.INTENT_KEY_A4A_TOAST_MESSAGE);
-            Toast toast = Toast.makeText(context2, toastMsg, 1);
-            toast.show();
-        }
+        intent.setPackage(anglePkg);
+        context.sendOrderedBroadcast(intent, null, new BroadcastReceiver() { // from class: android.os.GraphicsEnvironment.1
+            @Override // android.content.BroadcastReceiver
+            public void onReceive(Context context2, Intent intent2) {
+                Bundle results = getResultExtras(true);
+                String toastMsg = results.getString(GraphicsEnvironment.INTENT_KEY_A4A_TOAST_MESSAGE);
+                Toast toast = Toast.makeText(context2, toastMsg, 1);
+                toast.show();
+            }
+        }, null, -1, null, null);
     }
 
     private String[] getAngleEglFeatures(Context context, Bundle coreSettings) {
@@ -528,12 +457,10 @@ public class GraphicsEnvironment {
             return null;
         }
         List<String> featuresLists = getGlobalSettingsString(context.getContentResolver(), coreSettings, Settings.Global.ANGLE_EGL_FEATURES);
-        int size = featuresLists.size();
-        int i = this.mAngleOptInIndex;
-        if (size <= i) {
+        if (featuresLists.size() <= this.mAngleOptInIndex) {
             return null;
         }
-        return featuresLists.get(i).split(":");
+        return featuresLists.get(this.mAngleOptInIndex).split(":");
     }
 
     private String chooseDriverInternal(Bundle coreSettings, ApplicationInfo ai) {
@@ -556,47 +483,45 @@ public class GraphicsEnvironment {
             case 1:
                 Log.v(TAG, "All apps opt in to use updatable production driver.");
                 if (hasProductionDriver) {
-                    return productionDriver;
+                    break;
                 }
-                return null;
+                break;
             case 2:
                 Log.v(TAG, "All apps opt in to use updatable prerelease driver.");
                 if (hasPrereleaseDriver && enablePrereleaseDriver) {
-                    return prereleaseDriver;
+                    break;
                 }
-                return null;
+                break;
             case 3:
                 Log.v(TAG, "The updatable driver is turned off on this device.");
-                return null;
+                break;
             default:
                 String appPackageName = ai.packageName;
                 if (getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRODUCTION_OPT_OUT_APPS).contains(appPackageName)) {
                     Log.v(TAG, "App opts out for updatable production driver.");
-                    return null;
-                }
-                if (getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRERELEASE_OPT_IN_APPS).contains(appPackageName)) {
+                    break;
+                } else if (getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRERELEASE_OPT_IN_APPS).contains(appPackageName)) {
                     Log.v(TAG, "App opts in for updatable prerelease driver.");
                     if (hasPrereleaseDriver && enablePrereleaseDriver) {
-                        return prereleaseDriver;
+                        break;
                     }
-                    return null;
-                }
-                if (!hasProductionDriver) {
+                } else if (!hasProductionDriver) {
                     Log.v(TAG, "Updatable production driver is not supported on the device.");
-                    return null;
+                    break;
+                } else {
+                    boolean isOptIn = getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRODUCTION_OPT_IN_APPS).contains(appPackageName);
+                    List<String> allowlist = getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRODUCTION_ALLOWLIST);
+                    if (!isOptIn && allowlist.indexOf("*") != 0 && !allowlist.contains(appPackageName)) {
+                        Log.v(TAG, "App is not on the allowlist for updatable production driver.");
+                        break;
+                    } else if (!isOptIn && getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRODUCTION_DENYLIST).contains(appPackageName)) {
+                        Log.v(TAG, "App is on the denylist for updatable production driver.");
+                        break;
+                    }
                 }
-                boolean isOptIn = getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRODUCTION_OPT_IN_APPS).contains(appPackageName);
-                List<String> allowlist = getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRODUCTION_ALLOWLIST);
-                if (!isOptIn && allowlist.indexOf("*") != 0 && !allowlist.contains(appPackageName)) {
-                    Log.v(TAG, "App is not on the allowlist for updatable production driver.");
-                    return null;
-                }
-                if (!isOptIn && getGlobalSettingsString(null, coreSettings, Settings.Global.UPDATABLE_DRIVER_PRODUCTION_DENYLIST).contains(appPackageName)) {
-                    Log.v(TAG, "App is on the denylist for updatable production driver.");
-                    return null;
-                }
-                return productionDriver;
+                break;
         }
+        return null;
     }
 
     private boolean chooseDriver(Context context, Bundle coreSettings, PackageManager pm, String packageName, ApplicationInfo ai) {

@@ -1,6 +1,6 @@
 package android.nearby;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class Enums {
     public static final int NEARBY_NETWORK_MEDIUM_BLE = 1;
     public static final int NEARBY_NETWORK_MEDIUM_BLUETOOTH = 2;

@@ -16,18 +16,17 @@ public final class SavedDatasetsInfo {
     private final String mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Type {
     }
 
     public SavedDatasetsInfo(String type, int count) {
         this.mType = type;
-        if (!Objects.equals(type, "other") && !Objects.equals(type, "passwords")) {
-            throw new IllegalArgumentException("type was " + type + " but must be one of: TYPE_OTHER(other), TYPE_PASSWORDS(passwords" + NavigationBarInflaterView.KEY_CODE_END);
+        if (!Objects.equals(this.mType, "other") && !Objects.equals(this.mType, TYPE_PASSWORDS)) {
+            throw new IllegalArgumentException("type was " + this.mType + " but must be one of: TYPE_OTHER(other), TYPE_PASSWORDS(" + TYPE_PASSWORDS + NavigationBarInflaterView.KEY_CODE_END);
         }
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mType);
         this.mCount = count;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, count, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mCount, "from", 0L);
     }
 
     public String getType() {

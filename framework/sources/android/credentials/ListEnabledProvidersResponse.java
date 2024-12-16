@@ -9,24 +9,19 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class ListEnabledProvidersResponse implements Parcelable {
     public static final Parcelable.Creator<ListEnabledProvidersResponse> CREATOR = new Parcelable.Creator<ListEnabledProvidersResponse>() { // from class: android.credentials.ListEnabledProvidersResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ListEnabledProvidersResponse createFromParcel(Parcel in) {
             return new ListEnabledProvidersResponse(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ListEnabledProvidersResponse[] newArray(int size) {
             return new ListEnabledProvidersResponse[size];
         }
     };
     private final List<String> mProviders;
-
-    /* synthetic */ ListEnabledProvidersResponse(Parcel parcel, ListEnabledProvidersResponseIA listEnabledProvidersResponseIA) {
-        this(parcel);
-    }
 
     public static ListEnabledProvidersResponse create(List<String> providers) {
         Objects.requireNonNull(providers, "providers must not be null");
@@ -40,23 +35,6 @@ public final class ListEnabledProvidersResponse implements Parcelable {
 
     private ListEnabledProvidersResponse(Parcel in) {
         this.mProviders = in.createStringArrayList();
-    }
-
-    /* renamed from: android.credentials.ListEnabledProvidersResponse$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ListEnabledProvidersResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ListEnabledProvidersResponse createFromParcel(Parcel in) {
-            return new ListEnabledProvidersResponse(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ListEnabledProvidersResponse[] newArray(int size) {
-            return new ListEnabledProvidersResponse[size];
-        }
     }
 
     @Override // android.os.Parcelable

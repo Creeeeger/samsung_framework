@@ -5,7 +5,7 @@ import com.android.internal.logging.InstanceId;
 import com.android.internal.logging.UiEventLogger;
 import com.android.internal.logging.nano.MetricsProto;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ChooserActivityLogger {
     InstanceId getInstanceId();
 
@@ -47,7 +47,6 @@ public interface ChooserActivityLogger {
         log(SharesheetStandardEvent.SHARESHEET_EMPTY_DIRECT_SHARE_ROW, getInstanceId());
     }
 
-    /* loaded from: classes4.dex */
     public enum SharesheetStartedEvent implements UiEventLogger.UiEventEnum {
         SHARE_STARTED(228);
 
@@ -63,7 +62,6 @@ public interface ChooserActivityLogger {
         }
     }
 
-    /* loaded from: classes4.dex */
     public enum SharesheetTargetSelectedEvent implements UiEventLogger.UiEventEnum {
         INVALID(0),
         SHARESHEET_SERVICE_TARGET_SELECTED(232),
@@ -104,7 +102,6 @@ public interface ChooserActivityLogger {
         }
     }
 
-    /* loaded from: classes4.dex */
     public enum SharesheetStandardEvent implements UiEventLogger.UiEventEnum {
         INVALID(0),
         SHARESHEET_TRIGGERED(227),
@@ -114,7 +111,7 @@ public interface ChooserActivityLogger {
         SHARESHEET_APP_LOAD_COMPLETE(322),
         SHARESHEET_DIRECT_LOAD_COMPLETE(323),
         SHARESHEET_DIRECT_LOAD_TIMEOUT(324),
-        SHARESHEET_APP_SHARE_RANKING_TIMEOUT(MetricsProto.MetricsEvent.NOTIFICATION_SNOOZED),
+        SHARESHEET_APP_SHARE_RANKING_TIMEOUT(831),
         SHARESHEET_EMPTY_DIRECT_SHARE_ROW(MetricsProto.MetricsEvent.CARRIER_DEMO_MODE_PASSWORD);
 
         private final int mId;
@@ -201,22 +198,7 @@ public interface ChooserActivityLogger {
                 break;
         }
         switch (c) {
-            case 0:
-                return 1;
-            case 1:
-                return 2;
-            case 2:
-                return 3;
-            case 3:
-                return 4;
-            case 4:
-                return 5;
-            case 5:
-                return 6;
-            case 6:
-                return 7;
-            default:
-                return 0;
         }
+        return 0;
     }
 }

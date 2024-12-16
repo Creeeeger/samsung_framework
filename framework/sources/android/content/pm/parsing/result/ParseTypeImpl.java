@@ -16,10 +16,11 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
     public static final boolean DEBUG_LOG_ON_ERROR = false;
     public static final boolean DEBUG_THROW_ALL_ERRORS = false;
     private static final String TAG = "ParseTypeImpl";
-    private ParseInput.Callback mCallback;
+    private final ParseInput.Callback mCallback;
     private String mErrorMessage;
     private Exception mException;
     private String mPackageName;
+    private String mPackageNameForAudit;
     private Object mResult;
     private int mErrorCode = 1;
     private ArrayMap<Long, String> mDeferredErrors = null;
@@ -34,7 +35,7 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
         });
     }
 
-    public static /* synthetic */ boolean lambda$forParsingWithoutPlatformCompat$0(long changeId, String packageName, int targetSdkVersion) {
+    static /* synthetic */ boolean lambda$forParsingWithoutPlatformCompat$0(long changeId, String packageName, int targetSdkVersion) {
         int gateSdkVersion = ParseInput.DeferredError.getTargetSdkForChange(changeId);
         return gateSdkVersion != -1 && targetSdkVersion > gateSdkVersion;
     }
@@ -49,7 +50,7 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
         });
     }
 
-    public static /* synthetic */ boolean lambda$forDefaultParsing$1(IPlatformCompat platformCompat, long changeId, String packageName, int targetSdkVersion) {
+    static /* synthetic */ boolean lambda$forDefaultParsing$1(IPlatformCompat platformCompat, long changeId, String packageName, int targetSdkVersion) {
         ApplicationInfo appInfo = new ApplicationInfo();
         appInfo.packageName = packageName;
         appInfo.targetSdkVersion = targetSdkVersion;
@@ -70,9 +71,9 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
         this.mErrorCode = 1;
         this.mErrorMessage = null;
         this.mException = null;
-        ArrayMap<Long, String> arrayMap = this.mDeferredErrors;
-        if (arrayMap != null) {
-            arrayMap.erase();
+        this.mPackageNameForAudit = null;
+        if (this.mDeferredErrors != null) {
+            this.mDeferredErrors.erase();
         }
         this.mTargetSdkVersion = -1;
         return this;
@@ -90,8 +91,7 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
     @Override // android.content.pm.parsing.result.ParseInput
     public ParseResult<?> deferError(String parseError, long deferredError) {
         if (this.mTargetSdkVersion != -1) {
-            ArrayMap<Long, String> arrayMap = this.mDeferredErrors;
-            if (arrayMap != null && arrayMap.containsKey(Long.valueOf(deferredError))) {
+            if (this.mDeferredErrors != null && this.mDeferredErrors.containsKey(Long.valueOf(deferredError))) {
                 return success(null);
             }
             if (this.mCallback.isChangeEnabled(deferredError, this.mPackageName, this.mTargetSdkVersion)) {
@@ -187,5 +187,15 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
     @Override // android.content.pm.parsing.result.ParseResult
     public Exception getException() {
         return this.mException;
+    }
+
+    @Override // android.content.pm.parsing.result.ParseResult
+    public String getPackageNameForAudit() {
+        return this.mPackageNameForAudit;
+    }
+
+    @Override // android.content.pm.parsing.result.ParseInput, android.content.pm.parsing.result.ParseResult
+    public void setPackageNameForAudit(String packageName) {
+        this.mPackageNameForAudit = packageName;
     }
 }

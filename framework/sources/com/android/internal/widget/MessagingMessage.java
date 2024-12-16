@@ -11,17 +11,19 @@ import java.util.Objects;
 public interface MessagingMessage extends MessagingLinearLayout.MessagingChild {
     public static final String IMAGE_MIME_TYPE_PREFIX = "image/";
 
+    void finalizeInflate();
+
     MessagingMessageState getState();
 
     int getVisibility();
 
     void setVisibility(int i);
 
-    static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m, ImageResolver resolver) {
+    static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m, ImageResolver resolver, boolean usePrecomputedText) {
         if (hasImage(m) && !ActivityManager.isLowRamDeviceStatic()) {
-            return MessagingImageMessage.createMessage(layout, m, resolver);
+            return MessagingImageMessage.createMessage(layout, m, resolver, usePrecomputedText);
         }
-        return MessagingTextMessage.createMessage(layout, m);
+        return MessagingTextMessage.createMessage(layout, m, usePrecomputedText);
     }
 
     static void dropCache() {
@@ -33,7 +35,7 @@ public interface MessagingMessage extends MessagingLinearLayout.MessagingChild {
         return (m.getDataUri() == null || m.getDataMimeType() == null || !m.getDataMimeType().startsWith(IMAGE_MIME_TYPE_PREFIX)) ? false : true;
     }
 
-    default boolean setMessage(Notification.MessagingStyle.Message message) {
+    default boolean setMessage(Notification.MessagingStyle.Message message, boolean usePrecomputedText) {
         getState().setMessage(message);
         return true;
     }
@@ -94,6 +96,7 @@ public interface MessagingMessage extends MessagingLinearLayout.MessagingChild {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* synthetic */ default void lambda$hideAnimated$0() {
         setIsHidingAnimated(false);
     }

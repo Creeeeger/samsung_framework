@@ -985,12 +985,11 @@ public class MimeIconUtils {
     public static ContentResolver.MimeTypeInfo getTypeInfo(String mimeType) {
         ContentResolver.MimeTypeInfo res;
         String mimeType2 = mimeType.toLowerCase(Locale.US);
-        ArrayMap<String, ContentResolver.MimeTypeInfo> arrayMap = sCache;
-        synchronized (arrayMap) {
-            res = arrayMap.get(mimeType2);
+        synchronized (sCache) {
+            res = sCache.get(mimeType2);
             if (res == null) {
                 res = buildTypeInfo(mimeType2);
-                arrayMap.put(mimeType2, res);
+                sCache.put(mimeType2, res);
             }
         }
         return res;

@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsEcbmListener extends IInterface {
     void enteredECBM() throws RemoteException;
 
     void exitedECBM() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsEcbmListener {
         @Override // com.android.ims.internal.IImsEcbmListener
         public void enteredECBM() throws RemoteException {
@@ -28,7 +27,6 @@ public interface IImsEcbmListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsEcbmListener {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsEcbmListener";
         static final int TRANSACTION_enteredECBM = 1;
@@ -75,27 +73,23 @@ public interface IImsEcbmListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    enteredECBM();
+                    return true;
+                case 2:
+                    exitedECBM();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            enteredECBM();
-                            return true;
-                        case 2:
-                            exitedECBM();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsEcbmListener {
+        private static class Proxy implements IImsEcbmListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class VirtualMouseRelativeEvent implements Parcelable {
     public static final Parcelable.Creator<VirtualMouseRelativeEvent> CREATOR = new Parcelable.Creator<VirtualMouseRelativeEvent>() { // from class: android.hardware.input.VirtualMouseRelativeEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualMouseRelativeEvent createFromParcel(Parcel source) {
             return new VirtualMouseRelativeEvent(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualMouseRelativeEvent[] newArray(int size) {
             return new VirtualMouseRelativeEvent[size];
@@ -24,14 +23,6 @@ public final class VirtualMouseRelativeEvent implements Parcelable {
     private final long mEventTimeNanos;
     private final float mRelativeX;
     private final float mRelativeY;
-
-    /* synthetic */ VirtualMouseRelativeEvent(float f, float f2, long j, VirtualMouseRelativeEventIA virtualMouseRelativeEventIA) {
-        this(f, f2, j);
-    }
-
-    /* synthetic */ VirtualMouseRelativeEvent(Parcel parcel, VirtualMouseRelativeEventIA virtualMouseRelativeEventIA) {
-        this(parcel);
-    }
 
     private VirtualMouseRelativeEvent(float relativeX, float relativeY, long eventTimeNanos) {
         this.mRelativeX = relativeX;
@@ -57,6 +48,10 @@ public final class VirtualMouseRelativeEvent implements Parcelable {
         return 0;
     }
 
+    public String toString() {
+        return "VirtualMouseRelativeEvent( x=" + this.mRelativeX + " y=" + this.mRelativeY + " eventTime(ns)=" + this.mEventTimeNanos;
+    }
+
     public float getRelativeX() {
         return this.mRelativeX;
     }
@@ -69,7 +64,6 @@ public final class VirtualMouseRelativeEvent implements Parcelable {
         return this.mEventTimeNanos;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private long mEventTimeNanos = 0;
         private float mRelativeX;
@@ -95,23 +89,6 @@ public final class VirtualMouseRelativeEvent implements Parcelable {
             }
             this.mEventTimeNanos = eventTimeNanos;
             return this;
-        }
-    }
-
-    /* renamed from: android.hardware.input.VirtualMouseRelativeEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VirtualMouseRelativeEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualMouseRelativeEvent createFromParcel(Parcel source) {
-            return new VirtualMouseRelativeEvent(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualMouseRelativeEvent[] newArray(int size) {
-            return new VirtualMouseRelativeEvent[size];
         }
     }
 }

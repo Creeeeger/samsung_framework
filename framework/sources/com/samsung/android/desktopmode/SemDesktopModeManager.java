@@ -12,7 +12,7 @@ import com.samsung.android.desktopmode.IDesktopModeLauncher;
 import com.samsung.android.desktopmode.IDesktopModeListener;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemDesktopModeManager {
     public static final String LAUNCHER_PACKAGE = "com.sec.android.app.desktoplauncher";
     public static final String UI_SERVICE_PACKAGE = "com.sec.android.desktopmode.uiservice";
@@ -22,27 +22,22 @@ public final class SemDesktopModeManager {
     private Map<DesktopModeListener, DesktopModeListenerDelegate> mDesktopModeListeners = null;
     private Map<DesktopModeBlocker, DesktopModeBlockerDelegate> mBlockers = null;
 
-    /* loaded from: classes5.dex */
     public interface DesktopModeBlocker {
         String onBlocked();
     }
 
-    /* loaded from: classes5.dex */
     public interface DesktopModeListener {
         void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState);
     }
 
     @Deprecated
-    /* loaded from: classes5.dex */
     public interface EventListener {
         void onDesktopDockConnectionChanged(boolean z);
 
         void onDesktopModeChanged(boolean z);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class DesktopModeListenerDelegate extends IDesktopModeListener.Stub {
+    private static class DesktopModeListenerDelegate extends IDesktopModeListener.Stub {
         private DesktopModeListener mListener;
 
         DesktopModeListenerDelegate(DesktopModeListener listener) {
@@ -74,9 +69,7 @@ public final class SemDesktopModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class DesktopModeBlockerDelegate extends IDesktopModeBlocker.Stub {
+    private static class DesktopModeBlockerDelegate extends IDesktopModeBlocker.Stub {
         private DesktopModeBlocker mBlocker;
 
         DesktopModeBlockerDelegate(DesktopModeBlocker blocker) {
@@ -152,11 +145,10 @@ public final class SemDesktopModeManager {
                 Log.w(TAG, "unregisterListener: Listener is null");
                 return;
             }
-            Map<DesktopModeListener, DesktopModeListenerDelegate> map = this.mDesktopModeListeners;
-            if (map == null) {
+            if (this.mDesktopModeListeners == null) {
                 return;
             }
-            DesktopModeListenerDelegate delegate = map.remove(listener);
+            DesktopModeListenerDelegate delegate = this.mDesktopModeListeners.remove(listener);
             if (delegate == null) {
                 Log.w(TAG, "unregisterListener: " + listener + " already unregistered");
                 return;
@@ -230,7 +222,6 @@ public final class SemDesktopModeManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     private static class IDesktopModeLauncherImpl extends IDesktopModeLauncher.Stub {
         OnMessageReceivedListener mLauncher;
 
@@ -240,15 +231,13 @@ public final class SemDesktopModeManager {
 
         @Override // com.samsung.android.desktopmode.IDesktopModeLauncher
         public Bundle sendMessage(Bundle message) throws RemoteException {
-            OnMessageReceivedListener onMessageReceivedListener = this.mLauncher;
-            if (onMessageReceivedListener != null) {
-                return onMessageReceivedListener.onMessageReceived(message);
+            if (this.mLauncher != null) {
+                return this.mLauncher.onMessageReceived(message);
             }
             return null;
         }
     }
 
-    /* loaded from: classes5.dex */
     public interface OnMessageReceivedListener {
         default Bundle onMessageReceived(Bundle message) {
             return null;
@@ -306,11 +295,10 @@ public final class SemDesktopModeManager {
                 Log.w(TAG, "unregisterBlocker: DesktopModeBlocker is null");
                 return;
             }
-            Map<DesktopModeBlocker, DesktopModeBlockerDelegate> map = this.mBlockers;
-            if (map == null) {
+            if (this.mBlockers == null) {
                 return;
             }
-            DesktopModeBlockerDelegate delegate = map.remove(blocker);
+            DesktopModeBlockerDelegate delegate = this.mBlockers.remove(blocker);
             if (delegate == null) {
                 Log.w(TAG, "unregisterBlocker: " + blocker + " already unregistered");
                 return;

@@ -15,7 +15,6 @@ public interface IWindowId extends IInterface {
 
     void unregisterFocusObserver(IWindowFocusObserver iWindowFocusObserver) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWindowId {
         @Override // android.view.IWindowId
         public void registerFocusObserver(IWindowFocusObserver observer) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IWindowId extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWindowId {
         public static final String DESCRIPTOR = "android.view.IWindowId";
         static final int TRANSACTION_isFocused = 3;
@@ -86,37 +84,34 @@ public interface IWindowId extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IWindowFocusObserver _arg0 = IWindowFocusObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerFocusObserver(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IWindowFocusObserver _arg02 = IWindowFocusObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterFocusObserver(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _result = isFocused();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IWindowFocusObserver _arg0 = IWindowFocusObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerFocusObserver(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IWindowFocusObserver _arg02 = IWindowFocusObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterFocusObserver(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _result = isFocused();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWindowId {
+        private static class Proxy implements IWindowId {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

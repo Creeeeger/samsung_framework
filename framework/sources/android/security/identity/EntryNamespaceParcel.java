@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class EntryNamespaceParcel implements Parcelable {
     public static final Parcelable.Creator<EntryNamespaceParcel> CREATOR = new Parcelable.Creator<EntryNamespaceParcel>() { // from class: android.security.identity.EntryNamespaceParcel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EntryNamespaceParcel createFromParcel(Parcel _aidl_source) {
             EntryNamespaceParcel _aidl_out = new EntryNamespaceParcel();
@@ -17,6 +15,7 @@ public class EntryNamespaceParcel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EntryNamespaceParcel[] newArray(int _aidl_size) {
             return new EntryNamespaceParcel[_aidl_size];
@@ -24,25 +23,6 @@ public class EntryNamespaceParcel implements Parcelable {
     };
     public EntryParcel[] entries;
     public String namespaceName;
-
-    /* renamed from: android.security.identity.EntryNamespaceParcel$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EntryNamespaceParcel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EntryNamespaceParcel createFromParcel(Parcel _aidl_source) {
-            EntryNamespaceParcel _aidl_out = new EntryNamespaceParcel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EntryNamespaceParcel[] newArray(int _aidl_size) {
-            return new EntryNamespaceParcel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

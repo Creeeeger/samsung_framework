@@ -11,20 +11,20 @@ import com.android.internal.app.ChooserActivity;
 import com.android.internal.widget.GridLayoutManager;
 import com.android.internal.widget.RecyclerView;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ChooserMultiProfilePagerAdapter extends AbstractMultiProfilePagerAdapter {
     private static final int SINGLE_CELL_SPAN_SIZE = 1;
     private int mBottomOffset;
     private final ChooserProfileDescriptor[] mItems;
     private int mMaxTargetsPerRow;
 
-    public ChooserMultiProfilePagerAdapter(Context context, ChooserActivity.ChooserGridAdapter adapter, AbstractMultiProfilePagerAdapter.EmptyStateProvider emptyStateProvider, AbstractMultiProfilePagerAdapter.QuietModeManager quietModeManager, UserHandle workProfileUserHandle, UserHandle cloneUserHandle, int maxTargetsPerRow) {
+    ChooserMultiProfilePagerAdapter(Context context, ChooserActivity.ChooserGridAdapter adapter, AbstractMultiProfilePagerAdapter.EmptyStateProvider emptyStateProvider, AbstractMultiProfilePagerAdapter.QuietModeManager quietModeManager, UserHandle workProfileUserHandle, UserHandle cloneUserHandle, int maxTargetsPerRow) {
         super(context, 0, emptyStateProvider, quietModeManager, workProfileUserHandle, cloneUserHandle);
         this.mItems = new ChooserProfileDescriptor[]{createProfileDescriptor(adapter)};
         this.mMaxTargetsPerRow = maxTargetsPerRow;
     }
 
-    public ChooserMultiProfilePagerAdapter(Context context, ChooserActivity.ChooserGridAdapter personalAdapter, ChooserActivity.ChooserGridAdapter workAdapter, AbstractMultiProfilePagerAdapter.EmptyStateProvider emptyStateProvider, AbstractMultiProfilePagerAdapter.QuietModeManager quietModeManager, int defaultProfile, UserHandle workProfileUserHandle, UserHandle cloneUserHandle, int maxTargetsPerRow) {
+    ChooserMultiProfilePagerAdapter(Context context, ChooserActivity.ChooserGridAdapter personalAdapter, ChooserActivity.ChooserGridAdapter workAdapter, AbstractMultiProfilePagerAdapter.EmptyStateProvider emptyStateProvider, AbstractMultiProfilePagerAdapter.QuietModeManager quietModeManager, int defaultProfile, UserHandle workProfileUserHandle, UserHandle cloneUserHandle, int maxTargetsPerRow) {
         super(context, defaultProfile, emptyStateProvider, quietModeManager, workProfileUserHandle, cloneUserHandle);
         this.mItems = new ChooserProfileDescriptor[]{createProfileDescriptor(personalAdapter), createProfileDescriptor(workAdapter)};
         this.mMaxTargetsPerRow = maxTargetsPerRow;
@@ -52,7 +52,7 @@ public class ChooserMultiProfilePagerAdapter extends AbstractMultiProfilePagerAd
     }
 
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
-    public int getItemCount() {
+    int getItemCount() {
         return this.mItems.length;
     }
 
@@ -61,6 +61,7 @@ public class ChooserMultiProfilePagerAdapter extends AbstractMultiProfilePagerAd
         return this.mItems[pageIndex].chooserGridAdapter;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public ChooserListAdapter getListAdapterForUserHandle(UserHandle userHandle) {
         if (getPersonalListAdapter().getUserHandle().equals(userHandle) || userHandle.equals(getCloneUserHandle())) {
@@ -73,20 +74,12 @@ public class ChooserMultiProfilePagerAdapter extends AbstractMultiProfilePagerAd
     }
 
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
-    public void setupListAdapter(int pageIndex) {
+    void setupListAdapter(int pageIndex) {
         RecyclerView recyclerView = getItem(pageIndex).recyclerView;
-        ChooserActivity.ChooserGridAdapter chooserGridAdapter = getItem(pageIndex).chooserGridAdapter;
-        GridLayoutManager glm = (GridLayoutManager) recyclerView.getLayoutManager();
+        final ChooserActivity.ChooserGridAdapter chooserGridAdapter = getItem(pageIndex).chooserGridAdapter;
+        final GridLayoutManager glm = (GridLayoutManager) recyclerView.getLayoutManager();
         glm.setSpanCount(this.mMaxTargetsPerRow);
         glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() { // from class: com.android.internal.app.ChooserMultiProfilePagerAdapter.1
-            final /* synthetic */ ChooserActivity.ChooserGridAdapter val$chooserGridAdapter;
-            final /* synthetic */ GridLayoutManager val$glm;
-
-            AnonymousClass1(ChooserActivity.ChooserGridAdapter chooserGridAdapter2, GridLayoutManager glm2) {
-                chooserGridAdapter = chooserGridAdapter2;
-                glm = glm2;
-            }
-
             @Override // com.android.internal.widget.GridLayoutManager.SpanSizeLookup
             public int getSpanSize(int position) {
                 if (chooserGridAdapter.shouldCellSpan(position)) {
@@ -95,26 +88,6 @@ public class ChooserMultiProfilePagerAdapter extends AbstractMultiProfilePagerAd
                 return glm.getSpanCount();
             }
         });
-    }
-
-    /* renamed from: com.android.internal.app.ChooserMultiProfilePagerAdapter$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends GridLayoutManager.SpanSizeLookup {
-        final /* synthetic */ ChooserActivity.ChooserGridAdapter val$chooserGridAdapter;
-        final /* synthetic */ GridLayoutManager val$glm;
-
-        AnonymousClass1(ChooserActivity.ChooserGridAdapter chooserGridAdapter2, GridLayoutManager glm2) {
-            chooserGridAdapter = chooserGridAdapter2;
-            glm = glm2;
-        }
-
-        @Override // com.android.internal.widget.GridLayoutManager.SpanSizeLookup
-        public int getSpanSize(int position) {
-            if (chooserGridAdapter.shouldCellSpan(position)) {
-                return 1;
-            }
-            return glm.getSpanCount();
-        }
     }
 
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
@@ -143,16 +116,19 @@ public class ChooserMultiProfilePagerAdapter extends AbstractMultiProfilePagerAd
         return getAdapterForIndex(1).getListAdapter();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public ChooserActivity.ChooserGridAdapter getCurrentRootAdapter() {
         return getAdapterForIndex(getCurrentPage());
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public RecyclerView getActiveAdapterView() {
         return getListViewForIndex(getCurrentPage());
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public RecyclerView getInactiveAdapterView() {
         if (getCount() == 1) {
@@ -161,18 +137,17 @@ public class ChooserMultiProfilePagerAdapter extends AbstractMultiProfilePagerAd
         return getListViewForIndex(1 - getCurrentPage());
     }
 
-    public void setEmptyStateBottomOffset(int bottomOffset) {
+    void setEmptyStateBottomOffset(int bottomOffset) {
         this.mBottomOffset = bottomOffset;
     }
 
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
-    public void setupContainerPadding(View container) {
+    protected void setupContainerPadding(View container) {
         int initialBottomPadding = getContext().getResources().getDimensionPixelSize(R.dimen.resolver_empty_state_container_padding_bottom);
         container.setPadding(container.getPaddingLeft(), container.getPaddingTop(), container.getPaddingRight(), this.mBottomOffset + initialBottomPadding);
     }
 
-    /* loaded from: classes4.dex */
-    public class ChooserProfileDescriptor extends AbstractMultiProfilePagerAdapter.ProfileDescriptor {
+    class ChooserProfileDescriptor extends AbstractMultiProfilePagerAdapter.ProfileDescriptor {
         private ChooserActivity.ChooserGridAdapter chooserGridAdapter;
         private RecyclerView recyclerView;
 

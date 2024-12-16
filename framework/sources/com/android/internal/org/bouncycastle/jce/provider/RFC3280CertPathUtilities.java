@@ -60,7 +60,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /* loaded from: classes5.dex */
-public class RFC3280CertPathUtilities {
+class RFC3280CertPathUtilities {
     public static final String ANY_POLICY = "2.5.29.32.0";
     protected static final int CRL_SIGN = 6;
     protected static final int KEY_CERT_SIGN = 5;
@@ -411,14 +411,13 @@ public class RFC3280CertPathUtilities {
             throw new AnnotatedException("delta CRL has unsupported critical extensions");
         }
         try {
-            String str = ISSUING_DISTRIBUTION_POINT;
-            IssuingDistributionPoint completeidp = IssuingDistributionPoint.getInstance(CertPathValidatorUtilities.getExtensionValue(completeCRL, str));
+            IssuingDistributionPoint completeidp = IssuingDistributionPoint.getInstance(CertPathValidatorUtilities.getExtensionValue(completeCRL, ISSUING_DISTRIBUTION_POINT));
             if (pkixParams.isUseDeltasEnabled()) {
                 if (!PrincipalUtils.getIssuerPrincipal(deltaCRL).equals(PrincipalUtils.getIssuerPrincipal(completeCRL))) {
                     throw new AnnotatedException("Complete CRL issuer does not match delta CRL issuer.");
                 }
                 try {
-                    IssuingDistributionPoint deltaidp = IssuingDistributionPoint.getInstance(CertPathValidatorUtilities.getExtensionValue(deltaCRL, str));
+                    IssuingDistributionPoint deltaidp = IssuingDistributionPoint.getInstance(CertPathValidatorUtilities.getExtensionValue(deltaCRL, ISSUING_DISTRIBUTION_POINT));
                     boolean match = false;
                     if (completeidp == null) {
                         if (deltaidp == null) {
@@ -431,10 +430,9 @@ public class RFC3280CertPathUtilities {
                         throw new AnnotatedException("Issuing distribution point extension from delta CRL and complete CRL does not match.");
                     }
                     try {
-                        String str2 = AUTHORITY_KEY_IDENTIFIER;
-                        ASN1Primitive completeKeyIdentifier = CertPathValidatorUtilities.getExtensionValue(completeCRL, str2);
+                        ASN1Primitive completeKeyIdentifier = CertPathValidatorUtilities.getExtensionValue(completeCRL, AUTHORITY_KEY_IDENTIFIER);
                         try {
-                            ASN1Primitive deltaKeyIdentifier = CertPathValidatorUtilities.getExtensionValue(deltaCRL, str2);
+                            ASN1Primitive deltaKeyIdentifier = CertPathValidatorUtilities.getExtensionValue(deltaCRL, AUTHORITY_KEY_IDENTIFIER);
                             if (completeKeyIdentifier == null) {
                                 throw new AnnotatedException("CRL authority key identifier is null.");
                             }
@@ -481,7 +479,7 @@ public class RFC3280CertPathUtilities {
      */
     /* JADX WARN: Code restructure failed: missing block: B:42:0x00f3, code lost:
     
-        if (r23.hasMoreElements() == false) goto L248;
+        if (r23.hasMoreElements() == false) goto L119;
      */
     /* JADX WARN: Code restructure failed: missing block: B:45:0x00f6, code lost:
     
@@ -489,7 +487,7 @@ public class RFC3280CertPathUtilities {
      */
     /* JADX WARN: Code restructure failed: missing block: B:47:0x010c, code lost:
     
-        if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r0.getPolicyIdentifier().getId()) == false) goto L249;
+        if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r0.getPolicyIdentifier().getId()) == false) goto L120;
      */
     /* JADX WARN: Code restructure failed: missing block: B:49:0x010f, code lost:
     
@@ -497,7 +495,7 @@ public class RFC3280CertPathUtilities {
      */
     /* JADX WARN: Code restructure failed: missing block: B:52:0x0132, code lost:
     
-        if (r5.getCriticalExtensionOIDs() == null) goto L184;
+        if (r5.getCriticalExtensionOIDs() == null) goto L55;
      */
     /* JADX WARN: Code restructure failed: missing block: B:53:0x0134, code lost:
     
@@ -510,7 +508,7 @@ public class RFC3280CertPathUtilities {
      */
     /* JADX WARN: Code restructure failed: missing block: B:55:0x0152, code lost:
     
-        if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r10.getValidPolicy()) == false) goto L188;
+        if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r10.getValidPolicy()) == false) goto L59;
      */
     /* JADX WARN: Code restructure failed: missing block: B:56:0x0154, code lost:
     
@@ -563,7 +561,7 @@ public class RFC3280CertPathUtilities {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode prepareCertB(java.security.cert.CertPath r31, int r32, java.util.List[] r33, com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode r34, int r35) throws java.security.cert.CertPathValidatorException {
+    protected static com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode prepareCertB(java.security.cert.CertPath r31, int r32, java.util.List[] r33, com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode r34, int r35) throws java.security.cert.CertPathValidatorException {
         /*
             Method dump skipped, instructions count: 577
             To view this dump change 'Code comments level' option to 'DEBUG'
@@ -571,7 +569,7 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.prepareCertB(java.security.cert.CertPath, int, java.util.List[], com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode, int):com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode");
     }
 
-    public static void prepareNextCertA(CertPath certPath, int index) throws CertPathValidatorException {
+    protected static void prepareNextCertA(CertPath certPath, int index) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         try {
@@ -598,13 +596,13 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static void processCertF(CertPath certPath, int index, PKIXPolicyNode validPolicyTree, int explicitPolicy) throws CertPathValidatorException {
+    protected static void processCertF(CertPath certPath, int index, PKIXPolicyNode validPolicyTree, int explicitPolicy) throws CertPathValidatorException {
         if (explicitPolicy <= 0 && validPolicyTree == null) {
             throw new ExtCertPathValidatorException("No valid policy tree found when one expected.", null, certPath, index);
         }
     }
 
-    public static PKIXPolicyNode processCertE(CertPath certPath, int index, PKIXPolicyNode validPolicyTree) throws CertPathValidatorException {
+    protected static PKIXPolicyNode processCertE(CertPath certPath, int index, PKIXPolicyNode validPolicyTree) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         try {
@@ -618,7 +616,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static void processCertBC(CertPath certPath, int index, PKIXNameConstraintValidator nameConstraintValidator, boolean isForCRLCheck) throws CertPathValidatorException {
+    protected static void processCertBC(CertPath certPath, int index, PKIXNameConstraintValidator nameConstraintValidator, boolean isForCRLCheck) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         int n = certs.size();
@@ -675,7 +673,7 @@ public class RFC3280CertPathUtilities {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode processCertD(java.security.cert.CertPath r32, int r33, java.util.Set r34, com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode r35, java.util.List[] r36, int r37, boolean r38) throws java.security.cert.CertPathValidatorException {
+    protected static com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode processCertD(java.security.cert.CertPath r32, int r33, java.util.Set r34, com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode r35, java.util.List[] r36, int r37, boolean r38) throws java.security.cert.CertPathValidatorException {
         /*
             Method dump skipped, instructions count: 564
             To view this dump change 'Code comments level' option to 'DEBUG'
@@ -683,7 +681,7 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.processCertD(java.security.cert.CertPath, int, java.util.Set, com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode, java.util.List[], int, boolean):com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode");
     }
 
-    public static void processCertA(CertPath certPath, PKIXExtendedParameters paramsPKIX, Date validityDate, PKIXCertRevocationChecker revocationChecker, int index, PublicKey workingPublicKey, boolean verificationAlreadyPerformed, X500Name workingIssuerName, X509Certificate sign) throws CertPathValidatorException {
+    protected static void processCertA(CertPath certPath, PKIXExtendedParameters paramsPKIX, Date validityDate, PKIXCertRevocationChecker revocationChecker, int index, PublicKey workingPublicKey, boolean verificationAlreadyPerformed, X500Name workingIssuerName, X509Certificate sign) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         if (!verificationAlreadyPerformed) {
@@ -731,7 +729,7 @@ public class RFC3280CertPathUtilities {
      */
     /* JADX WARN: Code restructure failed: missing block: B:14:0x003a, code lost:
     
-        if (r5 >= r9) goto L49;
+        if (r5 >= r9) goto L19;
      */
     /* JADX WARN: Code restructure failed: missing block: B:15:0x003c, code lost:
     
@@ -741,7 +739,7 @@ public class RFC3280CertPathUtilities {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static int prepareNextCertI1(java.security.cert.CertPath r7, int r8, int r9) throws java.security.cert.CertPathValidatorException {
+    protected static int prepareNextCertI1(java.security.cert.CertPath r7, int r8, int r9) throws java.security.cert.CertPathValidatorException {
         /*
             java.util.List r0 = r7.getCertificates()
             java.lang.Object r1 = r0.get(r8)
@@ -793,7 +791,7 @@ public class RFC3280CertPathUtilities {
      */
     /* JADX WARN: Code restructure failed: missing block: B:14:0x003b, code lost:
     
-        if (r5 >= r9) goto L49;
+        if (r5 >= r9) goto L19;
      */
     /* JADX WARN: Code restructure failed: missing block: B:15:0x003d, code lost:
     
@@ -803,7 +801,7 @@ public class RFC3280CertPathUtilities {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static int prepareNextCertI2(java.security.cert.CertPath r7, int r8, int r9) throws java.security.cert.CertPathValidatorException {
+    protected static int prepareNextCertI2(java.security.cert.CertPath r7, int r8, int r9) throws java.security.cert.CertPathValidatorException {
         /*
             java.util.List r0 = r7.getCertificates()
             java.lang.Object r1 = r0.get(r8)
@@ -850,7 +848,7 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.prepareNextCertI2(java.security.cert.CertPath, int, int):int");
     }
 
-    public static void prepareNextCertG(CertPath certPath, int index, PKIXNameConstraintValidator nameConstraintValidator) throws CertPathValidatorException {
+    protected static void prepareNextCertG(CertPath certPath, int index, PKIXNameConstraintValidator nameConstraintValidator) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         NameConstraints nc = null;
@@ -897,7 +895,7 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.checkCRL(com.android.internal.org.bouncycastle.jcajce.PKIXCertRevocationCheckerParameters, com.android.internal.org.bouncycastle.asn1.x509.DistributionPoint, com.android.internal.org.bouncycastle.jcajce.PKIXExtendedParameters, java.util.Date, java.util.Date, java.security.cert.X509Certificate, java.security.cert.X509Certificate, java.security.PublicKey, com.android.internal.org.bouncycastle.jce.provider.CertStatus, com.android.internal.org.bouncycastle.jce.provider.ReasonsMask, java.util.List, com.android.internal.org.bouncycastle.jcajce.util.JcaJceHelper):void");
     }
 
-    public static void checkCRLs(PKIXCertRevocationCheckerParameters params, PKIXExtendedParameters paramsPKIX, Date currentDate, Date validityDate, X509Certificate cert, X509Certificate sign, PublicKey workingPublicKey, List certPathCerts, JcaJceHelper helper) throws AnnotatedException, RecoverableCertPathValidatorException {
+    protected static void checkCRLs(PKIXCertRevocationCheckerParameters params, PKIXExtendedParameters paramsPKIX, Date currentDate, Date validityDate, X509Certificate cert, X509Certificate sign, PublicKey workingPublicKey, List certPathCerts, JcaJceHelper helper) throws AnnotatedException, RecoverableCertPathValidatorException {
         int i;
         CertStatus certStatus;
         CertStatus certStatus2;
@@ -1028,7 +1026,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static int prepareNextCertJ(CertPath certPath, int index, int inhibitAnyPolicy) throws CertPathValidatorException {
+    protected static int prepareNextCertJ(CertPath certPath, int index, int inhibitAnyPolicy) throws CertPathValidatorException {
         int _inhibitAnyPolicy;
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1043,7 +1041,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static void prepareNextCertK(CertPath certPath, int index) throws CertPathValidatorException {
+    protected static void prepareNextCertK(CertPath certPath, int index) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         try {
@@ -1060,7 +1058,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static int prepareNextCertL(CertPath certPath, int index, int maxPathLength) throws CertPathValidatorException {
+    protected static int prepareNextCertL(CertPath certPath, int index, int maxPathLength) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         if (!CertPathValidatorUtilities.isSelfIssued(cert)) {
@@ -1072,7 +1070,7 @@ public class RFC3280CertPathUtilities {
         return maxPathLength;
     }
 
-    public static int prepareNextCertM(CertPath certPath, int index, int maxPathLength) throws CertPathValidatorException {
+    protected static int prepareNextCertM(CertPath certPath, int index, int maxPathLength) throws CertPathValidatorException {
         BigInteger _pathLengthConstraint;
         int _plc;
         List certs = certPath.getCertificates();
@@ -1088,7 +1086,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static void prepareNextCertN(CertPath certPath, int index) throws CertPathValidatorException {
+    protected static void prepareNextCertN(CertPath certPath, int index) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         boolean[] keyUsage = cert.getKeyUsage();
@@ -1099,7 +1097,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static void prepareNextCertO(CertPath certPath, int index, Set criticalExtensions, List pathCheckers) throws CertPathValidatorException {
+    protected static void prepareNextCertO(CertPath certPath, int index, Set criticalExtensions, List pathCheckers) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         Iterator tmpIter = pathCheckers.iterator();
@@ -1115,7 +1113,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static int prepareNextCertH1(CertPath certPath, int index, int explicitPolicy) {
+    protected static int prepareNextCertH1(CertPath certPath, int index, int explicitPolicy) {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         if (!CertPathValidatorUtilities.isSelfIssued(cert) && explicitPolicy != 0) {
@@ -1124,7 +1122,7 @@ public class RFC3280CertPathUtilities {
         return explicitPolicy;
     }
 
-    public static int prepareNextCertH2(CertPath certPath, int index, int policyMapping) {
+    protected static int prepareNextCertH2(CertPath certPath, int index, int policyMapping) {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         if (!CertPathValidatorUtilities.isSelfIssued(cert) && policyMapping != 0) {
@@ -1133,7 +1131,7 @@ public class RFC3280CertPathUtilities {
         return policyMapping;
     }
 
-    public static int prepareNextCertH3(CertPath certPath, int index, int inhibitAnyPolicy) {
+    protected static int prepareNextCertH3(CertPath certPath, int index, int inhibitAnyPolicy) {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         if (!CertPathValidatorUtilities.isSelfIssued(cert) && inhibitAnyPolicy != 0) {
@@ -1142,14 +1140,14 @@ public class RFC3280CertPathUtilities {
         return inhibitAnyPolicy;
     }
 
-    public static int wrapupCertA(int explicitPolicy, X509Certificate cert) {
+    protected static int wrapupCertA(int explicitPolicy, X509Certificate cert) {
         if (!CertPathValidatorUtilities.isSelfIssued(cert) && explicitPolicy != 0) {
             return explicitPolicy - 1;
         }
         return explicitPolicy;
     }
 
-    public static int wrapupCertB(CertPath certPath, int index, int explicitPolicy) throws CertPathValidatorException {
+    protected static int wrapupCertB(CertPath certPath, int index, int explicitPolicy) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         try {
@@ -1179,7 +1177,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static void wrapupCertF(CertPath certPath, int index, List pathCheckers, Set criticalExtensions) throws CertPathValidatorException {
+    protected static void wrapupCertF(CertPath certPath, int index, List pathCheckers, Set criticalExtensions) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
         Iterator tmpIter = pathCheckers.iterator();
@@ -1197,7 +1195,7 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    public static PKIXPolicyNode wrapupCertG(CertPath certPath, PKIXExtendedParameters paramsPKIX, Set userInitialPolicySet, int index, List[] policyNodes, PKIXPolicyNode validPolicyTree, Set acceptablePolicies) throws CertPathValidatorException {
+    protected static PKIXPolicyNode wrapupCertG(CertPath certPath, PKIXExtendedParameters paramsPKIX, Set userInitialPolicySet, int index, List[] policyNodes, PKIXPolicyNode validPolicyTree, Set acceptablePolicies) throws CertPathValidatorException {
         PKIXPolicyNode validPolicyTree2;
         int n = certPath.getCertificates().size();
         if (validPolicyTree == null) {

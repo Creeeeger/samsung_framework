@@ -5,17 +5,16 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemProcessUsageStats implements Parcelable {
     public static final Parcelable.Creator<SemProcessUsageStats> CREATOR = new Parcelable.Creator<SemProcessUsageStats>() { // from class: com.samsung.android.sdhms.SemProcessUsageStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemProcessUsageStats createFromParcel(Parcel in) {
             return new SemProcessUsageStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemProcessUsageStats[] newArray(int size) {
             return new SemProcessUsageStats[size];
@@ -53,7 +52,6 @@ public class SemProcessUsageStats implements Parcelable {
         return this.procUsageList;
     }
 
-    /* loaded from: classes5.dex */
     public static final class Builder {
         private long cpuTime;
         private long endTime;
@@ -114,23 +112,6 @@ public class SemProcessUsageStats implements Parcelable {
         this.procUsageList = in.createTypedArrayList(ProcessUsageHistoryItem.CREATOR);
     }
 
-    /* renamed from: com.samsung.android.sdhms.SemProcessUsageStats$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemProcessUsageStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemProcessUsageStats createFromParcel(Parcel in) {
-            return new SemProcessUsageStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemProcessUsageStats[] newArray(int size) {
-            return new SemProcessUsageStats[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -145,17 +126,15 @@ public class SemProcessUsageStats implements Parcelable {
         parcel.writeTypedList(this.procUsageList);
     }
 
-    /* loaded from: classes5.dex */
     public static class ProcessUsageHistoryItem implements Parcelable {
         public static final Parcelable.Creator<ProcessUsageHistoryItem> CREATOR = new Parcelable.Creator<ProcessUsageHistoryItem>() { // from class: com.samsung.android.sdhms.SemProcessUsageStats.ProcessUsageHistoryItem.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ProcessUsageHistoryItem createFromParcel(Parcel in) {
                 return new ProcessUsageHistoryItem(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ProcessUsageHistoryItem[] newArray(int size) {
                 return new ProcessUsageHistoryItem[size];
@@ -189,7 +168,6 @@ public class SemProcessUsageStats implements Parcelable {
             return this.usage;
         }
 
-        /* loaded from: classes5.dex */
         public static final class Builder {
             private int pid;
             private String processName;
@@ -233,23 +211,6 @@ public class SemProcessUsageStats implements Parcelable {
             this.uid = in.readInt();
             this.pid = in.readInt();
             this.usage = in.readLong();
-        }
-
-        /* renamed from: com.samsung.android.sdhms.SemProcessUsageStats$ProcessUsageHistoryItem$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ProcessUsageHistoryItem> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ProcessUsageHistoryItem createFromParcel(Parcel in) {
-                return new ProcessUsageHistoryItem(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ProcessUsageHistoryItem[] newArray(int size) {
-                return new ProcessUsageHistoryItem[size];
-            }
         }
 
         @Override // android.os.Parcelable

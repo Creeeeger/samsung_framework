@@ -3,17 +3,13 @@ package android.media.tv.tuner.frontend;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class Atsc3PlpSettings {
     private final int mCodeRate;
     private final int mFec;
     private final int mInterleaveMode;
     private final int mModulation;
     private final int mPlpId;
-
-    /* synthetic */ Atsc3PlpSettings(int i, int i2, int i3, int i4, int i5, Atsc3PlpSettingsIA atsc3PlpSettingsIA) {
-        this(i, i2, i3, i4, i5);
-    }
 
     private Atsc3PlpSettings(int plpId, int modulation, int interleaveMode, int codeRate, int fec) {
         this.mPlpId = plpId;
@@ -47,17 +43,12 @@ public class Atsc3PlpSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mCodeRate;
         private int mFec;
         private int mInterleaveMode;
         private int mModulation;
         private int mPlpId;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
         }

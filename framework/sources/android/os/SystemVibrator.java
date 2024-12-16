@@ -3,19 +3,14 @@ package android.os;
 import android.content.Context;
 import android.os.SystemVibrator;
 import android.os.Vibrator;
-import android.os.VibratorInfo;
+import android.os.vibrator.VibratorInfoFactory;
 import android.util.ArrayMap;
 import android.util.Log;
-import android.util.Range;
-import android.util.Slog;
 import android.util.SparseArray;
-import android.util.SparseBooleanArray;
-import android.util.SparseIntArray;
+import com.samsung.android.vibrator.VibrationDebugInfo;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 
 /* loaded from: classes3.dex */
 public class SystemVibrator extends Vibrator {
@@ -24,6 +19,8 @@ public class SystemVibrator extends Vibrator {
     private final Context mContext;
     private final Object mLock;
     private final ArrayMap<Vibrator.OnVibratorStateChangedListener, MultiVibratorStateListener> mRegisteredListeners;
+    private int mSupportedPatternCounts;
+    private int mSupportedVibrationType;
     private VibratorInfo mVibratorInfo;
     private final VibratorManager mVibratorManager;
 
@@ -32,27 +29,27 @@ public class SystemVibrator extends Vibrator {
         this.mBrokenListeners = new ArrayList<>();
         this.mRegisteredListeners = new ArrayMap<>();
         this.mLock = new Object();
+        this.mSupportedVibrationType = -1;
+        this.mSupportedPatternCounts = -1;
         this.mContext = context;
-        this.mVibratorManager = (VibratorManager) context.getSystemService(VibratorManager.class);
+        this.mVibratorManager = (VibratorManager) this.mContext.getSystemService(VibratorManager.class);
     }
 
     @Override // android.os.Vibrator
     public VibratorInfo getInfo() {
         synchronized (this.mLock) {
-            VibratorInfo vibratorInfo = this.mVibratorInfo;
-            if (vibratorInfo != null) {
-                return vibratorInfo;
+            if (this.mVibratorInfo != null) {
+                return this.mVibratorInfo;
             }
-            VibratorManager vibratorManager = this.mVibratorManager;
-            if (vibratorManager == null) {
+            if (this.mVibratorManager == null) {
                 Log.w(TAG, "Failed to retrieve vibrator info; no vibrator manager.");
                 return VibratorInfo.EMPTY_VIBRATOR_INFO;
             }
-            int[] vibratorIds = vibratorManager.getVibratorIds();
+            int[] vibratorIds = this.mVibratorManager.getVibratorIds();
             if (vibratorIds.length == 0) {
-                NoVibratorInfo noVibratorInfo = new NoVibratorInfo();
-                this.mVibratorInfo = noVibratorInfo;
-                return noVibratorInfo;
+                VibratorInfo vibratorInfo = VibratorInfo.EMPTY_VIBRATOR_INFO;
+                this.mVibratorInfo = vibratorInfo;
+                return vibratorInfo;
             }
             VibratorInfo[] vibratorInfos = new VibratorInfo[vibratorIds.length];
             for (int i = 0; i < vibratorIds.length; i++) {
@@ -63,23 +60,16 @@ public class SystemVibrator extends Vibrator {
                 }
                 vibratorInfos[i] = vibrator.getInfo();
             }
-            int i2 = vibratorInfos.length;
-            if (i2 == 1) {
-                VibratorInfo vibratorInfo2 = new VibratorInfo(-1, vibratorInfos[0]);
-                this.mVibratorInfo = vibratorInfo2;
-                return vibratorInfo2;
-            }
-            MultiVibratorInfo multiVibratorInfo = new MultiVibratorInfo(vibratorInfos);
-            this.mVibratorInfo = multiVibratorInfo;
-            return multiVibratorInfo;
+            VibratorInfo create = VibratorInfoFactory.create(-1, vibratorInfos);
+            this.mVibratorInfo = create;
+            return create;
         }
     }
 
     @Override // android.os.Vibrator
     public boolean hasVibrator() {
-        VibratorManager vibratorManager = this.mVibratorManager;
-        if (vibratorManager != null) {
-            return vibratorManager.getVibratorIds().length > 0;
+        if (this.mVibratorManager != null) {
+            return this.mVibratorManager.getVibratorIds().length > 0;
         }
         Log.w(TAG, "Failed to check if vibrator exists; no vibrator manager.");
         return false;
@@ -87,12 +77,11 @@ public class SystemVibrator extends Vibrator {
 
     @Override // android.os.Vibrator
     public boolean isVibrating() {
-        VibratorManager vibratorManager = this.mVibratorManager;
-        if (vibratorManager == null) {
+        if (this.mVibratorManager == null) {
             Log.w(TAG, "Failed to vibrate; no vibrator manager.");
             return false;
         }
-        for (int vibratorId : vibratorManager.getVibratorIds()) {
+        for (int vibratorId : this.mVibratorManager.getVibratorIds()) {
             if (this.mVibratorManager.getVibrator(vibratorId).isVibrating()) {
                 return true;
             }
@@ -103,11 +92,10 @@ public class SystemVibrator extends Vibrator {
     @Override // android.os.Vibrator
     public void addVibratorStateListener(Vibrator.OnVibratorStateChangedListener listener) {
         Objects.requireNonNull(listener);
-        Context context = this.mContext;
-        if (context == null) {
+        if (this.mContext == null) {
             Log.w(TAG, "Failed to add vibrate state listener; no vibrator context.");
         } else {
-            addVibratorStateListener(context.getMainExecutor(), listener);
+            addVibratorStateListener(this.mContext.getMainExecutor(), listener);
         }
     }
 
@@ -197,22 +185,29 @@ public class SystemVibrator extends Vibrator {
     }
 
     @Override // android.os.Vibrator
+    public void performHapticFeedback(int constant, boolean always, String reason, boolean fromIme) {
+        if (this.mVibratorManager == null) {
+            Log.w(TAG, "Failed to perform haptic feedback; no vibrator manager.");
+        } else {
+            this.mVibratorManager.performHapticFeedback(constant, always, reason, fromIme);
+        }
+    }
+
+    @Override // android.os.Vibrator
     public void cancel() {
-        VibratorManager vibratorManager = this.mVibratorManager;
-        if (vibratorManager == null) {
+        if (this.mVibratorManager == null) {
             Log.w(TAG, "Failed to cancel vibrate; no vibrator manager.");
         } else {
-            vibratorManager.cancel();
+            this.mVibratorManager.cancel();
         }
     }
 
     @Override // android.os.Vibrator
     public void cancel(int usageFilter) {
-        VibratorManager vibratorManager = this.mVibratorManager;
-        if (vibratorManager == null) {
+        if (this.mVibratorManager == null) {
             Log.w(TAG, "Failed to cancel vibrate; no vibrator manager.");
         } else {
-            vibratorManager.cancel(usageFilter);
+            this.mVibratorManager.cancel(usageFilter);
         }
     }
 
@@ -234,8 +229,7 @@ public class SystemVibrator extends Vibrator {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class SingleVibratorStateListener implements Vibrator.OnVibratorStateChangedListener {
+    private static class SingleVibratorStateListener implements Vibrator.OnVibratorStateChangedListener {
         private final MultiVibratorStateListener mAllVibratorsListener;
         private final int mVibratorIdx;
 
@@ -250,232 +244,6 @@ public class SystemVibrator extends Vibrator {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class NoVibratorInfo extends VibratorInfo {
-        public NoVibratorInfo() {
-            super(-1, 0L, new SparseBooleanArray(), new SparseBooleanArray(), new SparseIntArray(), 0, 0, 0, 0, Float.NaN, new VibratorInfo.FrequencyProfile(Float.NaN, Float.NaN, Float.NaN, null));
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public static class MultiVibratorInfo extends VibratorInfo {
-        private static final float EPSILON = 1.0E-5f;
-
-        public MultiVibratorInfo(VibratorInfo[] vibrators) {
-            this(vibrators, frequencyProfileIntersection(vibrators));
-        }
-
-        private MultiVibratorInfo(VibratorInfo[] vibrators, VibratorInfo.FrequencyProfile mergedProfile) {
-            super(-1, capabilitiesIntersection(vibrators, mergedProfile.isEmpty()), supportedEffectsIntersection(vibrators), supportedBrakingIntersection(vibrators), supportedPrimitivesAndDurationsIntersection(vibrators), integerLimitIntersection(vibrators, new Function() { // from class: android.os.SystemVibrator$MultiVibratorInfo$$ExternalSyntheticLambda0
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return Integer.valueOf(((VibratorInfo) obj).getPrimitiveDelayMax());
-                }
-            }), integerLimitIntersection(vibrators, new Function() { // from class: android.os.SystemVibrator$MultiVibratorInfo$$ExternalSyntheticLambda1
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return Integer.valueOf(((VibratorInfo) obj).getCompositionSizeMax());
-                }
-            }), integerLimitIntersection(vibrators, new Function() { // from class: android.os.SystemVibrator$MultiVibratorInfo$$ExternalSyntheticLambda2
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return Integer.valueOf(((VibratorInfo) obj).getPwlePrimitiveDurationMax());
-                }
-            }), integerLimitIntersection(vibrators, new Function() { // from class: android.os.SystemVibrator$MultiVibratorInfo$$ExternalSyntheticLambda3
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return Integer.valueOf(((VibratorInfo) obj).getPwleSizeMax());
-                }
-            }), floatPropertyIntersection(vibrators, new Function() { // from class: android.os.SystemVibrator$MultiVibratorInfo$$ExternalSyntheticLambda4
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return Float.valueOf(((VibratorInfo) obj).getQFactor());
-                }
-            }), mergedProfile);
-        }
-
-        private static int capabilitiesIntersection(VibratorInfo[] infos, boolean frequencyProfileIsEmpty) {
-            int intersection = -1;
-            for (VibratorInfo info : infos) {
-                intersection = (int) (intersection & info.getCapabilities());
-            }
-            if (frequencyProfileIsEmpty) {
-                return intersection & (-513);
-            }
-            return intersection;
-        }
-
-        private static SparseBooleanArray supportedBrakingIntersection(VibratorInfo[] infos) {
-            for (VibratorInfo info : infos) {
-                if (!info.isBrakingSupportKnown()) {
-                    return null;
-                }
-            }
-            SparseBooleanArray intersection = new SparseBooleanArray();
-            SparseBooleanArray firstVibratorBraking = infos[0].getSupportedBraking();
-            for (int i = 0; i < firstVibratorBraking.size(); i++) {
-                int brakingId = firstVibratorBraking.keyAt(i);
-                if (firstVibratorBraking.valueAt(i)) {
-                    int j = 1;
-                    while (true) {
-                        if (j < infos.length) {
-                            if (!infos[j].hasBrakingSupport(brakingId)) {
-                                break;
-                            }
-                            j++;
-                        } else {
-                            intersection.put(brakingId, true);
-                            break;
-                        }
-                    }
-                }
-            }
-            return intersection;
-        }
-
-        private static SparseBooleanArray supportedEffectsIntersection(VibratorInfo[] infos) {
-            for (VibratorInfo info : infos) {
-                if (!info.isEffectSupportKnown()) {
-                    return null;
-                }
-            }
-            SparseBooleanArray intersection = new SparseBooleanArray();
-            SparseBooleanArray firstVibratorEffects = infos[0].getSupportedEffects();
-            for (int i = 0; i < firstVibratorEffects.size(); i++) {
-                int effectId = firstVibratorEffects.keyAt(i);
-                if (firstVibratorEffects.valueAt(i)) {
-                    int j = 1;
-                    while (true) {
-                        if (j < infos.length) {
-                            if (infos[j].isEffectSupported(effectId) != 1) {
-                                break;
-                            }
-                            j++;
-                        } else {
-                            intersection.put(effectId, true);
-                            break;
-                        }
-                    }
-                }
-            }
-            return intersection;
-        }
-
-        private static SparseIntArray supportedPrimitivesAndDurationsIntersection(VibratorInfo[] infos) {
-            SparseIntArray intersection = new SparseIntArray();
-            SparseIntArray firstVibratorPrimitives = infos[0].getSupportedPrimitives();
-            for (int i = 0; i < firstVibratorPrimitives.size(); i++) {
-                int primitiveId = firstVibratorPrimitives.keyAt(i);
-                int primitiveDuration = firstVibratorPrimitives.valueAt(i);
-                if (primitiveDuration != 0) {
-                    int j = 1;
-                    while (true) {
-                        if (j < infos.length) {
-                            int vibratorPrimitiveDuration = infos[j].getPrimitiveDuration(primitiveId);
-                            if (vibratorPrimitiveDuration == 0) {
-                                break;
-                            }
-                            primitiveDuration = Math.max(primitiveDuration, vibratorPrimitiveDuration);
-                            j++;
-                        } else {
-                            intersection.put(primitiveId, primitiveDuration);
-                            break;
-                        }
-                    }
-                }
-            }
-            return intersection;
-        }
-
-        private static int integerLimitIntersection(VibratorInfo[] infos, Function<VibratorInfo, Integer> propertyGetter) {
-            int limit = 0;
-            for (VibratorInfo info : infos) {
-                int vibratorLimit = propertyGetter.apply(info).intValue();
-                if (limit == 0 || (vibratorLimit > 0 && vibratorLimit < limit)) {
-                    limit = vibratorLimit;
-                }
-            }
-            return limit;
-        }
-
-        private static float floatPropertyIntersection(VibratorInfo[] infos, Function<VibratorInfo, Float> propertyGetter) {
-            float property = propertyGetter.apply(infos[0]).floatValue();
-            if (Float.isNaN(property)) {
-                return Float.NaN;
-            }
-            for (int i = 1; i < infos.length; i++) {
-                if (Float.compare(property, propertyGetter.apply(infos[i]).floatValue()) != 0) {
-                    return Float.NaN;
-                }
-            }
-            return property;
-        }
-
-        private static VibratorInfo.FrequencyProfile frequencyProfileIntersection(VibratorInfo[] infos) {
-            float freqResolution = floatPropertyIntersection(infos, new Function() { // from class: android.os.SystemVibrator$MultiVibratorInfo$$ExternalSyntheticLambda5
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    Float valueOf;
-                    valueOf = Float.valueOf(((VibratorInfo) obj).getFrequencyProfile().getFrequencyResolutionHz());
-                    return valueOf;
-                }
-            });
-            float resonantFreq = floatPropertyIntersection(infos, new Function() { // from class: android.os.SystemVibrator$MultiVibratorInfo$$ExternalSyntheticLambda6
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return Float.valueOf(((VibratorInfo) obj).getResonantFrequencyHz());
-                }
-            });
-            Range<Float> freqRange = frequencyRangeIntersection(infos, freqResolution);
-            if (freqRange == null || Float.isNaN(freqResolution)) {
-                return new VibratorInfo.FrequencyProfile(resonantFreq, Float.NaN, freqResolution, null);
-            }
-            int amplitudeCount = Math.round(((freqRange.getUpper().floatValue() - freqRange.getLower().floatValue()) / freqResolution) + 1.0f);
-            float[] maxAmplitudes = new float[amplitudeCount];
-            Arrays.fill(maxAmplitudes, Float.MAX_VALUE);
-            for (VibratorInfo info : infos) {
-                Range<Float> vibratorFreqRange = info.getFrequencyProfile().getFrequencyRangeHz();
-                float[] vibratorMaxAmplitudes = info.getFrequencyProfile().getMaxAmplitudes();
-                int vibratorStartIdx = Math.round((freqRange.getLower().floatValue() - vibratorFreqRange.getLower().floatValue()) / freqResolution);
-                int vibratorEndIdx = (maxAmplitudes.length + vibratorStartIdx) - 1;
-                if (vibratorStartIdx < 0 || vibratorEndIdx >= vibratorMaxAmplitudes.length) {
-                    Slog.w(SystemVibrator.TAG, "Error calculating the intersection of vibrator frequency profiles: attempted to fetch from vibrator " + info.getId() + " max amplitude with bad index " + vibratorStartIdx);
-                    return new VibratorInfo.FrequencyProfile(resonantFreq, Float.NaN, Float.NaN, null);
-                }
-                for (int i = 0; i < maxAmplitudes.length; i++) {
-                    maxAmplitudes[i] = Math.min(maxAmplitudes[i], vibratorMaxAmplitudes[vibratorStartIdx + i]);
-                }
-            }
-            return new VibratorInfo.FrequencyProfile(resonantFreq, freqRange.getLower().floatValue(), freqResolution, maxAmplitudes);
-        }
-
-        private static Range<Float> frequencyRangeIntersection(VibratorInfo[] infos, float frequencyResolution) {
-            Range<Float> firstRange = infos[0].getFrequencyProfile().getFrequencyRangeHz();
-            if (firstRange == null) {
-                return null;
-            }
-            float intersectionLower = firstRange.getLower().floatValue();
-            float intersectionUpper = firstRange.getUpper().floatValue();
-            for (int i = 1; i < infos.length; i++) {
-                Range<Float> vibratorRange = infos[i].getFrequencyProfile().getFrequencyRangeHz();
-                if (vibratorRange == null || vibratorRange.getLower().floatValue() >= intersectionUpper || vibratorRange.getUpper().floatValue() <= intersectionLower) {
-                    return null;
-                }
-                float frequencyDelta = Math.abs(intersectionLower - vibratorRange.getLower().floatValue());
-                if (frequencyDelta % frequencyResolution > 1.0E-5f) {
-                    return null;
-                }
-                intersectionLower = Math.max(intersectionLower, vibratorRange.getLower().floatValue());
-                intersectionUpper = Math.min(intersectionUpper, vibratorRange.getUpper().floatValue());
-            }
-            if (intersectionUpper - intersectionLower < frequencyResolution) {
-                return null;
-            }
-            return Range.create(Float.valueOf(intersectionLower), Float.valueOf(intersectionUpper));
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static class MultiVibratorStateListener {
         private final Vibrator.OnVibratorStateChangedListener mDelegate;
         private final Executor mExecutor;
@@ -542,25 +310,23 @@ public class SystemVibrator extends Vibrator {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVibrating$0(int vibratorIdx, boolean vibrating) {
             boolean isAnyVibrating;
             int allInitializedMask;
             synchronized (this.mLock) {
                 int i = 1;
                 int allInitializedMask2 = (1 << this.mVibratorListeners.size()) - 1;
-                int i2 = this.mVibratingMask;
-                boolean previousIsAnyVibrating = i2 != 0;
-                int i3 = this.mInitializedMask;
-                boolean previousAreAllInitialized = i3 == allInitializedMask2;
+                boolean previousIsAnyVibrating = this.mVibratingMask != 0;
+                boolean previousAreAllInitialized = this.mInitializedMask == allInitializedMask2;
                 int vibratorMask = 1 << vibratorIdx;
-                int i4 = i3 | vibratorMask;
-                this.mInitializedMask = i4;
-                boolean previousVibrating = (i2 & vibratorMask) != 0;
+                this.mInitializedMask |= vibratorMask;
+                boolean previousVibrating = (this.mVibratingMask & vibratorMask) != 0;
                 if (previousVibrating != vibrating) {
-                    this.mVibratingMask = i2 ^ vibratorMask;
+                    this.mVibratingMask ^= vibratorMask;
                 }
                 isAnyVibrating = this.mVibratingMask != 0;
-                boolean areAllInitialized = i4 == allInitializedMask2;
+                boolean areAllInitialized = this.mInitializedMask == allInitializedMask2;
                 boolean isStateChanging = previousIsAnyVibrating != isAnyVibrating;
                 if (!areAllInitialized || (previousAreAllInitialized && !isStateChanging)) {
                     i = 0;
@@ -575,26 +341,26 @@ public class SystemVibrator extends Vibrator {
 
     @Override // android.os.Vibrator
     public int semGetSupportedVibrationType() {
-        VibratorManager vibratorManager = this.mVibratorManager;
-        if (vibratorManager == null) {
+        if (this.mVibratorManager == null) {
             Log.w(TAG, "Failed to call semGetSupportedVibrationType; no vibrator service.");
             return -1;
         }
-        int ret = vibratorManager.semGetSupportedVibrationType();
-        Log.v(TAG, "semGetSupportedVibrationType: ret=" + ret);
-        return ret;
+        if (this.mSupportedVibrationType == -1) {
+            this.mSupportedVibrationType = this.mVibratorManager.semGetSupportedVibrationType();
+        }
+        return this.mSupportedVibrationType;
     }
 
     @Override // android.os.Vibrator
     public int semGetNumberOfSupportedPatterns() {
-        VibratorManager vibratorManager = this.mVibratorManager;
-        if (vibratorManager == null) {
+        if (this.mVibratorManager == null) {
             Log.w(TAG, "Failed to call semGetNumberOfSupportedPatterns; no vibrator service.");
             return -1;
         }
-        int ret = vibratorManager.semGetNumberOfSupportedPatterns();
-        Log.v(TAG, "semGetNumberOfSupportedPatterns: ret=" + ret);
-        return ret;
+        if (this.mSupportedPatternCounts == -1) {
+            this.mSupportedPatternCounts = this.mVibratorManager.semGetNumberOfSupportedPatterns();
+        }
+        return this.mSupportedPatternCounts;
     }
 
     @Override // android.os.Vibrator
@@ -604,12 +370,14 @@ public class SystemVibrator extends Vibrator {
 
     @Override // android.os.Vibrator
     public boolean semIsHapticSupported() {
-        VibratorManager vibratorManager = this.mVibratorManager;
-        if (vibratorManager != null) {
-            return vibratorManager.semGetSupportedVibrationType() > 1;
+        if (this.mVibratorManager == null) {
+            Log.w(TAG, "Failed to call semIsHapticSupported; no vibrator service.");
+            return false;
         }
-        Log.w(TAG, "Failed to call semIsHapticSupported; no vibrator service.");
-        return false;
+        if (this.mSupportedVibrationType == -1) {
+            this.mSupportedVibrationType = this.mVibratorManager.semGetSupportedVibrationType();
+        }
+        return this.mSupportedVibrationType > 1;
     }
 
     @Override // android.os.Vibrator
@@ -618,7 +386,7 @@ public class SystemVibrator extends Vibrator {
     }
 
     @Override // android.os.Vibrator
-    public String executeVibrationDebugCommand(int param) {
+    public String executeVibrationDebugCommand(VibrationDebugInfo param) {
         return this.mVibratorManager.executeVibrationDebugCommand(param);
     }
 }

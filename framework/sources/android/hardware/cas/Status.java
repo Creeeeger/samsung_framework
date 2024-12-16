@@ -4,13 +4,11 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class Status implements Parcelable {
     public static final int BAD_VALUE = 6;
     public static final Parcelable.Creator<Status> CREATOR = new Parcelable.Creator<Status>() { // from class: android.hardware.cas.Status.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Status createFromParcel(Parcel _aidl_source) {
             Status _aidl_out = new Status();
@@ -18,6 +16,7 @@ public class Status implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Status[] newArray(int _aidl_size) {
             return new Status[_aidl_size];
@@ -44,25 +43,6 @@ public class Status implements Parcelable {
     public static final int ERROR_CAS_TAMPER_DETECTED = 10;
     public static final int ERROR_CAS_UNKNOWN = 14;
     public static final int OK = 0;
-
-    /* renamed from: android.hardware.cas.Status$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Status> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Status createFromParcel(Parcel _aidl_source) {
-            Status _aidl_out = new Status();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Status[] newArray(int _aidl_size) {
-            return new Status[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

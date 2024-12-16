@@ -199,6 +199,9 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_LOCALE_CHANGED = "android.intent.action.LOCALE_CHANGED";
     public static final String ACTION_LOCKED_BOOT_COMPLETED = "android.intent.action.LOCKED_BOOT_COMPLETED";
     public static final String ACTION_MAIN = "android.intent.action.MAIN";
+
+    @SystemApi
+    public static final String ACTION_MAIN_USER_LOCKSCREEN_KNOWLEDGE_FACTOR_CHANGED = "android.intent.action.MAIN_USER_LOCKSCREEN_KNOWLEDGE_FACTOR_CHANGED";
     public static final String ACTION_MANAGED_PROFILE_ADDED = "android.intent.action.MANAGED_PROFILE_ADDED";
     public static final String ACTION_MANAGED_PROFILE_AVAILABLE = "android.intent.action.MANAGED_PROFILE_AVAILABLE";
     public static final String ACTION_MANAGED_PROFILE_REMOVED = "android.intent.action.MANAGED_PROFILE_REMOVED";
@@ -209,6 +212,7 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_MANAGE_APP_PERMISSION = "android.intent.action.MANAGE_APP_PERMISSION";
 
     @SystemApi
+    @Deprecated
     public static final String ACTION_MANAGE_APP_PERMISSIONS = "android.intent.action.MANAGE_APP_PERMISSIONS";
 
     @SystemApi
@@ -281,6 +285,7 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_PACKAGE_REMOVED_INTERNAL = "android.intent.action.PACKAGE_REMOVED_INTERNAL";
     public static final String ACTION_PACKAGE_REPLACED = "android.intent.action.PACKAGE_REPLACED";
     public static final String ACTION_PACKAGE_RESTARTED = "android.intent.action.PACKAGE_RESTARTED";
+    public static final String ACTION_PACKAGE_UNSTOPPED = "android.intent.action.PACKAGE_UNSTOPPED";
 
     @SystemApi
     public static final String ACTION_PACKAGE_UNSUSPENDED_MANUALLY = "android.intent.action.PACKAGE_UNSUSPENDED_MANUALLY";
@@ -301,8 +306,10 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_PROCESS_TEXT = "android.intent.action.PROCESS_TEXT";
     public static final String ACTION_PROFILE_ACCESSIBLE = "android.intent.action.PROFILE_ACCESSIBLE";
     public static final String ACTION_PROFILE_ADDED = "android.intent.action.PROFILE_ADDED";
+    public static final String ACTION_PROFILE_AVAILABLE = "android.intent.action.PROFILE_AVAILABLE";
     public static final String ACTION_PROFILE_INACCESSIBLE = "android.intent.action.PROFILE_INACCESSIBLE";
     public static final String ACTION_PROFILE_REMOVED = "android.intent.action.PROFILE_REMOVED";
+    public static final String ACTION_PROFILE_UNAVAILABLE = "android.intent.action.PROFILE_UNAVAILABLE";
     public static final String ACTION_PROVIDER_CHANGED = "android.intent.action.PROVIDER_CHANGED";
 
     @SystemApi
@@ -360,7 +367,6 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_SF_PACKAGE_REMOVED = "com.samsung.knox.SECURE_FOLDER_PACKAGE_REMOVED";
     public static final String ACTION_SHOW_APP_INFO = "android.intent.action.SHOW_APP_INFO";
     public static final String ACTION_SHOW_BRIGHTNESS_DIALOG = "com.android.intent.action.SHOW_BRIGHTNESS_DIALOG";
-    public static final String ACTION_SHOW_CONTRAST_DIALOG = "com.android.intent.action.SHOW_CONTRAST_DIALOG";
     public static final String ACTION_SHOW_FOREGROUND_SERVICE_MANAGER = "android.intent.action.SHOW_FOREGROUND_SERVICE_MANAGER";
     public static final String ACTION_SHOW_KEYBOARD_SHORTCUTS = "com.android.intent.action.SHOW_KEYBOARD_SHORTCUTS";
 
@@ -392,12 +398,14 @@ public class Intent implements Parcelable, Cloneable {
 
     @Deprecated
     public static final String ACTION_UMS_DISCONNECTED = "android.intent.action.UMS_DISCONNECTED";
+    public static final String ACTION_UNARCHIVE_PACKAGE = "android.intent.action.UNARCHIVE_PACKAGE";
 
     @Deprecated
     public static final String ACTION_UNINSTALL_PACKAGE = "android.intent.action.UNINSTALL_PACKAGE";
 
     @SystemApi
     public static final String ACTION_UPGRADE_SETUP = "android.intent.action.UPGRADE_SETUP";
+    public static final String ACTION_USB_RESTRICTION_STATE_SEC = "com.samsung.intent.action.USB_RESTRICTION_STATE";
     public static final String ACTION_USB_WET_STATE_SEC = "com.samsung.intent.action.USB_WET_STATE";
 
     @SystemApi
@@ -497,29 +505,31 @@ public class Intent implements Parcelable, Cloneable {
     public static final String CATEGORY_UNIT_TEST = "android.intent.category.UNIT_TEST";
     public static final String CATEGORY_VOICE = "android.intent.category.VOICE";
     public static final String CATEGORY_VR_HOME = "android.intent.category.VR_HOME";
+    public static final int CHOOSER_CONTENT_TYPE_ALBUM = 1;
     private static final int COPY_MODE_ALL = 0;
     private static final int COPY_MODE_FILTER = 1;
     private static final int COPY_MODE_HISTORY = 2;
     public static final Parcelable.Creator<Intent> CREATOR = new Parcelable.Creator<Intent>() { // from class: android.content.Intent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Intent createFromParcel(Parcel in) {
             return new Intent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Intent[] newArray(int size) {
             return new Intent[size];
         }
     };
+    public static final int EXTENDED_FLAG_FILTER_MISMATCH = 1;
     public static final String EXTRA_ALARM_COUNT = "android.intent.extra.ALARM_COUNT";
     public static final String EXTRA_ALLOW_MULTIPLE = "android.intent.extra.ALLOW_MULTIPLE";
 
     @Deprecated
     public static final String EXTRA_ALLOW_REPLACE = "android.intent.extra.ALLOW_REPLACE";
     public static final String EXTRA_ALTERNATE_INTENTS = "android.intent.extra.ALTERNATE_INTENTS";
+    public static final String EXTRA_ARCHIVAL = "android.intent.extra.ARCHIVAL";
     public static final String EXTRA_ASSIST_CONTEXT = "android.intent.extra.ASSIST_CONTEXT";
     public static final String EXTRA_ASSIST_INPUT_DEVICE_ID = "android.intent.extra.ASSIST_INPUT_DEVICE_ID";
     public static final String EXTRA_ASSIST_INPUT_HINT_KEYBOARD = "android.intent.extra.ASSIST_INPUT_HINT_KEYBOARD";
@@ -528,6 +538,7 @@ public class Intent implements Parcelable, Cloneable {
     public static final String EXTRA_ATTRIBUTION_TAGS = "android.intent.extra.ATTRIBUTION_TAGS";
     public static final String EXTRA_AUTO_LAUNCH_SINGLE_CHOICE = "android.intent.extra.AUTO_LAUNCH_SINGLE_CHOICE";
     public static final String EXTRA_BCC = "android.intent.extra.BCC";
+    public static final String EXTRA_BRIGHTNESS_DIALOG_IS_FULL_WIDTH = "android.intent.extra.BRIGHTNESS_DIALOG_IS_FULL_WIDTH";
     public static final String EXTRA_BUG_REPORT = "android.intent.extra.BUG_REPORT";
 
     @SystemApi
@@ -548,9 +559,14 @@ public class Intent implements Parcelable, Cloneable {
     public static final String EXTRA_CHANGED_COMPONENT_NAME_LIST = "android.intent.extra.changed_component_name_list";
     public static final String EXTRA_CHANGED_PACKAGE_LIST = "android.intent.extra.changed_package_list";
     public static final String EXTRA_CHANGED_UID_LIST = "android.intent.extra.changed_uid_list";
+    public static final String EXTRA_CHOOSER_ADDITIONAL_CONTENT_URI = "android.intent.extra.CHOOSER_ADDITIONAL_CONTENT_URI";
+    public static final String EXTRA_CHOOSER_CONTENT_TYPE_HINT = "android.intent.extra.CHOOSER_CONTENT_TYPE_HINT";
     public static final String EXTRA_CHOOSER_CUSTOM_ACTIONS = "android.intent.extra.CHOOSER_CUSTOM_ACTIONS";
+    public static final String EXTRA_CHOOSER_FOCUSED_ITEM_POSITION = "android.intent.extra.CHOOSER_FOCUSED_ITEM_POSITION";
     public static final String EXTRA_CHOOSER_MODIFY_SHARE_ACTION = "android.intent.extra.CHOOSER_MODIFY_SHARE_ACTION";
     public static final String EXTRA_CHOOSER_REFINEMENT_INTENT_SENDER = "android.intent.extra.CHOOSER_REFINEMENT_INTENT_SENDER";
+    public static final String EXTRA_CHOOSER_RESULT = "android.intent.extra.CHOOSER_RESULT";
+    public static final String EXTRA_CHOOSER_RESULT_INTENT_SENDER = "android.intent.extra.CHOOSER_RESULT_INTENT_SENDER";
     public static final String EXTRA_CHOOSER_TARGETS = "android.intent.extra.CHOOSER_TARGETS";
     public static final String EXTRA_CHOSEN_COMPONENT = "android.intent.extra.CHOSEN_COMPONENT";
     public static final String EXTRA_CHOSEN_COMPONENT_INTENT_SENDER = "android.intent.extra.CHOSEN_COMPONENT_INTENT_SENDER";
@@ -619,6 +635,7 @@ public class Intent implements Parcelable, Cloneable {
 
     @Deprecated
     public static final String EXTRA_FORCE_MASTER_CLEAR = "android.intent.extra.FORCE_MASTER_CLEAR";
+    public static final String EXTRA_FREEZE_TASK_DISPLAY_AREA = "com.sec.intent.extra.FREEZE_TASK_DISPLAY_AREA";
     public static final String EXTRA_FROM_STORAGE = "android.intent.extra.FROM_STORAGE";
     public static final String EXTRA_HTML_TEXT = "android.intent.extra.HTML_TEXT";
     public static final String EXTRA_INDEX = "android.intent.extra.INDEX";
@@ -653,6 +670,7 @@ public class Intent implements Parcelable, Cloneable {
     @SystemApi
     @Deprecated
     public static final String EXTRA_IS_DATA_ROAMING_FROM_REGISTRATION = "isDataRoamingFromRegistration";
+    public static final String EXTRA_IS_RESTORE = "android.intent.extra.IS_RESTORE";
 
     @SystemApi
     @Deprecated
@@ -678,6 +696,7 @@ public class Intent implements Parcelable, Cloneable {
     public static final String EXTRA_MEDIA_RESOURCE_TYPE = "android.intent.extra.MEDIA_RESOURCE_TYPE";
     public static final int EXTRA_MEDIA_RESOURCE_TYPE_AUDIO_CODEC = 1;
     public static final int EXTRA_MEDIA_RESOURCE_TYPE_VIDEO_CODEC = 0;
+    public static final String EXTRA_METADATA_TEXT = "android.intent.extra.METADATA_TEXT";
     public static final String EXTRA_MIME_TYPES = "android.intent.extra.MIME_TYPES";
 
     @SystemApi
@@ -710,6 +729,7 @@ public class Intent implements Parcelable, Cloneable {
     public static final String EXTRA_PHONE_NUMBER = "android.intent.extra.PHONE_NUMBER";
     public static final String EXTRA_PROCESS_TEXT = "android.intent.extra.PROCESS_TEXT";
     public static final String EXTRA_PROCESS_TEXT_READONLY = "android.intent.extra.PROCESS_TEXT_READONLY";
+    public static final String EXTRA_QUARANTINED = "android.intent.extra.quarantined";
 
     @Deprecated
     public static final String EXTRA_QUICK_VIEW_ADVANCED = "android.intent.extra.QUICK_VIEW_ADVANCED";
@@ -767,6 +787,7 @@ public class Intent implements Parcelable, Cloneable {
 
     @SystemApi
     public static final String EXTRA_SHOWING_ATTRIBUTION = "android.intent.extra.SHOWING_ATTRIBUTION";
+    public static final String EXTRA_SHOW_WIPE_PROGRESS = "android.intent.extra.SHOW_WIPE_PROGRESS";
     public static final String EXTRA_SHUTDOWN_USERSPACE_ONLY = "android.intent.extra.SHUTDOWN_USERSPACE_ONLY";
     public static final String EXTRA_SIM_ACTIVATION_RESPONSE = "android.intent.extra.SIM_ACTIVATION_RESPONSE";
     public static final String EXTRA_SIM_LOCKED_REASON = "reason";
@@ -957,10 +978,12 @@ public class Intent implements Parcelable, Cloneable {
     private ComponentName mComponent;
     private int mContentUserHint;
     private Uri mData;
+    private int mExtendedFlags;
     private Bundle mExtras;
     private int mFlags;
     private boolean mForceLaunchOverTargetTask;
     private String mIdentifier;
+    private boolean mIsAiKeyAppLaunch;
     private boolean mIsRemoteAppLaunch;
     private int mLaunchOverTargetTaskId;
     private int mLaunchTaskIdForAliasManagedTarget;
@@ -974,56 +997,52 @@ public class Intent implements Parcelable, Cloneable {
     private String mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface AccessUriMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CaptureContentForNoteStatusCodes {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ChooserContentType {
+    }
+
     public interface CommandOptionHandler {
         boolean handleOption(String str, ShellCommand shellCommand);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CopyMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
+    public @interface ExtendedFlags {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface FillInFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Flags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface GrantUriMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MutableFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface UriFlags {
     }
 
-    /* loaded from: classes.dex */
     public static class ShortcutIconResource implements Parcelable {
         public static final Parcelable.Creator<ShortcutIconResource> CREATOR = new Parcelable.Creator<ShortcutIconResource>() { // from class: android.content.Intent.ShortcutIconResource.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ShortcutIconResource createFromParcel(Parcel source) {
                 ShortcutIconResource icon = new ShortcutIconResource();
@@ -1032,6 +1051,7 @@ public class Intent implements Parcelable, Cloneable {
                 return icon;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ShortcutIconResource[] newArray(int size) {
                 return new ShortcutIconResource[size];
@@ -1045,26 +1065,6 @@ public class Intent implements Parcelable, Cloneable {
             icon.packageName = context.getPackageName();
             icon.resourceName = context.getResources().getResourceName(resourceId);
             return icon;
-        }
-
-        /* renamed from: android.content.Intent$ShortcutIconResource$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ShortcutIconResource> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ShortcutIconResource createFromParcel(Parcel source) {
-                ShortcutIconResource icon = new ShortcutIconResource();
-                icon.packageName = source.readString8();
-                icon.resourceName = source.readString8();
-                return icon;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ShortcutIconResource[] newArray(int size) {
-                return new ShortcutIconResource[size];
-            }
         }
 
         @Override // android.os.Parcelable
@@ -1095,7 +1095,11 @@ public class Intent implements Parcelable, Cloneable {
             intent.putExtra(EXTRA_TITLE, title);
         }
         if (sender != null) {
-            intent.putExtra(EXTRA_CHOSEN_COMPONENT_INTENT_SENDER, sender);
+            if (android.service.chooser.Flags.enableChooserResult()) {
+                intent.putExtra(EXTRA_CHOOSER_RESULT_INTENT_SENDER, sender);
+            } else {
+                intent.putExtra(EXTRA_CHOSEN_COMPONENT_INTENT_SENDER, sender);
+            }
         }
         int permFlags = target.getFlags() & 195;
         if (permFlags != 0) {
@@ -1126,6 +1130,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mIsRemoteAppLaunch = false;
         this.mLaunchTaskIdForAliasManagedTarget = -1;
         this.mLaunchTaskIdForSingleInstancePerTask = -1;
+        this.mIsAiKeyAppLaunch = false;
         this.mLaunchOverTargetTaskId = -1;
     }
 
@@ -1138,6 +1143,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mIsRemoteAppLaunch = false;
         this.mLaunchTaskIdForAliasManagedTarget = -1;
         this.mLaunchTaskIdForSingleInstancePerTask = -1;
+        this.mIsAiKeyAppLaunch = false;
         this.mLaunchOverTargetTaskId = -1;
         this.mAction = o.mAction;
         this.mData = o.mData;
@@ -1149,19 +1155,18 @@ public class Intent implements Parcelable, Cloneable {
         if (o.mCategories != null) {
             this.mCategories = new ArraySet<>((ArraySet) o.mCategories);
         }
-        int i = o.mLocalFlags;
-        this.mLocalFlags = i;
-        this.mLocalFlags = i | 1;
+        this.mLocalFlags = o.mLocalFlags;
+        this.mLocalFlags |= 1;
         if (copyMode != 1) {
             this.mFlags = o.mFlags;
+            this.mExtendedFlags = o.mExtendedFlags;
             this.mContentUserHint = o.mContentUserHint;
             this.mLaunchToken = o.mLaunchToken;
             if (o.mSourceBounds != null) {
                 this.mSourceBounds = new Rect(o.mSourceBounds);
             }
-            Intent intent = o.mSelector;
-            if (intent != null) {
-                this.mSelector = new Intent(intent);
+            if (o.mSelector != null) {
+                this.mSelector = new Intent(o.mSelector);
             }
             if (copyMode != 2) {
                 if (o.mExtras != null) {
@@ -1170,16 +1175,13 @@ public class Intent implements Parcelable, Cloneable {
                 if (o.mClipData != null) {
                     this.mClipData = new ClipData(o.mClipData);
                 }
-            } else {
-                Bundle bundle = o.mExtras;
-                if (bundle != null && !bundle.isDefinitelyEmpty()) {
-                    this.mExtras = Bundle.STRIPPED;
-                }
+            } else if (o.mExtras != null && !o.mExtras.isDefinitelyEmpty()) {
+                this.mExtras = Bundle.STRIPPED;
             }
         }
-        this.mIsRemoteAppLaunch = o.mIsRemoteAppLaunch;
         this.mLaunchOverTargetTaskId = o.mLaunchOverTargetTaskId;
         this.mForceLaunchOverTargetTask = o.mForceLaunchOverTargetTask;
+        this.mIsRemoteAppLaunch = o.mIsRemoteAppLaunch;
         this.mLaunchTaskIdForAliasManagedTarget = o.mLaunchTaskIdForAliasManagedTarget;
         this.mLaunchTaskIdForSingleInstancePerTask = o.mLaunchTaskIdForSingleInstancePerTask;
     }
@@ -1197,6 +1199,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mIsRemoteAppLaunch = false;
         this.mLaunchTaskIdForAliasManagedTarget = -1;
         this.mLaunchTaskIdForSingleInstancePerTask = -1;
+        this.mIsAiKeyAppLaunch = false;
         this.mLaunchOverTargetTaskId = -1;
         setAction(action);
     }
@@ -1206,6 +1209,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mIsRemoteAppLaunch = false;
         this.mLaunchTaskIdForAliasManagedTarget = -1;
         this.mLaunchTaskIdForSingleInstancePerTask = -1;
+        this.mIsAiKeyAppLaunch = false;
         this.mLaunchOverTargetTaskId = -1;
         setAction(action);
         this.mData = uri;
@@ -1216,6 +1220,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mIsRemoteAppLaunch = false;
         this.mLaunchTaskIdForAliasManagedTarget = -1;
         this.mLaunchTaskIdForSingleInstancePerTask = -1;
+        this.mIsAiKeyAppLaunch = false;
         this.mLaunchOverTargetTaskId = -1;
         this.mComponent = new ComponentName(packageContext, cls);
     }
@@ -1225,6 +1230,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mIsRemoteAppLaunch = false;
         this.mLaunchTaskIdForAliasManagedTarget = -1;
         this.mLaunchTaskIdForSingleInstancePerTask = -1;
+        this.mIsAiKeyAppLaunch = false;
         this.mLaunchOverTargetTaskId = -1;
         setAction(action);
         this.mData = uri;
@@ -1313,81 +1319,86 @@ public class Intent implements Parcelable, Cloneable {
                                 if (!uri.startsWith("type=", i)) {
                                     if (!uri.startsWith("identifier=", i)) {
                                         if (!uri.startsWith("launchFlags=", i)) {
-                                            if (!uri.startsWith("package=", i)) {
-                                                if (!uri.startsWith("component=", i)) {
-                                                    if (!uri.startsWith("scheme=", i)) {
-                                                        if (uri.startsWith("sourceBounds=", i)) {
-                                                            intent3.mSourceBounds = Rect.unflattenFromString(value);
+                                            if (!uri.startsWith("extendedLaunchFlags=", i)) {
+                                                if (!uri.startsWith("package=", i)) {
+                                                    if (!uri.startsWith("component=", i)) {
+                                                        if (!uri.startsWith("scheme=", i)) {
+                                                            if (uri.startsWith("sourceBounds=", i)) {
+                                                                intent3.mSourceBounds = Rect.unflattenFromString(value);
+                                                                androidApp = androidApp2;
+                                                                intent2 = intent3;
+                                                            } else if (semi != i + 3 || !uri.startsWith("SEL", i)) {
+                                                                String key = Uri.decode(uri.substring(i + 2, eq));
+                                                                if (intent3.mExtras == null) {
+                                                                    intent3.mExtras = new Bundle();
+                                                                }
+                                                                Bundle b = intent3.mExtras;
+                                                                androidApp = androidApp2;
+                                                                if (uri.startsWith("S.", i)) {
+                                                                    b.putString(key, value);
+                                                                    intent2 = intent3;
+                                                                } else if (uri.startsWith("B.", i)) {
+                                                                    b.putBoolean(key, Boolean.parseBoolean(value));
+                                                                    intent2 = intent3;
+                                                                } else if (uri.startsWith("b.", i)) {
+                                                                    b.putByte(key, Byte.parseByte(value));
+                                                                    intent2 = intent3;
+                                                                } else if (uri.startsWith("c.", i)) {
+                                                                    b.putChar(key, value.charAt(0));
+                                                                    intent2 = intent3;
+                                                                } else if (uri.startsWith("d.", i)) {
+                                                                    intent2 = intent3;
+                                                                    b.putDouble(key, Double.parseDouble(value));
+                                                                } else {
+                                                                    intent2 = intent3;
+                                                                    if (uri.startsWith("f.", i)) {
+                                                                        b.putFloat(key, Float.parseFloat(value));
+                                                                    } else if (uri.startsWith("i.", i)) {
+                                                                        b.putInt(key, Integer.parseInt(value));
+                                                                    } else if (uri.startsWith("l.", i)) {
+                                                                        b.putLong(key, Long.parseLong(value));
+                                                                    } else {
+                                                                        if (!uri.startsWith("s.", i)) {
+                                                                            throw new URISyntaxException(uri, "unknown EXTRA type", i);
+                                                                        }
+                                                                        b.putShort(key, Short.parseShort(value));
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                intent3 = new Intent();
+                                                                inSelector = true;
+                                                                androidApp = androidApp2;
+                                                            }
+                                                        } else if (inSelector) {
+                                                            intent3.mData = Uri.parse(value + ":");
                                                             androidApp = androidApp2;
                                                             intent2 = intent3;
-                                                        } else if (semi != i + 3 || !uri.startsWith("SEL", i)) {
-                                                            String key = Uri.decode(uri.substring(i + 2, eq));
-                                                            if (intent3.mExtras == null) {
-                                                                intent3.mExtras = new Bundle();
-                                                            }
-                                                            Bundle b = intent3.mExtras;
-                                                            androidApp = androidApp2;
-                                                            if (uri.startsWith("S.", i)) {
-                                                                b.putString(key, value);
-                                                                intent2 = intent3;
-                                                            } else if (uri.startsWith("B.", i)) {
-                                                                b.putBoolean(key, Boolean.parseBoolean(value));
-                                                                intent2 = intent3;
-                                                            } else if (uri.startsWith("b.", i)) {
-                                                                b.putByte(key, Byte.parseByte(value));
-                                                                intent2 = intent3;
-                                                            } else if (uri.startsWith("c.", i)) {
-                                                                b.putChar(key, value.charAt(0));
-                                                                intent2 = intent3;
-                                                            } else if (uri.startsWith("d.", i)) {
-                                                                intent2 = intent3;
-                                                                b.putDouble(key, Double.parseDouble(value));
-                                                            } else {
-                                                                intent2 = intent3;
-                                                                if (uri.startsWith("f.", i)) {
-                                                                    b.putFloat(key, Float.parseFloat(value));
-                                                                } else if (uri.startsWith("i.", i)) {
-                                                                    b.putInt(key, Integer.parseInt(value));
-                                                                } else if (uri.startsWith("l.", i)) {
-                                                                    b.putLong(key, Long.parseLong(value));
-                                                                } else {
-                                                                    if (!uri.startsWith("s.", i)) {
-                                                                        throw new URISyntaxException(uri, "unknown EXTRA type", i);
-                                                                    }
-                                                                    b.putShort(key, Short.parseShort(value));
-                                                                }
-                                                            }
                                                         } else {
-                                                            intent3 = new Intent();
-                                                            inSelector = true;
+                                                            scheme = value;
                                                             androidApp = androidApp2;
                                                         }
-                                                    } else if (inSelector) {
-                                                        intent3.mData = Uri.parse(value + ":");
+                                                    } else {
+                                                        intent3.mComponent = ComponentName.unflattenFromString(value);
                                                         androidApp = androidApp2;
                                                         intent2 = intent3;
-                                                    } else {
-                                                        scheme = value;
-                                                        androidApp = androidApp2;
                                                     }
                                                 } else {
-                                                    intent3.mComponent = ComponentName.unflattenFromString(value);
+                                                    intent3.mPackage = value;
                                                     androidApp = androidApp2;
                                                     intent2 = intent3;
                                                 }
                                             } else {
-                                                intent3.mPackage = value;
+                                                intent3.mExtendedFlags = decodeInteger(value).intValue();
                                                 androidApp = androidApp2;
                                                 intent2 = intent3;
                                             }
                                         } else {
-                                            int intValue = Integer.decode(value).intValue();
-                                            intent3.mFlags = intValue;
+                                            intent3.mFlags = decodeInteger(value).intValue();
                                             if ((flags & 4) != 0) {
                                                 androidApp = androidApp2;
                                                 intent2 = intent3;
                                             } else {
-                                                intent3.mFlags = intValue & (-196);
+                                                intent3.mFlags &= -196;
                                                 androidApp = androidApp2;
                                                 intent2 = intent3;
                                             }
@@ -1446,25 +1457,25 @@ public class Intent implements Parcelable, Cloneable {
                         if (data.charAt(12) == '/' && data.charAt(13) == '/') {
                             int end = data.indexOf(47, 14);
                             if (end < 0) {
-                                intent.mPackage = data.substring(14);
+                                intent.mPackage = Uri.decodeIfNeeded(data.substring(14));
                                 if (!explicitAction) {
                                     intent.setAction(ACTION_MAIN);
                                 }
                                 data2 = "";
                             } else {
                                 String authority = null;
-                                intent.mPackage = data.substring(14, end);
+                                intent.mPackage = Uri.decodeIfNeeded(data.substring(14, end));
                                 if (end + 1 < data.length()) {
                                     int newEnd2 = data.indexOf(47, end + 1);
                                     if (newEnd2 >= 0) {
-                                        scheme = data.substring(end + 1, newEnd2);
+                                        scheme = Uri.decodeIfNeeded(data.substring(end + 1, newEnd2));
                                         end = newEnd2;
                                         if (end < data.length() && (newEnd = data.indexOf(47, end + 1)) >= 0) {
-                                            authority = data.substring(end + 1, newEnd);
+                                            authority = Uri.decodeIfNeeded(data.substring(end + 1, newEnd));
                                             end = newEnd;
                                         }
                                     } else {
-                                        scheme = data.substring(end + 1);
+                                        scheme = Uri.decodeIfNeeded(data.substring(end + 1));
                                     }
                                 }
                                 if (scheme == null) {
@@ -1512,23 +1523,38 @@ public class Intent implements Parcelable, Cloneable {
         return intent;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:53:0x0114. Please report as an issue. */
-    /* JADX WARN: Removed duplicated region for block: B:57:0x01ad  */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x01ab A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x01af  */
+    /* JADX WARN: Removed duplicated region for block: B:64:0x01ad A[SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     private static android.content.Intent getIntentOld(java.lang.String r19, int r20) throws java.net.URISyntaxException {
         /*
-            Method dump skipped, instructions count: 562
+            Method dump skipped, instructions count: 564
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.content.Intent.getIntentOld(java.lang.String, int):android.content.Intent");
     }
 
+    private static Integer decodeInteger(String value) {
+        try {
+            return Integer.decode(value);
+        } catch (NumberFormatException e) {
+            if (value != null) {
+                try {
+                    if (value.startsWith("0x")) {
+                        return Integer.valueOf(Integer.parseUnsignedInt(value.substring(2), 16));
+                    }
+                } catch (NumberFormatException e2) {
+                }
+            }
+            throw e;
+        }
+    }
+
     /*  JADX ERROR: Type inference failed
-        jadx.core.utils.exceptions.JadxOverflowException: Type update terminated with stack overflow, arg: (r0v0 ?? I:??[int, boolean, OBJECT, ARRAY, byte, short, char] A[D('intent' android.content.Intent)]), method size: 2408
+        jadx.core.utils.exceptions.JadxOverflowException: Type update terminated with stack overflow, arg: (r3v5 ??), method size: 2408
         	at jadx.core.utils.ErrorsCounter.addError(ErrorsCounter.java:59)
         	at jadx.core.utils.ErrorsCounter.error(ErrorsCounter.java:31)
         	at jadx.core.dex.attributes.nodes.NotificationAttrNode.addError(NotificationAttrNode.java:19)
@@ -1559,17 +1585,15 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public String getDataString() {
-        Uri uri = this.mData;
-        if (uri != null) {
-            return uri.toString();
+        if (this.mData != null) {
+            return this.mData.toString();
         }
         return null;
     }
 
     public String getScheme() {
-        Uri uri = this.mData;
-        if (uri != null) {
-            return uri.getScheme();
+        if (this.mData != null) {
+            return this.mData.getScheme();
         }
         return null;
     }
@@ -1591,12 +1615,10 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public String resolveType(ContentResolver resolver) {
-        String str = this.mType;
-        if (str != null) {
-            return str;
+        if (this.mType != null) {
+            return this.mType;
         }
-        Uri uri = this.mData;
-        if (uri != null && "content".equals(uri.getScheme())) {
+        if (this.mData != null && "content".equals(this.mData.getScheme())) {
             return resolver.getType(this.mData);
         }
         return null;
@@ -1614,8 +1636,7 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public boolean hasCategory(String category) {
-        ArraySet<String> arraySet = this.mCategories;
-        return arraySet != null && arraySet.contains(category);
+        return this.mCategories != null && this.mCategories.contains(category);
     }
 
     public Set<String> getCategories() {
@@ -1643,33 +1664,28 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public void setExtrasClassLoader(ClassLoader loader) {
-        Bundle bundle = this.mExtras;
-        if (bundle != null) {
-            bundle.setClassLoader(loader);
+        if (this.mExtras != null) {
+            this.mExtras.setClassLoader(loader);
         }
     }
 
     public boolean hasExtra(String name) {
-        Bundle bundle = this.mExtras;
-        return bundle != null && bundle.containsKey(name);
+        return this.mExtras != null && this.mExtras.containsKey(name);
     }
 
     public boolean hasFileDescriptors() {
-        Bundle bundle = this.mExtras;
-        return bundle != null && bundle.hasFileDescriptors();
+        return this.mExtras != null && this.mExtras.hasFileDescriptors();
     }
 
     public void setAllowFds(boolean allowFds) {
-        Bundle bundle = this.mExtras;
-        if (bundle != null) {
-            bundle.setAllowFds(allowFds);
+        if (this.mExtras != null) {
+            this.mExtras.setAllowFds(allowFds);
         }
     }
 
     public void setDefusable(boolean defusable) {
-        Bundle bundle = this.mExtras;
-        if (bundle != null) {
-            bundle.setDefusable(defusable);
+        if (this.mExtras != null) {
+            this.mExtras.setDefusable(defusable);
         }
     }
 
@@ -1679,254 +1695,220 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public boolean getBooleanExtra(String name, boolean defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getBoolean(name, defaultValue);
+        return this.mExtras == null ? defaultValue : this.mExtras.getBoolean(name, defaultValue);
     }
 
     public byte getByteExtra(String name, byte defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getByte(name, defaultValue).byteValue();
+        return this.mExtras == null ? defaultValue : this.mExtras.getByte(name, defaultValue).byteValue();
     }
 
     public short getShortExtra(String name, short defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getShort(name, defaultValue);
+        return this.mExtras == null ? defaultValue : this.mExtras.getShort(name, defaultValue);
     }
 
     public char getCharExtra(String name, char defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getChar(name, defaultValue);
+        return this.mExtras == null ? defaultValue : this.mExtras.getChar(name, defaultValue);
     }
 
     public int getIntExtra(String name, int defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getInt(name, defaultValue);
+        return this.mExtras == null ? defaultValue : this.mExtras.getInt(name, defaultValue);
     }
 
     public long getLongExtra(String name, long defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getLong(name, defaultValue);
+        return this.mExtras == null ? defaultValue : this.mExtras.getLong(name, defaultValue);
     }
 
     public float getFloatExtra(String name, float defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getFloat(name, defaultValue);
+        return this.mExtras == null ? defaultValue : this.mExtras.getFloat(name, defaultValue);
     }
 
     public double getDoubleExtra(String name, double defaultValue) {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? defaultValue : bundle.getDouble(name, defaultValue);
+        return this.mExtras == null ? defaultValue : this.mExtras.getDouble(name, defaultValue);
     }
 
     public String getStringExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getString(name);
+        return this.mExtras.getString(name);
     }
 
     public CharSequence getCharSequenceExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getCharSequence(name);
+        return this.mExtras.getCharSequence(name);
     }
 
     @Deprecated
     public <T extends Parcelable> T getParcelableExtra(String str) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return (T) bundle.getParcelable(str);
+        return (T) this.mExtras.getParcelable(str);
     }
 
     public <T> T getParcelableExtra(String str, Class<T> cls) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return (T) bundle.getParcelable(str, cls);
+        return (T) this.mExtras.getParcelable(str, cls);
     }
 
     @Deprecated
     public Parcelable[] getParcelableArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getParcelableArray(name);
+        return this.mExtras.getParcelableArray(name);
     }
 
     public <T> T[] getParcelableArrayExtra(String str, Class<T> cls) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return (T[]) bundle.getParcelableArray(str, cls);
+        return (T[]) this.mExtras.getParcelableArray(str, cls);
     }
 
     @Deprecated
     public <T extends Parcelable> ArrayList<T> getParcelableArrayListExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getParcelableArrayList(name);
+        return this.mExtras.getParcelableArrayList(name);
     }
 
     public <T> ArrayList<T> getParcelableArrayListExtra(String name, Class<? extends T> clazz) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getParcelableArrayList(name, clazz);
+        return this.mExtras.getParcelableArrayList(name, clazz);
     }
 
     public Serializable getSerializableExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getSerializable(name);
+        return this.mExtras.getSerializable(name);
     }
 
     public <T extends Serializable> T getSerializableExtra(String str, Class<T> cls) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return (T) bundle.getSerializable(str, cls);
+        return (T) this.mExtras.getSerializable(str, cls);
     }
 
     public ArrayList<Integer> getIntegerArrayListExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getIntegerArrayList(name);
+        return this.mExtras.getIntegerArrayList(name);
     }
 
     public ArrayList<String> getStringArrayListExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getStringArrayList(name);
+        return this.mExtras.getStringArrayList(name);
     }
 
     public ArrayList<CharSequence> getCharSequenceArrayListExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getCharSequenceArrayList(name);
+        return this.mExtras.getCharSequenceArrayList(name);
     }
 
     public boolean[] getBooleanArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getBooleanArray(name);
+        return this.mExtras.getBooleanArray(name);
     }
 
     public byte[] getByteArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getByteArray(name);
+        return this.mExtras.getByteArray(name);
     }
 
     public short[] getShortArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getShortArray(name);
+        return this.mExtras.getShortArray(name);
     }
 
     public char[] getCharArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getCharArray(name);
+        return this.mExtras.getCharArray(name);
     }
 
     public int[] getIntArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getIntArray(name);
+        return this.mExtras.getIntArray(name);
     }
 
     public long[] getLongArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getLongArray(name);
+        return this.mExtras.getLongArray(name);
     }
 
     public float[] getFloatArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getFloatArray(name);
+        return this.mExtras.getFloatArray(name);
     }
 
     public double[] getDoubleArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getDoubleArray(name);
+        return this.mExtras.getDoubleArray(name);
     }
 
     public String[] getStringArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getStringArray(name);
+        return this.mExtras.getStringArray(name);
     }
 
     public CharSequence[] getCharSequenceArrayExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getCharSequenceArray(name);
+        return this.mExtras.getCharSequenceArray(name);
     }
 
     public Bundle getBundleExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getBundle(name);
+        return this.mExtras.getBundle(name);
     }
 
     @Deprecated
     public IBinder getIBinderExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return bundle.getIBinder(name);
+        return this.mExtras.getIBinder(name);
     }
 
     @Deprecated
     public Object getExtra(String name, Object defaultValue) {
         Object result2;
-        Bundle bundle = this.mExtras;
-        if (bundle == null || (result2 = bundle.get(name)) == null) {
+        if (this.mExtras == null || (result2 = this.mExtras.get(name)) == null) {
             return defaultValue;
         }
         return result2;
@@ -1940,16 +1922,14 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public int getExtrasTotalSize() {
-        Bundle bundle = this.mExtras;
-        if (bundle != null) {
-            return bundle.getSize();
+        if (this.mExtras != null) {
+            return this.mExtras.getSize();
         }
         return 0;
     }
 
     public boolean canStripForHistory() {
-        Bundle bundle = this.mExtras;
-        return (bundle != null && bundle.isParcelled()) || this.mClipData != null;
+        return (this.mExtras != null && this.mExtras.isParcelled()) || this.mClipData != null;
     }
 
     public Intent maybeStripForHistory() {
@@ -1961,6 +1941,10 @@ public class Intent implements Parcelable, Cloneable {
 
     public int getFlags() {
         return this.mFlags;
+    }
+
+    public int getExtendedFlags() {
+        return this.mExtendedFlags;
     }
 
     public boolean isExcludingStopped() {
@@ -1980,9 +1964,8 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public ComponentName resolveActivity(PackageManager pm) {
-        ComponentName componentName = this.mComponent;
-        if (componentName != null) {
-            return componentName;
+        if (this.mComponent != null) {
+            return this.mComponent;
         }
         ResolveInfo info = pm.resolveActivity(this, 65536);
         if (info != null) {
@@ -1992,10 +1975,9 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public ActivityInfo resolveActivityInfo(PackageManager pm, int flags) {
-        ComponentName componentName = this.mComponent;
-        if (componentName != null) {
+        if (this.mComponent != null) {
             try {
-                ActivityInfo ai = pm.getActivityInfo(componentName, flags);
+                ActivityInfo ai = pm.getActivityInfo(this.mComponent, flags);
                 return ai;
             } catch (PackageManager.NameNotFoundException e) {
                 return null;
@@ -2010,9 +1992,8 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public ComponentName resolveSystemService(PackageManager pm, int flags) {
-        ComponentName componentName = this.mComponent;
-        if (componentName != null) {
-            return componentName;
+        if (this.mComponent != null) {
+            return this.mComponent;
         }
         List<ResolveInfo> results = pm.queryIntentServices(this, flags);
         if (results == null) {
@@ -2081,9 +2062,8 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public void removeCategory(String category) {
-        ArraySet<String> arraySet = this.mCategories;
-        if (arraySet != null) {
-            arraySet.remove(category);
+        if (this.mCategories != null) {
+            this.mCategories.remove(category);
             if (this.mCategories.size() == 0) {
                 this.mCategories = null;
             }
@@ -2344,17 +2324,14 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public Intent putExtras(Intent src) {
-        Bundle bundle = src.mExtras;
-        if (bundle != null) {
-            Bundle bundle2 = this.mExtras;
-            if (bundle2 == null) {
+        if (src.mExtras != null) {
+            if (this.mExtras == null) {
                 this.mExtras = new Bundle(src.mExtras);
             } else {
-                bundle2.putAll(bundle);
+                this.mExtras.putAll(src.mExtras);
             }
         }
-        int i = src.mLocalFlags;
-        if ((i & 2) != 0 && (i & 36) == 0) {
+        if ((src.mLocalFlags & 2) != 0 && (src.mLocalFlags & 36) == 0) {
             this.mLocalFlags |= 8;
         }
         return this;
@@ -2382,9 +2359,8 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public void removeExtra(String name) {
-        Bundle bundle = this.mExtras;
-        if (bundle != null) {
-            bundle.remove(name);
+        if (this.mExtras != null) {
+            this.mExtras.remove(name);
             if (this.mExtras.size() == 0) {
                 this.mExtras = null;
             }
@@ -2401,8 +2377,17 @@ public class Intent implements Parcelable, Cloneable {
         return this;
     }
 
+    public Intent addExtendedFlags(int flags) {
+        this.mExtendedFlags |= flags;
+        return this;
+    }
+
     public void removeFlags(int flags) {
         this.mFlags &= ~flags;
+    }
+
+    public void removeExtendedFlags(int flags) {
+        this.mExtendedFlags &= ~flags;
     }
 
     public Intent setPackage(String packageName) {
@@ -2442,56 +2427,48 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public int fillIn(Intent other, int flags) {
-        int i;
         int changes = 0;
         boolean mayHaveCopiedUris = false;
-        String str = other.mAction;
-        if (str != null && (this.mAction == null || (flags & 1) != 0)) {
-            this.mAction = str;
+        if (other.mAction != null && (this.mAction == null || (flags & 1) != 0)) {
+            this.mAction = other.mAction;
             changes = 0 | 1;
         }
-        Uri uri = other.mData;
-        if ((uri != null || other.mType != null) && ((this.mData == null && this.mType == null) || (flags & 2) != 0)) {
-            this.mData = uri;
+        if ((other.mData != null || other.mType != null) && ((this.mData == null && this.mType == null) || (flags & 2) != 0)) {
+            this.mData = other.mData;
             this.mType = other.mType;
             changes |= 2;
             mayHaveCopiedUris = true;
         }
-        String str2 = other.mIdentifier;
-        if (str2 != null && (this.mIdentifier == null || (flags & 256) != 0)) {
-            this.mIdentifier = str2;
+        if (other.mIdentifier != null && (this.mIdentifier == null || (flags & 256) != 0)) {
+            this.mIdentifier = other.mIdentifier;
             changes |= 256;
         }
-        ArraySet<String> arraySet = other.mCategories;
-        if (arraySet != null && (this.mCategories == null || (flags & 4) != 0)) {
-            if (arraySet != null) {
+        if (other.mCategories != null && (this.mCategories == null || (flags & 4) != 0)) {
+            if (other.mCategories != null) {
                 this.mCategories = new ArraySet<>((ArraySet) other.mCategories);
             }
             changes |= 4;
         }
-        String str3 = other.mPackage;
-        if (str3 != null && ((this.mPackage == null || (flags & 16) != 0) && this.mSelector == null)) {
-            this.mPackage = str3;
+        if (other.mPackage != null && ((this.mPackage == null || (flags & 16) != 0) && this.mSelector == null)) {
+            this.mPackage = other.mPackage;
             changes |= 16;
         }
-        Intent intent = other.mSelector;
-        if (intent != null && (flags & 64) != 0 && this.mPackage == null) {
-            this.mSelector = new Intent(intent);
+        if (other.mSelector != null && (flags & 64) != 0 && this.mPackage == null) {
+            this.mSelector = new Intent(other.mSelector);
             this.mPackage = null;
             changes |= 64;
         }
-        ClipData clipData = other.mClipData;
-        if (clipData != null && (this.mClipData == null || (flags & 128) != 0)) {
-            this.mClipData = clipData;
+        if (other.mClipData != null && (this.mClipData == null || (flags & 128) != 0)) {
+            this.mClipData = other.mClipData;
             changes |= 128;
             mayHaveCopiedUris = true;
         }
-        ComponentName componentName = other.mComponent;
-        if (componentName != null && (flags & 8) != 0) {
-            this.mComponent = componentName;
+        if (other.mComponent != null && (flags & 8) != 0) {
+            this.mComponent = other.mComponent;
             changes |= 8;
         }
         this.mFlags |= other.mFlags;
+        this.mExtendedFlags |= other.mExtendedFlags;
         if (other.mSourceBounds != null && (this.mSourceBounds == null || (flags & 32) != 0)) {
             this.mSourceBounds = new Rect(other.mSourceBounds);
             changes |= 32;
@@ -2511,8 +2488,8 @@ public class Intent implements Parcelable, Cloneable {
                 Log.w(TAG, "Failure filling in extras", e);
             }
         }
-        if (mayHaveCopiedUris && this.mContentUserHint == -2 && (i = other.mContentUserHint) != -2) {
-            this.mContentUserHint = i;
+        if (mayHaveCopiedUris && this.mContentUserHint == -2 && other.mContentUserHint != -2) {
+            this.mContentUserHint = other.mContentUserHint;
         }
         return changes;
     }
@@ -2521,7 +2498,6 @@ public class Intent implements Parcelable, Cloneable {
         this.mExtras = extrasMerger.merge(this.mExtras, other.mExtras);
     }
 
-    /* loaded from: classes.dex */
     public static final class FilterComparison {
         private final int mHashCode;
         private final Intent mIntent;
@@ -2556,31 +2532,24 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public int filterHashCode() {
-        String str = this.mAction;
-        int code = str != null ? 0 + str.hashCode() : 0;
-        Uri uri = this.mData;
-        if (uri != null) {
-            code += uri.hashCode();
+        int code = this.mAction != null ? 0 + this.mAction.hashCode() : 0;
+        if (this.mData != null) {
+            code += this.mData.hashCode();
         }
-        String str2 = this.mType;
-        if (str2 != null) {
-            code += str2.hashCode();
+        if (this.mType != null) {
+            code += this.mType.hashCode();
         }
-        String str3 = this.mIdentifier;
-        if (str3 != null) {
-            code += str3.hashCode();
+        if (this.mIdentifier != null) {
+            code += this.mIdentifier.hashCode();
         }
-        String str4 = this.mPackage;
-        if (str4 != null) {
-            code += str4.hashCode();
+        if (this.mPackage != null) {
+            code += this.mPackage.hashCode();
         }
-        ComponentName componentName = this.mComponent;
-        if (componentName != null) {
-            code += componentName.hashCode();
+        if (this.mComponent != null) {
+            code += this.mComponent.hashCode();
         }
-        ArraySet<String> arraySet = this.mCategories;
-        if (arraySet != null) {
-            return code + arraySet.hashCode();
+        if (this.mCategories != null) {
+            return code + this.mCategories.hashCode();
         }
         return code;
     }
@@ -2666,6 +2635,13 @@ public class Intent implements Parcelable, Cloneable {
             first = false;
             b.append("flg=0x").append(Integer.toHexString(this.mFlags));
         }
+        if (this.mExtendedFlags != 0) {
+            if (!first) {
+                b.append(' ');
+            }
+            first = false;
+            b.append("xflg=0x").append(Integer.toHexString(this.mExtendedFlags));
+        }
         if (this.mPackage != null) {
             if (!first) {
                 b.append(' ');
@@ -2740,61 +2716,54 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     private void dumpDebugWithoutFieldId(ProtoOutputStream proto, boolean secure, boolean comp, boolean extras, boolean clip) {
-        Bundle bundle;
-        ComponentName componentName;
-        String str = this.mAction;
-        if (str != null) {
-            proto.write(1138166333441L, str);
+        if (this.mAction != null) {
+            proto.write(1138166333441L, this.mAction);
         }
-        ArraySet<String> arraySet = this.mCategories;
-        if (arraySet != null) {
-            Iterator<String> it = arraySet.iterator();
+        if (this.mCategories != null) {
+            Iterator<String> it = this.mCategories.iterator();
             while (it.hasNext()) {
                 String category = it.next();
                 proto.write(2237677961218L, category);
             }
         }
-        Uri uri = this.mData;
-        if (uri != null) {
+        if (this.mData != null) {
+            Uri uri = this.mData;
             proto.write(1138166333443L, secure ? uri.toSafeString() : uri.toString());
         }
-        String str2 = this.mType;
-        if (str2 != null) {
-            proto.write(1138166333444L, str2);
+        if (this.mType != null) {
+            proto.write(1138166333444L, this.mType);
         }
-        String str3 = this.mIdentifier;
-        if (str3 != null) {
-            proto.write(1138166333453L, str3);
+        if (this.mIdentifier != null) {
+            proto.write(1138166333453L, this.mIdentifier);
         }
         if (this.mFlags != 0) {
             proto.write(1138166333445L, "0x" + Integer.toHexString(this.mFlags));
         }
-        String str4 = this.mPackage;
-        if (str4 != null) {
-            proto.write(1138166333446L, str4);
+        if (this.mExtendedFlags != 0) {
+            proto.write(1138166333454L, "0x" + Integer.toHexString(this.mExtendedFlags));
         }
-        if (comp && (componentName = this.mComponent) != null) {
-            componentName.dumpDebug(proto, 1146756268039L);
+        if (this.mPackage != null) {
+            proto.write(1138166333446L, this.mPackage);
         }
-        Rect rect = this.mSourceBounds;
-        if (rect != null) {
-            proto.write(1138166333448L, rect.toShortString());
+        if (comp && this.mComponent != null) {
+            this.mComponent.dumpDebug(proto, 1146756268039L);
+        }
+        if (this.mSourceBounds != null) {
+            proto.write(1138166333448L, this.mSourceBounds.toShortString());
         }
         if (this.mClipData != null) {
             StringBuilder b = new StringBuilder();
             this.mClipData.toShortString(b, !clip || secure);
             proto.write(1138166333449L, b.toString());
         }
-        if (extras && (bundle = this.mExtras) != null) {
-            proto.write(1138166333450L, bundle.toShortString());
+        if (extras && this.mExtras != null) {
+            proto.write(1138166333450L, this.mExtras.toShortString());
         }
-        int i = this.mContentUserHint;
-        if (i != 0) {
-            proto.write(1120986464267L, i);
+        if (this.mContentUserHint != 0) {
+            proto.write(1120986464267L, this.mContentUserHint);
         }
-        Intent intent = this.mSelector;
-        if (intent != null) {
-            proto.write(1138166333452L, intent.toShortString(secure, comp, extras, clip));
+        if (this.mSelector != null) {
+            proto.write(1138166333452L, this.mSelector.toShortString(secure, comp, extras, clip));
         }
     }
 
@@ -2810,26 +2779,25 @@ public class Intent implements Parcelable, Cloneable {
                 throw new IllegalArgumentException("Intent must include an explicit package name to build an android-app: " + this);
             }
             uri.append("android-app://");
-            uri.append(this.mPackage);
+            uri.append(Uri.encode(this.mPackage));
             String scheme = null;
-            Uri uri2 = this.mData;
-            if (uri2 != null && (scheme = uri2.getScheme()) != null) {
+            if (this.mData != null && (scheme = Uri.encodeIfNotEncoded(this.mData.getScheme(), null)) != null) {
                 uri.append('/');
                 uri.append(scheme);
-                String authority = this.mData.getEncodedAuthority();
+                String authority = Uri.encodeIfNotEncoded(this.mData.getEncodedAuthority(), null);
                 if (authority != null) {
                     uri.append('/');
                     uri.append(authority);
-                    String path = this.mData.getEncodedPath();
+                    String path = Uri.encodeIfNotEncoded(this.mData.getEncodedPath(), "/");
                     if (path != null) {
                         uri.append(path);
                     }
-                    String queryParams = this.mData.getEncodedQuery();
+                    String queryParams = Uri.encodeIfNotEncoded(this.mData.getEncodedQuery(), null);
                     if (queryParams != null) {
                         uri.append('?');
                         uri.append(queryParams);
                     }
-                    String fragment = this.mData.getEncodedFragment();
+                    String fragment = Uri.encodeIfNotEncoded(this.mData.getEncodedFragment(), null);
                     if (fragment != null) {
                         uri.append('#');
                         uri.append(fragment);
@@ -2840,9 +2808,8 @@ public class Intent implements Parcelable, Cloneable {
             return uri.toString();
         }
         String scheme2 = null;
-        Uri uri3 = this.mData;
-        if (uri3 != null) {
-            String data = uri3.toString();
+        if (this.mData != null) {
+            String data = this.mData.toString();
             if ((flags & 1) != 0) {
                 int N = data.length();
                 int i = 0;
@@ -2873,9 +2840,7 @@ public class Intent implements Parcelable, Cloneable {
         toUriInner(frag, scheme, defAction, defPackage, flags);
         if (this.mSelector != null) {
             frag.append("SEL;");
-            Intent intent = this.mSelector;
-            Uri uri2 = intent.mData;
-            intent.toUriInner(frag, uri2 != null ? uri2.getScheme() : null, null, null, flags);
+            this.mSelector.toUriInner(frag, this.mSelector.mData != null ? this.mSelector.mData.getScheme() : null, null, null, flags);
         }
         if (frag.length() > 0) {
             uri.append("#Intent;");
@@ -2889,8 +2854,7 @@ public class Intent implements Parcelable, Cloneable {
         if (scheme != null) {
             uri.append("scheme=").append(Uri.encode(scheme)).append(';');
         }
-        String str = this.mAction;
-        if (str != null && !str.equals(defAction)) {
+        if (this.mAction != null && !this.mAction.equals(defAction)) {
             uri.append("action=").append(Uri.encode(this.mAction)).append(';');
         }
         if (this.mCategories != null) {
@@ -2907,8 +2871,10 @@ public class Intent implements Parcelable, Cloneable {
         if (this.mFlags != 0) {
             uri.append("launchFlags=0x").append(Integer.toHexString(this.mFlags)).append(';');
         }
-        String str2 = this.mPackage;
-        if (str2 != null && !str2.equals(defPackage)) {
+        if (this.mExtendedFlags != 0) {
+            uri.append("extendedLaunchFlags=0x").append(Integer.toHexString(this.mExtendedFlags)).append(';');
+        }
+        if (this.mPackage != null && !this.mPackage.equals(defPackage)) {
             uri.append("package=").append(Uri.encode(this.mPackage)).append(';');
         }
         if (this.mComponent != null) {
@@ -2917,9 +2883,8 @@ public class Intent implements Parcelable, Cloneable {
         if (this.mSourceBounds != null) {
             uri.append("sourceBounds=").append(Uri.encode(this.mSourceBounds.flattenToString())).append(';');
         }
-        Bundle bundle = this.mExtras;
-        if (bundle != null) {
-            for (String key : bundle.keySet()) {
+        if (this.mExtras != null) {
+            for (String key : this.mExtras.keySet()) {
                 Object value = this.mExtras.get(key);
                 if (value instanceof String) {
                     entryType = 'S';
@@ -2954,9 +2919,8 @@ public class Intent implements Parcelable, Cloneable {
 
     @Override // android.os.Parcelable
     public int describeContents() {
-        Bundle bundle = this.mExtras;
-        if (bundle != null) {
-            return bundle.describeContents();
+        if (this.mExtras != null) {
+            return this.mExtras.describeContents();
         }
         return 0;
     }
@@ -2968,6 +2932,7 @@ public class Intent implements Parcelable, Cloneable {
         parcel.writeString8(this.mType);
         parcel.writeString8(this.mIdentifier);
         parcel.writeInt(this.mFlags);
+        parcel.writeInt(this.mExtendedFlags);
         parcel.writeString8(this.mPackage);
         ComponentName.writeToParcel(this.mComponent, parcel);
         if (this.mSourceBounds != null) {
@@ -2976,9 +2941,8 @@ public class Intent implements Parcelable, Cloneable {
         } else {
             parcel.writeInt(0);
         }
-        ArraySet<String> arraySet = this.mCategories;
-        if (arraySet != null) {
-            int size = arraySet.size();
+        if (this.mCategories != null) {
+            int size = this.mCategories.size();
             parcel.writeInt(size);
             for (int i2 = 0; i2 < size; i2++) {
                 parcel.writeString8(this.mCategories.valueAt(i2));
@@ -3006,26 +2970,9 @@ public class Intent implements Parcelable, Cloneable {
         } else {
             parcel.writeInt(0);
         }
-        parcel.writeBoolean(this.mIsRemoteAppLaunch);
         parcel.writeInt(this.mLaunchOverTargetTaskId);
         parcel.writeInt(this.mForceLaunchOverTargetTask ? 1 : 0);
-    }
-
-    /* renamed from: android.content.Intent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Intent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Intent createFromParcel(Parcel in) {
-            return new Intent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Intent[] newArray(int size) {
-            return new Intent[size];
-        }
+        parcel.writeBoolean(this.mIsRemoteAppLaunch);
     }
 
     protected Intent(Parcel in) {
@@ -3033,6 +2980,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mIsRemoteAppLaunch = false;
         this.mLaunchTaskIdForAliasManagedTarget = -1;
         this.mLaunchTaskIdForSingleInstancePerTask = -1;
+        this.mIsAiKeyAppLaunch = false;
         this.mLaunchOverTargetTaskId = -1;
         this.mLocalFlags = 2;
         readFromParcel(in);
@@ -3044,6 +2992,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mType = in.readString8();
         this.mIdentifier = in.readString8();
         this.mFlags = in.readInt();
+        this.mExtendedFlags = in.readInt();
         this.mPackage = in.readString8();
         this.mComponent = ComponentName.readFromParcel(in);
         if (in.readInt() != 0) {
@@ -3069,9 +3018,9 @@ public class Intent implements Parcelable, Cloneable {
         if (in.readInt() != 0) {
             this.mOriginalIntent = new Intent(in);
         }
-        this.mIsRemoteAppLaunch = in.readBoolean();
         this.mLaunchOverTargetTaskId = in.readInt();
         this.mForceLaunchOverTargetTask = in.readInt() == 1;
+        this.mIsRemoteAppLaunch = in.readBoolean();
     }
 
     public static Intent parseIntent(Resources resources, XmlPullParser parser, AttributeSet attrs) throws XmlPullParserException, IOException {
@@ -3123,31 +3072,26 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public void saveToXml(XmlSerializer out) throws IOException {
-        String str = this.mAction;
-        if (str != null) {
-            out.attribute(null, "action", str);
+        if (this.mAction != null) {
+            out.attribute(null, "action", this.mAction);
         }
-        Uri uri = this.mData;
-        if (uri != null) {
-            out.attribute(null, "data", uri.toString());
+        if (this.mData != null) {
+            out.attribute(null, "data", this.mData.toString());
         }
-        String str2 = this.mType;
-        if (str2 != null) {
-            out.attribute(null, "type", str2);
+        if (this.mType != null) {
+            out.attribute(null, "type", this.mType);
         }
-        String str3 = this.mIdentifier;
-        if (str3 != null) {
-            out.attribute(null, ATTR_IDENTIFIER, str3);
+        if (this.mIdentifier != null) {
+            out.attribute(null, ATTR_IDENTIFIER, this.mIdentifier);
         }
-        ComponentName componentName = this.mComponent;
-        if (componentName != null) {
-            out.attribute(null, "component", componentName.flattenToShortString());
+        if (this.mComponent != null) {
+            out.attribute(null, "component", this.mComponent.flattenToShortString());
         }
         out.attribute(null, "flags", Integer.toHexString(getFlags()));
         if (this.mCategories != null) {
             out.startTag(null, "categories");
             for (int categoryNdx = this.mCategories.size() - 1; categoryNdx >= 0; categoryNdx--) {
-                out.attribute(null, "category", this.mCategories.valueAt(categoryNdx));
+                out.attribute(null, ATTR_CATEGORY, this.mCategories.valueAt(categoryNdx));
             }
             out.endTag(null, "categories");
         }
@@ -3211,32 +3155,28 @@ public class Intent implements Parcelable, Cloneable {
 
     public void prepareToLeaveProcess(Context context) {
         boolean leavingPackage;
-        ComponentName componentName = this.mComponent;
-        if (componentName != null) {
-            leavingPackage = !Objects.equals(componentName.getPackageName(), context.getPackageName());
+        if (this.mComponent != null) {
+            leavingPackage = !Objects.equals(this.mComponent.getPackageName(), context.getPackageName());
+        } else if (this.mPackage != null) {
+            leavingPackage = !Objects.equals(this.mPackage, context.getPackageName());
         } else {
-            String str = this.mPackage;
-            if (str != null) {
-                leavingPackage = !Objects.equals(str, context.getPackageName());
-            } else {
-                leavingPackage = true;
-            }
+            leavingPackage = true;
         }
         prepareToLeaveProcess(leavingPackage);
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:90:0x013f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:90:0x0149, code lost:
     
-        if (r1.equals(android.content.Intent.ACTION_PROVIDER_CHANGED) != false) goto L238;
+        if (r1.equals(android.content.Intent.ACTION_PROVIDER_CHANGED) != false) goto L100;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void prepareToLeaveProcess(boolean r9) {
+    public void prepareToLeaveProcess(boolean r11) {
         /*
-            Method dump skipped, instructions count: 632
+            Method dump skipped, instructions count: 650
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.content.Intent.prepareToLeaveProcess(boolean):void");
@@ -3253,25 +3193,21 @@ public class Intent implements Parcelable, Cloneable {
     public void prepareToEnterProcess(int localFlags, AttributionSource source) {
         BluetoothDevice device;
         setDefusable(true);
-        Intent intent = this.mSelector;
-        if (intent != null) {
-            intent.prepareToEnterProcess(0, source);
+        if (this.mSelector != null) {
+            this.mSelector.prepareToEnterProcess(0, source);
         }
-        ClipData clipData = this.mClipData;
-        if (clipData != null) {
-            clipData.prepareToEnterProcess(source);
+        if (this.mClipData != null) {
+            this.mClipData.prepareToEnterProcess(source);
         }
-        Intent intent2 = this.mOriginalIntent;
-        if (intent2 != null) {
-            intent2.prepareToEnterProcess(0, source);
+        if (this.mOriginalIntent != null) {
+            this.mOriginalIntent.prepareToEnterProcess(0, source);
         }
         if (this.mContentUserHint != -2 && UserHandle.getAppId(Process.myUid()) != 1000) {
             fixUris(this.mContentUserHint);
             this.mContentUserHint = -2;
         }
         this.mLocalFlags |= localFlags;
-        String str = this.mAction;
-        if (str != null && str.startsWith("android.bluetooth.") && hasExtra("android.bluetooth.device.extra.DEVICE") && (device = (BluetoothDevice) getParcelableExtra("android.bluetooth.device.extra.DEVICE", BluetoothDevice.class)) != null) {
+        if (this.mAction != null && this.mAction.startsWith("android.bluetooth.") && hasExtra("android.bluetooth.device.extra.DEVICE") && (device = (BluetoothDevice) getParcelableExtra("android.bluetooth.device.extra.DEVICE", BluetoothDevice.class)) != null) {
             device.prepareToEnterProcess(source);
         }
     }
@@ -3299,15 +3235,18 @@ public class Intent implements Parcelable, Cloneable {
         return this.mPackage == null && this.mComponent == null && isImageCaptureIntent();
     }
 
+    public boolean isMismatchingFilter() {
+        return (this.mExtendedFlags & 1) != 0;
+    }
+
     public void fixUris(int contentUserHint) {
         Uri output;
         Uri data = getData();
         if (data != null) {
             this.mData = ContentProvider.maybeAddUserId(data, contentUserHint);
         }
-        ClipData clipData = this.mClipData;
-        if (clipData != null) {
-            clipData.fixUris(contentUserHint);
+        if (this.mClipData != null) {
+            this.mClipData.fixUris(contentUserHint);
         }
         String action = getAction();
         if (ACTION_SEND.equals(action)) {
@@ -3340,8 +3279,7 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     public boolean migrateExtraStreamToClipData(Context context) {
-        Bundle bundle = this.mExtras;
-        if ((bundle != null && bundle.isParcelled()) || getClipData() != null) {
+        if ((this.mExtras != null && this.mExtras.isParcelled()) || getClipData() != null) {
             return false;
         }
         String action = getAction();
@@ -3479,18 +3417,16 @@ public class Intent implements Parcelable, Cloneable {
         return (this.mFlags & 524288) == 524288;
     }
 
+    @Deprecated
     public boolean isSandboxActivity(Context context) {
-        String str = this.mAction;
-        if (str != null && str.equals("android.app.sdksandbox.action.START_SANDBOXED_ACTIVITY")) {
+        if (this.mAction != null && this.mAction.equals("android.app.sdksandbox.action.START_SANDBOXED_ACTIVITY")) {
             return true;
         }
         String sandboxPackageName = context.getPackageManager().getSdkSandboxPackageName();
-        String str2 = this.mPackage;
-        if (str2 != null && str2.equals(sandboxPackageName)) {
-            return true;
+        if (this.mPackage == null || !this.mPackage.equals(sandboxPackageName)) {
+            return this.mComponent != null && this.mComponent.getPackageName().equals(sandboxPackageName);
         }
-        ComponentName componentName = this.mComponent;
-        return componentName != null && componentName.getPackageName().equals(sandboxPackageName);
+        return true;
     }
 
     public void semSetLaunchOverTargetTask(int taskId, boolean forceLaunch) {
@@ -3528,5 +3464,13 @@ public class Intent implements Parcelable, Cloneable {
 
     public int getLaunchTaskIdForSingleInstancePerTask() {
         return this.mLaunchTaskIdForSingleInstancePerTask;
+    }
+
+    public boolean isAiKeyAppLaunch() {
+        return this.mIsAiKeyAppLaunch;
+    }
+
+    public void setAiKeyAppLaunch(boolean aiKeyAppLaunch) {
+        this.mIsAiKeyAppLaunch = aiKeyAppLaunch;
     }
 }

@@ -1,22 +1,24 @@
 package android.hardware.biometrics;
 
+import android.content.ComponentName;
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.android.internal.hidden_from_bootclasspath.android.hardware.biometrics.Flags;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class PromptInfo implements Parcelable {
     public static final Parcelable.Creator<PromptInfo> CREATOR = new Parcelable.Creator<PromptInfo>() { // from class: android.hardware.biometrics.PromptInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PromptInfo createFromParcel(Parcel in) {
             return new PromptInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PromptInfo[] newArray(int size) {
             return new PromptInfo[size];
@@ -25,7 +27,9 @@ public class PromptInfo implements Parcelable {
     private boolean mAllowBackgroundAuthentication;
     private List<Integer> mAllowedSensorIds;
     private int mAuthenticators;
+    private ComponentName mComponentNameForConfirmDeviceCredentialActivity;
     private boolean mConfirmationRequested;
+    private PromptContentViewParcelable mContentView;
     private CharSequence mDescription;
     private boolean mDeviceCredentialAllowed;
     private CharSequence mDeviceCredentialDescription;
@@ -34,6 +38,9 @@ public class PromptInfo implements Parcelable {
     private boolean mDisallowBiometricsIfPolicyExists;
     private boolean mIgnoreEnrollmentState;
     private boolean mIsForLegacyFingerprintManager;
+    private Bitmap mLogoBitmap;
+    private String mLogoDescription;
+    private int mLogoRes;
     private CharSequence mNegativeButtonText;
     private boolean mReceiveSystemEvents;
     private int mSemBiometricType;
@@ -41,26 +48,38 @@ public class PromptInfo implements Parcelable {
     private int mSemDisplayId;
     private int mSemPrivilegedFlag;
     private int mSemTaskId;
+    private boolean mShowEmergencyCallButton;
     private CharSequence mSubtitle;
     private CharSequence mTitle;
     private boolean mUseDefaultSubtitle;
     private boolean mUseDefaultTitle;
+    private boolean mUseParentProfileForDeviceCredential;
 
     public PromptInfo() {
         this.mConfirmationRequested = true;
         this.mAllowedSensorIds = new ArrayList();
         this.mIsForLegacyFingerprintManager = false;
+        this.mShowEmergencyCallButton = false;
+        this.mUseParentProfileForDeviceCredential = false;
+        this.mComponentNameForConfirmDeviceCredentialActivity = null;
     }
 
-    public PromptInfo(Parcel in) {
+    PromptInfo(Parcel in) {
         this.mConfirmationRequested = true;
         this.mAllowedSensorIds = new ArrayList();
         this.mIsForLegacyFingerprintManager = false;
+        this.mShowEmergencyCallButton = false;
+        this.mUseParentProfileForDeviceCredential = false;
+        this.mComponentNameForConfirmDeviceCredentialActivity = null;
+        this.mLogoRes = in.readInt();
+        this.mLogoBitmap = (Bitmap) in.readTypedObject(Bitmap.CREATOR);
+        this.mLogoDescription = in.readString();
         this.mTitle = in.readCharSequence();
         this.mUseDefaultTitle = in.readBoolean();
         this.mSubtitle = in.readCharSequence();
         this.mUseDefaultSubtitle = in.readBoolean();
         this.mDescription = in.readCharSequence();
+        this.mContentView = (PromptContentViewParcelable) in.readParcelable(PromptContentViewParcelable.class.getClassLoader(), PromptContentViewParcelable.class);
         this.mDeviceCredentialTitle = in.readCharSequence();
         this.mDeviceCredentialSubtitle = in.readCharSequence();
         this.mDeviceCredentialDescription = in.readCharSequence();
@@ -74,34 +93,19 @@ public class PromptInfo implements Parcelable {
         this.mAllowBackgroundAuthentication = in.readBoolean();
         this.mIgnoreEnrollmentState = in.readBoolean();
         this.mIsForLegacyFingerprintManager = in.readBoolean();
+        this.mShowEmergencyCallButton = in.readBoolean();
+        this.mUseParentProfileForDeviceCredential = in.readBoolean();
+        this.mComponentNameForConfirmDeviceCredentialActivity = (ComponentName) in.readParcelable(ComponentName.class.getClassLoader(), ComponentName.class);
         this.mSemDisplayId = in.readInt();
         this.mSemTaskId = in.readInt();
         this.mSemBiometricType = in.readInt();
         this.mSemPrivilegedFlag = in.readInt();
         int challengeDataLength = in.readInt();
         if (challengeDataLength > 0) {
-            byte[] bArr = new byte[challengeDataLength];
-            this.mSemChallengeData = bArr;
-            in.readByteArray(bArr);
-            return;
-        }
-        this.mSemChallengeData = null;
-    }
-
-    /* renamed from: android.hardware.biometrics.PromptInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PromptInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PromptInfo createFromParcel(Parcel in) {
-            return new PromptInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PromptInfo[] newArray(int size) {
-            return new PromptInfo[size];
+            this.mSemChallengeData = new byte[challengeDataLength];
+            in.readByteArray(this.mSemChallengeData);
+        } else {
+            this.mSemChallengeData = null;
         }
     }
 
@@ -112,11 +116,15 @@ public class PromptInfo implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mLogoRes);
+        dest.writeTypedObject(this.mLogoBitmap, 0);
+        dest.writeString(this.mLogoDescription);
         dest.writeCharSequence(this.mTitle);
         dest.writeBoolean(this.mUseDefaultTitle);
         dest.writeCharSequence(this.mSubtitle);
         dest.writeBoolean(this.mUseDefaultSubtitle);
         dest.writeCharSequence(this.mDescription);
+        dest.writeParcelable(this.mContentView, 0);
         dest.writeCharSequence(this.mDeviceCredentialTitle);
         dest.writeCharSequence(this.mDeviceCredentialSubtitle);
         dest.writeCharSequence(this.mDeviceCredentialDescription);
@@ -130,28 +138,57 @@ public class PromptInfo implements Parcelable {
         dest.writeBoolean(this.mAllowBackgroundAuthentication);
         dest.writeBoolean(this.mIgnoreEnrollmentState);
         dest.writeBoolean(this.mIsForLegacyFingerprintManager);
+        dest.writeBoolean(this.mShowEmergencyCallButton);
+        dest.writeBoolean(this.mUseParentProfileForDeviceCredential);
+        dest.writeParcelable(this.mComponentNameForConfirmDeviceCredentialActivity, 0);
         dest.writeInt(this.mSemDisplayId);
         dest.writeInt(this.mSemTaskId);
         dest.writeInt(this.mSemBiometricType);
         dest.writeInt(this.mSemPrivilegedFlag);
-        byte[] bArr = this.mSemChallengeData;
-        if (bArr != null && bArr.length > 0) {
-            dest.writeInt(bArr.length);
+        if (this.mSemChallengeData != null && this.mSemChallengeData.length > 0) {
+            dest.writeInt(this.mSemChallengeData.length);
             dest.writeByteArray(this.mSemChallengeData);
         } else {
             dest.writeInt(0);
         }
     }
 
-    public boolean containsTestConfigurations() {
+    public boolean requiresTestOrInternalPermission() {
         if (this.mIsForLegacyFingerprintManager && this.mAllowedSensorIds.size() == 1 && !this.mAllowBackgroundAuthentication) {
             return false;
         }
-        return !this.mAllowedSensorIds.isEmpty() || this.mAllowBackgroundAuthentication;
+        return !this.mAllowedSensorIds.isEmpty() || this.mAllowBackgroundAuthentication || this.mIsForLegacyFingerprintManager || this.mIgnoreEnrollmentState || this.mShowEmergencyCallButton || this.mComponentNameForConfirmDeviceCredentialActivity != null;
     }
 
-    public boolean containsPrivateApiConfigurations() {
+    public boolean requiresInternalPermission() {
         return this.mDisallowBiometricsIfPolicyExists || this.mUseDefaultTitle || this.mUseDefaultSubtitle || this.mDeviceCredentialTitle != null || this.mDeviceCredentialSubtitle != null || this.mDeviceCredentialDescription != null || this.mReceiveSystemEvents;
+    }
+
+    public boolean requiresAdvancedPermission() {
+        if (this.mLogoRes != 0 || this.mLogoBitmap != null || this.mLogoDescription != null) {
+            return true;
+        }
+        if (this.mContentView == null || !isContentViewMoreOptionsButtonUsed()) {
+            return Flags.mandatoryBiometrics() && (this.mAuthenticators & 65536) != 0;
+        }
+        return true;
+    }
+
+    public boolean shouldUseParentProfileForDeviceCredential() {
+        return this.mUseParentProfileForDeviceCredential;
+    }
+
+    public boolean isContentViewMoreOptionsButtonUsed() {
+        return Flags.customBiometricPrompt() && this.mContentView != null && (this.mContentView instanceof PromptContentViewWithMoreOptionsButton);
+    }
+
+    public void setLogo(int logoRes, Bitmap logoBitmap) {
+        this.mLogoRes = logoRes;
+        this.mLogoBitmap = logoBitmap;
+    }
+
+    public void setLogoDescription(String logoDescription) {
+        this.mLogoDescription = logoDescription;
     }
 
     public void setTitle(CharSequence title) {
@@ -172,6 +209,10 @@ public class PromptInfo implements Parcelable {
 
     public void setDescription(CharSequence description) {
         this.mDescription = description;
+    }
+
+    public void setContentView(PromptContentView view) {
+        this.mContentView = (PromptContentViewParcelable) view;
     }
 
     public void setDeviceCredentialTitle(CharSequence deviceCredentialTitle) {
@@ -229,6 +270,37 @@ public class PromptInfo implements Parcelable {
         this.mAllowedSensorIds.add(Integer.valueOf(sensorId));
     }
 
+    public void setShowEmergencyCallButton(boolean showEmergencyCallButton) {
+        this.mShowEmergencyCallButton = showEmergencyCallButton;
+    }
+
+    public void setComponentNameForConfirmDeviceCredentialActivity(ComponentName componentNameForConfirmDeviceCredentialActivity) {
+        this.mComponentNameForConfirmDeviceCredentialActivity = componentNameForConfirmDeviceCredentialActivity;
+    }
+
+    public void setUseParentProfileForDeviceCredential(boolean useParentProfileForDeviceCredential) {
+        this.mUseParentProfileForDeviceCredential = useParentProfileForDeviceCredential;
+    }
+
+    public Bitmap getLogo() {
+        return this.mLogoBitmap;
+    }
+
+    public int getLogoRes() {
+        return this.mLogoRes;
+    }
+
+    public Bitmap getLogoBitmap() {
+        if (this.mLogoRes == 0) {
+            return this.mLogoBitmap;
+        }
+        return null;
+    }
+
+    public String getLogoDescription() {
+        return this.mLogoDescription;
+    }
+
     public CharSequence getTitle() {
         return this.mTitle;
     }
@@ -247,6 +319,10 @@ public class PromptInfo implements Parcelable {
 
     public CharSequence getDescription() {
         return this.mDescription;
+    }
+
+    public PromptContentView getContentView() {
+        return this.mContentView;
     }
 
     public CharSequence getDeviceCredentialTitle() {
@@ -302,6 +378,14 @@ public class PromptInfo implements Parcelable {
         return this.mIsForLegacyFingerprintManager;
     }
 
+    public boolean isShowEmergencyCallButton() {
+        return this.mShowEmergencyCallButton;
+    }
+
+    public ComponentName getComponentNameForConfirmDeviceCredentialActivity() {
+        return this.mComponentNameForConfirmDeviceCredentialActivity;
+    }
+
     public void semSetDisplayId(int displayId) {
         this.mSemDisplayId = displayId;
     }
@@ -340,5 +424,13 @@ public class PromptInfo implements Parcelable {
 
     public byte[] semGetChallengeData() {
         return this.mSemChallengeData;
+    }
+
+    private boolean semIsContentViewVerticalListUsed() {
+        return Flags.customBiometricPrompt() && this.mContentView != null && (this.mContentView instanceof PromptVerticalListContentView);
+    }
+
+    public boolean semIsDescriptionOptionalUsed() {
+        return isContentViewMoreOptionsButtonUsed() || semIsContentViewVerticalListUsed();
     }
 }

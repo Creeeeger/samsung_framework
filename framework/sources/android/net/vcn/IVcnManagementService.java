@@ -12,7 +12,7 @@ import android.os.ParcelUuid;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface IVcnManagementService extends IInterface {
     public static final String DESCRIPTOR = "android.net.vcn.IVcnManagementService";
 
@@ -32,7 +32,6 @@ public interface IVcnManagementService extends IInterface {
 
     void unregisterVcnStatusCallback(IVcnStatusCallback iVcnStatusCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IVcnManagementService {
         @Override // android.net.vcn.IVcnManagementService
         public void setVcnConfig(ParcelUuid subscriptionGroup, VcnConfig config, String opPkgName) throws RemoteException {
@@ -74,7 +73,6 @@ public interface IVcnManagementService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IVcnManagementService {
         static final int TRANSACTION_addVcnUnderlyingNetworkPolicyListener = 4;
         static final int TRANSACTION_clearVcnConfig = 2;
@@ -138,77 +136,73 @@ public interface IVcnManagementService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVcnManagementService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVcnManagementService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVcnManagementService.DESCRIPTOR);
+                case 1:
+                    ParcelUuid _arg0 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    VcnConfig _arg1 = (VcnConfig) data.readTypedObject(VcnConfig.CREATOR);
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    setVcnConfig(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ParcelUuid _arg02 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearVcnConfig(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<ParcelUuid> _result = getConfiguredSubscriptionGroups(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 4:
+                    IVcnUnderlyingNetworkPolicyListener _arg04 = IVcnUnderlyingNetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addVcnUnderlyingNetworkPolicyListener(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IVcnUnderlyingNetworkPolicyListener _arg05 = IVcnUnderlyingNetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeVcnUnderlyingNetworkPolicyListener(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    NetworkCapabilities _arg06 = (NetworkCapabilities) data.readTypedObject(NetworkCapabilities.CREATOR);
+                    LinkProperties _arg13 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
+                    data.enforceNoDataAvail();
+                    VcnUnderlyingNetworkPolicy _result2 = getUnderlyingNetworkPolicy(_arg06, _arg13);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 7:
+                    ParcelUuid _arg07 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    IVcnStatusCallback _arg14 = IVcnStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    registerVcnStatusCallback(_arg07, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IVcnStatusCallback _arg08 = IVcnStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterVcnStatusCallback(_arg08);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelUuid _arg0 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            VcnConfig _arg1 = (VcnConfig) data.readTypedObject(VcnConfig.CREATOR);
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            setVcnConfig(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ParcelUuid _arg02 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearVcnConfig(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<ParcelUuid> _result = getConfiguredSubscriptionGroups(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 4:
-                            IVcnUnderlyingNetworkPolicyListener _arg04 = IVcnUnderlyingNetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addVcnUnderlyingNetworkPolicyListener(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IVcnUnderlyingNetworkPolicyListener _arg05 = IVcnUnderlyingNetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeVcnUnderlyingNetworkPolicyListener(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            NetworkCapabilities _arg06 = (NetworkCapabilities) data.readTypedObject(NetworkCapabilities.CREATOR);
-                            LinkProperties _arg13 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
-                            data.enforceNoDataAvail();
-                            VcnUnderlyingNetworkPolicy _result2 = getUnderlyingNetworkPolicy(_arg06, _arg13);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 7:
-                            ParcelUuid _arg07 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            IVcnStatusCallback _arg14 = IVcnStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            registerVcnStatusCallback(_arg07, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IVcnStatusCallback _arg08 = IVcnStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterVcnStatusCallback(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IVcnManagementService {
+        private static class Proxy implements IVcnManagementService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

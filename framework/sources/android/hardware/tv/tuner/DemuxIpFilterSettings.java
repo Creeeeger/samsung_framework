@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxIpFilterSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxIpFilterSettings> CREATOR = new Parcelable.Creator<DemuxIpFilterSettings>() { // from class: android.hardware.tv.tuner.DemuxIpFilterSettings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxIpFilterSettings createFromParcel(Parcel _aidl_source) {
             DemuxIpFilterSettings _aidl_out = new DemuxIpFilterSettings();
@@ -17,6 +15,7 @@ public class DemuxIpFilterSettings implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxIpFilterSettings[] newArray(int _aidl_size) {
             return new DemuxIpFilterSettings[_aidl_size];
@@ -24,25 +23,6 @@ public class DemuxIpFilterSettings implements Parcelable {
     };
     public DemuxIpFilterSettingsFilterSettings filterSettings;
     public DemuxIpAddress ipAddr;
-
-    /* renamed from: android.hardware.tv.tuner.DemuxIpFilterSettings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxIpFilterSettings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxIpFilterSettings createFromParcel(Parcel _aidl_source) {
-            DemuxIpFilterSettings _aidl_out = new DemuxIpFilterSettings();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxIpFilterSettings[] newArray(int _aidl_size) {
-            return new DemuxIpFilterSettings[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

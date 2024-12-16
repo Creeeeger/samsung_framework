@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IGbaService extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.gba.IGbaService";
 
     void authenticationRequest(GbaAuthRequest gbaAuthRequest) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGbaService {
         @Override // android.telephony.gba.IGbaService
         public void authenticationRequest(GbaAuthRequest request) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IGbaService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGbaService {
         static final int TRANSACTION_authenticationRequest = 1;
 
@@ -67,24 +65,21 @@ public interface IGbaService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGbaService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGbaService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGbaService.DESCRIPTOR);
+                case 1:
+                    GbaAuthRequest _arg0 = (GbaAuthRequest) data.readTypedObject(GbaAuthRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    authenticationRequest(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            GbaAuthRequest _arg0 = (GbaAuthRequest) data.readTypedObject(GbaAuthRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            authenticationRequest(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IGbaService {
             private IBinder mRemote;
 

@@ -9,7 +9,7 @@ import com.android.internal.telephony.util.TelephonyUtils;
 import com.android.telephony.Rlog;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class CdmaCellLocation extends CellLocation {
     public static final int INVALID_LAT_LONG = Integer.MAX_VALUE;
     private int mBaseStationId;
@@ -37,7 +37,7 @@ public class CdmaCellLocation extends CellLocation {
         this.mBaseStationLongitude = Integer.MAX_VALUE;
         this.mSystemId = -1;
         this.mNetworkId = -1;
-        this.mBaseStationId = bundle.getInt("baseStationId", -1);
+        this.mBaseStationId = bundle.getInt("baseStationId", this.mBaseStationId);
         this.mBaseStationLatitude = bundle.getInt("baseStationLatitude", this.mBaseStationLatitude);
         this.mBaseStationLongitude = bundle.getInt("baseStationLongitude", this.mBaseStationLongitude);
         this.mSystemId = bundle.getInt(Intent.EXTRA_SYSTEM_ID, this.mSystemId);

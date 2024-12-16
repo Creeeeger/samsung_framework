@@ -22,7 +22,7 @@ import com.android.internal.R;
 import java.util.Locale;
 
 /* loaded from: classes4.dex */
-public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDelegate {
+class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDelegate {
     private static final int ANIMATION_DURATION = 300;
     private static final int DEFAULT_END_YEAR = 2100;
     private static final int DEFAULT_START_YEAR = 1900;
@@ -53,24 +53,16 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
 
     public DatePickerCalendarDelegate(DatePicker delegator, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(delegator, context);
-        ColorStateList headerTextColor;
         this.mCurrentView = -1;
         this.mFirstDayOfWeek = 0;
-        AnonymousClass1 anonymousClass1 = new DayPickerView.OnDaySelectedListener() { // from class: android.widget.DatePickerCalendarDelegate.1
-            AnonymousClass1() {
-            }
-
+        this.mOnDaySelectedListener = new DayPickerView.OnDaySelectedListener() { // from class: android.widget.DatePickerCalendarDelegate.1
             @Override // android.widget.DayPickerView.OnDaySelectedListener
             public void onDaySelected(DayPickerView view, Calendar day) {
                 DatePickerCalendarDelegate.this.mCurrentDate.setTimeInMillis(day.getTimeInMillis());
                 DatePickerCalendarDelegate.this.onDateChanged(true, true);
             }
         };
-        this.mOnDaySelectedListener = anonymousClass1;
-        AnonymousClass2 anonymousClass2 = new YearPickerView.OnYearSelectedListener() { // from class: android.widget.DatePickerCalendarDelegate.2
-            AnonymousClass2() {
-            }
-
+        this.mOnYearSelectedListener = new YearPickerView.OnYearSelectedListener() { // from class: android.widget.DatePickerCalendarDelegate.2
             @Override // android.widget.YearPickerView.OnYearSelectedListener
             public void onYearChanged(YearPickerView view, int year) {
                 int day = DatePickerCalendarDelegate.this.mCurrentDate.get(5);
@@ -90,47 +82,38 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
                 DatePickerCalendarDelegate.this.mHeaderYear.requestFocus();
             }
         };
-        this.mOnYearSelectedListener = anonymousClass2;
-        View.OnClickListener onClickListener = new View.OnClickListener() { // from class: android.widget.DatePickerCalendarDelegate$$ExternalSyntheticLambda0
+        this.mOnHeaderClickListener = new View.OnClickListener() { // from class: android.widget.DatePickerCalendarDelegate$$ExternalSyntheticLambda0
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
                 DatePickerCalendarDelegate.this.lambda$new$0(view);
             }
         };
-        this.mOnHeaderClickListener = onClickListener;
         Locale locale = this.mCurrentLocale;
         this.mCurrentDate = Calendar.getInstance(locale);
         this.mTempDate = Calendar.getInstance(locale);
-        Calendar calendar = Calendar.getInstance(locale);
-        this.mMinDate = calendar;
-        Calendar calendar2 = Calendar.getInstance(locale);
-        this.mMaxDate = calendar2;
-        calendar.set(1900, 0, 1);
-        calendar2.set(2100, 11, 31);
+        this.mMinDate = Calendar.getInstance(locale);
+        this.mMaxDate = Calendar.getInstance(locale);
+        this.mMinDate.set(1900, 0, 1);
+        this.mMaxDate.set(2100, 11, 31);
         Resources res = this.mDelegator.getResources();
         TypedArray a = this.mContext.obtainStyledAttributes(attrs, R.styleable.DatePicker, defStyleAttr, defStyleRes);
         LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         int layoutResourceId = a.getResourceId(19, R.layout.date_picker_material);
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(layoutResourceId, (ViewGroup) this.mDelegator, false);
-        this.mContainer = viewGroup;
-        viewGroup.setSaveFromParentEnabled(false);
+        this.mContainer = (ViewGroup) inflater.inflate(layoutResourceId, (ViewGroup) this.mDelegator, false);
+        this.mContainer.setSaveFromParentEnabled(false);
         this.mDelegator.addView(this.mContainer);
         ViewGroup header = (ViewGroup) this.mContainer.findViewById(R.id.date_picker_header);
-        TextView textView = (TextView) header.findViewById(R.id.date_picker_header_year);
-        this.mHeaderYear = textView;
-        textView.setOnClickListener(onClickListener);
-        TextView textView2 = (TextView) header.findViewById(R.id.date_picker_header_date);
-        this.mHeaderMonthDay = textView2;
-        textView2.setOnClickListener(onClickListener);
+        this.mHeaderYear = (TextView) header.findViewById(R.id.date_picker_header_year);
+        this.mHeaderYear.setOnClickListener(this.mOnHeaderClickListener);
+        this.mHeaderMonthDay = (TextView) header.findViewById(R.id.date_picker_header_date);
+        this.mHeaderMonthDay.setOnClickListener(this.mOnHeaderClickListener);
+        ColorStateList headerTextColor = null;
         int monthHeaderTextAppearance = a.getResourceId(10, 0);
-        if (monthHeaderTextAppearance == 0) {
-            headerTextColor = null;
-        } else {
+        if (monthHeaderTextAppearance != 0) {
             TypedArray textAppearance = this.mContext.obtainStyledAttributes(null, ATTRS_TEXT_COLOR, 0, monthHeaderTextAppearance);
             ColorStateList legacyHeaderTextColor = textAppearance.getColorStateList(0);
-            ColorStateList headerTextColor2 = applyLegacyColorFixes(legacyHeaderTextColor);
+            headerTextColor = applyLegacyColorFixes(legacyHeaderTextColor);
             textAppearance.recycle();
-            headerTextColor = headerTextColor2;
         }
         headerTextColor = headerTextColor == null ? a.getColorStateList(18) : headerTextColor;
         if (headerTextColor != null) {
@@ -141,20 +124,17 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
             header.setBackground(a.getDrawable(0));
         }
         a.recycle();
-        ViewAnimator viewAnimator = (ViewAnimator) this.mContainer.findViewById(R.id.animator);
-        this.mAnimator = viewAnimator;
-        DayPickerView dayPickerView = (DayPickerView) viewAnimator.findViewById(R.id.date_picker_day_picker);
-        this.mDayPickerView = dayPickerView;
-        dayPickerView.setFirstDayOfWeek(this.mFirstDayOfWeek);
-        this.mDayPickerView.setMinDate(calendar.getTimeInMillis());
-        this.mDayPickerView.setMaxDate(calendar2.getTimeInMillis());
+        this.mAnimator = (ViewAnimator) this.mContainer.findViewById(R.id.animator);
+        this.mDayPickerView = (DayPickerView) this.mAnimator.findViewById(R.id.date_picker_day_picker);
+        this.mDayPickerView.setFirstDayOfWeek(this.mFirstDayOfWeek);
+        this.mDayPickerView.setMinDate(this.mMinDate.getTimeInMillis());
+        this.mDayPickerView.setMaxDate(this.mMaxDate.getTimeInMillis());
         this.mDayPickerView.setDate(this.mCurrentDate.getTimeInMillis());
-        this.mDayPickerView.setOnDaySelectedListener(anonymousClass1);
-        YearPickerView yearPickerView = (YearPickerView) this.mAnimator.findViewById(R.id.date_picker_year_picker);
-        this.mYearPickerView = yearPickerView;
-        yearPickerView.setRange(calendar, calendar2);
+        this.mDayPickerView.setOnDaySelectedListener(this.mOnDaySelectedListener);
+        this.mYearPickerView = (YearPickerView) this.mAnimator.findViewById(R.id.date_picker_year_picker);
+        this.mYearPickerView.setRange(this.mMinDate, this.mMaxDate);
         this.mYearPickerView.setYear(this.mCurrentDate.get(1));
-        this.mYearPickerView.setOnYearSelectedListener(anonymousClass2);
+        this.mYearPickerView.setOnYearSelectedListener(this.mOnYearSelectedListener);
         this.mSelectDay = res.getString(R.string.select_day);
         this.mSelectYear = res.getString(R.string.select_year);
         onLocaleChanged(this.mCurrentLocale);
@@ -192,58 +172,16 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
         return (dstAlpha << 24) | srcRgb;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DatePickerCalendarDelegate$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements DayPickerView.OnDaySelectedListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.DayPickerView.OnDaySelectedListener
-        public void onDaySelected(DayPickerView view, Calendar day) {
-            DatePickerCalendarDelegate.this.mCurrentDate.setTimeInMillis(day.getTimeInMillis());
-            DatePickerCalendarDelegate.this.onDateChanged(true, true);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DatePickerCalendarDelegate$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements YearPickerView.OnYearSelectedListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.YearPickerView.OnYearSelectedListener
-        public void onYearChanged(YearPickerView view, int year) {
-            int day = DatePickerCalendarDelegate.this.mCurrentDate.get(5);
-            int month = DatePickerCalendarDelegate.this.mCurrentDate.get(2);
-            int daysInMonth = DatePickerCalendarDelegate.getDaysInMonth(month, year);
-            if (day > daysInMonth) {
-                DatePickerCalendarDelegate.this.mCurrentDate.set(5, daysInMonth);
-            }
-            DatePickerCalendarDelegate.this.mCurrentDate.set(1, year);
-            if (DatePickerCalendarDelegate.this.mCurrentDate.compareTo(DatePickerCalendarDelegate.this.mMinDate) < 0) {
-                DatePickerCalendarDelegate.this.mCurrentDate.setTimeInMillis(DatePickerCalendarDelegate.this.mMinDate.getTimeInMillis());
-            } else if (DatePickerCalendarDelegate.this.mCurrentDate.compareTo(DatePickerCalendarDelegate.this.mMaxDate) > 0) {
-                DatePickerCalendarDelegate.this.mCurrentDate.setTimeInMillis(DatePickerCalendarDelegate.this.mMaxDate.getTimeInMillis());
-            }
-            DatePickerCalendarDelegate.this.onDateChanged(true, true);
-            DatePickerCalendarDelegate.this.setCurrentView(0);
-            DatePickerCalendarDelegate.this.mHeaderYear.requestFocus();
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(View v) {
         tryVibrate();
         switch (v.getId()) {
-            case R.id.date_picker_header_date /* 16908971 */:
+            case R.id.date_picker_header_date /* 16908978 */:
                 setCurrentView(0);
-                return;
-            case R.id.date_picker_header_year /* 16908972 */:
+                break;
+            case R.id.date_picker_header_year /* 16908979 */:
                 setCurrentView(1);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -253,9 +191,8 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
         if (headerYear == null) {
             return;
         }
-        DateFormat instanceForSkeleton = DateFormat.getInstanceForSkeleton("EMMMd", locale);
-        this.mMonthDayFormat = instanceForSkeleton;
-        instanceForSkeleton.setContext(DisplayContext.CAPITALIZATION_FOR_BEGINNING_OF_SENTENCE);
+        this.mMonthDayFormat = DateFormat.getInstanceForSkeleton("EMMMd", locale);
+        this.mMonthDayFormat.setContext(DisplayContext.CAPITALIZATION_FOR_BEGINNING_OF_SENTENCE);
         this.mYearFormat = DateFormat.getInstanceForSkeleton("y", locale);
         onCurrentDateChanged(false);
     }
@@ -265,14 +202,15 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
             return;
         }
         String year = this.mYearFormat.format(this.mCurrentDate.getTime());
-        this.mHeaderYear.setText(year);
+        this.mHeaderYear.lambda$setTextAsync$0(year);
         String monthDay = this.mMonthDayFormat.format(this.mCurrentDate.getTime());
-        this.mHeaderMonthDay.setText(monthDay);
+        this.mHeaderMonthDay.lambda$setTextAsync$0(monthDay);
         if (announce) {
             this.mAnimator.announceForAccessibility(getFormattedCurrentDate());
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setCurrentView(int viewIndex) {
         switch (viewIndex) {
             case 0:
@@ -284,7 +222,7 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
                     this.mCurrentView = viewIndex;
                 }
                 this.mAnimator.announceForAccessibility(this.mSelectDay);
-                return;
+                break;
             case 1:
                 int year = this.mCurrentDate.get(1);
                 this.mYearPickerView.setYear(year);
@@ -301,12 +239,11 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
                     this.mCurrentView = viewIndex;
                 }
                 this.mAnimator.announceForAccessibility(this.mSelectYear);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setCurrentView$1() {
         this.mYearPickerView.requestFocus();
         View selected = this.mYearPickerView.getSelectedView();
@@ -335,6 +272,7 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
         resetAutofilledValue();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onDateChanged(boolean fromUser, boolean callbackToClient) {
         int year = this.mCurrentDate.get(1);
         if (callbackToClient && (this.mOnDateChangedListener != null || this.mAutoFillChangeListener != null)) {
@@ -418,9 +356,8 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
 
     @Override // android.widget.DatePicker.DatePickerDelegate
     public int getFirstDayOfWeek() {
-        int i = this.mFirstDayOfWeek;
-        if (i != 0) {
-            return i;
+        if (this.mFirstDayOfWeek != 0) {
+            return this.mFirstDayOfWeek;
         }
         return this.mCurrentDate.getFirstDayOfWeek();
     }
@@ -474,12 +411,11 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
         int year = this.mCurrentDate.get(1);
         int month = this.mCurrentDate.get(2);
         int day = this.mCurrentDate.get(5);
-        int i = this.mCurrentView;
-        if (i == 0) {
+        if (this.mCurrentView == 0) {
             int listPosition2 = this.mDayPickerView.getMostVisiblePosition();
             listPosition = listPosition2;
             listPositionOffset = -1;
-        } else if (i != 1) {
+        } else if (this.mCurrentView != 1) {
             listPosition = -1;
             listPositionOffset = -1;
         } else {
@@ -523,6 +459,7 @@ public class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDel
         return DatePicker.class.getName();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int getDaysInMonth(int month, int year) {
         switch (month) {
             case 0:

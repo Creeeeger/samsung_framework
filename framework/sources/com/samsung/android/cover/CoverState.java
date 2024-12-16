@@ -8,7 +8,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import com.android.internal.R;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CoverState implements Parcelable {
     public static final int COLOR_BLACK = 1;
     public static final int COLOR_BLUE = 5;
@@ -47,14 +47,13 @@ public class CoverState implements Parcelable {
     public static final boolean COVER_ATTACHED = true;
     public static final boolean COVER_DETACHED = false;
     public static final Parcelable.Creator<CoverState> CREATOR = new Parcelable.Creator<CoverState>() { // from class: com.samsung.android.cover.CoverState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoverState createFromParcel(Parcel parcel) {
             return new CoverState(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoverState[] newArray(int size) {
             return new CoverState[size];
@@ -86,6 +85,7 @@ public class CoverState implements Parcelable {
     public static final int TYPE_NEON_COVER = 11;
     public static final int TYPE_NFC_SMART_COVER = 255;
     public static final int TYPE_NONE = 2;
+    public static final int TYPE_PALETTE_COVER = 18;
     public static final int TYPE_SVIEW_CHARGER_COVER = 3;
     public static final int TYPE_SVIEW_COVER = 1;
     public static final int TYPE_S_CHARGER_COVER = 5;
@@ -130,7 +130,7 @@ public class CoverState implements Parcelable {
         this.heightPixel = defaultHeightPixel;
         this.attached = false;
         this.model = 0;
-        updateVisibleRect(defaultType);
+        updateVisibleRect(this.type);
     }
 
     public CoverState(boolean switchState, int type, int color, int widthPixel, int heightPixel) {
@@ -242,9 +242,8 @@ public class CoverState implements Parcelable {
         }
         if (src.readInt() == 1) {
             int smartCoverCookieLength = src.readInt();
-            byte[] bArr = new byte[smartCoverCookieLength];
-            this.smartCoverCookie = bArr;
-            src.readByteArray(bArr);
+            this.smartCoverCookie = new byte[smartCoverCookieLength];
+            src.readByteArray(this.smartCoverCookie);
         }
         int smartCoverCookieLength2 = src.readInt();
         if (smartCoverCookieLength2 == 1) {
@@ -254,23 +253,6 @@ public class CoverState implements Parcelable {
         this.fotaMode = src.readInt();
         this.friendsType = src.readInt();
         this.mVisibleRect = (Rect) src.readParcelable(Rect.class.getClassLoader());
-    }
-
-    /* renamed from: com.samsung.android.cover.CoverState$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CoverState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CoverState createFromParcel(Parcel parcel) {
-            return new CoverState(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CoverState[] newArray(int size) {
-            return new CoverState[size];
-        }
     }
 
     public String toString() {

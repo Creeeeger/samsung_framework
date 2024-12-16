@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class HostEndpointInfo implements Parcelable {
     public static final Parcelable.Creator<HostEndpointInfo> CREATOR = new Parcelable.Creator<HostEndpointInfo>() { // from class: android.hardware.contexthub.HostEndpointInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HostEndpointInfo createFromParcel(Parcel _aidl_source) {
             HostEndpointInfo _aidl_out = new HostEndpointInfo();
@@ -17,6 +15,7 @@ public class HostEndpointInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HostEndpointInfo[] newArray(int _aidl_size) {
             return new HostEndpointInfo[_aidl_size];
@@ -27,30 +26,10 @@ public class HostEndpointInfo implements Parcelable {
     public String packageName;
     public int type;
 
-    /* loaded from: classes.dex */
     public @interface Type {
         public static final int APP = 2;
         public static final int FRAMEWORK = 1;
         public static final int NATIVE = 3;
-    }
-
-    /* renamed from: android.hardware.contexthub.HostEndpointInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HostEndpointInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HostEndpointInfo createFromParcel(Parcel _aidl_source) {
-            HostEndpointInfo _aidl_out = new HostEndpointInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HostEndpointInfo[] newArray(int _aidl_size) {
-            return new HostEndpointInfo[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable

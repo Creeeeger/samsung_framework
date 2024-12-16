@@ -10,7 +10,7 @@ import android.telephony.ims.aidl.ISipDelegate;
 import android.telephony.ims.aidl.ISipDelegateMessageCallback;
 import android.telephony.ims.aidl.ISipDelegateStateCallback;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISipTransport extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.ISipTransport";
 
@@ -18,7 +18,6 @@ public interface ISipTransport extends IInterface {
 
     void destroySipDelegate(ISipDelegate iSipDelegate, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISipTransport {
         @Override // android.telephony.ims.aidl.ISipTransport
         public void createSipDelegate(int subId, DelegateRequest request, ISipDelegateStateCallback dc, ISipDelegateMessageCallback mc) throws RemoteException {
@@ -34,7 +33,6 @@ public interface ISipTransport extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISipTransport {
         static final int TRANSACTION_createSipDelegate = 1;
         static final int TRANSACTION_destroySipDelegate = 2;
@@ -80,35 +78,31 @@ public interface ISipTransport extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISipTransport.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISipTransport.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISipTransport.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    DelegateRequest _arg1 = (DelegateRequest) data.readTypedObject(DelegateRequest.CREATOR);
+                    ISipDelegateStateCallback _arg2 = ISipDelegateStateCallback.Stub.asInterface(data.readStrongBinder());
+                    ISipDelegateMessageCallback _arg3 = ISipDelegateMessageCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    createSipDelegate(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    ISipDelegate _arg02 = ISipDelegate.Stub.asInterface(data.readStrongBinder());
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    destroySipDelegate(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            DelegateRequest _arg1 = (DelegateRequest) data.readTypedObject(DelegateRequest.CREATOR);
-                            ISipDelegateStateCallback _arg2 = ISipDelegateStateCallback.Stub.asInterface(data.readStrongBinder());
-                            ISipDelegateMessageCallback _arg3 = ISipDelegateMessageCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            createSipDelegate(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            ISipDelegate _arg02 = ISipDelegate.Stub.asInterface(data.readStrongBinder());
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            destroySipDelegate(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISipTransport {
+        private static class Proxy implements ISipTransport {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

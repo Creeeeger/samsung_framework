@@ -5,7 +5,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.util.Log;
 import java.util.HashMap;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class DeviceRootKeyServiceManager {
     public static final int ERR_SERVICE_ERROR = -10000;
     public static final int KEY_TYPE_EC = 4;
@@ -38,7 +38,7 @@ public final class DeviceRootKeyServiceManager {
 
     public DeviceRootKeyServiceManager(Context context) {
         this.mContext = context;
-        Log.i(TAG, NavigationBarInflaterView.SIZE_MOD_START + context.getPackageName() + "] create DeviceRootKeyServiceManager.");
+        Log.i(TAG, NavigationBarInflaterView.SIZE_MOD_START + this.mContext.getPackageName() + "] create DeviceRootKeyServiceManager.");
     }
 
     public byte[] createServiceKeySession(String serviceName, int keyType, Tlv tlv) {
@@ -93,7 +93,6 @@ public final class DeviceRootKeyServiceManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class DeviceInfo {
         public static final int DEVICE_INFO_ALL = 14;
         private static final int DEVICE_INFO_EMPTY = 0;
@@ -187,9 +186,7 @@ public final class DeviceRootKeyServiceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public final class TlvEx {
+    private final class TlvEx {
         private static final int LENGTH_FIELD_SIZE = 2;
         private static final int TAGLENGTH_FIELD_SIZE = 3;
         private static final int TAG_FIELD_SIZE = 1;

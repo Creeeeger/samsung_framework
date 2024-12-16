@@ -55,7 +55,7 @@ public final class Call {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.base.readEmbeddedFromParcel(parcel, _hidl_blob, _hidl_offset + 0);
         this.forwardedNumber = _hidl_blob.getString(_hidl_offset + 96);
-        parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 96 + 0, false);
+        parcel.readEmbeddedBuffer(this.forwardedNumber.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 96 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

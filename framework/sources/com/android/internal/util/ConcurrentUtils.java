@@ -19,97 +19,13 @@ public class ConcurrentUtils {
     private ConcurrentUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.util.ConcurrentUtils$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ThreadFactory {
-        private final AtomicInteger threadNum = new AtomicInteger(0);
-        final /* synthetic */ int val$linuxThreadPriority;
-        final /* synthetic */ String val$poolName;
-
-        AnonymousClass1(String str, int i) {
-            poolName = str;
-            linuxThreadPriority = i;
-        }
-
-        /* renamed from: com.android.internal.util.ConcurrentUtils$1$1 */
-        /* loaded from: classes5.dex */
-        class C00151 extends Thread {
-            final /* synthetic */ Runnable val$r;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            C00151(String name, Runnable runnable) {
-                super(name);
-                r = runnable;
-            }
-
-            @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
-                Process.setThreadPriority(linuxThreadPriority);
-                r.run();
-            }
-        }
-
-        @Override // java.util.concurrent.ThreadFactory
-        public Thread newThread(Runnable r) {
-            return new Thread(poolName + this.threadNum.incrementAndGet()) { // from class: com.android.internal.util.ConcurrentUtils.1.1
-                final /* synthetic */ Runnable val$r;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                C00151(String name, Runnable r2) {
-                    super(name);
-                    r = r2;
-                }
-
-                @Override // java.lang.Thread, java.lang.Runnable
-                public void run() {
-                    Process.setThreadPriority(linuxThreadPriority);
-                    r.run();
-                }
-            };
-        }
-    }
-
-    public static ExecutorService newFixedThreadPool(int nThreads, String poolName, int linuxThreadPriority) {
+    public static ExecutorService newFixedThreadPool(int nThreads, final String poolName, final int linuxThreadPriority) {
         return Executors.newFixedThreadPool(nThreads, new ThreadFactory() { // from class: com.android.internal.util.ConcurrentUtils.1
             private final AtomicInteger threadNum = new AtomicInteger(0);
-            final /* synthetic */ int val$linuxThreadPriority;
-            final /* synthetic */ String val$poolName;
-
-            AnonymousClass1(String poolName2, int linuxThreadPriority2) {
-                poolName = poolName2;
-                linuxThreadPriority = linuxThreadPriority2;
-            }
-
-            /* renamed from: com.android.internal.util.ConcurrentUtils$1$1 */
-            /* loaded from: classes5.dex */
-            class C00151 extends Thread {
-                final /* synthetic */ Runnable val$r;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                C00151(String name, Runnable r2) {
-                    super(name);
-                    r = r2;
-                }
-
-                @Override // java.lang.Thread, java.lang.Runnable
-                public void run() {
-                    Process.setThreadPriority(linuxThreadPriority);
-                    r.run();
-                }
-            }
 
             @Override // java.util.concurrent.ThreadFactory
-            public Thread newThread(Runnable r2) {
+            public Thread newThread(final Runnable r) {
                 return new Thread(poolName + this.threadNum.incrementAndGet()) { // from class: com.android.internal.util.ConcurrentUtils.1.1
-                    final /* synthetic */ Runnable val$r;
-
-                    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                    C00151(String name, Runnable r22) {
-                        super(name);
-                        r = r22;
-                    }
-
                     @Override // java.lang.Thread, java.lang.Runnable
                     public void run() {
                         Process.setThreadPriority(linuxThreadPriority);
@@ -154,12 +70,7 @@ public class ConcurrentUtils {
         }
     }
 
-    /* loaded from: classes5.dex */
     private static class DirectExecutor implements Executor {
-        /* synthetic */ DirectExecutor(DirectExecutorIA directExecutorIA) {
-            this();
-        }
-
         private DirectExecutor() {
         }
 

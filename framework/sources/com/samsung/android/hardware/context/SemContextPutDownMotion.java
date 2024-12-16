@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextPutDownMotion extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextPutDownMotion> CREATOR = new Parcelable.Creator<SemContextPutDownMotion>() { // from class: com.samsung.android.hardware.context.SemContextPutDownMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPutDownMotion createFromParcel(Parcel in) {
             return new SemContextPutDownMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPutDownMotion[] newArray(int size) {
             return new SemContextPutDownMotion[size];
@@ -25,24 +24,7 @@ public class SemContextPutDownMotion extends SemContextEventContext {
     public static final int TRUE = 1;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextPutDownMotion$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextPutDownMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPutDownMotion createFromParcel(Parcel in) {
-            return new SemContextPutDownMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPutDownMotion[] newArray(int size) {
-            return new SemContextPutDownMotion[size];
-        }
-    }
-
-    public SemContextPutDownMotion() {
+    SemContextPutDownMotion() {
         this.mContext = new Bundle();
     }
 

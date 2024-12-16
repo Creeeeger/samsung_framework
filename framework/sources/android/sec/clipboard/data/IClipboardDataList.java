@@ -22,7 +22,6 @@ public interface IClipboardDataList extends IInterface {
 
     boolean updateData(int i, SemClipData semClipData) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IClipboardDataList {
         @Override // android.sec.clipboard.data.IClipboardDataList
         public int size() throws RemoteException {
@@ -55,7 +54,6 @@ public interface IClipboardDataList extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IClipboardDataList {
         static final int TRANSACTION_getClipByID = 5;
         static final int TRANSACTION_getItem = 2;
@@ -110,53 +108,50 @@ public interface IClipboardDataList extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IClipboardDataList.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IClipboardDataList.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IClipboardDataList.DESCRIPTOR);
+                case 1:
+                    int _result = size();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SemClipData _result2 = getItem(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = removeData(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    SemClipData _arg1 = (SemClipData) data.readTypedObject(SemClipData.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result4 = updateData(_arg03, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    SemClipData _result5 = getClipByID(_arg04);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = size();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SemClipData _result2 = getItem(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = removeData(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            SemClipData _arg1 = (SemClipData) data.readTypedObject(SemClipData.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result4 = updateData(_arg03, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            SemClipData _result5 = getClipByID(_arg04);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IClipboardDataList {
             private IBinder mRemote;
 

@@ -14,7 +14,7 @@ import android.text.style.UpdateLayout;
 import android.view.View;
 import java.lang.ref.WeakReference;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class PasswordTransformationMethod implements TransformationMethod, TextWatcher {
     private static char DOT = 8226;
     private static PasswordTransformationMethod sInstance;
@@ -34,13 +34,11 @@ public class PasswordTransformationMethod implements TransformationMethod, TextW
     }
 
     public static PasswordTransformationMethod getInstance() {
-        PasswordTransformationMethod passwordTransformationMethod = sInstance;
-        if (passwordTransformationMethod != null) {
-            return passwordTransformationMethod;
+        if (sInstance != null) {
+            return sInstance;
         }
-        PasswordTransformationMethod passwordTransformationMethod2 = new PasswordTransformationMethod();
-        sInstance = passwordTransformationMethod2;
-        return passwordTransformationMethod2;
+        sInstance = new PasswordTransformationMethod();
+        return sInstance;
     }
 
     @Override // android.text.TextWatcher
@@ -91,7 +89,6 @@ public class PasswordTransformationMethod implements TransformationMethod, TextW
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class PasswordCharSequence implements CharSequence, GetChars {
         private CharSequence mSource;
 
@@ -106,9 +103,8 @@ public class PasswordTransformationMethod implements TransformationMethod, TextW
 
         @Override // java.lang.CharSequence
         public char charAt(int i) {
-            CharSequence charSequence = this.mSource;
-            if (charSequence instanceof Spanned) {
-                Spanned sp = (Spanned) charSequence;
+            if (this.mSource instanceof Spanned) {
+                Spanned sp = (Spanned) this.mSource;
                 int st = sp.getSpanStart(TextKeyListener.ACTIVE);
                 int en = sp.getSpanEnd(TextKeyListener.ACTIVE);
                 if (i >= st && i < en) {
@@ -148,9 +144,8 @@ public class PasswordTransformationMethod implements TransformationMethod, TextW
             int nvisible = 0;
             int[] starts = null;
             int[] ends = null;
-            CharSequence charSequence = this.mSource;
-            if (charSequence instanceof Spanned) {
-                Spanned sp = (Spanned) charSequence;
+            if (this.mSource instanceof Spanned) {
+                Spanned sp = (Spanned) this.mSource;
                 st = sp.getSpanStart(TextKeyListener.ACTIVE);
                 en = sp.getSpanEnd(TextKeyListener.ACTIVE);
                 Visible[] visible = (Visible[]) sp.getSpans(0, sp.length(), Visible.class);
@@ -187,8 +182,7 @@ public class PasswordTransformationMethod implements TransformationMethod, TextW
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class Visible extends Handler implements UpdateLayout, Runnable {
+    private static class Visible extends Handler implements UpdateLayout, Runnable {
         private Spannable mText;
         private PasswordTransformationMethod mTransformer;
 
@@ -204,7 +198,6 @@ public class PasswordTransformationMethod implements TransformationMethod, TextW
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class ViewReference extends WeakReference<View> implements NoCopySpan {
         public ViewReference(View v) {
             super(v);

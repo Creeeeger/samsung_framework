@@ -6,7 +6,7 @@ import com.samsung.android.graphics.spr.document.SprInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SprGradientBase implements Cloneable {
     public static final byte SPREAD_TYPE_NONE = 0;
     public static final byte SPREAD_TYPE_PAD = 1;
@@ -24,9 +24,8 @@ public abstract class SprGradientBase implements Cloneable {
 
     public void fromSPR(SprInputStream in) throws IOException {
         this.spreadMode = in.readByte();
-        int[] iArr = new int[in.readInt()];
-        this.colors = iArr;
-        this.positions = new float[iArr.length];
+        this.colors = new int[in.readInt()];
+        this.positions = new float[this.colors.length];
         for (int i = 0; i < this.colors.length; i++) {
             float offset = in.readFloat();
             int color = in.readInt();
@@ -58,22 +57,16 @@ public abstract class SprGradientBase implements Cloneable {
         return (this.colors.length * 12) + 30;
     }
 
-    /* renamed from: clone */
-    public SprGradientBase m8413clone() throws CloneNotSupportedException {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SprGradientBase m8814clone() throws CloneNotSupportedException {
         SprGradientBase attribute = (SprGradientBase) super.clone();
         attribute.colors = new int[this.colors.length];
         attribute.positions = new float[this.colors.length];
-        int i = 0;
-        while (true) {
-            int[] iArr = this.colors;
-            if (i < iArr.length) {
-                attribute.colors[i] = iArr[i];
-                attribute.positions[i] = this.positions[i];
-                i++;
-            } else {
-                attribute.updateGradient();
-                return attribute;
-            }
+        for (int i = 0; i < this.colors.length; i++) {
+            attribute.colors[i] = this.colors[i];
+            attribute.positions[i] = this.positions[i];
         }
+        attribute.updateGradient();
+        return attribute;
     }
 }

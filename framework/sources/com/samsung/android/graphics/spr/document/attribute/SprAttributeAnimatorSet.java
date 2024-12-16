@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprAttributeAnimatorSet extends SprAttributeBase {
     public int duration;
     private ArrayList<Animator> mAnimators;
@@ -100,18 +100,18 @@ public class SprAttributeAnimatorSet extends SprAttributeBase {
     }
 
     public void addAnimatorData(SprAnimatorBase animator) {
-        this.mAnimators.add(animator.mo57clone());
+        this.mAnimators.add(animator.mo77clone());
     }
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeAnimatorSet mo8412clone() throws CloneNotSupportedException {
-        SprAttributeAnimatorSet attribute = (SprAttributeAnimatorSet) super.mo8412clone();
+    public SprAttributeAnimatorSet mo8813clone() throws CloneNotSupportedException {
+        SprAttributeAnimatorSet attribute = (SprAttributeAnimatorSet) super.mo8813clone();
         attribute.mAnimators = new ArrayList<>();
         Iterator<Animator> it = this.mAnimators.iterator();
         while (it.hasNext()) {
             Animator animator = it.next();
-            attribute.mAnimators.add(animator.mo57clone());
+            attribute.mAnimators.add(animator.mo77clone());
         }
         return attribute;
     }

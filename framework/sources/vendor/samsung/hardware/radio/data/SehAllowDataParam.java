@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehAllowDataParam implements Parcelable {
     public static final Parcelable.Creator<SehAllowDataParam> CREATOR = new Parcelable.Creator<SehAllowDataParam>() { // from class: vendor.samsung.hardware.radio.data.SehAllowDataParam.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehAllowDataParam createFromParcel(Parcel _aidl_source) {
             SehAllowDataParam _aidl_out = new SehAllowDataParam();
@@ -23,25 +20,6 @@ public class SehAllowDataParam implements Parcelable {
         }
     };
     public int defaultDataPhoneId = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.data.SehAllowDataParam$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehAllowDataParam> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehAllowDataParam createFromParcel(Parcel _aidl_source) {
-            SehAllowDataParam _aidl_out = new SehAllowDataParam();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehAllowDataParam[] newArray(int _aidl_size) {
-            return new SehAllowDataParam[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

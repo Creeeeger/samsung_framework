@@ -31,14 +31,12 @@ public class RootTrustManagerFactorySpi extends TrustManagerFactorySpi {
 
     @Override // javax.net.ssl.TrustManagerFactorySpi
     public TrustManager[] engineGetTrustManagers() {
-        ApplicationConfig applicationConfig = this.mApplicationConfig;
-        if (applicationConfig == null) {
+        if (this.mApplicationConfig == null) {
             throw new IllegalStateException("TrustManagerFactory not initialized");
         }
-        return new TrustManager[]{applicationConfig.getTrustManager()};
+        return new TrustManager[]{this.mApplicationConfig.getTrustManager()};
     }
 
-    /* loaded from: classes3.dex */
     public static final class ApplicationConfigParameters implements ManagerFactoryParameters {
         public final ApplicationConfig config;
 

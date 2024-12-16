@@ -2,13 +2,16 @@ package android.hardware.camera2;
 
 import android.content.RestrictionsManager;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.hardware.camera2.impl.CameraMetadataNative;
 import android.hardware.camera2.impl.CaptureResultExtras;
+import android.hardware.camera2.impl.ExtensionKey;
 import android.hardware.camera2.impl.PublicKey;
 import android.hardware.camera2.impl.SyntheticKey;
 import android.hardware.camera2.params.ColorSpaceTransform;
 import android.hardware.camera2.params.Face;
+import android.hardware.camera2.params.LensIntrinsicsSample;
 import android.hardware.camera2.params.LensShadingMap;
 import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.params.OisSample;
@@ -22,7 +25,7 @@ import android.util.Rational;
 import android.util.Size;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CaptureResult extends CameraMetadata<Key<?>> {
     private static final String TAG = "CaptureResult";
     private static final boolean VERBOSE = false;
@@ -61,8 +64,6 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Integer>> CONTROL_AE_TARGET_FPS_RANGE = new Key<>("android.control.aeTargetFpsRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CaptureResult.1
-        AnonymousClass1() {
-        }
     });
 
     @PublicKey
@@ -135,6 +136,9 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
     public static final Key<Integer> CONTROL_AUTOFRAMING_STATE = new Key<>("android.control.autoframingState", Integer.TYPE);
 
     @PublicKey
+    public static final Key<Integer> CONTROL_LOW_LIGHT_BOOST_STATE = new Key<>("android.control.lowLightBoostState", Integer.TYPE);
+
+    @PublicKey
     public static final Key<Integer> EDGE_MODE = new Key<>("android.edge.mode", Integer.TYPE);
 
     @PublicKey
@@ -142,6 +146,9 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Integer> FLASH_STATE = new Key<>("android.flash.state", Integer.TYPE);
+
+    @PublicKey
+    public static final Key<Integer> FLASH_STRENGTH_LEVEL = new Key<>("android.flash.strengthLevel", Integer.TYPE);
 
     @PublicKey
     public static final Key<Integer> HOT_PIXEL_MODE = new Key<>("android.hotPixel.mode", Integer.TYPE);
@@ -179,8 +186,6 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Pair<Float, Float>> LENS_FOCUS_RANGE = new Key<>("android.lens.focusRange", new TypeReference<Pair<Float, Float>>() { // from class: android.hardware.camera2.CaptureResult.2
-        AnonymousClass2() {
-        }
     });
 
     @PublicKey
@@ -244,8 +249,6 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Pair<Double, Double>[]> SENSOR_NOISE_PROFILE = new Key<>("android.sensor.noiseProfile", new TypeReference<Pair<Double, Double>[]>() { // from class: android.hardware.camera2.CaptureResult.3
-        AnonymousClass3() {
-        }
     });
 
     @PublicKey
@@ -317,6 +320,12 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
     @SyntheticKey
     @PublicKey
     public static final Key<OisSample[]> STATISTICS_OIS_SAMPLES = new Key<>("android.statistics.oisSamples", OisSample[].class);
+
+    @SyntheticKey
+    @PublicKey
+    public static final Key<LensIntrinsicsSample[]> STATISTICS_LENS_INTRINSICS_SAMPLES = new Key<>("android.statistics.lensIntrinsicsSamples", LensIntrinsicsSample[].class);
+    public static final Key<long[]> STATISTICS_LENS_INTRINSIC_TIMESTAMPS = new Key<>("android.statistics.lensIntrinsicTimestamps", long[].class);
+    public static final Key<float[]> STATISTICS_LENS_INTRINSIC_SAMPLES = new Key<>("android.statistics.lensIntrinsicSamples", float[].class);
     public static final Key<float[]> TONEMAP_CURVE_BLUE = new Key<>("android.tonemap.curveBlue", float[].class);
     public static final Key<float[]> TONEMAP_CURVE_GREEN = new Key<>("android.tonemap.curveGreen", float[].class);
     public static final Key<float[]> TONEMAP_CURVE_RED = new Key<>("android.tonemap.curveRed", float[].class);
@@ -346,6 +355,9 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
     public static final Key<String> LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_ID = new Key<>("android.logicalMultiCamera.activePhysicalId", String.class);
 
     @PublicKey
+    public static final Key<Rect> LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_SENSOR_CROP_REGION = new Key<>("android.logicalMultiCamera.activePhysicalSensorCropRegion", Rect.class);
+
+    @PublicKey
     public static final Key<Integer> DISTORTION_CORRECTION_MODE = new Key<>("android.distortionCorrection.mode", Integer.TYPE);
 
     @PublicKey
@@ -354,7 +366,34 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
     @PublicKey
     public static final Key<Integer> EXTENSION_STRENGTH = new Key<>("android.extension.strength", Integer.TYPE);
 
-    /* loaded from: classes.dex */
+    @ExtensionKey
+    public static final Key<int[]> EFV_PADDING_REGION = new Key<>("android.efv.paddingRegion", int[].class);
+
+    @ExtensionKey
+    public static final Key<int[]> EFV_AUTO_ZOOM_PADDING_REGION = new Key<>("android.efv.autoZoomPaddingRegion", int[].class);
+
+    @ExtensionKey
+    public static final Key<PointF[]> EFV_TARGET_COORDINATES = new Key<>("android.efv.targetCoordinates", PointF[].class);
+
+    @ExtensionKey
+    public static final Key<Float> EFV_PADDING_ZOOM_FACTOR = new Key<>("android.efv.paddingZoomFactor", Float.TYPE);
+
+    @ExtensionKey
+    public static final Key<Integer> EFV_STABILIZATION_MODE = new Key<>("android.efv.stabilizationMode", Integer.TYPE);
+
+    @ExtensionKey
+    public static final Key<Boolean> EFV_AUTO_ZOOM = new Key<>("android.efv.autoZoom", Boolean.TYPE);
+
+    @ExtensionKey
+    public static final Key<Float> EFV_ROTATE_VIEWPORT = new Key<>("android.efv.rotateViewport", Float.TYPE);
+
+    @ExtensionKey
+    public static final Key<Pair<Integer, Integer>> EFV_TRANSLATE_VIEWPORT = new Key<>("android.efv.translateViewport", new TypeReference<Pair<Integer, Integer>>() { // from class: android.hardware.camera2.CaptureResult.4
+    });
+
+    @ExtensionKey
+    public static final Key<Float> EFV_MAX_PADDING_ZOOM_FACTOR = new Key<>("android.efv.maxPaddingZoomFactor", Float.TYPE);
+
     public static final class Key<T> {
         private final CameraMetadataNative.Key<T> mKey;
 
@@ -414,12 +453,11 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
         if (extras == null) {
             throw new IllegalArgumentException("extras was null");
         }
-        CameraMetadataNative move = CameraMetadataNative.move(results);
-        this.mResults = move;
-        if (move.isEmpty()) {
+        this.mResults = CameraMetadataNative.move(results);
+        if (this.mResults.isEmpty()) {
             throw new AssertionError("Results must not be empty");
         }
-        setNativeInstance(move);
+        setNativeInstance(this.mResults);
         this.mCameraId = cameraId;
         this.mRequest = parent;
         this.mSequenceId = extras.getRequestId();
@@ -433,12 +471,11 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
         if (parent == null) {
             throw new IllegalArgumentException("parent was null");
         }
-        CameraMetadataNative move = CameraMetadataNative.move(results);
-        this.mResults = move;
-        if (move.isEmpty()) {
+        this.mResults = CameraMetadataNative.move(results);
+        if (this.mResults.isEmpty()) {
             throw new AssertionError("Results must not be empty");
         }
-        setNativeInstance(move);
+        setNativeInstance(this.mResults);
         this.mCameraId = cameraId;
         this.mRequest = parent;
         this.mSequenceId = requestId;
@@ -453,12 +490,11 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
         if (results == null) {
             throw new IllegalArgumentException("results was null");
         }
-        CameraMetadataNative move = CameraMetadataNative.move(results);
-        this.mResults = move;
-        if (move.isEmpty()) {
+        this.mResults = CameraMetadataNative.move(results);
+        if (this.mResults.isEmpty()) {
             throw new AssertionError("Results must not be empty");
         }
-        setNativeInstance(move);
+        setNativeInstance(this.mResults);
         this.mCameraId = "none";
         this.mRequest = null;
         this.mSequenceId = sequenceId;
@@ -473,6 +509,7 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
         return (T) this.mResults.get(key);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.hardware.camera2.CameraMetadata
     public <T> T getProtected(Key<?> key) {
         return (T) this.mResults.get(key);
@@ -502,26 +539,5 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     public int getSequenceId() {
         return this.mSequenceId;
-    }
-
-    /* renamed from: android.hardware.camera2.CaptureResult$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends TypeReference<Range<Integer>> {
-        AnonymousClass1() {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.CaptureResult$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 extends TypeReference<Pair<Float, Float>> {
-        AnonymousClass2() {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.CaptureResult$3 */
-    /* loaded from: classes.dex */
-    class AnonymousClass3 extends TypeReference<Pair<Double, Double>[]> {
-        AnonymousClass3() {
-        }
     }
 }

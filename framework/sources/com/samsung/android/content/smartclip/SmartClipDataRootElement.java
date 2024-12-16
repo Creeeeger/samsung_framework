@@ -5,7 +5,10 @@ import android.text.TextUtils;
 
 /* compiled from: SemSmartClipDataRepository.java */
 /* loaded from: classes5.dex */
-public class SmartClipDataRootElement extends SmartClipDataElementImpl {
+class SmartClipDataRootElement extends SmartClipDataElementImpl {
+    SmartClipDataRootElement() {
+    }
+
     public String collectPlainTextTag() {
         SmartClipDataElementImpl element = this;
         StringBuilder resultString = new StringBuilder();

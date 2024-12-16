@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IGetDefaultDownloadableSubscriptionListCallback extends IInterface {
     void onComplete(GetDefaultDownloadableSubscriptionListResult getDefaultDownloadableSubscriptionListResult) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGetDefaultDownloadableSubscriptionListCallback {
         @Override // android.service.euicc.IGetDefaultDownloadableSubscriptionListCallback
         public void onComplete(GetDefaultDownloadableSubscriptionListResult result) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IGetDefaultDownloadableSubscriptionListCallback extends IInterf
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGetDefaultDownloadableSubscriptionListCallback {
         public static final String DESCRIPTOR = "android.service.euicc.IGetDefaultDownloadableSubscriptionListCallback";
         static final int TRANSACTION_onComplete = 1;
@@ -66,25 +64,22 @@ public interface IGetDefaultDownloadableSubscriptionListCallback extends IInterf
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    GetDefaultDownloadableSubscriptionListResult _arg0 = (GetDefaultDownloadableSubscriptionListResult) data.readTypedObject(GetDefaultDownloadableSubscriptionListResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            GetDefaultDownloadableSubscriptionListResult _arg0 = (GetDefaultDownloadableSubscriptionListResult) data.readTypedObject(GetDefaultDownloadableSubscriptionListResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGetDefaultDownloadableSubscriptionListCallback {
+        private static class Proxy implements IGetDefaultDownloadableSubscriptionListCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -4,8 +4,13 @@ package android.service;
 public final class ServiceProtoEnums {
     public static final int COMPLIANCE_WARNING_BC_1_2 = 2;
     public static final int COMPLIANCE_WARNING_DEBUG_ACCESSORY = 1;
+    public static final int COMPLIANCE_WARNING_ENUMERATION_FAIL = 7;
+    public static final int COMPLIANCE_WARNING_FLAKY_CONNECTION = 8;
+    public static final int COMPLIANCE_WARNING_INPUT_POWER_LIMITED = 5;
+    public static final int COMPLIANCE_WARNING_MISSING_DATA_LINES = 6;
     public static final int COMPLIANCE_WARNING_MISSING_RP = 3;
     public static final int COMPLIANCE_WARNING_OTHER = 4;
+    public static final int COMPLIANCE_WARNING_UNRELIABLE_IO = 9;
     public static final int COMPLIANCE_WARNING_UNSPECIFIED = 0;
     public static final int CONTAMINANT_STATUS_DETECTED = 4;
     public static final int CONTAMINANT_STATUS_DISABLED = 2;

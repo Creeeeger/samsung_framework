@@ -1,79 +1,17 @@
 package com.samsung.android.knox;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ILauncherApps;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherActivityInfoInternal;
-import android.content.pm.LauncherApps;
-import android.content.pm.ParceledListSlice;
-import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxHelper {
     private static boolean DEBUG = false;
-    private static final String SEC_DESKTOP_LAUNCHER_PACKGE_NAME = "com.sec.android.app.desktoplauncher";
-    private static final String SEC_LAUNCHER_PACKGE_NAME = "com.sec.android.app.launcher";
     static final String TAG = "KnoxHelper";
-
-    private static List<LauncherActivityInfo> convertToActivityList(Context context, ParceledListSlice<LauncherActivityInfoInternal> internals, UserHandle user, boolean needFilter) {
-        if (internals == null) {
-            return Collections.EMPTY_LIST;
-        }
-        Bundle configAS = SemPersonaManager.getAppSeparationConfig();
-        ArrayList<LauncherActivityInfo> lais = new ArrayList<>();
-        if (configAS != null && context.getUserId() != user.getIdentifier()) {
-            return Collections.EMPTY_LIST;
-        }
-        for (LauncherActivityInfoInternal internal : internals.getList()) {
-            LauncherActivityInfo lai = LauncherApps.getLauncherActivityInfo(context, user, internal);
-            if (DEBUG) {
-                Log.v(TAG, "Returning activity for profile " + user + " : " + lai.getComponentName());
-            }
-            lais.add(lai);
-        }
-        return lais;
-    }
-
-    private static List<LauncherActivityInfo> convertToActivityList(Context context, ParceledListSlice<LauncherActivityInfoInternal> internals, UserHandle user, boolean needFilter, List<ComponentName> cList) {
-        if (internals == null) {
-            return Collections.EMPTY_LIST;
-        }
-        ArrayList<LauncherActivityInfo> lais = new ArrayList<>();
-        for (LauncherActivityInfoInternal internal : internals.getList()) {
-            if (cList != null && cList.size() > 0) {
-                boolean needToSkip = true;
-                Iterator<ComponentName> it = cList.iterator();
-                while (true) {
-                    if (!it.hasNext()) {
-                        break;
-                    }
-                    ComponentName cName = it.next();
-                    if (DEBUG) {
-                        Log.v(TAG, "convertToActivityList " + user + " : " + cName + "," + internal.getComponentName() + ".equals():" + cName.equals(internal.getComponentName()));
-                    }
-                    if (cName.equals(internal.getComponentName())) {
-                        needToSkip = false;
-                        break;
-                    }
-                }
-                if (needToSkip) {
-                }
-            }
-            LauncherActivityInfo lai = LauncherApps.getLauncherActivityInfo(context, user, internal);
-            if (DEBUG) {
-                Log.v(TAG, "Returning activity for profile " + user + " : " + lai.getComponentName());
-            }
-            lais.add(lai);
-        }
-        return lais;
-    }
 
     public static List<LauncherActivityInfo> getActivityList(Context context, ILauncherApps service, String packageName, UserHandle user) {
         int callingUid = context.getUserId();

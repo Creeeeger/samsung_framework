@@ -5,7 +5,7 @@ import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprAnimatorRotate extends SprAnimatorBase {
     private float from;
     private float pivotX;

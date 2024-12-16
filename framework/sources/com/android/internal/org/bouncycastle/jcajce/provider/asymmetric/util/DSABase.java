@@ -16,7 +16,7 @@ public abstract class DSABase extends SignatureSpi implements PKCSObjectIdentifi
     protected DSAEncoding encoding;
     protected DSAExt signer;
 
-    public DSABase(Digest digest, DSAExt signer, DSAEncoding encoding) {
+    protected DSABase(Digest digest, DSAExt signer, DSAEncoding encoding) {
         this.digest = digest;
         this.signer = signer;
         this.encoding = encoding;

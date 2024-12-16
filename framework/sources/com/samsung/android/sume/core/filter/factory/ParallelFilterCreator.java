@@ -16,17 +16,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class ParallelFilterCreator implements MediaFilterCreator {
     @Override // com.samsung.android.sume.core.filter.factory.MediaFilterCreator
     public MediaFilter newFilter(final MediaFilterFactory factory, MFDescriptor descriptor, MediaFilter successor) {
         ParallelDescriptor desc = (ParallelDescriptor) descriptor;
         ParallelFilter parallelFilter = null;
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$sume$core$filter$collection$ParallelFilter$Type[desc.getParallelType().ordinal()]) {
-            case 1:
+        switch (desc.getParallelType()) {
+            case SHARED:
                 parallelFilter = new ParallelSharedFilter(desc, factory.getBufferChannelSupplier());
                 break;
-            case 2:
+            case DNC:
                 parallelFilter = new ParallelDNCFilter(desc, factory.getBufferChannelSupplier());
                 break;
         }
@@ -49,24 +49,5 @@ public class ParallelFilterCreator implements MediaFilterCreator {
         });
         parallelFilter.addFilter(successorFilters);
         return parallelFilter;
-    }
-
-    /* renamed from: com.samsung.android.sume.core.filter.factory.ParallelFilterCreator$1 */
-    /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$filter$collection$ParallelFilter$Type;
-
-        static {
-            int[] iArr = new int[ParallelFilter.Type.values().length];
-            $SwitchMap$com$samsung$android$sume$core$filter$collection$ParallelFilter$Type = iArr;
-            try {
-                iArr[ParallelFilter.Type.SHARED.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$sume$core$filter$collection$ParallelFilter$Type[ParallelFilter.Type.DNC.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-        }
     }
 }

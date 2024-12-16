@@ -13,7 +13,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 import com.sec.android.sdhms.ISamsungDeviceHealthManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemPerfManager {
     public static final String COMMAND_ACTIVITY_EXECUTION = "EXEC_ACTIVITY";
     public static final String COMMAND_BROWSER_DASH_MODE = "SBROWSER_DASH_MODE";
@@ -38,18 +38,10 @@ public class SemPerfManager {
     public static final String VALUE_GAME_TOUCH_BOOSTER_LOW = "low_game_touch_booster";
     public static final String VALUE_GAME_TOUCH_BOOSTER_MID = "mid_game_touch_booster";
     public static final String VALUE_GAME_TOUCH_BOOSTER_OFF = "off_game_touch_booster";
-    int[] mSupportedCPUCoreNum = null;
-    int[] mSupportedCPUCoreNumForSSRM = null;
-    int[] mSupportedCPUFrequency = null;
-    int[] mSupportedCPUFrequencyForSSRM = null;
     static boolean sIsDebugLevelHigh = "0x4948".equals(SystemProperties.get("ro.debug_level", "0x4f4c"));
     static String BOARD_PLATFORM = SystemProperties.get("ro.board.platform");
     static final String DEVICE_TYPE = SystemProperties.get("ro.build.characteristics");
     private static Handler mCommandHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.os.SemPerfManager.1
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
@@ -60,22 +52,6 @@ public class SemPerfManager {
     };
     static volatile ICustomFrequencyManager sCfmsService = null;
     static volatile ISamsungDeviceHealthManager sdhmservice = null;
-
-    /* renamed from: com.samsung.android.os.SemPerfManager$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            String type = bundle.getString("type");
-            String value = bundle.getString("value");
-            SemPerfManager.sendCommand(type, value);
-        }
-    }
 
     protected SemPerfManager() {
     }
@@ -101,6 +77,7 @@ public class SemPerfManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void sendCommand(String type, String value) {
         try {
             if (sCfmsService == null || sdhmservice == null) {

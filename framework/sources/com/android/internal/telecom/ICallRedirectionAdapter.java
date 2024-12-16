@@ -18,7 +18,6 @@ public interface ICallRedirectionAdapter extends IInterface {
 
     void redirectCall(Uri uri, PhoneAccountHandle phoneAccountHandle, boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallRedirectionAdapter {
         @Override // com.android.internal.telecom.ICallRedirectionAdapter
         public void cancelCall() throws RemoteException {
@@ -38,7 +37,6 @@ public interface ICallRedirectionAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallRedirectionAdapter {
         static final int TRANSACTION_cancelCall = 1;
         static final int TRANSACTION_placeCallUnmodified = 2;
@@ -87,34 +85,30 @@ public interface ICallRedirectionAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICallRedirectionAdapter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICallRedirectionAdapter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICallRedirectionAdapter.DESCRIPTOR);
+                case 1:
+                    cancelCall();
+                    return true;
+                case 2:
+                    placeCallUnmodified();
+                    return true;
+                case 3:
+                    Uri _arg0 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    PhoneAccountHandle _arg1 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    redirectCall(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            cancelCall();
-                            return true;
-                        case 2:
-                            placeCallUnmodified();
-                            return true;
-                        case 3:
-                            Uri _arg0 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            PhoneAccountHandle _arg1 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            redirectCall(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICallRedirectionAdapter {
+        private static class Proxy implements ICallRedirectionAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

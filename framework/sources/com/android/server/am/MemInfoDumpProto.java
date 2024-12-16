@@ -34,7 +34,6 @@ public final class MemInfoDumpProto {
     public static final long USED_PSS_KB = 1112396529677L;
     public static final long ZRAM_PHYSICAL_USED_IN_SWAP_KB = 1112396529681L;
 
-    /* loaded from: classes5.dex */
     public final class ProcessMemory {
         public static final long APP_SUMMARY = 1146756268041L;
         public static final long DALVIK_DETAILS = 2246267895816L;
@@ -49,7 +48,6 @@ public final class MemInfoDumpProto {
         public ProcessMemory() {
         }
 
-        /* loaded from: classes5.dex */
         public final class MemoryInfo {
             public static final long CLEAN_PSS_KB = 1120986464259L;
             public static final long DIRTY_SWAP_KB = 1120986464264L;
@@ -66,7 +64,6 @@ public final class MemInfoDumpProto {
             }
         }
 
-        /* loaded from: classes5.dex */
         public final class HeapInfo {
             public static final long HEAP_ALLOC_KB = 1120986464259L;
             public static final long HEAP_FREE_KB = 1120986464260L;
@@ -77,7 +74,6 @@ public final class MemInfoDumpProto {
             }
         }
 
-        /* loaded from: classes5.dex */
         public final class AppSummary {
             public static final long CODE_PSS_KB = 1120986464259L;
             public static final long CODE_RSS_KB = 1120986464268L;
@@ -100,7 +96,6 @@ public final class MemInfoDumpProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class AppData {
         public static final long ASSET_ALLOCATIONS = 1138166333444L;
         public static final long OBJECTS = 1146756268034L;
@@ -111,7 +106,6 @@ public final class MemInfoDumpProto {
         public AppData() {
         }
 
-        /* loaded from: classes5.dex */
         public final class ObjectStats {
             public static final long ACTIVITY_INSTANCE_COUNT = 1120986464260L;
             public static final long APP_CONTEXT_INSTANCE_COUNT = 1120986464259L;
@@ -131,7 +125,6 @@ public final class MemInfoDumpProto {
             }
         }
 
-        /* loaded from: classes5.dex */
         public final class SqlStats {
             public static final long DATABASES = 2246267895812L;
             public static final long MALLOC_SIZE_KB = 1120986464259L;
@@ -141,7 +134,6 @@ public final class MemInfoDumpProto {
             public SqlStats() {
             }
 
-            /* loaded from: classes5.dex */
             public final class Database {
                 public static final long CACHE = 1138166333445L;
                 public static final long CACHE_HITS = 1120986464262L;
@@ -158,7 +150,6 @@ public final class MemInfoDumpProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class MemItem {
         public static final long HAS_ACTIVITIES = 1133871366149L;
         public static final long ID = 1120986464259L;

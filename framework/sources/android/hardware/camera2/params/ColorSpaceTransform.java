@@ -6,7 +6,7 @@ import android.util.Rational;
 import com.android.internal.util.Preconditions;
 import java.util.Arrays;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class ColorSpaceTransform {
     private static final int COLUMNS = 3;
     private static final int COUNT = 9;
@@ -49,9 +49,8 @@ public final class ColorSpaceTransform {
         if (row < 0 || row >= 3) {
             throw new IllegalArgumentException("row out of range");
         }
-        int[] iArr = this.mElements;
-        int numerator = iArr[(((row * 3) + column) * 2) + 0];
-        int denominator = iArr[(((row * 3) + column) * 2) + 1];
+        int numerator = this.mElements[(((row * 3) + column) * 2) + 0];
+        int denominator = this.mElements[(((row * 3) + column) * 2) + 1];
         return new Rational(numerator, denominator);
     }
 
@@ -64,9 +63,8 @@ public final class ColorSpaceTransform {
         int i = 0;
         int j = 0;
         while (i < 9) {
-            int[] iArr = this.mElements;
-            int numerator = iArr[j + 0];
-            int denominator = iArr[j + 1];
+            int numerator = this.mElements[j + 0];
+            int denominator = this.mElements[j + 1];
             destination[i + offset] = new Rational(numerator, denominator);
             i++;
             j += 2;
@@ -98,12 +96,10 @@ public final class ColorSpaceTransform {
         int i = 0;
         int j = 0;
         while (i < 9) {
-            int[] iArr = this.mElements;
-            int numerator = iArr[j + 0];
-            int denominator = iArr[j + 1];
-            int[] iArr2 = other.mElements;
-            int numeratorOther = iArr2[j + 0];
-            int denominatorOther = iArr2[j + 1];
+            int numerator = this.mElements[j + 0];
+            int denominator = this.mElements[j + 1];
+            int numeratorOther = other.mElements[j + 0];
+            int denominatorOther = other.mElements[j + 1];
             Rational r = new Rational(numerator, denominator);
             Rational rOther = new Rational(numeratorOther, denominatorOther);
             if (!r.equals((Object) rOther)) {
@@ -130,9 +126,8 @@ public final class ColorSpaceTransform {
             sb.append(NavigationBarInflaterView.SIZE_MOD_START);
             int col = 0;
             while (col < 3) {
-                int[] iArr = this.mElements;
-                int numerator = iArr[i + 0];
-                int denominator = iArr[i + 1];
+                int numerator = this.mElements[i + 0];
+                int denominator = this.mElements[i + 1];
                 sb.append(numerator);
                 sb.append("/");
                 sb.append(denominator);

@@ -160,7 +160,6 @@ public class BackupTransport {
         return null;
     }
 
-    /* loaded from: classes.dex */
     class TransportImpl extends IBackupTransport.Stub {
         TransportImpl() {
         }

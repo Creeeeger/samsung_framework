@@ -23,8 +23,10 @@ import android.system.StructStat;
 import android.util.ArraySet;
 import android.util.Log;
 import com.android.internal.infra.AndroidFuture;
+import com.android.server.backup.Flags;
 import com.samsung.android.graphics.spr.document.attribute.SprAttributeBase;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.annotation.Retention;
@@ -49,6 +51,7 @@ public abstract class BackupAgent extends ContextWrapper {
     public static final int FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED = 1;
     public static final int FLAG_DEVICE_TO_DEVICE_TRANSFER = 2;
     public static final int FLAG_FAKE_CLIENT_SIDE_ENCRYPTION_ENABLED = Integer.MIN_VALUE;
+    public static final int FLAG_SKIP_RESTORE_FOR_LAUNCHED_APPS = 4;
     public static final int RESULT_ERROR = -1;
     public static final int RESULT_SUCCESS = 0;
     private static final String TAG = "BackupAgent";
@@ -66,7 +69,6 @@ public abstract class BackupAgent extends ContextWrapper {
     private UserHandle mUser;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BackupTransportFlags {
     }
 
@@ -81,8 +83,7 @@ public abstract class BackupAgent extends ContextWrapper {
         return this.mHandler;
     }
 
-    /* loaded from: classes.dex */
-    public class SharedPrefsSynchronizer implements Runnable {
+    class SharedPrefsSynchronizer implements Runnable {
         public final CountDownLatch mLatch = new CountDownLatch(1);
 
         SharedPrefsSynchronizer() {
@@ -95,6 +96,7 @@ public abstract class BackupAgent extends ContextWrapper {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void waitForSharedPrefs() {
         Handler h = getHandler();
         SharedPrefsSynchronizer s = new SharedPrefsSynchronizer();
@@ -154,9 +156,8 @@ public abstract class BackupAgent extends ContextWrapper {
         boolean z;
         BackupAgent backupAgent;
         FullBackup.BackupScheme backupScheme = FullBackup.getBackupScheme(this, this.mBackupDestination);
-        boolean z2 = this.mDisableDataExtractionRule;
-        if (z2) {
-            backupScheme.disableDataExtractionRule(z2);
+        if (this.mDisableDataExtractionRule) {
+            backupScheme.disableDataExtractionRule(this.mDisableDataExtractionRule);
         }
         if (!backupScheme.isFullBackupEnabled(data.getTransportFlags())) {
             return;
@@ -228,8 +229,8 @@ public abstract class BackupAgent extends ContextWrapper {
                 if (efLocation != null) {
                     z = false;
                     applyXmlFiltersAndDoFullBackupForDomain(packageName, FullBackup.MANAGED_EXTERNAL_TREE_TOKEN, manifestIncludeMap, manifestExcludeSet, traversalExcludeSet, data);
-                    String[] strArr = backupAgent.mSmartSwitchBackupPath;
-                    if (strArr != null) {
+                    if (backupAgent.mSmartSwitchBackupPath != null) {
+                        String[] strArr = backupAgent.mSmartSwitchBackupPath;
                         int length = strArr.length;
                         int i = 0;
                         while (i < length) {
@@ -273,9 +274,9 @@ public abstract class BackupAgent extends ContextWrapper {
     public void onQuotaExceeded(long backupDataBytes, long quotaBytes) {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getBackupUserId() {
-        UserHandle userHandle = this.mUser;
-        return userHandle == null ? super.getUserId() : userHandle.getIdentifier();
+        return this.mUser == null ? super.getUserId() : this.mUser.getIdentifier();
     }
 
     private void applyXmlFiltersAndDoFullBackupForDomain(String packageName, String domainToken, Map<String, Set<FullBackup.BackupScheme.PathWithRequiredFlags>> includeMap, Set<FullBackup.BackupScheme.PathWithRequiredFlags> filterSet, ArraySet<String> traversalExcludeSet, FullBackupDataOutput data) throws IOException {
@@ -523,14 +524,8 @@ public abstract class BackupAgent extends ContextWrapper {
         attachBaseContext(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class BackupServiceBinder extends IBackupAgent.Stub {
+    private class BackupServiceBinder extends IBackupAgent.Stub {
         private static final String TAG = "BackupServiceBinder";
-
-        /* synthetic */ BackupServiceBinder(BackupAgent backupAgent, BackupServiceBinderIA backupServiceBinderIA) {
-            this();
-        }
 
         private BackupServiceBinder() {
         }
@@ -564,7 +559,7 @@ public abstract class BackupAgent extends ContextWrapper {
                 r0.onBackup(r14, r6, r15)     // Catch: java.lang.Throwable -> L4b java.lang.RuntimeException -> L4d java.io.IOException -> L4f
                 r3 = 0
                 android.app.backup.BackupAgent r0 = android.app.backup.BackupAgent.this
-                android.app.backup.BackupAgent.m607$$Nest$mwaitForSharedPrefs(r0)
+                android.app.backup.BackupAgent.m635$$Nest$mwaitForSharedPrefs(r0)
                 android.os.Binder.restoreCallingIdentity(r12)
                 r2.operationComplete(r3)     // Catch: android.os.RemoteException -> L36
                 goto L37
@@ -638,7 +633,7 @@ public abstract class BackupAgent extends ContextWrapper {
                 r3 = r0
             Lb8:
                 android.app.backup.BackupAgent r0 = android.app.backup.BackupAgent.this
-                android.app.backup.BackupAgent.m607$$Nest$mwaitForSharedPrefs(r0)
+                android.app.backup.BackupAgent.m635$$Nest$mwaitForSharedPrefs(r0)
                 android.os.Binder.restoreCallingIdentity(r12)
                 r2.operationComplete(r10)     // Catch: android.os.RemoteException -> Lc4
                 goto Lc5
@@ -757,6 +752,9 @@ public abstract class BackupAgent extends ContextWrapper {
                     BackupAgent.this.onRestoreFile(data, size, type, domain, path, mode, mtime);
                     BackupAgent.this.waitForSharedPrefs();
                     BackupAgent.this.reloadSharedPreferences();
+                    if (Flags.enableClearPipeAfterRestoreFile()) {
+                        clearUnconsumedDataFromPipe(data, size);
+                    }
                     Binder.restoreCallingIdentity(ident);
                     try {
                         callbackBinder.opCompleteForUser(BackupAgent.this.getBackupUserId(), token, 0L);
@@ -770,6 +768,21 @@ public abstract class BackupAgent extends ContextWrapper {
                     throw new RuntimeException(e2);
                 }
             } finally {
+            }
+        }
+
+        private static void clearUnconsumedDataFromPipe(ParcelFileDescriptor data, long size) {
+            try {
+                FileInputStream in = new FileInputStream(data.getFileDescriptor());
+                try {
+                    if (in.available() > 0) {
+                        in.skip(size);
+                    }
+                    in.close();
+                } finally {
+                }
+            } catch (IOException e) {
+                Log.w(TAG, "Failed to clear unconsumed data from pipe.", e);
             }
         }
 
@@ -862,7 +875,6 @@ public abstract class BackupAgent extends ContextWrapper {
         }
     }
 
-    /* loaded from: classes.dex */
     static class FailRunnable implements Runnable {
         private String mMessage;
 
@@ -876,7 +888,6 @@ public abstract class BackupAgent extends ContextWrapper {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class IncludeExcludeRules {
         private final Set<FullBackup.BackupScheme.PathWithRequiredFlags> mManifestExcludeSet;
         private final Map<String, Set<FullBackup.BackupScheme.PathWithRequiredFlags>> mManifestIncludeMap;
@@ -890,10 +901,12 @@ public abstract class BackupAgent extends ContextWrapper {
             return new IncludeExcludeRules(Collections.emptyMap(), new ArraySet());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Map<String, Set<FullBackup.BackupScheme.PathWithRequiredFlags>> getIncludeMap() {
             return this.mManifestIncludeMap;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Set<FullBackup.BackupScheme.PathWithRequiredFlags> getExcludeSet() {
             return this.mManifestExcludeSet;
         }

@@ -4,7 +4,7 @@ import android.hardware.camera2.utils.HashCodeHelpers;
 import com.android.internal.util.Preconditions;
 import java.util.Collection;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class InputConfiguration {
     private final int mFormat;
     private final int mHeight;
@@ -59,7 +59,7 @@ public final class InputConfiguration {
     }
 
     public int hashCode() {
-        return HashCodeHelpers.hashCode(this.mWidth, this.mHeight, this.mFormat, this.mIsMultiResolution ? 1 : 0);
+        return HashCodeHelpers.hashCode(this.mWidth, this.mHeight, this.mFormat, this.mIsMultiResolution);
     }
 
     public String toString() {

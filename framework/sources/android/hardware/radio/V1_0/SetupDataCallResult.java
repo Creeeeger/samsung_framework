@@ -67,17 +67,17 @@ public final class SetupDataCallResult {
         this.cid = _hidl_blob.getInt32(_hidl_offset + 8);
         this.active = _hidl_blob.getInt32(_hidl_offset + 12);
         this.type = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.type.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         this.ifname = _hidl_blob.getString(_hidl_offset + 32);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
+        parcel.readEmbeddedBuffer(this.ifname.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
         this.addresses = _hidl_blob.getString(_hidl_offset + 48);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
+        parcel.readEmbeddedBuffer(this.addresses.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
         this.dnses = _hidl_blob.getString(_hidl_offset + 64);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
+        parcel.readEmbeddedBuffer(this.dnses.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
         this.gateways = _hidl_blob.getString(_hidl_offset + 80);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 80 + 0, false);
+        parcel.readEmbeddedBuffer(this.gateways.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 80 + 0, false);
         this.pcscf = _hidl_blob.getString(_hidl_offset + 96);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 96 + 0, false);
+        parcel.readEmbeddedBuffer(this.pcscf.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 96 + 0, false);
         this.mtu = _hidl_blob.getInt32(_hidl_offset + 112);
     }
 

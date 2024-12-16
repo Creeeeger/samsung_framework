@@ -9,7 +9,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICameraDeviceCallbacks extends IInterface {
     public static final int ERROR_CAMERA_BUFFER = 5;
     public static final int ERROR_CAMERA_DEVICE = 1;
@@ -35,7 +35,6 @@ public interface ICameraDeviceCallbacks extends IInterface {
 
     void onResultReceived(CameraMetadataNative cameraMetadataNative, CaptureResultExtras captureResultExtras, PhysicalCaptureResultInfo[] physicalCaptureResultInfoArr) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraDeviceCallbacks {
         @Override // android.hardware.camera2.ICameraDeviceCallbacks
         public void onDeviceError(int errorCode, CaptureResultExtras resultExtras) throws RemoteException {
@@ -71,7 +70,6 @@ public interface ICameraDeviceCallbacks extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraDeviceCallbacks {
         public static final String DESCRIPTOR = "android.hardware.camera2.ICameraDeviceCallbacks";
         static final int TRANSACTION_onCaptureStarted = 3;
@@ -133,57 +131,53 @@ public interface ICameraDeviceCallbacks extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    CaptureResultExtras _arg1 = (CaptureResultExtras) data.readTypedObject(CaptureResultExtras.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeviceError(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onDeviceIdle();
+                    return true;
+                case 3:
+                    CaptureResultExtras _arg02 = (CaptureResultExtras) data.readTypedObject(CaptureResultExtras.CREATOR);
+                    long _arg12 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onCaptureStarted(_arg02, _arg12);
+                    return true;
+                case 4:
+                    CameraMetadataNative _arg03 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    CaptureResultExtras _arg13 = (CaptureResultExtras) data.readTypedObject(CaptureResultExtras.CREATOR);
+                    PhysicalCaptureResultInfo[] _arg2 = (PhysicalCaptureResultInfo[]) data.createTypedArray(PhysicalCaptureResultInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResultReceived(_arg03, _arg13, _arg2);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPrepared(_arg04);
+                    return true;
+                case 6:
+                    long _arg05 = data.readLong();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRepeatingRequestError(_arg05, _arg14);
+                    return true;
+                case 7:
+                    onRequestQueueEmpty();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            CaptureResultExtras _arg1 = (CaptureResultExtras) data.readTypedObject(CaptureResultExtras.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeviceError(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onDeviceIdle();
-                            return true;
-                        case 3:
-                            CaptureResultExtras _arg02 = (CaptureResultExtras) data.readTypedObject(CaptureResultExtras.CREATOR);
-                            long _arg12 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onCaptureStarted(_arg02, _arg12);
-                            return true;
-                        case 4:
-                            CameraMetadataNative _arg03 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            CaptureResultExtras _arg13 = (CaptureResultExtras) data.readTypedObject(CaptureResultExtras.CREATOR);
-                            PhysicalCaptureResultInfo[] _arg2 = (PhysicalCaptureResultInfo[]) data.createTypedArray(PhysicalCaptureResultInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResultReceived(_arg03, _arg13, _arg2);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPrepared(_arg04);
-                            return true;
-                        case 6:
-                            long _arg05 = data.readLong();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRepeatingRequestError(_arg05, _arg14);
-                            return true;
-                        case 7:
-                            onRequestQueueEmpty();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraDeviceCallbacks {
+        private static class Proxy implements ICameraDeviceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

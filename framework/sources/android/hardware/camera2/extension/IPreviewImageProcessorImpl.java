@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.view.Surface;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IPreviewImageProcessorImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IPreviewImageProcessorImpl";
 
@@ -21,7 +21,6 @@ public interface IPreviewImageProcessorImpl extends IInterface {
 
     void process(ParcelImage parcelImage, CameraMetadataNative cameraMetadataNative, int i, IProcessResultImpl iProcessResultImpl) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPreviewImageProcessorImpl {
         @Override // android.hardware.camera2.extension.IPreviewImageProcessorImpl
         public void onOutputSurface(Surface surface, int imageFormat) throws RemoteException {
@@ -45,7 +44,6 @@ public interface IPreviewImageProcessorImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPreviewImageProcessorImpl {
         static final int TRANSACTION_onImageFormatUpdate = 3;
         static final int TRANSACTION_onOutputSurface = 1;
@@ -97,49 +95,45 @@ public interface IPreviewImageProcessorImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPreviewImageProcessorImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPreviewImageProcessorImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPreviewImageProcessorImpl.DESCRIPTOR);
+                case 1:
+                    Surface _arg0 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOutputSurface(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    Size _arg02 = (Size) data.readTypedObject(Size.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResolutionUpdate(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onImageFormatUpdate(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    ParcelImage _arg04 = (ParcelImage) data.readTypedObject(ParcelImage.CREATOR);
+                    CameraMetadataNative _arg12 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    int _arg2 = data.readInt();
+                    IProcessResultImpl _arg3 = IProcessResultImpl.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    process(_arg04, _arg12, _arg2, _arg3);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Surface _arg0 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOutputSurface(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            Size _arg02 = (Size) data.readTypedObject(Size.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResolutionUpdate(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onImageFormatUpdate(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            ParcelImage _arg04 = (ParcelImage) data.readTypedObject(ParcelImage.CREATOR);
-                            CameraMetadataNative _arg12 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            int _arg2 = data.readInt();
-                            IProcessResultImpl _arg3 = IProcessResultImpl.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            process(_arg04, _arg12, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPreviewImageProcessorImpl {
+        private static class Proxy implements IPreviewImageProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -15,7 +15,7 @@ public final class ToggleTemplate extends ControlTemplate {
         this.mButton = button;
     }
 
-    public ToggleTemplate(Bundle b) {
+    ToggleTemplate(Bundle b) {
         super(b);
         this.mButton = (ControlButton) b.getParcelable(KEY_BUTTON, ControlButton.class);
     }
@@ -33,9 +33,8 @@ public final class ToggleTemplate extends ControlTemplate {
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.templates.ControlTemplate
-    public Bundle getDataBundle() {
+    Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putParcelable(KEY_BUTTON, this.mButton);
         return b;

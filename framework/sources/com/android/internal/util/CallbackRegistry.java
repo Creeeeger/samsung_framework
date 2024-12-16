@@ -12,7 +12,6 @@ public class CallbackRegistry<C, T, A> implements Cloneable {
     private final NotifierCallback<C, T, A> mNotifier;
     private long[] mRemainderRemoved;
 
-    /* loaded from: classes5.dex */
     public static abstract class NotifierCallback<C, T, A> {
         public abstract void onNotifyCallback(C c, T t, int i, A a);
     }
@@ -24,22 +23,19 @@ public class CallbackRegistry<C, T, A> implements Cloneable {
     public synchronized void notifyCallbacks(T sender, int arg, A arg2) {
         this.mNotificationLevel++;
         notifyRecurseLocked(sender, arg, arg2);
-        int i = this.mNotificationLevel - 1;
-        this.mNotificationLevel = i;
-        if (i == 0) {
-            long[] jArr = this.mRemainderRemoved;
-            if (jArr != null) {
-                for (int i2 = jArr.length - 1; i2 >= 0; i2--) {
-                    long removedBits = this.mRemainderRemoved[i2];
+        this.mNotificationLevel--;
+        if (this.mNotificationLevel == 0) {
+            if (this.mRemainderRemoved != null) {
+                for (int i = this.mRemainderRemoved.length - 1; i >= 0; i--) {
+                    long removedBits = this.mRemainderRemoved[i];
                     if (removedBits != 0) {
-                        removeRemovedCallbacks((i2 + 1) * 64, removedBits);
-                        this.mRemainderRemoved[i2] = 0;
+                        removeRemovedCallbacks((i + 1) * 64, removedBits);
+                        this.mRemainderRemoved[i] = 0;
                     }
                 }
             }
-            long j = this.mFirst64Removed;
-            if (j != 0) {
-                removeRemovedCallbacks(0, j);
+            if (this.mFirst64Removed != 0) {
+                removeRemovedCallbacks(0, this.mFirst64Removed);
                 this.mFirst64Removed = 0L;
             }
         }
@@ -52,7 +48,7 @@ public class CallbackRegistry<C, T, A> implements Cloneable {
 
     private void notifyRecurseLocked(T sender, int arg, A arg2) {
         int callbackCount = this.mCallbacks.size();
-        int remainderIndex = this.mRemainderRemoved == null ? -1 : r1.length - 1;
+        int remainderIndex = this.mRemainderRemoved == null ? -1 : this.mRemainderRemoved.length - 1;
         notifyRemainderLocked(sender, arg, arg2, remainderIndex);
         int startCallbackIndex = (remainderIndex + 2) * 64;
         notifyCallbacksLocked(sender, arg, arg2, startCallbackIndex, callbackCount, 0L);
@@ -93,11 +89,10 @@ public class CallbackRegistry<C, T, A> implements Cloneable {
             long bitMask = 1 << index;
             return (this.mFirst64Removed & bitMask) != 0;
         }
-        long[] jArr = this.mRemainderRemoved;
-        if (jArr == null || (maskIndex = (index / 64) - 1) >= jArr.length) {
+        if (this.mRemainderRemoved == null || (maskIndex = (index / 64) - 1) >= this.mRemainderRemoved.length) {
             return false;
         }
-        long bits = jArr[maskIndex];
+        long bits = this.mRemainderRemoved[maskIndex];
         long bitMask2 = 1 << (index % 64);
         return (bits & bitMask2) != 0;
     }
@@ -131,18 +126,16 @@ public class CallbackRegistry<C, T, A> implements Cloneable {
             return;
         }
         int remainderIndex = (index / 64) - 1;
-        long[] jArr = this.mRemainderRemoved;
-        if (jArr == null) {
+        if (this.mRemainderRemoved == null) {
             this.mRemainderRemoved = new long[this.mCallbacks.size() / 64];
-        } else if (jArr.length < remainderIndex) {
+        } else if (this.mRemainderRemoved.length < remainderIndex) {
             long[] newRemainders = new long[this.mCallbacks.size() / 64];
-            long[] jArr2 = this.mRemainderRemoved;
-            System.arraycopy(jArr2, 0, newRemainders, 0, jArr2.length);
+            System.arraycopy(this.mRemainderRemoved, 0, newRemainders, 0, this.mRemainderRemoved.length);
             this.mRemainderRemoved = newRemainders;
         }
         long bitMask2 = 1 << (index % 64);
-        long[] jArr3 = this.mRemainderRemoved;
-        jArr3[remainderIndex] = jArr3[remainderIndex] | bitMask2;
+        long[] jArr = this.mRemainderRemoved;
+        jArr[remainderIndex] = jArr[remainderIndex] | bitMask2;
     }
 
     public synchronized ArrayList<C> copyListeners() {
@@ -183,8 +176,8 @@ public class CallbackRegistry<C, T, A> implements Cloneable {
         }
     }
 
-    /* renamed from: clone */
-    public synchronized CallbackRegistry<C, T, A> m7556clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public synchronized CallbackRegistry<C, T, A> m7967clone() {
         CallbackRegistry<C, T, A> callbackRegistry;
         callbackRegistry = null;
         try {

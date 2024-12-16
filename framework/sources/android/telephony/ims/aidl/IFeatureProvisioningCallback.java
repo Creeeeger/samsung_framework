@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IFeatureProvisioningCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IFeatureProvisioningCallback";
 
@@ -14,7 +14,6 @@ public interface IFeatureProvisioningCallback extends IInterface {
 
     void onRcsFeatureProvisioningChanged(int i, int i2, boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IFeatureProvisioningCallback {
         @Override // android.telephony.ims.aidl.IFeatureProvisioningCallback
         public void onFeatureProvisioningChanged(int capability, int tech, boolean isProvisioned) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IFeatureProvisioningCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IFeatureProvisioningCallback {
         static final int TRANSACTION_onFeatureProvisioningChanged = 1;
         static final int TRANSACTION_onRcsFeatureProvisioningChanged = 2;
@@ -76,34 +74,31 @@ public interface IFeatureProvisioningCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFeatureProvisioningCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFeatureProvisioningCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFeatureProvisioningCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onFeatureProvisioningChanged(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onRcsFeatureProvisioningChanged(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onFeatureProvisioningChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onRcsFeatureProvisioningChanged(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IFeatureProvisioningCallback {
+        private static class Proxy implements IFeatureProvisioningCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

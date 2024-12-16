@@ -24,9 +24,8 @@ import sun.security.jca.Providers;
 import sun.security.pkcs.PKCS7;
 import sun.security.pkcs.SignerInfo;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-public class StrictJarVerifier {
+class StrictJarVerifier {
     private static final String[] DIGEST_ALGORITHMS = {KeyProperties.DIGEST_SHA512, KeyProperties.DIGEST_SHA384, "SHA-256", "SHA1"};
     private static final int MAX_JAR_SIGNERS = 10;
     private static final String SF_ATTRIBUTE_ANDROID_APK_SIGNED_NAME = "X-Android-APK-Signed";
@@ -39,9 +38,7 @@ public class StrictJarVerifier {
     private final Hashtable<String, Certificate[]> certificates = new Hashtable<>(5);
     private final Hashtable<String, Certificate[][]> verifiedEntries = new Hashtable<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public static class VerifierEntry extends OutputStream {
+    static class VerifierEntry extends OutputStream {
         private final Certificate[][] certChains;
         private final MessageDigest digest;
         private final byte[] hash;
@@ -66,16 +63,16 @@ public class StrictJarVerifier {
             this.digest.update(buf, off, nbytes);
         }
 
-        public void verify() {
+        void verify() {
             byte[] d = this.digest.digest();
             if (!StrictJarVerifier.verifyMessageDigest(d, this.hash)) {
-                String str = this.name;
-                throw StrictJarVerifier.invalidDigest("META-INF/MANIFEST.MF", str, str);
+                throw StrictJarVerifier.invalidDigest("META-INF/MANIFEST.MF", this.name, this.name);
             }
             this.verifiedEntries.put(this.name, this.certChains);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static SecurityException invalidDigest(String signatureFile, String name, String jarName) {
         throw new SecurityException(signatureFile + " has invalid digest for " + name + " in " + jarName);
     }
@@ -88,7 +85,7 @@ public class StrictJarVerifier {
         throw new SecurityException(jarName + " failed verification of " + signatureFile, e);
     }
 
-    public StrictJarVerifier(String name, StrictJarManifest manifest, HashMap<String, byte[]> metaEntries, boolean signatureSchemeRollbackProtectionsEnforced) {
+    StrictJarVerifier(String name, StrictJarManifest manifest, HashMap<String, byte[]> metaEntries, boolean signatureSchemeRollbackProtectionsEnforced) {
         this.jarName = name;
         this.manifest = manifest;
         this.metaEntries = metaEntries;
@@ -96,7 +93,7 @@ public class StrictJarVerifier {
         this.signatureSchemeRollbackProtectionsEnforced = signatureSchemeRollbackProtectionsEnforced;
     }
 
-    public VerifierEntry initEntry(String name) {
+    VerifierEntry initEntry(String name) {
         Attributes attributes;
         if (this.manifest == null || this.signatures.isEmpty() || (attributes = this.manifest.getAttributes(name)) == null) {
             return null;
@@ -115,14 +112,9 @@ public class StrictJarVerifier {
         if (certChains.isEmpty()) {
             return null;
         }
-        Certificate[][] certChainsArray = (Certificate[][]) certChains.toArray(new Certificate[certChains.size()]);
-        int i = 0;
-        while (true) {
-            String[] strArr = DIGEST_ALGORITHMS;
-            if (i >= strArr.length) {
-                return null;
-            }
-            String algorithm = strArr[i];
+        Certificate[][] certChainsArray = (Certificate[][]) certChains.toArray(new Certificate[certChains.size()][]);
+        for (int i = 0; i < DIGEST_ALGORITHMS.length; i++) {
+            String algorithm = DIGEST_ALGORITHMS[i];
             String hash = attributes.getValue(algorithm + "-Digest");
             if (hash != null) {
                 byte[] hashBytes = hash.getBytes(StandardCharsets.ISO_8859_1);
@@ -134,15 +126,15 @@ public class StrictJarVerifier {
                 } catch (NoSuchAlgorithmException e2) {
                 }
             }
-            i++;
         }
+        return null;
     }
 
     void addMetaEntry(String name, byte[] buf) {
         this.metaEntries.put(name.toUpperCase(Locale.US), buf);
     }
 
-    public synchronized boolean readCertificates() {
+    synchronized boolean readCertificates() {
         if (this.metaEntries.isEmpty()) {
             return false;
         }
@@ -252,12 +244,11 @@ public class StrictJarVerifier {
                 if (createdBy != null) {
                     createdBySigntool = createdBy.indexOf("signtool") != -1;
                 }
-                int i = this.mainAttributesEnd;
-                if (i <= 0 || createdBySigntool) {
+                if (this.mainAttributesEnd <= 0 || createdBySigntool) {
                     entries = entries2;
                 } else {
                     entries = entries2;
-                    if (!verify(attributes, "-Digest-Manifest-Main-Attributes", manifestBytes, 0, i, false, true)) {
+                    if (!verify(attributes, "-Digest-Manifest-Main-Attributes", manifestBytes, 0, this.mainAttributesEnd, false, true)) {
                         throw failedVerification(this.jarName, signatureFile);
                     }
                 }
@@ -274,8 +265,8 @@ public class StrictJarVerifier {
                         if (!verify(entry.getValue(), "-Digest", manifestBytes, chunk.start, chunk.end, createdBySigntool, false)) {
                             throw invalidDigest(signatureFile, entry.getKey(), this.jarName);
                         }
-                        sBlockBytes = sBlockBytes2;
                         attributes = attributes2;
+                        sBlockBytes = sBlockBytes2;
                         manifestBytes = manifestBytes2;
                     }
                 }
@@ -288,38 +279,33 @@ public class StrictJarVerifier {
         }
     }
 
-    public boolean isSignedJar() {
+    boolean isSignedJar() {
         return this.certificates.size() > 0;
     }
 
     private boolean verify(Attributes attributes, String entry, byte[] data, int start, int end, boolean ignoreSecondEndline, boolean ignorable) {
-        int i = 0;
-        while (true) {
-            String[] strArr = DIGEST_ALGORITHMS;
-            if (i < strArr.length) {
-                String algorithm = strArr[i];
-                String hash = attributes.getValue(algorithm + entry);
-                if (hash != null) {
-                    try {
-                        MessageDigest md = MessageDigest.getInstance(algorithm);
-                        if (ignoreSecondEndline && data[end - 1] == 10 && data[end - 2] == 10) {
-                            md.update(data, start, (end - 1) - start);
-                        } else {
-                            md.update(data, start, end - start);
-                        }
-                        byte[] b = md.digest();
-                        byte[] encodedHashBytes = hash.getBytes(StandardCharsets.ISO_8859_1);
-                        return verifyMessageDigest(b, encodedHashBytes);
-                    } catch (NoSuchAlgorithmException e) {
+        for (int i = 0; i < DIGEST_ALGORITHMS.length; i++) {
+            String algorithm = DIGEST_ALGORITHMS[i];
+            String hash = attributes.getValue(algorithm + entry);
+            if (hash != null) {
+                try {
+                    MessageDigest md = MessageDigest.getInstance(algorithm);
+                    if (ignoreSecondEndline && data[end - 1] == 10 && data[end - 2] == 10) {
+                        md.update(data, start, (end - 1) - start);
+                    } else {
+                        md.update(data, start, end - start);
                     }
+                    byte[] b = md.digest();
+                    byte[] encodedHashBytes = hash.getBytes(StandardCharsets.ISO_8859_1);
+                    return verifyMessageDigest(b, encodedHashBytes);
+                } catch (NoSuchAlgorithmException e) {
                 }
-                i++;
-            } else {
-                return ignorable;
             }
         }
+        return ignorable;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean verifyMessageDigest(byte[] expected, byte[] encodedActual) {
         try {
             byte[] actual = Base64.getDecoder().decode(encodedActual);
@@ -329,7 +315,7 @@ public class StrictJarVerifier {
         }
     }
 
-    public Certificate[][] getCertificateChains(String name) {
+    Certificate[][] getCertificateChains(String name) {
         return this.verifiedEntries.get(name);
     }
 

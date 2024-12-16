@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioNetwork extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$network$IRadioNetwork".replace('$', '.');
-    public static final String HASH = "1b6608f238bd0b1c642df315621a7b605eafc883";
-    public static final int VERSION = 2;
+    public static final String HASH = "c45c122528c07c449ea08f6eacaace17bb7abc38";
+    public static final int VERSION = 3;
 
     void cancelEmergencyNetworkScan(int i, boolean z) throws RemoteException;
 
@@ -53,11 +53,15 @@ public interface IRadioNetwork extends IInterface {
 
     void getVoiceRegistrationState(int i) throws RemoteException;
 
+    void isCellularIdentifierTransparencyEnabled(int i) throws RemoteException;
+
     void isN1ModeEnabled(int i) throws RemoteException;
 
     void isNrDualConnectivityEnabled(int i) throws RemoteException;
 
     void isNullCipherAndIntegrityEnabled(int i) throws RemoteException;
+
+    void isSecurityAlgorithmsUpdatedEnabled(int i) throws RemoteException;
 
     void responseAcknowledgement() throws RemoteException;
 
@@ -70,6 +74,8 @@ public interface IRadioNetwork extends IInterface {
     void setCdmaRoamingPreference(int i, int i2) throws RemoteException;
 
     void setCellInfoListRate(int i, int i2) throws RemoteException;
+
+    void setCellularIdentifierTransparencyEnabled(int i, boolean z) throws RemoteException;
 
     void setEmergencyMode(int i, int i2) throws RemoteException;
 
@@ -91,6 +97,8 @@ public interface IRadioNetwork extends IInterface {
 
     void setResponseFunctions(IRadioNetworkResponse iRadioNetworkResponse, IRadioNetworkIndication iRadioNetworkIndication) throws RemoteException;
 
+    void setSecurityAlgorithmsUpdatedEnabled(int i, boolean z) throws RemoteException;
+
     void setSignalStrengthReportingCriteria(int i, SignalThresholdInfo[] signalThresholdInfoArr) throws RemoteException;
 
     void setSuppServiceNotifications(int i, boolean z) throws RemoteException;
@@ -107,7 +115,6 @@ public interface IRadioNetwork extends IInterface {
 
     void triggerEmergencyNetworkScan(int i, EmergencyNetworkScanTrigger emergencyNetworkScanTrigger) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioNetwork {
         @Override // android.hardware.radio.network.IRadioNetwork
         public void getAllowedNetworkTypesBitmap(int serial) throws RemoteException {
@@ -286,6 +293,22 @@ public interface IRadioNetwork extends IInterface {
         }
 
         @Override // android.hardware.radio.network.IRadioNetwork
+        public void isCellularIdentifierTransparencyEnabled(int serial) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetwork
+        public void setCellularIdentifierTransparencyEnabled(int serial, boolean enabled) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetwork
+        public void setSecurityAlgorithmsUpdatedEnabled(int serial, boolean enable) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetwork
+        public void isSecurityAlgorithmsUpdatedEnabled(int serial) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetwork
         public int getInterfaceVersion() {
             return 0;
         }
@@ -301,7 +324,6 @@ public interface IRadioNetwork extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioNetwork {
         static final int TRANSACTION_cancelEmergencyNetworkScan = 39;
         static final int TRANSACTION_exitEmergencyMode = 40;
@@ -322,15 +344,18 @@ public interface IRadioNetwork extends IInterface {
         static final int TRANSACTION_getUsageSetting = 36;
         static final int TRANSACTION_getVoiceRadioTechnology = 13;
         static final int TRANSACTION_getVoiceRegistrationState = 14;
+        static final int TRANSACTION_isCellularIdentifierTransparencyEnabled = 45;
         static final int TRANSACTION_isN1ModeEnabled = 43;
         static final int TRANSACTION_isNrDualConnectivityEnabled = 15;
         static final int TRANSACTION_isNullCipherAndIntegrityEnabled = 42;
+        static final int TRANSACTION_isSecurityAlgorithmsUpdatedEnabled = 48;
         static final int TRANSACTION_responseAcknowledgement = 16;
         static final int TRANSACTION_setAllowedNetworkTypesBitmap = 17;
         static final int TRANSACTION_setBandMode = 18;
         static final int TRANSACTION_setBarringPassword = 19;
         static final int TRANSACTION_setCdmaRoamingPreference = 20;
         static final int TRANSACTION_setCellInfoListRate = 21;
+        static final int TRANSACTION_setCellularIdentifierTransparencyEnabled = 46;
         static final int TRANSACTION_setEmergencyMode = 37;
         static final int TRANSACTION_setIndicationFilter = 22;
         static final int TRANSACTION_setLinkCapacityReportingCriteria = 23;
@@ -341,6 +366,7 @@ public interface IRadioNetwork extends IInterface {
         static final int TRANSACTION_setNrDualConnectivityState = 27;
         static final int TRANSACTION_setNullCipherAndIntegrityEnabled = 41;
         static final int TRANSACTION_setResponseFunctions = 28;
+        static final int TRANSACTION_setSecurityAlgorithmsUpdatedEnabled = 47;
         static final int TRANSACTION_setSignalStrengthReportingCriteria = 29;
         static final int TRANSACTION_setSuppServiceNotifications = 30;
         static final int TRANSACTION_setSystemSelectionChannels = 31;
@@ -377,276 +403,297 @@ public interface IRadioNetwork extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAllowedNetworkTypesBitmap(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAvailableBandModes(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAvailableNetworks(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getBarringInfo(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCdmaRoamingPreference(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCellInfoList(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getDataRegistrationState(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getImsRegistrationState(_arg08);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getNetworkSelectionMode(_arg09);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getOperator(_arg010);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSignalStrength(_arg011);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSystemSelectionChannels(_arg012);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getVoiceRadioTechnology(_arg013);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getVoiceRegistrationState(_arg014);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    isNrDualConnectivityEnabled(_arg015);
+                    return true;
+                case 16:
+                    responseAcknowledgement();
+                    return true;
+                case 17:
+                    int _arg016 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAllowedNetworkTypesBitmap(_arg016, _arg1);
+                    return true;
+                case 18:
+                    int _arg017 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setBandMode(_arg017, _arg12);
+                    return true;
+                case 19:
+                    int _arg018 = data.readInt();
+                    String _arg13 = data.readString();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBarringPassword(_arg018, _arg13, _arg2, _arg3);
+                    return true;
+                case 20:
+                    int _arg019 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCdmaRoamingPreference(_arg019, _arg14);
+                    return true;
+                case 21:
+                    int _arg020 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCellInfoListRate(_arg020, _arg15);
+                    return true;
+                case 22:
+                    int _arg021 = data.readInt();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setIndicationFilter(_arg021, _arg16);
+                    return true;
+                case 23:
+                    int _arg022 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    int[] _arg4 = data.createIntArray();
+                    int[] _arg5 = data.createIntArray();
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLinkCapacityReportingCriteria(_arg022, _arg17, _arg22, _arg32, _arg4, _arg5, _arg6);
+                    return true;
+                case 24:
+                    int _arg023 = data.readInt();
+                    boolean _arg18 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLocationUpdates(_arg023, _arg18);
+                    return true;
+                case 25:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNetworkSelectionModeAutomatic(_arg024);
+                    return true;
+                case 26:
+                    int _arg025 = data.readInt();
+                    String _arg19 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNetworkSelectionModeManual(_arg025, _arg19, _arg23);
+                    return true;
+                case 27:
+                    int _arg026 = data.readInt();
+                    byte _arg110 = data.readByte();
+                    data.enforceNoDataAvail();
+                    setNrDualConnectivityState(_arg026, _arg110);
+                    return true;
+                case 28:
+                    IRadioNetworkResponse _arg027 = IRadioNetworkResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioNetworkIndication _arg111 = IRadioNetworkIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg027, _arg111);
+                    return true;
+                case 29:
+                    int _arg028 = data.readInt();
+                    SignalThresholdInfo[] _arg112 = (SignalThresholdInfo[]) data.createTypedArray(SignalThresholdInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSignalStrengthReportingCriteria(_arg028, _arg112);
+                    return true;
+                case 30:
+                    int _arg029 = data.readInt();
+                    boolean _arg113 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSuppServiceNotifications(_arg029, _arg113);
+                    return true;
+                case 31:
+                    int _arg030 = data.readInt();
+                    boolean _arg114 = data.readBoolean();
+                    RadioAccessSpecifier[] _arg24 = (RadioAccessSpecifier[]) data.createTypedArray(RadioAccessSpecifier.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSystemSelectionChannels(_arg030, _arg114, _arg24);
+                    return true;
+                case 32:
+                    int _arg031 = data.readInt();
+                    NetworkScanRequest _arg115 = (NetworkScanRequest) data.readTypedObject(NetworkScanRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    startNetworkScan(_arg031, _arg115);
+                    return true;
+                case 33:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopNetworkScan(_arg032);
+                    return true;
+                case 34:
+                    int _arg033 = data.readInt();
+                    String _arg116 = data.readString();
+                    data.enforceNoDataAvail();
+                    supplyNetworkDepersonalization(_arg033, _arg116);
+                    return true;
+                case 35:
+                    int _arg034 = data.readInt();
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setUsageSetting(_arg034, _arg117);
+                    return true;
+                case 36:
+                    int _arg035 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getUsageSetting(_arg035);
+                    return true;
+                case 37:
+                    int _arg036 = data.readInt();
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setEmergencyMode(_arg036, _arg118);
+                    return true;
+                case 38:
+                    int _arg037 = data.readInt();
+                    EmergencyNetworkScanTrigger _arg119 = (EmergencyNetworkScanTrigger) data.readTypedObject(EmergencyNetworkScanTrigger.CREATOR);
+                    data.enforceNoDataAvail();
+                    triggerEmergencyNetworkScan(_arg037, _arg119);
+                    return true;
+                case 39:
+                    int _arg038 = data.readInt();
+                    boolean _arg120 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    cancelEmergencyNetworkScan(_arg038, _arg120);
+                    return true;
+                case 40:
+                    int _arg039 = data.readInt();
+                    data.enforceNoDataAvail();
+                    exitEmergencyMode(_arg039);
+                    return true;
+                case 41:
+                    int _arg040 = data.readInt();
+                    boolean _arg121 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNullCipherAndIntegrityEnabled(_arg040, _arg121);
+                    return true;
+                case 42:
+                    int _arg041 = data.readInt();
+                    data.enforceNoDataAvail();
+                    isNullCipherAndIntegrityEnabled(_arg041);
+                    return true;
+                case 43:
+                    int _arg042 = data.readInt();
+                    data.enforceNoDataAvail();
+                    isN1ModeEnabled(_arg042);
+                    return true;
+                case 44:
+                    int _arg043 = data.readInt();
+                    boolean _arg122 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setN1ModeEnabled(_arg043, _arg122);
+                    return true;
+                case 45:
+                    int _arg044 = data.readInt();
+                    data.enforceNoDataAvail();
+                    isCellularIdentifierTransparencyEnabled(_arg044);
+                    return true;
+                case 46:
+                    int _arg045 = data.readInt();
+                    boolean _arg123 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCellularIdentifierTransparencyEnabled(_arg045, _arg123);
+                    return true;
+                case 47:
+                    int _arg046 = data.readInt();
+                    boolean _arg124 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSecurityAlgorithmsUpdatedEnabled(_arg046, _arg124);
+                    return true;
+                case 48:
+                    int _arg047 = data.readInt();
+                    data.enforceNoDataAvail();
+                    isSecurityAlgorithmsUpdatedEnabled(_arg047);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAllowedNetworkTypesBitmap(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAvailableBandModes(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAvailableNetworks(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getBarringInfo(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCdmaRoamingPreference(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCellInfoList(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getDataRegistrationState(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getImsRegistrationState(_arg08);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getNetworkSelectionMode(_arg09);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getOperator(_arg010);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSignalStrength(_arg011);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSystemSelectionChannels(_arg012);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getVoiceRadioTechnology(_arg013);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getVoiceRegistrationState(_arg014);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            isNrDualConnectivityEnabled(_arg015);
-                            return true;
-                        case 16:
-                            responseAcknowledgement();
-                            return true;
-                        case 17:
-                            int _arg016 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAllowedNetworkTypesBitmap(_arg016, _arg1);
-                            return true;
-                        case 18:
-                            int _arg017 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setBandMode(_arg017, _arg12);
-                            return true;
-                        case 19:
-                            int _arg018 = data.readInt();
-                            String _arg13 = data.readString();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            setBarringPassword(_arg018, _arg13, _arg2, _arg3);
-                            return true;
-                        case 20:
-                            int _arg019 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCdmaRoamingPreference(_arg019, _arg14);
-                            return true;
-                        case 21:
-                            int _arg020 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCellInfoListRate(_arg020, _arg15);
-                            return true;
-                        case 22:
-                            int _arg021 = data.readInt();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setIndicationFilter(_arg021, _arg16);
-                            return true;
-                        case 23:
-                            int _arg022 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            int[] _arg4 = data.createIntArray();
-                            int[] _arg5 = data.createIntArray();
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLinkCapacityReportingCriteria(_arg022, _arg17, _arg22, _arg32, _arg4, _arg5, _arg6);
-                            return true;
-                        case 24:
-                            int _arg023 = data.readInt();
-                            boolean _arg18 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLocationUpdates(_arg023, _arg18);
-                            return true;
-                        case 25:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNetworkSelectionModeAutomatic(_arg024);
-                            return true;
-                        case 26:
-                            int _arg025 = data.readInt();
-                            String _arg19 = data.readString();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNetworkSelectionModeManual(_arg025, _arg19, _arg23);
-                            return true;
-                        case 27:
-                            int _arg026 = data.readInt();
-                            byte _arg110 = data.readByte();
-                            data.enforceNoDataAvail();
-                            setNrDualConnectivityState(_arg026, _arg110);
-                            return true;
-                        case 28:
-                            IRadioNetworkResponse _arg027 = IRadioNetworkResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioNetworkIndication _arg111 = IRadioNetworkIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg027, _arg111);
-                            return true;
-                        case 29:
-                            int _arg028 = data.readInt();
-                            SignalThresholdInfo[] _arg112 = (SignalThresholdInfo[]) data.createTypedArray(SignalThresholdInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSignalStrengthReportingCriteria(_arg028, _arg112);
-                            return true;
-                        case 30:
-                            int _arg029 = data.readInt();
-                            boolean _arg113 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSuppServiceNotifications(_arg029, _arg113);
-                            return true;
-                        case 31:
-                            int _arg030 = data.readInt();
-                            boolean _arg114 = data.readBoolean();
-                            RadioAccessSpecifier[] _arg24 = (RadioAccessSpecifier[]) data.createTypedArray(RadioAccessSpecifier.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSystemSelectionChannels(_arg030, _arg114, _arg24);
-                            return true;
-                        case 32:
-                            int _arg031 = data.readInt();
-                            NetworkScanRequest _arg115 = (NetworkScanRequest) data.readTypedObject(NetworkScanRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            startNetworkScan(_arg031, _arg115);
-                            return true;
-                        case 33:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopNetworkScan(_arg032);
-                            return true;
-                        case 34:
-                            int _arg033 = data.readInt();
-                            String _arg116 = data.readString();
-                            data.enforceNoDataAvail();
-                            supplyNetworkDepersonalization(_arg033, _arg116);
-                            return true;
-                        case 35:
-                            int _arg034 = data.readInt();
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setUsageSetting(_arg034, _arg117);
-                            return true;
-                        case 36:
-                            int _arg035 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getUsageSetting(_arg035);
-                            return true;
-                        case 37:
-                            int _arg036 = data.readInt();
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setEmergencyMode(_arg036, _arg118);
-                            return true;
-                        case 38:
-                            int _arg037 = data.readInt();
-                            EmergencyNetworkScanTrigger _arg119 = (EmergencyNetworkScanTrigger) data.readTypedObject(EmergencyNetworkScanTrigger.CREATOR);
-                            data.enforceNoDataAvail();
-                            triggerEmergencyNetworkScan(_arg037, _arg119);
-                            return true;
-                        case 39:
-                            int _arg038 = data.readInt();
-                            boolean _arg120 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            cancelEmergencyNetworkScan(_arg038, _arg120);
-                            return true;
-                        case 40:
-                            int _arg039 = data.readInt();
-                            data.enforceNoDataAvail();
-                            exitEmergencyMode(_arg039);
-                            return true;
-                        case 41:
-                            int _arg040 = data.readInt();
-                            boolean _arg121 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setNullCipherAndIntegrityEnabled(_arg040, _arg121);
-                            return true;
-                        case 42:
-                            int _arg041 = data.readInt();
-                            data.enforceNoDataAvail();
-                            isNullCipherAndIntegrityEnabled(_arg041);
-                            return true;
-                        case 43:
-                            int _arg042 = data.readInt();
-                            data.enforceNoDataAvail();
-                            isN1ModeEnabled(_arg042);
-                            return true;
-                        case 44:
-                            int _arg043 = data.readInt();
-                            boolean _arg122 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setN1ModeEnabled(_arg043, _arg122);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioNetwork {
             private IBinder mRemote;
             private int mCachedVersion = -1;
@@ -1349,6 +1396,68 @@ public interface IRadioNetwork extends IInterface {
                     boolean _status = this.mRemote.transact(44, _data, null, 1);
                     if (!_status) {
                         throw new RemoteException("Method setN1ModeEnabled is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetwork
+            public void isCellularIdentifierTransparencyEnabled(int serial) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(serial);
+                    boolean _status = this.mRemote.transact(45, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method isCellularIdentifierTransparencyEnabled is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetwork
+            public void setCellularIdentifierTransparencyEnabled(int serial, boolean enabled) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(serial);
+                    _data.writeBoolean(enabled);
+                    boolean _status = this.mRemote.transact(46, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method setCellularIdentifierTransparencyEnabled is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetwork
+            public void setSecurityAlgorithmsUpdatedEnabled(int serial, boolean enable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(serial);
+                    _data.writeBoolean(enable);
+                    boolean _status = this.mRemote.transact(47, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method setSecurityAlgorithmsUpdatedEnabled is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetwork
+            public void isSecurityAlgorithmsUpdatedEnabled(int serial) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(serial);
+                    boolean _status = this.mRemote.transact(48, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method isSecurityAlgorithmsUpdatedEnabled is unimplemented.");
                     }
                 } finally {
                     _data.recycle();

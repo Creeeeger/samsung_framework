@@ -8,14 +8,13 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public final class SparseRectFArray implements Parcelable {
     public static final Parcelable.Creator<SparseRectFArray> CREATOR = new Parcelable.Creator<SparseRectFArray>() { // from class: android.view.inputmethod.SparseRectFArray.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SparseRectFArray createFromParcel(Parcel source) {
             return new SparseRectFArray(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SparseRectFArray[] newArray(int size) {
             return new SparseRectFArray[size];
@@ -24,10 +23,6 @@ public final class SparseRectFArray implements Parcelable {
     private final float[] mCoordinates;
     private final int[] mFlagsArray;
     private final int[] mKeys;
-
-    /* synthetic */ SparseRectFArray(SparseRectFArrayBuilder sparseRectFArrayBuilder, SparseRectFArrayIA sparseRectFArrayIA) {
-        this(sparseRectFArrayBuilder);
-    }
 
     public SparseRectFArray(Parcel source) {
         this.mKeys = source.createIntArray();
@@ -43,11 +38,10 @@ public final class SparseRectFArray implements Parcelable {
     }
 
     public int hashCode() {
-        int[] iArr = this.mKeys;
-        if (iArr == null || iArr.length == 0) {
+        if (this.mKeys == null || this.mKeys.length == 0) {
             return 0;
         }
-        int hash = iArr.length;
+        int hash = this.mKeys.length;
         for (int i = 0; i < 4; i++) {
             hash = (int) ((hash * 31) + this.mCoordinates[i]);
         }
@@ -98,7 +92,6 @@ public final class SparseRectFArray implements Parcelable {
         return sb.toString();
     }
 
-    /* loaded from: classes4.dex */
     public static final class SparseRectFArrayBuilder {
         private static int INITIAL_SIZE = 16;
         private int mCount = 0;
@@ -107,8 +100,7 @@ public final class SparseRectFArray implements Parcelable {
         private int[] mFlagsArray = null;
 
         private void checkIndex(int key) {
-            int i = this.mCount;
-            if (i != 0 && this.mKeys[i - 1] >= key) {
+            if (this.mCount != 0 && this.mKeys[this.mCount - 1] >= key) {
                 throw new IllegalArgumentException("key must be greater than all existing keys.");
             }
         }
@@ -123,26 +115,21 @@ public final class SparseRectFArray implements Parcelable {
             if (this.mFlagsArray == null) {
                 this.mFlagsArray = new int[INITIAL_SIZE];
             }
-            int i = this.mCount;
-            int requiredIndexArraySize = i + 1;
-            int[] iArr = this.mKeys;
-            if (iArr.length <= requiredIndexArraySize) {
+            int requiredIndexArraySize = this.mCount + 1;
+            if (this.mKeys.length <= requiredIndexArraySize) {
                 int[] newArray = new int[requiredIndexArraySize * 2];
-                System.arraycopy(iArr, 0, newArray, 0, i);
+                System.arraycopy(this.mKeys, 0, newArray, 0, this.mCount);
                 this.mKeys = newArray;
             }
-            int i2 = this.mCount;
-            int requiredCoordinatesArraySize = (i2 + 1) * 4;
-            float[] fArr = this.mCoordinates;
-            if (fArr.length <= requiredCoordinatesArraySize) {
+            int requiredCoordinatesArraySize = (this.mCount + 1) * 4;
+            if (this.mCoordinates.length <= requiredCoordinatesArraySize) {
                 float[] newArray2 = new float[requiredCoordinatesArraySize * 2];
-                System.arraycopy(fArr, 0, newArray2, 0, i2 * 4);
+                System.arraycopy(this.mCoordinates, 0, newArray2, 0, this.mCount * 4);
                 this.mCoordinates = newArray2;
             }
-            int[] iArr2 = this.mFlagsArray;
-            if (iArr2.length <= requiredIndexArraySize) {
+            if (this.mFlagsArray.length <= requiredIndexArraySize) {
                 int[] newArray3 = new int[requiredIndexArraySize * 2];
-                System.arraycopy(iArr2, 0, newArray3, 0, this.mCount);
+                System.arraycopy(this.mFlagsArray, 0, newArray3, 0, this.mCount);
                 this.mFlagsArray = newArray3;
             }
         }
@@ -150,17 +137,15 @@ public final class SparseRectFArray implements Parcelable {
         public SparseRectFArrayBuilder append(int key, float left, float top, float right, float bottom, int flags) {
             checkIndex(key);
             ensureBufferSize();
-            int i = this.mCount;
-            int baseCoordinatesIndex = i * 4;
-            float[] fArr = this.mCoordinates;
-            fArr[baseCoordinatesIndex + 0] = left;
-            fArr[baseCoordinatesIndex + 1] = top;
-            fArr[baseCoordinatesIndex + 2] = right;
-            fArr[baseCoordinatesIndex + 3] = bottom;
+            int baseCoordinatesIndex = this.mCount * 4;
+            this.mCoordinates[baseCoordinatesIndex + 0] = left;
+            this.mCoordinates[baseCoordinatesIndex + 1] = top;
+            this.mCoordinates[baseCoordinatesIndex + 2] = right;
+            this.mCoordinates[baseCoordinatesIndex + 3] = bottom;
             int flagsIndex = this.mCount;
             this.mFlagsArray[flagsIndex] = flags;
-            this.mKeys[i] = key;
-            this.mCount = i + 1;
+            this.mKeys[this.mCount] = key;
+            this.mCount++;
             return this;
         }
 
@@ -187,60 +172,37 @@ public final class SparseRectFArray implements Parcelable {
             this.mKeys = null;
             this.mCoordinates = null;
             this.mFlagsArray = null;
-            return;
+        } else {
+            this.mKeys = new int[builder.mCount];
+            this.mCoordinates = new float[builder.mCount * 4];
+            this.mFlagsArray = new int[builder.mCount];
+            System.arraycopy(builder.mKeys, 0, this.mKeys, 0, builder.mCount);
+            System.arraycopy(builder.mCoordinates, 0, this.mCoordinates, 0, builder.mCount * 4);
+            System.arraycopy(builder.mFlagsArray, 0, this.mFlagsArray, 0, builder.mCount);
         }
-        int[] iArr = new int[builder.mCount];
-        this.mKeys = iArr;
-        float[] fArr = new float[builder.mCount * 4];
-        this.mCoordinates = fArr;
-        int[] iArr2 = new int[builder.mCount];
-        this.mFlagsArray = iArr2;
-        System.arraycopy(builder.mKeys, 0, iArr, 0, builder.mCount);
-        System.arraycopy(builder.mCoordinates, 0, fArr, 0, builder.mCount * 4);
-        System.arraycopy(builder.mFlagsArray, 0, iArr2, 0, builder.mCount);
     }
 
     public RectF get(int index) {
         int arrayIndex;
-        int[] iArr = this.mKeys;
-        if (iArr == null || index < 0 || (arrayIndex = Arrays.binarySearch(iArr, index)) < 0) {
+        if (this.mKeys == null || index < 0 || (arrayIndex = Arrays.binarySearch(this.mKeys, index)) < 0) {
             return null;
         }
         int baseCoordIndex = arrayIndex * 4;
-        float[] fArr = this.mCoordinates;
-        return new RectF(fArr[baseCoordIndex], fArr[baseCoordIndex + 1], fArr[baseCoordIndex + 2], fArr[baseCoordIndex + 3]);
+        return new RectF(this.mCoordinates[baseCoordIndex], this.mCoordinates[baseCoordIndex + 1], this.mCoordinates[baseCoordIndex + 2], this.mCoordinates[baseCoordIndex + 3]);
     }
 
     public int getFlags(int index, int valueIfKeyNotFound) {
-        int[] iArr = this.mKeys;
-        if (iArr == null) {
+        if (this.mKeys == null) {
             return valueIfKeyNotFound;
         }
         if (index < 0) {
             return valueIfKeyNotFound;
         }
-        int arrayIndex = Arrays.binarySearch(iArr, index);
+        int arrayIndex = Arrays.binarySearch(this.mKeys, index);
         if (arrayIndex < 0) {
             return valueIfKeyNotFound;
         }
         return this.mFlagsArray[arrayIndex];
-    }
-
-    /* renamed from: android.view.inputmethod.SparseRectFArray$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SparseRectFArray> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SparseRectFArray createFromParcel(Parcel source) {
-            return new SparseRectFArray(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SparseRectFArray[] newArray(int size) {
-            return new SparseRectFArray[size];
-        }
     }
 
     @Override // android.os.Parcelable

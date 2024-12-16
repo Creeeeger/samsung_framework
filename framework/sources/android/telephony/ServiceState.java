@@ -21,17 +21,16 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ServiceState implements Parcelable {
     public static final Parcelable.Creator<ServiceState> CREATOR = new Parcelable.Creator<ServiceState>() { // from class: android.telephony.ServiceState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceState createFromParcel(Parcel in) {
             return new ServiceState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceState[] newArray(int size) {
             return new ServiceState[size];
@@ -61,11 +60,6 @@ public class ServiceState implements Parcelable {
     public static final int OPTIONAL_RADIO_TECH_FOUR_POINT_FIVE_G = 3;
     public static final int OPTIONAL_RADIO_TECH_FOUR_POINT_FIVE_G_PLUS = 4;
     public static final int OPTIONAL_RADIO_TECH_NONE = 0;
-    public static final int REGISTRATION_TYPE_CELLULAR = 1;
-    public static final int REGISTRATION_TYPE_NOCELLULAR = 2;
-    public static final int REGISTRATION_TYPE_UNKNOWN = 0;
-    public static final int RIL_FEMTOCELL_INDICATOR_LTE = 1;
-    public static final int RIL_FEMTOCELL_INDICATOR_NONE = 0;
     public static final int RIL_RADIO_CDMA_TECHNOLOGY_BITMASK = 6392;
     public static final int RIL_RADIO_TECHNOLOGY_1xRTT = 6;
     public static final int RIL_RADIO_TECHNOLOGY_EDGE = 2;
@@ -121,11 +115,11 @@ public class ServiceState implements Parcelable {
     private int mChannelNumber;
     private boolean mCssIndicator;
     private int mDataRegState;
-    private int mFemtocellIndicator;
     private boolean mIsDataRoamingFromRegistration;
     private boolean mIsEmergencyOnly;
     private boolean mIsIwlanPreferred;
     private boolean mIsManualNetworkSelection;
+    private boolean mIsNonCellularType;
     private boolean mIsPsOnlyReg;
     private boolean mIsSprDisplayRoam;
     private boolean mIsVoiceCallAvailable;
@@ -142,30 +136,24 @@ public class ServiceState implements Parcelable {
     private int mSnapshotStatus;
     private int mSystemId;
     private int mVoiceRegState;
-    private int mVoiceRegType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DuplexMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface FrequencyRange {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RegState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RilRadioTechnology {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RoamingType {
     }
 
@@ -193,14 +181,12 @@ public class ServiceState implements Parcelable {
     public ServiceState() {
         this.mVoiceRegState = 1;
         this.mDataRegState = 1;
-        this.mCdmaEriIconIndex = 1;
         this.mCellBandwidths = new int[0];
         this.mArfcnRsrpBoost = 0;
         this.mNetworkRegistrationInfos = new ArrayList();
-        this.mVoiceRegType = 0;
+        this.mIsNonCellularType = false;
         this.mSnapshotStatus = 0;
         this.mIsPsOnlyReg = false;
-        this.mFemtocellIndicator = 0;
         this.mIsSprDisplayRoam = false;
         this.mOptionalRadioTech = 0;
         this.mMsimSubmode = 0;
@@ -210,14 +196,12 @@ public class ServiceState implements Parcelable {
     public ServiceState(ServiceState s) {
         this.mVoiceRegState = 1;
         this.mDataRegState = 1;
-        this.mCdmaEriIconIndex = 1;
         this.mCellBandwidths = new int[0];
         this.mArfcnRsrpBoost = 0;
         this.mNetworkRegistrationInfos = new ArrayList();
-        this.mVoiceRegType = 0;
+        this.mIsNonCellularType = false;
         this.mSnapshotStatus = 0;
         this.mIsPsOnlyReg = false;
-        this.mFemtocellIndicator = 0;
         this.mIsSprDisplayRoam = false;
         this.mOptionalRadioTech = 0;
         this.mMsimSubmode = 0;
@@ -241,8 +225,7 @@ public class ServiceState implements Parcelable {
         this.mCdmaEriIconMode = s.mCdmaEriIconMode;
         this.mIsEmergencyOnly = s.mIsEmergencyOnly;
         this.mChannelNumber = s.mChannelNumber;
-        int[] iArr = s.mCellBandwidths;
-        this.mCellBandwidths = iArr == null ? null : Arrays.copyOf(iArr, iArr.length);
+        this.mCellBandwidths = s.mCellBandwidths == null ? null : Arrays.copyOf(s.mCellBandwidths, s.mCellBandwidths.length);
         this.mArfcnRsrpBoost = s.mArfcnRsrpBoost;
         synchronized (this.mNetworkRegistrationInfos) {
             this.mNetworkRegistrationInfos.clear();
@@ -255,10 +238,9 @@ public class ServiceState implements Parcelable {
         this.mOperatorAlphaShortRaw = s.mOperatorAlphaShortRaw;
         this.mIsDataRoamingFromRegistration = s.mIsDataRoamingFromRegistration;
         this.mIsIwlanPreferred = s.mIsIwlanPreferred;
-        this.mVoiceRegType = s.mVoiceRegType;
+        this.mIsNonCellularType = s.mIsNonCellularType;
         this.mSnapshotStatus = s.mSnapshotStatus;
         this.mIsPsOnlyReg = s.mIsPsOnlyReg;
-        this.mFemtocellIndicator = s.mFemtocellIndicator;
         this.mIsSprDisplayRoam = s.mIsSprDisplayRoam;
         this.mOptionalRadioTech = s.mOptionalRadioTech;
         this.mMsimSubmode = s.mMsimSubmode;
@@ -274,15 +256,12 @@ public class ServiceState implements Parcelable {
         boolean z5;
         this.mVoiceRegState = 1;
         this.mDataRegState = 1;
-        this.mCdmaEriIconIndex = 1;
         this.mCellBandwidths = new int[0];
         this.mArfcnRsrpBoost = 0;
-        ArrayList arrayList = new ArrayList();
-        this.mNetworkRegistrationInfos = arrayList;
-        this.mVoiceRegType = 0;
+        this.mNetworkRegistrationInfos = new ArrayList();
+        this.mIsNonCellularType = false;
         this.mSnapshotStatus = 0;
         this.mIsPsOnlyReg = false;
-        this.mFemtocellIndicator = 0;
         this.mIsSprDisplayRoam = false;
         this.mOptionalRadioTech = 0;
         this.mMsimSubmode = 0;
@@ -317,8 +296,8 @@ public class ServiceState implements Parcelable {
         }
         this.mIsEmergencyOnly = z3;
         this.mArfcnRsrpBoost = in.readInt();
-        synchronized (arrayList) {
-            in.readList(arrayList, NetworkRegistrationInfo.class.getClassLoader(), NetworkRegistrationInfo.class);
+        synchronized (this.mNetworkRegistrationInfos) {
+            in.readList(this.mNetworkRegistrationInfos, NetworkRegistrationInfo.class.getClassLoader(), NetworkRegistrationInfo.class);
         }
         this.mChannelNumber = in.readInt();
         this.mCellBandwidths = in.createIntArray();
@@ -327,7 +306,7 @@ public class ServiceState implements Parcelable {
         this.mOperatorAlphaShortRaw = in.readString();
         this.mIsDataRoamingFromRegistration = in.readBoolean();
         this.mIsIwlanPreferred = in.readBoolean();
-        this.mVoiceRegType = in.readInt();
+        this.mIsNonCellularType = in.readBoolean();
         this.mSnapshotStatus = in.readInt();
         if (in.readInt() != 0) {
             z4 = true;
@@ -335,7 +314,6 @@ public class ServiceState implements Parcelable {
             z4 = false;
         }
         this.mIsPsOnlyReg = z4;
-        this.mFemtocellIndicator = in.readInt();
         if (in.readInt() != 0) {
             z5 = true;
         } else {
@@ -374,10 +352,9 @@ public class ServiceState implements Parcelable {
         parcel.writeString(this.mOperatorAlphaShortRaw);
         parcel.writeBoolean(this.mIsDataRoamingFromRegistration);
         parcel.writeBoolean(this.mIsIwlanPreferred);
-        parcel.writeInt(this.mVoiceRegType);
+        parcel.writeBoolean(this.mIsNonCellularType);
         parcel.writeInt(this.mSnapshotStatus);
         parcel.writeInt(this.mIsPsOnlyReg ? 1 : 0);
-        parcel.writeInt(this.mFemtocellIndicator);
         parcel.writeInt(this.mIsSprDisplayRoam ? 1 : 0);
         parcel.writeInt(this.mOptionalRadioTech);
         parcel.writeInt(this.mMsimSubmode);
@@ -387,23 +364,6 @@ public class ServiceState implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.ServiceState$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ServiceState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ServiceState createFromParcel(Parcel in) {
-            return new ServiceState(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ServiceState[] newArray(int size) {
-            return new ServiceState[size];
-        }
     }
 
     public int getState() {
@@ -435,8 +395,7 @@ public class ServiceState implements Parcelable {
     }
 
     public int[] getCellBandwidths() {
-        int[] iArr = this.mCellBandwidths;
-        return iArr == null ? new int[0] : iArr;
+        return this.mCellBandwidths == null ? new int[0] : this.mCellBandwidths;
     }
 
     public boolean getRoaming() {
@@ -553,39 +512,32 @@ public class ServiceState implements Parcelable {
     public int hashCode() {
         int hash;
         synchronized (this.mNetworkRegistrationInfos) {
-            Object[] objArr = new Object[31];
-            objArr[0] = Integer.valueOf(this.mVoiceRegState);
-            objArr[1] = Integer.valueOf(this.mDataRegState);
-            objArr[2] = Integer.valueOf(this.mChannelNumber);
-            objArr[3] = Integer.valueOf(Arrays.hashCode(this.mCellBandwidths));
-            objArr[4] = this.mOperatorAlphaLong;
-            objArr[5] = this.mOperatorAlphaShort;
-            objArr[6] = this.mOperatorNumeric;
-            objArr[7] = Boolean.valueOf(this.mIsManualNetworkSelection);
-            objArr[8] = Boolean.valueOf(this.mCssIndicator);
-            objArr[9] = Integer.valueOf(this.mNetworkId);
-            objArr[10] = Integer.valueOf(this.mSystemId);
-            objArr[11] = Integer.valueOf(this.mCdmaRoamingIndicator);
-            objArr[12] = Integer.valueOf(this.mCdmaDefaultRoamingIndicator);
-            objArr[13] = Integer.valueOf(this.mCdmaEriIconIndex);
-            objArr[14] = Integer.valueOf(this.mCdmaEriIconMode);
-            objArr[15] = Integer.valueOf(this.mVoiceRegType);
-            objArr[16] = Integer.valueOf(this.mSnapshotStatus);
-            objArr[17] = Integer.valueOf(this.mIsPsOnlyReg ? 1 : 0);
-            objArr[18] = Integer.valueOf(this.mFemtocellIndicator);
-            objArr[19] = Integer.valueOf(this.mIsSprDisplayRoam ? 1 : 0);
-            objArr[20] = Integer.valueOf(this.mOptionalRadioTech);
-            objArr[21] = Integer.valueOf(this.mMsimSubmode);
-            objArr[22] = Integer.valueOf(this.mIsVoiceCallAvailable ? 1 : 0);
-            objArr[23] = Boolean.valueOf(this.mIsEmergencyOnly);
-            objArr[24] = Integer.valueOf(this.mArfcnRsrpBoost);
-            objArr[25] = this.mNetworkRegistrationInfos;
-            objArr[26] = Integer.valueOf(this.mNrFrequencyRange);
-            objArr[27] = this.mOperatorAlphaLongRaw;
-            objArr[28] = this.mOperatorAlphaShortRaw;
-            objArr[29] = Boolean.valueOf(this.mIsDataRoamingFromRegistration);
-            objArr[30] = Boolean.valueOf(this.mIsIwlanPreferred);
-            hash = Objects.hash(objArr);
+            Integer valueOf = Integer.valueOf(this.mVoiceRegState);
+            Integer valueOf2 = Integer.valueOf(this.mDataRegState);
+            Integer valueOf3 = Integer.valueOf(this.mChannelNumber);
+            Integer valueOf4 = Integer.valueOf(Arrays.hashCode(this.mCellBandwidths));
+            String str = this.mOperatorAlphaLong;
+            String str2 = this.mOperatorAlphaShort;
+            String str3 = this.mOperatorNumeric;
+            Boolean valueOf5 = Boolean.valueOf(this.mIsManualNetworkSelection);
+            Boolean valueOf6 = Boolean.valueOf(this.mCssIndicator);
+            Integer valueOf7 = Integer.valueOf(this.mNetworkId);
+            Integer valueOf8 = Integer.valueOf(this.mSystemId);
+            Integer valueOf9 = Integer.valueOf(this.mCdmaRoamingIndicator);
+            Integer valueOf10 = Integer.valueOf(this.mCdmaDefaultRoamingIndicator);
+            Integer valueOf11 = Integer.valueOf(this.mCdmaEriIconIndex);
+            Integer valueOf12 = Integer.valueOf(this.mCdmaEriIconMode);
+            Boolean valueOf13 = Boolean.valueOf(this.mIsNonCellularType);
+            Integer valueOf14 = Integer.valueOf(this.mSnapshotStatus);
+            int i = 1;
+            Integer valueOf15 = Integer.valueOf(this.mIsPsOnlyReg ? 1 : 0);
+            Integer valueOf16 = Integer.valueOf(this.mIsSprDisplayRoam ? 1 : 0);
+            Integer valueOf17 = Integer.valueOf(this.mOptionalRadioTech);
+            Integer valueOf18 = Integer.valueOf(this.mMsimSubmode);
+            if (!this.mIsVoiceCallAvailable) {
+                i = 0;
+            }
+            hash = Objects.hash(valueOf, valueOf2, valueOf3, valueOf4, str, str2, str3, valueOf5, valueOf6, valueOf7, valueOf8, valueOf9, valueOf10, valueOf11, valueOf12, valueOf13, valueOf14, valueOf15, valueOf16, valueOf17, valueOf18, Integer.valueOf(i), Boolean.valueOf(this.mIsEmergencyOnly), Integer.valueOf(this.mArfcnRsrpBoost), this.mNetworkRegistrationInfos, Integer.valueOf(this.mNrFrequencyRange), this.mOperatorAlphaLongRaw, this.mOperatorAlphaShortRaw, Boolean.valueOf(this.mIsDataRoamingFromRegistration), Boolean.valueOf(this.mIsIwlanPreferred));
         }
         return hash;
     }
@@ -597,7 +549,7 @@ public class ServiceState implements Parcelable {
         }
         ServiceState s = (ServiceState) o;
         synchronized (this.mNetworkRegistrationInfos) {
-            if (this.mVoiceRegState == s.mVoiceRegState && this.mDataRegState == s.mDataRegState && this.mIsManualNetworkSelection == s.mIsManualNetworkSelection && this.mChannelNumber == s.mChannelNumber && Arrays.equals(this.mCellBandwidths, s.mCellBandwidths) && equalsHandlesNulls(this.mOperatorAlphaLong, s.mOperatorAlphaLong) && equalsHandlesNulls(this.mOperatorAlphaShort, s.mOperatorAlphaShort) && equalsHandlesNulls(this.mOperatorNumeric, s.mOperatorNumeric) && equalsHandlesNulls(Boolean.valueOf(this.mCssIndicator), Boolean.valueOf(s.mCssIndicator)) && equalsHandlesNulls(Integer.valueOf(this.mNetworkId), Integer.valueOf(s.mNetworkId)) && equalsHandlesNulls(Integer.valueOf(this.mSystemId), Integer.valueOf(s.mSystemId)) && equalsHandlesNulls(Integer.valueOf(this.mCdmaRoamingIndicator), Integer.valueOf(s.mCdmaRoamingIndicator)) && equalsHandlesNulls(Integer.valueOf(this.mCdmaDefaultRoamingIndicator), Integer.valueOf(s.mCdmaDefaultRoamingIndicator)) && equalsHandlesNulls(Integer.valueOf(this.mVoiceRegType), Integer.valueOf(s.mVoiceRegType)) && equalsHandlesNulls(Integer.valueOf(this.mSnapshotStatus), Integer.valueOf(s.mSnapshotStatus)) && this.mIsPsOnlyReg == s.mIsPsOnlyReg && equalsHandlesNulls(Integer.valueOf(this.mFemtocellIndicator), Integer.valueOf(s.mFemtocellIndicator)) && this.mIsSprDisplayRoam == s.mIsSprDisplayRoam && this.mOptionalRadioTech == s.mOptionalRadioTech && this.mMsimSubmode == s.mMsimSubmode && this.mIsVoiceCallAvailable == s.mIsVoiceCallAvailable && this.mIsEmergencyOnly == s.mIsEmergencyOnly && equalsHandlesNulls(this.mOperatorAlphaLongRaw, s.mOperatorAlphaLongRaw) && equalsHandlesNulls(this.mOperatorAlphaShortRaw, s.mOperatorAlphaShortRaw) && this.mNetworkRegistrationInfos.size() == s.mNetworkRegistrationInfos.size() && this.mNetworkRegistrationInfos.containsAll(s.mNetworkRegistrationInfos) && this.mNrFrequencyRange == s.mNrFrequencyRange && this.mIsDataRoamingFromRegistration == s.mIsDataRoamingFromRegistration && this.mIsIwlanPreferred == s.mIsIwlanPreferred) {
+            if (this.mVoiceRegState == s.mVoiceRegState && this.mDataRegState == s.mDataRegState && this.mIsManualNetworkSelection == s.mIsManualNetworkSelection && this.mChannelNumber == s.mChannelNumber && Arrays.equals(this.mCellBandwidths, s.mCellBandwidths) && equalsHandlesNulls(this.mOperatorAlphaLong, s.mOperatorAlphaLong) && equalsHandlesNulls(this.mOperatorAlphaShort, s.mOperatorAlphaShort) && equalsHandlesNulls(this.mOperatorNumeric, s.mOperatorNumeric) && equalsHandlesNulls(Boolean.valueOf(this.mCssIndicator), Boolean.valueOf(s.mCssIndicator)) && equalsHandlesNulls(Integer.valueOf(this.mNetworkId), Integer.valueOf(s.mNetworkId)) && equalsHandlesNulls(Integer.valueOf(this.mSystemId), Integer.valueOf(s.mSystemId)) && equalsHandlesNulls(Integer.valueOf(this.mCdmaRoamingIndicator), Integer.valueOf(s.mCdmaRoamingIndicator)) && equalsHandlesNulls(Integer.valueOf(this.mCdmaDefaultRoamingIndicator), Integer.valueOf(s.mCdmaDefaultRoamingIndicator)) && this.mIsNonCellularType == s.mIsNonCellularType && equalsHandlesNulls(Integer.valueOf(this.mSnapshotStatus), Integer.valueOf(s.mSnapshotStatus)) && this.mIsPsOnlyReg == s.mIsPsOnlyReg && this.mIsSprDisplayRoam == s.mIsSprDisplayRoam && this.mOptionalRadioTech == s.mOptionalRadioTech && this.mMsimSubmode == s.mMsimSubmode && this.mIsVoiceCallAvailable == s.mIsVoiceCallAvailable && this.mIsEmergencyOnly == s.mIsEmergencyOnly && equalsHandlesNulls(this.mOperatorAlphaLongRaw, s.mOperatorAlphaLongRaw) && equalsHandlesNulls(this.mOperatorAlphaShortRaw, s.mOperatorAlphaShortRaw) && this.mNetworkRegistrationInfos.size() == s.mNetworkRegistrationInfos.size() && this.mNetworkRegistrationInfos.containsAll(s.mNetworkRegistrationInfos) && this.mNrFrequencyRange == s.mNrFrequencyRange && this.mIsDataRoamingFromRegistration == s.mIsDataRoamingFromRegistration && this.mIsIwlanPreferred == s.mIsIwlanPreferred) {
                 z = true;
             }
         }
@@ -704,13 +656,13 @@ public class ServiceState implements Parcelable {
     public String toString() {
         String str;
         synchronized (this.mNetworkRegistrationInfos) {
-            str = "{mVoiceRegState=" + this.mVoiceRegState + (NavigationBarInflaterView.KEY_CODE_START + rilServiceStateToString(this.mVoiceRegState) + NavigationBarInflaterView.KEY_CODE_END) + ", mDataRegState=" + this.mDataRegState + (NavigationBarInflaterView.KEY_CODE_START + rilServiceStateToString(this.mDataRegState) + NavigationBarInflaterView.KEY_CODE_END) + ", mChannelNumber=" + this.mChannelNumber + ", duplexMode()=" + getDuplexMode() + ", mCellBandwidths=" + Arrays.toString(this.mCellBandwidths) + ", mOperatorAlphaLong=" + this.mOperatorAlphaLong + ", mOperatorAlphaShort=" + this.mOperatorAlphaShort + ", isManualNetworkSelection=" + this.mIsManualNetworkSelection + (this.mIsManualNetworkSelection ? "(manual)" : "(automatic)") + ", getRilVoiceRadioTechnology=" + getRilVoiceRadioTechnology() + (NavigationBarInflaterView.KEY_CODE_START + rilRadioTechnologyToString(getRilVoiceRadioTechnology()) + NavigationBarInflaterView.KEY_CODE_END) + ", getRilDataRadioTechnology=" + getRilDataRadioTechnology() + (NavigationBarInflaterView.KEY_CODE_START + rilRadioTechnologyToString(getRilDataRadioTechnology()) + NavigationBarInflaterView.KEY_CODE_END) + ", mCssIndicator=" + (this.mCssIndicator ? "supported" : "unsupported") + ", mNetworkId=" + SemTelephonyUtils.maskPiiFromCellIdentity(this.mNetworkId) + ", mSystemId=" + SemTelephonyUtils.maskPiiFromCellIdentity(this.mSystemId) + ", mCdmaRoamingIndicator=" + this.mCdmaRoamingIndicator + ", mCdmaDefaultRoamingIndicator=" + this.mCdmaDefaultRoamingIndicator + ", VoiceRegType=" + this.mVoiceRegType + ", Snap=" + this.mSnapshotStatus + ", PsOnly=" + this.mIsPsOnlyReg + ", FemtocellInd=" + this.mFemtocellIndicator + ", SprDisplayRoam=" + this.mIsSprDisplayRoam + ", OptRadioTech=" + this.mOptionalRadioTech + ", MsimSubmode=" + this.mMsimSubmode + ", IsVoiceCallAvailable=" + this.mIsVoiceCallAvailable + ", mIsEmergencyOnly=" + this.mIsEmergencyOnly + ", isUsingCarrierAggregation=" + isUsingCarrierAggregation() + ", mArfcnRsrpBoost=" + this.mArfcnRsrpBoost + ", mNetworkRegistrationInfos=" + this.mNetworkRegistrationInfos + ", mNrFrequencyRange=" + (Build.IS_DEBUGGABLE ? this.mNrFrequencyRange : 0) + ", mOperatorAlphaLongRaw=" + this.mOperatorAlphaLongRaw + ", mOperatorAlphaShortRaw=" + this.mOperatorAlphaShortRaw + ", mIsDataRoamingFromRegistration=" + this.mIsDataRoamingFromRegistration + ", mIsIwlanPreferred=" + this.mIsIwlanPreferred + "}";
+            str = "{mVoiceRegState=" + this.mVoiceRegState + (NavigationBarInflaterView.KEY_CODE_START + rilServiceStateToString(this.mVoiceRegState) + NavigationBarInflaterView.KEY_CODE_END) + ", mDataRegState=" + this.mDataRegState + (NavigationBarInflaterView.KEY_CODE_START + rilServiceStateToString(this.mDataRegState) + NavigationBarInflaterView.KEY_CODE_END) + ", mChannelNumber=" + this.mChannelNumber + ", duplexMode()=" + getDuplexMode() + ", mCellBandwidths=" + Arrays.toString(this.mCellBandwidths) + ", mOperatorAlphaLong=" + this.mOperatorAlphaLong + ", mOperatorAlphaShort=" + this.mOperatorAlphaShort + ", isManualNetworkSelection=" + this.mIsManualNetworkSelection + (this.mIsManualNetworkSelection ? "(manual)" : "(automatic)") + ", getRilVoiceRadioTechnology=" + getRilVoiceRadioTechnology() + (NavigationBarInflaterView.KEY_CODE_START + rilRadioTechnologyToString(getRilVoiceRadioTechnology()) + NavigationBarInflaterView.KEY_CODE_END) + ", getRilDataRadioTechnology=" + getRilDataRadioTechnology() + (NavigationBarInflaterView.KEY_CODE_START + rilRadioTechnologyToString(getRilDataRadioTechnology()) + NavigationBarInflaterView.KEY_CODE_END) + ", mCssIndicator=" + (this.mCssIndicator ? "supported" : "unsupported") + ", mNetworkId=" + SemTelephonyUtils.maskPiiFromCellIdentity(this.mNetworkId) + ", mSystemId=" + SemTelephonyUtils.maskPiiFromCellIdentity(this.mSystemId) + ", mCdmaRoamingIndicator=" + this.mCdmaRoamingIndicator + ", mCdmaDefaultRoamingIndicator=" + this.mCdmaDefaultRoamingIndicator + ", NonCellular=" + this.mIsNonCellularType + ", Snap=" + this.mSnapshotStatus + ", PsOnly=" + this.mIsPsOnlyReg + ", SprDisplayRoam=" + this.mIsSprDisplayRoam + ", OptRadioTech=" + this.mOptionalRadioTech + ", MsimSubmode=" + this.mMsimSubmode + ", IsVoiceCallAvailable=" + this.mIsVoiceCallAvailable + ", mIsEmergencyOnly=" + this.mIsEmergencyOnly + ", isUsingCarrierAggregation=" + isUsingCarrierAggregation() + ", mArfcnRsrpBoost=" + this.mArfcnRsrpBoost + ", mNetworkRegistrationInfos=" + this.mNetworkRegistrationInfos + ", mNrFrequencyRange=" + (Build.IS_DEBUGGABLE ? this.mNrFrequencyRange : 0) + ", mOperatorAlphaLongRaw=" + this.mOperatorAlphaLongRaw + ", mOperatorAlphaShortRaw=" + this.mOperatorAlphaShortRaw + ", mIsDataRoamingFromRegistration=" + this.mIsDataRoamingFromRegistration + ", mIsIwlanPreferred=" + this.mIsIwlanPreferred + ", mIsUsingNonTerrestrialNetwork=" + isUsingNonTerrestrialNetwork() + "}";
         }
         return str;
     }
 
     public String toSimpleString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(2048);
         sb.append("Voice=[").append(rilServiceStateToString(this.mVoiceRegState));
         sb.append(" ").append(getRoamingLogString(getVoiceRoamingType()));
         sb.append(" ").append(rilRadioTechnologyToString(getRilVoiceRadioTechnology()));
@@ -743,6 +695,9 @@ public class ServiceState implements Parcelable {
                 sb.append(" SID=").append(this.mSystemId);
             }
         }
+        if (isUsingNonTerrestrialNetwork()) {
+            sb.append(" UsingNTN");
+        }
         if (this.mCdmaRoamingIndicator != -1) {
             sb.append(" RoamInd=").append(this.mCdmaRoamingIndicator);
         }
@@ -759,16 +714,13 @@ public class ServiceState implements Parcelable {
             sb.append(" EmergOnly");
         }
         if (this.mOptionalRadioTech != 0) {
-            sb.append(" OptRadioTech").append(this.mOptionalRadioTech);
+            sb.append(" OptRadioTech=").append(this.mOptionalRadioTech);
         }
         if (!this.mIsVoiceCallAvailable) {
             sb.append(" VoiceCallNotAvailable");
         }
-        if (this.mVoiceRegType != 0) {
-            sb.append(" VoiceType=").append(this.mVoiceRegType);
-        }
-        if (this.mFemtocellIndicator != 0) {
-            sb.append(" FemtoInd=").append(this.mFemtocellIndicator);
+        if (this.mIsNonCellularType) {
+            sb.append(" NonCellular");
         }
         if (this.mIsSprDisplayRoam) {
             sb.append(" SprDisplayRoam");
@@ -779,15 +731,18 @@ public class ServiceState implements Parcelable {
         if (this.mChannelNumber != -1) {
             sb.append(" Channel=").append(this.mChannelNumber);
         }
-        if (getDuplexMode() != 0) {
-            sb.append(" Duplex=").append(getDuplexMode());
+        int duplexMode = getDuplexMode();
+        if (duplexMode != 0) {
+            sb.append(" Duplex=").append(duplexMode);
         }
         sb.append(" CellBandwidths=").append(Arrays.toString(this.mCellBandwidths));
         if (this.mNrFrequencyRange != 0) {
             sb.append(" NrFreq=").append(this.mNrFrequencyRange);
         }
+        if (this.mMsimSubmode != 0) {
+            sb.append(" MsimSubmode=").append(this.mMsimSubmode);
+        }
         sb.append(" NetRegiInfos=").append(this.mNetworkRegistrationInfos);
-        sb.append(" MsimSubmode=").append(this.mMsimSubmode);
         return sb.toString();
     }
 
@@ -810,10 +765,9 @@ public class ServiceState implements Parcelable {
         this.mIsEmergencyOnly = false;
         this.mArfcnRsrpBoost = 0;
         this.mNrFrequencyRange = 0;
-        this.mVoiceRegType = 0;
+        this.mIsNonCellularType = false;
         this.mSnapshotStatus = 0;
         this.mIsPsOnlyReg = false;
-        this.mFemtocellIndicator = 0;
         this.mIsSprDisplayRoam = false;
         this.mOptionalRadioTech = 0;
         this.mMsimSubmode = 0;
@@ -973,10 +927,9 @@ public class ServiceState implements Parcelable {
         m.putInt("mNrFrequencyRange", this.mNrFrequencyRange);
         m.putString("operator-alpha-long-raw", this.mOperatorAlphaLongRaw);
         m.putString("operator-alpha-short-raw", this.mOperatorAlphaShortRaw);
-        m.putInt("voiceRegType", this.mVoiceRegType);
+        m.putBoolean("isNonCellularType", this.mIsNonCellularType);
         m.putInt("snapshotstatus", this.mSnapshotStatus);
         m.putBoolean("isPsOnlyReg", this.mIsPsOnlyReg);
-        m.putInt("femtocellIndicator", this.mFemtocellIndicator);
         m.putBoolean("isSprDisplayRoam", this.mIsSprDisplayRoam);
         m.putInt("optionalRadioTech", this.mOptionalRadioTech);
         m.putInt("msimSubmode", this.mMsimSubmode);
@@ -1454,16 +1407,12 @@ public class ServiceState implements Parcelable {
         }
     }
 
-    public int getVoiceRegType() {
-        return this.mVoiceRegType;
-    }
-
-    public void setVoiceRegType(int voiceRegType) {
-        this.mVoiceRegType = voiceRegType;
+    public void setNonCellularType(boolean nonCellularType) {
+        this.mIsNonCellularType = nonCellularType;
     }
 
     public boolean canCellularVoiceService() {
-        return this.mVoiceRegType != 2;
+        return !this.mIsNonCellularType;
     }
 
     public int getSnapshotStatus() {
@@ -1476,24 +1425,24 @@ public class ServiceState implements Parcelable {
 
     public int getMobileDataRegState() {
         NetworkRegistrationInfo nri = getNetworkRegistrationInfo(2, 1);
-        if (nri == null) {
-            return 1;
+        if (nri != null) {
+            switch (nri.getNetworkRegistrationState()) {
+                case 1:
+                case 5:
+                    return 0;
+            }
         }
-        switch (nri.getNetworkRegistrationState()) {
-            case 1:
-            case 5:
-                return 0;
-            default:
-                return 1;
-        }
+        return 1;
     }
 
     public int getMobileDataRoamingType() {
+        com.android.telephony.Rlog.e(LOG_TAG, "getMobileDataRoamingType is deprecated. Use getDataRoamingType");
         return getDataRoamingType();
     }
 
     public boolean getMobileDataRoaming() {
-        return getDataRoamingType() != 0;
+        com.android.telephony.Rlog.e(LOG_TAG, "getMobileDataRoaming is deprecated. Use getDataRoaming");
+        return getDataRoaming();
     }
 
     public int getRilMobileDataRadioTechnology() {
@@ -1510,14 +1459,6 @@ public class ServiceState implements Parcelable {
 
     public void setPsOnlyReg(boolean psOnlyReg) {
         this.mIsPsOnlyReg = psOnlyReg;
-    }
-
-    public int getFemtocellIndicator() {
-        return this.mFemtocellIndicator;
-    }
-
-    public void setFemtocellIndicator(int femtocellIndicator) {
-        this.mFemtocellIndicator = femtocellIndicator;
     }
 
     public boolean getSprDisplayRoam() {
@@ -1557,20 +1498,18 @@ public class ServiceState implements Parcelable {
     }
 
     public int getEndcStatus() {
-        DataSpecificRegistrationInfo dataSpecificInfo;
         NetworkRegistrationInfo networkRegistrationInfo = getNetworkRegistrationInfo(2, 1);
-        if (networkRegistrationInfo == null || (dataSpecificInfo = networkRegistrationInfo.getDataSpecificInfo()) == null) {
+        if (networkRegistrationInfo == null || networkRegistrationInfo.getDataSpecificInfo() == null) {
             return 0;
         }
-        return dataSpecificInfo.isEnDcAvailable ? 1 : 0;
+        return networkRegistrationInfo.getDataSpecificInfo().isEnDcAvailable ? 1 : 0;
     }
 
     public int getRestrictDcnrStatus() {
-        DataSpecificRegistrationInfo dataSpecificInfo;
         NetworkRegistrationInfo networkRegistrationInfo = getNetworkRegistrationInfo(2, 1);
-        if (networkRegistrationInfo == null || (dataSpecificInfo = networkRegistrationInfo.getDataSpecificInfo()) == null) {
+        if (networkRegistrationInfo == null || networkRegistrationInfo.getDataSpecificInfo() == null) {
             return 0;
         }
-        return dataSpecificInfo.isDcNrRestricted ? 1 : 0;
+        return networkRegistrationInfo.getDataSpecificInfo().isDcNrRestricted ? 1 : 0;
     }
 }

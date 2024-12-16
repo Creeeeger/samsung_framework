@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class AttributionSourceState implements Parcelable {
     public static final Parcelable.Creator<AttributionSourceState> CREATOR = new Parcelable.Creator<AttributionSourceState>() { // from class: android.content.AttributionSourceState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttributionSourceState createFromParcel(Parcel _aidl_source) {
             AttributionSourceState _aidl_out = new AttributionSourceState();
@@ -18,6 +16,7 @@ public class AttributionSourceState implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttributionSourceState[] newArray(int _aidl_size) {
             return new AttributionSourceState[_aidl_size];
@@ -30,25 +29,7 @@ public class AttributionSourceState implements Parcelable {
     public IBinder token;
     public int pid = -1;
     public int uid = -1;
-
-    /* renamed from: android.content.AttributionSourceState$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AttributionSourceState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AttributionSourceState createFromParcel(Parcel _aidl_source) {
-            AttributionSourceState _aidl_out = new AttributionSourceState();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AttributionSourceState[] newArray(int _aidl_size) {
-            return new AttributionSourceState[_aidl_size];
-        }
-    }
+    public int deviceId = 0;
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -56,6 +37,7 @@ public class AttributionSourceState implements Parcelable {
         _aidl_parcel.writeInt(0);
         _aidl_parcel.writeInt(this.pid);
         _aidl_parcel.writeInt(this.uid);
+        _aidl_parcel.writeInt(this.deviceId);
         _aidl_parcel.writeString(this.packageName);
         _aidl_parcel.writeString(this.attributionTag);
         _aidl_parcel.writeStrongBinder(this.token);
@@ -90,6 +72,14 @@ public class AttributionSourceState implements Parcelable {
                 return;
             }
             this.uid = _aidl_parcel.readInt();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.deviceId = _aidl_parcel.readInt();
             if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");

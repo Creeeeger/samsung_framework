@@ -31,12 +31,10 @@ public abstract class JobScheduler {
     public static final long THROW_ON_INVALID_DATA_TRANSFER_IMPLEMENTATION = 255371817;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PendingJobReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Result {
     }
 
@@ -46,24 +44,14 @@ public abstract class JobScheduler {
 
     public abstract int enqueue(JobInfo jobInfo, JobWorkItem jobWorkItem);
 
-    public abstract List<JobSnapshot> getAllJobSnapshots();
-
     public abstract List<JobInfo> getAllPendingJobs();
 
     public abstract JobInfo getPendingJob(int i);
-
-    public abstract List<JobInfo> getStartedJobs();
-
-    public abstract void notePendingUserRequestedAppStop(String str, int i, String str2);
-
-    public abstract void registerUserVisibleJobObserver(IUserVisibleJobObserver iUserVisibleJobObserver);
 
     public abstract int schedule(JobInfo jobInfo);
 
     @SystemApi
     public abstract int scheduleAsPackage(JobInfo jobInfo, String str, int i, String str2);
-
-    public abstract void unregisterUserVisibleJobObserver(IUserVisibleJobObserver iUserVisibleJobObserver);
 
     public JobScheduler forNamespace(String namespace) {
         throw new RuntimeException("Not implemented. Must override in a subclass.");
@@ -98,5 +86,22 @@ public abstract class JobScheduler {
 
     public boolean hasRunUserInitiatedJobsPermission(String packageName, int userId) {
         return false;
+    }
+
+    public List<JobInfo> getStartedJobs() {
+        return null;
+    }
+
+    public List<JobSnapshot> getAllJobSnapshots() {
+        return null;
+    }
+
+    public void registerUserVisibleJobObserver(IUserVisibleJobObserver observer) {
+    }
+
+    public void unregisterUserVisibleJobObserver(IUserVisibleJobObserver observer) {
+    }
+
+    public void notePendingUserRequestedAppStop(String packageName, int userId, String debugReason) {
     }
 }

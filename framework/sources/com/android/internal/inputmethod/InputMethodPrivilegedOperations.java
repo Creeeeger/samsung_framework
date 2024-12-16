@@ -10,19 +10,13 @@ import com.android.internal.infra.AndroidFuture;
 import com.android.internal.inputmethod.IInputContentUriToken;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InputMethodPrivilegedOperations {
     private static final String TAG = "InputMethodPrivilegedOperations";
     private final OpsHolder mOps = new OpsHolder();
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static final class OpsHolder {
+    private static final class OpsHolder {
         private IInputMethodPrivilegedOperations mPrivOps;
-
-        /* synthetic */ OpsHolder(OpsHolderIA opsHolderIA) {
-            this();
-        }
 
         private OpsHolder() {
         }
@@ -74,6 +68,18 @@ public final class InputMethodPrivilegedOperations {
         }
         try {
             ops.reportStartInputAsync(startInputToken);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void setHandwritingSurfaceNotTouchable(boolean notTouchable) {
+        IInputMethodPrivilegedOperations ops = this.mOps.getAndWarnIfNull();
+        if (ops == null) {
+            return;
+        }
+        try {
+            ops.setHandwritingSurfaceNotTouchable(notTouchable);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -145,28 +151,32 @@ public final class InputMethodPrivilegedOperations {
         }
     }
 
-    public void hideMySoftInput(int flags, int reason) {
+    public void hideMySoftInput(ImeTracker.Token statsToken, int flags, int reason) {
         IInputMethodPrivilegedOperations ops = this.mOps.getAndWarnIfNull();
         if (ops == null) {
+            ImeTracker.forLogging().onFailed(statsToken, 46);
             return;
         }
+        ImeTracker.forLogging().onProgress(statsToken, 46);
         try {
             AndroidFuture<Void> future = new AndroidFuture<>();
-            ops.hideMySoftInput(flags, reason, future);
+            ops.hideMySoftInput(statsToken, flags, reason, future);
             CompletableFutureUtil.getResult(future);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public void showMySoftInput(int flags) {
+    public void showMySoftInput(ImeTracker.Token statsToken, int flags, int reason) {
         IInputMethodPrivilegedOperations ops = this.mOps.getAndWarnIfNull();
         if (ops == null) {
+            ImeTracker.forLogging().onFailed(statsToken, 46);
             return;
         }
+        ImeTracker.forLogging().onProgress(statsToken, 46);
         try {
             AndroidFuture<Void> future = new AndroidFuture<>();
-            ops.showMySoftInput(flags, future);
+            ops.showMySoftInput(statsToken, flags, reason, future);
             CompletableFutureUtil.getResult(future);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -230,8 +240,10 @@ public final class InputMethodPrivilegedOperations {
     public void applyImeVisibilityAsync(IBinder showOrHideInputToken, boolean setVisible, ImeTracker.Token statsToken) {
         IInputMethodPrivilegedOperations ops = this.mOps.getAndWarnIfNull();
         if (ops == null) {
+            ImeTracker.forLogging().onFailed(statsToken, 46);
             return;
         }
+        ImeTracker.forLogging().onProgress(statsToken, 46);
         try {
             ops.applyImeVisibilityAsync(showOrHideInputToken, setVisible, statsToken);
         } catch (RemoteException e) {
@@ -258,6 +270,18 @@ public final class InputMethodPrivilegedOperations {
         }
         try {
             ops.resetStylusHandwriting(requestId);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void switchKeyboardLayoutAsync(int direction) {
+        IInputMethodPrivilegedOperations ops = this.mOps.getAndWarnIfNull();
+        if (ops == null) {
+            return;
+        }
+        try {
+            ops.switchKeyboardLayoutAsync(direction);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

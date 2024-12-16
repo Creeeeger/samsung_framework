@@ -7,7 +7,7 @@ import android.util.TimeUtils;
 import android.util.proto.ProtoOutputStream;
 import java.io.PrintWriter;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class ServiceState {
     private static final boolean DEBUG = false;
     public static final int SERVICE_BOUND = 2;
@@ -91,9 +91,8 @@ public final class ServiceState {
     }
 
     public void applyNewOwner(Object newOwner) {
-        Object obj = this.mOwner;
-        if (obj != newOwner) {
-            if (obj == null) {
+        if (this.mOwner != newOwner) {
+            if (this.mOwner == null) {
                 this.mOwner = newOwner;
                 this.mProc.incActiveServices(this.mName);
                 return;
@@ -204,39 +203,33 @@ public final class ServiceState {
     }
 
     public void commitStateTime(long now) {
-        int i = this.mRunState;
-        if (i != -1) {
-            this.mDurations.addDuration((i * 5) + 0, now - this.mRunStartTime);
+        if (this.mRunState != -1) {
+            this.mDurations.addDuration((this.mRunState * 5) + 0, now - this.mRunStartTime);
             this.mRunStartTime = now;
         }
-        int i2 = this.mStartedState;
-        if (i2 != -1) {
-            this.mDurations.addDuration((i2 * 5) + 1, now - this.mStartedStartTime);
+        if (this.mStartedState != -1) {
+            this.mDurations.addDuration((this.mStartedState * 5) + 1, now - this.mStartedStartTime);
             this.mStartedStartTime = now;
         }
-        int i3 = this.mBoundState;
-        if (i3 != -1) {
-            this.mDurations.addDuration((i3 * 5) + 2, now - this.mBoundStartTime);
+        if (this.mBoundState != -1) {
+            this.mDurations.addDuration((this.mBoundState * 5) + 2, now - this.mBoundStartTime);
             this.mBoundStartTime = now;
         }
-        int i4 = this.mExecState;
-        if (i4 != -1) {
-            this.mDurations.addDuration((i4 * 5) + 3, now - this.mExecStartTime);
+        if (this.mExecState != -1) {
+            this.mDurations.addDuration((this.mExecState * 5) + 3, now - this.mExecStartTime);
             this.mExecStartTime = now;
         }
-        int i5 = this.mForegroundState;
-        if (i5 != -1) {
-            this.mDurations.addDuration((i5 * 5) + 4, now - this.mForegroundStartTime);
+        if (this.mForegroundState != -1) {
+            this.mDurations.addDuration((this.mForegroundState * 5) + 4, now - this.mForegroundStartTime);
             this.mForegroundStartTime = now;
         }
     }
 
     private void updateRunning(int memFactor, long now) {
         int state = (this.mStartedState == -1 && this.mBoundState == -1 && this.mExecState == -1 && this.mForegroundState == -1) ? -1 : memFactor;
-        int i = this.mRunState;
-        if (i != state) {
-            if (i != -1) {
-                this.mDurations.addDuration((i * 5) + 0, now - this.mRunStartTime);
+        if (this.mRunState != state) {
+            if (this.mRunState != -1) {
+                this.mDurations.addDuration((this.mRunState * 5) + 0, now - this.mRunStartTime);
             } else if (state != -1) {
                 this.mRunCount++;
             }
@@ -259,25 +252,23 @@ public final class ServiceState {
     }
 
     public void updateStartedState(int memFactor, long now) {
-        int i = this.mStartedState;
-        boolean wasStarted = i != -1;
+        boolean wasStarted = this.mStartedState != -1;
         boolean started = this.mStarted || this.mRestarting;
         int state = started ? memFactor : -1;
-        if (i != state) {
-            if (i != -1) {
-                this.mDurations.addDuration((i * 5) + 1, now - this.mStartedStartTime);
+        if (this.mStartedState != state) {
+            if (this.mStartedState != -1) {
+                this.mDurations.addDuration((this.mStartedState * 5) + 1, now - this.mStartedStartTime);
             } else if (started) {
                 this.mStartedCount++;
             }
             this.mStartedState = state;
             this.mStartedStartTime = now;
-            ProcessState pullFixedProc = this.mProc.pullFixedProc(this.mPackage);
-            this.mProc = pullFixedProc;
+            this.mProc = this.mProc.pullFixedProc(this.mPackage);
             if (wasStarted != started) {
                 if (started) {
-                    pullFixedProc.incStartedServices(memFactor, now, this.mName);
+                    this.mProc.incStartedServices(memFactor, now, this.mName);
                 } else {
-                    pullFixedProc.decStartedServices(memFactor, now, this.mName);
+                    this.mProc.decStartedServices(memFactor, now, this.mName);
                 }
             }
             updateRunning(memFactor, now);
@@ -289,10 +280,9 @@ public final class ServiceState {
             Slog.wtf("ProcessStats", "Binding service " + this + " without owner");
         }
         int state = bound ? memFactor : -1;
-        int i = this.mBoundState;
-        if (i != state) {
-            if (i != -1) {
-                this.mDurations.addDuration((i * 5) + 2, now - this.mBoundStartTime);
+        if (this.mBoundState != state) {
+            if (this.mBoundState != -1) {
+                this.mDurations.addDuration((this.mBoundState * 5) + 2, now - this.mBoundStartTime);
             } else if (bound) {
                 this.mBoundCount++;
             }
@@ -307,10 +297,9 @@ public final class ServiceState {
             Slog.wtf("ProcessStats", "Executing service " + this + " without owner");
         }
         int state = executing ? memFactor : -1;
-        int i = this.mExecState;
-        if (i != state) {
-            if (i != -1) {
-                this.mDurations.addDuration((i * 5) + 3, now - this.mExecStartTime);
+        if (this.mExecState != state) {
+            if (this.mExecState != -1) {
+                this.mDurations.addDuration((this.mExecState * 5) + 3, now - this.mExecStartTime);
             } else if (executing) {
                 this.mExecCount++;
             }
@@ -325,10 +314,9 @@ public final class ServiceState {
             Slog.wtf("ProcessStats", "Foregrounding service " + this + " without owner");
         }
         int state = foreground ? memFactor : -1;
-        int i = this.mForegroundState;
-        if (i != state) {
-            if (i != -1) {
-                this.mDurations.addDuration((i * 5) + 4, now - this.mForegroundStartTime);
+        if (this.mForegroundState != state) {
+            if (this.mForegroundState != -1) {
+                this.mDurations.addDuration((this.mForegroundState * 5) + 4, now - this.mForegroundStartTime);
             } else if (foreground) {
                 this.mForegroundCount++;
             }

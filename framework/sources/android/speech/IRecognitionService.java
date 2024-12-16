@@ -23,7 +23,6 @@ public interface IRecognitionService extends IInterface {
 
     void triggerModelDownload(Intent intent, AttributionSource attributionSource, IModelDownloadListener iModelDownloadListener) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecognitionService {
         @Override // android.speech.IRecognitionService
         public void startListening(Intent recognizerIntent, IRecognitionListener listener, AttributionSource attributionSource) throws RemoteException {
@@ -51,7 +50,6 @@ public interface IRecognitionService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecognitionService {
         public static final String DESCRIPTOR = "android.speech.IRecognitionService";
         static final int TRANSACTION_cancel = 3;
@@ -107,53 +105,49 @@ public interface IRecognitionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    IRecognitionListener _arg1 = IRecognitionListener.Stub.asInterface(data.readStrongBinder());
+                    AttributionSource _arg2 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    startListening(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    IRecognitionListener _arg02 = IRecognitionListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    stopListening(_arg02);
+                    return true;
+                case 3:
+                    IRecognitionListener _arg03 = IRecognitionListener.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    cancel(_arg03, _arg12);
+                    return true;
+                case 4:
+                    Intent _arg04 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    AttributionSource _arg13 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
+                    IRecognitionSupportCallback _arg22 = IRecognitionSupportCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    checkRecognitionSupport(_arg04, _arg13, _arg22);
+                    return true;
+                case 5:
+                    Intent _arg05 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    AttributionSource _arg14 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
+                    IModelDownloadListener _arg23 = IModelDownloadListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    triggerModelDownload(_arg05, _arg14, _arg23);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            IRecognitionListener _arg1 = IRecognitionListener.Stub.asInterface(data.readStrongBinder());
-                            AttributionSource _arg2 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            startListening(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            IRecognitionListener _arg02 = IRecognitionListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            stopListening(_arg02);
-                            return true;
-                        case 3:
-                            IRecognitionListener _arg03 = IRecognitionListener.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            cancel(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            Intent _arg04 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            AttributionSource _arg13 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
-                            IRecognitionSupportCallback _arg22 = IRecognitionSupportCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            checkRecognitionSupport(_arg04, _arg13, _arg22);
-                            return true;
-                        case 5:
-                            Intent _arg05 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            AttributionSource _arg14 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
-                            IModelDownloadListener _arg23 = IModelDownloadListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            triggerModelDownload(_arg05, _arg14, _arg23);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecognitionService {
+        private static class Proxy implements IRecognitionService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -57,14 +57,12 @@ public class MenuBuilder implements Menu {
     private ArrayList<MenuItemImpl> mNonActionItems = new ArrayList<>();
     private boolean mIsActionItemsStale = true;
 
-    /* loaded from: classes5.dex */
     public interface Callback {
         boolean onMenuItemSelected(MenuBuilder menuBuilder, MenuItem menuItem);
 
         void onMenuModeChange(MenuBuilder menuBuilder);
     }
 
-    /* loaded from: classes5.dex */
     public interface ItemInvoker {
         boolean invokeItem(MenuItemImpl menuItemImpl);
     }
@@ -240,7 +238,7 @@ public class MenuBuilder implements Menu {
         }
     }
 
-    public String getActionViewStatesKey() {
+    protected String getActionViewStatesKey() {
         return ACTION_VIEW_STATES_KEY;
     }
 
@@ -251,12 +249,10 @@ public class MenuBuilder implements Menu {
     private MenuItem addInternal(int group, int id, int categoryOrder, CharSequence title) {
         int ordering = getOrdering(categoryOrder);
         MenuItemImpl item = createNewMenuItem(group, id, categoryOrder, ordering, title, this.mDefaultShowAsAction);
-        ContextMenu.ContextMenuInfo contextMenuInfo = this.mCurrentMenuInfo;
-        if (contextMenuInfo != null) {
-            item.setMenuInfo(contextMenuInfo);
+        if (this.mCurrentMenuInfo != null) {
+            item.setMenuInfo(this.mCurrentMenuInfo);
         }
-        ArrayList<MenuItemImpl> arrayList = this.mItems;
-        arrayList.add(findInsertIndex(arrayList, ordering), item);
+        this.mItems.add(findInsertIndex(this.mItems, ordering), item);
         onItemsChanged(true);
         return item;
     }
@@ -386,15 +382,14 @@ public class MenuBuilder implements Menu {
 
     @Override // android.view.Menu
     public void clear() {
-        MenuItemImpl menuItemImpl = this.mExpandedItem;
-        if (menuItemImpl != null) {
-            collapseItemActionView(menuItemImpl);
+        if (this.mExpandedItem != null) {
+            collapseItemActionView(this.mExpandedItem);
         }
         this.mItems.clear();
         onItemsChanged(true);
     }
 
-    public void setExclusiveItemChecked(MenuItem item) {
+    void setExclusiveItemChecked(MenuItem item) {
         int group = item.getGroupId();
         int N = this.mItems.size();
         for (int i = 0; i < N; i++) {
@@ -523,16 +518,13 @@ public class MenuBuilder implements Menu {
 
     private static int getOrdering(int categoryOrder) {
         int index = ((-65536) & categoryOrder) >> 16;
-        if (index >= 0) {
-            int[] iArr = sCategoryToOrder;
-            if (index < iArr.length) {
-                return (iArr[index] << 16) | (65535 & categoryOrder);
-            }
+        if (index < 0 || index >= sCategoryToOrder.length) {
+            throw new IllegalArgumentException("order does not contain a valid category.");
         }
-        throw new IllegalArgumentException("order does not contain a valid category.");
+        return (sCategoryToOrder[index] << 16) | (65535 & categoryOrder);
     }
 
-    public boolean isQwertyMode() {
+    boolean isQwertyMode() {
         return this.mQwertyMode;
     }
 
@@ -546,7 +538,7 @@ public class MenuBuilder implements Menu {
 
     /* JADX WARN: Code restructure failed: missing block: B:5:0x0017, code lost:
     
-        if (android.view.ViewConfiguration.get(r2.mContext).shouldShowMenuShortcutsWhenKeyboardPresent() != false) goto L20;
+        if (android.view.ViewConfiguration.get(r2.mContext).shouldShowMenuShortcutsWhenKeyboardPresent() != false) goto L9;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -587,15 +579,13 @@ public class MenuBuilder implements Menu {
         return this.mContext;
     }
 
-    public boolean dispatchMenuItemSelected(MenuBuilder menu, MenuItem item) {
-        Callback callback = this.mCallback;
-        return callback != null && callback.onMenuItemSelected(menu, item);
+    boolean dispatchMenuItemSelected(MenuBuilder menu, MenuItem item) {
+        return this.mCallback != null && this.mCallback.onMenuItemSelected(menu, item);
     }
 
     public void changeMenuMode() {
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onMenuModeChange(this);
+        if (this.mCallback != null) {
+            this.mCallback.onMenuModeChange(this);
         }
     }
 
@@ -763,12 +753,12 @@ public class MenuBuilder implements Menu {
         }
     }
 
-    public void onItemVisibleChanged(MenuItemImpl item) {
+    void onItemVisibleChanged(MenuItemImpl item) {
         this.mIsVisibleItemsStale = true;
         onItemsChanged(true);
     }
 
-    public void onItemActionRequestChanged(MenuItemImpl item) {
+    void onItemActionRequestChanged(MenuItemImpl item) {
         this.mIsActionItemsStale = true;
         onItemsChanged(true);
     }
@@ -865,27 +855,27 @@ public class MenuBuilder implements Menu {
         onItemsChanged(false);
     }
 
-    public MenuBuilder setHeaderTitleInt(CharSequence title) {
+    protected MenuBuilder setHeaderTitleInt(CharSequence title) {
         setHeaderInternal(0, title, 0, null, null);
         return this;
     }
 
-    public MenuBuilder setHeaderTitleInt(int titleRes) {
+    protected MenuBuilder setHeaderTitleInt(int titleRes) {
         setHeaderInternal(titleRes, null, 0, null, null);
         return this;
     }
 
-    public MenuBuilder setHeaderIconInt(Drawable icon) {
+    protected MenuBuilder setHeaderIconInt(Drawable icon) {
         setHeaderInternal(0, null, 0, icon, null);
         return this;
     }
 
-    public MenuBuilder setHeaderIconInt(int iconRes) {
+    protected MenuBuilder setHeaderIconInt(int iconRes) {
         setHeaderInternal(0, null, iconRes, null, null);
         return this;
     }
 
-    public MenuBuilder setHeaderViewInt(View view) {
+    protected MenuBuilder setHeaderViewInt(View view) {
         setHeaderInternal(0, null, 0, null, view);
         return this;
     }
@@ -915,7 +905,7 @@ public class MenuBuilder implements Menu {
         this.mOptionalIconsVisible = visible;
     }
 
-    public boolean getOptionalIconsVisible() {
+    boolean getOptionalIconsVisible() {
         return this.mOptionalIconsVisible;
     }
 

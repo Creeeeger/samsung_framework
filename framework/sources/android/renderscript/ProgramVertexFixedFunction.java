@@ -17,7 +17,6 @@ public class ProgramVertexFixedFunction extends ProgramVertex {
         bindConstants(va.getAllocation(), 0);
     }
 
-    /* loaded from: classes3.dex */
     static class InternalBuilder extends Program.BaseProgramBuilder {
         public InternalBuilder(RenderScript rs) {
             super(rs);
@@ -74,7 +73,6 @@ public class ProgramVertexFixedFunction extends ProgramVertex {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         RenderScript mRS;
         String mShader;
@@ -131,7 +129,6 @@ public class ProgramVertexFixedFunction extends ProgramVertex {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Constants {
         static final int MODELVIEW_OFFSET = 0;
         static final int PROJECTION_OFFSET = 16;
@@ -169,8 +166,7 @@ public class ProgramVertexFixedFunction extends ProgramVertex {
             for (int i = 0; i < 16; i++) {
                 this.mIOBuffer.addF32(m.mMat[i]);
             }
-            FieldPacker fieldPacker = this.mIOBuffer;
-            fieldPacker.reset(fieldPacker.getData().length);
+            this.mIOBuffer.reset(this.mIOBuffer.getData().length);
             this.mAlloc.setFromFieldPacker(0, this.mIOBuffer);
         }
 

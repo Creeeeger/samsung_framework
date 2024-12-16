@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.internal.os.IParcelFileDescriptorFactory;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IMediaContainerService extends IInterface {
     long calculateInstalledSize(String str, String str2) throws RemoteException;
 
@@ -19,7 +19,6 @@ public interface IMediaContainerService extends IInterface {
 
     ObbInfo getObbInfo(String str) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IMediaContainerService {
         @Override // com.android.internal.app.IMediaContainerService
         public int copyPackage(String packagePath, IParcelFileDescriptorFactory target) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IMediaContainerService extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IMediaContainerService {
         public static final String DESCRIPTOR = "com.android.internal.app.IMediaContainerService";
         static final int TRANSACTION_calculateInstalledSize = 4;
@@ -100,51 +98,48 @@ public interface IMediaContainerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    IParcelFileDescriptorFactory _arg1 = IParcelFileDescriptorFactory.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result = copyPackage(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    PackageInfoLite _result2 = getMinimalPackageInfo(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    ObbInfo _result3 = getObbInfo(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result4 = calculateInstalledSize(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            IParcelFileDescriptorFactory _arg1 = IParcelFileDescriptorFactory.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result = copyPackage(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            PackageInfoLite _result2 = getMinimalPackageInfo(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            ObbInfo _result3 = getObbInfo(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result4 = calculateInstalledSize(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements IMediaContainerService {
             private IBinder mRemote;
 

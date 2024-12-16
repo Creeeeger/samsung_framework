@@ -5,20 +5,20 @@ import android.animation.ValueAnimator;
 import android.content.res.ConstantState;
 import android.util.LongArray;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 /* loaded from: classes.dex */
 public abstract class Animator implements Cloneable {
     public static final long DURATION_INFINITE = -1;
     private static long sBackgroundPauseDelay = 1000;
-    private Object[] mCachedList;
     private AnimatorConstantState mConstantState;
     ArrayList<AnimatorListener> mListeners = null;
     ArrayList<AnimatorPauseListener> mPauseListeners = null;
     boolean mPaused = false;
     int mChangingConfigurations = 0;
+    private AtomicReference<Object[]> mCachedList = new AtomicReference<>();
     boolean mStartListenersCalled = false;
 
-    /* loaded from: classes.dex */
     public interface AnimatorPauseListener {
         void onAnimationPause(Animator animator);
 
@@ -101,11 +101,10 @@ public abstract class Animator implements Cloneable {
     }
 
     public void removeListener(AnimatorListener listener) {
-        ArrayList<AnimatorListener> arrayList = this.mListeners;
-        if (arrayList == null) {
+        if (this.mListeners == null) {
             return;
         }
-        arrayList.remove(listener);
+        this.mListeners.remove(listener);
         if (this.mListeners.size() == 0) {
             this.mListeners = null;
         }
@@ -123,25 +122,22 @@ public abstract class Animator implements Cloneable {
     }
 
     public void removePauseListener(AnimatorPauseListener listener) {
-        ArrayList<AnimatorPauseListener> arrayList = this.mPauseListeners;
-        if (arrayList == null) {
+        if (this.mPauseListeners == null) {
             return;
         }
-        arrayList.remove(listener);
+        this.mPauseListeners.remove(listener);
         if (this.mPauseListeners.size() == 0) {
             this.mPauseListeners = null;
         }
     }
 
     public void removeAllListeners() {
-        ArrayList<AnimatorListener> arrayList = this.mListeners;
-        if (arrayList != null) {
-            arrayList.clear();
+        if (this.mListeners != null) {
+            this.mListeners.clear();
             this.mListeners = null;
         }
-        ArrayList<AnimatorPauseListener> arrayList2 = this.mPauseListeners;
-        if (arrayList2 != null) {
-            arrayList2.clear();
+        if (this.mPauseListeners != null) {
+            this.mPauseListeners.clear();
             this.mPauseListeners = null;
         }
     }
@@ -164,7 +160,7 @@ public abstract class Animator implements Cloneable {
 
     @Override // 
     /* renamed from: clone */
-    public Animator mo57clone() {
+    public Animator mo77clone() {
         try {
             Animator anim = (Animator) super.clone();
             if (this.mListeners != null) {
@@ -173,7 +169,7 @@ public abstract class Animator implements Cloneable {
             if (this.mPauseListeners != null) {
                 anim.mPauseListeners = new ArrayList<>(this.mPauseListeners);
             }
-            anim.mCachedList = null;
+            anim.mCachedList.set(null);
             anim.mStartListenersCalled = false;
             return anim;
         } catch (CloneNotSupportedException e) {
@@ -198,11 +194,11 @@ public abstract class Animator implements Cloneable {
         throw new IllegalStateException("Reverse is not supported");
     }
 
-    public boolean pulseAnimationFrame(long frameTime) {
+    boolean pulseAnimationFrame(long frameTime) {
         return false;
     }
 
-    public void startWithoutPulsing(boolean inReverse) {
+    void startWithoutPulsing(boolean inReverse) {
         if (inReverse) {
             reverse();
         } else {
@@ -210,20 +206,20 @@ public abstract class Animator implements Cloneable {
         }
     }
 
-    public void skipToEndValue(boolean inReverse) {
+    void skipToEndValue(boolean inReverse) {
     }
 
-    public boolean isInitialized() {
+    boolean isInitialized() {
         return true;
     }
 
-    public void animateValuesInRange(long currentPlayTime, long lastPlayTime) {
+    void animateValuesInRange(long currentPlayTime, long lastPlayTime) {
     }
 
-    public void animateSkipToEnds(long currentPlayTime, long lastPlayTime) {
+    void animateSkipToEnds(long currentPlayTime, long lastPlayTime) {
     }
 
-    public void getStartAndEndTimes(LongArray times, long offset) {
+    void getStartAndEndTimes(LongArray times, long offset) {
         long startTime = getStartDelay() + offset;
         if (times.indexOf(startTime) < 0) {
             times.add(startTime);
@@ -237,7 +233,7 @@ public abstract class Animator implements Cloneable {
         }
     }
 
-    public void notifyListeners(AnimatorCaller<AnimatorListener, Animator> notification, boolean isReverse) {
+    void notifyListeners(AnimatorCaller<AnimatorListener, Animator> notification, boolean isReverse) {
         callOnList(this.mListeners, notification, this, isReverse);
     }
 
@@ -245,7 +241,7 @@ public abstract class Animator implements Cloneable {
         callOnList(this.mPauseListeners, notification, this, false);
     }
 
-    public void notifyStartListeners(boolean isReversing) {
+    void notifyStartListeners(boolean isReversing) {
         boolean startListenersCalled = this.mStartListenersCalled;
         this.mStartListenersCalled = true;
         if (this.mListeners != null && !startListenersCalled) {
@@ -253,7 +249,7 @@ public abstract class Animator implements Cloneable {
         }
     }
 
-    public void notifyEndListeners(boolean isReversing) {
+    void notifyEndListeners(boolean isReversing) {
         boolean startListenersCalled = this.mStartListenersCalled;
         this.mStartListenersCalled = false;
         if (this.mListeners != null && startListenersCalled) {
@@ -262,27 +258,22 @@ public abstract class Animator implements Cloneable {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public <T, A> void callOnList(ArrayList<T> list, AnimatorCaller<T, A> animatorCaller, A animator, boolean isReverse) {
-        Object[] array;
+    <T, A> void callOnList(ArrayList<T> list, AnimatorCaller<T, A> animatorCaller, A animator, boolean isReverse) {
         int size = list == null ? 0 : list.size();
         if (size > 0) {
-            Object[] objArr = this.mCachedList;
-            if (objArr == null || objArr.length < size) {
+            Object[] array = this.mCachedList.getAndSet(null);
+            if (array == null || array.length < size) {
                 array = new Object[size];
-            } else {
-                array = this.mCachedList;
-                this.mCachedList = null;
             }
             list.toArray(array);
             for (int i = 0; i < size; i++) {
                 animatorCaller.call(array[i], animator, isReverse);
                 array[i] = null;
             }
-            this.mCachedList = array;
+            this.mCachedList.compareAndSet(null, array);
         }
     }
 
-    /* loaded from: classes.dex */
     public interface AnimatorListener {
         void onAnimationCancel(Animator animator);
 
@@ -304,16 +295,14 @@ public abstract class Animator implements Cloneable {
     public void setAllowRunningAsynchronously(boolean mayRunAsync) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class AnimatorConstantState extends ConstantState<Animator> {
+    private static class AnimatorConstantState extends ConstantState<Animator> {
         final Animator mAnimator;
         int mChangingConf;
 
         public AnimatorConstantState(Animator animator) {
             this.mAnimator = animator;
-            animator.mConstantState = this;
-            this.mChangingConf = animator.getChangingConfigurations();
+            this.mAnimator.mConstantState = this;
+            this.mChangingConf = this.mAnimator.getChangingConfigurations();
         }
 
         @Override // android.content.res.ConstantState
@@ -321,17 +310,16 @@ public abstract class Animator implements Cloneable {
             return this.mChangingConf;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.content.res.ConstantState
-        /* renamed from: newInstance */
-        public Animator newInstance2() {
-            Animator clone = this.mAnimator.mo57clone();
+        public Animator newInstance() {
+            Animator clone = this.mAnimator.mo77clone();
             clone.mConstantState = this;
             return clone;
         }
     }
 
-    /* loaded from: classes.dex */
-    public interface AnimatorCaller<T, A> {
+    interface AnimatorCaller<T, A> {
         public static final AnimatorCaller<AnimatorListener, Animator> ON_START = new AnimatorCaller() { // from class: android.animation.Animator$AnimatorCaller$$ExternalSyntheticLambda0
             @Override // android.animation.Animator.AnimatorCaller
             public final void call(Object obj, Object obj2, boolean z) {

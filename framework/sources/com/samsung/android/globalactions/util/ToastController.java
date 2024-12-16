@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 import java.util.function.Consumer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ToastController {
     private final Context mContext;
     private Consumer<String> mInterceptor = null;
@@ -18,9 +18,8 @@ public class ToastController {
     }
 
     public void showToast(String msg, int duration) {
-        Consumer<String> consumer = this.mInterceptor;
-        if (consumer != null) {
-            consumer.accept(msg);
+        if (this.mInterceptor != null) {
+            this.mInterceptor.accept(msg);
         } else {
             Toast.makeText(this.mContext, msg, duration).show();
         }

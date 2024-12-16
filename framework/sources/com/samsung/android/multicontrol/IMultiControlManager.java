@@ -9,7 +9,7 @@ import android.view.IInputFilter;
 import com.samsung.android.multicontrol.IInputFilterInstallListener;
 import com.samsung.android.multicontrol.IMultiControlDeathChecker;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMultiControlManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multicontrol.IMultiControlManager";
 
@@ -39,7 +39,6 @@ public interface IMultiControlManager extends IInterface {
 
     void stopDeathChecker() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMultiControlManager {
         @Override // com.samsung.android.multicontrol.IMultiControlManager
         public boolean isAllowed() throws RemoteException {
@@ -101,7 +100,6 @@ public interface IMultiControlManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMultiControlManager {
         static final int TRANSACTION_enableTriggerDetection = 12;
         static final int TRANSACTION_forceHideCursor = 6;
@@ -180,96 +178,92 @@ public interface IMultiControlManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMultiControlManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMultiControlManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMultiControlManager.DESCRIPTOR);
+                case 1:
+                    boolean _result = isAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _result2 = getProtocolVersion();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setProtocolVersion(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IInputFilter _arg02 = IInputFilter.Stub.asInterface(data.readStrongBinder());
+                    IInputFilterInstallListener _arg1 = IInputFilterInstallListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setInputFilter(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    resetInputFilter();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    forceHideCursor(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setInteractive(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMultiControlOutOfFocus(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IMultiControlDeathChecker _arg06 = IMultiControlDeathChecker.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startDeathChecker(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    stopDeathChecker();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg07 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCursorPosition(_arg07, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    boolean _arg08 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enableTriggerDetection(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTriggerThreshold(_arg09);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _result2 = getProtocolVersion();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setProtocolVersion(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IInputFilter _arg02 = IInputFilter.Stub.asInterface(data.readStrongBinder());
-                            IInputFilterInstallListener _arg1 = IInputFilterInstallListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setInputFilter(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            resetInputFilter();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            forceHideCursor(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setInteractive(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMultiControlOutOfFocus(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IMultiControlDeathChecker _arg06 = IMultiControlDeathChecker.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startDeathChecker(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            stopDeathChecker();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg07 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCursorPosition(_arg07, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            boolean _arg08 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enableTriggerDetection(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTriggerThreshold(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IMultiControlManager {
+        private static class Proxy implements IMultiControlManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

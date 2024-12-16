@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class BluetoothCallQualityReport implements Parcelable {
     public static final Parcelable.Creator<BluetoothCallQualityReport> CREATOR = new Parcelable.Creator<BluetoothCallQualityReport>() { // from class: android.telecom.BluetoothCallQualityReport.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BluetoothCallQualityReport createFromParcel(Parcel in) {
             return new BluetoothCallQualityReport(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BluetoothCallQualityReport[] newArray(int size) {
             return new BluetoothCallQualityReport[size];
@@ -31,14 +30,6 @@ public final class BluetoothCallQualityReport implements Parcelable {
     private final int mRssiDbm;
     private final long mSentTimestampMillis;
     private final int mSnrDb;
-
-    /* synthetic */ BluetoothCallQualityReport(Parcel parcel, BluetoothCallQualityReportIA bluetoothCallQualityReportIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ BluetoothCallQualityReport(Builder builder, BluetoothCallQualityReportIA bluetoothCallQualityReportIA) {
-        this(builder);
-    }
 
     public long getSentTimestampMillis() {
         return this.mSentTimestampMillis;
@@ -84,23 +75,6 @@ public final class BluetoothCallQualityReport implements Parcelable {
         out.writeInt(this.mNegativeAcknowledgementCount);
     }
 
-    /* renamed from: android.telecom.BluetoothCallQualityReport$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BluetoothCallQualityReport> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BluetoothCallQualityReport createFromParcel(Parcel in) {
-            return new BluetoothCallQualityReport(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BluetoothCallQualityReport[] newArray(int size) {
-            return new BluetoothCallQualityReport[size];
-        }
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -119,7 +93,6 @@ public final class BluetoothCallQualityReport implements Parcelable {
         return Objects.hash(Long.valueOf(this.mSentTimestampMillis), Boolean.valueOf(this.mChoppyVoice), Integer.valueOf(this.mRssiDbm), Integer.valueOf(this.mSnrDb), Integer.valueOf(this.mRetransmittedPacketsCount), Integer.valueOf(this.mPacketsNotReceivedCount), Integer.valueOf(this.mNegativeAcknowledgementCount));
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private boolean mChoppyVoice;
         private int mNegativeAcknowledgementCount;

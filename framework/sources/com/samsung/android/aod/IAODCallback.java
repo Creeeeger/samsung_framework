@@ -12,7 +12,6 @@ public interface IAODCallback extends IInterface {
 
     void onScreenTurningOn() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IAODCallback {
         @Override // com.samsung.android.aod.IAODCallback
         public void onScreenTurningOn() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAODCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IAODCallback {
         static final int TRANSACTION_onScreenTurningOn = 1;
 
@@ -67,22 +65,19 @@ public interface IAODCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAODCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAODCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAODCallback.DESCRIPTOR);
+                case 1:
+                    onScreenTurningOn();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onScreenTurningOn();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IAODCallback {
             private IBinder mRemote;
 

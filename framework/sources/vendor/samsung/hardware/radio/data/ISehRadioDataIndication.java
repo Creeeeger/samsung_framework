@@ -26,7 +26,6 @@ public interface ISehRadioDataIndication extends IInterface {
 
     void timerStatusChangedInd(int i, int[] iArr) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioDataIndication {
         @Override // vendor.samsung.hardware.radio.data.ISehRadioDataIndication
         public void rrcStateChanged(int indicationType, SehRrcStateInfo state) throws RemoteException {
@@ -67,7 +66,6 @@ public interface ISehRadioDataIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioDataIndication {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -104,63 +102,61 @@ public interface ISehRadioDataIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    SehRrcStateInfo _arg1 = (SehRrcStateInfo) data.readTypedObject(SehRrcStateInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    rrcStateChanged(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    int[] _arg12 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    timerStatusChangedInd(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    SehApnProfile _result = needApnProfileIndication(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = needSettingValueIndication(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    SehPacketUsage _result3 = needPacketUsage(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            SehRrcStateInfo _arg1 = (SehRrcStateInfo) data.readTypedObject(SehRrcStateInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            rrcStateChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int[] _arg12 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            timerStatusChangedInd(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            SehApnProfile _result = needApnProfileIndication(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = needSettingValueIndication(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            SehPacketUsage _result3 = needPacketUsage(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehRadioDataIndication {
+        private static class Proxy implements ISehRadioDataIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

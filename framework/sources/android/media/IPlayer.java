@@ -23,7 +23,6 @@ public interface IPlayer extends IInterface {
 
     void stop() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IPlayer {
         @Override // android.media.IPlayer
         public void start() throws RemoteException {
@@ -59,7 +58,6 @@ public interface IPlayer extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IPlayer {
         public static final String DESCRIPTOR = "android.media.IPlayer";
         static final int TRANSACTION_applyVolumeShaper = 7;
@@ -121,50 +119,47 @@ public interface IPlayer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    start();
+                    return true;
+                case 2:
+                    pause();
+                    return true;
+                case 3:
+                    stop();
+                    return true;
+                case 4:
+                    float _arg0 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setVolume(_arg0);
+                    return true;
+                case 5:
+                    float _arg02 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setPan(_arg02);
+                    return true;
+                case 6:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setStartDelayMs(_arg03);
+                    return true;
+                case 7:
+                    VolumeShaperConfiguration _arg04 = (VolumeShaperConfiguration) data.readTypedObject(VolumeShaperConfiguration.CREATOR);
+                    VolumeShaperOperation _arg1 = (VolumeShaperOperation) data.readTypedObject(VolumeShaperOperation.CREATOR);
+                    data.enforceNoDataAvail();
+                    applyVolumeShaper(_arg04, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            start();
-                            return true;
-                        case 2:
-                            pause();
-                            return true;
-                        case 3:
-                            stop();
-                            return true;
-                        case 4:
-                            float _arg0 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setVolume(_arg0);
-                            return true;
-                        case 5:
-                            float _arg02 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setPan(_arg02);
-                            return true;
-                        case 6:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setStartDelayMs(_arg03);
-                            return true;
-                        case 7:
-                            VolumeShaperConfiguration _arg04 = (VolumeShaperConfiguration) data.readTypedObject(VolumeShaperConfiguration.CREATOR);
-                            VolumeShaperOperation _arg1 = (VolumeShaperOperation) data.readTypedObject(VolumeShaperOperation.CREATOR);
-                            data.enforceNoDataAvail();
-                            applyVolumeShaper(_arg04, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IPlayer {
+        private static class Proxy implements IPlayer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

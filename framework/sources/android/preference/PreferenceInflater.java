@@ -10,7 +10,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 @Deprecated
 /* loaded from: classes3.dex */
-public class PreferenceInflater extends GenericInflater<Preference, PreferenceGroup> {
+class PreferenceInflater extends GenericInflater<Preference, PreferenceGroup> {
     private static final String EXTRA_TAG_NAME = "extra";
     private static final String INTENT_TAG_NAME = "intent";
     private static final String TAG = "PreferenceInflater";
@@ -36,6 +36,7 @@ public class PreferenceInflater extends GenericInflater<Preference, PreferenceGr
         setDefaultPackage("android.preference.");
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.GenericInflater
     public boolean onCreateCustomFromTag(XmlPullParser parser, Preference parentPreference, AttributeSet attrs) throws XmlPullParserException {
         String tag = parser.getName();
@@ -66,6 +67,7 @@ public class PreferenceInflater extends GenericInflater<Preference, PreferenceGr
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.GenericInflater
     public PreferenceGroup onMergeRoots(PreferenceGroup givenRoot, boolean attachToGivenRoot, PreferenceGroup xmlRoot) {
         if (givenRoot == null) {

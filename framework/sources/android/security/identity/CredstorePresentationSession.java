@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /* loaded from: classes3.dex */
-public class CredstorePresentationSession extends PresentationSession {
+class CredstorePresentationSession extends PresentationSession {
     private static final String TAG = "CredstorePresentationSession";
     private ISession mBinder;
     private int mCipherSuite;
@@ -33,7 +33,7 @@ public class CredstorePresentationSession extends PresentationSession {
     private boolean mOperationHandleSet = false;
     private long mOperationHandle = 0;
 
-    public CredstorePresentationSession(Context context, int cipherSuite, CredstoreIdentityCredentialStore store, ISession binder, int featureVersion) {
+    CredstorePresentationSession(Context context, int cipherSuite, CredstoreIdentityCredentialStore store, ISession binder, int featureVersion) {
         this.mFeatureVersion = 0;
         this.mContext = context;
         this.mCipherSuite = cipherSuite;

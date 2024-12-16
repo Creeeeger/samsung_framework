@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SlicingConfig implements Parcelable {
     public static final Parcelable.Creator<SlicingConfig> CREATOR = new Parcelable.Creator<SlicingConfig>() { // from class: android.hardware.radio.data.SlicingConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SlicingConfig createFromParcel(Parcel _aidl_source) {
             SlicingConfig _aidl_out = new SlicingConfig();
@@ -19,6 +17,7 @@ public class SlicingConfig implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SlicingConfig[] newArray(int _aidl_size) {
             return new SlicingConfig[_aidl_size];
@@ -26,25 +25,6 @@ public class SlicingConfig implements Parcelable {
     };
     public SliceInfo[] sliceInfo;
     public UrspRule[] urspRules;
-
-    /* renamed from: android.hardware.radio.data.SlicingConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SlicingConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SlicingConfig createFromParcel(Parcel _aidl_source) {
-            SlicingConfig _aidl_out = new SlicingConfig();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SlicingConfig[] newArray(int _aidl_size) {
-            return new SlicingConfig[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +83,7 @@ public class SlicingConfig implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("urspRules: " + Arrays.toString(this.urspRules));
         _aidl_sj.add("sliceInfo: " + Arrays.toString(this.sliceInfo));
-        return "android.hardware.radio.data.SlicingConfig" + _aidl_sj.toString();
+        return "SlicingConfig" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

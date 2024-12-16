@@ -31,7 +31,7 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprDocument implements Cloneable {
     public static final int ANIMATION_MODE_BATTERY = 10;
     public static final int ANIMATION_MODE_NONE = 0;
@@ -260,7 +260,7 @@ public class SprDocument implements Cloneable {
             this.mDocuments.add(new SprObjectShapeGroup(true, in));
         }
         int i4 = this.mAnimationMode;
-        if (i4 >= 1 && i4 <= 8) {
+        if (i4 >= 1 && this.mAnimationMode <= 8) {
             applyTimeAnimationMode();
         }
         this.mLoadingTime = System.currentTimeMillis() - start;
@@ -312,7 +312,7 @@ public class SprDocument implements Cloneable {
         this.mLeft = 0.0f;
         this.mRight = right;
         this.mBottom = bottom;
-        this.mDensity = right / width;
+        this.mDensity = this.mRight / width;
         this.mNinePatchBottom = 0.0f;
         this.mNinePatchRight = 0.0f;
         this.mNinePatchTop = 0.0f;
@@ -597,7 +597,6 @@ public class SprDocument implements Cloneable {
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:11:0x0033. Please report as an issue. */
     public void applyTimeAnimationMode() {
         Iterator<SprObjectBase> it = this.mAnimationObject.iterator();
         while (it.hasNext()) {
@@ -610,8 +609,7 @@ public class SprDocument implements Cloneable {
                     int duration = animatorSet.duration;
                     int quotient = 1;
                     int type = 1;
-                    int i = this.mAnimationMode;
-                    switch (i) {
+                    switch (this.mAnimationMode) {
                         case 1:
                             quotient = 1;
                             break;
@@ -645,27 +643,25 @@ public class SprDocument implements Cloneable {
                             quotient = 86400000;
                             break;
                     }
-                    animatorSet.updateAnimatorInterpolator(SprTimeInterpolatorFactory.get(i, duration, type, quotient));
+                    animatorSet.updateAnimatorInterpolator(SprTimeInterpolatorFactory.get(this.mAnimationMode, duration, type, quotient));
                 }
             }
         }
     }
 
-    /* renamed from: clone */
-    public SprDocument m8411clone() throws CloneNotSupportedException {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SprDocument m8812clone() throws CloneNotSupportedException {
         SprDocument document = (SprDocument) super.clone();
-        document.mReferenceMap = this.mReferenceMap.m4950clone();
+        document.mReferenceMap = this.mReferenceMap.m5234clone();
         document.mDocuments = new ArrayList<>();
         document.mAnimationObject = new ArrayList<>();
         Iterator<SprObjectShapeGroup> it = this.mDocuments.iterator();
         while (it.hasNext()) {
             SprObjectShapeGroup group = it.next();
-            document.mDocuments.add(group.mo8415clone());
-            ArrayList<SprObjectShapeGroup> arrayList = document.mDocuments;
-            document.updateAnimationObjectList(arrayList.get(arrayList.size() - 1));
+            document.mDocuments.add(group.mo8816clone());
+            document.updateAnimationObjectList(document.mDocuments.get(document.mDocuments.size() - 1));
         }
-        int i = this.mAnimationMode;
-        if (i >= 1 && i <= 8) {
+        if (this.mAnimationMode >= 1 && this.mAnimationMode <= 8) {
             applyTimeAnimationMode();
         }
         return document;
@@ -698,16 +694,14 @@ public class SprDocument implements Cloneable {
         float sx = displayWidth / (this.mRight - this.mLeft);
         float sy = displayHeight / (this.mBottom - this.mTop);
         canvas.save(31);
-        float f = this.mLeft;
-        float f2 = this.mTop;
-        canvas.clipRect(f, f2, f + displayWidth, f2 + displayHeight, Region.Op.INTERSECT);
+        canvas.clipRect(this.mLeft, this.mTop, this.mLeft + displayWidth, this.mTop + displayHeight, Region.Op.INTERSECT);
         canvas.scale(sx, sy);
         if (drawingGroupIdx < 0) {
             getObject().draw(this, canvas, sx, sy, 1.0f);
         } else if (drawingGroupIdx < this.mDocuments.size()) {
             this.mDocuments.get(drawingGroupIdx).draw(this, canvas, sx, sy, 1.0f);
         } else {
-            this.mDocuments.get(r2.size() - 1).draw(this, canvas, sx, sy, 1.0f);
+            this.mDocuments.get(this.mDocuments.size() - 1).draw(this, canvas, sx, sy, 1.0f);
         }
         canvas.restore();
         if (SprDebug.IsDebug) {
@@ -725,11 +719,10 @@ public class SprDocument implements Cloneable {
         fillPaint.setStyle(Paint.Style.FILL);
         if (drawingGroupIdx < 0) {
             getObject().preDraw(this, strokePaint, fillPaint, false, false, null);
-        } else if (drawingGroupIdx < this.mDocuments.size()) {
-            this.mDocuments.get(drawingGroupIdx).preDraw(this, strokePaint, fillPaint, false, false, null);
+        } else if (drawingGroupIdx >= this.mDocuments.size()) {
+            this.mDocuments.get(this.mDocuments.size() - 1).preDraw(this, strokePaint, fillPaint, false, false, null);
         } else {
-            ArrayList<SprObjectShapeGroup> arrayList = this.mDocuments;
-            arrayList.get(arrayList.size() - 1).preDraw(this, strokePaint, fillPaint, false, false, null);
+            this.mDocuments.get(drawingGroupIdx).preDraw(this, strokePaint, fillPaint, false, false, null);
         }
         if (drawingGroupIdx <= 0) {
             this.isPredraw = true;

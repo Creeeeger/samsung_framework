@@ -14,6 +14,7 @@ public final class TelephonyProperties {
     private TelephonyProperties() {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public static Boolean tryParseBoolean(String str) {
         char c;
@@ -55,17 +56,11 @@ public final class TelephonyProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Integer tryParseInteger(String str) {
         try {
             return Integer.valueOf(str);
@@ -106,6 +101,7 @@ public final class TelephonyProperties {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String tryParseString(String str) {
         if ("".equals(str)) {
             return null;
@@ -213,7 +209,7 @@ public final class TelephonyProperties {
 
     public static List<String> baseband_version() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_BASEBAND_VERSION);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda0
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -234,7 +230,7 @@ public final class TelephonyProperties {
 
     public static List<String> operator_alpha() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_OPERATOR_ALPHA);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda10
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda6
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -271,7 +267,7 @@ public final class TelephonyProperties {
 
     public static List<Boolean> operator_is_roaming() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_OPERATOR_ISROAMING);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda9
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda7
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Boolean tryParseBoolean;
@@ -287,7 +283,7 @@ public final class TelephonyProperties {
 
     public static List<String> operator_iso_country() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_OPERATOR_ISO_COUNTRY);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda14
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda12
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -313,7 +309,7 @@ public final class TelephonyProperties {
 
     public static List<Integer> current_active_phone() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.CURRENT_ACTIVE_PHONE);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda11
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda14
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -345,7 +341,7 @@ public final class TelephonyProperties {
 
     public static List<String> icc_operator_numeric() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_ICC_OPERATOR_NUMERIC);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda5
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -361,7 +357,7 @@ public final class TelephonyProperties {
 
     public static List<String> icc_operator_alpha() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_ICC_OPERATOR_ALPHA);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda7
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda8
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -377,7 +373,7 @@ public final class TelephonyProperties {
 
     public static List<String> icc_operator_iso_country() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_ICC_OPERATOR_ISO_COUNTRY);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda8
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda11
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -393,7 +389,7 @@ public final class TelephonyProperties {
 
     public static List<String> data_network_type() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_DATA_NETWORK_TYPE);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda13
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -432,7 +428,7 @@ public final class TelephonyProperties {
 
     public static List<String> otasp_num_schema() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_OTASP_NUM_SCHEMA);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda12
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -478,7 +474,7 @@ public final class TelephonyProperties {
 
     public static List<Boolean> sms_receive() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_SMS_RECEIVE);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda6
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda9
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Boolean tryParseBoolean;
@@ -490,7 +486,7 @@ public final class TelephonyProperties {
 
     public static List<Boolean> sms_send() {
         String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_SMS_SEND);
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda2
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda10
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Boolean tryParseBoolean;
@@ -525,7 +521,7 @@ public final class TelephonyProperties {
     }
 
     public static Optional<Integer> videocall_audio_output() {
-        String value = SystemProperties.get(com.android.internal.telephony.TelephonyProperties.PROPERTY_VIDEOCALL_AUDIO_OUTPUT);
+        String value = SystemProperties.get("persist.radio.call.audio.output");
         return Optional.ofNullable(tryParseInteger(value));
     }
 
@@ -536,7 +532,7 @@ public final class TelephonyProperties {
 
     public static List<Integer> default_network() {
         String value = SystemProperties.get("ro.telephony.default_network");
-        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda3
+        return tryParseList(new Function() { // from class: android.sysprop.TelephonyProperties$$ExternalSyntheticLambda13
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;

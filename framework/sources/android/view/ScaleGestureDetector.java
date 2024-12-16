@@ -44,7 +44,6 @@ public class ScaleGestureDetector {
     private boolean mUpdatePrevious;
     private boolean mUseTwoFingerSweep;
 
-    /* loaded from: classes4.dex */
     public interface OnScaleGestureListener {
         boolean onScale(ScaleGestureDetector scaleGestureDetector);
 
@@ -53,7 +52,6 @@ public class ScaleGestureDetector {
         void onScaleEnd(ScaleGestureDetector scaleGestureDetector);
     }
 
-    /* loaded from: classes4.dex */
     public static class SimpleOnScaleGestureListener implements OnScaleGestureListener {
         @Override // android.view.ScaleGestureDetector.OnScaleGestureListener
         public boolean onScale(ScaleGestureDetector detector) {
@@ -70,8 +68,7 @@ public class ScaleGestureDetector {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SaveState {
+    static class SaveState {
         float mLenBeforeSqrt;
         float mSpanX;
         float mSpanY;
@@ -100,6 +97,10 @@ public class ScaleGestureDetector {
     }
 
     public ScaleGestureDetector(Context context, OnScaleGestureListener listener, Handler handler) {
+        this(context, ViewConfiguration.get(context).getScaledTouchSlop() * 2, ViewConfiguration.get(context).getScaledMinimumScalingSpan(), handler, listener);
+    }
+
+    public ScaleGestureDetector(Context context, int spanSlop, int minSpan, Handler handler, OnScaleGestureListener listener) {
         this.mUpdatePrevious = true;
         this.mAreaRateCalculating = false;
         this.mUseTwoFingerSweep = false;
@@ -170,21 +171,15 @@ public class ScaleGestureDetector {
                         this.mPrevLenBeforeSqrt = this.mStateCurrent.mLenBeforeSqrt;
                     }
                     if (this.mAreaRateCalculating) {
-                        float f = this.mStateCurrent.mLenBeforeSqrt;
-                        float f2 = this.mTempLenBeforeSqrt;
-                        if (f > f2) {
+                        if (this.mStateCurrent.mLenBeforeSqrt > this.mTempLenBeforeSqrt) {
                             areaRate = this.mStateCurrent.mLenBeforeSqrt / this.mTempLenBeforeSqrt;
                         } else {
-                            areaRate = f2 / this.mStateCurrent.mLenBeforeSqrt;
+                            areaRate = this.mTempLenBeforeSqrt / this.mStateCurrent.mLenBeforeSqrt;
                         }
+                    } else if (this.mStateCurrent.mLenBeforeSqrt > this.mPrevLenBeforeSqrt) {
+                        areaRate = this.mStateCurrent.mLenBeforeSqrt / this.mPrevLenBeforeSqrt;
                     } else {
-                        float f3 = this.mStateCurrent.mLenBeforeSqrt;
-                        float f4 = this.mPrevLenBeforeSqrt;
-                        if (f3 > f4) {
-                            areaRate = this.mStateCurrent.mLenBeforeSqrt / this.mPrevLenBeforeSqrt;
-                        } else {
-                            areaRate = f4 / this.mStateCurrent.mLenBeforeSqrt;
-                        }
+                        areaRate = this.mPrevLenBeforeSqrt / this.mStateCurrent.mLenBeforeSqrt;
                     }
                     if (this.mUseTwoFingerSweep) {
                         scaleDecision = areaRate >= this.mAreaRateThreshold;
@@ -192,16 +187,16 @@ public class ScaleGestureDetector {
                         scaleDecision = this.mAreaRateCalculating && areaRate > this.mAreaRateThreshold;
                     }
                     if (scaleDecision) {
-                        float f5 = this.mStateCurrent.mSpanX;
-                        this.mCurrSpanX = f5;
-                        this.mPrevSpanX = f5;
-                        float f6 = this.mStateCurrent.mSpanY;
-                        this.mCurrSpanY = f6;
-                        this.mPrevSpanY = f6;
+                        float f = this.mStateCurrent.mSpanX;
+                        this.mCurrSpanX = f;
+                        this.mPrevSpanX = f;
+                        float f2 = this.mStateCurrent.mSpanY;
+                        this.mCurrSpanY = f2;
+                        this.mPrevSpanY = f2;
                         this.mPrevTime = this.mCurrTime;
-                        float f7 = this.mStateCurrent.mLenBeforeSqrt;
-                        this.mCurrLenBeforeSqrt = f7;
-                        this.mPrevLenBeforeSqrt = f7;
+                        float f3 = this.mStateCurrent.mLenBeforeSqrt;
+                        this.mCurrLenBeforeSqrt = f3;
+                        this.mPrevLenBeforeSqrt = f3;
                         this.mInProgress = this.mListener.onScaleBegin(this);
                         Log.i(TAG, "TwScaleGestureDetector");
                         this.mAreaRateCalculating = false;
@@ -251,8 +246,7 @@ public class ScaleGestureDetector {
             focusY = this.mAnchoredScaleStartY;
             this.mStateCurrent.mSpanX = focusX > x ? focusX - x : x - focusX;
             this.mStateCurrent.mSpanY = focusY > y ? focusY - y : y - focusY;
-            SaveState saveState = this.mStateCurrent;
-            saveState.mLenBeforeSqrt = saveState.mSpanY * this.mStateCurrent.mSpanY;
+            this.mStateCurrent.mLenBeforeSqrt = this.mStateCurrent.mSpanY * this.mStateCurrent.mSpanY;
             this.mEventBeforeOrAboveStartingGestureEvent = y < focusY;
         } else {
             int count = event.getPointerCount();
@@ -284,12 +278,9 @@ public class ScaleGestureDetector {
             }
             focusX = focusX2 / count;
             focusY = focusY2 / count;
-            SaveState saveState2 = this.mStateCurrent;
-            saveState2.mSpanX = saveState2.maxX - this.mStateCurrent.minX;
-            SaveState saveState3 = this.mStateCurrent;
-            saveState3.mSpanY = saveState3.maxY - this.mStateCurrent.minY;
-            SaveState saveState4 = this.mStateCurrent;
-            saveState4.mLenBeforeSqrt = (saveState4.mSpanX * this.mStateCurrent.mSpanX) + (this.mStateCurrent.mSpanY * this.mStateCurrent.mSpanY);
+            this.mStateCurrent.mSpanX = this.mStateCurrent.maxX - this.mStateCurrent.minX;
+            this.mStateCurrent.mSpanY = this.mStateCurrent.maxY - this.mStateCurrent.minY;
+            this.mStateCurrent.mLenBeforeSqrt = (this.mStateCurrent.mSpanX * this.mStateCurrent.mSpanX) + (this.mStateCurrent.mSpanY * this.mStateCurrent.mSpanY);
         }
         this.mFocusX = focusX;
         this.mFocusY = focusY;
@@ -308,12 +299,12 @@ public class ScaleGestureDetector {
 
     public void setQuickScaleEnabled(boolean scales) {
         this.mQuickScaleEnabled = scales;
-        if (scales && this.mGestureDetector == null) {
+        if (this.mQuickScaleEnabled && this.mGestureDetector == null) {
             GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() { // from class: android.view.ScaleGestureDetector.1
                 int mQuickScaleDoubleTapY;
                 int mQuickScaleSpanSlop;
 
-                AnonymousClass1() {
+                {
                     this.mQuickScaleSpanSlop = ViewConfiguration.get(ScaleGestureDetector.this.mContext).getScaledTouchSlop();
                 }
 
@@ -334,37 +325,8 @@ public class ScaleGestureDetector {
                     return true;
                 }
             };
-            GestureDetector gestureDetector = new GestureDetector(this.mContext, gestureListener, this.mHandler);
-            this.mGestureDetector = gestureDetector;
-            gestureDetector.setIsLongpressEnabled(false);
-        }
-    }
-
-    /* renamed from: android.view.ScaleGestureDetector$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends GestureDetector.SimpleOnGestureListener {
-        int mQuickScaleDoubleTapY;
-        int mQuickScaleSpanSlop;
-
-        AnonymousClass1() {
-            this.mQuickScaleSpanSlop = ViewConfiguration.get(ScaleGestureDetector.this.mContext).getScaledTouchSlop();
-        }
-
-        @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnDoubleTapListener
-        public boolean onDoubleTap(MotionEvent e) {
-            ScaleGestureDetector.this.mAnchoredScaleStartX = e.getX();
-            ScaleGestureDetector.this.mAnchoredScaleStartY = e.getY();
-            this.mQuickScaleDoubleTapY = (int) e.getY();
-            return true;
-        }
-
-        @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnDoubleTapListener
-        public boolean onDoubleTapEvent(MotionEvent e) {
-            int delta = (int) Math.abs(this.mQuickScaleDoubleTapY - e.getY());
-            if (delta > this.mQuickScaleSpanSlop) {
-                ScaleGestureDetector.this.mAnchoredScaleMode = 1;
-            }
-            return true;
+            this.mGestureDetector = new GestureDetector(this.mContext, gestureListener, this.mHandler);
+            this.mGestureDetector.setIsLongpressEnabled(false);
         }
     }
 
@@ -418,8 +380,7 @@ public class ScaleGestureDetector {
 
     public float getScaleFactor() {
         if (inAnchoredScaleMode()) {
-            boolean z = this.mEventBeforeOrAboveStartingGestureEvent;
-            boolean scaleUp = (z && this.mCurrLenBeforeSqrt < this.mPrevLenBeforeSqrt) || (!z && this.mCurrLenBeforeSqrt > this.mPrevLenBeforeSqrt);
+            boolean scaleUp = (this.mEventBeforeOrAboveStartingGestureEvent && this.mCurrLenBeforeSqrt < this.mPrevLenBeforeSqrt) || (!this.mEventBeforeOrAboveStartingGestureEvent && this.mCurrLenBeforeSqrt > this.mPrevLenBeforeSqrt);
             float spanDiff = Math.abs(1.0f - ((float) Math.sqrt(this.mCurrLenBeforeSqrt / this.mPrevLenBeforeSqrt))) * 0.5f;
             if (this.mPrevLenBeforeSqrt <= 0.0f) {
                 return 1.0f;

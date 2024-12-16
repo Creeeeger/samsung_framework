@@ -32,37 +32,8 @@ public abstract class UtteranceProgressListener {
     public void onUtteranceRangeStart(String utteranceId, int start, int end) {
     }
 
-    /* renamed from: android.speech.tts.UtteranceProgressListener$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends UtteranceProgressListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.speech.tts.UtteranceProgressListener
-        public synchronized void onDone(String utteranceId) {
-            TextToSpeech.OnUtteranceCompletedListener.this.onUtteranceCompleted(utteranceId);
-        }
-
-        @Override // android.speech.tts.UtteranceProgressListener
-        public void onError(String utteranceId) {
-            TextToSpeech.OnUtteranceCompletedListener.this.onUtteranceCompleted(utteranceId);
-        }
-
-        @Override // android.speech.tts.UtteranceProgressListener
-        public void onStart(String utteranceId) {
-        }
-
-        @Override // android.speech.tts.UtteranceProgressListener
-        public void onStop(String utteranceId, boolean interrupted) {
-            TextToSpeech.OnUtteranceCompletedListener.this.onUtteranceCompleted(utteranceId);
-        }
-    }
-
-    public static UtteranceProgressListener from(TextToSpeech.OnUtteranceCompletedListener listener) {
+    static UtteranceProgressListener from(final TextToSpeech.OnUtteranceCompletedListener listener) {
         return new UtteranceProgressListener() { // from class: android.speech.tts.UtteranceProgressListener.1
-            AnonymousClass1() {
-            }
-
             @Override // android.speech.tts.UtteranceProgressListener
             public synchronized void onDone(String utteranceId) {
                 TextToSpeech.OnUtteranceCompletedListener.this.onUtteranceCompleted(utteranceId);

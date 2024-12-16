@@ -38,7 +38,6 @@ public interface IMms extends IInterface {
 
     boolean updateStoredMessageStatus(String str, Uri uri, ContentValues contentValues) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMms {
         @Override // com.android.internal.telephony.IMms
         public void sendMessage(int subId, String callingPkg, Uri contentUri, String locationUrl, Bundle configOverrides, PendingIntent sentIntent, long messageId, String attributionTag) throws RemoteException {
@@ -107,7 +106,6 @@ public interface IMms extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMms {
         public static final String DESCRIPTOR = "com.android.internal.telephony.IMms";
         static final int TRANSACTION_addMultimediaMessageDraft = 10;
@@ -187,144 +185,141 @@ public interface IMms extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    Uri _arg2 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg3 = data.readString();
+                    Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    PendingIntent _arg5 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    long _arg6 = data.readLong();
+                    String _arg7 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendMessage(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    Uri _arg32 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Bundle _arg42 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    PendingIntent _arg52 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    long _arg62 = data.readLong();
+                    String _arg72 = data.readString();
+                    data.enforceNoDataAvail();
+                    downloadMessage(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62, _arg72);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    int _arg23 = data.readInt();
+                    String _arg33 = data.readString();
+                    long _arg43 = data.readLong();
+                    boolean _arg53 = data.readBoolean();
+                    boolean _arg63 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    Uri _result = importTextMessage(_arg03, _arg13, _arg23, _arg33, _arg43, _arg53, _arg63);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    Uri _arg14 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg24 = data.readString();
+                    long _arg34 = data.readLong();
+                    boolean _arg44 = data.readBoolean();
+                    boolean _arg54 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    Uri _result2 = importMultimediaMessage(_arg04, _arg14, _arg24, _arg34, _arg44, _arg54);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    Uri _arg15 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result3 = deleteStoredMessage(_arg05, _arg15);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    long _arg16 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = deleteStoredConversation(_arg06, _arg16);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    Uri _arg17 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    ContentValues _arg25 = (ContentValues) data.readTypedObject(ContentValues.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = updateStoredMessageStatus(_arg07, _arg17, _arg25);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    long _arg18 = data.readLong();
+                    boolean _arg26 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = archiveStoredConversation(_arg08, _arg18, _arg26);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    String _arg19 = data.readString();
+                    String _arg27 = data.readString();
+                    data.enforceNoDataAvail();
+                    Uri _result7 = addTextMessageDraft(_arg09, _arg19, _arg27);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    Uri _arg110 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    Uri _result8 = addMultimediaMessageDraft(_arg010, _arg110);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    String _arg111 = data.readString();
+                    Uri _arg28 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    PendingIntent _arg45 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendStoredMessage(_arg011, _arg111, _arg28, _arg35, _arg45);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    boolean _arg112 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAutoPersisting(_arg012, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    boolean _result9 = getAutoPersisting();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            Uri _arg2 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg3 = data.readString();
-                            Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            PendingIntent _arg5 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            long _arg6 = data.readLong();
-                            String _arg7 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendMessage(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            Uri _arg32 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Bundle _arg42 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            PendingIntent _arg52 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            long _arg62 = data.readLong();
-                            String _arg72 = data.readString();
-                            data.enforceNoDataAvail();
-                            downloadMessage(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62, _arg72);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            int _arg23 = data.readInt();
-                            String _arg33 = data.readString();
-                            long _arg43 = data.readLong();
-                            boolean _arg53 = data.readBoolean();
-                            boolean _arg63 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            Uri _result = importTextMessage(_arg03, _arg13, _arg23, _arg33, _arg43, _arg53, _arg63);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            Uri _arg14 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg24 = data.readString();
-                            long _arg34 = data.readLong();
-                            boolean _arg44 = data.readBoolean();
-                            boolean _arg54 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            Uri _result2 = importMultimediaMessage(_arg04, _arg14, _arg24, _arg34, _arg44, _arg54);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            Uri _arg15 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result3 = deleteStoredMessage(_arg05, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            long _arg16 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = deleteStoredConversation(_arg06, _arg16);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            Uri _arg17 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            ContentValues _arg25 = (ContentValues) data.readTypedObject(ContentValues.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = updateStoredMessageStatus(_arg07, _arg17, _arg25);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            long _arg18 = data.readLong();
-                            boolean _arg26 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = archiveStoredConversation(_arg08, _arg18, _arg26);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            String _arg19 = data.readString();
-                            String _arg27 = data.readString();
-                            data.enforceNoDataAvail();
-                            Uri _result7 = addTextMessageDraft(_arg09, _arg19, _arg27);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            Uri _arg110 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            Uri _result8 = addMultimediaMessageDraft(_arg010, _arg110);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            String _arg111 = data.readString();
-                            Uri _arg28 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            PendingIntent _arg45 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendStoredMessage(_arg011, _arg111, _arg28, _arg35, _arg45);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            boolean _arg112 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAutoPersisting(_arg012, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            boolean _result9 = getAutoPersisting();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IMms {
+        private static class Proxy implements IMms {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

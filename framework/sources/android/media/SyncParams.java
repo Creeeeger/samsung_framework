@@ -23,12 +23,10 @@ public final class SyncParams {
     private float mFrameRate = 0.0f;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioAdjustMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SyncSource {
     }
 

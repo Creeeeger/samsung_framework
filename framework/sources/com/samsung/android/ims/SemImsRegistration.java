@@ -10,17 +10,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemImsRegistration implements Parcelable {
     public static final Parcelable.Creator<SemImsRegistration> CREATOR = new Parcelable.Creator<SemImsRegistration>() { // from class: com.samsung.android.ims.SemImsRegistration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsRegistration createFromParcel(Parcel in) {
             return new SemImsRegistration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsRegistration[] newArray(int size) {
             return new SemImsRegistration[size];
@@ -54,10 +53,6 @@ public class SemImsRegistration implements Parcelable {
     private final String mRegisteredPublicUserId;
     private final Set<String> mServices;
     private final int mSubscriptionId;
-
-    /* synthetic */ SemImsRegistration(Parcel parcel, SemImsRegistrationIA semImsRegistrationIA) {
-        this(parcel);
-    }
 
     public int getHandle() {
         return this.mHandle;
@@ -233,23 +228,6 @@ public class SemImsRegistration implements Parcelable {
         parcel.writeString(this.mOwnNumber);
     }
 
-    /* renamed from: com.samsung.android.ims.SemImsRegistration$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemImsRegistration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsRegistration createFromParcel(Parcel in) {
-            return new SemImsRegistration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsRegistration[] newArray(int size) {
-            return new SemImsRegistration[size];
-        }
-    }
-
     private SemImsRegistration(Parcel in) {
         this.mProhibited = false;
         this.mDeregiReason = 14;
@@ -267,12 +245,10 @@ public class SemImsRegistration implements Parcelable {
             this.mRegisteredPublicUserId = null;
         }
         this.mPreferredPublicUserId = in.readString();
-        ArrayList arrayList = new ArrayList();
-        this.mPublicUserId = arrayList;
-        in.readStringList(arrayList);
-        ArrayList arrayList2 = new ArrayList();
-        this.mDeviceList = arrayList2;
-        in.readStringList(arrayList2);
+        this.mPublicUserId = new ArrayList();
+        in.readStringList(this.mPublicUserId);
+        this.mDeviceList = new ArrayList();
+        in.readStringList(this.mDeviceList);
         this.mDomain = in.readString();
         this.mPcscf = in.readString();
         this.mInstanceId = in.readString();
@@ -395,7 +371,6 @@ public class SemImsRegistration implements Parcelable {
         return new Builder();
     }
 
-    /* loaded from: classes5.dex */
     public static class Builder {
         protected String mDomain;
         private int mEcmpStatus;

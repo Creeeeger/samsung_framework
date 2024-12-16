@@ -19,7 +19,6 @@ public interface IQuickAccessWalletServiceCallbacks extends IInterface {
 
     void onWalletServiceEvent(WalletServiceEvent walletServiceEvent) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IQuickAccessWalletServiceCallbacks {
         @Override // android.service.quickaccesswallet.IQuickAccessWalletServiceCallbacks
         public void onGetWalletCardsSuccess(GetWalletCardsResponse response) throws RemoteException {
@@ -43,7 +42,6 @@ public interface IQuickAccessWalletServiceCallbacks extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IQuickAccessWalletServiceCallbacks {
         static final int TRANSACTION_onGetWalletCardsFailure = 2;
         static final int TRANSACTION_onGetWalletCardsSuccess = 1;
@@ -95,41 +93,37 @@ public interface IQuickAccessWalletServiceCallbacks extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IQuickAccessWalletServiceCallbacks.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IQuickAccessWalletServiceCallbacks.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IQuickAccessWalletServiceCallbacks.DESCRIPTOR);
+                case 1:
+                    GetWalletCardsResponse _arg0 = (GetWalletCardsResponse) data.readTypedObject(GetWalletCardsResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGetWalletCardsSuccess(_arg0);
+                    return true;
+                case 2:
+                    GetWalletCardsError _arg02 = (GetWalletCardsError) data.readTypedObject(GetWalletCardsError.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGetWalletCardsFailure(_arg02);
+                    return true;
+                case 3:
+                    WalletServiceEvent _arg03 = (WalletServiceEvent) data.readTypedObject(WalletServiceEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onWalletServiceEvent(_arg03);
+                    return true;
+                case 4:
+                    PendingIntent _arg04 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTargetActivityPendingIntentReceived(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            GetWalletCardsResponse _arg0 = (GetWalletCardsResponse) data.readTypedObject(GetWalletCardsResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGetWalletCardsSuccess(_arg0);
-                            return true;
-                        case 2:
-                            GetWalletCardsError _arg02 = (GetWalletCardsError) data.readTypedObject(GetWalletCardsError.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGetWalletCardsFailure(_arg02);
-                            return true;
-                        case 3:
-                            WalletServiceEvent _arg03 = (WalletServiceEvent) data.readTypedObject(WalletServiceEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onWalletServiceEvent(_arg03);
-                            return true;
-                        case 4:
-                            PendingIntent _arg04 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTargetActivityPendingIntentReceived(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IQuickAccessWalletServiceCallbacks {
+        private static class Proxy implements IQuickAccessWalletServiceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

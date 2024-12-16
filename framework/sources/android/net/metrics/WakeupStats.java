@@ -6,7 +6,7 @@ import android.os.SystemClock;
 import android.util.SparseIntArray;
 import java.util.StringJoiner;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class WakeupStats {
     private static final int NO_UID = -1;
     public final String iface;

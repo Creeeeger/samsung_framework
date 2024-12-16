@@ -62,6 +62,7 @@ public final class Sensor {
     public static final int SEM_TYPE_LIGHT_STRM_SUB = 65642;
     public static final int SEM_TYPE_LIGHT_SUB = 65641;
     public static final int SEM_TYPE_LP_SCAN_STATE = 65621;
+    public static final int SEM_TYPE_MOCCA_CORE = 65653;
     public static final int SEM_TYPE_MOVE_DETECTOR = 65593;
     public static final int SEM_TYPE_PHYSICAL_PROXIMITY = 65592;
     public static final int SEM_TYPE_POCKET_DETECTOR = 65609;
@@ -250,37 +251,39 @@ public final class Sensor {
     public boolean isDirectChannelTypeSupported(int sharedMemType) {
         switch (sharedMemType) {
             case 1:
-                return (this.mFlags & 1024) > 0;
+                if ((this.mFlags & 1024) <= 0) {
+                    break;
+                }
+                break;
             case 2:
-                return (this.mFlags & 2048) > 0;
-            default:
-                return false;
+                if ((this.mFlags & 2048) <= 0) {
+                    break;
+                }
+                break;
         }
+        return false;
     }
 
     public static int getMaxLengthValuesArray(Sensor sensor, int sdkLevel) {
-        int[] iArr = sSamsungSensorReportingModes;
-        int SENSOR_TYPE_PRIVATE_END = iArr.length + TYPE_ULTRAVIOLET;
-        int[] iArr2 = sSamsungDualSensorReportingModes;
-        int SENSOR_TYPE_DUAL_PRIVATE_END = iArr2.length + 65686;
+        int SENSOR_TYPE_PRIVATE_END = sSamsungSensorReportingModes.length + TYPE_ULTRAVIOLET;
+        int SENSOR_TYPE_DUAL_PRIVATE_END = sSamsungDualSensorReportingModes.length + 65686;
         if (sensor.mType == 11 && sdkLevel <= 17) {
             return 3;
         }
         int offset = sensor.mType;
-        int[] iArr3 = sSensorReportingModes;
-        if (offset < iArr3.length) {
-            return iArr3[offset];
+        if (offset < sSensorReportingModes.length) {
+            return sSensorReportingModes[offset];
         }
         if (offset >= 65557 && offset < SENSOR_TYPE_PRIVATE_END) {
-            return iArr[offset - TYPE_ULTRAVIOLET];
+            return sSamsungSensorReportingModes[offset - TYPE_ULTRAVIOLET];
         }
         if (offset >= 65686 && offset < SENSOR_TYPE_DUAL_PRIVATE_END) {
-            return iArr2[offset - 65686];
+            return sSamsungDualSensorReportingModes[offset - 65686];
         }
         return 16;
     }
 
-    public Sensor() {
+    Sensor() {
     }
 
     public Sensor(InputSensorInfo sensorInfo) {
@@ -399,130 +402,122 @@ public final class Sensor {
 
     public boolean semIsOnFoldingSide() {
         String model;
-        int i = this.mType;
-        return (i == 8 || i == 5 || i == 65601) && (model = SystemProperties.get("ro.product.vendor.device")) != null && (model.contains("bloom") || model.contains("b2q"));
+        return (this.mType == 8 || this.mType == 5 || this.mType == 65601) && (model = SystemProperties.get("ro.product.vendor.device")) != null && (model.contains("bloom") || model.contains("b2q"));
     }
 
     private boolean setType(int value) {
         this.mType = value;
-        switch (value) {
+        switch (this.mType) {
             case 1:
                 this.mStringType = STRING_TYPE_ACCELEROMETER;
-                return true;
+                break;
             case 2:
                 this.mStringType = STRING_TYPE_MAGNETIC_FIELD;
-                return true;
+                break;
             case 3:
                 this.mStringType = STRING_TYPE_ORIENTATION;
-                return true;
+                break;
             case 4:
                 this.mStringType = STRING_TYPE_GYROSCOPE;
-                return true;
+                break;
             case 5:
                 this.mStringType = STRING_TYPE_LIGHT;
-                return true;
+                break;
             case 6:
                 this.mStringType = STRING_TYPE_PRESSURE;
-                return true;
+                break;
             case 7:
                 this.mStringType = STRING_TYPE_TEMPERATURE;
-                return true;
+                break;
             case 8:
                 this.mStringType = STRING_TYPE_PROXIMITY;
-                return true;
+                break;
             case 9:
                 this.mStringType = STRING_TYPE_GRAVITY;
-                return true;
+                break;
             case 10:
                 this.mStringType = STRING_TYPE_LINEAR_ACCELERATION;
-                return true;
+                break;
             case 11:
                 this.mStringType = STRING_TYPE_ROTATION_VECTOR;
-                return true;
+                break;
             case 12:
                 this.mStringType = STRING_TYPE_RELATIVE_HUMIDITY;
-                return true;
+                break;
             case 13:
                 this.mStringType = STRING_TYPE_AMBIENT_TEMPERATURE;
-                return true;
+                break;
             case 14:
                 this.mStringType = STRING_TYPE_MAGNETIC_FIELD_UNCALIBRATED;
-                return true;
+                break;
             case 15:
                 this.mStringType = STRING_TYPE_GAME_ROTATION_VECTOR;
-                return true;
+                break;
             case 16:
                 this.mStringType = STRING_TYPE_GYROSCOPE_UNCALIBRATED;
-                return true;
+                break;
             case 17:
                 this.mStringType = STRING_TYPE_SIGNIFICANT_MOTION;
-                return true;
+                break;
             case 18:
                 this.mStringType = STRING_TYPE_STEP_DETECTOR;
-                return true;
+                break;
             case 19:
                 this.mStringType = STRING_TYPE_STEP_COUNTER;
-                return true;
+                break;
             case 20:
                 this.mStringType = STRING_TYPE_GEOMAGNETIC_ROTATION_VECTOR;
-                return true;
+                break;
             case 21:
                 this.mStringType = STRING_TYPE_HEART_RATE;
-                return true;
+                break;
             case 22:
                 this.mStringType = SENSOR_STRING_TYPE_TILT_DETECTOR;
-                return true;
+                break;
             case 23:
                 this.mStringType = STRING_TYPE_WAKE_GESTURE;
-                return true;
+                break;
             case 24:
                 this.mStringType = STRING_TYPE_GLANCE_GESTURE;
-                return true;
+                break;
             case 25:
                 this.mStringType = STRING_TYPE_PICK_UP_GESTURE;
-                return true;
-            case 26:
-            case 28:
-            case 29:
-            case 30:
-            case 31:
-            case 33:
-            default:
-                return false;
+                break;
             case 27:
                 this.mStringType = STRING_TYPE_DEVICE_ORIENTATION;
-                return true;
+                break;
             case 32:
                 this.mStringType = STRING_TYPE_DYNAMIC_SENSOR_META;
-                return true;
+                break;
             case 34:
                 this.mStringType = STRING_TYPE_LOW_LATENCY_OFFBODY_DETECT;
-                return true;
+                break;
             case 35:
                 this.mStringType = STRING_TYPE_ACCELEROMETER_UNCALIBRATED;
-                return true;
+                break;
             case 36:
                 this.mStringType = STRING_TYPE_HINGE_ANGLE;
-                return true;
+                break;
             case 37:
                 this.mStringType = STRING_TYPE_HEAD_TRACKER;
-                return true;
+                break;
             case 38:
                 this.mStringType = STRING_TYPE_ACCELEROMETER_LIMITED_AXES;
-                return true;
+                break;
             case 39:
                 this.mStringType = STRING_TYPE_GYROSCOPE_LIMITED_AXES;
-                return true;
+                break;
             case 40:
                 this.mStringType = STRING_TYPE_ACCELEROMETER_LIMITED_AXES_UNCALIBRATED;
-                return true;
+                break;
             case 41:
                 this.mStringType = STRING_TYPE_GYROSCOPE_LIMITED_AXES_UNCALIBRATED;
-                return true;
+                break;
             case 42:
                 this.mStringType = STRING_TYPE_HEADING;
-                return true;
+                break;
         }
+        return true;
     }
 
     private void setUuid(long msb, long lsb) {

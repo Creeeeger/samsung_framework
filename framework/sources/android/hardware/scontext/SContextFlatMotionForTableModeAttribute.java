@@ -9,7 +9,7 @@ public class SContextFlatMotionForTableModeAttribute extends SContextAttribute {
     private static final String TAG = "SContextFlatMotionForTableModeAttribute";
     private int mDuration;
 
-    public SContextFlatMotionForTableModeAttribute() {
+    SContextFlatMotionForTableModeAttribute() {
         this.mDuration = 500;
         setAttribute();
     }

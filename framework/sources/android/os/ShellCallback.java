@@ -7,14 +7,13 @@ import com.android.internal.os.IShellCallback;
 /* loaded from: classes3.dex */
 public class ShellCallback implements Parcelable {
     public static final Parcelable.Creator<ShellCallback> CREATOR = new Parcelable.Creator<ShellCallback>() { // from class: android.os.ShellCallback.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ShellCallback createFromParcel(Parcel in) {
             return new ShellCallback(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ShellCallback[] newArray(int size) {
             return new ShellCallback[size];
@@ -25,8 +24,7 @@ public class ShellCallback implements Parcelable {
     final boolean mLocal = true;
     IShellCallback mShellCallback;
 
-    /* loaded from: classes3.dex */
-    public class MyShellCallback extends IShellCallback.Stub {
+    class MyShellCallback extends IShellCallback.Stub {
         MyShellCallback() {
         }
 
@@ -43,10 +41,9 @@ public class ShellCallback implements Parcelable {
         if (this.mLocal) {
             return onOpenFile(path, seLinuxContext, mode);
         }
-        IShellCallback iShellCallback = this.mShellCallback;
-        if (iShellCallback != null) {
+        if (this.mShellCallback != null) {
             try {
-                return iShellCallback.openFile(path, seLinuxContext, mode);
+                return this.mShellCallback.openFile(path, seLinuxContext, mode);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failure opening " + path, e);
                 return null;
@@ -87,27 +84,9 @@ public class ShellCallback implements Parcelable {
     }
 
     ShellCallback(Parcel in) {
-        IShellCallback asInterface = IShellCallback.Stub.asInterface(in.readStrongBinder());
-        this.mShellCallback = asInterface;
-        if (asInterface != null) {
-            Binder.allowBlocking(asInterface.asBinder());
-        }
-    }
-
-    /* renamed from: android.os.ShellCallback$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ShellCallback> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ShellCallback createFromParcel(Parcel in) {
-            return new ShellCallback(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ShellCallback[] newArray(int size) {
-            return new ShellCallback[size];
+        this.mShellCallback = IShellCallback.Stub.asInterface(in.readStrongBinder());
+        if (this.mShellCallback != null) {
+            Binder.allowBlocking(this.mShellCallback.asBinder());
         }
     }
 }

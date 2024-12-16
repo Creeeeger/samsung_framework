@@ -20,7 +20,6 @@ public interface ICallStreamingService extends IInterface {
 
     void setStreamingCallAdapter(IStreamingCallAdapter iStreamingCallAdapter) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallStreamingService {
         @Override // com.android.internal.telecom.ICallStreamingService
         public void setStreamingCallAdapter(IStreamingCallAdapter streamingCallAdapter) throws RemoteException {
@@ -44,7 +43,6 @@ public interface ICallStreamingService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallStreamingService {
         static final int TRANSACTION_onCallStreamingStarted = 2;
         static final int TRANSACTION_onCallStreamingStateChanged = 4;
@@ -96,37 +94,34 @@ public interface ICallStreamingService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICallStreamingService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICallStreamingService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICallStreamingService.DESCRIPTOR);
+                case 1:
+                    IStreamingCallAdapter _arg0 = IStreamingCallAdapter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setStreamingCallAdapter(_arg0);
+                    return true;
+                case 2:
+                    StreamingCall _arg02 = (StreamingCall) data.readTypedObject(StreamingCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallStreamingStarted(_arg02);
+                    return true;
+                case 3:
+                    onCallStreamingStopped();
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCallStreamingStateChanged(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IStreamingCallAdapter _arg0 = IStreamingCallAdapter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setStreamingCallAdapter(_arg0);
-                            return true;
-                        case 2:
-                            StreamingCall _arg02 = (StreamingCall) data.readTypedObject(StreamingCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallStreamingStarted(_arg02);
-                            return true;
-                        case 3:
-                            onCallStreamingStopped();
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCallStreamingStateChanged(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICallStreamingService {
             private IBinder mRemote;
 

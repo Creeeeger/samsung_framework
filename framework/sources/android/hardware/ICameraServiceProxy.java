@@ -16,9 +16,10 @@ public interface ICameraServiceProxy extends IInterface {
 
     void notifyCameraState(CameraSessionStats cameraSessionStats) throws RemoteException;
 
+    void notifyFeatureCombinationStats(CameraFeatureCombinationStats cameraFeatureCombinationStats) throws RemoteException;
+
     void pingForUserUpdate() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraServiceProxy {
         @Override // android.hardware.ICameraServiceProxy
         public void pingForUserUpdate() throws RemoteException {
@@ -26,6 +27,10 @@ public interface ICameraServiceProxy extends IInterface {
 
         @Override // android.hardware.ICameraServiceProxy
         public void notifyCameraState(CameraSessionStats cameraSessionStats) throws RemoteException {
+        }
+
+        @Override // android.hardware.ICameraServiceProxy
+        public void notifyFeatureCombinationStats(CameraFeatureCombinationStats cameraFeatureCombinationStats) throws RemoteException {
         }
 
         @Override // android.hardware.ICameraServiceProxy
@@ -49,13 +54,13 @@ public interface ICameraServiceProxy extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraServiceProxy {
         public static final String DESCRIPTOR = "android.hardware.ICameraServiceProxy";
-        static final int TRANSACTION_getAutoframingOverride = 4;
-        static final int TRANSACTION_getRotateAndCropOverride = 3;
-        static final int TRANSACTION_isCameraDisabled = 5;
+        static final int TRANSACTION_getAutoframingOverride = 5;
+        static final int TRANSACTION_getRotateAndCropOverride = 4;
+        static final int TRANSACTION_isCameraDisabled = 6;
         static final int TRANSACTION_notifyCameraState = 2;
+        static final int TRANSACTION_notifyFeatureCombinationStats = 3;
         static final int TRANSACTION_pingForUserUpdate = 1;
 
         public Stub() {
@@ -85,10 +90,12 @@ public interface ICameraServiceProxy extends IInterface {
                 case 2:
                     return "notifyCameraState";
                 case 3:
-                    return "getRotateAndCropOverride";
+                    return "notifyFeatureCombinationStats";
                 case 4:
-                    return "getAutoframingOverride";
+                    return "getRotateAndCropOverride";
                 case 5:
+                    return "getAutoframingOverride";
+                case 6:
                     return "isCameraDisabled";
                 default:
                     return null;
@@ -105,50 +112,52 @@ public interface ICameraServiceProxy extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    pingForUserUpdate();
+                    return true;
+                case 2:
+                    CameraSessionStats _arg0 = (CameraSessionStats) data.readTypedObject(CameraSessionStats.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyCameraState(_arg0);
+                    return true;
+                case 3:
+                    CameraFeatureCombinationStats _arg02 = (CameraFeatureCombinationStats) data.readTypedObject(CameraFeatureCombinationStats.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyFeatureCombinationStats(_arg02);
+                    return true;
+                case 4:
+                    String _arg03 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getRotateAndCropOverride(_arg03, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = getAutoframingOverride(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isCameraDisabled(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            pingForUserUpdate();
-                            return true;
-                        case 2:
-                            CameraSessionStats _arg0 = (CameraSessionStats) data.readTypedObject(CameraSessionStats.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyCameraState(_arg0);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getRotateAndCropOverride(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 4:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = getAutoframingOverride(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isCameraDisabled(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements ICameraServiceProxy {
             private IBinder mRemote;
 
@@ -189,6 +198,18 @@ public interface ICameraServiceProxy extends IInterface {
             }
 
             @Override // android.hardware.ICameraServiceProxy
+            public void notifyFeatureCombinationStats(CameraFeatureCombinationStats cameraFeatureCombinationStats) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(cameraFeatureCombinationStats, 0);
+                    this.mRemote.transact(3, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.ICameraServiceProxy
             public int getRotateAndCropOverride(String packageName, int lensFacing, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -197,7 +218,7 @@ public interface ICameraServiceProxy extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(lensFacing);
                     _data.writeInt(userId);
-                    this.mRemote.transact(3, _data, _reply, 0);
+                    this.mRemote.transact(4, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -214,7 +235,7 @@ public interface ICameraServiceProxy extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(4, _data, _reply, 0);
+                    this.mRemote.transact(5, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -231,7 +252,7 @@ public interface ICameraServiceProxy extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(5, _data, _reply, 0);
+                    this.mRemote.transact(6, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -244,7 +265,7 @@ public interface ICameraServiceProxy extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 4;
+            return 5;
         }
     }
 }

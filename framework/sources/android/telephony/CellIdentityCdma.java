@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.android.internal.telephony.SemTelephonyUtils;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellIdentityCdma extends CellIdentity {
     private static final int BASESTATION_ID_MAX = 65535;
     private static final boolean DBG = false;
@@ -24,15 +24,14 @@ public final class CellIdentityCdma extends CellIdentity {
     private final int mSystemId;
     private static final String TAG = CellIdentityCdma.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityCdma> CREATOR = new Parcelable.Creator<CellIdentityCdma>() { // from class: android.telephony.CellIdentityCdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityCdma createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityCdma.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityCdma[] newArray(int size) {
             return new CellIdentityCdma[size];
@@ -70,7 +69,7 @@ public final class CellIdentityCdma extends CellIdentity {
         this(cid.mNetworkId, cid.mSystemId, cid.mBasestationId, cid.mLongitude, cid.mLatitude, cid.mAlphaLong, cid.mAlphaShort);
     }
 
-    public CellIdentityCdma copy() {
+    CellIdentityCdma copy() {
         return new CellIdentityCdma(this);
     }
 
@@ -81,12 +80,11 @@ public final class CellIdentityCdma extends CellIdentity {
 
     @Override // android.telephony.CellIdentity
     protected void updateGlobalCellId() {
-        int i;
         this.mGlobalCellId = null;
-        if (this.mNetworkId == Integer.MAX_VALUE || (i = this.mSystemId) == Integer.MAX_VALUE || this.mBasestationId == Integer.MAX_VALUE) {
+        if (this.mNetworkId == Integer.MAX_VALUE || this.mSystemId == Integer.MAX_VALUE || this.mBasestationId == Integer.MAX_VALUE) {
             return;
         }
-        this.mGlobalCellId = TextUtils.formatSimple("%04x%04x%04x", Integer.valueOf(i), Integer.valueOf(this.mNetworkId), Integer.valueOf(this.mBasestationId));
+        this.mGlobalCellId = TextUtils.formatSimple("%04x%04x%04x", Integer.valueOf(this.mSystemId), Integer.valueOf(this.mNetworkId), Integer.valueOf(this.mBasestationId));
     }
 
     private boolean isNullIsland(int lat, int lon) {
@@ -121,12 +119,9 @@ public final class CellIdentityCdma extends CellIdentity {
     @Override // android.telephony.CellIdentity
     public CdmaCellLocation asCellLocation() {
         CdmaCellLocation cl = new CdmaCellLocation();
-        int i = this.mBasestationId;
-        int bsid = i != Integer.MAX_VALUE ? i : -1;
-        int i2 = this.mSystemId;
-        int sid = i2 != Integer.MAX_VALUE ? i2 : -1;
-        int i3 = this.mNetworkId;
-        int nid = i3 != Integer.MAX_VALUE ? i3 : -1;
+        int bsid = this.mBasestationId != Integer.MAX_VALUE ? this.mBasestationId : -1;
+        int sid = this.mSystemId != Integer.MAX_VALUE ? this.mSystemId : -1;
+        int nid = this.mNetworkId != Integer.MAX_VALUE ? this.mNetworkId : -1;
         cl.setCellLocationData(bsid, this.mLatitude, this.mLongitude, sid, nid);
         return cl;
     }
@@ -167,25 +162,7 @@ public final class CellIdentityCdma extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* renamed from: android.telephony.CellIdentityCdma$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentityCdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityCdma createFromParcel(Parcel in) {
-            in.readInt();
-            return CellIdentityCdma.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityCdma[] newArray(int size) {
-            return new CellIdentityCdma[size];
-        }
-    }
-
-    public static CellIdentityCdma createFromParcelBody(Parcel in) {
+    protected static CellIdentityCdma createFromParcelBody(Parcel in) {
         return new CellIdentityCdma(in);
     }
 }

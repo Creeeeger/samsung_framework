@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IAlarmCompleteListener extends IInterface {
     void alarmComplete(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAlarmCompleteListener {
         @Override // android.app.IAlarmCompleteListener
         public void alarmComplete(IBinder who) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IAlarmCompleteListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAlarmCompleteListener {
         public static final String DESCRIPTOR = "android.app.IAlarmCompleteListener";
         static final int TRANSACTION_alarmComplete = 1;
@@ -66,27 +64,23 @@ public interface IAlarmCompleteListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    alarmComplete(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            alarmComplete(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAlarmCompleteListener {
+        private static class Proxy implements IAlarmCompleteListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

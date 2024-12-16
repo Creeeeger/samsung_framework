@@ -5,19 +5,31 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
+import com.android.internal.telephony.IIntegerConsumer;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IQualifiedNetworksServiceCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.data.IQualifiedNetworksServiceCallback";
 
     void onHandoverEnabledChanged(int i) throws RemoteException;
 
+    void onNetworkValidationRequested(int i, IIntegerConsumer iIntegerConsumer) throws RemoteException;
+
     void onQualifiedNetworkTypesChanged(int i, int[] iArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
+    void onReconnectQualifiedNetworkType(int i, int i2) throws RemoteException;
+
     public static class Default implements IQualifiedNetworksServiceCallback {
         @Override // android.telephony.data.IQualifiedNetworksServiceCallback
         public void onQualifiedNetworkTypesChanged(int apnTypes, int[] qualifiedNetworkTypes) throws RemoteException {
+        }
+
+        @Override // android.telephony.data.IQualifiedNetworksServiceCallback
+        public void onNetworkValidationRequested(int networkCapability, IIntegerConsumer callback) throws RemoteException {
+        }
+
+        @Override // android.telephony.data.IQualifiedNetworksServiceCallback
+        public void onReconnectQualifiedNetworkType(int apnTypes, int qualifiedNetworkType) throws RemoteException {
         }
 
         @Override // android.telephony.data.IQualifiedNetworksServiceCallback
@@ -30,10 +42,11 @@ public interface IQualifiedNetworksServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IQualifiedNetworksServiceCallback {
-        static final int TRANSACTION_onHandoverEnabledChanged = 2;
+        static final int TRANSACTION_onHandoverEnabledChanged = 4;
+        static final int TRANSACTION_onNetworkValidationRequested = 2;
         static final int TRANSACTION_onQualifiedNetworkTypesChanged = 1;
+        static final int TRANSACTION_onReconnectQualifiedNetworkType = 3;
 
         public Stub() {
             attachInterface(this, IQualifiedNetworksServiceCallback.DESCRIPTOR);
@@ -60,6 +73,10 @@ public interface IQualifiedNetworksServiceCallback extends IInterface {
                 case 1:
                     return "onQualifiedNetworkTypesChanged";
                 case 2:
+                    return "onNetworkValidationRequested";
+                case 3:
+                    return "onReconnectQualifiedNetworkType";
+                case 4:
                     return "onHandoverEnabledChanged";
                 default:
                     return null;
@@ -76,32 +93,40 @@ public interface IQualifiedNetworksServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IQualifiedNetworksServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IQualifiedNetworksServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IQualifiedNetworksServiceCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int[] _arg1 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onQualifiedNetworkTypesChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    IIntegerConsumer _arg12 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onNetworkValidationRequested(_arg02, _arg12);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onReconnectQualifiedNetworkType(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onHandoverEnabledChanged(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int[] _arg1 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onQualifiedNetworkTypesChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onHandoverEnabledChanged(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IQualifiedNetworksServiceCallback {
+        private static class Proxy implements IQualifiedNetworksServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -131,12 +156,38 @@ public interface IQualifiedNetworksServiceCallback extends IInterface {
             }
 
             @Override // android.telephony.data.IQualifiedNetworksServiceCallback
+            public void onNetworkValidationRequested(int networkCapability, IIntegerConsumer callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IQualifiedNetworksServiceCallback.DESCRIPTOR);
+                    _data.writeInt(networkCapability);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(2, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.telephony.data.IQualifiedNetworksServiceCallback
+            public void onReconnectQualifiedNetworkType(int apnTypes, int qualifiedNetworkType) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IQualifiedNetworksServiceCallback.DESCRIPTOR);
+                    _data.writeInt(apnTypes);
+                    _data.writeInt(qualifiedNetworkType);
+                    this.mRemote.transact(3, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.telephony.data.IQualifiedNetworksServiceCallback
             public void onHandoverEnabledChanged(int supportedApnTypes) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IQualifiedNetworksServiceCallback.DESCRIPTOR);
                     _data.writeInt(supportedApnTypes);
-                    this.mRemote.transact(2, _data, null, 1);
+                    this.mRemote.transact(4, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -145,7 +196,7 @@ public interface IQualifiedNetworksServiceCallback extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 1;
+            return 3;
         }
     }
 }

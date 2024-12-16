@@ -19,7 +19,6 @@ public abstract class OrientationListener implements SensorListener {
         this.mOrientationEventLis = new OrientationEventListenerInternal(context, rate);
     }
 
-    /* loaded from: classes4.dex */
     class OrientationEventListenerInternal extends OrientationEventListener {
         OrientationEventListenerInternal(Context context) {
             super(context);

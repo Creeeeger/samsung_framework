@@ -60,9 +60,9 @@ public final class SehPreferredNetworkInfo {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.index = _hidl_blob.getInt32(_hidl_offset + 0);
         this.oper = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.oper.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         this.plmn = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.plmn.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         this.gsmAct = _hidl_blob.getInt32(_hidl_offset + 40);
         this.gsmCompactAct = _hidl_blob.getInt32(_hidl_offset + 44);
         this.utranAct = _hidl_blob.getInt32(_hidl_offset + 48);

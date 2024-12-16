@@ -1,12 +1,12 @@
 package android.app;
 
-import android.Manifest;
 import android.annotation.SystemApi;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Person;
 import android.app.admin.DevicePolicyManager;
 import android.app.admin.DevicePolicyResources;
+import android.app.compat.CompatChanges;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +36,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -47,9 +48,13 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StrikethroughSpan;
+import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
+import android.text.style.UnderlineSpan;
 import android.util.ArraySet;
 import android.util.Log;
+import android.util.NtpTrustedTime;
 import android.util.Pair;
 import android.util.Patterns;
 import android.util.SparseArray;
@@ -61,8 +66,9 @@ import com.android.internal.R;
 import com.android.internal.graphics.ColorUtils;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.ContrastColorUtil;
+import com.android.internal.util.NotificationBigTextNormalizer;
 import com.android.internal.widget.MessagingMessage;
-import com.samsung.android.ims.options.SemCapabilities;
+import com.samsung.android.hardware.secinputdev.SemInputDeviceManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Array;
@@ -111,6 +117,7 @@ public class Notification implements Parcelable {
     public static final String CATEGORY_STOPWATCH = "stopwatch";
     public static final String CATEGORY_SYSTEM = "sys";
     public static final String CATEGORY_TRANSPORT = "transport";
+    public static final String CATEGORY_VOICEMAIL = "voicemail";
     public static final String CATEGORY_WORKOUT = "workout";
     public static final int COLOR_DEFAULT = 0;
     public static final int COLOR_INVALID = 1;
@@ -160,6 +167,57 @@ public class Notification implements Parcelable {
     public static final String EXTRA_MESSAGING_PERSON = "android.messagingUser";
     public static final String EXTRA_NOTIFICATION_ID = "android.intent.extra.NOTIFICATION_ID";
     public static final String EXTRA_NOTIFICATION_TAG = "android.intent.extra.NOTIFICATION_TAG";
+    public static final String EXTRA_ONGOING_ACTIVITY_ACTION_BG_COLOR = "android.ongoingActivityActionBgColors";
+    public static final String EXTRA_ONGOING_ACTIVITY_BADGE = "android.ongoingActivityBadge";
+    public static final String EXTRA_ONGOING_ACTIVITY_CARD_BACKGROUND = "android.ongoingActivityCardBackground";
+    public static final String EXTRA_ONGOING_ACTIVITY_CARD_ICON = "android.ongoingActivityCardIcon";
+    public static final String EXTRA_ONGOING_ACTIVITY_CHIP_BACKGROUND = "android.ongoingActivityChipBackground";
+    public static final String EXTRA_ONGOING_ACTIVITY_CHIP_ICON = "android.ongoingActivityChipIcon";
+    public static final String EXTRA_ONGOING_ACTIVITY_CHRONOMETER_BASE = "android.ongoingActivityChronometerBase";
+    public static final String EXTRA_ONGOING_ACTIVITY_CHRONOMETER_COUNTDOWN = "android.ongoingActivityChronometerCountdown";
+    public static final String EXTRA_ONGOING_ACTIVITY_CHRONOMETER_FORMAT = "android.ongoingActivityChronometerFormat";
+    public static final String EXTRA_ONGOING_ACTIVITY_CHRONOMETER_SPEED = "android.ongoingActivityChronometerSpeed";
+    public static final String EXTRA_ONGOING_ACTIVITY_CHRONOMETER_START = "android.ongoingActivityChronometerStart";
+    public static final String EXTRA_ONGOING_ACTIVITY_CUSTOM_CARD_VIEW_CENTER_UI = "android.ongoingActivityCustomCardViewCenterUI";
+    public static final String EXTRA_ONGOING_ACTIVITY_CUSTOM_EXPANDED_CARD_VIEW = "android.ongoingActivityCustomExpandedCardView";
+    public static final String EXTRA_ONGOING_ACTIVITY_EXPANDED_CHIP_TEXT = "android.ongoingActivityExpandedChipText";
+    public static final String EXTRA_ONGOING_ACTIVITY_EXPANDED_CHIP_VIEW = "android.ongoingActivityExpandedChipView";
+    public static final String EXTRA_ONGOING_ACTIVITY_EXPANDED_NOW_BAR_VIEW = "android.ongoingActivityExpandedNowBarView";
+    public static final String EXTRA_ONGOING_ACTIVITY_MORE_INFO = "android.ongoingActivityMoreInfo";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_ACTION_BG_COLOR = "android.ongoingActivityNoti.actionBgColor";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_ACTION_PRIMARY_SET = "android.ongoingActivityNoti.actionPrimarySet";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_ACTION_TYPE = "android.ongoingActivityNoti.actionType";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_BG_COLOR = "android.ongoingActivityNoti.bgColor";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_CHIP_BG_COLOR = "android.ongoingActivityNoti.chipBgColor";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_CHIP_EXPANDED_TEXT = "android.ongoingActivityNoti.chipExpandedText";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_CHIP_EXPANDED_VIEW = "android.ongoingActivityNoti.chipExpandedView";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_CHIP_ICON = "android.ongoingActivityNoti.chipIcon";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_CHRONOMETER_REMOTEVIEW = "android.ongoingActivityNoti.chronometerRemoteView";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_CHRONOMETER_REMOTEVIEW_POSITION = "android.ongoingActivityNoti.chronometerRemoteViewPosition";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_CHRONOMETER_REMOTEVIEW_TAG = "android.ongoingActivityNoti.chronometerRemoteViewTag";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_EXPANDED_REMOTEVIEW = "android.ongoingActivityNoti.expandedRemoteView";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_FIRST_ICON = "android.ongoingActivityNoti.firstIcon";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_NOWBAR_ICON = "android.ongoingActivityNoti.nowbarIcon";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_NOWBAR_PRIMARY_INFO = "android.ongoingActivityNoti.nowbarPrimaryInfo";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_NOWBAR_REMOTEVIEW = "android.ongoingActivityNoti.nowbarRemoteView";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_NOWBAR_SECONDARY_INFO = "android.ongoingActivityNoti.nowbarSecondaryInfo";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PRIMARY_INFO = "android.ongoingActivityNoti.primaryInfo";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PROGRESS = "android.ongoingActivityNoti.progress";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PROGRESS_INDETERMINATE = "android.ongoingActivityNoti.progressIndeterminate";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PROGRESS_MAX = "android.ongoingActivityNoti.progressMax";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PROGRESS_SEGMENTS = "android.ongoingActivityNoti.progressSegments";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PROGRESS_SEGMENT_INNER_COLOR = "android.ongoingActivityNoti.progressSegments.segmentColor";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PROGRESS_SEGMENT_INNER_ICON = "android.ongoingActivityNoti.progressSegments.icon";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_PROGRESS_SEGMENT_INNER_START = "android.ongoingActivityNoti.progressSegments.segmentStart";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_SECONDARY_INFO = "android.ongoingActivityNoti.secondaryInfo";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_SECOND_ICON = "android.ongoingActivityNoti.secondIcon";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_STATE = "android.ongoingActivityNoti.state";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_STYLE = "android.ongoingActivityNoti.style";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOTI_TERTIARY_INFO = "android.ongoingActivityNoti.tertiaryInfo";
+    public static final String EXTRA_ONGOING_ACTIVITY_NOW_BAR_EXPANDABLE_TYPE = "android.ongoingActivityNowBarExpandableType";
+    public static final String EXTRA_ONGOING_ACTIVITY_PRIMARY_ACTION = "android.ongoingActivityPrimaryAction";
+    public static final String EXTRA_ONGOING_ACTIVITY_PRIMARY_INFO = "android.ongoingActivityPrimaryInfo";
+    public static final String EXTRA_ONGOING_ACTIVITY_SECONDARY_INFO = "android.ongoingActivitySecondaryInfo";
     public static final String EXTRA_PEOPLE = "android.people";
     public static final String EXTRA_PEOPLE_LIST = "android.people.list";
     public static final String EXTRA_PICTURE = "android.picture";
@@ -176,6 +234,7 @@ public class Notification implements Parcelable {
     public static final String EXTRA_SHOW_BIG_PICTURE_WHEN_COLLAPSED = "android.showBigPictureWhenCollapsed";
     public static final String EXTRA_SHOW_CHRONOMETER = "android.showChronometer";
     public static final String EXTRA_SHOW_REMOTE_INPUT_SPINNER = "android.remoteInputSpinner";
+    public static final String EXTRA_SHOW_SMALL_ICON = "android.showSmallIcon";
     public static final String EXTRA_SHOW_WHEN = "android.showWhen";
 
     @Deprecated
@@ -205,6 +264,7 @@ public class Notification implements Parcelable {
     @Deprecated
     public static final int FLAG_HIGH_PRIORITY = 128;
     public static final int FLAG_INSISTENT = 4;
+    public static final int FLAG_LIFETIME_EXTENDED_BY_DIRECT_REPLY = 65536;
     public static final int FLAG_LOCAL_ONLY = 256;
     public static final int FLAG_NO_CLEAR = 32;
     public static final int FLAG_NO_DISMISS = 8192;
@@ -220,6 +280,7 @@ public class Notification implements Parcelable {
     public static final int GROUP_ALERT_ALL = 0;
     public static final int GROUP_ALERT_CHILDREN = 2;
     public static final int GROUP_ALERT_SUMMARY = 1;
+    public static final String GROUP_KEY_SILENT = "silent";
     public static final String INTENT_CATEGORY_NOTIFICATION_PREFERENCES = "android.intent.category.NOTIFICATION_PREFERENCES";
     public static final int MAX_ACTION_BUTTONS = 3;
     private static final int MAX_CHARSEQUENCE_LENGTH = 1024;
@@ -248,12 +309,14 @@ public class Notification implements Parcelable {
     public static final int SEM_FLAG_DISABLE_HEADS_UP = 8;
     public static final int SEM_FLAG_DISABLE_SIMPLE_COVER_SCREEN_NOTIFICATION = 256;
     public static final int SEM_FLAG_HALF_BRIEF = 16384;
+    public static final int SEM_FLAG_HIGHLIGHTS = 131072;
+    public static final int SEM_FLAG_INSIGNIFICANT = 262144;
     public static final int SEM_FLAG_SKIP_ASSITANT = 32768;
     public static final int SEM_FLAG_SNOOZED = 128;
     public static final int SEM_PRIORITY_DEFAULT = 0;
     public static final int SEM_PRIORITY_HIGH = 10;
     public static final int SEM_PRIORITY_MAX = 20;
-    private static final ArraySet<Integer> STANDARD_LAYOUTS;
+    private static final ArraySet<Integer> STANDARD_LAYOUTS = new ArraySet<>();
 
     @Deprecated
     public static final int STREAM_DEFAULT = -1;
@@ -261,6 +324,7 @@ public class Notification implements Parcelable {
     public static final int VISIBILITY_PRIVATE = 0;
     public static final int VISIBILITY_PUBLIC = 1;
     public static final int VISIBILITY_SECRET = -1;
+    static final long WEARABLE_EXTENDER_BACKGROUND_BLOCKED = 270551184;
     public static IBinder processAllowlistToken;
     public Action[] actions;
     public ArraySet<PendingIntent> allPendingIntents;
@@ -279,7 +343,7 @@ public class Notification implements Parcelable {
 
     @Deprecated
     public RemoteViews contentView;
-    private long creationTime;
+    public long creationTime;
 
     @Deprecated
     public int defaults;
@@ -308,7 +372,9 @@ public class Notification implements Parcelable {
     public int ledOnMS;
     private boolean mAllowSystemGeneratedContextualActions;
     private IBinder mAllowlistToken;
+    private Icon mAppIcon;
     private int mBadgeIcon;
+    private Boolean mBelongsToHeadlessSystemApp;
     private BubbleMetadata mBubbleMetadata;
     private String mChannelId;
     private int mFgsDeferBehavior;
@@ -345,68 +411,59 @@ public class Notification implements Parcelable {
     public int visibility;
     public long when;
 
-    /* loaded from: classes.dex */
     public interface Extender {
         Builder extend(Builder builder);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface GroupAlertBehavior {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NotificationFlags {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface NotificationVisibilityOverride {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Priority {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ServiceNotificationPolicy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Visibility {
     }
 
     static {
-        ArraySet<Integer> arraySet = new ArraySet<>();
-        STANDARD_LAYOUTS = arraySet;
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_base));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_heads_up_base));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_big_base));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_big_picture));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_big_text));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_inbox));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_messaging));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_big_messaging));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_conversation));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_media));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_big_media));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_call));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_material_big_call));
-        arraySet.add(Integer.valueOf(R.layout.notification_template_header));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_base));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_heads_up_base));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_big_base));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_big_picture));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_big_text));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_inbox));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_messaging));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_big_messaging));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_conversation));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_media));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_big_media));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_call));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_material_big_call));
+        STANDARD_LAYOUTS.add(Integer.valueOf(R.layout.notification_template_header));
         AUDIO_ATTRIBUTES_DEFAULT = new AudioAttributes.Builder().setContentType(4).setUsage(5).build();
-        PLATFORM_STYLE_CLASSES = Arrays.asList(BigTextStyle.class, BigPictureStyle.class, InboxStyle.class, MediaStyle.class, DecoratedCustomViewStyle.class, DecoratedMediaCustomViewStyle.class, MessagingStyle.class, CallStyle.class);
+        PLATFORM_STYLE_CLASSES = Arrays.asList(BigTextStyle.class, BigPictureStyle.class, InboxStyle.class, MediaStyle.class, DecoratedCustomViewStyle.class, DecoratedMediaCustomViewStyle.class, MessagingStyle.class, CallStyle.class, OngoingActivityStyle.class);
         CREATOR = new Parcelable.Creator<Notification>() { // from class: android.app.Notification.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Notification createFromParcel(Parcel parcel) {
                 return new Notification(parcel);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Notification[] newArray(int size) {
                 return new Notification[size];
@@ -422,17 +479,15 @@ public class Notification implements Parcelable {
         return this.mSortKey;
     }
 
-    /* loaded from: classes.dex */
     public static class Action implements Parcelable {
         public static final Parcelable.Creator<Action> CREATOR = new Parcelable.Creator<Action>() { // from class: android.app.Notification.Action.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Action createFromParcel(Parcel in) {
                 return new Action(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Action[] newArray(int size) {
                 return new Action[size];
@@ -469,30 +524,19 @@ public class Notification implements Parcelable {
         private final int mSemanticAction;
         public CharSequence title;
 
-        /* loaded from: classes.dex */
         public interface Extender {
             Builder extend(Builder builder);
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface SemanticAction {
-        }
-
-        /* synthetic */ Action(Icon icon, CharSequence charSequence, PendingIntent pendingIntent, Bundle bundle, RemoteInput[] remoteInputArr, boolean z, int i, boolean z2, boolean z3, ActionIA actionIA) {
-            this(icon, charSequence, pendingIntent, bundle, remoteInputArr, z, i, z2, z3);
-        }
-
-        /* synthetic */ Action(Parcel parcel, ActionIA actionIA) {
-            this(parcel);
         }
 
         private Action(Parcel in) {
             this.mAllowGeneratedReplies = true;
             if (in.readInt() != 0) {
-                Icon createFromParcel = Icon.CREATOR.createFromParcel(in);
-                this.mIcon = createFromParcel;
-                if (createFromParcel.getType() == 2) {
+                this.mIcon = Icon.CREATOR.createFromParcel(in);
+                if (this.mIcon.getType() == 2) {
                     this.icon = this.mIcon.getResId();
                 }
             }
@@ -530,9 +574,8 @@ public class Notification implements Parcelable {
         }
 
         public Icon getIcon() {
-            int i;
-            if (this.mIcon == null && (i = this.icon) != 0) {
-                this.mIcon = Icon.createWithResource("", i);
+            if (this.mIcon == null && this.icon != 0) {
+                this.mIcon = Icon.createWithResource("", this.icon);
             }
             return this.mIcon;
         }
@@ -565,7 +608,6 @@ public class Notification implements Parcelable {
             return this.mAuthenticationRequired;
         }
 
-        /* loaded from: classes.dex */
         public static final class Builder {
             private boolean mAllowGeneratedReplies;
             private boolean mAuthenticationRequired;
@@ -597,9 +639,8 @@ public class Notification implements Parcelable {
                 this.mIntent = intent;
                 this.mExtras = extras;
                 if (remoteInputs != null) {
-                    ArrayList<RemoteInput> arrayList = new ArrayList<>(remoteInputs.length);
-                    this.mRemoteInputs = arrayList;
-                    Collections.addAll(arrayList, remoteInputs);
+                    this.mRemoteInputs = new ArrayList<>(remoteInputs.length);
+                    Collections.addAll(this.mRemoteInputs, remoteInputs);
                 }
                 this.mAllowGeneratedReplies = allowGeneratedReplies;
                 this.mSemanticAction = semanticAction;
@@ -671,9 +712,8 @@ public class Notification implements Parcelable {
                     }
                 }
                 List<RemoteInput> textInputs = new ArrayList<>();
-                ArrayList<RemoteInput> arrayList = this.mRemoteInputs;
-                if (arrayList != null) {
-                    Iterator<RemoteInput> it = arrayList.iterator();
+                if (this.mRemoteInputs != null) {
+                    Iterator<RemoteInput> it = this.mRemoteInputs.iterator();
                     while (it.hasNext()) {
                         RemoteInput input = it.next();
                         if (input.isDataOnly()) {
@@ -692,12 +732,13 @@ public class Notification implements Parcelable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void visitUris(Consumer<Uri> visitor) {
             Notification.visitIconUri(visitor, getIcon());
         }
 
-        /* renamed from: clone */
-        public Action m380clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public Action m416clone() {
             return new Action(getIcon(), this.title, this.actionIntent, this.mExtras == null ? new Bundle() : new Bundle(this.mExtras), getRemoteInputs(), getAllowGeneratedReplies(), getSemanticAction(), isContextual(), isAuthenticationRequired());
         }
 
@@ -730,24 +771,6 @@ public class Notification implements Parcelable {
             parcel.writeInt(this.mAuthenticationRequired ? 1 : 0);
         }
 
-        /* renamed from: android.app.Notification$Action$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Action> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Action createFromParcel(Parcel in) {
-                return new Action(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Action[] newArray(int size) {
-                return new Action[size];
-            }
-        }
-
-        /* loaded from: classes.dex */
         public static final class WearableExtender implements Extender {
             private static final int DEFAULT_FLAGS = 1;
             private static final String EXTRA_WEARABLE_EXTENSIONS = "android.wearable.EXTENSIONS";
@@ -781,28 +804,24 @@ public class Notification implements Parcelable {
             @Override // android.app.Notification.Action.Extender
             public Builder extend(Builder builder) {
                 Bundle wearableBundle = new Bundle();
-                int i = this.mFlags;
-                if (i != 1) {
-                    wearableBundle.putInt("flags", i);
+                if (this.mFlags != 1) {
+                    wearableBundle.putInt("flags", this.mFlags);
                 }
-                CharSequence charSequence = this.mInProgressLabel;
-                if (charSequence != null) {
-                    wearableBundle.putCharSequence(KEY_IN_PROGRESS_LABEL, charSequence);
+                if (this.mInProgressLabel != null) {
+                    wearableBundle.putCharSequence(KEY_IN_PROGRESS_LABEL, this.mInProgressLabel);
                 }
-                CharSequence charSequence2 = this.mConfirmLabel;
-                if (charSequence2 != null) {
-                    wearableBundle.putCharSequence(KEY_CONFIRM_LABEL, charSequence2);
+                if (this.mConfirmLabel != null) {
+                    wearableBundle.putCharSequence(KEY_CONFIRM_LABEL, this.mConfirmLabel);
                 }
-                CharSequence charSequence3 = this.mCancelLabel;
-                if (charSequence3 != null) {
-                    wearableBundle.putCharSequence(KEY_CANCEL_LABEL, charSequence3);
+                if (this.mCancelLabel != null) {
+                    wearableBundle.putCharSequence(KEY_CANCEL_LABEL, this.mCancelLabel);
                 }
                 builder.getExtras().putBundle(EXTRA_WEARABLE_EXTENSIONS, wearableBundle);
                 return builder;
             }
 
-            /* renamed from: clone */
-            public WearableExtender m381clone() {
+            /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+            public WearableExtender m417clone() {
                 WearableExtender that = new WearableExtender();
                 that.mFlags = this.mFlags;
                 that.mInProgressLabel = this.mInProgressLabel;
@@ -887,11 +906,17 @@ public class Notification implements Parcelable {
         this.audioAttributes = AUDIO_ATTRIBUTES_DEFAULT;
         this.color = 0;
         this.extras = new Bundle();
+        this.mBelongsToHeadlessSystemApp = null;
         this.mGroupAlertBehavior = 0;
         this.mBadgeIcon = 0;
         this.mAllowSystemGeneratedContextualActions = true;
         this.when = System.currentTimeMillis();
-        this.creationTime = System.currentTimeMillis();
+        if (Flags.sortSectionByTime()) {
+            this.creationTime = this.when;
+            this.extras.putBoolean(EXTRA_SHOW_WHEN, true);
+        } else {
+            this.creationTime = System.currentTimeMillis();
+        }
         this.priority = 0;
     }
 
@@ -901,9 +926,14 @@ public class Notification implements Parcelable {
         this.audioAttributes = AUDIO_ATTRIBUTES_DEFAULT;
         this.color = 0;
         this.extras = new Bundle();
+        this.mBelongsToHeadlessSystemApp = null;
         this.mGroupAlertBehavior = 0;
         this.mBadgeIcon = 0;
         this.mAllowSystemGeneratedContextualActions = true;
+        if (Flags.sortSectionByTime()) {
+            this.creationTime = when;
+            this.extras.putBoolean(EXTRA_SHOW_WHEN, true);
+        }
         new Builder(context).setWhen(when).setSmallIcon(icon).setTicker(tickerText).setContentTitle(contentTitle).setContentText(contentText).setContentIntent(PendingIntent.getActivity(context, 0, contentIntent, 33554432)).buildInto(this);
     }
 
@@ -914,13 +944,19 @@ public class Notification implements Parcelable {
         this.audioAttributes = AUDIO_ATTRIBUTES_DEFAULT;
         this.color = 0;
         this.extras = new Bundle();
+        this.mBelongsToHeadlessSystemApp = null;
         this.mGroupAlertBehavior = 0;
         this.mBadgeIcon = 0;
         this.mAllowSystemGeneratedContextualActions = true;
         this.icon = icon;
         this.tickerText = tickerText;
         this.when = when;
-        this.creationTime = System.currentTimeMillis();
+        if (Flags.sortSectionByTime()) {
+            this.creationTime = when;
+            this.extras.putBoolean(EXTRA_SHOW_WHEN, true);
+        } else {
+            this.creationTime = System.currentTimeMillis();
+        }
     }
 
     public Notification(Parcel parcel) {
@@ -929,6 +965,7 @@ public class Notification implements Parcelable {
         this.audioAttributes = AUDIO_ATTRIBUTES_DEFAULT;
         this.color = 0;
         this.extras = new Bundle();
+        this.mBelongsToHeadlessSystemApp = null;
         this.mGroupAlertBehavior = 0;
         this.mBadgeIcon = 0;
         this.mAllowSystemGeneratedContextualActions = true;
@@ -938,18 +975,22 @@ public class Notification implements Parcelable {
 
     private void readFromParcelImpl(Parcel parcel) {
         parcel.readInt();
-        IBinder readStrongBinder = parcel.readStrongBinder();
-        this.mAllowlistToken = readStrongBinder;
-        if (readStrongBinder == null) {
+        this.mAllowlistToken = parcel.readStrongBinder();
+        if (this.mAllowlistToken == null) {
             this.mAllowlistToken = processAllowlistToken;
         }
-        parcel.setClassCookie(PendingIntent.class, this.mAllowlistToken);
+        if (Flags.secureAllowlistToken()) {
+            if (!parcel.hasClassCookie(PendingIntent.class)) {
+                parcel.setClassCookie(PendingIntent.class, this.mAllowlistToken);
+            }
+        } else {
+            parcel.setClassCookie(PendingIntent.class, this.mAllowlistToken);
+        }
         this.when = parcel.readLong();
         this.creationTime = parcel.readLong();
         if (parcel.readInt() != 0) {
-            Icon createFromParcel = Icon.CREATOR.createFromParcel(parcel);
-            this.mSmallIcon = createFromParcel;
-            if (createFromParcel.getType() == 2) {
+            this.mSmallIcon = Icon.CREATOR.createFromParcel(parcel);
+            if (this.mSmallIcon.getType() == 2) {
                 this.icon = this.mSmallIcon.getResId();
             }
         }
@@ -1036,19 +1077,14 @@ public class Notification implements Parcelable {
         this.parcelDataSize = parcel.dataSize();
     }
 
-    /* renamed from: clone */
-    public Notification m376clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public Notification m412clone() {
         Notification that = new Notification();
         cloneInto(that, true);
         return that;
     }
 
     public void cloneInto(Notification that, boolean heavy) {
-        RemoteViews remoteViews;
-        RemoteViews remoteViews2;
-        Icon icon;
-        RemoteViews remoteViews3;
-        RemoteViews remoteViews4;
         that.mAllowlistToken = this.mAllowlistToken;
         that.when = this.when;
         that.creationTime = this.creationTime;
@@ -1057,25 +1093,23 @@ public class Notification implements Parcelable {
         that.contentIntent = this.contentIntent;
         that.deleteIntent = this.deleteIntent;
         that.fullScreenIntent = this.fullScreenIntent;
-        CharSequence charSequence = this.tickerText;
-        if (charSequence != null) {
-            that.tickerText = charSequence.toString();
+        if (this.tickerText != null) {
+            that.tickerText = this.tickerText.toString();
         }
-        if (heavy && (remoteViews4 = this.tickerView) != null) {
-            that.tickerView = remoteViews4.mo407clone();
+        if (heavy && this.tickerView != null) {
+            that.tickerView = this.tickerView.mo447clone();
         }
-        if (heavy && (remoteViews3 = this.contentView) != null) {
-            that.contentView = remoteViews3.mo407clone();
+        if (heavy && this.contentView != null) {
+            that.contentView = this.contentView.mo447clone();
         }
-        if (heavy && (icon = this.mLargeIcon) != null) {
-            that.mLargeIcon = icon;
+        if (heavy && this.mLargeIcon != null) {
+            that.mLargeIcon = this.mLargeIcon;
         }
         that.iconLevel = this.iconLevel;
         that.sound = this.sound;
         that.audioStreamType = this.audioStreamType;
-        AudioAttributes audioAttributes = this.audioAttributes;
-        if (audioAttributes != null) {
-            that.audioAttributes = new AudioAttributes.Builder(audioAttributes).build();
+        if (this.audioAttributes != null) {
+            that.audioAttributes = new AudioAttributes.Builder(this.audioAttributes).build();
         }
         long[] vibrate = this.vibrate;
         if (vibrate != null) {
@@ -1095,9 +1129,8 @@ public class Notification implements Parcelable {
         that.mSortKey = this.mSortKey;
         if (this.extras != null) {
             try {
-                Bundle bundle = new Bundle(this.extras);
-                that.extras = bundle;
-                bundle.size();
+                that.extras = new Bundle(this.extras);
+                that.extras.size();
             } catch (BadParcelableException e) {
                 Log.e(TAG, "could not unparcel extras from notification: " + this, e);
                 that.extras = null;
@@ -1106,33 +1139,24 @@ public class Notification implements Parcelable {
         if (!ArrayUtils.isEmpty(this.allPendingIntents)) {
             that.allPendingIntents = new ArraySet<>((ArraySet) this.allPendingIntents);
         }
-        Action[] actionArr = this.actions;
-        if (actionArr != null) {
-            that.actions = new Action[actionArr.length];
-            int i = 0;
-            while (true) {
-                Action[] actionArr2 = this.actions;
-                if (i >= actionArr2.length) {
-                    break;
+        if (this.actions != null) {
+            that.actions = new Action[this.actions.length];
+            for (int i = 0; i < this.actions.length; i++) {
+                if (this.actions[i] != null) {
+                    that.actions[i] = this.actions[i].m416clone();
                 }
-                Action action = actionArr2[i];
-                if (action != null) {
-                    that.actions[i] = action.m380clone();
-                }
-                i++;
             }
         }
-        if (heavy && (remoteViews2 = this.bigContentView) != null) {
-            that.bigContentView = remoteViews2.mo407clone();
+        if (heavy && this.bigContentView != null) {
+            that.bigContentView = this.bigContentView.mo447clone();
         }
-        if (heavy && (remoteViews = this.headsUpContentView) != null) {
-            that.headsUpContentView = remoteViews.mo407clone();
+        if (heavy && this.headsUpContentView != null) {
+            that.headsUpContentView = this.headsUpContentView.mo447clone();
         }
         that.visibility = this.visibility;
         if (this.publicVersion != null) {
-            Notification notification = new Notification();
-            that.publicVersion = notification;
-            this.publicVersion.cloneInto(notification, heavy);
+            that.publicVersion = new Notification();
+            this.publicVersion.cloneInto(that.publicVersion, heavy);
         }
         that.color = this.color;
         that.mChannelId = this.mChannelId;
@@ -1151,13 +1175,13 @@ public class Notification implements Parcelable {
         that.semMissedCount = this.semMissedCount;
         that.semFlags = this.semFlags;
         that.semPriority = this.semPriority;
-        ComponentName componentName = this.semBadgeTarget;
-        if (componentName != null) {
-            that.semBadgeTarget = componentName.m780clone();
+        if (this.semBadgeTarget != null) {
+            that.semBadgeTarget = this.semBadgeTarget.m840clone();
         }
         that.parcelDataSize = this.parcelDataSize;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void visitIconUri(Consumer<Uri> visitor, Icon icon) {
         if (icon == null) {
             return;
@@ -1169,38 +1193,31 @@ public class Notification implements Parcelable {
     }
 
     public void visitUris(Consumer<Uri> visitor) {
-        Notification notification = this.publicVersion;
-        if (notification != null) {
-            notification.visitUris(visitor);
+        if (this.publicVersion != null) {
+            this.publicVersion.visitUris(visitor);
         }
         visitor.accept(this.sound);
-        RemoteViews remoteViews = this.tickerView;
-        if (remoteViews != null) {
-            remoteViews.visitUris(visitor);
+        if (this.tickerView != null) {
+            this.tickerView.visitUris(visitor);
         }
-        RemoteViews remoteViews2 = this.contentView;
-        if (remoteViews2 != null) {
-            remoteViews2.visitUris(visitor);
+        if (this.contentView != null) {
+            this.contentView.visitUris(visitor);
         }
-        RemoteViews remoteViews3 = this.bigContentView;
-        if (remoteViews3 != null) {
-            remoteViews3.visitUris(visitor);
+        if (this.bigContentView != null) {
+            this.bigContentView.visitUris(visitor);
         }
-        RemoteViews remoteViews4 = this.headsUpContentView;
-        if (remoteViews4 != null) {
-            remoteViews4.visitUris(visitor);
+        if (this.headsUpContentView != null) {
+            this.headsUpContentView.visitUris(visitor);
         }
         visitIconUri(visitor, this.mSmallIcon);
         visitIconUri(visitor, this.mLargeIcon);
-        Action[] actionArr = this.actions;
-        if (actionArr != null) {
-            for (Action action : actionArr) {
+        if (this.actions != null) {
+            for (Action action : this.actions) {
                 action.visitUris(visitor);
             }
         }
-        Bundle bundle = this.extras;
-        if (bundle != null) {
-            visitIconUri(visitor, (Icon) bundle.getParcelable(EXTRA_LARGE_ICON_BIG, Icon.class));
+        if (this.extras != null) {
+            visitIconUri(visitor, (Icon) this.extras.getParcelable(EXTRA_LARGE_ICON_BIG, Icon.class));
             visitIconUri(visitor, (Icon) this.extras.getParcelable(EXTRA_PICTURE_ICON, Icon.class));
             Object audioContentsUri = this.extras.get(EXTRA_AUDIO_CONTENTS_URI);
             if (audioContentsUri instanceof Uri) {
@@ -1216,7 +1233,7 @@ public class Notification implements Parcelable {
                 Iterator<Person> it = people.iterator();
                 while (it.hasNext()) {
                     Person p = it.next();
-                    visitor.accept(p.getIconUri());
+                    p.visitUris(visitor);
                 }
             }
             RemoteInputHistoryItem[] history = (RemoteInputHistoryItem[]) this.extras.getParcelableArray(EXTRA_REMOTE_INPUT_HISTORY_ITEMS, RemoteInputHistoryItem.class);
@@ -1229,44 +1246,130 @@ public class Notification implements Parcelable {
             }
             Person person = (Person) this.extras.getParcelable(EXTRA_MESSAGING_PERSON, Person.class);
             if (person != null) {
-                visitor.accept(person.getIconUri());
+                person.visitUris(visitor);
             }
             Parcelable[] messages = (Parcelable[]) this.extras.getParcelableArray(EXTRA_MESSAGES, Parcelable.class);
             if (!ArrayUtils.isEmpty(messages)) {
                 for (MessagingStyle.Message message : MessagingStyle.Message.getMessagesFromBundleArray(messages)) {
-                    visitor.accept(message.getDataUri());
-                    Person senderPerson = message.getSenderPerson();
-                    if (senderPerson != null) {
-                        visitor.accept(senderPerson.getIconUri());
-                    }
+                    message.visitUris(visitor);
                 }
             }
             Parcelable[] historic = (Parcelable[]) this.extras.getParcelableArray(EXTRA_HISTORIC_MESSAGES, Parcelable.class);
             if (!ArrayUtils.isEmpty(historic)) {
                 for (MessagingStyle.Message message2 : MessagingStyle.Message.getMessagesFromBundleArray(historic)) {
-                    visitor.accept(message2.getDataUri());
-                    Person senderPerson2 = message2.getSenderPerson();
-                    if (senderPerson2 != null) {
-                        visitor.accept(senderPerson2.getIconUri());
-                    }
+                    message2.visitUris(visitor);
                 }
             }
             visitIconUri(visitor, (Icon) this.extras.getParcelable(EXTRA_CONVERSATION_ICON, Icon.class));
             Person callPerson = (Person) this.extras.getParcelable(EXTRA_CALL_PERSON, Person.class);
             if (callPerson != null) {
-                visitor.accept(callPerson.getIconUri());
+                callPerson.visitUris(visitor);
             }
             visitIconUri(visitor, (Icon) this.extras.getParcelable(EXTRA_VERIFICATION_ICON, Icon.class));
         }
-        BubbleMetadata bubbleMetadata = this.mBubbleMetadata;
-        if (bubbleMetadata != null) {
-            visitIconUri(visitor, bubbleMetadata.getIcon());
+        if (this.mBubbleMetadata != null) {
+            visitIconUri(visitor, this.mBubbleMetadata.getIcon());
         }
-        Bundle bundle2 = this.extras;
-        if (bundle2 != null && bundle2.containsKey("android.wearable.EXTENSIONS")) {
+        if (this.extras != null && this.extras.containsKey("android.wearable.EXTENSIONS")) {
             WearableExtender extender = new WearableExtender(this);
             extender.visitUris(visitor);
         }
+    }
+
+    public String loadHeaderAppName(Context context) {
+        Trace.beginSection("Notification#loadHeaderAppName");
+        CharSequence name = null;
+        try {
+            if (this.extras.containsKey(EXTRA_SUBSTITUTE_APP_NAME)) {
+                name = this.extras.getString(EXTRA_SUBSTITUTE_APP_NAME);
+                if (!TextUtils.isEmpty(name)) {
+                    return name.toString();
+                }
+            }
+            if (context == null) {
+                return null;
+            }
+            if (TextUtils.isEmpty(name)) {
+                ApplicationInfo info = getApplicationInfo(context);
+                if (info != null) {
+                    PackageManager pm = context.getPackageManager();
+                    name = pm.getApplicationLabel(getApplicationInfo(context));
+                }
+            }
+            if (TextUtils.isEmpty(name)) {
+                return null;
+            }
+            return name.toString();
+        } finally {
+            Trace.endSection();
+        }
+    }
+
+    public boolean belongsToHeadlessSystemApp(Context context) {
+        Trace.beginSection("Notification#belongsToHeadlessSystemApp");
+        try {
+            if (this.mBelongsToHeadlessSystemApp != null) {
+                return this.mBelongsToHeadlessSystemApp.booleanValue();
+            }
+            if (context == null) {
+                return false;
+            }
+            ApplicationInfo info = getApplicationInfo(context);
+            if (info == null) {
+                return false;
+            }
+            if ((info.flags & 1) == 0) {
+                this.mBelongsToHeadlessSystemApp = false;
+            } else {
+                PackageManager pm = context.getPackageManager();
+                this.mBelongsToHeadlessSystemApp = Boolean.valueOf(pm.getLaunchIntentForPackage(info.packageName) == null);
+            }
+            return this.mBelongsToHeadlessSystemApp.booleanValue();
+        } finally {
+            Trace.endSection();
+        }
+    }
+
+    public int getHeaderAppIconRes(Context context) {
+        ApplicationInfo info = getApplicationInfo(context);
+        if (info != null) {
+            return info.icon;
+        }
+        return 0;
+    }
+
+    public Drawable loadHeaderAppIcon(Context context) {
+        Trace.beginSection("Notification#loadHeaderAppIcon");
+        try {
+            if (context == null) {
+                Log.e(TAG, "Cannot load the app icon drawable with a null context");
+                return null;
+            }
+            PackageManager pm = context.getPackageManager();
+            ApplicationInfo info = getApplicationInfo(context);
+            if (info != null) {
+                return pm.getApplicationIcon(info);
+            }
+            Log.e(TAG, "Cannot load the app icon drawable: no application info");
+            return null;
+        } finally {
+            Trace.endSection();
+        }
+    }
+
+    private ApplicationInfo getApplicationInfo(Context context) {
+        ApplicationInfo info = null;
+        if (this.extras.containsKey(EXTRA_BUILDER_APPLICATION_INFO)) {
+            info = (ApplicationInfo) this.extras.getParcelable(EXTRA_BUILDER_APPLICATION_INFO, ApplicationInfo.class);
+        }
+        if (info == null) {
+            if (context == null) {
+                return null;
+            }
+            ApplicationInfo info2 = context.getApplicationInfo();
+            return info2;
+        }
+        return info;
     }
 
     public final void lightenPayload() {
@@ -1276,8 +1379,7 @@ public class Notification implements Parcelable {
         this.bigContentView = null;
         this.headsUpContentView = null;
         this.mLargeIcon = null;
-        Bundle bundle = this.extras;
-        if (bundle != null && !bundle.isEmpty()) {
+        if (this.extras != null && !this.extras.isEmpty()) {
             Set<String> keyset = this.extras.keySet();
             int N = keyset.size();
             String[] keys = (String[]) keyset.toArray(new String[N]);
@@ -1302,6 +1404,22 @@ public class Notification implements Parcelable {
             return cs.toString();
         }
         return removeTextSizeSpans(cs);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static CharSequence stripStyling(CharSequence cs) {
+        if (cs == null) {
+            return cs;
+        }
+        return cs.toString();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static CharSequence normalizeBigText(CharSequence charSequence) {
+        if (charSequence == null) {
+            return charSequence;
+        }
+        return NotificationBigTextNormalizer.normalizeBigText(charSequence.toString());
     }
 
     private static CharSequence removeTextSizeSpans(CharSequence charSequence) {
@@ -1337,27 +1455,44 @@ public class Notification implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(final Parcel parcel, int flags) {
-        boolean collectPendingIntents = this.allPendingIntents == null;
-        if (collectPendingIntents) {
-            PendingIntent.setOnMarshaledListener(new PendingIntent.OnMarshaledListener() { // from class: android.app.Notification$$ExternalSyntheticLambda0
+        PendingIntent.OnMarshaledListener addedListener = null;
+        if (this.allPendingIntents == null) {
+            addedListener = new PendingIntent.OnMarshaledListener() { // from class: android.app.Notification$$ExternalSyntheticLambda0
                 @Override // android.app.PendingIntent.OnMarshaledListener
                 public final void onMarshaled(PendingIntent pendingIntent, Parcel parcel2, int i) {
                     Notification.this.lambda$writeToParcel$0(parcel, pendingIntent, parcel2, i);
                 }
-            });
+            };
+            PendingIntent.addOnMarshaledListener(addedListener);
         }
         try {
-            writeToParcelImpl(parcel, flags);
+            if (Flags.secureAllowlistToken()) {
+                boolean mustClearCookie = false;
+                if (!parcel.hasClassCookie(Notification.class)) {
+                    parcel.setClassCookie(Notification.class, this.mAllowlistToken);
+                    mustClearCookie = true;
+                }
+                try {
+                    writeToParcelImpl(parcel, flags);
+                } finally {
+                    if (mustClearCookie) {
+                        parcel.removeClassCookie(Notification.class, this.mAllowlistToken);
+                    }
+                }
+            } else {
+                writeToParcelImpl(parcel, flags);
+            }
             synchronized (this) {
                 parcel.writeArraySet(this.allPendingIntents);
             }
         } finally {
-            if (collectPendingIntents) {
-                PendingIntent.setOnMarshaledListener(null);
+            if (addedListener != null) {
+                PendingIntent.removeOnMarshaledListener(addedListener);
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$writeToParcel$0(Parcel parcel, PendingIntent intent, Parcel out, int outFlags) {
         if (parcel == out) {
             synchronized (this) {
@@ -1370,14 +1505,17 @@ public class Notification implements Parcelable {
     }
 
     private void writeToParcelImpl(Parcel parcel, int flags) {
-        Bitmap bitmap;
-        int i;
         parcel.writeInt(1);
-        parcel.writeStrongBinder(this.mAllowlistToken);
+        if (Flags.secureAllowlistToken()) {
+            IBinder rootNotificationToken = (IBinder) parcel.getClassCookie(Notification.class);
+            parcel.writeStrongBinder(rootNotificationToken);
+        } else {
+            parcel.writeStrongBinder(this.mAllowlistToken);
+        }
         parcel.writeLong(this.when);
         parcel.writeLong(this.creationTime);
-        if (this.mSmallIcon == null && (i = this.icon) != 0) {
-            this.mSmallIcon = Icon.createWithResource("", i);
+        if (this.mSmallIcon == null && this.icon != 0) {
+            this.mSmallIcon = Icon.createWithResource("", this.icon);
         }
         if (this.mSmallIcon != null) {
             parcel.writeInt(1);
@@ -1416,8 +1554,8 @@ public class Notification implements Parcelable {
         } else {
             parcel.writeInt(0);
         }
-        if (this.mLargeIcon == null && (bitmap = this.largeIcon) != null) {
-            this.mLargeIcon = Icon.createWithBitmap(bitmap);
+        if (this.mLargeIcon == null && this.largeIcon != null) {
+            this.mLargeIcon = Icon.createWithBitmap(this.largeIcon);
         }
         if (this.mLargeIcon != null) {
             parcel.writeInt(1);
@@ -1524,23 +1662,6 @@ public class Notification implements Parcelable {
         this.parcelDataSize = parcel.dataSize();
     }
 
-    /* renamed from: android.app.Notification$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Notification> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Notification createFromParcel(Parcel parcel) {
-            return new Notification(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Notification[] newArray(int size) {
-            return new Notification[size];
-        }
-    }
-
     public static boolean areActionsVisiblyDifferent(Notification first, Notification second) {
         Action[] firstAs = first.actions;
         Action[] secondAs = second.actions;
@@ -1580,6 +1701,7 @@ public class Notification implements Parcelable {
         return areIconsMaybeDifferent(first.getSmallIcon(), second.getSmallIcon()) || areIconsMaybeDifferent(first.getLargeIcon(), second.getLargeIcon());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean areIconsMaybeDifferent(Icon a, Icon b) {
         if (a == b) {
             return false;
@@ -1660,12 +1782,15 @@ public class Notification implements Parcelable {
         builder.build();
     }
 
-    public void clearAllowlistToken() {
-        this.mAllowlistToken = null;
-        Notification notification = this.publicVersion;
-        if (notification != null) {
-            notification.clearAllowlistToken();
+    public void overrideAllowlistToken(IBinder token) {
+        this.mAllowlistToken = token;
+        if (this.publicVersion != null) {
+            this.publicVersion.overrideAllowlistToken(token);
         }
+    }
+
+    public IBinder getAllowlistToken() {
+        return this.mAllowlistToken;
     }
 
     public static void addFieldsFromContext(Context context, Notification notification) {
@@ -1685,17 +1810,14 @@ public class Notification implements Parcelable {
         proto.write(1138166333445L, this.category);
         proto.write(1138166333446L, this.mGroupKey);
         proto.write(1138166333447L, this.mSortKey);
-        Action[] actionArr = this.actions;
-        if (actionArr != null) {
-            proto.write(1120986464264L, actionArr.length);
+        if (this.actions != null) {
+            proto.write(1120986464264L, this.actions.length);
         }
-        int i = this.visibility;
-        if (i >= -1 && i <= 1) {
-            proto.write(1159641169929L, i);
+        if (this.visibility >= -1 && this.visibility <= 1) {
+            proto.write(1159641169929L, this.visibility);
         }
-        Notification notification = this.publicVersion;
-        if (notification != null) {
-            notification.dumpDebug(proto, 1146756268042L);
+        if (this.publicVersion != null) {
+            this.publicVersion.dumpDebug(proto, 1146756268042L);
         }
         proto.end(token);
     }
@@ -1742,52 +1864,45 @@ public class Notification implements Parcelable {
         sb.append(" shortcut=");
         sb.append(getShortcutId());
         sb.append(" contentView=");
-        RemoteViews remoteViews = this.contentView;
-        if (remoteViews != null) {
-            sb.append(remoteViews.getPackage());
+        if (this.contentView != null) {
+            sb.append(this.contentView.getPackage());
             sb.append("/0x");
             sb.append(Integer.toHexString(this.contentView.getLayoutId()));
         } else {
-            sb.append(SemCapabilities.FEATURE_TAG_NULL);
+            sb.append("null");
         }
         sb.append(" vibrate=");
         if ((this.defaults & 2) != 0) {
             sb.append("default");
-        } else {
-            long[] jArr = this.vibrate;
-            if (jArr != null) {
-                int N = jArr.length - 1;
-                sb.append(NavigationBarInflaterView.SIZE_MOD_START);
-                for (int i = 0; i < N; i++) {
-                    sb.append(this.vibrate[i]);
-                    sb.append(',');
-                }
-                if (N != -1) {
-                    sb.append(this.vibrate[N]);
-                }
-                sb.append(NavigationBarInflaterView.SIZE_MOD_END);
-            } else {
-                sb.append(SemCapabilities.FEATURE_TAG_NULL);
+        } else if (this.vibrate != null) {
+            int N = this.vibrate.length - 1;
+            sb.append(NavigationBarInflaterView.SIZE_MOD_START);
+            for (int i = 0; i < N; i++) {
+                sb.append(this.vibrate[i]);
+                sb.append(',');
             }
+            if (N != -1) {
+                sb.append(this.vibrate[N]);
+            }
+            sb.append(NavigationBarInflaterView.SIZE_MOD_END);
+        } else {
+            sb.append("null");
         }
         sb.append(" sound=");
         if ((this.defaults & 1) != 0) {
             sb.append("default");
+        } else if (this.sound != null) {
+            sb.append(this.sound.toString());
         } else {
-            Uri uri = this.sound;
-            if (uri != null) {
-                sb.append(uri.toString());
-            } else {
-                sb.append(SemCapabilities.FEATURE_TAG_NULL);
-            }
+            sb.append("null");
         }
         if (this.tickerText != null) {
             sb.append(" tick");
         }
-        sb.append(" defaults=0x");
-        sb.append(Integer.toHexString(this.defaults));
-        sb.append(" flags=0x");
-        sb.append(Integer.toHexString(this.flags));
+        sb.append(" defaults=");
+        sb.append(defaultsToString(this.defaults));
+        sb.append(" flags=");
+        sb.append(flagsToString(this.flags));
         sb.append(String.format(" color=0x%08x", Integer.valueOf(this.color)));
         if (this.category != null) {
             sb.append(" category=");
@@ -1859,6 +1974,112 @@ public class Notification implements Parcelable {
         }
     }
 
+    public static String flagsToString(int flags) {
+        List<String> flagStrings = new ArrayList<>();
+        if ((flags & 1) != 0) {
+            flagStrings.add("SHOW_LIGHTS");
+            flags &= -2;
+        }
+        if ((flags & 2) != 0) {
+            flagStrings.add("ONGOING_EVENT");
+            flags &= -3;
+        }
+        if ((flags & 4) != 0) {
+            flagStrings.add("INSISTENT");
+            flags &= -5;
+        }
+        if ((flags & 8) != 0) {
+            flagStrings.add("ONLY_ALERT_ONCE");
+            flags &= -9;
+        }
+        if ((flags & 16) != 0) {
+            flagStrings.add("AUTO_CANCEL");
+            flags &= -17;
+        }
+        if ((flags & 32) != 0) {
+            flagStrings.add("NO_CLEAR");
+            flags &= -33;
+        }
+        if ((flags & 64) != 0) {
+            flagStrings.add("FOREGROUND_SERVICE");
+            flags &= -65;
+        }
+        if ((flags & 128) != 0) {
+            flagStrings.add("HIGH_PRIORITY");
+            flags &= PackageManager.INSTALL_FAILED_PRE_APPROVAL_NOT_AVAILABLE;
+        }
+        if ((flags & 256) != 0) {
+            flagStrings.add("LOCAL_ONLY");
+            flags &= -257;
+        }
+        if ((flags & 512) != 0) {
+            flagStrings.add("GROUP_SUMMARY");
+            flags &= -513;
+        }
+        if ((flags & 1024) != 0) {
+            flagStrings.add("AUTOGROUP_SUMMARY");
+            flags &= -1025;
+        }
+        if ((flags & 2048) != 0) {
+            flagStrings.add("CAN_COLORIZE");
+            flags &= -2049;
+        }
+        if ((flags & 4096) != 0) {
+            flagStrings.add("BUBBLE");
+            flags &= -4097;
+        }
+        if ((flags & 8192) != 0) {
+            flagStrings.add("NO_DISMISS");
+            flags &= -8193;
+        }
+        if ((flags & 16384) != 0) {
+            flagStrings.add("FSI_REQUESTED_BUT_DENIED");
+            flags &= -16385;
+        }
+        if ((32768 & flags) != 0) {
+            flagStrings.add("USER_INITIATED_JOB");
+            flags &= -32769;
+        }
+        if (Flags.lifetimeExtensionRefactor() && (65536 & flags) != 0) {
+            flagStrings.add("LIFETIME_EXTENDED_BY_DIRECT_REPLY");
+            flags &= -65537;
+        }
+        if (flagStrings.isEmpty()) {
+            return "0";
+        }
+        if (flags != 0) {
+            flagStrings.add(String.format("UNKNOWN(0x%08x)", Integer.valueOf(flags)));
+        }
+        return String.join(NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER, flagStrings);
+    }
+
+    public static String defaultsToString(int defaults) {
+        List<String> defaultStrings = new ArrayList<>();
+        if ((defaults & (-1)) == -1) {
+            defaultStrings.add(SemInputDeviceManager.MOTION_CONTROL_TYPE_ALL);
+            defaults &= 0;
+        }
+        if ((defaults & 1) != 0) {
+            defaultStrings.add("SOUND");
+            defaults &= -2;
+        }
+        if ((defaults & 2) != 0) {
+            defaultStrings.add("VIBRATE");
+            defaults &= -3;
+        }
+        if ((defaults & 4) != 0) {
+            defaultStrings.add("LIGHTS");
+            defaults &= -5;
+        }
+        if (defaultStrings.isEmpty()) {
+            return "0";
+        }
+        if (defaults != 0) {
+            defaultStrings.add(String.format("UNKNOWN(0x%08x)", Integer.valueOf(defaults)));
+        }
+        return String.join(NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER, defaultStrings);
+    }
+
     public boolean hasCompletedProgress() {
         return this.extras.containsKey(EXTRA_PROGRESS) && this.extras.containsKey(EXTRA_PROGRESS_MAX) && this.extras.getInt(EXTRA_PROGRESS_MAX) != 0 && this.extras.getInt(EXTRA_PROGRESS) == this.extras.getInt(EXTRA_PROGRESS_MAX);
     }
@@ -1879,6 +2100,10 @@ public class Notification implements Parcelable {
 
     public long getTimeoutAfter() {
         return this.mTimeout;
+    }
+
+    public void setTimeoutAfter(long timeout) {
+        this.mTimeout = timeout;
     }
 
     public int getBadgeIconType() {
@@ -1921,8 +2146,38 @@ public class Notification implements Parcelable {
         this.mSmallIcon = icon;
     }
 
+    public Icon getAppIcon() {
+        if (this.mAppIcon != null) {
+            return this.mAppIcon;
+        }
+        if (this.extras.containsKey(EXTRA_BUILDER_APPLICATION_INFO)) {
+            ApplicationInfo info = (ApplicationInfo) this.extras.getParcelable(EXTRA_BUILDER_APPLICATION_INFO, ApplicationInfo.class);
+            if (info != null) {
+                int appIconRes = info.icon;
+                if (appIconRes == 0) {
+                    Log.w(TAG, "Failed to get the app icon: no icon in application info");
+                    return null;
+                }
+                this.mAppIcon = Icon.createWithResource(info.packageName, appIconRes);
+                return this.mAppIcon;
+            }
+            Log.e(TAG, "Failed to get the app icon: there's an EXTRA_BUILDER_APPLICATION_INFO in extras but it's null");
+        } else {
+            Log.w(TAG, "Failed to get the app icon: no application info in extras");
+        }
+        return null;
+    }
+
+    public boolean shouldUseAppIcon() {
+        return (!Flags.notificationsUseAppIconInRow() || belongsToHeadlessSystemApp(null) || getAppIcon() == null) ? false : true;
+    }
+
     public Icon getLargeIcon() {
         return this.mLargeIcon;
+    }
+
+    public boolean hasAppProvidedWhen() {
+        return (this.when == 0 || this.when == this.creationTime) ? false : true;
     }
 
     public boolean isGroupSummary() {
@@ -1941,11 +2196,10 @@ public class Notification implements Parcelable {
     }
 
     public Pair<RemoteInput, Action> findRemoteInputActionPair(boolean requiresFreeform) {
-        Action[] actionArr = this.actions;
-        if (actionArr == null) {
+        if (this.actions == null) {
             return null;
         }
-        for (Action action : actionArr) {
+        for (Action action : this.actions) {
             if (action.getRemoteInputs() != null) {
                 RemoteInput resultRemoteInput = null;
                 for (RemoteInput remoteInput : action.getRemoteInputs()) {
@@ -1974,7 +2228,6 @@ public class Notification implements Parcelable {
         return contextualActions;
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         public static final String EXTRA_REBUILD_BIG_CONTENT_VIEW_ACTION_COUNT = "android.rebuild.bigViewActionCount";
         public static final String EXTRA_REBUILD_CONTENT_VIEW_ACTION_COUNT = "android.rebuild.contentViewActionCount";
@@ -2016,7 +2269,7 @@ public class Notification implements Parcelable {
             this.mParams = new StandardTemplateParams();
             this.mColors = new Colors();
             this.mContext = context;
-            Resources res = context.getResources();
+            Resources res = this.mContext.getResources();
             this.mTintActionButtons = res.getBoolean(R.bool.config_tintNotificationActionButtons);
             if (res.getBoolean(R.bool.config_enableNightMode)) {
                 Configuration currentConfig = res.getConfiguration();
@@ -2032,7 +2285,7 @@ public class Notification implements Parcelable {
                 return;
             }
             this.mN = toAdopt;
-            if (toAdopt.actions != null) {
+            if (this.mN.actions != null) {
                 Collections.addAll(this.mActions, this.mN.actions);
             }
             if (this.mN.extras.containsKey(Notification.EXTRA_PEOPLE_LIST) && (people = this.mN.extras.getParcelableArrayList(Notification.EXTRA_PEOPLE_LIST, Person.class)) != null && !people.isEmpty()) {
@@ -2158,6 +2411,26 @@ public class Notification implements Parcelable {
             this.mN.setSmallIcon(icon);
             if (icon != null && icon.getType() == 2) {
                 this.mN.icon = icon.getResId();
+            }
+            return this;
+        }
+
+        public Builder setSilent(boolean silent) {
+            if (!silent) {
+                return this;
+            }
+            if (this.mN.isGroupSummary()) {
+                setGroupAlertBehavior(2);
+            } else {
+                setGroupAlertBehavior(1);
+            }
+            setVibrate(null);
+            setSound(null);
+            this.mN.defaults &= -2;
+            this.mN.defaults &= -3;
+            setDefaults(this.mN.defaults);
+            if (TextUtils.isEmpty(this.mN.mGroupKey)) {
+                setGroup("silent");
             }
             return this;
         }
@@ -2458,11 +2731,11 @@ public class Notification implements Parcelable {
         public Builder setStyle(Style style) {
             if (this.mStyle != style) {
                 this.mStyle = style;
-                if (style == null) {
-                    this.mN.extras.remove(Notification.EXTRA_TEMPLATE);
-                } else {
-                    style.setBuilder(this);
+                if (this.mStyle != null) {
+                    this.mStyle.setBuilder(this);
                     this.mN.extras.putString(Notification.EXTRA_TEMPLATE, style.getClass().getName());
+                } else {
+                    this.mN.extras.remove(Notification.EXTRA_TEMPLATE);
                 }
             }
             return this;
@@ -2530,6 +2803,7 @@ public class Notification implements Parcelable {
             return ((UserManager) this.mContext.getSystemService(UserManager.class)).isManagedProfile() ? DevicePolicyResources.Drawables.WORK_PROFILE_ICON : DevicePolicyResources.UNDEFINED;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Drawable getDefaultProfileBadgeDrawable() {
             return this.mContext.getPackageManager().getUserBadgeForDensityNoBackground(new UserHandle(this.mContext.getUserId()), 0);
         }
@@ -2555,6 +2829,7 @@ public class Notification implements Parcelable {
                 if (isBackgroundColorized(p)) {
                     contentView.setDrawableTint(R.id.profile_badge, false, getPrimaryTextColor(p), PorterDuff.Mode.SRC_ATOP);
                 }
+                contentView.setContentDescription(R.id.profile_badge, ((UserManager) this.mContext.getSystemService(UserManager.class)).getProfileAccessibilityString(this.mContext.getUserId()));
             }
         }
 
@@ -2601,9 +2876,10 @@ public class Notification implements Parcelable {
             this.mN.mUsesStandardHeader = false;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public RemoteViews applyStandardTemplate(int resId, StandardTemplateParams p, TemplateBindResult result) {
             boolean rightIcon;
-            p.headerless(resId == getBaseLayoutResource() || resId == getHeadsUpBaseLayoutResource() || resId == getMessagingLayoutResource() || resId == 17367256 || resId == 17367251 || resId == 17367260);
+            p.headerless(resId == getBaseLayoutResource() || resId == getHeadsUpBaseLayoutResource() || resId == getCompactHeadsUpBaseLayoutResource() || resId == getMessagingCompactHeadsUpLayoutResource() || resId == getMessagingLayoutResource() || resId == 17367259 || resId == 17367254 || resId == 17367264);
             RemoteViews contentView = new BuilderRemoteViews(this.mContext.getApplicationInfo(), resId);
             resetStandardTemplate(contentView);
             Bundle ex = this.mN.extras;
@@ -2627,7 +2903,7 @@ public class Notification implements Parcelable {
             boolean hasSecondLine = showProgress;
             if (p.hasTitle()) {
                 contentView.setViewVisibility(p.mTitleViewId, 0);
-                contentView.setTextViewText(p.mTitleViewId, ensureColorSpanContrast(p.mTitle, p));
+                contentView.setTextViewText(p.mTitleViewId, ensureColorSpanContrastOrStripStyling(p.mTitle, p));
                 setTextViewColorPrimary(contentView, p.mTitleViewId, p);
             } else if (p.mTitleViewId != 16908310) {
                 contentView.setViewVisibility(p.mTitleViewId, 8);
@@ -2635,31 +2911,16 @@ public class Notification implements Parcelable {
             }
             if (p.mText != null && p.mText.length() != 0 && (!showProgress || p.mAllowTextWithProgress)) {
                 contentView.setViewVisibility(p.mTextViewId, 0);
-                contentView.setTextViewText(p.mTextViewId, ensureColorSpanContrast(p.mText, p));
+                contentView.setTextViewText(p.mTextViewId, ensureColorSpanContrastOrStripStyling(p.mText, p));
                 setTextViewColorSecondary(contentView, p.mTextViewId, p);
                 hasSecondLine = true;
-            } else if (p.mTextViewId != 16909857) {
+            } else if (p.mTextViewId != 16909869) {
                 contentView.setViewVisibility(p.mTextViewId, 8);
                 contentView.setTextViewText(p.mTextViewId, null);
             }
+            setHeaderlessVerticalMargins(contentView, p, hasSecondLine);
             setHeaderlessVerticalMargins(this.mContext, contentView, p, hasSecondLine);
             return contentView;
-        }
-
-        public static void setHeaderlessVerticalMargins(Context context, RemoteViews contentView, StandardTemplateParams p, boolean hasSecondLine) {
-            int marginDimen;
-            if (!p.mHeaderless) {
-                int marginDimen2 = Notification.getFontScaledMarginHeight(context, R.dimen.notification_content_margin_top);
-                contentView.setViewLayoutMargin(R.id.notification_main_column, 1, marginDimen2, 0);
-                return;
-            }
-            if (hasSecondLine) {
-                marginDimen = R.dimen.notification_headerless_margin_twoline;
-            } else {
-                marginDimen = R.dimen.notification_headerless_margin_oneline;
-            }
-            contentView.setViewLayoutMarginDimen(R.id.notification_headerless_view_column, 1, marginDimen);
-            contentView.setViewLayoutMarginDimen(R.id.notification_headerless_view_column, 3, marginDimen);
         }
 
         private static void setHeaderlessVerticalMargins(RemoteViews contentView, StandardTemplateParams p, boolean hasSecondLine) {
@@ -2676,10 +2937,36 @@ public class Notification implements Parcelable {
             contentView.setViewLayoutMarginDimen(R.id.notification_headerless_view_column, 3, marginDimen);
         }
 
-        private CharSequence processTextSpans(CharSequence text) {
-            return text;
+        /* JADX INFO: Access modifiers changed from: private */
+        public static void setHeaderlessVerticalMargins(Context context, RemoteViews contentView, StandardTemplateParams p, boolean hasSecondLine) {
+            int marginDimen;
+            if (!p.mHeaderless) {
+                return;
+            }
+            if (hasSecondLine) {
+                marginDimen = R.dimen.notification_headerless_margin_twoline;
+            } else {
+                marginDimen = R.dimen.notification_headerless_margin_oneline;
+            }
+            contentView.setViewLayoutMarginDimen(R.id.notification_headerless_view_column, 1, marginDimen);
+            contentView.setViewLayoutMarginDimen(R.id.notification_headerless_view_column, 3, marginDimen);
         }
 
+        private static int getFontScaledMarginHeight(Context context, int dimenId) {
+            int dimensionPixelSize = context.getResources().getDimensionPixelSize(dimenId);
+            float factor = context.getResources().getDisplayMetrics().scaledDensity / context.getResources().getDisplayMetrics().density;
+            float factor2 = ((factor - 1.0f) / 2.0f) + 1.0f;
+            float factor3 = dimensionPixelSize;
+            return (int) (factor3 * factor2);
+        }
+
+        private static int getFontScaledHeight(Context context, int dimenId) {
+            int dimensionPixelSize = context.getResources().getDimensionPixelSize(dimenId);
+            float factor = context.getResources().getDisplayMetrics().scaledDensity / context.getResources().getDisplayMetrics().density;
+            return (int) (dimensionPixelSize * factor);
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
         public void setTextViewColorPrimary(RemoteViews contentView, int id, StandardTemplateParams p) {
             contentView.setTextColor(id, getPrimaryTextColor(p));
         }
@@ -2692,6 +2979,7 @@ public class Notification implements Parcelable {
             return getColors(p).getSecondaryTextColor();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setTextViewColorSecondary(RemoteViews contentView, int id, StandardTemplateParams p) {
             contentView.setTextColor(id, getSecondaryTextColor(p));
         }
@@ -2704,8 +2992,14 @@ public class Notification implements Parcelable {
             contentView.setTextColor(id, getThirdTextColor(p));
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Colors getColors(StandardTemplateParams p) {
             this.mColors.resolvePalette(this.mContext, this.mN.color, isBackgroundColorized(p), this.mInNightMode);
+            return this.mColors;
+        }
+
+        private Colors getColors(boolean isHeader) {
+            this.mColors.resolvePalette(this.mContext, this.mN.color, !isHeader && this.mN.isColorized(), this.mInNightMode);
             return this.mColors;
         }
 
@@ -2772,8 +3066,7 @@ public class Notification implements Parcelable {
         private void bindLargeIcon(RemoteViews contentView, StandardTemplateParams p, TemplateBindResult result) {
             Icon rightIcon;
             if (this.mN.mLargeIcon == null && this.mN.largeIcon != null) {
-                Notification notification = this.mN;
-                notification.mLargeIcon = Icon.createWithBitmap(notification.largeIcon);
+                this.mN.mLargeIcon = Icon.createWithBitmap(this.mN.largeIcon);
             }
             Icon leftIcon = p.mHideLeftIcon ? null : this.mN.mLargeIcon;
             if (p.mHideRightIcon) {
@@ -2823,7 +3116,7 @@ public class Notification implements Parcelable {
             bindAlertedIcon(contentView, p);
             bindExpandButton(contentView, p);
             if (p.mViewType == StandardTemplateParams.VIEW_TYPE_GROUP_HEADER) {
-                int marginDimen = Notification.getFontScaledHeight(this.mContext, R.dimen.notification_group_icon_margin_top);
+                int marginDimen = getFontScaledHeight(this.mContext, R.dimen.notification_group_icon_margin_top);
                 int shadowMarginDimen = this.mContext.getResources().getDimensionPixelSize(R.dimen.notification_group_icon_shadow_margin_top);
                 contentView.setViewLayoutMargin(R.id.left_icon, 1, marginDimen, 0);
                 contentView.setViewLayoutMargin(16908294, 1, marginDimen, 0);
@@ -2839,18 +3132,11 @@ public class Notification implements Parcelable {
             contentView.setInt(R.id.expand_button, "setDefaultTextColor", isBackgroundColorized(p) ? getPrimaryTextColor(p) : getThirdTextColor(p));
             contentView.setInt(R.id.expand_button, "setDefaultPillColor", pillColor);
             if (p.mHighlightExpander) {
-                pillColor = Colors.flattenAlpha(getColors(p).getTertiaryAccentColor(), bgColor);
-                Colors.flattenAlpha(getColors(p).getOnAccentTextColor(), pillColor);
+                pillColor = Colors.flattenAlpha(getColors(p).getTertiaryFixedDimAccentColor(), bgColor);
+                Colors.flattenAlpha(getColors(p).getOnTertiaryFixedAccentTextColor(), pillColor);
             }
             contentView.setInt(R.id.expand_button, "setHighlightTextColor", getSecondaryTextColor(p));
             contentView.setInt(R.id.expand_button, "setHighlightPillColor", pillColor);
-            if (p.mViewType == StandardTemplateParams.VIEW_TYPE_GROUP_HEADER || p.mViewType == StandardTemplateParams.VIEW_TYPE_GROUP_HEADER_EXPANDED) {
-                int marginDimen = Notification.getFontScaledMarginHeight(this.mContext, R.dimen.notification_content_margin);
-                contentView.setViewLayoutMargin(R.id.expand_button, 1, marginDimen, 0);
-            } else if (p.mViewType != StandardTemplateParams.VIEW_TYPE_MINIMIZED) {
-                int marginDimen2 = Notification.getFontScaledHeight(this.mContext, R.dimen.notification_content_margin);
-                contentView.setViewLayoutMargin(R.id.expand_button, 1, marginDimen2, 0);
-            }
         }
 
         private void bindHeaderChronometerAndTime(RemoteViews contentView, StandardTemplateParams p, boolean hasTextToLeft) {
@@ -2861,29 +3147,28 @@ public class Notification implements Parcelable {
                 }
                 if (this.mN.extras.getBoolean(Notification.EXTRA_SHOW_CHRONOMETER)) {
                     contentView.setViewVisibility(R.id.chronometer, 0);
-                    contentView.setLong(R.id.chronometer, "setBase", this.mN.when + (SystemClock.elapsedRealtime() - System.currentTimeMillis()));
+                    contentView.setLong(R.id.chronometer, "setBase", this.mN.getWhen() + (SystemClock.elapsedRealtime() - System.currentTimeMillis()));
                     contentView.setBoolean(R.id.chronometer, "setStarted", true);
                     boolean countsDown = this.mN.extras.getBoolean(Notification.EXTRA_CHRONOMETER_COUNT_DOWN);
                     contentView.setChronometerCountDown(R.id.chronometer, countsDown);
-                    setTextViewColorThird(contentView, R.id.chronometer, p);
+                    setTextViewColorSecondary(contentView, R.id.chronometer, p);
                     return;
                 }
                 contentView.setViewVisibility(R.id.time, 0);
-                contentView.setLong(R.id.time, "setTime", this.mN.when);
-                setTextViewColorThird(contentView, R.id.time, p);
+                contentView.setLong(R.id.time, "setTime", this.mN.getWhen());
+                setTextViewColorSecondary(contentView, R.id.time, p);
                 return;
             }
-            contentView.setLong(R.id.time, "setTime", this.mN.when != 0 ? this.mN.when : this.mN.creationTime);
-            setTextViewColorThird(contentView, R.id.time, p);
+            contentView.setLong(R.id.time, "setTime", this.mN.getWhen() != 0 ? this.mN.getWhen() : this.mN.creationTime);
+            setTextViewColorSecondary(contentView, R.id.time, p);
         }
 
         private boolean bindHeaderText(RemoteViews contentView, StandardTemplateParams p, boolean hasTextToLeft) {
-            Style style;
             if (p.mHideSubText) {
                 return false;
             }
             CharSequence headerText = p.mSubText;
-            if (headerText == null && (style = this.mStyle) != null && style.mSummaryTextSet && this.mStyle.hasSummaryInHeader()) {
+            if (headerText == null && this.mStyle != null && this.mStyle.mSummaryTextSet && this.mStyle.hasSummaryInHeader()) {
                 headerText = this.mStyle.mSummaryText;
             }
             if (headerText == null && this.mContext.getApplicationInfo().targetSdkVersion < 24 && this.mN.extras.getCharSequence(Notification.EXTRA_INFO_TEXT) != null) {
@@ -2892,8 +3177,8 @@ public class Notification implements Parcelable {
             if (TextUtils.isEmpty(headerText)) {
                 return false;
             }
-            contentView.setTextViewText(R.id.header_text, ensureColorSpanContrast(processLegacyText(headerText), p));
-            setTextViewColorThird(contentView, R.id.header_text, p);
+            contentView.setTextViewText(R.id.header_text, ensureColorSpanContrastOrStripStyling(processLegacyText(headerText), p));
+            setTextViewColorSecondary(contentView, R.id.header_text, p);
             contentView.setViewVisibility(R.id.header_text, 0);
             if (hasTextToLeft) {
                 contentView.setViewVisibility(R.id.header_text_divider, 8);
@@ -2908,8 +3193,8 @@ public class Notification implements Parcelable {
             if (p.mHideSubText || TextUtils.isEmpty(p.mHeaderTextSecondary)) {
                 return false;
             }
-            contentView.setTextViewText(R.id.header_text_secondary, ensureColorSpanContrast(processLegacyText(p.mHeaderTextSecondary), p));
-            setTextViewColorThird(contentView, R.id.header_text_secondary, p);
+            contentView.setTextViewText(R.id.header_text_secondary, ensureColorSpanContrastOrStripStyling(processLegacyText(p.mHeaderTextSecondary), p));
+            setTextViewColorSecondary(contentView, R.id.header_text_secondary, p);
             contentView.setViewVisibility(R.id.header_text_secondary, 0);
             if (hasTextToLeft) {
                 contentView.setViewVisibility(R.id.header_text_secondary_divider, 8);
@@ -2920,28 +3205,11 @@ public class Notification implements Parcelable {
         }
 
         public String loadHeaderAppName() {
-            CharSequence name = null;
-            PackageManager pm = this.mContext.getPackageManager();
-            if (this.mN.extras.containsKey(Notification.EXTRA_SUBSTITUTE_APP_NAME)) {
-                String pkg = this.mContext.getPackageName();
-                String subName = this.mN.extras.getString(Notification.EXTRA_SUBSTITUTE_APP_NAME);
-                if (pm.checkPermission(Manifest.permission.SUBSTITUTE_NOTIFICATION_APP_NAME, pkg) != 0) {
-                    Log.w(Notification.TAG, "warning: pkg " + pkg + " attempting to substitute app name '" + subName + "' without holding perm " + Manifest.permission.SUBSTITUTE_NOTIFICATION_APP_NAME);
-                } else {
-                    name = subName;
-                }
-            }
-            if (TextUtils.isEmpty(name)) {
-                name = pm.getApplicationLabel(this.mContext.getApplicationInfo());
-            }
-            if (TextUtils.isEmpty(name)) {
-                return null;
-            }
-            return String.valueOf(name);
+            return this.mN.loadHeaderAppName(this.mContext);
         }
 
         private boolean bindHeaderAppName(RemoteViews contentView, StandardTemplateParams p, boolean force) {
-            if (p.mViewType == StandardTemplateParams.VIEW_TYPE_MINIMIZED && !force) {
+            if ((p.mViewType == StandardTemplateParams.VIEW_TYPE_MINIMIZED && !force) || p.mViewType == StandardTemplateParams.VIEW_TYPE_INSIGNIFICANT) {
                 return false;
             }
             if (p.mHeaderless && p.hasTitle()) {
@@ -2952,7 +3220,7 @@ public class Notification implements Parcelable {
             }
             contentView.setViewVisibility(R.id.app_name_text, 0);
             contentView.setTextViewText(R.id.app_name_text, loadHeaderAppName());
-            contentView.setTextColor(R.id.app_name_text, getThirdTextColor(p));
+            contentView.setTextColor(R.id.app_name_text, getSecondaryTextColor(p));
             return true;
         }
 
@@ -2960,18 +3228,35 @@ public class Notification implements Parcelable {
             return p.allowColorization && this.mN.isColorized();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isCallActionColorCustomizable() {
             return this.mN.isColorized() && this.mContext.getResources().getBoolean(R.bool.config_callNotificationActionColorsRequireColorized);
         }
 
         private void bindSmallIcon(RemoteViews contentView, StandardTemplateParams p) {
-            if (this.mN.mSmallIcon == null && this.mN.icon != 0) {
-                Notification notification = this.mN;
-                notification.mSmallIcon = Icon.createWithResource(this.mContext, notification.icon);
+            if (Flags.notificationsUseAppIcon()) {
+                this.mN.mSmallIcon = Icon.createWithResource(this.mContext, this.mN.getHeaderAppIconRes(this.mContext));
+            } else if (this.mN.mSmallIcon == null && this.mN.icon != 0) {
+                this.mN.mSmallIcon = Icon.createWithResource(this.mContext, this.mN.icon);
             }
-            contentView.setImageViewIcon(16908294, this.mN.mSmallIcon);
+            boolean usingAppIcon = false;
+            if (Flags.notificationsUseAppIconInRow() && !this.mN.belongsToHeadlessSystemApp(this.mContext)) {
+                int appIconRes = this.mN.getHeaderAppIconRes(this.mContext);
+                if (appIconRes != 0) {
+                    this.mN.mAppIcon = Icon.createWithResource(this.mContext, appIconRes);
+                    contentView.setImageViewIcon(16908294, this.mN.mAppIcon);
+                    usingAppIcon = true;
+                } else {
+                    Log.w(Notification.TAG, "bindSmallIcon: could not get the app icon");
+                }
+            }
+            if (!usingAppIcon) {
+                contentView.setImageViewIcon(16908294, this.mN.mSmallIcon);
+            }
             contentView.setInt(16908294, "setImageLevel", this.mN.iconLevel);
-            processSmallIconColor(this.mN.mSmallIcon, contentView, p);
+            if (!Flags.notificationsUseAppIcon() && !usingAppIcon) {
+                processSmallIconColor(this.mN.mSmallIcon, contentView, p);
+            }
         }
 
         private boolean showsTimeOrChronometer() {
@@ -2989,7 +3274,7 @@ public class Notification implements Parcelable {
             big.setTextViewText(R.id.notification_material_reply_text_2, null);
             big.setViewVisibility(R.id.notification_material_reply_text_3, 8);
             big.setTextViewText(R.id.notification_material_reply_text_3, null);
-            big.setViewLayoutMarginDimen(R.id.notification_action_list_margin_target, 3, R.dimen.notification_content_margin);
+            big.setViewLayoutMarginDimen(R.id.notification_action_list_margin_target, 3, R.dimen.conversation_expand_button_top_margin_expanded);
         }
 
         private void bindSnoozeAction(RemoteViews big, StandardTemplateParams p) {
@@ -3012,7 +3297,8 @@ public class Notification implements Parcelable {
             }
         }
 
-        private List<Action> getNonContextualActions() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public List<Action> getNonContextualActions() {
             if (this.mActions == null) {
                 return Collections.emptyList();
             }
@@ -3027,6 +3313,7 @@ public class Notification implements Parcelable {
             return standardActions;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public RemoteViews applyStandardTemplateWithActions(int layoutId, StandardTemplateParams p, TemplateBindResult result) {
             int i;
             RemoteViews big = applyStandardTemplate(layoutId, p, result);
@@ -3042,6 +3329,10 @@ public class Notification implements Parcelable {
             if (p.mCallStyleActions) {
                 big.setViewPadding(R.id.actions, 0, 0, 0, 0);
                 big.setInt(R.id.actions, "setCollapsibleIndentDimen", R.dimen.call_notification_collapsible_indent);
+                if (Flags.evenlyDividedCallStyleActionLayout()) {
+                    Log.d(Notification.TAG, "setting evenly divided mode on action list");
+                    big.setBoolean(R.id.actions, "setEvenlyDividedMode", true);
+                }
             }
             big.setBoolean(R.id.actions, "setEmphasizedMode", emphasizedMode);
             if (numActions > 0 && !p.mHideActions) {
@@ -3068,7 +3359,7 @@ public class Notification implements Parcelable {
                 boolean showSpinner = this.mN.extras.getBoolean(Notification.EXTRA_SHOW_REMOTE_INPUT_SPINNER);
                 big.setViewVisibility(R.id.notification_material_reply_container, 0);
                 big.setViewVisibility(R.id.notification_material_reply_text_1_container, 0);
-                big.setTextViewText(R.id.notification_material_reply_text_1, ensureColorSpanContrast(replyText[0].getText(), p));
+                big.setTextViewText(R.id.notification_material_reply_text_1, ensureColorSpanContrastOrStripStyling(replyText[0].getText(), p));
                 setTextViewColorSecondary(big, R.id.notification_material_reply_text_1, p);
                 if (showSpinner) {
                     i = 0;
@@ -3077,11 +3368,11 @@ public class Notification implements Parcelable {
                 big.setProgressIndeterminateTintList(R.id.notification_material_reply_progress, ColorStateList.valueOf(getPrimaryAccentColor(p)));
                 if (replyText.length > 1 && !TextUtils.isEmpty(replyText[1].getText()) && p.maxRemoteInputHistory > 1) {
                     big.setViewVisibility(R.id.notification_material_reply_text_2, 0);
-                    big.setTextViewText(R.id.notification_material_reply_text_2, ensureColorSpanContrast(replyText[1].getText(), p));
+                    big.setTextViewText(R.id.notification_material_reply_text_2, ensureColorSpanContrastOrStripStyling(replyText[1].getText(), p));
                     setTextViewColorSecondary(big, R.id.notification_material_reply_text_2, p);
                     if (replyText.length > 2 && !TextUtils.isEmpty(replyText[2].getText()) && p.maxRemoteInputHistory > 2) {
                         big.setViewVisibility(R.id.notification_material_reply_text_3, 0);
-                        big.setTextViewText(R.id.notification_material_reply_text_3, ensureColorSpanContrast(replyText[2].getText(), p));
+                        big.setTextViewText(R.id.notification_material_reply_text_3, ensureColorSpanContrastOrStripStyling(replyText[2].getText(), p));
                         setTextViewColorSecondary(big, R.id.notification_material_reply_text_3, p);
                     }
                 }
@@ -3089,7 +3380,8 @@ public class Notification implements Parcelable {
             return big;
         }
 
-        private boolean hasValidRemoteInput(Action action) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public boolean hasValidRemoteInput(Action action) {
             RemoteInput[] remoteInputs;
             if (TextUtils.isEmpty(action.title) || action.actionIntent == null || (remoteInputs = action.getRemoteInputs()) == null) {
                 return false;
@@ -3106,6 +3398,7 @@ public class Notification implements Parcelable {
             return false;
         }
 
+        @Deprecated
         public RemoteViews createContentView() {
             return createContentView(false);
         }
@@ -3144,8 +3437,7 @@ public class Notification implements Parcelable {
             if (useExistingRemoteView(this.mN.contentView)) {
                 return fullyCustomViewRequiresDecoration(false) ? minimallyDecoratedContentView(this.mN.contentView) : this.mN.contentView;
             }
-            Style style = this.mStyle;
-            if (style != null && (styleView = style.makeContentView(increasedHeight)) != null) {
+            if (this.mStyle != null && (styleView = this.mStyle.makeContentView(increasedHeight)) != null) {
                 return fullyCustomViewRequiresDecoration(true) ? minimallyDecoratedContentView(styleView) : styleView;
             }
             StandardTemplateParams p = this.mParams.reset().viewType(StandardTemplateParams.VIEW_TYPE_NORMAL).fillTextsFrom(this);
@@ -3163,14 +3455,14 @@ public class Notification implements Parcelable {
             return true;
         }
 
+        @Deprecated
         public RemoteViews createBigContentView() {
             RemoteViews result = null;
             if (useExistingRemoteView(this.mN.bigContentView)) {
                 return fullyCustomViewRequiresDecoration(false) ? minimallyDecoratedBigContentView(this.mN.bigContentView) : this.mN.bigContentView;
             }
-            Style style = this.mStyle;
-            if (style != null) {
-                result = style.makeBigContentView();
+            if (this.mStyle != null) {
+                result = this.mStyle.makeBigContentView();
                 if (fullyCustomViewRequiresDecoration(true)) {
                     result = minimallyDecoratedBigContentView(result);
                 }
@@ -3184,11 +3476,15 @@ public class Notification implements Parcelable {
         }
 
         private boolean bigContentViewRequired() {
+            if (Flags.notificationExpansionOptional()) {
+                boolean exempt = this.mN.bigContentView == null && this.mStyle == null && this.mActions.size() == 0;
+                return !exempt;
+            }
             if (this.mContext.getApplicationInfo().targetSdkVersion >= 31) {
                 return true;
             }
-            boolean exempt = this.mN.contentView != null && this.mN.bigContentView == null && this.mStyle == null && this.mActions.size() == 0;
-            return !exempt;
+            boolean exempt2 = this.mN.contentView != null && this.mN.bigContentView == null && this.mStyle == null && this.mActions.size() == 0;
+            return !exempt2;
         }
 
         public RemoteViews makeNotificationGroupHeader() {
@@ -3208,6 +3504,8 @@ public class Notification implements Parcelable {
                 header = new BuilderRemoteViews(this.mContext.getApplicationInfo(), R.layout.notification_template_group_header_expanded);
             } else if (p.mViewType == StandardTemplateParams.VIEW_TYPE_MINIMIZED || p.mViewType == StandardTemplateParams.VIEW_TYPE_PUBLIC) {
                 header = new BuilderRemoteViews(this.mContext.getApplicationInfo(), R.layout.notification_template_header_minimized);
+            } else if (p.mViewType == StandardTemplateParams.VIEW_TYPE_INSIGNIFICANT) {
+                header = new BuilderRemoteViews(this.mContext.getApplicationInfo(), R.layout.notification_template_header_insignificant);
             } else {
                 header = new BuilderRemoteViews(this.mContext.getApplicationInfo(), R.layout.notification_template_header);
             }
@@ -3237,9 +3535,8 @@ public class Notification implements Parcelable {
                 }
                 return this.mN.headsUpContentView;
             }
-            Style style = this.mStyle;
-            if (style != null) {
-                RemoteViews styleView = style.makeHeadsUpContentView(increasedHeight);
+            if (this.mStyle != null) {
+                RemoteViews styleView = this.mStyle.makeHeadsUpContentView(increasedHeight);
                 if (styleView != null) {
                     return fullyCustomViewRequiresDecoration(true) ? minimallyDecoratedHeadsUpContentView(styleView) : styleView;
                 }
@@ -3250,6 +3547,20 @@ public class Notification implements Parcelable {
             return applyStandardTemplateWithActions(getHeadsUpBaseLayoutResource(), p, null);
         }
 
+        public RemoteViews createCompactHeadsUpContentView() {
+            RemoteViews styleView;
+            if (this.mN.fullScreenIntent != null) {
+                return createHeadsUpContentView(false);
+            }
+            if (this.mStyle != null && (styleView = this.mStyle.makeCompactHeadsUpContentView()) != null) {
+                return styleView;
+            }
+            StandardTemplateParams p = this.mParams.reset().viewType(StandardTemplateParams.VIEW_TYPE_HEADS_UP).fillTextsFrom(this);
+            p.headerTextSecondary(p.mText).text(null).hideTime(true).summaryText("");
+            return applyStandardTemplate(getCompactHeadsUpBaseLayoutResource(), p, null);
+        }
+
+        @Deprecated
         public RemoteViews createHeadsUpContentView() {
             return createHeadsUpContentView(false);
         }
@@ -3307,6 +3618,20 @@ public class Notification implements Parcelable {
             return header;
         }
 
+        public RemoteViews makeInsignificantView(boolean useRegularSubtext) {
+            StandardTemplateParams p = this.mParams.reset().viewType(StandardTemplateParams.VIEW_TYPE_INSIGNIFICANT).highlightExpander(false).fillTextsFrom(this);
+            if (!useRegularSubtext || TextUtils.isEmpty(p.mSubText)) {
+                p.summaryText(createSummaryText());
+            }
+            RemoteViews header = makeNotificationHeader(p);
+            header.setBoolean(R.id.notification_header, "setAcceptAllTouches", true);
+            header.setBoolean(R.id.notification_header, "styleTextAsTitle", true);
+            header.setTextViewText(p.mTextViewId, ensureColorSpanContrastOrStripStyling(p.mText, p));
+            setTextViewColorSecondary(header, p.mTextViewId, p);
+            header.setViewVisibility(R.id.text, 0);
+            return header;
+        }
+
         private CharSequence createSummaryText() {
             CharSequence titleText = this.mN.extras.getCharSequence(Notification.EXTRA_TITLE);
             if (USE_ONLY_TITLE_IN_LOW_PRIORITY_SUMMARY) {
@@ -3330,8 +3655,9 @@ public class Notification implements Parcelable {
             return summary;
         }
 
-        private RemoteViews generateActionButton(Action action, boolean emphasizedMode, StandardTemplateParams p) {
-            CharSequence title;
+        /* JADX INFO: Access modifiers changed from: private */
+        public RemoteViews generateActionButton(Action action, boolean emphasizedMode, StandardTemplateParams p) {
+            Integer fullLengthColor;
             boolean tombstone = action.actionIntent == null;
             RemoteViews button = new BuilderRemoteViews(this.mContext.getApplicationInfo(), getActionButtonLayoutResource(emphasizedMode, tombstone));
             if (!tombstone) {
@@ -3342,30 +3668,39 @@ public class Notification implements Parcelable {
                 button.setRemoteInputs(R.id.action0, action.mRemoteInputs);
             }
             if (!emphasizedMode) {
-                button.setTextViewText(R.id.action0, ensureColorSpanContrast(action.title, p));
+                button.setTextViewText(R.id.action0, ensureColorSpanContrastOrStripStyling(action.title, p));
                 button.setTextColor(R.id.action0, getStandardActionColor(p));
             } else {
-                CharSequence title2 = action.title;
+                CharSequence title = action.title;
                 int buttonFillColor = getColors(p).getSecondaryAccentColor();
                 if (tombstone) {
-                    Context context = this.mContext;
-                    buttonFillColor = setAlphaComponentByFloatDimen(context, ContrastColorUtil.resolveSecondaryColor(context, getColors(p).getBackgroundColor(), this.mInNightMode), R.dimen.notification_action_disabled_container_alpha);
+                    buttonFillColor = setAlphaComponentByFloatDimen(this.mContext, ContrastColorUtil.resolveSecondaryColor(this.mContext, getColors(p).getBackgroundColor(), this.mInNightMode), R.dimen.notification_action_disabled_container_alpha);
                 }
-                if (isLegacy()) {
-                    title = ContrastColorUtil.clearColorSpans(title2);
-                } else {
-                    Integer fullLengthColor = getFullLengthSpanColor(title2);
-                    if (fullLengthColor != null) {
+                if (Flags.cleanUpSpansAndNewLines()) {
+                    if (!isLegacy() && (fullLengthColor = getFullLengthSpanColor(title)) != null) {
                         int notifBackgroundColor = getColors(p).getBackgroundColor();
                         buttonFillColor = ensureButtonFillContrast(fullLengthColor.intValue(), notifBackgroundColor);
                     }
-                    title = ContrastColorUtil.ensureColorSpanContrast(title2, buttonFillColor);
+                } else if (isLegacy()) {
+                    title = ContrastColorUtil.clearColorSpans(title);
+                } else {
+                    Integer fullLengthColor2 = getFullLengthSpanColor(title);
+                    if (fullLengthColor2 != null) {
+                        int notifBackgroundColor2 = getColors(p).getBackgroundColor();
+                        buttonFillColor = ensureButtonFillContrast(fullLengthColor2.intValue(), notifBackgroundColor2);
+                    }
+                    title = ContrastColorUtil.ensureColorSpanContrast(title, buttonFillColor);
                 }
-                button.setTextViewText(R.id.action0, ensureColorSpanContrast(title, p));
+                CharSequence label = ensureColorSpanContrastOrStripStyling(title, p);
+                if (p.mCallStyleActions && Flags.evenlyDividedCallStyleActionLayout()) {
+                    Log.d(Notification.TAG, "new action layout enabled, gluing instead of setting text");
+                    button.setCharSequence(R.id.action0, "glueLabel", label);
+                } else {
+                    button.setTextViewText(R.id.action0, label);
+                }
                 int textColor = ContrastColorUtil.resolvePrimaryColor(this.mContext, buttonFillColor, this.mInNightMode);
                 if (tombstone) {
-                    Context context2 = this.mContext;
-                    textColor = setAlphaComponentByFloatDimen(context2, ContrastColorUtil.resolveSecondaryColor(context2, getColors(p).getBackgroundColor(), this.mInNightMode), R.dimen.notification_action_disabled_content_alpha);
+                    textColor = setAlphaComponentByFloatDimen(this.mContext, ContrastColorUtil.resolveSecondaryColor(this.mContext, getColors(p).getBackgroundColor(), this.mInNightMode), R.dimen.notification_action_disabled_content_alpha);
                 }
                 button.setTextColor(R.id.action0, textColor);
                 int rippleColor = (16777215 & textColor) | Enums.AUDIO_FORMAT_DTS_UHD_P2;
@@ -3421,6 +3756,17 @@ public class Notification implements Parcelable {
             return result;
         }
 
+        public CharSequence ensureColorSpanContrastOrStripStyling(CharSequence cs, StandardTemplateParams p) {
+            return ensureColorSpanContrastOrStripStyling(cs, getBackgroundColor(p));
+        }
+
+        public CharSequence ensureColorSpanContrastOrStripStyling(CharSequence cs, int buttonFillColor) {
+            if (Flags.cleanUpSpansAndNewLines()) {
+                return Notification.stripStyling(cs);
+            }
+            return ContrastColorUtil.ensureColorSpanContrast(cs, buttonFillColor);
+        }
+
         public CharSequence ensureColorSpanContrast(CharSequence charSequence, StandardTemplateParams p) {
             return ContrastColorUtil.ensureColorSpanContrast(charSequence, getBackgroundColor(p));
         }
@@ -3444,6 +3790,7 @@ public class Notification implements Parcelable {
             return this.mIsLegacy;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public CharSequence processLegacyText(CharSequence charSequence) {
             boolean isAlreadyLightText = isLegacy() || textColorsNeedInversion();
             if (isAlreadyLightText) {
@@ -3455,7 +3802,9 @@ public class Notification implements Parcelable {
         private void processSmallIconColor(Icon smallIcon, RemoteViews contentView, StandardTemplateParams p) {
             boolean colorable = getColorUtil().isGrayscaleIcon(this.mContext, smallIcon);
             int color = getSmallIconColor(p);
-            contentView.setInt(16908294, "setBackgroundColor", getBackgroundColor(p));
+            if (p.mViewType != StandardTemplateParams.VIEW_TYPE_INSIGNIFICANT) {
+                contentView.setInt(16908294, "setBackgroundColor", getBackgroundColor(p));
+            }
             contentView.setInt(16908294, "setOriginalIconColor", colorable ? color : 1);
             contentView.setBoolean(16908294, "updateColorizedIconTint", isBackgroundColorized(p));
         }
@@ -3473,12 +3822,22 @@ public class Notification implements Parcelable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getStandardActionColor(StandardTemplateParams p) {
             return (this.mTintActionButtons || isBackgroundColorized(p)) ? getPrimaryAccentColor(p) : getSecondaryTextColor(p);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getSmallIconColor(StandardTemplateParams p) {
             return getColors(p).getContrastColor();
+        }
+
+        public int getSmallIconColor(boolean isHeader) {
+            return getColors(isHeader).getContrastColor();
+        }
+
+        public int getBackgroundColor(boolean isHeader) {
+            return getColors(isHeader).getBackgroundColor();
         }
 
         private int getPrimaryAccentColor(StandardTemplateParams p) {
@@ -3501,18 +3860,23 @@ public class Notification implements Parcelable {
 
         public static Builder recoverBuilder(Context context, Notification n) {
             Context builderContext;
-            ApplicationInfo applicationInfo = (ApplicationInfo) n.extras.getParcelable(Notification.EXTRA_BUILDER_APPLICATION_INFO, ApplicationInfo.class);
-            if (applicationInfo != null) {
-                try {
-                    builderContext = context.createApplicationContext(applicationInfo, 4);
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(Notification.TAG, "ApplicationInfo " + applicationInfo + " not found");
+            Trace.beginSection("Notification.Builder#recoverBuilder");
+            try {
+                ApplicationInfo applicationInfo = (ApplicationInfo) n.extras.getParcelable(Notification.EXTRA_BUILDER_APPLICATION_INFO, ApplicationInfo.class);
+                if (applicationInfo != null) {
+                    try {
+                        builderContext = context.createApplicationContext(applicationInfo, 4);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        Log.e(Notification.TAG, "ApplicationInfo " + applicationInfo + " not found");
+                        builderContext = context;
+                    }
+                } else {
                     builderContext = context;
                 }
-            } else {
-                builderContext = context;
+                return new Builder(builderContext, n);
+            } finally {
+                Trace.endSection();
             }
-            return new Builder(builderContext, n);
         }
 
         public Builder setAllowSystemGeneratedContextualActions(boolean allowed) {
@@ -3529,22 +3893,17 @@ public class Notification implements Parcelable {
             if (this.mN.mShortcutId != null && this.mN.mBubbleMetadata != null && this.mN.mBubbleMetadata.getShortcutId() != null && !this.mN.mShortcutId.equals(this.mN.mBubbleMetadata.getShortcutId())) {
                 throw new IllegalArgumentException("Notification and BubbleMetadata shortcut id's don't match, notification: " + this.mN.mShortcutId + " vs bubble: " + this.mN.mBubbleMetadata.getShortcutId());
             }
-            Bundle bundle = this.mUserExtras;
-            if (bundle != null) {
-                Bundle saveExtras = (Bundle) bundle.clone();
-                if (SystemProperties.getBoolean("persist.sysui.notification.builder_extras_override", false)) {
-                    this.mN.extras.putAll(saveExtras);
-                } else {
-                    saveExtras.putAll(this.mN.extras);
-                    this.mN.extras = saveExtras;
-                }
+            if (this.mUserExtras != null) {
+                Bundle saveExtras = (Bundle) this.mUserExtras.clone();
+                this.mN.extras.putAll(saveExtras);
             }
-            this.mN.creationTime = System.currentTimeMillis();
+            if (!Flags.sortSectionByTime()) {
+                this.mN.creationTime = System.currentTimeMillis();
+            }
             Notification.addFieldsFromContext(this.mContext, this.mN);
             buildUnstyled();
-            Style style = this.mStyle;
-            if (style != null) {
-                style.reduceImageSizes(this.mContext);
+            if (this.mStyle != null) {
+                this.mStyle.reduceImageSizes(this.mContext);
                 this.mStyle.purgeResources();
                 this.mStyle.validate(this.mContext);
                 this.mStyle.buildStyled(this.mN);
@@ -3576,8 +3935,7 @@ public class Notification implements Parcelable {
         }
 
         private boolean styleDisplaysCustomViewInline() {
-            Style style = this.mStyle;
-            return style != null && style.displayCustomViewInline();
+            return this.mStyle != null && this.mStyle.displayCustomViewInline();
         }
 
         public Notification buildInto(Notification n) {
@@ -3596,7 +3954,7 @@ public class Notification implements Parcelable {
             if (!stripContentView && !stripBigContentView && !stripHeadsUpContentView) {
                 return n;
             }
-            Notification clone = n.m376clone();
+            Notification clone = n.m412clone();
             if (stripContentView) {
                 clone.contentView = null;
                 clone.extras.remove(EXTRA_REBUILD_CONTENT_VIEW_ACTION_COUNT);
@@ -3612,38 +3970,56 @@ public class Notification implements Parcelable {
             return clone;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getBaseLayoutResource() {
             return R.layout.notification_template_material_base;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getHeadsUpBaseLayoutResource() {
             return R.layout.notification_template_material_heads_up_base;
         }
 
+        private int getCompactHeadsUpBaseLayoutResource() {
+            return R.layout.notification_template_material_compact_heads_up_base;
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public int getMessagingCompactHeadsUpLayoutResource() {
+            return R.layout.notification_template_material_messaging_compact_heads_up;
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
         public int getBigBaseLayoutResource() {
             return R.layout.notification_template_material_big_base;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getBigPictureLayoutResource() {
             return R.layout.notification_template_material_big_picture;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getBigTextLayoutResource() {
             return R.layout.notification_template_material_big_text;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getInboxLayoutResource() {
             return R.layout.notification_template_material_inbox;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getMessagingLayoutResource() {
             return R.layout.notification_template_material_messaging;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getBigMessagingLayoutResource() {
             return R.layout.notification_template_material_big_messaging;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getConversationLayoutResource() {
             return R.layout.notification_template_material_conversation;
         }
@@ -3664,20 +4040,19 @@ public class Notification implements Parcelable {
             return R.layout.notification_material_action_tombstone;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getBackgroundColor(StandardTemplateParams p) {
             return getColors(p).getBackgroundColor();
         }
 
         private boolean textColorsNeedInversion() {
             int targetSdkVersion;
-            Style style = this.mStyle;
-            return style != null && MediaStyle.class.equals(style.getClass()) && (targetSdkVersion = this.mContext.getApplicationInfo().targetSdkVersion) > 23 && targetSdkVersion < 26;
+            return this.mStyle != null && MediaStyle.class.equals(this.mStyle.getClass()) && (targetSdkVersion = this.mContext.getApplicationInfo().targetSdkVersion) > 23 && targetSdkVersion < 26;
         }
 
         public CharSequence getHeadsUpStatusBarText(boolean publicMode) {
-            Style style = this.mStyle;
-            if (style != null && !publicMode) {
-                CharSequence text = style.getHeadsUpStatusBarText();
+            if (this.mStyle != null && !publicMode) {
+                CharSequence text = this.mStyle.getHeadsUpStatusBarText();
                 if (!TextUtils.isEmpty(text)) {
                     return text;
                 }
@@ -3690,14 +4065,13 @@ public class Notification implements Parcelable {
         }
     }
 
-    public void reduceImageSizes(Context context) {
+    void reduceImageSizes(Context context) {
         int i;
         if (this.extras.getBoolean(EXTRA_REDUCED_IMAGES)) {
             return;
         }
         boolean isLowRam = ActivityManager.isLowRamDeviceStatic();
-        Icon icon = this.mSmallIcon;
-        if (icon != null && (icon.getType() == 1 || this.mSmallIcon.getType() == 5)) {
+        if (this.mSmallIcon != null && (this.mSmallIcon.getType() == 1 || this.mSmallIcon.getType() == 5)) {
             Resources resources = context.getResources();
             int maxSize = resources.getDimensionPixelSize(isLowRam ? R.dimen.notification_small_icon_size_low_ram : R.dimen.notification_small_icon_size);
             this.mSmallIcon.scaleDownIfNecessary(maxSize, maxSize);
@@ -3711,13 +4085,11 @@ public class Notification implements Parcelable {
                 i = R.dimen.notification_right_icon_size;
             }
             int maxSize2 = resources2.getDimensionPixelSize(i);
-            Icon icon2 = this.mLargeIcon;
-            if (icon2 != null) {
-                icon2.scaleDownIfNecessary(maxSize2, maxSize2);
+            if (this.mLargeIcon != null) {
+                this.mLargeIcon.scaleDownIfNecessary(maxSize2, maxSize2);
             }
-            Bitmap bitmap = this.largeIcon;
-            if (bitmap != null) {
-                this.largeIcon = Icon.scaleDownIfNecessary(bitmap, maxSize2, maxSize2);
+            if (this.largeIcon != null) {
+                this.largeIcon = Icon.scaleDownIfNecessary(this.largeIcon, maxSize2, maxSize2);
             }
         }
         reduceImageSizesForRemoteView(this.contentView, context, isLowRam);
@@ -3760,15 +4132,13 @@ public class Notification implements Parcelable {
     }
 
     public boolean shouldShowForegroundImmediately() {
-        Action[] actionArr;
-        int i = this.mFgsDeferBehavior;
-        if (i == 1) {
+        if (this.mFgsDeferBehavior == 1) {
             return true;
         }
-        if (i == 2) {
+        if (this.mFgsDeferBehavior == 2) {
             return false;
         }
-        return isMediaNotification() || "call".equals(this.category) || CATEGORY_NAVIGATION.equals(this.category) || ((actionArr = this.actions) != null && actionArr.length > 0);
+        return isMediaNotification() || "call".equals(this.category) || CATEGORY_NAVIGATION.equals(this.category) || (this.actions != null && this.actions.length > 0);
     }
 
     public boolean isForegroundDisplayForceDeferred() {
@@ -3818,20 +4188,32 @@ public class Notification implements Parcelable {
         return (this.mLargeIcon == null && this.largeIcon == null) ? false : true;
     }
 
+    public long getWhen() {
+        if (Flags.sortSectionByTime() && this.when == 0) {
+            return this.creationTime;
+        }
+        return this.when;
+    }
+
     public boolean showsTime() {
+        if (Flags.sortSectionByTime()) {
+            return this.extras.getBoolean(EXTRA_SHOW_WHEN);
+        }
         return this.when != 0 && this.extras.getBoolean(EXTRA_SHOW_WHEN);
     }
 
     public boolean showsChronometer() {
+        if (Flags.sortSectionByTime()) {
+            return this.extras.getBoolean(EXTRA_SHOW_CHRONOMETER);
+        }
         return this.when != 0 && this.extras.getBoolean(EXTRA_SHOW_CHRONOMETER);
     }
 
     public boolean hasImage() {
-        Bundle bundle;
-        if (!isStyle(MessagingStyle.class) || (bundle = this.extras) == null) {
+        if (!isStyle(MessagingStyle.class) || this.extras == null) {
             return hasLargeIcon() || this.extras.containsKey(EXTRA_BACKGROUND_IMAGE_URI);
         }
-        Parcelable[] messages = (Parcelable[]) bundle.getParcelableArray(EXTRA_MESSAGES, Parcelable.class);
+        Parcelable[] messages = (Parcelable[]) this.extras.getParcelableArray(EXTRA_MESSAGES, Parcelable.class);
         if (!ArrayUtils.isEmpty(messages)) {
             for (MessagingStyle.Message m : MessagingStyle.Message.getMessagesFromBundleArray(messages)) {
                 if (m.getDataUri() != null && m.getDataMimeType() != null && m.getDataMimeType().startsWith(MessagingMessage.IMAGE_MIME_TYPE_PREFIX)) {
@@ -3853,10 +4235,11 @@ public class Notification implements Parcelable {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void buildCustomContentIntoTemplate(Context context, RemoteViews template, RemoteViews customContent, StandardTemplateParams p, TemplateBindResult result) {
         int childIndex = -1;
         if (customContent != null) {
-            RemoteViews customContent2 = customContent.mo407clone();
+            RemoteViews customContent2 = customContent.mo447clone();
             if (p.mHeaderless) {
                 template.removeFromParent(R.id.notification_top_line);
                 Builder.setHeaderlessVerticalMargins(context, template, p, true);
@@ -3872,7 +4255,6 @@ public class Notification implements Parcelable {
         template.setIntTag(R.id.notification_main_column, R.id.notification_custom_view_index_tag, childIndex);
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Style {
         static final int MAX_REMOTE_INPUT_HISTORY_LINES = 3;
         private CharSequence mBigContentTitle;
@@ -3881,6 +4263,10 @@ public class Notification implements Parcelable {
         protected boolean mSummaryTextSet = false;
 
         public abstract boolean areNotificationsVisiblyDifferent(Style style);
+
+        @Deprecated
+        public Style() {
+        }
 
         protected void internalSetBigContentTitle(CharSequence title) {
             this.mBigContentTitle = title;
@@ -3894,8 +4280,8 @@ public class Notification implements Parcelable {
         public void setBuilder(Builder builder) {
             if (this.mBuilder != builder) {
                 this.mBuilder = builder;
-                if (builder != null) {
-                    builder.setStyle(this);
+                if (this.mBuilder != null) {
+                    this.mBuilder.setStyle(this);
                 }
             }
         }
@@ -3913,9 +4299,8 @@ public class Notification implements Parcelable {
 
         protected RemoteViews getStandardView(int layoutId, StandardTemplateParams p, TemplateBindResult result) {
             checkBuilder();
-            CharSequence charSequence = this.mBigContentTitle;
-            if (charSequence != null) {
-                p.mTitle = charSequence;
+            if (this.mBigContentTitle != null) {
+                p.mTitle = this.mBigContentTitle;
             }
             return this.mBuilder.applyStandardTemplateWithActions(layoutId, p, result);
         }
@@ -3932,13 +4317,16 @@ public class Notification implements Parcelable {
             return null;
         }
 
+        public RemoteViews makeCompactHeadsUpContentView() {
+            return null;
+        }
+
         public void addExtras(Bundle extras) {
             if (this.mSummaryTextSet) {
                 extras.putCharSequence(Notification.EXTRA_SUMMARY_TEXT, this.mSummaryText);
             }
-            CharSequence charSequence = this.mBigContentTitle;
-            if (charSequence != null) {
-                extras.putCharSequence(Notification.EXTRA_TITLE_BIG, charSequence);
+            if (this.mBigContentTitle != null) {
+                extras.putCharSequence(Notification.EXTRA_TITLE_BIG, this.mBigContentTitle);
             }
             extras.putString(Notification.EXTRA_TEMPLATE, getClass().getName());
         }
@@ -3985,7 +4373,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class BigPictureStyle extends Style {
         public static final int MIN_ASHMEM_BITMAP_SIZE = 131072;
         private Icon mBigLargeIcon;
@@ -4018,9 +4405,8 @@ public class Notification implements Parcelable {
         }
 
         public Icon getBigPicture() {
-            Icon icon = this.mPictureIcon;
-            if (icon != null) {
-                return icon;
+            if (this.mPictureIcon != null) {
+                return this.mPictureIcon;
             }
             return null;
         }
@@ -4053,13 +4439,11 @@ public class Notification implements Parcelable {
         @Override // android.app.Notification.Style
         public void purgeResources() {
             super.purgeResources();
-            Icon icon = this.mPictureIcon;
-            if (icon != null) {
-                icon.convertToAshmem();
+            if (this.mPictureIcon != null) {
+                this.mPictureIcon.convertToAshmem();
             }
-            Icon icon2 = this.mBigLargeIcon;
-            if (icon2 != null) {
-                icon2.convertToAshmem();
+            if (this.mBigLargeIcon != null) {
+                this.mBigLargeIcon.convertToAshmem();
             }
         }
 
@@ -4130,7 +4514,7 @@ public class Notification implements Parcelable {
             StandardTemplateParams p = this.mBuilder.mParams.reset().viewType(StandardTemplateParams.VIEW_TYPE_BIG).fillTextsFrom(this.mBuilder);
             RemoteViews contentView = getStandardView(this.mBuilder.getBigPictureLayoutResource(), p, null);
             if (this.mSummaryTextSet) {
-                contentView.setTextViewText(R.id.text, this.mBuilder.ensureColorSpanContrast(this.mBuilder.processLegacyText(this.mSummaryText), p));
+                contentView.setTextViewText(R.id.text, this.mBuilder.ensureColorSpanContrastOrStripStyling(this.mBuilder.processLegacyText(this.mSummaryText), p));
                 this.mBuilder.setTextViewColorSecondary(contentView, R.id.text, p);
                 contentView.setViewVisibility(R.id.text, 0);
             }
@@ -4139,9 +4523,8 @@ public class Notification implements Parcelable {
                 this.mBuilder.mN.largeIcon = largeIconLegacy;
             }
             contentView.setImageViewIcon(R.id.big_picture, this.mPictureIcon);
-            CharSequence charSequence = this.mPictureContentDescription;
-            if (charSequence != null) {
-                contentView.setContentDescription(R.id.big_picture, charSequence);
+            if (this.mPictureContentDescription != null) {
+                contentView.setContentDescription(R.id.big_picture, this.mPictureContentDescription);
             }
             return contentView;
         }
@@ -4152,13 +4535,14 @@ public class Notification implements Parcelable {
             if (this.mBigLargeIconSet) {
                 extras.putParcelable(Notification.EXTRA_LARGE_ICON_BIG, this.mBigLargeIcon);
             }
-            CharSequence charSequence = this.mPictureContentDescription;
-            if (charSequence != null) {
-                extras.putCharSequence(Notification.EXTRA_PICTURE_CONTENT_DESCRIPTION, charSequence);
+            if (this.mPictureContentDescription != null) {
+                extras.putCharSequence(Notification.EXTRA_PICTURE_CONTENT_DESCRIPTION, this.mPictureContentDescription);
             }
             extras.putBoolean(Notification.EXTRA_SHOW_BIG_PICTURE_WHEN_COLLAPSED, this.mShowBigPictureWhenCollapsed);
-            Icon icon = this.mPictureIcon;
-            if (icon != null && icon.getType() == 1) {
+            if (this.mPictureIcon == null) {
+                extras.remove(Notification.EXTRA_PICTURE_ICON);
+                extras.remove(Notification.EXTRA_PICTURE);
+            } else if (this.mPictureIcon.getType() == 1) {
                 extras.putParcelable(Notification.EXTRA_PICTURE, this.mPictureIcon.getBitmap());
                 extras.putParcelable(Notification.EXTRA_PICTURE_ICON, null);
             } else {
@@ -4207,7 +4591,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class BigTextStyle extends Style {
         private CharSequence mBigText;
 
@@ -4274,6 +4657,9 @@ public class Notification implements Parcelable {
         public RemoteViews makeBigContentView() {
             StandardTemplateParams p = this.mBuilder.mParams.reset().viewType(StandardTemplateParams.VIEW_TYPE_BIG).allowTextWithProgress(true).textViewId(R.id.big_text).fillTextsFrom(this.mBuilder);
             CharSequence bigTextText = this.mBuilder.processLegacyText(this.mBigText);
+            if (Flags.cleanUpSpansAndNewLines()) {
+                bigTextText = Notification.normalizeBigText(Notification.stripStyling(bigTextText));
+            }
             if (!TextUtils.isEmpty(bigTextText)) {
                 p.text(bigTextText);
             }
@@ -4290,7 +4676,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class MessagingStyle extends Style {
         public static final int CONVERSATION_TYPE_IMPORTANT = 2;
         public static final int CONVERSATION_TYPE_LEGACY = 0;
@@ -4306,7 +4691,6 @@ public class Notification implements Parcelable {
         Person mUser;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface ConversationType {
         }
 
@@ -4331,8 +4715,7 @@ public class Notification implements Parcelable {
         public void validate(Context context) {
             super.validate(context);
             if (context.getApplicationInfo().targetSdkVersion >= 28) {
-                Person person = this.mUser;
-                if (person == null || person.getName() == null) {
+                if (this.mUser == null || this.mUser.getName() == null) {
                     throw new RuntimeException("User must be valid and have a name.");
                 }
             }
@@ -4447,14 +4830,12 @@ public class Notification implements Parcelable {
         }
 
         public void addExtras(Bundle extras, boolean ensureContrast, int backgroundColor) {
-            Person person = this.mUser;
-            if (person != null) {
-                extras.putCharSequence(Notification.EXTRA_SELF_DISPLAY_NAME, person.getName());
+            if (this.mUser != null) {
+                extras.putCharSequence(Notification.EXTRA_SELF_DISPLAY_NAME, this.mUser.getName());
                 extras.putParcelable(Notification.EXTRA_MESSAGING_PERSON, this.mUser);
             }
-            CharSequence charSequence = this.mConversationTitle;
-            if (charSequence != null) {
-                extras.putCharSequence(Notification.EXTRA_CONVERSATION_TITLE, charSequence);
+            if (this.mConversationTitle != null) {
+                extras.putCharSequence(Notification.EXTRA_CONVERSATION_TITLE, this.mConversationTitle);
             }
             if (!this.mMessages.isEmpty()) {
                 extras.putParcelableArray(Notification.EXTRA_MESSAGES, getBundleArrayForMessages(this.mMessages, ensureContrast, backgroundColor));
@@ -4462,9 +4843,8 @@ public class Notification implements Parcelable {
             if (!this.mHistoricMessages.isEmpty()) {
                 extras.putParcelableArray(Notification.EXTRA_HISTORIC_MESSAGES, getBundleArrayForMessages(this.mHistoricMessages, ensureContrast, backgroundColor));
             }
-            Icon icon = this.mShortcutIcon;
-            if (icon != null) {
-                extras.putParcelable(Notification.EXTRA_CONVERSATION_ICON, icon);
+            if (this.mShortcutIcon != null) {
+                extras.putParcelable(Notification.EXTRA_CONVERSATION_ICON, this.mShortcutIcon);
             }
             extras.putInt(Notification.EXTRA_CONVERSATION_UNREAD_MESSAGE_COUNT, this.mUnreadMessageCount);
             fixTitleAndTextExtras(extras);
@@ -4477,7 +4857,7 @@ public class Notification implements Parcelable {
             for (int i = 0; i < N; i++) {
                 Message m = messages.get(i);
                 if (ensureContrast) {
-                    m.ensureColorContrast(backgroundColor);
+                    m.ensureColorContrastOrStripStyling(backgroundColor);
                 }
                 bundles[i] = m.toBundle();
             }
@@ -4502,12 +4882,56 @@ public class Notification implements Parcelable {
             } else {
                 title = sender;
             }
+            if (Flags.cleanUpSpansAndNewLines()) {
+                title = Notification.stripStyling(title);
+            }
             if (title != null) {
                 extras.putCharSequence(Notification.EXTRA_TITLE, title);
             }
             if (text != null) {
                 extras.putCharSequence(Notification.EXTRA_TEXT, text);
             }
+        }
+
+        private void fixTitleAndTextForCompactMessaging(StandardTemplateParams p) {
+            CharSequence sender;
+            CharSequence title;
+            Message m = findLatestIncomingMessage();
+            CharSequence text = m == null ? null : m.mText;
+            if (m == null) {
+                sender = null;
+            } else {
+                sender = ((m.mSender == null || TextUtils.isEmpty(m.mSender.getName())) ? this.mUser : m.mSender).getName();
+            }
+            CharSequence conversationTitle = this.mIsGroupConversation ? this.mConversationTitle : null;
+            BidiFormatter bidi = BidiFormatter.getInstance();
+            if (sender != null) {
+                sender = this.mBuilder.mContext.getString(R.string.notification_messaging_title_template, bidi.unicodeWrap(sender), "");
+            } else if (conversationTitle != null) {
+                conversationTitle = this.mBuilder.mContext.getString(R.string.notification_messaging_title_template, bidi.unicodeWrap(conversationTitle), "");
+            }
+            if (Flags.cleanUpSpansAndNewLines()) {
+                conversationTitle = Notification.stripStyling(conversationTitle);
+                sender = Notification.stripStyling(sender);
+            }
+            boolean isConversationTitleAvailable = showConversationTitle() && conversationTitle != null;
+            if (isConversationTitleAvailable) {
+                title = conversationTitle;
+            } else {
+                title = sender;
+            }
+            p.title(title);
+            if (isConversationTitleAvailable) {
+                p.headerTextSecondary(sender);
+                p.summaryText(text);
+            } else {
+                p.headerTextSecondary(text);
+                p.summaryText(null);
+            }
+        }
+
+        private boolean showConversationTitle() {
+            return SystemProperties.getBoolean("persist.compact_heads_up_notification.show_conversation_title_for_group", false);
         }
 
         @Override // android.app.Notification.Style
@@ -4616,9 +5040,8 @@ public class Notification implements Parcelable {
             int bigMessagingLayoutResource;
             boolean isCollapsed = viewType != StandardTemplateParams.VIEW_TYPE_BIG;
             boolean hideRightIcons = viewType != StandardTemplateParams.VIEW_TYPE_NORMAL;
-            int i = this.mConversationType;
-            boolean isConversationLayout = i != 0;
-            boolean isImportantConversation = i == 2;
+            boolean isConversationLayout = this.mConversationType != 0;
+            boolean isImportantConversation = this.mConversationType == 2;
             boolean isHeaderless = !isConversationLayout && isCollapsed;
             boolean isBigMessageLayout = (isConversationLayout || isCollapsed) ? false : true;
             if (!TextUtils.isEmpty(((Style) this).mBigContentTitle)) {
@@ -4731,6 +5154,66 @@ public class Notification implements Parcelable {
         }
 
         @Override // android.app.Notification.Style
+        public RemoteViews makeCompactHeadsUpContentView() {
+            Message message;
+            Person sender;
+            boolean isConversationLayout = this.mConversationType != 0;
+            Icon conversationIcon = null;
+            Action remoteInputAction = null;
+            if (isConversationLayout) {
+                conversationIcon = this.mShortcutIcon;
+                if (conversationIcon == null && !this.mIsGroupConversation && (message = findLatestIncomingMessage()) != null && (sender = message.mSender) != null) {
+                    conversationIcon = sender.getIcon();
+                }
+                if (Flags.compactHeadsUpNotificationReply()) {
+                    List<Action> nonContextualActions = this.mBuilder.getNonContextualActions();
+                    int i = 0;
+                    while (true) {
+                        if (i >= nonContextualActions.size()) {
+                            break;
+                        }
+                        Action action = nonContextualActions.get(i);
+                        if (!this.mBuilder.hasValidRemoteInput(action)) {
+                            i++;
+                        } else {
+                            remoteInputAction = action;
+                            break;
+                        }
+                    }
+                }
+            }
+            StandardTemplateParams p = this.mBuilder.mParams.reset().viewType(StandardTemplateParams.VIEW_TYPE_HEADS_UP).highlightExpander(isConversationLayout).fillTextsFrom(this.mBuilder).hideTime(true);
+            fixTitleAndTextForCompactMessaging(p);
+            TemplateBindResult bindResult = new TemplateBindResult();
+            RemoteViews contentView = this.mBuilder.applyStandardTemplate(this.mBuilder.getMessagingCompactHeadsUpLayoutResource(), p, bindResult);
+            contentView.setViewVisibility(R.id.header_text_secondary_divider, 8);
+            contentView.setViewVisibility(R.id.header_text_divider, 8);
+            if (conversationIcon != null) {
+                contentView.setViewVisibility(16908294, 8);
+                contentView.setViewVisibility(R.id.conversation_face_pile, 8);
+                contentView.setViewVisibility(R.id.conversation_icon, 0);
+                contentView.setBoolean(R.id.conversation_icon, "setApplyCircularCrop", true);
+                contentView.setImageViewIcon(R.id.conversation_icon, conversationIcon);
+            } else if (this.mIsGroupConversation) {
+                contentView.setViewVisibility(16908294, 8);
+                contentView.setViewVisibility(R.id.conversation_icon, 8);
+                contentView.setInt(R.id.status_bar_latest_event_content, "setNotificationBackgroundColor", this.mBuilder.getBackgroundColor(p));
+                contentView.setInt(R.id.status_bar_latest_event_content, "setLayoutColor", this.mBuilder.getSmallIconColor(p));
+                contentView.setBundle(R.id.status_bar_latest_event_content, "setGroupFacePile", this.mBuilder.mN.extras);
+            }
+            if (remoteInputAction != null) {
+                contentView.setViewVisibility(R.id.reply_action_container, 0);
+                RemoteViews inlineReplyButton = this.mBuilder.generateActionButton(remoteInputAction, false, p);
+                inlineReplyButton.setInt(R.id.action0, "setBackgroundResource", 0);
+                inlineReplyButton.setTextViewText(R.id.action0, this.mBuilder.mContext.getString(R.string.notification_compact_heads_up_reply));
+                contentView.addView(R.id.reply_action_container, inlineReplyButton);
+            } else {
+                contentView.setViewVisibility(R.id.reply_action_container, 8);
+            }
+            return contentView;
+        }
+
+        @Override // android.app.Notification.Style
         public void reduceImageSizes(Context context) {
             super.reduceImageSizes(context);
             Resources resources = context.getResources();
@@ -4740,8 +5223,7 @@ public class Notification implements Parcelable {
                 this.mShortcutIcon.scaleDownIfNecessary(maxSize, maxSize);
             }
             int maxAvatarSize = resources.getDimensionPixelSize(isLowRam ? R.dimen.notification_person_icon_max_size_low_ram : R.dimen.notification_person_icon_max_size);
-            Person person = this.mUser;
-            if (person != null && person.getIcon() != null) {
+            if (this.mUser != null && this.mUser.getIcon() != null) {
                 this.mUser.getIcon().scaleDownIfNecessary(maxAvatarSize, maxAvatarSize);
             }
             reduceMessagesIconSizes(this.mMessages, maxAvatarSize);
@@ -4761,7 +5243,6 @@ public class Notification implements Parcelable {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class Message {
             static final String KEY_DATA_MIME_TYPE = "type";
             static final String KEY_DATA_URI = "uri";
@@ -4801,6 +5282,34 @@ public class Notification implements Parcelable {
                 return this;
             }
 
+            public void ensureColorContrastOrStripStyling(int backgroundColor) {
+                if (Flags.cleanUpSpansAndNewLines()) {
+                    this.mText = stripNonStyleSpans(this.mText);
+                } else {
+                    ensureColorContrast(backgroundColor);
+                }
+            }
+
+            private CharSequence stripNonStyleSpans(CharSequence text) {
+                Object resultSpan;
+                if (text instanceof Spanned) {
+                    Spanned ss = (Spanned) text;
+                    Object[] spans = ss.getSpans(0, ss.length(), Object.class);
+                    SpannableStringBuilder builder = new SpannableStringBuilder(ss.toString());
+                    for (Object span : spans) {
+                        if ((span instanceof StyleSpan) || (span instanceof StrikethroughSpan) || (span instanceof UnderlineSpan)) {
+                            resultSpan = span;
+                        } else if (span instanceof TextAppearanceSpan) {
+                            TextAppearanceSpan originalSpan = (TextAppearanceSpan) span;
+                            resultSpan = new TextAppearanceSpan(null, originalSpan.getTextStyle(), -1, null, null);
+                        }
+                        builder.setSpan(resultSpan, ss.getSpanStart(span), ss.getSpanEnd(span), ss.getSpanFlags(span));
+                    }
+                    return builder;
+                }
+                return text;
+            }
+
             public void ensureColorContrast(int backgroundColor) {
                 this.mText = ContrastColorUtil.ensureColorSpanContrast(this.mText, backgroundColor);
             }
@@ -4818,11 +5327,10 @@ public class Notification implements Parcelable {
             }
 
             public CharSequence getSender() {
-                Person person = this.mSender;
-                if (person == null) {
+                if (this.mSender == null) {
                     return null;
                 }
-                return person.getName();
+                return this.mSender.getName();
             }
 
             public Person getSenderPerson() {
@@ -4843,33 +5351,34 @@ public class Notification implements Parcelable {
 
             public Bundle toBundle() {
                 Bundle bundle = new Bundle();
-                CharSequence charSequence = this.mText;
-                if (charSequence != null) {
-                    bundle.putCharSequence("text", charSequence);
+                if (this.mText != null) {
+                    bundle.putCharSequence("text", this.mText);
                 }
                 bundle.putLong("time", this.mTimestamp);
-                Person person = this.mSender;
-                if (person != null) {
-                    bundle.putCharSequence("sender", Notification.safeCharSequence(person.getName()));
+                if (this.mSender != null) {
+                    bundle.putCharSequence("sender", Notification.safeCharSequence(this.mSender.getName()));
                     bundle.putParcelable(KEY_SENDER_PERSON, this.mSender);
                 }
-                String str = this.mDataMimeType;
-                if (str != null) {
-                    bundle.putString("type", str);
+                if (this.mDataMimeType != null) {
+                    bundle.putString("type", this.mDataMimeType);
                 }
-                Uri uri = this.mDataUri;
-                if (uri != null) {
-                    bundle.putParcelable("uri", uri);
+                if (this.mDataUri != null) {
+                    bundle.putParcelable("uri", this.mDataUri);
                 }
-                Bundle bundle2 = this.mExtras;
-                if (bundle2 != null) {
-                    bundle.putBundle("extras", bundle2);
+                if (this.mExtras != null) {
+                    bundle.putBundle("extras", this.mExtras);
                 }
-                boolean z = this.mRemoteInputHistory;
-                if (z) {
-                    bundle.putBoolean(KEY_REMOTE_INPUT_HISTORY, z);
+                if (this.mRemoteInputHistory) {
+                    bundle.putBoolean(KEY_REMOTE_INPUT_HISTORY, this.mRemoteInputHistory);
                 }
                 return bundle;
+            }
+
+            public void visitUris(Consumer<Uri> visitor) {
+                visitor.accept(getDataUri());
+                if (this.mSender != null) {
+                    this.mSender.visitUris(visitor);
+                }
             }
 
             public static List<Message> getMessagesFromBundleArray(Parcelable[] bundles) {
@@ -4917,7 +5426,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class InboxStyle extends Style {
         private static final int NUMBER_OF_HISTORY_ALLOWED_UNTIL_REDUCTION = 1;
         private ArrayList<CharSequence> mTexts = new ArrayList<>(5);
@@ -5002,7 +5510,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class MediaStyle extends Style {
         static final int MAX_MEDIA_BUTTONS = 5;
         static final int MAX_MEDIA_BUTTONS_IN_COMPACT = 3;
@@ -5065,25 +5572,20 @@ public class Notification implements Parcelable {
         @Override // android.app.Notification.Style
         public void addExtras(Bundle extras) {
             super.addExtras(extras);
-            MediaSession.Token token = this.mToken;
-            if (token != null) {
-                extras.putParcelable(Notification.EXTRA_MEDIA_SESSION, token);
+            if (this.mToken != null) {
+                extras.putParcelable(Notification.EXTRA_MEDIA_SESSION, this.mToken);
             }
-            int[] iArr = this.mActionsToShowInCompact;
-            if (iArr != null) {
-                extras.putIntArray(Notification.EXTRA_COMPACT_ACTIONS, iArr);
+            if (this.mActionsToShowInCompact != null) {
+                extras.putIntArray(Notification.EXTRA_COMPACT_ACTIONS, this.mActionsToShowInCompact);
             }
-            CharSequence charSequence = this.mDeviceName;
-            if (charSequence != null) {
-                extras.putCharSequence(Notification.EXTRA_MEDIA_REMOTE_DEVICE, charSequence);
+            if (this.mDeviceName != null) {
+                extras.putCharSequence(Notification.EXTRA_MEDIA_REMOTE_DEVICE, this.mDeviceName);
             }
-            int i = this.mDeviceIcon;
-            if (i > 0) {
-                extras.putInt(Notification.EXTRA_MEDIA_REMOTE_ICON, i);
+            if (this.mDeviceIcon > 0) {
+                extras.putInt(Notification.EXTRA_MEDIA_REMOTE_ICON, this.mDeviceIcon);
             }
-            PendingIntent pendingIntent = this.mDeviceIntent;
-            if (pendingIntent != null) {
-                extras.putParcelable(Notification.EXTRA_MEDIA_REMOTE_INTENT, pendingIntent);
+            if (this.mDeviceIntent != null) {
+                extras.putParcelable(Notification.EXTRA_MEDIA_REMOTE_INTENT, this.mDeviceIntent);
             }
         }
 
@@ -5132,8 +5634,7 @@ public class Notification implements Parcelable {
 
         protected RemoteViews makeMediaContentView(RemoteViews customContent) {
             int numActions = this.mBuilder.mActions.size();
-            int[] iArr = this.mActionsToShowInCompact;
-            int numActionsToShow = Math.min(iArr == null ? 0 : iArr.length, 3);
+            int numActionsToShow = Math.min(this.mActionsToShowInCompact == null ? 0 : this.mActionsToShowInCompact.length, 3);
             if (numActionsToShow > numActions) {
                 throw new IllegalArgumentException(String.format("setShowActionsInCompactView: action %d out of bounds (max %d)", Integer.valueOf(numActions), Integer.valueOf(numActions - 1)));
             }
@@ -5171,12 +5672,12 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class CallStyle extends Style {
         public static final int CALL_TYPE_INCOMING = 1;
         public static final int CALL_TYPE_ONGOING = 2;
         public static final int CALL_TYPE_SCREENING = 3;
         public static final int CALL_TYPE_UNKNOWN = 0;
+        public static final boolean DEBUG_NEW_ACTION_LAYOUT = true;
         private static final String KEY_ACTION_PRIORITY = "key_action_priority";
         private Integer mAnswerButtonColor;
         private PendingIntent mAnswerIntent;
@@ -5190,7 +5691,6 @@ public class Notification implements Parcelable {
         private CharSequence mVerificationText;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface CallType {
         }
 
@@ -5262,9 +5762,8 @@ public class Notification implements Parcelable {
         @Override // android.app.Notification.Style
         public void purgeResources() {
             super.purgeResources();
-            Icon icon = this.mVerificationIcon;
-            if (icon != null) {
-                icon.convertToAshmem();
+            if (this.mVerificationIcon != null) {
+                this.mVerificationIcon.convertToAshmem();
             }
         }
 
@@ -5295,25 +5794,27 @@ public class Notification implements Parcelable {
         }
 
         @Override // android.app.Notification.Style
+        public RemoteViews makeCompactHeadsUpContentView() {
+            return makeHeadsUpContentView(false);
+        }
+
+        @Override // android.app.Notification.Style
         public RemoteViews makeBigContentView() {
             return makeCallLayout(StandardTemplateParams.VIEW_TYPE_BIG);
         }
 
         private Action makeNegativeAction() {
-            PendingIntent pendingIntent = this.mDeclineIntent;
-            if (pendingIntent == null) {
+            if (this.mDeclineIntent == null) {
                 return makeAction(R.drawable.ic_call_decline, R.string.call_notification_hang_up_action, this.mDeclineButtonColor, R.color.call_notification_decline_color, this.mHangUpIntent);
             }
-            return makeAction(R.drawable.ic_call_decline, R.string.call_notification_decline_action, this.mDeclineButtonColor, R.color.call_notification_decline_color, pendingIntent);
+            return makeAction(R.drawable.ic_call_decline, R.string.call_notification_decline_action, this.mDeclineButtonColor, R.color.call_notification_decline_color, this.mDeclineIntent);
         }
 
         private Action makeAnswerAction() {
-            PendingIntent pendingIntent = this.mAnswerIntent;
-            if (pendingIntent == null) {
+            if (this.mAnswerIntent == null) {
                 return null;
             }
-            boolean z = this.mIsVideo;
-            return makeAction(z ? R.drawable.ic_call_answer_video : R.drawable.ic_call_answer, z ? 17039970 : 17039969, this.mAnswerButtonColor, R.color.call_notification_answer_color, pendingIntent);
+            return makeAction(this.mIsVideo ? R.drawable.ic_call_answer_video : R.drawable.ic_call_answer, this.mIsVideo ? 17039983 : 17039982, this.mAnswerButtonColor, R.color.call_notification_answer_color, this.mAnswerIntent);
         }
 
         private Action makeAction(int icon, int title, Integer colorInt, int defaultColorRes, PendingIntent intent) {
@@ -5361,8 +5862,7 @@ public class Notification implements Parcelable {
             RemoteViews contentView;
             boolean isCollapsed = viewType == StandardTemplateParams.VIEW_TYPE_NORMAL;
             Bundle extras = this.mBuilder.mN.extras;
-            Person person = this.mPerson;
-            CharSequence title = person != null ? person.getName() : null;
+            CharSequence title = this.mPerson != null ? this.mPerson.getName() : null;
             CharSequence text = this.mBuilder.processLegacyText(extras.getCharSequence(Notification.EXTRA_TEXT));
             if (text == null) {
                 text = getDefaultText();
@@ -5389,9 +5889,8 @@ public class Notification implements Parcelable {
         private void bindCallerVerification(RemoteViews contentView, StandardTemplateParams p) {
             String iconContentDescription = null;
             boolean showDivider = true;
-            Icon icon = this.mVerificationIcon;
-            if (icon != null) {
-                contentView.setImageViewIcon(R.id.verification_icon, icon);
+            if (this.mVerificationIcon != null) {
+                contentView.setImageViewIcon(R.id.verification_icon, this.mVerificationIcon);
                 contentView.setDrawableTint(R.id.verification_icon, false, this.mBuilder.getSecondaryTextColor(p), PorterDuff.Mode.SRC_ATOP);
                 contentView.setViewVisibility(R.id.verification_icon, 0);
                 iconContentDescription = this.mBuilder.mContext.getString(R.string.notification_verified_content_description);
@@ -5436,40 +5935,32 @@ public class Notification implements Parcelable {
             extras.putInt(Notification.EXTRA_CALL_TYPE, this.mCallType);
             extras.putBoolean(Notification.EXTRA_CALL_IS_VIDEO, this.mIsVideo);
             extras.putParcelable(Notification.EXTRA_CALL_PERSON, this.mPerson);
-            Icon icon = this.mVerificationIcon;
-            if (icon != null) {
-                extras.putParcelable(Notification.EXTRA_VERIFICATION_ICON, icon);
+            if (this.mVerificationIcon != null) {
+                extras.putParcelable(Notification.EXTRA_VERIFICATION_ICON, this.mVerificationIcon);
             }
-            CharSequence charSequence = this.mVerificationText;
-            if (charSequence != null) {
-                extras.putCharSequence(Notification.EXTRA_VERIFICATION_TEXT, charSequence);
+            if (this.mVerificationText != null) {
+                extras.putCharSequence(Notification.EXTRA_VERIFICATION_TEXT, this.mVerificationText);
             }
-            PendingIntent pendingIntent = this.mAnswerIntent;
-            if (pendingIntent != null) {
-                extras.putParcelable(Notification.EXTRA_ANSWER_INTENT, pendingIntent);
+            if (this.mAnswerIntent != null) {
+                extras.putParcelable(Notification.EXTRA_ANSWER_INTENT, this.mAnswerIntent);
             }
-            PendingIntent pendingIntent2 = this.mDeclineIntent;
-            if (pendingIntent2 != null) {
-                extras.putParcelable(Notification.EXTRA_DECLINE_INTENT, pendingIntent2);
+            if (this.mDeclineIntent != null) {
+                extras.putParcelable(Notification.EXTRA_DECLINE_INTENT, this.mDeclineIntent);
             }
-            PendingIntent pendingIntent3 = this.mHangUpIntent;
-            if (pendingIntent3 != null) {
-                extras.putParcelable(Notification.EXTRA_HANG_UP_INTENT, pendingIntent3);
+            if (this.mHangUpIntent != null) {
+                extras.putParcelable(Notification.EXTRA_HANG_UP_INTENT, this.mHangUpIntent);
             }
-            Integer num = this.mAnswerButtonColor;
-            if (num != null) {
-                extras.putInt(Notification.EXTRA_ANSWER_COLOR, num.intValue());
+            if (this.mAnswerButtonColor != null) {
+                extras.putInt(Notification.EXTRA_ANSWER_COLOR, this.mAnswerButtonColor.intValue());
             }
-            Integer num2 = this.mDeclineButtonColor;
-            if (num2 != null) {
-                extras.putInt(Notification.EXTRA_DECLINE_COLOR, num2.intValue());
+            if (this.mDeclineButtonColor != null) {
+                extras.putInt(Notification.EXTRA_DECLINE_COLOR, this.mDeclineButtonColor.intValue());
             }
             fixTitleAndTextExtras(extras);
         }
 
         private void fixTitleAndTextExtras(Bundle extras) {
-            Person person = this.mPerson;
-            CharSequence sender = person != null ? person.getName() : null;
+            CharSequence sender = this.mPerson != null ? this.mPerson.getName() : null;
             if (sender != null) {
                 extras.putCharSequence(Notification.EXTRA_TITLE, sender);
             }
@@ -5508,7 +5999,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class DecoratedCustomViewStyle extends Style {
         @Override // android.app.Notification.Style
         public boolean displayCustomViewInline() {
@@ -5587,7 +6077,267 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
+    public static class OngoingActivityStyle extends Style {
+        public static final int NOW_BAR_EXPANDABLE_TYPE_FULL = 2;
+        public static final int NOW_BAR_EXPANDABLE_TYPE_HALF = 1;
+        public static final int NOW_BAR_EXPANDABLE_TYPE_NONE = 0;
+        private static final String TAG = OngoingActivityStyle.class.getSimpleName();
+        private Icon mBadge;
+        private int mCardBackground;
+        private Icon mCardIcon;
+        private int mChipBackground;
+        private Icon mChipIcon;
+        private boolean mChronometerCountDown;
+        private float mChronometerSpeed;
+        private boolean mChronometerStart;
+        private RemoteViews mCustomCardViewCenterUI;
+        private RemoteViews mCustomExpandedCardView;
+        private CharSequence mExpandedChipText;
+        private RemoteViews mExpandedChipView;
+        private RemoteViews mExpandedNowBarView;
+        private CharSequence mMoreInfo;
+        private CharSequence mPrimaryInfo;
+        private CharSequence mSecondaryInfo;
+        private ArrayList<Action> mActions = new ArrayList<>(3);
+        private ArrayList<Integer> mActionBgColors = new ArrayList<>(3);
+        private int mNowBarExpandableType = 0;
+        private int mPrimaryActionNum = 0;
+        private Long mChronometerBase = 0L;
+        private String mChronometerFormat = "";
+
+        @Retention(RetentionPolicy.SOURCE)
+        public @interface NowBarExpandableType {
+        }
+
+        public OngoingActivityStyle() {
+            Log.i(TAG, "Constructor");
+        }
+
+        public OngoingActivityStyle setChipIcon(Icon chipIcon) {
+            this.mChipIcon = chipIcon;
+            printLog("setChipIcon");
+            return this;
+        }
+
+        public OngoingActivityStyle setExpandedChipView(RemoteViews expandedChipView) {
+            this.mExpandedChipView = expandedChipView;
+            printLog("setExpandedChipView");
+            return this;
+        }
+
+        public OngoingActivityStyle setChipBackground(int background) {
+            this.mChipBackground = background;
+            printLog("setChipBackground");
+            return this;
+        }
+
+        public OngoingActivityStyle addAction(Action action) {
+            addAction(action, null);
+            return this;
+        }
+
+        public OngoingActivityStyle addAction(Action action, Integer bgColor) {
+            if (action != null) {
+                this.mActions.add(action);
+            }
+            if (bgColor != null) {
+                this.mActionBgColors.add(bgColor);
+            } else {
+                this.mActionBgColors.add(1);
+            }
+            printLog("addAction");
+            return this;
+        }
+
+        public OngoingActivityStyle setPrimaryActionNumber(int actionNum) {
+            this.mPrimaryActionNum = actionNum;
+            printLog("setPrimaryActionNumber");
+            return this;
+        }
+
+        public OngoingActivityStyle setCardIcon(Icon cardIcon) {
+            this.mCardIcon = cardIcon;
+            printLog("setCardIcon");
+            return this;
+        }
+
+        public OngoingActivityStyle setBadge(Icon badge) {
+            this.mBadge = badge;
+            printLog("setBadge");
+            return this;
+        }
+
+        public OngoingActivityStyle setPrimaryInfo(CharSequence text) {
+            this.mPrimaryInfo = text;
+            printLog("setPrimaryInfo");
+            return this;
+        }
+
+        public OngoingActivityStyle setSecondaryInfo(CharSequence text) {
+            this.mSecondaryInfo = text;
+            printLog("setSecondaryInfo");
+            return this;
+        }
+
+        public OngoingActivityStyle setMoreInfo(CharSequence text) {
+            this.mMoreInfo = text;
+            printLog("setMoreInfo");
+            return this;
+        }
+
+        public OngoingActivityStyle setCustomCardViewCenterUI(RemoteViews customCardViewCenterUI) {
+            this.mCustomCardViewCenterUI = customCardViewCenterUI;
+            printLog("mCustomCardViewCenterUI");
+            return this;
+        }
+
+        public OngoingActivityStyle setCustomExpandedCardView(RemoteViews expandedCardView) {
+            this.mCustomExpandedCardView = expandedCardView;
+            printLog("mCustomExpandedCardView");
+            return this;
+        }
+
+        public OngoingActivityStyle setCardBackground(int background) {
+            this.mCardBackground = background;
+            printLog("setCardBackground");
+            return this;
+        }
+
+        public OngoingActivityStyle setExpandedNowBarView(RemoteViews expandedNowBarView, int expandableType) {
+            this.mExpandedNowBarView = expandedNowBarView;
+            this.mNowBarExpandableType = expandableType;
+            printLog("setExpandedNowBarView");
+            return this;
+        }
+
+        public OngoingActivityStyle setExpandedChipText(CharSequence infoChipText) {
+            this.mExpandedChipText = infoChipText;
+            printLog("setExpandedChipText");
+            return this;
+        }
+
+        public OngoingActivityStyle setChronometerBase(Long base) {
+            this.mChronometerBase = base;
+            printLog("setChronometerBase");
+            return this;
+        }
+
+        public OngoingActivityStyle setChronometerFormat(String format) {
+            this.mChronometerFormat = format;
+            printLog("setChronometerFormat");
+            return this;
+        }
+
+        public OngoingActivityStyle setChronometerCountDown(boolean isCountDown) {
+            this.mChronometerCountDown = isCountDown;
+            printLog("setChronometerCountDown");
+            return this;
+        }
+
+        public OngoingActivityStyle setChronometerStart(boolean start) {
+            this.mChronometerStart = start;
+            printLog("setChronometerStart");
+            return this;
+        }
+
+        public OngoingActivityStyle setChronometerSpeed(float speed) {
+            this.mChronometerSpeed = speed;
+            printLog("setChronometerSpeed");
+            return this;
+        }
+
+        private void printLog(String methodName) {
+            String num;
+            String str = TAG;
+            if ((methodName + ": Icon = " + this.mChipIcon + ", mExpandedChipView = " + this.mExpandedChipView + ", mExpandedChipText = " + ((Object) this.mExpandedChipText) + ", mChipBackground = " + this.mChipBackground + ", mActions = " + this.mActions) != null) {
+                num = Integer.toString(this.mActions.size());
+            } else {
+                num = new StringBuilder().append("null, mActionBgColor = ").append(this.mActionBgColors).toString() != null ? Integer.toString(this.mActionBgColors.size()) : "null, mPrimaryActionNum = " + this.mPrimaryActionNum + ", mCardIcon = " + this.mCardIcon + ", mBadge = " + this.mBadge + ", mPrimaryInfo = " + ((Object) this.mPrimaryInfo) + ", mSecondaryInfo = " + ((Object) this.mSecondaryInfo) + ", mMoreInfo = " + ((Object) this.mMoreInfo) + ", mCustomCardViewCenterUI = " + this.mCustomCardViewCenterUI + ", mCustomExpandedCardView = " + this.mCustomExpandedCardView + ", mCardBackground = " + this.mCardBackground + ", mExpandedNowBarView = " + this.mExpandedNowBarView + ", mNowBarExpandableType = " + this.mNowBarExpandableType + ", mChronometerBase = " + this.mChronometerBase + ", mChronometerFormat = " + this.mChronometerFormat + ", mChronometerCountDown = " + this.mChronometerCountDown + ", mChronometerStart = " + this.mChronometerStart + ", mChronometerSpeed = " + this.mChronometerSpeed;
+            }
+            Log.i(str, num);
+        }
+
+        @Override // android.app.Notification.Style
+        public Notification buildStyled(Notification wip) {
+            Notification wip2 = super.buildStyled(wip);
+            this.mBuilder.mActions = this.mActions;
+            wip2.actions = new Action[this.mBuilder.mActions.size()];
+            this.mBuilder.mActions.toArray(wip2.actions);
+            return wip2;
+        }
+
+        @Override // android.app.Notification.Style
+        public boolean displayCustomViewInline() {
+            return false;
+        }
+
+        @Override // android.app.Notification.Style
+        public void addExtras(Bundle extras) {
+            super.addExtras(extras);
+            extras.putParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CHIP_ICON, this.mChipIcon);
+            extras.putParcelable(Notification.EXTRA_ONGOING_ACTIVITY_EXPANDED_CHIP_VIEW, this.mExpandedChipView);
+            extras.putInt(Notification.EXTRA_ONGOING_ACTIVITY_CHIP_BACKGROUND, this.mChipBackground);
+            extras.putIntegerArrayList(Notification.EXTRA_ONGOING_ACTIVITY_ACTION_BG_COLOR, this.mActionBgColors);
+            extras.putInt(Notification.EXTRA_ONGOING_ACTIVITY_PRIMARY_ACTION, this.mPrimaryActionNum);
+            extras.putParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CARD_ICON, this.mCardIcon);
+            extras.putParcelable(Notification.EXTRA_ONGOING_ACTIVITY_BADGE, this.mBadge);
+            extras.putCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_PRIMARY_INFO, this.mPrimaryInfo);
+            extras.putCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_SECONDARY_INFO, this.mSecondaryInfo);
+            extras.putCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_MORE_INFO, this.mMoreInfo);
+            extras.putParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CUSTOM_CARD_VIEW_CENTER_UI, this.mCustomCardViewCenterUI);
+            extras.putParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CUSTOM_EXPANDED_CARD_VIEW, this.mCustomExpandedCardView);
+            extras.putInt(Notification.EXTRA_ONGOING_ACTIVITY_CARD_BACKGROUND, this.mCardBackground);
+            extras.putParcelable(Notification.EXTRA_ONGOING_ACTIVITY_EXPANDED_NOW_BAR_VIEW, this.mExpandedNowBarView);
+            extras.putInt(Notification.EXTRA_ONGOING_ACTIVITY_NOW_BAR_EXPANDABLE_TYPE, this.mNowBarExpandableType);
+            extras.putCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_EXPANDED_CHIP_TEXT, this.mExpandedChipText);
+            extras.putLong(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_BASE, this.mChronometerBase.longValue());
+            extras.putString(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_FORMAT, this.mChronometerFormat);
+            extras.putBoolean(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_COUNTDOWN, this.mChronometerCountDown);
+            extras.putBoolean(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_START, this.mChronometerStart);
+            extras.putFloat(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_SPEED, this.mChronometerSpeed);
+            printLog("addExtras");
+        }
+
+        @Override // android.app.Notification.Style
+        protected void restoreFromExtras(Bundle extras) {
+            super.restoreFromExtras(extras);
+            this.mChipIcon = (Icon) extras.getParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CHIP_ICON, Icon.class);
+            this.mExpandedChipView = (RemoteViews) extras.getParcelable(Notification.EXTRA_ONGOING_ACTIVITY_EXPANDED_CHIP_VIEW, RemoteViews.class);
+            this.mChipBackground = extras.getInt(Notification.EXTRA_ONGOING_ACTIVITY_CHIP_BACKGROUND);
+            ArrayList<Integer> actionBgColors = extras.getIntegerArrayList(Notification.EXTRA_ONGOING_ACTIVITY_ACTION_BG_COLOR);
+            if (actionBgColors != null) {
+                this.mActionBgColors = actionBgColors;
+            }
+            this.mPrimaryActionNum = extras.getInt(Notification.EXTRA_ONGOING_ACTIVITY_PRIMARY_ACTION);
+            this.mCardIcon = (Icon) extras.getParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CARD_ICON, Icon.class);
+            this.mBadge = (Icon) extras.getParcelable(Notification.EXTRA_ONGOING_ACTIVITY_BADGE, Icon.class);
+            this.mPrimaryInfo = extras.getCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_PRIMARY_INFO);
+            this.mSecondaryInfo = extras.getCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_SECONDARY_INFO);
+            this.mMoreInfo = extras.getCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_MORE_INFO);
+            this.mCustomCardViewCenterUI = (RemoteViews) extras.getParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CUSTOM_CARD_VIEW_CENTER_UI, RemoteViews.class);
+            this.mCustomExpandedCardView = (RemoteViews) extras.getParcelable(Notification.EXTRA_ONGOING_ACTIVITY_CUSTOM_EXPANDED_CARD_VIEW, RemoteViews.class);
+            this.mCardBackground = extras.getInt(Notification.EXTRA_ONGOING_ACTIVITY_CARD_BACKGROUND);
+            this.mExpandedNowBarView = (RemoteViews) extras.getParcelable(Notification.EXTRA_ONGOING_ACTIVITY_EXPANDED_NOW_BAR_VIEW, RemoteViews.class);
+            this.mNowBarExpandableType = extras.getInt(Notification.EXTRA_ONGOING_ACTIVITY_NOW_BAR_EXPANDABLE_TYPE);
+            this.mExpandedChipText = extras.getCharSequence(Notification.EXTRA_ONGOING_ACTIVITY_EXPANDED_CHIP_TEXT);
+            this.mChronometerBase = Long.valueOf(extras.getLong(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_BASE, 0L));
+            this.mChronometerFormat = extras.getString(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_FORMAT, "");
+            this.mChronometerCountDown = extras.getBoolean(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_COUNTDOWN, false);
+            this.mChronometerStart = extras.getBoolean(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_START, false);
+            this.mChronometerSpeed = extras.getFloat(Notification.EXTRA_ONGOING_ACTIVITY_CHRONOMETER_SPEED, 1.0f);
+        }
+
+        @Override // android.app.Notification.Style
+        public boolean hasSummaryInHeader() {
+            return false;
+        }
+
+        @Override // android.app.Notification.Style
+        public boolean areNotificationsVisiblyDifferent(Style other) {
+            return true;
+        }
+    }
+
     public static class DecoratedMediaCustomViewStyle extends MediaStyle {
         @Override // android.app.Notification.Style
         public boolean displayCustomViewInline() {
@@ -5630,17 +6380,15 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class BubbleMetadata implements Parcelable {
         public static final Parcelable.Creator<BubbleMetadata> CREATOR = new Parcelable.Creator<BubbleMetadata>() { // from class: android.app.Notification.BubbleMetadata.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BubbleMetadata createFromParcel(Parcel source) {
                 return new BubbleMetadata(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BubbleMetadata[] newArray(int size) {
                 return new BubbleMetadata[size];
@@ -5657,14 +6405,6 @@ public class Notification implements Parcelable {
         private Icon mIcon;
         private PendingIntent mPendingIntent;
         private String mShortcutId;
-
-        /* synthetic */ BubbleMetadata(PendingIntent pendingIntent, PendingIntent pendingIntent2, Icon icon, int i, int i2, String str, BubbleMetadataIA bubbleMetadataIA) {
-            this(pendingIntent, pendingIntent2, icon, i, i2, str);
-        }
-
-        /* synthetic */ BubbleMetadata(Parcel parcel, BubbleMetadataIA bubbleMetadataIA) {
-            this(parcel);
-        }
 
         private BubbleMetadata(PendingIntent expandIntent, PendingIntent deleteIntent, Icon icon, int height, int heightResId, String shortcutId) {
             this.mPendingIntent = expandIntent;
@@ -5701,21 +6441,11 @@ public class Notification implements Parcelable {
             return this.mPendingIntent;
         }
 
-        @Deprecated
-        public PendingIntent getBubbleIntent() {
-            return this.mPendingIntent;
-        }
-
         public PendingIntent getDeleteIntent() {
             return this.mDeleteIntent;
         }
 
         public Icon getIcon() {
-            return this.mIcon;
-        }
-
-        @Deprecated
-        public Icon getBubbleIcon() {
             return this.mIcon;
         }
 
@@ -5767,23 +6497,6 @@ public class Notification implements Parcelable {
             return this.mFlags;
         }
 
-        /* renamed from: android.app.Notification$BubbleMetadata$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<BubbleMetadata> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BubbleMetadata createFromParcel(Parcel source) {
-                return new BubbleMetadata(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BubbleMetadata[] newArray(int size) {
-                return new BubbleMetadata[size];
-            }
-        }
-
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -5792,21 +6505,18 @@ public class Notification implements Parcelable {
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeInt(this.mPendingIntent != null ? 1 : 0);
-            PendingIntent pendingIntent = this.mPendingIntent;
-            if (pendingIntent != null) {
-                pendingIntent.writeToParcel(parcel, 0);
+            if (this.mPendingIntent != null) {
+                this.mPendingIntent.writeToParcel(parcel, 0);
             }
             parcel.writeInt(this.mIcon != null ? 1 : 0);
-            Icon icon = this.mIcon;
-            if (icon != null) {
-                icon.writeToParcel(parcel, 0);
+            if (this.mIcon != null) {
+                this.mIcon.writeToParcel(parcel, 0);
             }
             parcel.writeInt(this.mDesiredHeight);
             parcel.writeInt(this.mFlags);
             parcel.writeInt(this.mDeleteIntent != null ? 1 : 0);
-            PendingIntent pendingIntent2 = this.mDeleteIntent;
-            if (pendingIntent2 != null) {
-                pendingIntent2.writeToParcel(parcel, 0);
+            if (this.mDeleteIntent != null) {
+                this.mDeleteIntent.writeToParcel(parcel, 0);
             }
             parcel.writeInt(this.mDesiredHeightResId);
             parcel.writeInt(!TextUtils.isEmpty(this.mShortcutId) ? 1 : 0);
@@ -5815,7 +6525,6 @@ public class Notification implements Parcelable {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class Builder {
             private PendingIntent mDeleteIntent;
             private int mDesiredHeight;
@@ -5848,33 +6557,6 @@ public class Notification implements Parcelable {
                 }
                 this.mPendingIntent = intent;
                 this.mIcon = icon;
-            }
-
-            @Deprecated
-            public Builder createShortcutBubble(String shortcutId) {
-                if (!TextUtils.isEmpty(shortcutId)) {
-                    this.mPendingIntent = null;
-                    this.mIcon = null;
-                }
-                this.mShortcutId = shortcutId;
-                return this;
-            }
-
-            @Deprecated
-            public Builder createIntentBubble(PendingIntent intent, Icon icon) {
-                if (intent == null) {
-                    throw new IllegalArgumentException("Bubble requires non-null pending intent");
-                }
-                if (icon == null) {
-                    throw new IllegalArgumentException("Bubbles require non-null icon");
-                }
-                if (icon.getType() != 6 && icon.getType() != 4) {
-                    Log.w(Notification.TAG, "Bubbles work best with icons of TYPE_URI or TYPE_URI_ADAPTIVE_BITMAP. In the future, using an icon of this type will be required.");
-                }
-                this.mShortcutId = null;
-                this.mPendingIntent = intent;
-                this.mIcon = icon;
-                return this;
             }
 
             public Builder setIntent(PendingIntent intent) {
@@ -5935,11 +6617,10 @@ public class Notification implements Parcelable {
             }
 
             public BubbleMetadata build() {
-                String str = this.mShortcutId;
-                if (str == null && this.mPendingIntent == null) {
+                if (this.mShortcutId == null && this.mPendingIntent == null) {
                     throw new NullPointerException("Must supply pending intent or shortcut to bubble");
                 }
-                if (str == null && this.mIcon == null) {
+                if (this.mShortcutId == null && this.mIcon == null) {
                     throw new NullPointerException("Must supply an icon or shortcut for the bubble");
                 }
                 BubbleMetadata data = new BubbleMetadata(this.mPendingIntent, this.mDeleteIntent, this.mIcon, this.mDesiredHeight, this.mDesiredHeightResId, this.mShortcutId);
@@ -5958,7 +6639,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class WearableExtender implements Extender {
         private static final int DEFAULT_CONTENT_ICON_GRAVITY = 8388613;
         private static final int DEFAULT_FLAGS = 1;
@@ -6074,64 +6754,55 @@ public class Notification implements Parcelable {
             if (!this.mActions.isEmpty()) {
                 wearableBundle.putParcelableArrayList("actions", this.mActions);
             }
-            int i = this.mFlags;
-            if (i != 1) {
-                wearableBundle.putInt("flags", i);
+            if (this.mFlags != 1) {
+                wearableBundle.putInt("flags", this.mFlags);
             }
-            PendingIntent pendingIntent = this.mDisplayIntent;
-            if (pendingIntent != null) {
-                wearableBundle.putParcelable(KEY_DISPLAY_INTENT, pendingIntent);
+            if (this.mDisplayIntent != null) {
+                wearableBundle.putParcelable(KEY_DISPLAY_INTENT, this.mDisplayIntent);
             }
             if (!this.mPages.isEmpty()) {
-                ArrayList<Notification> arrayList = this.mPages;
-                wearableBundle.putParcelableArray(KEY_PAGES, (Parcelable[]) arrayList.toArray(new Notification[arrayList.size()]));
+                wearableBundle.putParcelableArray(KEY_PAGES, (Parcelable[]) this.mPages.toArray(new Notification[this.mPages.size()]));
             }
-            Bitmap bitmap = this.mBackground;
-            if (bitmap != null) {
-                wearableBundle.putParcelable("background", bitmap);
+            if (this.mBackground != null) {
+                if (CompatChanges.isChangeEnabled(Notification.WEARABLE_EXTENDER_BACKGROUND_BLOCKED)) {
+                    Log.d(Notification.TAG, "Use of background in WearableExtenders has been deprecated and will not be populated anymore.");
+                } else {
+                    wearableBundle.putParcelable("background", this.mBackground);
+                }
             }
-            int i2 = this.mContentIcon;
-            if (i2 != 0) {
-                wearableBundle.putInt(KEY_CONTENT_ICON, i2);
+            if (this.mContentIcon != 0) {
+                wearableBundle.putInt(KEY_CONTENT_ICON, this.mContentIcon);
             }
-            int i3 = this.mContentIconGravity;
-            if (i3 != 8388613) {
-                wearableBundle.putInt(KEY_CONTENT_ICON_GRAVITY, i3);
+            if (this.mContentIconGravity != 8388613) {
+                wearableBundle.putInt(KEY_CONTENT_ICON_GRAVITY, this.mContentIconGravity);
             }
-            int i4 = this.mContentActionIndex;
-            if (i4 != -1) {
-                wearableBundle.putInt(KEY_CONTENT_ACTION_INDEX, i4);
+            if (this.mContentActionIndex != -1) {
+                wearableBundle.putInt(KEY_CONTENT_ACTION_INDEX, this.mContentActionIndex);
             }
-            int i5 = this.mCustomSizePreset;
-            if (i5 != 0) {
-                wearableBundle.putInt(KEY_CUSTOM_SIZE_PRESET, i5);
+            if (this.mCustomSizePreset != 0) {
+                wearableBundle.putInt(KEY_CUSTOM_SIZE_PRESET, this.mCustomSizePreset);
             }
-            int i6 = this.mCustomContentHeight;
-            if (i6 != 0) {
-                wearableBundle.putInt(KEY_CUSTOM_CONTENT_HEIGHT, i6);
+            if (this.mCustomContentHeight != 0) {
+                wearableBundle.putInt(KEY_CUSTOM_CONTENT_HEIGHT, this.mCustomContentHeight);
             }
-            int i7 = this.mGravity;
-            if (i7 != 80) {
-                wearableBundle.putInt(KEY_GRAVITY, i7);
+            if (this.mGravity != 80) {
+                wearableBundle.putInt(KEY_GRAVITY, this.mGravity);
             }
-            int i8 = this.mHintScreenTimeout;
-            if (i8 != 0) {
-                wearableBundle.putInt(KEY_HINT_SCREEN_TIMEOUT, i8);
+            if (this.mHintScreenTimeout != 0) {
+                wearableBundle.putInt(KEY_HINT_SCREEN_TIMEOUT, this.mHintScreenTimeout);
             }
-            String str = this.mDismissalId;
-            if (str != null) {
-                wearableBundle.putString(KEY_DISMISSAL_ID, str);
+            if (this.mDismissalId != null) {
+                wearableBundle.putString(KEY_DISMISSAL_ID, this.mDismissalId);
             }
-            String str2 = this.mBridgeTag;
-            if (str2 != null) {
-                wearableBundle.putString(KEY_BRIDGE_TAG, str2);
+            if (this.mBridgeTag != null) {
+                wearableBundle.putString(KEY_BRIDGE_TAG, this.mBridgeTag);
             }
             builder.getExtras().putBundle(EXTRA_WEARABLE_EXTENSIONS, wearableBundle);
             return builder;
         }
 
-        /* renamed from: clone */
-        public WearableExtender m413clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public WearableExtender m453clone() {
             WearableExtender that = new WearableExtender();
             that.mActions = new ArrayList<>(this.mActions);
             that.mFlags = this.mFlags;
@@ -6205,12 +6876,17 @@ public class Notification implements Parcelable {
 
         @Deprecated
         public WearableExtender setBackground(Bitmap background) {
-            this.mBackground = background;
+            if (CompatChanges.isChangeEnabled(Notification.WEARABLE_EXTENDER_BACKGROUND_BLOCKED)) {
+                Log.d(Notification.TAG, "Use of background in WearableExtenders has been deprecated and will not be populated anymore.");
+            } else {
+                this.mBackground = background;
+            }
             return this;
         }
 
         @Deprecated
         public Bitmap getBackground() {
+            Log.w(Notification.TAG, "Use of background in WearableExtender has been removed, returning null.");
             return this.mBackground;
         }
 
@@ -6386,6 +7062,7 @@ public class Notification implements Parcelable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void visitUris(Consumer<Uri> visitor) {
             Iterator<Action> it = this.mActions.iterator();
             while (it.hasNext()) {
@@ -6395,7 +7072,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class CarExtender implements Extender {
         private static final String EXTRA_CAR_EXTENDER = "android.car.EXTENSIONS";
         private static final String EXTRA_COLOR = "app_color";
@@ -6424,17 +7100,14 @@ public class Notification implements Parcelable {
         @Override // android.app.Notification.Extender
         public Builder extend(Builder builder) {
             Bundle carExtensions = new Bundle();
-            Bitmap bitmap = this.mLargeIcon;
-            if (bitmap != null) {
-                carExtensions.putParcelable(EXTRA_LARGE_ICON, bitmap);
+            if (this.mLargeIcon != null) {
+                carExtensions.putParcelable(EXTRA_LARGE_ICON, this.mLargeIcon);
             }
-            int i = this.mColor;
-            if (i != 0) {
-                carExtensions.putInt(EXTRA_COLOR, i);
+            if (this.mColor != 0) {
+                carExtensions.putInt(EXTRA_COLOR, this.mColor);
             }
-            UnreadConversation unreadConversation = this.mUnreadConversation;
-            if (unreadConversation != null) {
-                Bundle b = unreadConversation.getBundleForUnreadConversation();
+            if (this.mUnreadConversation != null) {
+                Bundle b = this.mUnreadConversation.getBundleForUnreadConversation();
                 carExtensions.putBundle(EXTRA_CONVERSATION, b);
             }
             Bundle b2 = builder.getExtras();
@@ -6469,7 +7142,6 @@ public class Notification implements Parcelable {
             return this.mUnreadConversation;
         }
 
-        /* loaded from: classes.dex */
         public static class UnreadConversation {
             private static final String KEY_AUTHOR = "author";
             private static final String KEY_MESSAGES = "messages";
@@ -6516,9 +7188,8 @@ public class Notification implements Parcelable {
             }
 
             public String getParticipant() {
-                String[] strArr = this.mParticipants;
-                if (strArr.length > 0) {
-                    return strArr[0];
+                if (this.mParticipants.length > 0) {
+                    return this.mParticipants[0];
                 }
                 return null;
             }
@@ -6530,9 +7201,8 @@ public class Notification implements Parcelable {
             Bundle getBundleForUnreadConversation() {
                 Bundle b = new Bundle();
                 String author = null;
-                String[] strArr = this.mParticipants;
-                if (strArr != null && strArr.length > 1) {
-                    author = strArr[0];
+                if (this.mParticipants != null && this.mParticipants.length > 1) {
+                    author = this.mParticipants[0];
                 }
                 Parcelable[] messages = new Parcelable[this.mMessages.length];
                 for (int i = 0; i < messages.length; i++) {
@@ -6542,9 +7212,8 @@ public class Notification implements Parcelable {
                     messages[i] = m;
                 }
                 b.putParcelableArray(KEY_MESSAGES, messages);
-                Parcelable parcelable = this.mRemoteInput;
-                if (parcelable != null) {
-                    b.putParcelable(KEY_REMOTE_INPUT, parcelable);
+                if (this.mRemoteInput != null) {
+                    b.putParcelable(KEY_REMOTE_INPUT, this.mRemoteInput);
                 }
                 b.putParcelable(KEY_ON_REPLY, this.mReplyPendingIntent);
                 b.putParcelable(KEY_ON_READ, this.mReadPendingIntent);
@@ -6595,7 +7264,6 @@ public class Notification implements Parcelable {
             }
         }
 
-        /* loaded from: classes.dex */
         public static class Builder {
             private long mLatestTimestamp;
             private final List<String> mMessages = new ArrayList();
@@ -6630,16 +7298,13 @@ public class Notification implements Parcelable {
             }
 
             public UnreadConversation build() {
-                List<String> list = this.mMessages;
-                String[] messages = (String[]) list.toArray(new String[list.size()]);
+                String[] messages = (String[]) this.mMessages.toArray(new String[this.mMessages.size()]);
                 String[] participants = {this.mParticipant};
                 return new UnreadConversation(messages, this.mRemoteInput, this.mReplyPendingIntent, this.mReadPendingIntent, participants, this.mLatestTimestamp);
             }
         }
     }
 
-    @SystemApi
-    /* loaded from: classes.dex */
     public static final class TvExtender implements Extender {
         private static final String EXTRA_CHANNEL_ID = "channel_id";
         static final String EXTRA_CONTENT_INTENT = "content_intent";
@@ -6676,13 +7341,11 @@ public class Notification implements Parcelable {
             bundle.putInt("flags", this.mFlags);
             bundle.putString("channel_id", this.mChannelId);
             bundle.putBoolean(EXTRA_SUPPRESS_SHOW_OVER_APPS, this.mSuppressShowOverApps);
-            PendingIntent pendingIntent = this.mContentIntent;
-            if (pendingIntent != null) {
-                bundle.putParcelable(EXTRA_CONTENT_INTENT, pendingIntent);
+            if (this.mContentIntent != null) {
+                bundle.putParcelable(EXTRA_CONTENT_INTENT, this.mContentIntent);
             }
-            PendingIntent pendingIntent2 = this.mDeleteIntent;
-            if (pendingIntent2 != null) {
-                bundle.putParcelable(EXTRA_DELETE_INTENT, pendingIntent2);
+            if (this.mDeleteIntent != null) {
+                bundle.putParcelable(EXTRA_DELETE_INTENT, this.mDeleteIntent);
             }
             builder.getExtras().putBundle(EXTRA_TV_EXTENDER, bundle);
             return builder;
@@ -6692,6 +7355,7 @@ public class Notification implements Parcelable {
             return (this.mFlags & 1) != 0;
         }
 
+        @SystemApi
         public TvExtender setChannel(String channelId) {
             this.mChannelId = channelId;
             return this;
@@ -6702,6 +7366,7 @@ public class Notification implements Parcelable {
             return this;
         }
 
+        @SystemApi
         @Deprecated
         public String getChannel() {
             return this.mChannelId;
@@ -6734,11 +7399,17 @@ public class Notification implements Parcelable {
             return this;
         }
 
+        @SystemApi
         public boolean getSuppressShowOverApps() {
+            return this.mSuppressShowOverApps;
+        }
+
+        public boolean isSuppressShowOverApps() {
             return this.mSuppressShowOverApps;
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends Parcelable> T[] getParcelableArrayFromBundle(Bundle bundle, String str, Class<T> cls) {
         T[] tArr = (T[]) ((Parcelable[]) bundle.getParcelableArray(str, Parcelable.class));
         if (Array.newInstance((Class<?>) cls, 0).getClass().isInstance(tArr) || tArr == null) {
@@ -6752,8 +7423,7 @@ public class Notification implements Parcelable {
         return tArr2;
     }
 
-    /* loaded from: classes.dex */
-    public static class BuilderRemoteViews extends RemoteViews {
+    private static class BuilderRemoteViews extends RemoteViews {
         public BuilderRemoteViews(Parcel parcel) {
             super(parcel);
         }
@@ -6763,8 +7433,8 @@ public class Notification implements Parcelable {
         }
 
         @Override // android.widget.RemoteViews
-        /* renamed from: clone */
-        public BuilderRemoteViews mo407clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public BuilderRemoteViews mo447clone() {
             Parcel p = Parcel.obtain();
             writeToParcel(p, 0);
             p.setDataPosition(0);
@@ -6779,18 +7449,13 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class TemplateBindResult {
+    private static class TemplateBindResult {
         public final MarginSet mHeadingExtraMarginSet;
         public final MarginSet mHeadingFullMarginSet;
         float mRightIconHeightDp;
         boolean mRightIconVisible;
         float mRightIconWidthDp;
         public final MarginSet mTitleMarginSet;
-
-        /* synthetic */ TemplateBindResult(TemplateBindResultIA templateBindResultIA) {
-            this();
-        }
 
         private TemplateBindResult() {
             this.mHeadingExtraMarginSet = new MarginSet();
@@ -6807,14 +7472,9 @@ public class Notification implements Parcelable {
             this.mTitleMarginSet.setValues(0.0f, marginEndDpIfVisible + expanderSizeDp);
         }
 
-        /* loaded from: classes.dex */
-        public class MarginSet {
+        private class MarginSet {
             private float mValueIfGone;
             private float mValueIfVisible;
-
-            /* synthetic */ MarginSet(TemplateBindResult templateBindResult, MarginSetIA marginSetIA) {
-                this();
-            }
 
             private MarginSet() {
             }
@@ -6830,9 +7490,9 @@ public class Notification implements Parcelable {
 
             public void applyToView(RemoteViews views, int viewId, float extraMarginDp) {
                 float marginEndDp = getDpValue() + extraMarginDp;
-                if (viewId == 16909393) {
+                if (viewId == 16909398) {
                     views.setFloat(R.id.notification_header, "setTopLineExtraMarginEndDp", marginEndDp);
-                } else if (viewId != 16909857 && viewId != 16908842) {
+                } else if (viewId != 16909869 && viewId != 16908848) {
                     views.setViewLayoutMargin(viewId, 5, marginEndDp, 1);
                 } else {
                     if (this.mValueIfGone != 0.0f) {
@@ -6854,8 +7514,7 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class StandardTemplateParams {
+    private static class StandardTemplateParams {
         public static final int DECORATION_MINIMAL = 1;
         public static final int DECORATION_PARTIAL = 2;
         boolean allowColorization;
@@ -6889,10 +7548,7 @@ public class Notification implements Parcelable {
         public static int VIEW_TYPE_PUBLIC = 5;
         public static int VIEW_TYPE_GROUP_HEADER = 6;
         public static int VIEW_TYPE_GROUP_HEADER_EXPANDED = 7;
-
-        /* synthetic */ StandardTemplateParams(StandardTemplateParamsIA standardTemplateParamsIA) {
-            this();
-        }
+        public static int VIEW_TYPE_INSIGNIFICANT = 8;
 
         private StandardTemplateParams() {
             this.mViewType = VIEW_TYPE_UNSPECIFIED;
@@ -7069,7 +7725,6 @@ public class Notification implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Colors {
         private int mPaletteIsForRawColor = 1;
         private boolean mPaletteIsForColorized = false;
@@ -7082,7 +7737,9 @@ public class Notification implements Parcelable {
         private int mPrimaryAccentColor = 1;
         private int mSecondaryAccentColor = 1;
         private int mTertiaryAccentColor = 1;
-        private int mOnAccentTextColor = 1;
+        private int mOnTertiaryAccentTextColor = 1;
+        private int mTertiaryFixedDimAccentColor = 1;
+        private int mOnTertiaryFixedAccentTextColor = 1;
         private int mErrorColor = 1;
         private int mContrastColor = 1;
         private int mRippleAlpha = 51;
@@ -7109,7 +7766,7 @@ public class Notification implements Parcelable {
             this.mPaletteIsForNightMode = nightMode;
             if (isColorized) {
                 if (rawColor == 0) {
-                    int[] attrs = {R.attr.colorAccentSecondary};
+                    int[] attrs = {R.attr.materialColorSecondary};
                     ta = obtainDayNightAttributes(ctx, attrs);
                     try {
                         this.mBackgroundColor = getColor(ta, 0, -1);
@@ -7121,33 +7778,32 @@ public class Notification implements Parcelable {
                 } else {
                     this.mBackgroundColor = rawColor;
                 }
-                this.mProtectionColor = 1;
                 this.mPrimaryTextColor = ContrastColorUtil.findAlphaToMeetContrast(ContrastColorUtil.resolvePrimaryColor(ctx, this.mBackgroundColor, nightMode), this.mBackgroundColor, 4.5d);
-                int findAlphaToMeetContrast = ContrastColorUtil.findAlphaToMeetContrast(ContrastColorUtil.resolveSecondaryColor(ctx, this.mBackgroundColor, nightMode), this.mBackgroundColor, 4.5d);
-                this.mSecondaryTextColor = findAlphaToMeetContrast;
-                this.mThirdTextColor = findAlphaToMeetContrast;
-                int i = this.mPrimaryTextColor;
-                this.mContrastColor = i;
-                this.mPrimaryAccentColor = i;
-                this.mSecondaryAccentColor = findAlphaToMeetContrast;
-                this.mTertiaryAccentColor = flattenAlpha(i, this.mBackgroundColor);
-                this.mOnAccentTextColor = this.mBackgroundColor;
+                this.mSecondaryTextColor = ContrastColorUtil.findAlphaToMeetContrast(ContrastColorUtil.resolveSecondaryColor(ctx, this.mBackgroundColor, nightMode), this.mBackgroundColor, 4.5d);
+                this.mContrastColor = this.mPrimaryTextColor;
+                this.mPrimaryAccentColor = this.mPrimaryTextColor;
+                this.mSecondaryAccentColor = this.mSecondaryTextColor;
+                this.mTertiaryAccentColor = flattenAlpha(this.mPrimaryTextColor, this.mBackgroundColor);
+                this.mOnTertiaryAccentTextColor = this.mBackgroundColor;
+                this.mTertiaryFixedDimAccentColor = this.mTertiaryAccentColor;
+                this.mOnTertiaryFixedAccentTextColor = this.mOnTertiaryAccentTextColor;
                 this.mErrorColor = this.mPrimaryTextColor;
                 this.mRippleAlpha = 51;
             } else {
-                int[] attrs2 = {R.attr.colorSurface, 16844002, 16842806, 16842808, 16843829, R.attr.colorAccentSecondary, R.attr.colorAccentTertiary, R.attr.textColorOnAccent, 16844099, 16843820};
+                int[] attrs2 = {R.attr.materialColorSurfaceContainerHigh, R.attr.materialColorOnSurface, R.attr.materialColorOnSurfaceVariant, R.attr.materialColorPrimary, R.attr.materialColorSecondary, R.attr.materialColorTertiary, R.attr.materialColorOnTertiary, R.attr.materialColorTertiaryFixedDim, R.attr.materialColorOnTertiaryFixed, 16844099, 16843820};
                 ta = obtainDayNightAttributes(ctx, attrs2);
                 try {
                     this.mBackgroundColor = getColor(ta, 0, nightMode ? -16777216 : -1);
-                    this.mProtectionColor = getColor(ta, 1, 1);
-                    this.mPrimaryTextColor = getColor(ta, 2, 1);
-                    this.mSecondaryTextColor = getColor(ta, 3, 1);
-                    this.mPrimaryAccentColor = getColor(ta, 4, 1);
-                    this.mSecondaryAccentColor = getColor(ta, 5, 1);
-                    this.mTertiaryAccentColor = getColor(ta, 6, 1);
-                    this.mOnAccentTextColor = getColor(ta, 7, 1);
-                    this.mErrorColor = getColor(ta, 8, 1);
-                    this.mRippleAlpha = Color.alpha(getColor(ta, 9, 872415231));
+                    this.mPrimaryTextColor = getColor(ta, 1, 1);
+                    this.mSecondaryTextColor = getColor(ta, 2, 1);
+                    this.mPrimaryAccentColor = getColor(ta, 3, 1);
+                    this.mSecondaryAccentColor = getColor(ta, 4, 1);
+                    this.mTertiaryAccentColor = getColor(ta, 5, 1);
+                    this.mOnTertiaryAccentTextColor = getColor(ta, 6, 1);
+                    this.mTertiaryFixedDimAccentColor = getColor(ta, 7, 1);
+                    this.mOnTertiaryFixedAccentTextColor = getColor(ta, 8, 1);
+                    this.mErrorColor = getColor(ta, 9, 1);
+                    this.mRippleAlpha = Color.alpha(getColor(ta, 10, 872415231));
                     if (ta != null) {
                         ta.close();
                     }
@@ -7162,8 +7818,14 @@ public class Notification implements Parcelable {
                     if (this.mTertiaryAccentColor == 1) {
                         this.mTertiaryAccentColor = this.mContrastColor;
                     }
-                    if (this.mOnAccentTextColor == 1) {
-                        this.mOnAccentTextColor = ColorUtils.setAlphaComponent(ContrastColorUtil.resolvePrimaryColor(ctx, this.mTertiaryAccentColor, nightMode), 255);
+                    if (this.mOnTertiaryAccentTextColor == 1) {
+                        this.mOnTertiaryAccentTextColor = ColorUtils.setAlphaComponent(ContrastColorUtil.resolvePrimaryColor(ctx, this.mTertiaryAccentColor, nightMode), 255);
+                    }
+                    if (this.mTertiaryFixedDimAccentColor == 1) {
+                        this.mTertiaryFixedDimAccentColor = this.mContrastColor;
+                    }
+                    if (this.mOnTertiaryFixedAccentTextColor == 1) {
+                        this.mOnTertiaryFixedAccentTextColor = ColorUtils.setAlphaComponent(ContrastColorUtil.resolvePrimaryColor(ctx, this.mTertiaryFixedDimAccentColor, nightMode), 255);
                     }
                     if (this.mErrorColor == 1) {
                         this.mErrorColor = this.mPrimaryTextColor;
@@ -7171,9 +7833,7 @@ public class Notification implements Parcelable {
                 } finally {
                 }
             }
-            if (this.mProtectionColor == 1) {
-                this.mProtectionColor = ColorUtils.blendARGB(this.mPrimaryTextColor, this.mBackgroundColor, 0.8f);
-            }
+            this.mProtectionColor = ColorUtils.blendARGB(this.mPrimaryTextColor, this.mBackgroundColor, 0.9f);
         }
 
         private static int calculateContrastColor(Context ctx, int rawColor, int accentColor, int backgroundColor, boolean nightMode) {
@@ -7189,6 +7849,7 @@ public class Notification implements Parcelable {
             return flattenAlpha(color, backgroundColor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static int flattenAlpha(int color, int background) {
             return Color.alpha(color) == 255 ? color : ContrastColorUtil.compositeColors(color, background);
         }
@@ -7225,8 +7886,16 @@ public class Notification implements Parcelable {
             return this.mTertiaryAccentColor;
         }
 
-        public int getOnAccentTextColor() {
-            return this.mOnAccentTextColor;
+        public int getOnTertiaryAccentTextColor() {
+            return this.mOnTertiaryAccentTextColor;
+        }
+
+        public int getTertiaryFixedDimAccentColor() {
+            return this.mTertiaryFixedDimAccentColor;
+        }
+
+        public int getOnTertiaryFixedAccentTextColor() {
+            return this.mOnTertiaryFixedAccentTextColor;
         }
 
         public int getContrastColor() {
@@ -7246,20 +7915,7 @@ public class Notification implements Parcelable {
         this.semFlags |= 32;
     }
 
-    public static int getFontScaledMarginHeight(Context context, int dimenId) {
-        int dimensionPixelSize = context.getResources().getDimensionPixelSize(dimenId);
-        float factor = context.getResources().getDisplayMetrics().scaledDensity / context.getResources().getDisplayMetrics().density;
-        float factor2 = ((factor - 1.0f) / 2.0f) + 1.0f;
-        float factor3 = dimensionPixelSize;
-        return (int) (factor3 * factor2);
-    }
-
-    public static int getFontScaledHeight(Context context, int dimenId) {
-        int dimensionPixelSize = context.getResources().getDimensionPixelSize(dimenId);
-        float factor = context.getResources().getDisplayMetrics().scaledDensity / context.getResources().getDisplayMetrics().density;
-        return (int) (dimensionPixelSize * factor);
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static Bitmap scaleDownIfNecessaryForBigPicture(Bitmap bitmap, int maxWidth, int maxHeight) {
         float factor;
         int bitmapWidth = bitmap.getWidth();

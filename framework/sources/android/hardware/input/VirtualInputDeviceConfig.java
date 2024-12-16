@@ -1,28 +1,38 @@
 package android.hardware.input;
 
 import android.annotation.SystemApi;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 @SystemApi
 /* loaded from: classes2.dex */
 public abstract class VirtualInputDeviceConfig {
+    private static final int DEVICE_NAME_MAX_LENGTH = 80;
     private final int mAssociatedDisplayId;
     private final String mInputDeviceName;
     private final int mProductId;
     private final int mVendorId;
 
-    public VirtualInputDeviceConfig(Builder<? extends Builder<?>> builder) {
+    protected VirtualInputDeviceConfig(Builder<? extends Builder<?>> builder) {
         this.mVendorId = ((Builder) builder).mVendorId;
         this.mProductId = ((Builder) builder).mProductId;
         this.mAssociatedDisplayId = ((Builder) builder).mAssociatedDisplayId;
-        this.mInputDeviceName = ((Builder) builder).mInputDeviceName;
+        this.mInputDeviceName = (String) Objects.requireNonNull(((Builder) builder).mInputDeviceName);
+        if (this.mAssociatedDisplayId == -1) {
+            throw new IllegalArgumentException("Display association is required for virtual input devices.");
+        }
+        if (this.mInputDeviceName.getBytes(StandardCharsets.UTF_8).length >= 80) {
+            throw new IllegalArgumentException("Input device name exceeds maximum length of 80bytes: " + this.mInputDeviceName);
+        }
     }
 
-    public VirtualInputDeviceConfig(Parcel in) {
+    protected VirtualInputDeviceConfig(Parcel in) {
         this.mVendorId = in.readInt();
         this.mProductId = in.readInt();
         this.mAssociatedDisplayId = in.readInt();
-        this.mInputDeviceName = in.readString8();
+        this.mInputDeviceName = (String) Objects.requireNonNull(in.readString8());
     }
 
     public int getVendorId() {
@@ -41,6 +51,7 @@ public abstract class VirtualInputDeviceConfig {
         return this.mInputDeviceName;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mVendorId);
         dest.writeInt(this.mProductId);
@@ -48,9 +59,16 @@ public abstract class VirtualInputDeviceConfig {
         dest.writeString8(this.mInputDeviceName);
     }
 
-    /* loaded from: classes2.dex */
+    public String toString() {
+        return getClass().getName() + "(  name=" + this.mInputDeviceName + " vendorId=" + this.mVendorId + " productId=" + this.mProductId + " associatedDisplayId=" + this.mAssociatedDisplayId + additionalFieldsToString() + NavigationBarInflaterView.KEY_CODE_END;
+    }
+
+    String additionalFieldsToString() {
+        return "";
+    }
+
     public static abstract class Builder<T extends Builder<T>> {
-        private int mAssociatedDisplayId;
+        private int mAssociatedDisplayId = -1;
         private String mInputDeviceName;
         private int mProductId;
         private int mVendorId;
@@ -71,7 +89,7 @@ public abstract class VirtualInputDeviceConfig {
         }
 
         public T setInputDeviceName(String deviceName) {
-            this.mInputDeviceName = deviceName;
+            this.mInputDeviceName = (String) Objects.requireNonNull(deviceName);
             return self();
         }
 

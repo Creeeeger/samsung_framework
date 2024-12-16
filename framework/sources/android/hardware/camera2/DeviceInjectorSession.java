@@ -9,10 +9,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class DeviceInjectorSession implements AutoCloseable {
 
-    /* loaded from: classes.dex */
     public static abstract class CharacteristicBuilder {
         public abstract CharacteristicBuilder addSupportedAEMode(int i);
 
@@ -45,7 +44,6 @@ public abstract class DeviceInjectorSession implements AutoCloseable {
         public abstract CharacteristicBuilder setSensorOrientation(int i);
     }
 
-    /* loaded from: classes.dex */
     public static abstract class RemoteDevice {
         public abstract void clearRequest();
 
@@ -66,14 +64,12 @@ public abstract class DeviceInjectorSession implements AutoCloseable {
         public abstract void submitRequest(CaptureRequest captureRequest, int[] iArr, boolean z);
     }
 
-    /* loaded from: classes.dex */
     public static abstract class RemoteDeviceCallback {
         public static final int ERROR_REMOTE_BUFFER = 1;
         public static final int ERROR_REMOTE_DEVICE = 0;
         public static final int ERROR_REMOTE_UNKNOWN = 2;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface ErrorCode {
         }
 
@@ -84,7 +80,6 @@ public abstract class DeviceInjectorSession implements AutoCloseable {
         public abstract void onOrientationChanged(int i) throws RemoteException, IllegalArgumentException;
     }
 
-    /* loaded from: classes.dex */
     public static abstract class StatusCallback {
         public static final int ERROR_INJECTION_INVALID_ERROR = -1;
         public static final int ERROR_INJECTION_SERVICE = 1;
@@ -92,7 +87,6 @@ public abstract class DeviceInjectorSession implements AutoCloseable {
         public static final int ERROR_INJECTION_UNSUPPORTED = 2;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface ErrorCode {
         }
 

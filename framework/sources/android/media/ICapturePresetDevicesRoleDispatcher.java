@@ -13,7 +13,6 @@ public interface ICapturePresetDevicesRoleDispatcher extends IInterface {
 
     void dispatchDevicesRoleChanged(int i, int i2, List<AudioDeviceAttributes> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ICapturePresetDevicesRoleDispatcher {
         @Override // android.media.ICapturePresetDevicesRoleDispatcher
         public void dispatchDevicesRoleChanged(int capturePreset, int role, List<AudioDeviceAttributes> devices) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ICapturePresetDevicesRoleDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ICapturePresetDevicesRoleDispatcher {
         static final int TRANSACTION_dispatchDevicesRoleChanged = 1;
 
@@ -68,27 +66,24 @@ public interface ICapturePresetDevicesRoleDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICapturePresetDevicesRoleDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICapturePresetDevicesRoleDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICapturePresetDevicesRoleDispatcher.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    List<AudioDeviceAttributes> _arg2 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchDevicesRoleChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            List<AudioDeviceAttributes> _arg2 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchDevicesRoleChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ICapturePresetDevicesRoleDispatcher {
+        private static class Proxy implements ICapturePresetDevicesRoleDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

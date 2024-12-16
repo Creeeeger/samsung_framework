@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsRcsManager {
     public static final String ACTION_SHOW_CAPABILITY_DISCOVERY_OPT_IN = "android.telephony.ims.action.SHOW_CAPABILITY_DISCOVERY_OPT_IN";
     public static final int CAPABILITY_TYPE_MAX = 3;
@@ -38,22 +38,20 @@ public class ImsRcsManager {
     private final BinderCacheManager<ITelephony> mTelephonyBinderCache;
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public interface OnAvailabilityChangedListener {
         void onAvailabilityChanged(int i);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RcsImsCapabilityFlag {
     }
 
-    /* loaded from: classes3.dex */
-    public static class AvailabilityCallbackAdapter {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class AvailabilityCallbackAdapter {
         private final CapabilityBinder mBinder;
 
-        /* loaded from: classes3.dex */
-        public static class CapabilityBinder extends IImsCapabilityCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class CapabilityBinder extends IImsCapabilityCallback.Stub {
             private final Executor mExecutor;
             private final OnAvailabilityChangedListener mOnAvailabilityChangedListener;
 
@@ -80,6 +78,7 @@ public class ImsRcsManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onCapabilitiesStatusChanged$0(int config) {
                 this.mOnAvailabilityChangedListener.onAvailabilityChanged(config);
             }
@@ -167,7 +166,7 @@ public class ImsRcsManager {
             imsRcsController.getImsRcsRegistrationState(this.mSubId, new AnonymousClass1(executor, stateCallback));
         } catch (RemoteException | ServiceSpecificException e) {
             Log.w(TAG, "Get registration state error: " + e);
-            executor.execute(new Runnable() { // from class: android.telephony.ims.ImsRcsManager$$ExternalSyntheticLambda1
+            executor.execute(new Runnable() { // from class: android.telephony.ims.ImsRcsManager$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     stateCallback.accept(0);
@@ -176,8 +175,7 @@ public class ImsRcsManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsRcsManager$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.ImsRcsManager$1, reason: invalid class name */
     class AnonymousClass1 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ Consumer val$stateCallback;
@@ -221,7 +219,7 @@ public class ImsRcsManager {
             imsRcsController.getImsRcsRegistrationTransportType(this.mSubId, new AnonymousClass2(executor, transportTypeCallback));
         } catch (RemoteException | ServiceSpecificException e) {
             Log.w(TAG, "Get registration transport type error: " + e);
-            executor.execute(new Runnable() { // from class: android.telephony.ims.ImsRcsManager$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: android.telephony.ims.ImsRcsManager$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     transportTypeCallback.accept(-1);
@@ -230,8 +228,7 @@ public class ImsRcsManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsRcsManager$2 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.ImsRcsManager$2, reason: invalid class name */
     class AnonymousClass2 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ Consumer val$transportTypeCallback;
@@ -344,7 +341,7 @@ public class ImsRcsManager {
         callback.init(executor);
         BinderCacheManager<ITelephony> binderCacheManager = this.mTelephonyBinderCache;
         Objects.requireNonNull(callback);
-        ITelephony telephony = binderCacheManager.listenOnBinder(callback, new ImsMmTelManager$$ExternalSyntheticLambda2(callback));
+        ITelephony telephony = binderCacheManager.listenOnBinder(callback, new ImsMmTelManager$$ExternalSyntheticLambda3(callback));
         if (telephony == null) {
             throw new ImsException("Telephony server is down", 1);
         }

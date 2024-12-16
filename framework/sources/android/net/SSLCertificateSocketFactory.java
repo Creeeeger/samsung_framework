@@ -27,12 +27,9 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class SSLCertificateSocketFactory extends SSLSocketFactory {
     private static final TrustManager[] INSECURE_TRUST_MANAGER = {new X509TrustManager() { // from class: android.net.SSLCertificateSocketFactory.1
-        AnonymousClass1() {
-        }
-
         @Override // javax.net.ssl.X509TrustManager
         public X509Certificate[] getAcceptedIssuers() {
             return null;
@@ -57,26 +54,6 @@ public class SSLCertificateSocketFactory extends SSLSocketFactory {
     private SSLSocketFactory mSecureFactory;
     private final SSLClientSessionCache mSessionCache;
     private TrustManager[] mTrustManagers;
-
-    /* renamed from: android.net.SSLCertificateSocketFactory$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements X509TrustManager {
-        AnonymousClass1() {
-        }
-
-        @Override // javax.net.ssl.X509TrustManager
-        public X509Certificate[] getAcceptedIssuers() {
-            return null;
-        }
-
-        @Override // javax.net.ssl.X509TrustManager
-        public void checkClientTrusted(X509Certificate[] certs, String authType) {
-        }
-
-        @Override // javax.net.ssl.X509TrustManager
-        public void checkServerTrusted(X509Certificate[] certs, String authType) {
-        }
-    }
 
     @Deprecated
     public SSLCertificateSocketFactory(int handshakeTimeoutMillis) {

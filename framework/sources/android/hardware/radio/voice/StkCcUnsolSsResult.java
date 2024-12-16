@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class StkCcUnsolSsResult implements Parcelable {
     public static final Parcelable.Creator<StkCcUnsolSsResult> CREATOR = new Parcelable.Creator<StkCcUnsolSsResult>() { // from class: android.hardware.radio.voice.StkCcUnsolSsResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StkCcUnsolSsResult createFromParcel(Parcel _aidl_source) {
             StkCcUnsolSsResult _aidl_out = new StkCcUnsolSsResult();
@@ -20,6 +18,7 @@ public class StkCcUnsolSsResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StkCcUnsolSsResult[] newArray(int _aidl_size) {
             return new StkCcUnsolSsResult[_aidl_size];
@@ -72,25 +71,6 @@ public class StkCcUnsolSsResult implements Parcelable {
     public int requestType = 0;
     public int teleserviceType = 0;
     public int serviceClass = 0;
-
-    /* renamed from: android.hardware.radio.voice.StkCcUnsolSsResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StkCcUnsolSsResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StkCcUnsolSsResult createFromParcel(Parcel _aidl_source) {
-            StkCcUnsolSsResult _aidl_out = new StkCcUnsolSsResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StkCcUnsolSsResult[] newArray(int _aidl_size) {
-            return new StkCcUnsolSsResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -199,7 +179,7 @@ public class StkCcUnsolSsResult implements Parcelable {
         _aidl_sj.add("result: " + RadioError$$.toString(this.result));
         _aidl_sj.add("ssInfo: " + Arrays.toString(this.ssInfo));
         _aidl_sj.add("cfData: " + Arrays.toString(this.cfData));
-        return "android.hardware.radio.voice.StkCcUnsolSsResult" + _aidl_sj.toString();
+        return "StkCcUnsolSsResult" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

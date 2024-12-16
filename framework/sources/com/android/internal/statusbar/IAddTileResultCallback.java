@@ -12,7 +12,6 @@ public interface IAddTileResultCallback extends IInterface {
 
     void onTileRequest(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IAddTileResultCallback {
         @Override // com.android.internal.statusbar.IAddTileResultCallback
         public void onTileRequest(int userResponse) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAddTileResultCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IAddTileResultCallback {
         static final int TRANSACTION_onTileRequest = 1;
 
@@ -67,26 +65,22 @@ public interface IAddTileResultCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAddTileResultCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAddTileResultCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAddTileResultCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTileRequest(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTileRequest(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IAddTileResultCallback {
+        private static class Proxy implements IAddTileResultCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

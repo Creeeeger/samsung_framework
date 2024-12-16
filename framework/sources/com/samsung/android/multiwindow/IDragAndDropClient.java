@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDragAndDropClient extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multiwindow.IDragAndDropClient";
 
@@ -19,7 +19,6 @@ public interface IDragAndDropClient extends IInterface {
 
     void onDisconnected() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDragAndDropClient {
         @Override // com.samsung.android.multiwindow.IDragAndDropClient
         public void onConnected(IBinder serverProxy, int displayId) throws RemoteException {
@@ -45,7 +44,6 @@ public interface IDragAndDropClient extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDragAndDropClient {
         static final int TRANSACTION_getHiddenDropTargetArea = 4;
         static final int TRANSACTION_getInitialDropTargetVisible = 3;
@@ -97,40 +95,37 @@ public interface IDragAndDropClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDragAndDropClient.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDragAndDropClient.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDragAndDropClient.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onConnected(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    onDisconnected();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _result = getInitialDropTargetVisible();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    Rect _result2 = getHiddenDropTargetArea();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onConnected(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            onDisconnected();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _result = getInitialDropTargetVisible();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            Rect _result2 = getHiddenDropTargetArea();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IDragAndDropClient {
             private IBinder mRemote;
 

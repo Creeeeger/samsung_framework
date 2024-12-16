@@ -18,7 +18,6 @@ public abstract class IntegrityFormula {
     public static final int STRING_ATOMIC_FORMULA_TAG = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     @interface Tag {
     }
 
@@ -32,7 +31,6 @@ public abstract class IntegrityFormula {
 
     public abstract boolean matches(AppInstallMetadata appInstallMetadata);
 
-    /* loaded from: classes.dex */
     public static final class Application {
         public static IntegrityFormula packageNameEquals(String packageName) {
             return new AtomicFormula.StringAtomicFormula(0, packageName);
@@ -66,7 +64,6 @@ public abstract class IntegrityFormula {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Installer {
         public static IntegrityFormula packageNameEquals(String installerName) {
             return new AtomicFormula.StringAtomicFormula(2, installerName);
@@ -84,7 +81,6 @@ public abstract class IntegrityFormula {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class SourceStamp {
         public static IntegrityFormula stampCertificateHashEquals(String stampCertificateHash) {
             return new AtomicFormula.StringAtomicFormula(7, stampCertificateHash);
@@ -132,5 +128,8 @@ public abstract class IntegrityFormula {
 
     public static IntegrityFormula not(IntegrityFormula formula) {
         return new CompoundFormula(2, Arrays.asList(formula));
+    }
+
+    IntegrityFormula() {
     }
 }

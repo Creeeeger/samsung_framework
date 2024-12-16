@@ -34,7 +34,6 @@ public interface ICallDiagnosticService extends IInterface {
 
     void updateCallAudioState(CallAudioState callAudioState) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallDiagnosticService {
         @Override // com.android.internal.telecom.ICallDiagnosticService
         public void setAdapter(ICallDiagnosticServiceAdapter adapter) throws RemoteException {
@@ -78,7 +77,6 @@ public interface ICallDiagnosticService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallDiagnosticService {
         static final int TRANSACTION_callQualityChanged = 7;
         static final int TRANSACTION_initializeDiagnosticCall = 2;
@@ -145,68 +143,65 @@ public interface ICallDiagnosticService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICallDiagnosticService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICallDiagnosticService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICallDiagnosticService.DESCRIPTOR);
+                case 1:
+                    ICallDiagnosticServiceAdapter _arg0 = ICallDiagnosticServiceAdapter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setAdapter(_arg0);
+                    return true;
+                case 2:
+                    ParcelableCall _arg02 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    initializeDiagnosticCall(_arg02);
+                    return true;
+                case 3:
+                    ParcelableCall _arg03 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCall(_arg03);
+                    return true;
+                case 4:
+                    CallAudioState _arg04 = (CallAudioState) data.readTypedObject(CallAudioState.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCallAudioState(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeDiagnosticCall(_arg05);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    receiveDeviceToDeviceMessage(_arg06, _arg1, _arg2);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    CallQuality _arg12 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
+                    data.enforceNoDataAvail();
+                    callQualityChanged(_arg07, _arg12);
+                    return true;
+                case 8:
+                    BluetoothCallQualityReport _arg08 = (BluetoothCallQualityReport) data.readTypedObject(BluetoothCallQualityReport.CREATOR);
+                    data.enforceNoDataAvail();
+                    receiveBluetoothCallQualityReport(_arg08);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    DisconnectCause _arg13 = (DisconnectCause) data.readTypedObject(DisconnectCause.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyCallDisconnected(_arg09, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICallDiagnosticServiceAdapter _arg0 = ICallDiagnosticServiceAdapter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setAdapter(_arg0);
-                            return true;
-                        case 2:
-                            ParcelableCall _arg02 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            initializeDiagnosticCall(_arg02);
-                            return true;
-                        case 3:
-                            ParcelableCall _arg03 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCall(_arg03);
-                            return true;
-                        case 4:
-                            CallAudioState _arg04 = (CallAudioState) data.readTypedObject(CallAudioState.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCallAudioState(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeDiagnosticCall(_arg05);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            receiveDeviceToDeviceMessage(_arg06, _arg1, _arg2);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            CallQuality _arg12 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
-                            data.enforceNoDataAvail();
-                            callQualityChanged(_arg07, _arg12);
-                            return true;
-                        case 8:
-                            BluetoothCallQualityReport _arg08 = (BluetoothCallQualityReport) data.readTypedObject(BluetoothCallQualityReport.CREATOR);
-                            data.enforceNoDataAvail();
-                            receiveBluetoothCallQualityReport(_arg08);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            DisconnectCause _arg13 = (DisconnectCause) data.readTypedObject(DisconnectCause.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyCallDisconnected(_arg09, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICallDiagnosticService {
             private IBinder mRemote;
 

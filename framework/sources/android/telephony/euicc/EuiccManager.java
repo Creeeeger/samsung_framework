@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SystemApi;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.admin.PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -15,15 +16,17 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.telephony.euicc.IEuiccController;
+import com.android.internal.telephony.flags.Flags;
 import com.samsung.android.feature.SemFloatingFeature;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class EuiccManager {
 
     @SystemApi
@@ -83,6 +86,8 @@ public class EuiccManager {
 
     @SystemApi
     public static final int EUICC_ACTIVATION_TYPE_TRANSFER = 3;
+    public static final int EUICC_ACTIVATION_TYPE_TRANSFER_FINAL_HOLD = 5;
+    public static final long EUICC_MEMORY_FIELD_UNAVAILABLE = -1;
 
     @SystemApi
     public static final int EUICC_OTA_FAILED = 2;
@@ -152,30 +157,24 @@ public class EuiccManager {
     private final Context mContext;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ErrorCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EuiccActivationType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface OperationCode {
     }
 
-    @SystemApi
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface OtaStatus {
     }
 
     public EuiccManager(Context context) {
         this.mContext = context;
-        TelephonyManager tm = (TelephonyManager) context.getSystemService("phone");
-        this.mCardId = tm.getCardIdForDefaultEuicc();
+        this.mCardId = getCardIdForDefaultEuicc();
     }
 
     private EuiccManager(Context context, int cardId) {
@@ -204,6 +203,17 @@ public class EuiccManager {
         }
         try {
             return getIEuiccController().getEid(this.mCardId, this.mContext.getOpPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public long getAvailableMemoryInBytes() {
+        if (!isEnabled()) {
+            return -1L;
+        }
+        try {
+            return getIEuiccController().getAvailableMemoryInBytes(this.mCardId, this.mContext.getOpPackageName());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -457,13 +467,9 @@ public class EuiccManager {
 
     private boolean refreshCardIdIfUninitialized() {
         if (this.mCardId == -2) {
-            TelephonyManager tm = (TelephonyManager) this.mContext.getSystemService("phone");
-            this.mCardId = tm.getCardIdForDefaultEuicc();
+            this.mCardId = getCardIdForDefaultEuicc();
         }
-        if (this.mCardId == -2) {
-            return false;
-        }
-        return true;
+        return this.mCardId != -2;
     }
 
     private static void sendUnavailableError(PendingIntent callbackIntent) {
@@ -477,11 +483,51 @@ public class EuiccManager {
         return IEuiccController.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getEuiccControllerService().get());
     }
 
+    private int getCardIdForDefaultEuicc() {
+        if (Flags.enforceTelephonyFeatureMappingForPublicApis()) {
+            PackageManager pm = this.mContext.getPackageManager();
+            if (pm == null || !pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY_EUICC)) {
+                return -2;
+            }
+            TelephonyManager tm = (TelephonyManager) this.mContext.getSystemService(TelephonyManager.class);
+            int cardId = tm.getCardIdForDefaultEuicc();
+            return cardId;
+        }
+        TelephonyManager tm2 = (TelephonyManager) this.mContext.getSystemService(TelephonyManager.class);
+        int cardId2 = tm2.getCardIdForDefaultEuicc();
+        return cardId2;
+    }
+
     public boolean isSimPortAvailable(int portIndex) {
         try {
             return getIEuiccController().isSimPortAvailable(this.mCardId, portIndex, this.mContext.getOpPackageName());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public void setPsimConversionSupportedCarriers(Set<Integer> carrierIds) {
+        if (!isEnabled()) {
+            throw new IllegalStateException("Euicc is not enabled");
+        }
+        try {
+            int[] arr = carrierIds.stream().mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray();
+            getIEuiccController().setPsimConversionSupportedCarriers(arr);
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        }
+    }
+
+    @SystemApi
+    public boolean isPsimConversionSupported(int carrierId) {
+        if (!isEnabled()) {
+            return false;
+        }
+        try {
+            return getIEuiccController().isPsimConversionSupported(carrierId);
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
     }
 }

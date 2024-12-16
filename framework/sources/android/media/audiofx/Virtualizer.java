@@ -30,17 +30,14 @@ public class Virtualizer extends AudioEffect {
     private boolean mStrengthSupported;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ForceVirtualizationMode {
     }
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(Virtualizer virtualizer, int i, int i2, short s);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VirtualizationMode {
     }
 
@@ -198,12 +195,7 @@ public class Virtualizer extends AudioEffect {
         return 0;
     }
 
-    /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
-        /* synthetic */ BaseParameterListener(Virtualizer virtualizer, BaseParameterListenerIA baseParameterListenerIA) {
-            this();
-        }
-
         private BaseParameterListener() {
         }
 
@@ -235,14 +227,12 @@ public class Virtualizer extends AudioEffect {
         synchronized (this.mParamListenerLock) {
             if (this.mParamListener == null) {
                 this.mParamListener = listener;
-                BaseParameterListener baseParameterListener = new BaseParameterListener();
-                this.mBaseParamListener = baseParameterListener;
-                super.setParameterListener(baseParameterListener);
+                this.mBaseParamListener = new BaseParameterListener();
+                super.setParameterListener(this.mBaseParamListener);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Settings {
         public short strength;
 

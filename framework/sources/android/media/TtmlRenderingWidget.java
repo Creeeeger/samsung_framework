@@ -39,9 +39,8 @@ class TtmlRenderingWidget extends LinearLayout implements SubtitleTrack.Renderin
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mTextViewSet = new LinkedList<>();
         setLayerType(1, null);
-        CaptioningManager captioningManager = (CaptioningManager) context.getSystemService(Context.CAPTIONING_SERVICE);
-        this.mCaptionManager = captioningManager;
-        this.mCaptionStyle = captioningManager.getUserStyle();
+        this.mCaptionManager = (CaptioningManager) context.getSystemService(Context.CAPTIONING_SERVICE);
+        this.mCaptionStyle = this.mCaptionManager.getUserStyle();
         CustomTextView customTextView = new CustomTextView(context);
         customTextView.setGravity(81);
         this.mTextViewSet.addLast(customTextView);
@@ -80,12 +79,12 @@ class TtmlRenderingWidget extends LinearLayout implements SubtitleTrack.Renderin
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
     }
 
@@ -113,7 +112,7 @@ class TtmlRenderingWidget extends LinearLayout implements SubtitleTrack.Renderin
             float fontSize = this.mCaptionManager.getFontScale() * getHeight() * LINE_HEIGHT_RATIO;
             textSpan.setSpan(new BackgroundColorSpan(color), 0, subtitleText.length(), 33);
             this.mTextViewSet.get(0).setGravity(81);
-            this.mTextViewSet.get(0).setText(textSpan);
+            this.mTextViewSet.get(0).lambda$setTextAsync$0(textSpan);
             this.mTextViewSet.get(0).setTextSize(fontSize);
             float tmpTextSize = this.mTextViewSet.get(0).getTextSize();
             this.mTextViewSet.get(0).setTextSize((fontSize * fontSize) / tmpTextSize);
@@ -122,16 +121,13 @@ class TtmlRenderingWidget extends LinearLayout implements SubtitleTrack.Renderin
         }
         int i3 = getWidth();
         setSize(i3, getHeight());
-        SubtitleTrack.RenderingWidget.OnChangedListener onChangedListener = this.mListener;
-        if (onChangedListener != null) {
-            onChangedListener.onChanged(this);
+        if (this.mListener != null) {
+            this.mListener.onChanged(this);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: TtmlRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CustomTextView extends TextView {
+    private static class CustomTextView extends TextView {
         public CustomTextView(Context context) {
             super(context);
         }

@@ -41,8 +41,7 @@ public class OvershootInterpolator extends BaseInterpolator implements NativeInt
     @Override // android.animation.TimeInterpolator
     public float getInterpolation(float t) {
         float t2 = t - 1.0f;
-        float f = this.mTension;
-        return (t2 * t2 * (((f + 1.0f) * t2) + f)) + 1.0f;
+        return (t2 * t2 * (((this.mTension + 1.0f) * t2) + this.mTension)) + 1.0f;
     }
 
     @Override // android.graphics.animation.NativeInterpolator

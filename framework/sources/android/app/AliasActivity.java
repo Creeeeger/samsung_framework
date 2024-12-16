@@ -18,30 +18,24 @@ public class AliasActivity extends Activity {
     public final String ALIAS_META_DATA = "android.app.alias";
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         XmlResourceParser parser = null;
         try {
             try {
-                try {
-                    ActivityInfo ai = getPackageManager().getActivityInfo(getComponentName(), 128);
-                    parser = ai.loadXmlMetaData(getPackageManager(), "android.app.alias");
-                    if (parser == null) {
-                        throw new RuntimeException("Alias requires a meta-data field android.app.alias");
-                    }
-                    Intent intent = parseAlias(parser);
-                    if (intent == null) {
-                        throw new RuntimeException("No <intent> tag found in alias description");
-                    }
-                    startActivity(intent);
-                    finish();
-                } catch (IOException e) {
-                    throw new RuntimeException("Error parsing alias", e);
-                } catch (XmlPullParserException e2) {
-                    throw new RuntimeException("Error parsing alias", e2);
+                ActivityInfo ai = getPackageManager().getActivityInfo(getComponentName(), 128);
+                parser = ai.loadXmlMetaData(getPackageManager(), "android.app.alias");
+                if (parser == null) {
+                    throw new RuntimeException("Alias requires a meta-data field android.app.alias");
                 }
-            } catch (PackageManager.NameNotFoundException e3) {
-                throw new RuntimeException("Error parsing alias", e3);
+                Intent intent = parseAlias(parser);
+                if (intent == null) {
+                    throw new RuntimeException("No <intent> tag found in alias description");
+                }
+                startActivity(intent);
+                finish();
+            } catch (PackageManager.NameNotFoundException | IOException | XmlPullParserException e) {
+                throw new RuntimeException("Error parsing alias", e);
             }
         } finally {
             if (parser != null) {

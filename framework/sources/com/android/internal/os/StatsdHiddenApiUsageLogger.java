@@ -8,7 +8,7 @@ import com.android.internal.util.FrameworkStatsLog;
 import dalvik.system.VMRuntime;
 
 /* loaded from: classes5.dex */
-public class StatsdHiddenApiUsageLogger implements VMRuntime.HiddenApiUsageLogger {
+class StatsdHiddenApiUsageLogger implements VMRuntime.HiddenApiUsageLogger {
     private static final StatsdHiddenApiUsageLogger sInstance = new StatsdHiddenApiUsageLogger();
     private final MetricsLogger mMetricsLogger = new MetricsLogger();
     private int mHiddenApiAccessLogSampleRate = 0;
@@ -17,13 +17,12 @@ public class StatsdHiddenApiUsageLogger implements VMRuntime.HiddenApiUsageLogge
     StatsdHiddenApiUsageLogger() {
     }
 
-    public static void setHiddenApiAccessLogSampleRates(int sampleRate, int newSampleRate) {
-        StatsdHiddenApiUsageLogger statsdHiddenApiUsageLogger = sInstance;
-        statsdHiddenApiUsageLogger.mHiddenApiAccessLogSampleRate = sampleRate;
-        statsdHiddenApiUsageLogger.mHiddenApiAccessStatslogSampleRate = newSampleRate;
+    static void setHiddenApiAccessLogSampleRates(int sampleRate, int newSampleRate) {
+        sInstance.mHiddenApiAccessLogSampleRate = sampleRate;
+        sInstance.mHiddenApiAccessStatslogSampleRate = newSampleRate;
     }
 
-    public static StatsdHiddenApiUsageLogger getInstance() {
+    static StatsdHiddenApiUsageLogger getInstance() {
         return sInstance;
     }
 

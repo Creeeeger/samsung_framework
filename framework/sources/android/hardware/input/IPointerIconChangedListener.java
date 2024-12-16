@@ -13,7 +13,6 @@ public interface IPointerIconChangedListener extends IInterface {
 
     void onPointerIconChanged(int i, PointerIcon pointerIcon) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IPointerIconChangedListener {
         @Override // android.hardware.input.IPointerIconChangedListener
         public void onPointerIconChanged(int type, PointerIcon icon) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IPointerIconChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IPointerIconChangedListener {
         static final int TRANSACTION_onPointerIconChanged = 1;
 
@@ -68,26 +66,23 @@ public interface IPointerIconChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPointerIconChangedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPointerIconChangedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPointerIconChangedListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    PointerIcon _arg1 = (PointerIcon) data.readTypedObject(PointerIcon.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPointerIconChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            PointerIcon _arg1 = (PointerIcon) data.readTypedObject(PointerIcon.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPointerIconChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IPointerIconChangedListener {
+        private static class Proxy implements IPointerIconChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -5,7 +5,6 @@ public final class ProcrankProto {
     public static final long PROCESSES = 2246267895809L;
     public static final long SUMMARY = 1146756268034L;
 
-    /* loaded from: classes3.dex */
     public final class Process {
         public static final long CMDLINE = 1138166333450L;
         public static final long PID = 1120986464257L;
@@ -22,7 +21,6 @@ public final class ProcrankProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Summary {
         public static final long RAM = 1146756268035L;
         public static final long TOTAL = 1146756268033L;
@@ -31,7 +29,6 @@ public final class ProcrankProto {
         public Summary() {
         }
 
-        /* loaded from: classes3.dex */
         public final class Zram {
             public static final long RAW_TEXT = 1138166333441L;
 
@@ -39,7 +36,6 @@ public final class ProcrankProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class Ram {
             public static final long RAW_TEXT = 1138166333441L;
 

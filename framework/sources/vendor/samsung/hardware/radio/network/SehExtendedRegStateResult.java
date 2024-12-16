@@ -8,9 +8,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehExtendedRegStateResult implements Parcelable {
     public static final Parcelable.Creator<SehExtendedRegStateResult> CREATOR = new Parcelable.Creator<SehExtendedRegStateResult>() { // from class: vendor.samsung.hardware.radio.network.SehExtendedRegStateResult.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehExtendedRegStateResult createFromParcel(Parcel _aidl_source) {
             SehExtendedRegStateResult _aidl_out = new SehExtendedRegStateResult();
@@ -31,25 +28,6 @@ public class SehExtendedRegStateResult implements Parcelable {
     public int mobileOptionalRat = 0;
     public int imsEmergencyCallBarring = 0;
     public boolean isPsOnlyReg = false;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehExtendedRegStateResult$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehExtendedRegStateResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehExtendedRegStateResult createFromParcel(Parcel _aidl_source) {
-            SehExtendedRegStateResult _aidl_out = new SehExtendedRegStateResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehExtendedRegStateResult[] newArray(int _aidl_size) {
-            return new SehExtendedRegStateResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -168,7 +146,7 @@ public class SehExtendedRegStateResult implements Parcelable {
         _aidl_sj.add("imsEmergencyCallBarring: " + this.imsEmergencyCallBarring);
         _aidl_sj.add("unprocessedVoiceRegState: " + SehRegState$$.toString(this.unprocessedVoiceRegState));
         _aidl_sj.add("isPsOnlyReg: " + this.isPsOnlyReg);
-        return "vendor.samsung.hardware.radio.network.SehExtendedRegStateResult" + _aidl_sj.toString();
+        return "SehExtendedRegStateResult" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

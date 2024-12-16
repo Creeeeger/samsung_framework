@@ -8,7 +8,7 @@ import javax.crypto.Mac;
 class MacUpdatingOutputStream extends OutputStream {
     private Mac mac;
 
-    public MacUpdatingOutputStream(Mac mac) {
+    MacUpdatingOutputStream(Mac mac) {
         this.mac = mac;
     }
 

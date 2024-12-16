@@ -2,6 +2,10 @@ package android.contexthub;
 
 /* loaded from: classes.dex */
 public final class ContextHubProtoEnums {
+    public static final int SIGNIFICANT_MOTION_HIGH_MOBILITY = 3;
+    public static final int SIGNIFICANT_MOTION_LOW_MOBILITY = 2;
+    public static final int SIGNIFICANT_MOTION_STATIC_LOCATION = 1;
+    public static final int SIGNIFICANT_MOTION_UNKNOWN = 0;
     public static final int TRANSACTION_RESULT_FAILED_AT_HUB = 5;
     public static final int TRANSACTION_RESULT_FAILED_BAD_PARAMS = 2;
     public static final int TRANSACTION_RESULT_FAILED_BUSY = 4;

@@ -38,12 +38,12 @@ public class AttCertIssuer extends ASN1Object implements ASN1Choice {
 
     public AttCertIssuer(GeneralNames names) {
         this.obj = names;
-        this.choiceObj = names.toASN1Primitive();
+        this.choiceObj = this.obj.toASN1Primitive();
     }
 
     public AttCertIssuer(V2Form v2Form) {
         this.obj = v2Form;
-        this.choiceObj = new DERTaggedObject(false, 0, v2Form);
+        this.choiceObj = new DERTaggedObject(false, 0, this.obj);
     }
 
     public ASN1Encodable getIssuer() {

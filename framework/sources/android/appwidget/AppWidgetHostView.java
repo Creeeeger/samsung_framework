@@ -14,18 +14,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.Parcelable;
@@ -45,30 +38,23 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsAdapter;
 import android.widget.TextView;
 import com.android.internal.R;
 import com.samsung.android.app.SemDualAppManager;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.knox.SemPersonaManager;
-import com.samsung.android.rune.ViewRune;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 
 /* loaded from: classes.dex */
 public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppWidgetHostListener {
-    private static final String COMPLICATION_COLOR_BACKGROUND = "android:background";
-    private static final String COMPLICATION_COLOR_ON_PRIMARY = "android:onPrimary";
-    private static final String COMPLICATION_COLOR_ON_SECONDARY = "android:onSecondary";
-    private static final String COMPLICATION_COLOR_ON_TERTIARY = "android:onTertiary";
-    private static final String COMPLICATION_COLOR_PRIMARY = "android:primary";
+    private static final String APPWIDGET_HOST_OPTIONS_HOST_TYPE = "semHostType";
+    public static final int APPWIDGET_HOST_TYPE_COVER = 4;
+    public static final int APPWIDGET_HOST_TYPE_HOME = 1;
+    public static final int APPWIDGET_HOST_TYPE_LOCK_AND_AOD = 2;
     private static final int FIRST_RESOURCE_COLOR_ID = 17170461;
     private static final LayoutInflater.Filter INFLATER_FILTER = new LayoutInflater.Filter() { // from class: android.appwidget.AppWidgetHostView$$ExternalSyntheticLambda3
         @Override // android.view.LayoutInflater.Filter
@@ -91,12 +77,12 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     private Executor mAsyncExecutor;
     boolean mColorMappingChanged;
     private RemoteViews.ColorResources mColorResources;
-    private final Map<String, Integer> mComplicationColorsMap;
     private boolean mConfigChanged;
     Context mContext;
     private SizeF mCurrentSize;
     private long mDelayedRestoredInflationId;
     private SparseArray<Parcelable> mDelayedRestoredState;
+    private int mHostType;
     AppWidgetProviderInfo mInfo;
     private RemoteViews.InteractionHandler mInteractionHandler;
     private boolean mIsForcedOrientation;
@@ -106,6 +92,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     private RemoteViews mLastInflatedRemoteViews;
     private long mLastInflatedRemoteViewsId;
     int mLastViewIdToDataChanged;
+    private View.OnClickListener mOnContentAppliedListener;
     private boolean mOnLightBackground;
     Context mRemoteContext;
     View mView;
@@ -129,13 +116,23 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         this.mLastInflatedRemoteViews = null;
         this.mLastInflatedRemoteViewsId = -1L;
         this.mLastViewIdToDataChanged = -1;
-        this.mComplicationColorsMap = new HashMap();
         this.mContext = context;
         setIsRootNamespace(true);
     }
 
     public void setInteractionHandler(RemoteViews.InteractionHandler handler) {
         this.mInteractionHandler = getHandler(handler);
+    }
+
+    public static class AdapterChildHostView extends AppWidgetHostView {
+        public AdapterChildHostView(Context context) {
+            super(context);
+        }
+
+        @Override // android.appwidget.AppWidgetHostView
+        public Context getRemoteContextEnsuringCorrectCachedApkPath() {
+            return null;
+        }
     }
 
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
@@ -183,7 +180,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         SparseArray<Parcelable> jail = new SparseArray<>();
         super.dispatchSaveInstanceState(jail);
         Bundle bundle = new Bundle();
@@ -199,7 +196,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         Parcelable parcelable = container.get(generateId());
         SparseArray<Parcelable> jail = null;
         long inflationId = -1;
@@ -227,7 +224,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         try {
             super.dispatchRestoreInstanceState(state);
         } catch (Exception e) {
-            Log.e(TAG, "failed to restoreInstanceState for widget id: " + this.mAppWidgetId + ", " + (this.mInfo == null ? SemCapabilities.FEATURE_TAG_NULL : this.mInfo.provider), e);
+            Log.e(TAG, "failed to restoreInstanceState for widget id: " + this.mAppWidgetId + ", " + (this.mInfo == null ? "null" : this.mInfo.provider), e);
         }
     }
 
@@ -237,14 +234,13 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         RemoteViews toApply;
         try {
             SizeF oldSize = this.mCurrentSize;
             SizeF newSize = computeSizeFromLayout(left, top, right, bottom);
             this.mCurrentSize = newSize;
-            RemoteViews remoteViews = this.mLastInflatedRemoteViews;
-            if (remoteViews != null && (toApply = remoteViews.getRemoteViewsToApplyIfDifferent(oldSize, newSize)) != null) {
+            if (this.mLastInflatedRemoteViews != null && (toApply = this.mLastInflatedRemoteViews.getRemoteViewsToApplyIfDifferent(oldSize, newSize)) != null) {
                 applyRemoteViews(toApply, false);
                 measureChildWithMargins(this.mView, View.MeasureSpec.makeMeasureSpec(getMeasuredWidth(), 1073741824), 0, View.MeasureSpec.makeMeasureSpec(getMeasuredHeight(), 1073741824), 0);
             }
@@ -255,6 +251,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleViewError() {
         removeViewInLayout(this.mView);
         View child = getErrorView();
@@ -344,17 +341,13 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup
     public FrameLayout.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        Context context = this.mRemoteContext;
-        if (context == null) {
-            context = this.mContext;
-        }
+        Context context = this.mRemoteContext != null ? this.mRemoteContext : this.mContext;
         return new FrameLayout.LayoutParams(context, attrs);
     }
 
     public void setExecutor(Executor executor) {
-        CancellationSignal cancellationSignal = this.mLastExecutionSignal;
-        if (cancellationSignal != null) {
-            cancellationSignal.cancel();
+        if (this.mLastExecutionSignal != null) {
+            this.mLastExecutionSignal.cancel();
             this.mLastExecutionSignal = null;
         }
         this.mAsyncExecutor = executor;
@@ -375,12 +368,10 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     public void updateAppWidget(RemoteViews remoteViews) {
         this.mLastInflatedRemoteViews = remoteViews;
         applyRemoteViews(remoteViews, true);
-        AppWidgetProviderInfo appWidgetProviderInfo = this.mInfo;
-        if (appWidgetProviderInfo != null && appWidgetProviderInfo.getProfile() != null && SemDualAppManager.isDualAppId(this.mInfo.getProfile().getIdentifier())) {
+        if (this.mInfo != null && this.mInfo.getProfile() != null && SemDualAppManager.isDualAppId(this.mInfo.getProfile().getIdentifier())) {
             SemDualAppManager.drawDualAppBadge(this.mContext, this, this.mInfo.getProfile());
         }
-        AppWidgetProviderInfo appWidgetProviderInfo2 = this.mInfo;
-        if (appWidgetProviderInfo2 != null && appWidgetProviderInfo2.getProfile() != null && SemPersonaManager.isKnoxId(this.mInfo.getProfile().getIdentifier())) {
+        if (this.mInfo != null && this.mInfo.getProfile() != null && SemPersonaManager.isKnoxId(this.mInfo.getProfile().getIdentifier())) {
             SemPersonaManager.drawKnoxAppBadge(this.mContext, this, this.mInfo.getProfile());
         }
     }
@@ -392,14 +383,13 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         restoreHierarchyState(savedState);
     }
 
-    public void applyRemoteViews(RemoteViews remoteViews, boolean useAsyncIfPossible) {
+    protected void applyRemoteViews(RemoteViews remoteViews, boolean useAsyncIfPossible) {
         boolean recycled = false;
         View content = null;
         Exception exception = null;
         this.mLastInflatedRemoteViewsId = -1L;
-        CancellationSignal cancellationSignal = this.mLastExecutionSignal;
-        if (cancellationSignal != null) {
-            cancellationSignal.cancel();
+        if (this.mLastExecutionSignal != null) {
+            this.mLastExecutionSignal.cancel();
             this.mLastExecutionSignal = null;
         }
         if (remoteViews == null) {
@@ -445,8 +435,8 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         applyContent(content, recycled, exception);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void applyContent(View content, boolean recycled, Exception exception) {
-        AppWidgetProviderInfo appWidgetProviderInfo;
         this.mColorMappingChanged = false;
         if (content == null) {
             if (this.mViewMode == 2) {
@@ -459,25 +449,40 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
             this.mViewMode = 2;
         }
         if (!recycled) {
-            prepareView(content);
-            addView(content);
+            try {
+                prepareView(content);
+                addView(content);
+            } catch (Exception e) {
+                removeViewInLayout(content);
+                View child = getErrorView();
+                prepareView(child);
+                addViewInLayout(child, 0, child.getLayoutParams());
+                measureChild(child, View.MeasureSpec.makeMeasureSpec(getMeasuredWidth(), 1073741824), View.MeasureSpec.makeMeasureSpec(getMeasuredHeight(), 1073741824));
+                child.layout(0, 0, child.getMeasuredWidth() + this.mPaddingLeft + this.mPaddingRight, child.getMeasuredHeight() + this.mPaddingTop + this.mPaddingBottom);
+                this.mView = child;
+                this.mViewMode = 2;
+                Log.e(TAG, "Error on prepare/add Views", e);
+                return;
+            }
         }
-        View view = this.mView;
-        if (view != content) {
-            removeView(view);
+        if (this.mView != content) {
+            removeView(this.mView);
             this.mView = content;
         }
-        if (ViewRune.APPWIDGET_COMPLICATION && (appWidgetProviderInfo = this.mInfo) != null && appWidgetProviderInfo.widgetCategory == 8192 && !this.mComplicationColorsMap.isEmpty()) {
-            traverseAndSetColor(this);
+        if (this.mOnContentAppliedListener != null) {
+            this.mOnContentAppliedListener.onClick(content);
         }
+    }
+
+    private void hidden_semSetOnContentAppliedListener(View.OnClickListener l) {
+        this.mOnContentAppliedListener = l;
     }
 
     private void inflateAsync(RemoteViews remoteViews) {
         this.mRemoteContext = getRemoteContextEnsuringCorrectCachedApkPath();
         int layoutId = remoteViews.getLayoutId();
-        CancellationSignal cancellationSignal = this.mLastExecutionSignal;
-        if (cancellationSignal != null) {
-            cancellationSignal.cancel();
+        if (this.mLastExecutionSignal != null) {
+            this.mLastExecutionSignal.cancel();
         }
         if (!this.mColorMappingChanged && remoteViews.canRecycleView(this.mView) && !this.mConfigChanged) {
             try {
@@ -491,8 +496,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         this.mConfigChanged = false;
     }
 
-    /* loaded from: classes.dex */
-    public class ViewApplyListener implements RemoteViews.OnViewAppliedListener {
+    private class ViewApplyListener implements RemoteViews.OnViewAppliedListener {
         private final boolean mIsReapply;
         private final int mLayoutId;
         private final RemoteViews mViews;
@@ -513,8 +517,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
                 Log.i(AppWidgetHostView.TAG, "onViewApplied, Trigger viewDataChanged for viewId : " + viewId);
                 AppWidgetHostView.this.onViewDataChanged(viewId);
             }
-            AppWidgetHostView appWidgetHostView = AppWidgetHostView.this;
-            appWidgetHostView.mLastInflatedRemoteViewsId = this.mViews.computeUniqueId(appWidgetHostView.mLastInflatedRemoteViews);
+            AppWidgetHostView.this.mLastInflatedRemoteViewsId = this.mViews.computeUniqueId(AppWidgetHostView.this.mLastInflatedRemoteViews);
             AppWidgetHostView.this.restoreInstanceState();
             AppWidgetHostView.this.mLastExecutionSignal = null;
         }
@@ -522,11 +525,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         @Override // android.widget.RemoteViews.OnViewAppliedListener
         public void onError(Exception e) {
             if (this.mIsReapply) {
-                AppWidgetHostView appWidgetHostView = AppWidgetHostView.this;
-                RemoteViews remoteViews = this.mViews;
-                Context context = appWidgetHostView.mContext;
-                AppWidgetHostView appWidgetHostView2 = AppWidgetHostView.this;
-                appWidgetHostView.mLastExecutionSignal = remoteViews.applyAsync(context, appWidgetHostView2, appWidgetHostView2.mAsyncExecutor, new ViewApplyListener(this.mViews, this.mLayoutId, false), AppWidgetHostView.this.mInteractionHandler, AppWidgetHostView.this.mCurrentSize);
+                AppWidgetHostView.this.mLastExecutionSignal = this.mViews.applyAsync(AppWidgetHostView.this.mContext, AppWidgetHostView.this, AppWidgetHostView.this.mAsyncExecutor, AppWidgetHostView.this.new ViewApplyListener(this.mViews, this.mLayoutId, false), AppWidgetHostView.this.mInteractionHandler, AppWidgetHostView.this.mCurrentSize);
             } else {
                 AppWidgetHostView.this.applyContent(null, false, e);
             }
@@ -560,9 +559,8 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
             ApplicationInfo expectedAppInfo = this.mInfo.providerInfo.applicationInfo;
             LoadedApk.checkAndUpdateApkPaths(expectedAppInfo);
             Context newContext = this.mContext.createApplicationContext(this.mInfo.providerInfo.applicationInfo, 4);
-            RemoteViews.ColorResources colorResources = this.mColorResources;
-            if (colorResources != null) {
-                colorResources.apply(newContext);
+            if (this.mColorResources != null) {
+                this.mColorResources.apply(newContext);
             }
             return newContext;
         } catch (PackageManager.NameNotFoundException e) {
@@ -672,6 +670,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         return defaultView;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onDefaultViewClicked(View view) {
         if (this.mInfo != null) {
             LauncherApps launcherApps = (LauncherApps) getContext().getSystemService(LauncherApps.class);
@@ -733,8 +732,12 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$getHandler$1(RemoteViews.InteractionHandler handler, View view, PendingIntent pendingIntent, RemoteViews.RemoteResponse response) {
-        AppWidgetManager.getInstance(this.mContext).noteAppWidgetTapped(this.mAppWidgetId);
+        AppWidgetManager manager = AppWidgetManager.getInstance(this.mContext);
+        if (manager != null) {
+            manager.noteAppWidgetTapped(this.mAppWidgetId);
+        }
         if (handler != null) {
             return handler.onInteraction(view, pendingIntent, response);
         }
@@ -742,21 +745,31 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     }
 
     public void setColorResources(SparseIntArray colorMapping) {
-        RemoteViews.ColorResources colorResources = this.mColorResources;
-        if (colorResources != null && isSameColorMapping(colorResources.getColorMapping(), colorMapping)) {
+        if (this.mColorResources != null && isSameColorMapping(this.mColorResources.getColorMapping(), colorMapping)) {
             return;
         }
         setColorResources(RemoteViews.ColorResources.create(this.mContext, colorMapping));
+    }
+
+    private void setColorResourcesStates(RemoteViews.ColorResources colorResources) {
+        this.mColorResources = colorResources;
+        this.mColorMappingChanged = true;
+        this.mViewMode = 0;
     }
 
     public void setColorResources(RemoteViews.ColorResources colorResources) {
         if (colorResources == this.mColorResources) {
             return;
         }
-        this.mColorResources = colorResources;
-        this.mColorMappingChanged = true;
-        this.mViewMode = 0;
+        setColorResourcesStates(colorResources);
         reapplyLastRemoteViews();
+    }
+
+    public void setColorResourcesNoReapply(RemoteViews.ColorResources colorResources) {
+        if (colorResources == this.mColorResources) {
+            return;
+        }
+        setColorResourcesStates(colorResources);
     }
 
     private boolean isSameColorMapping(SparseIntArray oldColors, SparseIntArray newColors) {
@@ -781,7 +794,7 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         try {
             super.dispatchDraw(canvas);
         } catch (Exception e) {
@@ -806,20 +819,19 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
     public void semForceOrientation(boolean forced, boolean isPortrait) {
         Log.d(TAG, "force orientation - forced=" + forced + ", isPortrait=" + isPortrait);
         this.mIsForcedOrientation = forced;
-        if (forced) {
+        if (this.mIsForcedOrientation) {
             this.mIsPortrait = isPortrait;
         }
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Configuration configuration = this.mLastConfig;
-        if (configuration == null) {
+        if (this.mLastConfig == null) {
             this.mLastConfig = newConfig;
             this.mConfigChanged = true;
         } else {
-            if (configuration.equals(newConfig)) {
+            if (this.mLastConfig.equals(newConfig)) {
                 return;
             }
             this.mLastConfig = newConfig;
@@ -827,77 +839,11 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         }
     }
 
-    public void hidden_semSetComplicationColor(int baseColor) {
-        int color = 16777215 & baseColor;
-        this.mComplicationColorsMap.put(COMPLICATION_COLOR_PRIMARY, Integer.valueOf(color | 1073741824));
-        this.mComplicationColorsMap.put(COMPLICATION_COLOR_ON_PRIMARY, Integer.valueOf((-16777216) | color));
-        this.mComplicationColorsMap.put(COMPLICATION_COLOR_ON_SECONDARY, Integer.valueOf((-872415232) | color));
-        this.mComplicationColorsMap.put(COMPLICATION_COLOR_ON_TERTIARY, Integer.valueOf((-1291845632) | color));
-        this.mComplicationColorsMap.put(COMPLICATION_COLOR_BACKGROUND, Integer.valueOf(1073741824 | color));
-        Log.d(TAG, "Changed base color(" + baseColor + ") and set primary : " + this.mComplicationColorsMap);
-        traverseAndSetColor(this);
+    private void hidden_semSetOptions(Bundle options) {
+        this.mHostType = options.getInt(APPWIDGET_HOST_OPTIONS_HOST_TYPE, 0);
     }
 
-    private void traverseAndSetColor(View view) {
-        if (view instanceof ViewGroup) {
-            Drawable d = view.getBackground();
-            if (d instanceof GradientDrawable) {
-                GradientDrawable gd = (GradientDrawable) d;
-                if (gd.getColor() != null) {
-                    int alpha = (-16777216) & gd.getColor().getDefaultColor();
-                    int color = (16777215 & this.mComplicationColorsMap.get(COMPLICATION_COLOR_PRIMARY).intValue()) | alpha;
-                    gd.setColor(color);
-                    view.setBackground(gd);
-                }
-            } else if (d instanceof ColorDrawable) {
-                ColorDrawable cd = (ColorDrawable) d;
-                int alpha2 = (-16777216) & cd.getColor();
-                int color2 = (16777215 & this.mComplicationColorsMap.get(COMPLICATION_COLOR_PRIMARY).intValue()) | alpha2;
-                view.setBackgroundColor(color2);
-            }
-            ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                View childView = viewGroup.getChildAt(i);
-                traverseAndSetColor(childView);
-            }
-            return;
-        }
-        Log.d(TAG, "Child view : " + view);
-        if (!(view instanceof ImageView)) {
-            if (view instanceof TextView) {
-                ((TextView) view).setTextColor((-16777216) | (16777215 & this.mComplicationColorsMap.get(COMPLICATION_COLOR_PRIMARY).intValue()));
-                return;
-            } else {
-                if (view instanceof ProgressBar) {
-                    ProgressBar progressBar = (ProgressBar) view;
-                    progressBar.setProgressTintList(ColorStateList.valueOf(this.mComplicationColorsMap.get(COMPLICATION_COLOR_ON_PRIMARY).intValue()));
-                    progressBar.setProgressBackgroundTintList(ColorStateList.valueOf(this.mComplicationColorsMap.get(COMPLICATION_COLOR_PRIMARY).intValue()));
-                    progressBar.invalidate();
-                    return;
-                }
-                return;
-            }
-        }
-        ImageView imageView = (ImageView) view;
-        Drawable targetDrawable = imageView.getDrawable();
-        if (targetDrawable instanceof VectorDrawable) {
-            VectorDrawable vectorDrawable = (VectorDrawable) targetDrawable;
-            for (Map.Entry<String, Integer> m : this.mComplicationColorsMap.entrySet()) {
-                if (m.getKey() != COMPLICATION_COLOR_BACKGROUND) {
-                    vectorDrawable.setPathColor(m.getKey(), m.getValue().intValue());
-                }
-            }
-            view.invalidate();
-            return;
-        }
-        ColorFilter colorFilter = imageView.getColorFilter();
-        if (colorFilter instanceof PorterDuffColorFilter) {
-            PorterDuffColorFilter porterDuffColorFilter = (PorterDuffColorFilter) colorFilter;
-            int alpha3 = (-16777216) & porterDuffColorFilter.getColor();
-            imageView.setColorFilter((16777215 & this.mComplicationColorsMap.get(COMPLICATION_COLOR_ON_PRIMARY).intValue()) | alpha3);
-            view.invalidate();
-            return;
-        }
-        Log.d(TAG, "This is not PorterDuffColorFilter");
+    public int getHostType() {
+        return this.mHostType;
     }
 }

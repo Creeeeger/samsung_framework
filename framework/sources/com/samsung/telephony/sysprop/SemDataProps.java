@@ -55,15 +55,8 @@ public final class SemDataProps {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {

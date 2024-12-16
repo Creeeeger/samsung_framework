@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class ListenerTransportManager<TTransport extends ListenerTransport<?>> {
     private final Map<Object, WeakReference<TTransport>> mRegistrations;
 
@@ -15,7 +15,7 @@ public abstract class ListenerTransportManager<TTransport extends ListenerTransp
 
     protected abstract void unregisterTransport(TTransport ttransport) throws RemoteException;
 
-    public ListenerTransportManager(boolean allowServerSideTransportRemoval) {
+    protected ListenerTransportManager(boolean allowServerSideTransportRemoval) {
         if (allowServerSideTransportRemoval) {
             this.mRegistrations = new WeakHashMap();
         } else {

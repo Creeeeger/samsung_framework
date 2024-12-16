@@ -6,7 +6,6 @@ public interface ISpqrService extends IInterface {
 
     boolean createInvariantProfile(String str, String str2, int i, int i2, String str3, String str4, String str5, String str6) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISpqrService {
         @Override // android.os.ISpqrService
         public boolean createInvariantProfile(String oldPkgPath, String newPkgPath, int userId, int appId, String packageName, String profPath, String oldVersionName, String newVersionName) throws RemoteException {
@@ -19,7 +18,6 @@ public interface ISpqrService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISpqrService {
         static final int TRANSACTION_createInvariantProfile = 1;
 
@@ -62,33 +60,30 @@ public interface ISpqrService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpqrService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpqrService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpqrService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    String _arg4 = data.readString();
+                    String _arg5 = data.readString();
+                    String _arg6 = data.readString();
+                    String _arg7 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = createInvariantProfile(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            String _arg4 = data.readString();
-                            String _arg5 = data.readString();
-                            String _arg6 = data.readString();
-                            String _arg7 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = createInvariantProfile(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ISpqrService {
             private IBinder mRemote;
 

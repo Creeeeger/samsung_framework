@@ -1,5 +1,6 @@
 package com.android.internal.widget;
 
+import android.app.blob.XmlTags;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -20,7 +21,6 @@ public class NumericTextView extends TextView {
     private boolean mShowLeadingZeroes;
     private int mValue;
 
-    /* loaded from: classes5.dex */
     public interface OnValueChangedListener {
         void onValueChanged(NumericTextView numericTextView, int i, boolean z, boolean z2);
     }
@@ -37,30 +37,27 @@ public class NumericTextView extends TextView {
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
         if (focused) {
             this.mPreviousValue = this.mValue;
             this.mValue = 0;
             this.mCount = 0;
             setHint(getText());
-            setText("");
+            lambda$setTextAsync$0("");
             return;
         }
         if (this.mCount == 0) {
             this.mValue = this.mPreviousValue;
-            setText(getHint());
+            lambda$setTextAsync$0(getHint());
             setHint("");
         }
-        int i = this.mValue;
-        int i2 = this.mMinValue;
-        if (i < i2) {
-            this.mValue = i2;
+        if (this.mValue < this.mMinValue) {
+            this.mValue = this.mMinValue;
         }
         setValue(this.mValue);
-        OnValueChangedListener onValueChangedListener = this.mListener;
-        if (onValueChangedListener != null) {
-            onValueChangedListener.onValueChanged(this, this.mValue, true, true);
+        if (this.mListener != null) {
+            this.mListener.onValueChanged(this, this.mValue, true, true);
         }
     }
 
@@ -109,25 +106,25 @@ public class NumericTextView extends TextView {
     private void updateDisplayedValue() {
         String format;
         if (this.mShowLeadingZeroes) {
-            format = "%0" + this.mMaxCount + "d";
+            format = "%0" + this.mMaxCount + XmlTags.ATTR_DESCRIPTION;
         } else {
             format = "%d";
         }
-        setText(String.format(format, Integer.valueOf(this.mValue)));
+        lambda$setTextAsync$0(String.format(format, Integer.valueOf(this.mValue)));
     }
 
     private void updateMinimumWidth() {
         CharSequence previousText = getText();
         int maxWidth = 0;
         for (int i = 0; i < this.mMaxValue; i++) {
-            setText(String.format("%0" + this.mMaxCount + "d", Integer.valueOf(i)));
+            lambda$setTextAsync$0(String.format("%0" + this.mMaxCount + XmlTags.ATTR_DESCRIPTION, Integer.valueOf(i)));
             measure(0, 0);
             int width = getMeasuredWidth();
             if (width > maxWidth) {
                 maxWidth = width;
             }
         }
-        setText(previousText);
+        lambda$setTextAsync$0(previousText);
         setMinWidth(maxWidth);
         setMinimumWidth(maxWidth);
     }
@@ -158,10 +155,9 @@ public class NumericTextView extends TextView {
     private boolean handleKeyUp(int keyCode) {
         String formattedValue;
         if (keyCode == 67) {
-            int i = this.mCount;
-            if (i > 0) {
+            if (this.mCount > 0) {
                 this.mValue /= 10;
-                this.mCount = i - 1;
+                this.mCount--;
             }
         } else {
             if (!isKeyCodeNumeric(keyCode)) {
@@ -177,17 +173,15 @@ public class NumericTextView extends TextView {
             }
         }
         if (this.mCount > 0) {
-            formattedValue = String.format("%0" + this.mCount + "d", Integer.valueOf(this.mValue));
+            formattedValue = String.format("%0" + this.mCount + XmlTags.ATTR_DESCRIPTION, Integer.valueOf(this.mValue));
         } else {
             formattedValue = "";
         }
-        setText(formattedValue);
-        OnValueChangedListener onValueChangedListener = this.mListener;
-        if (onValueChangedListener != null) {
-            int i2 = this.mValue;
-            boolean isValid = i2 >= this.mMinValue;
-            boolean isFinished = this.mCount >= this.mMaxCount || i2 * 10 > this.mMaxValue;
-            onValueChangedListener.onValueChanged(this, i2, isValid, isFinished);
+        lambda$setTextAsync$0(formattedValue);
+        if (this.mListener != null) {
+            boolean isValid = this.mValue >= this.mMinValue;
+            boolean isFinished = this.mCount >= this.mMaxCount || this.mValue * 10 > this.mMaxValue;
+            this.mListener.onValueChanged(this, this.mValue, isValid, isFinished);
         }
         return true;
     }

@@ -10,14 +10,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class SelectionsRequest implements Parcelable {
     public static final Parcelable.Creator<SelectionsRequest> CREATOR = new Parcelable.Creator<SelectionsRequest>() { // from class: android.app.contentsuggestions.SelectionsRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectionsRequest createFromParcel(Parcel source) {
             return new SelectionsRequest(source.readInt(), (Point) source.readTypedObject(Point.CREATOR), source.readBundle());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectionsRequest[] newArray(int size) {
             return new SelectionsRequest[size];
@@ -26,10 +25,6 @@ public final class SelectionsRequest implements Parcelable {
     private final Bundle mExtras;
     private final Point mInterestPoint;
     private final int mTaskId;
-
-    /* synthetic */ SelectionsRequest(int i, Point point, Bundle bundle, SelectionsRequestIA selectionsRequestIA) {
-        this(i, point, bundle);
-    }
 
     private SelectionsRequest(int taskId, Point interestPoint, Bundle extras) {
         this.mTaskId = taskId;
@@ -46,8 +41,7 @@ public final class SelectionsRequest implements Parcelable {
     }
 
     public Bundle getExtras() {
-        Bundle bundle = this.mExtras;
-        return bundle == null ? new Bundle() : bundle;
+        return this.mExtras == null ? new Bundle() : this.mExtras;
     }
 
     @Override // android.os.Parcelable
@@ -62,25 +56,7 @@ public final class SelectionsRequest implements Parcelable {
         dest.writeBundle(this.mExtras);
     }
 
-    /* renamed from: android.app.contentsuggestions.SelectionsRequest$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SelectionsRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectionsRequest createFromParcel(Parcel source) {
-            return new SelectionsRequest(source.readInt(), (Point) source.readTypedObject(Point.CREATOR), source.readBundle());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectionsRequest[] newArray(int size) {
-            return new SelectionsRequest[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private Bundle mExtras;
         private Point mInterestPoint;

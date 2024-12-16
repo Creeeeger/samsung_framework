@@ -2,6 +2,7 @@ package android.filterfw.core;
 
 import android.filterpacks.base.FrameBranch;
 import android.filterpacks.base.NullFilter;
+import android.media.MediaMetrics;
 import android.telecom.Logging.Session;
 import android.util.Log;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class FilterGraph {
     private int mTypeCheckMode = 2;
     private boolean mDiscardUnconnectedOutputs = false;
     private String TAG = "FilterGraph";
-    private boolean mLogVerbose = Log.isLoggable("FilterGraph", 2);
+    private boolean mLogVerbose = Log.isLoggable(this.TAG, 2);
 
     public boolean addFilter(Filter filter) {
         if (!containsFilter(filter)) {
@@ -194,109 +195,36 @@ public class FilterGraph {
         }
     }
 
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0085, code lost:
-    
-        if (r4 == false) goto L63;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x00ba, code lost:
-    
-        throw new java.lang.RuntimeException("Type mismatch: Filter " + r8 + " expects a format of type " + r3 + " but got a format of type " + r2 + "!");
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void runTypeCheckOn(android.filterfw.core.Filter r8) {
-        /*
-            r7 = this;
-            java.util.Collection r0 = r8.getInputPorts()
-            java.util.Iterator r0 = r0.iterator()
-        L8:
-            boolean r1 = r0.hasNext()
-            if (r1 == 0) goto Lbd
-            java.lang.Object r1 = r0.next()
-            android.filterfw.core.InputPort r1 = (android.filterfw.core.InputPort) r1
-            boolean r2 = r7.mLogVerbose
-            if (r2 == 0) goto L30
-            java.lang.String r2 = r7.TAG
-            java.lang.StringBuilder r3 = new java.lang.StringBuilder
-            r3.<init>()
-            java.lang.String r4 = "Type checking port "
-            java.lang.StringBuilder r3 = r3.append(r4)
-            java.lang.StringBuilder r3 = r3.append(r1)
-            java.lang.String r3 = r3.toString()
-            android.util.Log.v(r2, r3)
-        L30:
-            android.filterfw.core.FrameFormat r2 = r1.getSourceFormat()
-            android.filterfw.core.FrameFormat r3 = r1.getPortFormat()
-            if (r2 == 0) goto Lbb
-            if (r3 == 0) goto Lbb
-            boolean r4 = r7.mLogVerbose
-            if (r4 == 0) goto L68
-            java.lang.String r4 = r7.TAG
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder
-            r5.<init>()
-            java.lang.String r6 = "Checking "
-            java.lang.StringBuilder r5 = r5.append(r6)
-            java.lang.StringBuilder r5 = r5.append(r2)
-            java.lang.String r6 = " against "
-            java.lang.StringBuilder r5 = r5.append(r6)
-            java.lang.StringBuilder r5 = r5.append(r3)
-            java.lang.String r6 = "."
-            java.lang.StringBuilder r5 = r5.append(r6)
-            java.lang.String r5 = r5.toString()
-            android.util.Log.v(r4, r5)
-        L68:
-            r4 = 1
-            int r5 = r7.mTypeCheckMode
-            r6 = 0
-            switch(r5) {
-                case 0: goto L81;
-                case 1: goto L78;
-                case 2: goto L70;
-                default: goto L6f;
+    private void runTypeCheckOn(Filter filter) {
+        for (InputPort inputPort : filter.getInputPorts()) {
+            if (this.mLogVerbose) {
+                Log.v(this.TAG, "Type checking port " + inputPort);
             }
-        L6f:
-            goto L85
-        L70:
-            boolean r4 = r2.isCompatibleWith(r3)
-            r1.setChecksType(r6)
-            goto L85
-        L78:
-            boolean r4 = r2.mayBeCompatibleWith(r3)
-            r5 = 1
-            r1.setChecksType(r5)
-            goto L85
-        L81:
-            r1.setChecksType(r6)
-        L85:
-            if (r4 == 0) goto L88
-            goto Lbb
-        L88:
-            java.lang.RuntimeException r0 = new java.lang.RuntimeException
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder
-            r5.<init>()
-            java.lang.String r6 = "Type mismatch: Filter "
-            java.lang.StringBuilder r5 = r5.append(r6)
-            java.lang.StringBuilder r5 = r5.append(r8)
-            java.lang.String r6 = " expects a format of type "
-            java.lang.StringBuilder r5 = r5.append(r6)
-            java.lang.StringBuilder r5 = r5.append(r3)
-            java.lang.String r6 = " but got a format of type "
-            java.lang.StringBuilder r5 = r5.append(r6)
-            java.lang.StringBuilder r5 = r5.append(r2)
-            java.lang.String r6 = "!"
-            java.lang.StringBuilder r5 = r5.append(r6)
-            java.lang.String r5 = r5.toString()
-            r0.<init>(r5)
-            throw r0
-        Lbb:
-            goto L8
-        Lbd:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.filterfw.core.FilterGraph.runTypeCheckOn(android.filterfw.core.Filter):void");
+            FrameFormat sourceFormat = inputPort.getSourceFormat();
+            FrameFormat targetFormat = inputPort.getPortFormat();
+            if (sourceFormat != null && targetFormat != null) {
+                if (this.mLogVerbose) {
+                    Log.v(this.TAG, "Checking " + sourceFormat + " against " + targetFormat + MediaMetrics.SEPARATOR);
+                }
+                boolean compatible = true;
+                switch (this.mTypeCheckMode) {
+                    case 0:
+                        inputPort.setChecksType(false);
+                        break;
+                    case 1:
+                        compatible = sourceFormat.mayBeCompatibleWith(targetFormat);
+                        inputPort.setChecksType(true);
+                        break;
+                    case 2:
+                        compatible = sourceFormat.isCompatibleWith(targetFormat);
+                        inputPort.setChecksType(false);
+                        break;
+                }
+                if (!compatible) {
+                    throw new RuntimeException("Type mismatch: Filter " + filter + " expects a format of type " + targetFormat + " but got a format of type " + sourceFormat + "!");
+                }
+            }
+        }
     }
 
     private void checkConnections() {
@@ -388,7 +316,7 @@ public class FilterGraph {
         return sourceFilters;
     }
 
-    public void setupFilters() {
+    void setupFilters() {
         if (this.mDiscardUnconnectedOutputs) {
             discardUnconnectedOutputs();
         }

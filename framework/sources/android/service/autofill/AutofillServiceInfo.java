@@ -33,6 +33,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes3.dex */
 public final class AutofillServiceInfo {
+    private static final ComponentName CREDMAN_SERVICE_COMPONENT_NAME = new ComponentName("com.android.credentialmanager", "com.android.credentialmanager.autofill.CredentialAutofillService");
     private static final String TAG = "AutofillServiceInfo";
     private static final String TAG_AUTOFILL_SERVICE = "autofill-service";
     private static final String TAG_COMPATIBILITY_PACKAGE = "compatibility-package";
@@ -41,10 +42,6 @@ public final class AutofillServiceInfo {
     private final String mPasswordsActivity;
     private final ServiceInfo mServiceInfo;
     private final String mSettingsActivity;
-
-    /* synthetic */ AutofillServiceInfo(String str, AutofillServiceInfoIA autofillServiceInfoIA) {
-        this(str);
-    }
 
     private static ServiceInfo getServiceInfoOrThrow(ComponentName comp, int userHandle) throws PackageManager.NameNotFoundException {
         try {
@@ -184,17 +181,15 @@ public final class AutofillServiceInfo {
     }
 
     private AutofillServiceInfo(String passwordsActivity) {
-        ServiceInfo serviceInfo = new ServiceInfo();
-        this.mServiceInfo = serviceInfo;
-        serviceInfo.applicationInfo = new ApplicationInfo();
-        serviceInfo.packageName = "com.android.test";
+        this.mServiceInfo = new ServiceInfo();
+        this.mServiceInfo.applicationInfo = new ApplicationInfo();
+        this.mServiceInfo.packageName = "com.android.test";
         this.mSettingsActivity = null;
         this.mPasswordsActivity = passwordsActivity;
         this.mCompatibilityPackages = null;
         this.mInlineSuggestionsEnabled = false;
     }
 
-    /* loaded from: classes3.dex */
     public static final class TestDataBuilder {
         private String mPasswordsActivity;
 
@@ -233,13 +228,31 @@ public final class AutofillServiceInfo {
         List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServicesAsUser(new Intent(AutofillService.SERVICE_INTERFACE), 128, user);
         for (ResolveInfo resolveInfo : resolveInfos) {
             ServiceInfo serviceInfo = resolveInfo.serviceInfo;
-            try {
-                services.add(new AutofillServiceInfo(context, serviceInfo));
-            } catch (SecurityException e) {
-                Log.w(TAG, "Error getting info for " + serviceInfo + ": " + e);
+            if (serviceInfo != null) {
+                try {
+                } catch (SecurityException e) {
+                    Log.w(TAG, "Error getting info for " + serviceInfo + ": " + e);
+                }
+                if (isCredentialManagerAutofillService(context, serviceInfo.getComponentName())) {
+                }
             }
+            services.add(new AutofillServiceInfo(context, serviceInfo));
         }
         return services;
+    }
+
+    private static boolean isCredentialManagerAutofillService(Context context, ComponentName componentName) {
+        if (componentName == null) {
+            return false;
+        }
+        ComponentName credAutofillService = null;
+        String credentialManagerAutofillCompName = context.getResources().getString(R.string.config_defaultCredentialManagerAutofillService);
+        if (credentialManagerAutofillCompName != null && !credentialManagerAutofillCompName.isEmpty()) {
+            credAutofillService = ComponentName.unflattenFromString(credentialManagerAutofillCompName);
+        } else {
+            Log.w(TAG, "Invalid CredentialAutofillService");
+        }
+        return componentName.equals(credAutofillService);
     }
 
     public String toString() {
@@ -248,9 +261,7 @@ public final class AutofillServiceInfo {
         builder.append(NavigationBarInflaterView.SIZE_MOD_START).append(this.mServiceInfo);
         builder.append(", settings:").append(this.mSettingsActivity);
         builder.append(", passwords activity:").append(this.mPasswordsActivity);
-        StringBuilder append = builder.append(", hasCompatPckgs:");
-        ArrayMap<String, Long> arrayMap = this.mCompatibilityPackages;
-        append.append((arrayMap == null || arrayMap.isEmpty()) ? false : true).append(NavigationBarInflaterView.SIZE_MOD_END);
+        builder.append(", hasCompatPckgs:").append((this.mCompatibilityPackages == null || this.mCompatibilityPackages.isEmpty()) ? false : true).append(NavigationBarInflaterView.SIZE_MOD_END);
         builder.append(", inline suggestions enabled:").append(this.mInlineSuggestionsEnabled);
         return builder.toString();
     }

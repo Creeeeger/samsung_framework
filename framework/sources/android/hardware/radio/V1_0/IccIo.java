@@ -63,16 +63,16 @@ public final class IccIo {
         this.command = _hidl_blob.getInt32(_hidl_offset + 0);
         this.fileId = _hidl_blob.getInt32(_hidl_offset + 4);
         this.path = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.path.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         this.p1 = _hidl_blob.getInt32(_hidl_offset + 24);
         this.p2 = _hidl_blob.getInt32(_hidl_offset + 28);
         this.p3 = _hidl_blob.getInt32(_hidl_offset + 32);
         this.data = _hidl_blob.getString(_hidl_offset + 40);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
+        parcel.readEmbeddedBuffer(this.data.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
         this.pin2 = _hidl_blob.getString(_hidl_offset + 56);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 56 + 0, false);
+        parcel.readEmbeddedBuffer(this.pin2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 56 + 0, false);
         this.aid = _hidl_blob.getString(_hidl_offset + 72);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 72 + 0, false);
+        parcel.readEmbeddedBuffer(this.aid.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 72 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

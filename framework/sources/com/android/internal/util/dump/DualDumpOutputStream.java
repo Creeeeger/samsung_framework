@@ -17,13 +17,8 @@ public class DualDumpOutputStream {
     private final IndentingPrintWriter mIpw;
     private final ProtoOutputStream mProtoStream;
 
-    /* loaded from: classes5.dex */
-    public static abstract class Dumpable {
+    private static abstract class Dumpable {
         final String name;
-
-        /* synthetic */ Dumpable(String str, DumpableIA dumpableIA) {
-            this(str);
-        }
 
         abstract void print(IndentingPrintWriter indentingPrintWriter, boolean z);
 
@@ -32,14 +27,8 @@ public class DualDumpOutputStream {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class DumpObject extends Dumpable {
+    private static class DumpObject extends Dumpable {
         private final LinkedHashMap<String, ArrayList<Dumpable>> mSubObjects;
-
-        /* synthetic */ DumpObject(String str, DumpObjectIA dumpObjectIA) {
-            this(str);
-        }
 
         private DumpObject(String name) {
             super(name);
@@ -82,14 +71,8 @@ public class DualDumpOutputStream {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class DumpField extends Dumpable {
+    private static class DumpField extends Dumpable {
         private final String mValue;
-
-        /* synthetic */ DumpField(String str, String str2, DumpFieldIA dumpFieldIA) {
-            this(str, str2);
-        }
 
         private DumpField(String name, String value) {
             super(name);
@@ -112,81 +95,72 @@ public class DualDumpOutputStream {
         this.mIpw = null;
     }
 
-    public DualDumpOutputStream(IndentingPrintWriter ipw) {
-        LinkedList<DumpObject> linkedList = new LinkedList<>();
-        this.mDumpObjects = linkedList;
+    public DualDumpOutputStream(IndentingPrintWriter indentingPrintWriter) {
+        this.mDumpObjects = new LinkedList<>();
         this.mProtoStream = null;
-        this.mIpw = ipw;
-        linkedList.add(new DumpObject(null));
+        this.mIpw = indentingPrintWriter;
+        this.mDumpObjects.add(new DumpObject(null));
     }
 
     public void write(String fieldName, long fieldId, double val) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.write(fieldId, val);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.write(fieldId, val);
         } else {
             this.mDumpObjects.getLast().add(fieldName, new DumpField(fieldName, String.valueOf(val)));
         }
     }
 
     public void write(String fieldName, long fieldId, boolean val) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.write(fieldId, val);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.write(fieldId, val);
         } else {
             this.mDumpObjects.getLast().add(fieldName, new DumpField(fieldName, String.valueOf(val)));
         }
     }
 
     public void write(String fieldName, long fieldId, int val) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.write(fieldId, val);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.write(fieldId, val);
         } else {
             this.mDumpObjects.getLast().add(fieldName, new DumpField(fieldName, String.valueOf(val)));
         }
     }
 
     public void write(String fieldName, long fieldId, float val) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.write(fieldId, val);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.write(fieldId, val);
         } else {
             this.mDumpObjects.getLast().add(fieldName, new DumpField(fieldName, String.valueOf(val)));
         }
     }
 
     public void write(String fieldName, long fieldId, byte[] val) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.write(fieldId, val);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.write(fieldId, val);
         } else {
             this.mDumpObjects.getLast().add(fieldName, new DumpField(fieldName, Arrays.toString(val)));
         }
     }
 
     public void write(String fieldName, long fieldId, long val) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.write(fieldId, val);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.write(fieldId, val);
         } else {
             this.mDumpObjects.getLast().add(fieldName, new DumpField(fieldName, String.valueOf(val)));
         }
     }
 
     public void write(String fieldName, long fieldId, String val) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.write(fieldId, val);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.write(fieldId, val);
         } else {
             this.mDumpObjects.getLast().add(fieldName, new DumpField(fieldName, String.valueOf(val)));
         }
     }
 
     public long start(String fieldName, long fieldId) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            return protoOutputStream.start(fieldId);
+        if (this.mProtoStream != null) {
+            return this.mProtoStream.start(fieldId);
         }
         DumpObject d = new DumpObject(fieldName);
         this.mDumpObjects.getLast().add(fieldName, d);
@@ -195,9 +169,8 @@ public class DualDumpOutputStream {
     }
 
     public void end(long token) {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.end(token);
+        if (this.mProtoStream != null) {
+            this.mProtoStream.end(token);
             return;
         }
         if (System.identityHashCode(this.mDumpObjects.getLast()) != token) {
@@ -207,9 +180,8 @@ public class DualDumpOutputStream {
     }
 
     public void flush() {
-        ProtoOutputStream protoOutputStream = this.mProtoStream;
-        if (protoOutputStream != null) {
-            protoOutputStream.flush();
+        if (this.mProtoStream != null) {
+            this.mProtoStream.flush();
             return;
         }
         if (this.mDumpObjects.size() == 1) {

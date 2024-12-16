@@ -17,7 +17,6 @@ public final class Downloads {
     private Downloads() {
     }
 
-    /* loaded from: classes3.dex */
     public static final class Impl implements BaseColumns {
         public static final String ACTION_DOWNLOAD_COMPLETED = "android.intent.action.DOWNLOAD_COMPLETED";
         public static final String ACTION_NOTIFICATION_CLICKED = "android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED";
@@ -191,7 +190,6 @@ public final class Downloads {
         public static final Uri PUBLICLY_ACCESSIBLE_DOWNLOADS_URI = Uri.parse("content://downloads/public_downloads");
         public static final Uri CONTENT_CDURI = Uri.parse("content://sisodownloads/sisodownloads");
 
-        /* loaded from: classes3.dex */
         public static class RequestHeaders {
             public static final String COLUMN_DOWNLOAD_ID = "download_id";
             public static final String COLUMN_HEADER = "header";
@@ -290,7 +288,7 @@ public final class Downloads {
                     return "HTTP_DATA_ERROR";
                 case 496:
                     return "HTTP_EXCEPTION";
-                case STATUS_TOO_MANY_REDIRECTS /* 497 */:
+                case 497:
                     return "TOO_MANY_REDIRECTS";
                 case 498:
                     return "BLOCKED";

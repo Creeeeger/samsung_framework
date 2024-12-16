@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SrvccCall implements Parcelable {
     public static final Parcelable.Creator<SrvccCall> CREATOR = new Parcelable.Creator<SrvccCall>() { // from class: android.telephony.ims.SrvccCall.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SrvccCall createFromParcel(Parcel in) {
             return new SrvccCall(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SrvccCall[] newArray(int size) {
             return new SrvccCall[size];
@@ -26,10 +25,6 @@ public final class SrvccCall implements Parcelable {
     private String mCallId;
     private int mCallState;
     private ImsCallProfile mImsCallProfile;
-
-    /* synthetic */ SrvccCall(Parcel parcel, SrvccCallIA srvccCallIA) {
-        this(parcel);
-    }
 
     private SrvccCall(Parcel in) {
         readFromParcel(in);
@@ -98,22 +93,5 @@ public final class SrvccCall implements Parcelable {
         this.mCallId = in.readString();
         this.mCallState = in.readInt();
         this.mImsCallProfile = (ImsCallProfile) in.readParcelable(ImsCallProfile.class.getClassLoader(), ImsCallProfile.class);
-    }
-
-    /* renamed from: android.telephony.ims.SrvccCall$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SrvccCall> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SrvccCall createFromParcel(Parcel in) {
-            return new SrvccCall(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SrvccCall[] newArray(int size) {
-            return new SrvccCall[size];
-        }
     }
 }

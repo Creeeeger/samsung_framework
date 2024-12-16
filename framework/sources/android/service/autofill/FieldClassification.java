@@ -13,12 +13,8 @@ public final class FieldClassification {
     private final ArrayList<Match> mMatches;
 
     public FieldClassification(ArrayList<Match> matches) {
-        ArrayList<Match> arrayList = (ArrayList) Objects.requireNonNull(matches);
-        this.mMatches = arrayList;
-        Collections.sort(arrayList, new Comparator<Match>() { // from class: android.service.autofill.FieldClassification.1
-            AnonymousClass1() {
-            }
-
+        this.mMatches = (ArrayList) Objects.requireNonNull(matches);
+        Collections.sort(this.mMatches, new Comparator<Match>() { // from class: android.service.autofill.FieldClassification.1
             @Override // java.util.Comparator
             public int compare(Match o1, Match o2) {
                 if (o1.mScore > o2.mScore) {
@@ -27,22 +23,6 @@ public final class FieldClassification {
                 return o1.mScore < o2.mScore ? 1 : 0;
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.autofill.FieldClassification$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Comparator<Match> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(Match o1, Match o2) {
-            if (o1.mScore > o2.mScore) {
-                return -1;
-            }
-            return o1.mScore < o2.mScore ? 1 : 0;
-        }
     }
 
     public List<Match> getMatches() {
@@ -69,7 +49,7 @@ public final class FieldClassification {
         return new FieldClassification(matches);
     }
 
-    public static FieldClassification[] readArrayFromParcel(Parcel parcel) {
+    static FieldClassification[] readArrayFromParcel(Parcel parcel) {
         int length = parcel.readInt();
         FieldClassification[] fcs = new FieldClassification[length];
         for (int i = 0; i < length; i++) {
@@ -78,14 +58,13 @@ public final class FieldClassification {
         return fcs;
     }
 
-    public static void writeArrayToParcel(Parcel parcel, FieldClassification[] fcs) {
+    static void writeArrayToParcel(Parcel parcel, FieldClassification[] fcs) {
         parcel.writeInt(fcs.length);
         for (FieldClassification fieldClassification : fcs) {
             fieldClassification.writeToParcel(parcel);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Match {
         private final String mCategoryId;
         private final float mScore;
@@ -112,11 +91,13 @@ public final class FieldClassification {
             return string.append(", score=").append(this.mScore).toString();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void writeToParcel(Parcel parcel) {
             parcel.writeString(this.mCategoryId);
             parcel.writeFloat(this.mScore);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static Match readFromParcel(Parcel parcel) {
             return new Match(parcel.readString(), parcel.readFloat());
         }

@@ -5,30 +5,18 @@ import com.android.internal.org.bouncycastle.math.ec.ECPoint;
 import java.math.BigInteger;
 
 /* loaded from: classes5.dex */
-public class Tnaf {
-    private static final BigInteger MINUS_ONE;
-    private static final BigInteger MINUS_THREE;
-    private static final BigInteger MINUS_TWO;
+class Tnaf {
     public static final byte POW_2_WIDTH = 16;
     public static final byte WIDTH = 4;
-    public static final ZTauElement[] alpha0;
-    public static final byte[][] alpha0Tnaf;
-    public static final ZTauElement[] alpha1;
-    public static final byte[][] alpha1Tnaf;
+    private static final BigInteger MINUS_ONE = ECConstants.ONE.negate();
+    private static final BigInteger MINUS_TWO = ECConstants.TWO.negate();
+    private static final BigInteger MINUS_THREE = ECConstants.THREE.negate();
+    public static final ZTauElement[] alpha0 = {null, new ZTauElement(ECConstants.ONE, ECConstants.ZERO), null, new ZTauElement(MINUS_THREE, MINUS_ONE), null, new ZTauElement(MINUS_ONE, MINUS_ONE), null, new ZTauElement(ECConstants.ONE, MINUS_ONE), null};
+    public static final byte[][] alpha0Tnaf = {null, new byte[]{1}, null, new byte[]{-1, 0, 1}, null, new byte[]{1, 0, 1}, null, new byte[]{-1, 0, 0, 1}};
+    public static final ZTauElement[] alpha1 = {null, new ZTauElement(ECConstants.ONE, ECConstants.ZERO), null, new ZTauElement(MINUS_THREE, ECConstants.ONE), null, new ZTauElement(MINUS_ONE, ECConstants.ONE), null, new ZTauElement(ECConstants.ONE, ECConstants.ONE), null};
+    public static final byte[][] alpha1Tnaf = {null, new byte[]{1}, null, new byte[]{-1, 0, 1}, null, new byte[]{1, 0, 1}, null, new byte[]{-1, 0, 0, -1}};
 
     Tnaf() {
-    }
-
-    static {
-        BigInteger negate = ECConstants.ONE.negate();
-        MINUS_ONE = negate;
-        MINUS_TWO = ECConstants.TWO.negate();
-        BigInteger negate2 = ECConstants.THREE.negate();
-        MINUS_THREE = negate2;
-        alpha0 = new ZTauElement[]{null, new ZTauElement(ECConstants.ONE, ECConstants.ZERO), null, new ZTauElement(negate2, negate), null, new ZTauElement(negate, negate), null, new ZTauElement(ECConstants.ONE, negate), null};
-        alpha0Tnaf = new byte[][]{null, new byte[]{1}, null, new byte[]{-1, 0, 1}, null, new byte[]{1, 0, 1}, null, new byte[]{-1, 0, 0, 1}};
-        alpha1 = new ZTauElement[]{null, new ZTauElement(ECConstants.ONE, ECConstants.ZERO), null, new ZTauElement(negate2, ECConstants.ONE), null, new ZTauElement(negate, ECConstants.ONE), null, new ZTauElement(ECConstants.ONE, ECConstants.ONE), null};
-        alpha1Tnaf = new byte[][]{null, new byte[]{1}, null, new byte[]{-1, 0, 1}, null, new byte[]{1, 0, 1}, null, new byte[]{-1, 0, 0, -1}};
     }
 
     public static BigInteger norm(byte mu, ZTauElement lambda) {

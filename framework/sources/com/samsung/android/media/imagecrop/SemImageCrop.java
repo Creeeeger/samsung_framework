@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemImageCrop {
     private static final int DEFAULT_HEADER_SIZE = 32;
     public static final int IMAGE_FILE_FORMAT_HEIC = 2;
@@ -209,9 +209,8 @@ public class SemImageCrop {
             int base = 0;
             while (i < size) {
                 int v = bytes[i] & 255;
-                char[] cArr = HEX_ARRAY;
-                hexChars[base] = cArr[v >>> 4];
-                hexChars[base + 1] = cArr[v & 15];
+                hexChars[base] = HEX_ARRAY[v >>> 4];
+                hexChars[base + 1] = HEX_ARRAY[v & 15];
                 hexChars[base + 2] = ' ';
                 i++;
                 base += 3;

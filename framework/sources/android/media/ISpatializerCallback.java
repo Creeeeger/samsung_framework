@@ -14,7 +14,6 @@ public interface ISpatializerCallback extends IInterface {
 
     void dispatchSpatializerEnabledChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISpatializerCallback {
         @Override // android.media.ISpatializerCallback
         public void dispatchSpatializerEnabledChanged(boolean enabled) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISpatializerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISpatializerCallback {
         static final int TRANSACTION_dispatchSpatializerAvailableChanged = 2;
         static final int TRANSACTION_dispatchSpatializerEnabledChanged = 1;
@@ -76,30 +74,27 @@ public interface ISpatializerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpatializerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpatializerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpatializerCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dispatchSpatializerEnabledChanged(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dispatchSpatializerAvailableChanged(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dispatchSpatializerEnabledChanged(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dispatchSpatializerAvailableChanged(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISpatializerCallback {
+        private static class Proxy implements ISpatializerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

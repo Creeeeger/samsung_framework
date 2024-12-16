@@ -8,8 +8,13 @@ import org.apache.harmony.dalvik.ddmc.DdmServer;
 /* loaded from: classes.dex */
 public class DdmHandleAppName extends DdmHandle {
     public static final int CHUNK_APNM = ChunkHandler.type("APNM");
-    private static volatile Names sNames = new Names("", "");
     private static DdmHandleAppName mInstance = new DdmHandleAppName();
+    private static volatile Names sNames;
+
+    static {
+        String str = "";
+        sNames = new Names(str, str);
+    }
 
     private DdmHandleAppName() {
     }
@@ -55,14 +60,9 @@ public class DdmHandleAppName extends DdmHandle {
         DdmServer.sendChunk(chunk);
     }
 
-    /* loaded from: classes.dex */
-    public static final class Names {
+    static final class Names {
         private final String mAppName;
         private final String mPkgName;
-
-        /* synthetic */ Names(String str, String str2, NamesIA namesIA) {
-            this(str, str2);
-        }
 
         private Names(String appName, String pkgName) {
             this.mAppName = appName;

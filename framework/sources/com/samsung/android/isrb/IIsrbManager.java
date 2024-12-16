@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IIsrbManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.isrb.IIsrbManager";
 
@@ -16,7 +16,6 @@ public interface IIsrbManager extends IInterface {
 
     void setIsrbEnable(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IIsrbManager {
         @Override // com.samsung.android.isrb.IIsrbManager
         public boolean isBootCompleteState() throws RemoteException {
@@ -37,7 +36,6 @@ public interface IIsrbManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IIsrbManager {
         static final int TRANSACTION_isBootCompleteState = 1;
         static final int TRANSACTION_setFakeTime = 3;
@@ -86,36 +84,32 @@ public interface IIsrbManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIsrbManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIsrbManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIsrbManager.DESCRIPTOR);
+                case 1:
+                    boolean _result = isBootCompleteState();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setIsrbEnable(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    setFakeTime();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isBootCompleteState();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setIsrbEnable(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            setFakeTime();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IIsrbManager {
+        private static class Proxy implements IIsrbManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

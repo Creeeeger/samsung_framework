@@ -40,22 +40,18 @@ public class SemMobileWipsProvider extends ContentProvider {
     private static final String TAG = "MobileWipsFrameworkProvider";
     public static final String TIME_STAMP = "time_stamp";
     public static final int WHITELIST = 0;
-    private static final String[] mDBCreationSQL;
-    private static final String[] mDBDeleteSQL;
-    private static final UriMatcher sURIMatcher;
     private SQLiteOpenHelper mOpenHelper;
     public static final Uri CONTENT_URI_WHITELIST = Uri.parse("content://com.samsung.server.wifi.mwips/whitelist");
     public static final Uri CONTENT_URI_IELIST = Uri.parse("content://com.samsung.server.wifi.mwips/ielist");
     public static final Uri CONTENT_URI_DUMP = Uri.parse("content://com.samsung.server.wifi.mwips/dump");
+    private static final UriMatcher sURIMatcher = new UriMatcher(-1);
+    private static final String[] mDBCreationSQL = {"CREATE TABLE IF NOT EXISTS MobileWIPSWHITE(history_id INTEGER PRIMARY KEY AUTOINCREMENT,mac_addr TEXT, exception_type Integer DEFAULT 0, ssid_name TEXT ) ", "CREATE TABLE IF NOT EXISTS MobileWIPSIE(history_id INTEGER PRIMARY KEY AUTOINCREMENT,mac_addr TEXT, frequency INTEGER, time_stamp LONG, seen_time LONG, ies varbinary, time_saved LONG, beacon_tsf LONG, beacon_seen LONG ) ", "CREATE TABLE IF NOT EXISTS MobileWIPSDUMP(history_id INTEGER PRIMARY KEY AUTOINCREMENT,time_stamp LONG, attack_type Integer, reason TEXT) "};
+    private static final String[] mDBDeleteSQL = {"DROP TABLE IF EXISTS MobileWIPSWHITE", "DROP TABLE IF EXISTS MobileWIPSIE", "DROP TABLE IF EXISTS MobileWIPSDUMP"};
 
     static {
-        UriMatcher uriMatcher = new UriMatcher(-1);
-        sURIMatcher = uriMatcher;
-        mDBCreationSQL = new String[]{"CREATE TABLE IF NOT EXISTS MobileWIPSWHITE(history_id INTEGER PRIMARY KEY AUTOINCREMENT,mac_addr TEXT, exception_type Integer DEFAULT 0, ssid_name TEXT ) ", "CREATE TABLE IF NOT EXISTS MobileWIPSIE(history_id INTEGER PRIMARY KEY AUTOINCREMENT,mac_addr TEXT, frequency INTEGER, time_stamp LONG, seen_time LONG, ies varbinary, time_saved LONG, beacon_tsf LONG, beacon_seen LONG ) ", "CREATE TABLE IF NOT EXISTS MobileWIPSDUMP(history_id INTEGER PRIMARY KEY AUTOINCREMENT,time_stamp LONG, attack_type Integer, reason TEXT) "};
-        mDBDeleteSQL = new String[]{"DROP TABLE IF EXISTS MobileWIPSWHITE", "DROP TABLE IF EXISTS MobileWIPSIE", "DROP TABLE IF EXISTS MobileWIPSDUMP"};
-        uriMatcher.addURI(AUTHORITY, "whitelist", 0);
-        uriMatcher.addURI(AUTHORITY, "ielist", 1);
-        uriMatcher.addURI(AUTHORITY, "dump", 2);
+        sURIMatcher.addURI(AUTHORITY, "whitelist", 0);
+        sURIMatcher.addURI(AUTHORITY, "ielist", 1);
+        sURIMatcher.addURI(AUTHORITY, "dump", 2);
     }
 
     @Override // android.content.ContentProvider, android.content.ContentInterface
@@ -93,16 +89,18 @@ public class SemMobileWipsProvider extends ContentProvider {
                     Cursor ret = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
                     if (ret == null) {
                         Log.d(TAG, "query failed in downloads database");
+                        break;
                     }
-                    return ret;
+                    break;
                 default:
                     Log.d(TAG, "querying unknown URI: " + uri);
-                    return null;
+                    break;
             }
         } catch (SQLiteException e) {
             Log.e(TAG, "Exception: " + e);
             return null;
         }
+        return null;
     }
 
     @Override // android.content.ContentProvider
@@ -120,7 +118,6 @@ public class SemMobileWipsProvider extends ContentProvider {
         return 0;
     }
 
-    /* loaded from: classes6.dex */
     private static class DatabaseHelper extends SQLiteOpenHelper {
         public DatabaseHelper(Context context, int version) {
             super(context, SemMobileWipsProvider.DB_NAME, (SQLiteDatabase.CursorFactory) null, version);

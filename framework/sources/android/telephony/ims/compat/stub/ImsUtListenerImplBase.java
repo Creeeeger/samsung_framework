@@ -9,7 +9,7 @@ import android.telephony.ims.ImsSsInfo;
 import com.android.ims.internal.IImsUt;
 import com.android.ims.internal.IImsUtListener;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsUtListenerImplBase extends IImsUtListener.Stub {
     @Override // com.android.ims.internal.IImsUtListener
     public void utConfigurationUpdated(IImsUt ut, int id) throws RemoteException {

@@ -5,35 +5,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public abstract class ListFieldSchema {
-    private static final ListFieldSchema FULL_INSTANCE = new ListFieldSchemaFull();
-    private static final ListFieldSchema LITE_INSTANCE = new ListFieldSchemaLite();
+/* loaded from: classes3.dex */
+abstract class ListFieldSchema {
+    private static final ListFieldSchema FULL_INSTANCE;
+    private static final ListFieldSchema LITE_INSTANCE;
 
-    public abstract void makeImmutableListAt(Object obj, long j);
+    abstract void makeImmutableListAt(Object obj, long j);
 
-    public abstract <L> void mergeListsAt(Object obj, Object obj2, long j);
+    abstract <L> void mergeListsAt(Object obj, Object obj2, long j);
 
-    public abstract <L> List<L> mutableListAt(Object obj, long j);
-
-    /* synthetic */ ListFieldSchema(AnonymousClass1 x0) {
-        this();
-    }
+    abstract <L> List<L> mutableListAt(Object obj, long j);
 
     private ListFieldSchema() {
     }
 
-    public static ListFieldSchema full() {
+    static {
+        FULL_INSTANCE = new ListFieldSchemaFull();
+        LITE_INSTANCE = new ListFieldSchemaLite();
+    }
+
+    static ListFieldSchema full() {
         return FULL_INSTANCE;
     }
 
-    public static ListFieldSchema lite() {
+    static ListFieldSchema lite() {
         return LITE_INSTANCE;
     }
 
-    /* loaded from: classes4.dex */
     private static final class ListFieldSchemaFull extends ListFieldSchema {
         private static final Class<?> UNMODIFIABLE_LIST_CLASS = Collections.unmodifiableList(Collections.emptyList()).getClass();
 
@@ -41,19 +40,13 @@ public abstract class ListFieldSchema {
             super();
         }
 
-        /* synthetic */ ListFieldSchemaFull(AnonymousClass1 x0) {
-            this();
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ListFieldSchema
-        public <L> List<L> mutableListAt(Object message, long offset) {
+        <L> List<L> mutableListAt(Object message, long offset) {
             return mutableListAt(message, offset, 10);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ListFieldSchema
-        public void makeImmutableListAt(Object message, long offset) {
+        void makeImmutableListAt(Object message, long offset) {
             Object immutable;
             List<?> list = (List) UnsafeUtil.getObject(message, offset);
             if (list instanceof LazyStringList) {
@@ -108,9 +101,8 @@ public abstract class ListFieldSchema {
             return list2;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ListFieldSchema
-        public <E> void mergeListsAt(Object msg, Object otherMsg, long offset) {
+        <E> void mergeListsAt(Object msg, Object otherMsg, long offset) {
             List<E> other = getList(otherMsg, offset);
             List<E> mine = mutableListAt(msg, offset, other.size());
             int size = mine.size();
@@ -127,19 +119,13 @@ public abstract class ListFieldSchema {
         }
     }
 
-    /* loaded from: classes4.dex */
     private static final class ListFieldSchemaLite extends ListFieldSchema {
         private ListFieldSchemaLite() {
             super();
         }
 
-        /* synthetic */ ListFieldSchemaLite(AnonymousClass1 x0) {
-            this();
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ListFieldSchema
-        public <L> List<L> mutableListAt(Object message, long offset) {
+        <L> List<L> mutableListAt(Object message, long offset) {
             Internal.ProtobufList<L> list = getProtobufList(message, offset);
             if (!list.isModifiable()) {
                 int size = list.size();
@@ -150,16 +136,14 @@ public abstract class ListFieldSchema {
             return list;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ListFieldSchema
-        public void makeImmutableListAt(Object message, long offset) {
+        void makeImmutableListAt(Object message, long offset) {
             Internal.ProtobufList<?> list = getProtobufList(message, offset);
             list.makeImmutable();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ListFieldSchema
-        public <E> void mergeListsAt(Object msg, Object otherMsg, long offset) {
+        <E> void mergeListsAt(Object msg, Object otherMsg, long offset) {
             Internal.ProtobufList<E> mine = getProtobufList(msg, offset);
             Internal.ProtobufList<E> other = getProtobufList(otherMsg, offset);
             int size = mine.size();

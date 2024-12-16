@@ -13,7 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import com.android.internal.inputmethod.IRemoteInputConnection;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IInputMethodSession extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IInputMethodSession";
 
@@ -39,7 +39,6 @@ public interface IInputMethodSession extends IInterface {
 
     void viewClicked(boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputMethodSession {
         @Override // com.android.internal.inputmethod.IInputMethodSession
         public void updateExtractedText(int token, ExtractedText text) throws RemoteException {
@@ -91,7 +90,6 @@ public interface IInputMethodSession extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputMethodSession {
         static final int TRANSACTION_appPrivateCommand = 6;
         static final int TRANSACTION_displayCompletions = 5;
@@ -164,78 +162,75 @@ public interface IInputMethodSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputMethodSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputMethodSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputMethodSession.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    ExtractedText _arg1 = (ExtractedText) data.readTypedObject(ExtractedText.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateExtractedText(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateSelection(_arg02, _arg12, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    viewClicked(_arg03);
+                    return true;
+                case 4:
+                    Rect _arg04 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCursor(_arg04);
+                    return true;
+                case 5:
+                    CompletionInfo[] _arg05 = (CompletionInfo[]) data.createTypedArray(CompletionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    displayCompletions(_arg05);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    appPrivateCommand(_arg06, _arg13);
+                    return true;
+                case 7:
+                    finishSession();
+                    return true;
+                case 8:
+                    CursorAnchorInfo _arg07 = (CursorAnchorInfo) data.readTypedObject(CursorAnchorInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCursorAnchorInfo(_arg07);
+                    return true;
+                case 9:
+                    removeImeSurface();
+                    return true;
+                case 10:
+                    finishInput();
+                    return true;
+                case 11:
+                    EditorInfo _arg08 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
+                    IRemoteInputConnection _arg14 = IRemoteInputConnection.Stub.asInterface(data.readStrongBinder());
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    invalidateInput(_arg08, _arg14, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            ExtractedText _arg1 = (ExtractedText) data.readTypedObject(ExtractedText.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateExtractedText(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateSelection(_arg02, _arg12, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            viewClicked(_arg03);
-                            return true;
-                        case 4:
-                            Rect _arg04 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCursor(_arg04);
-                            return true;
-                        case 5:
-                            CompletionInfo[] _arg05 = (CompletionInfo[]) data.createTypedArray(CompletionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            displayCompletions(_arg05);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            appPrivateCommand(_arg06, _arg13);
-                            return true;
-                        case 7:
-                            finishSession();
-                            return true;
-                        case 8:
-                            CursorAnchorInfo _arg07 = (CursorAnchorInfo) data.readTypedObject(CursorAnchorInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCursorAnchorInfo(_arg07);
-                            return true;
-                        case 9:
-                            removeImeSurface();
-                            return true;
-                        case 10:
-                            finishInput();
-                            return true;
-                        case 11:
-                            EditorInfo _arg08 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
-                            IRemoteInputConnection _arg14 = IRemoteInputConnection.Stub.asInterface(data.readStrongBinder());
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            invalidateInput(_arg08, _arg14, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInputMethodSession {
+        private static class Proxy implements IInputMethodSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

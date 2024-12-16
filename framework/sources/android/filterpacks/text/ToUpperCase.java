@@ -4,7 +4,6 @@ import android.filterfw.core.Filter;
 import android.filterfw.core.FilterContext;
 import android.filterfw.core.Frame;
 import android.filterfw.core.FrameFormat;
-import android.filterfw.core.MutableFrameFormat;
 import android.filterfw.format.ObjectFormat;
 import java.util.Locale;
 
@@ -18,9 +17,8 @@ public class ToUpperCase extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void setupPorts() {
-        MutableFrameFormat fromClass = ObjectFormat.fromClass(String.class, 1);
-        this.mOutputFormat = fromClass;
-        addMaskedInputPort("mixedcase", fromClass);
+        this.mOutputFormat = ObjectFormat.fromClass(String.class, 1);
+        addMaskedInputPort("mixedcase", this.mOutputFormat);
         addOutputPort("uppercase", this.mOutputFormat);
     }
 

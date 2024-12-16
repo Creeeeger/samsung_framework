@@ -1,5 +1,6 @@
 package android.app.servertransaction;
 
+import android.os.Parcel;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -16,13 +17,20 @@ public abstract class ActivityLifecycleItem extends ActivityTransactionItem {
     public static final int UNDEFINED = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface LifecycleState {
     }
 
     public abstract int getTargetState();
 
-    @Override // android.app.servertransaction.ObjectPoolItem
-    public void recycle() {
+    ActivityLifecycleItem() {
+    }
+
+    ActivityLifecycleItem(Parcel in) {
+        super(in);
+    }
+
+    @Override // android.app.servertransaction.ClientTransactionItem
+    public boolean isActivityLifecycleItem() {
+        return true;
     }
 }

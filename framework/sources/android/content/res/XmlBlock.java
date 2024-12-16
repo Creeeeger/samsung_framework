@@ -27,55 +27,71 @@ public final class XmlBlock implements AutoCloseable {
 
     private static final native void nativeDestroy(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native void nativeDestroyParseState(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetAttributeCount(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetAttributeData(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetAttributeDataType(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native int nativeGetAttributeIndex(long j, String str, String str2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetAttributeName(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetAttributeNamespace(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetAttributeResource(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetAttributeStringValue(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetClassAttribute(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetIdAttribute(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetLineNumber(long j);
 
     @CriticalNative
     static final native int nativeGetName(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetNamespace(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetSourceResId(long j);
 
     private static final native long nativeGetStringBlock(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetStyleAttribute(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static final native int nativeGetText(long j);
 
@@ -86,18 +102,16 @@ public final class XmlBlock implements AutoCloseable {
         this.mOpen = true;
         this.mOpenCount = 1;
         this.mAssets = null;
-        long nativeCreate = nativeCreate(data, 0, data.length);
-        this.mNative = nativeCreate;
-        this.mStrings = new StringBlock(nativeGetStringBlock(nativeCreate), false);
+        this.mNative = nativeCreate(data, 0, data.length);
+        this.mStrings = new StringBlock(nativeGetStringBlock(this.mNative), false);
     }
 
     public XmlBlock(byte[] data, int offset, int size) {
         this.mOpen = true;
         this.mOpenCount = 1;
         this.mAssets = null;
-        long nativeCreate = nativeCreate(data, offset, size);
-        this.mNative = nativeCreate;
-        this.mStrings = new StringBlock(nativeGetStringBlock(nativeCreate), false);
+        this.mNative = nativeCreate(data, offset, size);
+        this.mStrings = new StringBlock(nativeGetStringBlock(this.mNative), false);
     }
 
     @Override // java.lang.AutoCloseable
@@ -110,16 +124,15 @@ public final class XmlBlock implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void decOpenCountLocked() {
-        int i = this.mOpenCount - 1;
-        this.mOpenCount = i;
-        if (i == 0) {
+        this.mOpenCount--;
+        if (this.mOpenCount == 0) {
             this.mStrings.close();
             nativeDestroy(this.mNative);
             this.mNative = 0L;
-            AssetManager assetManager = this.mAssets;
-            if (assetManager != null) {
-                assetManager.xmlBlockGone(hashCode());
+            if (this.mAssets != null) {
+                this.mAssets.xmlBlockGone(hashCode());
             }
         }
     }
@@ -130,27 +143,44 @@ public final class XmlBlock implements AutoCloseable {
 
     public XmlResourceParser newParser(int resId) {
         synchronized (this) {
-            long j = this.mNative;
-            if (j == 0) {
+            if (this.mNative == 0) {
                 return null;
             }
-            return new Parser(nativeCreateParseState(j, resId), this);
+            return new Parser(nativeCreateParseState(this.mNative, resId), this);
         }
     }
 
-    /* loaded from: classes.dex */
+    public XmlResourceParser newParser(int resId, Validator validator) {
+        synchronized (this) {
+            if (this.mNative == 0) {
+                return null;
+            }
+            return new Parser(this, nativeCreateParseState(this.mNative, resId), this, validator);
+        }
+    }
+
     public final class Parser implements XmlResourceParser {
         private final XmlBlock mBlock;
+        private boolean mDecNextDepth;
+        private int mDepth;
+        private int mEventType;
         long mParseState;
-        private boolean mStarted = false;
-        private boolean mDecNextDepth = false;
-        private int mDepth = 0;
-        private int mEventType = 0;
+        private boolean mStarted;
+        Validator mValidator;
 
         Parser(long parseState, XmlBlock block) {
+            this.mStarted = false;
+            this.mDecNextDepth = false;
+            this.mDepth = 0;
+            this.mEventType = 0;
             this.mParseState = parseState;
             this.mBlock = block;
             block.mOpenCount++;
+        }
+
+        Parser(XmlBlock this$0, long parseState, XmlBlock block, Validator validator) {
+            this(parseState, block);
+            this.mValidator = validator;
         }
 
         public int getSourceResId() {
@@ -390,7 +420,11 @@ public final class XmlBlock implements AutoCloseable {
         public String getAttributeValue(String namespace, String name) {
             int idx = XmlBlock.nativeGetAttributeIndex(this.mParseState, namespace, name);
             if (idx >= 0) {
-                return getAttributeValue(idx);
+                String value = getAttributeValue(idx);
+                if (this.mValidator != null) {
+                    this.mValidator.validateStrAttr(this, name, value);
+                }
+                return value;
             }
             return null;
         }
@@ -401,11 +435,10 @@ public final class XmlBlock implements AutoCloseable {
                 this.mStarted = true;
                 return 0;
             }
-            long j = this.mParseState;
-            if (j == 0) {
+            if (this.mParseState == 0) {
                 return 1;
             }
-            int ev = XmlBlock.nativeNext(j);
+            int ev = XmlBlock.nativeNext(this.mParseState);
             if (ev == XmlBlock.ERROR_BAD_DOCUMENT) {
                 throw new XmlPullParserException("Corrupt XML binary file");
             }
@@ -422,6 +455,9 @@ public final class XmlBlock implements AutoCloseable {
                     break;
             }
             this.mEventType = ev;
+            if (this.mValidator != null) {
+                this.mValidator.validate(this);
+            }
             if (ev == 1) {
                 close();
             }
@@ -673,9 +709,8 @@ public final class XmlBlock implements AutoCloseable {
         @Override // android.content.res.XmlResourceParser, java.lang.AutoCloseable
         public void close() {
             synchronized (this.mBlock) {
-                long j = this.mParseState;
-                if (j != 0) {
-                    XmlBlock.nativeDestroyParseState(j);
+                if (this.mParseState != 0) {
+                    XmlBlock.nativeDestroyParseState(this.mParseState);
                     this.mParseState = 0L;
                     this.mBlock.decOpenCountLocked();
                 }
@@ -686,7 +721,7 @@ public final class XmlBlock implements AutoCloseable {
             close();
         }
 
-        public final CharSequence getPooledString(int id) {
+        final CharSequence getPooledString(int id) {
             return XmlBlock.this.mStrings.getSequence(id);
         }
     }
@@ -695,7 +730,7 @@ public final class XmlBlock implements AutoCloseable {
         close();
     }
 
-    public XmlBlock(AssetManager assets, long xmlBlock) {
+    XmlBlock(AssetManager assets, long xmlBlock) {
         this.mOpen = true;
         this.mOpenCount = 1;
         this.mAssets = assets;

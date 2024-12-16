@@ -13,7 +13,7 @@ public class MessagingMessageState {
     private boolean mIsHistoric;
     private Notification.MessagingStyle.Message mMessage;
 
-    public MessagingMessageState(View hostView) {
+    MessagingMessageState(View hostView) {
         this.mHostView = hostView;
     }
 

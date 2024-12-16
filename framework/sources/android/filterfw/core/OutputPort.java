@@ -14,7 +14,7 @@ public class OutputPort extends FilterPort {
             throw new RuntimeException(this + " already connected to " + this.mTargetPort + "!");
         }
         this.mTargetPort = target;
-        target.setSourcePort(this);
+        this.mTargetPort.setSourcePort(this);
     }
 
     public boolean isConnected() {
@@ -24,8 +24,7 @@ public class OutputPort extends FilterPort {
     @Override // android.filterfw.core.FilterPort
     public void open() {
         super.open();
-        InputPort inputPort = this.mTargetPort;
-        if (inputPort != null && !inputPort.isOpen()) {
+        if (this.mTargetPort != null && !this.mTargetPort.isOpen()) {
             this.mTargetPort.open();
         }
     }
@@ -33,8 +32,7 @@ public class OutputPort extends FilterPort {
     @Override // android.filterfw.core.FilterPort
     public void close() {
         super.close();
-        InputPort inputPort = this.mTargetPort;
-        if (inputPort != null && inputPort.isOpen()) {
+        if (this.mTargetPort != null && this.mTargetPort.isOpen()) {
             this.mTargetPort.close();
         }
     }
@@ -44,11 +42,10 @@ public class OutputPort extends FilterPort {
     }
 
     public Filter getTargetFilter() {
-        InputPort inputPort = this.mTargetPort;
-        if (inputPort == null) {
+        if (this.mTargetPort == null) {
             return null;
         }
-        return inputPort.getFilter();
+        return this.mTargetPort.getFilter();
     }
 
     public void setBasePort(InputPort basePort) {
@@ -71,29 +68,26 @@ public class OutputPort extends FilterPort {
 
     @Override // android.filterfw.core.FilterPort
     public void clear() {
-        InputPort inputPort = this.mTargetPort;
-        if (inputPort != null) {
-            inputPort.clear();
+        if (this.mTargetPort != null) {
+            this.mTargetPort.clear();
         }
     }
 
     @Override // android.filterfw.core.FilterPort
     public void pushFrame(Frame frame) {
-        InputPort inputPort = this.mTargetPort;
-        if (inputPort == null) {
+        if (this.mTargetPort == null) {
             throw new RuntimeException("Attempting to push frame on unconnected port: " + this + "!");
         }
-        inputPort.pushFrame(frame);
+        this.mTargetPort.pushFrame(frame);
     }
 
     @Override // android.filterfw.core.FilterPort
     public void setFrame(Frame frame) {
         assertPortIsOpen();
-        InputPort inputPort = this.mTargetPort;
-        if (inputPort == null) {
+        if (this.mTargetPort == null) {
             throw new RuntimeException("Attempting to set frame on unconnected port: " + this + "!");
         }
-        inputPort.setFrame(frame);
+        this.mTargetPort.setFrame(frame);
     }
 
     @Override // android.filterfw.core.FilterPort
@@ -103,11 +97,10 @@ public class OutputPort extends FilterPort {
 
     @Override // android.filterfw.core.FilterPort
     public boolean hasFrame() {
-        InputPort inputPort = this.mTargetPort;
-        if (inputPort == null) {
+        if (this.mTargetPort == null) {
             return false;
         }
-        return inputPort.hasFrame();
+        return this.mTargetPort.hasFrame();
     }
 
     @Override // android.filterfw.core.FilterPort

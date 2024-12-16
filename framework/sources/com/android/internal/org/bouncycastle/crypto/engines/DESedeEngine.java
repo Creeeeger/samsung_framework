@@ -51,8 +51,7 @@ public class DESedeEngine extends DESEngine {
 
     @Override // com.android.internal.org.bouncycastle.crypto.engines.DESEngine, com.android.internal.org.bouncycastle.crypto.BlockCipher
     public int processBlock(byte[] in, int inOff, byte[] out, int outOff) {
-        int[] iArr = this.workingKey1;
-        if (iArr == null) {
+        if (this.workingKey1 == null) {
             throw new IllegalStateException("DESede engine not initialised");
         }
         if (inOff + 8 > in.length) {
@@ -63,7 +62,7 @@ public class DESedeEngine extends DESEngine {
         }
         byte[] temp = new byte[8];
         if (this.forEncryption) {
-            desFunc(iArr, in, inOff, temp, 0);
+            desFunc(this.workingKey1, in, inOff, temp, 0);
             desFunc(this.workingKey2, temp, 0, temp, 0);
             desFunc(this.workingKey3, temp, 0, out, outOff);
         } else {

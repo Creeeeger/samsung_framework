@@ -11,6 +11,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 import com.android.internal.os.SomeArgs;
+import com.samsung.android.knox.zt.internal.KnoxZtInternalConst;
 import java.lang.ref.WeakReference;
 
 /* loaded from: classes.dex */
@@ -32,9 +33,7 @@ public abstract class JobServiceEngine {
 
     public abstract boolean onStopJob(JobParameters jobParameters);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public static final class JobInterface extends IJobService.Stub {
+    static final class JobInterface extends IJobService.Stub {
         final WeakReference<JobServiceEngine> mService;
 
         JobInterface(JobServiceEngine service) {
@@ -91,9 +90,7 @@ public abstract class JobServiceEngine {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public class JobHandler extends Handler {
+    class JobHandler extends Handler {
         JobHandler(Looper looper) {
             super(looper);
         }
@@ -300,7 +297,7 @@ public abstract class JobServiceEngine {
 
     public void jobFinished(JobParameters jobParameters, boolean z) {
         if (jobParameters == null) {
-            throw new NullPointerException("params");
+            throw new NullPointerException(KnoxZtInternalConst.Event.LogKeys.PARAMS);
         }
         Message obtain = Message.obtain(this.mHandler, 2, jobParameters);
         obtain.arg2 = z ? 1 : 0;
@@ -327,7 +324,7 @@ public abstract class JobServiceEngine {
 
     public void updateTransferredNetworkBytes(JobParameters params, JobWorkItem item, long downloadBytes, long uploadBytes) {
         if (params == null) {
-            throw new NullPointerException("params");
+            throw new NullPointerException(KnoxZtInternalConst.Event.LogKeys.PARAMS);
         }
         SomeArgs args = SomeArgs.obtain();
         args.arg1 = params;
@@ -339,7 +336,7 @@ public abstract class JobServiceEngine {
 
     public void updateEstimatedNetworkBytes(JobParameters params, JobWorkItem item, long downloadBytes, long uploadBytes) {
         if (params == null) {
-            throw new NullPointerException("params");
+            throw new NullPointerException(KnoxZtInternalConst.Event.LogKeys.PARAMS);
         }
         SomeArgs args = SomeArgs.obtain();
         args.arg1 = params;
@@ -351,7 +348,7 @@ public abstract class JobServiceEngine {
 
     public void setNotification(JobParameters params, int notificationId, Notification notification, int jobEndNotificationPolicy) {
         if (params == null) {
-            throw new NullPointerException("params");
+            throw new NullPointerException(KnoxZtInternalConst.Event.LogKeys.PARAMS);
         }
         if (notification == null) {
             throw new NullPointerException("notification");

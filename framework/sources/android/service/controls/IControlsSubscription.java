@@ -14,7 +14,6 @@ public interface IControlsSubscription extends IInterface {
 
     void request(long j) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IControlsSubscription {
         @Override // android.service.controls.IControlsSubscription
         public void request(long n) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IControlsSubscription extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IControlsSubscription {
         static final int TRANSACTION_cancel = 2;
         static final int TRANSACTION_request = 1;
@@ -76,29 +74,25 @@ public interface IControlsSubscription extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IControlsSubscription.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IControlsSubscription.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IControlsSubscription.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    request(_arg0);
+                    return true;
+                case 2:
+                    cancel();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            request(_arg0);
-                            return true;
-                        case 2:
-                            cancel();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IControlsSubscription {
+        private static class Proxy implements IControlsSubscription {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

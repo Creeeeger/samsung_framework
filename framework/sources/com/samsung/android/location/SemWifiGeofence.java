@@ -1,6 +1,6 @@
 package com.samsung.android.location;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemWifiGeofence {
     private final String mBssid;
     private final String mRequestId;

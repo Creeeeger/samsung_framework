@@ -4,7 +4,7 @@ import android.util.Log;
 import com.samsung.android.sume.core.Def;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class Event extends Message {
     private static final String TAG = Def.tagOf((Class<?>) Event.class);
 

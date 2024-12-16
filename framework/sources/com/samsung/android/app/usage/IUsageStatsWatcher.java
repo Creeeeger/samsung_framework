@@ -18,7 +18,6 @@ public interface IUsageStatsWatcher extends IInterface {
 
     void noteStopComponent(ComponentName componentName, Intent intent, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IUsageStatsWatcher {
         @Override // com.samsung.android.app.usage.IUsageStatsWatcher
         public void noteResumeComponent(ComponentName resumeComponent, Intent intent, int instanceId, int userId) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IUsageStatsWatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IUsageStatsWatcher {
         static final int TRANSACTION_notePauseComponent = 2;
         static final int TRANSACTION_noteResumeComponent = 1;
@@ -87,44 +85,41 @@ public interface IUsageStatsWatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUsageStatsWatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUsageStatsWatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUsageStatsWatcher.DESCRIPTOR);
+                case 1:
+                    ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Intent _arg1 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteResumeComponent(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Intent _arg12 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notePauseComponent(_arg02, _arg12, _arg22, _arg32);
+                    return true;
+                case 3:
+                    ComponentName _arg03 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Intent _arg13 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg23 = data.readInt();
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopComponent(_arg03, _arg13, _arg23, _arg33);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Intent _arg1 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteResumeComponent(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Intent _arg12 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notePauseComponent(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        case 3:
-                            ComponentName _arg03 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Intent _arg13 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg23 = data.readInt();
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopComponent(_arg03, _arg13, _arg23, _arg33);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IUsageStatsWatcher {
+        private static class Proxy implements IUsageStatsWatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -41,9 +41,8 @@ public class InterfaceParams {
         }
         this.name = name;
         this.index = index;
-        boolean z = macAddr != null;
-        this.hasMacAddress = z;
-        this.macAddr = z ? macAddr : MacAddress.fromBytes(new byte[]{2, 0, 0, 0, 0, 0});
+        this.hasMacAddress = macAddr != null;
+        this.macAddr = this.hasMacAddress ? macAddr : MacAddress.fromBytes(new byte[]{2, 0, 0, 0, 0, 0});
         this.defaultMtu = defaultMtu > 1280 ? defaultMtu : 1280;
     }
 

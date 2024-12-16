@@ -2,6 +2,7 @@ package android.ddm;
 
 import android.ddm.DdmHandleAppName;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.DdmSyncState;
 import android.os.Debug;
 import android.os.Process;
 import android.os.UserHandle;
@@ -18,7 +19,6 @@ public class DdmHandleHello extends DdmHandle {
     public static final int CHUNK_WAIT = ChunkHandler.type("WAIT");
     public static final int CHUNK_FEAT = ChunkHandler.type("FEAT");
     private static DdmHandleHello mInstance = new DdmHandleHello();
-    private static final String[] FRAMEWORK_FEATURES = {"opengl-tracing", "view-hierarchy"};
 
     private DdmHandleHello() {
     }
@@ -59,7 +59,7 @@ public class DdmHandleHello extends DdmHandle {
         }
         String str3 = "CheckJNI=" + (runtime.isCheckJniEnabled() ? "true" : "false");
         boolean isNativeDebuggable = runtime.isNativeDebuggable();
-        ByteBuffer allocate = ByteBuffer.allocate((str.length() * 2) + 32 + (appName.length() * 2) + (str2.length() * 2) + (str3.length() * 2) + 1 + (pkgName.length() * 2));
+        ByteBuffer allocate = ByteBuffer.allocate((str.length() * 2) + 32 + (appName.length() * 2) + (str2.length() * 2) + (str3.length() * 2) + 1 + (pkgName.length() * 2) + 4);
         allocate.order(ChunkHandler.CHUNK_ORDER);
         allocate.putInt(1);
         allocate.putInt(Process.myPid());
@@ -75,6 +75,7 @@ public class DdmHandleHello extends DdmHandle {
         allocate.put(isNativeDebuggable ? (byte) 1 : (byte) 0);
         allocate.putInt(pkgName.length());
         putString(allocate, pkgName);
+        allocate.putInt(DdmSyncState.getStage().toInt());
         Chunk chunk2 = new Chunk(CHUNK_HELO, allocate);
         if (Debug.waitingForDebugger()) {
             sendWAIT(0);
@@ -84,24 +85,26 @@ public class DdmHandleHello extends DdmHandle {
 
     private Chunk handleFEAT(Chunk request) {
         String[] vmFeatures = Debug.getVmFeatureList();
-        int size = ((vmFeatures.length + FRAMEWORK_FEATURES.length) * 4) + 4;
+        String[] fmFeatures = Debug.getFeatureList();
+        int size = ((vmFeatures.length + fmFeatures.length) * 4) + 4;
         for (int i = vmFeatures.length - 1; i >= 0; i--) {
             size += vmFeatures[i].length() * 2;
         }
-        for (int i2 = FRAMEWORK_FEATURES.length - 1; i2 >= 0; i2--) {
-            size += FRAMEWORK_FEATURES[i2].length() * 2;
+        int i2 = fmFeatures.length;
+        for (int i3 = i2 - 1; i3 >= 0; i3--) {
+            size += fmFeatures[i3].length() * 2;
         }
         ByteBuffer out = ByteBuffer.allocate(size);
         out.order(ChunkHandler.CHUNK_ORDER);
-        out.putInt(vmFeatures.length + FRAMEWORK_FEATURES.length);
-        for (int i3 = vmFeatures.length - 1; i3 >= 0; i3--) {
-            out.putInt(vmFeatures[i3].length());
-            putString(out, vmFeatures[i3]);
+        out.putInt(vmFeatures.length + fmFeatures.length);
+        for (int i4 = vmFeatures.length - 1; i4 >= 0; i4--) {
+            out.putInt(vmFeatures[i4].length());
+            putString(out, vmFeatures[i4]);
         }
-        for (int i4 = FRAMEWORK_FEATURES.length - 1; i4 >= 0; i4--) {
-            String[] strArr = FRAMEWORK_FEATURES;
-            out.putInt(strArr[i4].length());
-            putString(out, strArr[i4]);
+        int i5 = fmFeatures.length;
+        for (int i6 = i5 - 1; i6 >= 0; i6--) {
+            out.putInt(fmFeatures[i6].length());
+            putString(out, fmFeatures[i6]);
         }
         return new Chunk(CHUNK_FEAT, out);
     }

@@ -12,9 +12,8 @@ public abstract class ShellCommand extends BasicShellCommandHandler {
         this.mShellCallback = callback;
         this.mResultReceiver = resultReceiver;
         int result = super.exec(target, in, out, err, args);
-        ResultReceiver resultReceiver2 = this.mResultReceiver;
-        if (resultReceiver2 != null) {
-            resultReceiver2.send(result, null);
+        if (this.mResultReceiver != null) {
+            this.mResultReceiver.send(result, null);
         }
         return result;
     }

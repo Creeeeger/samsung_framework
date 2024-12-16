@@ -16,7 +16,6 @@ public interface IAccessibilityManagerClient extends IInterface {
 
     void setState(int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAccessibilityManagerClient {
         @Override // android.view.accessibility.IAccessibilityManagerClient
         public void setState(int stateFlags) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IAccessibilityManagerClient extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAccessibilityManagerClient {
         public static final String DESCRIPTOR = "android.view.accessibility.IAccessibilityManagerClient";
         static final int TRANSACTION_notifyServicesStateChanged = 2;
@@ -93,42 +91,38 @@ public interface IAccessibilityManagerClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setState(_arg0);
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    data.enforceNoDataAvail();
+                    notifyServicesStateChanged(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRelevantEventTypes(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setFocusAppearance(_arg04, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setState(_arg0);
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            data.enforceNoDataAvail();
-                            notifyServicesStateChanged(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRelevantEventTypes(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setFocusAppearance(_arg04, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAccessibilityManagerClient {
+        private static class Proxy implements IAccessibilityManagerClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

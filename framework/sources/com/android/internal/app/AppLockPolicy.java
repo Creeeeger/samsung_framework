@@ -7,7 +7,6 @@ import android.app.AppLockCoreState;
 import android.app.IUserSwitchObserver;
 import android.app.WindowConfiguration;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,8 +28,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AppLockPolicy {
+    public static final String ACTIVE_LOCKED_PACKAGES = "applock_locked_packages";
     private static final String APPLOCK_ENABLED = "app_lock_enabled";
     public static final int BINDER_ARRAY_DISPLAYID = 0;
     public static final int BINDER_ARRAY_EXCEPTIONLIST = 2;
@@ -87,7 +87,6 @@ public class AppLockPolicy {
     public static final String LAUNCH_FROM_NOTIFICATION = "LAUNCH_FROM_NOTIFICATION";
     public static final String LAUNCH_FROM_RESUME = "LAUNCH_FROM_RESUME";
     public static final String LAUNCH_FROM_SETTINGS = "APPLOCK_APPS_FROM_SETTINGS";
-    public static final String LAUNCH_FROM_WECHAT_HUN = "nofification_type";
     public static final String LOCKED_APP_CAN_SHOW_WHEN_LOCKED = "LOCKED_APP_CAN_SHOW_WHEN_LOCKED";
     private static final String LOCKED_CLASSES = "applock_locked_apps_classes";
     private static final String LOCKED_PACKAGE = "applock_locked_apps_packages";
@@ -106,7 +105,6 @@ public class AppLockPolicy {
     private static final String PATTERN_TYPE = "pattern_type";
     private static final String PINCODE_TYPE = "pincode_type";
     public static final String REQUEST_VERIFY_FROM = "REQUEST_VERIFY_FROM";
-    public static final String SETTINGS_KEY_NEW_DEX = "new_dex";
     public static final String START_SERVICE_WITH_NO_ANIMATION = "START_SERVICE_WITH_NO_ANIMATION";
     private static final String TAG = "AppLockPolicy";
     private static volatile AppLockPolicy mInstance;
@@ -121,19 +119,16 @@ public class AppLockPolicy {
     private ArrayList<String> mAppLockedClassList = new ArrayList<>();
     private ArrayList<String> mAppLockedHasUnLockedPackageList = new ArrayList<>();
     private ArrayList<String> mAppLockedHasUnLockedClassList = new ArrayList<>();
+    private ArrayList<String> mAppLockActiveLockedPackages = new ArrayList<>();
     private HashMap<String, ArrayList<String>> mAppLockedRelatedPackageMap = new HashMap<>();
     private HashMap<String, ArrayList<String>> mAppLockedRelatedClassMap = new HashMap<>();
     private ArrayList<String> mAppLockedVerifyingList = new ArrayList<>();
     private ArrayList<String> mAppLockLaunchingExcpetionList = new ArrayList<>();
     private ArrayList<String> mApplockCallingExceptionList = new ArrayList<>();
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.internal.app.AppLockPolicy.2
-        AnonymousClass2() {
-        }
-
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             AppLockPolicy.this.mAppLockSharedPref.initializeSharedPreference();
-            AppLockPolicy.this.reloadFromSettings();
             AppLockPolicy.this.updateSettings();
             AppLockPolicy.this.updateLockedApps();
         }
@@ -152,7 +147,7 @@ public class AppLockPolicy {
 
     private AppLockPolicy(Context context, Handler handler) {
         this.mContext = context;
-        this.mAppLockSharedPref = new AppLockCoreState(context);
+        this.mAppLockSharedPref = new AppLockCoreState(this.mContext);
         init();
         getAppLockLaunchingExceptionList();
         getCallingExceptionList();
@@ -315,11 +310,15 @@ public class AppLockPolicy {
         synchronized (this.mAppLockedLock) {
             if (!this.mAppLockedHasUnLockedPackageList.contains(packageName)) {
                 this.mAppLockedHasUnLockedPackageList.add(packageName);
+                this.mAppLockActiveLockedPackages.remove(packageName);
+                Settings.Secure.putString(this.mContext.getContentResolver(), "applock_locked_packages", this.mAppLockActiveLockedPackages.toString());
                 if (this.mAppLockedRelatedPackageMap.containsKey(packageName)) {
                     List<String> related = this.mAppLockedRelatedPackageMap.get(packageName);
                     for (String relatedPackage : related) {
                         if (!this.mAppLockedHasUnLockedPackageList.contains(relatedPackage)) {
                             this.mAppLockedHasUnLockedPackageList.add(relatedPackage);
+                            this.mAppLockActiveLockedPackages.remove(relatedPackage);
+                            Settings.Secure.putString(this.mContext.getContentResolver(), "applock_locked_packages", this.mAppLockActiveLockedPackages.toString());
                         }
                     }
                 }
@@ -332,6 +331,13 @@ public class AppLockPolicy {
             this.mAppLockedHasUnLockedPackageList.clear();
             this.mAppLockedHasUnLockedClassList.clear();
             this.mAppLockedVerifyingList.clear();
+            this.mAppLockActiveLockedPackages.clear();
+            Iterator<String> it = this.mAppLockedPackageList.iterator();
+            while (it.hasNext()) {
+                String pkg = it.next();
+                this.mAppLockActiveLockedPackages.add(new String(pkg));
+            }
+            Settings.Secure.putString(this.mContext.getContentResolver(), "applock_locked_packages", this.mAppLockActiveLockedPackages.toString());
         }
     }
 
@@ -414,41 +420,9 @@ public class AppLockPolicy {
         }
     }
 
-    /* renamed from: com.android.internal.app.AppLockPolicy$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends IUserSwitchObserver.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.app.IUserSwitchObserver
-        public void onBeforeUserSwitching(int newUserId) {
-        }
-
-        @Override // android.app.IUserSwitchObserver
-        public void onUserSwitching(int newUserId, IRemoteCallback reply) {
-        }
-
-        @Override // android.app.IUserSwitchObserver
-        public void onUserSwitchComplete(int newUserId) throws RemoteException {
-            Log.d(AppLockPolicy.TAG, "onUserSwitchComplete getLockedApps");
-            AppLockPolicy.this.updateLockedApps();
-        }
-
-        @Override // android.app.IUserSwitchObserver
-        public void onForegroundProfileSwitch(int newProfileId) {
-        }
-
-        @Override // android.app.IUserSwitchObserver
-        public void onLockedBootComplete(int newUserId) {
-        }
-    }
-
     private void init() {
         try {
             ActivityManagerNative.getDefault().registerUserSwitchObserver(new IUserSwitchObserver.Stub() { // from class: com.android.internal.app.AppLockPolicy.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.app.IUserSwitchObserver
                 public void onBeforeUserSwitching(int newUserId) {
                 }
@@ -478,22 +452,7 @@ public class AppLockPolicy {
         this.mContext.registerReceiver(this.mReceiver, filter);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.app.AppLockPolicy$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 extends BroadcastReceiver {
-        AnonymousClass2() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            AppLockPolicy.this.mAppLockSharedPref.initializeSharedPreference();
-            AppLockPolicy.this.reloadFromSettings();
-            AppLockPolicy.this.updateSettings();
-            AppLockPolicy.this.updateLockedApps();
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateLockedApps() {
         switch (this.mLockedTypeInt) {
             case 1:
@@ -570,9 +529,8 @@ public class AppLockPolicy {
                 break;
         }
         synchronized (this.mAppLockedLock) {
-            String str = this.mLockedPackages;
-            if (str != null) {
-                String[] lockedPackageArray = str.split(",");
+            if (this.mLockedPackages != null) {
+                String[] lockedPackageArray = this.mLockedPackages.split(",");
                 ArrayList<String> list = new ArrayList<>();
                 for (String packageName : lockedPackageArray) {
                     list.add(packageName);
@@ -586,10 +544,16 @@ public class AppLockPolicy {
                     }
                 }
                 this.mAppLockedPackageList = list;
+                this.mAppLockActiveLockedPackages.clear();
+                Iterator<String> it = this.mAppLockedPackageList.iterator();
+                while (it.hasNext()) {
+                    String pkg = it.next();
+                    this.mAppLockActiveLockedPackages.add(new String(pkg));
+                }
+                Settings.Secure.putString(this.mContext.getContentResolver(), "applock_locked_packages", this.mAppLockActiveLockedPackages.toString());
             }
-            String str2 = this.mLockedClasses;
-            if (str2 != null) {
-                String[] lockedClassArray = str2.split(",");
+            if (this.mLockedClasses != null) {
+                String[] lockedClassArray = this.mLockedClasses.split(",");
                 ArrayList<String> list2 = new ArrayList<>();
                 for (String className : lockedClassArray) {
                     list2.add(className);
@@ -603,24 +567,6 @@ public class AppLockPolicy {
                 }
                 this.mAppLockedClassList = list2;
             }
-        }
-    }
-
-    public void reloadFromSettings() {
-        ContentResolver resolver = this.mContext.getContentResolver();
-        String lockedPackages = Settings.Secure.getStringForUser(resolver, "applock_locked_apps_packages", -2);
-        String lockedClasses = Settings.Secure.getStringForUser(resolver, "applock_locked_apps_classes", -2);
-        String hiddenPkgs = Settings.Secure.getStringForUser(resolver, "ssecure_hidden_apps_packages", -2);
-        int lockedTypeInt = Settings.Secure.getIntForUser(resolver, "applock_lock_type", 0, -2);
-        boolean applockEnabled = Settings.Secure.getInt(resolver, "app_lock_enabled", -2) == 1;
-        String applockLockedAppsPackage = this.mAppLockSharedPref.getApplockLockedAppsPackage();
-        this.mLockedPackages = applockLockedAppsPackage;
-        if (lockedPackages != null && applockLockedAppsPackage.isEmpty() && lockedTypeInt != 0) {
-            this.mAppLockSharedPref.setApplockLockedAppsPackage(lockedPackages);
-            this.mAppLockSharedPref.setApplockLockedAppsClass(lockedClasses);
-            this.mAppLockSharedPref.setApplockType(lockedTypeInt);
-            this.mAppLockSharedPref.setApplockEnabled(applockEnabled);
-            this.mAppLockSharedPref.setSsecureHiddenAppsPackages(hiddenPkgs);
         }
     }
 
@@ -701,7 +647,6 @@ public class AppLockPolicy {
     }
 
     public static boolean skipLockWhenStart(Context context, String targetPackage, Intent intent, ActivityOptions options, String callingPackage) {
-        boolean isNewDexMode = Settings.System.getInt(context.getContentResolver(), "new_dex", 0) == 1;
         if (CoreRune.FW_APPLOCK && isSupportSSecure()) {
             Log.d(TAG, "intent is starting with S secure, skip");
             return true;
@@ -710,16 +655,8 @@ public class AppLockPolicy {
             Log.d(TAG, "intent is starting in dex display, skip");
             return true;
         }
-        if (CoreRune.MT_NEW_DEX && isNewDexMode) {
-            Log.d(TAG, "intent is starting in new dex display, skip");
-            return true;
-        }
         if (options != null && (WindowConfiguration.inMultiWindowMode(options.getLaunchWindowingMode()) || WindowConfiguration.inMultiWindowMode(options.getForceLaunchWindowingMode()))) {
             Log.d(TAG, "intent is starting in multi WindowingMode, skip");
-            return true;
-        }
-        if (intent.hasExtra(LAUNCH_FROM_WECHAT_HUN)) {
-            Log.d(TAG, "starting from WeChat HeadsUp Notification");
             return true;
         }
         ActivityManager am = (ActivityManager) context.getSystemService("activity");
@@ -752,6 +689,6 @@ public class AppLockPolicy {
     }
 
     public static boolean isSupportSSecure() {
-        return CoreRune.FW_SUPPORT_SPROTECT;
+        return false;
     }
 }

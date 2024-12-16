@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioIoFlags implements Parcelable {
     public static final Parcelable.Creator<AudioIoFlags> CREATOR = new Parcelable.Creator<AudioIoFlags>() { // from class: android.media.audio.common.AudioIoFlags.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioIoFlags createFromParcel(Parcel _aidl_source) {
             return new AudioIoFlags(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioIoFlags[] newArray(int _aidl_size) {
             return new AudioIoFlags[_aidl_size];
@@ -27,14 +26,9 @@ public final class AudioIoFlags implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int input = 0;
         public static final int output = 1;
-    }
-
-    /* synthetic */ AudioIoFlags(Parcel parcel, AudioIoFlagsIA audioIoFlagsIA) {
-        this(parcel);
     }
 
     public AudioIoFlags() {
@@ -86,35 +80,16 @@ public final class AudioIoFlags implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.media.audio.common.AudioIoFlags$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioIoFlags> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioIoFlags createFromParcel(Parcel _aidl_source) {
-            return new AudioIoFlags(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioIoFlags[] newArray(int _aidl_size) {
-            return new AudioIoFlags[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getInput());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getOutput());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -143,9 +118,9 @@ public final class AudioIoFlags implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.media.audio.common.AudioIoFlags.input(" + getInput() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioIoFlags.input(" + getInput() + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.media.audio.common.AudioIoFlags.output(" + getOutput() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioIoFlags.output(" + getOutput() + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

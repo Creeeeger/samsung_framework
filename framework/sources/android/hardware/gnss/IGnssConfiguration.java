@@ -37,7 +37,6 @@ public interface IGnssConfiguration extends IInterface {
 
     void setSuplVersion(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssConfiguration {
         @Override // android.hardware.gnss.IGnssConfiguration
         public void setSuplVersion(int version) throws RemoteException {
@@ -83,7 +82,6 @@ public interface IGnssConfiguration extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssConfiguration {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -152,71 +150,69 @@ public interface IGnssConfiguration extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSuplVersion(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSuplMode(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLppProfile(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setGlonassPositioningProtocol(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setEmergencySuplPdn(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setEsExtensionSec(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    BlocklistedSource[] _arg07 = (BlocklistedSource[]) data.createTypedArray(BlocklistedSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    setBlocklist(_arg07);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSuplVersion(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSuplMode(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLppProfile(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setGlonassPositioningProtocol(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setEmergencySuplPdn(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setEsExtensionSec(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            BlocklistedSource[] _arg07 = (BlocklistedSource[]) data.createTypedArray(BlocklistedSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            setBlocklist(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssConfiguration {
+        private static class Proxy implements IGnssConfiguration {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

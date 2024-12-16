@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioVoiceIndication extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$voice$IRadioVoiceIndication".replace('$', '.');
-    public static final String HASH = "8c5e0d53dc67b5ed221b2da0570a17684d973a20";
-    public static final int VERSION = 2;
+    public static final String HASH = "78fb79bcb32590a868b3eb7affb39ab90e4ca782";
+    public static final int VERSION = 3;
 
     void callRing(int i, boolean z, CdmaSignalInfoRecord cdmaSignalInfoRecord) throws RemoteException;
 
@@ -46,7 +46,6 @@ public interface IRadioVoiceIndication extends IInterface {
 
     void stkCallSetup(int i, long j) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioVoiceIndication {
         @Override // android.hardware.radio.voice.IRadioVoiceIndication
         public void callRing(int type, boolean isGsm, CdmaSignalInfoRecord record) throws RemoteException {
@@ -124,7 +123,6 @@ public interface IRadioVoiceIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioVoiceIndication {
         static final int TRANSACTION_callRing = 1;
         static final int TRANSACTION_callStateChanged = 2;
@@ -171,117 +169,115 @@ public interface IRadioVoiceIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    CdmaSignalInfoRecord _arg2 = (CdmaSignalInfoRecord) data.readTypedObject(CdmaSignalInfoRecord.CREATOR);
+                    data.enforceNoDataAvail();
+                    callRing(_arg0, _arg1, _arg2);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callStateChanged(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    CdmaCallWaiting _arg12 = (CdmaCallWaiting) data.readTypedObject(CdmaCallWaiting.CREATOR);
+                    data.enforceNoDataAvail();
+                    cdmaCallWaiting(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    CdmaInformationRecord[] _arg13 = (CdmaInformationRecord[]) data.createTypedArray(CdmaInformationRecord.CREATOR);
+                    data.enforceNoDataAvail();
+                    cdmaInfoRec(_arg04, _arg13);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cdmaOtaProvisionStatus(_arg05, _arg14);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    EmergencyNumber[] _arg15 = (EmergencyNumber[]) data.createTypedArray(EmergencyNumber.CREATOR);
+                    data.enforceNoDataAvail();
+                    currentEmergencyNumberList(_arg06, _arg15);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    enterEmergencyCallbackMode(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    exitEmergencyCallbackMode(_arg08);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    boolean _arg16 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    indicateRingbackTone(_arg09, _arg16);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    StkCcUnsolSsResult _arg17 = (StkCcUnsolSsResult) data.readTypedObject(StkCcUnsolSsResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSupplementaryServiceIndication(_arg010, _arg17);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    int _arg18 = data.readInt();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    onUssd(_arg011, _arg18, _arg22);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resendIncallMute(_arg012);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    srvccStateNotify(_arg013, _arg19);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    String _arg110 = data.readString();
+                    data.enforceNoDataAvail();
+                    stkCallControlAlphaNotify(_arg014, _arg110);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    long _arg111 = data.readLong();
+                    data.enforceNoDataAvail();
+                    stkCallSetup(_arg015, _arg111);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            CdmaSignalInfoRecord _arg2 = (CdmaSignalInfoRecord) data.readTypedObject(CdmaSignalInfoRecord.CREATOR);
-                            data.enforceNoDataAvail();
-                            callRing(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callStateChanged(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            CdmaCallWaiting _arg12 = (CdmaCallWaiting) data.readTypedObject(CdmaCallWaiting.CREATOR);
-                            data.enforceNoDataAvail();
-                            cdmaCallWaiting(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            CdmaInformationRecord[] _arg13 = (CdmaInformationRecord[]) data.createTypedArray(CdmaInformationRecord.CREATOR);
-                            data.enforceNoDataAvail();
-                            cdmaInfoRec(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cdmaOtaProvisionStatus(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            EmergencyNumber[] _arg15 = (EmergencyNumber[]) data.createTypedArray(EmergencyNumber.CREATOR);
-                            data.enforceNoDataAvail();
-                            currentEmergencyNumberList(_arg06, _arg15);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            enterEmergencyCallbackMode(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            exitEmergencyCallbackMode(_arg08);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            indicateRingbackTone(_arg09, _arg16);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            StkCcUnsolSsResult _arg17 = (StkCcUnsolSsResult) data.readTypedObject(StkCcUnsolSsResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSupplementaryServiceIndication(_arg010, _arg17);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            int _arg18 = data.readInt();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            onUssd(_arg011, _arg18, _arg22);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resendIncallMute(_arg012);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            srvccStateNotify(_arg013, _arg19);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            String _arg110 = data.readString();
-                            data.enforceNoDataAvail();
-                            stkCallControlAlphaNotify(_arg014, _arg110);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            long _arg111 = data.readLong();
-                            data.enforceNoDataAvail();
-                            stkCallSetup(_arg015, _arg111);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioVoiceIndication {
+        private static class Proxy implements IRadioVoiceIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

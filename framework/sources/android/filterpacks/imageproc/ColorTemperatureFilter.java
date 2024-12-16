@@ -8,14 +8,13 @@ import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
-import android.os.BatteryManager;
 
 /* loaded from: classes.dex */
 public class ColorTemperatureFilter extends Filter {
     private final String mColorTemperatureShader;
     private Program mProgram;
 
-    @GenerateFieldPort(hasDefault = true, name = BatteryManager.EXTRA_SCALE)
+    @GenerateFieldPort(hasDefault = true, name = "scale")
     private float mScale;
     private int mTarget;
 
@@ -69,7 +68,7 @@ public class ColorTemperatureFilter extends Filter {
     }
 
     private void updateParameters() {
-        this.mProgram.setHostValue(BatteryManager.EXTRA_SCALE, Float.valueOf((this.mScale * 2.0f) - 1.0f));
+        this.mProgram.setHostValue("scale", Float.valueOf((this.mScale * 2.0f) - 1.0f));
     }
 
     @Override // android.filterfw.core.Filter

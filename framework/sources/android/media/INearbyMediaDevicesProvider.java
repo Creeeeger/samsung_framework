@@ -15,7 +15,6 @@ public interface INearbyMediaDevicesProvider extends IInterface {
 
     void unregisterNearbyDevicesCallback(INearbyMediaDevicesUpdateCallback iNearbyMediaDevicesUpdateCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INearbyMediaDevicesProvider {
         @Override // android.media.INearbyMediaDevicesProvider
         public void registerNearbyDevicesCallback(INearbyMediaDevicesUpdateCallback callback) throws RemoteException {
@@ -31,7 +30,6 @@ public interface INearbyMediaDevicesProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INearbyMediaDevicesProvider {
         static final int TRANSACTION_registerNearbyDevicesCallback = 3;
         static final int TRANSACTION_unregisterNearbyDevicesCallback = 4;
@@ -77,31 +75,27 @@ public interface INearbyMediaDevicesProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(INearbyMediaDevicesProvider.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(INearbyMediaDevicesProvider.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(INearbyMediaDevicesProvider.DESCRIPTOR);
+                case 3:
+                    INearbyMediaDevicesUpdateCallback _arg0 = INearbyMediaDevicesUpdateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerNearbyDevicesCallback(_arg0);
+                    return true;
+                case 4:
+                    INearbyMediaDevicesUpdateCallback _arg02 = INearbyMediaDevicesUpdateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterNearbyDevicesCallback(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 3:
-                            INearbyMediaDevicesUpdateCallback _arg0 = INearbyMediaDevicesUpdateCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerNearbyDevicesCallback(_arg0);
-                            return true;
-                        case 4:
-                            INearbyMediaDevicesUpdateCallback _arg02 = INearbyMediaDevicesUpdateCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterNearbyDevicesCallback(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INearbyMediaDevicesProvider {
+        private static class Proxy implements INearbyMediaDevicesProvider {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

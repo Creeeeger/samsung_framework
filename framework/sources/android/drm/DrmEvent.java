@@ -14,7 +14,7 @@ public class DrmEvent {
     private final int mType;
     private final int mUniqueId;
 
-    public DrmEvent(int uniqueId, int type, String message, HashMap<String, Object> attributes) {
+    protected DrmEvent(int uniqueId, int type, String message, HashMap<String, Object> attributes) {
         this.mMessage = "";
         this.mAttributes = new HashMap<>();
         this.mUniqueId = uniqueId;
@@ -27,7 +27,7 @@ public class DrmEvent {
         }
     }
 
-    public DrmEvent(int uniqueId, int type, String message) {
+    protected DrmEvent(int uniqueId, int type, String message) {
         this.mMessage = "";
         this.mAttributes = new HashMap<>();
         this.mUniqueId = uniqueId;

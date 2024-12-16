@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.ims.ImsFeatureContainer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsServiceFeatureCallback extends IInterface {
     void imsFeatureCreated(ImsFeatureContainer imsFeatureContainer, int i) throws RemoteException;
 
@@ -17,7 +17,6 @@ public interface IImsServiceFeatureCallback extends IInterface {
 
     void updateCapabilities(long j) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsServiceFeatureCallback {
         @Override // com.android.ims.internal.IImsServiceFeatureCallback
         public void imsFeatureCreated(ImsFeatureContainer feature, int subId) throws RemoteException {
@@ -41,7 +40,6 @@ public interface IImsServiceFeatureCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsServiceFeatureCallback {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsServiceFeatureCallback";
         static final int TRANSACTION_imsFeatureCreated = 1;
@@ -94,42 +92,39 @@ public interface IImsServiceFeatureCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ImsFeatureContainer _arg0 = (ImsFeatureContainer) data.readTypedObject(ImsFeatureContainer.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    imsFeatureCreated(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    imsFeatureRemoved(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    imsStatusChanged(_arg03, _arg12);
+                    return true;
+                case 4:
+                    long _arg04 = data.readLong();
+                    data.enforceNoDataAvail();
+                    updateCapabilities(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ImsFeatureContainer _arg0 = (ImsFeatureContainer) data.readTypedObject(ImsFeatureContainer.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            imsFeatureCreated(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            imsFeatureRemoved(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            imsStatusChanged(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            long _arg04 = data.readLong();
-                            data.enforceNoDataAvail();
-                            updateCapabilities(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsServiceFeatureCallback {
+        private static class Proxy implements IImsServiceFeatureCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

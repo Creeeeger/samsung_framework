@@ -3,6 +3,8 @@ package android.os;
 import android.os.Parcelable;
 import android.util.Log;
 import android.util.proto.ProtoOutputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
 /* loaded from: classes3.dex */
@@ -32,24 +34,27 @@ public class PatternMatcher implements Parcelable {
     private final int mType;
     private static final int[] sParsedPatternScratch = new int[2048];
     public static final Parcelable.Creator<PatternMatcher> CREATOR = new Parcelable.Creator<PatternMatcher>() { // from class: android.os.PatternMatcher.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PatternMatcher createFromParcel(Parcel source) {
             return new PatternMatcher(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PatternMatcher[] newArray(int size) {
             return new PatternMatcher[size];
         }
     };
 
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PatternType {
+    }
+
     public PatternMatcher(String pattern, int type) {
         this.mPattern = pattern;
         this.mType = type;
-        if (type == 3) {
+        if (this.mType == 3) {
             this.mParsedPattern = parseAndVerifyAdvancedPattern(pattern);
         } else {
             this.mParsedPattern = null;
@@ -125,23 +130,6 @@ public class PatternMatcher implements Parcelable {
         this.mPattern = src.readString();
         this.mType = src.readInt();
         this.mParsedPattern = src.createIntArray();
-    }
-
-    /* renamed from: android.os.PatternMatcher$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PatternMatcher> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PatternMatcher createFromParcel(Parcel source) {
-            return new PatternMatcher(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PatternMatcher[] newArray(int size) {
-            return new PatternMatcher[size];
-        }
     }
 
     static boolean matchPattern(String match, String pattern, int[] parsedPattern, int type) {
@@ -223,16 +211,15 @@ public class PatternMatcher implements Parcelable {
         return true;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:10:0x001b. Please report as an issue. */
-    /* JADX WARN: Removed duplicated region for block: B:23:0x0144  */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x0107 A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:23:0x014d  */
+    /* JADX WARN: Removed duplicated region for block: B:69:0x010e A[SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     static synchronized int[] parseAndVerifyAdvancedPattern(java.lang.String r17) {
         /*
-            Method dump skipped, instructions count: 514
+            Method dump skipped, instructions count: 528
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.os.PatternMatcher.parseAndVerifyAdvancedPattern(java.lang.String):int[]");
@@ -368,30 +355,27 @@ public class PatternMatcher implements Parcelable {
         }
         switch (tokenType) {
             case 0:
-                if (match.charAt(im) != parsedPattern[tokenStart]) {
-                    return false;
+                if (match.charAt(im) == parsedPattern[tokenStart]) {
+                    break;
                 }
-                return true;
-            case 1:
-                return true;
+                break;
             case 2:
                 for (int i = tokenStart; i < tokenEnd; i += 2) {
                     char matchChar = match.charAt(im);
                     if (matchChar >= parsedPattern[i] && matchChar <= parsedPattern[i + 1]) {
-                        return true;
+                        break;
                     }
                 }
-                return false;
+                break;
             case 3:
                 for (int i2 = tokenStart; i2 < tokenEnd; i2 += 2) {
                     char matchChar2 = match.charAt(im);
                     if (matchChar2 >= parsedPattern[i2] && matchChar2 <= parsedPattern[i2 + 1]) {
-                        return false;
+                        break;
                     }
                 }
-                return true;
-            default:
-                return false;
+                break;
         }
+        return false;
     }
 }

@@ -91,8 +91,7 @@ public class OAEPEncoding implements AsymmetricBlockCipher {
         byte[] block = new byte[getInputBlockSize() + 1 + (this.defHash.length * 2)];
         System.arraycopy(in, inOff, block, block.length - inLen, inLen);
         block[(block.length - inLen) - 1] = 1;
-        byte[] bArr = this.defHash;
-        System.arraycopy(bArr, 0, block, bArr.length, bArr.length);
+        System.arraycopy(this.defHash, 0, block, this.defHash.length, this.defHash.length);
         byte[] seed = new byte[this.defHash.length];
         this.random.nextBytes(seed);
         byte[] mask = maskGeneratorFunction1(seed, 0, seed.length, block.length - this.defHash.length);
@@ -100,8 +99,7 @@ public class OAEPEncoding implements AsymmetricBlockCipher {
             block[i] = (byte) (block[i] ^ mask[i - this.defHash.length]);
         }
         System.arraycopy(seed, 0, block, 0, this.defHash.length);
-        byte[] bArr2 = this.defHash;
-        byte[] mask2 = maskGeneratorFunction1(block, bArr2.length, block.length - bArr2.length, bArr2.length);
+        byte[] mask2 = maskGeneratorFunction1(block, this.defHash.length, block.length - this.defHash.length, this.defHash.length);
         for (int i2 = 0; i2 != this.defHash.length; i2++) {
             block[i2] = (byte) (block[i2] ^ mask2[i2]);
         }
@@ -109,8 +107,6 @@ public class OAEPEncoding implements AsymmetricBlockCipher {
     }
 
     public byte[] decodeBlock(byte[] in, int inOff, int inLen) throws InvalidCipherTextException {
-        byte[] bArr;
-        byte[] bArr2;
         byte[] data = this.engine.processBlock(in, inOff, inLen);
         byte[] block = new byte[this.engine.getOutputBlockSize()];
         boolean wrongData = block.length < (this.defHash.length * 2) + 1;
@@ -120,36 +116,22 @@ public class OAEPEncoding implements AsymmetricBlockCipher {
             System.arraycopy(data, 0, block, 0, block.length);
             wrongData = true;
         }
-        byte[] bArr3 = this.defHash;
-        byte[] mask = maskGeneratorFunction1(block, bArr3.length, block.length - bArr3.length, bArr3.length);
-        int i = 0;
-        while (true) {
-            bArr = this.defHash;
-            if (i == bArr.length) {
-                break;
-            }
+        byte[] mask = maskGeneratorFunction1(block, this.defHash.length, block.length - this.defHash.length, this.defHash.length);
+        for (int i = 0; i != this.defHash.length; i++) {
             block[i] = (byte) (block[i] ^ mask[i]);
-            i++;
         }
-        int i2 = bArr.length;
-        byte[] mask2 = maskGeneratorFunction1(block, 0, i2, block.length - bArr.length);
-        for (int i3 = this.defHash.length; i3 != block.length; i3++) {
-            block[i3] = (byte) (block[i3] ^ mask2[i3 - this.defHash.length]);
+        byte[] mask2 = maskGeneratorFunction1(block, 0, this.defHash.length, block.length - this.defHash.length);
+        for (int i2 = this.defHash.length; i2 != block.length; i2++) {
+            block[i2] = (byte) (block[i2] ^ mask2[i2 - this.defHash.length]);
         }
         boolean defHashWrong = false;
-        int i4 = 0;
-        while (true) {
-            bArr2 = this.defHash;
-            if (i4 == bArr2.length) {
-                break;
-            }
-            if (bArr2[i4] != block[bArr2.length + i4]) {
+        for (int i3 = 0; i3 != this.defHash.length; i3++) {
+            if (this.defHash[i3] != block[this.defHash.length + i3]) {
                 defHashWrong = true;
             }
-            i4++;
         }
         int start = block.length;
-        for (int index = bArr2.length * 2; index != block.length; index++) {
+        for (int index = this.defHash.length * 2; index != block.length; index++) {
             if ((block[index] != 0) & (start == block.length)) {
                 start = index;
             }

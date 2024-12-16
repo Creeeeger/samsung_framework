@@ -45,7 +45,6 @@ public abstract class RadioTuner {
     public static final int TUNER_RESULT_UNKNOWN_ERROR = 7;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TunerResultType {
     }
 
@@ -58,8 +57,6 @@ public abstract class RadioTuner {
 
     @Deprecated
     public abstract int getConfiguration(RadioManager.BandConfig[] bandConfigArr);
-
-    public abstract Bitmap getMetadataImage(int i);
 
     public abstract boolean getMute();
 
@@ -102,6 +99,10 @@ public abstract class RadioTuner {
         throw new UnsupportedOperationException("Seeking is not supported");
     }
 
+    public Bitmap getMetadataImage(int id) {
+        throw new UnsupportedOperationException("Getting metadata image must be implemented in child classes");
+    }
+
     public ProgramList getDynamicProgramList(ProgramList.Filter filter) {
         return null;
     }
@@ -126,7 +127,6 @@ public abstract class RadioTuner {
         throw new UnsupportedOperationException("Getting parameters is not supported");
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         public void onError(int status) {
         }

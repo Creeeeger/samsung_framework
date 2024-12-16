@@ -114,9 +114,8 @@ public class X509AttributeCertificateHolder implements Encodable, Serializable {
     }
 
     public Extension getExtension(ASN1ObjectIdentifier oid) {
-        Extensions extensions = this.extensions;
-        if (extensions != null) {
-            return extensions.getExtension(oid);
+        if (this.extensions != null) {
+            return this.extensions.getExtension(oid);
         }
         return null;
     }

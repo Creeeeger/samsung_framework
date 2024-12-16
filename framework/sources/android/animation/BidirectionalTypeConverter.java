@@ -17,7 +17,6 @@ public abstract class BidirectionalTypeConverter<T, V> extends TypeConverter<T, 
         return this.mInvertedConverter;
     }
 
-    /* loaded from: classes.dex */
     private static class InvertedConverter<From, To> extends BidirectionalTypeConverter<From, To> {
         private BidirectionalTypeConverter<To, From> mConverter;
 

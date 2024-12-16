@@ -23,17 +23,18 @@ public abstract class HandwritingGesture {
     int mType = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface GestureType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface GestureTypeFlags {
     }
 
-    /* loaded from: classes4.dex */
+    @Retention(RetentionPolicy.SOURCE)
     @interface Granularity {
+    }
+
+    HandwritingGesture() {
     }
 
     public final int getGestureType() {

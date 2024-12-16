@@ -21,6 +21,7 @@ public class KeyInfo implements KeySpec {
     private final int mSecurityLevel;
     private final String[] mSignaturePaddings;
     private final boolean mTrustedUserPresenceRequired;
+    private final boolean mUnlockedDeviceRequired;
     private final boolean mUserAuthenticationRequired;
     private final boolean mUserAuthenticationRequirementEnforcedBySecureHardware;
     private final int mUserAuthenticationType;
@@ -28,7 +29,7 @@ public class KeyInfo implements KeySpec {
     private final int mUserAuthenticationValidityDurationSeconds;
     private final boolean mUserConfirmationRequired;
 
-    public KeyInfo(String keystoreKeyAlias, boolean insideSecureHardware, int origin, int keySize, Date keyValidityStart, Date keyValidityForOriginationEnd, Date keyValidityForConsumptionEnd, int purposes, String[] encryptionPaddings, String[] signaturePaddings, String[] digests, String[] blockModes, boolean userAuthenticationRequired, int userAuthenticationValidityDurationSeconds, int userAuthenticationType, boolean userAuthenticationRequirementEnforcedBySecureHardware, boolean userAuthenticationValidWhileOnBody, boolean trustedUserPresenceRequired, boolean invalidatedByBiometricEnrollment, boolean userConfirmationRequired, int securityLevel, int remainingUsageCount) {
+    public KeyInfo(String keystoreKeyAlias, boolean insideSecureHardware, int origin, int keySize, Date keyValidityStart, Date keyValidityForOriginationEnd, Date keyValidityForConsumptionEnd, int purposes, String[] encryptionPaddings, String[] signaturePaddings, String[] digests, String[] blockModes, boolean userAuthenticationRequired, int userAuthenticationValidityDurationSeconds, int userAuthenticationType, boolean userAuthenticationRequirementEnforcedBySecureHardware, boolean userAuthenticationValidWhileOnBody, boolean unlockedDeviceRequired, boolean trustedUserPresenceRequired, boolean invalidatedByBiometricEnrollment, boolean userConfirmationRequired, int securityLevel, int remainingUsageCount) {
         this.mKeystoreAlias = keystoreKeyAlias;
         this.mInsideSecureHardware = insideSecureHardware;
         this.mOrigin = origin;
@@ -46,6 +47,7 @@ public class KeyInfo implements KeySpec {
         this.mUserAuthenticationType = userAuthenticationType;
         this.mUserAuthenticationRequirementEnforcedBySecureHardware = userAuthenticationRequirementEnforcedBySecureHardware;
         this.mUserAuthenticationValidWhileOnBody = userAuthenticationValidWhileOnBody;
+        this.mUnlockedDeviceRequired = unlockedDeviceRequired;
         this.mTrustedUserPresenceRequired = trustedUserPresenceRequired;
         this.mInvalidatedByBiometricEnrollment = invalidatedByBiometricEnrollment;
         this.mUserConfirmationRequired = userConfirmationRequired;
@@ -104,6 +106,10 @@ public class KeyInfo implements KeySpec {
 
     public boolean isUserAuthenticationRequired() {
         return this.mUserAuthenticationRequired;
+    }
+
+    public boolean isUnlockedDeviceRequired() {
+        return this.mUnlockedDeviceRequired;
     }
 
     public boolean isUserConfirmationRequired() {

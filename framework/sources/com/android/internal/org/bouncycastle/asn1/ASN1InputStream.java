@@ -37,10 +37,10 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         super(input);
         this.limit = limit;
         this.lazyEvaluate = lazyEvaluate;
-        this.tmpBuffers = new byte[11];
+        this.tmpBuffers = new byte[11][];
     }
 
-    public int getLimit() {
+    int getLimit() {
         return this.limit;
     }
 
@@ -152,7 +152,7 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         }
     }
 
-    public static int readTagNumber(InputStream s, int tag) throws IOException {
+    static int readTagNumber(InputStream s, int tag) throws IOException {
         int tagNo = tag & 31;
         if (tagNo == 31) {
             int tagNo2 = 0;
@@ -172,7 +172,7 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         return tagNo;
     }
 
-    public static int readLength(InputStream s, int limit, boolean isParsing) throws IOException {
+    static int readLength(InputStream s, int limit, boolean isParsing) throws IOException {
         int length = s.read();
         if (length < 0) {
             throw new EOFException("EOF found when length expected");
@@ -265,7 +265,7 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         return string;
     }
 
-    public static ASN1Primitive createPrimitiveDERObject(int tagNo, DefiniteLengthInputStream defIn, byte[][] tmpBuffers) throws IOException {
+    static ASN1Primitive createPrimitiveDERObject(int tagNo, DefiniteLengthInputStream defIn, byte[][] tmpBuffers) throws IOException {
         switch (tagNo) {
             case 1:
                 return ASN1Boolean.fromOctetString(getBuffer(defIn, tmpBuffers));

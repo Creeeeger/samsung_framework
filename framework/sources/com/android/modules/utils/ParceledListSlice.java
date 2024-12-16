@@ -8,14 +8,12 @@ import java.util.List;
 /* loaded from: classes5.dex */
 public class ParceledListSlice<T extends Parcelable> extends BaseParceledListSlice<T> {
     public static final Parcelable.ClassLoaderCreator<ParceledListSlice> CREATOR = new Parcelable.ClassLoaderCreator<ParceledListSlice>() { // from class: com.android.modules.utils.ParceledListSlice.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
-        public ParceledListSlice createFromParcel(Parcel in) {
-            return new ParceledListSlice(in, null);
+        public ParceledListSlice createFromParcel(Parcel parcel) {
+            return new ParceledListSlice(parcel, null);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.ClassLoaderCreator
         public ParceledListSlice createFromParcel(Parcel in, ClassLoader loader) {
             return new ParceledListSlice(in, loader);
@@ -26,10 +24,6 @@ public class ParceledListSlice<T extends Parcelable> extends BaseParceledListSli
             return new ParceledListSlice[size];
         }
     };
-
-    /* synthetic */ ParceledListSlice(Parcel parcel, ClassLoader classLoader, ParceledListSliceIA parceledListSliceIA) {
-        this(parcel, classLoader);
-    }
 
     @Override // com.android.modules.utils.BaseParceledListSlice
     public /* bridge */ /* synthetic */ List getList() {
@@ -68,11 +62,13 @@ public class ParceledListSlice<T extends Parcelable> extends BaseParceledListSli
         return contents;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.modules.utils.BaseParceledListSlice
     public void writeElement(T parcelable, Parcel dest, int callFlags) {
         parcelable.writeToParcel(dest, callFlags);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.modules.utils.BaseParceledListSlice
     public void writeParcelableCreator(T parcelable, Parcel dest) {
         dest.writeParcelableCreator(parcelable);
@@ -81,27 +77,5 @@ public class ParceledListSlice<T extends Parcelable> extends BaseParceledListSli
     @Override // com.android.modules.utils.BaseParceledListSlice
     protected Parcelable.Creator<?> readParcelableCreator(Parcel from, ClassLoader loader) {
         return from.readParcelableCreator(loader);
-    }
-
-    /* renamed from: com.android.modules.utils.ParceledListSlice$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.ClassLoaderCreator<ParceledListSlice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParceledListSlice createFromParcel(Parcel in) {
-            return new ParceledListSlice(in, null);
-        }
-
-        @Override // android.os.Parcelable.ClassLoaderCreator
-        public ParceledListSlice createFromParcel(Parcel in, ClassLoader loader) {
-            return new ParceledListSlice(in, loader);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParceledListSlice[] newArray(int size) {
-            return new ParceledListSlice[size];
-        }
     }
 }

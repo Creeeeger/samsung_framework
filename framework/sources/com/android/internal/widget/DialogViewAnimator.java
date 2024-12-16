@@ -24,7 +24,7 @@ public class DialogViewAnimator extends ViewAnimator {
     }
 
     @Override // android.widget.FrameLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int maxHeight;
         int childWidthMeasureSpec;
         int childHeightMeasureSpec;

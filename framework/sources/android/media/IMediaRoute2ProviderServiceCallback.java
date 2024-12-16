@@ -21,7 +21,6 @@ public interface IMediaRoute2ProviderServiceCallback extends IInterface {
 
     void notifySessionsUpdated(List<RoutingSessionInfo> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaRoute2ProviderServiceCallback {
         @Override // android.media.IMediaRoute2ProviderServiceCallback
         public void notifyProviderUpdated(MediaRoute2ProviderInfo providerInfo) throws RemoteException {
@@ -49,7 +48,6 @@ public interface IMediaRoute2ProviderServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaRoute2ProviderServiceCallback {
         static final int TRANSACTION_notifyProviderUpdated = 1;
         static final int TRANSACTION_notifyRequestFailed = 5;
@@ -104,48 +102,44 @@ public interface IMediaRoute2ProviderServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMediaRoute2ProviderServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMediaRoute2ProviderServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMediaRoute2ProviderServiceCallback.DESCRIPTOR);
+                case 1:
+                    MediaRoute2ProviderInfo _arg0 = (MediaRoute2ProviderInfo) data.readTypedObject(MediaRoute2ProviderInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyProviderUpdated(_arg0);
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    RoutingSessionInfo _arg1 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionCreated(_arg02, _arg1);
+                    return true;
+                case 3:
+                    List<RoutingSessionInfo> _arg03 = data.createTypedArrayList(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionsUpdated(_arg03);
+                    return true;
+                case 4:
+                    RoutingSessionInfo _arg04 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionReleased(_arg04);
+                    return true;
+                case 5:
+                    long _arg05 = data.readLong();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyRequestFailed(_arg05, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MediaRoute2ProviderInfo _arg0 = (MediaRoute2ProviderInfo) data.readTypedObject(MediaRoute2ProviderInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyProviderUpdated(_arg0);
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            RoutingSessionInfo _arg1 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionCreated(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            List<RoutingSessionInfo> _arg03 = data.createTypedArrayList(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionsUpdated(_arg03);
-                            return true;
-                        case 4:
-                            RoutingSessionInfo _arg04 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionReleased(_arg04);
-                            return true;
-                        case 5:
-                            long _arg05 = data.readLong();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyRequestFailed(_arg05, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMediaRoute2ProviderServiceCallback {
+        private static class Proxy implements IMediaRoute2ProviderServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.internal.telephony.IVoidConsumer;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISatelliteDatagramCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.satellite.ISatelliteDatagramCallback";
 
     void onSatelliteDatagramReceived(long j, SatelliteDatagram satelliteDatagram, int i, IVoidConsumer iVoidConsumer) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISatelliteDatagramCallback {
         @Override // android.telephony.satellite.ISatelliteDatagramCallback
         public void onSatelliteDatagramReceived(long datagramId, SatelliteDatagram datagram, int pendingCount, IVoidConsumer callback) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISatelliteDatagramCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISatelliteDatagramCallback {
         static final int TRANSACTION_onSatelliteDatagramReceived = 1;
 
@@ -68,28 +66,25 @@ public interface ISatelliteDatagramCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISatelliteDatagramCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISatelliteDatagramCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISatelliteDatagramCallback.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    SatelliteDatagram _arg1 = (SatelliteDatagram) data.readTypedObject(SatelliteDatagram.CREATOR);
+                    int _arg2 = data.readInt();
+                    IVoidConsumer _arg3 = IVoidConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSatelliteDatagramReceived(_arg0, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            SatelliteDatagram _arg1 = (SatelliteDatagram) data.readTypedObject(SatelliteDatagram.CREATOR);
-                            int _arg2 = data.readInt();
-                            IVoidConsumer _arg3 = IVoidConsumer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSatelliteDatagramReceived(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISatelliteDatagramCallback {
+        private static class Proxy implements ISatelliteDatagramCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

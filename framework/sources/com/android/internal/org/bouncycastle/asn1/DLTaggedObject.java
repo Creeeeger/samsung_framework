@@ -9,12 +9,12 @@ public class DLTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return this.explicit || this.obj.toASN1Primitive().toDLObject().isConstructed();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         int length = this.obj.toASN1Primitive().toDLObject().encodedLength();
         if (this.explicit) {
             return StreamUtil.calculateTagLength(this.tagNo) + StreamUtil.calculateBodyLength(length) + length;
@@ -23,7 +23,7 @@ public class DLTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         ASN1Primitive primitive = this.obj.toASN1Primitive().toDLObject();
         int flags = 128;
         if (this.explicit || primitive.isConstructed()) {
@@ -37,7 +37,7 @@ public class DLTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return this;
     }
 }

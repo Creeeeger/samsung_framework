@@ -12,7 +12,6 @@ public interface ICinematicEffectListener extends IInterface {
 
     void onCinematicEffectGenerated(CinematicEffectResponse cinematicEffectResponse) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICinematicEffectListener {
         @Override // android.app.wallpapereffectsgeneration.ICinematicEffectListener
         public void onCinematicEffectGenerated(CinematicEffectResponse response) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICinematicEffectListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICinematicEffectListener {
         static final int TRANSACTION_onCinematicEffectGenerated = 1;
 
@@ -67,26 +65,22 @@ public interface ICinematicEffectListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICinematicEffectListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICinematicEffectListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICinematicEffectListener.DESCRIPTOR);
+                case 1:
+                    CinematicEffectResponse _arg0 = (CinematicEffectResponse) data.readTypedObject(CinematicEffectResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCinematicEffectGenerated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CinematicEffectResponse _arg0 = (CinematicEffectResponse) data.readTypedObject(CinematicEffectResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCinematicEffectGenerated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICinematicEffectListener {
+        private static class Proxy implements ICinematicEffectListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

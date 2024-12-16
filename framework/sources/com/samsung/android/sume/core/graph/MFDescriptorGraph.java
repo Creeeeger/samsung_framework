@@ -27,29 +27,24 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class MFDescriptorGraph implements Parcelable {
     private final DescriptorNode[] nodes;
     private final Graph.Option option;
     private static final String TAG = Def.tagOf((Class<?>) MFDescriptorGraph.class);
     public static final Parcelable.Creator<MFDescriptorGraph> CREATOR = new Parcelable.Creator<MFDescriptorGraph>() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MFDescriptorGraph createFromParcel(Parcel in) {
             return new MFDescriptorGraph(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MFDescriptorGraph[] newArray(int size) {
             return new MFDescriptorGraph[size];
         }
     };
-
-    /* synthetic */ MFDescriptorGraph(DescriptorNode[] x0, Graph.Option x1, AnonymousClass1 x2) {
-        this(x0, x1);
-    }
 
     private MFDescriptorGraph(DescriptorNode[] nodes, Graph.Option option) {
         this.nodes = nodes;
@@ -57,34 +52,32 @@ public class MFDescriptorGraph implements Parcelable {
     }
 
     protected MFDescriptorGraph(Parcel in) {
-        DescriptorNode[] descriptorNodeArr = (DescriptorNode[]) Arrays.stream(in.readParcelableArray(DescriptorNode.class.getClassLoader())).map(new Function() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda1
+        this.nodes = (DescriptorNode[]) Arrays.stream(in.readParcelableArray(DescriptorNode.class.getClassLoader())).map(new Function() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return MFDescriptorGraph.lambda$new$0((Parcelable) obj);
             }
-        }).toArray(new IntFunction() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda2
+        }).toArray(new IntFunction() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda4
             @Override // java.util.function.IntFunction
             public final Object apply(int i) {
                 return MFDescriptorGraph.lambda$new$1(i);
             }
         });
-        this.nodes = descriptorNodeArr;
         this.option = (Graph.Option) in.readParcelable(Graph.Option.class.getClassLoader());
-        for (DescriptorNode node : descriptorNodeArr) {
+        for (DescriptorNode node : this.nodes) {
             if (node.descriptor instanceof NNDescriptor) {
                 NNDescriptor nnDescriptor = (NNDescriptor) node.descriptor;
-                String str = TAG;
-                Log.d(str, "node: isKeepFilterDatatype " + nnDescriptor.isKeepFilterDatatype());
-                Log.d(str, "node: isMultipleInputOutput " + nnDescriptor.isBatchIO());
+                Log.d(TAG, "node: isKeepFilterDatatype " + nnDescriptor.isKeepFilterDatatype());
+                Log.d(TAG, "node: isMultipleInputOutput " + nnDescriptor.isBatchIO());
             }
         }
     }
 
-    public static /* synthetic */ DescriptorNode lambda$new$0(Parcelable it) {
+    static /* synthetic */ DescriptorNode lambda$new$0(Parcelable it) {
         return (DescriptorNode) it;
     }
 
-    public static /* synthetic */ DescriptorNode[] lambda$new$1(int x$0) {
+    static /* synthetic */ DescriptorNode[] lambda$new$1(int x$0) {
         return new DescriptorNode[x$0];
     }
 
@@ -102,18 +95,18 @@ public class MFDescriptorGraph implements Parcelable {
         Log.d(TAG, "toMediaFilterGraph: option=" + this.option);
         final MFGraph.Builder builder = new MFGraph.Builder(unitFactory, this.option);
         try {
-            final List<Pair<DescriptorNode, GraphNode<MediaFilter>>> nodeList = (List) Arrays.stream(this.nodes).sorted(Comparator.comparing(new Function() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda3
+            final List<Pair<DescriptorNode, GraphNode<MediaFilter>>> nodeList = (List) Arrays.stream(this.nodes).sorted(Comparator.comparing(new Function() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda0
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return Integer.valueOf(((MFDescriptorGraph.DescriptorNode) obj).getId());
                 }
-            })).map(new Function() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda4
+            })).map(new Function() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda1
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return MFDescriptorGraph.lambda$toMediaFilterGraph$2(MFGraphUnitFactory.this, (MFDescriptorGraph.DescriptorNode) obj);
                 }
             }).collect(Collectors.toList());
-            nodeList.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda5
+            nodeList.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda2
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     MFDescriptorGraph.lambda$toMediaFilterGraph$4(MFGraph.Builder.this, nodeList, (Pair) obj);
@@ -125,12 +118,12 @@ public class MFDescriptorGraph implements Parcelable {
         return builder.build();
     }
 
-    public static /* synthetic */ Pair lambda$toMediaFilterGraph$2(MFGraphUnitFactory unitFactory, DescriptorNode it) {
+    static /* synthetic */ Pair lambda$toMediaFilterGraph$2(MFGraphUnitFactory unitFactory, DescriptorNode it) {
         return new Pair(it, unitFactory.newNode(it.descriptor));
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public static /* synthetic */ void lambda$toMediaFilterGraph$4(final MFGraph.Builder builder, final List nodeList, Pair it) {
+    static /* synthetic */ void lambda$toMediaFilterGraph$4(final MFGraph.Builder builder, final List nodeList, Pair it) {
         List<Integer> children = ((DescriptorNode) it.first).children;
         final Map<Integer, Evaluator> evaluatorMap = ((DescriptorNode) it.first).evaluatorMap;
         final Map<Integer, BufferChannelDescriptor> channelMapMap = ((DescriptorNode) it.first).channelMap;
@@ -138,7 +131,7 @@ public class MFDescriptorGraph implements Parcelable {
         if (children.isEmpty()) {
             builder.addNode(from);
         } else {
-            children.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda0
+            children.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph$$ExternalSyntheticLambda5
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     MFDescriptorGraph.lambda$toMediaFilterGraph$3(nodeList, evaluatorMap, channelMapMap, builder, from, (Integer) obj);
@@ -147,7 +140,7 @@ public class MFDescriptorGraph implements Parcelable {
         }
     }
 
-    public static /* synthetic */ void lambda$toMediaFilterGraph$3(List nodeList, Map evaluatorMap, Map channelMapMap, MFGraph.Builder builder, GraphNode from, Integer idx) {
+    static /* synthetic */ void lambda$toMediaFilterGraph$3(List nodeList, Map evaluatorMap, Map channelMapMap, MFGraph.Builder builder, GraphNode from, Integer idx) {
         GraphNode<MediaFilter> to = (GraphNode) ((Pair) nodeList.get(idx.intValue())).second;
         Evaluator evaluator = null;
         BufferChannelDescriptor channelDesc = null;
@@ -163,30 +156,11 @@ public class MFDescriptorGraph implements Parcelable {
         builder.addNode(from, to, evaluator, channelDesc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.sume.core.graph.MFDescriptorGraph$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Parcelable.Creator<MFDescriptorGraph> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MFDescriptorGraph createFromParcel(Parcel in) {
-            return new MFDescriptorGraph(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MFDescriptorGraph[] newArray(int size) {
-            return new MFDescriptorGraph[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
     }
 
-    /* loaded from: classes4.dex */
     public static class Builder {
         AtomicInteger id = new AtomicInteger(0);
         Map<MFDescriptor, DescriptorNode> nodeMap = new HashMap();
@@ -241,17 +215,16 @@ public class MFDescriptorGraph implements Parcelable {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class DescriptorNode implements Parcelable {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class DescriptorNode implements Parcelable {
         public static final Parcelable.Creator<DescriptorNode> CREATOR = new Parcelable.Creator<DescriptorNode>() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph.DescriptorNode.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DescriptorNode createFromParcel(Parcel in) {
                 return new DescriptorNode(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DescriptorNode[] newArray(int size) {
                 return new DescriptorNode[size];
@@ -271,7 +244,7 @@ public class MFDescriptorGraph implements Parcelable {
             this.descriptor = descriptor;
         }
 
-        public int getId() {
+        int getId() {
             return this.id;
         }
 
@@ -301,23 +274,6 @@ public class MFDescriptorGraph implements Parcelable {
             dest.writeIntArray(this.children.stream().mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray());
             dest.writeMap(this.evaluatorMap);
             dest.writeMap(this.channelMap);
-        }
-
-        /* renamed from: com.samsung.android.sume.core.graph.MFDescriptorGraph$DescriptorNode$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<DescriptorNode> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public DescriptorNode createFromParcel(Parcel in) {
-                return new DescriptorNode(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public DescriptorNode[] newArray(int size) {
-                return new DescriptorNode[size];
-            }
         }
 
         @Override // android.os.Parcelable

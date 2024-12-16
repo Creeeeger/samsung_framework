@@ -51,8 +51,7 @@ public class DoodleItem extends Item {
     }
 
     public DoodleStroke getCurrentDoodleStroke() {
-        int i = this.currentStrokeIndex;
-        if (i < 0 || i >= this.strokeList.size()) {
+        if (this.currentStrokeIndex < 0 || this.currentStrokeIndex >= this.strokeList.size()) {
             Log.e(this.TAG, "strokeIndex is invalid - index : " + this.currentStrokeIndex);
             return null;
         }
@@ -90,7 +89,7 @@ public class DoodleItem extends Item {
             Log.e(this.TAG, "strokeList is empty");
             return;
         }
-        this.strokeList.remove(r0.size() - 1);
+        this.strokeList.remove(this.strokeList.size() - 1);
         this.currentStrokeIndex--;
         Log.d(this.TAG, "detachStroke stroke size : " + this.strokeList.size());
         this.context.getNativeInterface().detachStroke(this);
@@ -108,8 +107,7 @@ public class DoodleItem extends Item {
         if (!this.isDrawing) {
             Log.e(this.TAG, "isDrawing is false");
         }
-        int i = this.currentStrokeIndex;
-        if (i < 0 || i >= this.strokeList.size()) {
+        if (this.currentStrokeIndex < 0 || this.currentStrokeIndex >= this.strokeList.size()) {
             Log.e(this.TAG, "currentStrokeIndex is invalid : " + this.currentStrokeIndex + " Size : " + this.strokeList.size());
             return;
         }

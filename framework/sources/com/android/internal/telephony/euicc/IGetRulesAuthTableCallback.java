@@ -13,7 +13,6 @@ public interface IGetRulesAuthTableCallback extends IInterface {
 
     void onComplete(int i, EuiccRulesAuthTable euiccRulesAuthTable) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGetRulesAuthTableCallback {
         @Override // com.android.internal.telephony.euicc.IGetRulesAuthTableCallback
         public void onComplete(int resultCode, EuiccRulesAuthTable rat) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IGetRulesAuthTableCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGetRulesAuthTableCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -68,27 +66,23 @@ public interface IGetRulesAuthTableCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGetRulesAuthTableCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGetRulesAuthTableCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGetRulesAuthTableCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    EuiccRulesAuthTable _arg1 = (EuiccRulesAuthTable) data.readTypedObject(EuiccRulesAuthTable.CREATOR);
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            EuiccRulesAuthTable _arg1 = (EuiccRulesAuthTable) data.readTypedObject(EuiccRulesAuthTable.CREATOR);
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IGetRulesAuthTableCallback {
+        private static class Proxy implements IGetRulesAuthTableCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

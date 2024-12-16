@@ -50,7 +50,7 @@ public abstract class TimeZoneProviderService extends Service {
 
     private void reportSuggestionInternal(final TimeZoneProviderSuggestion suggestion, final TimeZoneProviderStatus providerStatus) {
         Objects.requireNonNull(suggestion);
-        this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$$ExternalSyntheticLambda2
+        this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 TimeZoneProviderService.this.lambda$reportSuggestionInternal$0(suggestion, providerStatus);
@@ -58,6 +58,7 @@ public abstract class TimeZoneProviderService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$reportSuggestionInternal$0(TimeZoneProviderSuggestion suggestion, TimeZoneProviderStatus providerStatus) {
         synchronized (this.mLock) {
             ITimeZoneProviderManager manager = this.mManager;
@@ -85,7 +86,7 @@ public abstract class TimeZoneProviderService extends Service {
     }
 
     private void reportUncertainInternal(final TimeZoneProviderStatus providerStatus) {
-        this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$$ExternalSyntheticLambda0
+        this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 TimeZoneProviderService.this.lambda$reportUncertainInternal$1(providerStatus);
@@ -93,6 +94,7 @@ public abstract class TimeZoneProviderService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$reportUncertainInternal$1(TimeZoneProviderStatus providerStatus) {
         synchronized (this.mLock) {
             ITimeZoneProviderManager manager = this.mManager;
@@ -112,7 +114,7 @@ public abstract class TimeZoneProviderService extends Service {
 
     public final void reportPermanentFailure(final Throwable cause) {
         Objects.requireNonNull(cause);
-        this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$$ExternalSyntheticLambda1
+        this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
             public final void run() {
                 TimeZoneProviderService.this.lambda$reportPermanentFailure$2(cause);
@@ -120,6 +122,7 @@ public abstract class TimeZoneProviderService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$reportPermanentFailure$2(Throwable cause) {
         synchronized (this.mLock) {
             ITimeZoneProviderManager manager = this.mManager;
@@ -146,6 +149,7 @@ public abstract class TimeZoneProviderService extends Service {
         return timeSinceLastEventMillis > this.mEventFilteringAgeThresholdMillis;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onStartUpdatesInternal(ITimeZoneProviderManager manager, long initializationTimeoutMillis, long eventFilteringAgeThresholdMillis) {
         synchronized (this.mLock) {
             this.mManager = manager;
@@ -155,6 +159,7 @@ public abstract class TimeZoneProviderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onStopUpdatesInternal() {
         synchronized (this.mLock) {
             onStopUpdates();
@@ -162,6 +167,7 @@ public abstract class TimeZoneProviderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
         synchronized (this.mLock) {
@@ -169,19 +175,15 @@ public abstract class TimeZoneProviderService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class TimeZoneProviderServiceWrapper extends ITimeZoneProvider.Stub {
-        /* synthetic */ TimeZoneProviderServiceWrapper(TimeZoneProviderService timeZoneProviderService, TimeZoneProviderServiceWrapperIA timeZoneProviderServiceWrapperIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class TimeZoneProviderServiceWrapper extends ITimeZoneProvider.Stub {
         private TimeZoneProviderServiceWrapper() {
         }
 
         @Override // android.service.timezone.ITimeZoneProvider
         public void startUpdates(final ITimeZoneProviderManager manager, final long initializationTimeoutMillis, final long eventFilteringAgeThresholdMillis) {
             Objects.requireNonNull(manager);
-            TimeZoneProviderService.this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$TimeZoneProviderServiceWrapper$$ExternalSyntheticLambda1
+            TimeZoneProviderService.this.mHandler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$TimeZoneProviderServiceWrapper$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     TimeZoneProviderService.TimeZoneProviderServiceWrapper.this.lambda$startUpdates$0(manager, initializationTimeoutMillis, eventFilteringAgeThresholdMillis);
@@ -189,6 +191,7 @@ public abstract class TimeZoneProviderService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startUpdates$0(ITimeZoneProviderManager manager, long initializationTimeoutMillis, long eventFilteringAgeThresholdMillis) {
             TimeZoneProviderService.this.onStartUpdatesInternal(manager, initializationTimeoutMillis, eventFilteringAgeThresholdMillis);
         }
@@ -197,7 +200,7 @@ public abstract class TimeZoneProviderService extends Service {
         public void stopUpdates() {
             Handler handler = TimeZoneProviderService.this.mHandler;
             final TimeZoneProviderService timeZoneProviderService = TimeZoneProviderService.this;
-            handler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$TimeZoneProviderServiceWrapper$$ExternalSyntheticLambda0
+            handler.post(new Runnable() { // from class: android.service.timezone.TimeZoneProviderService$TimeZoneProviderServiceWrapper$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     TimeZoneProviderService.this.onStopUpdatesInternal();

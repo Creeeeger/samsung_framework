@@ -121,7 +121,6 @@ public class SemBioFaceManager {
     private IBinder mToken = new Binder();
     private long mAuthRequestId = 0;
 
-    /* loaded from: classes5.dex */
     public static final class CryptoObject {
         private BiometricPrompt.CryptoObject mBioCryptoObject;
         private final byte[] mFidoRequestData;
@@ -188,12 +187,12 @@ public class SemBioFaceManager {
             return this.mFidoResultData;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setFidoResultData(byte[] fidoResultData) {
             this.mFidoResultData = fidoResultData;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class AuthenticationResult {
         private CryptoObject mCryptoObject;
         private SemBioFace mFace;
@@ -236,7 +235,6 @@ public class SemBioFaceManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class AuthenticationCallback {
         public void onAuthenticationError(int errorCode, CharSequence errString) {
         }
@@ -254,7 +252,6 @@ public class SemBioFaceManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class EnrollmentCallback {
         public void onEnrollmentError(int errMsgId, CharSequence errString) {
         }
@@ -269,18 +266,15 @@ public class SemBioFaceManager {
         }
     }
 
-    @Deprecated
-    /* loaded from: classes5.dex */
     public static abstract class RemovalCallback {
-        @Deprecated
         public void onRemovalError(SemBioFace face, int errMsgId, CharSequence errString) {
         }
 
-        @Deprecated
         public void onRemovalSucceeded(SemBioFace face) {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void useHandler(Handler handler) {
         if (handler != null) {
             this.mHandler = new MyHandler(handler.getLooper());
@@ -329,7 +323,6 @@ public class SemBioFaceManager {
         return 0L;
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class ChallengeCallback {
         public void onPreEnroll(long hat) {
         }
@@ -349,7 +342,6 @@ public class SemBioFaceManager {
         Log.e(TAG, "setActiveUser() : this is not used");
     }
 
-    @Deprecated
     public void remove(SemBioFace face, int userId, RemovalCallback callback) {
         Log.e(TAG, "remove() : this is not used");
     }
@@ -514,72 +506,62 @@ public class SemBioFaceManager {
     public static int getSepMappedError(int errCode, int vendorCode) {
         switch (errCode) {
             case 1:
-                return 1;
+                break;
             case 2:
-                return 2;
+                break;
             case 3:
-                return 3;
+                break;
             case 4:
-                return 4;
+                break;
             case 5:
-                return 5;
+                break;
             case 6:
-                return 2;
+                break;
             case 7:
-                return 10001;
+                break;
             case 8:
                 switch (vendorCode) {
                     case 1001:
-                        return 1004;
+                        break;
                     case 1002:
-                        return 2;
+                        break;
                     case 1003:
-                        return 10003;
+                        break;
                     case 1004:
-                        return 10005;
+                        break;
                     case 1005:
-                        return 1005;
+                        break;
                     case 1006:
-                        return 1006;
+                        break;
                     case 1007:
-                        return 1007;
+                        break;
                     case 100001:
-                        return 100001;
+                        break;
                     case 100002:
-                        return 100002;
+                        break;
                     case 100003:
-                        return 100003;
-                    default:
-                        return errCode;
+                        break;
                 }
             case 9:
-                return 10002;
+                break;
             case 10:
-                return 10;
+                break;
             case 11:
-                return 2;
+                break;
             case 12:
-                return 1;
+                break;
             case 13:
-                return 10;
+                break;
             case 14:
-                return 2;
+                break;
             default:
                 Log.d(TAG, "getSepMappedError: No data, " + errCode + ", " + vendorCode);
-                return errCode;
+                break;
         }
+        return errCode;
     }
 
-    /* loaded from: classes5.dex */
-    public class MyHandler extends Handler {
-        /* synthetic */ MyHandler(SemBioFaceManager semBioFaceManager, Context context, MyHandlerIA myHandlerIA) {
-            this(context);
-        }
-
-        /* synthetic */ MyHandler(SemBioFaceManager semBioFaceManager, Looper looper, MyHandlerIA myHandlerIA) {
-            this(looper);
-        }
-
+    private class MyHandler extends Handler {
         private MyHandler(Context context) {
             super(context.getMainLooper());
         }
@@ -594,19 +576,19 @@ public class SemBioFaceManager {
             switch (msg.what) {
                 case 101:
                     SemBioFaceManager.this.sendAcquiredResult(msg.arg1, (String) msg.obj);
-                    return;
+                    break;
                 case 102:
                     SemBioFaceManager.this.sendAuthenticatedSucceeded((AuthenticationResult) msg.obj);
-                    return;
+                    break;
                 case 103:
                     SemBioFaceManager.this.sendAuthenticatedFailed();
-                    return;
+                    break;
                 case 104:
                     SemBioFaceManager.this.sendErrorResult(msg.arg1, (String) msg.obj);
-                    return;
+                    break;
                 default:
                     Log.w(SemBioFaceManager.TAG, "handleMessage : Unknown msg");
-                    return;
+                    break;
             }
         }
 
@@ -617,31 +599,31 @@ public class SemBioFaceManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendErrorResult(int errMsgId, String errMsg) {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
-            authenticationCallback.onAuthenticationError(errMsgId, errMsg);
+        if (this.mAuthenticationCallback != null) {
+            this.mAuthenticationCallback.onAuthenticationError(errMsgId, errMsg);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedSucceeded(AuthenticationResult result) {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
-            authenticationCallback.onAuthenticationSucceeded(result);
+        if (this.mAuthenticationCallback != null) {
+            this.mAuthenticationCallback.onAuthenticationSucceeded(result);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedFailed() {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
-            authenticationCallback.onAuthenticationFailed();
+        if (this.mAuthenticationCallback != null) {
+            this.mAuthenticationCallback.onAuthenticationFailed();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendAcquiredResult(int acquireInfo, String helpMsg) {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
-            authenticationCallback.onAuthenticationAcquired(acquireInfo);
+        if (this.mAuthenticationCallback != null) {
+            this.mAuthenticationCallback.onAuthenticationAcquired(acquireInfo);
             if (helpMsg != null) {
                 this.mAuthenticationCallback.onAuthenticationHelp(acquireInfo, helpMsg);
             }
@@ -677,8 +659,7 @@ public class SemBioFaceManager {
         return "com.android.systemui".equals(clientPackage) || PKG_NAME_DESKTOP_KEYGUARD.equals(clientPackage);
     }
 
-    /* loaded from: classes5.dex */
-    public class FaceManagerCompat implements BiometricAuthenticator, BiometricFaceConstants {
+    public class FaceManagerCompat extends BiometricFaceConstants implements BiometricAuthenticator {
         private FaceManager mFaceManagerHAL;
         private boolean mHasFaceHAL;
         private IFaceService mServiceHAL;
@@ -728,12 +709,11 @@ public class SemBioFaceManager {
             return SemBioFaceManager.this.getEnrolledFaces(userId);
         }
 
-        /* renamed from: halCancelAuthentication */
+        /* renamed from: halCancelAuthentication, reason: merged with bridge method [inline-methods] */
         public void lambda$hAuthenticate$0() {
-            IFaceService iFaceService;
-            if (this.mHasFaceHAL && (iFaceService = this.mServiceHAL) != null) {
+            if (this.mHasFaceHAL && this.mServiceHAL != null) {
                 try {
-                    iFaceService.cancelAuthentication(SemBioFaceManager.this.mToken, SemBioFaceManager.this.mContext.getOpPackageName(), SemBioFaceManager.this.mAuthRequestId);
+                    this.mServiceHAL.cancelAuthentication(SemBioFaceManager.this.mToken, SemBioFaceManager.this.mContext.getOpPackageName(), SemBioFaceManager.this.mAuthRequestId);
                 } catch (RemoteException e) {
                     Log.e(SemBioFaceManager.TAG, "halCancelAuthentication: ", e);
                 }
@@ -751,7 +731,7 @@ public class SemBioFaceManager {
                 }
                 if (cancel != null) {
                     if (!cancel.isCanceled()) {
-                        cancel.setOnCancelListener(new CancellationSignal.OnCancelListener() { // from class: com.samsung.android.bio.face.SemBioFaceManager$FaceManagerCompat$$ExternalSyntheticLambda1
+                        cancel.setOnCancelListener(new CancellationSignal.OnCancelListener() { // from class: com.samsung.android.bio.face.SemBioFaceManager$FaceManagerCompat$$ExternalSyntheticLambda0
                             @Override // android.os.CancellationSignal.OnCancelListener
                             public final void onCancel() {
                                 SemBioFaceManager.FaceManagerCompat.this.lambda$hAuthenticate$0();
@@ -786,8 +766,7 @@ public class SemBioFaceManager {
                         }
                         try {
                             FaceAuthenticateOptions options = new FaceAuthenticateOptions.Builder().setUserId(userId).setOpPackageName(SemBioFaceManager.this.mContext.getOpPackageName()).build();
-                            SemBioFaceManager semBioFaceManager = SemBioFaceManager.this;
-                            semBioFaceManager.mAuthRequestId = this.mServiceHAL.semAuthenticate(semBioFaceManager.mToken, sessionId, this.mServiceReceiverHAL, options, b2, fidoRequestData);
+                            SemBioFaceManager.this.mAuthRequestId = this.mServiceHAL.semAuthenticate(SemBioFaceManager.this.mToken, sessionId, this.mServiceReceiverHAL, options, b2, fidoRequestData);
                         } catch (Exception e2) {
                             e = e2;
                             Log.w(SemBioFaceManager.TAG, "hAuthenticate: " + e.getMessage());
@@ -807,9 +786,8 @@ public class SemBioFaceManager {
         public int hGetSecurityLevel(boolean isKeyguard) {
             if (this.mHasFaceHAL) {
                 try {
-                    IFaceService iFaceService = this.mServiceHAL;
-                    if (iFaceService != null) {
-                        return iFaceService.semGetSecurityLevel(isKeyguard);
+                    if (this.mServiceHAL != null) {
+                        return this.mServiceHAL.semGetSecurityLevel(isKeyguard);
                     }
                     return 0;
                 } catch (Exception e) {
@@ -822,7 +800,7 @@ public class SemBioFaceManager {
 
         private void sendAuthError(final AuthenticationCallback callback, final int errCode) {
             if (SemBioFaceManager.this.mHandler != null) {
-                SemBioFaceManager.this.mHandler.post(new Runnable() { // from class: com.samsung.android.bio.face.SemBioFaceManager$FaceManagerCompat$$ExternalSyntheticLambda0
+                SemBioFaceManager.this.mHandler.post(new Runnable() { // from class: com.samsung.android.bio.face.SemBioFaceManager$FaceManagerCompat$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         SemBioFaceManager.AuthenticationCallback.this.onAuthenticationError(errCode, null);
@@ -831,96 +809,8 @@ public class SemBioFaceManager {
             }
         }
 
-        /* renamed from: com.samsung.android.bio.face.SemBioFaceManager$FaceManagerCompat$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 extends IFaceServiceReceiver.Stub {
-            AnonymousClass1() {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onEnrollResult(Face face, int remaining) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onAcquired(int acquireInfo, int vendorCode) {
-                String helpMsg = FaceManager.getHelpMessage(SemBioFaceManager.this.mContext, acquireInfo, vendorCode);
-                int acquireInfo2 = SemBioFaceManager.getSepMappedAcquiredInfo(acquireInfo, vendorCode);
-                Log.d(SemBioFaceManager.TAG, "help = " + helpMsg);
-                SemBioFaceManager.this.mHandler.obtainMessage(101, acquireInfo2, 0, helpMsg).sendToTarget();
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onAuthenticationSucceeded(Face face, int userId, boolean isStrongBiometric) {
-                AuthenticationResult result = new AuthenticationResult(SemBioFaceManager.this.mCryptoObject, face == null ? null : new SemBioFace(face), userId, isStrongBiometric);
-                SemBioFaceManager.this.mHandler.obtainMessage(102, result).sendToTarget();
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onFaceDetected(int sensorId, int userId, boolean isStrongBiometric) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onAuthenticationFailed() {
-                SemBioFaceManager.this.mHandler.obtainMessage(103).sendToTarget();
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onError(int error, int vendorCode) {
-                String errMsg = FaceManager.getErrorString(SemBioFaceManager.this.mContext, error, vendorCode);
-                SemBioFaceManager.this.mHandler.obtainMessage(104, SemBioFaceManager.getSepMappedError(error, vendorCode), 0, errMsg).sendToTarget();
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onRemoved(Face face, int remaining) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onFeatureSet(boolean success, int feature) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onFeatureGet(boolean success, int[] feature, boolean[] value) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onChallengeGenerated(int sensorId, int userId, long challenge) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onAuthenticationFrame(FaceAuthenticationFrame frame) {
-                onAcquired(frame.getData().getAcquiredInfo(), frame.getData().getVendorCode());
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onEnrollmentFrame(FaceEnrollFrame frame) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onSemAuthenticationSucceeded(Face face, int userId, boolean isStrongBiometric, byte[] fidoResultData) {
-                if (SemBioFaceManager.this.mCryptoObject != null) {
-                    SemBioFaceManager.this.mCryptoObject.setFidoResultData(fidoResultData);
-                }
-                onAuthenticationSucceeded(face, userId, isStrongBiometric);
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onSemAuthenticationSucceededWithBundle(Face face, int userId, boolean isStrongBiometric, Bundle b) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onSemImageProcessed(byte[] data, int width, int height, int orientation, int imageFormat, Bundle b) {
-            }
-
-            @Override // android.hardware.face.IFaceServiceReceiver
-            public void onSemStatusUpdate(int status, String msg) {
-            }
-        }
-
         private void initHAL() {
             this.mServiceReceiverHAL = new IFaceServiceReceiver.Stub() { // from class: com.samsung.android.bio.face.SemBioFaceManager.FaceManagerCompat.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.hardware.face.IFaceServiceReceiver
                 public void onEnrollResult(Face face, int remaining) {
                 }

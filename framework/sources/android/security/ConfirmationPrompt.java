@@ -18,13 +18,8 @@ public class ConfirmationPrompt {
     private Context mContext;
     private Executor mExecutor;
     private byte[] mExtraData;
-    private final KeyStore mKeyStore;
     private CharSequence mPromptText;
     private AndroidProtectedConfirmation mProtectedConfirmation;
-
-    /* synthetic */ ConfirmationPrompt(Context context, CharSequence charSequence, byte[] bArr, ConfirmationPromptIA confirmationPromptIA) {
-        this(context, charSequence, bArr);
-    }
 
     private AndroidProtectedConfirmation getService() {
         if (this.mProtectedConfirmation == null) {
@@ -33,86 +28,29 @@ public class ConfirmationPrompt {
         return this.mProtectedConfirmation;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doCallback(int responseCode, byte[] dataThatWasConfirmed, ConfirmationCallback callback) {
         switch (responseCode) {
             case 0:
                 callback.onConfirmed(dataThatWasConfirmed);
-                return;
+                break;
             case 1:
                 callback.onDismissed();
-                return;
+                break;
             case 2:
                 callback.onCanceled();
-                return;
+                break;
             case 3:
             case 4:
             default:
                 callback.onError(new Exception("Unexpected responseCode=" + responseCode + " from onConfirmtionPromptCompleted() callback."));
-                return;
+                break;
             case 5:
                 callback.onError(new Exception("System error returned by ConfirmationUI."));
-                return;
+                break;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.security.ConfirmationPrompt$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IConfirmationCallback.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.security.apc.IConfirmationCallback
-        public void onCompleted(int result, byte[] dataThatWasConfirmed) throws RemoteException {
-            if (ConfirmationPrompt.this.mCallback != null) {
-                ConfirmationCallback callback = ConfirmationPrompt.this.mCallback;
-                Executor executor = ConfirmationPrompt.this.mExecutor;
-                ConfirmationPrompt.this.mCallback = null;
-                ConfirmationPrompt.this.mExecutor = null;
-                if (executor == null) {
-                    ConfirmationPrompt.this.doCallback(result, dataThatWasConfirmed, callback);
-                } else {
-                    executor.execute(new Runnable() { // from class: android.security.ConfirmationPrompt.1.1
-                        final /* synthetic */ ConfirmationCallback val$callback;
-                        final /* synthetic */ byte[] val$dataThatWasConfirmed;
-                        final /* synthetic */ int val$result;
-
-                        RunnableC00061(int result2, byte[] dataThatWasConfirmed2, ConfirmationCallback callback2) {
-                            result = result2;
-                            dataThatWasConfirmed = dataThatWasConfirmed2;
-                            callback = callback2;
-                        }
-
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            ConfirmationPrompt.this.doCallback(result, dataThatWasConfirmed, callback);
-                        }
-                    });
-                }
-            }
-        }
-
-        /* renamed from: android.security.ConfirmationPrompt$1$1 */
-        /* loaded from: classes3.dex */
-        class RunnableC00061 implements Runnable {
-            final /* synthetic */ ConfirmationCallback val$callback;
-            final /* synthetic */ byte[] val$dataThatWasConfirmed;
-            final /* synthetic */ int val$result;
-
-            RunnableC00061(int result2, byte[] dataThatWasConfirmed2, ConfirmationCallback callback2) {
-                result = result2;
-                dataThatWasConfirmed = dataThatWasConfirmed2;
-                callback = callback2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                ConfirmationPrompt.this.doCallback(result, dataThatWasConfirmed, callback);
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private Context mContext;
         private byte[] mExtraData;
@@ -136,66 +74,32 @@ public class ConfirmationPrompt {
             if (TextUtils.isEmpty(this.mPromptText)) {
                 throw new IllegalArgumentException("prompt text must be set and non-empty");
             }
-            byte[] bArr = this.mExtraData;
-            if (bArr == null) {
+            if (this.mExtraData == null) {
                 throw new IllegalArgumentException("extraData must be set");
             }
-            return new ConfirmationPrompt(this.mContext, this.mPromptText, bArr);
+            return new ConfirmationPrompt(this.mContext, this.mPromptText, this.mExtraData);
         }
     }
 
     private ConfirmationPrompt(Context context, CharSequence promptText, byte[] extraData) {
-        this.mKeyStore = KeyStore.getInstance();
         this.mConfirmationCallback = new IConfirmationCallback.Stub() { // from class: android.security.ConfirmationPrompt.1
-            AnonymousClass1() {
-            }
-
             @Override // android.security.apc.IConfirmationCallback
-            public void onCompleted(int result2, byte[] dataThatWasConfirmed2) throws RemoteException {
+            public void onCompleted(final int result, final byte[] dataThatWasConfirmed) throws RemoteException {
                 if (ConfirmationPrompt.this.mCallback != null) {
-                    ConfirmationCallback callback2 = ConfirmationPrompt.this.mCallback;
+                    final ConfirmationCallback callback = ConfirmationPrompt.this.mCallback;
                     Executor executor = ConfirmationPrompt.this.mExecutor;
                     ConfirmationPrompt.this.mCallback = null;
                     ConfirmationPrompt.this.mExecutor = null;
                     if (executor == null) {
-                        ConfirmationPrompt.this.doCallback(result2, dataThatWasConfirmed2, callback2);
+                        ConfirmationPrompt.this.doCallback(result, dataThatWasConfirmed, callback);
                     } else {
                         executor.execute(new Runnable() { // from class: android.security.ConfirmationPrompt.1.1
-                            final /* synthetic */ ConfirmationCallback val$callback;
-                            final /* synthetic */ byte[] val$dataThatWasConfirmed;
-                            final /* synthetic */ int val$result;
-
-                            RunnableC00061(int result22, byte[] dataThatWasConfirmed22, ConfirmationCallback callback22) {
-                                result = result22;
-                                dataThatWasConfirmed = dataThatWasConfirmed22;
-                                callback = callback22;
-                            }
-
                             @Override // java.lang.Runnable
                             public void run() {
                                 ConfirmationPrompt.this.doCallback(result, dataThatWasConfirmed, callback);
                             }
                         });
                     }
-                }
-            }
-
-            /* renamed from: android.security.ConfirmationPrompt$1$1 */
-            /* loaded from: classes3.dex */
-            class RunnableC00061 implements Runnable {
-                final /* synthetic */ ConfirmationCallback val$callback;
-                final /* synthetic */ byte[] val$dataThatWasConfirmed;
-                final /* synthetic */ int val$result;
-
-                RunnableC00061(int result22, byte[] dataThatWasConfirmed22, ConfirmationCallback callback22) {
-                    result = result22;
-                    dataThatWasConfirmed = dataThatWasConfirmed22;
-                    callback = callback22;
-                }
-
-                @Override // java.lang.Runnable
-                public void run() {
-                    ConfirmationPrompt.this.doCallback(result, dataThatWasConfirmed, callback);
                 }
             }
         };

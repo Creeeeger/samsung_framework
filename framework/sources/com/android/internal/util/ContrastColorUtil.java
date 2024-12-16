@@ -57,8 +57,7 @@ public class ContrastColorUtil {
             Log.d(TAG, "GrayScale=false. Bitmap(Width=" + bitmap.getWidth() + "px, Height=" + bitmap.getHeight() + "px) is larger than " + this.mGrayscaleIconMaxSize + "px.");
             return false;
         }
-        Object obj = sLock;
-        synchronized (obj) {
+        synchronized (sLock) {
             Pair<Boolean, Integer> cached = this.mGrayscaleBitmapCache.get(bitmap);
             if (cached != null && cached.second.intValue() == bitmap.getGenerationId()) {
                 return cached.first.booleanValue();
@@ -67,7 +66,7 @@ public class ContrastColorUtil {
                 result = this.mImageUtils.isGrayscale(bitmap);
                 generationId = bitmap.getGenerationId();
             }
-            synchronized (obj) {
+            synchronized (sLock) {
                 this.mGrayscaleBitmapCache.put(bitmap, Pair.create(Boolean.valueOf(result), Integer.valueOf(generationId)));
             }
             if (!result) {
@@ -107,13 +106,8 @@ public class ContrastColorUtil {
             return false;
         }
         switch (icon.getType()) {
-            case 1:
-                return isGrayscaleIcon(icon.getBitmap());
-            case 2:
-                return isGrayscaleIcon(context, icon.getResId());
-            default:
-                return false;
         }
+        return false;
     }
 
     public boolean isGrayscaleIcon(Context context, int drawableResId) {
@@ -511,8 +505,7 @@ public class ContrastColorUtil {
         return calculateLuminance(backgroundColor) > 0.5d;
     }
 
-    /* loaded from: classes5.dex */
-    public static class ColorUtilsFromCompat {
+    private static class ColorUtilsFromCompat {
         private static final int MIN_ALPHA_SEARCH_MAX_ITERATIONS = 10;
         private static final int MIN_ALPHA_SEARCH_PRECISION = 1;
         private static final ThreadLocal<double[]> TEMP_ARRAY = new ThreadLocal<>();
@@ -651,11 +644,10 @@ public class ContrastColorUtil {
         }
 
         public static double[] getTempDouble3Array() {
-            ThreadLocal<double[]> threadLocal = TEMP_ARRAY;
-            double[] result = threadLocal.get();
+            double[] result = TEMP_ARRAY.get();
             if (result == null) {
                 double[] result2 = new double[3];
-                threadLocal.set(result2);
+                TEMP_ARRAY.set(result2);
                 return result2;
             }
             return result;

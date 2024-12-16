@@ -23,7 +23,6 @@ public interface ISehAuthenticationFramework extends IBase {
     public static final String kInterfaceName = "vendor.samsung.hardware.authfw@1.0::ISehAuthenticationFramework";
 
     @FunctionalInterface
-    /* loaded from: classes6.dex */
     public interface executeCallback {
         void onValues(boolean z, ArrayList<Byte> arrayList);
     }
@@ -114,7 +113,6 @@ public interface ISehAuthenticationFramework extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes6.dex */
     public static final class Proxy implements ISehAuthenticationFramework {
         private IHwBinder mRemote;
 
@@ -339,7 +337,6 @@ public interface ISehAuthenticationFramework extends IBase {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends HwBinder implements ISehAuthenticationFramework {
         @Override // vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -362,7 +359,7 @@ public interface ISehAuthenticationFramework extends IBase {
 
         @Override // vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{102, 7, -86, -16, 99, -90, 59, 123, -78, -62, 118, 14, -8, 98, 111, -92, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, MidiConstants.STATUS_PROGRAM_CHANGE, 63, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -108, -107, 54, -29, -69, SprAttributeBase.TYPE_SHADOW, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEOUT, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, SprAttributeBase.TYPE_SHADOW, 98, 53, -28}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{102, 7, -86, -16, 99, -90, 59, 123, -78, -62, 118, 14, -8, 98, 111, -92, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, MidiConstants.STATUS_PROGRAM_CHANGE, 63, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -108, -107, 54, -29, -69, SprAttributeBase.TYPE_SHADOW, 26, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, SprAttributeBase.TYPE_SHADOW, 98, 53, -28}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework, android.internal.hidl.base.V1_0.IBase
@@ -414,7 +411,7 @@ public interface ISehAuthenticationFramework extends IBase {
         }
 
         @Override // android.os.HwBinder
-        public void onTransact(int _hidl_code, HwParcel _hidl_request, HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
+        public void onTransact(int _hidl_code, HwParcel _hidl_request, final HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
             switch (_hidl_code) {
                 case 1:
                     _hidl_request.enforceInterface(ISehAuthenticationFramework.kInterfaceName);
@@ -438,12 +435,6 @@ public interface ISehAuthenticationFramework extends IBase {
                     int trustedAppType3 = _hidl_request.readInt32();
                     ArrayList<Byte> command = _hidl_request.readInt8Vector();
                     execute(trustedAppType3, command, new executeCallback() { // from class: vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework.Stub.1
-                        final /* synthetic */ HwParcel val$_hidl_reply;
-
-                        AnonymousClass1(HwParcel _hidl_reply2) {
-                            _hidl_reply = _hidl_reply2;
-                        }
-
                         @Override // vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework.executeCallback
                         public void onValues(boolean status, ArrayList<Byte> response) {
                             _hidl_reply.writeStatus(0);
@@ -456,29 +447,29 @@ public interface ISehAuthenticationFramework extends IBase {
                 case 256067662:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<String> _hidl_out_descriptors = interfaceChain();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeStringVector(_hidl_out_descriptors);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeStringVector(_hidl_out_descriptors);
+                    _hidl_reply.send();
                     return;
                 case 256131655:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     NativeHandle fd = _hidl_request.readNativeHandle();
                     ArrayList<String> options = _hidl_request.readStringVector();
                     debug(fd, options);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 256136003:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     String _hidl_out_descriptor = interfaceDescriptor();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeString(_hidl_out_descriptor);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeString(_hidl_out_descriptor);
+                    _hidl_reply.send();
                     return;
                 case 256398152:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<byte[]> _hidl_out_hashchain = getHashChain();
-                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply.writeStatus(0);
                     HwBlob _hidl_blob = new HwBlob(16);
                     int _hidl_vec_size = _hidl_out_hashchain.size();
                     _hidl_blob.putInt32(8L, _hidl_vec_size);
@@ -493,8 +484,8 @@ public interface ISehAuthenticationFramework extends IBase {
                         childBlob.putInt8Array(_hidl_array_offset_1, _hidl_array_item_1);
                     }
                     _hidl_blob.putBlob(0L, childBlob);
-                    _hidl_reply2.writeBuffer(_hidl_blob);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeBuffer(_hidl_blob);
+                    _hidl_reply.send();
                     return;
                 case 256462420:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
@@ -506,38 +497,20 @@ public interface ISehAuthenticationFramework extends IBase {
                 case 256921159:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ping();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 257049926:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     DebugInfo _hidl_out_info = getDebugInfo();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_out_info.writeToParcel(_hidl_reply2);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_out_info.writeToParcel(_hidl_reply);
+                    _hidl_reply.send();
                     return;
                 case 257120595:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     notifySyspropsChanged();
                     return;
-            }
-        }
-
-        /* renamed from: vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework$Stub$1 */
-        /* loaded from: classes6.dex */
-        class AnonymousClass1 implements executeCallback {
-            final /* synthetic */ HwParcel val$_hidl_reply;
-
-            AnonymousClass1(HwParcel _hidl_reply2) {
-                _hidl_reply = _hidl_reply2;
-            }
-
-            @Override // vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework.executeCallback
-            public void onValues(boolean status, ArrayList<Byte> response) {
-                _hidl_reply.writeStatus(0);
-                _hidl_reply.writeBool(status);
-                _hidl_reply.writeInt8Vector(response);
-                _hidl_reply.send();
             }
         }
     }

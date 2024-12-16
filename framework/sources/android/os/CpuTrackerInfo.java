@@ -6,14 +6,13 @@ import java.util.ArrayList;
 /* loaded from: classes3.dex */
 public class CpuTrackerInfo implements Parcelable {
     public static final Parcelable.Creator<CpuTrackerInfo> CREATOR = new Parcelable.Creator<CpuTrackerInfo>() { // from class: android.os.CpuTrackerInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CpuTrackerInfo createFromParcel(Parcel in) {
             return new CpuTrackerInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CpuTrackerInfo[] newArray(int size) {
             return new CpuTrackerInfo[size];
@@ -48,22 +47,5 @@ public class CpuTrackerInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.os.CpuTrackerInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CpuTrackerInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CpuTrackerInfo createFromParcel(Parcel in) {
-            return new CpuTrackerInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CpuTrackerInfo[] newArray(int size) {
-            return new CpuTrackerInfo[size];
-        }
     }
 }

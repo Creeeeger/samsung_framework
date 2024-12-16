@@ -1,6 +1,7 @@
 package android.graphics;
 
 import android.graphics.Shader;
+import com.android.graphics.hwui.flags.Flags;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -14,18 +15,16 @@ public class BitmapShader extends Shader {
     private int mFilterMode;
     private boolean mIsDirectSampled;
     private int mMaxAniso;
+    private Gainmap mOverrideGainmap;
     private boolean mRequestDirectSampling;
     private int mTileX;
     private int mTileY;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FilterMode {
     }
 
-    private static native long nativeCreate(long j, long j2, int i, int i2, boolean z, boolean z2);
-
-    private static native long nativeCreateWithMaxAniso(long j, long j2, int i, int i2, int i3, boolean z);
+    private static native long nativeCreate(long j, long j2, int i, int i2, int i3, boolean z, boolean z2, long j3);
 
     public BitmapShader(Bitmap bitmap, Shader.TileMode tileX, Shader.TileMode tileY) {
         this(bitmap, tileX.nativeInt, tileY.nativeInt);
@@ -66,11 +65,23 @@ public class BitmapShader extends Shader {
         }
     }
 
+    public void setOverrideGainmap(Gainmap overrideGainmap) {
+        if (!Flags.gainmapAnimations()) {
+            throw new IllegalStateException("API not available");
+        }
+        if (overrideGainmap == null) {
+            this.mOverrideGainmap = null;
+        } else {
+            this.mOverrideGainmap = new Gainmap(overrideGainmap, overrideGainmap.getGainmapContents());
+        }
+        discardNativeInstance();
+    }
+
     public int getMaxAnisotropy() {
         return this.mMaxAniso;
     }
 
-    public synchronized long getNativeInstanceWithDirectSampling() {
+    synchronized long getNativeInstanceWithDirectSampling() {
         this.mRequestDirectSampling = true;
         return getNativeInstance();
     }
@@ -78,18 +89,14 @@ public class BitmapShader extends Shader {
     @Override // android.graphics.Shader
     protected long createNativeInstance(long nativeMatrix, boolean filterFromPaint) {
         this.mBitmap.checkRecycled("BitmapShader's bitmap has been recycled");
-        int i = this.mFilterMode;
-        boolean enableLinearFilter = i == 2;
-        if (i == 0) {
+        boolean enableLinearFilter = this.mFilterMode == 2;
+        if (this.mFilterMode == 0) {
             this.mFilterFromPaint = filterFromPaint;
             enableLinearFilter = this.mFilterFromPaint;
         }
         this.mIsDirectSampled = this.mRequestDirectSampling;
         this.mRequestDirectSampling = false;
-        if (this.mMaxAniso > 0) {
-            return nativeCreateWithMaxAniso(nativeMatrix, this.mBitmap.getNativeInstance(), this.mTileX, this.mTileY, this.mMaxAniso, this.mIsDirectSampled);
-        }
-        return nativeCreate(nativeMatrix, this.mBitmap.getNativeInstance(), this.mTileX, this.mTileY, enableLinearFilter, this.mIsDirectSampled);
+        return nativeCreate(nativeMatrix, this.mBitmap.getNativeInstance(), this.mTileX, this.mTileY, this.mMaxAniso, enableLinearFilter, this.mIsDirectSampled, this.mOverrideGainmap != null ? this.mOverrideGainmap.mNativePtr : 0L);
     }
 
     @Override // android.graphics.Shader

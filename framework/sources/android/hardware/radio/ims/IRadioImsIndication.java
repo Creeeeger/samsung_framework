@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioImsIndication extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$ims$IRadioImsIndication".replace('$', '.');
-    public static final String HASH = "b09f8d98a60fbe74cefaca7aea9903ab5450110a";
-    public static final int VERSION = 1;
+    public static final String HASH = "ec0dfedf764f3916783848c540ad312a74fa755d";
+    public static final int VERSION = 2;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -22,7 +22,6 @@ public interface IRadioImsIndication extends IInterface {
 
     void triggerImsDeregistration(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioImsIndication {
         @Override // android.hardware.radio.ims.IRadioImsIndication
         public void onConnectionSetupFailure(int type, int token, ConnectionFailureInfo info) throws RemoteException {
@@ -52,7 +51,6 @@ public interface IRadioImsIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioImsIndication {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -87,50 +85,48 @@ public interface IRadioImsIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    ConnectionFailureInfo _arg2 = (ConnectionFailureInfo) data.readTypedObject(ConnectionFailureInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConnectionSetupFailure(_arg0, _arg1, _arg2);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyAnbr(_arg02, _arg12, _arg22, _arg3);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    triggerImsDeregistration(_arg03, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            ConnectionFailureInfo _arg2 = (ConnectionFailureInfo) data.readTypedObject(ConnectionFailureInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConnectionSetupFailure(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyAnbr(_arg02, _arg12, _arg22, _arg3);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            triggerImsDeregistration(_arg03, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioImsIndication {
+        private static class Proxy implements IRadioImsIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

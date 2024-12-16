@@ -4,7 +4,7 @@ import android.os.SystemProperties;
 import android.text.format.DateFormat;
 import java.util.Objects;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class PermissionAccessInformation {
     private static final long MIN_MS_SEC = 60000;
     private long mAccessTime;

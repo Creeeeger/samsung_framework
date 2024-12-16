@@ -7,17 +7,16 @@ import android.os.Parcelable;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class ApfStats implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<ApfStats> CREATOR = new Parcelable.Creator<ApfStats>() { // from class: android.net.metrics.ApfStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApfStats createFromParcel(Parcel in) {
             return new ApfStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApfStats[] newArray(int size) {
             return new ApfStats[size];
@@ -33,14 +32,6 @@ public final class ApfStats implements IpConnectivityLog.Event {
     public final int programUpdatesAllowingMulticast;
     public final int receivedRas;
     public final int zeroLifetimeRas;
-
-    /* synthetic */ ApfStats(long j, int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, ApfStatsIA apfStatsIA) {
-        this(j, i, i2, i3, i4, i5, i6, i7, i8, i9);
-    }
-
-    /* synthetic */ ApfStats(Parcel parcel, ApfStatsIA apfStatsIA) {
-        this(parcel);
-    }
 
     private ApfStats(Parcel in) {
         this.durationMs = in.readLong();
@@ -69,7 +60,6 @@ public final class ApfStats implements IpConnectivityLog.Event {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mDroppedRas;
         private long mDurationMs;
@@ -166,22 +156,5 @@ public final class ApfStats implements IpConnectivityLog.Event {
         }
         ApfStats other = (ApfStats) obj;
         return this.durationMs == other.durationMs && this.receivedRas == other.receivedRas && this.matchingRas == other.matchingRas && this.droppedRas == other.droppedRas && this.zeroLifetimeRas == other.zeroLifetimeRas && this.parseErrors == other.parseErrors && this.programUpdates == other.programUpdates && this.programUpdatesAll == other.programUpdatesAll && this.programUpdatesAllowingMulticast == other.programUpdatesAllowingMulticast && this.maxProgramSize == other.maxProgramSize;
-    }
-
-    /* renamed from: android.net.metrics.ApfStats$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ApfStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApfStats createFromParcel(Parcel in) {
-            return new ApfStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApfStats[] newArray(int size) {
-            return new ApfStats[size];
-        }
     }
 }

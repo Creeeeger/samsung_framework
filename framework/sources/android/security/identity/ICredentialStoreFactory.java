@@ -15,7 +15,6 @@ public interface ICredentialStoreFactory extends IInterface {
 
     ICredentialStore getCredentialStore(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICredentialStoreFactory {
         @Override // android.security.identity.ICredentialStoreFactory
         public ICredentialStore getCredentialStore(int credentialStoreType) throws RemoteException {
@@ -28,7 +27,6 @@ public interface ICredentialStoreFactory extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICredentialStoreFactory {
         static final int TRANSACTION_getCredentialStore = 1;
 
@@ -71,28 +69,24 @@ public interface ICredentialStoreFactory extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICredentialStoreFactory.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICredentialStoreFactory.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICredentialStoreFactory.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ICredentialStore _result = getCredentialStore(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ICredentialStore _result = getCredentialStore(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICredentialStoreFactory {
+        private static class Proxy implements ICredentialStoreFactory {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

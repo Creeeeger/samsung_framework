@@ -3,7 +3,6 @@ package android.security.keystore2;
 import android.hardware.security.keymint.KeyParameter;
 import android.security.keystore.ArrayUtils;
 import android.security.keystore.KeyProperties;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -36,13 +35,11 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
         this.mIvRequired = ivRequired;
     }
 
-    /* loaded from: classes3.dex */
     static abstract class ECB extends AndroidKeyStore3DESCipherSpi {
         protected ECB(int keymasterPadding) {
             super(1, keymasterPadding, false);
         }
 
-        /* loaded from: classes3.dex */
         public static class NoPadding extends ECB {
             @Override // android.security.keystore2.AndroidKeyStore3DESCipherSpi, android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -59,7 +56,6 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
             }
         }
 
-        /* loaded from: classes3.dex */
         public static class PKCS7Padding extends ECB {
             @Override // android.security.keystore2.AndroidKeyStore3DESCipherSpi, android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -77,13 +73,11 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
         }
     }
 
-    /* loaded from: classes3.dex */
     static abstract class CBC extends AndroidKeyStore3DESCipherSpi {
         protected CBC(int keymasterPadding) {
             super(2, keymasterPadding, true);
         }
 
-        /* loaded from: classes3.dex */
         public static class NoPadding extends CBC {
             @Override // android.security.keystore2.AndroidKeyStore3DESCipherSpi, android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -100,7 +94,6 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
             }
         }
 
-        /* loaded from: classes3.dex */
         public static class PKCS7Padding extends CBC {
             @Override // android.security.keystore2.AndroidKeyStore3DESCipherSpi, android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -121,7 +114,7 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     protected void initKey(int i, Key key) throws InvalidKeyException {
         if (!(key instanceof AndroidKeyStoreSecretKey)) {
-            throw new InvalidKeyException("Unsupported key: " + (key != null ? key.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL));
+            throw new InvalidKeyException("Unsupported key: " + (key != null ? key.getClass().getName() : "null"));
         }
         if (!KeyProperties.KEY_ALGORITHM_3DES.equalsIgnoreCase(key.getAlgorithm())) {
             throw new InvalidKeyException("Unsupported key algorithm: " + key.getAlgorithm() + ". Only " + KeyProperties.KEY_ALGORITHM_3DES + " supported");
@@ -146,8 +139,7 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase, javax.crypto.CipherSpi
     protected AlgorithmParameters engineGetParameters() {
-        byte[] bArr;
-        if (!this.mIvRequired || (bArr = this.mIv) == null || bArr.length <= 0) {
+        if (!this.mIvRequired || this.mIv == null || this.mIv.length <= 0) {
             return null;
         }
         try {
@@ -182,9 +174,8 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
             if (!(params instanceof IvParameterSpec)) {
                 throw new InvalidAlgorithmParameterException("Only IvParameterSpec supported");
             }
-            byte[] iv = ((IvParameterSpec) params).getIV();
-            this.mIv = iv;
-            if (iv == null) {
+            this.mIv = ((IvParameterSpec) params).getIV();
+            if (this.mIv == null) {
                 throw new InvalidAlgorithmParameterException("Null IV in IvParameterSpec");
             }
         }
@@ -209,9 +200,8 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
         }
         try {
             IvParameterSpec ivSpec = (IvParameterSpec) params.getParameterSpec(IvParameterSpec.class);
-            byte[] iv = ivSpec.getIV();
-            this.mIv = iv;
-            if (iv == null) {
+            this.mIv = ivSpec.getIV();
+            if (this.mIv == null) {
                 throw new InvalidAlgorithmParameterException("Null IV in AlgorithmParameters");
             }
         } catch (InvalidParameterSpecException e) {
@@ -237,15 +227,14 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     protected void addAlgorithmSpecificParametersToBegin(List<KeyParameter> parameters) {
-        byte[] bArr;
         if (isEncrypting() && this.mIvRequired && this.mIvHasBeenUsed) {
             throw new IllegalStateException("IV has already been used. Reusing IV in encryption mode violates security best practices.");
         }
         parameters.add(KeyStore2ParameterUtils.makeEnum(268435458, 33));
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870916, this.mKeymasterBlockMode));
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870918, this.mKeymasterPadding));
-        if (this.mIvRequired && (bArr = this.mIv) != null) {
-            parameters.add(KeyStore2ParameterUtils.makeBytes(-1879047191, bArr));
+        if (this.mIvRequired && this.mIv != null) {
+            parameters.add(KeyStore2ParameterUtils.makeBytes(-1879047191, this.mIv));
         }
     }
 
@@ -270,12 +259,11 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
             }
         }
         if (this.mIvRequired) {
-            byte[] bArr = this.mIv;
-            if (bArr == null) {
+            if (this.mIv == null) {
                 this.mIv = returnedIv;
                 return;
             } else {
-                if (returnedIv != null && !Arrays.equals(returnedIv, bArr)) {
+                if (returnedIv != null && !Arrays.equals(returnedIv, this.mIv)) {
                     throw new ProviderException("IV in use differs from provided IV");
                 }
                 return;
@@ -287,7 +275,7 @@ public abstract class AndroidKeyStore3DESCipherSpi extends AndroidKeyStoreCipher
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-    public final void resetAll() {
+    protected final void resetAll() {
         this.mIv = null;
         this.mIvHasBeenUsed = false;
         super.resetAll();

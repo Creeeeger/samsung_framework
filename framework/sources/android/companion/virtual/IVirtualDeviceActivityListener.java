@@ -15,7 +15,6 @@ public interface IVirtualDeviceActivityListener extends IInterface {
 
     void onTopActivityChanged(int i, ComponentName componentName, int i2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IVirtualDeviceActivityListener {
         @Override // android.companion.virtual.IVirtualDeviceActivityListener
         public void onTopActivityChanged(int displayId, ComponentName topActivity, int userId) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IVirtualDeviceActivityListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IVirtualDeviceActivityListener {
         static final int TRANSACTION_onDisplayEmpty = 2;
         static final int TRANSACTION_onTopActivityChanged = 1;
@@ -77,33 +75,29 @@ public interface IVirtualDeviceActivityListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVirtualDeviceActivityListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVirtualDeviceActivityListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVirtualDeviceActivityListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTopActivityChanged(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDisplayEmpty(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTopActivityChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDisplayEmpty(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IVirtualDeviceActivityListener {
+        private static class Proxy implements IVirtualDeviceActivityListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

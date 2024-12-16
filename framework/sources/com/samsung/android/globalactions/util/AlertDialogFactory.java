@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import com.android.internal.R;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class AlertDialogFactory {
     private AlertDialog mAlertDialog;
     private AlertDialog.Builder mAlertDialogBuilder;
@@ -23,13 +23,11 @@ public class AlertDialogFactory {
     }
 
     private void initAlertDialogBuilder() {
-        AlertDialog alertDialog = this.mAlertDialog;
-        if (alertDialog != null && alertDialog.isShowing()) {
+        if (this.mAlertDialog != null && this.mAlertDialog.isShowing()) {
             this.mAlertDialog.dismiss();
         }
-        boolean z = (this.mContext.getResources().getConfiguration().uiMode & 48) == 32;
-        this.mIsNightMode = z;
-        this.mAlertDialogBuilder = new AlertDialog.Builder(z ? new ContextThemeWrapper(this.mContext, 16974120) : this.mContext);
+        this.mIsNightMode = (this.mContext.getResources().getConfiguration().uiMode & 48) == 32;
+        this.mAlertDialogBuilder = new AlertDialog.Builder(this.mIsNightMode ? new ContextThemeWrapper(this.mContext, 16974120) : this.mContext);
     }
 
     public AlertDialog getProKioskModeDialog(final Runnable positiveRunnable, final Runnable negativeRunnable) {
@@ -40,9 +38,8 @@ public class AlertDialogFactory {
         layout.setOrientation(1);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -1);
         params.setMargins(50, 0, 50, 0);
-        EditText editText = new EditText(this.mIsNightMode ? new ContextThemeWrapper(this.mContext, 16974120) : this.mContext);
-        this.mPasswordTextView = editText;
-        editText.setInputType(129);
+        this.mPasswordTextView = new EditText(this.mIsNightMode ? new ContextThemeWrapper(this.mContext, 16974120) : this.mContext);
+        this.mPasswordTextView.setInputType(129);
         this.mPasswordTextView.setTransformationMethod(PasswordTransformationMethod.getInstance());
         this.mPasswordTextView.setGravity(1);
         layout.addView(this.mPasswordTextView, params);
@@ -59,9 +56,8 @@ public class AlertDialogFactory {
                 negativeRunnable.run();
             }
         });
-        AlertDialog create = this.mAlertDialogBuilder.create();
-        this.mAlertDialog = create;
-        create.getWindow().getAttributes().setTitle("GlobalActions_ProKioskDialog");
+        this.mAlertDialog = this.mAlertDialogBuilder.create();
+        this.mAlertDialog.getWindow().getAttributes().setTitle("GlobalActions_ProKioskDialog");
         this.mAlertDialog.getWindow().setType(2008);
         this.mAlertDialog.getWindow().setSoftInputMode(20);
         return this.mAlertDialog;
@@ -72,9 +68,8 @@ public class AlertDialogFactory {
         this.mAlertDialogBuilder.setTitle(R.string.global_action_insert_sim_card);
         this.mAlertDialogBuilder.setMessage(R.string.global_action_insert_sim_card_message);
         this.mAlertDialogBuilder.setPositiveButton(17039370, (DialogInterface.OnClickListener) null);
-        AlertDialog create = this.mAlertDialogBuilder.create();
-        this.mAlertDialog = create;
-        create.getWindow().getAttributes().setTitle("GlobalActions_InsertSimCardDialog");
+        this.mAlertDialog = this.mAlertDialogBuilder.create();
+        this.mAlertDialog.getWindow().getAttributes().setTitle("GlobalActions_InsertSimCardDialog");
         this.mAlertDialog.getWindow().setType(2009);
         return this.mAlertDialog;
     }

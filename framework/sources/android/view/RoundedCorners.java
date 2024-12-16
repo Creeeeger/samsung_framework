@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.DisplayMetrics;
 import android.util.DisplayUtils;
 import android.util.Pair;
 import com.android.internal.R;
@@ -22,9 +23,7 @@ public class RoundedCorners implements Parcelable {
     public static final RoundedCorners NO_ROUNDED_CORNERS = new RoundedCorners(new RoundedCorner(0), new RoundedCorner(1), new RoundedCorner(2), new RoundedCorner(3));
     private static final Object CACHE_LOCK = new Object();
     public static final Parcelable.Creator<RoundedCorners> CREATOR = new Parcelable.Creator<RoundedCorners>() { // from class: android.view.RoundedCorners.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoundedCorners createFromParcel(Parcel in) {
             int variant = in.readInt();
@@ -36,6 +35,7 @@ public class RoundedCorners implements Parcelable {
             return new RoundedCorners(roundedCorners);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoundedCorners[] newArray(int size) {
             return new RoundedCorners[size];
@@ -47,8 +47,11 @@ public class RoundedCorners implements Parcelable {
     }
 
     public RoundedCorners(RoundedCorner topLeft, RoundedCorner topRight, RoundedCorner bottomRight, RoundedCorner bottomLeft) {
-        this.mRoundedCorners = r0;
-        RoundedCorner[] roundedCornerArr = {topLeft, topRight, bottomRight, bottomLeft};
+        this.mRoundedCorners = new RoundedCorner[4];
+        this.mRoundedCorners[0] = topLeft;
+        this.mRoundedCorners[1] = topRight;
+        this.mRoundedCorners[2] = bottomRight;
+        this.mRoundedCorners[3] = bottomLeft;
     }
 
     public RoundedCorners(RoundedCorners roundedCorners) {
@@ -78,10 +81,6 @@ public class RoundedCorners implements Parcelable {
             RoundedCorner[] roundedCorners = new RoundedCorner[4];
             int topRadius = radii.first.intValue() > 0 ? radii.first.intValue() : 0;
             int bottomRadius = radii.second.intValue() > 0 ? radii.second.intValue() : 0;
-            if (physicalPixelDisplaySizeRatio != 1.0f) {
-                topRadius = (int) ((topRadius * physicalPixelDisplaySizeRatio) + 0.5d);
-                bottomRadius = (int) ((bottomRadius * physicalPixelDisplaySizeRatio) + 0.5d);
-            }
             int i = 0;
             while (i < 4) {
                 roundedCorners[i] = createRoundedCorner(i, i <= 1 ? topRadius : bottomRadius, displayWidth, displayHeight);
@@ -97,6 +96,36 @@ public class RoundedCorners implements Parcelable {
             }
             return result;
         }
+    }
+
+    public static RoundedCorners fromCustomResources(Resources res, String displayUniqueId, int physicalDisplayWidth, int physicalDisplayHeight, int displayWidth, int displayHeight, DisplayMetrics metrics) {
+        return fromRadii(loadCustomRoundedCornerRadii(res, displayUniqueId, metrics), physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight);
+    }
+
+    private static Pair<Integer, Integer> loadCustomRoundedCornerRadii(Resources res, String displayUniqueId, DisplayMetrics metrics) {
+        int radiusDefault = getCustomRoundedCornerRadius(R.dimen.rounded_corner_radius, res, displayUniqueId, metrics);
+        int radiusTop = getCustomRoundedCornerRadius(R.dimen.rounded_corner_radius_top, res, displayUniqueId, metrics);
+        int radiusBottom = getCustomRoundedCornerRadius(R.dimen.rounded_corner_radius_bottom, res, displayUniqueId, metrics);
+        if (radiusDefault == 0 && radiusTop == 0 && radiusBottom == 0) {
+            return null;
+        }
+        Pair<Integer, Integer> radii = new Pair<>(Integer.valueOf(radiusTop > 0 ? radiusTop : radiusDefault), Integer.valueOf(radiusBottom > 0 ? radiusBottom : radiusDefault));
+        return radii;
+    }
+
+    public static int getCustomRoundedCornerRadius(int id, Resources res, String displayUniqueId, DisplayMetrics metrics) {
+        int index = DisplayUtils.getDisplayUniqueIdConfigIndex(res, displayUniqueId);
+        TypedArray array = res.obtainTypedArray(R.array.config_roundedCornerRadiusArray);
+        if (index >= 0) {
+            try {
+                if (index < array.length()) {
+                    return array.getDimensionPixelSize(index, 0);
+                }
+            } finally {
+                array.recycle();
+            }
+        }
+        return res.getDimensionPixelSize(id, metrics);
     }
 
     private static Pair<Integer, Integer> loadRoundedCornerRadii(Resources res, String displayUniqueId) {
@@ -120,6 +149,10 @@ public class RoundedCorners implements Parcelable {
             radius = res.getDimensionPixelSize(R.dimen.rounded_corner_radius);
         }
         array.recycle();
+        if (radius == 0 && res.getConfiguration().isScreenRound()) {
+            int radius2 = res.getDisplayMetrics().widthPixels / 2;
+            return radius2;
+        }
         return radius;
     }
 
@@ -401,29 +434,6 @@ public class RoundedCorners implements Parcelable {
         } else {
             dest.writeInt(1);
             dest.writeTypedArray(this.mRoundedCorners, flags);
-        }
-    }
-
-    /* renamed from: android.view.RoundedCorners$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RoundedCorners> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RoundedCorners createFromParcel(Parcel in) {
-            int variant = in.readInt();
-            if (variant == 0) {
-                return RoundedCorners.NO_ROUNDED_CORNERS;
-            }
-            RoundedCorner[] roundedCorners = new RoundedCorner[4];
-            in.readTypedArray(roundedCorners, RoundedCorner.CREATOR);
-            return new RoundedCorners(roundedCorners);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RoundedCorners[] newArray(int size) {
-            return new RoundedCorners[size];
         }
     }
 }

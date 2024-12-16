@@ -9,7 +9,6 @@ import android.os.ServiceManager;
 public class DeviceConfigServiceManager {
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    /* loaded from: classes3.dex */
     public static final class ServiceRegisterer {
         private final String mServiceName;
 
@@ -43,7 +42,6 @@ public class DeviceConfigServiceManager {
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    /* loaded from: classes3.dex */
     public static class ServiceNotFoundException extends ServiceManager.ServiceNotFoundException {
         public ServiceNotFoundException(String name) {
             super(name);

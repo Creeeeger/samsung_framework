@@ -6,20 +6,26 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IContextHubCallback extends IInterface {
     public static final int CONTEXTHUB_NAN_TRANSACTION_TIMEOUT_MS = 10000;
     public static final String DESCRIPTOR = "android$hardware$contexthub$IContextHubCallback".replace('$', '.');
-    public static final String HASH = "b0fd976b134e549e03726d3ebeeae848e520d3d3";
-    public static final int VERSION = 2;
+    public static final String HASH = "03f1982c8e20e58494a4ff8c9736b1c257dfeb6c";
+    public static final int VERSION = 3;
 
     String getInterfaceHash() throws RemoteException;
 
     int getInterfaceVersion() throws RemoteException;
 
+    String getName() throws RemoteException;
+
+    byte[] getUuid() throws RemoteException;
+
     void handleContextHubAsyncEvent(int i) throws RemoteException;
 
     void handleContextHubMessage(ContextHubMessage contextHubMessage, String[] strArr) throws RemoteException;
+
+    void handleMessageDeliveryStatus(char c, MessageDeliveryStatus messageDeliveryStatus) throws RemoteException;
 
     void handleNanSessionRequest(NanSessionRequest nanSessionRequest) throws RemoteException;
 
@@ -27,7 +33,6 @@ public interface IContextHubCallback extends IInterface {
 
     void handleTransactionResult(int i, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IContextHubCallback {
         @Override // android.hardware.contexthub.IContextHubCallback
         public void handleNanoappInfo(NanoappInfo[] appInfo) throws RemoteException {
@@ -50,6 +55,20 @@ public interface IContextHubCallback extends IInterface {
         }
 
         @Override // android.hardware.contexthub.IContextHubCallback
+        public void handleMessageDeliveryStatus(char hostEndpointId, MessageDeliveryStatus messageDeliveryStatus) throws RemoteException {
+        }
+
+        @Override // android.hardware.contexthub.IContextHubCallback
+        public byte[] getUuid() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.hardware.contexthub.IContextHubCallback
+        public String getName() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.hardware.contexthub.IContextHubCallback
         public int getInterfaceVersion() {
             return 0;
         }
@@ -65,12 +84,14 @@ public interface IContextHubCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IContextHubCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
+        static final int TRANSACTION_getName = 8;
+        static final int TRANSACTION_getUuid = 7;
         static final int TRANSACTION_handleContextHubAsyncEvent = 3;
         static final int TRANSACTION_handleContextHubMessage = 2;
+        static final int TRANSACTION_handleMessageDeliveryStatus = 6;
         static final int TRANSACTION_handleNanSessionRequest = 5;
         static final int TRANSACTION_handleNanoappInfo = 1;
         static final int TRANSACTION_handleTransactionResult = 4;
@@ -102,61 +123,76 @@ public interface IContextHubCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    NanoappInfo[] _arg0 = (NanoappInfo[]) data.createTypedArray(NanoappInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleNanoappInfo(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    ContextHubMessage _arg02 = (ContextHubMessage) data.readTypedObject(ContextHubMessage.CREATOR);
+                    String[] _arg1 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    handleContextHubMessage(_arg02, _arg1);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    handleContextHubAsyncEvent(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    handleTransactionResult(_arg04, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    NanSessionRequest _arg05 = (NanSessionRequest) data.readTypedObject(NanSessionRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleNanSessionRequest(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    char _arg06 = (char) data.readInt();
+                    MessageDeliveryStatus _arg13 = (MessageDeliveryStatus) data.readTypedObject(MessageDeliveryStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleMessageDeliveryStatus(_arg06, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    byte[] _result = getUuid();
+                    reply.writeNoException();
+                    reply.writeFixedArray(_result, 1, 16);
+                    return true;
+                case 8:
+                    String _result2 = getName();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            NanoappInfo[] _arg0 = (NanoappInfo[]) data.createTypedArray(NanoappInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleNanoappInfo(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ContextHubMessage _arg02 = (ContextHubMessage) data.readTypedObject(ContextHubMessage.CREATOR);
-                            String[] _arg1 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            handleContextHubMessage(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            handleContextHubAsyncEvent(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            handleTransactionResult(_arg04, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            NanSessionRequest _arg05 = (NanSessionRequest) data.readTypedObject(NanSessionRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleNanSessionRequest(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IContextHubCallback {
+        private static class Proxy implements IContextHubCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -260,6 +296,63 @@ public interface IContextHubCallback extends IInterface {
                         throw new RemoteException("Method handleNanSessionRequest is unimplemented.");
                     }
                     _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.contexthub.IContextHubCallback
+            public void handleMessageDeliveryStatus(char hostEndpointId, MessageDeliveryStatus messageDeliveryStatus) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(hostEndpointId);
+                    _data.writeTypedObject(messageDeliveryStatus, 0);
+                    boolean _status = this.mRemote.transact(6, _data, _reply, 0);
+                    if (!_status) {
+                        throw new RemoteException("Method handleMessageDeliveryStatus is unimplemented.");
+                    }
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.contexthub.IContextHubCallback
+            public byte[] getUuid() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    boolean _status = this.mRemote.transact(7, _data, _reply, 0);
+                    if (!_status) {
+                        throw new RemoteException("Method getUuid is unimplemented.");
+                    }
+                    _reply.readException();
+                    byte[] _result = (byte[]) _reply.createFixedArray(byte[].class, 16);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.contexthub.IContextHubCallback
+            public String getName() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    boolean _status = this.mRemote.transact(8, _data, _reply, 0);
+                    if (!_status) {
+                        throw new RemoteException("Method getName is unimplemented.");
+                    }
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();

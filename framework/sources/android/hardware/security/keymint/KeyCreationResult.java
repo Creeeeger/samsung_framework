@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class KeyCreationResult implements Parcelable {
     public static final Parcelable.Creator<KeyCreationResult> CREATOR = new Parcelable.Creator<KeyCreationResult>() { // from class: android.hardware.security.keymint.KeyCreationResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyCreationResult createFromParcel(Parcel _aidl_source) {
             KeyCreationResult _aidl_out = new KeyCreationResult();
@@ -17,6 +15,7 @@ public class KeyCreationResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyCreationResult[] newArray(int _aidl_size) {
             return new KeyCreationResult[_aidl_size];
@@ -25,25 +24,6 @@ public class KeyCreationResult implements Parcelable {
     public Certificate[] certificateChain;
     public byte[] keyBlob;
     public KeyCharacteristics[] keyCharacteristics;
-
-    /* renamed from: android.hardware.security.keymint.KeyCreationResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyCreationResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyCreationResult createFromParcel(Parcel _aidl_source) {
-            KeyCreationResult _aidl_out = new KeyCreationResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyCreationResult[] newArray(int _aidl_size) {
-            return new KeyCreationResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

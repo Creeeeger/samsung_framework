@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface ICheckCredentialProgressCallback extends IInterface {
     void onCredentialVerified() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICheckCredentialProgressCallback {
         @Override // com.android.internal.widget.ICheckCredentialProgressCallback
         public void onCredentialVerified() throws RemoteException {
@@ -22,7 +21,6 @@ public interface ICheckCredentialProgressCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICheckCredentialProgressCallback {
         public static final String DESCRIPTOR = "com.android.internal.widget.ICheckCredentialProgressCallback";
         static final int TRANSACTION_onCredentialVerified = 1;
@@ -66,23 +64,20 @@ public interface ICheckCredentialProgressCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onCredentialVerified();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onCredentialVerified();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICheckCredentialProgressCallback {
+        private static class Proxy implements ICheckCredentialProgressCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

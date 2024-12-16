@@ -7,9 +7,7 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public class FabricatedOverlayInternal implements Parcelable {
     public static final Parcelable.Creator<FabricatedOverlayInternal> CREATOR = new Parcelable.Creator<FabricatedOverlayInternal>() { // from class: android.os.FabricatedOverlayInternal.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInternal createFromParcel(Parcel _aidl_source) {
             FabricatedOverlayInternal _aidl_out = new FabricatedOverlayInternal();
@@ -17,6 +15,7 @@ public class FabricatedOverlayInternal implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInternal[] newArray(int _aidl_size) {
             return new FabricatedOverlayInternal[_aidl_size];
@@ -27,25 +26,6 @@ public class FabricatedOverlayInternal implements Parcelable {
     public String packageName;
     public String targetOverlayable;
     public String targetPackageName;
-
-    /* renamed from: android.os.FabricatedOverlayInternal$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FabricatedOverlayInternal> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FabricatedOverlayInternal createFromParcel(Parcel _aidl_source) {
-            FabricatedOverlayInternal _aidl_out = new FabricatedOverlayInternal();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FabricatedOverlayInternal[] newArray(int _aidl_size) {
-            return new FabricatedOverlayInternal[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

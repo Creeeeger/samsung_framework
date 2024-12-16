@@ -43,7 +43,6 @@ public abstract class GameSession {
     private LifecycleState mLifecycleState = LifecycleState.INITIALIZED;
     private boolean mAreTransientInsetsVisibleDueToGesture = false;
 
-    /* loaded from: classes3.dex */
     public enum LifecycleState {
         INITIALIZED,
         CREATED,
@@ -52,12 +51,10 @@ public abstract class GameSession {
         DESTROYED
     }
 
-    /* loaded from: classes3.dex */
     public interface ScreenshotCallback {
         public static final int ERROR_TAKE_SCREENSHOT_INTERNAL_ERROR = 0;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface ScreenshotFailureStatus {
         }
 
@@ -66,15 +63,14 @@ public abstract class GameSession {
         void onSuccess();
     }
 
-    /* renamed from: android.service.games.GameSession$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.service.games.GameSession$1, reason: invalid class name */
     class AnonymousClass1 extends IGameSession.Stub {
         AnonymousClass1() {
         }
 
         @Override // android.service.games.IGameSession
         public void onDestroyed() {
-            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: android.service.games.GameSession$1$$ExternalSyntheticLambda0
+            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: android.service.games.GameSession$1$$ExternalSyntheticLambda1
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ((GameSession) obj).doDestroy();
@@ -84,7 +80,7 @@ public abstract class GameSession {
 
         @Override // android.service.games.IGameSession
         public void onTransientSystemBarVisibilityFromRevealGestureChanged(boolean visibleDueToGesture) {
-            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameSession$1$$ExternalSyntheticLambda1
+            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameSession$1$$ExternalSyntheticLambda2
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((GameSession) obj).dispatchTransientSystemBarVisibilityFromRevealGestureChanged(((Boolean) obj2).booleanValue());
@@ -94,7 +90,7 @@ public abstract class GameSession {
 
         @Override // android.service.games.IGameSession
         public void onTaskFocusChanged(boolean focused) {
-            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameSession$1$$ExternalSyntheticLambda2
+            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameSession$1$$ExternalSyntheticLambda0
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((GameSession) obj).moveToState((GameSession.LifecycleState) obj2);
@@ -108,15 +104,15 @@ public abstract class GameSession {
         this.mTaskId = taskId;
         this.mContext = context;
         this.mSurfaceControlViewHost = surfaceControlViewHost;
-        GameSessionRootView gameSessionRootView = new GameSessionRootView(context, this.mSurfaceControlViewHost);
-        this.mGameSessionRootView = gameSessionRootView;
-        surfaceControlViewHost.setView(gameSessionRootView, widthPx, heightPx);
+        this.mGameSessionRootView = new GameSessionRootView(context, this.mSurfaceControlViewHost);
+        surfaceControlViewHost.setView(this.mGameSessionRootView, widthPx, heightPx);
     }
 
-    public void doCreate() {
+    void doCreate() {
         moveToState(LifecycleState.CREATED);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doDestroy() {
         this.mSurfaceControlViewHost.release();
         moveToState(LifecycleState.DESTROYED);
@@ -137,8 +133,8 @@ public abstract class GameSession {
         if (this.mLifecycleState == newLifecycleState) {
             return;
         }
-        switch (AnonymousClass2.$SwitchMap$android$service$games$GameSession$LifecycleState[this.mLifecycleState.ordinal()]) {
-            case 1:
+        switch (this.mLifecycleState) {
+            case INITIALIZED:
                 if (newLifecycleState == LifecycleState.CREATED) {
                     onCreate();
                     break;
@@ -149,7 +145,7 @@ public abstract class GameSession {
                 } else {
                     return;
                 }
-            case 2:
+            case CREATED:
                 if (newLifecycleState == LifecycleState.TASK_FOCUSED) {
                     onGameTaskFocusChanged(true);
                     break;
@@ -159,7 +155,7 @@ public abstract class GameSession {
                 } else {
                     return;
                 }
-            case 3:
+            case TASK_FOCUSED:
                 if (newLifecycleState == LifecycleState.TASK_UNFOCUSED) {
                     onGameTaskFocusChanged(false);
                     break;
@@ -170,7 +166,7 @@ public abstract class GameSession {
                 } else {
                     return;
                 }
-            case 4:
+            case TASK_UNFOCUSED:
                 if (newLifecycleState == LifecycleState.TASK_FOCUSED) {
                     onGameTaskFocusChanged(true);
                     break;
@@ -180,41 +176,10 @@ public abstract class GameSession {
                 } else {
                     return;
                 }
-            case 5:
+            case DESTROYED:
                 return;
         }
         this.mLifecycleState = newLifecycleState;
-    }
-
-    /* renamed from: android.service.games.GameSession$2 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass2 {
-        static final /* synthetic */ int[] $SwitchMap$android$service$games$GameSession$LifecycleState;
-
-        static {
-            int[] iArr = new int[LifecycleState.values().length];
-            $SwitchMap$android$service$games$GameSession$LifecycleState = iArr;
-            try {
-                iArr[LifecycleState.INITIALIZED.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$service$games$GameSession$LifecycleState[LifecycleState.CREATED.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$service$games$GameSession$LifecycleState[LifecycleState.TASK_FOCUSED.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$service$games$GameSession$LifecycleState[LifecycleState.TASK_UNFOCUSED.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$android$service$games$GameSession$LifecycleState[LifecycleState.DESTROYED.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-        }
     }
 
     public void onCreate() {
@@ -244,9 +209,7 @@ public abstract class GameSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static final class GameSessionRootView extends FrameLayout {
+    private static final class GameSessionRootView extends FrameLayout {
         private final SurfaceControlViewHost mSurfaceControlViewHost;
 
         GameSessionRootView(Context context, SurfaceControlViewHost surfaceControlViewHost) {
@@ -255,7 +218,7 @@ public abstract class GameSession {
         }
 
         @Override // android.view.View
-        public void onConfigurationChanged(Configuration newConfig) {
+        protected void onConfigurationChanged(Configuration newConfig) {
             super.onConfigurationChanged(newConfig);
             Rect bounds = newConfig.windowConfiguration.getBounds();
             this.mSurfaceControlViewHost.relayout(bounds.width(), bounds.height());
@@ -279,24 +242,22 @@ public abstract class GameSession {
         }
     }
 
-    /* renamed from: handleScreenshotResult */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: handleScreenshotResult, reason: merged with bridge method [inline-methods] */
     public void lambda$takeScreenshot$0(ScreenshotCallback callback, GameScreenshotResult result, Throwable error) {
         if (error != null) {
             Slog.w(TAG, error.getMessage(), error.getCause());
             callback.onFailure(0);
-            return;
         }
         int status = result.getStatus();
         switch (status) {
             case 0:
                 callback.onSuccess();
-                return;
+                break;
             case 1:
                 Slog.w(TAG, "Error taking screenshot");
                 callback.onFailure(0);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -324,7 +285,7 @@ public abstract class GameSession {
         }
     }
 
-    public static /* synthetic */ void lambda$startActivityFromGameSessionForResult$1(GameSessionActivityCallback callback, GameSessionActivityResult result, Throwable ex) {
+    static /* synthetic */ void lambda$startActivityFromGameSessionForResult$1(GameSessionActivityCallback callback, GameSessionActivityResult result, Throwable ex) {
         if (ex != null) {
             callback.onActivityStartFailed(ex);
         } else {

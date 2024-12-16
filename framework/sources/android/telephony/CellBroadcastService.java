@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class CellBroadcastService extends Service {
     public static final String CELL_BROADCAST_SERVICE_INTERFACE = "android.telephony.CellBroadcastService";
     private static final int GSM_HEADER_LENGTH = 6;
@@ -43,7 +43,6 @@ public abstract class CellBroadcastService extends Service {
         return this.mStubWrapper;
     }
 
-    /* loaded from: classes3.dex */
     public class ICellBroadcastServiceWrapper extends ICellBroadcastService.Stub {
         public ICellBroadcastServiceWrapper() {
         }
@@ -103,10 +102,10 @@ public abstract class CellBroadcastService extends Service {
                 CellBroadcastService.this.onGsmCellBroadcastSms(slotIndex, pdu);
                 return;
             }
-            SmsCbConcatInfo concatInfo = new SmsCbConcatInfo(header, System.currentTimeMillis());
+            SmsCbConcatInfo concatInfo = new SmsCbConcatInfo(header, System.currentTimeMillis(), slotIndex);
             byte[][] pdus3 = (byte[][]) CellBroadcastService.this.mSmsCbPageMap.get(concatInfo);
             if (pdus3 == null) {
-                byte[][] pdus4 = new byte[pageCount];
+                byte[][] pdus4 = new byte[pageCount][];
                 CellBroadcastService.this.mSmsCbPageMap.put(concatInfo, pdus4);
                 pdus = pdus4;
             } else {
@@ -240,6 +239,7 @@ public abstract class CellBroadcastService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public SmsCbHeader createSmsCbHeader(byte[] bytes) {
         try {
             return new SmsCbHeader(bytes);
@@ -249,6 +249,7 @@ public abstract class CellBroadcastService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void convertGsmToUmts(byte[] pdu, byte[] wac, int pduLength, int wacLength, int slotIndex) {
         byte[] umtsPdu = new byte[wacLength + 90];
         int offset = 0 + 1;
@@ -277,6 +278,7 @@ public abstract class CellBroadcastService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void convertGsmToUmtsForMultiPage(int pageCount, byte[][] pdus, byte[] wac, int wacLength, int slotIndex) {
         byte[] umtsPdu = new byte[(pageCount * 83) + 7 + wacLength];
         int offset = 0 + 1;
@@ -318,14 +320,15 @@ public abstract class CellBroadcastService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class SmsCbConcatInfo {
         private final SmsCbHeader mHeader;
         private final long mReceivedTime;
+        private final int mSlotIndex;
 
-        SmsCbConcatInfo(SmsCbHeader header, long receivedTime) {
+        SmsCbConcatInfo(SmsCbHeader header, long receivedTime, int slotIndex) {
             this.mHeader = header;
             this.mReceivedTime = receivedTime;
+            this.mSlotIndex = slotIndex;
         }
 
         public int hashCode() {
@@ -337,9 +340,10 @@ public abstract class CellBroadcastService extends Service {
                 return false;
             }
             SmsCbConcatInfo other = (SmsCbConcatInfo) obj;
-            return this.mHeader.getSerialNumber() == other.mHeader.getSerialNumber() && this.mReceivedTime < other.mReceivedTime + ParcelableCallAnalytics.MILLIS_IN_5_MINUTES;
+            return this.mHeader.getSerialNumber() == other.mHeader.getSerialNumber() && this.mReceivedTime < other.mReceivedTime + ParcelableCallAnalytics.MILLIS_IN_5_MINUTES && this.mSlotIndex == other.mSlotIndex;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean overTime() {
             return this.mReceivedTime < System.currentTimeMillis() - ParcelableCallAnalytics.MILLIS_IN_5_MINUTES;
         }

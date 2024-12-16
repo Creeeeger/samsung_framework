@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IPrintDocumentAdapterObserver extends IInterface {
     void onDestroy() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintDocumentAdapterObserver {
         @Override // android.print.IPrintDocumentAdapterObserver
         public void onDestroy() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IPrintDocumentAdapterObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintDocumentAdapterObserver {
         public static final String DESCRIPTOR = "android.print.IPrintDocumentAdapterObserver";
         static final int TRANSACTION_onDestroy = 1;
@@ -66,23 +64,20 @@ public interface IPrintDocumentAdapterObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onDestroy();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onDestroy();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPrintDocumentAdapterObserver {
+        private static class Proxy implements IPrintDocumentAdapterObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

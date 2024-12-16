@@ -23,7 +23,7 @@ public abstract class GCMUtil {
     }
 
     public static long[] oneAsLongs() {
-        long[] tmp = {Long.MIN_VALUE};
+        long[] tmp = {Long.MIN_VALUE, 0};
         return tmp;
     }
 
@@ -252,7 +252,7 @@ public abstract class GCMUtil {
     }
 
     public static long[] pAsLongs() {
-        long[] tmp = {Context.BIND_EXTERNAL_SERVICE_LONG};
+        long[] tmp = {Context.BIND_EXTERNAL_SERVICE_LONG, 0};
         return tmp;
     }
 

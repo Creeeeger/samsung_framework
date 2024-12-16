@@ -57,16 +57,14 @@ public class CBCBlockCipherMac implements Mac {
 
     @Override // com.android.internal.org.bouncycastle.crypto.Mac
     public void update(byte in) {
-        int i = this.bufOff;
-        byte[] bArr = this.buf;
-        if (i == bArr.length) {
-            this.cipher.processBlock(bArr, 0, this.mac, 0);
+        if (this.bufOff == this.buf.length) {
+            this.cipher.processBlock(this.buf, 0, this.mac, 0);
             this.bufOff = 0;
         }
-        byte[] bArr2 = this.buf;
-        int i2 = this.bufOff;
-        this.bufOff = i2 + 1;
-        bArr2[i2] = in;
+        byte[] bArr = this.buf;
+        int i = this.bufOff;
+        this.bufOff = i + 1;
+        bArr[i] = in;
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.Mac
@@ -75,10 +73,9 @@ public class CBCBlockCipherMac implements Mac {
             throw new IllegalArgumentException("Can't have a negative input length!");
         }
         int blockSize = this.cipher.getBlockSize();
-        int i = this.bufOff;
-        int gapLen = blockSize - i;
+        int gapLen = blockSize - this.bufOff;
         if (len > gapLen) {
-            System.arraycopy(in, inOff, this.buf, i, gapLen);
+            System.arraycopy(in, inOff, this.buf, this.bufOff, gapLen);
             this.cipher.processBlock(this.buf, 0, this.mac, 0);
             this.bufOff = 0;
             len -= gapLen;
@@ -97,13 +94,9 @@ public class CBCBlockCipherMac implements Mac {
     public int doFinal(byte[] out, int outOff) {
         int blockSize = this.cipher.getBlockSize();
         if (this.padding == null) {
-            while (true) {
-                int i = this.bufOff;
-                if (i >= blockSize) {
-                    break;
-                }
-                this.buf[i] = 0;
-                this.bufOff = i + 1;
+            while (this.bufOff < blockSize) {
+                this.buf[this.bufOff] = 0;
+                this.bufOff++;
             }
         } else {
             if (this.bufOff == blockSize) {
@@ -120,17 +113,10 @@ public class CBCBlockCipherMac implements Mac {
 
     @Override // com.android.internal.org.bouncycastle.crypto.Mac
     public void reset() {
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.buf;
-            if (i < bArr.length) {
-                bArr[i] = 0;
-                i++;
-            } else {
-                this.bufOff = 0;
-                this.cipher.reset();
-                return;
-            }
+        for (int i = 0; i < this.buf.length; i++) {
+            this.buf[i] = 0;
         }
+        this.bufOff = 0;
+        this.cipher.reset();
     }
 }

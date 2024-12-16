@@ -12,7 +12,6 @@ public interface ITransitionMetricsReporter extends IInterface {
 
     void reportAnimationStart(IBinder iBinder, long j) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITransitionMetricsReporter {
         @Override // android.window.ITransitionMetricsReporter
         public void reportAnimationStart(IBinder transitionToken, long startTime) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ITransitionMetricsReporter extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITransitionMetricsReporter {
         static final int TRANSACTION_reportAnimationStart = 1;
 
@@ -67,27 +65,23 @@ public interface ITransitionMetricsReporter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITransitionMetricsReporter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITransitionMetricsReporter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITransitionMetricsReporter.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    reportAnimationStart(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            reportAnimationStart(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITransitionMetricsReporter {
+        private static class Proxy implements ITransitionMetricsReporter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

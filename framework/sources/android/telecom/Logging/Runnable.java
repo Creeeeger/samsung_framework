@@ -6,9 +6,6 @@ import android.telecom.Log;
 public abstract class Runnable {
     private final Object mLock;
     private final java.lang.Runnable mRunnable = new java.lang.Runnable() { // from class: android.telecom.Logging.Runnable.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (Runnable.this.mLock) {
@@ -28,29 +25,6 @@ public abstract class Runnable {
     private final String mSubsessionName;
 
     public abstract void loggedRun();
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.Logging.Runnable$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements java.lang.Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (Runnable.this.mLock) {
-                try {
-                    Log.continueSession(Runnable.this.mSubsession, Runnable.this.mSubsessionName);
-                    Runnable.this.loggedRun();
-                } finally {
-                    if (Runnable.this.mSubsession != null) {
-                        Log.endSession();
-                        Runnable.this.mSubsession = null;
-                    }
-                }
-            }
-        }
-    }
 
     public Runnable(String subsessionName, Object lock) {
         if (lock == null) {

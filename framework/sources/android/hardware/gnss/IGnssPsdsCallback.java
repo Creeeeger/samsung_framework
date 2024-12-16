@@ -18,7 +18,6 @@ public interface IGnssPsdsCallback extends IInterface {
 
     int getInterfaceVersion() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssPsdsCallback {
         @Override // android.hardware.gnss.IGnssPsdsCallback
         public void downloadRequestCb(int psdsType) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IGnssPsdsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssPsdsCallback {
         static final int TRANSACTION_downloadRequestCb = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -91,35 +89,32 @@ public interface IGnssPsdsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            downloadRequestCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    downloadRequestCb(_arg0);
+                    reply.writeNoException();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssPsdsCallback {
+        private static class Proxy implements IGnssPsdsCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

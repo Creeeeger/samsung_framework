@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMultiControlDeathChecker extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multicontrol.IMultiControlDeathChecker";
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMultiControlDeathChecker {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -18,7 +17,6 @@ public interface IMultiControlDeathChecker extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMultiControlDeathChecker {
         public Stub() {
             attachInterface(this, IMultiControlDeathChecker.DESCRIPTOR);
@@ -51,18 +49,14 @@ public interface IMultiControlDeathChecker extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMultiControlDeathChecker.DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(IMultiControlDeathChecker.DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IMultiControlDeathChecker {
+        private static class Proxy implements IMultiControlDeathChecker {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

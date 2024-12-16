@@ -1,6 +1,7 @@
 package android.service.dreams;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.service.dreams.DreamService;
 import android.text.TextUtils;
@@ -14,26 +15,45 @@ public class DreamActivity extends Activity {
     @Override // android.app.Activity
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        String title = getIntent().getStringExtra("title");
+        String title = getTitle(getIntent());
         if (!TextUtils.isEmpty(title)) {
             setTitle(title);
         }
-        Object callback = getIntent().getExtras().getBinder("binder");
-        if (callback instanceof DreamService.DreamActivityCallbacks) {
-            DreamService.DreamActivityCallbacks dreamActivityCallbacks = (DreamService.DreamActivityCallbacks) callback;
-            this.mCallback = dreamActivityCallbacks;
-            dreamActivityCallbacks.onActivityCreated(this);
-        } else {
-            this.mCallback = null;
+        this.mCallback = getCallback(getIntent());
+        if (this.mCallback == null) {
             finishAndRemoveTask();
+        } else {
+            this.mCallback.onActivityCreated(this);
         }
+    }
+
+    public static void setTitle(Intent intent, CharSequence title) {
+        if (TextUtils.isEmpty(title)) {
+            return;
+        }
+        intent.putExtra("title", title);
+    }
+
+    public static String getTitle(Intent intent) {
+        return intent.getStringExtra("title");
+    }
+
+    public static void setCallback(Intent intent, DreamService.DreamActivityCallbacks callback) {
+        intent.putExtra("binder", callback);
+    }
+
+    public static DreamService.DreamActivityCallbacks getCallback(Intent intent) {
+        Object binder = intent.getExtras().getBinder("binder");
+        if (binder instanceof DreamService.DreamActivityCallbacks) {
+            return (DreamService.DreamActivityCallbacks) binder;
+        }
+        return null;
     }
 
     @Override // android.app.Activity
     public void onDestroy() {
-        DreamService.DreamActivityCallbacks dreamActivityCallbacks = this.mCallback;
-        if (dreamActivityCallbacks != null) {
-            dreamActivityCallbacks.onActivityDestroyed();
+        if (this.mCallback != null) {
+            this.mCallback.onActivityDestroyed();
         }
         super.onDestroy();
     }

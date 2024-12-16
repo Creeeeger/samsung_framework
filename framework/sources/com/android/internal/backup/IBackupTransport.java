@@ -15,7 +15,7 @@ import com.android.internal.backup.ITransportStatusCallback;
 import com.android.internal.infra.AndroidFuture;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IBackupTransport extends IInterface {
     void abortFullRestore(ITransportStatusCallback iTransportStatusCallback) throws RemoteException;
 
@@ -73,7 +73,6 @@ public interface IBackupTransport extends IInterface {
 
     void transportDirName(AndroidFuture<String> androidFuture) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IBackupTransport {
         @Override // com.android.internal.backup.IBackupTransport
         public void name(AndroidFuture<String> result) throws RemoteException {
@@ -193,7 +192,6 @@ public interface IBackupTransport extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IBackupTransport {
         public static final String DESCRIPTOR = "com.android.internal.backup.IBackupTransport";
         static final int TRANSACTION_abortFullRestore = 26;
@@ -318,176 +316,173 @@ public interface IBackupTransport extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    AndroidFuture<String> _arg0 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    name(_arg0);
+                    return true;
+                case 2:
+                    AndroidFuture<Intent> _arg02 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    configurationIntent(_arg02);
+                    return true;
+                case 3:
+                    AndroidFuture<String> _arg03 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    currentDestinationString(_arg03);
+                    return true;
+                case 4:
+                    AndroidFuture<Intent> _arg04 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    dataManagementIntent(_arg04);
+                    return true;
+                case 5:
+                    AndroidFuture<CharSequence> _arg05 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    dataManagementIntentLabel(_arg05);
+                    return true;
+                case 6:
+                    AndroidFuture<String> _arg06 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    transportDirName(_arg06);
+                    return true;
+                case 7:
+                    AndroidFuture<Long> _arg07 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestBackupTime(_arg07);
+                    return true;
+                case 8:
+                    ITransportStatusCallback _arg08 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    initializeDevice(_arg08);
+                    return true;
+                case 9:
+                    PackageInfo _arg09 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
+                    ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg2 = data.readInt();
+                    ITransportStatusCallback _arg3 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    performBackup(_arg09, _arg1, _arg2, _arg3);
+                    return true;
+                case 10:
+                    PackageInfo _arg010 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
+                    ITransportStatusCallback _arg12 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    clearBackupData(_arg010, _arg12);
+                    return true;
+                case 11:
+                    ITransportStatusCallback _arg011 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    finishBackup(_arg011);
+                    return true;
+                case 12:
+                    AndroidFuture<List<RestoreSet>> _arg012 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAvailableRestoreSets(_arg012);
+                    return true;
+                case 13:
+                    AndroidFuture<Long> _arg013 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getCurrentRestoreSet(_arg013);
+                    return true;
+                case 14:
+                    long _arg014 = data.readLong();
+                    PackageInfo[] _arg13 = (PackageInfo[]) data.createTypedArray(PackageInfo.CREATOR);
+                    ITransportStatusCallback _arg22 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startRestore(_arg014, _arg13, _arg22);
+                    return true;
+                case 15:
+                    AndroidFuture<RestoreDescription> _arg015 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    nextRestorePackage(_arg015);
+                    return true;
+                case 16:
+                    ParcelFileDescriptor _arg016 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ITransportStatusCallback _arg14 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getRestoreData(_arg016, _arg14);
+                    return true;
+                case 17:
+                    ITransportStatusCallback _arg017 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    finishRestore(_arg017);
+                    return true;
+                case 18:
+                    AndroidFuture<Long> _arg018 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestFullBackupTime(_arg018);
+                    return true;
+                case 19:
+                    PackageInfo _arg019 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
+                    ParcelFileDescriptor _arg15 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg23 = data.readInt();
+                    ITransportStatusCallback _arg32 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    performFullBackup(_arg019, _arg15, _arg23, _arg32);
+                    return true;
+                case 20:
+                    long _arg020 = data.readLong();
+                    ITransportStatusCallback _arg16 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    checkFullBackupSize(_arg020, _arg16);
+                    return true;
+                case 21:
+                    int _arg021 = data.readInt();
+                    ITransportStatusCallback _arg17 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    sendBackupData(_arg021, _arg17);
+                    return true;
+                case 22:
+                    ITransportStatusCallback _arg022 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelFullBackup(_arg022);
+                    return true;
+                case 23:
+                    PackageInfo _arg023 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
+                    boolean _arg18 = data.readBoolean();
+                    AndroidFuture<Boolean> _arg24 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    isAppEligibleForBackup(_arg023, _arg18, _arg24);
+                    return true;
+                case 24:
+                    String _arg024 = data.readString();
+                    boolean _arg19 = data.readBoolean();
+                    AndroidFuture<Long> _arg25 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getBackupQuota(_arg024, _arg19, _arg25);
+                    return true;
+                case 25:
+                    ParcelFileDescriptor _arg025 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ITransportStatusCallback _arg110 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getNextFullRestoreDataChunk(_arg025, _arg110);
+                    return true;
+                case 26:
+                    ITransportStatusCallback _arg026 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    abortFullRestore(_arg026);
+                    return true;
+                case 27:
+                    AndroidFuture<Integer> _arg027 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getTransportFlags(_arg027);
+                    return true;
+                case 28:
+                    AndroidFuture<IBackupManagerMonitor> _arg028 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getBackupManagerMonitor(_arg028);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AndroidFuture<String> _arg0 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            name(_arg0);
-                            return true;
-                        case 2:
-                            AndroidFuture<Intent> _arg02 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            configurationIntent(_arg02);
-                            return true;
-                        case 3:
-                            AndroidFuture<String> _arg03 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            currentDestinationString(_arg03);
-                            return true;
-                        case 4:
-                            AndroidFuture<Intent> _arg04 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            dataManagementIntent(_arg04);
-                            return true;
-                        case 5:
-                            AndroidFuture<CharSequence> _arg05 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            dataManagementIntentLabel(_arg05);
-                            return true;
-                        case 6:
-                            AndroidFuture<String> _arg06 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            transportDirName(_arg06);
-                            return true;
-                        case 7:
-                            AndroidFuture<Long> _arg07 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestBackupTime(_arg07);
-                            return true;
-                        case 8:
-                            ITransportStatusCallback _arg08 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            initializeDevice(_arg08);
-                            return true;
-                        case 9:
-                            PackageInfo _arg09 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
-                            ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg2 = data.readInt();
-                            ITransportStatusCallback _arg3 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            performBackup(_arg09, _arg1, _arg2, _arg3);
-                            return true;
-                        case 10:
-                            PackageInfo _arg010 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
-                            ITransportStatusCallback _arg12 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            clearBackupData(_arg010, _arg12);
-                            return true;
-                        case 11:
-                            ITransportStatusCallback _arg011 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            finishBackup(_arg011);
-                            return true;
-                        case 12:
-                            AndroidFuture<List<RestoreSet>> _arg012 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAvailableRestoreSets(_arg012);
-                            return true;
-                        case 13:
-                            AndroidFuture<Long> _arg013 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getCurrentRestoreSet(_arg013);
-                            return true;
-                        case 14:
-                            long _arg014 = data.readLong();
-                            PackageInfo[] _arg13 = (PackageInfo[]) data.createTypedArray(PackageInfo.CREATOR);
-                            ITransportStatusCallback _arg22 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startRestore(_arg014, _arg13, _arg22);
-                            return true;
-                        case 15:
-                            AndroidFuture<RestoreDescription> _arg015 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            nextRestorePackage(_arg015);
-                            return true;
-                        case 16:
-                            ParcelFileDescriptor _arg016 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ITransportStatusCallback _arg14 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getRestoreData(_arg016, _arg14);
-                            return true;
-                        case 17:
-                            ITransportStatusCallback _arg017 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            finishRestore(_arg017);
-                            return true;
-                        case 18:
-                            AndroidFuture<Long> _arg018 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestFullBackupTime(_arg018);
-                            return true;
-                        case 19:
-                            PackageInfo _arg019 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
-                            ParcelFileDescriptor _arg15 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg23 = data.readInt();
-                            ITransportStatusCallback _arg32 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            performFullBackup(_arg019, _arg15, _arg23, _arg32);
-                            return true;
-                        case 20:
-                            long _arg020 = data.readLong();
-                            ITransportStatusCallback _arg16 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            checkFullBackupSize(_arg020, _arg16);
-                            return true;
-                        case 21:
-                            int _arg021 = data.readInt();
-                            ITransportStatusCallback _arg17 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            sendBackupData(_arg021, _arg17);
-                            return true;
-                        case 22:
-                            ITransportStatusCallback _arg022 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelFullBackup(_arg022);
-                            return true;
-                        case 23:
-                            PackageInfo _arg023 = (PackageInfo) data.readTypedObject(PackageInfo.CREATOR);
-                            boolean _arg18 = data.readBoolean();
-                            AndroidFuture<Boolean> _arg24 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            isAppEligibleForBackup(_arg023, _arg18, _arg24);
-                            return true;
-                        case 24:
-                            String _arg024 = data.readString();
-                            boolean _arg19 = data.readBoolean();
-                            AndroidFuture<Long> _arg25 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getBackupQuota(_arg024, _arg19, _arg25);
-                            return true;
-                        case 25:
-                            ParcelFileDescriptor _arg025 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ITransportStatusCallback _arg110 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getNextFullRestoreDataChunk(_arg025, _arg110);
-                            return true;
-                        case 26:
-                            ITransportStatusCallback _arg026 = ITransportStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            abortFullRestore(_arg026);
-                            return true;
-                        case 27:
-                            AndroidFuture<Integer> _arg027 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getTransportFlags(_arg027);
-                            return true;
-                        case 28:
-                            AndroidFuture<IBackupManagerMonitor> _arg028 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getBackupManagerMonitor(_arg028);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements IBackupTransport {
             private IBinder mRemote;
 

@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class SslCertificate {
     private static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd HH:mm:ssZ";
     private static final String ISSUED_BY = "issued-by";
@@ -195,7 +195,6 @@ public class SslCertificate {
         return (Date) date.clone();
     }
 
-    /* loaded from: classes2.dex */
     public class DName {
         private String mCName;
         private String mDName;
@@ -226,23 +225,19 @@ public class SslCertificate {
         }
 
         public String getDName() {
-            String str = this.mDName;
-            return str != null ? str : "";
+            return this.mDName != null ? this.mDName : "";
         }
 
         public String getCName() {
-            String str = this.mCName;
-            return str != null ? str : "";
+            return this.mCName != null ? this.mCName : "";
         }
 
         public String getOName() {
-            String str = this.mOName;
-            return str != null ? str : "";
+            return this.mOName != null ? this.mOName : "";
         }
 
         public String getUName() {
-            String str = this.mUName;
-            return str != null ? str : "";
+            return this.mUName != null ? this.mUName : "";
         }
     }
 
@@ -251,23 +246,23 @@ public class SslCertificate {
         View certificateView = factory.inflate(R.layout.ssl_certificate, (ViewGroup) null);
         DName issuedTo = getIssuedTo();
         if (issuedTo != null) {
-            ((TextView) certificateView.findViewById(R.id.to_common)).setText(issuedTo.getCName());
-            ((TextView) certificateView.findViewById(R.id.to_org)).setText(issuedTo.getOName());
-            ((TextView) certificateView.findViewById(R.id.to_org_unit)).setText(issuedTo.getUName());
+            ((TextView) certificateView.findViewById(R.id.to_common)).lambda$setTextAsync$0(issuedTo.getCName());
+            ((TextView) certificateView.findViewById(R.id.to_org)).lambda$setTextAsync$0(issuedTo.getOName());
+            ((TextView) certificateView.findViewById(R.id.to_org_unit)).lambda$setTextAsync$0(issuedTo.getUName());
         }
-        ((TextView) certificateView.findViewById(R.id.serial_number)).setText(getSerialNumber(this.mX509Certificate));
+        ((TextView) certificateView.findViewById(R.id.serial_number)).lambda$setTextAsync$0(getSerialNumber(this.mX509Certificate));
         DName issuedBy = getIssuedBy();
         if (issuedBy != null) {
-            ((TextView) certificateView.findViewById(R.id.by_common)).setText(issuedBy.getCName());
-            ((TextView) certificateView.findViewById(R.id.by_org)).setText(issuedBy.getOName());
-            ((TextView) certificateView.findViewById(R.id.by_org_unit)).setText(issuedBy.getUName());
+            ((TextView) certificateView.findViewById(R.id.by_common)).lambda$setTextAsync$0(issuedBy.getCName());
+            ((TextView) certificateView.findViewById(R.id.by_org)).lambda$setTextAsync$0(issuedBy.getOName());
+            ((TextView) certificateView.findViewById(R.id.by_org_unit)).lambda$setTextAsync$0(issuedBy.getUName());
         }
         String issuedOn = formatCertificateDate(context, getValidNotBeforeDate());
-        ((TextView) certificateView.findViewById(R.id.issued_on)).setText(issuedOn);
+        ((TextView) certificateView.findViewById(R.id.issued_on)).lambda$setTextAsync$0(issuedOn);
         String expiresOn = formatCertificateDate(context, getValidNotAfterDate());
-        ((TextView) certificateView.findViewById(R.id.expires_on)).setText(expiresOn);
-        ((TextView) certificateView.findViewById(R.id.sha256_fingerprint)).setText(getDigest(this.mX509Certificate, "SHA256"));
-        ((TextView) certificateView.findViewById(R.id.sha1_fingerprint)).setText(getDigest(this.mX509Certificate, "SHA1"));
+        ((TextView) certificateView.findViewById(R.id.expires_on)).lambda$setTextAsync$0(expiresOn);
+        ((TextView) certificateView.findViewById(R.id.sha256_fingerprint)).lambda$setTextAsync$0(getDigest(this.mX509Certificate, "SHA256"));
+        ((TextView) certificateView.findViewById(R.id.sha1_fingerprint)).lambda$setTextAsync$0(getDigest(this.mX509Certificate, "SHA1"));
         return certificateView;
     }
 

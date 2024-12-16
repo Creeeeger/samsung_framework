@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IOverrideValidator extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.compat.IOverrideValidator";
 
     OverrideAllowedState getOverrideAllowedState(long j, String str) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IOverrideValidator {
         @Override // com.android.internal.compat.IOverrideValidator
         public OverrideAllowedState getOverrideAllowedState(long changeId, String packageName) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IOverrideValidator extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IOverrideValidator {
         static final int TRANSACTION_getOverrideAllowedState = 1;
 
@@ -68,28 +66,25 @@ public interface IOverrideValidator extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOverrideValidator.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOverrideValidator.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOverrideValidator.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    OverrideAllowedState _result = getOverrideAllowedState(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            OverrideAllowedState _result = getOverrideAllowedState(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IOverrideValidator {
+        private static class Proxy implements IOverrideValidator {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

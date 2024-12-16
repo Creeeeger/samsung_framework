@@ -15,26 +15,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@Deprecated
 /* loaded from: classes.dex */
 public final class Slice implements Parcelable {
     public static final Parcelable.Creator<Slice> CREATOR = new Parcelable.Creator<Slice>() { // from class: android.app.slice.Slice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Slice createFromParcel(Parcel in) {
             return new Slice(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Slice[] newArray(int size) {
             return new Slice[size];
         }
     };
     public static final String EXTRA_RANGE_VALUE = "android.app.slice.extra.RANGE_VALUE";
-
-    @Deprecated
-    public static final String EXTRA_SLIDER_VALUE = "android.app.slice.extra.SLIDER_VALUE";
     public static final String EXTRA_TOGGLE_STATE = "android.app.slice.extra.TOGGLE_STATE";
     public static final String HINT_ACTIONS = "actions";
     public static final String HINT_CALLER_NEEDED = "caller_needed";
@@ -63,9 +60,6 @@ public final class Slice implements Parcelable {
     public static final String SUBTYPE_MILLIS = "millis";
     public static final String SUBTYPE_PRIORITY = "priority";
     public static final String SUBTYPE_RANGE = "range";
-
-    @Deprecated
-    public static final String SUBTYPE_SLIDER = "slider";
     public static final String SUBTYPE_SOURCE = "source";
     public static final String SUBTYPE_TOGGLE = "toggle";
     public static final String SUBTYPE_VALUE = "value";
@@ -75,12 +69,10 @@ public final class Slice implements Parcelable {
     private Uri mUri;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SliceHint {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SliceSubtype {
     }
 
@@ -122,18 +114,11 @@ public final class Slice implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(this.mHints);
         dest.writeInt(this.mItems.length);
-        int i = 0;
-        while (true) {
-            SliceItem[] sliceItemArr = this.mItems;
-            if (i < sliceItemArr.length) {
-                sliceItemArr[i].writeToParcel(dest, flags);
-                i++;
-            } else {
-                this.mUri.writeToParcel(dest, 0);
-                dest.writeTypedObject(this.mSpec, flags);
-                return;
-            }
+        for (int i = 0; i < this.mItems.length; i++) {
+            this.mItems[i].writeToParcel(dest, flags);
         }
+        this.mUri.writeToParcel(dest, 0);
+        dest.writeTypedObject(this.mSpec, flags);
     }
 
     @Override // android.os.Parcelable
@@ -149,17 +134,12 @@ public final class Slice implements Parcelable {
         return hasHint(HINT_CALLER_NEEDED);
     }
 
-    /* loaded from: classes.dex */
+    @Deprecated
     public static class Builder {
         private SliceSpec mSpec;
         private final Uri mUri;
         private ArrayList<SliceItem> mItems = new ArrayList<>();
         private ArrayList<String> mHints = new ArrayList<>();
-
-        @Deprecated
-        public Builder(Uri uri) {
-            this.mUri = uri;
-        }
 
         public Builder(Uri uri, SliceSpec spec) {
             this.mUri = uri;
@@ -181,11 +161,6 @@ public final class Slice implements Parcelable {
 
         public Builder addHints(List<String> hints) {
             this.mHints.addAll(hints);
-            return this;
-        }
-
-        public Builder setSpec(SliceSpec spec) {
-            this.mSpec = spec;
             return this;
         }
 
@@ -226,13 +201,8 @@ public final class Slice implements Parcelable {
             return this;
         }
 
-        @Deprecated
-        public Builder addTimestamp(long time, String subType, List<String> hints) {
-            return addLong(time, subType, hints);
-        }
-
         public Builder addLong(long value, String subType, List<String> hints) {
-            this.mItems.add(new SliceItem(Long.valueOf(value), "long", subType, (String[]) hints.toArray(new String[hints.size()])));
+            this.mItems.add(new SliceItem(Long.valueOf(value), SliceItem.FORMAT_LONG, subType, (String[]) hints.toArray(new String[hints.size()])));
             return this;
         }
 
@@ -243,26 +213,7 @@ public final class Slice implements Parcelable {
         }
 
         public Slice build() {
-            ArrayList<SliceItem> arrayList = this.mItems;
-            ArrayList<String> arrayList2 = this.mHints;
-            return new Slice(arrayList, (String[]) arrayList2.toArray(new String[arrayList2.size()]), this.mUri, this.mSpec);
-        }
-    }
-
-    /* renamed from: android.app.slice.Slice$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Slice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Slice createFromParcel(Parcel in) {
-            return new Slice(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Slice[] newArray(int size) {
-            return new Slice[size];
+            return new Slice(this.mItems, (String[]) this.mHints.toArray(new String[this.mHints.size()]), this.mUri, this.mSpec);
         }
     }
 

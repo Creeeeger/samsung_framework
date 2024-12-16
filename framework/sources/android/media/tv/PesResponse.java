@@ -3,18 +3,17 @@ package android.media.tv;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class PesResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<PesResponse> CREATOR = new Parcelable.Creator<PesResponse>() { // from class: android.media.tv.PesResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PesResponse createFromParcel(Parcel source) {
             source.readInt();
             return PesResponse.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PesResponse[] newArray(int size) {
             return new PesResponse[size];
@@ -23,25 +22,7 @@ public final class PesResponse extends BroadcastInfoResponse implements Parcelab
     private static final int RESPONSE_TYPE = 4;
     private final String mSharedFilterToken;
 
-    /* renamed from: android.media.tv.PesResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PesResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PesResponse createFromParcel(Parcel source) {
-            source.readInt();
-            return PesResponse.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PesResponse[] newArray(int size) {
-            return new PesResponse[size];
-        }
-    }
-
-    public static PesResponse createFromParcelBody(Parcel in) {
+    static PesResponse createFromParcelBody(Parcel in) {
         return new PesResponse(in);
     }
 

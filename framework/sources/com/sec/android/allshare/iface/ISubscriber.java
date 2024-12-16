@@ -22,7 +22,6 @@ public interface ISubscriber extends IInterface {
 
     void unsubscribeEvent(String str, CVMessage cVMessage) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISubscriber {
         @Override // com.sec.android.allshare.iface.ISubscriber
         public boolean requestCVAsync(String subscriber, CVMessage cvm) throws RemoteException {
@@ -59,7 +58,6 @@ public interface ISubscriber extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISubscriber {
         static final int TRANSACTION_getCaptionFilePathFromURI = 6;
         static final int TRANSACTION_getServiceVersion = 5;
@@ -117,63 +115,60 @@ public interface ISubscriber extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISubscriber.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISubscriber.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISubscriber.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    CVMessage _arg1 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = requestCVAsync(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    CVMessage _arg12 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    CVMessage _result2 = requestCVSync(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    CVMessage _arg13 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result3 = subscribeEvent(_arg03, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    CVMessage _arg14 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    unsubscribeEvent(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _result4 = getServiceVersion();
+                    reply.writeNoException();
+                    reply.writeString(_result4);
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result5 = getCaptionFilePathFromURI(_arg05);
+                    reply.writeNoException();
+                    reply.writeString(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            CVMessage _arg1 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = requestCVAsync(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            CVMessage _arg12 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            CVMessage _result2 = requestCVSync(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            CVMessage _arg13 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result3 = subscribeEvent(_arg03, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            CVMessage _arg14 = (CVMessage) data.readTypedObject(CVMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            unsubscribeEvent(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _result4 = getServiceVersion();
-                            reply.writeNoException();
-                            reply.writeString(_result4);
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result5 = getCaptionFilePathFromURI(_arg05);
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISubscriber {
+        private static class Proxy implements ISubscriber {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -35,7 +35,7 @@ public class BaseStreamCipher extends BaseWrapCipher implements PBE {
     private String pbeAlgorithm;
     private PBEParameterSpec pbeSpec;
 
-    public BaseStreamCipher(StreamCipher engine, int ivLength) {
+    protected BaseStreamCipher(StreamCipher engine, int ivLength) {
         this(engine, ivLength, -1, -1);
     }
 
@@ -43,7 +43,7 @@ public class BaseStreamCipher extends BaseWrapCipher implements PBE {
         this(engine, ivLength, keySizeInBits, -1);
     }
 
-    public BaseStreamCipher(StreamCipher engine, int ivLength, int keySizeInBits, int digest) {
+    protected BaseStreamCipher(StreamCipher engine, int ivLength, int keySizeInBits, int digest) {
         this.availableSpecs = new Class[]{IvParameterSpec.class, PBEParameterSpec.class};
         this.ivLength = 0;
         this.pbeSpec = null;
@@ -61,9 +61,8 @@ public class BaseStreamCipher extends BaseWrapCipher implements PBE {
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher, javax.crypto.CipherSpi
     protected byte[] engineGetIV() {
-        ParametersWithIV parametersWithIV = this.ivParam;
-        if (parametersWithIV != null) {
-            return parametersWithIV.getIV();
+        if (this.ivParam != null) {
+            return this.ivParam.getIV();
         }
         return null;
     }
@@ -140,9 +139,8 @@ public class BaseStreamCipher extends BaseWrapCipher implements PBE {
         }
         if (key instanceof PKCS12Key) {
             PKCS12Key k = (PKCS12Key) key;
-            PBEParameterSpec pBEParameterSpec = (PBEParameterSpec) params;
-            this.pbeSpec = pBEParameterSpec;
-            if ((k instanceof PKCS12KeyWithParameters) && pBEParameterSpec == null) {
+            this.pbeSpec = (PBEParameterSpec) params;
+            if ((k instanceof PKCS12KeyWithParameters) && this.pbeSpec == null) {
                 this.pbeSpec = new PBEParameterSpec(((PKCS12KeyWithParameters) k).getSalt(), ((PKCS12KeyWithParameters) k).getIterationCount());
             }
             param = PBE.Util.makePBEParameters(k.getEncoded(), 2, this.digest, this.keySizeInBits, this.ivLength * 8, this.pbeSpec, this.cipher.getAlgorithmName());

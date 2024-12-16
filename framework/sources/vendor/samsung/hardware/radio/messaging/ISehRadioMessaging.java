@@ -38,7 +38,6 @@ public interface ISehRadioMessaging extends IInterface {
 
     void writeSmsToSim(int i, SehSimMsgArgs sehSimMsgArgs) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioMessaging {
         @Override // vendor.samsung.hardware.radio.messaging.ISehRadioMessaging
         public void getCellBroadcastConfig(int serial) throws RemoteException {
@@ -96,7 +95,6 @@ public interface ISehRadioMessaging extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioMessaging {
         static final int TRANSACTION_getCellBroadcastConfig = 1;
         static final int TRANSACTION_getImsRegistrationState = 2;
@@ -138,85 +136,84 @@ public interface ISehRadioMessaging extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCellBroadcastConfig(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getImsRegistrationState(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getStoredMsgCountFromSim(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    readSmsFromSim(_arg04, _arg1);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    SehCdmaSmsMessage _arg12 = (SehCdmaSmsMessage) data.readTypedObject(SehCdmaSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCdmaSms(_arg05, _arg12);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    SehCdmaSmsMessage _arg13 = (SehCdmaSmsMessage) data.readTypedObject(SehCdmaSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCdmaSmsExpectMore(_arg06, _arg13);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    SehGsmSmsMessage _arg14 = (SehGsmSmsMessage) data.readTypedObject(SehGsmSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSMSExpectMore(_arg07, _arg14);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    SehGsmSmsMessage _arg15 = (SehGsmSmsMessage) data.readTypedObject(SehGsmSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSms(_arg08, _arg15);
+                    return true;
+                case 9:
+                    ISehRadioMessagingResponse _arg09 = ISehRadioMessagingResponse.Stub.asInterface(data.readStrongBinder());
+                    ISehRadioMessagingIndication _arg16 = ISehRadioMessagingIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg09, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    SehSimMsgArgs _arg17 = (SehSimMsgArgs) data.readTypedObject(SehSimMsgArgs.CREATOR);
+                    data.enforceNoDataAvail();
+                    writeSmsToSim(_arg010, _arg17);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCellBroadcastConfig(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getImsRegistrationState(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getStoredMsgCountFromSim(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            readSmsFromSim(_arg04, _arg1);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            SehCdmaSmsMessage _arg12 = (SehCdmaSmsMessage) data.readTypedObject(SehCdmaSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCdmaSms(_arg05, _arg12);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            SehCdmaSmsMessage _arg13 = (SehCdmaSmsMessage) data.readTypedObject(SehCdmaSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCdmaSmsExpectMore(_arg06, _arg13);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            SehGsmSmsMessage _arg14 = (SehGsmSmsMessage) data.readTypedObject(SehGsmSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSMSExpectMore(_arg07, _arg14);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            SehGsmSmsMessage _arg15 = (SehGsmSmsMessage) data.readTypedObject(SehGsmSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSms(_arg08, _arg15);
-                            return true;
-                        case 9:
-                            ISehRadioMessagingResponse _arg09 = ISehRadioMessagingResponse.Stub.asInterface(data.readStrongBinder());
-                            ISehRadioMessagingIndication _arg16 = ISehRadioMessagingIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg09, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            SehSimMsgArgs _arg17 = (SehSimMsgArgs) data.readTypedObject(SehSimMsgArgs.CREATOR);
-                            data.enforceNoDataAvail();
-                            writeSmsToSim(_arg010, _arg17);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISehRadioMessaging {
             private IBinder mRemote;
             private int mCachedVersion = -1;

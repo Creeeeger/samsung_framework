@@ -113,7 +113,6 @@ public interface IGnssGeofenceCallback extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class GeofenceTransition {
         public static final int ENTERED = 1;
         public static final int EXITED = 2;
@@ -154,7 +153,6 @@ public interface IGnssGeofenceCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GeofenceAvailability {
         public static final int AVAILABLE = 2;
         public static final int UNAVAILABLE = 1;
@@ -187,7 +185,6 @@ public interface IGnssGeofenceCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GeofenceStatus {
         public static final int ERROR_GENERIC = -149;
         public static final int ERROR_ID_EXISTS = -101;
@@ -249,7 +246,6 @@ public interface IGnssGeofenceCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssGeofenceCallback {
         private IHwBinder mRemote;
 
@@ -518,7 +514,6 @@ public interface IGnssGeofenceCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssGeofenceCallback {
         @Override // android.hardware.gnss.V1_0.IGnssGeofenceCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -541,7 +536,7 @@ public interface IGnssGeofenceCallback extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IGnssGeofenceCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-26, -35, 12, -124, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, -27, 35, -85, -100, -67, 20, -43, 106, -74, -16, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, 72, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEOUT, -118, -17, 59, -56, -89, 80, 5, 17, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, -45, 16, 117, -10, -57}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-26, -35, 12, -124, 22, -27, 35, -85, -100, -67, 20, -43, 106, -74, -16, 22, 72, 26, -118, -17, 59, -56, -89, 80, 5, 17, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, -45, 16, 117, -10, -57}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IGnssGeofenceCallback, android.internal.hidl.base.V1_0.IBase

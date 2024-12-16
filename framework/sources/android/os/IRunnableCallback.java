@@ -6,7 +6,6 @@ public interface IRunnableCallback extends IInterface {
 
     Bundle run(Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRunnableCallback {
         @Override // android.os.IRunnableCallback
         public Bundle run(Bundle arg1) throws RemoteException {
@@ -19,7 +18,6 @@ public interface IRunnableCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRunnableCallback {
         static final int TRANSACTION_run = 1;
 
@@ -62,26 +60,23 @@ public interface IRunnableCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRunnableCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRunnableCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRunnableCallback.DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result = run(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result = run(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IRunnableCallback {
             private IBinder mRemote;
 

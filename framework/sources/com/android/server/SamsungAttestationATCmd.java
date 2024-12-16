@@ -1,83 +1,54 @@
 package com.android.server;
 
 import android.content.Context;
-import android.util.Log;
 
 /* loaded from: classes5.dex */
 public class SamsungAttestationATCmd extends DevRootKeyATCmd implements IWorkOnAt {
-    protected static final String TAG = "DEVROOT#ATCmd(2.0.0)";
-    protected static final String VERSION = "2.0.0";
+    private static final String TAG = "DEVROOT#ATCmd(2.0.0)";
+    private static final String VERSION = "2.0.0";
 
     public SamsungAttestationATCmd(Context context) {
         super(context);
-        if (isSupportnewSAKatcmd) {
-            Log.i(TAG, "SkeymintATCmd start");
-        } else {
-            Log.i(TAG, "SkeymintATCmd is not start");
-        }
     }
 
+    /*  JADX ERROR: Types fix failed
+        java.lang.NullPointerException: Cannot invoke "jadx.core.dex.instructions.args.InsnArg.getType()" because "changeArg" is null
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.moveListener(TypeUpdate.java:439)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.runListeners(TypeUpdate.java:232)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.requestUpdate(TypeUpdate.java:212)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeForSsaVar(TypeUpdate.java:183)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeChecked(TypeUpdate.java:112)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:83)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:56)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.tryPossibleTypes(FixTypesVisitor.java:183)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.deduceType(FixTypesVisitor.java:242)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.tryDeduceTypes(FixTypesVisitor.java:221)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.visit(FixTypesVisitor.java:91)
+        */
+    /* JADX WARN: Failed to apply debug info
+    java.lang.NullPointerException: Cannot invoke "jadx.core.dex.instructions.args.InsnArg.getType()" because "changeArg" is null
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.moveListener(TypeUpdate.java:439)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.runListeners(TypeUpdate.java:232)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.requestUpdate(TypeUpdate.java:212)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeForSsaVar(TypeUpdate.java:183)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeChecked(TypeUpdate.java:112)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:83)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.applyWithWiderIgnoreUnknown(TypeUpdate.java:74)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:137)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:133)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.searchAndApplyVarDebugInfo(DebugInfoApplyVisitor.java:75)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.lambda$applyDebugInfo$0(DebugInfoApplyVisitor.java:68)
+    	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:68)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.visit(DebugInfoApplyVisitor.java:55)
+     */
+    /* JADX WARN: Not initialized variable reg: 16, insn: 0x03dd: MOVE (r3 I:??[int, float, boolean, short, byte, char, OBJECT, ARRAY]) = (r16 I:??[int, float, boolean, short, byte, char, OBJECT, ARRAY] A[D('ret' int)]), block:B:123:0x03db */
     @Override // com.android.server.DevRootKeyATCmd, com.android.server.IWorkOnAt
-    public String getCmd() {
-        return "DEVROOTK";
-    }
-
-    @Override // com.android.server.DevRootKeyATCmd, com.android.server.IWorkOnAt
-    public String processCmd(String cmd) {
-        if (!isSupportnewSAKatcmd) {
-            Log.i(TAG, "DevRootKeyATCmd.processCmd is run");
-            return super.processCmd(cmd);
-        }
-        String[] params = parsingParam(cmd);
-        if (params != null && params.length == 3) {
-            try {
-                Log.i(TAG, "ProcessCmd [" + cmd + "] start");
-                String result = params[0] + ",";
-                if ((Integer.parseInt(params[0]) == 0 || Integer.parseInt(params[0]) == 1) && !params[2].equals("0")) {
-                    return result + SecureKeyConst.AT_RESPONSE_INVALID_PARAM;
-                }
-                switch (Integer.parseInt(params[0] + params[1])) {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 20:
-                    case 21:
-                    case 22:
-                    case 23:
-                        Log.i(TAG, "New DRK AT cmd");
-                        return super.processCmd(cmd);
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 13:
-                    case 24:
-                    case 25:
-                    case 26:
-                    case 27:
-                        Log.i(TAG, "New SamsungAttestation AT cmd");
-                        return super.processCmd(cmd);
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 14:
-                    case 15:
-                    case 16:
-                    case 17:
-                    case 18:
-                    case 19:
-                    default:
-                        Log.i(TAG, "ProcessCmd [" + cmd + "] end");
-                        return result;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "NG_FAIL(EXCEPTION_OCCURS) " + e.getMessage();
-            }
-        }
-        return SecureKeyConst.AT_RESPONSE_INVALID_PARAM;
+    public java.lang.String processCmd(java.lang.String r19) {
+        /*
+            Method dump skipped, instructions count: 1140
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.SamsungAttestationATCmd.processCmd(java.lang.String):java.lang.String");
     }
 }

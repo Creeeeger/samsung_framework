@@ -13,7 +13,6 @@ public interface ISnapshotRuntimeProfileCallback extends IInterface {
 
     void onSuccess(ParcelFileDescriptor parcelFileDescriptor) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISnapshotRuntimeProfileCallback {
         @Override // android.content.pm.dex.ISnapshotRuntimeProfileCallback
         public void onSuccess(ParcelFileDescriptor profileReadFd) throws RemoteException {
@@ -29,7 +28,6 @@ public interface ISnapshotRuntimeProfileCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISnapshotRuntimeProfileCallback {
         public static final String DESCRIPTOR = "android.content.pm.dex.ISnapshotRuntimeProfileCallback";
         static final int TRANSACTION_onError = 2;
@@ -76,30 +74,27 @@ public interface ISnapshotRuntimeProfileCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISnapshotRuntimeProfileCallback {
+        private static class Proxy implements ISnapshotRuntimeProfileCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

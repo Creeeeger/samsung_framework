@@ -4,17 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class VoiceSpecificRegistrationInfo implements Parcelable {
     public static final Parcelable.Creator<VoiceSpecificRegistrationInfo> CREATOR = new Parcelable.Creator<VoiceSpecificRegistrationInfo>() { // from class: android.telephony.VoiceSpecificRegistrationInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VoiceSpecificRegistrationInfo createFromParcel(Parcel source) {
             return new VoiceSpecificRegistrationInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VoiceSpecificRegistrationInfo[] newArray(int size) {
             return new VoiceSpecificRegistrationInfo[size];
@@ -25,18 +24,14 @@ public class VoiceSpecificRegistrationInfo implements Parcelable {
     public final int roamingIndicator;
     public final int systemIsInPrl;
 
-    /* synthetic */ VoiceSpecificRegistrationInfo(Parcel parcel, VoiceSpecificRegistrationInfoIA voiceSpecificRegistrationInfoIA) {
-        this(parcel);
-    }
-
-    public VoiceSpecificRegistrationInfo(boolean cssSupported, int roamingIndicator, int systemIsInPrl, int defaultRoamingIndicator) {
+    VoiceSpecificRegistrationInfo(boolean cssSupported, int roamingIndicator, int systemIsInPrl, int defaultRoamingIndicator) {
         this.cssSupported = cssSupported;
         this.roamingIndicator = roamingIndicator;
         this.systemIsInPrl = systemIsInPrl;
         this.defaultRoamingIndicator = defaultRoamingIndicator;
     }
 
-    public VoiceSpecificRegistrationInfo(VoiceSpecificRegistrationInfo vsri) {
+    VoiceSpecificRegistrationInfo(VoiceSpecificRegistrationInfo vsri) {
         this.cssSupported = vsri.cssSupported;
         this.roamingIndicator = vsri.roamingIndicator;
         this.systemIsInPrl = vsri.systemIsInPrl;
@@ -83,22 +78,5 @@ public class VoiceSpecificRegistrationInfo implements Parcelable {
             return true;
         }
         return false;
-    }
-
-    /* renamed from: android.telephony.VoiceSpecificRegistrationInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VoiceSpecificRegistrationInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VoiceSpecificRegistrationInfo createFromParcel(Parcel source) {
-            return new VoiceSpecificRegistrationInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VoiceSpecificRegistrationInfo[] newArray(int size) {
-            return new VoiceSpecificRegistrationInfo[size];
-        }
     }
 }

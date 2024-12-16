@@ -10,13 +10,12 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemMediaPostProcessor {
     private long mNativeContext;
     private final Lock mNativeContextLock = new ReentrantLock();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ColorFormat {
         public static final int NV12 = 2;
         public static final int NV12_UBWC = 5;
@@ -26,20 +25,17 @@ public final class SemMediaPostProcessor {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface InputFlag {
         public static final int BY_PASS = 8;
         public static final int END_OF_STREAM = 2;
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface OutputFlag {
         public static final int END_OF_STREAM = 2;
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ParameterKey {
         public static final int FAST_START = 2;
         public static final int FILTER_LEVEL = 5;
@@ -47,14 +43,12 @@ public final class SemMediaPostProcessor {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ParameterValue {
         public static final int OFF = 0;
         public static final int ON = 1;
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface Type {
         public static final int DEFLICKER = 2;
         public static final int FILTER = 6;
@@ -99,7 +93,6 @@ public final class SemMediaPostProcessor {
 
     private final native void native_signalEndOfInputStream();
 
-    /* loaded from: classes5.dex */
     public static final class BufferInfo {
         public int flags;
         public int index;
@@ -112,12 +105,10 @@ public final class SemMediaPostProcessor {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class ProcessingFormat {
         private Map<String, Object> format;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes5.dex */
         public @interface Key {
             public static final String BUFFER_FORMAT = "bufferFormat";
             public static final String BUFFER_SIZE = "bufferSize";
@@ -138,14 +129,9 @@ public final class SemMediaPostProcessor {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes5.dex */
         public @interface Type {
             public static final int INTEGER = 0;
             public static final int STRING = 1;
-        }
-
-        /* synthetic */ ProcessingFormat(Map map, ProcessingFormatIA processingFormatIA) {
-            this(map);
         }
 
         public ProcessingFormat() {

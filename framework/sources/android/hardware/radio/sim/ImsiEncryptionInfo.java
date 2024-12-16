@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ImsiEncryptionInfo implements Parcelable {
     public static final Parcelable.Creator<ImsiEncryptionInfo> CREATOR = new Parcelable.Creator<ImsiEncryptionInfo>() { // from class: android.hardware.radio.sim.ImsiEncryptionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsiEncryptionInfo createFromParcel(Parcel _aidl_source) {
             ImsiEncryptionInfo _aidl_out = new ImsiEncryptionInfo();
@@ -20,6 +18,7 @@ public class ImsiEncryptionInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsiEncryptionInfo[] newArray(int _aidl_size) {
             return new ImsiEncryptionInfo[_aidl_size];
@@ -33,25 +32,6 @@ public class ImsiEncryptionInfo implements Parcelable {
     public String mnc;
     public long expirationTime = 0;
     public byte keyType = 0;
-
-    /* renamed from: android.hardware.radio.sim.ImsiEncryptionInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsiEncryptionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsiEncryptionInfo createFromParcel(Parcel _aidl_source) {
-            ImsiEncryptionInfo _aidl_out = new ImsiEncryptionInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsiEncryptionInfo[] newArray(int _aidl_size) {
-            return new ImsiEncryptionInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -150,7 +130,7 @@ public class ImsiEncryptionInfo implements Parcelable {
         _aidl_sj.add("keyIdentifier: " + Objects.toString(this.keyIdentifier));
         _aidl_sj.add("expirationTime: " + this.expirationTime);
         _aidl_sj.add("keyType: " + ((int) this.keyType));
-        return "android.hardware.radio.sim.ImsiEncryptionInfo" + _aidl_sj.toString();
+        return "ImsiEncryptionInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

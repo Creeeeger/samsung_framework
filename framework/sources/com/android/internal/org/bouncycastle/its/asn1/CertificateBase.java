@@ -11,7 +11,7 @@ public class CertificateBase extends ASN1Object {
     private CertificateType type;
     private byte[] version;
 
-    public CertificateBase(ASN1Sequence seq) {
+    protected CertificateBase(ASN1Sequence seq) {
     }
 
     public static CertificateBase getInstance(Object o) {

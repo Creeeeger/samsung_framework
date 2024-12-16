@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISViewCoverBaseService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.cover.ISViewCoverBaseService";
 
@@ -22,7 +22,6 @@ public interface ISViewCoverBaseService extends IInterface {
 
     void updateCoverState(CoverState coverState) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISViewCoverBaseService {
         @Override // com.samsung.android.cover.ISViewCoverBaseService
         public void onSystemReady() throws RemoteException {
@@ -56,7 +55,6 @@ public interface ISViewCoverBaseService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISViewCoverBaseService {
         static final int TRANSACTION_isCoverViewShowing = 5;
         static final int TRANSACTION_onCoverAppCovered = 6;
@@ -114,45 +112,42 @@ public interface ISViewCoverBaseService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISViewCoverBaseService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISViewCoverBaseService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISViewCoverBaseService.DESCRIPTOR);
+                case 1:
+                    onSystemReady();
+                    return true;
+                case 2:
+                    onSViewCoverShow();
+                    return true;
+                case 3:
+                    onSViewCoverHide();
+                    return true;
+                case 4:
+                    CoverState _arg0 = (CoverState) data.readTypedObject(CoverState.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCoverState(_arg0);
+                    return true;
+                case 5:
+                    boolean _result = isCoverViewShowing();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 6:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result2 = onCoverAppCovered(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onSystemReady();
-                            return true;
-                        case 2:
-                            onSViewCoverShow();
-                            return true;
-                        case 3:
-                            onSViewCoverHide();
-                            return true;
-                        case 4:
-                            CoverState _arg0 = (CoverState) data.readTypedObject(CoverState.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCoverState(_arg0);
-                            return true;
-                        case 5:
-                            boolean _result = isCoverViewShowing();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 6:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result2 = onCoverAppCovered(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISViewCoverBaseService {
             private IBinder mRemote;
 

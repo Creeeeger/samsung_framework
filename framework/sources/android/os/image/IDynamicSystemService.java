@@ -24,6 +24,8 @@ public interface IDynamicSystemService extends IInterface {
 
     boolean finishInstallation() throws RemoteException;
 
+    String getActiveDsuSlot() throws RemoteException;
+
     boolean getAvbPublicKey(AvbPublicKey avbPublicKey) throws RemoteException;
 
     GsiProgress getInstallationProgress() throws RemoteException;
@@ -46,7 +48,6 @@ public interface IDynamicSystemService extends IInterface {
 
     long suggestScratchSize() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDynamicSystemService {
         @Override // android.os.image.IDynamicSystemService
         public boolean startInstallation(String dsuSlot) throws RemoteException {
@@ -123,18 +124,23 @@ public interface IDynamicSystemService extends IInterface {
             return 0L;
         }
 
+        @Override // android.os.image.IDynamicSystemService
+        public String getActiveDsuSlot() throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDynamicSystemService {
         static final int TRANSACTION_abort = 6;
         static final int TRANSACTION_closePartition = 3;
         static final int TRANSACTION_createPartition = 2;
         static final int TRANSACTION_finishInstallation = 4;
+        static final int TRANSACTION_getActiveDsuSlot = 16;
         static final int TRANSACTION_getAvbPublicKey = 14;
         static final int TRANSACTION_getInstallationProgress = 5;
         static final int TRANSACTION_isEnabled = 9;
@@ -209,6 +215,8 @@ public interface IDynamicSystemService extends IInterface {
                     return "getAvbPublicKey";
                 case 15:
                     return "suggestScratchSize";
+                case 16:
+                    return "getActiveDsuSlot";
                 default:
                     return null;
             }
@@ -224,113 +232,114 @@ public interface IDynamicSystemService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDynamicSystemService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDynamicSystemService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDynamicSystemService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = startInstallation(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    long _arg1 = data.readLong();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result2 = createPartition(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    boolean _result3 = closePartition();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    boolean _result4 = finishInstallation();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    GsiProgress _result5 = getInstallationProgress();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 6:
+                    boolean _result6 = abort();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    boolean _result7 = isInUse();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 8:
+                    boolean _result8 = isInstalled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 9:
+                    boolean _result9 = isEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 10:
+                    boolean _result10 = remove();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 11:
+                    boolean _arg03 = data.readBoolean();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = setEnable(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 12:
+                    ParcelFileDescriptor _arg04 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg13 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = setAshmem(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 13:
+                    long _arg05 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = submitFromAshmem(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 14:
+                    AvbPublicKey _arg06 = new AvbPublicKey();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = getAvbPublicKey(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    reply.writeTypedObject(_arg06, 1);
+                    return true;
+                case 15:
+                    long _result15 = suggestScratchSize();
+                    reply.writeNoException();
+                    reply.writeLong(_result15);
+                    return true;
+                case 16:
+                    String _result16 = getActiveDsuSlot();
+                    reply.writeNoException();
+                    reply.writeString(_result16);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = startInstallation(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            long _arg1 = data.readLong();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result2 = createPartition(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            boolean _result3 = closePartition();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            boolean _result4 = finishInstallation();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            GsiProgress _result5 = getInstallationProgress();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 6:
-                            boolean _result6 = abort();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            boolean _result7 = isInUse();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 8:
-                            boolean _result8 = isInstalled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 9:
-                            boolean _result9 = isEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 10:
-                            boolean _result10 = remove();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 11:
-                            boolean _arg03 = data.readBoolean();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = setEnable(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 12:
-                            ParcelFileDescriptor _arg04 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg13 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = setAshmem(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 13:
-                            long _arg05 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = submitFromAshmem(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 14:
-                            AvbPublicKey _arg06 = new AvbPublicKey();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = getAvbPublicKey(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            reply.writeTypedObject(_arg06, 1);
-                            return true;
-                        case 15:
-                            long _result15 = suggestScratchSize();
-                            reply.writeNoException();
-                            reply.writeLong(_result15);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDynamicSystemService {
+        private static class Proxy implements IDynamicSystemService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -597,6 +606,22 @@ public interface IDynamicSystemService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.os.image.IDynamicSystemService
+            public String getActiveDsuSlot() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IDynamicSystemService.DESCRIPTOR);
+                    this.mRemote.transact(16, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         protected void startInstallation_enforcePermission() throws SecurityException {
@@ -651,9 +676,13 @@ public interface IDynamicSystemService extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_DYNAMIC_SYSTEM, getCallingPid(), getCallingUid());
         }
 
+        protected void getActiveDsuSlot_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_DYNAMIC_SYSTEM, getCallingPid(), getCallingUid());
+        }
+
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 14;
+            return 15;
         }
     }
 }

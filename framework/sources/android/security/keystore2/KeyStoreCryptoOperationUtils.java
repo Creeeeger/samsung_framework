@@ -19,9 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import libcore.util.EmptyArray;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-public abstract class KeyStoreCryptoOperationUtils {
+abstract class KeyStoreCryptoOperationUtils {
     private static volatile SecureRandom sRng;
 
     private KeyStoreCryptoOperationUtils() {
@@ -79,9 +78,6 @@ public abstract class KeyStoreCryptoOperationUtils {
     }
 
     public static GeneralSecurityException getExceptionForCipherInit(AndroidKeyStoreKey key, KeyStoreException e) {
-        if (e.getErrorCode() == 1) {
-            return null;
-        }
         switch (e.getErrorCode()) {
             case -55:
                 return new InvalidAlgorithmParameterException("Caller-provided IV not permitted");
@@ -92,7 +88,7 @@ public abstract class KeyStoreCryptoOperationUtils {
         }
     }
 
-    public static byte[] getRandomBytesToMixIntoKeystoreRng(SecureRandom rng, int sizeBytes) {
+    static byte[] getRandomBytesToMixIntoKeystoreRng(SecureRandom rng, int sizeBytes) {
         if (sizeBytes <= 0) {
             return EmptyArray.BYTE;
         }
@@ -111,7 +107,7 @@ public abstract class KeyStoreCryptoOperationUtils {
         return sRng;
     }
 
-    public static void abortOperation(KeyStoreOperation operation) {
+    static void abortOperation(KeyStoreOperation operation) {
         if (operation != null) {
             try {
                 operation.abort();
@@ -123,7 +119,7 @@ public abstract class KeyStoreCryptoOperationUtils {
         }
     }
 
-    public static long getOrMakeOperationChallenge(KeyStoreOperation operation, AndroidKeyStoreKey key) throws KeyPermanentlyInvalidatedException {
+    static long getOrMakeOperationChallenge(KeyStoreOperation operation, AndroidKeyStoreKey key) throws KeyPermanentlyInvalidatedException {
         if (operation.getChallenge() != null) {
             if (!canUserAuthorizationSucceed(key)) {
                 throw new KeyPermanentlyInvalidatedException();

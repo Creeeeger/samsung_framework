@@ -9,16 +9,15 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ActivityPresentationInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.IPackageDataObserver;
 import android.content.pm.UserInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.LocaleList;
 import android.os.TransactionTooLargeException;
 import android.os.WorkSource;
 import android.util.ArraySet;
 import android.util.Pair;
-import android.util.StatsEvent;
 import com.android.internal.os.TimeoutRecord;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -39,12 +38,13 @@ public abstract class ActivityManagerInternal {
     public static final int OOM_ADJ_REASON_ACTIVITY = 1;
     public static final int OOM_ADJ_REASON_ALLOWLIST = 10;
     public static final int OOM_ADJ_REASON_BACKUP = 15;
-    public static final int OOM_ADJ_REASON_BINDER_BUFFER_FULL = 25;
+    public static final int OOM_ADJ_REASON_BINDER_BUFFER_FULL = 26;
     public static final int OOM_ADJ_REASON_BIND_SERVICE = 4;
     public static final int OOM_ADJ_REASON_COMPONENT_DISABLED = 22;
     public static final int OOM_ADJ_REASON_EXECUTING_SERVICE = 20;
-    public static final int OOM_ADJ_REASON_FGSFILTER = 24;
+    public static final int OOM_ADJ_REASON_FGSFILTER = 25;
     public static final int OOM_ADJ_REASON_FINISH_RECEIVER = 2;
+    public static final int OOM_ADJ_REASON_FOLLOW_UP = 23;
     public static final int OOM_ADJ_REASON_GET_PROVIDER = 7;
     public static final int OOM_ADJ_REASON_NONE = 0;
     public static final int OOM_ADJ_REASON_PROCESS_BEGIN = 11;
@@ -54,7 +54,7 @@ public abstract class ActivityManagerInternal {
     public static final int OOM_ADJ_REASON_RESTRICTION_CHANGE = 21;
     public static final int OOM_ADJ_REASON_SHELL = 16;
     public static final int OOM_ADJ_REASON_SHORT_FGS_TIMEOUT = 13;
-    public static final int OOM_ADJ_REASON_SLOWDOWN = 23;
+    public static final int OOM_ADJ_REASON_SLOWDOWN = 24;
     public static final int OOM_ADJ_REASON_START_RECEIVER = 3;
     public static final int OOM_ADJ_REASON_START_SERVICE = 6;
     public static final int OOM_ADJ_REASON_STOP_SERVICE = 19;
@@ -63,17 +63,14 @@ public abstract class ActivityManagerInternal {
     public static final int OOM_ADJ_REASON_UI_VISIBILITY = 9;
     public static final int OOM_ADJ_REASON_UNBIND_SERVICE = 5;
 
-    /* loaded from: classes.dex */
     public interface BindServiceEventListener {
         void onBindingService(String str, int i);
     }
 
-    /* loaded from: classes.dex */
     public interface BroadcastEventListener {
         void onSendingBroadcast(String str, int i);
     }
 
-    /* loaded from: classes.dex */
     public interface ForegroundServiceStateListener {
         void onForegroundServiceNotificationUpdated(String str, int i, int i2, boolean z);
 
@@ -81,23 +78,19 @@ public abstract class ActivityManagerInternal {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MediaProjectionTokenEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface OomAdjReason {
     }
 
-    /* loaded from: classes.dex */
     public enum ServiceNotificationPolicy {
         NOT_FOREGROUND_SERVICE,
         SHOW_IMMEDIATELY,
         UPDATE_ONLY
     }
 
-    /* loaded from: classes.dex */
     public interface VoiceInteractionManagerProvider {
         void notifyActivityDestroyed(IBinder iBinder);
     }
@@ -112,7 +105,7 @@ public abstract class ActivityManagerInternal {
 
     public abstract void addPendingTopUid(int i, int i2, IApplicationThread iApplicationThread);
 
-    public abstract void addToLocaleChangedHistoryLocked(LocaleList localeList, LocaleList localeList2, boolean z);
+    public abstract void addStartInfoTimestamp(int i, long j, int i2, int i3, int i4);
 
     public abstract void appNotResponding(String str, int i, TimeoutRecord timeoutRecord);
 
@@ -130,7 +123,11 @@ public abstract class ActivityManagerInternal {
 
     public abstract int broadcastIntentWithCallback(Intent intent, IIntentReceiver iIntentReceiver, String[] strArr, int i, int[] iArr, BiFunction<Integer, Bundle, Bundle> biFunction, Bundle bundle);
 
+    public abstract boolean canAllowWhileInUsePermissionInFgs(int i, int i2, String str);
+
     public abstract boolean canScheduleUserInitiatedJobs(int i, int i2, String str);
+
+    public abstract boolean canStartForegroundService(int i, int i2, String str);
 
     public abstract boolean canStartMoreUsers();
 
@@ -143,6 +140,8 @@ public abstract class ActivityManagerInternal {
     public abstract int checkContentProviderUriPermission(Uri uri, int i, int i2, int i3);
 
     public abstract void cleanUpServices(int i, ComponentName componentName, Intent intent);
+
+    public abstract boolean clearApplicationUserData(String str, boolean z, boolean z2, IPackageDataObserver iPackageDataObserver, int i);
 
     public abstract void clearPendingBackup(int i);
 
@@ -174,7 +173,7 @@ public abstract class ActivityManagerInternal {
 
     public abstract long getBootTimeTempAllowListDuration();
 
-    public abstract StatsEvent getCachedAppsHighWatermarkStats(int i, boolean z);
+    public abstract Object getCachedAppsHighWatermarkStats(int i, boolean z);
 
     public abstract ArraySet<String> getClientPackages(String str);
 
@@ -213,8 +212,6 @@ public abstract class ActivityManagerInternal {
     public abstract Map<Integer, String> getProcessesWithPendingBindMounts(int i);
 
     public abstract int getPushMessagingOverQuotaBehavior();
-
-    public abstract IUnsafeIntentStrictModeCallback getRegisteredStrictModeCallback(int i);
 
     public abstract int getRestrictionLevel(int i);
 
@@ -274,8 +271,6 @@ public abstract class ActivityManagerInternal {
 
     public abstract boolean isDeviceOwner(int i);
 
-    public abstract boolean isModernQueueEnabled();
-
     public abstract boolean isPendingTopUid(int i);
 
     public abstract boolean isProfileOwner(int i);
@@ -296,9 +291,9 @@ public abstract class ActivityManagerInternal {
 
     public abstract void killAllBackgroundProcessesExcept(int i, int i2, Bundle bundle);
 
-    public abstract void killForegroundAppsForUser(int i);
+    public abstract void killApplicationSync(String str, int i, int i2, String str2, int i3);
 
-    public abstract void killPackageProcesses(String str, int i, int i2, String str2, Runnable runnable, Runnable runnable2);
+    public abstract void killForegroundAppsForUser(int i);
 
     public abstract void killProcess(String str, int i, String str2);
 
@@ -350,8 +345,6 @@ public abstract class ActivityManagerInternal {
 
     public abstract void rescheduleAnrDialog(Object obj);
 
-    public abstract void resetUpdateConfigurationCallerLocked();
-
     public abstract void restart();
 
     public abstract void scheduleAppGcs();
@@ -368,6 +361,8 @@ public abstract class ActivityManagerInternal {
 
     public abstract void setCompanionAppUids(int i, Set<Integer> set);
 
+    public abstract void setCurrentDexMode(int i);
+
     public abstract void setDebugFlagsForStartingActivity(ActivityInfo activityInfo, int i, ProfilerInfo profilerInfo, Object obj);
 
     public abstract void setDeviceIdleAllowlist(int[] iArr, int[] iArr2);
@@ -375,8 +370,6 @@ public abstract class ActivityManagerInternal {
     public abstract void setDeviceOwnerUid(int i);
 
     public abstract void setHasOverlayUi(int i, boolean z);
-
-    public abstract void setHasTopUiInternal(int i, boolean z);
 
     public abstract void setKeyguardPkgInfo(String str, int i);
 
@@ -394,11 +387,11 @@ public abstract class ActivityManagerInternal {
 
     public abstract void setSwitchingToSystemUserMessage(String str);
 
-    public abstract void setUpdateConfigurationCallerLocked(int i);
-
     public abstract void setVoiceInteractionManagerProvider(VoiceInteractionManagerProvider voiceInteractionManagerProvider);
 
     public abstract boolean shouldConfirmCredentials(int i);
+
+    public abstract boolean shouldDelayHomeLaunch(int i);
 
     public abstract boolean startForegroundServiceDelegate(ForegroundServiceDelegationOptions foregroundServiceDelegationOptions, ServiceConnection serviceConnection);
 
@@ -406,13 +399,13 @@ public abstract class ActivityManagerInternal {
 
     public abstract void startProcess(String str, ApplicationInfo applicationInfo, boolean z, boolean z2, String str2, ComponentName componentName);
 
-    public abstract void startProcess(String str, ApplicationInfo applicationInfo, boolean z, boolean z2, String str2, ComponentName componentName, int i, int i2);
-
     public abstract void startProcess(String str, ApplicationInfo applicationInfo, boolean z, boolean z2, String str2, ComponentName componentName, boolean z3, int i);
 
     public abstract boolean startProfileEvenWhenDisabled(int i);
 
     public abstract ComponentName startServiceInPackage(IApplicationThread iApplicationThread, int i, Intent intent, String str, boolean z, String str2, String str3, int i2, BackgroundStartPrivileges backgroundStartPrivileges) throws TransactionTooLargeException;
+
+    public abstract boolean startUserInBackground(int i);
 
     public abstract void stopAppForUser(String str, int i);
 
@@ -424,13 +417,13 @@ public abstract class ActivityManagerInternal {
 
     public abstract void tempAllowlistForPendingIntent(int i, int i2, int i3, long j, int i4, int i5, String str);
 
+    public abstract void triggerUnsafeIntentStrictMode(int i, int i2, Intent intent);
+
     public abstract void trimApplications();
 
     public abstract void unregisterAnrController(AnrController anrController);
 
     public abstract void unregisterProcessObserver(IProcessObserver iProcessObserver);
-
-    public abstract void unregisterStrictModeCallback(int i);
 
     public abstract void updateActivityUsageStats(ComponentName componentName, int i, int i2, IBinder iBinder, ComponentName componentName2, ActivityId activityId);
 
@@ -450,9 +443,6 @@ public abstract class ActivityManagerInternal {
 
     public abstract void updateOomLevelsForDisplay(int i);
 
-    public abstract void updateTransitionPlayerPid(int i);
-
-    /* loaded from: classes.dex */
     public interface AppBackgroundRestrictionListener {
         default void onRestrictionLevelChanged(int uid, String packageName, int newLevel) {
         }

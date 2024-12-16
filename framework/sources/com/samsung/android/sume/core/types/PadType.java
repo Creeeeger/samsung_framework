@@ -1,6 +1,6 @@
 package com.samsung.android.sume.core.types;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public enum PadType implements NumericEnum {
     NONE(0),
     OVERLAP(1);

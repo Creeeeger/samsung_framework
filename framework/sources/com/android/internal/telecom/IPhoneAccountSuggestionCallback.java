@@ -14,7 +14,6 @@ public interface IPhoneAccountSuggestionCallback extends IInterface {
 
     void suggestPhoneAccounts(String str, List<PhoneAccountSuggestion> list) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IPhoneAccountSuggestionCallback {
         @Override // com.android.internal.telecom.IPhoneAccountSuggestionCallback
         public void suggestPhoneAccounts(String number, List<PhoneAccountSuggestion> suggestions) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IPhoneAccountSuggestionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IPhoneAccountSuggestionCallback {
         static final int TRANSACTION_suggestPhoneAccounts = 1;
 
@@ -69,27 +67,23 @@ public interface IPhoneAccountSuggestionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPhoneAccountSuggestionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPhoneAccountSuggestionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPhoneAccountSuggestionCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    List<PhoneAccountSuggestion> _arg1 = data.createTypedArrayList(PhoneAccountSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    suggestPhoneAccounts(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            List<PhoneAccountSuggestion> _arg1 = data.createTypedArrayList(PhoneAccountSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            suggestPhoneAccounts(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IPhoneAccountSuggestionCallback {
+        private static class Proxy implements IPhoneAccountSuggestionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

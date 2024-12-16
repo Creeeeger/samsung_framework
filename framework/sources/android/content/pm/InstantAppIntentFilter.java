@@ -11,37 +11,32 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class InstantAppIntentFilter implements Parcelable {
     public static final Parcelable.Creator<InstantAppIntentFilter> CREATOR = new Parcelable.Creator<InstantAppIntentFilter>() { // from class: android.content.pm.InstantAppIntentFilter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppIntentFilter createFromParcel(Parcel in) {
             return new InstantAppIntentFilter(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppIntentFilter[] newArray(int size) {
             return new InstantAppIntentFilter[size];
         }
     };
-    private final List<IntentFilter> mFilters;
+    private final List<IntentFilter> mFilters = new ArrayList();
     private final String mSplitName;
 
     public InstantAppIntentFilter(String splitName, List<IntentFilter> filters) {
-        ArrayList arrayList = new ArrayList();
-        this.mFilters = arrayList;
         if (filters == null || filters.size() == 0) {
             throw new IllegalArgumentException();
         }
         this.mSplitName = splitName;
-        arrayList.addAll(filters);
+        this.mFilters.addAll(filters);
     }
 
     InstantAppIntentFilter(Parcel in) {
-        ArrayList arrayList = new ArrayList();
-        this.mFilters = arrayList;
         this.mSplitName = in.readString();
-        in.readList(arrayList, getClass().getClassLoader(), IntentFilter.class);
+        in.readList(this.mFilters, getClass().getClassLoader(), IntentFilter.class);
     }
 
     public String getSplitName() {
@@ -61,22 +56,5 @@ public final class InstantAppIntentFilter implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(this.mSplitName);
         out.writeList(this.mFilters);
-    }
-
-    /* renamed from: android.content.pm.InstantAppIntentFilter$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InstantAppIntentFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstantAppIntentFilter createFromParcel(Parcel in) {
-            return new InstantAppIntentFilter(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstantAppIntentFilter[] newArray(int size) {
-            return new InstantAppIntentFilter[size];
-        }
     }
 }

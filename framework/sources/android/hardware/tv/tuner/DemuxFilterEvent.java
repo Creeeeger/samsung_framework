@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxFilterEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterEvent> CREATOR = new Parcelable.Creator<DemuxFilterEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterEvent createFromParcel(Parcel _aidl_source) {
             return new DemuxFilterEvent(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterEvent[] newArray(int _aidl_size) {
             return new DemuxFilterEvent[_aidl_size];
@@ -33,7 +32,6 @@ public final class DemuxFilterEvent implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int download = 5;
         public static final int ipPayload = 6;
@@ -45,10 +43,6 @@ public final class DemuxFilterEvent implements Parcelable {
         public static final int startId = 9;
         public static final int temi = 7;
         public static final int tsRecord = 3;
-    }
-
-    /* synthetic */ DemuxFilterEvent(Parcel parcel, DemuxFilterEventIA demuxFilterEventIA) {
-        this(parcel);
     }
 
     public DemuxFilterEvent() {
@@ -204,59 +198,40 @@ public final class DemuxFilterEvent implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.DemuxFilterEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterEvent createFromParcel(Parcel _aidl_source) {
-            return new DemuxFilterEvent(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterEvent[] newArray(int _aidl_size) {
-            return new DemuxFilterEvent[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getSection(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getMedia(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getPes(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeTypedObject(getTsRecord(), _aidl_flag);
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeTypedObject(getMmtpRecord(), _aidl_flag);
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeTypedObject(getDownload(), _aidl_flag);
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeTypedObject(getIpPayload(), _aidl_flag);
-                return;
+                break;
             case 7:
                 _aidl_parcel.writeTypedObject(getTemi(), _aidl_flag);
-                return;
+                break;
             case 8:
                 _aidl_parcel.writeTypedObject(getMonitorEvent(), _aidl_flag);
-                return;
+                break;
             case 9:
                 _aidl_parcel.writeInt(getStartId());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

@@ -8,7 +8,7 @@ public class ReadOrigInd extends GenericPdu {
         setMessageType(136);
     }
 
-    public ReadOrigInd(PduHeaders headers) {
+    ReadOrigInd(PduHeaders headers) {
         super(headers);
     }
 

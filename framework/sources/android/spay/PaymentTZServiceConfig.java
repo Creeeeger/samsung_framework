@@ -19,25 +19,19 @@ public class PaymentTZServiceConfig implements Parcelable {
     public Map<Integer, TAConfig> mTAConfigs;
     private static final boolean bQC = Build.BOARD.matches("(?i)(msm[a-z0-9]*)|(sdm[a-z0-9]*)");
     public static final Parcelable.Creator<PaymentTZServiceConfig> CREATOR = new Parcelable.Creator<PaymentTZServiceConfig>() { // from class: android.spay.PaymentTZServiceConfig.2
-        AnonymousClass2() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PaymentTZServiceConfig createFromParcel(Parcel in) {
             return new PaymentTZServiceConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PaymentTZServiceConfig[] newArray(int size) {
             return new PaymentTZServiceConfig[size];
         }
     };
 
-    /* synthetic */ PaymentTZServiceConfig(Parcel parcel, PaymentTZServiceConfigIA paymentTZServiceConfigIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes3.dex */
     public static class TAConfig {
         public int maxRecvRespSize;
         public int maxSendCmdSize;
@@ -62,14 +56,6 @@ public class PaymentTZServiceConfig implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.spay.PaymentTZServiceConfig$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IPaymentClient.Stub {
-        AnonymousClass1() {
-        }
-    }
-
     public void addTAConfig(int taId, TAConfig config) {
         this.mTAConfigs.put(Integer.valueOf(taId), config);
     }
@@ -84,33 +70,12 @@ public class PaymentTZServiceConfig implements Parcelable {
 
     public PaymentTZServiceConfig() {
         this.mClient = new IPaymentClient.Stub() { // from class: android.spay.PaymentTZServiceConfig.1
-            AnonymousClass1() {
-            }
         };
         this.mTAConfigs = new HashMap();
     }
 
-    /* renamed from: android.spay.PaymentTZServiceConfig$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements Parcelable.Creator<PaymentTZServiceConfig> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PaymentTZServiceConfig createFromParcel(Parcel in) {
-            return new PaymentTZServiceConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PaymentTZServiceConfig[] newArray(int size) {
-            return new PaymentTZServiceConfig[size];
-        }
-    }
-
     private PaymentTZServiceConfig(Parcel in) {
         this.mClient = new IPaymentClient.Stub() { // from class: android.spay.PaymentTZServiceConfig.1
-            AnonymousClass1() {
-            }
         };
         this.mTAConfigs = new HashMap();
         readFromParcel(in);

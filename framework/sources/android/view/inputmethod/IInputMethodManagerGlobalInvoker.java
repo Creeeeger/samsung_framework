@@ -1,36 +1,43 @@
 package android.view.inputmethod;
 
 import android.content.Context;
-import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.os.ServiceManager;
+import android.util.ExceptionUtils;
 import android.view.inputmethod.ImeTracker;
 import android.window.ImeOnBackInvokedDispatcher;
+import com.android.internal.infra.AndroidFuture;
+import com.android.internal.inputmethod.IBooleanListener;
+import com.android.internal.inputmethod.IConnectionlessHandwritingCallback;
 import com.android.internal.inputmethod.IImeTracker;
 import com.android.internal.inputmethod.IInputMethodClient;
 import com.android.internal.inputmethod.IRemoteAccessibilityInputConnection;
 import com.android.internal.inputmethod.IRemoteInputConnection;
 import com.android.internal.inputmethod.InputBindResult;
+import com.android.internal.inputmethod.InputMethodInfoSafeList;
 import com.android.internal.view.IInputMethodManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /* loaded from: classes4.dex */
-public final class IInputMethodManagerGlobalInvoker {
+final class IInputMethodManagerGlobalInvoker {
+    private static final long TIMEOUT_MS = 10000;
     private static volatile IInputMethodManager sServiceCache = null;
     private static volatile IImeTracker sTrackerServiceCache = null;
+    private static int sCurStartInputSeq = 0;
 
     IInputMethodManagerGlobalInvoker() {
     }
 
-    public static boolean isAvailable() {
+    static boolean isAvailable() {
         return getService() != null;
     }
 
-    public static IInputMethodManager getService() {
+    static IInputMethodManager getService() {
         IInputMethodManager service = sServiceCache;
         if (service == null) {
             if (InputMethodManager.isInEditModeInternal() || (service = IInputMethodManager.Stub.asInterface(ServiceManager.getService(Context.INPUT_METHOD_SERVICE))) == null) {
@@ -49,7 +56,7 @@ public final class IInputMethodManagerGlobalInvoker {
         throw e.rethrowFromSystemServer();
     }
 
-    public static void startProtoDump(byte[] protoDump, int source, String where, Consumer<RemoteException> exceptionHandler) {
+    static void startProtoDump(byte[] protoDump, int source, String where, Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -61,7 +68,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void startImeTrace(Consumer<RemoteException> exceptionHandler) {
+    static void startImeTrace(Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -73,7 +80,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void stopImeTrace(Consumer<RemoteException> exceptionHandler) {
+    static void stopImeTrace(Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -85,7 +92,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean isImeTraceEnabled() {
+    static boolean isImeTraceEnabled() {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -97,7 +104,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void removeImeSurface(Consumer<RemoteException> exceptionHandler) {
+    static void removeImeSurface(Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -109,7 +116,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void addClient(IInputMethodClient client, IRemoteInputConnection fallbackInputConnection, int untrustedDisplayId) {
+    static void addClient(IInputMethodClient client, IRemoteInputConnection fallbackInputConnection, int untrustedDisplayId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -121,7 +128,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static InputMethodInfo getCurrentInputMethodInfoAsUser(int userId) {
+    static InputMethodInfo getCurrentInputMethodInfoAsUser(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return null;
@@ -133,31 +140,37 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static List<InputMethodInfo> getInputMethodList(int userId, int directBootAwareness) {
+    static List<InputMethodInfo> getInputMethodList(int userId, int directBootAwareness) {
         IInputMethodManager service = getService();
         if (service == null) {
             return new ArrayList();
         }
         try {
-            return service.getInputMethodList(userId, directBootAwareness);
+            if (Flags.useInputMethodInfoSafeList()) {
+                return InputMethodInfoSafeList.extractFrom(service.getInputMethodList(userId, directBootAwareness));
+            }
+            return service.getInputMethodListLegacy(userId, directBootAwareness);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public static List<InputMethodInfo> getEnabledInputMethodList(int userId) {
+    static List<InputMethodInfo> getEnabledInputMethodList(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return new ArrayList();
         }
         try {
-            return service.getEnabledInputMethodList(userId);
+            if (Flags.useInputMethodInfoSafeList()) {
+                return InputMethodInfoSafeList.extractFrom(service.getEnabledInputMethodList(userId));
+            }
+            return service.getEnabledInputMethodListLegacy(userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public static List<InputMethodSubtype> getEnabledInputMethodSubtypeList(String imiId, boolean allowsImplicitlyEnabledSubtypes, int userId) {
+    static List<InputMethodSubtype> getEnabledInputMethodSubtypeList(String imiId, boolean allowsImplicitlyEnabledSubtypes, int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return new ArrayList();
@@ -169,7 +182,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static InputMethodSubtype getLastInputMethodSubtype(int userId) {
+    static InputMethodSubtype getLastInputMethodSubtype(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return null;
@@ -181,7 +194,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean showSoftInput(IInputMethodClient client, IBinder windowToken, ImeTracker.Token statsToken, int flags, int lastClickToolType, ResultReceiver resultReceiver, int reason) {
+    static boolean showSoftInput(IInputMethodClient client, IBinder windowToken, ImeTracker.Token statsToken, int flags, int lastClickToolType, ResultReceiver resultReceiver, int reason) {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -193,7 +206,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean hideSoftInput(IInputMethodClient client, IBinder windowToken, ImeTracker.Token statsToken, int flags, ResultReceiver resultReceiver, int reason) {
+    static boolean hideSoftInput(IInputMethodClient client, IBinder windowToken, ImeTracker.Token statsToken, int flags, ResultReceiver resultReceiver, int reason) {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -205,7 +218,19 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static InputBindResult startInputOrWindowGainedFocus(int startInputReason, IInputMethodClient client, IBinder windowToken, int startInputFlags, int softInputMode, int windowFlags, EditorInfo editorInfo, IRemoteInputConnection remoteInputConnection, IRemoteAccessibilityInputConnection remoteAccessibilityInputConnection, int unverifiedTargetSdkVersion, int userId, ImeOnBackInvokedDispatcher imeDispatcher) {
+    static void hideSoftInputFromServerForTest() {
+        IInputMethodManager service = getService();
+        if (service == null) {
+            return;
+        }
+        try {
+            service.hideSoftInputFromServerForTest();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    static InputBindResult startInputOrWindowGainedFocus(int startInputReason, IInputMethodClient client, IBinder windowToken, int startInputFlags, int softInputMode, int windowFlags, EditorInfo editorInfo, IRemoteInputConnection remoteInputConnection, IRemoteAccessibilityInputConnection remoteAccessibilityInputConnection, int unverifiedTargetSdkVersion, int userId, ImeOnBackInvokedDispatcher imeDispatcher) {
         IInputMethodManager service = getService();
         if (service == null) {
             return InputBindResult.NULL;
@@ -217,7 +242,26 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void showInputMethodPickerFromClient(IInputMethodClient client, int auxiliarySubtypeMode) {
+    static int startInputOrWindowGainedFocusAsync(int startInputReason, IInputMethodClient client, IBinder windowToken, int startInputFlags, int softInputMode, int windowFlags, EditorInfo editorInfo, IRemoteInputConnection remoteInputConnection, IRemoteAccessibilityInputConnection remoteAccessibilityInputConnection, int unverifiedTargetSdkVersion, int userId, ImeOnBackInvokedDispatcher imeDispatcher) {
+        IInputMethodManager service = getService();
+        if (service == null) {
+            return -1;
+        }
+        try {
+            service.startInputOrWindowGainedFocusAsync(startInputReason, client, windowToken, startInputFlags, softInputMode, windowFlags, editorInfo, remoteInputConnection, remoteAccessibilityInputConnection, unverifiedTargetSdkVersion, userId, imeDispatcher, advanceAngGetStartInputSequenceNumber());
+            return sCurStartInputSeq;
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    private static int advanceAngGetStartInputSequenceNumber() {
+        int i = sCurStartInputSeq + 1;
+        sCurStartInputSeq = i;
+        return i;
+    }
+
+    static void showInputMethodPickerFromClient(IInputMethodClient client, int auxiliarySubtypeMode) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -229,7 +273,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void showInputMethodPickerFromSystem(int auxiliarySubtypeMode, int displayId) {
+    static void showInputMethodPickerFromSystem(int auxiliarySubtypeMode, int displayId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -241,7 +285,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean isInputMethodPickerShownForTest() {
+    static boolean isInputMethodPickerShownForTest() {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -253,7 +297,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static InputMethodSubtype getCurrentInputMethodSubtype(int userId) {
+    static InputMethodSubtype getCurrentInputMethodSubtype(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return null;
@@ -265,7 +309,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void setAdditionalInputMethodSubtypes(String imeId, InputMethodSubtype[] subtypes, int userId) {
+    static void setAdditionalInputMethodSubtypes(String imeId, InputMethodSubtype[] subtypes, int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -277,7 +321,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void setExplicitlyEnabledInputMethodSubtypes(String imeId, int[] subtypeHashCodes, int userId) {
+    static void setExplicitlyEnabledInputMethodSubtypes(String imeId, int[] subtypeHashCodes, int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -289,7 +333,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static int getInputMethodWindowVisibleHeight(IInputMethodClient client) {
+    static int getInputMethodWindowVisibleHeight(IInputMethodClient client) {
         IInputMethodManager service = getService();
         if (service == null) {
             return 0;
@@ -301,19 +345,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void reportVirtualDisplayGeometryAsync(IInputMethodClient client, int childDisplayId, float[] matrixValues) {
-        IInputMethodManager service = getService();
-        if (service == null) {
-            return;
-        }
-        try {
-            service.reportVirtualDisplayGeometryAsync(client, childDisplayId, matrixValues);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public static void reportPerceptibleAsync(IBinder windowToken, boolean perceptible) {
+    static void reportPerceptibleAsync(IBinder windowToken, boolean perceptible) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -325,7 +357,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void removeImeSurfaceFromWindowAsync(IBinder windowToken) {
+    static void removeImeSurfaceFromWindowAsync(IBinder windowToken) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -337,7 +369,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void startStylusHandwriting(IInputMethodClient client) {
+    static void startStylusHandwriting(IInputMethodClient client) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -349,7 +381,20 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void prepareStylusHandwritingDelegation(IInputMethodClient client, int userId, String delegatePackageName, String delegatorPackageName) {
+    static boolean startConnectionlessStylusHandwriting(IInputMethodClient client, int userId, CursorAnchorInfo cursorAnchorInfo, String delegatePackageName, String delegatorPackageName, IConnectionlessHandwritingCallback callback) {
+        IInputMethodManager service = getService();
+        if (service == null) {
+            return false;
+        }
+        try {
+            service.startConnectionlessStylusHandwriting(client, userId, cursorAnchorInfo, delegatePackageName, delegatorPackageName, callback);
+            return true;
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    static void prepareStylusHandwritingDelegation(IInputMethodClient client, int userId, String delegatePackageName, String delegatorPackageName) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -361,31 +406,44 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean acceptStylusHandwritingDelegation(IInputMethodClient client, int userId, String delegatePackageName, String delegatorPackageName) {
+    static boolean acceptStylusHandwritingDelegation(IInputMethodClient client, int userId, String delegatePackageName, String delegatorPackageName, int flags) {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
         }
         try {
-            return service.acceptStylusHandwritingDelegation(client, userId, delegatePackageName, delegatorPackageName);
+            return service.acceptStylusHandwritingDelegation(client, userId, delegatePackageName, delegatorPackageName, flags);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public static boolean isStylusHandwritingAvailableAsUser(int userId) {
+    static boolean acceptStylusHandwritingDelegationAsync(IInputMethodClient client, int userId, String delegatePackageName, String delegatorPackageName, int flags, IBooleanListener callback) {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
         }
         try {
-            return service.isStylusHandwritingAvailableAsUser(userId);
+            service.acceptStylusHandwritingDelegationAsync(client, userId, delegatePackageName, delegatorPackageName, flags, callback);
+            return true;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public static void addVirtualStylusIdForTestSession(IInputMethodClient client) {
+    static boolean isStylusHandwritingAvailableAsUser(int userId, boolean connectionless) {
+        IInputMethodManager service = getService();
+        if (service == null) {
+            return false;
+        }
+        try {
+            return service.isStylusHandwritingAvailableAsUser(userId, connectionless);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    static void addVirtualStylusIdForTestSession(IInputMethodClient client) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -397,7 +455,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void setStylusWindowIdleTimeoutForTest(IInputMethodClient client, long timeout) {
+    static void setStylusWindowIdleTimeoutForTest(IInputMethodClient client, long timeout) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -409,31 +467,19 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static ImeTracker.Token onRequestShow(String tag, int uid, int origin, int reason) {
+    static ImeTracker.Token onStart(String tag, int uid, int type, int origin, int reason, boolean fromUser) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
-            return new ImeTracker.Token(new Binder(), tag);
+            return ImeTracker.Token.empty(tag);
         }
         try {
-            return service.onRequestShow(tag, uid, origin, reason);
+            return service.onStart(tag, uid, type, origin, reason, fromUser);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public static ImeTracker.Token onRequestHide(String tag, int uid, int origin, int reason) {
-        IImeTracker service = getImeTrackerService();
-        if (service == null) {
-            return new ImeTracker.Token(new Binder(), tag);
-        }
-        try {
-            return service.onRequestHide(tag, uid, origin, reason);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public static void onProgress(IBinder binder, int phase) {
+    static void onProgress(IBinder binder, int phase) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
             return;
@@ -445,7 +491,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void onFailed(ImeTracker.Token statsToken, int phase) {
+    static void onFailed(ImeTracker.Token statsToken, int phase) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
             return;
@@ -457,7 +503,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void onCancelled(ImeTracker.Token statsToken, int phase) {
+    static void onCancelled(ImeTracker.Token statsToken, int phase) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
             return;
@@ -469,7 +515,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void onShown(ImeTracker.Token statsToken) {
+    static void onShown(ImeTracker.Token statsToken) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
             return;
@@ -481,7 +527,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void onHidden(ImeTracker.Token statsToken) {
+    static void onHidden(ImeTracker.Token statsToken) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
             return;
@@ -493,7 +539,19 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean hasPendingImeVisibilityRequests() {
+    static void onDispatched(ImeTracker.Token statsToken) {
+        IImeTracker service = getImeTrackerService();
+        if (service == null) {
+            return;
+        }
+        try {
+            service.onDispatched(statsToken);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    static boolean hasPendingImeVisibilityRequests() {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
             return true;
@@ -502,6 +560,22 @@ public final class IInputMethodManagerGlobalInvoker {
             return service.hasPendingImeVisibilityRequests();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    static void finishTrackingPendingImeVisibilityRequests() {
+        IImeTracker service = getImeTrackerService();
+        if (service == null) {
+            return;
+        }
+        try {
+            AndroidFuture<Void> completionSignal = new AndroidFuture<>();
+            service.finishTrackingPendingImeVisibilityRequests(completionSignal);
+            completionSignal.get(10000L, TimeUnit.MILLISECONDS);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        } catch (Exception e2) {
+            throw ExceptionUtils.propagate(e2);
         }
     }
 
@@ -525,7 +599,7 @@ public final class IInputMethodManagerGlobalInvoker {
         return trackerService;
     }
 
-    public static boolean minimizeSoftInput(IInputMethodClient client, int height) {
+    static boolean minimizeSoftInput(IInputMethodClient client, int height) {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -537,7 +611,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void undoMinimizeSoftInput() {
+    static void undoMinimizeSoftInput() {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -549,7 +623,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static int isAccessoryKeyboard() {
+    static int isAccessoryKeyboard() {
         IInputMethodManager service = getService();
         if (service == null) {
             return 0;
@@ -561,7 +635,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean getWACOMPen() {
+    static boolean getWACOMPen() {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -573,7 +647,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean isInputMethodShown() {
+    static boolean isInputMethodShown() {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -585,7 +659,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean isCurrentInputMethodAsSamsungKeyboard() {
+    static boolean isCurrentInputMethodAsSamsungKeyboard() {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -597,7 +671,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static boolean getDexSettingsValue(String key, String defaultKey) {
+    static boolean getDexSettingsValue(String key, String defaultKey) {
         IInputMethodManager service = getService();
         if (service == null) {
             return false;
@@ -609,7 +683,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void setInputMethodSwitchDisable(IInputMethodClient client, boolean disable) {
+    static void setInputMethodSwitchDisable(IInputMethodClient client, boolean disable) {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -621,7 +695,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void dismissAndShowAgainInputMethodPicker() {
+    static void dismissAndShowAgainInputMethodPicker() {
         IInputMethodManager service = getService();
         if (service == null) {
             return;
@@ -633,7 +707,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static int getCurrentFocusDisplayID() {
+    static int getCurrentFocusDisplayID() {
         IInputMethodManager service = getService();
         if (service == null) {
             return 0;
@@ -645,7 +719,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static int getCurTokenDisplayId() {
+    static int getCurTokenDisplayId() {
         IInputMethodManager service = getService();
         if (service == null) {
             return 0;
@@ -657,7 +731,7 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    public static void handleVoiceHWKey() {
+    static void handleVoiceHWKey() {
         IInputMethodManager service = getService();
         if (service == null) {
             return;

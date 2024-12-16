@@ -12,7 +12,6 @@ import android.os.RemoteException;
 public interface IIntentSender extends IInterface {
     void send(int i, Intent intent, String str, IBinder iBinder, IIntentReceiver iIntentReceiver, String str2, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IIntentSender {
         @Override // android.content.IIntentSender
         public void send(int code, Intent intent, String resolvedType, IBinder whitelistToken, IIntentReceiver finishedReceiver, String requiredPermission, Bundle options) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IIntentSender extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IIntentSender {
         public static final String DESCRIPTOR = "android.content.IIntentSender";
         static final int TRANSACTION_send = 1;
@@ -68,31 +66,28 @@ public interface IIntentSender extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Intent _arg1 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg2 = data.readString();
+                    IBinder _arg3 = data.readStrongBinder();
+                    IIntentReceiver _arg4 = IIntentReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg5 = data.readString();
+                    Bundle _arg6 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    send(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Intent _arg1 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg2 = data.readString();
-                            IBinder _arg3 = data.readStrongBinder();
-                            IIntentReceiver _arg4 = IIntentReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg5 = data.readString();
-                            Bundle _arg6 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            send(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IIntentSender {
+        private static class Proxy implements IIntentSender {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

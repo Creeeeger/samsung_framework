@@ -30,49 +30,42 @@ public final class DESede {
     private DESede() {
     }
 
-    /* loaded from: classes5.dex */
     public static class ECB extends BaseBlockCipher {
         public ECB() {
             super(new DESedeEngine());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class CBC extends BaseBlockCipher {
         public CBC() {
             super(new CBCBlockCipher(new DESedeEngine()), 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class DESede64 extends BaseMac {
         public DESede64() {
             super(new CBCBlockCipherMac(new DESedeEngine(), 64));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class DESede64with7816d4 extends BaseMac {
         public DESede64with7816d4() {
             super(new CBCBlockCipherMac(new DESedeEngine(), 64, new ISO7816d4Padding()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class CBCMAC extends BaseMac {
         public CBCMAC() {
             super(new CBCBlockCipherMac(new DESedeEngine()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Wrap extends BaseWrapCipher {
         public Wrap() {
             super(new DESedeWrapEngine());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyGenerator extends BaseKeyGenerator {
         private boolean keySizeSet;
 
@@ -82,7 +75,7 @@ public final class DESede {
         }
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseKeyGenerator, javax.crypto.KeyGeneratorSpi
-        public void engineInit(int keySize, SecureRandom random) {
+        protected void engineInit(int keySize, SecureRandom random) {
             super.engineInit(keySize, random);
             this.keySizeSet = true;
         }
@@ -102,42 +95,36 @@ public final class DESede {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyGenerator3 extends BaseKeyGenerator {
         public KeyGenerator3() {
             super("DESede3", 192, new DESedeKeyGenerator());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithSHAAndDES3Key extends BaseBlockCipher {
         public PBEWithSHAAndDES3Key() {
             super(new CBCBlockCipher(new DESedeEngine()), 2, 1, 192, 8);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithSHAAndDES2Key extends BaseBlockCipher {
         public PBEWithSHAAndDES2Key() {
             super(new CBCBlockCipher(new DESedeEngine()), 2, 1, 128, 8);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithSHAAndDES3KeyFactory extends DES.DESPBEKeyFactory {
         public PBEWithSHAAndDES3KeyFactory() {
             super("PBEwithSHAandDES3Key-CBC", PKCSObjectIdentifiers.pbeWithSHAAnd3_KeyTripleDES_CBC, true, 2, 1, 192, 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithSHAAndDES2KeyFactory extends DES.DESPBEKeyFactory {
         public PBEWithSHAAndDES2KeyFactory() {
             super("PBEwithSHAandDES2Key-CBC", PKCSObjectIdentifiers.pbeWithSHAAnd2_KeyTripleDES_CBC, true, 2, 1, 128, 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyFactory extends BaseSecretKeyFactory {
         public KeyFactory() {
             super(KeyProperties.KEY_ALGORITHM_3DES, null);
@@ -172,7 +159,7 @@ public final class DESede {
         }
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
-        public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
+        protected SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
             if (keySpec instanceof DESedeKeySpec) {
                 DESedeKeySpec desKeySpec = (DESedeKeySpec) keySpec;
                 return new SecretKeySpec(desKeySpec.getKey(), KeyProperties.KEY_ALGORITHM_3DES);
@@ -181,22 +168,19 @@ public final class DESede {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AlgorithmProvider {
         private static final String PACKAGE = "com.android.internal.org.bouncycastle.jcajce.provider.symmetric";
         private static final String PREFIX = DESede.class.getName();
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvider
         public void configure(ConfigurableProvider provider) {
-            StringBuilder sb = new StringBuilder();
-            String str = PREFIX;
-            provider.addAlgorithm("Cipher.DESEDE", sb.append(str).append("$ECB").toString());
-            provider.addAlgorithm("Cipher.DESEDEWRAP", str + "$Wrap");
+            provider.addAlgorithm("Cipher.DESEDE", PREFIX + "$ECB");
+            provider.addAlgorithm("Cipher.DESEDEWRAP", PREFIX + "$Wrap");
             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.id_alg_CMS3DESwrap, "DESEDEWRAP");
             provider.addAlgorithm("Alg.Alias.Cipher.TDEA", "DESEDE");
             provider.addAlgorithm("Alg.Alias.Cipher.TDEAWRAP", "DESEDEWRAP");
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", str + "$PBEWithSHAAndDES3Key");
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", str + "$PBEWithSHAAndDES2Key");
+            provider.addAlgorithm("Cipher.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3Key");
+            provider.addAlgorithm("Cipher.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2Key");
             provider.addAlgorithm("Alg.Alias.Cipher", PKCSObjectIdentifiers.pbeWithSHAAnd3_KeyTripleDES_CBC, "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
             provider.addAlgorithm("Alg.Alias.Cipher", PKCSObjectIdentifiers.pbeWithSHAAnd2_KeyTripleDES_CBC, "PBEWITHSHAAND2-KEYTRIPLEDES-CBC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1ANDDESEDE", "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
@@ -207,8 +191,8 @@ public final class DESede {
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND3-KEYDESEDE-CBC", "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND2-KEYDESEDE-CBC", "PBEWITHSHAAND2-KEYTRIPLEDES-CBC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1ANDDESEDE-CBC", "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
-            provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", str + "$PBEWithSHAAndDES3KeyFactory");
-            provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", str + "$PBEWithSHAAndDES2KeyFactory");
+            provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3KeyFactory");
+            provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2KeyFactory");
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory.PBEWITHSHA1ANDDESEDE", "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND3-KEYTRIPLEDES", "PKCS12PBE");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND2-KEYTRIPLEDES", "PKCS12PBE");

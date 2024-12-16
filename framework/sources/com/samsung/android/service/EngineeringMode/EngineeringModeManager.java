@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class EngineeringModeManager {
     public static final int ALLOWED = 1;
     public static final int DEV_OK = -16777064;
@@ -65,9 +65,7 @@ public final class EngineeringModeManager {
     public static final int[] ERRORINTARR_NOT_SUPPORTED = {NATIVE_NO_PERMISSION};
     public static final int[] ERRORINTARR_NOT_INSTALLED = {-268435451};
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class EngineeringModeNative {
+    private class EngineeringModeNative {
         private Context mClientContext;
         private boolean mSupportJNI;
 
@@ -228,14 +226,12 @@ public final class EngineeringModeManager {
 
     public EngineeringModeManager(Context context) {
         this.mContext = context;
-        String packageName = context.getPackageName();
-        this.mPkgName = packageName;
+        this.mPkgName = this.mContext.getPackageName();
         this.mNative = new EngineeringModeNative(context);
         try {
-            PackageManager packageManager = context.getPackageManager();
-            this.mPkgMgr = packageManager;
-            this.mCallerUid = packageManager.getApplicationInfo(packageName, 0).uid;
-            this.mSignature = this.mPkgMgr.checkSignatures("android", packageName);
+            this.mPkgMgr = this.mContext.getPackageManager();
+            this.mCallerUid = this.mPkgMgr.getApplicationInfo(this.mPkgName, 0).uid;
+            this.mSignature = this.mPkgMgr.checkSignatures("android", this.mPkgName);
         } catch (Exception e) {
             this.mPkgMgr = null;
             this.mCallerUid = -1;
@@ -757,7 +753,6 @@ public final class EngineeringModeManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     static class EmPacketManager {
         private static final int EMP_2BYTES = 2;
         private static final int EMP_3BYTES = 3;
@@ -780,7 +775,6 @@ public final class EngineeringModeManager {
         private int[] mPosDeviceInfo = new int[500];
         private int mNumOfDevice = 0;
 
-        /* loaded from: classes5.dex */
         static class EmType {
             public static final int DEVI_DID = 2;
             public static final int DEVI_IMEI = 3;
@@ -850,87 +844,78 @@ public final class EngineeringModeManager {
                 Log.e(EngineeringModeManager.TAG, "Error Invalid Argument");
                 return null;
             }
-            String prefix = new String(buf, 0, 3, Charset.forName("UTF-8"));
+            String prefix = new String(buf, this.mPos, 3, Charset.forName("UTF-8"));
             this.mPos += 3;
             if (!prefix.equals("ENG")) {
                 Log.e(EngineeringModeManager.TAG, "Error prefix");
                 return null;
             }
             String type = new String(buf, this.mPos, 3, Charset.forName("UTF-8"));
-            int i = this.mPos + 3;
-            this.mPos = i;
-            String version = new String(buf, i, 4, Charset.forName("UTF-8"));
+            this.mPos += 3;
+            String version = new String(buf, this.mPos, 4, Charset.forName("UTF-8"));
             this.mPos += 4;
             this.mToken.setPrefix(prefix);
             this.mToken.setType(type);
             this.mToken.setVersion(version);
             Log.d(EngineeringModeManager.TAG, "Prefix : " + prefix + ", Type : " + type + ", Version : " + version);
             this.headerLen = getInt(buf, this.mPos);
-            int i2 = this.mPos + 4;
-            this.mPos = i2;
-            int i3 = getInt(buf, i2);
-            this.mPosTokenInfo = i3;
             this.mPos += 4;
-            int ret = parseTokenInfo(buf, i3);
+            this.mPosTokenInfo = getInt(buf, this.mPos);
+            this.mPos += 4;
+            int ret = parseTokenInfo(buf, this.mPosTokenInfo);
             if (ret < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseTokenInfo");
                 return null;
             }
             Log.d(EngineeringModeManager.TAG, "headerLen : " + this.headerLen);
-            for (int i4 = 0; i4 < this.mNumOfDevice; i4++) {
-                this.mPosDeviceInfo[i4] = getInt(buf, this.mPos);
+            for (int i = 0; i < this.mNumOfDevice; i++) {
+                this.mPosDeviceInfo[i] = getInt(buf, this.mPos);
                 this.mPos += 4;
-                int ret2 = parseDeviceInfo(buf, this.mPosDeviceInfo[i4]);
+                int ret2 = parseDeviceInfo(buf, this.mPosDeviceInfo[i]);
                 if (ret2 < 0) {
-                    Log.e(EngineeringModeManager.TAG, "Error parseDeviceInfo " + i4);
+                    Log.e(EngineeringModeManager.TAG, "Error parseDeviceInfo " + i);
                     return null;
                 }
             }
-            int i5 = this.mPos;
-            int i6 = getInt(buf, i5);
-            this.mPosIssuerInfo = i6;
+            int i2 = this.mPos;
+            this.mPosIssuerInfo = getInt(buf, i2);
             this.mPos += 4;
-            int ret3 = parseIssuerInfo(buf, i6);
+            int ret3 = parseIssuerInfo(buf, this.mPosIssuerInfo);
             if (ret3 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseIssuerInfo");
                 return null;
             }
-            int i7 = getInt(buf, this.mPos);
-            this.mPosModeInfo = i7;
+            this.mPosModeInfo = getInt(buf, this.mPos);
             this.mPos += 4;
-            int ret4 = parseModeInfo(buf, i7);
+            int ret4 = parseModeInfo(buf, this.mPosModeInfo);
             if (ret4 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseModeInfo");
                 return null;
             }
-            int i8 = getInt(buf, this.mPos);
-            this.mPosValidityInfo = i8;
+            this.mPosValidityInfo = getInt(buf, this.mPos);
             this.mPos += 4;
-            int ret5 = parseValidityInfo(buf, i8);
+            int ret5 = parseValidityInfo(buf, this.mPosValidityInfo);
             if (ret5 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseValidityInfo");
                 return null;
             }
-            int i9 = getInt(buf, this.mPos);
-            this.mPosIntegrityInfo = i9;
+            this.mPosIntegrityInfo = getInt(buf, this.mPos);
             this.mPos += 4;
-            int ret6 = parseIntegrityInfo(buf, i9);
+            int ret6 = parseIntegrityInfo(buf, this.mPosIntegrityInfo);
             if (ret6 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseIntegrityInfo");
                 return null;
             }
-            int i10 = getInt(buf, this.mPos);
-            this.mPosModeDb = i10;
+            this.mPosModeDb = getInt(buf, this.mPos);
             this.mPos += 4;
-            int ret7 = parseModeDb(buf, i10);
+            int ret7 = parseModeDb(buf, this.mPosModeDb);
             if (ret7 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseModeDB");
                 return null;
             }
-            int i11 = getInt(buf, this.mPos);
-            this.mPosGroupDb = i11;
+            this.mPosGroupDb = getInt(buf, this.mPos);
             this.mPos += 4;
-            int ret8 = parseGroupDb(buf, i11);
+            int ret8 = parseGroupDb(buf, this.mPosGroupDb);
             if (ret8 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseGroupDB");
                 return null;
@@ -944,16 +929,15 @@ public final class EngineeringModeManager {
                 Log.e(EngineeringModeManager.TAG, "Error Invalid Argument");
                 return null;
             }
-            String prefix = new String(buf, 0, 3, Charset.forName("UTF-8"));
+            String prefix = new String(buf, this.mPos, 3, Charset.forName("UTF-8"));
             this.mPos += 3;
             if (!prefix.equals("ENG")) {
                 Log.e(EngineeringModeManager.TAG, "Error prefix");
                 return null;
             }
             String type = new String(buf, this.mPos, 3, Charset.forName("UTF-8"));
-            int i = this.mPos + 3;
-            this.mPos = i;
-            String version = new String(buf, i, 4, Charset.forName("UTF-8"));
+            this.mPos += 3;
+            String version = new String(buf, this.mPos, 4, Charset.forName("UTF-8"));
             this.mPos += 4;
             this.mToken.setPrefix(prefix);
             this.mToken.setType(type);
@@ -964,38 +948,31 @@ public final class EngineeringModeManager {
                 Log.e(EngineeringModeManager.TAG, "Error parseModeDB");
                 return null;
             }
-            int i2 = this.mPos + 4;
-            this.mPos = i2;
-            int sizeOfInfo = getInt(buf, i2);
-            int i3 = this.mPos + 4;
-            this.mPos = i3;
+            this.mPos += 4;
+            int sizeOfInfo = getInt(buf, this.mPos);
+            this.mPos += 4;
             if (sizeOfInfo < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error modeDB sizeOfInfo");
                 return null;
             }
-            int i4 = i3 + sizeOfInfo;
-            this.mPos = i4;
-            this.mPos = i4 + 4;
+            this.mPos += sizeOfInfo;
+            this.mPos += 4;
             Log.d(EngineeringModeManager.TAG, "Pos Offset : " + this.mPos);
             int ret2 = parseGroupDb(buf, this.mPos);
             if (ret2 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error parseGroupDB");
                 return null;
             }
-            int i5 = this.mPos + 4;
-            this.mPos = i5;
-            int sizeOfInfo2 = getInt(buf, i5);
-            int i6 = this.mPos + 4;
-            this.mPos = i6;
+            this.mPos += 4;
+            int sizeOfInfo2 = getInt(buf, this.mPos);
+            this.mPos += 4;
             if (sizeOfInfo2 < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error modeDB sizeOfInfo");
                 return null;
             }
-            int i7 = i6 + sizeOfInfo2;
-            this.mPos = i7;
-            int i8 = i7 + 4;
-            this.mPos = i8;
-            parseOTPtime(buf, i8);
+            this.mPos += sizeOfInfo2;
+            this.mPos += 4;
+            parseOTPtime(buf, this.mPos);
             return this.mToken;
         }
 
@@ -1619,9 +1596,8 @@ public final class EngineeringModeManager {
         }
 
         private int parseOTPtime(byte[] buf, int pos) {
-            int i = getInt(buf, pos);
-            this.mOTPtime = i;
-            if (i < 0) {
+            this.mOTPtime = getInt(buf, pos);
+            if (this.mOTPtime < 0) {
                 Log.e(EngineeringModeManager.TAG, "Error OTP remain time");
                 return -1;
             }

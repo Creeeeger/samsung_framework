@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IMediaCasService extends android.hardware.cas.V1_0.IMediaCasService {
     public static final String kInterfaceName = "android.hardware.cas@1.1::IMediaCasService";
 
@@ -105,7 +105,6 @@ public interface IMediaCasService extends android.hardware.cas.V1_0.IMediaCasSer
         return getService("default");
     }
 
-    /* loaded from: classes.dex */
     public static final class Proxy implements IMediaCasService {
         private IHwBinder mRemote;
 
@@ -379,7 +378,6 @@ public interface IMediaCasService extends android.hardware.cas.V1_0.IMediaCasSer
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends HwBinder implements IMediaCasService {
         @Override // android.hardware.cas.V1_1.IMediaCasService, android.hardware.cas.V1_0.IMediaCasService, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -402,7 +400,7 @@ public interface IMediaCasService extends android.hardware.cas.V1_0.IMediaCasSer
 
         @Override // android.hardware.cas.V1_1.IMediaCasService, android.hardware.cas.V1_0.IMediaCasService, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-33, -6, -51, -66, 11, -49, -124, 67, 1, 61, -27, -67, -59, 106, -125, 71, -102, -39, 121, -44, -111, -98, -47, 90, 85, -123, 83, -97, 70, 9, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, 7}, new byte[]{-122, -70, -100, 3, -105, -117, 121, -89, 66, -23, MidiConstants.STATUS_NOTE_ON, 66, 11, -59, -50, MidiConstants.STATUS_CHANNEL_PRESSURE, 103, 61, 37, -87, 57, -8, 37, 114, -103, 107, -17, -110, 98, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, 32, 20}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-33, -6, -51, -66, 11, -49, -124, 67, 1, 61, -27, -67, -59, 106, -125, 71, -102, -39, 121, -44, -111, -98, -47, 90, 85, -123, 83, -97, 70, 9, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, 7}, new byte[]{-122, -70, -100, 3, -105, -117, 121, -89, 66, -23, MidiConstants.STATUS_NOTE_ON, 66, 11, -59, -50, MidiConstants.STATUS_CHANNEL_PRESSURE, 103, 61, 37, -87, 57, -8, 37, 114, -103, 107, -17, -110, 98, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, 32, 20}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.cas.V1_1.IMediaCasService, android.hardware.cas.V1_0.IMediaCasService, android.internal.hidl.base.V1_0.IBase

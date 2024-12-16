@@ -11,6 +11,8 @@ public class PendingInsetsController implements WindowInsetsController {
     private static final int KEEP_BEHAVIOR = -1;
     private boolean mAnimationsDisabled;
     private int mAppearance;
+    private int mAppearanceFromResource;
+    private int mAppearanceFromResourceMask;
     private int mAppearanceMask;
     private WindowInsetsAnimationControlListener mLoggingListener;
     private InsetsController mReplayedInsetsController;
@@ -18,19 +20,17 @@ public class PendingInsetsController implements WindowInsetsController {
     private int mBehavior = -1;
     private final InsetsState mDummyState = new InsetsState();
     private ArrayList<WindowInsetsController.OnControllableInsetsChangedListener> mControllableInsetsChangedListeners = new ArrayList<>();
-    private int mCaptionInsetsHeight = 0;
+    private int mImeCaptionBarInsetsHeight = 0;
     private int mRequestedVisibleTypes = WindowInsets.Type.defaultVisible();
 
-    /* loaded from: classes4.dex */
-    public interface PendingRequest {
+    private interface PendingRequest {
         void replay(InsetsController insetsController);
     }
 
     @Override // android.view.WindowInsetsController
     public void show(int types) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.show(types);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.show(types);
         } else {
             this.mRequests.add(new ShowRequest(types));
             this.mRequestedVisibleTypes |= types;
@@ -39,9 +39,8 @@ public class PendingInsetsController implements WindowInsetsController {
 
     @Override // android.view.WindowInsetsController
     public void hide(int types) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.hide(types);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.hide(types);
         } else {
             this.mRequests.add(new HideRequest(types));
             this.mRequestedVisibleTypes &= ~types;
@@ -50,9 +49,8 @@ public class PendingInsetsController implements WindowInsetsController {
 
     @Override // android.view.WindowInsetsController
     public void setSystemBarsAppearance(int appearance, int mask) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.setSystemBarsAppearance(appearance, mask);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.setSystemBarsAppearance(appearance, mask);
         } else {
             this.mAppearance = (this.mAppearance & (~mask)) | (appearance & mask);
             this.mAppearanceMask |= mask;
@@ -60,24 +58,32 @@ public class PendingInsetsController implements WindowInsetsController {
     }
 
     @Override // android.view.WindowInsetsController
-    public int getSystemBarsAppearance() {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            return insetsController.getSystemBarsAppearance();
+    public void setSystemBarsAppearanceFromResource(int appearance, int mask) {
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.setSystemBarsAppearanceFromResource(appearance, mask);
+        } else {
+            this.mAppearanceFromResource = (this.mAppearanceFromResource & (~mask)) | (appearance & mask);
+            this.mAppearanceFromResourceMask |= mask;
         }
-        return this.mAppearance;
     }
 
     @Override // android.view.WindowInsetsController
-    public void setCaptionInsetsHeight(int height) {
-        this.mCaptionInsetsHeight = height;
+    public int getSystemBarsAppearance() {
+        if (this.mReplayedInsetsController != null) {
+            return this.mReplayedInsetsController.getSystemBarsAppearance();
+        }
+        return this.mAppearance | (this.mAppearanceFromResource & (~this.mAppearanceMask));
+    }
+
+    @Override // android.view.WindowInsetsController
+    public void setImeCaptionBarInsetsHeight(int height) {
+        this.mImeCaptionBarInsetsHeight = height;
     }
 
     @Override // android.view.WindowInsetsController
     public void setSystemBarsBehavior(int behavior) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.setSystemBarsBehavior(behavior);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.setSystemBarsBehavior(behavior);
         } else {
             this.mBehavior = behavior;
         }
@@ -85,22 +91,19 @@ public class PendingInsetsController implements WindowInsetsController {
 
     @Override // android.view.WindowInsetsController
     public int getSystemBarsBehavior() {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            return insetsController.getSystemBarsBehavior();
+        if (this.mReplayedInsetsController != null) {
+            return this.mReplayedInsetsController.getSystemBarsBehavior();
         }
-        int i = this.mBehavior;
-        if (i == -1) {
+        if (this.mBehavior == -1) {
             return 1;
         }
-        return i;
+        return this.mBehavior;
     }
 
     @Override // android.view.WindowInsetsController
     public void setAnimationsDisabled(boolean disable) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.setAnimationsDisabled(disable);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.setAnimationsDisabled(disable);
         } else {
             this.mAnimationsDisabled = disable;
         }
@@ -113,18 +116,16 @@ public class PendingInsetsController implements WindowInsetsController {
 
     @Override // android.view.WindowInsetsController
     public int getRequestedVisibleTypes() {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            return insetsController.getRequestedVisibleTypes();
+        if (this.mReplayedInsetsController != null) {
+            return this.mReplayedInsetsController.getRequestedVisibleTypes();
         }
         return this.mRequestedVisibleTypes;
     }
 
     @Override // android.view.WindowInsetsController
     public void addOnControllableInsetsChangedListener(WindowInsetsController.OnControllableInsetsChangedListener listener) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.addOnControllableInsetsChangedListener(listener);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.addOnControllableInsetsChangedListener(listener);
         } else {
             this.mControllableInsetsChangedListeners.add(listener);
             listener.onControllableInsetsChanged(this, 0);
@@ -133,47 +134,47 @@ public class PendingInsetsController implements WindowInsetsController {
 
     @Override // android.view.WindowInsetsController
     public void removeOnControllableInsetsChangedListener(WindowInsetsController.OnControllableInsetsChangedListener listener) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.removeOnControllableInsetsChangedListener(listener);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.removeOnControllableInsetsChangedListener(listener);
         } else {
             this.mControllableInsetsChangedListeners.remove(listener);
         }
     }
 
     public void replayAndAttach(InsetsController controller) {
-        int i = this.mBehavior;
-        if (i != -1) {
-            controller.setSystemBarsBehavior(i);
+        if (this.mBehavior != -1) {
+            controller.setSystemBarsBehavior(this.mBehavior);
         }
-        int i2 = this.mAppearanceMask;
-        if (i2 != 0) {
-            controller.setSystemBarsAppearance(this.mAppearance, i2);
+        if (this.mAppearanceMask != 0) {
+            controller.setSystemBarsAppearance(this.mAppearance, this.mAppearanceMask);
         }
-        int i3 = this.mCaptionInsetsHeight;
-        if (i3 != 0) {
-            controller.setCaptionInsetsHeight(i3);
+        if (this.mAppearanceFromResourceMask != 0) {
+            controller.setSystemBarsAppearanceFromResource(this.mAppearanceFromResource, this.mAppearanceFromResourceMask);
+        }
+        if (this.mImeCaptionBarInsetsHeight != 0) {
+            controller.setImeCaptionBarInsetsHeight(this.mImeCaptionBarInsetsHeight);
         }
         if (this.mAnimationsDisabled) {
             controller.setAnimationsDisabled(true);
         }
         int size = this.mRequests.size();
-        for (int i4 = 0; i4 < size; i4++) {
-            this.mRequests.get(i4).replay(controller);
+        for (int i = 0; i < size; i++) {
+            this.mRequests.get(i).replay(controller);
         }
         int size2 = this.mControllableInsetsChangedListeners.size();
-        for (int i5 = 0; i5 < size2; i5++) {
-            controller.addOnControllableInsetsChangedListener(this.mControllableInsetsChangedListeners.get(i5));
+        for (int i2 = 0; i2 < size2; i2++) {
+            controller.addOnControllableInsetsChangedListener(this.mControllableInsetsChangedListeners.get(i2));
         }
-        WindowInsetsAnimationControlListener windowInsetsAnimationControlListener = this.mLoggingListener;
-        if (windowInsetsAnimationControlListener != null) {
-            controller.setSystemDrivenInsetsAnimationLoggingListener(windowInsetsAnimationControlListener);
+        if (this.mLoggingListener != null) {
+            controller.setSystemDrivenInsetsAnimationLoggingListener(this.mLoggingListener);
         }
         this.mRequests.clear();
         this.mControllableInsetsChangedListeners.clear();
         this.mBehavior = -1;
         this.mAppearance = 0;
         this.mAppearanceMask = 0;
+        this.mAppearanceFromResource = 0;
+        this.mAppearanceFromResourceMask = 0;
         this.mAnimationsDisabled = false;
         this.mLoggingListener = null;
         this.mRequestedVisibleTypes = WindowInsets.Type.defaultVisible();
@@ -186,9 +187,8 @@ public class PendingInsetsController implements WindowInsetsController {
 
     @Override // android.view.WindowInsetsController
     public void setSystemDrivenInsetsAnimationLoggingListener(WindowInsetsAnimationControlListener listener) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.setSystemDrivenInsetsAnimationLoggingListener(listener);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.setSystemDrivenInsetsAnimationLoggingListener(listener);
         } else {
             this.mLoggingListener = listener;
         }
@@ -196,15 +196,13 @@ public class PendingInsetsController implements WindowInsetsController {
 
     @Override // android.view.WindowInsetsController
     public void controlWindowInsetsAnimation(int types, long durationMillis, Interpolator interpolator, CancellationSignal cancellationSignal, WindowInsetsAnimationControlListener listener) {
-        InsetsController insetsController = this.mReplayedInsetsController;
-        if (insetsController != null) {
-            insetsController.controlWindowInsetsAnimation(types, durationMillis, interpolator, cancellationSignal, listener);
+        if (this.mReplayedInsetsController != null) {
+            this.mReplayedInsetsController.controlWindowInsetsAnimation(types, durationMillis, interpolator, cancellationSignal, listener);
         } else {
             listener.onCancelled(null);
         }
     }
 
-    /* loaded from: classes4.dex */
     private static class ShowRequest implements PendingRequest {
         private final int mTypes;
 
@@ -218,7 +216,6 @@ public class PendingInsetsController implements WindowInsetsController {
         }
     }
 
-    /* loaded from: classes4.dex */
     private static class HideRequest implements PendingRequest {
         private final int mTypes;
 

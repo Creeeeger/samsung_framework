@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IRefreshRateToken extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.hardware.display.IRefreshRateToken";
 
     void release() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRefreshRateToken {
         @Override // com.samsung.android.hardware.display.IRefreshRateToken
         public void release() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IRefreshRateToken extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRefreshRateToken {
         static final int TRANSACTION_release = 1;
 
@@ -67,24 +65,21 @@ public interface IRefreshRateToken extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRefreshRateToken.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRefreshRateToken.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRefreshRateToken.DESCRIPTOR);
+                case 1:
+                    release();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            release();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRefreshRateToken {
+        private static class Proxy implements IRefreshRateToken {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

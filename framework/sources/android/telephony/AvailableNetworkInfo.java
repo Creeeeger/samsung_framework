@@ -9,17 +9,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class AvailableNetworkInfo implements Parcelable {
     public static final Parcelable.Creator<AvailableNetworkInfo> CREATOR = new Parcelable.Creator<AvailableNetworkInfo>() { // from class: android.telephony.AvailableNetworkInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AvailableNetworkInfo createFromParcel(Parcel in) {
             return new AvailableNetworkInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AvailableNetworkInfo[] newArray(int size) {
             return new AvailableNetworkInfo[size];
@@ -37,16 +36,7 @@ public final class AvailableNetworkInfo implements Parcelable {
     private int mSubId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AvailableNetworkInfoPriority {
-    }
-
-    /* synthetic */ AvailableNetworkInfo(int i, int i2, List list, List list2, List list3, AvailableNetworkInfoIA availableNetworkInfoIA) {
-        this(i, i2, list, list2, list3);
-    }
-
-    /* synthetic */ AvailableNetworkInfo(Parcel parcel, AvailableNetworkInfoIA availableNetworkInfoIA) {
-        this(parcel);
     }
 
     public int getSubId() {
@@ -86,15 +76,12 @@ public final class AvailableNetworkInfo implements Parcelable {
     private AvailableNetworkInfo(Parcel in) {
         this.mSubId = in.readInt();
         this.mPriority = in.readInt();
-        ArrayList<String> arrayList = new ArrayList<>();
-        this.mMccMncs = arrayList;
-        in.readStringList(arrayList);
-        ArrayList<Integer> arrayList2 = new ArrayList<>();
-        this.mBands = arrayList2;
-        in.readList(arrayList2, Integer.class.getClassLoader(), Integer.class);
-        ArrayList<RadioAccessSpecifier> arrayList3 = new ArrayList<>();
-        this.mRadioAccessSpecifiers = arrayList3;
-        in.readList(arrayList3, RadioAccessSpecifier.class.getClassLoader(), RadioAccessSpecifier.class);
+        this.mMccMncs = new ArrayList<>();
+        in.readStringList(this.mMccMncs);
+        this.mBands = new ArrayList<>();
+        in.readList(this.mBands, Integer.class.getClassLoader(), Integer.class);
+        this.mRadioAccessSpecifiers = new ArrayList<>();
+        in.readList(this.mRadioAccessSpecifiers, RadioAccessSpecifier.class.getClassLoader(), RadioAccessSpecifier.class);
     }
 
     public AvailableNetworkInfo(int subId, int priority, List<String> mccMncs, List<Integer> bands) {
@@ -110,10 +97,9 @@ public final class AvailableNetworkInfo implements Parcelable {
     }
 
     public boolean equals(Object o) {
-        ArrayList<String> arrayList;
         try {
             AvailableNetworkInfo ani = (AvailableNetworkInfo) o;
-            return o != null && this.mSubId == ani.mSubId && this.mPriority == ani.mPriority && (arrayList = this.mMccMncs) != null && arrayList.equals(ani.mMccMncs) && this.mBands.equals(ani.mBands) && this.mRadioAccessSpecifiers.equals(ani.getRadioAccessSpecifiers());
+            return o != null && this.mSubId == ani.mSubId && this.mPriority == ani.mPriority && this.mMccMncs != null && this.mMccMncs.equals(ani.mMccMncs) && this.mBands.equals(ani.mBands) && this.mRadioAccessSpecifiers.equals(ani.getRadioAccessSpecifiers());
         } catch (ClassCastException e) {
             return false;
         }
@@ -123,28 +109,10 @@ public final class AvailableNetworkInfo implements Parcelable {
         return Objects.hash(Integer.valueOf(this.mSubId), Integer.valueOf(this.mPriority), this.mMccMncs, this.mBands, this.mRadioAccessSpecifiers);
     }
 
-    /* renamed from: android.telephony.AvailableNetworkInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AvailableNetworkInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AvailableNetworkInfo createFromParcel(Parcel in) {
-            return new AvailableNetworkInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AvailableNetworkInfo[] newArray(int size) {
-            return new AvailableNetworkInfo[size];
-        }
-    }
-
     public String toString() {
         return "AvailableNetworkInfo: mSubId: " + this.mSubId + " mPriority: " + this.mPriority + " mMccMncs: " + Arrays.toString(this.mMccMncs.toArray()) + " mBands: " + Arrays.toString(this.mBands.toArray()) + " mRadioAccessSpecifiers: " + Arrays.toString(this.mRadioAccessSpecifiers.toArray());
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mSubId;
         private int mPriority = 3;

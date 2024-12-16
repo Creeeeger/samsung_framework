@@ -11,16 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TunedInfo implements Parcelable {
     public static final int APP_TAG_SELF = 0;
     public static final int APP_TYPE_NON_SYSTEM = 3;
     public static final int APP_TYPE_SELF = 1;
     public static final int APP_TYPE_SYSTEM = 2;
     public static final Parcelable.Creator<TunedInfo> CREATOR = new Parcelable.Creator<TunedInfo>() { // from class: android.media.tv.TunedInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunedInfo createFromParcel(Parcel source) {
             try {
@@ -31,6 +29,7 @@ public final class TunedInfo implements Parcelable {
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunedInfo[] newArray(int size) {
             return new TunedInfo[size];
@@ -46,34 +45,7 @@ public final class TunedInfo implements Parcelable {
     private final boolean mIsVisible;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AppType {
-    }
-
-    /* synthetic */ TunedInfo(Parcel parcel, TunedInfoIA tunedInfoIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.media.tv.TunedInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TunedInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunedInfo createFromParcel(Parcel source) {
-            try {
-                return new TunedInfo(source);
-            } catch (Exception e) {
-                Log.e(TunedInfo.TAG, "Exception creating TunedInfo from parcel", e);
-                return null;
-            }
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunedInfo[] newArray(int size) {
-            return new TunedInfo[size];
-        }
     }
 
     public TunedInfo(String inputId, Uri channelUri, boolean isRecordingSession, boolean isVisible, boolean isMainSession, int appType, int appTag) {
@@ -133,8 +105,7 @@ public final class TunedInfo implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.mInputId);
-        Uri uri = this.mChannelUri;
-        parcel.writeString(uri == null ? null : uri.toString());
+        parcel.writeString(this.mChannelUri == null ? null : this.mChannelUri.toString());
         parcel.writeInt(this.mIsRecordingSession ? 1 : 0);
         parcel.writeInt(this.mIsVisible ? 1 : 0);
         parcel.writeInt(this.mIsMainSession ? 1 : 0);

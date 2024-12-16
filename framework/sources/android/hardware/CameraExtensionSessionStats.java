@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class CameraExtensionSessionStats implements Parcelable {
     public static final Parcelable.Creator<CameraExtensionSessionStats> CREATOR = new Parcelable.Creator<CameraExtensionSessionStats>() { // from class: android.hardware.CameraExtensionSessionStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraExtensionSessionStats createFromParcel(Parcel _aidl_source) {
             CameraExtensionSessionStats _aidl_out = new CameraExtensionSessionStats();
@@ -17,6 +15,7 @@ public class CameraExtensionSessionStats implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraExtensionSessionStats[] newArray(int _aidl_size) {
             return new CameraExtensionSessionStats[_aidl_size];
@@ -27,8 +26,8 @@ public class CameraExtensionSessionStats implements Parcelable {
     public String key;
     public int type = -1;
     public boolean isAdvanced = false;
+    public int captureFormat = 0;
 
-    /* loaded from: classes.dex */
     public @interface Type {
         public static final int EXTENSION_AUTOMATIC = 0;
         public static final int EXTENSION_BOKEH = 2;
@@ -36,25 +35,6 @@ public class CameraExtensionSessionStats implements Parcelable {
         public static final int EXTENSION_HDR = 3;
         public static final int EXTENSION_NIGHT = 4;
         public static final int EXTENSION_NONE = -1;
-    }
-
-    /* renamed from: android.hardware.CameraExtensionSessionStats$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CameraExtensionSessionStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraExtensionSessionStats createFromParcel(Parcel _aidl_source) {
-            CameraExtensionSessionStats _aidl_out = new CameraExtensionSessionStats();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraExtensionSessionStats[] newArray(int _aidl_size) {
-            return new CameraExtensionSessionStats[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -66,6 +46,7 @@ public class CameraExtensionSessionStats implements Parcelable {
         _aidl_parcel.writeString(this.clientName);
         _aidl_parcel.writeInt(this.type);
         _aidl_parcel.writeBoolean(this.isAdvanced);
+        _aidl_parcel.writeInt(this.captureFormat);
         int _aidl_end_pos = _aidl_parcel.dataPosition();
         _aidl_parcel.setDataPosition(_aidl_start_pos);
         _aidl_parcel.writeInt(_aidl_end_pos - _aidl_start_pos);
@@ -116,8 +97,16 @@ public class CameraExtensionSessionStats implements Parcelable {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
                 _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.isAdvanced = _aidl_parcel.readBoolean();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
             } else {
-                this.isAdvanced = _aidl_parcel.readBoolean();
+                this.captureFormat = _aidl_parcel.readInt();
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }

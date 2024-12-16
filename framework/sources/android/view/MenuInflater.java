@@ -21,8 +21,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes4.dex */
 public class MenuInflater {
-    private static final Class<?>[] ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE;
-    private static final Class<?>[] ACTION_VIEW_CONSTRUCTOR_SIGNATURE;
     private static final String LOG_TAG = "MenuInflater";
     private static final int NO_ID = 0;
     private static final String XML_GROUP = "group";
@@ -32,26 +30,20 @@ public class MenuInflater {
     private final Object[] mActionViewConstructorArguments;
     private Context mContext;
     private Object mRealOwner;
-
-    static {
-        Class<?>[] clsArr = {Context.class};
-        ACTION_VIEW_CONSTRUCTOR_SIGNATURE = clsArr;
-        ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE = clsArr;
-    }
+    private static final Class<?>[] ACTION_VIEW_CONSTRUCTOR_SIGNATURE = {Context.class};
+    private static final Class<?>[] ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE = ACTION_VIEW_CONSTRUCTOR_SIGNATURE;
 
     public MenuInflater(Context context) {
         this.mContext = context;
-        Object[] objArr = {context};
-        this.mActionViewConstructorArguments = objArr;
-        this.mActionProviderConstructorArguments = objArr;
+        this.mActionViewConstructorArguments = new Object[]{context};
+        this.mActionProviderConstructorArguments = this.mActionViewConstructorArguments;
     }
 
     public MenuInflater(Context context, Object realOwner) {
         this.mContext = context;
         this.mRealOwner = realOwner;
-        Object[] objArr = {context};
-        this.mActionViewConstructorArguments = objArr;
-        this.mActionProviderConstructorArguments = objArr;
+        this.mActionViewConstructorArguments = new Object[]{context};
+        this.mActionProviderConstructorArguments = this.mActionViewConstructorArguments;
     }
 
     public void inflate(int menuRes, Menu menu) {
@@ -76,10 +68,10 @@ public class MenuInflater {
     /* JADX WARN: Code restructure failed: missing block: B:10:0x0047, code lost:
     
         switch(r1) {
-            case 1: goto L130;
-            case 2: goto L110;
-            case 3: goto L89;
-            default: goto L142;
+            case 1: goto L58;
+            case 2: goto L38;
+            case 3: goto L17;
+            default: goto L70;
         };
      */
     /* JADX WARN: Code restructure failed: missing block: B:11:0x004c, code lost:
@@ -88,11 +80,11 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:12:0x0050, code lost:
     
-        if (r2 == false) goto L94;
+        if (r2 == false) goto L22;
      */
     /* JADX WARN: Code restructure failed: missing block: B:14:0x0056, code lost:
     
-        if (r8.equals(r3) == false) goto L94;
+        if (r8.equals(r3) == false) goto L22;
      */
     /* JADX WARN: Code restructure failed: missing block: B:15:0x0058, code lost:
     
@@ -105,7 +97,7 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:19:0x0060, code lost:
     
-        if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L97;
+        if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L25;
      */
     /* JADX WARN: Code restructure failed: missing block: B:20:0x0062, code lost:
     
@@ -113,19 +105,19 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:23:0x006b, code lost:
     
-        if (r8.equals("item") == false) goto L107;
+        if (r8.equals("item") == false) goto L35;
      */
     /* JADX WARN: Code restructure failed: missing block: B:25:0x0071, code lost:
     
-        if (r0.hasAddedItem() != false) goto L133;
+        if (r0.hasAddedItem() != false) goto L61;
      */
     /* JADX WARN: Code restructure failed: missing block: B:27:0x0077, code lost:
     
-        if (r0.itemActionProvider == null) goto L106;
+        if (r0.itemActionProvider == null) goto L34;
      */
     /* JADX WARN: Code restructure failed: missing block: B:29:0x0081, code lost:
     
-        if (r0.itemActionProvider.hasSubMenu() == false) goto L106;
+        if (r0.itemActionProvider.hasSubMenu() == false) goto L34;
      */
     /* JADX WARN: Code restructure failed: missing block: B:30:0x0083, code lost:
     
@@ -137,7 +129,7 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:36:0x0097, code lost:
     
-        if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L136;
+        if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L64;
      */
     /* JADX WARN: Code restructure failed: missing block: B:37:0x0099, code lost:
     
@@ -145,7 +137,7 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:40:0x009b, code lost:
     
-        if (r2 == false) goto L112;
+        if (r2 == false) goto L40;
      */
     /* JADX WARN: Code restructure failed: missing block: B:41:0x009e, code lost:
     
@@ -153,7 +145,7 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:42:0x00a6, code lost:
     
-        if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L115;
+        if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L43;
      */
     /* JADX WARN: Code restructure failed: missing block: B:43:0x00a8, code lost:
     
@@ -161,7 +153,7 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:46:0x00b0, code lost:
     
-        if (r8.equals("item") == false) goto L118;
+        if (r8.equals("item") == false) goto L46;
      */
     /* JADX WARN: Code restructure failed: missing block: B:47:0x00b2, code lost:
     
@@ -169,7 +161,7 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:50:0x00ba, code lost:
     
-        if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L121;
+        if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L49;
      */
     /* JADX WARN: Code restructure failed: missing block: B:51:0x00bc, code lost:
     
@@ -196,7 +188,7 @@ public class MenuInflater {
      */
     /* JADX WARN: Code restructure failed: missing block: B:8:0x0041, code lost:
     
-        if (r4 != false) goto L129;
+        if (r4 != false) goto L57;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -265,9 +257,9 @@ public class MenuInflater {
             if (r6 == 0) goto L93
             boolean r6 = r0.hasAddedItem()
             if (r6 != 0) goto Ld2
-            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5134$$Nest$fgetitemActionProvider(r0)
+            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5446$$Nest$fgetitemActionProvider(r0)
             if (r6 == 0) goto L8b
-            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5134$$Nest$fgetitemActionProvider(r0)
+            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5446$$Nest$fgetitemActionProvider(r0)
             boolean r6 = r6.hasSubMenu()
             if (r6 == 0) goto L8b
             android.view.SubMenu r6 = r0.addSubMenuItem()
@@ -331,8 +323,7 @@ public class MenuInflater {
         return this.mContext;
     }
 
-    /* loaded from: classes4.dex */
-    public static class InflatedOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
+    private static class InflatedOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
         private static final Class<?>[] PARAM_TYPES = {MenuItem.class};
         private Method mMethod;
         private Object mRealOwner;
@@ -363,6 +354,7 @@ public class MenuInflater {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Object getRealOwner() {
         if (this.mRealOwner == null) {
             this.mRealOwner = findRealOwner(this.mContext);
@@ -380,8 +372,7 @@ public class MenuInflater {
         return owner;
     }
 
-    /* loaded from: classes4.dex */
-    public class MenuState {
+    private class MenuState {
         private static final int defaultGroupId = 0;
         private static final int defaultItemCategory = 0;
         private static final int defaultItemCheckable = 0;
@@ -480,11 +471,10 @@ public class MenuInflater {
             this.itemListenerMethodName = obtainStyledAttributes.getString(12);
             this.itemActionViewLayout = obtainStyledAttributes.getResourceId(15, 0);
             this.itemActionViewClassName = obtainStyledAttributes.getString(16);
-            String string = obtainStyledAttributes.getString(17);
-            this.itemActionProviderClassName = string;
-            boolean z = string != null;
+            this.itemActionProviderClassName = obtainStyledAttributes.getString(17);
+            boolean z = this.itemActionProviderClassName != null;
             if (z && this.itemActionViewLayout == 0 && this.itemActionViewClassName == null) {
-                this.itemActionProvider = (ActionProvider) newInstance(string, MenuInflater.ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE, MenuInflater.this.mActionProviderConstructorArguments);
+                this.itemActionProvider = (ActionProvider) newInstance(this.itemActionProviderClassName, MenuInflater.ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE, MenuInflater.this.mActionProviderConstructorArguments);
             } else {
                 if (z) {
                     Log.w(MenuInflater.LOG_TAG, "Ignoring attribute 'actionProviderClass'. Action view already specified.");
@@ -506,17 +496,14 @@ public class MenuInflater {
 
         private void setItem(MenuItem item) {
             item.setChecked(this.itemChecked).setVisible(this.itemVisible).setEnabled(this.itemEnabled).setCheckable(this.itemCheckable >= 1).setTitleCondensed(this.itemTitleCondensed).setIcon(this.itemIconResId).setAlphabeticShortcut(this.itemAlphabeticShortcut, this.itemAlphabeticModifiers).setNumericShortcut(this.itemNumericShortcut, this.itemNumericModifiers);
-            int i = this.itemShowAsAction;
-            if (i >= 0) {
-                item.setShowAsAction(i);
+            if (this.itemShowAsAction >= 0) {
+                item.setShowAsAction(this.itemShowAsAction);
             }
-            BlendMode blendMode = this.mItemIconBlendMode;
-            if (blendMode != null) {
-                item.setIconTintBlendMode(blendMode);
+            if (this.mItemIconBlendMode != null) {
+                item.setIconTintBlendMode(this.mItemIconBlendMode);
             }
-            ColorStateList colorStateList = this.itemIconTintList;
-            if (colorStateList != null) {
-                item.setIconTintList(colorStateList);
+            if (this.itemIconTintList != null) {
+                item.setIconTintList(this.itemIconTintList);
             }
             if (this.itemListenerMethodName != null) {
                 if (MenuInflater.this.mContext.isRestricted()) {
@@ -531,23 +518,20 @@ public class MenuInflater {
                 }
             }
             boolean actionViewSpecified = false;
-            String str = this.itemActionViewClassName;
-            if (str != null) {
-                View actionView = (View) newInstance(str, MenuInflater.ACTION_VIEW_CONSTRUCTOR_SIGNATURE, MenuInflater.this.mActionViewConstructorArguments);
+            if (this.itemActionViewClassName != null) {
+                View actionView = (View) newInstance(this.itemActionViewClassName, MenuInflater.ACTION_VIEW_CONSTRUCTOR_SIGNATURE, MenuInflater.this.mActionViewConstructorArguments);
                 item.setActionView(actionView);
                 actionViewSpecified = true;
             }
-            int i2 = this.itemActionViewLayout;
-            if (i2 > 0) {
+            if (this.itemActionViewLayout > 0) {
                 if (!actionViewSpecified) {
-                    item.setActionView(i2);
+                    item.setActionView(this.itemActionViewLayout);
                 } else {
                     Log.w(MenuInflater.LOG_TAG, "Ignoring attribute 'itemActionViewLayout'. Action view already specified.");
                 }
             }
-            ActionProvider actionProvider = this.itemActionProvider;
-            if (actionProvider != null) {
-                item.setActionProvider(actionProvider);
+            if (this.itemActionProvider != null) {
+                item.setActionProvider(this.itemActionProvider);
             }
             item.setContentDescription(this.itemContentDescription);
             item.setTooltipText(this.itemTooltipText);

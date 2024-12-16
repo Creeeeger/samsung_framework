@@ -5,16 +5,14 @@ import android.annotation.SystemApi;
 @SystemApi
 /* loaded from: classes.dex */
 public final class InstallationFile {
-    private final InstallationFileParcel mParcel;
+    private final InstallationFileParcel mParcel = new InstallationFileParcel();
 
     public InstallationFile(int location, String name, long lengthBytes, byte[] metadata, byte[] signature) {
-        InstallationFileParcel installationFileParcel = new InstallationFileParcel();
-        this.mParcel = installationFileParcel;
-        installationFileParcel.location = location;
-        installationFileParcel.name = name;
-        installationFileParcel.size = lengthBytes;
-        installationFileParcel.metadata = metadata;
-        installationFileParcel.signature = signature;
+        this.mParcel.location = location;
+        this.mParcel.name = name;
+        this.mParcel.size = lengthBytes;
+        this.mParcel.metadata = metadata;
+        this.mParcel.signature = signature;
     }
 
     public int getLocation() {

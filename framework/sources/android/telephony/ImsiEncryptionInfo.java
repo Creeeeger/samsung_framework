@@ -13,17 +13,16 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ImsiEncryptionInfo implements Parcelable {
     public static final Parcelable.Creator<ImsiEncryptionInfo> CREATOR = new Parcelable.Creator<ImsiEncryptionInfo>() { // from class: android.telephony.ImsiEncryptionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsiEncryptionInfo createFromParcel(Parcel in) {
             return new ImsiEncryptionInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsiEncryptionInfo[] newArray(int size) {
             return new ImsiEncryptionInfo[size];
@@ -106,23 +105,6 @@ public final class ImsiEncryptionInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.ImsiEncryptionInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsiEncryptionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsiEncryptionInfo createFromParcel(Parcel in) {
-            return new ImsiEncryptionInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsiEncryptionInfo[] newArray(int size) {
-            return new ImsiEncryptionInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

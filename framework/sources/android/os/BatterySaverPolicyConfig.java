@@ -12,14 +12,13 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class BatterySaverPolicyConfig implements Parcelable {
     public static final Parcelable.Creator<BatterySaverPolicyConfig> CREATOR = new Parcelable.Creator<BatterySaverPolicyConfig>() { // from class: android.os.BatterySaverPolicyConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BatterySaverPolicyConfig createFromParcel(Parcel in) {
             return new BatterySaverPolicyConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BatterySaverPolicyConfig[] newArray(int size) {
             return new BatterySaverPolicyConfig[size];
@@ -44,14 +43,6 @@ public final class BatterySaverPolicyConfig implements Parcelable {
     private final boolean mForceBackgroundCheck;
     private final int mLocationMode;
     private final int mSoundTriggerMode;
-
-    /* synthetic */ BatterySaverPolicyConfig(Builder builder, BatterySaverPolicyConfigIA batterySaverPolicyConfigIA) {
-        this(builder);
-    }
-
-    /* synthetic */ BatterySaverPolicyConfig(Parcel parcel, BatterySaverPolicyConfigIA batterySaverPolicyConfigIA) {
-        this(parcel);
-    }
 
     private BatterySaverPolicyConfig(Builder in) {
         this.mAdjustBrightnessFactor = Math.max(0.0f, Math.min(in.mAdjustBrightnessFactor, 1.0f));
@@ -104,23 +95,6 @@ public final class BatterySaverPolicyConfig implements Parcelable {
         this.mForceBackgroundCheck = in.readBoolean();
         this.mLocationMode = Math.max(0, Math.min(in.readInt(), 4));
         this.mSoundTriggerMode = Math.max(0, Math.min(in.readInt(), 2));
-    }
-
-    /* renamed from: android.os.BatterySaverPolicyConfig$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BatterySaverPolicyConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BatterySaverPolicyConfig createFromParcel(Parcel in) {
-            return new BatterySaverPolicyConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BatterySaverPolicyConfig[] newArray(int size) {
-            return new BatterySaverPolicyConfig[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -246,7 +220,6 @@ public final class BatterySaverPolicyConfig implements Parcelable {
         return this.mLocationMode;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private float mAdjustBrightnessFactor;
         private boolean mAdvertiseIsEnabled;

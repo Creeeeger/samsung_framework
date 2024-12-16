@@ -15,11 +15,10 @@ public abstract class SQLiteClosable implements Closeable {
 
     public void acquireReference() {
         synchronized (this) {
-            int i = this.mReferenceCount;
-            if (i <= 0) {
+            if (this.mReferenceCount <= 0) {
                 throw new IllegalStateException("attempt to re-open an already-closed object: " + this);
             }
-            this.mReferenceCount = i + 1;
+            this.mReferenceCount++;
         }
     }
 

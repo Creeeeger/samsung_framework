@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IBootstrapAuthenticationCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.IBootstrapAuthenticationCallback";
 
@@ -14,7 +14,6 @@ public interface IBootstrapAuthenticationCallback extends IInterface {
 
     void onKeysAvailable(int i, byte[] bArr, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IBootstrapAuthenticationCallback {
         @Override // android.telephony.IBootstrapAuthenticationCallback
         public void onKeysAvailable(int token, byte[] gbaKey, String btId) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IBootstrapAuthenticationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IBootstrapAuthenticationCallback {
         static final int TRANSACTION_onAuthenticationFailure = 2;
         static final int TRANSACTION_onKeysAvailable = 1;
@@ -76,33 +74,30 @@ public interface IBootstrapAuthenticationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBootstrapAuthenticationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBootstrapAuthenticationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBootstrapAuthenticationCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onKeysAvailable(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAuthenticationFailure(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onKeysAvailable(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAuthenticationFailure(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IBootstrapAuthenticationCallback {
+        private static class Proxy implements IBootstrapAuthenticationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

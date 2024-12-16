@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 public final class Telephony {
     private static final String TAG = "Telephony";
 
-    /* loaded from: classes3.dex */
     public interface BaseMmsColumns extends BaseColumns {
 
         @Deprecated
@@ -192,13 +191,11 @@ public final class Telephony {
         public static final String TRANSACTION_ID = "tr_id";
     }
 
-    /* loaded from: classes3.dex */
     public interface CanonicalAddressesColumns extends BaseColumns {
         public static final String ADDRESS = "address";
         public static final String SUBSCRIPTION_ID = "sub_id";
     }
 
-    /* loaded from: classes3.dex */
     public interface CarrierColumns extends BaseColumns {
         public static final String CARRIER_ID = "carrier_id";
         public static final Uri CONTENT_URI = Uri.parse("content://carrier_information/carrier");
@@ -211,7 +208,6 @@ public final class Telephony {
         public static final String PUBLIC_KEY = "public_key";
     }
 
-    /* loaded from: classes3.dex */
     public interface TextBasedSmsChangesColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://sms-changes");
         public static final String ID = "_id";
@@ -223,7 +219,6 @@ public final class Telephony {
         public static final int TYPE_UPDATE = 0;
     }
 
-    /* loaded from: classes3.dex */
     public interface TextBasedSmsColumns {
         public static final String ADDRESS = "address";
         public static final String BODY = "body";
@@ -260,7 +255,6 @@ public final class Telephony {
         public static final String TYPE = "type";
     }
 
-    /* loaded from: classes3.dex */
     public interface ThreadsColumns extends BaseColumns {
         public static final String ARCHIVED = "archived";
         public static final String DATE = "date";
@@ -278,7 +272,6 @@ public final class Telephony {
     private Telephony() {
     }
 
-    /* loaded from: classes3.dex */
     public static final class Sms implements BaseColumns, TextBasedSmsColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://sms");
         public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -362,7 +355,7 @@ public final class Telephony {
             } else if (markAsRead) {
                 values.put("read", (Integer) 1);
             }
-            values.put(TextBasedSmsColumns.ERROR_CODE, Integer.valueOf(error));
+            values.put("error_code", Integer.valueOf(error));
             return 1 == SqliteWrapper.update(context, context.getContentResolver(), uri, values, null, null);
         }
 
@@ -370,7 +363,6 @@ public final class Telephony {
             return messageType == 5 || messageType == 4 || messageType == 2 || messageType == 6;
         }
 
-        /* loaded from: classes3.dex */
         public static final class Inbox implements BaseColumns, TextBasedSmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://sms/inbox");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -387,7 +379,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Sent implements BaseColumns, TextBasedSmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://sms/sent");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -404,7 +395,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Draft implements BaseColumns, TextBasedSmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://sms/draft");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -421,7 +411,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Outbox implements BaseColumns, TextBasedSmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://sms/outbox");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -438,7 +427,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Conversations implements BaseColumns, TextBasedSmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://sms/conversations");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -449,7 +437,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Intents {
             public static final String ACTION_CHANGE_DEFAULT = "android.provider.Telephony.ACTION_CHANGE_DEFAULT";
             public static final String ACTION_DEFAULT_SMS_PACKAGE_CHANGED = "android.provider.action.DEFAULT_SMS_PACKAGE_CHANGED";
@@ -523,22 +510,15 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Threads implements ThreadsColumns {
         public static final int BROADCAST_THREAD = 1;
         public static final int COMMON_THREAD = 0;
-        public static final Uri CONTENT_URI;
-        public static final Uri OBSOLETE_THREADS_URI;
         private static final long TEMP_RECIPIENT = 9223372036854775806L;
         public static final long TEMP_THREAD_ID = 9223372036854775806L;
         private static final String[] ID_PROJECTION = {"_id"};
         private static final Uri THREAD_ID_CONTENT_URI = Uri.parse("content://mms-sms/threadID");
-
-        static {
-            Uri withAppendedPath = Uri.withAppendedPath(MmsSms.CONTENT_URI, "conversations");
-            CONTENT_URI = withAppendedPath;
-            OBSOLETE_THREADS_URI = Uri.withAppendedPath(withAppendedPath, "obsolete");
-        }
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(MmsSms.CONTENT_URI, "conversations");
+        public static final Uri OBSOLETE_THREADS_URI = Uri.withAppendedPath(CONTENT_URI, "obsolete");
 
         private Threads() {
         }
@@ -634,23 +614,14 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Mms implements BaseMmsColumns {
-        public static final Uri CONTENT_URI;
         public static final String DEFAULT_SORT_ORDER = "date DESC";
-        public static final Pattern NAME_ADDR_EMAIL_PATTERN;
-        public static final Uri REPORT_REQUEST_URI;
-        public static final Uri REPORT_STATUS_URI;
+        public static final Uri CONTENT_URI = Uri.parse("content://mms");
+        public static final Uri REPORT_REQUEST_URI = Uri.withAppendedPath(CONTENT_URI, "report-request");
+        public static final Uri REPORT_STATUS_URI = Uri.withAppendedPath(CONTENT_URI, "report-status");
+        public static final Pattern NAME_ADDR_EMAIL_PATTERN = Pattern.compile("\\s*(\"[^\"]*\"|[^<>\"]+)\\s*<([^<>]+)>\\s*");
 
         private Mms() {
-        }
-
-        static {
-            Uri parse = Uri.parse("content://mms");
-            CONTENT_URI = parse;
-            REPORT_REQUEST_URI = Uri.withAppendedPath(parse, "report-request");
-            REPORT_STATUS_URI = Uri.withAppendedPath(parse, "report-status");
-            NAME_ADDR_EMAIL_PATTERN = Pattern.compile("\\s*(\"[^\"]*\"|[^<>\"]+)\\s*<([^<>]+)>\\s*");
         }
 
         public static Cursor query(ContentResolver cr, String[] projection) {
@@ -686,7 +657,6 @@ public final class Telephony {
             return match.matches();
         }
 
-        /* loaded from: classes3.dex */
         public static final class Inbox implements BaseMmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://mms/inbox");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -695,7 +665,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Sent implements BaseMmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://mms/sent");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -704,7 +673,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Draft implements BaseMmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://mms/drafts");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -713,7 +681,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Outbox implements BaseMmsColumns {
             public static final Uri CONTENT_URI = Uri.parse("content://mms/outbox");
             public static final String DEFAULT_SORT_ORDER = "date DESC";
@@ -722,7 +689,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Addr implements BaseColumns {
             public static final String ADDRESS = "address";
             public static final String CHARSET = "charset";
@@ -740,7 +706,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Part implements BaseColumns {
             public static final String CHARSET = "chset";
             public static final String CONTENT_DISPOSITION = "cd";
@@ -768,7 +733,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Rate {
             public static final Uri CONTENT_URI = Uri.withAppendedPath(Mms.CONTENT_URI, TextToSpeech.Engine.KEY_PARAM_RATE);
             public static final String SENT_TIME = "sent_time";
@@ -778,7 +742,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Intents {
             public static final String CONTENT_CHANGED_ACTION = "android.intent.action.CONTENT_CHANGED";
             public static final String DELETED_CONTENTS = "deleted_contents";
@@ -788,7 +751,6 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class MmsSms implements BaseColumns {
         public static final int ERR_TYPE_GENERIC = 1;
         public static final int ERR_TYPE_GENERIC_PERMANENT = 10;
@@ -812,7 +774,6 @@ public final class Telephony {
         private MmsSms() {
         }
 
-        /* loaded from: classes3.dex */
         public static final class PendingMessages implements BaseColumns {
             public static final Uri CONTENT_URI = Uri.withAppendedPath(MmsSms.CONTENT_URI, ImsConferenceState.STATUS_PENDING);
             public static final String DUE_TIME = "due_time";
@@ -830,7 +791,6 @@ public final class Telephony {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class WordsTable {
             public static final String ID = "_id";
             public static final String INDEXED_TEXT = "index_text";
@@ -843,7 +803,6 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Carriers implements BaseColumns {
         public static final String ALWAYS_ON = "always_on";
         public static final String APN = "apn";
@@ -873,6 +832,7 @@ public final class Telephony {
         @SystemApi
         public static final String EDITED_STATUS = "edited";
         public static final String ENFORCE_KEY = "enforced";
+        public static final String ESIM_BOOTSTRAP_PROVISIONING = "esim_bootstrap_provisioning";
         public static final String INFRASTRUCTURE_BITMASK = "infrastructure_bitmask";
         public static final int INVALID_APN_ID = -1;
         public static final String LINGERING_NETWORK_TYPE_BITMASK = "lingering_network_type_bitmask";
@@ -894,11 +854,7 @@ public final class Telephony {
         @SystemApi
         @Deprecated
         public static final String MTU = "mtu";
-
-        @SystemApi
         public static final String MTU_V4 = "mtu_v4";
-
-        @SystemApi
         public static final String MTU_V6 = "mtu_v6";
         public static final String MVNO_MATCH_DATA = "mvno_match_data";
         public static final String MVNO_TYPE = "mvno_type";
@@ -937,14 +893,10 @@ public final class Telephony {
         @SystemApi
         public static final int USER_DELETED = 2;
         public static final int USER_DELETED_BUT_PRESENT_IN_XML = 3;
-
-        @SystemApi
         public static final String USER_EDITABLE = "user_editable";
 
         @SystemApi
         public static final int USER_EDITED = 1;
-
-        @SystemApi
         public static final String USER_VISIBLE = "user_visible";
 
         @SystemApi
@@ -958,7 +910,6 @@ public final class Telephony {
         public static final Uri PREFERRED_APN_SET_URI = Uri.parse("content://telephony/carriers/preferapnset/subId");
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface EditStatus {
         }
 
@@ -967,7 +918,6 @@ public final class Telephony {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class CellBroadcasts implements BaseColumns {
 
         @SystemApi
@@ -1016,7 +966,6 @@ public final class Telephony {
         }
 
         @SystemApi
-        /* loaded from: classes3.dex */
         public static final class Preference {
             public static final String ENABLE_ALERT_VIBRATION_PREF = "enable_alert_vibrate";
             public static final String ENABLE_AREA_UPDATE_INFO_PREF = "enable_area_update_info_alerts";
@@ -1035,7 +984,6 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ServiceStateTable {
         public static final String AUTHORITY = "service-state";
         public static final Uri CONTENT_URI = Uri.parse("content://service-state/");
@@ -1058,7 +1006,6 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class CarrierId implements BaseColumns {
         public static final String AUTHORITY = "carrier_id";
         public static final String CARRIER_ID = "carrier_id";
@@ -1079,7 +1026,6 @@ public final class Telephony {
             return Uri.withAppendedPath(Uri.withAppendedPath(CONTENT_URI, "specific"), String.valueOf(subscriptionId));
         }
 
-        /* loaded from: classes3.dex */
         public static final class All implements BaseColumns {
             public static final String APN = "apn";
             public static final Uri CONTENT_URI = Uri.parse("content://carrier_id/all");
@@ -1097,7 +1043,6 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SimInfo {
         public static final int COLOR_DEFAULT = 0;
         public static final String COLUMN_ACCESS_RULES = "access_rules";
@@ -1136,8 +1081,10 @@ public final class Telephony {
         public static final String COLUMN_IMS_RCS_UCE_ENABLED = "ims_rcs_uce_enabled";
         public static final String COLUMN_ISO_COUNTRY_CODE = "iso_country_code";
         public static final String COLUMN_IS_EMBEDDED = "is_embedded";
+        public static final String COLUMN_IS_ONLY_NTN = "is_only_ntn";
         public static final String COLUMN_IS_OPPORTUNISTIC = "is_opportunistic";
         public static final String COLUMN_IS_REMOVABLE = "is_removable";
+        public static final String COLUMN_IS_SATELLITE_PROVISIONED_FOR_NON_IP_DATAGRAM = "is_satellite_provisioned_for_non_ip_datagram";
         public static final String COLUMN_MCC = "mcc";
         public static final String COLUMN_MCC_STRING = "mcc_string";
         public static final String COLUMN_MNC = "mnc";
@@ -1151,9 +1098,12 @@ public final class Telephony {
         public static final String COLUMN_SATELLITE_ENABLED = "satellite_enabled";
         public static final String COLUMN_SATELLITE_ENTITLEMENT_PLMNS = "satellite_entitlement_plmns";
         public static final String COLUMN_SATELLITE_ENTITLEMENT_STATUS = "satellite_entitlement_status";
+        public static final String COLUMN_SATELLITE_ESOS_SUPPORTED = "satellite_esos_supported";
+        public static final String COLUMN_SERVICE_CAPABILITIES = "service_capabilities";
         public static final String COLUMN_SIM_SLOT_INDEX = "sim_id";
         public static final String COLUMN_SUBSCRIPTION_TYPE = "subscription_type";
         public static final String COLUMN_TP_MESSAGE_REF = "tp_message_ref";
+        public static final String COLUMN_TRANSFER_STATUS = "transfer_status";
         public static final String COLUMN_UICC_APPLICATIONS_ENABLED = "uicc_applications_enabled";
         public static final String COLUMN_UNIQUE_KEY_SUBSCRIPTION_ID = "_id";
         public static final String COLUMN_USAGE_SETTING = "usage_setting";
@@ -1191,7 +1141,7 @@ public final class Telephony {
         public static final String COLUMN_RCS_CONFIG = "rcs_config";
         public static final String COLUMN_PHONE_NUMBER_SOURCE_CARRIER = "phone_number_source_carrier";
         public static final String COLUMN_PHONE_NUMBER_SOURCE_IMS = "phone_number_source_ims";
-        private static final List<String> ALL_COLUMNS = List.of((Object[]) new String[]{"_id", "icc_id", "sim_id", "display_name", "carrier_name", "name_source", "color", "number", COLUMN_DISPLAY_NUMBER_FORMAT, "data_roaming", "mcc", "mnc", "mcc_string", "mnc_string", "ehplmns", "hplmns", COLUMN_SIM_PROVISIONING_STATUS, "is_embedded", "card_id", "access_rules", "access_rules_from_carrier_configs", "is_removable", "enable_cmas_extreme_threat_alerts", "enable_cmas_severe_threat_alerts", "enable_cmas_amber_alerts", "enable_emergency_alerts", "alert_sound_duration", "alert_reminder_interval", "enable_alert_vibrate", "enable_alert_speech", "enable_etws_test_alerts", "enable_channel_50_alerts", "enable_cmas_test_alerts", "show_cmas_opt_out_dialog", "volte_vt_enabled", "vt_ims_enabled", "wfc_ims_enabled", "wfc_ims_mode", "wfc_ims_roaming_mode", "wfc_ims_roaming_enabled", "is_opportunistic", "group_uuid", COLUMN_IS_METERED, "iso_country_code", "carrier_id", "profile_class", "subscription_type", "group_owner", COLUMN_DATA_ENABLED_OVERRIDE_RULES, "enabled_mobile_data_policies", "imsi", "uicc_applications_enabled", "allowed_network_types", "ims_rcs_uce_enabled", "cross_sim_calling_enabled", COLUMN_RCS_CONFIG, "allowed_network_types_for_reasons", "d2d_sharing_status", "voims_opt_in_status", "d2d_sharing_contacts", "nr_advanced_calling_enabled", COLUMN_PHONE_NUMBER_SOURCE_CARRIER, COLUMN_PHONE_NUMBER_SOURCE_IMS, "port_index", "usage_setting", "tp_message_ref", "user_handle", "satellite_enabled", "satellite_attach_enabled_for_carrier", "satellite_entitlement_status", "satellite_entitlement_plmns"});
+        private static final List<String> ALL_COLUMNS = List.of((Object[]) new String[]{"_id", "icc_id", "sim_id", "display_name", "carrier_name", "name_source", "color", "number", COLUMN_DISPLAY_NUMBER_FORMAT, "data_roaming", "mcc", "mnc", "mcc_string", "mnc_string", "ehplmns", "hplmns", COLUMN_SIM_PROVISIONING_STATUS, "is_embedded", "card_id", "access_rules", "access_rules_from_carrier_configs", "is_removable", "enable_cmas_extreme_threat_alerts", "enable_cmas_severe_threat_alerts", "enable_cmas_amber_alerts", "enable_emergency_alerts", "alert_sound_duration", "alert_reminder_interval", "enable_alert_vibrate", "enable_alert_speech", "enable_etws_test_alerts", "enable_channel_50_alerts", "enable_cmas_test_alerts", "show_cmas_opt_out_dialog", "volte_vt_enabled", "vt_ims_enabled", "wfc_ims_enabled", "wfc_ims_mode", "wfc_ims_roaming_mode", "wfc_ims_roaming_enabled", "is_opportunistic", "group_uuid", COLUMN_IS_METERED, "iso_country_code", "carrier_id", "profile_class", "subscription_type", "group_owner", COLUMN_DATA_ENABLED_OVERRIDE_RULES, "enabled_mobile_data_policies", "imsi", "uicc_applications_enabled", "allowed_network_types", "ims_rcs_uce_enabled", "cross_sim_calling_enabled", COLUMN_RCS_CONFIG, "allowed_network_types_for_reasons", "d2d_sharing_status", "voims_opt_in_status", "d2d_sharing_contacts", "nr_advanced_calling_enabled", COLUMN_PHONE_NUMBER_SOURCE_CARRIER, COLUMN_PHONE_NUMBER_SOURCE_IMS, "port_index", "usage_setting", "tp_message_ref", "user_handle", "satellite_enabled", "satellite_attach_enabled_for_carrier", "is_only_ntn", "service_capabilities", "transfer_status", "satellite_entitlement_status", "satellite_entitlement_plmns", "satellite_esos_supported", "is_satellite_provisioned_for_non_ip_datagram"});
 
         private SimInfo() {
         }
@@ -1201,7 +1151,6 @@ public final class Telephony {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SatelliteDatagrams {
         public static final String PROVIDER_NAME = "satellite";
         public static final String TABLE_NAME = "incoming_datagrams";

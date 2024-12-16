@@ -3,9 +3,11 @@ package android.hardware.camera2.params;
 import android.graphics.ColorSpace;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.impl.CameraMetadataNative;
 import android.hardware.camera2.utils.HashCodeHelpers;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.android.internal.camera.flags.Flags;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -13,17 +15,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class SessionConfiguration implements Parcelable {
     public static final Parcelable.Creator<SessionConfiguration> CREATOR = new Parcelable.Creator<SessionConfiguration>() { // from class: android.hardware.camera2.params.SessionConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SessionConfiguration createFromParcel(Parcel source) {
             return new SessionConfiguration(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SessionConfiguration[] newArray(int size) {
             return new SessionConfiguration[size];
@@ -42,12 +43,7 @@ public final class SessionConfiguration implements Parcelable {
     private CameraCaptureSession.StateCallback mStateCallback;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SessionMode {
-    }
-
-    /* synthetic */ SessionConfiguration(Parcel parcel, SessionConfigurationIA sessionConfigurationIA) {
-        this(parcel);
     }
 
     public SessionConfiguration(int sessionType, List<OutputConfiguration> outputs, Executor executor, CameraCaptureSession.StateCallback cb) {
@@ -58,6 +54,14 @@ public final class SessionConfiguration implements Parcelable {
         this.mOutputConfigurations = Collections.unmodifiableList(new ArrayList(outputs));
         this.mStateCallback = cb;
         this.mExecutor = executor;
+    }
+
+    public SessionConfiguration(int sessionType, List<OutputConfiguration> outputs) {
+        this.mExecutor = null;
+        this.mInputConfig = null;
+        this.mSessionParameters = null;
+        this.mSessionType = sessionType;
+        this.mOutputConfigurations = Collections.unmodifiableList(new ArrayList(outputs));
     }
 
     private SessionConfiguration(Parcel source) {
@@ -71,28 +75,18 @@ public final class SessionConfiguration implements Parcelable {
         boolean isInputMultiResolution = source.readBoolean();
         ArrayList<OutputConfiguration> outConfigs = new ArrayList<>();
         source.readTypedList(outConfigs, OutputConfiguration.CREATOR);
+        if (Flags.featureCombinationQuery()) {
+            boolean hasSessionParameters = source.readBoolean();
+            if (hasSessionParameters) {
+                CameraMetadataNative settings = new CameraMetadataNative();
+                settings.readFromParcel(source);
+            }
+        }
         if (inputWidth > 0 && inputHeight > 0 && inputFormat != -1) {
             this.mInputConfig = new InputConfiguration(inputWidth, inputHeight, inputFormat, isInputMultiResolution);
         }
         this.mSessionType = sessionType;
         this.mOutputConfigurations = outConfigs;
-    }
-
-    /* renamed from: android.hardware.camera2.params.SessionConfiguration$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SessionConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SessionConfiguration createFromParcel(Parcel source) {
-            return new SessionConfiguration(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SessionConfiguration[] newArray(int size) {
-            return new SessionConfiguration[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -101,9 +95,8 @@ public final class SessionConfiguration implements Parcelable {
             throw new IllegalArgumentException("dest must not be null");
         }
         dest.writeInt(this.mSessionType);
-        InputConfiguration inputConfiguration = this.mInputConfig;
-        if (inputConfiguration != null) {
-            dest.writeInt(inputConfiguration.getWidth());
+        if (this.mInputConfig != null) {
+            dest.writeInt(this.mInputConfig.getWidth());
             dest.writeInt(this.mInputConfig.getHeight());
             dest.writeInt(this.mInputConfig.getFormat());
             dest.writeBoolean(this.mInputConfig.isMultiResolution());
@@ -114,6 +107,15 @@ public final class SessionConfiguration implements Parcelable {
             dest.writeBoolean(false);
         }
         dest.writeTypedList(this.mOutputConfigurations);
+        if (Flags.featureCombinationQuery()) {
+            if (this.mSessionParameters != null) {
+                dest.writeBoolean(true);
+                CameraMetadataNative metadata = this.mSessionParameters.getNativeCopy();
+                metadata.writeToParcel(dest, 0);
+                return;
+            }
+            dest.writeBoolean(false);
+        }
     }
 
     @Override // android.os.Parcelable
@@ -202,5 +204,10 @@ public final class SessionConfiguration implements Parcelable {
             return ColorSpace.get(ColorSpace.Named.values()[this.mColorSpace]);
         }
         return null;
+    }
+
+    public void setStateCallback(Executor executor, CameraCaptureSession.StateCallback cb) {
+        this.mStateCallback = cb;
+        this.mExecutor = executor;
     }
 }

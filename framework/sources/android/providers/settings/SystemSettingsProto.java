@@ -19,6 +19,7 @@ public final class SystemSettingsProto {
     public static final long LOCK_TO_APP_ENABLED = 1146756268046L;
     public static final long MEDIA_BUTTON_RECEIVER = 1146756268048L;
     public static final long NOTIFICATION = 1146756268049L;
+    public static final long POINTER = 1146756268069L;
     public static final long POINTER_SPEED = 1146756268050L;
     public static final long RINGTONE = 1146756268051L;
     public static final long ROTATION = 1146756268052L;
@@ -37,7 +38,6 @@ public final class SystemSettingsProto {
     public static final long VOLUME = 1146756268065L;
     public static final long WHEN_TO_MAKE_WIFI_CALLS = 1146756268066L;
 
-    /* loaded from: classes3.dex */
     public final class Alarm {
         public static final long ALERT_CACHE = 1146756268034L;
         public static final long DEFAULT_URI = 1146756268033L;
@@ -46,7 +46,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Bluetooth {
         public static final long DISCOVERABILITY = 1146756268033L;
         public static final long DISCOVERABILITY_TIMEOUT_SECS = 1146756268034L;
@@ -55,7 +54,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class DevOptions {
         public static final long POINTER_LOCATION = 1146756268033L;
         public static final long SHOW_KEY_PRESSES = 1146756268036L;
@@ -66,7 +64,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class DtmfTone {
         public static final long PLAY_WHEN_DIALING = 1146756268033L;
         public static final long TYPE_PLAYED_WHEN_DIALING = 1146756268034L;
@@ -75,7 +72,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class HapticFeedback {
         public static final long ENABLED = 1146756268033L;
         public static final long INTENSITY = 1146756268034L;
@@ -84,7 +80,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Lockscreen {
         public static final long DISABLED = 1146756268034L;
         public static final long SOUNDS_ENABLED = 1146756268033L;
@@ -93,7 +88,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Notification {
         public static final long CAMERA_FLASH_NOTIFICATION = 1146756268037L;
         public static final long LIGHT_PULSE = 1146756268035L;
@@ -107,7 +101,14 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
+    public final class Pointer {
+        public static final long POINTER_FILL_STYLE = 1146756268033L;
+        public static final long POINTER_SCALE = 1146756268035L;
+
+        public Pointer() {
+        }
+    }
+
     public final class Ringtone {
         public static final long CACHE = 1146756268034L;
         public static final long DEFAULT_URI = 1146756268033L;
@@ -116,7 +117,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Rotation {
         public static final long ACCELEROMETER_ROTATION = 1146756268033L;
         public static final long HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY = 1146756268035L;
@@ -126,7 +126,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Screen {
         public static final long AUTO_BRIGHTNESS_ADJ = 1146756268037L;
         public static final long BRIGHTNESS = 1146756268034L;
@@ -140,7 +139,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Sip {
         public static final long ADDRESS_ONLY = 1146756268036L;
         public static final long ALWAYS = 1146756268035L;
@@ -151,7 +149,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Text {
         public static final long AUTO_CAPS = 1146756268034L;
         public static final long AUTO_PUNCTUATE = 1146756268035L;
@@ -162,18 +159,17 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Touchpad {
         public static final long NATURAL_SCROLLING = 1146756268033L;
         public static final long POINTER_SPEED = 1146756268034L;
         public static final long RIGHT_CLICK_ZONE = 1146756268035L;
+        public static final long TAP_DRAGGING = 1146756268037L;
         public static final long TAP_TO_CLICK = 1146756268036L;
 
         public Touchpad() {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Vibrate {
         public static final long ALARM_INTENSITY = 1146756268037L;
         public static final long INPUT_DEVICES = 1146756268034L;
@@ -187,7 +183,6 @@ public final class SystemSettingsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Volume {
         public static final long ACCESSIBILITY = 1146756268040L;
         public static final long ALARM = 1146756268037L;

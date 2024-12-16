@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioDataIndication extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$data$IRadioDataIndication".replace('$', '.');
-    public static final String HASH = "cb458326b02e0e87143f24118543e8cc7d6a9e8e";
-    public static final int VERSION = 2;
+    public static final String HASH = "cd8913a3f9d39f1cc0a5fcf9e90257be94ec38df";
+    public static final int VERSION = 3;
 
     void dataCallListChanged(int i, SetupDataCallResult[] setupDataCallResultArr) throws RemoteException;
 
@@ -26,7 +26,6 @@ public interface IRadioDataIndication extends IInterface {
 
     void unthrottleApn(int i, DataProfileInfo dataProfileInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioDataIndication {
         @Override // android.hardware.radio.data.IRadioDataIndication
         public void dataCallListChanged(int type, SetupDataCallResult[] dcList) throws RemoteException {
@@ -64,7 +63,6 @@ public interface IRadioDataIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioDataIndication {
         static final int TRANSACTION_dataCallListChanged = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -101,59 +99,57 @@ public interface IRadioDataIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    SetupDataCallResult[] _arg1 = (SetupDataCallResult[]) data.createTypedArray(SetupDataCallResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    dataCallListChanged(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    KeepaliveStatus _arg12 = (KeepaliveStatus) data.readTypedObject(KeepaliveStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    keepaliveStatus(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    PcoDataInfo _arg13 = (PcoDataInfo) data.readTypedObject(PcoDataInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    pcoData(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    DataProfileInfo _arg14 = (DataProfileInfo) data.readTypedObject(DataProfileInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    unthrottleApn(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    SlicingConfig _arg15 = (SlicingConfig) data.readTypedObject(SlicingConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    slicingConfigChanged(_arg05, _arg15);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            SetupDataCallResult[] _arg1 = (SetupDataCallResult[]) data.createTypedArray(SetupDataCallResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            dataCallListChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            KeepaliveStatus _arg12 = (KeepaliveStatus) data.readTypedObject(KeepaliveStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            keepaliveStatus(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            PcoDataInfo _arg13 = (PcoDataInfo) data.readTypedObject(PcoDataInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            pcoData(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            DataProfileInfo _arg14 = (DataProfileInfo) data.readTypedObject(DataProfileInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            unthrottleApn(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            SlicingConfig _arg15 = (SlicingConfig) data.readTypedObject(SlicingConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            slicingConfigChanged(_arg05, _arg15);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioDataIndication {
+        private static class Proxy implements IRadioDataIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

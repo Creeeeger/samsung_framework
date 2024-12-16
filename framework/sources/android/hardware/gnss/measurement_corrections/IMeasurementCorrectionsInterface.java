@@ -21,7 +21,6 @@ public interface IMeasurementCorrectionsInterface extends IInterface {
 
     void setCorrections(MeasurementCorrections measurementCorrections) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMeasurementCorrectionsInterface {
         @Override // android.hardware.gnss.measurement_corrections.IMeasurementCorrectionsInterface
         public void setCorrections(MeasurementCorrections corrections) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IMeasurementCorrectionsInterface extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMeasurementCorrectionsInterface {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -101,41 +99,39 @@ public interface IMeasurementCorrectionsInterface extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    MeasurementCorrections _arg0 = (MeasurementCorrections) data.readTypedObject(MeasurementCorrections.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCorrections(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    IMeasurementCorrectionsCallback _arg02 = IMeasurementCorrectionsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MeasurementCorrections _arg0 = (MeasurementCorrections) data.readTypedObject(MeasurementCorrections.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCorrections(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IMeasurementCorrectionsCallback _arg02 = IMeasurementCorrectionsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMeasurementCorrectionsInterface {
+        private static class Proxy implements IMeasurementCorrectionsInterface {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

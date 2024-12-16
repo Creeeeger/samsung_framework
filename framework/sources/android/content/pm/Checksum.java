@@ -14,19 +14,19 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class Checksum implements Parcelable {
     public static final Parcelable.Creator<Checksum> CREATOR = new Parcelable.Creator<Checksum>() { // from class: android.content.pm.Checksum.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Checksum[] newArray(int size) {
             return new Checksum[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Checksum createFromParcel(Parcel in) {
             return new Checksum(in);
         }
     };
+    public static final int MAX_CHECKSUM_SIZE_BYTES = 64;
     public static final int TYPE_PARTIAL_MERKLE_ROOT_1M_SHA256 = 32;
     public static final int TYPE_PARTIAL_MERKLE_ROOT_1M_SHA512 = 64;
 
@@ -46,12 +46,10 @@ public final class Checksum implements Parcelable {
     private final byte[] mValue;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Type {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface TypeMask {
     }
 
@@ -71,9 +69,9 @@ public final class Checksum implements Parcelable {
 
     public Checksum(int type, byte[] value) {
         this.mType = type;
-        AnnotationValidations.validate((Class<? extends Annotation>) Type.class, (Annotation) null, type);
+        AnnotationValidations.validate((Class<? extends Annotation>) Type.class, (Annotation) null, this.mType);
         this.mValue = value;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) value);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mValue);
     }
 
     public int getType() {
@@ -99,26 +97,9 @@ public final class Checksum implements Parcelable {
         int type = in.readInt();
         byte[] value = in.createByteArray();
         this.mType = type;
-        AnnotationValidations.validate((Class<? extends Annotation>) Type.class, (Annotation) null, type);
+        AnnotationValidations.validate((Class<? extends Annotation>) Type.class, (Annotation) null, this.mType);
         this.mValue = value;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) value);
-    }
-
-    /* renamed from: android.content.pm.Checksum$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Checksum> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Checksum[] newArray(int size) {
-            return new Checksum[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Checksum createFromParcel(Parcel in) {
-            return new Checksum(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mValue);
     }
 
     @Deprecated

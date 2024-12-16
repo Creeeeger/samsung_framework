@@ -9,6 +9,9 @@ public abstract class DrmInitData {
     @Deprecated
     public abstract SchemeInitData get(UUID uuid);
 
+    DrmInitData() {
+    }
+
     public int getSchemeInitDataCount() {
         return 0;
     }
@@ -17,7 +20,6 @@ public abstract class DrmInitData {
         throw new IndexOutOfBoundsException();
     }
 
-    /* loaded from: classes2.dex */
     public static final class SchemeInitData {
         public static final UUID UUID_NIL = new UUID(0, 0);
         public final byte[] data;

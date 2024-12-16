@@ -15,7 +15,6 @@ public interface ISemWifiApClientListUpdateCallback extends IInterface {
 
     void onOverallDataLimitChanged(long j) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemWifiApClientListUpdateCallback {
         @Override // com.samsung.android.wifi.ISemWifiApClientListUpdateCallback
         public void onClientListUpdated(List<SemWifiApClientDetails> clientsList, long totalDataUsageInBytes) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ISemWifiApClientListUpdateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemWifiApClientListUpdateCallback {
         static final int TRANSACTION_onClientListUpdated = 1;
         static final int TRANSACTION_onOverallDataLimitChanged = 2;
@@ -77,32 +75,28 @@ public interface ISemWifiApClientListUpdateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemWifiApClientListUpdateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemWifiApClientListUpdateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemWifiApClientListUpdateCallback.DESCRIPTOR);
+                case 1:
+                    List<SemWifiApClientDetails> _arg0 = data.createTypedArrayList(SemWifiApClientDetails.CREATOR);
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onClientListUpdated(_arg0, _arg1);
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onOverallDataLimitChanged(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SemWifiApClientDetails> _arg0 = data.createTypedArrayList(SemWifiApClientDetails.CREATOR);
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onClientListUpdated(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onOverallDataLimitChanged(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemWifiApClientListUpdateCallback {
+        private static class Proxy implements ISemWifiApClientListUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

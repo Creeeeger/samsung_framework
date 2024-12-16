@@ -30,7 +30,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     private static final float OUT_OF_BOUNDARY = -9999.0f;
     private static final String TAG = "SemIndexScrollView";
     private static final float TRANSPARENCY_VALUE = 0.8f;
-    private final boolean debug;
+    private static final boolean debug = false;
     private Context mContext;
     private String mCurrentIndex;
     private boolean mHasOverlayChild;
@@ -50,7 +50,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     private ViewGroupOverlay mViewGroupOverlay;
 
     @Deprecated
-    /* loaded from: classes6.dex */
     public interface OnIndexBarEventListener {
         @Deprecated
         void onIndexChanged(int i);
@@ -65,7 +64,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     @Deprecated
     public SemIndexScrollView(Context context) {
         super(context);
-        this.debug = false;
         this.mIndexBarGravity = 1;
         this.mIndexerObserver = new IndexerObserver();
         this.mIsSimpleIndexScroll = false;
@@ -75,9 +73,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         this.mTouchY = OUT_OF_BOUNDARY;
         this.mStartTouchDown = 0L;
         this.mPreviewDelayRunnable = new Runnable() { // from class: com.samsung.android.widget.SemIndexScrollView.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 if (SemIndexScrollView.this.mIndexScrollPreview != null) {
@@ -93,7 +88,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     @Deprecated
     public SemIndexScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.debug = false;
         this.mIndexBarGravity = 1;
         this.mIndexerObserver = new IndexerObserver();
         this.mIsSimpleIndexScroll = false;
@@ -103,9 +97,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         this.mTouchY = OUT_OF_BOUNDARY;
         this.mStartTouchDown = 0L;
         this.mPreviewDelayRunnable = new Runnable() { // from class: com.samsung.android.widget.SemIndexScrollView.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 if (SemIndexScrollView.this.mIndexScrollPreview != null) {
@@ -115,15 +106,14 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         };
         this.mContext = context;
         this.mIndexBarGravity = 1;
-        init(context, 1);
+        init(context, this.mIndexBarGravity);
     }
 
     private void init(Context context, int gravity) {
         this.mViewGroupOverlay = getOverlay();
         if (this.mIndexScrollPreview == null) {
-            IndexScrollPreview indexScrollPreview = new IndexScrollPreview(this.mContext);
-            this.mIndexScrollPreview = indexScrollPreview;
-            indexScrollPreview.setLayout(0, 0, getWidth(), getHeight());
+            this.mIndexScrollPreview = new IndexScrollPreview(this.mContext);
+            this.mIndexScrollPreview.setLayout(0, 0, getWidth(), getHeight());
             this.mViewGroupOverlay.add(this.mIndexScrollPreview);
         }
         this.mHasOverlayChild = true;
@@ -131,55 +121,43 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchDraw(Canvas canvas) {
-        IndexScrollPreview indexScrollPreview;
+    protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        IndexScroll indexScroll = this.mIndexScroll;
-        if (indexScroll == null) {
+        if (this.mIndexScroll == null) {
             return;
         }
-        indexScroll.setDimensions(getWidth(), getHeight());
-        String str = this.mCurrentIndex;
-        if (str != null && str.length() != 0 && (indexScrollPreview = this.mIndexScrollPreview) != null) {
-            indexScrollPreview.setLayout(0, 0, getWidth(), getHeight());
+        this.mIndexScroll.setDimensions(getWidth(), getHeight());
+        if (this.mCurrentIndex != null && this.mCurrentIndex.length() != 0 && this.mIndexScrollPreview != null) {
+            this.mIndexScrollPreview.setLayout(0, 0, getWidth(), getHeight());
             this.mIndexScrollPreview.invalidate();
         }
-        IndexScroll indexScroll2 = this.mIndexScroll;
-        if (indexScroll2 != null && indexScroll2.isAlphabetInit()) {
+        if (this.mIndexScroll != null && this.mIndexScroll.isAlphabetInit()) {
             this.mIndexScroll.draw(canvas);
         }
     }
 
     @Deprecated
     public void setIndexer(SemAbstractIndexer indexer) {
-        SemAbstractIndexer semAbstractIndexer;
-        if (indexer == null) {
-            throw new IllegalArgumentException("SemIndexView.setIndexer(indexer) : indexer=null.");
-        }
-        SemAbstractIndexer semAbstractIndexer2 = this.mIndexer;
-        if (semAbstractIndexer2 != null && this.mRegisteredDataSetObserver) {
-            semAbstractIndexer2.unregisterDataSetObserver(this.mIndexerObserver);
+        if (this.mIndexer != null && this.mRegisteredDataSetObserver) {
+            this.mIndexer.unregisterDataSetObserver(this.mIndexerObserver);
             this.mRegisteredDataSetObserver = false;
         }
         this.mIsSimpleIndexScroll = false;
         this.mIndexer = indexer;
-        indexer.registerDataSetObserver(this.mIndexerObserver);
+        this.mIndexer.registerDataSetObserver(this.mIndexerObserver);
         this.mRegisteredDataSetObserver = true;
         if (this.mIndexScroll.mScrollThumbBgDrawable != null) {
             this.mIndexScroll.mScrollThumbBgDrawable.setColorFilter(this.mIndexScroll.mThumbColor, PorterDuff.Mode.MULTIPLY);
         }
         this.mIndexer.cacheIndexInfo();
         this.mIndexScroll.setAlphabetArray(this.mIndexer.getAlphabetArray(), getFirstAlphabetCharacterIndex(), getLastAlphabetCharacterIndex());
-        if (!this.mIsSimpleIndexScroll && (semAbstractIndexer = this.mIndexer) != null && semAbstractIndexer.getLangAlphabetArray() != null) {
+        if (!this.mIsSimpleIndexScroll && this.mIndexer.getLangAlphabetArray() != null) {
             this.mNumberOfLanguages = this.mIndexer.getLangAlphabetArray().length;
         }
     }
 
     @Deprecated
     public void setSimpleIndexScroll(String[] indexBarChar, int width) {
-        if (indexBarChar == null) {
-            throw new IllegalArgumentException("SemIndexView.setSimpleIndexScroll(indexBarChar)");
-        }
         this.mIsSimpleIndexScroll = true;
         Resources rsrc = this.mContext.getResources();
         setSimpleIndexWidth((int) rsrc.getDimension(R.dimen.sem_indexbar_simpleindex_width));
@@ -193,41 +171,37 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     }
 
     private void setSimpleIndexWidth(int width) {
-        IndexScroll indexScroll = this.mIndexScroll;
-        if (indexScroll != null) {
-            indexScroll.setSimpleIndexScrollWidth(width);
+        if (this.mIndexScroll != null) {
+            this.mIndexScroll.setSimpleIndexScrollWidth(width);
         }
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (this.mHasOverlayChild) {
             this.mViewGroupOverlay.remove(this.mIndexScrollPreview);
             this.mHasOverlayChild = false;
         }
-        SemAbstractIndexer semAbstractIndexer = this.mIndexer;
-        if (semAbstractIndexer != null && this.mRegisteredDataSetObserver) {
-            semAbstractIndexer.unregisterDataSetObserver(this.mIndexerObserver);
+        if (this.mIndexer != null && this.mRegisteredDataSetObserver) {
+            this.mIndexer.unregisterDataSetObserver(this.mIndexerObserver);
             this.mRegisteredDataSetObserver = false;
         }
-        Runnable runnable = this.mPreviewDelayRunnable;
-        if (runnable != null) {
-            removeCallbacks(runnable);
+        if (this.mPreviewDelayRunnable != null) {
+            removeCallbacks(this.mPreviewDelayRunnable);
         }
     }
 
     @Override // android.view.ViewGroup, android.view.View
     @Deprecated
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!this.mHasOverlayChild) {
             this.mViewGroupOverlay.add(this.mIndexScrollPreview);
             this.mHasOverlayChild = true;
         }
-        SemAbstractIndexer semAbstractIndexer = this.mIndexer;
-        if (semAbstractIndexer != null && !this.mRegisteredDataSetObserver) {
-            semAbstractIndexer.registerDataSetObserver(this.mIndexerObserver);
+        if (this.mIndexer != null && !this.mRegisteredDataSetObserver) {
+            this.mIndexer.registerDataSetObserver(this.mIndexerObserver);
             this.mRegisteredDataSetObserver = true;
         }
     }
@@ -265,18 +239,16 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     }
 
     private int getListViewPosition(String indexPath) {
-        SemAbstractIndexer semAbstractIndexer;
-        if (indexPath != null && (semAbstractIndexer = this.mIndexer) != null) {
-            return semAbstractIndexer.getCachingValue(this.mIndexScroll.getSelectedIndex());
+        if (indexPath != null && this.mIndexer != null) {
+            return this.mIndexer.getCachingValue(this.mIndexScroll.getSelectedIndex());
         }
         return -1;
     }
 
     @Deprecated
     public void setIndexScrollMargin(int topMargin, int bottomMargin) {
-        IndexScroll indexScroll = this.mIndexScroll;
-        if (indexScroll != null) {
-            indexScroll.setIndexScrollBgMargin(topMargin, bottomMargin);
+        if (this.mIndexScroll != null) {
+            this.mIndexScroll.setIndexScrollBgMargin(topMargin, bottomMargin);
         }
     }
 
@@ -289,9 +261,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
 
     private boolean handleMotionEvent(MotionEvent ev) {
         int position;
-        String str;
         int position2;
-        String str2;
         int position3;
         int action = ev.getAction();
         float y = ev.getY();
@@ -301,7 +271,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 this.mCurrentIndex = this.mIndexScroll.getIndexByPosition((int) x, (int) y);
                 this.mStartTouchDown = System.currentTimeMillis();
                 if (this.mCurrentIndex != null) {
-                    if (this.mIndexScroll.isAlphabetInit() && (str = this.mCurrentIndex) != null && str.length() != 0) {
+                    if (this.mIndexScroll.isAlphabetInit() && this.mCurrentIndex.length() != 0) {
                         this.mIndexScroll.setEffectText(this.mCurrentIndex);
                         this.mIndexScroll.drawEffect(y);
                         this.mIndexScrollPreview.setLayout(0, 0, getWidth(), getHeight());
@@ -327,16 +297,14 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 this.mIndexScroll.resetSelectedIndex();
                 this.mIndexScrollPreview.close();
                 this.mTouchY = OUT_OF_BOUNDARY;
-                OnIndexBarEventListener onIndexBarEventListener = this.mOnIndexBarEventListener;
-                if (onIndexBarEventListener != null) {
-                    onIndexBarEventListener.onReleased(y);
+                if (this.mOnIndexBarEventListener != null) {
+                    this.mOnIndexBarEventListener.onReleased(y);
                     break;
                 }
                 break;
             case 2:
                 String calculatedIndexStr = this.mIndexScroll.getIndexByPosition((int) x, (int) y);
-                String str3 = this.mCurrentIndex;
-                if (str3 != null && calculatedIndexStr == null && !this.mIsSimpleIndexScroll) {
+                if (this.mCurrentIndex != null && calculatedIndexStr == null && !this.mIsSimpleIndexScroll) {
                     String calculatedIndexStr2 = this.mIndexScroll.getIndexByPosition((int) x, (int) y);
                     this.mCurrentIndex = this.mIndexScroll.getIndexByPosition((int) x, (int) y);
                     int position4 = getListViewPosition(calculatedIndexStr2);
@@ -344,11 +312,10 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                         notifyIndexChange(position4);
                         break;
                     }
-                } else if (str3 != null && calculatedIndexStr != null && calculatedIndexStr.length() < this.mCurrentIndex.length()) {
-                    String indexByPosition = this.mIndexScroll.getIndexByPosition((int) x, (int) y);
-                    this.mCurrentIndex = indexByPosition;
+                } else if (this.mCurrentIndex != null && calculatedIndexStr != null && calculatedIndexStr.length() < this.mCurrentIndex.length()) {
+                    this.mCurrentIndex = this.mIndexScroll.getIndexByPosition((int) x, (int) y);
                     if (!this.mIsSimpleIndexScroll) {
-                        position3 = getListViewPosition(indexByPosition);
+                        position3 = getListViewPosition(this.mCurrentIndex);
                     } else {
                         position3 = this.mIndexScroll.getSelectedIndex();
                     }
@@ -358,7 +325,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                     }
                 } else {
                     this.mCurrentIndex = this.mIndexScroll.getIndexByPosition((int) x, (int) y);
-                    if (this.mIndexScroll.isAlphabetInit() && (str2 = this.mCurrentIndex) != null && str2.length() != 0) {
+                    if (this.mIndexScroll.isAlphabetInit() && this.mCurrentIndex != null && this.mCurrentIndex.length() != 0) {
                         this.mIndexScroll.setEffectText(this.mCurrentIndex);
                         this.mIndexScroll.drawEffect(y);
                         this.mTouchY = y;
@@ -395,18 +362,13 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     }
 
     private int getLastAlphabetCharacterIndex() {
-        SemAbstractIndexer semAbstractIndexer = this.mIndexer;
-        if (semAbstractIndexer == null) {
+        if (this.mIndexer == null) {
             return -1;
         }
-        int currentLang = semAbstractIndexer.getCurrentLang();
+        int currentLang = this.mIndexer.getCurrentLang();
         int indexerAlphabetSize = this.mIndexer.getAlphabetArray().length;
         int index = indexerAlphabetSize - 1;
-        while (index >= 0) {
-            SemAbstractIndexer semAbstractIndexer2 = this.mIndexer;
-            if (semAbstractIndexer2 == null || currentLang == semAbstractIndexer2.getLangbyIndex(index)) {
-                break;
-            }
+        while (index >= 0 && currentLang != this.mIndexer.getLangbyIndex(index)) {
             index--;
         }
         if (index > 0) {
@@ -416,14 +378,13 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
     }
 
     @Override // android.view.View
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
     private void notifyIndexChange(int pos) {
-        OnIndexBarEventListener onIndexBarEventListener = this.mOnIndexBarEventListener;
-        if (onIndexBarEventListener != null) {
-            onIndexBarEventListener.onIndexChanged(pos);
+        if (this.mOnIndexBarEventListener != null) {
+            this.mOnIndexBarEventListener.onIndexChanged(pos);
         }
     }
 
@@ -432,15 +393,10 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         this.mOnIndexBarEventListener = iOnIndexBarEventListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes6.dex */
-    public class IndexerObserver extends DataSetObserver {
+    class IndexerObserver extends DataSetObserver {
         private final long INDEX_UPDATE_DELAY = 200;
         boolean mDataInvalid = false;
         Runnable mUpdateIndex = new Runnable() { // from class: com.samsung.android.widget.SemIndexScrollView.IndexerObserver.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 IndexerObserver.this.mDataInvalid = false;
@@ -471,30 +427,16 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             SemIndexScrollView.this.removeCallbacks(this.mUpdateIndex);
             SemIndexScrollView.this.postDelayed(this.mUpdateIndex, 200L);
         }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.widget.SemIndexScrollView$IndexerObserver$1 */
-        /* loaded from: classes6.dex */
-        public class AnonymousClass1 implements Runnable {
-            AnonymousClass1() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                IndexerObserver.this.mDataInvalid = false;
-            }
-        }
     }
 
-    /* loaded from: classes6.dex */
-    public class IndexScroll {
+    class IndexScroll {
         public static final int FIRST_LETTER_NOT_RELEVANT_NOT_MULTI_LANGUAGE = -1;
         public static final int GRAVITY_INDEX_BAR_LEFT = 0;
         public static final int GRAVITY_INDEX_BAR_RIGHT = 1;
         public static final int LAST_LETTER_NOT_RELEVANT_NOT_MULTI_LANGUAGE = -1;
         public static final int NO_SELECTED_INDEX = -1;
         private static final String TAG = "IndexScroll";
-        private final boolean debug;
+        private static final boolean debug = false;
         private int mAdditionalSpace;
         private String[] mAlphabetArray;
         private int mAlphabetArrayFirstLetterIndex;
@@ -544,8 +486,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         private int mWidth;
         private int mWidthShift;
 
-        /* loaded from: classes6.dex */
-        public class LangAttributeValues {
+        class LangAttributeValues {
             String[] alphabetArray;
             int dotCount;
             float height;
@@ -563,7 +504,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
 
         public IndexScroll(Context context, int height, int width) {
-            this.debug = false;
             this.mAlphabetArray = null;
             this.mAlphabetArrayFirstLetterIndex = -1;
             this.mAlphabetArrayLastLetterIndex = -1;
@@ -584,7 +524,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
 
         public IndexScroll(Context context, int height, int width, int position) {
-            this.debug = false;
             this.mAlphabetArray = null;
             this.mAlphabetArrayFirstLetterIndex = -1;
             this.mAlphabetArrayLastLetterIndex = -1;
@@ -647,16 +586,13 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 }
                 this.mIsSetDimensions = false;
                 this.mWidth = width;
-                int i = height - (((this.mScrollTop + this.mScrollBottom) + this.mScrollTopMargin) + this.mScrollBottomMargin);
-                this.mHeight = i;
+                this.mHeight = height - (((this.mScrollTop + this.mScrollBottom) + this.mScrollTopMargin) + this.mScrollBottomMargin);
                 this.mScreenHeight = height;
-                float f = i / this.mAlphabetSize;
-                this.mItemHeight = f;
-                this.mSeparatorHeight = Math.max(f, this.mContentMinHeight);
+                this.mItemHeight = this.mHeight / this.mAlphabetSize;
+                this.mSeparatorHeight = Math.max(this.mItemHeight, this.mContentMinHeight);
                 setBgRectParams();
-                LangAttributeValues langAttributeValues = this.mFirstLang;
-                if (langAttributeValues != null && this.mSecondLang != null) {
-                    langAttributeValues.separatorHeight = this.mContentMinHeight;
+                if (this.mFirstLang != null && this.mSecondLang != null) {
+                    this.mFirstLang.separatorHeight = this.mContentMinHeight;
                     this.mSecondLang.separatorHeight = this.mContentMinHeight;
                     manageIndexScrollHeight();
                 }
@@ -665,9 +601,8 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
 
         private void init() {
             Resources rsrc = this.mContext.getResources();
-            Paint paint = new Paint();
-            this.mPaint = paint;
-            paint.setAntiAlias(true);
+            this.mPaint = new Paint();
+            this.mPaint.setAntiAlias(true);
             if (SemIndexScrollView.this.mSECRobotoLightRegularFont == null) {
                 SemIndexScrollView.this.mSECRobotoLightRegularFont = Typeface.create("sec-roboto-light", 0);
             }
@@ -695,9 +630,8 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             this.mScrollThumbAdditionalHeight = (int) rsrc.getDimension(R.dimen.sem_indexbar_thumb_additional_height);
             this.mDotHeight = (int) rsrc.getDimension(R.dimen.sem_indexbar_dot_separator_height);
             SemIndexScrollView.this.mIndexScrollPreview.setBackgroundColor(getColorWithAlpha(colorPrimary, 0.8f));
-            Drawable drawable = rsrc.getDrawable(R.drawable.sem_indexbar_thumb_mtrl_shape);
-            this.mScrollThumbBgDrawable = drawable;
-            drawable.setColorFilter(colorPrimary, PorterDuff.Mode.MULTIPLY);
+            this.mScrollThumbBgDrawable = rsrc.getDrawable(R.drawable.sem_indexbar_thumb_mtrl_shape);
+            this.mScrollThumbBgDrawable.setColorFilter(colorPrimary, PorterDuff.Mode.MULTIPLY);
             this.mThumbColor = colorPrimary;
             this.mContext.getTheme().resolveAttribute(16844176, outValue, true);
             if (outValue.data != 0) {
@@ -707,12 +641,12 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 this.mTextColorDimmed = rsrc.getColor(R.color.sem_indexbar_text_color_dark, null);
                 this.mBgTintColor = rsrc.getColor(R.color.sem_indexbar_bg_tint_color_dark, null);
             }
-            Drawable drawable2 = rsrc.getDrawable(R.drawable.sem_indexbar_bg_mtrl);
-            this.mBgDrawableDefault = drawable2;
-            drawable2.setColorFilter(this.mBgTintColor, PorterDuff.Mode.MULTIPLY);
+            this.mBgDrawableDefault = rsrc.getDrawable(R.drawable.sem_indexbar_bg_mtrl);
+            this.mBgDrawableDefault.setColorFilter(this.mBgTintColor, PorterDuff.Mode.MULTIPLY);
             setBgRectParams();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getColorWithAlpha(int color, float ratio) {
             int alpha = Math.round(Color.alpha(color) * ratio);
             int r = Color.red(color);
@@ -727,56 +661,46 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 return;
             }
             this.mAlphabetArray = alphabetArray;
-            int length = alphabetArray.length;
-            this.mAlphabetSize = length;
+            this.mAlphabetSize = this.mAlphabetArray.length;
             this.mAlphabetArrayFirstLetterIndex = alphabetArrayFirstLetterIndex;
             this.mAlphabetArrayLastLetterIndex = alphabetArrayLastLetterIndex;
-            float f = this.mHeight / length;
-            this.mItemHeight = f;
-            this.mSeparatorHeight = Math.max(f, this.mContentMinHeight);
+            this.mItemHeight = this.mHeight / this.mAlphabetSize;
+            this.mSeparatorHeight = Math.max(this.mItemHeight, this.mContentMinHeight);
             this.mIsAlphabetInit = true;
             this.mIsSetDimensions = true;
         }
 
         private void adjustSeparatorHeight() {
             if (SemIndexScrollView.this.mNumberOfLanguages == 1) {
-                this.mFirstLang.separatorHeight = (this.mHeight - (this.mDotHeight * r0.dotCount)) / this.mFirstLang.indexCount;
+                this.mFirstLang.separatorHeight = (this.mHeight - (this.mDotHeight * this.mFirstLang.dotCount)) / this.mFirstLang.indexCount;
                 this.mFirstLang.height = this.mHeight;
                 return;
             }
-            float f = this.mFirstLang.height;
-            int i = this.mHeight;
-            if (f > i * 0.6f) {
-                this.mFirstLang.separatorHeight = ((i * 0.6f) - (this.mDotHeight * r0.dotCount)) / this.mFirstLang.indexCount;
-                this.mSecondLang.separatorHeight = ((this.mHeight * 0.4f) - (this.mDotHeight * r0.dotCount)) / this.mSecondLang.indexCount;
+            if (this.mFirstLang.height > this.mHeight * 0.6f) {
+                this.mFirstLang.separatorHeight = ((this.mHeight * 0.6f) - (this.mDotHeight * this.mFirstLang.dotCount)) / this.mFirstLang.indexCount;
+                this.mSecondLang.separatorHeight = ((this.mHeight * 0.4f) - (this.mDotHeight * this.mSecondLang.dotCount)) / this.mSecondLang.indexCount;
                 this.mFirstLang.height = this.mHeight * 0.6f;
                 this.mSecondLang.height = this.mHeight * 0.4f;
+            } else if (this.mFirstLang.height <= this.mHeight * 0.5f) {
+                this.mFirstLang.separatorHeight = ((this.mHeight * 0.5f) - (this.mDotHeight * this.mFirstLang.dotCount)) / this.mFirstLang.indexCount;
+                this.mSecondLang.separatorHeight = ((this.mHeight * 0.5f) - (this.mDotHeight * this.mSecondLang.dotCount)) / this.mSecondLang.indexCount;
+                LangAttributeValues langAttributeValues = this.mFirstLang;
+                float f = this.mHeight * 0.5f;
+                this.mSecondLang.height = f;
+                langAttributeValues.height = f;
             } else {
-                float f2 = this.mFirstLang.height;
-                int i2 = this.mHeight;
-                if (f2 <= i2 * 0.5f) {
-                    this.mFirstLang.separatorHeight = ((i2 * 0.5f) - (this.mDotHeight * r0.dotCount)) / this.mFirstLang.indexCount;
-                    this.mSecondLang.separatorHeight = ((this.mHeight * 0.5f) - (this.mDotHeight * r0.dotCount)) / this.mSecondLang.indexCount;
-                    LangAttributeValues langAttributeValues = this.mFirstLang;
-                    float f3 = this.mHeight * 0.5f;
-                    this.mSecondLang.height = f3;
-                    langAttributeValues.height = f3;
-                } else {
-                    LangAttributeValues langAttributeValues2 = this.mFirstLang;
-                    langAttributeValues2.separatorHeight = (langAttributeValues2.height - (this.mDotHeight * this.mFirstLang.dotCount)) / this.mFirstLang.indexCount;
-                    LangAttributeValues langAttributeValues3 = this.mSecondLang;
-                    langAttributeValues3.separatorHeight = (langAttributeValues3.height - (this.mDotHeight * this.mSecondLang.dotCount)) / this.mSecondLang.indexCount;
-                }
+                this.mFirstLang.separatorHeight = (this.mFirstLang.height - (this.mDotHeight * this.mFirstLang.dotCount)) / this.mFirstLang.indexCount;
+                this.mSecondLang.separatorHeight = (this.mSecondLang.height - (this.mDotHeight * this.mSecondLang.dotCount)) / this.mSecondLang.indexCount;
             }
             if (this.mSecondLang.totalCount == 0) {
-                this.mFirstLang.separatorHeight = (this.mHeight - (this.mDotHeight * r0.dotCount)) / this.mFirstLang.indexCount;
+                this.mFirstLang.separatorHeight = (this.mHeight - (this.mDotHeight * this.mFirstLang.dotCount)) / this.mFirstLang.indexCount;
                 this.mFirstLang.height = this.mHeight;
                 this.mSecondLang.separatorHeight = 0.0f;
                 this.mSecondLang.height = 0.0f;
                 return;
             }
             if (this.mFirstLang.totalCount == 0) {
-                this.mSecondLang.separatorHeight = (this.mHeight - (this.mDotHeight * r0.dotCount)) / this.mSecondLang.indexCount;
+                this.mSecondLang.separatorHeight = (this.mHeight - (this.mDotHeight * this.mSecondLang.dotCount)) / this.mSecondLang.indexCount;
                 this.mSecondLang.height = this.mHeight;
                 this.mFirstLang.separatorHeight = 0.0f;
                 this.mFirstLang.height = 0.0f;
@@ -794,18 +718,14 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 this.mAlphabetArrayLastLetterIndex = 0;
             }
             this.mFirstLang.indexCount = this.mAlphabetSize - this.mAlphabetArrayLastLetterIndex;
-            LangAttributeValues langAttributeValues = this.mFirstLang;
-            langAttributeValues.totalCount = langAttributeValues.indexCount;
-            LangAttributeValues langAttributeValues2 = this.mFirstLang;
-            langAttributeValues2.alphabetArray = new String[langAttributeValues2.totalCount];
+            this.mFirstLang.totalCount = this.mFirstLang.indexCount;
+            this.mFirstLang.alphabetArray = new String[this.mFirstLang.totalCount];
             this.mFirstLang.dotCount = 0;
             this.mSecondLang.indexCount = this.mAlphabetSize - this.mFirstLang.indexCount;
-            LangAttributeValues langAttributeValues3 = this.mSecondLang;
-            langAttributeValues3.totalCount = langAttributeValues3.indexCount;
-            LangAttributeValues langAttributeValues4 = this.mSecondLang;
-            langAttributeValues4.alphabetArray = new String[langAttributeValues4.totalCount];
+            this.mSecondLang.totalCount = this.mSecondLang.indexCount;
+            this.mSecondLang.alphabetArray = new String[this.mSecondLang.totalCount];
             this.mSecondLang.dotCount = 0;
-            this.mFirstLang.height = r0.indexCount * this.mContentMinHeight;
+            this.mFirstLang.height = this.mFirstLang.indexCount * this.mContentMinHeight;
             this.mSecondLang.height = this.mHeight - this.mFirstLang.height;
             this.mAlphabetArrayToDraw = this.mAlphabetArray;
             this.mAlphabetToDrawSize = this.mAlphabetSize;
@@ -911,11 +831,9 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                             int specialIndexCount3 = specialIndexCount2;
                             while (specialIndexCount3 < indexCount) {
                                 int numberOfMissingElements3 = numberOfMissingElements;
-                                String[] strArr = this.mAlphabetArray;
-                                int langCount2 = langCount;
-                                if (targetIndex < strArr.length - digitIndexCount2) {
+                                if (targetIndex < this.mAlphabetArray.length - digitIndexCount2) {
                                     if (!isDotPosition) {
-                                        alphabetArrWithDots[specialIndexCount3] = strArr[targetIndex + startIndexPosition];
+                                        alphabetArrWithDots[specialIndexCount3] = this.mAlphabetArray[targetIndex + startIndexPosition];
                                         targetIndex++;
                                         if (dotCount < language.dotCount) {
                                             isDotPosition = true;
@@ -933,12 +851,10 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                                 }
                                 specialIndexCount3++;
                                 numberOfMissingElements = numberOfMissingElements3;
-                                langCount = langCount2;
                             }
                             int numberOfMissingElements4 = numberOfMissingElements;
                             if (digitIndexCount2 > 0) {
-                                String[] strArr2 = this.mAlphabetArray;
-                                alphabetArrWithDots[indexCount] = strArr2[strArr2.length - 1];
+                                alphabetArrWithDots[indexCount] = this.mAlphabetArray[this.mAlphabetArray.length - 1];
                             }
                             language.alphabetArray = alphabetArrWithDots;
                             isFullCountState = true;
@@ -997,32 +913,26 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
 
         public String getIndexByPosition(int x, int y) {
-            int i;
-            int i2;
-            Rect rect = this.mBgRect;
-            if (rect == null || !this.mIsAlphabetInit) {
+            if (this.mBgRect == null || !this.mIsAlphabetInit) {
                 return "";
             }
-            if ((this.mPosition == 0 && x < rect.left - this.mAdditionalSpace) || (this.mPosition == 1 && x > this.mBgRect.right + this.mAdditionalSpace)) {
+            if ((this.mPosition == 0 && x < this.mBgRect.left - this.mAdditionalSpace) || (this.mPosition == 1 && x > this.mBgRect.right + this.mAdditionalSpace)) {
                 return "";
             }
             if (x >= this.mBgRect.left - this.mAdditionalSpace && x <= this.mBgRect.right + this.mAdditionalSpace) {
                 if (isInSelectedIndexRect(y)) {
-                    String[] strArr = this.mAlphabetArrayToDraw;
-                    return (strArr == null || (i2 = this.mSelectedIndex) < 0 || i2 >= strArr.length) ? "" : getIndexByY(y);
+                    return (this.mAlphabetArrayToDraw == null || this.mSelectedIndex < 0 || this.mSelectedIndex >= this.mAlphabetArrayToDraw.length) ? "" : getIndexByY(y);
                 }
                 return getIndexByY(y);
             }
-            int i3 = this.mPosition;
-            if (i3 == 0 && x >= this.mWidthShift + this.mItemWidth + this.mItemWidthGap) {
+            if (this.mPosition == 0 && x >= this.mWidthShift + this.mItemWidth + this.mItemWidthGap) {
                 return null;
             }
-            if (i3 == 1 && x <= (this.mWidth - this.mWidthShift) - (this.mItemWidth + this.mItemWidthGap)) {
+            if (this.mPosition == 1 && x <= (this.mWidth - this.mWidthShift) - (this.mItemWidth + this.mItemWidthGap)) {
                 return null;
             }
             if (isInSelectedIndexRect(y)) {
-                String[] strArr2 = this.mAlphabetArrayToDraw;
-                return (strArr2 == null || (i = this.mSelectedIndex) < 0 || i >= strArr2.length) ? "" : strArr2[i];
+                return (this.mAlphabetArrayToDraw == null || this.mSelectedIndex < 0 || this.mSelectedIndex >= this.mAlphabetArrayToDraw.length) ? "" : this.mAlphabetArrayToDraw[this.mSelectedIndex];
             }
             return getIndexByY(y);
         }
@@ -1041,16 +951,14 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             if (index < 0) {
                 return 0;
             }
-            int i = this.mAlphabetToDrawSize;
-            if (index >= i) {
-                int index3 = i - 1;
+            if (index >= this.mAlphabetToDrawSize) {
+                int index3 = this.mAlphabetToDrawSize - 1;
                 return index3;
             }
             return index;
         }
 
         private String getIndexByY(int y) {
-            int i;
             if (y <= this.mBgRect.top - this.mAdditionalSpace || y >= this.mBgRect.bottom + this.mAdditionalSpace) {
                 return "";
             }
@@ -1059,30 +967,19 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             } else if (y > this.mBgRect.bottom) {
                 this.mSelectedIndex = this.mAlphabetToDrawSize - 1;
             } else {
-                int index = getIndex(y);
-                this.mSelectedIndex = index;
-                if (index == this.mAlphabetToDrawSize) {
-                    this.mSelectedIndex = index - 1;
+                this.mSelectedIndex = getIndex(y);
+                if (this.mSelectedIndex == this.mAlphabetToDrawSize) {
+                    this.mSelectedIndex--;
                 }
             }
-            int i2 = this.mSelectedIndex;
-            int i3 = this.mAlphabetToDrawSize;
-            if (i2 == i3 || i2 == i3 + 1) {
-                this.mSelectedIndex = i3 - 1;
+            if (this.mSelectedIndex == this.mAlphabetToDrawSize || this.mSelectedIndex == this.mAlphabetToDrawSize + 1) {
+                this.mSelectedIndex = this.mAlphabetToDrawSize - 1;
             }
-            String[] strArr = this.mAlphabetArrayToDraw;
-            return (strArr == null || (i = this.mSelectedIndex) <= -1 || i > i3) ? "" : strArr[i];
+            return (this.mAlphabetArrayToDraw == null || this.mSelectedIndex <= -1 || this.mSelectedIndex > this.mAlphabetToDrawSize) ? "" : this.mAlphabetArrayToDraw[this.mSelectedIndex];
         }
 
         private boolean isInSelectedIndexRect(int y) {
-            int i = this.mSelectedIndex;
-            if (i == -1 || i >= this.mAlphabetToDrawSize) {
-                return false;
-            }
-            int i2 = this.mScrollTop;
-            int i3 = this.mScrollTopMargin;
-            float f = this.mSeparatorHeight;
-            return y >= ((int) (((float) (i2 + i3)) + (((float) i) * f))) && y <= ((int) (((float) (i2 + i3)) + (f * ((float) (i + 1)))));
+            return this.mSelectedIndex != -1 && this.mSelectedIndex < this.mAlphabetToDrawSize && y >= ((int) (((float) (this.mScrollTop + this.mScrollTopMargin)) + (this.mSeparatorHeight * ((float) this.mSelectedIndex)))) && y <= ((int) (((float) (this.mScrollTop + this.mScrollTopMargin)) + (this.mSeparatorHeight * ((float) (this.mSelectedIndex + 1)))));
         }
 
         public void resetSelectedIndex() {
@@ -1099,8 +996,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         public void drawScroll(Canvas canvas) {
             drawBgRectangle(canvas);
             drawAlphabetCharacters(canvas);
-            int i = this.mSelectedIndex;
-            if (i < 0 || i >= this.mAlphabetSize) {
+            if (this.mSelectedIndex < 0 || this.mSelectedIndex >= this.mAlphabetSize) {
                 if (SemIndexScrollView.this.mIndexScrollPreview != null) {
                     SemIndexScrollView.this.mIndexScrollPreview.close();
                 }
@@ -1115,20 +1011,13 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
 
         public void drawEffect(float effectPositionY) {
-            int i = this.mSelectedIndex;
-            if (i != -1) {
-                String str = this.mAlphabetArrayToDraw[i];
-                this.mSmallText = str;
-                this.mPaint.getTextBounds(str, 0, str.length(), this.mTextBounds);
-                int i2 = this.mScrollTopMargin;
-                float f = this.mPreviewLimitY;
-                float f2 = this.mIndexScrollPreviewRadius;
-                float topDrawY = i2 + f + f2;
-                int i3 = this.mScreenHeight;
-                int i4 = this.mScrollBottomMargin;
-                float bottomDrawY = ((i3 - i4) - f) - f2;
-                if (i3 <= (f2 * 2.0f) + f + i2 + i4) {
-                    topDrawY = this.mScrollTop + i2 + ((float) (this.mFirstLang.separatorHeight * 0.5d));
+            if (this.mSelectedIndex != -1) {
+                this.mSmallText = this.mAlphabetArrayToDraw[this.mSelectedIndex];
+                this.mPaint.getTextBounds(this.mSmallText, 0, this.mSmallText.length(), this.mTextBounds);
+                float topDrawY = this.mScrollTopMargin + this.mPreviewLimitY + this.mIndexScrollPreviewRadius;
+                float bottomDrawY = ((this.mScreenHeight - this.mScrollBottomMargin) - this.mPreviewLimitY) - this.mIndexScrollPreviewRadius;
+                if (this.mScreenHeight <= (this.mIndexScrollPreviewRadius * 2.0f) + this.mPreviewLimitY + this.mScrollTopMargin + this.mScrollBottomMargin) {
+                    topDrawY = this.mScrollTop + this.mScrollTopMargin + ((float) (this.mFirstLang.separatorHeight * 0.5d));
                     bottomDrawY = ((((this.mScrollTop + this.mScrollTopMargin) - this.mScrollBottomMargin) + this.mFirstLang.height) + this.mSecondLang.height) - ((float) (this.mFirstLang.separatorHeight * 0.5d));
                 }
                 float drawY = SemIndexScrollView.OUT_OF_BOUNDARY;
@@ -1160,22 +1049,14 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 right = right3 + this.mBgRectWidth;
                 left = this.mWidthShift;
             }
-            Rect rect = this.mBgRect;
-            if (rect == null) {
-                int i = this.mScrollTop;
-                int i2 = this.mScrollTopMargin;
-                int i3 = this.mContentPadding;
-                this.mBgRect = new Rect(left, (i + i2) - i3, right, this.mHeight + i + i2 + i3);
+            if (this.mBgRect == null) {
+                this.mBgRect = new Rect(left, (this.mScrollTop + this.mScrollTopMargin) - this.mContentPadding, right, this.mHeight + this.mScrollTop + this.mScrollTopMargin + this.mContentPadding);
             } else {
-                int i4 = this.mScrollTop;
-                int i5 = this.mScrollTopMargin;
-                int i6 = this.mContentPadding;
-                rect.set(left, (i4 + i5) - i6, right, this.mHeight + i4 + i5 + i6);
+                this.mBgRect.set(left, (this.mScrollTop + this.mScrollTopMargin) - this.mContentPadding, right, this.mHeight + this.mScrollTop + this.mScrollTopMargin + this.mContentPadding);
             }
             this.mScrollThumbBgRectHeight = ((int) (this.mContentMinHeight * 3.0f)) + this.mScrollThumbAdditionalHeight;
-            int i7 = this.mScrollThumbBgRectPadding;
-            int left2 = left + i7;
-            int right4 = right - i7;
+            int left2 = left + this.mScrollThumbBgRectPadding;
+            int right4 = right - this.mScrollThumbBgRectPadding;
             int top = (int) (SemIndexScrollView.this.mTouchY - (this.mScrollThumbBgRectHeight / 2));
             int bottom = (int) (SemIndexScrollView.this.mTouchY + (this.mScrollThumbBgRectHeight / 2));
             if ((top < this.mBgRect.top + this.mScrollThumbBgRectPadding && bottom > this.mBgRect.bottom - this.mScrollThumbBgRectPadding) || this.mScrollThumbBgRectHeight >= (this.mBgRect.bottom - this.mBgRect.top) - (this.mScrollThumbBgRectPadding * 2)) {
@@ -1188,11 +1069,10 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
                 bottom = this.mBgRect.bottom - this.mScrollThumbBgRectPadding;
                 top = bottom - this.mScrollThumbBgRectHeight;
             }
-            Rect rect2 = this.mScrollThumbBgRect;
-            if (rect2 == null) {
+            if (this.mScrollThumbBgRect == null) {
                 this.mScrollThumbBgRect = new Rect(left2, top, right4, bottom);
             } else {
-                rect2.set(left2, top, right4, bottom);
+                this.mScrollThumbBgRect.set(left2, top, right4, bottom);
             }
         }
 
@@ -1247,22 +1127,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
     }
 
-    /* renamed from: com.samsung.android.widget.SemIndexScrollView$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (SemIndexScrollView.this.mIndexScrollPreview != null) {
-                SemIndexScrollView.this.mIndexScrollPreview.fadeOutAnimation();
-            }
-        }
-    }
-
-    /* loaded from: classes6.dex */
-    public class IndexScrollPreview extends View {
+    class IndexScrollPreview extends View {
         private static final int FASTSCROLL_VIBRATE_INDEX = 26;
         private boolean mIsOpen;
         private float mPreviewCenterMargin;
@@ -1284,15 +1149,13 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
 
         private void init(Context context) {
             Resources rsrc = context.getResources();
-            Paint paint = new Paint();
-            this.mShapePaint = paint;
-            paint.setStyle(Paint.Style.FILL);
+            this.mShapePaint = new Paint();
+            this.mShapePaint.setStyle(Paint.Style.FILL);
             this.mShapePaint.setAntiAlias(true);
             this.mTextSize = (int) rsrc.getDimension(R.dimen.sem_index_scroll_preview_text_size);
             this.mTextWidhtLimit = (int) rsrc.getDimension(R.dimen.sem_index_scroll_preview_text_width_limit);
-            Paint paint2 = new Paint();
-            this.mTextPaint = paint2;
-            paint2.setAntiAlias(true);
+            this.mTextPaint = new Paint();
+            this.mTextPaint.setAntiAlias(true);
             this.mTextPaint.setTypeface(SemIndexScrollView.this.mSECRobotoLightRegularFont);
             this.mTextPaint.setTextAlign(Paint.Align.CENTER);
             this.mTextPaint.setTextSize(this.mTextSize);
@@ -1324,7 +1187,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         public void open(float y, String text) {
             int textSize = this.mTextSize;
             this.mPreviewCenterY = y;
-            if (!this.mIsOpen || this.mPreviewText != text) {
+            if (!this.mIsOpen || !this.mPreviewText.equals(text)) {
                 performHapticFeedback(HapticFeedbackConstants.semGetVibrationIndex(26));
             }
             this.mPreviewText = text;
@@ -1349,6 +1212,7 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void fadeOutAnimation() {
             if (this.mIsOpen) {
                 startAnimation();
@@ -1370,11 +1234,11 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
 
         @Override // android.view.View
-        public void onDraw(Canvas canvas) {
+        protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
             if (this.mIsOpen) {
                 canvas.drawCircle(this.mPreviewCenterX, this.mPreviewCenterY, this.mPreviewRadius, this.mShapePaint);
-                this.mTextPaint.getTextBounds(this.mPreviewText, 0, r1.length() - 1, this.mTextBounds);
+                this.mTextPaint.getTextBounds(this.mPreviewText, 0, this.mPreviewText.length() - 1, this.mTextBounds);
                 float textY = this.mPreviewCenterY - ((this.mTextPaint.descent() + this.mTextPaint.ascent()) / 2.0f);
                 canvas.drawText(this.mPreviewText, this.mPreviewCenterX, textY, this.mTextPaint);
             }

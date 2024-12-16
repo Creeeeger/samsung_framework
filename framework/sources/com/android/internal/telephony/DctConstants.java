@@ -27,6 +27,7 @@ public class DctConstants {
     public static final int EVENT_DATA_CONNECTION_DETACHED = 270345;
     public static final int EVENT_DATA_ENABLED_CHANGED = 270382;
     public static final int EVENT_DATA_ENABLED_OVERRIDE_RULES_CHANGED = 270387;
+    public static final int EVENT_DATA_POPUP_CHECK_BOOT_COMPLETED = 270465;
     public static final int EVENT_DATA_POPUP_REQUEST_SENDIBLE = 270461;
     public static final int EVENT_DATA_RAT_CHANGED = 270377;
     public static final int EVENT_DATA_RECONNECT = 270383;
@@ -81,6 +82,7 @@ public class DctConstants {
     public static final int EVENT_TRY_SETUP_DATA = 270339;
     public static final int EVENT_VOICE_CALL_ENDED = 270344;
     public static final int EVENT_VOICE_CALL_STARTED = 270343;
+    public static final int EVENT_WIFI_INVALIDATED_DURING_SUP = 270466;
     public static final int INVALID = -1;
     public static final int NR_QOS_OFFSET = 25;
     public static final String PROVISIONING_URL_KEY = "provisioningUrl";
@@ -91,7 +93,6 @@ public class DctConstants {
     public static final String RAT_NAME_NR_NSA_MMWAVE = "NR_NSA_MMWAVE";
     public static final String RAT_NAME_NR_SA_MMWAVE = "NR_MMWAVE";
 
-    /* loaded from: classes5.dex */
     public enum Activity {
         NONE,
         DATAIN,
@@ -100,7 +101,6 @@ public class DctConstants {
         DORMANT
     }
 
-    /* loaded from: classes5.dex */
     public enum State {
         IDLE,
         CONNECTING,

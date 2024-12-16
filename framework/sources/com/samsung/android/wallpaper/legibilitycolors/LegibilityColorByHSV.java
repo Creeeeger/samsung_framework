@@ -1,12 +1,14 @@
 package com.samsung.android.wallpaper.legibilitycolors;
 
+import android.hardware.scontext.SContextConstants;
 import com.android.internal.graphics.ColorUtils;
 import com.samsung.android.wallpaper.legibilitycolors.LegibilityDefinition;
 import com.samsung.android.wallpaper.legibilitycolors.utils.ColorExtractor;
 import com.samsung.android.wallpaper.legibilitycolors.utils.IUXColorUtils;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class LegibilityColorByHSV {
+    private static final float BASE_LUMINANCE = 67.0f;
     static final int BLACK_COLOR = -16777216;
     static final float CONTRAST_BLACK_THRESHOLD = 1.34f;
     static final float CONTRAST_WHITE_THRESHOLD = 1.24f;
@@ -15,10 +17,10 @@ public class LegibilityColorByHSV {
     static final float SIMILAR_CONTRAST_THRESHOLD = 1.8f;
     static final float SIMILAR_PERCENTAGE_THRESHOLD = 0.1f;
     static final int WHITE_COLOR = -1;
-    private static float[][] mLegibilityTable = {new float[]{76.0f, 82.0f, 85.0f, 87.0f, 89.0f, 92.0f, 95.0f, 98.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}, new float[]{76.0f, 82.0f, 85.0f, 87.0f, 89.0f, 92.0f, 94.0f, 95.0f, 98.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}, new float[]{76.0f, 82.0f, 85.0f, 86.5f, 88.5f, 90.0f, 91.0f, 91.5f, 94.0f, 96.0f, 97.5f, 98.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}, new float[]{76.0f, 82.0f, 86.0f, 88.0f, 90.0f, 92.0f, 92.85f, 93.21f, 94.0f, 94.0f, 94.0f, 94.5f, 94.5f, 95.0f, 95.0f, 95.5f, 95.5f, 96.0f, 96.0f, 96.0f}, new float[]{76.0f, 82.0f, 86.0f, 87.5f, 89.0f, 89.0f, 89.3f, 90.0f, 90.2f, 90.71f, 90.71f, 90.71f, 90.71f, 90.71f, 91.0f, 91.0f, 92.0f, 92.0f, 93.0f, 93.0f}, new float[]{76.0f, 82.0f, 86.0f, 87.0f, 88.0f, 88.92f, 89.28f, 90.0f, 90.2f, 90.3f, 90.6f, 91.5f, 92.5f, 93.0f, 93.5f, 93.5f, 94.0f, 94.5f, 95.0f, 95.0f}, new float[]{76.0f, 82.0f, 86.0f, 89.0f, 90.5f, 91.5f, 92.1f, 92.3f, 92.4f, 92.5f, 92.6f, 92.6f, 92.7f, 92.9f, 93.5f, 93.54f, 94.0f, 94.5f, 95.0f, 95.0f}, new float[]{76.0f, 82.0f, 85.0f, 87.0f, 89.0f, 90.35f, 91.07f, 91.42f, 91.8f, 92.5f, 93.0f, 93.5f, 93.8f, 93.8f, 93.9f, 94.0f, 94.1f, 94.16f, 94.16f, 94.16f}, new float[]{76.0f, 82.0f, 83.0f, 85.0f, 86.0f, 87.0f, 89.0f, 90.0f, 91.0f, 92.0f, 92.5f, 92.5f, 92.5f, 92.5f, 92.5f, 92.5f, 93.0f, 93.5f, 93.8f, 94.0f}, new float[]{76.0f, 82.0f, 84.0f, 85.5f, 86.0f, 87.0f, 90.0f, 93.0f, 95.0f, 96.0f, 97.0f, 98.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}, new float[]{76.0f, 82.0f, 84.5f, 86.0f, 87.0f, 89.0f, 93.0f, 96.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}, new float[]{76.0f, 82.0f, 85.0f, 87.0f, 92.0f, 96.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}, new float[]{76.0f, 82.0f, 85.0f, 87.0f, 92.0f, 96.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}, new float[]{76.0f, 82.0f, 88.0f, 92.0f, 96.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}};
+    private static final double XYZ_EPSILON = 0.008856d;
+    private static final double XYZ_KAPPA = 903.3d;
     static SimilarColorResult mSimilarColorResult = new SimilarColorResult();
 
-    /* loaded from: classes5.dex */
     public static class EdgeCaseResultForIndicator {
         public float black_contrast_percent;
         public int color;
@@ -28,48 +30,66 @@ public class LegibilityColorByHSV {
         public float white_contrast_percent;
     }
 
-    public static LegibilityDefinition.ColorType getLegibilityColorType(float h, float s, float v) {
-        return mGetLegibilityColorType(h, s, v);
+    private static float getLABLfromHSV(float hsv_h, float hsv_S, float hsv_v) {
+        double h = hsv_h;
+        double s = hsv_S;
+        double l = ((2.0d - s) * hsv_v) / 2.0d;
+        if (SContextConstants.ENVIRONMENT_VALUE_UNKNOWN != l) {
+            if (1.0d != l) {
+                s = l < 0.5d ? (hsv_v * s) / (l * 2.0d) : (hsv_v * s) / (2.0d - (l * 2.0d));
+            } else {
+                s = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+            }
+        }
+        int hueSegment = ((int) h) / 60;
+        double xH = 1.0d - Math.abs(((h / 60.0d) % 2.0d) - 1.0d);
+        double sr = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+        double sg = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+        double sb = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+        double labs = (2.0d * l) - 1.0d;
+        double c = (1.0d - (labs > SContextConstants.ENVIRONMENT_VALUE_UNKNOWN ? labs : -labs)) * s;
+        double m = l - (0.5d * c);
+        double x = c * xH;
+        switch (hueSegment) {
+            case 0:
+                sr = c + m;
+                sg = x + m;
+                sb = m;
+                break;
+            case 1:
+                sr = x + m;
+                sg = c + m;
+                sb = m;
+                break;
+            case 2:
+                sr = m;
+                sg = c + m;
+                sb = x + m;
+                break;
+            case 3:
+                sr = m;
+                sg = x + m;
+                sb = c + m;
+                break;
+            case 4:
+                sr = x + m;
+                sg = m;
+                sb = c + m;
+                break;
+            case 5:
+            case 6:
+                sr = c + m;
+                sg = m;
+                sb = x + m;
+                break;
+        }
+        double y = (sr < 0.04045d ? 0.01645510835913313d * sr : 0.2126d * Math.pow((sr / 1.055d) + 0.05213270142180095d, 2.4d)) + (sg < 0.04045d ? 0.05535603715170278d * sg : 0.7152d * Math.pow((sg / 1.055d) + 0.05213270142180095d, 2.4d)) + (sb < 0.04045d ? 0.005588235294117647d * sb : Math.pow((sb / 1.055d) + 0.05213270142180095d, 2.4d) * 0.0722d);
+        double sb2 = (116.0d * (y > XYZ_EPSILON ? Math.cbrt(y) : (7.787068965517241d * y) + 0.13793103448275862d)) - 16.0d;
+        return (float) Math.max(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, sb2);
     }
 
-    protected static LegibilityDefinition.ColorType mGetLegibilityColorType(float h, float s, float v) {
-        LegibilityDefinition.ColorType ret = LegibilityDefinition.ColorType.LIGHT;
-        int hIdx = 0;
-        if (h >= 10.0f && h < 20.0f) {
-            hIdx = 1;
-        } else if (h >= 20.0f && h < 40.0f) {
-            hIdx = 2;
-        } else if (h >= 40.0f && h < 50.0f) {
-            hIdx = 3;
-        } else if (h >= 50.0f && h < 61.0f) {
-            hIdx = 4;
-        } else if (h >= 61.0f && h < 83.0f) {
-            hIdx = 5;
-        } else if (h >= 83.0f && h < 140.0f) {
-            hIdx = 6;
-        } else if (h >= 140.0f && h < 166.0f) {
-            hIdx = 7;
-        } else if (h >= 166.0f && h < 186.0f) {
-            hIdx = 8;
-        } else if (h >= 186.0f && h < 211.0f) {
-            hIdx = 9;
-        } else if (h >= 211.0f && h < 241.0f) {
-            hIdx = 10;
-        } else if (h >= 241.0f && h < 261.0f) {
-            hIdx = 11;
-        } else if (h >= 261.0f && h < 318.0f) {
-            hIdx = 12;
-        } else if (h >= 318.0f && h < 339.0f) {
-            hIdx = 13;
-        }
-        float tmpVal = s * 100.0f;
-        int tmpValInt = (int) tmpVal;
-        int sIdx = (tmpValInt / 5) - (tmpValInt / 100);
-        if (100.0f * v > mLegibilityTable[hIdx][sIdx]) {
-            LegibilityDefinition.ColorType ret2 = LegibilityDefinition.ColorType.DARK;
-            return ret2;
-        }
-        return ret;
+    public static LegibilityDefinition.ColorType getLegibilityColorType(float h, float s, float v) {
+        return BASE_LUMINANCE < getLABLfromHSV(h, s, v) ? LegibilityDefinition.ColorType.DARK : LegibilityDefinition.ColorType.LIGHT;
     }
 
     public static LegibilityDefinition.ColorWeightType getLegibilityColorWeight(LegibilityDefinition.ColorType majorColorType, float majorH, float majorS, float majorV, LegibilityDefinition.ColorType minorColorType, float minorH, float minorS, float minorV) {
@@ -166,14 +186,9 @@ public class LegibilityColorByHSV {
         return false;
     }
 
-    /* loaded from: classes5.dex */
-    public static class SimilarColorResult {
+    private static class SimilarColorResult {
         int color;
         LegibilityDefinition.ColorType colorType;
-
-        /* synthetic */ SimilarColorResult(SimilarColorResultIA similarColorResultIA) {
-            this();
-        }
 
         private SimilarColorResult() {
         }

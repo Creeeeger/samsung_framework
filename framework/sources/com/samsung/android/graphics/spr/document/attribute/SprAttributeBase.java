@@ -4,7 +4,7 @@ import com.samsung.android.graphics.spr.document.SprInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SprAttributeBase implements Cloneable {
     public static final byte TYPE_ANIMATOR_SET = 97;
     public static final byte TYPE_CLIP = 1;
@@ -26,7 +26,7 @@ public abstract class SprAttributeBase implements Cloneable {
 
     public abstract void toSPR(DataOutputStream dataOutputStream) throws IOException;
 
-    public SprAttributeBase(byte type) {
+    protected SprAttributeBase(byte type) {
         this.mType = type;
     }
 
@@ -35,8 +35,8 @@ public abstract class SprAttributeBase implements Cloneable {
     }
 
     @Override // 
-    /* renamed from: clone */
-    public SprAttributeBase mo8412clone() throws CloneNotSupportedException {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SprAttributeBase mo8813clone() throws CloneNotSupportedException {
         return (SprAttributeBase) super.clone();
     }
 }

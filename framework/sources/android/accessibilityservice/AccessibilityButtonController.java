@@ -14,17 +14,16 @@ public final class AccessibilityButtonController {
     private final Object mLock = new Object();
     private final IAccessibilityServiceConnection mServiceConnection;
 
-    public AccessibilityButtonController(IAccessibilityServiceConnection serviceConnection) {
+    AccessibilityButtonController(IAccessibilityServiceConnection serviceConnection) {
         this.mServiceConnection = serviceConnection;
     }
 
     public boolean isAccessibilityButtonAvailable() {
-        IAccessibilityServiceConnection iAccessibilityServiceConnection = this.mServiceConnection;
-        if (iAccessibilityServiceConnection == null) {
+        if (this.mServiceConnection == null) {
             return false;
         }
         try {
-            return iAccessibilityServiceConnection.isAccessibilityButtonAvailable();
+            return this.mServiceConnection.isAccessibilityButtonAvailable();
         } catch (RemoteException re) {
             Slog.w(LOG_TAG, "Failed to get accessibility button availability.", re);
             re.rethrowFromSystemServer();
@@ -50,11 +49,10 @@ public final class AccessibilityButtonController {
     public void unregisterAccessibilityButtonCallback(AccessibilityButtonCallback callback) {
         Objects.requireNonNull(callback);
         synchronized (this.mLock) {
-            ArrayMap<AccessibilityButtonCallback, Handler> arrayMap = this.mCallbacks;
-            if (arrayMap == null) {
+            if (this.mCallbacks == null) {
                 return;
             }
-            int keyIndex = arrayMap.indexOfKey(callback);
+            int keyIndex = this.mCallbacks.indexOfKey(callback);
             boolean hasKey = keyIndex >= 0;
             if (hasKey) {
                 this.mCallbacks.removeAt(keyIndex);
@@ -62,10 +60,9 @@ public final class AccessibilityButtonController {
         }
     }
 
-    public void dispatchAccessibilityButtonClicked() {
+    void dispatchAccessibilityButtonClicked() {
         synchronized (this.mLock) {
-            ArrayMap<AccessibilityButtonCallback, Handler> arrayMap = this.mCallbacks;
-            if (arrayMap != null && !arrayMap.isEmpty()) {
+            if (this.mCallbacks != null && !this.mCallbacks.isEmpty()) {
                 ArrayMap<AccessibilityButtonCallback, Handler> entries = new ArrayMap<>(this.mCallbacks);
                 int count = entries.size();
                 for (int i = 0; i < count; i++) {
@@ -84,14 +81,14 @@ public final class AccessibilityButtonController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispatchAccessibilityButtonClicked$0(AccessibilityButtonCallback callback) {
         callback.onClicked(this);
     }
 
-    public void dispatchAccessibilityButtonAvailabilityChanged(final boolean available) {
+    void dispatchAccessibilityButtonAvailabilityChanged(final boolean available) {
         synchronized (this.mLock) {
-            ArrayMap<AccessibilityButtonCallback, Handler> arrayMap = this.mCallbacks;
-            if (arrayMap != null && !arrayMap.isEmpty()) {
+            if (this.mCallbacks != null && !this.mCallbacks.isEmpty()) {
                 ArrayMap<AccessibilityButtonCallback, Handler> entries = new ArrayMap<>(this.mCallbacks);
                 int count = entries.size();
                 for (int i = 0; i < count; i++) {
@@ -110,11 +107,11 @@ public final class AccessibilityButtonController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispatchAccessibilityButtonAvailabilityChanged$1(AccessibilityButtonCallback callback, boolean available) {
         callback.onAvailabilityChanged(this, available);
     }
 
-    /* loaded from: classes.dex */
     public static abstract class AccessibilityButtonCallback {
         public void onClicked(AccessibilityButtonController controller) {
         }

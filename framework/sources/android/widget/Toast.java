@@ -8,6 +8,7 @@ import android.app.ITransientNotificationCallback;
 import android.compat.Compatibility;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -22,6 +23,9 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.provider.Settings;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
@@ -31,11 +35,14 @@ import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.accessibility.IAccessibilityManager;
 import android.widget.Toast;
+import android.widget.flags.Flags;
 import com.android.internal.R;
 import com.android.internal.util.Preconditions;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 import com.samsung.android.desktopmode.SemDesktopModeState;
+import com.samsung.android.knox.custom.CustomDeviceManagerProxy;
 import com.samsung.android.rune.CoreRune;
+import com.samsung.android.rune.ViewRune;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -69,13 +76,7 @@ public class Toast {
     static final boolean DEBUG = Debug.semIsProductDev();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Duration {
-    }
-
-    /* renamed from: -$$Nest$smgetService */
-    static /* bridge */ /* synthetic */ INotificationManager m6787$$Nest$smgetService() {
-        return getService();
     }
 
     public Toast(Context context) {
@@ -88,16 +89,13 @@ public class Toast {
         this.mIsCustomToast = false;
         this.mCustomDisplayId = -1;
         this.mContext = context;
-        Binder binder = new Binder();
-        this.mToken = binder;
+        this.mToken = new Binder();
         Looper looper2 = getLooper(looper);
         this.mHandler = new Handler(looper2);
-        ArrayList arrayList = new ArrayList();
-        this.mCallbacks = arrayList;
-        TN tn = new TN(context, context.getPackageName(), binder, arrayList, looper2);
-        this.mTN = tn;
-        tn.mY = context.getResources().getDimensionPixelSize(R.dimen.toast_y_offset);
-        tn.mGravity = context.getResources().getInteger(R.integer.config_toastDefaultGravity);
+        this.mCallbacks = new ArrayList();
+        this.mTN = new TN(context, context.getPackageName(), this.mToken, this.mCallbacks, looper2);
+        this.mTN.mY = context.getResources().getDimensionPixelSize(R.dimen.toast_y_offset);
+        this.mTN.mGravity = context.getResources().getInteger(R.integer.config_toastDefaultGravity);
     }
 
     private Looper getLooper(Looper looper) {
@@ -113,24 +111,124 @@ public class Toast {
         return CoreRune.SYSFW_APP_SPEG && (context = ActivityThread.currentApplication()) != null && (pm = context.getPackageManager()) != null && pm.isSpeg(Binder.getCallingUid());
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:104:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:108:0x0283  */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x0214  */
-    /* JADX WARN: Removed duplicated region for block: B:67:0x0233  */
-    /* JADX WARN: Removed duplicated region for block: B:73:0x0268  */
-    /* JADX WARN: Removed duplicated region for block: B:76:0x0274  */
-    /* JADX WARN: Removed duplicated region for block: B:79:0x027f  */
-    /* JADX WARN: Removed duplicated region for block: B:86:0x02a3  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
     public void show() {
-        /*
-            Method dump skipped, instructions count: 808
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.widget.Toast.show():void");
+        int displayId;
+        if (isSpeg()) {
+            return;
+        }
+        CustomDeviceManagerProxy knoxCustomManager = CustomDeviceManagerProxy.getInstance();
+        if (knoxCustomManager != null && !knoxCustomManager.getToastEnabledState()) {
+            Log.i(TAG, "Knox Customization: Not showing toast");
+            return;
+        }
+        if (checkGameHomeAllowList()) {
+            return;
+        }
+        if (Compatibility.isChangeEnabled(CHANGE_TEXT_TOASTS_IN_THE_SYSTEM)) {
+            Preconditions.checkState((this.mNextView == null && this.mText == null) ? false : true, "You must either set a text or a view");
+        } else if (this.mNextView == null) {
+            throw new RuntimeException("setView must have been called");
+        }
+        this.mTN.mIsCustomView = this.mIsCustomToast;
+        Log.i(TAG, "show: caller = " + Debug.getCallers(1));
+        this.mDisplayContext = null;
+        int contextDispId = this.mContext.getDisplayId();
+        int focusedDisplayId = semGetFocusedDisplayId();
+        boolean isActivityContext = getActivityContext(this.mContext) != null;
+        boolean isDexDualMode = isDexDualModeEnabled(this.mContext);
+        boolean isFocusInDesktop = isDexDualMode && focusedDisplayId == 2;
+        Log.i(TAG, "show: isDexDualMode = " + isDexDualMode);
+        if (!this.mIsCustomToast && !isActivityContext && isFocusInDesktop && isDexDualMode && this.mContext.getApplicationContext() != null) {
+            this.mDisplayContext = semCreateDisplayContext(2);
+        }
+        if (ViewRune.WIDGET_ONEUI_TOAST_SUPPRORT_SUB_DISPLAY && !this.mIsCustomToast && focusedDisplayId == 1 && contextDispId != 1 && this.mContext.getApplicationContext() != null) {
+            this.mDisplayContext = semCreateDisplayContext(1);
+        }
+        Log.i(TAG, "show: contextDispId = " + contextDispId + " mCustomDisplayId = " + this.mCustomDisplayId + " focusedDisplayId = " + focusedDisplayId + " isActivityContext = " + isActivityContext);
+        if (knoxCustomManager != null && knoxCustomManager.getToastShowPackageNameState()) {
+            PackageManager pm = this.mContext.getPackageManager();
+            ApplicationInfo info = this.mContext.getApplicationInfo();
+            String appName = pm.getApplicationLabel(info).toString();
+            if (this.mNextView != null) {
+                TextView tv = (TextView) this.mNextView.findViewById(16908299);
+                if (tv != null && appName != null && !tv.getText().toString().startsWith(appName)) {
+                    try {
+                        Spanned spannedText = new SpannableString(tv.getText());
+                        String oldText = Html.toHtml(spannedText);
+                        int idx1 = oldText.indexOf(62);
+                        int idx2 = oldText.lastIndexOf(60);
+                        tv.lambda$setTextAsync$0(Html.fromHtml(String.format("%1s: %2s", appName, oldText.substring(idx1 + 1, idx2))));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception thrown :", e);
+                        tv.lambda$setTextAsync$0(String.format("%1s: %2s", appName, tv.getText().toString()));
+                    }
+                }
+            } else if (appName != null && this.mText != null && !this.mText.toString().startsWith(appName)) {
+                try {
+                    Spanned spannedText2 = new SpannableString(this.mText);
+                    String oldText2 = Html.toHtml(spannedText2);
+                    int idx12 = oldText2.indexOf(62);
+                    int idx22 = oldText2.lastIndexOf(60);
+                    this.mText = Html.fromHtml(String.format("%1s: %2s", appName, oldText2.substring(idx12 + 1, idx22)));
+                } catch (Exception e2) {
+                    Log.e(TAG, "Exception thrown :", e2);
+                    this.mText = String.format("%1s: %2s", appName, this.mText.toString());
+                }
+            }
+        }
+        if (!this.mIsCustomToast && this.mDisplayContext != null) {
+            this.mNextViewForDex = ToastPresenter.getTextToastView(this.mDisplayContext, this.mText);
+            if (localLOGV) {
+                Log.v(TAG, "show: new view = " + this.mNextViewForDex);
+            }
+        }
+        if (!this.mTN.mIsCustomOffset) {
+            if (this.mDisplayContext != null) {
+                this.mTN.mY = this.mDisplayContext.getResources().getDimensionPixelSize(R.dimen.toast_y_offset);
+            } else {
+                this.mTN.mY = this.mContext.getResources().getDimensionPixelSize(R.dimen.toast_y_offset);
+            }
+        }
+        INotificationManager service = getService();
+        String pkg = this.mContext.getOpPackageName();
+        TN tn = this.mTN;
+        if (Flags.toastNoWeakref()) {
+            tn.mNextView = this.mNextViewForDex != null ? this.mNextViewForDex : this.mNextView;
+        } else {
+            tn.mNextViewWeakRef = new WeakReference<>(this.mNextViewForDex != null ? this.mNextViewForDex : this.mNextView);
+        }
+        int displayId2 = (this.mDisplayContext != null ? this.mDisplayContext : this.mContext).getDisplayId();
+        if (this.mCustomDisplayId == -1) {
+            displayId = displayId2;
+        } else {
+            int displayId3 = this.mCustomDisplayId;
+            displayId = displayId3;
+        }
+        int uid = -1;
+        try {
+            PackageManager pm2 = this.mContext.getPackageManager();
+            ApplicationInfo ai = pm2.getApplicationInfo(pkg, 0);
+            uid = ai.uid;
+        } catch (Exception e3) {
+            Log.e(TAG, "show: cannot get uid!!!", e3);
+        }
+        boolean isUiContext = this.mContext.isUiContext();
+        if (service != null) {
+            try {
+                if (Compatibility.isChangeEnabled(CHANGE_TEXT_TOASTS_IN_THE_SYSTEM)) {
+                    if (this.mNextView != null) {
+                        service.enqueueToastForDex(pkg, this.mToken, tn, this.mDuration, isUiContext, displayId, semGetMessageFromTv(this.mNextView), uid);
+                        return;
+                    } else {
+                        ITransientNotificationCallback callback = new CallbackBinder(this.mCallbacks, this.mHandler);
+                        service.enqueueTextToastForDex(pkg, this.mToken, this.mText, this.mDuration, isUiContext, displayId, callback, this.mText != null ? this.mText.toString() : "", uid);
+                        return;
+                    }
+                }
+                service.enqueueToastForDex(pkg, this.mToken, tn, this.mDuration, isUiContext, displayId, semGetMessageFromTv(this.mNextView), uid);
+            } catch (RemoteException e4) {
+            }
+        }
     }
 
     public void cancel() {
@@ -284,30 +382,31 @@ public class Toast {
                 throw new IllegalStateException("Text provided for custom toast, remove previous setView() calls if you want a text toast instead.");
             }
             this.mText = s;
-            return;
+        } else {
+            if (this.mNextView == null) {
+                throw new RuntimeException("This Toast was not created with Toast.makeText()");
+            }
+            TextView tv = (TextView) this.mNextView.findViewById(16908299);
+            if (tv == null) {
+                throw new RuntimeException("This Toast was not created with Toast.makeText()");
+            }
+            tv.lambda$setTextAsync$0(s);
         }
-        View view = this.mNextView;
-        if (view == null) {
-            throw new RuntimeException("This Toast was not created with Toast.makeText()");
-        }
-        TextView tv = (TextView) view.findViewById(16908299);
-        if (tv == null) {
-            throw new RuntimeException("This Toast was not created with Toast.makeText()");
-        }
-        tv.setText(s);
     }
 
-    private static INotificationManager getService() {
-        INotificationManager iNotificationManager = sService;
-        if (iNotificationManager != null) {
-            return iNotificationManager;
-        }
-        INotificationManager asInterface = INotificationManager.Stub.asInterface(ServiceManager.getService("notification"));
-        sService = asInterface;
-        return asInterface;
+    public TN getTn() {
+        return this.mTN;
     }
 
-    /* loaded from: classes4.dex */
+    /* JADX INFO: Access modifiers changed from: private */
+    public static INotificationManager getService() {
+        if (sService != null) {
+            return sService;
+        }
+        sService = INotificationManager.Stub.asInterface(ServiceManager.getService("notification"));
+        return sService;
+    }
+
     public static class TN extends ITransientNotification.Stub {
         private static final int CANCEL = 2;
         private static final int HIDE = 1;
@@ -319,7 +418,8 @@ public class Toast {
         float mHorizontalMargin;
         boolean mIsCustomOffset;
         boolean mIsCustomView = false;
-        WeakReference<View> mNextView;
+        View mNextView;
+        WeakReference<View> mNextViewWeakRef;
         final String mPackageName;
         private final WindowManager.LayoutParams mParams;
         private final ToastPresenter mPresenter;
@@ -332,76 +432,44 @@ public class Toast {
 
         TN(Context context, String packageName, Binder token, List<Callback> callbacks, Looper looper) {
             IAccessibilityManager accessibilityManager = IAccessibilityManager.Stub.asInterface(ServiceManager.getService(Context.ACCESSIBILITY_SERVICE));
-            ToastPresenter toastPresenter = new ToastPresenter(context, accessibilityManager, Toast.m6787$$Nest$smgetService(), packageName);
-            this.mPresenter = toastPresenter;
-            this.mParams = toastPresenter.getLayoutParams();
+            this.mPresenter = new ToastPresenter(context, accessibilityManager, Toast.getService(), packageName);
+            this.mParams = this.mPresenter.getLayoutParams();
             this.mPackageName = packageName;
             this.mToken = token;
             this.mCallbacks = new WeakReference<>(callbacks);
             this.mHandler = new Handler(looper, null) { // from class: android.widget.Toast.TN.1
-                AnonymousClass1(Looper looper2, Handler.Callback callback) {
-                    super(looper2, callback);
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
                         case 0:
                             IBinder token2 = (IBinder) msg.obj;
                             TN.this.handleShow(token2);
-                            return;
+                            break;
                         case 1:
                             TN.this.handleHide();
-                            TN.this.mNextView = null;
-                            return;
+                            if (Flags.toastNoWeakref()) {
+                                TN.this.mNextView = null;
+                                break;
+                            } else {
+                                TN.this.mNextViewWeakRef = null;
+                                break;
+                            }
                         case 2:
                             TN.this.handleHide();
-                            TN.this.mNextView = null;
+                            if (Flags.toastNoWeakref()) {
+                                TN.this.mNextView = null;
+                            } else {
+                                TN.this.mNextViewWeakRef = null;
+                            }
                             try {
-                                Toast.m6787$$Nest$smgetService().cancelToast(TN.this.mPackageName, TN.this.mToken);
-                                return;
+                                Toast.getService().cancelToast(TN.this.mPackageName, TN.this.mToken);
+                                break;
                             } catch (RemoteException e) {
                                 return;
                             }
-                        default:
-                            return;
                     }
                 }
             };
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.widget.Toast$TN$1 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass1 extends Handler {
-            AnonymousClass1(Looper looper2, Handler.Callback callback) {
-                super(looper2, callback);
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 0:
-                        IBinder token2 = (IBinder) msg.obj;
-                        TN.this.handleShow(token2);
-                        return;
-                    case 1:
-                        TN.this.handleHide();
-                        TN.this.mNextView = null;
-                        return;
-                    case 2:
-                        TN.this.handleHide();
-                        TN.this.mNextView = null;
-                        try {
-                            Toast.m6787$$Nest$smgetService().cancelToast(TN.this.mPackageName, TN.this.mToken);
-                            return;
-                        } catch (RemoteException e) {
-                            return;
-                        }
-                    default:
-                        return;
-                }
-            }
         }
 
         private List<Callback> getCallbacks() {
@@ -437,19 +505,43 @@ public class Toast {
         }
 
         public void handleShow(IBinder windowToken) {
-            WeakReference<View> weakReference;
-            Log.v(Toast.TAG, "HANDLE SHOW: " + this + " mView=" + this.mView + " mNextView=" + this.mNextView);
-            if (!this.mHandler.hasMessages(2) && !this.mHandler.hasMessages(1) && (weakReference = this.mNextView) != null && this.mView != weakReference.get()) {
+            if (Flags.toastNoWeakref()) {
+                if (Toast.localLOGV) {
+                    Log.v(Toast.TAG, "HANDLE SHOW: " + this + " mView=" + this.mView + " mNextView=" + this.mNextView);
+                }
+            } else if (Toast.localLOGV) {
+                Log.v(Toast.TAG, "HANDLE SHOW: " + this + " mView=" + this.mView + " mNextView=" + this.mNextViewWeakRef);
+            }
+            if (this.mHandler.hasMessages(2) || this.mHandler.hasMessages(1)) {
+                return;
+            }
+            if (Flags.toastNoWeakref()) {
+                if (this.mNextView != null && this.mView != this.mNextView) {
+                    handleHide();
+                    if (this.mIsCustomView) {
+                        this.mParams.semClearExtensionFlags(131072);
+                    } else {
+                        this.mParams.semAddExtensionFlags(131072);
+                    }
+                    this.mView = this.mNextView;
+                    if (this.mView != null) {
+                        this.mPresenter.show(this.mView, this.mToken, windowToken, this.mDuration, this.mGravity, this.mX, this.mY, this.mHorizontalMargin, this.mVerticalMargin, new CallbackBinder(getCallbacks(), this.mHandler));
+                        return;
+                    }
+                    return;
+                }
+                return;
+            }
+            if (this.mNextViewWeakRef != null && this.mView != this.mNextViewWeakRef.get()) {
                 handleHide();
                 if (this.mIsCustomView) {
                     this.mParams.semClearExtensionFlags(131072);
                 } else {
                     this.mParams.semAddExtensionFlags(131072);
                 }
-                View view = this.mNextView.get();
-                this.mView = view;
-                if (view != null) {
-                    this.mPresenter.show(view, this.mToken, windowToken, this.mDuration, this.mGravity, this.mX, this.mY, this.mHorizontalMargin, this.mVerticalMargin, new CallbackBinder(getCallbacks(), this.mHandler));
+                this.mView = this.mNextViewWeakRef.get();
+                if (this.mView != null) {
+                    this.mPresenter.show(this.mView, this.mToken, windowToken, this.mDuration, this.mGravity, this.mX, this.mY, this.mHorizontalMargin, this.mVerticalMargin, new CallbackBinder(getCallbacks(), this.mHandler));
                 }
             }
         }
@@ -458,16 +550,24 @@ public class Toast {
             if (Toast.localLOGV) {
                 Log.v(Toast.TAG, "HANDLE HIDE: " + this + " mView=" + this.mView);
             }
-            View view = this.mView;
-            if (view != null) {
-                Preconditions.checkState(view == this.mPresenter.getView(), "Trying to hide toast view different than the last one displayed");
+            if (this.mView != null) {
+                Preconditions.checkState(this.mView == this.mPresenter.getView(), "Trying to hide toast view different than the last one displayed");
                 this.mPresenter.hide(new CallbackBinder(getCallbacks(), this.mHandler));
                 this.mView = null;
             }
         }
+
+        public View getNextView() {
+            if (Flags.toastNoWeakref()) {
+                return this.mNextView;
+            }
+            if (this.mNextViewWeakRef != null) {
+                return this.mNextViewWeakRef.get();
+            }
+            return null;
+        }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Callback {
         public void onToastShown() {
         }
@@ -476,14 +576,10 @@ public class Toast {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class CallbackBinder extends ITransientNotificationCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class CallbackBinder extends ITransientNotificationCallback.Stub {
         private final List<Callback> mCallbacks;
         private final Handler mHandler;
-
-        /* synthetic */ CallbackBinder(List list, Handler handler, CallbackBinderIA callbackBinderIA) {
-            this(list, handler);
-        }
 
         private CallbackBinder(List<Callback> callbacks, Handler handler) {
             this.mCallbacks = callbacks;
@@ -492,7 +588,7 @@ public class Toast {
 
         @Override // android.app.ITransientNotificationCallback
         public void onToastShown() {
-            this.mHandler.post(new Runnable() { // from class: android.widget.Toast$CallbackBinder$$ExternalSyntheticLambda1
+            this.mHandler.post(new Runnable() { // from class: android.widget.Toast$CallbackBinder$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     Toast.CallbackBinder.this.lambda$onToastShown$0();
@@ -500,6 +596,7 @@ public class Toast {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onToastShown$0() {
             for (Callback callback : getCallbacks()) {
                 callback.onToastShown();
@@ -508,7 +605,7 @@ public class Toast {
 
         @Override // android.app.ITransientNotificationCallback
         public void onToastHidden() {
-            this.mHandler.post(new Runnable() { // from class: android.widget.Toast$CallbackBinder$$ExternalSyntheticLambda0
+            this.mHandler.post(new Runnable() { // from class: android.widget.Toast$CallbackBinder$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     Toast.CallbackBinder.this.lambda$onToastHidden$1();
@@ -516,6 +613,7 @@ public class Toast {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onToastHidden$1() {
             for (Callback callback : getCallbacks()) {
                 callback.onToastHidden();
@@ -574,6 +672,7 @@ public class Toast {
     }
 
     public void semSetPreferredDisplayType(int displayId) {
+        this.mCustomDisplayId = 0;
         if (displayId == 1) {
             this.mCustomDisplayId = 2;
         } else {

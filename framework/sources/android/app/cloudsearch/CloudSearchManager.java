@@ -9,7 +9,6 @@ import java.util.concurrent.Executor;
 /* loaded from: classes.dex */
 public class CloudSearchManager {
 
-    /* loaded from: classes.dex */
     public interface CallBack {
         void onSearchFailed(SearchRequest searchRequest, SearchResponse searchResponse);
 

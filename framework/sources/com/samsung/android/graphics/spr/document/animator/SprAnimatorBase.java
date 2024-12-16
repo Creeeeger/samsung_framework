@@ -54,7 +54,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SprAnimatorBase extends ValueAnimator implements Cloneable {
     public static final byte INTERPOLATOR_TYPE_ACCELERATE = 2;
     public static final byte INTERPOLATOR_TYPE_ACCELERATE_DECELERATE = 1;
@@ -122,7 +122,6 @@ public abstract class SprAnimatorBase extends ValueAnimator implements Cloneable
     private float mInterpolatorPeriod = 0.0f;
     protected final SprAnimatorBase mIntrinsic = this;
 
-    /* loaded from: classes5.dex */
     public static class UpdateParameter {
         public float alpha;
         public int fillColor;
@@ -146,7 +145,7 @@ public abstract class SprAnimatorBase extends ValueAnimator implements Cloneable
 
     public abstract boolean updateValues(UpdateParameter updateParameter);
 
-    public SprAnimatorBase(byte type) {
+    protected SprAnimatorBase(byte type) {
         this.mType = type;
     }
 
@@ -155,22 +154,18 @@ public abstract class SprAnimatorBase extends ValueAnimator implements Cloneable
         int size = in.readInt();
         byte[] data = new byte[size];
         in.read(data, 0, size);
-        byte b = this.mInterpolatorType;
-        if (b == 6) {
-            float f = ByteBuffer.wrap(data).getFloat();
-            this.mInterpolatorCycle = f;
-            setInterpolatorCycle(this.mInterpolatorType, f);
-        } else if (b >= 10 && b <= 11) {
-            float f2 = ByteBuffer.wrap(data).getFloat();
-            this.mInterpolatorOvershot = f2;
-            setInterpolatorBackEase(this.mInterpolatorType, f2);
-        } else if (b >= 22 && b <= 23) {
+        if (this.mInterpolatorType == 6) {
+            this.mInterpolatorCycle = ByteBuffer.wrap(data).getFloat();
+            setInterpolatorCycle(this.mInterpolatorType, this.mInterpolatorCycle);
+        } else if (this.mInterpolatorType >= 10 && this.mInterpolatorType <= 11) {
+            this.mInterpolatorOvershot = ByteBuffer.wrap(data).getFloat();
+            setInterpolatorBackEase(this.mInterpolatorType, this.mInterpolatorOvershot);
+        } else if (this.mInterpolatorType >= 22 && this.mInterpolatorType <= 23) {
             this.mInterpolatorAmplitude = ByteBuffer.wrap(data).getFloat();
-            float f3 = ByteBuffer.wrap(data).getFloat();
-            this.mInterpolatorPeriod = f3;
-            setInterpolatorElastic(this.mInterpolatorType, this.mInterpolatorAmplitude, f3);
+            this.mInterpolatorPeriod = ByteBuffer.wrap(data).getFloat();
+            setInterpolatorElastic(this.mInterpolatorType, this.mInterpolatorAmplitude, this.mInterpolatorPeriod);
         } else {
-            setInterpolator(b);
+            setInterpolator(this.mInterpolatorType);
         }
         int delay = in.readInt();
         int duration = in.readInt();
@@ -193,12 +188,11 @@ public abstract class SprAnimatorBase extends ValueAnimator implements Cloneable
     public void toSPR(DataOutputStream out) throws IOException {
         out.writeByte(this.mInterpolatorType);
         ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
-        byte b = this.mInterpolatorType;
-        if (b == 6) {
+        if (this.mInterpolatorType == 6) {
             new DataOutputStream(bytestream).writeFloat(this.mInterpolatorCycle);
-        } else if (b >= 10 && b <= 11) {
+        } else if (this.mInterpolatorType >= 10 && this.mInterpolatorType <= 11) {
             new DataOutputStream(bytestream).writeFloat(this.mInterpolatorOvershot);
-        } else if (b >= 22 && b <= 23) {
+        } else if (this.mInterpolatorType >= 22 && this.mInterpolatorType <= 23) {
             DataOutputStream ostream = new DataOutputStream(bytestream);
             ostream.writeFloat(this.mInterpolatorAmplitude);
             ostream.writeFloat(this.mInterpolatorPeriod);
@@ -232,8 +226,8 @@ public abstract class SprAnimatorBase extends ValueAnimator implements Cloneable
 
     @Override // android.animation.ValueAnimator, android.animation.Animator
     /* renamed from: clone */
-    public SprAnimatorBase mo57clone() {
-        return (SprAnimatorBase) super.mo57clone();
+    public SprAnimatorBase mo77clone() {
+        return (SprAnimatorBase) super.mo77clone();
     }
 
     public boolean update(UpdateParameter parameter) {

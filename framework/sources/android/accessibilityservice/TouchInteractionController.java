@@ -5,6 +5,8 @@ import android.os.RemoteException;
 import android.util.ArrayMap;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityInteractionClient;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Executor;
@@ -26,18 +28,17 @@ public final class TouchInteractionController {
     private boolean mStateChangeRequested = false;
     private int mState = 0;
 
-    /* loaded from: classes.dex */
     public interface Callback {
         void onMotionEvent(MotionEvent motionEvent);
 
         void onStateChanged(int i);
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     private @interface State {
     }
 
-    public TouchInteractionController(AccessibilityService service, Object lock, int displayId) {
+    TouchInteractionController(AccessibilityService service, Object lock, int displayId) {
         this.mDisplayId = displayId;
         this.mLock = lock;
         this.mService = service;
@@ -78,7 +79,7 @@ public final class TouchInteractionController {
         }
     }
 
-    public void onMotionEvent(MotionEvent event) {
+    void onMotionEvent(MotionEvent event) {
         if (this.mStateChangeRequested) {
             this.mQueuedMotionEvents.add(event);
         } else {
@@ -108,7 +109,7 @@ public final class TouchInteractionController {
         }
     }
 
-    public void onStateChanged(final int state) {
+    void onStateChanged(final int state) {
         ArrayMap<Callback, Executor> entries;
         this.mState = state;
         synchronized (this.mLock) {
@@ -221,8 +222,7 @@ public final class TouchInteractionController {
         if (!this.mServiceDetectsGestures || this.mCallbacks.size() == 0) {
             throw new IllegalStateException("State transitions are not allowed without first adding a callback.");
         }
-        int i = this.mState;
-        if (i == 4 || i == 2) {
+        if (this.mState == 4 || this.mState == 2) {
             throw new IllegalStateException("State transition requests are not allowed in " + stateToString(this.mState));
         }
     }

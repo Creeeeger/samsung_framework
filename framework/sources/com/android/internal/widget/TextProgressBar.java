@@ -70,9 +70,8 @@ public class TextProgressBar extends RelativeLayout implements Chronometer.OnChr
         super.addView(child, index, params);
         int childId = child.getId();
         if (childId == 16908308 && (child instanceof Chronometer)) {
-            Chronometer chronometer = (Chronometer) child;
-            this.mChronometer = chronometer;
-            chronometer.setOnChronometerTickListener(this);
+            this.mChronometer = (Chronometer) child;
+            this.mChronometer.setOnChronometerTickListener(this);
             this.mChronometerFollow = params.width == -2;
             this.mChronometerGravity = this.mChronometer.getGravity() & Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
             return;
@@ -84,14 +83,12 @@ public class TextProgressBar extends RelativeLayout implements Chronometer.OnChr
 
     @RemotableViewMethod
     public void setDurationBase(long durationBase) {
-        Chronometer chronometer;
         this.mDurationBase = durationBase;
-        if (this.mProgressBar == null || (chronometer = this.mChronometer) == null) {
+        if (this.mProgressBar == null || this.mChronometer == null) {
             throw new RuntimeException("Expecting child ProgressBar with id 'android.R.id.progress' and Chronometer id 'android.R.id.text1'");
         }
-        int base = (int) (durationBase - chronometer.getBase());
-        this.mDuration = base;
-        if (base <= 0) {
+        this.mDuration = (int) (durationBase - this.mChronometer.getBase());
+        if (this.mDuration <= 0) {
             this.mDuration = 1;
         }
         this.mProgressBar.setMax(this.mDuration);
@@ -114,10 +111,9 @@ public class TextProgressBar extends RelativeLayout implements Chronometer.OnChr
             int leadingEdge = ((this.mProgressBar.getProgress() * contentWidth) / this.mProgressBar.getMax()) + params.leftMargin;
             int adjustLeft = 0;
             int textWidth = this.mChronometer.getWidth();
-            int i = this.mChronometerGravity;
-            if (i == 8388613) {
+            if (this.mChronometerGravity == 8388613) {
                 adjustLeft = -textWidth;
-            } else if (i == 1) {
+            } else if (this.mChronometerGravity == 1) {
                 adjustLeft = -(textWidth / 2);
             }
             int leadingEdge2 = leadingEdge + adjustLeft;

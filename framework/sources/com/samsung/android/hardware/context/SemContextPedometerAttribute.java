@@ -6,17 +6,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextPedometerAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextPedometerAttribute> CREATOR = new Parcelable.Creator<SemContextPedometerAttribute>() { // from class: com.samsung.android.hardware.context.SemContextPedometerAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPedometerAttribute createFromParcel(Parcel in) {
             return new SemContextPedometerAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPedometerAttribute[] newArray(int size) {
             return new SemContextPedometerAttribute[size];
@@ -31,24 +30,7 @@ public class SemContextPedometerAttribute extends SemContextAttribute {
     private int mMode;
     private double mWeight;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextPedometerAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextPedometerAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPedometerAttribute createFromParcel(Parcel in) {
-            return new SemContextPedometerAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPedometerAttribute[] newArray(int size) {
-            return new SemContextPedometerAttribute[size];
-        }
-    }
-
-    public SemContextPedometerAttribute() {
+    SemContextPedometerAttribute() {
         this.mGender = 1;
         this.mHeight = 170.0d;
         this.mWeight = 60.0d;
@@ -93,8 +75,7 @@ public class SemContextPedometerAttribute extends SemContextAttribute {
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mGender;
-        if (i < 1 || i > 2) {
+        if (this.mGender < 1 || this.mGender > 2) {
             Log.e(TAG, "The gender is wrong.");
             return false;
         }

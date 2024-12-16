@@ -6,10 +6,9 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsRcsFeature extends IInterface {
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsRcsFeature {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -17,7 +16,6 @@ public interface IImsRcsFeature extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsRcsFeature {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsRcsFeature";
 
@@ -52,18 +50,14 @@ public interface IImsRcsFeature extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsRcsFeature {
+        private static class Proxy implements IImsRcsFeature {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

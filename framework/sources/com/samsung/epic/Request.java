@@ -36,12 +36,11 @@ public class Request {
     }
 
     public boolean acquire_lock() {
-        IEpicObject iEpicObject = this.mEpicObject;
-        if (iEpicObject == null) {
+        if (this.mEpicObject == null) {
             return false;
         }
         try {
-            boolean ret = iEpicObject.acquire_lock();
+            boolean ret = this.mEpicObject.acquire_lock();
             return ret;
         } catch (RemoteException e) {
             return false;
@@ -49,12 +48,11 @@ public class Request {
     }
 
     public boolean release_lock() {
-        IEpicObject iEpicObject = this.mEpicObject;
-        if (iEpicObject == null) {
+        if (this.mEpicObject == null) {
             return false;
         }
         try {
-            boolean ret = iEpicObject.release_lock();
+            boolean ret = this.mEpicObject.release_lock();
             return ret;
         } catch (RemoteException e) {
             return false;
@@ -62,12 +60,11 @@ public class Request {
     }
 
     public boolean acquire_lock(int value, int usec) {
-        IEpicObject iEpicObject = this.mEpicObject;
-        if (iEpicObject == null) {
+        if (this.mEpicObject == null) {
             return false;
         }
         try {
-            boolean ret = iEpicObject.acquire_lock_option(value, usec);
+            boolean ret = this.mEpicObject.acquire_lock_option(value, usec);
             return ret;
         } catch (RemoteException e) {
             return false;
@@ -75,12 +72,11 @@ public class Request {
     }
 
     public boolean acquire_lock(int[] value_list, int[] usec_list) {
-        IEpicObject iEpicObject = this.mEpicObject;
-        if (iEpicObject == null) {
+        if (this.mEpicObject == null) {
             return false;
         }
         try {
-            boolean ret = iEpicObject.acquire_lock_option_multi(value_list, usec_list);
+            boolean ret = this.mEpicObject.acquire_lock_option_multi(value_list, usec_list);
             return ret;
         } catch (RemoteException e) {
             return false;
@@ -88,12 +84,11 @@ public class Request {
     }
 
     public boolean perf_hint(String name) {
-        IEpicObject iEpicObject = this.mEpicObject;
-        if (iEpicObject == null) {
+        if (this.mEpicObject == null) {
             return false;
         }
         try {
-            boolean ret = iEpicObject.perf_hint(name);
+            boolean ret = this.mEpicObject.perf_hint(name);
             return ret;
         } catch (RemoteException e) {
             return false;
@@ -101,12 +96,11 @@ public class Request {
     }
 
     public boolean hint_release(String name) {
-        IEpicObject iEpicObject = this.mEpicObject;
-        if (iEpicObject == null) {
+        if (this.mEpicObject == null) {
             return false;
         }
         try {
-            boolean ret = iEpicObject.hint_release(name);
+            boolean ret = this.mEpicObject.hint_release(name);
             return ret;
         } catch (RemoteException e) {
             return false;

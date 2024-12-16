@@ -8,6 +8,7 @@ public final class JobProtoEnums {
     public static final int INTERNAL_STOP_REASON_DATA_CLEARED = 8;
     public static final int INTERNAL_STOP_REASON_DEVICE_IDLE = 4;
     public static final int INTERNAL_STOP_REASON_DEVICE_THERMAL = 5;
+    public static final int INTERNAL_STOP_REASON_OLAF = 13;
     public static final int INTERNAL_STOP_REASON_PREEMPT = 2;
     public static final int INTERNAL_STOP_REASON_RESTRICTED_BUCKET = 6;
     public static final int INTERNAL_STOP_REASON_RTC_UPDATED = 9;

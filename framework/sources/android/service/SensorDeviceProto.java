@@ -7,7 +7,6 @@ public final class SensorDeviceProto {
     public static final long SENSORS = 2246267895812L;
     public static final long TOTAL_SENSORS = 1120986464258L;
 
-    /* loaded from: classes3.dex */
     public final class SensorProto {
         public static final long ACTIVE_COUNT = 1120986464258L;
         public static final long BATCHING_PERIOD_MS = 2207613190149L;

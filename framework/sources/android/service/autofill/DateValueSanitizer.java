@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class DateValueSanitizer extends InternalSanitizer implements Sanitizer, Parcelable {
     public static final Parcelable.Creator<DateValueSanitizer> CREATOR = new Parcelable.Creator<DateValueSanitizer>() { // from class: android.service.autofill.DateValueSanitizer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DateValueSanitizer createFromParcel(Parcel parcel) {
             return new DateValueSanitizer((DateFormat) parcel.readSerializable(DateFormat.class.getClassLoader(), DateFormat.class));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DateValueSanitizer[] newArray(int size) {
             return new DateValueSanitizer[size];
@@ -74,22 +73,5 @@ public final class DateValueSanitizer extends InternalSanitizer implements Sanit
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeSerializable(this.mDateFormat);
-    }
-
-    /* renamed from: android.service.autofill.DateValueSanitizer$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DateValueSanitizer> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DateValueSanitizer createFromParcel(Parcel parcel) {
-            return new DateValueSanitizer((DateFormat) parcel.readSerializable(DateFormat.class.getClassLoader(), DateFormat.class));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DateValueSanitizer[] newArray(int size) {
-            return new DateValueSanitizer[size];
-        }
     }
 }

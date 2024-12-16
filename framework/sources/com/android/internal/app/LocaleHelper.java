@@ -5,12 +5,13 @@ import android.icu.text.ListFormatter;
 import android.icu.text.NumberingSystem;
 import android.icu.util.ULocale;
 import android.os.LocaleList;
+import android.text.TextUtils;
 import com.android.internal.app.LocaleStore;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class LocaleHelper {
     public static String toSentenceCase(String str, Locale locale) {
         return CaseMap.toTitle().wholeString().noLowercase().apply(locale, null, str);
@@ -73,9 +74,7 @@ public class LocaleHelper {
             localeNames[i] = getDisplayName(locales.get(i), dispLocale, false);
         }
         if (ellipsisNeeded) {
-            char[] ELLIPSIS_NORMAL = {8230};
-            String ELLIPSIS_STRING = new String(ELLIPSIS_NORMAL);
-            localeNames[maxLocales] = ELLIPSIS_STRING;
+            localeNames[maxLocales] = TextUtils.getEllipsisString(TextUtils.TruncateAt.END);
         }
         ListFormatter lfn = ListFormatter.getInstance(dispLocale);
         return lfn.format(localeNames);
@@ -90,7 +89,6 @@ public class LocaleHelper {
         return ULocale.addLikelySubtags(ULocale.forLocale(locale)).toLocale();
     }
 
-    /* loaded from: classes4.dex */
     public static final class LocaleInfoComparator implements Comparator<LocaleStore.LocaleInfo> {
         private static final String PREFIX_ARABIC = "ال";
         private final Collator mCollator;

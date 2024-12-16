@@ -18,7 +18,6 @@ public interface IRegistration extends IInterface {
 
     void storeUpgradedKeyAsync(byte[] bArr, byte[] bArr2, IStoreUpgradedKeyCallback iStoreUpgradedKeyCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRegistration {
         @Override // android.security.rkp.IRegistration
         public void getKey(int keyId, IGetKeyCallback callback) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IRegistration extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRegistration {
         static final int TRANSACTION_cancelGetKey = 2;
         static final int TRANSACTION_getKey = 1;
@@ -87,39 +85,35 @@ public interface IRegistration extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRegistration.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRegistration.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRegistration.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    IGetKeyCallback _arg1 = IGetKeyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getKey(_arg0, _arg1);
+                    return true;
+                case 2:
+                    IGetKeyCallback _arg02 = IGetKeyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelGetKey(_arg02);
+                    return true;
+                case 3:
+                    byte[] _arg03 = data.createByteArray();
+                    byte[] _arg12 = data.createByteArray();
+                    IStoreUpgradedKeyCallback _arg2 = IStoreUpgradedKeyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    storeUpgradedKeyAsync(_arg03, _arg12, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            IGetKeyCallback _arg1 = IGetKeyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getKey(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            IGetKeyCallback _arg02 = IGetKeyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelGetKey(_arg02);
-                            return true;
-                        case 3:
-                            byte[] _arg03 = data.createByteArray();
-                            byte[] _arg12 = data.createByteArray();
-                            IStoreUpgradedKeyCallback _arg2 = IStoreUpgradedKeyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            storeUpgradedKeyAsync(_arg03, _arg12, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRegistration {
+        private static class Proxy implements IRegistration {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

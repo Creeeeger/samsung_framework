@@ -82,7 +82,7 @@ public final class TextViewOnReceiveContentListener implements OnReceiveContentL
             }
         } else {
             CharSequence text = coerceToText(clip, view.getContext(), payload.getFlags());
-            view.setText(text);
+            view.lambda$setTextAsync$0(text);
             Editable editable = (Editable) view.getText();
             Selection.setSelection(editable, editable.length());
         }
@@ -109,14 +109,9 @@ public final class TextViewOnReceiveContentListener implements OnReceiveContentL
         return view.getReceiveContentMimeTypes() == null && !Compatibility.isChangeEnabled(AUTOFILL_NON_TEXT_REQUIRES_ON_RECEIVE_CONTENT_LISTENER);
     }
 
-    /* loaded from: classes4.dex */
-    public static final class InputConnectionInfo {
+    private static final class InputConnectionInfo {
         private final String[] mEditorInfoContentMimeTypes;
         private final WeakReference<InputConnection> mInputConnection;
-
-        /* synthetic */ InputConnectionInfo(InputConnection inputConnection, String[] strArr, InputConnectionInfoIA inputConnectionInfoIA) {
-            this(inputConnection, strArr);
-        }
 
         private InputConnectionInfo(InputConnection inputConnection, String[] editorInfoContentMimeTypes) {
             this.mInputConnection = new WeakReference<>(inputConnection);
@@ -128,7 +123,7 @@ public final class TextViewOnReceiveContentListener implements OnReceiveContentL
         }
     }
 
-    public void setInputConnectionInfo(TextView view, InputConnection ic, EditorInfo editorInfo) {
+    void setInputConnectionInfo(TextView view, InputConnection ic, EditorInfo editorInfo) {
         if (!isUsageOfImeCommitContentEnabled(view)) {
             this.mInputConnectionInfo = null;
             return;
@@ -141,7 +136,7 @@ public final class TextViewOnReceiveContentListener implements OnReceiveContentL
         }
     }
 
-    public void clearInputConnectionInfo() {
+    void clearInputConnectionInfo() {
         this.mInputConnectionInfo = null;
     }
 

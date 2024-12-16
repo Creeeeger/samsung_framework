@@ -1,6 +1,6 @@
 package android.text;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface Spannable extends Spanned {
     void removeSpan(Object obj);
 
@@ -10,7 +10,6 @@ public interface Spannable extends Spanned {
         removeSpan(what);
     }
 
-    /* loaded from: classes3.dex */
     public static class Factory {
         private static Factory sInstance = new Factory();
 

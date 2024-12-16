@@ -15,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class DateTransformation extends InternalTransformation implements Transformation, Parcelable {
     public static final Parcelable.Creator<DateTransformation> CREATOR = new Parcelable.Creator<DateTransformation>() { // from class: android.service.autofill.DateTransformation.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DateTransformation createFromParcel(Parcel parcel) {
             return new DateTransformation((AutofillId) parcel.readParcelable(null, AutofillId.class), (DateFormat) parcel.readSerializable(DateFormat.class.getClassLoader(), DateFormat.class));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DateTransformation[] newArray(int size) {
             return new DateTransformation[size];
@@ -73,22 +72,5 @@ public final class DateTransformation extends InternalTransformation implements 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelable(this.mFieldId, flags);
         parcel.writeSerializable(this.mDateFormat);
-    }
-
-    /* renamed from: android.service.autofill.DateTransformation$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DateTransformation> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DateTransformation createFromParcel(Parcel parcel) {
-            return new DateTransformation((AutofillId) parcel.readParcelable(null, AutofillId.class), (DateFormat) parcel.readSerializable(DateFormat.class.getClassLoader(), DateFormat.class));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DateTransformation[] newArray(int size) {
-            return new DateTransformation[size];
-        }
     }
 }

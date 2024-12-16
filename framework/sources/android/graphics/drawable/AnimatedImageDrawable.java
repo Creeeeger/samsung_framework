@@ -84,8 +84,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
     @FastNative
     private static native boolean nStop(long j);
 
-    /* loaded from: classes.dex */
-    public class State {
+    private class State {
         private final AssetFileDescriptor mAssetFd;
         private final InputStream mInputStream;
         final long mNativePtr;
@@ -122,8 +121,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
             throw new IllegalStateException("called getRepeatCount on empty AnimatedImageDrawable");
         }
         if (this.mState.mRepeatCount == -2) {
-            State state = this.mState;
-            state.mRepeatCount = nGetRepeatCount(state.mNativePtr);
+            this.mState.mRepeatCount = nGetRepeatCount(this.mState.mNativePtr);
         }
         return this.mState.mRepeatCount;
     }
@@ -170,7 +168,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
             try {
                 InputStream is = r.openRawResource(srcResId, value);
                 ImageDecoder.Source source = ImageDecoder.createSource(r, is, density);
-                Drawable drawable = ImageDecoder.decodeDrawable(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda1
+                Drawable drawable = ImageDecoder.decodeDrawable(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda3
                     @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
                     public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source2) {
                         AnimatedImageDrawable.lambda$updateStateFromTypedArray$0(imageDecoder, imageInfo, source2);
@@ -207,7 +205,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         }
     }
 
-    public static /* synthetic */ void lambda$updateStateFromTypedArray$0(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
+    static /* synthetic */ void lambda$updateStateFromTypedArray$0(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
         if (!info.isAnimated()) {
             throw new IllegalArgumentException("image is not animated");
         }
@@ -225,12 +223,10 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
             this.mIntrinsicWidth = cropRect.width();
             this.mIntrinsicHeight = cropRect.height();
         }
-        State state = new State(nCreate(nativeImageDecoder, decoder, width2, height2, colorSpaceHandle, extended, cropRect), inputStream, afd);
-        this.mState = state;
-        long nativeSize = nNativeByteSize(state.mNativePtr);
+        this.mState = new State(nCreate(nativeImageDecoder, decoder, width2, height2, colorSpaceHandle, extended, cropRect), inputStream, afd);
+        long nativeSize = nNativeByteSize(this.mState.mNativePtr);
         NativeAllocationRegistry registry = NativeAllocationRegistry.createMalloced(AnimatedImageDrawable.class.getClassLoader(), nGetNativeFinalizer(), nativeSize);
-        State state2 = this.mState;
-        registry.registerNativeAllocation(state2, state2.mNativePtr);
+        registry.registerNativeAllocation(this.mState, this.mState.mNativePtr);
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -255,7 +251,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         long nextUpdate = nDraw(this.mState.mNativePtr, canvas.getNativeCanvasWrapper());
         if (nextUpdate > 0) {
             if (this.mRunnable == null) {
-                this.mRunnable = new Runnable() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda2
+                this.mRunnable = new Runnable() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         AnimatedImageDrawable.this.invalidateSelf();
@@ -382,8 +378,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
 
     @Override // android.graphics.drawable.Animatable2
     public boolean unregisterAnimationCallback(Animatable2.AnimationCallback callback) {
-        ArrayList<Animatable2.AnimationCallback> arrayList;
-        if (callback == null || (arrayList = this.mAnimationCallbacks) == null || !arrayList.remove(callback)) {
+        if (callback == null || this.mAnimationCallbacks == null || !this.mAnimationCallbacks.remove(callback)) {
             return false;
         }
         if (this.mAnimationCallbacks.isEmpty()) {
@@ -405,7 +400,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         if (this.mAnimationCallbacks == null) {
             return;
         }
-        getHandler().post(new Runnable() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda3
+        getHandler().post(new Runnable() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 AnimatedImageDrawable.this.lambda$postOnAnimationStart$1();
@@ -413,6 +408,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$postOnAnimationStart$1() {
         Iterator<Animatable2.AnimationCallback> it = this.mAnimationCallbacks.iterator();
         while (it.hasNext()) {
@@ -425,7 +421,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         if (this.mAnimationCallbacks == null) {
             return;
         }
-        getHandler().post(new Runnable() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda0
+        getHandler().post(new Runnable() { // from class: android.graphics.drawable.AnimatedImageDrawable$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
             public final void run() {
                 AnimatedImageDrawable.this.lambda$postOnAnimationEnd$2();
@@ -433,6 +429,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$postOnAnimationEnd$2() {
         Iterator<Animatable2.AnimationCallback> it = this.mAnimationCallbacks.iterator();
         while (it.hasNext()) {
@@ -456,9 +453,8 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
     }
 
     private void onAnimationEnd() {
-        ArrayList<Animatable2.AnimationCallback> arrayList = this.mAnimationCallbacks;
-        if (arrayList != null) {
-            Iterator<Animatable2.AnimationCallback> it = arrayList.iterator();
+        if (this.mAnimationCallbacks != null) {
+            Iterator<Animatable2.AnimationCallback> it = this.mAnimationCallbacks.iterator();
             while (it.hasNext()) {
                 Animatable2.AnimationCallback callback = it.next();
                 callback.onAnimationEnd(this);
@@ -467,7 +463,7 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         if (this.mState.mNativePtr != 0) {
             nSetBounds(this.mState.mNativePtr, bounds);
         }

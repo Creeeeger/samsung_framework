@@ -21,14 +21,13 @@ public final class TextBoundsInfo implements Parcelable {
     private static final int BIDI_LEVEL_MASK = 66584576;
     private static final int BIDI_LEVEL_SHIFT = 19;
     public static final Parcelable.Creator<TextBoundsInfo> CREATOR = new Parcelable.Creator<TextBoundsInfo>() { // from class: android.view.inputmethod.TextBoundsInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextBoundsInfo createFromParcel(Parcel source) {
             return new TextBoundsInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextBoundsInfo[] newArray(int size) {
             return new TextBoundsInfo[size];
@@ -56,16 +55,7 @@ public final class TextBoundsInfo implements Parcelable {
     private final SegmentFinder mWordSegmentFinder;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface CharacterFlags {
-    }
-
-    /* synthetic */ TextBoundsInfo(Parcel parcel, TextBoundsInfoIA textBoundsInfoIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ TextBoundsInfo(Builder builder, TextBoundsInfoIA textBoundsInfoIA) {
-        this(builder);
     }
 
     public void getMatrix(Matrix matrix) {
@@ -82,30 +72,26 @@ public final class TextBoundsInfo implements Parcelable {
     }
 
     public void getCharacterBounds(int index, RectF bounds) {
-        int i = this.mStart;
-        if (index < i || index >= this.mEnd) {
+        if (index < this.mStart || index >= this.mEnd) {
             throw new IndexOutOfBoundsException("Index is out of the bounds of [" + this.mStart + ", " + this.mEnd + ").");
         }
-        int offset = (index - i) * 4;
-        float[] fArr = this.mCharacterBounds;
-        bounds.set(fArr[offset], fArr[offset + 1], fArr[offset + 2], fArr[offset + 3]);
+        int offset = (index - this.mStart) * 4;
+        bounds.set(this.mCharacterBounds[offset], this.mCharacterBounds[offset + 1], this.mCharacterBounds[offset + 2], this.mCharacterBounds[offset + 3]);
     }
 
     public int getCharacterFlags(int index) {
-        int i = this.mStart;
-        if (index < i || index >= this.mEnd) {
+        if (index < this.mStart || index >= this.mEnd) {
             throw new IndexOutOfBoundsException("Index is out of the bounds of [" + this.mStart + ", " + this.mEnd + ").");
         }
-        int offset = index - i;
+        int offset = index - this.mStart;
         return this.mInternalCharacterFlags[offset] & 15;
     }
 
     public int getCharacterBidiLevel(int index) {
-        int i = this.mStart;
-        if (index < i || index >= this.mEnd) {
+        if (index < this.mStart || index >= this.mEnd) {
             throw new IndexOutOfBoundsException("Index is out of the bounds of [" + this.mStart + ", " + this.mEnd + ").");
         }
-        int offset = index - i;
+        int offset = index - this.mStart;
         return (this.mInternalCharacterFlags[offset] & BIDI_LEVEL_MASK) >> 19;
     }
 
@@ -417,17 +403,15 @@ public final class TextBoundsInfo implements Parcelable {
     }
 
     private TextBoundsInfo(Parcel source) {
-        int readInt = source.readInt();
-        this.mStart = readInt;
-        int readInt2 = source.readInt();
-        this.mEnd = readInt2;
+        this.mStart = source.readInt();
+        this.mEnd = source.readInt();
         this.mMatrixValues = (float[]) Objects.requireNonNull(source.createFloatArray());
         this.mCharacterBounds = (float[]) Objects.requireNonNull(source.createFloatArray());
         int[] encodedFlags = (int[]) Objects.requireNonNull(source.createIntArray());
-        this.mGraphemeSegmentFinder = decodeSegmentFinder(encodedFlags, 134217728, 67108864, readInt, readInt2);
-        this.mWordSegmentFinder = decodeSegmentFinder(encodedFlags, 536870912, 268435456, readInt, readInt2);
-        this.mLineSegmentFinder = decodeSegmentFinder(encodedFlags, Integer.MIN_VALUE, 1073741824, readInt, readInt2);
-        int length = readInt2 - readInt;
+        this.mGraphemeSegmentFinder = decodeSegmentFinder(encodedFlags, 134217728, 67108864, this.mStart, this.mEnd);
+        this.mWordSegmentFinder = decodeSegmentFinder(encodedFlags, 536870912, 268435456, this.mStart, this.mEnd);
+        this.mLineSegmentFinder = decodeSegmentFinder(encodedFlags, Integer.MIN_VALUE, 1073741824, this.mStart, this.mEnd);
+        int length = this.mEnd - this.mStart;
         this.mInternalCharacterFlags = new int[length];
         for (int i = 0; i < length; i++) {
             this.mInternalCharacterFlags[i] = encodedFlags[i] & 66584591;
@@ -435,12 +419,10 @@ public final class TextBoundsInfo implements Parcelable {
     }
 
     private TextBoundsInfo(Builder builder) {
-        int i = builder.mStart;
-        this.mStart = i;
-        int i2 = builder.mEnd;
-        this.mEnd = i2;
+        this.mStart = builder.mStart;
+        this.mEnd = builder.mEnd;
         this.mMatrixValues = Arrays.copyOf(builder.mMatrixValues, 9);
-        int length = i2 - i;
+        int length = this.mEnd - this.mStart;
         this.mCharacterBounds = Arrays.copyOf(builder.mCharacterBounds, length * 4);
         this.mInternalCharacterFlags = new int[length];
         for (int index = 0; index < length; index++) {
@@ -449,23 +431,6 @@ public final class TextBoundsInfo implements Parcelable {
         this.mGraphemeSegmentFinder = builder.mGraphemeSegmentFinder;
         this.mWordSegmentFinder = builder.mWordSegmentFinder;
         this.mLineSegmentFinder = builder.mLineSegmentFinder;
-    }
-
-    /* renamed from: android.view.inputmethod.TextBoundsInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TextBoundsInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextBoundsInfo createFromParcel(Parcel source) {
-            return new TextBoundsInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextBoundsInfo[] newArray(int size) {
-            return new TextBoundsInfo[size];
-        }
     }
 
     public Bundle toBundle() {
@@ -481,7 +446,6 @@ public final class TextBoundsInfo implements Parcelable {
         return (TextBoundsInfo) bundle.getParcelable(TEXT_BOUNDS_INFO_KEY, TextBoundsInfo.class);
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private int[] mCharacterBidiLevels;
         private float[] mCharacterBounds;
@@ -566,33 +530,28 @@ public final class TextBoundsInfo implements Parcelable {
         }
 
         public TextBoundsInfo build() {
-            int i;
-            int i2 = this.mStart;
-            if (i2 < 0 || (i = this.mEnd) < 0) {
+            if (this.mStart < 0 || this.mEnd < 0) {
                 throw new IllegalStateException("Start and end must be set.");
             }
             if (!this.mMatrixInitialized) {
                 throw new IllegalStateException("Matrix must be set.");
             }
-            float[] fArr = this.mCharacterBounds;
-            if (fArr == null) {
+            if (this.mCharacterBounds == null) {
                 throw new IllegalStateException("CharacterBounds must be set.");
             }
-            int[] iArr = this.mCharacterFlags;
-            if (iArr == null) {
+            if (this.mCharacterFlags == null) {
                 throw new IllegalStateException("CharacterFlags must be set.");
             }
-            int[] iArr2 = this.mCharacterBidiLevels;
-            if (iArr2 == null) {
+            if (this.mCharacterBidiLevels == null) {
                 throw new IllegalStateException("CharacterBidiLevel must be set.");
             }
-            if (fArr.length != (i - i2) * 4) {
+            if (this.mCharacterBounds.length != (this.mEnd - this.mStart) * 4) {
                 throw new IllegalStateException("The length of characterBounds doesn't match the length of the given start and end. Expected length: " + ((this.mEnd - this.mStart) * 4) + " characterBounds length: " + this.mCharacterBounds.length);
             }
-            if (iArr.length != i - i2) {
+            if (this.mCharacterFlags.length != this.mEnd - this.mStart) {
                 throw new IllegalStateException("The length of characterFlags doesn't match the length of the given start and end. Expected length: " + (this.mEnd - this.mStart) + " characterFlags length: " + this.mCharacterFlags.length);
             }
-            if (iArr2.length != i - i2) {
+            if (this.mCharacterBidiLevels.length != this.mEnd - this.mStart) {
                 throw new IllegalStateException("The length of characterBidiLevels doesn't match the length of the given start and end. Expected length: " + (this.mEnd - this.mStart) + " characterFlags length: " + this.mCharacterBidiLevels.length);
             }
             if (this.mGraphemeSegmentFinder == null) {
@@ -601,11 +560,10 @@ public final class TextBoundsInfo implements Parcelable {
             if (this.mWordSegmentFinder == null) {
                 throw new IllegalStateException("WordSegmentFinder must be set.");
             }
-            SegmentFinder segmentFinder = this.mLineSegmentFinder;
-            if (segmentFinder == null) {
+            if (this.mLineSegmentFinder == null) {
                 throw new IllegalStateException("LineSegmentFinder must be set.");
             }
-            if (!TextBoundsInfo.isLineDirectionFlagConsistent(iArr, segmentFinder, i2, i)) {
+            if (!TextBoundsInfo.isLineDirectionFlagConsistent(this.mCharacterFlags, this.mLineSegmentFinder, this.mStart, this.mEnd)) {
                 throw new IllegalStateException("characters in the same line must have the same FLAG_LINE_IS_RTL flag value.");
             }
             return new TextBoundsInfo(this);
@@ -653,6 +611,7 @@ public final class TextBoundsInfo implements Parcelable {
         return new SegmentFinder.PrescribedSegmentFinder(Arrays.copyOf(breaks, count));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isLineDirectionFlagConsistent(int[] characterFlags, SegmentFinder lineSegmentFinder, int start, int end) {
         int segmentEnd = lineSegmentFinder.nextEndBoundary(start);
         if (segmentEnd == -1) {

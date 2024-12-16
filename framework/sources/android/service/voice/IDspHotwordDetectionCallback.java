@@ -14,7 +14,6 @@ public interface IDspHotwordDetectionCallback extends IInterface {
 
     void onRejected(HotwordRejectedResult hotwordRejectedResult) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDspHotwordDetectionCallback {
         @Override // android.service.voice.IDspHotwordDetectionCallback
         public void onDetected(HotwordDetectedResult hotwordDetectedResult) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IDspHotwordDetectionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDspHotwordDetectionCallback {
         static final int TRANSACTION_onDetected = 1;
         static final int TRANSACTION_onRejected = 2;
@@ -76,31 +74,27 @@ public interface IDspHotwordDetectionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDspHotwordDetectionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDspHotwordDetectionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDspHotwordDetectionCallback.DESCRIPTOR);
+                case 1:
+                    HotwordDetectedResult _arg0 = (HotwordDetectedResult) data.readTypedObject(HotwordDetectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDetected(_arg0);
+                    return true;
+                case 2:
+                    HotwordRejectedResult _arg02 = (HotwordRejectedResult) data.readTypedObject(HotwordRejectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRejected(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            HotwordDetectedResult _arg0 = (HotwordDetectedResult) data.readTypedObject(HotwordDetectedResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDetected(_arg0);
-                            return true;
-                        case 2:
-                            HotwordRejectedResult _arg02 = (HotwordRejectedResult) data.readTypedObject(HotwordRejectedResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRejected(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDspHotwordDetectionCallback {
+        private static class Proxy implements IDspHotwordDetectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class TrafficDescriptor implements Parcelable {
     public static final Parcelable.Creator<TrafficDescriptor> CREATOR = new Parcelable.Creator<TrafficDescriptor>() { // from class: android.hardware.radio.data.TrafficDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TrafficDescriptor createFromParcel(Parcel _aidl_source) {
             TrafficDescriptor _aidl_out = new TrafficDescriptor();
@@ -19,6 +17,7 @@ public class TrafficDescriptor implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TrafficDescriptor[] newArray(int _aidl_size) {
             return new TrafficDescriptor[_aidl_size];
@@ -26,25 +25,6 @@ public class TrafficDescriptor implements Parcelable {
     };
     public String dnn;
     public OsAppId osAppId;
-
-    /* renamed from: android.hardware.radio.data.TrafficDescriptor$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TrafficDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TrafficDescriptor createFromParcel(Parcel _aidl_source) {
-            TrafficDescriptor _aidl_out = new TrafficDescriptor();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TrafficDescriptor[] newArray(int _aidl_size) {
-            return new TrafficDescriptor[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +83,7 @@ public class TrafficDescriptor implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("dnn: " + Objects.toString(this.dnn));
         _aidl_sj.add("osAppId: " + Objects.toString(this.osAppId));
-        return "android.hardware.radio.data.TrafficDescriptor" + _aidl_sj.toString();
+        return "TrafficDescriptor" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

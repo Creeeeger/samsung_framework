@@ -4,20 +4,18 @@ import android.os.RemoteException;
 import android.util.Log;
 import com.samsung.android.knox.tima.attestation.IEnhancedAttestationPolicyCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class EnhancedAttestationPolicyCallback {
     private static final String TAG = "SEMEAPolicyCb";
     private EnhancedAttestationPolicyCallback acb = this;
 
-    public abstract void onAttestationFinished(EnhancedAttestationResult enhancedAttestationResult);
+    abstract void onAttestationFinished(EnhancedAttestationResult enhancedAttestationResult);
 
-    /* loaded from: classes5.dex */
-    public class EaAttestationPolicyCallback extends IEnhancedAttestationPolicyCallback.Stub {
+    EnhancedAttestationPolicyCallback() {
+    }
+
+    private class EaAttestationPolicyCallback extends IEnhancedAttestationPolicyCallback.Stub {
         private String mNonce;
-
-        /* synthetic */ EaAttestationPolicyCallback(EnhancedAttestationPolicyCallback enhancedAttestationPolicyCallback, EaAttestationPolicyCallbackIA eaAttestationPolicyCallbackIA) {
-            this();
-        }
 
         private EaAttestationPolicyCallback() {
             this.mNonce = "";
@@ -31,7 +29,7 @@ public abstract class EnhancedAttestationPolicyCallback {
         }
     }
 
-    public IEnhancedAttestationPolicyCallback getEaAttestationCb(String nonce) {
+    IEnhancedAttestationPolicyCallback getEaAttestationCb(String nonce) {
         EaAttestationPolicyCallback eaAttestationCb = new EaAttestationPolicyCallback();
         eaAttestationCb.mNonce = nonce;
         return eaAttestationCb;

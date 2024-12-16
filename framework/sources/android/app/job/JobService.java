@@ -18,7 +18,6 @@ public abstract class JobService extends Service {
     private JobServiceEngine mEngine;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface JobEndNotificationPolicy {
     }
 
@@ -26,53 +25,10 @@ public abstract class JobService extends Service {
 
     public abstract boolean onStopJob(JobParameters jobParameters);
 
-    /* renamed from: android.app.job.JobService$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends JobServiceEngine {
-        AnonymousClass1(Service service) {
-            super(service);
-        }
-
-        @Override // android.app.job.JobServiceEngine
-        public boolean onStartJob(JobParameters params) {
-            return JobService.this.onStartJob(params);
-        }
-
-        @Override // android.app.job.JobServiceEngine
-        public boolean onStopJob(JobParameters params) {
-            return JobService.this.onStopJob(params);
-        }
-
-        @Override // android.app.job.JobServiceEngine
-        public long getTransferredDownloadBytes(JobParameters params, JobWorkItem item) {
-            if (item == null) {
-                return JobService.this.getTransferredDownloadBytes(params);
-            }
-            return JobService.this.getTransferredDownloadBytes(params, item);
-        }
-
-        @Override // android.app.job.JobServiceEngine
-        public long getTransferredUploadBytes(JobParameters params, JobWorkItem item) {
-            if (item == null) {
-                return JobService.this.getTransferredUploadBytes(params);
-            }
-            return JobService.this.getTransferredUploadBytes(params, item);
-        }
-
-        @Override // android.app.job.JobServiceEngine
-        public void onNetworkChanged(JobParameters params) {
-            JobService.this.onNetworkChanged(params);
-        }
-    }
-
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         if (this.mEngine == null) {
             this.mEngine = new JobServiceEngine(this) { // from class: android.app.job.JobService.1
-                AnonymousClass1(Service this) {
-                    super(this);
-                }
-
                 @Override // android.app.job.JobServiceEngine
                 public boolean onStartJob(JobParameters params) {
                     return JobService.this.onStartJob(params);

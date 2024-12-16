@@ -15,46 +15,43 @@ import java.util.concurrent.Executor;
 
 /* loaded from: classes5.dex */
 public class GestureNavigationSettingsObserver extends ContentObserver {
+    private Handler mBgHandler;
     private Context mContext;
     private Handler mMainHandler;
     private Runnable mOnChangeRunnable;
     private final DeviceConfig.OnPropertiesChangedListener mOnPropertiesChangedListener;
 
-    public GestureNavigationSettingsObserver(Handler handler, Context context, Runnable onChangeRunnable) {
-        super(handler);
+    public GestureNavigationSettingsObserver(Handler mainHandler, Handler bgHandler, Context context, Runnable onChangeRunnable) {
+        super(mainHandler);
         this.mOnPropertiesChangedListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver.1
-            AnonymousClass1() {
-            }
-
             public void onPropertiesChanged(DeviceConfig.Properties properties) {
                 if ("systemui".equals(properties.getNamespace()) && GestureNavigationSettingsObserver.this.mOnChangeRunnable != null) {
                     GestureNavigationSettingsObserver.this.mOnChangeRunnable.run();
                 }
             }
         };
-        this.mMainHandler = handler;
+        this.mMainHandler = mainHandler;
+        this.mBgHandler = bgHandler;
         this.mContext = context;
         this.mOnChangeRunnable = onChangeRunnable;
     }
 
-    /* renamed from: com.android.internal.policy.GestureNavigationSettingsObserver$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements DeviceConfig.OnPropertiesChangedListener {
-        AnonymousClass1() {
-        }
-
-        public void onPropertiesChanged(DeviceConfig.Properties properties) {
-            if ("systemui".equals(properties.getNamespace()) && GestureNavigationSettingsObserver.this.mOnChangeRunnable != null) {
-                GestureNavigationSettingsObserver.this.mOnChangeRunnable.run();
+    public void register() {
+        this.mBgHandler.post(new Runnable() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver$$ExternalSyntheticLambda2
+            @Override // java.lang.Runnable
+            public final void run() {
+                GestureNavigationSettingsObserver.this.lambda$register$1();
             }
-        }
+        });
     }
 
-    public void register() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$register$1() {
         ContentResolver r = this.mContext.getContentResolver();
         r.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.BACK_GESTURE_INSET_SCALE_LEFT), false, this, -1);
         r.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.BACK_GESTURE_INSET_SCALE_RIGHT), false, this, -1);
         r.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), false, this, -1);
+        r.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.NAVIGATION_MODE), false, this, -1);
         r.registerContentObserver(Settings.Global.getUriFor(Settings.Global.BOTTOM_GESTURE_INSET_SCALE), false, this, -1);
         r.registerContentObserver(Settings.Global.getUriFor(Settings.Global.NAVIGATIONBAR_GESTURES_DETAIL_TYPE), false, this, -1);
         DeviceConfig.addOnPropertiesChangedListener("systemui", new Executor() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver$$ExternalSyntheticLambda1
@@ -65,28 +62,50 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
         }, this.mOnPropertiesChangedListener);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$register$0(Runnable runnable) {
         this.mMainHandler.post(runnable);
     }
 
     public void registerForCallingUser() {
+        this.mBgHandler.post(new Runnable() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                GestureNavigationSettingsObserver.this.lambda$registerForCallingUser$3();
+            }
+        });
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$registerForCallingUser$3() {
         ContentResolver r = this.mContext.getContentResolver();
         r.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.BACK_GESTURE_INSET_SCALE_LEFT), false, this);
         r.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.BACK_GESTURE_INSET_SCALE_RIGHT), false, this);
         r.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), false, this);
-        DeviceConfig.addOnPropertiesChangedListener("systemui", new Executor() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver$$ExternalSyntheticLambda0
+        DeviceConfig.addOnPropertiesChangedListener("systemui", new Executor() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver$$ExternalSyntheticLambda4
             @Override // java.util.concurrent.Executor
             public final void execute(Runnable runnable) {
-                GestureNavigationSettingsObserver.this.lambda$registerForCallingUser$1(runnable);
+                GestureNavigationSettingsObserver.this.lambda$registerForCallingUser$2(runnable);
             }
         }, this.mOnPropertiesChangedListener);
     }
 
-    public /* synthetic */ void lambda$registerForCallingUser$1(Runnable runnable) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$registerForCallingUser$2(Runnable runnable) {
         this.mMainHandler.post(runnable);
     }
 
     public void unregister() {
+        this.mBgHandler.post(new Runnable() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver$$ExternalSyntheticLambda3
+            @Override // java.lang.Runnable
+            public final void run() {
+                GestureNavigationSettingsObserver.this.lambda$unregister$4();
+            }
+        });
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$unregister$4() {
         this.mContext.getContentResolver().unregisterContentObserver(this);
         DeviceConfig.removeOnPropertiesChangedListener(this.mOnPropertiesChangedListener);
     }
@@ -94,9 +113,8 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
     @Override // android.database.ContentObserver
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
-        Runnable runnable = this.mOnChangeRunnable;
-        if (runnable != null) {
-            runnable.run();
+        if (this.mOnChangeRunnable != null) {
+            this.mOnChangeRunnable.run();
         }
     }
 

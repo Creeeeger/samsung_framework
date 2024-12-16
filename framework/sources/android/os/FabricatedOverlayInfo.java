@@ -5,9 +5,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class FabricatedOverlayInfo implements Parcelable {
     public static final Parcelable.Creator<FabricatedOverlayInfo> CREATOR = new Parcelable.Creator<FabricatedOverlayInfo>() { // from class: android.os.FabricatedOverlayInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInfo createFromParcel(Parcel _aidl_source) {
             FabricatedOverlayInfo _aidl_out = new FabricatedOverlayInfo();
@@ -15,6 +13,7 @@ public class FabricatedOverlayInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInfo[] newArray(int _aidl_size) {
             return new FabricatedOverlayInfo[_aidl_size];
@@ -25,25 +24,6 @@ public class FabricatedOverlayInfo implements Parcelable {
     public String path;
     public String targetOverlayable;
     public String targetPackageName;
-
-    /* renamed from: android.os.FabricatedOverlayInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FabricatedOverlayInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FabricatedOverlayInfo createFromParcel(Parcel _aidl_source) {
-            FabricatedOverlayInfo _aidl_out = new FabricatedOverlayInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FabricatedOverlayInfo[] newArray(int _aidl_size) {
-            return new FabricatedOverlayInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

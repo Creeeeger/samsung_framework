@@ -18,6 +18,7 @@ public abstract class SemAbstractIndexer extends DataSetObserver {
     protected static final String INDEXSCROLL_INDEX_TITLES = "indexscroll_index_titles";
     private static final char SYMBOL_BASE_CHAR = '!';
     private static final char SYMBOL_CHAR = '&';
+    private static final boolean debug = false;
     protected SparseIntArray mAlphaMap;
     protected CharSequence mAlphabet;
     protected String[] mAlphabetArray;
@@ -30,7 +31,6 @@ public abstract class SemAbstractIndexer extends DataSetObserver {
     private int mProfileItemCount;
     private boolean mUseFavoriteIndex;
     private final String TAG = "SemAbstractIndexer";
-    private final boolean debug = false;
     private int mGroupItemCount = 0;
     private int mDigitItemCount = 0;
     private boolean mUseGroupIndex = false;
@@ -183,31 +183,22 @@ public abstract class SemAbstractIndexer extends DataSetObserver {
             throw new IllegalArgumentException("Invalid indexString :" + ((Object) alphabet));
         }
         this.mAlphabet = alphabet;
-        int length = alphabet.length();
-        this.mAlphabetLength = length;
-        this.mCachingValue = new int[length];
-        this.mAlphabetArray = new String[length];
-        int i = 0;
-        while (true) {
-            int i2 = this.mAlphabetLength;
-            if (i < i2) {
-                if (this.mUseGroupIndex && this.mAlphabet.charAt(i) == 55357) {
-                    this.mAlphabetArray[i] = GROUP_CHAR;
-                } else {
-                    this.mAlphabetArray[i] = Character.toString(this.mAlphabet.charAt(i));
-                }
-                i++;
+        this.mAlphabetLength = alphabet.length();
+        this.mCachingValue = new int[this.mAlphabetLength];
+        this.mAlphabetArray = new String[this.mAlphabetLength];
+        for (int i = 0; i < this.mAlphabetLength; i++) {
+            if (this.mUseGroupIndex && this.mAlphabet.charAt(i) == 55357) {
+                this.mAlphabetArray[i] = GROUP_CHAR;
             } else {
-                this.mAlphaMap = new SparseIntArray(i2);
-                Collator collator = Collator.getInstance();
-                this.mCollator = collator;
-                collator.setStrength(0);
-                return;
+                this.mAlphabetArray[i] = Character.toString(this.mAlphabet.charAt(i));
             }
         }
+        this.mAlphaMap = new SparseIntArray(this.mAlphabetLength);
+        this.mCollator = Collator.getInstance();
+        this.mCollator.setStrength(0);
     }
 
-    public String[] getAlphabetArray() {
+    String[] getAlphabetArray() {
         return this.mAlphabetArray;
     }
 
@@ -219,9 +210,8 @@ public abstract class SemAbstractIndexer extends DataSetObserver {
         if (!isDataToBeIndexedAvailable() || getItemCount() == 0) {
             return;
         }
-        Bundle bundle = getBundle();
-        this.mBundle = bundle;
-        if (bundle != null && bundle.containsKey("indexscroll_index_titles") && this.mBundle.containsKey("indexscroll_index_counts")) {
+        this.mBundle = getBundle();
+        if (this.mBundle != null && this.mBundle.containsKey("indexscroll_index_titles") && this.mBundle.containsKey("indexscroll_index_counts")) {
             getBundleInfo();
             return;
         }
@@ -233,20 +223,98 @@ public abstract class SemAbstractIndexer extends DataSetObserver {
         onEndTransaction();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x00e0, code lost:
-    
-        if (r4 != '#') goto L157;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private int getPositionForString(java.lang.String r18) {
-        /*
-            Method dump skipped, instructions count: 272
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.widget.SemAbstractIndexer.getPositionForString(java.lang.String):int");
+    private int getPositionForString(String searchString) {
+        SparseIntArray alphaMap = this.mAlphaMap;
+        int count = getItemCount();
+        if (count == 0 || this.mAlphabet == null) {
+            return 0;
+        }
+        if (searchString == null || searchString.length() == 0) {
+            return count;
+        }
+        int start = 0;
+        int end = count;
+        char letter = searchString.charAt(0);
+        String targetLetter = searchString;
+        int pos = alphaMap.get(letter, Integer.MIN_VALUE);
+        if (Integer.MIN_VALUE == pos) {
+            int sectionIndex = this.mAlphabet.toString().indexOf(letter);
+            if (sectionIndex > 0 && letter > this.mAlphabet.charAt(sectionIndex - 1)) {
+                int prevLetter = this.mAlphabet.charAt(sectionIndex - 1);
+                int prevLetterPos = alphaMap.get(prevLetter, Integer.MIN_VALUE);
+                if (prevLetterPos != Integer.MIN_VALUE) {
+                    start = Math.abs(prevLetterPos);
+                }
+            }
+            if (sectionIndex < this.mAlphabet.length() - 1 && letter < this.mAlphabet.charAt(sectionIndex + 1)) {
+                int nextLetter = this.mAlphabet.charAt(sectionIndex + 1);
+                int nextLetterPos = alphaMap.get(nextLetter, Integer.MIN_VALUE);
+                if (nextLetterPos != Integer.MIN_VALUE) {
+                    end = Math.abs(nextLetterPos);
+                }
+            }
+        } else {
+            start = Math.abs(pos);
+        }
+        char targetChar = targetLetter.charAt(0);
+        if (targetChar == '&') {
+            targetLetter = "!";
+        }
+        if (targetChar == 9733) {
+            if (start < this.mProfileItemCount) {
+                start = this.mProfileItemCount;
+            }
+        } else if (targetChar == 55357) {
+            if (start < this.mProfileItemCount + this.mFavoriteItemCount) {
+                start = this.mProfileItemCount + this.mFavoriteItemCount;
+            }
+        } else if (start < this.mProfileItemCount + this.mFavoriteItemCount + this.mGroupItemCount) {
+            start = this.mProfileItemCount + this.mFavoriteItemCount + this.mGroupItemCount;
+        }
+        int end2 = end - this.mDigitItemCount;
+        if (targetChar == '#') {
+            start = end2;
+        }
+        int pos2 = (end2 + start) / 2;
+        while (true) {
+            if (pos2 < start || pos2 >= end2) {
+                break;
+            }
+            String curName = getItemAt(pos2);
+            if (curName == null || curName.equals("")) {
+                if (pos2 <= start) {
+                    break;
+                }
+                pos2--;
+            } else {
+                int diff = compare(curName, targetLetter);
+                if (targetChar == 9733 || targetChar == '&' || targetChar == '#') {
+                    diff = 1;
+                }
+                if (diff != 0) {
+                    if (diff < 0) {
+                        start = pos2 + 1;
+                        if (start >= count) {
+                            pos2 = count;
+                            break;
+                        }
+                    } else {
+                        end2 = pos2;
+                    }
+                    pos2 = (start + end2) / 2;
+                } else {
+                    if (start == pos2) {
+                        break;
+                    }
+                    end2 = pos2;
+                    pos2 = (start + end2) / 2;
+                }
+            }
+        }
+        if (searchString.length() == 1) {
+            alphaMap.put(letter, pos2);
+        }
+        return pos2;
     }
 
     private void getBundleInfo() {

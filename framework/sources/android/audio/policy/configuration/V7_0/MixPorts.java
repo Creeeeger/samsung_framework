@@ -12,7 +12,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MixPorts {
     private List<MixPort> mixPort;
 
-    /* loaded from: classes.dex */
     public static class MixPort {
         private List<AudioInOutFlag> flags;
         private Gains gains;
@@ -94,11 +93,10 @@ public class MixPorts {
         }
 
         public long getMaxOpenCount() {
-            Long l = this.maxOpenCount;
-            if (l == null) {
+            if (this.maxOpenCount == null) {
                 return 0L;
             }
-            return l.longValue();
+            return this.maxOpenCount.longValue();
         }
 
         boolean hasMaxOpenCount() {
@@ -113,11 +111,10 @@ public class MixPorts {
         }
 
         public long getMaxActiveCount() {
-            Long l = this.maxActiveCount;
-            if (l == null) {
+            if (this.maxActiveCount == null) {
                 return 0L;
             }
-            return l.longValue();
+            return this.maxActiveCount.longValue();
         }
 
         boolean hasMaxActiveCount() {
@@ -220,7 +217,7 @@ public class MixPorts {
         return this.mixPort;
     }
 
-    public static MixPorts read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static MixPorts read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         MixPorts _instance = new MixPorts();
         _parser.getDepth();

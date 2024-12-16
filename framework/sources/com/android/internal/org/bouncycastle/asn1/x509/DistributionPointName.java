@@ -49,9 +49,8 @@ public class DistributionPointName extends ASN1Object implements ASN1Choice {
     }
 
     public DistributionPointName(ASN1TaggedObject obj) {
-        int tagNo = obj.getTagNo();
-        this.type = tagNo;
-        if (tagNo == 0) {
+        this.type = obj.getTagNo();
+        if (this.type == 0) {
             this.name = GeneralNames.getInstance(obj, false);
         } else {
             this.name = ASN1Set.getInstance(obj, false);

@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class RecordSettings extends Settings {
     public static final int INDEX_TYPE_NONE = 0;
     public static final int INDEX_TYPE_SC = 1;
@@ -61,37 +61,27 @@ public class RecordSettings extends Settings {
     private final int mTsIndexMask;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScHevcIndex {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScIndex {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScIndexMask {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScIndexType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScVvcIndex {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TsIndexMask {
-    }
-
-    /* synthetic */ RecordSettings(int i, int i2, int i3, int i4, RecordSettingsIA recordSettingsIA) {
-        this(i, i2, i3, i4);
     }
 
     private RecordSettings(int mainType, int tsIndexType, int scIndexType, int scIndexMask) {
@@ -117,16 +107,11 @@ public class RecordSettings extends Settings {
         return new Builder(mainType);
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private final int mMainType;
         private int mScIndexMask;
         private int mScIndexType;
         private int mTsIndexMask;
-
-        /* synthetic */ Builder(int i, BuilderIA builderIA) {
-            this(i);
-        }
 
         private Builder(int mainType) {
             this.mMainType = mainType;

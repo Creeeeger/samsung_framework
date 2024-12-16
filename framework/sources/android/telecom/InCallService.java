@@ -4,7 +4,6 @@ import android.annotation.SystemApi;
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,10 +11,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.OutcomeReceiver;
-import android.telecom.Call;
 import android.telecom.Phone;
 import android.telecom.VideoProfile;
-import android.telephony.Rlog;
 import android.view.Surface;
 import com.android.internal.os.SomeArgs;
 import com.android.internal.telecom.IInCallAdapter;
@@ -27,7 +24,6 @@ import java.util.concurrent.Executor;
 
 /* loaded from: classes3.dex */
 public abstract class InCallService extends Service {
-    private static final String LOG_TAG = "Telecom-InCallService";
     private static final int MSG_ADD_CALL = 2;
     private static final int MSG_BRING_TO_FOREGROUND = 6;
     private static final int MSG_ON_AVAILABLE_CALL_ENDPOINTS_CHANGED = 15;
@@ -48,24 +44,22 @@ public abstract class InCallService extends Service {
     private CallEndpoint mCallEndpoint;
     private Phone mPhone;
     private final Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: android.telecom.InCallService.1
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             SomeArgs args;
             if (InCallService.this.mPhone == null && msg.what != 1) {
                 return;
             }
-            Rlog.d(InCallService.LOG_TAG, "handleMessage: " + InCallService.eventToString(msg.what));
             switch (msg.what) {
                 case 1:
+                    if (InCallService.this.mPhone != null) {
+                        Log.i(this, "mPhone is already instantiated, ignoring request to reset adapter.", new Object[0]);
+                        return;
+                    }
                     String callingPackage = InCallService.this.getApplicationContext().getOpPackageName();
                     InCallService.this.mPhone = new Phone(new InCallAdapter((IInCallAdapter) msg.obj), callingPackage, InCallService.this.getApplicationContext().getApplicationInfo().targetSdkVersion);
                     InCallService.this.mPhone.addListener(InCallService.this.mPhoneListener);
-                    InCallService inCallService = InCallService.this;
-                    inCallService.onPhoneCreated(inCallService.mPhone);
+                    InCallService.this.onPhoneCreated(InCallService.this.mPhone);
                     return;
                 case 2:
                     InCallService.this.mPhone.internalAddCall((ParcelableCall) msg.obj);
@@ -127,8 +121,7 @@ public abstract class InCallService extends Service {
                     CallEndpoint endpoint = (CallEndpoint) msg.obj;
                     if (!Objects.equals(InCallService.this.mCallEndpoint, endpoint)) {
                         InCallService.this.mCallEndpoint = endpoint;
-                        InCallService inCallService2 = InCallService.this;
-                        inCallService2.onCallEndpointChanged(inCallService2.mCallEndpoint);
+                        InCallService.this.onCallEndpointChanged(InCallService.this.mCallEndpoint);
                         return;
                     }
                     return;
@@ -144,9 +137,6 @@ public abstract class InCallService extends Service {
         }
     };
     private Phone.Listener mPhoneListener = new Phone.Listener() { // from class: android.telecom.InCallService.2
-        AnonymousClass2() {
-        }
-
         @Override // android.telecom.Phone.Listener
         public void onAudioStateChanged(Phone phone, AudioState audioState) {
             InCallService.this.onAudioStateChanged(audioState);
@@ -183,10 +173,8 @@ public abstract class InCallService extends Service {
         }
     };
 
-    /* loaded from: classes3.dex */
     public static abstract class VideoCall {
 
-        /* loaded from: classes3.dex */
         public static abstract class Callback {
             public abstract void onCallDataUsageChanged(long j);
 
@@ -232,111 +220,7 @@ public abstract class InCallService extends Service {
         public abstract void unregisterCallback(Callback callback);
     }
 
-    /* renamed from: android.telecom.InCallService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            SomeArgs args;
-            if (InCallService.this.mPhone == null && msg.what != 1) {
-                return;
-            }
-            Rlog.d(InCallService.LOG_TAG, "handleMessage: " + InCallService.eventToString(msg.what));
-            switch (msg.what) {
-                case 1:
-                    String callingPackage = InCallService.this.getApplicationContext().getOpPackageName();
-                    InCallService.this.mPhone = new Phone(new InCallAdapter((IInCallAdapter) msg.obj), callingPackage, InCallService.this.getApplicationContext().getApplicationInfo().targetSdkVersion);
-                    InCallService.this.mPhone.addListener(InCallService.this.mPhoneListener);
-                    InCallService inCallService = InCallService.this;
-                    inCallService.onPhoneCreated(inCallService.mPhone);
-                    return;
-                case 2:
-                    InCallService.this.mPhone.internalAddCall((ParcelableCall) msg.obj);
-                    return;
-                case 3:
-                    InCallService.this.mPhone.internalUpdateCall((ParcelableCall) msg.obj);
-                    return;
-                case 4:
-                    args = (SomeArgs) msg.obj;
-                    try {
-                        String callId = (String) args.arg1;
-                        String remaining = (String) args.arg2;
-                        InCallService.this.mPhone.internalSetPostDialWait(callId, remaining);
-                        return;
-                    } finally {
-                    }
-                case 5:
-                    InCallService.this.mPhone.internalCallAudioStateChanged((CallAudioState) msg.obj);
-                    return;
-                case 6:
-                    InCallService.this.mPhone.internalBringToForeground(msg.arg1 == 1);
-                    return;
-                case 7:
-                    InCallService.this.mPhone.internalSetCanAddCall(msg.arg1 == 1);
-                    return;
-                case 8:
-                    InCallService.this.mPhone.internalSilenceRinger();
-                    return;
-                case 9:
-                    args = (SomeArgs) msg.obj;
-                    try {
-                        String callId2 = (String) args.arg1;
-                        String event = (String) args.arg2;
-                        Bundle extras = (Bundle) args.arg3;
-                        InCallService.this.mPhone.internalOnConnectionEvent(callId2, event, extras);
-                        return;
-                    } finally {
-                    }
-                case 10:
-                    String callId3 = (String) msg.obj;
-                    int requestId = msg.arg1;
-                    InCallService.this.mPhone.internalOnRttUpgradeRequest(callId3, requestId);
-                    return;
-                case 11:
-                    String callId4 = (String) msg.obj;
-                    int reason = msg.arg1;
-                    InCallService.this.mPhone.internalOnRttInitiationFailure(callId4, reason);
-                    return;
-                case 12:
-                    String callId5 = (String) msg.obj;
-                    int error = msg.arg1;
-                    InCallService.this.mPhone.internalOnHandoverFailed(callId5, error);
-                    return;
-                case 13:
-                    String callId6 = (String) msg.obj;
-                    InCallService.this.mPhone.internalOnHandoverComplete(callId6);
-                    return;
-                case 14:
-                    CallEndpoint endpoint = (CallEndpoint) msg.obj;
-                    if (!Objects.equals(InCallService.this.mCallEndpoint, endpoint)) {
-                        InCallService.this.mCallEndpoint = endpoint;
-                        InCallService inCallService2 = InCallService.this;
-                        inCallService2.onCallEndpointChanged(inCallService2.mCallEndpoint);
-                        return;
-                    }
-                    return;
-                case 15:
-                    InCallService.this.onAvailableCallEndpointsChanged((List) msg.obj);
-                    return;
-                case 16:
-                    InCallService.this.onMuteStateChanged(((Boolean) msg.obj).booleanValue());
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
     private final class InCallServiceBinder extends IInCallService.Stub {
-        /* synthetic */ InCallServiceBinder(InCallService inCallService, InCallServiceBinderIA inCallServiceBinderIA) {
-            this();
-        }
-
         private InCallServiceBinder() {
         }
 
@@ -347,21 +231,11 @@ public abstract class InCallService extends Service {
 
         @Override // com.android.internal.telecom.IInCallService
         public void addCall(ParcelableCall call) {
-            if (call == null) {
-                Rlog.d(InCallService.LOG_TAG, "InCallServiceBinder - addCall: call is null");
-            } else {
-                Rlog.d(InCallService.LOG_TAG, "InCallServiceBinder - addCall: id(" + call.getId() + "), state(" + Call.stateToStringInternal(call.getState()) + "), " + Call.Details.capabilitiesToString(call.getCapabilities()));
-            }
             InCallService.this.mHandler.obtainMessage(2, call).sendToTarget();
         }
 
         @Override // com.android.internal.telecom.IInCallService
         public void updateCall(ParcelableCall call) {
-            if (call == null) {
-                Rlog.d(InCallService.LOG_TAG, "InCallServiceBinder - updateCall: call is null");
-            } else {
-                Rlog.d(InCallService.LOG_TAG, "InCallServiceBinder - updateCall: id(" + call.getId() + "), state(" + Call.stateToStringInternal(call.getState()) + "), " + Call.Details.capabilitiesToString(call.getCapabilities()));
-            }
             InCallService.this.mHandler.obtainMessage(3, call).sendToTarget();
         }
 
@@ -442,48 +316,6 @@ public abstract class InCallService extends Service {
         }
     }
 
-    /* renamed from: android.telecom.InCallService$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 extends Phone.Listener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.telecom.Phone.Listener
-        public void onAudioStateChanged(Phone phone, AudioState audioState) {
-            InCallService.this.onAudioStateChanged(audioState);
-        }
-
-        @Override // android.telecom.Phone.Listener
-        public void onCallAudioStateChanged(Phone phone, CallAudioState callAudioState) {
-            InCallService.this.onCallAudioStateChanged(callAudioState);
-        }
-
-        @Override // android.telecom.Phone.Listener
-        public void onBringToForeground(Phone phone, boolean showDialpad) {
-            InCallService.this.onBringToForeground(showDialpad);
-        }
-
-        @Override // android.telecom.Phone.Listener
-        public void onCallAdded(Phone phone, Call call) {
-            InCallService.this.onCallAdded(call);
-        }
-
-        @Override // android.telecom.Phone.Listener
-        public void onCallRemoved(Phone phone, Call call) {
-            InCallService.this.onCallRemoved(call);
-        }
-
-        @Override // android.telecom.Phone.Listener
-        public void onCanAddCallChanged(Phone phone, boolean canAddCall) {
-            InCallService.this.onCanAddCallChanged(canAddCall);
-        }
-
-        @Override // android.telecom.Phone.Listener
-        public void onSilenceRinger(Phone phone) {
-            InCallService.this.onSilenceRinger();
-        }
-    }
-
     @Override // android.app.Service
     public IBinder onBind(Intent intent) {
         return new InCallServiceBinder();
@@ -509,63 +341,55 @@ public abstract class InCallService extends Service {
     }
 
     public final List<Call> getCalls() {
-        Phone phone = this.mPhone;
-        return phone == null ? Collections.emptyList() : phone.getCalls();
+        return this.mPhone == null ? Collections.emptyList() : this.mPhone.getCalls();
     }
 
     public final boolean canAddCall() {
-        Phone phone = this.mPhone;
-        if (phone == null) {
+        if (this.mPhone == null) {
             return false;
         }
-        return phone.canAddCall();
+        return this.mPhone.canAddCall();
     }
 
     @Deprecated
     public final AudioState getAudioState() {
-        Phone phone = this.mPhone;
-        if (phone == null) {
+        if (this.mPhone == null) {
             return null;
         }
-        return phone.getAudioState();
+        return this.mPhone.getAudioState();
     }
 
     @Deprecated
     public final CallAudioState getCallAudioState() {
-        Phone phone = this.mPhone;
-        if (phone == null) {
+        if (this.mPhone == null) {
             return null;
         }
-        return phone.getCallAudioState();
+        return this.mPhone.getCallAudioState();
     }
 
     public final void setMuted(boolean state) {
-        Phone phone = this.mPhone;
-        if (phone != null) {
-            phone.setMuted(state);
+        if (this.mPhone != null) {
+            this.mPhone.setMuted(state);
         }
     }
 
     @Deprecated
     public final void setAudioRoute(int route) {
-        Phone phone = this.mPhone;
-        if (phone != null) {
-            phone.setAudioRoute(route);
+        if (this.mPhone != null) {
+            this.mPhone.setAudioRoute(route);
         }
     }
 
     @Deprecated
     public final void requestBluetoothAudio(BluetoothDevice bluetoothDevice) {
-        Phone phone = this.mPhone;
-        if (phone != null) {
-            phone.requestBluetoothAudio(bluetoothDevice.getAddress());
+        if (this.mPhone != null) {
+            this.mPhone.requestBluetoothAudio(bluetoothDevice.getAddress());
         }
     }
 
     public final void requestCallEndpointChange(CallEndpoint endpoint, Executor executor, OutcomeReceiver<Void, CallEndpointException> callback) {
-        Phone phone = this.mPhone;
-        if (phone != null) {
-            phone.requestCallEndpointChange(endpoint, executor, callback);
+        if (this.mPhone != null) {
+            this.mPhone.requestCallEndpointChange(endpoint, executor, callback);
         }
     }
 
@@ -616,44 +440,5 @@ public abstract class InCallService extends Service {
     }
 
     public void onConnectionEvent(Call call, String event, Bundle extras) {
-    }
-
-    public static String eventToString(int event) {
-        switch (event) {
-            case 1:
-                return "SET_IN_CALL_ADAPTER";
-            case 2:
-                return "ADD_CALL";
-            case 3:
-                return "UPDATE_CALL";
-            case 4:
-                return "SET_POST_DIAL_WAIT";
-            case 5:
-                return "ON_CALL_AUDIO_STATE_CHANGED";
-            case 6:
-                return "BRING_TO_FOREGROUND";
-            case 7:
-                return "ON_CAN_ADD_CALL_CHANGED";
-            case 8:
-                return "SILENCE_RINGER";
-            case 9:
-                return "ON_CONNECTION_EVENT";
-            case 10:
-                return "ON_RTT_UPGRADE_REQUEST";
-            case 11:
-                return "ON_RTT_INITIATION_FAILURE";
-            case 12:
-                return "MSG_ON_HANDOVER_FAILED";
-            case 13:
-                return "MSG_ON_HANDOVER_COMPLETE";
-            case 14:
-                return "MSG_ON_CALL_ENDPOINT_CHANGED";
-            case 15:
-                return "MSG_ON_AVAILABLE_CALL_ENDPOINTS_CHANGED";
-            case 16:
-                return "MSG_ON_MUTE_STATE_CHANGED";
-            default:
-                return "UNKNOWN_EVENT(" + event + NavigationBarInflaterView.KEY_CODE_END;
-        }
     }
 }

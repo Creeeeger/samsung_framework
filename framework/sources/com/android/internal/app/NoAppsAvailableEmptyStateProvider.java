@@ -12,7 +12,7 @@ import com.android.internal.app.ResolverActivity;
 import java.util.List;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class NoAppsAvailableEmptyStateProvider implements AbstractMultiProfilePagerAdapter.EmptyStateProvider {
     private final Context mContext;
     private final String mMetricsCategory;
@@ -60,10 +60,12 @@ public class NoAppsAvailableEmptyStateProvider implements AbstractMultiProfilePa
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getEmptyState$0() {
         return this.mContext.getString(R.string.resolver_no_personal_apps_available);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getEmptyState$1() {
         return this.mContext.getString(R.string.resolver_no_work_apps_available);
     }
@@ -82,7 +84,6 @@ public class NoAppsAvailableEmptyStateProvider implements AbstractMultiProfilePa
         return false;
     }
 
-    /* loaded from: classes4.dex */
     public static class DefaultEmptyState implements AbstractMultiProfilePagerAdapter.EmptyState {
         @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter.EmptyState
         public boolean useDefaultEmptyView() {
@@ -90,7 +91,6 @@ public class NoAppsAvailableEmptyStateProvider implements AbstractMultiProfilePa
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class NoAppsAvailableEmptyState implements AbstractMultiProfilePagerAdapter.EmptyState {
         private boolean mIsPersonalProfile;
         private String mMetricsCategory;

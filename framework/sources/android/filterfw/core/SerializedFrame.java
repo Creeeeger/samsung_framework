@@ -16,8 +16,7 @@ public class SerializedFrame extends Frame {
     private DirectByteOutputStream mByteOutputStream;
     private ObjectOutputStream mObjectOut;
 
-    /* loaded from: classes.dex */
-    public class DirectByteOutputStream extends OutputStream {
+    private class DirectByteOutputStream extends OutputStream {
         private byte[] mBuffer;
         private int mOffset = 0;
         private int mDataOffset = 0;
@@ -28,14 +27,10 @@ public class SerializedFrame extends Frame {
         }
 
         private final void ensureFit(int bytesToWrite) {
-            int i = this.mOffset;
-            int i2 = i + bytesToWrite;
-            byte[] bArr = this.mBuffer;
-            if (i2 > bArr.length) {
+            if (this.mOffset + bytesToWrite > this.mBuffer.length) {
                 byte[] oldBuffer = this.mBuffer;
-                byte[] bArr2 = new byte[Math.max(i + bytesToWrite, bArr.length * 2)];
-                this.mBuffer = bArr2;
-                System.arraycopy(oldBuffer, 0, bArr2, 0, this.mOffset);
+                this.mBuffer = new byte[Math.max(this.mOffset + bytesToWrite, this.mBuffer.length * 2)];
+                System.arraycopy(oldBuffer, 0, this.mBuffer, 0, this.mOffset);
             }
         }
 
@@ -77,12 +72,11 @@ public class SerializedFrame extends Frame {
         }
 
         public final DirectByteInputStream getInputStream() {
-            return new DirectByteInputStream(this.mBuffer, this.mOffset);
+            return SerializedFrame.this.new DirectByteInputStream(this.mBuffer, this.mOffset);
         }
     }
 
-    /* loaded from: classes.dex */
-    public class DirectByteInputStream extends InputStream {
+    private class DirectByteInputStream extends InputStream {
         private byte[] mBuffer;
         private int mPos = 0;
         private int mSize;
@@ -99,47 +93,42 @@ public class SerializedFrame extends Frame {
 
         @Override // java.io.InputStream
         public final int read() {
-            int i = this.mPos;
-            if (i >= this.mSize) {
+            if (this.mPos >= this.mSize) {
                 return -1;
             }
             byte[] bArr = this.mBuffer;
+            int i = this.mPos;
             this.mPos = i + 1;
             return bArr[i] & 255;
         }
 
         @Override // java.io.InputStream
         public final int read(byte[] b, int off, int len) {
-            int i = this.mPos;
-            int i2 = this.mSize;
-            if (i >= i2) {
+            if (this.mPos >= this.mSize) {
                 return -1;
             }
-            if (i + len > i2) {
-                len = i2 - i;
+            if (this.mPos + len > this.mSize) {
+                len = this.mSize - this.mPos;
             }
-            System.arraycopy(this.mBuffer, i, b, off, len);
+            System.arraycopy(this.mBuffer, this.mPos, b, off, len);
             this.mPos += len;
             return len;
         }
 
         @Override // java.io.InputStream
         public final long skip(long n) {
-            int i = this.mPos;
-            long j = i + n;
-            int i2 = this.mSize;
-            if (j > i2) {
-                n = i2 - i;
+            if (this.mPos + n > this.mSize) {
+                n = this.mSize - this.mPos;
             }
             if (n < 0) {
                 return 0L;
             }
-            this.mPos = (int) (i + n);
+            this.mPos = (int) (this.mPos + n);
             return n;
         }
     }
 
-    public SerializedFrame(FrameFormat format, FrameManager frameManager) {
+    SerializedFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         setReusable(false);
         try {
@@ -159,12 +148,12 @@ public class SerializedFrame extends Frame {
     }
 
     @Override // android.filterfw.core.Frame
-    public boolean hasNativeAllocation() {
+    protected boolean hasNativeAllocation() {
         return false;
     }
 
     @Override // android.filterfw.core.Frame
-    public void releaseNativeAllocation() {
+    protected void releaseNativeAllocation() {
     }
 
     @Override // android.filterfw.core.Frame

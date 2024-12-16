@@ -10,8 +10,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioSimResponse extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$sim$IRadioSimResponse".replace('$', '.');
-    public static final String HASH = "4f348cc7aca716cc41c09ea95895c4b261231035";
-    public static final int VERSION = 2;
+    public static final String HASH = "ea7be3035be8d4869237a6478d2e0bb0efcc1e87";
+    public static final int VERSION = 3;
 
     void acknowledgeRequest(int i) throws RemoteException;
 
@@ -90,7 +90,6 @@ public interface IRadioSimResponse extends IInterface {
 
     void updateSimPhonebookRecordsResponse(RadioResponseInfo radioResponseInfo, int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioSimResponse {
         @Override // android.hardware.radio.sim.IRadioSimResponse
         public void acknowledgeRequest(int serial) throws RemoteException {
@@ -252,7 +251,6 @@ public interface IRadioSimResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioSimResponse {
         static final int TRANSACTION_acknowledgeRequest = 1;
         static final int TRANSACTION_areUiccApplicationsEnabledResponse = 2;
@@ -320,240 +318,238 @@ public interface IRadioSimResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeRequest(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    areUiccApplicationsEnabledResponse(_arg02, _arg1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    changeIccPin2ForAppResponse(_arg03, _arg12);
+                    return true;
+                case 4:
+                    RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    changeIccPinForAppResponse(_arg04, _arg13);
+                    return true;
+                case 5:
+                    RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    enableUiccApplicationsResponse(_arg05);
+                    return true;
+                case 6:
+                    RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    CarrierRestrictions _arg14 = (CarrierRestrictions) data.readTypedObject(CarrierRestrictions.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAllowedCarriersResponse(_arg06, _arg14, _arg2);
+                    return true;
+                case 7:
+                    RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    String _arg15 = data.readString();
+                    String _arg22 = data.readString();
+                    String _arg3 = data.readString();
+                    String _arg4 = data.readString();
+                    String _arg5 = data.readString();
+                    data.enforceNoDataAvail();
+                    getCdmaSubscriptionResponse(_arg07, _arg15, _arg22, _arg3, _arg4, _arg5);
+                    return true;
+                case 8:
+                    RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCdmaSubscriptionSourceResponse(_arg08, _arg16);
+                    return true;
+                case 9:
+                    RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getFacilityLockForAppResponse(_arg09, _arg17);
+                    return true;
+                case 10:
+                    RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    CardStatus _arg18 = (CardStatus) data.readTypedObject(CardStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    getIccCardStatusResponse(_arg010, _arg18);
+                    return true;
+                case 11:
+                    RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    String _arg19 = data.readString();
+                    data.enforceNoDataAvail();
+                    getImsiForAppResponse(_arg011, _arg19);
+                    return true;
+                case 12:
+                    RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    PhonebookCapacity _arg110 = (PhonebookCapacity) data.readTypedObject(PhonebookCapacity.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSimPhonebookCapacityResponse(_arg012, _arg110);
+                    return true;
+                case 13:
+                    RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSimPhonebookRecordsResponse(_arg013);
+                    return true;
+                case 14:
+                    RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccCloseLogicalChannelResponse(_arg014);
+                    return true;
+                case 15:
+                    RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    IccIoResult _arg111 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccIoForAppResponse(_arg015, _arg111);
+                    return true;
+                case 16:
+                    RadioResponseInfo _arg016 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg112 = data.readInt();
+                    byte[] _arg23 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    iccOpenLogicalChannelResponse(_arg016, _arg112, _arg23);
+                    return true;
+                case 17:
+                    RadioResponseInfo _arg017 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    IccIoResult _arg113 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccTransmitApduBasicChannelResponse(_arg017, _arg113);
+                    return true;
+                case 18:
+                    RadioResponseInfo _arg018 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    IccIoResult _arg114 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccTransmitApduLogicalChannelResponse(_arg018, _arg114);
+                    return true;
+                case 19:
+                    RadioResponseInfo _arg019 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    reportStkServiceIsRunningResponse(_arg019);
+                    return true;
+                case 20:
+                    RadioResponseInfo _arg020 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    IccIoResult _arg115 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestIccSimAuthenticationResponse(_arg020, _arg115);
+                    return true;
+                case 21:
+                    RadioResponseInfo _arg021 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    String _arg116 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendEnvelopeResponse(_arg021, _arg116);
+                    return true;
+                case 22:
+                    RadioResponseInfo _arg022 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    IccIoResult _arg117 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendEnvelopeWithStatusResponse(_arg022, _arg117);
+                    return true;
+                case 23:
+                    RadioResponseInfo _arg023 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendTerminalResponseToSimResponse(_arg023);
+                    return true;
+                case 24:
+                    RadioResponseInfo _arg024 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setAllowedCarriersResponse(_arg024);
+                    return true;
+                case 25:
+                    RadioResponseInfo _arg025 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCarrierInfoForImsiEncryptionResponse(_arg025);
+                    return true;
+                case 26:
+                    RadioResponseInfo _arg026 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCdmaSubscriptionSourceResponse(_arg026);
+                    return true;
+                case 27:
+                    RadioResponseInfo _arg027 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setFacilityLockForAppResponse(_arg027, _arg118);
+                    return true;
+                case 28:
+                    RadioResponseInfo _arg028 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSimCardPowerResponse(_arg028);
+                    return true;
+                case 29:
+                    RadioResponseInfo _arg029 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUiccSubscriptionResponse(_arg029);
+                    return true;
+                case 30:
+                    RadioResponseInfo _arg030 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg119 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplyIccPin2ForAppResponse(_arg030, _arg119);
+                    return true;
+                case 31:
+                    RadioResponseInfo _arg031 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplyIccPinForAppResponse(_arg031, _arg120);
+                    return true;
+                case 32:
+                    RadioResponseInfo _arg032 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplyIccPuk2ForAppResponse(_arg032, _arg121);
+                    return true;
+                case 33:
+                    RadioResponseInfo _arg033 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplyIccPukForAppResponse(_arg033, _arg122);
+                    return true;
+                case 34:
+                    RadioResponseInfo _arg034 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg123 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplySimDepersonalizationResponse(_arg034, _arg123, _arg24);
+                    return true;
+                case 35:
+                    RadioResponseInfo _arg035 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateSimPhonebookRecordsResponse(_arg035, _arg124);
+                    return true;
+                case 36:
+                    RadioResponseInfo _arg036 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccCloseLogicalChannelWithSessionInfoResponse(_arg036);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeRequest(_arg0);
-                            return true;
-                        case 2:
-                            RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            areUiccApplicationsEnabledResponse(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            changeIccPin2ForAppResponse(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            changeIccPinForAppResponse(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            enableUiccApplicationsResponse(_arg05);
-                            return true;
-                        case 6:
-                            RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            CarrierRestrictions _arg14 = (CarrierRestrictions) data.readTypedObject(CarrierRestrictions.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAllowedCarriersResponse(_arg06, _arg14, _arg2);
-                            return true;
-                        case 7:
-                            RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            String _arg15 = data.readString();
-                            String _arg22 = data.readString();
-                            String _arg3 = data.readString();
-                            String _arg4 = data.readString();
-                            String _arg5 = data.readString();
-                            data.enforceNoDataAvail();
-                            getCdmaSubscriptionResponse(_arg07, _arg15, _arg22, _arg3, _arg4, _arg5);
-                            return true;
-                        case 8:
-                            RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCdmaSubscriptionSourceResponse(_arg08, _arg16);
-                            return true;
-                        case 9:
-                            RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getFacilityLockForAppResponse(_arg09, _arg17);
-                            return true;
-                        case 10:
-                            RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            CardStatus _arg18 = (CardStatus) data.readTypedObject(CardStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            getIccCardStatusResponse(_arg010, _arg18);
-                            return true;
-                        case 11:
-                            RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            String _arg19 = data.readString();
-                            data.enforceNoDataAvail();
-                            getImsiForAppResponse(_arg011, _arg19);
-                            return true;
-                        case 12:
-                            RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            PhonebookCapacity _arg110 = (PhonebookCapacity) data.readTypedObject(PhonebookCapacity.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSimPhonebookCapacityResponse(_arg012, _arg110);
-                            return true;
-                        case 13:
-                            RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSimPhonebookRecordsResponse(_arg013);
-                            return true;
-                        case 14:
-                            RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccCloseLogicalChannelResponse(_arg014);
-                            return true;
-                        case 15:
-                            RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            IccIoResult _arg111 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccIoForAppResponse(_arg015, _arg111);
-                            return true;
-                        case 16:
-                            RadioResponseInfo _arg016 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg112 = data.readInt();
-                            byte[] _arg23 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            iccOpenLogicalChannelResponse(_arg016, _arg112, _arg23);
-                            return true;
-                        case 17:
-                            RadioResponseInfo _arg017 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            IccIoResult _arg113 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccTransmitApduBasicChannelResponse(_arg017, _arg113);
-                            return true;
-                        case 18:
-                            RadioResponseInfo _arg018 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            IccIoResult _arg114 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccTransmitApduLogicalChannelResponse(_arg018, _arg114);
-                            return true;
-                        case 19:
-                            RadioResponseInfo _arg019 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            reportStkServiceIsRunningResponse(_arg019);
-                            return true;
-                        case 20:
-                            RadioResponseInfo _arg020 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            IccIoResult _arg115 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestIccSimAuthenticationResponse(_arg020, _arg115);
-                            return true;
-                        case 21:
-                            RadioResponseInfo _arg021 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            String _arg116 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendEnvelopeResponse(_arg021, _arg116);
-                            return true;
-                        case 22:
-                            RadioResponseInfo _arg022 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            IccIoResult _arg117 = (IccIoResult) data.readTypedObject(IccIoResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendEnvelopeWithStatusResponse(_arg022, _arg117);
-                            return true;
-                        case 23:
-                            RadioResponseInfo _arg023 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendTerminalResponseToSimResponse(_arg023);
-                            return true;
-                        case 24:
-                            RadioResponseInfo _arg024 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setAllowedCarriersResponse(_arg024);
-                            return true;
-                        case 25:
-                            RadioResponseInfo _arg025 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCarrierInfoForImsiEncryptionResponse(_arg025);
-                            return true;
-                        case 26:
-                            RadioResponseInfo _arg026 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCdmaSubscriptionSourceResponse(_arg026);
-                            return true;
-                        case 27:
-                            RadioResponseInfo _arg027 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setFacilityLockForAppResponse(_arg027, _arg118);
-                            return true;
-                        case 28:
-                            RadioResponseInfo _arg028 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSimCardPowerResponse(_arg028);
-                            return true;
-                        case 29:
-                            RadioResponseInfo _arg029 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUiccSubscriptionResponse(_arg029);
-                            return true;
-                        case 30:
-                            RadioResponseInfo _arg030 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplyIccPin2ForAppResponse(_arg030, _arg119);
-                            return true;
-                        case 31:
-                            RadioResponseInfo _arg031 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplyIccPinForAppResponse(_arg031, _arg120);
-                            return true;
-                        case 32:
-                            RadioResponseInfo _arg032 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg121 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplyIccPuk2ForAppResponse(_arg032, _arg121);
-                            return true;
-                        case 33:
-                            RadioResponseInfo _arg033 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplyIccPukForAppResponse(_arg033, _arg122);
-                            return true;
-                        case 34:
-                            RadioResponseInfo _arg034 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg123 = data.readInt();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplySimDepersonalizationResponse(_arg034, _arg123, _arg24);
-                            return true;
-                        case 35:
-                            RadioResponseInfo _arg035 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateSimPhonebookRecordsResponse(_arg035, _arg124);
-                            return true;
-                        case 36:
-                            RadioResponseInfo _arg036 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccCloseLogicalChannelWithSessionInfoResponse(_arg036);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioSimResponse {
+        private static class Proxy implements IRadioSimResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

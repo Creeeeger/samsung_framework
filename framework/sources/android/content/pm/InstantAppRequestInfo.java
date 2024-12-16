@@ -12,14 +12,13 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes.dex */
 public final class InstantAppRequestInfo implements Parcelable {
     public static final Parcelable.Creator<InstantAppRequestInfo> CREATOR = new Parcelable.Creator<InstantAppRequestInfo>() { // from class: android.content.pm.InstantAppRequestInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppRequestInfo[] newArray(int size) {
             return new InstantAppRequestInfo[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppRequestInfo createFromParcel(Parcel in) {
             return new InstantAppRequestInfo(in);
@@ -33,13 +32,13 @@ public final class InstantAppRequestInfo implements Parcelable {
 
     public InstantAppRequestInfo(Intent intent, int[] hostDigestPrefix, UserHandle userHandle, boolean requesterInstantApp, String token) {
         this.mIntent = intent;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) intent);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mIntent);
         this.mHostDigestPrefix = hostDigestPrefix;
         this.mUserHandle = userHandle;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) userHandle);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mUserHandle);
         this.mRequesterInstantApp = requesterInstantApp;
         this.mToken = token;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) token);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mToken);
     }
 
     public Intent getIntent() {
@@ -70,9 +69,8 @@ public final class InstantAppRequestInfo implements Parcelable {
         }
         dest.writeByte(flg);
         dest.writeTypedObject(this.mIntent, flags);
-        int[] iArr = this.mHostDigestPrefix;
-        if (iArr != null) {
-            dest.writeIntArray(iArr);
+        if (this.mHostDigestPrefix != null) {
+            dest.writeIntArray(this.mHostDigestPrefix);
         }
         dest.writeTypedObject(this.mUserHandle, flags);
         dest.writeString(this.mToken);
@@ -91,30 +89,13 @@ public final class InstantAppRequestInfo implements Parcelable {
         UserHandle userHandle = (UserHandle) in.readTypedObject(UserHandle.CREATOR);
         String token = in.readString();
         this.mIntent = intent;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) intent);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mIntent);
         this.mHostDigestPrefix = hostDigestPrefix;
         this.mUserHandle = userHandle;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) userHandle);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mUserHandle);
         this.mRequesterInstantApp = requesterInstantApp;
         this.mToken = token;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) token);
-    }
-
-    /* renamed from: android.content.pm.InstantAppRequestInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InstantAppRequestInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstantAppRequestInfo[] newArray(int size) {
-            return new InstantAppRequestInfo[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstantAppRequestInfo createFromParcel(Parcel in) {
-            return new InstantAppRequestInfo(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mToken);
     }
 
     @Deprecated

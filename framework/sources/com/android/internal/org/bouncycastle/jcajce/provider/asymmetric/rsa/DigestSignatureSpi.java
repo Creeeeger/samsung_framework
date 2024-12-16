@@ -147,50 +147,43 @@ public class DigestSignatureSpi extends SignatureSpi {
     }
 
     private byte[] derEncode(byte[] hash) throws IOException {
-        AlgorithmIdentifier algorithmIdentifier = this.algId;
-        if (algorithmIdentifier == null) {
+        if (this.algId == null) {
             return hash;
         }
-        DigestInfo dInfo = new DigestInfo(algorithmIdentifier, hash);
+        DigestInfo dInfo = new DigestInfo(this.algId, hash);
         return dInfo.getEncoded(ASN1Encoding.DER);
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA1 extends DigestSignatureSpi {
         public SHA1() {
             super(OIWObjectIdentifiers.idSHA1, AndroidDigestFactory.getSHA1(), new PKCS1Encoding(new RSABlindedEngine()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA224 extends DigestSignatureSpi {
         public SHA224() {
             super(NISTObjectIdentifiers.id_sha224, AndroidDigestFactory.getSHA224(), new PKCS1Encoding(new RSABlindedEngine()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA256 extends DigestSignatureSpi {
         public SHA256() {
             super(NISTObjectIdentifiers.id_sha256, AndroidDigestFactory.getSHA256(), new PKCS1Encoding(new RSABlindedEngine()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA384 extends DigestSignatureSpi {
         public SHA384() {
             super(NISTObjectIdentifiers.id_sha384, AndroidDigestFactory.getSHA384(), new PKCS1Encoding(new RSABlindedEngine()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA512 extends DigestSignatureSpi {
         public SHA512() {
             super(NISTObjectIdentifiers.id_sha512, AndroidDigestFactory.getSHA512(), new PKCS1Encoding(new RSABlindedEngine()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class MD5 extends DigestSignatureSpi {
         public MD5() {
             super(PKCSObjectIdentifiers.md5, AndroidDigestFactory.getMD5(), new PKCS1Encoding(new RSABlindedEngine()));

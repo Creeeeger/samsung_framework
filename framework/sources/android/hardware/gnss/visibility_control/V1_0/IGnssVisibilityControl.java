@@ -106,7 +106,6 @@ public interface IGnssVisibilityControl extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssVisibilityControl {
         private IHwBinder mRemote;
 
@@ -311,7 +310,6 @@ public interface IGnssVisibilityControl extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssVisibilityControl {
         @Override // android.hardware.gnss.visibility_control.V1_0.IGnssVisibilityControl, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -334,7 +332,7 @@ public interface IGnssVisibilityControl extends IBase {
 
         @Override // android.hardware.gnss.visibility_control.V1_0.IGnssVisibilityControl, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{13, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -119, 86, -41, -4, 111, -33, -100, -87, -60, 41, 98, -1, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 115, -106, 123, -69, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, -97, 11, 62, 11, 88, -41, 27, SprAttributeBase.TYPE_SHADOW, -107, -62, -122, -68}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{13, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -119, 86, -41, -4, 111, -33, -100, -87, -60, 41, 98, -1, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 115, -106, 123, -69, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, -97, 11, 62, 11, 88, -41, 27, SprAttributeBase.TYPE_SHADOW, -107, -62, -122, -68}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.visibility_control.V1_0.IGnssVisibilityControl, android.internal.hidl.base.V1_0.IBase

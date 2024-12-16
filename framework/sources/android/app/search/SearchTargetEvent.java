@@ -22,14 +22,13 @@ public final class SearchTargetEvent implements Parcelable {
     public static final int ACTION_SURFACE_VISIBLE = 1;
     public static final int ACTION_TAP = 3;
     public static final Parcelable.Creator<SearchTargetEvent> CREATOR = new Parcelable.Creator<SearchTargetEvent>() { // from class: android.app.search.SearchTargetEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchTargetEvent createFromParcel(Parcel parcel) {
             return new SearchTargetEvent(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchTargetEvent[] newArray(int size) {
             return new SearchTargetEvent[size];
@@ -42,21 +41,11 @@ public final class SearchTargetEvent implements Parcelable {
     private final List<String> mTargetIds;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ActionType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FlagType {
-    }
-
-    /* synthetic */ SearchTargetEvent(Parcel parcel, SearchTargetEventIA searchTargetEventIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ SearchTargetEvent(List list, String str, int i, int i2, SearchTargetEventIA searchTargetEventIA) {
-        this(list, str, i, i2);
     }
 
     private SearchTargetEvent(List<String> targetIds, String location, int actionType, int flags) {
@@ -67,9 +56,8 @@ public final class SearchTargetEvent implements Parcelable {
     }
 
     private SearchTargetEvent(Parcel parcel) {
-        ArrayList arrayList = new ArrayList();
-        this.mTargetIds = arrayList;
-        parcel.readStringList(arrayList);
+        this.mTargetIds = new ArrayList();
+        parcel.readStringList(this.mTargetIds);
         this.mLocation = parcel.readString();
         this.mAction = parcel.readInt();
         this.mFlags = parcel.readInt();
@@ -120,25 +108,7 @@ public final class SearchTargetEvent implements Parcelable {
         dest.writeInt(this.mFlags);
     }
 
-    /* renamed from: android.app.search.SearchTargetEvent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SearchTargetEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchTargetEvent createFromParcel(Parcel parcel) {
-            return new SearchTargetEvent(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchTargetEvent[] newArray(int size) {
-            return new SearchTargetEvent[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private int mAction;
         private int mFlags;
@@ -146,9 +116,8 @@ public final class SearchTargetEvent implements Parcelable {
         private List<String> mTargetIds;
 
         public Builder(String id, int actionType) {
-            ArrayList arrayList = new ArrayList();
-            this.mTargetIds = arrayList;
-            arrayList.add(id);
+            this.mTargetIds = new ArrayList();
+            this.mTargetIds.add(id);
             this.mAction = actionType;
         }
 

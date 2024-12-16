@@ -31,15 +31,14 @@ public class DoodleStroke {
         this.strokeType = StrokeType.NORMAL;
         this.strokeColor = doodleStroke.strokeColor;
         this.strokeSize = doodleStroke.strokeSize;
+        this.strokeType = doodleStroke.strokeType;
         this.penType = doodleStroke.penType;
         this.mosaicStrength = doodleStroke.mosaicStrength;
         this.patternURI = doodleStroke.patternURI;
         this.isAuto = doodleStroke.isAuto;
-        ArrayList<DoodlePoint> arrayList = new ArrayList<>();
-        this.pointList = arrayList;
-        ArrayList<DoodlePoint> arrayList2 = doodleStroke.pointList;
-        if (arrayList2 != null) {
-            arrayList.addAll(arrayList2);
+        this.pointList = new ArrayList<>();
+        if (doodleStroke.pointList != null) {
+            this.pointList.addAll(doodleStroke.pointList);
         }
     }
 

@@ -11,6 +11,7 @@ import android.graphics.Picture;
 import android.graphics.RecordingCanvas;
 import android.graphics.Rect;
 import android.graphics.RenderNode;
+import android.os.Looper;
 import android.os.Trace;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,7 +22,6 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import com.android.internal.R;
 import com.samsung.android.rune.CoreRune;
-import com.samsung.android.util.SemViewUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,14 +38,12 @@ public final class ThreadedRenderer extends HardwareRenderer {
     static final String PRINT_CONFIG_PROPERTY = "debug.hwui.print_config";
     static final String PROFILE_MAXFRAMES_PROPERTY = "debug.hwui.profile.maxframes";
     public static final String PROFILE_PROPERTY = "debug.hwui.profile";
-    private Context mContext;
-    private float mDesktopLightY;
     private boolean mEnabled;
     private int mHeight;
     private int mInsetLeft;
     private int mInsetTop;
     private final float mLightRadius;
-    private float mLightY;
+    private final float mLightY;
     private final float mLightZ;
     private ArrayList<HardwareRenderer.FrameDrawingCallback> mNextRtFrameCallbacks;
     private boolean mRootNodeNeedsUpdate;
@@ -64,15 +62,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
     private final WebViewOverlayProvider mWebViewOverlayProvider = new WebViewOverlayProvider();
     private boolean mWebViewOverlaysEnabled = false;
 
-    /* loaded from: classes4.dex */
-    public interface DrawCallbacks {
+    interface DrawCallbacks {
         void onPostDraw(RecordingCanvas recordingCanvas);
 
         void onPreDraw(RecordingCanvas recordingCanvas);
-    }
-
-    static /* synthetic */ boolean access$000() {
-        return isWebViewOverlaysEnabled();
     }
 
     public static void enableForegroundTrimming() {
@@ -89,17 +82,12 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return new ThreadedRenderer(context, translucent, name);
     }
 
-    /* loaded from: classes4.dex */
-    public static final class WebViewOverlayProvider implements HardwareRenderer.PrepareSurfaceControlForWebviewCallback, HardwareRenderer.ASurfaceTransactionCallback {
-        private static final boolean sOverlaysAreEnabled = ThreadedRenderer.access$000();
+    private static final class WebViewOverlayProvider implements HardwareRenderer.PrepareSurfaceControlForWebviewCallback, HardwareRenderer.ASurfaceTransactionCallback {
+        private static final boolean sOverlaysAreEnabled = ThreadedRenderer.isWebViewOverlaysEnabled();
         private BLASTBufferQueue mBLASTBufferQueue;
         private boolean mHasWebViewOverlays;
         private SurfaceControl mSurfaceControl;
         private final SurfaceControl.Transaction mTransaction;
-
-        /* synthetic */ WebViewOverlayProvider(WebViewOverlayProviderIA webViewOverlayProviderIA) {
-            this();
-        }
 
         private WebViewOverlayProvider() {
             this.mTransaction = new SurfaceControl.Transaction();
@@ -123,7 +111,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         public void setSurfaceControl(SurfaceControl surfaceControl) {
             synchronized (this) {
                 this.mSurfaceControl = surfaceControl;
-                if (surfaceControl != null && this.mHasWebViewOverlays) {
+                if (this.mSurfaceControl != null && this.mHasWebViewOverlays) {
                     this.mTransaction.setOpaque(surfaceControl, false).apply();
                 }
             }
@@ -139,9 +127,8 @@ public final class ThreadedRenderer extends HardwareRenderer {
         public void prepare() {
             synchronized (this) {
                 this.mHasWebViewOverlays = true;
-                SurfaceControl surfaceControl = this.mSurfaceControl;
-                if (surfaceControl != null) {
-                    this.mTransaction.setOpaque(surfaceControl, false).apply();
+                if (this.mSurfaceControl != null) {
+                    this.mTransaction.setOpaque(this.mSurfaceControl, false).apply();
                 }
             }
         }
@@ -149,11 +136,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
         @Override // android.graphics.HardwareRenderer.ASurfaceTransactionCallback
         public boolean onMergeTransaction(long nativeTransactionObj, long aSurfaceControlNativeObj, long frameNr) {
             synchronized (this) {
-                BLASTBufferQueue bLASTBufferQueue = this.mBLASTBufferQueue;
-                if (bLASTBufferQueue == null) {
+                if (this.mBLASTBufferQueue == null) {
                     return false;
                 }
-                bLASTBufferQueue.mergeWithNextTransaction(nativeTransactionObj, frameNr);
+                this.mBLASTBufferQueue.mergeWithNextTransaction(nativeTransactionObj, frameNr);
                 return true;
             }
         }
@@ -163,18 +149,8 @@ public final class ThreadedRenderer extends HardwareRenderer {
         setName(name);
         setOpaque(!translucent);
         TypedArray a = context.obtainStyledAttributes(null, R.styleable.Lighting, 0, 0);
-        if (SemViewUtils.isFoldDevice() || SemViewUtils.isTablet()) {
-            this.mLightY = context.getResources().getDimensionPixelSize(R.dimen.sem_light_y);
-        } else if (CoreRune.MW_CAPTION_SHELL_DEX && isInDexDisplay(context)) {
-            this.mLightY = context.getResources().getDimensionPixelSize(R.dimen.sem_light_y);
-        } else {
-            this.mLightY = a.getDimension(3, 0.0f);
-        }
+        this.mLightY = a.getDimension(3, 0.0f);
         this.mLightZ = a.getDimension(4, 0.0f);
-        if (CoreRune.MW_CAPTION_SHELL_DEX) {
-            this.mContext = context;
-            this.mDesktopLightY = context.getResources().getDimensionPixelSize(R.dimen.sem_light_y);
-        }
         this.mLightRadius = a.getDimension(2, 0.0f);
         float ambientShadowAlpha = a.getFloat(0, 0.0f);
         float spotShadowAlpha = a.getFloat(1, 0.0f);
@@ -189,7 +165,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         super.destroy();
     }
 
-    public boolean isEnabled() {
+    boolean isEnabled() {
         return this.mEnabled;
     }
 
@@ -197,11 +173,11 @@ public final class ThreadedRenderer extends HardwareRenderer {
         this.mEnabled = enabled;
     }
 
-    public boolean isRequested() {
+    boolean isRequested() {
         return this.mRequested;
     }
 
-    public void setRequested(boolean requested) {
+    void setRequested(boolean requested) {
         this.mRequested = requested;
     }
 
@@ -213,7 +189,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    public boolean initialize(Surface surface) throws Surface.OutOfResourcesException {
+    boolean initialize(Surface surface) throws Surface.OutOfResourcesException {
         boolean status = !this.mInitialized;
         this.mInitialized = true;
         updateEnabledState(surface);
@@ -221,7 +197,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return status;
     }
 
-    public boolean initializeIfNeeded(int width, int height, View.AttachInfo attachInfo, Surface surface, Rect surfaceInsets) throws Surface.OutOfResourcesException {
+    boolean initializeIfNeeded(int width, int height, View.AttachInfo attachInfo, Surface surface, Rect surfaceInsets) throws Surface.OutOfResourcesException {
         if (isRequested() && !isEnabled() && initialize(surface)) {
             setup(width, height, attachInfo, surfaceInsets);
             return true;
@@ -229,7 +205,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return false;
     }
 
-    public void updateSurface(Surface surface) throws Surface.OutOfResourcesException {
+    void updateSurface(Surface surface) throws Surface.OutOfResourcesException {
         updateEnabledState(surface);
         setSurface(surface);
     }
@@ -243,7 +219,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    public void registerRtFrameCallback(HardwareRenderer.FrameDrawingCallback callback) {
+    void registerRtFrameCallback(HardwareRenderer.FrameDrawingCallback callback) {
         if (this.mNextRtFrameCallbacks == null) {
             this.mNextRtFrameCallbacks = new ArrayList<>();
         }
@@ -251,14 +227,13 @@ public final class ThreadedRenderer extends HardwareRenderer {
     }
 
     void unregisterRtFrameCallback(HardwareRenderer.FrameDrawingCallback callback) {
-        ArrayList<HardwareRenderer.FrameDrawingCallback> arrayList = this.mNextRtFrameCallbacks;
-        if (arrayList == null) {
+        if (this.mNextRtFrameCallbacks == null) {
             return;
         }
-        arrayList.remove(callback);
+        this.mNextRtFrameCallbacks.remove(callback);
     }
 
-    public void destroyHardwareResources(View view) {
+    void destroyHardwareResources(View view) {
         destroyResources(view);
         clearContent();
     }
@@ -267,11 +242,11 @@ public final class ThreadedRenderer extends HardwareRenderer {
         view.destroyHardwareResources();
     }
 
-    public void setup(int width, int height, View.AttachInfo attachInfo, Rect surfaceInsets) {
+    void setup(int width, int height, View.AttachInfo attachInfo, Rect surfaceInsets) {
         setup(width, height, attachInfo, surfaceInsets, null);
     }
 
-    public void setup(int width, int height, View.AttachInfo attachInfo, Rect surfaceInsets, Rect bounds) {
+    void setup(int width, int height, View.AttachInfo attachInfo, Rect surfaceInsets, Rect bounds) {
         this.mWidth = width;
         this.mHeight = height;
         if (surfaceInsets != null && (surfaceInsets.left != 0 || surfaceInsets.right != 0 || surfaceInsets.top != 0 || surfaceInsets.bottom != 0)) {
@@ -338,48 +313,38 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    public void setLightCenter(View.AttachInfo attachInfo) {
+    void setLightCenter(View.AttachInfo attachInfo) {
         setLightCenter(attachInfo, null);
     }
 
-    public void setLightCenter(View.AttachInfo attachInfo, Rect bounds) {
-        if (setLightCenterWithMaxBounds(attachInfo)) {
+    void setLightCenter(View.AttachInfo attachInfo, Rect bounds) {
+        ActivityThread thread = ActivityThread.currentActivityThread();
+        if (thread != null && thread.getApplication() != null && thread.isDexCompatMode()) {
+            Rect maxBounds = ((WindowManager) thread.getApplication().getSystemService(WindowManager.class)).getMaximumWindowMetrics().getBounds();
+            float lightX = (maxBounds.width() / 2.0f) - attachInfo.mWindowLeft;
+            float lightY = this.mLightY - attachInfo.mWindowTop;
+            setLightSourceGeometry(lightX, lightY, this.mLightZ, this.mLightRadius);
             return;
-        }
-        if (CoreRune.MW_CAPTION_SHELL_DEX && isInDexDisplay(this.mContext)) {
-            this.mLightY = this.mDesktopLightY;
         }
         DisplayMetrics displayMetrics = new DisplayMetrics();
         attachInfo.mDisplay.getRealMetrics(displayMetrics);
-        float lightX = (displayMetrics.widthPixels / 2.0f) - ((!CoreRune.MW_CAPTION_SHELL_BUG_FIX || bounds == null) ? attachInfo.mWindowLeft : bounds.left);
-        float lightY = this.mLightY - ((!CoreRune.MW_CAPTION_SHELL_BUG_FIX || bounds == null) ? attachInfo.mWindowTop : bounds.top);
+        float lightX2 = (displayMetrics.widthPixels / 2.0f) - ((!CoreRune.MW_CAPTION_SHELL_BUG_FIX || bounds == null) ? attachInfo.mWindowLeft : bounds.left);
+        float lightY2 = this.mLightY - ((!CoreRune.MW_CAPTION_SHELL_BUG_FIX || bounds == null) ? attachInfo.mWindowTop : bounds.top);
         float zRatio = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels) / (displayMetrics.density * 450.0f);
         float zWeightedAdjustment = (2.0f + zRatio) / 3.0f;
         float lightZ = this.mLightZ * zWeightedAdjustment;
-        setLightSourceGeometry(lightX, lightY, lightZ, this.mLightRadius);
+        setLightSourceGeometry(lightX2, lightY2, lightZ, this.mLightRadius);
     }
 
-    private boolean setLightCenterWithMaxBounds(View.AttachInfo attachInfo) {
-        ActivityThread thread = ActivityThread.currentActivityThread();
-        if (thread == null || thread.getApplication() == null || !thread.isDexCompatMode()) {
-            return false;
-        }
-        WindowManager wm = (WindowManager) thread.getApplication().getSystemService(WindowManager.class);
-        Rect maxBounds = wm.getMaximumWindowMetrics().getBounds();
-        float lightX = (maxBounds.width() / 2.0f) - attachInfo.mWindowLeft;
-        float lightY = this.mLightY - attachInfo.mWindowTop;
-        setLightSourceGeometry(lightX, lightY, this.mLightZ, this.mLightRadius);
-        return true;
-    }
-
-    public int getWidth() {
+    int getWidth() {
         return this.mWidth;
     }
 
-    public int getHeight() {
+    int getHeight() {
         return this.mHeight;
     }
 
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     private static int dumpArgsToFlags(String[] args) {
         char c;
         if (args == null || args.length == 0) {
@@ -393,21 +358,26 @@ public final class ThreadedRenderer extends HardwareRenderer {
                         c = 0;
                         break;
                     }
+                    c = 65535;
                     break;
                 case 1492:
                     if (str.equals("-a")) {
                         c = 2;
                         break;
                     }
+                    c = 65535;
                     break;
                 case 108404047:
                     if (str.equals("reset")) {
                         c = 1;
                         break;
                     }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
                     break;
             }
-            c = 65535;
             switch (c) {
                 case 0:
                     flags |= 1;
@@ -428,7 +398,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         WindowManagerGlobal.getInstance().dumpGfxInfo(fd, args);
     }
 
-    public void dumpGfxInfo(PrintWriter pw, FileDescriptor fd, String[] args) {
+    void dumpGfxInfo(PrintWriter pw, FileDescriptor fd, String[] args) {
         pw.flush();
         dumpProfileInfo(fd, dumpArgsToFlags(args));
     }
@@ -481,9 +451,8 @@ public final class ThreadedRenderer extends HardwareRenderer {
         Trace.traceEnd(8L);
     }
 
-    /* renamed from: android.view.ThreadedRenderer$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements HardwareRenderer.FrameDrawingCallback {
+    /* renamed from: android.view.ThreadedRenderer$1, reason: invalid class name */
+    class AnonymousClass1 implements HardwareRenderer.FrameDrawingCallback {
         final /* synthetic */ ArrayList val$frameCallbacks;
 
         AnonymousClass1(ArrayList arrayList) {
@@ -514,18 +483,18 @@ public final class ThreadedRenderer extends HardwareRenderer {
             };
         }
 
-        public static /* synthetic */ void lambda$onFrameDraw$0(ArrayList frameCommitCallbacks, boolean didProduceBuffer) {
+        static /* synthetic */ void lambda$onFrameDraw$0(ArrayList frameCommitCallbacks, boolean didProduceBuffer) {
             for (int i = 0; i < frameCommitCallbacks.size(); i++) {
                 ((HardwareRenderer.FrameCommitCallback) frameCommitCallbacks.get(i)).onFrameCommit(didProduceBuffer);
             }
         }
     }
 
-    public void invalidateRoot() {
+    void invalidateRoot() {
         this.mRootNodeNeedsUpdate = true;
     }
 
-    public void draw(View view, View.AttachInfo attachInfo, DrawCallbacks callbacks) {
+    void draw(View view, View.AttachInfo attachInfo, DrawCallbacks callbacks) {
         attachInfo.mViewRootImpl.mViewFrameInfo.markDrawStart();
         updateRootDisplayList(view, callbacks);
         if (attachInfo.mPendingAnimatingRenderNodes != null) {
@@ -537,9 +506,15 @@ public final class ThreadedRenderer extends HardwareRenderer {
             attachInfo.mPendingAnimatingRenderNodes = null;
         }
         FrameInfo frameInfo = attachInfo.mViewRootImpl.getUpdatedFrameInfo();
+        long start = System.nanoTime();
         int syncResult = syncAndDrawFrame(frameInfo);
+        long end = System.nanoTime();
+        Choreographer choreographer = Looper.myLooper() != null ? Choreographer.getInstance() : null;
+        if (choreographer != null) {
+            choreographer.setSyncAndDrawFrameDuration(end - start);
+        }
         if ((syncResult & 2) != 0) {
-            Log.w("OpenGLRenderer", "Surface lost, forcing relayout");
+            Log.w("HWUI", "Surface lost, forcing relayout");
             attachInfo.mViewRootImpl.mForceNextWindowRelayout = true;
             attachInfo.mViewRootImpl.requestLayout();
         }
@@ -552,12 +527,9 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return this.mRootNode;
     }
 
-    /* loaded from: classes4.dex */
     public static class SimpleRenderer extends HardwareRenderer {
-        private Context mContext;
-        private float mDesktopLightY;
         private final float mLightRadius;
-        private float mLightY;
+        private final float mLightY;
         private final float mLightZ;
 
         public SimpleRenderer(Context context, String name, Surface surface) {
@@ -565,18 +537,8 @@ public final class ThreadedRenderer extends HardwareRenderer {
             setOpaque(false);
             setSurface(surface);
             TypedArray a = context.obtainStyledAttributes(null, R.styleable.Lighting, 0, 0);
-            if (SemViewUtils.isFoldDevice() || SemViewUtils.isTablet()) {
-                this.mLightY = context.getResources().getDimensionPixelSize(R.dimen.sem_light_y);
-            } else if (CoreRune.MW_CAPTION_SHELL_DEX && ThreadedRenderer.isInDexDisplay(context)) {
-                this.mLightY = context.getResources().getDimensionPixelSize(R.dimen.sem_light_y);
-            } else {
-                this.mLightY = a.getDimension(3, 0.0f);
-            }
+            this.mLightY = a.getDimension(3, 0.0f);
             this.mLightZ = a.getDimension(4, 0.0f);
-            if (CoreRune.MW_CAPTION_SHELL_DEX) {
-                this.mContext = context;
-                this.mDesktopLightY = context.getResources().getDimensionPixelSize(R.dimen.sem_light_y);
-            }
             this.mLightRadius = a.getDimension(2, 0.0f);
             float ambientShadowAlpha = a.getFloat(0, 0.0f);
             float spotShadowAlpha = a.getFloat(1, 0.0f);
@@ -585,9 +547,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
 
         public void setLightCenter(Display display, int windowLeft, int windowTop) {
-            if (CoreRune.MW_CAPTION_SHELL_DEX && ThreadedRenderer.isInDexDisplay(this.mContext)) {
-                this.mLightY = this.mDesktopLightY;
-            }
             DisplayMetrics displayMetrics = new DisplayMetrics();
             display.getRealMetrics(displayMetrics);
             float lightX = (displayMetrics.widthPixels / 2.0f) - windowLeft;
@@ -609,9 +568,5 @@ public final class ThreadedRenderer extends HardwareRenderer {
             }
             createRenderRequest().setVsyncTime(vsync).syncAndDraw();
         }
-    }
-
-    public static boolean isInDexDisplay(Context context) {
-        return CoreRune.MW_CAPTION_SHELL_DEX && context.getResources().getConfiguration().isDesktopModeEnabled() && context.getDisplayId() != 0;
     }
 }

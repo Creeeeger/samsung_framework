@@ -43,26 +43,22 @@ public class PKIXNameConstraintValidator implements NameConstraintValidator {
         switch (name.getTagNo()) {
             case 0:
                 checkPermittedOtherName(this.permittedSubtreesOtherName, OtherName.getInstance(name.getName()));
-                return;
+                break;
             case 1:
                 checkPermittedEmail(this.permittedSubtreesEmail, extractNameAsString(name));
-                return;
+                break;
             case 2:
                 checkPermittedDNS(this.permittedSubtreesDNS, extractNameAsString(name));
-                return;
-            case 3:
-            case 5:
-            default:
-                return;
+                break;
             case 4:
                 checkPermittedDN(X500Name.getInstance(name.getName()));
-                return;
+                break;
             case 6:
                 checkPermittedURI(this.permittedSubtreesURI, extractNameAsString(name));
-                return;
+                break;
             case 7:
                 checkPermittedIP(this.permittedSubtreesIP, ASN1OctetString.getInstance(name.getName()).getOctets());
-                return;
+                break;
         }
     }
 
@@ -71,26 +67,22 @@ public class PKIXNameConstraintValidator implements NameConstraintValidator {
         switch (name.getTagNo()) {
             case 0:
                 checkExcludedOtherName(this.excludedSubtreesOtherName, OtherName.getInstance(name.getName()));
-                return;
+                break;
             case 1:
                 checkExcludedEmail(this.excludedSubtreesEmail, extractNameAsString(name));
-                return;
+                break;
             case 2:
                 checkExcludedDNS(this.excludedSubtreesDNS, extractNameAsString(name));
-                return;
-            case 3:
-            case 5:
-            default:
-                return;
+                break;
             case 4:
                 checkExcludedDN(X500Name.getInstance(name.getName()));
-                return;
+                break;
             case 6:
                 checkExcludedURI(this.excludedSubtreesURI, extractNameAsString(name));
-                return;
+                break;
             case 7:
                 checkExcludedIP(this.excludedSubtreesIP, ASN1OctetString.getInstance(name.getName()).getOctets());
-                return;
+                break;
         }
     }
 
@@ -354,9 +346,9 @@ public class PKIXNameConstraintValidator implements NameConstraintValidator {
     }
 
     private Set unionOtherName(Set permitted, OtherName otherName) {
-        Set union = permitted != null ? new HashSet(permitted) : new HashSet();
-        union.add(otherName);
-        return union;
+        HashSet hashSet = permitted != null ? new HashSet(permitted) : new HashSet();
+        hashSet.add(otherName);
+        return hashSet;
     }
 
     private Set intersectEmail(Set permitted, Set emails) {

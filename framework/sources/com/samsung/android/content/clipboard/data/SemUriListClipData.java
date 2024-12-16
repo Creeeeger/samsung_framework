@@ -120,9 +120,8 @@ public class SemUriListClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     protected void readFromSource(Parcel source) {
-        ArrayList<String> arrayList = new ArrayList<>();
-        this.mUriArray = arrayList;
-        source.readStringList(arrayList);
+        this.mUriArray = new ArrayList<>();
+        source.readStringList(this.mUriArray);
     }
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData

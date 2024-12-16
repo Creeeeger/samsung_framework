@@ -27,7 +27,6 @@ public interface IGnssGeofence extends IInterface {
 
     void setCallback(IGnssGeofenceCallback iGnssGeofenceCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssGeofence {
         @Override // android.hardware.gnss.IGnssGeofence
         public void setCallback(IGnssGeofenceCallback callback) throws RemoteException {
@@ -65,7 +64,6 @@ public interface IGnssGeofence extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssGeofence {
         static final int TRANSACTION_addGeofence = 2;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -128,67 +126,64 @@ public interface IGnssGeofence extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            IGnssGeofenceCallback _arg0 = IGnssGeofenceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            double _arg1 = data.readDouble();
-                            double _arg2 = data.readDouble();
-                            double _arg3 = data.readDouble();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            int _arg6 = data.readInt();
-                            int _arg7 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addGeofence(_arg02, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            pauseGeofence(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resumeGeofence(_arg04, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeGeofence(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    IGnssGeofenceCallback _arg0 = IGnssGeofenceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
+                    reply.writeNoException();
+                    break;
+                case 2:
+                    int _arg02 = data.readInt();
+                    double _arg1 = data.readDouble();
+                    double _arg2 = data.readDouble();
+                    double _arg3 = data.readDouble();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    int _arg6 = data.readInt();
+                    int _arg7 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addGeofence(_arg02, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    break;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    pauseGeofence(_arg03);
+                    reply.writeNoException();
+                    break;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resumeGeofence(_arg04, _arg12);
+                    reply.writeNoException();
+                    break;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeGeofence(_arg05);
+                    reply.writeNoException();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssGeofence {
+        private static class Proxy implements IGnssGeofence {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 public class SparseArrayMap<K, V> {
     private final SparseArray<ArrayMap<K, V>> mData = new SparseArray<>();
 
-    /* loaded from: classes4.dex */
     public interface TriConsumer<K, V> {
         void accept(int i, K k, V v);
     }

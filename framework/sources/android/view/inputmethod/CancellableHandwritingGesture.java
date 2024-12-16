@@ -13,14 +13,13 @@ public abstract class CancellableHandwritingGesture extends HandwritingGesture {
         this.mCancellationSignal = cancellationSignal;
     }
 
-    public CancellationSignal getCancellationSignal() {
+    CancellationSignal getCancellationSignal() {
         return this.mCancellationSignal;
     }
 
     public void unbeamCancellationSignal(CancellationSignalBeamer.Receiver receiver) {
-        IBinder iBinder = this.mCancellationSignalToken;
-        if (iBinder != null) {
-            this.mCancellationSignal = receiver.unbeam(iBinder);
+        if (this.mCancellationSignalToken != null) {
+            this.mCancellationSignal = receiver.unbeam(this.mCancellationSignalToken);
             this.mCancellationSignalToken = null;
         }
     }

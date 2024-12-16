@@ -41,7 +41,7 @@ public abstract class PrintService extends Service {
     protected abstract void onRequestCancelPrintJob(PrintJob printJob);
 
     @Override // android.app.Service, android.content.ContextWrapper
-    public final void attachBaseContext(Context base) {
+    protected final void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         this.mHandler = new ServiceHandler(base.getMainLooper());
     }
@@ -54,13 +54,12 @@ public abstract class PrintService extends Service {
 
     public final List<PrintJob> getActivePrintJobs() {
         throwIfNotCalledOnMainThread();
-        IPrintServiceClient iPrintServiceClient = this.mClient;
-        if (iPrintServiceClient == null) {
+        if (this.mClient == null) {
             return Collections.emptyList();
         }
         List<PrintJob> printJobs = null;
         try {
-            List<PrintJobInfo> printJobInfos = iPrintServiceClient.getPrintJobInfos();
+            List<PrintJobInfo> printJobInfos = this.mClient.getPrintJobInfos();
             if (printJobInfos != null) {
                 int printJobInfoCount = printJobInfos.size();
                 printJobs = new ArrayList<>(printJobInfoCount);
@@ -82,80 +81,15 @@ public abstract class PrintService extends Service {
         return new PrinterId(new ComponentName(getPackageName(), getClass().getName()), (String) Preconditions.checkNotNull(localId, "localId cannot be null"));
     }
 
-    public static void throwIfNotCalledOnMainThread() {
+    static void throwIfNotCalledOnMainThread() {
         if (!Looper.getMainLooper().isCurrentThread()) {
             throw new IllegalAccessError("must be called from the main thread");
-        }
-    }
-
-    /* renamed from: android.printservice.PrintService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IPrintService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.printservice.IPrintService
-        public void createPrinterDiscoverySession() {
-            PrintService.this.mHandler.sendEmptyMessage(1);
-        }
-
-        @Override // android.printservice.IPrintService
-        public void destroyPrinterDiscoverySession() {
-            PrintService.this.mHandler.sendEmptyMessage(2);
-        }
-
-        @Override // android.printservice.IPrintService
-        public void startPrinterDiscovery(List<PrinterId> priorityList) {
-            PrintService.this.mHandler.obtainMessage(3, priorityList).sendToTarget();
-        }
-
-        @Override // android.printservice.IPrintService
-        public void stopPrinterDiscovery() {
-            PrintService.this.mHandler.sendEmptyMessage(4);
-        }
-
-        @Override // android.printservice.IPrintService
-        public void validatePrinters(List<PrinterId> printerIds) {
-            PrintService.this.mHandler.obtainMessage(5, printerIds).sendToTarget();
-        }
-
-        @Override // android.printservice.IPrintService
-        public void startPrinterStateTracking(PrinterId printerId) {
-            PrintService.this.mHandler.obtainMessage(6, printerId).sendToTarget();
-        }
-
-        @Override // android.printservice.IPrintService
-        public void requestCustomPrinterIcon(PrinterId printerId) {
-            PrintService.this.mHandler.obtainMessage(7, printerId).sendToTarget();
-        }
-
-        @Override // android.printservice.IPrintService
-        public void stopPrinterStateTracking(PrinterId printerId) {
-            PrintService.this.mHandler.obtainMessage(8, printerId).sendToTarget();
-        }
-
-        @Override // android.printservice.IPrintService
-        public void setClient(IPrintServiceClient client) {
-            PrintService.this.mHandler.obtainMessage(11, client).sendToTarget();
-        }
-
-        @Override // android.printservice.IPrintService
-        public void requestCancelPrintJob(PrintJobInfo printJobInfo) {
-            PrintService.this.mHandler.obtainMessage(10, printJobInfo).sendToTarget();
-        }
-
-        @Override // android.printservice.IPrintService
-        public void onPrintJobQueued(PrintJobInfo printJobInfo) {
-            PrintService.this.mHandler.obtainMessage(9, printJobInfo).sendToTarget();
         }
     }
 
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         return new IPrintService.Stub() { // from class: android.printservice.PrintService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.printservice.IPrintService
             public void createPrinterDiscoverySession() {
                 PrintService.this.mHandler.sendEmptyMessage(1);
@@ -213,7 +147,6 @@ public abstract class PrintService extends Service {
         };
     }
 
-    /* loaded from: classes3.dex */
     private final class ServiceHandler extends Handler {
         public static final int MSG_CREATE_PRINTER_DISCOVERY_SESSION = 1;
         public static final int MSG_DESTROY_PRINTER_DISCOVERY_SESSION = 2;
@@ -297,13 +230,11 @@ public abstract class PrintService extends Service {
                     return;
                 case 9:
                     PrintJobInfo printJobInfo = (PrintJobInfo) message.obj;
-                    PrintService printService = PrintService.this;
-                    printService.onPrintJobQueued(new PrintJob(printService, printJobInfo, printService.mClient));
+                    PrintService.this.onPrintJobQueued(new PrintJob(PrintService.this, printJobInfo, PrintService.this.mClient));
                     return;
                 case 10:
                     PrintJobInfo printJobInfo2 = (PrintJobInfo) message.obj;
-                    PrintService printService2 = PrintService.this;
-                    printService2.onRequestCancelPrintJob(new PrintJob(printService2, printJobInfo2, printService2.mClient));
+                    PrintService.this.onRequestCancelPrintJob(new PrintJob(PrintService.this, printJobInfo2, PrintService.this.mClient));
                     return;
                 case 11:
                     PrintService.this.mClient = (IPrintServiceClient) message.obj;

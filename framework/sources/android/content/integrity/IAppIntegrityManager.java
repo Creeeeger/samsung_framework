@@ -23,7 +23,6 @@ public interface IAppIntegrityManager extends IInterface {
 
     void updateRuleSet(String str, ParceledListSlice<Rule> parceledListSlice, IntentSender intentSender) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAppIntegrityManager {
         @Override // android.content.integrity.IAppIntegrityManager
         public void updateRuleSet(String version, ParceledListSlice<Rule> rules, IntentSender statusReceiver) throws RemoteException {
@@ -55,7 +54,6 @@ public interface IAppIntegrityManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAppIntegrityManager {
         static final int TRANSACTION_getCurrentRuleSetProvider = 3;
         static final int TRANSACTION_getCurrentRuleSetVersion = 2;
@@ -110,49 +108,45 @@ public interface IAppIntegrityManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAppIntegrityManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAppIntegrityManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAppIntegrityManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    ParceledListSlice<Rule> _arg1 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    IntentSender _arg2 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateRuleSet(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _result = getCurrentRuleSetVersion();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 3:
+                    String _result2 = getCurrentRuleSetProvider();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 4:
+                    ParceledListSlice<Rule> _result3 = getCurrentRules();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 5:
+                    List<String> _result4 = getWhitelistedRuleProviders();
+                    reply.writeNoException();
+                    reply.writeStringList(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            ParceledListSlice<Rule> _arg1 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            IntentSender _arg2 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateRuleSet(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _result = getCurrentRuleSetVersion();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 3:
-                            String _result2 = getCurrentRuleSetProvider();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 4:
-                            ParceledListSlice<Rule> _result3 = getCurrentRules();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 5:
-                            List<String> _result4 = getWhitelistedRuleProviders();
-                            reply.writeNoException();
-                            reply.writeStringList(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAppIntegrityManager {
+        private static class Proxy implements IAppIntegrityManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

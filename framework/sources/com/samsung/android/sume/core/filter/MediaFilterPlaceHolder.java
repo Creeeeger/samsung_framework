@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class MediaFilterPlaceHolder implements MediaFilter, PlaceHolder<MediaFilter> {
     private static final String TAG = Def.tagOf((Class<?>) MediaFilterPlaceHolder.class);
     private final MFDescriptor descriptor;
@@ -58,6 +58,7 @@ public class MediaFilterPlaceHolder implements MediaFilter, PlaceHolder<MediaFil
         this.mediaFilter = instance;
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.functional.PlaceHolder
     public MediaFilter reset() {
         if (this.mediaFilter == null) {
@@ -67,29 +68,27 @@ public class MediaFilterPlaceHolder implements MediaFilter, PlaceHolder<MediaFil
         this.mediaFilterUpdaterList.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterPlaceHolder$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaFilterPlaceHolder.this.m8750x59f5e82e((Consumer) obj);
+                MediaFilterPlaceHolder.this.m9138x59f5e82e((Consumer) obj);
             }
         });
-        MediaFilterRetriever mediaFilterRetriever = this.mediaFilterRetriever;
-        if (mediaFilterRetriever != null) {
-            this.mediaFilter.accept(mediaFilterRetriever, this.parent.get());
+        if (this.mediaFilterRetriever != null) {
+            this.mediaFilter.accept(this.mediaFilterRetriever, this.parent.get());
             this.mediaFilterRetriever = null;
             this.parent = null;
         }
         return this.mediaFilter;
     }
 
-    /* renamed from: lambda$reset$0$com-samsung-android-sume-core-filter-MediaFilterPlaceHolder */
-    public /* synthetic */ void m8750x59f5e82e(Consumer it) {
+    /* renamed from: lambda$reset$0$com-samsung-android-sume-core-filter-MediaFilterPlaceHolder, reason: not valid java name */
+    /* synthetic */ void m9138x59f5e82e(Consumer it) {
         it.accept(this.mediaFilter);
     }
 
     public MediaFilter get() {
         if (this.mediaFilter == null) {
             synchronized (this) {
-                Supplier<MediaFilter> supplier = this.mediaFilterProvider;
-                if (supplier != null) {
-                    this.mediaFilter = supplier.get();
+                if (this.mediaFilterProvider != null) {
+                    this.mediaFilter = this.mediaFilterProvider.get();
                 }
             }
         }

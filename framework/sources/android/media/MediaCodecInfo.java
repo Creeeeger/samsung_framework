@@ -2,7 +2,7 @@ package android.media;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.MediaCodecInfo;
-import android.media.audiofx.SemDolbyAudioEffect;
+import android.media.codec.Flags;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.sysprop.MediaProperties;
@@ -12,11 +12,12 @@ import android.util.Range;
 import android.util.Rational;
 import android.util.Size;
 import com.android.internal.content.NativeLibraryHelper;
-import com.android.internal.util.Protocol;
 import com.samsung.android.media.SemMediaPlayer;
 import com.samsung.android.media.SemMediaPostProcessor;
 import com.samsung.android.transcode.constants.EncodeConstants;
 import com.samsung.android.wallpaperbackup.BnRConstants;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.function.Supplier;
 
 /* loaded from: classes2.dex */
 public final class MediaCodecInfo {
@@ -39,6 +41,9 @@ public final class MediaCodecInfo {
     private static final int FLAG_IS_SOFTWARE_ONLY = 4;
     private static final int FLAG_IS_VENDOR = 2;
     private static final int MAX_SUPPORTED_INSTANCES_LIMIT = 256;
+    public static final int SECURITY_MODEL_MEMORY_SAFE = 1;
+    public static final int SECURITY_MODEL_SANDBOXED = 0;
+    public static final int SECURITY_MODEL_TRUSTED_CONTENT_ONLY = 2;
     private static final String TAG = "MediaCodecInfo";
     private String mCanonicalName;
     private Map<String, CodecCapabilities> mCaps = new HashMap();
@@ -50,12 +55,11 @@ public final class MediaCodecInfo {
     private static final Range<Integer> FRAME_RATE_RANGE = Range.create(0, Integer.valueOf(EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
     private static final Range<Integer> BITRATE_RANGE = Range.create(0, 500000000);
 
-    /* renamed from: -$$Nest$smgetSizeRange */
-    static /* bridge */ /* synthetic */ Range m2313$$Nest$smgetSizeRange() {
-        return getSizeRange();
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SecurityModel {
     }
 
-    public MediaCodecInfo(String name, String canonicalName, int flags, CodecCapabilities[] caps) {
+    MediaCodecInfo(String name, String canonicalName, int flags, CodecCapabilities[] caps) {
         this.mName = name;
         this.mCanonicalName = canonicalName;
         this.mFlags = flags;
@@ -99,6 +103,7 @@ public final class MediaCodecInfo {
         return types;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int checkPowerOfTwo(int value, String message) {
         if (((value - 1) & value) != 0) {
             throw new IllegalArgumentException(message);
@@ -106,8 +111,7 @@ public final class MediaCodecInfo {
         return value;
     }
 
-    /* loaded from: classes2.dex */
-    public static class Feature {
+    private static class Feature {
         public boolean mDefault;
         public boolean mInternal;
         public String mName;
@@ -125,8 +129,7 @@ public final class MediaCodecInfo {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class LazyHolder {
+    private static final class LazyHolder {
         private static final Range<Integer> SIZE_RANGE;
 
         private LazyHolder() {
@@ -137,11 +140,11 @@ public final class MediaCodecInfo {
         }
     }
 
-    private static Range<Integer> getSizeRange() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static Range<Integer> getSizeRange() {
         return LazyHolder.SIZE_RANGE;
     }
 
-    /* loaded from: classes2.dex */
     public static final class CodecCapabilities {
         public static final int COLOR_Format12bitRGB444 = 3;
         public static final int COLOR_Format16bitARGB1555 = 5;
@@ -198,7 +201,23 @@ public final class MediaCodecInfo {
         public static final int COLOR_FormatYUVP010 = 54;
         public static final int COLOR_QCOM_FormatYUV420SemiPlanar = 2141391872;
         public static final int COLOR_TI_FormatYUV420PackedSemiPlanar = 2130706688;
+        public static final String FEATURE_AdaptivePlayback = "adaptive-playback";
+        public static final String FEATURE_DetachedSurface = "detached-surface";
+        public static final String FEATURE_DynamicColorAspects = "dynamic-color-aspects";
+        public static final String FEATURE_DynamicTimestamp = "dynamic-timestamp";
+        public static final String FEATURE_EncodingStatistics = "encoding-statistics";
+        public static final String FEATURE_FrameParsing = "frame-parsing";
+        public static final String FEATURE_HdrEditing = "hdr-editing";
+        public static final String FEATURE_HlgEditing = "hlg-editing";
+        public static final String FEATURE_IntraRefresh = "intra-refresh";
         public static final String FEATURE_LowLatency = "low-latency";
+        public static final String FEATURE_MultipleFrames = "multiple-frames";
+        public static final String FEATURE_PartialFrame = "partial-frame";
+        public static final String FEATURE_QpBounds = "qp-bounds";
+        public static final String FEATURE_Roi = "region-of-interest";
+        public static final String FEATURE_SecurePlayback = "secure-playback";
+        private static final String FEATURE_SpecialCodec = "special-codec";
+        public static final String FEATURE_TunneledPlayback = "tunneled-playback";
         private static final String TAG = "CodecCapabilities";
         public int[] colorFormats;
         private AudioCapabilities mAudioCaps;
@@ -213,20 +232,6 @@ public final class MediaCodecInfo {
         private String mMime;
         private VideoCapabilities mVideoCaps;
         public CodecProfileLevel[] profileLevels;
-        public static final String FEATURE_AdaptivePlayback = "adaptive-playback";
-        public static final String FEATURE_SecurePlayback = "secure-playback";
-        public static final String FEATURE_TunneledPlayback = "tunneled-playback";
-        public static final String FEATURE_PartialFrame = "partial-frame";
-        public static final String FEATURE_FrameParsing = "frame-parsing";
-        public static final String FEATURE_MultipleFrames = "multiple-frames";
-        public static final String FEATURE_DynamicTimestamp = "dynamic-timestamp";
-        private static final String FEATURE_SpecialCodec = "special-codec";
-        private static final Feature[] decoderFeatures = {new Feature(FEATURE_AdaptivePlayback, 1, true), new Feature(FEATURE_SecurePlayback, 2, false), new Feature(FEATURE_TunneledPlayback, 4, false), new Feature(FEATURE_PartialFrame, 8, false), new Feature(FEATURE_FrameParsing, 16, false), new Feature(FEATURE_MultipleFrames, 32, false), new Feature(FEATURE_DynamicTimestamp, 64, false), new Feature("low-latency", 128, true), new Feature(FEATURE_SpecialCodec, 1073741824, false, true)};
-        public static final String FEATURE_IntraRefresh = "intra-refresh";
-        public static final String FEATURE_QpBounds = "qp-bounds";
-        public static final String FEATURE_EncodingStatistics = "encoding-statistics";
-        public static final String FEATURE_HdrEditing = "hdr-editing";
-        private static final Feature[] encoderFeatures = {new Feature(FEATURE_IntraRefresh, 1, false), new Feature(FEATURE_MultipleFrames, 2, false), new Feature(FEATURE_DynamicTimestamp, 4, false), new Feature(FEATURE_QpBounds, 8, false), new Feature(FEATURE_EncodingStatistics, 16, false), new Feature(FEATURE_HdrEditing, 32, false), new Feature(FEATURE_SpecialCodec, 1073741824, false, true)};
 
         public CodecCapabilities() {
         }
@@ -237,6 +242,88 @@ public final class MediaCodecInfo {
 
         public final boolean isFeatureRequired(String name) {
             return checkFeature(name, this.mFlagsRequired);
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        static class FeatureList {
+            private static Feature[] decoderFeatures = getDecoderFeatures();
+            private static Feature[] encoderFeatures = getEncoderFeatures();
+
+            private FeatureList() {
+            }
+
+            private static Feature[] getDecoderFeatures() {
+                ArrayList<Feature> features = new ArrayList<>();
+                features.add(new Feature(CodecCapabilities.FEATURE_AdaptivePlayback, 1, true));
+                features.add(new Feature(CodecCapabilities.FEATURE_SecurePlayback, 2, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_TunneledPlayback, 4, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_PartialFrame, 8, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_FrameParsing, 16, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_MultipleFrames, 32, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_DynamicTimestamp, 64, false));
+                features.add(new Feature("low-latency", 128, true));
+                if (MediaCodec.GetFlag(new Supplier() { // from class: android.media.MediaCodecInfo$CodecCapabilities$FeatureList$$ExternalSyntheticLambda0
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        Boolean valueOf;
+                        valueOf = Boolean.valueOf(Flags.dynamicColorAspects());
+                        return valueOf;
+                    }
+                })) {
+                    features.add(new Feature(CodecCapabilities.FEATURE_DynamicColorAspects, 256, true));
+                }
+                if (MediaCodec.GetFlag(new Supplier() { // from class: android.media.MediaCodecInfo$CodecCapabilities$FeatureList$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        Boolean valueOf;
+                        valueOf = Boolean.valueOf(Flags.nullOutputSurface());
+                        return valueOf;
+                    }
+                })) {
+                    features.add(new Feature(CodecCapabilities.FEATURE_DetachedSurface, 512, true));
+                }
+                features.add(new Feature(CodecCapabilities.FEATURE_SpecialCodec, 1073741824, false, true));
+                return (Feature[]) features.toArray(new Feature[0]);
+            }
+
+            private static Feature[] getEncoderFeatures() {
+                ArrayList<Feature> features = new ArrayList<>();
+                features.add(new Feature(CodecCapabilities.FEATURE_IntraRefresh, 1, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_MultipleFrames, 2, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_DynamicTimestamp, 4, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_QpBounds, 8, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_EncodingStatistics, 16, false));
+                features.add(new Feature(CodecCapabilities.FEATURE_HdrEditing, 32, false));
+                if (MediaCodec.GetFlag(new Supplier() { // from class: android.media.MediaCodecInfo$CodecCapabilities$FeatureList$$ExternalSyntheticLambda2
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        Boolean valueOf;
+                        valueOf = Boolean.valueOf(Flags.hlgEditing());
+                        return valueOf;
+                    }
+                })) {
+                    features.add(new Feature(CodecCapabilities.FEATURE_HlgEditing, 64, true));
+                }
+                if (MediaCodec.GetFlag(new Supplier() { // from class: android.media.MediaCodecInfo$CodecCapabilities$FeatureList$$ExternalSyntheticLambda3
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        Boolean valueOf;
+                        valueOf = Boolean.valueOf(Flags.regionOfInterest());
+                        return valueOf;
+                    }
+                })) {
+                    features.add(new Feature(CodecCapabilities.FEATURE_Roi, 128, true));
+                }
+                features.add(new Feature(CodecCapabilities.FEATURE_SpecialCodec, 1073741824, false, true));
+                return (Feature[]) features.toArray(new Feature[0]);
+            }
+
+            public static Feature[] getFeatures(boolean isEncoder) {
+                if (isEncoder) {
+                    return encoderFeatures;
+                }
+                return decoderFeatures;
+            }
         }
 
         public String[] validFeatures() {
@@ -251,10 +338,7 @@ public final class MediaCodecInfo {
         }
 
         private Feature[] getValidFeatures() {
-            if (!isEncoder()) {
-                return decoderFeatures;
-            }
-            return encoderFeatures;
+            return FeatureList.getFeatures(isEncoder());
         }
 
         private boolean checkFeature(String name, int flags) {
@@ -279,7 +363,7 @@ public final class MediaCodecInfo {
             Set<String> criticalKeys;
             Integer yesNo;
             Map<String, Object> map = format.getMap();
-            String mime = (String) map.get(MediaFormat.KEY_MIME);
+            String mime = (String) map.get("mime");
             if (mime != null && !this.mMime.equalsIgnoreCase(mime)) {
                 return false;
             }
@@ -315,18 +399,16 @@ public final class MediaCodecInfo {
                     }
                 }
             }
-            AudioCapabilities audioCapabilities = this.mAudioCaps;
-            if (audioCapabilities != null && !audioCapabilities.supportsFormat(format)) {
+            if (this.mAudioCaps != null && !this.mAudioCaps.supportsFormat(format)) {
                 return false;
             }
-            VideoCapabilities videoCapabilities = this.mVideoCaps;
-            if (videoCapabilities != null && !videoCapabilities.supportsFormat(format)) {
-                return false;
+            if (this.mVideoCaps == null || this.mVideoCaps.supportsFormat(format)) {
+                return this.mEncoderCaps == null || this.mEncoderCaps.supportsFormat(format);
             }
-            EncoderCapabilities encoderCapabilities = this.mEncoderCaps;
-            return encoderCapabilities == null || encoderCapabilities.supportsFormat(format);
+            return false;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static boolean supportsBitrate(Range<Integer> bitrateRange, MediaFormat format) {
             Map<String, Object> map = format.getMap();
             Integer maxBitrate = (Integer) map.get(MediaFormat.KEY_MAX_BIT_RATE);
@@ -402,10 +484,8 @@ public final class MediaCodecInfo {
 
         public CodecCapabilities dup() {
             CodecCapabilities caps = new CodecCapabilities();
-            CodecProfileLevel[] codecProfileLevelArr = this.profileLevels;
-            caps.profileLevels = (CodecProfileLevel[]) Arrays.copyOf(codecProfileLevelArr, codecProfileLevelArr.length);
-            int[] iArr = this.colorFormats;
-            caps.colorFormats = Arrays.copyOf(iArr, iArr.length);
+            caps.profileLevels = (CodecProfileLevel[]) Arrays.copyOf(this.profileLevels, this.profileLevels.length);
+            caps.colorFormats = Arrays.copyOf(this.colorFormats, this.colorFormats.length);
             caps.mMime = this.mMime;
             caps.mMaxSupportedInstances = this.mMaxSupportedInstances;
             caps.mFlagsRequired = this.mFlagsRequired;
@@ -424,7 +504,7 @@ public final class MediaCodecInfo {
             pl.profile = profile;
             pl.level = level;
             MediaFormat defaultFormat = new MediaFormat();
-            defaultFormat.setString(MediaFormat.KEY_MIME, mime);
+            defaultFormat.setString("mime", mime);
             CodecCapabilities ret = new CodecCapabilities(new CodecProfileLevel[]{pl}, new int[0], true, defaultFormat, new MediaFormat());
             if (ret.mError != 0) {
                 return null;
@@ -444,11 +524,10 @@ public final class MediaCodecInfo {
             this.mFlagsVerified = 0;
             this.mDefaultFormat = defaultFormat;
             this.mCapabilitiesInfo = info;
-            String string = defaultFormat.getString(MediaFormat.KEY_MIME);
-            this.mMime = string;
+            this.mMime = this.mDefaultFormat.getString("mime");
             CodecProfileLevel[] profLevs2 = profLevs;
             boolean z2 = true;
-            if (profLevs2.length == 0 && string.equalsIgnoreCase(MediaFormat.MIMETYPE_VIDEO_VP9)) {
+            if (profLevs2.length == 0 && this.mMime.equalsIgnoreCase(MediaFormat.MIMETYPE_VIDEO_VP9)) {
                 CodecProfileLevel profLev = new CodecProfileLevel();
                 profLev.profile = 1;
                 profLev.level = VideoCapabilities.equivalentVP9Level(info);
@@ -456,16 +535,14 @@ public final class MediaCodecInfo {
             }
             this.profileLevels = profLevs2;
             if (this.mMime.toLowerCase().startsWith("audio/")) {
-                AudioCapabilities create = AudioCapabilities.create(info, this);
-                this.mAudioCaps = create;
-                create.getDefaultFormat(this.mDefaultFormat);
+                this.mAudioCaps = AudioCapabilities.create(info, this);
+                this.mAudioCaps.getDefaultFormat(this.mDefaultFormat);
             } else if (this.mMime.toLowerCase().startsWith(BnRConstants.VIDEO_DIR_PATH) || this.mMime.equalsIgnoreCase(MediaFormat.MIMETYPE_IMAGE_ANDROID_HEIC)) {
                 this.mVideoCaps = VideoCapabilities.create(info, this);
             }
             if (encoder) {
-                EncoderCapabilities create2 = EncoderCapabilities.create(info, this);
-                this.mEncoderCaps = create2;
-                create2.getDefaultFormat(this.mDefaultFormat);
+                this.mEncoderCaps = EncoderCapabilities.create(info, this);
+                this.mEncoderCaps.getDefaultFormat(this.mDefaultFormat);
             }
             Map<String, Object> global = MediaCodecList.getGlobalSettings();
             this.mMaxSupportedInstances = Utils.parseIntSafely(global.get("max-concurrent-instances"), 32);
@@ -497,9 +574,8 @@ public final class MediaCodecInfo {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class AudioCapabilities {
-        static final Set<String> AUDIO_LEVEL_CRITICAL_FORMAT_KEYS = Set.of(MediaFormat.KEY_MIME);
+        static final Set<String> AUDIO_LEVEL_CRITICAL_FORMAT_KEYS = Set.of("mime");
         private static final int MAX_INPUT_CHANNEL_COUNT = 30;
         private static final String TAG = "AudioCapabilities";
         private Range<Integer> mBitrateRange;
@@ -513,16 +589,14 @@ public final class MediaCodecInfo {
         }
 
         public int[] getSupportedSampleRates() {
-            int[] iArr = this.mSampleRates;
-            if (iArr != null) {
-                return Arrays.copyOf(iArr, iArr.length);
+            if (this.mSampleRates != null) {
+                return Arrays.copyOf(this.mSampleRates, this.mSampleRates.length);
             }
             return null;
         }
 
         public Range<Integer>[] getSupportedSampleRateRanges() {
-            Range<Integer>[] rangeArr = this.mSampleRateRanges;
-            return (Range[]) Arrays.copyOf(rangeArr, rangeArr.length);
+            return (Range[]) Arrays.copyOf(this.mSampleRateRanges, this.mSampleRateRanges.length);
         }
 
         public int getMaxInputChannelCount() {
@@ -548,8 +622,7 @@ public final class MediaCodecInfo {
         }
 
         public Range<Integer>[] getInputChannelCountRanges() {
-            Range<Integer>[] rangeArr = this.mInputChannelRanges;
-            return (Range[]) Arrays.copyOf(rangeArr, rangeArr.length);
+            return (Range[]) Arrays.copyOf(this.mInputChannelRanges, this.mInputChannelRanges.length);
         }
 
         private AudioCapabilities() {
@@ -612,23 +685,15 @@ public final class MediaCodecInfo {
 
         private void createDiscreteSampleRates() {
             this.mSampleRates = new int[this.mSampleRateRanges.length];
-            int i = 0;
-            while (true) {
-                Range<Integer>[] rangeArr = this.mSampleRateRanges;
-                if (i < rangeArr.length) {
-                    this.mSampleRates[i] = rangeArr[i].getLower().intValue();
-                    i++;
-                } else {
-                    return;
-                }
+            for (int i = 0; i < this.mSampleRateRanges.length; i++) {
+                this.mSampleRates[i] = this.mSampleRateRanges[i].getLower().intValue();
             }
         }
 
         private void limitSampleRates(Range<Integer>[] rateRanges) {
             Utils.sortDistinctRanges(rateRanges);
-            Range<Integer>[] intersectSortedDistinctRanges = Utils.intersectSortedDistinctRanges(this.mSampleRateRanges, rateRanges);
-            this.mSampleRateRanges = intersectSortedDistinctRanges;
-            for (Range<Integer> range : intersectSortedDistinctRanges) {
+            this.mSampleRateRanges = Utils.intersectSortedDistinctRanges(this.mSampleRateRanges, rateRanges);
+            for (Range<Integer> range : this.mSampleRateRanges) {
                 if (!range.getLower().equals(range.getUpper())) {
                     this.mSampleRates = null;
                     return;
@@ -638,16 +703,16 @@ public final class MediaCodecInfo {
         }
 
         private void applyLevelLimits() {
-            Range<Integer> sampleRateRange;
-            Range<Integer> sampleRateRange2;
+            int i;
+            char c;
             int[] sampleRates = null;
-            Range<Integer> sampleRateRange3 = null;
+            Range<Integer> sampleRateRange = null;
             Range<Integer> bitRates = null;
             int maxChannels = 30;
             CodecProfileLevel[] profileLevels = this.mParent.profileLevels;
             String mime = this.mParent.getMimeType();
             if (mime.equalsIgnoreCase("audio/mpeg")) {
-                sampleRates = new int[]{8000, 11025, 12000, 16000, 22050, 24000, 32000, SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000};
+                sampleRates = new int[]{8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
                 bitRates = Range.create(8000, 320000);
                 maxChannels = 2;
             } else if (mime.equalsIgnoreCase("audio/3gpp")) {
@@ -659,25 +724,25 @@ public final class MediaCodecInfo {
                 bitRates = Range.create(6600, 23850);
                 maxChannels = 1;
             } else if (mime.equalsIgnoreCase("audio/mp4a-latm")) {
-                sampleRates = new int[]{7350, 8000, 11025, 12000, 16000, 22050, 24000, 32000, SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000, 64000, 88200, 96000};
+                sampleRates = new int[]{7350, 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000};
                 bitRates = Range.create(8000, 510000);
                 maxChannels = 48;
             } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_VORBIS)) {
                 bitRates = Range.create(32000, 500000);
-                sampleRateRange3 = Range.create(8000, 192000);
+                sampleRateRange = Range.create(8000, 192000);
                 maxChannels = 255;
             } else {
-                int i = 48000;
+                int i2 = 24000;
+                int i3 = 48000;
                 if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_OPUS)) {
                     bitRates = Range.create(6000, 510000);
                     sampleRates = new int[]{8000, 12000, 16000, 24000, 48000};
                     maxChannels = 255;
                 } else if (!mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_RAW)) {
                     if (!mime.equalsIgnoreCase("audio/flac")) {
-                        if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_G711_ALAW)) {
-                            sampleRateRange = null;
-                        } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_G711_MLAW)) {
-                            sampleRateRange = null;
+                        if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_G711_ALAW) || mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_G711_MLAW)) {
+                            sampleRates = new int[]{8000};
+                            bitRates = Range.create(64000, 64000);
                         } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_MSGSM)) {
                             sampleRates = new int[]{8000};
                             bitRates = Range.create(Integer.valueOf(EncodeConstants.BitRate.MM_AVG_FHD_DATARATE), Integer.valueOf(EncodeConstants.BitRate.MM_AVG_FHD_DATARATE));
@@ -690,98 +755,102 @@ public final class MediaCodecInfo {
                             sampleRates = new int[]{48000};
                             bitRates = Range.create(32000, 6144000);
                             maxChannels = 16;
-                        } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_AC4)) {
-                            sampleRates = new int[]{SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000, 96000, 192000};
-                            bitRates = Range.create(16000, 2688000);
-                            maxChannels = 24;
-                        } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_DTS)) {
-                            sampleRates = new int[]{SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000};
-                            bitRates = Range.create(96000, 1524000);
-                            maxChannels = 6;
-                        } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_DTS_HD)) {
-                            int length = profileLevels.length;
-                            int i2 = 0;
-                            while (i2 < length) {
-                                CodecProfileLevel profileLevel = profileLevels[i2];
-                                switch (profileLevel.profile) {
-                                    case 1:
-                                    case 4:
-                                        sampleRateRange2 = sampleRateRange3;
-                                        sampleRates = new int[]{SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000, 88200, 96000, 176400, 192000};
-                                        bitRates = Range.create(96000, 24500000);
-                                        break;
-                                    case 2:
-                                        sampleRateRange2 = sampleRateRange3;
-                                        int[] sampleRates2 = {22050, 24000, SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000};
-                                        bitRates = Range.create(32000, 768000);
-                                        sampleRates = sampleRates2;
-                                        break;
-                                    case 3:
-                                    default:
-                                        sampleRateRange2 = sampleRateRange3;
-                                        Log.w(TAG, "Unrecognized profile " + profileLevel.profile + " for " + mime);
-                                        this.mParent.mError |= 1;
-                                        sampleRates = new int[]{SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000, 88200, 96000, 176400, 192000};
-                                        bitRates = Range.create(96000, 24500000);
-                                        break;
-                                }
-                                i2++;
-                                sampleRateRange3 = sampleRateRange2;
-                            }
-                            maxChannels = 8;
-                        } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_DTS_UHD)) {
-                            int length2 = profileLevels.length;
-                            int i3 = 0;
-                            while (i3 < length2) {
-                                CodecProfileLevel profileLevel2 = profileLevels[i3];
-                                switch (profileLevel2.profile) {
-                                    case 1:
-                                        sampleRates = new int[]{SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000, 88200, 96000, 176400, 192000};
-                                        bitRates = Range.create(96000, 24500000);
-                                        maxChannels = 32;
-                                        break;
-                                    case 2:
-                                        sampleRates = new int[]{i};
-                                        bitRates = Range.create(96000, 768000);
-                                        maxChannels = 10;
-                                        break;
-                                    default:
-                                        Log.w(TAG, "Unrecognized profile " + profileLevel2.profile + " for " + mime);
-                                        this.mParent.mError |= 1;
-                                        sampleRates = new int[]{SemDolbyAudioEffect.SAMPLE_RATE_44100, 48000, 88200, 96000, 176400, 192000};
-                                        bitRates = Range.create(96000, 24500000);
-                                        maxChannels = 32;
-                                        break;
-                                }
-                                i3++;
-                                i = 48000;
-                            }
-                            sampleRateRange3 = null;
                         } else {
-                            Log.w(TAG, "Unsupported mime " + mime);
-                            this.mParent.mError |= 2;
-                            sampleRateRange3 = null;
+                            int i4 = 44100;
+                            if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_AC4)) {
+                                sampleRates = new int[]{44100, 48000, 96000, 192000};
+                                bitRates = Range.create(16000, 2688000);
+                                maxChannels = 24;
+                            } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_DTS)) {
+                                sampleRates = new int[]{44100, 48000};
+                                bitRates = Range.create(96000, 1524000);
+                                maxChannels = 6;
+                            } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_DTS_HD)) {
+                                int length = profileLevels.length;
+                                int i5 = 0;
+                                while (i5 < length) {
+                                    CodecProfileLevel profileLevel = profileLevels[i5];
+                                    switch (profileLevel.profile) {
+                                        case 1:
+                                        case 4:
+                                            sampleRates = new int[]{44100, 48000, 88200, 96000, 176400, 192000};
+                                            bitRates = Range.create(96000, 24500000);
+                                            break;
+                                        case 2:
+                                            sampleRates = new int[]{22050, i2, i4, 48000};
+                                            bitRates = Range.create(32000, 768000);
+                                            break;
+                                        case 3:
+                                        default:
+                                            Log.w(TAG, "Unrecognized profile " + profileLevel.profile + " for " + mime);
+                                            this.mParent.mError |= 1;
+                                            sampleRates = new int[]{44100, 48000, 88200, 96000, 176400, 192000};
+                                            bitRates = Range.create(96000, 24500000);
+                                            break;
+                                    }
+                                    i5++;
+                                    i4 = 44100;
+                                    i2 = 24000;
+                                }
+                                maxChannels = 8;
+                            } else if (mime.equalsIgnoreCase(MediaFormat.MIMETYPE_AUDIO_DTS_UHD)) {
+                                int length2 = profileLevels.length;
+                                int i6 = 0;
+                                while (i6 < length2) {
+                                    CodecProfileLevel profileLevel2 = profileLevels[i6];
+                                    switch (profileLevel2.profile) {
+                                        case 1:
+                                            sampleRates = new int[]{44100, 48000, 88200, 96000, 176400, 192000};
+                                            bitRates = Range.create(96000, 24500000);
+                                            maxChannels = 32;
+                                            break;
+                                        case 2:
+                                            sampleRates = new int[]{i3};
+                                            bitRates = Range.create(96000, 768000);
+                                            maxChannels = 10;
+                                            break;
+                                        default:
+                                            Log.w(TAG, "Unrecognized profile " + profileLevel2.profile + " for " + mime);
+                                            this.mParent.mError |= 1;
+                                            sampleRates = new int[]{44100, 48000, 88200, 96000, 176400, 192000};
+                                            bitRates = Range.create(96000, 24500000);
+                                            maxChannels = 32;
+                                            break;
+                                    }
+                                    i6++;
+                                    i3 = 48000;
+                                }
+                            } else {
+                                Log.w(TAG, "Unsupported mime " + mime);
+                                this.mParent.mError |= 2;
+                            }
                         }
-                        sampleRates = new int[]{8000};
-                        bitRates = Range.create(64000, 64000);
-                        sampleRateRange3 = sampleRateRange;
                     } else {
-                        sampleRateRange3 = Range.create(1, 655350);
+                        sampleRateRange = Range.create(1, 655350);
                         maxChannels = 255;
                     }
                 } else {
-                    sampleRateRange3 = Range.create(1, 192000);
+                    sampleRateRange = Range.create(1, 192000);
                     bitRates = Range.create(1, 10000000);
                     maxChannels = AudioSystem.OUT_CHANNEL_COUNT_MAX;
                 }
             }
             if (sampleRates != null) {
                 limitSampleRates(sampleRates);
-            } else if (sampleRateRange3 != null) {
-                limitSampleRates(new Range[]{sampleRateRange3});
+                i = 1;
+                c = 0;
+            } else if (sampleRateRange == null) {
+                i = 1;
+                c = 0;
+            } else {
+                i = 1;
+                c = 0;
+                limitSampleRates(new Range[]{sampleRateRange});
             }
             Range<Integer> channelRange = Range.create(1, Integer.valueOf(maxChannels));
-            applyLimits(new Range[]{channelRange}, bitRates);
+            Range<Integer>[] rangeArr = new Range[i];
+            rangeArr[c] = channelRange;
+            applyLimits(rangeArr, bitRates);
         }
 
         private void applyLimits(Range<Integer>[] inputChannels, Range<Integer> bitRates) {
@@ -822,7 +891,11 @@ public final class MediaCodecInfo {
                 channels = new Range[]{oneRange};
             } else if (info.containsKey("max-channel-count")) {
                 int maxInputChannels = Utils.parseIntSafely(info.getString("max-channel-count"), 30);
-                channels = maxInputChannels == 0 ? new Range[]{Range.create(0, 0)} : new Range[]{Range.create(1, Integer.valueOf(maxInputChannels))};
+                if (maxInputChannels == 0) {
+                    channels = new Range[]{Range.create(0, 0)};
+                } else {
+                    channels = new Range[]{Range.create(1, Integer.valueOf(maxInputChannels))};
+                }
             } else if ((this.mParent.mError & 2) != 0) {
                 channels = new Range[]{Range.create(0, 0)};
             }
@@ -839,9 +912,8 @@ public final class MediaCodecInfo {
             if (getMaxInputChannelCount() == 1) {
                 format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 1);
             }
-            int[] iArr = this.mSampleRates;
-            if (iArr != null && iArr.length == 1) {
-                format.setInteger(MediaFormat.KEY_SAMPLE_RATE, iArr[0]);
+            if (this.mSampleRates != null && this.mSampleRates.length == 1) {
+                format.setInteger(MediaFormat.KEY_SAMPLE_RATE, this.mSampleRates[0]);
             }
         }
 
@@ -853,10 +925,13 @@ public final class MediaCodecInfo {
         }
     }
 
-    /* loaded from: classes2.dex */
+    public int getSecurityModel() {
+        return 0;
+    }
+
     public static final class VideoCapabilities {
         private static final String TAG = "VideoCapabilities";
-        static final Set<String> VIDEO_LEVEL_CRITICAL_FORMAT_KEYS = Set.of("width", "height", MediaFormat.KEY_FRAME_RATE, MediaFormat.KEY_BIT_RATE, MediaFormat.KEY_MIME);
+        static final Set<String> VIDEO_LEVEL_CRITICAL_FORMAT_KEYS = Set.of("width", "height", MediaFormat.KEY_FRAME_RATE, MediaFormat.KEY_BIT_RATE, "mime");
         private boolean mAllowMbOverride;
         private Range<Rational> mAspectRatioRange;
         private Range<Integer> mBitrateRange;
@@ -983,15 +1058,13 @@ public final class MediaCodecInfo {
             if (!supports(Integer.valueOf(width), Integer.valueOf(height), null)) {
                 throw new IllegalArgumentException("unsupported size");
             }
-            Map<Size, Range<Long>> map = this.mMeasuredFrameRates;
-            if (map == null || map.size() <= 0) {
+            if (this.mMeasuredFrameRates == null || this.mMeasuredFrameRates.size() <= 0) {
                 Log.w(TAG, "Codec did not publish any measurement data.");
                 return null;
             }
             return estimateFrameRatesFor(width, height);
         }
 
-        /* loaded from: classes2.dex */
         public static final class PerformancePoint {
             private Size mBlockSize;
             private int mHeight;
@@ -1209,20 +1282,20 @@ public final class MediaCodecInfo {
 
         private void initWithPlatformLimits() {
             this.mBitrateRange = MediaCodecInfo.BITRATE_RANGE;
-            this.mWidthRange = MediaCodecInfo.m2313$$Nest$smgetSizeRange();
-            this.mHeightRange = MediaCodecInfo.m2313$$Nest$smgetSizeRange();
+            this.mWidthRange = MediaCodecInfo.getSizeRange();
+            this.mHeightRange = MediaCodecInfo.getSizeRange();
             this.mFrameRateRange = MediaCodecInfo.FRAME_RATE_RANGE;
-            this.mHorizontalBlockRange = MediaCodecInfo.m2313$$Nest$smgetSizeRange();
-            this.mVerticalBlockRange = MediaCodecInfo.m2313$$Nest$smgetSizeRange();
+            this.mHorizontalBlockRange = MediaCodecInfo.getSizeRange();
+            this.mVerticalBlockRange = MediaCodecInfo.getSizeRange();
             this.mBlockCountRange = MediaCodecInfo.POSITIVE_INTEGERS;
             this.mBlocksPerSecondRange = MediaCodecInfo.POSITIVE_LONGS;
             this.mBlockAspectRatioRange = MediaCodecInfo.POSITIVE_RATIONALS;
             this.mAspectRatioRange = MediaCodecInfo.POSITIVE_RATIONALS;
-            this.mWidthAlignment = 2;
-            this.mHeightAlignment = 2;
-            this.mBlockWidth = 2;
-            this.mBlockHeight = 2;
-            this.mSmallerDimensionUpperLimit = ((Integer) MediaCodecInfo.m2313$$Nest$smgetSizeRange().getUpper()).intValue();
+            this.mWidthAlignment = 1;
+            this.mHeightAlignment = 1;
+            this.mBlockWidth = 1;
+            this.mBlockHeight = 1;
+            this.mSmallerDimensionUpperLimit = ((Integer) MediaCodecInfo.getSizeRange().getUpper()).intValue();
         }
 
         private List<PerformancePoint> getPerformancePoints(Map<String, Object> map) {
@@ -1275,7 +1348,7 @@ public final class MediaCodecInfo {
             return Collections.unmodifiableList(ret);
         }
 
-        public static /* synthetic */ int lambda$getPerformancePoints$0(PerformancePoint a, PerformancePoint b) {
+        static /* synthetic */ int lambda$getPerformancePoints$0(PerformancePoint a, PerformancePoint b) {
             int i = -1;
             if (a.getMaxMacroBlocks() != b.getMaxMacroBlocks()) {
                 if (a.getMaxMacroBlocks() >= b.getMaxMacroBlocks()) {
@@ -1387,16 +1460,16 @@ public final class MediaCodecInfo {
 
         /* JADX WARN: Removed duplicated region for block: B:10:0x012e  */
         /* JADX WARN: Removed duplicated region for block: B:13:0x016f  */
-        /* JADX WARN: Removed duplicated region for block: B:16:0x01dd  */
-        /* JADX WARN: Removed duplicated region for block: B:20:0x028e  */
-        /* JADX WARN: Removed duplicated region for block: B:22:0x029a  */
-        /* JADX WARN: Removed duplicated region for block: B:24:0x02a6  */
-        /* JADX WARN: Removed duplicated region for block: B:26:0x02c5  */
-        /* JADX WARN: Removed duplicated region for block: B:28:0x02e5  */
-        /* JADX WARN: Removed duplicated region for block: B:30:0x0303  */
-        /* JADX WARN: Removed duplicated region for block: B:32:0x030f  */
-        /* JADX WARN: Removed duplicated region for block: B:34:0x031b  */
-        /* JADX WARN: Removed duplicated region for block: B:62:0x0282  */
+        /* JADX WARN: Removed duplicated region for block: B:16:0x01de  */
+        /* JADX WARN: Removed duplicated region for block: B:20:0x028f  */
+        /* JADX WARN: Removed duplicated region for block: B:22:0x029b  */
+        /* JADX WARN: Removed duplicated region for block: B:24:0x02a7  */
+        /* JADX WARN: Removed duplicated region for block: B:26:0x02c6  */
+        /* JADX WARN: Removed duplicated region for block: B:28:0x02e6  */
+        /* JADX WARN: Removed duplicated region for block: B:30:0x0304  */
+        /* JADX WARN: Removed duplicated region for block: B:32:0x0310  */
+        /* JADX WARN: Removed duplicated region for block: B:34:0x031c  */
+        /* JADX WARN: Removed duplicated region for block: B:62:0x0283  */
         /* JADX WARN: Removed duplicated region for block: B:63:0x013d A[EXC_TOP_SPLITTER, SYNTHETIC] */
         /* JADX WARN: Removed duplicated region for block: B:69:0x00f9 A[EXC_TOP_SPLITTER, SYNTHETIC] */
         /*
@@ -1405,7 +1478,7 @@ public final class MediaCodecInfo {
         */
         private void parseFromInfo(android.media.MediaFormat r30) {
             /*
-                Method dump skipped, instructions count: 826
+                Method dump skipped, instructions count: 827
                 To view this dump change 'Code comments level' option to 'DEBUG'
             */
             throw new UnsupportedOperationException("Method not decompiled: android.media.MediaCodecInfo.VideoCapabilities.parseFromInfo(android.media.MediaFormat):void");
@@ -1440,9 +1513,8 @@ public final class MediaCodecInfo {
         private void applyAlignment(int widthAlignment, int heightAlignment) {
             MediaCodecInfo.checkPowerOfTwo(widthAlignment, "widthAlignment must be a power of two");
             MediaCodecInfo.checkPowerOfTwo(heightAlignment, "heightAlignment must be a power of two");
-            int i = this.mBlockWidth;
-            if (widthAlignment > i || heightAlignment > this.mBlockHeight) {
-                applyBlockLimits(Math.max(widthAlignment, i), Math.max(heightAlignment, this.mBlockHeight), MediaCodecInfo.POSITIVE_INTEGERS, MediaCodecInfo.POSITIVE_LONGS, MediaCodecInfo.POSITIVE_RATIONALS);
+            if (widthAlignment > this.mBlockWidth || heightAlignment > this.mBlockHeight) {
+                applyBlockLimits(Math.max(widthAlignment, this.mBlockWidth), Math.max(heightAlignment, this.mBlockHeight), MediaCodecInfo.POSITIVE_INTEGERS, MediaCodecInfo.POSITIVE_LONGS, MediaCodecInfo.POSITIVE_RATIONALS);
             }
             this.mWidthAlignment = Math.max(widthAlignment, this.mWidthAlignment);
             this.mHeightAlignment = Math.max(heightAlignment, this.mHeightAlignment);
@@ -1451,21 +1523,18 @@ public final class MediaCodecInfo {
         }
 
         private void updateLimits() {
-            Range<Integer> intersect = this.mHorizontalBlockRange.intersect(Utils.factorRange(this.mWidthRange, this.mBlockWidth));
-            this.mHorizontalBlockRange = intersect;
-            this.mHorizontalBlockRange = intersect.intersect(Range.create(Integer.valueOf(this.mBlockCountRange.getLower().intValue() / this.mVerticalBlockRange.getUpper().intValue()), Integer.valueOf(this.mBlockCountRange.getUpper().intValue() / this.mVerticalBlockRange.getLower().intValue())));
-            Range<Integer> intersect2 = this.mVerticalBlockRange.intersect(Utils.factorRange(this.mHeightRange, this.mBlockHeight));
-            this.mVerticalBlockRange = intersect2;
-            this.mVerticalBlockRange = intersect2.intersect(Range.create(Integer.valueOf(this.mBlockCountRange.getLower().intValue() / this.mHorizontalBlockRange.getUpper().intValue()), Integer.valueOf(this.mBlockCountRange.getUpper().intValue() / this.mHorizontalBlockRange.getLower().intValue())));
+            this.mHorizontalBlockRange = this.mHorizontalBlockRange.intersect(Utils.factorRange(this.mWidthRange, this.mBlockWidth));
+            this.mHorizontalBlockRange = this.mHorizontalBlockRange.intersect(Range.create(Integer.valueOf(this.mBlockCountRange.getLower().intValue() / this.mVerticalBlockRange.getUpper().intValue()), Integer.valueOf(this.mBlockCountRange.getUpper().intValue() / this.mVerticalBlockRange.getLower().intValue())));
+            this.mVerticalBlockRange = this.mVerticalBlockRange.intersect(Utils.factorRange(this.mHeightRange, this.mBlockHeight));
+            this.mVerticalBlockRange = this.mVerticalBlockRange.intersect(Range.create(Integer.valueOf(this.mBlockCountRange.getLower().intValue() / this.mHorizontalBlockRange.getUpper().intValue()), Integer.valueOf(this.mBlockCountRange.getUpper().intValue() / this.mHorizontalBlockRange.getLower().intValue())));
             this.mBlockCountRange = this.mBlockCountRange.intersect(Range.create(Integer.valueOf(this.mHorizontalBlockRange.getLower().intValue() * this.mVerticalBlockRange.getLower().intValue()), Integer.valueOf(this.mHorizontalBlockRange.getUpper().intValue() * this.mVerticalBlockRange.getUpper().intValue())));
             this.mBlockAspectRatioRange = this.mBlockAspectRatioRange.intersect(new Rational(this.mHorizontalBlockRange.getLower().intValue(), this.mVerticalBlockRange.getUpper().intValue()), new Rational(this.mHorizontalBlockRange.getUpper().intValue(), this.mVerticalBlockRange.getLower().intValue()));
             this.mWidthRange = this.mWidthRange.intersect(Integer.valueOf(((this.mHorizontalBlockRange.getLower().intValue() - 1) * this.mBlockWidth) + this.mWidthAlignment), Integer.valueOf(this.mHorizontalBlockRange.getUpper().intValue() * this.mBlockWidth));
             this.mHeightRange = this.mHeightRange.intersect(Integer.valueOf(((this.mVerticalBlockRange.getLower().intValue() - 1) * this.mBlockHeight) + this.mHeightAlignment), Integer.valueOf(this.mVerticalBlockRange.getUpper().intValue() * this.mBlockHeight));
             this.mAspectRatioRange = this.mAspectRatioRange.intersect(new Rational(this.mWidthRange.getLower().intValue(), this.mHeightRange.getUpper().intValue()), new Rational(this.mWidthRange.getUpper().intValue(), this.mHeightRange.getLower().intValue()));
             this.mSmallerDimensionUpperLimit = Math.min(this.mSmallerDimensionUpperLimit, Math.min(this.mWidthRange.getUpper().intValue(), this.mHeightRange.getUpper().intValue()));
-            Range<Long> intersect3 = this.mBlocksPerSecondRange.intersect(Long.valueOf(this.mBlockCountRange.getLower().intValue() * this.mFrameRateRange.getLower().intValue()), Long.valueOf(this.mBlockCountRange.getUpper().intValue() * this.mFrameRateRange.getUpper().intValue()));
-            this.mBlocksPerSecondRange = intersect3;
-            this.mFrameRateRange = this.mFrameRateRange.intersect(Integer.valueOf((int) (intersect3.getLower().longValue() / this.mBlockCountRange.getUpper().intValue())), Integer.valueOf((int) (this.mBlocksPerSecondRange.getUpper().longValue() / this.mBlockCountRange.getLower().intValue())));
+            this.mBlocksPerSecondRange = this.mBlocksPerSecondRange.intersect(Long.valueOf(this.mBlockCountRange.getLower().intValue() * this.mFrameRateRange.getLower().intValue()), Long.valueOf(this.mBlockCountRange.getUpper().intValue() * this.mFrameRateRange.getUpper().intValue()));
+            this.mFrameRateRange = this.mFrameRateRange.intersect(Integer.valueOf((int) (this.mBlocksPerSecondRange.getLower().longValue() / this.mBlockCountRange.getUpper().intValue())), Integer.valueOf((int) (this.mBlocksPerSecondRange.getUpper().longValue() / this.mBlockCountRange.getLower().intValue())));
         }
 
         private void applyMacroBlockLimits(int maxHorizontalBlocks, int maxVerticalBlocks, int maxBlocks, long maxBlocksPerSecond, int blockWidth, int blockHeight, int widthAlignment, int heightAlignment) {
@@ -1498,12 +1567,12 @@ public final class MediaCodecInfo {
             int i;
             String str4;
             CodecProfileLevel[] profileLevels2;
-            long SR2;
-            int D3;
-            Integer num2;
             int FS2;
+            int D3;
             String str5;
             int BR3;
+            Integer num2;
+            long SR2;
             String str6;
             String str7;
             String str8;
@@ -1751,6 +1820,7 @@ public final class MediaCodecInfo {
                         case 2:
                         case 65536:
                             str20 = str21;
+                            BR7 = BR6 * 1000;
                             break;
                         case 4:
                         case 32:
@@ -1759,6 +1829,7 @@ public final class MediaCodecInfo {
                             Log.w(TAG, str21 + profileLevel.profile + " for " + mime);
                             errors |= 2;
                             supported = false;
+                            BR7 = BR6 * 1000;
                             break;
                         case 8:
                         case 524288:
@@ -1776,7 +1847,6 @@ public final class MediaCodecInfo {
                             BR7 = BR6 * 1000;
                             break;
                     }
-                    BR7 = BR6 * 1000;
                     if (supported) {
                         errors &= -5;
                     }
@@ -2612,140 +2682,140 @@ public final class MediaCodecInfo {
                                         switch (profileLevel6.level) {
                                             case 1:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 829440;
-                                                D3 = 512;
-                                                num2 = num5;
                                                 FS2 = 36864;
+                                                D3 = 512;
                                                 str5 = str49;
                                                 BR3 = 200;
+                                                num2 = num5;
+                                                SR2 = 829440;
                                                 break;
                                             case 2:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 2764800;
-                                                D3 = 768;
-                                                num2 = num5;
                                                 FS2 = 73728;
+                                                D3 = 768;
                                                 str5 = str49;
                                                 BR3 = 800;
+                                                num2 = num5;
+                                                SR2 = 2764800;
                                                 break;
                                             case 4:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 4608000;
-                                                D3 = 960;
-                                                num2 = num5;
                                                 FS2 = 122880;
+                                                D3 = 960;
                                                 str5 = str49;
                                                 BR3 = 1800;
+                                                num2 = num5;
+                                                SR2 = 4608000;
                                                 break;
                                             case 8:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 9216000;
-                                                D3 = 1344;
-                                                num2 = num5;
                                                 FS2 = 245760;
+                                                D3 = 1344;
                                                 str5 = str49;
                                                 BR3 = 3600;
+                                                num2 = num5;
+                                                SR2 = 9216000;
                                                 break;
                                             case 16:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 20736000;
-                                                D3 = 2048;
-                                                num2 = num5;
                                                 FS2 = 552960;
+                                                D3 = 2048;
                                                 str5 = str49;
                                                 BR3 = 7200;
+                                                num2 = num5;
+                                                SR2 = 20736000;
                                                 break;
                                             case 32:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 36864000;
-                                                D3 = 2752;
-                                                num2 = num5;
                                                 FS2 = 983040;
+                                                D3 = 2752;
                                                 str5 = str49;
                                                 BR3 = 12000;
+                                                num2 = num5;
+                                                SR2 = 36864000;
                                                 break;
                                             case 64:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 83558400;
-                                                D3 = 4160;
-                                                num2 = num5;
                                                 FS2 = 2228224;
+                                                D3 = 4160;
                                                 str5 = str49;
                                                 BR3 = 18000;
+                                                num2 = num5;
+                                                SR2 = 83558400;
                                                 break;
                                             case 128:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 160432128;
-                                                D3 = 4160;
-                                                num2 = num5;
                                                 FS2 = 2228224;
+                                                D3 = 4160;
                                                 str5 = str49;
                                                 BR3 = 30000;
+                                                num2 = num5;
+                                                SR2 = 160432128;
                                                 break;
                                             case 256:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 311951360;
-                                                D3 = 8384;
-                                                num2 = num5;
                                                 FS2 = 8912896;
+                                                D3 = 8384;
                                                 str5 = str49;
                                                 BR3 = 60000;
+                                                num2 = num5;
+                                                SR2 = 311951360;
                                                 break;
                                             case 512:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 588251136;
-                                                D3 = 8384;
-                                                num2 = num5;
                                                 FS2 = 8912896;
+                                                D3 = 8384;
                                                 str5 = str49;
                                                 BR3 = 120000;
+                                                num2 = num5;
+                                                SR2 = 588251136;
                                                 break;
                                             case 1024:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 1176502272;
-                                                D3 = 8384;
-                                                num2 = num5;
                                                 FS2 = 8912896;
+                                                D3 = 8384;
                                                 str5 = str49;
                                                 BR3 = 180000;
+                                                num2 = num5;
+                                                SR2 = 1176502272;
                                                 break;
                                             case 2048:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 1176502272;
-                                                D3 = 16832;
-                                                num2 = num5;
                                                 FS2 = 35651584;
+                                                D3 = 16832;
                                                 str5 = str49;
                                                 BR3 = 180000;
+                                                num2 = num5;
+                                                SR2 = 1176502272;
                                                 break;
                                             case 4096:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 2353004544L;
-                                                D3 = 16832;
-                                                num2 = num5;
                                                 FS2 = 35651584;
+                                                D3 = 16832;
                                                 str5 = str49;
                                                 BR3 = 240000;
+                                                num2 = num5;
+                                                SR2 = 2353004544L;
                                                 break;
                                             case 8192:
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 4706009088L;
-                                                D3 = 16832;
-                                                num2 = num5;
                                                 FS2 = 35651584;
+                                                D3 = 16832;
                                                 str5 = str49;
                                                 BR3 = 480000;
+                                                num2 = num5;
+                                                SR2 = 4706009088L;
                                                 break;
                                             default:
                                                 Log.w(str50, str49 + profileLevel6.level + str46 + mime);
                                                 errors |= 1;
                                                 profileLevels2 = profileLevels11;
-                                                SR2 = 0;
-                                                D3 = 0;
-                                                num2 = num5;
                                                 FS2 = 0;
+                                                D3 = 0;
                                                 str5 = str49;
                                                 BR3 = 0;
+                                                num2 = num5;
+                                                SR2 = 0;
                                                 break;
                                         }
                                         int i13 = maxBps6;
@@ -2878,7 +2948,7 @@ public final class MediaCodecInfo {
                                                     break;
                                                 case 131072:
                                                     FS7 = 8912896;
-                                                    BR10 = Protocol.BASE_WIFI_SCANNER_SERVICE;
+                                                    BR10 = 160000;
                                                     FR = 60.0d;
                                                     str3 = str51;
                                                     break;
@@ -3201,7 +3271,6 @@ public final class MediaCodecInfo {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class EncoderCapabilities {
         public static final int BITRATE_MODE_CBR = 2;
         public static final int BITRATE_MODE_CBR_FD = 3;
@@ -3325,13 +3394,11 @@ public final class MediaCodecInfo {
         }
 
         public void getDefaultFormat(MediaFormat format) {
-            Integer num;
-            Integer num2;
-            if (!this.mQualityRange.getUpper().equals(this.mQualityRange.getLower()) && (num2 = this.mDefaultQuality) != null) {
-                format.setInteger("quality", num2.intValue());
+            if (!this.mQualityRange.getUpper().equals(this.mQualityRange.getLower()) && this.mDefaultQuality != null) {
+                format.setInteger("quality", this.mDefaultQuality.intValue());
             }
-            if (!this.mComplexityRange.getUpper().equals(this.mComplexityRange.getLower()) && (num = this.mDefaultComplexity) != null) {
-                format.setInteger(MediaFormat.KEY_COMPLEXITY, num.intValue());
+            if (!this.mComplexityRange.getUpper().equals(this.mComplexityRange.getLower()) && this.mDefaultComplexity != null) {
+                format.setInteger(MediaFormat.KEY_COMPLEXITY, this.mDefaultComplexity.intValue());
             }
             for (Feature feat : bitrates) {
                 if ((this.mBitControl & (1 << feat.mValue)) != 0) {
@@ -3371,7 +3438,6 @@ public final class MediaCodecInfo {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class CodecProfileLevel {
         public static final int AACObjectELD = 39;
         public static final int AACObjectERLC = 17;

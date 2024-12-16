@@ -5,7 +5,6 @@ import android.app.blob.XmlTags;
 import android.provider.Telephony;
 import android.view.ThreadedRenderer;
 import com.samsung.android.content.smartclip.SemSmartClipMetaTagType;
-import com.samsung.android.share.SemShareConstants;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,7 +30,6 @@ public abstract class AbstractMessageParser {
     private String text;
     private ArrayList<Token> tokens;
 
-    /* loaded from: classes5.dex */
     public interface Resources {
         TrieNode getAcronyms();
 
@@ -161,7 +159,7 @@ public abstract class AbstractMessageParser {
     }
 
     private Part lastPart() {
-        return this.parts.get(r0.size() - 1);
+        return this.parts.get(this.parts.size() - 1);
     }
 
     private boolean parseMusicTrack() {
@@ -477,20 +475,18 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Token {
         protected String text;
         protected Type type;
 
         public abstract boolean isHtml();
 
-        /* loaded from: classes5.dex */
         public enum Type {
             HTML(SemSmartClipMetaTagType.HTML),
             FORMAT(Telephony.CellBroadcasts.MESSAGE_FORMAT),
             LINK(XmlTags.TAG_LEASEE),
-            SMILEY(SemShareConstants.DMA_SURVEY_DETAIL_SHAREVIA_VALUE_ALL_APPS),
-            ACRONYM("a"),
+            SMILEY("e"),
+            ACRONYM(FullBackup.APK_TREE_TOKEN),
             MUSIC("m"),
             GOOGLE_VIDEO("v"),
             YOUTUBE_VIDEO("yt"),
@@ -549,7 +545,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Html extends Token {
         private String html;
 
@@ -601,7 +596,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class MusicTrack extends Token {
         private String track;
 
@@ -627,7 +621,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Link extends Token {
         private String url;
 
@@ -654,7 +647,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Video extends Token {
         private static final Pattern URL_PATTERN = Pattern.compile("(?i)http://video\\.google\\.[a-z0-9]+(?:\\.[a-z0-9]+)?/videoplay\\?.*?\\bdocid=(-?\\d+).*");
         private String docid;
@@ -712,7 +704,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class YouTubeVideo extends Token {
         private static final Pattern URL_PATTERN = Pattern.compile("(?i)http://(?:[a-z0-9]+\\.)?youtube\\.[a-z0-9]+(?:\\.[a-z0-9]+)?/watch\\?.*\\bv=([-_a-zA-Z0-9=]+).*");
         private String docid;
@@ -786,7 +777,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Photo extends Token {
         private static final Pattern URL_PATTERN = Pattern.compile("http://picasaweb.google.com/([^/?#&]+)/+((?!searchbrowse)[^/?#&]+)(?:/|/photo)?(?:\\?[^#]*)?(?:#(.*))?");
         private String album;
@@ -856,7 +846,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class FlickrPhoto extends Token {
         private static final String SETS = "sets";
         private static final String TAGS = "tags";
@@ -936,15 +925,13 @@ public abstract class AbstractMessageParser {
                 return getUserSetsURL(this.user, this.groupingId);
             }
             if (TAGS.equals(this.grouping)) {
-                String str = this.user;
-                if (str != null) {
-                    return getUserTagsURL(str, this.groupingId);
+                if (this.user != null) {
+                    return getUserTagsURL(this.user, this.groupingId);
                 }
                 return getTagsURL(this.groupingId);
             }
-            String str2 = this.photo;
-            if (str2 != null) {
-                return getPhotoURL(this.user, str2);
+            if (this.photo != null) {
+                return getPhotoURL(this.user, this.photo);
             }
             return getUserURL(this.user);
         }
@@ -974,7 +961,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Smiley extends Token {
         public Smiley(String text) {
             super(Token.Type.SMILEY, text);
@@ -993,7 +979,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Acronym extends Token {
         private String value;
 
@@ -1020,7 +1005,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Format extends Token {
         private char ch;
         private boolean matched;
@@ -1043,11 +1027,7 @@ public abstract class AbstractMessageParser {
 
         @Override // com.google.android.util.AbstractMessageParser.Token
         public String toHtml(boolean caps) {
-            if (this.matched) {
-                return this.start ? getFormatStart(this.ch) : getFormatEnd(this.ch);
-            }
-            char c = this.ch;
-            return c == '\"' ? "&quot;" : String.valueOf(c);
+            return this.matched ? this.start ? getFormatStart(this.ch) : getFormatEnd(this.ch) : this.ch == '\"' ? "&quot;" : String.valueOf(this.ch);
         }
 
         @Override // com.google.android.util.AbstractMessageParser.Token
@@ -1113,45 +1093,45 @@ public abstract class AbstractMessageParser {
                 if (token.isHtml()) {
                     html.append(token.toHtml(caps));
                 } else {
-                    switch (AnonymousClass1.$SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[token.getType().ordinal()]) {
-                        case 1:
+                    switch (token.getType().ordinal()) {
+                        case 2:
                             html.append("<a href=\"");
                             html.append(((Link) token).getURL());
                             html.append("\">");
                             html.append(token.getRawText());
                             html.append("</a>");
                             break;
-                        case 2:
-                            html.append(token.getRawText());
-                            break;
                         case 3:
                             html.append(token.getRawText());
                             break;
                         case 4:
-                            html.append(((MusicTrack) token).getTrack());
+                            html.append(token.getRawText());
                             break;
                         case 5:
+                            html.append(((MusicTrack) token).getTrack());
+                            break;
+                        case 6:
                             html.append("<a href=\"");
                             html.append(Video.getURL(((Video) token).getDocID()));
                             html.append("\">");
                             html.append(token.getRawText());
                             html.append("</a>");
                             break;
-                        case 6:
+                        case 7:
                             html.append("<a href=\"");
                             html.append(YouTubeVideo.getURL(((YouTubeVideo) token).getDocID()));
                             html.append("\">");
                             html.append(token.getRawText());
                             html.append("</a>");
                             break;
-                        case 7:
+                        case 8:
                             html.append("<a href=\"");
                             html.append(Photo.getAlbumURL(((Photo) token).getUser(), ((Photo) token).getAlbum()));
                             html.append("\">");
                             html.append(token.getRawText());
                             html.append("</a>");
                             break;
-                        case 8:
+                        case 9:
                             html.append("<a href=\"");
                             html.append(((FlickrPhoto) token).getUrl());
                             html.append("\">");
@@ -1171,49 +1151,6 @@ public abstract class AbstractMessageParser {
         return html.toString();
     }
 
-    /* renamed from: com.google.android.util.AbstractMessageParser$1 */
-    /* loaded from: classes5.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type;
-
-        static {
-            int[] iArr = new int[Token.Type.values().length];
-            $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type = iArr;
-            try {
-                iArr[Token.Type.LINK.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[Token.Type.SMILEY.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[Token.Type.ACRONYM.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[Token.Type.MUSIC.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[Token.Type.GOOGLE_VIDEO.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[Token.Type.YOUTUBE_VIDEO.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[Token.Type.PHOTO.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-            try {
-                $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type[Token.Type.FLICKR.ordinal()] = 8;
-            } catch (NoSuchFieldError e8) {
-            }
-        }
-    }
-
     protected static String reverse(String str) {
         StringBuilder buf = new StringBuilder();
         for (int i = str.length() - 1; i >= 0; i--) {
@@ -1222,7 +1159,6 @@ public abstract class AbstractMessageParser {
         return buf.toString();
     }
 
-    /* loaded from: classes5.dex */
     public static class TrieNode {
         private final HashMap<Character, TrieNode> children;
         private String text;
@@ -1321,7 +1257,6 @@ public abstract class AbstractMessageParser {
         return bestMatch;
     }
 
-    /* loaded from: classes5.dex */
     public static class Part {
         private String meText;
         private ArrayList<Token> tokens = new ArrayList<>();
@@ -1332,7 +1267,7 @@ public abstract class AbstractMessageParser {
 
         private String getPartType() {
             if (isMedia()) {
-                return "d";
+                return XmlTags.ATTR_DESCRIPTION;
             }
             if (this.meText != null) {
                 return "m";
@@ -1364,9 +1299,8 @@ public abstract class AbstractMessageParser {
 
         public String getRawText() {
             StringBuilder buf = new StringBuilder();
-            String str = this.meText;
-            if (str != null) {
-                buf.append(str);
+            if (this.meText != null) {
+                buf.append(this.meText);
             }
             for (int i = 0; i < this.tokens.size(); i++) {
                 buf.append(this.tokens.get(i).getRawText());

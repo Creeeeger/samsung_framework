@@ -5,10 +5,7 @@ import android.media.AudioDeviceAttributes;
 import android.media.AudioFormat;
 import android.media.AudioSystem;
 import android.media.MediaFormat;
-import android.media.audiopolicy.AudioMixingRule;
 import android.os.Parcel;
-import com.android.internal.telephony.RILConstants;
-import com.android.internal.telephony.cdma.sms.SmsEnvelope;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -190,115 +187,109 @@ public class AidlConversion {
 
     public static int aidl2api_AudioChannelLayout_AudioFormatChannelMask(AudioChannelLayout aidlMask, boolean isInput) {
         switch (aidlMask.getTag()) {
-            case 0:
-                return 1;
-            case 1:
-                return 0;
-            case 2:
-                return aidlMask.getIndexMask();
             case 3:
-                if (isInput) {
+                if (!isInput) {
                     switch (aidlMask.getLayoutMask()) {
                         case 1:
-                            return 16;
+                            break;
                         case 3:
-                            return 12;
+                            break;
+                        case 7:
+                            break;
+                        case 11:
+                            break;
+                        case 15:
+                            break;
+                        case 51:
+                            break;
+                        case 55:
+                            break;
                         case 63:
-                            return AudioFormat.CHANNEL_IN_5POINT1;
+                            break;
+                        case 259:
+                            break;
                         case 260:
-                            return 48;
+                            break;
+                        case 263:
+                            break;
+                        case 319:
+                            break;
+                        case 1539:
+                            break;
+                        case 1551:
+                            break;
+                        case 1599:
+                            break;
+                        case AudioChannelLayout.LAYOUT_5POINT1POINT4 /* 184383 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_7POINT1POINT4 /* 185919 */:
+                            break;
                         case AudioChannelLayout.LAYOUT_2POINT0POINT2 /* 786435 */:
-                            return AudioFormat.CHANNEL_IN_2POINT0POINT2;
+                            break;
                         case AudioChannelLayout.LAYOUT_3POINT0POINT2 /* 786439 */:
-                            return AudioFormat.CHANNEL_IN_3POINT0POINT2;
+                            break;
                         case AudioChannelLayout.LAYOUT_2POINT1POINT2 /* 786443 */:
-                            return AudioFormat.CHANNEL_IN_2POINT1POINT2;
+                            break;
                         case AudioChannelLayout.LAYOUT_3POINT1POINT2 /* 786447 */:
-                            return AudioFormat.CHANNEL_IN_3POINT1POINT2;
+                            break;
+                        case AudioChannelLayout.LAYOUT_5POINT1POINT2 /* 786495 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_7POINT1POINT2 /* 788031 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_13POINT_360RA /* 7534087 */:
+                            break;
+                        case 16777215:
+                            break;
+                        case AudioChannelLayout.LAYOUT_9POINT1POINT4 /* 50517567 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_9POINT1POINT6 /* 51303999 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_MONO_HAPTIC_A /* 1073741825 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_STEREO_HAPTIC_A /* 1073741827 */:
+                            break;
+                        case 1610612736:
+                            break;
+                        case AudioChannelLayout.LAYOUT_MONO_HAPTIC_AB /* 1610612737 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_STEREO_HAPTIC_AB /* 1610612739 */:
+                            break;
+                    }
+                } else {
+                    switch (aidlMask.getLayoutMask()) {
+                        case 1:
+                            break;
+                        case 3:
+                            break;
+                        case 63:
+                            break;
+                        case 260:
+                            break;
+                        case AudioChannelLayout.LAYOUT_2POINT0POINT2 /* 786435 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_3POINT0POINT2 /* 786439 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_2POINT1POINT2 /* 786443 */:
+                            break;
+                        case AudioChannelLayout.LAYOUT_3POINT1POINT2 /* 786447 */:
+                            break;
                     }
                 }
-                switch (aidlMask.getLayoutMask()) {
-                    case 1:
-                        return 4;
-                    case 3:
-                        return 12;
-                    case 7:
-                        return 28;
-                    case 11:
-                        return 44;
-                    case 15:
-                        return 60;
-                    case 51:
-                        return 204;
-                    case 55:
-                        return 220;
-                    case 63:
-                        return 252;
-                    case 259:
-                        return 1036;
-                    case 260:
-                        return RILConstants.RIL_UNSOL_HARDWARE_CONFIG_CHANGED;
-                    case 263:
-                        return 1052;
-                    case 319:
-                        return 1276;
-                    case 1539:
-                        return AudioFormat.CHANNEL_OUT_QUAD_SIDE;
-                    case 1551:
-                        return AudioFormat.CHANNEL_OUT_5POINT1_SIDE;
-                    case 1599:
-                        return AudioFormat.CHANNEL_OUT_7POINT1_SURROUND;
-                    case AudioChannelLayout.LAYOUT_5POINT1POINT4 /* 184383 */:
-                        return AudioFormat.CHANNEL_OUT_5POINT1POINT4;
-                    case AudioChannelLayout.LAYOUT_7POINT1POINT4 /* 185919 */:
-                        return AudioFormat.CHANNEL_OUT_7POINT1POINT4;
-                    case AudioChannelLayout.LAYOUT_2POINT0POINT2 /* 786435 */:
-                        return 3145740;
-                    case AudioChannelLayout.LAYOUT_3POINT0POINT2 /* 786439 */:
-                        return 3145756;
-                    case AudioChannelLayout.LAYOUT_2POINT1POINT2 /* 786443 */:
-                        return 3145772;
-                    case AudioChannelLayout.LAYOUT_3POINT1POINT2 /* 786447 */:
-                        return 3145788;
-                    case AudioChannelLayout.LAYOUT_5POINT1POINT2 /* 786495 */:
-                        return AudioFormat.CHANNEL_OUT_5POINT1POINT2;
-                    case AudioChannelLayout.LAYOUT_7POINT1POINT2 /* 788031 */:
-                        return AudioFormat.CHANNEL_OUT_7POINT1POINT2;
-                    case AudioChannelLayout.LAYOUT_13POINT_360RA /* 7534087 */:
-                        return AudioFormat.CHANNEL_OUT_13POINT_360RA;
-                    case 16777215:
-                        return AudioFormat.CHANNEL_OUT_22POINT2;
-                    case AudioChannelLayout.LAYOUT_9POINT1POINT4 /* 50517567 */:
-                        return AudioFormat.CHANNEL_OUT_9POINT1POINT4;
-                    case AudioChannelLayout.LAYOUT_9POINT1POINT6 /* 51303999 */:
-                        return AudioFormat.CHANNEL_OUT_9POINT1POINT6;
-                    case AudioChannelLayout.LAYOUT_MONO_HAPTIC_A /* 1073741825 */:
-                        return 536870916;
-                    case AudioChannelLayout.LAYOUT_STEREO_HAPTIC_A /* 1073741827 */:
-                        return 536870924;
-                    case 1610612736:
-                        return 805306368;
-                    case AudioChannelLayout.LAYOUT_MONO_HAPTIC_AB /* 1610612737 */:
-                        return 805306372;
-                    case AudioChannelLayout.LAYOUT_STEREO_HAPTIC_AB /* 1610612739 */:
-                        return 805306380;
-                }
-                return aidl2api_AudioChannelLayoutBitMask_AudioFormatChannelMask(aidlMask.getLayoutMask(), isInput);
+                break;
             case 4:
                 if (isInput) {
                     switch (aidlMask.getVoiceMask()) {
                         case 16384:
-                            return 16400;
+                            break;
                         case 32768:
-                            return AudioMixingRule.RULE_EXCLUDE_AUDIO_SESSION_ID;
+                            break;
                         case AudioChannelLayout.VOICE_CALL_MONO /* 49152 */:
-                            return SmsEnvelope.TELESERVICE_LGT_WAP_URL_NOTI_49168;
+                            break;
                     }
                 }
-                return 0;
-            default:
-                return 0;
+                break;
         }
+        return 0;
     }
 
     public static AudioFormat aidl2api_AudioConfig_AudioFormat(AudioConfig aidl, boolean isInput) {
@@ -320,92 +311,58 @@ public class AidlConversion {
     public static int aidl2api_AudioFormat_AudioFormatEncoding(AudioFormatDescription aidl) {
         switch (aidl.type) {
             case 0:
-                if (aidl.encoding == null || aidl.encoding.isEmpty()) {
-                    return 1;
+                if (aidl.encoding != null && !aidl.encoding.isEmpty()) {
+                    if (!MediaFormat.MIMETYPE_AUDIO_AC3.equals(aidl.encoding)) {
+                        if (!MediaFormat.MIMETYPE_AUDIO_EAC3.equals(aidl.encoding)) {
+                            if (!MediaFormat.MIMETYPE_AUDIO_DTS.equals(aidl.encoding)) {
+                                if (!MediaFormat.MIMETYPE_AUDIO_DTS_HD.equals(aidl.encoding)) {
+                                    if (!"audio/mpeg".equals(aidl.encoding)) {
+                                        if (!MediaFormat.MIMETYPE_AUDIO_AAC_LC.equals(aidl.encoding)) {
+                                            if (!MediaFormat.MIMETYPE_AUDIO_AAC_HE_V1.equals(aidl.encoding)) {
+                                                if (!MediaFormat.MIMETYPE_AUDIO_AAC_HE_V2.equals(aidl.encoding)) {
+                                                    if (!MediaFormat.MIMETYPE_AUDIO_IEC61937.equals(aidl.encoding) || aidl.pcm != 1) {
+                                                        if (!MediaFormat.MIMETYPE_AUDIO_DOLBY_TRUEHD.equals(aidl.encoding)) {
+                                                            if (!MediaFormat.MIMETYPE_AUDIO_AAC_ELD.equals(aidl.encoding)) {
+                                                                if (!MediaFormat.MIMETYPE_AUDIO_AAC_XHE.equals(aidl.encoding)) {
+                                                                    if (!MediaFormat.MIMETYPE_AUDIO_AC4.equals(aidl.encoding)) {
+                                                                        if (!MediaFormat.MIMETYPE_AUDIO_EAC3_JOC.equals(aidl.encoding)) {
+                                                                            if (!MediaFormat.MIMETYPE_AUDIO_DOLBY_MAT.equals(aidl.encoding) && !aidl.encoding.startsWith("audio/vnd.dolby.mat.")) {
+                                                                                if (!MediaFormat.MIMETYPE_AUDIO_OPUS.equals(aidl.encoding)) {
+                                                                                    if (!MediaFormat.MIMETYPE_AUDIO_MPEGH_BL_L3.equals(aidl.encoding)) {
+                                                                                        if (!MediaFormat.MIMETYPE_AUDIO_MPEGH_BL_L4.equals(aidl.encoding)) {
+                                                                                            if (!MediaFormat.MIMETYPE_AUDIO_MPEGH_LC_L3.equals(aidl.encoding)) {
+                                                                                                if (!MediaFormat.MIMETYPE_AUDIO_MPEGH_LC_L4.equals(aidl.encoding)) {
+                                                                                                    if (!MediaFormat.MIMETYPE_AUDIO_DTS_UHD.equals(aidl.encoding)) {
+                                                                                                        if (MediaFormat.MIMETYPE_AUDIO_DRA.equals(aidl.encoding)) {
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                if (MediaFormat.MIMETYPE_AUDIO_AC3.equals(aidl.encoding)) {
-                    return 5;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_EAC3.equals(aidl.encoding)) {
-                    return 6;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_DTS.equals(aidl.encoding)) {
-                    return 7;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_DTS_HD.equals(aidl.encoding)) {
-                    return 8;
-                }
-                if ("audio/mpeg".equals(aidl.encoding)) {
-                    return 9;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_AAC_LC.equals(aidl.encoding)) {
-                    return 10;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_AAC_HE_V1.equals(aidl.encoding)) {
-                    return 11;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_AAC_HE_V2.equals(aidl.encoding)) {
-                    return 12;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_IEC61937.equals(aidl.encoding) && aidl.pcm == 1) {
-                    return 13;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_DOLBY_TRUEHD.equals(aidl.encoding)) {
-                    return 14;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_AAC_ELD.equals(aidl.encoding)) {
-                    return 15;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_AAC_XHE.equals(aidl.encoding)) {
-                    return 16;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_AC4.equals(aidl.encoding)) {
-                    return 17;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_EAC3_JOC.equals(aidl.encoding)) {
-                    return 18;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_DOLBY_MAT.equals(aidl.encoding) || aidl.encoding.startsWith("audio/vnd.dolby.mat.")) {
-                    return 19;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_OPUS.equals(aidl.encoding)) {
-                    return 20;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_MPEGH_BL_L3.equals(aidl.encoding)) {
-                    return 23;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_MPEGH_BL_L4.equals(aidl.encoding)) {
-                    return 24;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_MPEGH_LC_L3.equals(aidl.encoding)) {
-                    return 25;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_MPEGH_LC_L4.equals(aidl.encoding)) {
-                    return 26;
-                }
-                if (MediaFormat.MIMETYPE_AUDIO_DTS_UHD.equals(aidl.encoding)) {
-                    return 27;
-                }
-                return MediaFormat.MIMETYPE_AUDIO_DRA.equals(aidl.encoding) ? 28 : 0;
+                break;
             case 1:
                 switch (aidl.pcm) {
-                    case 0:
-                        return 3;
-                    case 1:
-                        return 2;
-                    case 2:
-                        return 22;
-                    case 3:
-                    case 4:
-                        return 4;
-                    case 5:
-                        return 21;
-                    default:
-                        return 0;
                 }
-            default:
-                return 0;
         }
+        return 0;
     }
 
     public static AudioPort api2aidl_AudioDeviceAttributes_AudioPort(AudioDeviceAttributes attributes) {
@@ -436,7 +393,7 @@ public class AidlConversion {
         return port;
     }
 
-    public static /* synthetic */ ExtraAudioDescriptor[] lambda$api2aidl_AudioDeviceAttributes_AudioPort$1(int x$0) {
+    static /* synthetic */ ExtraAudioDescriptor[] lambda$api2aidl_AudioDeviceAttributes_AudioPort$1(int x$0) {
         return new ExtraAudioDescriptor[x$0];
     }
 
@@ -528,6 +485,7 @@ public class AidlConversion {
                 return aidl;
             case AudioSystem.DEVICE_IN_REMOTE_SUBMIX /* -2147483392 */:
                 aidl.type = 11;
+                aidl.connection = AudioDeviceDescription.CONNECTION_VIRTUAL;
                 return aidl;
             case -2147483136:
                 aidl.type = 14;
@@ -547,6 +505,7 @@ public class AidlConversion {
                 return aidl;
             case -2147475456:
                 aidl.type = 6;
+                aidl.connection = AudioDeviceDescription.VX_SEC_CONNECTION_FM;
                 return aidl;
             case -2147467264:
                 aidl.type = 13;
@@ -663,6 +622,7 @@ public class AidlConversion {
                 return aidl;
             case 32768:
                 aidl.type = 143;
+                aidl.connection = AudioDeviceDescription.CONNECTION_VIRTUAL;
                 return aidl;
             case 65536:
                 aidl.type = 144;
@@ -685,6 +645,7 @@ public class AidlConversion {
                 return aidl;
             case 1048576:
                 aidl.type = 135;
+                aidl.connection = AudioDeviceDescription.VX_SEC_CONNECTION_FM;
                 return aidl;
             case 2097152:
                 aidl.type = 139;

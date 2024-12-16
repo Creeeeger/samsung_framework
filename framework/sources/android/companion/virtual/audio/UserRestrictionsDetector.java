@@ -7,9 +7,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.UserManager;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
-public final class UserRestrictionsDetector extends BroadcastReceiver {
+final class UserRestrictionsDetector extends BroadcastReceiver {
     private static final String TAG = "UserRestrictionsDetector";
     private final Context mContext;
     private boolean mIsUnmuteMicDisallowed;
@@ -17,23 +16,21 @@ public final class UserRestrictionsDetector extends BroadcastReceiver {
     private final UserManager mUserManager;
     private UserRestrictionsCallback mUserRestrictionsCallback;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public interface UserRestrictionsCallback {
+    interface UserRestrictionsCallback {
         void onMicrophoneRestrictionChanged(boolean z);
     }
 
-    public UserRestrictionsDetector(Context context) {
+    UserRestrictionsDetector(Context context) {
         this.mContext = context;
         this.mUserManager = (UserManager) context.getSystemService(UserManager.class);
     }
 
-    public boolean isUnmuteMicrophoneDisallowed() {
+    boolean isUnmuteMicrophoneDisallowed() {
         Bundle bundle = this.mUserManager.getUserRestrictions();
         return bundle.getBoolean(UserManager.DISALLOW_UNMUTE_MICROPHONE);
     }
 
-    public void register(UserRestrictionsCallback callback) {
+    void register(UserRestrictionsCallback callback) {
         this.mUserRestrictionsCallback = callback;
         IntentFilter filter = new IntentFilter();
         filter.addAction(UserManager.ACTION_USER_RESTRICTIONS_CHANGED);
@@ -43,7 +40,7 @@ public final class UserRestrictionsDetector extends BroadcastReceiver {
         }
     }
 
-    public void unregister() {
+    void unregister() {
         if (this.mUserRestrictionsCallback != null) {
             this.mUserRestrictionsCallback = null;
             this.mContext.unregisterReceiver(this);
@@ -60,9 +57,8 @@ public final class UserRestrictionsDetector extends BroadcastReceiver {
                     return;
                 }
                 this.mIsUnmuteMicDisallowed = isUnmuteMicDisallowed;
-                UserRestrictionsCallback userRestrictionsCallback = this.mUserRestrictionsCallback;
-                if (userRestrictionsCallback != null) {
-                    userRestrictionsCallback.onMicrophoneRestrictionChanged(isUnmuteMicDisallowed);
+                if (this.mUserRestrictionsCallback != null) {
+                    this.mUserRestrictionsCallback.onMicrophoneRestrictionChanged(isUnmuteMicDisallowed);
                 }
             }
         }

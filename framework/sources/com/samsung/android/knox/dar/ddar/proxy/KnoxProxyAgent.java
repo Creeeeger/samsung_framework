@@ -9,7 +9,7 @@ import android.util.Log;
 import com.samsung.android.knox.dar.ddar.proxy.IProxyAgent;
 import java.util.HashMap;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxProxyAgent extends Service {
     private static final String TAG = "KnoxProxyAgent";
     Object mPolicyServiceLock = new Object();
@@ -25,12 +25,7 @@ public class KnoxProxyAgent extends Service {
         return new ServiceImpl();
     }
 
-    /* loaded from: classes5.dex */
     private final class ServiceImpl extends IProxyAgent.Stub {
-        /* synthetic */ ServiceImpl(KnoxProxyAgent knoxProxyAgent, ServiceImplIA serviceImplIA) {
-            this();
-        }
-
         private ServiceImpl() {
         }
 

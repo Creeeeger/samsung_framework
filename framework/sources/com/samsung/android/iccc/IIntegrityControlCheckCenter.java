@@ -6,9 +6,11 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IIntegrityControlCheckCenter extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.iccc.IIntegrityControlCheckCenter";
+
+    byte[] getBldpData() throws RemoteException;
 
     byte[] getDeviceInfo(byte[] bArr) throws RemoteException;
 
@@ -22,7 +24,6 @@ public interface IIntegrityControlCheckCenter extends IInterface {
 
     int setSecureData(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IIntegrityControlCheckCenter {
         @Override // com.samsung.android.iccc.IIntegrityControlCheckCenter
         public int getSecureData(int type) throws RemoteException {
@@ -54,14 +55,19 @@ public interface IIntegrityControlCheckCenter extends IInterface {
             return null;
         }
 
+        @Override // com.samsung.android.iccc.IIntegrityControlCheckCenter
+        public byte[] getBldpData() throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IIntegrityControlCheckCenter {
+        static final int TRANSACTION_getBldpData = 7;
         static final int TRANSACTION_getDeviceInfo = 6;
         static final int TRANSACTION_getDeviceStatus = 5;
         static final int TRANSACTION_getSecureData = 1;
@@ -103,6 +109,8 @@ public interface IIntegrityControlCheckCenter extends IInterface {
                     return "getDeviceStatus";
                 case 6:
                     return "getDeviceInfo";
+                case 7:
+                    return "getBldpData";
                 default:
                     return null;
             }
@@ -118,63 +126,64 @@ public interface IIntegrityControlCheckCenter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIntegrityControlCheckCenter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIntegrityControlCheckCenter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIntegrityControlCheckCenter.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getSecureData(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = setSecureData(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    int _result3 = getTrustedBootData();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result4 = setAttestationData(_arg03);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    byte[] _arg12 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result5 = getDeviceStatus(_arg04, _arg12);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result5);
+                    return true;
+                case 6:
+                    byte[] _arg05 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result6 = getDeviceInfo(_arg05);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result6);
+                    return true;
+                case 7:
+                    byte[] _result7 = getBldpData();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result7);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getSecureData(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = setSecureData(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            int _result3 = getTrustedBootData();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            byte[] _arg03 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result4 = setAttestationData(_arg03);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            byte[] _arg12 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result5 = getDeviceStatus(_arg04, _arg12);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result5);
-                            return true;
-                        case 6:
-                            byte[] _arg05 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result6 = getDeviceInfo(_arg05);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IIntegrityControlCheckCenter {
+        private static class Proxy implements IIntegrityControlCheckCenter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -292,11 +301,27 @@ public interface IIntegrityControlCheckCenter extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // com.samsung.android.iccc.IIntegrityControlCheckCenter
+            public byte[] getBldpData() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IIntegrityControlCheckCenter.DESCRIPTOR);
+                    this.mRemote.transact(7, _data, _reply, 0);
+                    _reply.readException();
+                    byte[] _result = _reply.createByteArray();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 5;
+            return 6;
         }
     }
 }

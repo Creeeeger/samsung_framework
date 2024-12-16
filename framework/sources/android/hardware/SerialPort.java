@@ -36,9 +36,8 @@ public class SerialPort {
     }
 
     public void close() throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor = this.mFileDescriptor;
-        if (parcelFileDescriptor != null) {
-            parcelFileDescriptor.close();
+        if (this.mFileDescriptor != null) {
+            this.mFileDescriptor.close();
             this.mFileDescriptor = null;
         }
         native_close();

@@ -10,7 +10,7 @@ import com.samsung.android.sepunion.ISemExclusiveTaskManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemExclusiveTaskManager {
     private static ISemExclusiveTaskManager mService;
     private static SemExclusiveTaskManager sInstance;

@@ -5,27 +5,30 @@ import android.app.IApplicationThread;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.security.keystore.KeyProperties;
 import android.window.IRemoteTransition;
 import com.android.internal.util.AnnotationValidations;
+import com.samsung.android.rune.CoreRune;
 
 /* loaded from: classes4.dex */
-public class RemoteTransition implements Parcelable {
+public final class RemoteTransition implements Parcelable {
     public static final Parcelable.Creator<RemoteTransition> CREATOR = new Parcelable.Creator<RemoteTransition>() { // from class: android.window.RemoteTransition.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteTransition[] newArray(int size) {
             return new RemoteTransition[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteTransition createFromParcel(Parcel in) {
             return new RemoteTransition(in);
         }
     };
+    public static final int FLAG_CAN_BE_FORCE_MERGED_TO_REMOTE_TRANSIT = 1;
     private IApplicationThread mAppThread;
     private String mDebugName;
+    private int mFlags;
     private IRemoteTransition mRemoteTransition;
 
     public RemoteTransition(IRemoteTransition remoteTransition) {
@@ -42,7 +45,7 @@ public class RemoteTransition implements Parcelable {
 
     public RemoteTransition(IRemoteTransition remoteTransition, IApplicationThread appThread, String debugName) {
         this.mRemoteTransition = remoteTransition;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) remoteTransition);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mRemoteTransition);
         this.mAppThread = appThread;
         this.mDebugName = debugName;
     }
@@ -59,9 +62,13 @@ public class RemoteTransition implements Parcelable {
         return this.mDebugName;
     }
 
+    public int getFlags() {
+        return this.mFlags;
+    }
+
     public RemoteTransition setRemoteTransition(IRemoteTransition value) {
         this.mRemoteTransition = value;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) value);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mRemoteTransition);
         return this;
     }
 
@@ -75,8 +82,24 @@ public class RemoteTransition implements Parcelable {
         return this;
     }
 
+    public RemoteTransition setFlags(int flags) {
+        this.mFlags = flags;
+        return this;
+    }
+
+    public static String flagsToString(int flags) {
+        if (flags == 0) {
+            return KeyProperties.DIGEST_NONE;
+        }
+        StringBuilder sb = new StringBuilder();
+        if ((flags & 1) != 0) {
+            sb.append("CAN_BE_FORCE_MERGED_TO_REMOTE_TRANSIT");
+        }
+        return sb.toString();
+    }
+
     public String toString() {
-        return "RemoteTransition { remoteTransition = " + this.mRemoteTransition + ", appThread = " + this.mAppThread + ", debugName = " + this.mDebugName + " }";
+        return "RemoteTransition { remoteTransition = " + this.mRemoteTransition + ", appThread = " + this.mAppThread + ", debugName = " + this.mDebugName + (CoreRune.FW_SHELL_TRANSITION_MERGE ? "flags =" + flagsToString(this.mFlags) : null) + " }";
     }
 
     @Override // android.os.Parcelable
@@ -87,13 +110,14 @@ public class RemoteTransition implements Parcelable {
         }
         dest.writeByte(flg);
         dest.writeStrongInterface(this.mRemoteTransition);
-        IApplicationThread iApplicationThread = this.mAppThread;
-        if (iApplicationThread != null) {
-            dest.writeStrongInterface(iApplicationThread);
+        if (this.mAppThread != null) {
+            dest.writeStrongInterface(this.mAppThread);
         }
-        String str = this.mDebugName;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mDebugName != null) {
+            dest.writeString(this.mDebugName);
+        }
+        if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
+            dest.writeInt(this.mFlags);
         }
     }
 
@@ -108,29 +132,11 @@ public class RemoteTransition implements Parcelable {
         IApplicationThread appThread = (flg & 2) == 0 ? null : IApplicationThread.Stub.asInterface(in.readStrongBinder());
         String debugName = (flg & 4) == 0 ? null : in.readString();
         this.mRemoteTransition = remoteTransition;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) remoteTransition);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mRemoteTransition);
         this.mAppThread = appThread;
         this.mDebugName = debugName;
-    }
-
-    /* renamed from: android.window.RemoteTransition$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RemoteTransition> {
-        AnonymousClass1() {
+        if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
+            this.mFlags = in.readInt();
         }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteTransition[] newArray(int size) {
-            return new RemoteTransition[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteTransition createFromParcel(Parcel in) {
-            return new RemoteTransition(in);
-        }
-    }
-
-    @Deprecated
-    private void __metadata() {
     }
 }

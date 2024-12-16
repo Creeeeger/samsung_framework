@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendAtsc3Settings implements Parcelable {
     public static final Parcelable.Creator<FrontendAtsc3Settings> CREATOR = new Parcelable.Creator<FrontendAtsc3Settings>() { // from class: android.hardware.tv.tuner.FrontendAtsc3Settings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendAtsc3Settings createFromParcel(Parcel _aidl_source) {
             FrontendAtsc3Settings _aidl_out = new FrontendAtsc3Settings();
@@ -17,6 +15,7 @@ public class FrontendAtsc3Settings implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendAtsc3Settings[] newArray(int _aidl_size) {
             return new FrontendAtsc3Settings[_aidl_size];
@@ -28,25 +27,6 @@ public class FrontendAtsc3Settings implements Parcelable {
     public int bandwidth = 0;
     public int inversion = 0;
     public byte demodOutputFormat = 0;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendAtsc3Settings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendAtsc3Settings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendAtsc3Settings createFromParcel(Parcel _aidl_source) {
-            FrontendAtsc3Settings _aidl_out = new FrontendAtsc3Settings();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendAtsc3Settings[] newArray(int _aidl_size) {
-            return new FrontendAtsc3Settings[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

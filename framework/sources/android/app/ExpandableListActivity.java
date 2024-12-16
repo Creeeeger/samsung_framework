@@ -31,7 +31,7 @@ public class ExpandableListActivity extends Activity implements View.OnCreateCon
     }
 
     @Override // android.app.Activity
-    public void onRestoreInstanceState(Bundle state) {
+    protected void onRestoreInstanceState(Bundle state) {
         ensureList();
         super.onRestoreInstanceState(state);
     }
@@ -40,13 +40,12 @@ public class ExpandableListActivity extends Activity implements View.OnCreateCon
     public void onContentChanged() {
         super.onContentChanged();
         View emptyView = findViewById(16908292);
-        ExpandableListView expandableListView = (ExpandableListView) findViewById(16908298);
-        this.mList = expandableListView;
-        if (expandableListView == null) {
+        this.mList = (ExpandableListView) findViewById(16908298);
+        if (this.mList == null) {
             throw new RuntimeException("Your content must have a ExpandableListView whose id attribute is 'android.R.id.list'");
         }
         if (emptyView != null) {
-            expandableListView.setEmptyView(emptyView);
+            this.mList.setEmptyView(emptyView);
         }
         this.mList.setOnChildClickListener(this);
         this.mList.setOnGroupExpandListener(this);

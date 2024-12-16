@@ -3,7 +3,7 @@ package android.mtp;
 import com.android.internal.util.Preconditions;
 import dalvik.system.VMRuntime;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class MtpObjectInfo {
     private int mAssociationDesc;
     private int mAssociationType;
@@ -25,10 +25,6 @@ public final class MtpObjectInfo {
     private int mThumbFormat;
     private int mThumbPixHeight;
     private int mThumbPixWidth;
-
-    /* synthetic */ MtpObjectInfo(MtpObjectInfoIA mtpObjectInfoIA) {
-        this();
-    }
 
     private MtpObjectInfo() {
         this.mName = "";
@@ -155,20 +151,15 @@ public final class MtpObjectInfo {
         return this.mKeywords;
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
-        private MtpObjectInfo mObjectInfo;
+        private MtpObjectInfo mObjectInfo = new MtpObjectInfo();
 
         public Builder() {
-            MtpObjectInfo mtpObjectInfo = new MtpObjectInfo();
-            this.mObjectInfo = mtpObjectInfo;
-            mtpObjectInfo.mHandle = -1;
+            this.mObjectInfo.mHandle = -1;
         }
 
         public Builder(MtpObjectInfo objectInfo) {
-            MtpObjectInfo mtpObjectInfo = new MtpObjectInfo();
-            this.mObjectInfo = mtpObjectInfo;
-            mtpObjectInfo.mHandle = -1;
+            this.mObjectInfo.mHandle = -1;
             this.mObjectInfo.mAssociationDesc = objectInfo.mAssociationDesc;
             this.mObjectInfo.mAssociationType = objectInfo.mAssociationType;
             this.mObjectInfo.mCompressedSize = objectInfo.mCompressedSize;
@@ -307,6 +298,7 @@ public final class MtpObjectInfo {
         return value < 0 ? value + 4294967296L : value;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int longToUint32(long value, String valueName) {
         Preconditions.checkArgumentInRange(value, 0L, 4294967295L, valueName);
         return (int) value;

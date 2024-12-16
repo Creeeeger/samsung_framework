@@ -10,7 +10,7 @@ import com.android.ims.internal.uce.common.StatusCode;
 import com.android.ims.internal.uce.common.UceLong;
 import com.android.ims.internal.uce.options.IOptionsListener;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IOptionsService extends IInterface {
     StatusCode addListener(int i, IOptionsListener iOptionsListener, UceLong uceLong) throws RemoteException;
 
@@ -28,7 +28,6 @@ public interface IOptionsService extends IInterface {
 
     StatusCode setMyInfo(int i, CapInfo capInfo, int i2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IOptionsService {
         @Override // com.android.ims.internal.uce.options.IOptionsService
         public StatusCode getVersion(int optionsServiceHandle) throws RemoteException {
@@ -76,7 +75,6 @@ public interface IOptionsService extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IOptionsService {
         public static final String DESCRIPTOR = "com.android.ims.internal.uce.options.IOptionsService";
         static final int TRANSACTION_addListener = 2;
@@ -141,93 +139,89 @@ public interface IOptionsService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result = getVersion(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    IOptionsListener _arg1 = IOptionsListener.Stub.asInterface(data.readStrongBinder());
+                    UceLong _arg2 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    data.enforceNoDataAvail();
+                    StatusCode _result2 = addListener(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    reply.writeTypedObject(_arg2, 1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    UceLong _arg12 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    data.enforceNoDataAvail();
+                    StatusCode _result3 = removeListener(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    CapInfo _arg13 = (CapInfo) data.readTypedObject(CapInfo.CREATOR);
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result4 = setMyInfo(_arg04, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result5 = getMyInfo(_arg05, _arg14);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg15 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result6 = getContactCap(_arg06, _arg15, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String[] _arg16 = data.createStringArray();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result7 = getContactListCap(_arg07, _arg16, _arg24);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg25 = data.readInt();
+                    String _arg3 = data.readString();
+                    OptionsCapInfo _arg4 = (OptionsCapInfo) data.readTypedObject(OptionsCapInfo.CREATOR);
+                    boolean _arg5 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    StatusCode _result8 = responseIncomingOptions(_arg08, _arg17, _arg25, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result = getVersion(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            IOptionsListener _arg1 = IOptionsListener.Stub.asInterface(data.readStrongBinder());
-                            UceLong _arg2 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            data.enforceNoDataAvail();
-                            StatusCode _result2 = addListener(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            reply.writeTypedObject(_arg2, 1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            UceLong _arg12 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            data.enforceNoDataAvail();
-                            StatusCode _result3 = removeListener(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            CapInfo _arg13 = (CapInfo) data.readTypedObject(CapInfo.CREATOR);
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result4 = setMyInfo(_arg04, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result5 = getMyInfo(_arg05, _arg14);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg15 = data.readString();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result6 = getContactCap(_arg06, _arg15, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            String[] _arg16 = data.createStringArray();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result7 = getContactListCap(_arg07, _arg16, _arg24);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg25 = data.readInt();
-                            String _arg3 = data.readString();
-                            OptionsCapInfo _arg4 = (OptionsCapInfo) data.readTypedObject(OptionsCapInfo.CREATOR);
-                            boolean _arg5 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            StatusCode _result8 = responseIncomingOptions(_arg08, _arg17, _arg25, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IOptionsService {
+        private static class Proxy implements IOptionsService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

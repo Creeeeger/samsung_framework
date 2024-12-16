@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Cdma2000RegistrationInfo implements Parcelable {
     public static final Parcelable.Creator<Cdma2000RegistrationInfo> CREATOR = new Parcelable.Creator<Cdma2000RegistrationInfo>() { // from class: android.hardware.radio.network.Cdma2000RegistrationInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Cdma2000RegistrationInfo createFromParcel(Parcel _aidl_source) {
             Cdma2000RegistrationInfo _aidl_out = new Cdma2000RegistrationInfo();
@@ -18,6 +16,7 @@ public class Cdma2000RegistrationInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Cdma2000RegistrationInfo[] newArray(int _aidl_size) {
             return new Cdma2000RegistrationInfo[_aidl_size];
@@ -30,25 +29,6 @@ public class Cdma2000RegistrationInfo implements Parcelable {
     public int roamingIndicator = 0;
     public int systemIsInPrl = 0;
     public int defaultRoamingIndicator = 0;
-
-    /* renamed from: android.hardware.radio.network.Cdma2000RegistrationInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Cdma2000RegistrationInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Cdma2000RegistrationInfo createFromParcel(Parcel _aidl_source) {
-            Cdma2000RegistrationInfo _aidl_out = new Cdma2000RegistrationInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Cdma2000RegistrationInfo[] newArray(int _aidl_size) {
-            return new Cdma2000RegistrationInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -127,7 +107,7 @@ public class Cdma2000RegistrationInfo implements Parcelable {
         _aidl_sj.add("roamingIndicator: " + this.roamingIndicator);
         _aidl_sj.add("systemIsInPrl: " + this.systemIsInPrl);
         _aidl_sj.add("defaultRoamingIndicator: " + this.defaultRoamingIndicator);
-        return "android.hardware.radio.network.Cdma2000RegistrationInfo" + _aidl_sj.toString();
+        return "Cdma2000RegistrationInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

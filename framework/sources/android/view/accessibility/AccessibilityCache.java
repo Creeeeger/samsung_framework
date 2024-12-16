@@ -19,6 +19,7 @@ public class AccessibilityCache {
     private static final boolean VERBOSE;
     private final AccessibilityNodeRefresher mAccessibilityNodeRefresher;
     private boolean mIsAllWindowsCached;
+    private OnNodeAddedListener mOnNodeAddedListener;
     private boolean mEnabled = true;
     private final Object mLock = new Object();
     private long mAccessibilityFocus = 2147483647L;
@@ -29,6 +30,10 @@ public class AccessibilityCache {
     private final SparseArray<SparseArray<AccessibilityWindowInfo>> mWindowCacheByDisplay = new SparseArray<>();
     private final SparseArray<LongSparseArray<AccessibilityNodeInfo>> mNodeCache = new SparseArray<>();
     private final SparseArray<AccessibilityWindowInfo> mTempWindowArray = new SparseArray<>();
+
+    public interface OnNodeAddedListener {
+        void onNodeAdded(AccessibilityNodeInfo accessibilityNodeInfo);
+    }
 
     static {
         DEBUG = Log.isLoggable(LOG_TAG, 3) && Build.IS_DEBUGGABLE;
@@ -114,17 +119,16 @@ public class AccessibilityCache {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:16:0x0040. Please report as an issue. */
-    /* JADX WARN: Removed duplicated region for block: B:20:0x0108  */
-    /* JADX WARN: Removed duplicated region for block: B:27:0x0120  */
-    /* JADX WARN: Removed duplicated region for block: B:29:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:20:0x010c  */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x0126  */
+    /* JADX WARN: Removed duplicated region for block: B:30:? A[RETURN, SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void onAccessibilityEvent(android.view.accessibility.AccessibilityEvent r12) {
+    public void onAccessibilityEvent(android.view.accessibility.AccessibilityEvent r11) {
         /*
-            Method dump skipped, instructions count: 342
+            Method dump skipped, instructions count: 348
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.view.accessibility.AccessibilityCache.onAccessibilityEvent(android.view.accessibility.AccessibilityEvent):void");
@@ -287,9 +291,8 @@ public class AccessibilityCache {
             AccessibilityNodeInfo clone = new AccessibilityNodeInfo(info);
             nodes.put(sourceId, clone);
             if (clone.isAccessibilityFocused()) {
-                long j = this.mAccessibilityFocus;
-                if (j != 2147483647L && j != sourceId) {
-                    removeCachedNodeLocked(windowId, j);
+                if (this.mAccessibilityFocus != 2147483647L && this.mAccessibilityFocus != sourceId) {
+                    removeCachedNodeLocked(windowId, this.mAccessibilityFocus);
                 }
                 this.mAccessibilityFocus = sourceId;
                 this.mAccessibilityFocusedWindow = windowId;
@@ -300,6 +303,9 @@ public class AccessibilityCache {
             if (clone.isFocused()) {
                 this.mInputFocus = sourceId;
                 this.mInputFocusWindow = windowId;
+            }
+            if (this.mOnNodeAddedListener != null) {
+                this.mOnNodeAddedListener.onNodeAdded(clone);
             }
         }
     }
@@ -624,7 +630,18 @@ public class AccessibilityCache {
         }
     }
 
-    /* loaded from: classes4.dex */
+    public void registerOnNodeAddedListener(OnNodeAddedListener listener) {
+        synchronized (this.mLock) {
+            this.mOnNodeAddedListener = listener;
+        }
+    }
+
+    public void clearOnNodeAddedListener() {
+        synchronized (this.mLock) {
+            this.mOnNodeAddedListener = null;
+        }
+    }
+
     public static class AccessibilityNodeRefresher {
         public boolean refreshNode(AccessibilityNodeInfo info, boolean bypassCache) {
             return info.refresh(null, bypassCache);

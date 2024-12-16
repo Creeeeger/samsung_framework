@@ -357,6 +357,7 @@ public interface SemOemFunctions {
     public static final int OEM_MISC_GET_RADIO_FREQ = 134;
     public static final int OEM_MISC_GET_RF_MIPI_INFO = 129;
     public static final int OEM_MISC_GET_RIL_STATUS = 160;
+    public static final int OEM_MISC_GET_SAT_IMEI = 174;
     public static final int OEM_MISC_GET_SERIALNUMBER = 17;
     public static final int OEM_MISC_GET_SIB_INFO = 102;
     public static final int OEM_MISC_GET_SIM_CHECK = 161;
@@ -368,7 +369,9 @@ public interface SemOemFunctions {
     public static final int OEM_MISC_SECURE_SIMLOCK = 99;
     public static final int OEM_MISC_SEND_AM = 128;
     public static final int OEM_MISC_SEND_CP_FEATURE = 120;
+    public static final int OEM_MISC_SEND_RILD_BOOT_TYPE = 171;
     public static final int OEM_MISC_SEND_SVN = 121;
+    public static final int OEM_MISC_SEND_UAI_INFO = 172;
     public static final int OEM_MISC_SET_1X_SVC_DELAY_TIMER = 44;
     public static final int OEM_MISC_SET_ANTENNA_TEST = 7;
     public static final int OEM_MISC_SET_BLK_CP_THERMAL = 168;
@@ -383,6 +386,7 @@ public interface SemOemFunctions {
     public static final int OEM_MISC_SET_GRIP_SENSOR_INFO = 113;
     public static final int OEM_MISC_SET_LOGGING_TIME = 2;
     public static final int OEM_MISC_SET_MPSR_TIMER = 34;
+    public static final int OEM_MISC_SET_NB_IOT_NTN_SMS_SUPPORT = 173;
     public static final int OEM_MISC_SET_PERFORMANCE_MODE = 167;
     public static final int OEM_MISC_SET_PLMN_BARRING_TIMER = 132;
     public static final int OEM_MISC_SET_RMPC = 50;
@@ -399,6 +403,7 @@ public interface SemOemFunctions {
     public static final int OEM_MMS_PROVISION_GET_ITEM_DATA = 1;
     public static final int OEM_MODEM_LOG = 18;
     public static final int OEM_NET_CANCEL_AVAILABLE_NETWORK = 3;
+    public static final int OEM_NET_CANCEL_QUERY_CSG_LIST = 150;
     public static final int OEM_NET_CLEAR_LTE_SCAN_FILE = 33;
     public static final int OEM_NET_CONTROL_MEASUREMENT_REPORT = 66;
     public static final int OEM_NET_FORCE_UPDATE_CELL_INFO = 125;
@@ -433,6 +438,7 @@ public interface SemOemFunctions {
     public static final int OEM_NET_SET_AUTOMATIC_SELECTION_BY_EFCSP = 9;
     public static final int OEM_NET_SET_BAND_MODE = 8;
     public static final int OEM_NET_SET_CALL_PREF_CHANGE = 140;
+    public static final int OEM_NET_SET_DEPRIORITIZE_NR5G = 64;
     public static final int OEM_NET_SET_DEPRIORITIZE_NR5G_W2L_HO = 144;
     public static final int OEM_NET_SET_DRX = 45;
     public static final int OEM_NET_SET_EXTENDED_BAND_MODE = 49;
@@ -449,9 +455,11 @@ public interface SemOemFunctions {
     public static final int OEM_NET_SET_MANUAL_SELECTION = 2;
     public static final int OEM_NET_SET_MAX_SCAN_TIME = 119;
     public static final int OEM_NET_SET_MMS_MODE = 127;
+    public static final int OEM_NET_SET_NETWORK_SELECT_AUTO_IMMEDIATELY = 149;
     public static final int OEM_NET_SET_NETWORK_TYPE = 130;
     public static final int OEM_NET_SET_NR5G_FULL_VOICE_SUPPORT = 134;
     public static final int OEM_NET_SET_NR_DISABLE_MODE = 131;
+    public static final int OEM_NET_SET_SATELLITE_PLMN_LIST = 146;
     public static final int OEM_NET_SET_SERVICE_DOMAIN = 4;
     public static final int OEM_NET_SET_START_IMS_REG = 136;
     public static final int OEM_NET_SET_STOP_IMS_REG = 137;
@@ -531,6 +539,7 @@ public interface SemOemFunctions {
     public static final int OEM_SET_TIME_SERVICE_REQUEST = 33;
     public static final int OEM_SIM_DETECT_REQUEST = 34;
     public static final int OEM_SMS_BLOCK_CMAS = 2;
+    public static final int OEM_SMS_EMERGENCY_CALLBACK_MODE = 8;
     public static final int OEM_SMS_EMERGENCY_NETWORK_CONTROL = 7;
     public static final int OEM_SMS_NSRI_FEATURE_ON = 5;
     public static final int OEM_SMS_PP_HANDLE_FOR_STK = 3;

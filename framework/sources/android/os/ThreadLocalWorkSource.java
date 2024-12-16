@@ -12,7 +12,7 @@ public final class ThreadLocalWorkSource {
         }
     });
 
-    public static /* synthetic */ int[] lambda$static$0() {
+    static /* synthetic */ int[] lambda$static$0() {
         return new int[]{-1};
     }
 

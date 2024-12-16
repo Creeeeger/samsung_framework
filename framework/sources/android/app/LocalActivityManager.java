@@ -34,8 +34,7 @@ public class LocalActivityManager {
     private int mCurState = 1;
     private final ActivityThread mActivityThread = ActivityThread.currentActivityThread();
 
-    /* loaded from: classes.dex */
-    public static class LocalActivityRecord extends Binder {
+    private static class LocalActivityRecord extends Binder {
         Activity activity;
         ActivityInfo activityInfo;
         int curState = 0;
@@ -78,9 +77,9 @@ public class LocalActivityManager {
                         this.mActivityThread.performRestartActivity(clientRecord, true);
                         this.mActivityThread.performResumeActivity(clientRecord, true, "moveToState-CREATED");
                         r.curState = 4;
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 3:
                     if (desiredState == 4) {
                         this.mActivityThread.performResumeActivity(clientRecord, true, "moveToState-STARTED");
@@ -90,9 +89,9 @@ public class LocalActivityManager {
                     if (desiredState == 2) {
                         this.mActivityThread.performStopActivity(r, false, "moveToState-STARTED");
                         r.curState = 2;
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 4:
                     if (desiredState == 3) {
                         performPause(r, this.mFinishing);
@@ -102,12 +101,11 @@ public class LocalActivityManager {
                         performPause(r, this.mFinishing);
                         this.mActivityThread.performStopActivity(r, false, "moveToState-RESUMED");
                         r.curState = 2;
-                        return;
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
+            return;
         }
         HashMap<String, Object> lastNonConfigurationInstances = this.mParent.getLastNonConfigurationChildInstances();
         if (lastNonConfigurationInstances == null) {
@@ -223,7 +221,7 @@ public class LocalActivityManager {
         }
         ActivityThread.ActivityClientRecord clientRecord = this.mActivityThread.getActivityClient(r);
         if (clientRecord != null) {
-            this.mActivityThread.performDestroyActivity(clientRecord, finish, 0, false, "LocalActivityManager::performDestroy");
+            this.mActivityThread.performDestroyActivity(clientRecord, finish, false, "LocalActivityManager::performDestroy");
         }
         r.activity = null;
         r.window = null;
@@ -248,17 +246,15 @@ public class LocalActivityManager {
     }
 
     public Activity getCurrentActivity() {
-        LocalActivityRecord localActivityRecord = this.mResumed;
-        if (localActivityRecord != null) {
-            return localActivityRecord.activity;
+        if (this.mResumed != null) {
+            return this.mResumed.activity;
         }
         return null;
     }
 
     public String getCurrentId() {
-        LocalActivityRecord localActivityRecord = this.mResumed;
-        if (localActivityRecord != null) {
-            return localActivityRecord.id;
+        if (this.mResumed != null) {
+            return this.mResumed.id;
         }
         return null;
     }
@@ -316,16 +312,14 @@ public class LocalActivityManager {
     public void dispatchResume() {
         this.mCurState = 4;
         if (this.mSingleMode) {
-            LocalActivityRecord localActivityRecord = this.mResumed;
-            if (localActivityRecord != null) {
-                moveToState(localActivityRecord, 4);
-                return;
+            if (this.mResumed != null) {
+                moveToState(this.mResumed, 4);
             }
-            return;
-        }
-        int N = this.mActivityArray.size();
-        for (int i = 0; i < N; i++) {
-            moveToState(this.mActivityArray.get(i), 4);
+        } else {
+            int N = this.mActivityArray.size();
+            for (int i = 0; i < N; i++) {
+                moveToState(this.mActivityArray.get(i), 4);
+            }
         }
     }
 
@@ -335,9 +329,8 @@ public class LocalActivityManager {
         }
         this.mCurState = 3;
         if (this.mSingleMode) {
-            LocalActivityRecord localActivityRecord = this.mResumed;
-            if (localActivityRecord != null) {
-                moveToState(localActivityRecord, 3);
+            if (this.mResumed != null) {
+                moveToState(this.mResumed, 3);
                 return;
             }
             return;
@@ -386,7 +379,7 @@ public class LocalActivityManager {
             LocalActivityRecord r = this.mActivityArray.get(i);
             ActivityThread.ActivityClientRecord clientRecord = this.mActivityThread.getActivityClient(r);
             if (clientRecord != null) {
-                this.mActivityThread.performDestroyActivity(clientRecord, finishing, 0, false, "LocalActivityManager::dispatchDestroy");
+                this.mActivityThread.performDestroyActivity(clientRecord, finishing, false, "LocalActivityManager::dispatchDestroy");
             }
         }
         this.mActivities.clear();

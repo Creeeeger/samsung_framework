@@ -34,34 +34,17 @@ public abstract class DialogPreference extends Preference implements DialogInter
     private CharSequence mPositiveButtonText;
     private int mWhichButtonClicked;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.DialogPreference$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            DialogPreference.this.mDialog.dismiss();
-        }
-    }
-
     public DialogPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mDismissRunnable = new Runnable() { // from class: android.preference.DialogPreference.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 DialogPreference.this.mDialog.dismiss();
             }
         };
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DialogPreference, defStyleAttr, defStyleRes);
-        String string = a.getString(0);
-        this.mDialogTitle = string;
-        if (string == null) {
+        this.mDialogTitle = a.getString(0);
+        if (this.mDialogTitle == null) {
             this.mDialogTitle = getTitle();
         }
         this.mDialogMessage = a.getString(1);
@@ -152,18 +135,17 @@ public abstract class DialogPreference extends Preference implements DialogInter
         return this.mDialogLayoutResId;
     }
 
-    public void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
     }
 
     @Override // android.preference.Preference
-    public void onClick() {
-        Dialog dialog = this.mDialog;
-        if (dialog == null || !dialog.isShowing()) {
+    protected void onClick() {
+        if (this.mDialog == null || !this.mDialog.isShowing()) {
             showDialog(null);
         }
     }
 
-    public void showDialog(Bundle state) {
+    protected void showDialog(Bundle state) {
         Context context = getContext();
         this.mWhichButtonClicked = -2;
         this.mBuilder = new AlertDialog.Builder(context).setTitle(this.mDialogTitle).setIcon(this.mDialogIcon).setPositiveButton(this.mPositiveButtonText, this).setNegativeButton(this.mNegativeButtonText, this);
@@ -182,9 +164,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
             dialog.onRestoreInstanceState(state);
         }
         dialog.setOnShowListener(new DialogInterface.OnShowListener() { // from class: android.preference.DialogPreference.2
-            AnonymousClass2() {
-            }
-
             @Override // android.content.DialogInterface.OnShowListener
             public void onShow(DialogInterface dialog2) {
                 DialogPreference.this.removeDismissCallbacks();
@@ -198,27 +177,14 @@ public abstract class DialogPreference extends Preference implements DialogInter
         }
     }
 
-    /* renamed from: android.preference.DialogPreference$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements DialogInterface.OnShowListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.content.DialogInterface.OnShowListener
-        public void onShow(DialogInterface dialog2) {
-            DialogPreference.this.removeDismissCallbacks();
-        }
-    }
-
     private View getDecorView() {
-        Dialog dialog = this.mDialog;
-        if (dialog != null && dialog.getWindow() != null) {
+        if (this.mDialog != null && this.mDialog.getWindow() != null) {
             return this.mDialog.getWindow().getDecorView();
         }
         return null;
     }
 
-    public void postDismiss() {
+    void postDismiss() {
         removeDismissCallbacks();
         View decorView = getDecorView();
         if (decorView != null) {
@@ -226,6 +192,7 @@ public abstract class DialogPreference extends Preference implements DialogInter
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void removeDismissCallbacks() {
         View decorView = getDecorView();
         if (decorView != null) {
@@ -241,14 +208,14 @@ public abstract class DialogPreference extends Preference implements DialogInter
         return inflater.inflate(this.mDialogLayoutResId, (ViewGroup) null);
     }
 
-    public void onBindDialogView(View view) {
+    protected void onBindDialogView(View view) {
         View dialogMessageView = view.findViewById(16908299);
         if (dialogMessageView != null) {
             CharSequence message = getDialogMessage();
             int newVisibility = 8;
             if (!TextUtils.isEmpty(message)) {
                 if (dialogMessageView instanceof TextView) {
-                    ((TextView) dialogMessageView).setText(message);
+                    ((TextView) dialogMessageView).lambda$setTextAsync$0(message);
                 }
                 newVisibility = 0;
             }
@@ -271,7 +238,7 @@ public abstract class DialogPreference extends Preference implements DialogInter
         onDialogClosed(this.mWhichButtonClicked == -1);
     }
 
-    public void onDialogClosed(boolean positiveResult) {
+    protected void onDialogClosed(boolean positiveResult) {
     }
 
     public Dialog getDialog() {
@@ -280,18 +247,16 @@ public abstract class DialogPreference extends Preference implements DialogInter
 
     @Override // android.preference.PreferenceManager.OnActivityDestroyListener
     public void onActivityDestroy() {
-        Dialog dialog = this.mDialog;
-        if (dialog == null || !dialog.isShowing()) {
+        if (this.mDialog == null || !this.mDialog.isShowing()) {
             return;
         }
         this.mDialog.dismiss();
     }
 
     @Override // android.preference.Preference
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-        Dialog dialog = this.mDialog;
-        if (dialog == null || !dialog.isShowing()) {
+        if (this.mDialog == null || !this.mDialog.isShowing()) {
             return superState;
         }
         SavedState myState = new SavedState(superState);
@@ -301,7 +266,7 @@ public abstract class DialogPreference extends Preference implements DialogInter
     }
 
     @Override // android.preference.Preference
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
@@ -313,17 +278,15 @@ public abstract class DialogPreference extends Preference implements DialogInter
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class SavedState extends Preference.BaseSavedState {
+    private static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.DialogPreference.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -347,23 +310,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
 
         public SavedState(Parcelable superState) {
             super(superState);
-        }
-
-        /* renamed from: android.preference.DialogPreference$SavedState$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 }

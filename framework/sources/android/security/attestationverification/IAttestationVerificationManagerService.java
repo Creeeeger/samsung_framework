@@ -17,7 +17,6 @@ public interface IAttestationVerificationManagerService extends IInterface {
 
     void verifyToken(VerificationToken verificationToken, ParcelDuration parcelDuration, AndroidFuture androidFuture) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IAttestationVerificationManagerService {
         @Override // android.security.attestationverification.IAttestationVerificationManagerService
         public void verifyAttestation(AttestationProfile profile, int localBindingType, Bundle requirements, byte[] attestation, AndroidFuture resultCallback) throws RemoteException {
@@ -33,7 +32,6 @@ public interface IAttestationVerificationManagerService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IAttestationVerificationManagerService {
         static final int TRANSACTION_verifyAttestation = 1;
         static final int TRANSACTION_verifyToken = 2;
@@ -79,37 +77,33 @@ public interface IAttestationVerificationManagerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAttestationVerificationManagerService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAttestationVerificationManagerService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAttestationVerificationManagerService.DESCRIPTOR);
+                case 1:
+                    AttestationProfile _arg0 = (AttestationProfile) data.readTypedObject(AttestationProfile.CREATOR);
+                    int _arg1 = data.readInt();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    byte[] _arg3 = data.createByteArray();
+                    AndroidFuture _arg4 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    verifyAttestation(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    VerificationToken _arg02 = (VerificationToken) data.readTypedObject(VerificationToken.CREATOR);
+                    ParcelDuration _arg12 = (ParcelDuration) data.readTypedObject(ParcelDuration.CREATOR);
+                    AndroidFuture _arg22 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    verifyToken(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AttestationProfile _arg0 = (AttestationProfile) data.readTypedObject(AttestationProfile.CREATOR);
-                            int _arg1 = data.readInt();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            byte[] _arg3 = data.createByteArray();
-                            AndroidFuture _arg4 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            verifyAttestation(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            VerificationToken _arg02 = (VerificationToken) data.readTypedObject(VerificationToken.CREATOR);
-                            ParcelDuration _arg12 = (ParcelDuration) data.readTypedObject(ParcelDuration.CREATOR);
-                            AndroidFuture _arg22 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            verifyToken(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IAttestationVerificationManagerService {
+        private static class Proxy implements IAttestationVerificationManagerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,7 +8,7 @@ import com.samsung.android.sepunion.SemUnionManager;
 import com.samsung.android.sepunion.UnionConstants;
 import com.samsung.android.service.HermesService.IHermesService;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class HermesServiceManager {
     public static final int ERR_SERVICE_ERROR = -10000;
     public static final int NO_ERROR = 0;
@@ -30,20 +30,61 @@ public final class HermesServiceManager {
     public HermesServiceManager(Context context) {
         this.mContext = context;
         if (bindHermesService() == null) {
-            Log.i(TAG, context.getPackageName() + " It Can't connects to HermesService.");
+            Log.i(TAG, this.mContext.getPackageName() + " It Can't connects to HermesService.");
         } else {
-            Log.i(TAG, context.getPackageName() + " It connects to HermesService.");
+            Log.i(TAG, this.mContext.getPackageName() + " It connects to HermesService.");
         }
-        PowerManager pm = (PowerManager) context.getSystemService(PowerManager.class);
+        PowerManager pm = (PowerManager) this.mContext.getSystemService(PowerManager.class);
         this.mWakeLock = pm.newWakeLock(1, TAG);
+    }
+
+    public byte[] hermesSelftest(String cmd) {
+        byte[] ret;
+        Log.i(TAG, "hermesSelftest() is called.");
+        if (this.mWakeLock != null) {
+            if (!this.mWakeLock.isHeld()) {
+                Log.i(TAG, "hermesSelftest acquire wakelock.");
+                this.mWakeLock.acquire();
+            } else {
+                Log.i(TAG, "hermesSelftest already acquried wakelock.");
+            }
+        } else {
+            Log.e(TAG, "hermesSelftest start mWakeLock is null.");
+        }
+        IHermesService mBinder = bindHermesService();
+        if (mBinder != null) {
+            try {
+                ret = mBinder.hermesSelftest2(cmd);
+            } catch (NullPointerException npe) {
+                Log.e(TAG, "Failed to hermesSelftest service.");
+                npe.printStackTrace();
+                ret = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                ret = null;
+            }
+        } else {
+            Log.e(TAG, "bindHermesService is null");
+            ret = null;
+        }
+        if (this.mWakeLock != null) {
+            if (this.mWakeLock.isHeld()) {
+                Log.i(TAG, "hermesSelftest release wakelock.");
+                this.mWakeLock.release();
+            } else {
+                Log.i(TAG, "hermesSelftest already released wakelock.");
+            }
+        } else {
+            Log.e(TAG, "hermesSelftest end mWakeLock is null.");
+        }
+        return ret;
     }
 
     public byte[] hermesSelftest() {
         byte[] ret;
         Log.i(TAG, "hermesSelftest() is called.");
-        PowerManager.WakeLock wakeLock = this.mWakeLock;
-        if (wakeLock != null) {
-            if (!wakeLock.isHeld()) {
+        if (this.mWakeLock != null) {
+            if (!this.mWakeLock.isHeld()) {
                 Log.i(TAG, "hermesSelftest acquire wakelock.");
                 this.mWakeLock.acquire();
             } else {
@@ -68,9 +109,8 @@ public final class HermesServiceManager {
             Log.e(TAG, "bindHermesService is null");
             ret = null;
         }
-        PowerManager.WakeLock wakeLock2 = this.mWakeLock;
-        if (wakeLock2 != null) {
-            if (wakeLock2.isHeld()) {
+        if (this.mWakeLock != null) {
+            if (this.mWakeLock.isHeld()) {
                 Log.i(TAG, "hermesSelftest release wakelock.");
                 this.mWakeLock.release();
             } else {
@@ -145,6 +185,120 @@ public final class HermesServiceManager {
         if (mBinder != null) {
             try {
                 return mBinder.hermesUpdateCryptoFW();
+            } catch (NullPointerException npe) {
+                Log.e(TAG, "Failed to connect service.");
+                npe.printStackTrace();
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        Log.e(TAG, "bindHermesService is null");
+        return null;
+    }
+
+    public byte[] hermesUpdateApplet() {
+        Log.i(TAG, "hermesUpdateApplet() is called.");
+        IHermesService mBinder = bindHermesService();
+        if (mBinder != null) {
+            try {
+                return mBinder.hermesUpdateApplet();
+            } catch (NullPointerException npe) {
+                Log.e(TAG, "Failed to connect service.");
+                npe.printStackTrace();
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        Log.e(TAG, "bindHermesService is null");
+        return null;
+    }
+
+    public int open() {
+        Log.i(TAG, "open() is called.");
+        IHermesService mBinder = bindHermesService();
+        if (mBinder != null) {
+            try {
+                return mBinder.hermesSecureHwPowerOn();
+            } catch (NullPointerException npe) {
+                Log.e(TAG, "Failed to connect service.");
+                npe.printStackTrace();
+                return -10000;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -10000;
+            }
+        }
+        Log.e(TAG, "bindHermesService is null");
+        return -10000;
+    }
+
+    public int close() {
+        Log.i(TAG, "close() is called.");
+        IHermesService mBinder = bindHermesService();
+        if (mBinder != null) {
+            try {
+                return mBinder.hermesSecureHwPowerOff();
+            } catch (NullPointerException npe) {
+                Log.e(TAG, "Failed to connect service.");
+                npe.printStackTrace();
+                return -10000;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -10000;
+            }
+        }
+        Log.e(TAG, "bindHermesService is null");
+        return -10000;
+    }
+
+    public byte[] send(byte[] capdu) {
+        Log.i(TAG, "send() is called.");
+        IHermesService mBinder = bindHermesService();
+        if (mBinder != null) {
+            try {
+                return mBinder.hermesSendApdu(capdu);
+            } catch (NullPointerException npe) {
+                Log.e(TAG, "Failed to connect service.");
+                npe.printStackTrace();
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        Log.e(TAG, "bindHermesService is null");
+        return null;
+    }
+
+    public byte[] cosPatchTest(byte[] script) {
+        Log.i(TAG, "cosPatchTest() is called.");
+        IHermesService mBinder = bindHermesService();
+        if (mBinder != null) {
+            try {
+                return mBinder.hermesCosPatchTest(script);
+            } catch (NullPointerException npe) {
+                Log.e(TAG, "Failed to connect service.");
+                npe.printStackTrace();
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        Log.e(TAG, "bindHermesService is null");
+        return null;
+    }
+
+    public byte[] getSeId() {
+        Log.i(TAG, "getSeId() is called.");
+        IHermesService mBinder = bindHermesService();
+        if (mBinder != null) {
+            try {
+                return mBinder.hermesGetSeId();
             } catch (NullPointerException npe) {
                 Log.e(TAG, "Failed to connect service.");
                 npe.printStackTrace();

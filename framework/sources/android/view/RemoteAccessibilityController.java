@@ -11,7 +11,7 @@ import android.view.accessibility.IAccessibilityEmbeddedConnection;
 import java.lang.ref.WeakReference;
 
 /* loaded from: classes4.dex */
-public class RemoteAccessibilityController {
+class RemoteAccessibilityController {
     private static final String TAG = "RemoteAccessibilityController";
     private RemoteAccessibilityEmbeddedConnection mConnectionWrapper;
     private int mHostId;
@@ -19,10 +19,11 @@ public class RemoteAccessibilityController {
     private Matrix mWindowMatrixForEmbeddedHierarchy = new Matrix();
     private final float[] mMatrixValues = new float[9];
 
-    public RemoteAccessibilityController(View v) {
+    RemoteAccessibilityController(View v) {
         this.mHostView = v;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void runOnUiThread(Runnable runnable) {
         Handler h = this.mHostView.getHandler();
         if (h != null && h.getLooper() != Looper.myLooper()) {
@@ -32,37 +33,36 @@ public class RemoteAccessibilityController {
         }
     }
 
-    public void assosciateHierarchy(IAccessibilityEmbeddedConnection connection, IBinder leashToken, int hostId) {
+    void assosciateHierarchy(IAccessibilityEmbeddedConnection connection, IBinder leashToken, int hostId) {
         this.mHostId = hostId;
         try {
-            setRemoteAccessibilityEmbeddedConnection(connection, connection.associateEmbeddedHierarchy(leashToken, hostId));
+            setRemoteAccessibilityEmbeddedConnection(connection, connection.associateEmbeddedHierarchy(leashToken, this.mHostId));
         } catch (RemoteException e) {
             Log.d(TAG, "Error in associateEmbeddedHierarchy " + e);
         }
     }
 
-    public void disassosciateHierarchy() {
+    void disassosciateHierarchy() {
         setRemoteAccessibilityEmbeddedConnection(null, null);
     }
 
-    public boolean alreadyAssociated(IAccessibilityEmbeddedConnection connection) {
-        RemoteAccessibilityEmbeddedConnection remoteAccessibilityEmbeddedConnection = this.mConnectionWrapper;
-        if (remoteAccessibilityEmbeddedConnection == null) {
+    boolean alreadyAssociated(IAccessibilityEmbeddedConnection connection) {
+        if (this.mConnectionWrapper == null) {
             return false;
         }
-        return remoteAccessibilityEmbeddedConnection.mConnection.equals(connection);
+        return this.mConnectionWrapper.mConnection.equals(connection);
     }
 
-    public boolean connected() {
+    boolean connected() {
         return this.mConnectionWrapper != null;
     }
 
-    public IBinder getLeashToken() {
+    IBinder getLeashToken() {
         return this.mConnectionWrapper.getLeashToken();
     }
 
-    /* loaded from: classes4.dex */
-    public static final class RemoteAccessibilityEmbeddedConnection implements IBinder.DeathRecipient {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class RemoteAccessibilityEmbeddedConnection implements IBinder.DeathRecipient {
         private final IAccessibilityEmbeddedConnection mConnection;
         private final WeakReference<RemoteAccessibilityController> mController;
         private final IBinder mLeashToken;
@@ -104,6 +104,7 @@ public class RemoteAccessibilityController {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$binderDied$0(RemoteAccessibilityController controller) {
             if (controller.mConnectionWrapper == this) {
                 controller.mConnectionWrapper = null;
@@ -113,16 +114,14 @@ public class RemoteAccessibilityController {
 
     private void setRemoteAccessibilityEmbeddedConnection(IAccessibilityEmbeddedConnection connection, IBinder leashToken) {
         try {
-            RemoteAccessibilityEmbeddedConnection remoteAccessibilityEmbeddedConnection = this.mConnectionWrapper;
-            if (remoteAccessibilityEmbeddedConnection != null) {
-                remoteAccessibilityEmbeddedConnection.getConnection().disassociateEmbeddedHierarchy();
+            if (this.mConnectionWrapper != null) {
+                this.mConnectionWrapper.getConnection().disassociateEmbeddedHierarchy();
                 this.mConnectionWrapper.unlinkToDeath();
                 this.mConnectionWrapper = null;
             }
             if (connection != null && leashToken != null) {
-                RemoteAccessibilityEmbeddedConnection remoteAccessibilityEmbeddedConnection2 = new RemoteAccessibilityEmbeddedConnection(this, connection, leashToken);
-                this.mConnectionWrapper = remoteAccessibilityEmbeddedConnection2;
-                remoteAccessibilityEmbeddedConnection2.linkToDeath();
+                this.mConnectionWrapper = new RemoteAccessibilityEmbeddedConnection(this, connection, leashToken);
+                this.mConnectionWrapper.linkToDeath();
             }
         } catch (RemoteException e) {
             Log.d(TAG, "Error while setRemoteEmbeddedConnection " + e);
@@ -133,7 +132,7 @@ public class RemoteAccessibilityController {
         return this.mConnectionWrapper;
     }
 
-    public void setWindowMatrix(Matrix m, boolean force) {
+    void setWindowMatrix(Matrix m, boolean force) {
         if (!force && m.equals(this.mWindowMatrixForEmbeddedHierarchy)) {
             return;
         }

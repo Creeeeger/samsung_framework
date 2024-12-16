@@ -1,13 +1,12 @@
 package com.samsung.android.service.vaultkeeper;
 
-import android.content.ContentResolver;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IVaultKeeperService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.service.vaultkeeper.IVaultKeeperService";
 
@@ -33,7 +32,6 @@ public interface IVaultKeeperService extends IInterface {
 
     int write(String str, int i, byte[] bArr, byte[] bArr2, byte[] bArr3) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IVaultKeeperService {
         @Override // com.samsung.android.service.vaultkeeper.IVaultKeeperService
         public boolean isInitialized(String vaultName) throws RemoteException {
@@ -96,7 +94,6 @@ public interface IVaultKeeperService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IVaultKeeperService {
         static final int TRANSACTION_checkDataWritable = 10;
         static final int TRANSACTION_destroy = 3;
@@ -135,7 +132,7 @@ public interface IVaultKeeperService extends IInterface {
                 case 1:
                     return "isInitialized";
                 case 2:
-                    return ContentResolver.SYNC_EXTRAS_INITIALIZE;
+                    return "initialize";
                 case 3:
                     return "destroy";
                 case 4:
@@ -171,127 +168,123 @@ public interface IVaultKeeperService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVaultKeeperService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVaultKeeperService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVaultKeeperService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = isInitialized(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    byte[] _arg1 = data.createByteArray();
+                    byte[] _arg23 = data.createByteArray();
+                    byte[] _arg3 = data.createByteArray();
+                    byte[] _arg4 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result2 = initialize(_arg02, _arg1, _arg23, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    byte[] _arg12 = data.createByteArray();
+                    byte[] _arg24 = data.createByteArray();
+                    byte[] _arg32 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result3 = destroy(_arg03, _arg12, _arg24, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg13 = data.readInt();
+                    int _arg2_length = data.readInt();
+                    if (_arg2_length < 0) {
+                        _arg2 = null;
+                    } else {
+                        _arg2 = new int[_arg2_length];
+                    }
+                    data.enforceNoDataAvail();
+                    byte[] _result4 = read(_arg04, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    reply.writeIntArray(_arg2);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg14 = data.readInt();
+                    byte[] _arg25 = data.createByteArray();
+                    byte[] _arg33 = data.createByteArray();
+                    byte[] _arg42 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result5 = write(_arg05, _arg14, _arg25, _arg33, _arg42);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    int _arg15 = data.readInt();
+                    int _arg2_length2 = data.readInt();
+                    if (_arg2_length2 < 0) {
+                        _arg22 = null;
+                    } else {
+                        _arg22 = new int[_arg2_length2];
+                    }
+                    data.enforceNoDataAvail();
+                    byte[] _result6 = sensitiveBox(_arg06, _arg15, _arg22);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result6);
+                    reply.writeIntArray(_arg22);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    byte[] _arg16 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result7 = encryptMessage(_arg07, _arg16);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result7);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = migrationStorage(_arg08);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    byte[] _arg17 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = verifyCertificate(_arg09, _arg17);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result10 = checkDataWritable(_arg010);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result11 = generateHotpCode(_arg011);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = isInitialized(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            byte[] _arg1 = data.createByteArray();
-                            byte[] _arg23 = data.createByteArray();
-                            byte[] _arg3 = data.createByteArray();
-                            byte[] _arg4 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result2 = initialize(_arg02, _arg1, _arg23, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            byte[] _arg12 = data.createByteArray();
-                            byte[] _arg24 = data.createByteArray();
-                            byte[] _arg32 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result3 = destroy(_arg03, _arg12, _arg24, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg13 = data.readInt();
-                            int _arg2_length = data.readInt();
-                            if (_arg2_length < 0) {
-                                _arg2 = null;
-                            } else {
-                                _arg2 = new int[_arg2_length];
-                            }
-                            data.enforceNoDataAvail();
-                            byte[] _result4 = read(_arg04, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            reply.writeIntArray(_arg2);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg14 = data.readInt();
-                            byte[] _arg25 = data.createByteArray();
-                            byte[] _arg33 = data.createByteArray();
-                            byte[] _arg42 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result5 = write(_arg05, _arg14, _arg25, _arg33, _arg42);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            int _arg15 = data.readInt();
-                            int _arg2_length2 = data.readInt();
-                            if (_arg2_length2 < 0) {
-                                _arg22 = null;
-                            } else {
-                                _arg22 = new int[_arg2_length2];
-                            }
-                            data.enforceNoDataAvail();
-                            byte[] _result6 = sensitiveBox(_arg06, _arg15, _arg22);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result6);
-                            reply.writeIntArray(_arg22);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            byte[] _arg16 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result7 = encryptMessage(_arg07, _arg16);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result7);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = migrationStorage(_arg08);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            byte[] _arg17 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = verifyCertificate(_arg09, _arg17);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result10 = checkDataWritable(_arg010);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result11 = generateHotpCode(_arg011);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IVaultKeeperService {
+        private static class Proxy implements IVaultKeeperService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

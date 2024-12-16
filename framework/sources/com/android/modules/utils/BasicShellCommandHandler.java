@@ -50,21 +50,13 @@ public abstract class BasicShellCommandHandler {
         this.mInputStream = null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0029, code lost:
-    
-        if (r2 != null) goto L50;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x002b, code lost:
-    
-        r2.flush();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0064, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x006c, code lost:
     
         return r1;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0061, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0069, code lost:
     
-        if (r2 == null) goto L59;
+        if (r9.mErrPrintWriter == null) goto L23;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -96,51 +88,57 @@ public abstract class BasicShellCommandHandler {
             r1.init(r2, r3, r4, r5, r6, r7)
             r9.mCmd = r0
             r1 = -1
-            int r2 = r9.onCommand(r0)     // Catch: java.lang.Throwable -> L2f
+            java.lang.String r2 = r9.mCmd     // Catch: java.lang.Throwable -> L35
+            int r2 = r9.onCommand(r2)     // Catch: java.lang.Throwable -> L35
             r1 = r2
             java.io.PrintWriter r2 = r9.mOutPrintWriter
-            if (r2 == 0) goto L27
-            r2.flush()
-        L27:
-            java.io.PrintWriter r2 = r9.mErrPrintWriter
-            if (r2 == 0) goto L64
-        L2b:
-            r2.flush()
-            goto L64
-        L2f:
-            r2 = move-exception
-            java.io.PrintWriter r3 = r9.getErrPrintWriter()     // Catch: java.lang.Throwable -> L65
-            r3.println()     // Catch: java.lang.Throwable -> L65
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L65
-            r4.<init>()     // Catch: java.lang.Throwable -> L65
-            java.lang.String r5 = "Exception occurred while executing '"
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L65
-            java.lang.String r5 = r9.mCmd     // Catch: java.lang.Throwable -> L65
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L65
-            java.lang.String r5 = "':"
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L65
-            java.lang.String r4 = r4.toString()     // Catch: java.lang.Throwable -> L65
-            r3.println(r4)     // Catch: java.lang.Throwable -> L65
-            r2.printStackTrace(r3)     // Catch: java.lang.Throwable -> L65
+            if (r2 == 0) goto L2b
             java.io.PrintWriter r2 = r9.mOutPrintWriter
-            if (r2 == 0) goto L5f
             r2.flush()
-        L5f:
+        L2b:
             java.io.PrintWriter r2 = r9.mErrPrintWriter
-            if (r2 == 0) goto L64
-            goto L2b
-        L64:
+            if (r2 == 0) goto L6c
+        L2f:
+            java.io.PrintWriter r2 = r9.mErrPrintWriter
+            r2.flush()
+            goto L6c
+        L35:
+            r2 = move-exception
+            java.io.PrintWriter r3 = r9.getErrPrintWriter()     // Catch: java.lang.Throwable -> L6d
+            r3.println()     // Catch: java.lang.Throwable -> L6d
+            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L6d
+            r4.<init>()     // Catch: java.lang.Throwable -> L6d
+            java.lang.String r5 = "Exception occurred while executing '"
+            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L6d
+            java.lang.String r5 = r9.mCmd     // Catch: java.lang.Throwable -> L6d
+            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L6d
+            java.lang.String r5 = "':"
+            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L6d
+            java.lang.String r4 = r4.toString()     // Catch: java.lang.Throwable -> L6d
+            r3.println(r4)     // Catch: java.lang.Throwable -> L6d
+            r2.printStackTrace(r3)     // Catch: java.lang.Throwable -> L6d
+            java.io.PrintWriter r2 = r9.mOutPrintWriter
+            if (r2 == 0) goto L67
+            java.io.PrintWriter r2 = r9.mOutPrintWriter
+            r2.flush()
+        L67:
+            java.io.PrintWriter r2 = r9.mErrPrintWriter
+            if (r2 == 0) goto L6c
+            goto L2f
+        L6c:
             return r1
-        L65:
+        L6d:
             r2 = move-exception
             java.io.PrintWriter r3 = r9.mOutPrintWriter
-            if (r3 == 0) goto L6d
+            if (r3 == 0) goto L77
+            java.io.PrintWriter r3 = r9.mOutPrintWriter
             r3.flush()
-        L6d:
+        L77:
             java.io.PrintWriter r3 = r9.mErrPrintWriter
-            if (r3 == 0) goto L74
+            if (r3 == 0) goto L80
+            java.io.PrintWriter r3 = r9.mErrPrintWriter
             r3.flush()
-        L74:
+        L80:
             throw r2
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.modules.utils.BasicShellCommandHandler.exec(android.os.Binder, java.io.FileDescriptor, java.io.FileDescriptor, java.io.FileDescriptor, java.lang.String[]):int");
@@ -208,12 +206,10 @@ public abstract class BasicShellCommandHandler {
             String prev = this.mArgs[this.mArgPos - 1];
             throw new IllegalArgumentException("No argument expected after \"" + prev + "\"");
         }
-        int i = this.mArgPos;
-        String[] strArr = this.mArgs;
-        if (i >= strArr.length) {
+        if (this.mArgPos >= this.mArgs.length) {
             return null;
         }
-        String arg = strArr[i];
+        String arg = this.mArgs[this.mArgPos];
         if (!arg.startsWith(NativeLibraryHelper.CLEAR_ABI_OVERRIDE)) {
             return null;
         }
@@ -239,24 +235,21 @@ public abstract class BasicShellCommandHandler {
             this.mCurArgData = null;
             return arg;
         }
-        int i = this.mArgPos;
-        String[] strArr = this.mArgs;
-        if (i >= strArr.length) {
+        if (this.mArgPos >= this.mArgs.length) {
             return null;
         }
+        String[] strArr = this.mArgs;
+        int i = this.mArgPos;
         this.mArgPos = i + 1;
         return strArr[i];
     }
 
     public String peekNextArg() {
-        String str = this.mCurArgData;
-        if (str != null) {
-            return str;
+        if (this.mCurArgData != null) {
+            return this.mCurArgData;
         }
-        int i = this.mArgPos;
-        String[] strArr = this.mArgs;
-        if (i < strArr.length) {
-            return strArr[i];
+        if (this.mArgPos < this.mArgs.length) {
+            return this.mArgs[this.mArgPos];
         }
         return null;
     }
@@ -264,25 +257,17 @@ public abstract class BasicShellCommandHandler {
     public String[] peekRemainingArgs() {
         int remaining = getRemainingArgsCount();
         String[] args = new String[remaining];
-        int pos = this.mArgPos;
-        while (true) {
-            String[] strArr = this.mArgs;
-            if (pos < strArr.length) {
-                args[pos - this.mArgPos] = strArr[pos];
-                pos++;
-            } else {
-                return args;
-            }
+        for (int pos = this.mArgPos; pos < this.mArgs.length; pos++) {
+            args[pos - this.mArgPos] = this.mArgs[pos];
         }
+        return args;
     }
 
     public int getRemainingArgsCount() {
-        int i = this.mArgPos;
-        String[] strArr = this.mArgs;
-        if (i >= strArr.length) {
+        if (this.mArgPos >= this.mArgs.length) {
             return 0;
         }
-        return strArr.length - i;
+        return this.mArgs.length - this.mArgPos;
     }
 
     public String getNextArgRequired() {

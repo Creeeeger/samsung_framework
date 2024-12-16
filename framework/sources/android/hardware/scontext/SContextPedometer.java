@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextPedometer extends SContextEventContext {
     public static final Parcelable.Creator<SContextPedometer> CREATOR = new Parcelable.Creator<SContextPedometer>() { // from class: android.hardware.scontext.SContextPedometer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextPedometer createFromParcel(Parcel in) {
             return new SContextPedometer(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextPedometer[] newArray(int size) {
             return new SContextPedometer[size];
@@ -24,7 +23,7 @@ public class SContextPedometer extends SContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    public SContextPedometer() {
+    SContextPedometer() {
         this.mContext = new Bundle();
         this.mMode = 0;
     }
@@ -177,8 +176,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public double[] getSpeedArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         double[] res = this.mContext.getDoubleArray("SpeedArray");
@@ -186,8 +184,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public double[] getCalorieDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         double[] res = this.mContext.getDoubleArray("CalorieDiffArray");
@@ -195,8 +192,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public double[] getDistanceDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         double[] res = this.mContext.getDoubleArray("DistanceDiffArray");
@@ -204,8 +200,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getTotalStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("TotalStepCountDiffArray");
@@ -213,8 +208,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getWalkStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("WalkStepCountDiffArray");
@@ -222,8 +216,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getWalkUpStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("WalkUpStepCountDiffArray");
@@ -231,8 +224,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getWalkDownStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("WalkDownStepCountDiffArray");
@@ -240,8 +232,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getRunStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("RunStepCountDiffArray");
@@ -249,8 +240,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getRunUpStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("RunUpStepCountDiffArray");
@@ -258,8 +248,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getRunDownStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("RunDownStepCountDiffArray");
@@ -267,8 +256,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public long[] getTimeStampArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("TimeStampArray");
@@ -276,8 +264,7 @@ public class SContextPedometer extends SContextEventContext {
     }
 
     public int getArraySize() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return 0;
         }
         int res = this.mContext.getInt("LoggingCount");
@@ -287,7 +274,7 @@ public class SContextPedometer extends SContextEventContext {
     @Override // android.hardware.scontext.SContextEventContext, com.samsung.android.hardware.context.SemContextEventContext
     public void setValues(Bundle context) {
         this.mContext = context;
-        this.mMode = context.getInt("Mode");
+        this.mMode = this.mContext.getInt("Mode");
     }
 
     @Override // com.samsung.android.hardware.context.SemContextEventContext, android.os.Parcelable
@@ -299,22 +286,5 @@ public class SContextPedometer extends SContextEventContext {
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
         this.mMode = src.readInt();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextPedometer$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextPedometer> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextPedometer createFromParcel(Parcel in) {
-            return new SContextPedometer(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextPedometer[] newArray(int size) {
-            return new SContextPedometer[size];
-        }
     }
 }

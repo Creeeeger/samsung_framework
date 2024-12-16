@@ -7,7 +7,6 @@ import com.android.internal.org.bouncycastle.jcajce.provider.util.AsymmetricAlgo
 public class BC {
     private static final String PREFIX = "com.android.internal.org.bouncycastle.jcajce.provider.keystore.bc.";
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AsymmetricAlgorithmProvider {
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvider
         public void configure(ConfigurableProvider provider) {

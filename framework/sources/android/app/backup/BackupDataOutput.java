@@ -36,9 +36,8 @@ public class BackupDataOutput {
         }
         this.mQuota = quota;
         this.mTransportFlags = transportFlags;
-        long ctor = ctor(fd);
-        this.mBackupWriter = ctor;
-        if (ctor == 0) {
+        this.mBackupWriter = ctor(fd);
+        if (this.mBackupWriter == 0) {
             throw new RuntimeException("Native initialization failed with fd=" + fd);
         }
     }

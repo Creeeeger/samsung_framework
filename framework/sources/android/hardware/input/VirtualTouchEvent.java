@@ -3,6 +3,7 @@ package android.hardware.input;
 import android.annotation.SystemApi;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.MotionEvent;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -15,14 +16,13 @@ public final class VirtualTouchEvent implements Parcelable {
     public static final int ACTION_UNKNOWN = -1;
     public static final int ACTION_UP = 1;
     public static final Parcelable.Creator<VirtualTouchEvent> CREATOR = new Parcelable.Creator<VirtualTouchEvent>() { // from class: android.hardware.input.VirtualTouchEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualTouchEvent createFromParcel(Parcel source) {
             return new VirtualTouchEvent(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualTouchEvent[] newArray(int size) {
             return new VirtualTouchEvent[size];
@@ -42,21 +42,11 @@ public final class VirtualTouchEvent implements Parcelable {
     private final float mY;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Action {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ToolType {
-    }
-
-    /* synthetic */ VirtualTouchEvent(int i, int i2, int i3, float f, float f2, float f3, float f4, long j, VirtualTouchEventIA virtualTouchEventIA) {
-        this(i, i2, i3, f, f2, f3, f4, j);
-    }
-
-    /* synthetic */ VirtualTouchEvent(Parcel parcel, VirtualTouchEventIA virtualTouchEventIA) {
-        this(parcel);
     }
 
     private VirtualTouchEvent(int pointerId, int toolType, int action, float x, float y, float pressure, float majorAxisSize, long eventTimeNanos) {
@@ -98,6 +88,10 @@ public final class VirtualTouchEvent implements Parcelable {
         return 0;
     }
 
+    public String toString() {
+        return "VirtualTouchEvent( pointerId=" + this.mPointerId + " toolType=" + MotionEvent.toolTypeToString(this.mToolType) + " action=" + MotionEvent.actionToString(this.mAction) + " x=" + this.mX + " y=" + this.mY + " pressure=" + this.mPressure + " majorAxisSize=" + this.mMajorAxisSize + " eventTime(ns)=" + this.mEventTimeNanos;
+    }
+
     public int getPointerId() {
         return this.mPointerId;
     }
@@ -130,7 +124,6 @@ public final class VirtualTouchEvent implements Parcelable {
         return this.mEventTimeNanos;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mToolType = 0;
         private int mPointerId = -1;
@@ -145,8 +138,7 @@ public final class VirtualTouchEvent implements Parcelable {
             if (this.mToolType == 0 || this.mPointerId == -1 || this.mAction == -1 || Float.isNaN(this.mX) || Float.isNaN(this.mY)) {
                 throw new IllegalArgumentException("Cannot build virtual touch event with unset required fields");
             }
-            int i = this.mToolType;
-            if ((i == 5 && this.mAction != 3) || (this.mAction == 3 && i != 5)) {
+            if ((this.mToolType == 5 && this.mAction != 3) || (this.mAction == 3 && this.mToolType != 5)) {
                 throw new IllegalArgumentException("ACTION_CANCEL and TOOL_TYPE_PALM must always appear together");
             }
             return new VirtualTouchEvent(this.mPointerId, this.mToolType, this.mAction, this.mX, this.mY, this.mPressure, this.mMajorAxisSize, this.mEventTimeNanos);
@@ -170,7 +162,7 @@ public final class VirtualTouchEvent implements Parcelable {
 
         public Builder setAction(int action) {
             if (action != 0 && action != 1 && action != 2 && action != 3) {
-                throw new IllegalArgumentException("Unsupported touch event action type");
+                throw new IllegalArgumentException("Unsupported touch event action type: " + action);
             }
             this.mAction = action;
             return this;
@@ -208,23 +200,6 @@ public final class VirtualTouchEvent implements Parcelable {
             }
             this.mEventTimeNanos = eventTimeNanos;
             return this;
-        }
-    }
-
-    /* renamed from: android.hardware.input.VirtualTouchEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VirtualTouchEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualTouchEvent createFromParcel(Parcel source) {
-            return new VirtualTouchEvent(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualTouchEvent[] newArray(int size) {
-            return new VirtualTouchEvent[size];
         }
     }
 }

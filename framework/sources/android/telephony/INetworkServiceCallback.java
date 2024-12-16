@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface INetworkServiceCallback extends IInterface {
     void onNetworkStateChanged() throws RemoteException;
 
     void onRequestNetworkRegistrationInfoComplete(int i, NetworkRegistrationInfo networkRegistrationInfo) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements INetworkServiceCallback {
         @Override // android.telephony.INetworkServiceCallback
         public void onRequestNetworkRegistrationInfoComplete(int result, NetworkRegistrationInfo state) throws RemoteException {
@@ -28,7 +27,6 @@ public interface INetworkServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements INetworkServiceCallback {
         public static final String DESCRIPTOR = "android.telephony.INetworkServiceCallback";
         static final int TRANSACTION_onNetworkStateChanged = 2;
@@ -75,30 +73,26 @@ public interface INetworkServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    NetworkRegistrationInfo _arg1 = (NetworkRegistrationInfo) data.readTypedObject(NetworkRegistrationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRequestNetworkRegistrationInfoComplete(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onNetworkStateChanged();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            NetworkRegistrationInfo _arg1 = (NetworkRegistrationInfo) data.readTypedObject(NetworkRegistrationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRequestNetworkRegistrationInfoComplete(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onNetworkStateChanged();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements INetworkServiceCallback {
+        private static class Proxy implements INetworkServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

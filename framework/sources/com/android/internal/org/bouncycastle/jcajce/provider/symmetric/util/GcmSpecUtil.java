@@ -16,14 +16,12 @@ import java.security.spec.InvalidParameterSpecException;
 
 /* loaded from: classes5.dex */
 public class GcmSpecUtil {
-    static final Class gcmSpecClass;
+    static final Class gcmSpecClass = ClassUtil.loadClass(GcmSpecUtil.class, "javax.crypto.spec.GCMParameterSpec");
     static final Method iv;
     static final Method tLen;
 
     static {
-        Class loadClass = ClassUtil.loadClass(GcmSpecUtil.class, "javax.crypto.spec.GCMParameterSpec");
-        gcmSpecClass = loadClass;
-        if (loadClass != null) {
+        if (gcmSpecClass != null) {
             tLen = extractMethod("getTLen");
             iv = extractMethod("getIV");
         } else {
@@ -32,30 +30,9 @@ public class GcmSpecUtil {
         }
     }
 
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.GcmSpecUtil$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements PrivilegedExceptionAction {
-        final /* synthetic */ String val$name;
-
-        AnonymousClass1(String str) {
-            name = str;
-        }
-
-        @Override // java.security.PrivilegedExceptionAction
-        public Object run() throws Exception {
-            return GcmSpecUtil.gcmSpecClass.getDeclaredMethod(name, new Class[0]);
-        }
-    }
-
-    private static Method extractMethod(String name) {
+    private static Method extractMethod(final String name) {
         try {
             return (Method) AccessController.doPrivileged(new PrivilegedExceptionAction() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.GcmSpecUtil.1
-                final /* synthetic */ String val$name;
-
-                AnonymousClass1(String name2) {
-                    name = name2;
-                }
-
                 @Override // java.security.PrivilegedExceptionAction
                 public Object run() throws Exception {
                     return GcmSpecUtil.gcmSpecClass.getDeclaredMethod(name, new Class[0]);
@@ -71,8 +48,7 @@ public class GcmSpecUtil {
     }
 
     public static boolean isGcmSpec(AlgorithmParameterSpec paramSpec) {
-        Class cls = gcmSpecClass;
-        return cls != null && cls.isInstance(paramSpec);
+        return gcmSpecClass != null && gcmSpecClass.isInstance(paramSpec);
     }
 
     public static boolean isGcmSpec(Class paramSpecClass) {
@@ -91,31 +67,9 @@ public class GcmSpecUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.GcmSpecUtil$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements PrivilegedExceptionAction {
-        final /* synthetic */ AlgorithmParameterSpec val$params;
-
-        AnonymousClass2(AlgorithmParameterSpec algorithmParameterSpec) {
-            params = algorithmParameterSpec;
-        }
-
-        @Override // java.security.PrivilegedExceptionAction
-        public Object run() throws Exception {
-            return new AEADParameters(KeyParameter.this, ((Integer) GcmSpecUtil.tLen.invoke(params, new Object[0])).intValue(), (byte[]) GcmSpecUtil.iv.invoke(params, new Object[0]));
-        }
-    }
-
-    public static AEADParameters extractAeadParameters(KeyParameter keyParam, AlgorithmParameterSpec params) throws InvalidAlgorithmParameterException {
+    static AEADParameters extractAeadParameters(final KeyParameter keyParam, final AlgorithmParameterSpec params) throws InvalidAlgorithmParameterException {
         try {
             return (AEADParameters) AccessController.doPrivileged(new PrivilegedExceptionAction() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.GcmSpecUtil.2
-                final /* synthetic */ AlgorithmParameterSpec val$params;
-
-                AnonymousClass2(AlgorithmParameterSpec params2) {
-                    params = params2;
-                }
-
                 @Override // java.security.PrivilegedExceptionAction
                 public Object run() throws Exception {
                     return new AEADParameters(KeyParameter.this, ((Integer) GcmSpecUtil.tLen.invoke(params, new Object[0])).intValue(), (byte[]) GcmSpecUtil.iv.invoke(params, new Object[0]));
@@ -126,31 +80,9 @@ public class GcmSpecUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.GcmSpecUtil$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 implements PrivilegedExceptionAction {
-        final /* synthetic */ AlgorithmParameterSpec val$paramSpec;
-
-        AnonymousClass3(AlgorithmParameterSpec algorithmParameterSpec) {
-            paramSpec = algorithmParameterSpec;
-        }
-
-        @Override // java.security.PrivilegedExceptionAction
-        public Object run() throws Exception {
-            return new GCMParameters((byte[]) GcmSpecUtil.iv.invoke(paramSpec, new Object[0]), ((Integer) GcmSpecUtil.tLen.invoke(paramSpec, new Object[0])).intValue() / 8);
-        }
-    }
-
-    public static GCMParameters extractGcmParameters(AlgorithmParameterSpec paramSpec) throws InvalidParameterSpecException {
+    public static GCMParameters extractGcmParameters(final AlgorithmParameterSpec paramSpec) throws InvalidParameterSpecException {
         try {
             return (GCMParameters) AccessController.doPrivileged(new PrivilegedExceptionAction() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.GcmSpecUtil.3
-                final /* synthetic */ AlgorithmParameterSpec val$paramSpec;
-
-                AnonymousClass3(AlgorithmParameterSpec paramSpec2) {
-                    paramSpec = paramSpec2;
-                }
-
                 @Override // java.security.PrivilegedExceptionAction
                 public Object run() throws Exception {
                     return new GCMParameters((byte[]) GcmSpecUtil.iv.invoke(paramSpec, new Object[0]), ((Integer) GcmSpecUtil.tLen.invoke(paramSpec, new Object[0])).intValue() / 8);

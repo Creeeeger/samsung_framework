@@ -28,7 +28,6 @@ public interface JobSchedulerInternal {
 
     void reportAppUsage(String str, int i);
 
-    /* loaded from: classes5.dex */
     public static class JobStorePersistStats {
         public int countAllJobsLoaded;
         public int countAllJobsSaved;

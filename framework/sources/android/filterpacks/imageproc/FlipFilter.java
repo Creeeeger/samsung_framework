@@ -78,12 +78,10 @@ public class FlipFilter extends Filter {
     }
 
     private void updateParameters() {
-        boolean z = this.mHorizontal;
-        float x_origin = z ? 1.0f : 0.0f;
-        boolean z2 = this.mVertical;
-        float y_origin = z2 ? 1.0f : 0.0f;
-        float width = z ? -1.0f : 1.0f;
-        float height = z2 ? -1.0f : 1.0f;
+        float x_origin = this.mHorizontal ? 1.0f : 0.0f;
+        float y_origin = this.mVertical ? 1.0f : 0.0f;
+        float width = this.mHorizontal ? -1.0f : 1.0f;
+        float height = this.mVertical ? -1.0f : 1.0f;
         ((ShaderProgram) this.mProgram).setSourceRect(x_origin, y_origin, width, height);
     }
 }

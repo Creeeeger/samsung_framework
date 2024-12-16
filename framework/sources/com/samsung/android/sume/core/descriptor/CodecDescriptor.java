@@ -9,7 +9,7 @@ import com.samsung.android.sume.core.types.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class CodecDescriptor extends MFDescriptorBase {
     private int bitrate;
     private final Map<String, Object> data;
@@ -42,41 +42,14 @@ public class CodecDescriptor extends MFDescriptorBase {
         this.data.put(key, value);
     }
 
-    /* renamed from: com.samsung.android.sume.core.descriptor.CodecDescriptor$1 */
-    /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$MediaType;
-
-        static {
-            int[] iArr = new int[MediaType.values().length];
-            $SwitchMap$com$samsung$android$sume$core$types$MediaType = iArr;
-            try {
-                iArr[MediaType.COMPRESSED_AUDIO.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$sume$core$types$MediaType[MediaType.COMPRESSED_VIDEO.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$sume$core$types$MediaType[MediaType.RAW_AUDIO.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$sume$core$types$MediaType[MediaType.RAW_VIDEO.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
-    }
-
     @Override // com.samsung.android.sume.core.descriptor.MFDescriptorBase, com.samsung.android.sume.core.descriptor.MFDescriptor
     public String getFilterId() {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$sume$core$types$MediaType[this.mediaType.ordinal()]) {
-            case 1:
-            case 2:
+        switch (this.mediaType) {
+            case COMPRESSED_AUDIO:
+            case COMPRESSED_VIDEO:
                 return DecoderFilter.class.getName();
-            case 3:
-            case 4:
+            case RAW_AUDIO:
+            case RAW_VIDEO:
                 return EncoderFilter.class.getName();
             default:
                 throw new IllegalArgumentException("");

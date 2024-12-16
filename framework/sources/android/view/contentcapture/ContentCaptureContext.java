@@ -17,9 +17,7 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ContentCaptureContext implements Parcelable {
     public static final Parcelable.Creator<ContentCaptureContext> CREATOR = new Parcelable.Creator<ContentCaptureContext>() { // from class: android.view.contentcapture.ContentCaptureContext.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureContext createFromParcel(Parcel parcel) {
             ContentCaptureContext clientContext;
@@ -46,6 +44,7 @@ public final class ContentCaptureContext implements Parcelable {
             return new ContentCaptureContext(clientContext, activityId, componentName, displayId, windowToken, flags);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureContext[] newArray(int size) {
             return new ContentCaptureContext[size];
@@ -72,12 +71,7 @@ public final class ContentCaptureContext implements Parcelable {
     private final IBinder mWindowToken;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface ContextCreationFlags {
-    }
-
-    /* synthetic */ ContentCaptureContext(Builder builder, ContentCaptureContextIA contentCaptureContextIA) {
-        this(builder);
     }
 
     public ContentCaptureContext(ContentCaptureContext clientContext, ActivityId activityId, ComponentName componentName, int displayId, IBinder windowToken, int flags) {
@@ -182,7 +176,6 @@ public final class ContentCaptureContext implements Parcelable {
         return new Builder(new LocusId(id)).build();
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private boolean mDestroyed;
         private Bundle mExtras;
@@ -275,44 +268,6 @@ public final class ContentCaptureContext implements Parcelable {
             parcel.writeStrongBinder(this.mWindowToken);
             parcel.writeInt(this.mFlags);
             this.mActivityId.writeToParcel(parcel, i);
-        }
-    }
-
-    /* renamed from: android.view.contentcapture.ContentCaptureContext$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContentCaptureContext> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureContext createFromParcel(Parcel parcel) {
-            ContentCaptureContext clientContext;
-            boolean hasClientContext = parcel.readInt() == 1;
-            if (hasClientContext) {
-                LocusId id = (LocusId) parcel.readParcelable(null, LocusId.class);
-                Bundle extras = parcel.readBundle();
-                Builder builder = new Builder(id);
-                if (extras != null) {
-                    builder.setExtras(extras);
-                }
-                clientContext = new ContentCaptureContext(builder);
-            } else {
-                clientContext = null;
-            }
-            ComponentName componentName = (ComponentName) parcel.readParcelable(null, ComponentName.class);
-            if (componentName == null) {
-                return clientContext;
-            }
-            int displayId = parcel.readInt();
-            IBinder windowToken = parcel.readStrongBinder();
-            int flags = parcel.readInt();
-            ActivityId activityId = new ActivityId(parcel);
-            return new ContentCaptureContext(clientContext, activityId, componentName, displayId, windowToken, flags);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureContext[] newArray(int size) {
-            return new ContentCaptureContext[size];
         }
     }
 }

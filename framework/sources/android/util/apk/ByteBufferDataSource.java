@@ -8,7 +8,7 @@ import java.security.DigestException;
 class ByteBufferDataSource implements DataSource {
     private final ByteBuffer mBuf;
 
-    public ByteBufferDataSource(ByteBuffer buf) {
+    ByteBufferDataSource(ByteBuffer buf) {
         this.mBuf = buf.slice();
     }
 

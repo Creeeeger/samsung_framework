@@ -114,8 +114,7 @@ public class ActionMenuItem implements MenuItem {
 
     @Override // android.view.MenuItem
     public CharSequence getTitleCondensed() {
-        CharSequence charSequence = this.mTitleCondensed;
-        return charSequence != null ? charSequence : this.mTitle;
+        return this.mTitleCondensed != null ? this.mTitleCondensed : this.mTitle;
     }
 
     @Override // android.view.MenuItem
@@ -222,13 +221,11 @@ public class ActionMenuItem implements MenuItem {
     }
 
     private void applyIconTint() {
-        Drawable drawable = this.mIconDrawable;
-        if (drawable != null) {
+        if (this.mIconDrawable != null) {
             if (this.mHasIconTint || this.mHasIconTintMode) {
-                Drawable mutate = drawable.mutate();
-                this.mIconDrawable = mutate;
+                this.mIconDrawable = this.mIconDrawable.mutate();
                 if (this.mHasIconTint) {
-                    mutate.setTintList(this.mIconTintList);
+                    this.mIconDrawable.setTintList(this.mIconTintList);
                 }
                 if (this.mHasIconTintMode) {
                     this.mIconDrawable.setTintMode(this.mIconTintMode);
@@ -303,13 +300,11 @@ public class ActionMenuItem implements MenuItem {
     }
 
     public boolean invoke() {
-        MenuItem.OnMenuItemClickListener onMenuItemClickListener = this.mClickListener;
-        if (onMenuItemClickListener != null && onMenuItemClickListener.onMenuItemClick(this)) {
+        if (this.mClickListener != null && this.mClickListener.onMenuItemClick(this)) {
             return true;
         }
-        Intent intent = this.mIntent;
-        if (intent != null) {
-            this.mContext.startActivity(intent);
+        if (this.mIntent != null) {
+            this.mContext.startActivity(this.mIntent);
             return true;
         }
         return false;

@@ -28,7 +28,6 @@ import android.widget.TextViewTranslationCallback;
 import com.android.internal.util.function.QuadConsumer;
 import com.android.internal.util.function.TriConsumer;
 import com.android.internal.util.function.pooled.PooledLambda;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -58,10 +57,9 @@ public class UiTranslationController implements Dumpable {
     public UiTranslationController(Activity activity, Context context) {
         this.mActivity = activity;
         this.mContext = context;
-        HandlerThread handlerThread = new HandlerThread("UiTranslationController_" + activity.getComponentName(), -2);
-        this.mWorkerThread = handlerThread;
-        handlerThread.start();
-        this.mWorkerHandler = handlerThread.getThreadHandler();
+        this.mWorkerThread = new HandlerThread("UiTranslationController_" + this.mActivity.getComponentName(), -2);
+        this.mWorkerThread.start();
+        this.mWorkerHandler = this.mWorkerThread.getThreadHandler();
         activity.addDumpable(this);
     }
 
@@ -285,7 +283,7 @@ public class UiTranslationController implements Dumpable {
         if (response == null || response.getTranslationStatus() != 0) {
             StringBuilder append = new StringBuilder().append("Fail result from TranslationService, status=");
             if (response == null) {
-                valueOf = SemCapabilities.FEATURE_TAG_NULL;
+                valueOf = "null";
             } else {
                 valueOf = Integer.valueOf(response.getTranslationStatus());
             }
@@ -349,7 +347,7 @@ public class UiTranslationController implements Dumpable {
                         if (this.mCurrentState == 1) {
                             return;
                         } else {
-                            this.mActivity.runOnUiThread(new Runnable() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda8
+                            this.mActivity.runOnUiThread(new Runnable() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda9
                                 @Override // java.lang.Runnable
                                 public final void run() {
                                     UiTranslationController.lambda$onVirtualViewTranslationCompleted$3(View.this, isLoggable);
@@ -362,7 +360,7 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
-    public static /* synthetic */ void lambda$onVirtualViewTranslationCompleted$3(View view, boolean isLoggable) {
+    static /* synthetic */ void lambda$onVirtualViewTranslationCompleted$3(View view, boolean isLoggable) {
         if (view.getViewTranslationCallback() == null) {
             if (isLoggable) {
                 Log.d("UiTranslationController", view + " doesn't support showing translation because of null ViewTranslationCallback.");
@@ -451,6 +449,7 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onTranslationCompleted$4(View view, ViewTranslationResponse response, boolean isLoggable, AutofillId autofillId, int currentState) {
         ViewTranslationCallback callback = view.getViewTranslationCallback();
         if (view.getViewTranslationResponse() != null && view.getViewTranslationResponse().equals(response) && (callback instanceof TextViewTranslationCallback)) {
@@ -486,6 +485,7 @@ public class UiTranslationController implements Dumpable {
         callback.onShowTranslation(view);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void createTranslatorAndStart(TranslationSpec sourceSpec, TranslationSpec targetSpec, List<AutofillId> views) {
         Translator translator = createTranslatorIfNeeded(sourceSpec, targetSpec);
         if (translator == null) {
@@ -495,6 +495,7 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendTranslationRequest(Translator translator, List<ViewTranslationRequest> requests) {
         if (requests.size() == 0) {
             Log.w("UiTranslationController", "No ViewTranslationRequest was collected.");
@@ -508,12 +509,12 @@ public class UiTranslationController implements Dumpable {
             }
             Log.d("UiTranslationController", "sendTranslationRequest: " + msg.toString());
         }
-        translator.requestUiTranslate(request, new Executor() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda9
+        translator.requestUiTranslate(request, new Executor() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda7
             @Override // java.util.concurrent.Executor
             public final void execute(Runnable runnable) {
                 runnable.run();
             }
-        }, new Consumer() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda10
+        }, new Consumer() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda8
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 UiTranslationController.this.onTranslationCompleted((TranslationResponse) obj);
@@ -554,7 +555,7 @@ public class UiTranslationController implements Dumpable {
             final int[] supportedFormats = getSupportedFormatsLocked();
             final ArrayList<ViewRootImpl> roots = WindowManagerGlobal.getInstance().getRootViews(this.mActivity.getActivityToken());
             final TranslationCapability capability = getTranslationCapability(translator.getTranslationContext());
-            this.mActivity.runOnUiThread(new Runnable() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda7
+            this.mActivity.runOnUiThread(new Runnable() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     UiTranslationController.this.lambda$onUiTranslationStarted$6(roots, viewIds, supportedFormats, capability, requests, translator);
@@ -563,16 +564,13 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onUiTranslationStarted$6(ArrayList roots, Map viewIds, int[] supportedFormats, TranslationCapability capability, ArrayList requests, Translator translator) {
         for (int rootNum = 0; rootNum < roots.size(); rootNum++) {
             View rootView = ((ViewRootImpl) roots.get(rootNum)).getView();
-            if (rootView != null) {
-                rootView.dispatchCreateViewTranslationRequest(viewIds, supportedFormats, capability, requests);
-            } else {
-                Log.w("UiTranslationController", "onUiTranslationStarted(): rootView is null");
-            }
+            rootView.dispatchCreateViewTranslationRequest(viewIds, supportedFormats, capability, requests);
         }
-        this.mWorkerHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda0
+        this.mWorkerHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda10
             @Override // com.android.internal.util.function.TriConsumer
             public final void accept(Object obj, Object obj2, Object obj3) {
                 ((UiTranslationController) obj).sendTranslationRequest((Translator) obj2, (ArrayList) obj3);
@@ -640,7 +638,7 @@ public class UiTranslationController implements Dumpable {
             if (views.size() == 0) {
                 Log.w("UiTranslationController", "No views can be excuted for runForEachView.");
             }
-            this.mActivity.runOnUiThread(new Runnable() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda1
+            this.mActivity.runOnUiThread(new Runnable() { // from class: android.view.translation.UiTranslationController$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     UiTranslationController.lambda$runForEachView$7(ArrayMap.this, isLoggable, action);
@@ -649,76 +647,21 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x004a, code lost:
-    
-        android.util.Log.d("UiTranslationController", "View was gone or ViewTranslationCallback for autofillId = " + r6.keyAt(r2));
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static /* synthetic */ void lambda$runForEachView$7(android.util.ArrayMap r6, boolean r7, java.util.function.BiConsumer r8) {
-        /*
-            java.lang.String r0 = "UiTranslationController"
-            int r1 = r6.size()     // Catch: java.lang.Exception -> L68
-            r2 = 0
-        L7:
-            if (r2 >= r1) goto L67
-            java.lang.Object r3 = r6.valueAt(r2)     // Catch: java.lang.Exception -> L68
-            java.lang.ref.WeakReference r3 = (java.lang.ref.WeakReference) r3     // Catch: java.lang.Exception -> L68
-            java.lang.Object r3 = r3.get()     // Catch: java.lang.Exception -> L68
-            android.view.View r3 = (android.view.View) r3     // Catch: java.lang.Exception -> L68
-            if (r7 == 0) goto L37
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L68
-            r4.<init>()     // Catch: java.lang.Exception -> L68
-            java.lang.String r5 = "runForEachView for autofillId = "
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Exception -> L68
-            if (r3 == 0) goto L2a
-            android.view.autofill.AutofillId r5 = r3.getAutofillId()     // Catch: java.lang.Exception -> L68
-            goto L2c
-        L2a:
-            java.lang.String r5 = " null"
-        L2c:
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Exception -> L68
-            java.lang.String r4 = r4.toString()     // Catch: java.lang.Exception -> L68
-            android.util.Log.d(r0, r4)     // Catch: java.lang.Exception -> L68
-        L37:
-            if (r3 == 0) goto L48
-            android.view.translation.ViewTranslationCallback r4 = r3.getViewTranslationCallback()     // Catch: java.lang.Exception -> L68
-            if (r4 != 0) goto L40
-            goto L48
-        L40:
-            android.view.translation.ViewTranslationCallback r4 = r3.getViewTranslationCallback()     // Catch: java.lang.Exception -> L68
-            r8.accept(r3, r4)     // Catch: java.lang.Exception -> L68
-            goto L64
-        L48:
-            if (r7 == 0) goto L64
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L68
-            r4.<init>()     // Catch: java.lang.Exception -> L68
-            java.lang.String r5 = "View was gone or ViewTranslationCallback for autofillId = "
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Exception -> L68
-            java.lang.Object r5 = r6.keyAt(r2)     // Catch: java.lang.Exception -> L68
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Exception -> L68
-            java.lang.String r4 = r4.toString()     // Catch: java.lang.Exception -> L68
-            android.util.Log.d(r0, r4)     // Catch: java.lang.Exception -> L68
-        L64:
-            int r2 = r2 + 1
-            goto L7
-        L67:
-            goto L80
-        L68:
-            r1 = move-exception
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder
-            r2.<init>()
-            java.lang.String r3 = "runForEachView: "
-            java.lang.StringBuilder r2 = r2.append(r3)
-            java.lang.StringBuilder r2 = r2.append(r1)
-            java.lang.String r2 = r2.toString()
-            android.util.Log.w(r0, r2)
-        L80:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.view.translation.UiTranslationController.lambda$runForEachView$7(android.util.ArrayMap, boolean, java.util.function.BiConsumer):void");
+    static /* synthetic */ void lambda$runForEachView$7(ArrayMap views, boolean isLoggable, BiConsumer action) {
+        int viewCounts = views.size();
+        for (int i = 0; i < viewCounts; i++) {
+            View view = (View) ((WeakReference) views.valueAt(i)).get();
+            if (isLoggable) {
+                Log.d("UiTranslationController", "runForEachView for autofillId = " + (view != null ? view.getAutofillId() : " null"));
+            }
+            if (view == null || view.getViewTranslationCallback() == null) {
+                if (isLoggable) {
+                    Log.d("UiTranslationController", "View was gone or ViewTranslationCallback for autofillId = " + views.keyAt(i));
+                }
+            } else {
+                action.accept(view, view.getViewTranslationCallback());
+            }
+        }
     }
 
     private Translator createTranslatorIfNeeded(TranslationSpec sourceSpec, TranslationSpec targetSpec) {
@@ -769,7 +712,7 @@ public class UiTranslationController implements Dumpable {
             TranslationRequestValue value = request.getValue(key);
             StringBuilder append = msg.append("{text=");
             if (value.getText() == null) {
-                str = SemCapabilities.FEATURE_TAG_NULL;
+                str = "null";
             } else {
                 str = "string[" + value.getText().length() + "]}, ";
             }
@@ -790,10 +733,9 @@ public class UiTranslationController implements Dumpable {
             TranslationResponseValue value = response.getValue(key);
             msg.append("{status=").append(value.getStatusCode()).append(", ");
             StringBuilder append = msg.append("text=");
-            CharSequence text = value.getText();
-            String str3 = SemCapabilities.FEATURE_TAG_NULL;
-            if (text == null) {
-                str = SemCapabilities.FEATURE_TAG_NULL;
+            String str3 = "null";
+            if (value.getText() == null) {
+                str = "null";
             } else {
                 str = "string[" + value.getText().length() + "], ";
             }

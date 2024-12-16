@@ -7,7 +7,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class UriCodec {
     private static final char INVALID_INPUT_CHARACTER = 65533;
 
@@ -46,7 +46,7 @@ public final class UriCodec {
         return builder.toString();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x008a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x008b, code lost:
     
         r1.put(r4);
      */
@@ -66,75 +66,75 @@ public final class UriCodec {
             int r1 = r11.length()
             java.nio.ByteBuffer r1 = java.nio.ByteBuffer.allocate(r1)
             r2 = 0
-        L1f:
+        L20:
             int r3 = r11.length()
-            if (r2 >= r3) goto L8f
+            if (r2 >= r3) goto L90
             char r3 = r11.charAt(r2)
             int r2 = r2 + 1
             switch(r3) {
-                case 37: goto L43;
-                case 43: goto L35;
-                default: goto L2e;
+                case 37: goto L44;
+                case 43: goto L36;
+                default: goto L2f;
             }
-        L2e:
+        L2f:
             flushDecodingByteAccumulator(r10, r0, r1, r14)
             r10.append(r3)
-            goto L8e
-        L35:
+            goto L8f
+        L36:
             flushDecodingByteAccumulator(r10, r0, r1, r14)
-            if (r12 == 0) goto L3d
+            if (r12 == 0) goto L3e
             r4 = 32
-            goto L3f
-        L3d:
+            goto L40
+        L3e:
             r4 = 43
-        L3f:
+        L40:
             r10.append(r4)
-            goto L8e
-        L43:
+            goto L8f
+        L44:
             r4 = 0
             r5 = 0
-        L45:
+        L46:
             r6 = 2
-            if (r5 >= r6) goto L8a
+            if (r5 >= r6) goto L8b
             r6 = 65533(0xfffd, float:9.1831E-41)
-            int r7 = r11.length()     // Catch: java.net.URISyntaxException -> L7a
+            int r7 = r11.length()     // Catch: java.net.URISyntaxException -> L7b
             r8 = 0
-            char r7 = getNextCharacter(r11, r2, r7, r8)     // Catch: java.net.URISyntaxException -> L7a
+            char r7 = getNextCharacter(r11, r2, r7, r8)     // Catch: java.net.URISyntaxException -> L7b
             r3 = r7
             int r2 = r2 + 1
             int r7 = hexCharToValue(r3)
-            if (r7 >= 0) goto L73
-            if (r14 != 0) goto L67
+            if (r7 >= 0) goto L74
+            if (r14 != 0) goto L68
             flushDecodingByteAccumulator(r10, r0, r1, r14)
             r10.append(r6)
-            goto L8a
-        L67:
+            goto L8b
+        L68:
             java.lang.IllegalArgumentException r6 = new java.lang.IllegalArgumentException
             int r9 = r2 + (-1)
             java.net.URISyntaxException r8 = unexpectedCharacterException(r11, r8, r3, r9)
             r6.<init>(r8)
             throw r6
-        L73:
+        L74:
             int r6 = r4 * 16
             int r6 = r6 + r7
             byte r4 = (byte) r6
             int r5 = r5 + 1
-            goto L45
-        L7a:
+            goto L46
+        L7b:
             r7 = move-exception
-            if (r14 != 0) goto L84
+            if (r14 != 0) goto L85
             flushDecodingByteAccumulator(r10, r0, r1, r14)
             r10.append(r6)
             return
-        L84:
+        L85:
             java.lang.IllegalArgumentException r6 = new java.lang.IllegalArgumentException
             r6.<init>(r7)
             throw r6
-        L8a:
+        L8b:
             r1.put(r4)
-        L8e:
-            goto L1f
         L8f:
+            goto L20
+        L90:
             flushDecodingByteAccumulator(r10, r0, r1, r14)
             return
         */

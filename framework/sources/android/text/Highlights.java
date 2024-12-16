@@ -7,13 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Highlights {
     private final List<Pair<Paint, int[]>> mHighlights;
-
-    /* synthetic */ Highlights(List list, HighlightsIA highlightsIA) {
-        this(list);
-    }
 
     private Highlights(List<Pair<Paint, int[]>> highlights) {
         this.mHighlights = highlights;
@@ -31,7 +27,6 @@ public class Highlights {
         return this.mHighlights.get(index).second;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final List<Pair<Paint, int[]>> mHighlights = new ArrayList();
 

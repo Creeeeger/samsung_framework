@@ -8,11 +8,11 @@ import com.android.internal.org.bouncycastle.math.raw.Nat192;
 
 /* loaded from: classes5.dex */
 public class SecP192K1Point extends ECPoint.AbstractFp {
-    public SecP192K1Point(ECCurve curve, ECFieldElement x, ECFieldElement y) {
+    SecP192K1Point(ECCurve curve, ECFieldElement x, ECFieldElement y) {
         super(curve, x, y);
     }
 
-    public SecP192K1Point(ECCurve curve, ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
+    SecP192K1Point(ECCurve curve, ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
         super(curve, x, y, zs);
     }
 

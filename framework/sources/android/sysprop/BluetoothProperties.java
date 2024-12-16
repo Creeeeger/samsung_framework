@@ -56,15 +56,8 @@ public final class BluetoothProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -75,6 +68,7 @@ public final class BluetoothProperties {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Integer tryParseUInt(String str) {
         try {
             return Integer.valueOf(Integer.parseUnsignedInt(str));
@@ -107,6 +101,7 @@ public final class BluetoothProperties {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String tryParseString(String str) {
         if ("".equals(str)) {
             return null;
@@ -203,7 +198,6 @@ public final class BluetoothProperties {
         return joiner.toString();
     }
 
-    /* loaded from: classes3.dex */
     public enum snoop_default_mode_values {
         EMPTY("empty"),
         DISABLED("disabled"),
@@ -230,7 +224,6 @@ public final class BluetoothProperties {
         SystemProperties.set("persist.bluetooth.btsnoopdefaultmode", value == null ? "" : value.getPropValue());
     }
 
-    /* loaded from: classes3.dex */
     public enum snoop_log_mode_values {
         EMPTY("empty"),
         DISABLED("disabled"),
@@ -275,7 +268,6 @@ public final class BluetoothProperties {
         SystemProperties.set("persist.bluetooth.snooplogfilter.profiles.a2dp.enabled", value == null ? "" : value.toString());
     }
 
-    /* loaded from: classes3.dex */
     public enum snoop_log_filter_profile_map_values {
         EMPTY("empty"),
         DISABLED("disabled"),
@@ -303,7 +295,6 @@ public final class BluetoothProperties {
         SystemProperties.set("persist.bluetooth.snooplogfilter.profiles.map", value == null ? "" : value.getPropValue());
     }
 
-    /* loaded from: classes3.dex */
     public enum snoop_log_filter_profile_pbap_values {
         EMPTY("empty"),
         DISABLED("disabled"),
@@ -351,7 +342,7 @@ public final class BluetoothProperties {
 
     public static List<String> le_audio_allow_list() {
         String value = SystemProperties.get("persist.bluetooth.leaudio.allow_list");
-        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda0
+        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda6
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -382,6 +373,11 @@ public final class BluetoothProperties {
 
     public static Optional<Boolean> isLeAudioInbandRingtoneSupported() {
         String value = SystemProperties.get("bluetooth.core.le_audio.inband_ringtone.supported");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static Optional<Boolean> isLeAudioCodecExtensionAidlEnabled() {
+        String value = SystemProperties.get("bluetooth.core.le_audio.codec_extension_aidl.enabled");
         return Optional.ofNullable(tryParseBoolean(value));
     }
 
@@ -567,6 +563,11 @@ public final class BluetoothProperties {
         return Optional.ofNullable(tryParseBoolean(value));
     }
 
+    public static Optional<Boolean> isProfilePbapSimEnabled() {
+        String value = SystemProperties.get("bluetooth.profile.pbap.sim.enabled");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
     public static Optional<Boolean> isProfileSapServerEnabled() {
         String value = SystemProperties.get("bluetooth.profile.sap.server.enabled");
         return Optional.ofNullable(tryParseBoolean(value));
@@ -624,7 +625,7 @@ public final class BluetoothProperties {
 
     public static List<Integer> getClassicSniffMaxIntervals() {
         String value = SystemProperties.get("bluetooth.core.classic.sniff_max_intervals");
-        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda3
+        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseUInt;
@@ -636,7 +637,7 @@ public final class BluetoothProperties {
 
     public static List<Integer> getClassicSniffMinIntervals() {
         String value = SystemProperties.get("bluetooth.core.classic.sniff_min_intervals");
-        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda1
+        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseUInt;
@@ -648,7 +649,7 @@ public final class BluetoothProperties {
 
     public static List<Integer> getClassicSniffAttempts() {
         String value = SystemProperties.get("bluetooth.core.classic.sniff_attempts");
-        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda5
+        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseUInt;
@@ -660,7 +661,7 @@ public final class BluetoothProperties {
 
     public static List<Integer> getClassicSniffTimeouts() {
         String value = SystemProperties.get("bluetooth.core.classic.sniff_timeouts");
-        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda2
+        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseUInt;
@@ -740,8 +741,30 @@ public final class BluetoothProperties {
         return Optional.ofNullable(tryParseBoolean(value));
     }
 
+    public static Optional<Integer> getLeMaxNumberOfConcurrentConnections() {
+        String value = SystemProperties.get("bluetooth.core.le.max_number_of_concurrent_connections");
+        return Optional.ofNullable(tryParseUInt(value));
+    }
+
+    public static List<String> dsa_transport_preference() {
+        String value = SystemProperties.get("bluetooth.core.le.dsa_transport_preference");
+        return tryParseList(new Function() { // from class: android.sysprop.BluetoothProperties$$ExternalSyntheticLambda1
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                String tryParseString;
+                tryParseString = BluetoothProperties.tryParseString((String) obj);
+                return tryParseString;
+            }
+        }, value);
+    }
+
     public static Optional<Boolean> getDisableEnchancedConnection() {
         String value = SystemProperties.get("bluetooth.sco.disable_enhanced_connection");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static Optional<Boolean> isScoManagedByAudioEnabled() {
+        String value = SystemProperties.get("bluetooth.sco.managed_by_audio");
         return Optional.ofNullable(tryParseBoolean(value));
     }
 }

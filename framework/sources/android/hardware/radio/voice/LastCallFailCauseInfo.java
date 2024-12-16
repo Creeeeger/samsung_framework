@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class LastCallFailCauseInfo implements Parcelable {
     public static final Parcelable.Creator<LastCallFailCauseInfo> CREATOR = new Parcelable.Creator<LastCallFailCauseInfo>() { // from class: android.hardware.radio.voice.LastCallFailCauseInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LastCallFailCauseInfo createFromParcel(Parcel _aidl_source) {
             LastCallFailCauseInfo _aidl_out = new LastCallFailCauseInfo();
@@ -19,6 +17,7 @@ public class LastCallFailCauseInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LastCallFailCauseInfo[] newArray(int _aidl_size) {
             return new LastCallFailCauseInfo[_aidl_size];
@@ -26,25 +25,6 @@ public class LastCallFailCauseInfo implements Parcelable {
     };
     public int causeCode;
     public String vendorCause;
-
-    /* renamed from: android.hardware.radio.voice.LastCallFailCauseInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LastCallFailCauseInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LastCallFailCauseInfo createFromParcel(Parcel _aidl_source) {
-            LastCallFailCauseInfo _aidl_out = new LastCallFailCauseInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LastCallFailCauseInfo[] newArray(int _aidl_size) {
-            return new LastCallFailCauseInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +83,7 @@ public class LastCallFailCauseInfo implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("causeCode: " + LastCallFailCause$$.toString(this.causeCode));
         _aidl_sj.add("vendorCause: " + Objects.toString(this.vendorCause));
-        return "android.hardware.radio.voice.LastCallFailCauseInfo" + _aidl_sj.toString();
+        return "LastCallFailCauseInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

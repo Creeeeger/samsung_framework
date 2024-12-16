@@ -35,7 +35,7 @@ public class SemStatusBarManager {
     private IStatusBarService mService;
     private IBinder mToken = new Binder();
 
-    public SemStatusBarManager(Context context) {
+    SemStatusBarManager(Context context) {
         this.mContext = context;
     }
 
@@ -188,18 +188,6 @@ public class SemStatusBarManager {
                 } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
-            }
-        }
-    }
-
-    private void resetScheduleAutoHide() {
-        enforceStatusBarService();
-        IStatusBarService svc = getService();
-        if (svc != null) {
-            try {
-                svc.resetScheduleAutoHide();
-            } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
             }
         }
     }

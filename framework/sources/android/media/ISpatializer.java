@@ -9,7 +9,7 @@ import android.os.RemoteException;
 
 /* loaded from: classes2.dex */
 public interface ISpatializer extends IInterface {
-    public static final String DESCRIPTOR = "android$media$ISpatializer".replace('$', '.');
+    public static final String DESCRIPTOR = "android.media.ISpatializer";
 
     byte getActualHeadTrackingMode() throws RemoteException;
 
@@ -51,7 +51,6 @@ public interface ISpatializer extends IInterface {
 
     void setScreenSensor(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISpatializer {
         @Override // android.media.ISpatializer
         public void release() throws RemoteException {
@@ -146,7 +145,6 @@ public interface ISpatializer extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISpatializer {
         static final int TRANSACTION_getActualHeadTrackingMode = 8;
         static final int TRANSACTION_getLevel = 4;
@@ -170,14 +168,14 @@ public interface ISpatializer extends IInterface {
         static final int TRANSACTION_setScreenSensor = 12;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, ISpatializer.DESCRIPTOR);
         }
 
         public static ISpatializer asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(ISpatializer.DESCRIPTOR);
             if (iin != null && (iin instanceof ISpatializer)) {
                 return (ISpatializer) iin;
             }
@@ -191,136 +189,132 @@ public interface ISpatializer extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            String descriptor = DESCRIPTOR;
             if (code >= 1 && code <= 16777215) {
-                data.enforceInterface(descriptor);
+                data.enforceInterface(ISpatializer.DESCRIPTOR);
+            }
+            if (code == 1598968902) {
+                reply.writeString(ISpatializer.DESCRIPTOR);
+                return true;
             }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 1:
+                    release();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    byte[] _result = getSupportedLevels();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result);
+                    return true;
+                case 3:
+                    byte _arg0 = data.readByte();
+                    data.enforceNoDataAvail();
+                    setLevel(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    byte _result2 = getLevel();
+                    reply.writeNoException();
+                    reply.writeByte(_result2);
+                    return true;
+                case 5:
+                    boolean _result3 = isHeadTrackingSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    byte[] _result4 = getSupportedHeadTrackingModes();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    return true;
+                case 7:
+                    byte _arg02 = data.readByte();
+                    data.enforceNoDataAvail();
+                    setDesiredHeadTrackingMode(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    byte _result5 = getActualHeadTrackingMode();
+                    reply.writeNoException();
+                    reply.writeByte(_result5);
+                    return true;
+                case 9:
+                    recenterHeadTracker();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    float[] _arg03 = data.createFloatArray();
+                    data.enforceNoDataAvail();
+                    setGlobalTransform(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setHeadSensor(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setScreenSensor(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    float _arg06 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setDisplayOrientation(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    float _arg07 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setHingeAngle(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    boolean _arg08 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setFoldState(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    byte[] _result6 = getSupportedModes();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result6);
+                    return true;
+                case 17:
+                    ISpatializerHeadTrackingCallback _arg09 = ISpatializerHeadTrackingCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerHeadTrackingCallback(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    int _arg010 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setParameter(_arg010, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int _arg011 = data.readInt();
+                    byte[] _arg12 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    getParameter(_arg011, _arg12);
+                    reply.writeNoException();
+                    reply.writeByteArray(_arg12);
+                    return true;
+                case 20:
+                    int _result7 = getOutput();
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            release();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            byte[] _result = getSupportedLevels();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 3:
-                            byte _arg0 = data.readByte();
-                            data.enforceNoDataAvail();
-                            setLevel(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            byte _result2 = getLevel();
-                            reply.writeNoException();
-                            reply.writeByte(_result2);
-                            return true;
-                        case 5:
-                            boolean _result3 = isHeadTrackingSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            byte[] _result4 = getSupportedHeadTrackingModes();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            return true;
-                        case 7:
-                            byte _arg02 = data.readByte();
-                            data.enforceNoDataAvail();
-                            setDesiredHeadTrackingMode(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            byte _result5 = getActualHeadTrackingMode();
-                            reply.writeNoException();
-                            reply.writeByte(_result5);
-                            return true;
-                        case 9:
-                            recenterHeadTracker();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            float[] _arg03 = data.createFloatArray();
-                            data.enforceNoDataAvail();
-                            setGlobalTransform(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setHeadSensor(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setScreenSensor(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            float _arg06 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setDisplayOrientation(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            float _arg07 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setHingeAngle(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            boolean _arg08 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setFoldState(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            byte[] _result6 = getSupportedModes();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result6);
-                            return true;
-                        case 17:
-                            ISpatializerHeadTrackingCallback _arg09 = ISpatializerHeadTrackingCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerHeadTrackingCallback(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            int _arg010 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setParameter(_arg010, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int _arg011 = data.readInt();
-                            byte[] _arg12 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            getParameter(_arg011, _arg12);
-                            reply.writeNoException();
-                            reply.writeByteArray(_arg12);
-                            return true;
-                        case 20:
-                            int _result7 = getOutput();
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISpatializer {
+        private static class Proxy implements ISpatializer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -333,7 +327,7 @@ public interface ISpatializer extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return ISpatializer.DESCRIPTOR;
             }
 
             @Override // android.media.ISpatializer
@@ -341,7 +335,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(1, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -355,7 +349,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(2, _data, _reply, 0);
                     _reply.readException();
                     byte[] _result = _reply.createByteArray();
@@ -371,7 +365,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeByte(level);
                     this.mRemote.transact(3, _data, _reply, 0);
                     _reply.readException();
@@ -386,7 +380,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(4, _data, _reply, 0);
                     _reply.readException();
                     byte _result = _reply.readByte();
@@ -402,7 +396,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(5, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
@@ -418,7 +412,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(6, _data, _reply, 0);
                     _reply.readException();
                     byte[] _result = _reply.createByteArray();
@@ -434,7 +428,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeByte(mode);
                     this.mRemote.transact(7, _data, _reply, 0);
                     _reply.readException();
@@ -449,7 +443,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(8, _data, _reply, 0);
                     _reply.readException();
                     byte _result = _reply.readByte();
@@ -465,7 +459,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(9, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -479,7 +473,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeFloatArray(screenToStage);
                     this.mRemote.transact(10, _data, _reply, 0);
                     _reply.readException();
@@ -494,7 +488,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeInt(sensorHandle);
                     this.mRemote.transact(11, _data, _reply, 0);
                     _reply.readException();
@@ -509,7 +503,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeInt(sensorHandle);
                     this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
@@ -524,7 +518,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeFloat(physicalToLogicalAngle);
                     this.mRemote.transact(13, _data, _reply, 0);
                     _reply.readException();
@@ -539,7 +533,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeFloat(hingeAngle);
                     this.mRemote.transact(14, _data, _reply, 0);
                     _reply.readException();
@@ -554,7 +548,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeBoolean(folded);
                     this.mRemote.transact(15, _data, _reply, 0);
                     _reply.readException();
@@ -569,7 +563,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(16, _data, _reply, 0);
                     _reply.readException();
                     byte[] _result = _reply.createByteArray();
@@ -585,7 +579,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(17, _data, _reply, 0);
                     _reply.readException();
@@ -600,7 +594,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeInt(key);
                     _data.writeByteArray(value);
                     this.mRemote.transact(18, _data, _reply, 0);
@@ -616,7 +610,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     _data.writeInt(key);
                     _data.writeByteArray(value);
                     this.mRemote.transact(19, _data, _reply, 0);
@@ -633,7 +627,7 @@ public interface ISpatializer extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISpatializer.DESCRIPTOR);
                     this.mRemote.transact(20, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();

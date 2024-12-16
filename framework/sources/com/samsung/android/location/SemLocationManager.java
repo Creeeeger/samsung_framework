@@ -2,7 +2,6 @@ package com.samsung.android.location;
 
 import android.app.PendingIntent;
 import android.content.Context;
-import android.location.Address;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +14,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemLocationManager {
     public static final String ACTION_SERVICE_READY = "com.samsung.android.location.SERVICE_READY";
     public static final String BATCHED_LOCATION = "batchedlocation";
@@ -57,13 +55,10 @@ public class SemLocationManager {
     private final ISLocationManager mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SemLocationManagerModule {
     }
 
-    /* loaded from: classes5.dex */
-    public class LocListenerTransport extends ISLocationListener.Stub {
-        public static final int TYPE_LOCATION_AVAILABLE = 1;
+    private class LocListenerTransport extends ISLocationListener.Stub {
         public static final int TYPE_LOCATION_CHANGED_ADDRESS = 2;
         private SemLocationListener mListener;
         private final Handler mListenerHandler;
@@ -71,12 +66,6 @@ public class SemLocationManager {
         LocListenerTransport(SemLocationListener listener) {
             this.mListener = listener;
             this.mListenerHandler = new Handler() { // from class: com.samsung.android.location.SemLocationManager.LocListenerTransport.1
-                final /* synthetic */ SemLocationManager val$this$0;
-
-                AnonymousClass1(SemLocationManager semLocationManager) {
-                    r2 = semLocationManager;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     LocListenerTransport.this._handleMessage(msg);
@@ -84,32 +73,8 @@ public class SemLocationManager {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.location.SemLocationManager$LocListenerTransport$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 extends Handler {
-            final /* synthetic */ SemLocationManager val$this$0;
-
-            AnonymousClass1(SemLocationManager semLocationManager) {
-                r2 = semLocationManager;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                LocListenerTransport.this._handleMessage(msg);
-            }
-        }
-
         @Override // com.samsung.android.location.ISLocationListener
-        public void onLocationAvailable(Location[] locations) {
-            Message msg = Message.obtain();
-            msg.what = 1;
-            msg.obj = locations;
-            sendCallbackMessage(msg);
-        }
-
-        @Override // com.samsung.android.location.ISLocationListener
-        public void onLocationChanged(Location location, Address address) {
+        public void onLocationChanged(Location location) {
             Message msg = Message.obtain();
             msg.what = 2;
             msg.obj = location;
@@ -127,16 +92,12 @@ public class SemLocationManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void _handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
-                    this.mListener.onLocationAvailable((Location[]) msg.obj);
-                    return;
                 case 2:
-                    this.mListener.onLocationChanged((Location) msg.obj, new Address(Locale.ENGLISH));
-                    return;
-                default:
-                    return;
+                    this.mListener.onLocationChanged((Location) msg.obj);
+                    break;
             }
         }
     }
@@ -147,13 +108,12 @@ public class SemLocationManager {
     }
 
     public boolean isAvailable(int module) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return false;
         }
         try {
-            return iSLocationManager.isAvailable(module);
+            return this.mService.isAvailable(module, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (RemoteException ex) {
             Log.e(TAG, "isAvailable : RemoteException " + ex.toString());
             return false;
@@ -161,13 +121,12 @@ public class SemLocationManager {
     }
 
     public int removeGeofence(PendingIntent intent) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return -1;
         }
         try {
-            return iSLocationManager.removeGeofencesPendingIntent(intent);
+            return this.mService.removeGeofencesPendingIntent(intent, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (RemoteException ex) {
             Log.e(TAG, "removeGeofence: RemoteException " + ex.toString());
             return -4;
@@ -175,8 +134,7 @@ public class SemLocationManager {
     }
 
     public int requestSingleLocation(int accuracy, int timeout, boolean isAddress, PendingIntent intent) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return -1;
         }
@@ -185,27 +143,9 @@ public class SemLocationManager {
             return -2;
         }
         try {
-            return iSLocationManager.requestSingleLocation(accuracy, timeout, isAddress, intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
+            return this.mService.requestSingleLocation(accuracy, timeout, isAddress, intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (RemoteException ex) {
             Log.e(TAG, "requestSingleLocation: RemoteException " + ex.toString());
-            return -4;
-        }
-    }
-
-    public int removeSingleLocation(PendingIntent intent) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
-            Log.e(TAG, "SLocationService is not supported");
-            return -1;
-        }
-        if (intent == null) {
-            Log.e(TAG, "parameters are not vaild");
-            return -2;
-        }
-        try {
-            return iSLocationManager.removeSingleLocation(intent, null);
-        } catch (RemoteException ex) {
-            Log.e(TAG, "removeSingleLocation: RemoteException " + ex.toString());
             return -4;
         }
     }
@@ -251,35 +191,9 @@ public class SemLocationManager {
                 Log.e(TAG, "Already stopped location");
                 return -3;
             }
-            return this.mService.removeSingleLocation(null, transport);
+            return this.mService.removeSingleLocation(null, transport, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (RemoteException ex) {
             Log.e(TAG, "removeSingleLocation: RemoteException " + ex.toString());
-            return -4;
-        }
-    }
-
-    public int requestMostAccurateLocation(int accuracyLimit, int requestTimeout, int locationTimeout, SemLocationListener listener) {
-        int requestMostAccurateLocation;
-        if (this.mService == null) {
-            Log.e(TAG, "SLocationService is not supported");
-            return -1;
-        }
-        if (listener == null) {
-            Log.e(TAG, "parameters are not vaild");
-            return -2;
-        }
-        try {
-            synchronized (this.mLocListeners) {
-                LocListenerTransport transport = this.mLocListeners.get(listener);
-                if (transport == null) {
-                    transport = new LocListenerTransport(listener);
-                }
-                this.mLocListeners.put(listener, transport);
-                requestMostAccurateLocation = this.mService.requestMostAccurateLocation(accuracyLimit, requestTimeout, locationTimeout, null, transport, this.mContext.getPackageName(), this.mContext.getAttributionTag());
-            }
-            return requestMostAccurateLocation;
-        } catch (RemoteException ex) {
-            Log.e(TAG, "requestMostAccurateLocation: RemoteException " + ex.toString());
             return -4;
         }
     }
@@ -325,7 +239,7 @@ public class SemLocationManager {
                 Log.e(TAG, "Already stopped location");
                 return -3;
             }
-            return this.mService.removeLocation(transport);
+            return this.mService.removeLocation(transport, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (RemoteException ex) {
             Log.e(TAG, "removeLocationUpdates: RemoteException " + ex.toString());
             return -4;
@@ -333,8 +247,7 @@ public class SemLocationManager {
     }
 
     public void requestPassiveLocation(PendingIntent intent) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return;
         }
@@ -343,15 +256,14 @@ public class SemLocationManager {
             return;
         }
         try {
-            iSLocationManager.requestPassiveLocation(intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
+            this.mService.requestPassiveLocation(intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (Throwable ex) {
             Log.e(TAG, "requestLocationToPoi: RemoteException " + ex.toString());
         }
     }
 
     public void removePassiveLocation(PendingIntent intent) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return;
         }
@@ -360,15 +272,14 @@ public class SemLocationManager {
             return;
         }
         try {
-            iSLocationManager.removePassiveLocation(intent, null);
+            this.mService.removePassiveLocation(intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (Throwable ex) {
             Log.e(TAG, "requestLocationToPoi: RemoteException " + ex.toString());
         }
     }
 
     public int requestBatchedLocations(SemLocationBatchingRequest request, PendingIntent intent) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return -1;
         }
@@ -377,7 +288,7 @@ public class SemLocationManager {
             return -2;
         }
         try {
-            return iSLocationManager.requestBatchedLocations(request, intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
+            return this.mService.requestBatchedLocations(request, intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (Throwable ex) {
             Log.e(TAG, "requestLocationBatchingUpdates: RemoteException " + ex.toString());
             return -4;
@@ -397,8 +308,7 @@ public class SemLocationManager {
     }
 
     public int removeBatchedLocations(PendingIntent intent) {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return -1;
         }
@@ -407,7 +317,7 @@ public class SemLocationManager {
             return -2;
         }
         try {
-            return iSLocationManager.removeBatchedLocations(intent, null);
+            return this.mService.removeBatchedLocations(intent, null, this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (Throwable ex) {
             Log.e(TAG, "requestLocationBatchingUpdates: RemoteException " + ex.toString());
             return -4;
@@ -427,13 +337,12 @@ public class SemLocationManager {
     }
 
     public void flushBatchedLocations() {
-        ISLocationManager iSLocationManager = this.mService;
-        if (iSLocationManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "SLocationService is not supported");
             return;
         }
         try {
-            iSLocationManager.flushBatchedLocations();
+            this.mService.flushBatchedLocations(this.mContext.getPackageName(), this.mContext.getAttributionTag());
         } catch (Throwable ex) {
             Log.e(TAG, "flushLocations: RemoteException " + ex.toString());
         }

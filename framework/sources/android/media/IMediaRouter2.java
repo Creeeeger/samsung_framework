@@ -23,7 +23,6 @@ public interface IMediaRouter2 extends IInterface {
 
     void requestCreateSessionByManager(long j, RoutingSessionInfo routingSessionInfo, MediaRoute2Info mediaRoute2Info) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaRouter2 {
         @Override // android.media.IMediaRouter2
         public void notifyRouterRegistered(List<MediaRoute2Info> currentRoutes, RoutingSessionInfo currentSystemSessionInfo) throws RemoteException {
@@ -55,7 +54,6 @@ public interface IMediaRouter2 extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaRouter2 {
         static final int TRANSACTION_notifyRouterRegistered = 1;
         static final int TRANSACTION_notifyRoutesUpdated = 2;
@@ -113,55 +111,51 @@ public interface IMediaRouter2 extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMediaRouter2.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMediaRouter2.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMediaRouter2.DESCRIPTOR);
+                case 1:
+                    List<MediaRoute2Info> _arg0 = data.createTypedArrayList(MediaRoute2Info.CREATOR);
+                    RoutingSessionInfo _arg1 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyRouterRegistered(_arg0, _arg1);
+                    return true;
+                case 2:
+                    List<MediaRoute2Info> _arg02 = data.createTypedArrayList(MediaRoute2Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyRoutesUpdated(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    RoutingSessionInfo _arg12 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionCreated(_arg03, _arg12);
+                    return true;
+                case 4:
+                    RoutingSessionInfo _arg04 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionInfoChanged(_arg04);
+                    return true;
+                case 5:
+                    RoutingSessionInfo _arg05 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionReleased(_arg05);
+                    return true;
+                case 6:
+                    long _arg06 = data.readLong();
+                    RoutingSessionInfo _arg13 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    MediaRoute2Info _arg2 = (MediaRoute2Info) data.readTypedObject(MediaRoute2Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestCreateSessionByManager(_arg06, _arg13, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<MediaRoute2Info> _arg0 = data.createTypedArrayList(MediaRoute2Info.CREATOR);
-                            RoutingSessionInfo _arg1 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyRouterRegistered(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            List<MediaRoute2Info> _arg02 = data.createTypedArrayList(MediaRoute2Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyRoutesUpdated(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            RoutingSessionInfo _arg12 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionCreated(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            RoutingSessionInfo _arg04 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionInfoChanged(_arg04);
-                            return true;
-                        case 5:
-                            RoutingSessionInfo _arg05 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionReleased(_arg05);
-                            return true;
-                        case 6:
-                            long _arg06 = data.readLong();
-                            RoutingSessionInfo _arg13 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            MediaRoute2Info _arg2 = (MediaRoute2Info) data.readTypedObject(MediaRoute2Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestCreateSessionByManager(_arg06, _arg13, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMediaRouter2 {
+        private static class Proxy implements IMediaRouter2 {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

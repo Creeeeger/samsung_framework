@@ -3,17 +3,18 @@ package com.samsung.android.knox.util;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemCertByte implements Parcelable {
-    public static final Parcelable.Creator<SemCertByte> CREATOR = new Parcelable.Creator<SemCertByte>() { // from class: com.samsung.android.knox.util.SemCertByte.1
-        AnonymousClass1() {
-        }
 
+    @Deprecated(forRemoval = true, since = "16.0")
+    public static final Parcelable.Creator<SemCertByte> CREATOR = new Parcelable.Creator<SemCertByte>() { // from class: com.samsung.android.knox.util.SemCertByte.1
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemCertByte createFromParcel(Parcel source) {
             return new SemCertByte(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemCertByte[] newArray(int size) {
             return null;
@@ -28,24 +29,22 @@ public class SemCertByte implements Parcelable {
     }
 
     public SemCertByte(Parcel source) {
-        int readInt = source.readInt();
-        this.certsize = readInt;
-        byte[] bArr = new byte[readInt];
-        this.certBytes = bArr;
-        readByteArray(source, bArr);
-        int readInt2 = source.readInt();
-        this.caSize = readInt2;
-        byte[] bArr2 = new byte[readInt2];
-        this.caCertBytes = bArr2;
-        readByteArray(source, bArr2);
+        this.certsize = source.readInt();
+        this.certBytes = new byte[this.certsize];
+        readByteArray(source, this.certBytes);
+        this.caSize = source.readInt();
+        this.caCertBytes = new byte[this.caSize];
+        readByteArray(source, this.caCertBytes);
     }
 
     @Override // android.os.Parcelable
+    @Deprecated(forRemoval = true, since = "16.0")
     public int describeContents() {
         return 0;
     }
 
     @Override // android.os.Parcelable
+    @Deprecated(forRemoval = true, since = "16.0")
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.certsize);
         dest.writeByteArray(this.certBytes);
@@ -60,22 +59,5 @@ public class SemCertByte implements Parcelable {
             return;
         }
         throw new RuntimeException("bad array lengths");
-    }
-
-    /* renamed from: com.samsung.android.knox.util.SemCertByte$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemCertByte> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemCertByte createFromParcel(Parcel source) {
-            return new SemCertByte(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemCertByte[] newArray(int size) {
-            return null;
-        }
     }
 }

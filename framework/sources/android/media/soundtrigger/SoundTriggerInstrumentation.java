@@ -34,12 +34,10 @@ public final class SoundTriggerInstrumentation {
     private Map<IBinder, RecognitionSession> mRecognitionSessionMap = new HashMap();
     private IBinder mClientToken = null;
 
-    /* loaded from: classes2.dex */
     public interface RecognitionCallback {
         void onRecognitionStopped();
     }
 
-    /* loaded from: classes2.dex */
     public interface GlobalCallback {
         void onModelLoaded(ModelSession modelSession);
 
@@ -59,7 +57,6 @@ public final class SoundTriggerInstrumentation {
         }
     }
 
-    /* loaded from: classes2.dex */
     public interface ModelCallback {
         void onRecognitionStarted(RecognitionSession recognitionSession);
 
@@ -70,7 +67,6 @@ public final class SoundTriggerInstrumentation {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class ModelSession {
         private final List<Consumer<ModelCallback>> mDroppedConsumerList;
         private final IInjectModelEvent mInjectModelEvent;
@@ -78,10 +74,6 @@ public final class SoundTriggerInstrumentation {
         private ModelCallback mModelCallback;
         private Executor mModelExecutor;
         private final SoundTrigger.Keyphrase[] mPhrases;
-
-        /* synthetic */ ModelSession(SoundTriggerInstrumentation soundTriggerInstrumentation, SoundModel soundModel, Phrase[] phraseArr, IInjectModelEvent iInjectModelEvent, ModelSessionIA modelSessionIA) {
-            this(soundModel, phraseArr, iInjectModelEvent);
-        }
 
         public void triggerUnloadModel() {
             synchronized (SoundTriggerInstrumentation.this.mLock) {
@@ -119,7 +111,7 @@ public final class SoundTriggerInstrumentation {
             synchronized (SoundTriggerInstrumentation.this.mLock) {
                 if (this.mModelCallback == null) {
                     for (final Consumer<ModelCallback> droppedConsumer : this.mDroppedConsumerList) {
-                        executor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$ModelSession$$ExternalSyntheticLambda0
+                        executor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$ModelSession$$ExternalSyntheticLambda1
                             @Override // java.lang.Runnable
                             public final void run() {
                                 droppedConsumer.accept(callback);
@@ -162,11 +154,12 @@ public final class SoundTriggerInstrumentation {
             this.mInjectModelEvent = injection;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void wrap(final Consumer<ModelCallback> consumer) {
             synchronized (SoundTriggerInstrumentation.this.mLock) {
-                final ModelCallback callback = this.mModelCallback;
-                if (callback != null) {
-                    this.mModelExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$ModelSession$$ExternalSyntheticLambda1
+                if (this.mModelCallback != null) {
+                    final ModelCallback callback = this.mModelCallback;
+                    this.mModelExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$ModelSession$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             consumer.accept(callback);
@@ -179,7 +172,6 @@ public final class SoundTriggerInstrumentation {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class RecognitionSession {
         private final int mAudioSession;
         private final List<Consumer<RecognitionCallback>> mDroppedConsumerList;
@@ -187,10 +179,6 @@ public final class SoundTriggerInstrumentation {
         private RecognitionCallback mRecognitionCallback;
         private final SoundTrigger.RecognitionConfig mRecognitionConfig;
         private Executor mRecognitionExecutor;
-
-        /* synthetic */ RecognitionSession(SoundTriggerInstrumentation soundTriggerInstrumentation, int i, RecognitionConfig recognitionConfig, IInjectRecognitionEvent iInjectRecognitionEvent, RecognitionSessionIA recognitionSessionIA) {
-            this(i, recognitionConfig, iInjectRecognitionEvent);
-        }
 
         public int getAudioSession() {
             return this.mAudioSession;
@@ -267,10 +255,11 @@ public final class SoundTriggerInstrumentation {
             this.mInjectRecognitionEvent = injectRecognitionEvent;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void wrap(final Consumer<RecognitionCallback> consumer) {
             synchronized (SoundTriggerInstrumentation.this.mLock) {
-                final RecognitionCallback callback = this.mRecognitionCallback;
-                if (callback != null) {
+                if (this.mRecognitionCallback != null) {
+                    final RecognitionCallback callback = this.mRecognitionCallback;
                     this.mRecognitionExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$RecognitionSession$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
@@ -284,12 +273,8 @@ public final class SoundTriggerInstrumentation {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class Injection extends ISoundTriggerInjection.Stub {
-        /* synthetic */ Injection(SoundTriggerInstrumentation soundTriggerInstrumentation, InjectionIA injectionIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class Injection extends ISoundTriggerInjection.Stub {
         private Injection() {
         }
 
@@ -308,7 +293,7 @@ public final class SoundTriggerInstrumentation {
                 }
                 final ModelSession modelSession = new ModelSession(model, phrases, modelInjection);
                 SoundTriggerInstrumentation.this.mModelSessionMap.put(modelInjection.asBinder(), modelSession);
-                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda0
+                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         SoundTriggerInstrumentation.Injection.this.lambda$onSoundModelLoaded$0(modelSession);
@@ -317,6 +302,7 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSoundModelLoaded$0(ModelSession modelSession) {
             SoundTriggerInstrumentation.this.mClientCallback.onModelLoaded(modelSession);
         }
@@ -328,7 +314,7 @@ public final class SoundTriggerInstrumentation {
                 if (clientModelSession == null) {
                     return;
                 }
-                clientModelSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda9
+                clientModelSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda8
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         ((SoundTriggerInstrumentation.ModelCallback) obj).onModelUnloaded();
@@ -346,7 +332,7 @@ public final class SoundTriggerInstrumentation {
                 }
                 final RecognitionSession recogSession = new RecognitionSession(audioSessionHandle, config, recognitionInjection);
                 SoundTriggerInstrumentation.this.mRecognitionSessionMap.put(recognitionInjection.asBinder(), recogSession);
-                clientModelSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda4
+                clientModelSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda0
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         ((SoundTriggerInstrumentation.ModelCallback) obj).onRecognitionStarted(SoundTriggerInstrumentation.RecognitionSession.this);
@@ -362,7 +348,7 @@ public final class SoundTriggerInstrumentation {
                 if (clientRecognitionSession == null) {
                     return;
                 }
-                clientRecognitionSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda1
+                clientRecognitionSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda7
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         ((SoundTriggerInstrumentation.RecognitionCallback) obj).onRecognitionStopped();
@@ -378,7 +364,7 @@ public final class SoundTriggerInstrumentation {
                 if (clientModelSession == null) {
                     return;
                 }
-                clientModelSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda7
+                clientModelSession.wrap(new Consumer() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda6
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         ((SoundTriggerInstrumentation.ModelCallback) obj).onParamSet(modelParam, value);
@@ -395,7 +381,7 @@ public final class SoundTriggerInstrumentation {
                 }
                 SoundTriggerInstrumentation.this.mRecognitionSessionMap.clear();
                 SoundTriggerInstrumentation.this.mModelSessionMap.clear();
-                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda3
+                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda5
                     @Override // java.lang.Runnable
                     public final void run() {
                         SoundTriggerInstrumentation.Injection.this.lambda$onRestarted$5();
@@ -404,6 +390,7 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRestarted$5() {
             SoundTriggerInstrumentation.this.mClientCallback.onRestarted();
         }
@@ -414,7 +401,7 @@ public final class SoundTriggerInstrumentation {
                 if (globalSession.asBinder() != SoundTriggerInstrumentation.this.mInjectGlobalEvent.asBinder()) {
                     return;
                 }
-                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda2
+                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda9
                     @Override // java.lang.Runnable
                     public final void run() {
                         SoundTriggerInstrumentation.Injection.this.lambda$onFrameworkDetached$6();
@@ -423,6 +410,7 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFrameworkDetached$6() {
             SoundTriggerInstrumentation.this.mClientCallback.onFrameworkDetached();
         }
@@ -434,7 +422,7 @@ public final class SoundTriggerInstrumentation {
                     return;
                 }
                 SoundTriggerInstrumentation.this.mClientToken = token;
-                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda8
+                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda4
                     @Override // java.lang.Runnable
                     public final void run() {
                         SoundTriggerInstrumentation.Injection.this.lambda$onClientAttached$7();
@@ -443,6 +431,7 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClientAttached$7() {
             SoundTriggerInstrumentation.this.mClientCallback.onClientAttached();
         }
@@ -454,7 +443,7 @@ public final class SoundTriggerInstrumentation {
                     return;
                 }
                 SoundTriggerInstrumentation.this.mClientToken = null;
-                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda6
+                SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda3
                     @Override // java.lang.Runnable
                     public final void run() {
                         SoundTriggerInstrumentation.Injection.this.lambda$onClientDetached$8();
@@ -463,17 +452,19 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClientDetached$8() {
             SoundTriggerInstrumentation.this.mClientCallback.onClientDetached();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPreempted$9() {
             SoundTriggerInstrumentation.this.mClientCallback.onPreempted();
         }
 
         @Override // android.media.soundtrigger_middleware.ISoundTriggerInjection
         public void onPreempted() {
-            SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda5
+            SoundTriggerInstrumentation.this.mGlobalCallbackExecutor.execute(new Runnable() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation$Injection$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     SoundTriggerInstrumentation.Injection.this.lambda$onPreempted$9();
@@ -495,12 +486,11 @@ public final class SoundTriggerInstrumentation {
 
     public void triggerRestart() {
         synchronized (this.mLock) {
-            IInjectGlobalEvent iInjectGlobalEvent = this.mInjectGlobalEvent;
-            if (iInjectGlobalEvent == null) {
+            if (this.mInjectGlobalEvent == null) {
                 throw new IllegalStateException("Attempted to trigger HAL restart before registration");
             }
             try {
-                iInjectGlobalEvent.triggerRestart();
+                this.mInjectGlobalEvent.triggerRestart();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -509,12 +499,11 @@ public final class SoundTriggerInstrumentation {
 
     public void triggerOnResourcesAvailable() {
         synchronized (this.mLock) {
-            IInjectGlobalEvent iInjectGlobalEvent = this.mInjectGlobalEvent;
-            if (iInjectGlobalEvent == null) {
+            if (this.mInjectGlobalEvent == null) {
                 throw new IllegalStateException("Attempted to trigger HAL resources available before registration");
             }
             try {
-                iInjectGlobalEvent.triggerOnResourcesAvailable();
+                this.mInjectGlobalEvent.triggerOnResourcesAvailable();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -523,47 +512,26 @@ public final class SoundTriggerInstrumentation {
 
     public void setResourceContention(boolean isResourceContended) {
         synchronized (this.mLock) {
-            IInjectGlobalEvent current = this.mInjectGlobalEvent;
-            if (current == null) {
+            if (this.mInjectGlobalEvent == null) {
                 throw new IllegalStateException("Injection interface not set up");
             }
-            CountDownLatch signal = new CountDownLatch(1);
+            IInjectGlobalEvent current = this.mInjectGlobalEvent;
+            final CountDownLatch signal = new CountDownLatch(1);
             try {
                 current.setResourceContention(isResourceContended, new IAcknowledgeEvent.Stub() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation.1
-                    final /* synthetic */ CountDownLatch val$signal;
-
-                    AnonymousClass1(CountDownLatch signal2) {
-                        signal = signal2;
-                    }
-
                     @Override // android.media.soundtrigger_middleware.IAcknowledgeEvent
                     public void eventReceived() {
                         signal.countDown();
                     }
                 });
                 try {
-                    signal2.await();
+                    signal.await();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             } catch (RemoteException e2) {
                 throw e2.rethrowFromSystemServer();
             }
-        }
-    }
-
-    /* renamed from: android.media.soundtrigger.SoundTriggerInstrumentation$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 extends IAcknowledgeEvent.Stub {
-        final /* synthetic */ CountDownLatch val$signal;
-
-        AnonymousClass1(CountDownLatch signal2) {
-            signal = signal2;
-        }
-
-        @Override // android.media.soundtrigger_middleware.IAcknowledgeEvent
-        public void eventReceived() {
-            signal.countDown();
         }
     }
 

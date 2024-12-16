@@ -12,7 +12,7 @@ import android.text.TextPaint;
 import android.text.format.DateFormat;
 import com.android.internal.R;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TextAppearanceSpan extends MetricAffectingSpan implements ParcelableSpan {
     private final boolean mElegantTextHeight;
     private final String mFamilyName;
@@ -272,17 +272,14 @@ public class TextAppearanceSpan extends MetricAffectingSpan implements Parcelabl
     @Override // android.text.style.CharacterStyle
     public void updateDrawState(TextPaint ds) {
         updateMeasureState(ds);
-        ColorStateList colorStateList = this.mTextColor;
-        if (colorStateList != null) {
-            ds.setColor(colorStateList.getColorForState(ds.drawableState, 0));
+        if (this.mTextColor != null) {
+            ds.setColor(this.mTextColor.getColorForState(ds.drawableState, 0));
         }
-        ColorStateList colorStateList2 = this.mTextColorLink;
-        if (colorStateList2 != null) {
-            ds.linkColor = colorStateList2.getColorForState(ds.drawableState, 0);
+        if (this.mTextColorLink != null) {
+            ds.linkColor = this.mTextColorLink.getColorForState(ds.drawableState, 0);
         }
-        int i = this.mShadowColor;
-        if (i != 0) {
-            ds.setShadowLayer(this.mShadowRadius, this.mShadowDx, this.mShadowDy, i);
+        if (this.mShadowColor != 0) {
+            ds.setShadowLayer(this.mShadowRadius, this.mShadowDx, this.mShadowDy, this.mShadowColor);
         }
     }
 
@@ -291,19 +288,17 @@ public class TextAppearanceSpan extends MetricAffectingSpan implements Parcelabl
         Typeface styledTypeface;
         Typeface readyTypeface;
         int style = 0;
-        Typeface typeface = this.mTypeface;
-        if (typeface != null) {
+        if (this.mTypeface != null) {
             style = this.mStyle;
-            styledTypeface = Typeface.create(typeface, style);
+            styledTypeface = Typeface.create(this.mTypeface, style);
         } else if (this.mFamilyName != null || this.mStyle != 0) {
             Typeface tf = ds.getTypeface();
             if (tf != null) {
                 style = tf.getStyle();
             }
             style |= this.mStyle;
-            String str = this.mFamilyName;
-            if (str != null) {
-                styledTypeface = Typeface.create(str, style);
+            if (this.mFamilyName != null) {
+                styledTypeface = Typeface.create(this.mFamilyName, style);
             } else if (tf == null) {
                 styledTypeface = Typeface.defaultFromStyle(style);
             } else {
@@ -314,9 +309,8 @@ public class TextAppearanceSpan extends MetricAffectingSpan implements Parcelabl
             styledTypeface = null;
         }
         if (styledTypeface != null) {
-            int i = this.mTextFontWeight;
-            if (i >= 0) {
-                int weight = Math.min(1000, i);
+            if (this.mTextFontWeight >= 0) {
+                int weight = Math.min(1000, this.mTextFontWeight);
                 boolean italic = (style & 2) != 0;
                 readyTypeface = ds.setTypeface(Typeface.create(styledTypeface, weight, italic));
             } else {
@@ -331,13 +325,11 @@ public class TextAppearanceSpan extends MetricAffectingSpan implements Parcelabl
             }
             ds.setTypeface(readyTypeface);
         }
-        int i2 = this.mTextSize;
-        if (i2 > 0) {
-            ds.setTextSize(i2);
+        if (this.mTextSize > 0) {
+            ds.setTextSize(this.mTextSize);
         }
-        LocaleList localeList = this.mTextLocales;
-        if (localeList != null) {
-            ds.setTextLocales(localeList);
+        if (this.mTextLocales != null) {
+            ds.setTextLocales(this.mTextLocales);
         }
         if (this.mHasElegantTextHeight) {
             ds.setElegantTextHeight(this.mElegantTextHeight);
@@ -345,13 +337,11 @@ public class TextAppearanceSpan extends MetricAffectingSpan implements Parcelabl
         if (this.mHasLetterSpacing) {
             ds.setLetterSpacing(this.mLetterSpacing);
         }
-        String str2 = this.mFontFeatureSettings;
-        if (str2 != null) {
-            ds.setFontFeatureSettings(str2);
+        if (this.mFontFeatureSettings != null) {
+            ds.setFontFeatureSettings(this.mFontFeatureSettings);
         }
-        String str3 = this.mFontVariationSettings;
-        if (str3 != null) {
-            ds.setFontVariationSettings(str3);
+        if (this.mFontVariationSettings != null) {
+            ds.setFontVariationSettings(this.mFontVariationSettings);
         }
     }
 

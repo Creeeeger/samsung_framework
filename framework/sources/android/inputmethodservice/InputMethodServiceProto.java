@@ -29,7 +29,6 @@ public final class InputMethodServiceProto {
     public static final long VIEWS_CREATED = 1133871366146L;
     public static final long WINDOW_VISIBLE = 1133871366149L;
 
-    /* loaded from: classes2.dex */
     public final class InsetsProto {
         public static final long CONTENT_TOP_INSETS = 1120986464257L;
         public static final long TOUCHABLE_INSETS = 1120986464259L;

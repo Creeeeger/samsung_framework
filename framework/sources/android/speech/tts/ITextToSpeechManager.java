@@ -13,7 +13,6 @@ public interface ITextToSpeechManager extends IInterface {
 
     void createSession(String str, ITextToSpeechSessionCallback iTextToSpeechSessionCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITextToSpeechManager {
         @Override // android.speech.tts.ITextToSpeechManager
         public void createSession(String engine, ITextToSpeechSessionCallback managerCallback) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ITextToSpeechManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITextToSpeechManager {
         static final int TRANSACTION_createSession = 1;
 
@@ -68,27 +66,23 @@ public interface ITextToSpeechManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITextToSpeechManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITextToSpeechManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITextToSpeechManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    ITextToSpeechSessionCallback _arg1 = ITextToSpeechSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    createSession(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            ITextToSpeechSessionCallback _arg1 = ITextToSpeechSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            createSession(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITextToSpeechManager {
+        private static class Proxy implements ITextToSpeechManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

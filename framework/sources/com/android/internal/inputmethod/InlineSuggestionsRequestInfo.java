@@ -9,17 +9,16 @@ import android.view.autofill.AutofillId;
 import com.android.internal.util.AnnotationValidations;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InlineSuggestionsRequestInfo implements Parcelable {
     public static final Parcelable.Creator<InlineSuggestionsRequestInfo> CREATOR = new Parcelable.Creator<InlineSuggestionsRequestInfo>() { // from class: com.android.internal.inputmethod.InlineSuggestionsRequestInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequestInfo[] newArray(int size) {
             return new InlineSuggestionsRequestInfo[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequestInfo createFromParcel(Parcel in) {
             return new InlineSuggestionsRequestInfo(in);
@@ -31,11 +30,11 @@ public final class InlineSuggestionsRequestInfo implements Parcelable {
 
     public InlineSuggestionsRequestInfo(ComponentName componentName, AutofillId autofillId, Bundle uiExtras) {
         this.mComponentName = componentName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) componentName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mComponentName);
         this.mAutofillId = autofillId;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         this.mUiExtras = uiExtras;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) uiExtras);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mUiExtras);
     }
 
     public ComponentName getComponentName() {
@@ -90,28 +89,11 @@ public final class InlineSuggestionsRequestInfo implements Parcelable {
         AutofillId autofillId = (AutofillId) in.readTypedObject(AutofillId.CREATOR);
         Bundle uiExtras = in.readBundle();
         this.mComponentName = componentName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) componentName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mComponentName);
         this.mAutofillId = autofillId;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         this.mUiExtras = uiExtras;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) uiExtras);
-    }
-
-    /* renamed from: com.android.internal.inputmethod.InlineSuggestionsRequestInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestionsRequestInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionsRequestInfo[] newArray(int size) {
-            return new InlineSuggestionsRequestInfo[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionsRequestInfo createFromParcel(Parcel in) {
-            return new InlineSuggestionsRequestInfo(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mUiExtras);
     }
 
     @Deprecated

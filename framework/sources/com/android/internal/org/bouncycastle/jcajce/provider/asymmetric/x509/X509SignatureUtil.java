@@ -28,28 +28,25 @@ import java.security.spec.PSSParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class X509SignatureUtil {
-    private static final Map<ASN1ObjectIdentifier, String> algNames;
+class X509SignatureUtil {
+    private static final Map<ASN1ObjectIdentifier, String> algNames = new HashMap();
     private static final ASN1Null derNull;
 
     X509SignatureUtil() {
     }
 
     static {
-        HashMap hashMap = new HashMap();
-        algNames = hashMap;
-        hashMap.put(OIWObjectIdentifiers.dsaWithSHA1, "SHA1withDSA");
-        hashMap.put(X9ObjectIdentifiers.id_dsa_with_sha1, "SHA1withDSA");
+        algNames.put(OIWObjectIdentifiers.dsaWithSHA1, "SHA1withDSA");
+        algNames.put(X9ObjectIdentifiers.id_dsa_with_sha1, "SHA1withDSA");
         derNull = DERNull.INSTANCE;
     }
 
-    public static boolean isCompositeAlgorithm(AlgorithmIdentifier algorithmIdentifier) {
+    static boolean isCompositeAlgorithm(AlgorithmIdentifier algorithmIdentifier) {
         return MiscObjectIdentifiers.id_alg_composite.equals((ASN1Primitive) algorithmIdentifier.getAlgorithm());
     }
 
-    public static void setSignatureParameters(Signature signature, ASN1Encodable params) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+    static void setSignatureParameters(Signature signature, ASN1Encodable params) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         if (params != null && !derNull.equals(params)) {
             AlgorithmParameters sigParams = AlgorithmParameters.getInstance(signature.getAlgorithm(), signature.getProvider());
             try {
@@ -67,7 +64,7 @@ public class X509SignatureUtil {
         }
     }
 
-    public static String getSignatureName(AlgorithmIdentifier sigAlgId) {
+    static String getSignatureName(AlgorithmIdentifier sigAlgId) {
         ASN1Encodable params = sigAlgId.getParameters();
         if (params != null && !derNull.equals(params)) {
             if (sigAlgId.getAlgorithm().equals((ASN1Primitive) PKCSObjectIdentifiers.id_RSASSA_PSS)) {
@@ -123,7 +120,7 @@ public class X509SignatureUtil {
         return null;
     }
 
-    public static void prettyPrintSignature(byte[] sig, StringBuffer buf, String nl) {
+    static void prettyPrintSignature(byte[] sig, StringBuffer buf, String nl) {
         if (sig.length > 20) {
             buf.append("            Signature: ").append(Hex.toHexString(sig, 0, 20)).append(nl);
             for (int i = 20; i < sig.length; i += 20) {

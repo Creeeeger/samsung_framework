@@ -2,7 +2,7 @@ package android.net;
 
 import android.util.EventLog;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class EventLogTags {
     public static final int NTP_FAILURE = 50081;
     public static final int NTP_SUCCESS = 50080;

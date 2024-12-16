@@ -26,8 +26,7 @@ public final class TimeSuggestionHelper {
     }
 
     public List<String> getDebugInfo() {
-        ArrayList<String> arrayList = this.mDebugInfo;
-        return arrayList == null ? Collections.emptyList() : Collections.unmodifiableList(arrayList);
+        return this.mDebugInfo == null ? Collections.emptyList() : Collections.unmodifiableList(this.mDebugInfo);
     }
 
     public void addDebugInfo(String debugInfo) {
@@ -84,7 +83,6 @@ public final class TimeSuggestionHelper {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:5:0x000d. Please report as an issue. */
     public static TimeSuggestionHelper handleParseCommandLineArg(Class<?> helpedClass, ShellCommand cmd) throws IllegalArgumentException {
         char c;
         Long elapsedRealtimeMillis = null;

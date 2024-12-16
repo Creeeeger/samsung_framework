@@ -2,7 +2,7 @@ package android.media;
 
 /* compiled from: WebVttRenderer.java */
 /* loaded from: classes2.dex */
-public interface WebVttCueListener {
+interface WebVttCueListener {
     void onCueParsed(TextTrackCue textTrackCue);
 
     void onRegionParsed(TextTrackRegion textTrackRegion);

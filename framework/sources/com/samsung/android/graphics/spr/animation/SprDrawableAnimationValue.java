@@ -15,12 +15,11 @@ import com.samsung.android.graphics.spr.document.shape.SprObjectBase;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprDrawableAnimationValue extends SprDrawableAnimation {
     private final ArrayList<AnimatorData> mAnimatingList;
 
-    /* loaded from: classes5.dex */
-    public static class AnimatorData {
+    private static class AnimatorData {
         public AnimatorSet animatorSet;
         public long duration;
         public SprAttributeFill fillPaint;
@@ -31,10 +30,6 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
         public long startTime;
         public SprAttributeStroke strokePaint;
         public SprAnimatorBase.UpdateParameter updateParameter;
-
-        /* synthetic */ AnimatorData(AnimatorDataIA animatorDataIA) {
-            this();
-        }
 
         private AnimatorData() {
             this.updateParameter = new SprAnimatorBase.UpdateParameter();
@@ -90,7 +85,7 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
                     }
                     object.getIntrinsic().appendAttribute(fill);
                     try {
-                        fill2 = (SprAttributeFill) fill.mo8412clone();
+                        fill2 = (SprAttributeFill) fill.mo8813clone();
                         object.appendAttribute(fill2);
                     } catch (CloneNotSupportedException e) {
                         throw new RuntimeException(e);
@@ -104,7 +99,7 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
                     }
                     object.getIntrinsic().appendAttribute(stroke);
                     try {
-                        stroke2 = (SprAttributeStroke) stroke.mo8412clone();
+                        stroke2 = (SprAttributeStroke) stroke.mo8813clone();
                         object.appendAttribute(stroke2);
                     } catch (CloneNotSupportedException e2) {
                         throw new RuntimeException(e2);
@@ -114,7 +109,7 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
                     SprAttributeMatrix matrix2 = new SprAttributeMatrix();
                     object.getIntrinsic().appendAttribute(matrix2);
                     try {
-                        matrix = matrix2.mo8412clone();
+                        matrix = matrix2.mo8813clone();
                         object.appendAttribute(matrix);
                     } catch (CloneNotSupportedException e3) {
                         throw new RuntimeException(e3);

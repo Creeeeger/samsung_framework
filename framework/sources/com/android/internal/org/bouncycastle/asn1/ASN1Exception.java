@@ -6,11 +6,11 @@ import java.io.IOException;
 public class ASN1Exception extends IOException {
     private Throwable cause;
 
-    public ASN1Exception(String message) {
+    ASN1Exception(String message) {
         super(message);
     }
 
-    public ASN1Exception(String message, Throwable cause) {
+    ASN1Exception(String message, Throwable cause) {
         super(message);
         this.cause = cause;
     }

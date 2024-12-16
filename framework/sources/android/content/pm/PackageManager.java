@@ -5,18 +5,18 @@ import android.app.ActivityThread;
 import android.app.AppDetailsActivity;
 import android.app.PackageDeleteObserver;
 import android.app.PropertyInvalidatedCache;
+import android.companion.virtual.VirtualDeviceManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.IPackageDataObserver;
 import android.content.pm.IPackageDeleteObserver2;
-import android.content.pm.PackageParser;
 import android.content.pm.SuspendDialogInfo;
 import android.content.pm.dex.ArtManager;
-import android.content.pm.pkg.FrameworkPackageUserState;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -25,7 +25,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.IRemoteCallback;
 import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
@@ -34,10 +36,15 @@ import android.os.storage.VolumeInfo;
 import android.permission.PermissionManager;
 import android.util.AndroidException;
 import android.util.Log;
+import com.android.internal.pm.parsing.PackageInfoCommonUtils;
+import com.android.internal.pm.parsing.PackageParser2;
+import com.android.internal.pm.parsing.PackageParserException;
+import com.android.internal.pm.parsing.pkg.ParsedPackage;
 import com.android.internal.util.AnnotationValidations;
 import com.android.internal.util.ArrayUtils;
 import dalvik.system.VMRuntime;
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -45,10 +52,12 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /* loaded from: classes.dex */
 public abstract class PackageManager {
@@ -60,6 +69,18 @@ public abstract class PackageManager {
     public static final String ACTION_REQUEST_PERMISSIONS_FOR_OTHER = "android.content.pm.action.REQUEST_PERMISSIONS_FOR_OTHER";
     public static final boolean APPLY_DEFAULT_TO_DEVICE_PROTECTED_STORAGE = true;
     public static final boolean APP_ENUMERATION_ENABLED_BY_DEFAULT = true;
+
+    @SystemApi
+    public static final int APP_METADATA_SOURCE_APK = 1;
+
+    @SystemApi
+    public static final int APP_METADATA_SOURCE_INSTALLER = 2;
+
+    @SystemApi
+    public static final int APP_METADATA_SOURCE_SYSTEM_IMAGE = 3;
+
+    @SystemApi
+    public static final int APP_METADATA_SOURCE_UNKNOWN = 0;
     public static final int CERT_INPUT_RAW_X509 = 0;
     public static final int CERT_INPUT_SHA256 = 1;
     public static final int COMPONENT_ENABLED_STATE_DEFAULT = 0;
@@ -71,6 +92,7 @@ public abstract class PackageManager {
     @SystemApi
     public static final int DELETE_ALL_USERS = 2;
     public static final int DELETE_APP_SEPARATION_ONE_USER_APP = 268435456;
+    public static final int DELETE_ARCHIVE = 16;
     public static final int DELETE_CHATTY = Integer.MIN_VALUE;
     public static final int DELETE_DONT_KILL_APP = 8;
 
@@ -115,6 +137,10 @@ public abstract class PackageManager {
     public static final String EXTRA_INTENT_FILTER_VERIFICATION_URI_SCHEME = "android.content.pm.extra.INTENT_FILTER_VERIFICATION_URI_SCHEME";
     public static final int EXTRA_KNOX_GET_ONLY_PREFERRED = 131072;
     public static final String EXTRA_MOVE_ID = "android.content.pm.extra.MOVE_ID";
+    public static final String EXTRA_PACKAGE_MONITOR_CALLBACK_RESULT = "android.content.pm.extra.EXTRA_PACKAGE_MONITOR_CALLBACK_RESULT";
+
+    @SystemApi
+    public static final String EXTRA_REQUEST_PERMISSIONS_DEVICE_ID = "android.content.pm.extra.REQUEST_PERMISSIONS_DEVICE_ID";
 
     @SystemApi
     public static final String EXTRA_REQUEST_PERMISSIONS_LEGACY_ACCESS_PERMISSION_NAMES = "android.content.pm.extra.REQUEST_PERMISSIONS_LEGACY_ACCESS_PERMISSION_NAMES";
@@ -148,6 +174,7 @@ public abstract class PackageManager {
     public static final String FEATURE_AUDIO_LOW_LATENCY = "android.hardware.audio.low_latency";
     public static final String FEATURE_AUDIO_OUTPUT = "android.hardware.audio.output";
     public static final String FEATURE_AUDIO_PRO = "android.hardware.audio.pro";
+    public static final String FEATURE_AUDIO_SPATIAL_HEADTRACKING_LOW_LATENCY = "android.hardware.audio.spatial.headtracking.low_latency";
     public static final String FEATURE_AUTOFILL = "android.software.autofill";
     public static final String FEATURE_AUTOMOTIVE = "android.hardware.type.automotive";
     public static final String FEATURE_BACKUP = "android.software.backup";
@@ -170,6 +197,7 @@ public abstract class PackageManager {
     public static final String FEATURE_CAMERA_FRONT = "android.hardware.camera.front";
     public static final String FEATURE_CAMERA_LEVEL_FULL = "android.hardware.camera.level.full";
     public static final String FEATURE_CANT_SAVE_STATE = "android.software.cant_save_state";
+    public static final String FEATURE_CAR_DISPLAY_COMPATIBILITY = "android.software.car.display_compatibility";
     public static final String FEATURE_CAR_SPLITSCREEN_MULTITASKING = "android.software.car.splitscreen_multitasking";
     public static final String FEATURE_CAR_TEMPLATES_HOST = "android.software.car.templates_host";
     public static final String FEATURE_COMMUNAL_MODE = "android.software.communal_mode";
@@ -178,9 +206,7 @@ public abstract class PackageManager {
     @Deprecated
     public static final String FEATURE_CONNECTION_SERVICE = "android.software.connectionservice";
     public static final String FEATURE_CONSUMER_IR = "android.hardware.consumerir";
-
-    @SystemApi
-    public static final String FEATURE_CONTEXTUALSEARCH = "android.software.contextualsearch";
+    public static final String FEATURE_CONTEXTUAL_SEARCH_HELPER = "android.software.contextualsearch";
 
     @SystemApi
     public static final String FEATURE_CONTEXT_HUB = "android.hardware.context_hub";
@@ -250,6 +276,7 @@ public abstract class PackageManager {
     public static final String FEATURE_NFC = "android.hardware.nfc";
     public static final String FEATURE_NFC_ANY = "android.hardware.nfc.any";
     public static final String FEATURE_NFC_BEAM = "android.sofware.nfc.beam";
+    public static final String FEATURE_NFC_CHARGING = "android.hardware.nfc.charging";
 
     @Deprecated
     public static final String FEATURE_NFC_HCE = "android.hardware.nfc.hce";
@@ -267,6 +294,7 @@ public abstract class PackageManager {
 
     @SystemApi
     public static final String FEATURE_REBOOT_ESCROW = "android.hardware.reboot_escrow";
+    public static final String FEATURE_ROTARY_ENCODER_LOW_RES = "android.hardware.rotaryencoder.lowres";
     public static final String FEATURE_SCONTEXT_LITE = "com.sec.feature.scontext_lite";
     public static final String FEATURE_SCREEN_LANDSCAPE = "android.hardware.screen.landscape";
     public static final String FEATURE_SCREEN_PORTRAIT = "android.hardware.screen.portrait";
@@ -324,6 +352,7 @@ public abstract class PackageManager {
 
     @Deprecated
     public static final String FEATURE_TELEVISION = "android.hardware.type.television";
+    public static final String FEATURE_THREAD_NETWORK = "android.hardware.thread_network";
     public static final String FEATURE_TOUCHSCREEN = "android.hardware.touchscreen";
     public static final String FEATURE_TOUCHSCREEN_MULTITOUCH = "android.hardware.touchscreen.multitouch";
     public static final String FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT = "android.hardware.touchscreen.multitouch.distinct";
@@ -421,6 +450,9 @@ public abstract class PackageManager {
     public static final int FLAG_PERMISSION_WHITELIST_INSTALLER = 2;
     public static final int FLAG_PERMISSION_WHITELIST_SYSTEM = 1;
     public static final int FLAG_PERMISSION_WHITELIST_UPGRADE = 4;
+
+    @SystemApi
+    public static final int FLAG_SUSPEND_QUARANTINED = 1;
     public static final int GET_ACTIVITIES = 1;
     public static final String GET_APP_LIST_PERMISSION = "com.samsung.android.permission.GET_APP_LIST";
 
@@ -454,7 +486,6 @@ public abstract class PackageManager {
     @Deprecated
     public static final int GET_UNINSTALLED_PACKAGES = 8192;
     public static final int GET_URI_PERMISSION_PATTERNS = 2048;
-    public static final int HANDLE_MANY_APPS_BURST = 4;
     public static final int ICON_TRAY_DEFAULT_MODE = 0;
     public static final int ICON_TRAY_SQUICLE_MODE = 1;
     public static final String INSTALLTOSDCARD_ENABLED_STATE = "installToSdCardState";
@@ -465,7 +496,9 @@ public abstract class PackageManager {
     public static final int INSTALL_ALL_USERS = 64;
     public static final int INSTALL_ALL_WHITELIST_RESTRICTED_PERMISSIONS = 4194304;
     public static final int INSTALL_APEX = 131072;
+    public static final int INSTALL_ARCHIVED = 134217728;
     public static final int INSTALL_BYPASS_LOW_TARGET_SDK_BLOCK = 16777216;
+    public static final int INSTALL_DEVELOPMENT_FORCE_NON_STAGED_APEX_UPDATE = 1;
     public static final int INSTALL_DIRECTLY = 33554432;
     public static final int INSTALL_DISABLE_ALLOWED_APEX_UPDATE_CHECK = 8388608;
     public static final int INSTALL_DISABLE_VERIFICATION = 524288;
@@ -528,6 +561,7 @@ public abstract class PackageManager {
     public static final int INSTALL_FAILED_MISSING_SHARED_LIBRARY = -9;
     public static final int INSTALL_FAILED_MISSING_SPLIT = -28;
     public static final int INSTALL_FAILED_MULTIPACKAGE_INCONSISTENCY = -120;
+    public static final int INSTALL_FAILED_MULTI_ARCH_NOT_MATCH_ALL_NATIVE_ABIS = -131;
 
     @SystemApi
     public static final int INSTALL_FAILED_NEWER_SDK = -14;
@@ -584,6 +618,7 @@ public abstract class PackageManager {
     public static final int INSTALL_FROM_MANAGED_USER_OR_PROFILE = 67108864;
     public static final int INSTALL_FULL_APP = 16384;
     public static final int INSTALL_GRANT_ALL_REQUESTED_PERMISSIONS = 256;
+    public static final int INSTALL_IGNORE_DEXOPT_PROFILE = 268435456;
     public static final int INSTALL_INSTANT_APP = 2048;
     public static final int INSTALL_INTERNAL = 16;
 
@@ -636,6 +671,8 @@ public abstract class PackageManager {
 
     @SystemApi
     public static final int INSTALL_SUCCEEDED = 1;
+    public static final int INSTALL_UNARCHIVE = 1073741824;
+    public static final int INSTALL_UNARCHIVE_DRAFT = 536870912;
     public static final int INSTALL_UNKNOWN = 0;
     public static final int INSTALL_VIRTUAL_PRELOAD = 65536;
 
@@ -676,9 +713,14 @@ public abstract class PackageManager {
     @SystemApi
     public static final int MATCH_ANY_USER = 4194304;
     public static final int MATCH_APEX = 1073741824;
+    public static final long MATCH_ARCHIVED_PACKAGES = 4294967296L;
 
     @SystemApi
+    @Deprecated
     public static final int MATCH_CLONE_PROFILE = 536870912;
+
+    @SystemApi
+    public static final long MATCH_CLONE_PROFILE_LONG = 17179869184L;
 
     @Deprecated
     public static final int MATCH_DEBUG_TRIAGED_MISSING = 268435456;
@@ -700,7 +742,7 @@ public abstract class PackageManager {
     @SystemApi
     public static final int MATCH_INSTANT = 8388608;
     public static final int MATCH_KNOWN_PACKAGES = 4202496;
-    public static final long MATCH_SAMSUNG_THEME_PACKAGES = Long.MIN_VALUE;
+    public static final long MATCH_QUARANTINED_COMPONENTS = 8589934592L;
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static final int MATCH_STATIC_SHARED_AND_SDK_LIBRARIES = 67108864;
@@ -741,6 +783,7 @@ public abstract class PackageManager {
     public static final int PERMISSION_DENIED = -1;
     public static final int PERMISSION_GRANTED = 0;
     public static final String PROPERTY_ALLOW_ADB_BACKUP = "android.backup.ALLOW_ADB_BACKUP";
+    public static final String PROPERTY_ANDROID_SAFETY_LABEL = "android.content.PROPERTY_ANDROID_SAFETY_LABEL";
     public static final String PROPERTY_COMPAT_OVERRIDE_LANDSCAPE_TO_PORTRAIT = "android.camera.PROPERTY_COMPAT_OVERRIDE_LANDSCAPE_TO_PORTRAIT";
     public static final String PROPERTY_LEGACY_UPDATE_OWNERSHIP_DENYLIST = "android.app.PROPERTY_LEGACY_UPDATE_OWNERSHIP_DENYLIST";
     public static final String PROPERTY_MEDIA_CAPABILITIES = "android.media.PROPERTY_MEDIA_CAPABILITIES";
@@ -765,6 +808,15 @@ public abstract class PackageManager {
 
     @SystemApi
     public static final int ROLLBACK_DATA_POLICY_WIPE = 1;
+
+    @SystemApi
+    public static final int ROLLBACK_USER_IMPACT_HIGH = 1;
+
+    @SystemApi
+    public static final int ROLLBACK_USER_IMPACT_LOW = 0;
+
+    @SystemApi
+    public static final int ROLLBACK_USER_IMPACT_ONLY_MANUAL = 2;
     public static final int SEM_FEATURE_APPICON_ADAPTIVEICON_SHADOW = 2;
     public static final int SEM_FEATURE_APPICON_COLOR_NO_ADAPTIVE = 4;
     public static final int SEM_FEATURE_APPICON_COLOR_ONLY_BG = 8;
@@ -780,12 +832,11 @@ public abstract class PackageManager {
     public static final String SEM_FEATURE_DEVICE_CATEGORY_TABLET_HIGH_END = "com.samsung.feature.device_category_tablet_high_end";
     public static final String SEM_FEATURE_DEVICE_CATEGORY_TABLET_LOW_END = "com.samsung.feature.device_category_tablet_low_end";
     public static final String SEM_FEATURE_DUAL_SCREEN = "com.sec.feature.dual_lcd";
+
+    @Deprecated
     public static final String SEM_FEATURE_FINDO = "com.sec.feature.findo";
     public static final String SEM_FEATURE_FOLDER_TYPE = "com.sec.feature.folder_type";
     public static final String SEM_FEATURE_HOVERING_UI = "com.sec.feature.hovering_ui";
-
-    @Deprecated(forRemoval = true, since = "14.0")
-    public static final String SEM_FEATURE_LINUX_ON_DEX = "com.sec.feature.support_linux_on_dex";
 
     @Deprecated(forRemoval = true, since = "13.0")
     public static final String SEM_FEATURE_MIRRORLINK_FW = "com.samsung.feature.mirrorlink_fw";
@@ -798,6 +849,7 @@ public abstract class PackageManager {
     public static final String SEM_FEATURE_WIFI_DISPLAY = "com.sec.feature.wfd_support";
     public static final int SEM_FLAG_PERMISSION_USER_FIXED = 2;
     public static final int SEM_FLAG_PERMISSION_USER_SET = 1;
+    public static final int SEM_ICON_ARCHIVED = 512;
     public static final int SEM_ICON_MASK_COLORTHEME = 32;
     public static final int SEM_ICON_MASK_DAY = 64;
     public static final int SEM_ICON_MASK_LOCKSCREEN_SHORTCUT = 256;
@@ -847,201 +899,164 @@ public abstract class PackageManager {
     public static final int TYPE_UNKNOWN = 0;
     public static final int UNINSTALL_REASON_UNKNOWN = 0;
     public static final int UNINSTALL_REASON_USER_TYPE = 1;
+    public static final int USER_MIN_ASPECT_RATIO_16_9 = 4;
+    public static final int USER_MIN_ASPECT_RATIO_3_2 = 5;
+    public static final int USER_MIN_ASPECT_RATIO_4_3 = 3;
+    public static final int USER_MIN_ASPECT_RATIO_APP_DEFAULT = 7;
+    public static final int USER_MIN_ASPECT_RATIO_DISPLAY_SIZE = 2;
+    public static final int USER_MIN_ASPECT_RATIO_FULLSCREEN = 6;
+    public static final int USER_MIN_ASPECT_RATIO_SPLIT_SCREEN = 1;
+    public static final int USER_MIN_ASPECT_RATIO_UNSET = 0;
     public static final int VERIFICATION_ALLOW = 1;
     public static final int VERIFICATION_ALLOW_WITHOUT_SUFFICIENT = 2;
     public static final int VERIFICATION_REJECT = -1;
     public static final int VERSION_CODE_HIGHEST = -1;
+    private static final PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo> sApplicationInfoCache;
+    private static final PropertyInvalidatedCache.AutoCorker sCacheAutoCorker;
+    private static final PropertyInvalidatedCache<PackageInfoQuery, PackageInfo> sPackageInfoCache;
     public static final String APP_DETAILS_ACTIVITY_CLASS_NAME = AppDetailsActivity.class.getName();
     public static final List<Certificate> TRUST_ALL = Collections.singletonList(null);
     public static final List<Certificate> TRUST_NONE = Collections.singletonList(null);
-    private static final PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo> sApplicationInfoCache = new PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo>(32, PermissionManager.CACHE_KEY_PACKAGE_INFO, "getApplicationInfo") { // from class: android.content.pm.PackageManager.1
-        AnonymousClass1(int maxEntries, String propertyName, String cacheName) {
-            super(maxEntries, propertyName, cacheName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public ApplicationInfo recompute(ApplicationInfoQuery query) {
-            return PackageManager.getApplicationInfoAsUserUncached(query.packageName, query.flags, query.userId);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean resultEquals(ApplicationInfo cached, ApplicationInfo fetched) {
-            return true;
-        }
-    };
-    private static final PropertyInvalidatedCache.AutoCorker sCacheAutoCorker = new PropertyInvalidatedCache.AutoCorker(PermissionManager.CACHE_KEY_PACKAGE_INFO);
-    private static final PropertyInvalidatedCache<PackageInfoQuery, PackageInfo> sPackageInfoCache = new PropertyInvalidatedCache<PackageInfoQuery, PackageInfo>(64, PermissionManager.CACHE_KEY_PACKAGE_INFO, "getPackageInfo") { // from class: android.content.pm.PackageManager.2
-        AnonymousClass2(int maxEntries, String propertyName, String cacheName) {
-            super(maxEntries, propertyName, cacheName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public PackageInfo recompute(PackageInfoQuery query) {
-            return PackageManager.getPackageInfoAsUserUncached(query.packageName, query.flags, query.userId);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean resultEquals(PackageInfo cached, PackageInfo fetched) {
-            return true;
-        }
-    };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
+    public @interface AppMetadataSource {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ApplicationInfoFlagsBits {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CertificateInputType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ComponentInfoFlagsBits {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ComponentType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DeleteFlags {
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DevelopmentInstallFlags {
+    }
+
     @SystemApi
-    /* loaded from: classes.dex */
     public static abstract class DexModuleRegisterCallback {
         public abstract void onDexModuleRegistered(String str, boolean z, String str2);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DistractionRestriction {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface EnabledFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface EnabledState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface InstallFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface InstallReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface InstallScenario {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface InstalledModulesFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface InstrumentationInfoFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ModuleInfoFlags {
     }
 
-    /* loaded from: classes.dex */
     public @interface NotifyReason {
     }
 
     @FunctionalInterface
-    /* loaded from: classes.dex */
     public interface OnChecksumsReadyListener {
         void onChecksumsReady(List<ApkChecksum> list);
     }
 
-    @SystemApi
-    /* loaded from: classes.dex */
-    public interface OnPermissionsChangedListener {
-        void onPermissionsChanged(int i);
-    }
-
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PackageInfoFlagsBits {
     }
 
-    @SystemApi
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PermissionFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PermissionGroupInfoFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PermissionInfoFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PermissionResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PermissionWhitelistFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PropertyLocation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ResolveInfoFlagsBits {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RollbackDataPolicy {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface RollbackImpactLevel {
+    }
+
     public interface SemFreeStorageNotifyListener {
         void onRemoveCompleted(String str, boolean z);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SignatureResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
+    public @interface SuspendedFlags {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SystemAppState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface UninstallReason {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface UserMinAspectRatio {
     }
 
     public abstract void addCrossProfileIntentFilter(IntentFilter intentFilter, int i, int i2, int i3);
@@ -1326,6 +1341,8 @@ public abstract class PackageManager {
 
     public abstract boolean isInstantApp(String str);
 
+    public abstract boolean isPackageAutoDisabled(String str, int i);
+
     public abstract boolean isPackageAvailable(String str);
 
     public abstract boolean isPackageSuspendedForUser(String str, int i);
@@ -1442,7 +1459,6 @@ public abstract class PackageManager {
 
     public abstract void verifyPendingInstall(int i, int i2);
 
-    /* loaded from: classes.dex */
     public static class NameNotFoundException extends AndroidException {
         public NameNotFoundException() {
         }
@@ -1452,12 +1468,9 @@ public abstract class PackageManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Property implements Parcelable {
         public static final Parcelable.Creator<Property> CREATOR = new Parcelable.Creator<Property>() { // from class: android.content.pm.PackageManager.Property.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Property createFromParcel(Parcel source) {
                 String name = source.readString();
@@ -1482,6 +1495,7 @@ public abstract class PackageManager {
                 return null;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Property[] newArray(int size) {
                 return new Property[size];
@@ -1595,16 +1609,15 @@ public abstract class PackageManager {
 
         public Bundle toBundle(Bundle outBundle) {
             Bundle b = (outBundle == null || outBundle == Bundle.EMPTY) ? new Bundle() : outBundle;
-            int i = this.mType;
-            if (i == 1) {
+            if (this.mType == 1) {
                 b.putBoolean(this.mName, this.mBooleanValue);
-            } else if (i == 2) {
+            } else if (this.mType == 2) {
                 b.putFloat(this.mName, this.mFloatValue);
-            } else if (i == 3) {
+            } else if (this.mType == 3) {
                 b.putInt(this.mName, this.mIntegerValue);
-            } else if (i == 4) {
+            } else if (this.mType == 4) {
                 b.putInt(this.mName, this.mIntegerValue);
-            } else if (i == 5) {
+            } else if (this.mType == 5) {
                 b.putString(this.mName, this.mStringValue);
             }
             return b;
@@ -1621,72 +1634,33 @@ public abstract class PackageManager {
             dest.writeInt(this.mType);
             dest.writeString(this.mPackageName);
             dest.writeString(this.mClassName);
-            int i = this.mType;
-            if (i == 1) {
+            if (this.mType == 1) {
                 dest.writeBoolean(this.mBooleanValue);
                 return;
             }
-            if (i == 2) {
+            if (this.mType == 2) {
                 dest.writeFloat(this.mFloatValue);
                 return;
             }
-            if (i == 3) {
+            if (this.mType == 3) {
                 dest.writeInt(this.mIntegerValue);
-            } else if (i == 4) {
+            } else if (this.mType == 4) {
                 dest.writeInt(this.mIntegerValue);
-            } else if (i == 5) {
+            } else if (this.mType == 5) {
                 dest.writeString(this.mStringValue);
-            }
-        }
-
-        /* renamed from: android.content.pm.PackageManager$Property$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Property> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Property createFromParcel(Parcel source) {
-                String name = source.readString();
-                int type = source.readInt();
-                String packageName = source.readString();
-                String className = source.readString();
-                if (type == 1) {
-                    return new Property(name, source.readBoolean(), packageName, className);
-                }
-                if (type == 2) {
-                    return new Property(name, source.readFloat(), packageName, className);
-                }
-                if (type == 3) {
-                    return new Property(name, source.readInt(), false, packageName, className);
-                }
-                if (type == 4) {
-                    return new Property(name, source.readInt(), true, packageName, className);
-                }
-                if (type == 5) {
-                    return new Property(name, source.readString(), packageName, className);
-                }
-                return null;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Property[] newArray(int size) {
-                return new Property[size];
             }
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class ComponentEnabledSetting implements Parcelable {
         public static final Parcelable.Creator<ComponentEnabledSetting> CREATOR = new Parcelable.Creator<ComponentEnabledSetting>() { // from class: android.content.pm.PackageManager.ComponentEnabledSetting.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ComponentEnabledSetting[] newArray(int size) {
                 return new ComponentEnabledSetting[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ComponentEnabledSetting createFromParcel(Parcel in) {
                 return new ComponentEnabledSetting(in);
@@ -1748,13 +1722,11 @@ public abstract class PackageManager {
                 flg = (byte) (flg | 2);
             }
             dest.writeByte(flg);
-            String str = this.mPackageName;
-            if (str != null) {
-                dest.writeString(str);
+            if (this.mPackageName != null) {
+                dest.writeString(this.mPackageName);
             }
-            ComponentName componentName = this.mComponentName;
-            if (componentName != null) {
-                dest.writeTypedObject(componentName, flags);
+            if (this.mComponentName != null) {
+                dest.writeTypedObject(this.mComponentName, flags);
             }
             dest.writeInt(this.mEnabledState);
             dest.writeInt(this.mEnabledFlags);
@@ -1774,26 +1746,9 @@ public abstract class PackageManager {
             this.mPackageName = packageName;
             this.mComponentName = componentName;
             this.mEnabledState = enabledState;
-            AnnotationValidations.validate((Class<? extends Annotation>) EnabledState.class, (Annotation) null, enabledState);
+            AnnotationValidations.validate((Class<? extends Annotation>) EnabledState.class, (Annotation) null, this.mEnabledState);
             this.mEnabledFlags = enabledFlags;
-            AnnotationValidations.validate((Class<? extends Annotation>) EnabledFlags.class, (Annotation) null, enabledFlags);
-        }
-
-        /* renamed from: android.content.pm.PackageManager$ComponentEnabledSetting$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ComponentEnabledSetting> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ComponentEnabledSetting[] newArray(int size) {
-                return new ComponentEnabledSetting[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ComponentEnabledSetting createFromParcel(Parcel in) {
-                return new ComponentEnabledSetting(in);
-            }
+            AnnotationValidations.validate((Class<? extends Annotation>) EnabledFlags.class, (Annotation) null, this.mEnabledFlags);
         }
 
         @Deprecated
@@ -1801,7 +1756,45 @@ public abstract class PackageManager {
         }
     }
 
-    /* loaded from: classes.dex */
+    @SystemApi
+    public interface OnPermissionsChangedListener {
+        void onPermissionsChanged(int i);
+
+        default void onPermissionsChanged(int uid, String persistentDeviceId) {
+            Objects.requireNonNull(persistentDeviceId);
+            if (Objects.equals(persistentDeviceId, VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT)) {
+                onPermissionsChanged(uid);
+            }
+        }
+    }
+
+    static {
+        String str = PermissionManager.CACHE_KEY_PACKAGE_INFO;
+        sApplicationInfoCache = new PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo>(32, str, "getApplicationInfo") { // from class: android.content.pm.PackageManager.2
+            @Override // android.app.PropertyInvalidatedCache
+            public ApplicationInfo recompute(ApplicationInfoQuery query) {
+                return PackageManager.getApplicationInfoAsUserUncached(query.packageName, query.flags, query.userId);
+            }
+
+            @Override // android.app.PropertyInvalidatedCache
+            public boolean resultEquals(ApplicationInfo cached, ApplicationInfo fetched) {
+                return true;
+            }
+        };
+        sCacheAutoCorker = new PropertyInvalidatedCache.AutoCorker(PermissionManager.CACHE_KEY_PACKAGE_INFO);
+        sPackageInfoCache = new PropertyInvalidatedCache<PackageInfoQuery, PackageInfo>(64, str, "getPackageInfo") { // from class: android.content.pm.PackageManager.3
+            @Override // android.app.PropertyInvalidatedCache
+            public PackageInfo recompute(PackageInfoQuery query) {
+                return PackageManager.getPackageInfoAsUserUncached(query.packageName, query.flags, query.userId);
+            }
+
+            @Override // android.app.PropertyInvalidatedCache
+            public boolean resultEquals(PackageInfo cached, PackageInfo fetched) {
+                return true;
+            }
+        };
+    }
+
     public static class Flags {
         final long mValue;
 
@@ -1814,7 +1807,6 @@ public abstract class PackageManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class PackageInfoFlags extends Flags {
         private PackageInfoFlags(long value) {
             super(value);
@@ -1825,7 +1817,6 @@ public abstract class PackageManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class ApplicationInfoFlags extends Flags {
         private ApplicationInfoFlags(long value) {
             super(value);
@@ -1836,7 +1827,6 @@ public abstract class PackageManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class ComponentInfoFlags extends Flags {
         private ComponentInfoFlags(long value) {
             super(value);
@@ -1847,7 +1837,6 @@ public abstract class PackageManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class ResolveInfoFlags extends Flags {
         private ResolveInfoFlags(long value) {
             super(value);
@@ -1897,7 +1886,7 @@ public abstract class PackageManager {
 
     public boolean isSpeg(int uid) {
         String packageName = getNameForUid(uid);
-        return packageName != null && isSpeg(packageName, UserHandle.getUserId(uid));
+        return isSpeg(packageName, UserHandle.getUserId(uid));
     }
 
     public boolean isSpeg(String packageName, int userId) {
@@ -1917,7 +1906,7 @@ public abstract class PackageManager {
                 return false;
             }
             try {
-                return new File(sourceDir, new StringBuilder().append("base.speg").append(info.uid).toString()).exists();
+                return new File(sourceDir, "base.speg" + info.uid).exists();
             } catch (SecurityException e) {
                 Log.w("SPEG", "No permission to check status for uid " + info.uid);
                 return false;
@@ -1992,6 +1981,11 @@ public abstract class PackageManager {
         throw new UnsupportedOperationException("getAppMetadata not implemented in subclass");
     }
 
+    @SystemApi
+    public int getAppMetadataSource(String packageName) throws NameNotFoundException {
+        throw new UnsupportedOperationException("getAppMetadataSource not implemented in subclass");
+    }
+
     public List<PackageInfo> getPackagesHoldingPermissions(String[] permissions, PackageInfoFlags flags) {
         throw new UnsupportedOperationException("getPackagesHoldingPermissions not implemented in subclass");
     }
@@ -2001,7 +1995,7 @@ public abstract class PackageManager {
         throw new UnsupportedOperationException("getApplicationInfoAsUser not implemented in subclass");
     }
 
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    @SystemApi
     public String getPermissionControllerPackageName() {
         throw new RuntimeException("Not implemented. Must override in a subclass.");
     }
@@ -2206,25 +2200,51 @@ public abstract class PackageManager {
     }
 
     public PackageInfo getPackageArchiveInfo(String archiveFilePath, PackageInfoFlags flags) {
-        long flagsBits = flags.getValue();
-        PackageParser parser = new PackageParser();
-        parser.setCallback(new PackageParser.CallbackImpl(this));
         File apkFile = new File(archiveFilePath);
-        long flagsBits2 = (flagsBits & 786432) != 0 ? flagsBits : flagsBits | 786432;
-        try {
-            PackageParser.Package pkg = parser.parsePackage(apkFile, 0, false);
-            if ((64 & flagsBits2) != 0 || (134217728 & flagsBits2) != 0) {
-                PackageParser.collectCertificates(pkg, false);
+        long flagsBits = flags.getValue();
+        if ((flagsBits & 786432) == 0) {
+            flagsBits |= 786432;
+        }
+        int parserFlags = 0;
+        if ((134217792 & flagsBits) != 0) {
+            parserFlags = 0 | 32;
+        }
+        PackageParser2 parser2 = new PackageParser2(null, null, null, new PackageParser2.Callback() { // from class: android.content.pm.PackageManager.1
+            @Override // com.android.internal.pm.pkg.parsing.ParsingPackageUtils.Callback
+            public boolean hasFeature(String feature) {
+                return PackageManager.this.hasSystemFeature(feature);
             }
-            return PackageParser.generatePackageInfo(pkg, null, (int) flagsBits2, 0L, 0L, null, FrameworkPackageUserState.DEFAULT);
-        } catch (PackageParser.PackageParserException e) {
-            Log.w(TAG, "Failure to parse package archive", e);
+
+            @Override // com.android.internal.pm.pkg.parsing.ParsingPackageUtils.Callback
+            public Set<String> getHiddenApiWhitelistedApps() {
+                return Collections.emptySet();
+            }
+
+            @Override // com.android.internal.pm.pkg.parsing.ParsingPackageUtils.Callback
+            public Set<String> getInstallConstraintsAllowlist() {
+                return Collections.emptySet();
+            }
+
+            @Override // com.android.internal.pm.parsing.PackageParser2.Callback
+            public boolean isChangeEnabled(long changeId, ApplicationInfo appInfo) {
+                return false;
+            }
+        });
+        try {
+            ParsedPackage pp = parser2.parsePackage(apkFile, parserFlags, false);
+            return PackageInfoCommonUtils.generate(pp, flagsBits, UserHandle.myUserId());
+        } catch (PackageParserException e) {
+            Log.w(TAG, "Failure to parse package archive apkFile= " + apkFile);
             return null;
         }
     }
 
     public InstallSourceInfo getInstallSourceInfo(String packageName) throws NameNotFoundException {
         throw new UnsupportedOperationException("getInstallSourceInfo not implemented");
+    }
+
+    public boolean isAppArchivable(String packageName) throws NameNotFoundException {
+        throw new UnsupportedOperationException("isAppArchivable not implemented");
     }
 
     public void freeStorageAndNotify(long freeStorageSize, IPackageDataObserver observer) {
@@ -2294,6 +2314,11 @@ public abstract class PackageManager {
     }
 
     @SystemApi
+    public String[] setPackagesSuspended(String[] packageNames, boolean suspended, PersistableBundle appExtras, PersistableBundle launcherExtras, SuspendDialogInfo dialogInfo, int flags) {
+        throw new UnsupportedOperationException("setPackagesSuspended not implemented");
+    }
+
+    @SystemApi
     public String[] getUnsuspendablePackages(String[] packageNames) {
         throw new UnsupportedOperationException("getUnsuspendablePackages not implemented");
     }
@@ -2310,11 +2335,22 @@ public abstract class PackageManager {
         throw new UnsupportedOperationException("getSuspendedPackageAppExtras not implemented");
     }
 
+    public String getSuspendingPackage(String suspendedPackage) {
+        throw new UnsupportedOperationException("getSuspendingPackage not implemented");
+    }
+
+    public boolean isPackageStopped(String packageName) throws NameNotFoundException {
+        throw new UnsupportedOperationException("isPackageStopped not implemented");
+    }
+
+    public boolean isPackageQuarantined(String packageName) throws NameNotFoundException {
+        throw new UnsupportedOperationException("isPackageQuarantined not implemented");
+    }
+
     public static boolean isMoveStatusFinished(int status) {
         return status < 0 || status > 100;
     }
 
-    /* loaded from: classes.dex */
     public static abstract class MoveCallback {
         public abstract void onStatusChanged(int i, int i2, long j);
 
@@ -2344,6 +2380,8 @@ public abstract class PackageManager {
 
     public static String installStatusToString(int status) {
         switch (status) {
+            case INSTALL_FAILED_MULTI_ARCH_NOT_MATCH_ALL_NATIVE_ABIS /* -131 */:
+                return "INSTALL_FAILED_MULTI_ARCH_NOT_MATCH_ALL_NATIVE_ABIS";
             case INSTALL_FAILED_SHARED_LIBRARY_BAD_CERTIFICATE_DIGEST /* -130 */:
                 return "INSTALL_FAILED_SHARED_LIBRARY_BAD_CERTIFICATE_DIGEST";
             case INSTALL_FAILED_PROCESS_NOT_DEFINED /* -122 */:
@@ -2582,26 +2620,8 @@ public abstract class PackageManager {
 
     public static int deleteStatusToPublicStatus(int status) {
         switch (status) {
-            case -7:
-                return 2;
-            case -6:
-                return 5;
-            case -5:
-                return 3;
-            case -4:
-                return 2;
-            case -3:
-                return 2;
-            case -2:
-                return 2;
-            case -1:
-                return 1;
-            case 0:
-            default:
-                return 1;
-            case 1:
-                return 0;
         }
+        return 1;
     }
 
     public static String permissionFlagToString(int flag) {
@@ -2645,7 +2665,6 @@ public abstract class PackageManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class LegacyPackageDeleteObserver extends PackageDeleteObserver {
         private final IPackageDeleteObserver mLegacy;
 
@@ -2655,41 +2674,26 @@ public abstract class PackageManager {
 
         @Override // android.app.PackageDeleteObserver
         public void onPackageDeleted(String basePackageName, int returnCode, String msg) {
-            IPackageDeleteObserver iPackageDeleteObserver = this.mLegacy;
-            if (iPackageDeleteObserver == null) {
+            if (this.mLegacy == null) {
                 return;
             }
             try {
-                iPackageDeleteObserver.packageDeleted(basePackageName, returnCode);
+                this.mLegacy.packageDeleted(basePackageName, returnCode);
             } catch (RemoteException e) {
             }
         }
     }
 
-    public void setApplicationEnabledSettingWithList(List<String> listPackageName, int newState, int flags, boolean usePending, boolean startNow) {
-        throw new UnsupportedOperationException();
-    }
-
-    public int getProgressionOfPackageChanged() {
-        throw new UnsupportedOperationException();
-    }
-
-    public void cancelEMPHandlerSendPendingBroadcast() {
-        throw new UnsupportedOperationException();
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class UninstallCompleteCallback implements Parcelable {
         public static final Parcelable.Creator<UninstallCompleteCallback> CREATOR = new Parcelable.Creator<UninstallCompleteCallback>() { // from class: android.content.pm.PackageManager.UninstallCompleteCallback.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public UninstallCompleteCallback createFromParcel(Parcel source) {
                 return new UninstallCompleteCallback(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public UninstallCompleteCallback[] newArray(int size) {
                 return new UninstallCompleteCallback[size];
@@ -2698,12 +2702,7 @@ public abstract class PackageManager {
         private IPackageDeleteObserver2 mBinder;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface DeleteStatus {
-        }
-
-        /* synthetic */ UninstallCompleteCallback(Parcel parcel, UninstallCompleteCallbackIA uninstallCompleteCallbackIA) {
-            this(parcel);
         }
 
         public UninstallCompleteCallback(IBinder binder) {
@@ -2712,23 +2711,6 @@ public abstract class PackageManager {
 
         private UninstallCompleteCallback(Parcel in) {
             this.mBinder = IPackageDeleteObserver2.Stub.asInterface(in.readStrongBinder());
-        }
-
-        /* renamed from: android.content.pm.PackageManager$UninstallCompleteCallback$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<UninstallCompleteCallback> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public UninstallCompleteCallback createFromParcel(Parcel source) {
-                return new UninstallCompleteCallback(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public UninstallCompleteCallback[] newArray(int size) {
-                return new UninstallCompleteCallback[size];
-            }
         }
 
         @SystemApi
@@ -2846,7 +2828,7 @@ public abstract class PackageManager {
 
     public boolean isDefaultApplicationIcon(Drawable drawable) {
         int resId = drawable instanceof AdaptiveIconDrawable ? ((AdaptiveIconDrawable) drawable).getSourceDrawableResId() : 0;
-        return resId == 17301651 || resId == 17304332;
+        return resId == 17301651 || resId == 17304561;
     }
 
     public void setMimeGroup(String mimeGroup, Set<String> mimeTypes) {
@@ -2910,8 +2892,11 @@ public abstract class PackageManager {
         throw new UnsupportedOperationException("makeUidVisible not implemented in subclass");
     }
 
-    /* loaded from: classes.dex */
-    public static final class ApplicationInfoQuery {
+    public ArchivedPackageInfo getArchivedPackage(String packageName) {
+        throw new UnsupportedOperationException("getArchivedPackage not implemented in subclass");
+    }
+
+    private static final class ApplicationInfoQuery {
         final long flags;
         final String packageName;
         final int userId;
@@ -2944,29 +2929,12 @@ public abstract class PackageManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ApplicationInfo getApplicationInfoAsUserUncached(String packageName, long flags, int userId) {
         try {
             return ActivityThread.getPackageManager().getApplicationInfo(packageName, flags, userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
-        }
-    }
-
-    /* renamed from: android.content.pm.PackageManager$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo> {
-        AnonymousClass1(int maxEntries, String propertyName, String cacheName) {
-            super(maxEntries, propertyName, cacheName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public ApplicationInfo recompute(ApplicationInfoQuery query) {
-            return PackageManager.getApplicationInfoAsUserUncached(query.packageName, query.flags, query.userId);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean resultEquals(ApplicationInfo cached, ApplicationInfo fetched) {
-            return true;
         }
     }
 
@@ -2982,8 +2950,7 @@ public abstract class PackageManager {
         sCacheAutoCorker.autoCork();
     }
 
-    /* loaded from: classes.dex */
-    public static final class PackageInfoQuery {
+    private static final class PackageInfoQuery {
         final long flags;
         final String packageName;
         final int userId;
@@ -3016,29 +2983,12 @@ public abstract class PackageManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static PackageInfo getPackageInfoAsUserUncached(String packageName, long flags, int userId) {
         try {
             return ActivityThread.getPackageManager().getPackageInfo(packageName, flags, userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
-        }
-    }
-
-    /* renamed from: android.content.pm.PackageManager$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 extends PropertyInvalidatedCache<PackageInfoQuery, PackageInfo> {
-        AnonymousClass2(int maxEntries, String propertyName, String cacheName) {
-            super(maxEntries, propertyName, cacheName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public PackageInfo recompute(PackageInfoQuery query) {
-            return PackageManager.getPackageInfoAsUserUncached(query.packageName, query.flags, query.userId);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean resultEquals(PackageInfo cached, PackageInfo fetched) {
-            return true;
         }
     }
 
@@ -3104,15 +3054,31 @@ public abstract class PackageManager {
         throw new UnsupportedOperationException("relinquishUpdateOwnership not implemented in subclass");
     }
 
+    public void registerPackageMonitorCallback(IRemoteCallback callback, int userId) {
+        throw new UnsupportedOperationException("registerPackageMonitorCallback not implemented in subclass");
+    }
+
+    public void unregisterPackageMonitorCallback(IRemoteCallback callback) {
+        throw new UnsupportedOperationException("unregisterPackageMonitorCallback not implemented in subclass");
+    }
+
+    public <T> T parseAndroidManifest(File apkFile, Function<XmlResourceParser, T> parserFunction) throws IOException {
+        throw new UnsupportedOperationException("parseAndroidManifest not implemented in subclass");
+    }
+
+    public <T> T parseAndroidManifest(ParcelFileDescriptor apkFileDescriptor, Function<XmlResourceParser, T> parserFunction) throws IOException {
+        throw new UnsupportedOperationException("parseAndroidManifest not implemented in subclass");
+    }
+
+    public TypedArray extractPackageItemInfoAttributes(PackageItemInfo info, String name, String rootTag, int[] attributes) {
+        throw new UnsupportedOperationException("parseServiceMetadata not implemented in subclass");
+    }
+
     public int semGetSystemFeatureLevel(String name) {
         throw new UnsupportedOperationException("semGetSystemFeatureLevel not implemented in subclass");
     }
 
     public Drawable semGetActivityIconForIconTray(ComponentName activityName, int mode) throws NameNotFoundException {
-        throw new UnsupportedOperationException("semGetActivityIconForIconTray not implemented in subclass");
-    }
-
-    public Drawable semGetActivityIconForIconTray(Intent intent, int mode) throws NameNotFoundException {
         throw new UnsupportedOperationException("semGetActivityIconForIconTray not implemented in subclass");
     }
 
@@ -3165,7 +3131,6 @@ public abstract class PackageManager {
         freeStorageAndNotify(null, freeStorageSize, spdo);
     }
 
-    /* loaded from: classes.dex */
     public class SemPackageDataObserver extends IPackageDataObserver.Stub {
         private SemFreeStorageNotifyListener mListener;
 
@@ -3175,9 +3140,8 @@ public abstract class PackageManager {
 
         @Override // android.content.pm.IPackageDataObserver
         public void onRemoveCompleted(String packageName, boolean succeeded) {
-            SemFreeStorageNotifyListener semFreeStorageNotifyListener = this.mListener;
-            if (semFreeStorageNotifyListener != null) {
-                semFreeStorageNotifyListener.onRemoveCompleted(packageName, succeeded);
+            if (this.mListener != null) {
+                this.mListener.onRemoveCompleted(packageName, succeeded);
             }
         }
     }
@@ -3243,10 +3207,6 @@ public abstract class PackageManager {
         return getInstalledPackagesAsUser(flags, userId);
     }
 
-    public boolean isPackageAutoDisabled(String packageName, int uid) {
-        throw new UnsupportedOperationException("isPackageAutoDisabled not implemented in subclass");
-    }
-
     public Drawable loadItemIcon(PackageItemInfo itemInfo, ApplicationInfo appInfo, boolean forIconContainer, int mode) {
         throw new UnsupportedOperationException("loadItemIcon not implemented in subclass");
     }
@@ -3261,5 +3221,21 @@ public abstract class PackageManager {
 
     public boolean shouldAppSupportBadgeIcon(String packageName, int userId) {
         throw new UnsupportedOperationException("shouldAppSupportBadgeIcon not implemented in subclass");
+    }
+
+    public void setAppCategoryHintUser(String pkgName, int category) {
+        throw new UnsupportedOperationException("setAppCategoryHintUser not implemented in subclass");
+    }
+
+    public void clearAppCategoryHintUser(String pkgName) {
+        throw new UnsupportedOperationException("setAppCategoryHintUser not implemented in subclass");
+    }
+
+    public Map<String, String> getAppCategoryHintUserMap() {
+        throw new UnsupportedOperationException("getAppCategoryHintUserMap not implemented in subclass");
+    }
+
+    public Map<String, String[]> getAppCategoryInfos(String pkgName) {
+        throw new UnsupportedOperationException("getAppCategoryInfos not implemented in subclass");
     }
 }

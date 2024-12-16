@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.view.ThreadedRenderer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDragAndDropControllerProxy extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multiwindow.IDragAndDropControllerProxy";
 
     void show(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDragAndDropControllerProxy {
         @Override // com.samsung.android.multiwindow.IDragAndDropControllerProxy
         public void show(int displayId) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDragAndDropControllerProxy extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDragAndDropControllerProxy {
         static final int TRANSACTION_show = 1;
 
@@ -68,27 +66,23 @@ public interface IDragAndDropControllerProxy extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDragAndDropControllerProxy.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDragAndDropControllerProxy.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDragAndDropControllerProxy.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    show(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            show(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDragAndDropControllerProxy {
+        private static class Proxy implements IDragAndDropControllerProxy {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

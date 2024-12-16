@@ -257,8 +257,7 @@ public class GeneralName extends ASN1Object implements ASN1Choice {
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
-        int i = this.tag;
-        boolean explicit = i == 4;
-        return new DERTaggedObject(explicit, i, this.obj);
+        boolean explicit = this.tag == 4;
+        return new DERTaggedObject(explicit, this.tag, this.obj);
     }
 }

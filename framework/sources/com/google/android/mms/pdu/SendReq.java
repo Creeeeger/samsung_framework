@@ -38,7 +38,7 @@ public class SendReq extends MultimediaMessagePdu {
         super(headers);
     }
 
-    public SendReq(PduHeaders headers, PduBody body) {
+    SendReq(PduHeaders headers, PduBody body) {
         super(headers, body);
     }
 

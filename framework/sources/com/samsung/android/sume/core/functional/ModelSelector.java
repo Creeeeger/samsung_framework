@@ -5,10 +5,9 @@ import com.samsung.android.sume.core.descriptor.nn.NNDescriptor;
 import java.util.function.Consumer;
 
 @FunctionalInterface
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface ModelSelector {
 
-    /* loaded from: classes4.dex */
     public static class Item {
         public Consumer<NNDescriptor> descriptorUpdater;
         public String name;

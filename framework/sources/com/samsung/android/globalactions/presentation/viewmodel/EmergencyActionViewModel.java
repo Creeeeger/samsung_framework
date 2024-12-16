@@ -15,7 +15,7 @@ import com.samsung.android.globalactions.util.SystemController;
 import com.samsung.android.globalactions.util.ToastController;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class EmergencyActionViewModel implements ActionViewModel {
     private final ConditionChecker mConditionChecker;
     private final FeatureFactory mFeatureFactory;

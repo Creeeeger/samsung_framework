@@ -85,9 +85,8 @@ public class CertificationRequestInfo extends ASN1Object {
         v.add(this.version);
         v.add(this.subject);
         v.add(this.subjectPKInfo);
-        ASN1Set aSN1Set = this.attributes;
-        if (aSN1Set != null) {
-            v.add(new DERTaggedObject(false, 0, aSN1Set));
+        if (this.attributes != null) {
+            v.add(new DERTaggedObject(false, 0, this.attributes));
         }
         return new DERSequence(v);
     }

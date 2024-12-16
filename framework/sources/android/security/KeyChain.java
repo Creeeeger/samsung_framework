@@ -239,13 +239,8 @@ public final class KeyChain {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class AliasResponse extends IKeyChainAliasCallback.Stub {
+    private static class AliasResponse extends IKeyChainAliasCallback.Stub {
         private final KeyChainAliasCallback keyChainAliasResponse;
-
-        /* synthetic */ AliasResponse(KeyChainAliasCallback keyChainAliasCallback, AliasResponseIA aliasResponseIA) {
-            this(keyChainAliasCallback);
-        }
 
         private AliasResponse(KeyChainAliasCallback keyChainAliasResponse) {
             this.keyChainAliasResponse = keyChainAliasResponse;
@@ -339,9 +334,21 @@ public final class KeyChain {
                         if (certificateBytes == null) {
                             return null;
                         }
-                        TrustedCertificateStore store = new TrustedCertificateStore();
-                        List<X509Certificate> chain = store.getCertificateChain(toCertificate(certificateBytes));
-                        return (X509Certificate[]) chain.toArray(new X509Certificate[chain.size()]);
+                        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+                        ByteArrayInputStream bIs = new ByteArrayInputStream(certificateBytes);
+                        List<Certificate> certList = (List) certFactory.generateCertificates(bIs);
+                        X509Certificate[] chain = new X509Certificate[certList.size()];
+                        int index = 0;
+                        for (Certificate certificate : certList) {
+                            if (certificate instanceof X509Certificate) {
+                                chain[index] = (X509Certificate) certificate;
+                                index++;
+                            } else {
+                                Log.e(LOG, "A certificate in the chain is not X509");
+                                return new X509Certificate[0];
+                            }
+                        }
+                        return chain;
                     } catch (RemoteException re) {
                         Log.e(LOG, "Remote Exception " + re);
                     } catch (CertificateException e) {
@@ -369,8 +376,8 @@ public final class KeyChain {
                             fullChain.addAll(chain2);
                             return (X509Certificate[]) fullChain.toArray(new X509Certificate[fullChain.size()]);
                         }
-                        TrustedCertificateStore store2 = new TrustedCertificateStore();
-                        List<X509Certificate> chain3 = store2.getCertificateChain(leafCert);
+                        TrustedCertificateStore store = new TrustedCertificateStore();
+                        List<X509Certificate> chain3 = store.getCertificateChain(leafCert);
                         return (X509Certificate[]) chain3.toArray(new X509Certificate[chain3.size()]);
                     } catch (RuntimeException | CertificateException e2) {
                         throw new KeyChainException(e2);
@@ -380,15 +387,7 @@ public final class KeyChain {
                     keyChainConnection.close();
                 }
                 return null;
-            } catch (Throwable th) {
-                if (keyChainConnection != null) {
-                    try {
-                        keyChainConnection.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
+            } finally {
             }
         } catch (RemoteException e3) {
             throw new KeyChainException(e3);
@@ -432,7 +431,6 @@ public final class KeyChain {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class KeyChainConnection implements Closeable {
         private final Context mContext;
         private final IKeyChainService mService;
@@ -537,17 +535,10 @@ public final class KeyChain {
         if (!UserManager.get(context).isUserUnlocked(user)) {
             throw new IllegalStateException("User must be unlocked");
         }
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        AtomicReference<IKeyChainService> keyChainService = new AtomicReference<>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final AtomicReference<IKeyChainService> keyChainService = new AtomicReference<>();
         ServiceConnection keyChainServiceConnection = new ServiceConnection() { // from class: android.security.KeyChain.1
             volatile boolean mConnectedAtLeastOnce = false;
-            final /* synthetic */ CountDownLatch val$countDownLatch;
-            final /* synthetic */ AtomicReference val$keyChainService;
-
-            AnonymousClass1(AtomicReference keyChainService2, CountDownLatch countDownLatch2) {
-                keyChainService = keyChainService2;
-                countDownLatch = countDownLatch2;
-            }
 
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -585,47 +576,13 @@ public final class KeyChain {
             context.unbindService(keyChainServiceConnection);
             throw new AssertionError("could not bind to KeyChainService");
         }
-        countDownLatch2.await();
-        IKeyChainService service = keyChainService2.get();
+        countDownLatch.await();
+        IKeyChainService service = keyChainService.get();
         if (service != null) {
             return new KeyChainConnection(context, keyChainServiceConnection, service);
         }
         context.unbindService(keyChainServiceConnection);
         throw new AssertionError("KeyChainService died while binding");
-    }
-
-    /* renamed from: android.security.KeyChain$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements ServiceConnection {
-        volatile boolean mConnectedAtLeastOnce = false;
-        final /* synthetic */ CountDownLatch val$countDownLatch;
-        final /* synthetic */ AtomicReference val$keyChainService;
-
-        AnonymousClass1(AtomicReference keyChainService2, CountDownLatch countDownLatch2) {
-            keyChainService = keyChainService2;
-            countDownLatch = countDownLatch2;
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            if (!this.mConnectedAtLeastOnce) {
-                this.mConnectedAtLeastOnce = true;
-                keyChainService.set(IKeyChainService.Stub.asInterface(Binder.allowBlocking(service)));
-                countDownLatch.countDown();
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onBindingDied(ComponentName name) {
-            if (!this.mConnectedAtLeastOnce) {
-                this.mConnectedAtLeastOnce = true;
-                countDownLatch.countDown();
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName name) {
-        }
     }
 
     private static void ensureNotOnMainThread(Context context) {

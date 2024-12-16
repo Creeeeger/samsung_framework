@@ -38,7 +38,6 @@ public interface ITimeDetectorService extends IInterface {
 
     boolean updateConfiguration(TimeConfiguration timeConfiguration) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITimeDetectorService {
         @Override // android.app.timedetector.ITimeDetectorService
         public TimeCapabilitiesAndConfig getCapabilitiesAndConfig() throws RemoteException {
@@ -97,7 +96,6 @@ public interface ITimeDetectorService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITimeDetectorService {
         static final int TRANSACTION_addListener = 2;
         static final int TRANSACTION_confirmTime = 6;
@@ -170,87 +168,84 @@ public interface ITimeDetectorService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITimeDetectorService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITimeDetectorService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITimeDetectorService.DESCRIPTOR);
+                case 1:
+                    TimeCapabilitiesAndConfig _result = getCapabilitiesAndConfig();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    ITimeDetectorListener _arg0 = ITimeDetectorListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addListener(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ITimeDetectorListener _arg02 = ITimeDetectorListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeListener(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    TimeConfiguration _arg03 = (TimeConfiguration) data.readTypedObject(TimeConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result2 = updateConfiguration(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    TimeState _result3 = getTimeState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 6:
+                    UnixEpochTime _arg04 = (UnixEpochTime) data.readTypedObject(UnixEpochTime.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result4 = confirmTime(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 7:
+                    ManualTimeSuggestion _arg05 = (ManualTimeSuggestion) data.readTypedObject(ManualTimeSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = setManualTime(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    ExternalTimeSuggestion _arg06 = (ExternalTimeSuggestion) data.readTypedObject(ExternalTimeSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    suggestExternalTime(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    ManualTimeSuggestion _arg07 = (ManualTimeSuggestion) data.readTypedObject(ManualTimeSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result6 = suggestManualTime(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 10:
+                    TelephonyTimeSuggestion _arg08 = (TelephonyTimeSuggestion) data.readTypedObject(TelephonyTimeSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    suggestTelephonyTime(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    UnixEpochTime _result7 = latestNetworkTime();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            TimeCapabilitiesAndConfig _result = getCapabilitiesAndConfig();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            ITimeDetectorListener _arg0 = ITimeDetectorListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addListener(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ITimeDetectorListener _arg02 = ITimeDetectorListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeListener(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            TimeConfiguration _arg03 = (TimeConfiguration) data.readTypedObject(TimeConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result2 = updateConfiguration(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            TimeState _result3 = getTimeState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 6:
-                            UnixEpochTime _arg04 = (UnixEpochTime) data.readTypedObject(UnixEpochTime.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result4 = confirmTime(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 7:
-                            ManualTimeSuggestion _arg05 = (ManualTimeSuggestion) data.readTypedObject(ManualTimeSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = setManualTime(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            ExternalTimeSuggestion _arg06 = (ExternalTimeSuggestion) data.readTypedObject(ExternalTimeSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            suggestExternalTime(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            ManualTimeSuggestion _arg07 = (ManualTimeSuggestion) data.readTypedObject(ManualTimeSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result6 = suggestManualTime(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 10:
-                            TelephonyTimeSuggestion _arg08 = (TelephonyTimeSuggestion) data.readTypedObject(TelephonyTimeSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            suggestTelephonyTime(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            UnixEpochTime _result7 = latestNetworkTime();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITimeDetectorService {
+        private static class Proxy implements ITimeDetectorService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

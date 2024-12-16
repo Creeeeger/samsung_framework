@@ -24,7 +24,6 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
     public static final String kInterfaceName = "android.hardware.contexthub@1.2::IContexthub";
 
     @FunctionalInterface
-    /* loaded from: classes2.dex */
     public interface getHubs_1_2Callback {
         void onValues(ArrayList<ContextHub> arrayList, ArrayList<String> arrayList2);
     }
@@ -115,7 +114,6 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IContexthub {
         private IHwBinder mRemote;
 
@@ -498,7 +496,6 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IContexthub {
         @Override // android.hardware.contexthub.V1_2.IContexthub, android.hardware.contexthub.V1_1.IContexthub, android.hardware.contexthub.V1_0.IContexthub, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -521,7 +518,7 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
 
         @Override // android.hardware.contexthub.V1_2.IContexthub, android.hardware.contexthub.V1_1.IContexthub, android.hardware.contexthub.V1_0.IContexthub, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{53, 0, -45, -60, -30, -44, -98, -18, -46, MidiConstants.STATUS_SONG_SELECT, 35, -109, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -95, 102, -66, -78, -37, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 80, 113, -72, 77, -100, 115, -117, 4, -116, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 84, -93, -39}, new byte[]{-125, 81, -52, 1, -18, -44, MidiConstants.STATUS_PROGRAM_CHANGE, -76, 72, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -107, 114, -75, -57, -35, -3, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEOUT, -121, 77, -114, -37, 81, -42, 118, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, 52, -127, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, -4, -111, -35, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT}, new byte[]{MidiConstants.STATUS_PITCH_BEND, 66, 82, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -86, 75, 95, Byte.MAX_VALUE, -44, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, -95, -101, -51, -83, -71, 60, 121, -95, MidiConstants.STATUS_CONTROL_CHANGE, 76, 9, -17, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -104, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -93, -88, -108, 16, 50, MidiConstants.STATUS_SONG_SELECT, -11}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{53, 0, -45, -60, -30, -44, -98, -18, -46, MidiConstants.STATUS_SONG_SELECT, 35, -109, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -95, 102, -66, -78, -37, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 80, 113, -72, 77, -100, 115, -117, 4, -116, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 84, -93, -39}, new byte[]{-125, 81, -52, 1, -18, -44, MidiConstants.STATUS_PROGRAM_CHANGE, -76, 72, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -107, 114, -75, -57, -35, -3, 23, -121, 77, -114, -37, 81, -42, 118, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, 52, -127, 22, -4, -111, -35, 24}, new byte[]{MidiConstants.STATUS_PITCH_BEND, 66, 82, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -86, 75, 95, Byte.MAX_VALUE, -44, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, -95, -101, -51, -83, -71, 60, 121, -95, MidiConstants.STATUS_CONTROL_CHANGE, 76, 9, -17, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -104, 19, -93, -88, -108, 16, 50, MidiConstants.STATUS_SONG_SELECT, -11}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.contexthub.V1_2.IContexthub, android.hardware.contexthub.V1_1.IContexthub, android.hardware.contexthub.V1_0.IContexthub, android.internal.hidl.base.V1_0.IBase
@@ -573,7 +570,7 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
         }
 
         @Override // android.os.HwBinder
-        public void onTransact(int _hidl_code, HwParcel _hidl_request, HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
+        public void onTransact(int _hidl_code, HwParcel _hidl_request, final HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
             switch (_hidl_code) {
                 case 1:
                     _hidl_request.enforceInterface(android.hardware.contexthub.V1_0.IContexthub.kInterfaceName);
@@ -661,12 +658,6 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
                 case 10:
                     _hidl_request.enforceInterface(IContexthub.kInterfaceName);
                     getHubs_1_2(new getHubs_1_2Callback() { // from class: android.hardware.contexthub.V1_2.IContexthub.Stub.1
-                        final /* synthetic */ HwParcel val$_hidl_reply;
-
-                        AnonymousClass1(HwParcel _hidl_reply2) {
-                            _hidl_reply = _hidl_reply2;
-                        }
-
                         @Override // android.hardware.contexthub.V1_2.IContexthub.getHubs_1_2Callback
                         public void onValues(ArrayList<ContextHub> hubs, ArrayList<String> supportedPermissions) {
                             _hidl_reply.writeStatus(0);
@@ -681,44 +672,44 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
                     int hubId8 = _hidl_request.readInt32();
                     IContexthubCallback cb2 = IContexthubCallback.asInterface(_hidl_request.readStrongBinder());
                     int _hidl_out_result8 = registerCallback_1_2(hubId8, cb2);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_result8);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_result8);
+                    _hidl_reply.send();
                     return;
                 case 12:
                     _hidl_request.enforceInterface(IContexthub.kInterfaceName);
                     byte setting2 = _hidl_request.readInt8();
                     byte newValue2 = _hidl_request.readInt8();
                     onSettingChanged_1_2(setting2, newValue2);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 256067662:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<String> _hidl_out_descriptors = interfaceChain();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeStringVector(_hidl_out_descriptors);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeStringVector(_hidl_out_descriptors);
+                    _hidl_reply.send();
                     return;
                 case 256131655:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     NativeHandle fd = _hidl_request.readNativeHandle();
                     ArrayList<String> options = _hidl_request.readStringVector();
                     debug(fd, options);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 256136003:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     String _hidl_out_descriptor = interfaceDescriptor();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeString(_hidl_out_descriptor);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeString(_hidl_out_descriptor);
+                    _hidl_reply.send();
                     return;
                 case 256398152:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<byte[]> _hidl_out_hashchain = getHashChain();
-                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply.writeStatus(0);
                     HwBlob _hidl_blob = new HwBlob(16);
                     int _hidl_vec_size = _hidl_out_hashchain.size();
                     _hidl_blob.putInt32(8L, _hidl_vec_size);
@@ -733,8 +724,8 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
                         childBlob.putInt8Array(_hidl_array_offset_1, _hidl_array_item_1);
                     }
                     _hidl_blob.putBlob(0L, childBlob);
-                    _hidl_reply2.writeBuffer(_hidl_blob);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeBuffer(_hidl_blob);
+                    _hidl_reply.send();
                     return;
                 case 256462420:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
@@ -746,38 +737,20 @@ public interface IContexthub extends android.hardware.contexthub.V1_1.IContexthu
                 case 256921159:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ping();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 257049926:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     DebugInfo _hidl_out_info = getDebugInfo();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_out_info.writeToParcel(_hidl_reply2);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_out_info.writeToParcel(_hidl_reply);
+                    _hidl_reply.send();
                     return;
                 case 257120595:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     notifySyspropsChanged();
                     return;
-            }
-        }
-
-        /* renamed from: android.hardware.contexthub.V1_2.IContexthub$Stub$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements getHubs_1_2Callback {
-            final /* synthetic */ HwParcel val$_hidl_reply;
-
-            AnonymousClass1(HwParcel _hidl_reply2) {
-                _hidl_reply = _hidl_reply2;
-            }
-
-            @Override // android.hardware.contexthub.V1_2.IContexthub.getHubs_1_2Callback
-            public void onValues(ArrayList<ContextHub> hubs, ArrayList<String> supportedPermissions) {
-                _hidl_reply.writeStatus(0);
-                ContextHub.writeVectorToParcel(_hidl_reply, hubs);
-                _hidl_reply.writeStringVector(supportedPermissions);
-                _hidl_reply.send();
             }
         }
     }

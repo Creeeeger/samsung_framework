@@ -5,7 +5,7 @@ import android.hardware.soundtrigger.SoundTriggerModuleWrapper;
 import android.os.Handler;
 import com.samsung.android.hardware.soundtrigger.SemSoundTrigger;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemSoundTriggerModule {
     private static final int EVENT_RECOGNITION = 1;
     private static final int EVENT_SERVICE_DIED = 2;
@@ -13,15 +13,9 @@ public class SemSoundTriggerModule {
     private static final int EVENT_SOUNDMODEL = 3;
     private SoundTriggerModuleWrapper instance;
 
-    public SemSoundTriggerModule(int moduleId, SemSoundTrigger.StatusListener listener, Handler handler) {
+    SemSoundTriggerModule(int moduleId, final SemSoundTrigger.StatusListener listener, Handler handler) {
         this.instance = null;
         SoundTrigger.StatusListener stListener = new SoundTrigger.StatusListener() { // from class: com.samsung.android.hardware.soundtrigger.SemSoundTriggerModule.1
-            final /* synthetic */ SemSoundTrigger.StatusListener val$listener;
-
-            AnonymousClass1(SemSoundTrigger.StatusListener listener2) {
-                listener = listener2;
-            }
-
             @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
             public void onRecognition(SoundTrigger.RecognitionEvent recognitionEvent) {
                 if (recognitionEvent.status == 1) {
@@ -61,57 +55,9 @@ public class SemSoundTriggerModule {
         this.instance = new SoundTriggerModuleWrapper(moduleId, stListener, handler);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.hardware.soundtrigger.SemSoundTriggerModule$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements SoundTrigger.StatusListener {
-        final /* synthetic */ SemSoundTrigger.StatusListener val$listener;
-
-        AnonymousClass1(SemSoundTrigger.StatusListener listener2) {
-            listener = listener2;
-        }
-
-        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
-        public void onRecognition(SoundTrigger.RecognitionEvent recognitionEvent) {
-            if (recognitionEvent.status == 1) {
-                listener.onServiceStateChange(1);
-                return;
-            }
-            if (recognitionEvent instanceof SoundTrigger.KeyphraseRecognitionEvent) {
-                SoundTrigger.KeyphraseRecognitionExtra[] stKeyphraseExtras = ((SoundTrigger.KeyphraseRecognitionEvent) recognitionEvent).keyphraseExtras;
-                SemSoundTrigger.KeyphraseRecognitionExtra[] KeyphraseExtras = new SemSoundTrigger.KeyphraseRecognitionExtra[stKeyphraseExtras.length];
-                for (int i = 0; i < stKeyphraseExtras.length; i++) {
-                    SemSoundTrigger.ConfidenceLevel[] confidenceLevels = new SemSoundTrigger.ConfidenceLevel[stKeyphraseExtras[i].confidenceLevels.length];
-                    for (int j = 0; j < stKeyphraseExtras[i].confidenceLevels.length; j++) {
-                        confidenceLevels[j] = new SemSoundTrigger.ConfidenceLevel(stKeyphraseExtras[i].confidenceLevels[j].userId, stKeyphraseExtras[i].confidenceLevels[j].confidenceLevel);
-                    }
-                    KeyphraseExtras[i] = new SemSoundTrigger.KeyphraseRecognitionExtra(stKeyphraseExtras[i].id, stKeyphraseExtras[i].recognitionModes, stKeyphraseExtras[i].coarseConfidenceLevel, confidenceLevels);
-                }
-                listener.onRecognition(new SemSoundTrigger.KeyphraseRecognitionEvent(recognitionEvent.status, recognitionEvent.soundModelHandle, recognitionEvent.captureAvailable, recognitionEvent.captureSession, recognitionEvent.captureDelayMs, recognitionEvent.capturePreambleMs, recognitionEvent.triggerInData, recognitionEvent.captureFormat, recognitionEvent.data, KeyphraseExtras));
-                return;
-            }
-            listener.onRecognition(new SemSoundTrigger.RecognitionEvent(recognitionEvent.status, recognitionEvent.soundModelHandle, recognitionEvent.captureAvailable, recognitionEvent.captureSession, recognitionEvent.captureDelayMs, recognitionEvent.capturePreambleMs, recognitionEvent.triggerInData, recognitionEvent.captureFormat, recognitionEvent.data));
-        }
-
-        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
-        public void onModelUnloaded(int modelHandle) {
-        }
-
-        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
-        public void onResourcesAvailable() {
-            listener.onServiceStateChange(0);
-        }
-
-        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
-        public void onServiceDied() {
-            listener.onServiceDied();
-        }
-    }
-
     public void detach() {
-        SoundTriggerModuleWrapper soundTriggerModuleWrapper = this.instance;
-        if (soundTriggerModuleWrapper != null) {
-            soundTriggerModuleWrapper.detach();
+        if (this.instance != null) {
+            this.instance.detach();
         }
     }
 
@@ -125,25 +71,22 @@ public class SemSoundTriggerModule {
     }
 
     public int unloadSoundModel(int soundModelHandle) {
-        SoundTriggerModuleWrapper soundTriggerModuleWrapper = this.instance;
-        if (soundTriggerModuleWrapper != null) {
-            return soundTriggerModuleWrapper.unloadSoundModel(soundModelHandle);
+        if (this.instance != null) {
+            return this.instance.unloadSoundModel(soundModelHandle);
         }
         return Integer.MIN_VALUE;
     }
 
     public int startRecognition(int soundModelHandle, SemSoundTrigger.RecognitionConfig config) {
-        SoundTriggerModuleWrapper soundTriggerModuleWrapper = this.instance;
-        if (soundTriggerModuleWrapper != null) {
-            return soundTriggerModuleWrapper.startRecognition(soundModelHandle, config.instance);
+        if (this.instance != null) {
+            return this.instance.startRecognition(soundModelHandle, config.instance);
         }
         return Integer.MIN_VALUE;
     }
 
     public int stopRecognition(int soundModelHandle) {
-        SoundTriggerModuleWrapper soundTriggerModuleWrapper = this.instance;
-        if (soundTriggerModuleWrapper != null) {
-            return soundTriggerModuleWrapper.stopRecognition(soundModelHandle);
+        if (this.instance != null) {
+            return this.instance.stopRecognition(soundModelHandle);
         }
         return Integer.MIN_VALUE;
     }

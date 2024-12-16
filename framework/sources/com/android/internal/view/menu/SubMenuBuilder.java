@@ -59,7 +59,7 @@ public class SubMenuBuilder extends MenuBuilder implements SubMenu {
     }
 
     @Override // com.android.internal.view.menu.MenuBuilder
-    public boolean dispatchMenuItemSelected(MenuBuilder menu, MenuItem item) {
+    boolean dispatchMenuItemSelected(MenuBuilder menu, MenuItem item) {
         return super.dispatchMenuItemSelected(menu, item) || this.mParentMenu.dispatchMenuItemSelected(menu, item);
     }
 
@@ -112,8 +112,7 @@ public class SubMenuBuilder extends MenuBuilder implements SubMenu {
 
     @Override // com.android.internal.view.menu.MenuBuilder
     public String getActionViewStatesKey() {
-        MenuItemImpl menuItemImpl = this.mItem;
-        int itemId = menuItemImpl != null ? menuItemImpl.getItemId() : 0;
+        int itemId = this.mItem != null ? this.mItem.getItemId() : 0;
         if (itemId == 0) {
             return null;
         }

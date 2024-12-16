@@ -4,6 +4,7 @@ import android.annotation.SystemApi;
 import android.companion.virtual.IVirtualDevice;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 @SystemApi
 /* loaded from: classes2.dex */
@@ -18,13 +19,20 @@ public class VirtualNavigationTouchpad extends VirtualInputDevice {
         return super.getInputDeviceId();
     }
 
-    public VirtualNavigationTouchpad(IVirtualDevice virtualDevice, IBinder token) {
-        super(virtualDevice, token);
+    @Override // android.hardware.input.VirtualInputDevice
+    public /* bridge */ /* synthetic */ String toString() {
+        return super.toString();
+    }
+
+    public VirtualNavigationTouchpad(VirtualNavigationTouchpadConfig config, IVirtualDevice virtualDevice, IBinder token) {
+        super(config, virtualDevice, token);
     }
 
     public void sendTouchEvent(VirtualTouchEvent event) {
         try {
-            this.mVirtualDevice.sendTouchEvent(this.mToken, event);
+            if (!this.mVirtualDevice.sendTouchEvent(this.mToken, event)) {
+                Log.w("VirtualInputDevice", "Failed to send touch event to virtual navigation touchpad " + this.mConfig.getInputDeviceName());
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

@@ -11,7 +11,10 @@ import java.io.IOException;
 /* loaded from: classes5.dex */
 public final class Capabilities extends MessageNano {
     private static volatile Capabilities[] _emptyArray;
+    public FrameworkCapability[] frameworkCapabilities;
     public Capability[] values;
+    public VMCapability[] vmCapabilities;
+    public VMInfo vmInfo;
 
     public static Capabilities[] emptyArray() {
         if (_emptyArray == null) {
@@ -30,47 +33,74 @@ public final class Capabilities extends MessageNano {
 
     public Capabilities clear() {
         this.values = Capability.emptyArray();
+        this.vmCapabilities = VMCapability.emptyArray();
+        this.frameworkCapabilities = FrameworkCapability.emptyArray();
+        this.vmInfo = null;
         this.cachedSize = -1;
         return this;
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
     public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-        Capability[] capabilityArr = this.values;
-        if (capabilityArr != null && capabilityArr.length > 0) {
-            int i = 0;
-            while (true) {
-                Capability[] capabilityArr2 = this.values;
-                if (i >= capabilityArr2.length) {
-                    break;
-                }
-                Capability element = capabilityArr2[i];
+        if (this.values != null && this.values.length > 0) {
+            for (int i = 0; i < this.values.length; i++) {
+                Capability element = this.values[i];
                 if (element != null) {
                     output.writeMessage(1, element);
                 }
-                i++;
             }
+        }
+        if (this.vmCapabilities != null && this.vmCapabilities.length > 0) {
+            for (int i2 = 0; i2 < this.vmCapabilities.length; i2++) {
+                VMCapability element2 = this.vmCapabilities[i2];
+                if (element2 != null) {
+                    output.writeMessage(2, element2);
+                }
+            }
+        }
+        if (this.frameworkCapabilities != null && this.frameworkCapabilities.length > 0) {
+            for (int i3 = 0; i3 < this.frameworkCapabilities.length; i3++) {
+                FrameworkCapability element3 = this.frameworkCapabilities[i3];
+                if (element3 != null) {
+                    output.writeMessage(3, element3);
+                }
+            }
+        }
+        if (this.vmInfo != null) {
+            output.writeMessage(4, this.vmInfo);
         }
         super.writeTo(output);
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
-        Capability[] capabilityArr = this.values;
-        if (capabilityArr != null && capabilityArr.length > 0) {
-            int i = 0;
-            while (true) {
-                Capability[] capabilityArr2 = this.values;
-                if (i >= capabilityArr2.length) {
-                    break;
-                }
-                Capability element = capabilityArr2[i];
+        if (this.values != null && this.values.length > 0) {
+            for (int i = 0; i < this.values.length; i++) {
+                Capability element = this.values[i];
                 if (element != null) {
                     size += CodedOutputByteBufferNano.computeMessageSize(1, element);
                 }
-                i++;
             }
+        }
+        if (this.vmCapabilities != null && this.vmCapabilities.length > 0) {
+            for (int i2 = 0; i2 < this.vmCapabilities.length; i2++) {
+                VMCapability element2 = this.vmCapabilities[i2];
+                if (element2 != null) {
+                    size += CodedOutputByteBufferNano.computeMessageSize(2, element2);
+                }
+            }
+        }
+        if (this.frameworkCapabilities != null && this.frameworkCapabilities.length > 0) {
+            for (int i3 = 0; i3 < this.frameworkCapabilities.length; i3++) {
+                FrameworkCapability element3 = this.frameworkCapabilities[i3];
+                if (element3 != null) {
+                    size += CodedOutputByteBufferNano.computeMessageSize(3, element3);
+                }
+            }
+        }
+        if (this.vmInfo != null) {
+            return size + CodedOutputByteBufferNano.computeMessageSize(4, this.vmInfo);
         }
         return size;
     }
@@ -84,11 +114,10 @@ public final class Capabilities extends MessageNano {
                     return this;
                 case 10:
                     int arrayLength = WireFormatNano.getRepeatedFieldArrayLength(input, 10);
-                    Capability[] capabilityArr = this.values;
-                    int i = capabilityArr == null ? 0 : capabilityArr.length;
+                    int i = this.values == null ? 0 : this.values.length;
                     Capability[] newArray = new Capability[i + arrayLength];
                     if (i != 0) {
-                        System.arraycopy(capabilityArr, 0, newArray, 0, i);
+                        System.arraycopy(this.values, 0, newArray, 0, i);
                     }
                     while (i < newArray.length - 1) {
                         newArray[i] = new Capability();
@@ -99,6 +128,46 @@ public final class Capabilities extends MessageNano {
                     newArray[i] = new Capability();
                     input.readMessage(newArray[i]);
                     this.values = newArray;
+                    break;
+                case 18:
+                    int arrayLength2 = WireFormatNano.getRepeatedFieldArrayLength(input, 18);
+                    int i2 = this.vmCapabilities == null ? 0 : this.vmCapabilities.length;
+                    VMCapability[] newArray2 = new VMCapability[i2 + arrayLength2];
+                    if (i2 != 0) {
+                        System.arraycopy(this.vmCapabilities, 0, newArray2, 0, i2);
+                    }
+                    while (i2 < newArray2.length - 1) {
+                        newArray2[i2] = new VMCapability();
+                        input.readMessage(newArray2[i2]);
+                        input.readTag();
+                        i2++;
+                    }
+                    newArray2[i2] = new VMCapability();
+                    input.readMessage(newArray2[i2]);
+                    this.vmCapabilities = newArray2;
+                    break;
+                case 26:
+                    int arrayLength3 = WireFormatNano.getRepeatedFieldArrayLength(input, 26);
+                    int i3 = this.frameworkCapabilities == null ? 0 : this.frameworkCapabilities.length;
+                    FrameworkCapability[] newArray3 = new FrameworkCapability[i3 + arrayLength3];
+                    if (i3 != 0) {
+                        System.arraycopy(this.frameworkCapabilities, 0, newArray3, 0, i3);
+                    }
+                    while (i3 < newArray3.length - 1) {
+                        newArray3[i3] = new FrameworkCapability();
+                        input.readMessage(newArray3[i3]);
+                        input.readTag();
+                        i3++;
+                    }
+                    newArray3[i3] = new FrameworkCapability();
+                    input.readMessage(newArray3[i3]);
+                    this.frameworkCapabilities = newArray3;
+                    break;
+                case 34:
+                    if (this.vmInfo == null) {
+                        this.vmInfo = new VMInfo();
+                    }
+                    input.readMessage(this.vmInfo);
                     break;
                 default:
                     if (!WireFormatNano.parseUnknownField(input, tag)) {

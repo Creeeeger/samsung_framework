@@ -30,7 +30,7 @@ public enum AudioStreamType {
         return this.rawName;
     }
 
-    public static AudioStreamType fromString(String rawString) {
+    static AudioStreamType fromString(String rawString) {
         for (AudioStreamType _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

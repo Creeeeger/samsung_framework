@@ -25,14 +25,13 @@ public final class NotificationChannelGroup implements Parcelable {
     private static final String ATT_NAME = "name";
     private static final String ATT_USER_LOCKED = "locked";
     public static final Parcelable.Creator<NotificationChannelGroup> CREATOR = new Parcelable.Creator<NotificationChannelGroup>() { // from class: android.app.NotificationChannelGroup.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationChannelGroup createFromParcel(Parcel in) {
             return new NotificationChannelGroup(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationChannelGroup[] newArray(int size) {
             return new NotificationChannelGroup[size];
@@ -195,23 +194,6 @@ public final class NotificationChannelGroup implements Parcelable {
         return record;
     }
 
-    /* renamed from: android.app.NotificationChannelGroup$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NotificationChannelGroup> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationChannelGroup createFromParcel(Parcel in) {
-            return new NotificationChannelGroup(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationChannelGroup[] newArray(int size) {
-            return new NotificationChannelGroup[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -235,8 +217,8 @@ public final class NotificationChannelGroup implements Parcelable {
         return Objects.hash(getId(), getName(), getDescription(), Boolean.valueOf(isBlocked()), getChannels(), Integer.valueOf(this.mUserLockedFields));
     }
 
-    /* renamed from: clone */
-    public NotificationChannelGroup m414clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public NotificationChannelGroup m454clone() {
         NotificationChannelGroup cloned = new NotificationChannelGroup(getId(), getName());
         cloned.setDescription(getDescription());
         cloned.setBlocked(isBlocked());

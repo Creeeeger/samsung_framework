@@ -26,32 +26,31 @@ class SRTTrack extends WebVttTrack {
     private static final String TAG = "SRTTrack";
     private final Handler mEventHandler;
 
-    public SRTTrack(WebVttRenderingWidget renderingWidget, MediaFormat format) {
+    SRTTrack(WebVttRenderingWidget renderingWidget, MediaFormat format) {
         super(renderingWidget, format);
         this.mEventHandler = null;
     }
 
-    public SRTTrack(Handler eventHandler, MediaFormat format) {
+    SRTTrack(Handler eventHandler, MediaFormat format) {
         super(null, format);
         this.mEventHandler = eventHandler;
     }
 
     @Override // android.media.SubtitleTrack
-    public void onData(SubtitleData data) {
+    protected void onData(SubtitleData data) {
         try {
             TextTrackCue cue = new TextTrackCue();
             cue.mStartTimeMs = data.getStartTimeUs() / 1000;
             cue.mEndTimeMs = (data.getStartTimeUs() + data.getDurationUs()) / 1000;
             String paragraph = new String(data.getData(), "UTF-8");
             String[] lines = paragraph.split("\\r?\\n");
-            cue.mLines = new TextTrackCueSpan[lines.length];
+            cue.mLines = new TextTrackCueSpan[lines.length][];
             int i = 0;
             int length = lines.length;
             int i2 = 0;
             while (i2 < length) {
                 String line = lines[i2];
-                TextTrackCueSpan[] span = new TextTrackCueSpan[1];
-                span[0] = new TextTrackCueSpan(line, -1L);
+                TextTrackCueSpan[] span = {new TextTrackCueSpan(line, -1L)};
                 cue.mLines[i] = span;
                 i2++;
                 i++;
@@ -86,7 +85,7 @@ class SRTTrack extends WebVttTrack {
                         }
                     }
                     int i2 = 0;
-                    cue.mLines = new TextTrackCueSpan[paragraph.size()];
+                    cue.mLines = new TextTrackCueSpan[paragraph.size()][];
                     cue.mStrings = (String[]) paragraph.toArray(new String[0]);
                     for (String line : paragraph) {
                         TextTrackCueSpan[] span = new TextTrackCueSpan[i];

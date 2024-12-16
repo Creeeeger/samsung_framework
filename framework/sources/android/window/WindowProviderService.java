@@ -10,18 +10,20 @@ import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 
 /* loaded from: classes4.dex */
 public abstract class WindowProviderService extends Service implements WindowProvider {
-    private final ComponentCallbacksController mCallbacksController;
-    private final WindowContextController mController;
+    private static final String TAG = WindowProviderService.class.getSimpleName();
     private boolean mInitialized;
-    private final Bundle mOptions;
     private WindowManager mWindowManager;
-    private final WindowTokenClient mWindowToken;
+    private final WindowTokenClient mWindowToken = new WindowTokenClient();
+    private final WindowContextController mController = new WindowContextController(this.mWindowToken);
+    private final ComponentCallbacksController mCallbacksController = new ComponentCallbacksController();
+    private final Bundle mOptions = new Bundle();
 
     public abstract int getWindowType();
 
@@ -33,13 +35,7 @@ public abstract class WindowProviderService extends Service implements WindowPro
     }
 
     public WindowProviderService() {
-        WindowTokenClient windowTokenClient = new WindowTokenClient();
-        this.mWindowToken = windowTokenClient;
-        this.mController = new WindowContextController(windowTokenClient);
-        this.mCallbacksController = new ComponentCallbacksController();
-        Bundle bundle = new Bundle();
-        this.mOptions = bundle;
-        bundle.putBoolean(WindowProvider.KEY_IS_WINDOW_PROVIDER_SERVICE, true);
+        this.mOptions.putBoolean(WindowProvider.KEY_IS_WINDOW_PROVIDER_SERVICE, true);
     }
 
     public Bundle getWindowContextOptions() {
@@ -75,10 +71,6 @@ public abstract class WindowProviderService extends Service implements WindowPro
         return 0;
     }
 
-    public Display getInitialDisplay(Context context) {
-        return ((DisplayManager) context.getSystemService(DisplayManager.class)).getDisplay(getInitialDisplayId());
-    }
-
     public final void attachToWindowToken(IBinder windowToken) {
         this.mController.attachToWindowToken(windowToken);
     }
@@ -86,11 +78,18 @@ public abstract class WindowProviderService extends Service implements WindowPro
     @Override // android.app.Service
     public final Context createServiceBaseContext(ActivityThread mainThread, LoadedApk packageInfo) {
         Context context = super.createServiceBaseContext(mainThread, packageInfo);
-        return context.createTokenContext(this.mWindowToken, getInitialDisplay(context));
+        DisplayManager displayManager = (DisplayManager) context.getSystemService(DisplayManager.class);
+        int initialDisplayId = getInitialDisplayId();
+        Display display = displayManager.getDisplay(initialDisplayId);
+        if (display == null) {
+            Log.e(TAG, "Display with id " + initialDisplayId + " not found, falling back to DEFAULT_DISPLAY");
+            display = displayManager.getDisplay(0);
+        }
+        return context.createTokenContext(this.mWindowToken, display);
     }
 
     @Override // android.app.Service, android.content.ContextWrapper
-    public void attachBaseContext(Context newBase) {
+    protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         if (!this.mInitialized) {
             this.mWindowToken.attachContext(this);

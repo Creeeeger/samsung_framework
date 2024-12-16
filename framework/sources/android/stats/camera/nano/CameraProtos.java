@@ -11,7 +11,6 @@ import java.io.IOException;
 /* loaded from: classes3.dex */
 public interface CameraProtos {
 
-    /* loaded from: classes3.dex */
     public static final class CameraStreamProto extends MessageNano {
         public static final int CAPTURE_LATENCY = 1;
         public static final int UNKNOWN = 0;
@@ -71,168 +70,117 @@ public interface CameraProtos {
 
         @Override // com.android.framework.protobuf.nano.MessageNano
         public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-            int i = this.width;
-            if (i != 0) {
-                output.writeInt32(1, i);
+            if (this.width != 0) {
+                output.writeInt32(1, this.width);
             }
-            int i2 = this.height;
-            if (i2 != 0) {
-                output.writeInt32(2, i2);
+            if (this.height != 0) {
+                output.writeInt32(2, this.height);
             }
-            int i3 = this.format;
-            if (i3 != 0) {
-                output.writeInt32(3, i3);
+            if (this.format != 0) {
+                output.writeInt32(3, this.format);
             }
-            int i4 = this.dataSpace;
-            if (i4 != 0) {
-                output.writeInt32(4, i4);
+            if (this.dataSpace != 0) {
+                output.writeInt32(4, this.dataSpace);
             }
-            long j = this.usage;
-            if (j != 0) {
-                output.writeInt64(5, j);
+            if (this.usage != 0) {
+                output.writeInt64(5, this.usage);
             }
-            long j2 = this.requestCount;
-            if (j2 != 0) {
-                output.writeInt64(6, j2);
+            if (this.requestCount != 0) {
+                output.writeInt64(6, this.requestCount);
             }
-            long j3 = this.errorCount;
-            if (j3 != 0) {
-                output.writeInt64(7, j3);
+            if (this.errorCount != 0) {
+                output.writeInt64(7, this.errorCount);
             }
-            int i5 = this.firstCaptureLatencyMillis;
-            if (i5 != 0) {
-                output.writeInt32(8, i5);
+            if (this.firstCaptureLatencyMillis != 0) {
+                output.writeInt32(8, this.firstCaptureLatencyMillis);
             }
-            int i6 = this.maxHalBuffers;
-            if (i6 != 0) {
-                output.writeInt32(9, i6);
+            if (this.maxHalBuffers != 0) {
+                output.writeInt32(9, this.maxHalBuffers);
             }
-            int i7 = this.maxAppBuffers;
-            if (i7 != 0) {
-                output.writeInt32(10, i7);
+            if (this.maxAppBuffers != 0) {
+                output.writeInt32(10, this.maxAppBuffers);
             }
-            int i8 = this.histogramType;
-            if (i8 != 0) {
-                output.writeInt32(11, i8);
+            if (this.histogramType != 0) {
+                output.writeInt32(11, this.histogramType);
             }
-            float[] fArr = this.histogramBins;
-            if (fArr != null && fArr.length > 0) {
-                int i9 = 0;
-                while (true) {
-                    float[] fArr2 = this.histogramBins;
-                    if (i9 >= fArr2.length) {
-                        break;
-                    }
-                    output.writeFloat(12, fArr2[i9]);
-                    i9++;
+            if (this.histogramBins != null && this.histogramBins.length > 0) {
+                for (int i = 0; i < this.histogramBins.length; i++) {
+                    output.writeFloat(12, this.histogramBins[i]);
                 }
             }
-            long[] jArr = this.histogramCounts;
-            if (jArr != null && jArr.length > 0) {
-                int i10 = 0;
-                while (true) {
-                    long[] jArr2 = this.histogramCounts;
-                    if (i10 >= jArr2.length) {
-                        break;
-                    }
-                    output.writeInt64(13, jArr2[i10]);
-                    i10++;
+            if (this.histogramCounts != null && this.histogramCounts.length > 0) {
+                for (int i2 = 0; i2 < this.histogramCounts.length; i2++) {
+                    output.writeInt64(13, this.histogramCounts[i2]);
                 }
             }
-            long j4 = this.dynamicRangeProfile;
-            if (j4 != 0) {
-                output.writeInt64(14, j4);
+            if (this.dynamicRangeProfile != 0) {
+                output.writeInt64(14, this.dynamicRangeProfile);
             }
-            long j5 = this.streamUseCase;
-            if (j5 != 0) {
-                output.writeInt64(15, j5);
+            if (this.streamUseCase != 0) {
+                output.writeInt64(15, this.streamUseCase);
             }
-            int i11 = this.colorSpace;
-            if (i11 != 0) {
-                output.writeInt32(16, i11);
+            if (this.colorSpace != 0) {
+                output.writeInt32(16, this.colorSpace);
             }
             super.writeTo(output);
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
-            long[] jArr;
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
-            int i = this.width;
-            if (i != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(1, i);
+            if (this.width != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(1, this.width);
             }
-            int i2 = this.height;
-            if (i2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(2, i2);
+            if (this.height != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(2, this.height);
             }
-            int i3 = this.format;
-            if (i3 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(3, i3);
+            if (this.format != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(3, this.format);
             }
-            int i4 = this.dataSpace;
-            if (i4 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(4, i4);
+            if (this.dataSpace != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(4, this.dataSpace);
             }
-            long j = this.usage;
-            if (j != 0) {
-                size += CodedOutputByteBufferNano.computeInt64Size(5, j);
+            if (this.usage != 0) {
+                size += CodedOutputByteBufferNano.computeInt64Size(5, this.usage);
             }
-            long j2 = this.requestCount;
-            if (j2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt64Size(6, j2);
+            if (this.requestCount != 0) {
+                size += CodedOutputByteBufferNano.computeInt64Size(6, this.requestCount);
             }
-            long j3 = this.errorCount;
-            if (j3 != 0) {
-                size += CodedOutputByteBufferNano.computeInt64Size(7, j3);
+            if (this.errorCount != 0) {
+                size += CodedOutputByteBufferNano.computeInt64Size(7, this.errorCount);
             }
-            int i5 = this.firstCaptureLatencyMillis;
-            if (i5 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(8, i5);
+            if (this.firstCaptureLatencyMillis != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(8, this.firstCaptureLatencyMillis);
             }
-            int i6 = this.maxHalBuffers;
-            if (i6 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(9, i6);
+            if (this.maxHalBuffers != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(9, this.maxHalBuffers);
             }
-            int i7 = this.maxAppBuffers;
-            if (i7 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(10, i7);
+            if (this.maxAppBuffers != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(10, this.maxAppBuffers);
             }
-            int i8 = this.histogramType;
-            if (i8 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(11, i8);
+            if (this.histogramType != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(11, this.histogramType);
             }
-            float[] fArr = this.histogramBins;
-            if (fArr != null && fArr.length > 0) {
-                int dataSize = fArr.length * 4;
-                size = size + dataSize + (fArr.length * 1);
+            if (this.histogramBins != null && this.histogramBins.length > 0) {
+                int dataSize = this.histogramBins.length * 4;
+                size = size + dataSize + (this.histogramBins.length * 1);
             }
-            long[] jArr2 = this.histogramCounts;
-            if (jArr2 != null && jArr2.length > 0) {
+            if (this.histogramCounts != null && this.histogramCounts.length > 0) {
                 int dataSize2 = 0;
-                int i9 = 0;
-                while (true) {
-                    jArr = this.histogramCounts;
-                    if (i9 >= jArr.length) {
-                        break;
-                    }
-                    long element = jArr[i9];
+                for (int i = 0; i < this.histogramCounts.length; i++) {
+                    long element = this.histogramCounts[i];
                     dataSize2 += CodedOutputByteBufferNano.computeInt64SizeNoTag(element);
-                    i9++;
                 }
-                size = size + dataSize2 + (jArr.length * 1);
+                size = size + dataSize2 + (this.histogramCounts.length * 1);
             }
-            long j4 = this.dynamicRangeProfile;
-            if (j4 != 0) {
-                size += CodedOutputByteBufferNano.computeInt64Size(14, j4);
+            if (this.dynamicRangeProfile != 0) {
+                size += CodedOutputByteBufferNano.computeInt64Size(14, this.dynamicRangeProfile);
             }
-            long j5 = this.streamUseCase;
-            if (j5 != 0) {
-                size += CodedOutputByteBufferNano.computeInt64Size(15, j5);
+            if (this.streamUseCase != 0) {
+                size += CodedOutputByteBufferNano.computeInt64Size(15, this.streamUseCase);
             }
-            int i10 = this.colorSpace;
-            if (i10 != 0) {
-                return size + CodedOutputByteBufferNano.computeInt32Size(16, i10);
+            if (this.colorSpace != 0) {
+                return size + CodedOutputByteBufferNano.computeInt32Size(16, this.colorSpace);
             }
             return size;
         }
@@ -286,11 +234,10 @@ public interface CameraProtos {
                         int length = input.readRawVarint32();
                         int limit = input.pushLimit(length);
                         int arrayLength = length / 4;
-                        float[] fArr = this.histogramBins;
-                        int i = fArr == null ? 0 : fArr.length;
+                        int i = this.histogramBins == null ? 0 : this.histogramBins.length;
                         float[] newArray = new float[i + arrayLength];
                         if (i != 0) {
-                            System.arraycopy(fArr, 0, newArray, 0, i);
+                            System.arraycopy(this.histogramBins, 0, newArray, 0, i);
                         }
                         while (i < newArray.length) {
                             newArray[i] = input.readFloat();
@@ -301,11 +248,10 @@ public interface CameraProtos {
                         break;
                     case 101:
                         int arrayLength2 = WireFormatNano.getRepeatedFieldArrayLength(input, 101);
-                        float[] fArr2 = this.histogramBins;
-                        int i2 = fArr2 == null ? 0 : fArr2.length;
+                        int i2 = this.histogramBins == null ? 0 : this.histogramBins.length;
                         float[] newArray2 = new float[i2 + arrayLength2];
                         if (i2 != 0) {
-                            System.arraycopy(fArr2, 0, newArray2, 0, i2);
+                            System.arraycopy(this.histogramBins, 0, newArray2, 0, i2);
                         }
                         while (i2 < newArray2.length - 1) {
                             newArray2[i2] = input.readFloat();
@@ -317,11 +263,10 @@ public interface CameraProtos {
                         break;
                     case 104:
                         int arrayLength3 = WireFormatNano.getRepeatedFieldArrayLength(input, 104);
-                        long[] jArr = this.histogramCounts;
-                        int i3 = jArr == null ? 0 : jArr.length;
+                        int i3 = this.histogramCounts == null ? 0 : this.histogramCounts.length;
                         long[] newArray3 = new long[i3 + arrayLength3];
                         if (i3 != 0) {
-                            System.arraycopy(jArr, 0, newArray3, 0, i3);
+                            System.arraycopy(this.histogramCounts, 0, newArray3, 0, i3);
                         }
                         while (i3 < newArray3.length - 1) {
                             newArray3[i3] = input.readInt64();
@@ -340,11 +285,10 @@ public interface CameraProtos {
                             arrayLength4++;
                         }
                         input.rewindToPosition(startPos);
-                        long[] jArr2 = this.histogramCounts;
-                        int i4 = jArr2 == null ? 0 : jArr2.length;
+                        int i4 = this.histogramCounts == null ? 0 : this.histogramCounts.length;
                         long[] newArray4 = new long[i4 + arrayLength4];
                         if (i4 != 0) {
-                            System.arraycopy(jArr2, 0, newArray4, 0, i4);
+                            System.arraycopy(this.histogramCounts, 0, newArray4, 0, i4);
                         }
                         while (i4 < newArray4.length) {
                             newArray4[i4] = input.readInt64();

@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IShellCallback extends IInterface {
     ParcelFileDescriptor openFile(String str, String str2, String str3) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IShellCallback {
         @Override // com.android.internal.os.IShellCallback
         public ParcelFileDescriptor openFile(String path, String seLinuxContext, String mode) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IShellCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IShellCallback {
         public static final String DESCRIPTOR = "com.android.internal.os.IShellCallback";
         static final int TRANSACTION_openFile = 1;
@@ -68,29 +66,26 @@ public interface IShellCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result = openFile(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result = openFile(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IShellCallback {
+        private static class Proxy implements IShellCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

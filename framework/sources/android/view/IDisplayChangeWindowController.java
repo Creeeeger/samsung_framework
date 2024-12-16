@@ -14,7 +14,6 @@ public interface IDisplayChangeWindowController extends IInterface {
 
     void onDisplayChange(int i, int i2, int i3, DisplayAreaInfo displayAreaInfo, IDisplayChangeWindowCallback iDisplayChangeWindowCallback) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDisplayChangeWindowController {
         @Override // android.view.IDisplayChangeWindowController
         public void onDisplayChange(int displayId, int fromRotation, int toRotation, DisplayAreaInfo newDisplayAreaInfo, IDisplayChangeWindowCallback callback) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IDisplayChangeWindowController extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDisplayChangeWindowController {
         static final int TRANSACTION_onDisplayChange = 1;
 
@@ -69,29 +67,26 @@ public interface IDisplayChangeWindowController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayChangeWindowController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayChangeWindowController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayChangeWindowController.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    DisplayAreaInfo _arg3 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
+                    IDisplayChangeWindowCallback _arg4 = IDisplayChangeWindowCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onDisplayChange(_arg0, _arg1, _arg2, _arg3, _arg4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            DisplayAreaInfo _arg3 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
-                            IDisplayChangeWindowCallback _arg4 = IDisplayChangeWindowCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onDisplayChange(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDisplayChangeWindowController {
+        private static class Proxy implements IDisplayChangeWindowController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

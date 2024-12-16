@@ -4,7 +4,7 @@ import com.android.framework.protobuf.Writer;
 import java.io.IOException;
 import java.util.Arrays;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class UnknownFieldSetLite {
     private static final UnknownFieldSetLite DEFAULT_INSTANCE = new UnknownFieldSetLite(0, new int[0], new Object[0], false);
     private static final int MIN_CAPACITY = 8;
@@ -18,11 +18,11 @@ public final class UnknownFieldSetLite {
         return DEFAULT_INSTANCE;
     }
 
-    public static UnknownFieldSetLite newInstance() {
+    static UnknownFieldSetLite newInstance() {
         return new UnknownFieldSetLite();
     }
 
-    public static UnknownFieldSetLite mutableCopyOf(UnknownFieldSetLite first, UnknownFieldSetLite second) {
+    static UnknownFieldSetLite mutableCopyOf(UnknownFieldSetLite first, UnknownFieldSetLite second) {
         int count = first.count + second.count;
         int[] tags = Arrays.copyOf(first.tags, count);
         System.arraycopy(second.tags, 0, tags, first.count, second.count);
@@ -89,7 +89,7 @@ public final class UnknownFieldSetLite {
         }
     }
 
-    public void writeAsMessageSetTo(Writer writer) throws IOException {
+    void writeAsMessageSetTo(Writer writer) throws IOException {
         if (writer.fieldOrder() == Writer.FieldOrder.DESCENDING) {
             for (int i = this.count - 1; i >= 0; i--) {
                 int fieldNumber = WireFormat.getTagFieldNumber(this.tags[i]);
@@ -228,8 +228,7 @@ public final class UnknownFieldSetLite {
             return false;
         }
         UnknownFieldSetLite other = (UnknownFieldSetLite) obj;
-        int i = this.count;
-        if (i == other.count && tagsEquals(this.tags, other.tags, i) && objectsEquals(this.objects, other.objects, this.count)) {
+        if (this.count == other.count && tagsEquals(this.tags, other.tags, this.count) && objectsEquals(this.objects, other.objects, this.count)) {
             return true;
         }
         return false;
@@ -252,45 +251,40 @@ public final class UnknownFieldSetLite {
     }
 
     public int hashCode() {
-        int i = this.count;
-        int hashCode = (17 * 31) + i;
-        return (((hashCode * 31) + hashCode(this.tags, i)) * 31) + hashCode(this.objects, this.count);
+        int hashCode = (17 * 31) + this.count;
+        return (((hashCode * 31) + hashCode(this.tags, this.count)) * 31) + hashCode(this.objects, this.count);
     }
 
-    public final void printWithIndent(StringBuilder buffer, int indent) {
+    final void printWithIndent(StringBuilder buffer, int indent) {
         for (int i = 0; i < this.count; i++) {
             int fieldNumber = WireFormat.getTagFieldNumber(this.tags[i]);
             MessageLiteToString.printField(buffer, indent, String.valueOf(fieldNumber), this.objects[i]);
         }
     }
 
-    public void storeField(int tag, Object value) {
+    void storeField(int tag, Object value) {
         checkMutable();
         ensureCapacity(this.count + 1);
-        int[] iArr = this.tags;
-        int i = this.count;
-        iArr[i] = tag;
-        this.objects[i] = value;
-        this.count = i + 1;
+        this.tags[this.count] = tag;
+        this.objects[this.count] = value;
+        this.count++;
     }
 
     private void ensureCapacity(int minCapacity) {
-        int[] iArr = this.tags;
-        if (minCapacity > iArr.length) {
-            int i = this.count;
-            int newCapacity = i + (i / 2);
+        if (minCapacity > this.tags.length) {
+            int newCapacity = this.count + (this.count / 2);
             if (newCapacity < minCapacity) {
                 newCapacity = minCapacity;
             }
             if (newCapacity < 8) {
                 newCapacity = 8;
             }
-            this.tags = Arrays.copyOf(iArr, newCapacity);
+            this.tags = Arrays.copyOf(this.tags, newCapacity);
             this.objects = Arrays.copyOf(this.objects, newCapacity);
         }
     }
 
-    public boolean mergeFieldFrom(int tag, CodedInputStream input) throws IOException {
+    boolean mergeFieldFrom(int tag, CodedInputStream input) throws IOException {
         checkMutable();
         int fieldNumber = WireFormat.getTagFieldNumber(tag);
         switch (WireFormat.getTagWireType(tag)) {
@@ -319,7 +313,7 @@ public final class UnknownFieldSetLite {
         }
     }
 
-    public UnknownFieldSetLite mergeVarintField(int fieldNumber, int value) {
+    UnknownFieldSetLite mergeVarintField(int fieldNumber, int value) {
         checkMutable();
         if (fieldNumber == 0) {
             throw new IllegalArgumentException("Zero is not a valid field number.");
@@ -328,7 +322,7 @@ public final class UnknownFieldSetLite {
         return this;
     }
 
-    public UnknownFieldSetLite mergeLengthDelimitedField(int fieldNumber, ByteString value) {
+    UnknownFieldSetLite mergeLengthDelimitedField(int fieldNumber, ByteString value) {
         checkMutable();
         if (fieldNumber == 0) {
             throw new IllegalArgumentException("Zero is not a valid field number.");
@@ -348,7 +342,7 @@ public final class UnknownFieldSetLite {
         return this;
     }
 
-    public UnknownFieldSetLite mergeFrom(UnknownFieldSetLite other) {
+    UnknownFieldSetLite mergeFrom(UnknownFieldSetLite other) {
         if (other.equals(getDefaultInstance())) {
             return this;
         }

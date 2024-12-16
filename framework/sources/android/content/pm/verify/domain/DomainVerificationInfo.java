@@ -29,7 +29,6 @@ public final class DomainVerificationInfo implements Parcelable {
     private final String mPackageName;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface State {
     }
 
@@ -62,11 +61,11 @@ public final class DomainVerificationInfo implements Parcelable {
 
     public DomainVerificationInfo(UUID identifier, String packageName, Map<String, Integer> hostToStateMap) {
         this.mIdentifier = identifier;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) identifier);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mIdentifier);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mHostToStateMap = hostToStateMap;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hostToStateMap);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHostToStateMap);
     }
 
     public UUID getIdentifier() {
@@ -105,20 +104,18 @@ public final class DomainVerificationInfo implements Parcelable {
     }
 
     static {
-        Parcelling<UUID> parcelling = Parcelling.Cache.get(Parcelling.BuiltIn.ForUUID.class);
-        sParcellingForIdentifier = parcelling;
-        if (parcelling == null) {
+        sParcellingForIdentifier = Parcelling.Cache.get(Parcelling.BuiltIn.ForUUID.class);
+        if (sParcellingForIdentifier == null) {
             sParcellingForIdentifier = Parcelling.Cache.put(new Parcelling.BuiltIn.ForUUID());
         }
         CREATOR = new Parcelable.Creator<DomainVerificationInfo>() { // from class: android.content.pm.verify.domain.DomainVerificationInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DomainVerificationInfo[] newArray(int size) {
                 return new DomainVerificationInfo[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DomainVerificationInfo createFromParcel(Parcel in) {
                 return new DomainVerificationInfo(in);
@@ -143,28 +140,11 @@ public final class DomainVerificationInfo implements Parcelable {
         String packageName = in.readString();
         Map<String, Integer> hostToStateMap = unparcelHostToStateMap(in);
         this.mIdentifier = identifier;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) identifier);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mIdentifier);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mHostToStateMap = hostToStateMap;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hostToStateMap);
-    }
-
-    /* renamed from: android.content.pm.verify.domain.DomainVerificationInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DomainVerificationInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DomainVerificationInfo[] newArray(int size) {
-            return new DomainVerificationInfo[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DomainVerificationInfo createFromParcel(Parcel in) {
-            return new DomainVerificationInfo(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHostToStateMap);
     }
 
     @Deprecated

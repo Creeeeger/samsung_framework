@@ -55,15 +55,8 @@ public final class SetupWizardProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -106,6 +99,7 @@ public final class SetupWizardProperties {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String tryParseString(String str) {
         if ("".equals(str)) {
             return null;

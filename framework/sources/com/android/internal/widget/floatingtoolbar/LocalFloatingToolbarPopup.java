@@ -94,6 +94,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     private final int mMarginVertical;
     private final int mMenuFirstImageStartPadding;
     private final int mMenuFirstLastSidePadding;
+    private final int mMenuIntelliFirstStartPadding;
     private boolean mMoved;
     private MenuItem.OnMenuItemClickListener mOnMenuItemClickListener;
     private final AnimationSet mOpenOverflowAnimation;
@@ -137,9 +138,6 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
     };
     private final Runnable mPreparePopupContentRTLHelper = new Runnable() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             LocalFloatingToolbarPopup.this.setPanelsStatesAtRestingPosition();
@@ -150,9 +148,6 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     private boolean mDismissed = true;
     private final Map<MenuItemRepr, MenuItem> mMenuItems = new LinkedHashMap();
     private final View.OnClickListener mMenuItemButtonOnClickListener = new View.OnClickListener() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.2
-        AnonymousClass2() {
-        }
-
         @Override // android.view.View.OnClickListener
         public void onClick(View v) {
             MenuItem menuItem;
@@ -176,6 +171,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     private Point mOriginalPos = new Point();
     private final View.OnAttachStateChangeListener mOnAnchorRootDetachedListener = new FloatingOnAttachStateChangeListener(this);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(ViewTreeObserver.InternalInsetsInfo info) {
         info.contentInsets.setEmpty();
         info.visibleInsets.setEmpty();
@@ -183,52 +179,12 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         info.setTouchableInsets(3);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            LocalFloatingToolbarPopup.this.setPanelsStatesAtRestingPosition();
-            LocalFloatingToolbarPopup.this.setContentAreaAsTouchableSurface();
-            LocalFloatingToolbarPopup.this.mContentContainer.setAlpha(1.0f);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements View.OnClickListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            MenuItem menuItem;
-            if (LocalFloatingToolbarPopup.this.mOnMenuItemClickListener == null) {
-                return;
-            }
-            Object tag = v.getTag();
-            if (!(tag instanceof MenuItemRepr) || (menuItem = (MenuItem) LocalFloatingToolbarPopup.this.mMenuItems.get((MenuItemRepr) tag)) == null) {
-                return;
-            }
-            LocalFloatingToolbarPopup.this.mOnMenuItemClickListener.onMenuItemClick(menuItem);
-        }
-    }
-
     public LocalFloatingToolbarPopup(Context context, View parent, boolean isSemTypeFloating) {
         sIsSemType = isSemTypeFloating;
-        View view = (View) Objects.requireNonNull(parent);
-        this.mParent = view;
-        Context applyDefaultTheme = applyDefaultTheme(context);
-        this.mContext = applyDefaultTheme;
-        ViewGroup createContentContainer = createContentContainer(applyDefaultTheme);
-        this.mContentContainer = createContentContainer;
-        PopupWindow createPopupWindow = createPopupWindow(createContentContainer);
-        this.mPopupWindow = createPopupWindow;
+        this.mParent = (View) Objects.requireNonNull(parent);
+        this.mContext = applyDefaultTheme(context);
+        this.mContentContainer = createContentContainer(this.mContext);
+        this.mPopupWindow = createPopupWindow(this.mContentContainer);
         this.mMarginHorizontal = parent.getResources().getDimensionPixelSize(R.dimen.floating_toolbar_horizontal_margin);
         if (sIsSemType) {
             this.mMarginVertical = parent.getResources().getDimensionPixelSize(R.dimen.sem_floating_popup_vertical_margin);
@@ -237,43 +193,31 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             this.mMarginVertical = parent.getResources().getDimensionPixelSize(R.dimen.floating_toolbar_vertical_margin);
             this.mLineHeight = context.getResources().getDimensionPixelSize(R.dimen.floating_toolbar_height);
         }
-        int dimensionPixelSize = context.getResources().getDimensionPixelSize(R.dimen.floating_toolbar_icon_text_spacing);
-        this.mIconTextSpacing = dimensionPixelSize;
+        this.mIconTextSpacing = context.getResources().getDimensionPixelSize(R.dimen.floating_toolbar_icon_text_spacing);
         this.mLogAccelerateInterpolator = new LogAccelerateInterpolator();
-        this.mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(applyDefaultTheme, 17563661);
-        this.mLinearOutSlowInInterpolator = AnimationUtils.loadInterpolator(applyDefaultTheme, 17563662);
-        this.mFastOutLinearInInterpolator = AnimationUtils.loadInterpolator(applyDefaultTheme, 17563663);
-        Drawable drawable = applyDefaultTheme.getResources().getDrawable(R.drawable.ft_avd_tooverflow, applyDefaultTheme.getTheme());
-        this.mArrow = drawable;
-        drawable.setAutoMirrored(true);
-        Drawable drawable2 = applyDefaultTheme.getResources().getDrawable(R.drawable.ft_avd_toarrow, applyDefaultTheme.getTheme());
-        this.mOverflow = drawable2;
-        drawable2.setAutoMirrored(true);
-        AnimatedVectorDrawable animatedVectorDrawable = (AnimatedVectorDrawable) applyDefaultTheme.getResources().getDrawable(R.drawable.ft_avd_toarrow_animation, applyDefaultTheme.getTheme());
-        this.mToArrow = animatedVectorDrawable;
-        animatedVectorDrawable.setAutoMirrored(true);
-        AnimatedVectorDrawable animatedVectorDrawable2 = (AnimatedVectorDrawable) applyDefaultTheme.getResources().getDrawable(R.drawable.ft_avd_tooverflow_animation, applyDefaultTheme.getTheme());
-        this.mToOverflow = animatedVectorDrawable2;
-        animatedVectorDrawable2.setAutoMirrored(true);
-        ImageButton createOverflowButton = createOverflowButton();
-        this.mOverflowButton = createOverflowButton;
-        this.mOverflowButtonSize = measure(createOverflowButton);
+        this.mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(this.mContext, 17563661);
+        this.mLinearOutSlowInInterpolator = AnimationUtils.loadInterpolator(this.mContext, 17563662);
+        this.mFastOutLinearInInterpolator = AnimationUtils.loadInterpolator(this.mContext, 17563663);
+        this.mArrow = this.mContext.getResources().getDrawable(R.drawable.ft_avd_tooverflow, this.mContext.getTheme());
+        this.mArrow.setAutoMirrored(true);
+        this.mOverflow = this.mContext.getResources().getDrawable(R.drawable.ft_avd_toarrow, this.mContext.getTheme());
+        this.mOverflow.setAutoMirrored(true);
+        this.mToArrow = (AnimatedVectorDrawable) this.mContext.getResources().getDrawable(R.drawable.ft_avd_toarrow_animation, this.mContext.getTheme());
+        this.mToArrow.setAutoMirrored(true);
+        this.mToOverflow = (AnimatedVectorDrawable) this.mContext.getResources().getDrawable(R.drawable.ft_avd_tooverflow_animation, this.mContext.getTheme());
+        this.mToOverflow.setAutoMirrored(true);
+        this.mOverflowButton = createOverflowButton();
+        this.mOverflowButtonSize = measure(this.mOverflowButton);
         this.mMainPanel = createMainPanel();
-        this.mOverflowPanelViewHelper = new OverflowPanelViewHelper(applyDefaultTheme, dimensionPixelSize);
+        this.mOverflowPanelViewHelper = new OverflowPanelViewHelper(this.mContext, this.mIconTextSpacing);
         this.mOverflowPanel = createOverflowPanel();
-        Animation.AnimationListener createOverflowAnimationListener = createOverflowAnimationListener();
-        this.mOverflowAnimationListener = createOverflowAnimationListener;
-        AnimationSet animationSet = new AnimationSet(true);
-        this.mOpenOverflowAnimation = animationSet;
-        animationSet.setAnimationListener(createOverflowAnimationListener);
-        AnimationSet animationSet2 = new AnimationSet(true);
-        this.mCloseOverflowAnimation = animationSet2;
-        animationSet2.setAnimationListener(createOverflowAnimationListener);
-        this.mShowAnimation = createEnterAnimation(createContentContainer);
-        this.mDismissAnimation = createExitAnimation(createContentContainer, 150, new AnimatorListenerAdapter() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.3
-            AnonymousClass3() {
-            }
-
+        this.mOverflowAnimationListener = createOverflowAnimationListener();
+        this.mOpenOverflowAnimation = new AnimationSet(true);
+        this.mOpenOverflowAnimation.setAnimationListener(this.mOverflowAnimationListener);
+        this.mCloseOverflowAnimation = new AnimationSet(true);
+        this.mCloseOverflowAnimation.setAnimationListener(this.mOverflowAnimationListener);
+        this.mShowAnimation = createEnterAnimation(this.mContentContainer);
+        this.mDismissAnimation = createExitAnimation(this.mContentContainer, 150, new AnimatorListenerAdapter() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.3
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 LocalFloatingToolbarPopup.this.mPopupWindow.dismiss();
@@ -283,10 +227,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
                 }
             }
         });
-        this.mHideAnimation = createExitAnimation(createContentContainer, 0, new AnimatorListenerAdapter() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.4
-            AnonymousClass4() {
-            }
-
+        this.mHideAnimation = createExitAnimation(this.mContentContainer, 0, new AnimatorListenerAdapter() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.4
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 LocalFloatingToolbarPopup.this.mPopupWindow.dismiss();
@@ -294,18 +235,16 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         });
         this.mMenuFirstLastSidePadding = parent.getResources().getDimensionPixelSize(R.dimen.sem_floating_popup_menu_first_last_side_padding);
         this.mMenuFirstImageStartPadding = parent.getResources().getDimensionPixelSize(R.dimen.sem_floating_popup_menu_image_button_vertical_padding);
+        this.mMenuIntelliFirstStartPadding = parent.getResources().getDimensionPixelSize(R.dimen.sem_floating_popup_intelli_first_padding);
         this.mPopupTopMargin = parent.getResources().getDimensionPixelSize(R.dimen.sem_floating_popup_top_margin);
         this.mPopupVerticalOffset = parent.getResources().getDimensionPixelSize(R.dimen.sem_floating_popup_vertical_offset);
-        this.mArrowSem = applyDefaultTheme.getResources().getDrawable(R.drawable.tw_ic_ab_back_material, applyDefaultTheme.getTheme());
+        this.mArrowSem = this.mContext.getResources().getDrawable(R.drawable.tw_ic_ab_back_material, this.mContext.getTheme());
         createDividers();
-        ViewConfiguration viewConfig = ViewConfiguration.get(applyDefaultTheme);
+        ViewConfiguration viewConfig = ViewConfiguration.get(this.mContext);
         this.mTouchSlop = viewConfig.getScaledTouchSlop();
-        createPopupWindow.setTouchInterceptor(new View.OnTouchListener() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.5
-            AnonymousClass5() {
-            }
-
+        this.mPopupWindow.setTouchInterceptor(new View.OnTouchListener() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.5
             /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-            /* JADX WARN: Code restructure failed: missing block: B:18:0x0147, code lost:
+            /* JADX WARN: Code restructure failed: missing block: B:18:0x0152, code lost:
             
                 return false;
              */
@@ -316,75 +255,14 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             */
             public boolean onTouch(android.view.View r13, android.view.MotionEvent r14) {
                 /*
-                    Method dump skipped, instructions count: 338
+                    Method dump skipped, instructions count: 350
                     To view this dump change 'Code comments level' option to 'DEBUG'
                 */
                 throw new UnsupportedOperationException("Method not decompiled: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.AnonymousClass5.onTouch(android.view.View, android.view.MotionEvent):boolean");
             }
         });
-        this.mParentRoot = view.getRootView();
-        this.mParentRootWindowInset = view.getRootWindowInsets();
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 extends AnimatorListenerAdapter {
-        AnonymousClass3() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            LocalFloatingToolbarPopup.this.mPopupWindow.dismiss();
-            LocalFloatingToolbarPopup.this.mContentContainer.removeAllViews();
-            if (LocalFloatingToolbarPopup.this.mParentRoot != null) {
-                LocalFloatingToolbarPopup.this.mParentRoot.removeOnAttachStateChangeListener(LocalFloatingToolbarPopup.this.mOnAnchorRootDetachedListener);
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 extends AnimatorListenerAdapter {
-        AnonymousClass4() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            LocalFloatingToolbarPopup.this.mPopupWindow.dismiss();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$5 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass5 implements View.OnTouchListener {
-        AnonymousClass5() {
-        }
-
-        @Override // android.view.View.OnTouchListener
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            /*  JADX ERROR: Method code generation error
-                java.lang.NullPointerException: Cannot invoke "jadx.core.dex.nodes.IContainer.get(jadx.api.plugins.input.data.attributes.IJadxAttrType)" because "cont" is null
-                	at jadx.core.codegen.RegionGen.declareVars(RegionGen.java:70)
-                	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:65)
-                	at jadx.core.codegen.MethodGen.addRegionInsns(MethodGen.java:297)
-                	at jadx.core.codegen.MethodGen.addInstructions(MethodGen.java:276)
-                	at jadx.core.codegen.ClassGen.addMethodCode(ClassGen.java:406)
-                	at jadx.core.codegen.ClassGen.addMethod(ClassGen.java:335)
-                	at jadx.core.codegen.ClassGen.lambda$addInnerClsAndMethods$3(ClassGen.java:301)
-                	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
-                	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-                	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
-                	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
-                */
-            /*
-                Method dump skipped, instructions count: 338
-                To view this dump change 'Code comments level' option to 'DEBUG'
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.AnonymousClass5.onTouch(android.view.View, android.view.MotionEvent):boolean");
-        }
+        this.mParentRoot = this.mParent.getRootView();
+        this.mParentRootWindowInset = this.mParent.getRootWindowInsets();
     }
 
     @Override // com.android.internal.widget.floatingtoolbar.FloatingToolbarPopup
@@ -457,9 +335,8 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         if (isShowing()) {
             return;
         }
-        View view = this.mParentRoot;
-        if (view != null) {
-            view.addOnAttachStateChangeListener(this.mOnAnchorRootDetachedListener);
+        if (this.mParentRoot != null) {
+            this.mParentRoot.addOnAttachStateChangeListener(this.mOnAnchorRootDetachedListener);
         }
         this.mHidden = false;
         this.mDismissed = false;
@@ -610,13 +487,11 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             }
         }
         this.mParent.getRootView().getLocationOnScreen(this.mTmpCoords);
-        int[] iArr = this.mTmpCoords;
-        int rootViewLeftOnScreen = iArr[0];
-        int rootViewTopOnScreen = iArr[1];
+        int rootViewLeftOnScreen = this.mTmpCoords[0];
+        int rootViewTopOnScreen = this.mTmpCoords[1];
         this.mParent.getRootView().getLocationInWindow(this.mTmpCoords);
-        int[] iArr2 = this.mTmpCoords;
-        int rootViewLeftOnWindow = iArr2[0];
-        int rootViewTopOnWindow = iArr2[1];
+        int rootViewLeftOnWindow = this.mTmpCoords[0];
+        int rootViewTopOnWindow = this.mTmpCoords[1];
         int windowLeftOnScreen = rootViewLeftOnScreen - rootViewLeftOnWindow;
         int windowTopOnScreen = rootViewTopOnScreen - rootViewTopOnWindow;
         this.mCoordsOnWindow.set(Math.max(Math.max(this.mViewPortOnScreen.left, 0) - windowLeftOnScreen, x - windowLeftOnScreen), Math.max(Math.max(this.mViewPortOnScreen.top, 0) - windowTopOnScreen, minimumOverflowHeightWithMargin - windowTopOnScreen));
@@ -658,10 +533,8 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             this.mOpenOverflowUpwards = !this.mOpenOverflowUpwards;
         }
         if (needToChangeDirection == 2 || needToChangeDirection == 3) {
-            boolean isInRTLMode = isInRTLMode();
-            boolean z = this.mIsClosedOpposites;
-            if (isInRTLMode == z) {
-                this.mIsClosedOpposites = !z;
+            if (isInRTLMode() == this.mIsClosedOpposites) {
+                this.mIsClosedOpposites = !this.mIsClosedOpposites;
                 if (this.mCoordsOnWindow.x + this.mContentContainer.getX() + this.mOverflowPanelSize.getWidth() > this.mViewPortOnScreen.right) {
                     shiftPopup();
                     this.mIsClosedOpposites = !this.mIsClosedOpposites;
@@ -674,28 +547,16 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         if (sIsSemType) {
             changeOverflowPanelAdapterOrder();
         }
-        int targetWidth = this.mOverflowPanelSize.getWidth();
-        int targetHeight = this.mOverflowPanelSize.getHeight();
-        int startWidth = this.mContentContainer.getWidth();
-        int startHeight = this.mContentContainer.getHeight();
-        float startY = this.mContentContainer.getY();
-        float left = this.mContentContainer.getX();
-        float right = left + this.mContentContainer.getWidth();
+        final int targetWidth = this.mOverflowPanelSize.getWidth();
+        final int targetHeight = this.mOverflowPanelSize.getHeight();
+        final int startWidth = this.mContentContainer.getWidth();
+        final int startHeight = this.mContentContainer.getHeight();
+        final float startY = this.mContentContainer.getY();
+        final float left = this.mContentContainer.getX();
+        final float right = left + this.mContentContainer.getWidth();
         Animation widthAnimation = new Animation() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.6
-            final /* synthetic */ float val$left;
-            final /* synthetic */ float val$right;
-            final /* synthetic */ int val$startWidth;
-            final /* synthetic */ int val$targetWidth;
-
-            AnonymousClass6(int targetWidth2, int startWidth2, float left2, float right2) {
-                targetWidth = targetWidth2;
-                startWidth = startWidth2;
-                left = left2;
-                right = right2;
-            }
-
             @Override // android.view.animation.Animation
-            public void applyTransformation(float interpolatedTime, Transformation t) {
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
                 float x;
                 int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
                 LocalFloatingToolbarPopup.setWidth(LocalFloatingToolbarPopup.this.mContentContainer, startWidth + deltaWidth);
@@ -716,18 +577,8 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             }
         };
         Animation heightAnimation = new Animation() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.7
-            final /* synthetic */ int val$startHeight;
-            final /* synthetic */ float val$startY;
-            final /* synthetic */ int val$targetHeight;
-
-            AnonymousClass7(int targetHeight2, int startHeight2, float startY2) {
-                targetHeight = targetHeight2;
-                startHeight = startHeight2;
-                startY = startY2;
-            }
-
             @Override // android.view.animation.Animation
-            public void applyTransformation(float interpolatedTime, Transformation t) {
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
                 int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
                 LocalFloatingToolbarPopup.setHeight(LocalFloatingToolbarPopup.this.mContentContainer, startHeight + deltaHeight);
                 if (LocalFloatingToolbarPopup.this.mOpenOverflowUpwards) {
@@ -736,23 +587,12 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
                 }
             }
         };
-        float overflowButtonStartX = this.mOverflowButton.getX();
-        float overflowButtonTargetX = isInRTLMode() ? (targetWidth2 + overflowButtonStartX) - this.mOverflowButton.getWidth() : (overflowButtonStartX - targetWidth2) + this.mOverflowButton.getWidth();
+        final float overflowButtonStartX = this.mOverflowButton.getX();
+        final float overflowButtonTargetX = isInRTLMode() ? (targetWidth + overflowButtonStartX) - this.mOverflowButton.getWidth() : (overflowButtonStartX - targetWidth) + this.mOverflowButton.getWidth();
         Animation overflowButtonAnimation = new Animation() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.8
-            final /* synthetic */ float val$overflowButtonStartX;
-            final /* synthetic */ float val$overflowButtonTargetX;
-            final /* synthetic */ int val$startWidth;
-
-            AnonymousClass8(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
-                overflowButtonStartX = overflowButtonStartX2;
-                overflowButtonTargetX = overflowButtonTargetX2;
-                startWidth = startWidth2;
-            }
-
             @Override // android.view.animation.Animation
-            public void applyTransformation(float interpolatedTime, Transformation t) {
-                float f = overflowButtonStartX;
-                float overflowButtonX = f + ((overflowButtonTargetX - f) * interpolatedTime);
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                float overflowButtonX = overflowButtonStartX + ((overflowButtonTargetX - overflowButtonStartX) * interpolatedTime);
                 float deltaContainerWidth = LocalFloatingToolbarPopup.this.isInRTLMode() ? 0.0f : LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - startWidth;
                 float actualOverflowButtonX = overflowButtonX + deltaContainerWidth;
                 LocalFloatingToolbarPopup.this.mOverflowButton.setX(actualOverflowButtonX);
@@ -775,97 +615,11 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mOverflowPanel.setAlpha(1.0f);
     }
 
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$6 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass6 extends Animation {
-        final /* synthetic */ float val$left;
-        final /* synthetic */ float val$right;
-        final /* synthetic */ int val$startWidth;
-        final /* synthetic */ int val$targetWidth;
-
-        AnonymousClass6(int targetWidth2, int startWidth2, float left2, float right2) {
-            targetWidth = targetWidth2;
-            startWidth = startWidth2;
-            left = left2;
-            right = right2;
-        }
-
-        @Override // android.view.animation.Animation
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            float x;
-            int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
-            LocalFloatingToolbarPopup.setWidth(LocalFloatingToolbarPopup.this.mContentContainer, startWidth + deltaWidth);
-            if (LocalFloatingToolbarPopup.this.isInRTLMode() != LocalFloatingToolbarPopup.this.mIsClosedOpposites) {
-                x = left;
-            } else {
-                float x2 = right;
-                x = x2 - LocalFloatingToolbarPopup.this.mContentContainer.getWidth();
-            }
-            LocalFloatingToolbarPopup.this.mContentContainer.setX(x);
-            if (LocalFloatingToolbarPopup.this.isInRTLMode()) {
-                LocalFloatingToolbarPopup.this.mMainPanel.setX(0.0f);
-                LocalFloatingToolbarPopup.this.mOverflowPanel.setX(0.0f);
-            } else {
-                LocalFloatingToolbarPopup.this.mMainPanel.setX(LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - startWidth);
-                LocalFloatingToolbarPopup.this.mOverflowPanel.setX(LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - targetWidth);
-            }
-        }
-    }
-
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$7 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass7 extends Animation {
-        final /* synthetic */ int val$startHeight;
-        final /* synthetic */ float val$startY;
-        final /* synthetic */ int val$targetHeight;
-
-        AnonymousClass7(int targetHeight2, int startHeight2, float startY2) {
-            targetHeight = targetHeight2;
-            startHeight = startHeight2;
-            startY = startY2;
-        }
-
-        @Override // android.view.animation.Animation
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
-            LocalFloatingToolbarPopup.setHeight(LocalFloatingToolbarPopup.this.mContentContainer, startHeight + deltaHeight);
-            if (LocalFloatingToolbarPopup.this.mOpenOverflowUpwards) {
-                LocalFloatingToolbarPopup.this.mContentContainer.setY(startY - (LocalFloatingToolbarPopup.this.mContentContainer.getHeight() - startHeight));
-                LocalFloatingToolbarPopup.this.positionContentYCoordinatesIfOpeningOverflowUpwards();
-            }
-        }
-    }
-
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$8 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass8 extends Animation {
-        final /* synthetic */ float val$overflowButtonStartX;
-        final /* synthetic */ float val$overflowButtonTargetX;
-        final /* synthetic */ int val$startWidth;
-
-        AnonymousClass8(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
-            overflowButtonStartX = overflowButtonStartX2;
-            overflowButtonTargetX = overflowButtonTargetX2;
-            startWidth = startWidth2;
-        }
-
-        @Override // android.view.animation.Animation
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            float f = overflowButtonStartX;
-            float overflowButtonX = f + ((overflowButtonTargetX - f) * interpolatedTime);
-            float deltaContainerWidth = LocalFloatingToolbarPopup.this.isInRTLMode() ? 0.0f : LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - startWidth;
-            float actualOverflowButtonX = overflowButtonX + deltaContainerWidth;
-            LocalFloatingToolbarPopup.this.mOverflowButton.setX(actualOverflowButtonX);
-        }
-    }
-
     private void closeOverflow() {
         int needToChangeDirection = isNeedToChangeDirection();
         if (needToChangeDirection == 2) {
-            boolean isInRTLMode = isInRTLMode();
-            boolean z = this.mIsClosedOpposites;
-            if (isInRTLMode == z) {
-                this.mIsClosedOpposites = !z;
+            if (isInRTLMode() == this.mIsClosedOpposites) {
+                this.mIsClosedOpposites = !this.mIsClosedOpposites;
                 if (this.mCoordsOnWindow.x + this.mContentContainer.getX() + this.mMainPanelSize.getWidth() > this.mViewPortOnScreen.right) {
                     shiftPopup();
                     this.mIsClosedOpposites = !this.mIsClosedOpposites;
@@ -878,25 +632,13 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         if (sIsSemType) {
             this.mDividerHorizontal.setVisibility(4);
         }
-        int targetWidth = this.mMainPanelSize.getWidth();
-        int startWidth = this.mContentContainer.getWidth();
-        float left = this.mContentContainer.getX();
-        float right = left + this.mContentContainer.getWidth();
+        final int targetWidth = this.mMainPanelSize.getWidth();
+        final int startWidth = this.mContentContainer.getWidth();
+        final float left = this.mContentContainer.getX();
+        final float right = left + this.mContentContainer.getWidth();
         Animation widthAnimation = new Animation() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.9
-            final /* synthetic */ float val$left;
-            final /* synthetic */ float val$right;
-            final /* synthetic */ int val$startWidth;
-            final /* synthetic */ int val$targetWidth;
-
-            AnonymousClass9(int targetWidth2, int startWidth2, float right2, float left2) {
-                targetWidth = targetWidth2;
-                startWidth = startWidth2;
-                right = right2;
-                left = left2;
-            }
-
             @Override // android.view.animation.Animation
-            public void applyTransformation(float interpolatedTime, Transformation t) {
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
                 int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
                 LocalFloatingToolbarPopup.setWidth(LocalFloatingToolbarPopup.this.mContentContainer, startWidth + deltaWidth);
                 float x = right - LocalFloatingToolbarPopup.this.mContentContainer.getWidth();
@@ -913,22 +655,12 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
                 }
             }
         };
-        int targetHeight = this.mMainPanelSize.getHeight();
-        int startHeight = this.mContentContainer.getHeight();
-        float bottom = this.mContentContainer.getY() + this.mContentContainer.getHeight();
+        final int targetHeight = this.mMainPanelSize.getHeight();
+        final int startHeight = this.mContentContainer.getHeight();
+        final float bottom = this.mContentContainer.getY() + this.mContentContainer.getHeight();
         Animation heightAnimation = new Animation() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.10
-            final /* synthetic */ float val$bottom;
-            final /* synthetic */ int val$startHeight;
-            final /* synthetic */ int val$targetHeight;
-
-            AnonymousClass10(int targetHeight2, int startHeight2, float bottom2) {
-                targetHeight = targetHeight2;
-                startHeight = startHeight2;
-                bottom = bottom2;
-            }
-
             @Override // android.view.animation.Animation
-            public void applyTransformation(float interpolatedTime, Transformation t) {
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
                 int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
                 LocalFloatingToolbarPopup.setHeight(LocalFloatingToolbarPopup.this.mContentContainer, startHeight + deltaHeight);
                 if (LocalFloatingToolbarPopup.this.mOpenOverflowUpwards) {
@@ -937,23 +669,12 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
                 }
             }
         };
-        float overflowButtonStartX = this.mOverflowButton.getX();
-        float overflowButtonTargetX = isInRTLMode() ? (overflowButtonStartX - startWidth2) + this.mOverflowButton.getWidth() : (startWidth2 + overflowButtonStartX) - this.mOverflowButton.getWidth();
+        final float overflowButtonStartX = this.mOverflowButton.getX();
+        final float overflowButtonTargetX = isInRTLMode() ? (overflowButtonStartX - startWidth) + this.mOverflowButton.getWidth() : (startWidth + overflowButtonStartX) - this.mOverflowButton.getWidth();
         Animation overflowButtonAnimation = new Animation() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.11
-            final /* synthetic */ float val$overflowButtonStartX;
-            final /* synthetic */ float val$overflowButtonTargetX;
-            final /* synthetic */ int val$startWidth;
-
-            AnonymousClass11(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
-                overflowButtonStartX = overflowButtonStartX2;
-                overflowButtonTargetX = overflowButtonTargetX2;
-                startWidth = startWidth2;
-            }
-
             @Override // android.view.animation.Animation
-            public void applyTransformation(float interpolatedTime, Transformation t) {
-                float f = overflowButtonStartX;
-                float overflowButtonX = f + ((overflowButtonTargetX - f) * interpolatedTime);
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                float overflowButtonX = overflowButtonStartX + ((overflowButtonTargetX - overflowButtonStartX) * interpolatedTime);
                 float deltaContainerWidth = LocalFloatingToolbarPopup.this.isInRTLMode() ? 0.0f : LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - startWidth;
                 float actualOverflowButtonX = overflowButtonX + deltaContainerWidth;
                 LocalFloatingToolbarPopup.this.mOverflowButton.setX(actualOverflowButtonX);
@@ -975,87 +696,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mOverflowPanel.animate().alpha(0.0f).withLayer().setInterpolator(this.mLinearOutSlowInInterpolator).setDuration(150L).start();
     }
 
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$9 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass9 extends Animation {
-        final /* synthetic */ float val$left;
-        final /* synthetic */ float val$right;
-        final /* synthetic */ int val$startWidth;
-        final /* synthetic */ int val$targetWidth;
-
-        AnonymousClass9(int targetWidth2, int startWidth2, float right2, float left2) {
-            targetWidth = targetWidth2;
-            startWidth = startWidth2;
-            right = right2;
-            left = left2;
-        }
-
-        @Override // android.view.animation.Animation
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
-            LocalFloatingToolbarPopup.setWidth(LocalFloatingToolbarPopup.this.mContentContainer, startWidth + deltaWidth);
-            float x = right - LocalFloatingToolbarPopup.this.mContentContainer.getWidth();
-            if (LocalFloatingToolbarPopup.this.isInRTLMode() != LocalFloatingToolbarPopup.this.mIsClosedOpposites) {
-                x = left;
-            }
-            LocalFloatingToolbarPopup.this.mContentContainer.setX(x);
-            if (LocalFloatingToolbarPopup.this.isInRTLMode()) {
-                LocalFloatingToolbarPopup.this.mMainPanel.setX(0.0f);
-                LocalFloatingToolbarPopup.this.mOverflowPanel.setX(0.0f);
-            } else {
-                LocalFloatingToolbarPopup.this.mMainPanel.setX(LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - targetWidth);
-                LocalFloatingToolbarPopup.this.mOverflowPanel.setX(LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - startWidth);
-            }
-        }
-    }
-
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$10 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass10 extends Animation {
-        final /* synthetic */ float val$bottom;
-        final /* synthetic */ int val$startHeight;
-        final /* synthetic */ int val$targetHeight;
-
-        AnonymousClass10(int targetHeight2, int startHeight2, float bottom2) {
-            targetHeight = targetHeight2;
-            startHeight = startHeight2;
-            bottom = bottom2;
-        }
-
-        @Override // android.view.animation.Animation
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
-            LocalFloatingToolbarPopup.setHeight(LocalFloatingToolbarPopup.this.mContentContainer, startHeight + deltaHeight);
-            if (LocalFloatingToolbarPopup.this.mOpenOverflowUpwards) {
-                LocalFloatingToolbarPopup.this.mContentContainer.setY(bottom - LocalFloatingToolbarPopup.this.mContentContainer.getHeight());
-                LocalFloatingToolbarPopup.this.positionContentYCoordinatesIfOpeningOverflowUpwards();
-            }
-        }
-    }
-
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$11 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass11 extends Animation {
-        final /* synthetic */ float val$overflowButtonStartX;
-        final /* synthetic */ float val$overflowButtonTargetX;
-        final /* synthetic */ int val$startWidth;
-
-        AnonymousClass11(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
-            overflowButtonStartX = overflowButtonStartX2;
-            overflowButtonTargetX = overflowButtonTargetX2;
-            startWidth = startWidth2;
-        }
-
-        @Override // android.view.animation.Animation
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            float f = overflowButtonStartX;
-            float overflowButtonX = f + ((overflowButtonTargetX - f) * interpolatedTime);
-            float deltaContainerWidth = LocalFloatingToolbarPopup.this.isInRTLMode() ? 0.0f : LocalFloatingToolbarPopup.this.mContentContainer.getWidth() - startWidth;
-            float actualOverflowButtonX = overflowButtonX + deltaContainerWidth;
-            LocalFloatingToolbarPopup.this.mOverflowButton.setX(actualOverflowButtonX);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void setPanelsStatesAtRestingPosition() {
         int x;
         int x2;
@@ -1070,9 +711,9 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             this.mOverflowPanel.setVisibility(0);
             if (sIsSemType) {
                 this.mDividerHorizontal.setVisibility(0);
-                this.mOverflowButton.lambda$setImageURIAsync$2(this.mArrowSem);
+                this.mOverflowButton.setImageDrawable(this.mArrowSem);
             } else {
-                this.mOverflowButton.lambda$setImageURIAsync$2(this.mArrow);
+                this.mOverflowButton.setImageDrawable(this.mArrow);
             }
             this.mOverflowButton.setContentDescription(this.mContext.getString(R.string.floating_toolbar_close_overflow_description));
             int diff = this.mMainPanelSize.getWidth() - this.mOverflowPanelSize.getWidth();
@@ -1133,7 +774,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mMainPanel.setVisibility(0);
         this.mOverflowPanel.setAlpha(0.0f);
         this.mOverflowPanel.setVisibility(4);
-        this.mOverflowButton.lambda$setImageURIAsync$2(this.mOverflow);
+        this.mOverflowButton.setImageDrawable(this.mOverflow);
         this.mOverflowButton.setContentDescription(this.mContext.getString(R.string.floating_toolbar_open_overflow_description));
         if (sIsSemType) {
             this.mDividerHorizontal.setVisibility(4);
@@ -1190,10 +831,8 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
                 setSize(this.mContentContainer, this.mOverflowPanelSize);
                 if (this.mOpenOverflowUpwards) {
                     int deltaHeight = this.mOverflowPanelSize.getHeight() - newHeight;
-                    ViewGroup viewGroup = this.mContentContainer;
-                    viewGroup.setY(viewGroup.getY() + deltaHeight);
-                    ImageButton imageButton = this.mOverflowButton;
-                    imageButton.setY(imageButton.getY() - deltaHeight);
+                    this.mContentContainer.setY(this.mContentContainer.getY() + deltaHeight);
+                    this.mOverflowButton.setY(this.mOverflowButton.getY() - deltaHeight);
                 }
             } else {
                 setSize(this.mContentContainer, this.mMainPanelSize);
@@ -1205,18 +844,15 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     private void updatePopupSize() {
         int width = 0;
         int height = 0;
-        Size size = this.mMainPanelSize;
-        if (size != null) {
-            width = Math.max(0, size.getWidth());
+        if (this.mMainPanelSize != null) {
+            width = Math.max(0, this.mMainPanelSize.getWidth());
             height = Math.max(0, this.mMainPanelSize.getHeight());
         }
-        Size size2 = this.mOverflowPanelSize;
-        if (size2 != null) {
-            width = Math.max(width, size2.getWidth());
+        if (this.mOverflowPanelSize != null) {
+            width = Math.max(width, this.mOverflowPanelSize.getWidth());
             height = Math.max(height, this.mOverflowPanelSize.getHeight());
-            Size size3 = this.mMainPanelSize;
-            if (size3 != null) {
-                int adbDiff = Math.abs(size3.getWidth() - this.mOverflowPanelSize.getWidth());
+            if (this.mMainPanelSize != null) {
+                int adbDiff = Math.abs(this.mMainPanelSize.getWidth() - this.mOverflowPanelSize.getWidth());
                 width += adbDiff;
                 height = (height * 2) - this.mMainPanelSize.getHeight();
             }
@@ -1251,6 +887,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mTouchableRegion.setEmpty();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setContentAreaAsTouchableSurface() {
         int width;
         int height;
@@ -1276,6 +913,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         viewTreeObserver.addOnComputeInternalInsetsListener(this.mInsetsComputer);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isInRTLMode() {
         return this.mContext.getApplicationInfo().hasRtlSupport() && this.mContext.getResources().getConfiguration().getLayoutDirection() == 1;
     }
@@ -1287,8 +925,9 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     /* JADX WARN: Multi-variable type inference failed */
     public List<MenuItem> layoutMainPanelItems(List<MenuItem> menuItems, int toolbarWidth) {
         int i;
-        int paddingEnd;
+        View previousButton;
         int itemMarginStart;
+        int i2;
         Objects.requireNonNull(menuItems);
         int availableWidth = toolbarWidth;
         ArrayList<MenuItem> remainingMenuItems = new ArrayList<>();
@@ -1308,45 +947,63 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
         remainingMenuItems.addAll(overflowMenuItems);
         this.mMainPanel.removeAllViews();
-        int i2 = 0;
+        int i3 = 0;
         this.mMainPanel.setPaddingRelative(0, 0, 0, 0);
         boolean isFirstItem = true;
+        int isIntelliMenu = 0;
         while (!remainingMenuItems.isEmpty()) {
-            MenuItem menuItem2 = remainingMenuItems.get(i2);
-            if (menuItem2.getItemId() == 16909085) {
-                remainingMenuItems.remove(i2);
+            MenuItem menuItem2 = remainingMenuItems.get(i3);
+            if (menuItem2.getItemId() == 16909092) {
+                remainingMenuItems.remove(i3);
             } else {
                 if (!isFirstItem && menuItem2.requiresOverflow()) {
                     break;
                 }
-                boolean z = (isFirstItem && menuItem2.getItemId() == i) ? 1 : i2;
+                boolean z = (isFirstItem && menuItem2.getItemId() == i) ? 1 : i3;
                 View menuItemButton = createMenuItemButton(this.mContext, menuItem2, this.mIconTextSpacing, z);
                 if (z == 0 && (menuItemButton instanceof LinearLayout)) {
                     ((LinearLayout) menuItemButton).setGravity(17);
                 }
-                if (isFirstItem) {
+                if (menuItem2.getItemId() == 16910028) {
+                    isIntelliMenu = 1;
+                    LayoutInflater from = LayoutInflater.from(this.mContext);
                     if (sIsSemType) {
-                        if (z != 0) {
-                            itemMarginStart = this.mMenuFirstImageStartPadding;
-                        } else {
-                            itemMarginStart = this.mMenuFirstLastSidePadding;
-                        }
+                        i2 = R.layout.sem_floating_popup_menu_intelli;
                     } else {
-                        int itemMarginStart2 = menuItemButton.getPaddingStart();
-                        itemMarginStart = (int) (itemMarginStart2 * 1.5d);
+                        i2 = R.layout.sem_floating_popup_menu_intelli_default;
+                    }
+                    menuItemButton = from.inflate(i2, (ViewGroup) null);
+                    menuItemButton.semSetHoverPopupType(i3);
+                    menuItemButton.setPaddingRelative(menuItemButton.getPaddingStart(), menuItemButton.getPaddingTop(), menuItemButton.getPaddingEnd(), menuItemButton.getPaddingBottom());
+                }
+                if (isFirstItem && isIntelliMenu <= 0) {
+                    if (isIntelliMenu == 0) {
+                        if (sIsSemType) {
+                            itemMarginStart = z != 0 ? this.mMenuFirstImageStartPadding : this.mMenuFirstLastSidePadding;
+                        } else {
+                            int itemMarginStart2 = menuItemButton.getPaddingStart();
+                            itemMarginStart = (int) (itemMarginStart2 * 1.5d);
+                        }
+                    } else if (sIsSemType) {
+                        itemMarginStart = z != 0 ? this.mMenuIntelliFirstStartPadding : menuItemButton.getPaddingStart();
+                    } else {
+                        int itemMarginStart3 = menuItemButton.getPaddingStart();
+                        itemMarginStart = (int) (itemMarginStart3 * 1.5d);
                     }
                     menuItemButton.setPaddingRelative(itemMarginStart, menuItemButton.getPaddingTop(), menuItemButton.getPaddingEnd(), menuItemButton.getPaddingBottom());
                 }
                 boolean isLastItem = remainingMenuItems.size() == 1;
                 if (isLastItem) {
-                    int paddingStart = menuItemButton.getPaddingStart();
-                    int paddingTop = menuItemButton.getPaddingTop();
-                    if (sIsSemType) {
-                        paddingEnd = this.mMenuFirstLastSidePadding;
-                    } else {
-                        paddingEnd = (int) (menuItemButton.getPaddingEnd() * 1.5d);
+                    int menuEndPadding = sIsSemType ? this.mMenuFirstLastSidePadding : (int) (menuItemButton.getPaddingEnd() * 1.5d);
+                    if (menuItems.size() == 1 && menuItem2.getItemId() == 16910028) {
+                        View divider = menuItemButton.findViewById(R.id.intelli_menu_divider);
+                        if (divider != null) {
+                            divider.setVisibility(8);
+                        }
+                        int intelliOnlyEndPadding = this.mParent.getResources().getDimensionPixelSize(R.dimen.sem_floating_popup_intelli_menu_only_end_padding);
+                        menuEndPadding = sIsSemType ? intelliOnlyEndPadding : (int) (menuItemButton.getPaddingEnd() * 1.5d);
                     }
-                    menuItemButton.setPaddingRelative(paddingStart, paddingTop, paddingEnd, menuItemButton.getPaddingBottom());
+                    menuItemButton.setPaddingRelative(menuItemButton.getPaddingStart(), menuItemButton.getPaddingTop(), menuEndPadding, menuItemButton.getPaddingBottom());
                 }
                 menuItemButton.measure(0, 0);
                 int menuItemButtonWidth = Math.min(menuItemButton.getMeasuredWidth(), toolbarWidth);
@@ -1364,26 +1021,23 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
                 ViewGroup.LayoutParams params = menuItemButton.getLayoutParams();
                 params.width = menuItemButtonWidth;
                 menuItemButton.setLayoutParams(params);
-                availableWidth -= menuItemButtonWidth;
+                int availableWidth2 = availableWidth - menuItemButtonWidth;
                 remainingMenuItems.remove(0);
                 menuItem2.getGroupId();
-                isFirstItem = false;
-                i2 = 0;
+                isFirstItem = isIntelliMenu == 1;
+                isIntelliMenu = -1;
+                availableWidth = availableWidth2;
+                i3 = 0;
                 i = 16908353;
             }
         }
         if (!remainingMenuItems.isEmpty()) {
-            if (sIsSemType) {
-                ViewGroup viewGroup = this.mMainPanel;
-                View previousButton = viewGroup.getChildAt(viewGroup.getChildCount() - 1);
-                if (previousButton != null) {
-                    int prevPaddingEnd = previousButton.getPaddingEnd();
-                    previousButton.setPaddingRelative(previousButton.getPaddingStart(), previousButton.getPaddingTop(), prevPaddingEnd * 2, previousButton.getPaddingBottom());
-                    ViewGroup.LayoutParams prevParams = previousButton.getLayoutParams();
-                    prevParams.width += prevPaddingEnd;
-                    previousButton.setLayoutParams(prevParams);
-                    this.mMainPanel.addView(this.mDividerVertical);
-                }
+            if (sIsSemType && (previousButton = this.mMainPanel.getChildAt(this.mMainPanel.getChildCount() - 1)) != null) {
+                int prevPaddingEnd = previousButton.getPaddingEnd();
+                previousButton.setPaddingRelative(previousButton.getPaddingStart(), previousButton.getPaddingTop(), 0, previousButton.getPaddingBottom());
+                ViewGroup.LayoutParams prevParams = previousButton.getLayoutParams();
+                prevParams.width -= prevPaddingEnd;
+                previousButton.setLayoutParams(prevParams);
             }
             this.mMainPanel.setPaddingRelative(0, 0, this.mOverflowButtonSize.getWidth(), 0);
         }
@@ -1407,9 +1061,8 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
         int width = Math.max(getOverflowWidth(), this.mOverflowButtonSize.getWidth());
         int height = calculateOverflowHeight(4);
-        Size size2 = new Size(width, height);
-        this.mOverflowPanelSize = size2;
-        setSize(this.mOverflowPanel, size2);
+        this.mOverflowPanelSize = new Size(width, height);
+        setSize(this.mOverflowPanel, this.mOverflowPanelSize);
     }
 
     private void preparePopupContent() {
@@ -1443,6 +1096,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mContentContainer.removeAllViews();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void positionContentYCoordinatesIfOpeningOverflowUpwards() {
         if (this.mOpenOverflowUpwards) {
             this.mMainPanel.setY(this.mContentContainer.getHeight() - this.mMainPanelSize.getHeight());
@@ -1477,54 +1131,27 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     }
 
     private int getAdjustedDuration(int originalDuration) {
-        int i = this.mTransitionDurationScale;
-        if (i < 150) {
+        if (this.mTransitionDurationScale < 150) {
             return Math.max(originalDuration - 50, 0);
         }
-        if (i > 300) {
+        if (this.mTransitionDurationScale > 300) {
             return originalDuration + 50;
         }
         return (int) (originalDuration * ValueAnimator.getDurationScale());
     }
 
     private void maybeComputeTransitionDurationScale() {
-        Size size = this.mMainPanelSize;
-        if (size != null && this.mOverflowPanelSize != null) {
-            int w = size.getWidth() - this.mOverflowPanelSize.getWidth();
+        if (this.mMainPanelSize != null && this.mOverflowPanelSize != null) {
+            int w = this.mMainPanelSize.getWidth() - this.mOverflowPanelSize.getWidth();
             int h = this.mOverflowPanelSize.getHeight() - this.mMainPanelSize.getHeight();
             this.mTransitionDurationScale = (int) (Math.sqrt((w * w) + (h * h)) / this.mContentContainer.getContext().getResources().getDisplayMetrics().density);
         }
     }
 
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$12 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass12 extends LinearLayout {
-        AnonymousClass12(Context context) {
-            super(context);
-        }
-
-        @Override // android.widget.LinearLayout, android.view.View
-        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            if (LocalFloatingToolbarPopup.this.isOverflowAnimating()) {
-                widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(LocalFloatingToolbarPopup.this.mMainPanelSize.getWidth(), 1073741824);
-            }
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
-
-        @Override // android.view.ViewGroup
-        public boolean onInterceptTouchEvent(MotionEvent ev) {
-            return LocalFloatingToolbarPopup.this.isOverflowAnimating();
-        }
-    }
-
     private ViewGroup createMainPanel() {
         ViewGroup mainPanel = new LinearLayout(this.mContext) { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.12
-            AnonymousClass12(Context context) {
-                super(context);
-            }
-
             @Override // android.widget.LinearLayout, android.view.View
-            public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
                 if (LocalFloatingToolbarPopup.this.isOverflowAnimating()) {
                     widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(LocalFloatingToolbarPopup.this.mMainPanelSize.getWidth(), 1073741824);
                 }
@@ -1542,7 +1169,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     private ImageButton createOverflowButton() {
         int res = sIsSemType ? R.layout.sem_floating_popup_overflow_button : R.layout.floating_popup_overflow_button;
         final ImageButton overflowButton = (ImageButton) LayoutInflater.from(this.mContext).inflate(res, (ViewGroup) null);
-        overflowButton.lambda$setImageURIAsync$2(this.mOverflow);
+        overflowButton.setImageDrawable(this.mOverflow);
         overflowButton.semSetHoverPopupType(0);
         overflowButton.setAccessibilityDelegate(getAccessibilityDelegate());
         overflowButton.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$$ExternalSyntheticLambda0
@@ -1554,24 +1181,25 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         return overflowButton;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOverflowButton$1(ImageButton overflowButton, View v) {
         if (sIsDiscardTouch) {
             return;
         }
         if (this.mIsOverflowOpen) {
             if (sIsSemType) {
-                overflowButton.lambda$setImageURIAsync$2(this.mOverflow);
+                overflowButton.setImageDrawable(this.mOverflow);
             } else {
-                overflowButton.lambda$setImageURIAsync$2(this.mToOverflow);
+                overflowButton.setImageDrawable(this.mToOverflow);
                 this.mToOverflow.start();
             }
             closeOverflow();
             return;
         }
         if (sIsSemType) {
-            overflowButton.lambda$setImageURIAsync$2(this.mArrowSem);
+            overflowButton.setImageDrawable(this.mArrowSem);
         } else {
-            overflowButton.lambda$setImageURIAsync$2(this.mToArrow);
+            overflowButton.setImageDrawable(this.mToArrow);
             this.mToArrow.start();
         }
         openOverflow();
@@ -1583,10 +1211,6 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         overflowPanel.setDivider(null);
         overflowPanel.setDividerHeight(0);
         ArrayAdapter adapter = new ArrayAdapter<MenuItem>(this.mContext, 0) { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.13
-            AnonymousClass13(Context context, int resource) {
-                super(context, resource);
-            }
-
             @Override // android.widget.ArrayAdapter, android.widget.Adapter
             public View getView(int position, View convertView, ViewGroup parent) {
                 return LocalFloatingToolbarPopup.this.mOverflowPanelViewHelper.getView(getItem(position), LocalFloatingToolbarPopup.this.mOverflowPanelSize.getWidth(), convertView);
@@ -1602,37 +1226,24 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         return overflowPanel;
     }
 
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$13 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass13 extends ArrayAdapter<MenuItem> {
-        AnonymousClass13(Context context, int resource) {
-            super(context, resource);
-        }
-
-        @Override // android.widget.ArrayAdapter, android.widget.Adapter
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return LocalFloatingToolbarPopup.this.mOverflowPanelViewHelper.getView(getItem(position), LocalFloatingToolbarPopup.this.mOverflowPanelSize.getWidth(), convertView);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOverflowPanel$2(OverflowPanel overflowPanel, AdapterView parent, View view, int position, long id) {
         view.setAccessibilityDelegate(getAccessibilityDelegate());
         MenuItem menuItem = (MenuItem) overflowPanel.getAdapter().getItem(position);
-        MenuItem.OnMenuItemClickListener onMenuItemClickListener = this.mOnMenuItemClickListener;
-        if (onMenuItemClickListener != null) {
-            onMenuItemClickListener.onMenuItemClick(menuItem);
+        if (this.mOnMenuItemClickListener != null) {
+            this.mOnMenuItemClickListener.onMenuItemClick(menuItem);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isOverflowAnimating() {
         boolean overflowOpening = this.mOpenOverflowAnimation.hasStarted() && !this.mOpenOverflowAnimation.hasEnded();
         boolean overflowClosing = this.mCloseOverflowAnimation.hasStarted() && !this.mCloseOverflowAnimation.hasEnded();
         return overflowOpening || overflowClosing;
     }
 
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$14 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass14 implements Animation.AnimationListener {
+    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$14, reason: invalid class name */
+    class AnonymousClass14 implements Animation.AnimationListener {
         AnonymousClass14() {
         }
 
@@ -1653,6 +1264,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAnimationEnd$0() {
             LocalFloatingToolbarPopup.this.setPanelsStatesAtRestingPosition();
             LocalFloatingToolbarPopup.this.setContentAreaAsTouchableSurface();
@@ -1688,18 +1300,20 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         setSize(view, size.getWidth(), size.getHeight());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void setWidth(View view, int width) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         setSize(view, width, params.height);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void setHeight(View view, int height) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         setSize(view, params.width, height);
     }
 
-    /* loaded from: classes5.dex */
-    public static final class OverflowPanel extends ListView {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class OverflowPanel extends ListView {
         private final LocalFloatingToolbarPopup mPopup;
 
         OverflowPanel(LocalFloatingToolbarPopup popup) {
@@ -1712,7 +1326,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
 
         @Override // android.widget.ListView, android.widget.AbsListView, android.view.View
-        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             int height = this.mPopup.mOverflowPanelSize.getHeight() - this.mPopup.mOverflowButtonSize.getHeight();
             int heightMeasureSpec2 = View.MeasureSpec.makeMeasureSpec(height, 1073741824);
             super.onMeasure(widthMeasureSpec, heightMeasureSpec2);
@@ -1729,21 +1343,16 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             return super.dispatchTouchEvent(ev);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public boolean awakenScrollBars() {
             return super.awakenScrollBars();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static final class LogAccelerateInterpolator implements Interpolator {
+    private static final class LogAccelerateInterpolator implements Interpolator {
         private static final int BASE = 100;
         private static final float LOGS_SCALE = 1.0f / computeLog(1.0f, 100);
-
-        /* synthetic */ LogAccelerateInterpolator(LogAccelerateInterpolatorIA logAccelerateInterpolatorIA) {
-            this();
-        }
 
         private LogAccelerateInterpolator() {
         }
@@ -1758,8 +1367,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static final class OverflowPanelViewHelper {
+    private static final class OverflowPanelViewHelper {
         private final View mCalculator = createMenuButton(null);
         private final Context mContext;
         private final int mIconTextSpacing;
@@ -1790,13 +1398,12 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
 
         private View createMenuButton(MenuItem menuItem) {
             View button = LocalFloatingToolbarPopup.createMenuItemButton(this.mContext, menuItem, this.mIconTextSpacing, shouldShowIcon(menuItem));
-            int i = this.mSidePadding;
-            button.setPadding(i, 0, i, 0);
+            button.setPadding(this.mSidePadding, 0, this.mSidePadding, 0);
             return button;
         }
 
         private boolean shouldShowIcon(MenuItem menuItem) {
-            return menuItem != null && menuItem.getGroupId() == 16908353;
+            return false;
         }
     }
 
@@ -1809,9 +1416,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static final class FloatingOnAttachStateChangeListener implements View.OnAttachStateChangeListener {
+    private static final class FloatingOnAttachStateChangeListener implements View.OnAttachStateChangeListener {
         private final WeakReference<LocalFloatingToolbarPopup> mFloatingToolbarPopup;
 
         public FloatingOnAttachStateChangeListener(LocalFloatingToolbarPopup floatingToolbarPopup) {
@@ -1831,27 +1436,9 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
     }
 
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$15 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass15 extends View.AccessibilityDelegate {
-        AnonymousClass15() {
-        }
-
-        @Override // android.view.View.AccessibilityDelegate
-        public boolean performAccessibilityAction(View host, int action, Bundle args) {
-            if (action == 16) {
-                return false;
-            }
-            return super.performAccessibilityAction(host, action, args);
-        }
-    }
-
     private View.AccessibilityDelegate getAccessibilityDelegate() {
         if (this.mAccessibilityDelegate == null) {
             this.mAccessibilityDelegate = new View.AccessibilityDelegate() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.15
-                AnonymousClass15() {
-                }
-
                 @Override // android.view.View.AccessibilityDelegate
                 public boolean performAccessibilityAction(View host, int action, Bundle args) {
                     if (action == 16) {
@@ -1873,6 +1460,9 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         int appHeight = displayMetrics.heightPixels;
         int sipHeight = getImeHeight();
         int viewPortVisibleHeight = appHeight - sipHeight;
+        if (this.mContext.getResources().getConfiguration().windowConfiguration.isPopOver()) {
+            viewPortVisibleHeight = appHeight;
+        }
         if (multiWindowManager.getMode() != 0) {
             int viewPortVisibleHeight2 = appHeight + this.mViewPortOnScreen.top;
             return viewPortVisibleHeight2;
@@ -1880,28 +1470,24 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         return viewPortVisibleHeight;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isInsideOfViewPortRect(float x, float y) {
         refreshViewPort();
         return ((float) this.mViewPortOnScreen.left) <= x && ((float) this.mViewPortOnScreen.right) >= x && ((float) this.mViewPortOnScreen.top) <= y && ((float) this.mViewPortOnScreen.bottom) >= y;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void calculateCoords(int x, int y) {
         this.mParent.getRootView().getLocationOnScreen(this.mTmpCoords);
-        int[] iArr = this.mTmpCoords;
-        int rootViewLeftOnScreen = iArr[0];
-        int rootViewTopOnScreen = iArr[1];
+        int rootViewLeftOnScreen = this.mTmpCoords[0];
+        int rootViewTopOnScreen = this.mTmpCoords[1];
         this.mParent.getRootView().getLocationInWindow(this.mTmpCoords);
-        int[] iArr2 = this.mTmpCoords;
-        int rootViewLeftOnWindow = iArr2[0];
-        int rootViewTopOnWindow = iArr2[1];
+        int rootViewLeftOnWindow = this.mTmpCoords[0];
+        int rootViewTopOnWindow = this.mTmpCoords[1];
         int windowLeftOnScreen = rootViewLeftOnScreen - rootViewLeftOnWindow;
         int windowTopOnScreen = rootViewTopOnScreen - rootViewTopOnWindow;
-        int i = this.mViewPortOnScreen.left;
-        int i2 = this.mToolbarHiddenArea[0];
-        int left = Math.max(Math.max(i + i2, i2) - windowLeftOnScreen, x);
-        int i3 = this.mViewPortOnScreen.top;
-        int i4 = this.mToolbarHiddenArea[1];
-        int top = Math.max(Math.max(i3 + i4, i4) - windowTopOnScreen, y);
+        int left = Math.max(Math.max(this.mViewPortOnScreen.left + this.mToolbarHiddenArea[0], this.mToolbarHiddenArea[0]) - windowLeftOnScreen, x);
+        int top = Math.max(Math.max(this.mViewPortOnScreen.top + this.mToolbarHiddenArea[1], this.mToolbarHiddenArea[1]) - windowTopOnScreen, y);
         int right = Math.min((this.mToolbarVisibleRect.width() + left) - this.mToolbarHiddenArea[0], this.mViewPortOnScreen.right - windowLeftOnScreen);
         int bottom = Math.min((this.mToolbarVisibleRect.height() + top) - this.mToolbarHiddenArea[1], getViewPortVisibleHeight() - windowTopOnScreen);
         this.mCoordsOnWindow.set(Math.min(left, (right - this.mToolbarVisibleRect.width()) + this.mToolbarHiddenArea[0]), Math.min(top, (bottom - this.mToolbarVisibleRect.height()) + this.mToolbarHiddenArea[1]));
@@ -1948,13 +1534,11 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             popupAreaReverse.right -= this.mMarginHorizontal + absOffsetX;
         }
         this.mParent.getRootView().getLocationOnScreen(this.mTmpCoords);
-        int[] iArr = this.mTmpCoords;
-        int rootViewLeftOnScreen = iArr[0];
-        int rootViewTopOnScreen = iArr[1];
+        int rootViewLeftOnScreen = this.mTmpCoords[0];
+        int rootViewTopOnScreen = this.mTmpCoords[1];
         this.mParent.getRootView().getLocationInWindow(this.mTmpCoords);
-        int[] iArr2 = this.mTmpCoords;
-        int rootViewLeftOnWindow = iArr2[0];
-        int rootViewTopOnWindow = iArr2[1];
+        int rootViewLeftOnWindow = this.mTmpCoords[0];
+        int rootViewTopOnWindow = this.mTmpCoords[1];
         int windowLeftOnScreen = rootViewLeftOnScreen - rootViewLeftOnWindow;
         int windowTopOnScreen = rootViewTopOnScreen - rootViewTopOnWindow;
         popupArea.offset(this.mCoordsOnWindow.x, this.mCoordsOnWindow.y);
@@ -1981,9 +1565,6 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         int targetPopupX = this.mViewPortOnScreen.left - this.mMarginHorizontal;
         ValueAnimator popupShiftAnimator = ValueAnimator.ofInt(startPopupX, targetPopupX);
         popupShiftAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup.16
-            AnonymousClass16() {
-            }
-
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
             public void onAnimationUpdate(ValueAnimator animation) {
                 LocalFloatingToolbarPopup.this.mCoordsOnWindow.x = ((Integer) animation.getAnimatedValue()).intValue();
@@ -1993,20 +1574,6 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         });
         popupShiftAnimator.setDuration(100L);
         popupShiftAnimator.start();
-    }
-
-    /* renamed from: com.android.internal.widget.floatingtoolbar.LocalFloatingToolbarPopup$16 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass16 implements ValueAnimator.AnimatorUpdateListener {
-        AnonymousClass16() {
-        }
-
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-        public void onAnimationUpdate(ValueAnimator animation) {
-            LocalFloatingToolbarPopup.this.mCoordsOnWindow.x = ((Integer) animation.getAnimatedValue()).intValue();
-            LocalFloatingToolbarPopup.this.recalCoordsOnWindowX();
-            LocalFloatingToolbarPopup.this.mPopupWindow.update(LocalFloatingToolbarPopup.this.mCoordsOnWindow.x, LocalFloatingToolbarPopup.this.mCoordsOnWindow.y, LocalFloatingToolbarPopup.this.mPopupWindow.getWidth(), LocalFloatingToolbarPopup.this.mPopupWindow.getHeight());
-        }
     }
 
     private void changeOverflowPanelAdapterOrder() {
@@ -2024,17 +1591,15 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     }
 
     private void createDividers() {
-        ImageView imageView = new ImageView(this.mContext);
-        this.mDividerVertical = imageView;
-        imageView.setImageResource(R.drawable.tw_floating_popup_divider);
+        this.mDividerVertical = new ImageView(this.mContext);
+        this.mDividerVertical.setImageResource(R.drawable.tw_floating_popup_divider);
         this.mDividerVertical.setLayoutParams(new ViewGroup.LayoutParams(-2, -1));
         this.mDividerVertical.setImportantForAccessibility(2);
         this.mDividerVertical.setEnabled(false);
         this.mDividerVertical.setFocusable(false);
         this.mDividerVertical.setContentDescription(null);
-        ImageView imageView2 = new ImageView(this.mContext);
-        this.mDividerHorizontal = imageView2;
-        imageView2.setImageResource(R.drawable.tw_floating_popup_divider_horizontal);
+        this.mDividerHorizontal = new ImageView(this.mContext);
+        this.mDividerHorizontal.setImageResource(R.drawable.tw_floating_popup_divider_horizontal);
         this.mDividerHorizontal.setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
         this.mDividerHorizontal.setImportantForAccessibility(2);
         this.mDividerHorizontal.setEnabled(false);
@@ -2052,8 +1617,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     private DisplayCutout getDisplayCutout() {
         WindowInsets rootWindowInsets;
         DisplayCutout displayCutout;
-        View view = this.mParentRoot;
-        if (view != null && (rootWindowInsets = view.getRootWindowInsets()) != null && (displayCutout = rootWindowInsets.getDisplayCutout()) != null) {
+        if (this.mParentRoot != null && (rootWindowInsets = this.mParentRoot.getRootWindowInsets()) != null && (displayCutout = rootWindowInsets.getDisplayCutout()) != null) {
             return displayCutout;
         }
         mCutoutRightMargin = 0;
@@ -2082,6 +1646,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void recalCoordsOnWindowX() {
         DisplayCutout displayCutout = getDisplayCutout();
         if (displayCutout != null) {
@@ -2091,13 +1656,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             int rotation = ((WindowManager) this.mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
             if (rotation == 1) {
                 if (!isInRTLMode()) {
-                    Point point = this.mCoordsOnWindow;
-                    int i = point.x;
-                    int i2 = mCutoutLeftMargin;
-                    if (i >= i2) {
-                        i2 = this.mCoordsOnWindow.x;
-                    }
-                    point.x = i2;
+                    this.mCoordsOnWindow.x = this.mCoordsOnWindow.x < mCutoutLeftMargin ? mCutoutLeftMargin : this.mCoordsOnWindow.x;
                     return;
                 }
                 return;
@@ -2107,14 +1666,12 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
                 if (hasOverflow()) {
                     currentPopupWindowWidth = (this.mOverflowPanelSize.getWidth() + currentPopupWindowWidth) / 2;
                 }
-                Point point2 = this.mCoordsOnWindow;
-                int i3 = point2.x + currentPopupWindowWidth;
-                int i4 = mCutoutRightMargin;
-                point2.x = i3 > i4 ? i4 - currentPopupWindowWidth : this.mCoordsOnWindow.x;
+                this.mCoordsOnWindow.x = this.mCoordsOnWindow.x + currentPopupWindowWidth > mCutoutRightMargin ? mCutoutRightMargin - currentPopupWindowWidth : this.mCoordsOnWindow.x;
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static View createMenuItemButton(Context context, MenuItem menuItem, int iconTextSpacing, boolean showIcon) {
         int res = sIsSemType ? R.layout.sem_floating_popup_menu_button : R.layout.floating_popup_menu_button;
         View menuItemButton = LayoutInflater.from(context).inflate(res, (ViewGroup) null);
@@ -2125,6 +1682,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         return menuItemButton;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void updateMenuItemButton(View menuItemButton, MenuItem menuItem, int iconTextSpacing, boolean showIcon) {
         TextView buttonText = (TextView) menuItemButton.findViewById(R.id.floating_toolbar_menu_item_text);
         buttonText.setEllipsize(null);
@@ -2132,7 +1690,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             buttonText.setVisibility(8);
         } else {
             buttonText.setVisibility(0);
-            buttonText.setText(menuItem.getTitle());
+            buttonText.lambda$setTextAsync$0(menuItem.getTitle());
         }
         ImageView buttonIcon = (ImageView) menuItemButton.findViewById(R.id.floating_toolbar_menu_item_image);
         if (menuItem.getIcon() == null || !showIcon) {
@@ -2142,7 +1700,7 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
             }
         } else {
             buttonIcon.setVisibility(0);
-            buttonIcon.lambda$setImageURIAsync$2(menuItem.getIcon());
+            buttonIcon.setImageDrawable(menuItem.getIcon());
             if (buttonText != null) {
                 buttonText.setPaddingRelative(iconTextSpacing, 0, 0, 0);
             }
@@ -2202,7 +1760,6 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
         return new ContextThemeWrapper(originalContext, themeId);
     }
 
-    /* loaded from: classes5.dex */
     public static final class MenuItemRepr {
         public final int groupId;
         public final int itemId;
@@ -2256,12 +1813,11 @@ public final class LocalFloatingToolbarPopup implements FloatingToolbarPopup {
     }
 
     private int getImeHeight() {
-        WindowInsets windowInsets = this.mParentRootWindowInset;
-        if (windowInsets == null) {
+        if (this.mParentRootWindowInset == null) {
             Log.w(FloatingToolbar.FLOATING_TOOLBAR_TAG, "mParentRootWindowInset is null");
             return 0;
         }
-        Insets imeInset = windowInsets.getInsets(WindowInsets.Type.ime());
+        Insets imeInset = this.mParentRootWindowInset.getInsets(WindowInsets.Type.ime());
         Insets navibarInset = this.mParentRootWindowInset.getInsets(WindowInsets.Type.navigationBars());
         return imeInset.bottom - navibarInset.bottom;
     }

@@ -4,7 +4,6 @@ import android.os.Parcel;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 import com.android.internal.util.Preconditions;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class LongSparseLongArray implements Cloneable {
@@ -21,15 +20,14 @@ public class LongSparseLongArray implements Cloneable {
             this.mKeys = EmptyArray.LONG;
             this.mValues = EmptyArray.LONG;
         } else {
-            long[] newUnpaddedLongArray = ArrayUtils.newUnpaddedLongArray(initialCapacity);
-            this.mKeys = newUnpaddedLongArray;
-            this.mValues = new long[newUnpaddedLongArray.length];
+            this.mKeys = ArrayUtils.newUnpaddedLongArray(initialCapacity);
+            this.mValues = new long[this.mKeys.length];
         }
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public LongSparseLongArray m4942clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public LongSparseLongArray m5226clone() {
         LongSparseLongArray clone = null;
         try {
             clone = (LongSparseLongArray) super.clone();
@@ -61,10 +59,8 @@ public class LongSparseLongArray implements Cloneable {
     }
 
     public void removeAt(int index) {
-        long[] jArr = this.mKeys;
-        System.arraycopy(jArr, index + 1, jArr, index, this.mSize - (index + 1));
-        long[] jArr2 = this.mValues;
-        System.arraycopy(jArr2, index + 1, jArr2, index, this.mSize - (index + 1));
+        System.arraycopy(this.mKeys, index + 1, this.mKeys, index, this.mSize - (index + 1));
+        System.arraycopy(this.mValues, index + 1, this.mValues, index, this.mSize - (index + 1));
         this.mSize--;
     }
 
@@ -116,12 +112,11 @@ public class LongSparseLongArray implements Cloneable {
     }
 
     public void append(long key, long value) {
-        int i = this.mSize;
-        if (i != 0 && key <= this.mKeys[i - 1]) {
+        if (this.mSize != 0 && key <= this.mKeys[this.mSize - 1]) {
             put(key, value);
             return;
         }
-        this.mKeys = GrowingArrayUtils.append(this.mKeys, i, key);
+        this.mKeys = GrowingArrayUtils.append(this.mKeys, this.mSize, key);
         this.mValues = GrowingArrayUtils.append(this.mValues, this.mSize, value);
         this.mSize++;
     }
@@ -146,7 +141,6 @@ public class LongSparseLongArray implements Cloneable {
         return buffer.toString();
     }
 
-    /* loaded from: classes4.dex */
     public static class Parcelling implements com.android.internal.util.Parcelling<LongSparseLongArray> {
         @Override // com.android.internal.util.Parcelling
         public void parcel(LongSparseLongArray array, Parcel dest, int parcelFlags) {
@@ -159,6 +153,7 @@ public class LongSparseLongArray implements Cloneable {
             dest.writeLongArray(array.mValues);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.util.Parcelling
         public LongSparseLongArray unparcel(Parcel source) {
             int size = source.readInt();

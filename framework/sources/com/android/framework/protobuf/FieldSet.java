@@ -12,15 +12,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
-public final class FieldSet<T extends FieldDescriptorLite<T>> {
+/* loaded from: classes3.dex */
+final class FieldSet<T extends FieldDescriptorLite<T>> {
     private static final int DEFAULT_FIELD_MAP_ARRAY_SIZE = 16;
     private static final FieldSet DEFAULT_INSTANCE = new FieldSet(true);
     private final SmallSortedMap<T, Object> fields;
     private boolean hasLazyField;
     private boolean isImmutable;
 
-    /* loaded from: classes4.dex */
     public interface FieldDescriptorLite<T extends FieldDescriptorLite<T>> extends Comparable<T> {
         Internal.EnumLiteMap<?> getEnumType();
 
@@ -67,7 +66,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return new Builder<>((AnonymousClass1) null);
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return this.fields.isEmpty();
     }
 
@@ -104,8 +103,8 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return this.fields.hashCode();
     }
 
-    /* renamed from: clone */
-    public FieldSet<T> m7004clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public FieldSet<T> m7417clone() {
         FieldSet<T> clone = newFieldSet();
         for (int i = 0; i < this.fields.getNumArrayEntries(); i++) {
             Map.Entry<T, Object> entry = this.fields.getArrayEntryAt(i);
@@ -134,6 +133,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return result;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends FieldDescriptorLite<T>> SmallSortedMap<T, Object> cloneAllFieldsMap(SmallSortedMap<T, Object> fields, boolean copyList) {
         SmallSortedMap<T, Object> result = SmallSortedMap.newFieldMap(16);
         for (int i = 0; i < fields.getNumArrayEntries(); i++) {
@@ -164,7 +164,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return this.fields.entrySet().iterator();
     }
 
-    public Iterator<Map.Entry<T, Object>> descendingIterator() {
+    Iterator<Map.Entry<T, Object>> descendingIterator() {
         if (this.hasLazyField) {
             return new LazyField.LazyIterator(this.fields.descendingEntrySet().iterator());
         }
@@ -269,30 +269,27 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidType(WireFormat.FieldType type, Object value) {
         Internal.checkNotNull(value);
-        switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$JavaType[type.getJavaType().ordinal()]) {
-            case 1:
-                return value instanceof Integer;
-            case 2:
-                return value instanceof Long;
-            case 3:
-                return value instanceof Float;
-            case 4:
-                return value instanceof Double;
-            case 5:
-                return value instanceof Boolean;
-            case 6:
-                return value instanceof String;
-            case 7:
-                return (value instanceof ByteString) || (value instanceof byte[]);
-            case 8:
-                return (value instanceof Integer) || (value instanceof Internal.EnumLite);
-            case 9:
-                return (value instanceof MessageLite) || (value instanceof LazyField);
-            default:
-                return false;
+        switch (type.getJavaType()) {
+            case BYTE_STRING:
+                if (!(value instanceof ByteString) && !(value instanceof byte[])) {
+                    break;
+                }
+                break;
+            case ENUM:
+                if (!(value instanceof Integer) && !(value instanceof Internal.EnumLite)) {
+                    break;
+                }
+                break;
+            case MESSAGE:
+                if (!(value instanceof MessageLite) && !(value instanceof LazyField)) {
+                    break;
+                }
+                break;
         }
+        return false;
     }
 
     public boolean isInitialized() {
@@ -309,6 +306,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends FieldDescriptorLite<T>> boolean isInitialized(Map.Entry<T, Object> entry) {
         T descriptor = entry.getKey();
         if (descriptor.getLiteJavaType() == WireFormat.JavaType.MESSAGE) {
@@ -335,7 +333,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         throw new IllegalArgumentException("Wrong object type used with protocol message reflection.");
     }
 
-    public static int getWireFormatForFieldType(WireFormat.FieldType type, boolean isPacked) {
+    static int getWireFormatForFieldType(WireFormat.FieldType type, boolean isPacked) {
         if (isPacked) {
             return 2;
         }
@@ -351,6 +349,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Object cloneIfMutable(Object value) {
         if (value instanceof byte[]) {
             byte[] bytes = (byte[]) value;
@@ -430,7 +429,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         writeField(descriptor, entry.getValue(), output);
     }
 
-    public static void writeElement(CodedOutputStream output, WireFormat.FieldType type, int number, Object value) throws IOException {
+    static void writeElement(CodedOutputStream output, WireFormat.FieldType type, int number, Object value) throws IOException {
         if (type == WireFormat.FieldType.GROUP) {
             output.writeGroup(number, (MessageLite) value);
         } else {
@@ -439,17 +438,13 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         }
     }
 
-    /* renamed from: com.android.framework.protobuf.FieldSet$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$JavaType;
+    /* renamed from: com.android.framework.protobuf.FieldSet$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType = new int[WireFormat.FieldType.values().length];
 
         static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
             try {
-                iArr[WireFormat.FieldType.DOUBLE.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.DOUBLE.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {
@@ -520,10 +515,9 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
                 $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.ENUM.ordinal()] = 18;
             } catch (NoSuchFieldError e18) {
             }
-            int[] iArr2 = new int[WireFormat.JavaType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$JavaType = iArr2;
+            $SwitchMap$com$google$protobuf$WireFormat$JavaType = new int[WireFormat.JavaType.values().length];
             try {
-                iArr2[WireFormat.JavaType.INT.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$JavaType[WireFormat.JavaType.INT.ordinal()] = 1;
             } catch (NoSuchFieldError e19) {
             }
             try {
@@ -565,75 +559,73 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$FieldType[type.ordinal()]) {
             case 1:
                 output.writeDoubleNoTag(((Double) value).doubleValue());
-                return;
+                break;
             case 2:
                 output.writeFloatNoTag(((Float) value).floatValue());
-                return;
+                break;
             case 3:
                 output.writeInt64NoTag(((Long) value).longValue());
-                return;
+                break;
             case 4:
                 output.writeUInt64NoTag(((Long) value).longValue());
-                return;
+                break;
             case 5:
                 output.writeInt32NoTag(((Integer) value).intValue());
-                return;
+                break;
             case 6:
                 output.writeFixed64NoTag(((Long) value).longValue());
-                return;
+                break;
             case 7:
                 output.writeFixed32NoTag(((Integer) value).intValue());
-                return;
+                break;
             case 8:
                 output.writeBoolNoTag(((Boolean) value).booleanValue());
-                return;
+                break;
             case 9:
                 output.writeGroupNoTag((MessageLite) value);
-                return;
+                break;
             case 10:
                 output.writeMessageNoTag((MessageLite) value);
-                return;
+                break;
             case 11:
                 if (value instanceof ByteString) {
                     output.writeBytesNoTag((ByteString) value);
-                    return;
+                    break;
                 } else {
                     output.writeStringNoTag((String) value);
-                    return;
+                    break;
                 }
             case 12:
                 if (value instanceof ByteString) {
                     output.writeBytesNoTag((ByteString) value);
-                    return;
+                    break;
                 } else {
                     output.writeByteArrayNoTag((byte[]) value);
-                    return;
+                    break;
                 }
             case 13:
                 output.writeUInt32NoTag(((Integer) value).intValue());
-                return;
+                break;
             case 14:
                 output.writeSFixed32NoTag(((Integer) value).intValue());
-                return;
+                break;
             case 15:
                 output.writeSFixed64NoTag(((Long) value).longValue());
-                return;
+                break;
             case 16:
                 output.writeSInt32NoTag(((Integer) value).intValue());
-                return;
+                break;
             case 17:
                 output.writeSInt64NoTag(((Long) value).longValue());
-                return;
+                break;
             case 18:
                 if (value instanceof Internal.EnumLite) {
                     output.writeEnumNoTag(((Internal.EnumLite) value).getNumber());
-                    return;
+                    break;
                 } else {
                     output.writeEnumNoTag(((Integer) value).intValue());
-                    return;
+                    break;
                 }
-            default:
-                return;
         }
     }
 
@@ -701,7 +693,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return computeFieldSize(descriptor, value);
     }
 
-    public static int computeElementSize(WireFormat.FieldType type, int number, Object value) {
+    static int computeElementSize(WireFormat.FieldType type, int number, Object value) {
         int tagSize = CodedOutputStream.computeTagSize(number);
         if (type == WireFormat.FieldType.GROUP) {
             tagSize *= 2;
@@ -785,7 +777,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return size2;
     }
 
-    /* loaded from: classes4.dex */
     static final class Builder<T extends FieldDescriptorLite<T>> {
         private SmallSortedMap<T, Object> fields;
         private boolean hasLazyField;

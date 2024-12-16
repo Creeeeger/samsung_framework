@@ -35,8 +35,6 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
     private boolean mAllowCrossDomainRedirect = true;
     private boolean mAllowCrossProtocolRedirect = true;
     private final AtomicInteger mNumDisconnectingThreads = new AtomicInteger(0);
-    private int mResponse = 0;
-    private Object mIsDisconnecting = new Object();
 
     private final native void native_finalize();
 
@@ -58,30 +56,18 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
 
     @Override // android.media.IMediaHTTPConnection
     public synchronized IBinder connect(String uri, String headers) {
-        IBinder native_getIMemory;
-        synchronized (this.mIsDisconnecting) {
-            try {
-                try {
-                    disconnect();
-                    this.mAllowCrossDomainRedirect = true;
-                    this.mURL = new URL(uri);
-                    this.mHeaders = convertHeaderStringToMap(headers);
-                    native_getIMemory = native_getIMemory();
-                } catch (MalformedURLException e) {
-                    return null;
-                }
-            } finally {
-                e = th;
-                while (true) {
-                    try {
-                        break;
-                    } catch (Throwable th) {
-                        e = th;
-                    }
-                }
-            }
+        try {
+            disconnect();
+        } catch (MalformedURLException e) {
         }
-        return native_getIMemory;
+        try {
+            this.mAllowCrossDomainRedirect = true;
+            this.mURL = new URL(uri);
+            this.mHeaders = convertHeaderStringToMap(headers);
+            return native_getIMemory();
+        } catch (MalformedURLException e2) {
+            return null;
+        }
     }
 
     private static boolean parseBoolean(String val) {
@@ -96,9 +82,8 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
         if (!"android-allow-cross-domain-redirect".equalsIgnoreCase(key)) {
             return false;
         }
-        boolean parseBoolean = parseBoolean(val);
-        this.mAllowCrossDomainRedirect = parseBoolean;
-        this.mAllowCrossProtocolRedirect = parseBoolean;
+        this.mAllowCrossDomainRedirect = parseBoolean(val);
+        this.mAllowCrossProtocolRedirect = this.mAllowCrossDomainRedirect;
         return true;
     }
 
@@ -127,7 +112,7 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
             if (connectionToDisconnect != null) {
                 connectionToDisconnect.disconnect();
             }
-            synchronized (this.mIsDisconnecting) {
+            synchronized (this) {
                 teardownConnection();
                 this.mHeaders = null;
                 this.mURL = null;
@@ -137,21 +122,18 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
         }
     }
 
-    private void teardownConnection() {
-        synchronized (this.mIsDisconnecting) {
-            if (this.mConnection != null) {
-                InputStream inputStream = this.mInputStream;
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                    }
-                    this.mInputStream = null;
+    private synchronized void teardownConnection() {
+        if (this.mConnection != null) {
+            if (this.mInputStream != null) {
+                try {
+                    this.mInputStream.close();
+                } catch (IOException e) {
                 }
-                this.mConnection.disconnect();
-                this.mConnection = null;
-                this.mCurrentOffset = -1L;
+                this.mInputStream = null;
             }
+            this.mConnection.disconnect();
+            this.mConnection = null;
+            this.mCurrentOffset = -1L;
         }
     }
 
@@ -166,7 +148,7 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
         return InetAddresses.parseNumericAddress(host).isLoopbackAddress();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:101:0x01f7, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:101:0x01b2, code lost:
     
         r16.mURL = r8;
      */
@@ -176,7 +158,7 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
     */
     private synchronized void seekTo(long r17) throws java.io.IOException {
         /*
-            Method dump skipped, instructions count: 613
+            Method dump skipped, instructions count: 503
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.media.MediaHTTPConnection.seekTo(long):void");
@@ -228,9 +210,7 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
     public synchronized long getSize() {
         if (this.mConnection == null) {
             try {
-                Log.i(TAG, "getsize trying to seekto");
                 seekTo(0L);
-                Log.i(TAG, "seekto Completed");
             } catch (IOException e) {
                 return -1L;
             }
@@ -240,19 +220,13 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
 
     @Override // android.media.IMediaHTTPConnection
     public synchronized String getMIMEType() {
-        Log.i(TAG, "get Mime Type entered");
         if (this.mConnection == null) {
             try {
                 seekTo(0L);
             } catch (IOException e) {
-                if (this.mResponse / 100 >= 4) {
-                    Log.w(TAG, "request failed with error => " + this.mResponse);
-                    return "MEDIA_ERROR_IO";
-                }
                 return "application/octet-stream";
             }
         }
-        Log.i(TAG, "get Mime Type out");
         return this.mConnection.getContentType();
     }
 

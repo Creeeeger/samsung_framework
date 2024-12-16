@@ -14,7 +14,7 @@ public class MultimediaMessagePdu extends GenericPdu {
         this.mMessageBody = body;
     }
 
-    public MultimediaMessagePdu(PduHeaders headers) {
+    MultimediaMessagePdu(PduHeaders headers) {
         super(headers);
     }
 

@@ -51,8 +51,7 @@ public class CropFilter extends Filter {
     }
 
     protected void createProgram(FilterContext context, FrameFormat format) {
-        FrameFormat frameFormat = this.mLastFormat;
-        if (frameFormat == null || frameFormat.getTarget() != format.getTarget()) {
+        if (this.mLastFormat == null || this.mLastFormat.getTarget() != format.getTarget()) {
             this.mLastFormat = format;
             this.mProgram = null;
             switch (format.getTarget()) {
@@ -78,19 +77,10 @@ public class CropFilter extends Filter {
         createProgram(env, imageFrame.getFormat());
         Quad box = (Quad) boxFrame.getObjectValue();
         MutableFrameFormat outputFormat = imageFrame.getFormat().mutableCopy();
-        int i = this.mOutputWidth;
-        if (i == -1) {
-            i = outputFormat.getWidth();
-        }
-        int i2 = this.mOutputHeight;
-        if (i2 == -1) {
-            i2 = outputFormat.getHeight();
-        }
-        outputFormat.setDimensions(i, i2);
+        outputFormat.setDimensions(this.mOutputWidth == -1 ? outputFormat.getWidth() : this.mOutputWidth, this.mOutputHeight == -1 ? outputFormat.getHeight() : this.mOutputHeight);
         Frame output = env.getFrameManager().newFrame(outputFormat);
-        Program program = this.mProgram;
-        if (program instanceof ShaderProgram) {
-            ShaderProgram shaderProgram = (ShaderProgram) program;
+        if (this.mProgram instanceof ShaderProgram) {
+            ShaderProgram shaderProgram = (ShaderProgram) this.mProgram;
             shaderProgram.setSourceRegion(box);
         }
         this.mProgram.process(imageFrame, output);

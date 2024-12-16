@@ -17,7 +17,6 @@ public interface IIrisService extends IInterface {
 
     void registerAuthenticators(List<SensorPropertiesInternal> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IIrisService {
         @Override // android.hardware.iris.IIrisService
         public void registerAuthenticators(List<SensorPropertiesInternal> hidlSensors) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IIrisService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IIrisService {
         static final int TRANSACTION_registerAuthenticators = 1;
         private final PermissionEnforcer mEnforcer;
@@ -82,27 +80,23 @@ public interface IIrisService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIrisService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIrisService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIrisService.DESCRIPTOR);
+                case 1:
+                    List<SensorPropertiesInternal> _arg0 = data.createTypedArrayList(SensorPropertiesInternal.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerAuthenticators(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SensorPropertiesInternal> _arg0 = data.createTypedArrayList(SensorPropertiesInternal.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerAuthenticators(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IIrisService {
+        private static class Proxy implements IIrisService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

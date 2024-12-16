@@ -40,7 +40,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import libcore.util.EmptyArray;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class AccessibilityUtils {
     public static final String MENU_SERVICE_RELATIVE_CLASS_NAME = ".AccessibilityMenuService";
     public static final int NONE = 0;
@@ -50,8 +50,13 @@ public final class AccessibilityUtils {
     public static final ComponentName ACCESSIBILITY_MENU_IN_SYSTEM = new ComponentName("com.android.systemui.accessibility.accessibilitymenu", "com.android.systemui.accessibility.accessibilitymenu.AccessibilityMenuService");
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface A11yTextChangeType {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface State {
+        public static final int OFF = 0;
+        public static final int ON = 1;
     }
 
     private AccessibilityUtils() {
@@ -190,7 +195,7 @@ public final class AccessibilityUtils {
         return null;
     }
 
-    public static /* synthetic */ boolean lambda$getAccessibilityMenuComponentToMigrate$0(ComponentName name) {
+    static /* synthetic */ boolean lambda$getAccessibilityMenuComponentToMigrate$0(ComponentName name) {
         return !name.equals(ACCESSIBILITY_MENU_IN_SYSTEM);
     }
 
@@ -270,7 +275,7 @@ public final class AccessibilityUtils {
 
     public static boolean makeToastForFingerprint(Context context, String targetName, String targetLabel) {
         FingerprintManager fpm = (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
-        if (fpm.semCanChangeDeviceColorMode() || !disallowPerformWhileFingerPrint(targetName)) {
+        if (fpm == null || fpm.semCanChangeDeviceColorMode() || !disallowPerformWhileFingerPrint(targetName)) {
             return false;
         }
         String message = context.getString(R.string.accessibility_shortcut_cannot_use_fingerprint, targetLabel);
@@ -305,6 +310,11 @@ public final class AccessibilityUtils {
         } catch (NullPointerException e) {
             return false;
         }
+    }
+
+    public static boolean isDefaultTheme(Context context) {
+        String openTheme = Settings.System.getString(context.getContentResolver(), "current_sec_active_themepackage");
+        return TextUtils.isEmpty(openTheme);
     }
 
     public static void updateProfile(Context context, String targetName) {

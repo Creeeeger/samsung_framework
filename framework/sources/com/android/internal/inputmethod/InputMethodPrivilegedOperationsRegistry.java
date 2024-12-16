@@ -4,7 +4,7 @@ import android.os.IBinder;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InputMethodPrivilegedOperationsRegistry {
     private static final Object sLock = new Object();
     private static InputMethodPrivilegedOperations sNop;
@@ -31,11 +31,10 @@ public final class InputMethodPrivilegedOperationsRegistry {
 
     public static InputMethodPrivilegedOperations get(IBinder token) {
         synchronized (sLock) {
-            WeakHashMap<IBinder, WeakReference<InputMethodPrivilegedOperations>> weakHashMap = sRegistry;
-            if (weakHashMap == null) {
+            if (sRegistry == null) {
                 return getNopOps();
             }
-            WeakReference<InputMethodPrivilegedOperations> wrapperRef = weakHashMap.get(token);
+            WeakReference<InputMethodPrivilegedOperations> wrapperRef = sRegistry.get(token);
             if (wrapperRef == null) {
                 return getNopOps();
             }
@@ -49,11 +48,10 @@ public final class InputMethodPrivilegedOperationsRegistry {
 
     public static void remove(IBinder token) {
         synchronized (sLock) {
-            WeakHashMap<IBinder, WeakReference<InputMethodPrivilegedOperations>> weakHashMap = sRegistry;
-            if (weakHashMap == null) {
+            if (sRegistry == null) {
                 return;
             }
-            weakHashMap.remove(token);
+            sRegistry.remove(token);
             if (sRegistry.isEmpty()) {
                 sRegistry = null;
             }

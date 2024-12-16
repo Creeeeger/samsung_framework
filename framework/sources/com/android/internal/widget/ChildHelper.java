@@ -7,15 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /* loaded from: classes5.dex */
-public class ChildHelper {
+class ChildHelper {
     private static final boolean DEBUG = false;
     private static final String TAG = "ChildrenHelper";
     final Callback mCallback;
     final Bucket mBucket = new Bucket();
     final List<View> mHiddenViews = new ArrayList();
 
-    /* loaded from: classes5.dex */
-    public interface Callback {
+    interface Callback {
         void addView(View view, int i);
 
         void attachViewToParent(View view, int i, ViewGroup.LayoutParams layoutParams);
@@ -39,7 +38,7 @@ public class ChildHelper {
         void removeViewAt(int i);
     }
 
-    public ChildHelper(Callback callback) {
+    ChildHelper(Callback callback) {
         this.mCallback = callback;
     }
 
@@ -56,11 +55,11 @@ public class ChildHelper {
         return false;
     }
 
-    public void addView(View child, boolean hidden) {
+    void addView(View child, boolean hidden) {
         addView(child, -1, hidden);
     }
 
-    public void addView(View child, int index, boolean hidden) {
+    void addView(View child, int index, boolean hidden) {
         int offset;
         if (index < 0) {
             offset = this.mCallback.getChildCount();
@@ -94,7 +93,7 @@ public class ChildHelper {
         return -1;
     }
 
-    public void removeView(View view) {
+    void removeView(View view) {
         int index = this.mCallback.indexOfChild(view);
         if (index < 0) {
             return;
@@ -105,7 +104,7 @@ public class ChildHelper {
         this.mCallback.removeViewAt(index);
     }
 
-    public void removeViewAt(int index) {
+    void removeViewAt(int index) {
         int offset = getOffset(index);
         View view = this.mCallback.getChildAt(offset);
         if (view == null) {
@@ -117,12 +116,12 @@ public class ChildHelper {
         this.mCallback.removeViewAt(offset);
     }
 
-    public View getChildAt(int index) {
+    View getChildAt(int index) {
         int offset = getOffset(index);
         return this.mCallback.getChildAt(offset);
     }
 
-    public void removeAllViewsUnfiltered() {
+    void removeAllViewsUnfiltered() {
         this.mBucket.reset();
         for (int i = this.mHiddenViews.size() - 1; i >= 0; i--) {
             this.mCallback.onLeftHiddenState(this.mHiddenViews.get(i));
@@ -131,7 +130,7 @@ public class ChildHelper {
         this.mCallback.removeAllViews();
     }
 
-    public View findHiddenNonRemovedView(int position) {
+    View findHiddenNonRemovedView(int position) {
         int count = this.mHiddenViews.size();
         for (int i = 0; i < count; i++) {
             View view = this.mHiddenViews.get(i);
@@ -143,7 +142,7 @@ public class ChildHelper {
         return null;
     }
 
-    public void attachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams, boolean hidden) {
+    void attachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams, boolean hidden) {
         int offset;
         if (index < 0) {
             offset = this.mCallback.getChildCount();
@@ -157,25 +156,25 @@ public class ChildHelper {
         this.mCallback.attachViewToParent(child, offset, layoutParams);
     }
 
-    public int getChildCount() {
+    int getChildCount() {
         return this.mCallback.getChildCount() - this.mHiddenViews.size();
     }
 
-    public int getUnfilteredChildCount() {
+    int getUnfilteredChildCount() {
         return this.mCallback.getChildCount();
     }
 
-    public View getUnfilteredChildAt(int index) {
+    View getUnfilteredChildAt(int index) {
         return this.mCallback.getChildAt(index);
     }
 
-    public void detachViewFromParent(int index) {
+    void detachViewFromParent(int index) {
         int offset = getOffset(index);
         this.mBucket.remove(offset);
         this.mCallback.detachViewFromParent(offset);
     }
 
-    public int indexOfChild(View child) {
+    int indexOfChild(View child) {
         int index = this.mCallback.indexOfChild(child);
         if (index == -1 || this.mBucket.get(index)) {
             return -1;
@@ -183,11 +182,11 @@ public class ChildHelper {
         return index - this.mBucket.countOnesBefore(index);
     }
 
-    public boolean isHidden(View view) {
+    boolean isHidden(View view) {
         return this.mHiddenViews.contains(view);
     }
 
-    public void hide(View view) {
+    void hide(View view) {
         int offset = this.mCallback.indexOfChild(view);
         if (offset < 0) {
             throw new IllegalArgumentException("view is not a child, cannot hide " + view);
@@ -196,7 +195,7 @@ public class ChildHelper {
         hideViewInternal(view);
     }
 
-    public void unhide(View view) {
+    void unhide(View view) {
         int offset = this.mCallback.indexOfChild(view);
         if (offset < 0) {
             throw new IllegalArgumentException("view is not a child, cannot hide " + view);
@@ -212,7 +211,7 @@ public class ChildHelper {
         return this.mBucket.toString() + ", hidden list:" + this.mHiddenViews.size();
     }
 
-    public boolean removeViewIfHidden(View view) {
+    boolean removeViewIfHidden(View view) {
         int index = this.mCallback.indexOfChild(view);
         if (index == -1) {
             unhideViewInternal(view);
@@ -227,8 +226,7 @@ public class ChildHelper {
         return false;
     }
 
-    /* loaded from: classes5.dex */
-    public static class Bucket {
+    static class Bucket {
         static final int BITS_PER_WORD = 64;
         static final long LAST_BIT = Long.MIN_VALUE;
         long mData = 0;
@@ -254,9 +252,8 @@ public class ChildHelper {
 
         void clear(int index) {
             if (index >= 64) {
-                Bucket bucket = this.mNext;
-                if (bucket != null) {
-                    bucket.clear(index - 64);
+                if (this.mNext != null) {
+                    this.mNext.clear(index - 64);
                     return;
                 }
                 return;
@@ -274,9 +271,8 @@ public class ChildHelper {
 
         void reset() {
             this.mData = 0L;
-            Bucket bucket = this.mNext;
-            if (bucket != null) {
-                bucket.reset();
+            if (this.mNext != null) {
+                this.mNext.reset();
             }
         }
 
@@ -286,11 +282,10 @@ public class ChildHelper {
                 this.mNext.insert(index - 64, value);
                 return;
             }
-            long j = this.mData;
-            boolean lastBit = (Long.MIN_VALUE & j) != 0;
+            boolean lastBit = (this.mData & Long.MIN_VALUE) != 0;
             long mask = (1 << index) - 1;
-            long before = j & mask;
-            long after = (j & (~mask)) << 1;
+            long before = this.mData & mask;
+            long after = (this.mData & (~mask)) << 1;
             this.mData = before | after;
             if (value) {
                 set(index);
@@ -309,17 +304,14 @@ public class ChildHelper {
                 return this.mNext.remove(index - 64);
             }
             long mask = 1 << index;
-            long j = this.mData;
-            boolean value = (j & mask) != 0;
-            long j2 = j & (~mask);
-            this.mData = j2;
+            boolean value = (this.mData & mask) != 0;
+            this.mData &= ~mask;
             long mask2 = mask - 1;
-            long before = j2 & mask2;
-            long after = Long.rotateRight(j2 & (~mask2), 1);
+            long before = this.mData & mask2;
+            long after = Long.rotateRight(this.mData & (~mask2), 1);
             this.mData = before | after;
-            Bucket bucket = this.mNext;
-            if (bucket != null) {
-                if (bucket.get(0)) {
+            if (this.mNext != null) {
+                if (this.mNext.get(0)) {
                     set(63);
                 }
                 this.mNext.remove(0);
@@ -328,8 +320,7 @@ public class ChildHelper {
         }
 
         int countOnesBefore(int index) {
-            Bucket bucket = this.mNext;
-            if (bucket == null) {
+            if (this.mNext == null) {
                 if (index >= 64) {
                     return Long.bitCount(this.mData);
                 }
@@ -338,7 +329,7 @@ public class ChildHelper {
             if (index < 64) {
                 return Long.bitCount(this.mData & ((1 << index) - 1));
             }
-            return bucket.countOnesBefore(index - 64) + Long.bitCount(this.mData);
+            return this.mNext.countOnesBefore(index - 64) + Long.bitCount(this.mData);
         }
 
         public String toString() {

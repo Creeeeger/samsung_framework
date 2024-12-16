@@ -8,7 +8,6 @@ import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
-import android.os.BatteryManager;
 import java.util.Date;
 import java.util.Random;
 
@@ -64,11 +63,9 @@ public class BlackWhiteFilter extends Filter {
     }
 
     private void updateParameters() {
-        float f = this.mBlack;
-        float f2 = this.mWhite;
-        float scale = f != f2 ? 1.0f / (f2 - f) : 2000.0f;
-        this.mProgram.setHostValue("black", Float.valueOf(f));
-        this.mProgram.setHostValue(BatteryManager.EXTRA_SCALE, Float.valueOf(scale));
+        float scale = this.mBlack != this.mWhite ? 1.0f / (this.mWhite - this.mBlack) : 2000.0f;
+        this.mProgram.setHostValue("black", Float.valueOf(this.mBlack));
+        this.mProgram.setHostValue("scale", Float.valueOf(scale));
         this.mProgram.setHostValue("stepsize", Float.valueOf(0.003921569f));
         float[] seed = {this.mRandom.nextFloat(), this.mRandom.nextFloat()};
         this.mProgram.setHostValue("seed", seed);

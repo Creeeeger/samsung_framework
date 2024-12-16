@@ -20,7 +20,6 @@ public final class SensorEventConnectionProto {
     public static final long UID = 1120986464260L;
     public static final long WAKE_LOCK_REF_COUNT = 1120986464259L;
 
-    /* loaded from: classes3.dex */
     public final class FlushInfoProto {
         public static final long FIRST_FLUSH_PENDING = 1133871366147L;
         public static final long PENDING_FLUSH_EVENTS_TO_SEND = 1120986464260L;

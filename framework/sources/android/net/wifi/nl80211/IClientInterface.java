@@ -24,7 +24,6 @@ public interface IClientInterface extends IInterface {
 
     int[] signalPoll() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IClientInterface {
         @Override // android.net.wifi.nl80211.IClientInterface
         public int[] getPacketCounters() throws RemoteException {
@@ -61,7 +60,6 @@ public interface IClientInterface extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IClientInterface {
         static final int TRANSACTION_SendMgmtFrame = 6;
         static final int TRANSACTION_getInterfaceName = 4;
@@ -119,53 +117,49 @@ public interface IClientInterface extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IClientInterface.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IClientInterface.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IClientInterface.DESCRIPTOR);
+                case 1:
+                    int[] _result = getPacketCounters();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result);
+                    return true;
+                case 2:
+                    int[] _result2 = signalPoll();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result2);
+                    return true;
+                case 3:
+                    byte[] _result3 = getMacAddress();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result3);
+                    return true;
+                case 4:
+                    String _result4 = getInterfaceName();
+                    reply.writeNoException();
+                    reply.writeString(_result4);
+                    return true;
+                case 5:
+                    IWifiScannerImpl _result5 = getWifiScannerImpl();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 6:
+                    byte[] _arg0 = data.createByteArray();
+                    ISendMgmtFrameEvent _arg1 = ISendMgmtFrameEvent.Stub.asInterface(data.readStrongBinder());
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SendMgmtFrame(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _result = getPacketCounters();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result);
-                            return true;
-                        case 2:
-                            int[] _result2 = signalPoll();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result2);
-                            return true;
-                        case 3:
-                            byte[] _result3 = getMacAddress();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result3);
-                            return true;
-                        case 4:
-                            String _result4 = getInterfaceName();
-                            reply.writeNoException();
-                            reply.writeString(_result4);
-                            return true;
-                        case 5:
-                            IWifiScannerImpl _result5 = getWifiScannerImpl();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 6:
-                            byte[] _arg0 = data.createByteArray();
-                            ISendMgmtFrameEvent _arg1 = ISendMgmtFrameEvent.Stub.asInterface(data.readStrongBinder());
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SendMgmtFrame(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IClientInterface {
+        private static class Proxy implements IClientInterface {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

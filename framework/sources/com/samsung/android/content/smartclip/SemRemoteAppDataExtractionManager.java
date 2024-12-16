@@ -19,9 +19,8 @@ public class SemRemoteAppDataExtractionManager {
             Log.e(TAG, "SemRemoteAppDataExtractionManager : Context is null! ");
             throw new RuntimeException("Context should not be null!");
         }
-        SpenGestureManager spenGestureManager = (SpenGestureManager) context.getSystemService(Context.SEM_SPEN_GESTURE_SERVICE);
-        this.mManager = spenGestureManager;
-        if (spenGestureManager == null) {
+        this.mManager = (SpenGestureManager) context.getSystemService(Context.SEM_SPEN_GESTURE_SERVICE);
+        if (this.mManager == null) {
             Log.e(TAG, "SemRemoteAppDataExtractionManager : Failed to connect to the service");
             throw new RuntimeException("Failed to connect to the service. Feature is not supported");
         }

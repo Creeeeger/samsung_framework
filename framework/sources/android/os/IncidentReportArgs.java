@@ -9,14 +9,13 @@ import java.util.ArrayList;
 /* loaded from: classes3.dex */
 public final class IncidentReportArgs implements Parcelable {
     public static final Parcelable.Creator<IncidentReportArgs> CREATOR = new Parcelable.Creator<IncidentReportArgs>() { // from class: android.os.IncidentReportArgs.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IncidentReportArgs createFromParcel(Parcel in) {
             return new IncidentReportArgs(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IncidentReportArgs[] newArray(int size) {
             return new IncidentReportArgs[size];
@@ -82,23 +81,6 @@ public final class IncidentReportArgs implements Parcelable {
         this.mReceiverCls = in.readString();
     }
 
-    /* renamed from: android.os.IncidentReportArgs$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IncidentReportArgs> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IncidentReportArgs createFromParcel(Parcel in) {
-            return new IncidentReportArgs(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IncidentReportArgs[] newArray(int size) {
-            return new IncidentReportArgs[size];
-        }
-    }
-
     public String toString() {
         StringBuilder sb = new StringBuilder("Incident(");
         if (this.mAll) {
@@ -135,10 +117,10 @@ public final class IncidentReportArgs implements Parcelable {
             case 100:
             case 200:
                 this.mPrivacyPolicy = privacyPolicy;
-                return;
+                break;
             default:
                 this.mPrivacyPolicy = 200;
-                return;
+                break;
         }
     }
 

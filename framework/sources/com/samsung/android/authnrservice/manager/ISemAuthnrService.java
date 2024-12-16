@@ -1,6 +1,5 @@
 package com.samsung.android.authnrservice.manager;
 
-import android.content.ContentResolver;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
@@ -53,7 +52,6 @@ public interface ISemAuthnrService extends IInterface {
 
     boolean writeFile(byte[] bArr, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemAuthnrService {
         @Override // com.samsung.android.authnrservice.manager.ISemAuthnrService
         public int getVersion() throws RemoteException {
@@ -161,7 +159,6 @@ public interface ISemAuthnrService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemAuthnrService {
         static final int TRANSACTION_deleteFile = 11;
         static final int TRANSACTION_getDrkKeyHandle = 9;
@@ -209,7 +206,7 @@ public interface ISemAuthnrService extends IInterface {
                 case 1:
                     return "getVersion";
                 case 2:
-                    return ContentResolver.SYNC_EXTRAS_INITIALIZE;
+                    return "initialize";
                 case 3:
                     return "terminate";
                 case 4:
@@ -261,153 +258,150 @@ public interface ISemAuthnrService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemAuthnrService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemAuthnrService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemAuthnrService.DESCRIPTOR);
+                case 1:
+                    int _result = getVersion();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg1 = data.readLong();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = initialize(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    boolean _result3 = terminate();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    byte[] _arg02 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result4 = process(_arg02);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    return true;
+                case 5:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = setChallenge(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 6:
+                    byte[] _arg04 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result6 = getWrappedObject(_arg04);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result6);
+                    return true;
+                case 7:
+                    boolean _result7 = initializeDrk();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 8:
+                    boolean _result8 = terminateDrk();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 9:
+                    byte[] _result9 = getDrkKeyHandle();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result9);
+                    return true;
+                case 10:
+                    byte[] _arg05 = data.createByteArray();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = writeFile(_arg05, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 11:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = deleteFile(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 12:
+                    String _arg07 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result12 = getFiles(_arg07, _arg13);
+                    reply.writeNoException();
+                    reply.writeStringList(_result12);
+                    return true;
+                case 13:
+                    boolean _result13 = initializeWithPreloadedTa();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 14:
+                    boolean _result14 = terminateWithPreloadedTa();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 15:
+                    byte[] _arg08 = data.createByteArray();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    byte[] _result15 = processWithPreloadedTa(_arg08, _arg14);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result15);
+                    return true;
+                case 16:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result16 = readFile(_arg09);
+                    reply.writeNoException();
+                    reply.writeString(_result16);
+                    return true;
+                case 17:
+                    String _arg010 = data.readString();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result17 = getMatchedFilePaths(_arg010, _arg15);
+                    reply.writeNoException();
+                    reply.writeStringList(_result17);
+                    return true;
+                case 18:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result18 = initializePreloadedTa(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 19:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result19 = terminatePreloadedTa(_arg012);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 20:
+                    int _arg013 = data.readInt();
+                    byte[] _arg16 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result20 = processPreloadedTa(_arg013, _arg16);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result20);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = getVersion();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg1 = data.readLong();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = initialize(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            boolean _result3 = terminate();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            byte[] _arg02 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result4 = process(_arg02);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            return true;
-                        case 5:
-                            byte[] _arg03 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = setChallenge(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 6:
-                            byte[] _arg04 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result6 = getWrappedObject(_arg04);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result6);
-                            return true;
-                        case 7:
-                            boolean _result7 = initializeDrk();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 8:
-                            boolean _result8 = terminateDrk();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 9:
-                            byte[] _result9 = getDrkKeyHandle();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result9);
-                            return true;
-                        case 10:
-                            byte[] _arg05 = data.createByteArray();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = writeFile(_arg05, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 11:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = deleteFile(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 12:
-                            String _arg07 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result12 = getFiles(_arg07, _arg13);
-                            reply.writeNoException();
-                            reply.writeStringList(_result12);
-                            return true;
-                        case 13:
-                            boolean _result13 = initializeWithPreloadedTa();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 14:
-                            boolean _result14 = terminateWithPreloadedTa();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 15:
-                            byte[] _arg08 = data.createByteArray();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            byte[] _result15 = processWithPreloadedTa(_arg08, _arg14);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result15);
-                            return true;
-                        case 16:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result16 = readFile(_arg09);
-                            reply.writeNoException();
-                            reply.writeString(_result16);
-                            return true;
-                        case 17:
-                            String _arg010 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result17 = getMatchedFilePaths(_arg010, _arg15);
-                            reply.writeNoException();
-                            reply.writeStringList(_result17);
-                            return true;
-                        case 18:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result18 = initializePreloadedTa(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 19:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result19 = terminatePreloadedTa(_arg012);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        case 20:
-                            int _arg013 = data.readInt();
-                            byte[] _arg16 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result20 = processPreloadedTa(_arg013, _arg16);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result20);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemAuthnrService {
+        private static class Proxy implements ISemAuthnrService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

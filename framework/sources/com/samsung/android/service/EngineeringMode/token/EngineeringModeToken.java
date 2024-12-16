@@ -3,7 +3,7 @@ package com.samsung.android.service.EngineeringMode.token;
 import com.samsung.android.core.SizeCompatInfo;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class EngineeringModeToken {
     private static EngineeringModeToken mEngineeringModeToken;
     private int mOTPtime;
@@ -122,9 +122,8 @@ public class EngineeringModeToken {
     }
 
     public void pushAttrToModeItem(int modeIndex, int type, int len, byte[] attribute) {
-        ModeItemCollection modeItemCollection = this.mModeDB;
-        if (modeItemCollection != null) {
-            modeItemCollection.addAttrToModeItem(modeIndex, type, len, attribute);
+        if (this.mModeDB != null) {
+            this.mModeDB.addAttrToModeItem(modeIndex, type, len, attribute);
         }
     }
 
@@ -136,9 +135,8 @@ public class EngineeringModeToken {
     }
 
     public void pushAttrToGroupItem(int groupIndex, int type, int len, byte[] attribute) {
-        GroupItemCollection groupItemCollection = this.mGroupDB;
-        if (groupItemCollection != null) {
-            groupItemCollection.addAttrToGroupItem(groupIndex, type, len, attribute);
+        if (this.mGroupDB != null) {
+            this.mGroupDB.addAttrToGroupItem(groupIndex, type, len, attribute);
         }
     }
 

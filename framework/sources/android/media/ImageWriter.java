@@ -37,21 +37,13 @@ public class ImageWriter implements AutoCloseable {
     private final Object mListenerLock;
     private final int mMaxImages;
     private long mNativeContext;
+    private int mSemTransform;
     private long mUsage;
     private int mWidth;
     private int mWriterFormat;
 
-    /* loaded from: classes2.dex */
     public interface OnImageReleasedListener {
         void onImageReleased(ImageWriter imageWriter);
-    }
-
-    /* synthetic */ ImageWriter(Surface surface, int i, boolean z, int i2, int i3, int i4, int i5, long j, ImageWriterIA imageWriterIA) {
-        this(surface, i, z, i2, i3, i4, i5, j);
-    }
-
-    /* synthetic */ ImageWriter(Surface surface, int i, boolean z, int i2, int i3, int i4, long j, ImageWriterIA imageWriterIA) {
-        this(surface, i, z, i2, i3, i4, j);
     }
 
     private native synchronized void cancelImage(long j, Image image);
@@ -103,9 +95,8 @@ public class ImageWriter implements AutoCloseable {
             }
             Size surfSize = SurfaceUtils.getSurfaceSize(surface);
             this.mWidth = width == -1 ? surfSize.getWidth() : width;
-            int height2 = height == -1 ? surfSize.getHeight() : height;
-            this.mHeight = height2;
-            this.mEstimatedNativeAllocBytes = ImageUtils.getEstimatedNativeAllocBytes(this.mWidth, height2, imageFormat2, 1);
+            this.mHeight = height == -1 ? surfSize.getHeight() : height;
+            this.mEstimatedNativeAllocBytes = ImageUtils.getEstimatedNativeAllocBytes(this.mWidth, this.mHeight, imageFormat2, 1);
             VMRuntime.getRuntime().registerNativeAllocation(this.mEstimatedNativeAllocBytes);
             this.mIsWriterValid = true;
             return;
@@ -118,6 +109,7 @@ public class ImageWriter implements AutoCloseable {
         this.mCloseLock = new Object();
         this.mIsWriterValid = false;
         this.mUsage = 48L;
+        this.mSemTransform = 0;
         this.mDequeuedImages = new CopyOnWriteArrayList();
         this.mMaxImages = maxImages;
         if (!useSurfaceImageFormatInfo) {
@@ -132,6 +124,7 @@ public class ImageWriter implements AutoCloseable {
         this.mCloseLock = new Object();
         this.mIsWriterValid = false;
         this.mUsage = 48L;
+        this.mSemTransform = 0;
         this.mDequeuedImages = new CopyOnWriteArrayList();
         this.mMaxImages = maxImages;
         this.mUsage = usage;
@@ -148,6 +141,7 @@ public class ImageWriter implements AutoCloseable {
         this.mCloseLock = new Object();
         this.mIsWriterValid = false;
         this.mUsage = 48L;
+        this.mSemTransform = 0;
         this.mDequeuedImages = new CopyOnWriteArrayList();
         this.mMaxImages = maxImages;
         this.mUsage = usage;
@@ -160,6 +154,16 @@ public class ImageWriter implements AutoCloseable {
             imageFormat = imageFormat2;
         }
         initializeImageWriter(surface, maxImages, useSurfaceImageFormatInfo, imageFormat, hardwareBufferFormat, dataSpace, width, height, usage);
+    }
+
+    private ImageWriter(Surface surface, int maxImages, boolean useSurfaceImageFormatInfo, int imageFormat, int width, int height, long usage, int transform) {
+        this(surface, maxImages, useSurfaceImageFormatInfo, imageFormat, width, height, usage);
+        this.mSemTransform = transform;
+    }
+
+    private ImageWriter(Surface surface, int maxImages, boolean useSurfaceImageFormatInfo, int hardwareBufferFormat, int dataSpace, int width, int height, long usage, int transform) {
+        this(surface, maxImages, useSurfaceImageFormatInfo, hardwareBufferFormat, dataSpace, width, height, usage);
+        this.mSemTransform = transform;
     }
 
     public int getMaxImages() {
@@ -237,8 +241,7 @@ public class ImageWriter implements AutoCloseable {
                 if (looper == null) {
                     throw new IllegalArgumentException("handler is null but the current thread is not a looper");
                 }
-                ListenerHandler listenerHandler = this.mListenerHandler;
-                if (listenerHandler == null || listenerHandler.getLooper() != looper) {
+                if (this.mListenerHandler == null || this.mListenerHandler.getLooper() != looper) {
                     this.mListenerHandler = new ListenerHandler(looper);
                 }
                 this.mListener = listener;
@@ -299,8 +302,7 @@ public class ImageWriter implements AutoCloseable {
         image.close();
     }
 
-    /* loaded from: classes2.dex */
-    public final class ListenerHandler extends Handler {
+    private final class ListenerHandler extends Handler {
         public ListenerHandler(Looper looper) {
             super(looper, null, true);
         }
@@ -336,6 +338,7 @@ public class ImageWriter implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void abortImage(Image image) {
         if (image == null) {
             throw new IllegalArgumentException("image shouldn't be null");
@@ -361,7 +364,6 @@ public class ImageWriter implements AutoCloseable {
         return wi.getOwner() == this;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private Surface mSurface;
         private int mWidth = -1;
@@ -373,6 +375,7 @@ public class ImageWriter implements AutoCloseable {
         private int mDataSpace = 0;
         private boolean mUseSurfaceImageFormatInfo = true;
         private boolean mUseLegacyImageFormat = false;
+        private int mSemTransform = 0;
 
         public Builder(Surface surface) {
             this.mSurface = surface;
@@ -422,27 +425,31 @@ public class ImageWriter implements AutoCloseable {
             return this;
         }
 
+        public Builder semSetTransform(int transform) {
+            this.mSemTransform = transform;
+            return this;
+        }
+
         public ImageWriter build() {
             if (this.mUseLegacyImageFormat) {
-                return new ImageWriter(this.mSurface, this.mMaxImages, this.mUseSurfaceImageFormatInfo, this.mImageFormat, this.mWidth, this.mHeight, this.mUsage);
+                return new ImageWriter(this.mSurface, this.mMaxImages, this.mUseSurfaceImageFormatInfo, this.mImageFormat, this.mWidth, this.mHeight, this.mUsage, this.mSemTransform);
             }
-            return new ImageWriter(this.mSurface, this.mMaxImages, this.mUseSurfaceImageFormatInfo, this.mHardwareBufferFormat, this.mDataSpace, this.mWidth, this.mHeight, this.mUsage);
+            return new ImageWriter(this.mSurface, this.mMaxImages, this.mUseSurfaceImageFormatInfo, this.mHardwareBufferFormat, this.mDataSpace, this.mWidth, this.mHeight, this.mUsage, this.mSemTransform);
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class WriterSurfaceImage extends Image {
+    private static class WriterSurfaceImage extends Image {
         private int mDataSpace;
         private int mHeight;
         private long mNativeBuffer;
         private ImageWriter mOwner;
         private SurfacePlane[] mPlanes;
+        private int mTransform;
         private int mWidth;
         private int mNativeFenceFd = -1;
         private int mFormat = -1;
         private final long DEFAULT_TIMESTAMP = Long.MIN_VALUE;
         private long mTimestamp = Long.MIN_VALUE;
-        private int mTransform = 0;
         private int mScalingMode = 0;
         private final Object mCloseLock = new Object();
 
@@ -462,10 +469,12 @@ public class ImageWriter implements AutoCloseable {
             this.mHeight = -1;
             this.mWidth = -1;
             this.mDataSpace = 0;
+            this.mTransform = 0;
             this.mOwner = writer;
             this.mWidth = writer.mWidth;
             this.mHeight = writer.mHeight;
             this.mDataSpace = writer.mDataSpace;
+            this.mTransform = writer.mSemTransform;
         }
 
         @Override // android.media.Image
@@ -540,9 +549,8 @@ public class ImageWriter implements AutoCloseable {
         @Override // android.media.Image
         public SyncFence getFence() throws IOException {
             throwISEIfImageIsInvalid();
-            int i = this.mNativeFenceFd;
-            if (i != -1) {
-                return SyncFence.create(ParcelFileDescriptor.fromFd(i));
+            if (this.mNativeFenceFd != -1) {
+                return SyncFence.create(ParcelFileDescriptor.fromFd(this.mNativeFenceFd));
             }
             return SyncFence.createEmpty();
         }
@@ -569,6 +577,7 @@ public class ImageWriter implements AutoCloseable {
             return false;
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.media.Image
         public ImageWriter getOwner() {
             throwISEIfImageIsInvalid();
@@ -576,7 +585,7 @@ public class ImageWriter implements AutoCloseable {
         }
 
         @Override // android.media.Image
-        public long getNativeContext() {
+        long getNativeContext() {
             throwISEIfImageIsInvalid();
             return this.mNativeBuffer;
         }
@@ -598,27 +607,19 @@ public class ImageWriter implements AutoCloseable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void clearSurfacePlanes() {
             if (this.mIsImageValid && this.mPlanes != null) {
-                int i = 0;
-                while (true) {
-                    SurfacePlane[] surfacePlaneArr = this.mPlanes;
-                    if (i < surfacePlaneArr.length) {
-                        SurfacePlane surfacePlane = surfacePlaneArr[i];
-                        if (surfacePlane != null) {
-                            surfacePlane.clearBuffer();
-                            this.mPlanes[i] = null;
-                        }
-                        i++;
-                    } else {
-                        return;
+                for (int i = 0; i < this.mPlanes.length; i++) {
+                    if (this.mPlanes[i] != null) {
+                        this.mPlanes[i].clearBuffer();
+                        this.mPlanes[i] = null;
                     }
                 }
             }
         }
 
-        /* loaded from: classes2.dex */
-        public class SurfacePlane extends Image.Plane {
+        private class SurfacePlane extends Image.Plane {
             private ByteBuffer mBuffer;
             private final int mPixelStride;
             private final int mRowStride;
@@ -627,7 +628,7 @@ public class ImageWriter implements AutoCloseable {
                 this.mRowStride = rowStride;
                 this.mPixelStride = pixelStride;
                 this.mBuffer = buffer;
-                buffer.order(ByteOrder.nativeOrder());
+                this.mBuffer.order(ByteOrder.nativeOrder());
             }
 
             @Override // android.media.Image.Plane
@@ -648,12 +649,12 @@ public class ImageWriter implements AutoCloseable {
                 return this.mBuffer;
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public void clearBuffer() {
-                ByteBuffer byteBuffer = this.mBuffer;
-                if (byteBuffer == null) {
+                if (this.mBuffer == null) {
                     return;
                 }
-                if (byteBuffer.isDirect()) {
+                if (this.mBuffer.isDirect()) {
                     NioUtils.freeDirectBuffer(this.mBuffer);
                 }
                 this.mBuffer = null;

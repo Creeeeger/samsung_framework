@@ -7,17 +7,16 @@ import android.os.Parcelable;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class RaEvent implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<RaEvent> CREATOR = new Parcelable.Creator<RaEvent>() { // from class: android.net.metrics.RaEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RaEvent createFromParcel(Parcel in) {
             return new RaEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RaEvent[] newArray(int size) {
             return new RaEvent[size];
@@ -30,10 +29,6 @@ public final class RaEvent implements IpConnectivityLog.Event {
     public final long rdnssLifetime;
     public final long routeInfoLifetime;
     public final long routerLifetime;
-
-    /* synthetic */ RaEvent(Parcel parcel, RaEventIA raEventIA) {
-        this(parcel);
-    }
 
     public RaEvent(long routerLifetime, long prefixValidLifetime, long prefixPreferredLifetime, long routeInfoLifetime, long rdnssLifetime, long dnsslLifetime) {
         this.routerLifetime = routerLifetime;
@@ -80,24 +75,6 @@ public final class RaEvent implements IpConnectivityLog.Event {
         return this.routerLifetime == other.routerLifetime && this.prefixValidLifetime == other.prefixValidLifetime && this.prefixPreferredLifetime == other.prefixPreferredLifetime && this.routeInfoLifetime == other.routeInfoLifetime && this.rdnssLifetime == other.rdnssLifetime && this.dnsslLifetime == other.dnsslLifetime;
     }
 
-    /* renamed from: android.net.metrics.RaEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RaEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RaEvent createFromParcel(Parcel in) {
-            return new RaEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RaEvent[] newArray(int size) {
-            return new RaEvent[size];
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static final class Builder {
         long routerLifetime = -1;
         long prefixValidLifetime = -1;

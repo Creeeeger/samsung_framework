@@ -48,24 +48,21 @@ public final class IncrementalFileStorages {
             this.mStageDir = stageDir;
             this.mIncrementalManager = incrementalManager;
             if (inheritedDir != null && IncrementalManager.isIncrementalPath(inheritedDir.getAbsolutePath())) {
-                IncrementalStorage openStorage = incrementalManager.openStorage(inheritedDir.getAbsolutePath());
-                this.mInheritedStorage = openStorage;
-                if (openStorage != null) {
+                this.mInheritedStorage = this.mIncrementalManager.openStorage(inheritedDir.getAbsolutePath());
+                if (this.mInheritedStorage != null) {
                     boolean systemDataLoader = "android".equals(dataLoaderParams.getComponentName().getPackageName());
                     if (systemDataLoader && !this.mInheritedStorage.isFullyLoaded()) {
                         throw new IOException("Inherited storage has missing pages.");
                     }
-                    IncrementalStorage createStorage = incrementalManager.createStorage(stageDir.getAbsolutePath(), this.mInheritedStorage, 5);
-                    this.mDefaultStorage = createStorage;
-                    if (createStorage == null) {
+                    this.mDefaultStorage = this.mIncrementalManager.createStorage(stageDir.getAbsolutePath(), this.mInheritedStorage, 5);
+                    if (this.mDefaultStorage == null) {
                         throw new IOException("Couldn't create linked incremental storage at " + stageDir);
                     }
                     return;
                 }
             }
-            IncrementalStorage createStorage2 = incrementalManager.createStorage(stageDir.getAbsolutePath(), dataLoaderParams, 5);
-            this.mDefaultStorage = createStorage2;
-            if (createStorage2 == null) {
+            this.mDefaultStorage = this.mIncrementalManager.createStorage(stageDir.getAbsolutePath(), dataLoaderParams, 5);
+            if (this.mDefaultStorage == null) {
                 throw new IOException("Couldn't create incremental storage at " + stageDir);
             }
         } catch (IOException e) {

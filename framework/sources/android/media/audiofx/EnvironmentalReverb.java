@@ -22,7 +22,6 @@ public class EnvironmentalReverb extends AudioEffect {
     private OnParameterChangeListener mParamListener;
     private final Object mParamListenerLock;
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(EnvironmentalReverb environmentalReverb, int i, int i2, int i3);
     }
@@ -144,12 +143,7 @@ public class EnvironmentalReverb extends AudioEffect {
         return byteArrayToShort(param);
     }
 
-    /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
-        /* synthetic */ BaseParameterListener(EnvironmentalReverb environmentalReverb, BaseParameterListenerIA baseParameterListenerIA) {
-            this();
-        }
-
         private BaseParameterListener() {
         }
 
@@ -183,14 +177,12 @@ public class EnvironmentalReverb extends AudioEffect {
         synchronized (this.mParamListenerLock) {
             if (this.mParamListener == null) {
                 this.mParamListener = listener;
-                BaseParameterListener baseParameterListener = new BaseParameterListener();
-                this.mBaseParamListener = baseParameterListener;
-                super.setParameterListener(baseParameterListener);
+                this.mBaseParamListener = new BaseParameterListener();
+                super.setParameterListener(this.mBaseParamListener);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Settings {
         public short decayHFRatio;
         public int decayTime;

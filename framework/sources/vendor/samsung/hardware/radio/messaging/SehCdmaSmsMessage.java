@@ -10,9 +10,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehCdmaSmsMessage implements Parcelable {
     public static final Parcelable.Creator<SehCdmaSmsMessage> CREATOR = new Parcelable.Creator<SehCdmaSmsMessage>() { // from class: vendor.samsung.hardware.radio.messaging.SehCdmaSmsMessage.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehCdmaSmsMessage createFromParcel(Parcel _aidl_source) {
             SehCdmaSmsMessage _aidl_out = new SehCdmaSmsMessage();
@@ -31,25 +28,6 @@ public class SehCdmaSmsMessage implements Parcelable {
     public int teleserviceId = 0;
     public boolean isServicePresent = false;
     public int serviceCategory = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.messaging.SehCdmaSmsMessage$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehCdmaSmsMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCdmaSmsMessage createFromParcel(Parcel _aidl_source) {
-            SehCdmaSmsMessage _aidl_out = new SehCdmaSmsMessage();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCdmaSmsMessage[] newArray(int _aidl_size) {
-            return new SehCdmaSmsMessage[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -148,7 +126,7 @@ public class SehCdmaSmsMessage implements Parcelable {
         _aidl_sj.add("address: " + Objects.toString(this.address));
         _aidl_sj.add("subAddress: " + Objects.toString(this.subAddress));
         _aidl_sj.add("bearerData: " + Arrays.toString(this.bearerData));
-        return "vendor.samsung.hardware.radio.messaging.SehCdmaSmsMessage" + _aidl_sj.toString();
+        return "SehCdmaSmsMessage" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

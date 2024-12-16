@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IInputFilterInstallListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multicontrol.IInputFilterInstallListener";
 
@@ -14,7 +14,6 @@ public interface IInputFilterInstallListener extends IInterface {
 
     void onUninstalled() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInputFilterInstallListener {
         @Override // com.samsung.android.multicontrol.IInputFilterInstallListener
         public void onInstalled() throws RemoteException {
@@ -30,7 +29,6 @@ public interface IInputFilterInstallListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInputFilterInstallListener {
         static final int TRANSACTION_onInstalled = 1;
         static final int TRANSACTION_onUninstalled = 2;
@@ -76,27 +74,23 @@ public interface IInputFilterInstallListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputFilterInstallListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputFilterInstallListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputFilterInstallListener.DESCRIPTOR);
+                case 1:
+                    onInstalled();
+                    return true;
+                case 2:
+                    onUninstalled();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onInstalled();
-                            return true;
-                        case 2:
-                            onUninstalled();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IInputFilterInstallListener {
+        private static class Proxy implements IInputFilterInstallListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

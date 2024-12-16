@@ -38,28 +38,24 @@ public class RotationUtils {
         int origLeft = inOutBounds.left;
         int origTop = inOutBounds.top;
         switch (rotation) {
-            case 0:
-                return;
             case 1:
                 inOutBounds.left = inOutBounds.top;
                 inOutBounds.top = parentWidth - inOutBounds.right;
                 inOutBounds.right = inOutBounds.bottom;
                 inOutBounds.bottom = parentWidth - origLeft;
-                return;
+                break;
             case 2:
                 inOutBounds.left = parentWidth - inOutBounds.right;
                 inOutBounds.right = parentWidth - origLeft;
                 inOutBounds.top = parentHeight - inOutBounds.bottom;
                 inOutBounds.bottom = parentHeight - origTop;
-                return;
+                break;
             case 3:
                 inOutBounds.left = parentHeight - inOutBounds.bottom;
                 inOutBounds.bottom = inOutBounds.right;
                 inOutBounds.right = parentHeight - inOutBounds.top;
                 inOutBounds.top = origLeft;
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -76,62 +72,52 @@ public class RotationUtils {
         switch (rotation) {
             case 0:
                 t.setMatrix(sc, 1.0f, 0.0f, 0.0f, 1.0f);
-                return;
+                break;
             case 1:
                 t.setMatrix(sc, 0.0f, -1.0f, 1.0f, 0.0f);
-                return;
+                break;
             case 2:
                 t.setMatrix(sc, -1.0f, 0.0f, 0.0f, -1.0f);
-                return;
+                break;
             case 3:
                 t.setMatrix(sc, 0.0f, 1.0f, -1.0f, 0.0f);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
     public static void rotatePoint(Point inOutPoint, int rotation, int parentW, int parentH) {
         int origX = inOutPoint.x;
         switch (rotation) {
-            case 0:
-                return;
             case 1:
                 inOutPoint.x = inOutPoint.y;
                 inOutPoint.y = parentW - origX;
-                return;
+                break;
             case 2:
                 inOutPoint.x = parentW - inOutPoint.x;
                 inOutPoint.y = parentH - inOutPoint.y;
-                return;
+                break;
             case 3:
                 inOutPoint.x = parentH - inOutPoint.y;
                 inOutPoint.y = origX;
-                return;
-            default:
-                return;
+                break;
         }
     }
 
     public static void rotatePointF(PointF inOutPoint, int rotation, float parentW, float parentH) {
         float origX = inOutPoint.x;
         switch (rotation) {
-            case 0:
-                return;
             case 1:
                 inOutPoint.x = inOutPoint.y;
                 inOutPoint.y = parentW - origX;
-                return;
+                break;
             case 2:
                 inOutPoint.x = parentW - inOutPoint.x;
                 inOutPoint.y = parentH - inOutPoint.y;
-                return;
+                break;
             case 3:
                 inOutPoint.x = parentH - inOutPoint.y;
                 inOutPoint.y = origX;
-                return;
-            default:
-                return;
+                break;
         }
     }
 

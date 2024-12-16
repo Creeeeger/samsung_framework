@@ -33,7 +33,10 @@ class BouncyCastleProviderConfiguration implements ProviderConfiguration {
     private volatile Set acceptableNamedCurves = new HashSet();
     private volatile Map additionalECParameters = new HashMap();
 
-    public void setParameter(String parameterName, Object parameter) {
+    BouncyCastleProviderConfiguration() {
+    }
+
+    void setParameter(String parameterName, Object parameter) {
         ECParameterSpec curveSpec;
         SecurityManager securityManager = System.getSecurityManager();
         if (parameterName.equals(ConfigurableProvider.THREAD_LOCAL_EC_IMPLICITLY_CA)) {

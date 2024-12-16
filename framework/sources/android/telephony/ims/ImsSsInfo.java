@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ImsSsInfo implements Parcelable {
     public static final int CLIR_OUTGOING_DEFAULT = 0;
     public static final int CLIR_OUTGOING_INVOCATION = 1;
@@ -18,14 +18,13 @@ public final class ImsSsInfo implements Parcelable {
     public static final int CLIR_STATUS_TEMPORARILY_RESTRICTED = 3;
     public static final int CLIR_STATUS_UNKNOWN = 2;
     public static final Parcelable.Creator<ImsSsInfo> CREATOR = new Parcelable.Creator<ImsSsInfo>() { // from class: android.telephony.ims.ImsSsInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsSsInfo createFromParcel(Parcel in) {
             return new ImsSsInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsSsInfo[] newArray(int size) {
             return new ImsSsInfo[size];
@@ -45,27 +44,19 @@ public final class ImsSsInfo implements Parcelable {
     public int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ClirInterrogationStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ClirOutgoingState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ServiceProvisionStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ServiceStatus {
-    }
-
-    /* synthetic */ ImsSsInfo(Parcel parcel, ImsSsInfoIA imsSsInfoIA) {
-        this(parcel);
     }
 
     public ImsSsInfo() {
@@ -74,14 +65,11 @@ public final class ImsSsInfo implements Parcelable {
         this.mClirOutgoingState = 0;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
-        private final ImsSsInfo mImsSsInfo;
+        private final ImsSsInfo mImsSsInfo = new ImsSsInfo();
 
         public Builder(int status) {
-            ImsSsInfo imsSsInfo = new ImsSsInfo();
-            this.mImsSsInfo = imsSsInfo;
-            imsSsInfo.mStatus = status;
+            this.mImsSsInfo.mStatus = status;
         }
 
         public Builder setIncomingCommunicationBarringNumber(String number) {
@@ -167,23 +155,6 @@ public final class ImsSsInfo implements Parcelable {
         this.mProvisionStatus = in.readInt();
         this.mClirInterrogationStatus = in.readInt();
         this.mClirOutgoingState = in.readInt();
-    }
-
-    /* renamed from: android.telephony.ims.ImsSsInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsSsInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsSsInfo createFromParcel(Parcel in) {
-            return new ImsSsInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsSsInfo[] newArray(int size) {
-            return new ImsSsInfo[size];
-        }
     }
 
     public int getStatus() {

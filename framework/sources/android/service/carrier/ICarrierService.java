@@ -11,7 +11,6 @@ import android.os.ResultReceiver;
 public interface ICarrierService extends IInterface {
     void getCarrierConfig(int i, CarrierIdentifier carrierIdentifier, ResultReceiver resultReceiver) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICarrierService {
         @Override // android.service.carrier.ICarrierService
         public void getCarrierConfig(int phoneId, CarrierIdentifier id, ResultReceiver result) throws RemoteException {
@@ -23,7 +22,6 @@ public interface ICarrierService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICarrierService {
         public static final String DESCRIPTOR = "android.service.carrier.ICarrierService";
         static final int TRANSACTION_getCarrierConfig = 1;
@@ -67,26 +65,23 @@ public interface ICarrierService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    CarrierIdentifier _arg1 = (CarrierIdentifier) data.readTypedObject(CarrierIdentifier.CREATOR);
+                    ResultReceiver _arg2 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    getCarrierConfig(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            CarrierIdentifier _arg1 = (CarrierIdentifier) data.readTypedObject(CarrierIdentifier.CREATOR);
-                            ResultReceiver _arg2 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            getCarrierConfig(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ICarrierService {
             private IBinder mRemote;
 

@@ -15,7 +15,6 @@ public abstract class SimpleCursorTreeAdapter extends ResourceCursorTreeAdapter 
     private int[] mGroupTo;
     private ViewBinder mViewBinder;
 
-    /* loaded from: classes4.dex */
     public interface ViewBinder {
         boolean setViewValue(View view, Cursor cursor, int i);
     }
@@ -87,10 +86,8 @@ public abstract class SimpleCursorTreeAdapter extends ResourceCursorTreeAdapter 
     @Override // android.widget.CursorTreeAdapter
     protected void bindChildView(View view, Context context, Cursor cursor, boolean isLastChild) {
         if (this.mChildFrom == null) {
-            String[] strArr = this.mChildFromNames;
-            int[] iArr = new int[strArr.length];
-            this.mChildFrom = iArr;
-            initFromColumns(cursor, strArr, iArr);
+            this.mChildFrom = new int[this.mChildFromNames.length];
+            initFromColumns(cursor, this.mChildFromNames, this.mChildFrom);
         }
         bindView(view, context, cursor, this.mChildFrom, this.mChildTo);
     }
@@ -98,10 +95,8 @@ public abstract class SimpleCursorTreeAdapter extends ResourceCursorTreeAdapter 
     @Override // android.widget.CursorTreeAdapter
     protected void bindGroupView(View view, Context context, Cursor cursor, boolean isExpanded) {
         if (this.mGroupFrom == null) {
-            String[] strArr = this.mGroupFromNames;
-            int[] iArr = new int[strArr.length];
-            this.mGroupFrom = iArr;
-            initFromColumns(cursor, strArr, iArr);
+            this.mGroupFrom = new int[this.mGroupFromNames.length];
+            initFromColumns(cursor, this.mGroupFromNames, this.mGroupFrom);
         }
         bindView(view, context, cursor, this.mGroupFrom, this.mGroupTo);
     }
@@ -115,6 +110,6 @@ public abstract class SimpleCursorTreeAdapter extends ResourceCursorTreeAdapter 
     }
 
     public void setViewText(TextView v, String text) {
-        v.setText(text);
+        v.lambda$setTextAsync$0(text);
     }
 }

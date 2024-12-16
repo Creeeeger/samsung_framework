@@ -36,7 +36,6 @@ public interface IBlobStoreSession extends IInterface {
 
     ParcelFileDescriptor openWrite(long j, long j2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBlobStoreSession {
         @Override // android.app.blob.IBlobStoreSession
         public ParcelFileDescriptor openWrite(long offsetBytes, long lengthBytes) throws RemoteException {
@@ -98,7 +97,6 @@ public interface IBlobStoreSession extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBlobStoreSession {
         static final int TRANSACTION_abandon = 11;
         static final int TRANSACTION_allowPackageAccess = 3;
@@ -174,86 +172,82 @@ public interface IBlobStoreSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBlobStoreSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBlobStoreSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBlobStoreSession.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result = openWrite(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    ParcelFileDescriptor _result2 = openRead();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    byte[] _arg12 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    allowPackageAccess(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    allowSameSignatureAccess();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    allowPublicAccess();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg03 = data.readString();
+                    byte[] _arg13 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isPackageAccessAllowed(_arg03, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 7:
+                    boolean _result4 = isSameSignatureAccessAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 8:
+                    boolean _result5 = isPublicAccessAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 9:
+                    long _result6 = getSize();
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
+                    return true;
+                case 10:
+                    close();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    abandon();
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    IBlobCommitCallback _arg04 = IBlobCommitCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    commit(_arg04);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result = openWrite(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            ParcelFileDescriptor _result2 = openRead();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            byte[] _arg12 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            allowPackageAccess(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            allowSameSignatureAccess();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            allowPublicAccess();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg03 = data.readString();
-                            byte[] _arg13 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isPackageAccessAllowed(_arg03, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 7:
-                            boolean _result4 = isSameSignatureAccessAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            boolean _result5 = isPublicAccessAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 9:
-                            long _result6 = getSize();
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        case 10:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            abandon();
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            IBlobCommitCallback _arg04 = IBlobCommitCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            commit(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBlobStoreSession {
+        private static class Proxy implements IBlobStoreSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,17 +8,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ThermalMitigationRequest implements Parcelable {
     public static final Parcelable.Creator<ThermalMitigationRequest> CREATOR = new Parcelable.Creator<ThermalMitigationRequest>() { // from class: android.telephony.ThermalMitigationRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ThermalMitigationRequest createFromParcel(Parcel in) {
             return new ThermalMitigationRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ThermalMitigationRequest[] newArray(int size) {
             return new ThermalMitigationRequest[size];
@@ -37,16 +36,7 @@ public final class ThermalMitigationRequest implements Parcelable {
     private int mThermalMitigationAction;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ThermalMitigationAction {
-    }
-
-    /* synthetic */ ThermalMitigationRequest(int i, DataThrottlingRequest dataThrottlingRequest, ThermalMitigationRequestIA thermalMitigationRequestIA) {
-        this(i, dataThrottlingRequest);
-    }
-
-    /* synthetic */ ThermalMitigationRequest(Parcel parcel, ThermalMitigationRequestIA thermalMitigationRequestIA) {
-        this(parcel);
     }
 
     private ThermalMitigationRequest(int thermalMitigationAction, DataThrottlingRequest dataThrottlingRequest) {
@@ -82,25 +72,7 @@ public final class ThermalMitigationRequest implements Parcelable {
         return this.mDataThrottlingRequest;
     }
 
-    /* renamed from: android.telephony.ThermalMitigationRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ThermalMitigationRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ThermalMitigationRequest createFromParcel(Parcel in) {
-            return new ThermalMitigationRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ThermalMitigationRequest[] newArray(int size) {
-            return new ThermalMitigationRequest[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private DataThrottlingRequest mDataThrottlingRequest;
         private int mThermalMitigationAction = -1;
@@ -116,11 +88,10 @@ public final class ThermalMitigationRequest implements Parcelable {
         }
 
         public ThermalMitigationRequest build() {
-            int i = this.mThermalMitigationAction;
-            if (i < 0) {
+            if (this.mThermalMitigationAction < 0) {
                 throw new IllegalArgumentException("thermalMitigationAction was  not set");
             }
-            if (i == 0) {
+            if (this.mThermalMitigationAction == 0) {
                 if (this.mDataThrottlingRequest == null) {
                     throw new IllegalArgumentException("dataThrottlingRequest  cannot be null for THERMAL_MITIGATION_ACTION_DATA_THROTTLING");
                 }

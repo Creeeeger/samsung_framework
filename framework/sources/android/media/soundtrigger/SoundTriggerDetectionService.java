@@ -31,11 +31,12 @@ public abstract class SoundTriggerDetectionService extends Service {
     public abstract void onStopOperation(UUID uuid, Bundle bundle, int i);
 
     @Override // android.app.Service, android.content.ContextWrapper
-    public final void attachBaseContext(Context base) {
+    protected final void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         this.mHandler = new Handler(base.getMainLooper());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setClient(UUID uuid, Bundle params, ISoundTriggerDetectionServiceClient client) {
         synchronized (this.mLock) {
             this.mClients.put(uuid, client);
@@ -43,6 +44,7 @@ public abstract class SoundTriggerDetectionService extends Service {
         onConnected(uuid, params);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void removeClient(UUID uuid, Bundle params) {
         synchronized (this.mLock) {
             this.mClients.remove(uuid);
@@ -79,8 +81,7 @@ public abstract class SoundTriggerDetectionService extends Service {
         }
     }
 
-    /* renamed from: android.media.soundtrigger.SoundTriggerDetectionService$1 */
-    /* loaded from: classes2.dex */
+    /* renamed from: android.media.soundtrigger.SoundTriggerDetectionService$1, reason: invalid class name */
     class AnonymousClass1 extends ISoundTriggerDetectionService.Stub {
         private final Object mBinderLock = new Object();
         public final ArrayMap<UUID, Bundle> mParams = new ArrayMap<>();
@@ -109,7 +110,7 @@ public abstract class SoundTriggerDetectionService extends Service {
             synchronized (this.mBinderLock) {
                 params = this.mParams.remove(uuid);
             }
-            SoundTriggerDetectionService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.soundtrigger.SoundTriggerDetectionService$1$$ExternalSyntheticLambda1
+            SoundTriggerDetectionService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.soundtrigger.SoundTriggerDetectionService$1$$ExternalSyntheticLambda3
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((SoundTriggerDetectionService) obj).removeClient((UUID) obj2, (Bundle) obj3);
@@ -139,7 +140,7 @@ public abstract class SoundTriggerDetectionService extends Service {
             synchronized (this.mBinderLock) {
                 params = this.mParams.get(uuid);
             }
-            SoundTriggerDetectionService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuintConsumer() { // from class: android.media.soundtrigger.SoundTriggerDetectionService$1$$ExternalSyntheticLambda3
+            SoundTriggerDetectionService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuintConsumer() { // from class: android.media.soundtrigger.SoundTriggerDetectionService$1$$ExternalSyntheticLambda4
                 @Override // com.android.internal.util.function.QuintConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5) {
                     ((SoundTriggerDetectionService) obj).onError((UUID) obj2, (Bundle) obj3, ((Integer) obj4).intValue(), ((Integer) obj5).intValue());
@@ -154,7 +155,7 @@ public abstract class SoundTriggerDetectionService extends Service {
             synchronized (this.mBinderLock) {
                 params = this.mParams.get(uuid);
             }
-            SoundTriggerDetectionService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.soundtrigger.SoundTriggerDetectionService$1$$ExternalSyntheticLambda4
+            SoundTriggerDetectionService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.soundtrigger.SoundTriggerDetectionService$1$$ExternalSyntheticLambda1
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((SoundTriggerDetectionService) obj).onStopOperation((UUID) obj2, (Bundle) obj3, ((Integer) obj4).intValue());

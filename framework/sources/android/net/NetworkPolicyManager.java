@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class NetworkPolicyManager {
     public static final int ALLOWED_METERED_REASON_FOREGROUND = 262144;
     public static final int ALLOWED_METERED_REASON_MASK = -65536;
@@ -35,15 +35,21 @@ public class NetworkPolicyManager {
     public static final int ALLOWED_REASON_FOREGROUND = 2;
     public static final int ALLOWED_REASON_LOW_POWER_STANDBY_ALLOWLIST = 64;
     public static final int ALLOWED_REASON_NONE = 0;
+    public static final int ALLOWED_REASON_NOT_IN_BACKGROUND = 128;
     public static final int ALLOWED_REASON_POWER_SAVE_ALLOWLIST = 4;
     public static final int ALLOWED_REASON_POWER_SAVE_EXCEPT_IDLE_ALLOWLIST = 8;
     public static final int ALLOWED_REASON_RESTRICTED_MODE_PERMISSIONS = 16;
     public static final int ALLOWED_REASON_SYSTEM = 1;
     public static final int ALLOWED_REASON_TOP = 32;
     private static final boolean ALLOW_PLATFORM_APP_POLICY = true;
+    public static final int BACKGROUND_THRESHOLD_STATE = 12;
     public static final String EXTRA_NETWORK_TEMPLATE = "android.net.NETWORK_TEMPLATE";
+    public static final String FIREWALL_CHAIN_NAME_BACKGROUND = "background";
     public static final String FIREWALL_CHAIN_NAME_DOZABLE = "dozable";
     public static final String FIREWALL_CHAIN_NAME_LOW_POWER_STANDBY = "low_power_standby";
+    public static final String FIREWALL_CHAIN_NAME_METERED_ALLOW = "metered_allow";
+    public static final String FIREWALL_CHAIN_NAME_METERED_DENY_ADMIN = "metered_deny_admin";
+    public static final String FIREWALL_CHAIN_NAME_METERED_DENY_USER = "metered_deny_user";
     public static final String FIREWALL_CHAIN_NAME_NONE = "none";
     public static final String FIREWALL_CHAIN_NAME_OEM_DENY_1 = "fw_oem_deny_1";
     public static final String FIREWALL_CHAIN_NAME_POWERSAVE = "powersave";
@@ -77,7 +83,6 @@ public class NetworkPolicyManager {
     private final Map<NetworkPolicyCallback, NetworkPolicyCallbackProxy> mNetworkPolicyCallbackMap = new ConcurrentHashMap();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SubscriptionOverrideMask {
     }
 
@@ -296,45 +301,16 @@ public class NetworkPolicyManager {
         }
     }
 
-    /* renamed from: android.net.NetworkPolicyManager$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Iterator<Pair<ZonedDateTime, ZonedDateTime>> {
-        final /* synthetic */ Iterator val$it;
-
-        AnonymousClass1(Iterator it) {
-            it = it;
-        }
-
-        @Override // java.util.Iterator
-        public boolean hasNext() {
-            return it.hasNext();
-        }
-
-        @Override // java.util.Iterator
-        public Pair<ZonedDateTime, ZonedDateTime> next() {
-            if (hasNext()) {
-                Range<ZonedDateTime> r = (Range) it.next();
-                return Pair.create(r.getLower(), r.getUpper());
-            }
-            return Pair.create(null, null);
-        }
-    }
-
     @Deprecated
     public static Iterator<Pair<ZonedDateTime, ZonedDateTime>> cycleIterator(NetworkPolicy policy) {
-        Iterator<Range<ZonedDateTime>> it = policy.cycleIterator();
+        final Iterator<Range<ZonedDateTime>> it = policy.cycleIterator();
         return new Iterator<Pair<ZonedDateTime, ZonedDateTime>>() { // from class: android.net.NetworkPolicyManager.1
-            final /* synthetic */ Iterator val$it;
-
-            AnonymousClass1(Iterator it2) {
-                it = it2;
-            }
-
             @Override // java.util.Iterator
             public boolean hasNext() {
                 return it.hasNext();
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.util.Iterator
             public Pair<ZonedDateTime, ZonedDateTime> next() {
                 if (hasNext()) {
@@ -408,6 +384,13 @@ public class NetworkPolicyManager {
         return uidState != null && uidState.procState <= 3;
     }
 
+    public static boolean isProcStateAllowedNetworkWhileBackground(UidState uidState) {
+        if (uidState == null) {
+            return false;
+        }
+        return uidState.procState < 12 || (uidState.capability & 8) != 0;
+    }
+
     public static boolean isProcStateAllowedWhileOnRestrictBackground(UidState uidState) {
         if (uidState == null) {
             return false;
@@ -422,7 +405,6 @@ public class NetworkPolicyManager {
         return procState <= 5 || (procState <= 6 && (capabilities & 32) != 0);
     }
 
-    /* loaded from: classes2.dex */
     public static final class UidState {
         public int capability;
         public int procState;
@@ -488,14 +470,12 @@ public class NetworkPolicyManager {
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    /* loaded from: classes2.dex */
     public interface NetworkPolicyCallback {
         @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
         default void onUidBlockedReasonChanged(int uid, int blockedReasons) {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class NetworkPolicyCallbackProxy extends Listener {
         private final NetworkPolicyCallback mCallback;
         private final Executor mExecutor;
@@ -513,6 +493,7 @@ public class NetworkPolicyManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void dispatchOnUidBlockedReasonChanged(Executor executor, NetworkPolicyCallback callback, int uid, int blockedReasons) {
         if (executor == null) {
             callback.onUidBlockedReasonChanged(uid, blockedReasons);
@@ -526,7 +507,6 @@ public class NetworkPolicyManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class SubscriptionCallback {
         public void onSubscriptionOverride(int subId, int overrideMask, int overrideValue, int[] networkTypes) {
         }
@@ -535,7 +515,6 @@ public class NetworkPolicyManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class SubscriptionCallbackProxy extends Listener {
         private final SubscriptionCallback mCallback;
 
@@ -554,7 +533,6 @@ public class NetworkPolicyManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Listener extends INetworkPolicyListener.Stub {
         @Override // android.net.INetworkPolicyListener
         public void onUidRulesChanged(int uid, int uidRules) {

@@ -25,6 +25,7 @@ import java.util.concurrent.Executor;
 public class DynamicSystemClient {
     public static final String ACTION_HIDE_NOTIFICATION = "android.os.image.action.HIDE_NOTIFICATION";
     public static final String ACTION_NOTIFY_IF_IN_USE = "android.os.image.action.NOTIFY_IF_IN_USE";
+    public static final String ACTION_NOTIFY_KEYGUARD_DISMISSED = "android.os.image.action.NOTIFY_KEYGUARD_DISMISSED";
     public static final String ACTION_START_INSTALL = "android.os.image.action.START_INSTALL";
     public static final int CAUSE_ERROR_EXCEPTION = 6;
     public static final int CAUSE_ERROR_INVALID_URL = 4;
@@ -58,21 +59,17 @@ public class DynamicSystemClient {
     private final Messenger mMessenger = new Messenger(new IncomingHandler(this));
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface InstallationStatus {
     }
 
-    /* loaded from: classes3.dex */
     public interface OnStatusChangedListener {
         void onStatusChanged(int i, int i2, long j, Throwable th);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StatusChangedCause {
     }
 
-    /* loaded from: classes3.dex */
     private static class IncomingHandler extends Handler {
         private final WeakReference<DynamicSystemClient> mWeakClient;
 
@@ -90,12 +87,7 @@ public class DynamicSystemClient {
         }
     }
 
-    /* loaded from: classes3.dex */
     private class DynSystemServiceConnection implements ServiceConnection {
-        /* synthetic */ DynSystemServiceConnection(DynamicSystemClient dynamicSystemClient, DynSystemServiceConnectionIA dynSystemServiceConnectionIA) {
-            this();
-        }
-
         private DynSystemServiceConnection() {
         }
 
@@ -135,23 +127,23 @@ public class DynamicSystemClient {
         this.mExecutor = null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyOnStatusChangedListener(final int status, final int cause, final long progress, final Throwable detail) {
-        OnStatusChangedListener onStatusChangedListener = this.mListener;
-        if (onStatusChangedListener != null) {
-            Executor executor = this.mExecutor;
-            if (executor != null) {
-                executor.execute(new Runnable() { // from class: android.os.image.DynamicSystemClient$$ExternalSyntheticLambda0
+        if (this.mListener != null) {
+            if (this.mExecutor != null) {
+                this.mExecutor.execute(new Runnable() { // from class: android.os.image.DynamicSystemClient$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         DynamicSystemClient.this.lambda$notifyOnStatusChangedListener$0(status, cause, progress, detail);
                     }
                 });
             } else {
-                onStatusChangedListener.onStatusChanged(status, cause, progress, detail);
+                this.mListener.onStatusChanged(status, cause, progress, detail);
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyOnStatusChangedListener$0(int status, int cause, long progress, Throwable detail) {
         this.mListener.onStatusChanged(status, cause, progress, detail);
     }
@@ -198,6 +190,7 @@ public class DynamicSystemClient {
         this.mContext.startActivity(intent);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleMessage(Message msg) {
         switch (msg.what) {
             case 3:
@@ -208,9 +201,7 @@ public class DynamicSystemClient {
                 ParcelableException t = (ParcelableException) bundle.getSerializable(KEY_EXCEPTION_DETAIL, ParcelableException.class);
                 Throwable detail = t == null ? null : t.getCause();
                 notifyOnStatusChangedListener(status, cause, progress, detail);
-                return;
-            default:
-                return;
+                break;
         }
     }
 }

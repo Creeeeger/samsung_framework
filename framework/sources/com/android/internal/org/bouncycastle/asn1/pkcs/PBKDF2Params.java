@@ -92,22 +92,19 @@ public class PBKDF2Params extends ASN1Object {
     }
 
     public BigInteger getKeyLength() {
-        ASN1Integer aSN1Integer = this.keyLength;
-        if (aSN1Integer != null) {
-            return aSN1Integer.getValue();
+        if (this.keyLength != null) {
+            return this.keyLength.getValue();
         }
         return null;
     }
 
     public boolean isDefaultPrf() {
-        AlgorithmIdentifier algorithmIdentifier = this.prf;
-        return algorithmIdentifier == null || algorithmIdentifier.equals(algid_hmacWithSHA1);
+        return this.prf == null || this.prf.equals(algid_hmacWithSHA1);
     }
 
     public AlgorithmIdentifier getPrf() {
-        AlgorithmIdentifier algorithmIdentifier = this.prf;
-        if (algorithmIdentifier != null) {
-            return algorithmIdentifier;
+        if (this.prf != null) {
+            return this.prf;
         }
         return algid_hmacWithSHA1;
     }
@@ -117,12 +114,10 @@ public class PBKDF2Params extends ASN1Object {
         ASN1EncodableVector v = new ASN1EncodableVector(4);
         v.add(this.octStr);
         v.add(this.iterationCount);
-        ASN1Integer aSN1Integer = this.keyLength;
-        if (aSN1Integer != null) {
-            v.add(aSN1Integer);
+        if (this.keyLength != null) {
+            v.add(this.keyLength);
         }
-        AlgorithmIdentifier algorithmIdentifier = this.prf;
-        if (algorithmIdentifier != null && !algorithmIdentifier.equals(algid_hmacWithSHA1)) {
+        if (this.prf != null && !this.prf.equals(algid_hmacWithSHA1)) {
             v.add(this.prf);
         }
         return new DERSequence(v);

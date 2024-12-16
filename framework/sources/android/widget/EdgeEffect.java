@@ -114,7 +114,6 @@ public class EdgeEffect {
     private static final float COS = (float) Math.cos(ANGLE);
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface EdgeEffectType {
     }
 
@@ -126,8 +125,7 @@ public class EdgeEffect {
         this.mInterpolator = new DecelerateInterpolator();
         this.mState = 0;
         this.mBounds = new Rect();
-        Paint paint = new Paint();
-        this.mPaint = paint;
+        this.mPaint = new Paint();
         this.mDisplacement = 0.5f;
         this.mTargetDisplacement = 0.5f;
         this.mEdgeEffectType = 0;
@@ -135,29 +133,19 @@ public class EdgeEffect {
         this.mTmpPoints = null;
         this.mPath = new Path();
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: android.widget.EdgeEffect.1
-            AnonymousClass1(Looper looper) {
-                super(looper);
-            }
-
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case 1:
                         EdgeEffect.this.onRelease();
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         };
         this.mForceCallOnRelease = new Runnable() { // from class: android.widget.EdgeEffect.2
-            AnonymousClass2() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
-                EdgeEffect edgeEffect = EdgeEffect.this;
-                edgeEffect.onPull(edgeEffect.mTempDeltaDistance, EdgeEffect.this.mTempDisplacement);
+                EdgeEffect.this.onPull(EdgeEffect.this.mTempDeltaDistance, EdgeEffect.this.mTempDisplacement);
                 EdgeEffect.this.mHandler.sendEmptyMessageDelayed(1, 700L);
             }
         };
@@ -165,10 +153,10 @@ public class EdgeEffect {
         int themeColor = a.getColor(0, -10066330);
         this.mEdgeEffectType = Compatibility.isChangeEnabled(USE_STRETCH_EDGE_EFFECT_BY_DEFAULT) ? 1 : 0;
         a.recycle();
-        paint.setAntiAlias(true);
-        paint.setColor((16777215 & themeColor) | Enums.AUDIO_FORMAT_DTS_UHD_P2);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setBlendMode(DEFAULT_BLEND_MODE);
+        this.mPaint.setAntiAlias(true);
+        this.mPaint.setColor((16777215 & themeColor) | Enums.AUDIO_FORMAT_DTS_UHD_P2);
+        this.mPaint.setStyle(Paint.Style.FILL);
+        this.mPaint.setBlendMode(DEFAULT_BLEND_MODE);
     }
 
     private float calculateEdgeEffectMargin(int width) {
@@ -188,18 +176,15 @@ public class EdgeEffect {
     }
 
     public void setSize(int width, int height) {
-        float f = SIN;
-        float r = (width * 0.6f) / f;
-        float f2 = COS;
-        float y = f2 * r;
+        float r = (width * 0.6f) / SIN;
+        float y = COS * r;
         float h = r - y;
-        float or = (height * 0.6f) / f;
-        float oy = f2 * or;
+        float or = (height * 0.6f) / SIN;
+        float oy = COS * or;
         float oh = or - oy;
         this.mRadius = r;
         this.mBaseGlowScale = h > 0.0f ? Math.min(oh / h, 1.0f) : 1.0f;
-        Rect rect = this.mBounds;
-        rect.set(rect.left, this.mBounds.top, width, (int) Math.min(height, h));
+        this.mBounds.set(this.mBounds.left, this.mBounds.top, width, (int) Math.min(height, h));
         this.mWidth = width;
         this.mHeight = height;
     }
@@ -219,43 +204,7 @@ public class EdgeEffect {
     }
 
     private boolean isEdgeEffectRunning() {
-        int i = this.mState;
-        return i == 5 || i == 6 || i == 3 || i == 2;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.EdgeEffect$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    EdgeEffect.this.onRelease();
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.EdgeEffect$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            EdgeEffect edgeEffect = EdgeEffect.this;
-            edgeEffect.onPull(edgeEffect.mTempDeltaDistance, EdgeEffect.this.mTempDisplacement);
-            EdgeEffect.this.mHandler.sendEmptyMessageDelayed(1, 700L);
-        }
+        return this.mState == 5 || this.mState == 6 || this.mState == 3 || this.mState == 2;
     }
 
     public void onPullCallOnRelease(float deltaDistance, float displacement, int delayTime) {
@@ -272,28 +221,25 @@ public class EdgeEffect {
         }
         long now = AnimationUtils.currentAnimationTimeMillis();
         this.mTargetDisplacement = displacement;
-        int i = this.mState;
-        if (i == 4 && ((float) (now - this.mStartTime)) < this.mDuration && this.mEdgeEffectType == 0) {
+        if (this.mState == 4 && now - this.mStartTime < this.mDuration && this.mEdgeEffectType == 0) {
             return;
         }
-        if (i != 1) {
+        if (this.mState != 1) {
             if (this.mEdgeEffectType == 1) {
                 this.mPullDistance = this.mDistance;
             } else {
                 this.mGlowScaleY = Math.max(0.0f, this.mGlowScaleY);
             }
-            View view = this.mHostView;
-            if (view != null && this.mGlowScaleY == 0.0f) {
-                view.performHapticFeedback(HapticFeedbackConstants.semGetVibrationIndex(28));
+            if (this.mHostView != null && this.mGlowScaleY == 0.0f) {
+                this.mHostView.performHapticFeedback(HapticFeedbackConstants.semGetVibrationIndex(28));
             }
         }
         this.mState = 1;
         this.mStartTime = now;
         this.mDuration = 167.0f;
-        float f = this.mPullDistance + deltaDistance;
-        this.mPullDistance = f;
+        this.mPullDistance += deltaDistance;
         if (edgeEffectBehavior == 1) {
-            this.mPullDistance = Math.min(1.0f, f);
+            this.mPullDistance = Math.min(1.0f, this.mPullDistance);
         }
         this.mDistance = Math.max(0.0f, this.mPullDistance);
         this.mVelocity = 0.0f;
@@ -325,14 +271,12 @@ public class EdgeEffect {
             return 0.0f;
         }
         float finalDistance = Math.max(0.0f, this.mDistance + deltaDistance);
-        float f = this.mDistance;
-        float delta = finalDistance - f;
-        if (delta == 0.0f && f == 0.0f) {
+        float delta = finalDistance - this.mDistance;
+        if (delta == 0.0f && this.mDistance == 0.0f) {
             return 0.0f;
         }
-        int i = this.mState;
-        if (i != 1 && i != 4 && edgeEffectBehavior == 0) {
-            this.mPullDistance = f;
+        if (this.mState != 1 && this.mState != 4 && edgeEffectBehavior == 0) {
+            this.mPullDistance = this.mDistance;
             this.mState = 1;
         }
         onPull(delta, displacement);
@@ -345,8 +289,7 @@ public class EdgeEffect {
 
     public void onRelease() {
         this.mPullDistance = 0.0f;
-        int i = this.mState;
-        if (i != 1 && i != 4) {
+        if (this.mState != 1 && this.mState != 4) {
             return;
         }
         this.mState = 3;
@@ -361,9 +304,8 @@ public class EdgeEffect {
 
     public void onAbsorb(int velocity) {
         int edgeEffectBehavior = getCurrentEdgeEffectBehavior();
-        View view = this.mHostView;
-        if (view != null) {
-            view.performHapticFeedback(HapticFeedbackConstants.semGetVibrationIndex(28));
+        if (this.mHostView != null) {
+            this.mHostView.performHapticFeedback(HapticFeedbackConstants.semGetVibrationIndex(28));
         }
         if (edgeEffectBehavior == 1) {
             this.mState = 3;
@@ -404,7 +346,7 @@ public class EdgeEffect {
     }
 
     public boolean draw(Canvas canvas) {
-        float f;
+        float vecY;
         boolean z;
         int edgeEffectBehavior = getCurrentEdgeEffectBehavior();
         if (edgeEffectBehavior == 0) {
@@ -420,78 +362,58 @@ public class EdgeEffect {
             this.mPaint.setAlpha((int) (this.mGlowAlpha * 255.0f));
             canvas.drawCircle(centerX, centerY, this.mRadius, this.mPaint);
             canvas.restoreToCount(count);
-            f = 0.0f;
+            vecY = 0.0f;
         } else if (edgeEffectBehavior != 1 || !(canvas instanceof RecordingCanvas)) {
             this.mState = 0;
-            f = 0.0f;
+            vecY = 0.0f;
             this.mDistance = 0.0f;
             this.mVelocity = 0.0f;
         } else {
             if (this.mState == 3) {
                 updateSpring();
             }
-            if (this.mDistance == 0.0f) {
-                f = 0.0f;
-            } else {
+            if (this.mDistance != 0.0f) {
                 RecordingCanvas recordingCanvas = (RecordingCanvas) canvas;
                 if (this.mTmpMatrix == null) {
                     this.mTmpMatrix = new Matrix();
                     this.mTmpPoints = new float[12];
                 }
                 recordingCanvas.getMatrix(this.mTmpMatrix);
-                float[] fArr = this.mTmpPoints;
-                fArr[0] = 0.0f;
-                fArr[1] = 0.0f;
-                float f2 = this.mWidth;
-                fArr[2] = f2;
-                fArr[3] = 0.0f;
-                fArr[4] = f2;
-                float f3 = this.mHeight;
-                fArr[5] = f3;
-                fArr[6] = 0.0f;
-                fArr[7] = f3;
-                float f4 = this.mDisplacement;
-                fArr[8] = f2 * f4;
-                fArr[9] = 0.0f;
-                fArr[10] = f2 * f4;
-                fArr[11] = f3 * this.mDistance;
-                this.mTmpMatrix.mapPoints(fArr);
+                this.mTmpPoints[0] = 0.0f;
+                this.mTmpPoints[1] = 0.0f;
+                this.mTmpPoints[2] = this.mWidth;
+                this.mTmpPoints[3] = 0.0f;
+                this.mTmpPoints[4] = this.mWidth;
+                this.mTmpPoints[5] = this.mHeight;
+                this.mTmpPoints[6] = 0.0f;
+                this.mTmpPoints[7] = this.mHeight;
+                this.mTmpPoints[8] = this.mWidth * this.mDisplacement;
+                this.mTmpPoints[9] = 0.0f;
+                this.mTmpPoints[10] = this.mWidth * this.mDisplacement;
+                this.mTmpPoints[11] = this.mHeight * this.mDistance;
+                this.mTmpMatrix.mapPoints(this.mTmpPoints);
                 RenderNode renderNode = recordingCanvas.mNode;
-                float left = renderNode.getLeft();
-                float[] fArr2 = this.mTmpPoints;
-                float left2 = left + min(fArr2[0], fArr2[2], fArr2[4], fArr2[6]);
-                float top = renderNode.getTop();
-                float[] fArr3 = this.mTmpPoints;
-                float top2 = top + min(fArr3[1], fArr3[3], fArr3[5], fArr3[7]);
-                float left3 = renderNode.getLeft();
-                float[] fArr4 = this.mTmpPoints;
-                float right = left3 + max(fArr4[0], fArr4[2], fArr4[4], fArr4[6]);
-                float top3 = renderNode.getTop();
-                float[] fArr5 = this.mTmpPoints;
-                float bottom = top3 + max(fArr5[1], fArr5[3], fArr5[5], fArr5[7]);
-                float[] fArr6 = this.mTmpPoints;
-                float x = fArr6[10] - fArr6[8];
-                float width = right - left2;
+                float left = renderNode.getLeft() + min(this.mTmpPoints[0], this.mTmpPoints[2], this.mTmpPoints[4], this.mTmpPoints[6]);
+                float top = renderNode.getTop() + min(this.mTmpPoints[1], this.mTmpPoints[3], this.mTmpPoints[5], this.mTmpPoints[7]);
+                float right = renderNode.getLeft() + max(this.mTmpPoints[0], this.mTmpPoints[2], this.mTmpPoints[4], this.mTmpPoints[6]);
+                float bottom = renderNode.getTop() + max(this.mTmpPoints[1], this.mTmpPoints[3], this.mTmpPoints[5], this.mTmpPoints[7]);
+                float x = this.mTmpPoints[10] - this.mTmpPoints[8];
+                float width = right - left;
                 float vecX = dampStretchVector(Math.max(-1.0f, Math.min(1.0f, x / width)));
-                float[] fArr7 = this.mTmpPoints;
-                float y = fArr7[11] - fArr7[9];
-                float height = bottom - top2;
-                float vecY = dampStretchVector(Math.max(-1.0f, Math.min(1.0f, y / height)));
-                boolean hasValidVectors = Float.isFinite(vecX) && Float.isFinite(vecY);
-                if (right > left2 && bottom > top2) {
-                    float f5 = this.mWidth;
-                    if (f5 > 0.0f) {
-                        float f6 = this.mHeight;
-                        if (f6 > 0.0f && hasValidVectors) {
-                            renderNode.stretch(vecX, vecY, f5, f6);
-                        }
-                    }
+                float y = this.mTmpPoints[11] - this.mTmpPoints[9];
+                float height = bottom - top;
+                float vecY2 = dampStretchVector(Math.max(-1.0f, Math.min(1.0f, y / height)));
+                boolean hasValidVectors = Float.isFinite(vecX) && Float.isFinite(vecY2);
+                if (right > left && bottom > top && this.mWidth > 0.0f && this.mHeight > 0.0f && hasValidVectors) {
+                    renderNode.stretch(vecX, vecY2, this.mWidth, this.mHeight);
                 }
-                f = 0.0f;
+                vecY = 0.0f;
+            } else {
+                vecY = 0.0f;
             }
         }
         boolean oneLastFrame = false;
-        if (this.mState != 3 || this.mDistance != f || this.mVelocity != f) {
+        if (this.mState != 3 || this.mDistance != vecY || this.mVelocity != vecY) {
             z = false;
         } else {
             z = false;
@@ -520,16 +442,12 @@ public class EdgeEffect {
 
     private void update() {
         long time = AnimationUtils.currentAnimationTimeMillis();
-        float t = Math.min(((float) (time - this.mStartTime)) / this.mDuration, 1.0f);
+        float t = Math.min((time - this.mStartTime) / this.mDuration, 1.0f);
         float interp = this.mInterpolator.getInterpolation(t);
-        float f = this.mGlowAlphaStart;
-        float f2 = f + ((this.mGlowAlphaFinish - f) * interp);
-        this.mGlowAlpha = f2;
-        float f3 = this.mGlowScaleYStart;
-        float f4 = f3 + ((this.mGlowScaleYFinish - f3) * interp);
-        this.mGlowScaleY = f4;
+        this.mGlowAlpha = this.mGlowAlphaStart + ((this.mGlowAlphaFinish - this.mGlowAlphaStart) * interp);
+        this.mGlowScaleY = this.mGlowScaleYStart + ((this.mGlowScaleYFinish - this.mGlowScaleYStart) * interp);
         if (this.mState != 1) {
-            this.mDistance = calculateDistanceFromGlowValues(f4, f2);
+            this.mDistance = calculateDistanceFromGlowValues(this.mGlowScaleY, this.mGlowAlpha);
         }
         this.mDisplacement = (this.mDisplacement + this.mTargetDisplacement) / 2.0f;
         if (t >= 0.999f) {
@@ -542,7 +460,7 @@ public class EdgeEffect {
                     this.mGlowScaleYStart = this.mGlowScaleY;
                     this.mGlowAlphaFinish = 0.0f;
                     this.mGlowScaleYFinish = 0.0f;
-                    return;
+                    break;
                 case 2:
                     this.mState = 3;
                     this.mStartTime = AnimationUtils.currentAnimationTimeMillis();
@@ -551,15 +469,13 @@ public class EdgeEffect {
                     this.mGlowScaleYStart = this.mGlowScaleY;
                     this.mGlowAlphaFinish = 0.0f;
                     this.mGlowScaleYFinish = 0.0f;
-                    return;
+                    break;
                 case 3:
                     this.mState = 0;
-                    return;
+                    break;
                 case 4:
                     this.mState = 3;
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
@@ -567,15 +483,14 @@ public class EdgeEffect {
     private void updateSpring() {
         float f;
         long time = AnimationUtils.currentAnimationTimeMillis();
-        float deltaT = ((float) (time - this.mStartTime)) / 1000.0f;
+        float deltaT = (time - this.mStartTime) / 1000.0f;
         if (deltaT < 0.001f) {
             return;
         }
         this.mStartTime = time;
         if (Math.abs(this.mVelocity) <= 200.0f && Math.abs(this.mDistance * this.mHeight) < LINEAR_DISTANCE_TAKE_OVER && Math.signum(this.mVelocity) == (-Math.signum(this.mDistance))) {
-            float signum = Math.signum(this.mVelocity) * 200.0f;
-            this.mVelocity = signum;
-            float targetDistance = this.mDistance + ((signum * deltaT) / this.mHeight);
+            this.mVelocity = Math.signum(this.mVelocity) * 200.0f;
+            float targetDistance = this.mDistance + ((this.mVelocity * deltaT) / this.mHeight);
             if (Math.signum(targetDistance) != Math.signum(this.mDistance)) {
                 this.mDistance = 0.0f;
                 this.mVelocity = 0.0f;
@@ -586,16 +501,13 @@ public class EdgeEffect {
             }
         }
         double mDampedFreq = Math.sqrt(0.03960000000000008d) * NATURAL_FREQUENCY;
-        float f2 = this.mDistance;
-        float f3 = this.mHeight;
-        double cosCoeff = f2 * f3;
-        double sinCoeff = (1.0d / mDampedFreq) * ((f2 * 24.16386d * f3) + this.mVelocity);
+        double cosCoeff = this.mDistance * this.mHeight;
+        double sinCoeff = (1.0d / mDampedFreq) * ((this.mDistance * 24.16386d * this.mHeight) + this.mVelocity);
         double distance = Math.pow(2.718281828459045d, deltaT * (-24.16386d)) * ((Math.cos(deltaT * mDampedFreq) * cosCoeff) + (Math.sin(deltaT * mDampedFreq) * sinCoeff));
         double velocity = ((-24.657d) * distance * DAMPING_RATIO) + (Math.pow(2.718281828459045d, deltaT * (-24.16386d)) * (((-mDampedFreq) * cosCoeff * Math.sin(deltaT * mDampedFreq)) + (mDampedFreq * sinCoeff * Math.cos(deltaT * mDampedFreq))));
-        float f4 = ((float) distance) / this.mHeight;
-        this.mDistance = f4;
+        this.mDistance = ((float) distance) / this.mHeight;
         this.mVelocity = (float) velocity;
-        if (f4 <= 1.0f) {
+        if (this.mDistance <= 1.0f) {
             f = 0.0f;
         } else {
             this.mDistance = 1.0f;

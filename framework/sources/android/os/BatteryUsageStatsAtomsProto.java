@@ -11,7 +11,6 @@ public final class BatteryUsageStatsAtomsProto {
     public static final long SESSION_START_MILLIS = 1112396529665L;
     public static final long UID_BATTERY_CONSUMERS = 2246267895813L;
 
-    /* loaded from: classes3.dex */
     public final class BatteryConsumerData {
         public static final long POWER_COMPONENTS = 2246267895810L;
         public static final long SLICES = 2246267895811L;
@@ -20,7 +19,6 @@ public final class BatteryUsageStatsAtomsProto {
         public BatteryConsumerData() {
         }
 
-        /* loaded from: classes3.dex */
         public final class PowerComponentUsage {
             public static final long COMPONENT = 1120986464257L;
             public static final long DURATION_MILLIS = 1112396529667L;
@@ -30,7 +28,6 @@ public final class BatteryUsageStatsAtomsProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class PowerComponentUsageSlice {
             public static final int BACKGROUND = 2;
             public static final int CACHED = 4;
@@ -45,18 +42,29 @@ public final class BatteryUsageStatsAtomsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class UidBatteryConsumer {
         public static final long BATTERY_CONSUMER_DATA = 1146756268034L;
         public static final long TIME_IN_BACKGROUND_MILLIS = 1112396529668L;
         public static final long TIME_IN_FOREGROUND_MILLIS = 1112396529667L;
+        public static final long TIME_IN_STATE = 2246267895813L;
         public static final long UID = 1120986464257L;
 
         public UidBatteryConsumer() {
         }
+
+        public final class TimeInState {
+            public static final int BACKGROUND = 2;
+            public static final int FOREGROUND = 1;
+            public static final int FOREGROUND_SERVICE = 3;
+            public static final long PROCESS_STATE = 1159641169921L;
+            public static final long TIME_IN_STATE_MILLIS = 1112396529666L;
+            public static final int UNSPECIFIED = 0;
+
+            public TimeInState() {
+            }
+        }
     }
 
-    /* loaded from: classes3.dex */
     public final class PowerComponentModel {
         public static final long COMPONENT = 1120986464257L;
         public static final int MEASURED_ENERGY = 2;

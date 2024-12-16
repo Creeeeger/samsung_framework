@@ -6,16 +6,33 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISatelliteModemStateCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.satellite.ISatelliteModemStateCallback";
 
+    void onEmergencyModeChanged(boolean z) throws RemoteException;
+
+    void onRegistrationFailure(int i) throws RemoteException;
+
     void onSatelliteModemStateChanged(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
+    void onTerrestrialNetworkAvailableChanged(boolean z) throws RemoteException;
+
     public static class Default implements ISatelliteModemStateCallback {
         @Override // android.telephony.satellite.ISatelliteModemStateCallback
         public void onSatelliteModemStateChanged(int state) throws RemoteException {
+        }
+
+        @Override // android.telephony.satellite.ISatelliteModemStateCallback
+        public void onEmergencyModeChanged(boolean isEmergency) throws RemoteException {
+        }
+
+        @Override // android.telephony.satellite.ISatelliteModemStateCallback
+        public void onRegistrationFailure(int causeCode) throws RemoteException {
+        }
+
+        @Override // android.telephony.satellite.ISatelliteModemStateCallback
+        public void onTerrestrialNetworkAvailableChanged(boolean isAvailable) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -24,9 +41,11 @@ public interface ISatelliteModemStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISatelliteModemStateCallback {
+        static final int TRANSACTION_onEmergencyModeChanged = 2;
+        static final int TRANSACTION_onRegistrationFailure = 3;
         static final int TRANSACTION_onSatelliteModemStateChanged = 1;
+        static final int TRANSACTION_onTerrestrialNetworkAvailableChanged = 4;
 
         public Stub() {
             attachInterface(this, ISatelliteModemStateCallback.DESCRIPTOR);
@@ -52,6 +71,12 @@ public interface ISatelliteModemStateCallback extends IInterface {
             switch (transactionCode) {
                 case 1:
                     return "onSatelliteModemStateChanged";
+                case 2:
+                    return "onEmergencyModeChanged";
+                case 3:
+                    return "onRegistrationFailure";
+                case 4:
+                    return "onTerrestrialNetworkAvailableChanged";
                 default:
                     return null;
             }
@@ -67,25 +92,37 @@ public interface ISatelliteModemStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISatelliteModemStateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISatelliteModemStateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISatelliteModemStateCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSatelliteModemStateChanged(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onEmergencyModeChanged(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRegistrationFailure(_arg03);
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onTerrestrialNetworkAvailableChanged(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSatelliteModemStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISatelliteModemStateCallback {
+        private static class Proxy implements ISatelliteModemStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -112,11 +149,47 @@ public interface ISatelliteModemStateCallback extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.telephony.satellite.ISatelliteModemStateCallback
+            public void onEmergencyModeChanged(boolean isEmergency) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISatelliteModemStateCallback.DESCRIPTOR);
+                    _data.writeBoolean(isEmergency);
+                    this.mRemote.transact(2, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.telephony.satellite.ISatelliteModemStateCallback
+            public void onRegistrationFailure(int causeCode) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISatelliteModemStateCallback.DESCRIPTOR);
+                    _data.writeInt(causeCode);
+                    this.mRemote.transact(3, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.telephony.satellite.ISatelliteModemStateCallback
+            public void onTerrestrialNetworkAvailableChanged(boolean isAvailable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISatelliteModemStateCallback.DESCRIPTOR);
+                    _data.writeBoolean(isAvailable);
+                    this.mRemote.transact(4, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 0;
+            return 3;
         }
     }
 }

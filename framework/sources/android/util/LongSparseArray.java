@@ -8,7 +8,6 @@ import com.android.internal.util.Preconditions;
 import com.android.internal.util.function.LongObjPredicate;
 import java.util.Arrays;
 import java.util.Objects;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class LongSparseArray<E> implements Cloneable {
@@ -34,8 +33,8 @@ public class LongSparseArray<E> implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public LongSparseArray<E> m4935clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public LongSparseArray<E> m5219clone() {
         LongSparseArray<E> clone = null;
         try {
             clone = (LongSparseArray) super.clone();
@@ -52,24 +51,18 @@ public class LongSparseArray<E> implements Cloneable {
     }
 
     public E get(long j, E e) {
-        E e2;
         int binarySearch = ContainerHelpers.binarySearch(this.mKeys, this.mSize, j);
-        if (binarySearch < 0 || (e2 = (E) this.mValues[binarySearch]) == DELETED) {
+        if (binarySearch < 0 || this.mValues[binarySearch] == DELETED) {
             return e;
         }
-        return e2;
+        return (E) this.mValues[binarySearch];
     }
 
     public void delete(long key) {
         int i = ContainerHelpers.binarySearch(this.mKeys, this.mSize, key);
-        if (i >= 0) {
-            Object[] objArr = this.mValues;
-            Object obj = objArr[i];
-            Object obj2 = DELETED;
-            if (obj != obj2) {
-                objArr[i] = obj2;
-                this.mGarbage = true;
-            }
+        if (i >= 0 && this.mValues[i] != DELETED) {
+            this.mValues[i] = DELETED;
+            this.mGarbage = true;
         }
     }
 
@@ -80,10 +73,8 @@ public class LongSparseArray<E> implements Cloneable {
     public void removeIf(LongObjPredicate<? super E> filter) {
         Objects.requireNonNull(filter);
         for (int i = 0; i < this.mSize; i++) {
-            Object obj = this.mValues[i];
-            Object obj2 = DELETED;
-            if (obj != obj2 && filter.test(this.mKeys[i], obj)) {
-                this.mValues[i] = obj2;
+            if (this.mValues[i] != DELETED && filter.test(this.mKeys[i], this.mValues[i])) {
+                this.mValues[i] = DELETED;
                 this.mGarbage = true;
             }
         }
@@ -93,11 +84,8 @@ public class LongSparseArray<E> implements Cloneable {
         if (index >= this.mSize && UtilConfig.sThrowExceptionForUpperArrayOutOfBounds) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
-        Object[] objArr = this.mValues;
-        Object obj = objArr[index];
-        Object obj2 = DELETED;
-        if (obj != obj2) {
-            objArr[index] = obj2;
+        if (this.mValues[index] != DELETED) {
+            this.mValues[index] = DELETED;
             this.mGarbage = true;
         }
     }
@@ -122,6 +110,22 @@ public class LongSparseArray<E> implements Cloneable {
         this.mSize = o;
     }
 
+    public int firstIndexOnOrAfter(long key) {
+        if (this.mGarbage) {
+            gc();
+        }
+        int index = Arrays.binarySearch(this.mKeys, 0, size(), key);
+        return index >= 0 ? index : (-index) - 1;
+    }
+
+    public int lastIndexOnOrBefore(long key) {
+        int index = firstIndexOnOrAfter(key);
+        if (index < size() && keyAt(index) == key) {
+            return index;
+        }
+        return index - 1;
+    }
+
     public void put(long key, E value) {
         int i = ContainerHelpers.binarySearch(this.mKeys, this.mSize, key);
         if (i >= 0) {
@@ -129,16 +133,12 @@ public class LongSparseArray<E> implements Cloneable {
             return;
         }
         int i2 = ~i;
-        int i3 = this.mSize;
-        if (i2 < i3) {
-            Object[] objArr = this.mValues;
-            if (objArr[i2] == DELETED) {
-                this.mKeys[i2] = key;
-                objArr[i2] = value;
-                return;
-            }
+        if (i2 < this.mSize && this.mValues[i2] == DELETED) {
+            this.mKeys[i2] = key;
+            this.mValues[i2] = value;
+            return;
         }
-        if (this.mGarbage && i3 >= this.mKeys.length) {
+        if (this.mGarbage && this.mSize >= this.mKeys.length) {
             gc();
             i2 = ~ContainerHelpers.binarySearch(this.mKeys, this.mSize, key);
         }
@@ -230,12 +230,11 @@ public class LongSparseArray<E> implements Cloneable {
     }
 
     public void append(long key, E value) {
-        int i = this.mSize;
-        if (i != 0 && key <= this.mKeys[i - 1]) {
+        if (this.mSize != 0 && key <= this.mKeys[this.mSize - 1]) {
             put(key, value);
             return;
         }
-        if (this.mGarbage && i >= this.mKeys.length) {
+        if (this.mGarbage && this.mSize >= this.mKeys.length) {
             gc();
         }
         this.mKeys = GrowingArrayUtils.append(this.mKeys, this.mSize, key);
@@ -267,7 +266,6 @@ public class LongSparseArray<E> implements Cloneable {
         return buffer.toString();
     }
 
-    /* loaded from: classes4.dex */
     public static class StringParcelling implements Parcelling<LongSparseArray<String>> {
         @Override // com.android.internal.util.Parcelling
         public void parcel(LongSparseArray<String> array, Parcel dest, int parcelFlags) {
@@ -281,6 +279,7 @@ public class LongSparseArray<E> implements Cloneable {
             dest.writeStringArray((String[]) Arrays.copyOfRange(((LongSparseArray) array).mValues, 0, size, String[].class));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.util.Parcelling
         public LongSparseArray<String> unparcel(Parcel source) {
             int size = source.readInt();

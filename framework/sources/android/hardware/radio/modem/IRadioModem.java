@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioModem extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$modem$IRadioModem".replace('$', '.');
-    public static final String HASH = "09927560afccc75a063944fbbab3af48099261ca";
-    public static final int VERSION = 2;
+    public static final String HASH = "8586a5528f0085c15cff4b6628f1b8153aca29ad";
+    public static final int VERSION = 3;
 
     void enableModem(int i, boolean z) throws RemoteException;
 
@@ -58,7 +58,6 @@ public interface IRadioModem extends IInterface {
 
     void setResponseFunctions(IRadioModemResponse iRadioModemResponse, IRadioModemIndication iRadioModemIndication) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioModem {
         @Override // android.hardware.radio.modem.IRadioModem
         public void enableModem(int serial, boolean on) throws RemoteException {
@@ -148,7 +147,6 @@ public interface IRadioModem extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioModem {
         static final int TRANSACTION_enableModem = 1;
         static final int TRANSACTION_getBasebandVersion = 2;
@@ -198,127 +196,126 @@ public interface IRadioModem extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enableModem(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getBasebandVersion(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getDeviceIdentity(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getHardwareConfig(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getModemActivityInfo(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getModemStackStatus(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getRadioCapability(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    nvReadItem(_arg08, _arg12);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    nvResetConfig(_arg09, _arg13);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    byte[] _arg14 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    nvWriteCdmaPrl(_arg010, _arg14);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    NvWriteItem _arg15 = (NvWriteItem) data.readTypedObject(NvWriteItem.CREATOR);
+                    data.enforceNoDataAvail();
+                    nvWriteItem(_arg011, _arg15);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestShutdown(_arg012);
+                    return true;
+                case 13:
+                    responseAcknowledgement();
+                    return true;
+                case 14:
+                    int _arg013 = data.readInt();
+                    int _arg16 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    sendDeviceState(_arg013, _arg16, _arg2);
+                    return true;
+                case 15:
+                    int _arg014 = data.readInt();
+                    RadioCapability _arg17 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRadioCapability(_arg014, _arg17);
+                    return true;
+                case 16:
+                    int _arg015 = data.readInt();
+                    boolean _arg18 = data.readBoolean();
+                    boolean _arg22 = data.readBoolean();
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setRadioPower(_arg015, _arg18, _arg22, _arg3);
+                    return true;
+                case 17:
+                    IRadioModemResponse _arg016 = IRadioModemResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioModemIndication _arg19 = IRadioModemIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg016, _arg19);
+                    return true;
+                case 18:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getImei(_arg017);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enableModem(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getBasebandVersion(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getDeviceIdentity(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getHardwareConfig(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getModemActivityInfo(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getModemStackStatus(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getRadioCapability(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            nvReadItem(_arg08, _arg12);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            nvResetConfig(_arg09, _arg13);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            byte[] _arg14 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            nvWriteCdmaPrl(_arg010, _arg14);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            NvWriteItem _arg15 = (NvWriteItem) data.readTypedObject(NvWriteItem.CREATOR);
-                            data.enforceNoDataAvail();
-                            nvWriteItem(_arg011, _arg15);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestShutdown(_arg012);
-                            return true;
-                        case 13:
-                            responseAcknowledgement();
-                            return true;
-                        case 14:
-                            int _arg013 = data.readInt();
-                            int _arg16 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            sendDeviceState(_arg013, _arg16, _arg2);
-                            return true;
-                        case 15:
-                            int _arg014 = data.readInt();
-                            RadioCapability _arg17 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRadioCapability(_arg014, _arg17);
-                            return true;
-                        case 16:
-                            int _arg015 = data.readInt();
-                            boolean _arg18 = data.readBoolean();
-                            boolean _arg22 = data.readBoolean();
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRadioPower(_arg015, _arg18, _arg22, _arg3);
-                            return true;
-                        case 17:
-                            IRadioModemResponse _arg016 = IRadioModemResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioModemIndication _arg19 = IRadioModemIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg016, _arg19);
-                            return true;
-                        case 18:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getImei(_arg017);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioModem {
             private IBinder mRemote;
             private int mCachedVersion = -1;

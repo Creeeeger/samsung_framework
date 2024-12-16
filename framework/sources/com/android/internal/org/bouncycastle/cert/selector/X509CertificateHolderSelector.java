@@ -43,13 +43,11 @@ public class X509CertificateHolderSelector implements Selector {
 
     public int hashCode() {
         int code = Arrays.hashCode(this.subjectKeyId);
-        BigInteger bigInteger = this.serialNumber;
-        if (bigInteger != null) {
-            code ^= bigInteger.hashCode();
+        if (this.serialNumber != null) {
+            code ^= this.serialNumber.hashCode();
         }
-        X500Name x500Name = this.issuer;
-        if (x500Name != null) {
-            return code ^ x500Name.hashCode();
+        if (this.issuer != null) {
+            return code ^ this.issuer.hashCode();
         }
         return code;
     }

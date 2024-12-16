@@ -3,51 +3,46 @@ package com.samsung.android.allshare;
 import android.net.Uri;
 import android.os.Bundle;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 class IconImpl extends Icon {
     private Bundle mIconBundle;
 
-    public IconImpl(Bundle bundle) {
+    protected IconImpl(Bundle bundle) {
         this.mIconBundle = null;
         this.mIconBundle = bundle;
     }
 
     @Override // com.samsung.android.allshare.Icon
     public int getDepth() {
-        Bundle bundle = this.mIconBundle;
-        if (bundle == null) {
+        if (this.mIconBundle == null) {
             return -1;
         }
-        return bundle.getInt("ICON_DEPTH");
+        return this.mIconBundle.getInt("ICON_DEPTH");
     }
 
     @Override // com.samsung.android.allshare.Icon
     public int getWidth() {
-        Bundle bundle = this.mIconBundle;
-        if (bundle == null) {
+        if (this.mIconBundle == null) {
             return -1;
         }
-        return bundle.getInt("ICON_WIDTH");
+        return this.mIconBundle.getInt("ICON_WIDTH");
     }
 
     @Override // com.samsung.android.allshare.Icon
     public int getHeight() {
-        Bundle bundle = this.mIconBundle;
-        if (bundle == null) {
+        if (this.mIconBundle == null) {
             return -1;
         }
-        return bundle.getInt("ICON_HEIGHT");
+        return this.mIconBundle.getInt("ICON_HEIGHT");
     }
 
     @Override // com.samsung.android.allshare.Icon
     public String getMimetype() {
-        Bundle bundle = this.mIconBundle;
-        return bundle == null ? "" : bundle.getString("ICON_MIMETYPE");
+        return this.mIconBundle == null ? "" : this.mIconBundle.getString("ICON_MIMETYPE");
     }
 
     @Override // com.samsung.android.allshare.Icon
     public Uri getUri() {
-        Bundle bundle = this.mIconBundle;
-        return (Uri) (bundle == null ? null : bundle.getParcelable("ICON_URI"));
+        return (Uri) (this.mIconBundle == null ? null : this.mIconBundle.getParcelable("ICON_URI"));
     }
 }

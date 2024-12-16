@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IActivityPendingResult extends IInterface {
     boolean sendResult(int i, String str, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IActivityPendingResult {
         @Override // android.app.IActivityPendingResult
         public boolean sendResult(int code, String data, Bundle ex) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IActivityPendingResult extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IActivityPendingResult {
         public static final String DESCRIPTOR = "android.app.IActivityPendingResult";
         static final int TRANSACTION_sendResult = 1;
@@ -68,28 +66,25 @@ public interface IActivityPendingResult extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = sendResult(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = sendResult(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IActivityPendingResult {
             private IBinder mRemote;
 

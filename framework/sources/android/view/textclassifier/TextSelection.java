@@ -15,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TextSelection implements Parcelable {
     public static final Parcelable.Creator<TextSelection> CREATOR = new Parcelable.Creator<TextSelection>() { // from class: android.view.textclassifier.TextSelection.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextSelection createFromParcel(Parcel in) {
             return new TextSelection(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextSelection[] newArray(int size) {
             return new TextSelection[size];
@@ -34,14 +33,6 @@ public final class TextSelection implements Parcelable {
     private final String mId;
     private final int mStartIndex;
     private final TextClassification mTextClassification;
-
-    /* synthetic */ TextSelection(int i, int i2, Map map, String str, TextClassification textClassification, Bundle bundle, TextSelectionIA textSelectionIA) {
-        this(i, i2, map, str, textClassification, bundle);
-    }
-
-    /* synthetic */ TextSelection(Parcel parcel, TextSelectionIA textSelectionIA) {
-        this(parcel);
-    }
 
     private TextSelection(int startIndex, int endIndex, Map<String, Float> entityConfidence, String id, TextClassification textClassification, Bundle extras) {
         this.mStartIndex = startIndex;
@@ -92,7 +83,6 @@ public final class TextSelection implements Parcelable {
         return String.format(Locale.US, "TextSelection {id=%s, startIndex=%d, endIndex=%d, entities=%s}", this.mId, Integer.valueOf(this.mStartIndex), Integer.valueOf(this.mEndIndex), this.mEntityConfidence);
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private final int mEndIndex;
         private final Map<String, Float> mEntityConfidence = new ArrayMap();
@@ -136,30 +126,19 @@ public final class TextSelection implements Parcelable {
         }
 
         public TextSelection build() {
-            int i = this.mStartIndex;
-            int i2 = this.mEndIndex;
-            Map<String, Float> map = this.mEntityConfidence;
-            String str = this.mId;
-            TextClassification textClassification = this.mTextClassification;
-            Bundle bundle = this.mExtras;
-            if (bundle == null) {
-                bundle = Bundle.EMPTY;
-            }
-            return new TextSelection(i, i2, map, str, textClassification, bundle);
+            return new TextSelection(this.mStartIndex, this.mEndIndex, this.mEntityConfidence, this.mId, this.mTextClassification, this.mExtras == null ? Bundle.EMPTY : this.mExtras);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Request implements Parcelable {
         public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() { // from class: android.view.textclassifier.TextSelection.Request.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request createFromParcel(Parcel in) {
                 return Request.readFromParcel(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request[] newArray(int size) {
                 return new Request[size];
@@ -173,10 +152,6 @@ public final class TextSelection implements Parcelable {
         private final int mStartIndex;
         private SystemTextClassifierMetadata mSystemTcMetadata;
         private final CharSequence mText;
-
-        /* synthetic */ Request(CharSequence charSequence, int i, int i2, LocaleList localeList, boolean z, boolean z2, Bundle bundle, RequestIA requestIA) {
-            this(charSequence, i, i2, localeList, z, z2, bundle);
-        }
 
         private Request(CharSequence text, int startIndex, int endIndex, LocaleList defaultLocales, boolean darkLaunchAllowed, boolean includeTextClassification, Bundle extras) {
             this.mText = text;
@@ -209,9 +184,8 @@ public final class TextSelection implements Parcelable {
         }
 
         public String getCallingPackageName() {
-            SystemTextClassifierMetadata systemTextClassifierMetadata = this.mSystemTcMetadata;
-            if (systemTextClassifierMetadata != null) {
-                return systemTextClassifierMetadata.getCallingPackageName();
+            if (this.mSystemTcMetadata != null) {
+                return this.mSystemTcMetadata.getCallingPackageName();
             }
             return null;
         }
@@ -232,7 +206,6 @@ public final class TextSelection implements Parcelable {
             return this.mExtras;
         }
 
-        /* loaded from: classes4.dex */
         public static final class Builder {
             private boolean mDarkLaunchAllowed;
             private LocaleList mDefaultLocales;
@@ -270,17 +243,7 @@ public final class TextSelection implements Parcelable {
             }
 
             public Request build() {
-                SpannedString spannedString = new SpannedString(this.mText);
-                int i = this.mStartIndex;
-                int i2 = this.mEndIndex;
-                LocaleList localeList = this.mDefaultLocales;
-                boolean z = this.mDarkLaunchAllowed;
-                boolean z2 = this.mIncludeTextClassification;
-                Bundle bundle = this.mExtras;
-                if (bundle == null) {
-                    bundle = Bundle.EMPTY;
-                }
-                return new Request(spannedString, i, i2, localeList, z, z2, bundle);
+                return new Request(new SpannedString(this.mText), this.mStartIndex, this.mEndIndex, this.mDefaultLocales, this.mDarkLaunchAllowed, this.mIncludeTextClassification, this.mExtras == null ? Bundle.EMPTY : this.mExtras);
             }
         }
 
@@ -300,6 +263,7 @@ public final class TextSelection implements Parcelable {
             dest.writeBoolean(this.mIncludeTextClassification);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static Request readFromParcel(Parcel in) {
             CharSequence text = in.readCharSequence();
             int startIndex = in.readInt();
@@ -311,23 +275,6 @@ public final class TextSelection implements Parcelable {
             Request request = new Request(text, startIndex, endIndex, defaultLocales, false, includeTextClassification, extras);
             request.setSystemTextClassifierMetadata(systemTcMetadata);
             return request;
-        }
-
-        /* renamed from: android.view.textclassifier.TextSelection$Request$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Request> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Request createFromParcel(Parcel in) {
-                return Request.readFromParcel(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Request[] newArray(int size) {
-                return new Request[size];
-            }
         }
     }
 
@@ -344,23 +291,6 @@ public final class TextSelection implements Parcelable {
         dest.writeString(this.mId);
         dest.writeBundle(this.mExtras);
         dest.writeParcelable(this.mTextClassification, flags);
-    }
-
-    /* renamed from: android.view.textclassifier.TextSelection$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TextSelection> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextSelection createFromParcel(Parcel in) {
-            return new TextSelection(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextSelection[] newArray(int size) {
-            return new TextSelection[size];
-        }
     }
 
     private TextSelection(Parcel in) {

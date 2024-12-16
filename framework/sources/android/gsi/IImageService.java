@@ -45,7 +45,6 @@ public interface IImageService extends IInterface {
 
     void zeroFillNewImage(String str, long j) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IImageService {
         @Override // android.gsi.IImageService
         public void createBackingImage(String name, long size, int flags, IProgressCallback on_progress) throws RemoteException {
@@ -115,7 +114,6 @@ public interface IImageService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IImageService {
         static final int TRANSACTION_backingImageExists = 5;
         static final int TRANSACTION_createBackingImage = 1;
@@ -197,114 +195,110 @@ public interface IImageService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImageService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImageService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImageService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    long _arg1 = data.readLong();
+                    int _arg2 = data.readInt();
+                    IProgressCallback _arg3 = IProgressCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    createBackingImage(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    deleteBackingImage(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    int _arg12 = data.readInt();
+                    MappedImage _arg22 = new MappedImage();
+                    data.enforceNoDataAvail();
+                    mapImageDevice(_arg03, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_arg22, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    unmapImageDevice(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = backingImageExists(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isImageMapped(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    AvbPublicKey _arg13 = new AvbPublicKey();
+                    data.enforceNoDataAvail();
+                    int _result3 = getAvbPublicKey(_arg07, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    reply.writeTypedObject(_arg13, 1);
+                    return true;
+                case 8:
+                    List<String> _result4 = getAllBackingImages();
+                    reply.writeNoException();
+                    reply.writeStringList(_result4);
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    long _arg14 = data.readLong();
+                    data.enforceNoDataAvail();
+                    zeroFillNewImage(_arg08, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    removeAllImages();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    disableImage(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    removeDisabledImages();
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isImageDisabled(_arg010);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 14:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result6 = getMappedImageDevice(_arg011);
+                    reply.writeNoException();
+                    reply.writeString(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            long _arg1 = data.readLong();
-                            int _arg2 = data.readInt();
-                            IProgressCallback _arg3 = IProgressCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            createBackingImage(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            deleteBackingImage(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            int _arg12 = data.readInt();
-                            MappedImage _arg22 = new MappedImage();
-                            data.enforceNoDataAvail();
-                            mapImageDevice(_arg03, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg22, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            unmapImageDevice(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = backingImageExists(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isImageMapped(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            AvbPublicKey _arg13 = new AvbPublicKey();
-                            data.enforceNoDataAvail();
-                            int _result3 = getAvbPublicKey(_arg07, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            reply.writeTypedObject(_arg13, 1);
-                            return true;
-                        case 8:
-                            List<String> _result4 = getAllBackingImages();
-                            reply.writeNoException();
-                            reply.writeStringList(_result4);
-                            return true;
-                        case 9:
-                            String _arg08 = data.readString();
-                            long _arg14 = data.readLong();
-                            data.enforceNoDataAvail();
-                            zeroFillNewImage(_arg08, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            removeAllImages();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            disableImage(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            removeDisabledImages();
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isImageDisabled(_arg010);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 14:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result6 = getMappedImageDevice(_arg011);
-                            reply.writeNoException();
-                            reply.writeString(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IImageService {
+        private static class Proxy implements IImageService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

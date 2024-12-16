@@ -34,8 +34,7 @@ public class UserIcons {
     public static Drawable getDefaultUserIcon(Resources resources, int userId, boolean light) {
         int colorResId = light ? R.color.user_icon_default_white : R.color.user_icon_default_gray;
         if (userId != -10000) {
-            int[] iArr = USER_ICON_COLORS;
-            colorResId = iArr[userId % iArr.length];
+            colorResId = USER_ICON_COLORS[userId % USER_ICON_COLORS.length];
         }
         return getDefaultUserIconInColor(resources, resources.getColor(colorResId, null));
     }

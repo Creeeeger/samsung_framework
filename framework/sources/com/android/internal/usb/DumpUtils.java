@@ -1,6 +1,7 @@
 package com.android.internal.usb;
 
 import android.content.Context;
+import android.hardware.usb.DisplayPortAltModeInfo;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbConfiguration;
 import android.hardware.usb.UsbDevice;
@@ -109,6 +110,9 @@ public class DumpUtils {
             dump.write("supported_modes", 2259152797698L, UsbPort.modeToString(mode));
         }
         dump.write("supports_compliance_warnings", 1133871366147L, port.supportsComplianceWarnings());
+        if (port.isAltModeSupported(1)) {
+            dump.write("supported_alt_modes", 2259152797700L, 1);
+        }
         dump.end(token);
     }
 
@@ -162,6 +166,10 @@ public class DumpUtils {
         dump.write("is_power_transfer_limited", 1133871366152L, status.isPowerTransferLimited());
         dump.write("usb_power_brick_status", 1138166333449L, UsbPort.powerBrickConnectionStatusToString(status.getPowerBrickConnectionStatus()));
         dump.write("compliance_warning_status", 1138166333450L, UsbPort.complianceWarningsToString(status.getComplianceWarnings()));
+        DisplayPortAltModeInfo displayPortAltModeInfo = status.getDisplayPortAltModeInfo();
+        if (displayPortAltModeInfo != null) {
+            dump.write("displayport_alt_mode_status", 1138166333451L, status.getDisplayPortAltModeInfo().toString());
+        }
         dump.end(token);
     }
 }

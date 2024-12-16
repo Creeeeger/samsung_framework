@@ -49,7 +49,7 @@ public class SignerInformation {
     protected final ASN1Set unsignedAttributeSet;
     private AttributeTable unsignedAttributeValues;
 
-    public SignerInformation(SignerInfo info, ASN1ObjectIdentifier contentType, CMSProcessable content, byte[] resultDigest) {
+    SignerInformation(SignerInfo info, ASN1ObjectIdentifier contentType, CMSProcessable content, byte[] resultDigest) {
         this.info = info;
         this.contentType = contentType;
         this.isCounterSignature = contentType == null;
@@ -130,11 +130,10 @@ public class SignerInformation {
     }
 
     public byte[] getContentDigest() {
-        byte[] bArr = this.resultDigest;
-        if (bArr == null) {
+        if (this.resultDigest == null) {
             throw new IllegalStateException("method can only be called after verify.");
         }
-        return Arrays.clone(bArr);
+        return Arrays.clone(this.resultDigest);
     }
 
     public String getEncryptionAlgOID() {
@@ -150,17 +149,15 @@ public class SignerInformation {
     }
 
     public AttributeTable getSignedAttributes() {
-        ASN1Set aSN1Set = this.signedAttributeSet;
-        if (aSN1Set != null && this.signedAttributeValues == null) {
-            this.signedAttributeValues = new AttributeTable(aSN1Set);
+        if (this.signedAttributeSet != null && this.signedAttributeValues == null) {
+            this.signedAttributeValues = new AttributeTable(this.signedAttributeSet);
         }
         return this.signedAttributeValues;
     }
 
     public AttributeTable getUnsignedAttributes() {
-        ASN1Set aSN1Set = this.unsignedAttributeSet;
-        if (aSN1Set != null && this.unsignedAttributeValues == null) {
-            this.unsignedAttributeValues = new AttributeTable(aSN1Set);
+        if (this.unsignedAttributeSet != null && this.unsignedAttributeValues == null) {
+            this.unsignedAttributeValues = new AttributeTable(this.unsignedAttributeSet);
         }
         return this.unsignedAttributeValues;
     }
@@ -190,9 +187,8 @@ public class SignerInformation {
     }
 
     public byte[] getEncodedSignedAttributes() throws IOException {
-        ASN1Set aSN1Set = this.signedAttributeSet;
-        if (aSN1Set != null) {
-            return aSN1Set.getEncoded(ASN1Encoding.DER);
+        if (this.signedAttributeSet != null) {
+            return this.signedAttributeSet.getEncoded(ASN1Encoding.DER);
         }
         return null;
     }
@@ -227,9 +223,8 @@ public class SignerInformation {
                     }
                     this.resultDigest = calc.getDigest();
                 } else if (this.signedAttributeSet == null) {
-                    CMSProcessable cMSProcessable = this.content;
-                    if (cMSProcessable != null) {
-                        cMSProcessable.write(sigOut);
+                    if (this.content != null) {
+                        this.content.write(sigOut);
                     }
                 } else {
                     sigOut.write(getEncodedSignedAttributes());

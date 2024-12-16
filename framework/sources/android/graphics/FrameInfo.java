@@ -24,19 +24,17 @@ public final class FrameInfo {
     public long[] frameInfo = new long[12];
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FrameInfoFlags {
     }
 
     public void setVsync(long intendedVsync, long usedVsync, long frameTimelineVsyncId, long frameDeadline, long frameStartTime, long frameInterval) {
-        long[] jArr = this.frameInfo;
-        jArr[1] = frameTimelineVsyncId;
-        jArr[2] = intendedVsync;
-        jArr[3] = usedVsync;
-        jArr[0] = 0;
-        jArr[9] = frameDeadline;
-        jArr[10] = frameStartTime;
-        jArr[11] = frameInterval;
+        this.frameInfo[1] = frameTimelineVsyncId;
+        this.frameInfo[2] = intendedVsync;
+        this.frameInfo[3] = usedVsync;
+        this.frameInfo[0] = 0;
+        this.frameInfo[9] = frameDeadline;
+        this.frameInfo[10] = frameStartTime;
+        this.frameInfo[11] = frameInterval;
     }
 
     public void markInputHandlingStart() {

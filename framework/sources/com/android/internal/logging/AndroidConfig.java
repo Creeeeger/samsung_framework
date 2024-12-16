@@ -3,7 +3,7 @@ package com.android.internal.logging;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AndroidConfig {
     public AndroidConfig() {
         try {

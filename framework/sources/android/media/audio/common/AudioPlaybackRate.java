@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioPlaybackRate implements Parcelable {
     public static final Parcelable.Creator<AudioPlaybackRate> CREATOR = new Parcelable.Creator<AudioPlaybackRate>() { // from class: android.media.audio.common.AudioPlaybackRate.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPlaybackRate createFromParcel(Parcel _aidl_source) {
             AudioPlaybackRate _aidl_out = new AudioPlaybackRate();
@@ -20,6 +18,7 @@ public class AudioPlaybackRate implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPlaybackRate[] newArray(int _aidl_size) {
             return new AudioPlaybackRate[_aidl_size];
@@ -30,7 +29,6 @@ public class AudioPlaybackRate implements Parcelable {
     public int timestretchMode = 0;
     public int fallbackMode = 0;
 
-    /* loaded from: classes2.dex */
     public @interface TimestretchFallbackMode {
         public static final int FAIL = 2;
         public static final int MUTE = 1;
@@ -38,29 +36,9 @@ public class AudioPlaybackRate implements Parcelable {
         public static final int SYS_RESERVED_DEFAULT = 0;
     }
 
-    /* loaded from: classes2.dex */
     public @interface TimestretchMode {
         public static final int DEFAULT = 0;
         public static final int VOICE = 1;
-    }
-
-    /* renamed from: android.media.audio.common.AudioPlaybackRate$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioPlaybackRate> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPlaybackRate createFromParcel(Parcel _aidl_source) {
-            AudioPlaybackRate _aidl_out = new AudioPlaybackRate();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPlaybackRate[] newArray(int _aidl_size) {
-            return new AudioPlaybackRate[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -140,7 +118,7 @@ public class AudioPlaybackRate implements Parcelable {
         _aidl_sj.add("pitch: " + this.pitch);
         _aidl_sj.add("timestretchMode: " + this.timestretchMode);
         _aidl_sj.add("fallbackMode: " + this.fallbackMode);
-        return "android.media.audio.common.AudioPlaybackRate" + _aidl_sj.toString();
+        return "AudioPlaybackRate" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

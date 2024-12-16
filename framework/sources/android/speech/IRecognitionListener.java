@@ -33,7 +33,6 @@ public interface IRecognitionListener extends IInterface {
 
     void onSegmentResults(Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecognitionListener {
         @Override // android.speech.IRecognitionListener
         public void onReadyForSpeech(Bundle params) throws RemoteException {
@@ -89,7 +88,6 @@ public interface IRecognitionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecognitionListener {
         public static final String DESCRIPTOR = "android.speech.IRecognitionListener";
         static final int TRANSACTION_onBeginningOfSpeech = 2;
@@ -166,76 +164,72 @@ public interface IRecognitionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onReadyForSpeech(_arg0);
+                    return true;
+                case 2:
+                    onBeginningOfSpeech();
+                    return true;
+                case 3:
+                    float _arg02 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onRmsChanged(_arg02);
+                    return true;
+                case 4:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onBufferReceived(_arg03);
+                    return true;
+                case 5:
+                    onEndOfSpeech();
+                    return true;
+                case 6:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg04);
+                    return true;
+                case 7:
+                    Bundle _arg05 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResults(_arg05);
+                    return true;
+                case 8:
+                    Bundle _arg06 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPartialResults(_arg06);
+                    return true;
+                case 9:
+                    Bundle _arg07 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSegmentResults(_arg07);
+                    return true;
+                case 10:
+                    onEndOfSegmentedSession();
+                    return true;
+                case 11:
+                    Bundle _arg08 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onLanguageDetection(_arg08);
+                    return true;
+                case 12:
+                    int _arg09 = data.readInt();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEvent(_arg09, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onReadyForSpeech(_arg0);
-                            return true;
-                        case 2:
-                            onBeginningOfSpeech();
-                            return true;
-                        case 3:
-                            float _arg02 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onRmsChanged(_arg02);
-                            return true;
-                        case 4:
-                            byte[] _arg03 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onBufferReceived(_arg03);
-                            return true;
-                        case 5:
-                            onEndOfSpeech();
-                            return true;
-                        case 6:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg04);
-                            return true;
-                        case 7:
-                            Bundle _arg05 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResults(_arg05);
-                            return true;
-                        case 8:
-                            Bundle _arg06 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPartialResults(_arg06);
-                            return true;
-                        case 9:
-                            Bundle _arg07 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSegmentResults(_arg07);
-                            return true;
-                        case 10:
-                            onEndOfSegmentedSession();
-                            return true;
-                        case 11:
-                            Bundle _arg08 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onLanguageDetection(_arg08);
-                            return true;
-                        case 12:
-                            int _arg09 = data.readInt();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEvent(_arg09, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecognitionListener {
+        private static class Proxy implements IRecognitionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

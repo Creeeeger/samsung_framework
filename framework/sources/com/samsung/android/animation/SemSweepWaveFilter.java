@@ -25,72 +25,43 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
     private static final int WAVE_ANIMATION_DURATION = 1300;
     private static final int WAVE_BG_ALPHA = 225;
     private static Interpolator sDecel = new DecelerateInterpolator();
-    private final Interpolator WAVE_INTERPOLATOR;
-    private float incrementYdown;
-    private float incrementYup;
-    private final int leftColor;
-    private Paint mBaseWaveColor;
-    private Paint mBgLeftGreen;
-    private Paint mBgMiddleBlue;
-    private Paint mBgRightYellow;
-    private float mDeltaX;
-    private BitmapDrawable mDrawSweepBitmapDrawable;
-    private float mEndXOfActionUpAnimator;
-    private float mGradientWidth;
-    private boolean mIsActionMove;
     private ListView mListView;
-    private RectF mMiddleBlueRect;
     private Path mPathDown;
     private Path mPathUp;
-    private Bitmap mSweepBitmap;
-    private SemSweepListAnimator.OnSweepListener mSweepListener;
-    private float mSweepProgress;
-    private Rect mSweepRect;
-    private View mViewForeground;
-    private final int middleColor;
-    private final int rightColor;
-    private int waveBaseColor;
-    private float waveControlPointHeight;
-    private float waveHeight;
     private ValueAnimator waveValueAnimator;
-    private float waveWidth;
+    private final int leftColor = Color.rgb(97, 170, 19);
+    private final int middleColor = Color.rgb(12, 92, 126);
+    private final int rightColor = Color.rgb(232, 156, 0);
+    private int waveBaseColor = Color.rgb(255, 255, 255);
+    private RectF mMiddleBlueRect = new RectF();
+    private float mGradientWidth = 400.0f;
+    private float waveHeight = 0.0f;
+    private float waveWidth = 0.0f;
+    private float waveControlPointHeight = 0.0f;
+    private final Interpolator WAVE_INTERPOLATOR = new LinearInterpolator();
+    private float incrementYdown = 0.0f;
+    private float incrementYup = 0.0f;
+    private Rect mSweepRect = null;
+    private Bitmap mSweepBitmap = null;
+    private SemSweepListAnimator.OnSweepListener mSweepListener = null;
+    private BitmapDrawable mDrawSweepBitmapDrawable = null;
+    private View mViewForeground = null;
+    private float mSweepProgress = 0.0f;
+    private boolean mIsActionMove = false;
+    private float mDeltaX = 0.0f;
+    private float mEndXOfActionUpAnimator = 0.0f;
+    private Paint mBgLeftGreen = initPaintWithAlphaAntiAliasing(this.leftColor);
+    private Paint mBgMiddleBlue = initPaintWithAlphaAntiAliasing(this.middleColor);
+    private Paint mBgRightYellow = initPaintWithAlphaAntiAliasing(this.rightColor);
+    private Paint mBaseWaveColor = new Paint();
 
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public /* bridge */ /* synthetic */ boolean isAnimationBack() {
         return super.isAnimationBack();
     }
 
-    public SemSweepWaveFilter(ListView listView) {
-        int rgb = Color.rgb(97, 170, 19);
-        this.leftColor = rgb;
-        int rgb2 = Color.rgb(12, 92, 126);
-        this.middleColor = rgb2;
-        int rgb3 = Color.rgb(232, 156, 0);
-        this.rightColor = rgb3;
-        this.waveBaseColor = Color.rgb(255, 255, 255);
-        this.mMiddleBlueRect = new RectF();
-        this.mGradientWidth = 400.0f;
-        this.waveHeight = 0.0f;
-        this.waveWidth = 0.0f;
-        this.waveControlPointHeight = 0.0f;
-        this.WAVE_INTERPOLATOR = new LinearInterpolator();
-        this.incrementYdown = 0.0f;
-        this.incrementYup = 0.0f;
-        this.mSweepRect = null;
-        this.mSweepBitmap = null;
-        this.mSweepListener = null;
-        this.mDrawSweepBitmapDrawable = null;
-        this.mViewForeground = null;
-        this.mSweepProgress = 0.0f;
-        this.mIsActionMove = false;
-        this.mDeltaX = 0.0f;
-        this.mEndXOfActionUpAnimator = 0.0f;
-        this.mBgLeftGreen = initPaintWithAlphaAntiAliasing(rgb);
-        this.mBgMiddleBlue = initPaintWithAlphaAntiAliasing(rgb2);
-        this.mBgRightYellow = initPaintWithAlphaAntiAliasing(rgb3);
-        Paint paint = new Paint();
-        this.mBaseWaveColor = paint;
-        paint.setColor(this.waveBaseColor);
+    SemSweepWaveFilter(ListView listView) {
+        this.mBaseWaveColor.setColor(this.waveBaseColor);
         this.mListView = listView;
     }
 
@@ -109,37 +80,32 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
 
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public Rect getBitmapDrawableBound() {
-        new Rect();
-        BitmapDrawable bitmapDrawable = this.mDrawSweepBitmapDrawable;
-        if (bitmapDrawable != null) {
-            Rect rect = bitmapDrawable.getBounds();
-            return rect;
+        if (this.mDrawSweepBitmapDrawable != null) {
+            return this.mDrawSweepBitmapDrawable.getBounds();
         }
         return null;
     }
 
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public void draw(Canvas canvas) {
-        BitmapDrawable bitmapDrawable = this.mDrawSweepBitmapDrawable;
-        if (bitmapDrawable != null) {
-            bitmapDrawable.draw(canvas);
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mDrawSweepBitmapDrawable.draw(canvas);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doDrawWaveEffect(View viewForeground, float deltaX, int position) {
         float sweepProgress = deltaX / viewForeground.getWidth();
         Canvas canvas = drawWaveToBitmapCanvas(viewForeground, sweepProgress);
-        SemSweepListAnimator.OnSweepListener onSweepListener = this.mSweepListener;
-        if (onSweepListener != null && canvas != null && this.mIsActionMove) {
-            onSweepListener.onSweep(position, sweepProgress, canvas);
+        if (this.mSweepListener != null && canvas != null && this.mIsActionMove) {
+            this.mSweepListener.onSweep(position, sweepProgress, canvas);
         }
         if (this.mDrawSweepBitmapDrawable == null) {
             this.mDrawSweepBitmapDrawable = new BitmapDrawable();
         }
-        BitmapDrawable bitmapDrawableToSweepBitmap = getBitmapDrawableToSweepBitmap();
-        this.mDrawSweepBitmapDrawable = bitmapDrawableToSweepBitmap;
-        if (bitmapDrawableToSweepBitmap != null) {
-            this.mListView.invalidate(bitmapDrawableToSweepBitmap.getBounds());
+        this.mDrawSweepBitmapDrawable = getBitmapDrawableToSweepBitmap();
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mListView.invalidate(this.mDrawSweepBitmapDrawable.getBounds());
         }
     }
 
@@ -186,18 +152,15 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public void doUpActionWhenAnimationUpdate(int position, float sweepProgress) {
         Canvas canvas = null;
-        View view = this.mViewForeground;
-        if (view != null) {
-            canvas = drawWaveToBitmapCanvas(view, sweepProgress);
+        if (this.mViewForeground != null) {
+            canvas = drawWaveToBitmapCanvas(this.mViewForeground, sweepProgress);
         }
-        SemSweepListAnimator.OnSweepListener onSweepListener = this.mSweepListener;
-        if (onSweepListener != null && canvas != null) {
-            onSweepListener.onSweep(position, sweepProgress, canvas);
+        if (this.mSweepListener != null && canvas != null) {
+            this.mSweepListener.onSweep(position, sweepProgress, canvas);
         }
-        BitmapDrawable bitmapDrawableToSweepBitmap = getBitmapDrawableToSweepBitmap();
-        this.mDrawSweepBitmapDrawable = bitmapDrawableToSweepBitmap;
-        if (bitmapDrawableToSweepBitmap != null) {
-            this.mListView.invalidate(bitmapDrawableToSweepBitmap.getBounds());
+        this.mDrawSweepBitmapDrawable = getBitmapDrawableToSweepBitmap();
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mListView.invalidate(this.mDrawSweepBitmapDrawable.getBounds());
         }
     }
 
@@ -237,9 +200,8 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
     }
 
     private void removeCachedBitmap() {
-        BitmapDrawable bitmapDrawable = this.mDrawSweepBitmapDrawable;
-        if (bitmapDrawable != null) {
-            bitmapDrawable.getBitmap().recycle();
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mDrawSweepBitmapDrawable.getBitmap().recycle();
             this.mDrawSweepBitmapDrawable = null;
             this.mSweepBitmap = null;
         }
@@ -251,47 +213,33 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         initWaveParams(deltaX, position, listener);
     }
 
-    private void initWaveParams(float deltaX, int itemIndex, SemSweepListAnimator.OnSweepListener listener) {
-        ListView listView = this.mListView;
-        View child = listView.getChildAt(itemIndex - listView.getFirstVisiblePosition());
+    private void initWaveParams(float deltaX, final int itemIndex, SemSweepListAnimator.OnSweepListener listener) {
+        View child = this.mListView.getChildAt(itemIndex - this.mListView.getFirstVisiblePosition());
         if (child == null) {
             return;
         }
         this.mSweepListener = listener;
         int itemHeight = child.getHeight();
-        Path path = new Path();
-        this.mPathDown = path;
-        path.reset();
-        Path path2 = new Path();
-        this.mPathUp = path2;
-        path2.reset();
+        this.mPathDown = new Path();
+        this.mPathDown.reset();
+        this.mPathUp = new Path();
+        this.mPathUp.reset();
         this.waveHeight = itemHeight / 2;
         this.waveWidth = itemHeight / 13;
         this.waveControlPointHeight = itemHeight / 4;
-        ValueAnimator valueAnimator = this.waveValueAnimator;
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
+        if (this.waveValueAnimator != null) {
+            this.waveValueAnimator.cancel();
             this.waveValueAnimator.start();
             return;
         }
-        ValueAnimator ofFloat = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.waveValueAnimator = ofFloat;
-        ofFloat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemSweepWaveFilter.1
-            final /* synthetic */ int val$position;
-
-            AnonymousClass1(int itemIndex2) {
-                itemIndex = itemIndex2;
-            }
-
+        this.waveValueAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        this.waveValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemSweepWaveFilter.1
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
             public void onAnimationUpdate(ValueAnimator animation) {
                 float fraction = animation.getAnimatedFraction();
-                SemSweepWaveFilter semSweepWaveFilter = SemSweepWaveFilter.this;
-                semSweepWaveFilter.incrementYdown = semSweepWaveFilter.waveHeight * fraction * 2.0f;
-                SemSweepWaveFilter semSweepWaveFilter2 = SemSweepWaveFilter.this;
-                semSweepWaveFilter2.incrementYup = (-fraction) * semSweepWaveFilter2.waveHeight * 2.0f;
-                SemSweepWaveFilter semSweepWaveFilter3 = SemSweepWaveFilter.this;
-                semSweepWaveFilter3.doDrawWaveEffect(semSweepWaveFilter3.mViewForeground, SemSweepWaveFilter.this.mDeltaX, itemIndex);
+                SemSweepWaveFilter.this.incrementYdown = SemSweepWaveFilter.this.waveHeight * fraction * 2.0f;
+                SemSweepWaveFilter.this.incrementYup = (-fraction) * SemSweepWaveFilter.this.waveHeight * 2.0f;
+                SemSweepWaveFilter.this.doDrawWaveEffect(SemSweepWaveFilter.this.mViewForeground, SemSweepWaveFilter.this.mDeltaX, itemIndex);
             }
         });
         this.waveValueAnimator.setRepeatCount(-1);
@@ -301,31 +249,9 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         this.waveValueAnimator.start();
     }
 
-    /* renamed from: com.samsung.android.animation.SemSweepWaveFilter$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
-        final /* synthetic */ int val$position;
-
-        AnonymousClass1(int itemIndex2) {
-            itemIndex = itemIndex2;
-        }
-
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-        public void onAnimationUpdate(ValueAnimator animation) {
-            float fraction = animation.getAnimatedFraction();
-            SemSweepWaveFilter semSweepWaveFilter = SemSweepWaveFilter.this;
-            semSweepWaveFilter.incrementYdown = semSweepWaveFilter.waveHeight * fraction * 2.0f;
-            SemSweepWaveFilter semSweepWaveFilter2 = SemSweepWaveFilter.this;
-            semSweepWaveFilter2.incrementYup = (-fraction) * semSweepWaveFilter2.waveHeight * 2.0f;
-            SemSweepWaveFilter semSweepWaveFilter3 = SemSweepWaveFilter.this;
-            semSweepWaveFilter3.doDrawWaveEffect(semSweepWaveFilter3.mViewForeground, SemSweepWaveFilter.this.mDeltaX, itemIndex);
-        }
-    }
-
     private void cancelRunningAnimator() {
-        ValueAnimator valueAnimator = this.waveValueAnimator;
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
+        if (this.waveValueAnimator != null) {
+            this.waveValueAnimator.cancel();
         }
     }
 
@@ -334,15 +260,14 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         rc.offset(0, -rcTopOffset);
         int listWidth = this.mListView.getWidth();
         canvas.drawRect(rc, this.mBaseWaveColor);
-        float f = this.mGradientWidth;
-        float shift = (listWidth + f) * sweepProgress;
+        float shift = (listWidth + this.mGradientWidth) * sweepProgress;
         if (shift > 0.0f) {
-            float gradientLeft = shift - f;
-            float waveCenterX = (f / 2.0f) + gradientLeft;
+            float gradientLeft = shift - this.mGradientWidth;
+            float waveCenterX = (this.mGradientWidth / 2.0f) + gradientLeft;
             drawWaveInto(canvas, rc, waveCenterX, false, this.mBgLeftGreen, this.mBgMiddleBlue);
         } else if (shift < 0.0f) {
             float gradientLeft2 = listWidth + shift;
-            float waveCenterX2 = (f / 2.0f) + gradientLeft2;
+            float waveCenterX2 = (this.mGradientWidth / 2.0f) + gradientLeft2;
             drawWaveInto(canvas, rc, waveCenterX2, true, this.mBgMiddleBlue, this.mBgRightYellow);
         } else {
             this.mMiddleBlueRect.set(rc);
@@ -357,51 +282,19 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         this.mPathDown.reset();
         this.mPathDown.moveTo(0.0f, startYdown);
         this.mPathDown.lineTo(this.waveWidth + startXdown, startYdown);
-        Path path = this.mPathDown;
-        float f = this.waveWidth + startXdown;
-        float f2 = this.waveControlPointHeight;
-        float f3 = this.waveHeight;
-        path.cubicTo(f, startYdown + f2, startXdown, (startYdown + f3) - f2, startXdown, startYdown + f3);
-        Path path2 = this.mPathDown;
-        float f4 = this.waveHeight;
-        float f5 = this.waveControlPointHeight;
-        float f6 = this.waveWidth;
-        path2.cubicTo(startXdown, startYdown + f4 + f5, startXdown + f6, ((f4 * 2.0f) + startYdown) - f5, startXdown + f6, startYdown + (f4 * 2.0f));
-        Path path3 = this.mPathDown;
-        float f7 = this.waveWidth + startXdown;
-        float f8 = this.waveHeight;
-        float f9 = this.waveControlPointHeight;
-        path3.cubicTo(f7, (f8 * 2.0f) + startYdown + f9, startXdown, ((f8 * 3.0f) + startYdown) - f9, startXdown, startYdown + (f8 * 3.0f));
-        Path path4 = this.mPathDown;
-        float f10 = this.waveHeight;
-        float f11 = this.waveControlPointHeight;
-        float f12 = this.waveWidth;
-        path4.cubicTo(startXdown, (f10 * 3.0f) + startYdown + f11, startXdown + f12, ((f10 * 4.0f) + startYdown) - f11, startXdown + f12, startYdown + (f10 * 4.0f));
+        this.mPathDown.cubicTo(this.waveWidth + startXdown, this.waveControlPointHeight + startYdown, startXdown, (this.waveHeight + startYdown) - this.waveControlPointHeight, startXdown, startYdown + this.waveHeight);
+        this.mPathDown.cubicTo(startXdown, this.waveControlPointHeight + this.waveHeight + startYdown, startXdown + this.waveWidth, ((this.waveHeight * 2.0f) + startYdown) - this.waveControlPointHeight, startXdown + this.waveWidth, startYdown + (this.waveHeight * 2.0f));
+        this.mPathDown.cubicTo(this.waveWidth + startXdown, (this.waveHeight * 2.0f) + startYdown + this.waveControlPointHeight, startXdown, ((this.waveHeight * 3.0f) + startYdown) - this.waveControlPointHeight, startXdown, startYdown + (this.waveHeight * 3.0f));
+        this.mPathDown.cubicTo(startXdown, this.waveControlPointHeight + (this.waveHeight * 3.0f) + startYdown, startXdown + this.waveWidth, ((this.waveHeight * 4.0f) + startYdown) - this.waveControlPointHeight, startXdown + this.waveWidth, startYdown + (this.waveHeight * 4.0f));
         this.mPathDown.lineTo(0.0f, (this.waveHeight * 4.0f) + startYdown);
         this.mPathDown.close();
         this.mPathUp.reset();
         this.mPathUp.moveTo(listWidth, startYdown);
         this.mPathUp.lineTo(this.waveWidth + startXdown, startYdown);
-        Path path5 = this.mPathUp;
-        float f13 = this.waveWidth + startXdown;
-        float f14 = this.waveControlPointHeight;
-        float f15 = this.waveHeight;
-        path5.cubicTo(f13, startYdown + f14, startXdown, (startYdown + f15) - f14, startXdown, startYdown + f15);
-        Path path6 = this.mPathUp;
-        float f16 = this.waveHeight;
-        float f17 = this.waveControlPointHeight;
-        float f18 = this.waveWidth;
-        path6.cubicTo(startXdown, startYdown + f16 + f17, startXdown + f18, ((f16 * 2.0f) + startYdown) - f17, startXdown + f18, startYdown + (f16 * 2.0f));
-        Path path7 = this.mPathUp;
-        float f19 = this.waveWidth + startXdown;
-        float f20 = this.waveHeight;
-        float f21 = this.waveControlPointHeight;
-        path7.cubicTo(f19, (2.0f * f20) + startYdown + f21, startXdown, ((f20 * 3.0f) + startYdown) - f21, startXdown, startYdown + (f20 * 3.0f));
-        Path path8 = this.mPathUp;
-        float f22 = this.waveHeight;
-        float f23 = this.waveControlPointHeight;
-        float f24 = this.waveWidth;
-        path8.cubicTo(startXdown, startYdown + (3.0f * f22) + f23, startXdown + f24, ((f22 * 4.0f) + startYdown) - f23, startXdown + f24, (f22 * 4.0f) + startYdown);
+        this.mPathUp.cubicTo(this.waveWidth + startXdown, this.waveControlPointHeight + startYdown, startXdown, (this.waveHeight + startYdown) - this.waveControlPointHeight, startXdown, startYdown + this.waveHeight);
+        this.mPathUp.cubicTo(startXdown, this.waveControlPointHeight + this.waveHeight + startYdown, startXdown + this.waveWidth, ((this.waveHeight * 2.0f) + startYdown) - this.waveControlPointHeight, startXdown + this.waveWidth, startYdown + (this.waveHeight * 2.0f));
+        this.mPathUp.cubicTo(this.waveWidth + startXdown, (this.waveHeight * 2.0f) + startYdown + this.waveControlPointHeight, startXdown, ((this.waveHeight * 3.0f) + startYdown) - this.waveControlPointHeight, startXdown, startYdown + (this.waveHeight * 3.0f));
+        this.mPathUp.cubicTo(startXdown, (this.waveHeight * 3.0f) + startYdown + this.waveControlPointHeight, startXdown + this.waveWidth, ((this.waveHeight * 4.0f) + startYdown) - this.waveControlPointHeight, startXdown + this.waveWidth, startYdown + (this.waveHeight * 4.0f));
         this.mPathUp.lineTo(listWidth, (this.waveHeight * 4.0f) + startYdown);
         this.mPathUp.close();
         int saveCount = canvas.save();

@@ -25,8 +25,7 @@ public class SQLiteSdpHelper {
     private void prepare() {
     }
 
-    /* renamed from: android.database.sqlite.SQLiteSdpHelper$1 */
-    /* loaded from: classes.dex */
+    /* renamed from: android.database.sqlite.SQLiteSdpHelper$1, reason: invalid class name */
     class AnonymousClass1 extends SQLiteSdpListener {
         AnonymousClass1() {
         }
@@ -36,12 +35,10 @@ public class SQLiteSdpHelper {
             switch (state) {
                 case 1:
                     SQLiteSdpHelper.this.mDatabase.execSQL("PRAGMA sdp_locked");
-                    return;
+                    break;
                 case 2:
                     SQLiteSdpHelper.this.mDatabase.execSQL("PRAGMA sdp_unlocked");
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -64,9 +61,8 @@ public class SQLiteSdpHelper {
     private int getEngineId() {
         long ret = -1;
         try {
-            SQLiteDatabase sQLiteDatabase = this.mDatabase;
-            if (sQLiteDatabase != null) {
-                ret = Long.valueOf(DatabaseUtils.longForQuery(sQLiteDatabase, "PRAGMA sdp_get_engine_id;", null)).intValue();
+            if (this.mDatabase != null) {
+                ret = Long.valueOf(DatabaseUtils.longForQuery(this.mDatabase, "PRAGMA sdp_get_engine_id;", null)).intValue();
             }
         } catch (Exception e) {
             e.printStackTrace();

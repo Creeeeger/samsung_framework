@@ -13,14 +13,13 @@ import java.lang.annotation.Annotation;
 /* loaded from: classes.dex */
 public final class RuntimeAppOpAccessMessage implements Parcelable {
     public static final Parcelable.Creator<RuntimeAppOpAccessMessage> CREATOR = new Parcelable.Creator<RuntimeAppOpAccessMessage>() { // from class: android.app.RuntimeAppOpAccessMessage.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RuntimeAppOpAccessMessage[] newArray(int size) {
             return new RuntimeAppOpAccessMessage[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RuntimeAppOpAccessMessage createFromParcel(Parcel in) {
             return new RuntimeAppOpAccessMessage(in);
@@ -39,16 +38,16 @@ public final class RuntimeAppOpAccessMessage implements Parcelable {
 
     public RuntimeAppOpAccessMessage(int uid, int opCode, String packageName, String attributionTag, String message, int samplingStrategy) {
         this.mUid = uid;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, uid, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mUid, "from", 0L);
         this.mOpCode = opCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, opCode, "from", 0L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOpCode, "from", 0L, "to", 148L);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mAttributionTag = attributionTag;
         this.mMessage = message;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) message);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mMessage);
         this.mSamplingStrategy = samplingStrategy;
-        AnnotationValidations.validate((Class<? extends Annotation>) AppOpsManager.SamplingStrategy.class, (Annotation) null, samplingStrategy);
+        AnnotationValidations.validate((Class<? extends Annotation>) AppOpsManager.SamplingStrategy.class, (Annotation) null, this.mSamplingStrategy);
     }
 
     public int getUid() {
@@ -78,9 +77,8 @@ public final class RuntimeAppOpAccessMessage implements Parcelable {
         dest.writeInt(this.mUid);
         dest.writeInt(this.mOpCode);
         dest.writeString(this.mPackageName);
-        String str = this.mAttributionTag;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mAttributionTag != null) {
+            dest.writeString(this.mAttributionTag);
         }
         dest.writeString(this.mMessage);
         dest.writeInt(this.mSamplingStrategy);
@@ -100,33 +98,16 @@ public final class RuntimeAppOpAccessMessage implements Parcelable {
         String message = in.readString();
         int samplingStrategy = in.readInt();
         this.mUid = uid;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, uid, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mUid, "from", 0L);
         this.mOpCode = opCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, opCode, "from", 0L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOpCode, "from", 0L, "to", 148L);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mAttributionTag = attributionTag;
         this.mMessage = message;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) message);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mMessage);
         this.mSamplingStrategy = samplingStrategy;
-        AnnotationValidations.validate((Class<? extends Annotation>) AppOpsManager.SamplingStrategy.class, (Annotation) null, samplingStrategy);
-    }
-
-    /* renamed from: android.app.RuntimeAppOpAccessMessage$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RuntimeAppOpAccessMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RuntimeAppOpAccessMessage[] newArray(int size) {
-            return new RuntimeAppOpAccessMessage[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RuntimeAppOpAccessMessage createFromParcel(Parcel in) {
-            return new RuntimeAppOpAccessMessage(in);
-        }
+        AnnotationValidations.validate((Class<? extends Annotation>) AppOpsManager.SamplingStrategy.class, (Annotation) null, this.mSamplingStrategy);
     }
 
     @Deprecated

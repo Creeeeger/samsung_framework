@@ -260,6 +260,7 @@ public class MediaSessionLegacyHelper {
         return holder;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void sendKeyEvent(PendingIntent pi, Context context, Intent intent) {
         try {
             pi.send(context, 0, intent);
@@ -268,8 +269,7 @@ public class MediaSessionLegacyHelper {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class MediaButtonListener extends MediaSession.Callback {
+    private static final class MediaButtonListener extends MediaSession.Callback {
         private final Context mContext;
         private final PendingIntent mPendingIntent;
 
@@ -334,8 +334,7 @@ public class MediaSessionLegacyHelper {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class SessionHolder {
+    private class SessionHolder {
         public SessionCallback mCb;
         public int mFlags;
         public MediaButtonListener mMediaButtonListener;
@@ -363,12 +362,7 @@ public class MediaSessionLegacyHelper {
             }
         }
 
-        /* loaded from: classes2.dex */
-        public class SessionCallback extends MediaSession.Callback {
-            /* synthetic */ SessionCallback(SessionHolder sessionHolder, SessionCallbackIA sessionCallbackIA) {
-                this();
-            }
-
+        private class SessionCallback extends MediaSession.Callback {
             private SessionCallback() {
             }
 

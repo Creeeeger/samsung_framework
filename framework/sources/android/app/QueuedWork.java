@@ -37,6 +37,25 @@ public class QueuedWork {
         return handler;
     }
 
+    public static void resetHandler() {
+        synchronized (sLock) {
+            if (sHandler == null) {
+                return;
+            }
+            sHandler.getLooper().quitSafely();
+            sHandler = null;
+        }
+    }
+
+    private static void handlerRemoveMessages(int what) {
+        synchronized (sLock) {
+            if (sHandler == null) {
+                return;
+            }
+            getHandler().removeMessages(what);
+        }
+    }
+
     public static void addFinisher(Runnable finisher) {
         synchronized (sLock) {
             sFinishers.add(finisher);
@@ -50,14 +69,10 @@ public class QueuedWork {
     }
 
     public static void waitToFinish() {
-        Object obj;
         Runnable finisher;
         long startTime = System.currentTimeMillis();
-        Handler handler = getHandler();
         synchronized (sLock) {
-            if (handler.hasMessages(1)) {
-                handler.removeMessages(1);
-            }
+            handlerRemoveMessages(1);
             sCanDelay = false;
         }
         StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskWrites();
@@ -65,8 +80,7 @@ public class QueuedWork {
             processPendingWork();
             while (true) {
                 try {
-                    obj = sLock;
-                    synchronized (obj) {
+                    synchronized (sLock) {
                         finisher = sFinishers.poll();
                     }
                     if (finisher == null) {
@@ -74,19 +88,19 @@ public class QueuedWork {
                     } else {
                         finisher.run();
                     }
-                } finally {
+                } catch (Throwable th) {
                     sCanDelay = true;
+                    throw th;
                 }
             }
-            synchronized (obj) {
+            sCanDelay = true;
+            synchronized (sLock) {
                 long waitTime = System.currentTimeMillis() - startTime;
                 if (waitTime > 0 || 0 != 0) {
-                    ExponentiallyBucketedHistogram exponentiallyBucketedHistogram = mWaitTimes;
-                    exponentiallyBucketedHistogram.add(Long.valueOf(waitTime).intValue());
-                    int i = mNumWaits + 1;
-                    mNumWaits = i;
-                    if (i % 1024 == 0 || waitTime > 512) {
-                        exponentiallyBucketedHistogram.log(LOG_TAG, "waited: ");
+                    mWaitTimes.add(Long.valueOf(waitTime).intValue());
+                    mNumWaits++;
+                    if (mNumWaits % 1024 == 0 || waitTime > 512) {
+                        mWaitTimes.log(LOG_TAG, "waited: ");
                     }
                 }
             }
@@ -115,13 +129,14 @@ public class QueuedWork {
         return z;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void processPendingWork() {
         LinkedList<Runnable> work;
         synchronized (sProcessingWork) {
             synchronized (sLock) {
                 work = sWork;
                 sWork = new LinkedList<>();
-                getHandler().removeMessages(1);
+                handlerRemoveMessages(1);
             }
             if (work.size() > 0) {
                 Iterator<Runnable> it = work.iterator();
@@ -133,8 +148,7 @@ public class QueuedWork {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class QueuedWorkHandler extends Handler {
+    private static class QueuedWorkHandler extends Handler {
         static final int MSG_RUN = 1;
 
         QueuedWorkHandler(Looper looper) {

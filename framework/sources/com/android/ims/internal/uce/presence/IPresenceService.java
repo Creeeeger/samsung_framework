@@ -9,7 +9,7 @@ import com.android.ims.internal.uce.common.StatusCode;
 import com.android.ims.internal.uce.common.UceLong;
 import com.android.ims.internal.uce.presence.IPresenceListener;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IPresenceService extends IInterface {
     StatusCode addListener(int i, IPresenceListener iPresenceListener, UceLong uceLong) throws RemoteException;
 
@@ -27,7 +27,6 @@ public interface IPresenceService extends IInterface {
 
     StatusCode setNewFeatureTag(int i, String str, PresServiceInfo presServiceInfo, int i2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IPresenceService {
         @Override // com.android.ims.internal.uce.presence.IPresenceService
         public StatusCode getVersion(int presenceServiceHdl) throws RemoteException {
@@ -75,7 +74,6 @@ public interface IPresenceService extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IPresenceService {
         public static final String DESCRIPTOR = "com.android.ims.internal.uce.presence.IPresenceService";
         static final int TRANSACTION_addListener = 2;
@@ -140,91 +138,87 @@ public interface IPresenceService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result = getVersion(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    IPresenceListener _arg1 = IPresenceListener.Stub.asInterface(data.readStrongBinder());
+                    UceLong _arg2 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    data.enforceNoDataAvail();
+                    StatusCode _result2 = addListener(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    reply.writeTypedObject(_arg2, 1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    UceLong _arg12 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    data.enforceNoDataAvail();
+                    StatusCode _result3 = removeListener(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result4 = reenableService(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    PresCapInfo _arg14 = (PresCapInfo) data.readTypedObject(PresCapInfo.CREATOR);
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result5 = publishMyCap(_arg05, _arg14, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg15 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result6 = getContactCap(_arg06, _arg15, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String[] _arg16 = data.createStringArray();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result7 = getContactListCap(_arg07, _arg16, _arg24);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg17 = data.readString();
+                    PresServiceInfo _arg25 = (PresServiceInfo) data.readTypedObject(PresServiceInfo.CREATOR);
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    StatusCode _result8 = setNewFeatureTag(_arg08, _arg17, _arg25, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result = getVersion(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            IPresenceListener _arg1 = IPresenceListener.Stub.asInterface(data.readStrongBinder());
-                            UceLong _arg2 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            data.enforceNoDataAvail();
-                            StatusCode _result2 = addListener(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            reply.writeTypedObject(_arg2, 1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            UceLong _arg12 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            data.enforceNoDataAvail();
-                            StatusCode _result3 = removeListener(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result4 = reenableService(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            PresCapInfo _arg14 = (PresCapInfo) data.readTypedObject(PresCapInfo.CREATOR);
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result5 = publishMyCap(_arg05, _arg14, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg15 = data.readString();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result6 = getContactCap(_arg06, _arg15, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            String[] _arg16 = data.createStringArray();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result7 = getContactListCap(_arg07, _arg16, _arg24);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg17 = data.readString();
-                            PresServiceInfo _arg25 = (PresServiceInfo) data.readTypedObject(PresServiceInfo.CREATOR);
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            StatusCode _result8 = setNewFeatureTag(_arg08, _arg17, _arg25, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IPresenceService {
+        private static class Proxy implements IPresenceService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

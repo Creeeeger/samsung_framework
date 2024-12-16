@@ -75,14 +75,8 @@ public class ChangeClipBounds extends Transition {
         RectEvaluator evaluator = new RectEvaluator(new Rect());
         ObjectAnimator animator = ObjectAnimator.ofObject(endValues.view, "clipBounds", evaluator, start, end);
         if (endIsNull) {
-            View endView = endValues.view;
+            final View endView = endValues.view;
             animator.addListener(new AnimatorListenerAdapter() { // from class: android.transition.ChangeClipBounds.1
-                final /* synthetic */ View val$endView;
-
-                AnonymousClass1(View endView2) {
-                    endView = endView2;
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     endView.setClipBounds(null);
@@ -90,20 +84,5 @@ public class ChangeClipBounds extends Transition {
             });
         }
         return animator;
-    }
-
-    /* renamed from: android.transition.ChangeClipBounds$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends AnimatorListenerAdapter {
-        final /* synthetic */ View val$endView;
-
-        AnonymousClass1(View endView2) {
-            endView = endView2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            endView.setClipBounds(null);
-        }
     }
 }

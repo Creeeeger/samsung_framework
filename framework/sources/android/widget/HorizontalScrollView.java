@@ -18,9 +18,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.FocusFinder;
-import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.PointerIcon;
 import android.view.SoundEffectConstants;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -33,6 +33,7 @@ import android.view.ViewRootImpl;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.AnimationUtils;
+import android.view.flags.Flags;
 import android.view.inspector.InspectionCompanion;
 import android.view.inspector.PropertyMapper;
 import android.view.inspector.PropertyReader;
@@ -95,7 +96,6 @@ public class HorizontalScrollView extends FrameLayout {
     private int mTouchSlop;
     private VelocityTracker mVelocityTracker;
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<HorizontalScrollView> {
         private int mFillViewportId;
         private boolean mPropertiesMapped = false;
@@ -184,11 +184,10 @@ public class HorizontalScrollView extends FrameLayout {
         }
         this.mIsThemeDeviceDefaultFamily = z;
         String themePackageName = Settings.System.getString(context.getContentResolver(), "current_sec_active_themepackage");
-        boolean z2 = this.mIsThemeDeviceDefaultFamily && themePackageName != null && context.getResources().getAssets().getSamsungThemeOverlays().size() > 0;
-        this.mIsSetOpenTheme = z2;
-        if (z2) {
+        this.mIsSetOpenTheme = this.mIsThemeDeviceDefaultFamily && themePackageName != null && context.getResources().getAssets().getSamsungThemeOverlays().size() > 0;
+        if (this.mIsSetOpenTheme) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, com.android.internal.R.styleable.View, defStyleAttr, defStyleRes);
-            if (typedArray.getResourceId(13, 0) == 17303730) {
+            if (typedArray.getResourceId(13, 0) == 17303947) {
                 setBackground(context.getDrawable(com.android.internal.R.drawable.tw_action_bar_background_stacked));
             }
             typedArray.recycle();
@@ -200,7 +199,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public float getLeftFadingEdgeStrength() {
+    protected float getLeftFadingEdgeStrength() {
         if (getChildCount() == 0) {
             return 0.0f;
         }
@@ -212,7 +211,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public float getRightFadingEdgeStrength() {
+    protected float getRightFadingEdgeStrength() {
         if (getChildCount() == 0) {
             return 0.0f;
         }
@@ -265,12 +264,12 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
     }
 
@@ -340,7 +339,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthPadding;
         int heightPadding;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -433,11 +432,10 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     private void initOrResetVelocityTracker() {
-        VelocityTracker velocityTracker = this.mVelocityTracker;
-        if (velocityTracker == null) {
+        if (this.mVelocityTracker == null) {
             this.mVelocityTracker = VelocityTracker.obtain();
         } else {
-            velocityTracker.clear();
+            this.mVelocityTracker.clear();
         }
     }
 
@@ -448,9 +446,8 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     private void recycleVelocityTracker() {
-        VelocityTracker velocityTracker = this.mVelocityTracker;
-        if (velocityTracker != null) {
-            velocityTracker.recycle();
+        if (this.mVelocityTracker != null) {
+            this.mVelocityTracker.recycle();
             this.mVelocityTracker = null;
         }
     }
@@ -563,7 +560,7 @@ public class HorizontalScrollView extends FrameLayout {
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     @Override // android.view.ViewGroup, android.view.View
-    public boolean dispatchHoverEvent(MotionEvent ev) {
+    protected boolean dispatchHoverEvent(MotionEvent ev) {
         if (!isHoveringUIEnabled()) {
             return super.dispatchHoverEvent(ev);
         }
@@ -603,14 +600,12 @@ public class HorizontalScrollView extends FrameLayout {
         if (this.mHoverHandler == null) {
             this.mHoverHandler = new HoverScrollHandler(this);
         }
-        int i = this.mHoverAreaWidth;
-        if ((x > i && x < contentRightSide - i) || range == 0 || ((x >= 0 && x <= i && this.mScrollX <= 0 && this.mIsHoverOverscrolled) || ((x >= contentRightSide - this.mHoverAreaWidth && x <= contentRightSide && this.mScrollX >= range && this.mIsHoverOverscrolled) || ((isPossibleTooltype && ev.getButtonState() == 32) || !isPossibleTooltype || isLockScreenMode())))) {
+        if ((x > this.mHoverAreaWidth && x < contentRightSide - this.mHoverAreaWidth) || range == 0 || ((x >= 0 && x <= this.mHoverAreaWidth && this.mScrollX <= 0 && this.mIsHoverOverscrolled) || ((x >= contentRightSide - this.mHoverAreaWidth && x <= contentRightSide && this.mScrollX >= range && this.mIsHoverOverscrolled) || ((isPossibleTooltype && ev.getButtonState() == 32) || !isPossibleTooltype || isLockScreenMode())))) {
             if (this.mHoverHandler.hasMessages(1)) {
                 this.mHoverHandler.removeMessages(1);
                 showPointerIcon(ev, 20001);
             }
-            int i2 = this.mHoverAreaWidth;
-            if (x > i2 && x < contentRightSide - i2) {
+            if (x > this.mHoverAreaWidth && x < contentRightSide - this.mHoverAreaWidth) {
                 this.mIsHoverOverscrolled = false;
             }
             if (this.mHoverAreaEnter || this.mHoverScrollStartTime != 0) {
@@ -685,9 +680,8 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     private void resetTimeout() {
-        HoverScrollHandler hoverScrollHandler = this.mHoverHandler;
-        if (hoverScrollHandler != null) {
-            if (hoverScrollHandler.hasMessages(4)) {
+        if (this.mHoverHandler != null) {
+            if (this.mHoverHandler.hasMessages(4)) {
                 this.mHoverHandler.removeMessages(4);
             }
             this.mHoverHandler.sendEmptyMessageDelayed(4, 100L);
@@ -837,9 +831,8 @@ public class HorizontalScrollView extends FrameLayout {
             int newPointerIndex = pointerIndex == 0 ? 1 : 0;
             this.mLastMotionX = (int) ev.getX(newPointerIndex);
             this.mActivePointerId = ev.getPointerId(newPointerIndex);
-            VelocityTracker velocityTracker = this.mVelocityTracker;
-            if (velocityTracker != null) {
-                velocityTracker.clear();
+            if (this.mVelocityTracker != null) {
+                this.mVelocityTracker.clear();
             }
         }
     }
@@ -1064,8 +1057,7 @@ public class HorizontalScrollView extends FrameLayout {
                 this.mTempRect.left = 0;
             }
         }
-        Rect rect = this.mTempRect;
-        rect.right = rect.left + width;
+        this.mTempRect.right = this.mTempRect.left + width;
         return scrollAndFocus(direction, this.mTempRect.left, this.mTempRect.right);
     }
 
@@ -1079,8 +1071,7 @@ public class HorizontalScrollView extends FrameLayout {
             if (count > 0) {
                 View view = getChildAt(0);
                 this.mTempRect.right = view.getRight();
-                Rect rect = this.mTempRect;
-                rect.left = rect.right - width;
+                this.mTempRect.left = this.mTempRect.right - width;
             }
         }
         return scrollAndFocus(direction, this.mTempRect.left, this.mTempRect.right);
@@ -1192,7 +1183,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public int computeHorizontalScrollRange() {
+    protected int computeHorizontalScrollRange() {
         int count = getChildCount();
         int contentWidth = (getWidth() - this.mPaddingLeft) - this.mPaddingRight;
         if (count == 0) {
@@ -1211,12 +1202,12 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public int computeHorizontalScrollOffset() {
+    protected int computeHorizontalScrollOffset() {
         return Math.max(0, super.computeHorizontalScrollOffset());
     }
 
     @Override // android.view.ViewGroup
-    public void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
+    protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         ViewGroup.LayoutParams lp = child.getLayoutParams();
         int horizontalPadding = this.mPaddingLeft + this.mPaddingRight;
         int childWidthMeasureSpec = View.MeasureSpec.makeSafeMeasureSpec(Math.max(0, View.MeasureSpec.getSize(parentWidthMeasureSpec) - horizontalPadding), 0);
@@ -1225,7 +1216,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup
-    public void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
+    protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
         int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec, this.mPaddingTop + this.mPaddingBottom + lp.topMargin + lp.bottomMargin + heightUsed, lp.height);
         int usedTotal = this.mPaddingLeft + this.mPaddingRight + lp.leftMargin + lp.rightMargin + widthUsed;
@@ -1262,13 +1253,18 @@ public class HorizontalScrollView extends FrameLayout {
             if (!awakenScrollBars()) {
                 postInvalidateOnAnimation();
             }
+            if (Flags.viewVelocityApi()) {
+                setFrameContentVelocity(Math.abs(this.mScroller.getCurrVelocity()));
+            }
         }
     }
 
     private int consumeFlingInStretch(int unconsumed) {
-        EdgeEffect edgeEffect;
-        EdgeEffect edgeEffect2;
-        if (unconsumed > 0 && (edgeEffect2 = this.mEdgeGlowLeft) != null && edgeEffect2.getDistance() != 0.0f) {
+        int scrollX = getScrollX();
+        if (scrollX < 0 || scrollX > getScrollRange()) {
+            return unconsumed;
+        }
+        if (unconsumed > 0 && this.mEdgeGlowLeft != null && this.mEdgeGlowLeft.getDistance() != 0.0f) {
             int size = getWidth();
             float deltaDistance = ((-unconsumed) * FLING_DESTRETCH_FACTOR) / size;
             int consumed = Math.round(((-size) / FLING_DESTRETCH_FACTOR) * this.mEdgeGlowLeft.onPullDistance(deltaDistance, 0.5f));
@@ -1277,7 +1273,7 @@ public class HorizontalScrollView extends FrameLayout {
             }
             return unconsumed - consumed;
         }
-        if (unconsumed < 0 && (edgeEffect = this.mEdgeGlowRight) != null && edgeEffect.getDistance() != 0.0f) {
+        if (unconsumed < 0 && this.mEdgeGlowRight != null && this.mEdgeGlowRight.getDistance() != 0.0f) {
             int size2 = getWidth();
             float deltaDistance2 = (unconsumed * FLING_DESTRETCH_FACTOR) / size2;
             int consumed2 = Math.round((size2 / FLING_DESTRETCH_FACTOR) * this.mEdgeGlowRight.onPullDistance(deltaDistance2, 0.5f));
@@ -1351,7 +1347,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup
-    public boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         View nextFocus;
         if (direction == 2) {
             direction = 66;
@@ -1382,7 +1378,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int childWidth;
         int childMargins;
         int i;
@@ -1401,8 +1397,7 @@ public class HorizontalScrollView extends FrameLayout {
         boolean forceLeftGravity = childWidth > available;
         layoutChildren(l, t, r, b, forceLeftGravity);
         this.mIsLayoutDirty = false;
-        View view = this.mChildToScrollTo;
-        if (view != null && isViewDescendantOf(view, this)) {
+        if (this.mChildToScrollTo != null && isViewDescendantOf(this.mChildToScrollTo, this)) {
             scrollToChild(this.mChildToScrollTo);
         }
         this.mChildToScrollTo = null;
@@ -1429,7 +1424,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         View currentFocused = findFocus();
         if (currentFocused == null || this == currentFocused) {
@@ -1453,7 +1448,7 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     /* JADX WARN: Removed duplicated region for block: B:12:0x006e  */
-    /* JADX WARN: Removed duplicated region for block: B:26:0x00a9  */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x00bc  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1464,7 +1459,7 @@ public class HorizontalScrollView extends FrameLayout {
             r0 = r19
             r12 = r20
             int r1 = r19.getChildCount()
-            if (r1 <= 0) goto Lae
+            if (r1 <= 0) goto Lc1
             int r1 = r19.getWidth()
             int r2 = r0.mPaddingRight
             int r1 = r1 - r2
@@ -1517,46 +1512,53 @@ public class HorizontalScrollView extends FrameLayout {
             r1 = 1
             r16 = r1
         L6c:
-            if (r16 == 0) goto La9
+            if (r16 == 0) goto Lbc
             android.widget.OverScroller r1 = r0.mScroller
             int r2 = r0.mScrollX
             int r3 = r0.mScrollY
+            int r10 = r13 / 2
+            r17 = 0
             r5 = 0
             r6 = 0
             r8 = 0
             r9 = 0
-            int r10 = r13 / 2
-            r17 = 0
             r4 = r20
             r7 = r11
             r18 = r11
             r11 = r17
             r1.fling(r2, r3, r4, r5, r6, r7, r8, r9, r10, r11)
-            if (r12 <= 0) goto L89
+            boolean r1 = android.view.flags.Flags.viewVelocityApi()
+            if (r1 == 0) goto L99
+            android.widget.OverScroller r1 = r0.mScroller
+            float r1 = r1.getCurrVelocity()
+            float r1 = java.lang.Math.abs(r1)
+            r0.setFrameContentVelocity(r1)
+        L99:
+            if (r12 <= 0) goto L9c
             r14 = 1
-        L89:
+        L9c:
             r1 = r14
             android.view.View r2 = r19.findFocus()
             android.widget.OverScroller r3 = r0.mScroller
             int r3 = r3.getFinalX()
             android.view.View r3 = r0.findFocusableViewInMyBounds(r1, r3, r2)
-            if (r3 != 0) goto L9c
+            if (r3 != 0) goto Laf
             r3 = r19
-        L9c:
-            if (r3 == r2) goto Lab
-            if (r1 == 0) goto La3
+        Laf:
+            if (r3 == r2) goto Lbe
+            if (r1 == 0) goto Lb6
             r4 = 66
-            goto La5
-        La3:
+            goto Lb8
+        Lb6:
             r4 = 17
-        La5:
+        Lb8:
             r3.requestFocus(r4)
-            goto Lab
-        La9:
+            goto Lbe
+        Lbc:
             r18 = r11
-        Lab:
+        Lbe:
             r19.postInvalidateOnAnimation()
-        Lae:
+        Lc1:
             return
         */
         throw new UnsupportedOperationException("Method not decompiled: android.widget.HorizontalScrollView.fling(int):void");
@@ -1628,6 +1630,7 @@ public class HorizontalScrollView extends FrameLayout {
         return n;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18 || !(state instanceof SavedState)) {
@@ -1640,6 +1643,7 @@ public class HorizontalScrollView extends FrameLayout {
         requestLayout();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18) {
@@ -1652,22 +1656,20 @@ public class HorizontalScrollView extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("layout:fillViewPort", this.mFillViewport);
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.HorizontalScrollView.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1693,27 +1695,9 @@ public class HorizontalScrollView extends FrameLayout {
         public String toString() {
             return "HorizontalScrollView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " scrollPosition=" + this.scrollOffsetFromStart + "}";
         }
-
-        /* renamed from: android.widget.HorizontalScrollView$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
-    /* loaded from: classes4.dex */
-    public static class HoverScrollHandler extends Handler {
+    private static class HoverScrollHandler extends Handler {
         private final WeakReference<HorizontalScrollView> mScrollView;
 
         HoverScrollHandler(HorizontalScrollView sv) {
@@ -1729,20 +1713,19 @@ public class HorizontalScrollView extends FrameLayout {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleMessage(Message msg) {
         switch (msg.what) {
             case 1:
                 int range = getScrollRange();
-                long currentTimeMillis = System.currentTimeMillis();
-                this.mHoverRecognitionCurrentTime = currentTimeMillis;
-                long j = (currentTimeMillis - this.mHoverRecognitionStartTime) / 1000;
-                this.mHoverRecognitionDurationTime = j;
-                if (currentTimeMillis - this.mHoverScrollStartTime >= this.mHoverScrollTimeInterval) {
-                    if (j == 3) {
+                this.mHoverRecognitionCurrentTime = System.currentTimeMillis();
+                this.mHoverRecognitionDurationTime = (this.mHoverRecognitionCurrentTime - this.mHoverRecognitionStartTime) / 1000;
+                if (this.mHoverRecognitionCurrentTime - this.mHoverScrollStartTime >= this.mHoverScrollTimeInterval) {
+                    if (this.mHoverRecognitionDurationTime == 3) {
                         this.mHoverScrollSpeed = this.HOVERSCROLL_SPEED + 2;
-                    } else if (j == 4) {
+                    } else if (this.mHoverRecognitionDurationTime == 4) {
                         this.mHoverScrollSpeed = this.HOVERSCROLL_SPEED + 4;
-                    } else if (j >= 5) {
+                    } else if (this.mHoverRecognitionDurationTime >= 5) {
                         this.mHoverScrollSpeed = this.HOVERSCROLL_SPEED + 6;
                     } else {
                         this.mHoverScrollSpeed = this.HOVERSCROLL_SPEED;
@@ -1752,53 +1735,48 @@ public class HorizontalScrollView extends FrameLayout {
                     if ((offset < 0 && this.mScrollX > 0) || (offset > 0 && this.mScrollX < range)) {
                         scrollBy(offset, 0);
                         this.mHoverHandler.sendEmptyMessageDelayed(1, this.HOVERSCROLL_DELAY);
-                        return;
-                    }
-                    int overscrollMode = getOverScrollMode();
-                    if (overscrollMode == 0 || (overscrollMode == 1 && range > 0)) {
-                        canOverscroll = true;
-                    }
-                    if (canOverscroll && !this.mIsHoverOverscrolled) {
-                        if (this.mEdgeGlowLeft != null) {
-                            int i = this.mHoverScrollDirection;
-                            if (i == 1) {
-                                int height = (getHeight() - this.mPaddingTop) - this.mPaddingBottom;
-                                this.mEdgeGlowLeft.setSize(height, getWidth());
-                                this.mEdgeGlowLeft.onAbsorb(10000);
-                                if (!this.mEdgeGlowRight.isFinished()) {
-                                    this.mEdgeGlowRight.onRelease();
-                                }
-                            } else if (i == 2) {
-                                int height2 = (getHeight() - this.mPaddingTop) - this.mPaddingBottom;
-                                this.mEdgeGlowRight.setSize(height2, getWidth());
-                                this.mEdgeGlowRight.onAbsorb(10000);
-                                if (!this.mEdgeGlowLeft.isFinished()) {
-                                    this.mEdgeGlowLeft.onRelease();
+                        break;
+                    } else {
+                        int overscrollMode = getOverScrollMode();
+                        if (overscrollMode == 0 || (overscrollMode == 1 && range > 0)) {
+                            canOverscroll = true;
+                        }
+                        if (canOverscroll && !this.mIsHoverOverscrolled) {
+                            if (this.mEdgeGlowLeft != null) {
+                                if (this.mHoverScrollDirection == 1) {
+                                    int height = (getHeight() - this.mPaddingTop) - this.mPaddingBottom;
+                                    this.mEdgeGlowLeft.setSize(height, getWidth());
+                                    this.mEdgeGlowLeft.onAbsorb(10000);
+                                    if (!this.mEdgeGlowRight.isFinished()) {
+                                        this.mEdgeGlowRight.onRelease();
+                                    }
+                                } else if (this.mHoverScrollDirection == 2) {
+                                    int height2 = (getHeight() - this.mPaddingTop) - this.mPaddingBottom;
+                                    this.mEdgeGlowRight.setSize(height2, getWidth());
+                                    this.mEdgeGlowRight.onAbsorb(10000);
+                                    if (!this.mEdgeGlowLeft.isFinished()) {
+                                        this.mEdgeGlowLeft.onRelease();
+                                    }
                                 }
                             }
+                            if (this.mEdgeGlowLeft != null && (!this.mEdgeGlowLeft.isFinished() || !this.mEdgeGlowRight.isFinished())) {
+                                invalidate();
+                            }
+                            this.mIsHoverOverscrolled = true;
                         }
-                        EdgeEffect edgeEffect = this.mEdgeGlowLeft;
-                        if (edgeEffect != null && (!edgeEffect.isFinished() || !this.mEdgeGlowRight.isFinished())) {
-                            invalidate();
+                        if (!canOverscroll && !this.mIsHoverOverscrolled) {
+                            this.mIsHoverOverscrolled = true;
+                            break;
                         }
-                        this.mIsHoverOverscrolled = true;
                     }
-                    if (!canOverscroll && !this.mIsHoverOverscrolled) {
-                        this.mIsHoverOverscrolled = true;
-                        return;
-                    }
-                    return;
                 }
-                return;
+                break;
             case 4:
-                HoverScrollHandler hoverScrollHandler = this.mHoverHandler;
-                if (hoverScrollHandler != null && hoverScrollHandler.hasMessages(1)) {
+                if (this.mHoverHandler != null && this.mHoverHandler.hasMessages(1)) {
                     this.mHoverHandler.removeMessages(1);
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -1806,12 +1784,8 @@ public class HorizontalScrollView extends FrameLayout {
         if (iconId == 20017 || iconId == 20013) {
             iconId = semGetRotatePointerIcon(iconId);
         }
-        InputDevice inputDevice = ev.getDevice();
-        if (inputDevice != null) {
-            inputDevice.setPointerType(iconId);
-        } else {
-            Log.e(TAG, "Failed to change PointerIcon to " + iconId);
-        }
+        PointerIcon pointerIcon = iconId == 20001 ? null : PointerIcon.getSystemIcon(this.mContext, iconId);
+        semSetPointerIcon(ev.getToolType(0), pointerIcon);
     }
 
     private int semGetRotatePointerIcon(int iconId) {

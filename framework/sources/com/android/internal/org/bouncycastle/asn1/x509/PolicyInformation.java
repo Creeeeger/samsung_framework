@@ -51,9 +51,8 @@ public class PolicyInformation extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(this.policyIdentifier);
-        ASN1Sequence aSN1Sequence = this.policyQualifiers;
-        if (aSN1Sequence != null) {
-            v.add(aSN1Sequence);
+        if (this.policyQualifiers != null) {
+            v.add(this.policyQualifiers);
         }
         return new DERSequence(v);
     }

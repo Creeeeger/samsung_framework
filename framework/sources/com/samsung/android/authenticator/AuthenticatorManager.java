@@ -26,7 +26,7 @@ final class AuthenticatorManager {
     private final ConcurrentMap<File, TrustedApplication> mFileTrustedApplications = new ConcurrentHashMap();
     private final AtomicInteger mFileTrustedApplicationHandle = new AtomicInteger(2000000);
 
-    public static synchronized AuthenticatorManager getInstance() {
+    static synchronized AuthenticatorManager getInstance() {
         AuthenticatorManager authenticatorManager;
         synchronized (AuthenticatorManager.class) {
             if (sAuthenticatorManager == null) {
@@ -40,7 +40,7 @@ final class AuthenticatorManager {
     private AuthenticatorManager() {
     }
 
-    public int load(SemTrustedApplicationExecutor.TrustedAppType type) {
+    int load(SemTrustedApplicationExecutor.TrustedAppType type) {
         if (type == null) {
             AuthenticatorLog.e(TAG, "type is null");
             return -1;
@@ -57,36 +57,13 @@ final class AuthenticatorManager {
         return ta.load();
     }
 
-    /* renamed from: com.samsung.android.authenticator.AuthenticatorManager$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType;
-
-        static {
-            int[] iArr = new int[SemTrustedApplicationExecutor.TrustedAppType.values().length];
-            $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType = iArr;
-            try {
-                iArr[SemTrustedApplicationExecutor.TrustedAppType.FINGERPRINT_TRUSTED_APP.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType[SemTrustedApplicationExecutor.TrustedAppType.DEVICE_ROOT_KEY_TRUSTED_APP.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType[SemTrustedApplicationExecutor.TrustedAppType.ASSET_DOWNLOADER_TRUSTED_APP.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-        }
-    }
-
     private TrustedApplication makeReservedTrustedApplication(SemTrustedApplicationExecutor.TrustedAppType type) {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType[type.ordinal()]) {
-            case 1:
+        switch (type) {
+            case FINGERPRINT_TRUSTED_APP:
                 return new FingerprintTrustedApplication(SemTrustedApplicationExecutor.TrustedAppType.FINGERPRINT_TRUSTED_APP.ordinal());
-            case 2:
+            case DEVICE_ROOT_KEY_TRUSTED_APP:
                 return new DeviceRootKeyTrustedApplication(SemTrustedApplicationExecutor.TrustedAppType.DEVICE_ROOT_KEY_TRUSTED_APP.ordinal());
-            case 3:
+            case ASSET_DOWNLOADER_TRUSTED_APP:
                 return new TadTrustedApplication(SemTrustedApplicationExecutor.TrustedAppType.ASSET_DOWNLOADER_TRUSTED_APP.ordinal());
             default:
                 AuthenticatorLog.e(TAG, "Not supported type");
@@ -138,7 +115,7 @@ final class AuthenticatorManager {
         }
     }
 
-    public int load(SemTrustedApplicationExecutor.TrustedAppAssetType type, AssetFileDescriptor file) {
+    int load(SemTrustedApplicationExecutor.TrustedAppAssetType type, AssetFileDescriptor file) {
         if (file == null) {
             AuthenticatorLog.e(TAG, "file is null");
             return -1;
@@ -152,7 +129,7 @@ final class AuthenticatorManager {
         return ta.load();
     }
 
-    public byte[] execute(int taHandle, byte[] command) {
+    byte[] execute(int taHandle, byte[] command) {
         TrustedApplication ta = getTrustedApplication(taHandle);
         if (ta == null) {
             AuthenticatorLog.e(TAG, "ta is not found");
@@ -203,7 +180,7 @@ final class AuthenticatorManager {
         return 2000000 <= taHandle && taHandle <= FILE_TRUSTED_APP_HANDLE_LIMIT;
     }
 
-    public boolean unload(int taHandle) {
+    boolean unload(int taHandle) {
         TrustedApplication ta = getTrustedApplication(taHandle);
         if (ta != null) {
             return ta.unload() == 0;
@@ -229,23 +206,23 @@ final class AuthenticatorManager {
         return null;
     }
 
-    public int getCommandVersion() {
+    int getCommandVersion() {
         return AuthenticatorService.getVersion();
     }
 
-    public boolean writeFile(String path, byte[] data) {
+    boolean writeFile(String path, byte[] data) {
         return AuthenticatorService.writeFile(data, path);
     }
 
-    public boolean deleteFile(String path) {
+    boolean deleteFile(String path) {
         return AuthenticatorService.deleteFile(path);
     }
 
-    public String readFile(String path) {
+    String readFile(String path) {
         return AuthenticatorService.readFile(path);
     }
 
-    public List<String> getFiles(String path, String filter) {
+    List<String> getFiles(String path, String filter) {
         return AuthenticatorService.getMatchedFilePaths(path, filter);
     }
 }

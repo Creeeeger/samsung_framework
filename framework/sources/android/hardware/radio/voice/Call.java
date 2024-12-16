@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Call implements Parcelable {
     public static final Parcelable.Creator<Call> CREATOR = new Parcelable.Creator<Call>() { // from class: android.hardware.radio.voice.Call.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Call createFromParcel(Parcel _aidl_source) {
             Call _aidl_out = new Call();
@@ -20,6 +18,7 @@ public class Call implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Call[] newArray(int _aidl_size) {
             return new Call[_aidl_size];
@@ -50,25 +49,6 @@ public class Call implements Parcelable {
     public boolean isVoicePrivacy = false;
     public int numberPresentation = 0;
     public int namePresentation = 0;
-
-    /* renamed from: android.hardware.radio.voice.Call$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Call> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Call createFromParcel(Parcel _aidl_source) {
-            Call _aidl_out = new Call();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Call[] newArray(int _aidl_size) {
-            return new Call[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -257,7 +237,7 @@ public class Call implements Parcelable {
         _aidl_sj.add("uusInfo: " + Arrays.toString(this.uusInfo));
         _aidl_sj.add("audioQuality: " + AudioQuality$$.toString(this.audioQuality));
         _aidl_sj.add("forwardedNumber: " + Objects.toString(this.forwardedNumber));
-        return "android.hardware.radio.voice.Call" + _aidl_sj.toString();
+        return "Call" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

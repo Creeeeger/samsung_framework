@@ -4,7 +4,7 @@ import android.os.SemSystemProperties;
 import android.util.Log;
 import android.util.Slog;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemLog {
     public static final int ASSERT = 7;
     public static final int DEBUG = 3;
@@ -138,13 +138,6 @@ public final class SemLog {
         return 0;
     }
 
-    public static int wtf(String tag, Throwable tr) {
-        if (mEnabledWtf) {
-            return Slog.wtf(tag, tr);
-        }
-        return 0;
-    }
-
     public static int wtf(String tag, String msg, Throwable tr) {
         if (mEnabledWtf) {
             return Slog.wtf(tag, msg, tr);
@@ -163,13 +156,6 @@ public final class SemLog {
     public static int println(int priority, String tag, String msg) {
         if (mEnabledGlobal) {
             return Log.println(priority, tag, msg);
-        }
-        return 0;
-    }
-
-    public static int wtfStack(String tag, String msg) {
-        if (mEnabledWtf) {
-            return Slog.wtfStack(tag, msg);
         }
         return 0;
     }
@@ -206,31 +192,11 @@ public final class SemLog {
         return w(tag, msg, tr);
     }
 
-    public static int secW(String tag, Throwable tr) {
-        return w(tag, tr);
-    }
-
     public static int secE(String tag, String msg) {
         return e(tag, msg);
     }
 
     public static int secE(String tag, String msg, Throwable tr) {
         return e(tag, msg, tr);
-    }
-
-    public static int secWtf(String tag, String msg) {
-        return wtf(tag, msg);
-    }
-
-    public static int secWtfStack(String tag, String msg) {
-        return wtfStack(tag, msg);
-    }
-
-    public static int secWtf(String tag, Throwable tr) {
-        return wtf(tag, tr);
-    }
-
-    public static int secWtf(String tag, String msg, Throwable tr) {
-        return wtf(tag, msg, tr);
     }
 }

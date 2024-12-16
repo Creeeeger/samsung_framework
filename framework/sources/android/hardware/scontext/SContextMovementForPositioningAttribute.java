@@ -12,7 +12,7 @@ public class SContextMovementForPositioningAttribute extends SContextAttribute {
     private int mMoveMinDurationThrs;
     private int mNomoveDurationThrs;
 
-    public SContextMovementForPositioningAttribute() {
+    SContextMovementForPositioningAttribute() {
         this.mNomoveDurationThrs = 60;
         this.mMoveDurationThrs = 60;
         this.mMoveDistanceThrs = 100.0d;

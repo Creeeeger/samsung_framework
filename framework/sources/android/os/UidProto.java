@@ -31,7 +31,6 @@ public final class UidProto {
     public static final long WIFI_CONTROLLER = 1146756268037L;
     public static final long WIFI_MULTICAST_WAKELOCK = 1146756268060L;
 
-    /* loaded from: classes3.dex */
     public final class Package {
         public static final long NAME = 1138166333441L;
         public static final long SERVICES = 2246267895810L;
@@ -39,7 +38,6 @@ public final class UidProto {
         public Package() {
         }
 
-        /* loaded from: classes3.dex */
         public final class Service {
             public static final long LAUNCH_COUNT = 1120986464260L;
             public static final long NAME = 1138166333441L;
@@ -51,7 +49,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class BluetoothMisc {
         public static final long APPORTIONED_BLE_SCAN = 1146756268033L;
         public static final long BACKGROUND_BLE_SCAN = 1146756268034L;
@@ -64,7 +61,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Cpu {
         public static final int BACKGROUND = 3;
         public static final long BY_FREQUENCY = 2246267895811L;
@@ -81,7 +77,6 @@ public final class UidProto {
         public Cpu() {
         }
 
-        /* loaded from: classes3.dex */
         public final class ByFrequency {
             public static final long FREQUENCY_INDEX = 1120986464257L;
             public static final long SCREEN_OFF_DURATION_MS = 1112396529667L;
@@ -91,7 +86,6 @@ public final class UidProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class ByProcessState {
             public static final long BY_FREQUENCY = 2246267895810L;
             public static final long PROCESS_STATE = 1159641169921L;
@@ -101,7 +95,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Job {
         public static final long BACKGROUND = 1146756268035L;
         public static final long NAME = 1138166333441L;
@@ -111,7 +104,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class JobCompletion {
         public static final long NAME = 1138166333441L;
         public static final long REASON_COUNT = 2246267895810L;
@@ -119,7 +111,6 @@ public final class UidProto {
         public JobCompletion() {
         }
 
-        /* loaded from: classes3.dex */
         public final class ReasonCount {
             public static final long COUNT = 1120986464258L;
             public static final long NAME = 1159641169921L;
@@ -129,7 +120,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Network {
         public static final long BT_BYTES_RX = 1112396529669L;
         public static final long BT_BYTES_TX = 1112396529670L;
@@ -158,7 +148,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class PowerUseItem {
         public static final long COMPUTED_POWER_MAH = 1103806595073L;
         public static final long PROPORTIONAL_SMEAR_MAH = 1103806595076L;
@@ -169,7 +158,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Process {
         public static final long ANR_COUNT = 1120986464262L;
         public static final long CRASH_COUNT = 1120986464263L;
@@ -183,7 +171,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class StateTime {
         public static final long DURATION_MS = 1112396529666L;
         public static final int PROCESS_STATE_BACKGROUND = 3;
@@ -199,7 +186,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Sensor {
         public static final long APPORTIONED = 1146756268034L;
         public static final long BACKGROUND = 1146756268035L;
@@ -209,7 +195,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Sync {
         public static final long BACKGROUND = 1146756268035L;
         public static final long NAME = 1138166333441L;
@@ -219,7 +204,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class UserActivity {
         public static final long COUNT = 1120986464258L;
         public static final long NAME = 1159641169921L;
@@ -228,7 +212,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class AggregatedWakelock {
         public static final long BACKGROUND_PARTIAL_DURATION_MS = 1112396529666L;
         public static final long PARTIAL_DURATION_MS = 1112396529665L;
@@ -237,7 +220,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Wakelock {
         public static final long BACKGROUND_PARTIAL = 1146756268036L;
         public static final long FULL = 1146756268034L;
@@ -249,7 +231,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class WakeupAlarm {
         public static final long COUNT = 1120986464258L;
         public static final long NAME = 1138166333441L;
@@ -258,7 +239,6 @@ public final class UidProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Wifi {
         public static final long APPORTIONED_SCAN = 1146756268035L;
         public static final long BACKGROUND_SCAN = 1146756268036L;

@@ -13,7 +13,6 @@ public interface IContextHubTransactionCallback extends IInterface {
 
     void onTransactionComplete(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IContextHubTransactionCallback {
         @Override // android.hardware.location.IContextHubTransactionCallback
         public void onQueryResponse(int result, List<NanoAppState> nanoappList) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IContextHubTransactionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IContextHubTransactionCallback {
         public static final String DESCRIPTOR = "android.hardware.location.IContextHubTransactionCallback";
         static final int TRANSACTION_onQueryResponse = 1;
@@ -76,32 +74,28 @@ public interface IContextHubTransactionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    List<NanoAppState> _arg1 = data.createTypedArrayList(NanoAppState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onQueryResponse(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTransactionComplete(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            List<NanoAppState> _arg1 = data.createTypedArrayList(NanoAppState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onQueryResponse(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTransactionComplete(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IContextHubTransactionCallback {
+        private static class Proxy implements IContextHubTransactionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

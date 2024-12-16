@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IPaymentClient extends IInterface {
     public static final String DESCRIPTOR = "android.spay.IPaymentClient";
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPaymentClient {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -18,7 +17,6 @@ public interface IPaymentClient extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPaymentClient {
         public Stub() {
             attachInterface(this, IPaymentClient.DESCRIPTOR);
@@ -51,16 +49,13 @@ public interface IPaymentClient extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPaymentClient.DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(IPaymentClient.DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IPaymentClient {
             private IBinder mRemote;
 

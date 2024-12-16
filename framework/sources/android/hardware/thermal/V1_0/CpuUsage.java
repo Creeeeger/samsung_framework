@@ -56,7 +56,7 @@ public final class CpuUsage {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.name = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.active = _hidl_blob.getInt64(16 + _hidl_offset);
         this.total = _hidl_blob.getInt64(24 + _hidl_offset);
         this.isOnline = _hidl_blob.getBool(32 + _hidl_offset);

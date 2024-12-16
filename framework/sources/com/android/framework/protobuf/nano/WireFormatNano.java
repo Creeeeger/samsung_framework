@@ -2,7 +2,7 @@ package com.android.framework.protobuf.nano;
 
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class WireFormatNano {
     static final int TAG_TYPE_BITS = 3;
     static final int TAG_TYPE_MASK = 7;
@@ -18,13 +18,13 @@ public final class WireFormatNano {
     public static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
     public static final boolean[] EMPTY_BOOLEAN_ARRAY = new boolean[0];
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
-    public static final byte[][] EMPTY_BYTES_ARRAY = new byte[0];
+    public static final byte[][] EMPTY_BYTES_ARRAY = new byte[0][];
     public static final byte[] EMPTY_BYTES = new byte[0];
 
     private WireFormatNano() {
     }
 
-    public static int getTagWireType(int tag) {
+    static int getTagWireType(int tag) {
         return tag & 7;
     }
 
@@ -32,7 +32,7 @@ public final class WireFormatNano {
         return tag >>> 3;
     }
 
-    public static int makeTag(int fieldNumber, int wireType) {
+    static int makeTag(int fieldNumber, int wireType) {
         return (fieldNumber << 3) | wireType;
     }
 

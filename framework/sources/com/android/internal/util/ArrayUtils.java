@@ -1,6 +1,7 @@
 package com.android.internal.util;
 
 import android.util.ArraySet;
+import android.util.EmptyArray;
 import dalvik.system.VMRuntime;
 import java.io.File;
 import java.lang.reflect.Array;
@@ -13,7 +14,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes5.dex */
 public class ArrayUtils {
@@ -54,6 +54,38 @@ public class ArrayUtils {
 
     public static <T> T[] newUnpaddedArray(Class<T> cls, int i) {
         return (T[]) ((Object[]) VMRuntime.getRuntime().newUnpaddedArray(cls, i));
+    }
+
+    public static byte[] newUnpaddedByteArray$ravenwood(int minLen) {
+        return new byte[minLen];
+    }
+
+    public static char[] newUnpaddedCharArray$ravenwood(int minLen) {
+        return new char[minLen];
+    }
+
+    public static int[] newUnpaddedIntArray$ravenwood(int minLen) {
+        return new int[minLen];
+    }
+
+    public static boolean[] newUnpaddedBooleanArray$ravenwood(int minLen) {
+        return new boolean[minLen];
+    }
+
+    public static long[] newUnpaddedLongArray$ravenwood(int minLen) {
+        return new long[minLen];
+    }
+
+    public static float[] newUnpaddedFloatArray$ravenwood(int minLen) {
+        return new float[minLen];
+    }
+
+    public static Object[] newUnpaddedObjectArray$ravenwood(int minLen) {
+        return new Object[minLen];
+    }
+
+    public static <T> T[] newUnpaddedArray$ravenwood(Class<T> cls, int i) {
+        return (T[]) ((Object[]) Array.newInstance((Class<?>) cls, i));
     }
 
     public static boolean equals(byte[] array1, byte[] array2, int length) {
@@ -443,6 +475,17 @@ public class ArrayUtils {
         }
         int i = N + 1;
         long[] ret = new long[i];
+        System.arraycopy(cur, 0, ret, 0, N);
+        ret[N] = val;
+        return ret;
+    }
+
+    public static boolean[] appendBoolean(boolean[] cur, boolean val) {
+        if (cur == null) {
+            return new boolean[]{val};
+        }
+        int N = cur.length;
+        boolean[] ret = new boolean[N + 1];
         System.arraycopy(cur, 0, ret, 0, N);
         ret[N] = val;
         return ret;

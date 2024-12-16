@@ -4,40 +4,31 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ScreenshotResult implements Parcelable {
     public static final Parcelable.Creator<ScreenshotResult> CREATOR = new Parcelable.Creator<ScreenshotResult>() { // from class: com.samsung.android.view.ScreenshotResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScreenshotResult createFromParcel(Parcel in) {
             return new ScreenshotResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScreenshotResult[] newArray(int size) {
             return new ScreenshotResult[size];
         }
     };
-    public static final int FAIL_REASON_EMPTY_BITMAP = 16;
+    public static final int FAIL_REASON_EMPTY_BITMAP = 8;
     public static final int FAIL_REASON_INVALID_DEFAULT_TASK_DISPLAY_AREA = 4;
     public static final int FAIL_REASON_INVALID_DISPLAY = 1;
     public static final int FAIL_REASON_INVALID_SYSTEM_WINDOW = 2;
-    public static final int FAIL_REASON_SECURE_POLICY_BY_MDM = 64;
-    public static final int FAIL_REASON_SECURE_POLICY_BY_SECURE_FLAGS = 32;
+    public static final int FAIL_REASON_SECURE_POLICY_BY_MDM = 32;
+    public static final int FAIL_REASON_SECURE_POLICY_BY_SECURE_FLAGS = 16;
     private Bitmap mCapturedBitmap;
     private int mFailedReason;
     private String mSecuredWindowName;
     private String mTargetWindowName;
-
-    /* synthetic */ ScreenshotResult(Bitmap bitmap, int i, String str, String str2, ScreenshotResultIA screenshotResultIA) {
-        this(bitmap, i, str, str2);
-    }
-
-    /* synthetic */ ScreenshotResult(Parcel parcel, ScreenshotResultIA screenshotResultIA) {
-        this(parcel);
-    }
 
     private ScreenshotResult(Bitmap bitmap, int failedReason, String targetWindowName, String securedWindowName) {
         this.mCapturedBitmap = bitmap;
@@ -73,7 +64,6 @@ public class ScreenshotResult implements Parcelable {
         return this.mSecuredWindowName;
     }
 
-    /* loaded from: classes5.dex */
     public static class Builder {
         private Bitmap mCapturedBitmap;
         private int mFailedReason;
@@ -81,8 +71,7 @@ public class ScreenshotResult implements Parcelable {
         private String mTargetWindowName;
 
         public ScreenshotResult build() {
-            ScreenshotResult info = new ScreenshotResult(this.mCapturedBitmap, this.mFailedReason, this.mTargetWindowName, this.mSecuredWindowName);
-            return info;
+            return new ScreenshotResult(this.mCapturedBitmap, this.mFailedReason, this.mTargetWindowName, this.mSecuredWindowName);
         }
 
         public Builder setCapturedBitmap(Bitmap bitmap) {
@@ -103,23 +92,6 @@ public class ScreenshotResult implements Parcelable {
         public Builder setSecuredWindowName(String securedWindowName) {
             this.mSecuredWindowName = securedWindowName;
             return this;
-        }
-    }
-
-    /* renamed from: com.samsung.android.view.ScreenshotResult$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ScreenshotResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ScreenshotResult createFromParcel(Parcel in) {
-            return new ScreenshotResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ScreenshotResult[] newArray(int size) {
-            return new ScreenshotResult[size];
         }
     }
 

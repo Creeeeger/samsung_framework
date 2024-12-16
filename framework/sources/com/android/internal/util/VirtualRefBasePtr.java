@@ -10,7 +10,7 @@ public final class VirtualRefBasePtr {
 
     public VirtualRefBasePtr(long ptr) {
         this.mNativePtr = ptr;
-        nIncStrong(ptr);
+        nIncStrong(this.mNativePtr);
     }
 
     public long get() {
@@ -18,9 +18,8 @@ public final class VirtualRefBasePtr {
     }
 
     public void release() {
-        long j = this.mNativePtr;
-        if (j != 0) {
-            nDecStrong(j);
+        if (this.mNativePtr != 0) {
+            nDecStrong(this.mNativePtr);
             this.mNativePtr = 0L;
         }
     }

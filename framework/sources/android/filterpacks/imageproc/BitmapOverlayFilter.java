@@ -9,12 +9,11 @@ import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
 import android.graphics.Bitmap;
-import com.samsung.android.content.smartclip.SemSmartClipMetaTagType;
 
 /* loaded from: classes.dex */
 public class BitmapOverlayFilter extends Filter {
 
-    @GenerateFieldPort(name = SemSmartClipMetaTagType.BITMAP)
+    @GenerateFieldPort(name = "bitmap")
     private Bitmap mBitmap;
     private Frame mFrame;
     private final String mOverlayShader;
@@ -57,9 +56,8 @@ public class BitmapOverlayFilter extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        Frame frame = this.mFrame;
-        if (frame != null) {
-            frame.release();
+        if (this.mFrame != null) {
+            this.mFrame.release();
             this.mFrame = null;
         }
     }

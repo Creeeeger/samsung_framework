@@ -20,7 +20,6 @@ public abstract class DeviceStateCache {
         return false;
     }
 
-    /* loaded from: classes.dex */
     private static class EmptyDeviceStateCache extends DeviceStateCache {
         private static final EmptyDeviceStateCache INSTANCE = new EmptyDeviceStateCache();
 

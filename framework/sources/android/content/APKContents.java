@@ -14,7 +14,7 @@ import java.io.IOException;
 public class APKContents {
     public static final String MAIN_PACKAGE_DIR = "/data/overlays/main_packages/";
     private AssetManager mAssetManager;
-    private Resources mResources;
+    private final Resources mResources = new Resources(ClassLoader.getSystemClassLoader());
 
     public APKContents(String path) {
         try {
@@ -29,9 +29,7 @@ public class APKContents {
                 Configuration config = new Configuration();
                 config.setToDefaults();
                 ResourcesImpl mResourcesImpl = new ResourcesImpl(this.mAssetManager, metrics, config, new DisplayAdjustments());
-                Resources resources = new Resources(ClassLoader.getSystemClassLoader());
-                this.mResources = resources;
-                resources.setImpl(mResourcesImpl);
+                this.mResources.setImpl(mResourcesImpl);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -50,5 +48,9 @@ public class APKContents {
 
     public static String getMainThemePackagePath(String pkgName) {
         return MAIN_PACKAGE_DIR + pkgName + ".apk";
+    }
+
+    public static String getCurrentThemePackagePath(String pkgName) {
+        return "/data/overlays/currentstyle/" + pkgName + ".apk";
     }
 }

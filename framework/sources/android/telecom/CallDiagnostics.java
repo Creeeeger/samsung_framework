@@ -22,7 +22,6 @@ public abstract class CallDiagnostics {
     private String mCallId;
     private Listener mListener;
 
-    /* loaded from: classes3.dex */
     public interface Listener {
         void onClearDiagnosticMessage(CallDiagnostics callDiagnostics, int i);
 
@@ -32,7 +31,6 @@ public abstract class CallDiagnostics {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface MessageType {
     }
 
@@ -59,23 +57,20 @@ public abstract class CallDiagnostics {
     }
 
     public final void sendDeviceToDeviceMessage(int message, int value) {
-        Listener listener = this.mListener;
-        if (listener != null) {
-            listener.onSendDeviceToDeviceMessage(this, message, value);
+        if (this.mListener != null) {
+            this.mListener.onSendDeviceToDeviceMessage(this, message, value);
         }
     }
 
     public final void displayDiagnosticMessage(int messageId, CharSequence message) {
-        Listener listener = this.mListener;
-        if (listener != null) {
-            listener.onDisplayDiagnosticMessage(this, messageId, message);
+        if (this.mListener != null) {
+            this.mListener.onDisplayDiagnosticMessage(this, messageId, message);
         }
     }
 
     public final void clearDiagnosticMessage(int messageId) {
-        Listener listener = this.mListener;
-        if (listener != null) {
-            listener.onClearDiagnosticMessage(this, messageId);
+        if (this.mListener != null) {
+            this.mListener.onClearDiagnosticMessage(this, messageId);
         }
     }
 

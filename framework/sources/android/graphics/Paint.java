@@ -1,11 +1,13 @@
 package android.graphics;
 
+import android.app.compat.CompatChanges;
 import android.graphics.fonts.FontVariationAxis;
 import android.os.LocaleList;
 import android.text.GraphicsOperations;
 import android.text.SpannableString;
 import android.text.SpannedString;
 import android.text.TextUtils;
+import com.android.text.flags.Flags;
 import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
 import java.lang.annotation.Retention;
@@ -35,10 +37,14 @@ public class Paint {
     public static final int CURSOR_AT_OR_BEFORE = 3;
     public static final int CURSOR_BEFORE = 2;
     private static final int CURSOR_OPT_MAX_VALUE = 4;
+    public static final long DEPRECATE_UI_FONT = 279646685;
     public static final int DEV_KERN_TEXT_FLAG = 256;
     public static final int DIRECTION_LTR = 0;
     public static final int DIRECTION_RTL = 1;
     public static final int DITHER_FLAG = 4;
+    private static final int ELEGANT_TEXT_HEIGHT_DISABLED = 1;
+    private static final int ELEGANT_TEXT_HEIGHT_ENABLED = 0;
+    private static final int ELEGANT_TEXT_HEIGHT_UNSET = -1;
     public static final int EMBEDDED_BITMAP_TEXT_FLAG = 1024;
     public static final int END_HYPHEN_EDIT_INSERT_ARMENIAN_HYPHEN = 3;
     public static final int END_HYPHEN_EDIT_INSERT_HYPHEN = 2;
@@ -59,6 +65,8 @@ public class Paint {
     public static final int START_HYPHEN_EDIT_NO_EDIT = 0;
     public static final int STRIKE_THRU_TEXT_FLAG = 16;
     public static final int SUBPIXEL_TEXT_FLAG = 128;
+    public static final int TEXT_RUN_FLAG_LEFT_EDGE = 8192;
+    public static final int TEXT_RUN_FLAG_RIGHT_EDGE = 16384;
     public static final int UNDERLINE_TEXT_FLAG = 8;
     public static final int VERTICAL_TEXT_FLAG = 4096;
     public int mBidiFlags;
@@ -92,37 +100,19 @@ public class Paint {
     static final Align[] sAlignArray = {Align.LEFT, Align.CENTER, Align.RIGHT};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CursorOption {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface EndHyphenEdit {
     }
 
-    /* loaded from: classes.dex */
-    public static class FontMetrics {
-        public float ascent;
-        public float bottom;
-        public float descent;
-        public float leading;
-        public float top;
-    }
-
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PaintFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface StartHyphenEdit {
-    }
-
-    /* renamed from: -$$Nest$smnGetNativeFinalizer */
-    static /* bridge */ /* synthetic */ long m1144$$Nest$smnGetNativeFinalizer() {
-        return nGetNativeFinalizer();
     }
 
     @CriticalNative
@@ -141,6 +131,9 @@ public class Paint {
     private static native void nGetCharArrayBounds(long j, char[] cArr, int i, int i2, int i3, Rect rect);
 
     @CriticalNative
+    private static native int nGetElegantTextHeight(long j);
+
+    @CriticalNative
     private static native int nGetEndHyphenEdit(long j);
 
     @CriticalNative
@@ -150,10 +143,10 @@ public class Paint {
     private static native int nGetFlags(long j);
 
     @FastNative
-    private static native float nGetFontMetrics(long j, FontMetrics fontMetrics);
+    private static native float nGetFontMetrics(long j, FontMetrics fontMetrics, boolean z);
 
     @FastNative
-    private static native int nGetFontMetricsInt(long j, FontMetricsInt fontMetricsInt);
+    private static native int nGetFontMetricsInt(long j, FontMetricsInt fontMetricsInt, boolean z);
 
     private static native void nGetFontMetricsIntForText(long j, String str, int i, int i2, int i3, int i4, boolean z, FontMetricsInt fontMetricsInt);
 
@@ -165,13 +158,16 @@ public class Paint {
     @CriticalNative
     private static native float nGetLetterSpacing(long j);
 
-    private static native long nGetNativeFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nGetNativeFinalizer();
 
     private static native int nGetOffsetForAdvance(long j, char[] cArr, int i, int i2, int i3, int i4, boolean z, float f);
 
     private static native float nGetRunAdvance(long j, char[] cArr, int i, int i2, int i3, int i4, boolean z, int i5);
 
-    private static native float nGetRunCharacterAdvance(long j, char[] cArr, int i, int i2, int i3, int i4, boolean z, int i5, float[] fArr, int i6);
+    private static native float nGetRunCharacterAdvance(long j, char[] cArr, int i, int i2, int i3, int i4, boolean z, int i5, float[] fArr, int i6, RectF rectF);
+
+    private static native float nGetRunCharacterAdvance(long j, char[] cArr, int i, int i2, int i3, int i4, boolean z, int i5, float[] fArr, int i6, RectF rectF, RunInfo runInfo);
 
     @CriticalNative
     private static native int nGetStartHyphenEdit(long j);
@@ -242,9 +238,6 @@ public class Paint {
     private static native long nInitWithPaint(long j);
 
     @CriticalNative
-    private static native boolean nIsElegantTextHeight(long j);
-
-    @CriticalNative
     private static native void nReset(long j);
 
     @CriticalNative
@@ -269,7 +262,7 @@ public class Paint {
     private static native void nSetDither(long j, boolean z);
 
     @CriticalNative
-    private static native void nSetElegantTextHeight(long j, boolean z);
+    private static native void nSetElegantTextHeight(long j, int i);
 
     @CriticalNative
     private static native void nSetEndHyphenEdit(long j, int i);
@@ -363,16 +356,13 @@ public class Paint {
     @CriticalNative
     private static native void nSetXfermode(long j, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Paint.class.getClassLoader(), Paint.m1144$$Nest$smnGetNativeFinalizer());
+    private static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Paint.class.getClassLoader(), Paint.nGetNativeFinalizer());
 
         private NoImagePreloadHolder() {
         }
     }
 
-    /* loaded from: classes.dex */
     public enum Style {
         FILL(0),
         STROKE(1),
@@ -385,7 +375,6 @@ public class Paint {
         }
     }
 
-    /* loaded from: classes.dex */
     public enum Cap {
         BUTT(0),
         ROUND(1),
@@ -398,7 +387,6 @@ public class Paint {
         }
     }
 
-    /* loaded from: classes.dex */
     public enum Join {
         MITER(0),
         ROUND(1),
@@ -411,7 +399,6 @@ public class Paint {
         }
     }
 
-    /* loaded from: classes.dex */
     public enum Align {
         LEFT(0),
         CENTER(1),
@@ -438,6 +425,7 @@ public class Paint {
         this.mCompatScaling = 1.0f;
         setTextLocales(LocaleList.getAdjustedDefault());
         this.mColor = Color.pack(-16777216);
+        resetElegantTextHeight();
     }
 
     public Paint(Paint paint) {
@@ -464,7 +452,7 @@ public class Paint {
         this.mInvCompatScaling = 1.0f;
         this.mBidiFlags = 2;
         setTextLocales(LocaleList.getAdjustedDefault());
-        setElegantTextHeight(false);
+        resetElegantTextHeight();
         this.mFontFeatureSettings = null;
         this.mFontVariationSettings = null;
         this.mShadowLayerRadius = 0.0f;
@@ -520,17 +508,15 @@ public class Paint {
 
     public synchronized long getNativeInstance() {
         boolean filter = isFilterBitmap();
-        Shader shader = this.mShader;
-        long newNativeShader = shader == null ? 0L : shader.getNativeInstance(filter);
+        long newNativeShader = this.mShader == null ? 0L : this.mShader.getNativeInstance(filter);
         if (newNativeShader != this.mNativeShader) {
             this.mNativeShader = newNativeShader;
-            nSetShader(this.mNativePaint, newNativeShader);
+            nSetShader(this.mNativePaint, this.mNativeShader);
         }
-        ColorFilter colorFilter = this.mColorFilter;
-        long newNativeColorFilter = colorFilter != null ? colorFilter.getNativeInstance() : 0L;
+        long newNativeColorFilter = this.mColorFilter != null ? this.mColorFilter.getNativeInstance() : 0L;
         if (newNativeColorFilter != this.mNativeColorFilter) {
             this.mNativeColorFilter = newNativeColorFilter;
-            nSetColorFilter(this.mNativePaint, newNativeColorFilter);
+            nSetColorFilter(this.mNativePaint, this.mNativeColorFilter);
         }
         return this.mNativePaint;
     }
@@ -753,11 +739,10 @@ public class Paint {
     }
 
     public BlendMode getBlendMode() {
-        Xfermode xfermode = this.mXfermode;
-        if (xfermode == null) {
+        if (this.mXfermode == null) {
             return null;
         }
-        return BlendMode.fromValue(xfermode.porterDuffMode);
+        return BlendMode.fromValue(this.mXfermode.porterDuffMode);
     }
 
     public Xfermode setXfermode(Xfermode xfermode) {
@@ -766,8 +751,7 @@ public class Paint {
 
     private Xfermode installXfermode(Xfermode xfermode) {
         int newMode = xfermode != null ? xfermode.porterDuffMode : Xfermode.DEFAULT;
-        Xfermode xfermode2 = this.mXfermode;
-        int curMode = xfermode2 != null ? xfermode2.porterDuffMode : Xfermode.DEFAULT;
+        int curMode = this.mXfermode != null ? this.mXfermode.porterDuffMode : Xfermode.DEFAULT;
         if (newMode != curMode) {
             nSetXfermode(this.mNativePaint, newMode);
         }
@@ -920,8 +904,7 @@ public class Paint {
                 nSetMyanmarEncoding(this.mNativePaint, MyanmarEncoding.ME_UNICODE.nativeInt);
             }
         }
-        LocaleList localeList = this.mLocales;
-        if (localeList != null && localeList.size() == 1 && locale.equals(this.mLocales.get(0))) {
+        if (this.mLocales != null && this.mLocales.size() == 1 && locale.equals(this.mLocales.get(0))) {
             return;
         }
         this.mLocales = new LocaleList(locale);
@@ -957,11 +940,10 @@ public class Paint {
     private void syncTextLocalesWithMinikin() {
         String languageTags = this.mLocales.toLanguageTags();
         synchronized (sCacheLock) {
-            HashMap<String, Integer> hashMap = sMinikinLocaleListIdCache;
-            Integer minikinLocaleListId = hashMap.get(languageTags);
+            Integer minikinLocaleListId = sMinikinLocaleListIdCache.get(languageTags);
             if (minikinLocaleListId == null) {
                 int newID = nSetTextLocales(this.mNativePaint, languageTags);
-                hashMap.put(languageTags, Integer.valueOf(newID));
+                sMinikinLocaleListIdCache.put(languageTags, Integer.valueOf(newID));
             } else {
                 nSetTextLocalesByMinikinLocaleListId(this.mNativePaint, minikinLocaleListId.intValue());
             }
@@ -969,11 +951,27 @@ public class Paint {
     }
 
     public boolean isElegantTextHeight() {
-        return nIsElegantTextHeight(this.mNativePaint);
+        int rawValue = nGetElegantTextHeight(this.mNativePaint);
+        switch (rawValue) {
+            case 0:
+                return true;
+            case 1:
+                return false;
+            default:
+                return Flags.deprecateUiFonts();
+        }
     }
 
-    public void setElegantTextHeight(boolean elegant) {
-        nSetElegantTextHeight(this.mNativePaint, elegant);
+    public void setElegantTextHeight(boolean z) {
+        nSetElegantTextHeight(this.mNativePaint, !z ? 1 : 0);
+    }
+
+    private void resetElegantTextHeight() {
+        if (CompatChanges.isChangeEnabled(DEPRECATE_UI_FONT)) {
+            nSetElegantTextHeight(this.mNativePaint, -1);
+        } else {
+            nSetElegantTextHeight(this.mNativePaint, 1);
+        }
     }
 
     public float getTextSize() {
@@ -1039,8 +1037,7 @@ public class Paint {
 
     public boolean setFontVariationSettings(String fontVariationSettings) {
         String settings = TextUtils.nullIfEmpty(fontVariationSettings);
-        String str = this.mFontVariationSettings;
-        if (settings == str || (settings != null && settings.equals(str))) {
+        if (settings == this.mFontVariationSettings || (settings != null && settings.equals(this.mFontVariationSettings))) {
             return true;
         }
         if (settings == null || settings.length() == 0) {
@@ -1048,10 +1045,7 @@ public class Paint {
             setTypeface(Typeface.createFromTypefaceWithVariation(this.mTypeface, Collections.emptyList()));
             return true;
         }
-        Typeface targetTypeface = this.mTypeface;
-        if (targetTypeface == null) {
-            targetTypeface = Typeface.DEFAULT;
-        }
+        Typeface targetTypeface = this.mTypeface == null ? Typeface.DEFAULT : this.mTypeface;
         FontVariationAxis[] axes = FontVariationAxis.fromFontVariationSettings(settings);
         ArrayList<FontVariationAxis> filteredAxes = new ArrayList<>();
         for (FontVariationAxis axis : axes) {
@@ -1091,14 +1085,48 @@ public class Paint {
         return nDescent(this.mNativePaint);
     }
 
+    public static class FontMetrics {
+        public float ascent;
+        public float bottom;
+        public float descent;
+        public float leading;
+        public float top;
+
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || !(o instanceof FontMetrics)) {
+                return false;
+            }
+            FontMetrics that = (FontMetrics) o;
+            if (that.top == this.top && that.ascent == this.ascent && that.descent == this.descent && that.bottom == this.bottom && that.leading == this.leading) {
+                return true;
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return Objects.hash(Float.valueOf(this.top), Float.valueOf(this.ascent), Float.valueOf(this.descent), Float.valueOf(this.bottom), Float.valueOf(this.leading));
+        }
+
+        public String toString() {
+            return "FontMetrics{top=" + this.top + ", ascent=" + this.ascent + ", descent=" + this.descent + ", bottom=" + this.bottom + ", leading=" + this.leading + '}';
+        }
+    }
+
     public float getFontMetrics(FontMetrics metrics) {
-        return nGetFontMetrics(this.mNativePaint, metrics);
+        return nGetFontMetrics(this.mNativePaint, metrics, false);
     }
 
     public FontMetrics getFontMetrics() {
         FontMetrics fm = new FontMetrics();
         getFontMetrics(fm);
         return fm;
+    }
+
+    public void getFontMetricsForLocale(FontMetrics metrics) {
+        nGetFontMetrics(this.mNativePaint, metrics, true);
     }
 
     public void getFontMetricsInt(CharSequence text, int start, int count, int contextStart, int contextCount, boolean isRtl, FontMetricsInt outMetrics) {
@@ -1163,13 +1191,28 @@ public class Paint {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class FontMetricsInt {
         public int ascent;
         public int bottom;
         public int descent;
         public int leading;
         public int top;
+
+        public void set(FontMetricsInt fontMetricsInt) {
+            this.top = fontMetricsInt.top;
+            this.ascent = fontMetricsInt.ascent;
+            this.descent = fontMetricsInt.descent;
+            this.bottom = fontMetricsInt.bottom;
+            this.leading = fontMetricsInt.leading;
+        }
+
+        public void set(FontMetrics fontMetrics) {
+            this.top = (int) Math.floor(fontMetrics.top);
+            this.ascent = Math.round(fontMetrics.ascent);
+            this.descent = Math.round(fontMetrics.descent);
+            this.bottom = (int) Math.ceil(fontMetrics.bottom);
+            this.leading = Math.round(fontMetrics.leading);
+        }
 
         public String toString() {
             return "FontMetricsInt: top=" + this.top + " ascent=" + this.ascent + " descent=" + this.descent + " bottom=" + this.bottom + " leading=" + this.leading;
@@ -1192,13 +1235,29 @@ public class Paint {
     }
 
     public int getFontMetricsInt(FontMetricsInt fmi) {
-        return nGetFontMetricsInt(this.mNativePaint, fmi);
+        return nGetFontMetricsInt(this.mNativePaint, fmi, false);
     }
 
     public FontMetricsInt getFontMetricsInt() {
         FontMetricsInt fm = new FontMetricsInt();
         getFontMetricsInt(fm);
         return fm;
+    }
+
+    public void getFontMetricsIntForLocale(FontMetricsInt metrics) {
+        nGetFontMetricsInt(this.mNativePaint, metrics, true);
+    }
+
+    public static final class RunInfo {
+        private int mClusterCount = 0;
+
+        public int getClusterCount() {
+            return this.mClusterCount;
+        }
+
+        public void setClusterCount(int clusterCount) {
+            this.mClusterCount = clusterCount;
+        }
     }
 
     public float getFontSpacing() {
@@ -1215,14 +1274,20 @@ public class Paint {
         if (text.length == 0 || count == 0) {
             return 0.0f;
         }
-        if (!this.mHasCompatScaling) {
+        int oldFlag = getFlags();
+        setFlags(getFlags() | 24576);
+        try {
+            if (this.mHasCompatScaling) {
+                float oldSize = getTextSize();
+                setTextSize(this.mCompatScaling * oldSize);
+                float w = nGetTextAdvances(this.mNativePaint, text, index, count, index, count, this.mBidiFlags, (float[]) null, 0);
+                setTextSize(oldSize);
+                return (float) Math.ceil(this.mInvCompatScaling * w);
+            }
             return (float) Math.ceil(nGetTextAdvances(this.mNativePaint, text, index, count, index, count, this.mBidiFlags, (float[]) null, 0));
+        } finally {
+            setFlags(oldFlag);
         }
-        float oldSize = getTextSize();
-        setTextSize(this.mCompatScaling * oldSize);
-        float w = nGetTextAdvances(this.mNativePaint, text, index, count, index, count, this.mBidiFlags, (float[]) null, 0);
-        setTextSize(oldSize);
-        return (float) Math.ceil(this.mInvCompatScaling * w);
     }
 
     public float measureText(String text, int start, int end) {
@@ -1235,14 +1300,20 @@ public class Paint {
         if (text.length() == 0 || start == end) {
             return 0.0f;
         }
-        if (!this.mHasCompatScaling) {
+        int oldFlag = getFlags();
+        setFlags(getFlags() | 24576);
+        try {
+            if (this.mHasCompatScaling) {
+                float oldSize = getTextSize();
+                setTextSize(this.mCompatScaling * oldSize);
+                float w = nGetTextAdvances(this.mNativePaint, text, start, end, start, end, this.mBidiFlags, (float[]) null, 0);
+                setTextSize(oldSize);
+                return (float) Math.ceil(this.mInvCompatScaling * w);
+            }
             return (float) Math.ceil(nGetTextAdvances(this.mNativePaint, text, start, end, start, end, this.mBidiFlags, (float[]) null, 0));
+        } finally {
+            setFlags(oldFlag);
         }
-        float oldSize = getTextSize();
-        setTextSize(this.mCompatScaling * oldSize);
-        float w = nGetTextAdvances(this.mNativePaint, text, start, end, start, end, this.mBidiFlags, (float[]) null, 0);
-        setTextSize(oldSize);
-        return (float) Math.ceil(this.mInvCompatScaling * w);
     }
 
     public float measureText(String text) {
@@ -1320,7 +1391,8 @@ public class Paint {
         if (measureForwards) {
             result = breakText(buf, 0, end - start, maxWidth, measuredWidth);
         } else {
-            result = breakText(buf, 0, -(end - start), maxWidth, measuredWidth);
+            int result2 = end - start;
+            result = breakText(buf, 0, -result2, maxWidth, measuredWidth);
         }
         TemporaryBuffer.recycle(buf);
         return result;
@@ -1356,18 +1428,24 @@ public class Paint {
         if (text.length == 0 || count == 0) {
             return 0;
         }
-        if (!this.mHasCompatScaling) {
+        int oldFlag = getFlags();
+        setFlags(getFlags() | 24576);
+        try {
+            if (!this.mHasCompatScaling) {
+                nGetTextAdvances(this.mNativePaint, text, index, count, index, count, this.mBidiFlags, widths, 0);
+                return count;
+            }
+            float oldSize = getTextSize();
+            setTextSize(this.mCompatScaling * oldSize);
             nGetTextAdvances(this.mNativePaint, text, index, count, index, count, this.mBidiFlags, widths, 0);
+            setTextSize(oldSize);
+            for (int i = 0; i < count; i++) {
+                widths[i] = widths[i] * this.mInvCompatScaling;
+            }
             return count;
+        } finally {
+            setFlags(oldFlag);
         }
-        float oldSize = getTextSize();
-        setTextSize(this.mCompatScaling * oldSize);
-        nGetTextAdvances(this.mNativePaint, text, index, count, index, count, this.mBidiFlags, widths, 0);
-        setTextSize(oldSize);
-        for (int i = 0; i < count; i++) {
-            widths[i] = widths[i] * this.mInvCompatScaling;
-        }
-        return count;
     }
 
     public int getTextWidths(CharSequence text, int start, int end, float[] widths) {
@@ -1412,19 +1490,25 @@ public class Paint {
         if (text.length() == 0 || start == end) {
             return 0;
         }
-        if (!this.mHasCompatScaling) {
+        int oldFlag = getFlags();
+        setFlags(getFlags() | 24576);
+        try {
+            if (!this.mHasCompatScaling) {
+                nGetTextAdvances(this.mNativePaint, text, start, end, start, end, this.mBidiFlags, widths, 0);
+                return end - start;
+            }
+            float oldSize = getTextSize();
+            setTextSize(this.mCompatScaling * oldSize);
             nGetTextAdvances(this.mNativePaint, text, start, end, start, end, this.mBidiFlags, widths, 0);
-            return end - start;
+            setTextSize(oldSize);
+            for (int i = 0; i < end - start; i++) {
+                widths[i] = widths[i] * this.mInvCompatScaling;
+            }
+            int i2 = end - start;
+            return i2;
+        } finally {
+            setFlags(oldFlag);
         }
-        float oldSize = getTextSize();
-        setTextSize(this.mCompatScaling * oldSize);
-        nGetTextAdvances(this.mNativePaint, text, start, end, start, end, this.mBidiFlags, widths, 0);
-        setTextSize(oldSize);
-        for (int i = 0; i < end - start; i++) {
-            widths[i] = widths[i] * this.mInvCompatScaling;
-        }
-        int i2 = end - start;
-        return i2;
     }
 
     public int getTextWidths(String text, float[] widths) {
@@ -1576,6 +1660,10 @@ public class Paint {
     }
 
     public float getRunCharacterAdvance(char[] text, int start, int end, int contextStart, int contextEnd, boolean isRtl, int offset, float[] advances, int advancesIndex) {
+        return getRunCharacterAdvance(text, start, end, contextStart, contextEnd, isRtl, offset, advances, advancesIndex, (RectF) null, (RunInfo) null);
+    }
+
+    public float getRunCharacterAdvance(char[] text, int start, int end, int contextStart, int contextEnd, boolean isRtl, int offset, float[] advances, int advancesIndex, RectF drawBounds, RunInfo runInfo) {
         if (text == null) {
             throw new IllegalArgumentException("text cannot be null");
         }
@@ -1592,12 +1680,20 @@ public class Paint {
             throw new IndexOutOfBoundsException("Given array doesn't have enough space to receive the result, advances.length: " + advances.length + " advanceIndex: " + advancesIndex + " needed space: " + (offset - start));
         }
         if (end == start) {
+            if (runInfo != null) {
+                runInfo.setClusterCount(0);
+                return 0.0f;
+            }
             return 0.0f;
         }
-        return nGetRunCharacterAdvance(this.mNativePaint, text, start, end, contextStart, contextEnd, isRtl, offset, advances, advancesIndex);
+        return nGetRunCharacterAdvance(this.mNativePaint, text, start, end, contextStart, contextEnd, isRtl, offset, advances, advancesIndex, drawBounds, runInfo);
     }
 
     public float getRunCharacterAdvance(CharSequence text, int start, int end, int contextStart, int contextEnd, boolean isRtl, int offset, float[] advances, int advancesIndex) {
+        return getRunCharacterAdvance(text, start, end, contextStart, contextEnd, isRtl, offset, advances, advancesIndex, (RectF) null, (RunInfo) null);
+    }
+
+    public float getRunCharacterAdvance(CharSequence text, int start, int end, int contextStart, int contextEnd, boolean isRtl, int offset, float[] advances, int advancesIndex, RectF drawBounds, RunInfo runInfo) {
         if (text == null) {
             throw new IllegalArgumentException("text cannot be null");
         }
@@ -1618,7 +1714,7 @@ public class Paint {
         }
         char[] buf = TemporaryBuffer.obtain(contextEnd - contextStart);
         TextUtils.getChars(text, contextStart, contextEnd, buf, 0);
-        float result = getRunCharacterAdvance(buf, start - contextStart, end - contextStart, 0, contextEnd - contextStart, isRtl, offset - contextStart, advances, advancesIndex);
+        float result = getRunCharacterAdvance(buf, start - contextStart, end - contextStart, 0, contextEnd - contextStart, isRtl, offset - contextStart, advances, advancesIndex, drawBounds, runInfo);
         TemporaryBuffer.recycle(buf);
         return result;
     }
@@ -1651,7 +1747,6 @@ public class Paint {
         return nEqualsForTextMeasurement(this.mNativePaint, other.mNativePaint);
     }
 
-    /* loaded from: classes.dex */
     public enum MyanmarEncoding {
         ME_UNICODE(0),
         ME_ZAWGYI(1),
@@ -1696,10 +1791,5 @@ public class Paint {
 
     public float getHCTStrokeWidth() {
         return (getTextSize() <= 15.0f ? 1 : 2) + (getTextSize() * 0.04f);
-    }
-
-    @Deprecated(forRemoval = true, since = "15.5")
-    public float semGetHighContrastTextStrokeWidth() {
-        return getHCTStrokeWidth();
     }
 }

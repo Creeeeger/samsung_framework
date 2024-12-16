@@ -57,7 +57,6 @@ public class SQLiteTrace {
         return session;
     }
 
-    /* loaded from: classes.dex */
     public static class SQLiteTraceSession {
         private static final int OPERATION_EXPORT_THRESHOLD = 100;
         private static final int TIMEOUT = 100;
@@ -65,6 +64,7 @@ public class SQLiteTrace {
         private ArrayList<TraceOperation> mOperations = new ArrayList<>();
         private AtomicBoolean mIsAlive = new AtomicBoolean(true);
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void start(final String dbPath) {
             Thread session = new Thread(new Runnable() { // from class: android.database.sqlite.trace.SQLiteTrace$SQLiteTraceSession$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -75,6 +75,7 @@ public class SQLiteTrace {
             session.start();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$start$0(String dbPath) {
             try {
                 try {
@@ -101,10 +102,9 @@ public class SQLiteTrace {
 
         private void end() {
             this.mIsAlive.set(false);
-            SQLiteTraceExporter sQLiteTraceExporter = this.mExporter;
-            if (sQLiteTraceExporter != null) {
+            if (this.mExporter != null) {
                 try {
-                    sQLiteTraceExporter.writeOperations(clearAndGetOperations());
+                    this.mExporter.writeOperations(clearAndGetOperations());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -118,6 +118,9 @@ public class SQLiteTrace {
 
         public synchronized void pushOperation(SQLiteConnection.Operation operation) {
             if (this.mIsAlive.get()) {
+                if (operation.mKind.equals("prepare")) {
+                    return;
+                }
                 this.mOperations.add(new TraceOperation(operation));
             }
         }
@@ -134,7 +137,6 @@ public class SQLiteTrace {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class TraceConfiguration {
         public final String databaseFilePath;
         public final String databaseName;
@@ -147,7 +149,6 @@ public class SQLiteTrace {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class TraceOperation {
         public final ArrayList<Object> bindArgs;
         public final int callingPid;

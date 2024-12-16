@@ -11,14 +11,14 @@ public abstract class PolicyValue<V> implements Parcelable {
         this.mValue = (V) Objects.requireNonNull(v);
     }
 
-    public PolicyValue() {
+    PolicyValue() {
     }
 
     public V getValue() {
         return this.mValue;
     }
 
-    public void setValue(V value) {
+    void setValue(V value) {
         this.mValue = value;
     }
 }

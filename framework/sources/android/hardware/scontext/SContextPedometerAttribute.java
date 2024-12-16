@@ -15,7 +15,7 @@ public class SContextPedometerAttribute extends SContextAttribute {
     private static int MODE_USER_INFO = 0;
     private static int MODE_EXERCISE = 1;
 
-    public SContextPedometerAttribute() {
+    SContextPedometerAttribute() {
         this.mGender = 1;
         this.mHeight = 170.0d;
         this.mWeight = 60.0d;
@@ -51,8 +51,7 @@ public class SContextPedometerAttribute extends SContextAttribute {
 
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mGender;
-        if (i < 1 || i > 2) {
+        if (this.mGender < 1 || this.mGender > 2) {
             Log.e(TAG, "The gender is wrong.");
             return false;
         }

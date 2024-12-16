@@ -89,16 +89,14 @@ public class DrmConvertSession {
     }
 
     public int close(String filename) {
-        int i;
         int result;
         String str;
         int result2 = 491;
-        DrmManagerClient drmManagerClient = this.mDrmClient;
-        if (drmManagerClient == null || (i = this.mConvertSessionId) < 0) {
+        if (this.mDrmClient == null || this.mConvertSessionId < 0) {
             return 491;
         }
         try {
-            DrmConvertedStatus convertedStatus = drmManagerClient.closeConvertSession(i);
+            DrmConvertedStatus convertedStatus = this.mDrmClient.closeConvertSession(this.mConvertSessionId);
             if (convertedStatus == null || convertedStatus.statusCode != 1 || convertedStatus.convertedData == null) {
                 return 406;
             }
@@ -155,9 +153,9 @@ public class DrmConvertSession {
                                 return result;
                             }
                         }
-                    } catch (IllegalArgumentException e6) {
+                    } catch (IOException e6) {
                         result2 = 492;
-                        Log.w(TAG, "Could not open file in mode: rw", e6);
+                        Log.w(TAG, "Could not access File: " + filename + " .", e6);
                         if (rndAccessFile == null) {
                             return 492;
                         }
@@ -172,9 +170,9 @@ public class DrmConvertSession {
                             return result;
                         }
                     }
-                } catch (IOException e8) {
+                } catch (IllegalArgumentException e8) {
                     result2 = 492;
-                    Log.w(TAG, "Could not access File: " + filename + " .", e8);
+                    Log.w(TAG, "Could not open file in mode: rw", e8);
                     if (rndAccessFile == null) {
                         return 492;
                     }

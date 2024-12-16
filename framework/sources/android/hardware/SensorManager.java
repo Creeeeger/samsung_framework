@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.MemoryFile;
 import android.util.Log;
 import android.util.SparseArray;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ public abstract class SensorManager {
     public static final int AXIS_X = 1;
     public static final int AXIS_Y = 2;
     public static final int AXIS_Z = 3;
+    public static final int DATA_INJECTION = 1;
 
     @Deprecated
     public static final int DATA_X = 0;
@@ -40,7 +43,12 @@ public abstract class SensorManager {
     public static final float GRAVITY_THE_ISLAND = 4.815162f;
     public static final float GRAVITY_URANUS = 8.69f;
     public static final float GRAVITY_VENUS = 8.87f;
+    public static final int HAL_BYPASS_REPLAY_DATA_INJECTION = 4;
+
+    @Deprecated
     private static final int INJECT_MAIN_SCREEN_ON = 33572801;
+
+    @Deprecated
     private static final int INJECT_SUB_SCREEN_ON = 50350017;
     public static final float LIGHT_CLOUDY = 100.0f;
     public static final float LIGHT_FULLMOON = 0.25f;
@@ -65,6 +73,7 @@ public abstract class SensorManager {
 
     @Deprecated
     public static final int RAW_DATA_Z = 5;
+    public static final int REPLAY_DATA_INJECTION = 3;
 
     @Deprecated
     public static final int SENSOR_ACCELEROMETER = 2;
@@ -113,9 +122,13 @@ public abstract class SensorManager {
     private LegacySensorManager mLegacySensorManager;
     private final SparseArray<List<Sensor>> mSensorListByType = new SparseArray<>();
 
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DataInjectionMode {
+    }
+
     protected abstract boolean cancelTriggerSensorImpl(TriggerEventListener triggerEventListener, Sensor sensor, boolean z);
 
-    public abstract int configureDirectChannelImpl(SensorDirectChannel sensorDirectChannel, Sensor sensor, int i);
+    protected abstract int configureDirectChannelImpl(SensorDirectChannel sensorDirectChannel, Sensor sensor, int i);
 
     protected abstract SensorDirectChannel createDirectChannelImpl(MemoryFile memoryFile, HardwareBuffer hardwareBuffer);
 
@@ -125,9 +138,9 @@ public abstract class SensorManager {
 
     protected abstract List<Sensor> getFullDynamicSensorList();
 
-    public abstract List<Sensor> getFullSensorList();
+    protected abstract List<Sensor> getFullSensorList();
 
-    protected abstract boolean initDataInjectionImpl(boolean z);
+    protected abstract boolean initDataInjectionImpl(boolean z, int i);
 
     protected abstract boolean injectSensorDataImpl(Sensor sensor, float[] fArr, int i, long j);
 
@@ -198,7 +211,7 @@ public abstract class SensorManager {
     public Sensor getDefaultSensor(int type) {
         List<Sensor> l = getSensorList(type);
         boolean wakeUpSensor = false;
-        if (type == 8 || type == 17 || type == 22 || type == 23 || type == 24 || type == 25 || type == 34 || type == 26 || type == 65651 || type == 32 || type == 36 || type == 8) {
+        if (type == 8 || type == 17 || type == 22 || type == 23 || type == 24 || type == 25 || type == 34 || type == 26 || type == 65651 || type == 65653 || type == 32 || type == 36 || type == 8) {
             wakeUpSensor = true;
         }
         for (Sensor sensor : l) {
@@ -311,11 +324,10 @@ public abstract class SensorManager {
         return createDirectChannelImpl(null, mem);
     }
 
-    public void destroyDirectChannel(SensorDirectChannel channel) {
+    void destroyDirectChannel(SensorDirectChannel channel) {
         destroyDirectChannelImpl(channel);
     }
 
-    /* loaded from: classes.dex */
     public static abstract class DynamicSensorCallback {
         public void onDynamicSensorConnected(Sensor sensor) {
         }
@@ -683,16 +695,17 @@ public abstract class SensorManager {
 
     @SystemApi
     public boolean initDataInjection(boolean enable) {
-        return initDataInjectionImpl(enable);
+        return initDataInjectionImpl(enable, 1);
+    }
+
+    public boolean initDataInjection(boolean enable, int mode) {
+        return initDataInjectionImpl(enable, mode);
     }
 
     @SystemApi
     public boolean injectSensorData(Sensor sensor, float[] values, int accuracy, long timestamp) {
         if (sensor == null) {
             throw new IllegalArgumentException("sensor cannot be null");
-        }
-        if (!sensor.isDataInjectionSupported()) {
-            throw new IllegalArgumentException("sensor does not support data injection");
         }
         if (values == null) {
             throw new IllegalArgumentException("sensor data cannot be null");
@@ -752,9 +765,9 @@ public abstract class SensorManager {
             int[] data = new int[2];
             data[0] = 4;
             if (screenID == 0) {
-                data[1] = INJECT_MAIN_SCREEN_ON;
+                data[1] = 33572801;
             } else if (screenID == 1) {
-                data[1] = INJECT_SUB_SCREEN_ON;
+                data[1] = 50350017;
             }
             SensorAdditionalInfo info = SensorAdditionalInfo.createSContextData(sensor, data);
             Log.d(TAG, "set parameter active screen = " + screenID + ", " + data[1]);

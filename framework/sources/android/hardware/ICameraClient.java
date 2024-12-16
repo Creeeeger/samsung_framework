@@ -9,7 +9,6 @@ import android.os.RemoteException;
 /* loaded from: classes.dex */
 public interface ICameraClient extends IInterface {
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraClient {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -17,7 +16,6 @@ public interface ICameraClient extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraClient {
         public static final String DESCRIPTOR = "android.hardware.ICameraClient";
 
@@ -52,17 +50,14 @@ public interface ICameraClient extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraClient {
+        private static class Proxy implements ICameraClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -4,7 +4,10 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 
 /* loaded from: classes.dex */
-public class DrawableCache extends ThemedResourceCache<Drawable.ConstantState> {
+class DrawableCache extends ThemedResourceCache<Drawable.ConstantState> {
+    DrawableCache() {
+    }
+
     public Drawable getInstance(long key, Resources resources, Resources.Theme theme) {
         Drawable.ConstantState entry = get(key, theme);
         if (entry != null) {

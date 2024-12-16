@@ -2,7 +2,6 @@ package android.util;
 
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class SparseLongArray implements Cloneable {
@@ -19,15 +18,14 @@ public class SparseLongArray implements Cloneable {
             this.mKeys = EmptyArray.INT;
             this.mValues = EmptyArray.LONG;
         } else {
-            long[] newUnpaddedLongArray = ArrayUtils.newUnpaddedLongArray(initialCapacity);
-            this.mValues = newUnpaddedLongArray;
-            this.mKeys = new int[newUnpaddedLongArray.length];
+            this.mValues = ArrayUtils.newUnpaddedLongArray(initialCapacity);
+            this.mKeys = new int[this.mValues.length];
         }
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public SparseLongArray m4954clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SparseLongArray m5238clone() {
         SparseLongArray clone = null;
         try {
             clone = (SparseLongArray) super.clone();
@@ -60,18 +58,14 @@ public class SparseLongArray implements Cloneable {
 
     public void removeAtRange(int index, int size) {
         int size2 = Math.min(size, this.mSize - index);
-        int[] iArr = this.mKeys;
-        System.arraycopy(iArr, index + size2, iArr, index, this.mSize - (index + size2));
-        long[] jArr = this.mValues;
-        System.arraycopy(jArr, index + size2, jArr, index, this.mSize - (index + size2));
+        System.arraycopy(this.mKeys, index + size2, this.mKeys, index, this.mSize - (index + size2));
+        System.arraycopy(this.mValues, index + size2, this.mValues, index, this.mSize - (index + size2));
         this.mSize -= size2;
     }
 
     public void removeAt(int index) {
-        int[] iArr = this.mKeys;
-        System.arraycopy(iArr, index + 1, iArr, index, this.mSize - (index + 1));
-        long[] jArr = this.mValues;
-        System.arraycopy(jArr, index + 1, jArr, index, this.mSize - (index + 1));
+        System.arraycopy(this.mKeys, index + 1, this.mKeys, index, this.mSize - (index + 1));
+        System.arraycopy(this.mValues, index + 1, this.mValues, index, this.mSize - (index + 1));
         this.mSize--;
     }
 
@@ -143,12 +137,11 @@ public class SparseLongArray implements Cloneable {
     }
 
     public void append(int key, long value) {
-        int i = this.mSize;
-        if (i != 0 && key <= this.mKeys[i - 1]) {
+        if (this.mSize != 0 && key <= this.mKeys[this.mSize - 1]) {
             put(key, value);
             return;
         }
-        this.mKeys = GrowingArrayUtils.append(this.mKeys, i, key);
+        this.mKeys = GrowingArrayUtils.append(this.mKeys, this.mSize, key);
         this.mValues = GrowingArrayUtils.append(this.mValues, this.mSize, value);
         this.mSize++;
     }

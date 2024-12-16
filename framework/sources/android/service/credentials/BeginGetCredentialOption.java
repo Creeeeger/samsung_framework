@@ -11,14 +11,13 @@ import com.android.internal.util.Preconditions;
 public final class BeginGetCredentialOption implements Parcelable {
     private static final String BUNDLE_ID_KEY = "android.service.credentials.BeginGetCredentialOption.BUNDLE_ID_KEY";
     public static final Parcelable.Creator<BeginGetCredentialOption> CREATOR = new Parcelable.Creator<BeginGetCredentialOption>() { // from class: android.service.credentials.BeginGetCredentialOption.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginGetCredentialOption[] newArray(int size) {
             return new BeginGetCredentialOption[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginGetCredentialOption createFromParcel(Parcel in) {
             return new BeginGetCredentialOption(in);
@@ -27,10 +26,6 @@ public final class BeginGetCredentialOption implements Parcelable {
     private final Bundle mCandidateQueryData;
     private final String mId;
     private final String mType;
-
-    /* synthetic */ BeginGetCredentialOption(Parcel parcel, BeginGetCredentialOptionIA beginGetCredentialOptionIA) {
-        this(parcel);
-    }
 
     public String getId() {
         return this.mId;
@@ -78,26 +73,9 @@ public final class BeginGetCredentialOption implements Parcelable {
         Bundle candidateQueryData = in.readBundle();
         String id = in.readString8();
         this.mType = type;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mType);
         this.mCandidateQueryData = candidateQueryData;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) candidateQueryData);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mCandidateQueryData);
         this.mId = id;
-    }
-
-    /* renamed from: android.service.credentials.BeginGetCredentialOption$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BeginGetCredentialOption> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BeginGetCredentialOption[] newArray(int size) {
-            return new BeginGetCredentialOption[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BeginGetCredentialOption createFromParcel(Parcel in) {
-            return new BeginGetCredentialOption(in);
-        }
     }
 }

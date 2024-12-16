@@ -14,9 +14,7 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CustomDescription implements Parcelable {
     public static final Parcelable.Creator<CustomDescription> CREATOR = new Parcelable.Creator<CustomDescription>() { // from class: android.service.autofill.CustomDescription.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CustomDescription createFromParcel(Parcel parcel) {
             RemoteViews parentPresentation = (RemoteViews) parcel.readParcelable(null, RemoteViews.class);
@@ -51,6 +49,7 @@ public final class CustomDescription implements Parcelable {
             return builder.build();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CustomDescription[] newArray(int size) {
             return new CustomDescription[size];
@@ -60,10 +59,6 @@ public final class CustomDescription implements Parcelable {
     private final RemoteViews mPresentation;
     private final ArrayList<Pair<Integer, InternalTransformation>> mTransformations;
     private final ArrayList<Pair<InternalValidator, BatchUpdates>> mUpdates;
-
-    /* synthetic */ CustomDescription(Builder builder, CustomDescriptionIA customDescriptionIA) {
-        this(builder);
-    }
 
     private CustomDescription(Builder builder) {
         this.mPresentation = builder.mPresentation;
@@ -88,7 +83,6 @@ public final class CustomDescription implements Parcelable {
         return this.mActions;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         private SparseArray<InternalOnClickAction> mActions;
         private boolean mDestroyed;
@@ -145,16 +139,10 @@ public final class CustomDescription implements Parcelable {
     }
 
     public String toString() {
-        if (!Helper.sDebug) {
-            return super.toString();
+        if (Helper.sDebug) {
+            return "CustomDescription: [presentation=" + this.mPresentation + ", transformations=" + (this.mTransformations == null ? "N/A" : Integer.valueOf(this.mTransformations.size())) + ", updates=" + (this.mUpdates == null ? "N/A" : Integer.valueOf(this.mUpdates.size())) + ", actions=" + (this.mActions != null ? Integer.valueOf(this.mActions.size()) : "N/A") + NavigationBarInflaterView.SIZE_MOD_END;
         }
-        StringBuilder append = new StringBuilder("CustomDescription: [presentation=").append(this.mPresentation).append(", transformations=");
-        ArrayList<Pair<Integer, InternalTransformation>> arrayList = this.mTransformations;
-        StringBuilder append2 = append.append(arrayList == null ? "N/A" : Integer.valueOf(arrayList.size())).append(", updates=");
-        ArrayList<Pair<InternalValidator, BatchUpdates>> arrayList2 = this.mUpdates;
-        StringBuilder append3 = append2.append(arrayList2 == null ? "N/A" : Integer.valueOf(arrayList2.size())).append(", actions=");
-        SparseArray<InternalOnClickAction> sparseArray = this.mActions;
-        return append3.append(sparseArray != null ? Integer.valueOf(sparseArray.size()) : "N/A").append(NavigationBarInflaterView.SIZE_MOD_END).toString();
+        return super.toString();
     }
 
     @Override // android.os.Parcelable
@@ -168,11 +156,10 @@ public final class CustomDescription implements Parcelable {
         if (this.mPresentation == null) {
             return;
         }
-        ArrayList<Pair<Integer, InternalTransformation>> arrayList = this.mTransformations;
-        if (arrayList == null) {
+        if (this.mTransformations == null) {
             dest.writeIntArray(null);
         } else {
-            int size = arrayList.size();
+            int size = this.mTransformations.size();
             int[] ids = new int[size];
             InternalTransformation[] values = new InternalTransformation[size];
             for (int i = 0; i < size; i++) {
@@ -183,11 +170,10 @@ public final class CustomDescription implements Parcelable {
             dest.writeIntArray(ids);
             dest.writeParcelableArray(values, flags);
         }
-        ArrayList<Pair<InternalValidator, BatchUpdates>> arrayList2 = this.mUpdates;
-        if (arrayList2 == null) {
+        if (this.mUpdates == null) {
             dest.writeParcelableArray(null, flags);
         } else {
-            int size2 = arrayList2.size();
+            int size2 = this.mUpdates.size();
             InternalValidator[] conditions = new InternalValidator[size2];
             BatchUpdates[] updates = new BatchUpdates[size2];
             for (int i2 = 0; i2 < size2; i2++) {
@@ -198,12 +184,11 @@ public final class CustomDescription implements Parcelable {
             dest.writeParcelableArray(conditions, flags);
             dest.writeParcelableArray(updates, flags);
         }
-        SparseArray<InternalOnClickAction> sparseArray = this.mActions;
-        if (sparseArray == null) {
+        if (this.mActions == null) {
             dest.writeIntArray(null);
             return;
         }
-        int size3 = sparseArray.size();
+        int size3 = this.mActions.size();
         int[] ids2 = new int[size3];
         InternalOnClickAction[] values2 = new InternalOnClickAction[size3];
         for (int i3 = 0; i3 < size3; i3++) {
@@ -212,51 +197,5 @@ public final class CustomDescription implements Parcelable {
         }
         dest.writeIntArray(ids2);
         dest.writeParcelableArray(values2, flags);
-    }
-
-    /* renamed from: android.service.autofill.CustomDescription$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CustomDescription> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CustomDescription createFromParcel(Parcel parcel) {
-            RemoteViews parentPresentation = (RemoteViews) parcel.readParcelable(null, RemoteViews.class);
-            if (parentPresentation == null) {
-                return null;
-            }
-            Builder builder = new Builder(parentPresentation);
-            int[] transformationIds = parcel.createIntArray();
-            if (transformationIds != null) {
-                InternalTransformation[] values = (InternalTransformation[]) parcel.readParcelableArray(null, InternalTransformation.class);
-                int size = transformationIds.length;
-                for (int i = 0; i < size; i++) {
-                    builder.addChild(transformationIds[i], values[i]);
-                }
-            }
-            InternalValidator[] conditions = (InternalValidator[]) parcel.readParcelableArray(null, InternalValidator.class);
-            if (conditions != null) {
-                BatchUpdates[] updates = (BatchUpdates[]) parcel.readParcelableArray(null, BatchUpdates.class);
-                int size2 = conditions.length;
-                for (int i2 = 0; i2 < size2; i2++) {
-                    builder.batchUpdate(conditions[i2], updates[i2]);
-                }
-            }
-            int[] actionIds = parcel.createIntArray();
-            if (actionIds != null) {
-                InternalOnClickAction[] values2 = (InternalOnClickAction[]) parcel.readParcelableArray(null, InternalOnClickAction.class);
-                int size3 = actionIds.length;
-                for (int i3 = 0; i3 < size3; i3++) {
-                    builder.addOnClickAction(actionIds[i3], values2[i3]);
-                }
-            }
-            return builder.build();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CustomDescription[] newArray(int size) {
-            return new CustomDescription[size];
-        }
     }
 }

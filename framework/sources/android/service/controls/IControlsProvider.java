@@ -25,7 +25,6 @@ public interface IControlsProvider extends IInterface {
 
     void subscribe(List<String> list, IControlsSubscriber iControlsSubscriber) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IControlsProvider {
         @Override // android.service.controls.IControlsProvider
         public void load(IControlsSubscriber subscriber) throws RemoteException {
@@ -53,7 +52,6 @@ public interface IControlsProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IControlsProvider {
         static final int TRANSACTION_action = 4;
         static final int TRANSACTION_load = 1;
@@ -108,47 +106,44 @@ public interface IControlsProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IControlsProvider.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IControlsProvider.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IControlsProvider.DESCRIPTOR);
+                case 1:
+                    IControlsSubscriber _arg0 = IControlsSubscriber.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    load(_arg0);
+                    return true;
+                case 2:
+                    IControlsSubscriber _arg02 = IControlsSubscriber.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    loadSuggested(_arg02);
+                    return true;
+                case 3:
+                    List<String> _arg03 = data.createStringArrayList();
+                    IControlsSubscriber _arg1 = IControlsSubscriber.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    subscribe(_arg03, _arg1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    ControlActionWrapper _arg12 = (ControlActionWrapper) data.readTypedObject(ControlActionWrapper.CREATOR);
+                    IControlsActionCallback _arg2 = IControlsActionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    action(_arg04, _arg12, _arg2);
+                    return true;
+                case 5:
+                    IControlsProviderInfoSubscriber _arg05 = IControlsProviderInfoSubscriber.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    loadControlsProviderInfo(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IControlsSubscriber _arg0 = IControlsSubscriber.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            load(_arg0);
-                            return true;
-                        case 2:
-                            IControlsSubscriber _arg02 = IControlsSubscriber.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            loadSuggested(_arg02);
-                            return true;
-                        case 3:
-                            List<String> _arg03 = data.createStringArrayList();
-                            IControlsSubscriber _arg1 = IControlsSubscriber.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            subscribe(_arg03, _arg1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            ControlActionWrapper _arg12 = (ControlActionWrapper) data.readTypedObject(ControlActionWrapper.CREATOR);
-                            IControlsActionCallback _arg2 = IControlsActionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            action(_arg04, _arg12, _arg2);
-                            return true;
-                        case 5:
-                            IControlsProviderInfoSubscriber _arg05 = IControlsProviderInfoSubscriber.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            loadControlsProviderInfo(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IControlsProvider {
             private IBinder mRemote;
 

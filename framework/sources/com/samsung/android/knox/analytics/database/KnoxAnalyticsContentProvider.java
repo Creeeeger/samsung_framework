@@ -14,7 +14,7 @@ import com.samsung.android.knox.analytics.database.Contract;
 import com.samsung.android.knox.analytics.util.Log;
 import com.samsung.android.knox.analytics.util.SecurityUtils;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxAnalyticsContentProvider extends ContentProvider {
     private static final int B2C_FEATURE_PATH_ID = 7;
     private static final int CLEANED_EVENTS_PATH_ID = 5;
@@ -22,21 +22,19 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
     private static final int EVENTS_PATH_ID = 1;
     private static final int FEATURES_BLACKLIST_PATH_ID = 3;
     private static final int FEATURES_WHITELIST_PATH_ID = 6;
-    private static final String TAG = "[KnoxAnalytics] " + KnoxAnalyticsContentProvider.class.getSimpleName();
     private static final int VERSIONING_PATH_ID = 4;
-    private static final UriMatcher sUriMatcher;
     private volatile DatabaseCryptoAdapter mDatabaseCryptoAdapter;
+    private static final String TAG = "[KnoxAnalytics] " + KnoxAnalyticsContentProvider.class.getSimpleName();
+    private static final UriMatcher sUriMatcher = new UriMatcher(-1);
 
     static {
-        UriMatcher uriMatcher = new UriMatcher(-1);
-        sUriMatcher = uriMatcher;
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.Events.PATH, 1);
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.DatabaseSize.PATH, 2);
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.FeaturesBlacklist.PATH, 3);
-        uriMatcher.addURI(Contract.AUTHORITY, "version", 4);
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.DatabaseClean.PATH, 5);
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.FeaturesWhitelist.PATH, 6);
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.B2CFeatures.PATH, 7);
+        sUriMatcher.addURI(Contract.AUTHORITY, Contract.Events.PATH, 1);
+        sUriMatcher.addURI(Contract.AUTHORITY, Contract.DatabaseSize.PATH, 2);
+        sUriMatcher.addURI(Contract.AUTHORITY, Contract.FeaturesBlacklist.PATH, 3);
+        sUriMatcher.addURI(Contract.AUTHORITY, "version", 4);
+        sUriMatcher.addURI(Contract.AUTHORITY, Contract.DatabaseClean.PATH, 5);
+        sUriMatcher.addURI(Contract.AUTHORITY, Contract.FeaturesWhitelist.PATH, 6);
+        sUriMatcher.addURI(Contract.AUTHORITY, Contract.B2CFeatures.PATH, 7);
     }
 
     @Override // android.content.ContentProvider
@@ -49,8 +47,7 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
     @Override // android.content.ContentProvider
     public Uri insert(Uri uri, ContentValues values) {
         Uri returnUri;
-        String str = TAG;
-        Log.d(str, "insert()");
+        Log.d(TAG, "insert()");
         switch (sUriMatcher.match(uri)) {
             case 1:
                 SecurityUtils.enforceInternalOnly(getCallingPackage(), Binder.getCallingPid());
@@ -58,7 +55,7 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
                 break;
             case 2:
             default:
-                Log.d(str, "delete(): no match for URI");
+                Log.d(TAG, "delete(): no match for URI");
                 return null;
             case 3:
                 SecurityUtils.enforcePackageNameForContentProvider(getCallingPackage(), Binder.getCallingPid());
@@ -82,7 +79,7 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
                 break;
         }
         if (returnUri != null) {
-            Log.d(str, "insert(): notifyChange(" + returnUri.toString() + NavigationBarInflaterView.KEY_CODE_END);
+            Log.d(TAG, "insert(): notifyChange(" + returnUri.toString() + NavigationBarInflaterView.KEY_CODE_END);
             long token = -1;
             try {
                 token = Binder.clearCallingIdentity();
@@ -96,8 +93,7 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
 
     @Override // android.content.ContentProvider
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        String str = TAG;
-        Log.d(str, "query()");
+        Log.d(TAG, "query()");
         DatabaseCryptoAdapter databaseCryptoAdapter = getDatabaseCryptoAdapter();
         switch (sUriMatcher.match(uri)) {
             case 1:
@@ -122,7 +118,7 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
                 SecurityUtils.enforceInternalOnly(getCallingPackage(), Binder.getCallingPid());
                 return databaseCryptoAdapter.getB2CFeaturesCursor(selectionArgs);
             default:
-                Log.d(str, "query(): no match for URI");
+                Log.d(TAG, "query(): no match for URI");
                 return null;
         }
     }
@@ -130,8 +126,7 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
     @Override // android.content.ContentProvider
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int affectedRows;
-        String str = TAG;
-        Log.d(str, "delete()");
+        Log.d(TAG, "delete()");
         SecurityUtils.enforcePackageNameForContentProvider(getCallingPackage(), Binder.getCallingPid());
         switch (sUriMatcher.match(uri)) {
             case 1:
@@ -139,7 +134,7 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
                 break;
             case 2:
             default:
-                Log.d(str, "delete(): no match for URI");
+                Log.d(TAG, "delete(): no match for URI");
                 return 0;
             case 3:
                 affectedRows = (int) deleteFromFeaturesBlacklist(selection, selectionArgs);
@@ -384,9 +379,9 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0064, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0066, code lost:
     
-        if (r17.equals(com.samsung.android.knox.analytics.database.Contract.Events.Selection.DELETE_UP_TO_ID) != false) goto L78;
+        if (r17.equals(com.samsung.android.knox.analytics.database.Contract.Events.Selection.DELETE_UP_TO_ID) != false) goto L31;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -401,91 +396,91 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
             java.lang.String r3 = "deleteFromEvents()"
             com.samsung.android.knox.analytics.util.Log.d(r0, r3)
             r3 = 0
-            if (r2 == 0) goto Lad
-            int r5 = r2.length
-            if (r5 != 0) goto L14
-            goto Lad
+            if (r2 == 0) goto Laf
+            int r0 = r2.length
+            if (r0 != 0) goto L14
+            goto Laf
         L14:
             r5 = 0
-            r6 = r2[r5]
-            boolean r6 = r6.isEmpty()
-            if (r6 == 0) goto L23
+            r0 = r2[r5]
+            boolean r0 = r0.isEmpty()
+            if (r0 == 0) goto L25
+            java.lang.String r0 = com.samsung.android.knox.analytics.database.KnoxAnalyticsContentProvider.TAG
             java.lang.String r5 = "deleteFromEvents(): empty selectionArgs[0]"
             com.samsung.android.knox.analytics.util.Log.e(r0, r5)
             return r3
-        L23:
+        L25:
             r6 = 0
-            r8 = r2[r5]     // Catch: java.lang.NumberFormatException -> L91
-            java.lang.Long r8 = java.lang.Long.valueOf(r8)     // Catch: java.lang.NumberFormatException -> L91
-            long r8 = r8.longValue()     // Catch: java.lang.NumberFormatException -> L91
-            int r10 = r2.length     // Catch: java.lang.NumberFormatException -> L91
-            r11 = 2
-            r12 = 1
-            if (r10 != r11) goto L47
-            r10 = r2[r12]     // Catch: java.lang.NumberFormatException -> L91
-            boolean r10 = r10.isEmpty()     // Catch: java.lang.NumberFormatException -> L91
-            if (r10 != 0) goto L47
-            r10 = r2[r12]     // Catch: java.lang.NumberFormatException -> L91
-            java.lang.Long r10 = java.lang.Long.valueOf(r10)     // Catch: java.lang.NumberFormatException -> L91
-            long r13 = r10.longValue()     // Catch: java.lang.NumberFormatException -> L91
-            r6 = r13
-        L47:
-            com.samsung.android.knox.analytics.database.DatabaseCryptoAdapter r15 = r16.getDatabaseCryptoAdapter()
-            int r10 = r17.hashCode()
-            switch(r10) {
-                case -774791398: goto L67;
-                case -707369028: goto L5e;
-                case -17614173: goto L54;
-                default: goto L53;
+            r0 = r2[r5]     // Catch: java.lang.NumberFormatException -> L93
+            java.lang.Long r0 = java.lang.Long.valueOf(r0)     // Catch: java.lang.NumberFormatException -> L93
+            long r8 = r0.longValue()     // Catch: java.lang.NumberFormatException -> L93
+            int r0 = r2.length     // Catch: java.lang.NumberFormatException -> L93
+            r10 = 2
+            r11 = 1
+            if (r0 != r10) goto L49
+            r0 = r2[r11]     // Catch: java.lang.NumberFormatException -> L93
+            boolean r0 = r0.isEmpty()     // Catch: java.lang.NumberFormatException -> L93
+            if (r0 != 0) goto L49
+            r0 = r2[r11]     // Catch: java.lang.NumberFormatException -> L93
+            java.lang.Long r0 = java.lang.Long.valueOf(r0)     // Catch: java.lang.NumberFormatException -> L93
+            long r12 = r0.longValue()     // Catch: java.lang.NumberFormatException -> L93
+            r6 = r12
+        L49:
+            com.samsung.android.knox.analytics.database.DatabaseCryptoAdapter r0 = r16.getDatabaseCryptoAdapter()
+            int r12 = r17.hashCode()
+            switch(r12) {
+                case -774791398: goto L69;
+                case -707369028: goto L60;
+                case -17614173: goto L56;
+                default: goto L55;
             }
-        L53:
-            goto L71
-        L54:
+        L55:
+            goto L73
+        L56:
             java.lang.String r5 = "deleteUntilTargetDbSize"
             boolean r5 = r1.equals(r5)
-            if (r5 == 0) goto L53
-            r5 = r11
-            goto L72
-        L5e:
+            if (r5 == 0) goto L55
+            r5 = r10
+            goto L74
+        L60:
             java.lang.String r10 = "deleteUpToId"
             boolean r10 = r1.equals(r10)
-            if (r10 == 0) goto L53
-            goto L72
-        L67:
+            if (r10 == 0) goto L55
+            goto L74
+        L69:
             java.lang.String r5 = "deleteChunkBySize"
             boolean r5 = r1.equals(r5)
-            if (r5 == 0) goto L53
-            r5 = r12
-            goto L72
-        L71:
+            if (r5 == 0) goto L55
+            r5 = r11
+            goto L74
+        L73:
             r5 = -1
-        L72:
+        L74:
             switch(r5) {
-                case 0: goto L8b;
-                case 1: goto L80;
-                case 2: goto L7b;
-                default: goto L75;
+                case 0: goto L8e;
+                case 1: goto L84;
+                case 2: goto L7f;
+                default: goto L77;
             }
-        L75:
+        L77:
+            java.lang.String r5 = com.samsung.android.knox.analytics.database.KnoxAnalyticsContentProvider.TAG
             java.lang.String r10 = "deleteFromEvents(): invalid selection"
-            com.samsung.android.knox.analytics.util.Log.e(r0, r10)
+            com.samsung.android.knox.analytics.util.Log.e(r5, r10)
             return r3
-        L7b:
-            long r3 = r15.deleteUntilTargetDbSize(r8)
+        L7f:
+            long r3 = r0.deleteUntilTargetDbSize(r8)
             return r3
-        L80:
-            r10 = r15
+        L84:
+            r10 = r0
             r11 = r8
             r13 = r6
-            r5 = r15
             r15 = r19
             long r3 = r10.deleteEventChunk(r11, r13, r15)
             return r3
-        L8b:
-            r5 = r15
-            long r3 = r5.deleteUpTo(r8)
+        L8e:
+            long r3 = r0.deleteUpTo(r8)
             return r3
-        L91:
+        L93:
             r0 = move-exception
             java.lang.String r8 = com.samsung.android.knox.analytics.database.KnoxAnalyticsContentProvider.TAG
             java.lang.StringBuilder r9 = new java.lang.StringBuilder
@@ -497,7 +492,8 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
             java.lang.String r5 = r5.toString()
             com.samsung.android.knox.analytics.util.Log.e(r8, r5)
             return r3
-        Lad:
+        Laf:
+            java.lang.String r0 = com.samsung.android.knox.analytics.database.KnoxAnalyticsContentProvider.TAG
             java.lang.String r5 = "deleteFromEvents(): no selectionArgs"
             com.samsung.android.knox.analytics.util.Log.e(r0, r5)
             return r3
@@ -524,14 +520,13 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
     }
 
     private long deleteFromVersion(String selection, String[] selectionArgs) {
-        String str = TAG;
-        Log.d(str, "deleteFromVersion()");
+        Log.d(TAG, "deleteFromVersion()");
         if (selectionArgs == null || selectionArgs.length == 0) {
-            Log.e(str, "deleteFromVersion(): no selectionArgs");
+            Log.e(TAG, "deleteFromVersion(): no selectionArgs");
             return 0L;
         }
         if (selectionArgs[0].isEmpty()) {
-            Log.e(str, "deleteFromVersion(): empty selectionArgs[0]");
+            Log.e(TAG, "deleteFromVersion(): empty selectionArgs[0]");
             return 0L;
         }
         try {
@@ -571,10 +566,9 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
             iteration++;
             int currentEvents = databaseCryptoAdapter.getTotalCompressedEvents((int) 1);
             long deletedRows = databaseCryptoAdapter.deleteCompressedEventChunk(1L);
-            String str = TAG;
-            Log.d(str, "IT=" + iteration + " curS=" + currentSize + " tlDel=" + totalDeleted + " nxtCh=" + currentEvents + " delRows=" + deletedRows);
+            Log.d(TAG, "IT=" + iteration + " curS=" + currentSize + " tlDel=" + totalDeleted + " nxtCh=" + currentEvents + " delRows=" + deletedRows);
             if (deletedRows == 0) {
-                Log.e(str, "cleanCompressedEventsTable(): error deleting or db is empty");
+                Log.e(TAG, "cleanCompressedEventsTable(): error deleting or db is empty");
                 break;
             }
             totalDeleted += currentEvents;

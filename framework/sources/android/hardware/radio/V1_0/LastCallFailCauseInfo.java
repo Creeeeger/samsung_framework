@@ -55,7 +55,7 @@ public final class LastCallFailCauseInfo {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.causeCode = _hidl_blob.getInt32(_hidl_offset + 0);
         this.vendorCause = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.vendorCause.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

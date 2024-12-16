@@ -26,33 +26,30 @@ public final class PduCache extends AbstractCache<Uri, PduCacheEntry> {
     private static final int MMS_SENT = 4;
     private static final int MMS_SENT_ID = 5;
     private static final String TAG = "PduCache";
-    private static final UriMatcher URI_MATCHER;
+    private static final UriMatcher URI_MATCHER = new UriMatcher(-1);
     private static PduCache sInstance;
     private final HashMap<Integer, HashSet<Uri>> mMessageBoxes = new HashMap<>();
     private final HashMap<Long, HashSet<Uri>> mThreads = new HashMap<>();
     private final HashSet<Uri> mUpdating = new HashSet<>();
 
     static {
-        UriMatcher uriMatcher = new UriMatcher(-1);
-        URI_MATCHER = uriMatcher;
-        uriMatcher.addURI("mms", null, 0);
-        uriMatcher.addURI("mms", "#", 1);
-        uriMatcher.addURI("mms", "inbox", 2);
-        uriMatcher.addURI("mms", "inbox/#", 3);
-        uriMatcher.addURI("mms", "sent", 4);
-        uriMatcher.addURI("mms", "sent/#", 5);
-        uriMatcher.addURI("mms", "drafts", 6);
-        uriMatcher.addURI("mms", "drafts/#", 7);
-        uriMatcher.addURI("mms", "outbox", 8);
-        uriMatcher.addURI("mms", "outbox/#", 9);
-        uriMatcher.addURI("mms-sms", "conversations", 10);
-        uriMatcher.addURI("mms-sms", "conversations/#", 11);
-        HashMap<Integer, Integer> hashMap = new HashMap<>();
-        MATCH_TO_MSGBOX_ID_MAP = hashMap;
-        hashMap.put(2, 1);
-        hashMap.put(4, 2);
-        hashMap.put(6, 3);
-        hashMap.put(8, 4);
+        URI_MATCHER.addURI("mms", null, 0);
+        URI_MATCHER.addURI("mms", "#", 1);
+        URI_MATCHER.addURI("mms", "inbox", 2);
+        URI_MATCHER.addURI("mms", "inbox/#", 3);
+        URI_MATCHER.addURI("mms", "sent", 4);
+        URI_MATCHER.addURI("mms", "sent/#", 5);
+        URI_MATCHER.addURI("mms", "drafts", 6);
+        URI_MATCHER.addURI("mms", "drafts/#", 7);
+        URI_MATCHER.addURI("mms", "outbox", 8);
+        URI_MATCHER.addURI("mms", "outbox/#", 9);
+        URI_MATCHER.addURI("mms-sms", "conversations", 10);
+        URI_MATCHER.addURI("mms-sms", "conversations/#", 11);
+        MATCH_TO_MSGBOX_ID_MAP = new HashMap<>();
+        MATCH_TO_MSGBOX_ID_MAP.put(2, 1);
+        MATCH_TO_MSGBOX_ID_MAP.put(4, 2);
+        MATCH_TO_MSGBOX_ID_MAP.put(6, 3);
+        MATCH_TO_MSGBOX_ID_MAP.put(8, 4);
     }
 
     private PduCache() {

@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TextClassificationContext implements Parcelable {
     public static final Parcelable.Creator<TextClassificationContext> CREATOR = new Parcelable.Creator<TextClassificationContext>() { // from class: android.view.textclassifier.TextClassificationContext.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextClassificationContext createFromParcel(Parcel parcel) {
             return new TextClassificationContext(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextClassificationContext[] newArray(int size) {
             return new TextClassificationContext[size];
@@ -25,14 +24,6 @@ public final class TextClassificationContext implements Parcelable {
     private SystemTextClassifierMetadata mSystemTcMetadata;
     private final String mWidgetType;
     private final String mWidgetVersion;
-
-    /* synthetic */ TextClassificationContext(Parcel parcel, TextClassificationContextIA textClassificationContextIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ TextClassificationContext(String str, String str2, String str3, TextClassificationContextIA textClassificationContextIA) {
-        this(str, str2, str3);
-    }
 
     private TextClassificationContext(String packageName, String widgetType, String widgetVersion) {
         this.mPackageName = (String) Objects.requireNonNull(packageName);
@@ -44,7 +35,7 @@ public final class TextClassificationContext implements Parcelable {
         return this.mPackageName;
     }
 
-    public void setSystemTextClassifierMetadata(SystemTextClassifierMetadata systemTcMetadata) {
+    void setSystemTextClassifierMetadata(SystemTextClassifierMetadata systemTcMetadata) {
         this.mSystemTcMetadata = systemTcMetadata;
     }
 
@@ -64,7 +55,6 @@ public final class TextClassificationContext implements Parcelable {
         return String.format(Locale.US, "TextClassificationContext{packageName=%s, widgetType=%s, widgetVersion=%s, systemTcMetadata=%s}", this.mPackageName, this.mWidgetType, this.mWidgetVersion, this.mSystemTcMetadata);
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private final String mPackageName;
         private final String mWidgetType;
@@ -103,22 +93,5 @@ public final class TextClassificationContext implements Parcelable {
         this.mWidgetType = in.readString();
         this.mWidgetVersion = in.readString();
         this.mSystemTcMetadata = (SystemTextClassifierMetadata) in.readParcelable(null, SystemTextClassifierMetadata.class);
-    }
-
-    /* renamed from: android.view.textclassifier.TextClassificationContext$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TextClassificationContext> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextClassificationContext createFromParcel(Parcel parcel) {
-            return new TextClassificationContext(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextClassificationContext[] newArray(int size) {
-            return new TextClassificationContext[size];
-        }
     }
 }

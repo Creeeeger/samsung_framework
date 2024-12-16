@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.PublishAttributes;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IRcsUcePublishStateCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IRcsUcePublishStateCallback";
 
     void onPublishUpdated(PublishAttributes publishAttributes) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRcsUcePublishStateCallback {
         @Override // android.telephony.ims.aidl.IRcsUcePublishStateCallback
         public void onPublishUpdated(PublishAttributes attributes) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IRcsUcePublishStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRcsUcePublishStateCallback {
         static final int TRANSACTION_onPublishUpdated = 1;
 
@@ -68,26 +66,22 @@ public interface IRcsUcePublishStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRcsUcePublishStateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRcsUcePublishStateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRcsUcePublishStateCallback.DESCRIPTOR);
+                case 1:
+                    PublishAttributes _arg0 = (PublishAttributes) data.readTypedObject(PublishAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPublishUpdated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            PublishAttributes _arg0 = (PublishAttributes) data.readTypedObject(PublishAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPublishUpdated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRcsUcePublishStateCallback {
+        private static class Proxy implements IRcsUcePublishStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

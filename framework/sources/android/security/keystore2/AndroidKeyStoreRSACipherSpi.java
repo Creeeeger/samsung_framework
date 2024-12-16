@@ -17,14 +17,12 @@ import java.util.List;
 import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherSpiBase {
+abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherSpiBase {
     private final int mKeymasterPadding;
     private int mKeymasterPaddingOverride;
     private int mModulusSizeBytes = -1;
 
-    /* loaded from: classes3.dex */
     public static final class NoPadding extends AndroidKeyStoreRSACipherSpi {
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -75,7 +73,6 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PKCS1Padding extends AndroidKeyStoreRSACipherSpi {
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -130,7 +127,6 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
     }
 
-    /* loaded from: classes3.dex */
     static abstract class OAEPWithMGF1Padding extends AndroidKeyStoreRSACipherSpi {
         private static final String MGF_ALGORITHM_MGF1 = "MGF1";
         private int mDigestOutputSizeBytes;
@@ -240,10 +236,10 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
 
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-        public final void addAlgorithmSpecificParametersToBegin(List<KeyParameter> parameters, Authorization[] keyCharacteristics) {
+        protected final void addAlgorithmSpecificParametersToBegin(List<KeyParameter> parameters, Authorization[] keyCharacteristics) {
             super.addAlgorithmSpecificParametersToBegin(parameters, keyCharacteristics);
             parameters.add(KeyStore2ParameterUtils.makeEnum(536870917, this.mKeymasterDigest));
-            if (isMgfDigestTagPresentInKeyProperties(keyCharacteristics) && KeymasterUtils.isKeyMintDevice(getKeySecurityLevel())) {
+            if (isMgfDigestTagPresentInKeyProperties(keyCharacteristics)) {
                 parameters.add(KeyStore2ParameterUtils.makeEnum(536871115, this.mKeymasterMgf1Digest));
             }
         }
@@ -285,7 +281,6 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class OAEPWithSHA1AndMGF1Padding extends OAEPWithMGF1Padding {
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -297,7 +292,6 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class OAEPWithSHA224AndMGF1Padding extends OAEPWithMGF1Padding {
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -309,7 +303,6 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class OAEPWithSHA256AndMGF1Padding extends OAEPWithMGF1Padding {
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -321,7 +314,6 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class OAEPWithSHA384AndMGF1Padding extends OAEPWithMGF1Padding {
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -333,7 +325,6 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class OAEPWithSHA512AndMGF1Padding extends OAEPWithMGF1Padding {
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -417,14 +408,14 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-    public final void resetAll() {
+    protected final void resetAll() {
         this.mModulusSizeBytes = -1;
         this.mKeymasterPaddingOverride = -1;
         super.resetAll();
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-    public final void resetWhilePreservingInitState() {
+    protected final void resetWhilePreservingInitState() {
         super.resetWhilePreservingInitState();
     }
 
@@ -464,11 +455,10 @@ public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherS
     }
 
     protected final int getModulusSizeBytes() {
-        int i = this.mModulusSizeBytes;
-        if (i == -1) {
+        if (this.mModulusSizeBytes == -1) {
             throw new IllegalStateException("Not initialized");
         }
-        return i;
+        return this.mModulusSizeBytes;
     }
 
     protected final void setKeymasterPaddingOverride(int keymasterPadding) {

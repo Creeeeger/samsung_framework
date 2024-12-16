@@ -37,7 +37,6 @@ public interface IQSTileService extends IInterface {
 
     void semSetToggleButtonChecked(boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IQSTileService {
         @Override // android.service.quicksettings.IQSTileService
         public void onTileAdded() throws RemoteException {
@@ -103,7 +102,6 @@ public interface IQSTileService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IQSTileService {
         public static final String DESCRIPTOR = "android.service.quicksettings.IQSTileService";
         static final int TRANSACTION_onClick = 5;
@@ -183,91 +181,88 @@ public interface IQSTileService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onTileAdded();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    onTileRemoved();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    onStartListening();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    onStopListening();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onClick(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    onUnlockComplete();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    CharSequence _result = semGetDetailViewTitle();
+                    reply.writeNoException();
+                    if (_result != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 8:
+                    CharSequence _result2 = semGetDetailViewSettingButtonName();
+                    reply.writeNoException();
+                    if (_result2 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result2, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 9:
+                    boolean _result3 = semIsToggleButtonExists();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 10:
+                    boolean _result4 = semIsToggleButtonChecked();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 11:
+                    RemoteViews _result5 = semGetDetailView();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 12:
+                    Intent _result6 = semGetSettingsIntent();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 13:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    semSetToggleButtonChecked(_arg02);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onTileAdded();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            onTileRemoved();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            onStartListening();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            onStopListening();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onClick(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            onUnlockComplete();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            CharSequence _result = semGetDetailViewTitle();
-                            reply.writeNoException();
-                            if (_result != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 8:
-                            CharSequence _result2 = semGetDetailViewSettingButtonName();
-                            reply.writeNoException();
-                            if (_result2 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result2, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 9:
-                            boolean _result3 = semIsToggleButtonExists();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 10:
-                            boolean _result4 = semIsToggleButtonChecked();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 11:
-                            RemoteViews _result5 = semGetDetailView();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 12:
-                            Intent _result6 = semGetSettingsIntent();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 13:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            semSetToggleButtonChecked(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IQSTileService {
             private IBinder mRemote;
 

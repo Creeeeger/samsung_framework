@@ -14,7 +14,6 @@ public interface ISemWifiP2pCallback extends IInterface {
 
     void onSuccess() throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemWifiP2pCallback {
         @Override // com.samsung.android.wifi.p2p.ISemWifiP2pCallback
         public void onSuccess() throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISemWifiP2pCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemWifiP2pCallback {
         static final int TRANSACTION_onFailure = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -76,29 +74,25 @@ public interface ISemWifiP2pCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemWifiP2pCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemWifiP2pCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemWifiP2pCallback.DESCRIPTOR);
+                case 1:
+                    onSuccess();
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFailure(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onSuccess();
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFailure(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemWifiP2pCallback {
+        private static class Proxy implements ISemWifiP2pCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

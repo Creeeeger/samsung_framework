@@ -134,7 +134,7 @@ public class GestureStroke {
         return path;
     }
 
-    public void serialize(DataOutputStream out) throws IOException {
+    void serialize(DataOutputStream out) throws IOException {
         float[] pts = this.points;
         long[] times = this.timestamps;
         int count = this.points.length;
@@ -146,7 +146,7 @@ public class GestureStroke {
         }
     }
 
-    public static GestureStroke deserialize(DataInputStream in) throws IOException {
+    static GestureStroke deserialize(DataInputStream in) throws IOException {
         int count = in.readInt();
         ArrayList<GesturePoint> points = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
@@ -156,9 +156,8 @@ public class GestureStroke {
     }
 
     public void clearPath() {
-        Path path = this.mCachedPath;
-        if (path != null) {
-            path.rewind();
+        if (this.mCachedPath != null) {
+            this.mCachedPath.rewind();
         }
     }
 

@@ -1,9 +1,17 @@
 package com.samsung.android.core;
 
 import android.app.ActivityTaskManager;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ParceledListSlice;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.os.ServiceManager;
+import android.util.Log;
+import android.util.Singleton;
+import com.android.internal.compat.IPlatformCompat;
 import com.samsung.android.core.CompatChangeablePackageInfo;
 import com.samsung.android.core.ICompatChangeableManager;
 import java.io.PrintWriter;
@@ -14,15 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CompatChangeableApps extends ICompatChangeableManager.Stub {
     public static final String TAG = "CompatChangeableApps";
     private final Map<String, CompatChangeablePackageInfo> mCache;
     private CompatChangeablePackageInfo mDummyInfo;
+    private final Singleton<IPlatformCompat> mPlatformCompat;
     private final int mUserId;
 
-    /* loaded from: classes5.dex */
-    public static class OrientationOverrideDisallowedLazyHolder {
+    private static class OrientationOverrideDisallowedLazyHolder {
         static final HashSet<String> sList = new HashSet<>(Arrays.asList("com.sec.android.app.camera", "com.samsung.android.globalroaming", "com.samsung.android.app.watchmanager"));
 
         private OrientationOverrideDisallowedLazyHolder() {
@@ -36,6 +44,15 @@ public class CompatChangeableApps extends ICompatChangeableManager.Stub {
     public CompatChangeableApps(int userId, boolean updateCache) {
         this.mDummyInfo = new CompatChangeablePackageInfo.Builder().build();
         this.mCache = new ConcurrentHashMap();
+        this.mPlatformCompat = new Singleton<IPlatformCompat>() { // from class: com.samsung.android.core.CompatChangeableApps.1
+            /* JADX INFO: Access modifiers changed from: protected */
+            /* JADX WARN: Can't rename method to resolve collision */
+            @Override // android.util.Singleton
+            public IPlatformCompat create() {
+                IBinder b = ServiceManager.getService(Context.PLATFORM_COMPAT_SERVICE);
+                return IPlatformCompat.Stub.asInterface(b);
+            }
+        };
         this.mUserId = userId;
         if (updateCache) {
             updateCompatChangeablePackageInfoList(null, null);
@@ -182,9 +199,13 @@ public class CompatChangeableApps extends ICompatChangeableManager.Stub {
         return getCachedInfo(packageName).mHasGameCategory;
     }
 
+    public boolean isResizeableActivityOverrideDisallowed(String packageName) {
+        return getCachedInfo(packageName).mIsResizeableActivityOverrideDisallowed || containsOverride(ActivityInfo.FORCE_RESIZE_APP, packageName) || containsOverride(ActivityInfo.FORCE_NON_RESIZE_APP, packageName);
+    }
+
     @Override // com.samsung.android.core.ICompatChangeableManager
     public boolean isOrientationOverrideDisallowed(String packageName) {
-        return isOrientationOverrideDisallowedPackage(packageName) || getCachedInfo(packageName).mIsOrientationOverrideDisallowed;
+        return isOrientationOverrideDisallowedPackage(packageName) || getCachedInfo(packageName).mIsOrientationOverrideDisallowed || containsOverride(ActivityInfo.OVERRIDE_RESPECT_REQUESTED_ORIENTATION, packageName);
     }
 
     @Override // com.samsung.android.core.ICompatChangeableManager
@@ -193,7 +214,7 @@ public class CompatChangeableApps extends ICompatChangeableManager.Stub {
             return true;
         }
         CompatChangeablePackageInfo info = getCachedInfo(packageName);
-        return info.mIsMinAspectRatioOverrideDisallowed || info.mIsActivityEmbeddingSplitsEnabled;
+        return info.mIsMinAspectRatioOverrideDisallowed || info.mIsActivityEmbeddingSplitsEnabled || containsOverride(ActivityInfo.OVERRIDE_MIN_ASPECT_RATIO, packageName) || containsOverride(ActivityInfo.OVERRIDE_MIN_ASPECT_RATIO_ONLY_FOR_CAMERA, packageName);
     }
 
     public static Boolean readComponentProperty(PackageManager packageManager, String packageName, String propertyName) {
@@ -201,6 +222,24 @@ public class CompatChangeableApps extends ICompatChangeableManager.Stub {
             return Boolean.valueOf(packageManager.getProperty(propertyName, packageName).getBoolean());
         } catch (PackageManager.NameNotFoundException e) {
             return null;
+        }
+    }
+
+    private boolean containsOverride(long changeId, String packageName) {
+        if (packageName == null) {
+            Log.w(TAG, "containsOverride: PackageName is null.");
+            return false;
+        }
+        IPlatformCompat platformCompat = this.mPlatformCompat.get();
+        if (platformCompat == null) {
+            Log.w(TAG, "containsOverride: PlatformCompat is null.");
+            return false;
+        }
+        try {
+            return platformCompat.containsOverride(changeId, packageName);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

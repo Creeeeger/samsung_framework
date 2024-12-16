@@ -16,7 +16,7 @@ import android.view.WindowManager;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MCInputEventReceiver extends InputEventReceiver {
     private final String ACTION_TRIGGERED;
     private final int DEFAULT_TRIGGER_THRESHOLD;
@@ -37,8 +37,7 @@ public class MCInputEventReceiver extends InputEventReceiver {
     private WindowManager mWindowManager;
     private int triggerThreshold;
 
-    /* loaded from: classes5.dex */
-    public enum Direction {
+    private enum Direction {
         RIGHT,
         LEFT,
         TOP,
@@ -98,77 +97,55 @@ public class MCInputEventReceiver extends InputEventReceiver {
 
     private boolean isValidMove(float x, float y, Direction direction) {
         Rect displayRect = this.mWindowManager.getMaximumWindowMetrics().getBounds();
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction[direction.ordinal()]) {
-            case 1:
-                return y <= ((float) displayRect.top);
-            case 2:
-                return x <= ((float) displayRect.left);
-            case 3:
-                return x >= ((float) (displayRect.right + (-5)));
-            case 4:
-                return y >= ((float) (displayRect.bottom + (-5)));
-            default:
-                return false;
+        switch (direction) {
+            case RIGHT:
+                if (x >= displayRect.right - 5) {
+                }
+                break;
+            case LEFT:
+                if (x <= displayRect.left) {
+                }
+                break;
+            case TOP:
+                if (y <= displayRect.top) {
+                }
+                break;
+            case BOTTOM:
+                if (y >= displayRect.bottom - 5) {
+                }
+                break;
         }
-    }
-
-    /* renamed from: com.samsung.android.multicontrol.MCInputEventReceiver$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction;
-
-        static {
-            int[] iArr = new int[Direction.values().length];
-            $SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction = iArr;
-            try {
-                iArr[Direction.TOP.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction[Direction.LEFT.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction[Direction.RIGHT.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction[Direction.BOTTOM.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
+        return true;
     }
 
     private boolean isValidTrigger(float x, float y, Direction direction) {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction[direction.ordinal()]) {
-            case 1:
-                if (y < 0.0f) {
-                    this.countY += 1.0f;
-                    break;
-                }
-                break;
-            case 2:
-                if (x < 0.0f) {
-                    this.countX += 1.0f;
-                    break;
-                }
-                break;
-            case 3:
+        switch (direction) {
+            case RIGHT:
                 if (x > 0.0f) {
                     this.countX += 1.0f;
                     break;
                 }
                 break;
-            case 4:
+            case LEFT:
+                if (x < 0.0f) {
+                    this.countX += 1.0f;
+                    break;
+                }
+                break;
+            case TOP:
+                if (y < 0.0f) {
+                    this.countY += 1.0f;
+                    break;
+                }
+                break;
+            case BOTTOM:
                 if (y > 0.0f) {
                     this.countY += 1.0f;
                     break;
                 }
                 break;
         }
-        float f = this.countX;
-        int i = this.triggerThreshold;
-        return f > ((float) i) || this.countY > ((float) i);
+        return this.countX > ((float) this.triggerThreshold) || this.countY > ((float) this.triggerThreshold);
     }
 
     private void handleInput(MotionEvent motionEvent) {

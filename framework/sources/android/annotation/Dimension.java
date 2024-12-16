@@ -16,7 +16,6 @@ public @interface Dimension {
     public static final int SP = 2;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Unit {
     }
 

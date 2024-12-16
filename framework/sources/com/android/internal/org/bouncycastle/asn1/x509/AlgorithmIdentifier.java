@@ -61,9 +61,8 @@ public class AlgorithmIdentifier extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(this.algorithm);
-        ASN1Encodable aSN1Encodable = this.parameters;
-        if (aSN1Encodable != null) {
-            v.add(aSN1Encodable);
+        if (this.parameters != null) {
+            v.add(this.parameters);
         }
         return new DERSequence(v);
     }

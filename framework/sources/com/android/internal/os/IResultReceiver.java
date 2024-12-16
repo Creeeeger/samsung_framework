@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IResultReceiver extends IInterface {
     void send(int i, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IResultReceiver {
         @Override // com.android.internal.os.IResultReceiver
         public void send(int resultCode, Bundle resultData) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IResultReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IResultReceiver {
         public static final String DESCRIPTOR = "com.android.internal.os.IResultReceiver";
         static final int TRANSACTION_send = 1;
@@ -67,27 +65,23 @@ public interface IResultReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    send(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            send(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IResultReceiver {
+        private static class Proxy implements IResultReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

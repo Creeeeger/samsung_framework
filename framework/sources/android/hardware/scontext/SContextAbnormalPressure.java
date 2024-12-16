@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextAbnormalPressure extends SContextEventContext {
     public static final Parcelable.Creator<SContextAbnormalPressure> CREATOR = new Parcelable.Creator<SContextAbnormalPressure>() { // from class: android.hardware.scontext.SContextAbnormalPressure.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAbnormalPressure createFromParcel(Parcel in) {
             return new SContextAbnormalPressure(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAbnormalPressure[] newArray(int size) {
             return new SContextAbnormalPressure[size];
@@ -23,7 +22,7 @@ public class SContextAbnormalPressure extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextAbnormalPressure() {
+    SContextAbnormalPressure() {
         this.mContext = new Bundle();
     }
 
@@ -59,22 +58,5 @@ public class SContextAbnormalPressure extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextAbnormalPressure$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextAbnormalPressure> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAbnormalPressure createFromParcel(Parcel in) {
-            return new SContextAbnormalPressure(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAbnormalPressure[] newArray(int size) {
-            return new SContextAbnormalPressure[size];
-        }
     }
 }

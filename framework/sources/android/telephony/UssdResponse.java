@@ -4,12 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class UssdResponse implements Parcelable {
     public static final Parcelable.Creator<UssdResponse> CREATOR = new Parcelable.Creator<UssdResponse>() { // from class: android.telephony.UssdResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UssdResponse createFromParcel(Parcel in) {
             String request = in.readString();
@@ -17,6 +15,7 @@ public final class UssdResponse implements Parcelable {
             return new UssdResponse(request, message);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UssdResponse[] newArray(int size) {
             return new UssdResponse[size];
@@ -47,24 +46,5 @@ public final class UssdResponse implements Parcelable {
     public UssdResponse(String ussdRequest, CharSequence returnMessage) {
         this.mUssdRequest = ussdRequest;
         this.mReturnMessage = returnMessage;
-    }
-
-    /* renamed from: android.telephony.UssdResponse$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UssdResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UssdResponse createFromParcel(Parcel in) {
-            String request = in.readString();
-            CharSequence message = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
-            return new UssdResponse(request, message);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UssdResponse[] newArray(int size) {
-            return new UssdResponse[size];
-        }
     }
 }

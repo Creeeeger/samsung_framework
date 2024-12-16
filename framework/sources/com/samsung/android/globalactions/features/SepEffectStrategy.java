@@ -4,7 +4,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import com.samsung.android.globalactions.presentation.strategies.WindowDecorationStrategy;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SepEffectStrategy implements WindowDecorationStrategy {
     private final float BLUR_DIM_AMOUNT = 0.3f;
 

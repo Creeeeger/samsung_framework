@@ -9,18 +9,17 @@ import android.os.Parcel;
 import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IContainerService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.core.pm.containerservice.IContainerService";
 
-    String copyPackageToContainer(String str, String str2, String str3, boolean z, String str4, boolean z2) throws RemoteException;
+    String copyPackageToContainer(String str, String str2, String str3, boolean z, String str4) throws RemoteException;
 
     void doForceGC() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IContainerService {
         @Override // com.samsung.android.core.pm.containerservice.IContainerService
-        public String copyPackageToContainer(String packagePath, String containerId, String key, boolean isExternal, String abiOverride, boolean addDexOptOnAsec) throws RemoteException {
+        public String copyPackageToContainer(String packagePath, String containerId, String key, boolean isExternal, String abiOverride) throws RemoteException {
             return null;
         }
 
@@ -34,7 +33,6 @@ public interface IContainerService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IContainerService {
         static final int TRANSACTION_copyPackageToContainer = 1;
         static final int TRANSACTION_doForceGC = 2;
@@ -90,35 +88,31 @@ public interface IContainerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContainerService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContainerService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContainerService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    boolean _arg3 = data.readBoolean();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result = copyPackageToContainer(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    doForceGC();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            boolean _arg3 = data.readBoolean();
-                            String _arg4 = data.readString();
-                            boolean _arg5 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            String _result = copyPackageToContainer(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            doForceGC();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IContainerService {
             private IBinder mRemote;
 
@@ -136,7 +130,7 @@ public interface IContainerService extends IInterface {
             }
 
             @Override // com.samsung.android.core.pm.containerservice.IContainerService
-            public String copyPackageToContainer(String packagePath, String containerId, String key, boolean isExternal, String abiOverride, boolean addDexOptOnAsec) throws RemoteException {
+            public String copyPackageToContainer(String packagePath, String containerId, String key, boolean isExternal, String abiOverride) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -146,7 +140,6 @@ public interface IContainerService extends IInterface {
                     _data.writeString(key);
                     _data.writeBoolean(isExternal);
                     _data.writeString(abiOverride);
-                    _data.writeBoolean(addDexOptOnAsec);
                     this.mRemote.transact(1, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();

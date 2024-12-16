@@ -62,7 +62,6 @@ public final class DynamicsProcessing extends AudioEffect {
     private static final float mMinFreqLog = (float) Math.log10(220.0d);
     private static final float mMaxFreqLog = (float) Math.log10(20000.0d);
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(DynamicsProcessing dynamicsProcessing, int i, int i2);
     }
@@ -85,13 +84,12 @@ public final class DynamicsProcessing extends AudioEffect {
         if (audioSession == 0) {
             Log.w(TAG, "WARNING: attaching a DynamicsProcessing to global output mix isdeprecated!");
         }
-        int channelCount = getChannelCount();
-        this.mChannelCount = channelCount;
+        this.mChannelCount = getChannelCount();
         if (cfg == null) {
-            Config.Builder builder = new Config.Builder(0, channelCount, true, 6, true, 6, true, 6, true);
+            Config.Builder builder = new Config.Builder(0, this.mChannelCount, true, 6, true, 6, true, 6, true);
             config = builder.build();
         } else {
-            config = new Config(channelCount, cfg);
+            config = new Config(this.mChannelCount, cfg);
         }
         setEngineArchitecture(config.getVariant(), config.getPreferredFrameDuration(), config.isPreEqInUse(), config.getPreEqBandCount(), config.isMbcInUse(), config.getMbcBandCount(), config.isPostEqInUse(), config.getPostEqBandCount(), config.isLimiterInUse());
         for (int ch = 0; ch < this.mChannelCount; ch++) {
@@ -115,7 +113,6 @@ public final class DynamicsProcessing extends AudioEffect {
         return config;
     }
 
-    /* loaded from: classes2.dex */
     public static class Stage {
         private boolean mEnabled;
         private boolean mInUse;
@@ -147,7 +144,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class BandStage extends Stage {
         private int mBandCount;
 
@@ -171,7 +167,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class BandBase {
         private float mCutoffFrequency;
         private boolean mEnabled;
@@ -202,7 +197,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class EqBand extends BandBase {
         private float mGain;
 
@@ -230,7 +224,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class MbcBand extends BandBase {
         private float mAttackTime;
         private float mExpanderRatio;
@@ -346,7 +339,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Eq extends BandStage {
         private final EqBand[] mBands;
 
@@ -370,19 +362,12 @@ public final class DynamicsProcessing extends AudioEffect {
             super(cfg.isInUse(), cfg.isEnabled(), cfg.getBandCount());
             if (isInUse()) {
                 this.mBands = new EqBand[cfg.mBands.length];
-                int b = 0;
-                while (true) {
-                    EqBand[] eqBandArr = this.mBands;
-                    if (b < eqBandArr.length) {
-                        eqBandArr[b] = new EqBand(cfg.mBands[b]);
-                        b++;
-                    } else {
-                        return;
-                    }
+                for (int b = 0; b < this.mBands.length; b++) {
+                    this.mBands[b] = new EqBand(cfg.mBands[b]);
                 }
-            } else {
-                this.mBands = null;
+                return;
             }
+            this.mBands = null;
         }
 
         @Override // android.media.audiofx.DynamicsProcessing.BandStage, android.media.audiofx.DynamicsProcessing.Stage
@@ -400,8 +385,7 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         private void checkBand(int band) {
-            EqBand[] eqBandArr = this.mBands;
-            if (eqBandArr == null || band < 0 || band >= eqBandArr.length) {
+            if (this.mBands == null || band < 0 || band >= this.mBands.length) {
                 throw new IllegalArgumentException("band index " + band + " out of bounds");
             }
         }
@@ -417,7 +401,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Mbc extends BandStage {
         private final MbcBand[] mBands;
 
@@ -441,19 +424,12 @@ public final class DynamicsProcessing extends AudioEffect {
             super(cfg.isInUse(), cfg.isEnabled(), cfg.getBandCount());
             if (isInUse()) {
                 this.mBands = new MbcBand[cfg.mBands.length];
-                int b = 0;
-                while (true) {
-                    MbcBand[] mbcBandArr = this.mBands;
-                    if (b < mbcBandArr.length) {
-                        mbcBandArr[b] = new MbcBand(cfg.mBands[b]);
-                        b++;
-                    } else {
-                        return;
-                    }
+                for (int b = 0; b < this.mBands.length; b++) {
+                    this.mBands[b] = new MbcBand(cfg.mBands[b]);
                 }
-            } else {
-                this.mBands = null;
+                return;
             }
+            this.mBands = null;
         }
 
         @Override // android.media.audiofx.DynamicsProcessing.BandStage, android.media.audiofx.DynamicsProcessing.Stage
@@ -471,8 +447,7 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         private void checkBand(int band) {
-            MbcBand[] mbcBandArr = this.mBands;
-            if (mbcBandArr == null || band < 0 || band >= mbcBandArr.length) {
+            if (this.mBands == null || band < 0 || band >= this.mBands.length) {
                 throw new IllegalArgumentException("band index " + band + " out of bounds");
             }
         }
@@ -488,7 +463,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Limiter extends Stage {
         private float mAttackTime;
         private int mLinkGroup;
@@ -581,7 +555,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Channel {
         private float mInputGain;
         private Limiter mLimiter;
@@ -594,7 +567,7 @@ public final class DynamicsProcessing extends AudioEffect {
             this.mPreEq = new Eq(preEqInUse, true, preEqBandCount);
             this.mMbc = new Mbc(mbcInUse, true, mbcBandCount);
             this.mPostEq = new Eq(postEqInUse, true, postEqBandCount);
-            this.mLimiter = new Limiter(limiterInUse, true, 0, 1.0f, 60.0f, 10.0f, DynamicsProcessing.LIMITER_DEFAULT_THRESHOLD, 0.0f);
+            this.mLimiter = new Limiter(limiterInUse, true, 0, 1.0f, 60.0f, 10.0f, -2.0f, 0.0f);
         }
 
         public Channel(Channel cfg) {
@@ -683,7 +656,6 @@ public final class DynamicsProcessing extends AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Config {
         private final Channel[] mChannel;
         private final int mChannelCount;
@@ -708,7 +680,7 @@ public final class DynamicsProcessing extends AudioEffect {
             this.mPostEqInUse = postEqInUse;
             this.mPostEqBandCount = postEqBandCount;
             this.mLimiterInUse = limiterInUse;
-            this.mChannel = new Channel[channelCount];
+            this.mChannel = new Channel[this.mChannelCount];
             for (int ch = 0; ch < this.mChannelCount; ch++) {
                 if (ch < channel.length) {
                     this.mChannel[ch] = new Channel(channel[ch]);
@@ -719,8 +691,7 @@ public final class DynamicsProcessing extends AudioEffect {
         public Config(int channelCount, Config cfg) {
             this.mVariant = cfg.mVariant;
             this.mPreferredFrameDuration = cfg.mPreferredFrameDuration;
-            int i = cfg.mChannelCount;
-            this.mChannelCount = i;
+            this.mChannelCount = cfg.mChannelCount;
             this.mPreEqInUse = cfg.mPreEqInUse;
             this.mPreEqBandCount = cfg.mPreEqBandCount;
             this.mMbcInUse = cfg.mMbcInUse;
@@ -728,19 +699,18 @@ public final class DynamicsProcessing extends AudioEffect {
             this.mPostEqInUse = cfg.mPostEqInUse;
             this.mPostEqBandCount = cfg.mPostEqBandCount;
             this.mLimiterInUse = cfg.mLimiterInUse;
-            if (i != cfg.mChannel.length) {
-                throw new IllegalArgumentException("configuration channel counts differ " + i + " !=" + cfg.mChannel.length);
+            if (this.mChannelCount != cfg.mChannel.length) {
+                throw new IllegalArgumentException("configuration channel counts differ " + this.mChannelCount + " !=" + cfg.mChannel.length);
             }
             if (channelCount < 1) {
                 throw new IllegalArgumentException("channel resizing less than 1 not allowed");
             }
             this.mChannel = new Channel[channelCount];
             for (int ch = 0; ch < channelCount; ch++) {
-                int i2 = this.mChannelCount;
-                if (ch < i2) {
-                    this.mChannel[ch] = new Channel(cfg.mChannel[ch]);
+                if (ch >= this.mChannelCount) {
+                    this.mChannel[ch] = new Channel(cfg.mChannel[this.mChannelCount - 1]);
                 } else {
-                    this.mChannel[ch] = new Channel(cfg.mChannel[i2 - 1]);
+                    this.mChannel[ch] = new Channel(cfg.mChannel[ch]);
                 }
             }
         }
@@ -843,15 +813,8 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setInputGainAllChannelsTo(float inputGain) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setInputGain(inputGain);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setInputGain(inputGain);
             }
         }
 
@@ -866,15 +829,8 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setPreEqAllChannelsTo(Eq preEq) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setPreEq(preEq);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setPreEq(preEq);
             }
         }
 
@@ -889,15 +845,8 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setPreEqBandAllChannelsTo(int band, EqBand preEqBand) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setPreEqBand(band, preEqBand);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setPreEqBand(band, preEqBand);
             }
         }
 
@@ -912,15 +861,8 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setMbcAllChannelsTo(Mbc mbc) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setMbc(mbc);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setMbc(mbc);
             }
         }
 
@@ -935,15 +877,8 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setMbcBandAllChannelsTo(int band, MbcBand mbcBand) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setMbcBand(band, mbcBand);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setMbcBand(band, mbcBand);
             }
         }
 
@@ -958,15 +893,8 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setPostEqAllChannelsTo(Eq postEq) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setPostEq(postEq);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setPostEq(postEq);
             }
         }
 
@@ -981,15 +909,8 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setPostEqBandAllChannelsTo(int band, EqBand postEqBand) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setPostEqBand(band, postEqBand);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setPostEqBand(band, postEqBand);
             }
         }
 
@@ -1004,19 +925,11 @@ public final class DynamicsProcessing extends AudioEffect {
         }
 
         public void setLimiterAllChannelsTo(Limiter limiter) {
-            int ch = 0;
-            while (true) {
-                Channel[] channelArr = this.mChannel;
-                if (ch < channelArr.length) {
-                    channelArr[ch].setLimiter(limiter);
-                    ch++;
-                } else {
-                    return;
-                }
+            for (int ch = 0; ch < this.mChannel.length; ch++) {
+                this.mChannel[ch].setLimiter(limiter);
             }
         }
 
-        /* loaded from: classes2.dex */
         public static final class Builder {
             private Channel[] mChannel;
             private int mChannelCount;
@@ -1040,7 +953,7 @@ public final class DynamicsProcessing extends AudioEffect {
                 this.mPostEqInUse = postEqInUse;
                 this.mPostEqBandCount = postEqBandCount;
                 this.mLimiterInUse = limiterInUse;
-                this.mChannel = new Channel[channelCount];
+                this.mChannel = new Channel[this.mChannelCount];
                 for (int ch = 0; ch < this.mChannelCount; ch++) {
                     this.mChannel[ch] = new Channel(0.0f, this.mPreEqInUse, this.mPreEqBandCount, this.mMbcInUse, this.mMbcBandCount, this.mPostEqInUse, this.mPostEqBandCount, this.mLimiterInUse);
                 }
@@ -1067,16 +980,10 @@ public final class DynamicsProcessing extends AudioEffect {
             }
 
             public Builder setInputGainAllChannelsTo(float inputGain) {
-                int ch = 0;
-                while (true) {
-                    Channel[] channelArr = this.mChannel;
-                    if (ch < channelArr.length) {
-                        channelArr[ch].setInputGain(inputGain);
-                        ch++;
-                    } else {
-                        return this;
-                    }
+                for (int ch = 0; ch < this.mChannel.length; ch++) {
+                    this.mChannel[ch].setInputGain(inputGain);
                 }
+                return this;
             }
 
             public Builder setChannelTo(int channelIndex, Channel channel) {
@@ -1487,13 +1394,7 @@ public final class DynamicsProcessing extends AudioEffect {
         this.mChannelCount = getChannelCount();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
-        /* synthetic */ BaseParameterListener(DynamicsProcessing dynamicsProcessing, BaseParameterListenerIA baseParameterListenerIA) {
-            this();
-        }
-
+    private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
         private BaseParameterListener() {
         }
 
@@ -1527,15 +1428,13 @@ public final class DynamicsProcessing extends AudioEffect {
     public void setParameterListener(OnParameterChangeListener listener) {
         synchronized (this.mParamListenerLock) {
             if (this.mParamListener == null) {
-                BaseParameterListener baseParameterListener = new BaseParameterListener();
-                this.mBaseParamListener = baseParameterListener;
-                super.setParameterListener(baseParameterListener);
+                this.mBaseParamListener = new BaseParameterListener();
+                super.setParameterListener(this.mBaseParamListener);
             }
             this.mParamListener = listener;
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Settings {
         public int channelCount;
         public float[] inputGain;
@@ -1557,17 +1456,14 @@ public final class DynamicsProcessing extends AudioEffect {
                 if (!key2.equals("channelCount")) {
                     throw new IllegalArgumentException("invalid key name: " + key2);
                 }
-                short parseShort = Short.parseShort(st.nextToken());
-                this.channelCount = parseShort;
-                if (parseShort > 32) {
+                this.channelCount = Short.parseShort(st.nextToken());
+                if (this.channelCount > 32) {
                     throw new IllegalArgumentException("too many channels Settings:" + settings);
                 }
-                int countTokens = st.countTokens();
-                int i = this.channelCount;
-                if (countTokens != i * 1) {
+                if (st.countTokens() != this.channelCount * 1) {
                     throw new IllegalArgumentException("settings: " + settings);
                 }
-                this.inputGain = new float[i];
+                this.inputGain = new float[this.channelCount];
                 for (int ch = 0; ch < this.channelCount; ch++) {
                     String key3 = st.nextToken();
                     if (!key3.equals(ch + "_inputGain")) {

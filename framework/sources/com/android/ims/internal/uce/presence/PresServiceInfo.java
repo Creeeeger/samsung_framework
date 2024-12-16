@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.presence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresServiceInfo implements Parcelable {
     public static final Parcelable.Creator<PresServiceInfo> CREATOR = new Parcelable.Creator<PresServiceInfo>() { // from class: com.android.ims.internal.uce.presence.PresServiceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresServiceInfo createFromParcel(Parcel source) {
             return new PresServiceInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresServiceInfo[] newArray(int size) {
             return new PresServiceInfo[size];
@@ -27,10 +26,6 @@ public class PresServiceInfo implements Parcelable {
     private String mServiceDesc;
     private String mServiceID;
     private String mServiceVer;
-
-    /* synthetic */ PresServiceInfo(Parcel parcel, PresServiceInfoIA presServiceInfoIA) {
-        this(parcel);
-    }
 
     public int getMediaType() {
         return this.mMediaCap;
@@ -82,23 +77,6 @@ public class PresServiceInfo implements Parcelable {
         dest.writeString(this.mServiceDesc);
         dest.writeString(this.mServiceVer);
         dest.writeInt(this.mMediaCap);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresServiceInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresServiceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresServiceInfo createFromParcel(Parcel source) {
-            return new PresServiceInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresServiceInfo[] newArray(int size) {
-            return new PresServiceInfo[size];
-        }
     }
 
     private PresServiceInfo(Parcel source) {

@@ -14,14 +14,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TextAppearanceInfo implements Parcelable {
     public static final Parcelable.Creator<TextAppearanceInfo> CREATOR = new Parcelable.Creator<TextAppearanceInfo>() { // from class: android.view.inputmethod.TextAppearanceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextAppearanceInfo createFromParcel(Parcel in) {
             return new TextAppearanceInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextAppearanceInfo[] newArray(int size) {
             return new TextAppearanceInfo[size];
@@ -49,10 +48,6 @@ public final class TextAppearanceInfo implements Parcelable {
     private final float mTextScaleX;
     private final float mTextSize;
     private final int mTextStyle;
-
-    /* synthetic */ TextAppearanceInfo(Builder builder, TextAppearanceInfoIA textAppearanceInfoIA) {
-        this(builder);
-    }
 
     private TextAppearanceInfo(Builder builder) {
         this.mTextSize = builder.mTextSize;
@@ -106,7 +101,7 @@ public final class TextAppearanceInfo implements Parcelable {
             textStyle = typeface.getStyle();
         }
         Builder builder = new Builder();
-        builder.setTextSize(textPaint.getTextSize()).setTextLocales(textPaint.getTextLocales()).setSystemFontFamilyName(systemFontFamilyName).setTextFontWeight(textWeight).setTextStyle(textStyle).setShadowDx(textPaint.getShadowLayerDx()).setShadowDy(textPaint.getShadowLayerDy()).setShadowRadius(textPaint.getShadowLayerRadius()).setShadowColor(textPaint.getShadowLayerColor()).setElegantTextHeight(textPaint.isElegantTextHeight()).setLetterSpacing(textPaint.getLetterSpacing()).setFontFeatureSettings(textPaint.getFontFeatureSettings()).setFontVariationSettings(textPaint.getFontVariationSettings()).setTextScaleX(textPaint.getTextScaleX()).setTextColor(textPaint.getColor()).setLinkTextColor(textPaint.linkColor).setAllCaps(textView.isAllCaps()).setFallbackLineSpacing(textView.isFallbackLineSpacing()).setLineBreakStyle(textView.getLineBreakStyle()).setLineBreakWordStyle(textView.getLineBreakWordStyle()).setHighlightTextColor(textView.getHighlightColor()).setHintTextColor(textView.getCurrentHintTextColor());
+        builder.setTextSize(textPaint.getTextSize()).setTextLocales(textPaint.getTextLocales()).setSystemFontFamilyName(systemFontFamilyName).setTextFontWeight(textWeight).setTextStyle(textStyle).setShadowDx(textPaint.getShadowLayerDx()).setShadowDy(textPaint.getShadowLayerDy()).setShadowRadius(textPaint.getShadowLayerRadius()).setShadowColor(textPaint.getShadowLayerColor()).setElegantTextHeight(textPaint.isElegantTextHeight()).setLetterSpacing(textPaint.getLetterSpacing()).setFontFeatureSettings(textPaint.getFontFeatureSettings()).setFontVariationSettings(textPaint.getFontVariationSettings()).setTextScaleX(textPaint.getTextScaleX()).setTextColor(text.length() == 0 ? textView.getCurrentTextColor() : textPaint.getColor()).setLinkTextColor(textPaint.linkColor).setAllCaps(textView.isAllCaps()).setFallbackLineSpacing(textView.isFallbackLineSpacing()).setLineBreakStyle(textView.getLineBreakStyle()).setLineBreakWordStyle(textView.getLineBreakWordStyle()).setHighlightTextColor(textView.getHighlightColor()).setHintTextColor(textView.getCurrentHintTextColor());
         return builder.build();
     }
 
@@ -164,23 +159,6 @@ public final class TextAppearanceInfo implements Parcelable {
         this.mTextColor = in.readInt();
         this.mHintTextColor = in.readInt();
         this.mLinkTextColor = in.readInt();
-    }
-
-    /* renamed from: android.view.inputmethod.TextAppearanceInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TextAppearanceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextAppearanceInfo createFromParcel(Parcel in) {
-            return new TextAppearanceInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextAppearanceInfo[] newArray(int size) {
-            return new TextAppearanceInfo[size];
-        }
     }
 
     public float getTextSize() {
@@ -290,7 +268,6 @@ public final class TextAppearanceInfo implements Parcelable {
         return "TextAppearanceInfo{mTextSize=" + this.mTextSize + ", mTextLocales=" + this.mTextLocales + ", mSystemFontFamilyName='" + this.mSystemFontFamilyName + DateFormat.QUOTE + ", mTextFontWeight=" + this.mTextFontWeight + ", mTextStyle=" + this.mTextStyle + ", mAllCaps=" + this.mAllCaps + ", mShadowDx=" + this.mShadowDx + ", mShadowDy=" + this.mShadowDy + ", mShadowRadius=" + this.mShadowRadius + ", mShadowColor=" + this.mShadowColor + ", mElegantTextHeight=" + this.mElegantTextHeight + ", mFallbackLineSpacing=" + this.mFallbackLineSpacing + ", mLetterSpacing=" + this.mLetterSpacing + ", mFontFeatureSettings='" + this.mFontFeatureSettings + DateFormat.QUOTE + ", mFontVariationSettings='" + this.mFontVariationSettings + DateFormat.QUOTE + ", mLineBreakStyle=" + this.mLineBreakStyle + ", mLineBreakWordStyle=" + this.mLineBreakWordStyle + ", mTextScaleX=" + this.mTextScaleX + ", mHighlightTextColor=" + this.mHighlightTextColor + ", mTextColor=" + this.mTextColor + ", mHintTextColor=" + this.mHintTextColor + ", mLinkTextColor=" + this.mLinkTextColor + '}';
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private float mTextSize = -1.0f;
         private LocaleList mTextLocales = LocaleList.getAdjustedDefault();

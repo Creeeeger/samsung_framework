@@ -14,29 +14,10 @@ public class ExponentialBackoff {
     private final Runnable mRunnable;
     private long mStartDelayMs;
 
-    /* loaded from: classes5.dex */
     public interface HandlerAdapter {
         boolean postDelayed(Runnable runnable, long j);
 
         void removeCallbacks(Runnable runnable);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.telephony.ExponentialBackoff$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements HandlerAdapter {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.internal.telephony.ExponentialBackoff.HandlerAdapter
-        public boolean postDelayed(Runnable runnable, long delayMillis) {
-            return ExponentialBackoff.this.mHandler.postDelayed(runnable, delayMillis);
-        }
-
-        @Override // com.android.internal.telephony.ExponentialBackoff.HandlerAdapter
-        public void removeCallbacks(Runnable runnable) {
-            ExponentialBackoff.this.mHandler.removeCallbacks(runnable);
-        }
     }
 
     public ExponentialBackoff(long initialDelayMs, long maximumDelayMs, int multiplier, Looper looper, Runnable runnable) {
@@ -45,9 +26,6 @@ public class ExponentialBackoff {
 
     public ExponentialBackoff(long initialDelayMs, long maximumDelayMs, int multiplier, Handler handler, Runnable runnable) {
         this.mHandlerAdapter = new HandlerAdapter() { // from class: com.android.internal.telephony.ExponentialBackoff.1
-            AnonymousClass1() {
-            }
-
             @Override // com.android.internal.telephony.ExponentialBackoff.HandlerAdapter
             public boolean postDelayed(Runnable runnable2, long delayMillis) {
                 return ExponentialBackoff.this.mHandler.postDelayed(runnable2, delayMillis);
@@ -79,9 +57,8 @@ public class ExponentialBackoff {
     }
 
     public void notifyFailed() {
-        int i = this.mRetryCounter + 1;
-        this.mRetryCounter = i;
-        long temp = Math.min(this.mMaximumDelayMs, (long) (this.mStartDelayMs * Math.pow(this.mMultiplier, i)));
+        this.mRetryCounter++;
+        long temp = Math.min(this.mMaximumDelayMs, (long) (this.mStartDelayMs * Math.pow(this.mMultiplier, this.mRetryCounter)));
         this.mCurrentDelayMs = (long) (((Math.random() + 1.0d) / 2.0d) * temp);
         this.mHandlerAdapter.removeCallbacks(this.mRunnable);
         this.mHandlerAdapter.postDelayed(this.mRunnable, this.mCurrentDelayMs);

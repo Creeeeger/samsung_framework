@@ -44,7 +44,6 @@ public interface ITextToSpeechService extends IInterface {
 
     int synthesizeToFileDescriptor(IBinder iBinder, CharSequence charSequence, ParcelFileDescriptor parcelFileDescriptor, Bundle bundle, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITextToSpeechService {
         @Override // android.speech.tts.ITextToSpeechService
         public int speak(IBinder callingInstance, CharSequence text, int queueMode, Bundle params, String utteranceId) throws RemoteException {
@@ -126,7 +125,6 @@ public interface ITextToSpeechService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITextToSpeechService {
         public static final String DESCRIPTOR = "android.speech.tts.ITextToSpeechService";
         static final int TRANSACTION_getClientDefaultLanguage = 8;
@@ -212,142 +210,139 @@ public interface ITextToSpeechService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    CharSequence _arg1 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg2 = data.readInt();
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result = speak(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    CharSequence _arg12 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    ParcelFileDescriptor _arg22 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg42 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = synthesizeToFileDescriptor(_arg02, _arg12, _arg22, _arg32, _arg42);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    Uri _arg13 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    int _arg23 = data.readInt();
+                    Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg43 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result3 = playAudio(_arg03, _arg13, _arg23, _arg33, _arg43);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    long _arg14 = data.readLong();
+                    int _arg24 = data.readInt();
+                    String _arg34 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result4 = playSilence(_arg04, _arg14, _arg24, _arg34);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    boolean _result5 = isSpeaking();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 6:
+                    IBinder _arg05 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    int _result6 = stop(_arg05);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 7:
+                    String[] _result7 = getLanguage();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result7);
+                    return true;
+                case 8:
+                    String[] _result8 = getClientDefaultLanguage();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result8);
+                    return true;
+                case 9:
+                    String _arg06 = data.readString();
+                    String _arg15 = data.readString();
+                    String _arg25 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result9 = isLanguageAvailable(_arg06, _arg15, _arg25);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 10:
+                    String _arg07 = data.readString();
+                    String _arg16 = data.readString();
+                    String _arg26 = data.readString();
+                    data.enforceNoDataAvail();
+                    String[] _result10 = getFeaturesForLanguage(_arg07, _arg16, _arg26);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result10);
+                    return true;
+                case 11:
+                    IBinder _arg08 = data.readStrongBinder();
+                    String _arg17 = data.readString();
+                    String _arg27 = data.readString();
+                    String _arg35 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result11 = loadLanguage(_arg08, _arg17, _arg27, _arg35);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 12:
+                    IBinder _arg09 = data.readStrongBinder();
+                    ITextToSpeechCallback _arg18 = ITextToSpeechCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg09, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    List<Voice> _result12 = getVoices();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result12, 1);
+                    return true;
+                case 14:
+                    IBinder _arg010 = data.readStrongBinder();
+                    String _arg19 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result13 = loadVoice(_arg010, _arg19);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 15:
+                    String _arg011 = data.readString();
+                    String _arg110 = data.readString();
+                    String _arg28 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result14 = getDefaultVoiceNameFor(_arg011, _arg110, _arg28);
+                    reply.writeNoException();
+                    reply.writeString(_result14);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            CharSequence _arg1 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg2 = data.readInt();
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result = speak(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            CharSequence _arg12 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            ParcelFileDescriptor _arg22 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            String _arg42 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = synthesizeToFileDescriptor(_arg02, _arg12, _arg22, _arg32, _arg42);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            Uri _arg13 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            int _arg23 = data.readInt();
-                            Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            String _arg43 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result3 = playAudio(_arg03, _arg13, _arg23, _arg33, _arg43);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            long _arg14 = data.readLong();
-                            int _arg24 = data.readInt();
-                            String _arg34 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result4 = playSilence(_arg04, _arg14, _arg24, _arg34);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            boolean _result5 = isSpeaking();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 6:
-                            IBinder _arg05 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            int _result6 = stop(_arg05);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 7:
-                            String[] _result7 = getLanguage();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result7);
-                            return true;
-                        case 8:
-                            String[] _result8 = getClientDefaultLanguage();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result8);
-                            return true;
-                        case 9:
-                            String _arg06 = data.readString();
-                            String _arg15 = data.readString();
-                            String _arg25 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result9 = isLanguageAvailable(_arg06, _arg15, _arg25);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 10:
-                            String _arg07 = data.readString();
-                            String _arg16 = data.readString();
-                            String _arg26 = data.readString();
-                            data.enforceNoDataAvail();
-                            String[] _result10 = getFeaturesForLanguage(_arg07, _arg16, _arg26);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result10);
-                            return true;
-                        case 11:
-                            IBinder _arg08 = data.readStrongBinder();
-                            String _arg17 = data.readString();
-                            String _arg27 = data.readString();
-                            String _arg35 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result11 = loadLanguage(_arg08, _arg17, _arg27, _arg35);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 12:
-                            IBinder _arg09 = data.readStrongBinder();
-                            ITextToSpeechCallback _arg18 = ITextToSpeechCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg09, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            List<Voice> _result12 = getVoices();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result12, 1);
-                            return true;
-                        case 14:
-                            IBinder _arg010 = data.readStrongBinder();
-                            String _arg19 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result13 = loadVoice(_arg010, _arg19);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 15:
-                            String _arg011 = data.readString();
-                            String _arg110 = data.readString();
-                            String _arg28 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result14 = getDefaultVoiceNameFor(_arg011, _arg110, _arg28);
-                            reply.writeNoException();
-                            reply.writeString(_result14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITextToSpeechService {
+        private static class Proxy implements ITextToSpeechService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

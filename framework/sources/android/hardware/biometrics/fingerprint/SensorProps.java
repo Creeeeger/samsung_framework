@@ -5,12 +5,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class SensorProps implements Parcelable {
     public static final Parcelable.Creator<SensorProps> CREATOR = new Parcelable.Creator<SensorProps>() { // from class: android.hardware.biometrics.fingerprint.SensorProps.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SensorProps createFromParcel(Parcel _aidl_source) {
             SensorProps _aidl_out = new SensorProps();
@@ -18,6 +16,7 @@ public class SensorProps implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SensorProps[] newArray(int _aidl_size) {
             return new SensorProps[_aidl_size];
@@ -31,25 +30,6 @@ public class SensorProps implements Parcelable {
     public boolean supportsDetectInteraction = false;
     public boolean halHandlesDisplayTouches = false;
     public boolean halControlsIllumination = false;
-
-    /* renamed from: android.hardware.biometrics.fingerprint.SensorProps$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SensorProps> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SensorProps createFromParcel(Parcel _aidl_source) {
-            SensorProps _aidl_out = new SensorProps();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SensorProps[] newArray(int _aidl_size) {
-            return new SensorProps[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

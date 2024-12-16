@@ -23,14 +23,13 @@ import java.util.UUID;
 public final class StorageVolume implements Parcelable {
     private static final String ACTION_OPEN_EXTERNAL_DIRECTORY = "android.os.storage.action.OPEN_EXTERNAL_DIRECTORY";
     public static final Parcelable.Creator<StorageVolume> CREATOR = new Parcelable.Creator<StorageVolume>() { // from class: android.os.storage.StorageVolume.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StorageVolume createFromParcel(Parcel in) {
             return new StorageVolume(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StorageVolume[] newArray(int size) {
             return new StorageVolume[size];
@@ -58,10 +57,6 @@ public final class StorageVolume implements Parcelable {
     private final int mStorageId;
     private final String mSubSystem;
     private final UUID mUuid;
-
-    /* synthetic */ StorageVolume(Parcel parcel, StorageVolumeIA storageVolumeIA) {
-        this(parcel);
-    }
 
     public StorageVolume(String id, File path, File internalPath, String description, boolean primary, boolean removable, boolean emulated, boolean externallyManaged, boolean allowMassStorage, long maxFileSize, UserHandle owner, UUID uuid, String fsUuid, String state) {
         this.mId = (String) Preconditions.checkNotNull(id);
@@ -216,8 +211,7 @@ public final class StorageVolume implements Parcelable {
     }
 
     public int getFatVolumeId() {
-        String str = this.mFsUuid;
-        if (str == null || str.length() != 9) {
+        if (this.mFsUuid == null || this.mFsUuid.length() != 9) {
             return -1;
         }
         try {
@@ -262,10 +256,9 @@ public final class StorageVolume implements Parcelable {
     }
 
     public boolean equals(Object obj) {
-        File file;
-        if ((obj instanceof StorageVolume) && (file = this.mPath) != null) {
+        if ((obj instanceof StorageVolume) && this.mPath != null) {
             StorageVolume volume = (StorageVolume) obj;
-            return file.equals(volume.mPath);
+            return this.mPath.equals(volume.mPath);
         }
         return false;
     }
@@ -310,23 +303,6 @@ public final class StorageVolume implements Parcelable {
         pw.decreaseIndent();
     }
 
-    /* renamed from: android.os.storage.StorageVolume$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StorageVolume> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StorageVolume createFromParcel(Parcel in) {
-            return new StorageVolume(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StorageVolume[] newArray(int size) {
-            return new StorageVolume[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -358,7 +334,6 @@ public final class StorageVolume implements Parcelable {
         parcel.writeInt(this.mActivitySecureContainer ? 1 : 0);
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private String mDescription;
         private boolean mEmulated;
@@ -405,9 +380,7 @@ public final class StorageVolume implements Parcelable {
         }
 
         public StorageVolume build() {
-            String str = this.mId;
-            File file = this.mPath;
-            return new StorageVolume(str, file, file, this.mDescription, this.mPrimary, this.mRemovable, this.mEmulated, false, false, 0L, this.mOwner, this.mStorageUuid, this.mUuid, this.mState);
+            return new StorageVolume(this.mId, this.mPath, this.mPath, this.mDescription, this.mPrimary, this.mRemovable, this.mEmulated, false, false, 0L, this.mOwner, this.mStorageUuid, this.mUuid, this.mState);
         }
     }
 

@@ -5,17 +5,16 @@ import android.os.Parcelable;
 import java.lang.Comparable;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class GreaterEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
     public static final Parcelable.Creator<GreaterEqual<?>> CREATOR = new Parcelable.Creator<GreaterEqual<?>>() { // from class: com.samsung.android.sume.core.evaluate.GreaterEqual.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GreaterEqual<?> createFromParcel(Parcel in) {
             return new GreaterEqual<>(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GreaterEqual<?>[] newArray(int size) {
             return new GreaterEqual[size];
@@ -67,7 +66,7 @@ public class GreaterEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
         super.writeToParcel(parcel, i);
     }
 
-    public GreaterEqual(T value) {
+    GreaterEqual(T value) {
         super(value);
     }
 
@@ -78,22 +77,5 @@ public class GreaterEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
     @Override // com.samsung.android.sume.core.evaluate.Evaluator
     public <V> boolean evaluate(V value) {
         return ((Comparable) value).compareTo(getValue()) >= 0;
-    }
-
-    /* renamed from: com.samsung.android.sume.core.evaluate.GreaterEqual$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GreaterEqual<?>> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GreaterEqual<?> createFromParcel(Parcel in) {
-            return new GreaterEqual<>(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GreaterEqual<?>[] newArray(int size) {
-            return new GreaterEqual[size];
-        }
     }
 }

@@ -12,7 +12,6 @@ public interface IAdbCallback extends IInterface {
 
     void onDebuggingChanged(boolean z, byte b) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAdbCallback {
         @Override // android.debug.IAdbCallback
         public void onDebuggingChanged(boolean enabled, byte type) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAdbCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAdbCallback {
         static final int TRANSACTION_onDebuggingChanged = 1;
 
@@ -67,27 +65,23 @@ public interface IAdbCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAdbCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAdbCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAdbCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    byte _arg1 = data.readByte();
+                    data.enforceNoDataAvail();
+                    onDebuggingChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            byte _arg1 = data.readByte();
-                            data.enforceNoDataAvail();
-                            onDebuggingChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAdbCallback {
+        private static class Proxy implements IAdbCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

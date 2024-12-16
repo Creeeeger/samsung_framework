@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class VpnManager {
     public static final String ACTION_VPN_MANAGER_EVENT = "android.net.action.VPN_MANAGER_EVENT";
     public static final String CATEGORY_EVENT_ALWAYS_ON_STATE_CHANGED = "android.net.category.EVENT_ALWAYS_ON_STATE_CHANGED";
@@ -58,7 +58,6 @@ public class VpnManager {
     private final IVpnManager mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VpnType {
     }
 
@@ -234,6 +233,38 @@ public class VpnManager {
     public boolean updateLockdownVpn() {
         try {
             return this.mService.updateLockdownVpn();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public byte[] getFromVpnProfileStore(String name) {
+        try {
+            return this.mService.getFromVpnProfileStore(name);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public boolean putIntoVpnProfileStore(String name, byte[] blob) {
+        try {
+            return this.mService.putIntoVpnProfileStore(name, blob);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public boolean removeFromVpnProfileStore(String name) {
+        try {
+            return this.mService.removeFromVpnProfileStore(name);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public String[] listFromVpnProfileStore(String prefix) {
+        try {
+            return this.mService.listFromVpnProfileStore(prefix);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

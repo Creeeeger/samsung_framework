@@ -52,13 +52,17 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public interface IActivityManager extends IInterface {
+    void addApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener iApplicationStartInfoCompleteListener, int i) throws RemoteException;
+
     void addInstrumentationResults(IApplicationThread iApplicationThread, Bundle bundle) throws RemoteException;
 
     boolean addLongLiveApp(String str) throws RemoteException;
 
-    void addPackageData(String str, float f) throws RemoteException;
+    void addOverridePermissionState(int i, int i2, String str, int i3) throws RemoteException;
 
     void addPackageDependency(String str) throws RemoteException;
+
+    void addStartInfoTimestamp(int i, long j, int i2) throws RemoteException;
 
     void addUidToObserver(IBinder iBinder, String str, int i) throws RemoteException;
 
@@ -91,7 +95,11 @@ public interface IActivityManager extends IInterface {
 
     void cancelTaskWindowTransition(int i) throws RemoteException;
 
+    int checkContentUriPermissionFull(Uri uri, int i, int i2, int i3, int i4) throws RemoteException;
+
     int checkPermission(String str, int i, int i2) throws RemoteException;
+
+    int checkPermissionForDevice(String str, int i, int i2, int i3) throws RemoteException;
 
     void checkProfileForADCP(int i, String str) throws RemoteException;
 
@@ -99,9 +107,13 @@ public interface IActivityManager extends IInterface {
 
     int[] checkUriPermissions(List<Uri> list, int i, int i2, int i3, int i4, IBinder iBinder) throws RemoteException;
 
+    void clearAllOverridePermissionStates(int i) throws RemoteException;
+
     boolean clearApplicationUserData(String str, boolean z, IPackageDataObserver iPackageDataObserver, int i) throws RemoteException;
 
     boolean clearLongLiveTask(int i) throws RemoteException;
+
+    void clearOverridePermissionStates(int i, int i2) throws RemoteException;
 
     boolean clearRestrictionInfo(List<SemAppRestrictionManager.AppRestrictionInfo> list) throws RemoteException;
 
@@ -117,7 +129,9 @@ public interface IActivityManager extends IInterface {
 
     void dismissUserSwitchingDialog(int i) throws RemoteException;
 
-    boolean dumpHeap(String str, int i, boolean z, boolean z2, boolean z3, String str2, ParcelFileDescriptor parcelFileDescriptor, RemoteCallback remoteCallback) throws RemoteException;
+    void doActiveLaunch(String str, boolean z, int i) throws RemoteException;
+
+    boolean dumpHeap(String str, int i, boolean z, boolean z2, boolean z3, String str2, String str3, ParcelFileDescriptor parcelFileDescriptor, RemoteCallback remoteCallback) throws RemoteException;
 
     void dumpHeapFinished(String str) throws RemoteException;
 
@@ -129,7 +143,7 @@ public interface IActivityManager extends IInterface {
 
     boolean finishActivity(IBinder iBinder, int i, Intent intent, int i2) throws RemoteException;
 
-    void finishAttachApplication(long j) throws RemoteException;
+    void finishAttachApplication(long j, long j2) throws RemoteException;
 
     void finishHeavyWeightApp() throws RemoteException;
 
@@ -145,6 +159,8 @@ public interface IActivityManager extends IInterface {
 
     void forceStopPackageEvenWhenStopping(String str, int i) throws RemoteException;
 
+    void frozenBinderTransactionDetected(int i, int i2, int i3, int i4) throws RemoteException;
+
     List<SemAppRestrictionManager.AppRestrictionInfo> getAllRestrictedList() throws RemoteException;
 
     List<ActivityTaskManager.RootTaskInfo> getAllRootTaskInfos() throws RemoteException;
@@ -152,6 +168,8 @@ public interface IActivityManager extends IInterface {
     boolean getAutoRemoveRecents(int i) throws RemoteException;
 
     int getBackgroundRestrictionExemptionReason(int i) throws RemoteException;
+
+    int getBindingUidProcessState(int i, String str) throws RemoteException;
 
     List<String> getBugreportWhitelistedPackages() throws RemoteException;
 
@@ -222,8 +240,6 @@ public interface IActivityManager extends IInterface {
 
     void getMyMemoryState(ActivityManager.RunningAppProcessInfo runningAppProcessInfo) throws RemoteException;
 
-    int getOomAdjByPid(int i) throws RemoteException;
-
     Bundle getOptionsForIntentSender(IIntentSender iIntentSender) throws RemoteException;
 
     String getPackageFromAppProcesses(int i) throws RemoteException;
@@ -254,8 +270,6 @@ public interface IActivityManager extends IInterface {
 
     int[] getRunningUserIds() throws RemoteException;
 
-    float getScalingFactor(String str) throws RemoteException;
-
     List<ActivityManager.RunningServiceInfo> getServices(int i, int i2) throws RemoteException;
 
     String getSwitchingFromUserMessage() throws RemoteException;
@@ -272,6 +286,8 @@ public interface IActivityManager extends IInterface {
 
     int[] getUidFrozenState(int[] iArr) throws RemoteException;
 
+    long getUidLastIdleElapsedTime(int i, String str) throws RemoteException;
+
     int getUidProcessCapabilities(int i, String str) throws RemoteException;
 
     int getUidProcessState(int i, String str) throws RemoteException;
@@ -287,6 +303,8 @@ public interface IActivityManager extends IInterface {
     int handleIncomingUser(int i, int i2, int i3, boolean z, boolean z2, String str, String str2) throws RemoteException;
 
     void hang(IBinder iBinder, boolean z) throws RemoteException;
+
+    boolean hasServiceTimeLimitExceeded(ComponentName componentName, IBinder iBinder) throws RemoteException;
 
     void holdLock(IBinder iBinder, int i) throws RemoteException;
 
@@ -306,13 +324,7 @@ public interface IActivityManager extends IInterface {
 
     boolean isIntentSenderTargetedToPackage(IIntentSender iIntentSender) throws RemoteException;
 
-    boolean isModernBroadcastQueueEnabled() throws RemoteException;
-
     boolean isProcessFrozen(int i) throws RemoteException;
-
-    boolean isScaledApp(int i) throws RemoteException;
-
-    boolean isScaledAppByPackageName(String str) throws RemoteException;
 
     boolean isTopActivityImmersive() throws RemoteException;
 
@@ -370,6 +382,8 @@ public interface IActivityManager extends IInterface {
 
     void noteAlarmStart(IIntentSender iIntentSender, WorkSource workSource, int i, String str) throws RemoteException;
 
+    void noteAppRestrictionEnabled(String str, int i, int i2, boolean z, int i3, String str2, int i4, long j) throws RemoteException;
+
     void noteWakeupAlarm(IIntentSender iIntentSender, WorkSource workSource, int i, String str, String str2) throws RemoteException;
 
     void notifyCleartextNetwork(int i, byte[] bArr) throws RemoteException;
@@ -420,7 +434,7 @@ public interface IActivityManager extends IInterface {
 
     void registerUserSwitchObserver(IUserSwitchObserver iUserSwitchObserver, String str) throws RemoteException;
 
-    void removeApplicationStartInfoCompleteListener(int i) throws RemoteException;
+    void removeApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener iApplicationStartInfoCompleteListener, int i) throws RemoteException;
 
     void removeContentProvider(IBinder iBinder, boolean z) throws RemoteException;
 
@@ -431,15 +445,21 @@ public interface IActivityManager extends IInterface {
 
     boolean removeLongLiveApp(String str) throws RemoteException;
 
+    void removeOverridePermissionState(int i, int i2, String str) throws RemoteException;
+
     boolean removeTask(int i) throws RemoteException;
 
     void removeUidFromObserver(IBinder iBinder, String str, int i) throws RemoteException;
 
     void reportAbnormalUsage(int i, int i2) throws RemoteException;
 
+    void reportStartInfoViewTimestamps(long j, long j2) throws RemoteException;
+
     void requestBugReport(int i) throws RemoteException;
 
     void requestBugReportWithDescription(String str, String str2, int i) throws RemoteException;
+
+    void requestBugReportWithExtraAttachment(Uri uri) throws RemoteException;
 
     void requestFullBugReport() throws RemoteException;
 
@@ -477,7 +497,7 @@ public interface IActivityManager extends IInterface {
 
     int sendIntentSender(IApplicationThread iApplicationThread, IIntentSender iIntentSender, IBinder iBinder, int i, Intent intent, String str, IIntentReceiver iIntentReceiver, String str2, Bundle bundle) throws RemoteException;
 
-    void serviceDoneExecuting(IBinder iBinder, int i, int i2, int i3) throws RemoteException;
+    void serviceDoneExecuting(IBinder iBinder, int i, int i2, int i3, Intent intent) throws RemoteException;
 
     void setActivityController(IActivityController iActivityController, boolean z) throws RemoteException;
 
@@ -487,13 +507,9 @@ public interface IActivityManager extends IInterface {
 
     void setAlwaysFinish(boolean z) throws RemoteException;
 
-    void setApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener iApplicationStartInfoCompleteListener, int i) throws RemoteException;
-
     void setDebugApp(String str, boolean z, boolean z2) throws RemoteException;
 
     void setDeterministicUidIdle(boolean z) throws RemoteException;
-
-    void setDssForPackage(String str, float f) throws RemoteException;
 
     void setDumpHeapDebugLimit(String str, int i, long j, String str2) throws RemoteException;
 
@@ -533,11 +549,11 @@ public interface IActivityManager extends IInterface {
 
     void setTaskResizeable(int i, int i2) throws RemoteException;
 
+    void setThemeOverlayReady(int i) throws RemoteException;
+
     void setUserIsMonkey(boolean z) throws RemoteException;
 
     boolean shouldServiceTimeOut(ComponentName componentName, IBinder iBinder) throws RemoteException;
-
-    void showAllDSSInfo() throws RemoteException;
 
     void showBootMessage(CharSequence charSequence, boolean z) throws RemoteException;
 
@@ -599,7 +615,11 @@ public interface IActivityManager extends IInterface {
 
     int stopUser(int i, boolean z, IStopUserCallback iStopUserCallback) throws RemoteException;
 
-    int stopUserWithDelayedLocking(int i, boolean z, IStopUserCallback iStopUserCallback) throws RemoteException;
+    int stopUserExceptCertainProfiles(int i, boolean z, IStopUserCallback iStopUserCallback) throws RemoteException;
+
+    int stopUserWithCallback(int i, IStopUserCallback iStopUserCallback) throws RemoteException;
+
+    int stopUserWithDelayedLocking(int i, IStopUserCallback iStopUserCallback) throws RemoteException;
 
     void suppressResizeConfigChanges(boolean z) throws RemoteException;
 
@@ -638,8 +658,6 @@ public interface IActivityManager extends IInterface {
 
     boolean updateConfiguration(Configuration configuration) throws RemoteException;
 
-    void updateDelayServiceEnable(boolean z) throws RemoteException;
-
     void updateFlingerFlag(int i, String str) throws RemoteException;
 
     void updateLockTaskPackages(int i, String[] strArr) throws RemoteException;
@@ -662,7 +680,6 @@ public interface IActivityManager extends IInterface {
 
     void waitForNetworkStateUpdate(long j) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IActivityManager {
         @Override // android.app.IActivityManager
         public ParcelFileDescriptor openContentUri(String uriString) throws RemoteException {
@@ -777,7 +794,7 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public void finishAttachApplication(long startSeq) throws RemoteException {
+        public void finishAttachApplication(long startSeq, long timestampApplicationOnCreateNs) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
@@ -906,6 +923,11 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
+        public int checkContentUriPermissionFull(Uri uri, int pid, int uid, int mode, int userId) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.IActivityManager
         public int[] checkUriPermissions(List<Uri> uris, int pid, int uid, int mode, int userId, IBinder callerToken) throws RemoteException {
             return null;
         }
@@ -936,7 +958,7 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public void serviceDoneExecuting(IBinder token, int type, int startId, int res) throws RemoteException {
+        public void serviceDoneExecuting(IBinder token, int type, int startId, int res, Intent intent) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
@@ -1170,7 +1192,7 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public boolean dumpHeap(String process, int userId, boolean managed, boolean mallocInfo, boolean runGc, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
+        public boolean dumpHeap(String process, int userId, boolean managed, boolean mallocInfo, boolean runGc, String dumpBitmaps, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
             return false;
         }
 
@@ -1298,12 +1320,22 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public int stopUser(int userid, boolean force, IStopUserCallback callback) throws RemoteException {
+        public int stopUser(int userid, boolean stopProfileRegardlessOfParent, IStopUserCallback callback) throws RemoteException {
             return 0;
         }
 
         @Override // android.app.IActivityManager
-        public int stopUserWithDelayedLocking(int userid, boolean force, IStopUserCallback callback) throws RemoteException {
+        public int stopUserWithCallback(int userid, IStopUserCallback callback) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.IActivityManager
+        public int stopUserExceptCertainProfiles(int userid, boolean stopProfileRegardlessOfParent, IStopUserCallback callback) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.IActivityManager
+        public int stopUserWithDelayedLocking(int userid, IStopUserCallback callback) throws RemoteException {
             return 0;
         }
 
@@ -1346,6 +1378,10 @@ public interface IActivityManager extends IInterface {
 
         @Override // android.app.IActivityManager
         public void requestInteractiveBugReport() throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void requestBugReportWithExtraAttachment(Uri extraAttachment) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
@@ -1459,6 +1495,10 @@ public interface IActivityManager extends IInterface {
 
         @Override // android.app.IActivityManager
         public void bootAnimationComplete() throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void setThemeOverlayReady(int userId) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
@@ -1640,16 +1680,28 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
+        public void doActiveLaunch(String packageName, boolean isLauncher, int userId) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
         public ParceledListSlice<ApplicationStartInfo> getHistoricalProcessStartReasons(String packageName, int maxNum, int userId) throws RemoteException {
             return null;
         }
 
         @Override // android.app.IActivityManager
-        public void setApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener listener, int userId) throws RemoteException {
+        public void addApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener listener, int userId) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
-        public void removeApplicationStartInfoCompleteListener(int userId) throws RemoteException {
+        public void removeApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener listener, int userId) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void addStartInfoTimestamp(int key, long timestampNs, int userId) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void reportStartInfoViewTimestamps(long renderThreadDrawStartTimeNs, long framePresentedTimeNs) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
@@ -1734,11 +1786,6 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public boolean isModernBroadcastQueueEnabled() throws RemoteException {
-            return false;
-        }
-
-        @Override // android.app.IActivityManager
         public boolean isProcessFrozen(int pid) throws RemoteException {
             return false;
         }
@@ -1775,6 +1822,11 @@ public interface IActivityManager extends IInterface {
 
         @Override // android.app.IActivityManager
         public boolean shouldServiceTimeOut(ComponentName className, IBinder token) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.app.IActivityManager
+        public boolean hasServiceTimeLimitExceeded(ComponentName className, IBinder token) throws RemoteException {
             return false;
         }
 
@@ -1861,10 +1913,6 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public void dismissUserSwitchingDialog(int userId) throws RemoteException {
-        }
-
-        @Override // android.app.IActivityManager
         public boolean moveTaskToBack(int taskId, boolean keepAlive) throws RemoteException {
             return false;
         }
@@ -1875,8 +1923,51 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
+        public void dismissUserSwitchingDialog(int userId) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
         public Configuration getGlobalConfiguration() throws RemoteException {
             return null;
+        }
+
+        @Override // android.app.IActivityManager
+        public int checkPermissionForDevice(String permission, int pid, int uid, int deviceId) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.IActivityManager
+        public void frozenBinderTransactionDetected(int debugPid, int code, int flags, int err) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public int getBindingUidProcessState(int uid, String callingPackage) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.IActivityManager
+        public long getUidLastIdleElapsedTime(int uid, String callingPackage) throws RemoteException {
+            return 0L;
+        }
+
+        @Override // android.app.IActivityManager
+        public void addOverridePermissionState(int originatingUid, int uid, String permission, int result) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void removeOverridePermissionState(int originatingUid, int uid, String permission) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void clearOverridePermissionStates(int originatingUid, int uid) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void clearAllOverridePermissionStates(int originatingUid) throws RemoteException {
+        }
+
+        @Override // android.app.IActivityManager
+        public void noteAppRestrictionEnabled(String packageName, int uid, int restrictionType, boolean enabled, int reason, String subReason, int source, long threshold) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
@@ -1945,39 +2036,21 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public void updatePersistentConfigurationAndLocaleOverlays(Configuration values, String callingPackageName, String callingAttributionTag, LocaleList ll) throws RemoteException {
-        }
-
-        @Override // android.app.IActivityManager
         public String getPackageFromAppProcesses(int pid) throws RemoteException {
             return null;
         }
 
         @Override // android.app.IActivityManager
-        public void setDssForPackage(String packageName, float scale) throws RemoteException {
+        public void updatePersistentConfigurationAndLocaleOverlays(Configuration values, String callingPackageName, String callingAttributionTag, LocaleList ll) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
-        public void showAllDSSInfo() throws RemoteException {
+        public void reportAbnormalUsage(int pid, int type) throws RemoteException {
         }
 
         @Override // android.app.IActivityManager
-        public void addPackageData(String packageName, float scalingFactor) throws RemoteException {
-        }
-
-        @Override // android.app.IActivityManager
-        public boolean isScaledApp(int pid) throws RemoteException {
+        public boolean isHeapDumpAllowed() throws RemoteException {
             return false;
-        }
-
-        @Override // android.app.IActivityManager
-        public boolean isScaledAppByPackageName(String packageName) throws RemoteException {
-            return false;
-        }
-
-        @Override // android.app.IActivityManager
-        public float getScalingFactor(String packageName) throws RemoteException {
-            return 0.0f;
         }
 
         @Override // android.app.IActivityManager
@@ -2005,26 +2078,8 @@ public interface IActivityManager extends IInterface {
         }
 
         @Override // android.app.IActivityManager
-        public void reportAbnormalUsage(int pid, int type) throws RemoteException {
-        }
-
-        @Override // android.app.IActivityManager
         public Bundle getOptionsForIntentSender(IIntentSender sender) throws RemoteException {
             return null;
-        }
-
-        @Override // android.app.IActivityManager
-        public int getOomAdjByPid(int pid) throws RemoteException {
-            return 0;
-        }
-
-        @Override // android.app.IActivityManager
-        public boolean isHeapDumpAllowed() throws RemoteException {
-            return false;
-        }
-
-        @Override // android.app.IActivityManager
-        public void updateDelayServiceEnable(boolean enable) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -2033,311 +2088,319 @@ public interface IActivityManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IActivityManager {
         public static final String DESCRIPTOR = "android.app.IActivityManager";
+        static final int TRANSACTION_addApplicationStartInfoCompleteListener = 227;
         static final int TRANSACTION_addInstrumentationResults = 45;
-        static final int TRANSACTION_addLongLiveApp = 255;
-        static final int TRANSACTION_addPackageData = 289;
-        static final int TRANSACTION_addPackageDependency = 97;
+        static final int TRANSACTION_addLongLiveApp = 263;
+        static final int TRANSACTION_addOverridePermissionState = 283;
+        static final int TRANSACTION_addPackageDependency = 98;
+        static final int TRANSACTION_addStartInfoTimestamp = 229;
         static final int TRANSACTION_addUidToObserver = 5;
-        static final int TRANSACTION_appNotResponding = 219;
-        static final int TRANSACTION_appNotRespondingViaProvider = 169;
+        static final int TRANSACTION_appNotResponding = 224;
+        static final int TRANSACTION_appNotRespondingViaProvider = 173;
         static final int TRANSACTION_attachApplication = 25;
-        static final int TRANSACTION_backgroundAllowlistUid = 212;
-        static final int TRANSACTION_backupAgentCreated = 94;
-        static final int TRANSACTION_bindBackupAgent = 93;
+        static final int TRANSACTION_backgroundAllowlistUid = 217;
+        static final int TRANSACTION_backupAgentCreated = 95;
+        static final int TRANSACTION_bindBackupAgent = 94;
         static final int TRANSACTION_bindService = 36;
         static final int TRANSACTION_bindServiceInstance = 37;
-        static final int TRANSACTION_bootAnimationComplete = 178;
+        static final int TRANSACTION_bootAnimationComplete = 182;
         static final int TRANSACTION_broadcastIntent = 21;
         static final int TRANSACTION_broadcastIntentWithFeature = 22;
-        static final int TRANSACTION_canRestrict = 275;
-        static final int TRANSACTION_cancelIntentSender = 64;
-        static final int TRANSACTION_cancelTaskWindowTransition = 208;
+        static final int TRANSACTION_canRestrict = 292;
+        static final int TRANSACTION_cancelIntentSender = 65;
+        static final int TRANSACTION_cancelTaskWindowTransition = 213;
+        static final int TRANSACTION_checkContentUriPermissionFull = 54;
         static final int TRANSACTION_checkPermission = 9;
-        static final int TRANSACTION_checkProfileForADCP = 271;
+        static final int TRANSACTION_checkPermissionForDevice = 279;
+        static final int TRANSACTION_checkProfileForADCP = 288;
         static final int TRANSACTION_checkUriPermission = 53;
-        static final int TRANSACTION_checkUriPermissions = 54;
-        static final int TRANSACTION_clearApplicationUserData = 79;
-        static final int TRANSACTION_clearLongLiveTask = 259;
-        static final int TRANSACTION_clearRestrictionInfo = 281;
-        static final int TRANSACTION_clearTTSPkgInfo = 283;
-        static final int TRANSACTION_closeSystemDialogs = 99;
-        static final int TRANSACTION_closeSystemDialogsInDisplay = 100;
-        static final int TRANSACTION_crashApplicationWithType = 111;
-        static final int TRANSACTION_crashApplicationWithTypeWithExtras = 112;
-        static final int TRANSACTION_dismissUserSwitchingDialog = 267;
-        static final int TRANSACTION_dumpHeap = 114;
-        static final int TRANSACTION_dumpHeapFinished = 186;
-        static final int TRANSACTION_enableAppFreezer = 231;
-        static final int TRANSACTION_enableFgsNotificationRateLimit = 232;
-        static final int TRANSACTION_enterSafeMode = 68;
+        static final int TRANSACTION_checkUriPermissions = 55;
+        static final int TRANSACTION_clearAllOverridePermissionStates = 286;
+        static final int TRANSACTION_clearApplicationUserData = 80;
+        static final int TRANSACTION_clearLongLiveTask = 267;
+        static final int TRANSACTION_clearOverridePermissionStates = 285;
+        static final int TRANSACTION_clearRestrictionInfo = 298;
+        static final int TRANSACTION_clearTTSPkgInfo = 300;
+        static final int TRANSACTION_closeSystemDialogs = 100;
+        static final int TRANSACTION_closeSystemDialogsInDisplay = 101;
+        static final int TRANSACTION_crashApplicationWithType = 112;
+        static final int TRANSACTION_crashApplicationWithTypeWithExtras = 113;
+        static final int TRANSACTION_dismissUserSwitchingDialog = 277;
+        static final int TRANSACTION_doActiveLaunch = 225;
+        static final int TRANSACTION_dumpHeap = 115;
+        static final int TRANSACTION_dumpHeapFinished = 191;
+        static final int TRANSACTION_enableAppFreezer = 239;
+        static final int TRANSACTION_enableFgsNotificationRateLimit = 240;
+        static final int TRANSACTION_enterSafeMode = 69;
         static final int TRANSACTION_finishActivity = 17;
         static final int TRANSACTION_finishAttachApplication = 26;
-        static final int TRANSACTION_finishHeavyWeightApp = 107;
+        static final int TRANSACTION_finishHeavyWeightApp = 108;
         static final int TRANSACTION_finishInstrumentation = 46;
         static final int TRANSACTION_finishReceiver = 24;
-        static final int TRANSACTION_forceDelayBroadcastDelivery = 240;
-        static final int TRANSACTION_forceStopPackage = 82;
-        static final int TRANSACTION_forceStopPackageByAdmin = 84;
-        static final int TRANSACTION_forceStopPackageEvenWhenStopping = 83;
-        static final int TRANSACTION_getAllRestrictedList = 278;
-        static final int TRANSACTION_getAllRootTaskInfos = 163;
-        static final int TRANSACTION_getAutoRemoveRecents = 263;
-        static final int TRANSACTION_getBackgroundRestrictionExemptionReason = 243;
-        static final int TRANSACTION_getBugreportWhitelistedPackages = 157;
+        static final int TRANSACTION_forceDelayBroadcastDelivery = 248;
+        static final int TRANSACTION_forceStopPackage = 83;
+        static final int TRANSACTION_forceStopPackageByAdmin = 85;
+        static final int TRANSACTION_forceStopPackageEvenWhenStopping = 84;
+        static final int TRANSACTION_frozenBinderTransactionDetected = 280;
+        static final int TRANSACTION_getAllRestrictedList = 295;
+        static final int TRANSACTION_getAllRootTaskInfos = 167;
+        static final int TRANSACTION_getAutoRemoveRecents = 271;
+        static final int TRANSACTION_getBackgroundRestrictionExemptionReason = 250;
+        static final int TRANSACTION_getBindingUidProcessState = 281;
+        static final int TRANSACTION_getBugreportWhitelistedPackages = 161;
         static final int TRANSACTION_getConfiguration = 47;
-        static final int TRANSACTION_getContentByTask = 253;
+        static final int TRANSACTION_getContentByTask = 261;
         static final int TRANSACTION_getContentProvider = 30;
-        static final int TRANSACTION_getContentProviderExternal = 130;
-        static final int TRANSACTION_getCurrentUser = 135;
-        static final int TRANSACTION_getCurrentUserId = 136;
-        static final int TRANSACTION_getDelegatedShellPermissions = 216;
-        static final int TRANSACTION_getDisplayIdsForStartingVisibleBackgroundUsers = 248;
-        static final int TRANSACTION_getFocusedRootTaskInfo = 166;
-        static final int TRANSACTION_getForegroundServiceType = 75;
-        static final int TRANSACTION_getGlobalConfiguration = 270;
-        static final int TRANSACTION_getHistoricalProcessExitReasons = 223;
-        static final int TRANSACTION_getHistoricalProcessStartReasons = 220;
-        static final int TRANSACTION_getInfoForIntentSender = 65;
-        static final int TRANSACTION_getInstalledPackageListFromMARs = 284;
-        static final int TRANSACTION_getIntentForIntentSender = 158;
-        static final int TRANSACTION_getIntentSender = 62;
-        static final int TRANSACTION_getIntentSenderWithFeature = 63;
-        static final int TRANSACTION_getIsolatedProcessList = 297;
-        static final int TRANSACTION_getLaunchedFromPackage = 159;
-        static final int TRANSACTION_getLaunchedFromUid = 137;
-        static final int TRANSACTION_getLifeMonitor = 217;
-        static final int TRANSACTION_getLockTaskModeState = 184;
-        static final int TRANSACTION_getLongLiveApp = 266;
-        static final int TRANSACTION_getLongLiveApps = 254;
-        static final int TRANSACTION_getLongLiveProcesses = 260;
-        static final int TRANSACTION_getLongLiveProcessesForUser = 261;
-        static final int TRANSACTION_getLongLiveTaskIdsForUser = 262;
-        static final int TRANSACTION_getMaxLongLiveApps = 257;
-        static final int TRANSACTION_getMemoryInfo = 77;
-        static final int TRANSACTION_getMemoryTrimLevel = 199;
-        static final int TRANSACTION_getMimeTypeFilterAsync = 113;
-        static final int TRANSACTION_getMyMemoryState = 133;
-        static final int TRANSACTION_getOomAdjByPid = 300;
-        static final int TRANSACTION_getOptionsForIntentSender = 299;
-        static final int TRANSACTION_getPackageFromAppProcesses = 286;
-        static final int TRANSACTION_getPackageProcessState = 190;
+        static final int TRANSACTION_getContentProviderExternal = 131;
+        static final int TRANSACTION_getCurrentUser = 136;
+        static final int TRANSACTION_getCurrentUserId = 137;
+        static final int TRANSACTION_getDelegatedShellPermissions = 221;
+        static final int TRANSACTION_getDisplayIdsForStartingVisibleBackgroundUsers = 255;
+        static final int TRANSACTION_getFocusedRootTaskInfo = 170;
+        static final int TRANSACTION_getForegroundServiceType = 76;
+        static final int TRANSACTION_getGlobalConfiguration = 278;
+        static final int TRANSACTION_getHistoricalProcessExitReasons = 231;
+        static final int TRANSACTION_getHistoricalProcessStartReasons = 226;
+        static final int TRANSACTION_getInfoForIntentSender = 66;
+        static final int TRANSACTION_getInstalledPackageListFromMARs = 301;
+        static final int TRANSACTION_getIntentForIntentSender = 162;
+        static final int TRANSACTION_getIntentSender = 63;
+        static final int TRANSACTION_getIntentSenderWithFeature = 64;
+        static final int TRANSACTION_getIsolatedProcessList = 310;
+        static final int TRANSACTION_getLaunchedFromPackage = 163;
+        static final int TRANSACTION_getLaunchedFromUid = 138;
+        static final int TRANSACTION_getLifeMonitor = 222;
+        static final int TRANSACTION_getLockTaskModeState = 189;
+        static final int TRANSACTION_getLongLiveApp = 274;
+        static final int TRANSACTION_getLongLiveApps = 262;
+        static final int TRANSACTION_getLongLiveProcesses = 268;
+        static final int TRANSACTION_getLongLiveProcessesForUser = 269;
+        static final int TRANSACTION_getLongLiveTaskIdsForUser = 270;
+        static final int TRANSACTION_getMaxLongLiveApps = 265;
+        static final int TRANSACTION_getMemoryInfo = 78;
+        static final int TRANSACTION_getMemoryTrimLevel = 204;
+        static final int TRANSACTION_getMimeTypeFilterAsync = 114;
+        static final int TRANSACTION_getMyMemoryState = 134;
+        static final int TRANSACTION_getOptionsForIntentSender = 311;
+        static final int TRANSACTION_getPackageFromAppProcesses = 302;
+        static final int TRANSACTION_getPackageProcessState = 195;
         static final int TRANSACTION_getProcessLimit = 52;
-        static final int TRANSACTION_getProcessMemoryInfo = 101;
-        static final int TRANSACTION_getProcessPss = 127;
-        static final int TRANSACTION_getProcessesInErrorState = 78;
-        static final int TRANSACTION_getRecentTasks = 60;
-        static final int TRANSACTION_getRestrictableList = 277;
-        static final int TRANSACTION_getRestrictedList = 279;
-        static final int TRANSACTION_getRestrictionInfo = 274;
-        static final int TRANSACTION_getRunningAppProcesses = 87;
-        static final int TRANSACTION_getRunningExternalApplications = 106;
+        static final int TRANSACTION_getProcessMemoryInfo = 102;
+        static final int TRANSACTION_getProcessPss = 128;
+        static final int TRANSACTION_getProcessesInErrorState = 79;
+        static final int TRANSACTION_getRecentTasks = 61;
+        static final int TRANSACTION_getRestrictableList = 294;
+        static final int TRANSACTION_getRestrictedList = 296;
+        static final int TRANSACTION_getRestrictionInfo = 291;
+        static final int TRANSACTION_getRunningAppProcesses = 88;
+        static final int TRANSACTION_getRunningExternalApplications = 107;
         static final int TRANSACTION_getRunningServiceControlPanel = 33;
-        static final int TRANSACTION_getRunningUserIds = 146;
-        static final int TRANSACTION_getScalingFactor = 292;
-        static final int TRANSACTION_getServices = 86;
-        static final int TRANSACTION_getSwitchingFromUserMessage = 118;
-        static final int TRANSACTION_getSwitchingToUserMessage = 119;
-        static final int TRANSACTION_getTagForIntentSender = 172;
-        static final int TRANSACTION_getTaskBounds = 170;
+        static final int TRANSACTION_getRunningUserIds = 149;
+        static final int TRANSACTION_getServices = 87;
+        static final int TRANSACTION_getSwitchingFromUserMessage = 119;
+        static final int TRANSACTION_getSwitchingToUserMessage = 120;
+        static final int TRANSACTION_getTagForIntentSender = 176;
+        static final int TRANSACTION_getTaskBounds = 174;
         static final int TRANSACTION_getTaskForActivity = 29;
         static final int TRANSACTION_getTasks = 27;
-        static final int TRANSACTION_getUidFrozenState = 252;
-        static final int TRANSACTION_getUidProcessCapabilities = 237;
+        static final int TRANSACTION_getUidFrozenState = 260;
+        static final int TRANSACTION_getUidLastIdleElapsedTime = 282;
+        static final int TRANSACTION_getUidProcessCapabilities = 245;
         static final int TRANSACTION_getUidProcessState = 8;
-        static final int TRANSACTION_grantUriPermission = 55;
+        static final int TRANSACTION_grantUriPermission = 56;
         static final int TRANSACTION_handleApplicationCrash = 13;
-        static final int TRANSACTION_handleApplicationStrictModeViolation = 108;
-        static final int TRANSACTION_handleApplicationWtf = 103;
-        static final int TRANSACTION_handleIncomingUser = 96;
-        static final int TRANSACTION_hang = 162;
-        static final int TRANSACTION_holdLock = 233;
-        static final int TRANSACTION_isAppFreezerEnabled = 228;
-        static final int TRANSACTION_isAppFreezerSupported = 227;
-        static final int TRANSACTION_isBackgroundRestricted = 205;
-        static final int TRANSACTION_isFreezableUid = 295;
-        static final int TRANSACTION_isHeapDumpAllowed = 301;
-        static final int TRANSACTION_isInLockTaskMode = 174;
-        static final int TRANSACTION_isIntentSenderAnActivity = 139;
-        static final int TRANSACTION_isIntentSenderTargetedToPackage = 124;
-        static final int TRANSACTION_isModernBroadcastQueueEnabled = 241;
-        static final int TRANSACTION_isProcessFrozen = 242;
-        static final int TRANSACTION_isScaledApp = 290;
-        static final int TRANSACTION_isScaledAppByPackageName = 291;
-        static final int TRANSACTION_isTopActivityImmersive = 110;
-        static final int TRANSACTION_isTopOfTask = 177;
+        static final int TRANSACTION_handleApplicationStrictModeViolation = 109;
+        static final int TRANSACTION_handleApplicationWtf = 104;
+        static final int TRANSACTION_handleIncomingUser = 97;
+        static final int TRANSACTION_hang = 166;
+        static final int TRANSACTION_hasServiceTimeLimitExceeded = 257;
+        static final int TRANSACTION_holdLock = 241;
+        static final int TRANSACTION_isAppFreezerEnabled = 236;
+        static final int TRANSACTION_isAppFreezerSupported = 235;
+        static final int TRANSACTION_isBackgroundRestricted = 210;
+        static final int TRANSACTION_isFreezableUid = 308;
+        static final int TRANSACTION_isHeapDumpAllowed = 305;
+        static final int TRANSACTION_isInLockTaskMode = 178;
+        static final int TRANSACTION_isIntentSenderAnActivity = 140;
+        static final int TRANSACTION_isIntentSenderTargetedToPackage = 125;
+        static final int TRANSACTION_isProcessFrozen = 249;
+        static final int TRANSACTION_isTopActivityImmersive = 111;
+        static final int TRANSACTION_isTopOfTask = 181;
         static final int TRANSACTION_isUidActive = 7;
-        static final int TRANSACTION_isUserAMonkey = 105;
-        static final int TRANSACTION_isUserRunning = 115;
-        static final int TRANSACTION_isVrModePackageEnabled = 200;
-        static final int TRANSACTION_killAllBackgroundProcesses = 129;
-        static final int TRANSACTION_killApplication = 98;
-        static final int TRANSACTION_killApplicationProcess = 102;
-        static final int TRANSACTION_killBackgroundProcesses = 104;
-        static final int TRANSACTION_killPackageDependents = 196;
-        static final int TRANSACTION_killPids = 85;
-        static final int TRANSACTION_killProcessesBelowForeground = 134;
-        static final int TRANSACTION_killProcessesWhenImperceptible = 224;
-        static final int TRANSACTION_killUid = 160;
-        static final int TRANSACTION_killUidForPermissionChange = 229;
-        static final int TRANSACTION_launchBugReportHandlerApp = 156;
+        static final int TRANSACTION_isUserAMonkey = 106;
+        static final int TRANSACTION_isUserRunning = 116;
+        static final int TRANSACTION_isVrModePackageEnabled = 205;
+        static final int TRANSACTION_killAllBackgroundProcesses = 130;
+        static final int TRANSACTION_killApplication = 99;
+        static final int TRANSACTION_killApplicationProcess = 103;
+        static final int TRANSACTION_killBackgroundProcesses = 105;
+        static final int TRANSACTION_killPackageDependents = 201;
+        static final int TRANSACTION_killPids = 86;
+        static final int TRANSACTION_killProcessesBelowForeground = 135;
+        static final int TRANSACTION_killProcessesWhenImperceptible = 232;
+        static final int TRANSACTION_killUid = 164;
+        static final int TRANSACTION_killUidForPermissionChange = 237;
+        static final int TRANSACTION_launchBugReportHandlerApp = 160;
         static final int TRANSACTION_logFgsApiBegin = 10;
         static final int TRANSACTION_logFgsApiEnd = 11;
         static final int TRANSACTION_logFgsApiStateChanged = 12;
-        static final int TRANSACTION_makePackageIdle = 197;
-        static final int TRANSACTION_moveActivityTaskToBack = 76;
-        static final int TRANSACTION_moveTaskToBack = 268;
-        static final int TRANSACTION_moveTaskToBackWithBundle = 269;
+        static final int TRANSACTION_makePackageIdle = 202;
+        static final int TRANSACTION_moveActivityTaskToBack = 77;
+        static final int TRANSACTION_moveTaskToBack = 275;
+        static final int TRANSACTION_moveTaskToBackWithBundle = 276;
         static final int TRANSACTION_moveTaskToFront = 28;
-        static final int TRANSACTION_moveTaskToRootTask = 164;
-        static final int TRANSACTION_noteAlarmFinish = 189;
-        static final int TRANSACTION_noteAlarmStart = 188;
-        static final int TRANSACTION_noteWakeupAlarm = 69;
-        static final int TRANSACTION_notifyCleartextNetwork = 181;
-        static final int TRANSACTION_notifyLockedProfile = 201;
+        static final int TRANSACTION_moveTaskToRootTask = 168;
+        static final int TRANSACTION_noteAlarmFinish = 194;
+        static final int TRANSACTION_noteAlarmStart = 193;
+        static final int TRANSACTION_noteAppRestrictionEnabled = 287;
+        static final int TRANSACTION_noteWakeupAlarm = 70;
+        static final int TRANSACTION_notifyCleartextNetwork = 186;
+        static final int TRANSACTION_notifyLockedProfile = 206;
         static final int TRANSACTION_openContentUri = 1;
-        static final int TRANSACTION_peekService = 88;
-        static final int TRANSACTION_performIdleMaintenance = 168;
-        static final int TRANSACTION_preloadBoosterAppsFromIpm = 272;
-        static final int TRANSACTION_profileControl = 89;
+        static final int TRANSACTION_peekService = 89;
+        static final int TRANSACTION_performIdleMaintenance = 172;
+        static final int TRANSACTION_preloadBoosterAppsFromIpm = 289;
+        static final int TRANSACTION_profileControl = 90;
         static final int TRANSACTION_publishContentProviders = 31;
         static final int TRANSACTION_publishService = 40;
-        static final int TRANSACTION_queryIntentComponentsForIntentSender = 236;
-        static final int TRANSACTION_queryRegisteredReceiverPackages = 244;
+        static final int TRANSACTION_queryIntentComponentsForIntentSender = 244;
+        static final int TRANSACTION_queryRegisteredReceiverPackages = 251;
         static final int TRANSACTION_refContentProvider = 32;
-        static final int TRANSACTION_registerDedicatedCallback = 264;
-        static final int TRANSACTION_registerForegroundServiceObserver = 81;
-        static final int TRANSACTION_registerIntentSenderCancelListenerEx = 66;
-        static final int TRANSACTION_registerProcessObserver = 122;
+        static final int TRANSACTION_registerDedicatedCallback = 272;
+        static final int TRANSACTION_registerForegroundServiceObserver = 82;
+        static final int TRANSACTION_registerIntentSenderCancelListenerEx = 67;
+        static final int TRANSACTION_registerProcessObserver = 123;
         static final int TRANSACTION_registerReceiver = 18;
         static final int TRANSACTION_registerReceiverWithFeature = 19;
-        static final int TRANSACTION_registerStrictModeCallback = 109;
-        static final int TRANSACTION_registerTaskStackListener = 179;
-        static final int TRANSACTION_registerUidFrozenStateChangedCallback = 250;
+        static final int TRANSACTION_registerStrictModeCallback = 110;
+        static final int TRANSACTION_registerTaskStackListener = 184;
+        static final int TRANSACTION_registerUidFrozenStateChangedCallback = 258;
         static final int TRANSACTION_registerUidObserver = 2;
         static final int TRANSACTION_registerUidObserverForUids = 4;
-        static final int TRANSACTION_registerUserSwitchObserver = 144;
-        static final int TRANSACTION_removeApplicationStartInfoCompleteListener = 222;
-        static final int TRANSACTION_removeContentProvider = 70;
-        static final int TRANSACTION_removeContentProviderExternal = 131;
-        static final int TRANSACTION_removeContentProviderExternalAsUser = 132;
-        static final int TRANSACTION_removeLongLiveApp = 256;
-        static final int TRANSACTION_removeTask = 121;
+        static final int TRANSACTION_registerUserSwitchObserver = 147;
+        static final int TRANSACTION_removeApplicationStartInfoCompleteListener = 228;
+        static final int TRANSACTION_removeContentProvider = 71;
+        static final int TRANSACTION_removeContentProviderExternal = 132;
+        static final int TRANSACTION_removeContentProviderExternalAsUser = 133;
+        static final int TRANSACTION_removeLongLiveApp = 264;
+        static final int TRANSACTION_removeOverridePermissionState = 284;
+        static final int TRANSACTION_removeTask = 122;
         static final int TRANSACTION_removeUidFromObserver = 6;
-        static final int TRANSACTION_reportAbnormalUsage = 298;
-        static final int TRANSACTION_requestBugReport = 148;
-        static final int TRANSACTION_requestBugReportWithDescription = 149;
-        static final int TRANSACTION_requestFullBugReport = 154;
-        static final int TRANSACTION_requestInteractiveBugReport = 153;
-        static final int TRANSACTION_requestInteractiveBugReportWithDescription = 152;
-        static final int TRANSACTION_requestRemoteBugReport = 155;
-        static final int TRANSACTION_requestSystemServerHeapDump = 147;
-        static final int TRANSACTION_requestTelephonyBugReport = 150;
-        static final int TRANSACTION_requestWifiBugReport = 151;
-        static final int TRANSACTION_resetAbnormalList = 294;
-        static final int TRANSACTION_resetAppErrors = 230;
-        static final int TRANSACTION_resizeTask = 183;
-        static final int TRANSACTION_restart = 167;
-        static final int TRANSACTION_restartUserInBackground = 247;
-        static final int TRANSACTION_restrict = 276;
-        static final int TRANSACTION_resumeAppSwitches = 92;
-        static final int TRANSACTION_revokeUriPermission = 56;
-        static final int TRANSACTION_scheduleApplicationInfoChanged = 209;
-        static final int TRANSACTION_sendIdleJobTrigger = 203;
-        static final int TRANSACTION_sendIntentSender = 204;
-        static final int TRANSACTION_serviceDoneExecuting = 61;
-        static final int TRANSACTION_setActivityController = 57;
-        static final int TRANSACTION_setActivityLocusContext = 225;
+        static final int TRANSACTION_reportAbnormalUsage = 304;
+        static final int TRANSACTION_reportStartInfoViewTimestamps = 230;
+        static final int TRANSACTION_requestBugReport = 151;
+        static final int TRANSACTION_requestBugReportWithDescription = 152;
+        static final int TRANSACTION_requestBugReportWithExtraAttachment = 157;
+        static final int TRANSACTION_requestFullBugReport = 158;
+        static final int TRANSACTION_requestInteractiveBugReport = 156;
+        static final int TRANSACTION_requestInteractiveBugReportWithDescription = 155;
+        static final int TRANSACTION_requestRemoteBugReport = 159;
+        static final int TRANSACTION_requestSystemServerHeapDump = 150;
+        static final int TRANSACTION_requestTelephonyBugReport = 153;
+        static final int TRANSACTION_requestWifiBugReport = 154;
+        static final int TRANSACTION_resetAbnormalList = 307;
+        static final int TRANSACTION_resetAppErrors = 238;
+        static final int TRANSACTION_resizeTask = 188;
+        static final int TRANSACTION_restart = 171;
+        static final int TRANSACTION_restartUserInBackground = 254;
+        static final int TRANSACTION_restrict = 293;
+        static final int TRANSACTION_resumeAppSwitches = 93;
+        static final int TRANSACTION_revokeUriPermission = 57;
+        static final int TRANSACTION_scheduleApplicationInfoChanged = 214;
+        static final int TRANSACTION_sendIdleJobTrigger = 208;
+        static final int TRANSACTION_sendIntentSender = 209;
+        static final int TRANSACTION_serviceDoneExecuting = 62;
+        static final int TRANSACTION_setActivityController = 58;
+        static final int TRANSACTION_setActivityLocusContext = 233;
         static final int TRANSACTION_setAgentApp = 42;
         static final int TRANSACTION_setAlwaysFinish = 43;
-        static final int TRANSACTION_setApplicationStartInfoCompleteListener = 221;
         static final int TRANSACTION_setDebugApp = 41;
-        static final int TRANSACTION_setDeterministicUidIdle = 198;
-        static final int TRANSACTION_setDssForPackage = 287;
-        static final int TRANSACTION_setDumpHeapDebugLimit = 185;
-        static final int TRANSACTION_setFGSFilter = 293;
-        static final int TRANSACTION_setFocusedRootTask = 165;
-        static final int TRANSACTION_setHasTopUi = 207;
-        static final int TRANSACTION_setLongLiveApp = 265;
-        static final int TRANSACTION_setLongLiveTask = 258;
-        static final int TRANSACTION_setPackageScreenCompatMode = 116;
-        static final int TRANSACTION_setPersistentVrThread = 210;
-        static final int TRANSACTION_setProcessImportant = 73;
+        static final int TRANSACTION_setDeterministicUidIdle = 203;
+        static final int TRANSACTION_setDumpHeapDebugLimit = 190;
+        static final int TRANSACTION_setFGSFilter = 306;
+        static final int TRANSACTION_setFocusedRootTask = 169;
+        static final int TRANSACTION_setHasTopUi = 212;
+        static final int TRANSACTION_setLongLiveApp = 273;
+        static final int TRANSACTION_setLongLiveTask = 266;
+        static final int TRANSACTION_setPackageScreenCompatMode = 117;
+        static final int TRANSACTION_setPersistentVrThread = 215;
+        static final int TRANSACTION_setProcessImportant = 74;
         static final int TRANSACTION_setProcessLimit = 51;
-        static final int TRANSACTION_setProcessMemoryTrimLevel = 171;
-        static final int TRANSACTION_setProcessSlowdown = 296;
-        static final int TRANSACTION_setProcessStateSummary = 226;
-        static final int TRANSACTION_setRenderThread = 206;
-        static final int TRANSACTION_setRequestedOrientation = 71;
-        static final int TRANSACTION_setServiceForeground = 74;
-        static final int TRANSACTION_setStopUserOnSwitch = 120;
-        static final int TRANSACTION_setTTSPkgInfo = 282;
-        static final int TRANSACTION_setTaskResizeable = 182;
-        static final int TRANSACTION_setUserIsMonkey = 161;
-        static final int TRANSACTION_shouldServiceTimeOut = 249;
-        static final int TRANSACTION_showAllDSSInfo = 288;
-        static final int TRANSACTION_showBootMessage = 128;
-        static final int TRANSACTION_showWaitingForDebugger = 58;
-        static final int TRANSACTION_shutdown = 90;
-        static final int TRANSACTION_signalPersistentProcesses = 59;
+        static final int TRANSACTION_setProcessMemoryTrimLevel = 175;
+        static final int TRANSACTION_setProcessSlowdown = 309;
+        static final int TRANSACTION_setProcessStateSummary = 234;
+        static final int TRANSACTION_setRenderThread = 211;
+        static final int TRANSACTION_setRequestedOrientation = 72;
+        static final int TRANSACTION_setServiceForeground = 75;
+        static final int TRANSACTION_setStopUserOnSwitch = 121;
+        static final int TRANSACTION_setTTSPkgInfo = 299;
+        static final int TRANSACTION_setTaskResizeable = 187;
+        static final int TRANSACTION_setThemeOverlayReady = 183;
+        static final int TRANSACTION_setUserIsMonkey = 165;
+        static final int TRANSACTION_shouldServiceTimeOut = 256;
+        static final int TRANSACTION_showBootMessage = 129;
+        static final int TRANSACTION_showWaitingForDebugger = 59;
+        static final int TRANSACTION_shutdown = 91;
+        static final int TRANSACTION_signalPersistentProcesses = 60;
         static final int TRANSACTION_startActivity = 14;
-        static final int TRANSACTION_startActivityAsUser = 140;
-        static final int TRANSACTION_startActivityAsUserWithFeature = 141;
-        static final int TRANSACTION_startActivityFromRecents = 175;
+        static final int TRANSACTION_startActivityAsUser = 141;
+        static final int TRANSACTION_startActivityAsUserWithFeature = 142;
+        static final int TRANSACTION_startActivityFromRecents = 179;
         static final int TRANSACTION_startActivityWithFeature = 15;
-        static final int TRANSACTION_startBinderTracking = 191;
-        static final int TRANSACTION_startConfirmDeviceCredentialIntent = 202;
-        static final int TRANSACTION_startDelegateShellPermissionIdentity = 214;
+        static final int TRANSACTION_startBinderTracking = 196;
+        static final int TRANSACTION_startConfirmDeviceCredentialIntent = 207;
+        static final int TRANSACTION_startDelegateShellPermissionIdentity = 219;
         static final int TRANSACTION_startInstrumentation = 44;
-        static final int TRANSACTION_startProfile = 234;
-        static final int TRANSACTION_startProfileWithListener = 246;
+        static final int TRANSACTION_startProfile = 242;
+        static final int TRANSACTION_startProfileWithListener = 253;
         static final int TRANSACTION_startService = 34;
-        static final int TRANSACTION_startSystemLockTaskMode = 176;
-        static final int TRANSACTION_startUserInBackground = 173;
-        static final int TRANSACTION_startUserInBackgroundVisibleOnDisplay = 245;
-        static final int TRANSACTION_startUserInBackgroundWithListener = 213;
-        static final int TRANSACTION_startUserInForegroundWithListener = 218;
-        static final int TRANSACTION_stopAppForUser = 80;
-        static final int TRANSACTION_stopAppSwitches = 91;
-        static final int TRANSACTION_stopBinderTrackingAndDump = 192;
-        static final int TRANSACTION_stopDelegateShellPermissionIdentity = 215;
-        static final int TRANSACTION_stopProfile = 235;
+        static final int TRANSACTION_startSystemLockTaskMode = 180;
+        static final int TRANSACTION_startUserInBackground = 177;
+        static final int TRANSACTION_startUserInBackgroundVisibleOnDisplay = 252;
+        static final int TRANSACTION_startUserInBackgroundWithListener = 218;
+        static final int TRANSACTION_startUserInForegroundWithListener = 223;
+        static final int TRANSACTION_stopAppForUser = 81;
+        static final int TRANSACTION_stopAppSwitches = 92;
+        static final int TRANSACTION_stopBinderTrackingAndDump = 197;
+        static final int TRANSACTION_stopDelegateShellPermissionIdentity = 220;
+        static final int TRANSACTION_stopProfile = 243;
         static final int TRANSACTION_stopService = 35;
         static final int TRANSACTION_stopServiceToken = 50;
-        static final int TRANSACTION_stopUser = 142;
-        static final int TRANSACTION_stopUserWithDelayedLocking = 143;
-        static final int TRANSACTION_suppressResizeConfigChanges = 193;
-        static final int TRANSACTION_switchUser = 117;
-        static final int TRANSACTION_unbindBackupAgent = 95;
-        static final int TRANSACTION_unbindFinished = 72;
+        static final int TRANSACTION_stopUser = 143;
+        static final int TRANSACTION_stopUserExceptCertainProfiles = 145;
+        static final int TRANSACTION_stopUserWithCallback = 144;
+        static final int TRANSACTION_stopUserWithDelayedLocking = 146;
+        static final int TRANSACTION_suppressResizeConfigChanges = 198;
+        static final int TRANSACTION_switchUser = 118;
+        static final int TRANSACTION_unbindBackupAgent = 96;
+        static final int TRANSACTION_unbindFinished = 73;
         static final int TRANSACTION_unbindService = 39;
         static final int TRANSACTION_unbroadcastIntent = 23;
         static final int TRANSACTION_unhandledBack = 16;
-        static final int TRANSACTION_unlockUser = 194;
-        static final int TRANSACTION_unlockUser2 = 195;
-        static final int TRANSACTION_unregisterIntentSenderCancelListener = 67;
-        static final int TRANSACTION_unregisterProcessObserver = 123;
+        static final int TRANSACTION_unlockUser = 199;
+        static final int TRANSACTION_unlockUser2 = 200;
+        static final int TRANSACTION_unregisterIntentSenderCancelListener = 68;
+        static final int TRANSACTION_unregisterProcessObserver = 124;
         static final int TRANSACTION_unregisterReceiver = 20;
-        static final int TRANSACTION_unregisterTaskStackListener = 180;
-        static final int TRANSACTION_unregisterUidFrozenStateChangedCallback = 251;
+        static final int TRANSACTION_unregisterTaskStackListener = 185;
+        static final int TRANSACTION_unregisterUidFrozenStateChangedCallback = 259;
         static final int TRANSACTION_unregisterUidObserver = 3;
-        static final int TRANSACTION_unregisterUserSwitchObserver = 145;
-        static final int TRANSACTION_unstableProviderDied = 138;
+        static final int TRANSACTION_unregisterUserSwitchObserver = 148;
+        static final int TRANSACTION_unstableProviderDied = 139;
         static final int TRANSACTION_updateConfiguration = 48;
-        static final int TRANSACTION_updateDelayServiceEnable = 302;
-        static final int TRANSACTION_updateFlingerFlag = 273;
-        static final int TRANSACTION_updateLockTaskPackages = 187;
+        static final int TRANSACTION_updateFlingerFlag = 290;
+        static final int TRANSACTION_updateLockTaskPackages = 192;
         static final int TRANSACTION_updateMccMncConfiguration = 49;
-        static final int TRANSACTION_updatePersistentConfiguration = 125;
-        static final int TRANSACTION_updatePersistentConfigurationAndLocaleOverlays = 285;
-        static final int TRANSACTION_updatePersistentConfigurationWithAttribution = 126;
-        static final int TRANSACTION_updateRestrictionInfo = 280;
+        static final int TRANSACTION_updatePersistentConfiguration = 126;
+        static final int TRANSACTION_updatePersistentConfigurationAndLocaleOverlays = 303;
+        static final int TRANSACTION_updatePersistentConfigurationWithAttribution = 127;
+        static final int TRANSACTION_updateRestrictionInfo = 297;
         static final int TRANSACTION_updateServiceGroup = 38;
-        static final int TRANSACTION_waitForBroadcastBarrier = 239;
-        static final int TRANSACTION_waitForBroadcastIdle = 238;
-        static final int TRANSACTION_waitForNetworkStateUpdate = 211;
+        static final int TRANSACTION_waitForBroadcastBarrier = 247;
+        static final int TRANSACTION_waitForBroadcastIdle = 246;
+        static final int TRANSACTION_waitForNetworkStateUpdate = 216;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
@@ -2468,503 +2531,521 @@ public interface IActivityManager extends IInterface {
                 case 53:
                     return "checkUriPermission";
                 case 54:
-                    return "checkUriPermissions";
+                    return "checkContentUriPermissionFull";
                 case 55:
-                    return "grantUriPermission";
+                    return "checkUriPermissions";
                 case 56:
-                    return "revokeUriPermission";
+                    return "grantUriPermission";
                 case 57:
-                    return "setActivityController";
+                    return "revokeUriPermission";
                 case 58:
-                    return "showWaitingForDebugger";
+                    return "setActivityController";
                 case 59:
-                    return "signalPersistentProcesses";
+                    return "showWaitingForDebugger";
                 case 60:
-                    return "getRecentTasks";
+                    return "signalPersistentProcesses";
                 case 61:
-                    return "serviceDoneExecuting";
+                    return "getRecentTasks";
                 case 62:
-                    return "getIntentSender";
+                    return "serviceDoneExecuting";
                 case 63:
-                    return "getIntentSenderWithFeature";
+                    return "getIntentSender";
                 case 64:
-                    return "cancelIntentSender";
+                    return "getIntentSenderWithFeature";
                 case 65:
-                    return "getInfoForIntentSender";
+                    return "cancelIntentSender";
                 case 66:
-                    return "registerIntentSenderCancelListenerEx";
+                    return "getInfoForIntentSender";
                 case 67:
-                    return "unregisterIntentSenderCancelListener";
+                    return "registerIntentSenderCancelListenerEx";
                 case 68:
-                    return "enterSafeMode";
+                    return "unregisterIntentSenderCancelListener";
                 case 69:
-                    return "noteWakeupAlarm";
+                    return "enterSafeMode";
                 case 70:
-                    return "removeContentProvider";
+                    return "noteWakeupAlarm";
                 case 71:
-                    return "setRequestedOrientation";
+                    return "removeContentProvider";
                 case 72:
-                    return "unbindFinished";
+                    return "setRequestedOrientation";
                 case 73:
-                    return "setProcessImportant";
+                    return "unbindFinished";
                 case 74:
-                    return "setServiceForeground";
+                    return "setProcessImportant";
                 case 75:
-                    return "getForegroundServiceType";
+                    return "setServiceForeground";
                 case 76:
-                    return "moveActivityTaskToBack";
+                    return "getForegroundServiceType";
                 case 77:
-                    return "getMemoryInfo";
+                    return "moveActivityTaskToBack";
                 case 78:
-                    return "getProcessesInErrorState";
+                    return "getMemoryInfo";
                 case 79:
-                    return "clearApplicationUserData";
+                    return "getProcessesInErrorState";
                 case 80:
-                    return "stopAppForUser";
+                    return "clearApplicationUserData";
                 case 81:
-                    return "registerForegroundServiceObserver";
+                    return "stopAppForUser";
                 case 82:
-                    return "forceStopPackage";
+                    return "registerForegroundServiceObserver";
                 case 83:
-                    return "forceStopPackageEvenWhenStopping";
+                    return "forceStopPackage";
                 case 84:
-                    return "forceStopPackageByAdmin";
+                    return "forceStopPackageEvenWhenStopping";
                 case 85:
-                    return "killPids";
+                    return "forceStopPackageByAdmin";
                 case 86:
-                    return "getServices";
+                    return "killPids";
                 case 87:
-                    return "getRunningAppProcesses";
+                    return "getServices";
                 case 88:
-                    return "peekService";
+                    return "getRunningAppProcesses";
                 case 89:
-                    return "profileControl";
+                    return "peekService";
                 case 90:
-                    return UsbManager.USB_FUNCTION_SHUTDOWN;
+                    return "profileControl";
                 case 91:
-                    return "stopAppSwitches";
+                    return UsbManager.USB_FUNCTION_SHUTDOWN;
                 case 92:
-                    return "resumeAppSwitches";
+                    return "stopAppSwitches";
                 case 93:
-                    return "bindBackupAgent";
+                    return "resumeAppSwitches";
                 case 94:
-                    return "backupAgentCreated";
+                    return "bindBackupAgent";
                 case 95:
-                    return "unbindBackupAgent";
+                    return "backupAgentCreated";
                 case 96:
-                    return "handleIncomingUser";
+                    return "unbindBackupAgent";
                 case 97:
-                    return "addPackageDependency";
+                    return "handleIncomingUser";
                 case 98:
-                    return "killApplication";
+                    return "addPackageDependency";
                 case 99:
-                    return "closeSystemDialogs";
+                    return "killApplication";
                 case 100:
-                    return "closeSystemDialogsInDisplay";
+                    return "closeSystemDialogs";
                 case 101:
-                    return "getProcessMemoryInfo";
+                    return "closeSystemDialogsInDisplay";
                 case 102:
-                    return "killApplicationProcess";
+                    return "getProcessMemoryInfo";
                 case 103:
-                    return "handleApplicationWtf";
+                    return "killApplicationProcess";
                 case 104:
-                    return "killBackgroundProcesses";
+                    return "handleApplicationWtf";
                 case 105:
-                    return "isUserAMonkey";
+                    return "killBackgroundProcesses";
                 case 106:
-                    return "getRunningExternalApplications";
+                    return "isUserAMonkey";
                 case 107:
-                    return "finishHeavyWeightApp";
+                    return "getRunningExternalApplications";
                 case 108:
-                    return "handleApplicationStrictModeViolation";
+                    return "finishHeavyWeightApp";
                 case 109:
-                    return "registerStrictModeCallback";
+                    return "handleApplicationStrictModeViolation";
                 case 110:
-                    return "isTopActivityImmersive";
+                    return "registerStrictModeCallback";
                 case 111:
-                    return "crashApplicationWithType";
+                    return "isTopActivityImmersive";
                 case 112:
-                    return "crashApplicationWithTypeWithExtras";
+                    return "crashApplicationWithType";
                 case 113:
-                    return "getMimeTypeFilterAsync";
+                    return "crashApplicationWithTypeWithExtras";
                 case 114:
-                    return "dumpHeap";
+                    return "getMimeTypeFilterAsync";
                 case 115:
-                    return "isUserRunning";
+                    return "dumpHeap";
                 case 116:
-                    return "setPackageScreenCompatMode";
+                    return "isUserRunning";
                 case 117:
-                    return "switchUser";
+                    return "setPackageScreenCompatMode";
                 case 118:
-                    return "getSwitchingFromUserMessage";
+                    return "switchUser";
                 case 119:
-                    return "getSwitchingToUserMessage";
+                    return "getSwitchingFromUserMessage";
                 case 120:
-                    return "setStopUserOnSwitch";
+                    return "getSwitchingToUserMessage";
                 case 121:
-                    return "removeTask";
+                    return "setStopUserOnSwitch";
                 case 122:
-                    return "registerProcessObserver";
+                    return "removeTask";
                 case 123:
-                    return "unregisterProcessObserver";
+                    return "registerProcessObserver";
                 case 124:
-                    return "isIntentSenderTargetedToPackage";
+                    return "unregisterProcessObserver";
                 case 125:
-                    return "updatePersistentConfiguration";
+                    return "isIntentSenderTargetedToPackage";
                 case 126:
-                    return "updatePersistentConfigurationWithAttribution";
+                    return "updatePersistentConfiguration";
                 case 127:
-                    return "getProcessPss";
+                    return "updatePersistentConfigurationWithAttribution";
                 case 128:
-                    return "showBootMessage";
+                    return "getProcessPss";
                 case 129:
-                    return "killAllBackgroundProcesses";
+                    return "showBootMessage";
                 case 130:
-                    return "getContentProviderExternal";
+                    return "killAllBackgroundProcesses";
                 case 131:
-                    return "removeContentProviderExternal";
+                    return "getContentProviderExternal";
                 case 132:
-                    return "removeContentProviderExternalAsUser";
+                    return "removeContentProviderExternal";
                 case 133:
-                    return "getMyMemoryState";
+                    return "removeContentProviderExternalAsUser";
                 case 134:
-                    return "killProcessesBelowForeground";
+                    return "getMyMemoryState";
                 case 135:
-                    return "getCurrentUser";
+                    return "killProcessesBelowForeground";
                 case 136:
-                    return "getCurrentUserId";
+                    return "getCurrentUser";
                 case 137:
-                    return "getLaunchedFromUid";
+                    return "getCurrentUserId";
                 case 138:
-                    return "unstableProviderDied";
+                    return "getLaunchedFromUid";
                 case 139:
-                    return "isIntentSenderAnActivity";
+                    return "unstableProviderDied";
                 case 140:
-                    return "startActivityAsUser";
+                    return "isIntentSenderAnActivity";
                 case 141:
-                    return "startActivityAsUserWithFeature";
+                    return "startActivityAsUser";
                 case 142:
-                    return "stopUser";
+                    return "startActivityAsUserWithFeature";
                 case 143:
-                    return "stopUserWithDelayedLocking";
+                    return "stopUser";
                 case 144:
-                    return "registerUserSwitchObserver";
+                    return "stopUserWithCallback";
                 case 145:
-                    return "unregisterUserSwitchObserver";
+                    return "stopUserExceptCertainProfiles";
                 case 146:
-                    return "getRunningUserIds";
+                    return "stopUserWithDelayedLocking";
                 case 147:
-                    return "requestSystemServerHeapDump";
+                    return "registerUserSwitchObserver";
                 case 148:
-                    return "requestBugReport";
+                    return "unregisterUserSwitchObserver";
                 case 149:
-                    return "requestBugReportWithDescription";
+                    return "getRunningUserIds";
                 case 150:
-                    return "requestTelephonyBugReport";
+                    return "requestSystemServerHeapDump";
                 case 151:
-                    return "requestWifiBugReport";
+                    return "requestBugReport";
                 case 152:
-                    return "requestInteractiveBugReportWithDescription";
+                    return "requestBugReportWithDescription";
                 case 153:
-                    return "requestInteractiveBugReport";
+                    return "requestTelephonyBugReport";
                 case 154:
-                    return "requestFullBugReport";
+                    return "requestWifiBugReport";
                 case 155:
-                    return "requestRemoteBugReport";
+                    return "requestInteractiveBugReportWithDescription";
                 case 156:
-                    return "launchBugReportHandlerApp";
+                    return "requestInteractiveBugReport";
                 case 157:
-                    return "getBugreportWhitelistedPackages";
+                    return "requestBugReportWithExtraAttachment";
                 case 158:
-                    return "getIntentForIntentSender";
+                    return "requestFullBugReport";
                 case 159:
-                    return "getLaunchedFromPackage";
+                    return "requestRemoteBugReport";
                 case 160:
-                    return "killUid";
+                    return "launchBugReportHandlerApp";
                 case 161:
-                    return "setUserIsMonkey";
+                    return "getBugreportWhitelistedPackages";
                 case 162:
-                    return "hang";
+                    return "getIntentForIntentSender";
                 case 163:
-                    return "getAllRootTaskInfos";
+                    return "getLaunchedFromPackage";
                 case 164:
-                    return "moveTaskToRootTask";
+                    return "killUid";
                 case 165:
-                    return "setFocusedRootTask";
+                    return "setUserIsMonkey";
                 case 166:
-                    return "getFocusedRootTaskInfo";
+                    return "hang";
                 case 167:
-                    return DefaultActionNames.ACTION_RESTART;
+                    return "getAllRootTaskInfos";
                 case 168:
-                    return "performIdleMaintenance";
+                    return "moveTaskToRootTask";
                 case 169:
-                    return "appNotRespondingViaProvider";
+                    return "setFocusedRootTask";
                 case 170:
-                    return "getTaskBounds";
+                    return "getFocusedRootTaskInfo";
                 case 171:
-                    return "setProcessMemoryTrimLevel";
+                    return DefaultActionNames.ACTION_RESTART;
                 case 172:
-                    return "getTagForIntentSender";
+                    return "performIdleMaintenance";
                 case 173:
-                    return "startUserInBackground";
+                    return "appNotRespondingViaProvider";
                 case 174:
-                    return "isInLockTaskMode";
+                    return "getTaskBounds";
                 case 175:
-                    return "startActivityFromRecents";
+                    return "setProcessMemoryTrimLevel";
                 case 176:
-                    return "startSystemLockTaskMode";
+                    return "getTagForIntentSender";
                 case 177:
-                    return "isTopOfTask";
+                    return "startUserInBackground";
                 case 178:
-                    return "bootAnimationComplete";
+                    return "isInLockTaskMode";
                 case 179:
-                    return "registerTaskStackListener";
+                    return "startActivityFromRecents";
                 case 180:
-                    return "unregisterTaskStackListener";
+                    return "startSystemLockTaskMode";
                 case 181:
-                    return "notifyCleartextNetwork";
+                    return "isTopOfTask";
                 case 182:
-                    return "setTaskResizeable";
+                    return "bootAnimationComplete";
                 case 183:
-                    return "resizeTask";
+                    return "setThemeOverlayReady";
                 case 184:
-                    return "getLockTaskModeState";
+                    return "registerTaskStackListener";
                 case 185:
-                    return "setDumpHeapDebugLimit";
+                    return "unregisterTaskStackListener";
                 case 186:
-                    return "dumpHeapFinished";
+                    return "notifyCleartextNetwork";
                 case 187:
-                    return "updateLockTaskPackages";
+                    return "setTaskResizeable";
                 case 188:
-                    return "noteAlarmStart";
+                    return "resizeTask";
                 case 189:
-                    return "noteAlarmFinish";
+                    return "getLockTaskModeState";
                 case 190:
-                    return "getPackageProcessState";
+                    return "setDumpHeapDebugLimit";
                 case 191:
-                    return "startBinderTracking";
+                    return "dumpHeapFinished";
                 case 192:
-                    return "stopBinderTrackingAndDump";
+                    return "updateLockTaskPackages";
                 case 193:
-                    return "suppressResizeConfigChanges";
+                    return "noteAlarmStart";
                 case 194:
-                    return "unlockUser";
+                    return "noteAlarmFinish";
                 case 195:
-                    return "unlockUser2";
+                    return "getPackageProcessState";
                 case 196:
-                    return "killPackageDependents";
+                    return "startBinderTracking";
                 case 197:
-                    return "makePackageIdle";
+                    return "stopBinderTrackingAndDump";
                 case 198:
-                    return "setDeterministicUidIdle";
+                    return "suppressResizeConfigChanges";
                 case 199:
-                    return "getMemoryTrimLevel";
+                    return "unlockUser";
                 case 200:
-                    return "isVrModePackageEnabled";
+                    return "unlockUser2";
                 case 201:
-                    return "notifyLockedProfile";
+                    return "killPackageDependents";
                 case 202:
-                    return "startConfirmDeviceCredentialIntent";
+                    return "makePackageIdle";
                 case 203:
-                    return "sendIdleJobTrigger";
+                    return "setDeterministicUidIdle";
                 case 204:
-                    return "sendIntentSender";
+                    return "getMemoryTrimLevel";
                 case 205:
-                    return "isBackgroundRestricted";
+                    return "isVrModePackageEnabled";
                 case 206:
-                    return "setRenderThread";
+                    return "notifyLockedProfile";
                 case 207:
-                    return "setHasTopUi";
+                    return "startConfirmDeviceCredentialIntent";
                 case 208:
-                    return "cancelTaskWindowTransition";
+                    return "sendIdleJobTrigger";
                 case 209:
-                    return "scheduleApplicationInfoChanged";
+                    return "sendIntentSender";
                 case 210:
-                    return "setPersistentVrThread";
+                    return "isBackgroundRestricted";
                 case 211:
-                    return "waitForNetworkStateUpdate";
+                    return "setRenderThread";
                 case 212:
-                    return "backgroundAllowlistUid";
+                    return "setHasTopUi";
                 case 213:
-                    return "startUserInBackgroundWithListener";
+                    return "cancelTaskWindowTransition";
                 case 214:
-                    return "startDelegateShellPermissionIdentity";
+                    return "scheduleApplicationInfoChanged";
                 case 215:
-                    return "stopDelegateShellPermissionIdentity";
+                    return "setPersistentVrThread";
                 case 216:
-                    return "getDelegatedShellPermissions";
+                    return "waitForNetworkStateUpdate";
                 case 217:
-                    return "getLifeMonitor";
+                    return "backgroundAllowlistUid";
                 case 218:
-                    return "startUserInForegroundWithListener";
+                    return "startUserInBackgroundWithListener";
                 case 219:
-                    return "appNotResponding";
+                    return "startDelegateShellPermissionIdentity";
                 case 220:
-                    return "getHistoricalProcessStartReasons";
+                    return "stopDelegateShellPermissionIdentity";
                 case 221:
-                    return "setApplicationStartInfoCompleteListener";
+                    return "getDelegatedShellPermissions";
                 case 222:
-                    return "removeApplicationStartInfoCompleteListener";
+                    return "getLifeMonitor";
                 case 223:
-                    return "getHistoricalProcessExitReasons";
+                    return "startUserInForegroundWithListener";
                 case 224:
-                    return "killProcessesWhenImperceptible";
+                    return "appNotResponding";
                 case 225:
-                    return "setActivityLocusContext";
+                    return "doActiveLaunch";
                 case 226:
-                    return "setProcessStateSummary";
+                    return "getHistoricalProcessStartReasons";
                 case 227:
-                    return "isAppFreezerSupported";
+                    return "addApplicationStartInfoCompleteListener";
                 case 228:
-                    return "isAppFreezerEnabled";
+                    return "removeApplicationStartInfoCompleteListener";
                 case 229:
-                    return "killUidForPermissionChange";
+                    return "addStartInfoTimestamp";
                 case 230:
-                    return "resetAppErrors";
+                    return "reportStartInfoViewTimestamps";
                 case 231:
-                    return "enableAppFreezer";
+                    return "getHistoricalProcessExitReasons";
                 case 232:
-                    return "enableFgsNotificationRateLimit";
+                    return "killProcessesWhenImperceptible";
                 case 233:
-                    return "holdLock";
+                    return "setActivityLocusContext";
                 case 234:
-                    return "startProfile";
+                    return "setProcessStateSummary";
                 case 235:
-                    return "stopProfile";
+                    return "isAppFreezerSupported";
                 case 236:
-                    return "queryIntentComponentsForIntentSender";
+                    return "isAppFreezerEnabled";
                 case 237:
-                    return "getUidProcessCapabilities";
+                    return "killUidForPermissionChange";
                 case 238:
-                    return "waitForBroadcastIdle";
+                    return "resetAppErrors";
                 case 239:
-                    return "waitForBroadcastBarrier";
+                    return "enableAppFreezer";
                 case 240:
-                    return "forceDelayBroadcastDelivery";
+                    return "enableFgsNotificationRateLimit";
                 case 241:
-                    return "isModernBroadcastQueueEnabled";
+                    return "holdLock";
                 case 242:
-                    return "isProcessFrozen";
+                    return "startProfile";
                 case 243:
-                    return "getBackgroundRestrictionExemptionReason";
+                    return "stopProfile";
                 case 244:
-                    return "queryRegisteredReceiverPackages";
+                    return "queryIntentComponentsForIntentSender";
                 case 245:
-                    return "startUserInBackgroundVisibleOnDisplay";
+                    return "getUidProcessCapabilities";
                 case 246:
-                    return "startProfileWithListener";
+                    return "waitForBroadcastIdle";
                 case 247:
-                    return "restartUserInBackground";
+                    return "waitForBroadcastBarrier";
                 case 248:
-                    return "getDisplayIdsForStartingVisibleBackgroundUsers";
+                    return "forceDelayBroadcastDelivery";
                 case 249:
-                    return "shouldServiceTimeOut";
+                    return "isProcessFrozen";
                 case 250:
-                    return "registerUidFrozenStateChangedCallback";
+                    return "getBackgroundRestrictionExemptionReason";
                 case 251:
-                    return "unregisterUidFrozenStateChangedCallback";
+                    return "queryRegisteredReceiverPackages";
                 case 252:
-                    return "getUidFrozenState";
+                    return "startUserInBackgroundVisibleOnDisplay";
                 case 253:
-                    return "getContentByTask";
+                    return "startProfileWithListener";
                 case 254:
-                    return "getLongLiveApps";
+                    return "restartUserInBackground";
                 case 255:
-                    return "addLongLiveApp";
+                    return "getDisplayIdsForStartingVisibleBackgroundUsers";
                 case 256:
-                    return "removeLongLiveApp";
+                    return "shouldServiceTimeOut";
                 case 257:
-                    return "getMaxLongLiveApps";
+                    return "hasServiceTimeLimitExceeded";
                 case 258:
-                    return "setLongLiveTask";
+                    return "registerUidFrozenStateChangedCallback";
                 case 259:
-                    return "clearLongLiveTask";
+                    return "unregisterUidFrozenStateChangedCallback";
                 case 260:
-                    return "getLongLiveProcesses";
+                    return "getUidFrozenState";
                 case 261:
-                    return "getLongLiveProcessesForUser";
+                    return "getContentByTask";
                 case 262:
-                    return "getLongLiveTaskIdsForUser";
+                    return "getLongLiveApps";
                 case 263:
-                    return "getAutoRemoveRecents";
+                    return "addLongLiveApp";
                 case 264:
-                    return "registerDedicatedCallback";
+                    return "removeLongLiveApp";
                 case 265:
-                    return "setLongLiveApp";
+                    return "getMaxLongLiveApps";
                 case 266:
-                    return "getLongLiveApp";
+                    return "setLongLiveTask";
                 case 267:
-                    return "dismissUserSwitchingDialog";
+                    return "clearLongLiveTask";
                 case 268:
-                    return "moveTaskToBack";
+                    return "getLongLiveProcesses";
                 case 269:
-                    return "moveTaskToBackWithBundle";
+                    return "getLongLiveProcessesForUser";
                 case 270:
-                    return "getGlobalConfiguration";
+                    return "getLongLiveTaskIdsForUser";
                 case 271:
-                    return "checkProfileForADCP";
+                    return "getAutoRemoveRecents";
                 case 272:
-                    return "preloadBoosterAppsFromIpm";
+                    return "registerDedicatedCallback";
                 case 273:
-                    return "updateFlingerFlag";
+                    return "setLongLiveApp";
                 case 274:
-                    return "getRestrictionInfo";
+                    return "getLongLiveApp";
                 case 275:
-                    return "canRestrict";
+                    return "moveTaskToBack";
                 case 276:
-                    return "restrict";
+                    return "moveTaskToBackWithBundle";
                 case 277:
-                    return "getRestrictableList";
+                    return "dismissUserSwitchingDialog";
                 case 278:
-                    return "getAllRestrictedList";
+                    return "getGlobalConfiguration";
                 case 279:
-                    return "getRestrictedList";
+                    return "checkPermissionForDevice";
                 case 280:
-                    return "updateRestrictionInfo";
+                    return "frozenBinderTransactionDetected";
                 case 281:
-                    return "clearRestrictionInfo";
+                    return "getBindingUidProcessState";
                 case 282:
-                    return "setTTSPkgInfo";
+                    return "getUidLastIdleElapsedTime";
                 case 283:
-                    return "clearTTSPkgInfo";
+                    return "addOverridePermissionState";
                 case 284:
-                    return "getInstalledPackageListFromMARs";
+                    return "removeOverridePermissionState";
                 case 285:
-                    return "updatePersistentConfigurationAndLocaleOverlays";
+                    return "clearOverridePermissionStates";
                 case 286:
-                    return "getPackageFromAppProcesses";
+                    return "clearAllOverridePermissionStates";
                 case 287:
-                    return "setDssForPackage";
+                    return "noteAppRestrictionEnabled";
                 case 288:
-                    return "showAllDSSInfo";
+                    return "checkProfileForADCP";
                 case 289:
-                    return "addPackageData";
+                    return "preloadBoosterAppsFromIpm";
                 case 290:
-                    return "isScaledApp";
+                    return "updateFlingerFlag";
                 case 291:
-                    return "isScaledAppByPackageName";
+                    return "getRestrictionInfo";
                 case 292:
-                    return "getScalingFactor";
+                    return "canRestrict";
                 case 293:
-                    return "setFGSFilter";
+                    return "restrict";
                 case 294:
-                    return "resetAbnormalList";
+                    return "getRestrictableList";
                 case 295:
-                    return "isFreezableUid";
+                    return "getAllRestrictedList";
                 case 296:
-                    return "setProcessSlowdown";
+                    return "getRestrictedList";
                 case 297:
-                    return "getIsolatedProcessList";
+                    return "updateRestrictionInfo";
                 case 298:
-                    return "reportAbnormalUsage";
+                    return "clearRestrictionInfo";
                 case 299:
-                    return "getOptionsForIntentSender";
+                    return "setTTSPkgInfo";
                 case 300:
-                    return "getOomAdjByPid";
+                    return "clearTTSPkgInfo";
                 case 301:
-                    return "isHeapDumpAllowed";
+                    return "getInstalledPackageListFromMARs";
                 case 302:
-                    return "updateDelayServiceEnable";
+                    return "getPackageFromAppProcesses";
+                case 303:
+                    return "updatePersistentConfigurationAndLocaleOverlays";
+                case 304:
+                    return "reportAbnormalUsage";
+                case 305:
+                    return "isHeapDumpAllowed";
+                case 306:
+                    return "setFGSFilter";
+                case 307:
+                    return "resetAbnormalList";
+                case 308:
+                    return "isFreezableUid";
+                case 309:
+                    return "setProcessSlowdown";
+                case 310:
+                    return "getIsolatedProcessList";
+                case 311:
+                    return "getOptionsForIntentSender";
                 default:
                     return null;
             }
@@ -2980,1962 +3061,1969 @@ public interface IActivityManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result = openContentUri(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    IUidObserver _arg02 = IUidObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    registerUidObserver(_arg02, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IUidObserver _arg03 = IUidObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterUidObserver(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    return onTransact$registerUidObserverForUids$(data, reply);
+                case 5:
+                    IBinder _arg04 = data.readStrongBinder();
+                    String _arg12 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addUidToObserver(_arg04, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IBinder _arg05 = data.readStrongBinder();
+                    String _arg13 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeUidFromObserver(_arg05, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isUidActive(_arg06, _arg14);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 8:
+                    int _arg07 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result3 = getUidProcessState(_arg07, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    int _arg16 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = checkPermission(_arg08, _arg16, _arg24);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    logFgsApiBegin(_arg09, _arg17, _arg25);
+                    return true;
+                case 11:
+                    int _arg010 = data.readInt();
+                    int _arg18 = data.readInt();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    logFgsApiEnd(_arg010, _arg18, _arg26);
+                    return true;
+                case 12:
+                    int _arg011 = data.readInt();
+                    int _arg19 = data.readInt();
+                    int _arg27 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    logFgsApiStateChanged(_arg011, _arg19, _arg27, _arg32);
+                    return true;
+                case 13:
+                    IBinder _arg012 = data.readStrongBinder();
+                    ApplicationErrorReport.ParcelableCrashInfo _arg110 = (ApplicationErrorReport.ParcelableCrashInfo) data.readTypedObject(ApplicationErrorReport.ParcelableCrashInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleApplicationCrash(_arg012, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    return onTransact$startActivity$(data, reply);
+                case 15:
+                    return onTransact$startActivityWithFeature$(data, reply);
+                case 16:
+                    unhandledBack();
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    IBinder _arg013 = data.readStrongBinder();
+                    int _arg111 = data.readInt();
+                    Intent _arg28 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = finishActivity(_arg013, _arg111, _arg28, _arg33);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 18:
+                    return onTransact$registerReceiver$(data, reply);
+                case 19:
+                    return onTransact$registerReceiverWithFeature$(data, reply);
+                case 20:
+                    IIntentReceiver _arg014 = IIntentReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterReceiver(_arg014);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    return onTransact$broadcastIntent$(data, reply);
+                case 22:
+                    return onTransact$broadcastIntentWithFeature$(data, reply);
+                case 23:
+                    IApplicationThread _arg015 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    Intent _arg112 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg29 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unbroadcastIntent(_arg015, _arg112, _arg29);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    return onTransact$finishReceiver$(data, reply);
+                case 25:
+                    IApplicationThread _arg016 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    long _arg113 = data.readLong();
+                    data.enforceNoDataAvail();
+                    attachApplication(_arg016, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    long _arg017 = data.readLong();
+                    long _arg114 = data.readLong();
+                    data.enforceNoDataAvail();
+                    finishAttachApplication(_arg017, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<ActivityManager.RunningTaskInfo> _result6 = getTasks(_arg018);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result6, 1);
+                    return true;
+                case 28:
+                    return onTransact$moveTaskToFront$(data, reply);
+                case 29:
+                    IBinder _arg019 = data.readStrongBinder();
+                    boolean _arg115 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result7 = getTaskForActivity(_arg019, _arg115);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 30:
+                    return onTransact$getContentProvider$(data, reply);
+                case 31:
+                    IBinder _arg020 = data.readStrongBinder();
+                    IApplicationThread _arg021 = IApplicationThread.Stub.asInterface(_arg020);
+                    List<ContentProviderHolder> _arg116 = data.createTypedArrayList(ContentProviderHolder.CREATOR);
+                    data.enforceNoDataAvail();
+                    publishContentProviders(_arg021, _arg116);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    IBinder _arg022 = data.readStrongBinder();
+                    int _arg117 = data.readInt();
+                    int _arg210 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = refContentProvider(_arg022, _arg117, _arg210);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 33:
+                    ComponentName _arg023 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    PendingIntent _result9 = getRunningServiceControlPanel(_arg023);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 34:
+                    return onTransact$startService$(data, reply);
+                case 35:
+                    IApplicationThread _arg024 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    Intent _arg118 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg211 = data.readString();
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result10 = stopService(_arg024, _arg118, _arg211, _arg34);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 36:
+                    return onTransact$bindService$(data, reply);
+                case 37:
+                    return onTransact$bindServiceInstance$(data, reply);
+                case 38:
+                    IServiceConnection _arg025 = IServiceConnection.Stub.asInterface(data.readStrongBinder());
+                    int _arg119 = data.readInt();
+                    int _arg212 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateServiceGroup(_arg025, _arg119, _arg212);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    IBinder _arg026 = data.readStrongBinder();
+                    IServiceConnection _arg027 = IServiceConnection.Stub.asInterface(_arg026);
+                    data.enforceNoDataAvail();
+                    boolean _result11 = unbindService(_arg027);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 40:
+                    IBinder _arg028 = data.readStrongBinder();
+                    Intent _arg120 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    IBinder _arg213 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    publishService(_arg028, _arg120, _arg213);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    String _arg029 = data.readString();
+                    boolean _arg121 = data.readBoolean();
+                    boolean _arg214 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDebugApp(_arg029, _arg121, _arg214);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    String _arg030 = data.readString();
+                    String _arg122 = data.readString();
+                    data.enforceNoDataAvail();
+                    setAgentApp(_arg030, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    boolean _arg031 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAlwaysFinish(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    return onTransact$startInstrumentation$(data, reply);
+                case 45:
+                    IApplicationThread _arg032 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    Bundle _arg123 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    addInstrumentationResults(_arg032, _arg123);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    IApplicationThread _arg033 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    int _arg124 = data.readInt();
+                    Bundle _arg215 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    finishInstrumentation(_arg033, _arg124, _arg215);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    Configuration _result12 = getConfiguration();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 48:
+                    Configuration _arg034 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result13 = updateConfiguration(_arg034);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 49:
+                    String _arg035 = data.readString();
+                    String _arg125 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = updateMccMncConfiguration(_arg035, _arg125);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 50:
+                    ComponentName _arg036 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    IBinder _arg126 = data.readStrongBinder();
+                    int _arg216 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = stopServiceToken(_arg036, _arg126, _arg216);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 51:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setProcessLimit(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    int _result16 = getProcessLimit();
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 53:
+                    return onTransact$checkUriPermission$(data, reply);
+                case 54:
+                    return onTransact$checkContentUriPermissionFull$(data, reply);
+                case 55:
+                    return onTransact$checkUriPermissions$(data, reply);
+                case 56:
+                    return onTransact$grantUriPermission$(data, reply);
+                case 57:
+                    return onTransact$revokeUriPermission$(data, reply);
+                case 58:
+                    IActivityController _arg038 = IActivityController.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg127 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setActivityController(_arg038, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 59:
+                    IApplicationThread _arg039 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg128 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    showWaitingForDebugger(_arg039, _arg128);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    int _arg040 = data.readInt();
+                    data.enforceNoDataAvail();
+                    signalPersistentProcesses(_arg040);
+                    reply.writeNoException();
+                    return true;
+                case 61:
+                    int _arg041 = data.readInt();
+                    int _arg129 = data.readInt();
+                    int _arg217 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result17 = getRecentTasks(_arg041, _arg129, _arg217);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result17, 1);
+                    return true;
+                case 62:
+                    return onTransact$serviceDoneExecuting$(data, reply);
+                case 63:
+                    return onTransact$getIntentSender$(data, reply);
+                case 64:
+                    return onTransact$getIntentSenderWithFeature$(data, reply);
+                case 65:
+                    IIntentSender _arg042 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelIntentSender(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 66:
+                    IIntentSender _arg043 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ActivityManager.PendingIntentInfo _result18 = getInfoForIntentSender(_arg043);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result18, 1);
+                    return true;
+                case 67:
+                    IIntentSender _arg044 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    IResultReceiver _arg130 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result19 = registerIntentSenderCancelListenerEx(_arg044, _arg130);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 68:
+                    IIntentSender _arg045 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    IResultReceiver _arg131 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterIntentSenderCancelListener(_arg045, _arg131);
+                    reply.writeNoException();
+                    return true;
+                case 69:
+                    enterSafeMode();
+                    reply.writeNoException();
+                    return true;
+                case 70:
+                    return onTransact$noteWakeupAlarm$(data, reply);
+                case 71:
+                    IBinder _arg046 = data.readStrongBinder();
+                    boolean _arg132 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    removeContentProvider(_arg046, _arg132);
+                    return true;
+                case 72:
+                    IBinder _arg047 = data.readStrongBinder();
+                    int _arg133 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRequestedOrientation(_arg047, _arg133);
+                    reply.writeNoException();
+                    return true;
+                case 73:
+                    IBinder _arg048 = data.readStrongBinder();
+                    Intent _arg134 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    boolean _arg218 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    unbindFinished(_arg048, _arg134, _arg218);
+                    reply.writeNoException();
+                    return true;
+                case 74:
+                    IBinder _arg049 = data.readStrongBinder();
+                    int _arg135 = data.readInt();
+                    boolean _arg219 = data.readBoolean();
+                    String _arg35 = data.readString();
+                    data.enforceNoDataAvail();
+                    setProcessImportant(_arg049, _arg135, _arg219, _arg35);
+                    reply.writeNoException();
+                    return true;
+                case 75:
+                    return onTransact$setServiceForeground$(data, reply);
+                case 76:
+                    ComponentName _arg050 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    IBinder _arg136 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    int _result20 = getForegroundServiceType(_arg050, _arg136);
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 77:
+                    IBinder _arg051 = data.readStrongBinder();
+                    boolean _arg137 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result21 = moveActivityTaskToBack(_arg051, _arg137);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result21);
+                    return true;
+                case 78:
+                    ActivityManager.MemoryInfo _arg052 = new ActivityManager.MemoryInfo();
+                    data.enforceNoDataAvail();
+                    getMemoryInfo(_arg052);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_arg052, 1);
+                    return true;
+                case 79:
+                    List<ActivityManager.ProcessErrorStateInfo> _result22 = getProcessesInErrorState();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result22, 1);
+                    return true;
+                case 80:
+                    String _arg053 = data.readString();
+                    boolean _arg138 = data.readBoolean();
+                    IPackageDataObserver _arg220 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result23 = clearApplicationUserData(_arg053, _arg138, _arg220, _arg36);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result23);
+                    return true;
+                case 81:
+                    String _arg054 = data.readString();
+                    int _arg139 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopAppForUser(_arg054, _arg139);
+                    reply.writeNoException();
+                    return true;
+                case 82:
+                    IForegroundServiceObserver _arg055 = IForegroundServiceObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result24 = registerForegroundServiceObserver(_arg055);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result24);
+                    return true;
+                case 83:
+                    String _arg056 = data.readString();
+                    int _arg140 = data.readInt();
+                    data.enforceNoDataAvail();
+                    forceStopPackage(_arg056, _arg140);
+                    reply.writeNoException();
+                    return true;
+                case 84:
+                    String _arg057 = data.readString();
+                    int _arg141 = data.readInt();
+                    data.enforceNoDataAvail();
+                    forceStopPackageEvenWhenStopping(_arg057, _arg141);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    String _arg058 = data.readString();
+                    int _arg142 = data.readInt();
+                    data.enforceNoDataAvail();
+                    forceStopPackageByAdmin(_arg058, _arg142);
+                    reply.writeNoException();
+                    return true;
+                case 86:
+                    int[] _arg059 = data.createIntArray();
+                    String _arg143 = data.readString();
+                    boolean _arg221 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result25 = killPids(_arg059, _arg143, _arg221);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result25);
+                    return true;
+                case 87:
+                    int _arg060 = data.readInt();
+                    int _arg144 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<ActivityManager.RunningServiceInfo> _result26 = getServices(_arg060, _arg144);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result26, 1);
+                    return true;
+                case 88:
+                    List<ActivityManager.RunningAppProcessInfo> _result27 = getRunningAppProcesses();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result27, 1);
+                    return true;
+                case 89:
+                    Intent _arg061 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg145 = data.readString();
+                    String _arg222 = data.readString();
+                    data.enforceNoDataAvail();
+                    IBinder _result28 = peekService(_arg061, _arg145, _arg222);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result28);
+                    return true;
+                case 90:
+                    return onTransact$profileControl$(data, reply);
+                case 91:
+                    int _arg062 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result29 = shutdown(_arg062);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result29);
+                    return true;
+                case 92:
+                    stopAppSwitches();
+                    reply.writeNoException();
+                    return true;
+                case 93:
+                    resumeAppSwitches();
+                    reply.writeNoException();
+                    return true;
+                case 94:
+                    String _arg063 = data.readString();
+                    int _arg146 = data.readInt();
+                    int _arg223 = data.readInt();
+                    int _arg37 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result30 = bindBackupAgent(_arg063, _arg146, _arg223, _arg37);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result30);
+                    return true;
+                case 95:
+                    String _arg064 = data.readString();
+                    IBinder _arg147 = data.readStrongBinder();
+                    int _arg224 = data.readInt();
+                    data.enforceNoDataAvail();
+                    backupAgentCreated(_arg064, _arg147, _arg224);
+                    reply.writeNoException();
+                    return true;
+                case 96:
+                    ApplicationInfo _arg065 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    unbindBackupAgent(_arg065);
+                    reply.writeNoException();
+                    return true;
+                case 97:
+                    return onTransact$handleIncomingUser$(data, reply);
+                case 98:
+                    String _arg066 = data.readString();
+                    data.enforceNoDataAvail();
+                    addPackageDependency(_arg066);
+                    reply.writeNoException();
+                    return true;
+                case 99:
+                    return onTransact$killApplication$(data, reply);
+                case 100:
+                    String _arg067 = data.readString();
+                    data.enforceNoDataAvail();
+                    closeSystemDialogs(_arg067);
+                    reply.writeNoException();
+                    return true;
+                case 101:
+                    String _arg068 = data.readString();
+                    int _arg148 = data.readInt();
+                    data.enforceNoDataAvail();
+                    closeSystemDialogsInDisplay(_arg068, _arg148);
+                    reply.writeNoException();
+                    return true;
+                case 102:
+                    int[] _arg069 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    Debug.MemoryInfo[] _result31 = getProcessMemoryInfo(_arg069);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result31, 1);
+                    return true;
+                case 103:
+                    String _arg070 = data.readString();
+                    int _arg149 = data.readInt();
+                    data.enforceNoDataAvail();
+                    killApplicationProcess(_arg070, _arg149);
+                    reply.writeNoException();
+                    return true;
+                case 104:
+                    return onTransact$handleApplicationWtf$(data, reply);
+                case 105:
+                    String _arg071 = data.readString();
+                    int _arg150 = data.readInt();
+                    data.enforceNoDataAvail();
+                    killBackgroundProcesses(_arg071, _arg150);
+                    reply.writeNoException();
+                    return true;
+                case 106:
+                    boolean _result32 = isUserAMonkey();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result32);
+                    return true;
+                case 107:
+                    List<ApplicationInfo> _result33 = getRunningExternalApplications();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result33, 1);
+                    return true;
+                case 108:
+                    finishHeavyWeightApp();
+                    reply.writeNoException();
+                    return true;
+                case 109:
+                    IBinder _arg072 = data.readStrongBinder();
+                    int _arg151 = data.readInt();
+                    StrictMode.ViolationInfo _arg225 = (StrictMode.ViolationInfo) data.readTypedObject(StrictMode.ViolationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleApplicationStrictModeViolation(_arg072, _arg151, _arg225);
+                    reply.writeNoException();
+                    return true;
+                case 110:
+                    IBinder _arg073 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    registerStrictModeCallback(_arg073);
+                    reply.writeNoException();
+                    return true;
+                case 111:
+                    boolean _result34 = isTopActivityImmersive();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result34);
+                    return true;
+                case 112:
+                    return onTransact$crashApplicationWithType$(data, reply);
+                case 113:
+                    return onTransact$crashApplicationWithTypeWithExtras$(data, reply);
+                case 114:
+                    Uri _arg074 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    int _arg152 = data.readInt();
+                    RemoteCallback _arg226 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    getMimeTypeFilterAsync(_arg074, _arg152, _arg226);
+                    return true;
+                case 115:
+                    return onTransact$dumpHeap$(data, reply);
+                case 116:
+                    int _arg075 = data.readInt();
+                    int _arg153 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result35 = isUserRunning(_arg075, _arg153);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result35);
+                    return true;
+                case 117:
+                    String _arg076 = data.readString();
+                    int _arg154 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPackageScreenCompatMode(_arg076, _arg154);
+                    reply.writeNoException();
+                    return true;
+                case 118:
+                    int _arg077 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result36 = switchUser(_arg077);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result36);
+                    return true;
+                case 119:
+                    String _result37 = getSwitchingFromUserMessage();
+                    reply.writeNoException();
+                    reply.writeString(_result37);
+                    return true;
+                case 120:
+                    String _result38 = getSwitchingToUserMessage();
+                    reply.writeNoException();
+                    reply.writeString(_result38);
+                    return true;
+                case 121:
+                    int _arg078 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setStopUserOnSwitch(_arg078);
+                    reply.writeNoException();
+                    return true;
+                case 122:
+                    int _arg079 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result39 = removeTask(_arg079);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result39);
+                    return true;
+                case 123:
+                    IProcessObserver _arg080 = IProcessObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerProcessObserver(_arg080);
+                    reply.writeNoException();
+                    return true;
+                case 124:
+                    IProcessObserver _arg081 = IProcessObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterProcessObserver(_arg081);
+                    reply.writeNoException();
+                    return true;
+                case 125:
+                    IIntentSender _arg082 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result40 = isIntentSenderTargetedToPackage(_arg082);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result40);
+                    return true;
+                case 126:
+                    Configuration _arg083 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    data.enforceNoDataAvail();
+                    updatePersistentConfiguration(_arg083);
+                    reply.writeNoException();
+                    return true;
+                case 127:
+                    Configuration _arg084 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    String _arg155 = data.readString();
+                    String _arg227 = data.readString();
+                    data.enforceNoDataAvail();
+                    updatePersistentConfigurationWithAttribution(_arg084, _arg155, _arg227);
+                    reply.writeNoException();
+                    return true;
+                case 128:
+                    int[] _arg085 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    long[] _result41 = getProcessPss(_arg085);
+                    reply.writeNoException();
+                    reply.writeLongArray(_result41);
+                    return true;
+                case 129:
+                    CharSequence _arg086 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    boolean _arg156 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    showBootMessage(_arg086, _arg156);
+                    reply.writeNoException();
+                    return true;
+                case 130:
+                    killAllBackgroundProcesses();
+                    reply.writeNoException();
+                    return true;
+                case 131:
+                    String _arg087 = data.readString();
+                    int _arg157 = data.readInt();
+                    IBinder _arg228 = data.readStrongBinder();
+                    String _arg38 = data.readString();
+                    data.enforceNoDataAvail();
+                    ContentProviderHolder _result42 = getContentProviderExternal(_arg087, _arg157, _arg228, _arg38);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result42, 1);
+                    return true;
+                case 132:
+                    String _arg088 = data.readString();
+                    IBinder _arg158 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    removeContentProviderExternal(_arg088, _arg158);
+                    reply.writeNoException();
+                    return true;
+                case 133:
+                    String _arg089 = data.readString();
+                    IBinder _arg159 = data.readStrongBinder();
+                    int _arg229 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeContentProviderExternalAsUser(_arg089, _arg159, _arg229);
+                    reply.writeNoException();
+                    return true;
+                case 134:
+                    ActivityManager.RunningAppProcessInfo _arg090 = new ActivityManager.RunningAppProcessInfo();
+                    data.enforceNoDataAvail();
+                    getMyMemoryState(_arg090);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_arg090, 1);
+                    return true;
+                case 135:
+                    String _arg091 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result43 = killProcessesBelowForeground(_arg091);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result43);
+                    return true;
+                case 136:
+                    UserInfo _result44 = getCurrentUser();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result44, 1);
+                    return true;
+                case 137:
+                    int _result45 = getCurrentUserId();
+                    reply.writeNoException();
+                    reply.writeInt(_result45);
+                    return true;
+                case 138:
+                    IBinder _arg092 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    int _result46 = getLaunchedFromUid(_arg092);
+                    reply.writeNoException();
+                    reply.writeInt(_result46);
+                    return true;
+                case 139:
+                    IBinder _arg093 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unstableProviderDied(_arg093);
+                    reply.writeNoException();
+                    return true;
+                case 140:
+                    IIntentSender _arg094 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result47 = isIntentSenderAnActivity(_arg094);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result47);
+                    return true;
+                case 141:
+                    return onTransact$startActivityAsUser$(data, reply);
+                case 142:
+                    return onTransact$startActivityAsUserWithFeature$(data, reply);
+                case 143:
+                    int _arg095 = data.readInt();
+                    boolean _arg160 = data.readBoolean();
+                    IStopUserCallback _arg230 = IStopUserCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result48 = stopUser(_arg095, _arg160, _arg230);
+                    reply.writeNoException();
+                    reply.writeInt(_result48);
+                    return true;
+                case 144:
+                    int _arg096 = data.readInt();
+                    IStopUserCallback _arg161 = IStopUserCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result49 = stopUserWithCallback(_arg096, _arg161);
+                    reply.writeNoException();
+                    reply.writeInt(_result49);
+                    return true;
+                case 145:
+                    int _arg097 = data.readInt();
+                    boolean _arg162 = data.readBoolean();
+                    IStopUserCallback _arg231 = IStopUserCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result50 = stopUserExceptCertainProfiles(_arg097, _arg162, _arg231);
+                    reply.writeNoException();
+                    reply.writeInt(_result50);
+                    return true;
+                case 146:
+                    int _arg098 = data.readInt();
+                    IStopUserCallback _arg163 = IStopUserCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result51 = stopUserWithDelayedLocking(_arg098, _arg163);
+                    reply.writeNoException();
+                    reply.writeInt(_result51);
+                    return true;
+                case 147:
+                    IUserSwitchObserver _arg099 = IUserSwitchObserver.Stub.asInterface(data.readStrongBinder());
+                    String _arg164 = data.readString();
+                    data.enforceNoDataAvail();
+                    registerUserSwitchObserver(_arg099, _arg164);
+                    reply.writeNoException();
+                    return true;
+                case 148:
+                    IUserSwitchObserver _arg0100 = IUserSwitchObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterUserSwitchObserver(_arg0100);
+                    reply.writeNoException();
+                    return true;
+                case 149:
+                    int[] _result52 = getRunningUserIds();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result52);
+                    return true;
+                case 150:
+                    requestSystemServerHeapDump();
+                    reply.writeNoException();
+                    return true;
+                case 151:
+                    int _arg0101 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestBugReport(_arg0101);
+                    reply.writeNoException();
+                    return true;
+                case 152:
+                    String _arg0102 = data.readString();
+                    String _arg165 = data.readString();
+                    int _arg232 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestBugReportWithDescription(_arg0102, _arg165, _arg232);
+                    reply.writeNoException();
+                    return true;
+                case 153:
+                    String _arg0103 = data.readString();
+                    String _arg166 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestTelephonyBugReport(_arg0103, _arg166);
+                    reply.writeNoException();
+                    return true;
+                case 154:
+                    String _arg0104 = data.readString();
+                    String _arg167 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestWifiBugReport(_arg0104, _arg167);
+                    reply.writeNoException();
+                    return true;
+                case 155:
+                    String _arg0105 = data.readString();
+                    String _arg168 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestInteractiveBugReportWithDescription(_arg0105, _arg168);
+                    reply.writeNoException();
+                    return true;
+                case 156:
+                    requestInteractiveBugReport();
+                    reply.writeNoException();
+                    return true;
+                case 157:
+                    Uri _arg0106 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestBugReportWithExtraAttachment(_arg0106);
+                    reply.writeNoException();
+                    return true;
+                case 158:
+                    requestFullBugReport();
+                    reply.writeNoException();
+                    return true;
+                case 159:
+                    long _arg0107 = data.readLong();
+                    data.enforceNoDataAvail();
+                    requestRemoteBugReport(_arg0107);
+                    reply.writeNoException();
+                    return true;
+                case 160:
+                    boolean _result53 = launchBugReportHandlerApp();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result53);
+                    return true;
+                case 161:
+                    List<String> _result54 = getBugreportWhitelistedPackages();
+                    reply.writeNoException();
+                    reply.writeStringList(_result54);
+                    return true;
+                case 162:
+                    IBinder _arg0108 = data.readStrongBinder();
+                    IIntentSender _arg0109 = IIntentSender.Stub.asInterface(_arg0108);
+                    data.enforceNoDataAvail();
+                    Intent _result55 = getIntentForIntentSender(_arg0109);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result55, 1);
+                    return true;
+                case 163:
+                    IBinder _arg0110 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    String _result56 = getLaunchedFromPackage(_arg0110);
+                    reply.writeNoException();
+                    reply.writeString(_result56);
+                    return true;
+                case 164:
+                    int _arg0111 = data.readInt();
+                    int _arg169 = data.readInt();
+                    String _arg233 = data.readString();
+                    data.enforceNoDataAvail();
+                    killUid(_arg0111, _arg169, _arg233);
+                    reply.writeNoException();
+                    return true;
+                case 165:
+                    boolean _arg0112 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setUserIsMonkey(_arg0112);
+                    reply.writeNoException();
+                    return true;
+                case 166:
+                    IBinder _arg0113 = data.readStrongBinder();
+                    boolean _arg170 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    hang(_arg0113, _arg170);
+                    reply.writeNoException();
+                    return true;
+                case 167:
+                    List<ActivityTaskManager.RootTaskInfo> _result57 = getAllRootTaskInfos();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result57, 1);
+                    return true;
+                case 168:
+                    int _arg0114 = data.readInt();
+                    int _arg171 = data.readInt();
+                    boolean _arg234 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    moveTaskToRootTask(_arg0114, _arg171, _arg234);
+                    reply.writeNoException();
+                    return true;
+                case 169:
+                    int _arg0115 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setFocusedRootTask(_arg0115);
+                    reply.writeNoException();
+                    return true;
+                case 170:
+                    ActivityTaskManager.RootTaskInfo _result58 = getFocusedRootTaskInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result58, 1);
+                    return true;
+                case 171:
+                    restart();
+                    reply.writeNoException();
+                    return true;
+                case 172:
+                    performIdleMaintenance();
+                    reply.writeNoException();
+                    return true;
+                case 173:
+                    IBinder _arg0116 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    appNotRespondingViaProvider(_arg0116);
+                    reply.writeNoException();
+                    return true;
+                case 174:
+                    int _arg0117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Rect _result59 = getTaskBounds(_arg0117);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result59, 1);
+                    return true;
+                case 175:
+                    String _arg0118 = data.readString();
+                    int _arg172 = data.readInt();
+                    int _arg235 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result60 = setProcessMemoryTrimLevel(_arg0118, _arg172, _arg235);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result60);
+                    return true;
+                case 176:
+                    IIntentSender _arg0119 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    String _arg173 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result61 = getTagForIntentSender(_arg0119, _arg173);
+                    reply.writeNoException();
+                    reply.writeString(_result61);
+                    return true;
+                case 177:
+                    int _arg0120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result62 = startUserInBackground(_arg0120);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result62);
+                    return true;
+                case 178:
+                    boolean _result63 = isInLockTaskMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result63);
+                    return true;
+                case 179:
+                    int _arg0121 = data.readInt();
+                    Bundle _arg174 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result64 = startActivityFromRecents(_arg0121, _arg174);
+                    reply.writeNoException();
+                    reply.writeInt(_result64);
+                    return true;
+                case 180:
+                    int _arg0122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startSystemLockTaskMode(_arg0122);
+                    reply.writeNoException();
+                    return true;
+                case 181:
+                    IBinder _arg0123 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result65 = isTopOfTask(_arg0123);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result65);
+                    return true;
+                case 182:
+                    bootAnimationComplete();
+                    reply.writeNoException();
+                    return true;
+                case 183:
+                    int _arg0124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setThemeOverlayReady(_arg0124);
+                    reply.writeNoException();
+                    return true;
+                case 184:
+                    ITaskStackListener _arg0125 = ITaskStackListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerTaskStackListener(_arg0125);
+                    reply.writeNoException();
+                    return true;
+                case 185:
+                    ITaskStackListener _arg0126 = ITaskStackListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterTaskStackListener(_arg0126);
+                    reply.writeNoException();
+                    return true;
+                case 186:
+                    int _arg0127 = data.readInt();
+                    byte[] _arg175 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    notifyCleartextNetwork(_arg0127, _arg175);
+                    reply.writeNoException();
+                    return true;
+                case 187:
+                    int _arg0128 = data.readInt();
+                    int _arg176 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTaskResizeable(_arg0128, _arg176);
+                    reply.writeNoException();
+                    return true;
+                case 188:
+                    int _arg0129 = data.readInt();
+                    Rect _arg177 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    int _arg236 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resizeTask(_arg0129, _arg177, _arg236);
+                    reply.writeNoException();
+                    return true;
+                case 189:
+                    int _result66 = getLockTaskModeState();
+                    reply.writeNoException();
+                    reply.writeInt(_result66);
+                    return true;
+                case 190:
+                    String _arg0130 = data.readString();
+                    int _arg178 = data.readInt();
+                    long _arg237 = data.readLong();
+                    String _arg39 = data.readString();
+                    data.enforceNoDataAvail();
+                    setDumpHeapDebugLimit(_arg0130, _arg178, _arg237, _arg39);
+                    reply.writeNoException();
+                    return true;
+                case 191:
+                    String _arg0131 = data.readString();
+                    data.enforceNoDataAvail();
+                    dumpHeapFinished(_arg0131);
+                    reply.writeNoException();
+                    return true;
+                case 192:
+                    int _arg0132 = data.readInt();
+                    String[] _arg179 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    updateLockTaskPackages(_arg0132, _arg179);
+                    reply.writeNoException();
+                    return true;
+                case 193:
+                    IIntentSender _arg0133 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    WorkSource _arg180 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg238 = data.readInt();
+                    String _arg310 = data.readString();
+                    data.enforceNoDataAvail();
+                    noteAlarmStart(_arg0133, _arg180, _arg238, _arg310);
+                    reply.writeNoException();
+                    return true;
+                case 194:
+                    IIntentSender _arg0134 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    WorkSource _arg181 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg239 = data.readInt();
+                    String _arg311 = data.readString();
+                    data.enforceNoDataAvail();
+                    noteAlarmFinish(_arg0134, _arg181, _arg239, _arg311);
+                    reply.writeNoException();
+                    return true;
+                case 195:
+                    String _arg0135 = data.readString();
+                    String _arg182 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result67 = getPackageProcessState(_arg0135, _arg182);
+                    reply.writeNoException();
+                    reply.writeInt(_result67);
+                    return true;
+                case 196:
+                    boolean _result68 = startBinderTracking();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result68);
+                    return true;
+                case 197:
+                    ParcelFileDescriptor _arg0136 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result69 = stopBinderTrackingAndDump(_arg0136);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result69);
+                    return true;
+                case 198:
+                    boolean _arg0137 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    suppressResizeConfigChanges(_arg0137);
+                    reply.writeNoException();
+                    return true;
+                case 199:
+                    int _arg0138 = data.readInt();
+                    byte[] _arg183 = data.createByteArray();
+                    byte[] _arg240 = data.createByteArray();
+                    IProgressListener _arg312 = IProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result70 = unlockUser(_arg0138, _arg183, _arg240, _arg312);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result70);
+                    return true;
+                case 200:
+                    int _arg0139 = data.readInt();
+                    IProgressListener _arg184 = IProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result71 = unlockUser2(_arg0139, _arg184);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result71);
+                    return true;
+                case 201:
+                    String _arg0140 = data.readString();
+                    int _arg185 = data.readInt();
+                    data.enforceNoDataAvail();
+                    killPackageDependents(_arg0140, _arg185);
+                    reply.writeNoException();
+                    return true;
+                case 202:
+                    String _arg0141 = data.readString();
+                    int _arg186 = data.readInt();
+                    data.enforceNoDataAvail();
+                    makePackageIdle(_arg0141, _arg186);
+                    reply.writeNoException();
+                    return true;
+                case 203:
+                    boolean _arg0142 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDeterministicUidIdle(_arg0142);
+                    reply.writeNoException();
+                    return true;
+                case 204:
+                    int _result72 = getMemoryTrimLevel();
+                    reply.writeNoException();
+                    reply.writeInt(_result72);
+                    return true;
+                case 205:
+                    ComponentName _arg0143 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result73 = isVrModePackageEnabled(_arg0143);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result73);
+                    return true;
+                case 206:
+                    int _arg0144 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyLockedProfile(_arg0144);
+                    reply.writeNoException();
+                    return true;
+                case 207:
+                    Intent _arg0145 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    Bundle _arg187 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startConfirmDeviceCredentialIntent(_arg0145, _arg187);
+                    reply.writeNoException();
+                    return true;
+                case 208:
+                    sendIdleJobTrigger();
+                    reply.writeNoException();
+                    return true;
+                case 209:
+                    return onTransact$sendIntentSender$(data, reply);
+                case 210:
+                    String _arg0146 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result74 = isBackgroundRestricted(_arg0146);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result74);
+                    return true;
+                case 211:
+                    int _arg0147 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRenderThread(_arg0147);
+                    reply.writeNoException();
+                    return true;
+                case 212:
+                    boolean _arg0148 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setHasTopUi(_arg0148);
+                    reply.writeNoException();
+                    return true;
+                case 213:
+                    int _arg0149 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancelTaskWindowTransition(_arg0149);
+                    reply.writeNoException();
+                    return true;
+                case 214:
+                    List<String> _arg0150 = data.createStringArrayList();
+                    int _arg188 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleApplicationInfoChanged(_arg0150, _arg188);
+                    reply.writeNoException();
+                    return true;
+                case 215:
+                    int _arg0151 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPersistentVrThread(_arg0151);
+                    reply.writeNoException();
+                    return true;
+                case 216:
+                    long _arg0152 = data.readLong();
+                    data.enforceNoDataAvail();
+                    waitForNetworkStateUpdate(_arg0152);
+                    reply.writeNoException();
+                    return true;
+                case 217:
+                    int _arg0153 = data.readInt();
+                    data.enforceNoDataAvail();
+                    backgroundAllowlistUid(_arg0153);
+                    reply.writeNoException();
+                    return true;
+                case 218:
+                    int _arg0154 = data.readInt();
+                    IProgressListener _arg189 = IProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result75 = startUserInBackgroundWithListener(_arg0154, _arg189);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result75);
+                    return true;
+                case 219:
+                    int _arg0155 = data.readInt();
+                    String[] _arg190 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    startDelegateShellPermissionIdentity(_arg0155, _arg190);
+                    reply.writeNoException();
+                    return true;
+                case 220:
+                    stopDelegateShellPermissionIdentity();
+                    reply.writeNoException();
+                    return true;
+                case 221:
+                    List<String> _result76 = getDelegatedShellPermissions();
+                    reply.writeNoException();
+                    reply.writeStringList(_result76);
+                    return true;
+                case 222:
+                    ParcelFileDescriptor _result77 = getLifeMonitor();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result77, 1);
+                    return true;
+                case 223:
+                    int _arg0156 = data.readInt();
+                    IProgressListener _arg191 = IProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result78 = startUserInForegroundWithListener(_arg0156, _arg191);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result78);
+                    return true;
+                case 224:
+                    String _arg0157 = data.readString();
+                    data.enforceNoDataAvail();
+                    appNotResponding(_arg0157);
+                    reply.writeNoException();
+                    return true;
+                case 225:
+                    String _arg0158 = data.readString();
+                    boolean _arg192 = data.readBoolean();
+                    int _arg241 = data.readInt();
+                    data.enforceNoDataAvail();
+                    doActiveLaunch(_arg0158, _arg192, _arg241);
+                    return true;
+                case 226:
+                    String _arg0159 = data.readString();
+                    int _arg193 = data.readInt();
+                    int _arg242 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice<ApplicationStartInfo> _result79 = getHistoricalProcessStartReasons(_arg0159, _arg193, _arg242);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result79, 1);
+                    return true;
+                case 227:
+                    IApplicationStartInfoCompleteListener _arg0160 = IApplicationStartInfoCompleteListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg194 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addApplicationStartInfoCompleteListener(_arg0160, _arg194);
+                    reply.writeNoException();
+                    return true;
+                case 228:
+                    IApplicationStartInfoCompleteListener _arg0161 = IApplicationStartInfoCompleteListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg195 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeApplicationStartInfoCompleteListener(_arg0161, _arg195);
+                    reply.writeNoException();
+                    return true;
+                case 229:
+                    int _arg0162 = data.readInt();
+                    long _arg196 = data.readLong();
+                    int _arg243 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addStartInfoTimestamp(_arg0162, _arg196, _arg243);
+                    reply.writeNoException();
+                    return true;
+                case 230:
+                    long _arg0163 = data.readLong();
+                    long _arg197 = data.readLong();
+                    data.enforceNoDataAvail();
+                    reportStartInfoViewTimestamps(_arg0163, _arg197);
+                    return true;
+                case 231:
+                    String _arg0164 = data.readString();
+                    int _arg198 = data.readInt();
+                    int _arg244 = data.readInt();
+                    int _arg313 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice<ApplicationExitInfo> _result80 = getHistoricalProcessExitReasons(_arg0164, _arg198, _arg244, _arg313);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result80, 1);
+                    return true;
+                case 232:
+                    int[] _arg0165 = data.createIntArray();
+                    String _arg199 = data.readString();
+                    data.enforceNoDataAvail();
+                    killProcessesWhenImperceptible(_arg0165, _arg199);
+                    reply.writeNoException();
+                    return true;
+                case 233:
+                    ComponentName _arg0166 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    LocusId _arg1100 = (LocusId) data.readTypedObject(LocusId.CREATOR);
+                    IBinder _arg245 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    setActivityLocusContext(_arg0166, _arg1100, _arg245);
+                    reply.writeNoException();
+                    return true;
+                case 234:
+                    byte[] _arg0167 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setProcessStateSummary(_arg0167);
+                    reply.writeNoException();
+                    return true;
+                case 235:
+                    boolean _result81 = isAppFreezerSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result81);
+                    return true;
+                case 236:
+                    boolean _result82 = isAppFreezerEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result82);
+                    return true;
+                case 237:
+                    int _arg0168 = data.readInt();
+                    int _arg1101 = data.readInt();
+                    String _arg246 = data.readString();
+                    data.enforceNoDataAvail();
+                    killUidForPermissionChange(_arg0168, _arg1101, _arg246);
+                    reply.writeNoException();
+                    return true;
+                case 238:
+                    resetAppErrors();
+                    reply.writeNoException();
+                    return true;
+                case 239:
+                    boolean _arg0169 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result83 = enableAppFreezer(_arg0169);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result83);
+                    return true;
+                case 240:
+                    boolean _arg0170 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result84 = enableFgsNotificationRateLimit(_arg0170);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result84);
+                    return true;
+                case 241:
+                    IBinder _arg0171 = data.readStrongBinder();
+                    int _arg1102 = data.readInt();
+                    data.enforceNoDataAvail();
+                    holdLock(_arg0171, _arg1102);
+                    reply.writeNoException();
+                    return true;
+                case 242:
+                    int _arg0172 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result85 = startProfile(_arg0172);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result85);
+                    return true;
+                case 243:
+                    int _arg0173 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result86 = stopProfile(_arg0173);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result86);
+                    return true;
+                case 244:
+                    IIntentSender _arg0174 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    int _arg1103 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result87 = queryIntentComponentsForIntentSender(_arg0174, _arg1103);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result87, 1);
+                    return true;
+                case 245:
+                    int _arg0175 = data.readInt();
+                    String _arg1104 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result88 = getUidProcessCapabilities(_arg0175, _arg1104);
+                    reply.writeNoException();
+                    reply.writeInt(_result88);
+                    return true;
+                case 246:
+                    waitForBroadcastIdle();
+                    reply.writeNoException();
+                    return true;
+                case 247:
+                    waitForBroadcastBarrier();
+                    reply.writeNoException();
+                    return true;
+                case 248:
+                    String _arg0176 = data.readString();
+                    long _arg1105 = data.readLong();
+                    data.enforceNoDataAvail();
+                    forceDelayBroadcastDelivery(_arg0176, _arg1105);
+                    reply.writeNoException();
+                    return true;
+                case 249:
+                    int _arg0177 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result89 = isProcessFrozen(_arg0177);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result89);
+                    return true;
+                case 250:
+                    int _arg0178 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result90 = getBackgroundRestrictionExemptionReason(_arg0178);
+                    reply.writeNoException();
+                    reply.writeInt(_result90);
+                    return true;
+                case 251:
+                    Intent _arg0179 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg1106 = data.readString();
+                    int _arg247 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result91 = queryRegisteredReceiverPackages(_arg0179, _arg1106, _arg247);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result91);
+                    return true;
+                case 252:
+                    int _arg0180 = data.readInt();
+                    int _arg1107 = data.readInt();
+                    IProgressListener _arg248 = IProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result92 = startUserInBackgroundVisibleOnDisplay(_arg0180, _arg1107, _arg248);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result92);
+                    return true;
+                case 253:
+                    int _arg0181 = data.readInt();
+                    IProgressListener _arg1108 = IProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result93 = startProfileWithListener(_arg0181, _arg1108);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result93);
+                    return true;
+                case 254:
+                    int _arg0182 = data.readInt();
+                    int _arg1109 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result94 = restartUserInBackground(_arg0182, _arg1109);
+                    reply.writeNoException();
+                    reply.writeInt(_result94);
+                    return true;
+                case 255:
+                    int[] _result95 = getDisplayIdsForStartingVisibleBackgroundUsers();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result95);
+                    return true;
+                case 256:
+                    ComponentName _arg0183 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    IBinder _arg1110 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result96 = shouldServiceTimeOut(_arg0183, _arg1110);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result96);
+                    return true;
+                case 257:
+                    ComponentName _arg0184 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    IBinder _arg1111 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result97 = hasServiceTimeLimitExceeded(_arg0184, _arg1111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result97);
+                    return true;
+                case 258:
+                    IUidFrozenStateChangedCallback _arg0185 = IUidFrozenStateChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerUidFrozenStateChangedCallback(_arg0185);
+                    reply.writeNoException();
+                    return true;
+                case 259:
+                    IUidFrozenStateChangedCallback _arg0186 = IUidFrozenStateChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterUidFrozenStateChangedCallback(_arg0186);
+                    reply.writeNoException();
+                    return true;
+                case 260:
+                    int[] _arg0187 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    int[] _result98 = getUidFrozenState(_arg0187);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result98);
+                    return true;
+                case 261:
+                    int _arg0188 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result99 = getContentByTask(_arg0188);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result99);
+                    return true;
+                case 262:
+                    List<String> _result100 = getLongLiveApps();
+                    reply.writeNoException();
+                    reply.writeStringList(_result100);
+                    return true;
+                case 263:
+                    String _arg0189 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result101 = addLongLiveApp(_arg0189);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result101);
+                    return true;
+                case 264:
+                    String _arg0190 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result102 = removeLongLiveApp(_arg0190);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result102);
+                    return true;
+                case 265:
+                    int _result103 = getMaxLongLiveApps();
+                    reply.writeNoException();
+                    reply.writeInt(_result103);
+                    return true;
+                case 266:
+                    int _arg0191 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result104 = setLongLiveTask(_arg0191);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result104);
+                    return true;
+                case 267:
+                    int _arg0192 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result105 = clearLongLiveTask(_arg0192);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result105);
+                    return true;
+                case 268:
+                    List<String> _result106 = getLongLiveProcesses();
+                    reply.writeNoException();
+                    reply.writeStringList(_result106);
+                    return true;
+                case 269:
+                    int _arg0193 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result107 = getLongLiveProcessesForUser(_arg0193);
+                    reply.writeNoException();
+                    reply.writeStringList(_result107);
+                    return true;
+                case 270:
+                    int _arg0194 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List _result108 = getLongLiveTaskIdsForUser(_arg0194);
+                    reply.writeNoException();
+                    reply.writeList(_result108);
+                    return true;
+                case 271:
+                    int _arg0195 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result109 = getAutoRemoveRecents(_arg0195);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result109);
+                    return true;
+                case 272:
+                    RemoteCallback _arg0196 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    int _arg1112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerDedicatedCallback(_arg0196, _arg1112);
+                    reply.writeNoException();
+                    return true;
+                case 273:
+                    String _arg0197 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result110 = setLongLiveApp(_arg0197);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result110);
+                    return true;
+                case 274:
+                    String _result111 = getLongLiveApp();
+                    reply.writeNoException();
+                    reply.writeString(_result111);
+                    return true;
+                case 275:
+                    int _arg0198 = data.readInt();
+                    boolean _arg1113 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result112 = moveTaskToBack(_arg0198, _arg1113);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result112);
+                    return true;
+                case 276:
+                    int _arg0199 = data.readInt();
+                    boolean _arg1114 = data.readBoolean();
+                    Bundle _arg249 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result113 = moveTaskToBackWithBundle(_arg0199, _arg1114, _arg249);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result113);
+                    return true;
+                case 277:
+                    int _arg0200 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dismissUserSwitchingDialog(_arg0200);
+                    reply.writeNoException();
+                    return true;
+                case 278:
+                    Configuration _result114 = getGlobalConfiguration();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result114, 1);
+                    return true;
+                case 279:
+                    String _arg0201 = data.readString();
+                    int _arg1115 = data.readInt();
+                    int _arg250 = data.readInt();
+                    int _arg314 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result115 = checkPermissionForDevice(_arg0201, _arg1115, _arg250, _arg314);
+                    reply.writeNoException();
+                    reply.writeInt(_result115);
+                    return true;
+                case 280:
+                    int _arg0202 = data.readInt();
+                    int _arg1116 = data.readInt();
+                    int _arg251 = data.readInt();
+                    int _arg315 = data.readInt();
+                    data.enforceNoDataAvail();
+                    frozenBinderTransactionDetected(_arg0202, _arg1116, _arg251, _arg315);
+                    return true;
+                case 281:
+                    int _arg0203 = data.readInt();
+                    String _arg1117 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result116 = getBindingUidProcessState(_arg0203, _arg1117);
+                    reply.writeNoException();
+                    reply.writeInt(_result116);
+                    return true;
+                case 282:
+                    int _arg0204 = data.readInt();
+                    String _arg1118 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result117 = getUidLastIdleElapsedTime(_arg0204, _arg1118);
+                    reply.writeNoException();
+                    reply.writeLong(_result117);
+                    return true;
+                case 283:
+                    int _arg0205 = data.readInt();
+                    int _arg1119 = data.readInt();
+                    String _arg252 = data.readString();
+                    int _arg316 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addOverridePermissionState(_arg0205, _arg1119, _arg252, _arg316);
+                    reply.writeNoException();
+                    return true;
+                case 284:
+                    int _arg0206 = data.readInt();
+                    int _arg1120 = data.readInt();
+                    String _arg253 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeOverridePermissionState(_arg0206, _arg1120, _arg253);
+                    reply.writeNoException();
+                    return true;
+                case 285:
+                    int _arg0207 = data.readInt();
+                    int _arg1121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearOverridePermissionStates(_arg0207, _arg1121);
+                    reply.writeNoException();
+                    return true;
+                case 286:
+                    int _arg0208 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearAllOverridePermissionStates(_arg0208);
+                    reply.writeNoException();
+                    return true;
+                case 287:
+                    return onTransact$noteAppRestrictionEnabled$(data, reply);
+                case 288:
+                    int _arg0209 = data.readInt();
+                    String _arg1122 = data.readString();
+                    data.enforceNoDataAvail();
+                    checkProfileForADCP(_arg0209, _arg1122);
+                    reply.writeNoException();
+                    return true;
+                case 289:
+                    List<String> _arg0210 = data.createStringArrayList();
+                    int _arg1123 = data.readInt();
+                    data.enforceNoDataAvail();
+                    preloadBoosterAppsFromIpm(_arg0210, _arg1123);
+                    reply.writeNoException();
+                    return true;
+                case 290:
+                    int _arg0211 = data.readInt();
+                    String _arg1124 = data.readString();
+                    data.enforceNoDataAvail();
+                    updateFlingerFlag(_arg0211, _arg1124);
+                    reply.writeNoException();
+                    return true;
+                case 291:
+                    int _arg0212 = data.readInt();
+                    String _arg1125 = data.readString();
+                    int _arg254 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SemAppRestrictionManager.RestrictionInfo _result118 = getRestrictionInfo(_arg0212, _arg1125, _arg254);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result118, 1);
+                    return true;
+                case 292:
+                    int _arg0213 = data.readInt();
+                    String _arg1126 = data.readString();
+                    int _arg255 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result119 = canRestrict(_arg0213, _arg1126, _arg255);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result119);
+                    return true;
+                case 293:
+                    return onTransact$restrict$(data, reply);
+                case 294:
+                    int _arg0214 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<SemAppRestrictionManager.AppRestrictionInfo> _result120 = getRestrictableList(_arg0214);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result120, 1);
+                    return true;
+                case 295:
+                    List<SemAppRestrictionManager.AppRestrictionInfo> _result121 = getAllRestrictedList();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result121, 1);
+                    return true;
+                case 296:
+                    int _arg0215 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<SemAppRestrictionManager.AppRestrictionInfo> _result122 = getRestrictedList(_arg0215);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result122, 1);
+                    return true;
+                case 297:
+                    SemAppRestrictionManager.RestrictionInfo _arg0216 = (SemAppRestrictionManager.RestrictionInfo) data.readTypedObject(SemAppRestrictionManager.RestrictionInfo.CREATOR);
+                    List<SemAppRestrictionManager.AppRestrictionInfo> _arg1127 = data.createTypedArrayList(SemAppRestrictionManager.AppRestrictionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result123 = updateRestrictionInfo(_arg0216, _arg1127);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result123);
+                    return true;
+                case 298:
+                    List<SemAppRestrictionManager.AppRestrictionInfo> _arg0217 = data.createTypedArrayList(SemAppRestrictionManager.AppRestrictionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result124 = clearRestrictionInfo(_arg0217);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result124);
+                    return true;
+                case 299:
+                    int _arg0218 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTTSPkgInfo(_arg0218);
+                    reply.writeNoException();
+                    return true;
+                case 300:
+                    clearTTSPkgInfo();
+                    reply.writeNoException();
+                    return true;
+                case 301:
+                    int _arg0219 = data.readInt();
+                    int _arg1128 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice<PackageInfo> _result125 = getInstalledPackageListFromMARs(_arg0219, _arg1128);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result125, 1);
+                    return true;
+                case 302:
+                    int _arg0220 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result126 = getPackageFromAppProcesses(_arg0220);
+                    reply.writeNoException();
+                    reply.writeString(_result126);
+                    return true;
+                case 303:
+                    Configuration _arg0221 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    String _arg1129 = data.readString();
+                    String _arg256 = data.readString();
+                    LocaleList _arg317 = (LocaleList) data.readTypedObject(LocaleList.CREATOR);
+                    data.enforceNoDataAvail();
+                    updatePersistentConfigurationAndLocaleOverlays(_arg0221, _arg1129, _arg256, _arg317);
+                    reply.writeNoException();
+                    return true;
+                case 304:
+                    int _arg0222 = data.readInt();
+                    int _arg1130 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportAbnormalUsage(_arg0222, _arg1130);
+                    reply.writeNoException();
+                    return true;
+                case 305:
+                    boolean _result127 = isHeapDumpAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result127);
+                    return true;
+                case 306:
+                    int _arg0223 = data.readInt();
+                    boolean _arg1131 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result128 = setFGSFilter(_arg0223, _arg1131);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result128);
+                    return true;
+                case 307:
+                    resetAbnormalList();
+                    reply.writeNoException();
+                    return true;
+                case 308:
+                    int _arg0224 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result129 = isFreezableUid(_arg0224);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result129);
+                    return true;
+                case 309:
+                    int _arg0225 = data.readInt();
+                    boolean _arg1132 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result130 = setProcessSlowdown(_arg0225, _arg1132);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result130);
+                    return true;
+                case 310:
+                    int[] _result131 = getIsolatedProcessList();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result131);
+                    return true;
+                case 311:
+                    IIntentSender _arg0226 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    Bundle _result132 = getOptionsForIntentSender(_arg0226);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result132, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result = openContentUri(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            IUidObserver _arg02 = IUidObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            registerUidObserver(_arg02, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IBinder _result2 = data.readStrongBinder();
-                            IUidObserver _arg03 = IUidObserver.Stub.asInterface(_result2);
-                            data.enforceNoDataAvail();
-                            unregisterUidObserver(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            IUidObserver _arg05 = IUidObserver.Stub.asInterface(_arg04);
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            String _arg32 = data.readString();
-                            int[] _arg4 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            IBinder _result3 = registerUidObserverForUids(_arg05, _arg12, _arg22, _arg32, _arg4);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result3);
-                            return true;
-                        case 5:
-                            IBinder _arg06 = data.readStrongBinder();
-                            String _arg13 = data.readString();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addUidToObserver(_arg06, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IBinder _arg07 = data.readStrongBinder();
-                            String _arg14 = data.readString();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeUidFromObserver(_arg07, _arg14, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg08 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isUidActive(_arg08, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            int _arg09 = data.readInt();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result5 = getUidProcessState(_arg09, _arg16);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 9:
-                            String _arg010 = data.readString();
-                            int _arg17 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result6 = checkPermission(_arg010, _arg17, _arg25);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 10:
-                            int _arg011 = data.readInt();
-                            int _arg18 = data.readInt();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            logFgsApiBegin(_arg011, _arg18, _arg26);
-                            return true;
-                        case 11:
-                            int _arg012 = data.readInt();
-                            int _arg19 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            logFgsApiEnd(_arg012, _arg19, _arg27);
-                            return true;
-                        case 12:
-                            int _arg013 = data.readInt();
-                            int _arg110 = data.readInt();
-                            int _arg28 = data.readInt();
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            logFgsApiStateChanged(_arg013, _arg110, _arg28, _arg33);
-                            return true;
-                        case 13:
-                            IBinder _arg014 = data.readStrongBinder();
-                            ApplicationErrorReport.ParcelableCrashInfo _arg111 = (ApplicationErrorReport.ParcelableCrashInfo) data.readTypedObject(ApplicationErrorReport.ParcelableCrashInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleApplicationCrash(_arg014, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            return onTransact$startActivity$(data, reply);
-                        case 15:
-                            return onTransact$startActivityWithFeature$(data, reply);
-                        case 16:
-                            unhandledBack();
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            IBinder _arg015 = data.readStrongBinder();
-                            int _arg112 = data.readInt();
-                            Intent _arg29 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = finishActivity(_arg015, _arg112, _arg29, _arg34);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 18:
-                            return onTransact$registerReceiver$(data, reply);
-                        case 19:
-                            return onTransact$registerReceiverWithFeature$(data, reply);
-                        case 20:
-                            IIntentReceiver _arg016 = IIntentReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterReceiver(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            return onTransact$broadcastIntent$(data, reply);
-                        case 22:
-                            return onTransact$broadcastIntentWithFeature$(data, reply);
-                        case 23:
-                            IApplicationThread _arg017 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            Intent _arg113 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg210 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unbroadcastIntent(_arg017, _arg113, _arg210);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            return onTransact$finishReceiver$(data, reply);
-                        case 25:
-                            IApplicationThread _arg018 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            long _arg114 = data.readLong();
-                            data.enforceNoDataAvail();
-                            attachApplication(_arg018, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            long _arg019 = data.readLong();
-                            data.enforceNoDataAvail();
-                            finishAttachApplication(_arg019);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<ActivityManager.RunningTaskInfo> _result8 = getTasks(_arg020);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result8, 1);
-                            return true;
-                        case 28:
-                            IBinder _arg021 = data.readStrongBinder();
-                            IApplicationThread _arg022 = IApplicationThread.Stub.asInterface(_arg021);
-                            String _arg115 = data.readString();
-                            int _arg211 = data.readInt();
-                            int _arg35 = data.readInt();
-                            Bundle _arg42 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            moveTaskToFront(_arg022, _arg115, _arg211, _arg35, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            IBinder _arg023 = data.readStrongBinder();
-                            boolean _arg116 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result9 = getTaskForActivity(_arg023, _arg116);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 30:
-                            IApplicationThread _arg024 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg117 = data.readString();
-                            String _arg212 = data.readString();
-                            int _arg36 = data.readInt();
-                            boolean _arg43 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            ContentProviderHolder _result10 = getContentProvider(_arg024, _arg117, _arg212, _arg36, _arg43);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 31:
-                            IBinder _arg025 = data.readStrongBinder();
-                            IApplicationThread _arg026 = IApplicationThread.Stub.asInterface(_arg025);
-                            List<ContentProviderHolder> _arg118 = data.createTypedArrayList(ContentProviderHolder.CREATOR);
-                            data.enforceNoDataAvail();
-                            publishContentProviders(_arg026, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            IBinder _arg027 = data.readStrongBinder();
-                            int _arg119 = data.readInt();
-                            int _arg213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = refContentProvider(_arg027, _arg119, _arg213);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 33:
-                            ComponentName _arg028 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            PendingIntent _result12 = getRunningServiceControlPanel(_arg028);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 34:
-                            return onTransact$startService$(data, reply);
-                        case 35:
-                            IApplicationThread _arg029 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            Intent _arg120 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg214 = data.readString();
-                            int _arg37 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result13 = stopService(_arg029, _arg120, _arg214, _arg37);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 36:
-                            return onTransact$bindService$(data, reply);
-                        case 37:
-                            return onTransact$bindServiceInstance$(data, reply);
-                        case 38:
-                            IServiceConnection _arg030 = IServiceConnection.Stub.asInterface(data.readStrongBinder());
-                            int _arg121 = data.readInt();
-                            int _arg215 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateServiceGroup(_arg030, _arg121, _arg215);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            IBinder _arg031 = data.readStrongBinder();
-                            IServiceConnection _arg032 = IServiceConnection.Stub.asInterface(_arg031);
-                            data.enforceNoDataAvail();
-                            boolean _result14 = unbindService(_arg032);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 40:
-                            IBinder _arg033 = data.readStrongBinder();
-                            Intent _arg122 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            IBinder _arg216 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            publishService(_arg033, _arg122, _arg216);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            String _arg034 = data.readString();
-                            boolean _arg123 = data.readBoolean();
-                            boolean _arg217 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDebugApp(_arg034, _arg123, _arg217);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            String _arg035 = data.readString();
-                            String _arg124 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAgentApp(_arg035, _arg124);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            boolean _arg036 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAlwaysFinish(_arg036);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            return onTransact$startInstrumentation$(data, reply);
-                        case 45:
-                            IApplicationThread _arg037 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            Bundle _arg125 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            addInstrumentationResults(_arg037, _arg125);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            IApplicationThread _arg038 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            int _arg126 = data.readInt();
-                            Bundle _arg218 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            finishInstrumentation(_arg038, _arg126, _arg218);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            Configuration _result15 = getConfiguration();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 48:
-                            Configuration _arg039 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result16 = updateConfiguration(_arg039);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 49:
-                            String _arg040 = data.readString();
-                            String _arg127 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result17 = updateMccMncConfiguration(_arg040, _arg127);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 50:
-                            ComponentName _arg041 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            IBinder _arg128 = data.readStrongBinder();
-                            int _arg219 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result18 = stopServiceToken(_arg041, _arg128, _arg219);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 51:
-                            int _arg042 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setProcessLimit(_arg042);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            int _result19 = getProcessLimit();
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            return true;
-                        case 53:
-                            return onTransact$checkUriPermission$(data, reply);
-                        case 54:
-                            return onTransact$checkUriPermissions$(data, reply);
-                        case 55:
-                            IApplicationThread _arg043 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg129 = data.readString();
-                            Uri _arg220 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            int _arg38 = data.readInt();
-                            int _arg44 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantUriPermission(_arg043, _arg129, _arg220, _arg38, _arg44);
-                            reply.writeNoException();
-                            return true;
-                        case 56:
-                            IApplicationThread _arg044 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg130 = data.readString();
-                            Uri _arg221 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            int _arg39 = data.readInt();
-                            int _arg45 = data.readInt();
-                            data.enforceNoDataAvail();
-                            revokeUriPermission(_arg044, _arg130, _arg221, _arg39, _arg45);
-                            reply.writeNoException();
-                            return true;
-                        case 57:
-                            IActivityController _arg045 = IActivityController.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg131 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setActivityController(_arg045, _arg131);
-                            reply.writeNoException();
-                            return true;
-                        case 58:
-                            IApplicationThread _arg046 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg132 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            showWaitingForDebugger(_arg046, _arg132);
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            int _arg047 = data.readInt();
-                            data.enforceNoDataAvail();
-                            signalPersistentProcesses(_arg047);
-                            reply.writeNoException();
-                            return true;
-                        case 60:
-                            int _arg048 = data.readInt();
-                            int _arg133 = data.readInt();
-                            int _arg222 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result20 = getRecentTasks(_arg048, _arg133, _arg222);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result20, 1);
-                            return true;
-                        case 61:
-                            IBinder _arg049 = data.readStrongBinder();
-                            int _arg134 = data.readInt();
-                            int _arg223 = data.readInt();
-                            int _arg310 = data.readInt();
-                            data.enforceNoDataAvail();
-                            serviceDoneExecuting(_arg049, _arg134, _arg223, _arg310);
-                            return true;
-                        case 62:
-                            return onTransact$getIntentSender$(data, reply);
-                        case 63:
-                            return onTransact$getIntentSenderWithFeature$(data, reply);
-                        case 64:
-                            IIntentSender _arg050 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelIntentSender(_arg050);
-                            reply.writeNoException();
-                            return true;
-                        case 65:
-                            IIntentSender _arg051 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ActivityManager.PendingIntentInfo _result21 = getInfoForIntentSender(_arg051);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result21, 1);
-                            return true;
-                        case 66:
-                            IIntentSender _arg052 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            IResultReceiver _arg135 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result22 = registerIntentSenderCancelListenerEx(_arg052, _arg135);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result22);
-                            return true;
-                        case 67:
-                            IIntentSender _arg053 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            IResultReceiver _arg136 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterIntentSenderCancelListener(_arg053, _arg136);
-                            reply.writeNoException();
-                            return true;
-                        case 68:
-                            enterSafeMode();
-                            reply.writeNoException();
-                            return true;
-                        case 69:
-                            IBinder _arg054 = data.readStrongBinder();
-                            IIntentSender _arg055 = IIntentSender.Stub.asInterface(_arg054);
-                            WorkSource _arg137 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg224 = data.readInt();
-                            String _arg311 = data.readString();
-                            String _arg46 = data.readString();
-                            data.enforceNoDataAvail();
-                            noteWakeupAlarm(_arg055, _arg137, _arg224, _arg311, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 70:
-                            IBinder _arg056 = data.readStrongBinder();
-                            boolean _arg138 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            removeContentProvider(_arg056, _arg138);
-                            return true;
-                        case 71:
-                            IBinder _arg057 = data.readStrongBinder();
-                            int _arg139 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRequestedOrientation(_arg057, _arg139);
-                            reply.writeNoException();
-                            return true;
-                        case 72:
-                            IBinder _arg058 = data.readStrongBinder();
-                            Intent _arg140 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            boolean _arg225 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            unbindFinished(_arg058, _arg140, _arg225);
-                            reply.writeNoException();
-                            return true;
-                        case 73:
-                            IBinder _arg059 = data.readStrongBinder();
-                            int _arg141 = data.readInt();
-                            boolean _arg226 = data.readBoolean();
-                            String _arg312 = data.readString();
-                            data.enforceNoDataAvail();
-                            setProcessImportant(_arg059, _arg141, _arg226, _arg312);
-                            reply.writeNoException();
-                            return true;
-                        case 74:
-                            return onTransact$setServiceForeground$(data, reply);
-                        case 75:
-                            ComponentName _arg060 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            IBinder _arg142 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            int _result23 = getForegroundServiceType(_arg060, _arg142);
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            return true;
-                        case 76:
-                            IBinder _arg061 = data.readStrongBinder();
-                            boolean _arg143 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result24 = moveActivityTaskToBack(_arg061, _arg143);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result24);
-                            return true;
-                        case 77:
-                            ActivityManager.MemoryInfo _arg062 = new ActivityManager.MemoryInfo();
-                            data.enforceNoDataAvail();
-                            getMemoryInfo(_arg062);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg062, 1);
-                            return true;
-                        case 78:
-                            List<ActivityManager.ProcessErrorStateInfo> _result25 = getProcessesInErrorState();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result25, 1);
-                            return true;
-                        case 79:
-                            String _arg063 = data.readString();
-                            boolean _arg144 = data.readBoolean();
-                            IPackageDataObserver _arg227 = IPackageDataObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg313 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result26 = clearApplicationUserData(_arg063, _arg144, _arg227, _arg313);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result26);
-                            return true;
-                        case 80:
-                            String _arg064 = data.readString();
-                            int _arg145 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopAppForUser(_arg064, _arg145);
-                            reply.writeNoException();
-                            return true;
-                        case 81:
-                            IForegroundServiceObserver _arg065 = IForegroundServiceObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result27 = registerForegroundServiceObserver(_arg065);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result27);
-                            return true;
-                        case 82:
-                            String _arg066 = data.readString();
-                            int _arg146 = data.readInt();
-                            data.enforceNoDataAvail();
-                            forceStopPackage(_arg066, _arg146);
-                            reply.writeNoException();
-                            return true;
-                        case 83:
-                            String _arg067 = data.readString();
-                            int _arg147 = data.readInt();
-                            data.enforceNoDataAvail();
-                            forceStopPackageEvenWhenStopping(_arg067, _arg147);
-                            reply.writeNoException();
-                            return true;
-                        case 84:
-                            String _arg068 = data.readString();
-                            int _arg148 = data.readInt();
-                            data.enforceNoDataAvail();
-                            forceStopPackageByAdmin(_arg068, _arg148);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            int[] _arg069 = data.createIntArray();
-                            String _arg149 = data.readString();
-                            boolean _arg228 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result28 = killPids(_arg069, _arg149, _arg228);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result28);
-                            return true;
-                        case 86:
-                            int _arg070 = data.readInt();
-                            int _arg150 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<ActivityManager.RunningServiceInfo> _result29 = getServices(_arg070, _arg150);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result29, 1);
-                            return true;
-                        case 87:
-                            List<ActivityManager.RunningAppProcessInfo> _result30 = getRunningAppProcesses();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result30, 1);
-                            return true;
-                        case 88:
-                            Intent _arg071 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg151 = data.readString();
-                            String _arg229 = data.readString();
-                            data.enforceNoDataAvail();
-                            IBinder _result31 = peekService(_arg071, _arg151, _arg229);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result31);
-                            return true;
-                        case 89:
-                            return onTransact$profileControl$(data, reply);
-                        case 90:
-                            int _arg072 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result32 = shutdown(_arg072);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result32);
-                            return true;
-                        case 91:
-                            stopAppSwitches();
-                            reply.writeNoException();
-                            return true;
-                        case 92:
-                            resumeAppSwitches();
-                            reply.writeNoException();
-                            return true;
-                        case 93:
-                            String _arg073 = data.readString();
-                            int _arg152 = data.readInt();
-                            int _arg230 = data.readInt();
-                            int _arg314 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result33 = bindBackupAgent(_arg073, _arg152, _arg230, _arg314);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result33);
-                            return true;
-                        case 94:
-                            String _arg074 = data.readString();
-                            IBinder _arg153 = data.readStrongBinder();
-                            int _arg231 = data.readInt();
-                            data.enforceNoDataAvail();
-                            backupAgentCreated(_arg074, _arg153, _arg231);
-                            reply.writeNoException();
-                            return true;
-                        case 95:
-                            ApplicationInfo _arg075 = (ApplicationInfo) data.readTypedObject(ApplicationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            unbindBackupAgent(_arg075);
-                            reply.writeNoException();
-                            return true;
-                        case 96:
-                            return onTransact$handleIncomingUser$(data, reply);
-                        case 97:
-                            String _arg076 = data.readString();
-                            data.enforceNoDataAvail();
-                            addPackageDependency(_arg076);
-                            reply.writeNoException();
-                            return true;
-                        case 98:
-                            return onTransact$killApplication$(data, reply);
-                        case 99:
-                            String _arg077 = data.readString();
-                            data.enforceNoDataAvail();
-                            closeSystemDialogs(_arg077);
-                            reply.writeNoException();
-                            return true;
-                        case 100:
-                            String _arg078 = data.readString();
-                            int _arg154 = data.readInt();
-                            data.enforceNoDataAvail();
-                            closeSystemDialogsInDisplay(_arg078, _arg154);
-                            reply.writeNoException();
-                            return true;
-                        case 101:
-                            int[] _arg079 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            Debug.MemoryInfo[] _result34 = getProcessMemoryInfo(_arg079);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result34, 1);
-                            return true;
-                        case 102:
-                            String _arg080 = data.readString();
-                            int _arg155 = data.readInt();
-                            data.enforceNoDataAvail();
-                            killApplicationProcess(_arg080, _arg155);
-                            reply.writeNoException();
-                            return true;
-                        case 103:
-                            return onTransact$handleApplicationWtf$(data, reply);
-                        case 104:
-                            String _arg081 = data.readString();
-                            int _arg156 = data.readInt();
-                            data.enforceNoDataAvail();
-                            killBackgroundProcesses(_arg081, _arg156);
-                            reply.writeNoException();
-                            return true;
-                        case 105:
-                            boolean _result35 = isUserAMonkey();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result35);
-                            return true;
-                        case 106:
-                            List<ApplicationInfo> _result36 = getRunningExternalApplications();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result36, 1);
-                            return true;
-                        case 107:
-                            finishHeavyWeightApp();
-                            reply.writeNoException();
-                            return true;
-                        case 108:
-                            IBinder _arg082 = data.readStrongBinder();
-                            int _arg157 = data.readInt();
-                            StrictMode.ViolationInfo _arg232 = (StrictMode.ViolationInfo) data.readTypedObject(StrictMode.ViolationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleApplicationStrictModeViolation(_arg082, _arg157, _arg232);
-                            reply.writeNoException();
-                            return true;
-                        case 109:
-                            IBinder _arg083 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            registerStrictModeCallback(_arg083);
-                            reply.writeNoException();
-                            return true;
-                        case 110:
-                            boolean _result37 = isTopActivityImmersive();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result37);
-                            return true;
-                        case 111:
-                            return onTransact$crashApplicationWithType$(data, reply);
-                        case 112:
-                            return onTransact$crashApplicationWithTypeWithExtras$(data, reply);
-                        case 113:
-                            Uri _arg084 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            int _arg158 = data.readInt();
-                            RemoteCallback _arg233 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            getMimeTypeFilterAsync(_arg084, _arg158, _arg233);
-                            return true;
-                        case 114:
-                            return onTransact$dumpHeap$(data, reply);
-                        case 115:
-                            int _arg085 = data.readInt();
-                            int _arg159 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result38 = isUserRunning(_arg085, _arg159);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result38);
-                            return true;
-                        case 116:
-                            String _arg086 = data.readString();
-                            int _arg160 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPackageScreenCompatMode(_arg086, _arg160);
-                            reply.writeNoException();
-                            return true;
-                        case 117:
-                            int _arg087 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result39 = switchUser(_arg087);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result39);
-                            return true;
-                        case 118:
-                            String _result40 = getSwitchingFromUserMessage();
-                            reply.writeNoException();
-                            reply.writeString(_result40);
-                            return true;
-                        case 119:
-                            String _result41 = getSwitchingToUserMessage();
-                            reply.writeNoException();
-                            reply.writeString(_result41);
-                            return true;
-                        case 120:
-                            int _arg088 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setStopUserOnSwitch(_arg088);
-                            reply.writeNoException();
-                            return true;
-                        case 121:
-                            int _arg089 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result42 = removeTask(_arg089);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result42);
-                            return true;
-                        case 122:
-                            IProcessObserver _arg090 = IProcessObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerProcessObserver(_arg090);
-                            reply.writeNoException();
-                            return true;
-                        case 123:
-                            IProcessObserver _arg091 = IProcessObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterProcessObserver(_arg091);
-                            reply.writeNoException();
-                            return true;
-                        case 124:
-                            IIntentSender _arg092 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result43 = isIntentSenderTargetedToPackage(_arg092);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result43);
-                            return true;
-                        case 125:
-                            Configuration _arg093 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            data.enforceNoDataAvail();
-                            updatePersistentConfiguration(_arg093);
-                            reply.writeNoException();
-                            return true;
-                        case 126:
-                            Configuration _arg094 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            String _arg161 = data.readString();
-                            String _arg234 = data.readString();
-                            data.enforceNoDataAvail();
-                            updatePersistentConfigurationWithAttribution(_arg094, _arg161, _arg234);
-                            reply.writeNoException();
-                            return true;
-                        case 127:
-                            int[] _arg095 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            long[] _result44 = getProcessPss(_arg095);
-                            reply.writeNoException();
-                            reply.writeLongArray(_result44);
-                            return true;
-                        case 128:
-                            CharSequence _arg096 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            boolean _arg162 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            showBootMessage(_arg096, _arg162);
-                            reply.writeNoException();
-                            return true;
-                        case 129:
-                            killAllBackgroundProcesses();
-                            reply.writeNoException();
-                            return true;
-                        case 130:
-                            String _arg097 = data.readString();
-                            int _arg163 = data.readInt();
-                            IBinder _arg235 = data.readStrongBinder();
-                            String _arg315 = data.readString();
-                            data.enforceNoDataAvail();
-                            ContentProviderHolder _result45 = getContentProviderExternal(_arg097, _arg163, _arg235, _arg315);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result45, 1);
-                            return true;
-                        case 131:
-                            String _arg098 = data.readString();
-                            IBinder _arg164 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            removeContentProviderExternal(_arg098, _arg164);
-                            reply.writeNoException();
-                            return true;
-                        case 132:
-                            String _arg099 = data.readString();
-                            IBinder _arg165 = data.readStrongBinder();
-                            int _arg236 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeContentProviderExternalAsUser(_arg099, _arg165, _arg236);
-                            reply.writeNoException();
-                            return true;
-                        case 133:
-                            ActivityManager.RunningAppProcessInfo _arg0100 = new ActivityManager.RunningAppProcessInfo();
-                            data.enforceNoDataAvail();
-                            getMyMemoryState(_arg0100);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg0100, 1);
-                            return true;
-                        case 134:
-                            String _arg0101 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result46 = killProcessesBelowForeground(_arg0101);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result46);
-                            return true;
-                        case 135:
-                            UserInfo _result47 = getCurrentUser();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result47, 1);
-                            return true;
-                        case 136:
-                            int _result48 = getCurrentUserId();
-                            reply.writeNoException();
-                            reply.writeInt(_result48);
-                            return true;
-                        case 137:
-                            IBinder _arg0102 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            int _result49 = getLaunchedFromUid(_arg0102);
-                            reply.writeNoException();
-                            reply.writeInt(_result49);
-                            return true;
-                        case 138:
-                            IBinder _arg0103 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unstableProviderDied(_arg0103);
-                            reply.writeNoException();
-                            return true;
-                        case 139:
-                            IIntentSender _arg0104 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result50 = isIntentSenderAnActivity(_arg0104);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result50);
-                            return true;
-                        case 140:
-                            return onTransact$startActivityAsUser$(data, reply);
-                        case 141:
-                            return onTransact$startActivityAsUserWithFeature$(data, reply);
-                        case 142:
-                            int _arg0105 = data.readInt();
-                            boolean _arg166 = data.readBoolean();
-                            IStopUserCallback _arg237 = IStopUserCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result51 = stopUser(_arg0105, _arg166, _arg237);
-                            reply.writeNoException();
-                            reply.writeInt(_result51);
-                            return true;
-                        case 143:
-                            int _arg0106 = data.readInt();
-                            boolean _arg167 = data.readBoolean();
-                            IStopUserCallback _arg238 = IStopUserCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result52 = stopUserWithDelayedLocking(_arg0106, _arg167, _arg238);
-                            reply.writeNoException();
-                            reply.writeInt(_result52);
-                            return true;
-                        case 144:
-                            IUserSwitchObserver _arg0107 = IUserSwitchObserver.Stub.asInterface(data.readStrongBinder());
-                            String _arg168 = data.readString();
-                            data.enforceNoDataAvail();
-                            registerUserSwitchObserver(_arg0107, _arg168);
-                            reply.writeNoException();
-                            return true;
-                        case 145:
-                            IUserSwitchObserver _arg0108 = IUserSwitchObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterUserSwitchObserver(_arg0108);
-                            reply.writeNoException();
-                            return true;
-                        case 146:
-                            int[] _result53 = getRunningUserIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result53);
-                            return true;
-                        case 147:
-                            requestSystemServerHeapDump();
-                            reply.writeNoException();
-                            return true;
-                        case 148:
-                            int _arg0109 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestBugReport(_arg0109);
-                            reply.writeNoException();
-                            return true;
-                        case 149:
-                            String _arg0110 = data.readString();
-                            String _arg169 = data.readString();
-                            int _arg239 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestBugReportWithDescription(_arg0110, _arg169, _arg239);
-                            reply.writeNoException();
-                            return true;
-                        case 150:
-                            String _arg0111 = data.readString();
-                            String _arg170 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestTelephonyBugReport(_arg0111, _arg170);
-                            reply.writeNoException();
-                            return true;
-                        case 151:
-                            String _arg0112 = data.readString();
-                            String _arg171 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestWifiBugReport(_arg0112, _arg171);
-                            reply.writeNoException();
-                            return true;
-                        case 152:
-                            String _arg0113 = data.readString();
-                            String _arg172 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestInteractiveBugReportWithDescription(_arg0113, _arg172);
-                            reply.writeNoException();
-                            return true;
-                        case 153:
-                            requestInteractiveBugReport();
-                            reply.writeNoException();
-                            return true;
-                        case 154:
-                            requestFullBugReport();
-                            reply.writeNoException();
-                            return true;
-                        case 155:
-                            long _arg0114 = data.readLong();
-                            data.enforceNoDataAvail();
-                            requestRemoteBugReport(_arg0114);
-                            reply.writeNoException();
-                            return true;
-                        case 156:
-                            boolean _result54 = launchBugReportHandlerApp();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result54);
-                            return true;
-                        case 157:
-                            List<String> _result55 = getBugreportWhitelistedPackages();
-                            reply.writeNoException();
-                            reply.writeStringList(_result55);
-                            return true;
-                        case 158:
-                            IBinder _arg0115 = data.readStrongBinder();
-                            IIntentSender _arg0116 = IIntentSender.Stub.asInterface(_arg0115);
-                            data.enforceNoDataAvail();
-                            Intent _result56 = getIntentForIntentSender(_arg0116);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result56, 1);
-                            return true;
-                        case 159:
-                            IBinder _arg0117 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            String _result57 = getLaunchedFromPackage(_arg0117);
-                            reply.writeNoException();
-                            reply.writeString(_result57);
-                            return true;
-                        case 160:
-                            int _arg0118 = data.readInt();
-                            int _arg173 = data.readInt();
-                            String _arg240 = data.readString();
-                            data.enforceNoDataAvail();
-                            killUid(_arg0118, _arg173, _arg240);
-                            reply.writeNoException();
-                            return true;
-                        case 161:
-                            boolean _arg0119 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setUserIsMonkey(_arg0119);
-                            reply.writeNoException();
-                            return true;
-                        case 162:
-                            IBinder _arg0120 = data.readStrongBinder();
-                            boolean _arg174 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            hang(_arg0120, _arg174);
-                            reply.writeNoException();
-                            return true;
-                        case 163:
-                            List<ActivityTaskManager.RootTaskInfo> _result58 = getAllRootTaskInfos();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result58, 1);
-                            return true;
-                        case 164:
-                            int _arg0121 = data.readInt();
-                            int _arg175 = data.readInt();
-                            boolean _arg241 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            moveTaskToRootTask(_arg0121, _arg175, _arg241);
-                            reply.writeNoException();
-                            return true;
-                        case 165:
-                            int _arg0122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setFocusedRootTask(_arg0122);
-                            reply.writeNoException();
-                            return true;
-                        case 166:
-                            ActivityTaskManager.RootTaskInfo _result59 = getFocusedRootTaskInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result59, 1);
-                            return true;
-                        case 167:
-                            restart();
-                            reply.writeNoException();
-                            return true;
-                        case 168:
-                            performIdleMaintenance();
-                            reply.writeNoException();
-                            return true;
-                        case 169:
-                            IBinder _arg0123 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            appNotRespondingViaProvider(_arg0123);
-                            reply.writeNoException();
-                            return true;
-                        case 170:
-                            int _arg0124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Rect _result60 = getTaskBounds(_arg0124);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result60, 1);
-                            return true;
-                        case 171:
-                            String _arg0125 = data.readString();
-                            int _arg176 = data.readInt();
-                            int _arg242 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result61 = setProcessMemoryTrimLevel(_arg0125, _arg176, _arg242);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result61);
-                            return true;
-                        case 172:
-                            IIntentSender _arg0126 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            String _arg177 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result62 = getTagForIntentSender(_arg0126, _arg177);
-                            reply.writeNoException();
-                            reply.writeString(_result62);
-                            return true;
-                        case 173:
-                            int _arg0127 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result63 = startUserInBackground(_arg0127);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result63);
-                            return true;
-                        case 174:
-                            boolean _result64 = isInLockTaskMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result64);
-                            return true;
-                        case 175:
-                            int _arg0128 = data.readInt();
-                            Bundle _arg178 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result65 = startActivityFromRecents(_arg0128, _arg178);
-                            reply.writeNoException();
-                            reply.writeInt(_result65);
-                            return true;
-                        case 176:
-                            int _arg0129 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startSystemLockTaskMode(_arg0129);
-                            reply.writeNoException();
-                            return true;
-                        case 177:
-                            IBinder _arg0130 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result66 = isTopOfTask(_arg0130);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result66);
-                            return true;
-                        case 178:
-                            bootAnimationComplete();
-                            reply.writeNoException();
-                            return true;
-                        case 179:
-                            ITaskStackListener _arg0131 = ITaskStackListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerTaskStackListener(_arg0131);
-                            reply.writeNoException();
-                            return true;
-                        case 180:
-                            ITaskStackListener _arg0132 = ITaskStackListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterTaskStackListener(_arg0132);
-                            reply.writeNoException();
-                            return true;
-                        case 181:
-                            int _arg0133 = data.readInt();
-                            byte[] _arg179 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            notifyCleartextNetwork(_arg0133, _arg179);
-                            reply.writeNoException();
-                            return true;
-                        case 182:
-                            int _arg0134 = data.readInt();
-                            int _arg180 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTaskResizeable(_arg0134, _arg180);
-                            reply.writeNoException();
-                            return true;
-                        case 183:
-                            int _arg0135 = data.readInt();
-                            Rect _arg181 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            int _arg243 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resizeTask(_arg0135, _arg181, _arg243);
-                            reply.writeNoException();
-                            return true;
-                        case 184:
-                            int _result67 = getLockTaskModeState();
-                            reply.writeNoException();
-                            reply.writeInt(_result67);
-                            return true;
-                        case 185:
-                            String _arg0136 = data.readString();
-                            int _arg182 = data.readInt();
-                            long _arg244 = data.readLong();
-                            String _arg316 = data.readString();
-                            data.enforceNoDataAvail();
-                            setDumpHeapDebugLimit(_arg0136, _arg182, _arg244, _arg316);
-                            reply.writeNoException();
-                            return true;
-                        case 186:
-                            String _arg0137 = data.readString();
-                            data.enforceNoDataAvail();
-                            dumpHeapFinished(_arg0137);
-                            reply.writeNoException();
-                            return true;
-                        case 187:
-                            int _arg0138 = data.readInt();
-                            String[] _arg183 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            updateLockTaskPackages(_arg0138, _arg183);
-                            reply.writeNoException();
-                            return true;
-                        case 188:
-                            IIntentSender _arg0139 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            WorkSource _arg184 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg245 = data.readInt();
-                            String _arg317 = data.readString();
-                            data.enforceNoDataAvail();
-                            noteAlarmStart(_arg0139, _arg184, _arg245, _arg317);
-                            reply.writeNoException();
-                            return true;
-                        case 189:
-                            IIntentSender _arg0140 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            WorkSource _arg185 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg246 = data.readInt();
-                            String _arg318 = data.readString();
-                            data.enforceNoDataAvail();
-                            noteAlarmFinish(_arg0140, _arg185, _arg246, _arg318);
-                            reply.writeNoException();
-                            return true;
-                        case 190:
-                            String _arg0141 = data.readString();
-                            String _arg186 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result68 = getPackageProcessState(_arg0141, _arg186);
-                            reply.writeNoException();
-                            reply.writeInt(_result68);
-                            return true;
-                        case 191:
-                            boolean _result69 = startBinderTracking();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result69);
-                            return true;
-                        case 192:
-                            ParcelFileDescriptor _arg0142 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result70 = stopBinderTrackingAndDump(_arg0142);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result70);
-                            return true;
-                        case 193:
-                            boolean _arg0143 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            suppressResizeConfigChanges(_arg0143);
-                            reply.writeNoException();
-                            return true;
-                        case 194:
-                            int _arg0144 = data.readInt();
-                            byte[] _arg187 = data.createByteArray();
-                            byte[] _arg247 = data.createByteArray();
-                            IProgressListener _arg319 = IProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result71 = unlockUser(_arg0144, _arg187, _arg247, _arg319);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result71);
-                            return true;
-                        case 195:
-                            int _arg0145 = data.readInt();
-                            IProgressListener _arg188 = IProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result72 = unlockUser2(_arg0145, _arg188);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result72);
-                            return true;
-                        case 196:
-                            String _arg0146 = data.readString();
-                            int _arg189 = data.readInt();
-                            data.enforceNoDataAvail();
-                            killPackageDependents(_arg0146, _arg189);
-                            reply.writeNoException();
-                            return true;
-                        case 197:
-                            String _arg0147 = data.readString();
-                            int _arg190 = data.readInt();
-                            data.enforceNoDataAvail();
-                            makePackageIdle(_arg0147, _arg190);
-                            reply.writeNoException();
-                            return true;
-                        case 198:
-                            boolean _arg0148 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDeterministicUidIdle(_arg0148);
-                            reply.writeNoException();
-                            return true;
-                        case 199:
-                            int _result73 = getMemoryTrimLevel();
-                            reply.writeNoException();
-                            reply.writeInt(_result73);
-                            return true;
-                        case 200:
-                            ComponentName _arg0149 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result74 = isVrModePackageEnabled(_arg0149);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result74);
-                            return true;
-                        case 201:
-                            int _arg0150 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyLockedProfile(_arg0150);
-                            reply.writeNoException();
-                            return true;
-                        case 202:
-                            Intent _arg0151 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            Bundle _arg191 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startConfirmDeviceCredentialIntent(_arg0151, _arg191);
-                            reply.writeNoException();
-                            return true;
-                        case 203:
-                            sendIdleJobTrigger();
-                            reply.writeNoException();
-                            return true;
-                        case 204:
-                            return onTransact$sendIntentSender$(data, reply);
-                        case 205:
-                            String _arg0152 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result75 = isBackgroundRestricted(_arg0152);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result75);
-                            return true;
-                        case 206:
-                            int _arg0153 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRenderThread(_arg0153);
-                            reply.writeNoException();
-                            return true;
-                        case 207:
-                            boolean _arg0154 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setHasTopUi(_arg0154);
-                            reply.writeNoException();
-                            return true;
-                        case 208:
-                            int _arg0155 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancelTaskWindowTransition(_arg0155);
-                            reply.writeNoException();
-                            return true;
-                        case 209:
-                            List<String> _arg0156 = data.createStringArrayList();
-                            int _arg192 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scheduleApplicationInfoChanged(_arg0156, _arg192);
-                            reply.writeNoException();
-                            return true;
-                        case 210:
-                            int _arg0157 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPersistentVrThread(_arg0157);
-                            reply.writeNoException();
-                            return true;
-                        case 211:
-                            long _arg0158 = data.readLong();
-                            data.enforceNoDataAvail();
-                            waitForNetworkStateUpdate(_arg0158);
-                            reply.writeNoException();
-                            return true;
-                        case 212:
-                            int _arg0159 = data.readInt();
-                            data.enforceNoDataAvail();
-                            backgroundAllowlistUid(_arg0159);
-                            reply.writeNoException();
-                            return true;
-                        case 213:
-                            int _arg0160 = data.readInt();
-                            IProgressListener _arg193 = IProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result76 = startUserInBackgroundWithListener(_arg0160, _arg193);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result76);
-                            return true;
-                        case 214:
-                            int _arg0161 = data.readInt();
-                            String[] _arg194 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            startDelegateShellPermissionIdentity(_arg0161, _arg194);
-                            reply.writeNoException();
-                            return true;
-                        case 215:
-                            stopDelegateShellPermissionIdentity();
-                            reply.writeNoException();
-                            return true;
-                        case 216:
-                            List<String> _result77 = getDelegatedShellPermissions();
-                            reply.writeNoException();
-                            reply.writeStringList(_result77);
-                            return true;
-                        case 217:
-                            ParcelFileDescriptor _result78 = getLifeMonitor();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result78, 1);
-                            return true;
-                        case 218:
-                            int _arg0162 = data.readInt();
-                            IProgressListener _arg195 = IProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result79 = startUserInForegroundWithListener(_arg0162, _arg195);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result79);
-                            return true;
-                        case 219:
-                            String _arg0163 = data.readString();
-                            data.enforceNoDataAvail();
-                            appNotResponding(_arg0163);
-                            reply.writeNoException();
-                            return true;
-                        case 220:
-                            String _arg0164 = data.readString();
-                            int _arg196 = data.readInt();
-                            int _arg248 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice<ApplicationStartInfo> _result80 = getHistoricalProcessStartReasons(_arg0164, _arg196, _arg248);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result80, 1);
-                            return true;
-                        case 221:
-                            IApplicationStartInfoCompleteListener _arg0165 = IApplicationStartInfoCompleteListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg197 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setApplicationStartInfoCompleteListener(_arg0165, _arg197);
-                            reply.writeNoException();
-                            return true;
-                        case 222:
-                            int _arg0166 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeApplicationStartInfoCompleteListener(_arg0166);
-                            reply.writeNoException();
-                            return true;
-                        case 223:
-                            String _arg0167 = data.readString();
-                            int _arg198 = data.readInt();
-                            int _arg249 = data.readInt();
-                            int _arg320 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice<ApplicationExitInfo> _result81 = getHistoricalProcessExitReasons(_arg0167, _arg198, _arg249, _arg320);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result81, 1);
-                            return true;
-                        case 224:
-                            int[] _arg0168 = data.createIntArray();
-                            String _arg199 = data.readString();
-                            data.enforceNoDataAvail();
-                            killProcessesWhenImperceptible(_arg0168, _arg199);
-                            reply.writeNoException();
-                            return true;
-                        case 225:
-                            ComponentName _arg0169 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            LocusId _arg1100 = (LocusId) data.readTypedObject(LocusId.CREATOR);
-                            IBinder _arg250 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            setActivityLocusContext(_arg0169, _arg1100, _arg250);
-                            reply.writeNoException();
-                            return true;
-                        case 226:
-                            byte[] _arg0170 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setProcessStateSummary(_arg0170);
-                            reply.writeNoException();
-                            return true;
-                        case 227:
-                            boolean _result82 = isAppFreezerSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result82);
-                            return true;
-                        case 228:
-                            boolean _result83 = isAppFreezerEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result83);
-                            return true;
-                        case 229:
-                            int _arg0171 = data.readInt();
-                            int _arg1101 = data.readInt();
-                            String _arg251 = data.readString();
-                            data.enforceNoDataAvail();
-                            killUidForPermissionChange(_arg0171, _arg1101, _arg251);
-                            reply.writeNoException();
-                            return true;
-                        case 230:
-                            resetAppErrors();
-                            reply.writeNoException();
-                            return true;
-                        case 231:
-                            boolean _arg0172 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result84 = enableAppFreezer(_arg0172);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result84);
-                            return true;
-                        case 232:
-                            boolean _arg0173 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result85 = enableFgsNotificationRateLimit(_arg0173);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result85);
-                            return true;
-                        case 233:
-                            IBinder _arg0174 = data.readStrongBinder();
-                            int _arg1102 = data.readInt();
-                            data.enforceNoDataAvail();
-                            holdLock(_arg0174, _arg1102);
-                            reply.writeNoException();
-                            return true;
-                        case 234:
-                            int _arg0175 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result86 = startProfile(_arg0175);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result86);
-                            return true;
-                        case 235:
-                            int _arg0176 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result87 = stopProfile(_arg0176);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result87);
-                            return true;
-                        case 236:
-                            IIntentSender _arg0177 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            int _arg1103 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result88 = queryIntentComponentsForIntentSender(_arg0177, _arg1103);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result88, 1);
-                            return true;
-                        case 237:
-                            int _arg0178 = data.readInt();
-                            String _arg1104 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result89 = getUidProcessCapabilities(_arg0178, _arg1104);
-                            reply.writeNoException();
-                            reply.writeInt(_result89);
-                            return true;
-                        case 238:
-                            waitForBroadcastIdle();
-                            reply.writeNoException();
-                            return true;
-                        case 239:
-                            waitForBroadcastBarrier();
-                            reply.writeNoException();
-                            return true;
-                        case 240:
-                            String _arg0179 = data.readString();
-                            long _arg1105 = data.readLong();
-                            data.enforceNoDataAvail();
-                            forceDelayBroadcastDelivery(_arg0179, _arg1105);
-                            reply.writeNoException();
-                            return true;
-                        case 241:
-                            boolean _result90 = isModernBroadcastQueueEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result90);
-                            return true;
-                        case 242:
-                            int _arg0180 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result91 = isProcessFrozen(_arg0180);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result91);
-                            return true;
-                        case 243:
-                            int _arg0181 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result92 = getBackgroundRestrictionExemptionReason(_arg0181);
-                            reply.writeNoException();
-                            reply.writeInt(_result92);
-                            return true;
-                        case 244:
-                            Intent _arg0182 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg1106 = data.readString();
-                            int _arg252 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result93 = queryRegisteredReceiverPackages(_arg0182, _arg1106, _arg252);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result93);
-                            return true;
-                        case 245:
-                            int _arg0183 = data.readInt();
-                            int _arg1107 = data.readInt();
-                            IProgressListener _arg253 = IProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result94 = startUserInBackgroundVisibleOnDisplay(_arg0183, _arg1107, _arg253);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result94);
-                            return true;
-                        case 246:
-                            int _arg0184 = data.readInt();
-                            IProgressListener _arg1108 = IProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result95 = startProfileWithListener(_arg0184, _arg1108);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result95);
-                            return true;
-                        case 247:
-                            int _arg0185 = data.readInt();
-                            int _arg1109 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result96 = restartUserInBackground(_arg0185, _arg1109);
-                            reply.writeNoException();
-                            reply.writeInt(_result96);
-                            return true;
-                        case 248:
-                            int[] _result97 = getDisplayIdsForStartingVisibleBackgroundUsers();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result97);
-                            return true;
-                        case 249:
-                            ComponentName _arg0186 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            IBinder _arg1110 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result98 = shouldServiceTimeOut(_arg0186, _arg1110);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result98);
-                            return true;
-                        case 250:
-                            IUidFrozenStateChangedCallback _arg0187 = IUidFrozenStateChangedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerUidFrozenStateChangedCallback(_arg0187);
-                            reply.writeNoException();
-                            return true;
-                        case 251:
-                            IUidFrozenStateChangedCallback _arg0188 = IUidFrozenStateChangedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterUidFrozenStateChangedCallback(_arg0188);
-                            reply.writeNoException();
-                            return true;
-                        case 252:
-                            int[] _arg0189 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            int[] _result99 = getUidFrozenState(_arg0189);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result99);
-                            return true;
-                        case 253:
-                            int _arg0190 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result100 = getContentByTask(_arg0190);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result100);
-                            return true;
-                        case 254:
-                            List<String> _result101 = getLongLiveApps();
-                            reply.writeNoException();
-                            reply.writeStringList(_result101);
-                            return true;
-                        case 255:
-                            String _arg0191 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result102 = addLongLiveApp(_arg0191);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result102);
-                            return true;
-                        case 256:
-                            String _arg0192 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result103 = removeLongLiveApp(_arg0192);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result103);
-                            return true;
-                        case 257:
-                            int _result104 = getMaxLongLiveApps();
-                            reply.writeNoException();
-                            reply.writeInt(_result104);
-                            return true;
-                        case 258:
-                            int _arg0193 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result105 = setLongLiveTask(_arg0193);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result105);
-                            return true;
-                        case 259:
-                            int _arg0194 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result106 = clearLongLiveTask(_arg0194);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result106);
-                            return true;
-                        case 260:
-                            List<String> _result107 = getLongLiveProcesses();
-                            reply.writeNoException();
-                            reply.writeStringList(_result107);
-                            return true;
-                        case 261:
-                            int _arg0195 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result108 = getLongLiveProcessesForUser(_arg0195);
-                            reply.writeNoException();
-                            reply.writeStringList(_result108);
-                            return true;
-                        case 262:
-                            int _arg0196 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List _result109 = getLongLiveTaskIdsForUser(_arg0196);
-                            reply.writeNoException();
-                            reply.writeList(_result109);
-                            return true;
-                        case 263:
-                            int _arg0197 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result110 = getAutoRemoveRecents(_arg0197);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result110);
-                            return true;
-                        case 264:
-                            RemoteCallback _arg0198 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            int _arg1111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerDedicatedCallback(_arg0198, _arg1111);
-                            reply.writeNoException();
-                            return true;
-                        case 265:
-                            String _arg0199 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result111 = setLongLiveApp(_arg0199);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result111);
-                            return true;
-                        case 266:
-                            String _result112 = getLongLiveApp();
-                            reply.writeNoException();
-                            reply.writeString(_result112);
-                            return true;
-                        case 267:
-                            int _arg0200 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dismissUserSwitchingDialog(_arg0200);
-                            reply.writeNoException();
-                            return true;
-                        case 268:
-                            int _arg0201 = data.readInt();
-                            boolean _arg1112 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result113 = moveTaskToBack(_arg0201, _arg1112);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result113);
-                            return true;
-                        case 269:
-                            int _arg0202 = data.readInt();
-                            boolean _arg1113 = data.readBoolean();
-                            Bundle _arg254 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result114 = moveTaskToBackWithBundle(_arg0202, _arg1113, _arg254);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result114);
-                            return true;
-                        case 270:
-                            Configuration _result115 = getGlobalConfiguration();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result115, 1);
-                            return true;
-                        case 271:
-                            int _arg0203 = data.readInt();
-                            String _arg1114 = data.readString();
-                            data.enforceNoDataAvail();
-                            checkProfileForADCP(_arg0203, _arg1114);
-                            reply.writeNoException();
-                            return true;
-                        case 272:
-                            List<String> _arg0204 = data.createStringArrayList();
-                            int _arg1115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            preloadBoosterAppsFromIpm(_arg0204, _arg1115);
-                            reply.writeNoException();
-                            return true;
-                        case 273:
-                            int _arg0205 = data.readInt();
-                            String _arg1116 = data.readString();
-                            data.enforceNoDataAvail();
-                            updateFlingerFlag(_arg0205, _arg1116);
-                            reply.writeNoException();
-                            return true;
-                        case 274:
-                            int _arg0206 = data.readInt();
-                            String _arg1117 = data.readString();
-                            int _arg255 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SemAppRestrictionManager.RestrictionInfo _result116 = getRestrictionInfo(_arg0206, _arg1117, _arg255);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result116, 1);
-                            return true;
-                        case 275:
-                            int _arg0207 = data.readInt();
-                            String _arg1118 = data.readString();
-                            int _arg256 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result117 = canRestrict(_arg0207, _arg1118, _arg256);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result117);
-                            return true;
-                        case 276:
-                            return onTransact$restrict$(data, reply);
-                        case 277:
-                            int _arg0208 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<SemAppRestrictionManager.AppRestrictionInfo> _result118 = getRestrictableList(_arg0208);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result118, 1);
-                            return true;
-                        case 278:
-                            List<SemAppRestrictionManager.AppRestrictionInfo> _result119 = getAllRestrictedList();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result119, 1);
-                            return true;
-                        case 279:
-                            int _arg0209 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<SemAppRestrictionManager.AppRestrictionInfo> _result120 = getRestrictedList(_arg0209);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result120, 1);
-                            return true;
-                        case 280:
-                            SemAppRestrictionManager.RestrictionInfo _arg0210 = (SemAppRestrictionManager.RestrictionInfo) data.readTypedObject(SemAppRestrictionManager.RestrictionInfo.CREATOR);
-                            List<SemAppRestrictionManager.AppRestrictionInfo> _arg1119 = data.createTypedArrayList(SemAppRestrictionManager.AppRestrictionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result121 = updateRestrictionInfo(_arg0210, _arg1119);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result121);
-                            return true;
-                        case 281:
-                            List<SemAppRestrictionManager.AppRestrictionInfo> _arg0211 = data.createTypedArrayList(SemAppRestrictionManager.AppRestrictionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result122 = clearRestrictionInfo(_arg0211);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result122);
-                            return true;
-                        case 282:
-                            int _arg0212 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTTSPkgInfo(_arg0212);
-                            reply.writeNoException();
-                            return true;
-                        case 283:
-                            clearTTSPkgInfo();
-                            reply.writeNoException();
-                            return true;
-                        case 284:
-                            int _arg0213 = data.readInt();
-                            int _arg1120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice<PackageInfo> _result123 = getInstalledPackageListFromMARs(_arg0213, _arg1120);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result123, 1);
-                            return true;
-                        case 285:
-                            Configuration _arg0214 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            String _arg1121 = data.readString();
-                            String _arg257 = data.readString();
-                            LocaleList _arg321 = (LocaleList) data.readTypedObject(LocaleList.CREATOR);
-                            data.enforceNoDataAvail();
-                            updatePersistentConfigurationAndLocaleOverlays(_arg0214, _arg1121, _arg257, _arg321);
-                            reply.writeNoException();
-                            return true;
-                        case 286:
-                            int _arg0215 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result124 = getPackageFromAppProcesses(_arg0215);
-                            reply.writeNoException();
-                            reply.writeString(_result124);
-                            return true;
-                        case 287:
-                            String _arg0216 = data.readString();
-                            float _arg1122 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setDssForPackage(_arg0216, _arg1122);
-                            reply.writeNoException();
-                            return true;
-                        case 288:
-                            showAllDSSInfo();
-                            reply.writeNoException();
-                            return true;
-                        case 289:
-                            String _arg0217 = data.readString();
-                            float _arg1123 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            addPackageData(_arg0217, _arg1123);
-                            reply.writeNoException();
-                            return true;
-                        case 290:
-                            int _arg0218 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result125 = isScaledApp(_arg0218);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result125);
-                            return true;
-                        case 291:
-                            String _arg0219 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result126 = isScaledAppByPackageName(_arg0219);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result126);
-                            return true;
-                        case 292:
-                            String _arg0220 = data.readString();
-                            data.enforceNoDataAvail();
-                            float _result127 = getScalingFactor(_arg0220);
-                            reply.writeNoException();
-                            reply.writeFloat(_result127);
-                            return true;
-                        case 293:
-                            int _arg0221 = data.readInt();
-                            boolean _arg1124 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result128 = setFGSFilter(_arg0221, _arg1124);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result128);
-                            return true;
-                        case 294:
-                            resetAbnormalList();
-                            reply.writeNoException();
-                            return true;
-                        case 295:
-                            int _arg0222 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result129 = isFreezableUid(_arg0222);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result129);
-                            return true;
-                        case 296:
-                            int _arg0223 = data.readInt();
-                            boolean _arg1125 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result130 = setProcessSlowdown(_arg0223, _arg1125);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result130);
-                            return true;
-                        case 297:
-                            int[] _result131 = getIsolatedProcessList();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result131);
-                            return true;
-                        case 298:
-                            int _arg0224 = data.readInt();
-                            int _arg1126 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportAbnormalUsage(_arg0224, _arg1126);
-                            reply.writeNoException();
-                            return true;
-                        case 299:
-                            IIntentSender _arg0225 = IIntentSender.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            Bundle _result132 = getOptionsForIntentSender(_arg0225);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result132, 1);
-                            return true;
-                        case 300:
-                            int _arg0226 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result133 = getOomAdjByPid(_arg0226);
-                            reply.writeNoException();
-                            reply.writeInt(_result133);
-                            return true;
-                        case 301:
-                            boolean _result134 = isHeapDumpAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result134);
-                            return true;
-                        case 302:
-                            boolean _arg0227 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            updateDelayServiceEnable(_arg0227);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IActivityManager {
+        private static class Proxy implements IActivityManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -5663,12 +5751,13 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public void finishAttachApplication(long startSeq) throws RemoteException {
+            public void finishAttachApplication(long startSeq, long timestampApplicationOnCreateNs) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(startSeq);
+                    _data.writeLong(timestampApplicationOnCreateNs);
                     this.mRemote.transact(26, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -6176,6 +6265,27 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
+            public int checkContentUriPermissionFull(Uri uri, int pid, int uid, int mode, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(uri, 0);
+                    _data.writeInt(pid);
+                    _data.writeInt(uid);
+                    _data.writeInt(mode);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(54, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
             public int[] checkUriPermissions(List<Uri> uris, int pid, int uid, int mode, int userId, IBinder callerToken) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -6187,7 +6297,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(mode);
                     _data.writeInt(userId);
                     _data.writeStrongBinder(callerToken);
-                    this.mRemote.transact(54, _data, _reply, 0);
+                    this.mRemote.transact(55, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -6208,7 +6318,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(uri, 0);
                     _data.writeInt(mode);
                     _data.writeInt(userId);
-                    this.mRemote.transact(55, _data, _reply, 0);
+                    this.mRemote.transact(56, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6227,7 +6337,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(uri, 0);
                     _data.writeInt(mode);
                     _data.writeInt(userId);
-                    this.mRemote.transact(56, _data, _reply, 0);
+                    this.mRemote.transact(57, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6243,7 +6353,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(watcher);
                     _data.writeBoolean(imAMonkey);
-                    this.mRemote.transact(57, _data, _reply, 0);
+                    this.mRemote.transact(58, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6259,7 +6369,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(who);
                     _data.writeBoolean(waiting);
-                    this.mRemote.transact(58, _data, _reply, 0);
+                    this.mRemote.transact(59, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6274,7 +6384,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(signal);
-                    this.mRemote.transact(59, _data, _reply, 0);
+                    this.mRemote.transact(60, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6291,7 +6401,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(maxNum);
                     _data.writeInt(flags);
                     _data.writeInt(userId);
-                    this.mRemote.transact(60, _data, _reply, 0);
+                    this.mRemote.transact(61, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -6302,7 +6412,7 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public void serviceDoneExecuting(IBinder token, int type, int startId, int res) throws RemoteException {
+            public void serviceDoneExecuting(IBinder token, int type, int startId, int res, Intent intent) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
@@ -6310,7 +6420,8 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(type);
                     _data.writeInt(startId);
                     _data.writeInt(res);
-                    this.mRemote.transact(61, _data, null, 1);
+                    _data.writeTypedObject(intent, 0);
+                    this.mRemote.transact(62, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6332,7 +6443,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(flags);
                     _data.writeTypedObject(options, 0);
                     _data.writeInt(userId);
-                    this.mRemote.transact(62, _data, _reply, 0);
+                    this.mRemote.transact(63, _data, _reply, 0);
                     _reply.readException();
                     IIntentSender _result = IIntentSender.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -6424,7 +6535,7 @@ public interface IActivityManager extends IInterface {
                         throw th;
                     }
                     try {
-                        this.mRemote.transact(63, _data, _reply, 0);
+                        this.mRemote.transact(64, _data, _reply, 0);
                         _reply.readException();
                         IIntentSender _result = IIntentSender.Stub.asInterface(_reply.readStrongBinder());
                         _reply.recycle();
@@ -6451,7 +6562,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
-                    this.mRemote.transact(64, _data, _reply, 0);
+                    this.mRemote.transact(65, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6466,7 +6577,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
-                    this.mRemote.transact(65, _data, _reply, 0);
+                    this.mRemote.transact(66, _data, _reply, 0);
                     _reply.readException();
                     ActivityManager.PendingIntentInfo _result = (ActivityManager.PendingIntentInfo) _reply.readTypedObject(ActivityManager.PendingIntentInfo.CREATOR);
                     return _result;
@@ -6484,7 +6595,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
                     _data.writeStrongInterface(receiver);
-                    this.mRemote.transact(66, _data, _reply, 0);
+                    this.mRemote.transact(67, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6502,7 +6613,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
                     _data.writeStrongInterface(receiver);
-                    this.mRemote.transact(67, _data, _reply, 0);
+                    this.mRemote.transact(68, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6516,7 +6627,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(68, _data, _reply, 0);
+                    this.mRemote.transact(69, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6535,7 +6646,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(sourceUid);
                     _data.writeString(sourcePkg);
                     _data.writeString(tag);
-                    this.mRemote.transact(69, _data, _reply, 0);
+                    this.mRemote.transact(70, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6550,7 +6661,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(connection);
                     _data.writeBoolean(stable);
-                    this.mRemote.transact(70, _data, null, 1);
+                    this.mRemote.transact(71, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6564,7 +6675,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeInt(requestedOrientation);
-                    this.mRemote.transact(71, _data, _reply, 0);
+                    this.mRemote.transact(72, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6581,7 +6692,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeStrongBinder(token);
                     _data.writeTypedObject(service, 0);
                     _data.writeBoolean(doRebind);
-                    this.mRemote.transact(72, _data, _reply, 0);
+                    this.mRemote.transact(73, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6599,7 +6710,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(pid);
                     _data.writeBoolean(isForeground);
                     _data.writeString(reason);
-                    this.mRemote.transact(73, _data, _reply, 0);
+                    this.mRemote.transact(74, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6619,7 +6730,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(notification, 0);
                     _data.writeInt(flags);
                     _data.writeInt(foregroundServiceType);
-                    this.mRemote.transact(74, _data, _reply, 0);
+                    this.mRemote.transact(75, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6635,7 +6746,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(className, 0);
                     _data.writeStrongBinder(token);
-                    this.mRemote.transact(75, _data, _reply, 0);
+                    this.mRemote.transact(76, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6653,7 +6764,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeBoolean(nonRoot);
-                    this.mRemote.transact(76, _data, _reply, 0);
+                    this.mRemote.transact(77, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6669,7 +6780,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(77, _data, _reply, 0);
+                    this.mRemote.transact(78, _data, _reply, 0);
                     _reply.readException();
                     if (_reply.readInt() != 0) {
                         outInfo.readFromParcel(_reply);
@@ -6686,7 +6797,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(78, _data, _reply, 0);
+                    this.mRemote.transact(79, _data, _reply, 0);
                     _reply.readException();
                     List<ActivityManager.ProcessErrorStateInfo> _result = _reply.createTypedArrayList(ActivityManager.ProcessErrorStateInfo.CREATOR);
                     return _result;
@@ -6706,7 +6817,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeBoolean(keepState);
                     _data.writeStrongInterface(observer);
                     _data.writeInt(userId);
-                    this.mRemote.transact(79, _data, _reply, 0);
+                    this.mRemote.transact(80, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6724,7 +6835,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(80, _data, _reply, 0);
+                    this.mRemote.transact(81, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6739,7 +6850,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(81, _data, _reply, 0);
+                    this.mRemote.transact(82, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6757,7 +6868,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(82, _data, _reply, 0);
+                    this.mRemote.transact(83, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6773,7 +6884,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(83, _data, _reply, 0);
+                    this.mRemote.transact(84, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6789,7 +6900,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(84, _data, _reply, 0);
+                    this.mRemote.transact(85, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6806,7 +6917,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeIntArray(pids);
                     _data.writeString(reason);
                     _data.writeBoolean(secure);
-                    this.mRemote.transact(85, _data, _reply, 0);
+                    this.mRemote.transact(86, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6824,7 +6935,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(maxNum);
                     _data.writeInt(flags);
-                    this.mRemote.transact(86, _data, _reply, 0);
+                    this.mRemote.transact(87, _data, _reply, 0);
                     _reply.readException();
                     List<ActivityManager.RunningServiceInfo> _result = _reply.createTypedArrayList(ActivityManager.RunningServiceInfo.CREATOR);
                     return _result;
@@ -6840,7 +6951,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(87, _data, _reply, 0);
+                    this.mRemote.transact(88, _data, _reply, 0);
                     _reply.readException();
                     List<ActivityManager.RunningAppProcessInfo> _result = _reply.createTypedArrayList(ActivityManager.RunningAppProcessInfo.CREATOR);
                     return _result;
@@ -6859,7 +6970,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(service, 0);
                     _data.writeString(resolvedType);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(88, _data, _reply, 0);
+                    this.mRemote.transact(89, _data, _reply, 0);
                     _reply.readException();
                     IBinder _result = _reply.readStrongBinder();
                     return _result;
@@ -6880,7 +6991,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeBoolean(start);
                     _data.writeTypedObject(profilerInfo, 0);
                     _data.writeInt(profileType);
-                    this.mRemote.transact(89, _data, _reply, 0);
+                    this.mRemote.transact(90, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6897,7 +7008,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(timeout);
-                    this.mRemote.transact(90, _data, _reply, 0);
+                    this.mRemote.transact(91, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6913,7 +7024,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(91, _data, _reply, 0);
+                    this.mRemote.transact(92, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6927,7 +7038,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(92, _data, _reply, 0);
+                    this.mRemote.transact(93, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6945,7 +7056,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(backupRestoreMode);
                     _data.writeInt(targetUserId);
                     _data.writeInt(backupDestination);
-                    this.mRemote.transact(93, _data, _reply, 0);
+                    this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6964,7 +7075,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeStrongBinder(agent);
                     _data.writeInt(userId);
-                    this.mRemote.transact(94, _data, _reply, 0);
+                    this.mRemote.transact(95, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6979,7 +7090,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(appInfo, 0);
-                    this.mRemote.transact(95, _data, _reply, 0);
+                    this.mRemote.transact(96, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7000,7 +7111,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeBoolean(requireFull);
                     _data.writeString(name);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(96, _data, _reply, 0);
+                    this.mRemote.transact(97, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7017,7 +7128,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(97, _data, _reply, 0);
+                    this.mRemote.transact(98, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7036,7 +7147,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(userId);
                     _data.writeString(reason);
                     _data.writeInt(exitInfoReason);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7051,7 +7162,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(reason);
-                    this.mRemote.transact(99, _data, _reply, 0);
+                    this.mRemote.transact(100, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7067,7 +7178,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(reason);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(100, _data, _reply, 0);
+                    this.mRemote.transact(101, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7082,7 +7193,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(pids);
-                    this.mRemote.transact(101, _data, _reply, 0);
+                    this.mRemote.transact(102, _data, _reply, 0);
                     _reply.readException();
                     Debug.MemoryInfo[] _result = (Debug.MemoryInfo[]) _reply.createTypedArray(Debug.MemoryInfo.CREATOR);
                     return _result;
@@ -7100,7 +7211,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(processName);
                     _data.writeInt(uid);
-                    this.mRemote.transact(102, _data, _reply, 0);
+                    this.mRemote.transact(103, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7119,7 +7230,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeBoolean(system);
                     _data.writeTypedObject(crashInfo, 0);
                     _data.writeInt(immediateCallerPid);
-                    this.mRemote.transact(103, _data, _reply, 0);
+                    this.mRemote.transact(104, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7137,7 +7248,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(104, _data, _reply, 0);
+                    this.mRemote.transact(105, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7151,7 +7262,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(105, _data, _reply, 0);
+                    this.mRemote.transact(106, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7167,7 +7278,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(106, _data, _reply, 0);
+                    this.mRemote.transact(107, _data, _reply, 0);
                     _reply.readException();
                     List<ApplicationInfo> _result = _reply.createTypedArrayList(ApplicationInfo.CREATOR);
                     return _result;
@@ -7183,7 +7294,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(107, _data, _reply, 0);
+                    this.mRemote.transact(108, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7200,7 +7311,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeStrongBinder(app);
                     _data.writeInt(penaltyMask);
                     _data.writeTypedObject(crashInfo, 0);
-                    this.mRemote.transact(108, _data, _reply, 0);
+                    this.mRemote.transact(109, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7215,7 +7326,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(binder);
-                    this.mRemote.transact(109, _data, _reply, 0);
+                    this.mRemote.transact(110, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7229,7 +7340,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(110, _data, _reply, 0);
+                    this.mRemote.transact(111, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7252,7 +7363,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeString(message);
                     _data.writeBoolean(force);
                     _data.writeInt(exceptionTypeId);
-                    this.mRemote.transact(111, _data, _reply, 0);
+                    this.mRemote.transact(112, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7274,7 +7385,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeBoolean(force);
                     _data.writeInt(exceptionTypeId);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(112, _data, _reply, 0);
+                    this.mRemote.transact(113, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7290,14 +7401,14 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(uri, 0);
                     _data.writeInt(userId);
                     _data.writeTypedObject(resultCallback, 0);
-                    this.mRemote.transact(113, _data, null, 1);
+                    this.mRemote.transact(114, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
             }
 
             @Override // android.app.IActivityManager
-            public boolean dumpHeap(String process, int userId, boolean managed, boolean mallocInfo, boolean runGc, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
+            public boolean dumpHeap(String process, int userId, boolean managed, boolean mallocInfo, boolean runGc, String dumpBitmaps, String path, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -7307,10 +7418,11 @@ public interface IActivityManager extends IInterface {
                     _data.writeBoolean(managed);
                     _data.writeBoolean(mallocInfo);
                     _data.writeBoolean(runGc);
+                    _data.writeString(dumpBitmaps);
                     _data.writeString(path);
                     _data.writeTypedObject(fd, 0);
                     _data.writeTypedObject(finishCallback, 0);
-                    this.mRemote.transact(114, _data, _reply, 0);
+                    this.mRemote.transact(115, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7328,7 +7440,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userid);
                     _data.writeInt(flags);
-                    this.mRemote.transact(115, _data, _reply, 0);
+                    this.mRemote.transact(116, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7346,7 +7458,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(mode);
-                    this.mRemote.transact(116, _data, _reply, 0);
+                    this.mRemote.transact(117, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7361,7 +7473,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userid);
-                    this.mRemote.transact(117, _data, _reply, 0);
+                    this.mRemote.transact(118, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7377,7 +7489,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(118, _data, _reply, 0);
+                    this.mRemote.transact(119, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7393,7 +7505,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(119, _data, _reply, 0);
+                    this.mRemote.transact(120, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7410,7 +7522,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(value);
-                    this.mRemote.transact(120, _data, _reply, 0);
+                    this.mRemote.transact(121, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7425,7 +7537,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(121, _data, _reply, 0);
+                    this.mRemote.transact(122, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7442,7 +7554,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(122, _data, _reply, 0);
+                    this.mRemote.transact(123, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7457,7 +7569,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(123, _data, _reply, 0);
+                    this.mRemote.transact(124, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7472,7 +7584,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
-                    this.mRemote.transact(124, _data, _reply, 0);
+                    this.mRemote.transact(125, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7489,7 +7601,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(values, 0);
-                    this.mRemote.transact(125, _data, _reply, 0);
+                    this.mRemote.transact(126, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7506,7 +7618,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(values, 0);
                     _data.writeString(callingPackageName);
                     _data.writeString(callingAttributionTag);
-                    this.mRemote.transact(126, _data, _reply, 0);
+                    this.mRemote.transact(127, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7521,7 +7633,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(pids);
-                    this.mRemote.transact(127, _data, _reply, 0);
+                    this.mRemote.transact(128, _data, _reply, 0);
                     _reply.readException();
                     long[] _result = _reply.createLongArray();
                     return _result;
@@ -7544,7 +7656,7 @@ public interface IActivityManager extends IInterface {
                         _data.writeInt(0);
                     }
                     _data.writeBoolean(always);
-                    this.mRemote.transact(128, _data, _reply, 0);
+                    this.mRemote.transact(129, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7558,7 +7670,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(129, _data, _reply, 0);
+                    this.mRemote.transact(130, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7576,7 +7688,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(userId);
                     _data.writeStrongBinder(token);
                     _data.writeString(tag);
-                    this.mRemote.transact(130, _data, _reply, 0);
+                    this.mRemote.transact(131, _data, _reply, 0);
                     _reply.readException();
                     ContentProviderHolder _result = (ContentProviderHolder) _reply.readTypedObject(ContentProviderHolder.CREATOR);
                     return _result;
@@ -7594,7 +7706,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(name);
                     _data.writeStrongBinder(token);
-                    this.mRemote.transact(131, _data, _reply, 0);
+                    this.mRemote.transact(132, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7611,7 +7723,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeString(name);
                     _data.writeStrongBinder(token);
                     _data.writeInt(userId);
-                    this.mRemote.transact(132, _data, _reply, 0);
+                    this.mRemote.transact(133, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7625,7 +7737,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(133, _data, _reply, 0);
+                    this.mRemote.transact(134, _data, _reply, 0);
                     _reply.readException();
                     if (_reply.readInt() != 0) {
                         outInfo.readFromParcel(_reply);
@@ -7643,7 +7755,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(reason);
-                    this.mRemote.transact(134, _data, _reply, 0);
+                    this.mRemote.transact(135, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7659,7 +7771,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(135, _data, _reply, 0);
+                    this.mRemote.transact(136, _data, _reply, 0);
                     _reply.readException();
                     UserInfo _result = (UserInfo) _reply.readTypedObject(UserInfo.CREATOR);
                     return _result;
@@ -7675,7 +7787,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(136, _data, _reply, 0);
+                    this.mRemote.transact(137, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7692,7 +7804,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(activityToken);
-                    this.mRemote.transact(137, _data, _reply, 0);
+                    this.mRemote.transact(138, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7709,7 +7821,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(connection);
-                    this.mRemote.transact(138, _data, _reply, 0);
+                    this.mRemote.transact(139, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7724,7 +7836,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
-                    this.mRemote.transact(139, _data, _reply, 0);
+                    this.mRemote.transact(140, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7816,7 +7928,7 @@ public interface IActivityManager extends IInterface {
                         throw th;
                     }
                     try {
-                        this.mRemote.transact(140, _data, _reply, 0);
+                        this.mRemote.transact(141, _data, _reply, 0);
                         _reply.readException();
                         int _result = _reply.readInt();
                         _reply.recycle();
@@ -7919,7 +8031,7 @@ public interface IActivityManager extends IInterface {
                         throw th;
                     }
                     try {
-                        this.mRemote.transact(141, _data, _reply, 0);
+                        this.mRemote.transact(142, _data, _reply, 0);
                         _reply.readException();
                         int _result = _reply.readInt();
                         _reply.recycle();
@@ -7940,15 +8052,15 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public int stopUser(int userid, boolean force, IStopUserCallback callback) throws RemoteException {
+            public int stopUser(int userid, boolean stopProfileRegardlessOfParent, IStopUserCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userid);
-                    _data.writeBoolean(force);
+                    _data.writeBoolean(stopProfileRegardlessOfParent);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(142, _data, _reply, 0);
+                    this.mRemote.transact(143, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7959,15 +8071,51 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public int stopUserWithDelayedLocking(int userid, boolean force, IStopUserCallback callback) throws RemoteException {
+            public int stopUserWithCallback(int userid, IStopUserCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userid);
-                    _data.writeBoolean(force);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(143, _data, _reply, 0);
+                    this.mRemote.transact(144, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public int stopUserExceptCertainProfiles(int userid, boolean stopProfileRegardlessOfParent, IStopUserCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userid);
+                    _data.writeBoolean(stopProfileRegardlessOfParent);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(145, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public int stopUserWithDelayedLocking(int userid, IStopUserCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userid);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(146, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7985,7 +8133,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(observer);
                     _data.writeString(name);
-                    this.mRemote.transact(144, _data, _reply, 0);
+                    this.mRemote.transact(147, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8000,7 +8148,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(observer);
-                    this.mRemote.transact(145, _data, _reply, 0);
+                    this.mRemote.transact(148, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8014,7 +8162,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(146, _data, _reply, 0);
+                    this.mRemote.transact(149, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -8030,7 +8178,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(147, _data, _reply, 0);
+                    this.mRemote.transact(150, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8045,7 +8193,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(bugreportType);
-                    this.mRemote.transact(148, _data, _reply, 0);
+                    this.mRemote.transact(151, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8062,7 +8210,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeString(shareTitle);
                     _data.writeString(shareDescription);
                     _data.writeInt(bugreportType);
-                    this.mRemote.transact(149, _data, _reply, 0);
+                    this.mRemote.transact(152, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8078,7 +8226,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(shareTitle);
                     _data.writeString(shareDescription);
-                    this.mRemote.transact(150, _data, _reply, 0);
+                    this.mRemote.transact(153, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8094,7 +8242,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(shareTitle);
                     _data.writeString(shareDescription);
-                    this.mRemote.transact(151, _data, _reply, 0);
+                    this.mRemote.transact(154, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8110,7 +8258,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(shareTitle);
                     _data.writeString(shareDescription);
-                    this.mRemote.transact(152, _data, _reply, 0);
+                    this.mRemote.transact(155, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8124,7 +8272,22 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(153, _data, _reply, 0);
+                    this.mRemote.transact(156, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void requestBugReportWithExtraAttachment(Uri extraAttachment) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(extraAttachment, 0);
+                    this.mRemote.transact(157, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8138,7 +8301,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(154, _data, _reply, 0);
+                    this.mRemote.transact(158, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8153,7 +8316,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(nonce);
-                    this.mRemote.transact(155, _data, _reply, 0);
+                    this.mRemote.transact(159, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8167,7 +8330,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(156, _data, _reply, 0);
+                    this.mRemote.transact(160, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8183,7 +8346,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(157, _data, _reply, 0);
+                    this.mRemote.transact(161, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -8200,7 +8363,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
-                    this.mRemote.transact(158, _data, _reply, 0);
+                    this.mRemote.transact(162, _data, _reply, 0);
                     _reply.readException();
                     Intent _result = (Intent) _reply.readTypedObject(Intent.CREATOR);
                     return _result;
@@ -8217,7 +8380,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(activityToken);
-                    this.mRemote.transact(159, _data, _reply, 0);
+                    this.mRemote.transact(163, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8236,7 +8399,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(appId);
                     _data.writeInt(userId);
                     _data.writeString(reason);
-                    this.mRemote.transact(160, _data, _reply, 0);
+                    this.mRemote.transact(164, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8251,7 +8414,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(monkey);
-                    this.mRemote.transact(161, _data, _reply, 0);
+                    this.mRemote.transact(165, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8267,7 +8430,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(who);
                     _data.writeBoolean(allowRestart);
-                    this.mRemote.transact(162, _data, _reply, 0);
+                    this.mRemote.transact(166, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8281,7 +8444,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(163, _data, _reply, 0);
+                    this.mRemote.transact(167, _data, _reply, 0);
                     _reply.readException();
                     List<ActivityTaskManager.RootTaskInfo> _result = _reply.createTypedArrayList(ActivityTaskManager.RootTaskInfo.CREATOR);
                     return _result;
@@ -8300,7 +8463,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(taskId);
                     _data.writeInt(rootTaskId);
                     _data.writeBoolean(toTop);
-                    this.mRemote.transact(164, _data, _reply, 0);
+                    this.mRemote.transact(168, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8315,7 +8478,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(165, _data, _reply, 0);
+                    this.mRemote.transact(169, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8329,7 +8492,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(166, _data, _reply, 0);
+                    this.mRemote.transact(170, _data, _reply, 0);
                     _reply.readException();
                     ActivityTaskManager.RootTaskInfo _result = (ActivityTaskManager.RootTaskInfo) _reply.readTypedObject(ActivityTaskManager.RootTaskInfo.CREATOR);
                     return _result;
@@ -8345,7 +8508,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(167, _data, _reply, 0);
+                    this.mRemote.transact(171, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8359,7 +8522,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(168, _data, _reply, 0);
+                    this.mRemote.transact(172, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8374,7 +8537,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(connection);
-                    this.mRemote.transact(169, _data, _reply, 0);
+                    this.mRemote.transact(173, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8389,7 +8552,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(170, _data, _reply, 0);
+                    this.mRemote.transact(174, _data, _reply, 0);
                     _reply.readException();
                     Rect _result = (Rect) _reply.readTypedObject(Rect.CREATOR);
                     return _result;
@@ -8408,7 +8571,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeString(process);
                     _data.writeInt(userId);
                     _data.writeInt(level);
-                    this.mRemote.transact(171, _data, _reply, 0);
+                    this.mRemote.transact(175, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8426,7 +8589,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
                     _data.writeString(prefix);
-                    this.mRemote.transact(172, _data, _reply, 0);
+                    this.mRemote.transact(176, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8443,7 +8606,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userid);
-                    this.mRemote.transact(173, _data, _reply, 0);
+                    this.mRemote.transact(177, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8459,7 +8622,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(174, _data, _reply, 0);
+                    this.mRemote.transact(178, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8477,7 +8640,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
                     _data.writeTypedObject(options, 0);
-                    this.mRemote.transact(175, _data, _reply, 0);
+                    this.mRemote.transact(179, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8494,7 +8657,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(176, _data, _reply, 0);
+                    this.mRemote.transact(180, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8509,7 +8672,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
-                    this.mRemote.transact(177, _data, _reply, 0);
+                    this.mRemote.transact(181, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8525,7 +8688,22 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(178, _data, _reply, 0);
+                    this.mRemote.transact(182, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void setThemeOverlayReady(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(183, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8540,7 +8718,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(listener);
-                    this.mRemote.transact(179, _data, _reply, 0);
+                    this.mRemote.transact(184, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8555,7 +8733,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(listener);
-                    this.mRemote.transact(180, _data, _reply, 0);
+                    this.mRemote.transact(185, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8571,7 +8749,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
                     _data.writeByteArray(firstPacket);
-                    this.mRemote.transact(181, _data, _reply, 0);
+                    this.mRemote.transact(186, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8587,7 +8765,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
                     _data.writeInt(resizeableMode);
-                    this.mRemote.transact(182, _data, _reply, 0);
+                    this.mRemote.transact(187, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8604,7 +8782,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(taskId);
                     _data.writeTypedObject(bounds, 0);
                     _data.writeInt(resizeMode);
-                    this.mRemote.transact(183, _data, _reply, 0);
+                    this.mRemote.transact(188, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8618,7 +8796,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(184, _data, _reply, 0);
+                    this.mRemote.transact(189, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8638,7 +8816,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(uid);
                     _data.writeLong(maxMemSize);
                     _data.writeString(reportPackage);
-                    this.mRemote.transact(185, _data, _reply, 0);
+                    this.mRemote.transact(190, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8653,7 +8831,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(path);
-                    this.mRemote.transact(186, _data, _reply, 0);
+                    this.mRemote.transact(191, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8669,7 +8847,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeStringArray(packages);
-                    this.mRemote.transact(187, _data, _reply, 0);
+                    this.mRemote.transact(192, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8687,7 +8865,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(workSource, 0);
                     _data.writeInt(sourceUid);
                     _data.writeString(tag);
-                    this.mRemote.transact(188, _data, _reply, 0);
+                    this.mRemote.transact(193, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8705,7 +8883,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(workSource, 0);
                     _data.writeInt(sourceUid);
                     _data.writeString(tag);
-                    this.mRemote.transact(189, _data, _reply, 0);
+                    this.mRemote.transact(194, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8721,7 +8899,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(190, _data, _reply, 0);
+                    this.mRemote.transact(195, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8737,7 +8915,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(191, _data, _reply, 0);
+                    this.mRemote.transact(196, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8754,7 +8932,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(fd, 0);
-                    this.mRemote.transact(192, _data, _reply, 0);
+                    this.mRemote.transact(197, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8771,7 +8949,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(suppress);
-                    this.mRemote.transact(193, _data, _reply, 0);
+                    this.mRemote.transact(198, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8789,7 +8967,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeByteArray(token);
                     _data.writeByteArray(secret);
                     _data.writeStrongInterface(listener);
-                    this.mRemote.transact(194, _data, _reply, 0);
+                    this.mRemote.transact(199, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8807,7 +8985,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeStrongInterface(listener);
-                    this.mRemote.transact(195, _data, _reply, 0);
+                    this.mRemote.transact(200, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8825,7 +9003,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(196, _data, _reply, 0);
+                    this.mRemote.transact(201, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8841,7 +9019,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(197, _data, _reply, 0);
+                    this.mRemote.transact(202, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8856,7 +9034,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(deterministic);
-                    this.mRemote.transact(198, _data, _reply, 0);
+                    this.mRemote.transact(203, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8870,7 +9048,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(199, _data, _reply, 0);
+                    this.mRemote.transact(204, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8887,7 +9065,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(packageName, 0);
-                    this.mRemote.transact(200, _data, _reply, 0);
+                    this.mRemote.transact(205, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8904,7 +9082,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(201, _data, _reply, 0);
+                    this.mRemote.transact(206, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8920,7 +9098,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(intent, 0);
                     _data.writeTypedObject(options, 0);
-                    this.mRemote.transact(202, _data, _reply, 0);
+                    this.mRemote.transact(207, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8934,7 +9112,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(203, _data, _reply, 0);
+                    this.mRemote.transact(208, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8957,7 +9135,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeStrongInterface(finishedReceiver);
                     _data.writeString(requiredPermission);
                     _data.writeTypedObject(options, 0);
-                    this.mRemote.transact(204, _data, _reply, 0);
+                    this.mRemote.transact(209, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8974,7 +9152,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(205, _data, _reply, 0);
+                    this.mRemote.transact(210, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8991,7 +9169,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(tid);
-                    this.mRemote.transact(206, _data, _reply, 0);
+                    this.mRemote.transact(211, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9006,7 +9184,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(hasTopUi);
-                    this.mRemote.transact(207, _data, _reply, 0);
+                    this.mRemote.transact(212, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9021,7 +9199,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(208, _data, _reply, 0);
+                    this.mRemote.transact(213, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9037,7 +9215,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStringList(packageNames);
                     _data.writeInt(userId);
-                    this.mRemote.transact(209, _data, _reply, 0);
+                    this.mRemote.transact(214, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9052,7 +9230,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(tid);
-                    this.mRemote.transact(210, _data, _reply, 0);
+                    this.mRemote.transact(215, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9067,7 +9245,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(procStateSeq);
-                    this.mRemote.transact(211, _data, _reply, 0);
+                    this.mRemote.transact(216, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9082,7 +9260,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(212, _data, _reply, 0);
+                    this.mRemote.transact(217, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9092,86 +9270,6 @@ public interface IActivityManager extends IInterface {
 
             @Override // android.app.IActivityManager
             public boolean startUserInBackgroundWithListener(int userid, IProgressListener unlockProgressListener) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(userid);
-                    _data.writeStrongInterface(unlockProgressListener);
-                    this.mRemote.transact(213, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public void startDelegateShellPermissionIdentity(int uid, String[] permissions) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(uid);
-                    _data.writeStringArray(permissions);
-                    this.mRemote.transact(214, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public void stopDelegateShellPermissionIdentity() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(215, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public List<String> getDelegatedShellPermissions() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(216, _data, _reply, 0);
-                    _reply.readException();
-                    List<String> _result = _reply.createStringArrayList();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public ParcelFileDescriptor getLifeMonitor() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(217, _data, _reply, 0);
-                    _reply.readException();
-                    ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public boolean startUserInForegroundWithListener(int userid, IProgressListener unlockProgressListener) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -9189,16 +9287,110 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
+            public void startDelegateShellPermissionIdentity(int uid, String[] permissions) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(uid);
+                    _data.writeStringArray(permissions);
+                    this.mRemote.transact(219, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void stopDelegateShellPermissionIdentity() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(220, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public List<String> getDelegatedShellPermissions() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(221, _data, _reply, 0);
+                    _reply.readException();
+                    List<String> _result = _reply.createStringArrayList();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public ParcelFileDescriptor getLifeMonitor() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(222, _data, _reply, 0);
+                    _reply.readException();
+                    ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public boolean startUserInForegroundWithListener(int userid, IProgressListener unlockProgressListener) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userid);
+                    _data.writeStrongInterface(unlockProgressListener);
+                    this.mRemote.transact(223, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
             public void appNotResponding(String reason) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(reason);
-                    this.mRemote.transact(219, _data, _reply, 0);
+                    this.mRemote.transact(224, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void doActiveLaunch(String packageName, boolean isLauncher, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeBoolean(isLauncher);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(225, _data, null, 1);
+                } finally {
                     _data.recycle();
                 }
             }
@@ -9212,7 +9404,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(maxNum);
                     _data.writeInt(userId);
-                    this.mRemote.transact(220, _data, _reply, 0);
+                    this.mRemote.transact(226, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice<ApplicationStartInfo> _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -9223,14 +9415,14 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public void setApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener listener, int userId) throws RemoteException {
+            public void addApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener listener, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(listener);
                     _data.writeInt(userId);
-                    this.mRemote.transact(221, _data, _reply, 0);
+                    this.mRemote.transact(227, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9239,16 +9431,47 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public void removeApplicationStartInfoCompleteListener(int userId) throws RemoteException {
+            public void removeApplicationStartInfoCompleteListener(IApplicationStartInfoCompleteListener listener, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
                     _data.writeInt(userId);
-                    this.mRemote.transact(222, _data, _reply, 0);
+                    this.mRemote.transact(228, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void addStartInfoTimestamp(int key, long timestampNs, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(key);
+                    _data.writeLong(timestampNs);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(229, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void reportStartInfoViewTimestamps(long renderThreadDrawStartTimeNs, long framePresentedTimeNs) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeLong(renderThreadDrawStartTimeNs);
+                    _data.writeLong(framePresentedTimeNs);
+                    this.mRemote.transact(230, _data, null, 1);
+                } finally {
                     _data.recycle();
                 }
             }
@@ -9263,7 +9486,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(pid);
                     _data.writeInt(maxNum);
                     _data.writeInt(userId);
-                    this.mRemote.transact(223, _data, _reply, 0);
+                    this.mRemote.transact(231, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice<ApplicationExitInfo> _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -9281,7 +9504,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(pids);
                     _data.writeString(reason);
-                    this.mRemote.transact(224, _data, _reply, 0);
+                    this.mRemote.transact(232, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9298,7 +9521,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(activity, 0);
                     _data.writeTypedObject(locusId, 0);
                     _data.writeStrongBinder(appToken);
-                    this.mRemote.transact(225, _data, _reply, 0);
+                    this.mRemote.transact(233, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9313,7 +9536,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(state);
-                    this.mRemote.transact(226, _data, _reply, 0);
+                    this.mRemote.transact(234, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9327,7 +9550,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(227, _data, _reply, 0);
+                    this.mRemote.transact(235, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9343,7 +9566,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(228, _data, _reply, 0);
+                    this.mRemote.transact(236, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9362,7 +9585,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(appId);
                     _data.writeInt(userId);
                     _data.writeString(reason);
-                    this.mRemote.transact(229, _data, _reply, 0);
+                    this.mRemote.transact(237, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9376,7 +9599,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(230, _data, _reply, 0);
+                    this.mRemote.transact(238, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9391,7 +9614,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(231, _data, _reply, 0);
+                    this.mRemote.transact(239, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9408,7 +9631,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(232, _data, _reply, 0);
+                    this.mRemote.transact(240, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9426,7 +9649,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeInt(durationMs);
-                    this.mRemote.transact(233, _data, _reply, 0);
+                    this.mRemote.transact(241, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9441,7 +9664,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(234, _data, _reply, 0);
+                    this.mRemote.transact(242, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9458,7 +9681,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(235, _data, _reply, 0);
+                    this.mRemote.transact(243, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9476,7 +9699,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
                     _data.writeInt(matchFlags);
-                    this.mRemote.transact(236, _data, _reply, 0);
+                    this.mRemote.transact(244, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -9494,7 +9717,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(237, _data, _reply, 0);
+                    this.mRemote.transact(245, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9510,7 +9733,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(238, _data, _reply, 0);
+                    this.mRemote.transact(246, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9524,7 +9747,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(239, _data, _reply, 0);
+                    this.mRemote.transact(247, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9540,24 +9763,8 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(targetPackage);
                     _data.writeLong(delayedDurationMs);
-                    this.mRemote.transact(240, _data, _reply, 0);
+                    this.mRemote.transact(248, _data, _reply, 0);
                     _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public boolean isModernBroadcastQueueEnabled() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(241, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -9571,7 +9778,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(pid);
-                    this.mRemote.transact(242, _data, _reply, 0);
+                    this.mRemote.transact(249, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9588,7 +9795,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(243, _data, _reply, 0);
+                    this.mRemote.transact(250, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9607,7 +9814,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeTypedObject(intent, 0);
                     _data.writeString(resolvedType);
                     _data.writeInt(userId);
-                    this.mRemote.transact(244, _data, _reply, 0);
+                    this.mRemote.transact(251, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -9626,7 +9833,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(userid);
                     _data.writeInt(displayId);
                     _data.writeStrongInterface(unlockProgressListener);
-                    this.mRemote.transact(245, _data, _reply, 0);
+                    this.mRemote.transact(252, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9644,7 +9851,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userid);
                     _data.writeStrongInterface(unlockProgressListener);
-                    this.mRemote.transact(246, _data, _reply, 0);
+                    this.mRemote.transact(253, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9662,7 +9869,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeInt(userStartMode);
-                    this.mRemote.transact(247, _data, _reply, 0);
+                    this.mRemote.transact(254, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9678,7 +9885,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(248, _data, _reply, 0);
+                    this.mRemote.transact(255, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -9696,7 +9903,25 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(className, 0);
                     _data.writeStrongBinder(token);
-                    this.mRemote.transact(249, _data, _reply, 0);
+                    this.mRemote.transact(256, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public boolean hasServiceTimeLimitExceeded(ComponentName className, IBinder token) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(className, 0);
+                    _data.writeStrongBinder(token);
+                    this.mRemote.transact(257, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9713,7 +9938,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(250, _data, _reply, 0);
+                    this.mRemote.transact(258, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9728,7 +9953,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(251, _data, _reply, 0);
+                    this.mRemote.transact(259, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9743,7 +9968,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(uids);
-                    this.mRemote.transact(252, _data, _reply, 0);
+                    this.mRemote.transact(260, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -9760,7 +9985,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(253, _data, _reply, 0);
+                    this.mRemote.transact(261, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -9776,7 +10001,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(254, _data, _reply, 0);
+                    this.mRemote.transact(262, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9793,7 +10018,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(255, _data, _reply, 0);
+                    this.mRemote.transact(263, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9810,7 +10035,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(256, _data, _reply, 0);
+                    this.mRemote.transact(264, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9826,7 +10051,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(257, _data, _reply, 0);
+                    this.mRemote.transact(265, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9843,7 +10068,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(258, _data, _reply, 0);
+                    this.mRemote.transact(266, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9860,7 +10085,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(259, _data, _reply, 0);
+                    this.mRemote.transact(267, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9876,7 +10101,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(260, _data, _reply, 0);
+                    this.mRemote.transact(268, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9893,7 +10118,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(261, _data, _reply, 0);
+                    this.mRemote.transact(269, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9910,7 +10135,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(262, _data, _reply, 0);
+                    this.mRemote.transact(270, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     List _result = _reply.readArrayList(cl);
@@ -9928,7 +10153,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(263, _data, _reply, 0);
+                    this.mRemote.transact(271, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9946,7 +10171,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(resultCallback, 0);
                     _data.writeInt(type);
-                    this.mRemote.transact(264, _data, _reply, 0);
+                    this.mRemote.transact(272, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9961,7 +10186,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(265, _data, _reply, 0);
+                    this.mRemote.transact(273, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9977,25 +10202,10 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(266, _data, _reply, 0);
+                    this.mRemote.transact(274, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public void dismissUserSwitchingDialog(int userId) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(userId);
-                    this.mRemote.transact(267, _data, _reply, 0);
-                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -10010,7 +10220,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(taskId);
                     _data.writeBoolean(keepAlive);
-                    this.mRemote.transact(268, _data, _reply, 0);
+                    this.mRemote.transact(275, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10029,10 +10239,25 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(taskId);
                     _data.writeBoolean(keepAlive);
                     _data.writeTypedObject(options, 0);
-                    this.mRemote.transact(269, _data, _reply, 0);
+                    this.mRemote.transact(276, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void dismissUserSwitchingDialog(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(277, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -10045,10 +10270,169 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(270, _data, _reply, 0);
+                    this.mRemote.transact(278, _data, _reply, 0);
                     _reply.readException();
                     Configuration _result = (Configuration) _reply.readTypedObject(Configuration.CREATOR);
                     return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public int checkPermissionForDevice(String permission, int pid, int uid, int deviceId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(permission);
+                    _data.writeInt(pid);
+                    _data.writeInt(uid);
+                    _data.writeInt(deviceId);
+                    this.mRemote.transact(279, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void frozenBinderTransactionDetected(int debugPid, int code, int flags, int err) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(debugPid);
+                    _data.writeInt(code);
+                    _data.writeInt(flags);
+                    _data.writeInt(err);
+                    this.mRemote.transact(280, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public int getBindingUidProcessState(int uid, String callingPackage) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(uid);
+                    _data.writeString(callingPackage);
+                    this.mRemote.transact(281, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public long getUidLastIdleElapsedTime(int uid, String callingPackage) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(uid);
+                    _data.writeString(callingPackage);
+                    this.mRemote.transact(282, _data, _reply, 0);
+                    _reply.readException();
+                    long _result = _reply.readLong();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void addOverridePermissionState(int originatingUid, int uid, String permission, int result) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(originatingUid);
+                    _data.writeInt(uid);
+                    _data.writeString(permission);
+                    _data.writeInt(result);
+                    this.mRemote.transact(283, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void removeOverridePermissionState(int originatingUid, int uid, String permission) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(originatingUid);
+                    _data.writeInt(uid);
+                    _data.writeString(permission);
+                    this.mRemote.transact(284, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void clearOverridePermissionStates(int originatingUid, int uid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(originatingUid);
+                    _data.writeInt(uid);
+                    this.mRemote.transact(285, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void clearAllOverridePermissionStates(int originatingUid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(originatingUid);
+                    this.mRemote.transact(286, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public void noteAppRestrictionEnabled(String packageName, int uid, int restrictionType, boolean enabled, int reason, String subReason, int source, long threshold) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeInt(uid);
+                    _data.writeInt(restrictionType);
+                    _data.writeBoolean(enabled);
+                    _data.writeInt(reason);
+                    _data.writeString(subReason);
+                    _data.writeInt(source);
+                    _data.writeLong(threshold);
+                    this.mRemote.transact(287, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -10063,7 +10447,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(pid);
                     _data.writeString(pkg);
-                    this.mRemote.transact(271, _data, _reply, 0);
+                    this.mRemote.transact(288, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10079,7 +10463,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStringList(packageNames);
                     _data.writeInt(type);
-                    this.mRemote.transact(272, _data, _reply, 0);
+                    this.mRemote.transact(289, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10095,7 +10479,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(pid);
                     _data.writeString(pkg);
-                    this.mRemote.transact(273, _data, _reply, 0);
+                    this.mRemote.transact(290, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10112,7 +10496,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(type);
                     _data.writeString(packageName);
                     _data.writeInt(uid);
-                    this.mRemote.transact(274, _data, _reply, 0);
+                    this.mRemote.transact(291, _data, _reply, 0);
                     _reply.readException();
                     SemAppRestrictionManager.RestrictionInfo _result = (SemAppRestrictionManager.RestrictionInfo) _reply.readTypedObject(SemAppRestrictionManager.RestrictionInfo.CREATOR);
                     return _result;
@@ -10131,7 +10515,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInt(type);
                     _data.writeString(packageName);
                     _data.writeInt(uid);
-                    this.mRemote.transact(275, _data, _reply, 0);
+                    this.mRemote.transact(292, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10152,7 +10536,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeBoolean(byUser);
                     _data.writeString(packageName);
                     _data.writeInt(uid);
-                    this.mRemote.transact(276, _data, _reply, 0);
+                    this.mRemote.transact(293, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10169,7 +10553,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(type);
-                    this.mRemote.transact(277, _data, _reply, 0);
+                    this.mRemote.transact(294, _data, _reply, 0);
                     _reply.readException();
                     List<SemAppRestrictionManager.AppRestrictionInfo> _result = _reply.createTypedArrayList(SemAppRestrictionManager.AppRestrictionInfo.CREATOR);
                     return _result;
@@ -10185,7 +10569,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(278, _data, _reply, 0);
+                    this.mRemote.transact(295, _data, _reply, 0);
                     _reply.readException();
                     List<SemAppRestrictionManager.AppRestrictionInfo> _result = _reply.createTypedArrayList(SemAppRestrictionManager.AppRestrictionInfo.CREATOR);
                     return _result;
@@ -10202,7 +10586,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(type);
-                    this.mRemote.transact(279, _data, _reply, 0);
+                    this.mRemote.transact(296, _data, _reply, 0);
                     _reply.readException();
                     List<SemAppRestrictionManager.AppRestrictionInfo> _result = _reply.createTypedArrayList(SemAppRestrictionManager.AppRestrictionInfo.CREATOR);
                     return _result;
@@ -10220,7 +10604,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(info, 0);
                     _data.writeTypedList(list, 0);
-                    this.mRemote.transact(280, _data, _reply, 0);
+                    this.mRemote.transact(297, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10237,7 +10621,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedList(list, 0);
-                    this.mRemote.transact(281, _data, _reply, 0);
+                    this.mRemote.transact(298, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10254,7 +10638,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(282, _data, _reply, 0);
+                    this.mRemote.transact(299, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10268,7 +10652,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(283, _data, _reply, 0);
+                    this.mRemote.transact(300, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10284,9 +10668,26 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(flags);
                     _data.writeInt(userId);
-                    this.mRemote.transact(284, _data, _reply, 0);
+                    this.mRemote.transact(301, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice<PackageInfo> _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IActivityManager
+            public String getPackageFromAppProcesses(int pid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(pid);
+                    this.mRemote.transact(302, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -10304,7 +10705,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeString(callingPackageName);
                     _data.writeString(callingAttributionTag);
                     _data.writeTypedObject(ll, 0);
-                    this.mRemote.transact(285, _data, _reply, 0);
+                    this.mRemote.transact(303, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10313,31 +10714,14 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public String getPackageFromAppProcesses(int pid) throws RemoteException {
+            public void reportAbnormalUsage(int pid, int type) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(pid);
-                    this.mRemote.transact(286, _data, _reply, 0);
-                    _reply.readException();
-                    String _result = _reply.readString();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public void setDssForPackage(String packageName, float scale) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(packageName);
-                    _data.writeFloat(scale);
-                    this.mRemote.transact(287, _data, _reply, 0);
+                    _data.writeInt(type);
+                    this.mRemote.transact(304, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10346,79 +10730,14 @@ public interface IActivityManager extends IInterface {
             }
 
             @Override // android.app.IActivityManager
-            public void showAllDSSInfo() throws RemoteException {
+            public boolean isHeapDumpAllowed() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(288, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public void addPackageData(String packageName, float scalingFactor) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(packageName);
-                    _data.writeFloat(scalingFactor);
-                    this.mRemote.transact(289, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public boolean isScaledApp(int pid) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(pid);
-                    this.mRemote.transact(290, _data, _reply, 0);
+                    this.mRemote.transact(305, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public boolean isScaledAppByPackageName(String packageName) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(packageName);
-                    this.mRemote.transact(291, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public float getScalingFactor(String packageName) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(packageName);
-                    this.mRemote.transact(292, _data, _reply, 0);
-                    _reply.readException();
-                    float _result = _reply.readFloat();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -10434,7 +10753,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(293, _data, _reply, 0);
+                    this.mRemote.transact(306, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10450,7 +10769,7 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(294, _data, _reply, 0);
+                    this.mRemote.transact(307, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10465,7 +10784,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(295, _data, _reply, 0);
+                    this.mRemote.transact(308, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10483,7 +10802,7 @@ public interface IActivityManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(pid);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(296, _data, _reply, 0);
+                    this.mRemote.transact(309, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10499,26 +10818,10 @@ public interface IActivityManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(297, _data, _reply, 0);
+                    this.mRemote.transact(310, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public void reportAbnormalUsage(int pid, int type) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(pid);
-                    _data.writeInt(type);
-                    this.mRemote.transact(298, _data, _reply, 0);
-                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -10532,7 +10835,7 @@ public interface IActivityManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(sender);
-                    this.mRemote.transact(299, _data, _reply, 0);
+                    this.mRemote.transact(311, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -10541,54 +10844,19 @@ public interface IActivityManager extends IInterface {
                     _data.recycle();
                 }
             }
+        }
 
-            @Override // android.app.IActivityManager
-            public int getOomAdjByPid(int pid) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(pid);
-                    this.mRemote.transact(300, _data, _reply, 0);
-                    _reply.readException();
-                    int _result = _reply.readInt();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public boolean isHeapDumpAllowed() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(301, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IActivityManager
-            public void updateDelayServiceEnable(boolean enable) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeBoolean(enable);
-                    this.mRemote.transact(302, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
+        private boolean onTransact$registerUidObserverForUids$(Parcel data, Parcel reply) throws RemoteException {
+            IUidObserver _arg0 = IUidObserver.Stub.asInterface(data.readStrongBinder());
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            String _arg3 = data.readString();
+            int[] _arg4 = data.createIntArray();
+            data.enforceNoDataAvail();
+            IBinder _result = registerUidObserverForUids(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            reply.writeStrongBinder(_result);
+            return true;
         }
 
         private boolean onTransact$startActivity$(Parcel data, Parcel reply) throws RemoteException {
@@ -10717,6 +10985,31 @@ public interface IActivityManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$moveTaskToFront$(Parcel data, Parcel reply) throws RemoteException {
+            IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            int _arg2 = data.readInt();
+            int _arg3 = data.readInt();
+            Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+            data.enforceNoDataAvail();
+            moveTaskToFront(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$getContentProvider$(Parcel data, Parcel reply) throws RemoteException {
+            IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            String _arg2 = data.readString();
+            int _arg3 = data.readInt();
+            boolean _arg4 = data.readBoolean();
+            data.enforceNoDataAvail();
+            ContentProviderHolder _result = getContentProvider(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            reply.writeTypedObject(_result, 1);
+            return true;
+        }
+
         private boolean onTransact$startService$(Parcel data, Parcel reply) throws RemoteException {
             IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
             Intent _arg1 = (Intent) data.readTypedObject(Intent.CREATOR);
@@ -10795,6 +11088,19 @@ public interface IActivityManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$checkContentUriPermissionFull$(Parcel data, Parcel reply) throws RemoteException {
+            Uri _arg0 = (Uri) data.readTypedObject(Uri.CREATOR);
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            int _arg3 = data.readInt();
+            int _arg4 = data.readInt();
+            data.enforceNoDataAvail();
+            int _result = checkContentUriPermissionFull(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
         private boolean onTransact$checkUriPermissions$(Parcel data, Parcel reply) throws RemoteException {
             List<Uri> _arg0 = data.createTypedArrayList(Uri.CREATOR);
             int _arg1 = data.readInt();
@@ -10806,6 +11112,41 @@ public interface IActivityManager extends IInterface {
             int[] _result = checkUriPermissions(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
             reply.writeNoException();
             reply.writeIntArray(_result);
+            return true;
+        }
+
+        private boolean onTransact$grantUriPermission$(Parcel data, Parcel reply) throws RemoteException {
+            IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            Uri _arg2 = (Uri) data.readTypedObject(Uri.CREATOR);
+            int _arg3 = data.readInt();
+            int _arg4 = data.readInt();
+            data.enforceNoDataAvail();
+            grantUriPermission(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$revokeUriPermission$(Parcel data, Parcel reply) throws RemoteException {
+            IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            Uri _arg2 = (Uri) data.readTypedObject(Uri.CREATOR);
+            int _arg3 = data.readInt();
+            int _arg4 = data.readInt();
+            data.enforceNoDataAvail();
+            revokeUriPermission(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$serviceDoneExecuting$(Parcel data, Parcel reply) throws RemoteException {
+            IBinder _arg0 = data.readStrongBinder();
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            int _arg3 = data.readInt();
+            Intent _arg4 = (Intent) data.readTypedObject(Intent.CREATOR);
+            data.enforceNoDataAvail();
+            serviceDoneExecuting(_arg0, _arg1, _arg2, _arg3, _arg4);
             return true;
         }
 
@@ -10843,6 +11184,18 @@ public interface IActivityManager extends IInterface {
             IIntentSender _result = getIntentSenderWithFeature(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10);
             reply.writeNoException();
             reply.writeStrongInterface(_result);
+            return true;
+        }
+
+        private boolean onTransact$noteWakeupAlarm$(Parcel data, Parcel reply) throws RemoteException {
+            IIntentSender _arg0 = IIntentSender.Stub.asInterface(data.readStrongBinder());
+            WorkSource _arg1 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+            int _arg2 = data.readInt();
+            String _arg3 = data.readString();
+            String _arg4 = data.readString();
+            data.enforceNoDataAvail();
+            noteWakeupAlarm(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
             return true;
         }
 
@@ -10948,10 +11301,11 @@ public interface IActivityManager extends IInterface {
             boolean _arg3 = data.readBoolean();
             boolean _arg4 = data.readBoolean();
             String _arg5 = data.readString();
-            ParcelFileDescriptor _arg6 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-            RemoteCallback _arg7 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+            String _arg6 = data.readString();
+            ParcelFileDescriptor _arg7 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+            RemoteCallback _arg8 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
             data.enforceNoDataAvail();
-            boolean _result = dumpHeap(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+            boolean _result = dumpHeap(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
             reply.writeNoException();
             reply.writeBoolean(_result);
             return true;
@@ -11013,6 +11367,21 @@ public interface IActivityManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$noteAppRestrictionEnabled$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            boolean _arg3 = data.readBoolean();
+            int _arg4 = data.readInt();
+            String _arg5 = data.readString();
+            int _arg6 = data.readInt();
+            long _arg7 = data.readLong();
+            data.enforceNoDataAvail();
+            noteAppRestrictionEnabled(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+            reply.writeNoException();
+            return true;
+        }
+
         private boolean onTransact$restrict$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             int _arg1 = data.readInt();
@@ -11028,7 +11397,7 @@ public interface IActivityManager extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 301;
+            return 310;
         }
     }
 }

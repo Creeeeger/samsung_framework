@@ -15,14 +15,13 @@ import java.util.function.Predicate;
 public final class CompoundFormula extends IntegrityFormula implements Parcelable {
     public static final int AND = 0;
     public static final Parcelable.Creator<CompoundFormula> CREATOR = new Parcelable.Creator<CompoundFormula>() { // from class: android.content.integrity.CompoundFormula.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompoundFormula createFromParcel(Parcel in) {
             return new CompoundFormula(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompoundFormula[] newArray(int size) {
             return new CompoundFormula[size];
@@ -34,25 +33,7 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
     private final List<IntegrityFormula> mFormulas;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Connector {
-    }
-
-    /* renamed from: android.content.integrity.CompoundFormula$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompoundFormula> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompoundFormula createFromParcel(Parcel in) {
-            return new CompoundFormula(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompoundFormula[] newArray(int size) {
-            return new CompoundFormula[size];
-        }
     }
 
     public CompoundFormula(int connector, List<IntegrityFormula> formulas) {
@@ -91,7 +72,7 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
     public boolean matches(final AppInstallMetadata appInstallMetadata) {
         switch (getConnector()) {
             case 0:
-                return getFormulas().stream().allMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda0
+                return getFormulas().stream().allMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda2
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         boolean matches;
@@ -100,7 +81,7 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
                     }
                 });
             case 1:
-                return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda1
+                return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda3
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         boolean matches;
@@ -117,7 +98,7 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
 
     @Override // android.content.integrity.IntegrityFormula
     public boolean isAppCertificateFormula() {
-        return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda4
+        return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean isAppCertificateFormula;
@@ -129,7 +110,7 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
 
     @Override // android.content.integrity.IntegrityFormula
     public boolean isAppCertificateLineageFormula() {
-        return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda2
+        return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean isAppCertificateLineageFormula;
@@ -141,7 +122,7 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
 
     @Override // android.content.integrity.IntegrityFormula
     public boolean isInstallerFormula() {
-        return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda3
+        return getFormulas().stream().anyMatch(new Predicate() { // from class: android.content.integrity.CompoundFormula$$ExternalSyntheticLambda4
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean isInstallerFormula;
@@ -204,12 +185,10 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
             case 0:
             case 1:
                 Preconditions.checkArgument(formulas.size() >= 2, "Connector %s must have at least 2 formulas", connectorToString(connector));
-                return;
+                break;
             case 2:
                 Preconditions.checkArgument(formulas.size() == 1, "Connector %s must have 1 formula only", connectorToString(connector));
-                return;
-            default:
-                return;
+                break;
         }
     }
 

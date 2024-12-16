@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEmergencyManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.emergencymode.IEmergencyManager";
 
@@ -38,7 +38,6 @@ public interface IEmergencyManager extends IInterface {
 
     void setUserPackageBlocked(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEmergencyManager {
         @Override // com.samsung.android.emergencymode.IEmergencyManager
         public boolean isEmergencyMode() throws RemoteException {
@@ -114,7 +113,6 @@ public interface IEmergencyManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEmergencyManager {
         static final int TRANSACTION_addAppToLauncher = 13;
         static final int TRANSACTION_checkInvalidBroadcast = 6;
@@ -196,109 +194,106 @@ public interface IEmergencyManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEmergencyManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEmergencyManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEmergencyManager.DESCRIPTOR);
+                case 1:
+                    boolean _result = isEmergencyMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _result2 = getEmergencyState();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = checkValidPackage(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = checkValidIntentAction(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = checkInvalidProcess(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 6:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = checkInvalidBroadcast(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    boolean _result7 = needMobileDataBlock();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 8:
+                    boolean _result8 = isScreenOn();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 9:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setUserPackageBlocked(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    boolean _result9 = isUserPackageBlocked();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 11:
+                    boolean _result10 = isModifying();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 12:
+                    boolean _arg06 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLocationProviderEnabled(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg07 = data.readString();
+                    boolean _arg14 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = addAppToLauncher(_arg07, _arg14);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 14:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = checkModeType(_arg08);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isEmergencyMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _result2 = getEmergencyState();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = checkValidPackage(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = checkValidIntentAction(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = checkInvalidProcess(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 6:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = checkInvalidBroadcast(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            boolean _result7 = needMobileDataBlock();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 8:
-                            boolean _result8 = isScreenOn();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 9:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setUserPackageBlocked(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            boolean _result9 = isUserPackageBlocked();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 11:
-                            boolean _result10 = isModifying();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 12:
-                            boolean _arg06 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLocationProviderEnabled(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            String _arg07 = data.readString();
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = addAppToLauncher(_arg07, _arg14);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 14:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = checkModeType(_arg08);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IEmergencyManager {
+        private static class Proxy implements IEmergencyManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

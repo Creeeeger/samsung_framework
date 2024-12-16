@@ -11,7 +11,6 @@ public interface SavedDatasetsInfoCallback {
     public static final int ERROR_UNSUPPORTED = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Error {
     }
 

@@ -74,7 +74,7 @@ public class SimpleExpandableListAdapter extends BaseExpandableListAdapter {
         for (int i = 0; i < len; i++) {
             TextView v = (TextView) view.findViewById(to[i]);
             if (v != null) {
-                v.setText((String) data.get(from[i]));
+                v.lambda$setTextAsync$0((String) data.get(from[i]));
             }
         }
     }

@@ -70,7 +70,7 @@ public abstract class MenuPopup implements ShowableListMenu, MenuPresenter, Adap
         wrappedAdapter.mAdapterMenu.performItemAction((MenuItem) outerAdapter.getItem(position), 0);
     }
 
-    public static int measureIndividualMenuWidth(ListAdapter adapter, ViewGroup parent, Context context, int maxAllowedWidth) {
+    protected static int measureIndividualMenuWidth(ListAdapter adapter, ViewGroup parent, Context context, int maxAllowedWidth) {
         int maxWidth = 0;
         View itemView = null;
         int itemType = 0;
@@ -99,14 +99,14 @@ public abstract class MenuPopup implements ShowableListMenu, MenuPresenter, Adap
         return maxWidth;
     }
 
-    public static MenuAdapter toMenuAdapter(ListAdapter adapter) {
+    protected static MenuAdapter toMenuAdapter(ListAdapter adapter) {
         if (adapter instanceof HeaderViewListAdapter) {
             return (MenuAdapter) ((HeaderViewListAdapter) adapter).getWrappedAdapter();
         }
         return (MenuAdapter) adapter;
     }
 
-    public static boolean shouldPreserveIconSpacing(MenuBuilder menu) {
+    protected static boolean shouldPreserveIconSpacing(MenuBuilder menu) {
         int count = menu.size();
         for (int i = 0; i < count; i++) {
             MenuItem childItem = menu.getItem(i);

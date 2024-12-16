@@ -3,7 +3,7 @@ package android.text.style;
 import android.graphics.Rasterizer;
 import android.text.TextPaint;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class RasterizerSpan extends CharacterStyle implements UpdateAppearance {
     private Rasterizer mRasterizer;
 

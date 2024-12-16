@@ -11,7 +11,7 @@ import android.util.JsonReader;
 import android.util.Log;
 import android.util.jar.StrictJarFile;
 import com.android.internal.security.VerityUtils;
-import com.samsung.android.sm.iafdlib.IafdConstant;
+import com.sec.android.iaft.SmLib_IafdConstant;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -203,7 +203,7 @@ public class DexMetadataHelper {
                 String name = reader.nextName();
                 if (name.equals("packageName")) {
                     jsonPackageName = reader.nextString();
-                } else if (name.equals(IafdConstant.KEY_VERSION_CODE)) {
+                } else if (name.equals(SmLib_IafdConstant.KEY_VERSION_CODE)) {
                     jsonVersionCode = reader.nextLong();
                 } else {
                     reader.skipValue();

@@ -34,19 +34,11 @@ public final class ScriptIntrinsicConvolve3x3 extends ScriptIntrinsic {
 
     public void setCoefficients(float[] v) {
         FieldPacker fp = new FieldPacker(36);
-        int ct = 0;
-        while (true) {
-            float[] fArr = this.mValues;
-            if (ct < fArr.length) {
-                float f = v[ct];
-                fArr[ct] = f;
-                fp.addF32(f);
-                ct++;
-            } else {
-                setVar(0, fp);
-                return;
-            }
+        for (int ct = 0; ct < this.mValues.length; ct++) {
+            this.mValues[ct] = v[ct];
+            fp.addF32(this.mValues[ct]);
         }
+        setVar(0, fp);
     }
 
     public void forEach(Allocation aout) {

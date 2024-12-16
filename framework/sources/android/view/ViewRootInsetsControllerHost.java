@@ -36,17 +36,11 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
     }
 
     @Override // android.view.InsetsController.Host
-    public void addOnPreDrawRunnable(Runnable r) {
+    public void addOnPreDrawRunnable(final Runnable r) {
         if (this.mViewRoot.mView == null) {
             return;
         }
         this.mViewRoot.mView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: android.view.ViewRootInsetsControllerHost.1
-            final /* synthetic */ Runnable val$r;
-
-            AnonymousClass1(Runnable r2) {
-                r = r2;
-            }
-
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public boolean onPreDraw() {
                 ViewRootInsetsControllerHost.this.mViewRoot.mView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -55,23 +49,6 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
             }
         });
         this.mViewRoot.mView.invalidate();
-    }
-
-    /* renamed from: android.view.ViewRootInsetsControllerHost$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
-        final /* synthetic */ Runnable val$r;
-
-        AnonymousClass1(Runnable r2) {
-            r = r2;
-        }
-
-        @Override // android.view.ViewTreeObserver.OnPreDrawListener
-        public boolean onPreDraw() {
-            ViewRootInsetsControllerHost.this.mViewRoot.mView.getViewTreeObserver().removeOnPreDrawListener(this);
-            r.run();
-            return true;
-        }
     }
 
     @Override // android.view.InsetsController.Host
@@ -87,6 +64,9 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
         if (this.mViewRoot.mView == null) {
             return null;
         }
+        if (InsetsController.DEBUG) {
+            Log.d("VRInsetsControllerHost", "windowInsetsAnimation started");
+        }
         return this.mViewRoot.mView.dispatchWindowInsetsAnimationStart(animation, bounds);
     }
 
@@ -95,11 +75,19 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
         if (this.mViewRoot.mView == null) {
             return null;
         }
+        if (InsetsController.DEBUG) {
+            for (WindowInsetsAnimation anim : runningAnimations) {
+                Log.d("VRInsetsControllerHost", "windowInsetsAnimation progress: " + anim.getInterpolatedFraction());
+            }
+        }
         return this.mViewRoot.mView.dispatchWindowInsetsAnimationProgress(insets, runningAnimations);
     }
 
     @Override // android.view.InsetsController.Host
     public void dispatchWindowInsetsAnimationEnd(WindowInsetsAnimation animation) {
+        if (InsetsController.DEBUG) {
+            Log.d("VRInsetsControllerHost", "windowInsetsAnimation ended");
+        }
         if (this.mViewRoot.mView == null) {
             return;
         }
@@ -108,18 +96,13 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
 
     @Override // android.view.InsetsController.Host
     public void applySurfaceParams(SyncRtSurfaceTransactionApplier.SurfaceParams... params) {
-        applySurfaceParams(false, params);
-    }
-
-    @Override // android.view.InsetsController.Host
-    public void applySurfaceParams(boolean ignoreVisibility, SyncRtSurfaceTransactionApplier.SurfaceParams... params) {
         if (this.mViewRoot.mView == null) {
             throw new IllegalStateException("View of the ViewRootImpl is not initiated.");
         }
         if (this.mApplier == null) {
             this.mApplier = new SyncRtSurfaceTransactionApplier(this.mViewRoot.mView);
         }
-        if (this.mViewRoot.mView.isHardwareAccelerated() && (isVisibleToUser() || ignoreVisibility)) {
+        if (this.mViewRoot.mView.isHardwareAccelerated() && isVisibleToUser()) {
             this.mApplier.scheduleApply(params);
             return;
         }
@@ -159,7 +142,6 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
 
     @Override // android.view.InsetsController.Host
     public void setSystemBarsAppearance(int appearance, int mask) {
-        this.mViewRoot.mWindowAttributes.privateFlags |= 67108864;
         InsetsFlags insetsFlags = this.mViewRoot.mWindowAttributes.insetsFlags;
         int newAppearance = (insetsFlags.appearance & (~mask)) | (appearance & mask);
         if (insetsFlags.appearance != newAppearance) {
@@ -175,13 +157,7 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
     }
 
     @Override // android.view.InsetsController.Host
-    public boolean isSystemBarsAppearanceControlled() {
-        return (this.mViewRoot.mWindowAttributes.privateFlags & 67108864) != 0;
-    }
-
-    @Override // android.view.InsetsController.Host
     public void setSystemBarsBehavior(int behavior) {
-        this.mViewRoot.mWindowAttributes.privateFlags |= 134217728;
         if (this.mViewRoot.mWindowAttributes.insetsFlags.behavior != behavior) {
             this.mViewRoot.mWindowAttributes.insetsFlags.behavior = behavior;
             this.mViewRoot.mWindowAttributesChanged = true;
@@ -192,11 +168,6 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
     @Override // android.view.InsetsController.Host
     public int getSystemBarsBehavior() {
         return this.mViewRoot.mWindowAttributes.insetsFlags.behavior;
-    }
-
-    @Override // android.view.InsetsController.Host
-    public boolean isSystemBarsBehaviorControlled() {
-        return (this.mViewRoot.mWindowAttributes.privateFlags & 134217728) != 0;
     }
 
     @Override // android.view.InsetsController.Host
@@ -221,27 +192,24 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
 
     @Override // android.view.InsetsController.Host
     public String getRootViewTitle() {
-        ViewRootImpl viewRootImpl = this.mViewRoot;
-        if (viewRootImpl == null) {
+        if (this.mViewRoot == null) {
             return null;
         }
-        return viewRootImpl.getTitle().toString();
+        return this.mViewRoot.getTitle().toString();
     }
 
     @Override // android.view.InsetsController.Host
     public Context getRootViewContext() {
-        ViewRootImpl viewRootImpl = this.mViewRoot;
-        if (viewRootImpl != null) {
-            return viewRootImpl.mContext;
+        if (this.mViewRoot != null) {
+            return this.mViewRoot.mContext;
         }
         return null;
     }
 
     @Override // android.view.InsetsController.Host
     public int dipToPx(int dips) {
-        ViewRootImpl viewRootImpl = this.mViewRoot;
-        if (viewRootImpl != null) {
-            return viewRootImpl.dipToPx(dips);
+        if (this.mViewRoot != null) {
+            return this.mViewRoot.dipToPx(dips);
         }
         return 0;
     }
@@ -249,8 +217,7 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
     @Override // android.view.InsetsController.Host
     public IBinder getWindowToken() {
         View view;
-        ViewRootImpl viewRootImpl = this.mViewRoot;
-        if (viewRootImpl == null || (view = viewRootImpl.getView()) == null) {
+        if (this.mViewRoot == null || (view = this.mViewRoot.getView()) == null) {
             return null;
         }
         return view.getWindowToken();
@@ -258,20 +225,27 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
 
     @Override // android.view.InsetsController.Host
     public CompatibilityInfo.Translator getTranslator() {
-        ViewRootImpl viewRootImpl = this.mViewRoot;
-        if (viewRootImpl != null) {
-            return viewRootImpl.mTranslator;
+        if (this.mViewRoot != null) {
+            return this.mViewRoot.mTranslator;
         }
         return null;
     }
 
     @Override // android.view.InsetsController.Host
-    public InsetsSourceControl[] getScaledInsetHintControls(InsetsSourceControl[] controls) {
-        ViewRootImpl viewRootImpl = this.mViewRoot;
-        if (viewRootImpl != null) {
-            return viewRootImpl.getScaledInsetHintControls(controls);
+    public void applyInsetsHintSandboxingIfNeeded(InsetsSourceControl[] controls) {
+        this.mViewRoot.applyInsetsHintSandboxingIfNeeded(controls);
+    }
+
+    @Override // android.view.InsetsController.Host
+    public void notifyAnimationRunningStateChanged(boolean running) {
+        if (this.mViewRoot != null) {
+            this.mViewRoot.notifyInsetsAnimationRunningStateChanged(running);
         }
-        return controls;
+    }
+
+    @Override // android.view.InsetsController.Host
+    public boolean isHandlingPointerEvent() {
+        return this.mViewRoot != null && this.mViewRoot.isHandlingPointerEvent();
     }
 
     private boolean isVisibleToUser() {

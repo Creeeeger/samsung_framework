@@ -19,23 +19,18 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
     public long mWindowPtr;
     private static int sCursorWindowSize = -1;
     public static final Parcelable.Creator<CursorWindow> CREATOR = new Parcelable.Creator<CursorWindow>() { // from class: android.database.CursorWindow.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CursorWindow createFromParcel(Parcel source) {
             return new CursorWindow(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CursorWindow[] newArray(int size) {
             return new CursorWindow[size];
         }
     };
-
-    /* synthetic */ CursorWindow(Parcel parcel, CursorWindowIA cursorWindowIA) {
-        this(parcel);
-    }
 
     @FastNative
     private static native boolean nativeAllocRow(long j);
@@ -95,21 +90,17 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
     }
 
     public CursorWindow(String name, long windowSizeBytes) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
         if (windowSizeBytes < 0) {
             throw new IllegalArgumentException("Window size cannot be less than 0");
         }
         this.mStartPos = 0;
         this.mTotalRows = 0;
-        String str = (name == null || name.length() == 0) ? "<unnamed>" : name;
-        this.mName = str;
-        long nativeCreate = nativeCreate(str, (int) windowSizeBytes);
-        this.mWindowPtr = nativeCreate;
-        if (nativeCreate == 0) {
+        this.mName = (name == null || name.length() == 0) ? "<unnamed>" : name;
+        this.mWindowPtr = nativeCreate(this.mName, (int) windowSizeBytes);
+        if (this.mWindowPtr == 0) {
             throw new AssertionError();
         }
-        closeGuard.open("CursorWindow.close");
+        this.mCloseGuard = createCloseGuard();
     }
 
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
@@ -119,23 +110,29 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
     }
 
     private CursorWindow(Parcel source) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
         this.mStartPos = source.readInt();
-        long nativeCreateFromParcel = nativeCreateFromParcel(source);
-        this.mWindowPtr = nativeCreateFromParcel;
-        if (nativeCreateFromParcel == 0) {
+        this.mWindowPtr = nativeCreateFromParcel(source);
+        if (this.mWindowPtr == 0) {
             throw new AssertionError();
         }
-        this.mName = nativeGetName(nativeCreateFromParcel);
+        this.mName = nativeGetName(this.mWindowPtr);
+        this.mCloseGuard = createCloseGuard();
+    }
+
+    private CloseGuard createCloseGuard() {
+        CloseGuard closeGuard = CloseGuard.get();
         closeGuard.open("CursorWindow.close");
+        return closeGuard;
+    }
+
+    private CloseGuard createCloseGuard$ravenwood() {
+        return null;
     }
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             dispose();
         } finally {
@@ -144,13 +141,11 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
     }
 
     private void dispose() {
-        CloseGuard closeGuard = this.mCloseGuard;
-        if (closeGuard != null) {
-            closeGuard.close();
+        if (this.mCloseGuard != null) {
+            this.mCloseGuard.close();
         }
-        long j = this.mWindowPtr;
-        if (j != 0) {
-            nativeDispose(j);
+        if (this.mWindowPtr != 0) {
+            nativeDispose(this.mWindowPtr);
             this.mWindowPtr = 0L;
         }
     }
@@ -354,23 +349,6 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
         }
     }
 
-    /* renamed from: android.database.CursorWindow$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CursorWindow> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CursorWindow createFromParcel(Parcel source) {
-            return new CursorWindow(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CursorWindow[] newArray(int size) {
-            return new CursorWindow[size];
-        }
-    }
-
     public static CursorWindow newFromParcel(Parcel p) {
         return CREATOR.createFromParcel(p);
     }
@@ -404,6 +382,10 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
             sCursorWindowSize = Resources.getSystem().getInteger(R.integer.config_cursorWindowSize) * 1024;
         }
         return sCursorWindowSize;
+    }
+
+    private static int getCursorWindowSize$ravenwood() {
+        return 1024;
     }
 
     public void setTotalRows(int rows) {

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ColorPaletteCreator {
     private static final float ACCENT1_SAT_DELTA = 0.3f;
     private static final float ACCENT1_SAT_MAX = 0.8f;
@@ -71,28 +71,23 @@ public class ColorPaletteCreator {
         if (hue < 0.0f) {
             return 0;
         }
-        int i = 0;
-        while (true) {
-            if (i >= range.length) {
-                return -1;
-            }
-            if (r2[16] <= hue) {
+        for (int i = 0; i < range.length; i++) {
+            if (range[16] <= hue) {
                 return 0;
             }
-            if (hue >= r2[i]) {
-                i++;
-            } else {
+            if (hue < range[i]) {
                 return i - 1;
             }
         }
+        return -1;
     }
 
     static float findRatio(float hue, int r) {
-        return (hue - range[r]) / (r0[r + 1] - r1);
+        return (hue - range[r]) / (range[r + 1] - range[r]);
     }
 
     static float getHue(int r, float ratio) {
-        float hue = range[r] + ((r0[r + 1] - r1) * ratio);
+        float hue = range[r] + ((range[r + 1] - range[r]) * ratio);
         if (hue < 0.0f) {
             return hue + 360.0f;
         }
@@ -109,8 +104,7 @@ public class ColorPaletteCreator {
         if (ratio > 0.5f) {
             r = (r2 + step) % (range.length - 1);
         } else {
-            int[] iArr = range;
-            r = (((r2 - step) + iArr.length) - 1) % (iArr.length - 1);
+            r = (((r2 - step) + range.length) - 1) % (range.length - 1);
         }
         return getHue(r, ratio);
     }
@@ -133,8 +127,7 @@ public class ColorPaletteCreator {
     }
 
     private void populateStyles() {
-        int[] iArr = this.mSeedColors;
-        if (iArr == null || iArr.length <= 0) {
+        if (this.mSeedColors == null || this.mSeedColors.length <= 0) {
             return;
         }
         float[] accent1 = new float[3];
@@ -142,15 +135,9 @@ public class ColorPaletteCreator {
         float[] accent3 = new float[3];
         float[] neutral1 = new float[3];
         float[] neutral2 = new float[3];
-        float[][] colorHsl = (float[][]) Array.newInstance((Class<?>) Float.TYPE, iArr.length, 3);
-        int i = 0;
-        while (true) {
-            int[] iArr2 = this.mSeedColors;
-            if (i >= iArr2.length) {
-                break;
-            }
-            ColorUtils.colorToHSL(iArr2[i], colorHsl[i]);
-            i++;
+        float[][] colorHsl = (float[][]) Array.newInstance((Class<?>) Float.TYPE, this.mSeedColors.length, 3);
+        for (int i = 0; i < this.mSeedColors.length; i++) {
+            ColorUtils.colorToHSL(this.mSeedColors[i], colorHsl[i]);
         }
         if (isGrayImage(colorHsl)) {
             accent1[0] = 0.0f;
@@ -188,8 +175,7 @@ public class ColorPaletteCreator {
             this.mColorPalettes.add(new ColorPalette(accent1, accent2, accent3, neutral1, neutral2).getTable());
             return;
         }
-        int[] iArr3 = this.mSeedColors;
-        if (iArr3.length == 1) {
+        if (this.mSeedColors.length == 1) {
             accent1[0] = colorHsl[0][0];
             accent2[0] = hueMove(colorHsl[0][0], 1);
             accent3[0] = comp(colorHsl[0][0]);
@@ -215,7 +201,7 @@ public class ColorPaletteCreator {
             this.mColorPalettes.add(new ColorPalette(accent1, accent2, accent3, neutral1, neutral2).getTable());
             return;
         }
-        if (iArr3.length == 2) {
+        if (this.mSeedColors.length == 2) {
             accent1[0] = colorHsl[0][0];
             accent2[0] = hueMove(colorHsl[0][0], 1);
             accent3[0] = colorHsl[1][0];

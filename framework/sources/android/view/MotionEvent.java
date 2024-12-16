@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.security.keystore.KeyProperties;
 import android.util.Log;
 import android.util.SparseArray;
-import com.samsung.android.rune.CoreRune;
 import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
 import java.lang.annotation.Retention;
@@ -84,9 +83,9 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     public static final int AXIS_GESTURE_PINCH_SCALE_FACTOR = 52;
     public static final int AXIS_GESTURE_SCROLL_X_DISTANCE = 50;
     public static final int AXIS_GESTURE_SCROLL_Y_DISTANCE = 51;
+    public static final int AXIS_GESTURE_SWIPE_FINGER_COUNT = 53;
     public static final int AXIS_GESTURE_X_OFFSET = 48;
     public static final int AXIS_GESTURE_Y_OFFSET = 49;
-    public static final int AXIS_GRIP = 56;
     public static final int AXIS_HAT_X = 15;
     public static final int AXIS_HAT_Y = 16;
     public static final int AXIS_HSCROLL = 10;
@@ -98,7 +97,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     public static final int AXIS_PRESSURE = 2;
     public static final int AXIS_RELATIVE_X = 27;
     public static final int AXIS_RELATIVE_Y = 28;
-    public static final int AXIS_RESAMPLED = 57;
     public static final int AXIS_RTRIGGER = 18;
     public static final int AXIS_RUDDER = 20;
     public static final int AXIS_RX = 12;
@@ -189,15 +187,28 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     private float mCompatSandboxXOffset = 0.0f;
     private float mCompatSandboxYOffset = 0.0f;
     private float mCompatSandboxScale = 1.0f;
-    float mDssScale = 1.0f;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
+    @interface ActionMasked {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Axis {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Button {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Classification {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
+    @interface Flag {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ToolType {
     }
 
@@ -212,9 +223,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
 
     @CriticalNative
     private static native long nativeCopy(long j, long j2, boolean z);
-
-    @CriticalNative
-    private static native void nativeCopyRawOffsetsFrom(long j, long j2);
 
     private static native void nativeDispose(long j);
 
@@ -277,6 +285,12 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     private static native float nativeGetRawAxisValue(long j, int i, int i2, int i3);
 
     @CriticalNative
+    private static native float nativeGetRawXOffset(long j);
+
+    @CriticalNative
+    private static native float nativeGetRawYOffset(long j);
+
+    @CriticalNative
     private static native int nativeGetSource(long j);
 
     @CriticalNative
@@ -289,16 +303,10 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     private static native float nativeGetXCursorPosition(long j);
 
     @CriticalNative
-    private static native float nativeGetXOffset(long j);
-
-    @CriticalNative
     private static native float nativeGetXPrecision(long j);
 
     @CriticalNative
     private static native float nativeGetYCursorPosition(long j);
-
-    @CriticalNative
-    private static native float nativeGetYOffset(long j);
 
     @CriticalNative
     private static native float nativeGetYPrecision(long j);
@@ -342,6 +350,9 @@ public final class MotionEvent extends InputEvent implements Parcelable {
 
     @CriticalNative
     private static native void nativeSetSource(long j, int i);
+
+    @CriticalNative
+    private static native long nativeSplit(long j, long j2, int i);
 
     @FastNative
     private static native void nativeTransform(long j, Matrix matrix);
@@ -400,6 +411,7 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         names.append(50, "AXIS_GESTURE_SCROLL_X_DISTANCE");
         names.append(51, "AXIS_GESTURE_SCROLL_Y_DISTANCE");
         names.append(52, "AXIS_GESTURE_PINCH_SCALE_FACTOR");
+        names.append(53, "AXIS_GESTURE_SWIPE_FINGER_COUNT");
         names.append(55, "AXIS_PALM");
         BUTTON_SYMBOLIC_NAMES = new String[]{"BUTTON_PRIMARY", "BUTTON_SECONDARY", "BUTTON_TERTIARY", "BUTTON_BACK", "BUTTON_FORWARD", "BUTTON_STYLUS_PRIMARY", "BUTTON_STYLUS_SECONDARY", "0x00000080", "0x00000100", "0x00000200", "0x00000400", "0x00000800", "0x00001000", "0x00002000", "0x00004000", "0x00008000", "0x00010000", "0x00020000", "0x00040000", "0x00080000", "0x00100000", "0x00200000", "0x00400000", "0x00800000", "0x01000000", "0x02000000", "0x04000000", "0x08000000", "0x10000000", "0x20000000", "0x40000000", "0x80000000"};
         TOOL_TYPE_SYMBOLIC_NAMES = new SparseArray<>();
@@ -412,15 +424,14 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         gRecyclerLock = new Object();
         gSharedTempLock = new Object();
         CREATOR = new Parcelable.Creator<MotionEvent>() { // from class: android.view.MotionEvent.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MotionEvent createFromParcel(Parcel in) {
                 in.readInt();
                 return MotionEvent.createFromParcelBody(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MotionEvent[] newArray(int size) {
                 return new MotionEvent[size];
@@ -429,9 +440,8 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     }
 
     private static final void ensureSharedTempPointerCapacity(int desiredCapacity) {
-        PointerCoords[] pointerCoordsArr = gSharedTempPointerCoords;
-        if (pointerCoordsArr == null || pointerCoordsArr.length < desiredCapacity) {
-            int capacity = pointerCoordsArr != null ? pointerCoordsArr.length : 8;
+        if (gSharedTempPointerCoords == null || gSharedTempPointerCoords.length < desiredCapacity) {
+            int capacity = gSharedTempPointerCoords != null ? gSharedTempPointerCoords.length : 8;
             while (capacity < desiredCapacity) {
                 capacity *= 2;
             }
@@ -446,9 +456,8 @@ public final class MotionEvent extends InputEvent implements Parcelable {
 
     protected void finalize() throws Throwable {
         try {
-            long j = this.mNativePtr;
-            if (j != 0) {
-                nativeDispose(j);
+            if (this.mNativePtr != 0) {
+                nativeDispose(this.mNativePtr);
                 this.mNativePtr = 0L;
             }
         } finally {
@@ -469,16 +478,14 @@ public final class MotionEvent extends InputEvent implements Parcelable {
             ev.mNeedWindowOffset = false;
             ev.mWindowOffsetX = 0;
             ev.mWindowOffsetY = 0;
-            if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-                ev.setCompatSandboxScale(0.0f, 0.0f, 1.0f);
-            }
+            ev.setCompatSandboxScale(0.0f, 0.0f, 1.0f);
             return ev;
         }
     }
 
     public static MotionEvent obtain(long downTime, long eventTime, int action, int pointerCount, PointerProperties[] pointerProperties, PointerCoords[] pointerCoords, int metaState, int buttonState, float xPrecision, float yPrecision, int deviceId, int edgeFlags, int source, int displayId, int flags, int classification) {
         MotionEvent ev = obtain();
-        boolean success = ev.initialize(deviceId, source, displayId, action, flags, edgeFlags, metaState, buttonState, classification, 0.0f, 0.0f, xPrecision, yPrecision, downTime * 1000000, 1000000 * eventTime, pointerCount, pointerProperties, pointerCoords);
+        boolean success = ev.initialize(deviceId, source, displayId, action, flags, edgeFlags, metaState, buttonState, classification, 0.0f, 0.0f, xPrecision, yPrecision, downTime * 1000000, eventTime * 1000000, pointerCount, pointerProperties, pointerCoords);
         if (!success) {
             Log.e(TAG, "Could not initialize MotionEvent");
             ev.recycle();
@@ -554,7 +561,7 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         ev.mNeedWindowOffset = other.mNeedWindowOffset;
         ev.mWindowOffsetX = other.mWindowOffsetX;
         ev.mWindowOffsetY = other.mWindowOffsetY;
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX && other.shouldApplyCompatSandbox()) {
+        if (other.shouldApplyCompatSandbox()) {
             ev.setCompatSandboxScale(other.mCompatSandboxXOffset, other.mCompatSandboxYOffset, other.mCompatSandboxScale);
         }
         return ev;
@@ -569,16 +576,21 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         ev.mNeedWindowOffset = other.mNeedWindowOffset;
         ev.mWindowOffsetX = other.mWindowOffsetX;
         ev.mWindowOffsetY = other.mWindowOffsetY;
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX && other.shouldApplyCompatSandbox()) {
+        if (other.shouldApplyCompatSandbox()) {
             ev.setCompatSandboxScale(other.mCompatSandboxXOffset, other.mCompatSandboxYOffset, other.mCompatSandboxScale);
         }
         return ev;
     }
 
     private boolean initialize(int deviceId, int source, int displayId, int action, int flags, int edgeFlags, int metaState, int buttonState, int classification, float xOffset, float yOffset, float xPrecision, float yPrecision, long downTimeNanos, long eventTimeNanos, int pointerCount, PointerProperties[] pointerIds, PointerCoords[] pointerCoords) {
-        long nativeInitialize = nativeInitialize(this.mNativePtr, deviceId, source, displayId, action, flags, edgeFlags, metaState, buttonState, classification, xOffset, yOffset, xPrecision, yPrecision, downTimeNanos, eventTimeNanos, pointerCount, pointerIds, pointerCoords);
-        this.mNativePtr = nativeInitialize;
-        if (nativeInitialize == 0) {
+        int flags2;
+        if (action != 3) {
+            flags2 = flags;
+        } else {
+            flags2 = flags | 32;
+        }
+        this.mNativePtr = nativeInitialize(this.mNativePtr, deviceId, source, displayId, action, flags2, edgeFlags, metaState, buttonState, classification, xOffset, yOffset, xPrecision, yPrecision, downTimeNanos, eventTimeNanos, pointerCount, pointerIds, pointerCoords);
+        if (this.mNativePtr == 0) {
             return false;
         }
         updateCursorPosition();
@@ -594,9 +606,8 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     public final void recycle() {
         super.recycle();
         synchronized (gRecyclerLock) {
-            int i = gRecyclerUsed;
-            if (i < 10) {
-                gRecyclerUsed = i + 1;
+            if (gRecyclerUsed < 10) {
+                gRecyclerUsed++;
                 this.mNext = gRecyclerTop;
                 gRecyclerTop = this;
             }
@@ -693,6 +704,11 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         nativeSetFlags(this.mNativePtr, tainted ? Integer.MIN_VALUE | flags : Integer.MAX_VALUE & flags);
     }
 
+    private void setCanceled(boolean canceled) {
+        int flags = getFlags();
+        nativeSetFlags(this.mNativePtr, canceled ? flags | 32 : flags & (-33));
+    }
+
     public boolean isTargetAccessibilityFocus() {
         int flags = getFlags();
         return (1073741824 & flags) != 0;
@@ -754,17 +770,9 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         return nativeGetEventTimeNanos(this.mNativePtr, Integer.MIN_VALUE) / 1000000;
     }
 
-    public final long getEventTimeNano() {
-        return nativeGetEventTimeNanos(this.mNativePtr, Integer.MIN_VALUE);
-    }
-
     @Override // android.view.InputEvent
     public long getEventTimeNanos() {
         return nativeGetEventTimeNanos(this.mNativePtr, Integer.MIN_VALUE);
-    }
-
-    public final long semGetEventTimeNano() {
-        return getEventTimeNano();
     }
 
     public final float getX() {
@@ -917,7 +925,7 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         if (this.mNeedWindowOffset) {
             return getAdjustedRawX();
         }
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX && shouldApplyCompatSandbox()) {
+        if (shouldApplyCompatSandbox()) {
             float rawX = nativeGetRawAxisValue(this.mNativePtr, 0, 0, Integer.MIN_VALUE);
             return (this.mCompatSandboxXOffset + rawX) * this.mCompatSandboxScale;
         }
@@ -932,7 +940,7 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         if (this.mNeedWindowOffset) {
             return getAdjustedRawY();
         }
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX && shouldApplyCompatSandbox()) {
+        if (shouldApplyCompatSandbox()) {
             float rawY = nativeGetRawAxisValue(this.mNativePtr, 1, 0, Integer.MIN_VALUE);
             return (this.mCompatSandboxYOffset + rawY) * this.mCompatSandboxScale;
         }
@@ -941,9 +949,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
             return nativeGetRawAxisValue(this.mNativePtr, 1, 0, Integer.MIN_VALUE) * overrideScale;
         }
         return nativeGetRawAxisValue(this.mNativePtr, 1, 0, Integer.MIN_VALUE);
-    }
-
-    public void setDssScale(float dssScale) {
     }
 
     public final float getRawXForScaledWindow() {
@@ -956,6 +961,14 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         float rawY = getRawY();
         float overrideScale = CompatibilityInfo.getOverrideInvertedScale();
         return rawY / overrideScale;
+    }
+
+    public float getRawX(int pointerIndex) {
+        return nativeGetRawAxisValue(this.mNativePtr, 0, pointerIndex, Integer.MIN_VALUE);
+    }
+
+    public float getRawY(int pointerIndex) {
+        return nativeGetRawAxisValue(this.mNativePtr, 1, pointerIndex, Integer.MIN_VALUE);
     }
 
     public void setWindowOffset(int offsetX, int offsetY) {
@@ -998,18 +1011,7 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     }
 
     private boolean shouldApplyCompatSandbox() {
-        if (this.mNeedWindowOffset) {
-            return false;
-        }
         return (this.mCompatSandboxXOffset == 0.0f && this.mCompatSandboxYOffset == 0.0f && this.mCompatSandboxScale == 1.0f) ? false : true;
-    }
-
-    public float getRawX(int pointerIndex) {
-        return nativeGetRawAxisValue(this.mNativePtr, 0, pointerIndex, Integer.MIN_VALUE);
-    }
-
-    public float getRawY(int pointerIndex) {
-        return nativeGetRawAxisValue(this.mNativePtr, 1, pointerIndex, Integer.MIN_VALUE);
     }
 
     public final float getXPrecision() {
@@ -1042,10 +1044,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
 
     public long getHistoricalEventTimeNanos(int pos) {
         return nativeGetEventTimeNanos(this.mNativePtr, pos);
-    }
-
-    public long semGetHistoricalEventTimeNano(int pos) {
-        return getHistoricalEventTimeNanos(pos);
     }
 
     public final float getHistoricalX(int pos) {
@@ -1141,6 +1139,12 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     }
 
     public final void setAction(int action) {
+        int actionMasked = action & 255;
+        if (actionMasked == 3) {
+            setCanceled(true);
+        } else if (actionMasked != 6) {
+            setCanceled(false);
+        }
         nativeSetAction(this.mNativePtr, action);
     }
 
@@ -1243,50 +1247,32 @@ public final class MotionEvent extends InputEvent implements Parcelable {
     }
 
     public final MotionEvent clampNoHistory(float left, float top, float right, float bottom) {
-        int pointerCount;
-        PointerProperties[] pp;
-        PointerCoords[] pc;
         MotionEvent ev = obtain();
         synchronized (gSharedTempLock) {
             try {
-                try {
-                    pointerCount = nativeGetPointerCount(this.mNativePtr);
-                    ensureSharedTempPointerCapacity(pointerCount);
-                    pp = gSharedTempPointerProperties;
-                    pc = gSharedTempPointerCoords;
-                    for (int i = 0; i < pointerCount; i++) {
-                        try {
-                            nativeGetPointerProperties(this.mNativePtr, i, pp[i]);
-                            nativeGetPointerCoords(this.mNativePtr, i, Integer.MIN_VALUE, pc[i]);
-                        } catch (Throwable th) {
-                            th = th;
-                        }
-                        try {
-                            pc[i].x = clamp(pc[i].x, left, right);
-                        } catch (Throwable th2) {
-                            th = th2;
-                            throw th;
-                        }
-                        try {
-                            pc[i].y = clamp(pc[i].y, top, bottom);
-                        } catch (Throwable th3) {
-                            th = th3;
-                            throw th;
-                        }
+                int pointerCount = nativeGetPointerCount(this.mNativePtr);
+                ensureSharedTempPointerCapacity(pointerCount);
+                PointerProperties[] pp = gSharedTempPointerProperties;
+                PointerCoords[] pc = gSharedTempPointerCoords;
+                for (int i = 0; i < pointerCount; i++) {
+                    try {
+                        nativeGetPointerProperties(this.mNativePtr, i, pp[i]);
+                        nativeGetPointerCoords(this.mNativePtr, i, Integer.MIN_VALUE, pc[i]);
+                    } catch (Throwable th) {
+                        th = th;
                     }
-                } catch (Throwable th4) {
-                    th = th4;
+                    try {
+                        pc[i].x = clamp(pc[i].x, left, right);
+                        pc[i].y = clamp(pc[i].y, top, bottom);
+                    } catch (Throwable th2) {
+                        th = th2;
+                        throw th;
+                    }
                 }
-            } catch (Throwable th5) {
-                th = th5;
-            }
-            try {
-                ev.initialize(nativeGetDeviceId(this.mNativePtr), nativeGetSource(this.mNativePtr), nativeGetDisplayId(this.mNativePtr), nativeGetAction(this.mNativePtr), nativeGetFlags(this.mNativePtr), nativeGetEdgeFlags(this.mNativePtr), nativeGetMetaState(this.mNativePtr), nativeGetButtonState(this.mNativePtr), nativeGetClassification(this.mNativePtr), nativeGetXOffset(this.mNativePtr), nativeGetYOffset(this.mNativePtr), nativeGetXPrecision(this.mNativePtr), nativeGetYPrecision(this.mNativePtr), nativeGetDownTimeNanos(this.mNativePtr), nativeGetEventTimeNanos(this.mNativePtr, Integer.MIN_VALUE), pointerCount, pp, pc);
-                nativeCopyRawOffsetsFrom(ev.mNativePtr, this.mNativePtr);
+                ev.initialize(nativeGetDeviceId(this.mNativePtr), nativeGetSource(this.mNativePtr), nativeGetDisplayId(this.mNativePtr), nativeGetAction(this.mNativePtr), nativeGetFlags(this.mNativePtr), nativeGetEdgeFlags(this.mNativePtr), nativeGetMetaState(this.mNativePtr), nativeGetButtonState(this.mNativePtr), nativeGetClassification(this.mNativePtr), nativeGetRawXOffset(this.mNativePtr), nativeGetRawYOffset(this.mNativePtr), nativeGetXPrecision(this.mNativePtr), nativeGetYPrecision(this.mNativePtr), nativeGetDownTimeNanos(this.mNativePtr), nativeGetEventTimeNanos(this.mNativePtr, Integer.MIN_VALUE), pointerCount, pp, pc);
                 return ev;
-            } catch (Throwable th6) {
-                th = th6;
-                throw th;
+            } catch (Throwable th3) {
+                th = th3;
             }
         }
     }
@@ -1300,22 +1286,20 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         return idBits;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:75:0x0064, code lost:
-    
-        r28 = 2;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:33:0x008b  */
-    /* JADX WARN: Removed duplicated region for block: B:63:0x016e A[Catch: all -> 0x0186, TRY_LEAVE, TryCatch #3 {all -> 0x0186, blocks: (B:61:0x016a, B:63:0x016e), top: B:60:0x016a }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final android.view.MotionEvent split(int r42) {
-        /*
-            Method dump skipped, instructions count: 418
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.view.MotionEvent.split(int):android.view.MotionEvent");
+    public final MotionEvent split(int idBits) {
+        if (idBits == 0) {
+            throw new IllegalArgumentException("idBits must contain at least one pointer from this motion event");
+        }
+        int currentBits = getPointerIdBits();
+        if ((currentBits & idBits) != idBits) {
+            throw new IllegalArgumentException("idBits must be a non-empty subset of the pointer IDs from this MotionEvent, got idBits: " + String.format("0x%x", Integer.valueOf(idBits)) + " for " + this);
+        }
+        MotionEvent event = obtain();
+        event.mNativePtr = nativeSplit(event.mNativePtr, this.mNativePtr, idBits);
+        if (shouldApplyCompatSandbox()) {
+            event.setCompatSandboxScale(this.mCompatSandboxXOffset, this.mCompatSandboxYOffset, this.mCompatSandboxScale);
+        }
+        return event;
     }
 
     private void updateCursorPosition() {
@@ -1497,24 +1481,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         return toOrient;
     }
 
-    /* renamed from: android.view.MotionEvent$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MotionEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MotionEvent createFromParcel(Parcel in) {
-            in.readInt();
-            return MotionEvent.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MotionEvent[] newArray(int size) {
-            return new MotionEvent[size];
-        }
-    }
-
     public static MotionEvent createFromParcelBody(Parcel in) {
         MotionEvent ev = obtain();
         ev.mNativePtr = nativeReadFromParcel(ev.mNativePtr, in);
@@ -1523,6 +1489,7 @@ public final class MotionEvent extends InputEvent implements Parcelable {
 
     @Override // android.view.InputEvent
     public final void cancel() {
+        setCanceled(true);
         setAction(3);
     }
 
@@ -1552,10 +1519,8 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         return getY(pointerIndex);
     }
 
-    /* loaded from: classes4.dex */
     public static final class PointerCoords {
         private static final int INITIAL_PACKED_AXIS_VALUES = 8;
-        public float grip;
         public boolean isResampled;
         private long mPackedAxisBits;
         private float[] mPackedAxisValues;
@@ -1587,6 +1552,10 @@ public final class MotionEvent extends InputEvent implements Parcelable {
             return array;
         }
 
+        public boolean isResampled() {
+            return this.isResampled;
+        }
+
         public void clear() {
             this.mPackedAxisBits = 0L;
             this.x = 0.0f;
@@ -1601,7 +1570,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
             this.relativeX = 0.0f;
             this.relativeY = 0.0f;
             this.palm = 0.0f;
-            this.grip = 0.0f;
             this.isResampled = false;
         }
 
@@ -1659,8 +1627,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
                     return this.relativeY;
                 case 55:
                     return this.palm;
-                case 56:
-                    return this.grip;
                 default:
                     if (axis < 0 || axis > 63) {
                         throw new IllegalArgumentException("Axis out of range.");
@@ -1713,42 +1679,40 @@ public final class MotionEvent extends InputEvent implements Parcelable {
                 case 55:
                     this.palm = value;
                     return;
-                case 56:
-                    this.grip = value;
-                    break;
-            }
-            if (axis < 0 || axis > 63) {
-                throw new IllegalArgumentException("Axis out of range.");
-            }
-            long bits = this.mPackedAxisBits;
-            long axisBit = (-9223372036854775808) >>> axis;
-            int index = Long.bitCount((~((-1) >>> axis)) & bits);
-            float[] values = this.mPackedAxisValues;
-            if ((bits & axisBit) == 0) {
-                if (values == null) {
-                    values = new float[8];
-                    this.mPackedAxisValues = values;
-                } else {
-                    int count = Long.bitCount(bits);
-                    if (count < values.length) {
-                        if (index != count) {
-                            System.arraycopy(values, index, values, index + 1, count - index);
-                        }
-                    } else {
-                        float[] newValues = new float[count * 2];
-                        System.arraycopy(values, 0, newValues, 0, index);
-                        System.arraycopy(values, index, newValues, index + 1, count - index);
-                        values = newValues;
-                        this.mPackedAxisValues = values;
+                default:
+                    if (axis < 0 || axis > 63) {
+                        throw new IllegalArgumentException("Axis out of range.");
                     }
-                }
-                this.mPackedAxisBits = bits | axisBit;
+                    long bits = this.mPackedAxisBits;
+                    long axisBit = (-9223372036854775808) >>> axis;
+                    int index = Long.bitCount((~((-1) >>> axis)) & bits);
+                    float[] values = this.mPackedAxisValues;
+                    if ((bits & axisBit) == 0) {
+                        if (values == null) {
+                            values = new float[8];
+                            this.mPackedAxisValues = values;
+                        } else {
+                            int count = Long.bitCount(bits);
+                            if (count < values.length) {
+                                if (index != count) {
+                                    System.arraycopy(values, index, values, index + 1, count - index);
+                                }
+                            } else {
+                                float[] newValues = new float[count * 2];
+                                System.arraycopy(values, 0, newValues, 0, index);
+                                System.arraycopy(values, index, newValues, index + 1, count - index);
+                                values = newValues;
+                                this.mPackedAxisValues = values;
+                            }
+                        }
+                        this.mPackedAxisBits = bits | axisBit;
+                    }
+                    values[index] = value;
+                    return;
             }
-            values[index] = value;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class PointerProperties {
         public int id;
         public int toolType;
@@ -1786,6 +1750,7 @@ public final class MotionEvent extends InputEvent implements Parcelable {
             return false;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean equals(PointerProperties other) {
             return other != null && this.id == other.id && this.toolType == other.toolType;
         }

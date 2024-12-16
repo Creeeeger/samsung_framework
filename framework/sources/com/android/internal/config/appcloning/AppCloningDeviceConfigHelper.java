@@ -4,7 +4,7 @@ import android.content.Context;
 import android.provider.DeviceConfig;
 import java.util.Iterator;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AppCloningDeviceConfigHelper {
     public static final String ENABLE_APP_CLONING_BUILDING_BLOCKS = "enable_app_cloning_building_blocks";
     private static AppCloningDeviceConfigHelper sInstance;
@@ -19,9 +19,8 @@ public class AppCloningDeviceConfigHelper {
         AppCloningDeviceConfigHelper appCloningDeviceConfigHelper;
         synchronized (sLock) {
             if (sInstance == null) {
-                AppCloningDeviceConfigHelper appCloningDeviceConfigHelper2 = new AppCloningDeviceConfigHelper();
-                sInstance = appCloningDeviceConfigHelper2;
-                appCloningDeviceConfigHelper2.init(context);
+                sInstance = new AppCloningDeviceConfigHelper();
+                sInstance.init(context);
             }
             appCloningDeviceConfigHelper = sInstance;
         }
@@ -41,6 +40,7 @@ public class AppCloningDeviceConfigHelper {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$initializeDeviceConfigChangeListener$0(DeviceConfig.Properties properties) {
         String name;
         if (!"app_cloning".equals(properties.getNamespace())) {

@@ -4,7 +4,6 @@ package android.os;
 public final class BackTraceProto {
     public static final long TRACES = 2246267895809L;
 
-    /* loaded from: classes3.dex */
     public final class Stack {
         public static final long DUMP = 1138166333442L;
         public static final long DUMP_DURATION_NS = 1112396529667L;

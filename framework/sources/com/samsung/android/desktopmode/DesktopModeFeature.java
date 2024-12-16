@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DesktopModeFeature {
     public static final boolean DEBUG;
     public static final boolean ENABLED = true;
@@ -45,20 +45,16 @@ public class DesktopModeFeature {
         DEBUG = Debug.semIsProductDev() || Build.IS_DEBUGGABLE || Log.isLoggable("DMS", 3);
         FEATURE_STANDALONE_MODE_WALLPAPER = Build.VERSION.SEM_PLATFORM_INT < 140100;
         IS_TABLET = SystemProperties.get("ro.build.characteristics").contains(BnRConstants.DEVICETYPE_TABLET) || isDebuggableAndSysPropSet(BnRConstants.DEVICETYPE_TABLET);
-        Set<String> unmodifiableSet = Collections.unmodifiableSet(new ArraySet(Arrays.asList(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_COMMON_CONFIG_DEX_MODE").split(","))));
-        SUPPORTED_MODES = unmodifiableSet;
-        SUPPORT_DUAL = unmodifiableSet.contains("dual") || isDebuggableAndSysPropSet("dual");
-        SUPPORT_DEX_ON_PC = unmodifiableSet.contains("dexforpc") || isDebuggableAndSysPropSet("dop");
-        SUPPORT_STANDALONE = unmodifiableSet.contains("standalone") || isDebuggableAndSysPropSet("standalone");
-        boolean z2 = unmodifiableSet.contains(AudioDeviceDescription.CONNECTION_WIRELESS) || isDebuggableAndSysPropSet(AudioDeviceDescription.CONNECTION_WIRELESS);
-        SUPPORT_WIRELESS_DEX = z2;
-        SUPPORT_NEW_DEX = unmodifiableSet.contains("newdex") || isDebuggableAndSysPropSet("newdex");
-        SUPPORT_UIBC_EXTENSION_MOUSE_ICON_SYNC = z2;
-        int i = SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_SPEN_VERSION");
-        SPEN_USP_LEVEL = i;
-        boolean z3 = i > 0;
-        SUPPORT_SPEN = z3;
-        if (z3 && i % 10 == 5) {
+        SUPPORTED_MODES = Collections.unmodifiableSet(new ArraySet(Arrays.asList(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_COMMON_CONFIG_DEX_MODE").split(","))));
+        SUPPORT_DUAL = SUPPORTED_MODES.contains("dual") || isDebuggableAndSysPropSet("dual");
+        SUPPORT_DEX_ON_PC = SUPPORTED_MODES.contains("dexforpc") || isDebuggableAndSysPropSet("dop");
+        SUPPORT_STANDALONE = SUPPORTED_MODES.contains("standalone") || isDebuggableAndSysPropSet("standalone");
+        SUPPORT_WIRELESS_DEX = SUPPORTED_MODES.contains(AudioDeviceDescription.CONNECTION_WIRELESS) || isDebuggableAndSysPropSet(AudioDeviceDescription.CONNECTION_WIRELESS);
+        SUPPORT_NEW_DEX = SUPPORTED_MODES.contains("newdex") || isDebuggableAndSysPropSet("newdex");
+        SUPPORT_UIBC_EXTENSION_MOUSE_ICON_SYNC = SUPPORT_WIRELESS_DEX;
+        SPEN_USP_LEVEL = SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_SPEN_VERSION");
+        SUPPORT_SPEN = SPEN_USP_LEVEL > 0;
+        if (SUPPORT_SPEN && SPEN_USP_LEVEL % 10 == 5) {
             z = true;
         }
         SPEN_INBOX_MODEL = z;

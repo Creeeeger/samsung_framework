@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IBlockchainClient extends IInterface {
     public static final String DESCRIPTOR = "android.blockchain.IBlockchainClient";
 
-    /* loaded from: classes.dex */
     public static class Default implements IBlockchainClient {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -18,7 +17,6 @@ public interface IBlockchainClient extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBlockchainClient {
         public Stub() {
             attachInterface(this, IBlockchainClient.DESCRIPTOR);
@@ -51,16 +49,13 @@ public interface IBlockchainClient extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBlockchainClient.DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(IBlockchainClient.DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IBlockchainClient {
             private IBinder mRemote;
 

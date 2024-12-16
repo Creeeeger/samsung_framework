@@ -14,11 +14,11 @@ public final class PrintJob {
     private final PrintDocument mDocument;
     private final IPrintServiceClient mPrintServiceClient;
 
-    public PrintJob(Context context, PrintJobInfo jobInfo, IPrintServiceClient client) {
+    PrintJob(Context context, PrintJobInfo jobInfo, IPrintServiceClient client) {
         this.mContext = context;
         this.mCachedInfo = jobInfo;
         this.mPrintServiceClient = client;
-        this.mDocument = new PrintDocument(jobInfo.getId(), client, jobInfo.getDocumentInfo());
+        this.mDocument = new PrintDocument(this.mCachedInfo.getId(), client, jobInfo.getDocumentInfo());
     }
 
     public PrintJobId getId() {

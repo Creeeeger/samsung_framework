@@ -17,7 +17,6 @@ public interface ITransitionPlayer extends IInterface {
 
     void transitionAborted(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITransitionPlayer {
         @Override // android.window.ITransitionPlayer
         public void onTransitionReady(IBinder transitionToken, TransitionInfo info, SurfaceControl.Transaction t, SurfaceControl.Transaction finishT) throws RemoteException {
@@ -37,7 +36,6 @@ public interface ITransitionPlayer extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITransitionPlayer {
         static final int TRANSACTION_onTransitionReady = 1;
         static final int TRANSACTION_requestStartTransition = 2;
@@ -86,40 +84,36 @@ public interface ITransitionPlayer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITransitionPlayer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITransitionPlayer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITransitionPlayer.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    TransitionInfo _arg1 = (TransitionInfo) data.readTypedObject(TransitionInfo.CREATOR);
+                    SurfaceControl.Transaction _arg2 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
+                    SurfaceControl.Transaction _arg3 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTransitionReady(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    TransitionRequestInfo _arg12 = (TransitionRequestInfo) data.readTypedObject(TransitionRequestInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestStartTransition(_arg02, _arg12);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    transitionAborted(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            TransitionInfo _arg1 = (TransitionInfo) data.readTypedObject(TransitionInfo.CREATOR);
-                            SurfaceControl.Transaction _arg2 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
-                            SurfaceControl.Transaction _arg3 = (SurfaceControl.Transaction) data.readTypedObject(SurfaceControl.Transaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTransitionReady(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            TransitionRequestInfo _arg12 = (TransitionRequestInfo) data.readTypedObject(TransitionRequestInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestStartTransition(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            transitionAborted(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITransitionPlayer {
+        private static class Proxy implements ITransitionPlayer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

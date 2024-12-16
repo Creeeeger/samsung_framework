@@ -4,7 +4,7 @@ import android.app.AppOpsManager;
 import java.util.Objects;
 
 /* loaded from: classes.dex */
-public class AppOpInfo {
+class AppOpInfo {
     public final AppOpsManager.RestrictionBypass allowSystemRestrictionBypass;
     public final int code;
     public final int defaultMode;
@@ -39,7 +39,6 @@ public class AppOpInfo {
         this.forceCollectNotes = forceCollectNotes;
     }
 
-    /* loaded from: classes.dex */
     static class Builder {
         private int mCode;
         private String mName;
@@ -53,7 +52,7 @@ public class AppOpInfo {
         private boolean mRestrictRead = false;
         private boolean mForceCollectNotes = false;
 
-        public Builder(int code, String name, String simpleName) {
+        Builder(int code, String name, String simpleName) {
             if (code < -1) {
                 throw new IllegalArgumentException();
             }

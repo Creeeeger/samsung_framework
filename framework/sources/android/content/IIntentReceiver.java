@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IIntentReceiver extends IInterface {
     void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IIntentReceiver {
         @Override // android.content.IIntentReceiver
         public void performReceive(Intent intent, int resultCode, String data, Bundle extras, boolean ordered, boolean sticky, int sendingUser) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IIntentReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IIntentReceiver {
         public static final String DESCRIPTOR = "android.content.IIntentReceiver";
         static final int TRANSACTION_performReceive = 1;
@@ -67,31 +65,28 @@ public interface IIntentReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    boolean _arg4 = data.readBoolean();
+                    boolean _arg5 = data.readBoolean();
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    performReceive(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            boolean _arg4 = data.readBoolean();
-                            boolean _arg5 = data.readBoolean();
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            performReceive(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IIntentReceiver {
+        private static class Proxy implements IIntentReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -35,7 +35,7 @@ import com.samsung.android.globalactions.util.WindowManagerUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class GlobalActionsContentView implements ContentView, ViewStateController {
     private static final int LAND_NUM_COLUMNS_4_ITEMS = 2;
     private static final int LAND_NUM_COLUMNS_MORE_THAN_4_ITEMS = 3;
@@ -65,6 +65,7 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
     private int mItemVerticalSpacingPort;
     private int mItemWidthLand;
     private int mItemWidthPort;
+    private int mItemWidthPortPhone;
     private SamsungGlobalActionsGridView mLandListView;
     private SamsungGlobalActionsGridView mListView;
     private final LogWrapper mLogWrapper;
@@ -77,7 +78,7 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
     private LinearLayout mTopView;
     private final WindowManagerUtils mWindowManagerUtil;
     private boolean mNeedToForceUpdate = false;
-    private SamsungGlobalActionsAnimator.ViewUpdateCallback mBaseAnimatorCallback = new AnonymousClass2();
+    private SamsungGlobalActionsAnimator.ViewUpdateCallback mBaseAnimatorCallback = new AnonymousClass3();
     private boolean mForceDismiss = false;
     private ViewAnimationState mViewAnimationState = ViewAnimationState.IDLE;
     private ViewStateController mViewStateController = this;
@@ -106,29 +107,26 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         this.mItemVerticalSpacingLand = this.mContext.getResources().getDimensionPixelSize(R.dimen.sec_global_actions_items_vertical_spacing_land);
         this.mItemWidthLand = this.mContext.getResources().getDimensionPixelSize(R.dimen.sec_global_actions_items_width_land);
         this.mItemWidthPort = this.mContext.getResources().getDimensionPixelSize(R.dimen.sec_global_actions_items_width_port);
+        this.mItemWidthPortPhone = this.mContext.getResources().getDimensionPixelSize(R.dimen.sec_global_actions_items_width_port_phone);
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
     public void initLayouts() {
-        SamsungGlobalActionsRootView samsungGlobalActionsRootView = new SamsungGlobalActionsRootView(this.mContext);
-        this.mRootView = samsungGlobalActionsRootView;
-        ViewGroup listViewParent = (ViewGroup) samsungGlobalActionsRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_ITEM_LIST));
+        this.mRootView = new SamsungGlobalActionsRootView(this.mContext);
+        ViewGroup listViewParent = (ViewGroup) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_ITEM_LIST));
         listViewParent.setContentDescription(this.mContext.getResources().getText(R.string.global_action_power_off_menu));
-        SamsungGlobalActionsGridView samsungGlobalActionsGridView = new SamsungGlobalActionsGridView(this.mContext, true);
-        this.mListView = samsungGlobalActionsGridView;
-        listViewParent.addView(samsungGlobalActionsGridView);
+        this.mListView = new SamsungGlobalActionsGridView(this.mContext, true);
+        listViewParent.addView(this.mListView);
         ViewGroup landListViewParent = (ViewGroup) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_ITEM_LIST_LAND));
-        SamsungGlobalActionsGridView samsungGlobalActionsGridView2 = new SamsungGlobalActionsGridView(this.mContext, false);
-        this.mLandListView = samsungGlobalActionsGridView2;
-        landListViewParent.addView(samsungGlobalActionsGridView2);
+        this.mLandListView = new SamsungGlobalActionsGridView(this.mContext, false);
+        landListViewParent.addView(this.mLandListView);
         this.mTopView = (LinearLayout) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_TOP_VIEW));
         this.mBottomButtonView = (LinearLayout) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_BOTTOM_BUTTON_VIEW));
         this.mBottomMsgView = (LinearLayout) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_FORCE_RESTART_TEXT_VIEW));
         this.mConfirmationView = (ViewGroup) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_CONFIRMATION_VIEW));
-        FrameLayout frameLayout = (FrameLayout) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_SCREEN_CAPTURE_POPUP));
-        this.mPopupView = frameLayout;
-        if (frameLayout != null) {
-            ImageView popupCloseView = (ImageView) frameLayout.findViewById(this.mResourceFactory.get(ResourceType.ID_ICON));
+        this.mPopupView = (FrameLayout) this.mRootView.findViewById(this.mResourceFactory.get(ResourceType.ID_SCREEN_CAPTURE_POPUP));
+        if (this.mPopupView != null) {
+            ImageView popupCloseView = (ImageView) this.mPopupView.findViewById(this.mResourceFactory.get(ResourceType.ID_ICON));
             popupCloseView.setOnClickListener(new View.OnClickListener() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$$ExternalSyntheticLambda0
                 @Override // android.view.View.OnClickListener
                 public final void onClick(View view) {
@@ -138,9 +136,8 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
         this.mIsVoiceAssistantMode = this.mConditionChecker.isEnabled(SystemConditions.IS_VOICE_ASSISTANT_MODE);
         this.mIsWhiteTheme = this.mConditionChecker.isEnabled(SystemConditions.IS_WHITE_THEME);
-        BaseContentAdapter baseContentAdapter = new BaseContentAdapter(this.mContext);
-        this.mGridViewAdapter = baseContentAdapter;
-        this.mListView.setAdapter((ListAdapter) baseContentAdapter);
+        this.mGridViewAdapter = new BaseContentAdapter(this.mContext);
+        this.mListView.setAdapter((ListAdapter) this.mGridViewAdapter);
         this.mLandListView.setAdapter((ListAdapter) this.mGridViewAdapter);
         this.mDialog.setContentView(this.mRootView);
         if (this.mConditionChecker.isEnabled(SystemConditions.IS_SUPPORT_SF_EFFECT) || this.mConditionChecker.isEnabled(SystemConditions.IS_SUPPORT_CAPTURED_BLUR)) {
@@ -154,30 +151,27 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$initLayouts$0(View view) {
         this.mPopupView.setVisibility(8);
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
     public void initAnimations() {
-        SamsungGlobalActionsAnimator samsungGlobalActionsAnimator = new SamsungGlobalActionsAnimator(this.mContext, this.mConditionChecker, this.mLogWrapper, this);
-        this.mAnimator = samsungGlobalActionsAnimator;
-        samsungGlobalActionsAnimator.setCallback(this.mBaseAnimatorCallback);
+        this.mAnimator = new SamsungGlobalActionsAnimator(this.mContext, this.mConditionChecker, this.mLogWrapper, this);
+        this.mAnimator.setCallback(this.mBaseAnimatorCallback);
         this.mAnimatorFSM = new SamsungGlobalActionsAnimatorFSM(this.mAnimator, this.mLogWrapper, this);
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
     public void updateItemLists(SamsungGlobalActionsPresenter presenter) {
-        LinearLayout linearLayout = this.mTopView;
-        if (linearLayout != null && linearLayout.getChildCount() != 0) {
+        if (this.mTopView != null && this.mTopView.getChildCount() != 0) {
             this.mTopView.removeAllViews();
         }
-        LinearLayout linearLayout2 = this.mBottomButtonView;
-        if (linearLayout2 != null && linearLayout2.getChildCount() != 0) {
+        if (this.mBottomButtonView != null && this.mBottomButtonView.getChildCount() != 0) {
             this.mBottomButtonView.removeAllViews();
         }
-        LinearLayout linearLayout3 = this.mBottomMsgView;
-        if (linearLayout3 != null && linearLayout3.getChildCount() != 0) {
+        if (this.mBottomMsgView != null && this.mBottomMsgView.getChildCount() != 0) {
             this.mBottomMsgView.removeAllViews();
         }
         this.mGridViewAdapter.resetItems();
@@ -201,6 +195,13 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
         this.mGridViewAdapter.updateNumColumns();
         notifyDataSetChanged();
+        this.mListView.post(new Runnable() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView.1
+            @Override // java.lang.Runnable
+            public void run() {
+                GlobalActionsContentView.this.mNeedToForceUpdate = true;
+                GlobalActionsContentView.this.mListView.requestLayout();
+            }
+        });
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
@@ -210,9 +211,8 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
 
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
     public void dismiss() {
-        SamsungGlobalActionsAnimatorFSM samsungGlobalActionsAnimatorFSM = this.mAnimatorFSM;
-        if (samsungGlobalActionsAnimatorFSM != null) {
-            samsungGlobalActionsAnimatorFSM.handleAnimationEvent(SamsungGlobalActionsAnimatorFSM.Event.HIDE);
+        if (this.mAnimatorFSM != null) {
+            this.mAnimatorFSM.handleAnimationEvent(SamsungGlobalActionsAnimatorFSM.Event.HIDE);
         }
     }
 
@@ -244,41 +244,24 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
     public void registerRotationWatcher() {
         this.mIWindowManager = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
-        AnonymousClass1 anonymousClass1 = new IRotationWatcher.Stub() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView.1
-            AnonymousClass1() {
-            }
-
+        this.mRotationWatcher = new IRotationWatcher.Stub() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView.2
             @Override // android.view.IRotationWatcher
             public void onRotationChanged(int rotation) {
                 GlobalActionsContentView.this.forceRequestLayout();
             }
         };
-        this.mRotationWatcher = anonymousClass1;
         try {
-            this.mIWindowManager.watchRotation(anonymousClass1, this.mContext.getDisplay().getDisplayId());
+            this.mIWindowManager.watchRotation(this.mRotationWatcher, this.mContext.getDisplay().getDisplayId());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    /* renamed from: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends IRotationWatcher.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.IRotationWatcher
-        public void onRotationChanged(int rotation) {
-            GlobalActionsContentView.this.forceRequestLayout();
-        }
-    }
-
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
     public void onDismiss() {
-        IRotationWatcher.Stub stub = this.mRotationWatcher;
-        if (stub != null) {
+        if (this.mRotationWatcher != null) {
             try {
-                this.mIWindowManager.removeRotationWatcher(stub);
+                this.mIWindowManager.removeRotationWatcher(this.mRotationWatcher);
                 this.mRotationWatcher = null;
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -290,18 +273,15 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         if (this.mAnimatorFSM != null) {
             this.mAnimatorFSM = null;
         }
-        LinearLayout linearLayout = this.mTopView;
-        if (linearLayout != null && linearLayout.getChildCount() != 0) {
+        if (this.mTopView != null && this.mTopView.getChildCount() != 0) {
             this.mTopView.removeAllViews();
             this.mTopView = null;
         }
-        LinearLayout linearLayout2 = this.mBottomButtonView;
-        if (linearLayout2 != null && linearLayout2.getChildCount() != 0) {
+        if (this.mBottomButtonView != null && this.mBottomButtonView.getChildCount() != 0) {
             this.mBottomButtonView.removeAllViews();
             this.mBottomButtonView = null;
         }
-        LinearLayout linearLayout3 = this.mBottomMsgView;
-        if (linearLayout3 != null && linearLayout3.getChildCount() != 0) {
+        if (this.mBottomMsgView != null && this.mBottomMsgView.getChildCount() != 0) {
             this.mBottomMsgView.removeAllViews();
             this.mBottomMsgView = null;
         }
@@ -329,7 +309,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         this.mViewAnimationState = viewAnimationState;
     }
 
-    /* loaded from: classes5.dex */
     public class SamsungGlobalActionsRootView extends FrameLayout {
         public SamsungGlobalActionsRootView(Context context) {
             super(context);
@@ -347,7 +326,7 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
 
         @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-        public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
             super.onLayout(changed, left, top, right, bottom);
             if (changed || GlobalActionsContentView.this.mNeedToForceUpdate) {
                 GlobalActionsContentView.this.mLogWrapper.i(GlobalActionsContentView.TAG, "RootView onLayout");
@@ -365,7 +344,7 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public void onAttachedToWindow() {
+        protected void onAttachedToWindow() {
             super.onAttachedToWindow();
             boolean isPortrait = this.mContext.getResources().getConfiguration().orientation == 1;
             GlobalActionsContentView.this.mLogWrapper.logDebug(GlobalActionsContentView.TAG, "onAttachedWindow newConfig.orientation = " + isPortrait);
@@ -375,13 +354,13 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public void onDetachedFromWindow() {
+        protected void onDetachedFromWindow() {
             GlobalActionsContentView.this.mAnimatorFSM = null;
             GlobalActionsContentView.this.mAnimator = null;
         }
 
         @Override // android.view.View
-        public void onConfigurationChanged(Configuration newConfig) {
+        protected void onConfigurationChanged(Configuration newConfig) {
             super.onConfigurationChanged(newConfig);
             boolean isPortrait = newConfig.orientation == 1;
             GlobalActionsContentView.this.mAnimatorFSM.setOrientation(isPortrait);
@@ -425,6 +404,10 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
                 ViewGroup.LayoutParams params = GlobalActionsContentView.this.mListView.getLayoutParams();
                 params.width = (GlobalActionsContentView.this.mItemWidthPort * GlobalActionsContentView.this.mListView.getNumColumns()) + (GlobalActionsContentView.this.mItemVerticalSpacingPort * (GlobalActionsContentView.this.mListView.getNumColumns() - 1));
                 GlobalActionsContentView.this.mListView.setLayoutParams(params);
+            } else {
+                ViewGroup.LayoutParams params2 = GlobalActionsContentView.this.mListView.getLayoutParams();
+                params2.width = (GlobalActionsContentView.this.mItemWidthPortPhone * GlobalActionsContentView.this.mListView.getNumColumns()) + (GlobalActionsContentView.this.mItemHorizontalSpacing * (GlobalActionsContentView.this.mListView.getNumColumns() - 1));
+                GlobalActionsContentView.this.mListView.setLayoutParams(params2);
             }
         }
 
@@ -563,19 +546,39 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
 
         private void setListViewHeight() {
-            if (GlobalActionsContentView.this.mListView.getNumColumns() == 2) {
-                int firstColumn = 0;
-                int secondColumn = 0;
-                int numRows = 0;
-                for (int i = 0; i < GlobalActionsContentView.this.mListView.getChildCount(); i++) {
-                    if (i % 2 == 0) {
+            int height = 0;
+            int firstColumn = 0;
+            int numRows = 0;
+            int orientation = this.mContext.getResources().getConfiguration().orientation;
+            boolean isPortrait = orientation == 1;
+            boolean isListHeightModified = false;
+            if (GlobalActionsContentView.this.mListView.getNumColumns() != 2) {
+                if (isPortrait && GlobalActionsContentView.this.mListView.getNumColumns() == 1) {
+                    for (int i = 0; i < GlobalActionsContentView.this.mListView.getChildCount(); i++) {
                         firstColumn += GlobalActionsContentView.this.mListView.getChildAt(i).getHeight();
                         numRows++;
+                    }
+                    height = firstColumn + (GlobalActionsContentView.this.mListView.getVerticalSpacing() * (numRows - 1));
+                    isListHeightModified = true;
+                }
+            } else {
+                int secondColumn = 0;
+                for (int i2 = 0; i2 < GlobalActionsContentView.this.mListView.getChildCount(); i2++) {
+                    if (i2 % 2 == 0) {
+                        firstColumn += GlobalActionsContentView.this.mListView.getChildAt(i2).getHeight();
+                        numRows++;
                     } else {
-                        secondColumn += GlobalActionsContentView.this.mListView.getChildAt(i).getHeight();
+                        secondColumn += GlobalActionsContentView.this.mListView.getChildAt(i2).getHeight();
                     }
                 }
-                int height = (firstColumn > secondColumn ? firstColumn : secondColumn) + (GlobalActionsContentView.this.mListView.getVerticalSpacing() * (numRows - 1));
+                height = (firstColumn > secondColumn ? firstColumn : secondColumn) + (GlobalActionsContentView.this.mListView.getVerticalSpacing() * (numRows - 1));
+                isListHeightModified = true;
+            }
+            if (isListHeightModified) {
+                int bottom = GlobalActionsContentView.this.mListView.getChildAt(GlobalActionsContentView.this.mListView.getChildCount() - 1).getBottom();
+                if (bottom > height) {
+                    height = bottom;
+                }
                 ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) GlobalActionsContentView.this.mListView.getLayoutParams();
                 int availableSpace = (GlobalActionsContentView.this.mRootView.getHeight() - GlobalActionsContentView.this.mRootView.getPaddingBottom()) - marginLayoutParams.bottomMargin;
                 if (height < availableSpace) {
@@ -587,7 +590,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
     }
 
-    /* loaded from: classes5.dex */
     public class SamsungGlobalActionsBackgroundView extends FrameLayout {
         public SamsungGlobalActionsBackgroundView(Context context) {
             super(context);
@@ -596,7 +598,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
     }
 
-    /* loaded from: classes5.dex */
     public class BaseContentAdapter extends BaseAdapter {
         Context mContext;
         List<ActionViewModel> mViewModelList = new ArrayList();
@@ -658,7 +659,7 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
 
         private void setVerticalSpacing() {
             if (!GlobalActionsContentView.this.mConditionChecker.isEnabled(SystemConditions.IS_TABLET_DEVICE)) {
-                if (GlobalActionsContentView.this.mListView.getChildCount() == 4) {
+                if (this.mViewModelList.size() == 4) {
                     GlobalActionsContentView.this.mListView.setVerticalSpacing(this.mContext.getResources().getDimensionPixelSize(R.dimen.sec_global_actions_items_vertical_spacing_port_only_4_buttons));
                 } else {
                     GlobalActionsContentView.this.mListView.setVerticalSpacing(GlobalActionsContentView.this.mItemVerticalSpacingPort);
@@ -667,7 +668,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
     }
 
-    /* loaded from: classes5.dex */
     public class SamsungGlobalActionsGridView extends GridView {
         boolean mIsVerticalMode;
 
@@ -698,10 +698,9 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
     }
 
-    /* renamed from: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements SamsungGlobalActionsAnimator.ViewUpdateCallback {
-        AnonymousClass2() {
+    /* renamed from: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$3, reason: invalid class name */
+    class AnonymousClass3 implements SamsungGlobalActionsAnimator.ViewUpdateCallback {
+        AnonymousClass3() {
         }
 
         @Override // com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator.ViewUpdateCallback
@@ -771,16 +770,17 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
             return GlobalActionsContentView.this.mSelectedViewModel.getActionInfo().getName().equals(DefaultActionNames.ACTION_SAFE_MODE);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getDismissRunnable$0() {
             GlobalActionsContentView.this.mParentView.dismiss();
         }
 
         @Override // com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator.ViewUpdateCallback
         public Runnable getDismissRunnable() {
-            return new Runnable() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$2$$ExternalSyntheticLambda0
+            return new Runnable() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$3$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    GlobalActionsContentView.AnonymousClass2.this.lambda$getDismissRunnable$0();
+                    GlobalActionsContentView.AnonymousClass3.this.lambda$getDismissRunnable$0();
                 }
             };
         }
@@ -809,8 +809,8 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
             ViewGroup powerOffItemView = (ViewGroup) item.createView(false);
             ImageView powerOffIconView = (ImageView) powerOffItemView.findViewById(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.ID_ICON));
             TextView powerOffLabelView = (TextView) powerOffItemView.findViewById(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.ID_LABEL));
-            powerOffLabelView.setText(GlobalActionsContentView.this.mContext.getResources().getText(R.string.samsung_global_action_power_off));
-            powerOffIconView.lambda$setImageURIAsync$2(GlobalActionsContentView.this.mContext.getResources().getDrawable(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.DRAWABLE_POWEROFF), null));
+            powerOffLabelView.lambda$setTextAsync$0(GlobalActionsContentView.this.mContext.getResources().getText(R.string.samsung_global_action_power_off));
+            powerOffIconView.setImageDrawable(GlobalActionsContentView.this.mContext.getResources().getDrawable(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.DRAWABLE_POWEROFF), null));
             ViewGroup powerOffView = getConfirmIconLabelView(powerOffItemView);
             ((ViewGroup) powerOffView.getParent()).removeAllViews();
             GlobalActionsContentView.this.mConfirmationView.addView(powerOffView);

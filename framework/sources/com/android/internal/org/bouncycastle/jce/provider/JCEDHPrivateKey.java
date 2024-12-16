@@ -87,9 +87,8 @@ public class JCEDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier 
     @Override // java.security.Key
     public byte[] getEncoded() {
         try {
-            PrivateKeyInfo privateKeyInfo = this.info;
-            if (privateKeyInfo != null) {
-                return privateKeyInfo.getEncoded(ASN1Encoding.DER);
+            if (this.info != null) {
+                return this.info.getEncoded(ASN1Encoding.DER);
             }
             PrivateKeyInfo info = new PrivateKeyInfo(new AlgorithmIdentifier(PKCSObjectIdentifiers.dhKeyAgreement, new DHParameter(this.dhSpec.getP(), this.dhSpec.getG(), this.dhSpec.getL())), new ASN1Integer(getX()));
             return info.getEncoded(ASN1Encoding.DER);

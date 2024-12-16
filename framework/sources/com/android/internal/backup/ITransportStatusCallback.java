@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ITransportStatusCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.backup.ITransportStatusCallback";
 
@@ -14,7 +14,6 @@ public interface ITransportStatusCallback extends IInterface {
 
     void onOperationCompleteWithStatus(int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITransportStatusCallback {
         @Override // com.android.internal.backup.ITransportStatusCallback
         public void onOperationCompleteWithStatus(int status) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ITransportStatusCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITransportStatusCallback {
         static final int TRANSACTION_onOperationComplete = 2;
         static final int TRANSACTION_onOperationCompleteWithStatus = 1;
@@ -76,29 +74,25 @@ public interface ITransportStatusCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITransportStatusCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITransportStatusCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITransportStatusCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOperationCompleteWithStatus(_arg0);
+                    return true;
+                case 2:
+                    onOperationComplete();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOperationCompleteWithStatus(_arg0);
-                            return true;
-                        case 2:
-                            onOperationComplete();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITransportStatusCallback {
+        private static class Proxy implements ITransportStatusCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.ims.internal.IImsExternalCallStateListener;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsMultiEndpoint extends IInterface {
     void requestImsExternalCallStateInfo() throws RemoteException;
 
     void setListener(IImsExternalCallStateListener iImsExternalCallStateListener) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsMultiEndpoint {
         @Override // com.android.ims.internal.IImsMultiEndpoint
         public void setListener(IImsExternalCallStateListener listener) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IImsMultiEndpoint extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsMultiEndpoint {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsMultiEndpoint";
         static final int TRANSACTION_requestImsExternalCallStateInfo = 2;
@@ -76,31 +74,27 @@ public interface IImsMultiEndpoint extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IImsExternalCallStateListener _arg0 = IImsExternalCallStateListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setListener(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    requestImsExternalCallStateInfo();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IImsExternalCallStateListener _arg0 = IImsExternalCallStateListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setListener(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            requestImsExternalCallStateInfo();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsMultiEndpoint {
+        private static class Proxy implements IImsMultiEndpoint {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

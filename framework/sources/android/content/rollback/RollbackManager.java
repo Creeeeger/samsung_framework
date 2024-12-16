@@ -24,7 +24,6 @@ public final class RollbackManager {
     private final String mCallerPackageName;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Status {
     }
 

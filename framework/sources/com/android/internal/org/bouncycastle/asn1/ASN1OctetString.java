@@ -12,7 +12,7 @@ public abstract class ASN1OctetString extends ASN1Primitive implements ASN1Octet
     byte[] string;
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
+    abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
     public static ASN1OctetString getInstance(ASN1TaggedObject taggedObject, boolean explicit) {
         if (explicit) {
@@ -92,7 +92,7 @@ public abstract class ASN1OctetString extends ASN1Primitive implements ASN1Octet
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1OctetString)) {
             return false;
         }
@@ -106,12 +106,12 @@ public abstract class ASN1OctetString extends ASN1Primitive implements ASN1Octet
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return new DEROctetString(this.string);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return new DEROctetString(this.string);
     }
 

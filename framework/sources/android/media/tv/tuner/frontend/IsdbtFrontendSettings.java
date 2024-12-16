@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class IsdbtFrontendSettings extends FrontendSettings {
     public static final int BANDWIDTH_6MHZ = 8;
     public static final int BANDWIDTH_7MHZ = 4;
@@ -51,32 +51,23 @@ public class IsdbtFrontendSettings extends FrontendSettings {
     private final int mServiceAreaId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Bandwidth {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Mode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Modulation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PartialReceptionFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TimeInterleaveMode {
-    }
-
-    /* synthetic */ IsdbtFrontendSettings(long j, int i, int i2, int i3, int i4, IsdbtLayerSettings[] isdbtLayerSettingsArr, int i5, IsdbtFrontendSettingsIA isdbtFrontendSettingsIA) {
-        this(j, i, i2, i3, i4, isdbtLayerSettingsArr, i5);
     }
 
     private IsdbtFrontendSettings(long frequency, int bandwidth, int mode, int guardInterval, int serviceAreaId, IsdbtLayerSettings[] layerSettings, int partialReceptionFlag) {
@@ -94,12 +85,8 @@ public class IsdbtFrontendSettings extends FrontendSettings {
 
     @Deprecated
     public int getModulation() {
-        if (TunerVersionChecker.isHigherOrEqualVersionTo(131072)) {
-            return 0;
-        }
-        IsdbtLayerSettings[] isdbtLayerSettingsArr = this.mLayerSettings;
-        if (isdbtLayerSettingsArr.length > 0) {
-            return isdbtLayerSettingsArr[0].getModulation();
+        if (!TunerVersionChecker.isHigherOrEqualVersionTo(131072) && this.mLayerSettings.length > 0) {
+            return this.mLayerSettings[0].getModulation();
         }
         return 0;
     }
@@ -114,12 +101,8 @@ public class IsdbtFrontendSettings extends FrontendSettings {
 
     @Deprecated
     public int getCodeRate() {
-        if (TunerVersionChecker.isHigherOrEqualVersionTo(131072)) {
-            return 0;
-        }
-        IsdbtLayerSettings[] isdbtLayerSettingsArr = this.mLayerSettings;
-        if (isdbtLayerSettingsArr.length > 0) {
-            return isdbtLayerSettingsArr[0].getCodeRate();
+        if (!TunerVersionChecker.isHigherOrEqualVersionTo(131072) && this.mLayerSettings.length > 0) {
+            return this.mLayerSettings[0].getCodeRate();
         }
         return 0;
     }
@@ -144,7 +127,6 @@ public class IsdbtFrontendSettings extends FrontendSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mBandwidth;
         private long mFrequency;
@@ -153,10 +135,6 @@ public class IsdbtFrontendSettings extends FrontendSettings {
         private int mMode;
         private int mPartialReceptionFlag;
         private int mServiceAreaId;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;
@@ -185,11 +163,10 @@ public class IsdbtFrontendSettings extends FrontendSettings {
             } else {
                 IsdbtLayerSettings.Builder layerBuilder = IsdbtLayerSettings.builder();
                 layerBuilder.setModulation(modulation);
-                IsdbtLayerSettings[] isdbtLayerSettingsArr = this.mLayerSettings;
-                if (isdbtLayerSettingsArr.length == 0) {
+                if (this.mLayerSettings.length == 0) {
                     this.mLayerSettings = new IsdbtLayerSettings[1];
                 } else {
-                    layerBuilder.setCodeRate(isdbtLayerSettingsArr[0].getCodeRate());
+                    layerBuilder.setCodeRate(this.mLayerSettings[0].getCodeRate());
                 }
                 this.mLayerSettings[0] = layerBuilder.build();
             }
@@ -213,11 +190,10 @@ public class IsdbtFrontendSettings extends FrontendSettings {
             } else {
                 IsdbtLayerSettings.Builder layerBuilder = IsdbtLayerSettings.builder();
                 layerBuilder.setCodeRate(codeRate);
-                IsdbtLayerSettings[] isdbtLayerSettingsArr = this.mLayerSettings;
-                if (isdbtLayerSettingsArr.length == 0) {
+                if (this.mLayerSettings.length == 0) {
                     this.mLayerSettings = new IsdbtLayerSettings[1];
                 } else {
-                    layerBuilder.setModulation(isdbtLayerSettingsArr[0].getModulation());
+                    layerBuilder.setModulation(this.mLayerSettings[0].getModulation());
                 }
                 this.mLayerSettings[0] = layerBuilder.build();
             }
@@ -261,16 +237,11 @@ public class IsdbtFrontendSettings extends FrontendSettings {
         return 9;
     }
 
-    /* loaded from: classes2.dex */
     public static final class IsdbtLayerSettings {
         private final int mCodeRate;
         private final int mModulation;
         private final int mNumOfSegments;
         private final int mTimeInterleaveMode;
-
-        /* synthetic */ IsdbtLayerSettings(int i, int i2, int i3, int i4, IsdbtLayerSettingsIA isdbtLayerSettingsIA) {
-            this(i, i2, i3, i4);
-        }
 
         private IsdbtLayerSettings(int modulation, int timeInterleaveMode, int codeRate, int numOfSegments) {
             this.mModulation = modulation;
@@ -299,16 +270,11 @@ public class IsdbtFrontendSettings extends FrontendSettings {
             return new Builder();
         }
 
-        /* loaded from: classes2.dex */
         public static final class Builder {
             private int mCodeRate;
             private int mModulation;
             private int mNumOfSegments;
             private int mTimeInterleaveMode;
-
-            /* synthetic */ Builder(BuilderIA builderIA) {
-                this();
-            }
 
             private Builder() {
                 this.mModulation = 0;

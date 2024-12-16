@@ -382,4 +382,7 @@ public class GLES31 extends GLES30 {
     static {
         _nativeClassInit();
     }
+
+    GLES31() {
+    }
 }

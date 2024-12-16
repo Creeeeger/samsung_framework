@@ -6,11 +6,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.RandomAccess;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes4.dex */
-public abstract class AbstractProtobufList<E> extends AbstractList<E> implements Internal.ProtobufList<E> {
+/* loaded from: classes3.dex */
+abstract class AbstractProtobufList<E> extends AbstractList<E> implements Internal.ProtobufList<E> {
     protected static final int DEFAULT_CAPACITY = 10;
     private boolean isMutable = true;
+
+    AbstractProtobufList() {
+    }
 
     @Override // java.util.AbstractList, java.util.Collection, java.util.List
     public boolean equals(Object o) {
@@ -121,7 +123,7 @@ public abstract class AbstractProtobufList<E> extends AbstractList<E> implements
         return (E) super.set(i, e);
     }
 
-    public void ensureIsMutable() {
+    protected void ensureIsMutable() {
         if (!this.isMutable) {
             throw new UnsupportedOperationException();
         }

@@ -8,7 +8,7 @@ import com.samsung.android.graphics.spr.document.attribute.SprAttributeShadow;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprObjectShapeUse extends SprObjectBase {
     public int link;
 

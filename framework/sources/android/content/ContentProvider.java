@@ -11,13 +11,13 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.multiuser.Flags;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.os.IBinder;
 import android.os.ICancellationSignal;
 import android.os.ParcelFileDescriptor;
 import android.os.ParcelableException;
@@ -54,11 +54,11 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
     private PathPermission[] mPathPermissions;
     private String mReadPermission;
     private boolean mSingleUser;
+    private boolean mSystemUserOnly;
     private Transport mTransport;
     private SparseBooleanArray mUsersRedirectedToOwnerForMedia;
     private String mWritePermission;
 
-    /* loaded from: classes.dex */
     public interface PipeDataWriter<T> {
         void writeDataToPipe(ParcelFileDescriptor parcelFileDescriptor, Uri uri, String str, Bundle bundle, T t);
     }
@@ -103,8 +103,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return null;
     }
 
-    /* loaded from: classes.dex */
-    public class Transport extends ContentProviderNative {
+    class Transport extends ContentProviderNative {
         volatile ContentInterface mInterface;
         volatile AppOpsManager mAppOpsManager = null;
         volatile int mReadOp = -1;
@@ -127,7 +126,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         public Cursor query(AttributionSource attributionSource, Uri uri, String[] projection, Bundle queryArgs, ICancellationSignal cancellationSignal) {
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
             if (enforceReadPermission(attributionSource, uri2) == 0) {
-                ContentProvider.traceBegin(1048576L, "query: ", uri2.getAuthority());
+                ContentProvider.traceBegin(64L, "query: ", uri2.getAuthority());
                 AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
                 try {
                     try {
@@ -137,7 +136,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                     }
                 } finally {
                     ContentProvider.this.setCallingAttributionSource(original);
-                    Trace.traceEnd(1048576L);
+                    Trace.traceEnd(64L);
                 }
             }
             if (projection != null) {
@@ -164,7 +163,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             CallingIdentity origId;
             String type;
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
-            ContentProvider.traceBegin(1048576L, "getType: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "getType: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -199,7 +198,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -212,7 +211,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 ProviderInfo cpi = ContentProvider.this.mContext.getPackageManager().resolveContentProvider(uri.getAuthority(), PackageManager.ComponentInfoFlags.of(128L));
                 int callingUserId = UserHandle.getUserId(callingUid);
                 Uri userUri = (!ContentProvider.this.mSingleUser || UserHandle.isSameUser(ContentProvider.this.mMyUid, callingUid)) ? uri : ContentProvider.maybeAddUserId(uri, callingUserId);
-                if (cpi.forceUriPermissions && this.mInterface.checkUriPermission(uri, callingUid, 1) != 0 && ContentProvider.this.getContext().checkUriPermission(userUri, Binder.getCallingPid(), callingUid, 1) != 0) {
+                if (cpi.forceUriPermissions && this.mInterface.checkUriPermission(uri, callingUid, 1) != 0 && ContentProvider.this.getContext().checkUriPermission(userUri, Binder.getCallingPid(), callingUid, 1) != 0 && !ContentProvider.deniedAccessSystemUserOnlyProvider(callingUserId, ContentProvider.this.mSystemUserOnly)) {
                     FrameworkStatsLog.write(564, 5, callingUid, uri.getAuthority(), type);
                 }
             } catch (Exception e) {
@@ -233,7 +232,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         @Override // android.content.IContentProvider
         public void getTypeAnonymousAsync(Uri uri, RemoteCallback callback) {
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
-            ContentProvider.traceBegin(1048576L, "getTypeAnonymous: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "getTypeAnonymous: ", uri2.getAuthority());
             Bundle result = new Bundle();
             try {
                 try {
@@ -243,7 +242,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 callback.sendResult(result);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -260,7 +259,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                     ContentProvider.this.setCallingAttributionSource(original);
                 }
             }
-            ContentProvider.traceBegin(1048576L, "insert: ", uri3.getAuthority());
+            ContentProvider.traceBegin(64L, "insert: ", uri3.getAuthority());
             AttributionSource original2 = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -270,7 +269,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original2);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -280,7 +279,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             if (enforceWritePermission(attributionSource, uri2) != 0) {
                 return 0;
             }
-            ContentProvider.traceBegin(1048576L, "bulkInsert: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "bulkInsert: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -290,7 +289,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -315,7 +314,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                     throw new OperationApplicationException("App op not allowed", 0);
                 }
             }
-            ContentProvider.traceBegin(1048576L, "applyBatch: ", authority);
+            ContentProvider.traceBegin(64L, "applyBatch: ", authority);
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -333,7 +332,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -343,7 +342,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             if (enforceWritePermission(attributionSource, uri2) != 0) {
                 return 0;
             }
-            ContentProvider.traceBegin(1048576L, "delete: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "delete: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -353,7 +352,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -363,7 +362,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             if (enforceWritePermission(attributionSource, uri2) != 0) {
                 return 0;
             }
-            ContentProvider.traceBegin(1048576L, "update: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "update: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -373,7 +372,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -381,7 +380,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         public ParcelFileDescriptor openFile(AttributionSource attributionSource, Uri uri, String mode, ICancellationSignal cancellationSignal) throws FileNotFoundException {
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
             enforceFilePermission(attributionSource, uri2, mode);
-            ContentProvider.traceBegin(1048576L, "openFile: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "openFile: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -391,7 +390,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -399,7 +398,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         public AssetFileDescriptor openAssetFile(AttributionSource attributionSource, Uri uri, String mode, ICancellationSignal cancellationSignal) throws FileNotFoundException {
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
             enforceFilePermission(attributionSource, uri2, mode);
-            ContentProvider.traceBegin(1048576L, "openAssetFile: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "openAssetFile: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -409,7 +408,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -417,7 +416,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         public Bundle call(AttributionSource attributionSource, String authority, String method, String arg, Bundle extras) {
             ContentProvider.this.validateIncomingAuthority(authority);
             Bundle.setDefusable(extras, true);
-            ContentProvider.traceBegin(1048576L, "call: ", authority);
+            ContentProvider.traceBegin(64L, "call: ", authority);
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -427,14 +426,14 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
         @Override // android.content.IContentProvider
         public String[] getStreamTypes(AttributionSource attributionSource, Uri uri, String mimeTypeFilter) {
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
-            ContentProvider.traceBegin(1048576L, "getStreamTypes: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "getStreamTypes: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -444,7 +443,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -453,7 +452,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             Bundle.setDefusable(opts, true);
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
             enforceFilePermission(attributionSource, uri2, "r");
-            ContentProvider.traceBegin(1048576L, "openTypedAssetFile: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "openTypedAssetFile: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -463,7 +462,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -480,7 +479,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             if (enforceReadPermission(attributionSource, uri3) != 0) {
                 return null;
             }
-            ContentProvider.traceBegin(1048576L, "canonicalize: ", uri3.getAuthority());
+            ContentProvider.traceBegin(64L, "canonicalize: ", uri3.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -490,7 +489,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -513,7 +512,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             if (enforceReadPermission(attributionSource, uri3) != 0) {
                 return null;
             }
-            ContentProvider.traceBegin(1048576L, "uncanonicalize: ", uri3.getAuthority());
+            ContentProvider.traceBegin(64L, "uncanonicalize: ", uri3.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -523,7 +522,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -544,20 +543,20 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             if (enforceReadPermission(attributionSource, uri2) != 0) {
                 return false;
             }
-            ContentProvider.traceBegin(1048576L, "refresh: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "refresh: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 return this.mInterface.refresh(uri2, extras, CancellationSignal.fromTransport(cancellationSignal));
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
         @Override // android.content.IContentProvider
         public int checkUriPermission(AttributionSource attributionSource, Uri uri, int uid, int modeFlags) {
             Uri uri2 = ContentProvider.this.maybeGetUriWithoutUserId(ContentProvider.this.validateIncomingUri(uri));
-            ContentProvider.traceBegin(1048576L, "checkUriPermission: ", uri2.getAuthority());
+            ContentProvider.traceBegin(64L, "checkUriPermission: ", uri2.getAuthority());
             AttributionSource original = ContentProvider.this.setCallingAttributionSource(attributionSource);
             try {
                 try {
@@ -567,7 +566,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             } finally {
                 ContentProvider.this.setCallingAttributionSource(original);
-                Trace.traceEnd(1048576L);
+                Trace.traceEnd(64L);
             }
         }
 
@@ -618,6 +617,9 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
 
     boolean checkUser(int pid, int uid, Context context) {
         int callingUserId = UserHandle.getUserId(uid);
+        if (deniedAccessSystemUserOnlyProvider(callingUserId, this.mSystemUserOnly)) {
+            return false;
+        }
         if (callingUserId == context.getUserId() || this.mSingleUser || ((SemDualAppManager.isDualAppId(UserHandle.getUserId(uid)) && context.getUserId() == 0) || ((SemDualAppManager.isDualAppId(context.getUserId()) && UserHandle.getUserId(uid) == 0) || context.checkPermission(Manifest.permission.INTERACT_ACROSS_USERS, pid, uid) == 0 || context.checkPermission(Manifest.permission.INTERACT_ACROSS_USERS_FULL, pid, uid) == 0))) {
             return true;
         }
@@ -642,6 +644,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int checkPermission(String permission, AttributionSource attributionSource) {
         if (Binder.getCallingPid() == Process.myPid()) {
             return 0;
@@ -649,16 +652,11 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return PermissionChecker.checkPermissionForDataDeliveryFromDataSource(getContext(), permission, -1, new AttributionSource(getContext().getAttributionSource(), attributionSource), null);
     }
 
-    @Deprecated(forRemoval = true, since = "13.0")
-    protected int semEnforceReadPermission(Uri uri, String callingPkg, String attributionTag, IBinder callerToken) throws SecurityException {
-        return 2;
-    }
-
     protected int semEnforceReadPermission(Uri uri, AttributionSource attributionSource) throws SecurityException {
         return enforceReadPermissionInner(uri, attributionSource);
     }
 
-    public int enforceReadPermissionInner(Uri uri, AttributionSource attributionSource) throws SecurityException {
+    protected int enforceReadPermissionInner(Uri uri, AttributionSource attributionSource) throws SecurityException {
         String suffix;
         String missingPerm;
         Context context = getContext();
@@ -704,6 +702,9 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
             }
         }
         int callingUserId = UserHandle.getUserId(uid);
+        if (deniedAccessSystemUserOnlyProvider(callingUserId, this.mSystemUserOnly)) {
+            return 2;
+        }
         Uri userUri = (!this.mSingleUser || UserHandle.isSameUser(this.mMyUid, uid)) ? uri : maybeAddUserId(uri, callingUserId);
         if (context.checkUriPermission(userUri, pid, uid, 1) == 0) {
             return 0;
@@ -721,16 +722,11 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         throw new SecurityException("Permission Denial: reading " + getClass().getName() + " uri " + uri + " from pid=" + pid + ", uid=" + uid + suffix);
     }
 
-    @Deprecated(forRemoval = true, since = "13.0")
-    protected int semEnforceWritePermission(Uri uri, String callingPkg, String attributionTag, IBinder callerToken) throws SecurityException {
-        return 2;
-    }
-
     protected int semEnforceWritePermission(Uri uri, AttributionSource attributionSource) throws SecurityException {
         return enforceWritePermissionInner(uri, attributionSource);
     }
 
-    public int enforceWritePermissionInner(Uri uri, AttributionSource attributionSource) throws SecurityException {
+    protected int enforceWritePermissionInner(Uri uri, AttributionSource attributionSource) throws SecurityException {
         String failReason;
         String missingPerm;
         Context context = getContext();
@@ -801,6 +797,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return ctx;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public AttributionSource setCallingAttributionSource(AttributionSource attributionSource) {
         AttributionSource original = this.mCallingAttributionSource.get();
         this.mCallingAttributionSource.set(attributionSource);
@@ -848,7 +845,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
     public void onCallingPackageChanged() {
     }
 
-    /* loaded from: classes.dex */
     public final class CallingIdentity {
         public final long binderToken;
         public final AttributionSource callingAttributionSource;
@@ -881,13 +877,11 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
     }
 
     protected final boolean matchesOurAuthorities(String authority) {
-        String str = this.mAuthority;
-        if (str != null) {
-            return str.equals(authority);
+        if (this.mAuthority != null) {
+            return this.mAuthority.equals(authority);
         }
-        String[] strArr = this.mAuthorities;
-        if (strArr != null) {
-            int length = strArr.length;
+        if (this.mAuthorities != null) {
+            int length = this.mAuthorities.length;
             for (int i = 0; i < length; i++) {
                 if (this.mAuthorities[i].equals(authority)) {
                     return true;
@@ -934,14 +928,13 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
     }
 
     public final void setTransportLoggingEnabled(boolean enabled) {
-        Transport transport = this.mTransport;
-        if (transport == null) {
+        if (this.mTransport == null) {
             return;
         }
         if (enabled) {
-            transport.mInterface = new LoggingContentInterface(getClass().getSimpleName(), this);
+            this.mTransport.mInterface = new LoggingContentInterface(getClass().getSimpleName(), this);
         } else {
-            transport.mInterface = this;
+            this.mTransport.mInterface = this;
         }
     }
 
@@ -1048,7 +1041,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return openAssetFile(uri, mode);
     }
 
-    public final ParcelFileDescriptor openFileHelper(Uri uri, String mode) throws FileNotFoundException {
+    protected final ParcelFileDescriptor openFileHelper(Uri uri, String mode) throws FileNotFoundException {
         Cursor c = query(uri, new String[]{"_data"}, null, null, null);
         int count = c != null ? c.getCount() : 0;
         if (count != 1) {
@@ -1092,26 +1085,10 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return openTypedAssetFile(uri, mimeTypeFilter, opts);
     }
 
-    public <T> ParcelFileDescriptor openPipeHelper(Uri uri, String mimeType, Bundle opts, T args, PipeDataWriter<T> func) throws FileNotFoundException {
+    public <T> ParcelFileDescriptor openPipeHelper(final Uri uri, final String mimeType, final Bundle opts, final T args, final PipeDataWriter<T> func) throws FileNotFoundException {
         try {
-            ParcelFileDescriptor[] fds = ParcelFileDescriptor.createPipe();
+            final ParcelFileDescriptor[] fds = ParcelFileDescriptor.createPipe();
             AsyncTask<Object, Object, Object> task = new AsyncTask<Object, Object, Object>() { // from class: android.content.ContentProvider.1
-                final /* synthetic */ Object val$args;
-                final /* synthetic */ ParcelFileDescriptor[] val$fds;
-                final /* synthetic */ PipeDataWriter val$func;
-                final /* synthetic */ String val$mimeType;
-                final /* synthetic */ Bundle val$opts;
-                final /* synthetic */ Uri val$uri;
-
-                AnonymousClass1(PipeDataWriter func2, ParcelFileDescriptor[] fds2, Uri uri2, String mimeType2, Bundle opts2, Object args2) {
-                    func = func2;
-                    fds = fds2;
-                    uri = uri2;
-                    mimeType = mimeType2;
-                    opts = opts2;
-                    args = args2;
-                }
-
                 @Override // android.os.AsyncTask
                 protected Object doInBackground(Object... params) {
                     func.writeDataToPipe(fds[1], uri, mimeType, opts, args);
@@ -1125,41 +1102,9 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             };
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-            return fds2[0];
+            return fds[0];
         } catch (IOException e) {
             throw new FileNotFoundException("failure making pipe");
-        }
-    }
-
-    /* renamed from: android.content.ContentProvider$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends AsyncTask<Object, Object, Object> {
-        final /* synthetic */ Object val$args;
-        final /* synthetic */ ParcelFileDescriptor[] val$fds;
-        final /* synthetic */ PipeDataWriter val$func;
-        final /* synthetic */ String val$mimeType;
-        final /* synthetic */ Bundle val$opts;
-        final /* synthetic */ Uri val$uri;
-
-        AnonymousClass1(PipeDataWriter func2, ParcelFileDescriptor[] fds2, Uri uri2, String mimeType2, Bundle opts2, Object args2) {
-            func = func2;
-            fds = fds2;
-            uri = uri2;
-            mimeType = mimeType2;
-            opts = opts2;
-            args = args2;
-        }
-
-        @Override // android.os.AsyncTask
-        protected Object doInBackground(Object... params) {
-            func.writeDataToPipe(fds[1], uri, mimeType, opts, args);
-            try {
-                fds[1].close();
-                return null;
-            } catch (IOException e) {
-                Log.w(ContentProvider.TAG, "Failure closing pipe", e);
-                return null;
-            }
         }
     }
 
@@ -1180,13 +1125,12 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
     }
 
     private void attachInfo(Context context, ProviderInfo info, boolean testing) {
-        Transport transport;
         this.mNoPerms = testing;
         this.mCallingAttributionSource = new ThreadLocal<>();
         if (this.mContext == null) {
             this.mContext = context;
-            if (context != null && (transport = this.mTransport) != null) {
-                transport.mAppOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            if (context != null && this.mTransport != null) {
+                this.mTransport.mAppOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
             }
             this.mMyUid = Process.myUid();
             if (info != null) {
@@ -1195,6 +1139,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 setPathPermissions(info.pathPermissions);
                 this.mExported = info.exported;
                 this.mSingleUser = (info.flags & 1073741824) != 0;
+                this.mSystemUserOnly = (info.flags & 536870912) != 0;
                 setAuthorities(info.authority);
             }
             if (Build.IS_DEBUGGABLE) {
@@ -1235,6 +1180,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         writer.println("nothing to dump");
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void validateIncomingAuthority(String authority) throws SecurityException {
         String message;
         if (!matchesOurAuthorities(getAuthorityWithoutUserId(authority))) {
@@ -1249,10 +1195,15 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
     }
 
     public Uri validateIncomingUri(Uri uri) throws SecurityException {
-        int userId;
         String auth = uri.getAuthority();
-        if (!this.mSingleUser && (userId = getUserIdFromAuthority(auth, -2)) != -2 && userId != this.mContext.getUserId() && !isContentRedirectionAllowedForUser(userId)) {
-            throw new SecurityException("trying to query a ContentProvider in user " + this.mContext.getUserId() + " with a uri belonging to user " + userId);
+        if (!this.mSingleUser) {
+            int userId = getUserIdFromAuthority(auth, -2);
+            if (deniedAccessSystemUserOnlyProvider(this.mContext.getUserId(), this.mSystemUserOnly)) {
+                throw new SecurityException("Trying to query a SYSTEM user only content provider from user:" + this.mContext.getUserId());
+            }
+            if (userId != -2 && userId != this.mContext.getUserId() && !isContentRedirectionAllowedForUser(userId)) {
+                throw new SecurityException("trying to query a ContentProvider in user " + this.mContext.getUserId() + " with a uri belonging to user " + userId);
+            }
         }
         validateIncomingAuthority(auth);
         String encodedPath = uri.getEncodedPath();
@@ -1264,6 +1215,7 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return uri;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Uri maybeGetUriWithoutUserId(Uri uri) {
         if (this.mSingleUser) {
             return uri;
@@ -1354,9 +1306,15 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return uri;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void traceBegin(long traceTag, String methodName, String subInfo) {
         if (Trace.isTagEnabled(traceTag)) {
             Trace.traceBegin(traceTag, methodName + subInfo);
         }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean deniedAccessSystemUserOnlyProvider(int callingUserId, boolean systemUserOnly) {
+        return Flags.enableSystemUserOnlyForServicesAndProviders() && callingUserId != 0 && systemUserOnly;
     }
 }

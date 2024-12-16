@@ -36,9 +36,8 @@ public abstract class UcmKeyStoreGenericCipher {
     }
 
     public void setPadding(String padding) throws NoSuchPaddingException {
-        int isPaddingSupported = isPaddingSupported(toUpperCase(padding));
-        this.mPadding = isPaddingSupported;
-        if (isPaddingSupported != -1) {
+        this.mPadding = isPaddingSupported(toUpperCase(padding));
+        if (this.mPadding != -1) {
         } else {
             throw new NoSuchPaddingException("Padding not supported: " + padding);
         }

@@ -2,19 +2,20 @@ package android.telephony;
 
 import android.annotation.SystemApi;
 import android.app.job.JobInfo;
-import android.app.settings.SettingsEnums;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.os.SemSystemProperties;
 import android.telecom.TelecomManager;
+import android.telephony.data.ApnSetting;
 import android.view.WindowManager;
+import com.android.ims.internal.uce.common.CapInfo;
 import com.android.internal.telephony.DctConstants;
 import com.android.internal.telephony.ICarrierConfigLoader;
 import com.android.internal.telephony.TelephonyFeatures;
+import com.android.internal.telephony.flags.Flags;
 import com.samsung.android.app.SemDualAppManager;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.media.SemExtendedFormat;
 import com.samsung.android.transcode.constants.EncodeConstants;
 import com.sec.android.allshare.iface.message.EventMsg;
@@ -22,11 +23,13 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class CarrierConfigManager {
     public static final String ACTION_CARRIER_CONFIG_CHANGED = "android.telephony.action.CARRIER_CONFIG_CHANGED";
     public static final int CARRIER_NR_AVAILABILITY_NSA = 1;
     public static final int CARRIER_NR_AVAILABILITY_SA = 2;
+    public static final int CARRIER_ROAMING_NTN_CONNECT_AUTOMATIC = 0;
+    public static final int CARRIER_ROAMING_NTN_CONNECT_MANUAL = 1;
     public static final int CROSS_SIM_SPN_FORMAT_CARRIER_NAME_ONLY = 0;
     public static final int CROSS_SIM_SPN_FORMAT_CARRIER_NAME_WITH_BRANDING = 1;
     public static final int DATA_CYCLE_THRESHOLD_DISABLED = -2;
@@ -86,7 +89,6 @@ public class CarrierConfigManager {
     public static final String KEY_ALWAYS_SHOW_EMERGENCY_ALERT_ONOFF_BOOL = "always_show_emergency_alert_onoff_bool";
     public static final String KEY_ALWAYS_SHOW_PRIMARY_SIGNAL_BAR_IN_OPPORTUNISTIC_NETWORK_BOOLEAN = "always_show_primary_signal_bar_in_opportunistic_network_boolean";
     public static final String KEY_APN_EXPAND_BOOL = "apn_expand_bool";
-    public static final String KEY_APN_PRIORITY_STRING_ARRAY = "apn_priority_string_array";
     public static final String KEY_APN_SETTINGS_DEFAULT_APN_TYPES_STRING_ARRAY = "apn_settings_default_apn_types_string_array";
     public static final String KEY_ASCII_7_BIT_SUPPORT_FOR_LONG_MESSAGE_BOOL = "ascii_7_bit_support_for_long_message_bool";
     public static final String KEY_AUTO_CANCEL_CS_REJECT_NOTIFICATION = "carrier_auto_cancel_cs_notification";
@@ -171,6 +173,8 @@ public class CarrierConfigManager {
     public static final String KEY_CARRIER_QUALIFIED_NETWORKS_SERVICE_CLASS_OVERRIDE_STRING = "carrier_qualified_networks_service_class_override_string";
     public static final String KEY_CARRIER_QUALIFIED_NETWORKS_SERVICE_PACKAGE_OVERRIDE_STRING = "carrier_qualified_networks_service_package_override_string";
     public static final String KEY_CARRIER_RCS_PROVISIONING_REQUIRED_BOOL = "carrier_rcs_provisioning_required_bool";
+    public static final String KEY_CARRIER_ROAMING_NTN_CONNECT_TYPE_INT = "carrier_roaming_ntn_connect_type_int";
+    public static final String KEY_CARRIER_ROAMING_NTN_EMERGENCY_CALL_TO_SATELLITE_HANDOVER_TYPE_INT = "carrier_roaming_ntn_emergency_call_to_satellite_handover_type_int";
     public static final String KEY_CARRIER_ROAMING_SATELLITE_DEFAULT_SERVICES_INT_ARRAY = "carrier_roaming_satellite_default_services_int_array";
     public static final String KEY_CARRIER_SERVICE_NAME_STRING_ARRAY = "carrier_service_name_array";
     public static final String KEY_CARRIER_SERVICE_NUMBER_STRING_ARRAY = "carrier_service_number_array";
@@ -179,6 +183,7 @@ public class CarrierConfigManager {
 
     @SystemApi
     public static final String KEY_CARRIER_SETUP_APP_STRING = "carrier_setup_app_string";
+    public static final String KEY_CARRIER_SUPPORTED_SATELLITE_NOTIFICATION_HYSTERESIS_SEC_INT = "carrier_supported_satellite_notification_hysteresis_sec_int";
     public static final String KEY_CARRIER_SUPPORTED_SATELLITE_SERVICES_PER_PROVIDER_BUNDLE = "carrier_supported_satellite_services_per_provider_bundle";
     public static final String KEY_CARRIER_SUPPORTS_CALLER_ID_VERTICAL_SERVICE_CODES_BOOL = "carrier_supports_caller_id_vertical_service_codes_bool";
     public static final String KEY_CARRIER_SUPPORTS_OPP_DATA_AUTO_PROVISIONING_BOOL = "carrier_supports_opp_data_auto_provisioning_bool";
@@ -214,6 +219,7 @@ public class CarrierConfigManager {
     public static final String KEY_CDMA_NONROAMING_NETWORKS_STRING_ARRAY = "cdma_nonroaming_networks_string_array";
     public static final String KEY_CDMA_ROAMING_MODE_INT = "cdma_roaming_mode_int";
     public static final String KEY_CDMA_ROAMING_NETWORKS_STRING_ARRAY = "cdma_roaming_networks_string_array";
+    public static final String KEY_CELLULAR_SERVICE_CAPABILITIES_INT_ARRAY = "cellular_service_capabilities_int_array";
     public static final String KEY_CELLULAR_USAGE_SETTING_INT = "cellular_usage_setting_int";
     public static final String KEY_CHECK_PRICING_WITH_CARRIER_FOR_DATA_ROAMING_BOOL = "check_pricing_with_carrier_data_roaming_bool";
     public static final String KEY_CI_ACTION_ON_SYS_UPDATE_BOOL = "ci_action_on_sys_update_bool";
@@ -232,6 +238,8 @@ public class CarrierConfigManager {
     public static final String KEY_CONVERT_CDMA_CALLER_ID_MMI_CODES_WHILE_ROAMING_ON_3GPP_BOOL = "convert_cdma_caller_id_mmi_codes_while_roaming_on_3gpp_bool";
     public static final String KEY_CROSS_SIM_SPN_FORMAT_INT = "cross_sim_spn_format_int";
     public static final String KEY_CSP_ENABLED_BOOL = "csp_enabled_bool";
+    public static final String KEY_DATA_CONNECTED_ROAMING_NOTIFICATION_EXCLUDED_MCCS_STRING_ARRAY = "data_connected_roaming_notification_excluded_mccs_string_array";
+    public static final String KEY_DATA_CONNECTED_ROAMING_NOTIFICATION_INCLUDED_MCC_MNCS_STRING_ARRAY = "data_connected_roaming_notification_included_mcc_mncs_string_array";
     public static final String KEY_DATA_LIMIT_NOTIFICATION_BOOL = "data_limit_notification_bool";
     public static final String KEY_DATA_LIMIT_THRESHOLD_BYTES_LONG = "data_limit_threshold_bytes_long";
     public static final String KEY_DATA_RAPID_NOTIFICATION_BOOL = "data_rapid_notification_bool";
@@ -313,6 +321,7 @@ public class CarrierConfigManager {
     @SystemApi
     public static final String KEY_GBA_UA_TLS_CIPHER_SUITE_INT = "gba_ua_tls_cipher_suite_int";
     public static final String KEY_GERAN_RSSI_HYSTERESIS_DB_INT = "geran_rssi_hysteresis_db_int";
+    public static final String KEY_GET_PHONE_NUMBER_TS43_BOOL = "get_phone_number_ts43_bool";
     public static final String KEY_GSM_CDMA_CALLS_CAN_BE_HD_AUDIO = "gsm_cdma_calls_can_be_hd_audio";
     public static final String KEY_GSM_DTMF_TONE_DELAY_INT = "gsm_dtmf_tone_delay_int";
     public static final String KEY_GSM_NONROAMING_NETWORKS_STRING_ARRAY = "gsm_nonroaming_networks_string_array";
@@ -331,6 +340,7 @@ public class CarrierConfigManager {
     public static final String KEY_HIDE_PRESET_APN_DETAILS_BOOL = "hide_preset_apn_details_bool";
     public static final String KEY_HIDE_SIM_LOCK_SETTINGS_BOOL = "hide_sim_lock_settings_bool";
     public static final String KEY_HIDE_TTY_HCO_VCO_WITH_RTT_BOOL = "hide_tty_hco_vco_with_rtt";
+    public static final String KEY_HIDE_VOICEMAIL_NUMBER_SETTING_BOOL = "hide_voicemail_number_setting_bool";
     public static final String KEY_HIGH_BANDWIDTH_DATA_TRANSFER_THRESHOLD_KBPS_INT = "high_bandwidth_data_transfer_threshold_kbps_int";
     public static final String KEY_IDENTIFY_HIGH_DEFINITION_CALLS_IN_CALL_LOG_BOOL = "identify_high_definition_calls_in_call_log_bool";
     public static final String KEY_IGNORE_DATA_ENABLED_CHANGED_FOR_VIDEO_CALLS = "ignore_data_enabled_changed_for_video_calls";
@@ -405,10 +415,16 @@ public class CarrierConfigManager {
     public static final String KEY_NOTIFY_HANDOVER_VIDEO_FROM_WIFI_TO_LTE_BOOL = "notify_handover_video_from_wifi_to_lte_bool";
     public static final String KEY_NOTIFY_INTERNATIONAL_CALL_ON_WFC_BOOL = "notify_international_call_on_wfc_bool";
     public static final String KEY_NOTIFY_VT_HANDOVER_TO_WIFI_FAILURE_BOOL = "notify_vt_handover_to_wifi_failure_bool";
+    public static final String KEY_NO_REPLY_TIMER_FOR_CFNRY_SEC_INT = "no_reply_timer_for_cfnry_sec_int";
     public static final String KEY_NRARFCNS_RSRP_BOOST_INT_ARRAY = "nrarfcns_rsrp_boost_int_array";
+    public static final String KEY_NRSA_ENTITLEMENT_APP_NAME_STRING = "nrsa_entitlement_app_name_string";
+    public static final String KEY_NRSA_ENTITLEMENT_SERVER_URL_STRING = "nrsa_entitlement_server_url_string";
+    public static final String KEY_NR_ADVANCED_BANDS_SECONDARY_TIMER_SECONDS_INT = "nr_advanced_bands_secondary_timer_seconds_int";
     public static final String KEY_NR_ADVANCED_CAPABLE_PCO_ID_INT = "nr_advanced_capable_pco_id_int";
     public static final String KEY_NR_ADVANCED_THRESHOLD_BANDWIDTH_KHZ_INT = "nr_advanced_threshold_bandwidth_khz_int";
     public static final String KEY_NR_TIMERS_RESET_IF_NON_ENDC_AND_RRC_IDLE_BOOL = "nr_timers_reset_if_non_endc_and_rrc_idle_bool";
+    public static final String KEY_NR_TIMERS_RESET_ON_PLMN_CHANGE_BOOL = "nr_timers_reset_on_plmn_change_bool";
+    public static final String KEY_NR_TIMERS_RESET_ON_VOICE_QOS_BOOL = "nr_timers_reset_on_voice_qos_bool";
     public static final String KEY_NTN_LTE_RSRP_THRESHOLDS_INT_ARRAY = "ntn_lte_rsrp_thresholds_int_array";
     public static final String KEY_NTN_LTE_RSRQ_THRESHOLDS_INT_ARRAY = "ntn_lte_rsrq_thresholds_int_array";
     public static final String KEY_NTN_LTE_RSSNR_THRESHOLDS_INT_ARRAY = "ntn_lte_rssnr_thresholds_int_array";
@@ -430,6 +446,7 @@ public class CarrierConfigManager {
     public static final String KEY_OPPORTUNISTIC_NETWORK_EXIT_THRESHOLD_RSSNR_INT = "opportunistic_network_exit_threshold_rssnr_int";
     public static final String KEY_OPPORTUNISTIC_NETWORK_MAX_BACKOFF_TIME_LONG = "opportunistic_network_max_backoff_time_long";
     public static final String KEY_OPPORTUNISTIC_NETWORK_PING_PONG_TIME_LONG = "opportunistic_network_ping_pong_time_long";
+    public static final String KEY_OPPORTUNISTIC_NETWORK_SCAN_DEFAULT_PERIODIC_INT = "opportunistic_network_scan_default_periodic_int";
     public static final String KEY_OPPORTUNISTIC_TIME_TO_SCAN_AFTER_CAPABILITY_SWITCH_TO_PRIMARY_LONG = "opportunistic_time_to_scan_after_capability_switch_to_primary_long";
     public static final String KEY_OVERRIDE_WFC_ROAMING_MODE_WHILE_USING_NTN_BOOL = "override_wfc_roaming_mode_while_using_ntn_bool";
     public static final String KEY_PARAMETERS_USED_FOR_LTE_SIGNAL_BAR_INT = "parameters_used_for_lte_signal_bar_int";
@@ -440,6 +457,8 @@ public class CarrierConfigManager {
     public static final String KEY_PNN_OVERRIDE_STRING_ARRAY = "pnn_override_string_array";
     public static final String KEY_PREFERRED_IKE_PROTOCOL_INT = "preferred_ike_protocol_int";
     public static final String KEY_PREFER_2G_BOOL = "prefer_2g_bool";
+    public static final String KEY_PREFER_3G_VISIBILITY_BOOL = "prefer_3g_visibility_bool";
+    public static final String KEY_PREFER_IN_SERVICE_SIM_FOR_NORMAL_ROUTED_EMERGENCY_CALLS_BOOL = "prefer_in_service_sim_for_normal_routed_emergency_calls_bool";
     public static final String KEY_PREF_NETWORK_NOTIFICATION_DELAY_INT = "network_notification_delay_int";
     public static final String KEY_PREMIUM_CAPABILITY_MAXIMUM_DAILY_NOTIFICATION_COUNT_INT = "premium_capability_maximum_daily_notification_count_int";
     public static final String KEY_PREMIUM_CAPABILITY_MAXIMUM_MONTHLY_NOTIFICATION_COUNT_INT = "premium_capability_maximum_monthly_notification_count_int";
@@ -472,8 +491,21 @@ public class CarrierConfigManager {
     public static final String KEY_RTT_UPGRADE_SUPPORTED_FOR_DOWNGRADED_VT_CALL_BOOL = "rtt_upgrade_supported_for_downgraded_vt_call";
     public static final String KEY_SATELLITE_ATTACH_SUPPORTED_BOOL = "satellite_attach_supported_bool";
     public static final String KEY_SATELLITE_CONNECTION_HYSTERESIS_SEC_INT = "satellite_connection_hysteresis_sec_int";
+    public static final String KEY_SATELLITE_DATA_SUPPORT_MODE_INT = "satellite_data_support_mode_int";
+    public static final String KEY_SATELLITE_ENTITLEMENT_APP_NAME_STRING = "satellite_entitlement_app_name_string";
     public static final String KEY_SATELLITE_ENTITLEMENT_STATUS_REFRESH_DAYS_INT = "satellite_entitlement_status_refresh_days_int";
     public static final String KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL = "satellite_entitlement_supported_bool";
+    public static final String KEY_SATELLITE_ESOS_SUPPORTED_BOOL = "satellite_esos_supported_bool";
+    public static final String KEY_SATELLITE_INFORMATION_REDIRECT_URL_STRING = "satellite_information_redirect_url_string";
+    public static final String KEY_SATELLITE_NIDD_APN_NAME_STRING = "satellite_nidd_apn_name_string";
+    public static final String KEY_SATELLITE_ROAMING_ESOS_INACTIVITY_TIMEOUT_SEC_INT = "satellite_roaming_esos_inactivity_timeout_sec_int";
+    public static final String KEY_SATELLITE_ROAMING_P2P_SMS_INACTIVITY_TIMEOUT_SEC_INT = "satellite_roaming_p2p_sms_inactivity_timeout_sec_int";
+    public static final String KEY_SATELLITE_ROAMING_P2P_SMS_SUPPORTED_BOOL = "satellite_roaming_p2p_sms_supported_bool";
+    public static final String KEY_SATELLITE_ROAMING_SCREEN_OFF_INACTIVITY_TIMEOUT_SEC_INT = "satellite_roaming_screen_off_inactivity_timeout_sec_int";
+    public static final String KEY_SATELLITE_ROAMING_TRANSMISSION_ONLY_TO_INACTIVITY_CALCULATION_BOOL = "satellite_roaming_transmission_only_to_inactivity_calculation_bool";
+    public static final String KEY_SATELLITE_ROAMING_TURN_OFF_SESSION_FOR_EMERGENCY_CALL_BOOL = "satellite_roaming_turn_off_session_for_emergency_call_bool";
+    public static final String KEY_SATELLITE_SOS_MAX_DATAGRAM_SIZE = "satellite_sos_max_datagram_size";
+    public static final String KEY_SATELLITE_SUPPORTED_MSG_APPS_STRING_ARRAY = "satellite_supported_msg_apps_string_array";
     public static final String KEY_SHOW_4GLTE_FOR_LTE_DATA_ICON_BOOL = "show_4glte_for_lte_data_icon_bool";
     public static final String KEY_SHOW_4G_FOR_3G_DATA_ICON_BOOL = "show_4g_for_3g_data_icon_bool";
     public static final String KEY_SHOW_4G_FOR_LTE_DATA_ICON_BOOL = "show_4g_for_lte_data_icon_bool";
@@ -490,6 +522,7 @@ public class CarrierConfigManager {
     public static final String KEY_SHOW_ONSCREEN_DIAL_BUTTON_BOOL = "show_onscreen_dial_button_bool";
     public static final String KEY_SHOW_OPERATOR_NAME_IN_STATUSBAR_BOOL = "show_operator_name_in_statusbar_bool";
     public static final String KEY_SHOW_PRECISE_FAILED_CAUSE_BOOL = "show_precise_failed_cause_bool";
+    public static final String KEY_SHOW_ROAMING_INDICATOR_BOOL = "show_roaming_indicator_bool";
     public static final String KEY_SHOW_SIGNAL_STRENGTH_IN_SIM_STATUS_BOOL = "show_signal_strength_in_sim_status_bool";
     public static final String KEY_SHOW_SINGLE_OPERATOR_ROW_IN_CHOOSE_NETWORK_SETTING_BOOL = "show_single_operator_row_in_choose_network_setting_bool";
     public static final String KEY_SHOW_SPN_FOR_HOME_IN_CHOOSE_NETWORK_SETTING_BOOL = "show_spn_for_home_in_choose_network_setting_bool";
@@ -513,6 +546,7 @@ public class CarrierConfigManager {
     public static final String KEY_STORE_SIM_PIN_FOR_UNATTENDED_REBOOT_BOOL = "store_sim_pin_for_unattended_reboot_bool";
     public static final String KEY_SUBSCRIPTION_GROUP_UUID_STRING = "subscription_group_uuid_string";
     public static final String KEY_SUPPORTED_PREMIUM_CAPABILITIES_INT_ARRAY = "supported_premium_capabilities_int_array";
+    public static final String KEY_SUPPORTS_BUSINESS_CALL_COMPOSER_BOOL = "supports_business_call_composer_bool";
     public static final String KEY_SUPPORTS_CALL_COMPOSER_BOOL = "supports_call_composer_bool";
     public static final String KEY_SUPPORTS_DEVICE_TO_DEVICE_COMMUNICATION_USING_DTMF_BOOL = "supports_device_to_device_communication_using_dtmf_bool";
     public static final String KEY_SUPPORTS_DEVICE_TO_DEVICE_COMMUNICATION_USING_RTP_BOOL = "supports_device_to_device_communication_using_rtp_bool";
@@ -596,6 +630,8 @@ public class CarrierConfigManager {
     public static final String KEY_WCDMA_DEFAULT_SIGNAL_STRENGTH_MEASUREMENT_STRING = "wcdma_default_signal_strength_measurement_string";
     public static final String KEY_WCDMA_ECNO_THRESHOLDS_INT_ARRAY = "wcdma_ecno_thresholds_int_array";
     public static final String KEY_WCDMA_RSCP_THRESHOLDS_INT_ARRAY = "wcdma_rscp_thresholds_int_array";
+    public static final String KEY_WEAR_CONNECTIVITY_BT_TO_CELL_DELAY_MS_INT = "proxy_connectivity_delay_cell";
+    public static final String KEY_WEAR_CONNECTIVITY_EXTEND_BT_TO_CELL_DELAY_ON_WIFI_MS_INT = "wifi_connectivity_extend_cell_delay";
     public static final String KEY_WFC_CARRIER_NAME_OVERRIDE_BY_PNN_BOOL = "wfc_carrier_name_override_by_pnn_bool";
     public static final String KEY_WFC_DATA_SPN_FORMAT_IDX_INT = "wfc_data_spn_format_idx_int";
     public static final String KEY_WFC_EMERGENCY_ADDRESS_CARRIER_APP_STRING = "wfc_emergency_address_carrier_app_string";
@@ -607,6 +643,9 @@ public class CarrierConfigManager {
     public static final String KEY_WORLD_MODE_ENABLED_BOOL = "world_mode_enabled_bool";
     public static final String KEY_WORLD_PHONE_BOOL = "world_phone_bool";
     public static final String REMOVE_GROUP_UUID_STRING = "00000000-0000-0000-0000-000000000000";
+    public static final int SATELLITE_DATA_SUPPORT_ALL = 2;
+    public static final int SATELLITE_DATA_SUPPORT_BANDWIDTH_CONSTRAINED = 1;
+    public static final int SATELLITE_DATA_SUPPORT_ONLY_RESTRICTED = 0;
     public static final int SERVICE_CLASS_NONE = 0;
     public static final int SERVICE_CLASS_VOICE = 1;
     private static final String TAG = "CarrierConfigManager";
@@ -614,19 +653,23 @@ public class CarrierConfigManager {
     public static final int USSD_OVER_CS_PREFERRED = 0;
     public static final int USSD_OVER_IMS_ONLY = 3;
     public static final int USSD_OVER_IMS_PREFERRED = 1;
-    private static final PersistableBundle sDefaults;
+    private static final PersistableBundle sDefaults = new PersistableBundle();
     private final Context mContext;
 
-    /* loaded from: classes3.dex */
+    public @interface CARRIER_ROAMING_NTN_CONNECT_TYPE {
+    }
+
     public interface CarrierConfigChangeListener {
         void onCarrierConfigChanged(int i, int i2, int i3, int i4);
+    }
+
+    public @interface SATELLITE_DATA_SUPPORT_MODE {
     }
 
     public CarrierConfigManager(Context context) {
         this.mContext = context;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Apn {
 
         @Deprecated
@@ -637,15 +680,11 @@ public class CarrierConfigManager {
         public static final String PROTOCOL_IPV4V6 = "IPV4V6";
         public static final String PROTOCOL_IPV6 = "IPV6";
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4320$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
         private Apn() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putString(KEY_SETTINGS_DEFAULT_PROTOCOL_STRING, "");
             defaults.putString(KEY_SETTINGS_DEFAULT_ROAMING_PROTOCOL_STRING, "");
@@ -653,7 +692,6 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class OpportunisticNetwork {
         public static final String KEY_5G_BACKOFF_TIME_LONG = "opportunistic.5g_backoff_time_long";
         public static final String KEY_5G_DATA_SWITCH_EXIT_HYSTERESIS_TIME_LONG = "opportunistic.5g_data_switch_exit_hysteresis_time_long";
@@ -672,12 +710,8 @@ public class CarrierConfigManager {
         public static final String KEY_EXIT_THRESHOLD_SS_RSRQ_DOUBLE_BUNDLE = "opportunistic.exit_threshold_ss_rsrq_double_bundle";
         public static final String PREFIX = "opportunistic.";
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4333$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             CarrierConfigManager.sDefaults.putInt(KEY_ENTRY_THRESHOLD_SS_RSRP_INT, PackageManager.INSTALL_FAILED_USER_RESTRICTED);
             CarrierConfigManager.sDefaults.putPersistableBundle(KEY_ENTRY_THRESHOLD_SS_RSRP_INT_BUNDLE, PersistableBundle.EMPTY);
@@ -698,33 +732,33 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsServiceEntitlement {
+        public static final String KEY_DEFAULT_SERVICE_ENTITLEMENT_STATUS_BOOL = "imsserviceentitlement.default_service_entitlement_status_bool";
         public static final String KEY_ENTITLEMENT_SERVER_URL_STRING = "imsserviceentitlement.entitlement_server_url_string";
+        public static final String KEY_ENTITLEMENT_VERSION_INT = "imsserviceentitlement.entitlement_version_int";
         public static final String KEY_FCM_SENDER_ID_STRING = "imsserviceentitlement.fcm_sender_id_string";
         public static final String KEY_IMS_PROVISIONING_BOOL = "imsserviceentitlement.ims_provisioning_bool";
         public static final String KEY_PREFIX = "imsserviceentitlement.";
         public static final String KEY_SHOW_VOWIFI_WEBVIEW_BOOL = "imsserviceentitlement.show_vowifi_webview_bool";
-
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4326$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
+        public static final String KEY_SKIP_WFC_ACTIVATION_BOOL = "imsserviceentitlement.skip_wfc_activation_bool";
 
         private ImsServiceEntitlement() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putString(KEY_ENTITLEMENT_SERVER_URL_STRING, "");
             defaults.putString(KEY_FCM_SENDER_ID_STRING, "");
             defaults.putBoolean(KEY_SHOW_VOWIFI_WEBVIEW_BOOL, false);
             defaults.putBoolean(KEY_IMS_PROVISIONING_BOOL, false);
+            defaults.putBoolean(KEY_DEFAULT_SERVICE_ENTITLEMENT_STATUS_BOOL, false);
+            defaults.putBoolean(KEY_SKIP_WFC_ACTIVATION_BOOL, false);
+            defaults.putInt(KEY_ENTITLEMENT_VERSION_INT, 2);
             return defaults;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Gps {
         public static final String KEY_A_GLONASS_POS_PROTOCOL_SELECT_STRING = "gps.a_glonass_pos_protocol_select";
         public static final String KEY_ES_EXTENSION_SEC_STRING = "gps.es_extension_sec";
@@ -745,15 +779,11 @@ public class CarrierConfigManager {
         public static final int SUPL_EMERGENCY_MODE_TYPE_CP_ONLY = 0;
         public static final int SUPL_EMERGENCY_MODE_TYPE_DP_ONLY = 2;
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4322$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
         private Gps() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_PERSIST_LPP_MODE_BOOL, true);
             defaults.putString(KEY_SUPL_HOST_STRING, "supl.google.com");
@@ -773,7 +803,6 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Ims {
         public static final int E911_RTCP_INACTIVITY_ON_CONNECTED = 3;
         public static final int E911_RTP_INACTIVITY_ON_CONNECTED = 4;
@@ -786,6 +815,7 @@ public class CarrierConfigManager {
         public static final int IPSEC_ENCRYPTION_ALGORITHM_AES_CBC = 2;
         public static final int IPSEC_ENCRYPTION_ALGORITHM_DES_EDE3_CBC = 1;
         public static final int IPSEC_ENCRYPTION_ALGORITHM_NULL = 0;
+        public static final String KEY_ALLOW_NON_GLOBAL_PHONE_NUMBER_FORMAT_BOOL = "ims.allow_non_global_phone_number_format_bool";
         public static final String KEY_CAPABILITY_TYPE_CALL_COMPOSER_INT_ARRAY = "ims.capability_type_call_composer_int_array";
         public static final String KEY_CAPABILITY_TYPE_OPTIONS_UCE_INT_ARRAY = "ims.capability_type_options_uce_int_array";
         public static final String KEY_CAPABILITY_TYPE_PRESENCE_UCE_INT_ARRAY = "ims.capability_type_presence_uce_int_array";
@@ -836,6 +866,7 @@ public class CarrierConfigManager {
         public static final String KEY_SIP_TIMER_T1_MILLIS_INT = "ims.sip_timer_t1_millis_int";
         public static final String KEY_SIP_TIMER_T2_MILLIS_INT = "ims.sip_timer_t2_millis_int";
         public static final String KEY_SIP_TIMER_T4_MILLIS_INT = "ims.sip_timer_t4_millis_int";
+        public static final String KEY_SUBSCRIBE_RETRY_DURATION_MILLIS_LONG = "ims.subscribe_retry_duration_millis_long";
         public static final String KEY_SUPPORTED_RATS_INT_ARRAY = "ims.supported_rats_int_array";
         public static final String KEY_USE_SIP_URI_FOR_PRESENCE_SUBSCRIBE_BOOL = "ims.use_sip_uri_for_presence_subscribe_bool";
         public static final String KEY_USE_TEL_URI_FOR_PIDF_XML_BOOL = "ims.use_tel_uri_for_pidf_xml";
@@ -856,47 +887,35 @@ public class CarrierConfigManager {
         public static final int RTCP_INACTIVITY_ON_HOLD = 0;
         public static final int RTP_INACTIVITY_ON_CONNECTED = 2;
 
-        /* loaded from: classes3.dex */
         public @interface GeolocationPidfAllowedType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface IpsecAuthenticationAlgorithmType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface IpsecEncryptionAlgorithmType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface MediaInactivityReason {
         }
 
-        /* loaded from: classes3.dex */
         public @interface NetworkType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface NrSaDisablePolicy {
         }
 
-        /* loaded from: classes3.dex */
         public @interface PreferredTransportType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface RequestUriFormatType {
-        }
-
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4323$$Nest$smgetDefaults() {
-            return getDefaults();
         }
 
         private Ims() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putInt(KEY_WIFI_OFF_DEFERRING_TIME_MILLIS_INT, 4000);
             defaults.putBoolean(KEY_IMS_SINGLE_REGISTRATION_REQUIRED_BOOL, false);
@@ -905,11 +924,12 @@ public class CarrierConfigManager {
             defaults.putBoolean(KEY_ENABLE_PRESENCE_CAPABILITY_EXCHANGE_BOOL, false);
             defaults.putBoolean(KEY_RCS_BULK_CAPABILITY_EXCHANGE_BOOL, false);
             defaults.putBoolean(KEY_ENABLE_PRESENCE_GROUP_SUBSCRIBE_BOOL, false);
+            defaults.putLong(KEY_SUBSCRIBE_RETRY_DURATION_MILLIS_LONG, -1L);
             defaults.putBoolean(KEY_USE_SIP_URI_FOR_PRESENCE_SUBSCRIBE_BOOL, false);
             defaults.putInt(KEY_NON_RCS_CAPABILITIES_CACHE_EXPIRATION_SEC_INT, 2592000);
             defaults.putBoolean(KEY_RCS_REQUEST_FORBIDDEN_BY_SIP_489_BOOL, false);
             defaults.putLong(KEY_RCS_REQUEST_RETRY_INTERVAL_MILLIS_LONG, 1200000L);
-            defaults.putStringArray(KEY_RCS_FEATURE_TAG_ALLOWED_STRING_ARRAY, new String[]{"+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.msg\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.largemsg\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.deferred\"", "+g.gsma.rcs.cpm.pager-large", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.session\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.filetransfer\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.fthttp\"", SemCapabilities.FEATURE_TAG_FT_VIA_SMS, "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.callcomposer\"", "+g.gsma.callcomposer", SemCapabilities.FEATURE_TAG_ENRICHED_POST_CALL, SemCapabilities.FEATURE_TAG_ENRICHED_SHARED_MAP, SemCapabilities.FEATURE_TAG_ENRICHED_SHARED_SKETCH, "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.geopush\"", SemCapabilities.FEATURE_TAG_GEO_VIA_SMS, SemCapabilities.FEATURE_TAG_CHATBOT_CHAT_SESSION, "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.chatbot.sa\"", "+g.gsma.rcs.botversion=\"#=1,#=2\"", "+g.gsma.rcs.cpimext"});
+            defaults.putStringArray(KEY_RCS_FEATURE_TAG_ALLOWED_STRING_ARRAY, new String[]{"+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.msg\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.largemsg\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.deferred\"", "+g.gsma.rcs.cpm.pager-large", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.session\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.filetransfer\"", CapInfo.FILE_TRANSFER_HTTP, "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.ftsms\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.callcomposer\"", CapInfo.MMTEL_CALLCOMPOSER, "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.callunanswered\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.sharedmap\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.sharedsketch\"", CapInfo.GEOPUSH, "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.geosms\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.chatbot\"", CapInfo.STANDALONE_CHATBOT, "+g.gsma.rcs.botversion=\"#=1,#=2\"", "+g.gsma.rcs.cpimext"});
             defaults.putPersistableBundle(KEY_MMTEL_REQUIRES_PROVISIONING_BUNDLE, new PersistableBundle());
             defaults.putPersistableBundle(KEY_RCS_REQUIRES_PROVISIONING_BUNDLE, new PersistableBundle());
             defaults.putBoolean(KEY_GRUU_ENABLED_BOOL, false);
@@ -918,7 +938,7 @@ public class CarrierConfigManager {
             defaults.putBoolean(KEY_REGISTRATION_EVENT_PACKAGE_SUPPORTED_BOOL, true);
             defaults.putInt(KEY_SIP_TIMER_T1_MILLIS_INT, 2000);
             defaults.putInt(KEY_SIP_TIMER_T2_MILLIS_INT, 16000);
-            defaults.putInt(KEY_SIP_TIMER_T4_MILLIS_INT, 17000);
+            defaults.putInt(KEY_SIP_TIMER_T4_MILLIS_INT, EncodeConstants.BitRate.MM_BITRATE_AVC_FHD_30);
             defaults.putInt(KEY_SIP_TIMER_B_MILLIS_INT, 128000);
             defaults.putInt(KEY_SIP_TIMER_C_MILLIS_INT, 210000);
             defaults.putInt(KEY_SIP_TIMER_D_MILLIS_INT, SemDualAppManager.SepVersionInt.SEP_VER_13_0_INT);
@@ -943,11 +963,11 @@ public class CarrierConfigManager {
             defaults.putIntArray(KEY_SUPPORTED_RATS_INT_ARRAY, new int[]{6, 3, 5});
             defaults.putString(KEY_PHONE_CONTEXT_DOMAIN_NAME_STRING, "");
             defaults.putString(KEY_IMS_USER_AGENT_STRING, "#MANUFACTURER#_#MODEL#_Android#AV#_#BUILD#");
+            defaults.putBoolean(KEY_ALLOW_NON_GLOBAL_PHONE_NUMBER_FORMAT_BOOL, false);
             return defaults;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsVoice {
         public static final int ALERTING_SRVCC_SUPPORT = 1;
         public static final int BANDWIDTH_EFFICIENT = 0;
@@ -1042,51 +1062,38 @@ public class CarrierConfigManager {
         public static final int SESSION_REFRESH_METHOD_INVITE = 0;
         public static final int SESSION_REFRESH_METHOD_UPDATE_PREFERRED = 1;
 
-        /* loaded from: classes3.dex */
         public @interface AmrPayloadFormat {
         }
 
-        /* loaded from: classes3.dex */
         public @interface ConferenceSubscribeType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface EvsEncodedBwType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface EvsOperationalMode {
         }
 
-        /* loaded from: classes3.dex */
         public @interface EvsPrimaryModeBitRate {
         }
 
-        /* loaded from: classes3.dex */
         public @interface SessionPrivacyType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface SessionRefreshMethod {
         }
 
-        /* loaded from: classes3.dex */
         public @interface SessionRefresherType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface SrvccType {
-        }
-
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4329$$Nest$smgetDefaults() {
-            return getDefaults();
         }
 
         private ImsVoice() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_CARRIER_VOLTE_ROAMING_AVAILABLE_BOOL, true);
             defaults.putBoolean(KEY_INCLUDE_CALLER_ID_SERVICE_CODES_IN_SIP_INVITE_BOOL, false);
@@ -1141,7 +1148,6 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsSms {
         public static final String KEY_PREFIX = "imssms.";
         public static final String KEY_SMS_CSFB_RETRY_ON_FAILURE_BOOL = "imssms.sms_csfb_retry_on_failure_bool";
@@ -1158,19 +1164,14 @@ public class CarrierConfigManager {
         public static final int SMS_FORMAT_3GPP = 0;
         public static final int SMS_FORMAT_3GPP2 = 1;
 
-        /* loaded from: classes3.dex */
         public @interface SmsFormat {
-        }
-
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4327$$Nest$smgetDefaults() {
-            return getDefaults();
         }
 
         private ImsSms() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_SMS_OVER_IMS_SUPPORTED_BOOL, true);
             defaults.putBoolean(KEY_SMS_CSFB_RETRY_ON_FAILURE_BOOL, true);
@@ -1187,7 +1188,6 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsRtt {
         public static final String KEY_PREFIX = "imsrtt.";
         public static final String KEY_RED_PAYLOAD_TYPE_INT = "imsrtt.red_payload_type_int";
@@ -1199,15 +1199,11 @@ public class CarrierConfigManager {
         public static final String KEY_TEXT_RR_BANDWIDTH_BPS_INT = "imsrtt.text_rr_bandwidth_bps_int";
         public static final String KEY_TEXT_RS_BANDWIDTH_BPS_INT = "imsrtt.text_rs_bandwidth_bps_int";
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4325$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
         private ImsRtt() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_TEXT_ON_DEFAULT_BEARER_SUPPORTED_BOOL, false);
             defaults.putBoolean(KEY_TEXT_QOS_PRECONDITION_SUPPORTED_BOOL, true);
@@ -1222,7 +1218,6 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsEmergency {
         public static final int DOMAIN_CS = 1;
         public static final int DOMAIN_PS_3GPP = 2;
@@ -1246,6 +1241,7 @@ public class CarrierConfigManager {
         public static final String KEY_EMERGENCY_REQUIRES_VOLTE_ENABLED_BOOL = "imsemergency.emergency_requires_volte_enabled_bool";
         public static final String KEY_EMERGENCY_SCAN_TIMER_SEC_INT = "imsemergency.emergency_scan_timer_sec_int";
         public static final String KEY_EMERGENCY_VOWIFI_REQUIRES_CONDITION_INT = "imsemergency.emergency_vowifi_requires_condition_int";
+        public static final String KEY_IMS_REASONINFO_CODE_TO_RETRY_EMERGENCY_INT_ARRAY = "imsemergency.ims_reasoninfo_code_to_retry_emergency_int_array";
         public static final String KEY_MAXIMUM_CELLULAR_SEARCH_TIMER_SEC_INT = "imsemergency.maximum_cellular_search_timer_sec_int";
         public static final String KEY_MAXIMUM_NUMBER_OF_EMERGENCY_TRIES_OVER_VOWIFI_INT = "imsemergency.maximum_number_of_emergency_tries_over_vowifi_int";
         public static final String KEY_PREFER_IMS_EMERGENCY_WHEN_VOICE_CALLS_ON_CS_BOOL = "imsemergency.prefer_ims_emergency_when_voice_calls_on_cs_bool";
@@ -1253,6 +1249,7 @@ public class CarrierConfigManager {
         public static final String KEY_QUICK_CROSS_STACK_REDIAL_TIMER_SEC_INT = "imsemergency.quick_cross_stack_redial_timer_sec_int";
         public static final String KEY_REFRESH_GEOLOCATION_TIMEOUT_MILLIS_INT = "imsemergency.refresh_geolocation_timeout_millis_int";
         public static final String KEY_RETRY_EMERGENCY_ON_IMS_PDN_BOOL = "imsemergency.retry_emergency_on_ims_pdn_bool";
+        public static final String KEY_SCAN_LIMITED_SERVICE_AFTER_VOLTE_FAILURE_BOOL = "imsemergency.scan_limited_service_after_volte_failure_bool";
         public static final String KEY_START_QUICK_CROSS_STACK_REDIAL_TIMER_WHEN_REGISTERED_BOOL = "imsemergency.start_quick_cross_stack_redial_timer_when_registered_bool";
         public static final int REDIAL_TIMER_DISABLED = 0;
         public static final int SCAN_TYPE_FULL_SERVICE = 1;
@@ -1262,27 +1259,20 @@ public class CarrierConfigManager {
         public static final int VOWIFI_REQUIRES_SETTING_ENABLED = 1;
         public static final int VOWIFI_REQUIRES_VALID_EID = 2;
 
-        /* loaded from: classes3.dex */
         public @interface EmergencyDomain {
         }
 
-        /* loaded from: classes3.dex */
         public @interface EmergencyScanType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface VoWiFiRequires {
-        }
-
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4324$$Nest$smgetDefaults() {
-            return getDefaults();
         }
 
         private ImsEmergency() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_RETRY_EMERGENCY_ON_IMS_PDN_BOOL, false);
             defaults.putBoolean(KEY_EMERGENCY_CALLBACK_MODE_SUPPORTED_BOOL, false);
@@ -1310,11 +1300,12 @@ public class CarrierConfigManager {
             defaults.putInt(KEY_CROSS_STACK_REDIAL_TIMER_SEC_INT, 120);
             defaults.putInt(KEY_QUICK_CROSS_STACK_REDIAL_TIMER_SEC_INT, 0);
             defaults.putBoolean(KEY_START_QUICK_CROSS_STACK_REDIAL_TIMER_WHEN_REGISTERED_BOOL, true);
+            defaults.putBoolean(KEY_SCAN_LIMITED_SERVICE_AFTER_VOLTE_FAILURE_BOOL, false);
+            defaults.putIntArray(KEY_IMS_REASONINFO_CODE_TO_RETRY_EMERGENCY_INT_ARRAY, new int[0]);
             return defaults;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsVt {
         public static final String KEY_H264_PAYLOAD_DESCRIPTION_BUNDLE = "imsvt.h264_payload_description_bundle";
         public static final String KEY_H264_PAYLOAD_TYPE_INT_ARRAY = "imsvt.h264_payload_type_int_array";
@@ -1333,15 +1324,11 @@ public class CarrierConfigManager {
         public static final String KEY_VIDEO_RTP_DSCP_INT = "imsvt.video_rtp_dscp_int";
         public static final String KEY_VIDEO_RTP_INACTIVITY_TIMER_MILLIS_INT = "imsvt.video_rtp_inactivity_timer_millis_int";
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4330$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
         private ImsVt() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_VIDEO_ON_DEFAULT_BEARER_SUPPORTED_BOOL, false);
             defaults.putBoolean(KEY_VIDEO_QOS_PRECONDITION_SUPPORTED_BOOL, true);
@@ -1365,21 +1352,16 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsWfc {
         public static final String KEY_EMERGENCY_CALL_OVER_EMERGENCY_PDN_BOOL = "imswfc.emergency_call_over_emergency_pdn_bool";
         public static final String KEY_PIDF_SHORT_CODE_STRING_ARRAY = "imswfc.pidf_short_code_string_array";
         public static final String KEY_PREFIX = "imswfc.";
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4331$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
         private ImsWfc() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_EMERGENCY_CALL_OVER_EMERGENCY_PDN_BOOL, false);
             defaults.putStringArray(KEY_PIDF_SHORT_CODE_STRING_ARRAY, new String[0]);
@@ -1387,7 +1369,6 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImsSs {
         public static final int CALL_WAITING_SYNC_FIRST_CHANGE = 3;
         public static final int CALL_WAITING_SYNC_FIRST_POWER_UP = 2;
@@ -1434,23 +1415,17 @@ public class CarrierConfigManager {
         public static final int SUPPLEMENTARY_SERVICE_IDENTIFICATION_TIP = 9;
         public static final int SUPPLEMENTARY_SERVICE_IDENTIFICATION_TIR = 11;
 
-        /* loaded from: classes3.dex */
         public @interface CwSyncType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface SsType {
-        }
-
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4328$$Nest$smgetDefaults() {
-            return getDefaults();
         }
 
         private ImsSs() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putBoolean(KEY_UT_REQUIRES_IMS_REGISTRATION_BOOL, false);
             defaults.putBoolean(KEY_USE_CSFB_ON_XCAP_OVER_UT_FAILURE_BOOL, true);
@@ -1471,22 +1446,17 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Bsf {
         public static final String KEY_BSF_SERVER_FQDN_STRING = "bsf.bsf_server_fqdn_string";
         public static final String KEY_BSF_SERVER_PORT_INT = "bsf.bsf_server_port_int";
         public static final String KEY_BSF_TRANSPORT_TYPE_INT = "bsf.bsf_transport_type_int";
         public static final String KEY_PREFIX = "bsf.";
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4321$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
         private Bsf() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putInt(KEY_BSF_SERVER_PORT_INT, 80);
             defaults.putInt(KEY_BSF_TRANSPORT_TYPE_INT, 1);
@@ -1495,7 +1465,6 @@ public class CarrierConfigManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Iwlan {
         public static final int AUTHENTICATION_METHOD_CERT = 1;
         public static final int AUTHENTICATION_METHOD_EAP_ONLY = 0;
@@ -1521,6 +1490,7 @@ public class CarrierConfigManager {
         public static final String KEY_CHILD_SA_REKEY_SOFT_TIMER_SEC_INT = "iwlan.child_sa_rekey_soft_timer_sec_int";
         public static final String KEY_CHILD_SESSION_AES_CBC_KEY_SIZE_INT_ARRAY = "iwlan.child_session_aes_cbc_key_size_int_array";
         public static final String KEY_CHILD_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY = "iwlan.child_session_aes_ctr_key_size_int_array";
+        public static final String KEY_CHILD_SESSION_AES_GCM_KEY_SIZE_INT_ARRAY = "iwlan.child_session_aes_gcm_key_size_int_array";
         public static final String KEY_DIFFIE_HELLMAN_GROUPS_INT_ARRAY = "iwlan.diffie_hellman_groups_int_array";
         public static final String KEY_DPD_TIMER_SEC_INT = "iwlan.dpd_timer_sec_int";
         public static final String KEY_EPDG_ADDRESS_IP_TYPE_PREFERENCE_INT = "iwlan.epdg_address_ip_type_preference_int";
@@ -1537,57 +1507,57 @@ public class CarrierConfigManager {
         public static final String KEY_IKE_REMOTE_ID_TYPE_INT = "iwlan.ike_remote_id_type_int";
         public static final String KEY_IKE_SESSION_AES_CBC_KEY_SIZE_INT_ARRAY = "iwlan.ike_session_encryption_aes_cbc_key_size_int_array";
         public static final String KEY_IKE_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY = "iwlan.ike_session_encryption_aes_ctr_key_size_int_array";
+        public static final String KEY_IKE_SESSION_AES_GCM_KEY_SIZE_INT_ARRAY = "iwlan.ike_session_encryption_aes_gcm_key_size_int_array";
         public static final String KEY_MAX_RETRIES_INT = "iwlan.max_retries_int";
         public static final String KEY_MCC_MNCS_STRING_ARRAY = "iwlan.mcc_mncs_string_array";
         public static final String KEY_NATT_KEEP_ALIVE_TIMER_SEC_INT = "iwlan.natt_keep_alive_timer_sec_int";
         public static final String KEY_PREFIX = "iwlan.";
         public static final String KEY_RETRANSMIT_TIMER_MSEC_INT_ARRAY = "iwlan.retransmit_timer_sec_int_array";
+        public static final String KEY_SUPPORTED_CHILD_SESSION_AEAD_ALGORITHMS_INT_ARRAY = "iwlan.supported_child_session_aead_algorithms_int_array";
         public static final String KEY_SUPPORTED_CHILD_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY = "iwlan.supported_child_session_encryption_algorithms_int_array";
+        public static final String KEY_SUPPORTED_IKE_SESSION_AEAD_ALGORITHMS_INT_ARRAY = "iwlan.supported_ike_session_aead_algorithms_int_array";
         public static final String KEY_SUPPORTED_IKE_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY = "iwlan.supported_ike_session_encryption_algorithms_int_array";
         public static final String KEY_SUPPORTED_INTEGRITY_ALGORITHMS_INT_ARRAY = "iwlan.supported_integrity_algorithms_int_array";
         public static final String KEY_SUPPORTED_PRF_ALGORITHMS_INT_ARRAY = "iwlan.supported_prf_algorithms_int_array";
+        public static final String KEY_SUPPORTS_CHILD_SESSION_MULTIPLE_SA_PROPOSALS_BOOL = "iwlan.supports_child_session_multiple_sa_proposals_bool";
         public static final String KEY_SUPPORTS_EAP_AKA_FAST_REAUTH_BOOL = "iwlan.supports_eap_aka_fast_reauth_bool";
+        public static final String KEY_SUPPORTS_IKE_SESSION_MULTIPLE_SA_PROPOSALS_BOOL = "iwlan.supports_ike_session_multiple_sa_proposals_bool";
 
-        /* loaded from: classes3.dex */
         public @interface AuthenticationMethodType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface EpdgAddressIpPreference {
         }
 
-        /* loaded from: classes3.dex */
         public @interface EpdgAddressPlmnType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface EpdgAddressType {
         }
 
-        /* loaded from: classes3.dex */
         public @interface IkeIdType {
-        }
-
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4332$$Nest$smgetDefaults() {
-            return getDefaults();
         }
 
         private Iwlan() {
         }
 
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putInt(KEY_IKE_REKEY_SOFT_TIMER_SEC_INT, 7200);
             defaults.putInt(KEY_IKE_REKEY_HARD_TIMER_SEC_INT, 14400);
             defaults.putInt(KEY_CHILD_SA_REKEY_SOFT_TIMER_SEC_INT, 3600);
             defaults.putInt(KEY_CHILD_SA_REKEY_HARD_TIMER_SEC_INT, 7200);
+            defaults.putBoolean(KEY_SUPPORTS_IKE_SESSION_MULTIPLE_SA_PROPOSALS_BOOL, false);
+            defaults.putBoolean(KEY_SUPPORTS_CHILD_SESSION_MULTIPLE_SA_PROPOSALS_BOOL, false);
             defaults.putIntArray(KEY_RETRANSMIT_TIMER_MSEC_INT_ARRAY, new int[]{500, 1000, 2000, 4000, 8000});
             defaults.putInt(KEY_DPD_TIMER_SEC_INT, 120);
             defaults.putInt(KEY_MAX_RETRIES_INT, 3);
             defaults.putIntArray(KEY_DIFFIE_HELLMAN_GROUPS_INT_ARRAY, new int[]{2, 5, 14});
             defaults.putIntArray(KEY_SUPPORTED_IKE_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY, new int[]{12});
+            defaults.putIntArray(KEY_SUPPORTED_IKE_SESSION_AEAD_ALGORITHMS_INT_ARRAY, new int[0]);
             defaults.putIntArray(KEY_SUPPORTED_CHILD_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY, new int[]{12});
+            defaults.putIntArray(KEY_SUPPORTED_CHILD_SESSION_AEAD_ALGORITHMS_INT_ARRAY, new int[0]);
             defaults.putIntArray(KEY_SUPPORTED_INTEGRITY_ALGORITHMS_INT_ARRAY, new int[]{5, 2, 12, 13, 14});
             defaults.putIntArray(KEY_SUPPORTED_PRF_ALGORITHMS_INT_ARRAY, new int[]{2, 4, 5, 6, 7});
             defaults.putInt(KEY_EPDG_AUTHENTICATION_METHOD_INT, 0);
@@ -1598,6 +1568,8 @@ public class CarrierConfigManager {
             defaults.putIntArray(KEY_CHILD_SESSION_AES_CBC_KEY_SIZE_INT_ARRAY, new int[]{128, 192, 256});
             defaults.putIntArray(KEY_IKE_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY, new int[]{128, 192, 256});
             defaults.putIntArray(KEY_CHILD_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY, new int[]{128, 192, 256});
+            defaults.putIntArray(KEY_IKE_SESSION_AES_GCM_KEY_SIZE_INT_ARRAY, new int[0]);
+            defaults.putIntArray(KEY_CHILD_SESSION_AES_GCM_KEY_SIZE_INT_ARRAY, new int[0]);
             defaults.putIntArray(KEY_EPDG_ADDRESS_PRIORITY_INT_ARRAY, new int[]{1, 0});
             defaults.putIntArray(KEY_EPDG_PLMN_PRIORITY_INT_ARRAY, new int[]{0, 1, 2});
             defaults.putStringArray(KEY_MCC_MNCS_STRING_ARRAY, new String[0]);
@@ -1613,526 +1585,567 @@ public class CarrierConfigManager {
     }
 
     static {
-        PersistableBundle persistableBundle = new PersistableBundle();
-        sDefaults = persistableBundle;
-        persistableBundle.putString(KEY_CARRIER_CONFIG_VERSION_STRING, "");
-        persistableBundle.putBoolean(KEY_ALLOW_HOLD_IN_IMS_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_CARRIER_ALLOW_DEFLECT_IMS_CALL_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_ALLOW_TRANSFER_IMS_CALL_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALWAYS_PLAY_REMOTE_HOLD_TONE_BOOL, false);
-        persistableBundle.putBoolean(KEY_AUTO_RETRY_FAILED_WIFI_EMERGENCY_CALL, false);
-        persistableBundle.putBoolean(KEY_ADDITIONAL_CALL_SETTING_BOOL, true);
-        persistableBundle.putBoolean(KEY_ALLOW_EMERGENCY_NUMBERS_IN_CALL_LOG_BOOL, false);
-        persistableBundle.putStringArray(KEY_UNLOGGABLE_NUMBERS_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_ALLOW_LOCAL_DTMF_TONES_BOOL, true);
-        persistableBundle.putBoolean(KEY_PLAY_CALL_RECORDING_TONE_BOOL, false);
-        persistableBundle.putBoolean(KEY_APN_EXPAND_BOOL, true);
-        persistableBundle.putBoolean(KEY_AUTO_RETRY_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_SETTINGS_ENABLE_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_VOLTE_AVAILABLE_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_VT_AVAILABLE_BOOL, false);
-        persistableBundle.putInt(KEY_CARRIER_USSD_METHOD_INT, 0);
-        persistableBundle.putBoolean(KEY_VOLTE_5G_LIMITED_ALERT_DIALOG_BOOL, false);
-        persistableBundle.putBoolean(KEY_NOTIFY_HANDOVER_VIDEO_FROM_WIFI_TO_LTE_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALLOW_MERGING_RTT_CALLS_BOOL, false);
-        persistableBundle.putBoolean(KEY_NOTIFY_HANDOVER_VIDEO_FROM_LTE_TO_WIFI_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_DOWNGRADE_VT_TO_AUDIO_BOOL, true);
-        persistableBundle.putString(KEY_DEFAULT_VM_NUMBER_STRING, "");
-        persistableBundle.putString(KEY_DEFAULT_VM_NUMBER_ROAMING_STRING, "");
-        persistableBundle.putString(KEY_DEFAULT_VM_NUMBER_ROAMING_AND_IMS_UNREGISTERED_STRING, "");
-        persistableBundle.putBoolean(KEY_CONFIG_TELEPHONY_USE_OWN_NUMBER_FOR_VOICEMAIL_BOOL, false);
-        persistableBundle.putBoolean(KEY_IGNORE_DATA_ENABLED_CHANGED_FOR_VIDEO_CALLS, true);
-        persistableBundle.putBoolean(KEY_VILTE_DATA_IS_METERED_BOOL, true);
-        persistableBundle.putBoolean(KEY_CARRIER_WFC_IMS_AVAILABLE_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_CROSS_SIM_IMS_AVAILABLE_BOOL, false);
-        persistableBundle.putBoolean(KEY_ENABLE_CROSS_SIM_CALLING_ON_OPPORTUNISTIC_DATA_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_WFC_SUPPORTS_WIFI_ONLY_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_DEFAULT_WFC_IMS_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_DEFAULT_WFC_IMS_ROAMING_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_PROMOTE_WFC_ON_CALL_FAIL_BOOL, false);
-        persistableBundle.putInt(KEY_CARRIER_DEFAULT_WFC_IMS_MODE_INT, 2);
-        persistableBundle.putInt(KEY_CARRIER_DEFAULT_WFC_IMS_ROAMING_MODE_INT, 2);
-        persistableBundle.putBoolean(KEY_CARRIER_FORCE_DISABLE_ETWS_CMAS_TEST_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_RCS_PROVISIONING_REQUIRED_BOOL, true);
-        persistableBundle.putBoolean(KEY_CARRIER_VOLTE_PROVISIONING_REQUIRED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_UT_PROVISIONING_REQUIRED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_SUPPORTS_SS_OVER_UT_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_VOLTE_OVERRIDE_WFC_PROVISIONING_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_VOLTE_TTY_SUPPORTED_BOOL, true);
-        persistableBundle.putBoolean(KEY_CARRIER_VOWIFI_TTY_SUPPORTED_BOOL, true);
-        persistableBundle.putBoolean(KEY_CARRIER_ALLOW_TURNOFF_IMS_BOOL, true);
-        persistableBundle.putBoolean(KEY_CARRIER_IMS_GBA_REQUIRED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_INSTANT_LETTERING_AVAILABLE_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_USE_IMS_FIRST_FOR_EMERGENCY_BOOL, true);
-        persistableBundle.putBoolean(KEY_USE_ONLY_DIALED_SIM_ECC_LIST_BOOL, false);
-        persistableBundle.putString(KEY_CARRIER_NETWORK_SERVICE_WWAN_PACKAGE_OVERRIDE_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_NETWORK_SERVICE_WLAN_PACKAGE_OVERRIDE_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_QUALIFIED_NETWORKS_SERVICE_PACKAGE_OVERRIDE_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_DATA_SERVICE_WWAN_PACKAGE_OVERRIDE_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_DATA_SERVICE_WLAN_PACKAGE_OVERRIDE_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_INSTANT_LETTERING_INVALID_CHARS_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_INSTANT_LETTERING_ESCAPED_CHARS_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_INSTANT_LETTERING_ENCODING_STRING, "");
-        persistableBundle.putInt(KEY_CARRIER_INSTANT_LETTERING_LENGTH_LIMIT_INT, 64);
-        persistableBundle.putBoolean(KEY_DISABLE_CDMA_ACTIVATION_CODE_BOOL, false);
-        persistableBundle.putBoolean(KEY_DTMF_TYPE_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_ENABLE_DIALER_KEY_VIBRATION_BOOL, true);
-        persistableBundle.putBoolean(KEY_HAS_IN_CALL_NOISE_SUPPRESSION_BOOL, false);
-        persistableBundle.putBoolean(KEY_HIDE_CARRIER_NETWORK_SETTINGS_BOOL, false);
-        persistableBundle.putBoolean(KEY_ONLY_AUTO_SELECT_IN_HOME_NETWORK_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_SINGLE_OPERATOR_ROW_IN_CHOOSE_NETWORK_SETTING_BOOL, true);
-        persistableBundle.putBoolean(KEY_SHOW_SPN_FOR_HOME_IN_CHOOSE_NETWORK_SETTING_BOOL, false);
-        persistableBundle.putBoolean(KEY_SIMPLIFIED_NETWORK_SETTINGS_BOOL, false);
-        persistableBundle.putBoolean(KEY_HIDE_SIM_LOCK_SETTINGS_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_VOLTE_PROVISIONED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CALL_BARRING_VISIBILITY_BOOL, false);
-        persistableBundle.putBoolean(KEY_CALL_BARRING_SUPPORTS_PASSWORD_CHANGE_BOOL, true);
-        persistableBundle.putBoolean(KEY_CALL_BARRING_SUPPORTS_DEACTIVATE_ALL_BOOL, true);
-        persistableBundle.putInt(KEY_CALL_BARRING_DEFAULT_SERVICE_CLASS_INT, 1);
-        persistableBundle.putBoolean(KEY_SUPPORT_SS_OVER_CDMA_BOOL, false);
-        persistableBundle.putBoolean(KEY_CALL_FORWARDING_VISIBILITY_BOOL, true);
-        persistableBundle.putBoolean(KEY_CALL_FORWARDING_WHEN_UNREACHABLE_SUPPORTED_BOOL, true);
-        persistableBundle.putBoolean(KEY_CALL_FORWARDING_WHEN_UNANSWERED_SUPPORTED_BOOL, true);
-        persistableBundle.putBoolean(KEY_CALL_FORWARDING_WHEN_BUSY_SUPPORTED_BOOL, true);
-        persistableBundle.putBoolean(KEY_ADDITIONAL_SETTINGS_CALLER_ID_VISIBILITY_BOOL, true);
-        persistableBundle.putBoolean(KEY_ADDITIONAL_SETTINGS_CALL_WAITING_VISIBILITY_BOOL, true);
-        persistableBundle.putBoolean(KEY_DISABLE_SUPPLEMENTARY_SERVICES_IN_AIRPLANE_MODE_BOOL, false);
-        persistableBundle.putBoolean(KEY_IGNORE_SIM_NETWORK_LOCKED_EVENTS_BOOL, false);
-        persistableBundle.putBoolean(KEY_MDN_IS_ADDITIONAL_VOICEMAIL_NUMBER_BOOL, false);
-        persistableBundle.putBoolean(KEY_OPERATOR_SELECTION_EXPAND_BOOL, true);
-        persistableBundle.putBoolean(KEY_PREFER_2G_BOOL, false);
-        persistableBundle.putBoolean(KEY_4G_ONLY_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_APN_SETTING_CDMA_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_CDMA_CHOICES_BOOL, false);
-        persistableBundle.putBoolean(KEY_SMS_REQUIRES_DESTINATION_NUMBER_CONVERSION_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_EMERGENCY_SMS_OVER_IMS_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_ONSCREEN_DIAL_BUTTON_BOOL, true);
-        persistableBundle.putBoolean(KEY_SIM_NETWORK_UNLOCK_ALLOW_DISMISS_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORT_PAUSE_IMS_VIDEO_CALLS_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_SWAP_AFTER_MERGE_BOOL, true);
-        persistableBundle.putBoolean(KEY_USE_HFA_FOR_PROVISIONING_BOOL, false);
-        persistableBundle.putBoolean(KEY_EDITABLE_VOICEMAIL_NUMBER_SETTING_BOOL, true);
-        persistableBundle.putBoolean(KEY_EDITABLE_VOICEMAIL_NUMBER_BOOL, false);
-        persistableBundle.putBoolean(KEY_USE_OTASP_FOR_PROVISIONING_BOOL, false);
-        persistableBundle.putBoolean(KEY_VOICEMAIL_NOTIFICATION_PERSISTENT_BOOL, false);
-        persistableBundle.putBoolean(KEY_VOICE_PRIVACY_DISABLE_UI_BOOL, false);
-        persistableBundle.putBoolean(KEY_WORLD_PHONE_BOOL, false);
-        persistableBundle.putBoolean(KEY_REQUIRE_ENTITLEMENT_CHECKS_BOOL, true);
-        persistableBundle.putBoolean(KEY_CARRIER_SUPPORTS_TETHERING_BOOL, true);
-        persistableBundle.putBoolean(KEY_RESTART_RADIO_ON_PDP_FAIL_REGULAR_DEACTIVATION_BOOL, false);
-        persistableBundle.putIntArray(KEY_RADIO_RESTART_FAILURE_CAUSES_INT_ARRAY, new int[0]);
-        persistableBundle.putInt(KEY_VOLTE_REPLACEMENT_RAT_INT, 0);
-        persistableBundle.putString(KEY_DEFAULT_SIM_CALL_MANAGER_STRING, "");
-        persistableBundle.putString(KEY_VVM_DESTINATION_NUMBER_STRING, "");
-        persistableBundle.putInt(KEY_VVM_PORT_NUMBER_INT, 0);
-        persistableBundle.putString(KEY_VVM_TYPE_STRING, "");
-        persistableBundle.putBoolean(KEY_VVM_CELLULAR_DATA_REQUIRED_BOOL, false);
-        persistableBundle.putString(KEY_VVM_CLIENT_PREFIX_STRING, VisualVoicemailSmsFilterSettings.DEFAULT_CLIENT_PREFIX);
-        persistableBundle.putBoolean(KEY_VVM_SSL_ENABLED_BOOL, false);
-        persistableBundle.putStringArray(KEY_VVM_DISABLED_CAPABILITIES_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_VVM_LEGACY_MODE_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_VVM_PREFETCH_BOOL, true);
-        persistableBundle.putString(KEY_CARRIER_VVM_PACKAGE_NAME_STRING, "");
-        persistableBundle.putStringArray(KEY_CARRIER_VVM_PACKAGE_NAME_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_SHOW_ICCID_IN_SIM_STATUS_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_SIGNAL_STRENGTH_IN_SIM_STATUS_BOOL, true);
-        persistableBundle.putBoolean(KEY_INFLATE_SIGNAL_STRENGTH_BOOL, false);
-        persistableBundle.putBoolean(KEY_CI_ACTION_ON_SYS_UPDATE_BOOL, false);
-        persistableBundle.putString(KEY_CI_ACTION_ON_SYS_UPDATE_INTENT_STRING, "");
-        persistableBundle.putString(KEY_CI_ACTION_ON_SYS_UPDATE_EXTRA_STRING, "");
-        persistableBundle.putString(KEY_CI_ACTION_ON_SYS_UPDATE_EXTRA_VAL_STRING, "");
-        persistableBundle.putBoolean(KEY_CSP_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALLOW_ADDING_APNS_BOOL, true);
-        persistableBundle.putStringArray(KEY_READ_ONLY_APN_TYPES_STRING_ARRAY, new String[]{"dun"});
-        persistableBundle.putStringArray(KEY_READ_ONLY_APN_FIELDS_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_APN_SETTINGS_DEFAULT_APN_TYPES_STRING_ARRAY, null);
-        persistableBundle.putAll(Apn.m4320$$Nest$smgetDefaults());
-        persistableBundle.putBoolean(KEY_BROADCAST_EMERGENCY_CALL_STATE_CHANGES_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALWAYS_SHOW_EMERGENCY_ALERT_ONOFF_BOOL, false);
-        persistableBundle.putInt(KEY_DEFAULT_MTU_INT, 1500);
-        persistableBundle.putLong(KEY_CARRIER_DATA_CALL_APN_RETRY_AFTER_DISCONNECT_LONG, TelecomManager.VERY_SHORT_CALL_TIME_MS);
-        persistableBundle.putString(KEY_CARRIER_ERI_FILE_NAME_STRING, "eri.xml");
-        persistableBundle.putInt(KEY_DURATION_BLOCKING_DISABLED_AFTER_EMERGENCY_INT, 7200);
-        persistableBundle.putStringArray(KEY_CARRIER_METERED_APN_TYPES_STRINGS, new String[]{"default", "mms", "dun", "supl"});
-        persistableBundle.putStringArray(KEY_CARRIER_METERED_ROAMING_APN_TYPES_STRINGS, new String[]{"default", "mms", "dun", "supl"});
-        persistableBundle.putIntArray(KEY_ONLY_SINGLE_DC_ALLOWED_INT_ARRAY, new int[]{4, 7, 5, 6, 12});
-        persistableBundle.putIntArray(KEY_CAPABILITIES_EXEMPT_FROM_SINGLE_DC_CHECK_INT_ARRAY, new int[]{4});
-        persistableBundle.putStringArray(KEY_GSM_ROAMING_NETWORKS_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_GSM_NONROAMING_NETWORKS_STRING_ARRAY, null);
-        persistableBundle.putString(KEY_CONFIG_IMS_PACKAGE_OVERRIDE_STRING, null);
-        persistableBundle.putString(KEY_CONFIG_IMS_MMTEL_PACKAGE_OVERRIDE_STRING, null);
-        persistableBundle.putString(KEY_CONFIG_IMS_RCS_PACKAGE_OVERRIDE_STRING, null);
-        persistableBundle.putStringArray(KEY_CDMA_ROAMING_NETWORKS_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_CDMA_NONROAMING_NETWORKS_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_DIAL_STRING_REPLACE_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_INTERNATIONAL_ROAMING_DIAL_STRING_REPLACE_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_FORCE_HOME_NETWORK_BOOL, false);
-        persistableBundle.putInt(KEY_GSM_DTMF_TONE_DELAY_INT, 0);
-        persistableBundle.putInt(KEY_IMS_DTMF_TONE_DELAY_INT, 0);
-        persistableBundle.putInt(KEY_CDMA_DTMF_TONE_DELAY_INT, 100);
-        persistableBundle.putBoolean(KEY_CALL_FORWARDING_MAP_NON_NUMBER_TO_VOICEMAIL_BOOL, false);
-        persistableBundle.putBoolean(KEY_IGNORE_RTT_MODE_SETTING_BOOL, true);
-        persistableBundle.putInt(KEY_CDMA_3WAYCALL_FLASH_DELAY_INT, 0);
-        persistableBundle.putBoolean(KEY_SUPPORT_ADHOC_CONFERENCE_CALLS_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_ADD_CONFERENCE_PARTICIPANTS_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_CONFERENCE_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORT_IMS_CONFERENCE_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_LOCAL_DISCONNECT_EMPTY_IMS_CONFERENCE_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_MANAGE_IMS_CONFERENCE_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORT_IMS_CONFERENCE_EVENT_PACKAGE_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORT_IMS_CONFERENCE_EVENT_PACKAGE_ON_PEER_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORTS_DEVICE_TO_DEVICE_COMMUNICATION_USING_RTP_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORTS_SDP_NEGOTIATION_OF_D2D_RTP_HEADER_EXTENSIONS_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORTS_DEVICE_TO_DEVICE_COMMUNICATION_USING_DTMF_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_VIDEO_CONFERENCE_CALL_BOOL, false);
-        persistableBundle.putBoolean(KEY_IS_IMS_CONFERENCE_SIZE_ENFORCED_BOOL, false);
-        persistableBundle.putInt(KEY_IMS_CONFERENCE_SIZE_LIMIT_INT, 5);
-        persistableBundle.putBoolean(KEY_DISPLAY_HD_AUDIO_PROPERTY_BOOL, true);
-        persistableBundle.putBoolean(KEY_EDITABLE_ENHANCED_4G_LTE_BOOL, true);
-        persistableBundle.putBoolean(KEY_HIDE_ENHANCED_4G_LTE_BOOL, false);
-        persistableBundle.putBoolean(KEY_ENHANCED_4G_LTE_ON_BY_DEFAULT_BOOL, true);
-        persistableBundle.putBoolean(KEY_HIDE_IMS_APN_BOOL, false);
-        persistableBundle.putBoolean(KEY_HIDE_PREFERRED_NETWORK_TYPE_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALLOW_EMERGENCY_VIDEO_CALLS_BOOL, false);
-        persistableBundle.putStringArray(KEY_ENABLE_APPS_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_EDITABLE_WFC_MODE_BOOL, true);
-        persistableBundle.putStringArray(KEY_WFC_OPERATOR_ERROR_CODES_STRING_ARRAY, null);
-        persistableBundle.putInt(KEY_WFC_SPN_FORMAT_IDX_INT, 0);
-        persistableBundle.putInt(KEY_WFC_DATA_SPN_FORMAT_IDX_INT, 0);
-        persistableBundle.putInt(KEY_WFC_FLIGHT_MODE_SPN_FORMAT_IDX_INT, -1);
-        persistableBundle.putBoolean(KEY_WFC_SPN_USE_ROOT_LOCALE, false);
-        persistableBundle.putString(KEY_WFC_EMERGENCY_ADDRESS_CARRIER_APP_STRING, "");
-        persistableBundle.putBoolean(KEY_CONFIG_WIFI_DISABLE_IN_ECBM, false);
-        persistableBundle.putBoolean(KEY_CARRIER_NAME_OVERRIDE_BOOL, false);
-        persistableBundle.putString(KEY_CARRIER_NAME_STRING, "");
-        persistableBundle.putBoolean(KEY_WFC_CARRIER_NAME_OVERRIDE_BY_PNN_BOOL, false);
-        persistableBundle.putInt(KEY_CROSS_SIM_SPN_FORMAT_INT, 1);
-        persistableBundle.putInt(KEY_SPN_DISPLAY_CONDITION_OVERRIDE_INT, -1);
-        persistableBundle.putStringArray(KEY_SPDI_OVERRIDE_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_PNN_OVERRIDE_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_OPL_OVERRIDE_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_EHPLMN_OVERRIDE_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_ALLOW_ERI_BOOL, false);
-        persistableBundle.putBoolean(KEY_ENABLE_CARRIER_DISPLAY_NAME_RESOLVER_BOOL, false);
-        persistableBundle.putString(KEY_SIM_COUNTRY_ISO_OVERRIDE_STRING, "");
-        persistableBundle.putString(KEY_CARRIER_CALL_SCREENING_APP_STRING, "");
-        persistableBundle.putString(KEY_CALL_REDIRECTION_SERVICE_COMPONENT_NAME_STRING, null);
-        persistableBundle.putBoolean(KEY_CDMA_HOME_REGISTERED_PLMN_NAME_OVERRIDE_BOOL, false);
-        persistableBundle.putString(KEY_CDMA_HOME_REGISTERED_PLMN_NAME_STRING, "");
-        persistableBundle.putBoolean(KEY_SUPPORT_DIRECT_FDN_DIALING_BOOL, false);
-        persistableBundle.putInt(KEY_FDN_NUMBER_LENGTH_LIMIT_INT, 20);
-        persistableBundle.putBoolean(KEY_CARRIER_DEFAULT_DATA_ROAMING_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_DEFAULT_INTERNATIONAL_DATA_ROAMING_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_SKIP_CF_FAIL_TO_DISABLE_DIALOG_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_ENHANCED_CALL_BLOCKING_BOOL, true);
-        persistableBundle.putBoolean("aliasEnabled", false);
-        persistableBundle.putBoolean("allowAttachAudio", true);
-        persistableBundle.putBoolean("enabledTransID", false);
-        persistableBundle.putBoolean("enableGroupMms", true);
-        persistableBundle.putBoolean("enableMMSDeliveryReports", false);
-        persistableBundle.putBoolean("enabledMMS", true);
-        persistableBundle.putBoolean("enableMMSReadReports", false);
-        persistableBundle.putBoolean("enableMultipartSMS", true);
-        persistableBundle.putBoolean("enabledNotifyWapMMSC", false);
-        persistableBundle.putBoolean("sendMultipartSmsAsSeparateMessages", false);
-        persistableBundle.putBoolean("config_cellBroadcastAppLinks", true);
-        persistableBundle.putBoolean("enableSMSDeliveryReports", true);
-        persistableBundle.putBoolean("supportHttpCharsetHeader", false);
-        persistableBundle.putBoolean("supportMmsContentDisposition", true);
-        persistableBundle.putBoolean("mmsCloseConnection", false);
-        persistableBundle.putInt("aliasMaxChars", 48);
-        persistableBundle.putInt("aliasMinChars", 2);
-        persistableBundle.putInt("httpSocketTimeout", 60000);
-        persistableBundle.putInt("maxImageHeight", 480);
-        persistableBundle.putInt("maxImageWidth", 640);
-        persistableBundle.putInt("maxMessageTextSize", -1);
-        persistableBundle.putInt("smsToMmsTextLengthThreshold", -1);
-        persistableBundle.putInt("maxSubjectLength", 40);
-        persistableBundle.putInt(KEY_MMS_NETWORK_RELEASE_TIMEOUT_MILLIS_INT, 5000);
-        persistableBundle.putInt(KEY_MMS_MAX_NTN_PAYLOAD_SIZE_BYTES_INT, 3000);
-        persistableBundle.putString("emailGatewayNumber", "");
-        persistableBundle.putString("httpParams", "");
-        persistableBundle.putString("naiSuffix", "");
-        persistableBundle.putString("uaProfTagName", "x-wap-profile");
-        persistableBundle.putString("uaProfUrl", "");
-        persistableBundle.putString("userAgent", "");
-        persistableBundle.putBoolean(KEY_ALLOW_NON_EMERGENCY_CALLS_IN_ECM_BOOL, true);
-        persistableBundle.putInt(KEY_EMERGENCY_SMS_MODE_TIMER_MS_INT, 0);
-        persistableBundle.putBoolean(KEY_ALLOW_HOLD_CALL_DURING_EMERGENCY_BOOL, true);
-        persistableBundle.putBoolean(KEY_USE_RCS_PRESENCE_BOOL, false);
-        persistableBundle.putBoolean(KEY_USE_RCS_SIP_OPTIONS_BOOL, false);
-        persistableBundle.putBoolean(KEY_FORCE_IMEI_BOOL, false);
-        persistableBundle.putInt(KEY_CDMA_ROAMING_MODE_INT, -1);
-        persistableBundle.putBoolean(KEY_SUPPORT_CDMA_1X_VOICE_CALLS_BOOL, true);
-        persistableBundle.putString(KEY_RCS_CONFIG_SERVER_URL_STRING, "");
+        sDefaults.putString(KEY_CARRIER_CONFIG_VERSION_STRING, "");
+        sDefaults.putBoolean(KEY_ALLOW_HOLD_IN_IMS_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_CARRIER_ALLOW_DEFLECT_IMS_CALL_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_ALLOW_TRANSFER_IMS_CALL_BOOL, false);
+        sDefaults.putBoolean(KEY_ALWAYS_PLAY_REMOTE_HOLD_TONE_BOOL, false);
+        sDefaults.putBoolean(KEY_AUTO_RETRY_FAILED_WIFI_EMERGENCY_CALL, false);
+        sDefaults.putBoolean(KEY_ADDITIONAL_CALL_SETTING_BOOL, true);
+        sDefaults.putBoolean(KEY_ALLOW_EMERGENCY_NUMBERS_IN_CALL_LOG_BOOL, false);
+        sDefaults.putStringArray(KEY_UNLOGGABLE_NUMBERS_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_ALLOW_LOCAL_DTMF_TONES_BOOL, true);
+        sDefaults.putBoolean(KEY_PLAY_CALL_RECORDING_TONE_BOOL, false);
+        sDefaults.putBoolean(KEY_APN_EXPAND_BOOL, true);
+        sDefaults.putBoolean(KEY_AUTO_RETRY_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_SETTINGS_ENABLE_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_VOLTE_AVAILABLE_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_VT_AVAILABLE_BOOL, false);
+        sDefaults.putInt(KEY_CARRIER_USSD_METHOD_INT, 0);
+        sDefaults.putBoolean(KEY_VOLTE_5G_LIMITED_ALERT_DIALOG_BOOL, false);
+        sDefaults.putBoolean(KEY_NOTIFY_HANDOVER_VIDEO_FROM_WIFI_TO_LTE_BOOL, false);
+        sDefaults.putBoolean(KEY_ALLOW_MERGING_RTT_CALLS_BOOL, false);
+        sDefaults.putBoolean(KEY_NOTIFY_HANDOVER_VIDEO_FROM_LTE_TO_WIFI_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_DOWNGRADE_VT_TO_AUDIO_BOOL, true);
+        sDefaults.putString(KEY_DEFAULT_VM_NUMBER_STRING, "");
+        sDefaults.putString(KEY_DEFAULT_VM_NUMBER_ROAMING_STRING, "");
+        sDefaults.putString(KEY_DEFAULT_VM_NUMBER_ROAMING_AND_IMS_UNREGISTERED_STRING, "");
+        sDefaults.putBoolean(KEY_CONFIG_TELEPHONY_USE_OWN_NUMBER_FOR_VOICEMAIL_BOOL, false);
+        sDefaults.putBoolean(KEY_IGNORE_DATA_ENABLED_CHANGED_FOR_VIDEO_CALLS, true);
+        sDefaults.putBoolean(KEY_VILTE_DATA_IS_METERED_BOOL, true);
+        sDefaults.putBoolean(KEY_CARRIER_WFC_IMS_AVAILABLE_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_CROSS_SIM_IMS_AVAILABLE_BOOL, false);
+        sDefaults.putBoolean(KEY_ENABLE_CROSS_SIM_CALLING_ON_OPPORTUNISTIC_DATA_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_WFC_SUPPORTS_WIFI_ONLY_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_DEFAULT_WFC_IMS_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_DEFAULT_WFC_IMS_ROAMING_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_PROMOTE_WFC_ON_CALL_FAIL_BOOL, false);
+        sDefaults.putInt(KEY_CARRIER_DEFAULT_WFC_IMS_MODE_INT, 2);
+        sDefaults.putInt(KEY_CARRIER_DEFAULT_WFC_IMS_ROAMING_MODE_INT, 2);
+        sDefaults.putBoolean(KEY_CARRIER_FORCE_DISABLE_ETWS_CMAS_TEST_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_RCS_PROVISIONING_REQUIRED_BOOL, true);
+        sDefaults.putBoolean(KEY_CARRIER_VOLTE_PROVISIONING_REQUIRED_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_UT_PROVISIONING_REQUIRED_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_SUPPORTS_SS_OVER_UT_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_VOLTE_OVERRIDE_WFC_PROVISIONING_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_VOLTE_TTY_SUPPORTED_BOOL, true);
+        sDefaults.putBoolean(KEY_CARRIER_VOWIFI_TTY_SUPPORTED_BOOL, true);
+        sDefaults.putBoolean(KEY_CARRIER_ALLOW_TURNOFF_IMS_BOOL, true);
+        sDefaults.putBoolean(KEY_CARRIER_IMS_GBA_REQUIRED_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_INSTANT_LETTERING_AVAILABLE_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_USE_IMS_FIRST_FOR_EMERGENCY_BOOL, true);
+        sDefaults.putBoolean(KEY_PREFER_IN_SERVICE_SIM_FOR_NORMAL_ROUTED_EMERGENCY_CALLS_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_ONLY_DIALED_SIM_ECC_LIST_BOOL, false);
+        sDefaults.putString(KEY_CARRIER_NETWORK_SERVICE_WWAN_PACKAGE_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_NETWORK_SERVICE_WLAN_PACKAGE_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_NETWORK_SERVICE_WLAN_CLASS_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_NETWORK_SERVICE_WWAN_CLASS_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_QUALIFIED_NETWORKS_SERVICE_PACKAGE_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_QUALIFIED_NETWORKS_SERVICE_CLASS_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_DATA_SERVICE_WWAN_PACKAGE_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_DATA_SERVICE_WLAN_PACKAGE_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_DATA_SERVICE_WWAN_CLASS_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_DATA_SERVICE_WLAN_CLASS_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CONFIG_PLANS_PACKAGE_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_INSTANT_LETTERING_INVALID_CHARS_STRING, "");
+        sDefaults.putString(KEY_CARRIER_INSTANT_LETTERING_ESCAPED_CHARS_STRING, "");
+        sDefaults.putString(KEY_CARRIER_INSTANT_LETTERING_ENCODING_STRING, "");
+        sDefaults.putInt(KEY_CARRIER_INSTANT_LETTERING_LENGTH_LIMIT_INT, 64);
+        sDefaults.putBoolean(KEY_DISABLE_CDMA_ACTIVATION_CODE_BOOL, false);
+        sDefaults.putBoolean(KEY_DTMF_TYPE_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_ENABLE_DIALER_KEY_VIBRATION_BOOL, true);
+        sDefaults.putBoolean(KEY_HAS_IN_CALL_NOISE_SUPPRESSION_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_CARRIER_NETWORK_SETTINGS_BOOL, false);
+        sDefaults.putBoolean(KEY_ONLY_AUTO_SELECT_IN_HOME_NETWORK_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_SINGLE_OPERATOR_ROW_IN_CHOOSE_NETWORK_SETTING_BOOL, true);
+        sDefaults.putBoolean(KEY_SHOW_SPN_FOR_HOME_IN_CHOOSE_NETWORK_SETTING_BOOL, false);
+        sDefaults.putBoolean(KEY_SIMPLIFIED_NETWORK_SETTINGS_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_SIM_LOCK_SETTINGS_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_VOLTE_PROVISIONED_BOOL, false);
+        sDefaults.putBoolean(KEY_CALL_BARRING_VISIBILITY_BOOL, false);
+        sDefaults.putBoolean(KEY_CALL_BARRING_SUPPORTS_PASSWORD_CHANGE_BOOL, true);
+        sDefaults.putBoolean(KEY_CALL_BARRING_SUPPORTS_DEACTIVATE_ALL_BOOL, true);
+        sDefaults.putInt(KEY_CALL_BARRING_DEFAULT_SERVICE_CLASS_INT, 1);
+        sDefaults.putBoolean(KEY_SUPPORT_SS_OVER_CDMA_BOOL, false);
+        sDefaults.putBoolean(KEY_CALL_FORWARDING_VISIBILITY_BOOL, true);
+        sDefaults.putBoolean(KEY_CALL_FORWARDING_WHEN_UNREACHABLE_SUPPORTED_BOOL, true);
+        sDefaults.putBoolean(KEY_CALL_FORWARDING_WHEN_UNANSWERED_SUPPORTED_BOOL, true);
+        sDefaults.putBoolean(KEY_CALL_FORWARDING_WHEN_BUSY_SUPPORTED_BOOL, true);
+        sDefaults.putBoolean(KEY_ADDITIONAL_SETTINGS_CALLER_ID_VISIBILITY_BOOL, true);
+        sDefaults.putBoolean(KEY_ADDITIONAL_SETTINGS_CALL_WAITING_VISIBILITY_BOOL, true);
+        sDefaults.putBoolean(KEY_DISABLE_SUPPLEMENTARY_SERVICES_IN_AIRPLANE_MODE_BOOL, false);
+        sDefaults.putBoolean(KEY_IGNORE_SIM_NETWORK_LOCKED_EVENTS_BOOL, false);
+        sDefaults.putBoolean(KEY_MDN_IS_ADDITIONAL_VOICEMAIL_NUMBER_BOOL, false);
+        sDefaults.putBoolean(KEY_OPERATOR_SELECTION_EXPAND_BOOL, true);
+        sDefaults.putBoolean(KEY_PREFER_2G_BOOL, false);
+        sDefaults.putBoolean(KEY_PREFER_3G_VISIBILITY_BOOL, true);
+        sDefaults.putBoolean(KEY_4G_ONLY_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_APN_SETTING_CDMA_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_CDMA_CHOICES_BOOL, false);
+        sDefaults.putBoolean(KEY_SMS_REQUIRES_DESTINATION_NUMBER_CONVERSION_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_EMERGENCY_SMS_OVER_IMS_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_ONSCREEN_DIAL_BUTTON_BOOL, true);
+        sDefaults.putBoolean(KEY_SIM_NETWORK_UNLOCK_ALLOW_DISMISS_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORT_PAUSE_IMS_VIDEO_CALLS_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_SWAP_AFTER_MERGE_BOOL, true);
+        sDefaults.putBoolean(KEY_USE_HFA_FOR_PROVISIONING_BOOL, false);
+        sDefaults.putBoolean(KEY_EDITABLE_VOICEMAIL_NUMBER_SETTING_BOOL, true);
+        sDefaults.putBoolean(KEY_EDITABLE_VOICEMAIL_NUMBER_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_VOICEMAIL_NUMBER_SETTING_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_OTASP_FOR_PROVISIONING_BOOL, false);
+        sDefaults.putBoolean(KEY_VOICEMAIL_NOTIFICATION_PERSISTENT_BOOL, false);
+        sDefaults.putBoolean(KEY_VOICE_PRIVACY_DISABLE_UI_BOOL, false);
+        sDefaults.putBoolean(KEY_WORLD_PHONE_BOOL, false);
+        sDefaults.putBoolean(KEY_REQUIRE_ENTITLEMENT_CHECKS_BOOL, true);
+        sDefaults.putBoolean(KEY_CARRIER_SUPPORTS_TETHERING_BOOL, true);
+        sDefaults.putBoolean(KEY_RESTART_RADIO_ON_PDP_FAIL_REGULAR_DEACTIVATION_BOOL, false);
+        sDefaults.putIntArray(KEY_RADIO_RESTART_FAILURE_CAUSES_INT_ARRAY, new int[0]);
+        sDefaults.putInt(KEY_VOLTE_REPLACEMENT_RAT_INT, 0);
+        sDefaults.putString(KEY_DEFAULT_SIM_CALL_MANAGER_STRING, "");
+        sDefaults.putString(KEY_VVM_DESTINATION_NUMBER_STRING, "");
+        sDefaults.putInt(KEY_VVM_PORT_NUMBER_INT, 0);
+        sDefaults.putString(KEY_VVM_TYPE_STRING, "");
+        sDefaults.putBoolean(KEY_VVM_CELLULAR_DATA_REQUIRED_BOOL, false);
+        sDefaults.putString(KEY_VVM_CLIENT_PREFIX_STRING, VisualVoicemailSmsFilterSettings.DEFAULT_CLIENT_PREFIX);
+        sDefaults.putBoolean(KEY_VVM_SSL_ENABLED_BOOL, false);
+        sDefaults.putStringArray(KEY_VVM_DISABLED_CAPABILITIES_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_VVM_LEGACY_MODE_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_VVM_PREFETCH_BOOL, true);
+        sDefaults.putString(KEY_CARRIER_VVM_PACKAGE_NAME_STRING, "");
+        sDefaults.putStringArray(KEY_CARRIER_VVM_PACKAGE_NAME_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_SHOW_ICCID_IN_SIM_STATUS_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_SIGNAL_STRENGTH_IN_SIM_STATUS_BOOL, true);
+        sDefaults.putBoolean(KEY_INFLATE_SIGNAL_STRENGTH_BOOL, false);
+        sDefaults.putBoolean(KEY_CI_ACTION_ON_SYS_UPDATE_BOOL, false);
+        sDefaults.putString(KEY_CI_ACTION_ON_SYS_UPDATE_INTENT_STRING, "");
+        sDefaults.putString(KEY_CI_ACTION_ON_SYS_UPDATE_EXTRA_STRING, "");
+        sDefaults.putString(KEY_CI_ACTION_ON_SYS_UPDATE_EXTRA_VAL_STRING, "");
+        sDefaults.putBoolean(KEY_CSP_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_ALLOW_ADDING_APNS_BOOL, true);
+        sDefaults.putStringArray(KEY_READ_ONLY_APN_TYPES_STRING_ARRAY, new String[]{"dun"});
+        sDefaults.putStringArray(KEY_READ_ONLY_APN_FIELDS_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_APN_SETTINGS_DEFAULT_APN_TYPES_STRING_ARRAY, null);
+        sDefaults.putAll(Apn.getDefaults());
+        sDefaults.putBoolean(KEY_BROADCAST_EMERGENCY_CALL_STATE_CHANGES_BOOL, false);
+        sDefaults.putBoolean(KEY_ALWAYS_SHOW_EMERGENCY_ALERT_ONOFF_BOOL, false);
+        sDefaults.putInt(KEY_DEFAULT_MTU_INT, 1500);
+        sDefaults.putLong(KEY_CARRIER_DATA_CALL_APN_RETRY_AFTER_DISCONNECT_LONG, 3000L);
+        sDefaults.putString(KEY_CARRIER_ERI_FILE_NAME_STRING, "eri.xml");
+        sDefaults.putInt(KEY_DURATION_BLOCKING_DISABLED_AFTER_EMERGENCY_INT, 7200);
+        sDefaults.putStringArray(KEY_CARRIER_METERED_APN_TYPES_STRINGS, new String[]{"default", "mms", "dun", "supl", ApnSetting.TYPE_ENTERPRISE_STRING});
+        sDefaults.putStringArray(KEY_CARRIER_METERED_ROAMING_APN_TYPES_STRINGS, new String[]{"default", "mms", "dun", "supl", ApnSetting.TYPE_ENTERPRISE_STRING});
+        sDefaults.putIntArray(KEY_ONLY_SINGLE_DC_ALLOWED_INT_ARRAY, new int[]{4, 7, 5, 6, 12});
+        sDefaults.putIntArray(KEY_CAPABILITIES_EXEMPT_FROM_SINGLE_DC_CHECK_INT_ARRAY, new int[]{4});
+        sDefaults.putStringArray(KEY_GSM_ROAMING_NETWORKS_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_GSM_NONROAMING_NETWORKS_STRING_ARRAY, null);
+        sDefaults.putString(KEY_CONFIG_IMS_PACKAGE_OVERRIDE_STRING, null);
+        sDefaults.putString(KEY_CONFIG_IMS_MMTEL_PACKAGE_OVERRIDE_STRING, null);
+        sDefaults.putString(KEY_CONFIG_IMS_RCS_PACKAGE_OVERRIDE_STRING, null);
+        sDefaults.putStringArray(KEY_CDMA_ROAMING_NETWORKS_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_CDMA_NONROAMING_NETWORKS_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_DIAL_STRING_REPLACE_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_INTERNATIONAL_ROAMING_DIAL_STRING_REPLACE_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_FORCE_HOME_NETWORK_BOOL, false);
+        sDefaults.putInt(KEY_GSM_DTMF_TONE_DELAY_INT, 0);
+        sDefaults.putInt(KEY_IMS_DTMF_TONE_DELAY_INT, 0);
+        sDefaults.putInt(KEY_CDMA_DTMF_TONE_DELAY_INT, 100);
+        sDefaults.putBoolean(KEY_CALL_FORWARDING_MAP_NON_NUMBER_TO_VOICEMAIL_BOOL, false);
+        sDefaults.putBoolean(KEY_IGNORE_RTT_MODE_SETTING_BOOL, true);
+        sDefaults.putInt(KEY_CDMA_3WAYCALL_FLASH_DELAY_INT, 0);
+        sDefaults.putBoolean(KEY_SUPPORT_ADHOC_CONFERENCE_CALLS_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_ADD_CONFERENCE_PARTICIPANTS_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_CONFERENCE_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORT_IMS_CONFERENCE_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_LOCAL_DISCONNECT_EMPTY_IMS_CONFERENCE_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_MANAGE_IMS_CONFERENCE_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORT_IMS_CONFERENCE_EVENT_PACKAGE_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORT_IMS_CONFERENCE_EVENT_PACKAGE_ON_PEER_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORTS_DEVICE_TO_DEVICE_COMMUNICATION_USING_RTP_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORTS_SDP_NEGOTIATION_OF_D2D_RTP_HEADER_EXTENSIONS_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORTS_DEVICE_TO_DEVICE_COMMUNICATION_USING_DTMF_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_VIDEO_CONFERENCE_CALL_BOOL, false);
+        sDefaults.putBoolean(KEY_IS_IMS_CONFERENCE_SIZE_ENFORCED_BOOL, false);
+        sDefaults.putInt(KEY_IMS_CONFERENCE_SIZE_LIMIT_INT, 5);
+        sDefaults.putBoolean(KEY_DISPLAY_HD_AUDIO_PROPERTY_BOOL, true);
+        sDefaults.putBoolean(KEY_EDITABLE_ENHANCED_4G_LTE_BOOL, true);
+        sDefaults.putBoolean(KEY_HIDE_ENHANCED_4G_LTE_BOOL, false);
+        sDefaults.putBoolean(KEY_ENHANCED_4G_LTE_ON_BY_DEFAULT_BOOL, true);
+        sDefaults.putBoolean(KEY_HIDE_IMS_APN_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_PREFERRED_NETWORK_TYPE_BOOL, false);
+        sDefaults.putBoolean(KEY_ALLOW_EMERGENCY_VIDEO_CALLS_BOOL, false);
+        sDefaults.putStringArray(KEY_ENABLE_APPS_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_EDITABLE_WFC_MODE_BOOL, true);
+        sDefaults.putStringArray(KEY_WFC_OPERATOR_ERROR_CODES_STRING_ARRAY, null);
+        sDefaults.putInt(KEY_WFC_SPN_FORMAT_IDX_INT, 0);
+        sDefaults.putInt(KEY_WFC_DATA_SPN_FORMAT_IDX_INT, 0);
+        sDefaults.putInt(KEY_WFC_FLIGHT_MODE_SPN_FORMAT_IDX_INT, -1);
+        sDefaults.putBoolean(KEY_WFC_SPN_USE_ROOT_LOCALE, false);
+        sDefaults.putString(KEY_WFC_EMERGENCY_ADDRESS_CARRIER_APP_STRING, "");
+        sDefaults.putBoolean(KEY_CONFIG_WIFI_DISABLE_IN_ECBM, false);
+        sDefaults.putBoolean(KEY_CARRIER_NAME_OVERRIDE_BOOL, false);
+        sDefaults.putString(KEY_CARRIER_NAME_STRING, "");
+        sDefaults.putBoolean(KEY_WFC_CARRIER_NAME_OVERRIDE_BY_PNN_BOOL, false);
+        sDefaults.putInt(KEY_CROSS_SIM_SPN_FORMAT_INT, 1);
+        sDefaults.putInt(KEY_SPN_DISPLAY_CONDITION_OVERRIDE_INT, -1);
+        sDefaults.putStringArray(KEY_SPDI_OVERRIDE_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_PNN_OVERRIDE_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_OPL_OVERRIDE_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_EHPLMN_OVERRIDE_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_ALLOW_ERI_BOOL, false);
+        sDefaults.putBoolean(KEY_ENABLE_CARRIER_DISPLAY_NAME_RESOLVER_BOOL, false);
+        sDefaults.putString(KEY_SIM_COUNTRY_ISO_OVERRIDE_STRING, "");
+        sDefaults.putString(KEY_CARRIER_CALL_SCREENING_APP_STRING, "");
+        sDefaults.putString(KEY_CALL_REDIRECTION_SERVICE_COMPONENT_NAME_STRING, null);
+        sDefaults.putBoolean(KEY_CDMA_HOME_REGISTERED_PLMN_NAME_OVERRIDE_BOOL, false);
+        sDefaults.putString(KEY_CDMA_HOME_REGISTERED_PLMN_NAME_STRING, "");
+        sDefaults.putBoolean(KEY_SUPPORT_DIRECT_FDN_DIALING_BOOL, false);
+        sDefaults.putInt(KEY_FDN_NUMBER_LENGTH_LIMIT_INT, 20);
+        sDefaults.putBoolean(KEY_CARRIER_DEFAULT_DATA_ROAMING_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_DEFAULT_INTERNATIONAL_DATA_ROAMING_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_SKIP_CF_FAIL_TO_DISABLE_DIALOG_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_ENHANCED_CALL_BLOCKING_BOOL, true);
+        sDefaults.putBoolean("aliasEnabled", false);
+        sDefaults.putBoolean("allowAttachAudio", true);
+        sDefaults.putBoolean("enabledTransID", false);
+        sDefaults.putBoolean("enableGroupMms", true);
+        sDefaults.putBoolean("enableMMSDeliveryReports", false);
+        sDefaults.putBoolean("enabledMMS", true);
+        sDefaults.putBoolean("enableMMSReadReports", false);
+        sDefaults.putBoolean("enableMultipartSMS", true);
+        sDefaults.putBoolean("enabledNotifyWapMMSC", false);
+        sDefaults.putBoolean("sendMultipartSmsAsSeparateMessages", false);
+        sDefaults.putBoolean("config_cellBroadcastAppLinks", true);
+        sDefaults.putBoolean("enableSMSDeliveryReports", true);
+        sDefaults.putBoolean("supportHttpCharsetHeader", false);
+        sDefaults.putBoolean("supportMmsContentDisposition", true);
+        sDefaults.putBoolean("mmsCloseConnection", false);
+        sDefaults.putInt("aliasMaxChars", 48);
+        sDefaults.putInt("aliasMinChars", 2);
+        sDefaults.putInt("httpSocketTimeout", 60000);
+        sDefaults.putInt("maxImageHeight", 480);
+        sDefaults.putInt("maxImageWidth", 640);
+        sDefaults.putInt("maxMessageTextSize", -1);
+        sDefaults.putInt("smsToMmsTextLengthThreshold", -1);
+        sDefaults.putInt("maxSubjectLength", 40);
+        sDefaults.putInt(KEY_MMS_NETWORK_RELEASE_TIMEOUT_MILLIS_INT, 5000);
+        sDefaults.putInt(KEY_MMS_MAX_NTN_PAYLOAD_SIZE_BYTES_INT, 3000);
+        sDefaults.putString("emailGatewayNumber", "");
+        sDefaults.putString("httpParams", "");
+        sDefaults.putString("naiSuffix", "");
+        sDefaults.putString("uaProfTagName", "x-wap-profile");
+        sDefaults.putString("uaProfUrl", "");
+        sDefaults.putString("userAgent", "");
+        sDefaults.putBoolean(KEY_ALLOW_NON_EMERGENCY_CALLS_IN_ECM_BOOL, true);
+        sDefaults.putInt(KEY_EMERGENCY_SMS_MODE_TIMER_MS_INT, 0);
+        sDefaults.putBoolean(KEY_ALLOW_HOLD_CALL_DURING_EMERGENCY_BOOL, true);
+        sDefaults.putBoolean(KEY_USE_RCS_PRESENCE_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_RCS_SIP_OPTIONS_BOOL, false);
+        sDefaults.putBoolean(KEY_FORCE_IMEI_BOOL, false);
+        sDefaults.putInt(KEY_CDMA_ROAMING_MODE_INT, -1);
+        sDefaults.putBoolean(KEY_SUPPORT_CDMA_1X_VOICE_CALLS_BOOL, true);
+        sDefaults.putString(KEY_RCS_CONFIG_SERVER_URL_STRING, "");
         if ("US".equalsIgnoreCase(SemSystemProperties.getCountryIso())) {
-            persistableBundle.putInt("maxMessageSize", 1024000);
-            persistableBundle.putInt("recipientLimit", 10);
-            persistableBundle.putInt("smsToMmsTextThreshold", 5);
+            sDefaults.putInt("maxMessageSize", 1024000);
+            sDefaults.putInt("recipientLimit", 10);
+            sDefaults.putInt("smsToMmsTextThreshold", 5);
         } else {
-            persistableBundle.putInt("maxMessageSize", 307200);
-            persistableBundle.putInt("recipientLimit", 20);
-            persistableBundle.putInt("smsToMmsTextThreshold", 3);
+            sDefaults.putInt("maxMessageSize", 307200);
+            sDefaults.putInt("recipientLimit", 20);
+            sDefaults.putInt("smsToMmsTextThreshold", 3);
         }
-        persistableBundle.putString(KEY_CARRIER_SETUP_APP_STRING, "");
-        persistableBundle.putStringArray(KEY_CARRIER_APP_WAKE_SIGNAL_CONFIG_STRING_ARRAY, new String[]{"com.android.carrierdefaultapp/.CarrierDefaultBroadcastReceiver:com.android.internal.telephony.CARRIER_SIGNAL_RESET"});
-        persistableBundle.putStringArray(KEY_CARRIER_APP_NO_WAKE_SIGNAL_CONFIG_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_CARRIER_APP_REQUIRED_DURING_SIM_SETUP_BOOL, false);
-        persistableBundle.putStringArray(KEY_CARRIER_DEFAULT_ACTIONS_ON_REDIRECTION_STRING_ARRAY, new String[]{"9, 4, 1"});
-        persistableBundle.putStringArray(KEY_CARRIER_DEFAULT_ACTIONS_ON_RESET, new String[]{"6, 8"});
-        persistableBundle.putStringArray(KEY_CARRIER_DEFAULT_ACTIONS_ON_DEFAULT_NETWORK_AVAILABLE, new String[]{"false: 7", "true: 8"});
-        persistableBundle.putStringArray(KEY_CARRIER_DEFAULT_REDIRECTION_URL_STRING_ARRAY, null);
-        persistableBundle.putInt(KEY_MONTHLY_DATA_CYCLE_DAY_INT, -1);
-        persistableBundle.putLong(KEY_DATA_WARNING_THRESHOLD_BYTES_LONG, -1L);
-        persistableBundle.putBoolean(KEY_DATA_WARNING_NOTIFICATION_BOOL, true);
-        persistableBundle.putBoolean(KEY_LIMITED_SIM_FUNCTION_NOTIFICATION_FOR_DSDS_BOOL, false);
-        persistableBundle.putLong(KEY_DATA_LIMIT_THRESHOLD_BYTES_LONG, -1L);
-        persistableBundle.putBoolean(KEY_DATA_LIMIT_NOTIFICATION_BOOL, true);
-        persistableBundle.putBoolean(KEY_DATA_RAPID_NOTIFICATION_BOOL, true);
-        persistableBundle.putStringArray(KEY_RATCHET_RAT_FAMILIES, new String[]{"1,2", "7,8,12", "3,11,9,10,15", "14,19"});
-        persistableBundle.putBoolean(KEY_TREAT_DOWNGRADED_VIDEO_CALLS_AS_VIDEO_CALLS_BOOL, false);
-        persistableBundle.putBoolean(KEY_DROP_VIDEO_CALL_WHEN_ANSWERING_AUDIO_CALL_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALLOW_MERGE_WIFI_CALLS_WHEN_VOWIFI_OFF_BOOL, true);
-        persistableBundle.putBoolean(KEY_ALLOW_ADD_CALL_DURING_VIDEO_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_ALLOW_HOLD_VIDEO_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_WIFI_CALLS_CAN_BE_HD_AUDIO, true);
-        persistableBundle.putBoolean(KEY_VIDEO_CALLS_CAN_BE_HD_AUDIO, true);
-        persistableBundle.putBoolean(KEY_GSM_CDMA_CALLS_CAN_BE_HD_AUDIO, false);
-        persistableBundle.putBoolean(KEY_ALLOW_VIDEO_CALLING_FALLBACK_BOOL, true);
-        persistableBundle.putStringArray(KEY_IMS_REASONINFO_MAPPING_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_ENHANCED_4G_LTE_TITLE_VARIANT_BOOL, false);
-        persistableBundle.putInt(KEY_ENHANCED_4G_LTE_TITLE_VARIANT_INT, 0);
-        persistableBundle.putBoolean(KEY_NOTIFY_VT_HANDOVER_TO_WIFI_FAILURE_BOOL, false);
-        persistableBundle.putStringArray(KEY_FILTERED_CNAP_NAMES_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_EDITABLE_WFC_ROAMING_MODE_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_BLOCKING_PAY_PHONE_OPTION_BOOL, false);
-        persistableBundle.putBoolean(KEY_USE_WFC_HOME_NETWORK_MODE_IN_ROAMING_NETWORK_BOOL, false);
-        persistableBundle.putBoolean(KEY_STK_DISABLE_LAUNCH_BROWSER_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALLOW_METERED_NETWORK_FOR_CERT_DOWNLOAD_BOOL, false);
-        persistableBundle.putBoolean(KEY_HIDE_DIGITS_HELPER_TEXT_ON_STK_INPUT_SCREEN_BOOL, true);
-        persistableBundle.putInt(KEY_PREF_NETWORK_NOTIFICATION_DELAY_INT, -1);
-        persistableBundle.putInt(KEY_EMERGENCY_NOTIFICATION_DELAY_INT, -1);
-        persistableBundle.putBoolean(KEY_ALLOW_USSD_REQUESTS_VIA_TELEPHONY_MANAGER_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORT_3GPP_CALL_FORWARDING_WHILE_ROAMING_BOOL, true);
-        persistableBundle.putBoolean(KEY_DISPLAY_VOICEMAIL_NUMBER_AS_DEFAULT_CALL_FORWARDING_NUMBER_BOOL, false);
-        persistableBundle.putBoolean(KEY_NOTIFY_INTERNATIONAL_CALL_ON_WFC_BOOL, false);
-        persistableBundle.putBoolean(KEY_HIDE_PRESET_APN_DETAILS_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_VIDEO_CALL_CHARGES_ALERT_DIALOG_BOOL, false);
-        persistableBundle.putStringArray(KEY_CALL_FORWARDING_BLOCKS_WHILE_ROAMING_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_SUPPORT_IMS_CALL_FORWARDING_WHILE_ROAMING_BOOL, true);
-        persistableBundle.putInt(KEY_LTE_EARFCNS_RSRP_BOOST_INT, 0);
-        persistableBundle.putStringArray(KEY_BOOSTED_LTE_EARFCNS_STRING_ARRAY, null);
-        persistableBundle.putIntArray(KEY_NRARFCNS_RSRP_BOOST_INT_ARRAY, null);
-        persistableBundle.putStringArray(KEY_BOOSTED_NRARFCNS_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_USE_ONLY_RSRP_FOR_LTE_SIGNAL_BAR_BOOL, false);
-        persistableBundle.putBoolean(KEY_DISABLE_VOICE_BARRING_NOTIFICATION_BOOL, false);
-        persistableBundle.putInt(IMSI_KEY_AVAILABILITY_INT, 0);
-        persistableBundle.putString(IMSI_KEY_DOWNLOAD_URL_STRING, null);
-        persistableBundle.putString(IMSI_CARRIER_PUBLIC_KEY_EPDG_STRING, null);
-        persistableBundle.putString(IMSI_CARRIER_PUBLIC_KEY_WLAN_STRING, null);
-        persistableBundle.putBoolean(KEY_CONVERT_CDMA_CALLER_ID_MMI_CODES_WHILE_ROAMING_ON_3GPP_BOOL, false);
-        persistableBundle.putStringArray(KEY_NON_ROAMING_OPERATOR_STRING_ARRAY, null);
-        persistableBundle.putStringArray(KEY_ROAMING_OPERATOR_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_SHOW_IMS_REGISTRATION_STATUS_BOOL, false);
-        persistableBundle.putBoolean(KEY_RTT_SUPPORTED_BOOL, false);
-        persistableBundle.putBoolean(KEY_TTY_SUPPORTED_BOOL, true);
-        persistableBundle.putBoolean(KEY_HIDE_TTY_HCO_VCO_WITH_RTT_BOOL, false);
-        persistableBundle.putBoolean(KEY_RTT_SUPPORTED_WHILE_ROAMING_BOOL, false);
-        persistableBundle.putBoolean(KEY_RTT_UPGRADE_SUPPORTED_FOR_DOWNGRADED_VT_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_VT_UPGRADE_SUPPORTED_FOR_DOWNGRADED_RTT_CALL_BOOL, true);
-        persistableBundle.putBoolean(KEY_DISABLE_CHARGE_INDICATION_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_NO_REPLY_TIMER_FOR_CFNRY_BOOL, true);
-        persistableBundle.putStringArray(KEY_FEATURE_ACCESS_CODES_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_IDENTIFY_HIGH_DEFINITION_CALLS_IN_CALL_LOG_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_PRECISE_FAILED_CAUSE_BOOL, false);
-        persistableBundle.putBoolean(KEY_SPN_DISPLAY_RULE_USE_ROAMING_FROM_SERVICE_STATE_BOOL, false);
-        persistableBundle.putBoolean(KEY_ALWAYS_SHOW_DATA_RAT_ICON_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_4G_FOR_LTE_DATA_ICON_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_4GLTE_FOR_LTE_DATA_ICON_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_4G_FOR_3G_DATA_ICON_BOOL, false);
-        persistableBundle.putString(KEY_OPERATOR_NAME_FILTER_PATTERN_STRING, "");
-        persistableBundle.putString(KEY_SHOW_CARRIER_DATA_ICON_PATTERN_STRING, "");
-        persistableBundle.putBoolean(KEY_HIDE_LTE_PLUS_DATA_ICON_BOOL, true);
-        persistableBundle.putBoolean(KEY_SHOW_5G_SLICE_ICON_BOOL, true);
-        persistableBundle.putInt(KEY_LTE_PLUS_THRESHOLD_BANDWIDTH_KHZ_INT, 20000);
-        persistableBundle.putInt(KEY_NR_ADVANCED_THRESHOLD_BANDWIDTH_KHZ_INT, 0);
-        persistableBundle.putBoolean(KEY_INCLUDE_LTE_FOR_NR_ADVANCED_THRESHOLD_BANDWIDTH_BOOL, false);
-        persistableBundle.putBoolean(KEY_RATCHET_NR_ADVANCED_BANDWIDTH_IF_RRC_IDLE_BOOL, true);
-        persistableBundle.putIntArray(KEY_CARRIER_NR_AVAILABILITIES_INT_ARRAY, new int[]{1, 2});
-        persistableBundle.putBoolean(KEY_LTE_ENABLED_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORT_TDSCDMA_BOOL, false);
-        persistableBundle.putStringArray(KEY_SUPPORT_TDSCDMA_ROAMING_NETWORKS_STRING_ARRAY, null);
-        persistableBundle.putBoolean(KEY_WORLD_MODE_ENABLED_BOOL, false);
-        persistableBundle.putString(KEY_CARRIER_SETTINGS_ACTIVITY_COMPONENT_NAME_STRING, "");
-        persistableBundle.putBoolean(KEY_SHOW_OPERATOR_NAME_IN_STATUSBAR_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_CONFIG_APPLIED_BOOL, false);
-        persistableBundle.putBoolean(KEY_CHECK_PRICING_WITH_CARRIER_FOR_DATA_ROAMING_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_DATA_CONNECTED_ROAMING_NOTIFICATION_BOOL, false);
-        persistableBundle.putIntArray(KEY_LTE_RSRP_THRESHOLDS_INT_ARRAY, new int[]{-128, PackageManager.INSTALL_FAILED_BAD_SIGNATURE, -108, -98});
-        persistableBundle.putIntArray(KEY_LTE_RSRQ_THRESHOLDS_INT_ARRAY, new int[]{-20, -17, -14, -11});
-        persistableBundle.putIntArray(KEY_LTE_RSSNR_THRESHOLDS_INT_ARRAY, new int[]{-3, 1, 5, 13});
-        persistableBundle.putIntArray(KEY_WCDMA_RSCP_THRESHOLDS_INT_ARRAY, new int[]{PackageManager.INSTALL_FAILED_ABORTED, -105, -95, -85});
-        persistableBundle.putIntArray(KEY_WCDMA_ECNO_THRESHOLDS_INT_ARRAY, new int[]{-24, -14, -6, 1});
-        persistableBundle.putIntArray(KEY_5G_NR_SSRSRP_THRESHOLDS_INT_ARRAY, new int[]{-110, -90, -80, -65});
-        persistableBundle.putIntArray(KEY_5G_NR_SSRSRQ_THRESHOLDS_INT_ARRAY, new int[]{-31, -19, -7, 6});
-        persistableBundle.putIntArray(KEY_5G_NR_SSSINR_THRESHOLDS_INT_ARRAY, new int[]{-5, 5, 15, 30});
-        persistableBundle.putInt(KEY_GERAN_RSSI_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_UTRAN_RSCP_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_EUTRAN_RSRP_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_EUTRAN_RSRQ_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_EUTRAN_RSSNR_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_NGRAN_SSRSRP_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_NGRAN_SSRSRQ_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_NGRAN_SSSINR_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_UTRAN_ECNO_HYSTERESIS_DB_INT, 2);
-        persistableBundle.putInt(KEY_PARAMETERS_USE_FOR_5G_NR_SIGNAL_BAR_INT, 1);
-        persistableBundle.putBoolean(KEY_SIGNAL_STRENGTH_NR_NSA_USE_LTE_AS_PRIMARY_BOOL, true);
-        persistableBundle.putStringArray(KEY_BANDWIDTH_STRING_ARRAY, new String[]{"GPRS:24,24", "EDGE:70,18", "UMTS:115,115", "CDMA:14,14", "1xRTT:30,30", "EvDo_0:750,48", "EvDo_A:950,550", "HSDPA:4300,620", "HSUPA:4300,1800", "HSPA:4300,1800", "EvDo_B:1500,550", "eHRPD:750,48", "iDEN:14,14", "LTE:30000,15000", "HSPA+:13000,3400", "GSM:24,24", "TD_SCDMA:115,115", "LTE_CA:30000,15000", "NR_NSA:47000,18000", "NR_NSA_MMWAVE:145000,60000", "NR_SA:145000,60000", "NR_SA_MMWAVE:145000,60000"});
-        persistableBundle.putBoolean(KEY_BANDWIDTH_NR_NSA_USE_LTE_VALUE_FOR_UPLINK_BOOL, false);
-        persistableBundle.putString(KEY_WCDMA_DEFAULT_SIGNAL_STRENGTH_MEASUREMENT_STRING, CellSignalStrengthWcdma.LEVEL_CALCULATION_METHOD_RSSI);
-        persistableBundle.putBoolean(KEY_CONFIG_SHOW_ORIG_DIAL_STRING_FOR_CDMA_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_CALL_BLOCKING_DISABLED_NOTIFICATION_ALWAYS_BOOL, false);
-        persistableBundle.putBoolean(KEY_CALL_FORWARDING_OVER_UT_WARNING_BOOL, false);
-        persistableBundle.putBoolean(KEY_CALL_BARRING_OVER_UT_WARNING_BOOL, false);
-        persistableBundle.putBoolean(KEY_CALLER_ID_OVER_UT_WARNING_BOOL, false);
-        persistableBundle.putBoolean(KEY_CALL_WAITING_OVER_UT_WARNING_BOOL, false);
-        persistableBundle.putBoolean(KEY_SUPPORT_CLIR_NETWORK_DEFAULT_BOOL, true);
-        persistableBundle.putBoolean(KEY_SUPPORT_EMERGENCY_DIALER_SHORTCUT_BOOL, true);
-        persistableBundle.putBoolean(KEY_USE_CALL_FORWARDING_USSD_BOOL, false);
-        persistableBundle.putBoolean(KEY_USE_CALLER_ID_USSD_BOOL, false);
-        persistableBundle.putBoolean(KEY_USE_CALL_WAITING_USSD_BOOL, false);
-        persistableBundle.putInt(KEY_CALL_WAITING_SERVICE_CLASS_INT, 1);
-        persistableBundle.putString(KEY_5G_ICON_DISPLAY_GRACE_PERIOD_STRING, "");
-        persistableBundle.putString(KEY_5G_ICON_DISPLAY_SECONDARY_GRACE_PERIOD_STRING, "");
-        persistableBundle.putString(KEY_5G_ICON_CONFIGURATION_STRING_2ND, "connected_mmwave:5G,connected:5G,not_restricted_rrc_idle:5G,not_restricted_rrc_con:5G");
-        persistableBundle.putString(KEY_5G_ICON_DISPLAY_GRACE_PERIOD_STRING_2ND, "");
-        persistableBundle.putString(KEY_5G_ICON_DISPLAY_SECONDARY_GRACE_PERIOD_STRING_2ND, "");
-        persistableBundle.putBoolean(KEY_NR_TIMERS_RESET_IF_NON_ENDC_AND_RRC_IDLE_BOOL, false);
-        persistableBundle.putLong(KEY_5G_WATCHDOG_TIME_MS_LONG, 3600000L);
-        persistableBundle.putIntArray(KEY_ADDITIONAL_NR_ADVANCED_BANDS_INT_ARRAY, new int[0]);
-        persistableBundle.putInt(KEY_NR_ADVANCED_CAPABLE_PCO_ID_INT, 0);
-        persistableBundle.putBoolean(KEY_ENABLE_NR_ADVANCED_WHILE_ROAMING_BOOL, true);
-        persistableBundle.putBoolean(KEY_UW_DISQUALIFICATION_ENABLED_BOOL, false);
-        persistableBundle.putInt(KEY_HIGH_BANDWIDTH_DATA_TRANSFER_THRESHOLD_KBPS_INT, 0);
-        persistableBundle.putBoolean(KEY_LTE_ENDC_USING_USER_DATA_FOR_RRC_DETECTION_BOOL, false);
-        persistableBundle.putStringArray(KEY_UNMETERED_NETWORK_TYPES_STRING_ARRAY, new String[]{DctConstants.RAT_NAME_NR_NSA, DctConstants.RAT_NAME_NR_NSA_MMWAVE, "NR_SA", "NR_SA_MMWAVE"});
-        persistableBundle.putStringArray(KEY_ROAMING_UNMETERED_NETWORK_TYPES_STRING_ARRAY, new String[0]);
-        persistableBundle.putBoolean(KEY_ASCII_7_BIT_SUPPORT_FOR_LONG_MESSAGE_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_WIFI_CALLING_ICON_IN_STATUS_BAR_BOOL, false);
-        persistableBundle.putBoolean(KEY_CARRIER_SUPPORTS_OPP_DATA_AUTO_PROVISIONING_BOOL, false);
-        persistableBundle.putString(KEY_SMDP_SERVER_ADDRESS_STRING, "");
-        persistableBundle.putInt(KEY_ESIM_MAX_DOWNLOAD_RETRY_ATTEMPTS_INT, 5);
-        persistableBundle.putInt(KEY_ESIM_DOWNLOAD_RETRY_BACKOFF_TIMER_SEC_INT, 60);
-        persistableBundle.putIntArray(KEY_OPPORTUNISTIC_CARRIER_IDS_INT_ARRAY, new int[]{0});
-        persistableBundle.putBoolean(KEY_OPPORTUNISTIC_ESIM_DOWNLOAD_VIA_WIFI_ONLY_BOOL, false);
-        persistableBundle.putInt(KEY_OPPORTUNISTIC_NETWORK_ENTRY_THRESHOLD_RSRP_INT, -108);
-        persistableBundle.putInt(KEY_OPPORTUNISTIC_NETWORK_EXIT_THRESHOLD_RSRP_INT, PackageManager.INSTALL_FAILED_BAD_SIGNATURE);
-        persistableBundle.putInt(KEY_OPPORTUNISTIC_NETWORK_ENTRY_THRESHOLD_RSSNR_INT, 5);
-        persistableBundle.putInt(KEY_OPPORTUNISTIC_NETWORK_EXIT_THRESHOLD_RSSNR_INT, 1);
-        persistableBundle.putInt(KEY_OPPORTUNISTIC_NETWORK_ENTRY_THRESHOLD_BANDWIDTH_INT, 1024);
-        persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_ENTRY_OR_EXIT_HYSTERESIS_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
-        persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_DATA_SWITCH_HYSTERESIS_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
-        persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_DATA_SWITCH_EXIT_HYSTERESIS_TIME_LONG, TelecomManager.VERY_SHORT_CALL_TIME_MS);
-        persistableBundle.putAll(OpportunisticNetwork.m4333$$Nest$smgetDefaults());
-        persistableBundle.putBoolean(KEY_PING_TEST_BEFORE_DATA_SWITCH_BOOL, true);
-        persistableBundle.putBoolean(KEY_SWITCH_DATA_TO_PRIMARY_IF_PRIMARY_IS_OOS_BOOL, true);
-        persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_PING_PONG_TIME_LONG, 60000L);
-        persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_BACKOFF_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
-        persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_MAX_BACKOFF_TIME_LONG, 60000L);
-        persistableBundle.putBoolean(KEY_ENABLE_4G_OPPORTUNISTIC_NETWORK_SCAN_BOOL, true);
-        persistableBundle.putLong(KEY_TIME_TO_SWITCH_BACK_TO_PRIMARY_IF_OPPORTUNISTIC_OOS_LONG, 60000L);
-        persistableBundle.putLong(KEY_OPPORTUNISTIC_TIME_TO_SCAN_AFTER_CAPABILITY_SWITCH_TO_PRIMARY_LONG, TelecomManager.MEDIUM_CALL_TIME_MS);
-        persistableBundle.putAll(ImsServiceEntitlement.m4326$$Nest$smgetDefaults());
-        persistableBundle.putAll(Gps.m4322$$Nest$smgetDefaults());
-        persistableBundle.putIntArray(KEY_CDMA_ENHANCED_ROAMING_INDICATOR_FOR_HOME_NETWORK_INT_ARRAY, new int[]{1});
-        persistableBundle.putStringArray(KEY_EMERGENCY_NUMBER_PREFIX_STRING_ARRAY, new String[0]);
-        persistableBundle.putBoolean(KEY_CARRIER_SUPPORTS_CALLER_ID_VERTICAL_SERVICE_CODES_BOOL, false);
-        persistableBundle.putBoolean(KEY_USE_USIM_BOOL, false);
-        persistableBundle.putBoolean(KEY_SHOW_WFC_LOCATION_PRIVACY_POLICY_BOOL, false);
-        persistableBundle.putBoolean(KEY_AUTO_CANCEL_CS_REJECT_NOTIFICATION, true);
-        persistableBundle.putString(KEY_SMART_FORWARDING_CONFIG_COMPONENT_NAME_STRING, "");
-        persistableBundle.putBoolean(KEY_ALWAYS_SHOW_PRIMARY_SIGNAL_BAR_IN_OPPORTUNISTIC_NETWORK_BOOLEAN, false);
-        persistableBundle.putString(KEY_SUBSCRIPTION_GROUP_UUID_STRING, "");
-        persistableBundle.putBoolean(KEY_IS_OPPORTUNISTIC_SUBSCRIPTION_BOOL, false);
-        persistableBundle.putIntArray(KEY_GSM_RSSI_THRESHOLDS_INT_ARRAY, new int[]{-107, -103, -97, -89});
-        persistableBundle.putBoolean(KEY_SUPPORT_WPS_OVER_IMS_BOOL, true);
-        persistableBundle.putAll(Ims.m4323$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsVoice.m4329$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsSms.m4327$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsRtt.m4325$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsEmergency.m4324$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsVt.m4330$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsWfc.m4331$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsSs.m4328$$Nest$smgetDefaults());
-        persistableBundle.putAll(Bsf.m4321$$Nest$smgetDefaults());
-        persistableBundle.putAll(Iwlan.m4332$$Nest$smgetDefaults());
-        persistableBundle.putStringArray(KEY_CARRIER_CERTIFICATE_STRING_ARRAY, new String[0]);
-        persistableBundle.putBoolean(KEY_FORMAT_INCOMING_NUMBER_TO_NATIONAL_FOR_JP_BOOL, false);
-        persistableBundle.putIntArray(KEY_DISCONNECT_CAUSE_PLAY_BUSYTONE_INT_ARRAY, new int[]{4});
-        persistableBundle.putBoolean(KEY_PREVENT_CLIR_ACTIVATION_AND_DEACTIVATION_CODE_BOOL, false);
-        persistableBundle.putLong(KEY_DATA_SWITCH_VALIDATION_TIMEOUT_LONG, 2000L);
-        persistableBundle.putStringArray(KEY_MMI_TWO_DIGIT_NUMBER_PATTERN_STRING_ARRAY, new String[0]);
-        persistableBundle.putInt(KEY_PARAMETERS_USED_FOR_LTE_SIGNAL_BAR_INT, 1);
-        persistableBundle.putInt(KEY_MIN_UDP_PORT_4500_NAT_TIMEOUT_SEC_INT, 300);
-        persistableBundle.putInt(KEY_PREFERRED_IKE_PROTOCOL_INT, -1);
-        persistableBundle.putAll(Wifi.m4334$$Nest$smgetDefaults());
-        persistableBundle.putBoolean(ENABLE_EAP_METHOD_PREFIX_BOOL, false);
-        persistableBundle.putInt(KEY_GBA_MODE_INT, 1);
-        persistableBundle.putInt(KEY_GBA_UA_SECURITY_ORGANIZATION_INT, 1);
-        persistableBundle.putInt(KEY_GBA_UA_SECURITY_PROTOCOL_INT, 65536);
-        persistableBundle.putInt(KEY_GBA_UA_TLS_CIPHER_SUITE_INT, 0);
-        persistableBundle.putBoolean(KEY_SHOW_FORWARDED_NUMBER_BOOL, false);
-        persistableBundle.putLong("data_switch_validation_min_gap_long", TimeUnit.DAYS.toMillis(1L));
-        persistableBundle.putStringArray(KEY_MISSED_INCOMING_CALL_SMS_ORIGINATOR_STRING_ARRAY, new String[0]);
-        persistableBundle.putStringArray(KEY_APN_PRIORITY_STRING_ARRAY, new String[]{"enterprise:0", "default:1", "mms:2", "supl:2", "dun:2", "hipri:3", "fota:2", "ims:2", "cbs:2", "ia:2", "emergency:2", "mcx:3", "xcap:3", "rcs:2", "bip:2", "vsim:2", "prioritize_bandwidth:0", "prioritize_latency:0"});
-        persistableBundle.putStringArray(KEY_TELEPHONY_NETWORK_CAPABILITY_PRIORITIES_STRING_ARRAY, new String[]{"eims:90", "supl:80", "mms:70", "xcap:70", "cbs:50", "mcx:50", "fota:50", "ims:40", "dun:30", "enterprise:20", "internet:20", "prioritize_bandwidth:20", "prioritize_latency:20"});
-        persistableBundle.putStringArray(KEY_TELEPHONY_DATA_SETUP_RETRY_RULES_STRING_ARRAY, new String[]{"capabilities=eims, retry_interval=1000, maximum_retries=20", "permanent_fail_causes=8|27|28|29|30|32|33|35|50|51|111|-5|-6|65537|65538|-3|65543|65547|2252|2253|2254, retry_interval=2500", "capabilities=mms|supl|cbs, retry_interval=2000", "capabilities=internet|enterprise|dun|ims|fota, retry_interval=2500|3000|5000|10000|15000|20000|40000|60000|120000|240000|600000|1200000|1800000, maximum_retries=20"});
-        persistableBundle.putStringArray(KEY_TELEPHONY_DATA_HANDOVER_RETRY_RULES_STRING_ARRAY, new String[]{"retry_interval=1000|2000|4000|8000|16000, maximum_retries=5"});
-        persistableBundle.putBoolean(KEY_DELAY_IMS_TEAR_DOWN_UNTIL_CALL_END_BOOL, false);
-        persistableBundle.putStringArray(KEY_MISSED_INCOMING_CALL_SMS_PATTERN_STRING_ARRAY, new String[0]);
-        persistableBundle.putPersistableBundle(KEY_CARRIER_SUPPORTED_SATELLITE_SERVICES_PER_PROVIDER_BUNDLE, PersistableBundle.EMPTY);
-        persistableBundle.putBoolean(KEY_SATELLITE_ATTACH_SUPPORTED_BOOL, false);
-        persistableBundle.putInt(KEY_SATELLITE_CONNECTION_HYSTERESIS_SEC_INT, 300);
-        persistableBundle.putIntArray(KEY_NTN_LTE_RSRP_THRESHOLDS_INT_ARRAY, new int[]{-128, PackageManager.INSTALL_FAILED_BAD_SIGNATURE, -108, -98});
-        persistableBundle.putIntArray(KEY_NTN_LTE_RSRQ_THRESHOLDS_INT_ARRAY, new int[]{-20, -17, -14, -11});
-        persistableBundle.putIntArray(KEY_NTN_LTE_RSSNR_THRESHOLDS_INT_ARRAY, new int[]{-3, 1, 5, 13});
-        persistableBundle.putInt(KEY_PARAMETERS_USED_FOR_NTN_LTE_SIGNAL_BAR_INT, 1);
-        persistableBundle.putBoolean(KEY_REMOVE_SATELLITE_PLMN_IN_MANUAL_NETWORK_SCAN_BOOL, true);
-        persistableBundle.putBoolean(KEY_OVERRIDE_WFC_ROAMING_MODE_WHILE_USING_NTN_BOOL, true);
-        persistableBundle.putInt(KEY_SATELLITE_ENTITLEMENT_STATUS_REFRESH_DAYS_INT, 7);
-        persistableBundle.putBoolean(KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL, false);
-        persistableBundle.putIntArray(KEY_CARRIER_ROAMING_SATELLITE_DEFAULT_SERVICES_INT_ARRAY, new int[]{3, 6});
-        persistableBundle.putBoolean(KEY_DISABLE_DUN_APN_WHILE_ROAMING_WITH_PRESET_APN_BOOL, false);
-        persistableBundle.putBoolean(KEY_EMERGENCY_MESSAGING_SUPPORTED_BOOL, false);
-        persistableBundle.putInt(KEY_EMERGENCY_CALL_TO_SATELLITE_T911_HANDOVER_TIMEOUT_MILLIS_INT, (int) TimeUnit.SECONDS.toMillis(30L));
-        persistableBundle.putString(KEY_DEFAULT_PREFERRED_APN_NAME_STRING, "");
-        persistableBundle.putBoolean(KEY_SUPPORTS_CALL_COMPOSER_BOOL, false);
-        persistableBundle.putString(KEY_CALL_COMPOSER_PICTURE_SERVER_URL_STRING, "");
-        persistableBundle.putBoolean(KEY_USE_ACS_FOR_RCS_BOOL, false);
-        persistableBundle.putBoolean(KEY_NETWORK_TEMP_NOT_METERED_SUPPORTED_BOOL, true);
-        persistableBundle.putInt(KEY_DEFAULT_RTT_MODE_INT, 0);
-        persistableBundle.putBoolean(KEY_STORE_SIM_PIN_FOR_UNATTENDED_REBOOT_BOOL, true);
-        persistableBundle.putBoolean(KEY_HIDE_ENABLE_2G, false);
-        persistableBundle.putStringArray(KEY_ALLOWED_INITIAL_ATTACH_APN_TYPES_STRING_ARRAY, new String[]{"ia", "default"});
-        persistableBundle.putBoolean(KEY_CARRIER_PROVISIONS_WIFI_MERGED_NETWORKS_BOOL, false);
-        persistableBundle.putBoolean(KEY_USE_IP_FOR_CALLING_INDICATOR_BOOL, false);
-        persistableBundle.putBoolean(KEY_DISPLAY_CALL_STRENGTH_INDICATOR_BOOL, true);
-        persistableBundle.putString(KEY_CARRIER_PROVISIONING_APP_STRING, "");
-        persistableBundle.putBoolean(KEY_DISPLAY_NO_DATA_NOTIFICATION_ON_PERMANENT_FAILURE_BOOL, false);
-        persistableBundle.putBoolean(KEY_UNTHROTTLE_DATA_RETRY_WHEN_TAC_CHANGES_BOOL, false);
-        persistableBundle.putBoolean(KEY_VONR_SETTING_VISIBILITY_BOOL, true);
-        persistableBundle.putBoolean(KEY_VONR_ENABLED_BOOL, false);
-        persistableBundle.putBoolean(KEY_VONR_ON_BY_DEFAULT_BOOL, true);
-        persistableBundle.putIntArray(KEY_SUPPORTED_PREMIUM_CAPABILITIES_INT_ARRAY, new int[0]);
-        persistableBundle.putLong(KEY_PREMIUM_CAPABILITY_NOTIFICATION_DISPLAY_TIMEOUT_MILLIS_LONG, TimeUnit.MINUTES.toMillis(30L));
-        persistableBundle.putLong(KEY_PREMIUM_CAPABILITY_NOTIFICATION_BACKOFF_HYSTERESIS_TIME_MILLIS_LONG, TimeUnit.MINUTES.toMillis(30L));
-        persistableBundle.putInt(KEY_PREMIUM_CAPABILITY_MAXIMUM_DAILY_NOTIFICATION_COUNT_INT, 2);
-        persistableBundle.putInt(KEY_PREMIUM_CAPABILITY_MAXIMUM_MONTHLY_NOTIFICATION_COUNT_INT, 10);
-        persistableBundle.putLong(KEY_PREMIUM_CAPABILITY_PURCHASE_CONDITION_BACKOFF_HYSTERESIS_TIME_MILLIS_LONG, TimeUnit.MINUTES.toMillis(30L));
-        persistableBundle.putLong(KEY_PREMIUM_CAPABILITY_NETWORK_SETUP_TIME_MILLIS_LONG, TimeUnit.MINUTES.toMillis(5L));
-        persistableBundle.putString(KEY_PREMIUM_CAPABILITY_PURCHASE_URL_STRING, null);
-        persistableBundle.putBoolean(KEY_PREMIUM_CAPABILITY_SUPPORTED_ON_LTE_BOOL, false);
-        persistableBundle.putStringArray(KEY_IWLAN_HANDOVER_POLICY_STRING_ARRAY, new String[]{"source=GERAN|UTRAN|EUTRAN|NGRAN|IWLAN, target=GERAN|UTRAN|EUTRAN|NGRAN|IWLAN, type=disallowed, capabilities=MMS|XCAP|CBS|SUPL|DUN|BIP|FOTA"});
+        sDefaults.putString(KEY_CARRIER_SETUP_APP_STRING, "");
+        sDefaults.putStringArray(KEY_CARRIER_APP_WAKE_SIGNAL_CONFIG_STRING_ARRAY, new String[]{"com.android.carrierdefaultapp/.CarrierDefaultBroadcastReceiver:com.android.internal.telephony.CARRIER_SIGNAL_RESET"});
+        sDefaults.putStringArray(KEY_CARRIER_APP_NO_WAKE_SIGNAL_CONFIG_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_CARRIER_APP_REQUIRED_DURING_SIM_SETUP_BOOL, false);
+        sDefaults.putStringArray(KEY_CARRIER_DEFAULT_ACTIONS_ON_REDIRECTION_STRING_ARRAY, new String[]{"9, 4, 1"});
+        sDefaults.putStringArray(KEY_CARRIER_DEFAULT_ACTIONS_ON_RESET, new String[]{"6, 8"});
+        sDefaults.putStringArray(KEY_CARRIER_DEFAULT_ACTIONS_ON_DEFAULT_NETWORK_AVAILABLE, new String[]{"false: 7", "true: 8"});
+        sDefaults.putStringArray(KEY_CARRIER_DEFAULT_REDIRECTION_URL_STRING_ARRAY, null);
+        sDefaults.putInt(KEY_MONTHLY_DATA_CYCLE_DAY_INT, -1);
+        sDefaults.putLong(KEY_DATA_WARNING_THRESHOLD_BYTES_LONG, -1L);
+        sDefaults.putBoolean(KEY_DATA_WARNING_NOTIFICATION_BOOL, true);
+        sDefaults.putBoolean(KEY_LIMITED_SIM_FUNCTION_NOTIFICATION_FOR_DSDS_BOOL, false);
+        sDefaults.putLong(KEY_DATA_LIMIT_THRESHOLD_BYTES_LONG, -1L);
+        sDefaults.putBoolean(KEY_DATA_LIMIT_NOTIFICATION_BOOL, true);
+        sDefaults.putBoolean(KEY_DATA_RAPID_NOTIFICATION_BOOL, true);
+        sDefaults.putStringArray(KEY_RATCHET_RAT_FAMILIES, new String[]{"1,2", "7,8,12", "3,11,9,10,15", "14,19"});
+        sDefaults.putBoolean(KEY_TREAT_DOWNGRADED_VIDEO_CALLS_AS_VIDEO_CALLS_BOOL, false);
+        sDefaults.putBoolean(KEY_DROP_VIDEO_CALL_WHEN_ANSWERING_AUDIO_CALL_BOOL, false);
+        sDefaults.putBoolean(KEY_ALLOW_MERGE_WIFI_CALLS_WHEN_VOWIFI_OFF_BOOL, true);
+        sDefaults.putBoolean(KEY_ALLOW_ADD_CALL_DURING_VIDEO_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_ALLOW_HOLD_VIDEO_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_WIFI_CALLS_CAN_BE_HD_AUDIO, true);
+        sDefaults.putBoolean(KEY_VIDEO_CALLS_CAN_BE_HD_AUDIO, true);
+        sDefaults.putBoolean(KEY_GSM_CDMA_CALLS_CAN_BE_HD_AUDIO, false);
+        sDefaults.putBoolean(KEY_ALLOW_VIDEO_CALLING_FALLBACK_BOOL, true);
+        sDefaults.putStringArray(KEY_IMS_REASONINFO_MAPPING_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_ENHANCED_4G_LTE_TITLE_VARIANT_BOOL, false);
+        sDefaults.putInt(KEY_ENHANCED_4G_LTE_TITLE_VARIANT_INT, 0);
+        sDefaults.putBoolean(KEY_NOTIFY_VT_HANDOVER_TO_WIFI_FAILURE_BOOL, false);
+        sDefaults.putStringArray(KEY_FILTERED_CNAP_NAMES_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_EDITABLE_WFC_ROAMING_MODE_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_BLOCKING_PAY_PHONE_OPTION_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_WFC_HOME_NETWORK_MODE_IN_ROAMING_NETWORK_BOOL, false);
+        sDefaults.putBoolean(KEY_STK_DISABLE_LAUNCH_BROWSER_BOOL, false);
+        sDefaults.putBoolean(KEY_ALLOW_METERED_NETWORK_FOR_CERT_DOWNLOAD_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_DIGITS_HELPER_TEXT_ON_STK_INPUT_SCREEN_BOOL, true);
+        sDefaults.putInt(KEY_PREF_NETWORK_NOTIFICATION_DELAY_INT, -1);
+        sDefaults.putInt(KEY_EMERGENCY_NOTIFICATION_DELAY_INT, -1);
+        sDefaults.putBoolean(KEY_ALLOW_USSD_REQUESTS_VIA_TELEPHONY_MANAGER_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORT_3GPP_CALL_FORWARDING_WHILE_ROAMING_BOOL, true);
+        sDefaults.putBoolean(KEY_DISPLAY_VOICEMAIL_NUMBER_AS_DEFAULT_CALL_FORWARDING_NUMBER_BOOL, false);
+        sDefaults.putBoolean(KEY_NOTIFY_INTERNATIONAL_CALL_ON_WFC_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_PRESET_APN_DETAILS_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_VIDEO_CALL_CHARGES_ALERT_DIALOG_BOOL, false);
+        sDefaults.putStringArray(KEY_CALL_FORWARDING_BLOCKS_WHILE_ROAMING_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_SUPPORT_IMS_CALL_FORWARDING_WHILE_ROAMING_BOOL, true);
+        sDefaults.putInt(KEY_LTE_EARFCNS_RSRP_BOOST_INT, 0);
+        sDefaults.putStringArray(KEY_BOOSTED_LTE_EARFCNS_STRING_ARRAY, null);
+        sDefaults.putIntArray(KEY_NRARFCNS_RSRP_BOOST_INT_ARRAY, null);
+        sDefaults.putStringArray(KEY_BOOSTED_NRARFCNS_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_USE_ONLY_RSRP_FOR_LTE_SIGNAL_BAR_BOOL, false);
+        sDefaults.putBoolean(KEY_DISABLE_VOICE_BARRING_NOTIFICATION_BOOL, false);
+        sDefaults.putInt(IMSI_KEY_AVAILABILITY_INT, 0);
+        sDefaults.putString(IMSI_KEY_DOWNLOAD_URL_STRING, null);
+        sDefaults.putString(IMSI_CARRIER_PUBLIC_KEY_EPDG_STRING, null);
+        sDefaults.putString(IMSI_CARRIER_PUBLIC_KEY_WLAN_STRING, null);
+        sDefaults.putBoolean(KEY_CONVERT_CDMA_CALLER_ID_MMI_CODES_WHILE_ROAMING_ON_3GPP_BOOL, false);
+        sDefaults.putStringArray(KEY_NON_ROAMING_OPERATOR_STRING_ARRAY, null);
+        sDefaults.putStringArray(KEY_ROAMING_OPERATOR_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_SHOW_ROAMING_INDICATOR_BOOL, true);
+        sDefaults.putBoolean(KEY_SHOW_IMS_REGISTRATION_STATUS_BOOL, false);
+        sDefaults.putBoolean(KEY_RTT_SUPPORTED_BOOL, false);
+        sDefaults.putBoolean(KEY_TTY_SUPPORTED_BOOL, true);
+        sDefaults.putBoolean(KEY_RTT_AUTO_UPGRADE_BOOL, false);
+        sDefaults.putBoolean(KEY_RTT_SUPPORTED_FOR_VT_BOOL, false);
+        sDefaults.putBoolean(KEY_RTT_UPGRADE_SUPPORTED_BOOL, false);
+        sDefaults.putBoolean(KEY_RTT_DOWNGRADE_SUPPORTED_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_TTY_HCO_VCO_WITH_RTT_BOOL, false);
+        sDefaults.putBoolean(KEY_RTT_SUPPORTED_WHILE_ROAMING_BOOL, false);
+        sDefaults.putBoolean(KEY_RTT_UPGRADE_SUPPORTED_FOR_DOWNGRADED_VT_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_VT_UPGRADE_SUPPORTED_FOR_DOWNGRADED_RTT_CALL_BOOL, true);
+        sDefaults.putBoolean(KEY_DISABLE_CHARGE_INDICATION_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_NO_REPLY_TIMER_FOR_CFNRY_BOOL, true);
+        sDefaults.putInt(KEY_NO_REPLY_TIMER_FOR_CFNRY_SEC_INT, 20);
+        sDefaults.putStringArray(KEY_FEATURE_ACCESS_CODES_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_IDENTIFY_HIGH_DEFINITION_CALLS_IN_CALL_LOG_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_PRECISE_FAILED_CAUSE_BOOL, false);
+        sDefaults.putBoolean(KEY_SPN_DISPLAY_RULE_USE_ROAMING_FROM_SERVICE_STATE_BOOL, false);
+        sDefaults.putBoolean(KEY_ALWAYS_SHOW_DATA_RAT_ICON_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_4G_FOR_LTE_DATA_ICON_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_4GLTE_FOR_LTE_DATA_ICON_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_4G_FOR_3G_DATA_ICON_BOOL, false);
+        sDefaults.putString(KEY_OPERATOR_NAME_FILTER_PATTERN_STRING, "");
+        sDefaults.putString(KEY_SHOW_CARRIER_DATA_ICON_PATTERN_STRING, "");
+        sDefaults.putBoolean(KEY_HIDE_LTE_PLUS_DATA_ICON_BOOL, true);
+        sDefaults.putBoolean(KEY_SHOW_5G_SLICE_ICON_BOOL, true);
+        sDefaults.putInt(KEY_LTE_PLUS_THRESHOLD_BANDWIDTH_KHZ_INT, 20000);
+        sDefaults.putInt(KEY_NR_ADVANCED_THRESHOLD_BANDWIDTH_KHZ_INT, 0);
+        sDefaults.putBoolean(KEY_INCLUDE_LTE_FOR_NR_ADVANCED_THRESHOLD_BANDWIDTH_BOOL, false);
+        sDefaults.putBoolean(KEY_RATCHET_NR_ADVANCED_BANDWIDTH_IF_RRC_IDLE_BOOL, false);
+        sDefaults.putIntArray(KEY_CARRIER_NR_AVAILABILITIES_INT_ARRAY, new int[]{1, 2});
+        sDefaults.putBoolean(KEY_LTE_ENABLED_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORT_TDSCDMA_BOOL, false);
+        sDefaults.putStringArray(KEY_SUPPORT_TDSCDMA_ROAMING_NETWORKS_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_WORLD_MODE_ENABLED_BOOL, false);
+        sDefaults.putString(KEY_CARRIER_SETTINGS_ACTIVITY_COMPONENT_NAME_STRING, "");
+        sDefaults.putBoolean(KEY_SHOW_OPERATOR_NAME_IN_STATUSBAR_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_CONFIG_APPLIED_BOOL, false);
+        sDefaults.putBoolean(KEY_CHECK_PRICING_WITH_CARRIER_FOR_DATA_ROAMING_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_DATA_CONNECTED_ROAMING_NOTIFICATION_BOOL, false);
+        sDefaults.putStringArray(KEY_DATA_CONNECTED_ROAMING_NOTIFICATION_EXCLUDED_MCCS_STRING_ARRAY, new String[0]);
+        sDefaults.putStringArray(KEY_DATA_CONNECTED_ROAMING_NOTIFICATION_INCLUDED_MCC_MNCS_STRING_ARRAY, new String[0]);
+        sDefaults.putIntArray(KEY_LTE_RSRP_THRESHOLDS_INT_ARRAY, new int[]{-128, PackageManager.INSTALL_FAILED_BAD_SIGNATURE, -108, -98});
+        sDefaults.putIntArray(KEY_LTE_RSRQ_THRESHOLDS_INT_ARRAY, new int[]{-20, -17, -14, -11});
+        sDefaults.putIntArray(KEY_LTE_RSSNR_THRESHOLDS_INT_ARRAY, new int[]{-3, 1, 5, 13});
+        sDefaults.putIntArray(KEY_WCDMA_RSCP_THRESHOLDS_INT_ARRAY, new int[]{PackageManager.INSTALL_FAILED_ABORTED, -105, -95, -85});
+        sDefaults.putIntArray(KEY_WCDMA_ECNO_THRESHOLDS_INT_ARRAY, new int[]{-24, -14, -6, 1});
+        sDefaults.putIntArray(KEY_5G_NR_SSRSRP_THRESHOLDS_INT_ARRAY, new int[]{-110, -90, -80, -65});
+        sDefaults.putIntArray(KEY_5G_NR_SSRSRQ_THRESHOLDS_INT_ARRAY, new int[]{-31, -19, -7, 6});
+        sDefaults.putIntArray(KEY_5G_NR_SSSINR_THRESHOLDS_INT_ARRAY, new int[]{-5, 5, 15, 30});
+        sDefaults.putInt(KEY_GERAN_RSSI_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_UTRAN_RSCP_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_EUTRAN_RSRP_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_EUTRAN_RSRQ_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_EUTRAN_RSSNR_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_NGRAN_SSRSRP_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_NGRAN_SSRSRQ_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_NGRAN_SSSINR_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_UTRAN_ECNO_HYSTERESIS_DB_INT, 2);
+        sDefaults.putInt(KEY_PARAMETERS_USE_FOR_5G_NR_SIGNAL_BAR_INT, 1);
+        sDefaults.putBoolean(KEY_SIGNAL_STRENGTH_NR_NSA_USE_LTE_AS_PRIMARY_BOOL, true);
+        sDefaults.putStringArray(KEY_BANDWIDTH_STRING_ARRAY, new String[]{"GPRS:24,24", "EDGE:70,18", "UMTS:115,115", "CDMA:14,14", "1xRTT:30,30", "EvDo_0:750,48", "EvDo_A:950,550", "HSDPA:4300,620", "HSUPA:4300,1800", "HSPA:4300,1800", "EvDo_B:1500,550", "eHRPD:750,48", "iDEN:14,14", "LTE:30000,15000", "HSPA+:13000,3400", "GSM:24,24", "TD_SCDMA:115,115", "LTE_CA:30000,15000", "NR_NSA:47000,18000", "NR_NSA_MMWAVE:145000,60000", "NR_SA:145000,60000", "NR_SA_MMWAVE:145000,60000"});
+        sDefaults.putBoolean(KEY_BANDWIDTH_NR_NSA_USE_LTE_VALUE_FOR_UPLINK_BOOL, false);
+        sDefaults.putString(KEY_WCDMA_DEFAULT_SIGNAL_STRENGTH_MEASUREMENT_STRING, CellSignalStrengthWcdma.LEVEL_CALCULATION_METHOD_RSSI);
+        sDefaults.putLong(KEY_UNDELIVERED_SMS_MESSAGE_EXPIRATION_TIME, 604800000L);
+        sDefaults.putBoolean(KEY_CONFIG_SHOW_ORIG_DIAL_STRING_FOR_CDMA_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_CALL_BLOCKING_DISABLED_NOTIFICATION_ALWAYS_BOOL, false);
+        sDefaults.putBoolean(KEY_CALL_FORWARDING_OVER_UT_WARNING_BOOL, false);
+        sDefaults.putBoolean(KEY_CALL_BARRING_OVER_UT_WARNING_BOOL, false);
+        sDefaults.putBoolean(KEY_CALLER_ID_OVER_UT_WARNING_BOOL, false);
+        sDefaults.putBoolean(KEY_CALL_WAITING_OVER_UT_WARNING_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORT_CLIR_NETWORK_DEFAULT_BOOL, true);
+        sDefaults.putBoolean(KEY_SUPPORT_EMERGENCY_DIALER_SHORTCUT_BOOL, true);
+        sDefaults.putBoolean(KEY_USE_CALL_FORWARDING_USSD_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_CALLER_ID_USSD_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_CALL_WAITING_USSD_BOOL, false);
+        sDefaults.putInt(KEY_CALL_WAITING_SERVICE_CLASS_INT, 1);
+        sDefaults.putString(KEY_5G_ICON_DISPLAY_GRACE_PERIOD_STRING, "");
+        sDefaults.putString(KEY_5G_ICON_DISPLAY_SECONDARY_GRACE_PERIOD_STRING, "");
+        sDefaults.putString(KEY_5G_ICON_CONFIGURATION_STRING_2ND, "connected_mmwave:5G,connected:5G,not_restricted_rrc_idle:5G,not_restricted_rrc_con:5G");
+        sDefaults.putString(KEY_5G_ICON_DISPLAY_GRACE_PERIOD_STRING_2ND, "");
+        sDefaults.putString(KEY_5G_ICON_DISPLAY_SECONDARY_GRACE_PERIOD_STRING_2ND, "");
+        sDefaults.putInt(KEY_NR_ADVANCED_BANDS_SECONDARY_TIMER_SECONDS_INT, 0);
+        sDefaults.putBoolean(KEY_NR_TIMERS_RESET_IF_NON_ENDC_AND_RRC_IDLE_BOOL, false);
+        sDefaults.putBoolean(KEY_NR_TIMERS_RESET_ON_VOICE_QOS_BOOL, true);
+        sDefaults.putBoolean(KEY_NR_TIMERS_RESET_ON_PLMN_CHANGE_BOOL, false);
+        sDefaults.putLong(KEY_5G_WATCHDOG_TIME_MS_LONG, 3600000L);
+        sDefaults.putIntArray(KEY_ADDITIONAL_NR_ADVANCED_BANDS_INT_ARRAY, new int[0]);
+        sDefaults.putInt(KEY_NR_ADVANCED_CAPABLE_PCO_ID_INT, 0);
+        sDefaults.putBoolean(KEY_ENABLE_NR_ADVANCED_WHILE_ROAMING_BOOL, true);
+        sDefaults.putBoolean(KEY_UW_DISQUALIFICATION_ENABLED_BOOL, false);
+        sDefaults.putInt(KEY_HIGH_BANDWIDTH_DATA_TRANSFER_THRESHOLD_KBPS_INT, 0);
+        sDefaults.putBoolean(KEY_LTE_ENDC_USING_USER_DATA_FOR_RRC_DETECTION_BOOL, false);
+        sDefaults.putStringArray(KEY_UNMETERED_NETWORK_TYPES_STRING_ARRAY, new String[]{DctConstants.RAT_NAME_NR_NSA, DctConstants.RAT_NAME_NR_NSA_MMWAVE, "NR_SA", "NR_SA_MMWAVE"});
+        sDefaults.putStringArray(KEY_ROAMING_UNMETERED_NETWORK_TYPES_STRING_ARRAY, new String[0]);
+        sDefaults.putBoolean(KEY_ASCII_7_BIT_SUPPORT_FOR_LONG_MESSAGE_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_WIFI_CALLING_ICON_IN_STATUS_BAR_BOOL, false);
+        sDefaults.putBoolean(KEY_CARRIER_SUPPORTS_OPP_DATA_AUTO_PROVISIONING_BOOL, false);
+        sDefaults.putString(KEY_SMDP_SERVER_ADDRESS_STRING, "");
+        sDefaults.putInt(KEY_ESIM_MAX_DOWNLOAD_RETRY_ATTEMPTS_INT, 5);
+        sDefaults.putInt(KEY_ESIM_DOWNLOAD_RETRY_BACKOFF_TIMER_SEC_INT, 60);
+        sDefaults.putIntArray(KEY_OPPORTUNISTIC_CARRIER_IDS_INT_ARRAY, new int[]{0});
+        sDefaults.putBoolean(KEY_OPPORTUNISTIC_ESIM_DOWNLOAD_VIA_WIFI_ONLY_BOOL, false);
+        sDefaults.putInt(KEY_OPPORTUNISTIC_NETWORK_ENTRY_THRESHOLD_RSRP_INT, -108);
+        sDefaults.putInt(KEY_OPPORTUNISTIC_NETWORK_EXIT_THRESHOLD_RSRP_INT, PackageManager.INSTALL_FAILED_BAD_SIGNATURE);
+        sDefaults.putInt(KEY_OPPORTUNISTIC_NETWORK_ENTRY_THRESHOLD_RSSNR_INT, 5);
+        sDefaults.putInt(KEY_OPPORTUNISTIC_NETWORK_EXIT_THRESHOLD_RSSNR_INT, 1);
+        sDefaults.putInt(KEY_OPPORTUNISTIC_NETWORK_ENTRY_THRESHOLD_BANDWIDTH_INT, 1024);
+        sDefaults.putLong(KEY_OPPORTUNISTIC_NETWORK_ENTRY_OR_EXIT_HYSTERESIS_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
+        sDefaults.putLong(KEY_OPPORTUNISTIC_NETWORK_DATA_SWITCH_HYSTERESIS_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
+        sDefaults.putLong(KEY_OPPORTUNISTIC_NETWORK_DATA_SWITCH_EXIT_HYSTERESIS_TIME_LONG, 3000L);
+        sDefaults.putAll(OpportunisticNetwork.getDefaults());
+        sDefaults.putBoolean(KEY_PING_TEST_BEFORE_DATA_SWITCH_BOOL, true);
+        sDefaults.putBoolean(KEY_SWITCH_DATA_TO_PRIMARY_IF_PRIMARY_IS_OOS_BOOL, true);
+        sDefaults.putLong(KEY_OPPORTUNISTIC_NETWORK_PING_PONG_TIME_LONG, 60000L);
+        sDefaults.putLong(KEY_OPPORTUNISTIC_NETWORK_BACKOFF_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
+        sDefaults.putLong(KEY_OPPORTUNISTIC_NETWORK_MAX_BACKOFF_TIME_LONG, 60000L);
+        sDefaults.putInt(KEY_OPPORTUNISTIC_NETWORK_SCAN_DEFAULT_PERIODIC_INT, 120);
+        sDefaults.putBoolean(KEY_ENABLE_4G_OPPORTUNISTIC_NETWORK_SCAN_BOOL, true);
+        sDefaults.putLong(KEY_TIME_TO_SWITCH_BACK_TO_PRIMARY_IF_OPPORTUNISTIC_OOS_LONG, 60000L);
+        sDefaults.putLong(KEY_OPPORTUNISTIC_TIME_TO_SCAN_AFTER_CAPABILITY_SWITCH_TO_PRIMARY_LONG, TelecomManager.MEDIUM_CALL_TIME_MS);
+        sDefaults.putAll(ImsServiceEntitlement.getDefaults());
+        sDefaults.putAll(Gps.getDefaults());
+        sDefaults.putIntArray(KEY_CDMA_ENHANCED_ROAMING_INDICATOR_FOR_HOME_NETWORK_INT_ARRAY, new int[]{1});
+        sDefaults.putStringArray(KEY_EMERGENCY_NUMBER_PREFIX_STRING_ARRAY, new String[0]);
+        sDefaults.putBoolean(KEY_CARRIER_SUPPORTS_CALLER_ID_VERTICAL_SERVICE_CODES_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_USIM_BOOL, false);
+        sDefaults.putBoolean(KEY_SHOW_WFC_LOCATION_PRIVACY_POLICY_BOOL, false);
+        sDefaults.putBoolean(KEY_AUTO_CANCEL_CS_REJECT_NOTIFICATION, true);
+        sDefaults.putString(KEY_SMART_FORWARDING_CONFIG_COMPONENT_NAME_STRING, "");
+        sDefaults.putBoolean(KEY_ALWAYS_SHOW_PRIMARY_SIGNAL_BAR_IN_OPPORTUNISTIC_NETWORK_BOOLEAN, false);
+        sDefaults.putString(KEY_SUBSCRIPTION_GROUP_UUID_STRING, "");
+        sDefaults.putBoolean(KEY_IS_OPPORTUNISTIC_SUBSCRIPTION_BOOL, false);
+        sDefaults.putIntArray(KEY_GSM_RSSI_THRESHOLDS_INT_ARRAY, new int[]{-107, -103, -97, -89});
+        sDefaults.putBoolean(KEY_SUPPORT_WPS_OVER_IMS_BOOL, true);
+        sDefaults.putAll(Ims.getDefaults());
+        sDefaults.putAll(ImsVoice.getDefaults());
+        sDefaults.putAll(ImsSms.getDefaults());
+        sDefaults.putAll(ImsRtt.getDefaults());
+        sDefaults.putAll(ImsEmergency.getDefaults());
+        sDefaults.putAll(ImsVt.getDefaults());
+        sDefaults.putAll(ImsWfc.getDefaults());
+        sDefaults.putAll(ImsSs.getDefaults());
+        sDefaults.putAll(Bsf.getDefaults());
+        sDefaults.putAll(Iwlan.getDefaults());
+        sDefaults.putStringArray(KEY_CARRIER_CERTIFICATE_STRING_ARRAY, new String[0]);
+        sDefaults.putBoolean(KEY_FORMAT_INCOMING_NUMBER_TO_NATIONAL_FOR_JP_BOOL, false);
+        if (Flags.doNotOverridePreciseLabel()) {
+            sDefaults.putIntArray(KEY_DISCONNECT_CAUSE_PLAY_BUSYTONE_INT_ARRAY, new int[0]);
+        } else {
+            sDefaults.putIntArray(KEY_DISCONNECT_CAUSE_PLAY_BUSYTONE_INT_ARRAY, new int[]{4});
+        }
+        sDefaults.putBoolean(KEY_PREVENT_CLIR_ACTIVATION_AND_DEACTIVATION_CODE_BOOL, false);
+        sDefaults.putLong(KEY_DATA_SWITCH_VALIDATION_TIMEOUT_LONG, 5000L);
+        sDefaults.putStringArray(KEY_MMI_TWO_DIGIT_NUMBER_PATTERN_STRING_ARRAY, new String[0]);
+        sDefaults.putInt(KEY_PARAMETERS_USED_FOR_LTE_SIGNAL_BAR_INT, 1);
+        sDefaults.putInt(KEY_MIN_UDP_PORT_4500_NAT_TIMEOUT_SEC_INT, 300);
+        sDefaults.putInt(KEY_PREFERRED_IKE_PROTOCOL_INT, -1);
+        sDefaults.putAll(Wifi.getDefaults());
+        sDefaults.putBoolean(ENABLE_EAP_METHOD_PREFIX_BOOL, false);
+        sDefaults.putInt(KEY_GBA_MODE_INT, 1);
+        sDefaults.putInt(KEY_GBA_UA_SECURITY_ORGANIZATION_INT, 1);
+        sDefaults.putInt(KEY_GBA_UA_SECURITY_PROTOCOL_INT, 65536);
+        sDefaults.putInt(KEY_GBA_UA_TLS_CIPHER_SUITE_INT, 0);
+        sDefaults.putBoolean(KEY_SHOW_FORWARDED_NUMBER_BOOL, false);
+        sDefaults.putLong("data_switch_validation_min_gap_long", TimeUnit.DAYS.toMillis(1L));
+        sDefaults.putStringArray(KEY_MISSED_INCOMING_CALL_SMS_ORIGINATOR_STRING_ARRAY, new String[0]);
+        sDefaults.putStringArray(KEY_TELEPHONY_NETWORK_CAPABILITY_PRIORITIES_STRING_ARRAY, new String[]{"eims:90", "supl:80", "mms:70", "xcap:70", "cbs:50", "mcx:50", "fota:50", "ims:40", "rcs:40", "dun:30", "enterprise:20", "internet:20", "prioritize_bandwidth:20", "prioritize_latency:20"});
+        sDefaults.putStringArray(KEY_TELEPHONY_DATA_SETUP_RETRY_RULES_STRING_ARRAY, new String[]{"capabilities=eims, retry_interval=1000, maximum_retries=20", "permanent_fail_causes=8|27|28|29|30|32|33|35|50|51|111|-5|-6|65537|65538|-3|65543|65547|2252|2253|2254, retry_interval=2500", "capabilities=mms|supl|cbs|rcs, retry_interval=2000", "capabilities=internet|enterprise|dun|ims|fota|xcap|mcx|prioritize_bandwidth|prioritize_latency, retry_interval=2500|3000|5000|10000|15000|20000|40000|60000|120000|240000|600000|1200000|1800000, maximum_retries=20"});
+        sDefaults.putStringArray(KEY_TELEPHONY_DATA_HANDOVER_RETRY_RULES_STRING_ARRAY, new String[]{"retry_interval=1000|2000|4000|8000|16000, maximum_retries=5"});
+        sDefaults.putBoolean(KEY_DELAY_IMS_TEAR_DOWN_UNTIL_CALL_END_BOOL, false);
+        sDefaults.putStringArray(KEY_MISSED_INCOMING_CALL_SMS_PATTERN_STRING_ARRAY, new String[0]);
+        sDefaults.putPersistableBundle(KEY_CARRIER_SUPPORTED_SATELLITE_SERVICES_PER_PROVIDER_BUNDLE, PersistableBundle.EMPTY);
+        sDefaults.putBoolean(KEY_SATELLITE_ATTACH_SUPPORTED_BOOL, false);
+        sDefaults.putInt(KEY_SATELLITE_CONNECTION_HYSTERESIS_SEC_INT, 180);
+        sDefaults.putIntArray(KEY_NTN_LTE_RSRP_THRESHOLDS_INT_ARRAY, new int[]{-128, PackageManager.INSTALL_FAILED_BAD_SIGNATURE, -108, -98});
+        sDefaults.putIntArray(KEY_NTN_LTE_RSRQ_THRESHOLDS_INT_ARRAY, new int[]{-20, -17, -14, -11});
+        sDefaults.putIntArray(KEY_NTN_LTE_RSSNR_THRESHOLDS_INT_ARRAY, new int[]{-3, 1, 5, 13});
+        sDefaults.putInt(KEY_PARAMETERS_USED_FOR_NTN_LTE_SIGNAL_BAR_INT, 1);
+        sDefaults.putBoolean(KEY_REMOVE_SATELLITE_PLMN_IN_MANUAL_NETWORK_SCAN_BOOL, true);
+        sDefaults.putInt(KEY_SATELLITE_DATA_SUPPORT_MODE_INT, 0);
+        sDefaults.putBoolean(KEY_OVERRIDE_WFC_ROAMING_MODE_WHILE_USING_NTN_BOOL, true);
+        sDefaults.putInt(KEY_SATELLITE_ENTITLEMENT_STATUS_REFRESH_DAYS_INT, 7);
+        sDefaults.putBoolean(KEY_SATELLITE_ENTITLEMENT_SUPPORTED_BOOL, false);
+        sDefaults.putString(KEY_SATELLITE_ENTITLEMENT_APP_NAME_STRING, "androidSatmode");
+        sDefaults.putString(KEY_SATELLITE_INFORMATION_REDIRECT_URL_STRING, "");
+        sDefaults.putIntArray(KEY_CARRIER_ROAMING_SATELLITE_DEFAULT_SERVICES_INT_ARRAY, new int[]{3, 6});
+        sDefaults.putStringArray(KEY_SATELLITE_SUPPORTED_MSG_APPS_STRING_ARRAY, new String[]{"com.google.android.apps.messaging"});
+        sDefaults.putBoolean(KEY_DISABLE_DUN_APN_WHILE_ROAMING_WITH_PRESET_APN_BOOL, false);
+        sDefaults.putBoolean(KEY_EMERGENCY_MESSAGING_SUPPORTED_BOOL, false);
+        sDefaults.putInt(KEY_EMERGENCY_CALL_TO_SATELLITE_T911_HANDOVER_TIMEOUT_MILLIS_INT, (int) TimeUnit.SECONDS.toMillis(30L));
+        sDefaults.putBoolean(KEY_SATELLITE_ESOS_SUPPORTED_BOOL, false);
+        sDefaults.putBoolean(KEY_SATELLITE_ROAMING_P2P_SMS_SUPPORTED_BOOL, false);
+        sDefaults.putString(KEY_SATELLITE_NIDD_APN_NAME_STRING, "");
+        sDefaults.putBoolean(KEY_SATELLITE_ROAMING_TURN_OFF_SESSION_FOR_EMERGENCY_CALL_BOOL, true);
+        sDefaults.putInt(KEY_CARRIER_ROAMING_NTN_CONNECT_TYPE_INT, 0);
+        sDefaults.putInt(KEY_CARRIER_ROAMING_NTN_EMERGENCY_CALL_TO_SATELLITE_HANDOVER_TYPE_INT, 2);
+        sDefaults.putBoolean(KEY_SATELLITE_ROAMING_TRANSMISSION_ONLY_TO_INACTIVITY_CALCULATION_BOOL, false);
+        sDefaults.putString(KEY_NRSA_ENTITLEMENT_SERVER_URL_STRING, "");
+        sDefaults.putString(KEY_NRSA_ENTITLEMENT_APP_NAME_STRING, "NrsaEntitlement");
+        sDefaults.putInt(KEY_CARRIER_SUPPORTED_SATELLITE_NOTIFICATION_HYSTERESIS_SEC_INT, 180);
+        sDefaults.putInt(KEY_SATELLITE_ROAMING_SCREEN_OFF_INACTIVITY_TIMEOUT_SEC_INT, 30);
+        sDefaults.putInt(KEY_SATELLITE_ROAMING_P2P_SMS_INACTIVITY_TIMEOUT_SEC_INT, 180);
+        sDefaults.putInt(KEY_SATELLITE_ROAMING_ESOS_INACTIVITY_TIMEOUT_SEC_INT, 600);
+        sDefaults.putString(KEY_DEFAULT_PREFERRED_APN_NAME_STRING, "");
+        sDefaults.putBoolean(KEY_SUPPORTS_CALL_COMPOSER_BOOL, false);
+        sDefaults.putBoolean(KEY_SUPPORTS_BUSINESS_CALL_COMPOSER_BOOL, false);
+        sDefaults.putString(KEY_CALL_COMPOSER_PICTURE_SERVER_URL_STRING, "");
+        sDefaults.putBoolean(KEY_USE_ACS_FOR_RCS_BOOL, false);
+        sDefaults.putBoolean(KEY_NETWORK_TEMP_NOT_METERED_SUPPORTED_BOOL, true);
+        sDefaults.putInt(KEY_DEFAULT_RTT_MODE_INT, 0);
+        sDefaults.putBoolean(KEY_STORE_SIM_PIN_FOR_UNATTENDED_REBOOT_BOOL, true);
+        sDefaults.putBoolean(KEY_HIDE_ENABLE_2G, false);
+        sDefaults.putStringArray(KEY_ALLOWED_INITIAL_ATTACH_APN_TYPES_STRING_ARRAY, new String[]{"ia", "default"});
+        sDefaults.putBoolean(KEY_CARRIER_PROVISIONS_WIFI_MERGED_NETWORKS_BOOL, false);
+        sDefaults.putBoolean(KEY_USE_IP_FOR_CALLING_INDICATOR_BOOL, false);
+        sDefaults.putBoolean(KEY_DISPLAY_CALL_STRENGTH_INDICATOR_BOOL, true);
+        sDefaults.putString(KEY_CARRIER_PROVISIONING_APP_STRING, "");
+        sDefaults.putBoolean(KEY_DISPLAY_NO_DATA_NOTIFICATION_ON_PERMANENT_FAILURE_BOOL, false);
+        sDefaults.putBoolean(KEY_UNTHROTTLE_DATA_RETRY_WHEN_TAC_CHANGES_BOOL, false);
+        sDefaults.putBoolean(KEY_VONR_SETTING_VISIBILITY_BOOL, true);
+        sDefaults.putBoolean(KEY_VONR_ENABLED_BOOL, false);
+        sDefaults.putBoolean(KEY_VONR_ON_BY_DEFAULT_BOOL, true);
+        sDefaults.putIntArray(KEY_SUPPORTED_PREMIUM_CAPABILITIES_INT_ARRAY, new int[0]);
+        sDefaults.putLong(KEY_PREMIUM_CAPABILITY_NOTIFICATION_DISPLAY_TIMEOUT_MILLIS_LONG, TimeUnit.MINUTES.toMillis(30L));
+        sDefaults.putLong(KEY_PREMIUM_CAPABILITY_NOTIFICATION_BACKOFF_HYSTERESIS_TIME_MILLIS_LONG, TimeUnit.MINUTES.toMillis(30L));
+        sDefaults.putInt(KEY_PREMIUM_CAPABILITY_MAXIMUM_DAILY_NOTIFICATION_COUNT_INT, 2);
+        sDefaults.putInt(KEY_PREMIUM_CAPABILITY_MAXIMUM_MONTHLY_NOTIFICATION_COUNT_INT, 10);
+        sDefaults.putLong(KEY_PREMIUM_CAPABILITY_PURCHASE_CONDITION_BACKOFF_HYSTERESIS_TIME_MILLIS_LONG, TimeUnit.MINUTES.toMillis(30L));
+        sDefaults.putLong(KEY_PREMIUM_CAPABILITY_NETWORK_SETUP_TIME_MILLIS_LONG, TimeUnit.MINUTES.toMillis(5L));
+        sDefaults.putString(KEY_PREMIUM_CAPABILITY_PURCHASE_URL_STRING, null);
+        sDefaults.putBoolean(KEY_PREMIUM_CAPABILITY_SUPPORTED_ON_LTE_BOOL, false);
+        sDefaults.putStringArray(KEY_IWLAN_HANDOVER_POLICY_STRING_ARRAY, new String[]{"source=GERAN|UTRAN|EUTRAN|NGRAN|IWLAN, target=GERAN|UTRAN|EUTRAN|NGRAN|IWLAN, type=disallowed, capabilities=MMS|XCAP|CBS|SUPL|DUN|BIP|FOTA"});
         PersistableBundle auto_data_switch_rat_signal_score_string_bundle = new PersistableBundle();
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("NR_SA_MMWAVE", new int[]{10000, 13227, 16000, 18488, 20017});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray(DctConstants.RAT_NAME_NR_NSA_MMWAVE, new int[]{8000, 10227, 12488, 15017, 15278});
@@ -2147,7 +2160,7 @@ public class CarrierConfigManager {
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("EvDo_B", new int[]{1000, 1495, 2186, 2532, WindowManager.LayoutParams.TYPE_ONE_HAND_OP_CONTROLLER});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("HSPA+", new int[]{1619, 2500, 3393, 4129, 4212});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("HSPA", new int[]{1000, 1495, 2186, 2532, SemExtendedFormat.DataType.PRO_MODE_INFO});
-        auto_data_switch_rat_signal_score_string_bundle.putIntArray("HSUPA", new int[]{1500, SettingsEnums.SCREEN_TIMEOUT_DOCKED, 2132, 2362, SemExtendedFormat.DataType.JPEG_360_HDR_NOTSTITCHED});
+        auto_data_switch_rat_signal_score_string_bundle.putIntArray("HSUPA", new int[]{1500, 1919, 2132, 2362, SemExtendedFormat.DataType.JPEG_360_HDR_NOTSTITCHED});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("HSDPA", new int[]{1500, 1732, 4000, EventMsg.UEVENT_UNZIP_PROFILE, 8000});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("EvDo_A", new int[]{600, 840, 1200, 1300, 1400});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("EvDo_0", new int[]{300, 600, 1000, 1500, 2000});
@@ -2156,20 +2169,19 @@ public class CarrierConfigManager {
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("GPRS", new int[]{15, 30, 40, 45, 50});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("CDMA", new int[]{1, 50, 100, 300, 2000});
         auto_data_switch_rat_signal_score_string_bundle.putIntArray("GSM", new int[]{1, 2, 10, 50, 100});
-        persistableBundle.putPersistableBundle(KEY_AUTO_DATA_SWITCH_RAT_SIGNAL_SCORE_BUNDLE, auto_data_switch_rat_signal_score_string_bundle);
-        persistableBundle.putInt(KEY_CELLULAR_USAGE_SETTING_INT, -1);
-        if (TelephonyFeatures.isCountrySpecific(0, "CHN")) {
-            persistableBundle.putLongArray(KEY_DATA_STALL_RECOVERY_TIMERS_LONG_ARRAY, new long[]{60000, 60000, 60000, 60000});
-        } else {
-            persistableBundle.putLongArray(KEY_DATA_STALL_RECOVERY_TIMERS_LONG_ARRAY, new long[]{180000, 180000, 180000, 180000});
-        }
-        persistableBundle.putBooleanArray(KEY_DATA_STALL_RECOVERY_SHOULD_SKIP_BOOL_ARRAY, new boolean[]{false, false, true, false, false});
-        persistableBundle.putStringArray(KEY_CARRIER_SERVICE_NAME_STRING_ARRAY, new String[0]);
-        persistableBundle.putStringArray(KEY_CARRIER_SERVICE_NUMBER_STRING_ARRAY, new String[0]);
+        sDefaults.putPersistableBundle(KEY_AUTO_DATA_SWITCH_RAT_SIGNAL_SCORE_BUNDLE, auto_data_switch_rat_signal_score_string_bundle);
+        sDefaults.putInt(KEY_CELLULAR_USAGE_SETTING_INT, -1);
+        sDefaults.putLongArray(KEY_DATA_STALL_RECOVERY_TIMERS_LONG_ARRAY, new long[]{180000, 180000, 180000, 180000});
+        sDefaults.putBooleanArray(KEY_DATA_STALL_RECOVERY_SHOULD_SKIP_BOOL_ARRAY, new boolean[]{false, false, true, false, false});
+        sDefaults.putStringArray(KEY_CARRIER_SERVICE_NAME_STRING_ARRAY, new String[0]);
+        sDefaults.putStringArray(KEY_CARRIER_SERVICE_NUMBER_STRING_ARRAY, new String[0]);
+        sDefaults.putIntArray(KEY_CELLULAR_SERVICE_CAPABILITIES_INT_ARRAY, new int[]{1, 2, 3});
+        sDefaults.putInt(KEY_WEAR_CONNECTIVITY_BT_TO_CELL_DELAY_MS_INT, -1);
+        sDefaults.putInt(KEY_WEAR_CONNECTIVITY_EXTEND_BT_TO_CELL_DELAY_ON_WIFI_MS_INT, -1);
+        sDefaults.putInt(KEY_SATELLITE_SOS_MAX_DATAGRAM_SIZE, 255);
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class Wifi {
         public static final String KEY_AVOID_5GHZ_SOFTAP_FOR_LAA_BOOL = "wifi.avoid_5ghz_softap_for_laa_bool";
         public static final String KEY_AVOID_5GHZ_WIFI_DIRECT_FOR_LAA_BOOL = "wifi.avoid_5ghz_wifi_direct_for_laa_bool";
@@ -2177,12 +2189,8 @@ public class CarrierConfigManager {
         public static final String KEY_PREFIX = "wifi.";
         public static final String KEY_SUGGESTION_SSID_LIST_WITH_MAC_RANDOMIZATION_DISABLED = "wifi.suggestion_ssid_list_with_mac_randomization_disabled";
 
-        /* renamed from: -$$Nest$smgetDefaults */
-        static /* bridge */ /* synthetic */ PersistableBundle m4334$$Nest$smgetDefaults() {
-            return getDefaults();
-        }
-
-        private static PersistableBundle getDefaults() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static PersistableBundle getDefaults() {
             PersistableBundle defaults = new PersistableBundle();
             defaults.putInt(KEY_HOTSPOT_MAX_CLIENT_COUNT, 0);
             defaults.putStringArray(KEY_SUGGESTION_SSID_LIST_WITH_MAC_RANDOMIZATION_DISABLED, new String[0]);
@@ -2399,6 +2407,9 @@ public class CarrierConfigManager {
         }
         PersistableBundle configs = null;
         CarrierConfigManager ccm = (CarrierConfigManager) context.getSystemService(CarrierConfigManager.class);
+        if (ccm == null) {
+            return new PersistableBundle();
+        }
         try {
             configs = ccm.getConfigForSubId(subId, keys);
         } catch (RuntimeException e) {

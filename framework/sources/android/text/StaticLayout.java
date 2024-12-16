@@ -1,8 +1,10 @@
 package android.text;
 
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.text.LineBreakConfig;
 import android.hardware.scontext.SContextConstants;
+import android.os.Trace;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.text.style.LineHeightSpan;
@@ -11,7 +13,7 @@ import android.util.Pools;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class StaticLayout extends Layout {
     private static final char CHAR_NEW_LINE = '\n';
     private static final int COLUMNS_ELLIPSIZE = 7;
@@ -38,9 +40,8 @@ public class StaticLayout extends Layout {
     private static final int TOP = 1;
     private int mBottomPadding;
     private int mColumns;
+    private RectF mDrawingBounds;
     private boolean mEllipsized;
-    private int mEllipsizedWidth;
-    private boolean mFallbackLineSpacing;
     private int[] mLeftIndents;
     private int mLineCount;
     private Layout.Directions[] mLineDirections;
@@ -50,16 +51,12 @@ public class StaticLayout extends Layout {
     private int[] mRightIndents;
     private int mTopPadding;
 
-    /* synthetic */ StaticLayout(Builder builder, StaticLayoutIA staticLayoutIA) {
-        this(builder);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private static final Pools.SynchronizedPool<Builder> sPool = new Pools.SynchronizedPool<>(3);
         private boolean mAddLastLineLineSpacing;
         private Layout.Alignment mAlignment;
         private int mBreakStrategy;
+        private boolean mCalculateBounds;
         private TextUtils.TruncateAt mEllipsize;
         private int mEllipsizedWidth;
         private int mEnd;
@@ -69,13 +66,16 @@ public class StaticLayout extends Layout {
         private int mJustificationMode;
         private int[] mLeftIndents;
         private int mMaxLines;
+        private Paint.FontMetrics mMinimumFontMetrics;
         private TextPaint mPaint;
         private int[] mRightIndents;
+        private boolean mShiftDrawingOffsetForStartOverhang;
         private float mSpacingAdd;
         private float mSpacingMult;
         private int mStart;
         private CharSequence mText;
         private TextDirectionHeuristic mTextDir;
+        private boolean mUseBoundsForWidth;
         private int mWidth;
         private LineBreakConfig mLineBreakConfig = LineBreakConfig.NONE;
         private final Paint.FontMetricsInt mFontMetricsInt = new Paint.FontMetricsInt();
@@ -106,22 +106,25 @@ public class StaticLayout extends Layout {
             b.mHyphenationFrequency = 0;
             b.mJustificationMode = 0;
             b.mLineBreakConfig = LineBreakConfig.NONE;
+            b.mMinimumFontMetrics = null;
             return b;
         }
 
-        public static void recycle(Builder b) {
+        private static void recycle(Builder b) {
             b.mPaint = null;
             b.mText = null;
             b.mLeftIndents = null;
             b.mRightIndents = null;
+            b.mMinimumFontMetrics = null;
             sPool.release(b);
         }
 
-        public void finish() {
+        void finish() {
             this.mText = null;
             this.mPaint = null;
             this.mLeftIndents = null;
             this.mRightIndents = null;
+            this.mMinimumFontMetrics = null;
         }
 
         public Builder setText(CharSequence source) {
@@ -210,7 +213,7 @@ public class StaticLayout extends Layout {
             return this;
         }
 
-        public Builder setAddLastLineLineSpacing(boolean value) {
+        Builder setAddLastLineLineSpacing(boolean value) {
             this.mAddLastLineLineSpacing = value;
             return this;
         }
@@ -220,11 +223,54 @@ public class StaticLayout extends Layout {
             return this;
         }
 
+        public Builder setUseBoundsForWidth(boolean useBoundsForWidth) {
+            this.mUseBoundsForWidth = useBoundsForWidth;
+            return this;
+        }
+
+        public Builder setShiftDrawingOffsetForStartOverhang(boolean shiftDrawingOffsetForStartOverhang) {
+            this.mShiftDrawingOffsetForStartOverhang = shiftDrawingOffsetForStartOverhang;
+            return this;
+        }
+
+        public Builder setCalculateBounds(boolean value) {
+            this.mCalculateBounds = value;
+            return this;
+        }
+
+        public Builder setMinimumFontMetrics(Paint.FontMetrics minimumFontMetrics) {
+            this.mMinimumFontMetrics = minimumFontMetrics;
+            return this;
+        }
+
         public StaticLayout build() {
-            StaticLayout result = new StaticLayout(this);
+            StaticLayout result = new StaticLayout(this, this.mIncludePad, this.mEllipsize != null ? 7 : 5);
             recycle(this);
             return result;
         }
+
+        StaticLayout buildPartialStaticLayoutForDynamicLayout(boolean trackpadding, StaticLayout recycle) {
+            if (recycle == null) {
+                recycle = new StaticLayout();
+            }
+            Trace.beginSection("Generating StaticLayout For DynamicLayout");
+            try {
+                recycle.generate(this, this.mIncludePad, trackpadding);
+                return recycle;
+            } finally {
+                Trace.endSection();
+            }
+        }
+    }
+
+    private StaticLayout() {
+        super(null, null, 0, null, null, 1.0f, 0.0f, false, false, 0, null, 1, 0, 0, null, null, 0, null, false, false, null);
+        this.mDrawingBounds = null;
+        this.mMaxLineHeight = -1;
+        this.mMaximumVisibleLineCount = Integer.MAX_VALUE;
+        this.mColumns = 7;
+        this.mLineDirections = (Layout.Directions[]) ArrayUtils.newUnpaddedArray(Layout.Directions.class, 2);
+        this.mLines = ArrayUtils.newUnpaddedIntArray(this.mColumns * 2);
     }
 
     @Deprecated
@@ -242,190 +288,113 @@ public class StaticLayout extends Layout {
         this(source, bufstart, bufend, paint, outerwidth, align, TextDirectionHeuristics.FIRSTSTRONG_LTR, spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth, Integer.MAX_VALUE);
     }
 
+    @Deprecated
+    public StaticLayout(CharSequence source, int bufstart, int bufend, TextPaint paint, int outerwidth, Layout.Alignment align, TextDirectionHeuristic textDir, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, int maxLines) {
+        this(Builder.obtain(source, bufstart, bufend, paint, outerwidth).setAlignment(align).setTextDirection(textDir).setLineSpacing(spacingadd, spacingmult).setIncludePad(includepad).setEllipsize(ellipsize).setEllipsizedWidth(ellipsizedWidth).setMaxLines(maxLines), includepad, ellipsize != null ? 7 : 5);
+    }
+
     /* JADX WARN: Illegal instructions before constructor call */
-    @java.lang.Deprecated
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public StaticLayout(java.lang.CharSequence r15, int r16, int r17, android.text.TextPaint r18, int r19, android.text.Layout.Alignment r20, android.text.TextDirectionHeuristic r21, float r22, float r23, boolean r24, android.text.TextUtils.TruncateAt r25, int r26, int r27) {
+    private StaticLayout(android.text.StaticLayout.Builder r24, boolean r25, int r26) {
         /*
-            r14 = this;
-            r8 = r14
-            r9 = r15
-            r10 = r25
-            r11 = r26
-            r12 = r27
-            if (r10 != 0) goto Lc
-            r1 = r9
-            goto L1d
-        Lc:
-            boolean r0 = r9 instanceof android.text.Spanned
-            if (r0 == 0) goto L17
-            android.text.Layout$SpannedEllipsizer r0 = new android.text.Layout$SpannedEllipsizer
-            r0.<init>(r15)
-            r1 = r0
-            goto L1d
-        L17:
-            android.text.Layout$Ellipsizer r0 = new android.text.Layout$Ellipsizer
-            r0.<init>(r15)
-            r1 = r0
-        L1d:
-            r0 = r14
-            r2 = r18
-            r3 = r19
-            r4 = r20
-            r5 = r21
-            r6 = r22
-            r7 = r23
-            r0.<init>(r1, r2, r3, r4, r5, r6, r7)
-            r0 = -1
-            r8.mMaxLineHeight = r0
-            r0 = 2147483647(0x7fffffff, float:NaN)
-            r8.mMaximumVisibleLineCount = r0
-            android.text.StaticLayout$Builder r0 = android.text.StaticLayout.Builder.obtain(r15, r16, r17, r18, r19)
-            r1 = r20
-            android.text.StaticLayout$Builder r0 = r0.setAlignment(r1)
-            r2 = r21
-            android.text.StaticLayout$Builder r0 = r0.setTextDirection(r2)
-            r3 = r22
-            r4 = r23
-            android.text.StaticLayout$Builder r0 = r0.setLineSpacing(r4, r3)
-            r5 = r24
-            android.text.StaticLayout$Builder r0 = r0.setIncludePad(r5)
-            android.text.StaticLayout$Builder r0 = r0.setEllipsizedWidth(r11)
-            android.text.StaticLayout$Builder r0 = r0.setEllipsize(r10)
-            android.text.StaticLayout$Builder r0 = r0.setMaxLines(r12)
-            if (r10 == 0) goto L75
-            java.lang.CharSequence r6 = r14.getText()
-            android.text.Layout$Ellipsizer r6 = (android.text.Layout.Ellipsizer) r6
-            r6.mLayout = r8
-            r6.mWidth = r11
-            r6.mMethod = r10
-            r8.mEllipsizedWidth = r11
-            r7 = 7
-            r8.mColumns = r7
-            r6 = r19
-            goto L7c
-        L75:
-            r6 = 5
-            r8.mColumns = r6
-            r6 = r19
-            r8.mEllipsizedWidth = r6
-        L7c:
-            java.lang.Class<android.text.Layout$Directions> r7 = android.text.Layout.Directions.class
-            r13 = 2
-            java.lang.Object[] r7 = com.android.internal.util.ArrayUtils.newUnpaddedArray(r7, r13)
-            android.text.Layout$Directions[] r7 = (android.text.Layout.Directions[]) r7
-            r8.mLineDirections = r7
-            int r7 = r8.mColumns
-            int r7 = r7 * r13
-            int[] r7 = com.android.internal.util.ArrayUtils.newUnpaddedIntArray(r7)
-            r8.mLines = r7
-            r8.mMaximumVisibleLineCount = r12
-            boolean r7 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r0)
-            boolean r13 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r0)
-            r14.generate(r0, r7, r13)
-            android.text.StaticLayout.Builder.m4894$$Nest$smrecycle(r0)
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.text.StaticLayout.<init>(java.lang.CharSequence, int, int, android.text.TextPaint, int, android.text.Layout$Alignment, android.text.TextDirectionHeuristic, float, float, boolean, android.text.TextUtils$TruncateAt, int, int):void");
-    }
-
-    public StaticLayout(CharSequence text) {
-        super(text, null, 0, null, 0.0f, 0.0f);
-        this.mMaxLineHeight = -1;
-        this.mMaximumVisibleLineCount = Integer.MAX_VALUE;
-        this.mColumns = 7;
-        this.mLineDirections = (Layout.Directions[]) ArrayUtils.newUnpaddedArray(Layout.Directions.class, 2);
-        this.mLines = ArrayUtils.newUnpaddedIntArray(this.mColumns * 2);
-    }
-
-    /* JADX WARN: Illegal instructions before constructor call */
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r0v23, types: [java.lang.CharSequence] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private StaticLayout(android.text.StaticLayout.Builder r11) {
-        /*
-            r10 = this;
-            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m4875$$Nest$fgetmEllipsize(r11)
-            if (r0 != 0) goto Lc
-            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
-            r3 = r0
-            goto L29
-        Lc:
-            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
+            r23 = this;
+            r2 = r23
+            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m5153$$Nest$fgetmEllipsize(r24)
+            if (r0 != 0) goto Ld
+            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m5171$$Nest$fgetmText(r24)
+            goto L28
+        Ld:
+            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m5171$$Nest$fgetmText(r24)
             boolean r0 = r0 instanceof android.text.Spanned
             if (r0 == 0) goto L1f
             android.text.Layout$SpannedEllipsizer r0 = new android.text.Layout$SpannedEllipsizer
-            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
+            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m5171$$Nest$fgetmText(r24)
             r0.<init>(r1)
-            r3 = r0
-            goto L29
+            goto L28
         L1f:
             android.text.Layout$Ellipsizer r0 = new android.text.Layout$Ellipsizer
-            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
+            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m5171$$Nest$fgetmText(r24)
             r0.<init>(r1)
-            r3 = r0
-        L29:
-            android.text.TextPaint r4 = android.text.StaticLayout.Builder.m4886$$Nest$fgetmPaint(r11)
-            int r5 = android.text.StaticLayout.Builder.m4893$$Nest$fgetmWidth(r11)
-            android.text.Layout$Alignment r6 = android.text.StaticLayout.Builder.m4873$$Nest$fgetmAlignment(r11)
-            android.text.TextDirectionHeuristic r7 = android.text.StaticLayout.Builder.m4892$$Nest$fgetmTextDir(r11)
-            float r8 = android.text.StaticLayout.Builder.m4889$$Nest$fgetmSpacingMult(r11)
-            float r9 = android.text.StaticLayout.Builder.m4888$$Nest$fgetmSpacingAdd(r11)
-            r2 = r10
-            r2.<init>(r3, r4, r5, r6, r7, r8, r9)
+        L28:
+            android.text.TextPaint r3 = android.text.StaticLayout.Builder.m5165$$Nest$fgetmPaint(r24)
+            int r4 = android.text.StaticLayout.Builder.m5174$$Nest$fgetmWidth(r24)
+            android.text.Layout$Alignment r5 = android.text.StaticLayout.Builder.m5150$$Nest$fgetmAlignment(r24)
+            android.text.TextDirectionHeuristic r6 = android.text.StaticLayout.Builder.m5172$$Nest$fgetmTextDir(r24)
+            float r7 = android.text.StaticLayout.Builder.m5169$$Nest$fgetmSpacingMult(r24)
+            float r8 = android.text.StaticLayout.Builder.m5168$$Nest$fgetmSpacingAdd(r24)
+            boolean r9 = android.text.StaticLayout.Builder.m5159$$Nest$fgetmIncludePad(r24)
+            boolean r10 = android.text.StaticLayout.Builder.m5156$$Nest$fgetmFallbackLineSpacing(r24)
+            int r11 = android.text.StaticLayout.Builder.m5154$$Nest$fgetmEllipsizedWidth(r24)
+            android.text.TextUtils$TruncateAt r12 = android.text.StaticLayout.Builder.m5153$$Nest$fgetmEllipsize(r24)
+            int r13 = android.text.StaticLayout.Builder.m5163$$Nest$fgetmMaxLines(r24)
+            int r14 = android.text.StaticLayout.Builder.m5151$$Nest$fgetmBreakStrategy(r24)
+            int r15 = android.text.StaticLayout.Builder.m5158$$Nest$fgetmHyphenationFrequency(r24)
+            int[] r16 = android.text.StaticLayout.Builder.m5161$$Nest$fgetmLeftIndents(r24)
+            int[] r17 = android.text.StaticLayout.Builder.m5166$$Nest$fgetmRightIndents(r24)
+            int r18 = android.text.StaticLayout.Builder.m5160$$Nest$fgetmJustificationMode(r24)
+            android.graphics.text.LineBreakConfig r19 = android.text.StaticLayout.Builder.m5162$$Nest$fgetmLineBreakConfig(r24)
+            boolean r20 = android.text.StaticLayout.Builder.m5173$$Nest$fgetmUseBoundsForWidth(r24)
+            boolean r21 = android.text.StaticLayout.Builder.m5167$$Nest$fgetmShiftDrawingOffsetForStartOverhang(r24)
+            android.graphics.Paint$FontMetrics r22 = android.text.StaticLayout.Builder.m5164$$Nest$fgetmMinimumFontMetrics(r24)
+            r1 = r23
+            r2 = r0
+            r1.<init>(r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22)
+            r0 = 0
+            r1.mDrawingBounds = r0
             r0 = -1
-            r10.mMaxLineHeight = r0
+            r1.mMaxLineHeight = r0
             r0 = 2147483647(0x7fffffff, float:NaN)
-            r10.mMaximumVisibleLineCount = r0
-            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m4875$$Nest$fgetmEllipsize(r11)
-            if (r0 == 0) goto L71
-            java.lang.CharSequence r0 = r10.getText()
+            r1.mMaximumVisibleLineCount = r0
+            r2 = r26
+            r1.mColumns = r2
+            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m5153$$Nest$fgetmEllipsize(r24)
+            if (r0 == 0) goto La7
+            java.lang.CharSequence r0 = r23.getText()
             android.text.Layout$Ellipsizer r0 = (android.text.Layout.Ellipsizer) r0
-            r0.mLayout = r10
-            int r1 = android.text.StaticLayout.Builder.m4876$$Nest$fgetmEllipsizedWidth(r11)
-            r0.mWidth = r1
-            android.text.TextUtils$TruncateAt r1 = android.text.StaticLayout.Builder.m4875$$Nest$fgetmEllipsize(r11)
-            r0.mMethod = r1
-            int r1 = android.text.StaticLayout.Builder.m4876$$Nest$fgetmEllipsizedWidth(r11)
-            r10.mEllipsizedWidth = r1
-            r1 = 7
-            r10.mColumns = r1
-            goto L7a
-        L71:
-            r0 = 5
-            r10.mColumns = r0
-            int r0 = android.text.StaticLayout.Builder.m4893$$Nest$fgetmWidth(r11)
-            r10.mEllipsizedWidth = r0
-        L7a:
+            r0.mLayout = r1
+            int r3 = android.text.StaticLayout.Builder.m5154$$Nest$fgetmEllipsizedWidth(r24)
+            r0.mWidth = r3
+            android.text.TextUtils$TruncateAt r3 = android.text.StaticLayout.Builder.m5153$$Nest$fgetmEllipsize(r24)
+            r0.mMethod = r3
+        La7:
             java.lang.Class<android.text.Layout$Directions> r0 = android.text.Layout.Directions.class
-            r1 = 2
-            java.lang.Object[] r0 = com.android.internal.util.ArrayUtils.newUnpaddedArray(r0, r1)
+            r3 = 2
+            java.lang.Object[] r0 = com.android.internal.util.ArrayUtils.newUnpaddedArray(r0, r3)
             android.text.Layout$Directions[] r0 = (android.text.Layout.Directions[]) r0
-            r10.mLineDirections = r0
-            int r0 = r10.mColumns
-            int r0 = r0 * r1
+            r1.mLineDirections = r0
+            int r0 = r1.mColumns
+            int r0 = r0 * r3
             int[] r0 = com.android.internal.util.ArrayUtils.newUnpaddedIntArray(r0)
-            r10.mLines = r0
-            int r0 = android.text.StaticLayout.Builder.m4885$$Nest$fgetmMaxLines(r11)
-            r10.mMaximumVisibleLineCount = r0
-            int[] r0 = android.text.StaticLayout.Builder.m4883$$Nest$fgetmLeftIndents(r11)
-            r10.mLeftIndents = r0
-            int[] r0 = android.text.StaticLayout.Builder.m4887$$Nest$fgetmRightIndents(r11)
-            r10.mRightIndents = r0
-            int r0 = android.text.StaticLayout.Builder.m4882$$Nest$fgetmJustificationMode(r11)
-            r10.setJustificationMode(r0)
-            boolean r0 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r11)
-            boolean r1 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r11)
-            r10.generate(r11, r0, r1)
+            r1.mLines = r0
+            int r0 = android.text.StaticLayout.Builder.m5163$$Nest$fgetmMaxLines(r24)
+            r1.mMaximumVisibleLineCount = r0
+            int[] r0 = android.text.StaticLayout.Builder.m5161$$Nest$fgetmLeftIndents(r24)
+            r1.mLeftIndents = r0
+            int[] r0 = android.text.StaticLayout.Builder.m5166$$Nest$fgetmRightIndents(r24)
+            r1.mRightIndents = r0
+            java.lang.String r0 = "Constructing StaticLayout"
+            android.os.Trace.beginSection(r0)
+            boolean r0 = android.text.StaticLayout.Builder.m5159$$Nest$fgetmIncludePad(r24)     // Catch: java.lang.Throwable -> Le4
+            r3 = r24
+            r4 = r25
+            r1.generate(r3, r0, r4)     // Catch: java.lang.Throwable -> Le2
+            android.os.Trace.endSection()
             return
+        Le2:
+            r0 = move-exception
+            goto Le9
+        Le4:
+            r0 = move-exception
+            r3 = r24
+            r4 = r25
+        Le9:
+            android.os.Trace.endSection()
+            throw r0
         */
-        throw new UnsupportedOperationException("Method not decompiled: android.text.StaticLayout.<init>(android.text.StaticLayout$Builder):void");
+        throw new UnsupportedOperationException("Method not decompiled: android.text.StaticLayout.<init>(android.text.StaticLayout$Builder, boolean, int):void");
     }
 
     private static int getBaseHyphenationFrequency(int frequency) {
@@ -441,55 +410,163 @@ public class StaticLayout extends Layout {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x0352, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:165:0x06cc, code lost:
     
-        if (r2 != android.text.TextUtils.TruncateAt.MARQUEE) goto L355;
+        r9 = r0;
+        r55 = r4;
+        r51 = r7;
+        r54 = r8;
+        r52 = r10;
+        r15 = r12;
+        r11 = r30;
+        r12 = r31;
+        r23 = r32;
+        r7 = r63;
+        r21 = r53;
+        r25 = r58;
+        r17 = r60;
+        r22 = r62;
+        r50 = r50;
+        r6 = r64;
+        r5 = r65;
+        r18 = r66;
+        r24 = r67;
+        r32 = r73;
+        r14 = r74;
+        r26 = r75;
+        r20 = r76;
+        r4 = r79;
+        r60 = r81;
+        r0 = r82;
+        r8 = r84;
+        r27 = r85;
+        r10 = r87;
+        r30 = r88;
+        r31 = r89;
+        r13 = r90;
+        r53 = r3;
+        r3 = r37;
+        r58 = r56;
+        r37 = r72;
      */
-    /* JADX WARN: Removed duplicated region for block: B:173:0x069b A[LOOP:0: B:25:0x018f->B:173:0x069b, LOOP_END] */
-    /* JADX WARN: Removed duplicated region for block: B:174:0x068b A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:192:0x0359  */
-    /* JADX WARN: Removed duplicated region for block: B:193:0x02f2  */
-    /* JADX WARN: Removed duplicated region for block: B:56:0x02ca  */
-    /* JADX WARN: Removed duplicated region for block: B:59:0x0305 A[LOOP:3: B:58:0x0303->B:59:0x0305, LOOP_END] */
-    /* JADX WARN: Removed duplicated region for block: B:63:0x0345  */
-    /* JADX WARN: Removed duplicated region for block: B:72:0x0360 A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:93:0x03d1  */
+    /* JADX WARN: Code restructure failed: missing block: B:178:0x07d5, code lost:
+    
+        r0 = r88;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:179:0x07d9, code lost:
+    
+        if (r5 == r0) goto L216;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:180:0x07db, code lost:
+    
+        r2 = r89;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:181:0x07eb, code lost:
+    
+        if (r2.charAt(r5 - 1) != '\n') goto L215;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:183:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:185:0x0800, code lost:
+    
+        if (r12.mLineCount >= r12.mMaximumVisibleLineCount) goto L225;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:186:0x0803, code lost:
+    
+        r6 = android.text.MeasuredParagraph.buildForBidi(r2, r5, r5, r75, null);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:187:0x080a, code lost:
+    
+        if (r8 == 0) goto L223;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:188:0x080c, code lost:
+    
+        if (r10 == 0) goto L223;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:189:0x080e, code lost:
+    
+        r3.top = r4;
+        r3.ascent = r8;
+        r3.descent = r10;
+        r3.bottom = r7;
+        r1 = r85;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:190:0x0822, code lost:
+    
+        r4 = r3.ascent;
+        out(r2, r5, r5, r4, r3.descent, r3.top, r3.bottom, r15, r46, r47, null, null, r3, false, 0, r16, r6, r5, r97, r98, r48, null, r0, r76, r72, 0.0f, r1, false);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:191:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:192:0x081b, code lost:
+    
+        r1 = r85;
+        r1.getFontMetricsInt(r3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:194:0x086f, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:195:0x07f4, code lost:
+    
+        r2 = r89;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:73:0x03cb, code lost:
+    
+        if (r2 != android.text.TextUtils.TruncateAt.MARQUEE) goto L117;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:175:0x076b A[LOOP:0: B:30:0x0208->B:175:0x076b, LOOP_END] */
+    /* JADX WARN: Removed duplicated region for block: B:176:0x0757 A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:199:0x03d3  */
+    /* JADX WARN: Removed duplicated region for block: B:200:0x036b  */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x0343  */
+    /* JADX WARN: Removed duplicated region for block: B:64:0x037e A[LOOP:3: B:63:0x037c->B:64:0x037e, LOOP_END] */
+    /* JADX WARN: Removed duplicated region for block: B:68:0x03be  */
+    /* JADX WARN: Removed duplicated region for block: B:77:0x03db A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:98:0x0450  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void generate(android.text.StaticLayout.Builder r90, boolean r91, boolean r92) {
+    void generate(android.text.StaticLayout.Builder r96, boolean r97, boolean r98) {
         /*
-            Method dump skipped, instructions count: 1912
+            Method dump skipped, instructions count: 2170
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.text.StaticLayout.generate(android.text.StaticLayout$Builder, boolean, boolean):void");
     }
 
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r13v1 */
+    /* JADX WARN: Type inference failed for: r13v2, types: [int] */
+    /* JADX WARN: Type inference failed for: r13v7 */
     private int out(CharSequence text, int start, int end, int above, int below, int top, int bottom, int v, float spacingmult, float spacingadd, LineHeightSpan[] chooseHt, int[] chooseHtv, Paint.FontMetricsInt fm, boolean hasTab, int hyphenEdit, boolean needMultiply, MeasuredParagraph measured, int bufEnd, boolean includePad, boolean trackPad, boolean addLastLineLineSpacing, char[] chs, int widthStart, TextUtils.TruncateAt ellipsize, float ellipsisWidth, float textWidth, TextPaint paint, boolean moreChars) {
         int[] lines;
-        int i;
+        ?? r13;
         int j;
         int above2;
         int below2;
         int top2;
         int bottom2;
+        int i;
         int i2;
         int i3;
         int i4;
         int i5;
         int i6;
-        int i7;
         boolean lastCharIsNewLine;
         int extra;
         int want;
-        int i8;
+        boolean z;
         int j2;
         int j3 = this.mLineCount;
-        int i9 = this.mColumns;
-        int off = j3 * i9;
-        int i10 = 1;
-        int want2 = off + i9 + 1;
+        int off = j3 * this.mColumns;
+        boolean z2 = true;
+        int want2 = off + this.mColumns + 1;
         int[] lines2 = this.mLines;
         int dir = measured.getParagraphDir();
         if (want2 < lines2.length) {
@@ -502,8 +579,7 @@ public class StaticLayout extends Layout {
         }
         if (j3 >= this.mLineDirections.length) {
             Layout.Directions[] grow2 = (Layout.Directions[]) ArrayUtils.newUnpaddedArray(Layout.Directions.class, GrowingArrayUtils.growSize(j3));
-            Layout.Directions[] directionsArr = this.mLineDirections;
-            System.arraycopy(directionsArr, 0, grow2, 0, directionsArr.length);
+            System.arraycopy(this.mLineDirections, 0, grow2, 0, this.mLineDirections.length);
             this.mLineDirections = grow2;
         }
         if (chooseHt != null) {
@@ -511,80 +587,77 @@ public class StaticLayout extends Layout {
             fm.descent = below;
             fm.top = top;
             fm.bottom = bottom;
-            int i11 = 0;
-            while (i11 < chooseHt.length) {
-                if (chooseHt[i11] instanceof LineHeightSpan.WithDensity) {
+            int i7 = 0;
+            while (i7 < chooseHt.length) {
+                if (chooseHt[i7] instanceof LineHeightSpan.WithDensity) {
                     want = want2;
-                    i8 = i10;
+                    z = z2;
                     j2 = j3;
-                    ((LineHeightSpan.WithDensity) chooseHt[i11]).chooseHeight(text, start, end, chooseHtv[i11], v, fm, paint);
+                    ((LineHeightSpan.WithDensity) chooseHt[i7]).chooseHeight(text, start, end, chooseHtv[i7], v, fm, paint);
                 } else {
                     want = want2;
-                    i8 = i10;
+                    z = z2;
                     j2 = j3;
-                    chooseHt[i11].chooseHeight(text, start, end, chooseHtv[i11], v, fm);
+                    chooseHt[i7].chooseHeight(text, start, end, chooseHtv[i7], v, fm);
                 }
-                i11++;
-                i10 = i8;
+                i7++;
+                z2 = z;
                 want2 = want;
                 j3 = j2;
             }
-            i = i10;
+            r13 = z2;
             j = j3;
             above2 = fm.ascent;
             below2 = fm.descent;
             top2 = fm.top;
             bottom2 = fm.bottom;
         } else {
-            i = 1;
+            r13 = 1;
             j = j3;
             above2 = above;
             below2 = below;
             top2 = top;
             bottom2 = bottom;
         }
-        int i12 = j == 0 ? i : 0;
-        int i13 = j + 1;
-        int i14 = this.mMaximumVisibleLineCount;
-        int i15 = i13 == i14 ? i : 0;
+        boolean firstLine = j == 0 ? r13 : false;
+        boolean currentLineIsTheLastVisibleOne = j + 1 == this.mMaximumVisibleLineCount ? r13 : false;
         if (ellipsize == null) {
-            i2 = widthStart;
-            i3 = bufEnd;
-            i4 = 0;
+            i = widthStart;
+            i2 = bufEnd;
+            i3 = 0;
         } else {
-            boolean forceEllipsis = (moreChars && this.mLineCount + i == i14) ? i : 0;
-            if (((((!(i14 == i && moreChars) && (i12 == 0 || moreChars)) || ellipsize == TextUtils.TruncateAt.MARQUEE) && (i12 != 0 || ((i15 == 0 && moreChars) || ellipsize != TextUtils.TruncateAt.END))) ? 0 : i) != 0) {
-                i2 = widthStart;
-                i3 = bufEnd;
+            boolean forceEllipsis = (moreChars && this.mLineCount + r13 == this.mMaximumVisibleLineCount) ? r13 : false;
+            boolean doEllipsis = (((!(this.mMaximumVisibleLineCount == r13 && moreChars) && (!firstLine || moreChars)) || ellipsize == TextUtils.TruncateAt.MARQUEE) && (firstLine || ((!currentLineIsTheLastVisibleOne && moreChars) || ellipsize != TextUtils.TruncateAt.END))) ? false : r13;
+            if (doEllipsis) {
+                i = widthStart;
+                i2 = bufEnd;
                 calculateEllipsis(start, end, measured, widthStart, ellipsisWidth, ellipsize, j, textWidth, paint, forceEllipsis, chs);
-                i4 = 0;
+                i3 = 0;
             } else {
-                i2 = widthStart;
-                i3 = bufEnd;
-                int[] iArr = this.mLines;
-                int i16 = this.mColumns;
-                i4 = 0;
-                iArr[(i16 * j) + 5] = 0;
-                iArr[(i16 * j) + 6] = 0;
+                i = widthStart;
+                i2 = bufEnd;
+                i3 = 0;
+                this.mLines[(this.mColumns * j) + 5] = 0;
+                this.mLines[(this.mColumns * j) + 6] = 0;
             }
         }
         if (this.mEllipsized) {
             lastCharIsNewLine = true;
-            i6 = i4;
-            i7 = start;
+            i5 = i3;
+            i6 = start;
         } else {
-            if (i2 != i3 && i3 > 0) {
-                if (text.charAt(i3 - 1) == '\n') {
-                    i5 = 1;
-                    int i17 = i5;
-                    if (end != i3 && i17 == 0) {
+            if (i != i2 && i2 > 0) {
+                if (text.charAt(i2 - 1) == '\n') {
+                    i4 = 1;
+                    int i8 = i4;
+                    if (end != i2 && i8 == 0) {
                         lastCharIsNewLine = true;
-                        i6 = i4;
-                        i7 = start;
+                        i5 = i3;
+                        i6 = start;
                     } else {
-                        i6 = i4;
-                        i7 = start;
-                        if (i7 != i3 && i17 != 0) {
+                        i5 = i3;
+                        i6 = start;
+                        if (i6 != i2 && i8 != 0) {
                             lastCharIsNewLine = true;
                         } else {
                             lastCharIsNewLine = false;
@@ -592,17 +665,17 @@ public class StaticLayout extends Layout {
                     }
                 }
             }
-            i5 = i4;
-            int i172 = i5;
-            if (end != i3) {
+            i4 = i3;
+            int i82 = i4;
+            if (end != i2) {
             }
-            i6 = i4;
-            i7 = start;
-            if (i7 != i3) {
+            i5 = i3;
+            i6 = start;
+            if (i6 != i2) {
             }
             lastCharIsNewLine = false;
         }
-        if (i12 != 0) {
+        if (firstLine) {
             if (trackPad) {
                 this.mTopPadding = top2 - above2;
             }
@@ -628,34 +701,32 @@ public class StaticLayout extends Layout {
         } else {
             extra = 0;
         }
-        lines[off + 0] = i7;
+        lines[off + 0] = i6;
         lines[off + 1] = v;
         lines[off + 2] = below2 + extra;
         lines[off + 3] = extra;
-        boolean z = this.mEllipsized;
-        if (!z && i15 != 0) {
+        if (!this.mEllipsized && currentLineIsTheLastVisibleOne) {
             int maxLineBelow = includePad ? bottom2 : below2;
             this.mMaxLineHeight = v + (maxLineBelow - above2);
         }
         int maxLineBelow2 = below2 - above2;
         int v2 = v + maxLineBelow2 + extra;
-        int i18 = this.mColumns;
-        lines[off + i18 + i6] = end;
-        lines[off + i18 + 1] = v2;
-        int i19 = off + 0;
-        lines[i19] = lines[i19] | (hasTab ? 536870912 : i6);
-        if (!z) {
+        lines[off + this.mColumns + i5] = end;
+        lines[off + this.mColumns + 1] = v2;
+        int i9 = off + 0;
+        lines[i9] = lines[i9] | (hasTab ? 536870912 : i5);
+        if (!this.mEllipsized) {
             lines[off + 4] = hyphenEdit;
         } else if (ellipsize == TextUtils.TruncateAt.START) {
-            lines[off + 4] = packHyphenEdit(i6, unpackEndHyphenEdit(hyphenEdit));
+            lines[off + 4] = packHyphenEdit(i5, unpackEndHyphenEdit(hyphenEdit));
         } else if (ellipsize == TextUtils.TruncateAt.END) {
-            lines[off + 4] = packHyphenEdit(unpackStartHyphenEdit(hyphenEdit), i6);
+            lines[off + 4] = packHyphenEdit(unpackStartHyphenEdit(hyphenEdit), i5);
         } else {
-            lines[off + 4] = packHyphenEdit(i6, i6);
+            lines[off + 4] = packHyphenEdit(i5, i5);
         }
-        int i20 = off + 0;
-        lines[i20] = lines[i20] | (dir << 30);
-        this.mLineDirections[j] = measured.getDirections(i7 - i2, end - i2);
+        int i10 = off + 0;
+        lines[i10] = lines[i10] | (dir << 30);
+        this.mLineDirections[j] = measured.getDirections(i6 - i, end - i);
         this.mLineCount++;
         return v2;
     }
@@ -663,10 +734,8 @@ public class StaticLayout extends Layout {
     private void calculateEllipsis(int lineStart, int lineEnd, MeasuredParagraph measured, int widthStart, float avail, TextUtils.TruncateAt where, int line, float textWidth, TextPaint paint, boolean forceEllipsis, char[] chs) {
         float avail2 = avail - getTotalInsets(line);
         if (textWidth <= avail2 && !forceEllipsis) {
-            int[] iArr = this.mLines;
-            int i = this.mColumns;
-            iArr[(i * line) + 5] = 0;
-            iArr[(i * line) + 6] = 0;
+            this.mLines[(this.mColumns * line) + 5] = 0;
+            this.mLines[(this.mColumns * line) + 6] = 0;
             return;
         }
         float ellipsisWidth = paint.measureText(TextUtils.getEllipsisString(where));
@@ -676,39 +745,39 @@ public class StaticLayout extends Layout {
         if (where == TextUtils.TruncateAt.START) {
             if (this.mMaximumVisibleLineCount == 1) {
                 float sum = 0.0f;
-                int i2 = len;
+                int i = len;
                 while (true) {
-                    if (i2 <= 0) {
+                    if (i <= 0) {
                         break;
                     }
-                    float w = measured.getCharWidthAt(((i2 - 1) + lineStart) - widthStart);
+                    float w = measured.getCharWidthAt(((i - 1) + lineStart) - widthStart);
                     if (w + sum + ellipsisWidth > avail2) {
-                        while (i2 < len && measured.getCharWidthAt((i2 + lineStart) - widthStart) == 0.0f) {
-                            i2++;
+                        while (i < len && measured.getCharWidthAt((i + lineStart) - widthStart) == 0.0f) {
+                            i++;
                         }
                     } else {
                         sum += w;
-                        i2--;
+                        i--;
                     }
                 }
                 ellipsisStart = 0;
-                ellipsisCount = i2;
+                ellipsisCount = i;
             } else if (Log.isLoggable(TAG, 5)) {
                 Log.w(TAG, "Start Ellipsis only supported with one line");
             }
         } else if (where == TextUtils.TruncateAt.END || where == TextUtils.TruncateAt.MARQUEE || where == TextUtils.TruncateAt.END_SMALL) {
             float sum2 = 0.0f;
-            int i3 = 0;
-            while (i3 < len) {
-                float w2 = measured.getCharWidthAt((i3 + lineStart) - widthStart);
+            int i2 = 0;
+            while (i2 < len) {
+                float w2 = measured.getCharWidthAt((i2 + lineStart) - widthStart);
                 if (w2 + sum2 + ellipsisWidth > avail2) {
                     break;
                 }
                 sum2 += w2;
-                i3++;
+                i2++;
             }
-            ellipsisStart = i3;
-            ellipsisCount = len - i3;
+            ellipsisStart = i2;
+            ellipsisCount = len - i2;
             if (forceEllipsis && ellipsisCount == 0 && len > 0) {
                 ellipsisStart = len - 1;
                 while (ellipsisStart > 0 && measured.getCharWidthAt((ellipsisStart + lineStart) - widthStart) == 0.0f && chs != null && chs[(ellipsisStart + lineStart) - widthStart] != '\n') {
@@ -751,21 +820,17 @@ public class StaticLayout extends Layout {
             Log.w(TAG, "Middle Ellipsis only supported with one line");
         }
         this.mEllipsized = true;
-        int[] iArr2 = this.mLines;
-        int i4 = this.mColumns;
-        iArr2[(i4 * line) + 5] = ellipsisStart;
-        iArr2[(i4 * line) + 6] = ellipsisCount;
+        this.mLines[(this.mColumns * line) + 5] = ellipsisStart;
+        this.mLines[(this.mColumns * line) + 6] = ellipsisCount;
     }
 
     private float getTotalInsets(int line) {
         int totalIndent = 0;
-        int[] iArr = this.mLeftIndents;
-        if (iArr != null) {
-            totalIndent = iArr[Math.min(line, iArr.length - 1)];
+        if (this.mLeftIndents != null) {
+            totalIndent = this.mLeftIndents[Math.min(line, this.mLeftIndents.length - 1)];
         }
-        int[] iArr2 = this.mRightIndents;
-        if (iArr2 != null) {
-            totalIndent += iArr2[Math.min(line, iArr2.length - 1)];
+        if (this.mRightIndents != null) {
+            totalIndent += this.mRightIndents[Math.min(line, this.mRightIndents.length - 1)];
         }
         return totalIndent;
     }
@@ -842,15 +907,15 @@ public class StaticLayout extends Layout {
         return this.mBottomPadding;
     }
 
-    public static int packHyphenEdit(int start, int end) {
+    static int packHyphenEdit(int start, int end) {
         return (start << 3) | end;
     }
 
-    public static int unpackStartHyphenEdit(int packedHyphenEdit) {
+    static int unpackStartHyphenEdit(int packedHyphenEdit) {
         return (packedHyphenEdit & 24) >> 3;
     }
 
-    public static int unpackEndHyphenEdit(int packedHyphenEdit) {
+    static int unpackEndHyphenEdit(int packedHyphenEdit) {
         return packedHyphenEdit & 7;
     }
 
@@ -867,29 +932,25 @@ public class StaticLayout extends Layout {
     @Override // android.text.Layout
     public int getIndentAdjust(int line, Layout.Alignment align) {
         if (align == Layout.Alignment.ALIGN_LEFT) {
-            int[] iArr = this.mLeftIndents;
-            if (iArr == null) {
+            if (this.mLeftIndents == null) {
                 return 0;
             }
-            return iArr[Math.min(line, iArr.length - 1)];
+            return this.mLeftIndents[Math.min(line, this.mLeftIndents.length - 1)];
         }
         if (align == Layout.Alignment.ALIGN_RIGHT) {
-            int[] iArr2 = this.mRightIndents;
-            if (iArr2 == null) {
+            if (this.mRightIndents == null) {
                 return 0;
             }
-            return -iArr2[Math.min(line, iArr2.length - 1)];
+            return -this.mRightIndents[Math.min(line, this.mRightIndents.length - 1)];
         }
         if (align == Layout.Alignment.ALIGN_CENTER) {
             int left = 0;
-            int[] iArr3 = this.mLeftIndents;
-            if (iArr3 != null) {
-                left = iArr3[Math.min(line, iArr3.length - 1)];
+            if (this.mLeftIndents != null) {
+                left = this.mLeftIndents[Math.min(line, this.mLeftIndents.length - 1)];
             }
             int right = 0;
-            int[] iArr4 = this.mRightIndents;
-            if (iArr4 != null) {
-                right = iArr4[Math.min(line, iArr4.length - 1)];
+            if (this.mRightIndents != null) {
+                right = this.mRightIndents[Math.min(line, this.mRightIndents.length - 1)];
             }
             return (left - right) >> 1;
         }
@@ -898,42 +959,36 @@ public class StaticLayout extends Layout {
 
     @Override // android.text.Layout
     public int getEllipsisCount(int line) {
-        int i = this.mColumns;
-        if (i < 7) {
+        if (this.mColumns < 7) {
             return 0;
         }
-        return this.mLines[(i * line) + 6];
+        return this.mLines[(this.mColumns * line) + 6];
     }
 
     @Override // android.text.Layout
     public int getEllipsisStart(int line) {
-        int i = this.mColumns;
-        if (i < 7) {
+        if (this.mColumns < 7) {
             return 0;
         }
-        return this.mLines[(i * line) + 5];
+        return this.mLines[(this.mColumns * line) + 5];
     }
 
     @Override // android.text.Layout
-    public int getEllipsizedWidth() {
-        return this.mEllipsizedWidth;
-    }
-
-    @Override // android.text.Layout
-    public boolean isFallbackLineSpacingEnabled() {
-        return this.mFallbackLineSpacing;
+    public RectF computeDrawingBoundingBox() {
+        if (this.mDrawingBounds == null) {
+            this.mDrawingBounds = super.computeDrawingBoundingBox();
+        }
+        return this.mDrawingBounds;
     }
 
     @Override // android.text.Layout
     public int getHeight(boolean cap) {
-        int i;
         if (cap && this.mLineCount > this.mMaximumVisibleLineCount && this.mMaxLineHeight == -1 && Log.isLoggable(TAG, 5)) {
             Log.w(TAG, "maxLineHeight should not be -1.  maxLines:" + this.mMaximumVisibleLineCount + " lineCount:" + this.mLineCount);
         }
-        return (!cap || this.mLineCount <= this.mMaximumVisibleLineCount || (i = this.mMaxLineHeight) == -1) ? super.getHeight() : i;
+        return (!cap || this.mLineCount <= this.mMaximumVisibleLineCount || this.mMaxLineHeight == -1) ? super.getHeight() : this.mMaxLineHeight;
     }
 
-    /* loaded from: classes3.dex */
     static class LineBreaks {
         private static final int INITIAL_SIZE = 16;
         public int[] breaks = new int[16];

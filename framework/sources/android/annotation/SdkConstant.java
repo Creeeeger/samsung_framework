@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 /* loaded from: classes.dex */
 public @interface SdkConstant {
 
-    /* loaded from: classes.dex */
     public enum SdkConstantType {
         ACTIVITY_INTENT_ACTION,
         BROADCAST_INTENT_ACTION,

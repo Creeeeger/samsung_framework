@@ -18,8 +18,6 @@ import android.util.Singleton;
 import android.view.RemoteAnimationDefinition;
 import android.window.SplashScreenView;
 import com.android.internal.R;
-import com.samsung.android.core.CompatChangeableApps;
-import com.samsung.android.core.ICompatChangeableManager;
 import com.samsung.android.multiwindow.MultiWindowCoreState;
 import java.util.List;
 
@@ -27,27 +25,24 @@ import java.util.List;
 public class ActivityTaskManager {
     public static final int APP_CONTINUITY_PACKAGES = 1;
     public static final int COVER_LAUNCHER_PACKAGES = 2048;
-    public static final int CUSTOM_ASPECT_RATIO_LEGACY_PACKAGES = 512;
-    public static final int CUSTOM_ASPECT_RATIO_PACKAGES = 2;
     public static final int DEFAULT_MINIMAL_SPLIT_SCREEN_DISPLAY_SIZE_DP = 440;
     public static final int DISPLAY_COMPAT_PACKAGES = 4;
     public static final int DISPLAY_CUTOUT_PACKAGES = 128;
     public static final int EMBED_ACTIVITY_PACKAGES = 1024;
     public static final String EXTRA_IGNORE_TARGET_SECURITY = "android.app.extra.EXTRA_IGNORE_TARGET_SECURITY";
     public static final String EXTRA_OPTIONS = "android.app.extra.OPTIONS";
-    public static final int FIXED_ASPECT_RATIO_PACKAGES = 8;
     public static final int INVALID_STACK_ID = -1;
     public static final int INVALID_TASK_ID = -1;
     public static final int INVALID_WINDOWING_MODE = -1;
+    public static final int MAX_ASPECT_RATIO_PACKAGES = 2;
+    public static final int MIN_ASPECT_RATIO_PACKAGES = 8;
     public static final int NIGHT_MODE_PRIORITY_APPLIED_PACKAGES = 4096;
     public static final int NIGHT_MODE_SHOW_DIALOG_PACKAGES = 8192;
-    public static final int NO_WAIT_ROTATION_PACKAGES = 256;
-    public static final int ORIENTATION_CONTROL_PACKAGES = 64;
-    public static final int RESET_ALL_PACKAGES_SETTINGS = 7935;
+    public static final int ORIENTATION_POLICY_PACKAGES = 64;
+    public static final int RESET_ALL_PACKAGES_SETTINGS = 7421;
     public static final int RESIZE_MODE_FORCED = 2;
     public static final int RESIZE_MODE_PRESERVE_WINDOW = 1;
     public static final int RESIZE_MODE_SYSTEM = 0;
-    public static final int RESIZE_MODE_SYSTEM_SCREEN_ROTATION = 1;
     public static final int RESIZE_MODE_USER = 1;
     public static final int RESIZE_MODE_USER_FORCED = 3;
     public static final int SPLIT_ACTIVITY_PACKAGES = 32;
@@ -59,18 +54,16 @@ public class ActivityTaskManager {
     public static final int SUPPORTS_FLEX_PANEL_PACKAGES = 16;
     private static int sMaxRecentTasks = -1;
     private static final Singleton<ActivityTaskManager> sInstance = new Singleton<ActivityTaskManager>() { // from class: android.app.ActivityTaskManager.1
-        AnonymousClass1() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.util.Singleton
         public ActivityTaskManager create() {
             return new ActivityTaskManager();
         }
     };
     private static final Singleton<IActivityTaskManager> IActivityTaskManagerSingleton = new Singleton<IActivityTaskManager>() { // from class: android.app.ActivityTaskManager.2
-        AnonymousClass2() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.util.Singleton
         public IActivityTaskManager create() {
             IBinder b = ServiceManager.getService(Context.ACTIVITY_TASK_SERVICE);
@@ -78,7 +71,6 @@ public class ActivityTaskManager {
         }
     };
 
-    /* loaded from: classes.dex */
     public @interface OrientationControlPolicy {
         public static final int DISABLED_FROM_ASPECT_RATIO = 0;
         public static final int DISABLED_FROM_ASPECT_RATIO_BY_SYSTEM = 128;
@@ -90,12 +82,7 @@ public class ActivityTaskManager {
         public static final int LEGACY_FULL_SCREEN_FLAG = 7;
     }
 
-    /* loaded from: classes.dex */
     public @interface SplitCreateMode {
-    }
-
-    /* synthetic */ ActivityTaskManager(ActivityTaskManagerIA activityTaskManagerIA) {
-        this();
     }
 
     public static String splitCreateModeToString(int splitCreateMode) {
@@ -117,18 +104,6 @@ public class ActivityTaskManager {
         }
     }
 
-    /* renamed from: android.app.ActivityTaskManager$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends Singleton<ActivityTaskManager> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.util.Singleton
-        public ActivityTaskManager create() {
-            return new ActivityTaskManager();
-        }
-    }
-
     private ActivityTaskManager() {
     }
 
@@ -138,19 +113,6 @@ public class ActivityTaskManager {
 
     public static IActivityTaskManager getService() {
         return IActivityTaskManagerSingleton.get();
-    }
-
-    /* renamed from: android.app.ActivityTaskManager$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 extends Singleton<IActivityTaskManager> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.util.Singleton
-        public IActivityTaskManager create() {
-            IBinder b = ServiceManager.getService(Context.ACTIVITY_TASK_SERVICE);
-            return IActivityTaskManager.Stub.asInterface(b);
-        }
     }
 
     public void removeRootTasksInWindowingModes(int[] windowingModes) {
@@ -178,13 +140,12 @@ public class ActivityTaskManager {
     }
 
     public static int getMaxRecentTasksStatic() {
-        int i = sMaxRecentTasks;
-        if (i < 0) {
-            int i2 = ActivityManager.isLowRamDeviceStatic() ? 36 : 48;
-            sMaxRecentTasks = i2;
-            return i2;
+        if (sMaxRecentTasks < 0) {
+            int i = ActivityManager.isLowRamDeviceStatic() ? 36 : 48;
+            sMaxRecentTasks = i;
+            return i;
         }
-        return i;
+        return sMaxRecentTasks;
     }
 
     public void onSplashScreenViewCopyFinished(int taskId, SplashScreenView.SplashScreenViewParcelable parcelable) {
@@ -370,17 +331,15 @@ public class ActivityTaskManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class RootTaskInfo extends TaskInfo implements Parcelable {
         public static final Parcelable.Creator<RootTaskInfo> CREATOR = new Parcelable.Creator<RootTaskInfo>() { // from class: android.app.ActivityTaskManager.RootTaskInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RootTaskInfo createFromParcel(Parcel source) {
                 return new RootTaskInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RootTaskInfo[] newArray(int size) {
                 return new RootTaskInfo[size];
@@ -393,10 +352,6 @@ public class ActivityTaskManager {
         public int[] childTaskUserIds;
         public int position;
         public boolean visible;
-
-        /* synthetic */ RootTaskInfo(Parcel parcel, RootTaskInfoIA rootTaskInfoIA) {
-            this(parcel);
-        }
 
         @Override // android.os.Parcelable
         public int describeContents() {
@@ -415,9 +370,8 @@ public class ActivityTaskManager {
             super.writeToParcel(parcel, i);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.app.TaskInfo
-        public void readFromParcel(Parcel source) {
+        void readFromParcel(Parcel source) {
             this.bounds = (Rect) source.readTypedObject(Rect.CREATOR);
             this.childTaskIds = source.createIntArray();
             this.childTaskNames = source.createStringArray();
@@ -426,23 +380,6 @@ public class ActivityTaskManager {
             this.visible = source.readInt() > 0;
             this.position = source.readInt();
             super.readFromParcel(source);
-        }
-
-        /* renamed from: android.app.ActivityTaskManager$RootTaskInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RootTaskInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RootTaskInfo createFromParcel(Parcel source) {
-                return new RootTaskInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RootTaskInfo[] newArray(int size) {
-                return new RootTaskInfo[size];
-            }
         }
 
         public RootTaskInfo() {
@@ -486,18 +423,6 @@ public class ActivityTaskManager {
                 sb.append("\n");
             }
             return sb.toString();
-        }
-    }
-
-    public ICompatChangeableManager createCompatChangeableManager(int userId) {
-        return new CompatChangeableApps(userId);
-    }
-
-    public void setCustomSplashScreenTheme(String packageName, String themeName, int userId) {
-        try {
-            getService().setCustomSplashScreenTheme(packageName, themeName, userId);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
         }
     }
 }

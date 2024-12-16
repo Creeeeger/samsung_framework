@@ -24,8 +24,6 @@ import java.util.Map;
 
 /* loaded from: classes5.dex */
 public interface ILockSettings extends IInterface {
-    void addLog(int i, String str) throws RemoteException;
-
     long addWeakEscrowToken(byte[] bArr, int i, IWeakEscrowTokenActivatedListener iWeakEscrowTokenActivatedListener) throws RemoteException;
 
     boolean changeToken(byte[] bArr, long j, byte[] bArr2, long j2, int i) throws RemoteException;
@@ -65,6 +63,8 @@ public interface ILockSettings extends IInterface {
     int getCredentialType(int i) throws RemoteException;
 
     long getExpireTimeForPrev() throws RemoteException;
+
+    int getFailureCount(int i) throws RemoteException;
 
     byte[] getHashFactor(LockscreenCredential lockscreenCredential, int i) throws RemoteException;
 
@@ -109,6 +109,8 @@ public interface ILockSettings extends IInterface {
     String importKeyWithMetadata(String str, byte[] bArr, byte[] bArr2) throws RemoteException;
 
     void initRecoveryServiceWithSigFile(String str, byte[] bArr, byte[] bArr2) throws RemoteException;
+
+    boolean isRemoteLock(int i) throws RemoteException;
 
     boolean isSupportWeaver() throws RemoteException;
 
@@ -202,6 +204,8 @@ public interface ILockSettings extends IInterface {
 
     boolean tryUnlockWithCachedUnifiedChallenge(int i) throws RemoteException;
 
+    void unlockUserKeyIfUnsecured(int i) throws RemoteException;
+
     void unregisterRemoteLockCallback(int i, IRemoteLockMonitorCallback iRemoteLockMonitorCallback) throws RemoteException;
 
     void unregisterStrongAuthTracker(IStrongAuthTracker iStrongAuthTracker) throws RemoteException;
@@ -224,7 +228,6 @@ public interface ILockSettings extends IInterface {
 
     VerifyCredentialResponse verifyToken(byte[] bArr, long j, int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ILockSettings {
         @Override // com.android.internal.widget.ILockSettings
         public void setBoolean(String key, boolean value, int userId) throws RemoteException {
@@ -486,6 +489,10 @@ public interface ILockSettings extends IInterface {
         }
 
         @Override // com.android.internal.widget.ILockSettings
+        public void unlockUserKeyIfUnsecured(int userId) throws RemoteException {
+        }
+
+        @Override // com.android.internal.widget.ILockSettings
         public void registerRemoteLockCallback(int type, IRemoteLockMonitorCallback callback) throws RemoteException {
         }
 
@@ -553,11 +560,21 @@ public interface ILockSettings extends IInterface {
         }
 
         @Override // com.android.internal.widget.ILockSettings
+        public boolean isRemoteLock(int userId) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.widget.ILockSettings
         public void setLockModeChangedCallback(IRemoteCallback callback) throws RemoteException {
         }
 
         @Override // com.android.internal.widget.ILockSettings
         public void sendLockTypeChangedInfo(int secureState) throws RemoteException {
+        }
+
+        @Override // com.android.internal.widget.ILockSettings
+        public int getFailureCount(int userId) throws RemoteException {
+            return 0;
         }
 
         @Override // com.android.internal.widget.ILockSettings
@@ -572,10 +589,6 @@ public interface ILockSettings extends IInterface {
         @Override // com.android.internal.widget.ILockSettings
         public boolean isSupportWeaver() throws RemoteException {
             return false;
-        }
-
-        @Override // com.android.internal.widget.ILockSettings
-        public void addLog(int type, String contents) throws RemoteException {
         }
 
         @Override // com.android.internal.widget.ILockSettings
@@ -690,30 +703,29 @@ public interface ILockSettings extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ILockSettings {
         public static final String DESCRIPTOR = "com.android.internal.widget.ILockSettings";
-        static final int TRANSACTION_addLog = 77;
         static final int TRANSACTION_addWeakEscrowToken = 53;
-        static final int TRANSACTION_changeToken = 98;
-        static final int TRANSACTION_checkAppLockBackupPin = 88;
-        static final int TRANSACTION_checkAppLockFingerprintPassword = 89;
-        static final int TRANSACTION_checkAppLockPassword = 86;
-        static final int TRANSACTION_checkAppLockPatternWithHash = 87;
-        static final int TRANSACTION_checkAppLockPin = 85;
-        static final int TRANSACTION_checkCarrierPassword = 71;
+        static final int TRANSACTION_changeToken = 100;
+        static final int TRANSACTION_checkAppLockBackupPin = 90;
+        static final int TRANSACTION_checkAppLockFingerprintPassword = 91;
+        static final int TRANSACTION_checkAppLockPassword = 88;
+        static final int TRANSACTION_checkAppLockPatternWithHash = 89;
+        static final int TRANSACTION_checkAppLockPin = 87;
+        static final int TRANSACTION_checkCarrierPassword = 72;
         static final int TRANSACTION_checkCredential = 9;
-        static final int TRANSACTION_checkCredentialForDualDarDo = 100;
-        static final int TRANSACTION_checkFMMPassword = 65;
-        static final int TRANSACTION_checkRemoteLockPassword = 61;
+        static final int TRANSACTION_checkCredentialForDualDarDo = 102;
+        static final int TRANSACTION_checkFMMPassword = 66;
+        static final int TRANSACTION_checkRemoteLockPassword = 62;
         static final int TRANSACTION_closeSession = 45;
-        static final int TRANSACTION_expirePreviousData = 75;
+        static final int TRANSACTION_expirePreviousData = 78;
         static final int TRANSACTION_generateKey = 31;
         static final int TRANSACTION_generateKeyWithMetadata = 32;
         static final int TRANSACTION_getBoolean = 4;
-        static final int TRANSACTION_getCarrierLock = 66;
+        static final int TRANSACTION_getCarrierLock = 67;
         static final int TRANSACTION_getCredentialType = 14;
-        static final int TRANSACTION_getExpireTimeForPrev = 74;
+        static final int TRANSACTION_getExpireTimeForPrev = 77;
+        static final int TRANSACTION_getFailureCount = 76;
         static final int TRANSACTION_getHashFactor = 17;
         static final int TRANSACTION_getKey = 35;
         static final int TRANSACTION_getKeyChainSnapshot = 30;
@@ -726,23 +738,24 @@ public interface ILockSettings extends IInterface {
         static final int TRANSACTION_getStrongAuthForUser = 27;
         static final int TRANSACTION_hasPendingEscrowToken = 28;
         static final int TRANSACTION_hasSecureLockScreen = 48;
-        static final int TRANSACTION_haveAppLockBackupPin = 93;
-        static final int TRANSACTION_haveAppLockFingerprintPassword = 94;
-        static final int TRANSACTION_haveAppLockPassword = 91;
-        static final int TRANSACTION_haveAppLockPattern = 92;
-        static final int TRANSACTION_haveAppLockPin = 90;
-        static final int TRANSACTION_haveCarrierPassword = 70;
-        static final int TRANSACTION_haveFMMPassword = 64;
+        static final int TRANSACTION_haveAppLockBackupPin = 95;
+        static final int TRANSACTION_haveAppLockFingerprintPassword = 96;
+        static final int TRANSACTION_haveAppLockPassword = 93;
+        static final int TRANSACTION_haveAppLockPattern = 94;
+        static final int TRANSACTION_haveAppLockPin = 92;
+        static final int TRANSACTION_haveCarrierPassword = 71;
+        static final int TRANSACTION_haveFMMPassword = 65;
         static final int TRANSACTION_importKey = 33;
         static final int TRANSACTION_importKeyWithMetadata = 34;
         static final int TRANSACTION_initRecoveryServiceWithSigFile = 29;
-        static final int TRANSACTION_isSupportWeaver = 76;
+        static final int TRANSACTION_isRemoteLock = 73;
+        static final int TRANSACTION_isSupportWeaver = 79;
         static final int TRANSACTION_isWeakEscrowTokenActive = 55;
         static final int TRANSACTION_isWeakEscrowTokenValid = 56;
-        static final int TRANSACTION_notifyPasswordChangedForEnterpriseUser = 96;
+        static final int TRANSACTION_notifyPasswordChangedForEnterpriseUser = 98;
         static final int TRANSACTION_recoverKeyChainSnapshot = 44;
         static final int TRANSACTION_refreshStoredPinLength = 16;
-        static final int TRANSACTION_registerRemoteLockCallback = 57;
+        static final int TRANSACTION_registerRemoteLockCallback = 58;
         static final int TRANSACTION_registerStrongAuthTracker = 20;
         static final int TRANSACTION_registerWeakEscrowTokenRemovedListener = 51;
         static final int TRANSACTION_removeCachedUnifiedChallenge = 50;
@@ -750,49 +763,50 @@ public interface ILockSettings extends IInterface {
         static final int TRANSACTION_removeKey = 36;
         static final int TRANSACTION_removeWeakEscrowToken = 54;
         static final int TRANSACTION_reportSuccessfulBiometricUnlock = 23;
-        static final int TRANSACTION_requestRemoteLockInfo = 62;
+        static final int TRANSACTION_requestRemoteLockInfo = 63;
         static final int TRANSACTION_requireStrongAuth = 22;
         static final int TRANSACTION_resetKeyStore = 8;
         static final int TRANSACTION_scheduleNonStrongBiometricIdleTimeout = 24;
-        static final int TRANSACTION_sendLockTypeChangedInfo = 73;
-        static final int TRANSACTION_setAppLockBackupPin = 83;
-        static final int TRANSACTION_setAppLockFingerprintPassword = 84;
-        static final int TRANSACTION_setAppLockPassword = 81;
-        static final int TRANSACTION_setAppLockPattern = 82;
-        static final int TRANSACTION_setAppLockPin = 80;
+        static final int TRANSACTION_sendLockTypeChangedInfo = 75;
+        static final int TRANSACTION_setAppLockBackupPin = 85;
+        static final int TRANSACTION_setAppLockFingerprintPassword = 86;
+        static final int TRANSACTION_setAppLockPassword = 83;
+        static final int TRANSACTION_setAppLockPattern = 84;
+        static final int TRANSACTION_setAppLockPin = 82;
         static final int TRANSACTION_setBoolean = 1;
-        static final int TRANSACTION_setCarrierLockEnabled = 68;
-        static final int TRANSACTION_setKnoxGuard = 59;
-        static final int TRANSACTION_setLockCarrierPassword = 69;
+        static final int TRANSACTION_setCarrierLockEnabled = 69;
+        static final int TRANSACTION_setKnoxGuard = 60;
+        static final int TRANSACTION_setLockCarrierPassword = 70;
         static final int TRANSACTION_setLockCredential = 7;
-        static final int TRANSACTION_setLockCredentialWithIgnoreNotifyIfNeeded = 95;
-        static final int TRANSACTION_setLockFMMPassword = 63;
-        static final int TRANSACTION_setLockModeChangedCallback = 72;
+        static final int TRANSACTION_setLockCredentialWithIgnoreNotifyIfNeeded = 97;
+        static final int TRANSACTION_setLockFMMPassword = 64;
+        static final int TRANSACTION_setLockModeChangedCallback = 74;
         static final int TRANSACTION_setLong = 2;
         static final int TRANSACTION_setRecoverySecretTypes = 41;
         static final int TRANSACTION_setRecoveryStatus = 39;
-        static final int TRANSACTION_setRemoteLock = 60;
-        static final int TRANSACTION_setSecurityDebugLevel = 78;
+        static final int TRANSACTION_setRemoteLock = 61;
+        static final int TRANSACTION_setSecurityDebugLevel = 80;
         static final int TRANSACTION_setSeparateProfileChallengeEnabled = 18;
         static final int TRANSACTION_setServerParams = 38;
-        static final int TRANSACTION_setShellCommandCallback = 79;
+        static final int TRANSACTION_setShellCommandCallback = 81;
         static final int TRANSACTION_setSnapshotCreatedPendingIntent = 37;
         static final int TRANSACTION_setString = 3;
         static final int TRANSACTION_startRecoverySessionWithCertPath = 43;
         static final int TRANSACTION_startRemoteLockscreenValidation = 46;
         static final int TRANSACTION_systemReady = 25;
         static final int TRANSACTION_tryUnlockWithCachedUnifiedChallenge = 49;
-        static final int TRANSACTION_unregisterRemoteLockCallback = 58;
+        static final int TRANSACTION_unlockUserKeyIfUnsecured = 57;
+        static final int TRANSACTION_unregisterRemoteLockCallback = 59;
         static final int TRANSACTION_unregisterStrongAuthTracker = 21;
         static final int TRANSACTION_unregisterWeakEscrowTokenRemovedListener = 52;
-        static final int TRANSACTION_updateCarrierLock = 67;
-        static final int TRANSACTION_updateSdpMdfppForSystem = 99;
+        static final int TRANSACTION_updateCarrierLock = 68;
+        static final int TRANSACTION_updateSdpMdfppForSystem = 101;
         static final int TRANSACTION_userPresent = 26;
         static final int TRANSACTION_validateRemoteLockscreen = 47;
         static final int TRANSACTION_verifyCredential = 10;
         static final int TRANSACTION_verifyGatekeeperPasswordHandle = 12;
         static final int TRANSACTION_verifyTiedProfileChallenge = 11;
-        static final int TRANSACTION_verifyToken = 97;
+        static final int TRANSACTION_verifyToken = 99;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
@@ -929,92 +943,96 @@ public interface ILockSettings extends IInterface {
                 case 56:
                     return "isWeakEscrowTokenValid";
                 case 57:
-                    return "registerRemoteLockCallback";
+                    return "unlockUserKeyIfUnsecured";
                 case 58:
-                    return "unregisterRemoteLockCallback";
+                    return "registerRemoteLockCallback";
                 case 59:
-                    return "setKnoxGuard";
+                    return "unregisterRemoteLockCallback";
                 case 60:
-                    return "setRemoteLock";
+                    return "setKnoxGuard";
                 case 61:
-                    return "checkRemoteLockPassword";
+                    return "setRemoteLock";
                 case 62:
-                    return "requestRemoteLockInfo";
+                    return "checkRemoteLockPassword";
                 case 63:
-                    return "setLockFMMPassword";
+                    return "requestRemoteLockInfo";
                 case 64:
-                    return "haveFMMPassword";
+                    return "setLockFMMPassword";
                 case 65:
-                    return "checkFMMPassword";
+                    return "haveFMMPassword";
                 case 66:
-                    return "getCarrierLock";
+                    return "checkFMMPassword";
                 case 67:
-                    return "updateCarrierLock";
+                    return "getCarrierLock";
                 case 68:
-                    return "setCarrierLockEnabled";
+                    return "updateCarrierLock";
                 case 69:
-                    return "setLockCarrierPassword";
+                    return "setCarrierLockEnabled";
                 case 70:
-                    return "haveCarrierPassword";
+                    return "setLockCarrierPassword";
                 case 71:
-                    return "checkCarrierPassword";
+                    return "haveCarrierPassword";
                 case 72:
-                    return "setLockModeChangedCallback";
+                    return "checkCarrierPassword";
                 case 73:
-                    return "sendLockTypeChangedInfo";
+                    return "isRemoteLock";
                 case 74:
-                    return "getExpireTimeForPrev";
+                    return "setLockModeChangedCallback";
                 case 75:
-                    return "expirePreviousData";
+                    return "sendLockTypeChangedInfo";
                 case 76:
-                    return "isSupportWeaver";
+                    return "getFailureCount";
                 case 77:
-                    return "addLog";
+                    return "getExpireTimeForPrev";
                 case 78:
-                    return "setSecurityDebugLevel";
+                    return "expirePreviousData";
                 case 79:
-                    return "setShellCommandCallback";
+                    return "isSupportWeaver";
                 case 80:
-                    return "setAppLockPin";
+                    return "setSecurityDebugLevel";
                 case 81:
-                    return "setAppLockPassword";
+                    return "setShellCommandCallback";
                 case 82:
-                    return "setAppLockPattern";
+                    return "setAppLockPin";
                 case 83:
-                    return "setAppLockBackupPin";
+                    return "setAppLockPassword";
                 case 84:
-                    return "setAppLockFingerprintPassword";
+                    return "setAppLockPattern";
                 case 85:
-                    return "checkAppLockPin";
+                    return "setAppLockBackupPin";
                 case 86:
-                    return "checkAppLockPassword";
+                    return "setAppLockFingerprintPassword";
                 case 87:
-                    return "checkAppLockPatternWithHash";
+                    return "checkAppLockPin";
                 case 88:
-                    return "checkAppLockBackupPin";
+                    return "checkAppLockPassword";
                 case 89:
-                    return "checkAppLockFingerprintPassword";
+                    return "checkAppLockPatternWithHash";
                 case 90:
-                    return "haveAppLockPin";
+                    return "checkAppLockBackupPin";
                 case 91:
-                    return "haveAppLockPassword";
+                    return "checkAppLockFingerprintPassword";
                 case 92:
-                    return "haveAppLockPattern";
+                    return "haveAppLockPin";
                 case 93:
-                    return "haveAppLockBackupPin";
+                    return "haveAppLockPassword";
                 case 94:
-                    return "haveAppLockFingerprintPassword";
+                    return "haveAppLockPattern";
                 case 95:
-                    return "setLockCredentialWithIgnoreNotifyIfNeeded";
+                    return "haveAppLockBackupPin";
                 case 96:
-                    return "notifyPasswordChangedForEnterpriseUser";
+                    return "haveAppLockFingerprintPassword";
                 case 97:
-                    return "verifyToken";
+                    return "setLockCredentialWithIgnoreNotifyIfNeeded";
                 case 98:
-                    return "changeToken";
+                    return "notifyPasswordChangedForEnterpriseUser";
                 case 99:
-                    return "updateSdpMdfppForSystem";
+                    return "verifyToken";
                 case 100:
+                    return "changeToken";
+                case 101:
+                    return "updateSdpMdfppForSystem";
+                case 102:
                     return "checkCredentialForDualDarDo";
                 default:
                     return null;
@@ -1031,738 +1049,749 @@ public interface ILockSettings extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setBoolean(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    long _arg12 = data.readLong();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLong(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setString(_arg03, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    boolean _arg14 = data.readBoolean();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = getBoolean(_arg04, _arg14, _arg24);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    long _arg15 = data.readLong();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long _result2 = getLong(_arg05, _arg15, _arg25);
+                    reply.writeNoException();
+                    reply.writeLong(_result2);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String _arg16 = data.readString();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result3 = getString(_arg06, _arg16, _arg26);
+                    reply.writeNoException();
+                    reply.writeString(_result3);
+                    return true;
+                case 7:
+                    LockscreenCredential _arg07 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    LockscreenCredential _arg17 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = setLockCredential(_arg07, _arg17, _arg27);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetKeyStore(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    LockscreenCredential _arg09 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg18 = data.readInt();
+                    ICheckCredentialProgressCallback _arg28 = ICheckCredentialProgressCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    VerifyCredentialResponse _result5 = checkCredential(_arg09, _arg18, _arg28);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 10:
+                    LockscreenCredential _arg010 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg19 = data.readInt();
+                    int _arg29 = data.readInt();
+                    data.enforceNoDataAvail();
+                    VerifyCredentialResponse _result6 = verifyCredential(_arg010, _arg19, _arg29);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 11:
+                    LockscreenCredential _arg011 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg110 = data.readInt();
+                    int _arg210 = data.readInt();
+                    data.enforceNoDataAvail();
+                    VerifyCredentialResponse _result7 = verifyTiedProfileChallenge(_arg011, _arg110, _arg210);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 12:
+                    long _arg012 = data.readLong();
+                    long _arg111 = data.readLong();
+                    int _arg211 = data.readInt();
+                    data.enforceNoDataAvail();
+                    VerifyCredentialResponse _result8 = verifyGatekeeperPasswordHandle(_arg012, _arg111, _arg211);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 13:
+                    long _arg013 = data.readLong();
+                    data.enforceNoDataAvail();
+                    removeGatekeeperPasswordHandle(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result9 = getCredentialType(_arg014);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result10 = getPinLength(_arg015);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = refreshStoredPinLength(_arg016);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 17:
+                    LockscreenCredential _arg017 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result12 = getHashFactor(_arg017, _arg112);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result12);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    boolean _arg113 = data.readBoolean();
+                    LockscreenCredential _arg212 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSeparateProfileChallengeEnabled(_arg018, _arg113, _arg212);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = getSeparateProfileChallengeEnabled(_arg019);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 20:
+                    IStrongAuthTracker _arg020 = IStrongAuthTracker.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerStrongAuthTracker(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    IStrongAuthTracker _arg021 = IStrongAuthTracker.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterStrongAuthTracker(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    int _arg022 = data.readInt();
+                    int _arg114 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requireStrongAuth(_arg022, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    boolean _arg023 = data.readBoolean();
+                    int _arg115 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportSuccessfulBiometricUnlock(_arg023, _arg115);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scheduleNonStrongBiometricIdleTimeout(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    systemReady();
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    userPresent(_arg025);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result14 = getStrongAuthForUser(_arg026);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 28:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = hasPendingEscrowToken(_arg027);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 29:
+                    String _arg028 = data.readString();
+                    byte[] _arg116 = data.createByteArray();
+                    byte[] _arg213 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    initRecoveryServiceWithSigFile(_arg028, _arg116, _arg213);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    KeyChainSnapshot _result16 = getKeyChainSnapshot();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result16, 1);
+                    return true;
+                case 31:
+                    String _arg029 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result17 = generateKey(_arg029);
+                    reply.writeNoException();
+                    reply.writeString(_result17);
+                    return true;
+                case 32:
+                    String _arg030 = data.readString();
+                    byte[] _arg117 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    String _result18 = generateKeyWithMetadata(_arg030, _arg117);
+                    reply.writeNoException();
+                    reply.writeString(_result18);
+                    return true;
+                case 33:
+                    String _arg031 = data.readString();
+                    byte[] _arg118 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    String _result19 = importKey(_arg031, _arg118);
+                    reply.writeNoException();
+                    reply.writeString(_result19);
+                    return true;
+                case 34:
+                    String _arg032 = data.readString();
+                    byte[] _arg119 = data.createByteArray();
+                    byte[] _arg214 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    String _result20 = importKeyWithMetadata(_arg032, _arg119, _arg214);
+                    reply.writeNoException();
+                    reply.writeString(_result20);
+                    return true;
+                case 35:
+                    String _arg033 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result21 = getKey(_arg033);
+                    reply.writeNoException();
+                    reply.writeString(_result21);
+                    return true;
+                case 36:
+                    String _arg034 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeKey(_arg034);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    PendingIntent _arg035 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSnapshotCreatedPendingIntent(_arg035);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    byte[] _arg036 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setServerParams(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    String _arg037 = data.readString();
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRecoveryStatus(_arg037, _arg120);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    Map _result22 = getRecoveryStatus();
+                    reply.writeNoException();
+                    reply.writeMap(_result22);
+                    return true;
+                case 41:
+                    int[] _arg038 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    setRecoverySecretTypes(_arg038);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int[] _result23 = getRecoverySecretTypes();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result23);
+                    return true;
+                case 43:
+                    String _arg039 = data.readString();
+                    String _arg121 = data.readString();
+                    RecoveryCertPath _arg215 = (RecoveryCertPath) data.readTypedObject(RecoveryCertPath.CREATOR);
+                    byte[] _arg3 = data.createByteArray();
+                    byte[] _arg4 = data.createByteArray();
+                    List<KeyChainProtectionParams> _arg5 = data.createTypedArrayList(KeyChainProtectionParams.CREATOR);
+                    data.enforceNoDataAvail();
+                    byte[] _result24 = startRecoverySessionWithCertPath(_arg039, _arg121, _arg215, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result24);
+                    return true;
+                case 44:
+                    String _arg040 = data.readString();
+                    byte[] _arg122 = data.createByteArray();
+                    List<WrappedApplicationKey> _arg216 = data.createTypedArrayList(WrappedApplicationKey.CREATOR);
+                    data.enforceNoDataAvail();
+                    Map _result25 = recoverKeyChainSnapshot(_arg040, _arg122, _arg216);
+                    reply.writeNoException();
+                    reply.writeMap(_result25);
+                    return true;
+                case 45:
+                    String _arg041 = data.readString();
+                    data.enforceNoDataAvail();
+                    closeSession(_arg041);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    RemoteLockscreenValidationSession _result26 = startRemoteLockscreenValidation();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result26, 1);
+                    return true;
+                case 47:
+                    byte[] _arg042 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    RemoteLockscreenValidationResult _result27 = validateRemoteLockscreen(_arg042);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result27, 1);
+                    return true;
+                case 48:
+                    boolean _result28 = hasSecureLockScreen();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result28);
+                    return true;
+                case 49:
+                    int _arg043 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result29 = tryUnlockWithCachedUnifiedChallenge(_arg043);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result29);
+                    return true;
+                case 50:
+                    int _arg044 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeCachedUnifiedChallenge(_arg044);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    IWeakEscrowTokenRemovedListener _arg045 = IWeakEscrowTokenRemovedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result30 = registerWeakEscrowTokenRemovedListener(_arg045);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result30);
+                    return true;
+                case 52:
+                    IWeakEscrowTokenRemovedListener _arg046 = IWeakEscrowTokenRemovedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result31 = unregisterWeakEscrowTokenRemovedListener(_arg046);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result31);
+                    return true;
+                case 53:
+                    byte[] _arg047 = data.createByteArray();
+                    int _arg123 = data.readInt();
+                    IWeakEscrowTokenActivatedListener _arg217 = IWeakEscrowTokenActivatedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    long _result32 = addWeakEscrowToken(_arg047, _arg123, _arg217);
+                    reply.writeNoException();
+                    reply.writeLong(_result32);
+                    return true;
+                case 54:
+                    long _arg048 = data.readLong();
+                    int _arg124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result33 = removeWeakEscrowToken(_arg048, _arg124);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result33);
+                    return true;
+                case 55:
+                    long _arg049 = data.readLong();
+                    int _arg125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result34 = isWeakEscrowTokenActive(_arg049, _arg125);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result34);
+                    return true;
+                case 56:
+                    long _arg050 = data.readLong();
+                    byte[] _arg126 = data.createByteArray();
+                    int _arg218 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result35 = isWeakEscrowTokenValid(_arg050, _arg126, _arg218);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result35);
+                    return true;
+                case 57:
+                    int _arg051 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unlockUserKeyIfUnsecured(_arg051);
+                    reply.writeNoException();
+                    return true;
+                case 58:
+                    int _arg052 = data.readInt();
+                    IRemoteLockMonitorCallback _arg127 = IRemoteLockMonitorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerRemoteLockCallback(_arg052, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 59:
+                    int _arg053 = data.readInt();
+                    IRemoteLockMonitorCallback _arg128 = IRemoteLockMonitorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterRemoteLockCallback(_arg053, _arg128);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    int _arg054 = data.readInt();
+                    RemoteLockInfo _arg129 = (RemoteLockInfo) data.readTypedObject(RemoteLockInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result36 = setKnoxGuard(_arg054, _arg129);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result36);
+                    return true;
+                case 61:
+                    int _arg055 = data.readInt();
+                    RemoteLockInfo _arg130 = (RemoteLockInfo) data.readTypedObject(RemoteLockInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRemoteLock(_arg055, _arg130);
+                    reply.writeNoException();
+                    return true;
+                case 62:
+                    int _arg056 = data.readInt();
+                    byte[] _arg131 = data.createByteArray();
+                    int _arg219 = data.readInt();
+                    IRemoteCallback _arg32 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    checkRemoteLockPassword(_arg056, _arg131, _arg219, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 63:
+                    int _arg057 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestRemoteLockInfo(_arg057);
+                    reply.writeNoException();
+                    return true;
+                case 64:
+                    byte[] _arg058 = data.createByteArray();
+                    int _arg132 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLockFMMPassword(_arg058, _arg132);
+                    reply.writeNoException();
+                    return true;
+                case 65:
+                    int _arg059 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result37 = haveFMMPassword(_arg059);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result37);
+                    return true;
+                case 66:
+                    byte[] _arg060 = data.createByteArray();
+                    int _arg133 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result38 = checkFMMPassword(_arg060, _arg133);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result38);
+                    return true;
+                case 67:
+                    int _arg061 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result39 = getCarrierLock(_arg061);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result39);
+                    return true;
+                case 68:
+                    int _arg062 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result40 = updateCarrierLock(_arg062);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result40);
+                    return true;
+                case 69:
+                    int _arg063 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCarrierLockEnabled(_arg063);
+                    reply.writeNoException();
+                    return true;
+                case 70:
+                    byte[] _arg064 = data.createByteArray();
+                    int _arg134 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLockCarrierPassword(_arg064, _arg134);
+                    reply.writeNoException();
+                    return true;
+                case 71:
+                    int _arg065 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result41 = haveCarrierPassword(_arg065);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result41);
+                    return true;
+                case 72:
+                    byte[] _arg066 = data.createByteArray();
+                    int _arg135 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result42 = checkCarrierPassword(_arg066, _arg135);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result42);
+                    return true;
+                case 73:
+                    int _arg067 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result43 = isRemoteLock(_arg067);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result43);
+                    return true;
+                case 74:
+                    IRemoteCallback _arg068 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setLockModeChangedCallback(_arg068);
+                    return true;
+                case 75:
+                    int _arg069 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendLockTypeChangedInfo(_arg069);
+                    return true;
+                case 76:
+                    int _arg070 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result44 = getFailureCount(_arg070);
+                    reply.writeNoException();
+                    reply.writeInt(_result44);
+                    return true;
+                case 77:
+                    long _result45 = getExpireTimeForPrev();
+                    reply.writeNoException();
+                    reply.writeLong(_result45);
+                    return true;
+                case 78:
+                    expirePreviousData();
+                    return true;
+                case 79:
+                    boolean _result46 = isSupportWeaver();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result46);
+                    return true;
+                case 80:
+                    int _arg071 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSecurityDebugLevel(_arg071);
+                    return true;
+                case 81:
+                    IRemoteCallback _arg072 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setShellCommandCallback(_arg072);
+                    return true;
+                case 82:
+                    String _arg073 = data.readString();
+                    int _arg136 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAppLockPin(_arg073, _arg136);
+                    reply.writeNoException();
+                    return true;
+                case 83:
+                    String _arg074 = data.readString();
+                    int _arg137 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAppLockPassword(_arg074, _arg137);
+                    reply.writeNoException();
+                    return true;
+                case 84:
+                    String _arg075 = data.readString();
+                    int _arg138 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAppLockPattern(_arg075, _arg138);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    String _arg076 = data.readString();
+                    int _arg139 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAppLockBackupPin(_arg076, _arg139);
+                    reply.writeNoException();
+                    return true;
+                case 86:
+                    String _arg077 = data.readString();
+                    int _arg140 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAppLockFingerprintPassword(_arg077, _arg140);
+                    reply.writeNoException();
+                    return true;
+                case 87:
+                    String _arg078 = data.readString();
+                    int _arg141 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result47 = checkAppLockPin(_arg078, _arg141);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result47);
+                    return true;
+                case 88:
+                    String _arg079 = data.readString();
+                    int _arg142 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result48 = checkAppLockPassword(_arg079, _arg142);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result48);
+                    return true;
+                case 89:
+                    String _arg080 = data.readString();
+                    int _arg143 = data.readInt();
+                    byte[] _arg220 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result49 = checkAppLockPatternWithHash(_arg080, _arg143, _arg220);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result49);
+                    return true;
+                case 90:
+                    String _arg081 = data.readString();
+                    int _arg144 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result50 = checkAppLockBackupPin(_arg081, _arg144);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result50);
+                    return true;
+                case 91:
+                    String _arg082 = data.readString();
+                    int _arg145 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result51 = checkAppLockFingerprintPassword(_arg082, _arg145);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result51);
+                    return true;
+                case 92:
+                    int _arg083 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result52 = haveAppLockPin(_arg083);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result52);
+                    return true;
+                case 93:
+                    int _arg084 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result53 = haveAppLockPassword(_arg084);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result53);
+                    return true;
+                case 94:
+                    int _arg085 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result54 = haveAppLockPattern(_arg085);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result54);
+                    return true;
+                case 95:
+                    int _arg086 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result55 = haveAppLockBackupPin(_arg086);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result55);
+                    return true;
+                case 96:
+                    int _arg087 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result56 = haveAppLockFingerprintPassword(_arg087);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result56);
+                    return true;
+                case 97:
+                    LockscreenCredential _arg088 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    LockscreenCredential _arg146 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg221 = data.readInt();
+                    boolean _arg33 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result57 = setLockCredentialWithIgnoreNotifyIfNeeded(_arg088, _arg146, _arg221, _arg33);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result57);
+                    return true;
+                case 98:
+                    LockscreenCredential _arg089 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg147 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyPasswordChangedForEnterpriseUser(_arg089, _arg147);
+                    reply.writeNoException();
+                    return true;
+                case 99:
+                    byte[] _arg090 = data.createByteArray();
+                    long _arg148 = data.readLong();
+                    int _arg222 = data.readInt();
+                    data.enforceNoDataAvail();
+                    VerifyCredentialResponse _result58 = verifyToken(_arg090, _arg148, _arg222);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result58, 1);
+                    return true;
+                case 100:
+                    byte[] _arg091 = data.createByteArray();
+                    long _arg149 = data.readLong();
+                    byte[] _arg223 = data.createByteArray();
+                    long _arg34 = data.readLong();
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result59 = changeToken(_arg091, _arg149, _arg223, _arg34, _arg42);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result59);
+                    return true;
+                case 101:
+                    int _arg092 = data.readInt();
+                    long _arg150 = data.readLong();
+                    data.enforceNoDataAvail();
+                    updateSdpMdfppForSystem(_arg092, _arg150);
+                    reply.writeNoException();
+                    return true;
+                case 102:
+                    LockscreenCredential _arg093 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
+                    int _arg151 = data.readInt();
+                    int _arg224 = data.readInt();
+                    IDualDarAuthProgressCallback _arg35 = IDualDarAuthProgressCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    VerifyCredentialResponse _result60 = checkCredentialForDualDarDo(_arg093, _arg151, _arg224, _arg35);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result60, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setBoolean(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            long _arg12 = data.readLong();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLong(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setString(_arg03, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            boolean _arg14 = data.readBoolean();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = getBoolean(_arg04, _arg14, _arg24);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            long _arg15 = data.readLong();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            long _result2 = getLong(_arg05, _arg15, _arg25);
-                            reply.writeNoException();
-                            reply.writeLong(_result2);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String _arg16 = data.readString();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result3 = getString(_arg06, _arg16, _arg26);
-                            reply.writeNoException();
-                            reply.writeString(_result3);
-                            return true;
-                        case 7:
-                            LockscreenCredential _arg07 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            LockscreenCredential _arg17 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = setLockCredential(_arg07, _arg17, _arg27);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetKeyStore(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            LockscreenCredential _arg09 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg18 = data.readInt();
-                            ICheckCredentialProgressCallback _arg28 = ICheckCredentialProgressCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            VerifyCredentialResponse _result5 = checkCredential(_arg09, _arg18, _arg28);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 10:
-                            LockscreenCredential _arg010 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg19 = data.readInt();
-                            int _arg29 = data.readInt();
-                            data.enforceNoDataAvail();
-                            VerifyCredentialResponse _result6 = verifyCredential(_arg010, _arg19, _arg29);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 11:
-                            LockscreenCredential _arg011 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg110 = data.readInt();
-                            int _arg210 = data.readInt();
-                            data.enforceNoDataAvail();
-                            VerifyCredentialResponse _result7 = verifyTiedProfileChallenge(_arg011, _arg110, _arg210);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 12:
-                            long _arg012 = data.readLong();
-                            long _arg111 = data.readLong();
-                            int _arg211 = data.readInt();
-                            data.enforceNoDataAvail();
-                            VerifyCredentialResponse _result8 = verifyGatekeeperPasswordHandle(_arg012, _arg111, _arg211);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 13:
-                            long _arg013 = data.readLong();
-                            data.enforceNoDataAvail();
-                            removeGatekeeperPasswordHandle(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result9 = getCredentialType(_arg014);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result10 = getPinLength(_arg015);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = refreshStoredPinLength(_arg016);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 17:
-                            LockscreenCredential _arg017 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result12 = getHashFactor(_arg017, _arg112);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result12);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            boolean _arg113 = data.readBoolean();
-                            LockscreenCredential _arg212 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSeparateProfileChallengeEnabled(_arg018, _arg113, _arg212);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = getSeparateProfileChallengeEnabled(_arg019);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 20:
-                            IStrongAuthTracker _arg020 = IStrongAuthTracker.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerStrongAuthTracker(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            IStrongAuthTracker _arg021 = IStrongAuthTracker.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterStrongAuthTracker(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            int _arg022 = data.readInt();
-                            int _arg114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requireStrongAuth(_arg022, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            boolean _arg023 = data.readBoolean();
-                            int _arg115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportSuccessfulBiometricUnlock(_arg023, _arg115);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scheduleNonStrongBiometricIdleTimeout(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            systemReady();
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            userPresent(_arg025);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result14 = getStrongAuthForUser(_arg026);
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 28:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = hasPendingEscrowToken(_arg027);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 29:
-                            String _arg028 = data.readString();
-                            byte[] _arg116 = data.createByteArray();
-                            byte[] _arg213 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            initRecoveryServiceWithSigFile(_arg028, _arg116, _arg213);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            KeyChainSnapshot _result16 = getKeyChainSnapshot();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result16, 1);
-                            return true;
-                        case 31:
-                            String _arg029 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result17 = generateKey(_arg029);
-                            reply.writeNoException();
-                            reply.writeString(_result17);
-                            return true;
-                        case 32:
-                            String _arg030 = data.readString();
-                            byte[] _arg117 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            String _result18 = generateKeyWithMetadata(_arg030, _arg117);
-                            reply.writeNoException();
-                            reply.writeString(_result18);
-                            return true;
-                        case 33:
-                            String _arg031 = data.readString();
-                            byte[] _arg118 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            String _result19 = importKey(_arg031, _arg118);
-                            reply.writeNoException();
-                            reply.writeString(_result19);
-                            return true;
-                        case 34:
-                            String _arg032 = data.readString();
-                            byte[] _arg119 = data.createByteArray();
-                            byte[] _arg214 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            String _result20 = importKeyWithMetadata(_arg032, _arg119, _arg214);
-                            reply.writeNoException();
-                            reply.writeString(_result20);
-                            return true;
-                        case 35:
-                            String _arg033 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result21 = getKey(_arg033);
-                            reply.writeNoException();
-                            reply.writeString(_result21);
-                            return true;
-                        case 36:
-                            String _arg034 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeKey(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            PendingIntent _arg035 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSnapshotCreatedPendingIntent(_arg035);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            byte[] _arg036 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setServerParams(_arg036);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            String _arg037 = data.readString();
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRecoveryStatus(_arg037, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            Map _result22 = getRecoveryStatus();
-                            reply.writeNoException();
-                            reply.writeMap(_result22);
-                            return true;
-                        case 41:
-                            int[] _arg038 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            setRecoverySecretTypes(_arg038);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            int[] _result23 = getRecoverySecretTypes();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result23);
-                            return true;
-                        case 43:
-                            String _arg039 = data.readString();
-                            String _arg121 = data.readString();
-                            RecoveryCertPath _arg215 = (RecoveryCertPath) data.readTypedObject(RecoveryCertPath.CREATOR);
-                            byte[] _arg3 = data.createByteArray();
-                            byte[] _arg4 = data.createByteArray();
-                            List<KeyChainProtectionParams> _arg5 = data.createTypedArrayList(KeyChainProtectionParams.CREATOR);
-                            data.enforceNoDataAvail();
-                            byte[] _result24 = startRecoverySessionWithCertPath(_arg039, _arg121, _arg215, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result24);
-                            return true;
-                        case 44:
-                            String _arg040 = data.readString();
-                            byte[] _arg122 = data.createByteArray();
-                            List<WrappedApplicationKey> _arg216 = data.createTypedArrayList(WrappedApplicationKey.CREATOR);
-                            data.enforceNoDataAvail();
-                            Map _result25 = recoverKeyChainSnapshot(_arg040, _arg122, _arg216);
-                            reply.writeNoException();
-                            reply.writeMap(_result25);
-                            return true;
-                        case 45:
-                            String _arg041 = data.readString();
-                            data.enforceNoDataAvail();
-                            closeSession(_arg041);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            RemoteLockscreenValidationSession _result26 = startRemoteLockscreenValidation();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result26, 1);
-                            return true;
-                        case 47:
-                            byte[] _arg042 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            RemoteLockscreenValidationResult _result27 = validateRemoteLockscreen(_arg042);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result27, 1);
-                            return true;
-                        case 48:
-                            boolean _result28 = hasSecureLockScreen();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result28);
-                            return true;
-                        case 49:
-                            int _arg043 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result29 = tryUnlockWithCachedUnifiedChallenge(_arg043);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result29);
-                            return true;
-                        case 50:
-                            int _arg044 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeCachedUnifiedChallenge(_arg044);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            IWeakEscrowTokenRemovedListener _arg045 = IWeakEscrowTokenRemovedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result30 = registerWeakEscrowTokenRemovedListener(_arg045);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result30);
-                            return true;
-                        case 52:
-                            IWeakEscrowTokenRemovedListener _arg046 = IWeakEscrowTokenRemovedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result31 = unregisterWeakEscrowTokenRemovedListener(_arg046);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result31);
-                            return true;
-                        case 53:
-                            byte[] _arg047 = data.createByteArray();
-                            int _arg123 = data.readInt();
-                            IWeakEscrowTokenActivatedListener _arg217 = IWeakEscrowTokenActivatedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            long _result32 = addWeakEscrowToken(_arg047, _arg123, _arg217);
-                            reply.writeNoException();
-                            reply.writeLong(_result32);
-                            return true;
-                        case 54:
-                            long _arg048 = data.readLong();
-                            int _arg124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result33 = removeWeakEscrowToken(_arg048, _arg124);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result33);
-                            return true;
-                        case 55:
-                            long _arg049 = data.readLong();
-                            int _arg125 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result34 = isWeakEscrowTokenActive(_arg049, _arg125);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result34);
-                            return true;
-                        case 56:
-                            long _arg050 = data.readLong();
-                            byte[] _arg126 = data.createByteArray();
-                            int _arg218 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result35 = isWeakEscrowTokenValid(_arg050, _arg126, _arg218);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result35);
-                            return true;
-                        case 57:
-                            int _arg051 = data.readInt();
-                            IRemoteLockMonitorCallback _arg127 = IRemoteLockMonitorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerRemoteLockCallback(_arg051, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 58:
-                            int _arg052 = data.readInt();
-                            IRemoteLockMonitorCallback _arg128 = IRemoteLockMonitorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterRemoteLockCallback(_arg052, _arg128);
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            int _arg053 = data.readInt();
-                            RemoteLockInfo _arg129 = (RemoteLockInfo) data.readTypedObject(RemoteLockInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result36 = setKnoxGuard(_arg053, _arg129);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result36);
-                            return true;
-                        case 60:
-                            int _arg054 = data.readInt();
-                            RemoteLockInfo _arg130 = (RemoteLockInfo) data.readTypedObject(RemoteLockInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRemoteLock(_arg054, _arg130);
-                            reply.writeNoException();
-                            return true;
-                        case 61:
-                            int _arg055 = data.readInt();
-                            byte[] _arg131 = data.createByteArray();
-                            int _arg219 = data.readInt();
-                            IRemoteCallback _arg32 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            checkRemoteLockPassword(_arg055, _arg131, _arg219, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 62:
-                            int _arg056 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestRemoteLockInfo(_arg056);
-                            reply.writeNoException();
-                            return true;
-                        case 63:
-                            byte[] _arg057 = data.createByteArray();
-                            int _arg132 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLockFMMPassword(_arg057, _arg132);
-                            reply.writeNoException();
-                            return true;
-                        case 64:
-                            int _arg058 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result37 = haveFMMPassword(_arg058);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result37);
-                            return true;
-                        case 65:
-                            byte[] _arg059 = data.createByteArray();
-                            int _arg133 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result38 = checkFMMPassword(_arg059, _arg133);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result38);
-                            return true;
-                        case 66:
-                            int _arg060 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result39 = getCarrierLock(_arg060);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result39);
-                            return true;
-                        case 67:
-                            int _arg061 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result40 = updateCarrierLock(_arg061);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result40);
-                            return true;
-                        case 68:
-                            int _arg062 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCarrierLockEnabled(_arg062);
-                            reply.writeNoException();
-                            return true;
-                        case 69:
-                            byte[] _arg063 = data.createByteArray();
-                            int _arg134 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLockCarrierPassword(_arg063, _arg134);
-                            reply.writeNoException();
-                            return true;
-                        case 70:
-                            int _arg064 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result41 = haveCarrierPassword(_arg064);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result41);
-                            return true;
-                        case 71:
-                            byte[] _arg065 = data.createByteArray();
-                            int _arg135 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result42 = checkCarrierPassword(_arg065, _arg135);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result42);
-                            return true;
-                        case 72:
-                            IRemoteCallback _arg066 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setLockModeChangedCallback(_arg066);
-                            return true;
-                        case 73:
-                            int _arg067 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendLockTypeChangedInfo(_arg067);
-                            return true;
-                        case 74:
-                            long _result43 = getExpireTimeForPrev();
-                            reply.writeNoException();
-                            reply.writeLong(_result43);
-                            return true;
-                        case 75:
-                            expirePreviousData();
-                            return true;
-                        case 76:
-                            boolean _result44 = isSupportWeaver();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result44);
-                            return true;
-                        case 77:
-                            int _arg068 = data.readInt();
-                            String _arg136 = data.readString();
-                            data.enforceNoDataAvail();
-                            addLog(_arg068, _arg136);
-                            return true;
-                        case 78:
-                            int _arg069 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSecurityDebugLevel(_arg069);
-                            return true;
-                        case 79:
-                            IRemoteCallback _arg070 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setShellCommandCallback(_arg070);
-                            return true;
-                        case 80:
-                            String _arg071 = data.readString();
-                            int _arg137 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAppLockPin(_arg071, _arg137);
-                            reply.writeNoException();
-                            return true;
-                        case 81:
-                            String _arg072 = data.readString();
-                            int _arg138 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAppLockPassword(_arg072, _arg138);
-                            reply.writeNoException();
-                            return true;
-                        case 82:
-                            String _arg073 = data.readString();
-                            int _arg139 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAppLockPattern(_arg073, _arg139);
-                            reply.writeNoException();
-                            return true;
-                        case 83:
-                            String _arg074 = data.readString();
-                            int _arg140 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAppLockBackupPin(_arg074, _arg140);
-                            reply.writeNoException();
-                            return true;
-                        case 84:
-                            String _arg075 = data.readString();
-                            int _arg141 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAppLockFingerprintPassword(_arg075, _arg141);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            String _arg076 = data.readString();
-                            int _arg142 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result45 = checkAppLockPin(_arg076, _arg142);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result45);
-                            return true;
-                        case 86:
-                            String _arg077 = data.readString();
-                            int _arg143 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result46 = checkAppLockPassword(_arg077, _arg143);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result46);
-                            return true;
-                        case 87:
-                            String _arg078 = data.readString();
-                            int _arg144 = data.readInt();
-                            byte[] _arg220 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result47 = checkAppLockPatternWithHash(_arg078, _arg144, _arg220);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result47);
-                            return true;
-                        case 88:
-                            String _arg079 = data.readString();
-                            int _arg145 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result48 = checkAppLockBackupPin(_arg079, _arg145);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result48);
-                            return true;
-                        case 89:
-                            String _arg080 = data.readString();
-                            int _arg146 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result49 = checkAppLockFingerprintPassword(_arg080, _arg146);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result49);
-                            return true;
-                        case 90:
-                            int _arg081 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result50 = haveAppLockPin(_arg081);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result50);
-                            return true;
-                        case 91:
-                            int _arg082 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result51 = haveAppLockPassword(_arg082);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result51);
-                            return true;
-                        case 92:
-                            int _arg083 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result52 = haveAppLockPattern(_arg083);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result52);
-                            return true;
-                        case 93:
-                            int _arg084 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result53 = haveAppLockBackupPin(_arg084);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result53);
-                            return true;
-                        case 94:
-                            int _arg085 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result54 = haveAppLockFingerprintPassword(_arg085);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result54);
-                            return true;
-                        case 95:
-                            LockscreenCredential _arg086 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            LockscreenCredential _arg147 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg221 = data.readInt();
-                            boolean _arg33 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result55 = setLockCredentialWithIgnoreNotifyIfNeeded(_arg086, _arg147, _arg221, _arg33);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result55);
-                            return true;
-                        case 96:
-                            LockscreenCredential _arg087 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg148 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyPasswordChangedForEnterpriseUser(_arg087, _arg148);
-                            reply.writeNoException();
-                            return true;
-                        case 97:
-                            byte[] _arg088 = data.createByteArray();
-                            long _arg149 = data.readLong();
-                            int _arg222 = data.readInt();
-                            data.enforceNoDataAvail();
-                            VerifyCredentialResponse _result56 = verifyToken(_arg088, _arg149, _arg222);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result56, 1);
-                            return true;
-                        case 98:
-                            byte[] _arg089 = data.createByteArray();
-                            long _arg150 = data.readLong();
-                            byte[] _arg223 = data.createByteArray();
-                            long _arg34 = data.readLong();
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result57 = changeToken(_arg089, _arg150, _arg223, _arg34, _arg42);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result57);
-                            return true;
-                        case 99:
-                            int _arg090 = data.readInt();
-                            long _arg151 = data.readLong();
-                            data.enforceNoDataAvail();
-                            updateSdpMdfppForSystem(_arg090, _arg151);
-                            reply.writeNoException();
-                            return true;
-                        case 100:
-                            LockscreenCredential _arg091 = (LockscreenCredential) data.readTypedObject(LockscreenCredential.CREATOR);
-                            int _arg152 = data.readInt();
-                            int _arg224 = data.readInt();
-                            IDualDarAuthProgressCallback _arg35 = IDualDarAuthProgressCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            VerifyCredentialResponse _result58 = checkCredentialForDualDarDo(_arg091, _arg152, _arg224, _arg35);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result58, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ILockSettings {
+        private static class Proxy implements ILockSettings {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -2732,13 +2761,12 @@ public interface ILockSettings extends IInterface {
             }
 
             @Override // com.android.internal.widget.ILockSettings
-            public void registerRemoteLockCallback(int type, IRemoteLockMonitorCallback callback) throws RemoteException {
+            public void unlockUserKeyIfUnsecured(int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(type);
-                    _data.writeStrongInterface(callback);
+                    _data.writeInt(userId);
                     this.mRemote.transact(57, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -2748,7 +2776,7 @@ public interface ILockSettings extends IInterface {
             }
 
             @Override // com.android.internal.widget.ILockSettings
-            public void unregisterRemoteLockCallback(int type, IRemoteLockMonitorCallback callback) throws RemoteException {
+            public void registerRemoteLockCallback(int type, IRemoteLockMonitorCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -2764,6 +2792,22 @@ public interface ILockSettings extends IInterface {
             }
 
             @Override // com.android.internal.widget.ILockSettings
+            public void unregisterRemoteLockCallback(int type, IRemoteLockMonitorCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(type);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(59, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.widget.ILockSettings
             public boolean setKnoxGuard(int userId, RemoteLockInfo data) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -2771,7 +2815,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeTypedObject(data, 0);
-                    this.mRemote.transact(59, _data, _reply, 0);
+                    this.mRemote.transact(60, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2789,7 +2833,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeTypedObject(data, 0);
-                    this.mRemote.transact(60, _data, _reply, 0);
+                    this.mRemote.transact(61, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2807,7 +2851,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeByteArray(password);
                     _data.writeInt(userId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(61, _data, _reply, 0);
+                    this.mRemote.transact(62, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2822,7 +2866,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(62, _data, _reply, 0);
+                    this.mRemote.transact(63, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2838,7 +2882,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(password);
                     _data.writeInt(userId);
-                    this.mRemote.transact(63, _data, _reply, 0);
+                    this.mRemote.transact(64, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2853,7 +2897,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(64, _data, _reply, 0);
+                    this.mRemote.transact(65, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2871,7 +2915,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(password);
                     _data.writeInt(userId);
-                    this.mRemote.transact(65, _data, _reply, 0);
+                    this.mRemote.transact(66, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2888,7 +2932,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(66, _data, _reply, 0);
+                    this.mRemote.transact(67, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2905,7 +2949,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(67, _data, _reply, 0);
+                    this.mRemote.transact(68, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2922,7 +2966,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(68, _data, _reply, 0);
+                    this.mRemote.transact(69, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2938,7 +2982,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(password);
                     _data.writeInt(userId);
-                    this.mRemote.transact(69, _data, _reply, 0);
+                    this.mRemote.transact(70, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2953,7 +2997,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(70, _data, _reply, 0);
+                    this.mRemote.transact(71, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2971,7 +3015,24 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(password);
                     _data.writeInt(userId);
-                    this.mRemote.transact(71, _data, _reply, 0);
+                    this.mRemote.transact(72, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.widget.ILockSettings
+            public boolean isRemoteLock(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(73, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2987,7 +3048,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(72, _data, null, 1);
+                    this.mRemote.transact(74, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2999,8 +3060,25 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(secureState);
-                    this.mRemote.transact(73, _data, null, 1);
+                    this.mRemote.transact(75, _data, null, 1);
                 } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.widget.ILockSettings
+            public int getFailureCount(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(76, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -3011,7 +3089,7 @@ public interface ILockSettings extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(74, _data, _reply, 0);
+                    this.mRemote.transact(77, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -3026,7 +3104,7 @@ public interface ILockSettings extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(75, _data, null, 1);
+                    this.mRemote.transact(78, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -3038,7 +3116,7 @@ public interface ILockSettings extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(76, _data, _reply, 0);
+                    this.mRemote.transact(79, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3049,25 +3127,12 @@ public interface ILockSettings extends IInterface {
             }
 
             @Override // com.android.internal.widget.ILockSettings
-            public void addLog(int type, String contents) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(type);
-                    _data.writeString(contents);
-                    this.mRemote.transact(77, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.widget.ILockSettings
             public void setSecurityDebugLevel(int level) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(level);
-                    this.mRemote.transact(78, _data, null, 1);
+                    this.mRemote.transact(80, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -3079,7 +3144,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(79, _data, null, 1);
+                    this.mRemote.transact(81, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -3087,38 +3152,6 @@ public interface ILockSettings extends IInterface {
 
             @Override // com.android.internal.widget.ILockSettings
             public void setAppLockPin(String password, int userId) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(password);
-                    _data.writeInt(userId);
-                    this.mRemote.transact(80, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.widget.ILockSettings
-            public void setAppLockPassword(String password, int userId) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(password);
-                    _data.writeInt(userId);
-                    this.mRemote.transact(81, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.widget.ILockSettings
-            public void setAppLockPattern(String password, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -3134,7 +3167,7 @@ public interface ILockSettings extends IInterface {
             }
 
             @Override // com.android.internal.widget.ILockSettings
-            public void setAppLockBackupPin(String password, int userId) throws RemoteException {
+            public void setAppLockPassword(String password, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -3150,7 +3183,7 @@ public interface ILockSettings extends IInterface {
             }
 
             @Override // com.android.internal.widget.ILockSettings
-            public void setAppLockFingerprintPassword(String password, int userId) throws RemoteException {
+            public void setAppLockPattern(String password, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -3166,7 +3199,7 @@ public interface ILockSettings extends IInterface {
             }
 
             @Override // com.android.internal.widget.ILockSettings
-            public boolean checkAppLockPin(String password, int userId) throws RemoteException {
+            public void setAppLockBackupPin(String password, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -3174,6 +3207,38 @@ public interface ILockSettings extends IInterface {
                     _data.writeString(password);
                     _data.writeInt(userId);
                     this.mRemote.transact(85, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.widget.ILockSettings
+            public void setAppLockFingerprintPassword(String password, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(password);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(86, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.widget.ILockSettings
+            public boolean checkAppLockPin(String password, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(password);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(87, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3191,7 +3256,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(password);
                     _data.writeInt(userId);
-                    this.mRemote.transact(86, _data, _reply, 0);
+                    this.mRemote.transact(88, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3210,7 +3275,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeString(password);
                     _data.writeInt(userId);
                     _data.writeByteArray(hash);
-                    this.mRemote.transact(87, _data, _reply, 0);
+                    this.mRemote.transact(89, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3228,7 +3293,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(password);
                     _data.writeInt(userId);
-                    this.mRemote.transact(88, _data, _reply, 0);
+                    this.mRemote.transact(90, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3246,7 +3311,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(password);
                     _data.writeInt(userId);
-                    this.mRemote.transact(89, _data, _reply, 0);
+                    this.mRemote.transact(91, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3263,7 +3328,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(90, _data, _reply, 0);
+                    this.mRemote.transact(92, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3280,7 +3345,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(91, _data, _reply, 0);
+                    this.mRemote.transact(93, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3297,7 +3362,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(92, _data, _reply, 0);
+                    this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3314,7 +3379,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(93, _data, _reply, 0);
+                    this.mRemote.transact(95, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3331,7 +3396,7 @@ public interface ILockSettings extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(94, _data, _reply, 0);
+                    this.mRemote.transact(96, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3351,7 +3416,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeTypedObject(savedCredential, 0);
                     _data.writeInt(userId);
                     _data.writeBoolean(ignoreNotifyPasswordChanged);
-                    this.mRemote.transact(95, _data, _reply, 0);
+                    this.mRemote.transact(97, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3369,7 +3434,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(newCredential, 0);
                     _data.writeInt(userId);
-                    this.mRemote.transact(96, _data, _reply, 0);
+                    this.mRemote.transact(98, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3386,7 +3451,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeByteArray(token);
                     _data.writeLong(tokenHandle);
                     _data.writeInt(userId);
-                    this.mRemote.transact(97, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                     VerifyCredentialResponse _result = (VerifyCredentialResponse) _reply.readTypedObject(VerifyCredentialResponse.CREATOR);
                     return _result;
@@ -3407,7 +3472,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeByteArray(oldToken);
                     _data.writeLong(oldHandle);
                     _data.writeInt(userId);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(100, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3425,7 +3490,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeLong(value);
-                    this.mRemote.transact(99, _data, _reply, 0);
+                    this.mRemote.transact(101, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3443,7 +3508,7 @@ public interface ILockSettings extends IInterface {
                     _data.writeInt(userId);
                     _data.writeInt(option);
                     _data.writeStrongInterface(progressCallback);
-                    this.mRemote.transact(100, _data, _reply, 0);
+                    this.mRemote.transact(102, _data, _reply, 0);
                     _reply.readException();
                     VerifyCredentialResponse _result = (VerifyCredentialResponse) _reply.readTypedObject(VerifyCredentialResponse.CREATOR);
                     return _result;
@@ -3456,7 +3521,7 @@ public interface ILockSettings extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 99;
+            return 101;
         }
     }
 }

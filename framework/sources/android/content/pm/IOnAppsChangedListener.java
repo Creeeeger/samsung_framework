@@ -28,7 +28,6 @@ public interface IOnAppsChangedListener extends IInterface {
 
     void onShortcutChanged(UserHandle userHandle, String str, ParceledListSlice parceledListSlice) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IOnAppsChangedListener {
         @Override // android.content.pm.IOnAppsChangedListener
         public void onPackageRemoved(UserHandle user, String packageName) throws RemoteException {
@@ -72,7 +71,6 @@ public interface IOnAppsChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IOnAppsChangedListener {
         public static final String DESCRIPTOR = "android.content.pm.IOnAppsChangedListener";
         static final int TRANSACTION_onPackageAdded = 2;
@@ -140,80 +138,76 @@ public interface IOnAppsChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    UserHandle _arg0 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onPackageRemoved(_arg0, _arg1);
+                    return true;
+                case 2:
+                    UserHandle _arg02 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    onPackageAdded(_arg02, _arg12);
+                    return true;
+                case 3:
+                    UserHandle _arg03 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    onPackageChanged(_arg03, _arg13);
+                    return true;
+                case 4:
+                    UserHandle _arg04 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String[] _arg14 = data.createStringArray();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onPackagesAvailable(_arg04, _arg14, _arg2);
+                    return true;
+                case 5:
+                    UserHandle _arg05 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String[] _arg15 = data.createStringArray();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onPackagesUnavailable(_arg05, _arg15, _arg22);
+                    return true;
+                case 6:
+                    UserHandle _arg06 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String[] _arg16 = data.createStringArray();
+                    Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPackagesSuspended(_arg06, _arg16, _arg23);
+                    return true;
+                case 7:
+                    UserHandle _arg07 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String[] _arg17 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    onPackagesUnsuspended(_arg07, _arg17);
+                    return true;
+                case 8:
+                    UserHandle _arg08 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String _arg18 = data.readString();
+                    ParceledListSlice _arg24 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onShortcutChanged(_arg08, _arg18, _arg24);
+                    return true;
+                case 9:
+                    UserHandle _arg09 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    String _arg19 = data.readString();
+                    float _arg25 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onPackageLoadingProgressChanged(_arg09, _arg19, _arg25);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            UserHandle _arg0 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onPackageRemoved(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            UserHandle _arg02 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            onPackageAdded(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            UserHandle _arg03 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            onPackageChanged(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            UserHandle _arg04 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String[] _arg14 = data.createStringArray();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onPackagesAvailable(_arg04, _arg14, _arg2);
-                            return true;
-                        case 5:
-                            UserHandle _arg05 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String[] _arg15 = data.createStringArray();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onPackagesUnavailable(_arg05, _arg15, _arg22);
-                            return true;
-                        case 6:
-                            UserHandle _arg06 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String[] _arg16 = data.createStringArray();
-                            Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPackagesSuspended(_arg06, _arg16, _arg23);
-                            return true;
-                        case 7:
-                            UserHandle _arg07 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String[] _arg17 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            onPackagesUnsuspended(_arg07, _arg17);
-                            return true;
-                        case 8:
-                            UserHandle _arg08 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String _arg18 = data.readString();
-                            ParceledListSlice _arg24 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onShortcutChanged(_arg08, _arg18, _arg24);
-                            return true;
-                        case 9:
-                            UserHandle _arg09 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            String _arg19 = data.readString();
-                            float _arg25 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onPackageLoadingProgressChanged(_arg09, _arg19, _arg25);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IOnAppsChangedListener {
+        private static class Proxy implements IOnAppsChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

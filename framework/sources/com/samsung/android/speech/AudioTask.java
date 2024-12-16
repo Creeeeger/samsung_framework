@@ -12,8 +12,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/* loaded from: classes5.dex */
-public class AudioTask implements Runnable {
+/* loaded from: classes6.dex */
+class AudioTask implements Runnable {
     static final int DEFAULT_BLOCK_SIZE = 320;
     private String mTAG = AudioTask.class.getSimpleName();
     private LinkedBlockingQueue<short[]> q = null;
@@ -57,9 +57,6 @@ public class AudioTask implements Runnable {
     private boolean isOEMResult = false;
     private int dualThresholdFlag = 0;
     private Handler handler = new Handler() { // from class: com.samsung.android.speech.AudioTask.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             String[] result = msg.getData().getStringArray("recognition_result");
@@ -69,13 +66,12 @@ public class AudioTask implements Runnable {
         }
     };
 
-    public AudioTask(SemSpeechRecognizer.ResultListener listener, String path, int command, int language, boolean samsungOOVResult) {
+    AudioTask(SemSpeechRecognizer.ResultListener listener, String path, int command, int language, boolean samsungOOVResult) {
     }
 
     void init(LinkedBlockingQueue<short[]> q, int block_size, SemSpeechRecognizer.ResultListener listener, String path, int command, int Language, boolean samsungOOVResult) {
-        String simpleName = AudioTask.class.getSimpleName();
-        this.mTAG = simpleName;
-        Log.i(simpleName, "AudioTask init()");
+        this.mTAG = AudioTask.class.getSimpleName();
+        Log.i(this.mTAG, "AudioTask init()");
         Log.i(this.mTAG, "command : " + command);
         Log.i(this.mTAG, "Language : " + Language);
         this.done = false;
@@ -132,11 +128,9 @@ public class AudioTask implements Runnable {
     }
 
     private int getMMUIRecognitionResult(short[] speech, int readNshorts) {
-        MMUIRecognizer mMUIRecognizer;
         int result = 0;
-        MMUIRecognizer mMUIRecognizer2 = this.aMMUIRecognizer;
-        if (mMUIRecognizer2 != null) {
-            result = mMUIRecognizer2.RECThread(speech);
+        if (this.aMMUIRecognizer != null) {
+            result = this.aMMUIRecognizer.RECThread(speech);
         }
         if (result == -2) {
             if (this.done) {
@@ -149,33 +143,28 @@ public class AudioTask implements Runnable {
                 this.aMMUIRecognizer.SASRReset();
             }
         }
-        boolean z = this.done;
-        if (z) {
+        if (this.done) {
             Log.e(this.mTAG, "readByteBlock return -1 : getMMUIRecognitionResult - Section2");
             return -1;
         }
-        if (result == 2 && (mMUIRecognizer = this.aMMUIRecognizer) != null) {
-            if (z) {
+        if (result == 2 && this.aMMUIRecognizer != null) {
+            if (this.done) {
                 Log.e(this.mTAG, "readByteBlock return -1 : getMMUIRecognitionResult - Section3");
                 return -1;
             }
-            mMUIRecognizer.ResetFx();
+            this.aMMUIRecognizer.ResetFx();
             this.numRecogResult = this.aMMUIRecognizer.SASRDoRecognition(this.cmResult, this.strResult, "/system/voicecommanddata/sasr/input.txt", this.BargeinAct, this.utfResult);
-            String[] strArr = this.strResult;
-            strArr[0] = strArr[0].replace('_', ' ');
-            int i = this.mEmbeddedEngineLanguage;
-            if (i == 0 || i == 2) {
-                String[] strArr2 = this.utfResult;
-                strArr2[0] = strArr2[0].replace('_', ' ');
+            this.strResult[0] = this.strResult[0].replace('_', ' ');
+            if (this.mEmbeddedEngineLanguage == 0 || this.mEmbeddedEngineLanguage == 2) {
+                this.utfResult[0] = this.utfResult[0].replace('_', ' ');
                 this.strResult[0] = this.utfResult[0];
             }
             Log.i(this.mTAG, "numResult[0] : " + this.cmResult[0]);
             Log.i(this.mTAG, "strResult[0] : " + this.strResult[0]);
             Log.i(this.mTAG, "BargeinAct[0] : " + ((int) this.BargeinAct[0]));
-            int i2 = this.mCommandType;
-            if (i2 == 3 && this.BargeinAct[0] == 2) {
+            if (this.mCommandType == 3 && this.BargeinAct[0] == 2) {
                 this.THscore = -1.8d;
-            } else if (i2 == 7) {
+            } else if (this.mCommandType == 7) {
                 this.THscore = -1.0d;
             } else {
                 this.THscore = -1.5d;
@@ -193,18 +182,16 @@ public class AudioTask implements Runnable {
                     Log.i(this.mTAG, "Set isOEMResult = false. So isOEMResult : " + this.isOEMResult);
                 } else {
                     Log.i(this.mTAG, "isOEMCameraBargeIn is true and keyword is not detected by OEM and keyword or non-keyword is detected by embeddedEngine.");
-                    String[] strArr3 = this.strResult;
-                    strArr3[0] = "TH-Reject";
+                    this.strResult[0] = "TH-Reject";
                     this.BargeinAct[0] = -1;
-                    SendHandlerMessage(strArr3);
+                    SendHandlerMessage(this.strResult);
                 }
             } else if (this.cmResult[0] > this.THscore) {
                 SendHandlerMessage(this.strResult);
             } else {
-                String[] strArr4 = this.strResult;
-                strArr4[0] = "TH-Reject";
+                this.strResult[0] = "TH-Reject";
                 this.BargeinAct[0] = -1;
-                SendHandlerMessage(strArr4);
+                SendHandlerMessage(this.strResult);
             }
             if (this.done) {
                 Log.e(this.mTAG, "readByteBlock return -1 : Section13");
@@ -221,22 +208,6 @@ public class AudioTask implements Runnable {
 
     public void setHandler(Handler stopHandler) {
         this.mStopHandler = stopHandler;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.speech.AudioTask$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            String[] result = msg.getData().getStringArray("recognition_result");
-            if (AudioTask.this.m_listener != null) {
-                AudioTask.this.m_listener.onResults(result);
-            }
-        }
     }
 
     private void SendHandlerMessage(String[] result) {
@@ -258,7 +229,7 @@ public class AudioTask implements Runnable {
         this.loadNameList = Config.GetSamsungNameList(domain);
     }
 
-    public AudioRecord getAudioRecord(int source) {
+    protected AudioRecord getAudioRecord(int source) {
         AudioRecord retAudioRecord = null;
         Log.i(this.mTAG, "getAudioRecord modified by jy");
         try {
@@ -282,27 +253,26 @@ public class AudioTask implements Runnable {
     }
 
     public void setEmbeddedEngineLanguage() {
-        int i = this.mLanguage;
-        this.mEmbeddedEngineLanguage = i;
+        this.mEmbeddedEngineLanguage = this.mLanguage;
         if (this.isOEMCameraBargeIn && this.isEnableSamsungOOVResult) {
             this.mEmbeddedEngineLanguage = 0;
-        } else if (i == 10) {
+        } else if (this.mEmbeddedEngineLanguage == 10) {
             this.mEmbeddedEngineLanguage = 1;
-        } else if (i == 11) {
+        } else if (this.mEmbeddedEngineLanguage == 11) {
             this.mEmbeddedEngineLanguage = 3;
-        } else if (i == 9) {
+        } else if (this.mEmbeddedEngineLanguage == 9) {
             this.mEmbeddedEngineLanguage = 1;
-        } else if (i == 13) {
+        } else if (this.mEmbeddedEngineLanguage == 13) {
             this.mEmbeddedEngineLanguage = 2;
-        } else if (i == 12) {
+        } else if (this.mEmbeddedEngineLanguage == 12) {
             this.mEmbeddedEngineLanguage = 2;
-        } else if (i == 14) {
+        } else if (this.mEmbeddedEngineLanguage == 14) {
             this.mEmbeddedEngineLanguage = 2;
         }
         Log.i(this.mTAG, "mEmbeddedEngineLanguage : " + this.mEmbeddedEngineLanguage);
     }
 
-    public boolean isBargeInFile(String mFilePath) {
+    protected boolean isBargeInFile(String mFilePath) {
         if (new File(mFilePath).exists()) {
             return true;
         }

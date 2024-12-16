@@ -27,8 +27,7 @@ public class CalendarView extends FrameLayout {
     private static final int MODE_MATERIAL = 1;
     private final CalendarViewDelegate mDelegate;
 
-    /* loaded from: classes4.dex */
-    public interface CalendarViewDelegate {
+    private interface CalendarViewDelegate {
         boolean getBoundsForDate(long j, Rect rect);
 
         long getDate();
@@ -96,12 +95,10 @@ public class CalendarView extends FrameLayout {
         void setWeekSeparatorLineColor(int i);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnDateChangeListener {
         void onSelectedDayChange(CalendarView calendarView, int i, int i2, int i3);
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<CalendarView> {
         private int mDateTextAppearanceId;
         private int mFirstDayOfWeekId;
@@ -333,7 +330,7 @@ public class CalendarView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         this.mDelegate.onConfigurationChanged(newConfig);
     }
@@ -343,21 +340,20 @@ public class CalendarView extends FrameLayout {
         return CalendarView.class.getName();
     }
 
-    /* loaded from: classes4.dex */
-    public static abstract class AbstractCalendarViewDelegate implements CalendarViewDelegate {
+    static abstract class AbstractCalendarViewDelegate implements CalendarViewDelegate {
         protected static final String DEFAULT_MAX_DATE = "01/01/2100";
         protected static final String DEFAULT_MIN_DATE = "01/01/1900";
         protected Context mContext;
         protected Locale mCurrentLocale;
         protected CalendarView mDelegator;
 
-        public AbstractCalendarViewDelegate(CalendarView delegator, Context context) {
+        AbstractCalendarViewDelegate(CalendarView delegator, Context context) {
             this.mDelegator = delegator;
             this.mContext = context;
             setCurrentLocale(Locale.getDefault());
         }
 
-        public void setCurrentLocale(Locale locale) {
+        protected void setCurrentLocale(Locale locale) {
             if (locale.equals(this.mCurrentLocale)) {
                 return;
             }

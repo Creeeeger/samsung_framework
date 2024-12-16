@@ -161,6 +161,7 @@ public final class DevicePolicyEnums {
     public static final int SET_CAMERA_DISABLED = 30;
     public static final int SET_CERT_INSTALLER_PACKAGE = 25;
     public static final int SET_COMMON_CRITERIA_MODE = 131;
+    public static final int SET_CONTENT_PROTECTION_POLICY = 218;
     public static final int SET_CROSS_PROFILE_CALENDAR_PACKAGES = 70;
     public static final int SET_CROSS_PROFILE_CALLER_ID_DISABLED = 46;
     public static final int SET_CROSS_PROFILE_CONTACTS_SEARCH_DISABLED = 45;

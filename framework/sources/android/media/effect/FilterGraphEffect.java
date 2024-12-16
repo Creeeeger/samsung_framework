@@ -28,9 +28,8 @@ public class FilterGraphEffect extends FilterEffect {
     private void createGraph(String graphString) {
         GraphReader reader = new TextGraphReader();
         try {
-            FilterGraph readGraphString = reader.readGraphString(graphString);
-            this.mGraph = readGraphString;
-            if (readGraphString == null) {
+            this.mGraph = reader.readGraphString(graphString);
+            if (this.mGraph == null) {
                 throw new RuntimeException("Could not setup effect");
             }
             this.mRunner = new SyncRunner(getFilterContext(), this.mGraph, this.mSchedulerClass);

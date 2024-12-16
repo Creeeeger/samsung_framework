@@ -7,17 +7,16 @@ import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.telephony.SemTelephonyUtils;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class NeighboringCellInfo implements Parcelable {
     public static final Parcelable.Creator<NeighboringCellInfo> CREATOR = new Parcelable.Creator<NeighboringCellInfo>() { // from class: android.telephony.NeighboringCellInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NeighboringCellInfo createFromParcel(Parcel in) {
             return new NeighboringCellInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NeighboringCellInfo[] newArray(int size) {
             return new NeighboringCellInfo[size];
@@ -48,19 +47,16 @@ public class NeighboringCellInfo implements Parcelable {
 
     public NeighboringCellInfo(CellInfoGsm info) {
         this.mNetworkType = 1;
-        int asuLevel = info.getCellSignalStrength().getAsuLevel();
-        this.mRssi = asuLevel;
-        if (asuLevel == Integer.MAX_VALUE) {
+        this.mRssi = info.getCellSignalStrength().getAsuLevel();
+        if (this.mRssi == Integer.MAX_VALUE) {
             this.mRssi = 99;
         }
-        int lac = info.getCellIdentity().getLac();
-        this.mLac = lac;
-        if (lac == Integer.MAX_VALUE) {
+        this.mLac = info.getCellIdentity().getLac();
+        if (this.mLac == Integer.MAX_VALUE) {
             this.mLac = -1;
         }
-        int cid = info.getCellIdentity().getCid();
-        this.mCid = cid;
-        if (cid == Integer.MAX_VALUE) {
+        this.mCid = info.getCellIdentity().getCid();
+        if (this.mCid == Integer.MAX_VALUE) {
             this.mCid = -1;
         }
         this.mPsc = -1;
@@ -68,24 +64,20 @@ public class NeighboringCellInfo implements Parcelable {
 
     public NeighboringCellInfo(CellInfoWcdma info) {
         this.mNetworkType = 3;
-        int asuLevel = info.getCellSignalStrength().getAsuLevel();
-        this.mRssi = asuLevel;
-        if (asuLevel == Integer.MAX_VALUE) {
+        this.mRssi = info.getCellSignalStrength().getAsuLevel();
+        if (this.mRssi == Integer.MAX_VALUE) {
             this.mRssi = 99;
         }
-        int lac = info.getCellIdentity().getLac();
-        this.mLac = lac;
-        if (lac == Integer.MAX_VALUE) {
+        this.mLac = info.getCellIdentity().getLac();
+        if (this.mLac == Integer.MAX_VALUE) {
             this.mLac = -1;
         }
-        int cid = info.getCellIdentity().getCid();
-        this.mCid = cid;
-        if (cid == Integer.MAX_VALUE) {
+        this.mCid = info.getCellIdentity().getCid();
+        if (this.mCid == Integer.MAX_VALUE) {
             this.mCid = -1;
         }
-        int psc = info.getCellIdentity().getPsc();
-        this.mPsc = psc;
-        if (psc == Integer.MAX_VALUE) {
+        this.mPsc = info.getCellIdentity().getPsc();
+        if (this.mPsc == Integer.MAX_VALUE) {
             this.mPsc = -1;
         }
     }
@@ -182,22 +174,17 @@ public class NeighboringCellInfo implements Parcelable {
         int i = this.mPsc;
         Object obj = NativeLibraryHelper.CLEAR_ABI_OVERRIDE;
         if (i != -1) {
-            StringBuilder append = sb.append(Integer.toHexString(i)).append("@");
-            int i2 = this.mRssi;
-            if (i2 != 99) {
-                obj = Integer.valueOf(i2);
+            StringBuilder append = sb.append(Integer.toHexString(this.mPsc)).append("@");
+            if (this.mRssi != 99) {
+                obj = Integer.valueOf(this.mRssi);
             }
             append.append(obj);
-        } else {
-            int i3 = this.mLac;
-            if (i3 != -1 && this.mCid != -1) {
-                StringBuilder append2 = sb.append(SemTelephonyUtils.maskPii(Integer.toHexString(i3))).append(SemTelephonyUtils.maskPii(Integer.toHexString(this.mCid))).append("@");
-                int i4 = this.mRssi;
-                if (i4 != 99) {
-                    obj = Integer.valueOf(i4);
-                }
-                append2.append(obj);
+        } else if (this.mLac != -1 && this.mCid != -1) {
+            StringBuilder append2 = sb.append(SemTelephonyUtils.maskPii(Integer.toHexString(this.mLac))).append(SemTelephonyUtils.maskPii(Integer.toHexString(this.mCid))).append("@");
+            if (this.mRssi != 99) {
+                obj = Integer.valueOf(this.mRssi);
             }
+            append2.append(obj);
         }
         sb.append(NavigationBarInflaterView.SIZE_MOD_END);
         return sb.toString();
@@ -215,22 +202,5 @@ public class NeighboringCellInfo implements Parcelable {
         dest.writeInt(this.mCid);
         dest.writeInt(this.mPsc);
         dest.writeInt(this.mNetworkType);
-    }
-
-    /* renamed from: android.telephony.NeighboringCellInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NeighboringCellInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NeighboringCellInfo createFromParcel(Parcel in) {
-            return new NeighboringCellInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NeighboringCellInfo[] newArray(int size) {
-            return new NeighboringCellInfo[size];
-        }
     }
 }

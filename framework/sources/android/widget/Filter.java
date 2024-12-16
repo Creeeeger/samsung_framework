@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.telecom.TelecomManager;
 import android.util.Log;
 
 /* loaded from: classes4.dex */
@@ -18,18 +17,16 @@ public abstract class Filter {
     private Handler mResultHandler = new ResultsHandler();
     private Handler mThreadHandler;
 
-    /* loaded from: classes4.dex */
     public interface Delayer {
         long getPostingDelay(CharSequence charSequence);
     }
 
-    /* loaded from: classes4.dex */
     public interface FilterListener {
         void onFilterComplete(int i);
     }
 
-    /* loaded from: classes4.dex */
-    protected static class FilterResults {
+    /* JADX INFO: Access modifiers changed from: protected */
+    public static class FilterResults {
         public int count;
         public Object values;
     }
@@ -48,23 +45,22 @@ public abstract class Filter {
         filter(constraint, null);
     }
 
-    public final void filter(CharSequence constraint, FilterListener listener) {
+    public final void filter(CharSequence charSequence, FilterListener filterListener) {
         synchronized (this.mLock) {
             if (this.mThreadHandler == null) {
-                HandlerThread thread = new HandlerThread("Filter", 10);
-                thread.start();
-                this.mThreadHandler = new RequestHandler(thread.getLooper());
+                HandlerThread handlerThread = new HandlerThread("Filter", 10);
+                handlerThread.start();
+                this.mThreadHandler = new RequestHandler(handlerThread.getLooper());
             }
-            Delayer delayer = this.mDelayer;
-            long delay = delayer == null ? 0L : delayer.getPostingDelay(constraint);
-            Message message = this.mThreadHandler.obtainMessage(FILTER_TOKEN);
-            RequestArguments args = new RequestArguments();
-            args.constraint = constraint != null ? constraint.toString() : null;
-            args.listener = listener;
-            message.obj = args;
+            long postingDelay = this.mDelayer == null ? 0L : this.mDelayer.getPostingDelay(charSequence);
+            Message obtainMessage = this.mThreadHandler.obtainMessage(FILTER_TOKEN);
+            RequestArguments requestArguments = new RequestArguments();
+            requestArguments.constraint = charSequence != null ? charSequence.toString() : null;
+            requestArguments.listener = filterListener;
+            obtainMessage.obj = requestArguments;
             this.mThreadHandler.removeMessages(FILTER_TOKEN);
             this.mThreadHandler.removeMessages(FINISH_TOKEN);
-            this.mThreadHandler.sendMessageDelayed(message, delay);
+            this.mThreadHandler.sendMessageDelayed(obtainMessage, postingDelay);
         }
     }
 
@@ -72,8 +68,7 @@ public abstract class Filter {
         return resultValue == null ? "" : resultValue.toString();
     }
 
-    /* loaded from: classes4.dex */
-    public class RequestHandler extends Handler {
+    private class RequestHandler extends Handler {
         public RequestHandler(Looper looper) {
             super(looper);
         }
@@ -94,7 +89,7 @@ public abstract class Filter {
                         synchronized (Filter.this.mLock) {
                             if (Filter.this.mThreadHandler != null) {
                                 Message finishMessage = Filter.this.mThreadHandler.obtainMessage(Filter.FINISH_TOKEN);
-                                Filter.this.mThreadHandler.sendMessageDelayed(finishMessage, TelecomManager.VERY_SHORT_CALL_TIME_MS);
+                                Filter.this.mThreadHandler.sendMessageDelayed(finishMessage, 3000L);
                             }
                         }
                         return;
@@ -117,13 +112,7 @@ public abstract class Filter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public class ResultsHandler extends Handler {
-        /* synthetic */ ResultsHandler(Filter filter, ResultsHandlerIA resultsHandlerIA) {
-            this();
-        }
-
+    private class ResultsHandler extends Handler {
         private ResultsHandler() {
         }
 
@@ -138,15 +127,10 @@ public abstract class Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class RequestArguments {
+    private static class RequestArguments {
         CharSequence constraint;
         FilterListener listener;
         FilterResults results;
-
-        /* synthetic */ RequestArguments(RequestArgumentsIA requestArgumentsIA) {
-            this();
-        }
 
         private RequestArguments() {
         }

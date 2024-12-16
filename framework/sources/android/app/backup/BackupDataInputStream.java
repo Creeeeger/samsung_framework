@@ -10,7 +10,7 @@ public class BackupDataInputStream extends InputStream {
     BackupDataInput mData;
     byte[] mOneByte;
 
-    public BackupDataInputStream(BackupDataInput data) {
+    BackupDataInputStream(BackupDataInput data) {
         this.mData = data;
     }
 

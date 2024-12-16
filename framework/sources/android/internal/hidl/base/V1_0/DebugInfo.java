@@ -12,7 +12,6 @@ public final class DebugInfo {
     public long ptr = 0;
     public int arch = 0;
 
-    /* loaded from: classes2.dex */
     public static final class Architecture {
         public static final int IS_32BIT = 2;
         public static final int IS_64BIT = 1;

@@ -4,10 +4,9 @@ import android.content.ContentResolver;
 import android.os.Bundle;
 import com.sec.android.allshare.iface.CVMessage;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public interface IAllShareConnector {
 
-    /* loaded from: classes5.dex */
     public enum AllShareServiceState {
         ALLSHARE_SERVICE_CONNECTED,
         ALLSHARE_SERVICE_DISCONNECTED

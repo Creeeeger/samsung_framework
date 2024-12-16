@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemMhsAiService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.mhs.ai.ISemMhsAiService";
 
@@ -14,7 +14,6 @@ public interface ISemMhsAiService extends IInterface {
 
     void toggleDebugMode(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemMhsAiService {
         @Override // com.samsung.android.mhs.ai.ISemMhsAiService
         public void serviceTypeQuery(float[][] trfDataArr, String[] convoStrArr, int[] timeStepArr, int convoCnt) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISemMhsAiService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemMhsAiService {
         static final int TRANSACTION_serviceTypeQuery = 1;
         static final int TRANSACTION_toggleDebugMode = 2;
@@ -76,32 +74,29 @@ public interface ISemMhsAiService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemMhsAiService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemMhsAiService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemMhsAiService.DESCRIPTOR);
+                case 1:
+                    float[][] _arg0 = (float[][]) data.createFixedArray(float[][].class, 12, 60);
+                    String[] _arg1 = data.createStringArray();
+                    int[] _arg2 = data.createIntArray();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    serviceTypeQuery(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    toggleDebugMode(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            float[][] _arg0 = (float[][]) data.createFixedArray(float[][].class, 12, 60);
-                            String[] _arg1 = data.createStringArray();
-                            int[] _arg2 = data.createIntArray();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            serviceTypeQuery(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            toggleDebugMode(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISemMhsAiService {
             private IBinder mRemote;
 

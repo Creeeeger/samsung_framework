@@ -16,20 +16,18 @@ public final class SensorDirectChannel implements Channel {
     public static final int RATE_VERY_FAST = 3;
     public static final int TYPE_HARDWARE_BUFFER = 2;
     public static final int TYPE_MEMORY_FILE = 1;
-    private final CloseGuard mCloseGuard;
-    private final AtomicBoolean mClosed = new AtomicBoolean();
     private final SensorManager mManager;
     private final int mNativeHandle;
     private final long mSize;
     private final int mType;
+    private final AtomicBoolean mClosed = new AtomicBoolean();
+    private final CloseGuard mCloseGuard = CloseGuard.get();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MemoryType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RateLevel {
     }
 
@@ -55,17 +53,15 @@ public final class SensorDirectChannel implements Channel {
         return this.mManager.configureDirectChannelImpl(this, sensor, rateLevel);
     }
 
-    public SensorDirectChannel(SensorManager manager, int id, int type, long size) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
+    SensorDirectChannel(SensorManager manager, int id, int type, long size) {
         this.mManager = manager;
         this.mNativeHandle = id;
         this.mType = type;
         this.mSize = size;
-        closeGuard.open("SensorDirectChannel");
+        this.mCloseGuard.open("SensorDirectChannel");
     }
 
-    public int getNativeHandle() {
+    int getNativeHandle() {
         return this.mNativeHandle;
     }
 
@@ -81,9 +77,8 @@ public final class SensorDirectChannel implements Channel {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             close();
         } finally {

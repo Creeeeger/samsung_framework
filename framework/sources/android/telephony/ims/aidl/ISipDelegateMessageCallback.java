@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.SipMessage;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISipDelegateMessageCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.ISipDelegateMessageCallback";
 
@@ -17,7 +17,6 @@ public interface ISipDelegateMessageCallback extends IInterface {
 
     void onMessageSent(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISipDelegateMessageCallback {
         @Override // android.telephony.ims.aidl.ISipDelegateMessageCallback
         public void onMessageReceived(SipMessage message) throws RemoteException {
@@ -37,7 +36,6 @@ public interface ISipDelegateMessageCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISipDelegateMessageCallback {
         static final int TRANSACTION_onMessageReceived = 1;
         static final int TRANSACTION_onMessageSendFailure = 3;
@@ -86,37 +84,33 @@ public interface ISipDelegateMessageCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISipDelegateMessageCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISipDelegateMessageCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISipDelegateMessageCallback.DESCRIPTOR);
+                case 1:
+                    SipMessage _arg0 = (SipMessage) data.readTypedObject(SipMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMessageReceived(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onMessageSent(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onMessageSendFailure(_arg03, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SipMessage _arg0 = (SipMessage) data.readTypedObject(SipMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMessageReceived(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onMessageSent(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onMessageSendFailure(_arg03, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISipDelegateMessageCallback {
+        private static class Proxy implements ISipDelegateMessageCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

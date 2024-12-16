@@ -25,12 +25,12 @@ public class TextSwitcher extends ViewSwitcher {
 
     public void setText(CharSequence text) {
         TextView t = (TextView) getNextView();
-        t.setText(text);
+        t.lambda$setTextAsync$0(text);
         showNext();
     }
 
     public void setCurrentText(CharSequence text) {
-        ((TextView) getCurrentView()).setText(text);
+        ((TextView) getCurrentView()).lambda$setTextAsync$0(text);
     }
 
     @Override // android.widget.ViewSwitcher, android.widget.ViewAnimator, android.widget.FrameLayout, android.view.ViewGroup, android.view.View

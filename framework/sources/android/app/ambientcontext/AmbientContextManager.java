@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.RemoteCallback;
 import android.os.RemoteException;
 import com.android.internal.util.Preconditions;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +32,7 @@ public final class AmbientContextManager {
     private final Context mContext;
     private final IAmbientContextManager mService;
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface StatusCode {
     }
 
@@ -48,7 +50,7 @@ public final class AmbientContextManager {
 
     public void queryAmbientContextServiceStatus(Set<Integer> eventTypes, final Executor executor, final Consumer<Integer> consumer) {
         try {
-            RemoteCallback callback = new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.ambientcontext.AmbientContextManager$$ExternalSyntheticLambda1
+            RemoteCallback callback = new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.ambientcontext.AmbientContextManager$$ExternalSyntheticLambda3
                 @Override // android.os.RemoteCallback.OnResultListener
                 public final void onResult(Bundle bundle) {
                     AmbientContextManager.lambda$queryAmbientContextServiceStatus$1(executor, consumer, bundle);
@@ -60,11 +62,11 @@ public final class AmbientContextManager {
         }
     }
 
-    public static /* synthetic */ void lambda$queryAmbientContextServiceStatus$1(Executor executor, final Consumer consumer, Bundle result) {
+    static /* synthetic */ void lambda$queryAmbientContextServiceStatus$1(Executor executor, final Consumer consumer, Bundle result) {
         final int status = result.getInt(STATUS_RESPONSE_BUNDLE_KEY);
         long identity = Binder.clearCallingIdentity();
         try {
-            executor.execute(new Runnable() { // from class: android.app.ambientcontext.AmbientContextManager$$ExternalSyntheticLambda2
+            executor.execute(new Runnable() { // from class: android.app.ambientcontext.AmbientContextManager$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     consumer.accept(Integer.valueOf(status));
@@ -96,7 +98,7 @@ public final class AmbientContextManager {
     public void registerObserver(AmbientContextEventRequest request, PendingIntent resultPendingIntent, final Executor executor, final Consumer<Integer> statusConsumer) {
         Preconditions.checkArgument(!resultPendingIntent.isImmutable());
         try {
-            RemoteCallback callback = new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.ambientcontext.AmbientContextManager$$ExternalSyntheticLambda3
+            RemoteCallback callback = new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.ambientcontext.AmbientContextManager$$ExternalSyntheticLambda2
                 @Override // android.os.RemoteCallback.OnResultListener
                 public final void onResult(Bundle bundle) {
                     AmbientContextManager.lambda$registerObserver$3(executor, statusConsumer, bundle);
@@ -108,7 +110,7 @@ public final class AmbientContextManager {
         }
     }
 
-    public static /* synthetic */ void lambda$registerObserver$3(Executor executor, final Consumer statusConsumer, Bundle result) {
+    static /* synthetic */ void lambda$registerObserver$3(Executor executor, final Consumer statusConsumer, Bundle result) {
         final int statusCode = result.getInt(STATUS_RESPONSE_BUNDLE_KEY);
         long identity = Binder.clearCallingIdentity();
         try {
@@ -123,8 +125,7 @@ public final class AmbientContextManager {
         }
     }
 
-    /* renamed from: android.app.ambientcontext.AmbientContextManager$1 */
-    /* loaded from: classes.dex */
+    /* renamed from: android.app.ambientcontext.AmbientContextManager$1, reason: invalid class name */
     class AnonymousClass1 extends IAmbientContextObserver.Stub {
         final /* synthetic */ AmbientContextCallback val$ambientContextCallback;
         final /* synthetic */ Executor val$executor;
@@ -140,7 +141,7 @@ public final class AmbientContextManager {
             try {
                 Executor executor = this.val$executor;
                 final AmbientContextCallback ambientContextCallback = this.val$ambientContextCallback;
-                executor.execute(new Runnable() { // from class: android.app.ambientcontext.AmbientContextManager$1$$ExternalSyntheticLambda1
+                executor.execute(new Runnable() { // from class: android.app.ambientcontext.AmbientContextManager$1$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         AmbientContextCallback.this.onEvents(events);
@@ -157,7 +158,7 @@ public final class AmbientContextManager {
             try {
                 Executor executor = this.val$executor;
                 final AmbientContextCallback ambientContextCallback = this.val$ambientContextCallback;
-                executor.execute(new Runnable() { // from class: android.app.ambientcontext.AmbientContextManager$1$$ExternalSyntheticLambda0
+                executor.execute(new Runnable() { // from class: android.app.ambientcontext.AmbientContextManager$1$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         AmbientContextCallback.this.onRegistrationComplete(statusCode);

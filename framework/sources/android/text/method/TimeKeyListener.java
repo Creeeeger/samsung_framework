@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TimeKeyListener extends NumberKeyListener {
     private static final String SKELETON_12HOUR = "hms";
     private static final String SKELETON_24HOUR = "Hms";
@@ -40,13 +40,12 @@ public class TimeKeyListener extends NumberKeyListener {
         LinkedHashSet<Character> chars = new LinkedHashSet<>();
         boolean success = NumberKeyListener.addDigits(chars, locale) && NumberKeyListener.addAmPmChars(chars, locale) && NumberKeyListener.addFormatCharsFromSkeleton(chars, locale, SKELETON_12HOUR, SYMBOLS_TO_IGNORE) && NumberKeyListener.addFormatCharsFromSkeleton(chars, locale, SKELETON_24HOUR, SYMBOLS_TO_IGNORE);
         if (success) {
-            char[] collectionToArray = NumberKeyListener.collectionToArray(chars);
-            this.mCharacters = collectionToArray;
+            this.mCharacters = NumberKeyListener.collectionToArray(chars);
             if (locale != null && "en".equals(locale.getLanguage())) {
                 this.mNeedsAdvancedInput = false;
                 return;
             } else {
-                this.mNeedsAdvancedInput = true ^ ArrayUtils.containsAll(CHARACTERS, collectionToArray);
+                this.mNeedsAdvancedInput = true ^ ArrayUtils.containsAll(CHARACTERS, this.mCharacters);
                 return;
             }
         }
@@ -62,11 +61,10 @@ public class TimeKeyListener extends NumberKeyListener {
     public static TimeKeyListener getInstance(Locale locale) {
         TimeKeyListener instance;
         synchronized (sLock) {
-            HashMap<Locale, TimeKeyListener> hashMap = sInstanceCache;
-            instance = hashMap.get(locale);
+            instance = sInstanceCache.get(locale);
             if (instance == null) {
                 instance = new TimeKeyListener(locale);
-                hashMap.put(locale, instance);
+                sInstanceCache.put(locale, instance);
             }
         }
         return instance;

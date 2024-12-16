@@ -22,7 +22,7 @@ public class AccelerateInterpolator extends BaseInterpolator implements NativeIn
 
     public AccelerateInterpolator(float factor) {
         this.mFactor = factor;
-        this.mDoubleFactor = 2.0f * factor;
+        this.mDoubleFactor = this.mFactor * 2.0f;
     }
 
     public AccelerateInterpolator(Context context, AttributeSet attrs) {
@@ -37,7 +37,7 @@ public class AccelerateInterpolator extends BaseInterpolator implements NativeIn
             a = res.obtainAttributes(attrs, R.styleable.AccelerateInterpolator);
         }
         this.mFactor = a.getFloat(0, 1.0f);
-        this.mDoubleFactor = r0 * 2.0f;
+        this.mDoubleFactor = this.mFactor * 2.0f;
         setChangingConfiguration(a.getChangingConfigurations());
         a.recycle();
     }

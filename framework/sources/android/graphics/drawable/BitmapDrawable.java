@@ -24,7 +24,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import com.android.internal.R;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,6 +34,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public class BitmapDrawable extends Drawable {
     private static final int DEFAULT_PAINT_FLAGS = 6;
+    private static final String TAG = "BitmapDrawable";
     private static final int TILE_MODE_CLAMP = 0;
     private static final int TILE_MODE_DISABLED = -1;
     private static final int TILE_MODE_MIRROR = 2;
@@ -50,10 +50,6 @@ public class BitmapDrawable extends Drawable {
     private boolean mMutated;
     private Insets mOpticalInsets;
     private int mTargetDensity;
-
-    /* synthetic */ BitmapDrawable(BitmapState bitmapState, Resources resources, BitmapDrawableIA bitmapDrawableIA) {
-        this(bitmapState, resources);
-    }
 
     @Deprecated
     public BitmapDrawable() {
@@ -79,6 +75,9 @@ public class BitmapDrawable extends Drawable {
         this.mTargetDensity = 160;
         this.mDstRectAndInsetsDirty = true;
         this.mOpticalInsets = Insets.NONE;
+        if (bitmap == null) {
+            Log.w(TAG, "BitmapDrawable created with null Bitmap");
+        }
         init(new BitmapState(bitmap), null);
     }
 
@@ -87,6 +86,9 @@ public class BitmapDrawable extends Drawable {
         this.mTargetDensity = 160;
         this.mDstRectAndInsetsDirty = true;
         this.mOpticalInsets = Insets.NONE;
+        if (bitmap == null) {
+            Log.w(TAG, "BitmapDrawable created with null Bitmap");
+        }
         init(new BitmapState(bitmap), res);
     }
 
@@ -104,7 +106,7 @@ public class BitmapDrawable extends Drawable {
         try {
             FileInputStream stream = new FileInputStream(filepath);
             try {
-                Bitmap bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(res, stream), new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.BitmapDrawable$$ExternalSyntheticLambda1
+                Bitmap bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(res, stream), new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.BitmapDrawable$$ExternalSyntheticLambda0
                     @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
                     public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source) {
                         imageDecoder.setAllocator(1);
@@ -124,13 +126,13 @@ public class BitmapDrawable extends Drawable {
         } catch (Throwable th) {
             init(new BitmapState((Bitmap) null), res);
             if (this.mBitmapState.mBitmap == null) {
-                Log.w("BitmapDrawable", "BitmapDrawable cannot decode " + filepath);
+                Log.w(TAG, "BitmapDrawable cannot decode " + filepath);
             }
             throw th;
         }
         if (this.mBitmapState.mBitmap == null) {
             sb = new StringBuilder();
-            Log.w("BitmapDrawable", sb.append("BitmapDrawable cannot decode ").append(filepath).toString());
+            Log.w(TAG, sb.append("BitmapDrawable cannot decode ").append(filepath).toString());
         }
     }
 
@@ -146,7 +148,7 @@ public class BitmapDrawable extends Drawable {
         this.mDstRectAndInsetsDirty = true;
         this.mOpticalInsets = Insets.NONE;
         try {
-            Bitmap bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(res, is), new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.BitmapDrawable$$ExternalSyntheticLambda0
+            Bitmap bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(res, is), new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.BitmapDrawable$$ExternalSyntheticLambda2
                 @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
                 public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source) {
                     imageDecoder.setAllocator(1);
@@ -163,13 +165,13 @@ public class BitmapDrawable extends Drawable {
         } catch (Throwable th) {
             init(new BitmapState((Bitmap) null), res);
             if (this.mBitmapState.mBitmap == null) {
-                Log.w("BitmapDrawable", "BitmapDrawable cannot decode " + is);
+                Log.w(TAG, "BitmapDrawable cannot decode " + is);
             }
             throw th;
         }
         if (this.mBitmapState.mBitmap == null) {
             sb = new StringBuilder();
-            Log.w("BitmapDrawable", sb.append("BitmapDrawable cannot decode ").append(is).toString());
+            Log.w(TAG, sb.append("BitmapDrawable cannot decode ").append(is).toString());
         }
     }
 
@@ -317,7 +319,7 @@ public class BitmapDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         this.mDstRectAndInsetsDirty = true;
         Bitmap bitmap = this.mBitmapState.mBitmap;
         Shader shader = this.mBitmapState.mPaint.getShader();
@@ -334,8 +336,8 @@ public class BitmapDrawable extends Drawable {
         if (bitmap == null) {
             return;
         }
-        if (bitmap.getConfig() == Bitmap.Config.HARDWARE && View.sCapturingCanvas && !canvas.isHardwareAccelerated()) {
-            Log.d("BitmapDrawable", "skip drawing hardware bitmap while capturing canvas");
+        if (bitmap.getConfig() == Bitmap.Config.HARDWARE && !canvas.isHardwareAccelerated()) {
+            Log.d(TAG, "skip drawing hardware bitmap on S/W canvas");
             return;
         }
         BitmapState state = this.mBitmapState;
@@ -527,7 +529,7 @@ public class BitmapDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         BitmapState state = this.mBitmapState;
         if (state.mTint != null && state.mBlendMode != null) {
             this.mBlendModeFilter = updateBlendModeFilter(this.mBlendModeFilter, state.mTint, state.mBlendMode);
@@ -596,7 +598,7 @@ public class BitmapDrawable extends Drawable {
                 InputStream is = r.openRawResource(srcResId, value);
                 try {
                     ImageDecoder.Source source = ImageDecoder.createSource(r, is, density);
-                    bitmap = ImageDecoder.decodeBitmap(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.BitmapDrawable$$ExternalSyntheticLambda2
+                    bitmap = ImageDecoder.decodeBitmap(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.graphics.drawable.BitmapDrawable$$ExternalSyntheticLambda1
                         @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
                         public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source2) {
                             imageDecoder.setAllocator(1);
@@ -687,8 +689,7 @@ public class BitmapDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        BitmapState bitmapState = this.mBitmapState;
-        return bitmapState != null && bitmapState.canApplyTheme();
+        return this.mBitmapState != null && this.mBitmapState.canApplyTheme();
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -713,8 +714,7 @@ public class BitmapDrawable extends Drawable {
         return this.mBitmapState;
     }
 
-    /* loaded from: classes.dex */
-    public static final class BitmapState extends Drawable.ConstantState {
+    static final class BitmapState extends Drawable.ConstantState {
         boolean mAutoMirrored;
         float mBaseAlpha;
         Bitmap mBitmap;
@@ -776,8 +776,7 @@ public class BitmapDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            ColorStateList colorStateList;
-            return this.mThemeAttrs != null || ((colorStateList = this.mTint) != null && colorStateList.canApplyTheme());
+            return this.mThemeAttrs != null || (this.mTint != null && this.mTint.canApplyTheme());
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -792,9 +791,7 @@ public class BitmapDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mTint;
-            return i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
     }
 
@@ -809,9 +806,8 @@ public class BitmapDrawable extends Drawable {
     private void init(BitmapState state, Resources res) {
         this.mBitmapState = state;
         updateLocalState(res);
-        BitmapState bitmapState = this.mBitmapState;
-        if (bitmapState != null && res != null) {
-            bitmapState.mTargetDensity = this.mTargetDensity;
+        if (this.mBitmapState != null && res != null) {
+            this.mBitmapState.mTargetDensity = this.mTargetDensity;
         }
     }
 

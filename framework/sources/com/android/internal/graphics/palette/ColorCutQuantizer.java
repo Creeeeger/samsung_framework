@@ -10,8 +10,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-/* loaded from: classes4.dex */
-public final class ColorCutQuantizer implements Quantizer {
+/* loaded from: classes5.dex */
+final class ColorCutQuantizer implements Quantizer {
     static final int COMPONENT_BLUE = -1;
     static final int COMPONENT_GREEN = -2;
     static final int COMPONENT_RED = -3;
@@ -20,9 +20,6 @@ public final class ColorCutQuantizer implements Quantizer {
     private static final int QUANTIZE_WORD_MASK = 31;
     private static final int QUANTIZE_WORD_WIDTH = 5;
     private static final Comparator<Vbox> VBOX_COMPARATOR_VOLUME = new Comparator<Vbox>() { // from class: com.android.internal.graphics.palette.ColorCutQuantizer.1
-        AnonymousClass1() {
-        }
-
         @Override // java.util.Comparator
         public int compare(Vbox lhs, Vbox rhs) {
             return rhs.getVolume() - lhs.getVolume();
@@ -33,6 +30,9 @@ public final class ColorCutQuantizer implements Quantizer {
     List<Palette.Swatch> mQuantizedColors;
     private final float[] mTempHsl = new float[3];
     TimingLogger mTimingLogger;
+
+    ColorCutQuantizer() {
+    }
 
     @Override // com.android.internal.graphics.palette.Quantizer
     public void quantize(int[] pixels, int maxColors) {
@@ -98,8 +98,7 @@ public final class ColorCutQuantizer implements Quantizer {
         return colors;
     }
 
-    /* loaded from: classes4.dex */
-    public class Vbox {
+    private class Vbox {
         private final int mLowerIndex;
         private int mMaxBlue;
         private int mMaxGreen;
@@ -177,7 +176,7 @@ public final class ColorCutQuantizer implements Quantizer {
                 throw new IllegalStateException("Can not split a box with only 1 color");
             }
             int splitPoint = findSplitPoint();
-            Vbox newBox = new Vbox(splitPoint + 1, this.mUpperIndex);
+            Vbox newBox = ColorCutQuantizer.this.new Vbox(splitPoint + 1, this.mUpperIndex);
             this.mUpperIndex = splitPoint;
             fitBox();
             return newBox;
@@ -204,22 +203,15 @@ public final class ColorCutQuantizer implements Quantizer {
             Arrays.sort(colors, this.mLowerIndex, this.mUpperIndex + 1);
             ColorCutQuantizer.modifySignificantOctet(colors, longestDimension, this.mLowerIndex, this.mUpperIndex);
             int midPoint = this.mPopulation / 2;
-            int i = this.mLowerIndex;
             int count = 0;
-            while (true) {
-                int i2 = this.mUpperIndex;
-                if (i <= i2) {
-                    count += hist[colors[i]];
-                    if (count < midPoint) {
-                        i++;
-                    } else {
-                        return Math.min(i2 - 1, i);
-                    }
-                } else {
-                    int i3 = this.mLowerIndex;
-                    return i3;
+            for (int i = this.mLowerIndex; i <= this.mUpperIndex; i++) {
+                count += hist[colors[i]];
+                if (count >= midPoint) {
+                    return Math.min(this.mUpperIndex - 1, i);
                 }
             }
+            int i2 = this.mLowerIndex;
+            return i2;
         }
 
         final Palette.Swatch getAverageColor() {
@@ -246,33 +238,18 @@ public final class ColorCutQuantizer implements Quantizer {
 
     static void modifySignificantOctet(int[] a, int dimension, int lower, int upper) {
         switch (dimension) {
-            case -3:
-            default:
-                return;
             case -2:
                 for (int i = lower; i <= upper; i++) {
                     int color = a[i];
                     a[i] = (quantizedGreen(color) << 10) | (quantizedRed(color) << 5) | quantizedBlue(color);
                 }
-                return;
+                break;
             case -1:
                 for (int i2 = lower; i2 <= upper; i2++) {
                     int color2 = a[i2];
                     a[i2] = (quantizedBlue(color2) << 10) | (quantizedGreen(color2) << 5) | quantizedRed(color2);
                 }
-                return;
-        }
-    }
-
-    /* renamed from: com.android.internal.graphics.palette.ColorCutQuantizer$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Comparator<Vbox> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(Vbox lhs, Vbox rhs) {
-            return rhs.getVolume() - lhs.getVolume();
+                break;
         }
     }
 

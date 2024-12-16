@@ -23,7 +23,6 @@ public interface IUdfpsOverlayController extends IInterface {
 
     void showUdfpsOverlay(long j, int i, int i2, IUdfpsOverlayControllerCallback iUdfpsOverlayControllerCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IUdfpsOverlayController {
         @Override // android.hardware.fingerprint.IUdfpsOverlayController
         public void showUdfpsOverlay(long requestId, int sensorId, int reason, IUdfpsOverlayControllerCallback callback) throws RemoteException {
@@ -55,7 +54,6 @@ public interface IUdfpsOverlayController extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IUdfpsOverlayController {
         static final int TRANSACTION_hideUdfpsOverlay = 2;
         static final int TRANSACTION_onAcquired = 3;
@@ -113,57 +111,53 @@ public interface IUdfpsOverlayController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUdfpsOverlayController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUdfpsOverlayController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUdfpsOverlayController.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    IUdfpsOverlayControllerCallback _arg3 = IUdfpsOverlayControllerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    showUdfpsOverlay(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    hideUdfpsOverlay(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAcquired(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEnrollmentProgress(_arg04, _arg13);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEnrollmentHelp(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    setDebugMessage(_arg06, _arg14);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            IUdfpsOverlayControllerCallback _arg3 = IUdfpsOverlayControllerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            showUdfpsOverlay(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            hideUdfpsOverlay(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAcquired(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEnrollmentProgress(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEnrollmentHelp(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            setDebugMessage(_arg06, _arg14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IUdfpsOverlayController {
+        private static class Proxy implements IUdfpsOverlayController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

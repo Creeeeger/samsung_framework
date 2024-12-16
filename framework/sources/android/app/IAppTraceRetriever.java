@@ -13,7 +13,6 @@ public interface IAppTraceRetriever extends IInterface {
 
     ParcelFileDescriptor getTraceFileDescriptor(String str, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAppTraceRetriever {
         @Override // android.app.IAppTraceRetriever
         public ParcelFileDescriptor getTraceFileDescriptor(String packageName, int uid, int pid) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IAppTraceRetriever extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAppTraceRetriever {
         static final int TRANSACTION_getTraceFileDescriptor = 1;
 
@@ -69,30 +67,26 @@ public interface IAppTraceRetriever extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAppTraceRetriever.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAppTraceRetriever.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAppTraceRetriever.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result = getTraceFileDescriptor(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result = getTraceFileDescriptor(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAppTraceRetriever {
+        private static class Proxy implements IAppTraceRetriever {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

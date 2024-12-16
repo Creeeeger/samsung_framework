@@ -64,28 +64,23 @@ public class DeviceAdminReceiver extends BroadcastReceiver {
     private ComponentName mWho;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BugreportFailureCode {
     }
 
     public DevicePolicyManager getManager(Context context) {
-        DevicePolicyManager devicePolicyManager = this.mManager;
-        if (devicePolicyManager != null) {
-            return devicePolicyManager;
+        if (this.mManager != null) {
+            return this.mManager;
         }
-        DevicePolicyManager devicePolicyManager2 = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        this.mManager = devicePolicyManager2;
-        return devicePolicyManager2;
+        this.mManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        return this.mManager;
     }
 
     public ComponentName getWho(Context context) {
-        ComponentName componentName = this.mWho;
-        if (componentName != null) {
-            return componentName;
+        if (this.mWho != null) {
+            return this.mWho;
         }
-        ComponentName componentName2 = new ComponentName(context, getClass());
-        this.mWho = componentName2;
-        return componentName2;
+        this.mWho = new ComponentName(context, getClass());
+        return this.mWho;
     }
 
     public void onEnabled(Context context, Intent intent) {

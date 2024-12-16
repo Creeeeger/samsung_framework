@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.knox.tima.attestation.IEnhancedAttestationPolicyCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEnhancedAttestation extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.tima.attestation.IEnhancedAttestation";
 
     void enhancedAttestation(String str, String str2, IEnhancedAttestationPolicyCallback iEnhancedAttestationPolicyCallback, boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEnhancedAttestation {
         @Override // com.samsung.android.knox.tima.attestation.IEnhancedAttestation
         public void enhancedAttestation(String nonce, String auk, IEnhancedAttestationPolicyCallback cb, boolean onPrem) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IEnhancedAttestation extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEnhancedAttestation {
         static final int TRANSACTION_enhancedAttestation = 1;
 
@@ -68,29 +66,26 @@ public interface IEnhancedAttestation extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEnhancedAttestation.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEnhancedAttestation.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEnhancedAttestation.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    IEnhancedAttestationPolicyCallback _arg2 = IEnhancedAttestationPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enhancedAttestation(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            IEnhancedAttestationPolicyCallback _arg2 = IEnhancedAttestationPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enhancedAttestation(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IEnhancedAttestation {
+        private static class Proxy implements IEnhancedAttestation {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

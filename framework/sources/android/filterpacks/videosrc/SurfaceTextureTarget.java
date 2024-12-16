@@ -73,9 +73,8 @@ public class SurfaceTextureTarget extends Filter {
         if (this.mLogVerbose) {
             Log.v(TAG, "updateRenderMode. Thread: " + Thread.currentThread());
         }
-        String str = this.mRenderModeString;
-        if (str != null) {
-            if (str.equals("stretch")) {
+        if (this.mRenderModeString != null) {
+            if (this.mRenderModeString.equals("stretch")) {
                 this.mRenderMode = 0;
             } else if (this.mRenderModeString.equals("fit")) {
                 this.mRenderMode = 1;
@@ -95,9 +94,8 @@ public class SurfaceTextureTarget extends Filter {
         if (this.mLogVerbose) {
             Log.v(TAG, "Prepare. Thread: " + Thread.currentThread());
         }
-        ShaderProgram createIdentity = ShaderProgram.createIdentity(context);
-        this.mProgram = createIdentity;
-        createIdentity.setSourceRect(0.0f, 1.0f, 1.0f, -1.0f);
+        this.mProgram = ShaderProgram.createIdentity(context);
+        this.mProgram.setSourceRect(0.0f, 1.0f, 1.0f, -1.0f);
         this.mProgram.setClearColor(0.0f, 0.0f, 0.0f);
         updateRenderMode();
         MutableFrameFormat screenFormat = new MutableFrameFormat(2, 3);
@@ -112,9 +110,8 @@ public class SurfaceTextureTarget extends Filter {
             Log.e(TAG, "SurfaceTexture is null!!");
             throw new RuntimeException("Could not register SurfaceTexture: " + this.mSurfaceTexture);
         }
-        int registerSurfaceTexture = context.getGLEnvironment().registerSurfaceTexture(this.mSurfaceTexture, this.mScreenWidth, this.mScreenHeight);
-        this.mSurfaceId = registerSurfaceTexture;
-        if (registerSurfaceTexture <= 0) {
+        this.mSurfaceId = context.getGLEnvironment().registerSurfaceTexture(this.mSurfaceTexture, this.mScreenWidth, this.mScreenHeight);
+        if (this.mSurfaceId <= 0) {
             throw new RuntimeException("Could not register SurfaceTexture: " + this.mSurfaceTexture);
         }
     }
@@ -185,20 +182,17 @@ public class SurfaceTextureTarget extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        GLFrame gLFrame = this.mScreen;
-        if (gLFrame != null) {
-            gLFrame.release();
+        if (this.mScreen != null) {
+            this.mScreen.release();
         }
     }
 
     private void updateTargetRect() {
-        int i;
         if (this.mLogVerbose) {
             Log.v(TAG, "updateTargetRect. Thread: " + Thread.currentThread());
         }
-        int i2 = this.mScreenWidth;
-        if (i2 > 0 && (i = this.mScreenHeight) > 0 && this.mProgram != null) {
-            float screenAspectRatio = i2 / i;
+        if (this.mScreenWidth > 0 && this.mScreenHeight > 0 && this.mProgram != null) {
+            float screenAspectRatio = this.mScreenWidth / this.mScreenHeight;
             float relativeAspectRatio = screenAspectRatio / this.mAspectRatio;
             if (this.mLogVerbose) {
                 Log.v(TAG, "UTR. screen w = " + this.mScreenWidth + " x screen h = " + this.mScreenHeight + " Screen AR: " + screenAspectRatio + ", frame AR: " + this.mAspectRatio + ", relative AR: " + relativeAspectRatio);

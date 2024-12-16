@@ -101,16 +101,8 @@ public class UriMatcher {
         }
     }
 
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x0061, code lost:
-    
-        if (r2 == null) goto L87;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0064, code lost:
-    
-        r7 = r7 + 1;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:16:0x0031  */
+    /* JADX WARN: Removed duplicated region for block: B:37:0x006b A[LOOP:0: B:9:0x0015->B:37:0x006b, LOOP_END] */
+    /* JADX WARN: Removed duplicated region for block: B:38:0x0069 A[SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -52,9 +52,8 @@ public final class Slog {
 
     private void initParam() {
         localLogV("initParam++");
-        int i = SystemProperties.getInt("persist.sys.sfslog.maxfilesize", 262144);
-        this.mMaxLogFileSize = i;
-        if (i <= 0) {
+        this.mMaxLogFileSize = SystemProperties.getInt("persist.sys.sfslog.maxfilesize", 262144);
+        if (this.mMaxLogFileSize <= 0) {
             this.mSfSlogEnable = false;
         }
         File t0 = new File(LOG0_PATH);
@@ -83,7 +82,7 @@ public final class Slog {
         try {
             this.mLogFile.createNewFile();
             FileUtils.setPermissions(this.mLogFile.getAbsolutePath(), 416, 1000, 1007);
-        } catch (IOException e) {
+        } catch (Exception e) {
             localLogE("initParam: error set permissions" + this.mLogFile.getAbsolutePath() + " , " + e);
         }
     }

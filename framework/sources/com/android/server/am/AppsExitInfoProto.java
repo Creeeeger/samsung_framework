@@ -5,7 +5,6 @@ public final class AppsExitInfoProto {
     public static final long LAST_UPDATE_TIMESTAMP = 1112396529665L;
     public static final long PACKAGES = 2246267895810L;
 
-    /* loaded from: classes5.dex */
     public final class Package {
         public static final long PACKAGE_NAME = 1138166333441L;
         public static final long USERS = 2246267895810L;
@@ -13,7 +12,6 @@ public final class AppsExitInfoProto {
         public Package() {
         }
 
-        /* loaded from: classes5.dex */
         public final class User {
             public static final long APP_EXIT_INFO = 2246267895810L;
             public static final long APP_RECOVERABLE_CRASH = 2246267895811L;

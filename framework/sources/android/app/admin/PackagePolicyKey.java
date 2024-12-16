@@ -1,6 +1,7 @@
 package android.app.admin;
 
 import android.annotation.SystemApi;
+import android.app.admin.flags.Flags;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,14 +16,13 @@ import org.xmlpull.v1.XmlPullParserException;
 public final class PackagePolicyKey extends PolicyKey {
     private static final String ATTR_PACKAGE_NAME = "package-name";
     public static final Parcelable.Creator<PackagePolicyKey> CREATOR = new Parcelable.Creator<PackagePolicyKey>() { // from class: android.app.admin.PackagePolicyKey.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackagePolicyKey createFromParcel(Parcel source) {
             return new PackagePolicyKey(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackagePolicyKey[] newArray(int size) {
             return new PackagePolicyKey[size];
@@ -30,12 +30,11 @@ public final class PackagePolicyKey extends PolicyKey {
     };
     private final String mPackageName;
 
-    /* synthetic */ PackagePolicyKey(Parcel parcel, PackagePolicyKeyIA packagePolicyKeyIA) {
-        this(parcel);
-    }
-
     public PackagePolicyKey(String key, String packageName) {
         super(key);
+        if (Flags.devicePolicySizeTrackingInternalBugFixEnabled()) {
+            PolicySizeVerifier.enforceMaxPackageNameLength(packageName);
+        }
         this.mPackageName = (String) Objects.requireNonNull(packageName);
     }
 
@@ -107,22 +106,5 @@ public final class PackagePolicyKey extends PolicyKey {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getIdentifier());
         dest.writeString(this.mPackageName);
-    }
-
-    /* renamed from: android.app.admin.PackagePolicyKey$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PackagePolicyKey> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackagePolicyKey createFromParcel(Parcel source) {
-            return new PackagePolicyKey(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackagePolicyKey[] newArray(int size) {
-            return new PackagePolicyKey[size];
-        }
     }
 }

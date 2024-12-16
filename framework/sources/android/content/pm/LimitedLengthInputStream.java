@@ -31,11 +31,10 @@ public class LimitedLengthInputStream extends FilterInputStream {
 
     @Override // java.io.FilterInputStream, java.io.InputStream
     public synchronized int read() throws IOException {
-        long j = this.mOffset;
-        if (j >= this.mEnd) {
+        if (this.mOffset >= this.mEnd) {
             return -1;
         }
-        this.mOffset = j + 1;
+        this.mOffset++;
         return super.read();
     }
 
@@ -46,14 +45,11 @@ public class LimitedLengthInputStream extends FilterInputStream {
         }
         int arrayLength = buffer.length;
         ArrayUtils.throwsIfOutOfBounds(arrayLength, offset, byteCount);
-        long j = this.mOffset;
-        if (j > Long.MAX_VALUE - byteCount) {
+        if (this.mOffset > Long.MAX_VALUE - byteCount) {
             throw new IOException("offset out of bounds: " + this.mOffset + " + " + byteCount);
         }
-        long j2 = byteCount + j;
-        long j3 = this.mEnd;
-        if (j2 > j3) {
-            byteCount = (int) (j3 - j);
+        if (this.mOffset + byteCount > this.mEnd) {
+            byteCount = (int) (this.mEnd - this.mOffset);
         }
         int numRead = super.read(buffer, offset, byteCount);
         this.mOffset += numRead;

@@ -5,27 +5,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class VcnUnderlyingNetworkPolicy implements Parcelable {
     public static final Parcelable.Creator<VcnUnderlyingNetworkPolicy> CREATOR = new Parcelable.Creator<VcnUnderlyingNetworkPolicy>() { // from class: android.net.vcn.VcnUnderlyingNetworkPolicy.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VcnUnderlyingNetworkPolicy createFromParcel(Parcel in) {
             return new VcnUnderlyingNetworkPolicy((VcnNetworkPolicyResult) in.readParcelable(null, VcnNetworkPolicyResult.class));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VcnUnderlyingNetworkPolicy[] newArray(int size) {
             return new VcnUnderlyingNetworkPolicy[size];
         }
     };
     private final VcnNetworkPolicyResult mVcnNetworkPolicyResult;
-
-    /* synthetic */ VcnUnderlyingNetworkPolicy(VcnNetworkPolicyResult vcnNetworkPolicyResult, VcnUnderlyingNetworkPolicyIA vcnUnderlyingNetworkPolicyIA) {
-        this(vcnNetworkPolicyResult);
-    }
 
     public VcnUnderlyingNetworkPolicy(boolean isTearDownRequested, NetworkCapabilities mergedNetworkCapabilities) {
         Objects.requireNonNull(mergedNetworkCapabilities, "mergedNetworkCapabilities must be nonnull");
@@ -71,22 +66,5 @@ public final class VcnUnderlyingNetworkPolicy implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.mVcnNetworkPolicyResult, flags);
-    }
-
-    /* renamed from: android.net.vcn.VcnUnderlyingNetworkPolicy$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VcnUnderlyingNetworkPolicy> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VcnUnderlyingNetworkPolicy createFromParcel(Parcel in) {
-            return new VcnUnderlyingNetworkPolicy((VcnNetworkPolicyResult) in.readParcelable(null, VcnNetworkPolicyResult.class));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VcnUnderlyingNetworkPolicy[] newArray(int size) {
-            return new VcnUnderlyingNetworkPolicy[size];
-        }
     }
 }

@@ -3,12 +3,12 @@ package android.view;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.view.SurfaceControl;
+import android.window.InputTransferToken;
 import android.window.SurfaceSyncGroup;
 
 /* loaded from: classes4.dex */
 public interface AttachedSurfaceControl {
 
-    /* loaded from: classes4.dex */
     public interface OnBufferTransformHintChangedListener {
         void onBufferTransformHintChanged(int i);
     }
@@ -35,5 +35,9 @@ public interface AttachedSurfaceControl {
     }
 
     default void setChildBoundingInsets(Rect insets) {
+    }
+
+    default InputTransferToken getInputTransferToken() {
+        throw new UnsupportedOperationException("The getInputTransferToken needs to be implemented before making this call.");
     }
 }

@@ -1,12 +1,9 @@
 package com.android.framework.protobuf;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class ManifestSchemaFactory implements SchemaFactory {
+/* loaded from: classes3.dex */
+final class ManifestSchemaFactory implements SchemaFactory {
     private static final MessageInfoFactory EMPTY_FACTORY = new MessageInfoFactory() { // from class: com.android.framework.protobuf.ManifestSchemaFactory.1
-        AnonymousClass1() {
-        }
-
         @Override // com.android.framework.protobuf.MessageInfoFactory
         public boolean isSupported(Class<?> clazz) {
             return false;
@@ -61,8 +58,7 @@ public final class ManifestSchemaFactory implements SchemaFactory {
         return new CompositeMessageInfoFactory(GeneratedMessageInfoFactory.getInstance(), getDescriptorMessageInfoFactory());
     }
 
-    /* loaded from: classes4.dex */
-    public static class CompositeMessageInfoFactory implements MessageInfoFactory {
+    private static class CompositeMessageInfoFactory implements MessageInfoFactory {
         private MessageInfoFactory[] factories;
 
         CompositeMessageInfoFactory(MessageInfoFactory... factories) {
@@ -87,23 +83,6 @@ public final class ManifestSchemaFactory implements SchemaFactory {
                 }
             }
             throw new UnsupportedOperationException("No factory is available for message type: " + clazz.getName());
-        }
-    }
-
-    /* renamed from: com.android.framework.protobuf.ManifestSchemaFactory$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements MessageInfoFactory {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.framework.protobuf.MessageInfoFactory
-        public boolean isSupported(Class<?> clazz) {
-            return false;
-        }
-
-        @Override // com.android.framework.protobuf.MessageInfoFactory
-        public MessageInfo messageInfoFor(Class<?> clazz) {
-            throw new IllegalStateException("This should never be called.");
         }
     }
 

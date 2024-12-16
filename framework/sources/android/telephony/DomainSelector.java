@@ -1,11 +1,11 @@
 package android.telephony;
 
+import android.annotation.SystemApi;
 import android.telephony.DomainSelectionService;
 
-/* loaded from: classes3.dex */
+@SystemApi
+/* loaded from: classes4.dex */
 public interface DomainSelector {
-    void cancelSelection();
-
     void finishSelection();
 
     void reselectDomain(DomainSelectionService.SelectionAttributes selectionAttributes);

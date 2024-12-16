@@ -87,20 +87,15 @@ public class TranslateAnimation extends Animation {
         this.mToYType = toYType;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
-    public void applyTransformation(float interpolatedTime, Transformation t) {
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
         float dx = this.mFromXDelta;
         float dy = this.mFromYDelta;
-        float f = this.mFromXDelta;
-        float f2 = this.mToXDelta;
-        if (f != f2) {
-            dx = f + ((f2 - f) * interpolatedTime);
+        if (this.mFromXDelta != this.mToXDelta) {
+            dx = this.mFromXDelta + ((this.mToXDelta - this.mFromXDelta) * interpolatedTime);
         }
-        float f3 = this.mFromYDelta;
-        float f4 = this.mToYDelta;
-        if (f3 != f4) {
-            dy = f3 + ((f4 - f3) * interpolatedTime);
+        if (this.mFromYDelta != this.mToYDelta) {
+            dy = this.mFromYDelta + ((this.mToYDelta - this.mFromYDelta) * interpolatedTime);
         }
         t.getMatrix().setTranslate(dx, dy);
     }
@@ -146,26 +141,10 @@ public class TranslateAnimation extends Animation {
     }
 
     private boolean endsXEnclosedWithinParent() {
-        int i = this.mWidth;
-        int i2 = this.mParentWidth;
-        if (i <= i2) {
-            float f = this.mToXDelta;
-            if (i + f <= i2 && f >= 0.0f) {
-                return true;
-            }
-        }
-        return false;
+        return this.mWidth <= this.mParentWidth && this.mToXDelta + ((float) this.mWidth) <= ((float) this.mParentWidth) && this.mToXDelta >= 0.0f;
     }
 
     private boolean startsXEnclosedWithinParent() {
-        int i = this.mWidth;
-        int i2 = this.mParentWidth;
-        if (i <= i2) {
-            float f = this.mFromXDelta;
-            if (i + f <= i2 && f >= 0.0f) {
-                return true;
-            }
-        }
-        return false;
+        return this.mWidth <= this.mParentWidth && this.mFromXDelta + ((float) this.mWidth) <= ((float) this.mParentWidth) && this.mFromXDelta >= 0.0f;
     }
 }

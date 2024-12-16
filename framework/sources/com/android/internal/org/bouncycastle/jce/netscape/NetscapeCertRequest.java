@@ -59,9 +59,8 @@ public class NetscapeCertRequest extends ASN1Object {
             this.content = new DERBitString(pkac);
             SubjectPublicKeyInfo pubkeyinfo = SubjectPublicKeyInfo.getInstance(pkac.getObjectAt(0));
             X509EncodedKeySpec xspec = new X509EncodedKeySpec(new DERBitString(pubkeyinfo).getBytes());
-            AlgorithmIdentifier algorithm = pubkeyinfo.getAlgorithm();
-            this.keyAlg = algorithm;
-            this.pubkey = KeyFactory.getInstance(algorithm.getAlgorithm().getId()).generatePublic(xspec);
+            this.keyAlg = pubkeyinfo.getAlgorithm();
+            this.pubkey = KeyFactory.getInstance(this.keyAlg.getAlgorithm().getId()).generatePublic(xspec);
         } catch (Exception e) {
             throw new IllegalArgumentException(e.toString());
         }

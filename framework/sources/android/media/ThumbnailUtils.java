@@ -40,8 +40,7 @@ public class ThumbnailUtils {
         return MediaStore.Images.Thumbnails.getKindSize(kind);
     }
 
-    /* loaded from: classes2.dex */
-    public static class Resizer implements ImageDecoder.OnHeaderDecodedListener {
+    private static class Resizer implements ImageDecoder.OnHeaderDecodedListener {
         private final CancellationSignal signal;
         private final Size size;
 
@@ -52,9 +51,8 @@ public class ThumbnailUtils {
 
         @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
         public void onHeaderDecoded(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
-            CancellationSignal cancellationSignal = this.signal;
-            if (cancellationSignal != null) {
-                cancellationSignal.throwIfCanceled();
+            if (this.signal != null) {
+                this.signal.throwIfCanceled();
             }
             decoder.setAllocator(1);
             int widthSample = info.getSize().getWidth() / this.size.getWidth();
@@ -136,12 +134,12 @@ public class ThumbnailUtils {
         }
     }
 
-    public static /* synthetic */ boolean lambda$createAudioThumbnail$0(File dir, String name) {
+    static /* synthetic */ boolean lambda$createAudioThumbnail$0(File dir, String name) {
         String lower = name.toLowerCase();
         return lower.contains("albumart") && (lower.endsWith(".jpg") || lower.endsWith(".png"));
     }
 
-    public static /* synthetic */ int lambda$createAudioThumbnail$1(File f) {
+    static /* synthetic */ int lambda$createAudioThumbnail$1(File f) {
         String lower = f.getName().toLowerCase();
         if (lower.equals("albumart.jpg")) {
             return 4;
@@ -152,7 +150,7 @@ public class ThumbnailUtils {
         return (lower.contains("albumart") && lower.endsWith(".jpg")) ? 2 : 0;
     }
 
-    public static /* synthetic */ int lambda$createAudioThumbnail$2(ToIntFunction score, File a, File b) {
+    static /* synthetic */ int lambda$createAudioThumbnail$2(ToIntFunction score, File a, File b) {
         return score.applyAsInt(a) - score.applyAsInt(b);
     }
 
@@ -386,7 +384,6 @@ public class ThumbnailUtils {
     }
 
     @Deprecated
-    /* loaded from: classes2.dex */
     private static class SizedThumbnailBitmap {
         public Bitmap mBitmap;
         public byte[] mThumbnailData;

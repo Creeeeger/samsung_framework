@@ -42,9 +42,8 @@ public class ProxyOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
                     return equals;
                 }
             });
-            OnBackInvokedDispatcher onBackInvokedDispatcher = this.mActualDispatcher;
-            if (onBackInvokedDispatcher != null) {
-                onBackInvokedDispatcher.unregisterOnBackInvokedCallback(callback);
+            if (this.mActualDispatcher != null) {
+                this.mActualDispatcher.unregisterOnBackInvokedCallback(callback);
             }
         }
     }
@@ -52,25 +51,22 @@ public class ProxyOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
     private void registerOnBackInvokedCallbackUnchecked(OnBackInvokedCallback callback, int priority) {
         synchronized (this.mLock) {
             this.mCallbacks.add(Pair.create(callback, Integer.valueOf(priority)));
-            OnBackInvokedDispatcher onBackInvokedDispatcher = this.mActualDispatcher;
-            if (onBackInvokedDispatcher != null) {
+            if (this.mActualDispatcher != null) {
                 if (priority <= -1) {
-                    onBackInvokedDispatcher.registerSystemOnBackInvokedCallback(callback);
+                    this.mActualDispatcher.registerSystemOnBackInvokedCallback(callback);
                 } else {
-                    onBackInvokedDispatcher.registerOnBackInvokedCallback(priority, callback);
+                    this.mActualDispatcher.registerOnBackInvokedCallback(priority, callback);
                 }
             }
         }
     }
 
     private void transferCallbacksToDispatcher() {
-        OnBackInvokedDispatcher onBackInvokedDispatcher = this.mActualDispatcher;
-        if (onBackInvokedDispatcher == null) {
+        if (this.mActualDispatcher == null) {
             return;
         }
-        ImeOnBackInvokedDispatcher imeOnBackInvokedDispatcher = this.mImeDispatcher;
-        if (imeOnBackInvokedDispatcher != null) {
-            onBackInvokedDispatcher.setImeOnBackInvokedDispatcher(imeOnBackInvokedDispatcher);
+        if (this.mImeDispatcher != null) {
+            this.mActualDispatcher.setImeOnBackInvokedDispatcher(this.mImeDispatcher);
         }
         for (Pair<OnBackInvokedCallback, Integer> callbackPair : this.mCallbacks) {
             int priority = callbackPair.second.intValue();
@@ -113,9 +109,8 @@ public class ProxyOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
 
     @Override // android.window.OnBackInvokedDispatcher
     public void setImeOnBackInvokedDispatcher(ImeOnBackInvokedDispatcher imeDispatcher) {
-        OnBackInvokedDispatcher onBackInvokedDispatcher = this.mActualDispatcher;
-        if (onBackInvokedDispatcher != null) {
-            onBackInvokedDispatcher.setImeOnBackInvokedDispatcher(imeDispatcher);
+        if (this.mActualDispatcher != null) {
+            this.mActualDispatcher.setImeOnBackInvokedDispatcher(imeDispatcher);
         } else {
             this.mImeDispatcher = imeDispatcher;
         }

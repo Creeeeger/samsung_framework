@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class DeviceStateSensorOrientationMap {
     public static final long FOLDED = 4;
     public static final long NORMAL = 0;
@@ -16,12 +16,7 @@ public final class DeviceStateSensorOrientationMap {
     private final long[] mElements;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DeviceState {
-    }
-
-    /* synthetic */ DeviceStateSensorOrientationMap(ArrayList arrayList, HashMap hashMap, DeviceStateSensorOrientationMapIA deviceStateSensorOrientationMapIA) {
-        this(arrayList, hashMap);
     }
 
     public DeviceStateSensorOrientationMap(long[] elements) {
@@ -71,7 +66,6 @@ public final class DeviceStateSensorOrientationMap {
         return HashCodeHelpers.hashCodeGeneric(this.mElements);
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final ArrayList<Long> mElements = new ArrayList<>();
         private final HashMap<Long, Integer> mDeviceStateOrientationMap = new HashMap<>();

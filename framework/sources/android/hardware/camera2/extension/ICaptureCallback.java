@@ -7,13 +7,15 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICaptureCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.ICaptureCallback";
 
     void onCaptureCompleted(long j, int i, CameraMetadataNative cameraMetadataNative) throws RemoteException;
 
     void onCaptureFailed(int i) throws RemoteException;
+
+    void onCaptureProcessFailed(int i, int i2) throws RemoteException;
 
     void onCaptureProcessProgressed(int i) throws RemoteException;
 
@@ -25,7 +27,6 @@ public interface ICaptureCallback extends IInterface {
 
     void onCaptureStarted(int i, long j) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICaptureCallback {
         @Override // android.hardware.camera2.extension.ICaptureCallback
         public void onCaptureStarted(int captureSequenceId, long timestamp) throws RemoteException {
@@ -55,16 +56,20 @@ public interface ICaptureCallback extends IInterface {
         public void onCaptureProcessProgressed(int progress) throws RemoteException {
         }
 
+        @Override // android.hardware.camera2.extension.ICaptureCallback
+        public void onCaptureProcessFailed(int captureSequenceId, int captureFailureReason) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICaptureCallback {
         static final int TRANSACTION_onCaptureCompleted = 6;
         static final int TRANSACTION_onCaptureFailed = 3;
+        static final int TRANSACTION_onCaptureProcessFailed = 8;
         static final int TRANSACTION_onCaptureProcessProgressed = 7;
         static final int TRANSACTION_onCaptureProcessStarted = 2;
         static final int TRANSACTION_onCaptureSequenceAborted = 5;
@@ -107,6 +112,8 @@ public interface ICaptureCallback extends IInterface {
                     return "onCaptureCompleted";
                 case 7:
                     return "onCaptureProcessProgressed";
+                case 8:
+                    return "onCaptureProcessFailed";
                 default:
                     return null;
             }
@@ -122,65 +129,69 @@ public interface ICaptureCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICaptureCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICaptureCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICaptureCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onCaptureStarted(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureProcessStarted(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureFailed(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureSequenceCompleted(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureSequenceAborted(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    long _arg06 = data.readLong();
+                    int _arg12 = data.readInt();
+                    CameraMetadataNative _arg2 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCaptureCompleted(_arg06, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureProcessProgressed(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureProcessFailed(_arg08, _arg13);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onCaptureStarted(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureProcessStarted(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureFailed(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureSequenceCompleted(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureSequenceAborted(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            long _arg06 = data.readLong();
-                            int _arg12 = data.readInt();
-                            CameraMetadataNative _arg2 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCaptureCompleted(_arg06, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureProcessProgressed(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICaptureCallback {
+        private static class Proxy implements ICaptureCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -303,11 +314,27 @@ public interface ICaptureCallback extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.hardware.camera2.extension.ICaptureCallback
+            public void onCaptureProcessFailed(int captureSequenceId, int captureFailureReason) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ICaptureCallback.DESCRIPTOR);
+                    _data.writeInt(captureSequenceId);
+                    _data.writeInt(captureFailureReason);
+                    this.mRemote.transact(8, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 6;
+            return 7;
         }
     }
 }

@@ -66,7 +66,6 @@ public interface ISehRadioNetwork extends IInterface {
 
     void setVendorSpecificConfiguration(int i, SehVendorConfiguration[] sehVendorConfigurationArr) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioNetwork {
         @Override // vendor.samsung.hardware.radio.network.ISehRadioNetwork
         public void emergencyControl(int serial, int command) throws RemoteException {
@@ -180,7 +179,6 @@ public interface ISehRadioNetwork extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioNetwork {
         static final int TRANSACTION_emergencyControl = 1;
         static final int TRANSACTION_emergencySearch = 2;
@@ -236,166 +234,165 @@ public interface ISehRadioNetwork extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    emergencyControl(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    emergencySearch(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAvailableNetworks(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCnap(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCsgList(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getDisable2g(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getNrIconType(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getNrMode(_arg08);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getPreferredNetworkList(_arg09);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    byte _arg12 = data.readByte();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    getRoamingNetworkInfoViaBLE(_arg010, _arg12, _arg2);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getVendorSpecificConfiguration(_arg011);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    SehCsgInfo _arg13 = (SehCsgInfo) data.readTypedObject(SehCsgInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    selectCsgManual(_arg012, _arg13);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    SehEncodedUssd _arg14 = (SehEncodedUssd) data.readTypedObject(SehEncodedUssd.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendEncodedUssd(_arg013, _arg14);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    byte[] _arg15 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendRequestRaw(_arg014, _arg15);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    String[] _arg16 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    sendRequestStrings(_arg015, _arg16);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    SehCurrentNetworkInfo[] _arg17 = (SehCurrentNetworkInfo[]) data.createTypedArray(SehCurrentNetworkInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCurrentNetworkInfoViaBLE(_arg016, _arg17);
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    int _arg18 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDisable2g(_arg017, _arg18);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    SehImsCall[] _arg19 = (SehImsCall[]) data.createTypedArray(SehImsCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    setImsCallList(_arg018, _arg19);
+                    return true;
+                case 19:
+                    int _arg019 = data.readInt();
+                    int _arg110 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNrMode(_arg019, _arg110, _arg22);
+                    return true;
+                case 20:
+                    int _arg020 = data.readInt();
+                    SehPreferredNetworkInfo _arg111 = (SehPreferredNetworkInfo) data.readTypedObject(SehPreferredNetworkInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPreferredNetworkList(_arg020, _arg111);
+                    return true;
+                case 21:
+                    ISehRadioNetworkResponse _arg021 = ISehRadioNetworkResponse.Stub.asInterface(data.readStrongBinder());
+                    ISehRadioNetworkIndication _arg112 = ISehRadioNetworkIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg021, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    int _arg022 = data.readInt();
+                    SehRoamingNetworkInfo[] _arg113 = (SehRoamingNetworkInfo[]) data.createTypedArray(SehRoamingNetworkInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRoamingNetworkInfoViaBLE(_arg022, _arg113);
+                    return true;
+                case 23:
+                    int _arg023 = data.readInt();
+                    byte _arg114 = data.readByte();
+                    byte _arg23 = data.readByte();
+                    data.enforceNoDataAvail();
+                    setScanResultViaBLE(_arg023, _arg114, _arg23);
+                    return true;
+                case 24:
+                    int _arg024 = data.readInt();
+                    SehVendorConfiguration[] _arg115 = (SehVendorConfiguration[]) data.createTypedArray(SehVendorConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    setVendorSpecificConfiguration(_arg024, _arg115);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            emergencyControl(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            emergencySearch(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAvailableNetworks(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCnap(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCsgList(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getDisable2g(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getNrIconType(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getNrMode(_arg08);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getPreferredNetworkList(_arg09);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            byte _arg12 = data.readByte();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            getRoamingNetworkInfoViaBLE(_arg010, _arg12, _arg2);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getVendorSpecificConfiguration(_arg011);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            SehCsgInfo _arg13 = (SehCsgInfo) data.readTypedObject(SehCsgInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            selectCsgManual(_arg012, _arg13);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            SehEncodedUssd _arg14 = (SehEncodedUssd) data.readTypedObject(SehEncodedUssd.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendEncodedUssd(_arg013, _arg14);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            byte[] _arg15 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendRequestRaw(_arg014, _arg15);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            String[] _arg16 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            sendRequestStrings(_arg015, _arg16);
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            SehCurrentNetworkInfo[] _arg17 = (SehCurrentNetworkInfo[]) data.createTypedArray(SehCurrentNetworkInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCurrentNetworkInfoViaBLE(_arg016, _arg17);
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            int _arg18 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDisable2g(_arg017, _arg18);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            SehImsCall[] _arg19 = (SehImsCall[]) data.createTypedArray(SehImsCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            setImsCallList(_arg018, _arg19);
-                            return true;
-                        case 19:
-                            int _arg019 = data.readInt();
-                            int _arg110 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setNrMode(_arg019, _arg110, _arg22);
-                            return true;
-                        case 20:
-                            int _arg020 = data.readInt();
-                            SehPreferredNetworkInfo _arg111 = (SehPreferredNetworkInfo) data.readTypedObject(SehPreferredNetworkInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPreferredNetworkList(_arg020, _arg111);
-                            return true;
-                        case 21:
-                            ISehRadioNetworkResponse _arg021 = ISehRadioNetworkResponse.Stub.asInterface(data.readStrongBinder());
-                            ISehRadioNetworkIndication _arg112 = ISehRadioNetworkIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg021, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            int _arg022 = data.readInt();
-                            SehRoamingNetworkInfo[] _arg113 = (SehRoamingNetworkInfo[]) data.createTypedArray(SehRoamingNetworkInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRoamingNetworkInfoViaBLE(_arg022, _arg113);
-                            return true;
-                        case 23:
-                            int _arg023 = data.readInt();
-                            byte _arg114 = data.readByte();
-                            byte _arg23 = data.readByte();
-                            data.enforceNoDataAvail();
-                            setScanResultViaBLE(_arg023, _arg114, _arg23);
-                            return true;
-                        case 24:
-                            int _arg024 = data.readInt();
-                            SehVendorConfiguration[] _arg115 = (SehVendorConfiguration[]) data.createTypedArray(SehVendorConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            setVendorSpecificConfiguration(_arg024, _arg115);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISehRadioNetwork {
             private IBinder mRemote;
             private int mCachedVersion = -1;

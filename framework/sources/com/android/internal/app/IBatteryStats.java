@@ -8,12 +8,12 @@ import android.os.BatteryUsageStats;
 import android.os.BatteryUsageStatsQuery;
 import android.os.Binder;
 import android.os.BluetoothBatteryStats;
-import android.os.ForegroundAppEnergyInfo;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.PermissionEnforcer;
 import android.os.RemoteException;
+import android.os.ResultReceiver;
 import android.os.SemBatterySipper;
 import android.os.SemModemActivityInfo;
 import android.os.SpeakerOutEnergyInfo;
@@ -30,8 +30,10 @@ import com.android.internal.app.IBatteryStatsCallback;
 import com.samsung.android.os.SemCompanionDeviceBatteryInfo;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IBatteryStats extends IInterface {
+    public static final String KEY_UID_SNAPSHOTS = "uid_snapshots";
+
     long computeBatteryScreenOffRealtimeMs() throws RemoteException;
 
     long computeBatteryTimeRemaining() throws RemoteException;
@@ -63,10 +65,6 @@ public interface IBatteryStats extends IInterface {
     WifiBatteryStats getWifiBatteryStats() throws RemoteException;
 
     boolean isCharging() throws RemoteException;
-
-    boolean isCpuClusterAvailable() throws RemoteException;
-
-    boolean isCpuFrequencyAvailable() throws RemoteException;
 
     void noteBleDutyScanStarted(WorkSource workSource, boolean z, int i) throws RemoteException;
 
@@ -132,7 +130,7 @@ public interface IBatteryStats extends IInterface {
 
     void noteNetworkStatsEnabled() throws RemoteException;
 
-    void notePhoneDataConnectionState(int i, boolean z, int i2, int i3) throws RemoteException;
+    void notePhoneDataConnectionState(int i, boolean z, int i2, int i3, int i4) throws RemoteException;
 
     void notePhoneOff() throws RemoteException;
 
@@ -264,6 +262,8 @@ public interface IBatteryStats extends IInterface {
 
     HealthStatsParceler[] takeUidSnapshots(int[] iArr) throws RemoteException;
 
+    void takeUidSnapshotsAsync(int[] iArr, ResultReceiver resultReceiver) throws RemoteException;
+
     void unRegisterDeviceBatteryInfoChanged(String str) throws RemoteException;
 
     void unplugBattery(boolean z) throws RemoteException;
@@ -272,13 +272,10 @@ public interface IBatteryStats extends IInterface {
 
     void unsetDeviceBatteryInfo(String str) throws RemoteException;
 
-    void updateForegroundAppEnergyInfo(List<ForegroundAppEnergyInfo> list) throws RemoteException;
-
     void updateSemModemActivityInfo(SemModemActivityInfo semModemActivityInfo) throws RemoteException;
 
     void updateSpeakerOutEnergyInfo(SpeakerOutEnergyInfo speakerOutEnergyInfo) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IBatteryStats {
         @Override // com.android.internal.app.IBatteryStats
         public void noteStartSensor(int uid, int sensor) throws RemoteException {
@@ -500,7 +497,7 @@ public interface IBatteryStats extends IInterface {
         }
 
         @Override // com.android.internal.app.IBatteryStats
-        public void notePhoneDataConnectionState(int dataType, boolean hasData, int serviceType, int nrFrequency) throws RemoteException {
+        public void notePhoneDataConnectionState(int dataType, boolean hasData, int serviceType, int nrState, int nrFrequency) throws RemoteException {
         }
 
         @Override // com.android.internal.app.IBatteryStats
@@ -669,6 +666,10 @@ public interface IBatteryStats extends IInterface {
         }
 
         @Override // com.android.internal.app.IBatteryStats
+        public void takeUidSnapshotsAsync(int[] uid, ResultReceiver result) throws RemoteException {
+        }
+
+        @Override // com.android.internal.app.IBatteryStats
         public void noteBluetoothControllerActivity(BluetoothActivityEnergyInfo info) throws RemoteException {
         }
 
@@ -710,10 +711,6 @@ public interface IBatteryStats extends IInterface {
         }
 
         @Override // com.android.internal.app.IBatteryStats
-        public void updateForegroundAppEnergyInfo(List<ForegroundAppEnergyInfo> info) throws RemoteException {
-        }
-
-        @Override // com.android.internal.app.IBatteryStats
         public void updateSpeakerOutEnergyInfo(SpeakerOutEnergyInfo info) throws RemoteException {
         }
 
@@ -732,19 +729,19 @@ public interface IBatteryStats extends IInterface {
         }
 
         @Override // com.android.internal.app.IBatteryStats
-        public void noteBleDutyScanStarted(WorkSource ws, boolean isUnoptimized, int dutyCycle) throws RemoteException {
-        }
-
-        @Override // com.android.internal.app.IBatteryStats
-        public void noteBleDutyScanStopped(WorkSource ws, boolean isUnoptimized, int dutyCycle) throws RemoteException {
-        }
-
-        @Override // com.android.internal.app.IBatteryStats
         public void noteStartTxPowerSharing() throws RemoteException {
         }
 
         @Override // com.android.internal.app.IBatteryStats
         public void noteStopTxPowerSharing() throws RemoteException {
+        }
+
+        @Override // com.android.internal.app.IBatteryStats
+        public void noteBleDutyScanStarted(WorkSource ws, boolean isUnoptimized, int dutyCycle) throws RemoteException {
+        }
+
+        @Override // com.android.internal.app.IBatteryStats
+        public void noteBleDutyScanStopped(WorkSource ws, boolean isUnoptimized, int dutyCycle) throws RemoteException {
         }
 
         @Override // com.android.internal.app.IBatteryStats
@@ -757,16 +754,6 @@ public interface IBatteryStats extends IInterface {
 
         @Override // com.android.internal.app.IBatteryStats
         public void updateSemModemActivityInfo(SemModemActivityInfo info) throws RemoteException {
-        }
-
-        @Override // com.android.internal.app.IBatteryStats
-        public boolean isCpuClusterAvailable() throws RemoteException {
-            return false;
-        }
-
-        @Override // com.android.internal.app.IBatteryStats
-        public boolean isCpuFrequencyAvailable() throws RemoteException {
-            return false;
         }
 
         @Override // com.android.internal.app.IBatteryStats
@@ -801,7 +788,6 @@ public interface IBatteryStats extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IBatteryStats {
         public static final String DESCRIPTOR = "com.android.internal.app.IBatteryStats";
         static final int TRANSACTION_computeBatteryScreenOffRealtimeMs = 24;
@@ -812,23 +798,21 @@ public interface IBatteryStats extends IInterface {
         static final int TRANSACTION_getBatteryUsageStats = 19;
         static final int TRANSACTION_getBluetoothBatteryStats = 91;
         static final int TRANSACTION_getCellularBatteryStats = 87;
-        static final int TRANSACTION_getDeviceBatteryInfo = 119;
-        static final int TRANSACTION_getDeviceBatteryInfos = 118;
+        static final int TRANSACTION_getDeviceBatteryInfo = 117;
+        static final int TRANSACTION_getDeviceBatteryInfos = 116;
         static final int TRANSACTION_getGpsBatteryStats = 89;
         static final int TRANSACTION_getScreenOffDischargeMah = 25;
         static final int TRANSACTION_getSemBatteryUsageStats = 20;
         static final int TRANSACTION_getWakeLockStats = 90;
         static final int TRANSACTION_getWifiBatteryStats = 88;
         static final int TRANSACTION_isCharging = 21;
-        static final int TRANSACTION_isCpuClusterAvailable = 116;
-        static final int TRANSACTION_isCpuFrequencyAvailable = 117;
-        static final int TRANSACTION_noteBleDutyScanStarted = 109;
-        static final int TRANSACTION_noteBleDutyScanStopped = 110;
+        static final int TRANSACTION_noteBleDutyScanStarted = 111;
+        static final int TRANSACTION_noteBleDutyScanStopped = 112;
         static final int TRANSACTION_noteBleScanReset = 85;
         static final int TRANSACTION_noteBleScanResults = 86;
         static final int TRANSACTION_noteBleScanStarted = 83;
         static final int TRANSACTION_noteBleScanStopped = 84;
-        static final int TRANSACTION_noteBluetoothControllerActivity = 94;
+        static final int TRANSACTION_noteBluetoothControllerActivity = 95;
         static final int TRANSACTION_noteChangeWakelockFromSource = 34;
         static final int TRANSACTION_noteConnectivityChanged = 49;
         static final int TRANSACTION_noteDeviceIdleMode = 79;
@@ -851,7 +835,7 @@ public interface IBatteryStats extends IInterface {
         static final int TRANSACTION_noteLongPartialWakelockStart = 36;
         static final int TRANSACTION_noteLongPartialWakelockStartFromSource = 37;
         static final int TRANSACTION_noteMobileRadioPowerState = 50;
-        static final int TRANSACTION_noteModemControllerActivity = 95;
+        static final int TRANSACTION_noteModemControllerActivity = 96;
         static final int TRANSACTION_noteNetworkInterfaceForTransports = 77;
         static final int TRANSACTION_noteNetworkStatsEnabled = 78;
         static final int TRANSACTION_notePhoneDataConnectionState = 54;
@@ -870,7 +854,7 @@ public interface IBatteryStats extends IInterface {
         static final int TRANSACTION_noteStartCamera = 11;
         static final int TRANSACTION_noteStartGps = 16;
         static final int TRANSACTION_noteStartSensor = 1;
-        static final int TRANSACTION_noteStartTxPowerSharing = 111;
+        static final int TRANSACTION_noteStartTxPowerSharing = 109;
         static final int TRANSACTION_noteStartVideo = 3;
         static final int TRANSACTION_noteStartWakelock = 31;
         static final int TRANSACTION_noteStartWakelockFromSource = 33;
@@ -878,7 +862,7 @@ public interface IBatteryStats extends IInterface {
         static final int TRANSACTION_noteStopCamera = 12;
         static final int TRANSACTION_noteStopGps = 17;
         static final int TRANSACTION_noteStopSensor = 2;
-        static final int TRANSACTION_noteStopTxPowerSharing = 112;
+        static final int TRANSACTION_noteStopTxPowerSharing = 110;
         static final int TRANSACTION_noteStopVideo = 4;
         static final int TRANSACTION_noteStopWakelock = 32;
         static final int TRANSACTION_noteStopWakelockFromSource = 35;
@@ -892,7 +876,7 @@ public interface IBatteryStats extends IInterface {
         static final int TRANSACTION_noteWakeupSensorEvent = 15;
         static final int TRANSACTION_noteWifiBatchedScanStartedFromSource = 74;
         static final int TRANSACTION_noteWifiBatchedScanStoppedFromSource = 75;
-        static final int TRANSACTION_noteWifiControllerActivity = 96;
+        static final int TRANSACTION_noteWifiControllerActivity = 97;
         static final int TRANSACTION_noteWifiMulticastDisabled = 69;
         static final int TRANSACTION_noteWifiMulticastEnabled = 68;
         static final int TRANSACTION_noteWifiOff = 57;
@@ -909,22 +893,22 @@ public interface IBatteryStats extends IInterface {
         static final int TRANSACTION_noteWifiStopped = 60;
         static final int TRANSACTION_noteWifiSupplicantStateChanged = 62;
         static final int TRANSACTION_registerBatteryStatsCallback = 106;
-        static final int TRANSACTION_registerDeviceBatteryInfoChanged = 120;
-        static final int TRANSACTION_resetBattery = 101;
-        static final int TRANSACTION_setBatteryLevel = 99;
+        static final int TRANSACTION_registerDeviceBatteryInfoChanged = 118;
+        static final int TRANSACTION_resetBattery = 102;
+        static final int TRANSACTION_setBatteryLevel = 100;
         static final int TRANSACTION_setBatteryState = 80;
-        static final int TRANSACTION_setChargerAcOnline = 98;
-        static final int TRANSACTION_setChargingStateUpdateDelayMillis = 97;
-        static final int TRANSACTION_setDeviceBatteryInfo = 122;
-        static final int TRANSACTION_setTemperatureNCurrent = 103;
-        static final int TRANSACTION_suspendBatteryInput = 102;
+        static final int TRANSACTION_setChargerAcOnline = 99;
+        static final int TRANSACTION_setChargingStateUpdateDelayMillis = 98;
+        static final int TRANSACTION_setDeviceBatteryInfo = 120;
+        static final int TRANSACTION_setTemperatureNCurrent = 104;
+        static final int TRANSACTION_suspendBatteryInput = 103;
         static final int TRANSACTION_takeUidSnapshot = 92;
         static final int TRANSACTION_takeUidSnapshots = 93;
-        static final int TRANSACTION_unRegisterDeviceBatteryInfoChanged = 121;
-        static final int TRANSACTION_unplugBattery = 100;
+        static final int TRANSACTION_takeUidSnapshotsAsync = 94;
+        static final int TRANSACTION_unRegisterDeviceBatteryInfoChanged = 119;
+        static final int TRANSACTION_unplugBattery = 101;
         static final int TRANSACTION_unregisterBatteryStatsCallback = 107;
-        static final int TRANSACTION_unsetDeviceBatteryInfo = 123;
-        static final int TRANSACTION_updateForegroundAppEnergyInfo = 104;
+        static final int TRANSACTION_unsetDeviceBatteryInfo = 121;
         static final int TRANSACTION_updateSemModemActivityInfo = 115;
         static final int TRANSACTION_updateSpeakerOutEnergyInfo = 105;
         private final PermissionEnforcer mEnforcer;
@@ -1150,27 +1134,27 @@ public interface IBatteryStats extends IInterface {
                 case 93:
                     return "takeUidSnapshots";
                 case 94:
-                    return "noteBluetoothControllerActivity";
+                    return "takeUidSnapshotsAsync";
                 case 95:
-                    return "noteModemControllerActivity";
+                    return "noteBluetoothControllerActivity";
                 case 96:
-                    return "noteWifiControllerActivity";
+                    return "noteModemControllerActivity";
                 case 97:
-                    return "setChargingStateUpdateDelayMillis";
+                    return "noteWifiControllerActivity";
                 case 98:
-                    return "setChargerAcOnline";
+                    return "setChargingStateUpdateDelayMillis";
                 case 99:
-                    return "setBatteryLevel";
+                    return "setChargerAcOnline";
                 case 100:
-                    return "unplugBattery";
+                    return "setBatteryLevel";
                 case 101:
-                    return "resetBattery";
+                    return "unplugBattery";
                 case 102:
-                    return "suspendBatteryInput";
+                    return "resetBattery";
                 case 103:
-                    return "setTemperatureNCurrent";
+                    return "suspendBatteryInput";
                 case 104:
-                    return "updateForegroundAppEnergyInfo";
+                    return "setTemperatureNCurrent";
                 case 105:
                     return "updateSpeakerOutEnergyInfo";
                 case 106:
@@ -1180,13 +1164,13 @@ public interface IBatteryStats extends IInterface {
                 case 108:
                     return "noteUpdateNetworkStats";
                 case 109:
-                    return "noteBleDutyScanStarted";
-                case 110:
-                    return "noteBleDutyScanStopped";
-                case 111:
                     return "noteStartTxPowerSharing";
-                case 112:
+                case 110:
                     return "noteStopTxPowerSharing";
+                case 111:
+                    return "noteBleDutyScanStarted";
+                case 112:
+                    return "noteBleDutyScanStopped";
                 case 113:
                     return "noteDualScreenState";
                 case 114:
@@ -1194,20 +1178,16 @@ public interface IBatteryStats extends IInterface {
                 case 115:
                     return "updateSemModemActivityInfo";
                 case 116:
-                    return "isCpuClusterAvailable";
-                case 117:
-                    return "isCpuFrequencyAvailable";
-                case 118:
                     return "getDeviceBatteryInfos";
-                case 119:
+                case 117:
                     return "getDeviceBatteryInfo";
-                case 120:
+                case 118:
                     return "registerDeviceBatteryInfoChanged";
-                case 121:
+                case 119:
                     return "unRegisterDeviceBatteryInfoChanged";
-                case 122:
+                case 120:
                     return "setDeviceBatteryInfo";
-                case 123:
+                case 121:
                     return "unsetDeviceBatteryInfo";
                 default:
                     return null;
@@ -1224,812 +1204,797 @@ public interface IBatteryStats extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStartSensor(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopSensor(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStartVideo(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopVideo(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStartAudio(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopAudio(_arg06);
+                    return true;
+                case 7:
+                    noteResetVideo();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    noteResetAudio();
+                    return true;
+                case 9:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteFlashlightOn(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteFlashlightOff(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStartCamera(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopCamera(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    noteResetCamera();
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    noteResetFlashlight();
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    long _arg011 = data.readLong();
+                    int _arg13 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWakeupSensorEvent(_arg011, _arg13, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStartGps(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopGps(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    noteResetGps();
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    List<BatteryUsageStatsQuery> _arg014 = data.createTypedArrayList(BatteryUsageStatsQuery.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<BatteryUsageStats> _result = getBatteryUsageStats(_arg014);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 20:
+                    SemBatterySipper _result2 = getSemBatteryUsageStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 21:
+                    boolean _result3 = isCharging();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 22:
+                    long _result4 = computeBatteryTimeRemaining();
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    return true;
+                case 23:
+                    long _result5 = computeChargeTimeRemaining();
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    return true;
+                case 24:
+                    long _result6 = computeBatteryScreenOffRealtimeMs();
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
+                    return true;
+                case 25:
+                    long _result7 = getScreenOffDischargeMah();
+                    reply.writeNoException();
+                    reply.writeLong(_result7);
+                    return true;
+                case 26:
+                    int _arg015 = data.readInt();
+                    String _arg14 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteEvent(_arg015, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    String _arg016 = data.readString();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteSyncStart(_arg016, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    String _arg017 = data.readString();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteSyncFinish(_arg017, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    String _arg018 = data.readString();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteJobStart(_arg018, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    String _arg019 = data.readString();
+                    int _arg18 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteJobFinish(_arg019, _arg18, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    int _arg020 = data.readInt();
+                    int _arg19 = data.readInt();
+                    String _arg24 = data.readString();
+                    String _arg3 = data.readString();
+                    int _arg4 = data.readInt();
+                    boolean _arg5 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    noteStartWakelock(_arg020, _arg19, _arg24, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    int _arg021 = data.readInt();
+                    int _arg110 = data.readInt();
+                    String _arg25 = data.readString();
+                    String _arg32 = data.readString();
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopWakelock(_arg021, _arg110, _arg25, _arg32, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    WorkSource _arg022 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg111 = data.readInt();
+                    String _arg26 = data.readString();
+                    String _arg33 = data.readString();
+                    int _arg43 = data.readInt();
+                    boolean _arg52 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    noteStartWakelockFromSource(_arg022, _arg111, _arg26, _arg33, _arg43, _arg52);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    WorkSource _arg023 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg112 = data.readInt();
+                    String _arg27 = data.readString();
+                    String _arg34 = data.readString();
+                    int _arg44 = data.readInt();
+                    WorkSource _arg53 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg6 = data.readInt();
+                    String _arg7 = data.readString();
+                    String _arg8 = data.readString();
+                    int _arg9 = data.readInt();
+                    boolean _arg10 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    noteChangeWakelockFromSource(_arg023, _arg112, _arg27, _arg34, _arg44, _arg53, _arg6, _arg7, _arg8, _arg9, _arg10);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    WorkSource _arg024 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg113 = data.readInt();
+                    String _arg28 = data.readString();
+                    String _arg35 = data.readString();
+                    int _arg45 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteStopWakelockFromSource(_arg024, _arg113, _arg28, _arg35, _arg45);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    String _arg025 = data.readString();
+                    String _arg114 = data.readString();
+                    int _arg29 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteLongPartialWakelockStart(_arg025, _arg114, _arg29);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    String _arg026 = data.readString();
+                    String _arg115 = data.readString();
+                    WorkSource _arg210 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteLongPartialWakelockStartFromSource(_arg026, _arg115, _arg210);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    String _arg027 = data.readString();
+                    String _arg116 = data.readString();
+                    int _arg211 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteLongPartialWakelockFinish(_arg027, _arg116, _arg211);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    String _arg028 = data.readString();
+                    String _arg117 = data.readString();
+                    WorkSource _arg212 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteLongPartialWakelockFinishFromSource(_arg028, _arg117, _arg212);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    int _arg029 = data.readInt();
+                    long _arg118 = data.readLong();
+                    data.enforceNoDataAvail();
+                    noteVibratorOn(_arg029, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    int _arg030 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteVibratorOff(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    WorkSource _arg031 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    WorkSource _arg119 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteGpsChanged(_arg031, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteGpsSignalQuality(_arg032);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    int _arg033 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteScreenState(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    int _arg034 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteScreenBrightness(_arg034);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg035 = data.readInt();
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteUserActivity(_arg035, _arg120);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    String _arg036 = data.readString();
+                    int _arg121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWakeUp(_arg036, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    boolean _arg037 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    noteInteractive(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    int _arg038 = data.readInt();
+                    String _arg122 = data.readString();
+                    data.enforceNoDataAvail();
+                    noteConnectivityChanged(_arg038, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    int _arg039 = data.readInt();
+                    long _arg123 = data.readLong();
+                    int _arg213 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteMobileRadioPowerState(_arg039, _arg123, _arg213);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    notePhoneOn();
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    notePhoneOff();
+                    reply.writeNoException();
+                    return true;
+                case 53:
+                    SignalStrength _arg040 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    notePhoneSignalStrength(_arg040);
+                    reply.writeNoException();
+                    return true;
+                case 54:
+                    int _arg041 = data.readInt();
+                    boolean _arg124 = data.readBoolean();
+                    int _arg214 = data.readInt();
+                    int _arg36 = data.readInt();
+                    int _arg46 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notePhoneDataConnectionState(_arg041, _arg124, _arg214, _arg36, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 55:
+                    int _arg042 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notePhoneState(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 56:
+                    noteWifiOn();
+                    reply.writeNoException();
+                    return true;
+                case 57:
+                    noteWifiOff();
+                    reply.writeNoException();
+                    return true;
+                case 58:
+                    WorkSource _arg043 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteWifiRunning(_arg043);
+                    reply.writeNoException();
+                    return true;
+                case 59:
+                    WorkSource _arg044 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    WorkSource _arg125 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteWifiRunningChanged(_arg044, _arg125);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    WorkSource _arg045 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteWifiStopped(_arg045);
+                    reply.writeNoException();
+                    return true;
+                case 61:
+                    int _arg046 = data.readInt();
+                    String _arg126 = data.readString();
+                    data.enforceNoDataAvail();
+                    noteWifiState(_arg046, _arg126);
+                    reply.writeNoException();
+                    return true;
+                case 62:
+                    int _arg047 = data.readInt();
+                    boolean _arg127 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    noteWifiSupplicantStateChanged(_arg047, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 63:
+                    int _arg048 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWifiRssiChanged(_arg048);
+                    reply.writeNoException();
+                    return true;
+                case 64:
+                    int _arg049 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteFullWifiLockAcquired(_arg049);
+                    reply.writeNoException();
+                    return true;
+                case 65:
+                    int _arg050 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteFullWifiLockReleased(_arg050);
+                    reply.writeNoException();
+                    return true;
+                case 66:
+                    int _arg051 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWifiScanStarted(_arg051);
+                    reply.writeNoException();
+                    return true;
+                case 67:
+                    int _arg052 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWifiScanStopped(_arg052);
+                    reply.writeNoException();
+                    return true;
+                case 68:
+                    int _arg053 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWifiMulticastEnabled(_arg053);
+                    reply.writeNoException();
+                    return true;
+                case 69:
+                    int _arg054 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWifiMulticastDisabled(_arg054);
+                    reply.writeNoException();
+                    return true;
+                case 70:
+                    WorkSource _arg055 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteFullWifiLockAcquiredFromSource(_arg055);
+                    reply.writeNoException();
+                    return true;
+                case 71:
+                    WorkSource _arg056 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteFullWifiLockReleasedFromSource(_arg056);
+                    reply.writeNoException();
+                    return true;
+                case 72:
+                    WorkSource _arg057 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteWifiScanStartedFromSource(_arg057);
+                    reply.writeNoException();
+                    return true;
+                case 73:
+                    WorkSource _arg058 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteWifiScanStoppedFromSource(_arg058);
+                    reply.writeNoException();
+                    return true;
+                case 74:
+                    WorkSource _arg059 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg128 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWifiBatchedScanStartedFromSource(_arg059, _arg128);
+                    reply.writeNoException();
+                    return true;
+                case 75:
+                    WorkSource _arg060 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteWifiBatchedScanStoppedFromSource(_arg060);
+                    reply.writeNoException();
+                    return true;
+                case 76:
+                    int _arg061 = data.readInt();
+                    long _arg129 = data.readLong();
+                    int _arg215 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteWifiRadioPowerState(_arg061, _arg129, _arg215);
+                    reply.writeNoException();
+                    return true;
+                case 77:
+                    String _arg062 = data.readString();
+                    int[] _arg130 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    noteNetworkInterfaceForTransports(_arg062, _arg130);
+                    reply.writeNoException();
+                    return true;
+                case 78:
+                    noteNetworkStatsEnabled();
+                    reply.writeNoException();
+                    return true;
+                case 79:
+                    int _arg063 = data.readInt();
+                    String _arg131 = data.readString();
+                    int _arg216 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteDeviceIdleMode(_arg063, _arg131, _arg216);
+                    reply.writeNoException();
+                    return true;
+                case 80:
+                    int _arg064 = data.readInt();
+                    int _arg132 = data.readInt();
+                    int _arg217 = data.readInt();
+                    int _arg37 = data.readInt();
+                    int _arg47 = data.readInt();
+                    int _arg54 = data.readInt();
+                    int _arg62 = data.readInt();
+                    int _arg72 = data.readInt();
+                    long _arg82 = data.readLong();
+                    int _arg92 = data.readInt();
+                    int _arg102 = data.readInt();
+                    int _arg11 = data.readInt();
+                    int _arg1210 = data.readInt();
+                    boolean _arg133 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBatteryState(_arg064, _arg132, _arg217, _arg37, _arg47, _arg54, _arg62, _arg72, _arg82, _arg92, _arg102, _arg11, _arg1210, _arg133);
+                    reply.writeNoException();
+                    return true;
+                case 81:
+                    long _result8 = getAwakeTimeBattery();
+                    reply.writeNoException();
+                    reply.writeLong(_result8);
+                    return true;
+                case 82:
+                    long _result9 = getAwakeTimePlugged();
+                    reply.writeNoException();
+                    reply.writeLong(_result9);
+                    return true;
+                case 83:
+                    WorkSource _arg065 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    boolean _arg134 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    noteBleScanStarted(_arg065, _arg134);
+                    reply.writeNoException();
+                    return true;
+                case 84:
+                    WorkSource _arg066 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    boolean _arg135 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    noteBleScanStopped(_arg066, _arg135);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    noteBleScanReset();
+                    reply.writeNoException();
+                    return true;
+                case 86:
+                    WorkSource _arg067 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    int _arg136 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteBleScanResults(_arg067, _arg136);
+                    reply.writeNoException();
+                    return true;
+                case 87:
+                    CellularBatteryStats _result10 = getCellularBatteryStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 88:
+                    WifiBatteryStats _result11 = getWifiBatteryStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 89:
+                    GpsBatteryStats _result12 = getGpsBatteryStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 90:
+                    WakeLockStats _result13 = getWakeLockStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 91:
+                    BluetoothBatteryStats _result14 = getBluetoothBatteryStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result14, 1);
+                    return true;
+                case 92:
+                    int _arg068 = data.readInt();
+                    data.enforceNoDataAvail();
+                    HealthStatsParceler _result15 = takeUidSnapshot(_arg068);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result15, 1);
+                    return true;
+                case 93:
+                    int[] _arg069 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    HealthStatsParceler[] _result16 = takeUidSnapshots(_arg069);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result16, 1);
+                    return true;
+                case 94:
+                    int[] _arg070 = data.createIntArray();
+                    ResultReceiver _arg137 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    takeUidSnapshotsAsync(_arg070, _arg137);
+                    return true;
+                case 95:
+                    BluetoothActivityEnergyInfo _arg071 = (BluetoothActivityEnergyInfo) data.readTypedObject(BluetoothActivityEnergyInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteBluetoothControllerActivity(_arg071);
+                    return true;
+                case 96:
+                    ModemActivityInfo _arg072 = (ModemActivityInfo) data.readTypedObject(ModemActivityInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteModemControllerActivity(_arg072);
+                    return true;
+                case 97:
+                    WifiActivityEnergyInfo _arg073 = (WifiActivityEnergyInfo) data.readTypedObject(WifiActivityEnergyInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteWifiControllerActivity(_arg073);
+                    return true;
+                case 98:
+                    int _arg074 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result17 = setChargingStateUpdateDelayMillis(_arg074);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 99:
+                    boolean _arg075 = data.readBoolean();
+                    boolean _arg138 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setChargerAcOnline(_arg075, _arg138);
+                    reply.writeNoException();
+                    return true;
+                case 100:
+                    int _arg076 = data.readInt();
+                    boolean _arg139 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBatteryLevel(_arg076, _arg139);
+                    reply.writeNoException();
+                    return true;
+                case 101:
+                    boolean _arg077 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    unplugBattery(_arg077);
+                    reply.writeNoException();
+                    return true;
+                case 102:
+                    boolean _arg078 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    resetBattery(_arg078);
+                    reply.writeNoException();
+                    return true;
+                case 103:
+                    suspendBatteryInput();
+                    reply.writeNoException();
+                    return true;
+                case 104:
+                    int _arg079 = data.readInt();
+                    int _arg140 = data.readInt();
+                    int _arg218 = data.readInt();
+                    int _arg38 = data.readInt();
+                    int _arg48 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTemperatureNCurrent(_arg079, _arg140, _arg218, _arg38, _arg48);
+                    return true;
+                case 105:
+                    SpeakerOutEnergyInfo _arg080 = (SpeakerOutEnergyInfo) data.readTypedObject(SpeakerOutEnergyInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateSpeakerOutEnergyInfo(_arg080);
+                    return true;
+                case 106:
+                    IBatteryStatsCallback _arg081 = IBatteryStatsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result18 = registerBatteryStatsCallback(_arg081);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 107:
+                    IBatteryStatsCallback _arg082 = IBatteryStatsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result19 = unregisterBatteryStatsCallback(_arg082);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 108:
+                    String _arg083 = data.readString();
+                    data.enforceNoDataAvail();
+                    noteUpdateNetworkStats(_arg083);
+                    reply.writeNoException();
+                    return true;
+                case 109:
+                    noteStartTxPowerSharing();
+                    reply.writeNoException();
+                    return true;
+                case 110:
+                    noteStopTxPowerSharing();
+                    reply.writeNoException();
+                    return true;
+                case 111:
+                    WorkSource _arg084 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    boolean _arg141 = data.readBoolean();
+                    int _arg219 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteBleDutyScanStarted(_arg084, _arg141, _arg219);
+                    reply.writeNoException();
+                    return true;
+                case 112:
+                    WorkSource _arg085 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
+                    boolean _arg142 = data.readBoolean();
+                    int _arg220 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteBleDutyScanStopped(_arg085, _arg142, _arg220);
+                    reply.writeNoException();
+                    return true;
+                case 113:
+                    int _arg086 = data.readInt();
+                    int _arg143 = data.readInt();
+                    int _arg221 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteDualScreenState(_arg086, _arg143, _arg221);
+                    reply.writeNoException();
+                    return true;
+                case 114:
+                    int _arg087 = data.readInt();
+                    int _arg144 = data.readInt();
+                    int _arg222 = data.readInt();
+                    data.enforceNoDataAvail();
+                    noteDualScreenBrightness(_arg087, _arg144, _arg222);
+                    reply.writeNoException();
+                    return true;
+                case 115:
+                    SemModemActivityInfo _arg088 = (SemModemActivityInfo) data.readTypedObject(SemModemActivityInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateSemModemActivityInfo(_arg088);
+                    return true;
+                case 116:
+                    SemCompanionDeviceBatteryInfo[] _result20 = getDeviceBatteryInfos();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result20, 1);
+                    return true;
+                case 117:
+                    String _arg089 = data.readString();
+                    data.enforceNoDataAvail();
+                    SemCompanionDeviceBatteryInfo _result21 = getDeviceBatteryInfo(_arg089);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result21, 1);
+                    return true;
+                case 118:
+                    String _arg090 = data.readString();
+                    data.enforceNoDataAvail();
+                    registerDeviceBatteryInfoChanged(_arg090);
+                    reply.writeNoException();
+                    return true;
+                case 119:
+                    String _arg091 = data.readString();
+                    data.enforceNoDataAvail();
+                    unRegisterDeviceBatteryInfoChanged(_arg091);
+                    reply.writeNoException();
+                    return true;
+                case 120:
+                    String _arg092 = data.readString();
+                    SemCompanionDeviceBatteryInfo _arg145 = (SemCompanionDeviceBatteryInfo) data.readTypedObject(SemCompanionDeviceBatteryInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDeviceBatteryInfo(_arg092, _arg145);
+                    reply.writeNoException();
+                    return true;
+                case 121:
+                    String _arg093 = data.readString();
+                    data.enforceNoDataAvail();
+                    unsetDeviceBatteryInfo(_arg093);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStartSensor(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopSensor(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStartVideo(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopVideo(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStartAudio(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopAudio(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            noteResetVideo();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            noteResetAudio();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteFlashlightOn(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteFlashlightOff(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStartCamera(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopCamera(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            noteResetCamera();
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            noteResetFlashlight();
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            long _arg011 = data.readLong();
-                            int _arg13 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWakeupSensorEvent(_arg011, _arg13, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStartGps(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopGps(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            noteResetGps();
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            List<BatteryUsageStatsQuery> _arg014 = data.createTypedArrayList(BatteryUsageStatsQuery.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<BatteryUsageStats> _result = getBatteryUsageStats(_arg014);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 20:
-                            SemBatterySipper _result2 = getSemBatteryUsageStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 21:
-                            boolean _result3 = isCharging();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 22:
-                            long _result4 = computeBatteryTimeRemaining();
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        case 23:
-                            long _result5 = computeChargeTimeRemaining();
-                            reply.writeNoException();
-                            reply.writeLong(_result5);
-                            return true;
-                        case 24:
-                            long _result6 = computeBatteryScreenOffRealtimeMs();
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        case 25:
-                            long _result7 = getScreenOffDischargeMah();
-                            reply.writeNoException();
-                            reply.writeLong(_result7);
-                            return true;
-                        case 26:
-                            int _arg015 = data.readInt();
-                            String _arg14 = data.readString();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteEvent(_arg015, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            String _arg016 = data.readString();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteSyncStart(_arg016, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            String _arg017 = data.readString();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteSyncFinish(_arg017, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            String _arg018 = data.readString();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteJobStart(_arg018, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            String _arg019 = data.readString();
-                            int _arg18 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteJobFinish(_arg019, _arg18, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            int _arg020 = data.readInt();
-                            int _arg19 = data.readInt();
-                            String _arg24 = data.readString();
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            boolean _arg5 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            noteStartWakelock(_arg020, _arg19, _arg24, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            int _arg021 = data.readInt();
-                            int _arg110 = data.readInt();
-                            String _arg25 = data.readString();
-                            String _arg32 = data.readString();
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopWakelock(_arg021, _arg110, _arg25, _arg32, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            WorkSource _arg022 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg111 = data.readInt();
-                            String _arg26 = data.readString();
-                            String _arg33 = data.readString();
-                            int _arg43 = data.readInt();
-                            boolean _arg52 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            noteStartWakelockFromSource(_arg022, _arg111, _arg26, _arg33, _arg43, _arg52);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            WorkSource _arg023 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg112 = data.readInt();
-                            String _arg27 = data.readString();
-                            String _arg34 = data.readString();
-                            int _arg44 = data.readInt();
-                            WorkSource _arg53 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg6 = data.readInt();
-                            String _arg7 = data.readString();
-                            String _arg8 = data.readString();
-                            int _arg9 = data.readInt();
-                            boolean _arg10 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            noteChangeWakelockFromSource(_arg023, _arg112, _arg27, _arg34, _arg44, _arg53, _arg6, _arg7, _arg8, _arg9, _arg10);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            WorkSource _arg024 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg113 = data.readInt();
-                            String _arg28 = data.readString();
-                            String _arg35 = data.readString();
-                            int _arg45 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteStopWakelockFromSource(_arg024, _arg113, _arg28, _arg35, _arg45);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            String _arg025 = data.readString();
-                            String _arg114 = data.readString();
-                            int _arg29 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteLongPartialWakelockStart(_arg025, _arg114, _arg29);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            String _arg026 = data.readString();
-                            String _arg115 = data.readString();
-                            WorkSource _arg210 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteLongPartialWakelockStartFromSource(_arg026, _arg115, _arg210);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            String _arg027 = data.readString();
-                            String _arg116 = data.readString();
-                            int _arg211 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteLongPartialWakelockFinish(_arg027, _arg116, _arg211);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            String _arg028 = data.readString();
-                            String _arg117 = data.readString();
-                            WorkSource _arg212 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteLongPartialWakelockFinishFromSource(_arg028, _arg117, _arg212);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            int _arg029 = data.readInt();
-                            long _arg118 = data.readLong();
-                            data.enforceNoDataAvail();
-                            noteVibratorOn(_arg029, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _arg030 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteVibratorOff(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            WorkSource _arg031 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            WorkSource _arg119 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteGpsChanged(_arg031, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteGpsSignalQuality(_arg032);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            int _arg033 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteScreenState(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            int _arg034 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteScreenBrightness(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg035 = data.readInt();
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteUserActivity(_arg035, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            String _arg036 = data.readString();
-                            int _arg121 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWakeUp(_arg036, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            boolean _arg037 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            noteInteractive(_arg037);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            int _arg038 = data.readInt();
-                            String _arg122 = data.readString();
-                            data.enforceNoDataAvail();
-                            noteConnectivityChanged(_arg038, _arg122);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            int _arg039 = data.readInt();
-                            long _arg123 = data.readLong();
-                            int _arg213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteMobileRadioPowerState(_arg039, _arg123, _arg213);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            notePhoneOn();
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            notePhoneOff();
-                            reply.writeNoException();
-                            return true;
-                        case 53:
-                            SignalStrength _arg040 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
-                            data.enforceNoDataAvail();
-                            notePhoneSignalStrength(_arg040);
-                            reply.writeNoException();
-                            return true;
-                        case 54:
-                            int _arg041 = data.readInt();
-                            boolean _arg124 = data.readBoolean();
-                            int _arg214 = data.readInt();
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notePhoneDataConnectionState(_arg041, _arg124, _arg214, _arg36);
-                            reply.writeNoException();
-                            return true;
-                        case 55:
-                            int _arg042 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notePhoneState(_arg042);
-                            reply.writeNoException();
-                            return true;
-                        case 56:
-                            noteWifiOn();
-                            reply.writeNoException();
-                            return true;
-                        case 57:
-                            noteWifiOff();
-                            reply.writeNoException();
-                            return true;
-                        case 58:
-                            WorkSource _arg043 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteWifiRunning(_arg043);
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            WorkSource _arg044 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            WorkSource _arg125 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteWifiRunningChanged(_arg044, _arg125);
-                            reply.writeNoException();
-                            return true;
-                        case 60:
-                            WorkSource _arg045 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteWifiStopped(_arg045);
-                            reply.writeNoException();
-                            return true;
-                        case 61:
-                            int _arg046 = data.readInt();
-                            String _arg126 = data.readString();
-                            data.enforceNoDataAvail();
-                            noteWifiState(_arg046, _arg126);
-                            reply.writeNoException();
-                            return true;
-                        case 62:
-                            int _arg047 = data.readInt();
-                            boolean _arg127 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            noteWifiSupplicantStateChanged(_arg047, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 63:
-                            int _arg048 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWifiRssiChanged(_arg048);
-                            reply.writeNoException();
-                            return true;
-                        case 64:
-                            int _arg049 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteFullWifiLockAcquired(_arg049);
-                            reply.writeNoException();
-                            return true;
-                        case 65:
-                            int _arg050 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteFullWifiLockReleased(_arg050);
-                            reply.writeNoException();
-                            return true;
-                        case 66:
-                            int _arg051 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWifiScanStarted(_arg051);
-                            reply.writeNoException();
-                            return true;
-                        case 67:
-                            int _arg052 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWifiScanStopped(_arg052);
-                            reply.writeNoException();
-                            return true;
-                        case 68:
-                            int _arg053 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWifiMulticastEnabled(_arg053);
-                            reply.writeNoException();
-                            return true;
-                        case 69:
-                            int _arg054 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWifiMulticastDisabled(_arg054);
-                            reply.writeNoException();
-                            return true;
-                        case 70:
-                            WorkSource _arg055 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteFullWifiLockAcquiredFromSource(_arg055);
-                            reply.writeNoException();
-                            return true;
-                        case 71:
-                            WorkSource _arg056 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteFullWifiLockReleasedFromSource(_arg056);
-                            reply.writeNoException();
-                            return true;
-                        case 72:
-                            WorkSource _arg057 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteWifiScanStartedFromSource(_arg057);
-                            reply.writeNoException();
-                            return true;
-                        case 73:
-                            WorkSource _arg058 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteWifiScanStoppedFromSource(_arg058);
-                            reply.writeNoException();
-                            return true;
-                        case 74:
-                            WorkSource _arg059 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg128 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWifiBatchedScanStartedFromSource(_arg059, _arg128);
-                            reply.writeNoException();
-                            return true;
-                        case 75:
-                            WorkSource _arg060 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteWifiBatchedScanStoppedFromSource(_arg060);
-                            reply.writeNoException();
-                            return true;
-                        case 76:
-                            int _arg061 = data.readInt();
-                            long _arg129 = data.readLong();
-                            int _arg215 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteWifiRadioPowerState(_arg061, _arg129, _arg215);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            String _arg062 = data.readString();
-                            int[] _arg130 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            noteNetworkInterfaceForTransports(_arg062, _arg130);
-                            reply.writeNoException();
-                            return true;
-                        case 78:
-                            noteNetworkStatsEnabled();
-                            reply.writeNoException();
-                            return true;
-                        case 79:
-                            int _arg063 = data.readInt();
-                            String _arg131 = data.readString();
-                            int _arg216 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteDeviceIdleMode(_arg063, _arg131, _arg216);
-                            reply.writeNoException();
-                            return true;
-                        case 80:
-                            int _arg064 = data.readInt();
-                            int _arg132 = data.readInt();
-                            int _arg217 = data.readInt();
-                            int _arg37 = data.readInt();
-                            int _arg46 = data.readInt();
-                            int _arg54 = data.readInt();
-                            int _arg62 = data.readInt();
-                            int _arg72 = data.readInt();
-                            long _arg82 = data.readLong();
-                            int _arg92 = data.readInt();
-                            int _arg102 = data.readInt();
-                            int _arg11 = data.readInt();
-                            int _arg1210 = data.readInt();
-                            boolean _arg133 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBatteryState(_arg064, _arg132, _arg217, _arg37, _arg46, _arg54, _arg62, _arg72, _arg82, _arg92, _arg102, _arg11, _arg1210, _arg133);
-                            reply.writeNoException();
-                            return true;
-                        case 81:
-                            long _result8 = getAwakeTimeBattery();
-                            reply.writeNoException();
-                            reply.writeLong(_result8);
-                            return true;
-                        case 82:
-                            long _result9 = getAwakeTimePlugged();
-                            reply.writeNoException();
-                            reply.writeLong(_result9);
-                            return true;
-                        case 83:
-                            WorkSource _arg065 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            boolean _arg134 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            noteBleScanStarted(_arg065, _arg134);
-                            reply.writeNoException();
-                            return true;
-                        case 84:
-                            WorkSource _arg066 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            boolean _arg135 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            noteBleScanStopped(_arg066, _arg135);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            noteBleScanReset();
-                            reply.writeNoException();
-                            return true;
-                        case 86:
-                            WorkSource _arg067 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            int _arg136 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteBleScanResults(_arg067, _arg136);
-                            reply.writeNoException();
-                            return true;
-                        case 87:
-                            CellularBatteryStats _result10 = getCellularBatteryStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 88:
-                            WifiBatteryStats _result11 = getWifiBatteryStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result11, 1);
-                            return true;
-                        case 89:
-                            GpsBatteryStats _result12 = getGpsBatteryStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 90:
-                            WakeLockStats _result13 = getWakeLockStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        case 91:
-                            BluetoothBatteryStats _result14 = getBluetoothBatteryStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result14, 1);
-                            return true;
-                        case 92:
-                            int _arg068 = data.readInt();
-                            data.enforceNoDataAvail();
-                            HealthStatsParceler _result15 = takeUidSnapshot(_arg068);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 93:
-                            int[] _arg069 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            HealthStatsParceler[] _result16 = takeUidSnapshots(_arg069);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result16, 1);
-                            return true;
-                        case 94:
-                            BluetoothActivityEnergyInfo _arg070 = (BluetoothActivityEnergyInfo) data.readTypedObject(BluetoothActivityEnergyInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteBluetoothControllerActivity(_arg070);
-                            return true;
-                        case 95:
-                            ModemActivityInfo _arg071 = (ModemActivityInfo) data.readTypedObject(ModemActivityInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteModemControllerActivity(_arg071);
-                            return true;
-                        case 96:
-                            WifiActivityEnergyInfo _arg072 = (WifiActivityEnergyInfo) data.readTypedObject(WifiActivityEnergyInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteWifiControllerActivity(_arg072);
-                            return true;
-                        case 97:
-                            int _arg073 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result17 = setChargingStateUpdateDelayMillis(_arg073);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 98:
-                            boolean _arg074 = data.readBoolean();
-                            boolean _arg137 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setChargerAcOnline(_arg074, _arg137);
-                            reply.writeNoException();
-                            return true;
-                        case 99:
-                            int _arg075 = data.readInt();
-                            boolean _arg138 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBatteryLevel(_arg075, _arg138);
-                            reply.writeNoException();
-                            return true;
-                        case 100:
-                            boolean _arg076 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            unplugBattery(_arg076);
-                            reply.writeNoException();
-                            return true;
-                        case 101:
-                            boolean _arg077 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            resetBattery(_arg077);
-                            reply.writeNoException();
-                            return true;
-                        case 102:
-                            suspendBatteryInput();
-                            reply.writeNoException();
-                            return true;
-                        case 103:
-                            int _arg078 = data.readInt();
-                            int _arg139 = data.readInt();
-                            int _arg218 = data.readInt();
-                            int _arg38 = data.readInt();
-                            int _arg47 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTemperatureNCurrent(_arg078, _arg139, _arg218, _arg38, _arg47);
-                            return true;
-                        case 104:
-                            List<ForegroundAppEnergyInfo> _arg079 = data.createTypedArrayList(ForegroundAppEnergyInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateForegroundAppEnergyInfo(_arg079);
-                            return true;
-                        case 105:
-                            SpeakerOutEnergyInfo _arg080 = (SpeakerOutEnergyInfo) data.readTypedObject(SpeakerOutEnergyInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateSpeakerOutEnergyInfo(_arg080);
-                            return true;
-                        case 106:
-                            IBatteryStatsCallback _arg081 = IBatteryStatsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result18 = registerBatteryStatsCallback(_arg081);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 107:
-                            IBatteryStatsCallback _arg082 = IBatteryStatsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result19 = unregisterBatteryStatsCallback(_arg082);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        case 108:
-                            String _arg083 = data.readString();
-                            data.enforceNoDataAvail();
-                            noteUpdateNetworkStats(_arg083);
-                            reply.writeNoException();
-                            return true;
-                        case 109:
-                            WorkSource _arg084 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            boolean _arg140 = data.readBoolean();
-                            int _arg219 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteBleDutyScanStarted(_arg084, _arg140, _arg219);
-                            reply.writeNoException();
-                            return true;
-                        case 110:
-                            WorkSource _arg085 = (WorkSource) data.readTypedObject(WorkSource.CREATOR);
-                            boolean _arg141 = data.readBoolean();
-                            int _arg220 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteBleDutyScanStopped(_arg085, _arg141, _arg220);
-                            reply.writeNoException();
-                            return true;
-                        case 111:
-                            noteStartTxPowerSharing();
-                            reply.writeNoException();
-                            return true;
-                        case 112:
-                            noteStopTxPowerSharing();
-                            reply.writeNoException();
-                            return true;
-                        case 113:
-                            int _arg086 = data.readInt();
-                            int _arg142 = data.readInt();
-                            int _arg221 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteDualScreenState(_arg086, _arg142, _arg221);
-                            reply.writeNoException();
-                            return true;
-                        case 114:
-                            int _arg087 = data.readInt();
-                            int _arg143 = data.readInt();
-                            int _arg222 = data.readInt();
-                            data.enforceNoDataAvail();
-                            noteDualScreenBrightness(_arg087, _arg143, _arg222);
-                            reply.writeNoException();
-                            return true;
-                        case 115:
-                            SemModemActivityInfo _arg088 = (SemModemActivityInfo) data.readTypedObject(SemModemActivityInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateSemModemActivityInfo(_arg088);
-                            return true;
-                        case 116:
-                            boolean _result20 = isCpuClusterAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 117:
-                            boolean _result21 = isCpuFrequencyAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result21);
-                            return true;
-                        case 118:
-                            SemCompanionDeviceBatteryInfo[] _result22 = getDeviceBatteryInfos();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result22, 1);
-                            return true;
-                        case 119:
-                            String _arg089 = data.readString();
-                            data.enforceNoDataAvail();
-                            SemCompanionDeviceBatteryInfo _result23 = getDeviceBatteryInfo(_arg089);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result23, 1);
-                            return true;
-                        case 120:
-                            String _arg090 = data.readString();
-                            data.enforceNoDataAvail();
-                            registerDeviceBatteryInfoChanged(_arg090);
-                            reply.writeNoException();
-                            return true;
-                        case 121:
-                            String _arg091 = data.readString();
-                            data.enforceNoDataAvail();
-                            unRegisterDeviceBatteryInfoChanged(_arg091);
-                            reply.writeNoException();
-                            return true;
-                        case 122:
-                            String _arg092 = data.readString();
-                            SemCompanionDeviceBatteryInfo _arg144 = (SemCompanionDeviceBatteryInfo) data.readTypedObject(SemCompanionDeviceBatteryInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDeviceBatteryInfo(_arg092, _arg144);
-                            reply.writeNoException();
-                            return true;
-                        case 123:
-                            String _arg093 = data.readString();
-                            data.enforceNoDataAvail();
-                            unsetDeviceBatteryInfo(_arg093);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IBatteryStats {
+        private static class Proxy implements IBatteryStats {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -2110,14 +2075,11 @@ public interface IBatteryStats extends IInterface {
             @Override // com.android.internal.app.IBatteryStats
             public void noteStartAudio(int uid) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(5, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(5, _data, null, 1);
                 } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -2125,14 +2087,11 @@ public interface IBatteryStats extends IInterface {
             @Override // com.android.internal.app.IBatteryStats
             public void noteStopAudio(int uid) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(6, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(6, _data, null, 1);
                 } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -2154,13 +2113,10 @@ public interface IBatteryStats extends IInterface {
             @Override // com.android.internal.app.IBatteryStats
             public void noteResetAudio() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(8, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(8, _data, null, 1);
                 } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -2971,7 +2927,7 @@ public interface IBatteryStats extends IInterface {
             }
 
             @Override // com.android.internal.app.IBatteryStats
-            public void notePhoneDataConnectionState(int dataType, boolean hasData, int serviceType, int nrFrequency) throws RemoteException {
+            public void notePhoneDataConnectionState(int dataType, boolean hasData, int serviceType, int nrState, int nrFrequency) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -2979,6 +2935,7 @@ public interface IBatteryStats extends IInterface {
                     _data.writeInt(dataType);
                     _data.writeBoolean(hasData);
                     _data.writeInt(serviceType);
+                    _data.writeInt(nrState);
                     _data.writeInt(nrFrequency);
                     this.mRemote.transact(54, _data, _reply, 0);
                     _reply.readException();
@@ -3677,11 +3634,12 @@ public interface IBatteryStats extends IInterface {
             }
 
             @Override // com.android.internal.app.IBatteryStats
-            public void noteBluetoothControllerActivity(BluetoothActivityEnergyInfo info) throws RemoteException {
+            public void takeUidSnapshotsAsync(int[] uid, ResultReceiver result) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(info, 0);
+                    _data.writeIntArray(uid);
+                    _data.writeTypedObject(result, 0);
                     this.mRemote.transact(94, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -3689,7 +3647,7 @@ public interface IBatteryStats extends IInterface {
             }
 
             @Override // com.android.internal.app.IBatteryStats
-            public void noteModemControllerActivity(ModemActivityInfo info) throws RemoteException {
+            public void noteBluetoothControllerActivity(BluetoothActivityEnergyInfo info) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
@@ -3701,12 +3659,24 @@ public interface IBatteryStats extends IInterface {
             }
 
             @Override // com.android.internal.app.IBatteryStats
-            public void noteWifiControllerActivity(WifiActivityEnergyInfo info) throws RemoteException {
+            public void noteModemControllerActivity(ModemActivityInfo info) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(info, 0);
                     this.mRemote.transact(96, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IBatteryStats
+            public void noteWifiControllerActivity(WifiActivityEnergyInfo info) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(info, 0);
+                    this.mRemote.transact(97, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -3719,7 +3689,7 @@ public interface IBatteryStats extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(delay);
-                    this.mRemote.transact(97, _data, _reply, 0);
+                    this.mRemote.transact(98, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3737,7 +3707,7 @@ public interface IBatteryStats extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(online);
                     _data.writeBoolean(forceUpdate);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3753,7 +3723,7 @@ public interface IBatteryStats extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(level);
                     _data.writeBoolean(forceUpdate);
-                    this.mRemote.transact(99, _data, _reply, 0);
+                    this.mRemote.transact(100, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3768,7 +3738,7 @@ public interface IBatteryStats extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(forceUpdate);
-                    this.mRemote.transact(100, _data, _reply, 0);
+                    this.mRemote.transact(101, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3783,7 +3753,7 @@ public interface IBatteryStats extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(forceUpdate);
-                    this.mRemote.transact(101, _data, _reply, 0);
+                    this.mRemote.transact(102, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3797,7 +3767,7 @@ public interface IBatteryStats extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(102, _data, _reply, 0);
+                    this.mRemote.transact(103, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3815,18 +3785,6 @@ public interface IBatteryStats extends IInterface {
                     _data.writeInt(skin_temp);
                     _data.writeInt(sub_batt_temp);
                     _data.writeInt(current);
-                    this.mRemote.transact(103, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.app.IBatteryStats
-            public void updateForegroundAppEnergyInfo(List<ForegroundAppEnergyInfo> info) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedList(info, 0);
                     this.mRemote.transact(104, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -3895,6 +3853,34 @@ public interface IBatteryStats extends IInterface {
             }
 
             @Override // com.android.internal.app.IBatteryStats
+            public void noteStartTxPowerSharing() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(109, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IBatteryStats
+            public void noteStopTxPowerSharing() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(110, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IBatteryStats
             public void noteBleDutyScanStarted(WorkSource ws, boolean isUnoptimized, int dutyCycle) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -3903,7 +3889,7 @@ public interface IBatteryStats extends IInterface {
                     _data.writeTypedObject(ws, 0);
                     _data.writeBoolean(isUnoptimized);
                     _data.writeInt(dutyCycle);
-                    this.mRemote.transact(109, _data, _reply, 0);
+                    this.mRemote.transact(111, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3920,34 +3906,6 @@ public interface IBatteryStats extends IInterface {
                     _data.writeTypedObject(ws, 0);
                     _data.writeBoolean(isUnoptimized);
                     _data.writeInt(dutyCycle);
-                    this.mRemote.transact(110, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.app.IBatteryStats
-            public void noteStartTxPowerSharing() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(111, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.app.IBatteryStats
-            public void noteStopTxPowerSharing() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     this.mRemote.transact(112, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -4003,44 +3961,12 @@ public interface IBatteryStats extends IInterface {
             }
 
             @Override // com.android.internal.app.IBatteryStats
-            public boolean isCpuClusterAvailable() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(116, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.app.IBatteryStats
-            public boolean isCpuFrequencyAvailable() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(117, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.app.IBatteryStats
             public SemCompanionDeviceBatteryInfo[] getDeviceBatteryInfos() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(118, _data, _reply, 0);
+                    this.mRemote.transact(116, _data, _reply, 0);
                     _reply.readException();
                     SemCompanionDeviceBatteryInfo[] _result = (SemCompanionDeviceBatteryInfo[]) _reply.createTypedArray(SemCompanionDeviceBatteryInfo.CREATOR);
                     return _result;
@@ -4057,7 +3983,7 @@ public interface IBatteryStats extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(address);
-                    this.mRemote.transact(119, _data, _reply, 0);
+                    this.mRemote.transact(117, _data, _reply, 0);
                     _reply.readException();
                     SemCompanionDeviceBatteryInfo _result = (SemCompanionDeviceBatteryInfo) _reply.readTypedObject(SemCompanionDeviceBatteryInfo.CREATOR);
                     return _result;
@@ -4074,7 +4000,7 @@ public interface IBatteryStats extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(120, _data, _reply, 0);
+                    this.mRemote.transact(118, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -4089,7 +4015,7 @@ public interface IBatteryStats extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(121, _data, _reply, 0);
+                    this.mRemote.transact(119, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -4105,7 +4031,7 @@ public interface IBatteryStats extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(address);
                     _data.writeTypedObject(info, 0);
-                    this.mRemote.transact(122, _data, _reply, 0);
+                    this.mRemote.transact(120, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -4120,7 +4046,7 @@ public interface IBatteryStats extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(address);
-                    this.mRemote.transact(123, _data, _reply, 0);
+                    this.mRemote.transact(121, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -4517,10 +4443,6 @@ public interface IBatteryStats extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
         }
 
-        protected void updateForegroundAppEnergyInfo_enforcePermission() throws SecurityException {
-            this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
-        }
-
         protected void updateSpeakerOutEnergyInfo_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
         }
@@ -4537,19 +4459,19 @@ public interface IBatteryStats extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
         }
 
-        protected void noteBleDutyScanStarted_enforcePermission() throws SecurityException {
-            this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
-        }
-
-        protected void noteBleDutyScanStopped_enforcePermission() throws SecurityException {
-            this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
-        }
-
         protected void noteStartTxPowerSharing_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
         }
 
         protected void noteStopTxPowerSharing_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
+        }
+
+        protected void noteBleDutyScanStarted_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
+        }
+
+        protected void noteBleDutyScanStopped_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.UPDATE_DEVICE_STATS, getCallingPid(), getCallingUid());
         }
 
@@ -4567,7 +4489,7 @@ public interface IBatteryStats extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 122;
+            return 120;
         }
     }
 }

@@ -45,11 +45,10 @@ public class SignerIdentifier extends ASN1Object implements ASN1Choice {
     }
 
     public ASN1Encodable getId() {
-        ASN1Encodable aSN1Encodable = this.id;
-        if (aSN1Encodable instanceof ASN1TaggedObject) {
-            return ASN1OctetString.getInstance((ASN1TaggedObject) aSN1Encodable, false);
+        if (this.id instanceof ASN1TaggedObject) {
+            return ASN1OctetString.getInstance((ASN1TaggedObject) this.id, false);
         }
-        return aSN1Encodable;
+        return this.id;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable

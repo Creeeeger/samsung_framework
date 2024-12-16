@@ -2,7 +2,7 @@ package android.text.style;
 
 import android.text.TextPaint;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class MetricAffectingSpan extends CharacterStyle implements UpdateLayout {
     public abstract void updateMeasureState(TextPaint textPaint);
 
@@ -11,11 +11,10 @@ public abstract class MetricAffectingSpan extends CharacterStyle implements Upda
         return this;
     }
 
-    /* loaded from: classes3.dex */
     static class Passthrough extends MetricAffectingSpan {
         private MetricAffectingSpan mStyle;
 
-        public Passthrough(MetricAffectingSpan cs) {
+        Passthrough(MetricAffectingSpan cs) {
             this.mStyle = cs;
         }
 

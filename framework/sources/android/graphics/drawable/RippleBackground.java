@@ -9,13 +9,9 @@ import android.util.FloatProperty;
 import android.view.animation.LinearInterpolator;
 
 /* loaded from: classes.dex */
-public class RippleBackground extends RippleComponent {
+class RippleBackground extends RippleComponent {
     private static final TimeInterpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
     private static final BackgroundProperty OPACITY = new BackgroundProperty("opacity") { // from class: android.graphics.drawable.RippleBackground.1
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
         @Override // android.util.FloatProperty
         public void setValue(RippleBackground object, float value) {
             object.mOpacity = value;
@@ -57,15 +53,13 @@ public class RippleBackground extends RippleComponent {
     }
 
     public void setState(boolean focused, boolean hovered, boolean pressed) {
-        boolean z = this.mFocused;
-        if (!z) {
+        if (!this.mFocused) {
             focused = focused && !pressed;
         }
-        boolean z2 = this.mHovered;
-        if (!z2) {
+        if (!this.mHovered) {
             hovered = hovered && !pressed;
         }
-        if (z2 != hovered || z != focused) {
+        if (this.mHovered != hovered || this.mFocused != focused) {
             this.mHovered = hovered;
             this.mFocused = focused;
             onStateChanged();
@@ -74,49 +68,26 @@ public class RippleBackground extends RippleComponent {
 
     private void onStateChanged() {
         float newOpacity = this.mFocused ? 0.8f : this.mHovered ? 0.6f : 0.0f;
-        ObjectAnimator objectAnimator = this.mAnimator;
-        if (objectAnimator != null) {
-            objectAnimator.cancel();
+        if (this.mAnimator != null) {
+            this.mAnimator.cancel();
             this.mAnimator = null;
         }
-        ObjectAnimator ofFloat = ObjectAnimator.ofFloat(this, OPACITY, newOpacity);
-        this.mAnimator = ofFloat;
-        ofFloat.setDuration(80L);
+        this.mAnimator = ObjectAnimator.ofFloat(this, OPACITY, newOpacity);
+        this.mAnimator.setDuration(80L);
         this.mAnimator.setInterpolator(LINEAR_INTERPOLATOR);
         this.mAnimator.start();
     }
 
     public void jumpToFinal() {
-        ObjectAnimator objectAnimator = this.mAnimator;
-        if (objectAnimator != null) {
-            objectAnimator.end();
+        if (this.mAnimator != null) {
+            this.mAnimator.end();
             this.mAnimator = null;
         }
     }
 
-    /* loaded from: classes.dex */
-    public static abstract class BackgroundProperty extends FloatProperty<RippleBackground> {
+    private static abstract class BackgroundProperty extends FloatProperty<RippleBackground> {
         public BackgroundProperty(String name) {
             super(name);
-        }
-    }
-
-    /* renamed from: android.graphics.drawable.RippleBackground$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends BackgroundProperty {
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(RippleBackground object, float value) {
-            object.mOpacity = value;
-            object.invalidateSelf();
-        }
-
-        @Override // android.util.Property
-        public Float get(RippleBackground object) {
-            return Float.valueOf(object.mOpacity);
         }
     }
 }

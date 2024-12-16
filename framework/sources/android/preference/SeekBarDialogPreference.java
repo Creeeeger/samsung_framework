@@ -38,12 +38,11 @@ public class SeekBarDialogPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference
-    public void onBindDialogView(View view) {
+    protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         ImageView iconView = (ImageView) view.findViewById(16908294);
-        Drawable drawable = this.mMyIcon;
-        if (drawable != null) {
-            iconView.lambda$setImageURIAsync$2(drawable);
+        if (this.mMyIcon != null) {
+            iconView.setImageDrawable(this.mMyIcon);
         } else {
             iconView.setVisibility(8);
         }

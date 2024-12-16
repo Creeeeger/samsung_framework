@@ -17,7 +17,6 @@ public interface IInlineContentCallback extends IInterface {
 
     void onLongClick() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInlineContentCallback {
         @Override // com.android.internal.view.inline.IInlineContentCallback
         public void onContent(SurfaceControlViewHost.SurfacePackage content, int width, int height) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IInlineContentCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInlineContentCallback {
         static final int TRANSACTION_onClick = 2;
         static final int TRANSACTION_onContent = 1;
@@ -86,34 +84,30 @@ public interface IInlineContentCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInlineContentCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInlineContentCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInlineContentCallback.DESCRIPTOR);
+                case 1:
+                    SurfaceControlViewHost.SurfacePackage _arg0 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onContent(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    onClick();
+                    return true;
+                case 3:
+                    onLongClick();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SurfaceControlViewHost.SurfacePackage _arg0 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onContent(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            onClick();
-                            return true;
-                        case 3:
-                            onLongClick();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IInlineContentCallback {
+        private static class Proxy implements IInlineContentCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

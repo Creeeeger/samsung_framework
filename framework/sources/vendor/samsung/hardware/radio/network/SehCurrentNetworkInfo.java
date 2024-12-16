@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehCurrentNetworkInfo implements Parcelable {
     public static final Parcelable.Creator<SehCurrentNetworkInfo> CREATOR = new Parcelable.Creator<SehCurrentNetworkInfo>() { // from class: vendor.samsung.hardware.radio.network.SehCurrentNetworkInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehCurrentNetworkInfo createFromParcel(Parcel _aidl_source) {
             SehCurrentNetworkInfo _aidl_out = new SehCurrentNetworkInfo();
@@ -29,25 +26,6 @@ public class SehCurrentNetworkInfo implements Parcelable {
     public int band = 0;
     public int cellularSignalStrength = 0;
     public int bleSignalStrength = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehCurrentNetworkInfo$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehCurrentNetworkInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCurrentNetworkInfo createFromParcel(Parcel _aidl_source) {
-            SehCurrentNetworkInfo _aidl_out = new SehCurrentNetworkInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCurrentNetworkInfo[] newArray(int _aidl_size) {
-            return new SehCurrentNetworkInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -136,7 +114,7 @@ public class SehCurrentNetworkInfo implements Parcelable {
         _aidl_sj.add("band: " + this.band);
         _aidl_sj.add("cellularSignalStrength: " + this.cellularSignalStrength);
         _aidl_sj.add("bleSignalStrength: " + this.bleSignalStrength);
-        return "vendor.samsung.hardware.radio.network.SehCurrentNetworkInfo" + _aidl_sj.toString();
+        return "SehCurrentNetworkInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

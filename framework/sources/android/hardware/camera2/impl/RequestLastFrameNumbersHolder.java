@@ -4,7 +4,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.utils.SubmitInfo;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class RequestLastFrameNumbersHolder {
     private boolean mInflightCompleted;
     private final long mLastRegularFrameNumber;
@@ -48,7 +48,7 @@ public class RequestLastFrameNumbersHolder {
         this.mInflightCompleted = false;
     }
 
-    public RequestLastFrameNumbersHolder(int requestId, long lastFrameNumber, int[] repeatingRequestTypes) {
+    RequestLastFrameNumbersHolder(int requestId, long lastFrameNumber, int[] repeatingRequestTypes) {
         long lastRegularFrameNumber = -1;
         long lastZslStillFrameNumber = -1;
         if (repeatingRequestTypes == null) {

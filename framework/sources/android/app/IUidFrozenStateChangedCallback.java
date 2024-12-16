@@ -12,7 +12,6 @@ public interface IUidFrozenStateChangedCallback extends IInterface {
 
     void onUidFrozenStateChanged(int[] iArr, int[] iArr2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IUidFrozenStateChangedCallback {
         @Override // android.app.IUidFrozenStateChangedCallback
         public void onUidFrozenStateChanged(int[] uids, int[] frozenStates) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IUidFrozenStateChangedCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IUidFrozenStateChangedCallback {
         static final int TRANSACTION_onUidFrozenStateChanged = 1;
 
@@ -67,26 +65,23 @@ public interface IUidFrozenStateChangedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUidFrozenStateChangedCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUidFrozenStateChangedCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUidFrozenStateChangedCallback.DESCRIPTOR);
+                case 1:
+                    int[] _arg0 = data.createIntArray();
+                    int[] _arg1 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onUidFrozenStateChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _arg0 = data.createIntArray();
-                            int[] _arg1 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onUidFrozenStateChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IUidFrozenStateChangedCallback {
+        private static class Proxy implements IUidFrozenStateChangedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

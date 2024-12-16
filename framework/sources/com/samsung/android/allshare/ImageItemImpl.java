@@ -9,19 +9,17 @@ import com.samsung.android.allshare.Item;
 import com.sec.android.allshare.iface.IBundleHolder;
 import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
-import java.util.Date;
 
-/* loaded from: classes5.dex */
-public final class ImageItemImpl extends Item implements IBundleHolder {
+/* loaded from: classes3.dex */
+final class ImageItemImpl extends Item implements IBundleHolder {
     public static final Parcelable.Creator<ImageItemImpl> CREATOR = new Parcelable.Creator<ImageItemImpl>() { // from class: com.samsung.android.allshare.ImageItemImpl.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImageItemImpl createFromParcel(Parcel src) {
             return new ImageItemImpl(src);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImageItemImpl[] newArray(int size) {
             return new ImageItemImpl[size];
@@ -29,11 +27,7 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
     };
     private final ItemImpl mItemImpl;
 
-    /* synthetic */ ImageItemImpl(Parcel parcel, ImageItemImplIA imageItemImplIA) {
-        this(parcel);
-    }
-
-    public ImageItemImpl(Bundle bundle) {
+    ImageItemImpl(Bundle bundle) {
         this.mItemImpl = new ItemImpl(bundle);
     }
 
@@ -42,12 +36,10 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
         return (Uri) (this.mItemImpl.getBundle() == null ? null : this.mItemImpl.getBundle().getParcelable(AllShareKey.BUNDLE_PARCELABLE_IMAGE_ITEM_THUMBNAIL));
     }
 
-    @Override // com.samsung.android.allshare.Item
     public String getResolution() {
         return this.mItemImpl.getBundle() == null ? "" : this.mItemImpl.getBundle().getString(AllShareKey.BUNDLE_STRING_IMAGE_ITEM_RESOLUTION);
     }
 
-    @Override // com.samsung.android.allshare.Item
     public Location getLocation() {
         return (Location) (this.mItemImpl.getBundle() == null ? null : this.mItemImpl.getBundle().getParcelable(AllShareKey.BUNDLE_PARCELABLE_IMAGE_ITEM_LOCATION));
     }
@@ -63,44 +55,27 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
     }
 
     @Override // com.samsung.android.allshare.Item
-    public Item.MediaType getType() {
-        return Item.MediaType.ITEM_IMAGE;
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public Date getDate() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
-            return null;
-        }
-        return itemImpl.getDate();
-    }
-
-    @Override // com.samsung.android.allshare.Item
     public long getFileSize() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return -1L;
         }
-        return itemImpl.getFileSize();
+        return this.mItemImpl.getFileSize();
     }
 
     @Override // com.samsung.android.allshare.Item
     public String getTitle() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return "";
         }
-        return itemImpl.getTitle();
+        return this.mItemImpl.getTitle();
     }
 
     @Override // com.samsung.android.allshare.Item
     public Uri getURI() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return null;
         }
-        return itemImpl.getURI();
+        return this.mItemImpl.getURI();
     }
 
     public boolean equals(Object o) {
@@ -115,8 +90,7 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
 
     public int hashCode() {
         String objID;
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null || (objID = itemImpl.getObjectID()) == null) {
+        if (this.mItemImpl == null || (objID = this.mItemImpl.getObjectID()) == null) {
             return -1;
         }
         return objID.hashCode();
@@ -124,11 +98,10 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
 
     @Override // com.sec.android.allshare.iface.IBundleHolder
     public Bundle getBundle() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return null;
         }
-        return itemImpl.getBundle();
+        return this.mItemImpl.getBundle();
     }
 
     @Override // android.os.Parcelable
@@ -144,23 +117,6 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
     private ImageItemImpl(Parcel src) {
         Bundle bundle = src.readBundle(Bundle.class.getClassLoader());
         this.mItemImpl = new ItemImpl(bundle);
-    }
-
-    /* renamed from: com.samsung.android.allshare.ImageItemImpl$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImageItemImpl> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImageItemImpl createFromParcel(Parcel src) {
-            return new ImageItemImpl(src);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImageItemImpl[] newArray(int size) {
-            return new ImageItemImpl[size];
-        }
     }
 
     @Override // com.samsung.android.allshare.Item
@@ -195,75 +151,42 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
 
     @Override // com.samsung.android.allshare.Item
     public Item.ContentBuildType getContentBuildType() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return Item.ContentBuildType.UNKNOWN;
         }
-        return itemImpl.getContentBuildType();
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public Item.WebContentBuilder.DeliveryMode getWebContentDeliveryMode() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
-            return Item.WebContentBuilder.DeliveryMode.UNKNOWN;
-        }
-        return itemImpl.getWebContentDeliveryMode();
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    @Deprecated
-    public Item.WebContentBuilder.PlayMode getWebContentPlayMode() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
-            return Item.WebContentBuilder.PlayMode.UNKNOWN;
-        }
-        return itemImpl.getWebContentPlayMode();
+        return this.mItemImpl.getContentBuildType();
     }
 
     @Override // com.samsung.android.allshare.Item
     public ArrayList<Subtitle> getSubtitleList() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return new ArrayList<>();
         }
-        return itemImpl.getSubtitleList();
+        return this.mItemImpl.getSubtitleList();
     }
 
     @Override // com.samsung.android.allshare.Item
     public Item.SeekMode getSeekMode() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return Item.SeekMode.UNKNOWN;
         }
-        return itemImpl.getSeekMode();
+        return this.mItemImpl.getSeekMode();
     }
 
     @Override // com.samsung.android.allshare.Item
     public int getBitrate() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return -1;
         }
-        return itemImpl.getBitrate();
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public ArrayList<Item.Resource> getResourceList() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
-            return new ArrayList<>();
-        }
-        return itemImpl.getResourceList();
+        return this.mItemImpl.getBitrate();
     }
 
     @Override // com.samsung.android.allshare.Item
     public String getChannelNr() {
-        ItemImpl itemImpl = this.mItemImpl;
-        if (itemImpl == null) {
+        if (this.mItemImpl == null) {
             return "";
         }
-        return itemImpl.getChannelNr();
+        return this.mItemImpl.getChannelNr();
     }
 
     @Override // com.samsung.android.allshare.Item

@@ -17,14 +17,14 @@ public class TaskFragmentOrganizer extends WindowOrganizer {
     public static final String KEY_ERROR_CALLBACK_THROWABLE = "fragment_throwable";
     public static final int TASK_FRAGMENT_TRANSIT_CHANGE = 6;
     public static final int TASK_FRAGMENT_TRANSIT_CLOSE = 2;
+    public static final int TASK_FRAGMENT_TRANSIT_DRAG_RESIZE = 1017;
     public static final int TASK_FRAGMENT_TRANSIT_NONE = 0;
     public static final int TASK_FRAGMENT_TRANSIT_OPEN = 1;
     private final Executor mExecutor;
-    private final ITaskFragmentOrganizer mInterface;
-    private final TaskFragmentOrganizerToken mToken;
+    private final ITaskFragmentOrganizer mInterface = new AnonymousClass1();
+    private final TaskFragmentOrganizerToken mToken = new TaskFragmentOrganizerToken(this.mInterface);
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface TaskFragmentTransitionType {
     }
 
@@ -39,9 +39,6 @@ public class TaskFragmentOrganizer extends WindowOrganizer {
     }
 
     public TaskFragmentOrganizer(Executor executor) {
-        AnonymousClass1 anonymousClass1 = new AnonymousClass1();
-        this.mInterface = anonymousClass1;
-        this.mToken = new TaskFragmentOrganizerToken(anonymousClass1);
         this.mExecutor = executor;
     }
 
@@ -51,7 +48,15 @@ public class TaskFragmentOrganizer extends WindowOrganizer {
 
     public void registerOrganizer() {
         try {
-            getController().registerOrganizer(this.mInterface);
+            getController().registerOrganizer(this.mInterface, false);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void registerOrganizer(boolean isSystemOrganizer) {
+        try {
+            getController().registerOrganizer(this.mInterface, isSystemOrganizer);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -101,7 +106,19 @@ public class TaskFragmentOrganizer extends WindowOrganizer {
         }
         wct.setTaskFragmentOrganizer(this.mInterface);
         try {
-            getController().applyTransaction(wct, transitionType, shouldApplyIndependently);
+            getController().applyTransaction(wct, transitionType, shouldApplyIndependently, null);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void applySystemTransaction(WindowContainerTransaction wct, int transitionType, RemoteTransition remoteTransition) {
+        if (wct.isEmpty()) {
+            return;
+        }
+        wct.setTaskFragmentOrganizer(this.mInterface);
+        try {
+            getController().applyTransaction(wct, transitionType, remoteTransition != null, remoteTransition);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -111,12 +128,12 @@ public class TaskFragmentOrganizer extends WindowOrganizer {
         onTransactionHandled(transaction.getTransactionToken(), new WindowContainerTransaction(), 0, false);
     }
 
-    /* renamed from: android.window.TaskFragmentOrganizer$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends ITaskFragmentOrganizer.Stub {
+    /* renamed from: android.window.TaskFragmentOrganizer$1, reason: invalid class name */
+    class AnonymousClass1 extends ITaskFragmentOrganizer.Stub {
         AnonymousClass1() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTransactionReady$0(TaskFragmentTransaction transaction) {
             TaskFragmentOrganizer.this.onTransactionReady(transaction);
         }

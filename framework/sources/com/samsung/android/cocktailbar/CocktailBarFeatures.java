@@ -22,9 +22,8 @@ public class CocktailBarFeatures {
                 pm = context.getPackageManager();
             }
             try {
-                int verifyCocktailFeature = verifyCocktailFeature(pm, 1, "com.sec.feature.cocktailbar");
-                sCocktailFeature = verifyCocktailFeature;
-                if (verifyCocktailFeature == 0) {
+                sCocktailFeature = verifyCocktailFeature(pm, 1, "com.sec.feature.cocktailbar");
+                if (sCocktailFeature == 0) {
                     sCocktailFeature = verifyCocktailFeature(pm, 2, PackageManager.SEM_FEATURE_COCKTAIL_PANEL);
                 }
             } catch (Exception e) {
@@ -44,8 +43,7 @@ public class CocktailBarFeatures {
 
     public static boolean isSupportCocktailPanel(Context context) {
         ensureCocktailFeature(context);
-        int i = sCocktailFeature;
-        return i == 1 || i == 2;
+        return sCocktailFeature == 1 || sCocktailFeature == 2;
     }
 
     @Deprecated

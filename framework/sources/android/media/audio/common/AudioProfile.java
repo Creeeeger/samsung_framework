@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioProfile implements Parcelable {
     public static final Parcelable.Creator<AudioProfile> CREATOR = new Parcelable.Creator<AudioProfile>() { // from class: android.media.audio.common.AudioProfile.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioProfile createFromParcel(Parcel _aidl_source) {
             AudioProfile _aidl_out = new AudioProfile();
@@ -20,6 +18,7 @@ public class AudioProfile implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioProfile[] newArray(int _aidl_size) {
             return new AudioProfile[_aidl_size];
@@ -30,25 +29,6 @@ public class AudioProfile implements Parcelable {
     public AudioFormatDescription format;
     public String name;
     public int[] sampleRates;
-
-    /* renamed from: android.media.audio.common.AudioProfile$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioProfile> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioProfile createFromParcel(Parcel _aidl_source) {
-            AudioProfile _aidl_out = new AudioProfile();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioProfile[] newArray(int _aidl_size) {
-            return new AudioProfile[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -137,7 +117,7 @@ public class AudioProfile implements Parcelable {
         _aidl_sj.add("channelMasks: " + Arrays.toString(this.channelMasks));
         _aidl_sj.add("sampleRates: " + Arrays.toString(this.sampleRates));
         _aidl_sj.add("encapsulationType: " + this.encapsulationType);
-        return "android.media.audio.common.AudioProfile" + _aidl_sj.toString();
+        return "AudioProfile" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

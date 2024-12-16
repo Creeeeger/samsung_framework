@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IGetEidCallback extends IInterface {
     void onSuccess(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGetEidCallback {
         @Override // android.service.euicc.IGetEidCallback
         public void onSuccess(String eid) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IGetEidCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGetEidCallback {
         public static final String DESCRIPTOR = "android.service.euicc.IGetEidCallback";
         static final int TRANSACTION_onSuccess = 1;
@@ -66,26 +64,22 @@ public interface IGetEidCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGetEidCallback {
+        private static class Proxy implements IGetEidCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

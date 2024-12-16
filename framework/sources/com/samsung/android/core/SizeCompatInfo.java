@@ -1,22 +1,19 @@
 package com.samsung.android.core;
 
-import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.samsung.android.rune.CoreRune;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SizeCompatInfo implements Parcelable {
     public static final Parcelable.Creator<SizeCompatInfo> CREATOR = new Parcelable.Creator<SizeCompatInfo>() { // from class: com.samsung.android.core.SizeCompatInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SizeCompatInfo createFromParcel(Parcel in) {
             return new SizeCompatInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SizeCompatInfo[] newArray(int size) {
             return new SizeCompatInfo[size];
@@ -24,14 +21,12 @@ public class SizeCompatInfo implements Parcelable {
     };
     private final Bundle mBundle;
 
-    /* loaded from: classes5.dex */
     public @interface DragMode {
         public static final int DEX_SIZE_COMPAT = 1;
         public static final int DEX_SIZE_COMPAT_ROTATABLE = 2;
         public static final int NON_RESIZABLE = 0;
     }
 
-    /* loaded from: classes5.dex */
     private @interface Key {
         public static final String DISPLAY_HEIGHT = "DISPLAY_HEIGHT";
         public static final String DISPLAY_WIDTH = "DISPLAY_WIDTH";
@@ -43,15 +38,10 @@ public class SizeCompatInfo implements Parcelable {
         public static final String MODE = "MODE";
     }
 
-    /* loaded from: classes5.dex */
     public @interface Mode {
         public static final int DEX_SIZE_COMPAT_MODE = 1;
         public static final int FLIP_LARGE_COVER_SCREEN_SIZE_COMPAT_MODE = 2;
         public static final int NONE = 0;
-    }
-
-    /* synthetic */ SizeCompatInfo(Parcel parcel, SizeCompatInfoIA sizeCompatInfoIA) {
-        this(parcel);
     }
 
     public SizeCompatInfo() {
@@ -70,23 +60,6 @@ public class SizeCompatInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.samsung.android.core.SizeCompatInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SizeCompatInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SizeCompatInfo createFromParcel(Parcel in) {
-            return new SizeCompatInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SizeCompatInfo[] newArray(int size) {
-            return new SizeCompatInfo[size];
-        }
     }
 
     public void setMode(int mode) {
@@ -172,18 +145,6 @@ public class SizeCompatInfo implements Parcelable {
     }
 
     public static String sizeCompatModeToString(int mode) {
-        if (!CoreRune.SAFE_DEBUG) {
-            return Integer.toString(mode);
-        }
-        switch (mode) {
-            case 0:
-                return "None";
-            case 1:
-                return "DexSizeCompatMode";
-            case 2:
-                return "FlipLargeCoverScreenSizeCompatMode";
-            default:
-                return "Unknown(" + mode + NavigationBarInflaterView.KEY_CODE_END;
-        }
+        return Integer.toString(mode);
     }
 }

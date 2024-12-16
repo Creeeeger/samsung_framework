@@ -26,6 +26,7 @@ import com.android.internal.R;
 import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.telephony.SemTelephonyUtils;
 import com.android.internal.telephony.TelephonyFeatures;
+import com.android.internal.telephony.flags.Flags;
 import com.samsung.android.feature.SemCscFeature;
 import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.lang.annotation.Retention;
@@ -34,7 +35,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class PhoneNumberUtils {
     private static final String BCD_CALLED_PARTY_EXTENDED = "*#abc";
     private static final String BCD_EF_ADN_EXTENDED = "*#,N;";
@@ -50,7 +51,6 @@ public class PhoneNumberUtils {
     public static final int FORMAT_NANP = 1;
     public static final int FORMAT_UNKNOWN = 0;
     private static final String JAPAN_ISO_COUNTRY_CODE = "JP";
-    private static final SparseIntArray KEYPAD_MAP;
     private static final String KOREA_ISO_COUNTRY_CODE = "KR";
     private static final int KRNP_STATE_0505_START = 14;
     private static final int KRNP_STATE_AREA_SEOUL = 6;
@@ -84,7 +84,11 @@ public class PhoneNumberUtils {
     public static final char PAUSE = ',';
     private static final char PLUS_SIGN_CHAR = '+';
     private static final String PLUS_SIGN_STRING = "+";
+    private static final String PREFIX_WPS = "*272";
+    private static final String PREFIX_WPS_CLIR_ACTIVATE = "*31#*272";
+    private static final String PREFIX_WPS_CLIR_DEACTIVATE = "#31#*272";
     private static final Uri REF_COUNTRY_SHARED_PREF;
+    private static final String SINGAPORE_ISO_COUNTRY_CODE = "SG";
     public static final int TOA_International = 145;
     public static final int TOA_Unknown = 129;
     public static final char WAIT = ';';
@@ -114,70 +118,67 @@ public class PhoneNumberUtils {
     private static final Pattern GLOBAL_PHONE_NUMBER_PATTERN = Pattern.compile("[\\+]?[0-9.-]+");
     private static int sMinMatch = 0;
     private static final String[] NANP_COUNTRIES = {"US", "CA", "AS", "AI", "AG", "BS", "BB", "BM", "VG", "KY", "DM", "DO", "GD", "GU", "JM", "PR", "MS", "MP", "KN", "LC", "VC", "TT", "TC", "VI"};
+    private static final SparseIntArray KEYPAD_MAP = new SparseIntArray();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface BcdExtendType {
     }
 
     static {
-        SparseIntArray sparseIntArray = new SparseIntArray();
-        KEYPAD_MAP = sparseIntArray;
-        sparseIntArray.put(97, 50);
-        sparseIntArray.put(98, 50);
-        sparseIntArray.put(99, 50);
-        sparseIntArray.put(65, 50);
-        sparseIntArray.put(66, 50);
-        sparseIntArray.put(67, 50);
-        sparseIntArray.put(100, 51);
-        sparseIntArray.put(101, 51);
-        sparseIntArray.put(102, 51);
-        sparseIntArray.put(68, 51);
-        sparseIntArray.put(69, 51);
-        sparseIntArray.put(70, 51);
-        sparseIntArray.put(103, 52);
-        sparseIntArray.put(104, 52);
-        sparseIntArray.put(105, 52);
-        sparseIntArray.put(71, 52);
-        sparseIntArray.put(72, 52);
-        sparseIntArray.put(73, 52);
-        sparseIntArray.put(106, 53);
-        sparseIntArray.put(107, 53);
-        sparseIntArray.put(108, 53);
-        sparseIntArray.put(74, 53);
-        sparseIntArray.put(75, 53);
-        sparseIntArray.put(76, 53);
-        sparseIntArray.put(109, 54);
-        sparseIntArray.put(110, 54);
-        sparseIntArray.put(111, 54);
-        sparseIntArray.put(77, 54);
-        sparseIntArray.put(78, 54);
-        sparseIntArray.put(79, 54);
-        sparseIntArray.put(112, 55);
-        sparseIntArray.put(113, 55);
-        sparseIntArray.put(114, 55);
-        sparseIntArray.put(115, 55);
-        sparseIntArray.put(80, 55);
-        sparseIntArray.put(81, 55);
-        sparseIntArray.put(82, 55);
-        sparseIntArray.put(83, 55);
-        sparseIntArray.put(116, 56);
-        sparseIntArray.put(117, 56);
-        sparseIntArray.put(118, 56);
-        sparseIntArray.put(84, 56);
-        sparseIntArray.put(85, 56);
-        sparseIntArray.put(86, 56);
-        sparseIntArray.put(119, 57);
-        sparseIntArray.put(120, 57);
-        sparseIntArray.put(121, 57);
-        sparseIntArray.put(122, 57);
-        sparseIntArray.put(87, 57);
-        sparseIntArray.put(88, 57);
-        sparseIntArray.put(89, 57);
-        sparseIntArray.put(90, 57);
-        boolean[] zArr = {true, true, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, true, true, false, true, true, true, true, true, false, true, false, false, true, true, false, false, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, false, true, false, false, true, true, true, true, true, true, true, false, false, true, false};
-        COUNTRY_CALLING_CALL = zArr;
-        CCC_LENGTH = zArr.length;
+        KEYPAD_MAP.put(97, 50);
+        KEYPAD_MAP.put(98, 50);
+        KEYPAD_MAP.put(99, 50);
+        KEYPAD_MAP.put(65, 50);
+        KEYPAD_MAP.put(66, 50);
+        KEYPAD_MAP.put(67, 50);
+        KEYPAD_MAP.put(100, 51);
+        KEYPAD_MAP.put(101, 51);
+        KEYPAD_MAP.put(102, 51);
+        KEYPAD_MAP.put(68, 51);
+        KEYPAD_MAP.put(69, 51);
+        KEYPAD_MAP.put(70, 51);
+        KEYPAD_MAP.put(103, 52);
+        KEYPAD_MAP.put(104, 52);
+        KEYPAD_MAP.put(105, 52);
+        KEYPAD_MAP.put(71, 52);
+        KEYPAD_MAP.put(72, 52);
+        KEYPAD_MAP.put(73, 52);
+        KEYPAD_MAP.put(106, 53);
+        KEYPAD_MAP.put(107, 53);
+        KEYPAD_MAP.put(108, 53);
+        KEYPAD_MAP.put(74, 53);
+        KEYPAD_MAP.put(75, 53);
+        KEYPAD_MAP.put(76, 53);
+        KEYPAD_MAP.put(109, 54);
+        KEYPAD_MAP.put(110, 54);
+        KEYPAD_MAP.put(111, 54);
+        KEYPAD_MAP.put(77, 54);
+        KEYPAD_MAP.put(78, 54);
+        KEYPAD_MAP.put(79, 54);
+        KEYPAD_MAP.put(112, 55);
+        KEYPAD_MAP.put(113, 55);
+        KEYPAD_MAP.put(114, 55);
+        KEYPAD_MAP.put(115, 55);
+        KEYPAD_MAP.put(80, 55);
+        KEYPAD_MAP.put(81, 55);
+        KEYPAD_MAP.put(82, 55);
+        KEYPAD_MAP.put(83, 55);
+        KEYPAD_MAP.put(116, 56);
+        KEYPAD_MAP.put(117, 56);
+        KEYPAD_MAP.put(118, 56);
+        KEYPAD_MAP.put(84, 56);
+        KEYPAD_MAP.put(85, 56);
+        KEYPAD_MAP.put(86, 56);
+        KEYPAD_MAP.put(119, 57);
+        KEYPAD_MAP.put(120, 57);
+        KEYPAD_MAP.put(121, 57);
+        KEYPAD_MAP.put(122, 57);
+        KEYPAD_MAP.put(87, 57);
+        KEYPAD_MAP.put(88, 57);
+        KEYPAD_MAP.put(89, 57);
+        KEYPAD_MAP.put(90, 57);
+        COUNTRY_CALLING_CALL = new boolean[]{true, true, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, true, true, false, true, true, true, true, true, false, true, false, false, true, true, false, false, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, false, true, false, false, true, true, true, true, true, true, true, false, false, true, false};
+        CCC_LENGTH = COUNTRY_CALLING_CALL.length;
         sConvertToEmergencyMap = null;
         refCountryName = "";
         refCountryIDDPrefix = "";
@@ -260,7 +261,7 @@ public class PhoneNumberUtils {
      */
     /* JADX WARN: Code restructure failed: missing block: B:31:0x007e, code lost:
     
-        if (r12 == null) goto L83;
+        if (r12 == null) goto L37;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -311,9 +312,9 @@ public class PhoneNumberUtils {
             r12 = 0
             android.content.ContentResolver r1 = r14.getContentResolver()     // Catch: java.lang.Throwable -> L73 java.lang.RuntimeException -> L75
             java.lang.String[] r3 = new java.lang.String[]{r11}     // Catch: java.lang.Throwable -> L73 java.lang.RuntimeException -> L75
-            r4 = 0
             r5 = 0
             r6 = 0
+            r4 = 0
             r2 = r7
             android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Throwable -> L73 java.lang.RuntimeException -> L75
             r12 = r1
@@ -897,9 +898,6 @@ public class PhoneNumberUtils {
     }
 
     private static byte[] numberToCalledPartyBCDHelper(String number, boolean includeLength, int bcdExtType) {
-        if (TextUtils.isEmpty(number)) {
-            return null;
-        }
         int numberLenReal = number.length();
         int numberLenEffective = numberLenReal;
         char c = PLUS_SIGN_CHAR;
@@ -907,41 +905,25 @@ public class PhoneNumberUtils {
         if (hasPlus) {
             numberLenEffective--;
         }
-        int numberLenEffective2 = numberLenEffective;
-        if (numberLenEffective2 == 0) {
+        if (numberLenEffective == 0) {
             return null;
         }
-        int resultLen = (numberLenEffective2 + 1) / 2;
+        int resultLen = (numberLenEffective + 1) / 2;
         int extraBytes = includeLength ? 1 + 1 : 1;
         int resultLen2 = resultLen + extraBytes;
         byte[] result = new byte[resultLen2];
-        String numbertoBCD = number.trim();
-        if (TextUtils.isEmpty(numbertoBCD)) {
-            log("numbertoBCD is null");
-            return null;
-        }
         int digitCount = 0;
         int i = 0;
-        while (i < numbertoBCD.length()) {
-            try {
-                char c2 = numbertoBCD.charAt(i);
-                if (c2 != c) {
-                    int shift = (digitCount & 1) == 1 ? 4 : 0;
-                    int i2 = extraBytes + (digitCount >> 1);
-                    try {
-                        result[i2] = (byte) (result[i2] | ((byte) ((charToBCD(c2, bcdExtType) & 15) << shift)));
-                        digitCount++;
-                    } catch (RuntimeException e) {
-                        e = e;
-                        com.android.telephony.Rlog.e(LOG_TAG, "Error for invalid char for BCD", e);
-                        return null;
-                    }
-                }
-                i++;
-                c = PLUS_SIGN_CHAR;
-            } catch (RuntimeException e2) {
-                e = e2;
+        while (i < numberLenReal) {
+            char c2 = number.charAt(i);
+            if (c2 != c) {
+                int shift = (digitCount & 1) == 1 ? 4 : 0;
+                int i2 = (digitCount >> 1) + extraBytes;
+                result[i2] = (byte) (((byte) ((charToBCD(c2, bcdExtType) & 15) << shift)) | result[i2]);
+                digitCount++;
             }
+            i++;
+            c = PLUS_SIGN_CHAR;
         }
         if ((digitCount & 1) == 1) {
             int i3 = (digitCount >> 1) + extraBytes;
@@ -986,25 +968,22 @@ public class PhoneNumberUtils {
         switch (formatType) {
             case 0:
                 removeDashes(text);
-                return;
+                break;
             case 1:
                 formatNanpNumber(text);
-                return;
+                break;
             case 2:
                 formatJapaneseNumber(text);
-                return;
+                break;
             case 82:
                 if (TelephonyFeatures.isCountrySpecific(0, "KOR")) {
                     formatKRnpNumber(text);
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:11:0x002b. Please report as an issue. */
     @Deprecated
     public static void formatNanpNumber(Editable text) {
         int length = text.length();
@@ -1026,14 +1005,14 @@ public class PhoneNumberUtils {
                         state = 2;
                     } else {
                         text.replace(0, length2, saved);
-                        return;
+                        break;
                     }
                 case ',':
                 case '.':
                 case '/':
                 default:
                     text.replace(0, length2, saved);
-                    return;
+                    break;
                 case '-':
                     state = 4;
                 case '1':
@@ -1051,18 +1030,20 @@ public class PhoneNumberUtils {
                 case '9':
                     if (state == 2) {
                         text.replace(0, length2, saved);
-                        return;
+                        break;
+                    } else {
+                        if (state == 3) {
+                            dashPositions[numDashes] = i;
+                            numDashes++;
+                        } else if (state != 4 && (numDigits == 3 || numDigits == 6)) {
+                            dashPositions[numDashes] = i;
+                            numDashes++;
+                        }
+                        state = 1;
+                        numDigits++;
                     }
-                    if (state == 3) {
-                        dashPositions[numDashes] = i;
-                        numDashes++;
-                    } else if (state != 4 && (numDigits == 3 || numDigits == 6)) {
-                        dashPositions[numDashes] = i;
-                        numDashes++;
-                    }
-                    state = 1;
-                    numDigits++;
             }
+            return;
         }
         if (numDigits == 7) {
             numDashes--;
@@ -1424,6 +1405,8 @@ public class PhoneNumberUtils {
             if (KOREA_ISO_COUNTRY_CODE.equalsIgnoreCase(defaultCountryIso) && pn2.getCountryCode() == util.getCountryCodeForRegion(KOREA_ISO_COUNTRY_CODE) && pn2.getCountryCodeSource() == Phonenumber.PhoneNumber.CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN) {
                 result = util.format(pn2, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
             } else if (JAPAN_ISO_COUNTRY_CODE.equalsIgnoreCase(defaultCountryIso) && pn2.getCountryCode() == util.getCountryCodeForRegion(JAPAN_ISO_COUNTRY_CODE) && pn2.getCountryCodeSource() == Phonenumber.PhoneNumber.CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN) {
+                result = util.format(pn2, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
+            } else if (Flags.removeCountryCodeFromLocalSingaporeCalls() && SINGAPORE_ISO_COUNTRY_CODE.equalsIgnoreCase(defaultCountryIso) && pn2.getCountryCode() == util.getCountryCodeForRegion(SINGAPORE_ISO_COUNTRY_CODE) && pn2.getCountryCodeSource() == Phonenumber.PhoneNumber.CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN) {
                 result = util.format(pn2, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
             } else {
                 result = util.formatInOriginalFormat(pn2, defaultCountryIso);
@@ -2034,8 +2017,7 @@ public class PhoneNumberUtils {
         return -1;
     }
 
-    /* loaded from: classes3.dex */
-    public static class CountryCallingCodeAndNewIndex {
+    private static class CountryCallingCodeAndNewIndex {
         public final int countryCallingCode;
         public final int newIndex;
 
@@ -2186,11 +2168,10 @@ public class PhoneNumberUtils {
         if (sConvertToEmergencyMap == null) {
             sConvertToEmergencyMap = context.getResources().getStringArray(R.array.config_convert_to_emergency_number_map);
         }
-        String[] strArr = sConvertToEmergencyMap;
-        if (strArr == null || strArr.length == 0) {
+        if (sConvertToEmergencyMap == null || sConvertToEmergencyMap.length == 0) {
             return number;
         }
-        for (String convertMap : strArr) {
+        for (String convertMap : sConvertToEmergencyMap) {
             String[] entry = null;
             String[] filterNumbers = null;
             String convertedNumber = null;
@@ -2230,6 +2211,10 @@ public class PhoneNumberUtils {
         } catch (NumberParseException e) {
             return false;
         }
+    }
+
+    public static boolean isWpsCallNumber(String number) {
+        return number != null && (number.startsWith(PREFIX_WPS) || number.startsWith(PREFIX_WPS_CLIR_ACTIVATE) || number.startsWith(PREFIX_WPS_CLIR_DEACTIVATE));
     }
 
     private static int charToBCD(char c) {
@@ -2318,10 +2303,9 @@ public class PhoneNumberUtils {
                 return false;
             }
             ContentResolver ContryCode = context.getContentResolver();
-            Cursor query = ContryCode.query(MCC_OTA_URI, null, null, null, null);
-            mCursorCountry = query;
-            if (query != null) {
-                query.moveToFirst();
+            mCursorCountry = ContryCode.query(MCC_OTA_URI, null, null, null, null);
+            if (mCursorCountry != null) {
+                mCursorCountry.moveToFirst();
                 while (!mCursorCountry.isAfterLast()) {
                     if (number.startsWith(mCursorCountry.getString(6))) {
                         log("contry code is detected");
@@ -2338,11 +2322,11 @@ public class PhoneNumberUtils {
 
     /* JADX WARN: Code restructure failed: missing block: B:110:0x0131, code lost:
     
-        if (r3 != 11) goto L215;
+        if (r3 != 11) goto L55;
      */
     /* JADX WARN: Code restructure failed: missing block: B:111:0x0133, code lost:
     
-        if ('1' == r5) goto L214;
+        if ('1' == r5) goto L54;
      */
     /* JADX WARN: Code restructure failed: missing block: B:114:0x013c, code lost:
     
@@ -2350,104 +2334,105 @@ public class PhoneNumberUtils {
      */
     /* JADX WARN: Code restructure failed: missing block: B:115:0x0146, code lost:
     
-        if (r11 == false) goto L218;
+        if (r11 == false) goto L58;
      */
     /* JADX WARN: Code restructure failed: missing block: B:116:0x0148, code lost:
     
+        r19 = android.telephony.PhoneNumberUtils.otaCountryIDDPrefix;
         r4 = r2.substring(android.telephony.PhoneNumberUtils.otaCountryIDDPrefix.length(), r2.length());
      */
-    /* JADX WARN: Code restructure failed: missing block: B:117:0x015d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:117:0x015f, code lost:
     
-        if (r11 == false) goto L232;
+        if (r11 == false) goto L72;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:118:0x015f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:118:0x0161, code lost:
     
         r13 = android.telephony.PhoneNumberUtils.otaCountryIDDPrefix.length();
         r13 = r2.substring(r13);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:119:0x016e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:119:0x0170, code lost:
     
-        if (isOneNanp(r15) == false) goto L225;
+        if (isOneNanp(r15) == false) goto L65;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:121:0x017a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:121:0x017c, code lost:
     
-        if (r2.length() != (r13 + 11)) goto L226;
+        if (r2.length() != (r13 + 11)) goto L66;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:122:0x017c, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:122:0x017e, code lost:
     
         r10.append(r13);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:124:0x01a3, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:124:0x01a5, code lost:
     
         return r10.toString();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:126:0x0188, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:126:0x018a, code lost:
     
-        if (startWithCountryCode(r4, r22) == false) goto L229;
+        if (startWithCountryCode(r4, r22) == false) goto L69;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:127:0x018a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:127:0x018c, code lost:
     
         com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "Found Country Code after IDD");
         r10.append(r2);
         r10.replace(0, r13, android.telephony.PhoneNumberUtils.NANP_IDP_STRING);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:128:0x0197, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:128:0x0199, code lost:
     
         com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "No Condition");
         r10.append(r2);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:131:0x01aa, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:131:0x01ac, code lost:
     
-        if ('+' != r5) goto L245;
+        if ('+' != r5) goto L85;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:132:0x01ac, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:132:0x01ae, code lost:
     
         r6 = r2.substring(1);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:133:0x01b5, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:133:0x01b7, code lost:
     
-        if (isOneNanp(r6) == false) goto L239;
+        if (isOneNanp(r6) == false) goto L79;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:135:0x01bd, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:135:0x01bf, code lost:
     
-        if (r2.length() != 12) goto L239;
+        if (r2.length() != 12) goto L79;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:136:0x01bf, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:136:0x01c1, code lost:
     
         r10.append(r6);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:138:0x01dc, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:138:0x01de, code lost:
     
         return r10.toString();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:140:0x01c7, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:140:0x01c9, code lost:
     
-        if (startWithCountryCode(r6, r22) == false) goto L242;
+        if (startWithCountryCode(r6, r22) == false) goto L82;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:141:0x01c9, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:141:0x01cb, code lost:
     
         r10.append(android.telephony.PhoneNumberUtils.NANP_IDP_STRING);
         r10.append(r6);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:142:0x01d0, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:142:0x01d2, code lost:
     
         com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "1NANP is not matched");
         r10.append(r2);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:144:0x01e1, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:144:0x01e3, code lost:
     
-        if (startWithCountryCode(r2, r22) == false) goto L251;
+        if (startWithCountryCode(r2, r22) == false) goto L91;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:145:0x01e3, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:145:0x01e5, code lost:
     
         r10.append(android.telephony.PhoneNumberUtils.NANP_IDP_STRING);
         r10.append(r2);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:146:0x01ed, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:146:0x01ef, code lost:
     
         return r10.toString();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:147:0x015b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:147:0x015d, code lost:
     
         r4 = null;
      */
@@ -2457,7 +2442,7 @@ public class PhoneNumberUtils {
     */
     public static java.lang.String convertSMSDestinationAddress(java.lang.String r21, android.content.Context r22, int r23) {
         /*
-            Method dump skipped, instructions count: 796
+            Method dump skipped, instructions count: 800
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.telephony.PhoneNumberUtils.convertSMSDestinationAddress(java.lang.String, android.content.Context, int):java.lang.String");
@@ -2475,13 +2460,12 @@ public class PhoneNumberUtils {
         if (!TextUtils.isEmpty(mdn) && mdn.length() >= 3) {
             try {
                 ContentResolver cr = context.getContentResolver();
-                Cursor query = cr.query(REF_COUNTRY_SHARED_PREF, null, null, null, null);
-                mCursor = query;
-                if (query == null) {
+                mCursor = cr.query(REF_COUNTRY_SHARED_PREF, null, null, null, null);
+                if (mCursor == null) {
                     adLog("Invalid Reference Country");
                     return false;
                 }
-                query.moveToFirst();
+                mCursor.moveToFirst();
                 refCountryName = mCursor.getString(1);
                 String refmcc = mCursor.getString(2);
                 String str = "430";
@@ -2490,10 +2474,9 @@ public class PhoneNumberUtils {
                 refCountryNDDPrefix = mCursor.getString(4);
                 isNANPCountry = mCursor.getString(5).equals("NANP");
                 refCountryCountryCode = mCursor.getString(6);
-                String string = mCursor.getString(8);
-                refCountryAreaCode = string;
+                refCountryAreaCode = mCursor.getString(8);
                 try {
-                    if (string == null) {
+                    if (refCountryAreaCode == null) {
                         if (mdn.length() >= 3) {
                             refCountryAreaCode = mdn.substring(0, 3);
                         } else {
@@ -2516,23 +2499,20 @@ public class PhoneNumberUtils {
                         }
                     }
                     adLog("refCountryMCC: " + refCountryMCC);
-                    Cursor cursor = mCursor;
-                    if (cursor != null) {
-                        cursor.close();
+                    if (mCursor != null) {
+                        mCursor.close();
                     }
                     isGSMRegistered = phoneType == 1;
                     isCDMARegistered = phoneType == 2;
                     try {
-                        Cursor otaCountry = getOtaCountry(subId, context, true);
-                        mCursor = otaCountry;
+                        mCursor = getOtaCountry(subId, context, true);
                         otaCountryMCC = null;
-                        if (otaCountry != null && otaCountry.moveToFirst()) {
+                        if (mCursor != null && mCursor.moveToFirst()) {
                             otaCountryName = mCursor.getString(1);
                             otaCountryMCC = mCursor.getString(2);
                             otaCountryIDDPrefix = mCursor.getString(3);
-                            String string2 = mCursor.getString(4);
-                            otaCountryNDDPrefix = string2;
-                            if (string2 == null) {
+                            otaCountryNDDPrefix = mCursor.getString(4);
+                            if (otaCountryNDDPrefix == null) {
                                 otaCountryNDDPrefix = "";
                             }
                             isOTANANPCountry = mCursor.getString(5).equals("NANP");
@@ -2544,9 +2524,8 @@ public class PhoneNumberUtils {
                             }
                             otaCountryMCC = str;
                         }
-                        Cursor cursor2 = mCursor;
-                        if (cursor2 != null) {
-                            cursor2.close();
+                        if (mCursor != null) {
+                            mCursor.close();
                         }
                         if (otaCountryMCC == null) {
                             adLog("OTA country not found");
@@ -2555,16 +2534,14 @@ public class PhoneNumberUtils {
                         displayAssistedParams();
                         return true;
                     } finally {
-                        Cursor cursor3 = mCursor;
-                        if (cursor3 != null) {
-                            cursor3.close();
+                        if (mCursor != null) {
+                            mCursor.close();
                         }
                     }
                 } catch (Throwable th) {
                     th = th;
-                    Cursor cursor4 = mCursor;
-                    if (cursor4 != null) {
-                        cursor4.close();
+                    if (mCursor != null) {
+                        mCursor.close();
                     }
                     throw th;
                 }

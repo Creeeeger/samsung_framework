@@ -7,11 +7,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.util.DisplayMetrics;
@@ -19,19 +21,19 @@ import android.util.Slog;
 import android.util.TypedValue;
 import android.view.RoundedCorners;
 import com.android.internal.R;
-import com.android.internal.logging.nano.MetricsProto;
-import com.samsung.android.common.AsPackageName;
+import com.android.internal.pm.pkg.parsing.ParsingPackageUtils;
 import com.samsung.android.core.CoreSaConstant;
 import com.samsung.android.core.CoreSaLogger;
 import com.samsung.android.rune.CoreRune;
 import com.samsung.android.wallpaperbackup.BnRConstants;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MultiWindowUtils {
     public static final int ADD_APP_PAIR_SHORTCUT_EDGE_PANEL = 2;
     public static final int ADD_APP_PAIR_SHORTCUT_HOME = 1;
     public static final int ADD_APP_PAIR_SHORTCUT_TASKBAR = 0;
+    private static final String AI_ASSIST_ACTION = "com.samsung.android.intent.action.AI_ASSIST";
     private static final int DENSITY_FREEFORM = 4;
     private static final int DENSITY_NONE = 0;
     private static final int DENSITY_SPLIT = 2;
@@ -49,74 +51,22 @@ public class MultiWindowUtils {
     private static final float FREEFORM_DEFAULT_SHORT_SIZE_RATIO_FOR_TABLET = 0.3f;
     private static final float FREEFORM_DEFAULT_SIZE_RATIO_FOR_MULTI_SPLIT = 0.45f;
     private static final String HONEY_SPACE_EDGE_APP_PICKER_CLASS_NAME = "com.samsung.app.honeyspace.edge.fromrecent.FromRecentActivity";
-    private static final String HONEY_SPACE_EDGE_PANEL_PROVIDER = "com.samsung.app.honeyspace.edge.appsedge.ui.panel.AppsEdgePanelProvider";
+    public static final String HONEY_SPACE_EDGE_PANEL_PROVIDER = "com.samsung.app.honeyspace.edge.appsedge.ui.panel.AppsEdgePanelProvider";
     private static final String HONEY_SPACE_EDGE_PKG_NAME = "com.sec.android.app.launcher";
     private static final String HONEY_SPACE_OVERLAY_ALLAPPS_SERVICE_CLS = "com.sec.android.app.launcher.overlayapps.OverlayAppsService";
-    public static final String IMMERSIVE_VIDEO_CONTROLS_DIM_CLASS_NAME = "com.android.wm.shell.controlpanel.activity.VideoControlsDimActivity";
     public static final int MAX_BOUNDS_CONFLICT_COUNT = 200;
     private static final String PERMISSION_CONTROLLER_PACKAGE = "com.google.android.permissioncontroller";
     private static final String SCREEN_CAPTURE_PACKAGE = "com.samsung.android.app.smartcapture";
     private static final String SEC_LAUNCHER_PACKAGE_NAME = "com.sec.android.app.launcher";
     public static final int SEND_SPLIT_STATE_CHANGED_INFO = 3;
+    public static final String START_DND_SPLIT_WITH_ALL_APPS = "start_dnd_split_with_all_apps";
+    private static final String TRAMPOLINE_APP_PACKAGE = "com.google.android.googlequicksearchbox";
     private static final int VALUE_MODE_FROM_MW = 3;
-    private static final String VIDEO_CONTROLS_PACKAGE_NAME = "com.android.systemui";
-    private static final boolean sIsTablet = checkIsTablet();
     public static final String FLEX_PANEL_CLASS_NAME = "com.android.wm.shell.controlpanel.activity.FlexPanelActivity";
-    public static final ComponentName FLEX_PANEL_COMPONENT_NAME = new ComponentName(AsPackageName.SYSTEMUI, FLEX_PANEL_CLASS_NAME);
-    public static final String VIDEO_CONTROLS_CLASS_NAME = "com.android.wm.shell.controlpanel.activity.VideoControlsActivity";
-    public static final ComponentName VIDEO_CONTROLS_COMPONENT_NAME = new ComponentName(AsPackageName.SYSTEMUI, VIDEO_CONTROLS_CLASS_NAME);
+    public static final ComponentName FLEX_PANEL_COMPONENT_NAME = new ComponentName("com.android.systemui", FLEX_PANEL_CLASS_NAME);
+    private static final boolean sIsTablet = checkIsTablet();
     public static final PointF DEX_DEFAULT_SIZE_RATIO = new PointF(0.42f, 0.56f);
     public static final PointF DEX_DEFAULT_SIZE_RATIO_FOR_STANDALONE = new PointF(0.55f, 0.66f);
-
-    public static Intent getEdgeAllAppsActivityIntent(ComponentName splitComponent, int userId, int taskId) {
-        Intent intent = new Intent();
-        intent.setComponent(new ComponentName(CoreSaConstant.PACKAGE_NAME_RECENTS, HONEY_SPACE_EDGE_APP_PICKER_CLASS_NAME));
-        intent.putExtra(EXTRA_SPLIT_COMPONENT, splitComponent);
-        intent.putExtra(EXTRA_SPLIT_TASK_USER_ID, userId);
-        intent.putExtra(EXTRA_SPLIT_TASK_ID, taskId);
-        intent.setFlags(805568512);
-        return intent;
-    }
-
-    public static Intent getExternalAppsServiceIntent(int taskId, int[] buttonPosition) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_ALL_APPS_BUTTON_POSITION, buttonPosition);
-        intent.putExtra("mode", 3);
-        intent.putExtra(EXTRA_LAUNCH_TASK_ID, taskId);
-        intent.setClassName(CoreSaConstant.PACKAGE_NAME_RECENTS, HONEY_SPACE_OVERLAY_ALLAPPS_SERVICE_CLS);
-        return intent;
-    }
-
-    public static boolean isAppsEdgeActivity(ComponentName comp) {
-        return comp.getClassName().equals(HONEY_SPACE_EDGE_APP_PICKER_CLASS_NAME);
-    }
-
-    public static ComponentName getEdgeAllAppsComponent() {
-        return new ComponentName(CoreSaConstant.PACKAGE_NAME_RECENTS, HONEY_SPACE_EDGE_APP_PICKER_CLASS_NAME);
-    }
-
-    public static String getEdgePanelProviderName() {
-        return HONEY_SPACE_EDGE_PANEL_PROVIDER;
-    }
-
-    /* loaded from: classes5.dex */
-    public static class MetaKeyBoundsChecker {
-        public static final Rect sInvalidBounds = new Rect(-1, -1, -1, -1);
-        public static final Rect sMinimizeBounds = new Rect(-2, -2, -2, -2);
-        public static final Rect sMoveToDefaultDisplayBounds = new Rect(-3, -3, -3, -3);
-
-        public static boolean isInvalidBounds(Rect bounds) {
-            return sInvalidBounds.equals(bounds);
-        }
-
-        public static boolean isMinimizeBounds(Rect bounds) {
-            return sMinimizeBounds.equals(bounds);
-        }
-
-        public static boolean isMoveToDefaultDisplayBounds(Rect bounds) {
-            return sMoveToDefaultDisplayBounds.equals(bounds);
-        }
-    }
 
     private static boolean checkIsTablet() {
         String deviceType = SystemProperties.get("ro.build.characteristics");
@@ -125,6 +75,10 @@ public class MultiWindowUtils {
 
     public static boolean isTablet() {
         return sIsTablet;
+    }
+
+    public static boolean isInSubDisplay(Context context) {
+        return context.getResources().getConfiguration().semDisplayDeviceType == 5;
     }
 
     public static boolean isDefaultLauncher(Context context) {
@@ -137,123 +91,6 @@ public class MultiWindowUtils {
             e.printStackTrace();
         }
         return CoreSaConstant.PACKAGE_NAME_RECENTS.equals(defaultLauncher);
-    }
-
-    public static boolean isInSubDisplay(Context context) {
-        return context.getResources().getConfiguration().semDisplayDeviceType == 5;
-    }
-
-    public static int getRoundedCornerColor(Context context) {
-        return context.getResources().getColor(R.color.split_divider_background, null);
-    }
-
-    public static int getRoundedCornerRadius(Context context) {
-        int multiWindowRadius = context.getResources().getDimensionPixelSize(R.dimen.rounded_corner_radius_for_multiwindow);
-        if (MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED) {
-            Resources resources = context.getResources();
-            String displayUniqueId = context.getDisplayNoVerify().getUniqueId();
-            int deviceRadius = Math.min(RoundedCorners.getRoundedCornerTopRadius(resources, displayUniqueId), RoundedCorners.getRoundedCornerBottomRadius(resources, displayUniqueId));
-            if (deviceRadius < multiWindowRadius) {
-                return deviceRadius;
-            }
-        }
-        return multiWindowRadius;
-    }
-
-    public static Intent getLaunchIntentForPackageAsUser(String packageName, int userId) {
-        try {
-            Intent intentToResolve = new Intent(Intent.ACTION_MAIN);
-            intentToResolve.addCategory(Intent.CATEGORY_INFO);
-            intentToResolve.setPackage(packageName);
-            List<ResolveInfo> ris = AppGlobals.getPackageManager().queryIntentActivities(intentToResolve, null, 0L, userId).getList();
-            if (ris == null || ris.size() <= 0) {
-                intentToResolve.removeCategory(Intent.CATEGORY_INFO);
-                intentToResolve.addCategory(Intent.CATEGORY_LAUNCHER);
-                intentToResolve.setPackage(packageName);
-                ris = AppGlobals.getPackageManager().queryIntentActivities(intentToResolve, null, 0L, userId).getList();
-            }
-            if (ris != null && ris.size() > 0) {
-                Intent intent = new Intent(intentToResolve);
-                intent.setFlags(268435456);
-                intent.setClassName(ris.get(0).activityInfo.packageName, ris.get(0).activityInfo.name);
-                return intent;
-            }
-            return null;
-        } catch (RemoteException e) {
-            Slog.d("MultiWindowUtils", "getLaunchIntentForPackageAsUser, e : " + e.getMessage());
-            return null;
-        }
-    }
-
-    private static int getDensityBucket(int densityDpi) {
-        if (densityDpi <= 120) {
-            return 120;
-        }
-        if (densityDpi <= 160) {
-            return 160;
-        }
-        if (densityDpi <= 240) {
-            return 240;
-        }
-        if (densityDpi <= 320) {
-            return 320;
-        }
-        if (densityDpi <= 480) {
-            return 480;
-        }
-        return 640;
-    }
-
-    public static int getScaleDownDensity(int smallestWidth, int densityDpi) {
-        if (!hasCustomDensity() && (isTablet() || smallestWidth >= 600)) {
-            return -1;
-        }
-        int scaledDensityDpi = (densityDpi * 75) / 100;
-        int densityBucket = getDensityBucket(densityDpi);
-        int scaledDensityBucket = getDensityBucket(scaledDensityDpi);
-        if (scaledDensityBucket < densityBucket) {
-            return getMinimumDensityWithinBucket(densityBucket);
-        }
-        return scaledDensityDpi;
-    }
-
-    private static int getMinimumDensityWithinBucket(int densityBucket) {
-        switch (densityBucket) {
-            case 160:
-                return 121;
-            case 240:
-                return 161;
-            case 320:
-                return 241;
-            case 480:
-                return 321;
-            case 640:
-                return MetricsProto.MetricsEvent.ACTION_SUPPORT_PHONE;
-            default:
-                return densityBucket;
-        }
-    }
-
-    public static boolean hasCustomDensity() {
-        return MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED != 0;
-    }
-
-    private static boolean isEnabledCustomDensityType(int windowingMode, int activityType, boolean isSplitScreenWindowingMode) {
-        if (MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED == 0 || (!(activityType == 1 || activityType == 0) || windowingMode == 2 || windowingMode == 1 || windowingMode == 0)) {
-            return false;
-        }
-        return windowingMode == 5 ? (MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED & 4) > 0 : windowingMode == 6 && isSplitScreenWindowingMode && (2 & MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED) > 0;
-    }
-
-    public static boolean needToUpdateDensity(int windowingMode, int activityType, boolean isSplitScreenWindowingMode) {
-        if (hasCustomDensity()) {
-            return isEnabledCustomDensityType(windowingMode, activityType, isSplitScreenWindowingMode);
-        }
-        return false;
-    }
-
-    public static boolean isFlexPanelEnabled(Context context) {
-        return false;
     }
 
     public static void getDefaultFreeformBounds(Rect displayBounds, Rect outBounds) {
@@ -288,42 +125,39 @@ public class MultiWindowUtils {
         outBounds.set(0, 0, width, height);
     }
 
-    public static boolean isSingleInstancePerTask(Context ctx, String pkg) {
-        int launchMode;
-        String launchMode2;
-        Intent i = ctx.getPackageManager().getLaunchIntentForPackage(pkg);
-        if (i == null) {
-            return false;
-        }
-        ComponentName cn = i.getComponent();
-        try {
-            ActivityInfo ai = ctx.getPackageManager().getActivityInfo(cn, PackageManager.ComponentInfoFlags.of(128L));
-            launchMode = ai != null ? ai.launchMode : -1;
-            launchMode2 = (ai == null || ai.metaData == null) ? null : ai.metaData.getString("android.activity.launch_mode");
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (launchMode != 4) {
-            if (launchMode2 != null) {
-                if (launchMode2.equals("singleInstancePerTask")) {
-                    return true;
-                }
+    public static int getRoundedCornerColor(Context context) {
+        return context.getResources().getColor(R.color.split_divider_background, null);
+    }
+
+    public static int getRoundedCornerRadius(Context context) {
+        int multiWindowRadius = context.getResources().getDimensionPixelSize(R.dimen.rounded_corner_radius_for_multiwindow);
+        if (MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED) {
+            Resources resources = context.getResources();
+            String displayUniqueId = context.getDisplayNoVerify().getUniqueId();
+            int deviceRadius = Math.min(RoundedCorners.getRoundedCornerTopRadius(resources, displayUniqueId), RoundedCorners.getRoundedCornerBottomRadius(resources, displayUniqueId));
+            if (deviceRadius < multiWindowRadius) {
+                return deviceRadius;
             }
-            return false;
         }
-        return true;
+        return multiWindowRadius;
     }
 
-    public static boolean isKeepFlexPanelTask(String pkg) {
-        return SCREEN_CAPTURE_PACKAGE.equalsIgnoreCase(pkg) || PERMISSION_CONTROLLER_PACKAGE.equalsIgnoreCase(pkg);
+    public static Intent getEdgeAllAppsActivityIntent(ComponentName splitComponent, int userId, int taskId) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(CoreSaConstant.PACKAGE_NAME_RECENTS, HONEY_SPACE_EDGE_APP_PICKER_CLASS_NAME));
+        intent.putExtra(EXTRA_SPLIT_COMPONENT, splitComponent);
+        intent.putExtra(EXTRA_SPLIT_TASK_USER_ID, userId);
+        intent.putExtra(EXTRA_SPLIT_TASK_ID, taskId);
+        intent.setFlags(805568512);
+        return intent;
     }
 
-    public static boolean isFlexPanelActivity(String s) {
-        return s.equals(FLEX_PANEL_CLASS_NAME) || s.equals(FLEX_PANEL_MEDIA_IMMERSIVE_CLASS_NAME);
+    public static boolean isAppsEdgeActivity(ComponentName comp) {
+        return comp.getClassName().equals(HONEY_SPACE_EDGE_APP_PICKER_CLASS_NAME);
     }
 
-    public static boolean isVideoControlsActivity(String s) {
-        return s.equals(VIDEO_CONTROLS_CLASS_NAME) || s.equals(IMMERSIVE_VIDEO_CONTROLS_DIM_CLASS_NAME);
+    public static ComponentName getEdgeAllAppsComponent() {
+        return new ComponentName(CoreSaConstant.PACKAGE_NAME_RECENTS, HONEY_SPACE_EDGE_APP_PICKER_CLASS_NAME);
     }
 
     public static boolean isNightMode(TaskInfo taskInfo) {
@@ -342,6 +176,18 @@ public class MultiWindowUtils {
 
     public static boolean isSplitEnabled(int multiSplitFlags) {
         return ((multiSplitFlags & 1) == 0 && (multiSplitFlags & 4) == 0) ? false : true;
+    }
+
+    public static boolean isDesktopModeSingleTopActivityTranslucent(TaskInfo taskInfo) {
+        return taskInfo != null && taskInfo.configuration.isDesktopModeEnabled() && taskInfo.isTopActivityTransparent && taskInfo.numActivities == 1;
+    }
+
+    public static boolean isSystemUiTask(Context context, TaskInfo taskInfo) {
+        if (context == null || taskInfo == null) {
+            return false;
+        }
+        String sysUiPackageName = context.getResources().getString(17039418);
+        return taskInfo.baseActivity != null && taskInfo.baseActivity.getPackageName().equals(sysUiPackageName);
     }
 
     public static void logForMultiWindowModeChange(int prevWinMode, int newWinMode, int prevStageType, int newStageType) {
@@ -401,6 +247,165 @@ public class MultiWindowUtils {
         if (value != 0) {
             CoreSaLogger.logForAdvanced(CoreSaConstant.MULTI_WINDOW_MODE_CHANGE_ID, detail, value);
         }
+    }
+
+    public static Intent getLaunchIntentForPackageAsUser(String packageName, int userId) {
+        try {
+            Intent intentToResolve = new Intent(Intent.ACTION_MAIN);
+            intentToResolve.addCategory(Intent.CATEGORY_INFO);
+            intentToResolve.setPackage(packageName);
+            List<ResolveInfo> ris = AppGlobals.getPackageManager().queryIntentActivities(intentToResolve, null, 0L, userId).getList();
+            if (ris == null || ris.isEmpty()) {
+                intentToResolve.removeCategory(Intent.CATEGORY_INFO);
+                intentToResolve.addCategory(Intent.CATEGORY_LAUNCHER);
+                ris = AppGlobals.getPackageManager().queryIntentActivities(intentToResolve, null, 0L, userId).getList();
+            }
+            if (ris != null && !ris.isEmpty()) {
+                Intent intent = new Intent(intentToResolve);
+                intent.setFlags(268435456);
+                intent.setClassName(ris.get(0).activityInfo.packageName, ris.get(0).activityInfo.name);
+                return intent;
+            }
+            return null;
+        } catch (RemoteException e) {
+            Slog.d("MultiWindowUtils", "getLaunchIntentForPackageAsUser, e : " + e.getMessage());
+            return null;
+        }
+    }
+
+    private static int getDensityBucket(int densityDpi) {
+        if (densityDpi <= 120) {
+            return 120;
+        }
+        if (densityDpi <= 160) {
+            return 160;
+        }
+        if (densityDpi <= 240) {
+            return 240;
+        }
+        if (densityDpi <= 320) {
+            return 320;
+        }
+        if (densityDpi <= 480) {
+            return 480;
+        }
+        return 640;
+    }
+
+    public static int getScaleDownDensity(int smallestWidth, int densityDpi) {
+        if (!hasCustomDensity() && (isTablet() || smallestWidth >= 600)) {
+            return -1;
+        }
+        int scaledDensityDpi = (densityDpi * 75) / 100;
+        int densityBucket = getDensityBucket(densityDpi);
+        int scaledDensityBucket = getDensityBucket(scaledDensityDpi);
+        if (scaledDensityBucket < densityBucket) {
+            return getMinimumDensityWithinBucket(densityBucket);
+        }
+        return scaledDensityDpi;
+    }
+
+    private static int getMinimumDensityWithinBucket(int densityBucket) {
+        switch (densityBucket) {
+            case 160:
+                return 121;
+            case 240:
+                return 161;
+            case 320:
+                return 241;
+            case 480:
+                return 321;
+            case 640:
+                return 481;
+            default:
+                return densityBucket;
+        }
+    }
+
+    public static boolean hasCustomDensity() {
+        return MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED != 0;
+    }
+
+    private static boolean isEnabledCustomDensityType(int windowingMode, int activityType, boolean isSplitScreenWindowingMode) {
+        if (MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED == 0 || (!(activityType == 1 || activityType == 0) || windowingMode == 2 || windowingMode == 1 || windowingMode == 0)) {
+            return false;
+        }
+        return windowingMode == 5 ? (MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED & 4) > 0 : windowingMode == 6 && isSplitScreenWindowingMode && (2 & MultiWindowCoreState.MW_MULTISTAR_CUSTOM_DENSITY_DYNAMIC_ENABLED) > 0;
+    }
+
+    public static boolean needToUpdateDensity(int windowingMode, int activityType, boolean isSplitScreenWindowingMode) {
+        if (hasCustomDensity()) {
+            return isEnabledCustomDensityType(windowingMode, activityType, isSplitScreenWindowingMode);
+        }
+        return false;
+    }
+
+    public static boolean isFlexPanelEnabled(Context context) {
+        if (!CoreRune.MW_SPLIT_FLEX_PANEL_MODE) {
+            return false;
+        }
+        return context.getResources().getConfiguration().windowConfiguration.isFlexPanelEnabled();
+    }
+
+    public static Intent getExternalAppsServiceIntent(int taskId, int[] buttonPosition) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_ALL_APPS_BUTTON_POSITION, buttonPosition);
+        intent.putExtra("mode", 3);
+        intent.putExtra(EXTRA_LAUNCH_TASK_ID, taskId);
+        intent.setClassName(CoreSaConstant.PACKAGE_NAME_RECENTS, HONEY_SPACE_OVERLAY_ALLAPPS_SERVICE_CLS);
+        return intent;
+    }
+
+    public static class MetaKeyBoundsChecker {
+        public static final Rect sInvalidBounds = new Rect(-1, -1, -1, -1);
+        public static final Rect sMinimizeBounds = new Rect(-2, -2, -2, -2);
+        public static final Rect sMoveToDefaultDisplayBounds = new Rect(-3, -3, -3, -3);
+
+        public static boolean isInvalidBounds(Rect bounds) {
+            return sInvalidBounds.equals(bounds);
+        }
+
+        public static boolean isMinimizeBounds(Rect bounds) {
+            return sMinimizeBounds.equals(bounds);
+        }
+
+        public static boolean isMoveToDefaultDisplayBounds(Rect bounds) {
+            return sMoveToDefaultDisplayBounds.equals(bounds);
+        }
+    }
+
+    public static boolean isSingleInstancePerTask(Context ctx, String pkg) {
+        int launchMode;
+        String launchMode2;
+        Intent i = ctx.getPackageManager().getLaunchIntentForPackage(pkg);
+        if (i == null) {
+            return false;
+        }
+        ComponentName cn = i.getComponent();
+        try {
+            ActivityInfo ai = ctx.getPackageManager().getActivityInfo(cn, PackageManager.ComponentInfoFlags.of(128L));
+            launchMode = ai != null ? ai.launchMode : -1;
+            launchMode2 = (ai == null || ai.metaData == null) ? null : ai.metaData.getString(ParsingPackageUtils.METADATA_ACTIVITY_LAUNCH_MODE);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (launchMode != 4) {
+            if (launchMode2 != null) {
+                if (launchMode2.equals("singleInstancePerTask")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isKeepFlexPanelTask(String pkg) {
+        return SCREEN_CAPTURE_PACKAGE.equalsIgnoreCase(pkg) || PERMISSION_CONTROLLER_PACKAGE.equalsIgnoreCase(pkg);
+    }
+
+    public static boolean isFlexPanelActivity(String s) {
+        return s.equals(FLEX_PANEL_CLASS_NAME) || s.equals(FLEX_PANEL_MEDIA_IMMERSIVE_CLASS_NAME);
     }
 
     public static void adjustBoundsForScreenRatio(Rect prevScreenBounds, Rect nextScreenBounds, Rect sourceBounds, Rect outBounds) {
@@ -470,5 +475,32 @@ public class MultiWindowUtils {
             outBounds.top = (int) ((nextScreenHeight - shownAppHeight) * appTopRatio);
             outBounds.bottom = outBounds.top + appHeight;
         }
+    }
+
+    public static Drawable getAppIcon(Context context, ComponentName componentName, int userId, String mPackageName) {
+        try {
+            return context.getPackageManager().semGetActivityIconForIconTray(componentName, 48);
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ApplicationInfo appInfo = context.getPackageManager().getApplicationInfoAsUser(mPackageName, 0, userId);
+                return context.getPackageManager().semGetApplicationIconForIconTray(appInfo, 48);
+            } catch (Exception e2) {
+                e2.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    public static boolean isAiKeyAction(String action) {
+        return AI_ASSIST_ACTION.equals(action);
+    }
+
+    public static String getAiKeyAction() {
+        return AI_ASSIST_ACTION;
+    }
+
+    public static boolean isAiKeyTrampolineActivity(String packageName) {
+        return "com.google.android.googlequicksearchbox".equals(packageName);
     }
 }

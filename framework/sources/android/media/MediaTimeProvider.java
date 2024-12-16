@@ -4,7 +4,6 @@ package android.media;
 public interface MediaTimeProvider {
     public static final long NO_TIME = -1;
 
-    /* loaded from: classes2.dex */
     public interface OnMediaTimeListener {
         void onSeek(long j);
 

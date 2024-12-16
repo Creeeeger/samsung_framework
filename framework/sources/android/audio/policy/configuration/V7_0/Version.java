@@ -14,7 +14,7 @@ public enum Version {
         return this.rawName;
     }
 
-    public static Version fromString(String rawString) {
+    static Version fromString(String rawString) {
         for (Version _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

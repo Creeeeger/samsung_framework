@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaSmsSubaddress implements Parcelable {
     public static final Parcelable.Creator<CdmaSmsSubaddress> CREATOR = new Parcelable.Creator<CdmaSmsSubaddress>() { // from class: android.hardware.radio.messaging.CdmaSmsSubaddress.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsSubaddress createFromParcel(Parcel _aidl_source) {
             CdmaSmsSubaddress _aidl_out = new CdmaSmsSubaddress();
@@ -19,6 +17,7 @@ public class CdmaSmsSubaddress implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsSubaddress[] newArray(int _aidl_size) {
             return new CdmaSmsSubaddress[_aidl_size];
@@ -29,25 +28,6 @@ public class CdmaSmsSubaddress implements Parcelable {
     public byte[] digits;
     public int subaddressType = 0;
     public boolean odd = false;
-
-    /* renamed from: android.hardware.radio.messaging.CdmaSmsSubaddress$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaSmsSubaddress> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsSubaddress createFromParcel(Parcel _aidl_source) {
-            CdmaSmsSubaddress _aidl_out = new CdmaSmsSubaddress();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsSubaddress[] newArray(int _aidl_size) {
-            return new CdmaSmsSubaddress[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -116,7 +96,7 @@ public class CdmaSmsSubaddress implements Parcelable {
         _aidl_sj.add("subaddressType: " + this.subaddressType);
         _aidl_sj.add("odd: " + this.odd);
         _aidl_sj.add("digits: " + Arrays.toString(this.digits));
-        return "android.hardware.radio.messaging.CdmaSmsSubaddress" + _aidl_sj.toString();
+        return "CdmaSmsSubaddress" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

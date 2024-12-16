@@ -11,7 +11,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.Objects;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
     private static final String TAG = SemSQLiteSecureOpenHelper.class.getSimpleName();
     private final Context mContext;
@@ -63,8 +63,7 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
     public void setWriteAheadLoggingEnabled(boolean enabled) {
         synchronized (this) {
             if (this.mOpenParamsBuilder.isWriteAheadLoggingEnabled() != enabled) {
-                SQLiteDatabase sQLiteDatabase = this.mDatabase;
-                if (sQLiteDatabase != null && sQLiteDatabase.isOpen() && !this.mDatabase.isReadOnly()) {
+                if (this.mDatabase != null && this.mDatabase.isOpen() && !this.mDatabase.isReadOnly()) {
                     if (enabled) {
                         this.mDatabase.enableWriteAheadLogging();
                     } else {
@@ -85,8 +84,7 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
     @Deprecated
     public void setLookasideConfig(int slotSize, int slotCount) {
         synchronized (this) {
-            SQLiteDatabase sQLiteDatabase = this.mDatabase;
-            if (sQLiteDatabase != null && sQLiteDatabase.isOpen()) {
+            if (this.mDatabase != null && this.mDatabase.isOpen()) {
                 throw new IllegalStateException("Lookaside memory config cannot be changed after opening the database");
             }
             this.mOpenParamsBuilder.setLookasideConfig(slotSize, slotCount);
@@ -97,8 +95,7 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
     public void setOpenParams(SQLiteDatabase.OpenParams openParams) {
         Objects.requireNonNull(openParams);
         synchronized (this) {
-            SQLiteDatabase sQLiteDatabase = this.mDatabase;
-            if (sQLiteDatabase != null && sQLiteDatabase.isOpen()) {
+            if (this.mDatabase != null && this.mDatabase.isOpen()) {
                 throw new IllegalStateException("OpenParams cannot be set after opening the database");
             }
             setOpenParamsBuilder(new SQLiteDatabase.OpenParams.Builder(openParams));
@@ -107,13 +104,12 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
 
     private void setOpenParamsBuilder(SQLiteDatabase.OpenParams.Builder openParamsBuilder) {
         this.mOpenParamsBuilder = openParamsBuilder;
-        openParamsBuilder.addOpenFlags(268435456);
+        this.mOpenParamsBuilder.addOpenFlags(268435456);
     }
 
     public void setIdleConnectionShrinkTimeout(long idleConnectionTimeoutMs) {
         synchronized (this) {
-            SQLiteDatabase sQLiteDatabase = this.mDatabase;
-            if (sQLiteDatabase != null && sQLiteDatabase.isOpen()) {
+            if (this.mDatabase != null && this.mDatabase.isOpen()) {
                 throw new IllegalStateException("Shrink timeout setting cannot be changed after opening the database");
             }
             this.mOpenParamsBuilder.semSetIdleConnectionShrinkTimeout(idleConnectionTimeoutMs);
@@ -122,8 +118,7 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
 
     public void setSeparateCacheModeEnabled(boolean enabled) {
         synchronized (this) {
-            SQLiteDatabase sQLiteDatabase = this.mDatabase;
-            if (sQLiteDatabase != null && sQLiteDatabase.isOpen()) {
+            if (this.mDatabase != null && this.mDatabase.isOpen()) {
                 throw new IllegalStateException("Separate cache config cannot be changed after opening the database");
             }
             this.mOpenParamsBuilder.semSetSeparateCacheModeEnabled(enabled);
@@ -136,8 +131,7 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
             throw new IllegalArgumentException("The cache size should not be negative value. Also, it should be less than soft heap size (8M)");
         }
         synchronized (this) {
-            SQLiteDatabase sQLiteDatabase = this.mDatabase;
-            if (sQLiteDatabase != null && sQLiteDatabase.isOpen()) {
+            if (this.mDatabase != null && this.mDatabase.isOpen()) {
                 this.mDatabase.setCacheSize(cacheSizeByte / SQLiteGlobal.getDefaultPageSize());
             }
             this.mOpenParamsBuilder.semSetCacheSize(cacheSizeByte);
@@ -146,8 +140,7 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
 
     public void setUserDataRecoveryEnabled(boolean enabled) {
         synchronized (this) {
-            SQLiteDatabase sQLiteDatabase = this.mDatabase;
-            if (sQLiteDatabase != null && sQLiteDatabase.isOpen()) {
+            if (this.mDatabase != null && this.mDatabase.isOpen()) {
                 throw new IllegalStateException("Database Recovery config cannot be changed after opening the database");
             }
             this.mOpenParamsBuilder.setUserDataRecoveryEnabled(enabled);
@@ -171,9 +164,8 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
     }
 
     private SQLiteDatabase getDatabaseLocked(boolean writable, byte[] password) {
-        SQLiteDatabase sQLiteDatabase = this.mDatabase;
-        if (sQLiteDatabase != null) {
-            if (!sQLiteDatabase.isOpen()) {
+        if (this.mDatabase != null) {
+            if (!this.mDatabase.isOpen()) {
                 this.mDatabase = null;
             } else if (!writable || !this.mDatabase.isReadOnly()) {
                 return this.mDatabase;
@@ -191,11 +183,10 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
                 }
                 db = null;
             }
-            String str = this.mName;
-            if (str == null) {
+            if (this.mName == null) {
                 db = SQLiteDatabase.createSecureDatabase(null, password);
             } else {
-                File filePath = this.mContext.getDatabasePath(str);
+                File filePath = this.mContext.getDatabasePath(this.mName);
                 SQLiteDatabase.OpenParams params = this.mOpenParamsBuilder.build();
                 try {
                     db = SQLiteDatabase.openSecureDatabase(filePath.getPath(), params, password, this.mContext);
@@ -245,6 +236,9 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
             }
             this.mDatabase = db;
             this.mIsInitializing = false;
+            if (db != null && db != this.mDatabase) {
+                db.close();
+            }
             return db;
         } finally {
             this.mIsInitializing = false;
@@ -263,8 +257,7 @@ public abstract class SemSQLiteSecureOpenHelper implements AutoCloseable {
         if (this.mIsInitializing) {
             throw new IllegalStateException("Closed during initialization");
         }
-        SQLiteDatabase sQLiteDatabase = this.mDatabase;
-        if (sQLiteDatabase != null && sQLiteDatabase.isOpen()) {
+        if (this.mDatabase != null && this.mDatabase.isOpen()) {
             this.mDatabase.close();
             this.mDatabase = null;
         }

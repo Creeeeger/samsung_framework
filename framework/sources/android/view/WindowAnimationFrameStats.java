@@ -7,23 +7,18 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class WindowAnimationFrameStats extends FrameStats implements Parcelable {
     public static final Parcelable.Creator<WindowAnimationFrameStats> CREATOR = new Parcelable.Creator<WindowAnimationFrameStats>() { // from class: android.view.WindowAnimationFrameStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowAnimationFrameStats createFromParcel(Parcel parcel) {
             return new WindowAnimationFrameStats(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowAnimationFrameStats[] newArray(int size) {
             return new WindowAnimationFrameStats[size];
         }
     };
-
-    /* synthetic */ WindowAnimationFrameStats(Parcel parcel, WindowAnimationFrameStatsIA windowAnimationFrameStatsIA) {
-        this(parcel);
-    }
 
     public WindowAnimationFrameStats() {
     }
@@ -57,22 +52,5 @@ public final class WindowAnimationFrameStats extends FrameStats implements Parce
         builder.append(", toTimeNano:" + getEndTimeNano());
         builder.append(']');
         return builder.toString();
-    }
-
-    /* renamed from: android.view.WindowAnimationFrameStats$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WindowAnimationFrameStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowAnimationFrameStats createFromParcel(Parcel parcel) {
-            return new WindowAnimationFrameStats(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowAnimationFrameStats[] newArray(int size) {
-            return new WindowAnimationFrameStats[size];
-        }
     }
 }

@@ -12,8 +12,6 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
-import com.samsung.android.feature.SemFloatingFeature;
 
 /* loaded from: classes2.dex */
 final class SemImsUtils {
@@ -28,7 +26,7 @@ final class SemImsUtils {
     SemImsUtils() {
     }
 
-    public static int getNavigationBarHeight(Resources resources) {
+    static int getNavigationBarHeight(Resources resources) {
         int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId > 0) {
             return resources.getDimensionPixelSize(resourceId);
@@ -36,19 +34,19 @@ final class SemImsUtils {
         return 0;
     }
 
-    public static boolean isHoneyboard(String packageName) {
+    static boolean isHoneyboard(String packageName) {
         return "com.samsung.android.honeyboard".equals(packageName);
     }
 
-    public static boolean isMockIme(String packageName) {
+    static boolean isMockIme(String packageName) {
         return "com.android.cts.mockime".equals(packageName);
     }
 
-    public static boolean isBixbyDictationId(String id) {
+    static boolean isBixbyDictationId(String id) {
         return "com.samsung.android.bixby.service/.dictation.DictationInputMethodService".equals(id);
     }
 
-    public static Context createDisplayContextAndSetTheme(Context context, int theme, InputMethodManager mImm) {
+    static Context createDisplayContextAndSetTheme(Context context, int theme, InputMethodManager mImm) {
         int curTokenDisplayId = mImm.getCurTokenDisplayId();
         Log.d(TAG, "onCreate: FocusDisplayId=" + mImm.getCurrentFocusDisplayID() + ", CurTokenDisplayId " + curTokenDisplayId);
         if (isHoneyboard(context.getPackageName())) {
@@ -66,7 +64,7 @@ final class SemImsUtils {
         return context;
     }
 
-    public static void sendBroadcastShownState(Context context, EditorInfo editorInfo, boolean isInputViewShown, int candidatesVisibility) {
+    static void sendBroadcastShownState(Context context, EditorInfo editorInfo, boolean isInputViewShown, int candidatesVisibility) {
         Log.d(TAG, "sendBroadcastImeShownState: isInputViewShown=" + isInputViewShown + " candidatesVisibility=" + candidatesVisibility);
         Intent respInt = new Intent();
         respInt.setAction(RESPONSE_AXT9INFO);
@@ -84,7 +82,7 @@ final class SemImsUtils {
         }
     }
 
-    public static void sendBroadcastForSSRM(Context context, boolean isVisible) {
+    static void sendBroadcastForSSRM(Context context, boolean isVisible) {
         Log.d(TAG, "sendInputViewShownStateSSRM(): " + isVisible);
         Intent respInt = new Intent();
         respInt.setAction(ACTION_INPUTMETHOD_STARTING_SSRM);
@@ -93,21 +91,7 @@ final class SemImsUtils {
         context.sendBroadcast(respInt);
     }
 
-    public static int getExtractSideMargin() {
-        float secFloatingFeatureSystemuiConfigCornerRound = Float.parseFloat(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_SYSTEMUI_CONFIG_CORNER_ROUND"));
-        int extractSideMargin = (int) (((10.0f - secFloatingFeatureSystemuiConfigCornerRound) * secFloatingFeatureSystemuiConfigCornerRound) - 1.0f);
-        Log.d(TAG, "getExtractSideMargin: margin=" + (extractSideMargin * 2));
-        return extractSideMargin * 2;
-    }
-
-    public static FrameLayout.LayoutParams getLayoutParamsExtractSideMargin(int extractSideMargin) {
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(-1, -1, 48);
-        layoutParams.setMarginStart(extractSideMargin);
-        layoutParams.setMarginEnd(extractSideMargin);
-        return layoutParams;
-    }
-
-    public static int getPixel(Resources resources, int dp) {
+    static int getPixel(Resources resources, int dp) {
         return (int) TypedValue.applyDimension(1, dp, resources.getDisplayMetrics());
     }
 }

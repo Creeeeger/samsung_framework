@@ -12,7 +12,6 @@ public interface ICocktailBarShowCallback extends IInterface {
 
     void onShown(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICocktailBarShowCallback {
         @Override // com.samsung.android.cocktailbar.ICocktailBarShowCallback
         public void onShown(IBinder windowToken) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICocktailBarShowCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICocktailBarShowCallback {
         static final int TRANSACTION_onShown = 1;
 
@@ -67,24 +65,21 @@ public interface ICocktailBarShowCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICocktailBarShowCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICocktailBarShowCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICocktailBarShowCallback.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onShown(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onShown(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICocktailBarShowCallback {
             private IBinder mRemote;
 

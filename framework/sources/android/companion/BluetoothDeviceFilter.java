@@ -16,14 +16,13 @@ import java.util.regex.Pattern;
 /* loaded from: classes.dex */
 public final class BluetoothDeviceFilter implements DeviceFilter<BluetoothDevice> {
     public static final Parcelable.Creator<BluetoothDeviceFilter> CREATOR = new Parcelable.Creator<BluetoothDeviceFilter>() { // from class: android.companion.BluetoothDeviceFilter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BluetoothDeviceFilter createFromParcel(Parcel in) {
             return new BluetoothDeviceFilter(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BluetoothDeviceFilter[] newArray(int size) {
             return new BluetoothDeviceFilter[size];
@@ -33,14 +32,6 @@ public final class BluetoothDeviceFilter implements DeviceFilter<BluetoothDevice
     private final Pattern mNamePattern;
     private final List<ParcelUuid> mServiceUuidMasks;
     private final List<ParcelUuid> mServiceUuids;
-
-    /* synthetic */ BluetoothDeviceFilter(Parcel parcel, BluetoothDeviceFilterIA bluetoothDeviceFilterIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ BluetoothDeviceFilter(Pattern pattern, String str, List list, List list2, BluetoothDeviceFilterIA bluetoothDeviceFilterIA) {
-        this(pattern, str, list, list2);
-    }
 
     private BluetoothDeviceFilter(Pattern namePattern, String address, List<ParcelUuid> serviceUuids, List<ParcelUuid> serviceUuidMasks) {
         this.mNamePattern = namePattern;
@@ -123,24 +114,6 @@ public final class BluetoothDeviceFilter implements DeviceFilter<BluetoothDevice
         return 0;
     }
 
-    /* renamed from: android.companion.BluetoothDeviceFilter$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BluetoothDeviceFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BluetoothDeviceFilter createFromParcel(Parcel in) {
-            return new BluetoothDeviceFilter(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BluetoothDeviceFilter[] newArray(int size) {
-            return new BluetoothDeviceFilter[size];
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder extends OneTimeUseBuilder<BluetoothDeviceFilter> {
         private String mAddress;
         private Pattern mNamePattern;
@@ -166,6 +139,7 @@ public final class BluetoothDeviceFilter implements DeviceFilter<BluetoothDevice
             return this;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.provider.OneTimeUseBuilder
         public BluetoothDeviceFilter build() {
             markUsed();

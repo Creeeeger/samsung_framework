@@ -39,9 +39,10 @@ public interface ICallEventCallback extends IInterface {
 
     void onSetInactive(String str, ResultReceiver resultReceiver) throws RemoteException;
 
+    void onVideoStateChanged(String str, int i) throws RemoteException;
+
     void removeCallFromTransactionalServiceWrapper(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallEventCallback {
         @Override // com.android.internal.telecom.ICallEventCallback
         public void onAddCallControl(String callId, int resultCode, ICallControl callControl, CallException exception) throws RemoteException {
@@ -84,6 +85,10 @@ public interface ICallEventCallback extends IInterface {
         }
 
         @Override // com.android.internal.telecom.ICallEventCallback
+        public void onVideoStateChanged(String callId, int videoState) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telecom.ICallEventCallback
         public void onEvent(String callId, String event, Bundle extras) throws RemoteException {
         }
 
@@ -97,7 +102,6 @@ public interface ICallEventCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallEventCallback {
         static final int TRANSACTION_onAddCallControl = 1;
         static final int TRANSACTION_onAnswer = 4;
@@ -106,11 +110,12 @@ public interface ICallEventCallback extends IInterface {
         static final int TRANSACTION_onCallStreamingFailed = 7;
         static final int TRANSACTION_onCallStreamingStarted = 6;
         static final int TRANSACTION_onDisconnect = 5;
-        static final int TRANSACTION_onEvent = 11;
+        static final int TRANSACTION_onEvent = 12;
         static final int TRANSACTION_onMuteStateChanged = 10;
         static final int TRANSACTION_onSetActive = 2;
         static final int TRANSACTION_onSetInactive = 3;
-        static final int TRANSACTION_removeCallFromTransactionalServiceWrapper = 12;
+        static final int TRANSACTION_onVideoStateChanged = 11;
+        static final int TRANSACTION_removeCallFromTransactionalServiceWrapper = 13;
 
         public Stub() {
             attachInterface(this, ICallEventCallback.DESCRIPTOR);
@@ -155,8 +160,10 @@ public interface ICallEventCallback extends IInterface {
                 case 10:
                     return "onMuteStateChanged";
                 case 11:
-                    return "onEvent";
+                    return "onVideoStateChanged";
                 case 12:
+                    return "onEvent";
+                case 13:
                     return "removeCallFromTransactionalServiceWrapper";
                 default:
                     return null;
@@ -173,97 +180,99 @@ public interface ICallEventCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICallEventCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICallEventCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICallEventCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    ICallControl _arg2 = ICallControl.Stub.asInterface(data.readStrongBinder());
+                    CallException _arg3 = (CallException) data.readTypedObject(CallException.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAddCallControl(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    ResultReceiver _arg12 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSetActive(_arg02, _arg12);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    ResultReceiver _arg13 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSetInactive(_arg03, _arg13);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    ResultReceiver _arg22 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAnswer(_arg04, _arg14, _arg22);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    DisconnectCause _arg15 = (DisconnectCause) data.readTypedObject(DisconnectCause.CREATOR);
+                    ResultReceiver _arg23 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDisconnect(_arg05, _arg15, _arg23);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    ResultReceiver _arg16 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallStreamingStarted(_arg06, _arg16);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCallStreamingFailed(_arg07, _arg17);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    CallEndpoint _arg18 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallEndpointChanged(_arg08, _arg18);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    List<CallEndpoint> _arg19 = data.createTypedArrayList(CallEndpoint.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAvailableCallEndpointsChanged(_arg09, _arg19);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    boolean _arg110 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onMuteStateChanged(_arg010, _arg110);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVideoStateChanged(_arg011, _arg111);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    String _arg112 = data.readString();
+                    Bundle _arg24 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEvent(_arg012, _arg112, _arg24);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeCallFromTransactionalServiceWrapper(_arg013);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            ICallControl _arg2 = ICallControl.Stub.asInterface(data.readStrongBinder());
-                            CallException _arg3 = (CallException) data.readTypedObject(CallException.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAddCallControl(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            ResultReceiver _arg12 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSetActive(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            ResultReceiver _arg13 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSetInactive(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            ResultReceiver _arg22 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAnswer(_arg04, _arg14, _arg22);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            DisconnectCause _arg15 = (DisconnectCause) data.readTypedObject(DisconnectCause.CREATOR);
-                            ResultReceiver _arg23 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDisconnect(_arg05, _arg15, _arg23);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            ResultReceiver _arg16 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallStreamingStarted(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCallStreamingFailed(_arg07, _arg17);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            CallEndpoint _arg18 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallEndpointChanged(_arg08, _arg18);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            List<CallEndpoint> _arg19 = data.createTypedArrayList(CallEndpoint.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAvailableCallEndpointsChanged(_arg09, _arg19);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            boolean _arg110 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onMuteStateChanged(_arg010, _arg110);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            String _arg111 = data.readString();
-                            Bundle _arg24 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEvent(_arg011, _arg111, _arg24);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeCallFromTransactionalServiceWrapper(_arg012);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICallEventCallback {
+        private static class Proxy implements ICallEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -414,6 +423,19 @@ public interface ICallEventCallback extends IInterface {
             }
 
             @Override // com.android.internal.telecom.ICallEventCallback
+            public void onVideoStateChanged(String callId, int videoState) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ICallEventCallback.DESCRIPTOR);
+                    _data.writeString(callId);
+                    _data.writeInt(videoState);
+                    this.mRemote.transact(11, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telecom.ICallEventCallback
             public void onEvent(String callId, String event, Bundle extras) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
@@ -421,7 +443,7 @@ public interface ICallEventCallback extends IInterface {
                     _data.writeString(callId);
                     _data.writeString(event);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(11, _data, null, 1);
+                    this.mRemote.transact(12, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -433,7 +455,7 @@ public interface ICallEventCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(ICallEventCallback.DESCRIPTOR);
                     _data.writeString(callId);
-                    this.mRemote.transact(12, _data, null, 1);
+                    this.mRemote.transact(13, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -442,7 +464,7 @@ public interface ICallEventCallback extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 11;
+            return 12;
         }
     }
 }

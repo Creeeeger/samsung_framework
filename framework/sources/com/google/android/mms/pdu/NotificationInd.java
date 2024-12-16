@@ -8,7 +8,7 @@ public class NotificationInd extends GenericPdu {
         setMessageType(130);
     }
 
-    public NotificationInd(PduHeaders headers) {
+    NotificationInd(PduHeaders headers) {
         super(headers);
     }
 

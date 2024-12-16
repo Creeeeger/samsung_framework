@@ -48,20 +48,12 @@ public class UserData {
     public boolean isAutoLogin = false;
 
     static {
-        int i = 0;
-        while (true) {
-            char[] cArr = ASCII_MAP;
-            if (i < cArr.length) {
-                charToAscii.put(cArr[i], i + 32);
-                i++;
-            } else {
-                SparseIntArray sparseIntArray = charToAscii;
-                sparseIntArray.put(10, 10);
-                sparseIntArray.put(13, 13);
-                ASCII_MAP_MAX_INDEX = (cArr.length + 32) - 1;
-                return;
-            }
+        for (int i = 0; i < ASCII_MAP.length; i++) {
+            charToAscii.put(ASCII_MAP[i], i + 32);
         }
+        charToAscii.put(10, 10);
+        charToAscii.put(13, 13);
+        ASCII_MAP_MAX_INDEX = (ASCII_MAP.length + 32) - 1;
     }
 
     public static byte[] stringToAscii(String str) {

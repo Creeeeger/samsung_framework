@@ -2,7 +2,7 @@ package com.samsung.android.allshare;
 
 import android.net.Uri;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public abstract class Icon {
     public abstract int getDepth();
 
@@ -13,4 +13,7 @@ public abstract class Icon {
     public abstract Uri getUri();
 
     public abstract int getWidth();
+
+    protected Icon() {
+    }
 }

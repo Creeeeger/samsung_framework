@@ -59,48 +59,42 @@ public abstract class ASN1External extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return new DERExternal(this.directReference, this.indirectReference, this.dataValueDescriptor, this.encoding, this.externalContent);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return new DLExternal(this.directReference, this.indirectReference, this.dataValueDescriptor, this.encoding, this.externalContent);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive, com.android.internal.org.bouncycastle.asn1.ASN1Object
     public int hashCode() {
         int ret = 0;
-        ASN1ObjectIdentifier aSN1ObjectIdentifier = this.directReference;
-        if (aSN1ObjectIdentifier != null) {
-            ret = aSN1ObjectIdentifier.hashCode();
+        if (this.directReference != null) {
+            ret = this.directReference.hashCode();
         }
-        ASN1Integer aSN1Integer = this.indirectReference;
-        if (aSN1Integer != null) {
-            ret ^= aSN1Integer.hashCode();
+        if (this.indirectReference != null) {
+            ret ^= this.indirectReference.hashCode();
         }
-        ASN1Primitive aSN1Primitive = this.dataValueDescriptor;
-        if (aSN1Primitive != null) {
-            ret ^= aSN1Primitive.hashCode();
+        if (this.dataValueDescriptor != null) {
+            ret ^= this.dataValueDescriptor.hashCode();
         }
         return ret ^ this.externalContent.hashCode();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return true;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         return getEncoded().length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
-        ASN1Primitive aSN1Primitive;
-        ASN1Integer aSN1Integer;
-        ASN1ObjectIdentifier aSN1ObjectIdentifier;
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1External)) {
             return false;
         }
@@ -108,16 +102,13 @@ public abstract class ASN1External extends ASN1Primitive {
             return true;
         }
         ASN1External other = (ASN1External) o;
-        ASN1ObjectIdentifier aSN1ObjectIdentifier2 = this.directReference;
-        if (aSN1ObjectIdentifier2 != null && ((aSN1ObjectIdentifier = other.directReference) == null || !aSN1ObjectIdentifier.equals((ASN1Primitive) aSN1ObjectIdentifier2))) {
+        if (this.directReference != null && (other.directReference == null || !other.directReference.equals((ASN1Primitive) this.directReference))) {
             return false;
         }
-        ASN1Integer aSN1Integer2 = this.indirectReference;
-        if (aSN1Integer2 != null && ((aSN1Integer = other.indirectReference) == null || !aSN1Integer.equals((ASN1Primitive) aSN1Integer2))) {
+        if (this.indirectReference != null && (other.indirectReference == null || !other.indirectReference.equals((ASN1Primitive) this.indirectReference))) {
             return false;
         }
-        ASN1Primitive aSN1Primitive2 = this.dataValueDescriptor;
-        if (aSN1Primitive2 == null || ((aSN1Primitive = other.dataValueDescriptor) != null && aSN1Primitive.equals(aSN1Primitive2))) {
+        if (this.dataValueDescriptor == null || (other.dataValueDescriptor != null && other.dataValueDescriptor.equals(this.dataValueDescriptor))) {
             return this.externalContent.equals(other.externalContent);
         }
         return false;

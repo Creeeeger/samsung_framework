@@ -12,13 +12,12 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class PacProxyManager {
     private final Context mContext;
     private final HashMap<PacProxyInstalledListener, PacProxyInstalledListenerProxy> mListenerMap = new HashMap<>();
     private final IPacProxyManager mService;
 
-    /* loaded from: classes2.dex */
     public interface PacProxyInstalledListener {
         void onPacProxyInstalled(Network network, ProxyInfo proxyInfo);
     }
@@ -65,7 +64,6 @@ public class PacProxyManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class PacProxyInstalledListenerProxy extends IPacProxyInstalledListener.Stub {
         private final Executor mExecutor;
         private final PacProxyInstalledListener mListener;
@@ -85,6 +83,7 @@ public class PacProxyManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPacProxyInstalled$1(final Network network, final ProxyInfo proxy) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.net.PacProxyManager$PacProxyInstalledListenerProxy$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -94,6 +93,7 @@ public class PacProxyManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPacProxyInstalled$0(Network network, ProxyInfo proxy) {
             this.mListener.onPacProxyInstalled(network, proxy);
         }

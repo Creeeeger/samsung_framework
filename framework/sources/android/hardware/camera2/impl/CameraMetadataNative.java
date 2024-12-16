@@ -35,6 +35,7 @@ import android.hardware.camera2.params.DeviceStateSensorOrientationMap;
 import android.hardware.camera2.params.DynamicRangeProfiles;
 import android.hardware.camera2.params.Face;
 import android.hardware.camera2.params.HighSpeedVideoConfiguration;
+import android.hardware.camera2.params.LensIntrinsicsSample;
 import android.hardware.camera2.params.LensShadingMap;
 import android.hardware.camera2.params.MandatoryStreamCombination;
 import android.hardware.camera2.params.MeteringRectangle;
@@ -50,13 +51,13 @@ import android.hardware.camera2.params.TonemapCurve;
 import android.hardware.camera2.utils.ArrayUtils;
 import android.hardware.camera2.utils.TypeReference;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.ServiceSpecificException;
 import android.util.Log;
 import android.util.Range;
 import android.util.Size;
+import com.android.internal.camera.flags.Flags;
 import dalvik.annotation.optimization.FastNative;
 import dalvik.system.VMRuntime;
 import java.io.IOException;
@@ -73,25 +74,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraMetadataNative implements Parcelable {
     private static final String CELLID_PROCESS = "CELLID";
-    public static final Parcelable.Creator<CameraMetadataNative> CREATOR = new Parcelable.Creator<CameraMetadataNative>() { // from class: android.hardware.camera2.impl.CameraMetadataNative.1
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraMetadataNative createFromParcel(Parcel in) {
-            CameraMetadataNative metadata = new CameraMetadataNative();
-            metadata.readFromParcel(in);
-            return metadata;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraMetadataNative[] newArray(int size) {
-            return new CameraMetadataNative[size];
-        }
-    };
     private static final boolean DEBUG = false;
     private static final int FACE_LANDMARK_SIZE = 6;
     private static final String GPS_PROCESS = "GPS";
@@ -110,14 +95,29 @@ public class CameraMetadataNative implements Parcelable {
     public static final int TYPE_INT32 = 1;
     public static final int TYPE_INT64 = 3;
     public static final int TYPE_RATIONAL = 5;
-    private static final HashMap<Key<?>, GetCommand> sGetCommandMap;
     private static final HashMap<Key<?>, SetCommand> sSetCommandMap;
+    private long mBufferSize;
+    private int mCameraId;
+    private Size mDisplaySize;
+    private boolean mHasMandatoryConcurrentStreams;
     private long mMetadataPtr;
-    private int mCameraId = -1;
-    private boolean mHasMandatoryConcurrentStreams = false;
-    private Size mDisplaySize = new Size(0, 0);
-    private long mBufferSize = 0;
-    private MultiResolutionStreamConfigurationMap mMultiResolutionStreamConfigurationMap = null;
+    private MultiResolutionStreamConfigurationMap mMultiResolutionStreamConfigurationMap;
+    public static final Parcelable.Creator<CameraMetadataNative> CREATOR = new Parcelable.Creator<CameraMetadataNative>() { // from class: android.hardware.camera2.impl.CameraMetadataNative.1
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public CameraMetadataNative createFromParcel(Parcel in) {
+            CameraMetadataNative metadata = new CameraMetadataNative();
+            metadata.readFromParcel(in);
+            return metadata;
+        }
+
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public CameraMetadataNative[] newArray(int size) {
+            return new CameraMetadataNative[size];
+        }
+    };
+    private static final HashMap<Key<?>, GetCommand> sGetCommandMap = new HashMap<>();
 
     @FastNative
     private static native long nativeAllocate();
@@ -165,7 +165,6 @@ public class CameraMetadataNative implements Parcelable {
 
     private static native synchronized void nativeWriteValues(int i, byte[] bArr, long j);
 
-    /* loaded from: classes.dex */
     public static class Key<T> {
         private final String mFallbackName;
         private boolean mHasTag;
@@ -188,9 +187,8 @@ public class CameraMetadataNative implements Parcelable {
             this.mFallbackName = null;
             this.mType = type;
             this.mVendorId = vendorId;
-            TypeReference<T> createSpecializedTypeReference = TypeReference.createSpecializedTypeReference((Class) type);
-            this.mTypeReference = createSpecializedTypeReference;
-            this.mHash = createSpecializedTypeReference.hashCode() ^ name.hashCode();
+            this.mTypeReference = TypeReference.createSpecializedTypeReference((Class) type);
+            this.mHash = this.mName.hashCode() ^ this.mTypeReference.hashCode();
         }
 
         public Key(String name, String fallbackName, Class<T> type) {
@@ -204,9 +202,8 @@ public class CameraMetadataNative implements Parcelable {
             this.mName = name;
             this.mFallbackName = fallbackName;
             this.mType = type;
-            TypeReference<T> createSpecializedTypeReference = TypeReference.createSpecializedTypeReference((Class) type);
-            this.mTypeReference = createSpecializedTypeReference;
-            this.mHash = createSpecializedTypeReference.hashCode() ^ name.hashCode();
+            this.mTypeReference = TypeReference.createSpecializedTypeReference((Class) type);
+            this.mHash = this.mName.hashCode() ^ this.mTypeReference.hashCode();
         }
 
         public Key(String name, Class<T> type) {
@@ -220,9 +217,8 @@ public class CameraMetadataNative implements Parcelable {
             this.mName = name;
             this.mFallbackName = null;
             this.mType = type;
-            TypeReference<T> createSpecializedTypeReference = TypeReference.createSpecializedTypeReference((Class) type);
-            this.mTypeReference = createSpecializedTypeReference;
-            this.mHash = createSpecializedTypeReference.hashCode() ^ name.hashCode();
+            this.mTypeReference = TypeReference.createSpecializedTypeReference((Class) type);
+            this.mHash = this.mName.hashCode() ^ this.mTypeReference.hashCode();
         }
 
         public Key(String str, TypeReference<T> typeReference) {
@@ -237,7 +233,7 @@ public class CameraMetadataNative implements Parcelable {
             this.mFallbackName = null;
             this.mType = typeReference.getRawType();
             this.mTypeReference = typeReference;
-            this.mHash = str.hashCode() ^ typeReference.hashCode();
+            this.mHash = this.mName.hashCode() ^ this.mTypeReference.hashCode();
         }
 
         public final String getName() {
@@ -312,14 +308,14 @@ public class CameraMetadataNative implements Parcelable {
         }
         switch (provider.hashCode()) {
             case 102570:
-                if (provider.equals(LocationManager.GPS_PROVIDER)) {
+                if (provider.equals("gps")) {
                     c = 0;
                     break;
                 }
                 c = 65535;
                 break;
             case 1843485230:
-                if (provider.equals(LocationManager.NETWORK_PROVIDER)) {
+                if (provider.equals("network")) {
                     c = 1;
                     break;
                 }
@@ -330,13 +326,8 @@ public class CameraMetadataNative implements Parcelable {
                 break;
         }
         switch (c) {
-            case 0:
-                return GPS_PROCESS;
-            case 1:
-                return CELLID_PROCESS;
-            default:
-                return null;
         }
+        return null;
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
@@ -365,28 +356,31 @@ public class CameraMetadataNative implements Parcelable {
                 break;
         }
         switch (c) {
-            case 0:
-                return LocationManager.GPS_PROVIDER;
-            case 1:
-                return LocationManager.NETWORK_PROVIDER;
-            default:
-                return null;
         }
+        return null;
     }
 
     public CameraMetadataNative() {
-        long nativeAllocate = nativeAllocate();
-        this.mMetadataPtr = nativeAllocate;
-        if (nativeAllocate == 0) {
+        this.mCameraId = -1;
+        this.mHasMandatoryConcurrentStreams = false;
+        this.mDisplaySize = new Size(0, 0);
+        this.mBufferSize = 0L;
+        this.mMultiResolutionStreamConfigurationMap = null;
+        this.mMetadataPtr = nativeAllocate();
+        if (this.mMetadataPtr == 0) {
             throw new OutOfMemoryError("Failed to allocate native CameraMetadata");
         }
         updateNativeAllocation();
     }
 
     public CameraMetadataNative(CameraMetadataNative other) {
-        long nativeAllocateCopy = nativeAllocateCopy(other.mMetadataPtr);
-        this.mMetadataPtr = nativeAllocateCopy;
-        if (nativeAllocateCopy == 0) {
+        this.mCameraId = -1;
+        this.mHasMandatoryConcurrentStreams = false;
+        this.mDisplaySize = new Size(0, 0);
+        this.mBufferSize = 0L;
+        this.mMultiResolutionStreamConfigurationMap = null;
+        this.mMetadataPtr = nativeAllocateCopy(other.mMetadataPtr);
+        if (this.mMetadataPtr == 0) {
             throw new OutOfMemoryError("Failed to allocate native CameraMetadata");
         }
         updateNativeAllocation();
@@ -402,370 +396,254 @@ public class CameraMetadataNative implements Parcelable {
         nativeUpdate(dst.mMetadataPtr, src.mMetadataPtr);
     }
 
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CameraMetadataNative> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraMetadataNative createFromParcel(Parcel in) {
-            CameraMetadataNative metadata = new CameraMetadataNative();
-            metadata.readFromParcel(in);
-            return metadata;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraMetadataNative[] newArray(int size) {
-            return new CameraMetadataNative[size];
-        }
-    }
-
     static {
-        HashMap<Key<?>, GetCommand> hashMap = new HashMap<>();
-        sGetCommandMap = hashMap;
-        hashMap.put(CameraCharacteristics.SCALER_AVAILABLE_FORMATS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.2
-            AnonymousClass2() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_AVAILABLE_FORMATS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.2
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getAvailableFormats();
             }
         });
-        hashMap.put(CaptureResult.STATISTICS_FACES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.3
-            AnonymousClass3() {
-            }
-
+        sGetCommandMap.put(CaptureResult.STATISTICS_FACES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.3
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getFaces();
             }
         });
-        hashMap.put(CaptureResult.STATISTICS_FACE_RECTANGLES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.4
-            AnonymousClass4() {
-            }
-
+        sGetCommandMap.put(CaptureResult.STATISTICS_FACE_RECTANGLES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.4
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getFaceRectangles();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.5
-            AnonymousClass5() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.5
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getStreamConfigurationMap();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.6
-            AnonymousClass6() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.6
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getStreamConfigurationMapMaximumResolution();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_MANDATORY_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.7
-            AnonymousClass7() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_MANDATORY_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.7
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMandatoryStreamCombinations();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_MANDATORY_CONCURRENT_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.8
-            AnonymousClass8() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_MANDATORY_CONCURRENT_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.8
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMandatoryConcurrentStreamCombinations();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_MANDATORY_TEN_BIT_OUTPUT_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.9
-            AnonymousClass9() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_MANDATORY_TEN_BIT_OUTPUT_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.9
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMandatory10BitStreamCombinations();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_MANDATORY_MAXIMUM_RESOLUTION_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.10
-            AnonymousClass10() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_MANDATORY_MAXIMUM_RESOLUTION_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.10
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMandatoryMaximumResolutionStreamCombinations();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_MANDATORY_USE_CASE_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.11
-            AnonymousClass11() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_MANDATORY_USE_CASE_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.11
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMandatoryUseCaseStreamCombinations();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_MANDATORY_PREVIEW_STABILIZATION_OUTPUT_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.12
-            AnonymousClass12() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_MANDATORY_PREVIEW_STABILIZATION_OUTPUT_STREAM_COMBINATIONS.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.12
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMandatoryPreviewStabilizationStreamCombinations();
             }
         });
-        hashMap.put(CameraCharacteristics.CONTROL_MAX_REGIONS_AE.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.13
-            AnonymousClass13() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.CONTROL_MAX_REGIONS_AE.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.13
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMaxRegions(key);
             }
         });
-        hashMap.put(CameraCharacteristics.CONTROL_MAX_REGIONS_AWB.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.14
-            AnonymousClass14() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.CONTROL_MAX_REGIONS_AWB.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.14
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMaxRegions(key);
             }
         });
-        hashMap.put(CameraCharacteristics.CONTROL_MAX_REGIONS_AF.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.15
-            AnonymousClass15() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.CONTROL_MAX_REGIONS_AF.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.15
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMaxRegions(key);
             }
         });
-        hashMap.put(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_RAW.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.16
-            AnonymousClass16() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_RAW.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.16
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMaxNumOutputs(key);
             }
         });
-        hashMap.put(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.17
-            AnonymousClass17() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.17
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMaxNumOutputs(key);
             }
         });
-        hashMap.put(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC_STALLING.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.18
-            AnonymousClass18() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC_STALLING.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.18
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMaxNumOutputs(key);
             }
         });
-        hashMap.put(CaptureRequest.TONEMAP_CURVE.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.19
-            AnonymousClass19() {
-            }
-
+        sGetCommandMap.put(CaptureRequest.TONEMAP_CURVE.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.19
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getTonemapCurve();
             }
         });
-        hashMap.put(CaptureResult.JPEG_GPS_LOCATION.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.20
-            AnonymousClass20() {
-            }
-
+        sGetCommandMap.put(CaptureResult.JPEG_GPS_LOCATION.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.20
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getGpsLocation();
             }
         });
-        hashMap.put(CaptureResult.STATISTICS_LENS_SHADING_CORRECTION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.21
-            AnonymousClass21() {
-            }
-
+        sGetCommandMap.put(CaptureResult.STATISTICS_LENS_SHADING_CORRECTION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.21
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getLensShadingMap();
             }
         });
-        hashMap.put(CameraCharacteristics.INFO_DEVICE_STATE_SENSOR_ORIENTATION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.22
-            AnonymousClass22() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.INFO_DEVICE_STATE_SENSOR_ORIENTATION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.22
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getDeviceStateOrientationMap();
             }
         });
-        hashMap.put(CameraCharacteristics.REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.23
-            AnonymousClass23() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.23
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getDynamicRangeProfiles();
             }
         });
-        hashMap.put(CameraCharacteristics.REQUEST_AVAILABLE_COLOR_SPACE_PROFILES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.24
-            AnonymousClass24() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.REQUEST_AVAILABLE_COLOR_SPACE_PROFILES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.24
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getColorSpaceProfiles();
             }
         });
-        hashMap.put(CaptureResult.STATISTICS_OIS_SAMPLES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.25
-            AnonymousClass25() {
-            }
-
+        sGetCommandMap.put(CaptureResult.STATISTICS_OIS_SAMPLES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.25
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getOisSamples();
             }
         });
-        hashMap.put(CameraCharacteristics.CONTROL_AVAILABLE_EXTENDED_SCENE_MODE_CAPABILITIES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.26
-            AnonymousClass26() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.CONTROL_AVAILABLE_EXTENDED_SCENE_MODE_CAPABILITIES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.26
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getExtendedSceneModeCapabilities();
             }
         });
-        hashMap.put(CameraCharacteristics.SCALER_MULTI_RESOLUTION_STREAM_CONFIGURATION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.27
-            AnonymousClass27() {
-            }
-
+        sGetCommandMap.put(CameraCharacteristics.SCALER_MULTI_RESOLUTION_STREAM_CONFIGURATION_MAP.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.27
             @Override // android.hardware.camera2.impl.GetCommand
             public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
                 return (T) cameraMetadataNative.getMultiResolutionStreamConfigurationMap();
             }
         });
-        HashMap<Key<?>, SetCommand> hashMap2 = new HashMap<>();
-        sSetCommandMap = hashMap2;
-        hashMap2.put(CameraCharacteristics.SCALER_AVAILABLE_FORMATS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.28
-            AnonymousClass28() {
+        sGetCommandMap.put(CaptureResult.STATISTICS_LENS_INTRINSICS_SAMPLES.getNativeKey(), new GetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.28
+            /* JADX WARN: Multi-variable type inference failed */
+            @Override // android.hardware.camera2.impl.GetCommand
+            public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
+                return (T) cameraMetadataNative.getLensIntrinsicSamples();
             }
-
+        });
+        sSetCommandMap = new HashMap<>();
+        sSetCommandMap.put(CameraCharacteristics.SCALER_AVAILABLE_FORMATS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.29
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T t) {
                 metadata.setAvailableFormats((int[]) t);
             }
         });
-        hashMap2.put(CaptureResult.STATISTICS_FACE_RECTANGLES.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.29
-            AnonymousClass29() {
-            }
-
+        sSetCommandMap.put(CaptureResult.STATISTICS_FACE_RECTANGLES.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.30
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T t) {
                 metadata.setFaceRectangles((Rect[]) t);
             }
         });
-        hashMap2.put(CaptureResult.STATISTICS_FACES.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.30
-            AnonymousClass30() {
-            }
-
+        sSetCommandMap.put(CaptureResult.STATISTICS_FACES.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.31
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T t) {
                 metadata.setFaces((Face[]) t);
             }
         });
-        hashMap2.put(CaptureRequest.TONEMAP_CURVE.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.31
-            AnonymousClass31() {
-            }
-
+        sSetCommandMap.put(CaptureRequest.TONEMAP_CURVE.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.32
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T t) {
                 metadata.setTonemapCurve((TonemapCurve) t);
             }
         });
-        hashMap2.put(CaptureResult.JPEG_GPS_LOCATION.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.32
-            AnonymousClass32() {
-            }
-
+        sSetCommandMap.put(CaptureResult.JPEG_GPS_LOCATION.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.33
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T t) {
                 metadata.setGpsLocation((Location) t);
             }
         });
-        hashMap2.put(CaptureRequest.SCALER_CROP_REGION.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.33
-            AnonymousClass33() {
-            }
-
+        sSetCommandMap.put(CaptureRequest.SCALER_CROP_REGION.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.34
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T t) {
                 metadata.setScalerCropRegion((Rect) t);
             }
         });
-        hashMap2.put(CaptureRequest.CONTROL_AWB_REGIONS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.34
-            AnonymousClass34() {
-            }
-
+        sSetCommandMap.put(CaptureRequest.CONTROL_AWB_REGIONS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.35
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T value) {
                 metadata.setAWBRegions(value);
             }
         });
-        hashMap2.put(CaptureRequest.CONTROL_AF_REGIONS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.35
-            AnonymousClass35() {
-            }
-
+        sSetCommandMap.put(CaptureRequest.CONTROL_AF_REGIONS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.36
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T value) {
                 metadata.setAFRegions(value);
             }
         });
-        hashMap2.put(CaptureRequest.CONTROL_AE_REGIONS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.36
-            AnonymousClass36() {
-            }
-
+        sSetCommandMap.put(CaptureRequest.CONTROL_AE_REGIONS.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.37
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T value) {
                 metadata.setAERegions(value);
             }
         });
-        hashMap2.put(CaptureResult.STATISTICS_LENS_SHADING_CORRECTION_MAP.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.37
-            AnonymousClass37() {
-            }
-
+        sSetCommandMap.put(CaptureResult.STATISTICS_LENS_SHADING_CORRECTION_MAP.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.38
             /* JADX WARN: Multi-variable type inference failed */
             @Override // android.hardware.camera2.impl.SetCommand
             public <T> void setValue(CameraMetadataNative metadata, T t) {
                 metadata.setLensShadingMap((LensShadingMap) t);
+            }
+        });
+        sSetCommandMap.put(CaptureResult.STATISTICS_LENS_INTRINSICS_SAMPLES.getNativeKey(), new SetCommand() { // from class: android.hardware.camera2.impl.CameraMetadataNative.39
+            /* JADX WARN: Multi-variable type inference failed */
+            @Override // android.hardware.camera2.impl.SetCommand
+            public <T> void setValue(CameraMetadataNative metadata, T t) {
+                metadata.setLensIntrinsicsSamples((LensIntrinsicsSample[]) t);
             }
         });
         registerAllMarshalers();
@@ -874,329 +752,7 @@ public class CameraMetadataNative implements Parcelable {
         return marshaler.unmarshal(buffer);
     }
 
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 implements GetCommand {
-        AnonymousClass2() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getAvailableFormats();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$3 */
-    /* loaded from: classes.dex */
-    class AnonymousClass3 implements GetCommand {
-        AnonymousClass3() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getFaces();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$4 */
-    /* loaded from: classes.dex */
-    class AnonymousClass4 implements GetCommand {
-        AnonymousClass4() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getFaceRectangles();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$5 */
-    /* loaded from: classes.dex */
-    class AnonymousClass5 implements GetCommand {
-        AnonymousClass5() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getStreamConfigurationMap();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$6 */
-    /* loaded from: classes.dex */
-    class AnonymousClass6 implements GetCommand {
-        AnonymousClass6() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getStreamConfigurationMapMaximumResolution();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$7 */
-    /* loaded from: classes.dex */
-    class AnonymousClass7 implements GetCommand {
-        AnonymousClass7() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMandatoryStreamCombinations();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$8 */
-    /* loaded from: classes.dex */
-    class AnonymousClass8 implements GetCommand {
-        AnonymousClass8() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMandatoryConcurrentStreamCombinations();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$9 */
-    /* loaded from: classes.dex */
-    class AnonymousClass9 implements GetCommand {
-        AnonymousClass9() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMandatory10BitStreamCombinations();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$10 */
-    /* loaded from: classes.dex */
-    class AnonymousClass10 implements GetCommand {
-        AnonymousClass10() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMandatoryMaximumResolutionStreamCombinations();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$11 */
-    /* loaded from: classes.dex */
-    class AnonymousClass11 implements GetCommand {
-        AnonymousClass11() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMandatoryUseCaseStreamCombinations();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$12 */
-    /* loaded from: classes.dex */
-    class AnonymousClass12 implements GetCommand {
-        AnonymousClass12() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMandatoryPreviewStabilizationStreamCombinations();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$13 */
-    /* loaded from: classes.dex */
-    class AnonymousClass13 implements GetCommand {
-        AnonymousClass13() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMaxRegions(key);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$14 */
-    /* loaded from: classes.dex */
-    class AnonymousClass14 implements GetCommand {
-        AnonymousClass14() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMaxRegions(key);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$15 */
-    /* loaded from: classes.dex */
-    class AnonymousClass15 implements GetCommand {
-        AnonymousClass15() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMaxRegions(key);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$16 */
-    /* loaded from: classes.dex */
-    class AnonymousClass16 implements GetCommand {
-        AnonymousClass16() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMaxNumOutputs(key);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$17 */
-    /* loaded from: classes.dex */
-    class AnonymousClass17 implements GetCommand {
-        AnonymousClass17() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMaxNumOutputs(key);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$18 */
-    /* loaded from: classes.dex */
-    class AnonymousClass18 implements GetCommand {
-        AnonymousClass18() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMaxNumOutputs(key);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$19 */
-    /* loaded from: classes.dex */
-    class AnonymousClass19 implements GetCommand {
-        AnonymousClass19() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getTonemapCurve();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$20 */
-    /* loaded from: classes.dex */
-    class AnonymousClass20 implements GetCommand {
-        AnonymousClass20() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getGpsLocation();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$21 */
-    /* loaded from: classes.dex */
-    class AnonymousClass21 implements GetCommand {
-        AnonymousClass21() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getLensShadingMap();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$22 */
-    /* loaded from: classes.dex */
-    class AnonymousClass22 implements GetCommand {
-        AnonymousClass22() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getDeviceStateOrientationMap();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$23 */
-    /* loaded from: classes.dex */
-    class AnonymousClass23 implements GetCommand {
-        AnonymousClass23() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getDynamicRangeProfiles();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$24 */
-    /* loaded from: classes.dex */
-    class AnonymousClass24 implements GetCommand {
-        AnonymousClass24() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getColorSpaceProfiles();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$25 */
-    /* loaded from: classes.dex */
-    class AnonymousClass25 implements GetCommand {
-        AnonymousClass25() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getOisSamples();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$26 */
-    /* loaded from: classes.dex */
-    class AnonymousClass26 implements GetCommand {
-        AnonymousClass26() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getExtendedSceneModeCapabilities();
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$27 */
-    /* loaded from: classes.dex */
-    class AnonymousClass27 implements GetCommand {
-        AnonymousClass27() {
-        }
-
-        @Override // android.hardware.camera2.impl.GetCommand
-        public <T> T getValue(CameraMetadataNative cameraMetadataNative, Key<T> key) {
-            return (T) cameraMetadataNative.getMultiResolutionStreamConfigurationMap();
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public int[] getAvailableFormats() {
         int[] availableFormats = (int[]) getBase(CameraCharacteristics.SCALER_AVAILABLE_FORMATS);
         if (availableFormats != null) {
@@ -1209,6 +765,7 @@ public class CameraMetadataNative implements Parcelable {
         return availableFormats;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean setFaces(Face[] faces) {
         if (faces == null) {
             return false;
@@ -1261,6 +818,7 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Face[] getFaces() {
         Integer faceDetectMode = (Integer) get(CaptureResult.STATISTICS_FACE_DETECT_MODE);
         byte[] faceScores = (byte[]) get(CaptureResult.STATISTICS_FACE_SCORES);
@@ -1346,6 +904,7 @@ public class CameraMetadataNative implements Parcelable {
         return faces;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Rect[] getFaceRectangles() {
         Rect[] faceRectangles = (Rect[]) getBase(CaptureResult.STATISTICS_FACE_RECTANGLES);
         if (faceRectangles == null) {
@@ -1358,6 +917,7 @@ public class CameraMetadataNative implements Parcelable {
         return fixedFaceRectangles;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean setLensShadingMap(LensShadingMap lensShadingMap) {
         if (lensShadingMap == null) {
             return false;
@@ -1370,6 +930,7 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public LensShadingMap getLensShadingMap() {
         float[] lsmArray = (float[]) getBase(CaptureResult.STATISTICS_LENS_SHADING_MAP);
         Size s = (Size) get(CameraCharacteristics.LENS_INFO_SHADING_MAP_SIZE);
@@ -1384,6 +945,7 @@ public class CameraMetadataNative implements Parcelable {
         return map;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public DeviceStateSensorOrientationMap getDeviceStateOrientationMap() {
         long[] mapArray = (long[]) getBase(CameraCharacteristics.INFO_DEVICE_STATE_ORIENTATIONS);
         if (mapArray == null) {
@@ -1393,6 +955,7 @@ public class CameraMetadataNative implements Parcelable {
         return map;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public DynamicRangeProfiles getDynamicRangeProfiles() {
         long[] profileArray = (long[]) getBase(CameraCharacteristics.REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP);
         if (profileArray == null) {
@@ -1401,6 +964,7 @@ public class CameraMetadataNative implements Parcelable {
         return new DynamicRangeProfiles(profileArray);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public ColorSpaceProfiles getColorSpaceProfiles() {
         long[] profileArray = (long[]) getBase(CameraCharacteristics.REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP);
         if (profileArray == null) {
@@ -1409,6 +973,7 @@ public class CameraMetadataNative implements Parcelable {
         return new ColorSpaceProfiles(profileArray);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Location getGpsLocation() {
         String processingMethod = (String) get(CaptureResult.JPEG_GPS_PROCESSING_METHOD);
         double[] coords = (double[]) get(CaptureResult.JPEG_GPS_COORDINATES);
@@ -1432,6 +997,7 @@ public class CameraMetadataNative implements Parcelable {
         return l;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean setGpsLocation(Location l) {
         if (l == null) {
             setBase((CaptureRequest.Key<CaptureRequest.Key<Long>>) CaptureRequest.JPEG_GPS_TIMESTAMP, (CaptureRequest.Key<Long>) null);
@@ -1554,15 +1120,10 @@ public class CameraMetadataNative implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class StreamConfigurationData {
+    private class StreamConfigurationData {
         StreamConfigurationDuration[] minDurationArray;
         StreamConfigurationDuration[] stallDurationArray;
         StreamConfiguration[] streamConfigurationArray;
-
-        /* synthetic */ StreamConfigurationData(CameraMetadataNative cameraMetadataNative, StreamConfigurationDataIA streamConfigurationDataIA) {
-            this();
-        }
 
         private StreamConfigurationData() {
             this.streamConfigurationArray = null;
@@ -1782,10 +1343,12 @@ public class CameraMetadataNative implements Parcelable {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public MandatoryStreamCombination[] getMandatory10BitStreamCombinations() {
         return getMandatoryStreamCombinationsHelper(3);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public MandatoryStreamCombination[] getMandatoryConcurrentStreamCombinations() {
         if (!this.mHasMandatoryConcurrentStreams) {
             return null;
@@ -1793,6 +1356,7 @@ public class CameraMetadataNative implements Parcelable {
         return getMandatoryStreamCombinationsHelper(2);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public MandatoryStreamCombination[] getMandatoryMaximumResolutionStreamCombinations() {
         if (!isUltraHighResolutionSensor()) {
             return null;
@@ -1800,18 +1364,22 @@ public class CameraMetadataNative implements Parcelable {
         return getMandatoryStreamCombinationsHelper(1);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public MandatoryStreamCombination[] getMandatoryStreamCombinations() {
         return getMandatoryStreamCombinationsHelper(0);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public MandatoryStreamCombination[] getMandatoryUseCaseStreamCombinations() {
         return getMandatoryStreamCombinationsHelper(4);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public MandatoryStreamCombination[] getMandatoryPreviewStabilizationStreamCombinations() {
         return getMandatoryStreamCombinationsHelper(5);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public StreamConfigurationMap getStreamConfigurationMap() {
         StreamConfiguration[] configurations = (StreamConfiguration[]) getBase(CameraCharacteristics.SCALER_AVAILABLE_STREAM_CONFIGURATIONS);
         StreamConfigurationDuration[] minFrameDurations = (StreamConfigurationDuration[]) getBase(CameraCharacteristics.SCALER_AVAILABLE_MIN_FRAME_DURATIONS);
@@ -1834,6 +1402,7 @@ public class CameraMetadataNative implements Parcelable {
         return new StreamConfigurationMap(configurations, minFrameDurations, stallDurations, depthConfigurations, depthMinFrameDurations, depthStallDurations, dynamicDepthConfigurations, dynamicDepthMinFrameDurations, dynamicDepthStallDurations, heicConfigurations, heicMinFrameDurations, heicStallDurations, jpegRConfigurations, jpegRMinFrameDurations, jpegRStallDurations, highSpeedVideoConfigurations, inputOutputFormatsMap, listHighResolution);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public StreamConfigurationMap getStreamConfigurationMapMaximumResolution() {
         StreamConfiguration[] configurations = (StreamConfiguration[]) getBase(CameraCharacteristics.SCALER_AVAILABLE_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION);
         StreamConfigurationDuration[] minFrameDurations = (StreamConfigurationDuration[]) getBase(CameraCharacteristics.SCALER_AVAILABLE_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION);
@@ -1859,6 +1428,7 @@ public class CameraMetadataNative implements Parcelable {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> Integer getMaxRegions(Key<T> key) {
         int[] maxRegions = (int[]) getBase(CameraCharacteristics.CONTROL_MAX_REGIONS);
         if (maxRegions == null) {
@@ -1876,6 +1446,7 @@ public class CameraMetadataNative implements Parcelable {
         throw new AssertionError("Invalid key " + key);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> Integer getMaxNumOutputs(Key<T> key) {
         int[] maxNumOutputs = (int[]) getBase(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_STREAMS);
         if (maxNumOutputs == null) {
@@ -1893,6 +1464,7 @@ public class CameraMetadataNative implements Parcelable {
         throw new AssertionError("Invalid key " + key);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> TonemapCurve getTonemapCurve() {
         float[] red = (float[]) getBase(CaptureRequest.TONEMAP_CURVE_RED);
         float[] green = (float[]) getBase(CaptureRequest.TONEMAP_CURVE_GREEN);
@@ -1908,6 +1480,7 @@ public class CameraMetadataNative implements Parcelable {
         return tc;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public OisSample[] getOisSamples() {
         long[] timestamps = (long[]) getBase(CaptureResult.STATISTICS_OIS_TIMESTAMPS);
         float[] xShifts = (float[]) getBase(CaptureResult.STATISTICS_OIS_X_SHIFTS);
@@ -1940,6 +1513,53 @@ public class CameraMetadataNative implements Parcelable {
         return samples;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public boolean setLensIntrinsicsSamples(LensIntrinsicsSample[] samples) {
+        if (samples == null || !Flags.concertMode()) {
+            return false;
+        }
+        long[] tsArray = new long[samples.length];
+        float[] intrinsicsArray = new float[samples.length * 5];
+        for (int i = 0; i < samples.length; i++) {
+            tsArray[i] = samples[i].getTimestampNanos();
+            System.arraycopy(samples[i].getLensIntrinsics(), 0, intrinsicsArray, i * 5, 5);
+        }
+        setBase((CaptureResult.Key<CaptureResult.Key<float[]>>) CaptureResult.STATISTICS_LENS_INTRINSIC_SAMPLES, (CaptureResult.Key<float[]>) intrinsicsArray);
+        setBase((CaptureResult.Key<CaptureResult.Key<long[]>>) CaptureResult.STATISTICS_LENS_INTRINSIC_TIMESTAMPS, (CaptureResult.Key<long[]>) tsArray);
+        return true;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public LensIntrinsicsSample[] getLensIntrinsicSamples() {
+        if (!Flags.concertMode()) {
+            return null;
+        }
+        long[] timestamps = (long[]) getBase(CaptureResult.STATISTICS_LENS_INTRINSIC_TIMESTAMPS);
+        float[] intrinsics = (float[]) getBase(CaptureResult.STATISTICS_LENS_INTRINSIC_SAMPLES);
+        if (timestamps == null) {
+            if (intrinsics == null) {
+                return null;
+            }
+            throw new AssertionError("timestamps is null but intrinsics is not");
+        }
+        if (intrinsics == null) {
+            throw new AssertionError("timestamps is not null but intrinsics is");
+        }
+        if (intrinsics.length % 5 != 0) {
+            throw new AssertionError("intrinsics are not multiple of 5");
+        }
+        if (intrinsics.length / 5 != timestamps.length) {
+            throw new AssertionError(String.format("timestamps has %d entries but intrinsics has %d", Integer.valueOf(timestamps.length), Integer.valueOf(intrinsics.length / 5)));
+        }
+        LensIntrinsicsSample[] samples = new LensIntrinsicsSample[timestamps.length];
+        for (int i = 0; i < timestamps.length; i++) {
+            float[] currentIntrinsic = Arrays.copyOfRange(intrinsics, i * 5, (i * 5) + 5);
+            samples[i] = new LensIntrinsicsSample(timestamps[i], currentIntrinsic);
+        }
+        return samples;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public Capability[] getExtendedSceneModeCapabilities() {
         int[] maxSizes;
         float[] zoomRanges;
@@ -2036,133 +1656,7 @@ public class CameraMetadataNative implements Parcelable {
         writeValues(tag, values);
     }
 
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$28 */
-    /* loaded from: classes.dex */
-    class AnonymousClass28 implements SetCommand {
-        AnonymousClass28() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T t) {
-            metadata.setAvailableFormats((int[]) t);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$29 */
-    /* loaded from: classes.dex */
-    class AnonymousClass29 implements SetCommand {
-        AnonymousClass29() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T t) {
-            metadata.setFaceRectangles((Rect[]) t);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$30 */
-    /* loaded from: classes.dex */
-    class AnonymousClass30 implements SetCommand {
-        AnonymousClass30() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T t) {
-            metadata.setFaces((Face[]) t);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$31 */
-    /* loaded from: classes.dex */
-    class AnonymousClass31 implements SetCommand {
-        AnonymousClass31() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T t) {
-            metadata.setTonemapCurve((TonemapCurve) t);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$32 */
-    /* loaded from: classes.dex */
-    class AnonymousClass32 implements SetCommand {
-        AnonymousClass32() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T t) {
-            metadata.setGpsLocation((Location) t);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$33 */
-    /* loaded from: classes.dex */
-    class AnonymousClass33 implements SetCommand {
-        AnonymousClass33() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T t) {
-            metadata.setScalerCropRegion((Rect) t);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$34 */
-    /* loaded from: classes.dex */
-    class AnonymousClass34 implements SetCommand {
-        AnonymousClass34() {
-        }
-
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T value) {
-            metadata.setAWBRegions(value);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$35 */
-    /* loaded from: classes.dex */
-    class AnonymousClass35 implements SetCommand {
-        AnonymousClass35() {
-        }
-
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T value) {
-            metadata.setAFRegions(value);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$36 */
-    /* loaded from: classes.dex */
-    class AnonymousClass36 implements SetCommand {
-        AnonymousClass36() {
-        }
-
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T value) {
-            metadata.setAERegions(value);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraMetadataNative$37 */
-    /* loaded from: classes.dex */
-    class AnonymousClass37 implements SetCommand {
-        AnonymousClass37() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.hardware.camera2.impl.SetCommand
-        public <T> void setValue(CameraMetadataNative metadata, T t) {
-            metadata.setLensShadingMap((LensShadingMap) t);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean setAvailableFormats(int[] value) {
         if (value == null) {
             return false;
@@ -2178,6 +1672,7 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean setFaceRectangles(Rect[] faceRects) {
         if (faceRects == null) {
             return false;
@@ -2190,11 +1685,12 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> boolean setTonemapCurve(TonemapCurve tc) {
         if (tc == null) {
             return false;
         }
-        float[][] curve = new float[3];
+        float[][] curve = new float[3][];
         for (int i = 0; i <= 2; i++) {
             int pointCount = tc.getPointCount(i);
             curve[i] = new float[pointCount * 2];
@@ -2206,6 +1702,7 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> boolean setScalerCropRegion(Rect cropRegion) {
         if (cropRegion == null) {
             return false;
@@ -2215,6 +1712,7 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> boolean setAFRegions(T afRegions) {
         if (afRegions == null) {
             return false;
@@ -2224,6 +1722,7 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> boolean setAERegions(T aeRegions) {
         if (aeRegions == null) {
             return false;
@@ -2233,6 +1732,7 @@ public class CameraMetadataNative implements Parcelable {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> boolean setAWBRegions(T awbRegions) {
         if (awbRegions == null) {
             return false;
@@ -2244,13 +1744,12 @@ public class CameraMetadataNative implements Parcelable {
 
     private void updateNativeAllocation() {
         long currentBufferSize = nativeGetBufferSize(this.mMetadataPtr);
-        long j = this.mBufferSize;
-        if (currentBufferSize != j) {
-            if (j > 0) {
+        if (currentBufferSize != this.mBufferSize) {
+            if (this.mBufferSize > 0) {
                 VMRuntime.getRuntime().registerNativeFree(this.mBufferSize);
             }
             this.mBufferSize = currentBufferSize;
-            if (currentBufferSize > 0) {
+            if (this.mBufferSize > 0) {
                 VMRuntime.getRuntime().registerNativeAllocation(this.mBufferSize);
             }
         }

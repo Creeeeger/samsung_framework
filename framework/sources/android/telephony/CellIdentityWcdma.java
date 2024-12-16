@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellIdentityWcdma extends CellIdentity {
     private static final boolean DBG = false;
     private static final int MAX_CID = 268435455;
@@ -26,15 +26,14 @@ public final class CellIdentityWcdma extends CellIdentity {
     private final int mUarfcn;
     private static final String TAG = CellIdentityWcdma.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityWcdma> CREATOR = new Parcelable.Creator<CellIdentityWcdma>() { // from class: android.telephony.CellIdentityWcdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityWcdma createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityWcdma.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityWcdma[] newArray(int size) {
             return new CellIdentityWcdma[size];
@@ -55,7 +54,7 @@ public final class CellIdentityWcdma extends CellIdentity {
     public CellIdentityWcdma(int lac, int cid, int psc, int uarfcn, String mccStr, String mncStr, String alphal, String alphas, Collection<String> additionalPlmns, ClosedSubscriberGroupInfo csgInfo) {
         super(TAG, 4, mccStr, mncStr, alphal, alphas);
         this.mLac = inRangeOrUnavailable(lac, 0, 65535);
-        this.mCid = inRangeOrUnavailable(cid, 0, MAX_CID);
+        this.mCid = inRangeOrUnavailable(cid, 0, 268435455);
         this.mPsc = inRangeOrUnavailable(psc, 0, 511);
         this.mUarfcn = inRangeOrUnavailable(uarfcn, 0, 16383);
         this.mAdditionalPlmns = new ArraySet<>(additionalPlmns.size());
@@ -77,7 +76,7 @@ public final class CellIdentityWcdma extends CellIdentity {
         return new CellIdentityWcdma(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, this.mMccStr, this.mMncStr, this.mAlphaLong, this.mAlphaShort, this.mAdditionalPlmns, null);
     }
 
-    public CellIdentityWcdma copy() {
+    CellIdentityWcdma copy() {
         return new CellIdentityWcdma(this);
     }
 
@@ -161,16 +160,9 @@ public final class CellIdentityWcdma extends CellIdentity {
     @Override // android.telephony.CellIdentity
     public GsmCellLocation asCellLocation() {
         GsmCellLocation cl = new GsmCellLocation();
-        int lac = this.mLac;
-        if (lac == Integer.MAX_VALUE) {
-            lac = -1;
-        }
-        int cid = this.mCid;
-        if (cid == Integer.MAX_VALUE) {
-            cid = -1;
-        }
-        int i = this.mPsc;
-        int psc = i != Integer.MAX_VALUE ? i : -1;
+        int lac = this.mLac != Integer.MAX_VALUE ? this.mLac : -1;
+        int cid = this.mCid != Integer.MAX_VALUE ? this.mCid : -1;
+        int psc = this.mPsc != Integer.MAX_VALUE ? this.mPsc : -1;
         cl.setLacAndCid(lac, cid);
         cl.setPsc(psc);
         return cl;
@@ -214,25 +206,7 @@ public final class CellIdentityWcdma extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* renamed from: android.telephony.CellIdentityWcdma$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentityWcdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityWcdma createFromParcel(Parcel in) {
-            in.readInt();
-            return CellIdentityWcdma.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityWcdma[] newArray(int size) {
-            return new CellIdentityWcdma[size];
-        }
-    }
-
-    public static CellIdentityWcdma createFromParcelBody(Parcel in) {
+    protected static CellIdentityWcdma createFromParcelBody(Parcel in) {
         return new CellIdentityWcdma(in);
     }
 

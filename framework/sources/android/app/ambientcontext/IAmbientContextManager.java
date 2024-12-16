@@ -1,11 +1,14 @@
 package android.app.ambientcontext;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.app.PendingIntent;
 import android.app.ambientcontext.IAmbientContextObserver;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.RemoteCallback;
 import android.os.RemoteException;
 
@@ -23,7 +26,6 @@ public interface IAmbientContextManager extends IInterface {
 
     void unregisterObserver(String str) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAmbientContextManager {
         @Override // android.app.ambientcontext.IAmbientContextManager
         public void registerObserver(AmbientContextEventRequest request, PendingIntent resultPendingIntent, RemoteCallback statusCallback) throws RemoteException {
@@ -51,16 +53,25 @@ public interface IAmbientContextManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAmbientContextManager {
         static final int TRANSACTION_queryServiceStatus = 4;
         static final int TRANSACTION_registerObserver = 1;
         static final int TRANSACTION_registerObserverWithCallback = 2;
         static final int TRANSACTION_startConsentActivity = 5;
         static final int TRANSACTION_unregisterObserver = 3;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, IAmbientContextManager.DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IAmbientContextManager asInterface(IBinder obj) {
@@ -106,58 +117,54 @@ public interface IAmbientContextManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAmbientContextManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAmbientContextManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAmbientContextManager.DESCRIPTOR);
+                case 1:
+                    AmbientContextEventRequest _arg0 = (AmbientContextEventRequest) data.readTypedObject(AmbientContextEventRequest.CREATOR);
+                    PendingIntent _arg1 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerObserver(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    AmbientContextEventRequest _arg02 = (AmbientContextEventRequest) data.readTypedObject(AmbientContextEventRequest.CREATOR);
+                    String _arg12 = data.readString();
+                    IAmbientContextObserver _arg22 = IAmbientContextObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerObserverWithCallback(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    unregisterObserver(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int[] _arg04 = data.createIntArray();
+                    String _arg13 = data.readString();
+                    RemoteCallback _arg23 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    queryServiceStatus(_arg04, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int[] _arg05 = data.createIntArray();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    startConsentActivity(_arg05, _arg14);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AmbientContextEventRequest _arg0 = (AmbientContextEventRequest) data.readTypedObject(AmbientContextEventRequest.CREATOR);
-                            PendingIntent _arg1 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerObserver(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            AmbientContextEventRequest _arg02 = (AmbientContextEventRequest) data.readTypedObject(AmbientContextEventRequest.CREATOR);
-                            String _arg12 = data.readString();
-                            IAmbientContextObserver _arg22 = IAmbientContextObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerObserverWithCallback(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            unregisterObserver(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int[] _arg04 = data.createIntArray();
-                            String _arg13 = data.readString();
-                            RemoteCallback _arg23 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            queryServiceStatus(_arg04, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int[] _arg05 = data.createIntArray();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            startConsentActivity(_arg05, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAmbientContextManager {
+        private static class Proxy implements IAmbientContextManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -254,6 +261,10 @@ public interface IAmbientContextManager extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void unregisterObserver_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.ACCESS_AMBIENT_CONTEXT_EVENT, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

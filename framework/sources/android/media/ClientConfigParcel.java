@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class ClientConfigParcel implements Parcelable {
     public static final Parcelable.Creator<ClientConfigParcel> CREATOR = new Parcelable.Creator<ClientConfigParcel>() { // from class: android.media.ClientConfigParcel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientConfigParcel createFromParcel(Parcel _aidl_source) {
             ClientConfigParcel _aidl_out = new ClientConfigParcel();
@@ -17,38 +15,19 @@ public class ClientConfigParcel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientConfigParcel[] newArray(int _aidl_size) {
             return new ClientConfigParcel[_aidl_size];
         }
     };
     public ClientInfoParcel clientInfo;
-    public int codecType;
+    public int codecType = 0;
     public boolean isEncoder = false;
-    public boolean isHardware = false;
     public int width = 0;
     public int height = 0;
     public long timeStamp = 0;
     public long id = 0;
-
-    /* renamed from: android.media.ClientConfigParcel$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ClientConfigParcel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClientConfigParcel createFromParcel(Parcel _aidl_source) {
-            ClientConfigParcel _aidl_out = new ClientConfigParcel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClientConfigParcel[] newArray(int _aidl_size) {
-            return new ClientConfigParcel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -57,7 +36,6 @@ public class ClientConfigParcel implements Parcelable {
         _aidl_parcel.writeTypedObject(this.clientInfo, _aidl_flag);
         _aidl_parcel.writeInt(this.codecType);
         _aidl_parcel.writeBoolean(this.isEncoder);
-        _aidl_parcel.writeBoolean(this.isHardware);
         _aidl_parcel.writeInt(this.width);
         _aidl_parcel.writeInt(this.height);
         _aidl_parcel.writeLong(this.timeStamp);
@@ -99,14 +77,6 @@ public class ClientConfigParcel implements Parcelable {
                 return;
             }
             this.isEncoder = _aidl_parcel.readBoolean();
-            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
-                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
-                    throw new BadParcelableException("Overflow in the size of parcelable");
-                }
-                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
-                return;
-            }
-            this.isHardware = _aidl_parcel.readBoolean();
             if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");

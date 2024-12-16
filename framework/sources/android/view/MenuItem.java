@@ -15,14 +15,12 @@ public interface MenuItem {
     public static final int SHOW_AS_ACTION_NEVER = 0;
     public static final int SHOW_AS_ACTION_WITH_TEXT = 4;
 
-    /* loaded from: classes4.dex */
     public interface OnActionExpandListener {
         boolean onMenuItemActionCollapse(MenuItem menuItem);
 
         boolean onMenuItemActionExpand(MenuItem menuItem);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnMenuItemClickListener {
         boolean onMenuItemClick(MenuItem menuItem);
     }

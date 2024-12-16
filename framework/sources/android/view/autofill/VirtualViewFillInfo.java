@@ -8,25 +8,20 @@ import java.lang.annotation.Annotation;
 public final class VirtualViewFillInfo {
     private String[] mAutofillHints;
 
-    /* renamed from: -$$Nest$smdefaultAutofillHints */
-    static /* bridge */ /* synthetic */ String[] m5573$$Nest$smdefaultAutofillHints() {
-        return defaultAutofillHints();
-    }
-
-    private static String[] defaultAutofillHints() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String[] defaultAutofillHints() {
         return null;
     }
 
     VirtualViewFillInfo(String[] autofillHints) {
         this.mAutofillHints = autofillHints;
-        AnnotationValidations.validate((Class<? extends Annotation>) SuppressLint.class, (Annotation) null, autofillHints, "value", "NullableCollection");
+        AnnotationValidations.validate((Class<? extends Annotation>) SuppressLint.class, (Annotation) null, this.mAutofillHints, "value", "NullableCollection");
     }
 
     public String[] getAutofillHints() {
         return this.mAutofillHints;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private String[] mAutofillHints;
         private long mBuilderFieldsSet = 0;
@@ -40,10 +35,9 @@ public final class VirtualViewFillInfo {
 
         public VirtualViewFillInfo build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 2;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mAutofillHints = VirtualViewFillInfo.m5573$$Nest$smdefaultAutofillHints();
+            this.mBuilderFieldsSet |= 2;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mAutofillHints = VirtualViewFillInfo.defaultAutofillHints();
             }
             VirtualViewFillInfo o = new VirtualViewFillInfo(this.mAutofillHints);
             return o;

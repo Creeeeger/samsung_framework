@@ -3,7 +3,7 @@ package com.samsung.android.knox.tima.attestation;
 import android.content.Context;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEnhancedAttestationPolicy {
     private static final String TAG = "SemEAPolicy";
     private static SemEnhancedAttestationPolicy mEnhancedAttestationPolicy = null;

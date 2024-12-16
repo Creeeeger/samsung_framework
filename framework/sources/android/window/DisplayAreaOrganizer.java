@@ -24,6 +24,7 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
     public static final int FEATURE_VENDOR_FIRST = 10001;
     public static final int FEATURE_VENDOR_LAST = 20001;
     public static final int FEATURE_WINDOWED_MAGNIFICATION = 4;
+    public static final int FEATURE_WINDOWING_LAYER = 9;
     public static final int FEATURE_WINDOW_TOKENS = 2;
     public static final String KEY_ROOT_DISPLAY_AREA_ID = "root_display_area_id";
     private final Executor mExecutor;
@@ -78,15 +79,14 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
     public void onDisplayAreaInfoChanged(DisplayAreaInfo displayAreaInfo) {
     }
 
-    /* renamed from: android.window.DisplayAreaOrganizer$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends IDisplayAreaOrganizer.Stub {
+    /* renamed from: android.window.DisplayAreaOrganizer$1, reason: invalid class name */
+    class AnonymousClass1 extends IDisplayAreaOrganizer.Stub {
         AnonymousClass1() {
         }
 
         @Override // android.window.IDisplayAreaOrganizer
         public void onDisplayAreaAppeared(final DisplayAreaInfo displayAreaInfo, final SurfaceControl leash) {
-            DisplayAreaOrganizer.this.mExecutor.execute(new Runnable() { // from class: android.window.DisplayAreaOrganizer$1$$ExternalSyntheticLambda0
+            DisplayAreaOrganizer.this.mExecutor.execute(new Runnable() { // from class: android.window.DisplayAreaOrganizer$1$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     DisplayAreaOrganizer.AnonymousClass1.this.lambda$onDisplayAreaAppeared$0(displayAreaInfo, leash);
@@ -94,13 +94,14 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayAreaAppeared$0(DisplayAreaInfo displayAreaInfo, SurfaceControl leash) {
             DisplayAreaOrganizer.this.onDisplayAreaAppeared(displayAreaInfo, leash);
         }
 
         @Override // android.window.IDisplayAreaOrganizer
         public void onDisplayAreaVanished(final DisplayAreaInfo displayAreaInfo) {
-            DisplayAreaOrganizer.this.mExecutor.execute(new Runnable() { // from class: android.window.DisplayAreaOrganizer$1$$ExternalSyntheticLambda2
+            DisplayAreaOrganizer.this.mExecutor.execute(new Runnable() { // from class: android.window.DisplayAreaOrganizer$1$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     DisplayAreaOrganizer.AnonymousClass1.this.lambda$onDisplayAreaVanished$1(displayAreaInfo);
@@ -108,13 +109,14 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayAreaVanished$1(DisplayAreaInfo displayAreaInfo) {
             DisplayAreaOrganizer.this.onDisplayAreaVanished(displayAreaInfo);
         }
 
         @Override // android.window.IDisplayAreaOrganizer
         public void onDisplayAreaInfoChanged(final DisplayAreaInfo displayAreaInfo) {
-            DisplayAreaOrganizer.this.mExecutor.execute(new Runnable() { // from class: android.window.DisplayAreaOrganizer$1$$ExternalSyntheticLambda1
+            DisplayAreaOrganizer.this.mExecutor.execute(new Runnable() { // from class: android.window.DisplayAreaOrganizer$1$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     DisplayAreaOrganizer.AnonymousClass1.this.lambda$onDisplayAreaInfoChanged$2(displayAreaInfo);
@@ -122,6 +124,7 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayAreaInfoChanged$2(DisplayAreaInfo displayAreaInfo) {
             DisplayAreaOrganizer.this.onDisplayAreaInfoChanged(displayAreaInfo);
         }

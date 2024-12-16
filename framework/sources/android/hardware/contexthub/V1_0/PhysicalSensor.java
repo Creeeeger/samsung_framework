@@ -12,7 +12,7 @@ public final class PhysicalSensor {
     public String type = new String();
     public String name = new String();
 
-    /* renamed from: vendor */
+    /* renamed from: vendor, reason: collision with root package name */
     public String f3vendor = new String();
     public int version = 0;
     public int fifoReservedCount = 0;
@@ -65,11 +65,11 @@ public final class PhysicalSensor {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.sensorType = _hidl_blob.getInt32(_hidl_offset + 0);
         this.type = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.type.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         this.name = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         this.f3vendor = _hidl_blob.getString(_hidl_offset + 40);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
+        parcel.readEmbeddedBuffer(this.f3vendor.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
         this.version = _hidl_blob.getInt32(_hidl_offset + 56);
         this.fifoReservedCount = _hidl_blob.getInt32(_hidl_offset + 60);
         this.fifoMaxCount = _hidl_blob.getInt32(_hidl_offset + 64);

@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public class Extension<M extends ExtendableMessageNano<M>, T> {
     public static final int TYPE_BOOL = 8;
     public static final int TYPE_BYTES = 12;
@@ -30,10 +30,6 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
     protected final boolean repeated;
     public final int tag;
     protected final int type;
-
-    /* synthetic */ Extension(int x0, Class x1, int x2, boolean x3, AnonymousClass1 x4) {
-        this(x0, x1, x2, x3);
-    }
 
     @Deprecated
     public static <M extends ExtendableMessageNano<M>, T extends MessageNano> Extension<M, T> createMessageTyped(int type, Class<T> clazz, int tag) {
@@ -63,7 +59,7 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         this.repeated = repeated;
     }
 
-    public final T getValueFrom(List<UnknownFieldData> unknownFields) {
+    final T getValueFrom(List<UnknownFieldData> unknownFields) {
         if (unknownFields == null) {
             return null;
         }
@@ -82,8 +78,7 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         if (resultSize == 0) {
             return null;
         }
-        Class<T> cls = this.clazz;
-        T result = cls.cast(Array.newInstance(cls.getComponentType(), resultSize));
+        T result = this.clazz.cast(Array.newInstance(this.clazz.getComponentType(), resultSize));
         for (int i2 = 0; i2 < resultSize; i2++) {
             Array.set(result, i2, resultList.get(i2));
         }
@@ -126,7 +121,7 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         resultList.add(readData(CodedInputByteBufferNano.newInstance(data.bytes)));
     }
 
-    public void writeTo(Object value, CodedOutputByteBufferNano output) throws IOException {
+    void writeTo(Object value, CodedOutputByteBufferNano output) throws IOException {
         if (this.repeated) {
             writeRepeatedData(value, output);
         } else {
@@ -166,7 +161,7 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         }
     }
 
-    public int computeSerializedSize(Object value) {
+    int computeSerializedSize(Object value) {
         if (this.repeated) {
             return computeRepeatedSerializedSize(value);
         }
@@ -199,7 +194,6 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         }
     }
 
-    /* loaded from: classes4.dex */
     private static class PrimitiveExtension<M extends ExtendableMessageNano<M>, T> extends Extension<M, T> {
         private final int nonPackedTag;
         private final int packedTag;

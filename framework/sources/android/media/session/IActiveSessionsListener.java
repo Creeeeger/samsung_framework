@@ -12,7 +12,6 @@ import java.util.List;
 public interface IActiveSessionsListener extends IInterface {
     void onActiveSessionsChanged(List<MediaSession.Token> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IActiveSessionsListener {
         @Override // android.media.session.IActiveSessionsListener
         public void onActiveSessionsChanged(List<MediaSession.Token> sessions) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IActiveSessionsListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IActiveSessionsListener {
         public static final String DESCRIPTOR = "android.media.session.IActiveSessionsListener";
         static final int TRANSACTION_onActiveSessionsChanged = 1;
@@ -68,26 +66,22 @@ public interface IActiveSessionsListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<MediaSession.Token> _arg0 = data.createTypedArrayList(MediaSession.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onActiveSessionsChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<MediaSession.Token> _arg0 = data.createTypedArrayList(MediaSession.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            onActiveSessionsChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IActiveSessionsListener {
+        private static class Proxy implements IActiveSessionsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

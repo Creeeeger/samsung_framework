@@ -12,7 +12,6 @@ import android.os.RemoteException;
 public interface IRuntimePermissionPresenter extends IInterface {
     void getAppPermissions(String str, RemoteCallback remoteCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRuntimePermissionPresenter {
         @Override // android.content.pm.permission.IRuntimePermissionPresenter
         public void getAppPermissions(String packageName, RemoteCallback callback) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IRuntimePermissionPresenter extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRuntimePermissionPresenter {
         public static final String DESCRIPTOR = "android.content.pm.permission.IRuntimePermissionPresenter";
         static final int TRANSACTION_getAppPermissions = 1;
@@ -68,25 +66,22 @@ public interface IRuntimePermissionPresenter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    RemoteCallback _arg1 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAppPermissions(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            RemoteCallback _arg1 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAppPermissions(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IRuntimePermissionPresenter {
             private IBinder mRemote;
 

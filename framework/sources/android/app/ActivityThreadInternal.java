@@ -4,7 +4,7 @@ import android.content.ComponentCallbacks2;
 import java.util.ArrayList;
 
 /* loaded from: classes.dex */
-public interface ActivityThreadInternal {
+interface ActivityThreadInternal {
     ArrayList<ComponentCallbacks2> collectComponentCallbacks(boolean z);
 
     Application getApplication();

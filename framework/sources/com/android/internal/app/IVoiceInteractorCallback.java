@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.internal.app.IVoiceInteractorRequest;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IVoiceInteractorCallback extends IInterface {
     void deliverAbortVoiceResult(IVoiceInteractorRequest iVoiceInteractorRequest, Bundle bundle) throws RemoteException;
 
@@ -25,7 +25,6 @@ public interface IVoiceInteractorCallback extends IInterface {
 
     void destroy() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IVoiceInteractorCallback {
         @Override // com.android.internal.app.IVoiceInteractorCallback
         public void deliverConfirmationResult(IVoiceInteractorRequest request, boolean confirmed, Bundle result) throws RemoteException {
@@ -61,7 +60,6 @@ public interface IVoiceInteractorCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractorCallback {
         public static final String DESCRIPTOR = "com.android.internal.app.IVoiceInteractorCallback";
         static final int TRANSACTION_deliverAbortVoiceResult = 4;
@@ -123,62 +121,59 @@ public interface IVoiceInteractorCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IVoiceInteractorRequest _arg0 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg1 = data.readBoolean();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    deliverConfirmationResult(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    IVoiceInteractorRequest _arg02 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg12 = data.readBoolean();
+                    VoiceInteractor.PickOptionRequest.Option[] _arg22 = (VoiceInteractor.PickOptionRequest.Option[]) data.createTypedArray(VoiceInteractor.PickOptionRequest.Option.CREATOR);
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    deliverPickOptionResult(_arg02, _arg12, _arg22, _arg3);
+                    return true;
+                case 3:
+                    IVoiceInteractorRequest _arg03 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
+                    Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    deliverCompleteVoiceResult(_arg03, _arg13);
+                    return true;
+                case 4:
+                    IVoiceInteractorRequest _arg04 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
+                    Bundle _arg14 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    deliverAbortVoiceResult(_arg04, _arg14);
+                    return true;
+                case 5:
+                    IVoiceInteractorRequest _arg05 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg15 = data.readBoolean();
+                    Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    deliverCommandResult(_arg05, _arg15, _arg23);
+                    return true;
+                case 6:
+                    IVoiceInteractorRequest _arg06 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    deliverCancel(_arg06);
+                    return true;
+                case 7:
+                    destroy();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IVoiceInteractorRequest _arg0 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg1 = data.readBoolean();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            deliverConfirmationResult(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            IVoiceInteractorRequest _arg02 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg12 = data.readBoolean();
-                            VoiceInteractor.PickOptionRequest.Option[] _arg22 = (VoiceInteractor.PickOptionRequest.Option[]) data.createTypedArray(VoiceInteractor.PickOptionRequest.Option.CREATOR);
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            deliverPickOptionResult(_arg02, _arg12, _arg22, _arg3);
-                            return true;
-                        case 3:
-                            IVoiceInteractorRequest _arg03 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
-                            Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            deliverCompleteVoiceResult(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            IVoiceInteractorRequest _arg04 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
-                            Bundle _arg14 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            deliverAbortVoiceResult(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            IVoiceInteractorRequest _arg05 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg15 = data.readBoolean();
-                            Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            deliverCommandResult(_arg05, _arg15, _arg23);
-                            return true;
-                        case 6:
-                            IVoiceInteractorRequest _arg06 = IVoiceInteractorRequest.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            deliverCancel(_arg06);
-                            return true;
-                        case 7:
-                            destroy();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IVoiceInteractorCallback {
+        private static class Proxy implements IVoiceInteractorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

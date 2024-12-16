@@ -4,65 +4,82 @@ import android.os.BatteryStats;
 import android.os.Parcel;
 import android.util.Slog;
 import android.util.SparseArray;
-import com.android.internal.os.BatteryStatsHistory;
+import com.android.internal.os.PowerStats;
 import com.samsung.android.media.SemExtendedFormat;
 import java.util.Iterator;
 
 /* loaded from: classes5.dex */
 public class BatteryStatsHistoryIterator implements Iterator<BatteryStats.HistoryItem>, AutoCloseable {
     private static final boolean DEBUG = false;
-    private static final int MAX_CPU_BRACKET_COUNT = 100;
-    private static final int MAX_ENERGY_CONSUMER_COUNT = 100;
     private static final String TAG = "BatteryStatsHistoryItr";
     private final BatteryStatsHistory mBatteryStatsHistory;
-    private BatteryStats.CpuUsageDetails mCpuUsageDetails;
-    private BatteryStats.EnergyConsumerDetails mEnergyConsumerDetails;
-    private final BatteryStats.HistoryItem mHistoryItem;
+    private boolean mClosed;
+    private final long mEndTimeMs;
+    private boolean mNextItemReady;
+    private final long mStartTimeMs;
+    private boolean mTimeInitialized;
     private final BatteryStats.HistoryStepDetails mReadHistoryStepDetails = new BatteryStats.HistoryStepDetails();
     private final SparseArray<BatteryStats.HistoryTag> mHistoryTags = new SparseArray<>();
-    private final BatteryStatsHistory.VarintParceler mVarintParceler = new BatteryStatsHistory.VarintParceler();
+    private final PowerStats.DescriptorRegistry mDescriptorRegistry = new PowerStats.DescriptorRegistry();
+    private BatteryStats.HistoryItem mHistoryItem = new BatteryStats.HistoryItem();
 
-    public BatteryStatsHistoryIterator(BatteryStatsHistory history) {
-        BatteryStats.HistoryItem historyItem = new BatteryStats.HistoryItem();
-        this.mHistoryItem = historyItem;
+    public BatteryStatsHistoryIterator(BatteryStatsHistory history, long startTimeMs, long endTimeMs) {
         this.mBatteryStatsHistory = history;
-        historyItem.clear();
+        this.mStartTimeMs = startTimeMs;
+        this.mEndTimeMs = endTimeMs != -1 ? endTimeMs : Long.MAX_VALUE;
+        this.mHistoryItem.clear();
     }
 
     @Override // java.util.Iterator
     public boolean hasNext() {
-        Parcel p = this.mBatteryStatsHistory.getNextParcel();
-        if (p == null) {
-            close();
-            return false;
+        if (!this.mNextItemReady) {
+            advance();
         }
-        return true;
+        return this.mHistoryItem != null;
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.Iterator
     public BatteryStats.HistoryItem next() {
-        Parcel p = this.mBatteryStatsHistory.getNextParcel();
-        if (p == null) {
-            close();
-            return null;
+        if (!this.mNextItemReady) {
+            advance();
         }
-        long lastRealtimeMs = this.mHistoryItem.time;
-        long lastWalltimeMs = this.mHistoryItem.currentTime;
-        try {
-            readHistoryDelta(p, this.mHistoryItem);
-            if (this.mHistoryItem.cmd != 5 && this.mHistoryItem.cmd != 7 && lastWalltimeMs != 0) {
-                BatteryStats.HistoryItem historyItem = this.mHistoryItem;
-                historyItem.currentTime = (historyItem.time - lastRealtimeMs) + lastWalltimeMs;
+        this.mNextItemReady = false;
+        return this.mHistoryItem;
+    }
+
+    private void advance() {
+        do {
+            Parcel p = this.mBatteryStatsHistory.getNextParcel(this.mStartTimeMs, this.mEndTimeMs);
+            if (p != null) {
+                if (!this.mTimeInitialized) {
+                    this.mHistoryItem.time = this.mBatteryStatsHistory.getHistoryBufferStartTime(p);
+                    this.mTimeInitialized = true;
+                }
+                long lastMonotonicTimeMs = this.mHistoryItem.time;
+                long lastWalltimeMs = this.mHistoryItem.currentTime;
+                try {
+                    readHistoryDelta(p, this.mHistoryItem);
+                    if (this.mHistoryItem.cmd != 5 && this.mHistoryItem.cmd != 7 && lastWalltimeMs != 0) {
+                        this.mHistoryItem.currentTime = (this.mHistoryItem.time - lastMonotonicTimeMs) + lastWalltimeMs;
+                    }
+                    if (this.mEndTimeMs == 0 || this.mHistoryItem.time < this.mEndTimeMs) {
+                    }
+                } catch (Throwable t) {
+                    Slog.wtf(TAG, "Corrupted battery history", t);
+                }
             }
-            return this.mHistoryItem;
-        } catch (Throwable t) {
-            Slog.wtf(TAG, "Corrupted battery history", t);
-            return null;
-        }
+            this.mHistoryItem = null;
+            this.mNextItemReady = true;
+            close();
+            return;
+        } while (this.mHistoryItem.time < this.mStartTimeMs);
+        this.mNextItemReady = true;
     }
 
     private void readHistoryDelta(Parcel src, BatteryStats.HistoryItem cur) {
         int batteryLevelInt;
+        PowerStats.Descriptor descriptor;
         int firstToken = src.readInt();
         int deltaTimeToken = 131071 & firstToken;
         cur.cmd = (byte) 0;
@@ -177,67 +194,25 @@ public class BatteryStatsHistoryIterator implements Iterator<BatteryStats.Histor
         cur.wifiRailChargeMah = src.readDouble();
         if ((cur.states2 & 131072) != 0) {
             int extensionFlags = src.readInt();
-            if ((extensionFlags & 1) != 0) {
-                if (this.mEnergyConsumerDetails == null) {
-                    this.mEnergyConsumerDetails = new BatteryStats.EnergyConsumerDetails();
-                }
-                int consumerCount = src.readInt();
-                if (consumerCount > 100) {
-                    throw new IllegalStateException("EnergyConsumer count too high: " + consumerCount + ". Max = 100");
-                }
-                this.mEnergyConsumerDetails.consumers = new BatteryStats.EnergyConsumerDetails.EnergyConsumer[consumerCount];
-                this.mEnergyConsumerDetails.chargeUC = new long[consumerCount];
-                for (int i = 0; i < consumerCount; i++) {
-                    BatteryStats.EnergyConsumerDetails.EnergyConsumer consumer = new BatteryStats.EnergyConsumerDetails.EnergyConsumer();
-                    consumer.type = src.readInt();
-                    consumer.ordinal = src.readInt();
-                    consumer.name = src.readString();
-                    this.mEnergyConsumerDetails.consumers[i] = consumer;
-                }
+            if ((extensionFlags & 1) != 0 && (descriptor = PowerStats.Descriptor.readSummaryFromParcel(src)) != null) {
+                this.mDescriptorRegistry.register(descriptor);
             }
             if ((extensionFlags & 2) != 0) {
-                BatteryStats.EnergyConsumerDetails energyConsumerDetails = this.mEnergyConsumerDetails;
-                if (energyConsumerDetails == null) {
-                    throw new IllegalStateException("MeasuredEnergyDetails without a header");
-                }
-                this.mVarintParceler.readLongArray(src, energyConsumerDetails.chargeUC);
-                cur.energyConsumerDetails = this.mEnergyConsumerDetails;
+                cur.powerStats = PowerStats.readFromParcel(src, this.mDescriptorRegistry);
             } else {
-                cur.energyConsumerDetails = null;
+                cur.powerStats = null;
             }
             if ((extensionFlags & 4) != 0) {
-                this.mCpuUsageDetails = new BatteryStats.CpuUsageDetails();
-                int cpuBracketCount = src.readInt();
-                if (cpuBracketCount > 100) {
-                    throw new IllegalStateException("Too many CPU brackets: " + cpuBracketCount + ". Max = 100");
-                }
-                this.mCpuUsageDetails.cpuBracketDescriptions = new String[cpuBracketCount];
-                for (int i2 = 0; i2 < cpuBracketCount; i2++) {
-                    this.mCpuUsageDetails.cpuBracketDescriptions[i2] = src.readString();
-                }
-                BatteryStats.CpuUsageDetails cpuUsageDetails = this.mCpuUsageDetails;
-                cpuUsageDetails.cpuUsageMs = new long[cpuUsageDetails.cpuBracketDescriptions.length];
+                cur.processStateChange = cur.localProcessStateChange;
+                cur.processStateChange.readFromParcel(src);
+                return;
             } else {
-                BatteryStats.CpuUsageDetails cpuUsageDetails2 = this.mCpuUsageDetails;
-                if (cpuUsageDetails2 != null) {
-                    cpuUsageDetails2.cpuBracketDescriptions = null;
-                }
-            }
-            if ((extensionFlags & 8) != 0) {
-                BatteryStats.CpuUsageDetails cpuUsageDetails3 = this.mCpuUsageDetails;
-                if (cpuUsageDetails3 == null) {
-                    throw new IllegalStateException("CpuUsageDetails without a header");
-                }
-                cpuUsageDetails3.uid = src.readInt();
-                this.mVarintParceler.readLongArray(src, this.mCpuUsageDetails.cpuUsageMs);
-                cur.cpuUsageDetails = this.mCpuUsageDetails;
+                cur.processStateChange = null;
                 return;
             }
-            cur.cpuUsageDetails = null;
-            return;
         }
-        cur.energyConsumerDetails = null;
-        cur.cpuUsageDetails = null;
+        cur.powerStats = null;
+        cur.processStateChange = null;
     }
 
     private boolean readHistoryTag(Parcel src, int index, BatteryStats.HistoryTag outTag) {
@@ -248,7 +223,11 @@ public class BatteryStatsHistoryIterator implements Iterator<BatteryStats.Histor
             BatteryStats.HistoryTag tag = new BatteryStats.HistoryTag();
             tag.readFromParcel(src);
             tag.poolIdx = (-32769) & index;
-            this.mHistoryTags.put(tag.poolIdx, tag);
+            if (tag.poolIdx < 32766) {
+                this.mHistoryTags.put(tag.poolIdx, tag);
+            } else {
+                tag.poolIdx = -1;
+            }
             outTag.setTo(tag);
             return true;
         }
@@ -266,7 +245,11 @@ public class BatteryStatsHistoryIterator implements Iterator<BatteryStats.Histor
     private static void readBatteryLevelInt(int batteryLevelInt, BatteryStats.HistoryItem out) {
         out.batteryLevel = (byte) (((-33554432) & batteryLevelInt) >>> 25);
         out.batteryTemperature = (short) ((33521664 & batteryLevelInt) >>> 15);
-        out.batteryVoltage = (char) ((batteryLevelInt & SemExtendedFormat.DataType.INVALID_DATA) >>> 1);
+        int voltage = (batteryLevelInt & SemExtendedFormat.DataType.INVALID_DATA) >>> 1;
+        if (voltage == 16383) {
+            voltage = -1;
+        }
+        out.batteryVoltage = (short) voltage;
     }
 
     private static void readCurrentNTemperatureInt(int currentNTemperatureInt, BatteryStats.HistoryItem out) {
@@ -292,6 +275,9 @@ public class BatteryStatsHistoryIterator implements Iterator<BatteryStats.Histor
 
     @Override // java.lang.AutoCloseable
     public void close() {
-        this.mBatteryStatsHistory.iteratorFinished();
+        if (!this.mClosed) {
+            this.mClosed = true;
+            this.mBatteryStatsHistory.iteratorFinished();
+        }
     }
 }

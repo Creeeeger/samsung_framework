@@ -12,7 +12,6 @@ public interface IDisplayPortAltModeInfoListener extends IInterface {
 
     void onDisplayPortAltModeInfoChanged(String str, DisplayPortAltModeInfo displayPortAltModeInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDisplayPortAltModeInfoListener {
         @Override // android.hardware.usb.IDisplayPortAltModeInfoListener
         public void onDisplayPortAltModeInfoChanged(String portId, DisplayPortAltModeInfo DisplayPortAltModeInfo) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDisplayPortAltModeInfoListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDisplayPortAltModeInfoListener {
         static final int TRANSACTION_onDisplayPortAltModeInfoChanged = 1;
 
@@ -67,27 +65,23 @@ public interface IDisplayPortAltModeInfoListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayPortAltModeInfoListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayPortAltModeInfoListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayPortAltModeInfoListener.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    DisplayPortAltModeInfo _arg1 = (DisplayPortAltModeInfo) data.readTypedObject(DisplayPortAltModeInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDisplayPortAltModeInfoChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            DisplayPortAltModeInfo _arg1 = (DisplayPortAltModeInfo) data.readTypedObject(DisplayPortAltModeInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDisplayPortAltModeInfoChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IDisplayPortAltModeInfoListener {
+        private static class Proxy implements IDisplayPortAltModeInfoListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

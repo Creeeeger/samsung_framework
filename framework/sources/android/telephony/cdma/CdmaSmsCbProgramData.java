@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CdmaSmsCbProgramData implements Parcelable {
     public static final int ALERT_OPTION_DEFAULT_ALERT = 1;
     public static final int ALERT_OPTION_HIGH_PRIORITY_ONCE = 10;
@@ -28,14 +28,13 @@ public final class CdmaSmsCbProgramData implements Parcelable {
     public static final int CATEGORY_CMAS_SEVERE_THREAT = 4098;
     public static final int CATEGORY_CMAS_TEST_MESSAGE = 4100;
     public static final Parcelable.Creator<CdmaSmsCbProgramData> CREATOR = new Parcelable.Creator<CdmaSmsCbProgramData>() { // from class: android.telephony.cdma.CdmaSmsCbProgramData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsCbProgramData createFromParcel(Parcel in) {
             return new CdmaSmsCbProgramData(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsCbProgramData[] newArray(int size) {
             return new CdmaSmsCbProgramData[size];
@@ -52,12 +51,10 @@ public final class CdmaSmsCbProgramData implements Parcelable {
     private final int mOperation;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Category {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Operation {
     }
 
@@ -120,22 +117,5 @@ public final class CdmaSmsCbProgramData implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.cdma.CdmaSmsCbProgramData$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaSmsCbProgramData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsCbProgramData createFromParcel(Parcel in) {
-            return new CdmaSmsCbProgramData(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsCbProgramData[] newArray(int size) {
-            return new CdmaSmsCbProgramData[size];
-        }
     }
 }

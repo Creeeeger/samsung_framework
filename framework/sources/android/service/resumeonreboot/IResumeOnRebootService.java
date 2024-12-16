@@ -15,7 +15,6 @@ public interface IResumeOnRebootService extends IInterface {
 
     void wrapSecret(byte[] bArr, long j, RemoteCallback remoteCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IResumeOnRebootService {
         @Override // android.service.resumeonreboot.IResumeOnRebootService
         public void wrapSecret(byte[] unwrappedBlob, long lifeTimeInMillis, RemoteCallback resultCallback) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IResumeOnRebootService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IResumeOnRebootService {
         static final int TRANSACTION_unwrap = 2;
         static final int TRANSACTION_wrapSecret = 1;
@@ -77,32 +75,29 @@ public interface IResumeOnRebootService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IResumeOnRebootService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IResumeOnRebootService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IResumeOnRebootService.DESCRIPTOR);
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    long _arg1 = data.readLong();
+                    RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    wrapSecret(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    byte[] _arg02 = data.createByteArray();
+                    RemoteCallback _arg12 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    unwrap(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            long _arg1 = data.readLong();
-                            RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            wrapSecret(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            byte[] _arg02 = data.createByteArray();
-                            RemoteCallback _arg12 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            unwrap(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IResumeOnRebootService {
             private IBinder mRemote;
 

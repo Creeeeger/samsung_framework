@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class CocktailBarStateInfo implements Parcelable, Cloneable {
     public static final Parcelable.Creator<CocktailBarStateInfo> CREATOR = new Parcelable.Creator<CocktailBarStateInfo>() { // from class: com.samsung.android.cocktailbar.CocktailBarStateInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CocktailBarStateInfo createFromParcel(Parcel in) {
             return new CocktailBarStateInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CocktailBarStateInfo[] newArray(int size) {
             return new CocktailBarStateInfo[size];
@@ -103,8 +102,8 @@ public class CocktailBarStateInfo implements Parcelable, Cloneable {
         this.changeFlag = in.readInt();
     }
 
-    /* renamed from: clone */
-    public CocktailBarStateInfo m8236clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public CocktailBarStateInfo m8624clone() {
         Parcel p = Parcel.obtain();
         writeToParcel(p, 0);
         p.setDataPosition(0);
@@ -128,22 +127,5 @@ public class CocktailBarStateInfo implements Parcelable, Cloneable {
         parcel.writeInt(this.activate ? 1 : 0);
         parcel.writeInt(this.windowType);
         parcel.writeInt(this.changeFlag);
-    }
-
-    /* renamed from: com.samsung.android.cocktailbar.CocktailBarStateInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CocktailBarStateInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CocktailBarStateInfo createFromParcel(Parcel in) {
-            return new CocktailBarStateInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CocktailBarStateInfo[] newArray(int size) {
-            return new CocktailBarStateInfo[size];
-        }
     }
 }

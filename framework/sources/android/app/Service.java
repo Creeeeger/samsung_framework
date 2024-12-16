@@ -46,17 +46,14 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
     private IBinder mToken;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface StartArgFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface StartResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface StopForegroundSelector {
     }
 
@@ -120,23 +117,21 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
     }
 
     public final void stopSelf(int startId) {
-        IActivityManager iActivityManager = this.mActivityManager;
-        if (iActivityManager == null) {
+        if (this.mActivityManager == null) {
             return;
         }
         try {
-            iActivityManager.stopServiceToken(new ComponentName(this, this.mClassName), this.mToken, startId);
+            this.mActivityManager.stopServiceToken(new ComponentName(this, this.mClassName), this.mToken, startId);
         } catch (RemoteException e) {
         }
     }
 
     public final boolean stopSelfResult(int startId) {
-        IActivityManager iActivityManager = this.mActivityManager;
-        if (iActivityManager == null) {
+        if (this.mActivityManager == null) {
             return false;
         }
         try {
-            return iActivityManager.stopServiceToken(new ComponentName(this, this.mClassName), this.mToken, startId);
+            return this.mActivityManager.stopServiceToken(new ComponentName(this, this.mClassName), this.mToken, startId);
         } catch (RemoteException e) {
             return false;
         }
@@ -189,12 +184,12 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
         }
     }
 
-    public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
+    protected void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
         writer.println("nothing to dump");
     }
 
     @Override // android.content.ContextWrapper
-    public void attachBaseContext(Context newBase) {
+    protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         if (newBase != null) {
             newBase.setContentCaptureOptions(getContentCaptureOptions());
@@ -221,7 +216,7 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
         logForegroundServiceStopIfNecessary();
     }
 
-    public final String getClassName() {
+    final String getClassName() {
         return this.mClassName;
     }
 
@@ -237,13 +232,11 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
 
     private void logForegroundServiceStart(ComponentName comp, int foregroundServiceType) {
         synchronized (this.mForegroundServiceTraceTitleLock) {
-            String str = this.mForegroundServiceTraceTitle;
-            if (str == null) {
-                String formatSimple = TextUtils.formatSimple("comp=%s type=%s", comp.toShortString(), Integer.toHexString(foregroundServiceType));
-                this.mForegroundServiceTraceTitle = formatSimple;
-                Trace.asyncTraceForTrackBegin(64L, TRACE_TRACK_NAME_FOREGROUND_SERVICE, formatSimple, System.identityHashCode(this));
+            if (this.mForegroundServiceTraceTitle == null) {
+                this.mForegroundServiceTraceTitle = TextUtils.formatSimple("comp=%s type=%s", comp.toShortString(), Integer.toHexString(foregroundServiceType));
+                Trace.asyncTraceForTrackBegin(64L, TRACE_TRACK_NAME_FOREGROUND_SERVICE, this.mForegroundServiceTraceTitle, System.identityHashCode(this));
             } else {
-                Trace.instantForTrack(64L, TRACE_TRACK_NAME_FOREGROUND_SERVICE, str);
+                Trace.instantForTrack(64L, TRACE_TRACK_NAME_FOREGROUND_SERVICE, this.mForegroundServiceTraceTitle);
             }
         }
     }
@@ -258,24 +251,21 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
     }
 
     public static void setStartForegroundServiceStackTrace(String className, StackTrace stacktrace) {
-        ArrayMap<String, StackTrace> arrayMap = sStartForegroundServiceStackTraces;
-        synchronized (arrayMap) {
-            arrayMap.put(className, stacktrace);
+        synchronized (sStartForegroundServiceStackTraces) {
+            sStartForegroundServiceStackTraces.put(className, stacktrace);
         }
     }
 
     private void clearStartForegroundServiceStackTrace() {
-        ArrayMap<String, StackTrace> arrayMap = sStartForegroundServiceStackTraces;
-        synchronized (arrayMap) {
-            arrayMap.remove(getClassName());
+        synchronized (sStartForegroundServiceStackTraces) {
+            sStartForegroundServiceStackTraces.remove(getClassName());
         }
     }
 
     public static StackTrace getStartForegroundServiceStackTrace(String className) {
         StackTrace stackTrace;
-        ArrayMap<String, StackTrace> arrayMap = sStartForegroundServiceStackTraces;
-        synchronized (arrayMap) {
-            stackTrace = arrayMap.get(className);
+        synchronized (sStartForegroundServiceStackTraces) {
+            stackTrace = sStartForegroundServiceStackTraces.get(className);
         }
         return stackTrace;
     }
@@ -293,8 +283,31 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
         } catch (RemoteException e) {
         }
         onTimeout(startId);
+        if (Flags.introduceNewServiceOntimeoutCallback()) {
+            onTimeout(startId, 2048);
+        }
     }
 
     public void onTimeout(int startId) {
+    }
+
+    public final void callOnTimeLimitExceeded(int startId, int fgsType) {
+        if (this.mToken == null) {
+            Log.w(TAG, "Service already destroyed, skipping onTimeLimitExceeded()");
+            return;
+        }
+        try {
+            if (!this.mActivityManager.hasServiceTimeLimitExceeded(new ComponentName(this, this.mClassName), this.mToken)) {
+                Log.w(TAG, "Service no longer relevant, skipping onTimeLimitExceeded()");
+                return;
+            }
+        } catch (RemoteException e) {
+        }
+        if (Flags.introduceNewServiceOntimeoutCallback()) {
+            onTimeout(startId, fgsType);
+        }
+    }
+
+    public void onTimeout(int startId, int fgsType) {
     }
 }

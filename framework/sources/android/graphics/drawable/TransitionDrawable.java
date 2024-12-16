@@ -21,16 +21,12 @@ public class TransitionDrawable extends LayerDrawable implements Drawable.Callba
     private int mTo;
     private int mTransitionState;
 
-    /* synthetic */ TransitionDrawable(TransitionState transitionState, Resources resources, TransitionDrawableIA transitionDrawableIA) {
-        this(transitionState, resources);
-    }
-
     public TransitionDrawable(Drawable[] layers) {
         this(new TransitionState(null, null, null), layers);
     }
 
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
-    public TransitionDrawable() {
+    TransitionDrawable() {
         this(new TransitionState(null, null, null), (Resources) null);
     }
 
@@ -77,8 +73,7 @@ public class TransitionDrawable extends LayerDrawable implements Drawable.Callba
 
     public void reverseTransition(int duration) {
         long time = SystemClock.uptimeMillis();
-        long j = this.mStartTimeMillis;
-        if (time - j > this.mDuration) {
+        if (time - this.mStartTimeMillis > this.mDuration) {
             if (this.mTo == 0) {
                 this.mFrom = 0;
                 this.mTo = 255;
@@ -96,11 +91,10 @@ public class TransitionDrawable extends LayerDrawable implements Drawable.Callba
             invalidateSelf();
             return;
         }
-        boolean z = !this.mReverse;
-        this.mReverse = z;
+        this.mReverse = !this.mReverse;
         this.mFrom = this.mAlpha;
-        this.mTo = z ? 0 : 255;
-        this.mDuration = (int) (z ? time - j : this.mOriginalDuration - (time - j));
+        this.mTo = this.mReverse ? 0 : 255;
+        this.mDuration = (int) (this.mReverse ? time - this.mStartTimeMillis : this.mOriginalDuration - (time - this.mStartTimeMillis));
         this.mTransitionState = 0;
     }
 
@@ -115,10 +109,9 @@ public class TransitionDrawable extends LayerDrawable implements Drawable.Callba
                 break;
             case 1:
                 if (this.mStartTimeMillis >= 0) {
-                    float normalized = ((float) (SystemClock.uptimeMillis() - this.mStartTimeMillis)) / this.mDuration;
+                    float normalized = (SystemClock.uptimeMillis() - this.mStartTimeMillis) / this.mDuration;
                     done = normalized >= 1.0f;
-                    float normalized2 = Math.min(normalized, 1.0f);
-                    this.mAlpha = (int) (this.mFrom + ((this.mTo - r4) * normalized2));
+                    this.mAlpha = (int) (this.mFrom + ((this.mTo - this.mFrom) * Math.min(normalized, 1.0f)));
                     break;
                 }
                 break;
@@ -163,8 +156,7 @@ public class TransitionDrawable extends LayerDrawable implements Drawable.Callba
         return this.mCrossFade;
     }
 
-    /* loaded from: classes.dex */
-    public static class TransitionState extends LayerDrawable.LayerState {
+    static class TransitionState extends LayerDrawable.LayerState {
         TransitionState(TransitionState orig, TransitionDrawable owner, Resources res) {
             super(orig, owner, res);
         }

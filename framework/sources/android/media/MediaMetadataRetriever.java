@@ -81,6 +81,9 @@ public class MediaMetadataRetriever implements AutoCloseable {
     public static final int SEM_METADATA_KEY_BITS_PER_SAMPLE = 1020;
     public static final int SEM_METADATA_KEY_CREATIONTIME = 1026;
     public static final int SEM_METADATA_KEY_HDR10_VIDEO = 1027;
+    public static final int SEM_METADATA_KEY_LENS_FOCAL_LENGTH = 1034;
+    public static final int SEM_METADATA_KEY_LENS_TYPE = 1033;
+    public static final int SEM_METADATA_KEY_LENS_ZOOMED_FOCAL_LENGTH = 1035;
     public static final int SEM_METADATA_KEY_MULTI_AUDIO_CHANNELS = 1012;
     public static final int SEM_METADATA_KEY_MULTI_AUDIO_LANGUAGES = 1011;
     public static final int SEM_METADATA_KEY_NUM_AUDIO_TRACKS = 1010;
@@ -88,6 +91,7 @@ public class MediaMetadataRetriever implements AutoCloseable {
     public static final int SEM_METADATA_KEY_SAMPLING_RATE = 1019;
     public static final int SEM_METADATA_KEY_SLOWVIDEOINFO = 1023;
     public static final int SEM_METADATA_KEY_USER_EDITED_DURATION = 1029;
+    public static final int SEM_METADATA_KEY_UTC_OFFSET = 1032;
     public static final int SEM_METADATA_KEY_VIDEOCODECINFO = 1024;
     public static final int SEM_METADATA_KEY_VIDEO_BIT_DEPTH = 1028;
     public static final int SEM_METADATA_KEY_VIDEO_SYNC_FRAME_SIZE_INFO = 1031;
@@ -99,7 +103,6 @@ public class MediaMetadataRetriever implements AutoCloseable {
     private long mNativeContext;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Option {
     }
 
@@ -284,7 +287,7 @@ public class MediaMetadataRetriever implements AutoCloseable {
         return meta;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00cb, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x00cf, code lost:
     
         return null;
      */
@@ -292,124 +295,126 @@ public class MediaMetadataRetriever implements AutoCloseable {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private java.lang.String convertGenreTag(java.lang.String r9) {
+    private java.lang.String convertGenreTag(java.lang.String r8) {
         /*
-            r8 = this;
-            boolean r0 = android.text.TextUtils.isEmpty(r9)
+            r7 = this;
+            boolean r0 = android.text.TextUtils.isEmpty(r8)
             r1 = 0
             if (r0 == 0) goto L8
             return r1
         L8:
             r0 = 0
-            char r0 = r9.charAt(r0)
+            char r0 = r8.charAt(r0)
             boolean r0 = java.lang.Character.isDigit(r0)
-            if (r0 == 0) goto L24
-            int r0 = java.lang.Integer.parseInt(r9)     // Catch: java.lang.NumberFormatException -> L22
-            if (r0 < 0) goto L21
-            java.lang.String[] r2 = android.media.MediaMetadataRetriever.STANDARD_GENRES     // Catch: java.lang.NumberFormatException -> L22
-            int r3 = r2.length     // Catch: java.lang.NumberFormatException -> L22
-            if (r0 >= r3) goto L21
-            r1 = r2[r0]     // Catch: java.lang.NumberFormatException -> L22
+            if (r0 == 0) goto L26
+            int r0 = java.lang.Integer.parseInt(r8)     // Catch: java.lang.NumberFormatException -> L24
+            if (r0 < 0) goto L23
+            java.lang.String[] r2 = android.media.MediaMetadataRetriever.STANDARD_GENRES     // Catch: java.lang.NumberFormatException -> L24
+            int r2 = r2.length     // Catch: java.lang.NumberFormatException -> L24
+            if (r0 >= r2) goto L23
+            java.lang.String[] r2 = android.media.MediaMetadataRetriever.STANDARD_GENRES     // Catch: java.lang.NumberFormatException -> L24
+            r1 = r2[r0]     // Catch: java.lang.NumberFormatException -> L24
             return r1
-        L21:
-            goto L23
-        L22:
-            r0 = move-exception
         L23:
-            return r1
+            goto L25
         L24:
+            r0 = move-exception
+        L25:
+            return r1
+        L26:
             r0 = 0
             r2 = 0
-        L26:
+        L28:
             boolean r3 = android.text.TextUtils.isEmpty(r2)
-            if (r3 != 0) goto L43
-            if (r0 != 0) goto L34
+            if (r3 != 0) goto L45
+            if (r0 != 0) goto L36
             java.lang.StringBuilder r3 = new java.lang.StringBuilder
             r3.<init>()
             r0 = r3
-        L34:
+        L36:
             int r3 = r0.length()
-            if (r3 == 0) goto L3f
+            if (r3 == 0) goto L41
             java.lang.String r3 = ", "
             r0.append(r3)
-        L3f:
+        L41:
             r0.append(r2)
             r2 = 0
-        L43:
-            boolean r3 = android.text.TextUtils.isEmpty(r9)
-            if (r3 == 0) goto L58
-        L4a:
-            if (r0 == 0) goto L57
+        L45:
+            boolean r3 = android.text.TextUtils.isEmpty(r8)
+            if (r3 == 0) goto L5a
+        L4c:
+            if (r0 == 0) goto L59
             int r3 = r0.length()
-            if (r3 != 0) goto L53
-            goto L57
-        L53:
+            if (r3 != 0) goto L55
+            goto L59
+        L55:
             java.lang.String r1 = r0.toString()
-        L57:
+        L59:
             return r1
-        L58:
+        L5a:
             java.lang.String r3 = "(RX)"
-            boolean r3 = r9.startsWith(r3)
+            boolean r3 = r8.startsWith(r3)
             r4 = 4
-            if (r3 == 0) goto L68
+            if (r3 == 0) goto L6a
             java.lang.String r2 = "Remix"
-            java.lang.String r9 = r9.substring(r4)
-            goto L26
-        L68:
+            java.lang.String r8 = r8.substring(r4)
+            goto L28
+        L6a:
             java.lang.String r3 = "(CR)"
-            boolean r3 = r9.startsWith(r3)
-            if (r3 == 0) goto L77
+            boolean r3 = r8.startsWith(r3)
+            if (r3 == 0) goto L79
             java.lang.String r2 = "Cover"
-            java.lang.String r9 = r9.substring(r4)
-            goto L26
-        L77:
+            java.lang.String r8 = r8.substring(r4)
+            goto L28
+        L79:
             java.lang.String r3 = "(("
-            boolean r3 = r9.startsWith(r3)
+            boolean r3 = r8.startsWith(r3)
             r4 = -1
             r5 = 41
             r6 = 1
-            if (r3 == 0) goto L9d
-            int r3 = r9.indexOf(r5)
-            if (r3 != r4) goto L90
-            java.lang.String r2 = r9.substring(r6)
-            java.lang.String r9 = ""
-            goto L9c
-        L90:
+            if (r3 == 0) goto L9f
+            int r3 = r8.indexOf(r5)
+            if (r3 != r4) goto L92
+            java.lang.String r2 = r8.substring(r6)
+            java.lang.String r8 = ""
+            goto L9e
+        L92:
             int r4 = r3 + 1
-            java.lang.String r2 = r9.substring(r6, r4)
+            java.lang.String r2 = r8.substring(r6, r4)
             int r4 = r3 + 1
-            java.lang.String r9 = r9.substring(r4)
-        L9c:
-            goto L26
-        L9d:
+            java.lang.String r8 = r8.substring(r4)
+        L9e:
+            goto L28
+        L9f:
             java.lang.String r3 = "("
-            boolean r3 = r9.startsWith(r3)
-            if (r3 == 0) goto Lce
-            int r3 = r9.indexOf(r5)
-            if (r3 != r4) goto Lac
+            boolean r3 = r8.startsWith(r3)
+            if (r3 == 0) goto Ld2
+            int r3 = r8.indexOf(r5)
+            if (r3 != r4) goto Lae
             return r1
-        Lac:
-            java.lang.String r4 = r9.substring(r6, r3)
-            java.lang.String r5 = r4.toString()     // Catch: java.lang.NumberFormatException -> Lcc
-            int r5 = java.lang.Integer.parseInt(r5)     // Catch: java.lang.NumberFormatException -> Lcc
-            if (r5 < 0) goto Lcb
-            java.lang.String[] r6 = android.media.MediaMetadataRetriever.STANDARD_GENRES     // Catch: java.lang.NumberFormatException -> Lcc
-            int r7 = r6.length     // Catch: java.lang.NumberFormatException -> Lcc
-            if (r5 >= r7) goto Lcb
-            r6 = r6[r5]     // Catch: java.lang.NumberFormatException -> Lcc
+        Lae:
+            java.lang.String r4 = r8.substring(r6, r3)
+            java.lang.String r5 = r4.toString()     // Catch: java.lang.NumberFormatException -> Ld0
+            int r5 = java.lang.Integer.parseInt(r5)     // Catch: java.lang.NumberFormatException -> Ld0
+            if (r5 < 0) goto Lcf
+            java.lang.String[] r6 = android.media.MediaMetadataRetriever.STANDARD_GENRES     // Catch: java.lang.NumberFormatException -> Ld0
+            int r6 = r6.length     // Catch: java.lang.NumberFormatException -> Ld0
+            if (r5 >= r6) goto Lcf
+            java.lang.String[] r6 = android.media.MediaMetadataRetriever.STANDARD_GENRES     // Catch: java.lang.NumberFormatException -> Ld0
+            r6 = r6[r5]     // Catch: java.lang.NumberFormatException -> Ld0
             r2 = r6
             int r5 = r3 + 1
-            java.lang.String r9 = r9.substring(r5)
-            goto L26
-        Lcb:
+            java.lang.String r8 = r8.substring(r5)
+            goto L28
+        Lcf:
             return r1
-        Lcc:
+        Ld0:
             r5 = move-exception
             return r1
-        Lce:
-            r2 = r9
-            java.lang.String r9 = ""
-            goto L26
+        Ld2:
+            r2 = r8
+            java.lang.String r8 = ""
+            goto L28
         */
         throw new UnsupportedOperationException("Method not decompiled: android.media.MediaMetadataRetriever.convertGenreTag(java.lang.String):java.lang.String");
     }
@@ -458,7 +463,6 @@ public class MediaMetadataRetriever implements AutoCloseable {
         return _getFrameAtTime(-1L, 2, -1, -1, null);
     }
 
-    /* loaded from: classes2.dex */
     public static final class BitmapParams {
         private Bitmap.Config inPreferredConfig = Bitmap.Config.ARGB_8888;
         private Bitmap.Config outActualConfig = Bitmap.Config.ARGB_8888;

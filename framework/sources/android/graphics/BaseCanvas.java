@@ -20,7 +20,7 @@ public abstract class BaseCanvas {
     protected long mNativeCanvasWrapper;
     protected int mScreenDensity = 0;
     protected int mDensity = 0;
-    private boolean mAllowHwFeaturesInSwMode = CoreRune.FW_VIEW_DEBUG_DISABLE_HWRENDERING;
+    private boolean mAllowHwFeaturesInSwMode = CoreRune.GFW_DEBUG_DISABLE_HWRENDERING;
 
     private static native void nDrawArc(long j, float f, float f2, float f3, float f4, float f5, float f6, boolean z, long j2);
 
@@ -86,7 +86,7 @@ public abstract class BaseCanvas {
 
     private static native void nPunchHole(long j, float f, float f2, float f3, float f4, float f5, float f6, float f7);
 
-    public void throwIfCannotDraw(Bitmap bitmap) {
+    protected void throwIfCannotDraw(Bitmap bitmap) {
         if (bitmap.isRecycled()) {
             throw new RuntimeException("Canvas: trying to use a recycled bitmap " + bitmap);
         }
@@ -96,7 +96,7 @@ public abstract class BaseCanvas {
         throwIfHwBitmapInSwMode(bitmap);
     }
 
-    public static final void checkRange(int length, int offset, int count) {
+    protected static final void checkRange(int length, int offset, int count) {
         if ((offset | count) < 0 || offset + count > length) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -306,6 +306,11 @@ public abstract class BaseCanvas {
     public void drawPath(Path path, Paint paint) {
         throwIfHasHwFeaturesInSwMode(paint);
         nDrawPath(this.mNativeCanvasWrapper, path.readOnlyNI(), paint.getNativeInstance());
+    }
+
+    public void drawRegion(Region region, Paint paint) {
+        throwIfHasHwFeaturesInSwMode(paint);
+        nDrawRegion(this.mNativeCanvasWrapper, region.mNativeRegion, paint.getNativeInstance());
     }
 
     public void drawPoint(float x, float y, Paint paint) {
@@ -571,7 +576,7 @@ public abstract class BaseCanvas {
         return this.mAllowHwFeaturesInSwMode;
     }
 
-    public boolean onHwFeatureInSwMode() {
+    protected boolean onHwFeatureInSwMode() {
         return !this.mAllowHwFeaturesInSwMode;
     }
 

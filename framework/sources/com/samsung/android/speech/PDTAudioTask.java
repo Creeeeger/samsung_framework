@@ -1,6 +1,5 @@
 package com.samsung.android.speech;
 
-import android.media.AudioRecord;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,8 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/* loaded from: classes5.dex */
-public class PDTAudioTask extends AudioTask implements Runnable {
+/* loaded from: classes6.dex */
+class PDTAudioTask extends AudioTask implements Runnable {
     static final int DEFAULT_BLOCK_SIZE = 320;
     private int AUDIO_START;
     public float CMscore;
@@ -51,7 +50,7 @@ public class PDTAudioTask extends AudioTask implements Runnable {
     public short[] speech;
     private int totalReadCount;
 
-    public PDTAudioTask(SemSpeechRecognizer.ResultListener listener, String path, int command, int language, boolean samsungOOVResult) {
+    PDTAudioTask(SemSpeechRecognizer.ResultListener listener, String path, int command, int language, boolean samsungOOVResult) {
         super(listener, path, command, language, samsungOOVResult);
         this.TAG = PDTAudioTask.class.getSimpleName();
         this.q = null;
@@ -67,7 +66,7 @@ public class PDTAudioTask extends AudioTask implements Runnable {
         this.loadPath = null;
         this.mCommandType = 0;
         this.mLanguage = 1;
-        this.mLocale = Config.GetLocale(1);
+        this.mLocale = Config.GetLocale(this.mLanguage);
         this.totalReadCount = 0;
         this.AUDIO_START = 0;
         this.recogAfterReadCount = 0;
@@ -84,9 +83,6 @@ public class PDTAudioTask extends AudioTask implements Runnable {
         this.mStopHandler = null;
         this.dualThresholdFlag = 0;
         this.handler = new Handler() { // from class: com.samsung.android.speech.PDTAudioTask.1
-            AnonymousClass1() {
-            }
-
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 String[] result = msg.getData().getStringArray("recognition_result");
@@ -100,9 +96,8 @@ public class PDTAudioTask extends AudioTask implements Runnable {
 
     @Override // com.samsung.android.speech.AudioTask
     void init(LinkedBlockingQueue<short[]> q, int block_size, SemSpeechRecognizer.ResultListener listener, String path, int command, int Language, boolean samsungOOVResult) {
-        String simpleName = PDTAudioTask.class.getSimpleName();
-        this.TAG = simpleName;
-        Log.i(simpleName, "PDTAudioTask init()");
+        this.TAG = PDTAudioTask.class.getSimpleName();
+        Log.i(this.TAG, "PDTAudioTask init()");
         Log.i(this.TAG, "command : " + command);
         Log.i(this.TAG, "Language : " + Language);
         this.done = false;
@@ -113,7 +108,7 @@ public class PDTAudioTask extends AudioTask implements Runnable {
         this.m_listener = listener;
         this.loadPath = path;
         this.mLanguage = Language;
-        this.mLocale = Config.GetLocale(Language);
+        this.mLocale = Config.GetLocale(this.mLanguage);
         this.BargeinAct[0] = -1;
         if (command == 7 && Language == 0) {
             this.dualThresholdFlag = -1;
@@ -149,10 +144,9 @@ public class PDTAudioTask extends AudioTask implements Runnable {
             Log.d(this.TAG, "new AudioRecord : " + this.AUDIO_RECORD_FOR_BARGE_IN);
         }
         if (this.isPDTBargeInEnable) {
-            BargeInEngine bargeInEngineWrapper = BargeInEngineWrapper.getInstance();
-            this.aPDTBargeInEngine = bargeInEngineWrapper;
-            if (bargeInEngineWrapper != null) {
-                this.consoleInitReturn = bargeInEngineWrapper.phrasespotInit(this.acousticModelPathname, this.mLocale);
+            this.aPDTBargeInEngine = BargeInEngineWrapper.getInstance();
+            if (this.aPDTBargeInEngine != null) {
+                this.consoleInitReturn = this.aPDTBargeInEngine.phrasespotInit(this.acousticModelPathname, this.mLocale);
             } else {
                 Log.e(this.TAG, "BargeInEngineWrapper.getInstance() is null");
             }
@@ -170,12 +164,11 @@ public class PDTAudioTask extends AudioTask implements Runnable {
 
     @Override // com.samsung.android.speech.AudioTask
     public void stopBargeInAudioRecord() {
-        DataOutputStream dataOutputStream;
         Log.i(this.TAG, "stopBargeInAudioRecord start");
         if (this.rec != null) {
-            if (this.isMakePCM && (dataOutputStream = this.mDataOutputStream) != null) {
+            if (this.isMakePCM && this.mDataOutputStream != null) {
                 try {
-                    dataOutputStream.flush();
+                    this.mDataOutputStream.flush();
                     this.mDataOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -195,7 +188,6 @@ public class PDTAudioTask extends AudioTask implements Runnable {
 
     @Override // com.samsung.android.speech.AudioTask, java.lang.Runnable
     public void run() {
-        Handler handler;
         Log.d(this.TAG, "PDTAudioTask run() ");
         if (this.rec != null) {
             Log.d(this.TAG, "Call rec.startRecording start");
@@ -211,8 +203,8 @@ public class PDTAudioTask extends AudioTask implements Runnable {
             Log.e(this.TAG, "Bargein fail to start");
         }
         Log.i(this.TAG, "run end");
-        if (!this.done && (handler = this.mStopHandler) != null) {
-            handler.sendEmptyMessage(0);
+        if (!this.done && this.mStopHandler != null) {
+            this.mStopHandler.sendEmptyMessage(0);
         }
     }
 
@@ -221,9 +213,8 @@ public class PDTAudioTask extends AudioTask implements Runnable {
         stopBargeInAudioRecord();
         if (this.aPDTBargeInEngine != null) {
             Log.i(this.TAG, "PDT phrasespotClose start");
-            long j = this.consoleInitReturn;
-            if (j != -1) {
-                this.aPDTBargeInEngine.phrasespotClose(j);
+            if (this.consoleInitReturn != -1) {
+                this.aPDTBargeInEngine.phrasespotClose(this.consoleInitReturn);
             }
             Log.i(this.TAG, "PDT phrasespotClose end");
         }
@@ -240,9 +231,7 @@ public class PDTAudioTask extends AudioTask implements Runnable {
             return -1;
         }
         if (this.rec != null && !this.done) {
-            AudioRecord audioRecord = this.rec;
-            short[] sArr = this.speech;
-            this.readNshorts = audioRecord.read(sArr, 0, sArr.length);
+            this.readNshorts = this.rec.read(this.speech, 0, this.speech.length);
         }
         if (this.done) {
             Log.e(this.TAG, "readByteBlock return -1 : Section2 ");
@@ -255,45 +244,36 @@ public class PDTAudioTask extends AudioTask implements Runnable {
         if (this.totalReadCount % 20 == 0) {
             Log.d(this.TAG, "nshorts = " + (this.readNshorts * 10) + " command = " + this.mCommandType + " language : " + this.mLanguage + " dualThr : " + this.dualThresholdFlag);
         }
-        int i = this.totalReadCount + 1;
-        this.totalReadCount = i;
-        int i2 = this.recogAfterReadCount;
-        if (i2 != 0) {
-            this.recogAfterReadCount = (i2 + 1) % 50;
+        this.totalReadCount++;
+        if (this.recogAfterReadCount != 0) {
+            this.recogAfterReadCount = (this.recogAfterReadCount + 1) % 50;
         }
-        boolean z = this.done;
-        if (z) {
+        if (this.done) {
             Log.e(this.TAG, "readByteBlock return -1 : Section3 ");
             this.readNshorts = -1;
             return -1;
         }
         if (this.readNshorts > 0) {
-            if (z) {
+            if (this.done) {
                 Log.e(this.TAG, "readByteBlock return -1 : Section4 ");
                 this.readNshorts = -1;
                 return -1;
             }
             if (this.isPDTBargeInEnable) {
-                if (z) {
+                if (this.done) {
                     Log.e(this.TAG, "readByteBlock return -1 : Section5 ");
                     this.readNshorts = -1;
                     return -1;
                 }
-                if (this.aPDTBargeInEngine != null && i > this.AUDIO_START) {
+                if (this.aPDTBargeInEngine != null && this.totalReadCount > this.AUDIO_START) {
                     getPDTRecognitionResult(this.consoleInitReturn, this.speech);
                 }
             }
             if (this.isMakePCM) {
                 AudioTask.swap(this.speech);
-                int i3 = 0;
-                while (true) {
+                for (int i = 0; i < this.speech.length; i++) {
                     try {
-                        short[] sArr2 = this.speech;
-                        if (i3 >= sArr2.length) {
-                            break;
-                        }
-                        this.mDataOutputStream.writeShort(sArr2[i3]);
-                        i3++;
+                        this.mDataOutputStream.writeShort(this.speech[i]);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -329,22 +309,6 @@ public class PDTAudioTask extends AudioTask implements Runnable {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.speech.PDTAudioTask$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            String[] result = msg.getData().getStringArray("recognition_result");
-            if (PDTAudioTask.this.m_listener != null) {
-                PDTAudioTask.this.m_listener.onResults(result);
-            }
-        }
-    }
-
     private void SendHandlerMessage(String[] result) {
         Message msg = this.handler.obtainMessage();
         Bundle b = new Bundle();
@@ -359,13 +323,13 @@ public class PDTAudioTask extends AudioTask implements Runnable {
     }
 
     private void setPDTFilePath(int language, int domain) {
-        String PDTModelPath = Config.GetPDTAM(language, domain) + ".bin";
-        if ((isBargeInFile(Config.PDT_SO_FILE_PATH) || isBargeInFile(Config.PDT_SO_FILE_PATH_64)) && isBargeInFile(PDTModelPath)) {
+        String PDTModelPath = Config.GetPDTAM(language, domain);
+        String PDTModelPath2 = PDTModelPath + ".bin";
+        if (isBargeInFile(Config.PDT_SO_FILE_PATH) || isBargeInFile(Config.PDT_SO_FILE_PATH_64)) {
             this.isPDTBargeInEnable = true;
-            this.acousticModelPathname = PDTModelPath;
+            this.acousticModelPathname = PDTModelPath2;
         }
-        int i = this.mCommandType;
-        if (i == 7) {
+        if (this.mCommandType == 7) {
             this.isCameraBargeIn = true;
             if (this.isPDTBargeInEnable) {
                 this.isPDTBargeInEnable = true;
@@ -373,7 +337,7 @@ public class PDTAudioTask extends AudioTask implements Runnable {
             }
             return;
         }
-        if (i == 9) {
+        if (this.mCommandType == 9) {
             this.isCancelBargeIn = true;
         }
     }

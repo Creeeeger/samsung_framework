@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class BrakingPwle implements Parcelable {
     public static final Parcelable.Creator<BrakingPwle> CREATOR = new Parcelable.Creator<BrakingPwle>() { // from class: android.hardware.vibrator.BrakingPwle.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrakingPwle createFromParcel(Parcel _aidl_source) {
             BrakingPwle _aidl_out = new BrakingPwle();
@@ -17,6 +15,7 @@ public class BrakingPwle implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrakingPwle[] newArray(int _aidl_size) {
             return new BrakingPwle[_aidl_size];
@@ -24,25 +23,6 @@ public class BrakingPwle implements Parcelable {
     };
     public int braking;
     public int duration = 0;
-
-    /* renamed from: android.hardware.vibrator.BrakingPwle$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BrakingPwle> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrakingPwle createFromParcel(Parcel _aidl_source) {
-            BrakingPwle _aidl_out = new BrakingPwle();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrakingPwle[] newArray(int _aidl_size) {
-            return new BrakingPwle[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

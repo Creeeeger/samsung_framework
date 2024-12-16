@@ -16,29 +16,20 @@ public class AlphabetIndexer extends DataSetObserver implements SectionIndexer {
     protected Cursor mDataCursor;
 
     public AlphabetIndexer(Cursor cursor, int sortedColumnIndex, CharSequence alphabet) {
-        int i;
         this.mDataCursor = cursor;
         this.mColumnIndex = sortedColumnIndex;
         this.mAlphabet = alphabet;
-        int length = alphabet.length();
-        this.mAlphabetLength = length;
-        this.mAlphabetArray = new String[length];
-        int i2 = 0;
-        while (true) {
-            i = this.mAlphabetLength;
-            if (i2 >= i) {
-                break;
-            }
-            this.mAlphabetArray[i2] = Character.toString(this.mAlphabet.charAt(i2));
-            i2++;
+        this.mAlphabetLength = alphabet.length();
+        this.mAlphabetArray = new String[this.mAlphabetLength];
+        for (int i = 0; i < this.mAlphabetLength; i++) {
+            this.mAlphabetArray[i] = Character.toString(this.mAlphabet.charAt(i));
         }
-        this.mAlphaMap = new SparseIntArray(i);
+        this.mAlphaMap = new SparseIntArray(this.mAlphabetLength);
         if (cursor != null) {
             cursor.registerDataSetObserver(this);
         }
-        Collator collator = Collator.getInstance();
-        this.mCollator = collator;
-        collator.setStrength(0);
+        this.mCollator = Collator.getInstance();
+        this.mCollator.setStrength(0);
     }
 
     @Override // android.widget.SectionIndexer
@@ -47,13 +38,12 @@ public class AlphabetIndexer extends DataSetObserver implements SectionIndexer {
     }
 
     public void setCursor(Cursor cursor) {
-        Cursor cursor2 = this.mDataCursor;
-        if (cursor2 != null) {
-            cursor2.unregisterDataSetObserver(this);
+        if (this.mDataCursor != null) {
+            this.mDataCursor.unregisterDataSetObserver(this);
         }
         this.mDataCursor = cursor;
         if (cursor != null) {
-            cursor.registerDataSetObserver(this);
+            this.mDataCursor.registerDataSetObserver(this);
         }
         this.mAlphaMap.clear();
     }
@@ -75,9 +65,8 @@ public class AlphabetIndexer extends DataSetObserver implements SectionIndexer {
         if (cursor == null || this.mAlphabet == null || sectionIndex <= 0) {
             return 0;
         }
-        int i = this.mAlphabetLength;
-        if (sectionIndex >= i) {
-            sectionIndex = i - 1;
+        if (sectionIndex >= this.mAlphabetLength) {
+            sectionIndex = this.mAlphabetLength - 1;
         }
         int savedCursorPos = cursor.getPosition();
         int count = cursor.getCount();

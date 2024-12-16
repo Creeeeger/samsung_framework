@@ -13,25 +13,21 @@ import java.util.function.Supplier;
 public class FunctionalUtils {
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingChecked2Consumer<Input, ExceptionOne extends Exception, ExceptionTwo extends Exception> {
         void accept(Input input) throws Exception, Exception;
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingCheckedConsumer<Input, ExceptionType extends Exception> {
         void accept(Input input) throws Exception;
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingCheckedFunction<Input, Output, ExceptionType extends Exception> {
         Output apply(Input input) throws Exception;
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingCheckedSupplier<Output, ExceptionType extends Exception> {
         Output get() throws Exception;
     }
@@ -72,7 +68,7 @@ public class FunctionalUtils {
         };
     }
 
-    public static /* synthetic */ void lambda$handleExceptions$0(ThrowingRunnable r, Consumer handler) {
+    static /* synthetic */ void lambda$handleExceptions$0(ThrowingRunnable r, Consumer handler) {
         try {
             r.run();
         } catch (Throwable t) {
@@ -81,7 +77,6 @@ public class FunctionalUtils {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingRunnable extends Runnable {
         void runOrThrow() throws Exception;
 
@@ -96,7 +91,6 @@ public class FunctionalUtils {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingSupplier<T> extends Supplier<T> {
         T getOrThrow() throws Exception;
 
@@ -111,7 +105,6 @@ public class FunctionalUtils {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingConsumer<T> extends Consumer<T> {
         void acceptOrThrow(T t) throws Exception;
 
@@ -126,7 +119,6 @@ public class FunctionalUtils {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface RemoteExceptionIgnoringConsumer<T> extends Consumer<T> {
         void acceptOrThrow(T t) throws RemoteException;
 
@@ -140,7 +132,6 @@ public class FunctionalUtils {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingFunction<T, R> extends Function<T, R> {
         R applyOrThrow(T t) throws Exception;
 
@@ -155,7 +146,6 @@ public class FunctionalUtils {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingBiFunction<T, U, R> extends BiFunction<T, U, R> {
         R applyOrThrow(T t, U u) throws Exception;
 
@@ -170,7 +160,6 @@ public class FunctionalUtils {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface ThrowingBiConsumer<A, B> extends BiConsumer<A, B> {
         void acceptOrThrow(A a, B b) throws Exception;
 

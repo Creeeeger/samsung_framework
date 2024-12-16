@@ -11,7 +11,6 @@ public interface DeviceFilter<D extends Parcelable> extends Parcelable {
     public static final int MEDIUM_TYPE_WIFI = 2;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MediumType {
     }
 

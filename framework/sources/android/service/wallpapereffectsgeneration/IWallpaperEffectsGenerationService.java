@@ -13,7 +13,6 @@ public interface IWallpaperEffectsGenerationService extends IInterface {
 
     void onGenerateCinematicEffect(CinematicEffectRequest cinematicEffectRequest) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWallpaperEffectsGenerationService {
         @Override // android.service.wallpapereffectsgeneration.IWallpaperEffectsGenerationService
         public void onGenerateCinematicEffect(CinematicEffectRequest request) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IWallpaperEffectsGenerationService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWallpaperEffectsGenerationService {
         static final int TRANSACTION_onGenerateCinematicEffect = 1;
 
@@ -68,24 +66,21 @@ public interface IWallpaperEffectsGenerationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWallpaperEffectsGenerationService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWallpaperEffectsGenerationService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWallpaperEffectsGenerationService.DESCRIPTOR);
+                case 1:
+                    CinematicEffectRequest _arg0 = (CinematicEffectRequest) data.readTypedObject(CinematicEffectRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGenerateCinematicEffect(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CinematicEffectRequest _arg0 = (CinematicEffectRequest) data.readTypedObject(CinematicEffectRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGenerateCinematicEffect(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IWallpaperEffectsGenerationService {
             private IBinder mRemote;
 

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IDescramblerBase extends IBase {
     public static final String kInterfaceName = "android.hardware.cas@1.0::IDescramblerBase";
 
@@ -107,7 +107,6 @@ public interface IDescramblerBase extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes.dex */
     public static final class Proxy implements IDescramblerBase {
         private IHwBinder mRemote;
 
@@ -328,7 +327,6 @@ public interface IDescramblerBase extends IBase {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends HwBinder implements IDescramblerBase {
         @Override // android.hardware.cas.V1_0.IDescramblerBase, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -351,7 +349,7 @@ public interface IDescramblerBase extends IBase {
 
         @Override // android.hardware.cas.V1_0.IDescramblerBase, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-92, 50, -42, -39, 32, 2, 72, -36, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, 38, -126, 123, -51, 108, -34, -93, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, -42, 94, -1, 57, -71, 57, -10, 69, -123, -46, 125, -111, 90, 88, 87}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-92, 50, -42, -39, 32, 2, 72, -36, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, 38, -126, 123, -51, 108, -34, -93, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, -42, 94, -1, 57, -71, 57, -10, 69, -123, -46, 125, -111, 90, 88, 87}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.cas.V1_0.IDescramblerBase, android.internal.hidl.base.V1_0.IBase

@@ -9,7 +9,6 @@ public final class ProcessStatsProto {
     public static final long TOTAL_RUNNING_STATE = 1146756268038L;
     public static final long UID = 1120986464258L;
 
-    /* loaded from: classes3.dex */
     public final class Kill {
         public static final long CACHED = 1120986464258L;
         public static final long CACHED_PSS = 1146756268035L;

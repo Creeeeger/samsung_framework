@@ -13,10 +13,10 @@ import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.hardware.HardwareBuffer;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
-import android.os.SystemProperties;
 import android.util.Slog;
 import android.view.InflateException;
 import android.view.SurfaceControl;
@@ -51,11 +51,13 @@ public class TransitionAnimation {
     private static final int THUMBNAIL_TRANSITION_EXIT_SCALE_DOWN = 3;
     private static final int THUMBNAIL_TRANSITION_EXIT_SCALE_UP = 1;
     static final Interpolator TOUCH_RESPONSE_INTERPOLATOR = new PathInterpolator(0.3f, 0.0f, 0.1f, 1.0f);
-    public static final int WALLPAPER_TRANSITION_CLOSE = 2;
-    public static final int WALLPAPER_TRANSITION_INTRA_CLOSE = 4;
-    public static final int WALLPAPER_TRANSITION_INTRA_OPEN = 3;
+    public static final int WALLPAPER_TRANSITION_CHANGE = 1;
+    public static final int WALLPAPER_TRANSITION_CLOSE = 3;
+    public static final int WALLPAPER_TRANSITION_INTRA_CLOSE = 5;
+    public static final int WALLPAPER_TRANSITION_INTRA_OPEN = 4;
     public static final int WALLPAPER_TRANSITION_NONE = 0;
-    public static final int WALLPAPER_TRANSITION_OPEN = 1;
+    public static final int WALLPAPER_TRANSITION_OPEN = 2;
+    public static final int WALLPAPER_TRANSITION_TRANSLUCENT_OPEN = 6;
     private final int mClipRevealTranslationY;
     private final int mConfigShortAnimTime;
     private final Context mContext;
@@ -88,7 +90,6 @@ public class TransitionAnimation {
             return lambda$new$1;
         }
     };
-    private final boolean mGridLayoutRecentsEnabled = SystemProperties.getBoolean("ro.recents.grid", false);
     private final boolean mLowRamRecentsEnabled = ActivityManager.isLowRamDeviceStatic();
 
     public TransitionAnimation(Context context, boolean debug, String tag) {
@@ -98,13 +99,14 @@ public class TransitionAnimation {
         this.mDecelerateInterpolator = AnimationUtils.loadInterpolator(context, 17563651);
         this.mFastOutLinearInInterpolator = AnimationUtils.loadInterpolator(context, 17563663);
         this.mLinearOutSlowInInterpolator = AnimationUtils.loadInterpolator(context, 17563662);
-        this.mClipRevealTranslationY = (int) (context.getResources().getDisplayMetrics().density * 8.0f);
+        this.mClipRevealTranslationY = (int) (this.mContext.getResources().getDisplayMetrics().density * 8.0f);
         this.mConfigShortAnimTime = context.getResources().getInteger(17694720);
-        TypedArray windowStyle = context.getTheme().obtainStyledAttributes(R.styleable.Window);
+        TypedArray windowStyle = this.mContext.getTheme().obtainStyledAttributes(R.styleable.Window);
         this.mDefaultWindowAnimationStyleResId = windowStyle.getResourceId(8, 0);
         windowStyle.recycle();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ float lambda$new$0(float input) {
         if (input >= 0.5f) {
             float t = (input - 0.5f) / 0.5f;
@@ -113,6 +115,7 @@ public class TransitionAnimation {
         return 0.0f;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ float lambda$new$1(float input) {
         if (input < 0.5f) {
             float t = input / 0.5f;
@@ -131,9 +134,6 @@ public class TransitionAnimation {
     }
 
     public Animation loadKeyguardUnoccludeAnimation() {
-        if (CoreRune.FW_CUSTOM_OCCLUDE_BASIC_ANIM) {
-            return loadDefaultAnimationRes(R.anim.samsung_lock_screen_unocclude);
-        }
         return loadDefaultAnimationRes(R.anim.wallpaper_open_exit);
     }
 
@@ -195,6 +195,9 @@ public class TransitionAnimation {
             resId = ent.array.getResourceId(animAttr, 0);
         }
         int resId2 = updateToTranslucentAnimIfNeeded(resId, transit);
+        if (CoreRune.FW_LARGE_FLIP_TRANSITION && this.mDisplayId == 1) {
+            resId2 = updateToCustomCoverAnimIfNeeded(resId2);
+        }
         if (CoreRune.FW_CUSTOM_BASIC_ANIM) {
             resId2 = updateToCustomAnimIfNeeded(resId2);
         }
@@ -210,7 +213,11 @@ public class TransitionAnimation {
         if (animAttr >= 0 && (ent = getCachedAnimations(lp)) != null) {
             resId = ent.array.getResourceId(animAttr, 0);
         }
-        return updateToTranslucentAnimIfNeeded(resId, transit);
+        int resId2 = updateToTranslucentAnimIfNeeded(resId, transit);
+        if (CoreRune.FW_CUSTOM_BASIC_ANIM) {
+            return updateToCustomAnimIfNeeded(resId2);
+        }
+        return resId2;
     }
 
     public int getDefaultAnimationResId(int animAttr, int transit) {
@@ -219,7 +226,11 @@ public class TransitionAnimation {
         if (animAttr >= 0 && (ent = getCachedAnimations("android", this.mDefaultWindowAnimationStyleResId)) != null) {
             resId = ent.array.getResourceId(animAttr, 0);
         }
-        return updateToTranslucentAnimIfNeeded(resId, transit);
+        int resId2 = updateToTranslucentAnimIfNeeded(resId, transit);
+        if (CoreRune.FW_CUSTOM_BASIC_ANIM) {
+            return updateToCustomAnimIfNeeded(resId2);
+        }
+        return resId2;
     }
 
     private Animation loadAnimationAttr(String packageName, int animStyleResId, int animAttr, boolean translucent, int transit) {
@@ -239,6 +250,9 @@ public class TransitionAnimation {
             resId = updateToTranslucentAnimIfNeeded(resId);
         } else if (transit != -1) {
             resId = updateToTranslucentAnimIfNeeded(resId, transit);
+        }
+        if (CoreRune.FW_LARGE_FLIP_TRANSITION && this.mDisplayId == 1) {
+            resId = updateToCustomCoverAnimIfNeeded(resId);
         }
         if (CoreRune.FW_CUSTOM_BASIC_ANIM) {
             resId = updateToCustomAnimIfNeeded(resId);
@@ -404,7 +418,7 @@ public class TransitionAnimation {
             Animation clipAnimLR = new ClipRectLRAnimation(clipStartX, this.mTmpRect.width() + clipStartX, 0, appWidth);
             clipAnimLR.setInterpolator(this.mClipHorizontalInterpolator);
             boolean cutOff3 = cutOff;
-            clipAnimLR.setDuration(((float) duration2) / 2.5f);
+            clipAnimLR.setDuration((long) (duration2 / 2.5f));
             TranslateAnimation translate = new TranslateAnimation(translationX, 0.0f, translationY, 0.0f);
             if (cutOff3) {
                 interpolator = this.mTouchResponseInterpolator;
@@ -590,14 +604,12 @@ public class TransitionAnimation {
                     this.mTmpFromClipRect.inset(contentInsets);
                     if (shouldScaleDownThumbnailTransition(orientation)) {
                         float scale = thumbWidth / ((appWidth - contentInsets.left) - contentInsets.right);
-                        if (!this.mGridLayoutRecentsEnabled) {
-                            int unscaledThumbHeight = (int) (thumbHeight / scale);
-                            Rect rect = this.mTmpFromClipRect;
-                            rect.bottom = rect.top + unscaledThumbHeight;
-                        }
+                        int unscaledThumbHeight = (int) (thumbHeight / scale);
+                        this.mTmpFromClipRect.bottom = this.mTmpFromClipRect.top + unscaledThumbHeight;
                         Animation scaleAnim = new ScaleAnimation(scaleUp ? scale : 1.0f, scaleUp ? 1.0f : scale, scaleUp ? scale : 1.0f, scaleUp ? 1.0f : scale, containingFrame.width() / 2.0f, (containingFrame.height() / 2.0f) + contentInsets.top);
                         float targetX = this.mTmpRect.left - containingFrame.left;
-                        float x = (containingFrame.width() / 2.0f) - ((containingFrame.width() / 2.0f) * scale);
+                        int unscaledThumbHeight2 = containingFrame.width();
+                        float x = (containingFrame.width() / 2.0f) - ((unscaledThumbHeight2 / 2.0f) * scale);
                         float targetY = this.mTmpRect.top - containingFrame.top;
                         float y = (containingFrame.height() / 2.0f) - ((containingFrame.height() / 2.0f) * scale);
                         if (this.mLowRamRecentsEnabled && contentInsets.top == 0 && scaleUp) {
@@ -625,10 +637,8 @@ public class TransitionAnimation {
                         set.addAnimation(translateAnim2);
                     } else {
                         appHeight = appHeight2;
-                        Rect rect2 = this.mTmpFromClipRect;
-                        rect2.bottom = rect2.top + thumbHeightI;
-                        Rect rect3 = this.mTmpFromClipRect;
-                        rect3.right = rect3.left + thumbWidthI;
+                        this.mTmpFromClipRect.bottom = this.mTmpFromClipRect.top + thumbHeightI;
+                        this.mTmpFromClipRect.right = this.mTmpFromClipRect.left + thumbWidthI;
                         if (scaleUp) {
                             clipAnim = new ClipRectAnimation(this.mTmpFromClipRect, this.mTmpToClipRect);
                         } else {
@@ -683,8 +693,6 @@ public class TransitionAnimation {
         float toX;
         float fromX;
         float toY;
-        float fromY2;
-        float toX2;
         Animation clipAnim;
         int thumbWidthI = thumbnailHeader.getWidth();
         float thumbWidth = thumbWidthI > 0 ? thumbWidthI : 1.0f;
@@ -695,90 +703,66 @@ public class TransitionAnimation {
         if (shouldScaleDownThumbnailTransition(orientation)) {
             float fromX2 = this.mTmpRect.left;
             fromY = this.mTmpRect.top;
-            float toX3 = ((this.mTmpRect.width() / 2) * (scaleW - 1.0f)) + appRect.left;
-            float toY2 = ((appRect.height() / 2) * (1.0f - (1.0f / scaleW))) + appRect.top;
+            float toX2 = ((this.mTmpRect.width() / 2) * (scaleW - 1.0f)) + appRect.left;
             float pivotX3 = this.mTmpRect.width() / 2;
-            float pivotY2 = (appRect.height() / 2) / scaleW;
-            if (!this.mGridLayoutRecentsEnabled) {
-                pivotX = pivotX3;
-                pivotY = pivotY2;
-                pivotX2 = toY2;
-                toX = fromX2;
-                fromX = toX3;
-            } else {
-                fromY -= thumbHeightI;
-                pivotX = pivotX3;
-                pivotY = pivotY2;
-                pivotX2 = toY2 - (thumbHeightI * scaleW);
-                toX = fromX2;
-                fromX = toX3;
-            }
+            pivotY = (appRect.height() / 2) / scaleW;
+            pivotX = pivotX3;
+            pivotX2 = ((appRect.height() / 2) * (1.0f - (1.0f / scaleW))) + appRect.top;
+            toX = fromX2;
+            fromX = toX2;
         } else {
             pivotY = 0.0f;
             float fromX3 = this.mTmpRect.left;
             fromY = this.mTmpRect.top;
-            float toX4 = appRect.left;
+            float toX3 = appRect.left;
             pivotX = 0.0f;
             pivotX2 = appRect.top;
             toX = fromX3;
-            fromX = toX4;
+            fromX = toX3;
         }
-        float toY3 = pivotX2;
+        float toY2 = pivotX2;
         if (scaleUp) {
-            toY = toY3;
+            toY = toY2;
             Animation scale = new ScaleAnimation(1.0f, scaleW, 1.0f, scaleW, pivotX, pivotY);
-            Interpolator interpolator = TOUCH_RESPONSE_INTERPOLATOR;
-            scale.setInterpolator(interpolator);
+            scale.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             scale.setDuration(336L);
             Animation alpha = new AlphaAnimation(1.0f, 0.0f);
             alpha.setInterpolator(this.mThumbnailFadeOutInterpolator);
             alpha.setDuration(336L);
             Animation translate = createCurvedMotion(toX, fromX, fromY, toY);
-            translate.setInterpolator(interpolator);
-            float toX5 = fromX;
-            float fromY3 = fromY;
+            translate.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             translate.setDuration(336L);
             this.mTmpFromClipRect.set(0, 0, thumbWidthI, thumbHeightI);
             this.mTmpToClipRect.set(appRect);
             this.mTmpToClipRect.offsetTo(0, 0);
-            this.mTmpToClipRect.right = (int) (r7.right / scaleW);
-            this.mTmpToClipRect.bottom = (int) (r7.bottom / scaleW);
+            this.mTmpToClipRect.right = (int) (this.mTmpToClipRect.right / scaleW);
+            this.mTmpToClipRect.bottom = (int) (this.mTmpToClipRect.bottom / scaleW);
             if (contentInsets != null) {
                 this.mTmpToClipRect.inset((int) ((-contentInsets.left) * scaleW), (int) ((-contentInsets.top) * scaleW), (int) ((-contentInsets.right) * scaleW), (int) ((-contentInsets.bottom) * scaleW));
             }
             Animation clipAnim2 = new ClipRectAnimation(this.mTmpFromClipRect, this.mTmpToClipRect);
-            clipAnim2.setInterpolator(interpolator);
+            clipAnim2.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             clipAnim2.setDuration(336L);
             AnimationSet set = new AnimationSet(false);
             set.addAnimation(scale);
-            if (!this.mGridLayoutRecentsEnabled) {
-                set.addAnimation(alpha);
-            }
+            set.addAnimation(alpha);
             set.addAnimation(translate);
             set.addAnimation(clipAnim2);
             clipAnim = set;
-            fromY2 = fromY3;
-            toX2 = toX5;
         } else {
-            float toX6 = fromX;
-            toY = toY3;
+            toY = toY2;
             Animation scale2 = new ScaleAnimation(scaleW, 1.0f, scaleW, 1.0f, pivotX, pivotY);
-            Interpolator interpolator2 = TOUCH_RESPONSE_INTERPOLATOR;
-            scale2.setInterpolator(interpolator2);
+            scale2.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             scale2.setDuration(336L);
             Animation alpha2 = new AlphaAnimation(0.0f, 1.0f);
             alpha2.setInterpolator(this.mThumbnailFadeInInterpolator);
             alpha2.setDuration(336L);
-            fromY2 = fromY;
-            toX2 = toX6;
-            Animation translate2 = createCurvedMotion(toX2, toX, toY, fromY2);
-            translate2.setInterpolator(interpolator2);
+            Animation translate2 = createCurvedMotion(fromX, toX, toY, fromY);
+            translate2.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
             translate2.setDuration(336L);
             AnimationSet set2 = new AnimationSet(false);
             set2.addAnimation(scale2);
-            if (!this.mGridLayoutRecentsEnabled) {
-                set2.addAnimation(alpha2);
-            }
+            set2.addAnimation(alpha2);
             set2.addAnimation(translate2);
             clipAnim = set2;
         }
@@ -858,7 +842,7 @@ public class TransitionAnimation {
     }
 
     private boolean shouldScaleDownThumbnailTransition(int orientation) {
-        return this.mGridLayoutRecentsEnabled || orientation == 1;
+        return orientation == 1;
     }
 
     private static int updateToTranslucentAnimIfNeeded(int anim, int transit) {
@@ -882,10 +866,10 @@ public class TransitionAnimation {
     }
 
     private static int getTransitCompatType(int transit, int wallpaperTransit) {
-        if (wallpaperTransit == 3) {
+        if (wallpaperTransit == 4) {
             return 14;
         }
-        if (wallpaperTransit == 4) {
+        if (wallpaperTransit == 5) {
             return 15;
         }
         if (transit == 1) {
@@ -902,7 +886,7 @@ public class TransitionAnimation {
             return 336L;
         }
         float fraction = Math.max(Math.abs(translationX) / displayFrame.width(), Math.abs(translationY) / displayFrame.height());
-        return (84.0f * fraction) + 336.0f;
+        return (long) ((84.0f * fraction) + 336.0f);
     }
 
     private int getThumbnailTransitionState(boolean enter, boolean scaleUp) {
@@ -951,9 +935,6 @@ public class TransitionAnimation {
         } catch (Resources.NotFoundException | InflateException e) {
             Slog.w(tag, "Unable to load animation resource", e);
             return null;
-        } catch (RuntimeException e2) {
-            Slog.w(tag, "Unable to load animation resource", e2);
-            return null;
         }
     }
 
@@ -962,9 +943,7 @@ public class TransitionAnimation {
         if (goingToNotificationShade) {
             return AnimationUtils.loadAnimation(context, R.anim.lock_screen_behind_enter_fade_in);
         }
-        if (CoreRune.FW_CUSTOM_KEYGUARD_BASIC_ANIM) {
-            resource = updateToCustomKeyguardAnim(onWallpaper, subtleAnimation);
-        } else if (subtleAnimation) {
+        if (subtleAnimation) {
             resource = R.anim.lock_screen_behind_enter_subtle;
         } else if (onWallpaper) {
             resource = R.anim.lock_screen_behind_enter_wallpaper;
@@ -991,6 +970,13 @@ public class TransitionAnimation {
         return (hardwareBuffer.getUsage() & 16384) == 16384;
     }
 
+    public static float getBorderLuma(HardwareBuffer hwBuffer, ColorSpace colorSpace, SurfaceControl sourceSurfaceControl) {
+        if (hasProtectedContent(hwBuffer)) {
+            return getBorderLuma(sourceSurfaceControl, hwBuffer.getWidth(), hwBuffer.getHeight());
+        }
+        return getBorderLuma(hwBuffer, colorSpace);
+    }
+
     public static float getBorderLuma(SurfaceControl surfaceControl, int w, int h) {
         ScreenCapture.ScreenshotHardwareBuffer buffer = ScreenCapture.captureLayers(surfaceControl, new Rect(0, 0, w, h), 1.0f);
         if (buffer == null) {
@@ -1010,53 +996,50 @@ public class TransitionAnimation {
             ImageReader ir = ImageReader.newInstance(hwBuffer.getWidth(), hwBuffer.getHeight(), format, 1);
             ir.getSurface().attachAndQueueBufferWithColorSpace(hwBuffer, colorSpace);
             Image image = ir.acquireLatestImage();
-            if (image != null && image.getPlaneCount() >= 1) {
-                Image.Plane plane = image.getPlanes()[0];
-                ByteBuffer buffer = plane.getBuffer();
-                int width = image.getWidth();
-                int height = image.getHeight();
-                int pixelStride = plane.getPixelStride();
-                int rowStride = plane.getRowStride();
-                int[] borderLumas = new int[((width + height) * 2) / 10];
-                int i = 0;
-                int size = width - 10;
-                for (int x = 0; x < size; x += 10) {
-                    int i2 = i + 1;
-                    borderLumas[i] = getPixelLuminance(buffer, x, 0, pixelStride, rowStride);
-                    i = i2 + 1;
-                    borderLumas[i2] = getPixelLuminance(buffer, x, height - 1, pixelStride, rowStride);
-                }
-                int y = 0;
-                int size2 = height - 10;
-                while (y < size2) {
-                    int i3 = i + 1;
-                    borderLumas[i] = getPixelLuminance(buffer, 0, y, pixelStride, rowStride);
-                    i = i3 + 1;
-                    borderLumas[i3] = getPixelLuminance(buffer, width - 1, y, pixelStride, rowStride);
-                    y += 10;
-                    plane = plane;
-                }
-                ir.close();
-                int[] histogram = new int[256];
-                int maxCount = 0;
-                int mostLuma = 0;
-                int length = borderLumas.length;
-                int format2 = 0;
-                while (format2 < length) {
-                    int luma = borderLumas[format2];
-                    int count = histogram[luma] + 1;
-                    histogram[luma] = count;
-                    int[] histogram2 = histogram;
-                    if (count > maxCount) {
-                        maxCount = count;
-                        mostLuma = luma;
-                    }
-                    format2++;
-                    histogram = histogram2;
-                }
-                return mostLuma / 255.0f;
+            if (image == null || image.getPlaneCount() < 1) {
+                return 0.0f;
             }
-            return 0.0f;
+            Image.Plane plane = image.getPlanes()[0];
+            ByteBuffer buffer = plane.getBuffer();
+            int width = image.getWidth();
+            int height = image.getHeight();
+            int pixelStride = plane.getPixelStride();
+            int rowStride = plane.getRowStride();
+            int[] histogram = new int[256];
+            int size = width - 10;
+            for (int x = 0; x < size; x += 10) {
+                int topLm = getPixelLuminance(buffer, x, 0, pixelStride, rowStride);
+                int bottomLm = getPixelLuminance(buffer, x, height - 1, pixelStride, rowStride);
+                histogram[topLm] = histogram[topLm] + 1;
+                histogram[bottomLm] = histogram[bottomLm] + 1;
+            }
+            int size2 = height - 10;
+            for (int y = 0; y < size2; y += 10) {
+                int leftLm = getPixelLuminance(buffer, 0, y, pixelStride, rowStride);
+                int rightLm = getPixelLuminance(buffer, width - 1, y, pixelStride, rowStride);
+                histogram[leftLm] = histogram[leftLm] + 1;
+                histogram[rightLm] = histogram[rightLm] + 1;
+            }
+            ir.close();
+            int halfNum = (width + height) / 10;
+            int sum = 0;
+            int medianLuminance = 0;
+            int i = 0;
+            while (true) {
+                Image.Plane plane2 = plane;
+                if (i >= histogram.length) {
+                    break;
+                }
+                sum += histogram[i];
+                if (sum < halfNum) {
+                    i++;
+                    plane = plane2;
+                } else {
+                    medianLuminance = i;
+                    break;
+                }
+            }
+            return medianLuminance / 255.0f;
         }
         return 0.0f;
     }
@@ -1074,19 +1057,6 @@ public class TransitionAnimation {
         AttributeCache.instance().monitorPackageRemove(handler);
     }
 
-    private static int updateToCustomKeyguardAnim(boolean onWallpaper, boolean subtleAnimation) {
-        if (subtleAnimation) {
-            if (onWallpaper) {
-                return R.anim.samsung_lock_screen_behind_enter_wallpaper_subtle;
-            }
-            return R.anim.samsung_lock_screen_behind_enter_subtle;
-        }
-        if (onWallpaper) {
-            return R.anim.samsung_lock_screen_behind_enter_wallpaper;
-        }
-        return R.anim.samsung_lock_screen_behind_enter;
-    }
-
     private int updateToCustomAnimIfNeeded(int anim) {
         switch (anim) {
             case R.anim.activity_close_enter /* 17432589 */:
@@ -1101,21 +1071,21 @@ public class TransitionAnimation {
                 return R.anim.samsung_activity_translucent_close_exit;
             case R.anim.activity_translucent_open_enter /* 17432594 */:
                 return R.anim.samsung_activity_translucent_open_enter;
-            case R.anim.task_close_enter /* 17432933 */:
+            case R.anim.task_close_enter /* 17432923 */:
                 return R.anim.samsung_task_close_enter;
-            case R.anim.task_close_exit /* 17432934 */:
+            case R.anim.task_close_exit /* 17432924 */:
                 return R.anim.samsung_task_close_exit;
-            case R.anim.task_open_enter /* 17432943 */:
+            case R.anim.task_open_enter /* 17432933 */:
                 return R.anim.samsung_task_open_enter;
-            case R.anim.task_open_exit /* 17432945 */:
+            case R.anim.task_open_exit /* 17432935 */:
                 return R.anim.samsung_task_open_exit;
-            case R.anim.wallpaper_close_enter /* 17432958 */:
+            case R.anim.wallpaper_close_enter /* 17432948 */:
                 return R.anim.samsung_wallpaper_close_enter;
-            case R.anim.wallpaper_close_exit /* 17432959 */:
+            case R.anim.wallpaper_close_exit /* 17432949 */:
                 return R.anim.samsung_wallpaper_close_exit;
-            case R.anim.wallpaper_open_enter /* 17432966 */:
+            case R.anim.wallpaper_open_enter /* 17432956 */:
                 return R.anim.samsung_wallpaper_open_enter;
-            case R.anim.wallpaper_open_exit /* 17432967 */:
+            case R.anim.wallpaper_open_exit /* 17432957 */:
                 return R.anim.samsung_wallpaper_open_exit;
             default:
                 return anim;
@@ -1126,27 +1096,37 @@ public class TransitionAnimation {
         return ((-16777216) & resId) == 16777216;
     }
 
-    public Animation loadDimAnimation() {
-        return loadAnimationRes("android", R.anim.samsung_activity_open_dim_anim);
+    public static Animation loadDimAnimation(Context context, int transitType) {
+        int i;
+        if (transitType == 1) {
+            i = R.anim.samsung_activity_open_dim_anim;
+        } else {
+            i = R.anim.samsung_activity_close_dim_anim;
+        }
+        return AnimationUtils.loadAnimation(context, i);
+    }
+
+    public Animation loadResumeAffordanceAnimation() {
+        return loadDefaultAnimationRes(R.anim.samsung_resumed_affordance);
     }
 
     public int updateToCustomCoverAnimIfNeeded(int anim) {
         switch (anim) {
             case R.anim.activity_close_enter /* 17432589 */:
-            case R.anim.task_close_enter /* 17432933 */:
-            case R.anim.wallpaper_open_enter /* 17432966 */:
+            case R.anim.task_close_enter /* 17432923 */:
+            case R.anim.wallpaper_open_enter /* 17432956 */:
                 return R.anim.samsung_cover_screen_task_close_enter;
             case R.anim.activity_close_exit /* 17432590 */:
-            case R.anim.task_close_exit /* 17432934 */:
-            case R.anim.wallpaper_open_exit /* 17432967 */:
+            case R.anim.task_close_exit /* 17432924 */:
+            case R.anim.wallpaper_open_exit /* 17432957 */:
                 return R.anim.samsung_cover_screen_task_close_exit;
             case R.anim.activity_open_enter /* 17432591 */:
-            case R.anim.task_open_enter /* 17432943 */:
-            case R.anim.wallpaper_close_enter /* 17432958 */:
+            case R.anim.task_open_enter /* 17432933 */:
+            case R.anim.wallpaper_close_enter /* 17432948 */:
                 return R.anim.samsung_cover_screen_task_open_enter;
             case R.anim.activity_open_exit /* 17432592 */:
-            case R.anim.task_open_exit /* 17432945 */:
-            case R.anim.wallpaper_close_exit /* 17432959 */:
+            case R.anim.task_open_exit /* 17432935 */:
+            case R.anim.wallpaper_close_exit /* 17432949 */:
                 return R.anim.samsung_cover_screen_task_open_exit;
             default:
                 return anim;
@@ -1155,5 +1135,26 @@ public class TransitionAnimation {
 
     public void overrideDisplayId(int displayId) {
         this.mDisplayId = displayId;
+    }
+
+    public static String wallpaperTransitTypeToString(int wallpaperTransit) {
+        switch (wallpaperTransit) {
+            case 0:
+                return "WALLPAPER_NONE";
+            case 1:
+                return "WALLPAPER_CHANGE";
+            case 2:
+                return "WALLPAPER_OPEN";
+            case 3:
+                return "WALLPAPER_CLOSE";
+            case 4:
+                return "WALLPAPER_INTRA_OPEN";
+            case 5:
+                return "WALLPAPER_INTRA_CLOSE";
+            case 6:
+                return "WALLPAPER_TRANSLUCENT_OPEN";
+            default:
+                return "UNKNOWN(" + wallpaperTransit + NavigationBarInflaterView.KEY_CODE_END;
+        }
     }
 }

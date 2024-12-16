@@ -4,7 +4,7 @@ import com.android.framework.protobuf.Internal;
 import java.lang.reflect.Field;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class FieldInfo implements Comparable<FieldInfo> {
     private final Field cachedSizeField;
     private final boolean enforceUtf8;
@@ -179,42 +179,13 @@ final class FieldInfo implements Comparable<FieldInfo> {
         return this.cachedSizeField;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.FieldInfo$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$FieldType;
-
-        static {
-            int[] iArr = new int[FieldType.values().length];
-            $SwitchMap$com$google$protobuf$FieldType = iArr;
-            try {
-                iArr[FieldType.MESSAGE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$FieldType[FieldType.GROUP.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$FieldType[FieldType.MESSAGE_LIST.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$FieldType[FieldType.GROUP_LIST.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
-    }
-
     public Class<?> getMessageFieldClass() {
-        switch (AnonymousClass1.$SwitchMap$com$google$protobuf$FieldType[this.type.ordinal()]) {
-            case 1:
-            case 2:
-                Field field = this.field;
-                return field != null ? field.getType() : this.oneofStoredType;
-            case 3:
-            case 4:
+        switch (this.type) {
+            case MESSAGE:
+            case GROUP:
+                return this.field != null ? this.field.getType() : this.oneofStoredType;
+            case MESSAGE_LIST:
+            case GROUP_LIST:
                 return this.messageClass;
             default:
                 return null;
@@ -222,10 +193,9 @@ final class FieldInfo implements Comparable<FieldInfo> {
     }
 
     public static Builder newBuilder() {
-        return new Builder(null);
+        return new Builder();
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private Field cachedSizeField;
         private boolean enforceUtf8;
@@ -239,10 +209,6 @@ final class FieldInfo implements Comparable<FieldInfo> {
         private int presenceMask;
         private boolean required;
         private FieldType type;
-
-        /* synthetic */ Builder(AnonymousClass1 x0) {
-            this();
-        }
 
         private Builder() {
         }
@@ -306,34 +272,28 @@ final class FieldInfo implements Comparable<FieldInfo> {
         }
 
         public FieldInfo build() {
-            OneofInfo oneofInfo = this.oneof;
-            if (oneofInfo != null) {
-                return FieldInfo.forOneofMemberField(this.fieldNumber, this.type, oneofInfo, this.oneofStoredType, this.enforceUtf8, this.enumVerifier);
+            if (this.oneof != null) {
+                return FieldInfo.forOneofMemberField(this.fieldNumber, this.type, this.oneof, this.oneofStoredType, this.enforceUtf8, this.enumVerifier);
             }
-            Object obj = this.mapDefaultEntry;
-            if (obj != null) {
-                return FieldInfo.forMapField(this.field, this.fieldNumber, obj, this.enumVerifier);
+            if (this.mapDefaultEntry != null) {
+                return FieldInfo.forMapField(this.field, this.fieldNumber, this.mapDefaultEntry, this.enumVerifier);
             }
-            Field field = this.presenceField;
-            if (field != null) {
+            if (this.presenceField != null) {
                 if (this.required) {
-                    return FieldInfo.forProto2RequiredField(this.field, this.fieldNumber, this.type, field, this.presenceMask, this.enforceUtf8, this.enumVerifier);
+                    return FieldInfo.forProto2RequiredField(this.field, this.fieldNumber, this.type, this.presenceField, this.presenceMask, this.enforceUtf8, this.enumVerifier);
                 }
-                return FieldInfo.forProto2OptionalField(this.field, this.fieldNumber, this.type, field, this.presenceMask, this.enforceUtf8, this.enumVerifier);
+                return FieldInfo.forProto2OptionalField(this.field, this.fieldNumber, this.type, this.presenceField, this.presenceMask, this.enforceUtf8, this.enumVerifier);
             }
-            Internal.EnumVerifier enumVerifier = this.enumVerifier;
-            if (enumVerifier != null) {
-                Field field2 = this.cachedSizeField;
-                if (field2 == null) {
-                    return FieldInfo.forFieldWithEnumVerifier(this.field, this.fieldNumber, this.type, enumVerifier);
+            if (this.enumVerifier != null) {
+                if (this.cachedSizeField == null) {
+                    return FieldInfo.forFieldWithEnumVerifier(this.field, this.fieldNumber, this.type, this.enumVerifier);
                 }
-                return FieldInfo.forPackedFieldWithEnumVerifier(this.field, this.fieldNumber, this.type, enumVerifier, field2);
+                return FieldInfo.forPackedFieldWithEnumVerifier(this.field, this.fieldNumber, this.type, this.enumVerifier, this.cachedSizeField);
             }
-            Field field3 = this.cachedSizeField;
-            if (field3 == null) {
+            if (this.cachedSizeField == null) {
                 return FieldInfo.forField(this.field, this.fieldNumber, this.type, this.enforceUtf8);
             }
-            return FieldInfo.forPackedField(this.field, this.fieldNumber, this.type, field3);
+            return FieldInfo.forPackedField(this.field, this.fieldNumber, this.type, this.cachedSizeField);
         }
     }
 

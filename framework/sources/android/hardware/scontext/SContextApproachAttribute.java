@@ -8,7 +8,7 @@ public class SContextApproachAttribute extends SContextAttribute {
     private static final String TAG = "SContextApproachAttribute";
     private int mUserID;
 
-    public SContextApproachAttribute() {
+    SContextApproachAttribute() {
         this.mUserID = -1;
         setAttribute();
     }

@@ -3,17 +3,16 @@ package android.hardware.camera2.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class SubmitInfo implements Parcelable {
     public static final Parcelable.Creator<SubmitInfo> CREATOR = new Parcelable.Creator<SubmitInfo>() { // from class: android.hardware.camera2.utils.SubmitInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubmitInfo createFromParcel(Parcel in) {
             return new SubmitInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubmitInfo[] newArray(int size) {
             return new SubmitInfo[size];
@@ -21,10 +20,6 @@ public class SubmitInfo implements Parcelable {
     };
     private long mLastFrameNumber;
     private int mRequestId;
-
-    /* synthetic */ SubmitInfo(Parcel parcel, SubmitInfoIA submitInfoIA) {
-        this(parcel);
-    }
 
     public SubmitInfo() {
         this.mRequestId = -1;
@@ -34,23 +29,6 @@ public class SubmitInfo implements Parcelable {
     public SubmitInfo(int requestId, long lastFrameNumber) {
         this.mRequestId = requestId;
         this.mLastFrameNumber = lastFrameNumber;
-    }
-
-    /* renamed from: android.hardware.camera2.utils.SubmitInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SubmitInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubmitInfo createFromParcel(Parcel in) {
-            return new SubmitInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubmitInfo[] newArray(int size) {
-            return new SubmitInfo[size];
-        }
     }
 
     private SubmitInfo(Parcel in) {

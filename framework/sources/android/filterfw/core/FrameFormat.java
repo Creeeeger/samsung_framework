@@ -1,7 +1,6 @@
 package android.filterfw.core;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import android.widget.SemRemoteViewsValueAnimation;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class FrameFormat {
     protected int mSize;
     protected int mTarget;
 
-    public FrameFormat() {
+    protected FrameFormat() {
         this.mBaseType = 0;
         this.mBytesPerSample = 1;
         this.mSize = -1;
@@ -59,8 +58,7 @@ public class FrameFormat {
     }
 
     public boolean isBinaryDataType() {
-        int i = this.mBaseType;
-        return i >= 1 && i <= 6;
+        return this.mBaseType >= 1 && this.mBaseType <= 6;
     }
 
     public int getBytesPerSample() {
@@ -84,24 +82,21 @@ public class FrameFormat {
     }
 
     public int getDimensionCount() {
-        int[] iArr = this.mDimensions;
-        if (iArr == null) {
+        if (this.mDimensions == null) {
             return 0;
         }
-        return iArr.length;
+        return this.mDimensions.length;
     }
 
     public boolean hasMetaKey(String key) {
-        KeyValueMap keyValueMap = this.mMetaData;
-        if (keyValueMap != null) {
-            return keyValueMap.containsKey(key);
+        if (this.mMetaData != null) {
+            return this.mMetaData.containsKey(key);
         }
         return false;
     }
 
     public boolean hasMetaKey(String key, Class expectedClass) {
-        KeyValueMap keyValueMap = this.mMetaData;
-        if (keyValueMap != null && keyValueMap.containsKey(key)) {
+        if (this.mMetaData != null && this.mMetaData.containsKey(key)) {
             if (!expectedClass.isAssignableFrom(this.mMetaData.get(key).getClass())) {
                 throw new RuntimeException("FrameFormat meta-key '" + key + "' is of type " + this.mMetaData.get(key).getClass() + " but expected to be of type " + expectedClass + "!");
             }
@@ -111,27 +106,24 @@ public class FrameFormat {
     }
 
     public Object getMetaValue(String key) {
-        KeyValueMap keyValueMap = this.mMetaData;
-        if (keyValueMap != null) {
-            return keyValueMap.get(key);
+        if (this.mMetaData != null) {
+            return this.mMetaData.get(key);
         }
         return null;
     }
 
     public int getNumberOfDimensions() {
-        int[] iArr = this.mDimensions;
-        if (iArr != null) {
-            return iArr.length;
+        if (this.mDimensions != null) {
+            return this.mDimensions.length;
         }
         return 0;
     }
 
     public int getLength() {
-        int[] iArr = this.mDimensions;
-        if (iArr == null || iArr.length < 1) {
+        if (this.mDimensions == null || this.mDimensions.length < 1) {
             return -1;
         }
-        return iArr[0];
+        return this.mDimensions[0];
     }
 
     public int getWidth() {
@@ -139,19 +131,17 @@ public class FrameFormat {
     }
 
     public int getHeight() {
-        int[] iArr = this.mDimensions;
-        if (iArr == null || iArr.length < 2) {
+        if (this.mDimensions == null || this.mDimensions.length < 2) {
             return -1;
         }
-        return iArr[1];
+        return this.mDimensions[1];
     }
 
     public int getDepth() {
-        int[] iArr = this.mDimensions;
-        if (iArr == null || iArr.length < 3) {
+        if (this.mDimensions == null || this.mDimensions.length < 3) {
             return -1;
         }
-        return iArr[2];
+        return this.mDimensions[2];
     }
 
     public int getSize() {
@@ -172,8 +162,7 @@ public class FrameFormat {
         result.setBytesPerSample(getBytesPerSample());
         result.setDimensions(getDimensions());
         result.setObjectClass(getObjectClass());
-        KeyValueMap keyValueMap = this.mMetaData;
-        result.mMetaData = keyValueMap == null ? null : (KeyValueMap) keyValueMap.clone();
+        result.mMetaData = this.mMetaData == null ? null : (KeyValueMap) this.mMetaData.clone();
         return result;
     }
 
@@ -214,11 +203,9 @@ public class FrameFormat {
         if (specification.getObjectClass() != null && (getObjectClass() == null || !specification.getObjectClass().isAssignableFrom(getObjectClass()))) {
             return false;
         }
-        KeyValueMap keyValueMap = specification.mMetaData;
-        if (keyValueMap != null) {
-            for (String specKey : keyValueMap.keySet()) {
-                KeyValueMap keyValueMap2 = this.mMetaData;
-                if (keyValueMap2 == null || !keyValueMap2.containsKey(specKey) || !this.mMetaData.get(specKey).equals(specification.mMetaData.get(specKey))) {
+        if (specification.mMetaData != null) {
+            for (String specKey : specification.mMetaData.keySet()) {
+                if (this.mMetaData == null || !this.mMetaData.containsKey(specKey) || !this.mMetaData.get(specKey).equals(specification.mMetaData.get(specKey))) {
                     return false;
                 }
             }
@@ -248,9 +235,8 @@ public class FrameFormat {
         if (specification.getObjectClass() != null && getObjectClass() != null && !specification.getObjectClass().isAssignableFrom(getObjectClass())) {
             return false;
         }
-        KeyValueMap keyValueMap = specification.mMetaData;
-        if (keyValueMap != null && this.mMetaData != null) {
-            for (String specKey : keyValueMap.keySet()) {
+        if (specification.mMetaData != null && this.mMetaData != null) {
+            for (String specKey : specification.mMetaData.keySet()) {
                 if (this.mMetaData.containsKey(specKey) && !this.mMetaData.get(specKey).equals(specification.mMetaData.get(specKey))) {
                     return false;
                 }
@@ -261,20 +247,8 @@ public class FrameFormat {
 
     public static int bytesPerSampleOf(int baseType) {
         switch (baseType) {
-            case 1:
-            case 2:
-                return 1;
-            case 3:
-                return 2;
-            case 4:
-            case 5:
-            case 7:
-                return 4;
-            case 6:
-                return 8;
-            default:
-                return 1;
         }
+        return 1;
     }
 
     public static String dimensionsToString(int[] dimensions) {
@@ -294,27 +268,8 @@ public class FrameFormat {
 
     public static String baseTypeToString(int baseType) {
         switch (baseType) {
-            case 0:
-                return "unspecified";
-            case 1:
-                return "bit";
-            case 2:
-                return "byte";
-            case 3:
-                return "int";
-            case 4:
-                return "int";
-            case 5:
-                return SemRemoteViewsValueAnimation.VALUE_TYPE_FLOAT;
-            case 6:
-                return "double";
-            case 7:
-                return "pointer";
-            case 8:
-                return "object";
-            default:
-                return "unknown";
         }
+        return "int";
     }
 
     public static String targetToString(int target) {
@@ -391,7 +346,7 @@ public class FrameFormat {
         return size;
     }
 
-    public boolean isReplaceableBy(FrameFormat format) {
+    boolean isReplaceableBy(FrameFormat format) {
         return this.mTarget == format.mTarget && getSize() == format.getSize() && Arrays.equals(format.mDimensions, this.mDimensions);
     }
 }

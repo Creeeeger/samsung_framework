@@ -25,21 +25,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraConstrainedHighSpeedCaptureSessionImpl extends CameraConstrainedHighSpeedCaptureSession implements CameraCaptureSessionCore {
-    private final String TAG;
     private final CameraCharacteristics mCharacteristics;
-    private final ConditionVariable mInitialized;
     private final CameraCaptureSessionImpl mSessionImpl;
+    private final ConditionVariable mInitialized = new ConditionVariable();
+    private final String TAG = "CameraConstrainedHighSpeedCaptureSessionImpl";
 
-    public CameraConstrainedHighSpeedCaptureSessionImpl(int id, CameraCaptureSession.StateCallback callback, Executor stateExecutor, CameraDeviceImpl deviceImpl, Executor deviceStateExecutor, boolean configureSuccess, CameraCharacteristics characteristics) {
-        ConditionVariable conditionVariable = new ConditionVariable();
-        this.mInitialized = conditionVariable;
-        this.TAG = "CameraConstrainedHighSpeedCaptureSessionImpl";
+    CameraConstrainedHighSpeedCaptureSessionImpl(int id, CameraCaptureSession.StateCallback callback, Executor stateExecutor, CameraDeviceImpl deviceImpl, Executor deviceStateExecutor, boolean configureSuccess, CameraCharacteristics characteristics) {
         this.mCharacteristics = characteristics;
         CameraCaptureSession.StateCallback wrapperCallback = new WrapperCallback(callback);
         this.mSessionImpl = new CameraCaptureSessionImpl(id, null, wrapperCallback, stateExecutor, deviceImpl, deviceStateExecutor, configureSuccess);
-        conditionVariable.open();
+        this.mInitialized.open();
     }
 
     @Override // android.hardware.camera2.CameraConstrainedHighSpeedCaptureSession
@@ -262,9 +259,7 @@ public class CameraConstrainedHighSpeedCaptureSessionImpl extends CameraConstrai
         this.mSessionImpl.finalizeOutputConfigurations(deferredOutputConfigs);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class WrapperCallback extends CameraCaptureSession.StateCallback {
+    private class WrapperCallback extends CameraCaptureSession.StateCallback {
         private final CameraCaptureSession.StateCallback mCallback;
 
         public WrapperCallback(CameraCaptureSession.StateCallback callback) {

@@ -12,10 +12,9 @@ public class ParametersWithIV implements CipherParameters {
     }
 
     public ParametersWithIV(CipherParameters parameters, byte[] iv, int ivOff, int ivLen) {
-        byte[] bArr = new byte[ivLen];
-        this.iv = bArr;
+        this.iv = new byte[ivLen];
         this.parameters = parameters;
-        System.arraycopy(iv, ivOff, bArr, 0, ivLen);
+        System.arraycopy(iv, ivOff, this.iv, 0, ivLen);
     }
 
     public byte[] getIV() {

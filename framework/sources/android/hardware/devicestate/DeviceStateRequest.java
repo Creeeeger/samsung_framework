@@ -14,26 +14,16 @@ public final class DeviceStateRequest {
     private final int mRequestedState;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RequestFlags {
-    }
-
-    /* synthetic */ DeviceStateRequest(int i, int i2, DeviceStateRequestIA deviceStateRequestIA) {
-        this(i, i2);
     }
 
     public static Builder newBuilder(int requestedState) {
         return new Builder(requestedState);
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mFlags;
         private final int mRequestedState;
-
-        /* synthetic */ Builder(int i, BuilderIA builderIA) {
-            this(i);
-        }
 
         private Builder(int requestedState) {
             this.mRequestedState = requestedState;
@@ -49,7 +39,6 @@ public final class DeviceStateRequest {
         }
     }
 
-    /* loaded from: classes2.dex */
     public interface Callback {
         default void onRequestActivated(DeviceStateRequest request) {
         }

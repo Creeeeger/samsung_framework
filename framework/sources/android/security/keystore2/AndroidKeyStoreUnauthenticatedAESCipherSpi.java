@@ -2,7 +2,6 @@ package android.security.keystore2;
 
 import android.hardware.security.keymint.KeyParameter;
 import android.security.keystore.ArrayUtils;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -15,9 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import javax.crypto.spec.IvParameterSpec;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends AndroidKeyStoreCipherSpiBase {
+abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends AndroidKeyStoreCipherSpiBase {
     private static final int BLOCK_SIZE_BYTES = 16;
     private byte[] mIv;
     private boolean mIvHasBeenUsed;
@@ -25,13 +23,11 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
     private final int mKeymasterBlockMode;
     private final int mKeymasterPadding;
 
-    /* loaded from: classes3.dex */
     static abstract class ECB extends AndroidKeyStoreUnauthenticatedAESCipherSpi {
         protected ECB(int keymasterPadding) {
             super(1, keymasterPadding, false);
         }
 
-        /* loaded from: classes3.dex */
         public static class NoPadding extends ECB {
             @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -48,7 +44,6 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
             }
         }
 
-        /* loaded from: classes3.dex */
         public static class PKCS7Padding extends ECB {
             @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -66,13 +61,11 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
         }
     }
 
-    /* loaded from: classes3.dex */
     static abstract class CBC extends AndroidKeyStoreUnauthenticatedAESCipherSpi {
         protected CBC(int keymasterPadding) {
             super(2, keymasterPadding, true);
         }
 
-        /* loaded from: classes3.dex */
         public static class NoPadding extends CBC {
             @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -89,7 +82,6 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
             }
         }
 
-        /* loaded from: classes3.dex */
         public static class PKCS7Padding extends CBC {
             @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -107,13 +99,11 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
         }
     }
 
-    /* loaded from: classes3.dex */
     static abstract class CTR extends AndroidKeyStoreUnauthenticatedAESCipherSpi {
         protected CTR(int keymasterPadding) {
             super(3, keymasterPadding, true);
         }
 
-        /* loaded from: classes3.dex */
         public static class NoPadding extends CTR {
             @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -138,21 +128,21 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-    public final void resetAll() {
+    protected final void resetAll() {
         this.mIv = null;
         this.mIvHasBeenUsed = false;
         super.resetAll();
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-    public final void resetWhilePreservingInitState() {
+    protected final void resetWhilePreservingInitState() {
         super.resetWhilePreservingInitState();
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     protected final void initKey(int opmode, Key key) throws InvalidKeyException {
         if (!(key instanceof AndroidKeyStoreSecretKey)) {
-            throw new InvalidKeyException("Unsupported key: " + (key != null ? key.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL));
+            throw new InvalidKeyException("Unsupported key: " + (key != null ? key.getClass().getName() : "null"));
         }
         if (!"AES".equalsIgnoreCase(key.getAlgorithm())) {
             throw new InvalidKeyException("Unsupported key algorithm: " + key.getAlgorithm() + ". Only AES supported");
@@ -181,9 +171,8 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
             if (!(params instanceof IvParameterSpec)) {
                 throw new InvalidAlgorithmParameterException("Only IvParameterSpec supported");
             }
-            byte[] iv = ((IvParameterSpec) params).getIV();
-            this.mIv = iv;
-            if (iv == null) {
+            this.mIv = ((IvParameterSpec) params).getIV();
+            if (this.mIv == null) {
                 throw new InvalidAlgorithmParameterException("Null IV in IvParameterSpec");
             }
         }
@@ -208,9 +197,8 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
         }
         try {
             IvParameterSpec ivSpec = (IvParameterSpec) params.getParameterSpec(IvParameterSpec.class);
-            byte[] iv = ivSpec.getIV();
-            this.mIv = iv;
-            if (iv == null) {
+            this.mIv = ivSpec.getIV();
+            if (this.mIv == null) {
                 throw new InvalidAlgorithmParameterException("Null IV in AlgorithmParameters");
             }
         } catch (InvalidParameterSpecException e) {
@@ -236,15 +224,14 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     protected final void addAlgorithmSpecificParametersToBegin(List<KeyParameter> parameters) {
-        byte[] bArr;
         if (isEncrypting() && this.mIvRequired && this.mIvHasBeenUsed) {
             throw new IllegalStateException("IV has already been used. Reusing IV in encryption mode violates security best practices.");
         }
         parameters.add(KeyStore2ParameterUtils.makeEnum(268435458, 32));
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870916, this.mKeymasterBlockMode));
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870918, this.mKeymasterPadding));
-        if (this.mIvRequired && (bArr = this.mIv) != null) {
-            parameters.add(KeyStore2ParameterUtils.makeBytes(-1879047191, bArr));
+        if (this.mIvRequired && this.mIv != null) {
+            parameters.add(KeyStore2ParameterUtils.makeBytes(-1879047191, this.mIv));
         }
     }
 
@@ -269,12 +256,11 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
             }
         }
         if (this.mIvRequired) {
-            byte[] bArr = this.mIv;
-            if (bArr == null) {
+            if (this.mIv == null) {
                 this.mIv = returnedIv;
                 return;
             } else {
-                if (returnedIv != null && !Arrays.equals(returnedIv, bArr)) {
+                if (returnedIv != null && !Arrays.equals(returnedIv, this.mIv)) {
                     throw new ProviderException("IV in use differs from provided IV");
                 }
                 return;
@@ -302,8 +288,7 @@ public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends Android
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase, javax.crypto.CipherSpi
     protected final AlgorithmParameters engineGetParameters() {
-        byte[] bArr;
-        if (!this.mIvRequired || (bArr = this.mIv) == null || bArr.length <= 0) {
+        if (!this.mIvRequired || this.mIv == null || this.mIv.length <= 0) {
             return null;
         }
         try {

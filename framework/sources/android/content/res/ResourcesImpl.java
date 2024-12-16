@@ -2,8 +2,9 @@ package android.content.res;
 
 import android.animation.Animator;
 import android.animation.StateListAnimator;
+import android.app.LocaleConfig;
+import android.app.ResourcesManager;
 import android.content.Context;
-import android.content.om.SamsungThemeConstants;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.content.res.FontResourcesParser;
@@ -34,7 +35,6 @@ import android.util.Xml;
 import android.view.DisplayAdjustments;
 import com.android.internal.util.GrowingArrayUtils;
 import com.samsung.android.knox.analytics.database.Contract;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,27 +56,21 @@ public class ResourcesImpl {
     private static final boolean TRACE_FOR_MISS_PRELOAD = false;
     private static final boolean TRACE_FOR_PRELOAD = false;
     private static final int XML_BLOCK_CACHE_SIZE = 4;
-    private static int sLoadDensityDpi;
     private static boolean sPreloaded;
-    private static final LongSparseArray<Drawable.ConstantState>[] sPreloadedDrawables;
     private static final NativeAllocationRegistry sThemeRegistry;
     final AssetManager mAssets;
-    private final Configuration mConfiguration;
     private final DisplayAdjustments mDisplayAdjustments;
-    private final DisplayMetrics mMetrics;
     private PluralRules mPluralRule;
     private boolean mPreloading;
     private static final Object sSync = new Object();
     private static final LongSparseArray<Drawable.ConstantState> sPreloadedColorDrawables = new LongSparseArray<>();
     private static final LongSparseArray<ConstantState<ComplexColor>> sPreloadedComplexColors = new LongSparseArray<>();
+    private static final LongSparseArray<Drawable.ConstantState>[] sPreloadedDrawables = new LongSparseArray[2];
     private final Object mAccessLock = new Object();
     private final Configuration mTmpConfig = new Configuration();
     private final DrawableCache mDrawableCache = new DrawableCache();
     private final DrawableCache mColorDrawableCache = new DrawableCache();
     private final ConfigurationBoundResourceCache<ComplexColor> mComplexColorCache = new ConfigurationBoundResourceCache<ComplexColor>() { // from class: android.content.res.ResourcesImpl.1
-        AnonymousClass1() {
-        }
-
         @Override // android.content.res.ConfigurationBoundResourceCache, android.content.res.ThemedResourceCache
         public void onConfigurationChange(int configChanges) {
             if ((configChanges & 512) != 0) {
@@ -88,7 +82,7 @@ public class ResourcesImpl {
     };
     private final ConfigurationBoundResourceCache<Animator> mAnimatorCache = new ConfigurationBoundResourceCache<>();
     private final ConfigurationBoundResourceCache<StateListAnimator> mStateListAnimatorCache = new ConfigurationBoundResourceCache<>();
-    private final ThreadLocal<LookupStack> mLookupStack = ThreadLocal.withInitial(new Supplier() { // from class: android.content.res.ResourcesImpl$$ExternalSyntheticLambda3
+    private final ThreadLocal<LookupStack> mLookupStack = ThreadLocal.withInitial(new Supplier() { // from class: android.content.res.ResourcesImpl$$ExternalSyntheticLambda2
         @Override // java.util.function.Supplier
         public final Object get() {
             return ResourcesImpl.lambda$new$0();
@@ -98,45 +92,36 @@ public class ResourcesImpl {
     private final int[] mCachedXmlBlockCookies = new int[4];
     private final String[] mCachedXmlBlockFiles = new String[4];
     private final XmlBlock[] mCachedXmlBlocks = new XmlBlock[4];
+    private final DisplayMetrics mMetrics = new DisplayMetrics();
+    private final Configuration mConfiguration = new Configuration();
+    private final int mAppliedSharedLibsHash = ResourcesManager.getInstance().updateResourceImplWithRegisteredLibs(this);
 
     static {
-        sPreloadedDrawables = r0;
-        LongSparseArray<Drawable.ConstantState>[] longSparseArrayArr = {new LongSparseArray<>(), new LongSparseArray<>()};
+        sPreloadedDrawables[0] = new LongSparseArray<>();
+        sPreloadedDrawables[1] = new LongSparseArray<>();
         sThemeRegistry = NativeAllocationRegistry.createMalloced(ResourcesImpl.class.getClassLoader(), AssetManager.getThemeFreeFunction());
-        sLoadDensityDpi = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.content.res.ResourcesImpl$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends ConfigurationBoundResourceCache<ComplexColor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.res.ConfigurationBoundResourceCache, android.content.res.ThemedResourceCache
-        public void onConfigurationChange(int configChanges) {
-            if ((configChanges & 512) != 0) {
-                clear();
-            } else {
-                super.onConfigurationChange(configChanges);
-            }
-        }
-    }
-
-    public static /* synthetic */ LookupStack lambda$new$0() {
+    static /* synthetic */ LookupStack lambda$new$0() {
         return new LookupStack();
     }
 
+    static void resetDrawableStateCache() {
+        synchronized (sSync) {
+            sPreloadedDrawables[0].clear();
+            sPreloadedDrawables[1].clear();
+            sPreloadedColorDrawables.clear();
+            sPreloadedComplexColors.clear();
+            sPreloaded = false;
+        }
+    }
+
     public ResourcesImpl(AssetManager assets, DisplayMetrics metrics, Configuration config, DisplayAdjustments displayAdjustments) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        this.mMetrics = displayMetrics;
-        Configuration configuration = new Configuration();
-        this.mConfiguration = configuration;
         this.mAssets = assets;
-        displayMetrics.setToDefaults();
+        this.mMetrics.setToDefaults();
         this.mDisplayAdjustments = displayAdjustments;
-        configuration.setToDefaults();
-        updateConfiguration(config, metrics, displayAdjustments.getCompatibilityInfo());
+        this.mConfiguration.setToDefaults();
+        updateConfigurationImpl(config, metrics, displayAdjustments.getCompatibilityInfo(), true);
     }
 
     public DisplayAdjustments getDisplayAdjustments() {
@@ -147,7 +132,11 @@ public class ResourcesImpl {
         return this.mAssets;
     }
 
-    public DisplayMetrics getDisplayMetrics() {
+    public DisplayMetrics getMetrics() {
+        return this.mMetrics;
+    }
+
+    DisplayMetrics getDisplayMetrics() {
         return this.mMetrics;
     }
 
@@ -155,15 +144,15 @@ public class ResourcesImpl {
         return this.mConfiguration;
     }
 
-    public Configuration[] getSizeConfigurations() {
+    Configuration[] getSizeConfigurations() {
         return this.mAssets.getSizeConfigurations();
     }
 
-    public Configuration[] getSizeAndUiModeConfigurations() {
+    Configuration[] getSizeAndUiModeConfigurations() {
         return this.mAssets.getSizeAndUiModeConfigurations();
     }
 
-    public CompatibilityInfo getCompatibilityInfo() {
+    CompatibilityInfo getCompatibilityInfo() {
         return this.mDisplayAdjustments.getCompatibilityInfo();
     }
 
@@ -178,7 +167,7 @@ public class ResourcesImpl {
         return pluralRules;
     }
 
-    public void getValue(int id, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
+    void getValue(int id, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
         boolean found = this.mAssets.getResourceValue(id, 0, outValue, resolveRefs);
         if (found) {
         } else {
@@ -186,7 +175,7 @@ public class ResourcesImpl {
         }
     }
 
-    public void getValueForDensity(int id, int density, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
+    void getValueForDensity(int id, int density, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
         boolean found = this.mAssets.getResourceValue(id, density, outValue, resolveRefs);
         if (found) {
         } else {
@@ -194,7 +183,7 @@ public class ResourcesImpl {
         }
     }
 
-    public void getValue(String name, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
+    void getValue(String name, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
         int id = getIdentifier(name, "string", null);
         if (id != 0) {
             getValue(id, outValue, resolveRefs);
@@ -203,18 +192,34 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("String resource name " + name);
     }
 
-    public int getIdentifier(String name, String defType, String defPackage) {
+    private static boolean isIntLike(String s) {
+        if (s.isEmpty() || s.length() > 10) {
+            return false;
+        }
+        int size = s.length();
+        for (int i = 0; i < size; i++) {
+            char c = s.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    int getIdentifier(String name, String defType, String defPackage) {
         if (name == null) {
             throw new NullPointerException("name is null");
         }
-        try {
-            return Integer.parseInt(name);
-        } catch (Exception e) {
-            return this.mAssets.getResourceIdentifier(name, defType, defPackage);
+        if (isIntLike(name)) {
+            try {
+                return Integer.parseInt(name);
+            } catch (Exception e) {
+            }
         }
+        return this.mAssets.getResourceIdentifier(name, defType, defPackage);
     }
 
-    public String getResourceName(int resid) throws Resources.NotFoundException {
+    String getResourceName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourceName(resid);
         if (str != null) {
             return str;
@@ -222,7 +227,7 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    public String getResourcePackageName(int resid) throws Resources.NotFoundException {
+    String getResourcePackageName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourcePackageName(resid);
         if (str != null) {
             return str;
@@ -230,7 +235,7 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    public String getResourceTypeName(int resid) throws Resources.NotFoundException {
+    String getResourceTypeName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourceTypeName(resid);
         if (str != null) {
             return str;
@@ -238,7 +243,7 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    public String getResourceEntryName(int resid) throws Resources.NotFoundException {
+    String getResourceEntryName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourceEntryName(resid);
         if (str != null) {
             return str;
@@ -246,7 +251,7 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    public String getLastResourceResolution() throws Resources.NotFoundException {
+    String getLastResourceResolution() throws Resources.NotFoundException {
         String str = this.mAssets.getLastResourceResolution();
         if (str != null) {
             return str;
@@ -254,7 +259,7 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Associated AssetManager hasn't resolved a resource");
     }
 
-    public CharSequence getQuantityText(int id, int quantity) throws Resources.NotFoundException {
+    CharSequence getQuantityText(int id, int quantity) throws Resources.NotFoundException {
         PluralRules rule = getPluralRule();
         CharSequence res = this.mAssets.getResourceBagText(id, attrForQuantityCode(rule.select(quantity)));
         if (res != null) {
@@ -326,7 +331,7 @@ public class ResourcesImpl {
         }
     }
 
-    public AssetFileDescriptor openRawResourceFd(int id, TypedValue tempValue) throws Resources.NotFoundException {
+    AssetFileDescriptor openRawResourceFd(int id, TypedValue tempValue) throws Resources.NotFoundException {
         getValue(id, tempValue, true);
         try {
             return this.mAssets.openNonAssetFd(tempValue.assetCookie, tempValue.string.toString());
@@ -335,7 +340,7 @@ public class ResourcesImpl {
         }
     }
 
-    public InputStream openRawResource(int id, TypedValue value) throws Resources.NotFoundException {
+    InputStream openRawResource(int id, TypedValue value) throws Resources.NotFoundException {
         getValue(id, value, true);
         try {
             return this.mAssets.openNonAsset(value.assetCookie, value.string.toString(), 2);
@@ -346,15 +351,19 @@ public class ResourcesImpl {
         }
     }
 
-    public ConfigurationBoundResourceCache<Animator> getAnimatorCache() {
+    ConfigurationBoundResourceCache<Animator> getAnimatorCache() {
         return this.mAnimatorCache;
     }
 
-    public ConfigurationBoundResourceCache<StateListAnimator> getStateListAnimatorCache() {
+    ConfigurationBoundResourceCache<StateListAnimator> getStateListAnimatorCache() {
         return this.mStateListAnimatorCache;
     }
 
     public void updateConfiguration(Configuration config, DisplayMetrics metrics, CompatibilityInfo compat) {
+        updateConfigurationImpl(config, metrics, compat, false);
+    }
+
+    private void updateConfigurationImpl(Configuration config, DisplayMetrics metrics, CompatibilityInfo compat, boolean forceAssetsRefresh) {
         int width;
         int height;
         int keyboardHidden;
@@ -379,24 +388,49 @@ public class ResourcesImpl {
                     locales = LocaleList.getDefault();
                     this.mConfiguration.setLocales(locales);
                 }
+                String[] selectedLocales = null;
+                String defaultLocale = null;
+                LocaleConfig lc = ResourcesManager.getInstance().getLocaleConfig();
                 if ((configChanges & 4) != 0 && locales.size() > 1) {
-                    String[] availableLocales = this.mAssets.getNonSystemLocales();
-                    if (LocaleList.isPseudoLocalesOnly(availableLocales)) {
-                        availableLocales = this.mAssets.getLocales();
+                    if (Flags.defaultLocale() && lc.getDefaultLocale() != null) {
+                        Locale[] intersection = locales.getIntersection(lc.getSupportedLocales());
+                        this.mConfiguration.setLocales(new LocaleList(intersection));
+                        selectedLocales = new String[intersection.length];
+                        for (int i = 0; i < intersection.length; i++) {
+                            selectedLocales[i] = adjustLanguageTag(intersection[i].toLanguageTag());
+                        }
+                        defaultLocale = adjustLanguageTag(lc.getDefaultLocale().toLanguageTag());
+                    } else {
+                        String[] availableLocales = this.mAssets.getNonSystemLocales();
                         if (LocaleList.isPseudoLocalesOnly(availableLocales)) {
-                            availableLocales = null;
+                            availableLocales = this.mAssets.getLocales();
+                            if (LocaleList.isPseudoLocalesOnly(availableLocales)) {
+                                availableLocales = null;
+                            }
+                        }
+                        if (availableLocales != null && (bestLocale = locales.getFirstMatchWithEnglishSupported(availableLocales)) != null) {
+                            selectedLocales = new String[]{adjustLanguageTag(bestLocale.toLanguageTag())};
+                            if (!bestLocale.equals(locales.get(0))) {
+                                this.mConfiguration.setLocales(new LocaleList(bestLocale, locales));
+                            }
                         }
                     }
-                    if (availableLocales != null && (bestLocale = locales.getFirstMatchWithEnglishSupported(availableLocales)) != null && bestLocale != locales.get(0)) {
-                        this.mConfiguration.setLocales(new LocaleList(bestLocale, locales));
+                }
+                if (selectedLocales == null) {
+                    if (Flags.defaultLocale() && lc.getDefaultLocale() != null) {
+                        selectedLocales = new String[locales.size()];
+                        for (int i2 = 0; i2 < locales.size(); i2++) {
+                            selectedLocales[i2] = adjustLanguageTag(locales.get(i2).toLanguageTag());
+                        }
+                    } else {
+                        selectedLocales = new String[]{adjustLanguageTag(locales.get(0).toLanguageTag())};
                     }
                 }
                 if (this.mConfiguration.densityDpi != 0) {
                     this.mMetrics.densityDpi = this.mConfiguration.densityDpi;
                     this.mMetrics.density = this.mConfiguration.densityDpi * 0.00625f;
                 }
-                DisplayMetrics displayMetrics = this.mMetrics;
-                displayMetrics.scaledDensity = displayMetrics.density * (this.mConfiguration.fontScale != 0.0f ? this.mConfiguration.fontScale : 1.0f);
+                this.mMetrics.scaledDensity = this.mMetrics.density * (this.mConfiguration.fontScale != 0.0f ? this.mConfiguration.fontScale : 1.0f);
                 this.mMetrics.fontScaleConverter = FontScaleConverterFactory.forScale(this.mConfiguration.fontScale);
                 if (this.mMetrics.widthPixels >= this.mMetrics.heightPixels) {
                     width = this.mMetrics.widthPixels;
@@ -410,7 +444,7 @@ public class ResourcesImpl {
                 } else {
                     keyboardHidden = this.mConfiguration.keyboardHidden;
                 }
-                this.mAssets.setConfiguration(this.mConfiguration.mcc, this.mConfiguration.mnc, adjustLanguageTag(this.mConfiguration.getLocales().get(0).toLanguageTag()), this.mConfiguration.orientation, this.mConfiguration.touchscreen, this.mConfiguration.densityDpi, this.mConfiguration.keyboard, keyboardHidden, this.mConfiguration.navigation, width, height, this.mConfiguration.smallestScreenWidthDp, this.mConfiguration.screenWidthDp, this.mConfiguration.screenHeightDp, this.mConfiguration.screenLayout, this.mConfiguration.uiMode, this.mConfiguration.colorMode, this.mConfiguration.getGrammaticalGender(), Build.VERSION.RESOURCES_SDK_INT);
+                this.mAssets.setConfigurationInternal(this.mConfiguration.mcc, this.mConfiguration.mnc, defaultLocale, selectedLocales, this.mConfiguration.orientation, this.mConfiguration.touchscreen, this.mConfiguration.densityDpi, this.mConfiguration.keyboard, keyboardHidden, this.mConfiguration.navigation, width, height, this.mConfiguration.smallestScreenWidthDp, this.mConfiguration.screenWidthDp, this.mConfiguration.screenHeightDp, this.mConfiguration.screenLayout, this.mConfiguration.uiMode, this.mConfiguration.colorMode, this.mConfiguration.getGrammaticalGender(), Build.VERSION.RESOURCES_SDK_INT, forceAssetsRefresh);
                 this.mDrawableCache.onConfigurationChange(configChanges);
                 this.mColorDrawableCache.onConfigurationChange(configChanges);
                 this.mComplexColorCache.onConfigurationChange(configChanges);
@@ -447,7 +481,7 @@ public class ResourcesImpl {
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Code restructure failed: missing block: B:18:0x002f, code lost:
     
-        if (r3.equals("id") != false) goto L45;
+        if (r3.equals("id") != false) goto L19;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -550,7 +584,7 @@ public class ResourcesImpl {
         }
     }
 
-    public Drawable loadDrawable(Resources wrapper, TypedValue value, int id, int density, Resources.Theme theme) throws Resources.NotFoundException {
+    Drawable loadDrawable(Resources wrapper, TypedValue value, int id, int density, Resources.Theme theme) throws Resources.NotFoundException {
         int i;
         byte[] imageData;
         String name;
@@ -675,53 +709,6 @@ public class ResourcesImpl {
         return dr3;
     }
 
-    public Drawable loadDrawable(Resources wrapper, TypedValue value, int id, int density) throws Resources.NotFoundException {
-        String name;
-        boolean isColorDrawable;
-        long key;
-        Drawable.ConstantState cs;
-        if (density > 0 && value.density > 0 && value.density != 65535) {
-            if (value.density == density) {
-                value.density = this.mMetrics.densityDpi;
-            } else {
-                value.density = (value.density * this.mMetrics.densityDpi) / density;
-            }
-        }
-        try {
-            if (value.type >= 28 && value.type <= 31) {
-                isColorDrawable = true;
-                key = value.data;
-            } else {
-                isColorDrawable = false;
-                key = (value.assetCookie << 32) | value.data;
-            }
-            if (isColorDrawable) {
-                cs = sPreloadedColorDrawables.get(key);
-            } else {
-                cs = sPreloadedDrawables[this.mConfiguration.getLayoutDirection()].get(key);
-            }
-            if (cs != null) {
-                Drawable dr = cs.newDrawable(wrapper);
-                return dr;
-            }
-            if (isColorDrawable) {
-                Drawable dr2 = new ColorDrawable(value.data);
-                return dr2;
-            }
-            Drawable dr3 = loadDrawableForCookie(wrapper, value, id, density);
-            return dr3;
-        } catch (Exception e) {
-            try {
-                name = getResourceName(id);
-            } catch (Resources.NotFoundException e2) {
-                name = "(missing name)";
-            }
-            Resources.NotFoundException nfe = new Resources.NotFoundException("Drawable " + name + " with resource ID #0x" + Integer.toHexString(id), e);
-            nfe.setStackTrace(new StackTraceElement[0]);
-            throw nfe;
-        }
-    }
-
     private void cacheDrawable(TypedValue value, boolean isColorDrawable, DrawableCache caches, Resources.Theme theme, boolean usesTheme, long key, Drawable dr, int cacheGeneration) {
         Drawable.ConstantState cs = dr.getConstantState();
         if (cs == null) {
@@ -740,11 +727,11 @@ public class ResourcesImpl {
                     if ((changingConfigs & 8192) != 0) {
                         sPreloadedDrawables[this.mConfiguration.getLayoutDirection()].put(key, cs);
                         return;
+                    } else {
+                        sPreloadedDrawables[0].put(key, cs);
+                        sPreloadedDrawables[1].put(key, cs);
+                        return;
                     }
-                    LongSparseArray<Drawable.ConstantState>[] longSparseArrayArr = sPreloadedDrawables;
-                    longSparseArrayArr[0].put(key, cs);
-                    longSparseArrayArr[1].put(key, cs);
-                    return;
                 }
                 return;
             }
@@ -771,7 +758,7 @@ public class ResourcesImpl {
     private Drawable decodeImageDrawable(AssetManager.AssetInputStream ais, Resources wrapper, TypedValue value) {
         ImageDecoder.Source src = new ImageDecoder.AssetInputStreamSource(ais, wrapper, value);
         try {
-            return ImageDecoder.decodeDrawable(src, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.content.res.ResourcesImpl$$ExternalSyntheticLambda2
+            return ImageDecoder.decodeDrawable(src, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.content.res.ResourcesImpl$$ExternalSyntheticLambda1
                 @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
                 public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source) {
                     imageDecoder.setAllocator(1);
@@ -798,8 +785,6 @@ public class ResourcesImpl {
 
     private Drawable loadDrawableForCookie(Resources wrapper, TypedValue value, int id, int density) {
         Drawable dr;
-        Drawable dr2;
-        Drawable dr3;
         byte[] imageData;
         if (value.string == null) {
             throw new Resources.NotFoundException("Resource \"" + getResourceName(id) + "\" (" + Integer.toHexString(id) + ") is not a Drawable (color or path): " + value);
@@ -833,63 +818,29 @@ public class ResourcesImpl {
                 if (file.endsWith(".xml")) {
                     String typeName = getResourceTypeName(id);
                     if (typeName != null && typeName.equals("color")) {
-                        dr3 = loadColorOrXmlDrawable(wrapper, value, id, density, file);
+                        dr = loadColorOrXmlDrawable(wrapper, value, id, density, file);
                     } else {
-                        dr3 = loadXmlDrawable(wrapper, value, id, density, file);
+                        dr = loadXmlDrawable(wrapper, value, id, density, file);
                     }
-                    dr = dr3;
                 } else if (file.startsWith("frro://")) {
                     Uri uri = Uri.parse(file);
                     File f = new File('/' + uri.getHost() + uri.getPath());
                     ParcelFileDescriptor pfd = ParcelFileDescriptor.open(f, 268435456);
                     AssetFileDescriptor afd = new AssetFileDescriptor(pfd, Long.parseLong(uri.getQueryParameter(CallLog.Calls.OFFSET_PARAM_KEY)), Long.parseLong(uri.getQueryParameter(Contract.DatabaseSize.PATH)));
-                    Drawable dr4 = decodeImageDrawable(afd.createInputStream(), wrapper);
-                    dr = dr4;
+                    dr = decodeImageDrawable(afd.createInputStream(), wrapper);
                 } else {
                     InputStream is2 = this.mAssets.openNonAsset(value.assetCookie, file, 2);
-                    boolean z = true;
-                    String apkPath = this.mAssets.getApkPaths()[value.assetCookie - 1];
-                    if (file.endsWith(".qmg") && (apkPath.startsWith("/data/overlays") || apkPath.startsWith(SamsungThemeConstants.DATA_APP_DIR))) {
-                        AssetManager.AssetInputStream aisQMG = (AssetManager.AssetInputStream) is2;
-                        if (isQMGImage(is2)) {
-                            dr2 = decodeImageDrawableQMG(aisQMG, wrapper, value);
-                        } else {
-                            Drawable dr5 = decodeImageDrawable(aisQMG, wrapper, value);
-                            try {
-                                StringBuilder append = new StringBuilder().append("QMG file ").append(file).append(", is decoded with original one, success load = ");
-                                if (dr5 == null) {
-                                    z = false;
-                                }
-                                Log.d(TAG, append.append(z).toString());
-                                dr2 = dr5;
-                            } catch (Throwable th) {
-                                th = th;
-                                stack.pop();
-                                throw th;
-                            }
-                        }
-                        dr = dr2;
-                    } else {
-                        if (!file.endsWith(".bmp") && !file.endsWith(".spr")) {
-                            AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) is2;
-                            dr = decodeImageDrawable(ais, wrapper, value);
-                        }
-                        Drawable dr6 = Drawable.createFromResourceStream(wrapper, value, is2, file, null);
-                        try {
-                            is2.close();
-                            dr = dr6;
-                        } catch (Throwable th2) {
-                            th = th2;
-                            stack.pop();
-                            throw th;
-                        }
+                    if (!file.endsWith(".bmp") && !file.endsWith(".spr")) {
+                        AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) is2;
+                        dr = decodeImageDrawable(ais, wrapper, value);
                     }
+                    dr = Drawable.createFromResourceStream(wrapper, value, is2, file, null);
+                    is2.close();
                 }
-                stack.pop();
                 Trace.traceEnd(8192L);
                 return dr;
-            } catch (Throwable th3) {
-                th = th3;
+            } finally {
+                stack.pop();
             }
         } catch (Exception | StackOverflowError e2) {
             Trace.traceEnd(8192L);
@@ -976,8 +927,7 @@ public class ResourcesImpl {
             return complexColor;
         }
         int cacheGeneration = cache.getGeneration();
-        LongSparseArray<ConstantState<ComplexColor>> longSparseArray = sPreloadedComplexColors;
-        ConstantState<ComplexColor> factory = longSparseArray.get(key);
+        ConstantState<ComplexColor> factory = sPreloadedComplexColors.get(key);
         if (factory != null) {
             complexColor = factory.newInstance2(wrapper, theme);
         }
@@ -990,7 +940,7 @@ public class ResourcesImpl {
             if (!verifyPreloadConfig(complexColor2.getChangingConfigurations(), 0, value.resourceId, "color")) {
                 return complexColor2;
             }
-            longSparseArray.put(key, complexColor2.getConstantState());
+            sPreloadedComplexColors.put(key, complexColor2.getConstantState());
             return complexColor2;
         }
         ComplexColor complexColor3 = complexColor2;
@@ -998,7 +948,7 @@ public class ResourcesImpl {
         return complexColor3;
     }
 
-    public ComplexColor loadComplexColor(Resources wrapper, TypedValue value, int id, Resources.Theme theme) {
+    ComplexColor loadComplexColor(Resources wrapper, TypedValue value, int id, Resources.Theme theme) {
         long key = (value.assetCookie << 32) | value.data;
         if (value.type >= 28 && value.type <= 31) {
             return getColorStateListFromInt(value, key);
@@ -1017,7 +967,7 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("File " + file + " from drawable resource ID #0x" + Integer.toHexString(id) + ": .xml extension required");
     }
 
-    public ColorStateList loadColorStateList(Resources wrapper, TypedValue value, int id, Resources.Theme theme) throws Resources.NotFoundException {
+    ColorStateList loadColorStateList(Resources wrapper, TypedValue value, int id, Resources.Theme theme) throws Resources.NotFoundException {
         long key = (value.assetCookie << 32) | value.data;
         if (value.type >= 28 && value.type <= 31) {
             return getColorStateListFromInt(value, key);
@@ -1030,14 +980,13 @@ public class ResourcesImpl {
     }
 
     private ColorStateList getColorStateListFromInt(TypedValue value, long key) {
-        LongSparseArray<ConstantState<ComplexColor>> longSparseArray = sPreloadedComplexColors;
-        ConstantState<ComplexColor> factory = longSparseArray.get(key);
+        ConstantState<ComplexColor> factory = sPreloadedComplexColors.get(key);
         if (factory != null) {
             return (ColorStateList) factory.newInstance2();
         }
         ColorStateList csl = ColorStateList.valueOf(value.data);
         if (this.mPreloading && verifyPreloadConfig(value.changingConfigurations, 0, value.resourceId, "color")) {
-            longSparseArray.put(key, csl.getConstantState());
+            sPreloadedComplexColors.put(key, csl.getConstantState());
         }
         return csl;
     }
@@ -1083,7 +1032,7 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("File " + file + " from drawable resource ID #0x" + Integer.toHexString(id) + ": .xml extension required");
     }
 
-    public XmlResourceParser loadXmlResourceParser(String file, int id, int assetCookie, String type) throws Resources.NotFoundException {
+    XmlResourceParser loadXmlResourceParser(String file, int id, int assetCookie, String type) throws Resources.NotFoundException {
         if (id != 0) {
             try {
                 synchronized (this.mCachedXmlBlocks) {
@@ -1131,35 +1080,34 @@ public class ResourcesImpl {
         }
     }
 
-    public void finishPreloading() {
+    void finishPreloading() {
         if (this.mPreloading) {
             this.mPreloading = false;
             flushLayoutCache();
         }
     }
 
-    public static int getAttributeSetSourceResId(AttributeSet set) {
+    static int getAttributeSetSourceResId(AttributeSet set) {
         if (set == null || !(set instanceof XmlBlock.Parser)) {
             return 0;
         }
         return ((XmlBlock.Parser) set).getSourceResId();
     }
 
-    public LongSparseArray<Drawable.ConstantState> getPreloadedDrawables() {
+    LongSparseArray<Drawable.ConstantState> getPreloadedDrawables() {
         return sPreloadedDrawables[0];
     }
 
-    public ThemeImpl newThemeImpl() {
+    ThemeImpl newThemeImpl() {
         return new ThemeImpl();
     }
 
-    public void dump(PrintWriter pw, String prefix) {
+    void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "class=" + getClass());
         pw.println(prefix + "assets");
         this.mAssets.dump(pw, prefix + "  ");
     }
 
-    /* loaded from: classes.dex */
     public class ThemeImpl {
         private AssetManager mAssets;
         private final long mTheme;
@@ -1167,11 +1115,9 @@ public class ResourcesImpl {
         private int mThemeResId = 0;
 
         ThemeImpl() {
-            AssetManager assetManager = ResourcesImpl.this.mAssets;
-            this.mAssets = assetManager;
-            long createTheme = assetManager.createTheme();
-            this.mTheme = createTheme;
-            ResourcesImpl.sThemeRegistry.registerNativeAllocation(this, createTheme);
+            this.mAssets = ResourcesImpl.this.mAssets;
+            this.mTheme = this.mAssets.createTheme();
+            ResourcesImpl.sThemeRegistry.registerNativeAllocation(this, this.mTheme);
         }
 
         protected void finalize() throws Throwable {
@@ -1179,38 +1125,38 @@ public class ResourcesImpl {
             this.mAssets.releaseTheme(this.mTheme);
         }
 
-        public Resources.ThemeKey getKey() {
+        Resources.ThemeKey getKey() {
             return this.mKey;
         }
 
-        public long getNativeTheme() {
+        long getNativeTheme() {
             return this.mTheme;
         }
 
-        public int getAppliedStyleResId() {
+        int getAppliedStyleResId() {
             return this.mThemeResId;
         }
 
-        public int getParentThemeIdentifier(int resId) {
+        int getParentThemeIdentifier(int resId) {
             if (resId > 0) {
                 return this.mAssets.getParentThemeIdentifier(resId);
             }
             return 0;
         }
 
-        public void applyStyle(int resId, boolean force) {
+        void applyStyle(int resId, boolean force) {
             this.mAssets.applyStyleToTheme(this.mTheme, resId, force);
             this.mThemeResId = resId;
             this.mKey.append(resId, force);
         }
 
-        public void setTo(ThemeImpl other) {
+        void setTo(ThemeImpl other) {
             this.mAssets.setThemeTo(this.mTheme, other.mAssets, other.mTheme);
             this.mThemeResId = other.mThemeResId;
             this.mKey.setTo(other.getKey());
         }
 
-        public TypedArray obtainStyledAttributes(Resources.Theme wrapper, AttributeSet set, int[] attrs, int defStyleAttr, int defStyleRes) {
+        TypedArray obtainStyledAttributes(Resources.Theme wrapper, AttributeSet set, int[] attrs, int defStyleAttr, int defStyleRes) {
             int len = attrs.length;
             TypedArray array = TypedArray.obtain(wrapper.getResources(), len);
             XmlBlock.Parser parser = (XmlBlock.Parser) set;
@@ -1220,7 +1166,7 @@ public class ResourcesImpl {
             return array;
         }
 
-        public TypedArray resolveAttributes(Resources.Theme wrapper, int[] values, int[] attrs) {
+        TypedArray resolveAttributes(Resources.Theme wrapper, int[] values, int[] attrs) {
             int len = attrs.length;
             if (values == null || len != values.length) {
                 throw new IllegalArgumentException("Base attribute values must the same length as attrs");
@@ -1232,15 +1178,15 @@ public class ResourcesImpl {
             return array;
         }
 
-        public boolean resolveAttribute(int resid, TypedValue outValue, boolean resolveRefs) {
+        boolean resolveAttribute(int resid, TypedValue outValue, boolean resolveRefs) {
             return this.mAssets.getThemeValue(this.mTheme, resid, outValue, resolveRefs);
         }
 
-        public int[] getAllAttributes() {
+        int[] getAllAttributes() {
             return this.mAssets.getStyleAttributes(getAppliedStyleResId());
         }
 
-        public int getChangingConfigurations() {
+        int getChangingConfigurations() {
             int nativeChangingConfig = AssetManager.nativeThemeGetChangingConfigurations(this.mTheme);
             return ActivityInfo.activityInfoConfigNativeToJava(nativeChangingConfig);
         }
@@ -1249,7 +1195,7 @@ public class ResourcesImpl {
             this.mAssets.dumpTheme(this.mTheme, priority, tag, prefix);
         }
 
-        public String[] getTheme() {
+        String[] getTheme() {
             int n = this.mKey.mCount;
             String[] themes = new String[n * 2];
             int i = 0;
@@ -1269,11 +1215,11 @@ public class ResourcesImpl {
             return themes;
         }
 
-        public void rebase() {
+        void rebase() {
             rebase(this.mAssets);
         }
 
-        public void rebase(AssetManager newAssets) {
+        void rebase(AssetManager newAssets) {
             this.mAssets = this.mAssets.rebaseTheme(this.mTheme, newAssets, this.mKey.mResId, this.mKey.mForce, this.mKey.mCount);
         }
 
@@ -1282,14 +1228,10 @@ public class ResourcesImpl {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class LookupStack {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class LookupStack {
         private int[] mIds;
         private int mSize;
-
-        /* synthetic */ LookupStack(LookupStackIA lookupStackIA) {
-            this();
-        }
 
         private LookupStack() {
             this.mIds = new int[4];
@@ -1315,43 +1257,7 @@ public class ResourcesImpl {
         }
     }
 
-    public static void setLoadDensityDpi(int loadDensityDpi) {
-        sLoadDensityDpi = loadDensityDpi;
-    }
-
-    private static boolean isQMGImage(InputStream is) {
-        byte[] buffer = new byte[2];
-        try {
-            if (!is.markSupported()) {
-                is = new BufferedInputStream(is);
-            }
-            is.mark(2);
-            is.read(buffer);
-            char h0 = (char) buffer[0];
-            char h1 = (char) buffer[1];
-            if (h0 == 'Q' && h1 == 'G') {
-                is.reset();
-                return true;
-            }
-            is.reset();
-            return false;
-        } catch (IOException ioe) {
-            Log.e(TAG, "Failed to read input stream: " + ioe);
-            return false;
-        }
-    }
-
-    private Drawable decodeImageDrawableQMG(AssetManager.AssetInputStream ais, Resources wrapper, TypedValue value) {
-        ImageDecoder.Source src = new ImageDecoder.AssetInputStreamSourceQMG(ais, wrapper, value);
-        try {
-            return ImageDecoder.decodeDrawable(src, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.content.res.ResourcesImpl$$ExternalSyntheticLambda1
-                @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
-                public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source) {
-                    imageDecoder.setAllocator(1);
-                }
-            });
-        } catch (IOException e) {
-            return null;
-        }
+    public int getAppliedSharedLibsHash() {
+        return this.mAppliedSharedLibsHash;
     }
 }

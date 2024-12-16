@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class LocalService extends ServiceStub {
     private static final String TAG = Def.tagOf((Class<?>) LocalService.class);
     protected Binder binder = new LocalBinder();
@@ -52,19 +52,16 @@ public abstract class LocalService extends ServiceStub {
                             return LocalService.lambda$onEvent$0((Parcelable) obj);
                         }
                     }).collect(Collectors.toList()));
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
-    public static /* synthetic */ MediaBuffer lambda$onEvent$0(Parcelable it) {
+    static /* synthetic */ MediaBuffer lambda$onEvent$0(Parcelable it) {
         return (MediaBuffer) it;
     }
 
-    /* loaded from: classes4.dex */
     public class LocalBinder extends Binder {
         public LocalBinder() {
         }

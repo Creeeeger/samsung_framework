@@ -7,7 +7,7 @@ import android.util.SparseArray;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ConnectionFailureInfo implements Parcelable {
     public static final Parcelable.Creator<ConnectionFailureInfo> CREATOR;
     public static final int REASON_ACCESS_DENIED = 1;
@@ -21,43 +21,35 @@ public final class ConnectionFailureInfo implements Parcelable {
     public static final int REASON_RRC_REJECT = 5;
     public static final int REASON_RRC_TIMEOUT = 6;
     public static final int REASON_UNSPECIFIED = 65535;
-    private static final SparseArray<String> sReasonMap;
+    private static final SparseArray<String> sReasonMap = new SparseArray<>();
     private final int mCauseCode;
     private final int mReason;
     private final int mWaitTimeMillis;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface FailureReason {
     }
 
-    /* synthetic */ ConnectionFailureInfo(Parcel parcel, ConnectionFailureInfoIA connectionFailureInfoIA) {
-        this(parcel);
-    }
-
     static {
-        SparseArray<String> sparseArray = new SparseArray<>();
-        sReasonMap = sparseArray;
-        sparseArray.set(0, KeyProperties.DIGEST_NONE);
-        sparseArray.set(1, "ACCESS_DENIED");
-        sparseArray.set(2, "NAS_FAILURE");
-        sparseArray.set(3, "RACH_FAILURE");
-        sparseArray.set(4, "RLC_FAILURE");
-        sparseArray.set(5, "RRC_REJECT");
-        sparseArray.set(6, "RRC_TIMEOUT");
-        sparseArray.set(7, "NO_SERVICE");
-        sparseArray.set(8, "PDN_NOT_AVAILABLE");
-        sparseArray.set(9, "RF_BUSY");
-        sparseArray.set(65535, "UNSPECIFIED");
+        sReasonMap.set(0, KeyProperties.DIGEST_NONE);
+        sReasonMap.set(1, "ACCESS_DENIED");
+        sReasonMap.set(2, "NAS_FAILURE");
+        sReasonMap.set(3, "RACH_FAILURE");
+        sReasonMap.set(4, "RLC_FAILURE");
+        sReasonMap.set(5, "RRC_REJECT");
+        sReasonMap.set(6, "RRC_TIMEOUT");
+        sReasonMap.set(7, "NO_SERVICE");
+        sReasonMap.set(8, "PDN_NOT_AVAILABLE");
+        sReasonMap.set(9, "RF_BUSY");
+        sReasonMap.set(65535, "UNSPECIFIED");
         CREATOR = new Parcelable.Creator<ConnectionFailureInfo>() { // from class: android.telephony.ims.feature.ConnectionFailureInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ConnectionFailureInfo createFromParcel(Parcel in) {
                 return new ConnectionFailureInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ConnectionFailureInfo[] newArray(int size) {
                 return new ConnectionFailureInfo[size];
@@ -104,22 +96,5 @@ public final class ConnectionFailureInfo implements Parcelable {
         out.writeInt(this.mReason);
         out.writeInt(this.mCauseCode);
         out.writeInt(this.mWaitTimeMillis);
-    }
-
-    /* renamed from: android.telephony.ims.feature.ConnectionFailureInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ConnectionFailureInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConnectionFailureInfo createFromParcel(Parcel in) {
-            return new ConnectionFailureInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConnectionFailureInfo[] newArray(int size) {
-            return new ConnectionFailureInfo[size];
-        }
     }
 }

@@ -7,11 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CountryTimeZones {
     private final com.android.i18n.timezone.CountryTimeZones mDelegate;
 
-    /* loaded from: classes3.dex */
     public static final class TimeZoneMapping {
         private CountryTimeZones.TimeZoneMapping mDelegate;
 
@@ -47,7 +46,6 @@ public final class CountryTimeZones {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class OffsetResult {
         private final boolean mIsOnlyMatch;
         private final TimeZone mTimeZone;
@@ -88,7 +86,7 @@ public final class CountryTimeZones {
         }
     }
 
-    public CountryTimeZones(com.android.i18n.timezone.CountryTimeZones delegate) {
+    CountryTimeZones(com.android.i18n.timezone.CountryTimeZones delegate) {
         this.mDelegate = delegate;
     }
 

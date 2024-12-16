@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDirEncryptServiceListener extends IInterface {
     void onEncryptionStatusChanged(String str, int i, String str2, int i2, int i3) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDirEncryptServiceListener {
         private static final String DESCRIPTOR = "IDirEncryptServiceListener";
         static final int TRANSACTION_onEncryptionStatusChanged = 1;
@@ -51,9 +50,7 @@ public interface IDirEncryptServiceListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDirEncryptServiceListener {
+        private static class Proxy implements IDirEncryptServiceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

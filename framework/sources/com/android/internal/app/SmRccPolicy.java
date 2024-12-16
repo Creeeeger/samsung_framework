@@ -14,7 +14,7 @@ import android.util.Slog;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class SmRccPolicy {
     private static final String ACTION = "action";
     private static final String ACTION_DELETE = "delete";
@@ -64,9 +64,8 @@ public final class SmRccPolicy {
         this.mContext = context;
         HandlerThread thread = new HandlerThread("RccAppThread");
         thread.start();
-        MyHandler myHandler = new MyHandler(thread.getLooper());
-        this.mHandler = myHandler;
-        myHandler.post(new Runnable() { // from class: com.android.internal.app.SmRccPolicy$$ExternalSyntheticLambda0
+        this.mHandler = new MyHandler(thread.getLooper());
+        this.mHandler.post(new Runnable() { // from class: com.android.internal.app.SmRccPolicy$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 SmRccPolicy.this.lambda$new$0();
@@ -74,7 +73,8 @@ public final class SmRccPolicy {
         });
     }
 
-    /* renamed from: registerRccDBObserver */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: registerRccDBObserver, reason: merged with bridge method [inline-methods] */
     public void lambda$new$0() {
         try {
             RccAppDBObserver rccDBObserver = new RccAppDBObserver(this.mHandler);
@@ -85,8 +85,7 @@ public final class SmRccPolicy {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class RccAppDBObserver extends ContentObserver {
+    private class RccAppDBObserver extends ContentObserver {
         public RccAppDBObserver(Handler handler) {
             super(handler);
         }
@@ -147,9 +146,7 @@ public final class SmRccPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public class MyHandler extends Handler {
+    private class MyHandler extends Handler {
         public MyHandler(Looper looper) {
             super(looper);
         }
@@ -159,31 +156,30 @@ public final class SmRccPolicy {
             switch (msg.what) {
                 case 10:
                     SmRccPolicy.this.loadRccAppFromSm();
-                    return;
+                    break;
                 case 20:
                     SmRccPolicy.this.addRccPackage((RccApp) msg.obj);
-                    return;
+                    break;
                 case 30:
                     SmRccPolicy.this.removeRccPackage((String) msg.obj);
-                    return;
+                    break;
                 case 40:
                     SmRccPolicy.this.updateRccShow((String) msg.obj, String.valueOf(msg.arg1));
-                    return;
+                    break;
                 case 50:
                     SmRccPolicy.this.updateRccOpen((String) msg.obj, String.valueOf(msg.arg1));
-                    return;
+                    break;
                 case 60:
                     SmRccPolicy.this.updateRccRestrict((String) msg.obj, String.valueOf(msg.arg1));
-                    return;
+                    break;
                 case 70:
                     SmRccPolicy.this.callResetSmRccOpen((String) msg.obj);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void loadRccAppFromSm() {
         Slog.i(TAG, "loadRccAppFromSm: ");
         mRccPkgMap.clear();
@@ -285,6 +281,7 @@ public final class SmRccPolicy {
         this.mHandler.sendMessage(message);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void callResetSmRccOpen(String packageName) {
         if (packageName != null && mRccPkgMap.containsKey(packageName)) {
             Bundle bundle = new Bundle();
@@ -303,16 +300,14 @@ public final class SmRccPolicy {
     }
 
     public void loadData() {
-        Handler handler = this.mHandler;
-        if (handler == null) {
+        if (this.mHandler == null) {
             Slog.i(TAG, "SmRcc handler is null, return");
         } else {
-            handler.sendEmptyMessage(10);
+            this.mHandler.sendEmptyMessage(10);
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class RccApp {
+    private static class RccApp {
         private String open;
         private String pkgName;
         private String restrict;

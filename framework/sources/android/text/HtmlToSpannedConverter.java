@@ -2,6 +2,7 @@ package android.text;
 
 import android.app.ActivityThread;
 import android.app.Application;
+import android.app.backup.FullBackup;
 import android.app.blob.XmlTags;
 import android.content.Context;
 import android.content.res.Resources;
@@ -44,11 +45,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /* compiled from: Html.java */
-/* loaded from: classes3.dex */
-public class HtmlToSpannedConverter implements ContentHandler {
-    private static final float[] HEADING_SIZES = {1.5f, 1.4f, 1.3f, 1.2f, 1.1f, 1.0f};
+/* loaded from: classes4.dex */
+class HtmlToSpannedConverter implements ContentHandler {
     private static Pattern sBackgroundColorPattern;
-    private static final Map<String, Integer> sColorMap;
     private static Pattern sForegroundColorPattern;
     private static Pattern sTextAlignPattern;
     private static Pattern sTextDecorationPattern;
@@ -58,17 +57,17 @@ public class HtmlToSpannedConverter implements ContentHandler {
     private String mSource;
     private SpannableStringBuilder mSpannableStringBuilder = new SpannableStringBuilder();
     private Html.TagHandler mTagHandler;
+    private static final float[] HEADING_SIZES = {1.5f, 1.4f, 1.3f, 1.2f, 1.1f, 1.0f};
+    private static final Map<String, Integer> sColorMap = new HashMap();
 
     static {
-        HashMap hashMap = new HashMap();
-        sColorMap = hashMap;
-        hashMap.put("darkgray", -5658199);
-        hashMap.put("gray", -8355712);
-        hashMap.put("lightgray", -2894893);
-        hashMap.put("darkgrey", -5658199);
-        hashMap.put("grey", -8355712);
-        hashMap.put("lightgrey", -2894893);
-        hashMap.put("green", -16744448);
+        sColorMap.put("darkgray", -5658199);
+        sColorMap.put("gray", -8355712);
+        sColorMap.put("lightgray", -2894893);
+        sColorMap.put("darkgrey", -5658199);
+        sColorMap.put("grey", -8355712);
+        sColorMap.put("lightgrey", -2894893);
+        sColorMap.put("green", -16744448);
     }
 
     private static Pattern getTextAlignPattern() {
@@ -111,8 +110,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
         this.mReader.setContentHandler(this);
         try {
             this.mReader.parse(new InputSource(new StringReader(this.mSource)));
-            SpannableStringBuilder spannableStringBuilder = this.mSpannableStringBuilder;
-            Object[] obj = spannableStringBuilder.getSpans(0, spannableStringBuilder.length(), ParagraphStyle.class);
+            Object[] obj = this.mSpannableStringBuilder.getSpans(0, this.mSpannableStringBuilder.length(), ParagraphStyle.class);
             for (int i = 0; i < obj.length; i++) {
                 int start = this.mSpannableStringBuilder.getSpanStart(obj[i]);
                 int end = this.mSpannableStringBuilder.getSpanEnd(obj[i]);
@@ -133,112 +131,121 @@ public class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private void handleStartTag(String tag, Attributes attributes) {
-        if (!tag.equalsIgnoreCase(TtmlUtils.TAG_BR)) {
-            if (tag.equalsIgnoreCase("p")) {
+    private void handleStartTag(String str, Attributes attributes) {
+        if (!str.equalsIgnoreCase(TtmlUtils.TAG_BR)) {
+            if (str.equalsIgnoreCase("p")) {
                 startBlockElement(this.mSpannableStringBuilder, attributes, getMarginParagraph());
                 startCssStyle(this.mSpannableStringBuilder, attributes);
                 return;
             }
-            if (tag.equalsIgnoreCase("ul")) {
+            if (str.equalsIgnoreCase("ul")) {
                 startBlockElement(this.mSpannableStringBuilder, attributes, getMarginList());
                 return;
             }
-            if (tag.equalsIgnoreCase("li")) {
+            if (str.equalsIgnoreCase("li")) {
                 startLi(this.mSpannableStringBuilder, attributes);
                 return;
             }
-            if (tag.equalsIgnoreCase(TtmlUtils.TAG_DIV)) {
+            if (str.equalsIgnoreCase(TtmlUtils.TAG_DIV)) {
                 startBlockElement(this.mSpannableStringBuilder, attributes, getMarginDiv());
                 return;
             }
-            if (tag.equalsIgnoreCase(TtmlUtils.TAG_SPAN)) {
+            if (str.equalsIgnoreCase(TtmlUtils.TAG_SPAN)) {
                 startCssStyle(this.mSpannableStringBuilder, attributes);
                 return;
             }
-            if (tag.equalsIgnoreCase("strong")) {
+            byte b = 0;
+            byte b2 = 0;
+            byte b3 = 0;
+            byte b4 = 0;
+            byte b5 = 0;
+            byte b6 = 0;
+            byte b7 = 0;
+            byte b8 = 0;
+            byte b9 = 0;
+            byte b10 = 0;
+            byte b11 = 0;
+            byte b12 = 0;
+            byte b13 = 0;
+            byte b14 = 0;
+            if (str.equalsIgnoreCase("strong")) {
                 start(this.mSpannableStringBuilder, new Bold());
                 return;
             }
-            if (tag.equalsIgnoreCase("b")) {
+            if (str.equalsIgnoreCase(XmlTags.TAG_BLOB)) {
                 start(this.mSpannableStringBuilder, new Bold());
                 return;
             }
-            if (tag.equalsIgnoreCase("em")) {
+            if (str.equalsIgnoreCase("em")) {
                 start(this.mSpannableStringBuilder, new Italic());
                 return;
             }
-            if (tag.equalsIgnoreCase("cite")) {
+            if (str.equalsIgnoreCase("cite")) {
                 start(this.mSpannableStringBuilder, new Italic());
                 return;
             }
-            if (tag.equalsIgnoreCase("dfn")) {
+            if (str.equalsIgnoreCase("dfn")) {
                 start(this.mSpannableStringBuilder, new Italic());
                 return;
             }
-            if (tag.equalsIgnoreCase("i")) {
+            if (str.equalsIgnoreCase("i")) {
                 start(this.mSpannableStringBuilder, new Italic());
                 return;
             }
-            if (tag.equalsIgnoreCase("big")) {
+            if (str.equalsIgnoreCase("big")) {
                 start(this.mSpannableStringBuilder, new Big());
                 return;
             }
-            if (tag.equalsIgnoreCase("small")) {
+            if (str.equalsIgnoreCase("small")) {
                 start(this.mSpannableStringBuilder, new Small());
                 return;
             }
-            if (tag.equalsIgnoreCase(Context.FONT_SERVICE)) {
+            if (str.equalsIgnoreCase(Context.FONT_SERVICE)) {
                 startFont(this.mSpannableStringBuilder, attributes);
                 return;
             }
-            if (tag.equalsIgnoreCase("blockquote")) {
+            if (str.equalsIgnoreCase("blockquote")) {
                 startBlockquote(this.mSpannableStringBuilder, attributes);
                 return;
             }
-            if (tag.equalsIgnoreCase(TtmlUtils.TAG_TT)) {
+            if (str.equalsIgnoreCase(TtmlUtils.TAG_TT)) {
                 start(this.mSpannableStringBuilder, new Monospace());
                 return;
             }
-            if (tag.equalsIgnoreCase("a")) {
+            if (str.equalsIgnoreCase(FullBackup.APK_TREE_TOKEN)) {
                 startA(this.mSpannableStringBuilder, attributes);
                 return;
             }
-            if (tag.equalsIgnoreCase(XmlTags.ATTR_UID)) {
+            if (str.equalsIgnoreCase(XmlTags.ATTR_UID)) {
                 start(this.mSpannableStringBuilder, new Underline());
                 return;
             }
-            if (tag.equalsIgnoreCase("del")) {
+            if (str.equalsIgnoreCase("del")) {
                 start(this.mSpannableStringBuilder, new Strikethrough());
                 return;
             }
-            if (tag.equalsIgnoreCase(XmlTags.TAG_SESSION)) {
+            if (str.equalsIgnoreCase(XmlTags.TAG_SESSION)) {
                 start(this.mSpannableStringBuilder, new Strikethrough());
                 return;
             }
-            if (tag.equalsIgnoreCase("strike")) {
+            if (str.equalsIgnoreCase("strike")) {
                 start(this.mSpannableStringBuilder, new Strikethrough());
                 return;
             }
-            if (tag.equalsIgnoreCase("sup")) {
+            if (str.equalsIgnoreCase("sup")) {
                 start(this.mSpannableStringBuilder, new Super());
                 return;
             }
-            if (tag.equalsIgnoreCase(Telephony.BaseMmsColumns.SUBJECT)) {
+            if (str.equalsIgnoreCase(Telephony.BaseMmsColumns.SUBJECT)) {
                 start(this.mSpannableStringBuilder, new Sub());
                 return;
             }
-            if (tag.length() == 2 && Character.toLowerCase(tag.charAt(0)) == 'h' && tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
-                startHeading(this.mSpannableStringBuilder, attributes, tag.charAt(1) - '1');
-                return;
-            }
-            if (tag.equalsIgnoreCase("img")) {
+            if (str.length() == 2 && Character.toLowerCase(str.charAt(0)) == 'h' && str.charAt(1) >= '1' && str.charAt(1) <= '6') {
+                startHeading(this.mSpannableStringBuilder, attributes, str.charAt(1) - '1');
+            } else if (str.equalsIgnoreCase("img")) {
                 startImg(this.mSpannableStringBuilder, attributes, this.mImageGetter);
-                return;
-            }
-            Html.TagHandler tagHandler = this.mTagHandler;
-            if (tagHandler != null) {
-                tagHandler.handleTag(true, tag, this.mSpannableStringBuilder, this.mReader);
+            } else if (this.mTagHandler != null) {
+                this.mTagHandler.handleTag(true, str, this.mSpannableStringBuilder, this.mReader);
             }
         }
     }
@@ -275,7 +282,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
             end(this.mSpannableStringBuilder, Bold.class, new StyleSpan(1, fontWeightAdjustment));
             return;
         }
-        if (tag.equalsIgnoreCase("b")) {
+        if (tag.equalsIgnoreCase(XmlTags.TAG_BLOB)) {
             Application application2 = ActivityThread.currentApplication();
             int fontWeightAdjustment2 = application2.getResources().getConfiguration().fontWeightAdjustment;
             end(this.mSpannableStringBuilder, Bold.class, new StyleSpan(1, fontWeightAdjustment2));
@@ -317,7 +324,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
             end(this.mSpannableStringBuilder, Monospace.class, new TypefaceSpan("monospace"));
             return;
         }
-        if (tag.equalsIgnoreCase("a")) {
+        if (tag.equalsIgnoreCase(FullBackup.APK_TREE_TOKEN)) {
             endA(this.mSpannableStringBuilder);
             return;
         }
@@ -347,11 +354,8 @@ public class HtmlToSpannedConverter implements ContentHandler {
         }
         if (tag.length() == 2 && Character.toLowerCase(tag.charAt(0)) == 'h' && tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
             endHeading(this.mSpannableStringBuilder);
-            return;
-        }
-        Html.TagHandler tagHandler = this.mTagHandler;
-        if (tagHandler != null) {
-            tagHandler.handleTag(false, tag, this.mSpannableStringBuilder, this.mReader);
+        } else if (this.mTagHandler != null) {
+            this.mTagHandler.handleTag(false, tag, this.mSpannableStringBuilder, this.mReader);
         }
     }
 
@@ -685,129 +689,73 @@ public class HtmlToSpannedConverter implements ContentHandler {
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Bold {
-        /* synthetic */ Bold(BoldIA boldIA) {
-            this();
-        }
-
+    private static class Bold {
         private Bold() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Italic {
-        /* synthetic */ Italic(ItalicIA italicIA) {
-            this();
-        }
-
+    private static class Italic {
         private Italic() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Underline {
-        /* synthetic */ Underline(UnderlineIA underlineIA) {
-            this();
-        }
-
+    private static class Underline {
         private Underline() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Strikethrough {
-        /* synthetic */ Strikethrough(StrikethroughIA strikethroughIA) {
-            this();
-        }
-
+    private static class Strikethrough {
         private Strikethrough() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Big {
-        /* synthetic */ Big(BigIA bigIA) {
-            this();
-        }
-
+    private static class Big {
         private Big() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Small {
-        /* synthetic */ Small(SmallIA smallIA) {
-            this();
-        }
-
+    private static class Small {
         private Small() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Monospace {
-        /* synthetic */ Monospace(MonospaceIA monospaceIA) {
-            this();
-        }
-
+    private static class Monospace {
         private Monospace() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Blockquote {
-        /* synthetic */ Blockquote(BlockquoteIA blockquoteIA) {
-            this();
-        }
-
+    private static class Blockquote {
         private Blockquote() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Super {
-        /* synthetic */ Super(SuperIA superIA) {
-            this();
-        }
-
+    private static class Super {
         private Super() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Sub {
-        /* synthetic */ Sub(SubIA subIA) {
-            this();
-        }
-
+    private static class Sub {
         private Sub() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Bullet {
-        /* synthetic */ Bullet(BulletIA bulletIA) {
-            this();
-        }
-
+    private static class Bullet {
         private Bullet() {
         }
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Font {
+    private static class Font {
         public String mFace;
 
         public Font(String face) {
@@ -816,8 +764,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Href {
+    private static class Href {
         public String mHref;
 
         public Href(String href) {
@@ -826,8 +773,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Foreground {
+    private static class Foreground {
         private int mForegroundColor;
 
         public Foreground(int foregroundColor) {
@@ -836,8 +782,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Background {
+    private static class Background {
         private int mBackgroundColor;
 
         public Background(int backgroundColor) {
@@ -846,8 +791,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Heading {
+    private static class Heading {
         private int mLevel;
 
         public Heading(int level) {
@@ -856,8 +800,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Newline {
+    private static class Newline {
         private int mNumNewlines;
 
         public Newline(int numNewlines) {
@@ -866,8 +809,7 @@ public class HtmlToSpannedConverter implements ContentHandler {
     }
 
     /* compiled from: Html.java */
-    /* loaded from: classes3.dex */
-    public static class Alignment {
+    private static class Alignment {
         private Layout.Alignment mAlignment;
 
         public Alignment(Layout.Alignment alignment) {

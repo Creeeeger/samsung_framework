@@ -33,7 +33,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.function.ObjIntConsumer;
 
 /* loaded from: classes4.dex */
 public final class AccessibilityInteractionClient extends IAccessibilityInteractionConnectionCallback.Stub {
@@ -45,6 +46,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
     public static final int NO_ID = -1;
     private static final long TIMEOUT_INTERACTION_MILLIS = 2000;
     private final AccessibilityManager mAccessibilityManager;
+    private final SparseArray<Pair<Executor, IntConsumer>> mAttachAccessibilityOverlayCallbacks;
     private List<StackTraceElement> mCallStackOfCallback;
     private volatile int mCallingUid;
     private int mConnectionIdWaitingForPrefetchResult;
@@ -54,6 +56,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
     private volatile int mInteractionId;
     private final AtomicInteger mInteractionIdCounter;
     private int mInteractionIdWaitingForPrefetchResult;
+    private Handler mMainHandler;
     private String[] mPackageNamesForNextPrefetchResult;
     private boolean mPerformAccessibilityActionResult;
     private Message mSameThreadMessage;
@@ -75,11 +78,10 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
     public static AccessibilityInteractionClient getInstanceForThread(long threadId) {
         AccessibilityInteractionClient client;
         synchronized (sStaticLock) {
-            LongSparseArray<AccessibilityInteractionClient> longSparseArray = sClients;
-            client = longSparseArray.get(threadId);
+            client = sClients.get(threadId);
             if (client == null) {
                 client = new AccessibilityInteractionClient();
-                longSparseArray.put(threadId, client);
+                sClients.put(threadId, client);
             }
         }
         return client;
@@ -96,11 +98,10 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
     public static AccessibilityInteractionClient getInstanceForThread(long threadId, Context context) {
         AccessibilityInteractionClient client;
         synchronized (sStaticLock) {
-            LongSparseArray<AccessibilityInteractionClient> longSparseArray = sClients;
-            client = longSparseArray.get(threadId);
+            client = sClients.get(threadId);
             if (client == null) {
                 client = new AccessibilityInteractionClient(context);
-                longSparseArray.put(threadId, client);
+                sClients.put(threadId, client);
             }
         }
         return client;
@@ -108,9 +109,8 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
 
     public static IAccessibilityServiceConnection getConnection(int connectionId) {
         IAccessibilityServiceConnection iAccessibilityServiceConnection;
-        SparseArray<IAccessibilityServiceConnection> sparseArray = sConnectionCache;
-        synchronized (sparseArray) {
-            iAccessibilityServiceConnection = sparseArray.get(connectionId);
+        synchronized (sConnectionCache) {
+            iAccessibilityServiceConnection = sConnectionCache.get(connectionId);
         }
         return iAccessibilityServiceConnection;
     }
@@ -119,13 +119,12 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         if (connectionId == -1) {
             return;
         }
-        SparseArray<IAccessibilityServiceConnection> sparseArray = sConnectionCache;
-        synchronized (sparseArray) {
+        synchronized (sConnectionCache) {
             IAccessibilityServiceConnection existingConnection = getConnection(connectionId);
             if (existingConnection instanceof DirectAccessibilityConnection) {
                 throw new IllegalArgumentException("Cannot add service connection with id " + connectionId + " which conflicts with existing direct connection.");
             }
-            sparseArray.put(connectionId, connection);
+            sConnectionCache.put(connectionId, connection);
             if (initializeCache) {
                 sCaches.put(connectionId, new AccessibilityCache(new AccessibilityCache.AccessibilityNodeRefresher()));
             }
@@ -134,15 +133,14 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
 
     public static int addDirectConnection(IAccessibilityInteractionConnection connection, AccessibilityManager accessibilityManager) {
         int connectionId;
-        SparseArray<IAccessibilityServiceConnection> sparseArray = sConnectionCache;
-        synchronized (sparseArray) {
+        synchronized (sConnectionCache) {
             connectionId = sDirectConnectionIdCounter;
             sDirectConnectionIdCounter = connectionId + 1;
             if (getConnection(connectionId) != null) {
                 throw new IllegalArgumentException("Cannot add direct connection with existing id " + connectionId);
             }
             DirectAccessibilityConnection directAccessibilityConnection = new DirectAccessibilityConnection(connection, accessibilityManager);
-            sparseArray.put(connectionId, directAccessibilityConnection);
+            sConnectionCache.put(connectionId, directAccessibilityConnection);
             sDirectConnectionCount++;
         }
         return connectionId;
@@ -161,12 +159,11 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
     }
 
     public static void removeConnection(int connectionId) {
-        SparseArray<IAccessibilityServiceConnection> sparseArray = sConnectionCache;
-        synchronized (sparseArray) {
+        synchronized (sConnectionCache) {
             if (getConnection(connectionId) instanceof DirectAccessibilityConnection) {
                 sDirectConnectionCount--;
             }
-            sparseArray.remove(connectionId);
+            sConnectionCache.remove(connectionId);
             sCaches.remove(connectionId);
         }
     }
@@ -183,8 +180,14 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         this.mInteractionId = -1;
         this.mCallingUid = -1;
         this.mTakeScreenshotOfWindowCallbacks = new SparseArray<>();
+        this.mAttachAccessibilityOverlayCallbacks = new SparseArray<>();
         this.mInteractionIdWaitingForPrefetchResult = -1;
         this.mAccessibilityManager = null;
+        try {
+            this.mMainHandler = new Handler(Looper.getMainLooper());
+        } catch (NullPointerException e) {
+            Log.w("AccessibilityInteractionClient", "Failed to initialize AccessibilityInteractionClient. But this may be initialized again later.");
+        }
     }
 
     private AccessibilityInteractionClient(Context context) {
@@ -193,8 +196,10 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         this.mInteractionId = -1;
         this.mCallingUid = -1;
         this.mTakeScreenshotOfWindowCallbacks = new SparseArray<>();
+        this.mAttachAccessibilityOverlayCallbacks = new SparseArray<>();
         this.mInteractionIdWaitingForPrefetchResult = -1;
         this.mAccessibilityManager = (AccessibilityManager) context.getSystemService(AccessibilityManager.class);
+        this.mMainHandler = new Handler(Looper.getMainLooper());
     }
 
     public void setSameThreadMessage(Message message) {
@@ -430,7 +435,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
             try {
                 connection = getConnection(connectionId);
             } catch (RemoteException e) {
-                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda3
+                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda4
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityService.TakeScreenshotCallback.this.onFailure(1);
@@ -438,7 +443,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
                 });
             }
             if (connection == null) {
-                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda0
+                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityService.TakeScreenshotCallback.this.onFailure(1);
@@ -450,14 +455,14 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
             try {
                 final int interactionId = this.mInteractionIdCounter.getAndIncrement();
                 this.mTakeScreenshotOfWindowCallbacks.put(interactionId, Pair.create(executor, callback));
-                ScreenCapture.ScreenCaptureListener listener = new ScreenCapture.ScreenCaptureListener((Consumer<ScreenCapture.ScreenshotHardwareBuffer>) new Consumer() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda1
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        AccessibilityInteractionClient.this.lambda$takeScreenshotOfWindow$1(interactionId, (ScreenCapture.ScreenshotHardwareBuffer) obj);
+                ScreenCapture.ScreenCaptureListener listener = new ScreenCapture.ScreenCaptureListener((ObjIntConsumer<ScreenCapture.ScreenshotHardwareBuffer>) new ObjIntConsumer() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda2
+                    @Override // java.util.function.ObjIntConsumer
+                    public final void accept(Object obj, int i) {
+                        AccessibilityInteractionClient.this.lambda$takeScreenshotOfWindow$1(interactionId, (ScreenCapture.ScreenshotHardwareBuffer) obj, i);
                     }
                 });
                 connection.takeScreenshotOfWindow(accessibilityWindowId, interactionId, listener, this);
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda2
+                this.mMainHandler.postDelayed(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda3
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityInteractionClient.this.lambda$takeScreenshotOfWindow$2(interactionId);
@@ -471,6 +476,16 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$takeScreenshotOfWindow$1(int interactionId, ScreenCapture.ScreenshotHardwareBuffer screenshot, int status) {
+        if (status != 0) {
+            sendTakeScreenshotOfWindowError(1, interactionId);
+        } else {
+            sendWindowScreenshotSuccess(screenshot, interactionId);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$takeScreenshotOfWindow$2(int interactionId) {
         synchronized (this.mInstanceLock) {
             if (this.mTakeScreenshotOfWindowCallbacks.contains(interactionId)) {
@@ -779,21 +794,13 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
             return;
         }
         synchronized (this.mInstanceLock) {
-            int i = this.mInteractionIdWaitingForPrefetchResult;
-            if (i == interactionId) {
-                interactionIdWaitingForPrefetchResultCopy = i;
+            if (this.mInteractionIdWaitingForPrefetchResult == interactionId) {
+                interactionIdWaitingForPrefetchResultCopy = this.mInteractionIdWaitingForPrefetchResult;
                 connectionIdWaitingForPrefetchResultCopy = this.mConnectionIdWaitingForPrefetchResult;
-                String[] strArr = this.mPackageNamesForNextPrefetchResult;
-                if (strArr != null) {
-                    packageNamesForNextPrefetchResultCopy = new String[strArr.length];
-                    int i2 = 0;
-                    while (true) {
-                        String[] strArr2 = this.mPackageNamesForNextPrefetchResult;
-                        if (i2 >= strArr2.length) {
-                            break;
-                        }
-                        packageNamesForNextPrefetchResultCopy[i2] = strArr2[i2];
-                        i2++;
+                if (this.mPackageNamesForNextPrefetchResult != null) {
+                    packageNamesForNextPrefetchResultCopy = new String[this.mPackageNamesForNextPrefetchResult.length];
+                    for (int i = 0; i < this.mPackageNamesForNextPrefetchResult.length; i++) {
+                        packageNamesForNextPrefetchResultCopy[i] = this.mPackageNamesForNextPrefetchResult[i];
                     }
                 }
             }
@@ -829,8 +836,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         }
     }
 
-    /* renamed from: sendWindowScreenshotSuccess */
-    public void lambda$takeScreenshotOfWindow$1(ScreenCapture.ScreenshotHardwareBuffer screenshot, int interactionId) {
+    private void sendWindowScreenshotSuccess(ScreenCapture.ScreenshotHardwareBuffer screenshot, int interactionId) {
         if (screenshot == null) {
             sendTakeScreenshotOfWindowError(1, interactionId);
             return;
@@ -841,7 +847,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
                 Pair<Executor, AccessibilityService.TakeScreenshotCallback> pair = this.mTakeScreenshotOfWindowCallbacks.get(interactionId);
                 Executor executor = pair.first;
                 final AccessibilityService.TakeScreenshotCallback callback = pair.second;
-                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda4
+                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda8
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityService.TakeScreenshotCallback.this.onSuccess(result);
@@ -859,7 +865,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
                 Pair<Executor, AccessibilityService.TakeScreenshotCallback> pair = this.mTakeScreenshotOfWindowCallbacks.get(interactionId);
                 Executor executor = pair.first;
                 final AccessibilityService.TakeScreenshotCallback callback = pair.second;
-                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda5
+                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityService.TakeScreenshotCallback.this.onFailure(errorCode);
@@ -987,29 +993,26 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
     }
 
     private void updateScrollingWindow(int windowId, long uptimeMillis) {
-        SparseLongArray sparseLongArray = sScrollingWindows;
-        synchronized (sparseLongArray) {
-            sparseLongArray.put(windowId, uptimeMillis);
+        synchronized (sScrollingWindows) {
+            sScrollingWindows.put(windowId, uptimeMillis);
         }
     }
 
     private void deleteScrollingWindow(int windowId) {
-        SparseLongArray sparseLongArray = sScrollingWindows;
-        synchronized (sparseLongArray) {
-            sparseLongArray.delete(windowId);
+        synchronized (sScrollingWindows) {
+            sScrollingWindows.delete(windowId);
         }
     }
 
     private boolean isWindowScrolling(int windowId) {
-        SparseLongArray sparseLongArray = sScrollingWindows;
-        synchronized (sparseLongArray) {
-            long latestScrollingTime = sparseLongArray.get(windowId);
+        synchronized (sScrollingWindows) {
+            long latestScrollingTime = sScrollingWindows.get(windowId);
             if (latestScrollingTime == 0) {
                 return false;
             }
             long currentUptime = SystemClock.uptimeMillis();
             if (currentUptime > DISABLE_PREFETCHING_FOR_SCROLLING_MILLIS + latestScrollingTime) {
-                sparseLongArray.delete(windowId);
+                sScrollingWindows.delete(windowId);
                 return false;
             }
             return true;
@@ -1017,13 +1020,11 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
     }
 
     private boolean shouldTraceClient() {
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager;
-        return accessibilityManager != null && accessibilityManager.isA11yInteractionClientTraceEnabled();
+        return this.mAccessibilityManager != null && this.mAccessibilityManager.isA11yInteractionClientTraceEnabled();
     }
 
     private boolean shouldTraceCallback() {
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager;
-        return accessibilityManager != null && accessibilityManager.isA11yInteractionConnectionCBTraceEnabled();
+        return this.mAccessibilityManager != null && this.mAccessibilityManager.isA11yInteractionConnectionCBTraceEnabled();
     }
 
     private void logTrace(IAccessibilityServiceConnection connection, String method, String params, int callingUid, List<StackTraceElement> callStack, HashSet<String> ignoreSet, long logTypes) {
@@ -1056,7 +1057,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         logTrace(connection, method, params, Binder.getCallingUid(), Arrays.asList(Thread.currentThread().getStackTrace()), new HashSet<>(Arrays.asList("getStackTrace", "logTraceClient")), 262144L);
     }
 
-    public void attachAccessibilityOverlayToWindow(int connectionId, int accessibilityWindowId, SurfaceControl sc) {
+    public void attachAccessibilityOverlayToWindow(int connectionId, int accessibilityWindowId, SurfaceControl sc, Executor executor, final IntConsumer callback) {
         IAccessibilityServiceConnection connection;
         synchronized (this.mInstanceLock) {
             try {
@@ -1065,9 +1066,93 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
                 re.rethrowFromSystemServer();
             }
             if (connection == null) {
-                Log.e("AccessibilityInteractionClient", "Error while getting service connection.");
-            } else {
-                connection.attachAccessibilityOverlayToWindow(accessibilityWindowId, sc);
+                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda5
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        callback.accept(1);
+                    }
+                });
+                return;
+            }
+            final int interactionId = this.mInteractionIdCounter.getAndIncrement();
+            this.mAttachAccessibilityOverlayCallbacks.put(interactionId, Pair.create(executor, callback));
+            connection.attachAccessibilityOverlayToWindow(interactionId, accessibilityWindowId, sc, this);
+            this.mMainHandler.postDelayed(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda6
+                @Override // java.lang.Runnable
+                public final void run() {
+                    AccessibilityInteractionClient.this.lambda$attachAccessibilityOverlayToWindow$7(interactionId);
+                }
+            }, TIMEOUT_INTERACTION_MILLIS);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$attachAccessibilityOverlayToWindow$7(int interactionId) {
+        synchronized (this.mInstanceLock) {
+            if (this.mAttachAccessibilityOverlayCallbacks.contains(interactionId)) {
+                sendAttachOverlayResult(1, interactionId);
+            }
+        }
+    }
+
+    public void attachAccessibilityOverlayToDisplay(int connectionId, int displayId, SurfaceControl sc, Executor executor, final IntConsumer callback) {
+        IAccessibilityServiceConnection connection;
+        synchronized (this.mInstanceLock) {
+            try {
+                connection = getConnection(connectionId);
+            } catch (RemoteException re) {
+                re.rethrowFromSystemServer();
+            }
+            if (connection == null) {
+                executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda9
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        callback.accept(1);
+                    }
+                });
+                return;
+            }
+            final int interactionId = this.mInteractionIdCounter.getAndIncrement();
+            this.mAttachAccessibilityOverlayCallbacks.put(interactionId, Pair.create(executor, callback));
+            connection.attachAccessibilityOverlayToDisplay(interactionId, displayId, sc, this);
+            this.mMainHandler.postDelayed(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda10
+                @Override // java.lang.Runnable
+                public final void run() {
+                    AccessibilityInteractionClient.this.lambda$attachAccessibilityOverlayToDisplay$9(interactionId);
+                }
+            }, TIMEOUT_INTERACTION_MILLIS);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$attachAccessibilityOverlayToDisplay$9(int interactionId) {
+        if (this.mAttachAccessibilityOverlayCallbacks.contains(interactionId)) {
+            sendAttachOverlayResult(1, interactionId);
+        }
+    }
+
+    @Override // android.view.accessibility.IAccessibilityInteractionConnectionCallback
+    public void sendAttachOverlayResult(final int result, int interactionId) {
+        if (!Flags.a11yOverlayCallbacks()) {
+            return;
+        }
+        synchronized (this.mInstanceLock) {
+            if (this.mAttachAccessibilityOverlayCallbacks.contains(interactionId)) {
+                Pair<Executor, IntConsumer> pair = this.mAttachAccessibilityOverlayCallbacks.get(interactionId);
+                if (pair == null) {
+                    return;
+                }
+                Executor executor = pair.first;
+                final IntConsumer callback = pair.second;
+                if (executor != null && callback != null) {
+                    executor.execute(new Runnable() { // from class: android.view.accessibility.AccessibilityInteractionClient$$ExternalSyntheticLambda7
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            callback.accept(result);
+                        }
+                    });
+                    this.mAttachAccessibilityOverlayCallbacks.remove(interactionId);
+                }
             }
         }
     }

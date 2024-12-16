@@ -7,12 +7,10 @@ import android.text.TextUtils;
 import java.util.Objects;
 import java.util.UUID;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class CellIdentity implements Parcelable {
     public static final Parcelable.Creator<CellIdentity> CREATOR = new Parcelable.Creator<CellIdentity>() { // from class: android.telephony.CellIdentity.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentity createFromParcel(Parcel in) {
             int type = in.readInt();
@@ -34,6 +32,7 @@ public abstract class CellIdentity implements Parcelable {
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentity[] newArray(int size) {
             return new CellIdentity[size];
@@ -59,7 +58,7 @@ public abstract class CellIdentity implements Parcelable {
 
     protected abstract void updateGlobalCellId();
 
-    public CellIdentity(String tag, int type, String mcc, String mnc, String alphal, String alphas) {
+    protected CellIdentity(String tag, int type, String mcc, String mnc, String alphal, String alphas) {
         this.mTag = tag;
         this.mType = type;
         if (mcc == null || isMcc(mcc)) {
@@ -78,8 +77,7 @@ public abstract class CellIdentity implements Parcelable {
             this.mMncStr = null;
             log("invalid MNC format: " + mnc);
         }
-        String str = this.mMccStr;
-        if ((str != null && this.mMncStr == null) || (str == null && this.mMncStr != null)) {
+        if ((this.mMccStr != null && this.mMncStr == null) || (this.mMccStr == null && this.mMncStr != null)) {
             AnomalyReporter.reportAnomaly(UUID.fromString("e257ae06-ac0a-44c0-ba63-823b9f07b3e4"), "CellIdentity Missing Half of PLMN ID");
         }
         this.mAlphaLong = alphal;
@@ -166,55 +164,22 @@ public abstract class CellIdentity implements Parcelable {
         return plmn.length() >= 5 && plmn.length() <= 6 && isMcc(plmn.substring(0, 3)) && isMnc(plmn.substring(3));
     }
 
-    public CellIdentity(String tag, int type, Parcel source) {
+    protected CellIdentity(String tag, int type, Parcel source) {
         this(tag, type, source.readString(), source.readString(), source.readString(), source.readString());
-    }
-
-    /* renamed from: android.telephony.CellIdentity$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentity> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentity createFromParcel(Parcel in) {
-            int type = in.readInt();
-            switch (type) {
-                case 1:
-                    return CellIdentityGsm.createFromParcelBody(in);
-                case 2:
-                    return CellIdentityCdma.createFromParcelBody(in);
-                case 3:
-                    return CellIdentityLte.createFromParcelBody(in);
-                case 4:
-                    return CellIdentityWcdma.createFromParcelBody(in);
-                case 5:
-                    return CellIdentityTdscdma.createFromParcelBody(in);
-                case 6:
-                    return CellIdentityNr.createFromParcelBody(in);
-                default:
-                    throw new IllegalArgumentException("Bad Cell identity Parcel");
-            }
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentity[] newArray(int size) {
-            return new CellIdentity[size];
-        }
     }
 
     protected void log(String s) {
         com.android.telephony.Rlog.w(this.mTag, s);
     }
 
-    public static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax) {
+    protected static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax) {
         if (value < rangeMin || value > rangeMax) {
             return Integer.MAX_VALUE;
         }
         return value;
     }
 
-    public static final long inRangeOrUnavailable(long value, long rangeMin, long rangeMax) {
+    protected static final long inRangeOrUnavailable(long value, long rangeMin, long rangeMax) {
         if (value < rangeMin || value > rangeMax) {
             return Long.MAX_VALUE;
         }

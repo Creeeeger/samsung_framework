@@ -47,7 +47,6 @@ public class AppSearchShortcutPerson extends GenericDocument {
         return new Person.Builder().setName(getPropertyString("name")).setUri(uri).setKey(getPropertyString("key")).setBot(getPropertyBoolean(KEY_IS_BOT)).setImportant(getPropertyBoolean(KEY_IS_IMPORTANT)).setIcon(transformToIcon(getPropertyBytes("icon"))).build();
     }
 
-    /* loaded from: classes.dex */
     public static class Builder extends GenericDocument.Builder<Builder> {
         public Builder(String id) {
             super("", id, AppSearchShortcutPerson.SCHEMA_TYPE);

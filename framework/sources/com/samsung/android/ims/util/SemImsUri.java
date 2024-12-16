@@ -9,7 +9,7 @@ import gov.nist.javax.sip.address.SipUri;
 import gov.nist.javax.sip.parser.URLParser;
 import java.util.regex.Pattern;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemImsUri implements Parcelable {
     private static final String LOG_TAG = "SemImsUri";
     private String mMsisdn;
@@ -23,29 +23,23 @@ public class SemImsUri implements Parcelable {
     private static final boolean DBG = "eng".equals(Build.TYPE);
     private static final Pattern PATTERN_WHITE_SPACES = Pattern.compile("\\s+");
     public static final Parcelable.Creator<SemImsUri> CREATOR = new Parcelable.Creator<SemImsUri>() { // from class: com.samsung.android.ims.util.SemImsUri.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsUri createFromParcel(Parcel in) {
             return new SemImsUri(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsUri[] newArray(int size) {
             return new SemImsUri[size];
         }
     };
 
-    /* loaded from: classes5.dex */
     public enum UriType {
         TEL_URI,
         SIP_URI,
         URN
-    }
-
-    /* synthetic */ SemImsUri(Parcel parcel, SemImsUriIA semImsUriIA) {
-        this(parcel);
     }
 
     public static SemImsUri parse(String str) {
@@ -105,14 +99,13 @@ public class SemImsUri implements Parcelable {
         this.mSipUri = null;
         this.mTelUri = null;
         this.mSipUri = uri;
-        if (uri != null) {
-            this.mUser = uri.getUser();
+        if (this.mSipUri != null) {
+            this.mUser = this.mSipUri.getUser();
             this.mScheme = this.mSipUri.getScheme();
-            String str = this.mUser;
-            if (str == null) {
+            if (this.mUser == null) {
                 this.mMsisdn = "";
             } else {
-                int index = str.indexOf(59);
+                int index = this.mUser.indexOf(59);
                 if (index > 0) {
                     this.mMsisdn = this.mUser.substring(0, index);
                 } else {
@@ -133,8 +126,8 @@ public class SemImsUri implements Parcelable {
         this.mSipUri = null;
         this.mTelUri = null;
         this.mTelUri = uri;
-        if (uri != null) {
-            this.mScheme = uri.getScheme();
+        if (this.mTelUri != null) {
+            this.mScheme = this.mTelUri.getScheme();
             this.mMsisdn = this.mTelUri.getPhoneNumber();
         } else {
             this.mScheme = null;
@@ -143,23 +136,6 @@ public class SemImsUri implements Parcelable {
         this.mUser = null;
         this.mUriType = UriType.TEL_URI;
         this.mUriToString = null;
-    }
-
-    /* renamed from: com.samsung.android.ims.util.SemImsUri$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemImsUri> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsUri createFromParcel(Parcel in) {
-            return new SemImsUri(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsUri[] newArray(int size) {
-            return new SemImsUri[size];
-        }
     }
 
     public String getUser() {
@@ -203,17 +179,14 @@ public class SemImsUri implements Parcelable {
     }
 
     public String toString() {
-        String str = this.mUriToString;
-        if (str != null) {
-            return str;
+        if (this.mUriToString != null) {
+            return this.mUriToString;
         }
-        String str2 = this.mUrn;
-        if (str2 != null) {
-            return str2;
+        if (this.mUrn != null) {
+            return this.mUrn;
         }
-        SemTelUri semTelUri = this.mTelUri;
-        if (semTelUri != null) {
-            return semTelUri.toString();
+        if (this.mTelUri != null) {
+            return this.mTelUri.toString();
         }
         return this.mSipUri.toString();
     }

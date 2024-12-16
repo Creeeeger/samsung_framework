@@ -18,7 +18,6 @@ public interface Cursor extends Closeable {
     public static final int FIELD_TYPE_STRING = 3;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FieldType {
     }
 

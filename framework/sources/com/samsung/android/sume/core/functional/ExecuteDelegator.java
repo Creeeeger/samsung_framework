@@ -5,7 +5,7 @@ import com.samsung.android.sume.core.buffer.MutableMediaBuffer;
 import com.samsung.android.sume.core.types.Status;
 
 @FunctionalInterface
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface ExecuteDelegator {
     Status execute(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer, BiBufferProcessor biBufferProcessor);
 }

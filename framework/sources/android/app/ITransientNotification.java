@@ -13,7 +13,6 @@ public interface ITransientNotification extends IInterface {
 
     void show(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITransientNotification {
         @Override // android.app.ITransientNotification
         public void show(IBinder windowToken) throws RemoteException {
@@ -29,7 +28,6 @@ public interface ITransientNotification extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITransientNotification {
         public static final String DESCRIPTOR = "android.app.ITransientNotification";
         static final int TRANSACTION_hide = 2;
@@ -76,29 +74,25 @@ public interface ITransientNotification extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    show(_arg0);
+                    return true;
+                case 2:
+                    hide();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            show(_arg0);
-                            return true;
-                        case 2:
-                            hide();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITransientNotification {
+        private static class Proxy implements ITransientNotification {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

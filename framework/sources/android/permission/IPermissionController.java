@@ -37,13 +37,13 @@ public interface IPermissionController extends IInterface {
 
     void grantOrUpgradeDefaultRuntimePermissions(AndroidFuture androidFuture) throws RemoteException;
 
-    void notifyOneTimePermissionSessionTimeout(String str) throws RemoteException;
+    void notifyOneTimePermissionSessionTimeout(String str, int i) throws RemoteException;
 
     void revokeRuntimePermission(String str, String str2) throws RemoteException;
 
     void revokeRuntimePermissions(Bundle bundle, boolean z, int i, String str, AndroidFuture androidFuture) throws RemoteException;
 
-    void revokeSelfPermissionsOnKill(String str, List<String> list, AndroidFuture androidFuture) throws RemoteException;
+    void revokeSelfPermissionsOnKill(String str, List<String> list, int i, AndroidFuture androidFuture) throws RemoteException;
 
     void setRuntimePermissionGrantStateByDeviceAdminFromParams(String str, AdminPermissionControlParams adminPermissionControlParams, AndroidFuture androidFuture) throws RemoteException;
 
@@ -51,7 +51,6 @@ public interface IPermissionController extends IInterface {
 
     void updateUserSensitiveForApp(int i, AndroidFuture androidFuture) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPermissionController {
         @Override // android.permission.IPermissionController
         public void revokeRuntimePermissions(Bundle request, boolean doDryRun, int reason, String callerPackageName, AndroidFuture callback) throws RemoteException {
@@ -94,7 +93,7 @@ public interface IPermissionController extends IInterface {
         }
 
         @Override // android.permission.IPermissionController
-        public void notifyOneTimePermissionSessionTimeout(String packageName) throws RemoteException {
+        public void notifyOneTimePermissionSessionTimeout(String packageName, int deviceId) throws RemoteException {
         }
 
         @Override // android.permission.IPermissionController
@@ -122,7 +121,7 @@ public interface IPermissionController extends IInterface {
         }
 
         @Override // android.permission.IPermissionController
-        public void revokeSelfPermissionsOnKill(String packageName, List<String> permissions, AndroidFuture callback) throws RemoteException {
+        public void revokeSelfPermissionsOnKill(String packageName, List<String> permissions, int deviceId, AndroidFuture callback) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -131,7 +130,6 @@ public interface IPermissionController extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPermissionController {
         static final int TRANSACTION_applyStagedRuntimePermissionBackup = 4;
         static final int TRANSACTION_countPermissionApps = 7;
@@ -225,134 +223,132 @@ public interface IPermissionController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPermissionController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPermissionController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPermissionController.DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    int _arg2 = data.readInt();
+                    String _arg3 = data.readString();
+                    AndroidFuture _arg4 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    revokeRuntimePermissions(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    UserHandle _arg02 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    ParcelFileDescriptor _arg12 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    getRuntimePermissionBackup(_arg02, _arg12);
+                    return true;
+                case 3:
+                    UserHandle _arg03 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    ParcelFileDescriptor _arg13 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    stageAndApplyRuntimePermissionsBackup(_arg03, _arg13);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    UserHandle _arg14 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    AndroidFuture _arg22 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    applyStagedRuntimePermissionBackup(_arg04, _arg14, _arg22);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    AndroidFuture _arg15 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAppPermissions(_arg05, _arg15);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    revokeRuntimePermission(_arg06, _arg16);
+                    return true;
+                case 7:
+                    List<String> _arg07 = data.createStringArrayList();
+                    int _arg17 = data.readInt();
+                    AndroidFuture _arg23 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    countPermissionApps(_arg07, _arg17, _arg23);
+                    return true;
+                case 8:
+                    boolean _arg08 = data.readBoolean();
+                    long _arg18 = data.readLong();
+                    AndroidFuture _arg24 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getPermissionUsages(_arg08, _arg18, _arg24);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    AdminPermissionControlParams _arg19 = (AdminPermissionControlParams) data.readTypedObject(AdminPermissionControlParams.CREATOR);
+                    AndroidFuture _arg25 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRuntimePermissionGrantStateByDeviceAdminFromParams(_arg09, _arg19, _arg25);
+                    return true;
+                case 10:
+                    AndroidFuture _arg010 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    grantOrUpgradeDefaultRuntimePermissions(_arg010);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyOneTimePermissionSessionTimeout(_arg011, _arg110);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    AndroidFuture _arg111 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateUserSensitiveForApp(_arg012, _arg111);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    AndroidFuture<String> _arg112 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getPrivilegesDescriptionStringForProfile(_arg013, _arg112);
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    AndroidFuture<List<String>> _arg113 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getPlatformPermissionsForGroup(_arg014, _arg113);
+                    return true;
+                case 15:
+                    String _arg015 = data.readString();
+                    AndroidFuture<String> _arg114 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getGroupOfPlatformPermission(_arg015, _arg114);
+                    return true;
+                case 16:
+                    AndroidFuture _arg016 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getUnusedAppCount(_arg016);
+                    return true;
+                case 17:
+                    String _arg017 = data.readString();
+                    AndroidFuture _arg115 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getHibernationEligibility(_arg017, _arg115);
+                    return true;
+                case 18:
+                    String _arg018 = data.readString();
+                    List<String> _arg116 = data.createStringArrayList();
+                    int _arg26 = data.readInt();
+                    AndroidFuture _arg32 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    revokeSelfPermissionsOnKill(_arg018, _arg116, _arg26, _arg32);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            int _arg2 = data.readInt();
-                            String _arg3 = data.readString();
-                            AndroidFuture _arg4 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            revokeRuntimePermissions(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            UserHandle _arg02 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            ParcelFileDescriptor _arg12 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            getRuntimePermissionBackup(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            UserHandle _arg03 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            ParcelFileDescriptor _arg13 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            stageAndApplyRuntimePermissionsBackup(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            UserHandle _arg14 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            AndroidFuture _arg22 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            applyStagedRuntimePermissionBackup(_arg04, _arg14, _arg22);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            AndroidFuture _arg15 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAppPermissions(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            revokeRuntimePermission(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            List<String> _arg07 = data.createStringArrayList();
-                            int _arg17 = data.readInt();
-                            AndroidFuture _arg23 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            countPermissionApps(_arg07, _arg17, _arg23);
-                            return true;
-                        case 8:
-                            boolean _arg08 = data.readBoolean();
-                            long _arg18 = data.readLong();
-                            AndroidFuture _arg24 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getPermissionUsages(_arg08, _arg18, _arg24);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            AdminPermissionControlParams _arg19 = (AdminPermissionControlParams) data.readTypedObject(AdminPermissionControlParams.CREATOR);
-                            AndroidFuture _arg25 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRuntimePermissionGrantStateByDeviceAdminFromParams(_arg09, _arg19, _arg25);
-                            return true;
-                        case 10:
-                            AndroidFuture _arg010 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            grantOrUpgradeDefaultRuntimePermissions(_arg010);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyOneTimePermissionSessionTimeout(_arg011);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            AndroidFuture _arg110 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateUserSensitiveForApp(_arg012, _arg110);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            AndroidFuture<String> _arg111 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getPrivilegesDescriptionStringForProfile(_arg013, _arg111);
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            AndroidFuture<List<String>> _arg112 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getPlatformPermissionsForGroup(_arg014, _arg112);
-                            return true;
-                        case 15:
-                            String _arg015 = data.readString();
-                            AndroidFuture<String> _arg113 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getGroupOfPlatformPermission(_arg015, _arg113);
-                            return true;
-                        case 16:
-                            AndroidFuture _arg016 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getUnusedAppCount(_arg016);
-                            return true;
-                        case 17:
-                            String _arg017 = data.readString();
-                            AndroidFuture _arg114 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getHibernationEligibility(_arg017, _arg114);
-                            return true;
-                        case 18:
-                            String _arg018 = data.readString();
-                            List<String> _arg115 = data.createStringArrayList();
-                            AndroidFuture _arg26 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            revokeSelfPermissionsOnKill(_arg018, _arg115, _arg26);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPermissionController {
+        private static class Proxy implements IPermissionController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -505,11 +501,12 @@ public interface IPermissionController extends IInterface {
             }
 
             @Override // android.permission.IPermissionController
-            public void notifyOneTimePermissionSessionTimeout(String packageName) throws RemoteException {
+            public void notifyOneTimePermissionSessionTimeout(String packageName, int deviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IPermissionController.DESCRIPTOR);
                     _data.writeString(packageName);
+                    _data.writeInt(deviceId);
                     this.mRemote.transact(11, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -594,12 +591,13 @@ public interface IPermissionController extends IInterface {
             }
 
             @Override // android.permission.IPermissionController
-            public void revokeSelfPermissionsOnKill(String packageName, List<String> permissions, AndroidFuture callback) throws RemoteException {
+            public void revokeSelfPermissionsOnKill(String packageName, List<String> permissions, int deviceId, AndroidFuture callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IPermissionController.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeStringList(permissions);
+                    _data.writeInt(deviceId);
                     _data.writeTypedObject(callback, 0);
                     this.mRemote.transact(18, _data, null, 1);
                 } finally {

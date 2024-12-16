@@ -59,7 +59,6 @@ public class PendingTransactionActions {
         this.mStopInfo = stopInfo;
     }
 
-    /* loaded from: classes.dex */
     public static class StopInfo implements Runnable {
         private static final String TAG = "ActivityStopInfo";
         private ActivityThread.ActivityClientRecord mActivity;

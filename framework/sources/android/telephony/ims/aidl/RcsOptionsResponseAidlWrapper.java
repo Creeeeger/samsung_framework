@@ -5,7 +5,7 @@ import android.telephony.ims.ImsException;
 import android.telephony.ims.stub.RcsCapabilityExchangeImplBase;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class RcsOptionsResponseAidlWrapper implements RcsCapabilityExchangeImplBase.OptionsResponseCallback {
     private final IOptionsResponseCallback mResponseBinder;
 

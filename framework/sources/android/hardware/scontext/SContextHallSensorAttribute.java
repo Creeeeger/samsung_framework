@@ -27,8 +27,7 @@ public class SContextHallSensorAttribute extends SContextAttribute {
 
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mDisplayStatus;
-        if (i < 0 || i > 2) {
+        if (this.mDisplayStatus < 0 || this.mDisplayStatus > 2) {
             Log.e(TAG, "The display status is wrong.");
             return false;
         }

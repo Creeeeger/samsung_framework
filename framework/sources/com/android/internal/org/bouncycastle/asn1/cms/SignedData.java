@@ -168,20 +168,18 @@ public class SignedData extends ASN1Object {
         v.add(this.version);
         v.add(this.digestAlgorithms);
         v.add(this.contentInfo);
-        ASN1Set aSN1Set = this.certificates;
-        if (aSN1Set != null) {
+        if (this.certificates != null) {
             if (this.certsBer) {
-                v.add(new BERTaggedObject(false, 0, aSN1Set));
+                v.add(new BERTaggedObject(false, 0, this.certificates));
             } else {
-                v.add(new DERTaggedObject(false, 0, aSN1Set));
+                v.add(new DERTaggedObject(false, 0, this.certificates));
             }
         }
-        ASN1Set aSN1Set2 = this.crls;
-        if (aSN1Set2 != null) {
+        if (this.crls != null) {
             if (this.crlsBer) {
-                v.add(new BERTaggedObject(false, 1, aSN1Set2));
+                v.add(new BERTaggedObject(false, 1, this.crls));
             } else {
-                v.add(new DERTaggedObject(false, 1, aSN1Set2));
+                v.add(new DERTaggedObject(false, 1, this.crls));
             }
         }
         v.add(this.signerInfos);

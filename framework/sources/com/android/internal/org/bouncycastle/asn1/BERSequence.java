@@ -20,7 +20,7 @@ public class BERSequence extends ASN1Sequence {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         int count = this.elements.length;
         int totalLength = 0;
         for (int i = 0; i < count; i++) {
@@ -32,7 +32,7 @@ public class BERSequence extends ASN1Sequence {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncodedIndef(withTag, 48, this.elements);
     }
 }

@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ResourceInfoParcel implements Parcelable {
     public static final Parcelable.Creator<ResourceInfoParcel> CREATOR = new Parcelable.Creator<ResourceInfoParcel>() { // from class: com.samsung.android.media.ResourceInfoParcel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResourceInfoParcel createFromParcel(Parcel _aidl_source) {
             ResourceInfoParcel _aidl_out = new ResourceInfoParcel();
@@ -17,6 +15,7 @@ public class ResourceInfoParcel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResourceInfoParcel[] newArray(int _aidl_size) {
             return new ResourceInfoParcel[_aidl_size];
@@ -34,25 +33,6 @@ public class ResourceInfoParcel implements Parcelable {
     public int isEncoder = 0;
     public int isSWCodec = 0;
     public int bitrate = 0;
-
-    /* renamed from: com.samsung.android.media.ResourceInfoParcel$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ResourceInfoParcel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResourceInfoParcel createFromParcel(Parcel _aidl_source) {
-            ResourceInfoParcel _aidl_out = new ResourceInfoParcel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResourceInfoParcel[] newArray(int _aidl_size) {
-            return new ResourceInfoParcel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

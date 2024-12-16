@@ -46,8 +46,7 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
 
     @Override // android.widget.Adapter
     public boolean isEmpty() {
-        ListAdapter listAdapter = this.mAdapter;
-        return listAdapter == null || listAdapter.isEmpty();
+        return this.mAdapter == null || this.mAdapter.isEmpty();
     }
 
     private boolean areAllListInfosSelectable(ArrayList<SemHorizontalListView.FixedViewInfo> infos) {
@@ -116,9 +115,8 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
 
     @Override // android.widget.ListAdapter
     public boolean areAllItemsEnabled() {
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null) {
-            return this.mAreAllFixedViewsSelectable && listAdapter.areAllItemsEnabled();
+        if (this.mAdapter != null) {
+            return this.mAreAllFixedViewsSelectable && this.mAdapter.areAllItemsEnabled();
         }
         return true;
     }
@@ -131,8 +129,7 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
         }
         int adjPosition = position - numHeaders;
         int adapterCount = 0;
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null && adjPosition < (adapterCount = listAdapter.getCount())) {
+        if (this.mAdapter != null && adjPosition < (adapterCount = this.mAdapter.getCount())) {
             return this.mAdapter.isEnabled(adjPosition);
         }
         if (adjPosition - adapterCount >= this.mFooterViewInfos.size()) {
@@ -149,8 +146,7 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
         }
         int adjPosition = position - numHeaders;
         int adapterCount = 0;
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null && adjPosition < (adapterCount = listAdapter.getCount())) {
+        if (this.mAdapter != null && adjPosition < (adapterCount = this.mAdapter.getCount())) {
             return this.mAdapter.getItem(adjPosition);
         }
         if (adjPosition - adapterCount >= this.mFooterViewInfos.size()) {
@@ -162,10 +158,9 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
     @Override // android.widget.Adapter
     public long getItemId(int position) {
         int numHeaders = getHeadersCount();
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null && position >= numHeaders) {
+        if (this.mAdapter != null && position >= numHeaders) {
             int adjPosition = position - numHeaders;
-            int adapterCount = listAdapter.getCount();
+            int adapterCount = this.mAdapter.getCount();
             if (adjPosition < adapterCount) {
                 return this.mAdapter.getItemId(adjPosition);
             }
@@ -176,9 +171,8 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
 
     @Override // android.widget.Adapter
     public boolean hasStableIds() {
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null) {
-            return listAdapter.hasStableIds();
+        if (this.mAdapter != null) {
+            return this.mAdapter.hasStableIds();
         }
         return false;
     }
@@ -191,8 +185,7 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
         }
         int adjPosition = position - numHeaders;
         int adapterCount = 0;
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null && adjPosition < (adapterCount = listAdapter.getCount())) {
+        if (this.mAdapter != null && adjPosition < (adapterCount = this.mAdapter.getCount())) {
             return this.mAdapter.getView(adjPosition, convertView, parent);
         }
         if (adjPosition - adapterCount >= this.mFooterViewInfos.size()) {
@@ -204,10 +197,9 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
     @Override // android.widget.Adapter
     public int getItemViewType(int position) {
         int numHeaders = getHeadersCount();
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null && position >= numHeaders) {
+        if (this.mAdapter != null && position >= numHeaders) {
             int adjPosition = position - numHeaders;
-            int adapterCount = listAdapter.getCount();
+            int adapterCount = this.mAdapter.getCount();
             if (adjPosition < adapterCount) {
                 return this.mAdapter.getItemViewType(adjPosition);
             }
@@ -218,26 +210,23 @@ public class SemHorizontalHeaderViewListAdapter implements WrapperListAdapter, F
 
     @Override // android.widget.Adapter
     public int getViewTypeCount() {
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null) {
-            return listAdapter.getViewTypeCount();
+        if (this.mAdapter != null) {
+            return this.mAdapter.getViewTypeCount();
         }
         return 1;
     }
 
     @Override // android.widget.Adapter
     public void registerDataSetObserver(DataSetObserver observer) {
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null) {
-            listAdapter.registerDataSetObserver(observer);
+        if (this.mAdapter != null) {
+            this.mAdapter.registerDataSetObserver(observer);
         }
     }
 
     @Override // android.widget.Adapter
     public void unregisterDataSetObserver(DataSetObserver observer) {
-        ListAdapter listAdapter = this.mAdapter;
-        if (listAdapter != null) {
-            listAdapter.unregisterDataSetObserver(observer);
+        if (this.mAdapter != null) {
+            this.mAdapter.unregisterDataSetObserver(observer);
         }
     }
 

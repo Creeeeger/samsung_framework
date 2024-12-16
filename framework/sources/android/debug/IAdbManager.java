@@ -41,7 +41,6 @@ public interface IAdbManager extends IInterface {
 
     void unregisterCallback(IAdbCallback iAdbCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAdbManager {
         @Override // android.debug.IAdbManager
         public void allowDebugging(boolean alwaysAllow, String publicKey) throws RemoteException {
@@ -113,7 +112,6 @@ public interface IAdbManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAdbManager {
         static final int TRANSACTION_allowDebugging = 1;
         static final int TRANSACTION_allowWirelessDebugging = 4;
@@ -198,100 +196,96 @@ public interface IAdbManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAdbManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAdbManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAdbManager.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    allowDebugging(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    denyDebugging();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    clearDebuggingKeys();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _arg02 = data.readBoolean();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    allowWirelessDebugging(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    denyWirelessDebugging();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    FingerprintAndPairDevice[] _result = getPairedDevices();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
+                    return true;
+                case 7:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    unpairDevice(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    enablePairingByPairingCode();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    enablePairingByQrCode(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _result2 = getAdbWirelessPort();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 11:
+                    disablePairing();
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    boolean _result3 = isAdbWifiSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 13:
+                    boolean _result4 = isAdbWifiQrSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 14:
+                    IAdbCallback _arg05 = IAdbCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    IAdbCallback _arg06 = IAdbCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCallback(_arg06);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            allowDebugging(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            denyDebugging();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            clearDebuggingKeys();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _arg02 = data.readBoolean();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            allowWirelessDebugging(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            denyWirelessDebugging();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            FingerprintAndPairDevice[] _result = getPairedDevices();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 7:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            unpairDevice(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            enablePairingByPairingCode();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            enablePairingByQrCode(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _result2 = getAdbWirelessPort();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 11:
-                            disablePairing();
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            boolean _result3 = isAdbWifiSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 13:
-                            boolean _result4 = isAdbWifiQrSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 14:
-                            IAdbCallback _arg05 = IAdbCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            IAdbCallback _arg06 = IAdbCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterCallback(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAdbManager {
+        private static class Proxy implements IAdbManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

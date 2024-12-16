@@ -29,14 +29,9 @@ public final class RpmStats {
         return e;
     }
 
-    /* loaded from: classes5.dex */
     public static class PowerStateElement {
         public int mCount;
         public long mTimeMs;
-
-        /* synthetic */ PowerStateElement(long j, int i, PowerStateElementIA powerStateElementIA) {
-            this(j, i);
-        }
 
         private PowerStateElement(long timeMs, int count) {
             this.mTimeMs = timeMs;
@@ -44,7 +39,6 @@ public final class RpmStats {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PowerStatePlatformSleepState {
         public int mCount;
         public long mTimeMs;
@@ -61,7 +55,6 @@ public final class RpmStats {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PowerStateSubsystem {
         public Map<String, PowerStateElement> mStates = new ArrayMap();
 

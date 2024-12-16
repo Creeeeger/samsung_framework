@@ -5,13 +5,8 @@ import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
-import android.media.audio.Enums;
 import android.os.Bundle;
 import android.os.LocaleList;
 import android.os.Parcel;
@@ -47,14 +42,13 @@ public final class TextClassification implements Parcelable {
     private final String mText;
     public static final TextClassification EMPTY = new Builder().build();
     public static final Parcelable.Creator<TextClassification> CREATOR = new Parcelable.Creator<TextClassification>() { // from class: android.view.textclassifier.TextClassification.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextClassification createFromParcel(Parcel in) {
             return new TextClassification(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextClassification[] newArray(int size) {
             return new TextClassification[size];
@@ -62,19 +56,10 @@ public final class TextClassification implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     private @interface IntentType {
         public static final int ACTIVITY = 0;
         public static final int SERVICE = 1;
         public static final int UNSUPPORTED = -1;
-    }
-
-    /* synthetic */ TextClassification(Parcel parcel, TextClassificationIA textClassificationIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ TextClassification(String str, Drawable drawable, String str2, Intent intent, View.OnClickListener onClickListener, List list, EntityConfidence entityConfidence, String str3, Bundle bundle, TextClassificationIA textClassificationIA) {
-        this(str, drawable, str2, intent, onClickListener, list, entityConfidence, str3, bundle);
     }
 
     private TextClassification(String text, Drawable legacyIcon, String legacyLabel, Intent legacyIntent, View.OnClickListener legacyOnClickListener, List<RemoteAction> actions, EntityConfidence entityConfidence, String id, Bundle extras) {
@@ -154,7 +139,7 @@ public final class TextClassification implements Parcelable {
         };
     }
 
-    public static /* synthetic */ void lambda$createIntentOnClickListener$0(PendingIntent intent, View v) {
+    static /* synthetic */ void lambda$createIntentOnClickListener$0(PendingIntent intent, View v) {
         try {
             intent.send(ActivityOptions.makeBasic().setPendingIntentBackgroundActivityStartMode(1).toBundle());
         } catch (PendingIntent.CanceledException e) {
@@ -163,10 +148,9 @@ public final class TextClassification implements Parcelable {
     }
 
     public static PendingIntent createPendingIntent(Context context, Intent intent, int requestCode) {
-        return PendingIntent.getActivity(context, requestCode, intent, Enums.AUDIO_FORMAT_DTS_HD);
+        return PendingIntent.getActivity(context, requestCode, intent, 201326592);
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private Bundle mExtras;
         private String mId;
@@ -252,32 +236,19 @@ public final class TextClassification implements Parcelable {
 
         public TextClassification build() {
             EntityConfidence entityConfidence = new EntityConfidence(this.mTypeScoreMap);
-            String str = this.mText;
-            Drawable drawable = this.mLegacyIcon;
-            String str2 = this.mLegacyLabel;
-            Intent intent = this.mLegacyIntent;
-            View.OnClickListener onClickListener = this.mLegacyOnClickListener;
-            List<RemoteAction> list = this.mActions;
-            String str3 = this.mId;
-            Bundle bundle = this.mExtras;
-            if (bundle == null) {
-                bundle = Bundle.EMPTY;
-            }
-            return new TextClassification(str, drawable, str2, intent, onClickListener, list, entityConfidence, str3, bundle);
+            return new TextClassification(this.mText, this.mLegacyIcon, this.mLegacyLabel, this.mLegacyIntent, this.mLegacyOnClickListener, this.mActions, entityConfidence, this.mId, this.mExtras == null ? Bundle.EMPTY : this.mExtras);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Request implements Parcelable {
         public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() { // from class: android.view.textclassifier.TextClassification.Request.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request createFromParcel(Parcel in) {
                 return Request.readFromParcel(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request[] newArray(int size) {
                 return new Request[size];
@@ -290,10 +261,6 @@ public final class TextClassification implements Parcelable {
         private final int mStartIndex;
         private SystemTextClassifierMetadata mSystemTcMetadata;
         private final CharSequence mText;
-
-        /* synthetic */ Request(CharSequence charSequence, int i, int i2, LocaleList localeList, ZonedDateTime zonedDateTime, Bundle bundle, RequestIA requestIA) {
-            this(charSequence, i, i2, localeList, zonedDateTime, bundle);
-        }
 
         private Request(CharSequence text, int startIndex, int endIndex, LocaleList defaultLocales, ZonedDateTime referenceTime, Bundle extras) {
             this.mText = text;
@@ -325,9 +292,8 @@ public final class TextClassification implements Parcelable {
         }
 
         public String getCallingPackageName() {
-            SystemTextClassifierMetadata systemTextClassifierMetadata = this.mSystemTcMetadata;
-            if (systemTextClassifierMetadata != null) {
-                return systemTextClassifierMetadata.getCallingPackageName();
+            if (this.mSystemTcMetadata != null) {
+                return this.mSystemTcMetadata.getCallingPackageName();
             }
             return null;
         }
@@ -344,7 +310,6 @@ public final class TextClassification implements Parcelable {
             return this.mExtras;
         }
 
-        /* loaded from: classes4.dex */
         public static final class Builder {
             private LocaleList mDefaultLocales;
             private final int mEndIndex;
@@ -376,16 +341,7 @@ public final class TextClassification implements Parcelable {
             }
 
             public Request build() {
-                SpannedString spannedString = new SpannedString(this.mText);
-                int i = this.mStartIndex;
-                int i2 = this.mEndIndex;
-                LocaleList localeList = this.mDefaultLocales;
-                ZonedDateTime zonedDateTime = this.mReferenceTime;
-                Bundle bundle = this.mExtras;
-                if (bundle == null) {
-                    bundle = Bundle.EMPTY;
-                }
-                return new Request(spannedString, i, i2, localeList, zonedDateTime, bundle);
+                return new Request(new SpannedString(this.mText), this.mStartIndex, this.mEndIndex, this.mDefaultLocales, this.mReferenceTime, this.mExtras == null ? Bundle.EMPTY : this.mExtras);
             }
         }
 
@@ -400,12 +356,12 @@ public final class TextClassification implements Parcelable {
             dest.writeInt(this.mStartIndex);
             dest.writeInt(this.mEndIndex);
             dest.writeParcelable(this.mDefaultLocales, flags);
-            ZonedDateTime zonedDateTime = this.mReferenceTime;
-            dest.writeString(zonedDateTime == null ? null : zonedDateTime.toString());
+            dest.writeString(this.mReferenceTime == null ? null : this.mReferenceTime.toString());
             dest.writeBundle(this.mExtras);
             dest.writeParcelable(this.mSystemTcMetadata, flags);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static Request readFromParcel(Parcel in) {
             CharSequence text = in.readCharSequence();
             int startIndex = in.readInt();
@@ -418,23 +374,6 @@ public final class TextClassification implements Parcelable {
             Request request = new Request(text, startIndex, endIndex, defaultLocales, referenceTime, extras);
             request.setSystemTextClassifierMetadata(systemTcMetadata);
             return request;
-        }
-
-        /* renamed from: android.view.textclassifier.TextClassification$Request$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Request> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Request createFromParcel(Parcel in) {
-                return Request.readFromParcel(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Request[] newArray(int size) {
-                return new Request[size];
-            }
         }
     }
 
@@ -452,32 +391,14 @@ public final class TextClassification implements Parcelable {
         dest.writeBundle(this.mExtras);
     }
 
-    /* renamed from: android.view.textclassifier.TextClassification$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TextClassification> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextClassification createFromParcel(Parcel in) {
-            return new TextClassification(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextClassification[] newArray(int size) {
-            return new TextClassification[size];
-        }
-    }
-
     private TextClassification(Parcel in) {
         this.mText = in.readString();
-        ArrayList createTypedArrayList = in.createTypedArrayList(RemoteAction.CREATOR);
-        this.mActions = createTypedArrayList;
-        if (!createTypedArrayList.isEmpty()) {
-            RemoteAction action = (RemoteAction) createTypedArrayList.get(0);
+        this.mActions = in.createTypedArrayList(RemoteAction.CREATOR);
+        if (!this.mActions.isEmpty()) {
+            RemoteAction action = this.mActions.get(0);
             this.mLegacyIcon = maybeLoadDrawable(action.getIcon());
             this.mLegacyLabel = action.getTitle().toString();
-            this.mLegacyOnClickListener = createIntentOnClickListener(((RemoteAction) createTypedArrayList.get(0)).getActionIntent());
+            this.mLegacyOnClickListener = createIntentOnClickListener(this.mActions.get(0).getActionIntent());
         } else {
             this.mLegacyIcon = null;
             this.mLegacyLabel = null;
@@ -494,16 +415,7 @@ public final class TextClassification implements Parcelable {
             return null;
         }
         switch (icon.getType()) {
-            case 1:
-                return new BitmapDrawable(Resources.getSystem(), icon.getBitmap());
-            case 2:
-            case 4:
-            default:
-                return null;
-            case 3:
-                return new BitmapDrawable(Resources.getSystem(), BitmapFactory.decodeByteArray(icon.getDataBytes(), icon.getDataOffset(), icon.getDataLength()));
-            case 5:
-                return new AdaptiveIconDrawable((Drawable) null, new BitmapDrawable(Resources.getSystem(), icon.getBitmap()));
         }
+        return null;
     }
 }

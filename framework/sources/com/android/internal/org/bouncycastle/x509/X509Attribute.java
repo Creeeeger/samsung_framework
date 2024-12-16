@@ -13,7 +13,7 @@ import com.android.internal.org.bouncycastle.asn1.x509.Attribute;
 public class X509Attribute extends ASN1Object {
     Attribute attr;
 
-    public X509Attribute(ASN1Encodable at) {
+    X509Attribute(ASN1Encodable at) {
         this.attr = Attribute.getInstance(at);
     }
 

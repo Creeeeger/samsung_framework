@@ -106,12 +106,7 @@ public abstract class ConditionProviderService extends Service {
         return this.mIsConnected;
     }
 
-    /* loaded from: classes3.dex */
-    public final class Provider extends IConditionProvider.Stub {
-        /* synthetic */ Provider(ConditionProviderService conditionProviderService, ProviderIA providerIA) {
-            this();
-        }
-
+    private final class Provider extends IConditionProvider.Stub {
         private Provider() {
         }
 
@@ -132,15 +127,10 @@ public abstract class ConditionProviderService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private final class H extends Handler {
         private static final int ON_CONNECTED = 1;
         private static final int ON_SUBSCRIBE = 3;
         private static final int ON_UNSUBSCRIBE = 4;
-
-        /* synthetic */ H(ConditionProviderService conditionProviderService, HIA hia) {
-            this();
-        }
 
         private H() {
         }

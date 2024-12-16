@@ -11,7 +11,6 @@ import java.util.List;
 public interface IRecommendationServiceCallbacks extends IInterface {
     void onRecommendationsUpdated(List<RecommendationInfo> list) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecommendationServiceCallbacks {
         @Override // android.printservice.recommendation.IRecommendationServiceCallbacks
         public void onRecommendationsUpdated(List<RecommendationInfo> recommendations) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IRecommendationServiceCallbacks extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecommendationServiceCallbacks {
         public static final String DESCRIPTOR = "android.printservice.recommendation.IRecommendationServiceCallbacks";
         static final int TRANSACTION_onRecommendationsUpdated = 1;
@@ -67,26 +65,22 @@ public interface IRecommendationServiceCallbacks extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<RecommendationInfo> _arg0 = data.createTypedArrayList(RecommendationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRecommendationsUpdated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<RecommendationInfo> _arg0 = data.createTypedArrayList(RecommendationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRecommendationsUpdated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecommendationServiceCallbacks {
+        private static class Proxy implements IRecommendationServiceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

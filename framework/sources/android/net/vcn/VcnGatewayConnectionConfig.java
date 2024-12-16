@@ -22,7 +22,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class VcnGatewayConnectionConfig {
     public static final Set<Integer> ALLOWED_CAPABILITIES;
     private static final Set<Integer> ALLOWED_GATEWAY_OPTIONS;
@@ -32,6 +32,7 @@ public final class VcnGatewayConnectionConfig {
     private static final String EXPOSED_CAPABILITIES_KEY = "mExposedCapabilities";
     private static final String GATEWAY_CONNECTION_NAME_KEY = "mGatewayConnectionName";
     private static final String GATEWAY_OPTIONS_KEY = "mGatewayOptions";
+    private static final String IS_SAFE_MODE_DISABLED_KEY = "mIsSafeModeDisabled";
     private static final String MAX_MTU_KEY = "mMaxMtu";
     private static final int MAX_RETRY_INTERVAL_COUNT = 10;
     private static final long MINIMUM_REPEATING_RETRY_INTERVAL_MS;
@@ -46,6 +47,7 @@ public final class VcnGatewayConnectionConfig {
     private final SortedSet<Integer> mExposedCapabilities;
     private final String mGatewayConnectionName;
     private final Set<Integer> mGatewayOptions;
+    private final boolean mIsSafeModeDisabled;
     private final int mMaxMtu;
     private final int mMinUdpPort4500NatTimeoutSeconds;
     private final long[] mRetryIntervalsMs;
@@ -53,17 +55,11 @@ public final class VcnGatewayConnectionConfig {
     private final List<VcnUnderlyingNetworkTemplate> mUnderlyingNetworkTemplates;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VcnGatewayOption {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VcnSupportedCapability {
-    }
-
-    /* synthetic */ VcnGatewayConnectionConfig(String str, IkeTunnelConnectionParams ikeTunnelConnectionParams, Set set, List list, long[] jArr, int i, int i2, Set set2, VcnGatewayConnectionConfigIA vcnGatewayConnectionConfigIA) {
-        this(str, ikeTunnelConnectionParams, set, list, jArr, i, i2, set2);
     }
 
     static {
@@ -81,19 +77,17 @@ public final class VcnGatewayConnectionConfig {
         allowedCaps.add(12);
         allowedCaps.add(23);
         ALLOWED_CAPABILITIES = Collections.unmodifiableSet(allowedCaps);
-        ArraySet arraySet = new ArraySet();
-        ALLOWED_GATEWAY_OPTIONS = arraySet;
-        arraySet.add(0);
+        ALLOWED_GATEWAY_OPTIONS = new ArraySet();
+        ALLOWED_GATEWAY_OPTIONS.add(0);
         MINIMUM_REPEATING_RETRY_INTERVAL_MS = TimeUnit.MINUTES.toMillis(15L);
         DEFAULT_RETRY_INTERVALS_MS = new long[]{TimeUnit.SECONDS.toMillis(1L), TimeUnit.SECONDS.toMillis(2L), TimeUnit.SECONDS.toMillis(5L), TimeUnit.SECONDS.toMillis(30L), TimeUnit.MINUTES.toMillis(1L), TimeUnit.MINUTES.toMillis(5L), TimeUnit.MINUTES.toMillis(15L)};
-        ArrayList arrayList = new ArrayList();
-        DEFAULT_UNDERLYING_NETWORK_TEMPLATES = arrayList;
-        arrayList.add(new VcnCellUnderlyingNetworkTemplate.Builder().setOpportunistic(1).build());
-        arrayList.add(new VcnWifiUnderlyingNetworkTemplate.Builder().build());
-        arrayList.add(new VcnCellUnderlyingNetworkTemplate.Builder().build());
+        DEFAULT_UNDERLYING_NETWORK_TEMPLATES = new ArrayList();
+        DEFAULT_UNDERLYING_NETWORK_TEMPLATES.add(new VcnCellUnderlyingNetworkTemplate.Builder().setOpportunistic(1).build());
+        DEFAULT_UNDERLYING_NETWORK_TEMPLATES.add(new VcnWifiUnderlyingNetworkTemplate.Builder().build());
+        DEFAULT_UNDERLYING_NETWORK_TEMPLATES.add(new VcnCellUnderlyingNetworkTemplate.Builder().build());
     }
 
-    private VcnGatewayConnectionConfig(String gatewayConnectionName, IkeTunnelConnectionParams tunnelConnectionParams, Set<Integer> exposedCapabilities, List<VcnUnderlyingNetworkTemplate> underlyingNetworkTemplates, long[] retryIntervalsMs, int maxMtu, int minUdpPort4500NatTimeoutSeconds, Set<Integer> gatewayOptions) {
+    private VcnGatewayConnectionConfig(String gatewayConnectionName, IkeTunnelConnectionParams tunnelConnectionParams, Set<Integer> exposedCapabilities, List<VcnUnderlyingNetworkTemplate> underlyingNetworkTemplates, long[] retryIntervalsMs, int maxMtu, int minUdpPort4500NatTimeoutSeconds, boolean isSafeModeDisabled, Set<Integer> gatewayOptions) {
         this.mGatewayConnectionName = gatewayConnectionName;
         this.mTunnelConnectionParams = tunnelConnectionParams;
         this.mExposedCapabilities = new TreeSet(exposedCapabilities);
@@ -101,10 +95,10 @@ public final class VcnGatewayConnectionConfig {
         this.mMaxMtu = maxMtu;
         this.mMinUdpPort4500NatTimeoutSeconds = minUdpPort4500NatTimeoutSeconds;
         this.mGatewayOptions = Collections.unmodifiableSet(new ArraySet(gatewayOptions));
-        ArrayList arrayList = new ArrayList(underlyingNetworkTemplates);
-        this.mUnderlyingNetworkTemplates = arrayList;
-        if (arrayList.isEmpty()) {
-            arrayList.addAll(DEFAULT_UNDERLYING_NETWORK_TEMPLATES);
+        this.mIsSafeModeDisabled = isSafeModeDisabled;
+        this.mUnderlyingNetworkTemplates = new ArrayList(underlyingNetworkTemplates);
+        if (this.mUnderlyingNetworkTemplates.isEmpty()) {
+            this.mUnderlyingNetworkTemplates.addAll(DEFAULT_UNDERLYING_NETWORK_TEMPLATES);
         }
         validate();
     }
@@ -120,7 +114,7 @@ public final class VcnGatewayConnectionConfig {
         if (networkTemplatesBundle == null) {
             this.mUnderlyingNetworkTemplates = new ArrayList(DEFAULT_UNDERLYING_NETWORK_TEMPLATES);
         } else {
-            this.mUnderlyingNetworkTemplates = PersistableBundleUtils.toList(networkTemplatesBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.VcnGatewayConnectionConfig$$ExternalSyntheticLambda1
+            this.mUnderlyingNetworkTemplates = PersistableBundleUtils.toList(networkTemplatesBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.VcnGatewayConnectionConfig$$ExternalSyntheticLambda0
                 @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Deserializer
                 public final Object fromPersistableBundle(PersistableBundle persistableBundle) {
                     return VcnUnderlyingNetworkTemplate.fromPersistableBundle(persistableBundle);
@@ -136,15 +130,15 @@ public final class VcnGatewayConnectionConfig {
         this.mRetryIntervalsMs = in.getLongArray(RETRY_INTERVAL_MS_KEY);
         this.mMaxMtu = in.getInt(MAX_MTU_KEY);
         this.mMinUdpPort4500NatTimeoutSeconds = in.getInt(MIN_UDP_PORT_4500_NAT_TIMEOUT_SECONDS_KEY, -1);
+        this.mIsSafeModeDisabled = in.getBoolean(IS_SAFE_MODE_DISABLED_KEY);
         validate();
     }
 
     private void validate() {
         Objects.requireNonNull(this.mGatewayConnectionName, "gatewayConnectionName was null");
         Objects.requireNonNull(this.mTunnelConnectionParams, "tunnel connection parameter was null");
-        SortedSet<Integer> sortedSet = this.mExposedCapabilities;
         boolean z = true;
-        Preconditions.checkArgument((sortedSet == null || sortedSet.isEmpty()) ? false : true, "exposedCapsBundle was null or empty");
+        Preconditions.checkArgument((this.mExposedCapabilities == null || this.mExposedCapabilities.isEmpty()) ? false : true, "exposedCapsBundle was null or empty");
         for (Integer cap : getAllExposedCapabilities()) {
             checkValidCapability(cap.intValue());
         }
@@ -152,8 +146,7 @@ public final class VcnGatewayConnectionConfig {
         Objects.requireNonNull(this.mRetryIntervalsMs, "retryIntervalsMs was null");
         validateRetryInterval(this.mRetryIntervalsMs);
         Preconditions.checkArgument(this.mMaxMtu >= 1280, "maxMtu must be at least IPv6 min MTU (1280)");
-        int i = this.mMinUdpPort4500NatTimeoutSeconds;
-        if (i != -1 && i < 120) {
+        if (this.mMinUdpPort4500NatTimeoutSeconds != -1 && this.mMinUdpPort4500NatTimeoutSeconds < 120) {
             z = false;
         }
         Preconditions.checkArgument(z, "minUdpPort4500NatTimeoutSeconds must be at least 120s");
@@ -164,10 +157,12 @@ public final class VcnGatewayConnectionConfig {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkValidCapability(int capability) {
         Preconditions.checkArgument(ALLOWED_CAPABILITIES.contains(Integer.valueOf(capability)), "NetworkCapability " + capability + "out of range");
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void validateRetryInterval(long[] retryIntervalsMs) {
         Preconditions.checkArgument(retryIntervalsMs != null && retryIntervalsMs.length > 0 && retryIntervalsMs.length <= 10, "retryIntervalsMs was null, empty or exceed max interval count");
         long repeatingInterval = retryIntervalsMs[retryIntervalsMs.length - 1];
@@ -176,6 +171,7 @@ public final class VcnGatewayConnectionConfig {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void validateNetworkTemplateList(List<VcnUnderlyingNetworkTemplate> networkPriorityRules) {
         Objects.requireNonNull(networkPriorityRules, "networkPriorityRules is null");
         Set<VcnUnderlyingNetworkTemplate> existingRules = new ArraySet<>();
@@ -187,6 +183,7 @@ public final class VcnGatewayConnectionConfig {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void validateGatewayOption(int option) {
         if (!ALLOWED_GATEWAY_OPTIONS.contains(Integer.valueOf(option))) {
             throw new IllegalArgumentException("Invalid vcn gateway option: " + option);
@@ -215,8 +212,7 @@ public final class VcnGatewayConnectionConfig {
     }
 
     public long[] getRetryIntervalsMillis() {
-        long[] jArr = this.mRetryIntervalsMs;
-        return Arrays.copyOf(jArr, jArr.length);
+        return Arrays.copyOf(this.mRetryIntervalsMs, this.mRetryIntervalsMs.length);
     }
 
     public int getMaxMtu() {
@@ -225,6 +221,10 @@ public final class VcnGatewayConnectionConfig {
 
     public int getMinUdpPort4500NatTimeoutSeconds() {
         return this.mMinUdpPort4500NatTimeoutSeconds;
+    }
+
+    public boolean isSafeModeEnabled() {
+        return !this.mIsSafeModeDisabled;
     }
 
     public boolean hasGatewayOption(int option) {
@@ -236,7 +236,7 @@ public final class VcnGatewayConnectionConfig {
         PersistableBundle result = new PersistableBundle();
         PersistableBundle tunnelConnectionParamsBundle = TunnelConnectionParamsUtils.toPersistableBundle(this.mTunnelConnectionParams);
         PersistableBundle exposedCapsBundle = PersistableBundleUtils.fromList(new ArrayList(this.mExposedCapabilities), PersistableBundleUtils.INTEGER_SERIALIZER);
-        PersistableBundle networkTemplatesBundle = PersistableBundleUtils.fromList(this.mUnderlyingNetworkTemplates, new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.VcnGatewayConnectionConfig$$ExternalSyntheticLambda0
+        PersistableBundle networkTemplatesBundle = PersistableBundleUtils.fromList(this.mUnderlyingNetworkTemplates, new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.VcnGatewayConnectionConfig$$ExternalSyntheticLambda1
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Serializer
             public final PersistableBundle toPersistableBundle(Object obj) {
                 return ((VcnUnderlyingNetworkTemplate) obj).toPersistableBundle();
@@ -251,11 +251,12 @@ public final class VcnGatewayConnectionConfig {
         result.putLongArray(RETRY_INTERVAL_MS_KEY, this.mRetryIntervalsMs);
         result.putInt(MAX_MTU_KEY, this.mMaxMtu);
         result.putInt(MIN_UDP_PORT_4500_NAT_TIMEOUT_SECONDS_KEY, this.mMinUdpPort4500NatTimeoutSeconds);
+        result.putBoolean(IS_SAFE_MODE_DISABLED_KEY, this.mIsSafeModeDisabled);
         return result;
     }
 
     public int hashCode() {
-        return Objects.hash(this.mGatewayConnectionName, this.mTunnelConnectionParams, this.mExposedCapabilities, this.mUnderlyingNetworkTemplates, Integer.valueOf(Arrays.hashCode(this.mRetryIntervalsMs)), Integer.valueOf(this.mMaxMtu), Integer.valueOf(this.mMinUdpPort4500NatTimeoutSeconds), this.mGatewayOptions);
+        return Objects.hash(this.mGatewayConnectionName, this.mTunnelConnectionParams, this.mExposedCapabilities, this.mUnderlyingNetworkTemplates, Integer.valueOf(Arrays.hashCode(this.mRetryIntervalsMs)), Integer.valueOf(this.mMaxMtu), Integer.valueOf(this.mMinUdpPort4500NatTimeoutSeconds), Boolean.valueOf(this.mIsSafeModeDisabled), this.mGatewayOptions);
     }
 
     public boolean equals(Object other) {
@@ -263,10 +264,9 @@ public final class VcnGatewayConnectionConfig {
             return false;
         }
         VcnGatewayConnectionConfig rhs = (VcnGatewayConnectionConfig) other;
-        return this.mGatewayConnectionName.equals(rhs.mGatewayConnectionName) && this.mTunnelConnectionParams.equals(rhs.mTunnelConnectionParams) && this.mExposedCapabilities.equals(rhs.mExposedCapabilities) && this.mUnderlyingNetworkTemplates.equals(rhs.mUnderlyingNetworkTemplates) && Arrays.equals(this.mRetryIntervalsMs, rhs.mRetryIntervalsMs) && this.mMaxMtu == rhs.mMaxMtu && this.mMinUdpPort4500NatTimeoutSeconds == rhs.mMinUdpPort4500NatTimeoutSeconds && this.mGatewayOptions.equals(rhs.mGatewayOptions);
+        return this.mGatewayConnectionName.equals(rhs.mGatewayConnectionName) && this.mTunnelConnectionParams.equals(rhs.mTunnelConnectionParams) && this.mExposedCapabilities.equals(rhs.mExposedCapabilities) && this.mUnderlyingNetworkTemplates.equals(rhs.mUnderlyingNetworkTemplates) && Arrays.equals(this.mRetryIntervalsMs, rhs.mRetryIntervalsMs) && this.mMaxMtu == rhs.mMaxMtu && this.mMinUdpPort4500NatTimeoutSeconds == rhs.mMinUdpPort4500NatTimeoutSeconds && this.mIsSafeModeDisabled == rhs.mIsSafeModeDisabled && this.mGatewayOptions.equals(rhs.mGatewayOptions);
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private final String mGatewayConnectionName;
         private final IkeTunnelConnectionParams mTunnelConnectionParams;
@@ -275,6 +275,7 @@ public final class VcnGatewayConnectionConfig {
         private long[] mRetryIntervalsMs = VcnGatewayConnectionConfig.DEFAULT_RETRY_INTERVALS_MS;
         private int mMaxMtu = 1500;
         private int mMinUdpPort4500NatTimeoutSeconds = -1;
+        private boolean mIsSafeModeDisabled = false;
         private final Set<Integer> mGatewayOptions = new ArraySet();
 
         public Builder(String gatewayConnectionName, IkeTunnelConnectionParams tunnelConnectionParams) {
@@ -340,8 +341,13 @@ public final class VcnGatewayConnectionConfig {
             return this;
         }
 
+        public Builder setSafeModeEnabled(boolean enabled) {
+            this.mIsSafeModeDisabled = !enabled;
+            return this;
+        }
+
         public VcnGatewayConnectionConfig build() {
-            return new VcnGatewayConnectionConfig(this.mGatewayConnectionName, this.mTunnelConnectionParams, this.mExposedCapabilities, this.mUnderlyingNetworkTemplates, this.mRetryIntervalsMs, this.mMaxMtu, this.mMinUdpPort4500NatTimeoutSeconds, this.mGatewayOptions);
+            return new VcnGatewayConnectionConfig(this.mGatewayConnectionName, this.mTunnelConnectionParams, this.mExposedCapabilities, this.mUnderlyingNetworkTemplates, this.mRetryIntervalsMs, this.mMaxMtu, this.mMinUdpPort4500NatTimeoutSeconds, this.mIsSafeModeDisabled, this.mGatewayOptions);
         }
     }
 }

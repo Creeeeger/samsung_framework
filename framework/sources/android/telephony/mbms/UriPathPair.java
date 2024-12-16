@@ -6,17 +6,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class UriPathPair implements Parcelable {
     public static final Parcelable.Creator<UriPathPair> CREATOR = new Parcelable.Creator<UriPathPair>() { // from class: android.telephony.mbms.UriPathPair.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UriPathPair createFromParcel(Parcel in) {
             return new UriPathPair(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UriPathPair[] newArray(int size) {
             return new UriPathPair[size];
@@ -24,10 +23,6 @@ public final class UriPathPair implements Parcelable {
     };
     private final Uri mContentUri;
     private final Uri mFilePathUri;
-
-    /* synthetic */ UriPathPair(Parcel parcel, UriPathPairIA uriPathPairIA) {
-        this(parcel);
-    }
 
     public UriPathPair(Uri fileUri, Uri contentUri) {
         if (fileUri == null || !"file".equals(fileUri.getScheme())) {
@@ -43,23 +38,6 @@ public final class UriPathPair implements Parcelable {
     private UriPathPair(Parcel in) {
         this.mFilePathUri = (Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class);
         this.mContentUri = (Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class);
-    }
-
-    /* renamed from: android.telephony.mbms.UriPathPair$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UriPathPair> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UriPathPair createFromParcel(Parcel in) {
-            return new UriPathPair(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UriPathPair[] newArray(int size) {
-            return new UriPathPair[size];
-        }
     }
 
     public Uri getFilePathUri() {

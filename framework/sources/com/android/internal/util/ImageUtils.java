@@ -37,9 +37,8 @@ public class ImageUtils {
             if (this.mTempCompactBitmap == null) {
                 this.mTempCompactBitmap = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888);
                 this.mTempCompactBitmapCanvas = new Canvas(this.mTempCompactBitmap);
-                Paint paint = new Paint(1);
-                this.mTempCompactBitmapPaint = paint;
-                paint.setFilterBitmap(true);
+                this.mTempCompactBitmapPaint = new Paint(1);
+                this.mTempCompactBitmapPaint.setFilterBitmap(true);
             }
             this.mTempMatrix.reset();
             this.mTempMatrix.setScale(64.0f / width, 64.0f / height, 0.0f, 0.0f);
@@ -65,8 +64,7 @@ public class ImageUtils {
     }
 
     private void ensureBufferSize(int size) {
-        int[] iArr = this.mTempBuffer;
-        if (iArr == null || iArr.length < size) {
+        if (this.mTempBuffer == null || this.mTempBuffer.length < size) {
             this.mTempBuffer = new int[size];
         }
     }
@@ -157,7 +155,7 @@ public class ImageUtils {
         }
     }
 
-    public static /* synthetic */ void lambda$loadThumbnail$1(Size size, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
+    static /* synthetic */ void lambda$loadThumbnail$1(Size size, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
         decoder.setAllocator(1);
         int sample = calculateSampleSize(info.getSize(), size);
         if (sample > 1) {

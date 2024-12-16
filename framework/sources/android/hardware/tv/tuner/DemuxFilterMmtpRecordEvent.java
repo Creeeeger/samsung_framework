@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterMmtpRecordEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterMmtpRecordEvent> CREATOR = new Parcelable.Creator<DemuxFilterMmtpRecordEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterMmtpRecordEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterMmtpRecordEvent createFromParcel(Parcel _aidl_source) {
             DemuxFilterMmtpRecordEvent _aidl_out = new DemuxFilterMmtpRecordEvent();
@@ -17,6 +15,7 @@ public class DemuxFilterMmtpRecordEvent implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterMmtpRecordEvent[] newArray(int _aidl_size) {
             return new DemuxFilterMmtpRecordEvent[_aidl_size];
@@ -28,25 +27,6 @@ public class DemuxFilterMmtpRecordEvent implements Parcelable {
     public int mpuSequenceNumber = 0;
     public int firstMbInSlice = 0;
     public int tsIndexMask = 0;
-
-    /* renamed from: android.hardware.tv.tuner.DemuxFilterMmtpRecordEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterMmtpRecordEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterMmtpRecordEvent createFromParcel(Parcel _aidl_source) {
-            DemuxFilterMmtpRecordEvent _aidl_out = new DemuxFilterMmtpRecordEvent();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterMmtpRecordEvent[] newArray(int _aidl_size) {
-            return new DemuxFilterMmtpRecordEvent[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

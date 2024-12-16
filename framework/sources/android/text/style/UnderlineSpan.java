@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.text.ParcelableSpan;
 import android.text.TextPaint;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class UnderlineSpan extends CharacterStyle implements UpdateAppearance, ParcelableSpan {
     public UnderlineSpan() {
     }

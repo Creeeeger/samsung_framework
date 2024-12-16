@@ -11,18 +11,19 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ImsRegistrationAttributes implements Parcelable {
     public static final int ATTR_EPDG_OVER_CELL_INTERNET = 1;
+    public static final int ATTR_REGISTRATION_TYPE_EMERGENCY = 2;
+    public static final int ATTR_VIRTUAL_FOR_ANONYMOUS_EMERGENCY_CALL = 4;
     public static final Parcelable.Creator<ImsRegistrationAttributes> CREATOR = new Parcelable.Creator<ImsRegistrationAttributes>() { // from class: android.telephony.ims.ImsRegistrationAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsRegistrationAttributes createFromParcel(Parcel source) {
             return new ImsRegistrationAttributes(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsRegistrationAttributes[] newArray(int size) {
             return new ImsRegistrationAttributes[size];
@@ -35,19 +36,21 @@ public final class ImsRegistrationAttributes implements Parcelable {
     private final int mTransportType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ImsAttributeFlag {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class Builder {
+        private int mAttributeFlags;
         private Set<String> mFeatureTags = Collections.emptySet();
         private final int mRegistrationTech;
         private SipDetails mSipDetails;
 
         public Builder(int registrationTech) {
             this.mRegistrationTech = registrationTech;
+            if (registrationTech == 2) {
+                this.mAttributeFlags |= 1;
+            }
         }
 
         public Builder setFeatureTags(Set<String> tags) {
@@ -63,17 +66,18 @@ public final class ImsRegistrationAttributes implements Parcelable {
             return this;
         }
 
-        public ImsRegistrationAttributes build() {
-            int i = this.mRegistrationTech;
-            return new ImsRegistrationAttributes(i, RegistrationManager.getAccessType(i), getAttributeFlags(this.mRegistrationTech), this.mFeatureTags, this.mSipDetails);
+        public Builder setFlagRegistrationTypeEmergency() {
+            this.mAttributeFlags |= 2;
+            return this;
         }
 
-        private static int getAttributeFlags(int imsRadioTech) {
-            if (imsRadioTech != 2) {
-                return 0;
-            }
-            int attributes = 0 | 1;
-            return attributes;
+        public Builder setFlagVirtualRegistrationForEmergencyCall() {
+            this.mAttributeFlags |= 4;
+            return this;
+        }
+
+        public ImsRegistrationAttributes build() {
+            return new ImsRegistrationAttributes(this.mRegistrationTech, RegistrationManager.getAccessType(this.mRegistrationTech), this.mAttributeFlags, this.mFeatureTags, this.mSipDetails);
         }
     }
 
@@ -97,9 +101,8 @@ public final class ImsRegistrationAttributes implements Parcelable {
         this.mRegistrationTech = source.readInt();
         this.mTransportType = source.readInt();
         this.mImsAttributeFlags = source.readInt();
-        ArrayList<String> arrayList = new ArrayList<>();
-        this.mFeatureTags = arrayList;
-        source.readList(arrayList, null, String.class);
+        this.mFeatureTags = new ArrayList<>();
+        source.readList(this.mFeatureTags, null, String.class);
         this.mSipDetails = (SipDetails) source.readParcelable(null, SipDetails.class);
     }
 
@@ -114,6 +117,14 @@ public final class ImsRegistrationAttributes implements Parcelable {
 
     public int getAttributeFlags() {
         return this.mImsAttributeFlags;
+    }
+
+    public boolean getFlagRegistrationTypeEmergency() {
+        return (this.mImsAttributeFlags & 2) != 0;
+    }
+
+    public boolean getFlagVirtualRegistrationForEmergencyCall() {
+        return (this.mImsAttributeFlags & 4) != 0;
     }
 
     public Set<String> getFeatureTags() {
@@ -139,23 +150,6 @@ public final class ImsRegistrationAttributes implements Parcelable {
         dest.writeInt(this.mImsAttributeFlags);
         dest.writeList(this.mFeatureTags);
         dest.writeParcelable(this.mSipDetails, flags);
-    }
-
-    /* renamed from: android.telephony.ims.ImsRegistrationAttributes$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsRegistrationAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsRegistrationAttributes createFromParcel(Parcel source) {
-            return new ImsRegistrationAttributes(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsRegistrationAttributes[] newArray(int size) {
-            return new ImsRegistrationAttributes[size];
-        }
     }
 
     public boolean equals(Object o) {

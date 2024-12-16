@@ -23,7 +23,7 @@ public final class StringPool {
         }
         int i2 = hashCode >>> 20;
         int hashCode2 = hashCode ^ (i2 ^ (hashCode >>> 12));
-        int index = (r1.length - 1) & (hashCode2 ^ ((hashCode2 >>> 7) ^ (hashCode2 >>> 4)));
+        int index = (this.mPool.length - 1) & (hashCode2 ^ ((hashCode2 >>> 7) ^ (hashCode2 >>> 4)));
         String pooled = this.mPool[index];
         if (pooled != null && contentEquals(pooled, array, start, length)) {
             return pooled;

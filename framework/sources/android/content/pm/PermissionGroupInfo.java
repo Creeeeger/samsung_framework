@@ -10,14 +10,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public class PermissionGroupInfo extends PackageItemInfo implements Parcelable {
     public static final Parcelable.Creator<PermissionGroupInfo> CREATOR = new Parcelable.Creator<PermissionGroupInfo>() { // from class: android.content.pm.PermissionGroupInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionGroupInfo createFromParcel(Parcel source) {
             return new PermissionGroupInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionGroupInfo[] newArray(int size) {
             return new PermissionGroupInfo[size];
@@ -42,12 +41,7 @@ public class PermissionGroupInfo extends PackageItemInfo implements Parcelable {
     public int requestRes;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Flags {
-    }
-
-    /* synthetic */ PermissionGroupInfo(Parcel parcel, PermissionGroupInfoIA permissionGroupInfoIA) {
-        this(parcel);
     }
 
     public PermissionGroupInfo(int requestDetailResourceId, int backgroundRequestResourceId, int backgroundRequestDetailResourceId) {
@@ -76,9 +70,8 @@ public class PermissionGroupInfo extends PackageItemInfo implements Parcelable {
 
     public CharSequence loadDescription(PackageManager pm) {
         CharSequence label;
-        CharSequence charSequence = this.nonLocalizedDescription;
-        if (charSequence != null) {
-            return charSequence;
+        if (this.nonLocalizedDescription != null) {
+            return this.nonLocalizedDescription;
         }
         if (this.descriptionRes == 0 || (label = pm.getText(this.packageName, this.descriptionRes, null)) == null) {
             return null;
@@ -106,23 +99,6 @@ public class PermissionGroupInfo extends PackageItemInfo implements Parcelable {
         TextUtils.writeToParcel(this.nonLocalizedDescription, dest, parcelableFlags);
         dest.writeInt(this.flags);
         dest.writeInt(this.priority);
-    }
-
-    /* renamed from: android.content.pm.PermissionGroupInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PermissionGroupInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PermissionGroupInfo createFromParcel(Parcel source) {
-            return new PermissionGroupInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PermissionGroupInfo[] newArray(int size) {
-            return new PermissionGroupInfo[size];
-        }
     }
 
     private PermissionGroupInfo(Parcel source) {

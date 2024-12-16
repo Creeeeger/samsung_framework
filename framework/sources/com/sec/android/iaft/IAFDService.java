@@ -28,7 +28,6 @@ public class IAFDService extends Service {
     private Context mContext;
     private IAFDServiceImpl mIAFDServiceImpl;
 
-    /* loaded from: classes6.dex */
     public class IAFDBinder extends IIAFDService.Stub {
         public IAFDBinder() {
         }
@@ -80,7 +79,8 @@ public class IAFDService extends Service {
                     msg.what = commandtype;
                     msg.setData(bundle);
                     this.mIAFDServiceImpl.IAFDServiceHandlerMessage(msg);
-                    break;
+                default:
+                    return 1;
             }
         }
         return 1;

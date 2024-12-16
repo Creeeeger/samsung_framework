@@ -4,32 +4,21 @@ import java.util.Vector;
 
 /* loaded from: classes6.dex */
 public class Vector2<T> {
-    private final int X;
-    private final int Y;
-    Vector<T> data;
+    private final int X = 0;
+    private final int Y = 1;
+    Vector<T> data = new Vector<>();
 
     public Vector2(T x, T y) {
-        this.X = 0;
-        this.Y = 1;
-        Vector<T> vector = new Vector<>();
-        this.data = vector;
-        vector.add(x);
+        this.data.add(x);
         this.data.add(y);
     }
 
     public Vector2(T[] array) {
-        this.X = 0;
-        this.Y = 1;
-        Vector<T> vector = new Vector<>();
-        this.data = vector;
-        vector.add(array[0]);
+        this.data.add(array[0]);
         this.data.add(array[1]);
     }
 
     public Vector2(Vector2<T> array) {
-        this.X = 0;
-        this.Y = 1;
-        this.data = new Vector<>();
         set(array.getX(), array.getY());
     }
 

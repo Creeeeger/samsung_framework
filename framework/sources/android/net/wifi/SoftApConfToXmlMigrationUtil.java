@@ -52,15 +52,8 @@ public final class SoftApConfToXmlMigrationUtil {
 
     public static int convertWifiConfigBandToSoftApConfigBand(int wifiConfigBand) {
         switch (wifiConfigBand) {
-            case -1:
-                return 3;
-            case 0:
-                return 1;
-            case 1:
-                return 2;
-            default:
-                return 1;
         }
+        return 1;
     }
 
     private static SoftApConfiguration loadFromLegacyFile(InputStream fis) {

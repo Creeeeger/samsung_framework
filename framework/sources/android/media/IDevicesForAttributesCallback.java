@@ -13,7 +13,6 @@ public interface IDevicesForAttributesCallback extends IInterface {
 
     void onDevicesForAttributesChanged(AudioAttributes audioAttributes, boolean z, List<AudioDeviceAttributes> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDevicesForAttributesCallback {
         @Override // android.media.IDevicesForAttributesCallback
         public void onDevicesForAttributesChanged(AudioAttributes attributes, boolean forVolume, List<AudioDeviceAttributes> devices) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDevicesForAttributesCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDevicesForAttributesCallback {
         static final int TRANSACTION_onDevicesForAttributesChanged = 1;
 
@@ -68,27 +66,24 @@ public interface IDevicesForAttributesCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDevicesForAttributesCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDevicesForAttributesCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDevicesForAttributesCallback.DESCRIPTOR);
+                case 1:
+                    AudioAttributes _arg0 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    List<AudioDeviceAttributes> _arg2 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDevicesForAttributesChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AudioAttributes _arg0 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            List<AudioDeviceAttributes> _arg2 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDevicesForAttributesChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IDevicesForAttributesCallback {
+        private static class Proxy implements IDevicesForAttributesCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

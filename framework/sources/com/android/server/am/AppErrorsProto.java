@@ -6,7 +6,6 @@ public final class AppErrorsProto {
     public static final long NOW_UPTIME_MS = 1112396529665L;
     public static final long PROCESS_CRASH_TIMES = 2246267895810L;
 
-    /* loaded from: classes5.dex */
     public final class ProcessCrashTime {
         public static final long ENTRIES = 2246267895810L;
         public static final long PROCESS_NAME = 1138166333441L;
@@ -14,7 +13,6 @@ public final class AppErrorsProto {
         public ProcessCrashTime() {
         }
 
-        /* loaded from: classes5.dex */
         public final class Entry {
             public static final long LAST_CRASHED_AT_MS = 1112396529666L;
             public static final long UID = 1120986464257L;
@@ -24,7 +22,6 @@ public final class AppErrorsProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class BadProcess {
         public static final long ENTRIES = 2246267895810L;
         public static final long PROCESS_NAME = 1138166333441L;
@@ -32,7 +29,6 @@ public final class AppErrorsProto {
         public BadProcess() {
         }
 
-        /* loaded from: classes5.dex */
         public final class Entry {
             public static final long CRASHED_AT_MS = 1112396529666L;
             public static final long LONG_MSG = 1138166333444L;

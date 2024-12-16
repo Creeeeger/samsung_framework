@@ -50,22 +50,17 @@ public class ImageSlicer extends Filter {
     private void calcOutputFormatForInput(Frame frame) {
         this.mInputWidth = frame.getFormat().getWidth();
         this.mInputHeight = frame.getFormat().getHeight();
-        int i = this.mInputWidth;
-        int i2 = ((i + r2) - 1) / this.mXSlices;
-        this.mSliceWidth = i2;
-        int i3 = ((r0 + r2) - 1) / this.mYSlices;
-        this.mSliceHeight = i3;
-        int i4 = this.mPadSize;
-        this.mOutputWidth = i2 + (i4 * 2);
-        this.mOutputHeight = i3 + (i4 * 2);
+        this.mSliceWidth = ((this.mInputWidth + this.mXSlices) - 1) / this.mXSlices;
+        this.mSliceHeight = ((this.mInputHeight + this.mYSlices) - 1) / this.mYSlices;
+        this.mOutputWidth = this.mSliceWidth + (this.mPadSize * 2);
+        this.mOutputHeight = this.mSliceHeight + (this.mPadSize * 2);
     }
 
     @Override // android.filterfw.core.Filter
     public void process(FilterContext context) {
         if (this.mSliceIndex == 0) {
-            Frame pullInput = pullInput("image");
-            this.mOriginalFrame = pullInput;
-            calcOutputFormatForInput(pullInput);
+            this.mOriginalFrame = pullInput("image");
+            calcOutputFormatForInput(this.mOriginalFrame);
         }
         FrameFormat inputFormat = this.mOriginalFrame.getFormat();
         MutableFrameFormat outputFormat = inputFormat.mutableCopy();
@@ -74,22 +69,14 @@ public class ImageSlicer extends Filter {
         if (this.mProgram == null) {
             this.mProgram = ShaderProgram.createIdentity(context);
         }
-        int i = this.mSliceIndex;
-        int i2 = this.mXSlices;
-        int xSliceIndex = i % i2;
-        int ySliceIndex = i / i2;
-        int i3 = this.mSliceWidth * xSliceIndex;
-        int i4 = this.mPadSize;
-        int i5 = this.mInputWidth;
-        float x0 = (i3 - i4) / i5;
-        float f = (this.mSliceHeight * ySliceIndex) - i4;
-        int i6 = this.mInputHeight;
-        float y0 = f / i6;
-        ((ShaderProgram) this.mProgram).setSourceRect(x0, y0, this.mOutputWidth / i5, this.mOutputHeight / i6);
+        int xSliceIndex = this.mSliceIndex % this.mXSlices;
+        int ySliceIndex = this.mSliceIndex / this.mXSlices;
+        float x0 = ((this.mSliceWidth * xSliceIndex) - this.mPadSize) / this.mInputWidth;
+        float y0 = ((this.mSliceHeight * ySliceIndex) - this.mPadSize) / this.mInputHeight;
+        ((ShaderProgram) this.mProgram).setSourceRect(x0, y0, this.mOutputWidth / this.mInputWidth, this.mOutputHeight / this.mInputHeight);
         this.mProgram.process(this.mOriginalFrame, output);
-        int i7 = this.mSliceIndex + 1;
-        this.mSliceIndex = i7;
-        if (i7 == this.mXSlices * this.mYSlices) {
+        this.mSliceIndex++;
+        if (this.mSliceIndex == this.mXSlices * this.mYSlices) {
             this.mSliceIndex = 0;
             this.mOriginalFrame.release();
             setWaitsOnInputPort("image", true);

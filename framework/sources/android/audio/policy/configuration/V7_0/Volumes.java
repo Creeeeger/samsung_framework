@@ -26,7 +26,7 @@ public class Volumes {
         return this.reference;
     }
 
-    public static Volumes read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static Volumes read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Volumes _instance = new Volumes();
         _parser.getDepth();

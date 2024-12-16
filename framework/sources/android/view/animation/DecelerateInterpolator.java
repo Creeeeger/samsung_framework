@@ -47,7 +47,7 @@ public class DecelerateInterpolator extends BaseInterpolator implements NativeIn
             return result;
         }
         float result2 = 1.0f - input;
-        return (float) (1.0d - Math.pow(result2, r0 * 2.0f));
+        return (float) (1.0d - Math.pow(result2, this.mFactor * 2.0f));
     }
 
     @Override // android.graphics.animation.NativeInterpolator

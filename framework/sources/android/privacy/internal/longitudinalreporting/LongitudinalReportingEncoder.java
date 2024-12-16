@@ -50,9 +50,8 @@ public class LongitudinalReportingEncoder implements DifferentialPrivacyEncoder 
 
     @Override // android.privacy.DifferentialPrivacyEncoder
     public byte[] encodeBoolean(boolean original) {
-        Boolean bool = this.mFakeValue;
-        if (bool != null) {
-            original = bool.booleanValue();
+        if (this.mFakeValue != null) {
+            original = this.mFakeValue.booleanValue();
         }
         byte[] result = this.mIRREncoder.encodeBoolean(original);
         return result;

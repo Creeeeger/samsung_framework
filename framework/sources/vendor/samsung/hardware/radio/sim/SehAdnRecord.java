@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehAdnRecord implements Parcelable {
     public static final Parcelable.Creator<SehAdnRecord> CREATOR = new Parcelable.Creator<SehAdnRecord>() { // from class: vendor.samsung.hardware.radio.sim.SehAdnRecord.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehAdnRecord createFromParcel(Parcel _aidl_source) {
             SehAdnRecord _aidl_out = new SehAdnRecord();
@@ -35,25 +32,6 @@ public class SehAdnRecord implements Parcelable {
     public int gsm8bitEmailLength = 0;
     public int sneLength = 0;
     public int sneDcs = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.sim.SehAdnRecord$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehAdnRecord> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehAdnRecord createFromParcel(Parcel _aidl_source) {
-            SehAdnRecord _aidl_out = new SehAdnRecord();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehAdnRecord[] newArray(int _aidl_size) {
-            return new SehAdnRecord[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

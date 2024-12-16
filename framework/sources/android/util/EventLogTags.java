@@ -7,7 +7,6 @@ import java.io.IOException;
 /* loaded from: classes4.dex */
 public class EventLogTags {
 
-    /* loaded from: classes4.dex */
     public static class Description {
         public final String mName;
         public final int mTag;

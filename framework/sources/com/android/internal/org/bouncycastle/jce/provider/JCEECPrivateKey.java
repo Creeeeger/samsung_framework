@@ -177,17 +177,16 @@ public class JCEECPrivateKey implements ECPrivateKey, com.android.internal.org.b
     public byte[] getEncoded() {
         X962Parameters params;
         ECPrivateKeyStructure keyStructure;
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec instanceof ECNamedCurveSpec) {
-            ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(((ECNamedCurveSpec) eCParameterSpec).getName());
+        if (this.ecSpec instanceof ECNamedCurveSpec) {
+            ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(((ECNamedCurveSpec) this.ecSpec).getName());
             if (curveOid == null) {
                 curveOid = new ASN1ObjectIdentifier(((ECNamedCurveSpec) this.ecSpec).getName());
             }
             params = new X962Parameters(curveOid);
-        } else if (eCParameterSpec == null) {
+        } else if (this.ecSpec == null) {
             params = new X962Parameters((ASN1Null) DERNull.INSTANCE);
         } else {
-            ECCurve curve = EC5Util.convertCurve(eCParameterSpec.getCurve());
+            ECCurve curve = EC5Util.convertCurve(this.ecSpec.getCurve());
             X9ECParameters ecP = new X9ECParameters(curve, new X9ECPoint(EC5Util.convertPoint(curve, this.ecSpec.getGenerator()), this.withCompression), this.ecSpec.getOrder(), BigInteger.valueOf(this.ecSpec.getCofactor()), this.ecSpec.getCurve().getSeed());
             params = new X962Parameters(ecP);
         }
@@ -211,17 +210,15 @@ public class JCEECPrivateKey implements ECPrivateKey, com.android.internal.org.b
 
     @Override // com.android.internal.org.bouncycastle.jce.interfaces.ECKey
     public com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec getParameters() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec == null) {
+        if (this.ecSpec == null) {
             return null;
         }
-        return EC5Util.convertSpec(eCParameterSpec);
+        return EC5Util.convertSpec(this.ecSpec);
     }
 
     com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec engineGetSpec() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec != null) {
-            return EC5Util.convertSpec(eCParameterSpec);
+        if (this.ecSpec != null) {
+            return EC5Util.convertSpec(this.ecSpec);
         }
         return BouncyCastleProvider.CONFIGURATION.getEcImplicitlyCa();
     }
@@ -290,9 +287,8 @@ public class JCEECPrivateKey implements ECPrivateKey, com.android.internal.org.b
         populateFromPrivKeyInfo(PrivateKeyInfo.getInstance(ASN1Primitive.fromByteArray(enc)));
         this.algorithm = (String) in.readObject();
         this.withCompression = in.readBoolean();
-        PKCS12BagAttributeCarrierImpl pKCS12BagAttributeCarrierImpl = new PKCS12BagAttributeCarrierImpl();
-        this.attrCarrier = pKCS12BagAttributeCarrierImpl;
-        pKCS12BagAttributeCarrierImpl.readObject(in);
+        this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
+        this.attrCarrier.readObject(in);
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

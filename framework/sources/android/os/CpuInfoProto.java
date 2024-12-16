@@ -8,7 +8,6 @@ public final class CpuInfoProto {
     public static final long TASKS = 2246267895813L;
     public static final long TASK_STATS = 1146756268033L;
 
-    /* loaded from: classes3.dex */
     public final class TaskStats {
         public static final long RUNNING = 1120986464258L;
         public static final long SLEEPING = 1120986464259L;
@@ -20,7 +19,6 @@ public final class CpuInfoProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class MemStats {
         public static final long BUFFERS = 1120986464260L;
         public static final long CACHED = 1120986464261L;
@@ -32,7 +30,6 @@ public final class CpuInfoProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class CpuUsage {
         public static final long CPU = 1120986464257L;
         public static final long HOST = 1120986464265L;
@@ -48,7 +45,6 @@ public final class CpuInfoProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Task {
         public static final long CMD = 1138166333451L;
         public static final long CPU = 1108101562374L;

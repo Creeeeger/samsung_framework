@@ -67,62 +67,52 @@ public abstract class KeyProperties {
     public static final int SECURITY_LEVEL_UNKNOWN_SECURE = -1;
     public static final String SIGNATURE_PADDING_RSA_PKCS1 = "PKCS1";
     public static final String SIGNATURE_PADDING_RSA_PSS = "PSS";
+    public static final int UID_SELF = -1;
     public static final int UNRESTRICTED_USAGE_COUNT = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AuthEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface BlockModeEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DigestEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EncryptionPaddingEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface KeyAlgorithmEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Namespace {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface OriginEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PurposeEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SecurityLevelEnum {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SignaturePaddingEnum {
     }
 
     private KeyProperties() {
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Purpose {
         private Purpose() {
         }
@@ -189,7 +179,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class KeyAlgorithm {
         private KeyAlgorithm() {
         }
@@ -256,54 +245,22 @@ public abstract class KeyProperties {
         }
 
         public static int toKeymasterDigest(String algorithm) {
+            String digestUpper;
             String algorithmUpper = algorithm.toUpperCase(Locale.US);
-            char c = 65535;
             if (!algorithmUpper.startsWith("HMAC")) {
                 return -1;
             }
-            String digestUpper = algorithmUpper.substring("HMAC".length());
-            switch (digestUpper.hashCode()) {
-                case -1850268184:
-                    if (digestUpper.equals("SHA224")) {
-                        c = 1;
-                        break;
-                    }
-                    break;
-                case -1850268089:
-                    if (digestUpper.equals("SHA256")) {
-                        c = 2;
-                        break;
-                    }
-                    break;
-                case -1850267037:
-                    if (digestUpper.equals("SHA384")) {
-                        c = 3;
-                        break;
-                    }
-                    break;
-                case -1850265334:
-                    if (digestUpper.equals("SHA512")) {
-                        c = 4;
-                        break;
-                    }
-                    break;
-                case 2543909:
-                    if (digestUpper.equals("SHA1")) {
-                        c = 0;
-                        break;
-                    }
-                    break;
-            }
-            switch (c) {
-                case 0:
+            digestUpper = algorithmUpper.substring("HMAC".length());
+            switch (digestUpper) {
+                case "SHA1":
                     return 2;
-                case 1:
+                case "SHA224":
                     return 3;
-                case 2:
+                case "SHA256":
                     return 4;
-                case 3:
+                case "SHA384":
                     return 5;
-                case 4:
+                case "SHA512":
                     return 6;
                 default:
                     throw new IllegalArgumentException("Unsupported HMAC digest: " + digestUpper);
@@ -311,7 +268,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class BlockMode {
         private BlockMode() {
         }
@@ -374,7 +330,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class EncryptionPadding {
         private EncryptionPadding() {
         }
@@ -422,7 +377,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class SignaturePadding {
         private SignaturePadding() {
         }
@@ -484,7 +438,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Digest {
         private Digest() {
         }
@@ -653,7 +606,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Origin {
         private Origin() {
         }
@@ -675,6 +627,7 @@ public abstract class KeyProperties {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int[] getSetFlags(int flags) {
         if (flags == 0) {
             return EmptyArray.INT;
@@ -707,7 +660,6 @@ public abstract class KeyProperties {
         return result;
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class SecurityLevel {
         private SecurityLevel() {
         }
@@ -739,7 +691,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class EcCurve {
         private EcCurve() {
         }

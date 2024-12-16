@@ -16,6 +16,8 @@ public interface IRemoteViewsFactory extends IInterface {
 
     RemoteViews getLoadingView() throws RemoteException;
 
+    RemoteViews.RemoteCollectionItems getRemoteCollectionItems(int i) throws RemoteException;
+
     RemoteViews getViewAt(int i) throws RemoteException;
 
     int getViewTypeCount() throws RemoteException;
@@ -30,7 +32,6 @@ public interface IRemoteViewsFactory extends IInterface {
 
     void onDestroy(Intent intent) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRemoteViewsFactory {
         @Override // com.android.internal.widget.IRemoteViewsFactory
         public void onDataSetChanged() throws RemoteException {
@@ -79,18 +80,23 @@ public interface IRemoteViewsFactory extends IInterface {
             return false;
         }
 
+        @Override // com.android.internal.widget.IRemoteViewsFactory
+        public RemoteViews.RemoteCollectionItems getRemoteCollectionItems(int capSize) throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRemoteViewsFactory {
         public static final String DESCRIPTOR = "com.android.internal.widget.IRemoteViewsFactory";
         static final int TRANSACTION_getCount = 4;
         static final int TRANSACTION_getItemId = 8;
         static final int TRANSACTION_getLoadingView = 6;
+        static final int TRANSACTION_getRemoteCollectionItems = 11;
         static final int TRANSACTION_getViewAt = 5;
         static final int TRANSACTION_getViewTypeCount = 7;
         static final int TRANSACTION_hasStableIds = 9;
@@ -141,6 +147,8 @@ public interface IRemoteViewsFactory extends IInterface {
                     return "hasStableIds";
                 case 10:
                     return "isCreated";
+                case 11:
+                    return "getRemoteCollectionItems";
                 default:
                     return null;
             }
@@ -156,71 +164,75 @@ public interface IRemoteViewsFactory extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onDataSetChanged();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    onDataSetChangedAsync();
+                    return true;
+                case 3:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDestroy(_arg0);
+                    return true;
+                case 4:
+                    int _result = getCount();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 5:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    RemoteViews _result2 = getViewAt(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 6:
+                    RemoteViews _result3 = getLoadingView();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 7:
+                    int _result4 = getViewTypeCount();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 8:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long _result5 = getItemId(_arg03);
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    return true;
+                case 9:
+                    boolean _result6 = hasStableIds();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 10:
+                    boolean _result7 = isCreated();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 11:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    RemoteViews.RemoteCollectionItems _result8 = getRemoteCollectionItems(_arg04);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onDataSetChanged();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            onDataSetChangedAsync();
-                            return true;
-                        case 3:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDestroy(_arg0);
-                            return true;
-                        case 4:
-                            int _result = getCount();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 5:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            RemoteViews _result2 = getViewAt(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 6:
-                            RemoteViews _result3 = getLoadingView();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 7:
-                            int _result4 = getViewTypeCount();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 8:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            long _result5 = getItemId(_arg03);
-                            reply.writeNoException();
-                            reply.writeLong(_result5);
-                            return true;
-                        case 9:
-                            boolean _result6 = hasStableIds();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 10:
-                            boolean _result7 = isCreated();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRemoteViewsFactory {
+        private static class Proxy implements IRemoteViewsFactory {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -386,11 +398,28 @@ public interface IRemoteViewsFactory extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // com.android.internal.widget.IRemoteViewsFactory
+            public RemoteViews.RemoteCollectionItems getRemoteCollectionItems(int capSize) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(capSize);
+                    this.mRemote.transact(11, _data, _reply, 0);
+                    _reply.readException();
+                    RemoteViews.RemoteCollectionItems _result = (RemoteViews.RemoteCollectionItems) _reply.readTypedObject(RemoteViews.RemoteCollectionItems.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 9;
+            return 10;
         }
     }
 }

@@ -4,12 +4,15 @@ import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /* loaded from: classes3.dex */
-public class AudioPlaybackHandler {
+class AudioPlaybackHandler {
     private static final boolean DBG = false;
     private static final String TAG = "TTS.AudioPlaybackHandler";
     private final LinkedBlockingQueue<PlaybackQueueItem> mQueue = new LinkedBlockingQueue<>();
     private volatile PlaybackQueueItem mCurrentWorkItem = null;
     private final Thread mHandlerThread = new Thread(new MessageLoop(), "TTS.AudioPlaybackThread");
+
+    AudioPlaybackHandler() {
+    }
 
     public void start() {
         this.mHandlerThread.start();
@@ -67,13 +70,7 @@ public class AudioPlaybackHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public final class MessageLoop implements Runnable {
-        /* synthetic */ MessageLoop(AudioPlaybackHandler audioPlaybackHandler, MessageLoopIA messageLoopIA) {
-            this();
-        }
-
+    private final class MessageLoop implements Runnable {
         private MessageLoop() {
         }
 

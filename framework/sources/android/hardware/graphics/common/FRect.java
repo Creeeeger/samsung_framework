@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FRect implements Parcelable {
     public static final Parcelable.Creator<FRect> CREATOR = new Parcelable.Creator<FRect>() { // from class: android.hardware.graphics.common.FRect.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FRect createFromParcel(Parcel _aidl_source) {
             FRect _aidl_out = new FRect();
@@ -17,6 +15,7 @@ public class FRect implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FRect[] newArray(int _aidl_size) {
             return new FRect[_aidl_size];
@@ -26,25 +25,6 @@ public class FRect implements Parcelable {
     public float top = 0.0f;
     public float right = 0.0f;
     public float bottom = 0.0f;
-
-    /* renamed from: android.hardware.graphics.common.FRect$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FRect> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FRect createFromParcel(Parcel _aidl_source) {
-            FRect _aidl_out = new FRect();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FRect[] newArray(int _aidl_size) {
-            return new FRect[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

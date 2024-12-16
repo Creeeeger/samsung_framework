@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public interface Reader {
+/* loaded from: classes3.dex */
+interface Reader {
     public static final int READ_DONE = Integer.MAX_VALUE;
     public static final int TAG_UNKNOWN = 0;
 

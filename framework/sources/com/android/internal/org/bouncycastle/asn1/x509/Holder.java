@@ -114,23 +114,19 @@ public class Holder extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         if (this.version == 1) {
             ASN1EncodableVector v = new ASN1EncodableVector(3);
-            IssuerSerial issuerSerial = this.baseCertificateID;
-            if (issuerSerial != null) {
-                v.add(new DERTaggedObject(false, 0, issuerSerial));
+            if (this.baseCertificateID != null) {
+                v.add(new DERTaggedObject(false, 0, this.baseCertificateID));
             }
-            GeneralNames generalNames = this.entityName;
-            if (generalNames != null) {
-                v.add(new DERTaggedObject(false, 1, generalNames));
+            if (this.entityName != null) {
+                v.add(new DERTaggedObject(false, 1, this.entityName));
             }
-            ObjectDigestInfo objectDigestInfo = this.objectDigestInfo;
-            if (objectDigestInfo != null) {
-                v.add(new DERTaggedObject(false, 2, objectDigestInfo));
+            if (this.objectDigestInfo != null) {
+                v.add(new DERTaggedObject(false, 2, this.objectDigestInfo));
             }
             return new DERSequence(v);
         }
-        GeneralNames generalNames2 = this.entityName;
-        if (generalNames2 != null) {
-            return new DERTaggedObject(true, 1, generalNames2);
+        if (this.entityName != null) {
+            return new DERTaggedObject(true, 1, this.entityName);
         }
         return new DERTaggedObject(true, 0, this.baseCertificateID);
     }

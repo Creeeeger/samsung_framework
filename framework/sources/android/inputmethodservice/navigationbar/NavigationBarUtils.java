@@ -8,7 +8,7 @@ final class NavigationBarUtils {
     private NavigationBarUtils() {
     }
 
-    public static int dpToPx(float dpValue, Resources res) {
+    static int dpToPx(float dpValue, Resources res) {
         return (int) TypedValue.applyDimension(1, dpValue, res.getDisplayMetrics());
     }
 }

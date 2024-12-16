@@ -16,7 +16,6 @@ public abstract class AccessibilityRequestPreparer {
     private final WeakReference<View> mViewRef;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface RequestTypes {
     }
 
@@ -36,12 +35,7 @@ public abstract class AccessibilityRequestPreparer {
         return this.mViewRef.get();
     }
 
-    /* loaded from: classes4.dex */
     private class ViewAttachStateListener implements View.OnAttachStateChangeListener {
-        /* synthetic */ ViewAttachStateListener(AccessibilityRequestPreparer accessibilityRequestPreparer, ViewAttachStateListenerIA viewAttachStateListenerIA) {
-            this();
-        }
-
         private ViewAttachStateListener() {
         }
 
@@ -59,7 +53,7 @@ public abstract class AccessibilityRequestPreparer {
         }
     }
 
-    public int getAccessibilityViewId() {
+    int getAccessibilityViewId() {
         return this.mAccessibilityViewId;
     }
 }

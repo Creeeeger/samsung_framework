@@ -57,7 +57,7 @@ public final class IccIoResult {
         this.sw1 = _hidl_blob.getInt32(_hidl_offset + 0);
         this.sw2 = _hidl_blob.getInt32(_hidl_offset + 4);
         this.simResponse = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.simResponse.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

@@ -10,17 +10,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class UiccCardInfo implements Parcelable {
     public static final Parcelable.Creator<UiccCardInfo> CREATOR = new Parcelable.Creator<UiccCardInfo>() { // from class: android.telephony.UiccCardInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccCardInfo createFromParcel(Parcel in) {
             return new UiccCardInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccCardInfo[] newArray(int size) {
             return new UiccCardInfo[size];
@@ -36,27 +35,6 @@ public final class UiccCardInfo implements Parcelable {
     private final int mPhysicalSlotIndex;
     private final List<UiccPortInfo> mPortList;
 
-    /* synthetic */ UiccCardInfo(Parcel parcel, UiccCardInfoIA uiccCardInfoIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.telephony.UiccCardInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UiccCardInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccCardInfo createFromParcel(Parcel in) {
-            return new UiccCardInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccCardInfo[] newArray(int size) {
-            return new UiccCardInfo[size];
-        }
-    }
-
     private UiccCardInfo(Parcel in) {
         this.mIccIdAccessRestricted = false;
         this.mIsEuicc = in.readBoolean();
@@ -66,9 +44,8 @@ public final class UiccCardInfo implements Parcelable {
         this.mPhysicalSlotIndex = in.readInt();
         this.mIsRemovable = in.readBoolean();
         this.mIsMultipleEnabledProfilesSupported = in.readBoolean();
-        ArrayList arrayList = new ArrayList();
-        this.mPortList = arrayList;
-        in.readTypedList(arrayList, UiccPortInfo.CREATOR);
+        this.mPortList = new ArrayList();
+        in.readTypedList(this.mPortList, UiccPortInfo.CREATOR);
         this.mIccIdAccessRestricted = in.readBoolean();
     }
 

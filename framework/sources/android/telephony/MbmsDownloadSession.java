@@ -32,7 +32,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class MbmsDownloadSession implements AutoCloseable {
     public static final String DEFAULT_TOP_LEVEL_TEMP_DIRECTORY = "androidMbmsTempFileRoot";
     private static final String DESTINATION_SANITY_CHECK_FILE_NAME = "destinationSanityCheckFile";
@@ -65,9 +65,6 @@ public class MbmsDownloadSession implements AutoCloseable {
     private static final String LOG_TAG = MbmsDownloadSession.class.getSimpleName();
     private static AtomicBoolean sIsInitialized = new AtomicBoolean(false);
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() { // from class: android.telephony.MbmsDownloadSession.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.IBinder.DeathRecipient
         public void binderDied() {
             MbmsDownloadSession.this.sendErrorToApp(3, "Received death notification");
@@ -78,26 +75,11 @@ public class MbmsDownloadSession implements AutoCloseable {
     private final Map<DownloadProgressListener, InternalDownloadProgressListener> mInternalDownloadProgressListeners = new HashMap();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DownloadResultCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DownloadStatus {
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.MbmsDownloadSession$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements IBinder.DeathRecipient {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            MbmsDownloadSession.this.sendErrorToApp(3, "Received death notification");
-        }
     }
 
     private MbmsDownloadSession(Context context, Executor executor, int subscriptionId, MbmsDownloadSessionCallback callback) {
@@ -111,21 +93,15 @@ public class MbmsDownloadSession implements AutoCloseable {
         return create(context, executor, SubscriptionManager.getDefaultSubscriptionId(), callback);
     }
 
-    public static MbmsDownloadSession create(Context context, Executor executor, int subscriptionId, MbmsDownloadSessionCallback callback) {
+    public static MbmsDownloadSession create(Context context, Executor executor, int subscriptionId, final MbmsDownloadSessionCallback callback) {
         if (!sIsInitialized.compareAndSet(false, true)) {
             throw new IllegalStateException("Cannot have two active instances");
         }
         MbmsDownloadSession session = new MbmsDownloadSession(context, executor, subscriptionId, callback);
-        int result = session.bindAndInitialize();
+        final int result = session.bindAndInitialize();
         if (result != 0) {
             sIsInitialized.set(false);
             executor.execute(new Runnable() { // from class: android.telephony.MbmsDownloadSession.2
-                final /* synthetic */ int val$result;
-
-                AnonymousClass2(int result2) {
-                    result = result2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     MbmsDownloadSessionCallback.this.onError(result, null);
@@ -136,85 +112,12 @@ public class MbmsDownloadSession implements AutoCloseable {
         return session;
     }
 
-    /* renamed from: android.telephony.MbmsDownloadSession$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ int val$result;
-
-        AnonymousClass2(int result2) {
-            result = result2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            MbmsDownloadSessionCallback.this.onError(result, null);
-        }
-    }
-
     public static int getMaximumServiceAnnouncementSize() {
         return 10240;
     }
 
-    /* renamed from: android.telephony.MbmsDownloadSession$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements ServiceConnection {
-        AnonymousClass3() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            IMbmsDownloadService downloadService = IMbmsDownloadService.Stub.asInterface(service);
-            try {
-                int result = downloadService.initialize(MbmsDownloadSession.this.mSubscriptionId, MbmsDownloadSession.this.mInternalCallback);
-                if (result == -1) {
-                    MbmsDownloadSession.this.close();
-                    throw new IllegalStateException("Middleware must not return an unknown error code");
-                }
-                if (result == 0) {
-                    try {
-                        downloadService.asBinder().linkToDeath(MbmsDownloadSession.this.mDeathRecipient, 0);
-                        MbmsDownloadSession.this.mService.set(downloadService);
-                        return;
-                    } catch (RemoteException e) {
-                        MbmsDownloadSession.this.sendErrorToApp(3, "Middleware lost during initialization");
-                        MbmsDownloadSession.sIsInitialized.set(false);
-                        return;
-                    }
-                }
-                MbmsDownloadSession.this.sendErrorToApp(result, "Error returned during initialization");
-                MbmsDownloadSession.sIsInitialized.set(false);
-            } catch (RemoteException e2) {
-                Log.e(MbmsDownloadSession.LOG_TAG, "Service died before initialization");
-                MbmsDownloadSession.sIsInitialized.set(false);
-            } catch (RuntimeException e3) {
-                Log.e(MbmsDownloadSession.LOG_TAG, "Runtime exception during initialization");
-                MbmsDownloadSession.this.sendErrorToApp(103, e3.toString());
-                MbmsDownloadSession.sIsInitialized.set(false);
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName name) {
-            Log.w(MbmsDownloadSession.LOG_TAG, "bindAndInitialize: Remote service disconnected");
-            MbmsDownloadSession.sIsInitialized.set(false);
-            MbmsDownloadSession.this.mService.set(null);
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onNullBinding(ComponentName name) {
-            Log.w(MbmsDownloadSession.LOG_TAG, "bindAndInitialize: Remote service returned null");
-            MbmsDownloadSession.this.sendErrorToApp(3, "Middleware service binding returned null");
-            MbmsDownloadSession.sIsInitialized.set(false);
-            MbmsDownloadSession.this.mService.set(null);
-            MbmsDownloadSession.this.mContext.unbindService(this);
-        }
-    }
-
     private int bindAndInitialize() {
-        AnonymousClass3 anonymousClass3 = new ServiceConnection() { // from class: android.telephony.MbmsDownloadSession.3
-            AnonymousClass3() {
-            }
-
+        this.mServiceConnection = new ServiceConnection() { // from class: android.telephony.MbmsDownloadSession.3
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
                 IMbmsDownloadService downloadService = IMbmsDownloadService.Stub.asInterface(service);
@@ -263,8 +166,7 @@ public class MbmsDownloadSession implements AutoCloseable {
                 MbmsDownloadSession.this.mContext.unbindService(this);
             }
         };
-        this.mServiceConnection = anonymousClass3;
-        return MbmsUtils.startBinding(this.mContext, MBMS_DOWNLOAD_SERVICE_ACTION, anonymousClass3);
+        return MbmsUtils.startBinding(this.mContext, MBMS_DOWNLOAD_SERVICE_ACTION, this.mServiceConnection);
     }
 
     public void requestUpdateFileServices(List<String> classList) {
@@ -729,6 +631,7 @@ public class MbmsDownloadSession implements AutoCloseable {
         return new File(tempFileLocation, downloadTokenFileName);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendErrorToApp(int errorCode, String message) {
         this.mInternalCallback.onError(errorCode, message);
     }

@@ -20,15 +20,9 @@ public class BackupDataInput {
 
     private native int skipEntityData_native(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class EntityHeader {
+    private static class EntityHeader {
         int dataSize;
         String key;
-
-        /* synthetic */ EntityHeader(EntityHeaderIA entityHeaderIA) {
-            this();
-        }
 
         private EntityHeader() {
         }
@@ -39,9 +33,8 @@ public class BackupDataInput {
         if (fd == null) {
             throw new NullPointerException();
         }
-        long ctor = ctor(fd);
-        this.mBackupReader = ctor;
-        if (ctor == 0) {
+        this.mBackupReader = ctor(fd);
+        if (this.mBackupReader == 0) {
             throw new RuntimeException("Native initialization failed with fd=" + fd);
         }
     }

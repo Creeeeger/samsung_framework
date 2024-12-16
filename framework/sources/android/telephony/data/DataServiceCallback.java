@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DataServiceCallback {
     private static final boolean DBG = true;
     public static final int RESULT_ERROR_BUSY = 3;
@@ -22,7 +22,6 @@ public class DataServiceCallback {
     private final IDataServiceCallback mCallback;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ResultCode {
     }
 
@@ -59,10 +58,9 @@ public class DataServiceCallback {
     }
 
     public void onSetInitialAttachApnComplete(int result) {
-        IDataServiceCallback iDataServiceCallback = this.mCallback;
-        if (iDataServiceCallback != null) {
+        if (this.mCallback != null) {
             try {
-                iDataServiceCallback.onSetInitialAttachApnComplete(result);
+                this.mCallback.onSetInitialAttachApnComplete(result);
                 return;
             } catch (RemoteException e) {
                 Rlog.e(TAG, "Failed to onSetInitialAttachApnComplete on the remote");
@@ -73,10 +71,9 @@ public class DataServiceCallback {
     }
 
     public void onSetDataProfileComplete(int result) {
-        IDataServiceCallback iDataServiceCallback = this.mCallback;
-        if (iDataServiceCallback != null) {
+        if (this.mCallback != null) {
             try {
-                iDataServiceCallback.onSetDataProfileComplete(result);
+                this.mCallback.onSetDataProfileComplete(result);
                 return;
             } catch (RemoteException e) {
                 Rlog.e(TAG, "Failed to onSetDataProfileComplete on the remote");
@@ -87,10 +84,9 @@ public class DataServiceCallback {
     }
 
     public void onRequestDataCallListComplete(int result, List<DataCallResponse> dataCallList) {
-        IDataServiceCallback iDataServiceCallback = this.mCallback;
-        if (iDataServiceCallback != null) {
+        if (this.mCallback != null) {
             try {
-                iDataServiceCallback.onRequestDataCallListComplete(result, dataCallList);
+                this.mCallback.onRequestDataCallListComplete(result, dataCallList);
                 return;
             } catch (RemoteException e) {
                 Rlog.e(TAG, "Failed to onRequestDataCallListComplete on the remote");

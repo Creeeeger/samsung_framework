@@ -36,7 +36,6 @@ public interface IPeopleManager extends IInterface {
 
     void unregisterConversationListener(IConversationListener iConversationListener) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPeopleManager {
         @Override // android.app.people.IPeopleManager
         public ConversationChannel getConversation(String packageName, int userId, String shortcutId) throws RemoteException {
@@ -97,7 +96,6 @@ public interface IPeopleManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPeopleManager {
         static final int TRANSACTION_addOrUpdateStatus = 7;
         static final int TRANSACTION_clearStatus = 8;
@@ -173,115 +171,111 @@ public interface IPeopleManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPeopleManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPeopleManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPeopleManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    ConversationChannel _result = getConversation(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    ParceledListSlice _result2 = getRecentConversations();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeRecentConversation(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    removeAllRecentConversations();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg03 = data.readString();
+                    int _arg13 = data.readInt();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isConversation(_arg03, _arg13, _arg23);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result4 = getLastInteraction(_arg04, _arg14, _arg24);
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    return true;
+                case 7:
+                    String _arg05 = data.readString();
+                    int _arg15 = data.readInt();
+                    String _arg25 = data.readString();
+                    ConversationStatus _arg3 = (ConversationStatus) data.readTypedObject(ConversationStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    addOrUpdateStatus(_arg05, _arg15, _arg25, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String _arg06 = data.readString();
+                    int _arg16 = data.readInt();
+                    String _arg26 = data.readString();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearStatus(_arg06, _arg16, _arg26, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg07 = data.readString();
+                    int _arg17 = data.readInt();
+                    String _arg27 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearStatuses(_arg07, _arg17, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    String _arg08 = data.readString();
+                    int _arg18 = data.readInt();
+                    String _arg28 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result5 = getStatuses(_arg08, _arg18, _arg28);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 11:
+                    String _arg09 = data.readString();
+                    int _arg19 = data.readInt();
+                    String _arg29 = data.readString();
+                    IConversationListener _arg33 = IConversationListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerConversationListener(_arg09, _arg19, _arg29, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    IConversationListener _arg010 = IConversationListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterConversationListener(_arg010);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            ConversationChannel _result = getConversation(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            ParceledListSlice _result2 = getRecentConversations();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeRecentConversation(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            removeAllRecentConversations();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg03 = data.readString();
-                            int _arg13 = data.readInt();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isConversation(_arg03, _arg13, _arg23);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result4 = getLastInteraction(_arg04, _arg14, _arg24);
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        case 7:
-                            String _arg05 = data.readString();
-                            int _arg15 = data.readInt();
-                            String _arg25 = data.readString();
-                            ConversationStatus _arg3 = (ConversationStatus) data.readTypedObject(ConversationStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            addOrUpdateStatus(_arg05, _arg15, _arg25, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String _arg06 = data.readString();
-                            int _arg16 = data.readInt();
-                            String _arg26 = data.readString();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearStatus(_arg06, _arg16, _arg26, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg07 = data.readString();
-                            int _arg17 = data.readInt();
-                            String _arg27 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearStatuses(_arg07, _arg17, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            String _arg08 = data.readString();
-                            int _arg18 = data.readInt();
-                            String _arg28 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result5 = getStatuses(_arg08, _arg18, _arg28);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 11:
-                            String _arg09 = data.readString();
-                            int _arg19 = data.readInt();
-                            String _arg29 = data.readString();
-                            IConversationListener _arg33 = IConversationListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerConversationListener(_arg09, _arg19, _arg29, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            IConversationListener _arg010 = IConversationListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterConversationListener(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPeopleManager {
+        private static class Proxy implements IPeopleManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

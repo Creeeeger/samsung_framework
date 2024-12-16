@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class ManualTimeZoneSuggestion implements Parcelable {
     public static final Parcelable.Creator<ManualTimeZoneSuggestion> CREATOR = new Parcelable.Creator<ManualTimeZoneSuggestion>() { // from class: android.app.timezonedetector.ManualTimeZoneSuggestion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ManualTimeZoneSuggestion createFromParcel(Parcel in) {
             return ManualTimeZoneSuggestion.createFromParcel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ManualTimeZoneSuggestion[] newArray(int size) {
             return new ManualTimeZoneSuggestion[size];
@@ -29,27 +28,11 @@ public final class ManualTimeZoneSuggestion implements Parcelable {
     private ArrayList<String> mDebugInfo;
     private final String mZoneId;
 
-    /* renamed from: android.app.timezonedetector.ManualTimeZoneSuggestion$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ManualTimeZoneSuggestion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ManualTimeZoneSuggestion createFromParcel(Parcel in) {
-            return ManualTimeZoneSuggestion.createFromParcel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ManualTimeZoneSuggestion[] newArray(int size) {
-            return new ManualTimeZoneSuggestion[size];
-        }
-    }
-
     public ManualTimeZoneSuggestion(String zoneId) {
         this.mZoneId = (String) Objects.requireNonNull(zoneId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ManualTimeZoneSuggestion createFromParcel(Parcel in) {
         String zoneId = in.readString();
         ManualTimeZoneSuggestion suggestion = new ManualTimeZoneSuggestion(zoneId);
@@ -74,8 +57,7 @@ public final class ManualTimeZoneSuggestion implements Parcelable {
     }
 
     public List<String> getDebugInfo() {
-        ArrayList<String> arrayList = this.mDebugInfo;
-        return arrayList == null ? Collections.emptyList() : Collections.unmodifiableList(arrayList);
+        return this.mDebugInfo == null ? Collections.emptyList() : Collections.unmodifiableList(this.mDebugInfo);
     }
 
     public void addDebugInfo(String... debugInfos) {
@@ -104,7 +86,6 @@ public final class ManualTimeZoneSuggestion implements Parcelable {
         return "ManualTimeZoneSuggestion{mZoneId=" + this.mZoneId + ", mDebugInfo=" + this.mDebugInfo + '}';
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:5:0x000c. Please report as an issue. */
     public static ManualTimeZoneSuggestion parseCommandLineArg(ShellCommand cmd) {
         char c;
         String zoneId = null;

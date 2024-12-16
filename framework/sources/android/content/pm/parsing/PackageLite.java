@@ -1,6 +1,8 @@
 package android.content.pm.parsing;
 
+import android.content.pm.ArchivedPackageParcel;
 import android.content.pm.PackageInfo;
+import android.content.pm.SigningDetails;
 import android.content.pm.VerifierInfo;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.CollectionUtils;
@@ -12,6 +14,7 @@ import java.util.function.Predicate;
 
 /* loaded from: classes.dex */
 public class PackageLite {
+    private final ArchivedPackageParcel mArchivedPackage;
     private final String mBaseApkPath;
     private final Set<String> mBaseRequiredSplitTypes;
     private final int mBaseRevisionCode;
@@ -28,6 +31,7 @@ public class PackageLite {
     private final String mPath;
     private final boolean mProfileableByShell;
     private final Set<String>[] mRequiredSplitTypes;
+    private final SigningDetails mSigningDetails;
     private final String[] mSplitApkPaths;
     private final String[] mSplitNames;
     private final boolean mSplitRequired;
@@ -49,6 +53,7 @@ public class PackageLite {
         this.mVersionCodeMajor = baseApk.getVersionCodeMajor();
         this.mInstallLocation = baseApk.getInstallLocation();
         this.mVerifiers = baseApk.getVerifiers();
+        this.mSigningDetails = baseApk.getSigningDetails();
         this.mBaseRevisionCode = baseApk.getRevisionCode();
         this.mCoreApp = baseApk.isCoreApp();
         this.mDebuggable = baseApk.isDebuggable();
@@ -70,6 +75,7 @@ public class PackageLite {
         this.mSplitApkPaths = splitApkPaths;
         this.mSplitRevisionCodes = splitRevisionCodes;
         this.mTargetSdk = targetSdk;
+        this.mArchivedPackage = baseApk.getArchivedPackage();
     }
 
     public List<String> getAllApkPaths() {
@@ -94,7 +100,7 @@ public class PackageLite {
         }) == null) ? false : true;
     }
 
-    public static /* synthetic */ boolean lambda$hasAnyRequiredSplitTypes$0(Set r) {
+    static /* synthetic */ boolean lambda$hasAnyRequiredSplitTypes$0(Set r) {
         return !CollectionUtils.isEmpty(r);
     }
 
@@ -166,6 +172,10 @@ public class PackageLite {
         return this.mVerifiers;
     }
 
+    public SigningDetails getSigningDetails() {
+        return this.mSigningDetails;
+    }
+
     public boolean[] getIsFeatureSplits() {
         return this.mIsFeatureSplits;
     }
@@ -208,6 +218,10 @@ public class PackageLite {
 
     public boolean isIsSdkLibrary() {
         return this.mIsSdkLibrary;
+    }
+
+    public ArchivedPackageParcel getArchivedPackage() {
+        return this.mArchivedPackage;
     }
 
     @Deprecated

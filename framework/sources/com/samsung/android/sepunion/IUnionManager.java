@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IUnionManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IUnionManager";
 
@@ -15,7 +15,6 @@ public interface IUnionManager extends IInterface {
 
     void setDumpEnabled(String str, String str2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IUnionManager {
         @Override // com.samsung.android.sepunion.IUnionManager
         public IBinder getSemSystemService(String name, Bundle opt) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IUnionManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IUnionManager {
         static final int TRANSACTION_getSemSystemService = 1;
         static final int TRANSACTION_setDumpEnabled = 2;
@@ -78,35 +76,32 @@ public interface IUnionManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUnionManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUnionManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUnionManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IBinder _result = getSemSystemService(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    setDumpEnabled(_arg02, _arg12);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IBinder _result = getSemSystemService(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            setDumpEnabled(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IUnionManager {
+        private static class Proxy implements IUnionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

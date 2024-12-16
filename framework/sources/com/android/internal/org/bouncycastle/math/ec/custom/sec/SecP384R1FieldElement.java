@@ -22,7 +22,7 @@ public class SecP384R1FieldElement extends ECFieldElement.AbstractFp {
         this.x = Nat.create(12);
     }
 
-    public SecP384R1FieldElement(int[] x) {
+    protected SecP384R1FieldElement(int[] x) {
         this.x = x;
     }
 

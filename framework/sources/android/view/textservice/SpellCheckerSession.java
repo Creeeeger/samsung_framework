@@ -4,7 +4,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
@@ -26,14 +25,13 @@ public class SpellCheckerSession {
     public static final String SERVICE_META_DATA = "android.view.textservice.scs";
     private static final String TAG = SpellCheckerSession.class.getSimpleName();
     private final Executor mExecutor;
-    private final CloseGuard mGuard;
+    private final CloseGuard mGuard = CloseGuard.get();
     private final InternalListener mInternalListener;
     private final SpellCheckerInfo mSpellCheckerInfo;
     private final SpellCheckerSessionListener mSpellCheckerSessionListener;
     private final SpellCheckerSessionListenerImpl mSpellCheckerSessionListenerImpl;
     private final TextServicesManager mTextServicesManager;
 
-    /* loaded from: classes4.dex */
     public interface SpellCheckerSessionListener {
         void onGetSentenceSuggestions(SentenceSuggestionsInfo[] sentenceSuggestionsInfoArr);
 
@@ -41,19 +39,16 @@ public class SpellCheckerSession {
     }
 
     public SpellCheckerSession(SpellCheckerInfo info, TextServicesManager tsm, SpellCheckerSessionListener listener, Executor executor) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mGuard = closeGuard;
         if (info == null || listener == null || tsm == null) {
             throw new NullPointerException();
         }
         this.mSpellCheckerInfo = info;
-        SpellCheckerSessionListenerImpl spellCheckerSessionListenerImpl = new SpellCheckerSessionListenerImpl(this);
-        this.mSpellCheckerSessionListenerImpl = spellCheckerSessionListenerImpl;
-        this.mInternalListener = new InternalListener(spellCheckerSessionListenerImpl);
+        this.mSpellCheckerSessionListenerImpl = new SpellCheckerSessionListenerImpl(this);
+        this.mInternalListener = new InternalListener(this.mSpellCheckerSessionListenerImpl);
         this.mTextServicesManager = tsm;
         this.mSpellCheckerSessionListener = listener;
         this.mExecutor = executor;
-        closeGuard.open("finishSession");
+        this.mGuard.open("finishSession");
     }
 
     public boolean isSessionDisconnected() {
@@ -98,6 +93,7 @@ public class SpellCheckerSession {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleOnGetSuggestionsMultiple$0(SuggestionsInfo[] suggestionsInfos) {
         this.mSpellCheckerSessionListener.onGetSuggestions(suggestionsInfos);
     }
@@ -120,12 +116,12 @@ public class SpellCheckerSession {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleOnGetSentenceSuggestionsMultiple$1(SentenceSuggestionsInfo[] suggestionsInfos) {
         this.mSpellCheckerSessionListener.onGetSentenceSuggestions(suggestionsInfos);
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SpellCheckerSessionListenerImpl extends ISpellCheckerSessionListener.Stub {
+    private static final class SpellCheckerSessionListenerImpl extends ISpellCheckerSessionListener.Stub {
         private static final int STATE_CLOSED_AFTER_CONNECTION = 2;
         private static final int STATE_CLOSED_BEFORE_CONNECTION = 3;
         private static final int STATE_CONNECTED = 1;
@@ -175,8 +171,7 @@ public class SpellCheckerSession {
             this.mSpellCheckerSession = spellCheckerSession;
         }
 
-        /* loaded from: classes4.dex */
-        public static class SpellCheckerParams {
+        private static class SpellCheckerParams {
             public final boolean mSequentialWords;
             public ISpellCheckerSession mSession;
             public final int mSuggestionsLimit;
@@ -191,6 +186,7 @@ public class SpellCheckerSession {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void processTask(ISpellCheckerSession session, SpellCheckerParams scp, boolean async) {
             if (async || this.mAsyncHandler == null) {
                 switch (scp.mWhat) {
@@ -229,8 +225,7 @@ public class SpellCheckerSession {
                 }
             } else {
                 scp.mSession = session;
-                Handler handler = this.mAsyncHandler;
-                handler.sendMessage(Message.obtain(handler, 1, scp));
+                this.mAsyncHandler.sendMessage(Message.obtain(this.mAsyncHandler, 1, scp));
             }
             if (scp.mWhat == 3) {
                 synchronized (this) {
@@ -241,9 +236,8 @@ public class SpellCheckerSession {
 
         private void processCloseLocked() {
             this.mISpellCheckerSession = null;
-            HandlerThread handlerThread = this.mThread;
-            if (handlerThread != null) {
-                handlerThread.quit();
+            if (this.mThread != null) {
+                this.mThread.quit();
             }
             this.mSpellCheckerSession = null;
             this.mPendingTasks.clear();
@@ -252,13 +246,13 @@ public class SpellCheckerSession {
             switch (this.mState) {
                 case 0:
                     this.mState = 3;
-                    return;
+                    break;
                 case 1:
                     this.mState = 2;
-                    return;
+                    break;
                 default:
                     Log.e(SpellCheckerSession.TAG, "processCloseLocked is called unexpectedly. mState=" + stateToString(this.mState));
-                    return;
+                    break;
             }
         }
 
@@ -272,14 +266,9 @@ public class SpellCheckerSession {
                         }
                         this.mISpellCheckerSession = session;
                         if ((session.asBinder() instanceof Binder) && this.mThread == null) {
-                            HandlerThread handlerThread = new HandlerThread("SpellCheckerSession", 10);
-                            this.mThread = handlerThread;
-                            handlerThread.start();
+                            this.mThread = new HandlerThread("SpellCheckerSession", 10);
+                            this.mThread.start();
                             this.mAsyncHandler = new Handler(this.mThread.getLooper()) { // from class: android.view.textservice.SpellCheckerSession.SpellCheckerSessionListenerImpl.1
-                                AnonymousClass1(Looper looper) {
-                                    super(looper);
-                                }
-
                                 @Override // android.os.Handler
                                 public void handleMessage(Message msg) {
                                     SpellCheckerParams scp = (SpellCheckerParams) msg.obj;
@@ -298,20 +287,6 @@ public class SpellCheckerSession {
                         Log.e(SpellCheckerSession.TAG, "ignoring onServiceConnected due to unexpected mState=" + stateToString(this.mState));
                         return;
                 }
-            }
-        }
-
-        /* renamed from: android.view.textservice.SpellCheckerSession$SpellCheckerSessionListenerImpl$1 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass1 extends Handler {
-            AnonymousClass1(Looper looper) {
-                super(looper);
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                SpellCheckerParams scp = (SpellCheckerParams) msg.obj;
-                SpellCheckerSessionListenerImpl.this.processTask(scp.mSession, scp, true);
             }
         }
 
@@ -343,17 +318,15 @@ public class SpellCheckerSession {
         }
 
         private void processOrEnqueueTask(SpellCheckerParams scp) {
-            int i;
             synchronized (this) {
-                if (scp.mWhat == 3 && ((i = this.mState) == 2 || i == 3)) {
+                if (scp.mWhat == 3 && (this.mState == 2 || this.mState == 3)) {
                     return;
                 }
-                int i2 = this.mState;
-                if (i2 != 0 && i2 != 1) {
+                if (this.mState != 0 && this.mState != 1) {
                     Log.e(SpellCheckerSession.TAG, "ignoring processOrEnqueueTask due to unexpected mState=" + stateToString(this.mState) + " scp.mWhat=" + taskToString(scp.mWhat));
                     return;
                 }
-                if (i2 == 0) {
+                if (this.mState == 0) {
                     if (scp.mWhat == 3) {
                         processCloseLocked();
                         return;
@@ -403,16 +376,11 @@ public class SpellCheckerSession {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class SpellCheckerSessionParams {
         private final Bundle mExtras;
         private final Locale mLocale;
         private final boolean mShouldReferToSpellCheckerLanguageSettings;
         private final int mSupportedAttributes;
-
-        /* synthetic */ SpellCheckerSessionParams(Locale locale, boolean z, int i, Bundle bundle, SpellCheckerSessionParamsIA spellCheckerSessionParamsIA) {
-            this(locale, z, i, bundle);
-        }
 
         private SpellCheckerSessionParams(Locale locale, boolean referToSpellCheckerLanguageSettings, int supportedAttributes, Bundle extras) {
             this.mLocale = locale;
@@ -437,7 +405,6 @@ public class SpellCheckerSession {
             return this.mExtras;
         }
 
-        /* loaded from: classes4.dex */
         public static final class Builder {
             private Locale mLocale;
             private boolean mShouldReferToSpellCheckerLanguageSettings = false;
@@ -445,11 +412,10 @@ public class SpellCheckerSession {
             private Bundle mExtras = Bundle.EMPTY;
 
             public SpellCheckerSessionParams build() {
-                Locale locale = this.mLocale;
-                if (locale == null && !this.mShouldReferToSpellCheckerLanguageSettings) {
+                if (this.mLocale == null && !this.mShouldReferToSpellCheckerLanguageSettings) {
                     throw new IllegalArgumentException("mLocale should not be null if  mShouldReferToSpellCheckerLanguageSettings is false.");
                 }
-                return new SpellCheckerSessionParams(locale, this.mShouldReferToSpellCheckerLanguageSettings, this.mSupportedAttributes, this.mExtras);
+                return new SpellCheckerSessionParams(this.mLocale, this.mShouldReferToSpellCheckerLanguageSettings, this.mSupportedAttributes, this.mExtras);
             }
 
             public Builder setLocale(Locale locale) {
@@ -474,9 +440,7 @@ public class SpellCheckerSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static final class InternalListener extends ITextServicesSessionListener.Stub {
+    private static final class InternalListener extends ITextServicesSessionListener.Stub {
         private final SpellCheckerSessionListenerImpl mParentSpellCheckerSessionListenerImpl;
 
         public InternalListener(SpellCheckerSessionListenerImpl spellCheckerSessionListenerImpl) {
@@ -491,9 +455,8 @@ public class SpellCheckerSession {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mGuard != null) {
+                this.mGuard.warnIfOpen();
                 close();
             }
         } finally {

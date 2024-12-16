@@ -48,7 +48,6 @@ public interface IFilter extends IInterface {
 
     void stop() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IFilter {
         @Override // android.hardware.tv.tuner.IFilter
         public void getQueueDesc(MQDescriptor<Byte, Byte> queue) throws RemoteException {
@@ -129,7 +128,6 @@ public interface IFilter extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFilter {
         static final int TRANSACTION_close = 2;
         static final int TRANSACTION_configure = 3;
@@ -176,112 +174,111 @@ public interface IFilter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    MQDescriptor<Byte, Byte> _arg0 = new MQDescriptor<>();
+                    data.enforceNoDataAvail();
+                    getQueueDesc(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeTypedObject(_arg0, 1);
                     return true;
-                case 16777215:
+                case 2:
+                    close();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    DemuxFilterSettings _arg02 = (DemuxFilterSettings) data.readTypedObject(DemuxFilterSettings.CREATOR);
+                    data.enforceNoDataAvail();
+                    configure(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    AvStreamType _arg03 = (AvStreamType) data.readTypedObject(AvStreamType.CREATOR);
+                    data.enforceNoDataAvail();
+                    configureAvStreamType(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    configureIpCid(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    configureMonitorEvent(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    start();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    stop();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    flush();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    NativeHandle _arg06 = new NativeHandle();
+                    data.enforceNoDataAvail();
+                    long _result = getAvSharedHandle(_arg06);
+                    reply.writeNoException();
+                    reply.writeLong(_result);
+                    reply.writeTypedObject(_arg06, 1);
+                    return true;
+                case 11:
+                    int _result2 = getId();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 12:
+                    long _result3 = getId64Bit();
+                    reply.writeNoException();
+                    reply.writeLong(_result3);
+                    return true;
+                case 13:
+                    NativeHandle _arg07 = (NativeHandle) data.readTypedObject(NativeHandle.CREATOR);
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    releaseAvHandle(_arg07, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IFilter _arg08 = asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setDataSource(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    FilterDelayHint _arg09 = (FilterDelayHint) data.readTypedObject(FilterDelayHint.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDelayHint(_arg09);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MQDescriptor<Byte, Byte> _arg0 = new MQDescriptor<>();
-                            data.enforceNoDataAvail();
-                            getQueueDesc(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg0, 1);
-                            return true;
-                        case 2:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            DemuxFilterSettings _arg02 = (DemuxFilterSettings) data.readTypedObject(DemuxFilterSettings.CREATOR);
-                            data.enforceNoDataAvail();
-                            configure(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            AvStreamType _arg03 = (AvStreamType) data.readTypedObject(AvStreamType.CREATOR);
-                            data.enforceNoDataAvail();
-                            configureAvStreamType(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            configureIpCid(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            configureMonitorEvent(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            start();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            stop();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            flush();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            NativeHandle _arg06 = new NativeHandle();
-                            data.enforceNoDataAvail();
-                            long _result = getAvSharedHandle(_arg06);
-                            reply.writeNoException();
-                            reply.writeLong(_result);
-                            reply.writeTypedObject(_arg06, 1);
-                            return true;
-                        case 11:
-                            int _result2 = getId();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 12:
-                            long _result3 = getId64Bit();
-                            reply.writeNoException();
-                            reply.writeLong(_result3);
-                            return true;
-                        case 13:
-                            NativeHandle _arg07 = (NativeHandle) data.readTypedObject(NativeHandle.CREATOR);
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            releaseAvHandle(_arg07, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IFilter _arg08 = asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setDataSource(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            FilterDelayHint _arg09 = (FilterDelayHint) data.readTypedObject(FilterDelayHint.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDelayHint(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFilter {
+        private static class Proxy implements IFilter {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

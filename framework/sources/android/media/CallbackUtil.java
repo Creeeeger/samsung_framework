@@ -12,30 +12,26 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-public class CallbackUtil {
+class CallbackUtil {
     private static final String TAG = "CallbackUtil";
 
-    /* loaded from: classes2.dex */
-    public interface CallbackMethod<T> {
+    interface CallbackMethod<T> {
         void callbackMethod(T t);
     }
 
-    /* loaded from: classes2.dex */
-    public interface DispatcherStub {
+    interface DispatcherStub {
         void register(boolean z);
     }
 
     CallbackUtil() {
     }
 
-    /* loaded from: classes2.dex */
-    public static class ListenerInfo<T> {
+    static class ListenerInfo<T> {
         final Executor mExecutor;
         final T mListener;
 
-        public ListenerInfo(T listener, Executor exe) {
+        ListenerInfo(T listener, Executor exe) {
             this.mListener = listener;
             this.mExecutor = exe;
         }
@@ -68,7 +64,7 @@ public class CallbackUtil {
         return false;
     }
 
-    public static <T, S> Pair<ArrayList<ListenerInfo<T>>, S> addListener(String methodName, Executor executor, T listener, ArrayList<ListenerInfo<T>> listeners, S dispatchStub, Supplier<S> newStub, Consumer<S> registerStub) {
+    static <T, S> Pair<ArrayList<ListenerInfo<T>>, S> addListener(String methodName, Executor executor, T listener, ArrayList<ListenerInfo<T>> listeners, S dispatchStub, Supplier<S> newStub, Consumer<S> registerStub) {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(listener);
         if (hasListener(listener, listeners)) {
@@ -92,7 +88,7 @@ public class CallbackUtil {
         return new Pair<>(listeners, dispatchStub);
     }
 
-    public static <T, S> Pair<ArrayList<ListenerInfo<T>>, S> removeListener(String methodName, T listener, ArrayList<ListenerInfo<T>> listeners, S dispatchStub, Consumer<S> unregisterStub) {
+    static <T, S> Pair<ArrayList<ListenerInfo<T>>, S> removeListener(String methodName, T listener, ArrayList<ListenerInfo<T>> listeners, S dispatchStub, Consumer<S> unregisterStub) {
         Objects.requireNonNull(listener);
         if (!removeListener(listener, listeners)) {
             throw new IllegalArgumentException("attempt to call " + methodName + " on an unregistered listener");
@@ -104,7 +100,7 @@ public class CallbackUtil {
         return new Pair<>(listeners, dispatchStub);
     }
 
-    public static <T> void callListeners(ArrayList<ListenerInfo<T>> listeners, Object listenerLock, final CallbackMethod<T> callback) {
+    static <T> void callListeners(ArrayList<ListenerInfo<T>> listeners, Object listenerLock, final CallbackMethod<T> callback) {
         Objects.requireNonNull(listenerLock);
         synchronized (listenerLock) {
             if (listeners != null) {
@@ -140,16 +136,18 @@ public class CallbackUtil {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class LazyListenerManager<T> {
+    static class LazyListenerManager<T> {
         private DispatcherStub mDispatcherStub;
         private final Object mListenerLock = new Object();
         private ArrayList<ListenerInfo<T>> mListeners;
 
+        LazyListenerManager() {
+        }
+
         /* JADX WARN: Multi-variable type inference failed */
-        public void addListener(Executor executor, T t, String str, Supplier<DispatcherStub> supplier) {
+        void addListener(Executor executor, T t, String str, Supplier<DispatcherStub> supplier) {
             synchronized (this.mListenerLock) {
-                Pair addListener = CallbackUtil.addListener(str, executor, t, this.mListeners, this.mDispatcherStub, supplier, new Consumer() { // from class: android.media.CallbackUtil$LazyListenerManager$$ExternalSyntheticLambda0
+                Pair addListener = CallbackUtil.addListener(str, executor, t, this.mListeners, this.mDispatcherStub, supplier, new Consumer() { // from class: android.media.CallbackUtil$LazyListenerManager$$ExternalSyntheticLambda1
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         ((CallbackUtil.DispatcherStub) obj).register(true);
@@ -161,9 +159,9 @@ public class CallbackUtil {
         }
 
         /* JADX WARN: Multi-variable type inference failed */
-        public void removeListener(T t, String str) {
+        void removeListener(T t, String str) {
             synchronized (this.mListenerLock) {
-                Pair removeListener = CallbackUtil.removeListener(str, t, this.mListeners, this.mDispatcherStub, new Consumer() { // from class: android.media.CallbackUtil$LazyListenerManager$$ExternalSyntheticLambda1
+                Pair removeListener = CallbackUtil.removeListener(str, t, this.mListeners, this.mDispatcherStub, new Consumer() { // from class: android.media.CallbackUtil$LazyListenerManager$$ExternalSyntheticLambda0
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         ((CallbackUtil.DispatcherStub) obj).register(false);
@@ -174,7 +172,7 @@ public class CallbackUtil {
             }
         }
 
-        public void callListeners(CallbackMethod<T> callback) {
+        void callListeners(CallbackMethod<T> callback) {
             CallbackUtil.callListeners(this.mListeners, this.mListenerLock, callback);
         }
     }

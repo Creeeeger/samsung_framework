@@ -10,6 +10,7 @@ public final class UsbPortStatusProto {
     public static final int DATA_ROLE_DEVICE = 2;
     public static final int DATA_ROLE_HOST = 1;
     public static final int DATA_ROLE_NONE = 0;
+    public static final long DISPLAYPORT_ALT_MODE_STATUS = 1138166333451L;
     public static final long IS_POWER_TRANSFER_LIMITED = 1133871366152L;
     public static final long POWER_ROLE = 1159641169923L;
     public static final int POWER_ROLE_NONE = 0;

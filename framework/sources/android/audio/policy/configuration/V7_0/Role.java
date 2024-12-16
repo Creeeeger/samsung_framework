@@ -17,7 +17,7 @@ public enum Role {
         return this.rawName;
     }
 
-    public static Role fromString(String rawString) {
+    static Role fromString(String rawString) {
         for (Role _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

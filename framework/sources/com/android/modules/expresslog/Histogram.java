@@ -5,9 +5,8 @@ import java.util.Arrays;
 /* loaded from: classes5.dex */
 public final class Histogram {
     private final BinOptions mBinOptions;
-    private final long mMetricIdHash;
+    private final String mMetricId;
 
-    /* loaded from: classes5.dex */
     public interface BinOptions {
         int getBinForSample(float f);
 
@@ -15,21 +14,22 @@ public final class Histogram {
     }
 
     public Histogram(String metricId, BinOptions binOptions) {
-        this.mMetricIdHash = Utils.hashString(metricId);
+        this.mMetricId = metricId;
         this.mBinOptions = binOptions;
     }
 
     public void logSample(float sample) {
+        long hash = MetricIds.getMetricIdHash(this.mMetricId, 2);
         int binIndex = this.mBinOptions.getBinForSample(sample);
-        StatsExpressLog.write(593, this.mMetricIdHash, 1L, binIndex);
+        StatsExpressLog.write(593, hash, 1L, binIndex);
     }
 
     public void logSampleWithUid(int uid, float sample) {
+        long hash = MetricIds.getMetricIdHash(this.mMetricId, 4);
         int binIndex = this.mBinOptions.getBinForSample(sample);
-        StatsExpressLog.write(658, this.mMetricIdHash, 1L, binIndex, uid);
+        StatsExpressLog.write(658, hash, 1L, binIndex, uid);
     }
 
-    /* loaded from: classes5.dex */
     public static final class UniformOptions implements BinOptions {
         private final int mBinCount;
         private final float mBinSize;
@@ -45,7 +45,7 @@ public final class Histogram {
             }
             this.mMinValue = minValue;
             this.mExclusiveMaxValue = exclusiveMaxValue;
-            this.mBinSize = (exclusiveMaxValue - minValue) / binCount;
+            this.mBinSize = (this.mExclusiveMaxValue - minValue) / binCount;
             this.mBinCount = binCount + 2;
         }
 
@@ -56,18 +56,16 @@ public final class Histogram {
 
         @Override // com.android.modules.expresslog.Histogram.BinOptions
         public int getBinForSample(float sample) {
-            float f = this.mMinValue;
-            if (sample < f) {
+            if (sample < this.mMinValue) {
                 return 0;
             }
             if (sample >= this.mExclusiveMaxValue) {
                 return this.mBinCount - 1;
             }
-            return (int) (((sample - f) / this.mBinSize) + 1.0f);
+            return (int) (((sample - this.mMinValue) / this.mBinSize) + 1.0f);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class ScaledRangeOptions implements BinOptions {
         final long[] mBins;
 
@@ -91,14 +89,13 @@ public final class Histogram {
 
         @Override // com.android.modules.expresslog.Histogram.BinOptions
         public int getBinForSample(float sample) {
-            long[] jArr = this.mBins;
-            if (sample < ((float) jArr[0])) {
+            if (sample < this.mBins[0]) {
                 return 0;
             }
-            if (sample >= ((float) jArr[jArr.length - 1])) {
-                return jArr.length;
+            if (sample >= this.mBins[this.mBins.length - 1]) {
+                return this.mBins.length;
             }
-            return lower_bound(jArr, sample) + 1;
+            return lower_bound(this.mBins, (long) sample) + 1;
         }
 
         private static int lower_bound(long[] array, long sample) {

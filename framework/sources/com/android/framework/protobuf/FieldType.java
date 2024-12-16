@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public enum FieldType {
     DOUBLE(0, Collection.SCALAR, JavaType.DOUBLE),
     FLOAT(1, Collection.SCALAR, JavaType.FLOAT),
@@ -80,23 +80,24 @@ public enum FieldType {
         this.id = id;
         this.collection = collection;
         this.javaType = javaType;
-        switch (AnonymousClass1.$SwitchMap$com$google$protobuf$FieldType$Collection[collection.ordinal()]) {
+        switch (collection.ordinal()) {
             case 1:
                 this.elementType = javaType.getBoxedType();
                 break;
             case 2:
-                this.elementType = javaType.getBoxedType();
-                break;
             default:
                 this.elementType = null;
+                break;
+            case 3:
+                this.elementType = javaType.getBoxedType();
                 break;
         }
         boolean primitiveScalar = false;
         if (collection == Collection.SCALAR) {
-            switch (AnonymousClass1.$SwitchMap$com$google$protobuf$JavaType[javaType.ordinal()]) {
-                case 1:
-                case 2:
-                case 3:
+            switch (javaType) {
+                case BYTE_STRING:
+                case MESSAGE:
+                case STRING:
                     break;
                 default:
                     primitiveScalar = true;
@@ -104,45 +105,6 @@ public enum FieldType {
             }
         }
         this.primitiveScalar = primitiveScalar;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.FieldType$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$FieldType$Collection;
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$JavaType;
-
-        static {
-            int[] iArr = new int[JavaType.values().length];
-            $SwitchMap$com$google$protobuf$JavaType = iArr;
-            try {
-                iArr[JavaType.BYTE_STRING.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$JavaType[JavaType.MESSAGE.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$JavaType[JavaType.STRING.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            int[] iArr2 = new int[Collection.values().length];
-            $SwitchMap$com$google$protobuf$FieldType$Collection = iArr2;
-            try {
-                iArr2[Collection.MAP.ordinal()] = 1;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$FieldType$Collection[Collection.VECTOR.ordinal()] = 2;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$FieldType$Collection[Collection.SCALAR.ordinal()] = 3;
-            } catch (NoSuchFieldError e6) {
-            }
-        }
     }
 
     public int id() {
@@ -198,14 +160,10 @@ public enum FieldType {
     }
 
     public static FieldType forId(int id) {
-        if (id < 0) {
+        if (id < 0 || id >= VALUES.length) {
             return null;
         }
-        FieldType[] fieldTypeArr = VALUES;
-        if (id >= fieldTypeArr.length) {
-            return null;
-        }
-        return fieldTypeArr[id];
+        return VALUES[id];
     }
 
     private static Type getGenericSuperList(Class<?> clazz) {
@@ -297,9 +255,7 @@ public enum FieldType {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public enum Collection {
+    enum Collection {
         SCALAR(false),
         VECTOR(true),
         PACKED_VECTOR(true),

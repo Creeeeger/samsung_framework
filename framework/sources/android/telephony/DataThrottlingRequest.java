@@ -8,17 +8,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class DataThrottlingRequest implements Parcelable {
     public static final Parcelable.Creator<DataThrottlingRequest> CREATOR = new Parcelable.Creator<DataThrottlingRequest>() { // from class: android.telephony.DataThrottlingRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataThrottlingRequest createFromParcel(Parcel in) {
             return new DataThrottlingRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataThrottlingRequest[] newArray(int size) {
             return new DataThrottlingRequest[size];
@@ -40,16 +39,7 @@ public final class DataThrottlingRequest implements Parcelable {
     private int mDataThrottlingAction;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DataThrottlingAction {
-    }
-
-    /* synthetic */ DataThrottlingRequest(int i, long j, DataThrottlingRequestIA dataThrottlingRequestIA) {
-        this(i, j);
-    }
-
-    /* synthetic */ DataThrottlingRequest(Parcel parcel, DataThrottlingRequestIA dataThrottlingRequestIA) {
-        this(parcel);
     }
 
     private DataThrottlingRequest(int dataThrottlingAction, long completionDurationMillis) {
@@ -85,25 +75,7 @@ public final class DataThrottlingRequest implements Parcelable {
         return this.mCompletionDurationMillis;
     }
 
-    /* renamed from: android.telephony.DataThrottlingRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DataThrottlingRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataThrottlingRequest createFromParcel(Parcel in) {
-            return new DataThrottlingRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataThrottlingRequest[] newArray(int size) {
-            return new DataThrottlingRequest[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private long mCompletionDurationMillis;
         private int mDataThrottlingAction;
@@ -119,11 +91,10 @@ public final class DataThrottlingRequest implements Parcelable {
         }
 
         public DataThrottlingRequest build() {
-            long j = this.mCompletionDurationMillis;
-            if (j < 0) {
+            if (this.mCompletionDurationMillis < 0) {
                 throw new IllegalArgumentException("completionDurationMillis cannot be a negative number");
             }
-            if (this.mDataThrottlingAction == 3 && j != 0) {
+            if (this.mDataThrottlingAction == 3 && this.mCompletionDurationMillis != 0) {
                 throw new IllegalArgumentException("completionDurationMillis must be 0 for DataThrottlingRequest.DATA_THROTTLING_ACTION_HOLD");
             }
             return new DataThrottlingRequest(this.mDataThrottlingAction, this.mCompletionDurationMillis);

@@ -51,9 +51,8 @@ public class OCSPRequest extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(this.tbsRequest);
-        Signature signature = this.optionalSignature;
-        if (signature != null) {
-            v.add(new DERTaggedObject(true, 0, signature));
+        if (this.optionalSignature != null) {
+            v.add(new DERTaggedObject(true, 0, this.optionalSignature));
         }
         return new DERSequence(v);
     }

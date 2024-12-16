@@ -4,6 +4,7 @@ import android.hardware.scontext.SContextConstants;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.BatteryConsumer;
 import android.util.proto.ProtoOutputStream;
+import com.android.internal.accessibility.common.ShortcutConstants;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
 import java.io.IOException;
@@ -11,46 +12,91 @@ import java.io.PrintWriter;
 import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes3.dex */
-public class PowerComponents {
+class PowerComponents {
     private final BatteryConsumer.BatteryConsumerData mData;
 
     PowerComponents(Builder builder) {
         this.mData = builder.mData;
     }
 
-    public PowerComponents(BatteryConsumer.BatteryConsumerData data) {
+    PowerComponents(BatteryConsumer.BatteryConsumerData data) {
         this.mData = data;
     }
 
     public double getConsumedPower(BatteryConsumer.Dimensions dimensions) {
-        if (dimensions.powerComponent != -1) {
-            BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-            return batteryConsumerData.getDouble(batteryConsumerData.getKeyOrThrow(dimensions.powerComponent, dimensions.processState).mPowerColumnIndex);
-        }
-        if (dimensions.processState != 0) {
-            if (!this.mData.layout.processStateDataIncluded) {
-                throw new IllegalArgumentException("No data included in BatteryUsageStats for " + dimensions);
+        return getConsumedPower(dimensions.powerComponent, dimensions.processState, dimensions.screenState, dimensions.powerState);
+    }
+
+    public double getConsumedPower(int powerComponent, int processState, int screenState, int powerState) {
+        if (powerComponent != -1 || processState != 0 || screenState != 0 || powerState != 0) {
+            if (powerComponent != -1 && ((this.mData.layout.screenStateDataIncluded && screenState != 0) || (this.mData.layout.powerStateDataIncluded && powerState != 0))) {
+                BatteryConsumer.Key key = this.mData.layout.getKey(powerComponent, processState, screenState, powerState);
+                if (key == null) {
+                    return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+                }
+                return this.mData.getDouble(key.mPowerColumnIndex);
             }
-            BatteryConsumer.Key[] keys = this.mData.layout.processStateKeys[dimensions.processState];
-            double totalPowerMah = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-            for (int i = keys.length - 1; i >= 0; i--) {
-                totalPowerMah += this.mData.getDouble(keys[i].mPowerColumnIndex);
+            if (this.mData.layout.processStateDataIncluded || this.mData.layout.screenStateDataIncluded || this.mData.layout.powerStateDataIncluded) {
+                double total = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+                for (BatteryConsumer.Key key2 : this.mData.layout.keys) {
+                    if (key2.processState != 0 && key2.matches(powerComponent, processState, screenState, powerState)) {
+                        total += this.mData.getDouble(key2.mPowerColumnIndex);
+                    }
+                }
+                if (total != SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
+                    return total;
+                }
             }
-            return totalPowerMah;
+            BatteryConsumer.Key key3 = this.mData.layout.getKey(powerComponent, processState, 0, 0);
+            if (key3 == null) {
+                return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+            }
+            return this.mData.getDouble(key3.mPowerColumnIndex);
         }
-        BatteryConsumer.BatteryConsumerData batteryConsumerData2 = this.mData;
-        return batteryConsumerData2.getDouble(batteryConsumerData2.layout.totalConsumedPowerColumnIndex);
+        return this.mData.getDouble(this.mData.layout.totalConsumedPowerColumnIndex);
+    }
+
+    public long getUsageDurationMillis(BatteryConsumer.Dimensions dimensions) {
+        return getUsageDurationMillis(dimensions.powerComponent, dimensions.processState, dimensions.screenState, dimensions.powerState);
+    }
+
+    public long getUsageDurationMillis(int powerComponent, int processState, int screenState, int powerState) {
+        if ((this.mData.layout.screenStateDataIncluded && screenState != 0) || (this.mData.layout.powerStateDataIncluded && powerState != 0)) {
+            BatteryConsumer.Key key = this.mData.layout.getKey(powerComponent, processState, screenState, powerState);
+            if (key != null) {
+                return this.mData.getLong(key.mDurationColumnIndex);
+            }
+            return 0L;
+        }
+        if (this.mData.layout.screenStateDataIncluded || this.mData.layout.powerStateDataIncluded) {
+            long total = 0;
+            for (BatteryConsumer.Key key2 : this.mData.layout.keys) {
+                if (key2.processState != 0 && key2.matches(powerComponent, processState, screenState, powerState)) {
+                    total += this.mData.getLong(key2.mDurationColumnIndex);
+                }
+            }
+            if (total != 0) {
+                return total;
+            }
+        }
+        BatteryConsumer.Key key3 = this.mData.layout.getKey(powerComponent, processState, 0, 0);
+        if (key3 != null) {
+            return this.mData.getLong(key3.mDurationColumnIndex);
+        }
+        return 0L;
     }
 
     public double getConsumedPower(BatteryConsumer.Key key) {
-        return this.mData.getDouble(key.mPowerColumnIndex);
+        if (this.mData.hasValue(key.mPowerColumnIndex)) {
+            return this.mData.getDouble(key.mPowerColumnIndex);
+        }
+        return getConsumedPower(key.powerComponent, key.processState, key.screenState, key.powerState);
     }
 
     public double getConsumedPowerForCustomComponent(int componentId) {
         int index = componentId - 1000;
         if (index >= 0 && index < this.mData.layout.customPowerComponentCount) {
-            BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-            return batteryConsumerData.getDouble(batteryConsumerData.layout.firstCustomConsumedPowerColumn + index);
+            return this.mData.getDouble(this.mData.layout.firstCustomConsumedPowerColumn + index);
         }
         throw new IllegalArgumentException("Unsupported custom power component ID: " + componentId);
     }
@@ -67,7 +113,7 @@ public class PowerComponents {
         throw new IllegalArgumentException("Unsupported custom power component ID: " + componentId);
     }
 
-    public int getPowerModel(BatteryConsumer.Key key) {
+    int getPowerModel(BatteryConsumer.Key key) {
         if (key.mPowerModelColumnIndex == -1) {
             throw new IllegalStateException("Power model IDs were not requested in the BatteryUsageStatsQuery");
         }
@@ -75,70 +121,76 @@ public class PowerComponents {
     }
 
     public long getUsageDurationMillis(BatteryConsumer.Key key) {
-        return this.mData.getLong(key.mDurationColumnIndex);
+        if (this.mData.hasValue(key.mDurationColumnIndex)) {
+            return this.mData.getLong(key.mDurationColumnIndex);
+        }
+        return getUsageDurationMillis(key.powerComponent, key.processState, key.screenState, key.powerState);
     }
 
     public long getUsageDurationForCustomComponentMillis(int componentId) {
         int index = componentId - 1000;
         if (index >= 0 && index < this.mData.layout.customPowerComponentCount) {
-            BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-            return batteryConsumerData.getLong(batteryConsumerData.layout.firstCustomUsageDurationColumn + index);
+            return this.mData.getLong(this.mData.layout.firstCustomUsageDurationColumn + index);
         }
         throw new IllegalArgumentException("Unsupported custom power component ID: " + componentId);
     }
 
-    public void dump(PrintWriter pw, boolean skipEmptyComponents) {
-        String separator = "";
+    void dump(PrintWriter pw, int screenState, int powerState, boolean skipEmptyComponents) {
         StringBuilder sb = new StringBuilder();
-        int componentId = 0;
-        while (true) {
-            double d = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-            if (componentId >= 19) {
-                break;
-            }
-            BatteryConsumer.Key[] keys = this.mData.getKeys(componentId);
-            int length = keys.length;
-            int i = 0;
-            while (i < length) {
-                BatteryConsumer.Key key = keys[i];
-                double componentPower = getConsumedPower(key);
-                long durationMs = getUsageDurationMillis(key);
-                if (!skipEmptyComponents || componentPower != d || durationMs != 0) {
-                    sb.append(separator);
-                    separator = " ";
-                    sb.append(key.toShortString());
-                    sb.append("=");
-                    sb.append(BatteryStats.formatCharge(componentPower));
-                    if (durationMs != 0) {
-                        sb.append(" (");
-                        BatteryStats.formatTimeMsNoSpace(sb, durationMs);
-                        sb.append(NavigationBarInflaterView.KEY_CODE_END);
+        for (int componentId = 0; componentId < 19; componentId++) {
+            dump(sb, componentId, 0, screenState, powerState, skipEmptyComponents);
+            if (this.mData.layout.processStateDataIncluded) {
+                for (int processState = 0; processState < 5; processState++) {
+                    if (processState != 0) {
+                        dump(sb, componentId, processState, screenState, powerState, skipEmptyComponents);
                     }
                 }
-                i++;
-                d = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
             }
-            componentId++;
         }
-        int customComponentCount = this.mData.layout.customPowerComponentCount;
-        for (int customComponentId = 1000; customComponentId < customComponentCount + 1000; customComponentId++) {
-            double customComponentPower = getConsumedPowerForCustomComponent(customComponentId);
-            if (skipEmptyComponents && customComponentPower == SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
+        if (screenState == 0 && powerState == 0) {
+            int customComponentCount = this.mData.layout.customPowerComponentCount;
+            for (int customComponentId = 1000; customComponentId < customComponentCount + 1000; customComponentId++) {
+                double customComponentPower = getConsumedPowerForCustomComponent(customComponentId);
+                if (!skipEmptyComponents || customComponentPower != SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
+                    sb.append(getCustomPowerComponentName(customComponentId));
+                    sb.append("=");
+                    sb.append(BatteryStats.formatCharge(customComponentPower));
+                    sb.append(" ");
+                }
             }
-            sb.append(separator);
-            separator = " ";
-            sb.append(getCustomPowerComponentName(customComponentId));
-            sb.append("=");
-            sb.append(BatteryStats.formatCharge(customComponentPower));
         }
-        pw.print(sb);
+        while (!sb.isEmpty() && Character.isWhitespace(sb.charAt(sb.length() - 1))) {
+            sb.setLength(sb.length() - 1);
+        }
+        pw.println(sb);
+    }
+
+    private void dump(StringBuilder sb, int powerComponent, int processState, int screenState, int powerState, boolean skipEmptyComponents) {
+        double componentPower = getConsumedPower(powerComponent, processState, screenState, powerState);
+        long durationMs = getUsageDurationMillis(powerComponent, processState, screenState, powerState);
+        if (skipEmptyComponents && componentPower == SContextConstants.ENVIRONMENT_VALUE_UNKNOWN && durationMs == 0) {
+            return;
+        }
+        sb.append(BatteryConsumer.powerComponentIdToString(powerComponent));
+        if (processState != 0) {
+            sb.append(ShortcutConstants.SERVICES_SEPARATOR);
+            sb.append(BatteryConsumer.processStateToString(processState));
+        }
+        sb.append("=");
+        sb.append(BatteryStats.formatCharge(componentPower));
+        if (durationMs != 0) {
+            sb.append(" (");
+            BatteryStats.formatTimeMsNoSpace(sb, durationMs);
+            sb.append(NavigationBarInflaterView.KEY_CODE_END);
+        }
+        sb.append(' ');
     }
 
     boolean hasStatsProtoData() {
         return writeStatsProtoImpl(null);
     }
 
-    public void writeStatsProto(ProtoOutputStream proto) {
+    void writeStatsProto(ProtoOutputStream proto) {
         writeStatsProtoImpl(proto);
     }
 
@@ -149,13 +201,13 @@ public class PowerComponents {
         while (true) {
             boolean z = true;
             if (componentId < 19) {
-                BatteryConsumer.Key[] keys = this.mData.getKeys(componentId);
+                BatteryConsumer.Key[] keys = this.mData.layout.getKeys(componentId);
                 int length = keys.length;
                 int i2 = 0;
                 while (i2 < length) {
                     BatteryConsumer.Key key = keys[i2];
-                    long powerDeciCoulombs = BatteryConsumer.convertMahToDeciCoulombs(getConsumedPower(key));
-                    long durationMs = getUsageDurationMillis(key);
+                    long powerDeciCoulombs = BatteryConsumer.convertMahToDeciCoulombs(getConsumedPower(key.powerComponent, key.processState, key.screenState, key.powerState));
+                    long durationMs = getUsageDurationMillis(key.powerComponent, key.processState, key.screenState, key.powerState);
                     if (powerDeciCoulombs == 0 && durationMs == 0) {
                         i = i2;
                     } else {
@@ -226,73 +278,65 @@ public class PowerComponents {
         proto.end(token);
     }
 
-    public void writeToXml(TypedXmlSerializer serializer) throws IOException {
-        BatteryConsumer.Key[] keys;
+    void writeToXml(TypedXmlSerializer serializer) throws IOException {
         int i;
+        BatteryConsumer.Key[] keyArr;
         String str;
-        String str2;
-        String str3 = "power_components";
         serializer.startTag(null, "power_components");
-        int componentId = 0;
-        while (true) {
-            double d = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-            if (componentId >= 19) {
-                break;
-            }
-            BatteryConsumer.Key[] keys2 = this.mData.getKeys(componentId);
-            int length = keys2.length;
-            int i2 = 0;
-            while (i2 < length) {
-                BatteryConsumer.Key key = keys2[i2];
-                String str4 = str3;
+        BatteryConsumer.Key[] keyArr2 = this.mData.layout.keys;
+        int length = keyArr2.length;
+        int i2 = 0;
+        while (i2 < length) {
+            BatteryConsumer.Key key = keyArr2[i2];
+            if (!this.mData.hasValue(key.mPowerColumnIndex) && !this.mData.hasValue(key.mDurationColumnIndex)) {
+                keyArr = keyArr2;
+                i = length;
+            } else {
                 double powerMah = getConsumedPower(key);
+                BatteryConsumer.Key[] keyArr3 = keyArr2;
+                i = length;
                 long durationMs = getUsageDurationMillis(key);
-                if (powerMah == d && durationMs == 0) {
-                    keys = keys2;
-                    i = length;
+                if (powerMah == SContextConstants.ENVIRONMENT_VALUE_UNKNOWN && durationMs == 0) {
+                    keyArr = keyArr3;
                 } else {
                     serializer.startTag(null, "component");
-                    serializer.attributeInt(null, "id", componentId);
-                    if (key.processState == 0) {
-                        keys = keys2;
-                        i = length;
-                        str = null;
-                    } else {
-                        keys = keys2;
-                        i = length;
-                        str = null;
+                    keyArr = keyArr3;
+                    serializer.attributeInt(null, "id", key.powerComponent);
+                    if (key.processState != 0) {
                         serializer.attributeInt(null, "process_state", key.processState);
                     }
+                    if (key.screenState != 0) {
+                        serializer.attributeInt(null, "screen_state", key.screenState);
+                    }
+                    if (key.powerState != 0) {
+                        serializer.attributeInt(null, "power_state", key.powerState);
+                    }
                     if (powerMah != SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
-                        serializer.attributeDouble(str, "power", powerMah);
+                        serializer.attributeDouble(null, "power", powerMah);
                     }
                     if (durationMs != 0) {
-                        serializer.attributeLong(str, "duration", durationMs);
+                        serializer.attributeLong(null, "duration", durationMs);
                     }
                     if (!this.mData.layout.powerModelsIncluded) {
-                        str2 = null;
+                        str = null;
                     } else {
-                        str2 = null;
+                        str = null;
                         serializer.attributeInt(null, "model", getPowerModel(key));
                     }
-                    serializer.endTag(str2, "component");
+                    serializer.endTag(str, "component");
                 }
-                i2++;
-                str3 = str4;
-                keys2 = keys;
-                length = i;
-                d = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
             }
-            componentId++;
+            i2++;
+            length = i;
+            keyArr2 = keyArr;
         }
-        String str5 = str3;
         int customComponentEnd = this.mData.layout.customPowerComponentCount + 1000;
-        for (int componentId2 = 1000; componentId2 < customComponentEnd; componentId2++) {
-            double powerMah2 = getConsumedPowerForCustomComponent(componentId2);
-            long durationMs2 = getUsageDurationForCustomComponentMillis(componentId2);
+        for (int componentId = 1000; componentId < customComponentEnd; componentId++) {
+            double powerMah2 = getConsumedPowerForCustomComponent(componentId);
+            long durationMs2 = getUsageDurationForCustomComponentMillis(componentId);
             if (powerMah2 != SContextConstants.ENVIRONMENT_VALUE_UNKNOWN || durationMs2 != 0) {
                 serializer.startTag(null, "custom_component");
-                serializer.attributeInt(null, "id", componentId2);
+                serializer.attributeInt(null, "id", componentId);
                 if (powerMah2 != SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
                     serializer.attributeDouble(null, "power", powerMah2);
                 }
@@ -302,179 +346,245 @@ public class PowerComponents {
                 serializer.endTag(null, "custom_component");
             }
         }
-        serializer.endTag(null, str5);
+        serializer.endTag(null, "power_components");
     }
 
-    public static void parseXml(TypedXmlPullParser parser, Builder builder) throws XmlPullParserException, IOException {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    static void parseXml(TypedXmlPullParser parser, Builder builder) throws XmlPullParserException, IOException {
+        String str;
         char c;
-        int eventType;
+        long durationMs;
         char c2;
         char c3;
-        int eventType2 = parser.getEventType();
+        int eventType = parser.getEventType();
         int i = 2;
-        if (eventType2 != 2 || !parser.getName().equals("power_components")) {
-            throw new XmlPullParserException("Invalid XML parser state");
-        }
-        while (true) {
-            if ((eventType2 != 3 || !parser.getName().equals("power_components")) && eventType2 != 1) {
-                if (eventType2 == i) {
-                    String name = parser.getName();
-                    switch (name.hashCode()) {
-                        case -1399907075:
-                            if (name.equals("component")) {
-                                c = 0;
-                                break;
+        if (eventType == 2) {
+            String str2 = "power_components";
+            if (parser.getName().equals("power_components")) {
+                while (true) {
+                    if ((eventType != 3 || !parser.getName().equals(str2)) && eventType != 1) {
+                        if (eventType == i) {
+                            String name = parser.getName();
+                            switch (name.hashCode()) {
+                                case -1399907075:
+                                    if (name.equals("component")) {
+                                        c = 0;
+                                        break;
+                                    }
+                                    c = 65535;
+                                    break;
+                                case -437794385:
+                                    if (name.equals("custom_component")) {
+                                        c = 1;
+                                        break;
+                                    }
+                                    c = 65535;
+                                    break;
+                                default:
+                                    c = 65535;
+                                    break;
                             }
-                            break;
-                        case -437794385:
-                            if (name.equals("custom_component")) {
-                                c = 1;
-                                break;
+                            switch (c) {
+                                case 0:
+                                    int componentId = -1;
+                                    int processState = 0;
+                                    int screenState = 0;
+                                    int powerState = 0;
+                                    double powerMah = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+                                    int model = 0;
+                                    int i2 = 0;
+                                    str = str2;
+                                    long durationMs2 = 0;
+                                    while (true) {
+                                        int eventType2 = eventType;
+                                        if (i2 < parser.getAttributeCount()) {
+                                            String attributeName = parser.getAttributeName(i2);
+                                            switch (attributeName.hashCode()) {
+                                                case -1992012396:
+                                                    durationMs = durationMs2;
+                                                    if (attributeName.equals("duration")) {
+                                                        c2 = 5;
+                                                        break;
+                                                    }
+                                                    c2 = 65535;
+                                                    break;
+                                                case -1336023298:
+                                                    durationMs = durationMs2;
+                                                    if (attributeName.equals("screen_state")) {
+                                                        c2 = 2;
+                                                        break;
+                                                    }
+                                                    c2 = 65535;
+                                                    break;
+                                                case 3355:
+                                                    durationMs = durationMs2;
+                                                    if (attributeName.equals("id")) {
+                                                        c2 = 0;
+                                                        break;
+                                                    }
+                                                    c2 = 65535;
+                                                    break;
+                                                case 104069929:
+                                                    durationMs = durationMs2;
+                                                    if (attributeName.equals("model")) {
+                                                        c2 = 6;
+                                                        break;
+                                                    }
+                                                    c2 = 65535;
+                                                    break;
+                                                case 106858757:
+                                                    durationMs = durationMs2;
+                                                    if (attributeName.equals("power")) {
+                                                        c2 = 4;
+                                                        break;
+                                                    }
+                                                    c2 = 65535;
+                                                    break;
+                                                case 783947991:
+                                                    durationMs = durationMs2;
+                                                    if (attributeName.equals("power_state")) {
+                                                        c2 = 3;
+                                                        break;
+                                                    }
+                                                    c2 = 65535;
+                                                    break;
+                                                case 1664710337:
+                                                    durationMs = durationMs2;
+                                                    if (attributeName.equals("process_state")) {
+                                                        c2 = 1;
+                                                        break;
+                                                    }
+                                                    c2 = 65535;
+                                                    break;
+                                                default:
+                                                    durationMs = durationMs2;
+                                                    c2 = 65535;
+                                                    break;
+                                            }
+                                            switch (c2) {
+                                                case 0:
+                                                    int componentId2 = parser.getAttributeInt(i2);
+                                                    componentId = componentId2;
+                                                    durationMs2 = durationMs;
+                                                    break;
+                                                case 1:
+                                                    int processState2 = parser.getAttributeInt(i2);
+                                                    processState = processState2;
+                                                    durationMs2 = durationMs;
+                                                    break;
+                                                case 2:
+                                                    int screenState2 = parser.getAttributeInt(i2);
+                                                    screenState = screenState2;
+                                                    durationMs2 = durationMs;
+                                                    break;
+                                                case 3:
+                                                    int powerState2 = parser.getAttributeInt(i2);
+                                                    powerState = powerState2;
+                                                    durationMs2 = durationMs;
+                                                    break;
+                                                case 4:
+                                                    double powerMah2 = parser.getAttributeDouble(i2);
+                                                    powerMah = powerMah2;
+                                                    durationMs2 = durationMs;
+                                                    break;
+                                                case 5:
+                                                    durationMs2 = parser.getAttributeLong(i2);
+                                                    break;
+                                                case 6:
+                                                    model = parser.getAttributeInt(i2);
+                                                    durationMs2 = durationMs;
+                                                    break;
+                                                default:
+                                                    durationMs2 = durationMs;
+                                                    break;
+                                            }
+                                            i2++;
+                                            eventType = eventType2;
+                                        } else {
+                                            BatteryConsumer.Key key = builder.mData.layout.getKey(componentId, processState, screenState, powerState);
+                                            builder.setConsumedPower(key, powerMah, model);
+                                            builder.setUsageDurationMillis(key, durationMs2);
+                                            break;
+                                        }
+                                    }
+                                case 1:
+                                    int componentId3 = -1;
+                                    double powerMah3 = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+                                    long durationMs3 = 0;
+                                    for (int i3 = 0; i3 < parser.getAttributeCount(); i3++) {
+                                        String attributeName2 = parser.getAttributeName(i3);
+                                        switch (attributeName2.hashCode()) {
+                                            case -1992012396:
+                                                if (attributeName2.equals("duration")) {
+                                                    c3 = 2;
+                                                    break;
+                                                }
+                                                c3 = 65535;
+                                                break;
+                                            case 3355:
+                                                if (attributeName2.equals("id")) {
+                                                    c3 = 0;
+                                                    break;
+                                                }
+                                                c3 = 65535;
+                                                break;
+                                            case 106858757:
+                                                if (attributeName2.equals("power")) {
+                                                    c3 = 1;
+                                                    break;
+                                                }
+                                                c3 = 65535;
+                                                break;
+                                            default:
+                                                c3 = 65535;
+                                                break;
+                                        }
+                                        switch (c3) {
+                                            case 0:
+                                                int componentId4 = parser.getAttributeInt(i3);
+                                                componentId3 = componentId4;
+                                                break;
+                                            case 1:
+                                                powerMah3 = parser.getAttributeDouble(i3);
+                                                break;
+                                            case 2:
+                                                durationMs3 = parser.getAttributeLong(i3);
+                                                break;
+                                        }
+                                    }
+                                    builder.setConsumedPowerForCustomComponent(componentId3, powerMah3);
+                                    builder.setUsageDurationForCustomComponentMillis(componentId3, durationMs3);
+                                    str = str2;
+                                    break;
+                                default:
+                                    str = str2;
+                                    break;
                             }
-                            break;
+                        } else {
+                            str = str2;
+                        }
+                        eventType = parser.next();
+                        str2 = str;
+                        i = 2;
                     }
-                    c = 65535;
-                    switch (c) {
-                        case 0:
-                            int componentId = -1;
-                            int processState = 0;
-                            double powerMah = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-                            long durationMs = 0;
-                            int model = 0;
-                            int i2 = 0;
-                            while (i2 < parser.getAttributeCount()) {
-                                String attributeName = parser.getAttributeName(i2);
-                                switch (attributeName.hashCode()) {
-                                    case -1992012396:
-                                        eventType = eventType2;
-                                        if (attributeName.equals("duration")) {
-                                            c2 = 3;
-                                            break;
-                                        }
-                                        break;
-                                    case 3355:
-                                        eventType = eventType2;
-                                        if (attributeName.equals("id")) {
-                                            c2 = 0;
-                                            break;
-                                        }
-                                        break;
-                                    case 104069929:
-                                        eventType = eventType2;
-                                        if (attributeName.equals("model")) {
-                                            c2 = 4;
-                                            break;
-                                        }
-                                        break;
-                                    case 106858757:
-                                        eventType = eventType2;
-                                        if (attributeName.equals("power")) {
-                                            c2 = 2;
-                                            break;
-                                        }
-                                        break;
-                                    case 1664710337:
-                                        eventType = eventType2;
-                                        if (attributeName.equals("process_state")) {
-                                            c2 = 1;
-                                            break;
-                                        }
-                                        break;
-                                    default:
-                                        eventType = eventType2;
-                                        break;
-                                }
-                                c2 = 65535;
-                                switch (c2) {
-                                    case 0:
-                                        int componentId2 = parser.getAttributeInt(i2);
-                                        componentId = componentId2;
-                                        break;
-                                    case 1:
-                                        int processState2 = parser.getAttributeInt(i2);
-                                        processState = processState2;
-                                        break;
-                                    case 2:
-                                        powerMah = parser.getAttributeDouble(i2);
-                                        break;
-                                    case 3:
-                                        durationMs = parser.getAttributeLong(i2);
-                                        break;
-                                    case 4:
-                                        model = parser.getAttributeInt(i2);
-                                        break;
-                                }
-                                i2++;
-                                eventType2 = eventType;
-                            }
-                            BatteryConsumer.Key key = builder.mData.getKey(componentId, processState);
-                            builder.setConsumedPower(key, powerMah, model);
-                            builder.setUsageDurationMillis(key, durationMs);
-                            break;
-                        case 1:
-                            int componentId3 = -1;
-                            double powerMah2 = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-                            long durationMs2 = 0;
-                            for (int i3 = 0; i3 < parser.getAttributeCount(); i3++) {
-                                String attributeName2 = parser.getAttributeName(i3);
-                                switch (attributeName2.hashCode()) {
-                                    case -1992012396:
-                                        if (attributeName2.equals("duration")) {
-                                            c3 = 2;
-                                            break;
-                                        }
-                                        break;
-                                    case 3355:
-                                        if (attributeName2.equals("id")) {
-                                            c3 = 0;
-                                            break;
-                                        }
-                                        break;
-                                    case 106858757:
-                                        if (attributeName2.equals("power")) {
-                                            c3 = 1;
-                                            break;
-                                        }
-                                        break;
-                                }
-                                c3 = 65535;
-                                switch (c3) {
-                                    case 0:
-                                        int componentId4 = parser.getAttributeInt(i3);
-                                        componentId3 = componentId4;
-                                        break;
-                                    case 1:
-                                        powerMah2 = parser.getAttributeDouble(i3);
-                                        break;
-                                    case 2:
-                                        durationMs2 = parser.getAttributeLong(i3);
-                                        break;
-                                }
-                            }
-                            builder.setConsumedPowerForCustomComponent(componentId3, powerMah2);
-                            builder.setUsageDurationForCustomComponentMillis(componentId3, durationMs2);
-                            break;
-                    }
+                    return;
                 }
-                eventType2 = parser.next();
-                i = 2;
             }
-            return;
         }
+        throw new XmlPullParserException("Invalid XML parser state");
     }
 
-    /* loaded from: classes3.dex */
-    public static final class Builder {
+    static final class Builder {
         private static final byte POWER_MODEL_UNINITIALIZED = -1;
         private final BatteryConsumer.BatteryConsumerData mData;
+        private final double mMinConsumedPowerThreshold;
 
-        public Builder(BatteryConsumer.BatteryConsumerData data) {
+        Builder(BatteryConsumer.BatteryConsumerData data, double minConsumedPowerThreshold) {
             this.mData = data;
-            for (BatteryConsumer.Key[] keys : data.layout.keys) {
-                for (BatteryConsumer.Key key : keys) {
-                    if (key.mPowerModelColumnIndex != -1) {
-                        this.mData.putInt(key.mPowerModelColumnIndex, -1);
-                    }
+            this.mMinConsumedPowerThreshold = minConsumedPowerThreshold;
+            for (BatteryConsumer.Key key : this.mData.layout.keys) {
+                if (key.mPowerModelColumnIndex != -1) {
+                    this.mData.putInt(key.mPowerModelColumnIndex, -1);
                 }
             }
         }
@@ -487,13 +597,29 @@ public class PowerComponents {
             return this;
         }
 
+        public Builder addConsumedPower(BatteryConsumer.Key key, double componentPower, int powerModel) {
+            this.mData.putDouble(key.mPowerColumnIndex, this.mData.getDouble(key.mPowerColumnIndex) + componentPower);
+            if (key.mPowerModelColumnIndex != -1) {
+                this.mData.putInt(key.mPowerModelColumnIndex, powerModel);
+            }
+            return this;
+        }
+
         public Builder setConsumedPowerForCustomComponent(int componentId, double componentPower) {
             int index = componentId - 1000;
             if (index < 0 || index >= this.mData.layout.customPowerComponentCount) {
                 throw new IllegalArgumentException("Unsupported custom power component ID: " + componentId);
             }
-            BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-            batteryConsumerData.putDouble(batteryConsumerData.layout.firstCustomConsumedPowerColumn + index, componentPower);
+            this.mData.putDouble(this.mData.layout.firstCustomConsumedPowerColumn + index, componentPower);
+            return this;
+        }
+
+        public Builder addConsumedPowerForCustomComponent(int componentId, double componentPower) {
+            int index = componentId - 1000;
+            if (index < 0 || index >= this.mData.layout.customPowerComponentCount) {
+                throw new IllegalArgumentException("Unsupported custom power component ID: " + componentId);
+            }
+            this.mData.putDouble(this.mData.layout.firstCustomConsumedPowerColumn + index, this.mData.getDouble(this.mData.layout.firstCustomConsumedPowerColumn + index) + componentPower);
             return this;
         }
 
@@ -507,8 +633,7 @@ public class PowerComponents {
             if (index < 0 || index >= this.mData.layout.customPowerComponentCount) {
                 throw new IllegalArgumentException("Unsupported custom power component ID: " + componentId);
             }
-            BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-            batteryConsumerData.putLong(batteryConsumerData.layout.firstCustomUsageDurationColumn + index, componentUsageDurationMillis);
+            this.mData.putLong(this.mData.layout.firstCustomUsageDurationColumn + index, componentUsageDurationMillis);
             return this;
         }
 
@@ -524,82 +649,62 @@ public class PowerComponents {
             if (this.mData.layout.customPowerComponentCount != otherData.layout.customPowerComponentCount) {
                 throw new IllegalArgumentException("Number of custom power components does not match: " + otherData.layout.customPowerComponentCount + ", expected: " + this.mData.layout.customPowerComponentCount);
             }
-            for (int componentId = 18; componentId >= 0; componentId--) {
-                BatteryConsumer.Key[] keys = this.mData.layout.keys[componentId];
-                for (BatteryConsumer.Key key : keys) {
-                    BatteryConsumer.Key otherKey = null;
-                    BatteryConsumer.Key[] keyArr = otherData.layout.keys[componentId];
-                    int length = keyArr.length;
-                    int i = 0;
-                    while (true) {
-                        if (i >= length) {
-                            break;
-                        }
-                        BatteryConsumer.Key aKey = keyArr[i];
-                        if (!aKey.equals(key)) {
-                            i++;
+            for (BatteryConsumer.Key key : this.mData.layout.keys) {
+                BatteryConsumer.Key otherKey = otherData.layout.getKey(key.powerComponent, key.processState, key.screenState, key.powerState);
+                if (otherKey != null) {
+                    this.mData.putDouble(key.mPowerColumnIndex, this.mData.getDouble(key.mPowerColumnIndex) + otherData.getDouble(otherKey.mPowerColumnIndex));
+                    this.mData.putLong(key.mDurationColumnIndex, this.mData.getLong(key.mDurationColumnIndex) + otherData.getLong(otherKey.mDurationColumnIndex));
+                    if (key.mPowerModelColumnIndex != -1) {
+                        boolean undefined = false;
+                        if (otherKey.mPowerModelColumnIndex == -1) {
+                            undefined = true;
                         } else {
-                            otherKey = aKey;
-                            break;
-                        }
-                    }
-                    if (otherKey != null) {
-                        this.mData.putDouble(key.mPowerColumnIndex, this.mData.getDouble(key.mPowerColumnIndex) + otherData.getDouble(otherKey.mPowerColumnIndex));
-                        this.mData.putLong(key.mDurationColumnIndex, this.mData.getLong(key.mDurationColumnIndex) + otherData.getLong(otherKey.mDurationColumnIndex));
-                        if (key.mPowerModelColumnIndex != -1) {
-                            boolean undefined = false;
-                            if (otherKey.mPowerModelColumnIndex == -1) {
+                            int powerModel = this.mData.getInt(key.mPowerModelColumnIndex);
+                            int otherPowerModel = otherData.getInt(otherKey.mPowerModelColumnIndex);
+                            if (powerModel == -1) {
+                                this.mData.putInt(key.mPowerModelColumnIndex, otherPowerModel);
+                            } else if (powerModel != otherPowerModel && otherPowerModel != -1) {
                                 undefined = true;
-                            } else {
-                                int powerModel = this.mData.getInt(key.mPowerModelColumnIndex);
-                                int otherPowerModel = otherData.getInt(otherKey.mPowerModelColumnIndex);
-                                if (powerModel == -1) {
-                                    this.mData.putInt(key.mPowerModelColumnIndex, otherPowerModel);
-                                } else if (powerModel != otherPowerModel && otherPowerModel != -1) {
-                                    undefined = true;
-                                }
                             }
-                            if (undefined) {
-                                this.mData.putInt(key.mPowerModelColumnIndex, 0);
-                            }
+                        }
+                        if (undefined) {
+                            this.mData.putInt(key.mPowerModelColumnIndex, 0);
                         }
                     }
                 }
             }
-            for (int i2 = this.mData.layout.customPowerComponentCount - 1; i2 >= 0; i2--) {
-                int powerColumnIndex = this.mData.layout.firstCustomConsumedPowerColumn + i2;
-                int otherPowerColumnIndex = otherData.layout.firstCustomConsumedPowerColumn + i2;
-                BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-                batteryConsumerData.putDouble(powerColumnIndex, batteryConsumerData.getDouble(powerColumnIndex) + otherData.getDouble(otherPowerColumnIndex));
-                int usageColumnIndex = this.mData.layout.firstCustomUsageDurationColumn + i2;
-                int otherDurationColumnIndex = otherData.layout.firstCustomUsageDurationColumn + i2;
-                BatteryConsumer.BatteryConsumerData batteryConsumerData2 = this.mData;
-                batteryConsumerData2.putLong(usageColumnIndex, batteryConsumerData2.getLong(usageColumnIndex) + otherData.getLong(otherDurationColumnIndex));
+            for (int i = this.mData.layout.customPowerComponentCount - 1; i >= 0; i--) {
+                int powerColumnIndex = this.mData.layout.firstCustomConsumedPowerColumn + i;
+                int otherPowerColumnIndex = otherData.layout.firstCustomConsumedPowerColumn + i;
+                this.mData.putDouble(powerColumnIndex, this.mData.getDouble(powerColumnIndex) + otherData.getDouble(otherPowerColumnIndex));
+                int usageColumnIndex = this.mData.layout.firstCustomUsageDurationColumn + i;
+                int otherDurationColumnIndex = otherData.layout.firstCustomUsageDurationColumn + i;
+                this.mData.putLong(usageColumnIndex, this.mData.getLong(usageColumnIndex) + otherData.getLong(otherDurationColumnIndex));
             }
         }
 
         public double getTotalPower() {
             double totalPowerMah = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
             for (int componentId = 0; componentId < 19; componentId++) {
-                BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-                totalPowerMah += batteryConsumerData.getDouble(batteryConsumerData.getKeyOrThrow(componentId, 0).mPowerColumnIndex);
+                totalPowerMah += this.mData.getDouble(this.mData.layout.getKeyOrThrow(componentId, 0, 0, 0).mPowerColumnIndex);
             }
             for (int i = 0; i < this.mData.layout.customPowerComponentCount; i++) {
-                BatteryConsumer.BatteryConsumerData batteryConsumerData2 = this.mData;
-                totalPowerMah += batteryConsumerData2.getDouble(batteryConsumerData2.layout.firstCustomConsumedPowerColumn + i);
+                totalPowerMah += this.mData.getDouble(this.mData.layout.firstCustomConsumedPowerColumn + i);
             }
             return totalPowerMah;
         }
 
         public PowerComponents build() {
-            BatteryConsumer.BatteryConsumerData batteryConsumerData = this.mData;
-            batteryConsumerData.putDouble(batteryConsumerData.layout.totalConsumedPowerColumnIndex, getTotalPower());
-            for (BatteryConsumer.Key[] keys : this.mData.layout.keys) {
-                for (BatteryConsumer.Key key : keys) {
-                    if (key.mPowerModelColumnIndex != -1 && this.mData.getInt(key.mPowerModelColumnIndex) == -1) {
-                        this.mData.putInt(key.mPowerModelColumnIndex, 0);
-                    }
+            for (BatteryConsumer.Key key : this.mData.layout.keys) {
+                if (key.mPowerModelColumnIndex != -1 && this.mData.getInt(key.mPowerModelColumnIndex) == -1) {
+                    this.mData.putInt(key.mPowerModelColumnIndex, 0);
                 }
+                if (this.mMinConsumedPowerThreshold != SContextConstants.ENVIRONMENT_VALUE_UNKNOWN && this.mData.getDouble(key.mPowerColumnIndex) < this.mMinConsumedPowerThreshold) {
+                    this.mData.putDouble(key.mPowerColumnIndex, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN);
+                }
+            }
+            if (this.mData.getDouble(this.mData.layout.totalConsumedPowerColumnIndex) == SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
+                this.mData.putDouble(this.mData.layout.totalConsumedPowerColumnIndex, getTotalPower());
             }
             return new PowerComponents(this);
         }

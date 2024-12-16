@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 @Deprecated(forRemoval = true, since = "15.5")
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextPhoneStatusMonitor extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextPhoneStatusMonitor> CREATOR = new Parcelable.Creator<SemContextPhoneStatusMonitor>() { // from class: com.samsung.android.hardware.context.SemContextPhoneStatusMonitor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPhoneStatusMonitor createFromParcel(Parcel in) {
             return new SemContextPhoneStatusMonitor(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPhoneStatusMonitor[] newArray(int size) {
             return new SemContextPhoneStatusMonitor[size];
@@ -32,24 +31,7 @@ public class SemContextPhoneStatusMonitor extends SemContextEventContext {
     public static final int SCREEN_UP = 2;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextPhoneStatusMonitor$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextPhoneStatusMonitor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPhoneStatusMonitor createFromParcel(Parcel in) {
-            return new SemContextPhoneStatusMonitor(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPhoneStatusMonitor[] newArray(int size) {
-            return new SemContextPhoneStatusMonitor[size];
-        }
-    }
-
-    public SemContextPhoneStatusMonitor() {
+    SemContextPhoneStatusMonitor() {
         this.mContext = new Bundle();
     }
 

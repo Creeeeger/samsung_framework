@@ -3,7 +3,9 @@ package com.android.internal.widget;
 import android.app.Notification;
 import android.content.Context;
 import android.text.Layout;
+import android.text.PrecomputedText;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
@@ -12,27 +14,33 @@ import com.android.internal.R;
 @RemoteViews.RemoteView
 /* loaded from: classes5.dex */
 public class MessagingTextMessage extends ImageFloatingTextView implements MessagingMessage {
+    private static final String TAG = "MessagingTextMessage";
     private static final MessagingPool<MessagingTextMessage> sInstancePool = new MessagingPool<>(20);
+    private PrecomputedText mPrecomputedText;
     private final MessagingMessageState mState;
 
     public MessagingTextMessage(Context context) {
         super(context);
         this.mState = new MessagingMessageState(this);
+        this.mPrecomputedText = null;
     }
 
     public MessagingTextMessage(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mState = new MessagingMessageState(this);
+        this.mPrecomputedText = null;
     }
 
     public MessagingTextMessage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mState = new MessagingMessageState(this);
+        this.mPrecomputedText = null;
     }
 
     public MessagingTextMessage(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mState = new MessagingMessageState(this);
+        this.mPrecomputedText = null;
     }
 
     @Override // com.android.internal.widget.MessagingMessage
@@ -41,20 +49,25 @@ public class MessagingTextMessage extends ImageFloatingTextView implements Messa
     }
 
     @Override // com.android.internal.widget.MessagingMessage
-    public boolean setMessage(Notification.MessagingStyle.Message message) {
-        super.setMessage(message);
-        setText(message.getText());
+    public boolean setMessage(Notification.MessagingStyle.Message message, boolean usePrecomputedText) {
+        super.setMessage(message, usePrecomputedText);
+        if (usePrecomputedText) {
+            this.mPrecomputedText = PrecomputedText.create(message.getText(), getTextMetricsParams());
+            return true;
+        }
+        lambda$setTextAsync$0(message.getText());
+        this.mPrecomputedText = null;
         return true;
     }
 
-    public static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m) {
+    static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m, boolean usePrecomputedText) {
         MessagingLinearLayout messagingLinearLayout = layout.getMessagingLinearLayout();
         MessagingTextMessage createdMessage = sInstancePool.acquire();
         if (createdMessage == null) {
             createdMessage = (MessagingTextMessage) LayoutInflater.from(layout.getContext()).inflate(R.layout.notification_template_messaging_text_message, (ViewGroup) messagingLinearLayout, false);
             createdMessage.addOnLayoutChangeListener(MessagingLayout.MESSAGING_PROPERTY_ANIMATOR);
         }
-        createdMessage.setMessage(m);
+        createdMessage.setMessage(m, usePrecomputedText);
         return createdMessage;
     }
 
@@ -99,5 +112,16 @@ public class MessagingTextMessage extends ImageFloatingTextView implements Messa
     @Override // com.android.internal.widget.MessagingMessage
     public void setColor(int color) {
         setTextColor(color);
+    }
+
+    @Override // com.android.internal.widget.MessagingMessage
+    public void finalizeInflate() {
+        try {
+            lambda$setTextAsync$0(this.mPrecomputedText != null ? this.mPrecomputedText : getState().getMessage().getText());
+        } catch (IllegalArgumentException exception) {
+            Log.wtf(TAG, "PrecomputedText setText failed for TextView:" + this, exception);
+            this.mPrecomputedText = null;
+            lambda$setTextAsync$0(getState().getMessage().getText());
+        }
     }
 }

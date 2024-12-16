@@ -13,7 +13,6 @@ public interface IDumpCallback extends IInterface {
 
     void onDump(ParcelFileDescriptor parcelFileDescriptor) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDumpCallback {
         @Override // android.window.IDumpCallback
         public void onDump(ParcelFileDescriptor outFd) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDumpCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDumpCallback {
         static final int TRANSACTION_onDump = 1;
 
@@ -68,26 +66,22 @@ public interface IDumpCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDumpCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDumpCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDumpCallback.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDump(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDump(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDumpCallback {
+        private static class Proxy implements IDumpCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

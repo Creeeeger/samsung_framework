@@ -7,11 +7,13 @@ import android.media.ISoundDose;
 import android.media.ISpatializer;
 import android.media.audio.common.AidlConversion;
 import android.media.audiofx.AudioEffect;
+import android.media.audiopolicy.AudioMixingRule;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Vibrator;
 import android.service.timezone.TimeZoneProviderService;
 import android.telephony.TelephonyManager;
+import android.util.IntArray;
 import android.util.Log;
 import android.util.Pair;
 import com.android.internal.R;
@@ -123,7 +125,6 @@ public class AudioSystem {
     public static final Set<Integer> DEVICE_OUT_ALL_BLE_UNICAST_SET;
     public static final Set<Integer> DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET;
     public static final Set<Integer> DEVICE_OUT_ALL_SCO_SET;
-    public static final Set<Integer> DEVICE_OUT_ALL_SET;
     public static final int DEVICE_OUT_ALL_USB = 67133440;
     public static final Set<Integer> DEVICE_OUT_ALL_USB_SET;
     public static final int DEVICE_OUT_ANLG_DOCK_HEADSET = 2048;
@@ -262,6 +263,7 @@ public class AudioSystem {
     public static final int PHONE_STATE_INCALL = 2;
     public static final int PHONE_STATE_OFFCALL = 0;
     public static final int PHONE_STATE_RINGING = 1;
+    public static final int PLATFORM_AUTOMOTIVE = 3;
     public static final int PLATFORM_DEFAULT = 0;
     public static final int PLATFORM_TELEVISION = 2;
     public static final int PLATFORM_VOICE = 1;
@@ -315,48 +317,40 @@ public class AudioSystem {
     public static final int SAMPLE_RATE_HZ_MAX = native_getMaxSampleRate();
     public static final int SAMPLE_RATE_HZ_MIN = native_getMinSampleRate();
     public static final String[] STREAM_NAMES = {"STREAM_VOICE_CALL", "STREAM_SYSTEM", "STREAM_RING", "STREAM_MUSIC", "STREAM_ALARM", "STREAM_NOTIFICATION", "STREAM_BLUETOOTH_SCO", "STREAM_SYSTEM_ENFORCED", "STREAM_DTMF", "STREAM_TTS", "STREAM_ACCESSIBILITY", "STREAM_ASSISTANT"};
+    public static final Set<Integer> DEVICE_OUT_ALL_SET = new HashSet();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioFormatNativeEnumForBtCodec {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioFormatNativeEnumForBtLeAudioCodec {
     }
 
-    /* loaded from: classes2.dex */
     public interface AudioRecordingCallback {
         void onRecordingConfigurationChanged(int i, int i2, int i3, int i4, int i5, int i6, boolean z, int[] iArr, AudioEffect.Descriptor[] descriptorArr, AudioEffect.Descriptor[] descriptorArr2, int i7, String str);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioSystemError {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface BtOffloadDeviceType {
     }
 
-    /* loaded from: classes2.dex */
     public interface DynamicPolicyCallback {
         void onDynamicPolicyMixStateUpdate(String str, int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface ErrorCallback {
         void onError(int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface RoutingUpdateCallback {
         void onRoutingUpdated();
     }
 
-    /* loaded from: classes2.dex */
     public interface VolumeRangeInitRequestCallback {
         void onVolumeRangeInitializationRequested();
     }
@@ -417,11 +411,15 @@ public class AudioSystem {
 
     public static native int getPrimaryOutputSamplingRate();
 
+    public static native int getRegisteredPolicyMixes(List<android.media.audiopolicy.AudioMix> list);
+
     public static native int getReportedSurroundFormats(ArrayList<Integer> arrayList);
 
     public static native float getStreamVolumeDB(int i, int i2, int i3);
 
     public static native int getStreamVolumeIndex(int i, int i2);
+
+    public static native int getSupportedDeviceTypes(int i, IntArray intArray);
 
     public static native int getSupportedMixerAttributes(int i, List<AudioMixerAttributes> list);
 
@@ -511,6 +509,8 @@ public class AudioSystem {
 
     public static native int setCurrentImeUid(int i);
 
+    public static native int setDeviceAbsoluteVolumeEnabled(int i, String str, boolean z, int i2);
+
     public static native int setDeviceConnectionState(int i, Parcel parcel, int i2);
 
     private static native int setDevicesRoleForCapturePreset(int i, int i2, int[] iArr, String[] strArr);
@@ -559,123 +559,112 @@ public class AudioSystem {
 
     public static native int systemReady();
 
+    public static native int updatePolicyMixes(android.media.audiopolicy.AudioMix[] audioMixArr, AudioMixingRule[] audioMixingRuleArr);
+
     private AudioSystem() {
         throw new UnsupportedOperationException("Trying to instantiate AudioSystem");
     }
 
     static {
-        HashSet hashSet = new HashSet();
-        DEVICE_OUT_ALL_SET = hashSet;
-        hashSet.add(1);
-        hashSet.add(2);
-        hashSet.add(4);
-        hashSet.add(8);
-        hashSet.add(16);
-        hashSet.add(32);
-        hashSet.add(64);
-        hashSet.add(128);
-        hashSet.add(256);
-        hashSet.add(512);
-        hashSet.add(1024);
-        hashSet.add(2048);
-        hashSet.add(4096);
-        hashSet.add(8192);
-        hashSet.add(16384);
-        hashSet.add(32768);
-        hashSet.add(65536);
-        hashSet.add(131072);
-        hashSet.add(262144);
-        hashSet.add(262145);
-        hashSet.add(524288);
-        hashSet.add(1048576);
-        hashSet.add(2097152);
-        hashSet.add(4194304);
-        hashSet.add(8388608);
-        hashSet.add(16777216);
-        hashSet.add(33554432);
-        hashSet.add(67108864);
-        hashSet.add(134217728);
-        hashSet.add(268435456);
-        hashSet.add(536870912);
-        hashSet.add(536870913);
-        hashSet.add(536870914);
-        hashSet.add(1073741824);
-        HashSet hashSet2 = new HashSet();
-        DEVICE_OUT_ALL_A2DP_SET = hashSet2;
-        hashSet2.add(128);
-        hashSet2.add(256);
-        hashSet2.add(512);
-        HashSet hashSet3 = new HashSet();
-        DEVICE_OUT_ALL_SCO_SET = hashSet3;
-        hashSet3.add(16);
-        hashSet3.add(32);
-        hashSet3.add(64);
-        HashSet hashSet4 = new HashSet();
-        DEVICE_OUT_ALL_USB_SET = hashSet4;
-        hashSet4.add(8192);
-        hashSet4.add(16384);
-        hashSet4.add(67108864);
-        HashSet hashSet5 = new HashSet();
-        DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET = hashSet5;
-        hashSet5.add(2097152);
-        hashSet5.add(262144);
-        hashSet5.add(262145);
-        hashSet5.add(524288);
-        HashSet hashSet6 = new HashSet();
-        DEVICE_ALL_HDMI_SYSTEM_AUDIO_AND_SPEAKER_SET = hashSet6;
-        hashSet6.addAll(hashSet5);
-        hashSet6.add(2);
-        HashSet hashSet7 = new HashSet();
-        DEVICE_OUT_ALL_BLE_SET = hashSet7;
-        hashSet7.add(536870912);
-        hashSet7.add(536870913);
-        hashSet7.add(536870914);
-        HashSet hashSet8 = new HashSet();
-        DEVICE_OUT_ALL_BLE_UNICAST_SET = hashSet8;
-        hashSet8.add(536870912);
-        hashSet8.add(536870913);
-        HashSet hashSet9 = new HashSet();
-        DEVICE_IN_ALL_SET = hashSet9;
-        hashSet9.add(Integer.valueOf(DEVICE_IN_COMMUNICATION));
-        hashSet9.add(Integer.valueOf(DEVICE_IN_AMBIENT));
-        hashSet9.add(-2147483644);
-        hashSet9.add(-2147483640);
-        hashSet9.add(-2147483632);
-        hashSet9.add(-2147483616);
-        hashSet9.add(-2147483584);
-        hashSet9.add(-2147483520);
-        hashSet9.add(Integer.valueOf(DEVICE_IN_REMOTE_SUBMIX));
-        hashSet9.add(-2147483136);
-        hashSet9.add(-2147482624);
-        hashSet9.add(-2147481600);
-        hashSet9.add(-2147479552);
-        hashSet9.add(-2147475456);
-        hashSet9.add(-2147467264);
-        hashSet9.add(-2147450880);
-        hashSet9.add(-2147418112);
-        hashSet9.add(Integer.valueOf(DEVICE_IN_BLUETOOTH_A2DP));
-        hashSet9.add(-2147221504);
-        hashSet9.add(Integer.valueOf(DEVICE_IN_IP));
-        hashSet9.add(Integer.valueOf(DEVICE_IN_BUS));
-        hashSet9.add(Integer.valueOf(DEVICE_IN_PROXY));
-        hashSet9.add(Integer.valueOf(DEVICE_IN_USB_HEADSET));
-        hashSet9.add(Integer.valueOf(DEVICE_IN_BLUETOOTH_BLE));
-        hashSet9.add(-2013265920);
-        hashSet9.add(-2013265919);
-        hashSet9.add(-1879048192);
-        hashSet9.add(-1610612736);
-        hashSet9.add(Integer.valueOf(DEVICE_IN_DEFAULT));
-        HashSet hashSet10 = new HashSet();
-        DEVICE_IN_ALL_SCO_SET = hashSet10;
-        hashSet10.add(-2147483640);
-        HashSet hashSet11 = new HashSet();
-        DEVICE_IN_ALL_USB_SET = hashSet11;
-        hashSet11.add(-2147481600);
-        hashSet11.add(-2147479552);
-        hashSet11.add(Integer.valueOf(DEVICE_IN_USB_HEADSET));
-        HashSet hashSet12 = new HashSet();
-        DEVICE_IN_ALL_BLE_SET = hashSet12;
-        hashSet12.add(-1610612736);
+        DEVICE_OUT_ALL_SET.add(1);
+        DEVICE_OUT_ALL_SET.add(2);
+        DEVICE_OUT_ALL_SET.add(4);
+        DEVICE_OUT_ALL_SET.add(8);
+        DEVICE_OUT_ALL_SET.add(16);
+        DEVICE_OUT_ALL_SET.add(32);
+        DEVICE_OUT_ALL_SET.add(64);
+        DEVICE_OUT_ALL_SET.add(128);
+        DEVICE_OUT_ALL_SET.add(256);
+        DEVICE_OUT_ALL_SET.add(512);
+        DEVICE_OUT_ALL_SET.add(1024);
+        DEVICE_OUT_ALL_SET.add(2048);
+        DEVICE_OUT_ALL_SET.add(4096);
+        DEVICE_OUT_ALL_SET.add(8192);
+        DEVICE_OUT_ALL_SET.add(16384);
+        DEVICE_OUT_ALL_SET.add(32768);
+        DEVICE_OUT_ALL_SET.add(65536);
+        DEVICE_OUT_ALL_SET.add(131072);
+        DEVICE_OUT_ALL_SET.add(262144);
+        DEVICE_OUT_ALL_SET.add(262145);
+        DEVICE_OUT_ALL_SET.add(524288);
+        DEVICE_OUT_ALL_SET.add(1048576);
+        DEVICE_OUT_ALL_SET.add(2097152);
+        DEVICE_OUT_ALL_SET.add(4194304);
+        DEVICE_OUT_ALL_SET.add(8388608);
+        DEVICE_OUT_ALL_SET.add(16777216);
+        DEVICE_OUT_ALL_SET.add(33554432);
+        DEVICE_OUT_ALL_SET.add(67108864);
+        DEVICE_OUT_ALL_SET.add(134217728);
+        DEVICE_OUT_ALL_SET.add(268435456);
+        DEVICE_OUT_ALL_SET.add(536870912);
+        DEVICE_OUT_ALL_SET.add(536870913);
+        DEVICE_OUT_ALL_SET.add(536870914);
+        DEVICE_OUT_ALL_SET.add(1073741824);
+        DEVICE_OUT_ALL_A2DP_SET = new HashSet();
+        DEVICE_OUT_ALL_A2DP_SET.add(128);
+        DEVICE_OUT_ALL_A2DP_SET.add(256);
+        DEVICE_OUT_ALL_A2DP_SET.add(512);
+        DEVICE_OUT_ALL_SCO_SET = new HashSet();
+        DEVICE_OUT_ALL_SCO_SET.add(16);
+        DEVICE_OUT_ALL_SCO_SET.add(32);
+        DEVICE_OUT_ALL_SCO_SET.add(64);
+        DEVICE_OUT_ALL_USB_SET = new HashSet();
+        DEVICE_OUT_ALL_USB_SET.add(8192);
+        DEVICE_OUT_ALL_USB_SET.add(16384);
+        DEVICE_OUT_ALL_USB_SET.add(67108864);
+        DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET = new HashSet();
+        DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET.add(2097152);
+        DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET.add(262144);
+        DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET.add(262145);
+        DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET.add(524288);
+        DEVICE_ALL_HDMI_SYSTEM_AUDIO_AND_SPEAKER_SET = new HashSet();
+        DEVICE_ALL_HDMI_SYSTEM_AUDIO_AND_SPEAKER_SET.addAll(DEVICE_OUT_ALL_HDMI_SYSTEM_AUDIO_SET);
+        DEVICE_ALL_HDMI_SYSTEM_AUDIO_AND_SPEAKER_SET.add(2);
+        DEVICE_OUT_ALL_BLE_SET = new HashSet();
+        DEVICE_OUT_ALL_BLE_SET.add(536870912);
+        DEVICE_OUT_ALL_BLE_SET.add(536870913);
+        DEVICE_OUT_ALL_BLE_SET.add(536870914);
+        DEVICE_OUT_ALL_BLE_UNICAST_SET = new HashSet();
+        DEVICE_OUT_ALL_BLE_UNICAST_SET.add(536870912);
+        DEVICE_OUT_ALL_BLE_UNICAST_SET.add(536870913);
+        DEVICE_IN_ALL_SET = new HashSet();
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_COMMUNICATION));
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_AMBIENT));
+        DEVICE_IN_ALL_SET.add(-2147483644);
+        DEVICE_IN_ALL_SET.add(-2147483640);
+        DEVICE_IN_ALL_SET.add(-2147483632);
+        DEVICE_IN_ALL_SET.add(-2147483616);
+        DEVICE_IN_ALL_SET.add(-2147483584);
+        DEVICE_IN_ALL_SET.add(-2147483520);
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_REMOTE_SUBMIX));
+        DEVICE_IN_ALL_SET.add(-2147483136);
+        DEVICE_IN_ALL_SET.add(-2147482624);
+        DEVICE_IN_ALL_SET.add(-2147481600);
+        DEVICE_IN_ALL_SET.add(-2147479552);
+        DEVICE_IN_ALL_SET.add(-2147475456);
+        DEVICE_IN_ALL_SET.add(-2147467264);
+        DEVICE_IN_ALL_SET.add(-2147450880);
+        DEVICE_IN_ALL_SET.add(-2147418112);
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_BLUETOOTH_A2DP));
+        DEVICE_IN_ALL_SET.add(-2147221504);
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_IP));
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_BUS));
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_PROXY));
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_USB_HEADSET));
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_BLUETOOTH_BLE));
+        DEVICE_IN_ALL_SET.add(-2013265920);
+        DEVICE_IN_ALL_SET.add(-2013265919);
+        DEVICE_IN_ALL_SET.add(-1879048192);
+        DEVICE_IN_ALL_SET.add(-1610612736);
+        DEVICE_IN_ALL_SET.add(Integer.valueOf(DEVICE_IN_DEFAULT));
+        DEVICE_IN_ALL_SCO_SET = new HashSet();
+        DEVICE_IN_ALL_SCO_SET.add(-2147483640);
+        DEVICE_IN_ALL_USB_SET = new HashSet();
+        DEVICE_IN_ALL_USB_SET.add(-2147481600);
+        DEVICE_IN_ALL_USB_SET.add(-2147479552);
+        DEVICE_IN_ALL_USB_SET.add(Integer.valueOf(DEVICE_IN_USB_HEADSET));
+        DEVICE_IN_ALL_BLE_SET = new HashSet();
+        DEVICE_IN_ALL_BLE_SET.add(-1610612736);
         DEFAULT_STREAM_VOLUME = new int[]{5, 6, 11, 7, 11, 11, 7, 14, 11, 11, 11, 7};
     }
 
@@ -740,7 +729,7 @@ public class AudioSystem {
         }
     }
 
-    public static int bluetoothCodecToAudioFormat(int btCodec) {
+    public static int bluetoothA2dpCodecToAudioFormat(int btCodec) {
         switch (btCodec) {
             case 0:
                 return 520093696;
@@ -757,7 +746,17 @@ public class AudioSystem {
             case 6:
                 return 134217728;
             default:
-                Log.e(TAG, "Unknown BT codec 0x" + Integer.toHexString(btCodec) + " for conversion to audio format");
+                Log.e(TAG, "Unknown A2DP BT codec 0x" + Integer.toHexString(btCodec) + " for conversion to audio format");
+                return 0;
+        }
+    }
+
+    public static int bluetoothLeCodecToAudioFormat(int btCodec) {
+        switch (btCodec) {
+            case 0:
+                return 721420288;
+            default:
+                Log.e(TAG, "Unknown LE Audio BT codec 0x" + Integer.toHexString(btCodec) + " for conversion to audio format");
                 return 0;
         }
     }
@@ -810,7 +809,7 @@ public class AudioSystem {
                 return "AUDIO_FORMAT_AAC_ELD";
             case android.media.audio.Enums.AUDIO_FORMAT_AAC_XHE /* 67109632 */:
                 return "AUDIO_FORMAT_AAC_XHE";
-            case android.media.audio.Enums.AUDIO_FORMAT_HE_AAC_V1 /* 83886080 */:
+            case 83886080:
                 return "AUDIO_FORMAT_HE_AAC_V1";
             case 100663296:
                 return "AUDIO_FORMAT_HE_AAC_V2";
@@ -818,17 +817,17 @@ public class AudioSystem {
                 return "AUDIO_FORMAT_VORBIS";
             case 134217728:
                 return "AUDIO_FORMAT_OPUS";
-            case android.media.audio.Enums.AUDIO_FORMAT_AC3 /* 150994944 */:
+            case 150994944:
                 return "AUDIO_FORMAT_AC3";
-            case android.media.audio.Enums.AUDIO_FORMAT_E_AC3 /* 167772160 */:
+            case 167772160:
                 return "AUDIO_FORMAT_E_AC3";
             case android.media.audio.Enums.AUDIO_FORMAT_E_AC3_JOC /* 167772161 */:
                 return "AUDIO_FORMAT_E_AC3_JOC";
-            case android.media.audio.Enums.AUDIO_FORMAT_DTS /* 184549376 */:
+            case 184549376:
                 return "AUDIO_FORMAT_DTS";
-            case android.media.audio.Enums.AUDIO_FORMAT_DTS_HD /* 201326592 */:
+            case 201326592:
                 return "AUDIO_FORMAT_DTS_HD";
-            case android.media.audio.Enums.AUDIO_FORMAT_IEC61937 /* 218103808 */:
+            case 218103808:
                 return "AUDIO_FORMAT_IEC61937";
             case android.media.audio.Enums.AUDIO_FORMAT_DOLBY_TRUEHD /* 234881024 */:
                 return "AUDIO_FORMAT_DOLBY_TRUEHD";
@@ -1093,6 +1092,10 @@ public class AudioSystem {
         }
     }
 
+    public static boolean isInputDevice(int deviceType) {
+        return (deviceType & Integer.MIN_VALUE) == Integer.MIN_VALUE;
+    }
+
     public static boolean isBluetoothDevice(int deviceType) {
         return isBluetoothA2dpOutDevice(deviceType) || isBluetoothScoDevice(deviceType) || isBluetoothLeDevice(deviceType);
     }
@@ -1131,6 +1134,10 @@ public class AudioSystem {
 
     public static boolean isBluetoothLeDevice(int deviceType) {
         return isBluetoothLeOutDevice(deviceType) || isBluetoothLeInDevice(deviceType);
+    }
+
+    public static boolean isRemoteSubmixDevice(int deviceType) {
+        return deviceType == -2147483392 || deviceType == 32768;
     }
 
     public static String deviceStateToString(int state) {
@@ -1283,7 +1290,7 @@ public class AudioSystem {
     }
 
     public static String getDeviceName(int device) {
-        if ((Integer.MIN_VALUE & device) != 0) {
+        if (isInputDevice(device)) {
             return getInputDeviceName(device);
         }
         return getOutputDeviceName(device);
@@ -1429,7 +1436,7 @@ public class AudioSystem {
         return routeDevices;
     }
 
-    public static int getOffloadSupport(AudioFormat format, AudioAttributes attr) {
+    static int getOffloadSupport(AudioFormat format, AudioAttributes attr) {
         return native_get_offload_support(format.getEncoding(), format.getSampleRate(), format.getChannelMask(), format.getChannelIndexMask(), attr.getVolumeControlStream());
     }
 
@@ -1515,17 +1522,14 @@ public class AudioSystem {
     }
 
     public static String streamToString(int stream) {
-        if (stream >= 0) {
-            String[] strArr = STREAM_NAMES;
-            if (stream < strArr.length) {
-                return strArr[stream];
-            }
-        }
-        return stream == Integer.MIN_VALUE ? "USE_DEFAULT_STREAM_TYPE" : "UNKNOWN_STREAM_" + stream;
+        return (stream < 0 || stream >= STREAM_NAMES.length) ? stream == Integer.MIN_VALUE ? "USE_DEFAULT_STREAM_TYPE" : "UNKNOWN_STREAM_" + stream : STREAM_NAMES[stream];
     }
 
     public static int getPlatformType(Context context) {
-        if (Rune.SEC_AUDIO_ATT_SOFTPHONE || ((TelephonyManager) context.getSystemService("phone")).isVoiceCapable()) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE)) {
+            return 3;
+        }
+        if (Rune.SEC_AUDIO_ATT_SOFTPHONE || ((TelephonyManager) context.getSystemService(TelephonyManager.class)).isVoiceCapable()) {
             return 1;
         }
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
@@ -1559,5 +1563,9 @@ public class AudioSystem {
 
     public static boolean isLeAudioDeviceType(int type) {
         return DEVICE_OUT_ALL_BLE_SET.contains(Integer.valueOf(type));
+    }
+
+    public static int setPolicyParameters(String keyValuePairs) {
+        return setParameters("AUDIO_POLICY;" + keyValuePairs);
     }
 }

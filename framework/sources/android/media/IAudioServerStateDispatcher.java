@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IAudioServerStateDispatcher extends IInterface {
     void dispatchAudioServerStateChange(boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAudioServerStateDispatcher {
         @Override // android.media.IAudioServerStateDispatcher
         public void dispatchAudioServerStateChange(boolean state) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IAudioServerStateDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAudioServerStateDispatcher {
         public static final String DESCRIPTOR = "android.media.IAudioServerStateDispatcher";
         static final int TRANSACTION_dispatchAudioServerStateChange = 1;
@@ -66,25 +64,22 @@ public interface IAudioServerStateDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dispatchAudioServerStateChange(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dispatchAudioServerStateChange(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAudioServerStateDispatcher {
+        private static class Proxy implements IAudioServerStateDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

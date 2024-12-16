@@ -124,7 +124,7 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         notifyHierarchyChanged();
     }
 
-    public boolean onPrepareAddPreference(Preference preference) {
+    protected boolean onPrepareAddPreference(Preference preference) {
         preference.onParentChanged(this, shouldDisableDependents());
         return true;
     }
@@ -148,12 +148,12 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         return null;
     }
 
-    public boolean isOnSameScreenAsChildren() {
+    protected boolean isOnSameScreenAsChildren() {
         return true;
     }
 
     @Override // android.preference.Preference
-    public void onAttachedToActivity() {
+    protected void onAttachedToActivity() {
         super.onAttachedToActivity();
         this.mAttachedToActivity = true;
         int preferenceCount = getPreferenceCount();
@@ -163,7 +163,7 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
     }
 
     @Override // android.preference.Preference
-    public void onPrepareForRemoval() {
+    protected void onPrepareForRemoval() {
         super.onPrepareForRemoval();
         this.mAttachedToActivity = false;
     }
@@ -177,14 +177,14 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         }
     }
 
-    public void sortPreferences() {
+    void sortPreferences() {
         synchronized (this) {
             Collections.sort(this.mPreferenceList);
         }
     }
 
     @Override // android.preference.Preference
-    public void dispatchSaveInstanceState(Bundle container) {
+    protected void dispatchSaveInstanceState(Bundle container) {
         super.dispatchSaveInstanceState(container);
         int preferenceCount = getPreferenceCount();
         for (int i = 0; i < preferenceCount; i++) {
@@ -193,7 +193,7 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
     }
 
     @Override // android.preference.Preference
-    public void dispatchRestoreInstanceState(Bundle container) {
+    protected void dispatchRestoreInstanceState(Bundle container) {
         super.dispatchRestoreInstanceState(container);
         int preferenceCount = getPreferenceCount();
         for (int i = 0; i < preferenceCount; i++) {

@@ -104,7 +104,6 @@ public interface IGnssMeasurementCallback extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssClockFlags {
         public static final short HAS_BIAS = 8;
         public static final short HAS_BIAS_UNCERTAINTY = 16;
@@ -177,7 +176,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssMeasurementFlags {
         public static final int HAS_AUTOMATIC_GAIN_CONTROL = 8192;
         public static final int HAS_CARRIER_CYCLES = 1024;
@@ -242,7 +240,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssMultipathIndicator {
         public static final byte INDICATIOR_NOT_PRESENT = 2;
         public static final byte INDICATOR_PRESENT = 1;
@@ -280,7 +277,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssMeasurementState {
         public static final int STATE_BDS_D2_BIT_SYNC = 256;
         public static final int STATE_BDS_D2_SUBFRAME_SYNC = 512;
@@ -430,7 +426,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssAccumulatedDeltaRangeState {
         public static final short ADR_STATE_CYCLE_SLIP = 4;
         public static final short ADR_STATE_RESET = 2;
@@ -476,7 +471,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssClock {
         public short gnssClockFlags;
         public short leapSecond = 0;
@@ -576,7 +570,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssMeasurement {
         public short accumulatedDeltaRangeState;
         public int flags;
@@ -706,7 +699,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssData {
         public int measurementCount = 0;
         public GnssMeasurement[] measurements = new GnssMeasurement[64];
@@ -794,7 +786,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssMeasurementCallback {
         private IHwBinder mRemote;
 
@@ -980,7 +971,6 @@ public interface IGnssMeasurementCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssMeasurementCallback {
         @Override // android.hardware.gnss.V1_0.IGnssMeasurementCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -1003,7 +993,7 @@ public interface IGnssMeasurementCallback extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IGnssMeasurementCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-67, -92, -110, -20, 64, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -47, 56, 105, -34, 114, -67, 111, -116, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT, -59, -125, 123, 120, -42, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 107, -115, 83, -114, -2, -59, 50, 5, 115, -91, -20}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-67, -92, -110, -20, 64, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -47, 56, 105, -34, 114, -67, 111, -116, 21, -59, -125, 123, 120, -42, 19, 107, -115, 83, -114, -2, -59, 50, 5, 115, -91, -20}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IGnssMeasurementCallback, android.internal.hidl.base.V1_0.IBase

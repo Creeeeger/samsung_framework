@@ -6,7 +6,7 @@ import com.samsung.android.globalactions.presentation.SamsungGlobalActions;
 import com.samsung.android.globalactions.util.HandlerUtil;
 import com.samsung.android.globalactions.util.LogWrapper;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class LogoutActionViewModel implements ActionViewModel {
     private static final String TAG = "LogoutActionViewModel";
     private final SamsungGlobalActions mGlobalActions;
@@ -41,6 +41,7 @@ public class LogoutActionViewModel implements ActionViewModel {
         this.mGlobalActions.dismissDialog(true);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPress$0() {
         try {
             int currentUserID = ActivityManager.getService().getCurrentUser().id;

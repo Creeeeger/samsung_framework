@@ -34,16 +34,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class CertUtils {
+class CertUtils {
     private static Set EMPTY_SET = Collections.unmodifiableSet(new HashSet());
     private static List EMPTY_LIST = Collections.unmodifiableList(new ArrayList());
 
     CertUtils() {
     }
 
-    public static ASN1Primitive parseNonEmptyASN1(byte[] encoding) throws IOException {
+    static ASN1Primitive parseNonEmptyASN1(byte[] encoding) throws IOException {
         ASN1Primitive p = ASN1Primitive.fromByteArray(encoding);
         if (p == null) {
             throw new IOException("no content found");
@@ -106,21 +105,21 @@ public class CertUtils {
         return CertificateList.getInstance(new DERSequence(v));
     }
 
-    public static Set getCriticalExtensionOIDs(Extensions extensions) {
+    static Set getCriticalExtensionOIDs(Extensions extensions) {
         if (extensions == null) {
             return EMPTY_SET;
         }
         return Collections.unmodifiableSet(new HashSet(Arrays.asList(extensions.getCriticalExtensionOIDs())));
     }
 
-    public static Set getNonCriticalExtensionOIDs(Extensions extensions) {
+    static Set getNonCriticalExtensionOIDs(Extensions extensions) {
         if (extensions == null) {
             return EMPTY_SET;
         }
         return Collections.unmodifiableSet(new HashSet(Arrays.asList(extensions.getNonCriticalExtensionOIDs())));
     }
 
-    public static List getExtensionOIDs(Extensions extensions) {
+    static List getExtensionOIDs(Extensions extensions) {
         if (extensions == null) {
             return EMPTY_LIST;
         }
@@ -149,7 +148,7 @@ public class CertUtils {
         return new DERBitString(bytes, 8 - pad);
     }
 
-    public static boolean[] bitStringToBoolean(DERBitString bitString) {
+    static boolean[] bitStringToBoolean(DERBitString bitString) {
         if (bitString != null) {
             byte[] bytes = bitString.getBytes();
             boolean[] boolId = new boolean[(bytes.length * 8) - bitString.getPadBits()];
@@ -161,7 +160,7 @@ public class CertUtils {
         return null;
     }
 
-    public static Date recoverDate(ASN1GeneralizedTime time) {
+    static Date recoverDate(ASN1GeneralizedTime time) {
         try {
             return time.getDate();
         } catch (ParseException e) {
@@ -169,7 +168,7 @@ public class CertUtils {
         }
     }
 
-    public static boolean isAlgIdEqual(AlgorithmIdentifier id1, AlgorithmIdentifier id2) {
+    static boolean isAlgIdEqual(AlgorithmIdentifier id1, AlgorithmIdentifier id2) {
         if (!id1.getAlgorithm().equals((ASN1Primitive) id2.getAlgorithm())) {
             return false;
         }
@@ -190,7 +189,7 @@ public class CertUtils {
         return true;
     }
 
-    public static ExtensionsGenerator doReplaceExtension(ExtensionsGenerator extGenerator, Extension ext) {
+    static ExtensionsGenerator doReplaceExtension(ExtensionsGenerator extGenerator, Extension ext) {
         boolean isReplaced = false;
         Extensions exts = extGenerator.generate();
         ExtensionsGenerator extGenerator2 = new ExtensionsGenerator();
@@ -210,7 +209,7 @@ public class CertUtils {
         throw new IllegalArgumentException("replace - original extension (OID = " + ext.getExtnId() + ") not found");
     }
 
-    public static ExtensionsGenerator doRemoveExtension(ExtensionsGenerator extGenerator, ASN1ObjectIdentifier oid) {
+    static ExtensionsGenerator doRemoveExtension(ExtensionsGenerator extGenerator, ASN1ObjectIdentifier oid) {
         boolean isRemoved = false;
         Extensions exts = extGenerator.generate();
         ExtensionsGenerator extGenerator2 = new ExtensionsGenerator();

@@ -29,7 +29,6 @@ public interface IJobCallback extends IInterface {
 
     void updateTransferredNetworkBytes(int i, JobWorkItem jobWorkItem, long j, long j2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IJobCallback {
         @Override // android.app.job.IJobCallback
         public void acknowledgeGetTransferredDownloadBytesMessage(int jobId, int workId, long transferredBytes) throws RemoteException {
@@ -79,7 +78,6 @@ public interface IJobCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IJobCallback {
         public static final String DESCRIPTOR = "android.app.job.IJobCallback";
         static final int TRANSACTION_acknowledgeGetTransferredDownloadBytesMessage = 1;
@@ -150,99 +148,96 @@ public interface IJobCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    acknowledgeGetTransferredDownloadBytesMessage(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    long _arg22 = data.readLong();
+                    data.enforceNoDataAvail();
+                    acknowledgeGetTransferredUploadBytesMessage(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    acknowledgeStartMessage(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    boolean _arg14 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    acknowledgeStopMessage(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    JobWorkItem _result = dequeueWork(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = completeWork(_arg06, _arg15);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    boolean _arg16 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    jobFinished(_arg07, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    JobWorkItem _arg17 = (JobWorkItem) data.readTypedObject(JobWorkItem.CREATOR);
+                    long _arg23 = data.readLong();
+                    long _arg3 = data.readLong();
+                    data.enforceNoDataAvail();
+                    updateEstimatedNetworkBytes(_arg08, _arg17, _arg23, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    JobWorkItem _arg18 = (JobWorkItem) data.readTypedObject(JobWorkItem.CREATOR);
+                    long _arg24 = data.readLong();
+                    long _arg32 = data.readLong();
+                    data.enforceNoDataAvail();
+                    updateTransferredNetworkBytes(_arg09, _arg18, _arg24, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg19 = data.readInt();
+                    Notification _arg25 = (Notification) data.readTypedObject(Notification.CREATOR);
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNotification(_arg010, _arg19, _arg25, _arg33);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            acknowledgeGetTransferredDownloadBytesMessage(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            long _arg22 = data.readLong();
-                            data.enforceNoDataAvail();
-                            acknowledgeGetTransferredUploadBytesMessage(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            acknowledgeStartMessage(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            acknowledgeStopMessage(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            JobWorkItem _result = dequeueWork(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = completeWork(_arg06, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            jobFinished(_arg07, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            JobWorkItem _arg17 = (JobWorkItem) data.readTypedObject(JobWorkItem.CREATOR);
-                            long _arg23 = data.readLong();
-                            long _arg3 = data.readLong();
-                            data.enforceNoDataAvail();
-                            updateEstimatedNetworkBytes(_arg08, _arg17, _arg23, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            JobWorkItem _arg18 = (JobWorkItem) data.readTypedObject(JobWorkItem.CREATOR);
-                            long _arg24 = data.readLong();
-                            long _arg32 = data.readLong();
-                            data.enforceNoDataAvail();
-                            updateTransferredNetworkBytes(_arg09, _arg18, _arg24, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg19 = data.readInt();
-                            Notification _arg25 = (Notification) data.readTypedObject(Notification.CREATOR);
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNotification(_arg010, _arg19, _arg25, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IJobCallback {
+        private static class Proxy implements IJobCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

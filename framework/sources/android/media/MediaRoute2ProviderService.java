@@ -3,6 +3,7 @@ package android.media;
 import android.app.Service;
 import android.content.Intent;
 import android.media.IMediaRoute2ProviderService;
+import android.media.MediaRoute2Info;
 import android.media.MediaRoute2ProviderInfo;
 import android.os.Binder;
 import android.os.Bundle;
@@ -53,7 +54,6 @@ public abstract class MediaRoute2ProviderService extends Service {
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Reason {
     }
 
@@ -117,12 +117,11 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             this.mSessionInfos.put(sessionInfo.getId(), sessionInfo);
-            IMediaRoute2ProviderServiceCallback iMediaRoute2ProviderServiceCallback = this.mRemoteCallback;
-            if (iMediaRoute2ProviderServiceCallback == null) {
+            if (this.mRemoteCallback == null) {
                 return;
             }
             try {
-                iMediaRoute2ProviderServiceCallback.notifySessionCreated(requestId, sessionInfo);
+                this.mRemoteCallback.notifySessionCreated(requestId, sessionInfo);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed to notify session created.");
             }
@@ -156,16 +155,15 @@ public abstract class MediaRoute2ProviderService extends Service {
             RoutingSessionInfo sessionInfo = this.mSessionInfos.remove(sessionId);
             if (sessionInfo == null) {
                 Log.w(TAG, "notifySessionReleased: Ignoring unknown session info.");
-                return;
-            }
-            IMediaRoute2ProviderServiceCallback iMediaRoute2ProviderServiceCallback = this.mRemoteCallback;
-            if (iMediaRoute2ProviderServiceCallback == null) {
-                return;
-            }
-            try {
-                iMediaRoute2ProviderServiceCallback.notifySessionReleased(sessionInfo);
-            } catch (RemoteException ex) {
-                Log.w(TAG, "Failed to notify session released.", ex);
+            } else {
+                if (this.mRemoteCallback == null) {
+                    return;
+                }
+                try {
+                    this.mRemoteCallback.notifySessionReleased(sessionInfo);
+                } catch (RemoteException ex) {
+                    Log.w(TAG, "Failed to notify session released.", ex);
+                }
             }
         }
     }
@@ -190,11 +188,20 @@ public abstract class MediaRoute2ProviderService extends Service {
 
     public final void notifyRoutes(Collection<MediaRoute2Info> routes) {
         Objects.requireNonNull(routes, "routes must not be null");
-        this.mProviderInfo = new MediaRoute2ProviderInfo.Builder().addRoutes(routes).build();
+        List<MediaRoute2Info> sanitizedRoutes = new ArrayList<>(routes.size());
+        for (MediaRoute2Info route : routes) {
+            if (route.isSystemRouteType()) {
+                Log.w(TAG, "Attempting to add a system route type from a non-system route provider. Overriding type to TYPE_UNKNOWN. Route: " + route);
+                sanitizedRoutes.add(new MediaRoute2Info.Builder(route).setType(0).build());
+            } else {
+                sanitizedRoutes.add(route);
+            }
+        }
+        this.mProviderInfo = new MediaRoute2ProviderInfo.Builder().addRoutes(sanitizedRoutes).build();
         schedulePublishState();
     }
 
-    public void setCallback(IMediaRoute2ProviderServiceCallback callback) {
+    void setCallback(IMediaRoute2ProviderServiceCallback callback) {
         this.mRemoteCallback = callback;
         schedulePublishState();
         scheduleUpdateSessions();
@@ -211,13 +218,13 @@ public abstract class MediaRoute2ProviderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void publishState() {
-        IMediaRoute2ProviderServiceCallback iMediaRoute2ProviderServiceCallback;
-        if (!this.mStatePublishScheduled.compareAndSet(true, false) || (iMediaRoute2ProviderServiceCallback = this.mRemoteCallback) == null) {
+        if (!this.mStatePublishScheduled.compareAndSet(true, false) || this.mRemoteCallback == null || this.mProviderInfo == null) {
             return;
         }
         try {
-            iMediaRoute2ProviderServiceCallback.notifyProviderUpdated(this.mProviderInfo);
+            this.mRemoteCallback.notifyProviderUpdated(this.mProviderInfo);
         } catch (RemoteException ex) {
             Log.w(TAG, "Failed to publish provider state.", ex);
         }
@@ -234,6 +241,7 @@ public abstract class MediaRoute2ProviderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateSessions() {
         List<RoutingSessionInfo> sessions;
         if (!this.mSessionUpdateScheduled.compareAndSet(true, false) || this.mRemoteCallback == null) {
@@ -249,6 +257,7 @@ public abstract class MediaRoute2ProviderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void addRequestId(long requestId) {
         synchronized (this.mRequestIdsLock) {
             if (this.mRequestIds.size() >= 500) {
@@ -266,7 +275,6 @@ public abstract class MediaRoute2ProviderService extends Service {
         return removeFirstOccurrence;
     }
 
-    /* loaded from: classes2.dex */
     final class MediaRoute2ProviderServiceStub extends IMediaRoute2ProviderService.Stub {
         MediaRoute2ProviderServiceStub() {
         }
@@ -304,7 +312,7 @@ public abstract class MediaRoute2ProviderService extends Service {
             if (!checkCallerIsSystem()) {
                 return;
             }
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda6
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda8
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((MediaRoute2ProviderService) obj).setCallback((IMediaRoute2ProviderServiceCallback) obj2);
@@ -317,7 +325,7 @@ public abstract class MediaRoute2ProviderService extends Service {
             if (!checkCallerIsSystem()) {
                 return;
             }
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda5
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda3
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((MediaRoute2ProviderService) obj).onDiscoveryPreferenceChanged((RouteDiscoveryPreference) obj2);
@@ -331,7 +339,7 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             MediaRoute2ProviderService.this.addRequestId(requestId);
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda4
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda5
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((MediaRoute2ProviderService) obj).onSetRouteVolume(((Long) obj2).longValue(), (String) obj3, ((Integer) obj4).intValue());
@@ -345,7 +353,7 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             MediaRoute2ProviderService.this.addRequestId(requestId);
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuintConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda1
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuintConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda0
                 @Override // com.android.internal.util.function.QuintConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5) {
                     ((MediaRoute2ProviderService) obj).onCreateSession(((Long) obj2).longValue(), (String) obj3, (String) obj4, (Bundle) obj5);
@@ -359,7 +367,7 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             MediaRoute2ProviderService.this.addRequestId(requestId);
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda2
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda6
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((MediaRoute2ProviderService) obj).onSelectRoute(((Long) obj2).longValue(), (String) obj3, (String) obj4);
@@ -373,7 +381,7 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             MediaRoute2ProviderService.this.addRequestId(requestId);
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda7
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda2
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((MediaRoute2ProviderService) obj).onDeselectRoute(((Long) obj2).longValue(), (String) obj3, (String) obj4);
@@ -387,7 +395,7 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             MediaRoute2ProviderService.this.addRequestId(requestId);
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda3
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda4
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((MediaRoute2ProviderService) obj).onTransferToRoute(((Long) obj2).longValue(), (String) obj3, (String) obj4);
@@ -401,7 +409,7 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             MediaRoute2ProviderService.this.addRequestId(requestId);
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda0
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda1
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((MediaRoute2ProviderService) obj).onSetSessionVolume(((Long) obj2).longValue(), (String) obj3, ((Integer) obj4).intValue());
@@ -415,7 +423,7 @@ public abstract class MediaRoute2ProviderService extends Service {
                 return;
             }
             MediaRoute2ProviderService.this.addRequestId(requestId);
-            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda8
+            MediaRoute2ProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRoute2ProviderService$MediaRoute2ProviderServiceStub$$ExternalSyntheticLambda7
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((MediaRoute2ProviderService) obj).onReleaseSession(((Long) obj2).longValue(), (String) obj3);

@@ -20,7 +20,7 @@ public class OvalShape extends RectShape {
 
     @Override // android.graphics.drawable.shapes.RectShape, android.graphics.drawable.shapes.Shape
     /* renamed from: clone */
-    public OvalShape mo1293clone() throws CloneNotSupportedException {
-        return (OvalShape) super.mo1293clone();
+    public OvalShape mo1387clone() throws CloneNotSupportedException {
+        return (OvalShape) super.mo1387clone();
     }
 }

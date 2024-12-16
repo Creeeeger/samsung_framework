@@ -3,17 +3,16 @@ package com.samsung.android.smartface;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class FaceInfo implements Parcelable {
     public static final Parcelable.Creator<FaceInfo> CREATOR = new Parcelable.Creator<FaceInfo>() { // from class: com.samsung.android.smartface.FaceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceInfo createFromParcel(Parcel in) {
             return new FaceInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceInfo[] newArray(int size) {
             return new FaceInfo[size];
@@ -45,22 +44,5 @@ public final class FaceInfo implements Parcelable {
     public void readFromParcel(Parcel in) {
         this.needToRotate = in.readInt();
         this.needToStay = in.readInt();
-    }
-
-    /* renamed from: com.samsung.android.smartface.FaceInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FaceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceInfo createFromParcel(Parcel in) {
-            return new FaceInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceInfo[] newArray(int size) {
-            return new FaceInfo[size];
-        }
     }
 }

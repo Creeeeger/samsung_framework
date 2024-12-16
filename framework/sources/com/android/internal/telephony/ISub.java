@@ -1,10 +1,13 @@
 package com.android.internal.telephony;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.ParcelUuid;
+import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.telephony.SubscriptionInfo;
@@ -27,7 +30,7 @@ public interface ISub extends IInterface {
 
     int[] getActiveSubIdList(boolean z) throws RemoteException;
 
-    int getActiveSubInfoCount(String str, String str2) throws RemoteException;
+    int getActiveSubInfoCount(String str, String str2, boolean z) throws RemoteException;
 
     int getActiveSubInfoCountMax() throws RemoteException;
 
@@ -37,7 +40,7 @@ public interface ISub extends IInterface {
 
     SubscriptionInfo getActiveSubscriptionInfoForSimSlotIndex(int i, String str, String str2) throws RemoteException;
 
-    List<SubscriptionInfo> getActiveSubscriptionInfoList(String str, String str2) throws RemoteException;
+    List<SubscriptionInfo> getActiveSubscriptionInfoList(String str, String str2, boolean z) throws RemoteException;
 
     List<SubscriptionInfo> getAllSubInfoList(String str, String str2) throws RemoteException;
 
@@ -47,9 +50,15 @@ public interface ISub extends IInterface {
 
     int getDefaultSmsSubId() throws RemoteException;
 
+    int getDefaultSmsSubIdAsUser(int i) throws RemoteException;
+
     int getDefaultSubId() throws RemoteException;
 
+    int getDefaultSubIdAsUser(int i) throws RemoteException;
+
     int getDefaultVoiceSubId() throws RemoteException;
+
+    int getDefaultVoiceSubIdAsUser(int i) throws RemoteException;
 
     int getEnabledSubscriptionId(int i) throws RemoteException;
 
@@ -76,6 +85,8 @@ public interface ISub extends IInterface {
     List<SubscriptionInfo> getSubscriptionsInGroup(ParcelUuid parcelUuid, String str, String str2) throws RemoteException;
 
     boolean isActiveSubId(int i, String str, String str2) throws RemoteException;
+
+    boolean isSubscriptionAssociatedWithCallingUser(int i) throws RemoteException;
 
     boolean isSubscriptionAssociatedWithUser(int i, UserHandle userHandle) throws RemoteException;
 
@@ -105,6 +116,8 @@ public interface ISub extends IInterface {
 
     int setDisplayNumber(String str, int i) throws RemoteException;
 
+    void setGroupOwner(int i, String str) throws RemoteException;
+
     int setIconTint(int i, int i2) throws RemoteException;
 
     int setOpportunistic(boolean z, int i, String str) throws RemoteException;
@@ -117,11 +130,12 @@ public interface ISub extends IInterface {
 
     int setSubscriptionUserHandle(UserHandle userHandle, int i) throws RemoteException;
 
+    void setTransferStatus(int i, int i2) throws RemoteException;
+
     void setUiccApplicationsEnabled(boolean z, int i) throws RemoteException;
 
     int setUsageSetting(int i, int i2, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISub {
         @Override // com.android.internal.telephony.ISub
         public List<SubscriptionInfo> getAllSubInfoList(String callingPackage, String callingFeatureId) throws RemoteException {
@@ -144,12 +158,12 @@ public interface ISub extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ISub
-        public List<SubscriptionInfo> getActiveSubscriptionInfoList(String callingPackage, String callingFeatureId) throws RemoteException {
+        public List<SubscriptionInfo> getActiveSubscriptionInfoList(String callingPackage, String callingFeatureId, boolean isForAllProfiles) throws RemoteException {
             return null;
         }
 
         @Override // com.android.internal.telephony.ISub
-        public int getActiveSubInfoCount(String callingPackage, String callingFeatureId) throws RemoteException {
+        public int getActiveSubInfoCount(String callingPackage, String callingFeatureId, boolean isForAllProfile) throws RemoteException {
             return 0;
         }
 
@@ -255,6 +269,11 @@ public interface ISub extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ISub
+        public int getDefaultSubIdAsUser(int userId) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.android.internal.telephony.ISub
         public int getPhoneId(int subId) throws RemoteException {
             return 0;
         }
@@ -274,11 +293,21 @@ public interface ISub extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ISub
+        public int getDefaultVoiceSubIdAsUser(int userId) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.android.internal.telephony.ISub
         public void setDefaultVoiceSubId(int subId) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ISub
         public int getDefaultSmsSubId() throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.android.internal.telephony.ISub
+        public int getDefaultSmsSubIdAsUser(int userId) throws RemoteException {
             return 0;
         }
 
@@ -359,6 +388,10 @@ public interface ISub extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ISub
+        public void setGroupOwner(int subId, String groupOwner) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ISub
         public int setSubscriptionUserHandle(UserHandle userHandle, int subId) throws RemoteException {
             return 0;
         }
@@ -366,6 +399,11 @@ public interface ISub extends IInterface {
         @Override // com.android.internal.telephony.ISub
         public UserHandle getSubscriptionUserHandle(int subId) throws RemoteException {
             return null;
+        }
+
+        @Override // com.android.internal.telephony.ISub
+        public boolean isSubscriptionAssociatedWithCallingUser(int subscriptionId) throws RemoteException {
+            return false;
         }
 
         @Override // com.android.internal.telephony.ISub
@@ -382,22 +420,25 @@ public interface ISub extends IInterface {
         public void restoreAllSimSpecificSettingsFromBackup(byte[] data) throws RemoteException {
         }
 
+        @Override // com.android.internal.telephony.ISub
+        public void setTransferStatus(int subId, int status) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISub {
         public static final String DESCRIPTOR = "com.android.internal.telephony.ISub";
         static final int TRANSACTION_addSubInfo = 11;
         static final int TRANSACTION_addSubscriptionsIntoGroup = 23;
-        static final int TRANSACTION_canDisablePhysicalSubscription = 42;
+        static final int TRANSACTION_canDisablePhysicalSubscription = 45;
         static final int TRANSACTION_createSubscriptionGroup = 18;
         static final int TRANSACTION_getAccessibleSubscriptionInfoList = 9;
-        static final int TRANSACTION_getActiveDataSubscriptionId = 41;
-        static final int TRANSACTION_getActiveSubIdList = 35;
+        static final int TRANSACTION_getActiveDataSubscriptionId = 44;
+        static final int TRANSACTION_getActiveSubIdList = 38;
         static final int TRANSACTION_getActiveSubInfoCount = 6;
         static final int TRANSACTION_getActiveSubInfoCountMax = 7;
         static final int TRANSACTION_getActiveSubscriptionInfo = 2;
@@ -406,48 +447,64 @@ public interface ISub extends IInterface {
         static final int TRANSACTION_getActiveSubscriptionInfoList = 5;
         static final int TRANSACTION_getAllSubInfoList = 1;
         static final int TRANSACTION_getAvailableSubscriptionInfoList = 8;
-        static final int TRANSACTION_getDefaultDataSubId = 29;
-        static final int TRANSACTION_getDefaultSmsSubId = 33;
+        static final int TRANSACTION_getDefaultDataSubId = 30;
+        static final int TRANSACTION_getDefaultSmsSubId = 35;
+        static final int TRANSACTION_getDefaultSmsSubIdAsUser = 36;
         static final int TRANSACTION_getDefaultSubId = 27;
-        static final int TRANSACTION_getDefaultVoiceSubId = 31;
-        static final int TRANSACTION_getEnabledSubscriptionId = 39;
+        static final int TRANSACTION_getDefaultSubIdAsUser = 28;
+        static final int TRANSACTION_getDefaultVoiceSubId = 32;
+        static final int TRANSACTION_getDefaultVoiceSubIdAsUser = 33;
+        static final int TRANSACTION_getEnabledSubscriptionId = 42;
         static final int TRANSACTION_getOpportunisticSubscriptions = 21;
-        static final int TRANSACTION_getPhoneId = 28;
-        static final int TRANSACTION_getPhoneNumber = 46;
-        static final int TRANSACTION_getPhoneNumberFromFirstAvailableSource = 47;
+        static final int TRANSACTION_getPhoneId = 29;
+        static final int TRANSACTION_getPhoneNumber = 49;
+        static final int TRANSACTION_getPhoneNumberFromFirstAvailableSource = 50;
         static final int TRANSACTION_getPreferredDataSubscriptionId = 20;
         static final int TRANSACTION_getSlotIndex = 25;
         static final int TRANSACTION_getSubId = 26;
-        static final int TRANSACTION_getSubscriptionInfoListAssociatedWithUser = 53;
-        static final int TRANSACTION_getSubscriptionProperty = 37;
-        static final int TRANSACTION_getSubscriptionUserHandle = 51;
+        static final int TRANSACTION_getSubscriptionInfoListAssociatedWithUser = 58;
+        static final int TRANSACTION_getSubscriptionProperty = 40;
+        static final int TRANSACTION_getSubscriptionUserHandle = 55;
         static final int TRANSACTION_getSubscriptionsInGroup = 24;
-        static final int TRANSACTION_isActiveSubId = 40;
-        static final int TRANSACTION_isSubscriptionAssociatedWithUser = 52;
-        static final int TRANSACTION_isSubscriptionEnabled = 38;
+        static final int TRANSACTION_isActiveSubId = 43;
+        static final int TRANSACTION_isSubscriptionAssociatedWithCallingUser = 56;
+        static final int TRANSACTION_isSubscriptionAssociatedWithUser = 57;
+        static final int TRANSACTION_isSubscriptionEnabled = 41;
         static final int TRANSACTION_removeSubInfo = 12;
         static final int TRANSACTION_removeSubscriptionsFromGroup = 22;
         static final int TRANSACTION_requestEmbeddedSubscriptionInfoListRefresh = 10;
-        static final int TRANSACTION_restoreAllSimSpecificSettingsFromBackup = 54;
+        static final int TRANSACTION_restoreAllSimSpecificSettingsFromBackup = 59;
         static final int TRANSACTION_setDataRoaming = 16;
-        static final int TRANSACTION_setDefaultDataSubId = 30;
-        static final int TRANSACTION_setDefaultSmsSubId = 34;
-        static final int TRANSACTION_setDefaultVoiceSubId = 32;
-        static final int TRANSACTION_setDeviceToDeviceStatusSharing = 44;
-        static final int TRANSACTION_setDeviceToDeviceStatusSharingContacts = 45;
+        static final int TRANSACTION_setDefaultDataSubId = 31;
+        static final int TRANSACTION_setDefaultSmsSubId = 37;
+        static final int TRANSACTION_setDefaultVoiceSubId = 34;
+        static final int TRANSACTION_setDeviceToDeviceStatusSharing = 47;
+        static final int TRANSACTION_setDeviceToDeviceStatusSharingContacts = 48;
         static final int TRANSACTION_setDisplayNameUsingSrc = 14;
         static final int TRANSACTION_setDisplayNumber = 15;
+        static final int TRANSACTION_setGroupOwner = 53;
         static final int TRANSACTION_setIconTint = 13;
         static final int TRANSACTION_setOpportunistic = 17;
-        static final int TRANSACTION_setPhoneNumber = 48;
+        static final int TRANSACTION_setPhoneNumber = 51;
         static final int TRANSACTION_setPreferredDataSubscriptionId = 19;
-        static final int TRANSACTION_setSubscriptionProperty = 36;
-        static final int TRANSACTION_setSubscriptionUserHandle = 50;
-        static final int TRANSACTION_setUiccApplicationsEnabled = 43;
-        static final int TRANSACTION_setUsageSetting = 49;
+        static final int TRANSACTION_setSubscriptionProperty = 39;
+        static final int TRANSACTION_setSubscriptionUserHandle = 54;
+        static final int TRANSACTION_setTransferStatus = 60;
+        static final int TRANSACTION_setUiccApplicationsEnabled = 46;
+        static final int TRANSACTION_setUsageSetting = 52;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static ISub asInterface(IBinder obj) {
@@ -523,59 +580,71 @@ public interface ISub extends IInterface {
                 case 27:
                     return "getDefaultSubId";
                 case 28:
-                    return "getPhoneId";
+                    return "getDefaultSubIdAsUser";
                 case 29:
-                    return "getDefaultDataSubId";
+                    return "getPhoneId";
                 case 30:
-                    return "setDefaultDataSubId";
+                    return "getDefaultDataSubId";
                 case 31:
-                    return "getDefaultVoiceSubId";
+                    return "setDefaultDataSubId";
                 case 32:
-                    return "setDefaultVoiceSubId";
+                    return "getDefaultVoiceSubId";
                 case 33:
-                    return "getDefaultSmsSubId";
+                    return "getDefaultVoiceSubIdAsUser";
                 case 34:
-                    return "setDefaultSmsSubId";
+                    return "setDefaultVoiceSubId";
                 case 35:
-                    return "getActiveSubIdList";
+                    return "getDefaultSmsSubId";
                 case 36:
-                    return "setSubscriptionProperty";
+                    return "getDefaultSmsSubIdAsUser";
                 case 37:
-                    return "getSubscriptionProperty";
+                    return "setDefaultSmsSubId";
                 case 38:
-                    return "isSubscriptionEnabled";
+                    return "getActiveSubIdList";
                 case 39:
-                    return "getEnabledSubscriptionId";
+                    return "setSubscriptionProperty";
                 case 40:
-                    return "isActiveSubId";
+                    return "getSubscriptionProperty";
                 case 41:
-                    return "getActiveDataSubscriptionId";
+                    return "isSubscriptionEnabled";
                 case 42:
-                    return "canDisablePhysicalSubscription";
+                    return "getEnabledSubscriptionId";
                 case 43:
-                    return "setUiccApplicationsEnabled";
+                    return "isActiveSubId";
                 case 44:
-                    return "setDeviceToDeviceStatusSharing";
+                    return "getActiveDataSubscriptionId";
                 case 45:
-                    return "setDeviceToDeviceStatusSharingContacts";
+                    return "canDisablePhysicalSubscription";
                 case 46:
-                    return "getPhoneNumber";
+                    return "setUiccApplicationsEnabled";
                 case 47:
-                    return "getPhoneNumberFromFirstAvailableSource";
+                    return "setDeviceToDeviceStatusSharing";
                 case 48:
-                    return "setPhoneNumber";
+                    return "setDeviceToDeviceStatusSharingContacts";
                 case 49:
-                    return "setUsageSetting";
+                    return "getPhoneNumber";
                 case 50:
-                    return "setSubscriptionUserHandle";
+                    return "getPhoneNumberFromFirstAvailableSource";
                 case 51:
-                    return "getSubscriptionUserHandle";
+                    return "setPhoneNumber";
                 case 52:
-                    return "isSubscriptionAssociatedWithUser";
+                    return "setUsageSetting";
                 case 53:
-                    return "getSubscriptionInfoListAssociatedWithUser";
+                    return "setGroupOwner";
                 case 54:
+                    return "setSubscriptionUserHandle";
+                case 55:
+                    return "getSubscriptionUserHandle";
+                case 56:
+                    return "isSubscriptionAssociatedWithCallingUser";
+                case 57:
+                    return "isSubscriptionAssociatedWithUser";
+                case 58:
+                    return "getSubscriptionInfoListAssociatedWithUser";
+                case 59:
                     return "restoreAllSimSpecificSettingsFromBackup";
+                case 60:
+                    return "setTransferStatus";
                 default:
                     return null;
             }
@@ -591,424 +660,465 @@ public interface ISub extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SubscriptionInfo> _result = getAllSubInfoList(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    SubscriptionInfo _result2 = getActiveSubscriptionInfo(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    SubscriptionInfo _result3 = getActiveSubscriptionInfoForIccId(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    String _arg14 = data.readString();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    SubscriptionInfo _result4 = getActiveSubscriptionInfoForSimSlotIndex(_arg04, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg15 = data.readString();
+                    boolean _arg24 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    List<SubscriptionInfo> _result5 = getActiveSubscriptionInfoList(_arg05, _arg15, _arg24);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result5, 1);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String _arg16 = data.readString();
+                    boolean _arg25 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result6 = getActiveSubInfoCount(_arg06, _arg16, _arg25);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 7:
+                    int _result7 = getActiveSubInfoCountMax();
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SubscriptionInfo> _result8 = getAvailableSubscriptionInfoList(_arg07, _arg17);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result8, 1);
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SubscriptionInfo> _result9 = getAccessibleSubscriptionInfoList(_arg08);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result9, 1);
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestEmbeddedSubscriptionInfoListRefresh(_arg09);
+                    return true;
+                case 11:
+                    String _arg010 = data.readString();
+                    String _arg18 = data.readString();
+                    int _arg26 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result10 = addSubInfo(_arg010, _arg18, _arg26, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 12:
+                    String _arg011 = data.readString();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = removeSubInfo(_arg011, _arg19);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 13:
+                    int _arg012 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result12 = setIconTint(_arg012, _arg110);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 14:
+                    String _arg013 = data.readString();
+                    int _arg111 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result13 = setDisplayNameUsingSrc(_arg013, _arg111, _arg27);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 15:
+                    String _arg014 = data.readString();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result14 = setDisplayNumber(_arg014, _arg112);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 16:
+                    int _arg015 = data.readInt();
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result15 = setDataRoaming(_arg015, _arg113);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 17:
+                    boolean _arg016 = data.readBoolean();
+                    int _arg114 = data.readInt();
+                    String _arg28 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result16 = setOpportunistic(_arg016, _arg114, _arg28);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 18:
+                    int[] _arg017 = data.createIntArray();
+                    String _arg115 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelUuid _result17 = createSubscriptionGroup(_arg017, _arg115);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result17, 1);
+                    return true;
+                case 19:
+                    int _arg018 = data.readInt();
+                    boolean _arg116 = data.readBoolean();
+                    ISetOpportunisticDataCallback _arg29 = ISetOpportunisticDataCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setPreferredDataSubscriptionId(_arg018, _arg116, _arg29);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    int _result18 = getPreferredDataSubscriptionId();
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 21:
+                    String _arg019 = data.readString();
+                    String _arg117 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SubscriptionInfo> _result19 = getOpportunisticSubscriptions(_arg019, _arg117);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result19, 1);
+                    return true;
+                case 22:
+                    int[] _arg020 = data.createIntArray();
+                    ParcelUuid _arg118 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    String _arg210 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeSubscriptionsFromGroup(_arg020, _arg118, _arg210);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    int[] _arg021 = data.createIntArray();
+                    ParcelUuid _arg119 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    String _arg211 = data.readString();
+                    data.enforceNoDataAvail();
+                    addSubscriptionsIntoGroup(_arg021, _arg119, _arg211);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    ParcelUuid _arg022 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    String _arg120 = data.readString();
+                    String _arg212 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SubscriptionInfo> _result20 = getSubscriptionsInGroup(_arg022, _arg120, _arg212);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result20, 1);
+                    return true;
+                case 25:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result21 = getSlotIndex(_arg023);
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    return true;
+                case 26:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result22 = getSubId(_arg024);
+                    reply.writeNoException();
+                    reply.writeInt(_result22);
+                    return true;
+                case 27:
+                    int _result23 = getDefaultSubId();
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    return true;
+                case 28:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result24 = getDefaultSubIdAsUser(_arg025);
+                    reply.writeNoException();
+                    reply.writeInt(_result24);
+                    return true;
+                case 29:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result25 = getPhoneId(_arg026);
+                    reply.writeNoException();
+                    reply.writeInt(_result25);
+                    return true;
+                case 30:
+                    int _result26 = getDefaultDataSubId();
+                    reply.writeNoException();
+                    reply.writeInt(_result26);
+                    return true;
+                case 31:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDefaultDataSubId(_arg027);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    int _result27 = getDefaultVoiceSubId();
+                    reply.writeNoException();
+                    reply.writeInt(_result27);
+                    return true;
+                case 33:
+                    int _arg028 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result28 = getDefaultVoiceSubIdAsUser(_arg028);
+                    reply.writeNoException();
+                    reply.writeInt(_result28);
+                    return true;
+                case 34:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDefaultVoiceSubId(_arg029);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    int _result29 = getDefaultSmsSubId();
+                    reply.writeNoException();
+                    reply.writeInt(_result29);
+                    return true;
+                case 36:
+                    int _arg030 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result30 = getDefaultSmsSubIdAsUser(_arg030);
+                    reply.writeNoException();
+                    reply.writeInt(_result30);
+                    return true;
+                case 37:
+                    int _arg031 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDefaultSmsSubId(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    boolean _arg032 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int[] _result31 = getActiveSubIdList(_arg032);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result31);
+                    return true;
+                case 39:
+                    int _arg033 = data.readInt();
+                    String _arg121 = data.readString();
+                    String _arg213 = data.readString();
+                    data.enforceNoDataAvail();
+                    setSubscriptionProperty(_arg033, _arg121, _arg213);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    int _arg034 = data.readInt();
+                    String _arg122 = data.readString();
+                    String _arg214 = data.readString();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result32 = getSubscriptionProperty(_arg034, _arg122, _arg214, _arg32);
+                    reply.writeNoException();
+                    reply.writeString(_result32);
+                    return true;
+                case 41:
+                    int _arg035 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result33 = isSubscriptionEnabled(_arg035);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result33);
+                    return true;
+                case 42:
+                    int _arg036 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result34 = getEnabledSubscriptionId(_arg036);
+                    reply.writeNoException();
+                    reply.writeInt(_result34);
+                    return true;
+                case 43:
+                    int _arg037 = data.readInt();
+                    String _arg123 = data.readString();
+                    String _arg215 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result35 = isActiveSubId(_arg037, _arg123, _arg215);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result35);
+                    return true;
+                case 44:
+                    int _result36 = getActiveDataSubscriptionId();
+                    reply.writeNoException();
+                    reply.writeInt(_result36);
+                    return true;
+                case 45:
+                    boolean _result37 = canDisablePhysicalSubscription();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result37);
+                    return true;
+                case 46:
+                    boolean _arg038 = data.readBoolean();
+                    int _arg124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setUiccApplicationsEnabled(_arg038, _arg124);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    int _arg039 = data.readInt();
+                    int _arg125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result38 = setDeviceToDeviceStatusSharing(_arg039, _arg125);
+                    reply.writeNoException();
+                    reply.writeInt(_result38);
+                    return true;
+                case 48:
+                    String _arg040 = data.readString();
+                    int _arg126 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result39 = setDeviceToDeviceStatusSharingContacts(_arg040, _arg126);
+                    reply.writeNoException();
+                    reply.writeInt(_result39);
+                    return true;
+                case 49:
+                    int _arg041 = data.readInt();
+                    int _arg127 = data.readInt();
+                    String _arg216 = data.readString();
+                    String _arg33 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result40 = getPhoneNumber(_arg041, _arg127, _arg216, _arg33);
+                    reply.writeNoException();
+                    reply.writeString(_result40);
+                    return true;
+                case 50:
+                    int _arg042 = data.readInt();
+                    String _arg128 = data.readString();
+                    String _arg217 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result41 = getPhoneNumberFromFirstAvailableSource(_arg042, _arg128, _arg217);
+                    reply.writeNoException();
+                    reply.writeString(_result41);
+                    return true;
+                case 51:
+                    int _arg043 = data.readInt();
+                    int _arg129 = data.readInt();
+                    String _arg218 = data.readString();
+                    String _arg34 = data.readString();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPhoneNumber(_arg043, _arg129, _arg218, _arg34, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    int _arg044 = data.readInt();
+                    int _arg130 = data.readInt();
+                    String _arg219 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result42 = setUsageSetting(_arg044, _arg130, _arg219);
+                    reply.writeNoException();
+                    reply.writeInt(_result42);
+                    return true;
+                case 53:
+                    int _arg045 = data.readInt();
+                    String _arg131 = data.readString();
+                    data.enforceNoDataAvail();
+                    setGroupOwner(_arg045, _arg131);
+                    reply.writeNoException();
+                    return true;
+                case 54:
+                    UserHandle _arg046 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    int _arg132 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result43 = setSubscriptionUserHandle(_arg046, _arg132);
+                    reply.writeNoException();
+                    reply.writeInt(_result43);
+                    return true;
+                case 55:
+                    int _arg047 = data.readInt();
+                    data.enforceNoDataAvail();
+                    UserHandle _result44 = getSubscriptionUserHandle(_arg047);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result44, 1);
+                    return true;
+                case 56:
+                    int _arg048 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result45 = isSubscriptionAssociatedWithCallingUser(_arg048);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result45);
+                    return true;
+                case 57:
+                    int _arg049 = data.readInt();
+                    UserHandle _arg133 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result46 = isSubscriptionAssociatedWithUser(_arg049, _arg133);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result46);
+                    return true;
+                case 58:
+                    UserHandle _arg050 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<SubscriptionInfo> _result47 = getSubscriptionInfoListAssociatedWithUser(_arg050);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result47, 1);
+                    return true;
+                case 59:
+                    byte[] _arg051 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    restoreAllSimSpecificSettingsFromBackup(_arg051);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    int _arg052 = data.readInt();
+                    int _arg134 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTransferStatus(_arg052, _arg134);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SubscriptionInfo> _result = getAllSubInfoList(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            SubscriptionInfo _result2 = getActiveSubscriptionInfo(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            SubscriptionInfo _result3 = getActiveSubscriptionInfoForIccId(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            String _arg14 = data.readString();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            SubscriptionInfo _result4 = getActiveSubscriptionInfoForSimSlotIndex(_arg04, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SubscriptionInfo> _result5 = getActiveSubscriptionInfoList(_arg05, _arg15);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result5, 1);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result6 = getActiveSubInfoCount(_arg06, _arg16);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 7:
-                            int _result7 = getActiveSubInfoCountMax();
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 8:
-                            String _arg07 = data.readString();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SubscriptionInfo> _result8 = getAvailableSubscriptionInfoList(_arg07, _arg17);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result8, 1);
-                            return true;
-                        case 9:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SubscriptionInfo> _result9 = getAccessibleSubscriptionInfoList(_arg08);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestEmbeddedSubscriptionInfoListRefresh(_arg09);
-                            return true;
-                        case 11:
-                            String _arg010 = data.readString();
-                            String _arg18 = data.readString();
-                            int _arg24 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result10 = addSubInfo(_arg010, _arg18, _arg24, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 12:
-                            String _arg011 = data.readString();
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = removeSubInfo(_arg011, _arg19);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 13:
-                            int _arg012 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result12 = setIconTint(_arg012, _arg110);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 14:
-                            String _arg013 = data.readString();
-                            int _arg111 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result13 = setDisplayNameUsingSrc(_arg013, _arg111, _arg25);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 15:
-                            String _arg014 = data.readString();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result14 = setDisplayNumber(_arg014, _arg112);
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 16:
-                            int _arg015 = data.readInt();
-                            int _arg113 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result15 = setDataRoaming(_arg015, _arg113);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 17:
-                            boolean _arg016 = data.readBoolean();
-                            int _arg114 = data.readInt();
-                            String _arg26 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result16 = setOpportunistic(_arg016, _arg114, _arg26);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 18:
-                            int[] _arg017 = data.createIntArray();
-                            String _arg115 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelUuid _result17 = createSubscriptionGroup(_arg017, _arg115);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result17, 1);
-                            return true;
-                        case 19:
-                            int _arg018 = data.readInt();
-                            boolean _arg116 = data.readBoolean();
-                            ISetOpportunisticDataCallback _arg27 = ISetOpportunisticDataCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setPreferredDataSubscriptionId(_arg018, _arg116, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            int _result18 = getPreferredDataSubscriptionId();
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 21:
-                            String _arg019 = data.readString();
-                            String _arg117 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SubscriptionInfo> _result19 = getOpportunisticSubscriptions(_arg019, _arg117);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result19, 1);
-                            return true;
-                        case 22:
-                            int[] _arg020 = data.createIntArray();
-                            ParcelUuid _arg118 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            String _arg28 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeSubscriptionsFromGroup(_arg020, _arg118, _arg28);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            int[] _arg021 = data.createIntArray();
-                            ParcelUuid _arg119 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            String _arg29 = data.readString();
-                            data.enforceNoDataAvail();
-                            addSubscriptionsIntoGroup(_arg021, _arg119, _arg29);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            ParcelUuid _arg022 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            String _arg120 = data.readString();
-                            String _arg210 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SubscriptionInfo> _result20 = getSubscriptionsInGroup(_arg022, _arg120, _arg210);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result20, 1);
-                            return true;
-                        case 25:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result21 = getSlotIndex(_arg023);
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            return true;
-                        case 26:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result22 = getSubId(_arg024);
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 27:
-                            int _result23 = getDefaultSubId();
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            return true;
-                        case 28:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result24 = getPhoneId(_arg025);
-                            reply.writeNoException();
-                            reply.writeInt(_result24);
-                            return true;
-                        case 29:
-                            int _result25 = getDefaultDataSubId();
-                            reply.writeNoException();
-                            reply.writeInt(_result25);
-                            return true;
-                        case 30:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDefaultDataSubId(_arg026);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            int _result26 = getDefaultVoiceSubId();
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 32:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDefaultVoiceSubId(_arg027);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            int _result27 = getDefaultSmsSubId();
-                            reply.writeNoException();
-                            reply.writeInt(_result27);
-                            return true;
-                        case 34:
-                            int _arg028 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDefaultSmsSubId(_arg028);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            boolean _arg029 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int[] _result28 = getActiveSubIdList(_arg029);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result28);
-                            return true;
-                        case 36:
-                            int _arg030 = data.readInt();
-                            String _arg121 = data.readString();
-                            String _arg211 = data.readString();
-                            data.enforceNoDataAvail();
-                            setSubscriptionProperty(_arg030, _arg121, _arg211);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            int _arg031 = data.readInt();
-                            String _arg122 = data.readString();
-                            String _arg212 = data.readString();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result29 = getSubscriptionProperty(_arg031, _arg122, _arg212, _arg32);
-                            reply.writeNoException();
-                            reply.writeString(_result29);
-                            return true;
-                        case 38:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result30 = isSubscriptionEnabled(_arg032);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result30);
-                            return true;
-                        case 39:
-                            int _arg033 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result31 = getEnabledSubscriptionId(_arg033);
-                            reply.writeNoException();
-                            reply.writeInt(_result31);
-                            return true;
-                        case 40:
-                            int _arg034 = data.readInt();
-                            String _arg123 = data.readString();
-                            String _arg213 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result32 = isActiveSubId(_arg034, _arg123, _arg213);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result32);
-                            return true;
-                        case 41:
-                            int _result33 = getActiveDataSubscriptionId();
-                            reply.writeNoException();
-                            reply.writeInt(_result33);
-                            return true;
-                        case 42:
-                            boolean _result34 = canDisablePhysicalSubscription();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result34);
-                            return true;
-                        case 43:
-                            boolean _arg035 = data.readBoolean();
-                            int _arg124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setUiccApplicationsEnabled(_arg035, _arg124);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            int _arg036 = data.readInt();
-                            int _arg125 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result35 = setDeviceToDeviceStatusSharing(_arg036, _arg125);
-                            reply.writeNoException();
-                            reply.writeInt(_result35);
-                            return true;
-                        case 45:
-                            String _arg037 = data.readString();
-                            int _arg126 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result36 = setDeviceToDeviceStatusSharingContacts(_arg037, _arg126);
-                            reply.writeNoException();
-                            reply.writeInt(_result36);
-                            return true;
-                        case 46:
-                            int _arg038 = data.readInt();
-                            int _arg127 = data.readInt();
-                            String _arg214 = data.readString();
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result37 = getPhoneNumber(_arg038, _arg127, _arg214, _arg33);
-                            reply.writeNoException();
-                            reply.writeString(_result37);
-                            return true;
-                        case 47:
-                            int _arg039 = data.readInt();
-                            String _arg128 = data.readString();
-                            String _arg215 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result38 = getPhoneNumberFromFirstAvailableSource(_arg039, _arg128, _arg215);
-                            reply.writeNoException();
-                            reply.writeString(_result38);
-                            return true;
-                        case 48:
-                            int _arg040 = data.readInt();
-                            int _arg129 = data.readInt();
-                            String _arg216 = data.readString();
-                            String _arg34 = data.readString();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPhoneNumber(_arg040, _arg129, _arg216, _arg34, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            int _arg041 = data.readInt();
-                            int _arg130 = data.readInt();
-                            String _arg217 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result39 = setUsageSetting(_arg041, _arg130, _arg217);
-                            reply.writeNoException();
-                            reply.writeInt(_result39);
-                            return true;
-                        case 50:
-                            UserHandle _arg042 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            int _arg131 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result40 = setSubscriptionUserHandle(_arg042, _arg131);
-                            reply.writeNoException();
-                            reply.writeInt(_result40);
-                            return true;
-                        case 51:
-                            int _arg043 = data.readInt();
-                            data.enforceNoDataAvail();
-                            UserHandle _result41 = getSubscriptionUserHandle(_arg043);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result41, 1);
-                            return true;
-                        case 52:
-                            int _arg044 = data.readInt();
-                            UserHandle _arg132 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result42 = isSubscriptionAssociatedWithUser(_arg044, _arg132);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result42);
-                            return true;
-                        case 53:
-                            UserHandle _arg045 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<SubscriptionInfo> _result43 = getSubscriptionInfoListAssociatedWithUser(_arg045);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result43, 1);
-                            return true;
-                        case 54:
-                            byte[] _arg046 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            restoreAllSimSpecificSettingsFromBackup(_arg046);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISub {
+        private static class Proxy implements ISub {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1100,13 +1210,14 @@ public interface ISub extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ISub
-            public List<SubscriptionInfo> getActiveSubscriptionInfoList(String callingPackage, String callingFeatureId) throws RemoteException {
+            public List<SubscriptionInfo> getActiveSubscriptionInfoList(String callingPackage, String callingFeatureId, boolean isForAllProfiles) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
+                    _data.writeBoolean(isForAllProfiles);
                     this.mRemote.transact(5, _data, _reply, 0);
                     _reply.readException();
                     List<SubscriptionInfo> _result = _reply.createTypedArrayList(SubscriptionInfo.CREATOR);
@@ -1118,13 +1229,14 @@ public interface ISub extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ISub
-            public int getActiveSubInfoCount(String callingPackage, String callingFeatureId) throws RemoteException {
+            public int getActiveSubInfoCount(String callingPackage, String callingFeatureId, boolean isForAllProfile) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
+                    _data.writeBoolean(isForAllProfile);
                     this.mRemote.transact(6, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
@@ -1501,13 +1613,30 @@ public interface ISub extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ISub
+            public int getDefaultSubIdAsUser(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(28, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ISub
             public int getPhoneId(int subId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(28, _data, _reply, 0);
+                    this.mRemote.transact(29, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1523,7 +1652,7 @@ public interface ISub extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(29, _data, _reply, 0);
+                    this.mRemote.transact(30, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1540,7 +1669,7 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(30, _data, _reply, 0);
+                    this.mRemote.transact(31, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1554,7 +1683,24 @@ public interface ISub extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(31, _data, _reply, 0);
+                    this.mRemote.transact(32, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ISub
+            public int getDefaultVoiceSubIdAsUser(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(33, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1571,7 +1717,7 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(32, _data, _reply, 0);
+                    this.mRemote.transact(34, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1585,7 +1731,24 @@ public interface ISub extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(33, _data, _reply, 0);
+                    this.mRemote.transact(35, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ISub
+            public int getDefaultSmsSubIdAsUser(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(36, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1602,7 +1765,7 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(34, _data, _reply, 0);
+                    this.mRemote.transact(37, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1617,7 +1780,7 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(visibleOnly);
-                    this.mRemote.transact(35, _data, _reply, 0);
+                    this.mRemote.transact(38, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -1636,7 +1799,7 @@ public interface ISub extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(propKey);
                     _data.writeString(propValue);
-                    this.mRemote.transact(36, _data, _reply, 0);
+                    this.mRemote.transact(39, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1654,7 +1817,7 @@ public interface ISub extends IInterface {
                     _data.writeString(propKey);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(37, _data, _reply, 0);
+                    this.mRemote.transact(40, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -1671,7 +1834,7 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(38, _data, _reply, 0);
+                    this.mRemote.transact(41, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1688,7 +1851,7 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(slotIndex);
-                    this.mRemote.transact(39, _data, _reply, 0);
+                    this.mRemote.transact(42, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1707,7 +1870,7 @@ public interface ISub extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(40, _data, _reply, 0);
+                    this.mRemote.transact(43, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1723,7 +1886,7 @@ public interface ISub extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(41, _data, _reply, 0);
+                    this.mRemote.transact(44, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1739,7 +1902,7 @@ public interface ISub extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(42, _data, _reply, 0);
+                    this.mRemote.transact(45, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1757,7 +1920,7 @@ public interface ISub extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
                     _data.writeInt(subscriptionId);
-                    this.mRemote.transact(43, _data, _reply, 0);
+                    this.mRemote.transact(46, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1773,7 +1936,7 @@ public interface ISub extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(sharing);
                     _data.writeInt(subId);
-                    this.mRemote.transact(44, _data, _reply, 0);
+                    this.mRemote.transact(47, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1791,7 +1954,7 @@ public interface ISub extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(contacts);
                     _data.writeInt(subscriptionId);
-                    this.mRemote.transact(45, _data, _reply, 0);
+                    this.mRemote.transact(48, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1811,7 +1974,7 @@ public interface ISub extends IInterface {
                     _data.writeInt(source);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(46, _data, _reply, 0);
+                    this.mRemote.transact(49, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -1830,7 +1993,7 @@ public interface ISub extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(47, _data, _reply, 0);
+                    this.mRemote.transact(50, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -1851,7 +2014,7 @@ public interface ISub extends IInterface {
                     _data.writeString(number);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(48, _data, _reply, 0);
+                    this.mRemote.transact(51, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1868,10 +2031,26 @@ public interface ISub extends IInterface {
                     _data.writeInt(usageSetting);
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(49, _data, _reply, 0);
+                    this.mRemote.transact(52, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ISub
+            public void setGroupOwner(int subId, String groupOwner) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeString(groupOwner);
+                    this.mRemote.transact(53, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -1886,7 +2065,7 @@ public interface ISub extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(userHandle, 0);
                     _data.writeInt(subId);
-                    this.mRemote.transact(50, _data, _reply, 0);
+                    this.mRemote.transact(54, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1903,9 +2082,26 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(51, _data, _reply, 0);
+                    this.mRemote.transact(55, _data, _reply, 0);
                     _reply.readException();
                     UserHandle _result = (UserHandle) _reply.readTypedObject(UserHandle.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ISub
+            public boolean isSubscriptionAssociatedWithCallingUser(int subscriptionId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subscriptionId);
+                    this.mRemote.transact(56, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -1921,7 +2117,7 @@ public interface ISub extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subscriptionId);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(52, _data, _reply, 0);
+                    this.mRemote.transact(57, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1938,7 +2134,7 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(53, _data, _reply, 0);
+                    this.mRemote.transact(58, _data, _reply, 0);
                     _reply.readException();
                     List<SubscriptionInfo> _result = _reply.createTypedArrayList(SubscriptionInfo.CREATOR);
                     return _result;
@@ -1955,7 +2151,23 @@ public interface ISub extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeByteArray(data);
-                    this.mRemote.transact(54, _data, _reply, 0);
+                    this.mRemote.transact(59, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ISub
+            public void setTransferStatus(int subId, int status) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeInt(status);
+                    this.mRemote.transact(60, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1964,9 +2176,13 @@ public interface ISub extends IInterface {
             }
         }
 
+        protected void setTransferStatus_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.WRITE_EMBEDDED_SUBSCRIPTIONS, getCallingPid(), getCallingUid());
+        }
+
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 53;
+            return 59;
         }
     }
 }

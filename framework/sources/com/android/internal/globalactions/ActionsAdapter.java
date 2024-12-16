@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ActionsAdapter extends BaseAdapter {
     private final Context mContext;
     private final BooleanSupplier mDeviceProvisioned;
@@ -71,7 +71,6 @@ public class ActionsAdapter extends BaseAdapter {
     @Override // android.widget.Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         Action action = getItem(position);
-        Context context = this.mContext;
-        return action.create(context, convertView, parent, LayoutInflater.from(context));
+        return action.create(this.mContext, convertView, parent, LayoutInflater.from(this.mContext));
     }
 }

@@ -4,7 +4,7 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MposTZServiceConfig implements Parcelable {
     private static final String QSEE_UNKNOWN_PROCESS = "unknown";
     private static final String QSEE_UNKNOWN_ROOT = "unknown";
@@ -18,23 +18,18 @@ public class MposTZServiceConfig implements Parcelable {
     public String taTechnology;
     private static final boolean bQC = Build.BOARD.matches("(?i)(msm[a-z0-9]*)|(sdm[a-z0-9]*)");
     public static final Parcelable.Creator<MposTZServiceConfig> CREATOR = new Parcelable.Creator<MposTZServiceConfig>() { // from class: com.samsung.android.knox.mpos.MposTZServiceConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MposTZServiceConfig createFromParcel(Parcel in) {
             return new MposTZServiceConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MposTZServiceConfig[] newArray(int size) {
             return new MposTZServiceConfig[size];
         }
     };
-
-    /* synthetic */ MposTZServiceConfig(Parcel parcel, MposTZServiceConfigIA mposTZServiceConfigIA) {
-        this(parcel);
-    }
 
     public MposTZServiceConfig(int maxSendCmdSize, int maxRecvRespSize, String taTechnology, String rootName, String processName) {
         this.maxSendCmdSize = maxSendCmdSize;
@@ -42,23 +37,6 @@ public class MposTZServiceConfig implements Parcelable {
         this.taTechnology = taTechnology;
         this.rootName = rootName;
         this.processName = processName;
-    }
-
-    /* renamed from: com.samsung.android.knox.mpos.MposTZServiceConfig$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MposTZServiceConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MposTZServiceConfig createFromParcel(Parcel in) {
-            return new MposTZServiceConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MposTZServiceConfig[] newArray(int size) {
-            return new MposTZServiceConfig[size];
-        }
     }
 
     private MposTZServiceConfig(Parcel in) {

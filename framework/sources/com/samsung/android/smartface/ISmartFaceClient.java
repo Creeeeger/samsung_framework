@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISmartFaceClient extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.smartface.ISmartFaceClient";
 
     void onInfo(int i, FaceInfo faceInfo, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISmartFaceClient {
         @Override // com.samsung.android.smartface.ISmartFaceClient
         public void onInfo(int msg_type, FaceInfo data, int service_type) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISmartFaceClient extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISmartFaceClient {
         static final int TRANSACTION_onInfo = 1;
 
@@ -67,28 +65,24 @@ public interface ISmartFaceClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISmartFaceClient.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISmartFaceClient.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISmartFaceClient.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    FaceInfo _arg1 = (FaceInfo) data.readTypedObject(FaceInfo.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onInfo(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            FaceInfo _arg1 = (FaceInfo) data.readTypedObject(FaceInfo.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onInfo(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISmartFaceClient {
+        private static class Proxy implements ISmartFaceClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

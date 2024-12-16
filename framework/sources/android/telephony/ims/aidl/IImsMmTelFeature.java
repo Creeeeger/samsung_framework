@@ -22,7 +22,7 @@ import com.android.ims.internal.IImsUt;
 import com.android.internal.telephony.PublishDialog;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsMmTelFeature extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsMmTelFeature";
 
@@ -86,6 +86,8 @@ public interface IImsMmTelFeature extends IInterface {
 
     void sendDtmfEvent(int i, String str) throws RemoteException;
 
+    void sendMmsProcType(int i, boolean z) throws RemoteException;
+
     void sendPublishDialog(int i, PublishDialog publishDialog) throws RemoteException;
 
     void sendSms(int i, int i2, String str, String str2, boolean z, byte[] bArr) throws RemoteException;
@@ -116,7 +118,6 @@ public interface IImsMmTelFeature extends IInterface {
 
     void triggerAutoConfigurationForApp(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsMmTelFeature {
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void setListener(IImsMmTelListener l) throws RemoteException {
@@ -313,13 +314,16 @@ public interface IImsMmTelFeature extends IInterface {
         public void notifyEpsFallbackResult(int phoneId, int result) throws RemoteException {
         }
 
+        @Override // android.telephony.ims.aidl.IImsMmTelFeature
+        public void sendMmsProcType(int phoneId, boolean enable) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsMmTelFeature {
         static final int TRANSACTION_acknowledgeSms = 26;
         static final int TRANSACTION_acknowledgeSmsReport = 28;
@@ -351,6 +355,7 @@ public interface IImsMmTelFeature extends IInterface {
         static final int TRANSACTION_queryMediaQualityStatus = 22;
         static final int TRANSACTION_removeCapabilityCallback = 14;
         static final int TRANSACTION_sendDtmfEvent = 38;
+        static final int TRANSACTION_sendMmsProcType = 46;
         static final int TRANSACTION_sendPublishDialog = 40;
         static final int TRANSACTION_sendSms = 24;
         static final int TRANSACTION_setListener = 1;
@@ -479,6 +484,8 @@ public interface IImsMmTelFeature extends IInterface {
                     return "triggerAutoConfigurationForApp";
                 case 45:
                     return "notifyEpsFallbackResult";
+                case 46:
+                    return "sendMmsProcType";
                 default:
                     return null;
             }
@@ -494,293 +501,296 @@ public interface IImsMmTelFeature extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsMmTelFeature.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsMmTelFeature.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsMmTelFeature.DESCRIPTOR);
+                case 1:
+                    IImsMmTelListener _arg0 = IImsMmTelListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setListener(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _result = getFeatureState();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ImsCallProfile _result2 = createCallProfile(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    List<RtpHeaderExtensionType> _arg03 = data.createTypedArrayList(RtpHeaderExtensionType.CREATOR);
+                    data.enforceNoDataAvail();
+                    changeOfferedRtpHeaderExtensionTypes(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    ImsCallProfile _arg04 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    IImsCallSession _result3 = createCallSession(_arg04);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 6:
+                    String[] _arg05 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    int _result4 = shouldProcessCall(_arg05);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 7:
+                    IImsUt _result5 = getUtInterface();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 8:
+                    IImsEcbm _result6 = getEcbmInterface();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result6);
+                    return true;
+                case 9:
+                    int _arg06 = data.readInt();
+                    Message _arg12 = (Message) data.readTypedObject(Message.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUiTtyMode(_arg06, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    IImsMultiEndpoint _result7 = getMultiEndpointInterface();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result7);
+                    return true;
+                case 11:
+                    int _result8 = queryCapabilityStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 12:
+                    boolean _arg07 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setTerminalBasedCallWaitingStatus(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    IImsCapabilityCallback _arg08 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addCapabilityCallback(_arg08);
+                    return true;
+                case 14:
+                    IImsCapabilityCallback _arg09 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeCapabilityCallback(_arg09);
+                    return true;
+                case 15:
+                    CapabilityChangeRequest _arg010 = (CapabilityChangeRequest) data.readTypedObject(CapabilityChangeRequest.CREATOR);
+                    IImsCapabilityCallback _arg13 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    changeCapabilitiesConfiguration(_arg010, _arg13);
+                    return true;
+                case 16:
+                    int _arg011 = data.readInt();
+                    int _arg14 = data.readInt();
+                    IImsCapabilityCallback _arg2 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    queryCapabilityConfiguration(_arg011, _arg14, _arg2);
+                    return true;
+                case 17:
+                    ISrvccStartedCallback _arg012 = ISrvccStartedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    notifySrvccStarted(_arg012);
+                    return true;
+                case 18:
+                    notifySrvccCompleted();
+                    return true;
+                case 19:
+                    notifySrvccFailed();
+                    return true;
+                case 20:
+                    notifySrvccCanceled();
+                    return true;
+                case 21:
+                    int _arg013 = data.readInt();
+                    MediaThreshold _arg15 = (MediaThreshold) data.readTypedObject(MediaThreshold.CREATOR);
+                    data.enforceNoDataAvail();
+                    setMediaQualityThreshold(_arg013, _arg15);
+                    return true;
+                case 22:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    MediaQualityStatus _result9 = queryMediaQualityStatus(_arg014);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 23:
+                    IImsSmsListener _arg015 = IImsSmsListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setSmsListener(_arg015);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    int _arg016 = data.readInt();
+                    int _arg16 = data.readInt();
+                    String _arg22 = data.readString();
+                    String _arg3 = data.readString();
+                    boolean _arg4 = data.readBoolean();
+                    byte[] _arg5 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendSms(_arg016, _arg16, _arg22, _arg3, _arg4, _arg5);
+                    return true;
+                case 25:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onMemoryAvailable(_arg017);
+                    return true;
+                case 26:
+                    int _arg018 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeSms(_arg018, _arg17, _arg23);
+                    return true;
+                case 27:
+                    int _arg019 = data.readInt();
+                    int _arg18 = data.readInt();
+                    int _arg24 = data.readInt();
+                    byte[] _arg32 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    acknowledgeSmsWithPdu(_arg019, _arg18, _arg24, _arg32);
+                    return true;
+                case 28:
+                    int _arg020 = data.readInt();
+                    int _arg19 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeSmsReport(_arg020, _arg19, _arg25);
+                    return true;
+                case 29:
+                    String _result10 = getSmsFormat();
+                    reply.writeNoException();
+                    reply.writeString(_result10);
+                    return true;
+                case 30:
+                    onSmsReady();
+                    return true;
+                case 31:
+                    int _arg021 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRetryCount(_arg021, _arg110);
+                    return true;
+                case 32:
+                    String _arg022 = data.readString();
+                    data.enforceNoDataAvail();
+                    setSmsc(_arg022);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    initImsSmsImplAdapter();
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    int _arg023 = data.readInt();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    changeAudioPath(_arg023, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    int _arg024 = data.readInt();
+                    int _arg112 = data.readInt();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result11 = startLocalRingBackTone(_arg024, _arg112, _arg26);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 36:
+                    int _result12 = stopLocalRingBackTone();
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 37:
+                    int _arg025 = data.readInt();
+                    boolean _arg113 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVideoCrtAudio(_arg025, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    int _arg026 = data.readInt();
+                    String _arg114 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendDtmfEvent(_arg026, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    String _arg027 = data.readString();
+                    String _arg115 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result13 = getTrn(_arg027, _arg115);
+                    reply.writeNoException();
+                    reply.writeString(_result13);
+                    return true;
+                case 40:
+                    int _arg028 = data.readInt();
+                    PublishDialog _arg116 = (PublishDialog) data.readTypedObject(PublishDialog.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendPublishDialog(_arg028, _arg116);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = isCmcEmergencyCallSupported(_arg029);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 42:
+                    int _arg030 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTtyMode(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    int _arg031 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result15 = getInitialCallNetworkType(_arg031);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 44:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    triggerAutoConfigurationForApp(_arg032);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    int _arg033 = data.readInt();
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyEpsFallbackResult(_arg033, _arg117);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg034 = data.readInt();
+                    boolean _arg118 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    sendMmsProcType(_arg034, _arg118);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IImsMmTelListener _arg0 = IImsMmTelListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setListener(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _result = getFeatureState();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ImsCallProfile _result2 = createCallProfile(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            List<RtpHeaderExtensionType> _arg03 = data.createTypedArrayList(RtpHeaderExtensionType.CREATOR);
-                            data.enforceNoDataAvail();
-                            changeOfferedRtpHeaderExtensionTypes(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            ImsCallProfile _arg04 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            IImsCallSession _result3 = createCallSession(_arg04);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 6:
-                            String[] _arg05 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            int _result4 = shouldProcessCall(_arg05);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 7:
-                            IImsUt _result5 = getUtInterface();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 8:
-                            IImsEcbm _result6 = getEcbmInterface();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result6);
-                            return true;
-                        case 9:
-                            int _arg06 = data.readInt();
-                            Message _arg12 = (Message) data.readTypedObject(Message.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUiTtyMode(_arg06, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            IImsMultiEndpoint _result7 = getMultiEndpointInterface();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result7);
-                            return true;
-                        case 11:
-                            int _result8 = queryCapabilityStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 12:
-                            boolean _arg07 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setTerminalBasedCallWaitingStatus(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            IImsCapabilityCallback _arg08 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addCapabilityCallback(_arg08);
-                            return true;
-                        case 14:
-                            IImsCapabilityCallback _arg09 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeCapabilityCallback(_arg09);
-                            return true;
-                        case 15:
-                            CapabilityChangeRequest _arg010 = (CapabilityChangeRequest) data.readTypedObject(CapabilityChangeRequest.CREATOR);
-                            IImsCapabilityCallback _arg13 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            changeCapabilitiesConfiguration(_arg010, _arg13);
-                            return true;
-                        case 16:
-                            int _arg011 = data.readInt();
-                            int _arg14 = data.readInt();
-                            IImsCapabilityCallback _arg2 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            queryCapabilityConfiguration(_arg011, _arg14, _arg2);
-                            return true;
-                        case 17:
-                            ISrvccStartedCallback _arg012 = ISrvccStartedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            notifySrvccStarted(_arg012);
-                            return true;
-                        case 18:
-                            notifySrvccCompleted();
-                            return true;
-                        case 19:
-                            notifySrvccFailed();
-                            return true;
-                        case 20:
-                            notifySrvccCanceled();
-                            return true;
-                        case 21:
-                            int _arg013 = data.readInt();
-                            MediaThreshold _arg15 = (MediaThreshold) data.readTypedObject(MediaThreshold.CREATOR);
-                            data.enforceNoDataAvail();
-                            setMediaQualityThreshold(_arg013, _arg15);
-                            return true;
-                        case 22:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            MediaQualityStatus _result9 = queryMediaQualityStatus(_arg014);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result9, 1);
-                            return true;
-                        case 23:
-                            IImsSmsListener _arg015 = IImsSmsListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setSmsListener(_arg015);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            int _arg016 = data.readInt();
-                            int _arg16 = data.readInt();
-                            String _arg22 = data.readString();
-                            String _arg3 = data.readString();
-                            boolean _arg4 = data.readBoolean();
-                            byte[] _arg5 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendSms(_arg016, _arg16, _arg22, _arg3, _arg4, _arg5);
-                            return true;
-                        case 25:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onMemoryAvailable(_arg017);
-                            return true;
-                        case 26:
-                            int _arg018 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeSms(_arg018, _arg17, _arg23);
-                            return true;
-                        case 27:
-                            int _arg019 = data.readInt();
-                            int _arg18 = data.readInt();
-                            int _arg24 = data.readInt();
-                            byte[] _arg32 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            acknowledgeSmsWithPdu(_arg019, _arg18, _arg24, _arg32);
-                            return true;
-                        case 28:
-                            int _arg020 = data.readInt();
-                            int _arg19 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeSmsReport(_arg020, _arg19, _arg25);
-                            return true;
-                        case 29:
-                            String _result10 = getSmsFormat();
-                            reply.writeNoException();
-                            reply.writeString(_result10);
-                            return true;
-                        case 30:
-                            onSmsReady();
-                            return true;
-                        case 31:
-                            int _arg021 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRetryCount(_arg021, _arg110);
-                            return true;
-                        case 32:
-                            String _arg022 = data.readString();
-                            data.enforceNoDataAvail();
-                            setSmsc(_arg022);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            initImsSmsImplAdapter();
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            int _arg023 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            changeAudioPath(_arg023, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            int _arg024 = data.readInt();
-                            int _arg112 = data.readInt();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result11 = startLocalRingBackTone(_arg024, _arg112, _arg26);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 36:
-                            int _result12 = stopLocalRingBackTone();
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 37:
-                            int _arg025 = data.readInt();
-                            boolean _arg113 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVideoCrtAudio(_arg025, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            int _arg026 = data.readInt();
-                            String _arg114 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendDtmfEvent(_arg026, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            String _arg027 = data.readString();
-                            String _arg115 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result13 = getTrn(_arg027, _arg115);
-                            reply.writeNoException();
-                            reply.writeString(_result13);
-                            return true;
-                        case 40:
-                            int _arg028 = data.readInt();
-                            PublishDialog _arg116 = (PublishDialog) data.readTypedObject(PublishDialog.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendPublishDialog(_arg028, _arg116);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _arg029 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = isCmcEmergencyCallSupported(_arg029);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 42:
-                            int _arg030 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTtyMode(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            int _arg031 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result15 = getInitialCallNetworkType(_arg031);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 44:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            triggerAutoConfigurationForApp(_arg032);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            int _arg033 = data.readInt();
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyEpsFallbackResult(_arg033, _arg117);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsMmTelFeature {
+        private static class Proxy implements IImsMmTelFeature {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1467,11 +1477,27 @@ public interface IImsMmTelFeature extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.telephony.ims.aidl.IImsMmTelFeature
+            public void sendMmsProcType(int phoneId, boolean enable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IImsMmTelFeature.DESCRIPTOR);
+                    _data.writeInt(phoneId);
+                    _data.writeBoolean(enable);
+                    this.mRemote.transact(46, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 44;
+            return 45;
         }
     }
 }

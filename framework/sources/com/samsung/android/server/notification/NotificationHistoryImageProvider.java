@@ -12,12 +12,12 @@ import android.util.Log;
 import android.util.Slog;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class NotificationHistoryImageProvider extends ContentProvider {
     static final String AUTHORITY = "com.android.server.notification.provider";
     private static final int DATABASE_VERSION = 1;
-    private static final int HISTORY_RETENTION_DAYS = 1;
-    private static final int HISTORY_RETENTION_MS = 86400000;
+    private static final long HISTORY_RETENTION_DAYS = 1;
+    private static final long HISTORY_RETENTION_MS = 86400000;
     public static final String KEY_IMAGE = "image";
     public static final String KEY_TIME = "time";
     public static final String KEY_URI_ID = "uri_id";
@@ -40,8 +40,7 @@ public class NotificationHistoryImageProvider extends ContentProvider {
         return sNotificationHistoryImageProvider;
     }
 
-    /* loaded from: classes5.dex */
-    public static class DatabaseHelper extends SQLiteOpenHelper {
+    private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG = "NotiHistoryImg.DB";
 
         public DatabaseHelper(Context context) {
@@ -68,12 +67,11 @@ public class NotificationHistoryImageProvider extends ContentProvider {
 
     @Override // android.content.ContentProvider
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        DatabaseHelper databaseHelper = this.mOpenHelper;
-        if (databaseHelper == null) {
+        if (this.mOpenHelper == null) {
             Slog.d(TAG, "Error getting mOpenHelper in delete db");
             return -1;
         }
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db = this.mOpenHelper.getWritableDatabase();
         if (db == null) {
             Slog.d(TAG, "Failed to delete db.");
             return -1;
@@ -102,12 +100,11 @@ public class NotificationHistoryImageProvider extends ContentProvider {
 
     @Override // android.content.ContentProvider
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        DatabaseHelper databaseHelper = this.mOpenHelper;
-        if (databaseHelper == null) {
+        if (this.mOpenHelper == null) {
             Slog.d(TAG, "Error getting mOpenHelper in getCachedImage");
             return null;
         }
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        SQLiteDatabase db = this.mOpenHelper.getReadableDatabase();
         if (db == null) {
             Slog.d(TAG, "Error getting DB in getCachedImage");
             return null;
@@ -129,12 +126,11 @@ public class NotificationHistoryImageProvider extends ContentProvider {
             Slog.d(TAG, "addImageToCache image is null or empty.");
             return -1L;
         }
-        DatabaseHelper databaseHelper = this.mOpenHelper;
-        if (databaseHelper == null) {
+        if (this.mOpenHelper == null) {
             Slog.d(TAG, "Error getting mOpenHelper in addImageToCache");
             return -1L;
         }
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db = this.mOpenHelper.getWritableDatabase();
         if (db == null) {
             Slog.d(TAG, "Error getting DB in addImageToCache");
             return -1L;
@@ -157,12 +153,11 @@ public class NotificationHistoryImageProvider extends ContentProvider {
     }
 
     private long addImageToCache(ContentValues contentValues) {
-        DatabaseHelper databaseHelper = this.mOpenHelper;
-        if (databaseHelper == null) {
+        if (this.mOpenHelper == null) {
             Slog.d(TAG, "Error getting mOpenHelper in addImageToCache");
             return -1L;
         }
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db = this.mOpenHelper.getWritableDatabase();
         if (db == null) {
             Slog.d(TAG, "Error getting DB in addImageToCache");
             return -1L;
@@ -181,12 +176,11 @@ public class NotificationHistoryImageProvider extends ContentProvider {
     }
 
     public boolean updatePostedTime(long time, ArrayList<String> list) {
-        DatabaseHelper databaseHelper = this.mOpenHelper;
-        if (databaseHelper == null) {
+        if (this.mOpenHelper == null) {
             Slog.d(TAG, "Error getting mOpenHelper in updatePostedTime");
             return false;
         }
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db = this.mOpenHelper.getWritableDatabase();
         if (db == null) {
             Slog.d(TAG, "Error getting DB in updatePostedTime");
             return false;
@@ -200,12 +194,11 @@ public class NotificationHistoryImageProvider extends ContentProvider {
     }
 
     public boolean deleteRows(long time) {
-        DatabaseHelper databaseHelper = this.mOpenHelper;
-        if (databaseHelper == null) {
+        if (this.mOpenHelper == null) {
             Slog.d(TAG, "Error getting mOpenHelper in deleteRows");
             return false;
         }
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db = this.mOpenHelper.getWritableDatabase();
         if (db == null) {
             Slog.d(TAG, "Error getting DB in deleteRows");
             return false;
@@ -218,12 +211,11 @@ public class NotificationHistoryImageProvider extends ContentProvider {
     }
 
     public boolean deleteRows(String uri) {
-        DatabaseHelper databaseHelper = this.mOpenHelper;
-        if (databaseHelper == null) {
+        if (this.mOpenHelper == null) {
             Slog.d(TAG, "Error getting mOpenHelper in deleteRows");
             return false;
         }
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db = this.mOpenHelper.getWritableDatabase();
         if (db == null) {
             Slog.d(TAG, "Error getting DB in deleteRows");
             return false;

@@ -10,14 +10,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes4.dex */
 public final class VerifiedKeyEvent extends VerifiedInputEvent implements Parcelable {
     public static final Parcelable.Creator<VerifiedKeyEvent> CREATOR = new Parcelable.Creator<VerifiedKeyEvent>() { // from class: android.view.VerifiedKeyEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifiedKeyEvent[] newArray(int size) {
             return new VerifiedKeyEvent[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifiedKeyEvent createFromParcel(Parcel in) {
             return new VerifiedKeyEvent(in);
@@ -33,7 +32,6 @@ public final class VerifiedKeyEvent extends VerifiedInputEvent implements Parcel
     private int mScanCode;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface KeyEventAction {
     }
 
@@ -50,7 +48,7 @@ public final class VerifiedKeyEvent extends VerifiedInputEvent implements Parcel
     public VerifiedKeyEvent(int deviceId, long eventTimeNanos, int source, int displayId, int action, long downTimeNanos, int flags, int keyCode, int scanCode, int metaState, int repeatCount) {
         super(1, deviceId, eventTimeNanos, source, displayId);
         this.mAction = action;
-        AnnotationValidations.validate((Class<? extends Annotation>) KeyEventAction.class, (Annotation) null, action);
+        AnnotationValidations.validate((Class<? extends Annotation>) KeyEventAction.class, (Annotation) null, this.mAction);
         this.mDownTimeNanos = downTimeNanos;
         this.mFlags = flags;
         this.mKeyCode = keyCode;
@@ -135,30 +133,13 @@ public final class VerifiedKeyEvent extends VerifiedInputEvent implements Parcel
         int metaState = in.readInt();
         int repeatCount = in.readInt();
         this.mAction = action;
-        AnnotationValidations.validate((Class<? extends Annotation>) KeyEventAction.class, (Annotation) null, action);
+        AnnotationValidations.validate((Class<? extends Annotation>) KeyEventAction.class, (Annotation) null, this.mAction);
         this.mDownTimeNanos = downTimeNanos;
         this.mFlags = flags;
         this.mKeyCode = keyCode;
         this.mScanCode = scanCode;
         this.mMetaState = metaState;
         this.mRepeatCount = repeatCount;
-    }
-
-    /* renamed from: android.view.VerifiedKeyEvent$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VerifiedKeyEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerifiedKeyEvent[] newArray(int size) {
-            return new VerifiedKeyEvent[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerifiedKeyEvent createFromParcel(Parcel in) {
-            return new VerifiedKeyEvent(in);
-        }
     }
 
     @Deprecated

@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class KeyChainProtectionParams implements Parcelable {
     public static final Parcelable.Creator<KeyChainProtectionParams> CREATOR = new Parcelable.Creator<KeyChainProtectionParams>() { // from class: android.security.keystore.recovery.KeyChainProtectionParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyChainProtectionParams createFromParcel(Parcel in) {
             return new KeyChainProtectionParams(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyChainProtectionParams[] newArray(int length) {
             return new KeyChainProtectionParams[length];
@@ -35,17 +34,11 @@ public final class KeyChainProtectionParams implements Parcelable {
     private Integer mUserSecretType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface LockScreenUiFormat {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface UserSecretType {
-    }
-
-    /* synthetic */ KeyChainProtectionParams(KeyChainProtectionParamsIA keyChainProtectionParamsIA) {
-        this();
     }
 
     private KeyChainProtectionParams() {
@@ -67,7 +60,6 @@ public final class KeyChainProtectionParams implements Parcelable {
         return this.mSecret;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         private KeyChainProtectionParams mInstance = new KeyChainProtectionParams();
 
@@ -106,23 +98,6 @@ public final class KeyChainProtectionParams implements Parcelable {
 
     public void clearSecret() {
         Arrays.fill(this.mSecret, (byte) 0);
-    }
-
-    /* renamed from: android.security.keystore.recovery.KeyChainProtectionParams$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyChainProtectionParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyChainProtectionParams createFromParcel(Parcel in) {
-            return new KeyChainProtectionParams(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyChainProtectionParams[] newArray(int length) {
-            return new KeyChainProtectionParams[length];
-        }
     }
 
     @Override // android.os.Parcelable

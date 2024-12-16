@@ -9,7 +9,7 @@ import android.os.SystemProperties;
 import android.os.UserHandle;
 import java.util.HashMap;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class Sender {
     private static final String ACTION_USE_APP_FEATURE_SURVEY = "com.sec.android.diagmonagent.intent.USE_APP_FEATURE_SURVEY";
     private static final String COMMERCIALIZED_DEVICE_KEY = "C";
@@ -66,7 +66,7 @@ public final class Sender {
         return sendToDsms(new DsmsMessage(featureCode, detail, Long.valueOf(value)));
     }
 
-    private int sendToDsms(DsmsMessage message) {
+    private int sendToDsms(final DsmsMessage message) {
         if (this.DSMS_DISABLED) {
             DsmsLog.e(SUBTAG, "DSMS not supported");
             return -19;
@@ -77,12 +77,6 @@ public final class Sender {
             return -1;
         }
         DsmsThreadPoolExecutor.getInstance().execute(new Runnable() { // from class: com.samsung.android.jdsms.Sender.1
-            final /* synthetic */ DsmsMessage val$message;
-
-            AnonymousClass1(DsmsMessage message2) {
-                message = message2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 Sender.this.sendMessage(message);
@@ -91,21 +85,7 @@ public final class Sender {
         return 0;
     }
 
-    /* renamed from: com.samsung.android.jdsms.Sender$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ DsmsMessage val$message;
-
-        AnonymousClass1(DsmsMessage message2) {
-            message = message2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Sender.this.sendMessage(message);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendMessage(DsmsMessage message) {
         Bundle bundle = new Bundle();
         bundle.putString("tracking_id", TRACKING_ID);

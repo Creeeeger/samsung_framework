@@ -112,13 +112,11 @@ public class AttributeCertificateInfo extends ASN1Object {
         v.add(this.serialNumber);
         v.add(this.attrCertValidityPeriod);
         v.add(this.attributes);
-        DERBitString dERBitString = this.issuerUniqueID;
-        if (dERBitString != null) {
-            v.add(dERBitString);
+        if (this.issuerUniqueID != null) {
+            v.add(this.issuerUniqueID);
         }
-        Extensions extensions = this.extensions;
-        if (extensions != null) {
-            v.add(extensions);
+        if (this.extensions != null) {
+            v.add(this.extensions);
         }
         return new DERSequence(v);
     }

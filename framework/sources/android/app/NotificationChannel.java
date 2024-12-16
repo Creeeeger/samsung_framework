@@ -5,15 +5,20 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.AudioAttributes;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.VibrationEffect;
+import android.os.vibrator.persistence.VibrationXmlParser;
+import android.os.vibrator.persistence.VibrationXmlSerializer;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.util.Patterns;
 import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
@@ -24,6 +29,8 @@ import com.android.modules.utils.TypedXmlSerializer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Objects;
 import org.json.JSONException;
@@ -60,6 +67,7 @@ public final class NotificationChannel implements Parcelable {
     private static final String ATT_USAGE = "usage";
     private static final String ATT_USER_LOCKED = "locked";
     private static final String ATT_VIBRATION = "vibration";
+    private static final String ATT_VIBRATION_EFFECT = "vibration_effect";
     private static final String ATT_VIBRATION_ENABLED = "vibration_enabled";
     private static final String ATT_VISIBILITY = "visibility";
     public static final String CONVERSATION_CHANNEL_ID_FORMAT = "%1$s : %2$s";
@@ -82,6 +90,7 @@ public final class NotificationChannel implements Parcelable {
     public static final int MAX_TEXT_LENGTH = 1000;
     public static final int MAX_VIBRATION_LENGTH = 1000;
     public static final String PLACEHOLDER_CONVERSATION_ID = ":placeholder_id";
+    private static final String TAG = "NotificationChannel";
     private static final String TAG_CHANNEL = "channel";
     public static final int USER_LOCKED_ALLOW_BUBBLE = 256;
     public static final int USER_LOCKED_APP_CHANGED = 512;
@@ -109,6 +118,7 @@ public final class NotificationChannel implements Parcelable {
     private boolean mImportanceLockedByOEM;
     private boolean mImportanceLockedDefaultApp;
     private boolean mImportantConvo;
+    private long mLastNotificationUpdateTimeMs;
     private int mLightColor;
     private boolean mLights;
     private int mLockscreenVisibility;
@@ -118,20 +128,21 @@ public final class NotificationChannel implements Parcelable {
     private boolean mShowBadge;
     private Uri mSound;
     private int mSoundMissingReason;
+    private boolean mSoundRestored;
     private int mUserLockedFields;
     private boolean mUserVisibleTaskShown;
-    private long[] mVibration;
+    private VibrationEffect mVibrationEffect;
     private boolean mVibrationEnabled;
+    private long[] mVibrationPattern;
     public static final int[] LOCKABLE_FIELDS = {1, 2, 4, 8, 16, 32, 128, 256};
     public static final Parcelable.Creator<NotificationChannel> CREATOR = new Parcelable.Creator<NotificationChannel>() { // from class: android.app.NotificationChannel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationChannel createFromParcel(Parcel in) {
             return new NotificationChannel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationChannel[] newArray(int size) {
             return new NotificationChannel[size];
@@ -143,6 +154,7 @@ public final class NotificationChannel implements Parcelable {
         this.mOriginalImportance = -1000;
         this.mLockscreenVisibility = -1000;
         this.mSound = Settings.System.DEFAULT_NOTIFICATION_URI;
+        this.mSoundRestored = false;
         this.mLightColor = 0;
         this.mShowBadge = true;
         this.mDeleted = false;
@@ -154,6 +166,7 @@ public final class NotificationChannel implements Parcelable {
         this.mDemoted = false;
         this.mImportantConvo = false;
         this.mDeletedTime = -1L;
+        this.mLastNotificationUpdateTimeMs = 0L;
         this.mSoundMissingReason = 0;
         this.mId = getTrimmedString(id);
         this.mName = name != null ? getTrimmedString(name.toString()) : null;
@@ -170,6 +183,7 @@ public final class NotificationChannel implements Parcelable {
         this.mOriginalImportance = -1000;
         this.mLockscreenVisibility = -1000;
         this.mSound = Settings.System.DEFAULT_NOTIFICATION_URI;
+        this.mSoundRestored = false;
         this.mLightColor = 0;
         this.mShowBadge = true;
         this.mDeleted = false;
@@ -181,6 +195,7 @@ public final class NotificationChannel implements Parcelable {
         this.mDemoted = false;
         this.mImportantConvo = false;
         this.mDeletedTime = -1L;
+        this.mLastNotificationUpdateTimeMs = 0L;
         this.mSoundMissingReason = 0;
         if (in.readByte() != 0) {
             this.mId = getTrimmedString(in.readString());
@@ -206,9 +221,8 @@ public final class NotificationChannel implements Parcelable {
         this.mBypassDnd = z;
         this.mLockscreenVisibility = in.readInt();
         if (in.readByte() != 0) {
-            Uri createFromParcel = Uri.CREATOR.createFromParcel(in);
-            this.mSound = createFromParcel;
-            this.mSound = Uri.parse(getTrimmedString(createFromParcel.toString()));
+            this.mSound = Uri.CREATOR.createFromParcel(in);
+            this.mSound = Uri.parse(getTrimmedString(this.mSound.toString()));
         } else {
             this.mSound = null;
         }
@@ -218,10 +232,12 @@ public final class NotificationChannel implements Parcelable {
             z2 = true;
         }
         this.mLights = z2;
-        long[] createLongArray = in.createLongArray();
-        this.mVibration = createLongArray;
-        if (createLongArray != null && createLongArray.length > 1000) {
-            this.mVibration = Arrays.copyOf(createLongArray, 1000);
+        this.mVibrationPattern = in.createLongArray();
+        if (this.mVibrationPattern != null && this.mVibrationPattern.length > 1000) {
+            this.mVibrationPattern = Arrays.copyOf(this.mVibrationPattern, 1000);
+        }
+        if (Flags.notificationChannelVibrationEffectApi()) {
+            this.mVibrationEffect = in.readInt() != 0 ? VibrationEffect.CREATOR.createFromParcel(in) : null;
         }
         this.mUserLockedFields = in.readInt();
         if (in.readByte() == 0) {
@@ -292,7 +308,15 @@ public final class NotificationChannel implements Parcelable {
             parcel.writeByte((byte) 0);
         }
         parcel.writeByte(this.mLights ? (byte) 1 : (byte) 0);
-        parcel.writeLongArray(this.mVibration);
+        parcel.writeLongArray(this.mVibrationPattern);
+        if (Flags.notificationChannelVibrationEffectApi()) {
+            if (this.mVibrationEffect != null) {
+                parcel.writeInt(1);
+                this.mVibrationEffect.writeToParcel(parcel, 0);
+            } else {
+                parcel.writeInt(0);
+            }
+        }
         parcel.writeInt(this.mUserLockedFields);
         parcel.writeByte(this.mUserVisibleTaskShown ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.mVibrationEnabled ? (byte) 1 : (byte) 0);
@@ -321,6 +345,36 @@ public final class NotificationChannel implements Parcelable {
         parcel.writeBoolean(this.mImportantConvo);
         parcel.writeLong(this.mDeletedTime);
         parcel.writeBoolean(this.mImportanceLockedDefaultApp);
+    }
+
+    public NotificationChannel copy() {
+        NotificationChannel copy = new NotificationChannel(this.mId, this.mName, this.mImportance);
+        copy.setDescription(this.mDesc);
+        copy.setBypassDnd(this.mBypassDnd);
+        copy.setLockscreenVisibility(this.mLockscreenVisibility);
+        copy.setSound(this.mSound, this.mAudioAttributes);
+        copy.setLightColor(this.mLightColor);
+        copy.enableLights(this.mLights);
+        copy.setVibrationPattern(this.mVibrationPattern);
+        if (Flags.notificationChannelVibrationEffectApi()) {
+            copy.setVibrationEffect(this.mVibrationEffect);
+        }
+        copy.lockFields(this.mUserLockedFields);
+        copy.setUserVisibleTaskShown(this.mUserVisibleTaskShown);
+        copy.enableVibration(this.mVibrationEnabled);
+        copy.setShowBadge(this.mShowBadge);
+        copy.setDeleted(this.mDeleted);
+        copy.setGroup(this.mGroup);
+        copy.setBlockable(this.mBlockableSystem);
+        copy.setAllowBubbles(this.mAllowBubbles);
+        copy.setOriginalImportance(this.mOriginalImportance);
+        copy.setConversationId(this.mParentId, this.mConversationId);
+        copy.setDemoted(this.mDemoted);
+        copy.setImportantConversation(this.mImportantConvo);
+        copy.setDeletedTimeMs(this.mDeletedTime);
+        copy.setImportanceLockedByCriticalDeviceFunction(this.mImportanceLockedDefaultApp);
+        copy.setLastNotificationUpdateTimeMs(this.mLastNotificationUpdateTimeMs);
+        return copy;
     }
 
     public void lockFields(int field) {
@@ -397,7 +451,20 @@ public final class NotificationChannel implements Parcelable {
 
     public void setVibrationPattern(long[] vibrationPattern) {
         this.mVibrationEnabled = vibrationPattern != null && vibrationPattern.length > 0;
-        this.mVibration = vibrationPattern;
+        this.mVibrationPattern = vibrationPattern;
+        if (Flags.notificationChannelVibrationEffectApi()) {
+            try {
+                this.mVibrationEffect = VibrationEffect.createWaveform(vibrationPattern, -1);
+            } catch (IllegalArgumentException | NullPointerException e) {
+                this.mVibrationEffect = null;
+            }
+        }
+    }
+
+    public void setVibrationEffect(VibrationEffect effect) {
+        this.mVibrationEnabled = effect != null;
+        this.mVibrationEffect = effect;
+        this.mVibrationPattern = effect == null ? null : effect.computeCreateWaveformOffOnTimingsOrNull();
     }
 
     public void setImportance(int importance) {
@@ -474,7 +541,11 @@ public final class NotificationChannel implements Parcelable {
     }
 
     public long[] getVibrationPattern() {
-        return this.mVibration;
+        return this.mVibrationPattern;
+    }
+
+    public VibrationEffect getVibrationEffect() {
+        return this.mVibrationEffect;
     }
 
     public int getLockscreenVisibility() {
@@ -567,6 +638,14 @@ public final class NotificationChannel implements Parcelable {
         return (this.mUserLockedFields & 32) != 0;
     }
 
+    public long getLastNotificationUpdateTimeMs() {
+        return this.mLastNotificationUpdateTimeMs;
+    }
+
+    public void setLastNotificationUpdateTimeMs(long updateTimeMs) {
+        this.mLastNotificationUpdateTimeMs = updateTimeMs;
+    }
+
     public void populateFromXmlForRestore(XmlPullParser parser, boolean pkgInstalled, Context context) {
         populateFromXml(XmlUtils.makeTyped(parser), true, pkgInstalled, context);
     }
@@ -577,15 +656,21 @@ public final class NotificationChannel implements Parcelable {
     }
 
     private void populateFromXml(TypedXmlPullParser parser, boolean forRestore, boolean pkgInstalled, Context context) {
+        VibrationEffect vibrationEffect;
         Preconditions.checkArgument((forRestore && context == null) ? false : true, "forRestore is true but got null context");
         setDescription(parser.getAttributeValue(null, ATT_DESC));
         setBypassDnd(safeInt(parser, "priority", 0) != 0);
         setLockscreenVisibility(safeInt(parser, "visibility", -1000));
         Uri sound = safeUri(parser, "sound");
-        setSound(forRestore ? restoreSoundUri(context, sound, pkgInstalled) : sound, safeAudioAttributes(parser));
+        AudioAttributes audioAttributes = safeAudioAttributes(parser);
+        int usage = audioAttributes.getUsage();
+        setSound(forRestore ? restoreSoundUri(context, sound, pkgInstalled, usage) : sound, audioAttributes);
         enableLights(safeBool(parser, "lights", false));
         setLightColor(safeInt(parser, ATT_LIGHT_COLOR, 0));
         setVibrationPattern(safeLongArray(parser, "vibration", null));
+        if (Flags.notificationChannelVibrationEffectApi() && (vibrationEffect = safeVibrationEffect(parser, ATT_VIBRATION_EFFECT)) != null) {
+            setVibrationEffect(vibrationEffect);
+        }
         enableVibration(safeBool(parser, ATT_VIBRATION_ENABLED, false));
         setShowBadge(safeBool(parser, ATT_SHOW_BADGE, false));
         setDeleted(safeBool(parser, "deleted", false));
@@ -599,6 +684,10 @@ public final class NotificationChannel implements Parcelable {
         setConversationId(parser.getAttributeValue(null, "parent"), parser.getAttributeValue(null, ATT_CONVERSATION_ID));
         setDemoted(safeBool(parser, ATT_DEMOTE, false));
         setImportantConversation(safeBool(parser, ATT_IMP_CONVERSATION, false));
+    }
+
+    public boolean isSoundRestored() {
+        return this.mSoundRestored;
     }
 
     private Uri getCanonicalizedSoundUri(ContentResolver contentResolver, Uri uri) {
@@ -619,26 +708,44 @@ public final class NotificationChannel implements Parcelable {
         return contentResolver.canonicalize(uri);
     }
 
-    private Uri getUncanonicalizedSoundUri(ContentResolver contentResolver, Uri uri) {
+    private Uri getUncanonicalizedSoundUri(ContentResolver contentResolver, Uri uri, int usage) {
+        int ringtoneType;
         if (Settings.System.DEFAULT_NOTIFICATION_URI.equals(uri) || ContentResolver.SCHEME_ANDROID_RESOURCE.equals(uri.getScheme()) || "file".equals(uri.getScheme())) {
             return uri;
         }
-        return contentResolver.uncanonicalize(uri);
+        if (4 == usage) {
+            ringtoneType = 4;
+        } else if (6 == usage) {
+            ringtoneType = 1;
+        } else {
+            ringtoneType = 2;
+        }
+        try {
+            return RingtoneManager.getRingtoneUriForRestore(contentResolver, uri.toString(), ringtoneType);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to uncanonicalized sound uri for " + uri + " " + e);
+            return Settings.System.DEFAULT_NOTIFICATION_URI;
+        }
     }
 
-    public Uri restoreSoundUri(Context context, Uri uri, boolean pkgInstalled) {
+    public Uri restoreSoundUri(Context context, Uri uri, boolean pkgInstalled, int usage) {
         String volumeName;
         Cursor c;
         if (uri == null || Uri.EMPTY.equals(uri)) {
-            this.mSoundMissingReason = 1;
             return null;
         }
         ContentResolver contentResolver = context.getContentResolver();
         Uri canonicalizedUri = getCanonicalizedSoundUri(contentResolver, uri);
         if (canonicalizedUri == null) {
-            this.mSoundMissingReason = 2;
-            return Settings.System.DEFAULT_NOTIFICATION_URI;
+            if (!this.mSoundRestored && pkgInstalled) {
+                this.mSoundRestored = true;
+                this.mSoundMissingReason = 2;
+                return Settings.System.DEFAULT_NOTIFICATION_URI;
+            }
+            this.mSoundRestored = false;
+            return uri;
         }
+        this.mSoundRestored = true;
         Uri unCanonicalizedUri = contentResolver.uncanonicalize(canonicalizedUri);
         if (unCanonicalizedUri == null) {
             try {
@@ -670,9 +777,9 @@ public final class NotificationChannel implements Parcelable {
                     this.mSoundMissingReason = 4;
                     return Settings.System.DEFAULT_NOTIFICATION_URI;
                 } finally {
-                    c.close();
                 }
             } finally {
+                c.close();
             }
         } else {
             return unCanonicalizedUri;
@@ -745,6 +852,9 @@ public final class NotificationChannel implements Parcelable {
         if (getVibrationPattern() != null) {
             out.attribute(null, "vibration", longArrayToString(getVibrationPattern()));
         }
+        if (getVibrationEffect() != null) {
+            out.attribute(null, ATT_VIBRATION_EFFECT, vibrationToString(getVibrationEffect()));
+        }
         if (getUserLockedFields() != 0) {
             out.attributeInt(null, "locked", getUserLockedFields());
         }
@@ -816,6 +926,9 @@ public final class NotificationChannel implements Parcelable {
         record.put("locked", Integer.toString(getUserLockedFields()));
         record.put(ATT_FG_SERVICE_SHOWN, Boolean.toString(isUserVisibleTaskShown()));
         record.put("vibration", longArrayToString(getVibrationPattern()));
+        if (getVibrationEffect() != null) {
+            record.put(ATT_VIBRATION_EFFECT, vibrationToString(getVibrationEffect()));
+        }
         record.put(ATT_SHOW_BADGE, Boolean.toString(canShowBadge()));
         record.put("deleted", Boolean.toString(isDeleted()));
         record.put(ATT_DELETED_TIME_MS, Long.toString(getDeletedTimeMs()));
@@ -838,6 +951,28 @@ public final class NotificationChannel implements Parcelable {
             return null;
         }
         return Uri.parse(val);
+    }
+
+    private static String vibrationToString(VibrationEffect effect) {
+        StringWriter writer = new StringWriter();
+        try {
+            VibrationXmlSerializer.serialize(effect, writer, 1);
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to serialize vibration: " + effect, e);
+        }
+        return writer.toString();
+    }
+
+    private static VibrationEffect safeVibrationEffect(TypedXmlPullParser parser, String att) {
+        String val = parser.getAttributeValue(null, att);
+        if (val != null) {
+            try {
+                return VibrationXmlParser.parseVibrationEffect(new StringReader(val), 1);
+            } catch (IOException e) {
+                Log.e(TAG, "Unable to read serialized vibration effect", e);
+            }
+        }
+        return null;
     }
 
     private static int safeInt(TypedXmlPullParser parser, String att, int defValue) {
@@ -877,23 +1012,6 @@ public final class NotificationChannel implements Parcelable {
         return sb.toString();
     }
 
-    /* renamed from: android.app.NotificationChannel$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NotificationChannel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationChannel createFromParcel(Parcel in) {
-            return new NotificationChannel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationChannel[] newArray(int size) {
-            return new NotificationChannel[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -907,15 +1025,15 @@ public final class NotificationChannel implements Parcelable {
             return false;
         }
         NotificationChannel that = (NotificationChannel) o;
-        if (getImportance() == that.getImportance() && this.mBypassDnd == that.mBypassDnd && getLockscreenVisibility() == that.getLockscreenVisibility() && this.mLights == that.mLights && getLightColor() == that.getLightColor() && getUserLockedFields() == that.getUserLockedFields() && isUserVisibleTaskShown() == that.isUserVisibleTaskShown() && this.mVibrationEnabled == that.mVibrationEnabled && this.mShowBadge == that.mShowBadge && isDeleted() == that.isDeleted() && getDeletedTimeMs() == that.getDeletedTimeMs() && isBlockable() == that.isBlockable() && this.mAllowBubbles == that.mAllowBubbles && Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(this.mDesc, that.mDesc) && Objects.equals(getSound(), that.getSound()) && Arrays.equals(this.mVibration, that.mVibration) && Objects.equals(getGroup(), that.getGroup()) && Objects.equals(getAudioAttributes(), that.getAudioAttributes()) && isImportanceLockedByOEM() == that.isImportanceLockedByOEM() && this.mImportanceLockedDefaultApp == that.mImportanceLockedDefaultApp && this.mOriginalImportance == that.mOriginalImportance && Objects.equals(getParentChannelId(), that.getParentChannelId()) && Objects.equals(getConversationId(), that.getConversationId()) && isDemoted() == that.isDemoted() && isImportantConversation() == that.isImportantConversation()) {
+        if (getImportance() == that.getImportance() && this.mBypassDnd == that.mBypassDnd && getLockscreenVisibility() == that.getLockscreenVisibility() && this.mLights == that.mLights && getLightColor() == that.getLightColor() && getUserLockedFields() == that.getUserLockedFields() && isUserVisibleTaskShown() == that.isUserVisibleTaskShown() && this.mVibrationEnabled == that.mVibrationEnabled && this.mShowBadge == that.mShowBadge && isDeleted() == that.isDeleted() && getDeletedTimeMs() == that.getDeletedTimeMs() && isBlockable() == that.isBlockable() && this.mAllowBubbles == that.mAllowBubbles && Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(this.mDesc, that.mDesc) && Objects.equals(getSound(), that.getSound()) && Arrays.equals(this.mVibrationPattern, that.mVibrationPattern) && Objects.equals(getVibrationEffect(), that.getVibrationEffect()) && Objects.equals(getGroup(), that.getGroup()) && Objects.equals(getAudioAttributes(), that.getAudioAttributes()) && isImportanceLockedByOEM() == that.isImportanceLockedByOEM() && this.mImportanceLockedDefaultApp == that.mImportanceLockedDefaultApp && this.mOriginalImportance == that.mOriginalImportance && Objects.equals(getParentChannelId(), that.getParentChannelId()) && Objects.equals(getConversationId(), that.getConversationId()) && isDemoted() == that.isDemoted() && isImportantConversation() == that.isImportantConversation()) {
             return true;
         }
         return false;
     }
 
     public int hashCode() {
-        int result = Objects.hash(getId(), getName(), this.mDesc, Integer.valueOf(getImportance()), Boolean.valueOf(this.mBypassDnd), Integer.valueOf(getLockscreenVisibility()), getSound(), Boolean.valueOf(this.mLights), Integer.valueOf(getLightColor()), Integer.valueOf(getUserLockedFields()), Boolean.valueOf(isUserVisibleTaskShown()), Boolean.valueOf(this.mVibrationEnabled), Boolean.valueOf(this.mShowBadge), Boolean.valueOf(isDeleted()), Long.valueOf(getDeletedTimeMs()), getGroup(), getAudioAttributes(), Boolean.valueOf(isBlockable()), Integer.valueOf(this.mAllowBubbles), Boolean.valueOf(this.mImportanceLockedByOEM), Boolean.valueOf(this.mImportanceLockedDefaultApp), Integer.valueOf(this.mOriginalImportance), this.mParentId, this.mConversationId, Boolean.valueOf(this.mDemoted), Boolean.valueOf(this.mImportantConvo));
-        return (result * 31) + Arrays.hashCode(this.mVibration);
+        int result = Objects.hash(getId(), getName(), this.mDesc, Integer.valueOf(getImportance()), Boolean.valueOf(this.mBypassDnd), Integer.valueOf(getLockscreenVisibility()), getSound(), Boolean.valueOf(this.mLights), Integer.valueOf(getLightColor()), Integer.valueOf(getUserLockedFields()), Boolean.valueOf(isUserVisibleTaskShown()), Boolean.valueOf(this.mVibrationEnabled), Boolean.valueOf(this.mShowBadge), Boolean.valueOf(isDeleted()), Long.valueOf(getDeletedTimeMs()), getGroup(), getAudioAttributes(), Boolean.valueOf(isBlockable()), Integer.valueOf(this.mAllowBubbles), Boolean.valueOf(this.mImportanceLockedByOEM), Boolean.valueOf(this.mImportanceLockedDefaultApp), Integer.valueOf(this.mOriginalImportance), getVibrationEffect(), this.mParentId, this.mConversationId, Boolean.valueOf(this.mDemoted), Boolean.valueOf(this.mImportantConvo));
+        return (result * 31) + Arrays.hashCode(this.mVibrationPattern);
     }
 
     public void dump(PrintWriter pw, String prefix, boolean redacted) {
@@ -970,7 +1088,7 @@ public final class NotificationChannel implements Parcelable {
 
     private String getFieldsString() {
         String fixedId = getRedatedString(this.mGroup);
-        return ", mDescription=" + (!TextUtils.isEmpty(this.mDesc) ? "hasDescription " : "") + ", mImportance=" + this.mImportance + ", mBypassDnd=" + this.mBypassDnd + ", mLockscreenVisibility=" + this.mLockscreenVisibility + ", mSound=" + this.mSound + ", mLights=" + this.mLights + ", mLightColor=" + this.mLightColor + ", mVibration=" + Arrays.toString(this.mVibration) + ", mUserLockedFields=" + Integer.toHexString(this.mUserLockedFields) + ", mUserVisibleTaskShown=" + this.mUserVisibleTaskShown + ", mVibrationEnabled=" + this.mVibrationEnabled + ", mShowBadge=" + this.mShowBadge + ", mDeleted=" + this.mDeleted + ", mDeletedTimeMs=" + this.mDeletedTime + ", mGroup='" + fixedId + DateFormat.QUOTE + ", mAudioAttributes=" + this.mAudioAttributes + ", mBlockableSystem=" + this.mBlockableSystem + ", mAllowBubbles=" + this.mAllowBubbles + ", mImportanceLockedByOEM=" + this.mImportanceLockedByOEM + ", mImportanceLockedDefaultApp=" + this.mImportanceLockedDefaultApp + ", mOriginalImp=" + this.mOriginalImportance + ", mParent=" + this.mParentId + ", mConversationId=" + this.mConversationId + ", mDemoted=" + this.mDemoted + ", mImportantConvo=" + this.mImportantConvo + ", mSoundMissingReason=" + this.mSoundMissingReason;
+        return ", mDescription=" + (!TextUtils.isEmpty(this.mDesc) ? "hasDescription " : "") + ", mImportance=" + this.mImportance + ", mBypassDnd=" + this.mBypassDnd + ", mLockscreenVisibility=" + this.mLockscreenVisibility + ", mSound=" + this.mSound + ", mLights=" + this.mLights + ", mLightColor=" + this.mLightColor + ", mVibrationPattern=" + Arrays.toString(this.mVibrationPattern) + ", mVibrationEffect=" + (this.mVibrationEffect == null ? "null" : this.mVibrationEffect.toString()) + ", mUserLockedFields=" + Integer.toHexString(this.mUserLockedFields) + ", mUserVisibleTaskShown=" + this.mUserVisibleTaskShown + ", mVibrationEnabled=" + this.mVibrationEnabled + ", mShowBadge=" + this.mShowBadge + ", mDeleted=" + this.mDeleted + ", mDeletedTimeMs=" + this.mDeletedTime + ", mGroup='" + fixedId + DateFormat.QUOTE + ", mAudioAttributes=" + this.mAudioAttributes + ", mBlockableSystem=" + this.mBlockableSystem + ", mAllowBubbles=" + this.mAllowBubbles + ", mImportanceLockedByOEM=" + this.mImportanceLockedByOEM + ", mImportanceLockedDefaultApp=" + this.mImportanceLockedDefaultApp + ", mOriginalImp=" + this.mOriginalImportance + ", mParent=" + this.mParentId + ", mConversationId=" + this.mConversationId + ", mDemoted=" + this.mDemoted + ", mImportantConvo=" + this.mImportantConvo + ", mLastNotificationUpdateTimeMs=" + this.mLastNotificationUpdateTimeMs + ", mSoundMissingReason=" + this.mSoundMissingReason;
     }
 
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
@@ -981,15 +1099,13 @@ public final class NotificationChannel implements Parcelable {
         proto.write(1120986464260L, this.mImportance);
         proto.write(1133871366149L, this.mBypassDnd);
         proto.write(1120986464262L, this.mLockscreenVisibility);
-        Uri uri = this.mSound;
-        if (uri != null) {
-            proto.write(1138166333447L, uri.toString());
+        if (this.mSound != null) {
+            proto.write(1138166333447L, this.mSound.toString());
         }
         proto.write(1133871366152L, this.mLights);
         proto.write(1120986464265L, this.mLightColor);
-        long[] jArr = this.mVibration;
-        if (jArr != null) {
-            for (long v : jArr) {
+        if (this.mVibrationPattern != null) {
+            for (long v : this.mVibrationPattern) {
                 proto.write(NotificationChannelProto.VIBRATION, v);
             }
         }
@@ -999,9 +1115,8 @@ public final class NotificationChannel implements Parcelable {
         proto.write(1133871366157L, this.mShowBadge);
         proto.write(1133871366158L, this.mDeleted);
         proto.write(1138166333455L, this.mGroup);
-        AudioAttributes audioAttributes = this.mAudioAttributes;
-        if (audioAttributes != null) {
-            audioAttributes.dumpDebug(proto, 1146756268048L);
+        if (this.mAudioAttributes != null) {
+            this.mAudioAttributes.dumpDebug(proto, 1146756268048L);
         }
         proto.write(1133871366161L, this.mBlockableSystem);
         proto.write(1133871366163L, this.mAllowBubbles);

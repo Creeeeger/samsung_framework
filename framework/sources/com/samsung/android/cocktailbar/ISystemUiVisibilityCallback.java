@@ -12,7 +12,6 @@ public interface ISystemUiVisibilityCallback extends IInterface {
 
     void onSystemUiVisibilityChanged(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISystemUiVisibilityCallback {
         @Override // com.samsung.android.cocktailbar.ISystemUiVisibilityCallback
         public void onSystemUiVisibilityChanged(int visibility) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISystemUiVisibilityCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISystemUiVisibilityCallback {
         static final int TRANSACTION_onSystemUiVisibilityChanged = 1;
 
@@ -67,24 +65,21 @@ public interface ISystemUiVisibilityCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISystemUiVisibilityCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISystemUiVisibilityCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISystemUiVisibilityCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSystemUiVisibilityChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSystemUiVisibilityChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISystemUiVisibilityCallback {
             private IBinder mRemote;
 

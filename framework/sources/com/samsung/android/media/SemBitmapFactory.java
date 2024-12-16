@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemBitmapFactory {
     private static final int IMAGE_TYPE_COVER = 0;
     private static final int IMAGE_TYPE_GAINMAP = 2;

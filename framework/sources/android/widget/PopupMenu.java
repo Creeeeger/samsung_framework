@@ -20,12 +20,10 @@ public class PopupMenu {
     private OnDismissListener mOnDismissListener;
     private final MenuPopupHelper mPopup;
 
-    /* loaded from: classes4.dex */
     public interface OnDismissListener {
         void onDismiss(PopupMenu popupMenu);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnMenuItemClickListener {
         boolean onMenuItemClick(MenuItem menuItem);
     }
@@ -41,12 +39,8 @@ public class PopupMenu {
     public PopupMenu(Context context, View anchor, int gravity, int popupStyleAttr, int popupStyleRes) {
         this.mContext = context;
         this.mAnchor = anchor;
-        MenuBuilder menuBuilder = new MenuBuilder(context);
-        this.mMenu = menuBuilder;
-        menuBuilder.setCallback(new MenuBuilder.Callback() { // from class: android.widget.PopupMenu.1
-            AnonymousClass1() {
-            }
-
+        this.mMenu = new MenuBuilder(context);
+        this.mMenu.setCallback(new MenuBuilder.Callback() { // from class: android.widget.PopupMenu.1
             @Override // com.android.internal.view.menu.MenuBuilder.Callback
             public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
                 if (PopupMenu.this.mMenuItemClickListener != null) {
@@ -59,13 +53,9 @@ public class PopupMenu {
             public void onMenuModeChange(MenuBuilder menu) {
             }
         });
-        MenuPopupHelper menuPopupHelper = new MenuPopupHelper(context, menuBuilder, anchor, false, popupStyleAttr, popupStyleRes);
-        this.mPopup = menuPopupHelper;
-        menuPopupHelper.setGravity(gravity);
-        menuPopupHelper.setOnDismissListener(new PopupWindow.OnDismissListener() { // from class: android.widget.PopupMenu.2
-            AnonymousClass2() {
-            }
-
+        this.mPopup = new MenuPopupHelper(context, this.mMenu, anchor, false, popupStyleAttr, popupStyleRes);
+        this.mPopup.setGravity(gravity);
+        this.mPopup.setOnDismissListener(new PopupWindow.OnDismissListener() { // from class: android.widget.PopupMenu.2
             @Override // android.widget.PopupWindow.OnDismissListener
             public void onDismiss() {
                 if (PopupMenu.this.mOnDismissListener != null) {
@@ -73,41 +63,6 @@ public class PopupMenu {
                 }
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.PopupMenu$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements MenuBuilder.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.internal.view.menu.MenuBuilder.Callback
-        public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
-            if (PopupMenu.this.mMenuItemClickListener != null) {
-                return PopupMenu.this.mMenuItemClickListener.onMenuItemClick(item);
-            }
-            return false;
-        }
-
-        @Override // com.android.internal.view.menu.MenuBuilder.Callback
-        public void onMenuModeChange(MenuBuilder menu) {
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.PopupMenu$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements PopupWindow.OnDismissListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.PopupWindow.OnDismissListener
-        public void onDismiss() {
-            if (PopupMenu.this.mOnDismissListener != null) {
-                PopupMenu.this.mOnDismissListener.onDismiss(PopupMenu.this);
-            }
-        }
     }
 
     public void setGravity(int gravity) {
@@ -118,38 +73,9 @@ public class PopupMenu {
         return this.mPopup.getGravity();
     }
 
-    /* renamed from: android.widget.PopupMenu$3 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass3 extends ForwardingListener {
-        AnonymousClass3(View src) {
-            super(src);
-        }
-
-        @Override // android.widget.ForwardingListener
-        protected boolean onForwardingStarted() {
-            PopupMenu.this.show();
-            return true;
-        }
-
-        @Override // android.widget.ForwardingListener
-        protected boolean onForwardingStopped() {
-            PopupMenu.this.dismiss();
-            return true;
-        }
-
-        @Override // android.widget.ForwardingListener
-        public ShowableListMenu getPopup() {
-            return PopupMenu.this.mPopup.getPopup();
-        }
-    }
-
     public View.OnTouchListener getDragToOpenListener() {
         if (this.mDragListener == null) {
             this.mDragListener = new ForwardingListener(this.mAnchor) { // from class: android.widget.PopupMenu.3
-                AnonymousClass3(View src) {
-                    super(src);
-                }
-
                 @Override // android.widget.ForwardingListener
                 protected boolean onForwardingStarted() {
                     PopupMenu.this.show();

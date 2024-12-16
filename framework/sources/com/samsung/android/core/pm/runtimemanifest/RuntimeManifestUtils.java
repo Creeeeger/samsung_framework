@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class RuntimeManifestUtils {
     public static final String ATTR_MAX_VALUE = "maxValue";
     public static final String ATTR_MIN_VALUE = "minValue";

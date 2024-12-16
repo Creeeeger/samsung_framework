@@ -4,6 +4,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcelable;
 import android.os.VibrationEffect;
 import android.security.keystore.KeyProperties;
+import android.util.IndentingPrintWriter;
 import android.util.MathUtils;
 import android.util.Range;
 import android.util.SparseBooleanArray;
@@ -30,14 +31,13 @@ public class VibratorInfo implements Parcelable {
     private final SparseIntArray mSupportedPrimitives;
     public static final VibratorInfo EMPTY_VIBRATOR_INFO = new Builder(-1).build();
     public static final Parcelable.Creator<VibratorInfo> CREATOR = new Parcelable.Creator<VibratorInfo>() { // from class: android.os.VibratorInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VibratorInfo createFromParcel(Parcel in) {
             return new VibratorInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VibratorInfo[] newArray(int size) {
             return new VibratorInfo[size];
@@ -67,9 +67,9 @@ public class VibratorInfo implements Parcelable {
         Preconditions.checkNotNull(frequencyProfile);
         this.mId = id;
         this.mCapabilities = capabilities;
-        this.mSupportedEffects = supportedEffects == null ? null : supportedEffects.m4951clone();
-        this.mSupportedBraking = supportedBraking != null ? supportedBraking.m4951clone() : null;
-        this.mSupportedPrimitives = supportedPrimitives.m4953clone();
+        this.mSupportedEffects = supportedEffects == null ? null : supportedEffects.m5235clone();
+        this.mSupportedBraking = supportedBraking != null ? supportedBraking.m5235clone() : null;
+        this.mSupportedPrimitives = supportedPrimitives.m5237clone();
         this.mPrimitiveDelayMax = primitiveDelayMax;
         this.mCompositionSizeMax = compositionSizeMax;
         this.mPwlePrimitiveDurationMax = pwlePrimitiveDurationMax;
@@ -106,6 +106,10 @@ public class VibratorInfo implements Parcelable {
             return false;
         }
         VibratorInfo that = (VibratorInfo) o;
+        return this.mId == that.mId && equalContent(that);
+    }
+
+    public boolean equalContent(VibratorInfo that) {
         int supportedPrimitivesCount = this.mSupportedPrimitives.size();
         if (supportedPrimitivesCount != that.mSupportedPrimitives.size()) {
             return false;
@@ -115,8 +119,7 @@ public class VibratorInfo implements Parcelable {
                 return false;
             }
         }
-        int i2 = this.mId;
-        return i2 == that.mId && this.mCapabilities == that.mCapabilities && this.mPrimitiveDelayMax == that.mPrimitiveDelayMax && this.mCompositionSizeMax == that.mCompositionSizeMax && this.mPwlePrimitiveDurationMax == that.mPwlePrimitiveDurationMax && this.mPwleSizeMax == that.mPwleSizeMax && Objects.equals(this.mSupportedEffects, that.mSupportedEffects) && Objects.equals(this.mSupportedBraking, that.mSupportedBraking) && Objects.equals(Float.valueOf(this.mQFactor), Float.valueOf(that.mQFactor)) && Objects.equals(this.mFrequencyProfile, that.mFrequencyProfile);
+        return this.mCapabilities == that.mCapabilities && this.mPrimitiveDelayMax == that.mPrimitiveDelayMax && this.mCompositionSizeMax == that.mCompositionSizeMax && this.mPwlePrimitiveDurationMax == that.mPwlePrimitiveDurationMax && this.mPwleSizeMax == that.mPwleSizeMax && Objects.equals(this.mSupportedEffects, that.mSupportedEffects) && Objects.equals(this.mSupportedBraking, that.mSupportedBraking) && Objects.equals(Float.valueOf(this.mQFactor), Float.valueOf(that.mQFactor)) && Objects.equals(this.mFrequencyProfile, that.mFrequencyProfile);
     }
 
     public int hashCode() {
@@ -131,6 +134,24 @@ public class VibratorInfo implements Parcelable {
         return "VibratorInfo{mId=" + this.mId + ", mCapabilities=" + Arrays.toString(getCapabilitiesNames()) + ", mCapabilities flags=" + Long.toBinaryString(this.mCapabilities) + ", mSupportedEffects=" + Arrays.toString(getSupportedEffectsNames()) + ", mSupportedBraking=" + Arrays.toString(getSupportedBrakingNames()) + ", mSupportedPrimitives=" + Arrays.toString(getSupportedPrimitivesNames()) + ", mPrimitiveDelayMax=" + this.mPrimitiveDelayMax + ", mCompositionSizeMax=" + this.mCompositionSizeMax + ", mPwlePrimitiveDurationMax=" + this.mPwlePrimitiveDurationMax + ", mPwleSizeMax=" + this.mPwleSizeMax + ", mQFactor=" + this.mQFactor + ", mFrequencyProfile=" + this.mFrequencyProfile + '}';
     }
 
+    public void dump(IndentingPrintWriter pw) {
+        pw.println("VibratorInfo:");
+        pw.increaseIndent();
+        pw.println("id = " + this.mId);
+        pw.println("capabilities = " + Arrays.toString(getCapabilitiesNames()));
+        pw.println("capabilitiesFlags = " + Long.toBinaryString(this.mCapabilities));
+        pw.println("supportedEffects = " + Arrays.toString(getSupportedEffectsNames()));
+        pw.println("supportedPrimitives = " + Arrays.toString(getSupportedPrimitivesNames()));
+        pw.println("supportedBraking = " + Arrays.toString(getSupportedBrakingNames()));
+        pw.println("primitiveDelayMax = " + this.mPrimitiveDelayMax);
+        pw.println("compositionSizeMax = " + this.mCompositionSizeMax);
+        pw.println("pwlePrimitiveDurationMax = " + this.mPwlePrimitiveDurationMax);
+        pw.println("pwleSizeMax = " + this.mPwleSizeMax);
+        pw.println("q-factor = " + this.mQFactor);
+        pw.println("frequencyProfile = " + this.mFrequencyProfile);
+        pw.decreaseIndent();
+    }
+
     public int getId() {
         return this.mId;
     }
@@ -139,10 +160,13 @@ public class VibratorInfo implements Parcelable {
         return hasCapability(4L);
     }
 
+    public boolean hasFrequencyControl() {
+        return hasCapability(1536L);
+    }
+
     public int getDefaultBraking() {
-        SparseBooleanArray sparseBooleanArray = this.mSupportedBraking;
-        if (sparseBooleanArray != null) {
-            int size = sparseBooleanArray.size();
+        if (this.mSupportedBraking != null) {
+            int size = this.mSupportedBraking.size();
             for (int i = 0; i < size; i++) {
                 if (this.mSupportedBraking.keyAt(i) != 0) {
                     return this.mSupportedBraking.keyAt(i);
@@ -154,11 +178,10 @@ public class VibratorInfo implements Parcelable {
     }
 
     public SparseBooleanArray getSupportedBraking() {
-        SparseBooleanArray sparseBooleanArray = this.mSupportedBraking;
-        if (sparseBooleanArray == null) {
+        if (this.mSupportedBraking == null) {
             return null;
         }
-        return sparseBooleanArray.m4951clone();
+        return this.mSupportedBraking.m5235clone();
     }
 
     public boolean isBrakingSupportKnown() {
@@ -166,8 +189,7 @@ public class VibratorInfo implements Parcelable {
     }
 
     public boolean hasBrakingSupport(int braking) {
-        SparseBooleanArray sparseBooleanArray = this.mSupportedBraking;
-        return sparseBooleanArray != null && sparseBooleanArray.get(braking);
+        return this.mSupportedBraking != null && this.mSupportedBraking.get(braking);
     }
 
     public boolean isEffectSupportKnown() {
@@ -175,23 +197,25 @@ public class VibratorInfo implements Parcelable {
     }
 
     public int isEffectSupported(int effectId) {
-        SparseBooleanArray sparseBooleanArray = this.mSupportedEffects;
-        if (sparseBooleanArray == null) {
+        if (this.mSupportedEffects == null) {
             return 0;
         }
-        return sparseBooleanArray.get(effectId) ? 1 : 2;
+        return this.mSupportedEffects.get(effectId) ? 1 : 2;
     }
 
     public SparseBooleanArray getSupportedEffects() {
-        SparseBooleanArray sparseBooleanArray = this.mSupportedEffects;
-        if (sparseBooleanArray == null) {
+        if (this.mSupportedEffects == null) {
             return null;
         }
-        return sparseBooleanArray.m4951clone();
+        return this.mSupportedEffects.m5235clone();
     }
 
     public boolean isPrimitiveSupported(int primitiveId) {
         return hasCapability(32L) && this.mSupportedPrimitives.indexOfKey(primitiveId) >= 0;
+    }
+
+    public boolean areVibrationFeaturesSupported(VibrationEffect effect) {
+        return effect.areVibrationFeaturesSupported(this);
     }
 
     public int getPrimitiveDuration(int primitiveId) {
@@ -199,7 +223,7 @@ public class VibratorInfo implements Parcelable {
     }
 
     public SparseIntArray getSupportedPrimitives() {
-        return this.mSupportedPrimitives.m4953clone();
+        return this.mSupportedPrimitives.m5237clone();
     }
 
     public int getPrimitiveDelayMax() {
@@ -271,11 +295,10 @@ public class VibratorInfo implements Parcelable {
     }
 
     private String[] getSupportedEffectsNames() {
-        SparseBooleanArray sparseBooleanArray = this.mSupportedEffects;
-        if (sparseBooleanArray == null) {
+        if (this.mSupportedEffects == null) {
             return new String[0];
         }
-        String[] names = new String[sparseBooleanArray.size()];
+        String[] names = new String[this.mSupportedEffects.size()];
         for (int i = 0; i < this.mSupportedEffects.size(); i++) {
             names[i] = VibrationEffect.effectIdToString(this.mSupportedEffects.keyAt(i));
         }
@@ -283,11 +306,10 @@ public class VibratorInfo implements Parcelable {
     }
 
     private String[] getSupportedBrakingNames() {
-        SparseBooleanArray sparseBooleanArray = this.mSupportedBraking;
-        if (sparseBooleanArray == null) {
+        if (this.mSupportedBraking == null) {
             return new String[0];
         }
-        String[] names = new String[sparseBooleanArray.size()];
+        String[] names = new String[this.mSupportedBraking.size()];
         for (int i = 0; i < this.mSupportedBraking.size(); i++) {
             switch (this.mSupportedBraking.keyAt(i)) {
                 case 0:
@@ -313,17 +335,15 @@ public class VibratorInfo implements Parcelable {
         return names;
     }
 
-    /* loaded from: classes3.dex */
     public static final class FrequencyProfile implements Parcelable {
         public static final Parcelable.Creator<FrequencyProfile> CREATOR = new Parcelable.Creator<FrequencyProfile>() { // from class: android.os.VibratorInfo.FrequencyProfile.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FrequencyProfile createFromParcel(Parcel in) {
                 return new FrequencyProfile(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FrequencyProfile[] newArray(int size) {
                 return new FrequencyProfile[size];
@@ -340,30 +360,21 @@ public class VibratorInfo implements Parcelable {
         }
 
         public FrequencyProfile(float resonantFrequencyHz, float minFrequencyHz, float frequencyResolutionHz, float[] maxAmplitudes) {
-            float[] fArr;
             float maxFrequencyHz;
             this.mMinFrequencyHz = minFrequencyHz;
             this.mResonantFrequencyHz = resonantFrequencyHz;
             this.mFrequencyResolutionHz = frequencyResolutionHz;
             boolean z = false;
-            float[] fArr2 = new float[maxAmplitudes == null ? 0 : maxAmplitudes.length];
-            this.mMaxAmplitudes = fArr2;
+            this.mMaxAmplitudes = new float[maxAmplitudes == null ? 0 : maxAmplitudes.length];
             if (maxAmplitudes != null) {
-                System.arraycopy(maxAmplitudes, 0, fArr2, 0, maxAmplitudes.length);
+                System.arraycopy(maxAmplitudes, 0, this.mMaxAmplitudes, 0, maxAmplitudes.length);
             }
-            boolean isValid = !Float.isNaN(resonantFrequencyHz) && resonantFrequencyHz > 0.0f && !Float.isNaN(minFrequencyHz) && minFrequencyHz > 0.0f && !Float.isNaN(frequencyResolutionHz) && frequencyResolutionHz > 0.0f && fArr2.length > 0;
-            int i = 0;
-            while (true) {
-                fArr = this.mMaxAmplitudes;
-                if (i >= fArr.length) {
-                    break;
-                }
-                float f = fArr[i];
-                isValid &= f >= 0.0f && f <= 1.0f;
-                i++;
+            boolean isValid = !Float.isNaN(resonantFrequencyHz) && resonantFrequencyHz > 0.0f && !Float.isNaN(minFrequencyHz) && minFrequencyHz > 0.0f && !Float.isNaN(frequencyResolutionHz) && frequencyResolutionHz > 0.0f && this.mMaxAmplitudes.length > 0;
+            for (int i = 0; i < this.mMaxAmplitudes.length; i++) {
+                isValid &= this.mMaxAmplitudes[i] >= 0.0f && this.mMaxAmplitudes[i] <= 1.0f;
             }
             if (isValid) {
-                maxFrequencyHz = ((fArr.length - 1) * frequencyResolutionHz) + minFrequencyHz;
+                maxFrequencyHz = ((this.mMaxAmplitudes.length - 1) * frequencyResolutionHz) + minFrequencyHz;
             } else {
                 maxFrequencyHz = Float.NaN;
             }
@@ -388,16 +399,11 @@ public class VibratorInfo implements Parcelable {
             float mappingFreq = frequencyHz - this.mMinFrequencyHz;
             int startIdx = MathUtils.constrain((int) Math.floor(mappingFreq / this.mFrequencyResolutionHz), 0, this.mMaxAmplitudes.length - 1);
             int nextIdx = MathUtils.constrain(startIdx + 1, 0, this.mMaxAmplitudes.length - 1);
-            float[] fArr = this.mMaxAmplitudes;
-            float f = fArr[startIdx];
-            float f2 = fArr[nextIdx];
-            float f3 = this.mFrequencyResolutionHz;
-            return MathUtils.constrainedMap(f, f2, startIdx * f3, nextIdx * f3, mappingFreq);
+            return MathUtils.constrainedMap(this.mMaxAmplitudes[startIdx], this.mMaxAmplitudes[nextIdx], startIdx * this.mFrequencyResolutionHz, nextIdx * this.mFrequencyResolutionHz, mappingFreq);
         }
 
         public float[] getMaxAmplitudes() {
-            float[] fArr = this.mMaxAmplitudes;
-            return Arrays.copyOf(fArr, fArr.length);
+            return Arrays.copyOf(this.mMaxAmplitudes, this.mMaxAmplitudes.length);
         }
 
         public float getFrequencyResolutionHz() {
@@ -436,26 +442,8 @@ public class VibratorInfo implements Parcelable {
         public String toString() {
             return "FrequencyProfile{mFrequencyRange=" + this.mFrequencyRangeHz + ", mMinFrequency=" + this.mMinFrequencyHz + ", mResonantFrequency=" + this.mResonantFrequencyHz + ", mFrequencyResolution=" + this.mFrequencyResolutionHz + ", mMaxAmplitudes count=" + this.mMaxAmplitudes.length + '}';
         }
-
-        /* renamed from: android.os.VibratorInfo$FrequencyProfile$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<FrequencyProfile> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public FrequencyProfile createFromParcel(Parcel in) {
-                return new FrequencyProfile(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public FrequencyProfile[] newArray(int size) {
-                return new FrequencyProfile[size];
-            }
-        }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private long mCapabilities;
         private int mCompositionSizeMax;
@@ -536,23 +524,6 @@ public class VibratorInfo implements Parcelable {
                 array.put(key, true);
             }
             return array;
-        }
-    }
-
-    /* renamed from: android.os.VibratorInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VibratorInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VibratorInfo createFromParcel(Parcel in) {
-            return new VibratorInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VibratorInfo[] newArray(int size) {
-            return new VibratorInfo[size];
         }
     }
 }

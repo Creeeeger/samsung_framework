@@ -21,10 +21,9 @@ class GLErrorWrapper extends GLWrapperBase {
     private void checkThread() {
         if (this.mCheckThread) {
             Thread currentThread = Thread.currentThread();
-            Thread thread = this.mOurThread;
-            if (thread == null) {
+            if (this.mOurThread == null) {
                 this.mOurThread = currentThread;
-            } else if (!thread.equals(currentThread)) {
+            } else if (!this.mOurThread.equals(currentThread)) {
                 throw new GLException(28672, "OpenGL method called from wrong thread.");
             }
         }

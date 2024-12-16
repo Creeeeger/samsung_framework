@@ -31,7 +31,7 @@ public class BaseNetworkObserver extends INetworkManagementEventObserver.Stub {
     }
 
     @Override // android.net.INetworkManagementEventObserver
-    public void interfaceClassDataActivityChanged(int transportType, boolean active, long tsNanos, int uid) {
+    public void interfaceClassDataActivityChanged(int label, boolean active, long tsNanos, int uid) {
     }
 
     @Override // android.net.INetworkManagementEventObserver

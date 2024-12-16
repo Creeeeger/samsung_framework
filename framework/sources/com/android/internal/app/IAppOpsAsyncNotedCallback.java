@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IAppOpsAsyncNotedCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.app.IAppOpsAsyncNotedCallback";
 
     void opNoted(AsyncNotedAppOp asyncNotedAppOp) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAppOpsAsyncNotedCallback {
         @Override // com.android.internal.app.IAppOpsAsyncNotedCallback
         public void opNoted(AsyncNotedAppOp op) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IAppOpsAsyncNotedCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAppOpsAsyncNotedCallback {
         static final int TRANSACTION_opNoted = 1;
 
@@ -68,25 +66,22 @@ public interface IAppOpsAsyncNotedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAppOpsAsyncNotedCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAppOpsAsyncNotedCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAppOpsAsyncNotedCallback.DESCRIPTOR);
+                case 1:
+                    AsyncNotedAppOp _arg0 = (AsyncNotedAppOp) data.readTypedObject(AsyncNotedAppOp.CREATOR);
+                    data.enforceNoDataAvail();
+                    opNoted(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AsyncNotedAppOp _arg0 = (AsyncNotedAppOp) data.readTypedObject(AsyncNotedAppOp.CREATOR);
-                            data.enforceNoDataAvail();
-                            opNoted(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAppOpsAsyncNotedCallback {
+        private static class Proxy implements IAppOpsAsyncNotedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

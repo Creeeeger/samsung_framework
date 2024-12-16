@@ -9,11 +9,10 @@ import android.filterfw.core.GLEnvironment;
 public class MffEnvironment {
     private FilterContext mContext;
 
-    public MffEnvironment(FrameManager frameManager) {
+    protected MffEnvironment(FrameManager frameManager) {
         frameManager = frameManager == null ? new CachedFrameManager() : frameManager;
-        FilterContext filterContext = new FilterContext();
-        this.mContext = filterContext;
-        filterContext.setFrameManager(frameManager);
+        this.mContext = new FilterContext();
+        this.mContext.setFrameManager(frameManager);
     }
 
     public FilterContext getContext() {

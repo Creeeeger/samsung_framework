@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMotionRecognitionCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.gesture.IMotionRecognitionCallback";
 
@@ -16,7 +16,6 @@ public interface IMotionRecognitionCallback extends IInterface {
 
     void motionCallback(SemMotionRecognitionEvent semMotionRecognitionEvent) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMotionRecognitionCallback {
         @Override // com.samsung.android.gesture.IMotionRecognitionCallback
         public void motionCallback(SemMotionRecognitionEvent motionEvent) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IMotionRecognitionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMotionRecognitionCallback {
         static final int TRANSACTION_getListenerInfo = 2;
         static final int TRANSACTION_getListenerPackageName = 3;
@@ -87,35 +85,32 @@ public interface IMotionRecognitionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMotionRecognitionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMotionRecognitionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMotionRecognitionCallback.DESCRIPTOR);
+                case 1:
+                    SemMotionRecognitionEvent _arg0 = (SemMotionRecognitionEvent) data.readTypedObject(SemMotionRecognitionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    motionCallback(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _result = getListenerInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 3:
+                    String _result2 = getListenerPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SemMotionRecognitionEvent _arg0 = (SemMotionRecognitionEvent) data.readTypedObject(SemMotionRecognitionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            motionCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _result = getListenerInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 3:
-                            String _result2 = getListenerPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IMotionRecognitionCallback {
             private IBinder mRemote;
 

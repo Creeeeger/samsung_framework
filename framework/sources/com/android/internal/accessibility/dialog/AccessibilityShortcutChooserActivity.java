@@ -3,37 +3,40 @@ package com.android.internal.accessibility.dialog;
 import android.R;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentSender;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import com.android.internal.accessibility.util.AccessibilityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AccessibilityShortcutChooserActivity extends Activity {
     private static final String KEY_ACCESSIBILITY_SHORTCUT_MENU_MODE = "accessibility_shortcut_menu_mode";
     private AlertDialog mMenuDialog;
-    private AlertDialog mPermissionDialog;
+    private Dialog mPermissionDialog;
     private ShortcutTargetAdapter mTargetAdapter;
-    private final int mShortcutType = 1;
+    private final int mShortcutType = 2;
     private final List<AccessibilityTarget> mTargets = new ArrayList();
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TypedArray theme = getTheme().obtainStyledAttributes(R.styleable.Theme);
         if (!theme.getBoolean(38, false)) {
             requestWindowFeature(1);
         }
-        this.mTargets.addAll(AccessibilityTargetHelper.getTargets(this, 1));
+        this.mTargets.addAll(AccessibilityTargetHelper.getTargets(this, 2));
         this.mTargetAdapter = new ShortcutTargetAdapter(this.mTargets);
-        AlertDialog createMenuDialog = createMenuDialog();
-        this.mMenuDialog = createMenuDialog;
-        createMenuDialog.setOnShowListener(new DialogInterface.OnShowListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda3
+        this.mMenuDialog = createMenuDialog();
+        this.mMenuDialog.setOnShowListener(new DialogInterface.OnShowListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda5
             @Override // android.content.DialogInterface.OnShowListener
             public final void onShow(DialogInterface dialogInterface) {
                 AccessibilityShortcutChooserActivity.this.lambda$onCreate$0(dialogInterface);
@@ -48,23 +51,25 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onCreate$0(DialogInterface dialog) {
         updateDialogListeners();
     }
 
     @Override // android.app.Activity
-    public void onDestroy() {
+    protected void onDestroy() {
         this.mMenuDialog.setOnDismissListener(null);
         this.mMenuDialog.dismiss();
         super.onDestroy();
     }
 
     @Override // android.app.Activity
-    public void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_ACCESSIBILITY_SHORTCUT_MENU_MODE, this.mTargetAdapter.getShortcutMenuMode());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onTargetSelected(AdapterView<?> parent, View view, int position, long id) {
         AccessibilityTarget target = this.mTargets.get(position);
         if (((target instanceof AccessibilityServiceTarget) || (target instanceof AccessibilityActivityTarget)) && sendRestrictedDialogIntentIfNeeded(target)) {
@@ -74,14 +79,23 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         this.mMenuDialog.dismiss();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onTargetChecked(AdapterView<?> parent, View view, int position, long id) {
         AccessibilityTarget target = this.mTargets.get(position);
-        if (!target.isShortcutEnabled()) {
-            if (((target instanceof AccessibilityServiceTarget) || (target instanceof AccessibilityActivityTarget)) && sendRestrictedDialogIntentIfNeeded(target)) {
+        if (target instanceof AccessibilityServiceTarget) {
+            AccessibilityServiceTarget serviceTarget = (AccessibilityServiceTarget) target;
+            if (sendRestrictedDialogIntentIfNeeded(target)) {
                 return;
             }
-            if (target instanceof AccessibilityServiceTarget) {
-                showPermissionDialogIfNeeded(this, (AccessibilityServiceTarget) target, this.mTargetAdapter);
+            AccessibilityManager am = (AccessibilityManager) getSystemService(AccessibilityManager.class);
+            if (am.isAccessibilityServiceWarningRequired(serviceTarget.getAccessibilityServiceInfo())) {
+                showPermissionDialogIfNeeded(this, (AccessibilityServiceTarget) target, position, this.mTargetAdapter);
+                return;
+            }
+        }
+        if (target instanceof AccessibilityActivityTarget) {
+            AccessibilityActivityTarget activityTarget = (AccessibilityActivityTarget) target;
+            if (!activityTarget.isShortcutEnabled() && sendRestrictedDialogIntentIfNeeded(activityTarget)) {
                 return;
             }
         }
@@ -97,85 +111,103 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         return true;
     }
 
-    private void showPermissionDialogIfNeeded(Context context, AccessibilityServiceTarget serviceTarget, final ShortcutTargetAdapter targetAdapter) {
+    private void showPermissionDialogIfNeeded(final Context context, final AccessibilityServiceTarget serviceTarget, final int position, final ShortcutTargetAdapter targetAdapter) {
         if (this.mPermissionDialog != null) {
             return;
         }
-        AlertDialog create = new AlertDialog.Builder(context).setView(AccessibilityTargetHelper.createEnableDialogContentView(context, serviceTarget, new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda0
+        this.mPermissionDialog = AccessibilityServiceWarning.createAccessibilityServiceWarningDialog(context, serviceTarget.getAccessibilityServiceInfo(), new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda6
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
-                AccessibilityShortcutChooserActivity.this.lambda$showPermissionDialogIfNeeded$1(targetAdapter, view);
+                AccessibilityShortcutChooserActivity.this.lambda$showPermissionDialogIfNeeded$1(serviceTarget, targetAdapter, view);
             }
-        }, new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda1
+        }, new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda7
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
-                AccessibilityShortcutChooserActivity.this.lambda$showPermissionDialogIfNeeded$2(view);
+                AccessibilityShortcutChooserActivity.this.lambda$showPermissionDialogIfNeeded$2(serviceTarget, view);
             }
-        })).setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda2
+        }, new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda8
+            @Override // android.view.View.OnClickListener
+            public final void onClick(View view) {
+                AccessibilityShortcutChooserActivity.this.lambda$showPermissionDialogIfNeeded$3(position, context, serviceTarget, targetAdapter, view);
+            }
+        });
+        this.mPermissionDialog.setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda9
             @Override // android.content.DialogInterface.OnDismissListener
             public final void onDismiss(DialogInterface dialogInterface) {
-                AccessibilityShortcutChooserActivity.this.lambda$showPermissionDialogIfNeeded$3(dialogInterface);
+                AccessibilityShortcutChooserActivity.this.lambda$showPermissionDialogIfNeeded$4(dialogInterface);
             }
-        }).create();
-        this.mPermissionDialog = create;
-        create.show();
+        });
+        this.mPermissionDialog.show();
     }
 
-    public /* synthetic */ void lambda$showPermissionDialogIfNeeded$1(ShortcutTargetAdapter targetAdapter, View v) {
-        this.mPermissionDialog.dismiss();
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$showPermissionDialogIfNeeded$1(AccessibilityServiceTarget serviceTarget, ShortcutTargetAdapter targetAdapter, View v) {
+        serviceTarget.onCheckedChanged(true);
         targetAdapter.notifyDataSetChanged();
-    }
-
-    public /* synthetic */ void lambda$showPermissionDialogIfNeeded$2(View v) {
         this.mPermissionDialog.dismiss();
     }
 
-    public /* synthetic */ void lambda$showPermissionDialogIfNeeded$3(DialogInterface dialog) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$showPermissionDialogIfNeeded$2(AccessibilityServiceTarget serviceTarget, View v) {
+        serviceTarget.onCheckedChanged(false);
+        this.mPermissionDialog.dismiss();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$showPermissionDialogIfNeeded$3(int position, Context context, AccessibilityServiceTarget serviceTarget, ShortcutTargetAdapter targetAdapter, View v) {
+        this.mTargets.remove(position);
+        context.getPackageManager().getPackageInstaller().uninstall(serviceTarget.getComponentName().getPackageName(), (IntentSender) null);
+        targetAdapter.notifyDataSetChanged();
+        this.mPermissionDialog.dismiss();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$showPermissionDialogIfNeeded$4(DialogInterface dialog) {
         this.mPermissionDialog = null;
     }
 
     private void onDoneButtonClicked() {
         this.mTargets.clear();
-        this.mTargets.addAll(AccessibilityTargetHelper.getTargets(this, 1));
+        this.mTargets.addAll(AccessibilityTargetHelper.getTargets(this, 2));
         if (this.mTargets.isEmpty()) {
             this.mMenuDialog.dismiss();
             return;
         }
         this.mTargetAdapter.setShortcutMenuMode(0);
         this.mTargetAdapter.notifyDataSetChanged();
-        this.mMenuDialog.getButton(-1).setText(getString(com.android.internal.R.string.edit_accessibility_shortcut_menu_button));
+        this.mMenuDialog.getButton(-1).lambda$setTextAsync$0(getString(com.android.internal.R.string.edit_accessibility_shortcut_menu_button));
         updateDialogListeners();
     }
 
     private void onEditButtonClicked() {
         this.mTargets.clear();
-        this.mTargets.addAll(AccessibilityTargetHelper.getInstalledTargets(this, 1));
+        this.mTargets.addAll(AccessibilityTargetHelper.getInstalledTargets(this, 2));
         this.mTargetAdapter.setShortcutMenuMode(1);
         this.mTargetAdapter.notifyDataSetChanged();
-        this.mMenuDialog.getButton(-1).setText(getString(com.android.internal.R.string.done_accessibility_shortcut_menu_button));
+        this.mMenuDialog.getButton(-1).lambda$setTextAsync$0(getString(com.android.internal.R.string.done_accessibility_shortcut_menu_button));
         updateDialogListeners();
     }
 
     private void updateDialogListeners() {
         boolean isEditMenuMode = this.mTargetAdapter.getShortcutMenuMode() == 1;
         this.mMenuDialog.setTitle(getString(isEditMenuMode ? com.android.internal.R.string.accessibility_edit_shortcut_menu_volume_title : com.android.internal.R.string.accessibility_select_shortcut_menu_title));
-        this.mMenuDialog.getButton(-1).setOnClickListener(isEditMenuMode ? new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda5
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                AccessibilityShortcutChooserActivity.this.lambda$updateDialogListeners$4(view);
-            }
-        } : new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda6
+        this.mMenuDialog.getButton(-1).setOnClickListener(isEditMenuMode ? new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda0
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
                 AccessibilityShortcutChooserActivity.this.lambda$updateDialogListeners$5(view);
             }
+        } : new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda1
+            @Override // android.view.View.OnClickListener
+            public final void onClick(View view) {
+                AccessibilityShortcutChooserActivity.this.lambda$updateDialogListeners$6(view);
+            }
         });
-        this.mMenuDialog.getListView().setOnItemClickListener(isEditMenuMode ? new AdapterView.OnItemClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda7
+        this.mMenuDialog.getListView().setOnItemClickListener(isEditMenuMode ? new AdapterView.OnItemClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda2
             @Override // android.widget.AdapterView.OnItemClickListener
             public final void onItemClick(AdapterView adapterView, View view, int i, long j) {
                 AccessibilityShortcutChooserActivity.this.onTargetChecked(adapterView, view, i, j);
             }
-        } : new AdapterView.OnItemClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda8
+        } : new AdapterView.OnItemClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda3
             @Override // android.widget.AdapterView.OnItemClickListener
             public final void onItemClick(AdapterView adapterView, View view, int i, long j) {
                 AccessibilityShortcutChooserActivity.this.onTargetSelected(adapterView, view, i, j);
@@ -183,12 +215,22 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         });
     }
 
-    public /* synthetic */ void lambda$updateDialogListeners$4(View view) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$updateDialogListeners$5(View view) {
         onDoneButtonClicked();
     }
 
-    public /* synthetic */ void lambda$updateDialogListeners$5(View view) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$updateDialogListeners$6(View view) {
         onEditButtonClicked();
+    }
+
+    public AlertDialog getMenuDialog() {
+        return this.mMenuDialog;
+    }
+
+    public Dialog getPermissionDialog() {
+        return this.mPermissionDialog;
     }
 
     private AlertDialog createMenuDialog() {
@@ -196,17 +238,29 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(dialogTitle).setAdapter(this.mTargetAdapter, null).setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity$$ExternalSyntheticLambda4
             @Override // android.content.DialogInterface.OnDismissListener
             public final void onDismiss(DialogInterface dialogInterface) {
-                AccessibilityShortcutChooserActivity.this.lambda$createMenuDialog$6(dialogInterface);
+                AccessibilityShortcutChooserActivity.this.lambda$createMenuDialog$7(dialogInterface);
             }
         });
-        if (AccessibilityUtils.isUserSetupCompleted(this)) {
+        boolean allowEditing = AccessibilityUtils.isUserSetupCompleted(this);
+        boolean showWhenLocked = false;
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KeyguardManager.class);
+        if (keyguardManager != null && keyguardManager.isKeyguardLocked()) {
+            allowEditing = false;
+            showWhenLocked = true;
+        }
+        if (allowEditing) {
             String positiveButtonText = getString(com.android.internal.R.string.edit_accessibility_shortcut_menu_button);
             builder.setPositiveButton(positiveButtonText, (DialogInterface.OnClickListener) null);
         }
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        if (showWhenLocked) {
+            dialog.getWindow().addFlags(524288);
+        }
+        return dialog;
     }
 
-    public /* synthetic */ void lambda$createMenuDialog$6(DialogInterface dialog) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$createMenuDialog$7(DialogInterface dialog) {
         finish();
     }
 }

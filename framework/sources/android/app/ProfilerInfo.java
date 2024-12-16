@@ -15,34 +15,32 @@ public class ProfilerInfo implements Parcelable {
     public static final int CLOCK_TYPE_THREAD_CPU = 256;
     public static final int CLOCK_TYPE_WALL = 16;
     public static final Parcelable.Creator<ProfilerInfo> CREATOR = new Parcelable.Creator<ProfilerInfo>() { // from class: android.app.ProfilerInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProfilerInfo createFromParcel(Parcel in) {
             return new ProfilerInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProfilerInfo[] newArray(int size) {
             return new ProfilerInfo[size];
         }
     };
+    public static final int OUTPUT_VERSION_DEFAULT = 1;
     private static final String TAG = "ProfilerInfo";
+    public static final int TRACE_FORMAT_VERSION_SHIFT = 1;
     public final String agent;
     public final boolean attachAgentDuringBind;
     public final boolean autoStopProfiler;
     public final int clockType;
     public ParcelFileDescriptor profileFd;
     public final String profileFile;
+    public final int profilerOutputVersion;
     public final int samplingInterval;
     public final boolean streamingOutput;
 
-    /* synthetic */ ProfilerInfo(Parcel parcel, ProfilerInfoIA profilerInfoIA) {
-        this(parcel);
-    }
-
-    public ProfilerInfo(String filename, ParcelFileDescriptor fd, int interval, boolean autoStop, boolean streaming, String agent, boolean attachAgentDuringBind, int clockType) {
+    public ProfilerInfo(String filename, ParcelFileDescriptor fd, int interval, boolean autoStop, boolean streaming, String agent, boolean attachAgentDuringBind, int clockType, int profilerOutputVersion) {
         this.profileFile = filename;
         this.profileFd = fd;
         this.samplingInterval = interval;
@@ -51,6 +49,7 @@ public class ProfilerInfo implements Parcelable {
         this.clockType = clockType;
         this.agent = agent;
         this.attachAgentDuringBind = attachAgentDuringBind;
+        this.profilerOutputVersion = profilerOutputVersion;
     }
 
     public ProfilerInfo(ProfilerInfo in) {
@@ -62,6 +61,7 @@ public class ProfilerInfo implements Parcelable {
         this.agent = in.agent;
         this.attachAgentDuringBind = in.attachAgentDuringBind;
         this.clockType = in.clockType;
+        this.profilerOutputVersion = in.profilerOutputVersion;
     }
 
     public static int getClockTypeFromString(String type) {
@@ -77,15 +77,21 @@ public class ProfilerInfo implements Parcelable {
         return 0;
     }
 
+    public static int getFlagsForOutputVersion(int version) {
+        if (version != 1 || version != 2) {
+            version = 1;
+        }
+        return (version - 1) << 1;
+    }
+
     public ProfilerInfo setAgent(String agent, boolean attachAgentDuringBind) {
-        return new ProfilerInfo(this.profileFile, this.profileFd, this.samplingInterval, this.autoStopProfiler, this.streamingOutput, agent, attachAgentDuringBind, this.clockType);
+        return new ProfilerInfo(this.profileFile, this.profileFd, this.samplingInterval, this.autoStopProfiler, this.streamingOutput, agent, attachAgentDuringBind, this.clockType, this.profilerOutputVersion);
     }
 
     public void closeFd() {
-        ParcelFileDescriptor parcelFileDescriptor = this.profileFd;
-        if (parcelFileDescriptor != null) {
+        if (this.profileFd != null) {
             try {
-                parcelFileDescriptor.close();
+                this.profileFd.close();
             } catch (IOException e) {
                 Slog.w(TAG, "Failure closing profile fd", e);
             }
@@ -95,9 +101,8 @@ public class ProfilerInfo implements Parcelable {
 
     @Override // android.os.Parcelable
     public int describeContents() {
-        ParcelFileDescriptor parcelFileDescriptor = this.profileFd;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.describeContents();
+        if (this.profileFd != null) {
+            return this.profileFd.describeContents();
         }
         return 0;
     }
@@ -117,38 +122,22 @@ public class ProfilerInfo implements Parcelable {
         parcel.writeString(this.agent);
         parcel.writeBoolean(this.attachAgentDuringBind);
         parcel.writeInt(this.clockType);
+        parcel.writeInt(this.profilerOutputVersion);
     }
 
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
         proto.write(1138166333441L, this.profileFile);
-        ParcelFileDescriptor parcelFileDescriptor = this.profileFd;
-        if (parcelFileDescriptor != null) {
-            proto.write(1120986464258L, parcelFileDescriptor.getFd());
+        if (this.profileFd != null) {
+            proto.write(1120986464258L, this.profileFd.getFd());
         }
         proto.write(1120986464259L, this.samplingInterval);
         proto.write(1133871366148L, this.autoStopProfiler);
         proto.write(1133871366149L, this.streamingOutput);
         proto.write(1138166333446L, this.agent);
         proto.write(1120986464263L, this.clockType);
+        proto.write(1120986464264L, this.profilerOutputVersion);
         proto.end(token);
-    }
-
-    /* renamed from: android.app.ProfilerInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ProfilerInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ProfilerInfo createFromParcel(Parcel in) {
-            return new ProfilerInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ProfilerInfo[] newArray(int size) {
-            return new ProfilerInfo[size];
-        }
     }
 
     private ProfilerInfo(Parcel in) {
@@ -160,6 +149,7 @@ public class ProfilerInfo implements Parcelable {
         this.agent = in.readString();
         this.attachAgentDuringBind = in.readBoolean();
         this.clockType = in.readInt();
+        this.profilerOutputVersion = in.readInt();
     }
 
     public boolean equals(Object o) {
@@ -170,13 +160,13 @@ public class ProfilerInfo implements Parcelable {
             return false;
         }
         ProfilerInfo other = (ProfilerInfo) o;
-        if (Objects.equals(this.profileFile, other.profileFile) && this.autoStopProfiler == other.autoStopProfiler && this.samplingInterval == other.samplingInterval && this.streamingOutput == other.streamingOutput && Objects.equals(this.agent, other.agent) && this.clockType == other.clockType) {
+        if (Objects.equals(this.profileFile, other.profileFile) && this.autoStopProfiler == other.autoStopProfiler && this.samplingInterval == other.samplingInterval && this.streamingOutput == other.streamingOutput && Objects.equals(this.agent, other.agent) && this.clockType == other.clockType && this.profilerOutputVersion == other.profilerOutputVersion) {
             return true;
         }
         return false;
     }
 
     public int hashCode() {
-        return (((((((((((17 * 31) + Objects.hashCode(this.profileFile)) * 31) + this.samplingInterval) * 31) + (this.autoStopProfiler ? 1 : 0)) * 31) + (this.streamingOutput ? 1 : 0)) * 31) + Objects.hashCode(this.agent)) * 31) + this.clockType;
+        return (((((((((((((17 * 31) + Objects.hashCode(this.profileFile)) * 31) + this.samplingInterval) * 31) + (this.autoStopProfiler ? 1 : 0)) * 31) + (this.streamingOutput ? 1 : 0)) * 31) + Objects.hashCode(this.agent)) * 31) + this.clockType) * 31) + this.profilerOutputVersion;
     }
 }

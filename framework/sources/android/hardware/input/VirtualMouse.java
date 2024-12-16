@@ -5,6 +5,7 @@ import android.companion.virtual.IVirtualDevice;
 import android.graphics.PointF;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 @SystemApi
 /* loaded from: classes2.dex */
@@ -19,13 +20,20 @@ public class VirtualMouse extends VirtualInputDevice {
         return super.getInputDeviceId();
     }
 
-    public VirtualMouse(IVirtualDevice virtualDevice, IBinder token) {
-        super(virtualDevice, token);
+    @Override // android.hardware.input.VirtualInputDevice
+    public /* bridge */ /* synthetic */ String toString() {
+        return super.toString();
+    }
+
+    public VirtualMouse(VirtualMouseConfig config, IVirtualDevice virtualDevice, IBinder token) {
+        super(config, virtualDevice, token);
     }
 
     public void sendButtonEvent(VirtualMouseButtonEvent event) {
         try {
-            this.mVirtualDevice.sendButtonEvent(this.mToken, event);
+            if (!this.mVirtualDevice.sendButtonEvent(this.mToken, event)) {
+                Log.w("VirtualInputDevice", "Failed to send button event to virtual mouse " + this.mConfig.getInputDeviceName());
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -33,7 +41,9 @@ public class VirtualMouse extends VirtualInputDevice {
 
     public void sendScrollEvent(VirtualMouseScrollEvent event) {
         try {
-            this.mVirtualDevice.sendScrollEvent(this.mToken, event);
+            if (!this.mVirtualDevice.sendScrollEvent(this.mToken, event)) {
+                Log.w("VirtualInputDevice", "Failed to send scroll event to virtual mouse " + this.mConfig.getInputDeviceName());
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -41,7 +51,9 @@ public class VirtualMouse extends VirtualInputDevice {
 
     public void sendRelativeEvent(VirtualMouseRelativeEvent event) {
         try {
-            this.mVirtualDevice.sendRelativeEvent(this.mToken, event);
+            if (!this.mVirtualDevice.sendRelativeEvent(this.mToken, event)) {
+                Log.w("VirtualInputDevice", "Failed to send relative event to virtual mouse " + this.mConfig.getInputDeviceName());
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

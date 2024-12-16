@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextPedometer extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextPedometer> CREATOR = new Parcelable.Creator<SemContextPedometer>() { // from class: com.samsung.android.hardware.context.SemContextPedometer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPedometer createFromParcel(Parcel in) {
             return new SemContextPedometer(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPedometer[] newArray(int size) {
             return new SemContextPedometer[size];
@@ -45,24 +44,7 @@ public class SemContextPedometer extends SemContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextPedometer$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextPedometer> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPedometer createFromParcel(Parcel in) {
-            return new SemContextPedometer(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextPedometer[] newArray(int size) {
-            return new SemContextPedometer[size];
-        }
-    }
-
-    public SemContextPedometer() {
+    SemContextPedometer() {
         this.mContext = new Bundle();
         this.mMode = 0;
     }
@@ -215,8 +197,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public double[] getSpeedArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         double[] res = this.mContext.getDoubleArray("SpeedArray");
@@ -224,8 +205,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public double[] getCalorieDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         double[] res = this.mContext.getDoubleArray("CalorieDiffArray");
@@ -233,8 +213,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public double[] getDistanceDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         double[] res = this.mContext.getDoubleArray("DistanceDiffArray");
@@ -242,8 +221,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getTotalStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("TotalStepCountDiffArray");
@@ -251,8 +229,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getWalkStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("WalkStepCountDiffArray");
@@ -260,8 +237,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getWalkUpStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("WalkUpStepCountDiffArray");
@@ -269,8 +245,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getWalkDownStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("WalkDownStepCountDiffArray");
@@ -278,8 +253,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getRunStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("RunStepCountDiffArray");
@@ -287,8 +261,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getRunUpStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("RunUpStepCountDiffArray");
@@ -296,8 +269,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getRunDownStepCountDiffArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("RunDownStepCountDiffArray");
@@ -305,8 +277,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public long[] getTimeStampArray() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return null;
         }
         long[] res = this.mContext.getLongArray("TimeStampArray");
@@ -314,8 +285,7 @@ public class SemContextPedometer extends SemContextEventContext {
     }
 
     public int getLoggingCount() {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             return 0;
         }
         int res = this.mContext.getInt("LoggingCount");
@@ -325,7 +295,7 @@ public class SemContextPedometer extends SemContextEventContext {
     @Override // com.samsung.android.hardware.context.SemContextEventContext
     public void setValues(Bundle context) {
         this.mContext = context;
-        this.mMode = context.getInt("Mode");
+        this.mMode = this.mContext.getInt("Mode");
     }
 
     @Override // com.samsung.android.hardware.context.SemContextEventContext, android.os.Parcelable

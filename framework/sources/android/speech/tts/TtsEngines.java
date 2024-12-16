@@ -210,8 +210,7 @@ public class TtsEngines {
         return null;
     }
 
-    /* loaded from: classes3.dex */
-    public static class EngineInfoComparator implements Comparator<TextToSpeech.EngineInfo> {
+    private static class EngineInfoComparator implements Comparator<TextToSpeech.EngineInfo> {
         static EngineInfoComparator INSTANCE = new EngineInfoComparator();
 
         private EngineInfoComparator() {

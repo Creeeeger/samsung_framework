@@ -13,17 +13,16 @@ import java.net.UnknownHostException;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SipDelegateConfiguration implements Parcelable {
     public static final Parcelable.Creator<SipDelegateConfiguration> CREATOR = new Parcelable.Creator<SipDelegateConfiguration>() { // from class: android.telephony.ims.SipDelegateConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDelegateConfiguration createFromParcel(Parcel source) {
             return new SipDelegateConfiguration(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDelegateConfiguration[] newArray(int size) {
             return new SipDelegateConfiguration[size];
@@ -58,19 +57,9 @@ public final class SipDelegateConfiguration implements Parcelable {
     private final long mVersion;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TransportType {
     }
 
-    /* synthetic */ SipDelegateConfiguration(long j, int i, InetSocketAddress inetSocketAddress, InetSocketAddress inetSocketAddress2, SipDelegateConfigurationIA sipDelegateConfigurationIA) {
-        this(j, i, inetSocketAddress, inetSocketAddress2);
-    }
-
-    /* synthetic */ SipDelegateConfiguration(Parcel parcel, SipDelegateConfigurationIA sipDelegateConfigurationIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class IpSecConfiguration {
         private final int mLastLocalTxPort;
         private final int mLastRemoteTxPort;
@@ -155,7 +144,6 @@ public final class SipDelegateConfiguration implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final SipDelegateConfiguration mConfig;
 
@@ -377,14 +365,12 @@ public final class SipDelegateConfiguration implements Parcelable {
         dest.writeString(this.mCniHeader);
         dest.writeString(this.mAssociatedUriHeader);
         dest.writeBoolean(this.mIpSecConfiguration != null);
-        IpSecConfiguration ipSecConfiguration = this.mIpSecConfiguration;
-        if (ipSecConfiguration != null) {
-            ipSecConfiguration.addToParcel(dest);
+        if (this.mIpSecConfiguration != null) {
+            this.mIpSecConfiguration.addToParcel(dest);
         }
         dest.writeBoolean(this.mNatAddress != null);
-        InetSocketAddress inetSocketAddress = this.mNatAddress;
-        if (inetSocketAddress != null) {
-            writeAddressToParcel(inetSocketAddress, dest);
+        if (this.mNatAddress != null) {
+            writeAddressToParcel(this.mNatAddress, dest);
         }
     }
 
@@ -528,23 +514,6 @@ public final class SipDelegateConfiguration implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.ims.SipDelegateConfiguration$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SipDelegateConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipDelegateConfiguration createFromParcel(Parcel source) {
-            return new SipDelegateConfiguration(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipDelegateConfiguration[] newArray(int size) {
-            return new SipDelegateConfiguration[size];
-        }
     }
 
     public boolean equals(Object o) {

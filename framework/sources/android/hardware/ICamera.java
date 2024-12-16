@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface ICamera extends IInterface {
     void disconnect() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICamera {
         @Override // android.hardware.ICamera
         public void disconnect() throws RemoteException {
@@ -23,7 +22,6 @@ public interface ICamera extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICamera {
         public static final String DESCRIPTOR = "android.hardware.ICamera";
         static final int TRANSACTION_disconnect = 1;
@@ -67,24 +65,21 @@ public interface ICamera extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    disconnect();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            disconnect();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICamera {
+        private static class Proxy implements ICamera {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

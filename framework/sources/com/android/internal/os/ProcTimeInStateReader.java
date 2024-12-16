@@ -53,53 +53,54 @@ public class ProcTimeInStateReader {
             r10 = r0
         L13:
             int r0 = r7.length
-            if (r1 >= r0) goto L42
+            if (r1 >= r0) goto L44
             r0 = r7[r1]
             boolean r0 = java.lang.Character.isDigit(r0)
-            if (r0 != 0) goto L27
+            if (r0 != 0) goto L29
             int[] r0 = com.android.internal.os.ProcTimeInStateReader.TIME_IN_STATE_HEADER_LINE_FORMAT
             r8.addAll(r0)
+            int[] r0 = com.android.internal.os.ProcTimeInStateReader.TIME_IN_STATE_HEADER_LINE_FORMAT
             r9.addAll(r0)
-            goto L33
-        L27:
+            goto L35
+        L29:
             int[] r0 = com.android.internal.os.ProcTimeInStateReader.TIME_IN_STATE_LINE_FREQUENCY_FORMAT
             r8.addAll(r0)
             int[] r0 = com.android.internal.os.ProcTimeInStateReader.TIME_IN_STATE_LINE_TIME_FORMAT
             r9.addAll(r0)
             int r10 = r10 + 1
-        L33:
+        L35:
             int r0 = r7.length
-            if (r1 >= r0) goto L3f
+            if (r1 >= r0) goto L41
             r0 = r7[r1]
             r2 = 10
-            if (r0 == r2) goto L3f
+            if (r0 == r2) goto L41
             int r1 = r1 + 1
-            goto L33
-        L3f:
+            goto L35
+        L41:
             int r1 = r1 + 1
             goto L13
-        L42:
-            if (r10 == 0) goto L67
+        L44:
+            if (r10 == 0) goto L69
             long[] r11 = new long[r10]
-            r1 = 0
             int r2 = r7.length
             int[] r3 = r8.toArray()
+            r1 = 0
             r4 = 0
             r6 = 0
             r0 = r7
             r5 = r11
             boolean r0 = android.os.Process.parseProcLine(r0, r1, r2, r3, r4, r5, r6)
-            if (r0 == 0) goto L5f
+            if (r0 == 0) goto L61
             int[] r1 = r9.toArray()
             r12.mTimeInStateTimeFormat = r1
             r12.mFrequenciesKhz = r11
             return
-        L5f:
+        L61:
             java.io.IOException r1 = new java.io.IOException
             java.lang.String r2 = "Failed to parse time_in_state file"
             r1.<init>(r2)
             throw r1
-        L67:
+        L69:
             java.io.IOException r0 = new java.io.IOException
             java.lang.String r1 = "Empty time_in_state file"
             r0.<init>(r1)

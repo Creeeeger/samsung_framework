@@ -37,8 +37,7 @@ public class BaseBundle {
         sShouldDefuse = shouldDefuse;
     }
 
-    /* loaded from: classes3.dex */
-    public static final class NoImagePreloadHolder {
+    static final class NoImagePreloadHolder {
         public static final Parcel EMPTY_PARCEL = Parcel.obtain();
 
         NoImagePreloadHolder() {
@@ -56,11 +55,11 @@ public class BaseBundle {
     }
 
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
-    public BaseBundle() {
+    BaseBundle() {
         this((ClassLoader) null, 0);
     }
 
-    public BaseBundle(Parcel parcelledData) {
+    BaseBundle(Parcel parcelledData) {
         this.mMap = null;
         this.mParcelledData = null;
         this.mOwnsLazyValues = true;
@@ -69,7 +68,7 @@ public class BaseBundle {
         readFromParcelInner(parcelledData);
     }
 
-    public BaseBundle(Parcel parcelledData, int length) {
+    BaseBundle(Parcel parcelledData, int length) {
         this.mMap = null;
         this.mParcelledData = null;
         this.mOwnsLazyValues = true;
@@ -78,20 +77,20 @@ public class BaseBundle {
         readFromParcelInner(parcelledData, length);
     }
 
-    public BaseBundle(ClassLoader loader) {
+    BaseBundle(ClassLoader loader) {
         this(loader, 0);
     }
 
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
-    public BaseBundle(int capacity) {
+    BaseBundle(int capacity) {
         this((ClassLoader) null, capacity);
     }
 
-    public BaseBundle(BaseBundle b) {
+    BaseBundle(BaseBundle b) {
         this(b, false);
     }
 
-    public BaseBundle(BaseBundle from, boolean deep) {
+    BaseBundle(BaseBundle from, boolean deep) {
         Parcel parcelledData;
         this.mMap = null;
         this.mParcelledData = null;
@@ -100,13 +99,13 @@ public class BaseBundle {
         this.mWeakParcelledData = null;
         synchronized (from) {
             this.mClassLoader = from.mClassLoader;
-            ArrayMap<String, Object> fromMap = from.mMap;
-            if (fromMap != null) {
+            if (from.mMap != null) {
                 this.mOwnsLazyValues = false;
                 from.mOwnsLazyValues = false;
                 if (!deep) {
                     this.mMap = new ArrayMap<>(from.mMap);
                 } else {
+                    ArrayMap<String, Object> fromMap = from.mMap;
                     int n = fromMap.size();
                     this.mMap = new ArrayMap<>(n);
                     for (int i = 0; i < n; i++) {
@@ -151,15 +150,15 @@ public class BaseBundle {
         }
     }
 
-    public void setClassLoader(ClassLoader loader) {
+    void setClassLoader(ClassLoader loader) {
         this.mClassLoader = loader;
     }
 
-    public ClassLoader getClassLoader() {
+    ClassLoader getClassLoader() {
         return this.mClassLoader;
     }
 
-    public final void unparcel() {
+    final void unparcel() {
         unparcel(false);
     }
 
@@ -180,7 +179,7 @@ public class BaseBundle {
     }
 
     @Deprecated
-    public final Object getValue(String key) {
+    final Object getValue(String key) {
         return getValue(key, null);
     }
 
@@ -188,7 +187,7 @@ public class BaseBundle {
         return (T) getValue(str, cls, null);
     }
 
-    public final <T> T getValue(String str, Class<T> cls, Class<?>... clsArr) {
+    final <T> T getValue(String str, Class<T> cls, Class<?>... clsArr) {
         int indexOfKey = this.mMap.indexOfKey(str);
         if (indexOfKey >= 0) {
             return (T) getValueAt(indexOfKey, cls, clsArr);
@@ -212,13 +211,12 @@ public class BaseBundle {
             try {
                 object = ((BiFunction) object).apply(clazz, itemTypes);
                 this.mMap.setValueAt(i, object);
-                int i2 = this.mLazyValues - 1;
-                this.mLazyValues = i2;
+                this.mLazyValues--;
                 if (this.mOwnsLazyValues) {
-                    Preconditions.checkState(i2 >= 0, "Lazy values ref count below 0");
-                    if (this.mLazyValues == 0) {
-                        Preconditions.checkState(this.mWeakParcelledData.get() != null, "Parcel recycled earlier than expected");
-                        recycleParcel(this.mWeakParcelledData.get());
+                    Preconditions.checkState(this.mLazyValues >= 0, "Lazy values ref count below 0");
+                    Parcel parcel = this.mWeakParcelledData.get();
+                    if (this.mLazyValues == 0 && parcel != null) {
+                        recycleParcel(parcel);
                         this.mWeakParcelledData = null;
                     }
                 }
@@ -237,11 +235,10 @@ public class BaseBundle {
         ArrayMap<String, Object> map;
         WeakReference<Parcel> weakReference;
         if (isEmptyParcel(parcelledData)) {
-            ArrayMap<String, Object> arrayMap = this.mMap;
-            if (arrayMap == null) {
+            if (this.mMap == null) {
                 this.mMap = new ArrayMap<>(1);
             } else {
-                arrayMap.erase();
+                this.mMap.erase();
             }
             this.mParcelledByNative = false;
             this.mParcelledData = null;
@@ -323,7 +320,7 @@ public class BaseBundle {
         }
     }
 
-    public ArrayMap<String, Object> getItemwiseMap() {
+    ArrayMap<String, Object> getItemwiseMap() {
         unparcel(true);
         return this.mMap;
     }
@@ -366,10 +363,9 @@ public class BaseBundle {
     }
 
     public void clear() {
-        WeakReference<Parcel> weakReference;
         unparcel();
-        if (this.mOwnsLazyValues && (weakReference = this.mWeakParcelledData) != null) {
-            recycleParcel(weakReference.get());
+        if (this.mOwnsLazyValues && this.mWeakParcelledData != null) {
+            recycleParcel(this.mWeakParcelledData.get());
         }
         this.mWeakParcelledData = null;
         this.mLazyValues = 0;
@@ -439,7 +435,7 @@ public class BaseBundle {
         return getValue(key);
     }
 
-    public <T> T get(String str, Class<T> cls) {
+    <T> T get(String str, Class<T> cls) {
         unparcel();
         try {
             return (T) getValue(str, (Class) Objects.requireNonNull(cls));
@@ -460,7 +456,7 @@ public class BaseBundle {
         this.mMap.putAll((ArrayMap<? extends String, ? extends Object>) bundle.mMap);
     }
 
-    public void putAll(ArrayMap map) {
+    void putAll(ArrayMap map) {
         unparcel();
         this.mMap.putAll((ArrayMap<? extends String, ? extends Object>) map);
     }
@@ -521,17 +517,17 @@ public class BaseBundle {
         this.mMap.put(key, Boolean.valueOf(value));
     }
 
-    public void putByte(String key, byte value) {
+    void putByte(String key, byte value) {
         unparcel();
         this.mMap.put(key, Byte.valueOf(value));
     }
 
-    public void putChar(String key, char value) {
+    void putChar(String key, char value) {
         unparcel();
         this.mMap.put(key, Character.valueOf(value));
     }
 
-    public void putShort(String key, short value) {
+    void putShort(String key, short value) {
         unparcel();
         this.mMap.put(key, Short.valueOf(value));
     }
@@ -546,7 +542,7 @@ public class BaseBundle {
         this.mMap.put(key, Long.valueOf(value));
     }
 
-    public void putFloat(String key, float value) {
+    void putFloat(String key, float value) {
         unparcel();
         this.mMap.put(key, Float.valueOf(value));
     }
@@ -561,27 +557,27 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    public void putCharSequence(String key, CharSequence value) {
+    void putCharSequence(String key, CharSequence value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    public void putIntegerArrayList(String key, ArrayList<Integer> value) {
+    void putIntegerArrayList(String key, ArrayList<Integer> value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    public void putStringArrayList(String key, ArrayList<String> value) {
+    void putStringArrayList(String key, ArrayList<String> value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    public void putCharSequenceArrayList(String key, ArrayList<CharSequence> value) {
+    void putCharSequenceArrayList(String key, ArrayList<CharSequence> value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    public void putSerializable(String key, Serializable value) {
+    void putSerializable(String key, Serializable value) {
         unparcel();
         this.mMap.put(key, value);
     }
@@ -591,17 +587,17 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    public void putByteArray(String key, byte[] value) {
+    void putByteArray(String key, byte[] value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    public void putShortArray(String key, short[] value) {
+    void putShortArray(String key, short[] value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    public void putCharArray(String key, char[] value) {
+    void putCharArray(String key, char[] value) {
         unparcel();
         this.mMap.put(key, value);
     }
@@ -616,7 +612,7 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    public void putFloatArray(String key, float[] value) {
+    void putFloatArray(String key, float[] value) {
         unparcel();
         this.mMap.put(key, value);
     }
@@ -631,7 +627,7 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    public void putCharSequenceArray(String key, CharSequence[] value) {
+    void putCharSequenceArray(String key, CharSequence[] value) {
         unparcel();
         this.mMap.put(key, value);
     }
@@ -660,11 +656,11 @@ public class BaseBundle {
         Log.w(TAG, "Attempt to cast generated internal exception:", e);
     }
 
-    public void typeWarning(String key, Object value, String className, RuntimeException e) {
+    void typeWarning(String key, Object value, String className, RuntimeException e) {
         typeWarning(key, value, className, "<null>", e);
     }
 
-    public void typeWarning(String key, String className, RuntimeException e) {
+    void typeWarning(String key, String className, RuntimeException e) {
         typeWarning(key, null, className, "<null>", e);
     }
 
@@ -682,12 +678,12 @@ public class BaseBundle {
         }
     }
 
-    public byte getByte(String key) {
+    byte getByte(String key) {
         unparcel();
         return getByte(key, (byte) 0).byteValue();
     }
 
-    public Byte getByte(String key, byte defaultValue) {
+    Byte getByte(String key, byte defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -701,12 +697,12 @@ public class BaseBundle {
         }
     }
 
-    public char getChar(String key) {
+    char getChar(String key) {
         unparcel();
         return getChar(key, (char) 0);
     }
 
-    public char getChar(String key, char defaultValue) {
+    char getChar(String key, char defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -720,12 +716,12 @@ public class BaseBundle {
         }
     }
 
-    public short getShort(String key) {
+    short getShort(String key) {
         unparcel();
         return getShort(key, (short) 0);
     }
 
-    public short getShort(String key, short defaultValue) {
+    short getShort(String key, short defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -777,12 +773,12 @@ public class BaseBundle {
         }
     }
 
-    public float getFloat(String key) {
+    float getFloat(String key) {
         unparcel();
         return getFloat(key, 0.0f);
     }
 
-    public float getFloat(String key, float defaultValue) {
+    float getFloat(String key, float defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -831,7 +827,7 @@ public class BaseBundle {
         return s == null ? defaultValue : s;
     }
 
-    public CharSequence getCharSequence(String key) {
+    CharSequence getCharSequence(String key) {
         unparcel();
         Object o = this.mMap.get(key);
         try {
@@ -842,13 +838,13 @@ public class BaseBundle {
         }
     }
 
-    public CharSequence getCharSequence(String key, CharSequence defaultValue) {
+    CharSequence getCharSequence(String key, CharSequence defaultValue) {
         CharSequence cs = getCharSequence(key);
         return cs == null ? defaultValue : cs;
     }
 
     @Deprecated
-    public Serializable getSerializable(String key) {
+    Serializable getSerializable(String key) {
         unparcel();
         Object o = getValue(key);
         if (o == null) {
@@ -862,11 +858,11 @@ public class BaseBundle {
         }
     }
 
-    public <T extends Serializable> T getSerializable(String key, Class<T> clazz) {
+    <T extends Serializable> T getSerializable(String key, Class<T> clazz) {
         return (T) get(key, clazz);
     }
 
-    public <T> ArrayList<T> getArrayList(String key, Class<? extends T> clazz) {
+    <T> ArrayList<T> getArrayList(String key, Class<? extends T> clazz) {
         unparcel();
         try {
             return (ArrayList) getValue(key, ArrayList.class, (Class) Objects.requireNonNull(clazz));
@@ -876,15 +872,15 @@ public class BaseBundle {
         }
     }
 
-    public ArrayList<Integer> getIntegerArrayList(String key) {
+    ArrayList<Integer> getIntegerArrayList(String key) {
         return getArrayList(key, Integer.class);
     }
 
-    public ArrayList<String> getStringArrayList(String key) {
+    ArrayList<String> getStringArrayList(String key) {
         return getArrayList(key, String.class);
     }
 
-    public ArrayList<CharSequence> getCharSequenceArrayList(String key) {
+    ArrayList<CharSequence> getCharSequenceArrayList(String key) {
         return getArrayList(key, CharSequence.class);
     }
 
@@ -902,7 +898,7 @@ public class BaseBundle {
         }
     }
 
-    public byte[] getByteArray(String key) {
+    byte[] getByteArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -916,7 +912,7 @@ public class BaseBundle {
         }
     }
 
-    public short[] getShortArray(String key) {
+    short[] getShortArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -930,7 +926,7 @@ public class BaseBundle {
         }
     }
 
-    public char[] getCharArray(String key) {
+    char[] getCharArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -972,7 +968,7 @@ public class BaseBundle {
         }
     }
 
-    public float[] getFloatArray(String key) {
+    float[] getFloatArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -1014,7 +1010,7 @@ public class BaseBundle {
         }
     }
 
-    public CharSequence[] getCharSequenceArray(String key) {
+    CharSequence[] getCharSequenceArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
         if (o == null) {
@@ -1028,7 +1024,7 @@ public class BaseBundle {
         }
     }
 
-    public void writeToParcelInner(Parcel parcel, int flags) {
+    void writeToParcelInner(Parcel parcel, int flags) {
         if (parcel.hasReadWriteHelper()) {
             unparcel(true);
         }
@@ -1066,7 +1062,7 @@ public class BaseBundle {
         }
     }
 
-    public void readFromParcelInner(Parcel parcel) {
+    void readFromParcelInner(Parcel parcel) {
         int length = parcel.readInt();
         readFromParcelInner(parcel, length);
     }

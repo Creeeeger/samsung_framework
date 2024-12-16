@@ -40,18 +40,15 @@ public class AttestationVerificationManager {
     private final IAttestationVerificationManagerService mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AttestationProfileId {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface LocalBindingType {
     }
 
     @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface VerificationResult {
     }
 
@@ -70,7 +67,7 @@ public class AttestationVerificationManager {
         }
     }
 
-    public static /* synthetic */ void lambda$verifyAttestation$1(Executor executor, final BiConsumer callback, final IVerificationResult result) {
+    static /* synthetic */ void lambda$verifyAttestation$1(Executor executor, final BiConsumer callback, final IVerificationResult result) {
         Log.d(TAG, "verifyAttestation result: " + result.resultCode + " / " + result.token);
         executor.execute(new Runnable() { // from class: android.security.attestationverification.AttestationVerificationManager$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
@@ -87,7 +84,7 @@ public class AttestationVerificationManager {
         } else {
             Duration usedMaximumAge2 = MAX_TOKEN_AGE;
             if (maximumAge.compareTo(usedMaximumAge2) > 0) {
-                throw new IllegalArgumentException("maximumAge cannot be greater than " + usedMaximumAge2 + "; was " + maximumAge);
+                throw new IllegalArgumentException("maximumAge cannot be greater than " + MAX_TOKEN_AGE + "; was " + maximumAge);
             }
             usedMaximumAge = maximumAge;
         }

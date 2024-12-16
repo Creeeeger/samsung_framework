@@ -1,6 +1,5 @@
 package com.android.internal.view;
 
-import android.hardware.input.InputManagerGlobal;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -14,6 +13,7 @@ import android.view.InsetsSourceControl;
 import android.view.InsetsState;
 import android.view.ScrollCaptureResponse;
 import android.view.inputmethod.ImeTracker;
+import android.window.ActivityWindowInfo;
 import android.window.ClientWindowFrames;
 import com.android.internal.os.IResultReceiver;
 import com.samsung.android.content.smartclip.SmartClipRemoteRequestInfo;
@@ -27,7 +27,7 @@ public class BaseIWindow extends IWindow.Stub {
         this.mSession = session;
     }
 
-    public void resized(ClientWindowFrames frames, boolean reportDraw, MergedConfiguration mergedConfiguration, InsetsState insetsState, boolean forceLayout, boolean alwaysConsumeSystemBars, int displayId, int seqId, boolean dragResizing) {
+    public void resized(ClientWindowFrames frames, boolean reportDraw, MergedConfiguration mergedConfiguration, InsetsState insetsState, boolean forceLayout, boolean alwaysConsumeSystemBars, int displayId, int seqId, boolean dragResizing, ActivityWindowInfo activityWindowInfo) {
         if (reportDraw) {
             try {
                 this.mSession.finishDrawing(this, null, seqId);
@@ -37,7 +37,7 @@ public class BaseIWindow extends IWindow.Stub {
     }
 
     @Override // android.view.IWindow
-    public void insetsControlChanged(InsetsState insetsState, InsetsSourceControl[] activeControls) {
+    public void insetsControlChanged(InsetsState insetsState, InsetsSourceControl.Array activeControls) {
     }
 
     @Override // android.view.IWindow
@@ -91,11 +91,6 @@ public class BaseIWindow extends IWindow.Stub {
         }
     }
 
-    @Override // android.view.IWindow
-    public void updatePointerIcon(float x, float y) {
-        InputManagerGlobal.getInstance().setPointerIconType(1);
-    }
-
     public void dispatchWallpaperCommand(String action, int x, int y, int z, Bundle extras, boolean sync) {
         if (sync) {
             try {
@@ -122,6 +117,10 @@ public class BaseIWindow extends IWindow.Stub {
     }
 
     @Override // android.view.IWindow
+    public void dumpWindow(ParcelFileDescriptor pfd) {
+    }
+
+    @Override // android.view.IWindow
     public void dispatchSmartClipRemoteRequest(SmartClipRemoteRequestInfo request) {
     }
 
@@ -130,15 +129,15 @@ public class BaseIWindow extends IWindow.Stub {
     }
 
     @Override // android.view.IWindow
-    public void dispatchSPenGestureEvent(InputEvent[] events) {
-    }
-
-    @Override // android.view.IWindow
     public void dispatchDragEventUpdated(DragEvent event) {
     }
 
     @Override // android.view.IWindow
     public void windowFocusInTaskChanged(boolean hasFocus) {
+    }
+
+    @Override // android.view.IWindow
+    public void dispatchSPenGestureEvent(InputEvent[] events) {
     }
 
     @Override // android.view.IWindow

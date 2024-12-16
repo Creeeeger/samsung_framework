@@ -5,7 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 import android.util.Pair;
 import com.samsung.android.sume.core.Def;
-import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda12;
+import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda3;
 import com.samsung.android.sume.core.descriptor.ImgpDescriptor;
 import com.samsung.android.sume.core.descriptor.MFDescriptor;
 import com.samsung.android.sume.core.descriptor.PluginDescriptor;
@@ -37,12 +37,15 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class PluginFilterCreator implements MediaFilterCreator {
     private static final String TAG = Def.tagOf((Class<?>) PluginFilterCreator.class);
     private PluginStore pluginStore;
 
-    public void setPluginStore(PluginStore pluginStore) {
+    PluginFilterCreator() {
+    }
+
+    void setPluginStore(PluginStore pluginStore) {
         this.pluginStore = pluginStore;
     }
 
@@ -80,7 +83,7 @@ public class PluginFilterCreator implements MediaFilterCreator {
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean anyMatch;
-                    anyMatch = typeNames.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda14
+                    anyMatch = typeNames.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda8
                         @Override // java.util.function.Predicate
                         public final boolean test(Object obj2) {
                             boolean equals;
@@ -93,7 +96,7 @@ public class PluginFilterCreator implements MediaFilterCreator {
             }).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda3
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
-                    return PluginFilterCreator.this.m8776x46ec1c58((String) obj);
+                    return PluginFilterCreator.this.m9164x46ec1c58((String) obj);
                 }
             }).filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda4
                 @Override // java.util.function.Predicate
@@ -120,10 +123,10 @@ public class PluginFilterCreator implements MediaFilterCreator {
                         join = ImgpPlugin.join((ImgpPlugin) ((PluginFixture) obj), (ImgpPlugin) ((PluginFixture) obj2));
                         return join;
                     }
-                }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+                }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
             }
         } else {
-            PluginStore.Entry found = (PluginStore.Entry) Optional.ofNullable(this.pluginStore.get(descriptor)).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+            PluginStore.Entry found = (PluginStore.Entry) Optional.ofNullable(this.pluginStore.get(descriptor)).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
             plugin = (ImgpPlugin) found.getPluginFixture();
             ((PluginDescriptor) found.getDescriptor()).copyTo(descriptor);
         }
@@ -136,13 +139,13 @@ public class PluginFilterCreator implements MediaFilterCreator {
         }).orElse(imgpFilter);
     }
 
-    public static /* synthetic */ boolean lambda$createImgpFilter$0(ImgpPlugin.Type e) {
+    static /* synthetic */ boolean lambda$createImgpFilter$0(ImgpPlugin.Type e) {
         return e != ImgpPlugin.Type.CUSTOM;
     }
 
-    /* renamed from: lambda$createImgpFilter$3$com-samsung-android-sume-core-filter-factory-PluginFilterCreator */
-    public /* synthetic */ Optional m8776x46ec1c58(String e) {
-        return Optional.ofNullable(this.pluginStore.get(new ImgpDescriptor(ImgpPlugin.Type.valueOf(e)))).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda13
+    /* renamed from: lambda$createImgpFilter$3$com-samsung-android-sume-core-filter-factory-PluginFilterCreator, reason: not valid java name */
+    /* synthetic */ Optional m9164x46ec1c58(String e) {
+        return Optional.ofNullable(this.pluginStore.get(new ImgpDescriptor(ImgpPlugin.Type.valueOf(e)))).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda14
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return ((PluginStore.Entry) obj).getPluginFixture();
@@ -150,14 +153,14 @@ public class PluginFilterCreator implements MediaFilterCreator {
         });
     }
 
-    public static /* synthetic */ MediaFilter lambda$createImgpFilter$5(MediaFilter filter, ContentFilterRegister it) {
+    static /* synthetic */ MediaFilter lambda$createImgpFilter$5(MediaFilter filter, ContentFilterRegister it) {
         return new ContentFilter(it, filter);
     }
 
     private MediaFilter createNNFilter(NNDescriptor descriptor, MediaFilter successor) {
         List<NNFileDescriptor> nnFileDescriptor;
         final MediaFilter filter;
-        PluginStore.Entry found = (PluginStore.Entry) Optional.ofNullable(this.pluginStore.get(descriptor)).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+        PluginStore.Entry found = (PluginStore.Entry) Optional.ofNullable(this.pluginStore.get(descriptor)).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
         NNPlugin plugin = (NNPlugin) found.getPluginFixture();
         ((PluginDescriptor) found.getDescriptor()).copyTo(descriptor);
         final Context context = this.pluginStore.getContext();
@@ -166,25 +169,25 @@ public class PluginFilterCreator implements MediaFilterCreator {
         }
         final Pair<String, Pattern> paths = plugin.getModelPathLoader().load(descriptor.getModelId());
         try {
-            nnFileDescriptor = (List) Arrays.stream(context.getAssets().list(paths.first)).filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda8
+            nnFileDescriptor = (List) Arrays.stream(context.getAssets().list(paths.first)).filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda9
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean find;
                     find = ((Pattern) Pair.this.second).matcher((String) obj).find();
                     return find;
                 }
-            }).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda9
+            }).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda10
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return PluginFilterCreator.lambda$createNNFilter$7(Context.this, paths, (String) obj);
                 }
-            }).filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda10
+            }).filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda11
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     return Objects.nonNull((NNFileDescriptor) obj);
                 }
             }).collect(Collectors.toList());
-            String models = Arrays.toString(nnFileDescriptor.stream().map(new NNFWDescriptor$$ExternalSyntheticLambda1()).toArray(new IntFunction() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda11
+            String models = Arrays.toString(nnFileDescriptor.stream().map(new NNFWDescriptor$$ExternalSyntheticLambda1()).toArray(new IntFunction() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda12
                 @Override // java.util.function.IntFunction
                 public final Object apply(int i) {
                     return PluginFilterCreator.lambda$createNNFilter$8(i);
@@ -210,7 +213,7 @@ public class PluginFilterCreator implements MediaFilterCreator {
             descriptor.setNNFileDescriptors(nnFileDescriptor);
             filter = new NNFilter(descriptor, plugin, (MediaFilter) Objects.requireNonNull(successor));
         }
-        return (MediaFilter) Optional.ofNullable(plugin.getContentFilterRegister()).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda12
+        return (MediaFilter) Optional.ofNullable(plugin.getContentFilterRegister()).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda13
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return PluginFilterCreator.lambda$createNNFilter$9(MediaFilter.this, (ContentFilterRegister) obj);
@@ -219,7 +222,7 @@ public class PluginFilterCreator implements MediaFilterCreator {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public static /* synthetic */ NNFileDescriptor lambda$createNNFilter$7(Context context, Pair paths, String it) {
+    static /* synthetic */ NNFileDescriptor lambda$createNNFilter$7(Context context, Pair paths, String it) {
         AssetFileDescriptor afd = null;
         try {
             try {
@@ -253,11 +256,11 @@ public class PluginFilterCreator implements MediaFilterCreator {
         }
     }
 
-    public static /* synthetic */ String[] lambda$createNNFilter$8(int x$0) {
+    static /* synthetic */ String[] lambda$createNNFilter$8(int x$0) {
         return new String[x$0];
     }
 
-    public static /* synthetic */ MediaFilter lambda$createNNFilter$9(MediaFilter filter, ContentFilterRegister it) {
+    static /* synthetic */ MediaFilter lambda$createNNFilter$9(MediaFilter filter, ContentFilterRegister it) {
         return new ContentFilter(it, filter);
     }
 }

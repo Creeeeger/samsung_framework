@@ -20,9 +20,8 @@ public class DevicePolicyKeyguardService extends Service {
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private final IKeyguardClient mClient = new AnonymousClass1();
 
-    /* renamed from: android.app.admin.DevicePolicyKeyguardService$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends IKeyguardClient.Stub {
+    /* renamed from: android.app.admin.DevicePolicyKeyguardService$1, reason: invalid class name */
+    class AnonymousClass1 extends IKeyguardClient.Stub {
         AnonymousClass1() {
         }
 
@@ -37,6 +36,7 @@ public class DevicePolicyKeyguardService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCreateKeyguardSurface$0(IBinder hostInputToken) {
             SurfaceControlViewHost.SurfacePackage surfacePackage = DevicePolicyKeyguardService.this.onCreateKeyguardSurface(hostInputToken);
             try {
@@ -62,13 +62,12 @@ public class DevicePolicyKeyguardService extends Service {
     }
 
     public void dismiss() {
-        IKeyguardCallback iKeyguardCallback = this.mCallback;
-        if (iKeyguardCallback == null) {
+        if (this.mCallback == null) {
             Log.w(TAG, "KeyguardCallback was unexpectedly null");
             return;
         }
         try {
-            iKeyguardCallback.onDismiss();
+            this.mCallback.onDismiss();
         } catch (RemoteException e) {
             Log.e(TAG, "onDismiss failed", e);
         }

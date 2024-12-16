@@ -5,7 +5,6 @@ import android.content.ContentResolver;
 import android.provider.Settings;
 import android.text.TextUtils;
 import com.android.internal.util.ArrayUtils;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,7 +17,6 @@ public class SettingsStringUtil {
     private SettingsStringUtil() {
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class ColonDelimitedSet<T> extends HashSet<T> {
         protected abstract T itemFromString(String str);
 
@@ -46,12 +44,12 @@ public class SettingsStringUtil {
             return sb.toString();
         }
 
-        /* loaded from: classes3.dex */
         public static class OfStrings extends ColonDelimitedSet<String> {
             public OfStrings(String colonSeparatedItems) {
                 super(colonSeparatedItems);
             }
 
+            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.provider.SettingsStringUtil.ColonDelimitedSet
             public String itemFromString(String s) {
                 return s;
@@ -87,20 +85,22 @@ public class SettingsStringUtil {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ComponentNameSet extends ColonDelimitedSet<ComponentName> {
         public ComponentNameSet(String colonSeparatedPackageNames) {
             super(colonSeparatedPackageNames);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.provider.SettingsStringUtil.ColonDelimitedSet
         public ComponentName itemFromString(String s) {
             return ComponentName.unflattenFromString(s);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.provider.SettingsStringUtil.ColonDelimitedSet
         public String itemToString(ComponentName item) {
-            return item != null ? item.flattenToString() : SemCapabilities.FEATURE_TAG_NULL;
+            return item != null ? item.flattenToString() : "null";
         }
 
         public static String add(String delimitedElements, ComponentName element) {
@@ -126,7 +126,6 @@ public class SettingsStringUtil {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class SettingStringHelper {
         private final ContentResolver mContentResolver;
         private final String mSettingName;

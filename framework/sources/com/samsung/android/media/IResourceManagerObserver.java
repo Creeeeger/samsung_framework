@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IResourceManagerObserver extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.media.IResourceManagerObserver";
 
@@ -21,7 +21,6 @@ public interface IResourceManagerObserver extends IInterface {
 
     int setResourcePriority(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IResourceManagerObserver {
         @Override // com.samsung.android.media.IResourceManagerObserver
         public int enableObserver(int listenerType, int enable) throws RemoteException {
@@ -53,7 +52,6 @@ public interface IResourceManagerObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IResourceManagerObserver {
         static final int TRANSACTION_disconnect = 5;
         static final int TRANSACTION_enableObserver = 1;
@@ -108,54 +106,50 @@ public interface IResourceManagerObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IResourceManagerObserver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IResourceManagerObserver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IResourceManagerObserver.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = enableObserver(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    GetResourceInfoReturn _result2 = getResourceInfo(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    GetCodecCapacityReturn _result3 = getCodecCapacity(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = setResourcePriority(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    disconnect();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = enableObserver(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            GetResourceInfoReturn _result2 = getResourceInfo(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            GetCodecCapacityReturn _result3 = getCodecCapacity(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = setResourcePriority(_arg04);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            disconnect();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IResourceManagerObserver {
+        private static class Proxy implements IResourceManagerObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -9,7 +9,7 @@ import java.security.SignatureException;
 class SignatureUpdatingOutputStream extends OutputStream {
     private Signature sig;
 
-    public SignatureUpdatingOutputStream(Signature sig) {
+    SignatureUpdatingOutputStream(Signature sig) {
         this.sig = sig;
     }
 

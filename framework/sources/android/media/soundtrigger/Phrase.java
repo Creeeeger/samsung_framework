@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Phrase implements Parcelable {
     public static final Parcelable.Creator<Phrase> CREATOR = new Parcelable.Creator<Phrase>() { // from class: android.media.soundtrigger.Phrase.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Phrase createFromParcel(Parcel _aidl_source) {
             Phrase _aidl_out = new Phrase();
@@ -20,6 +18,7 @@ public class Phrase implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Phrase[] newArray(int _aidl_size) {
             return new Phrase[_aidl_size];
@@ -30,25 +29,6 @@ public class Phrase implements Parcelable {
     public int[] users;
     public int id = 0;
     public int recognitionModes = 0;
-
-    /* renamed from: android.media.soundtrigger.Phrase$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Phrase> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Phrase createFromParcel(Parcel _aidl_source) {
-            Phrase _aidl_out = new Phrase();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Phrase[] newArray(int _aidl_size) {
-            return new Phrase[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -137,7 +117,7 @@ public class Phrase implements Parcelable {
         _aidl_sj.add("users: " + Arrays.toString(this.users));
         _aidl_sj.add("locale: " + Objects.toString(this.locale));
         _aidl_sj.add("text: " + Objects.toString(this.text));
-        return "android.media.soundtrigger.Phrase" + _aidl_sj.toString();
+        return "Phrase" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

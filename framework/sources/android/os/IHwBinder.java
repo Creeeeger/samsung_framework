@@ -6,7 +6,6 @@ import android.annotation.SystemApi;
 /* loaded from: classes3.dex */
 public interface IHwBinder {
 
-    /* loaded from: classes3.dex */
     public interface DeathRecipient {
         void serviceDied(long j);
     }

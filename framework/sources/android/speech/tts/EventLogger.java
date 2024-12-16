@@ -3,10 +3,10 @@ package android.speech.tts;
 import android.text.TextUtils;
 
 /* loaded from: classes3.dex */
-public class EventLogger extends AbstractEventLogger {
+class EventLogger extends AbstractEventLogger {
     private final SynthesisRequest mRequest;
 
-    public EventLogger(SynthesisRequest request, int callerUid, int callerPid, String serviceApp) {
+    EventLogger(SynthesisRequest request, int callerUid, int callerPid, String serviceApp) {
         super(callerUid, callerPid, serviceApp);
         this.mRequest = request;
     }

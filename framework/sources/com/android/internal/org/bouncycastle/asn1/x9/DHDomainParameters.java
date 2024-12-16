@@ -118,13 +118,11 @@ public class DHDomainParameters extends ASN1Object {
         v.add(this.p);
         v.add(this.g);
         v.add(this.q);
-        ASN1Integer aSN1Integer = this.j;
-        if (aSN1Integer != null) {
-            v.add(aSN1Integer);
+        if (this.j != null) {
+            v.add(this.j);
         }
-        DHValidationParms dHValidationParms = this.validationParms;
-        if (dHValidationParms != null) {
-            v.add(dHValidationParms);
+        if (this.validationParms != null) {
+            v.add(this.validationParms);
         }
         return new DERSequence(v);
     }

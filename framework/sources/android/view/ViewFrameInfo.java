@@ -7,6 +7,7 @@ public class ViewFrameInfo {
     public long drawStart;
     public long flags;
     private int mInputEventId;
+    private int mViewsMeasuredCounts;
 
     public void populateFrameInfo(FrameInfo frameInfo) {
         long[] jArr = frameInfo.frameInfo;
@@ -19,10 +20,17 @@ public class ViewFrameInfo {
         this.drawStart = 0L;
         this.mInputEventId = 0;
         this.flags = 0L;
+        this.mViewsMeasuredCounts = 0;
     }
 
     public void markDrawStart() {
         this.drawStart = System.nanoTime();
+    }
+
+    public int getAndIncreaseViewMeasuredCount() {
+        int i = this.mViewsMeasuredCounts + 1;
+        this.mViewsMeasuredCounts = i;
+        return i;
     }
 
     public void setInputEvent(int eventId) {

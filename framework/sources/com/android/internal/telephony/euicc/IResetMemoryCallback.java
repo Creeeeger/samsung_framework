@@ -12,7 +12,6 @@ public interface IResetMemoryCallback extends IInterface {
 
     void onComplete(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IResetMemoryCallback {
         @Override // com.android.internal.telephony.euicc.IResetMemoryCallback
         public void onComplete(int resultCode) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IResetMemoryCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IResetMemoryCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,26 +65,22 @@ public interface IResetMemoryCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IResetMemoryCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IResetMemoryCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IResetMemoryCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IResetMemoryCallback {
+        private static class Proxy implements IResetMemoryCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

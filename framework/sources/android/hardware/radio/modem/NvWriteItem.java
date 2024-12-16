@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class NvWriteItem implements Parcelable {
     public static final Parcelable.Creator<NvWriteItem> CREATOR = new Parcelable.Creator<NvWriteItem>() { // from class: android.hardware.radio.modem.NvWriteItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NvWriteItem createFromParcel(Parcel _aidl_source) {
             NvWriteItem _aidl_out = new NvWriteItem();
@@ -20,6 +18,7 @@ public class NvWriteItem implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NvWriteItem[] newArray(int _aidl_size) {
             return new NvWriteItem[_aidl_size];
@@ -27,25 +26,6 @@ public class NvWriteItem implements Parcelable {
     };
     public int itemId;
     public String value;
-
-    /* renamed from: android.hardware.radio.modem.NvWriteItem$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NvWriteItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NvWriteItem createFromParcel(Parcel _aidl_source) {
-            NvWriteItem _aidl_out = new NvWriteItem();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NvWriteItem[] newArray(int _aidl_size) {
-            return new NvWriteItem[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -104,7 +84,7 @@ public class NvWriteItem implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("itemId: " + NvItem$$.toString(this.itemId));
         _aidl_sj.add("value: " + Objects.toString(this.value));
-        return "android.hardware.radio.modem.NvWriteItem" + _aidl_sj.toString();
+        return "NvWriteItem" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

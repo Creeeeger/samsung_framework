@@ -66,14 +66,13 @@ public class PathKeyframes implements Keyframes {
     private PointF interpolateInRange(float fraction, int startIndex, int endIndex) {
         int startBase = startIndex * 3;
         int endBase = endIndex * 3;
-        float[] fArr = this.mKeyframeData;
-        float startFraction = fArr[startBase + 0];
-        float endFraction = fArr[endBase + 0];
+        float startFraction = this.mKeyframeData[startBase + 0];
+        float endFraction = this.mKeyframeData[endBase + 0];
         float intervalFraction = (fraction - startFraction) / (endFraction - startFraction);
-        float startX = fArr[startBase + 1];
-        float endX = fArr[endBase + 1];
-        float startY = fArr[startBase + 2];
-        float endY = fArr[endBase + 2];
+        float startX = this.mKeyframeData[startBase + 1];
+        float endX = this.mKeyframeData[endBase + 1];
+        float startY = this.mKeyframeData[startBase + 2];
+        float endY = this.mKeyframeData[endBase + 2];
         float x = interpolate(intervalFraction, startX, endX);
         float y = interpolate(intervalFraction, startY, endY);
         this.mTempPointF.set(x, y);
@@ -91,7 +90,7 @@ public class PathKeyframes implements Keyframes {
 
     @Override // android.animation.Keyframes
     /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public Keyframes m88clone() {
+    public Keyframes m108clone() {
         try {
             Keyframes clone = (Keyframes) super.clone();
             return clone;
@@ -104,9 +103,7 @@ public class PathKeyframes implements Keyframes {
         int base = index * 3;
         int xOffset = base + 1;
         int yOffset = base + 2;
-        PointF pointF = this.mTempPointF;
-        float[] fArr = this.mKeyframeData;
-        pointF.set(fArr[xOffset], fArr[yOffset]);
+        this.mTempPointF.set(this.mKeyframeData[xOffset], this.mKeyframeData[yOffset]);
         return this.mTempPointF;
     }
 
@@ -115,25 +112,8 @@ public class PathKeyframes implements Keyframes {
         return (diff * fraction) + startValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.animation.PathKeyframes$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends FloatKeyframesBase {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.Keyframes.FloatKeyframes
-        public float getFloatValue(float fraction) {
-            PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
-            return pointF.x;
-        }
-    }
-
     public Keyframes.FloatKeyframes createXFloatKeyframes() {
         return new FloatKeyframesBase() { // from class: android.animation.PathKeyframes.1
-            AnonymousClass1() {
-            }
-
             @Override // android.animation.Keyframes.FloatKeyframes
             public float getFloatValue(float fraction) {
                 PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
@@ -142,25 +122,8 @@ public class PathKeyframes implements Keyframes {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.animation.PathKeyframes$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends FloatKeyframesBase {
-        AnonymousClass2() {
-        }
-
-        @Override // android.animation.Keyframes.FloatKeyframes
-        public float getFloatValue(float fraction) {
-            PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
-            return pointF.y;
-        }
-    }
-
     public Keyframes.FloatKeyframes createYFloatKeyframes() {
         return new FloatKeyframesBase() { // from class: android.animation.PathKeyframes.2
-            AnonymousClass2() {
-            }
-
             @Override // android.animation.Keyframes.FloatKeyframes
             public float getFloatValue(float fraction) {
                 PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
@@ -169,25 +132,8 @@ public class PathKeyframes implements Keyframes {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.animation.PathKeyframes$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 extends IntKeyframesBase {
-        AnonymousClass3() {
-        }
-
-        @Override // android.animation.Keyframes.IntKeyframes
-        public int getIntValue(float fraction) {
-            PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
-            return Math.round(pointF.x);
-        }
-    }
-
     public Keyframes.IntKeyframes createXIntKeyframes() {
         return new IntKeyframesBase() { // from class: android.animation.PathKeyframes.3
-            AnonymousClass3() {
-            }
-
             @Override // android.animation.Keyframes.IntKeyframes
             public int getIntValue(float fraction) {
                 PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
@@ -196,25 +142,8 @@ public class PathKeyframes implements Keyframes {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.animation.PathKeyframes$4 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass4 extends IntKeyframesBase {
-        AnonymousClass4() {
-        }
-
-        @Override // android.animation.Keyframes.IntKeyframes
-        public int getIntValue(float fraction) {
-            PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
-            return Math.round(pointF.y);
-        }
-    }
-
     public Keyframes.IntKeyframes createYIntKeyframes() {
         return new IntKeyframesBase() { // from class: android.animation.PathKeyframes.4
-            AnonymousClass4() {
-            }
-
             @Override // android.animation.Keyframes.IntKeyframes
             public int getIntValue(float fraction) {
                 PointF pointF = (PointF) PathKeyframes.this.getValue(fraction);
@@ -223,13 +152,7 @@ public class PathKeyframes implements Keyframes {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static abstract class SimpleKeyframes implements Keyframes {
-        /* synthetic */ SimpleKeyframes(SimpleKeyframesIA simpleKeyframesIA) {
-            this();
-        }
-
+    private static abstract class SimpleKeyframes implements Keyframes {
         private SimpleKeyframes() {
         }
 
@@ -244,7 +167,7 @@ public class PathKeyframes implements Keyframes {
 
         @Override // android.animation.Keyframes
         /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public Keyframes m89clone() {
+        public Keyframes m109clone() {
             try {
                 Keyframes clone = (Keyframes) super.clone();
                 return clone;
@@ -254,9 +177,7 @@ public class PathKeyframes implements Keyframes {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public static abstract class IntKeyframesBase extends SimpleKeyframes implements Keyframes.IntKeyframes {
+    static abstract class IntKeyframesBase extends SimpleKeyframes implements Keyframes.IntKeyframes {
         IntKeyframesBase() {
             super();
         }
@@ -272,9 +193,7 @@ public class PathKeyframes implements Keyframes {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public static abstract class FloatKeyframesBase extends SimpleKeyframes implements Keyframes.FloatKeyframes {
+    static abstract class FloatKeyframesBase extends SimpleKeyframes implements Keyframes.FloatKeyframes {
         FloatKeyframesBase() {
             super();
         }

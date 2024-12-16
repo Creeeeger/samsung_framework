@@ -6,7 +6,8 @@ import com.android.internal.util.GrowingArrayUtils;
 import java.lang.reflect.Array;
 import libcore.util.EmptyArray;
 
-/* loaded from: classes3.dex */
+/* JADX INFO: Access modifiers changed from: package-private */
+/* loaded from: classes4.dex */
 public abstract class SpannableStringInternal {
     private static final int COLUMNS = 3;
     static final Object[] EMPTY = new Object[0];
@@ -19,7 +20,7 @@ public abstract class SpannableStringInternal {
     private String mText;
 
     /* JADX WARN: Multi-variable type inference failed */
-    public SpannableStringInternal(CharSequence charSequence, int start, int end, boolean ignoreNoCopySpan) {
+    SpannableStringInternal(CharSequence charSequence, int start, int end, boolean ignoreNoCopySpan) {
         if (start == 0 && end == charSequence.length()) {
             this.mText = charSequence.toString();
         } else {
@@ -78,21 +79,16 @@ public abstract class SpannableStringInternal {
             return;
         }
         if (!hasNoCopySpan && start == 0 && end == src.length()) {
-            Object[] newUnpaddedObjectArray = ArrayUtils.newUnpaddedObjectArray(src.mSpans.length);
-            this.mSpans = newUnpaddedObjectArray;
+            this.mSpans = ArrayUtils.newUnpaddedObjectArray(src.mSpans.length);
             this.mSpanData = new int[src.mSpanData.length];
             this.mSpanCount = src.mSpanCount;
-            Object[] objArr = src.mSpans;
-            System.arraycopy(objArr, 0, newUnpaddedObjectArray, 0, objArr.length);
-            int[] iArr = src.mSpanData;
-            int[] iArr2 = this.mSpanData;
-            System.arraycopy(iArr, 0, iArr2, 0, iArr2.length);
+            System.arraycopy(src.mSpans, 0, this.mSpans, 0, src.mSpans.length);
+            System.arraycopy(src.mSpanData, 0, this.mSpanData, 0, this.mSpanData.length);
             return;
         }
         this.mSpanCount = count;
-        Object[] newUnpaddedObjectArray2 = ArrayUtils.newUnpaddedObjectArray(count);
-        this.mSpans = newUnpaddedObjectArray2;
-        this.mSpanData = new int[newUnpaddedObjectArray2.length * 3];
+        this.mSpans = ArrayUtils.newUnpaddedObjectArray(this.mSpanCount);
+        this.mSpanData = new int[this.mSpans.length * 3];
         int j = 0;
         for (int i2 = 0; i2 < limit; i2++) {
             int spanStart = srcData[(i2 * 3) + 0];
@@ -105,10 +101,9 @@ public abstract class SpannableStringInternal {
                     spanEnd = end;
                 }
                 this.mSpans[j] = srcSpans[i2];
-                int[] iArr3 = this.mSpanData;
-                iArr3[(j * 3) + 0] = spanStart - start;
-                iArr3[(j * 3) + 1] = spanEnd - start;
-                iArr3[(j * 3) + 2] = srcData[(i2 * 3) + 2];
+                this.mSpanData[(j * 3) + 0] = spanStart - start;
+                this.mSpanData[(j * 3) + 1] = spanEnd - start;
+                this.mSpanData[(j * 3) + 2] = srcData[(i2 * 3) + 2];
                 j++;
             }
         }
@@ -143,6 +138,7 @@ public abstract class SpannableStringInternal {
         this.mText.getChars(start, end, dest, off);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSpan(Object what, int start, int end, int flags) {
         setSpan(what, start, end, flags, true);
     }
@@ -182,28 +178,25 @@ public abstract class SpannableStringInternal {
                 return;
             }
         }
-        int i2 = this.mSpanCount;
-        if (i2 + 1 >= this.mSpans.length) {
-            Object[] newtags = ArrayUtils.newUnpaddedObjectArray(GrowingArrayUtils.growSize(i2));
+        if (this.mSpanCount + 1 >= this.mSpans.length) {
+            Object[] newtags = ArrayUtils.newUnpaddedObjectArray(GrowingArrayUtils.growSize(this.mSpanCount));
             int[] newdata = new int[newtags.length * 3];
             System.arraycopy(this.mSpans, 0, newtags, 0, this.mSpanCount);
             System.arraycopy(this.mSpanData, 0, newdata, 0, this.mSpanCount * 3);
             this.mSpans = newtags;
             this.mSpanData = newdata;
         }
-        Object[] newtags2 = this.mSpans;
-        int i3 = this.mSpanCount;
-        newtags2[i3] = what;
-        int[] iArr = this.mSpanData;
-        iArr[(i3 * 3) + 0] = start;
-        iArr[(i3 * 3) + 1] = end;
-        iArr[(i3 * 3) + 2] = flags;
-        this.mSpanCount = i3 + 1;
+        this.mSpans[this.mSpanCount] = what;
+        this.mSpanData[(this.mSpanCount * 3) + 0] = start;
+        this.mSpanData[(this.mSpanCount * 3) + 1] = end;
+        this.mSpanData[(this.mSpanCount * 3) + 2] = flags;
+        this.mSpanCount++;
         if (this instanceof Spannable) {
             sendSpanAdded(what, start, end);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeSpan(Object what) {
         removeSpan(what, 0);
     }

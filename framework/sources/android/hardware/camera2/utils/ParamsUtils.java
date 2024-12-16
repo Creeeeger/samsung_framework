@@ -8,7 +8,7 @@ import android.util.Rational;
 import android.util.Size;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class ParamsUtils {
     private static final int RATIONAL_DENOMINATOR = 1000000;
 

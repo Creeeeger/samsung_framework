@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioHalVolumeCurve implements Parcelable {
     public static final Parcelable.Creator<AudioHalVolumeCurve> CREATOR = new Parcelable.Creator<AudioHalVolumeCurve>() { // from class: android.media.audio.common.AudioHalVolumeCurve.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalVolumeCurve createFromParcel(Parcel _aidl_source) {
             AudioHalVolumeCurve _aidl_out = new AudioHalVolumeCurve();
@@ -20,6 +18,7 @@ public class AudioHalVolumeCurve implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalVolumeCurve[] newArray(int _aidl_size) {
             return new AudioHalVolumeCurve[_aidl_size];
@@ -28,32 +27,12 @@ public class AudioHalVolumeCurve implements Parcelable {
     public CurvePoint[] curvePoints;
     public byte deviceCategory = 1;
 
-    /* loaded from: classes2.dex */
     public @interface DeviceCategory {
         public static final byte EARPIECE = 2;
         public static final byte EXT_MEDIA = 3;
         public static final byte HEADSET = 0;
         public static final byte HEARING_AID = 4;
         public static final byte SPEAKER = 1;
-    }
-
-    /* renamed from: android.media.audio.common.AudioHalVolumeCurve$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioHalVolumeCurve> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalVolumeCurve createFromParcel(Parcel _aidl_source) {
-            AudioHalVolumeCurve _aidl_out = new AudioHalVolumeCurve();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalVolumeCurve[] newArray(int _aidl_size) {
-            return new AudioHalVolumeCurve[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -113,7 +92,7 @@ public class AudioHalVolumeCurve implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("deviceCategory: " + ((int) this.deviceCategory));
         _aidl_sj.add("curvePoints: " + Arrays.toString(this.curvePoints));
-        return "android.media.audio.common.AudioHalVolumeCurve" + _aidl_sj.toString();
+        return "AudioHalVolumeCurve" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {
@@ -158,12 +137,9 @@ public class AudioHalVolumeCurve implements Parcelable {
         return ((Parcelable) _v).describeContents();
     }
 
-    /* loaded from: classes2.dex */
     public static class CurvePoint implements Parcelable {
         public static final Parcelable.Creator<CurvePoint> CREATOR = new Parcelable.Creator<CurvePoint>() { // from class: android.media.audio.common.AudioHalVolumeCurve.CurvePoint.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CurvePoint createFromParcel(Parcel _aidl_source) {
                 CurvePoint _aidl_out = new CurvePoint();
@@ -171,6 +147,7 @@ public class AudioHalVolumeCurve implements Parcelable {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CurvePoint[] newArray(int _aidl_size) {
                 return new CurvePoint[_aidl_size];
@@ -180,25 +157,6 @@ public class AudioHalVolumeCurve implements Parcelable {
         public static final byte MIN_INDEX = 0;
         public byte index = 0;
         public int attenuationMb = 0;
-
-        /* renamed from: android.media.audio.common.AudioHalVolumeCurve$CurvePoint$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<CurvePoint> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public CurvePoint createFromParcel(Parcel _aidl_source) {
-                CurvePoint _aidl_out = new CurvePoint();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public CurvePoint[] newArray(int _aidl_size) {
-                return new CurvePoint[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

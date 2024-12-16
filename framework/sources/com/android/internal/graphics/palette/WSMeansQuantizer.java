@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class WSMeansQuantizer implements Quantizer {
     static final /* synthetic */ boolean $assertionsDisabled = false;
     private static final boolean DEBUG = false;
@@ -28,8 +28,8 @@ public final class WSMeansQuantizer implements Quantizer {
     private int[] mPixels;
     private final PointProvider mPointProvider;
     private float[][] mPoints;
-    private int[][] mIndexMatrix = new int[0];
-    private float[][] mDistanceMatrix = new float[0];
+    private int[][] mIndexMatrix = new int[0][];
+    private float[][] mDistanceMatrix = new float[0][];
 
     public WSMeansQuantizer(int[] inClusters, PointProvider pointProvider, Map<Integer, Integer> inputPixelToCount) {
         int i = 0;
@@ -69,9 +69,8 @@ public final class WSMeansQuantizer implements Quantizer {
             this.mPoints[index] = this.mPointProvider.fromInt(pixel);
             index++;
         }
-        float[][] fArr = this.mClusters;
-        if (fArr.length > 0) {
-            maxColors = Math.min(maxColors, fArr.length);
+        if (this.mClusters.length > 0) {
+            maxColors = Math.min(maxColors, this.mClusters.length);
         }
         int maxColors2 = Math.min(maxColors, this.mPoints.length);
         initializeClusters(maxColors2);
@@ -92,21 +91,16 @@ public final class WSMeansQuantizer implements Quantizer {
     }
 
     private void initializeClusters(int maxColors) {
-        float[][] fArr = this.mClusters;
-        boolean hadInputClusters = fArr.length > 0;
+        boolean hadInputClusters = this.mClusters.length > 0;
         if (!hadInputClusters) {
-            int additionalClustersNeeded = maxColors - fArr.length;
+            int additionalClustersNeeded = maxColors - this.mClusters.length;
             Random random = new Random(272008L);
             List<float[]> additionalClusters = new ArrayList<>(additionalClustersNeeded);
             Set<Integer> clusterIndicesUsed = new HashSet<>();
             for (int i = 0; i < additionalClustersNeeded; i++) {
                 int index = random.nextInt(this.mPoints.length);
-                while (clusterIndicesUsed.contains(Integer.valueOf(index))) {
-                    int size = clusterIndicesUsed.size();
-                    float[][] fArr2 = this.mPoints;
-                    if (size < fArr2.length) {
-                        index = random.nextInt(fArr2.length);
-                    }
+                while (clusterIndicesUsed.contains(Integer.valueOf(index)) && clusterIndicesUsed.size() < this.mPoints.length) {
+                    index = random.nextInt(this.mPoints.length);
                 }
                 clusterIndicesUsed.add(Integer.valueOf(index));
                 additionalClusters.add(this.mPoints[index]);
@@ -116,9 +110,8 @@ public final class WSMeansQuantizer implements Quantizer {
             System.arraycopy(newClusters, 0, clusters, clusters.length, newClusters.length);
             this.mClusters = clusters;
         }
-        int[] iArr = this.mPixels;
-        this.mClusterIndices = new int[iArr.length];
-        this.mClusterPopulations = new int[iArr.length];
+        this.mClusterIndices = new int[this.mPixels.length];
+        this.mClusterPopulations = new int[this.mPixels.length];
         Random random2 = new Random(272008L);
         for (int i2 = 0; i2 < this.mPixels.length; i2++) {
             int clusterIndex = random2.nextInt(maxColors);
@@ -133,12 +126,9 @@ public final class WSMeansQuantizer implements Quantizer {
         }
         for (int i = 0; i <= maxColors; i++) {
             for (int j = i + 1; j < maxColors; j++) {
-                PointProvider pointProvider = this.mPointProvider;
-                float[][] fArr = this.mClusters;
-                float distance = pointProvider.distance(fArr[i], fArr[j]);
-                float[][] fArr2 = this.mDistanceMatrix;
-                fArr2[j][i] = distance;
-                fArr2[i][j] = distance;
+                float distance = this.mPointProvider.distance(this.mClusters[i], this.mClusters[j]);
+                this.mDistanceMatrix[j][i] = distance;
+                this.mDistanceMatrix[i][j] = distance;
             }
         }
         if (this.mIndexMatrix.length != maxColors) {
@@ -165,39 +155,33 @@ public final class WSMeansQuantizer implements Quantizer {
 
     boolean reassignPoints(int maxColors) {
         boolean colorMoved = false;
-        int i = 0;
-        while (true) {
-            float[][] fArr = this.mPoints;
-            if (i < fArr.length) {
-                float[] point = fArr[i];
-                int previousClusterIndex = this.mClusterIndices[i];
-                float[] previousCluster = this.mClusters[previousClusterIndex];
-                float previousDistance = this.mPointProvider.distance(point, previousCluster);
-                float minimumDistance = previousDistance;
-                int newClusterIndex = -1;
-                for (int j = 1; j < maxColors; j++) {
-                    int t = this.mIndexMatrix[previousClusterIndex][j];
-                    if (this.mDistanceMatrix[previousClusterIndex][t] >= 4.0f * previousDistance) {
-                        break;
-                    }
-                    float distance = this.mPointProvider.distance(point, this.mClusters[t]);
-                    if (distance < minimumDistance) {
-                        minimumDistance = distance;
-                        newClusterIndex = t;
-                    }
+        for (int i = 0; i < this.mPoints.length; i++) {
+            float[] point = this.mPoints[i];
+            int previousClusterIndex = this.mClusterIndices[i];
+            float[] previousCluster = this.mClusters[previousClusterIndex];
+            float previousDistance = this.mPointProvider.distance(point, previousCluster);
+            float minimumDistance = previousDistance;
+            int newClusterIndex = -1;
+            for (int j = 1; j < maxColors; j++) {
+                int t = this.mIndexMatrix[previousClusterIndex][j];
+                if (this.mDistanceMatrix[previousClusterIndex][t] >= 4.0f * previousDistance) {
+                    break;
                 }
-                if (newClusterIndex != -1) {
-                    float distanceChange = (float) Math.abs(Math.sqrt(minimumDistance) - Math.sqrt(previousDistance));
-                    if (distanceChange > 3.0f) {
-                        colorMoved = true;
-                        this.mClusterIndices[i] = newClusterIndex;
-                    }
+                float distance = this.mPointProvider.distance(point, this.mClusters[t]);
+                if (distance < minimumDistance) {
+                    minimumDistance = distance;
+                    newClusterIndex = t;
                 }
-                i++;
-            } else {
-                return colorMoved;
+            }
+            if (newClusterIndex != -1) {
+                float distanceChange = (float) Math.abs(Math.sqrt(minimumDistance) - Math.sqrt(previousDistance));
+                if (distanceChange > 3.0f) {
+                    colorMoved = true;
+                    this.mClusterIndices[i] = newClusterIndex;
+                }
             }
         }
+        return colorMoved;
     }
 
     void recalculateClusterCenters(int maxColors) {
@@ -205,14 +189,9 @@ public final class WSMeansQuantizer implements Quantizer {
         float[] aSums = new float[maxColors];
         float[] bSums = new float[maxColors];
         float[] cSums = new float[maxColors];
-        int i = 0;
-        while (true) {
-            float[][] fArr = this.mPoints;
-            if (i >= fArr.length) {
-                break;
-            }
+        for (int i = 0; i < this.mPoints.length; i++) {
             int clusterIndex = this.mClusterIndices[i];
-            float[] point = fArr[i];
+            float[] point = this.mPoints[i];
             int pixel = this.mPixels[i];
             int count = this.mInputPixelToCount.get(Integer.valueOf(pixel)).intValue();
             int[] iArr = this.mClusterPopulations;
@@ -220,22 +199,20 @@ public final class WSMeansQuantizer implements Quantizer {
             aSums[clusterIndex] = aSums[clusterIndex] + (point[0] * count);
             bSums[clusterIndex] = bSums[clusterIndex] + (point[1] * count);
             cSums[clusterIndex] = cSums[clusterIndex] + (point[2] * count);
-            i++;
         }
         for (int i2 = 0; i2 < maxColors; i2++) {
             int count2 = this.mClusterPopulations[i2];
             float aSum = aSums[i2];
             float bSum = bSums[i2];
             float cSum = cSums[i2];
-            float[] fArr2 = this.mClusters[i2];
-            fArr2[0] = aSum / count2;
-            fArr2[1] = bSum / count2;
-            fArr2[2] = cSum / count2;
+            this.mClusters[i2][0] = aSum / count2;
+            this.mClusters[i2][1] = bSum / count2;
+            this.mClusters[i2][2] = cSum / count2;
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class Distance {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class Distance {
         private final float mDistance;
         private final int mIndex;
 
@@ -243,8 +220,7 @@ public final class WSMeansQuantizer implements Quantizer {
             return this.mIndex;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        public float getDistance() {
+        float getDistance() {
             return this.mDistance;
         }
 

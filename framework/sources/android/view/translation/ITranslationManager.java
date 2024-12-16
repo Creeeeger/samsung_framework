@@ -34,7 +34,6 @@ public interface ITranslationManager extends IInterface {
 
     void updateUiTranslationState(int i, TranslationSpec translationSpec, TranslationSpec translationSpec2, List<AutofillId> list, IBinder iBinder, int i2, UiTranslationSpec uiTranslationSpec, int i3) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITranslationManager {
         @Override // android.view.translation.ITranslationManager
         public void onTranslationCapabilitiesRequest(int sourceFormat, int destFormat, ResultReceiver receiver, int userId) throws RemoteException {
@@ -78,7 +77,6 @@ public interface ITranslationManager extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITranslationManager {
         static final int TRANSACTION_getServiceSettingsActivity = 8;
         static final int TRANSACTION_onSessionCreated = 4;
@@ -145,86 +143,83 @@ public interface ITranslationManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITranslationManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITranslationManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITranslationManager.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    ResultReceiver _arg2 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTranslationCapabilitiesRequest(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    IRemoteCallback _arg02 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerTranslationCapabilityCallback(_arg02, _arg12);
+                    return true;
+                case 3:
+                    IRemoteCallback _arg03 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterTranslationCapabilityCallback(_arg03, _arg13);
+                    return true;
+                case 4:
+                    TranslationContext _arg04 = (TranslationContext) data.readTypedObject(TranslationContext.CREATOR);
+                    int _arg14 = data.readInt();
+                    IResultReceiver _arg22 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSessionCreated(_arg04, _arg14, _arg22, _arg32);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    TranslationSpec _arg15 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
+                    TranslationSpec _arg23 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
+                    List<AutofillId> _arg33 = data.createTypedArrayList(AutofillId.CREATOR);
+                    IBinder _arg4 = data.readStrongBinder();
+                    int _arg5 = data.readInt();
+                    UiTranslationSpec _arg6 = (UiTranslationSpec) data.readTypedObject(UiTranslationSpec.CREATOR);
+                    int _arg7 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateUiTranslationState(_arg05, _arg15, _arg23, _arg33, _arg4, _arg5, _arg6, _arg7);
+                    return true;
+                case 6:
+                    IRemoteCallback _arg06 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerUiTranslationStateCallback(_arg06, _arg16);
+                    return true;
+                case 7:
+                    IRemoteCallback _arg07 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterUiTranslationStateCallback(_arg07, _arg17);
+                    return true;
+                case 8:
+                    IResultReceiver _arg08 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    int _arg18 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getServiceSettingsActivity(_arg08, _arg18);
+                    return true;
+                case 9:
+                    boolean _arg09 = data.readBoolean();
+                    IBinder _arg19 = data.readStrongBinder();
+                    ComponentName _arg24 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTranslationFinished(_arg09, _arg19, _arg24, _arg34);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            ResultReceiver _arg2 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTranslationCapabilitiesRequest(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            IRemoteCallback _arg02 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerTranslationCapabilityCallback(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            IRemoteCallback _arg03 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterTranslationCapabilityCallback(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            TranslationContext _arg04 = (TranslationContext) data.readTypedObject(TranslationContext.CREATOR);
-                            int _arg14 = data.readInt();
-                            IResultReceiver _arg22 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSessionCreated(_arg04, _arg14, _arg22, _arg32);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            TranslationSpec _arg15 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
-                            TranslationSpec _arg23 = (TranslationSpec) data.readTypedObject(TranslationSpec.CREATOR);
-                            List<AutofillId> _arg33 = data.createTypedArrayList(AutofillId.CREATOR);
-                            IBinder _arg4 = data.readStrongBinder();
-                            int _arg5 = data.readInt();
-                            UiTranslationSpec _arg6 = (UiTranslationSpec) data.readTypedObject(UiTranslationSpec.CREATOR);
-                            int _arg7 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateUiTranslationState(_arg05, _arg15, _arg23, _arg33, _arg4, _arg5, _arg6, _arg7);
-                            return true;
-                        case 6:
-                            IRemoteCallback _arg06 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerUiTranslationStateCallback(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            IRemoteCallback _arg07 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterUiTranslationStateCallback(_arg07, _arg17);
-                            return true;
-                        case 8:
-                            IResultReceiver _arg08 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            int _arg18 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getServiceSettingsActivity(_arg08, _arg18);
-                            return true;
-                        case 9:
-                            boolean _arg09 = data.readBoolean();
-                            IBinder _arg19 = data.readStrongBinder();
-                            ComponentName _arg24 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTranslationFinished(_arg09, _arg19, _arg24, _arg34);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITranslationManager {
+        private static class Proxy implements ITranslationManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

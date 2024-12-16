@@ -16,9 +16,10 @@ abstract class SaProposalUtilsBase {
     static final String ENCRYPT_ALGO_KEY = "ENCRYPT_ALGO_KEY";
     static final String INTEGRITY_ALGO_KEY = "INTEGRITY_ALGO_KEY";
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public static class EncryptionAlgoKeyLenPair {
+    SaProposalUtilsBase() {
+    }
+
+    static class EncryptionAlgoKeyLenPair {
         private static final String ALGO_KEY = "ALGO_KEY";
         private static final String KEY_LEN_KEY = "KEY_LEN_KEY";
         public final int encryptionAlgo;
@@ -29,7 +30,7 @@ abstract class SaProposalUtilsBase {
             this.keyLen = keyLen;
         }
 
-        public EncryptionAlgoKeyLenPair(PersistableBundle in) {
+        EncryptionAlgoKeyLenPair(PersistableBundle in) {
             Objects.requireNonNull(in, "PersistableBundle was null");
             this.encryptionAlgo = in.getInt(ALGO_KEY);
             this.keyLen = in.getInt(KEY_LEN_KEY);
@@ -43,7 +44,7 @@ abstract class SaProposalUtilsBase {
         }
     }
 
-    public static PersistableBundle toPersistableBundle(SaProposal proposal) {
+    static PersistableBundle toPersistableBundle(SaProposal proposal) {
         PersistableBundle result = new PersistableBundle();
         List<EncryptionAlgoKeyLenPair> encryptAlgoKeyLenPairs = new ArrayList<>();
         for (Pair<Integer, Integer> pair : proposal.getEncryptionAlgorithms()) {

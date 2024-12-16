@@ -5,9 +5,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class FabricatedOverlayInternalEntry implements Parcelable {
     public static final Parcelable.Creator<FabricatedOverlayInternalEntry> CREATOR = new Parcelable.Creator<FabricatedOverlayInternalEntry>() { // from class: android.os.FabricatedOverlayInternalEntry.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInternalEntry createFromParcel(Parcel _aidl_source) {
             FabricatedOverlayInternalEntry _aidl_out = new FabricatedOverlayInternalEntry();
@@ -15,6 +13,7 @@ public class FabricatedOverlayInternalEntry implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInternalEntry[] newArray(int _aidl_size) {
             return new FabricatedOverlayInternalEntry[_aidl_size];
@@ -28,25 +27,7 @@ public class FabricatedOverlayInternalEntry implements Parcelable {
     public int data = 0;
     public long binaryDataOffset = 0;
     public long binaryDataSize = 0;
-
-    /* renamed from: android.os.FabricatedOverlayInternalEntry$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FabricatedOverlayInternalEntry> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FabricatedOverlayInternalEntry createFromParcel(Parcel _aidl_source) {
-            FabricatedOverlayInternalEntry _aidl_out = new FabricatedOverlayInternalEntry();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FabricatedOverlayInternalEntry[] newArray(int _aidl_size) {
-            return new FabricatedOverlayInternalEntry[_aidl_size];
-        }
-    }
+    public boolean isNinePatch = false;
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -60,6 +41,7 @@ public class FabricatedOverlayInternalEntry implements Parcelable {
         _aidl_parcel.writeString(this.configuration);
         _aidl_parcel.writeLong(this.binaryDataOffset);
         _aidl_parcel.writeLong(this.binaryDataSize);
+        _aidl_parcel.writeBoolean(this.isNinePatch);
         int _aidl_end_pos = _aidl_parcel.dataPosition();
         _aidl_parcel.setDataPosition(_aidl_start_pos);
         _aidl_parcel.writeInt(_aidl_end_pos - _aidl_start_pos);
@@ -134,8 +116,16 @@ public class FabricatedOverlayInternalEntry implements Parcelable {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
                 _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.binaryDataSize = _aidl_parcel.readLong();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
             } else {
-                this.binaryDataSize = _aidl_parcel.readLong();
+                this.isNinePatch = _aidl_parcel.readBoolean();
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }

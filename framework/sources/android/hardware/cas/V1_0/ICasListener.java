@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICasListener extends IBase {
     public static final String kInterfaceName = "android.hardware.cas@1.0::ICasListener";
 
@@ -103,7 +103,6 @@ public interface ICasListener extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes.dex */
     public static final class Proxy implements ICasListener {
         private IHwBinder mRemote;
 
@@ -291,7 +290,6 @@ public interface ICasListener extends IBase {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends HwBinder implements ICasListener {
         @Override // android.hardware.cas.V1_0.ICasListener, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -314,7 +312,7 @@ public interface ICasListener extends IBase {
 
         @Override // android.hardware.cas.V1_0.ICasListener, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-72, 14, 20, 86, -72, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, Byte.MIN_VALUE, 3, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 13, -25, -53, 69, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, -63, 90, MidiConstants.STATUS_MIDI_TIME_CODE, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, 116, 116, -43, 32, -41, 87, 72, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, -54, -83, 121, 109, -1}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-72, 14, 20, 86, -72, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, Byte.MIN_VALUE, 3, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 13, -25, -53, 69, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, -63, 90, MidiConstants.STATUS_MIDI_TIME_CODE, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, 116, 116, -43, 32, -41, 87, 72, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, -54, -83, 121, 109, -1}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.cas.V1_0.ICasListener, android.internal.hidl.base.V1_0.IBase

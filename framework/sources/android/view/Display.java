@@ -16,6 +16,7 @@ import android.hardware.graphics.common.DisplayDecorationSupport;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import android.security.Credentials;
 import android.util.ArraySet;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -56,10 +57,11 @@ public final class Display {
     public static final int DISPLAY_MODE_ID_FOR_FRAME_RATE_OVERRIDE = 255;
     public static final int EXTRA_BUILT_IN_DISPLAY = 1;
     public static final int FLAG_ALWAYS_UNLOCKED = 512;
+    public static int FLAG_BACKGROUND_DISPLAY = Integer.MIN_VALUE;
     public static final int FLAG_CAN_SHOW_WITH_INSECURE_KEYGUARD = 32;
     public static final int FLAG_CARLIFE_DISPLAY = 1048576;
     public static final int FLAG_EXTRA_BUILT_IN_DISPLAY = 262144;
-    public static final int FLAG_HIDDEN_SPACE_DISPLAY = 16384;
+    public static final int FLAG_HIDDEN_SPACE_DISPLAY = 33554432;
     public static final int FLAG_NO_LOCK_PRESENTATION = 536870912;
     public static final int FLAG_OWN_DISPLAY_GROUP = 256;
     public static final int FLAG_OWN_FOCUS = 2048;
@@ -67,7 +69,8 @@ public final class Display {
     public static final int FLAG_PRESENTATION = 8;
     public static final int FLAG_PRIVATE = 4;
     public static final int FLAG_REAR = 8192;
-    public static final int FLAG_REMOTE_APP_DISPLAY = 33554432;
+    public static final int FLAG_REMOTE_APP_DISPLAY = 2097152;
+    public static final int FLAG_ROTATES_WITH_CONTENT = 16384;
     public static final int FLAG_ROUND = 16;
     public static final int FLAG_SCALING_DISABLED = 1073741824;
     public static final int FLAG_SECURE = 2;
@@ -95,6 +98,14 @@ public final class Display {
     public static final int STATE_OFF = 1;
     public static final int STATE_ON = 2;
     public static final int STATE_ON_SUSPEND = 6;
+    public static final int STATE_REASON_DEFAULT_POLICY = 1;
+    public static final int STATE_REASON_DRAW_WAKE_LOCK = 2;
+    public static final int STATE_REASON_DREAM_MANAGER = 5;
+    public static final int STATE_REASON_KEY = 6;
+    public static final int STATE_REASON_MOTION = 7;
+    public static final int STATE_REASON_OFFLOAD = 3;
+    public static final int STATE_REASON_TILT = 4;
+    public static final int STATE_REASON_UNKNOWN = 0;
     public static final int STATE_UNKNOWN = 0;
     public static final int STATE_VR = 5;
     private static final String TAG = "Display";
@@ -123,8 +134,11 @@ public final class Display {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ColorMode {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface StateReason {
     }
 
     public Display(DisplayManagerGlobal global, int displayId, DisplayInfo displayInfo, DisplayAdjustments daj) {
@@ -144,8 +158,8 @@ public final class Display {
         this.mDisplayId = displayId;
         this.mDisplayInfo = displayInfo;
         this.mResources = res;
-        if (res != null) {
-            displayAdjustments = new DisplayAdjustments(res.getConfiguration());
+        if (this.mResources != null) {
+            displayAdjustments = new DisplayAdjustments(this.mResources.getConfiguration());
         } else {
             displayAdjustments = daj != null ? new DisplayAdjustments(daj) : new DisplayAdjustments();
         }
@@ -223,9 +237,8 @@ public final class Display {
     }
 
     public DisplayAdjustments getDisplayAdjustments() {
-        Resources resources = this.mResources;
-        if (resources != null) {
-            DisplayAdjustments currentAdjustments = resources.getDisplayAdjustments();
+        if (this.mResources != null) {
+            DisplayAdjustments currentAdjustments = this.mResources.getDisplayAdjustments();
             if (!this.mDisplayAdjustments.equals(currentAdjustments)) {
                 this.mDisplayAdjustments = new DisplayAdjustments(currentAdjustments);
             }
@@ -331,6 +344,11 @@ public final class Display {
         return i;
     }
 
+    @Deprecated
+    public int getOrientation() {
+        return getRotation();
+    }
+
     public int getRealRotation() {
         int i;
         synchronized (this.mLock) {
@@ -338,11 +356,6 @@ public final class Display {
             i = this.mDisplayInfo.rotation;
         }
         return i;
-    }
-
-    @Deprecated
-    public int getOrientation() {
-        return getRotation();
     }
 
     public DisplayCutout getCutout() {
@@ -434,97 +447,116 @@ public final class Display {
     public Mode[] getSupportedModes() {
         synchronized (this.mLock) {
             updateDisplayInfoLocked();
-            if (CoreRune.FW_VRR_REFRESH_RATE_MODE && this.mType == 1) {
-                final RefreshRateConfig config = RefreshRateConfig.getInstance();
-                final Mode activeMode = this.mDisplayInfo.getMode();
-                Stream<Mode> stream = Arrays.stream(this.mDisplayInfo.supportedModes);
-                if (this.mDisplayInfo.refreshRateMode == 0) {
-                    if (config.isSwitchable()) {
-                        return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda0
-                            @Override // java.util.function.Predicate
-                            public final boolean test(Object obj) {
-                                return Display.lambda$getSupportedModes$0(RefreshRateConfig.this, activeMode, (Display.Mode) obj);
-                            }
-                        }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda1
-                            @Override // java.util.function.IntFunction
-                            public final Object apply(int i) {
-                                return Display.lambda$getSupportedModes$1(i);
-                            }
-                        });
-                    }
-                    return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda2
-                        @Override // java.util.function.Predicate
-                        public final boolean test(Object obj) {
-                            return Display.lambda$getSupportedModes$2(RefreshRateConfig.this, (Display.Mode) obj);
-                        }
-                    }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda3
-                        @Override // java.util.function.IntFunction
-                        public final Object apply(int i) {
-                            return Display.lambda$getSupportedModes$3(i);
-                        }
-                    });
-                }
-                if (this.mDisplayInfo.refreshRateMode == 2) {
-                    return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda4
-                        @Override // java.util.function.Predicate
-                        public final boolean test(Object obj) {
-                            return Display.lambda$getSupportedModes$4(RefreshRateConfig.this, activeMode, (Display.Mode) obj);
-                        }
-                    }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda5
-                        @Override // java.util.function.IntFunction
-                        public final Object apply(int i) {
-                            return Display.lambda$getSupportedModes$5(i);
-                        }
-                    });
-                }
-                if (this.mDisplayInfo.refreshRateMode == 1) {
-                    return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda6
-                        @Override // java.util.function.Predicate
-                        public final boolean test(Object obj) {
-                            return Display.lambda$getSupportedModes$6(RefreshRateConfig.this, (Display.Mode) obj);
-                        }
-                    }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda7
-                        @Override // java.util.function.IntFunction
-                        public final Object apply(int i) {
-                            return Display.lambda$getSupportedModes$7(i);
-                        }
-                    });
-                }
+            if (CoreRune.FW_VRR_REFRESH_RATE_MODE) {
+                return filteredSupportedModes(this.mDisplayInfo.appsSupportedModes);
+            }
+            Mode[] modes = this.mDisplayInfo.appsSupportedModes;
+            return (Mode[]) Arrays.copyOf(modes, modes.length);
+        }
+    }
+
+    public Mode[] getSystemSupportedModes() {
+        synchronized (this.mLock) {
+            updateDisplayInfoLocked();
+            if (CoreRune.FW_VRR_REFRESH_RATE_MODE) {
+                return filteredSupportedModes(this.mDisplayInfo.supportedModes);
             }
             Mode[] modes = this.mDisplayInfo.supportedModes;
             return (Mode[]) Arrays.copyOf(modes, modes.length);
         }
     }
 
-    public static /* synthetic */ boolean lambda$getSupportedModes$0(RefreshRateConfig config, Mode activeMode, Mode m) {
+    private Mode[] filteredSupportedModes(Mode[] supportedModes) {
+        if (this.mType != 1) {
+            return (Mode[]) Arrays.copyOf(supportedModes, supportedModes.length);
+        }
+        final RefreshRateConfig config = RefreshRateConfig.getInstance();
+        final Mode activeMode = this.mDisplayInfo.getMode();
+        Stream<Mode> stream = Arrays.stream(supportedModes);
+        if (this.mDisplayInfo.refreshRateMode == 0) {
+            if (config.isSwitchable()) {
+                return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda0
+                    @Override // java.util.function.Predicate
+                    public final boolean test(Object obj) {
+                        return Display.lambda$filteredSupportedModes$0(RefreshRateConfig.this, activeMode, (Display.Mode) obj);
+                    }
+                }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda1
+                    @Override // java.util.function.IntFunction
+                    public final Object apply(int i) {
+                        return Display.lambda$filteredSupportedModes$1(i);
+                    }
+                });
+            }
+            return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda2
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    return Display.lambda$filteredSupportedModes$2(RefreshRateConfig.this, (Display.Mode) obj);
+                }
+            }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda3
+                @Override // java.util.function.IntFunction
+                public final Object apply(int i) {
+                    return Display.lambda$filteredSupportedModes$3(i);
+                }
+            });
+        }
+        if (this.mDisplayInfo.refreshRateMode == 2) {
+            return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda4
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    return Display.lambda$filteredSupportedModes$4(RefreshRateConfig.this, activeMode, (Display.Mode) obj);
+                }
+            }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda5
+                @Override // java.util.function.IntFunction
+                public final Object apply(int i) {
+                    return Display.lambda$filteredSupportedModes$5(i);
+                }
+            });
+        }
+        if (this.mDisplayInfo.refreshRateMode == 1) {
+            return (Mode[]) stream.filter(new Predicate() { // from class: android.view.Display$$ExternalSyntheticLambda6
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    return Display.lambda$filteredSupportedModes$6(RefreshRateConfig.this, (Display.Mode) obj);
+                }
+            }).toArray(new IntFunction() { // from class: android.view.Display$$ExternalSyntheticLambda7
+                @Override // java.util.function.IntFunction
+                public final Object apply(int i) {
+                    return Display.lambda$filteredSupportedModes$7(i);
+                }
+            });
+        }
+        return (Mode[]) Arrays.copyOf(supportedModes, supportedModes.length);
+    }
+
+    static /* synthetic */ boolean lambda$filteredSupportedModes$0(RefreshRateConfig config, Mode activeMode, Mode m) {
         return ((int) m.getRefreshRate()) == config.getNormalSpeedRefreshRates().max() && m.equalsExceptRefreshRate(activeMode);
     }
 
-    public static /* synthetic */ Mode[] lambda$getSupportedModes$1(int x$0) {
+    static /* synthetic */ Mode[] lambda$filteredSupportedModes$1(int x$0) {
         return new Mode[x$0];
     }
 
-    public static /* synthetic */ boolean lambda$getSupportedModes$2(RefreshRateConfig config, Mode m) {
+    static /* synthetic */ boolean lambda$filteredSupportedModes$2(RefreshRateConfig config, Mode m) {
         return ((int) m.getRefreshRate()) >= config.getNormalSpeedRefreshRates().min() && ((int) m.getRefreshRate()) <= config.getNormalSpeedRefreshRates().max();
     }
 
-    public static /* synthetic */ Mode[] lambda$getSupportedModes$3(int x$0) {
+    static /* synthetic */ Mode[] lambda$filteredSupportedModes$3(int x$0) {
         return new Mode[x$0];
     }
 
-    public static /* synthetic */ boolean lambda$getSupportedModes$4(RefreshRateConfig config, Mode activeMode, Mode m) {
+    static /* synthetic */ boolean lambda$filteredSupportedModes$4(RefreshRateConfig config, Mode activeMode, Mode m) {
         return ((int) m.getRefreshRate()) == config.getHighSpeedRefreshRates().max() && m.equalsExceptRefreshRate(activeMode);
     }
 
-    public static /* synthetic */ Mode[] lambda$getSupportedModes$5(int x$0) {
+    static /* synthetic */ Mode[] lambda$filteredSupportedModes$5(int x$0) {
         return new Mode[x$0];
     }
 
-    public static /* synthetic */ boolean lambda$getSupportedModes$6(RefreshRateConfig config, Mode m) {
+    static /* synthetic */ boolean lambda$filteredSupportedModes$6(RefreshRateConfig config, Mode m) {
         return ((int) m.getRefreshRate()) >= config.getHighSpeedRefreshRates().min() && ((int) m.getRefreshRate()) <= config.getHighSpeedRefreshRates().max();
     }
 
-    public static /* synthetic */ Mode[] lambda$getSupportedModes$7(int x$0) {
+    static /* synthetic */ Mode[] lambda$filteredSupportedModes$7(int x$0) {
         return new Mode[x$0];
     }
 
@@ -659,7 +691,7 @@ public final class Display {
             }
         }
         if (toRegister != null) {
-            this.mGlobal.registerDisplayListener(toRegister, executor, 18L);
+            this.mGlobal.registerDisplayListener(toRegister, executor, 18L, ActivityThread.currentPackageName());
         }
     }
 
@@ -711,8 +743,8 @@ public final class Display {
     public OverlayProperties getOverlaySupport() {
         synchronized (this.mLock) {
             updateDisplayInfoLocked();
-            if (this.mDisplayInfo.type == 5) {
-                return null;
+            if (this.mDisplayInfo.type != 1 && this.mDisplayInfo.type != 2) {
+                return OverlayProperties.getDefault();
             }
             return this.mGlobal.getOverlaySupport();
         }
@@ -922,11 +954,10 @@ public final class Display {
     }
 
     private int getLocalRotation() {
-        Resources resources = this.mResources;
-        if (resources == null) {
+        if (this.mResources == null) {
             return this.mDisplayInfo.rotation;
         }
-        int localRotation = resources.getConfiguration().windowConfiguration.getDisplayRotation();
+        int localRotation = this.mResources.getConfiguration().windowConfiguration.getDisplayRotation();
         return localRotation != -1 ? localRotation : this.mDisplayInfo.rotation;
     }
 
@@ -981,6 +1012,29 @@ public final class Display {
         }
     }
 
+    public static String stateReasonToString(int reason) {
+        switch (reason) {
+            case 0:
+                return "UNKNOWN";
+            case 1:
+                return "DEFAULT_POLICY";
+            case 2:
+                return "DRAW_WAKE_LOCK";
+            case 3:
+                return "OFFLOAD";
+            case 4:
+                return "TILT";
+            case 5:
+                return "DREAM_MANAGER";
+            case 6:
+                return Credentials.EXTRA_PUBLIC_KEY;
+            case 7:
+                return "MOTION";
+            default:
+                return Integer.toString(reason);
+        }
+    }
+
     public static boolean isSuspendedState(int state) {
         return state == 1 || state == 4 || state == 6;
     }
@@ -1017,54 +1071,58 @@ public final class Display {
         return this.mGlobal.getDisplayDecorationSupport(this.mDisplayId);
     }
 
-    /* loaded from: classes4.dex */
     public static final class Mode implements Parcelable {
         public static final int INVALID_MODE_ID = -1;
         private final float[] mAlternativeRefreshRates;
         private final int mHeight;
+        private final boolean mIsSynthetic;
         private final int mModeId;
-        private final float mRefreshRate;
+        private final float mPeakRefreshRate;
         private final int[] mSupportedHdrTypes;
+        private final float mVsyncRate;
         private final int mWidth;
         public static final Mode[] EMPTY_ARRAY = new Mode[0];
         public static final Parcelable.Creator<Mode> CREATOR = new Parcelable.Creator<Mode>() { // from class: android.view.Display.Mode.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Mode createFromParcel(Parcel in) {
                 return new Mode(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Mode[] newArray(int size) {
                 return new Mode[size];
             }
         };
 
-        /* synthetic */ Mode(Parcel parcel, ModeIA modeIA) {
-            this(parcel);
-        }
-
         public Mode(int width, int height, float refreshRate) {
-            this(-1, width, height, refreshRate, new float[0], new int[0]);
+            this(-1, width, height, refreshRate, refreshRate, new float[0], new int[0]);
         }
 
         public Mode(int modeId, int width, int height, float refreshRate) {
-            this(modeId, width, height, refreshRate, new float[0], new int[0]);
+            this(modeId, width, height, refreshRate, refreshRate, new float[0], new int[0]);
         }
 
         public Mode(int modeId, int width, int height, float refreshRate, float[] alternativeRefreshRates, int[] supportedHdrTypes) {
+            this(modeId, width, height, refreshRate, refreshRate, alternativeRefreshRates, supportedHdrTypes);
+        }
+
+        public Mode(int modeId, int width, int height, float refreshRate, float vsyncRate, float[] alternativeRefreshRates, int[] supportedHdrTypes) {
+            this(modeId, width, height, refreshRate, vsyncRate, false, alternativeRefreshRates, supportedHdrTypes);
+        }
+
+        public Mode(int modeId, int width, int height, float refreshRate, float vsyncRate, boolean isSynthetic, float[] alternativeRefreshRates, int[] supportedHdrTypes) {
             this.mModeId = modeId;
             this.mWidth = width;
             this.mHeight = height;
-            this.mRefreshRate = refreshRate;
-            float[] copyOf = Arrays.copyOf(alternativeRefreshRates, alternativeRefreshRates.length);
-            this.mAlternativeRefreshRates = copyOf;
-            Arrays.sort(copyOf);
-            int[] copyOf2 = Arrays.copyOf(supportedHdrTypes, supportedHdrTypes.length);
-            this.mSupportedHdrTypes = copyOf2;
-            Arrays.sort(copyOf2);
+            this.mPeakRefreshRate = refreshRate;
+            this.mVsyncRate = vsyncRate;
+            this.mIsSynthetic = isSynthetic;
+            this.mAlternativeRefreshRates = Arrays.copyOf(alternativeRefreshRates, alternativeRefreshRates.length);
+            Arrays.sort(this.mAlternativeRefreshRates);
+            this.mSupportedHdrTypes = Arrays.copyOf(supportedHdrTypes, supportedHdrTypes.length);
+            Arrays.sort(this.mSupportedHdrTypes);
         }
 
         public int getModeId() {
@@ -1080,35 +1138,41 @@ public final class Display {
         }
 
         public float getRefreshRate() {
-            return this.mRefreshRate;
+            return this.mPeakRefreshRate;
+        }
+
+        public float getVsyncRate() {
+            return this.mVsyncRate;
+        }
+
+        public boolean isSynthetic() {
+            return this.mIsSynthetic;
         }
 
         public float[] getAlternativeRefreshRates() {
             if (CoreRune.FW_VRR_POLICY && RefreshRateConfig.getInstance().isSwitchable()) {
                 return new float[0];
             }
-            float[] fArr = this.mAlternativeRefreshRates;
-            return Arrays.copyOf(fArr, fArr.length);
+            return Arrays.copyOf(this.mAlternativeRefreshRates, this.mAlternativeRefreshRates.length);
         }
 
         public int[] getSupportedHdrTypes() {
-            int[] iArr = this.mSupportedHdrTypes;
-            return Arrays.copyOf(iArr, iArr.length);
+            return Arrays.copyOf(this.mSupportedHdrTypes, this.mSupportedHdrTypes.length);
         }
 
         public boolean matches(int width, int height, float refreshRate) {
-            return this.mWidth == width && this.mHeight == height && Float.floatToIntBits(this.mRefreshRate) == Float.floatToIntBits(refreshRate);
+            return this.mWidth == width && this.mHeight == height && Float.floatToIntBits(this.mPeakRefreshRate) == Float.floatToIntBits(refreshRate);
         }
 
-        public boolean matchesIfValid(int width, int height, float refreshRate) {
-            if ((!Display.isWidthValid(width) && !Display.isHeightValid(height) && !Display.isRefreshRateValid(refreshRate)) || Display.isWidthValid(width) != Display.isHeightValid(height)) {
+        public boolean matchesIfValid(int width, int height, float peakRefreshRate) {
+            if ((!Display.isWidthValid(width) && !Display.isHeightValid(height) && !Display.isRefreshRateValid(peakRefreshRate)) || Display.isWidthValid(width) != Display.isHeightValid(height)) {
                 return false;
             }
             if (Display.isWidthValid(width) && this.mWidth != width) {
                 return false;
             }
             if (!Display.isHeightValid(height) || this.mHeight == height) {
-                return !Display.isRefreshRateValid(refreshRate) || Float.floatToIntBits(this.mRefreshRate) == Float.floatToIntBits(refreshRate);
+                return !Display.isRefreshRateValid(peakRefreshRate) || Float.floatToIntBits(this.mPeakRefreshRate) == Float.floatToIntBits(peakRefreshRate);
             }
             return false;
         }
@@ -1118,7 +1182,7 @@ public final class Display {
         }
 
         public boolean isRefreshRateSet() {
-            return this.mRefreshRate != 0.0f;
+            return this.mPeakRefreshRate != 0.0f;
         }
 
         public boolean isResolutionSet() {
@@ -1133,16 +1197,16 @@ public final class Display {
                 return false;
             }
             Mode that = (Mode) other;
-            return this.mModeId == that.mModeId && matches(that.mWidth, that.mHeight, that.mRefreshRate) && Arrays.equals(this.mAlternativeRefreshRates, that.mAlternativeRefreshRates) && Arrays.equals(this.mSupportedHdrTypes, that.mSupportedHdrTypes);
+            return this.mModeId == that.mModeId && matches(that.mWidth, that.mHeight, that.mPeakRefreshRate) && Arrays.equals(this.mAlternativeRefreshRates, that.mAlternativeRefreshRates) && Arrays.equals(this.mSupportedHdrTypes, that.mSupportedHdrTypes);
         }
 
         public int hashCode() {
             int hash = (1 * 17) + this.mModeId;
-            return (((((((((hash * 17) + this.mWidth) * 17) + this.mHeight) * 17) + Float.floatToIntBits(this.mRefreshRate)) * 17) + Arrays.hashCode(this.mAlternativeRefreshRates)) * 17) + Arrays.hashCode(this.mSupportedHdrTypes);
+            return (((((((((((hash * 17) + this.mWidth) * 17) + this.mHeight) * 17) + Float.floatToIntBits(this.mPeakRefreshRate)) * 17) + Float.floatToIntBits(this.mVsyncRate)) * 17) + Arrays.hashCode(this.mAlternativeRefreshRates)) * 17) + Arrays.hashCode(this.mSupportedHdrTypes);
         }
 
         public String toString() {
-            return "{id=" + this.mModeId + ", width=" + this.mWidth + ", height=" + this.mHeight + ", fps=" + this.mRefreshRate + ", alternativeRefreshRates=" + Arrays.toString(this.mAlternativeRefreshRates) + ", supportedHdrTypes=" + Arrays.toString(this.mSupportedHdrTypes) + "}";
+            return "{id=" + this.mModeId + ", width=" + this.mWidth + ", height=" + this.mHeight + ", fps=" + this.mPeakRefreshRate + ", vsync=" + this.mVsyncRate + ", synthetic=" + this.mIsSynthetic + ", alternativeRefreshRates=" + Arrays.toString(this.mAlternativeRefreshRates) + ", supportedHdrTypes=" + Arrays.toString(this.mSupportedHdrTypes) + "}";
         }
 
         @Override // android.os.Parcelable
@@ -1151,7 +1215,7 @@ public final class Display {
         }
 
         private Mode(Parcel in) {
-            this(in.readInt(), in.readInt(), in.readInt(), in.readFloat(), in.createFloatArray(), in.createIntArray());
+            this(in.readInt(), in.readInt(), in.readInt(), in.readFloat(), in.readFloat(), in.readBoolean(), in.createFloatArray(), in.createIntArray());
         }
 
         @Override // android.os.Parcelable
@@ -1159,29 +1223,13 @@ public final class Display {
             out.writeInt(this.mModeId);
             out.writeInt(this.mWidth);
             out.writeInt(this.mHeight);
-            out.writeFloat(this.mRefreshRate);
+            out.writeFloat(this.mPeakRefreshRate);
+            out.writeFloat(this.mVsyncRate);
+            out.writeBoolean(this.mIsSynthetic);
             out.writeFloatArray(this.mAlternativeRefreshRates);
             out.writeIntArray(this.mSupportedHdrTypes);
         }
 
-        /* renamed from: android.view.Display$Mode$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Mode> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Mode createFromParcel(Parcel in) {
-                return new Mode(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Mode[] newArray(int size) {
-                return new Mode[size];
-            }
-        }
-
-        /* loaded from: classes4.dex */
         public static final class Builder {
             private int mWidth = -1;
             private int mHeight = -1;
@@ -1209,7 +1257,6 @@ public final class Display {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class HdrCapabilities implements Parcelable {
         public static final int HDR_TYPE_DOLBY_VISION = 1;
         public static final int HDR_TYPE_HDR10 = 2;
@@ -1223,14 +1270,13 @@ public final class Display {
         private int[] mSupportedHdrTypes;
         public static final int[] HDR_TYPES = {1, 2, 3, 4};
         public static final Parcelable.Creator<HdrCapabilities> CREATOR = new Parcelable.Creator<HdrCapabilities>() { // from class: android.view.Display.HdrCapabilities.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HdrCapabilities createFromParcel(Parcel source) {
                 return new HdrCapabilities(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HdrCapabilities[] newArray(int size) {
                 return new HdrCapabilities[size];
@@ -1238,12 +1284,7 @@ public final class Display {
         };
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface HdrType {
-        }
-
-        /* synthetic */ HdrCapabilities(Parcel parcel, HdrCapabilitiesIA hdrCapabilitiesIA) {
-            this(parcel);
         }
 
         public HdrCapabilities() {
@@ -1259,7 +1300,7 @@ public final class Display {
             this.mMaxAverageLuminance = -1.0f;
             this.mMinLuminance = -1.0f;
             this.mSupportedHdrTypes = supportedHdrTypes;
-            Arrays.sort(supportedHdrTypes);
+            Arrays.sort(this.mSupportedHdrTypes);
             this.mMaxLuminance = maxLuminance;
             this.mMaxAverageLuminance = maxAverageLuminance;
             this.mMinLuminance = minLuminance;
@@ -1267,8 +1308,7 @@ public final class Display {
 
         @Deprecated
         public int[] getSupportedHdrTypes() {
-            int[] iArr = this.mSupportedHdrTypes;
-            return Arrays.copyOf(iArr, iArr.length);
+            return Arrays.copyOf(this.mSupportedHdrTypes, this.mSupportedHdrTypes.length);
         }
 
         public float getDesiredMaxLuminance() {
@@ -1299,23 +1339,6 @@ public final class Display {
             return (((((hash * 17) + Float.floatToIntBits(this.mMaxLuminance)) * 17) + Float.floatToIntBits(this.mMaxAverageLuminance)) * 17) + Float.floatToIntBits(this.mMinLuminance);
         }
 
-        /* renamed from: android.view.Display$HdrCapabilities$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<HdrCapabilities> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HdrCapabilities createFromParcel(Parcel source) {
-                return new HdrCapabilities(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HdrCapabilities[] newArray(int size) {
-                return new HdrCapabilities[size];
-            }
-        }
-
         private HdrCapabilities(Parcel source) {
             this.mSupportedHdrTypes = new int[0];
             this.mMaxLuminance = -1.0f;
@@ -1338,19 +1361,12 @@ public final class Display {
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mSupportedHdrTypes.length);
-            int i = 0;
-            while (true) {
-                int[] iArr = this.mSupportedHdrTypes;
-                if (i < iArr.length) {
-                    dest.writeInt(iArr[i]);
-                    i++;
-                } else {
-                    dest.writeFloat(this.mMaxLuminance);
-                    dest.writeFloat(this.mMaxAverageLuminance);
-                    dest.writeFloat(this.mMinLuminance);
-                    return;
-                }
+            for (int i = 0; i < this.mSupportedHdrTypes.length; i++) {
+                dest.writeInt(this.mSupportedHdrTypes[i]);
             }
+            dest.writeFloat(this.mMaxLuminance);
+            dest.writeFloat(this.mMaxAverageLuminance);
+            dest.writeFloat(this.mMinLuminance);
         }
 
         @Override // android.os.Parcelable
@@ -1378,14 +1394,9 @@ public final class Display {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class HdrSdrRatioListenerWrapper implements DisplayManager.DisplayListener {
+    private class HdrSdrRatioListenerWrapper implements DisplayManager.DisplayListener {
         float mLastReportedRatio;
         Consumer<Display> mListener;
-
-        /* synthetic */ HdrSdrRatioListenerWrapper(Display display, Consumer consumer, HdrSdrRatioListenerWrapperIA hdrSdrRatioListenerWrapperIA) {
-            this(consumer);
-        }
 
         private HdrSdrRatioListenerWrapper(Consumer<Display> listener) {
             this.mLastReportedRatio = 1.0f;

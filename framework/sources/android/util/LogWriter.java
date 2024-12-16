@@ -48,8 +48,7 @@ public class LogWriter extends Writer {
     private void flushBuilder() {
         if (this.mBuilder.length() > 0) {
             Log.println_native(this.mBuffer, this.mPriority, this.mTag, this.mBuilder.toString());
-            StringBuilder sb = this.mBuilder;
-            sb.delete(0, sb.length());
+            this.mBuilder.delete(0, this.mBuilder.length());
         }
     }
 }

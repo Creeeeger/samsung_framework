@@ -63,8 +63,7 @@ public class SecP521R1Field {
 
     public static void negate(int[] x, int[] z) {
         if (isZero(x) != 0) {
-            int[] iArr = P;
-            Nat.sub(17, iArr, iArr, z);
+            Nat.sub(17, P, P, z);
         } else {
             Nat.sub(17, P, x, z);
         }

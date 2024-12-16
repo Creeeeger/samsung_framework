@@ -3,7 +3,6 @@ package android.opengl;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import com.samsung.android.content.smartclip.SemSmartClipMetaTagType;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.IOException;
 import java.io.Writer;
 import javax.microedition.khronos.egl.EGL;
@@ -437,14 +436,14 @@ class EGLLogWrapper implements EGL11 {
 
     private String toString(Object obj) {
         if (obj == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         return obj.toString();
     }
 
     private void arg(String name, int[] arr) {
         if (arr == null) {
-            arg(name, SemCapabilities.FEATURE_TAG_NULL);
+            arg(name, "null");
         } else {
             arg(name, toString(arr.length, arr, 0));
         }
@@ -452,7 +451,7 @@ class EGLLogWrapper implements EGL11 {
 
     private void arg(String name, Object[] arr) {
         if (arr == null) {
-            arg(name, SemCapabilities.FEATURE_TAG_NULL);
+            arg(name, "null");
         } else {
             arg(name, toString(arr.length, arr, 0));
         }

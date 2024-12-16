@@ -56,7 +56,7 @@ public final class LinkAddress {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.address = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.address.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.properties = _hidl_blob.getInt32(16 + _hidl_offset);
         this.deprecationTime = _hidl_blob.getInt64(24 + _hidl_offset);
         this.expirationTime = _hidl_blob.getInt64(32 + _hidl_offset);

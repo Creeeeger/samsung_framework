@@ -1,6 +1,6 @@
 package android.text;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class MultiSelection {
     public static final Object CURRENT_SELECTION_START = new START();
     public static final Object CURRENT_SELECTION_END = new END();
@@ -28,7 +28,7 @@ public class MultiSelection {
 
     /* JADX WARN: Code restructure failed: missing block: B:53:0x00d1, code lost:
     
-        if (r4 == r2) goto L179;
+        if (r4 == r2) goto L88;
      */
     /* JADX WARN: Code restructure failed: missing block: B:54:?, code lost:
     
@@ -56,14 +56,14 @@ public class MultiSelection {
         setSelection(text, 0, text.length());
     }
 
-    public static final void addMultiSelection(Spannable text, int start, int stop) {
-        if (start < 0 || stop < 0) {
+    public static final void addMultiSelection(Spannable spannable, int i, int i2) {
+        if (i < 0 || i2 < 0) {
             return;
         }
-        Object penStart = new START();
-        Object penEnd = new END();
-        text.setSpan(penStart, start, start, 546);
-        text.setSpan(penEnd, stop, stop, 34);
+        START start = new START();
+        END end = new END();
+        spannable.setSpan(start, i, i, 546);
+        spannable.setSpan(end, i2, i2, 34);
     }
 
     public static final boolean removeMultiSelection(Spannable text, int start, int stop) {
@@ -147,22 +147,12 @@ public class MultiSelection {
         return mNeedToScroll;
     }
 
-    /* loaded from: classes3.dex */
-    public static final class START implements NoCopySpan {
-        /* synthetic */ START(STARTIA startia) {
-            this();
-        }
-
+    private static final class START implements NoCopySpan {
         private START() {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class END implements NoCopySpan {
-        /* synthetic */ END(ENDIA endia) {
-            this();
-        }
-
+    private static final class END implements NoCopySpan {
         private END() {
         }
     }

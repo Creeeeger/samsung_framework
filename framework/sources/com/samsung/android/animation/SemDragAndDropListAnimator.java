@@ -42,42 +42,8 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         this.mListView.setOnItemLongClickListener(this.mItemLongClickListener);
     }
 
-    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements SemDragAndDropAnimationCore.ItemAnimationListener {
-        AnonymousClass1() {
-        }
-
-        @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimationListener
-        public void onItemAnimatorEnd() {
-            if (SemDragAndDropListAnimator.this.mListItemSelectionAnimating) {
-                SemDragAndDropListAnimator.this.mListItemSelectionAnimating = false;
-                return;
-            }
-            if (SemDragAndDropListAnimator.this.mDropDonePending) {
-                SemDragAndDropListAnimator.this.mDropDonePending = false;
-                if (SemDragAndDropListAnimator.this.mDndController != null) {
-                    Log.d(SemDragAndDropListAnimator.TAG, "initListeners : onItemAnimatorEnd : mDndController.dropDone #1 , mFirstDragPos = " + SemDragAndDropListAnimator.this.mFirstDragPos + ", mDragPos = " + SemDragAndDropListAnimator.this.mDragPos);
-                    SemDragAndDropListAnimator.this.mDndController.dropDone(SemDragAndDropListAnimator.this.mFirstDragPos, SemDragAndDropListAnimator.this.mDragPos);
-                    SemDragAndDropListAnimator semDragAndDropListAnimator = SemDragAndDropListAnimator.this;
-                    semDragAndDropListAnimator.speakDragReleaseForAccessibility(semDragAndDropListAnimator.mDragPos);
-                }
-                SemDragAndDropListAnimator.this.mItemAnimator.removeAll();
-                SemDragAndDropListAnimator.this.resetDndPositionValues();
-                if (SemDragAndDropListAnimator.this.mDndListener != null) {
-                    Log.d(SemDragAndDropListAnimator.TAG, "initListeners : onItemAnimatorEnd : dndListener.onDragAndDropEnd() #1");
-                    SemDragAndDropListAnimator.this.mDndListener.onDragAndDropEnd();
-                }
-                SemDragAndDropListAnimator.this.mListView.setEnabled(true);
-            }
-        }
-    }
-
     private void initListeners() {
         this.mItemAnimationListener = new SemDragAndDropAnimationCore.ItemAnimationListener() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.1
-            AnonymousClass1() {
-            }
-
             @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimationListener
             public void onItemAnimatorEnd() {
                 if (SemDragAndDropListAnimator.this.mListItemSelectionAnimating) {
@@ -89,8 +55,7 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
                     if (SemDragAndDropListAnimator.this.mDndController != null) {
                         Log.d(SemDragAndDropListAnimator.TAG, "initListeners : onItemAnimatorEnd : mDndController.dropDone #1 , mFirstDragPos = " + SemDragAndDropListAnimator.this.mFirstDragPos + ", mDragPos = " + SemDragAndDropListAnimator.this.mDragPos);
                         SemDragAndDropListAnimator.this.mDndController.dropDone(SemDragAndDropListAnimator.this.mFirstDragPos, SemDragAndDropListAnimator.this.mDragPos);
-                        SemDragAndDropListAnimator semDragAndDropListAnimator = SemDragAndDropListAnimator.this;
-                        semDragAndDropListAnimator.speakDragReleaseForAccessibility(semDragAndDropListAnimator.mDragPos);
+                        SemDragAndDropListAnimator.this.speakDragReleaseForAccessibility(SemDragAndDropListAnimator.this.mDragPos);
                     }
                     SemDragAndDropListAnimator.this.mItemAnimator.removeAll();
                     SemDragAndDropListAnimator.this.resetDndPositionValues();
@@ -103,26 +68,11 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
             }
         };
         this.mItemLongClickListener = new AdapterView.OnItemLongClickListener() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.2
-            AnonymousClass2() {
-            }
-
             @Override // android.widget.AdapterView.OnItemLongClickListener
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 return SemDragAndDropListAnimator.this.initDragIfNecessary(position);
             }
         };
-    }
-
-    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements AdapterView.OnItemLongClickListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemLongClickListener
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            return SemDragAndDropListAnimator.this.initDragIfNecessary(position);
-        }
     }
 
     public void setDragAndDropController(SemAbsDragAndDropAnimator.DragAndDropController dndController) {
@@ -156,8 +106,7 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
             return true;
         }
         Rect childRect = new Rect();
-        ListView listView = this.mListView;
-        View v = listView.getChildAt(itemPosition - listView.getFirstVisiblePosition());
+        View v = this.mListView.getChildAt(itemPosition - this.mListView.getFirstVisiblePosition());
         v.getHitRect(childRect);
         getDragGrabHandleHitRect(childRect, this.mTempRect);
         return this.mTempRect.contains(x, y);
@@ -274,6 +223,7 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         return this.mItemLongClickListener;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean initDragIfNecessary(int position) {
         if (isDraggable() && activatedByLongPress() && this.mListView.getCount() > 1) {
             if (position >= 0 && position < this.mListView.getCount() && checkStartDnd(this.mDndTouchX, this.mDndTouchY, position)) {
@@ -286,8 +236,7 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
     }
 
     private boolean initDrag(int itemPosition) {
-        ListView listView = this.mListView;
-        this.mDragView = listView.getChildAt(itemPosition - listView.getFirstVisiblePosition());
+        this.mDragView = this.mListView.getChildAt(itemPosition - this.mListView.getFirstVisiblePosition());
         if (this.mDragView == null) {
             return false;
         }
@@ -301,9 +250,8 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
             if (this.mDragViewBitmap != null) {
                 this.mDragViewBitmap.recycle();
             }
-            int semGetRoundedCorners = this.mDragView.semGetRoundedCorners();
-            this.mDragViewRoundCorner = semGetRoundedCorners;
-            if (semGetRoundedCorners != 0) {
+            this.mDragViewRoundCorner = this.mDragView.semGetRoundedCorners();
+            if (this.mDragViewRoundCorner != 0) {
                 this.mDragView.semSetRoundedCorners(0);
                 this.mDragView.invalidate();
             }
@@ -352,30 +300,66 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         this.mItemAnimator.start();
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!isDraggable() || this.mDndTouchMode == 0) {
-            return false;
-        }
-        int action = event.getAction();
-        switch (action & 255) {
-            case 1:
-            case 3:
-                onTouchUpCancel(event);
-                break;
-            case 2:
-                onTouchMove(event);
-                break;
-            case 6:
-                int pointerIndex = (65280 & action) >> 8;
-                int pointerId = event.getPointerId(pointerIndex);
-                if (pointerId == this.mActivePointerId) {
-                    int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-                    this.mActivePointerId = event.getPointerId(newPointerIndex);
-                    break;
-                }
-                break;
-        }
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0038, code lost:
+    
         return true;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public boolean onTouchEvent(android.view.MotionEvent r7) {
+        /*
+            r6 = this;
+            boolean r0 = r6.isDraggable()
+            r1 = 0
+            if (r0 == 0) goto L39
+            int r0 = r6.mDndTouchMode
+            if (r0 != 0) goto Lc
+            goto L39
+        Lc:
+            int r0 = r7.getAction()
+            r2 = r0 & 255(0xff, float:3.57E-43)
+            r3 = 1
+            switch(r2) {
+                case 0: goto L37;
+                case 1: goto L33;
+                case 2: goto L2f;
+                case 3: goto L33;
+                case 4: goto L16;
+                case 5: goto L16;
+                case 6: goto L17;
+                default: goto L16;
+            }
+        L16:
+            goto L38
+        L17:
+            r2 = 65280(0xff00, float:9.1477E-41)
+            r2 = r2 & r0
+            int r2 = r2 >> 8
+            int r4 = r7.getPointerId(r2)
+            int r5 = r6.mActivePointerId
+            if (r4 != r5) goto L38
+            if (r2 != 0) goto L28
+            r1 = r3
+        L28:
+            int r5 = r7.getPointerId(r1)
+            r6.mActivePointerId = r5
+            goto L38
+        L2f:
+            r6.onTouchMove(r7)
+            goto L38
+        L33:
+            r6.onTouchUpCancel(r7)
+            goto L38
+        L37:
+        L38:
+            return r3
+        L39:
+            return r1
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.animation.SemDragAndDropListAnimator.onTouchEvent(android.view.MotionEvent):boolean");
     }
 
     private void onTouchMove(MotionEvent event) {
@@ -405,8 +389,7 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
             top += temp.getHeight() / 2;
         }
         int bottom = (this.mListView.getBottom() - this.mListView.getPaddingBottom()) - this.mListView.getTop();
-        ListView listView = this.mListView;
-        View temp2 = listView.getChildAt(listView.getChildCount() - 1);
+        View temp2 = this.mListView.getChildAt(this.mListView.getChildCount() - 1);
         if (temp2 != null) {
             bottom -= temp2.getHeight() / 2;
         }
@@ -478,15 +461,11 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
             } else if (this.mDragPos < firstVisiblePosition) {
                 distance = -((draggedBitmapTop - this.mListView.getChildAt(0).getTop()) + this.mDragViewRect.height());
             } else {
-                ListView listView = this.mListView;
-                distance = listView.getChildAt(listView.getChildCount() - 1).getBottom() - draggedBitmapTop;
+                distance = this.mListView.getChildAt(this.mListView.getChildCount() - 1).getBottom() - draggedBitmapTop;
             }
             Log.v(TAG, "dndListener.onTouchUp() dragView == null, distance=" + distance);
             ValueAnimator va = ValueAnimator.ofInt(0, distance);
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.3
-                AnonymousClass3() {
-                }
-
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animator) {
                     SemDragAndDropListAnimator.this.mDragViewBitmapTranslateY = ((Integer) animator.getAnimatedValue()).intValue();
@@ -494,16 +473,12 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
                 }
             });
             va.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.4
-                AnonymousClass4() {
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator anim) {
                     if (SemDragAndDropListAnimator.this.mFirstDragPos != SemDragAndDropListAnimator.this.mDragPos) {
                         Log.d(SemDragAndDropListAnimator.TAG, "onTouchUpCancel : onAnimationEnd : mDndController.dropDone #2 , mFirstDragPos = " + SemDragAndDropListAnimator.this.mFirstDragPos + ", mDragPos = " + SemDragAndDropListAnimator.this.mDragPos);
                         SemDragAndDropListAnimator.this.mDndController.dropDone(SemDragAndDropListAnimator.this.mFirstDragPos, SemDragAndDropListAnimator.this.mDragPos);
-                        SemDragAndDropListAnimator semDragAndDropListAnimator = SemDragAndDropListAnimator.this;
-                        semDragAndDropListAnimator.speakDragReleaseForAccessibility(semDragAndDropListAnimator.mDragPos);
+                        SemDragAndDropListAnimator.this.speakDragReleaseForAccessibility(SemDragAndDropListAnimator.this.mDragPos);
                     }
                     SemDragAndDropListAnimator.this.mItemAnimator.removeAll();
                     SemDragAndDropListAnimator.this.resetDndState();
@@ -541,50 +516,14 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         this.mListView.invalidate();
     }
 
-    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 implements ValueAnimator.AnimatorUpdateListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-        public void onAnimationUpdate(ValueAnimator animator) {
-            SemDragAndDropListAnimator.this.mDragViewBitmapTranslateY = ((Integer) animator.getAnimatedValue()).intValue();
-            SemDragAndDropListAnimator.this.mListView.invalidate();
-        }
-    }
-
-    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 extends AnimatorListenerAdapter {
-        AnonymousClass4() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator anim) {
-            if (SemDragAndDropListAnimator.this.mFirstDragPos != SemDragAndDropListAnimator.this.mDragPos) {
-                Log.d(SemDragAndDropListAnimator.TAG, "onTouchUpCancel : onAnimationEnd : mDndController.dropDone #2 , mFirstDragPos = " + SemDragAndDropListAnimator.this.mFirstDragPos + ", mDragPos = " + SemDragAndDropListAnimator.this.mDragPos);
-                SemDragAndDropListAnimator.this.mDndController.dropDone(SemDragAndDropListAnimator.this.mFirstDragPos, SemDragAndDropListAnimator.this.mDragPos);
-                SemDragAndDropListAnimator semDragAndDropListAnimator = SemDragAndDropListAnimator.this;
-                semDragAndDropListAnimator.speakDragReleaseForAccessibility(semDragAndDropListAnimator.mDragPos);
-            }
-            SemDragAndDropListAnimator.this.mItemAnimator.removeAll();
-            SemDragAndDropListAnimator.this.resetDndState();
-            if (SemDragAndDropListAnimator.this.mDndListener != null) {
-                Log.d(SemDragAndDropListAnimator.TAG, "dndListener.onDragAndDropEnd() from onAnimationEnd() #3");
-                SemDragAndDropListAnimator.this.mDndListener.onDragAndDropEnd();
-            }
-        }
-    }
-
     @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator
-    public void resetDndTouchValuesAndBitmap() {
+    void resetDndTouchValuesAndBitmap() {
         super.resetDndTouchValuesAndBitmap();
         this.mNonMovableItems.clear();
     }
 
     @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator
-    public void resetDndPositionValues() {
+    void resetDndPositionValues() {
         super.resetDndPositionValues();
         this.mListView.setEnableHoverDrawable(true);
     }
@@ -663,11 +602,10 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
 
     private void updateRoundCorner(int pos) {
         int childCorner;
-        int i;
         int firstVisiblePosition = this.mListView.getFirstVisiblePosition();
         View child = this.mListView.getChildAt(pos - firstVisiblePosition);
-        if (child != null && (i = this.mDragViewRoundCorner) != (childCorner = child.semGetRoundedCorners())) {
-            child.semSetRoundedCorners(i);
+        if (child != null && this.mDragViewRoundCorner != (childCorner = child.semGetRoundedCorners())) {
+            child.semSetRoundedCorners(this.mDragViewRoundCorner);
             this.mDragViewRoundCorner = childCorner;
             child.invalidate();
         }
@@ -850,7 +788,6 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         }
     }
 
-    /* loaded from: classes5.dex */
     private class HeaderFooterDndController implements SemAbsDragAndDropAnimator.DragAndDropController {
         private final SemAbsDragAndDropAnimator.DragAndDropController mWrappedController;
 

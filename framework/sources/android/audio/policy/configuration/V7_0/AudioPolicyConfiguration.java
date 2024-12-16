@@ -74,7 +74,7 @@ public class AudioPolicyConfiguration {
         this.version = version;
     }
 
-    public static AudioPolicyConfiguration read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static AudioPolicyConfiguration read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         AudioPolicyConfiguration _instance = new AudioPolicyConfiguration();
         String _raw = _parser.getAttributeValue(null, "version");

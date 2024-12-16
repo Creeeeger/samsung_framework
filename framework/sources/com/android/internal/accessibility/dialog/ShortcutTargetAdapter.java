@@ -16,12 +16,12 @@ import com.android.internal.accessibility.dialog.TargetAdapter;
 import com.android.internal.accessibility.util.AccessibilityUtils;
 import java.util.List;
 
-/* loaded from: classes4.dex */
-public class ShortcutTargetAdapter extends TargetAdapter {
+/* loaded from: classes5.dex */
+class ShortcutTargetAdapter extends TargetAdapter {
     private int mShortcutMenuMode = 0;
     private final List<AccessibilityTarget> mTargets;
 
-    public ShortcutTargetAdapter(List<AccessibilityTarget> targets) {
+    ShortcutTargetAdapter(List<AccessibilityTarget> targets) {
         this.mTargets = targets;
     }
 
@@ -145,12 +145,11 @@ public class ShortcutTargetAdapter extends TargetAdapter {
             } else {
                 String targetSummary = "";
                 if (target.getStateDescription() == null) {
-                    int i2 = this.mShortcutMenuMode;
-                    if (i2 == 3) {
+                    if (this.mShortcutMenuMode == 3) {
                         targetSummary = context.getString(R.string.accessibility_shortcut_menu_item_status_on);
-                    } else if (i2 == 4) {
+                    } else if (this.mShortcutMenuMode == 4) {
                         targetSummary = context.getString(R.string.accessibility_shortcut_menu_item_status_off);
-                    } else if (i2 == 5) {
+                    } else if (this.mShortcutMenuMode == 5) {
                         targetSummary = context.getString(R.string.accessibility_shortcut_menu_item_status_disabled);
                     }
                 } else {
@@ -164,11 +163,11 @@ public class ShortcutTargetAdapter extends TargetAdapter {
         return convertView2;
     }
 
-    public void setShortcutMenuMode(int shortcutMenuMode) {
+    void setShortcutMenuMode(int shortcutMenuMode) {
         this.mShortcutMenuMode = shortcutMenuMode;
     }
 
-    public int getShortcutMenuMode() {
+    int getShortcutMenuMode() {
         return this.mShortcutMenuMode;
     }
 }

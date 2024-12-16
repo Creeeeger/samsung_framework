@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.SipDetails;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IPublishResponseCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IPublishResponseCallback";
 
@@ -15,7 +15,6 @@ public interface IPublishResponseCallback extends IInterface {
 
     void onNetworkResponse(SipDetails sipDetails) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPublishResponseCallback {
         @Override // android.telephony.ims.aidl.IPublishResponseCallback
         public void onCommandError(int code) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IPublishResponseCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPublishResponseCallback {
         static final int TRANSACTION_onCommandError = 1;
         static final int TRANSACTION_onNetworkResponse = 2;
@@ -77,31 +75,27 @@ public interface IPublishResponseCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPublishResponseCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPublishResponseCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPublishResponseCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCommandError(_arg0);
+                    return true;
+                case 2:
+                    SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNetworkResponse(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCommandError(_arg0);
-                            return true;
-                        case 2:
-                            SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNetworkResponse(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPublishResponseCallback {
+        private static class Proxy implements IPublishResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

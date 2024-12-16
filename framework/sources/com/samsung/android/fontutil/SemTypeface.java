@@ -3,7 +3,7 @@ package com.samsung.android.fontutil;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemTypeface {
     private String mName = null;
     private String mFontPackageName = null;

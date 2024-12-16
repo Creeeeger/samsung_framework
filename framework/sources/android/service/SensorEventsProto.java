@@ -4,7 +4,6 @@ package android.service;
 public final class SensorEventsProto {
     public static final long RECENT_EVENTS_LOGS = 2246267895809L;
 
-    /* loaded from: classes3.dex */
     public final class Event {
         public static final long FLOAT_ARRAY = 2207613190149L;
         public static final long INT64_DATA = 1112396529668L;
@@ -16,7 +15,6 @@ public final class SensorEventsProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class RecentEventsLog {
         public static final long EVENTS = 2246267895811L;
         public static final long NAME = 1138166333441L;

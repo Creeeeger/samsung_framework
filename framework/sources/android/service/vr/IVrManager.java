@@ -33,7 +33,6 @@ public interface IVrManager extends IInterface {
 
     void unregisterPersistentVrStateListener(IPersistentVrStateCallbacks iPersistentVrStateCallbacks) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IVrManager {
         @Override // android.service.vr.IVrManager
         public void registerListener(IVrStateCallbacks cb) throws RemoteException {
@@ -88,7 +87,6 @@ public interface IVrManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IVrManager {
         public static final String DESCRIPTOR = "android.service.vr.IVrManager";
         static final int TRANSACTION_getPersistentVrModeEnabled = 6;
@@ -162,84 +160,80 @@ public interface IVrManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IVrStateCallbacks _arg0 = IVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerListener(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IVrStateCallbacks _arg02 = IVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterListener(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IPersistentVrStateCallbacks _arg03 = IPersistentVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerPersistentVrStateListener(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IPersistentVrStateCallbacks _arg04 = IPersistentVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterPersistentVrStateListener(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _result = getVrModeState();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 6:
+                    boolean _result2 = getPersistentVrModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 7:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setPersistentVrModeEnabled(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    Vr2dDisplayProperties _arg06 = (Vr2dDisplayProperties) data.readTypedObject(Vr2dDisplayProperties.CREATOR);
+                    data.enforceNoDataAvail();
+                    setVr2dDisplayProperties(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _result3 = getVr2dDisplayId();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 10:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    setAndBindCompositor(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    boolean _arg08 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setStandbyEnabled(_arg08);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IVrStateCallbacks _arg0 = IVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerListener(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IVrStateCallbacks _arg02 = IVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterListener(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IPersistentVrStateCallbacks _arg03 = IPersistentVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerPersistentVrStateListener(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IPersistentVrStateCallbacks _arg04 = IPersistentVrStateCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterPersistentVrStateListener(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _result = getVrModeState();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 6:
-                            boolean _result2 = getPersistentVrModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 7:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setPersistentVrModeEnabled(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            Vr2dDisplayProperties _arg06 = (Vr2dDisplayProperties) data.readTypedObject(Vr2dDisplayProperties.CREATOR);
-                            data.enforceNoDataAvail();
-                            setVr2dDisplayProperties(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _result3 = getVr2dDisplayId();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 10:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAndBindCompositor(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            boolean _arg08 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setStandbyEnabled(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IVrManager {
+        private static class Proxy implements IVrManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,7 +1,6 @@
 package android.app;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
@@ -27,14 +26,13 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public class LocaleConfig implements Parcelable {
     public static final Parcelable.Creator<LocaleConfig> CREATOR = new Parcelable.Creator<LocaleConfig>() { // from class: android.app.LocaleConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocaleConfig createFromParcel(Parcel source) {
             return new LocaleConfig(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocaleConfig[] newArray(int size) {
             return new LocaleConfig[size];
@@ -46,16 +44,12 @@ public class LocaleConfig implements Parcelable {
     private static final String TAG = "LocaleConfig";
     public static final String TAG_LOCALE = "locale";
     public static final String TAG_LOCALE_CONFIG = "locale-config";
+    private Locale mDefaultLocale;
     private LocaleList mLocales;
     private int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Status {
-    }
-
-    /* synthetic */ LocaleConfig(Parcel parcel, LocaleConfigIA localeConfigIA) {
-        this(parcel);
     }
 
     public LocaleConfig(Context context) {
@@ -83,10 +77,13 @@ public class LocaleConfig implements Parcelable {
                 return;
             }
         }
-        int resId = 0;
         Resources res = context.getResources();
+        int resId = context.getApplicationInfo().getLocaleConfigRes();
+        if (resId == 0) {
+            this.mStatus = 1;
+            return;
+        }
         try {
-            resId = new ApplicationInfo(context.getApplicationInfo()).getLocaleConfigRes();
             XmlResourceParser parser = res.getXml(resId);
             parseLocaleConfig(parser, res);
         } catch (Resources.NotFoundException e) {
@@ -114,6 +111,12 @@ public class LocaleConfig implements Parcelable {
         XmlUtils.beginDocument(parser, TAG_LOCALE_CONFIG);
         int outerDepth = parser.getDepth();
         AttributeSet attrs = Xml.asAttributeSet(parser);
+        String defaultLocale = null;
+        if (android.content.res.Flags.defaultLocale()) {
+            TypedArray att = res.obtainAttributes(attrs, R.styleable.LocaleConfig);
+            defaultLocale = att.getString(0);
+            att.recycle();
+        }
         Set<String> localeNames = new HashSet<>();
         while (XmlUtils.nextElementWithin(parser, outerDepth)) {
             if ("locale".equals(parser.getName())) {
@@ -127,10 +130,22 @@ public class LocaleConfig implements Parcelable {
         }
         this.mStatus = 0;
         this.mLocales = LocaleList.forLanguageTags(String.join(",", localeNames));
+        if (defaultLocale != null) {
+            if (localeNames.contains(defaultLocale)) {
+                this.mDefaultLocale = Locale.forLanguageTag(defaultLocale);
+            } else {
+                Slog.w(TAG, "Default locale specified that is not contained in the list: " + defaultLocale);
+                this.mStatus = 2;
+            }
+        }
     }
 
     public LocaleList getSupportedLocales() {
         return this.mLocales;
+    }
+
+    public Locale getDefaultLocale() {
+        return this.mDefaultLocale;
     }
 
     public int getStatus() {
@@ -148,23 +163,6 @@ public class LocaleConfig implements Parcelable {
         dest.writeTypedObject(this.mLocales, flags);
     }
 
-    /* renamed from: android.app.LocaleConfig$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LocaleConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocaleConfig createFromParcel(Parcel source) {
-            return new LocaleConfig(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocaleConfig[] newArray(int size) {
-            return new LocaleConfig[size];
-        }
-    }
-
     public boolean isSameLocaleConfig(LocaleConfig other) {
         if (other == this) {
             return true;
@@ -173,12 +171,11 @@ public class LocaleConfig implements Parcelable {
             return false;
         }
         LocaleList otherLocales = other.mLocales;
-        LocaleList localeList = this.mLocales;
-        if (localeList == null && otherLocales == null) {
+        if (this.mLocales == null && otherLocales == null) {
             return true;
         }
-        if (localeList != null && otherLocales != null) {
-            List<String> hostStrList = Arrays.asList(localeList.toLanguageTags().split(","));
+        if (this.mLocales != null && otherLocales != null) {
+            List<String> hostStrList = Arrays.asList(this.mLocales.toLanguageTags().split(","));
             List<String> targetStrList = Arrays.asList(otherLocales.toLanguageTags().split(","));
             Collections.sort(hostStrList);
             Collections.sort(targetStrList);

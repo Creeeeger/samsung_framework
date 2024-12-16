@@ -12,9 +12,7 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class TimeZoneProviderEvent implements Parcelable {
     public static final Parcelable.Creator<TimeZoneProviderEvent> CREATOR = new Parcelable.Creator<TimeZoneProviderEvent>() { // from class: android.service.timezone.TimeZoneProviderEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderEvent createFromParcel(Parcel in) {
             int type = in.readInt();
@@ -25,6 +23,7 @@ public final class TimeZoneProviderEvent implements Parcelable {
             return new TimeZoneProviderEvent(type, creationElapsedMillis, suggestion, failureCause, status);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderEvent[] newArray(int size) {
             return new TimeZoneProviderEvent[size];
@@ -41,23 +40,17 @@ public final class TimeZoneProviderEvent implements Parcelable {
 
     @Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EventType {
     }
 
-    /* synthetic */ TimeZoneProviderEvent(int i, long j, TimeZoneProviderSuggestion timeZoneProviderSuggestion, String str, TimeZoneProviderStatus timeZoneProviderStatus, TimeZoneProviderEventIA timeZoneProviderEventIA) {
-        this(i, j, timeZoneProviderSuggestion, str, timeZoneProviderStatus);
-    }
-
     private TimeZoneProviderEvent(int type, long creationElapsedMillis, TimeZoneProviderSuggestion suggestion, String failureCause, TimeZoneProviderStatus timeZoneProviderStatus) {
-        int validateEventType = validateEventType(type);
-        this.mType = validateEventType;
+        this.mType = validateEventType(type);
         this.mCreationElapsedMillis = creationElapsedMillis;
         this.mSuggestion = suggestion;
         this.mFailureCause = failureCause;
         this.mTimeZoneProviderStatus = timeZoneProviderStatus;
-        if (validateEventType == 1 && timeZoneProviderStatus != null) {
-            throw new IllegalArgumentException("Unexpected status: mType=" + validateEventType + ", mTimeZoneProviderStatus=" + timeZoneProviderStatus);
+        if (this.mType == 1 && this.mTimeZoneProviderStatus != null) {
+            throw new IllegalArgumentException("Unexpected status: mType=" + this.mType + ", mTimeZoneProviderStatus=" + this.mTimeZoneProviderStatus);
         }
     }
 
@@ -100,28 +93,6 @@ public final class TimeZoneProviderEvent implements Parcelable {
         return this.mTimeZoneProviderStatus;
     }
 
-    /* renamed from: android.service.timezone.TimeZoneProviderEvent$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimeZoneProviderEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneProviderEvent createFromParcel(Parcel in) {
-            int type = in.readInt();
-            long creationElapsedMillis = in.readLong();
-            TimeZoneProviderSuggestion suggestion = (TimeZoneProviderSuggestion) in.readParcelable(getClass().getClassLoader(), TimeZoneProviderSuggestion.class);
-            String failureCause = in.readString8();
-            TimeZoneProviderStatus status = (TimeZoneProviderStatus) in.readParcelable(getClass().getClassLoader(), TimeZoneProviderStatus.class);
-            return new TimeZoneProviderEvent(type, creationElapsedMillis, suggestion, failureCause, status);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneProviderEvent[] newArray(int size) {
-            return new TimeZoneProviderEvent[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -141,14 +112,13 @@ public final class TimeZoneProviderEvent implements Parcelable {
     }
 
     public boolean isEquivalentTo(TimeZoneProviderEvent other) {
-        int i;
         if (this == other) {
             return true;
         }
-        if (other == null || (i = this.mType) != other.mType) {
+        if (other == null || this.mType != other.mType) {
             return false;
         }
-        if (i == 2) {
+        if (this.mType == 2) {
             if (this.mSuggestion.isEquivalentTo(other.mSuggestion) && Objects.equals(this.mTimeZoneProviderStatus, other.mTimeZoneProviderStatus)) {
                 return true;
             }

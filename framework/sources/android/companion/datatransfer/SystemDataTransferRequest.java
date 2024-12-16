@@ -10,7 +10,9 @@ public abstract class SystemDataTransferRequest {
     boolean mUserConsented;
     int mUserId;
 
-    public SystemDataTransferRequest(int associationId, int dataType) {
+    public abstract SystemDataTransferRequest copyWithNewId(int i);
+
+    SystemDataTransferRequest(int associationId, int dataType) {
         this.mUserConsented = false;
         this.mAssociationId = associationId;
         this.mDataType = dataType;
@@ -40,7 +42,7 @@ public abstract class SystemDataTransferRequest {
         this.mUserConsented = isUserConsented;
     }
 
-    public SystemDataTransferRequest(Parcel in) {
+    SystemDataTransferRequest(Parcel in) {
         this.mUserConsented = false;
         this.mAssociationId = in.readInt();
         this.mDataType = in.readInt();

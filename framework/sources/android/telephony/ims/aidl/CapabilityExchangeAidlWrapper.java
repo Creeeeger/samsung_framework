@@ -12,7 +12,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class CapabilityExchangeAidlWrapper implements CapabilityExchangeEventListener {
     private static final String LOG_TAG = "CapExchangeListener";
     private final ICapabilityExchangeEventListener mListenerBinder;
@@ -80,18 +80,12 @@ public class CapabilityExchangeAidlWrapper implements CapabilityExchangeEventLis
     }
 
     @Override // android.telephony.ims.stub.CapabilityExchangeEventListener
-    public void onRemoteCapabilityRequest(Uri contactUri, Set<String> remoteCapabilities, CapabilityExchangeEventListener.OptionsRequestCallback callback) throws ImsException {
+    public void onRemoteCapabilityRequest(Uri contactUri, Set<String> remoteCapabilities, final CapabilityExchangeEventListener.OptionsRequestCallback callback) throws ImsException {
         ICapabilityExchangeEventListener listener = this.mListenerBinder;
         if (listener == null) {
             return;
         }
         IOptionsRequestCallback internalCallback = new IOptionsRequestCallback.Stub() { // from class: android.telephony.ims.aidl.CapabilityExchangeAidlWrapper.1
-            final /* synthetic */ CapabilityExchangeEventListener.OptionsRequestCallback val$callback;
-
-            AnonymousClass1(CapabilityExchangeEventListener.OptionsRequestCallback callback2) {
-                callback = callback2;
-            }
-
             @Override // android.telephony.ims.aidl.IOptionsRequestCallback
             public void respondToCapabilityRequest(RcsContactUceCapability ownCapabilities, boolean isBlocked) {
                 long callingIdentity = Binder.clearCallingIdentity();
@@ -117,36 +111,6 @@ public class CapabilityExchangeAidlWrapper implements CapabilityExchangeEventLis
         } catch (RemoteException e) {
             Log.w(LOG_TAG, "Remote capability request exception: " + e);
             throw new ImsException("Remote is not available", 1);
-        }
-    }
-
-    /* renamed from: android.telephony.ims.aidl.CapabilityExchangeAidlWrapper$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IOptionsRequestCallback.Stub {
-        final /* synthetic */ CapabilityExchangeEventListener.OptionsRequestCallback val$callback;
-
-        AnonymousClass1(CapabilityExchangeEventListener.OptionsRequestCallback callback2) {
-            callback = callback2;
-        }
-
-        @Override // android.telephony.ims.aidl.IOptionsRequestCallback
-        public void respondToCapabilityRequest(RcsContactUceCapability ownCapabilities, boolean isBlocked) {
-            long callingIdentity = Binder.clearCallingIdentity();
-            try {
-                callback.onRespondToCapabilityRequest(ownCapabilities, isBlocked);
-            } finally {
-                restoreCallingIdentity(callingIdentity);
-            }
-        }
-
-        @Override // android.telephony.ims.aidl.IOptionsRequestCallback
-        public void respondToCapabilityRequestWithError(int code, String reason) {
-            long callingIdentity = Binder.clearCallingIdentity();
-            try {
-                callback.onRespondToCapabilityRequestWithError(code, reason);
-            } finally {
-                restoreCallingIdentity(callingIdentity);
-            }
         }
     }
 }

@@ -41,7 +41,6 @@ public class Contacts {
     private static final String TAG = "Contacts";
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface ContactMethodsColumns {
 
         @Deprecated
@@ -82,7 +81,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface ExtensionsColumns {
 
         @Deprecated
@@ -93,7 +91,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface GroupsColumns {
 
         @Deprecated
@@ -110,7 +107,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface OrganizationColumns {
 
         @Deprecated
@@ -142,7 +138,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface PeopleColumns {
 
         @Deprecated
@@ -180,7 +175,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface PhonesColumns {
 
         @Deprecated
@@ -224,7 +218,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface PhotosColumns {
 
         @Deprecated
@@ -247,7 +240,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface PresenceColumns {
         public static final int AVAILABLE = 5;
         public static final int AWAY = 2;
@@ -270,7 +262,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface SettingsColumns {
 
         @Deprecated
@@ -290,7 +281,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Settings implements BaseColumns, SettingsColumns {
 
         @Deprecated
@@ -333,7 +323,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class People implements BaseColumns, PeopleColumns, PhonesColumns, PresenceColumns {
 
         @Deprecated
@@ -504,7 +493,6 @@ public class Contacts {
         }
 
         @Deprecated
-        /* loaded from: classes3.dex */
         public static final class Phones implements BaseColumns, PhonesColumns, PeopleColumns {
 
             @Deprecated
@@ -518,7 +506,6 @@ public class Contacts {
         }
 
         @Deprecated
-        /* loaded from: classes3.dex */
         public static final class ContactMethods implements BaseColumns, ContactMethodsColumns, PeopleColumns {
 
             @Deprecated
@@ -532,7 +519,6 @@ public class Contacts {
         }
 
         @Deprecated
-        /* loaded from: classes3.dex */
         public static class Extensions implements BaseColumns, ExtensionsColumns {
 
             @Deprecated
@@ -551,7 +537,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Groups implements BaseColumns, GroupsColumns {
 
         @Deprecated
@@ -580,7 +565,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Phones implements BaseColumns, PhonesColumns, PeopleColumns {
 
         @Deprecated
@@ -629,7 +613,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class GroupMembership implements BaseColumns, GroupsColumns {
 
         @Deprecated
@@ -670,7 +653,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class ContactMethods implements BaseColumns, ContactMethodsColumns, PeopleColumns {
 
         @Deprecated
@@ -733,7 +715,6 @@ public class Contacts {
         @Deprecated
         public static final Uri CONTENT_EMAIL_URI = Uri.parse("content://contacts/contact_methods/email");
 
-        /* loaded from: classes3.dex */
         interface ProviderNames {
             public static final String AIM = "AIM";
             public static final String GTALK = "GTalk";
@@ -842,17 +823,15 @@ public class Contacts {
             ContentValues values = new ContentValues(2);
             values.put("data", Double.valueOf(latitude));
             values.put("aux_data", Double.valueOf(longitude));
-            Uri uri = CONTENT_URI;
-            Uri loc = resolver.insert(uri, values);
+            Uri loc = resolver.insert(CONTENT_URI, values);
             long locId = ContentUris.parseId(loc);
             values.clear();
             values.put("aux_data", Long.valueOf(locId));
-            resolver.update(ContentUris.withAppendedId(uri, postalId), values, null, null);
+            resolver.update(ContentUris.withAppendedId(CONTENT_URI, postalId), values, null, null);
         }
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Presence implements BaseColumns, PresenceColumns, PeopleColumns {
 
         @Deprecated
@@ -885,7 +864,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Organizations implements BaseColumns, OrganizationColumns {
 
         @Deprecated
@@ -920,7 +898,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Photos implements BaseColumns, PhotosColumns {
 
         @Deprecated
@@ -937,7 +914,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Extensions implements BaseColumns, ExtensionsColumns {
 
         @Deprecated
@@ -960,7 +936,6 @@ public class Contacts {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Intents {
 
         @Deprecated
@@ -992,7 +967,6 @@ public class Contacts {
         }
 
         @Deprecated
-        /* loaded from: classes3.dex */
         public static final class UI {
 
             @Deprecated
@@ -1034,7 +1008,6 @@ public class Contacts {
         }
 
         @Deprecated
-        /* loaded from: classes3.dex */
         public static final class Insert {
 
             @Deprecated

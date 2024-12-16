@@ -3,7 +3,6 @@ package com.android.internal.logging;
 import android.media.MediaMetrics;
 import android.util.Log;
 import com.android.internal.util.FastPrintWriter;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -13,12 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AndroidHandler extends Handler {
     private static final Formatter THE_FORMATTER = new Formatter() { // from class: com.android.internal.logging.AndroidHandler.1
-        AnonymousClass1() {
-        }
-
         @Override // java.util.logging.Formatter
         public String format(LogRecord r) {
             Throwable thrown = r.getThrown();
@@ -35,28 +31,6 @@ public class AndroidHandler extends Handler {
         }
     };
 
-    /* renamed from: com.android.internal.logging.AndroidHandler$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends Formatter {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.logging.Formatter
-        public String format(LogRecord r) {
-            Throwable thrown = r.getThrown();
-            if (thrown != null) {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new FastPrintWriter((Writer) sw, false, 256);
-                sw.write(r.getMessage());
-                sw.write("\n");
-                thrown.printStackTrace(pw);
-                pw.flush();
-                return sw.toString();
-            }
-            return r.getMessage();
-        }
-    }
-
     public AndroidHandler() {
         setFormatter(THE_FORMATTER);
     }
@@ -71,7 +45,7 @@ public class AndroidHandler extends Handler {
 
     private static String loggerNameToTag(String loggerName) {
         if (loggerName == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         int length = loggerName.length();
         if (length <= 23) {

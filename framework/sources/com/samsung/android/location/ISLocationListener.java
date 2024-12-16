@@ -1,6 +1,5 @@
 package com.samsung.android.location;
 
-import android.location.Address;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
@@ -8,22 +7,15 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISLocationListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.location.ISLocationListener";
 
-    void onLocationAvailable(Location[] locationArr) throws RemoteException;
+    void onLocationChanged(Location location) throws RemoteException;
 
-    void onLocationChanged(Location location, Address address) throws RemoteException;
-
-    /* loaded from: classes5.dex */
     public static class Default implements ISLocationListener {
         @Override // com.samsung.android.location.ISLocationListener
-        public void onLocationAvailable(Location[] locations) throws RemoteException {
-        }
-
-        @Override // com.samsung.android.location.ISLocationListener
-        public void onLocationChanged(Location location, Address address) throws RemoteException {
+        public void onLocationChanged(Location location) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -32,10 +24,8 @@ public interface ISLocationListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISLocationListener {
-        static final int TRANSACTION_onLocationAvailable = 1;
-        static final int TRANSACTION_onLocationChanged = 2;
+        static final int TRANSACTION_onLocationChanged = 1;
 
         public Stub() {
             attachInterface(this, ISLocationListener.DESCRIPTOR);
@@ -60,8 +50,6 @@ public interface ISLocationListener extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return "onLocationAvailable";
-                case 2:
                     return "onLocationChanged";
                 default:
                     return null;
@@ -78,32 +66,22 @@ public interface ISLocationListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISLocationListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISLocationListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISLocationListener.DESCRIPTOR);
+                case 1:
+                    Location _arg0 = (Location) data.readTypedObject(Location.CREATOR);
+                    data.enforceNoDataAvail();
+                    onLocationChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Location[] _arg0 = (Location[]) data.createTypedArray(Location.CREATOR);
-                            data.enforceNoDataAvail();
-                            onLocationAvailable(_arg0);
-                            return true;
-                        case 2:
-                            Location _arg02 = (Location) data.readTypedObject(Location.CREATOR);
-                            Address _arg1 = (Address) data.readTypedObject(Address.CREATOR);
-                            data.enforceNoDataAvail();
-                            onLocationChanged(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISLocationListener {
+        private static class Proxy implements ISLocationListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -120,25 +98,12 @@ public interface ISLocationListener extends IInterface {
             }
 
             @Override // com.samsung.android.location.ISLocationListener
-            public void onLocationAvailable(Location[] locations) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(ISLocationListener.DESCRIPTOR);
-                    _data.writeTypedArray(locations, 0);
-                    this.mRemote.transact(1, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.location.ISLocationListener
-            public void onLocationChanged(Location location, Address address) throws RemoteException {
+            public void onLocationChanged(Location location) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ISLocationListener.DESCRIPTOR);
                     _data.writeTypedObject(location, 0);
-                    _data.writeTypedObject(address, 0);
-                    this.mRemote.transact(2, _data, null, 1);
+                    this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -147,7 +112,7 @@ public interface ISLocationListener extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 1;
+            return 0;
         }
     }
 }

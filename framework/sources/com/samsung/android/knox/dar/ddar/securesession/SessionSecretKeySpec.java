@@ -5,14 +5,14 @@ import java.util.Arrays;
 import javax.crypto.SecretKey;
 import javax.security.auth.DestroyFailedException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class SessionSecretKeySpec implements KeySpec, SecretKey {
     private static final long serialVersionUID = 6560385466025255248L;
     private String algorithm;
     private boolean isDestroyed;
     private byte[] key;
 
-    public SessionSecretKeySpec(byte[] key, String algorithm) {
+    SessionSecretKeySpec(byte[] key, String algorithm) {
         if (key == null || algorithm == null) {
             throw new IllegalArgumentException("No key/algorithm specified");
         }
@@ -44,16 +44,10 @@ class SessionSecretKeySpec implements KeySpec, SecretKey {
         if (this.isDestroyed) {
             return 0;
         }
-        int i = 1;
-        while (true) {
-            byte[] bArr = this.key;
-            if (i < bArr.length) {
-                retval += bArr[i] * i;
-                i++;
-            } else {
-                return retval ^ this.algorithm.hashCode();
-            }
+        for (int i = 1; i < this.key.length; i++) {
+            retval += this.key[i] * i;
         }
+        return retval ^ this.algorithm.hashCode();
     }
 
     public boolean equals(Object obj) {
@@ -73,9 +67,8 @@ class SessionSecretKeySpec implements KeySpec, SecretKey {
 
     @Override // javax.security.auth.Destroyable
     public void destroy() throws DestroyFailedException {
-        byte[] bArr = this.key;
-        if (bArr != null) {
-            Arrays.fill(bArr, (byte) 0);
+        if (this.key != null) {
+            Arrays.fill(this.key, (byte) 0);
             this.key = null;
         }
         this.isDestroyed = true;

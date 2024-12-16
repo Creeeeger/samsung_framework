@@ -16,6 +16,8 @@ public final class Enums {
     public static final int MEDIADEVICETYPE_BLUETOOTH = 0;
     public static final int MEDIADEVICETYPE_BUILTIN_SPEAKER = 2;
     public static final int MEDIADEVICETYPE_FASTPAIR = 1;
+    public static final int MEDIADEVICETYPE_SASS = 3;
+    public static final int MEDIUMTYPE_BLE = 5;
     public static final int MEDIUMTYPE_BLUETOOTH_A2DP = 1;
     public static final int MEDIUMTYPE_BUILTIN_SPEAKER = 0;
     public static final int MEDIUMTYPE_CAST_OUTPUT = 2;

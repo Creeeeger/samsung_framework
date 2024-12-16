@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IGroupCallCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.mbms.IGroupCallCallback";
 
@@ -16,7 +16,6 @@ public interface IGroupCallCallback extends IInterface {
 
     void onGroupCallStateChanged(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGroupCallCallback {
         @Override // android.telephony.mbms.IGroupCallCallback
         public void onError(int errorCode, String message) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IGroupCallCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGroupCallCallback {
         static final int TRANSACTION_onBroadcastSignalStrengthUpdated = 3;
         static final int TRANSACTION_onError = 1;
@@ -85,38 +83,34 @@ public interface IGroupCallCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGroupCallCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGroupCallCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGroupCallCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGroupCallStateChanged(_arg02, _arg12);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBroadcastSignalStrengthUpdated(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGroupCallStateChanged(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBroadcastSignalStrengthUpdated(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGroupCallCallback {
+        private static class Proxy implements IGroupCallCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,6 +1,5 @@
 package com.android.framework.protobuf.nano;
 
-import android.hardware.graphics.common.BufferUsage;
 import android.os.BatteryStats;
 import com.samsung.android.transcode.constants.EncodeConstants;
 import java.io.IOException;
@@ -9,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ReadOnlyBufferException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class CodedOutputByteBufferNano {
     public static final int LITTLE_ENDIAN_32_SIZE = 4;
     public static final int LITTLE_ENDIAN_64_SIZE = 8;
@@ -22,7 +21,7 @@ public final class CodedOutputByteBufferNano {
 
     private CodedOutputByteBufferNano(ByteBuffer buffer) {
         this.buffer = buffer;
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        this.buffer.order(ByteOrder.LITTLE_ENDIAN);
     }
 
     public static CodedOutputByteBufferNano newInstance(byte[] flatArray) {
@@ -507,7 +506,6 @@ public final class CodedOutputByteBufferNano {
         this.buffer.clear();
     }
 
-    /* loaded from: classes4.dex */
     public static class OutOfSpaceException extends IOException {
         private static final long serialVersionUID = -6947486886997889499L;
 
@@ -586,7 +584,7 @@ public final class CodedOutputByteBufferNano {
         if (((-2097152) & value) == 0) {
             return 3;
         }
-        if ((BufferUsage.VENDOR_MASK & value) == 0) {
+        if (((-268435456) & value) == 0) {
             return 4;
         }
         if (((-34359738368L) & value) == 0) {
@@ -626,7 +624,7 @@ public final class CodedOutputByteBufferNano {
         return (n << 1) ^ (n >> 63);
     }
 
-    public static int computeFieldSize(int number, int type, Object object) {
+    static int computeFieldSize(int number, int type, Object object) {
         switch (type) {
             case 1:
                 return computeDoubleSize(number, ((Double) object).doubleValue());
@@ -669,7 +667,7 @@ public final class CodedOutputByteBufferNano {
         }
     }
 
-    public void writeField(int number, int type, Object value) throws IOException {
+    void writeField(int number, int type, Object value) throws IOException {
         switch (type) {
             case 1:
                 Double doubleValue = (Double) value;

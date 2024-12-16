@@ -7,6 +7,7 @@ import android.annotation.SystemApi;
 import android.app.AppOpInfo;
 import android.app.AppOpsManager;
 import android.app.blob.XmlTags;
+import android.companion.virtual.VirtualDeviceManager;
 import android.compat.Compatibility;
 import android.content.AttributionSource;
 import android.content.ComponentName;
@@ -37,6 +38,8 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.permission.PermissionGroupUsage;
+import android.permission.PermissionUsageHelper;
 import android.provider.DeviceConfig;
 import android.security.keystore.KeyProperties;
 import android.util.ArrayMap;
@@ -60,7 +63,7 @@ import com.android.internal.util.AnnotationValidations;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.Parcelling;
 import com.android.internal.util.Preconditions;
-import com.samsung.android.ims.options.SemCapabilities;
+import com.samsung.android.knox.zt.internal.KnoxZtInternalConst;
 import com.samsung.android.media.AudioTag;
 import com.samsung.android.wallpaperbackup.GenerateXML;
 import java.lang.annotation.Annotation;
@@ -135,279 +138,6 @@ public class AppOpsManager {
     public static final int MODE_FOREGROUND = 4;
     public static final int MODE_IGNORED = 1;
     public static final boolean NOTE_OP_COLLECTION_ENABLED = false;
-
-    @SystemApi
-    public static final String OPSTR_ACCEPT_HANDOVER = "android:accept_handover";
-
-    @SystemApi
-    public static final String OPSTR_ACCESS_ACCESSIBILITY = "android:access_accessibility";
-    public static final String OPSTR_ACCESS_MEDIA_LOCATION = "android:access_media_location";
-
-    @SystemApi
-    public static final String OPSTR_ACCESS_NOTIFICATIONS = "android:access_notifications";
-    public static final String OPSTR_ACCESS_RESTRICTED_SETTINGS = "android:access_restricted_settings";
-
-    @SystemApi
-    public static final String OPSTR_ACTIVATE_PLATFORM_VPN = "android:activate_platform_vpn";
-
-    @SystemApi
-    public static final String OPSTR_ACTIVATE_VPN = "android:activate_vpn";
-    public static final String OPSTR_ACTIVITY_RECOGNITION = "android:activity_recognition";
-    public static final String OPSTR_ACTIVITY_RECOGNITION_SOURCE = "android:activity_recognition_source";
-    public static final String OPSTR_ADD_VOICEMAIL = "android:add_voicemail";
-    public static final String OPSTR_ANSWER_PHONE_CALLS = "android:answer_phone_calls";
-
-    @SystemApi
-    public static final String OPSTR_ASSIST_SCREENSHOT = "android:assist_screenshot";
-
-    @SystemApi
-    public static final String OPSTR_ASSIST_STRUCTURE = "android:assist_structure";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_ACCESSIBILITY_VOLUME = "android:audio_accessibility_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_ALARM_VOLUME = "android:audio_alarm_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_BLUETOOTH_VOLUME = "android:audio_bluetooth_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_MASTER_VOLUME = "android:audio_master_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_MEDIA_VOLUME = "android:audio_media_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_NOTIFICATION_VOLUME = "android:audio_notification_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_RING_VOLUME = "android:audio_ring_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUDIO_VOICE_VOLUME = "android:audio_voice_volume";
-
-    @SystemApi
-    public static final String OPSTR_AUTO_REVOKE_MANAGED_BY_INSTALLER = "android:auto_revoke_managed_by_installer";
-
-    @SystemApi
-    public static final String OPSTR_AUTO_REVOKE_PERMISSIONS_IF_UNUSED = "android:auto_revoke_permissions_if_unused";
-
-    @SystemApi
-    public static final String OPSTR_BIND_ACCESSIBILITY_SERVICE = "android:bind_accessibility_service";
-    public static final String OPSTR_BLUETOOTH_ADVERTISE = "android:bluetooth_advertise";
-    public static final String OPSTR_BLUETOOTH_CONNECT = "android:bluetooth_connect";
-    public static final String OPSTR_BLUETOOTH_SCAN = "android:bluetooth_scan";
-    public static final String OPSTR_BODY_SENSORS = "android:body_sensors";
-    public static final String OPSTR_CALL_PHONE = "android:call_phone";
-    public static final String OPSTR_CAMERA = "android:camera";
-    public static final String OPSTR_CAMERA_SANDBOXED = "android:camera_sandboxed";
-
-    @SystemApi
-    public static final String OPSTR_CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD = "android:capture_consentless_bugreport_on_userdebug_build";
-
-    @SystemApi
-    public static final String OPSTR_CHANGE_WIFI_STATE = "android:change_wifi_state";
-    public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
-    public static final String OPSTR_COARSE_LOCATION_SOURCE = "android:coarse_location_source";
-    public static final String OPSTR_DEPRECATED_2 = "android:deprecated_2";
-
-    @SystemApi
-    public static final String OPSTR_ESTABLISH_VPN_MANAGER = "android:establish_vpn_manager";
-
-    @SystemApi
-    public static final String OPSTR_ESTABLISH_VPN_SERVICE = "android:establish_vpn_service";
-    public static final String OPSTR_FINE_LOCATION = "android:fine_location";
-    public static final String OPSTR_FINE_LOCATION_SOURCE = "android:fine_location_source";
-    public static final String OPSTR_FOREGROUND_SERVICE_SPECIAL_USE = "android:foreground_service_special_use";
-
-    @SystemApi
-    public static final String OPSTR_GET_ACCOUNTS = "android:get_accounts";
-    public static final String OPSTR_GET_USAGE_STATS = "android:get_usage_stats";
-
-    @SystemApi
-    public static final String OPSTR_GPS = "android:gps";
-
-    @SystemApi
-    public static final String OPSTR_INSTANT_APP_START_FOREGROUND = "android:instant_app_start_foreground";
-
-    @SystemApi
-    public static final String OPSTR_INTERACT_ACROSS_PROFILES = "android:interact_across_profiles";
-
-    @SystemApi
-    public static final String OPSTR_LEGACY_STORAGE = "android:legacy_storage";
-
-    @SystemApi
-    public static final String OPSTR_LOADER_USAGE_STATS = "android:loader_usage_stats";
-    public static final String OPSTR_MANAGE_CREDENTIALS = "android:manage_credentials";
-
-    @SystemApi
-    public static final String OPSTR_MANAGE_EXTERNAL_STORAGE = "android:manage_external_storage";
-
-    @SystemApi
-    public static final String OPSTR_MANAGE_IPSEC_TUNNELS = "android:manage_ipsec_tunnels";
-    public static final String OPSTR_MANAGE_MEDIA = "android:manage_media";
-
-    @SystemApi
-    public static final String OPSTR_MANAGE_ONGOING_CALLS = "android:manage_ongoing_calls";
-    public static final String OPSTR_MOCK_LOCATION = "android:mock_location";
-    public static final String OPSTR_MONITOR_HIGH_POWER_LOCATION = "android:monitor_location_high_power";
-    public static final String OPSTR_MONITOR_LOCATION = "android:monitor_location";
-
-    @SystemApi
-    public static final String OPSTR_MUTE_MICROPHONE = "android:mute_microphone";
-    public static final String OPSTR_NEARBY_WIFI_DEVICES = "android:nearby_wifi_devices";
-
-    @SystemApi
-    public static final String OPSTR_NEIGHBORING_CELLS = "android:neighboring_cells";
-
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    public static final String OPSTR_NO_ISOLATED_STORAGE = "android:no_isolated_storage";
-
-    @SystemApi
-    public static final String OPSTR_PHONE_CALL_CAMERA = "android:phone_call_camera";
-
-    @SystemApi
-    public static final String OPSTR_PHONE_CALL_MICROPHONE = "android:phone_call_microphone";
-    public static final String OPSTR_PICTURE_IN_PICTURE = "android:picture_in_picture";
-
-    @SystemApi
-    public static final String OPSTR_PLAY_AUDIO = "android:play_audio";
-
-    @SystemApi
-    public static final String OPSTR_POST_NOTIFICATION = "android:post_notification";
-    public static final String OPSTR_PROCESS_OUTGOING_CALLS = "android:process_outgoing_calls";
-
-    @SystemApi
-    public static final String OPSTR_PROJECT_MEDIA = "android:project_media";
-    public static final String OPSTR_QUERY_ALL_PACKAGES = "android:query_all_packages";
-    public static final String OPSTR_READ_CALENDAR = "android:read_calendar";
-    public static final String OPSTR_READ_CALL_LOG = "android:read_call_log";
-    public static final String OPSTR_READ_CELL_BROADCASTS = "android:read_cell_broadcasts";
-
-    @SystemApi
-    public static final String OPSTR_READ_CLIPBOARD = "android:read_clipboard";
-    public static final String OPSTR_READ_CONTACTS = "android:read_contacts";
-    public static final String OPSTR_READ_DEVICE_IDENTIFIERS = "android:read_device_identifiers";
-    public static final String OPSTR_READ_EXTERNAL_STORAGE = "android:read_external_storage";
-
-    @SystemApi
-    public static final String OPSTR_READ_ICC_SMS = "android:read_icc_sms";
-
-    @SystemApi
-    public static final String OPSTR_READ_MEDIA_AUDIO = "android:read_media_audio";
-
-    @SystemApi
-    public static final String OPSTR_READ_MEDIA_IMAGES = "android:read_media_images";
-
-    @SystemApi
-    public static final String OPSTR_READ_MEDIA_VIDEO = "android:read_media_video";
-
-    @SystemApi
-    public static final String OPSTR_READ_MEDIA_VISUAL_USER_SELECTED = "android:read_media_visual_user_selected";
-    public static final String OPSTR_READ_PHONE_NUMBERS = "android:read_phone_numbers";
-    public static final String OPSTR_READ_PHONE_STATE = "android:read_phone_state";
-    public static final String OPSTR_READ_SMS = "android:read_sms";
-
-    @SystemApi
-    public static final String OPSTR_READ_WRITE_HEALTH_DATA = "android:read_write_health_data";
-
-    @SystemApi
-    public static final String OPSTR_RECEIVE_AMBIENT_TRIGGER_AUDIO = "android:receive_ambient_trigger_audio";
-
-    @SystemApi
-    public static final String OPSTR_RECEIVE_EMERGENCY_BROADCAST = "android:receive_emergency_broadcast";
-
-    @SystemApi
-    public static final String OPSTR_RECEIVE_EXPLICIT_USER_INTERACTION_AUDIO = "android:receive_explicit_user_interaction_audio";
-    public static final String OPSTR_RECEIVE_MMS = "android:receive_mms";
-    public static final String OPSTR_RECEIVE_SMS = "android:receive_sms";
-    public static final String OPSTR_RECEIVE_WAP_PUSH = "android:receive_wap_push";
-    public static final String OPSTR_RECORD_AUDIO = "android:record_audio";
-    public static final String OPSTR_RECORD_AUDIO_HOTWORD = "android:record_audio_hotword";
-    public static final String OPSTR_RECORD_AUDIO_OUTPUT = "android:record_audio_output";
-    public static final String OPSTR_RECORD_AUDIO_SANDBOXED = "android:record_audio_sandboxed";
-    public static final String OPSTR_RECORD_INCOMING_PHONE_AUDIO = "android:record_incoming_phone_audio";
-
-    @SystemApi
-    public static final String OPSTR_REQUEST_DELETE_PACKAGES = "android:request_delete_packages";
-
-    @SystemApi
-    public static final String OPSTR_REQUEST_INSTALL_PACKAGES = "android:request_install_packages";
-
-    @SystemApi
-    public static final String OPSTR_RUN_ANY_IN_BACKGROUND = "android:run_any_in_background";
-
-    @SystemApi
-    public static final String OPSTR_RUN_IN_BACKGROUND = "android:run_in_background";
-    public static final String OPSTR_RUN_USER_INITIATED_JOBS = "android:run_user_initiated_jobs";
-    public static final String OPSTR_SCHEDULE_EXACT_ALARM = "android:schedule_exact_alarm";
-    public static final String OPSTR_SEND_SMS = "android:send_sms";
-    public static final String OPSTR_SMS_FINANCIAL_TRANSACTIONS = "android:sms_financial_transactions";
-
-    @SystemApi
-    public static final String OPSTR_START_FOREGROUND = "android:start_foreground";
-    public static final String OPSTR_SYSTEM_ALERT_WINDOW = "android:system_alert_window";
-    public static final String OPSTR_SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION = "android:system_exempt_from_activity_bg_start_restriction";
-    public static final String OPSTR_SYSTEM_EXEMPT_FROM_DISMISSIBLE_NOTIFICATIONS = "android:system_exempt_from_dismissible_notifications";
-
-    @SystemApi
-    public static final String OPSTR_SYSTEM_EXEMPT_FROM_HIBERNATION = "android:system_exempt_from_hibernation";
-    public static final String OPSTR_SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS = "android:system_exempt_from_power_restrictions";
-    public static final String OPSTR_SYSTEM_EXEMPT_FROM_SUSPENSION = "android:system_exempt_from_suspension";
-
-    @SystemApi
-    public static final String OPSTR_TAKE_AUDIO_FOCUS = "android:take_audio_focus";
-
-    @SystemApi
-    public static final String OPSTR_TAKE_MEDIA_BUTTONS = "android:take_media_buttons";
-
-    @SystemApi
-    public static final String OPSTR_TOAST_WINDOW = "android:toast_window";
-
-    @SystemApi
-    public static final String OPSTR_TURN_SCREEN_ON = "android:turn_screen_on";
-    public static final String OPSTR_USE_BIOMETRIC = "android:use_biometric";
-    public static final String OPSTR_USE_FINGERPRINT = "android:use_fingerprint";
-    public static final String OPSTR_USE_FULL_SCREEN_INTENT = "android:use_full_screen_intent";
-    public static final String OPSTR_USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER = "android:use_icc_auth_with_device_identifier";
-    public static final String OPSTR_USE_SIP = "android:use_sip";
-    public static final String OPSTR_UWB_RANGING = "android:uwb_ranging";
-
-    @SystemApi
-    public static final String OPSTR_VIBRATE = "android:vibrate";
-
-    @SystemApi
-    public static final String OPSTR_WAKE_LOCK = "android:wake_lock";
-
-    @SystemApi
-    public static final String OPSTR_WIFI_SCAN = "android:wifi_scan";
-    public static final String OPSTR_WRITE_CALENDAR = "android:write_calendar";
-    public static final String OPSTR_WRITE_CALL_LOG = "android:write_call_log";
-
-    @SystemApi
-    public static final String OPSTR_WRITE_CLIPBOARD = "android:write_clipboard";
-    public static final String OPSTR_WRITE_CONTACTS = "android:write_contacts";
-    public static final String OPSTR_WRITE_EXTERNAL_STORAGE = "android:write_external_storage";
-
-    @SystemApi
-    public static final String OPSTR_WRITE_ICC_SMS = "android:write_icc_sms";
-
-    @SystemApi
-    public static final String OPSTR_WRITE_MEDIA_AUDIO = "android:write_media_audio";
-
-    @SystemApi
-    public static final String OPSTR_WRITE_MEDIA_IMAGES = "android:write_media_images";
-
-    @SystemApi
-    public static final String OPSTR_WRITE_MEDIA_VIDEO = "android:write_media_video";
-    public static final String OPSTR_WRITE_SETTINGS = "android:write_settings";
-
-    @SystemApi
-    public static final String OPSTR_WRITE_SMS = "android:write_sms";
-
-    @SystemApi
-    public static final String OPSTR_WRITE_WALLPAPER = "android:write_wallpaper";
     public static final int OP_ACCEPT_HANDOVER = 74;
     public static final int OP_ACCESS_ACCESSIBILITY = 88;
     public static final int OP_ACCESS_MEDIA_LOCATION = 90;
@@ -419,6 +149,7 @@ public class AppOpsManager {
     public static final int OP_ACTIVITY_RECOGNITION_SOURCE = 113;
     public static final int OP_ADD_VOICEMAIL = 52;
     public static final int OP_ANSWER_PHONE_CALLS = 69;
+    public static final int OP_ARCHIVE_ICON_OVERLAY = 145;
     public static final int OP_ASSIST_SCREENSHOT = 50;
     public static final int OP_ASSIST_STRUCTURE = 49;
     public static final int OP_AUDIO_ACCESSIBILITY_VOLUME = 64;
@@ -443,8 +174,13 @@ public class AppOpsManager {
     public static final int OP_CHANGE_WIFI_STATE = 71;
     public static final int OP_COARSE_LOCATION = 0;
     public static final int OP_COARSE_LOCATION_SOURCE = 109;
+    public static final int OP_CREATE_ACCESSIBILITY_OVERLAY = 138;
     private static final int OP_DEPRECATED_1 = 96;
     private static final int OP_DEPRECATED_2 = 132;
+    private static final int OP_DEPRECATED_3 = 137;
+    private static final int OP_DEPRECATED_4 = 144;
+    public static final int OP_EMERGENCY_LOCATION = 147;
+    public static final int OP_ENABLE_MOBILE_DATA_BY_USER = 140;
     public static final int OP_ESTABLISH_VPN_MANAGER = 118;
     public static final int OP_ESTABLISH_VPN_SERVICE = 117;
     public static final int OP_FINE_LOCATION = 1;
@@ -483,6 +219,7 @@ public class AppOpsManager {
     public static final int OP_MANAGE_IPSEC_TUNNELS = 75;
     public static final int OP_MANAGE_MEDIA = 110;
     public static final int OP_MANAGE_ONGOING_CALLS = 103;
+    public static final int OP_MEDIA_ROUTING_CONTROL = 139;
     public static final int OP_MOCK_LOCATION = 58;
     public static final int OP_MONITOR_HIGH_POWER_LOCATION = 42;
     public static final int OP_MONITOR_LOCATION = 41;
@@ -499,6 +236,7 @@ public class AppOpsManager {
     public static final int OP_PROCESS_OUTGOING_CALLS = 54;
     public static final int OP_PROJECT_MEDIA = 46;
     public static final int OP_QUERY_ALL_PACKAGES = 91;
+    public static final int OP_RAPID_CLEAR_NOTIFICATIONS_BY_LISTENER = 142;
     public static final int OP_READ_CALENDAR = 8;
     public static final int OP_READ_CALL_LOG = 6;
     public static final int OP_READ_CELL_BROADCASTS = 57;
@@ -514,11 +252,14 @@ public class AppOpsManager {
     public static final int OP_READ_PHONE_NUMBERS = 65;
     public static final int OP_READ_PHONE_STATE = 51;
     public static final int OP_READ_SMS = 14;
+    public static final int OP_READ_SYSTEM_GRAMMATICAL_GENDER = 143;
     public static final int OP_READ_WRITE_HEALTH_DATA = 126;
     public static final int OP_RECEIVE_AMBIENT_TRIGGER_AUDIO = 120;
     public static final int OP_RECEIVE_EMERGECY_SMS = 17;
     public static final int OP_RECEIVE_EXPLICIT_USER_INTERACTION_AUDIO = 121;
     public static final int OP_RECEIVE_MMS = 18;
+    public static final int OP_RECEIVE_SANDBOX_TRIGGER_AUDIO = 136;
+    public static final int OP_RECEIVE_SENSITIVE_NOTIFICATIONS = 148;
     public static final int OP_RECEIVE_SMS = 16;
     public static final int OP_RECEIVE_WAP_PUSH = 19;
     public static final int OP_RECORD_AUDIO = 27;
@@ -528,6 +269,7 @@ public class AppOpsManager {
     public static final int OP_RECORD_INCOMING_PHONE_AUDIO = 115;
     public static final int OP_REQUEST_DELETE_PACKAGES = 72;
     public static final int OP_REQUEST_INSTALL_PACKAGES = 66;
+    public static final int OP_RESERVED_FOR_TESTING = 141;
     public static final int OP_RUN_ANY_IN_BACKGROUND = 70;
     public static final int OP_RUN_IN_BACKGROUND = 63;
     public static final int OP_RUN_USER_INITIATED_JOBS = 122;
@@ -545,6 +287,7 @@ public class AppOpsManager {
     public static final int OP_TAKE_MEDIA_BUTTONS = 31;
     public static final int OP_TOAST_WINDOW = 45;
     public static final int OP_TURN_SCREEN_ON = 61;
+    public static final int OP_UNARCHIVAL_CONFIRMATION = 146;
     public static final int OP_USE_BIOMETRIC = 78;
     public static final int OP_USE_FINGERPRINT = 55;
     public static final int OP_USE_FULL_SCREEN_INTENT = 133;
@@ -592,6 +335,7 @@ public class AppOpsManager {
     @Deprecated
     public static final int UID_STATE_FOREGROUND_SERVICE_LOCATION = 300;
     public static final int UID_STATE_MAX_LAST_NON_RESTRICTED = 500;
+    public static final int UID_STATE_NONEXISTENT = Integer.MAX_VALUE;
     private static final int UID_STATE_OFFSET = 31;
 
     @SystemApi
@@ -600,25 +344,18 @@ public class AppOpsManager {
     @SystemApi
     public static final int UID_STATE_TOP = 200;
     public static final int WATCH_FOREGROUND_CHANGES = 1;
-    public static final int _NUM_OP = 136;
-    static final AppOpInfo[] sAppOpInfos;
-    private static final ThreadLocal<ArrayMap<String, BitSet>> sAppOpsNotedInThisBinderTransaction;
-    private static final ThreadLocal<Integer> sBinderThreadCallingUid;
+    public static final int _NUM_OP = 149;
     static IBinder sClientId;
     private static MessageSamplingConfig sConfig;
     private static OnOpNotedCallback sOnOpNotedCallback;
-    private static HashMap<String, Integer> sOpStrToOp;
-    private static HashMap<String, Integer> sPermToOp;
     static IAppOpsService sService;
     final Context mContext;
     final IAppOpsService mService;
+    private PermissionUsageHelper mUsageHelper;
     private static Boolean sFullLog = null;
     private static final Object sLock = new Object();
     private static ArrayList<AsyncNotedAppOp> sUnforwardedOps = new ArrayList<>();
     private static OnOpNotedCallback sMessageCollector = new OnOpNotedCallback() { // from class: android.app.AppOpsManager.1
-        AnonymousClass1() {
-        }
-
         @Override // android.app.AppOpsManager.OnOpNotedCallback
         public void onNoted(SyncNotedAppOp op) {
             reportStackTraceIfNeeded(op);
@@ -634,15 +371,15 @@ public class AppOpsManager {
         }
 
         private void reportStackTraceIfNeeded(SyncNotedAppOp op) {
-            if (!AppOpsManager.m202$$Nest$smisCollectingStackTraces()) {
+            if (!AppOpsManager.isCollectingStackTraces()) {
                 return;
             }
             MessageSamplingConfig config = AppOpsManager.sConfig;
-            if (AppOpsManager.leftCircularDistance(AppOpsManager.strOpToOp(op.getOp()), config.getSampledOpCode(), 136) <= config.getAcceptableLeftDistance() || config.getExpirationTimeSinceBootMillis() < SystemClock.elapsedRealtime()) {
-                String stackTrace = AppOpsManager.m199$$Nest$smgetFormattedStackTrace();
+            if (AppOpsManager.leftCircularDistance(AppOpsManager.strOpToOp(op.getOp()), config.getSampledOpCode(), 149) <= config.getAcceptableLeftDistance() || config.getExpirationTimeSinceBootMillis() < SystemClock.elapsedRealtime()) {
+                String stackTrace = AppOpsManager.getFormattedStackTrace();
                 try {
                     String packageName = ActivityThread.currentOpPackageName();
-                    AppOpsManager.sConfig = AppOpsManager.m201$$Nest$smgetService().reportRuntimeAppOpAccessMessageAndGetConfig(packageName == null ? "" : packageName, op, stackTrace);
+                    AppOpsManager.sConfig = AppOpsManager.getService().reportRuntimeAppOpAccessMessageAndGetConfig(packageName == null ? "" : packageName, op, stackTrace);
                 } catch (RemoteException e) {
                     e.rethrowFromSystemServer();
                 }
@@ -651,42 +388,339 @@ public class AppOpsManager {
     };
     public static final String[] MODE_NAMES = {"allow", "ignore", "deny", "default", "foreground"};
     public static final int[] UID_STATES = {100, 200, 300, 400, 500, 600, 700};
-    private static final byte[] sAppOpsToNote = new byte[136];
-    private static final int[] RUNTIME_PERMISSION_OPS = {4, 5, 62, 8, 9, 20, 16, 14, 19, 18, 57, 59, 60, 90, 0, 1, 51, 65, 13, 6, 7, 52, 53, 54, 69, 74, 27, 26, 56, 79, 81, 82, 83, 84, 85, 86, 77, 111, 114, 112, 116, 11};
-    private static final int[] APP_OP_PERMISSION_PACKAGE_OPS = {25, 24, 23, 66, 76, 80, 75, 68, 95};
-    private static final int[] APP_OP_PERMISSION_UID_OPS = {92, 93, 103, 105, 107, 110, 61, 122, 123, 127, 131, 133};
+    private static final byte[] sAppOpsToNote = new byte[149];
+    private static final int[] RUNTIME_PERMISSION_OPS = {4, 5, 62, 8, 9, 20, 16, 14, 19, 18, 57, 59, 60, 90, 0, 1, 51, 65, 13, 6, 7, 52, 53, 54, 69, 74, 27, 26, 56, 79, 81, 83, 85, 123, 77, 111, 114, 112, 116, 11};
+    private static final int[] APP_OP_PERMISSION_PACKAGE_OPS = {25, 24, 23, 43, 66, 76, 80, 75, 68, 95};
+    private static final int[] APP_OP_PERMISSION_UID_OPS = {92, 93, 103, 105, 107, 110, 61, 122, 127, 131, 133, 136, 139, 143};
+    public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
+    public static final String OPSTR_FINE_LOCATION = "android:fine_location";
+
+    @SystemApi
+    public static final String OPSTR_GPS = "android:gps";
+
+    @SystemApi
+    public static final String OPSTR_VIBRATE = "android:vibrate";
+    public static final String OPSTR_READ_CONTACTS = "android:read_contacts";
+    public static final String OPSTR_WRITE_CONTACTS = "android:write_contacts";
+    public static final String OPSTR_READ_CALL_LOG = "android:read_call_log";
+    public static final String OPSTR_WRITE_CALL_LOG = "android:write_call_log";
+    public static final String OPSTR_READ_CALENDAR = "android:read_calendar";
+    public static final String OPSTR_WRITE_CALENDAR = "android:write_calendar";
+
+    @SystemApi
+    public static final String OPSTR_WIFI_SCAN = "android:wifi_scan";
+
+    @SystemApi
+    public static final String OPSTR_POST_NOTIFICATION = "android:post_notification";
+
+    @SystemApi
+    public static final String OPSTR_NEIGHBORING_CELLS = "android:neighboring_cells";
+    public static final String OPSTR_CALL_PHONE = "android:call_phone";
+    public static final String OPSTR_READ_SMS = "android:read_sms";
+
+    @SystemApi
+    public static final String OPSTR_WRITE_SMS = "android:write_sms";
+    public static final String OPSTR_RECEIVE_SMS = "android:receive_sms";
+
+    @SystemApi
+    public static final String OPSTR_RECEIVE_EMERGENCY_BROADCAST = "android:receive_emergency_broadcast";
+    public static final String OPSTR_RECEIVE_MMS = "android:receive_mms";
+    public static final String OPSTR_RECEIVE_WAP_PUSH = "android:receive_wap_push";
+    public static final String OPSTR_SEND_SMS = "android:send_sms";
+
+    @SystemApi
+    public static final String OPSTR_READ_ICC_SMS = "android:read_icc_sms";
+
+    @SystemApi
+    public static final String OPSTR_WRITE_ICC_SMS = "android:write_icc_sms";
+    public static final String OPSTR_WRITE_SETTINGS = "android:write_settings";
+    public static final String OPSTR_SYSTEM_ALERT_WINDOW = "android:system_alert_window";
+
+    @SystemApi
+    public static final String OPSTR_ACCESS_NOTIFICATIONS = "android:access_notifications";
+    public static final String OPSTR_CAMERA = "android:camera";
+    public static final String OPSTR_RECORD_AUDIO = "android:record_audio";
+
+    @SystemApi
+    public static final String OPSTR_PLAY_AUDIO = "android:play_audio";
+
+    @SystemApi
+    public static final String OPSTR_READ_CLIPBOARD = "android:read_clipboard";
+
+    @SystemApi
+    public static final String OPSTR_WRITE_CLIPBOARD = "android:write_clipboard";
+
+    @SystemApi
+    public static final String OPSTR_TAKE_MEDIA_BUTTONS = "android:take_media_buttons";
+
+    @SystemApi
+    public static final String OPSTR_TAKE_AUDIO_FOCUS = "android:take_audio_focus";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_MASTER_VOLUME = "android:audio_master_volume";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_VOICE_VOLUME = "android:audio_voice_volume";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_RING_VOLUME = "android:audio_ring_volume";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_MEDIA_VOLUME = "android:audio_media_volume";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_ALARM_VOLUME = "android:audio_alarm_volume";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_NOTIFICATION_VOLUME = "android:audio_notification_volume";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_BLUETOOTH_VOLUME = "android:audio_bluetooth_volume";
+
+    @SystemApi
+    public static final String OPSTR_WAKE_LOCK = "android:wake_lock";
+    public static final String OPSTR_MONITOR_LOCATION = "android:monitor_location";
+    public static final String OPSTR_MONITOR_HIGH_POWER_LOCATION = "android:monitor_location_high_power";
+    public static final String OPSTR_GET_USAGE_STATS = "android:get_usage_stats";
+
+    @SystemApi
+    public static final String OPSTR_MUTE_MICROPHONE = "android:mute_microphone";
+
+    @SystemApi
+    public static final String OPSTR_TOAST_WINDOW = "android:toast_window";
+
+    @SystemApi
+    public static final String OPSTR_PROJECT_MEDIA = "android:project_media";
+
+    @SystemApi
+    public static final String OPSTR_ACTIVATE_VPN = "android:activate_vpn";
+
+    @SystemApi
+    public static final String OPSTR_WRITE_WALLPAPER = "android:write_wallpaper";
+
+    @SystemApi
+    public static final String OPSTR_ASSIST_STRUCTURE = "android:assist_structure";
+
+    @SystemApi
+    public static final String OPSTR_ASSIST_SCREENSHOT = "android:assist_screenshot";
+    public static final String OPSTR_READ_PHONE_STATE = "android:read_phone_state";
+    public static final String OPSTR_ADD_VOICEMAIL = "android:add_voicemail";
+    public static final String OPSTR_USE_SIP = "android:use_sip";
+    public static final String OPSTR_PROCESS_OUTGOING_CALLS = "android:process_outgoing_calls";
+    public static final String OPSTR_USE_FINGERPRINT = "android:use_fingerprint";
+    public static final String OPSTR_BODY_SENSORS = "android:body_sensors";
+    public static final String OPSTR_READ_CELL_BROADCASTS = "android:read_cell_broadcasts";
+    public static final String OPSTR_MOCK_LOCATION = "android:mock_location";
+    public static final String OPSTR_READ_EXTERNAL_STORAGE = "android:read_external_storage";
+    public static final String OPSTR_WRITE_EXTERNAL_STORAGE = "android:write_external_storage";
+
+    @SystemApi
+    public static final String OPSTR_TURN_SCREEN_ON = "android:turn_screen_on";
+
+    @SystemApi
+    public static final String OPSTR_GET_ACCOUNTS = "android:get_accounts";
+
+    @SystemApi
+    public static final String OPSTR_RUN_IN_BACKGROUND = "android:run_in_background";
+
+    @SystemApi
+    public static final String OPSTR_AUDIO_ACCESSIBILITY_VOLUME = "android:audio_accessibility_volume";
+    public static final String OPSTR_READ_PHONE_NUMBERS = "android:read_phone_numbers";
+
+    @SystemApi
+    public static final String OPSTR_REQUEST_INSTALL_PACKAGES = "android:request_install_packages";
+    public static final String OPSTR_PICTURE_IN_PICTURE = "android:picture_in_picture";
+
+    @SystemApi
+    public static final String OPSTR_INSTANT_APP_START_FOREGROUND = "android:instant_app_start_foreground";
+    public static final String OPSTR_ANSWER_PHONE_CALLS = "android:answer_phone_calls";
+
+    @SystemApi
+    public static final String OPSTR_RUN_ANY_IN_BACKGROUND = "android:run_any_in_background";
+
+    @SystemApi
+    public static final String OPSTR_CHANGE_WIFI_STATE = "android:change_wifi_state";
+
+    @SystemApi
+    public static final String OPSTR_REQUEST_DELETE_PACKAGES = "android:request_delete_packages";
+
+    @SystemApi
+    public static final String OPSTR_BIND_ACCESSIBILITY_SERVICE = "android:bind_accessibility_service";
+
+    @SystemApi
+    public static final String OPSTR_ACCEPT_HANDOVER = "android:accept_handover";
+
+    @SystemApi
+    public static final String OPSTR_MANAGE_IPSEC_TUNNELS = "android:manage_ipsec_tunnels";
+
+    @SystemApi
+    public static final String OPSTR_START_FOREGROUND = "android:start_foreground";
+    public static final String OPSTR_BLUETOOTH_SCAN = "android:bluetooth_scan";
+    public static final String OPSTR_USE_BIOMETRIC = "android:use_biometric";
+    public static final String OPSTR_ACTIVITY_RECOGNITION = "android:activity_recognition";
+    public static final String OPSTR_SMS_FINANCIAL_TRANSACTIONS = "android:sms_financial_transactions";
+
+    @SystemApi
+    public static final String OPSTR_READ_MEDIA_AUDIO = "android:read_media_audio";
+
+    @SystemApi
+    public static final String OPSTR_WRITE_MEDIA_AUDIO = "android:write_media_audio";
+
+    @SystemApi
+    public static final String OPSTR_READ_MEDIA_VIDEO = "android:read_media_video";
+
+    @SystemApi
+    public static final String OPSTR_WRITE_MEDIA_VIDEO = "android:write_media_video";
+
+    @SystemApi
+    public static final String OPSTR_READ_MEDIA_IMAGES = "android:read_media_images";
+
+    @SystemApi
+    public static final String OPSTR_WRITE_MEDIA_IMAGES = "android:write_media_images";
+
+    @SystemApi
+    public static final String OPSTR_LEGACY_STORAGE = "android:legacy_storage";
+
+    @SystemApi
+    public static final String OPSTR_ACCESS_ACCESSIBILITY = "android:access_accessibility";
+    public static final String OPSTR_READ_DEVICE_IDENTIFIERS = "android:read_device_identifiers";
+    public static final String OPSTR_ACCESS_MEDIA_LOCATION = "android:access_media_location";
+    public static final String OPSTR_QUERY_ALL_PACKAGES = "android:query_all_packages";
+
+    @SystemApi
+    public static final String OPSTR_MANAGE_EXTERNAL_STORAGE = "android:manage_external_storage";
+
+    @SystemApi
+    public static final String OPSTR_INTERACT_ACROSS_PROFILES = "android:interact_across_profiles";
+
+    @SystemApi
+    public static final String OPSTR_ACTIVATE_PLATFORM_VPN = "android:activate_platform_vpn";
+
+    @SystemApi
+    public static final String OPSTR_LOADER_USAGE_STATS = "android:loader_usage_stats";
+
+    @SystemApi
+    public static final String OPSTR_AUTO_REVOKE_PERMISSIONS_IF_UNUSED = "android:auto_revoke_permissions_if_unused";
+
+    @SystemApi
+    public static final String OPSTR_AUTO_REVOKE_MANAGED_BY_INSTALLER = "android:auto_revoke_managed_by_installer";
+
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    public static final String OPSTR_NO_ISOLATED_STORAGE = "android:no_isolated_storage";
+
+    @SystemApi
+    public static final String OPSTR_PHONE_CALL_MICROPHONE = "android:phone_call_microphone";
+
+    @SystemApi
+    public static final String OPSTR_PHONE_CALL_CAMERA = "android:phone_call_camera";
+    public static final String OPSTR_RECORD_AUDIO_HOTWORD = "android:record_audio_hotword";
+
+    @SystemApi
+    public static final String OPSTR_MANAGE_ONGOING_CALLS = "android:manage_ongoing_calls";
+    public static final String OPSTR_MANAGE_CREDENTIALS = "android:manage_credentials";
+    public static final String OPSTR_USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER = "android:use_icc_auth_with_device_identifier";
+    public static final String OPSTR_RECORD_AUDIO_OUTPUT = "android:record_audio_output";
+    public static final String OPSTR_SCHEDULE_EXACT_ALARM = "android:schedule_exact_alarm";
+    public static final String OPSTR_FINE_LOCATION_SOURCE = "android:fine_location_source";
+    public static final String OPSTR_COARSE_LOCATION_SOURCE = "android:coarse_location_source";
+    public static final String OPSTR_MANAGE_MEDIA = "android:manage_media";
+    public static final String OPSTR_BLUETOOTH_CONNECT = "android:bluetooth_connect";
+    public static final String OPSTR_UWB_RANGING = "android:uwb_ranging";
+    public static final String OPSTR_ACTIVITY_RECOGNITION_SOURCE = "android:activity_recognition_source";
+    public static final String OPSTR_BLUETOOTH_ADVERTISE = "android:bluetooth_advertise";
+    public static final String OPSTR_RECORD_INCOMING_PHONE_AUDIO = "android:record_incoming_phone_audio";
+    public static final String OPSTR_NEARBY_WIFI_DEVICES = "android:nearby_wifi_devices";
+
+    @SystemApi
+    public static final String OPSTR_ESTABLISH_VPN_SERVICE = "android:establish_vpn_service";
+
+    @SystemApi
+    public static final String OPSTR_ESTABLISH_VPN_MANAGER = "android:establish_vpn_manager";
+
+    @SystemApi
+    public static final String OPSTR_ACCESS_RESTRICTED_SETTINGS = "android:access_restricted_settings";
+
+    @SystemApi
+    public static final String OPSTR_RECEIVE_AMBIENT_TRIGGER_AUDIO = "android:receive_ambient_trigger_audio";
+
+    @SystemApi
+    public static final String OPSTR_RECEIVE_EXPLICIT_USER_INTERACTION_AUDIO = "android:receive_explicit_user_interaction_audio";
+    public static final String OPSTR_RUN_USER_INITIATED_JOBS = "android:run_user_initiated_jobs";
+
+    @SystemApi
+    public static final String OPSTR_READ_MEDIA_VISUAL_USER_SELECTED = "android:read_media_visual_user_selected";
+    public static final String OPSTR_SYSTEM_EXEMPT_FROM_SUSPENSION = "android:system_exempt_from_suspension";
+    public static final String OPSTR_SYSTEM_EXEMPT_FROM_DISMISSIBLE_NOTIFICATIONS = "android:system_exempt_from_dismissible_notifications";
+
+    @SystemApi
+    public static final String OPSTR_READ_WRITE_HEALTH_DATA = "android:read_write_health_data";
+    public static final String OPSTR_FOREGROUND_SERVICE_SPECIAL_USE = "android:foreground_service_special_use";
+    public static final String OPSTR_SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS = "android:system_exempt_from_power_restrictions";
+
+    @SystemApi
+    public static final String OPSTR_SYSTEM_EXEMPT_FROM_HIBERNATION = "android:system_exempt_from_hibernation";
+    public static final String OPSTR_SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION = "android:system_exempt_from_activity_bg_start_restriction";
+
+    @SystemApi
+    public static final String OPSTR_CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD = "android:capture_consentless_bugreport_on_userdebug_build";
+    public static final String OPSTR_DEPRECATED_2 = "android:deprecated_2";
+    public static final String OPSTR_USE_FULL_SCREEN_INTENT = "android:use_full_screen_intent";
+    public static final String OPSTR_CAMERA_SANDBOXED = "android:camera_sandboxed";
+    public static final String OPSTR_RECORD_AUDIO_SANDBOXED = "android:record_audio_sandboxed";
+    public static final String OPSTR_RECEIVE_SANDBOX_TRIGGER_AUDIO = "android:receive_sandbox_trigger_audio";
+    public static final String OPSTR_DEPRECATED_3 = "android:deprecated_3";
+
+    @SystemApi
+    public static final String OPSTR_CREATE_ACCESSIBILITY_OVERLAY = "android:create_accessibility_overlay";
+
+    @SystemApi
+    public static final String OPSTR_MEDIA_ROUTING_CONTROL = "android:media_routing_control";
+
+    @SystemApi
+    public static final String OPSTR_ENABLE_MOBILE_DATA_BY_USER = "android:enable_mobile_data_by_user";
+    public static final String OPSTR_RESERVED_FOR_TESTING = "android:reserved_for_testing";
+
+    @SystemApi
+    public static final String OPSTR_RAPID_CLEAR_NOTIFICATIONS_BY_LISTENER = "android:rapid_clear_notifications_by_listener";
+    public static final String OPSTR_READ_SYSTEM_GRAMMATICAL_GENDER = "android:read_system_grammatical_gender";
+    public static final String OPSTR_DEPRECATED_4 = "android:deprecated_4";
+    public static final String OPSTR_ARCHIVE_ICON_OVERLAY = "android:archive_icon_overlay";
+    public static final String OPSTR_UNARCHIVAL_CONFIRMATION = "android:unarchival_support";
+
+    @SystemApi
+    public static final String OPSTR_EMERGENCY_LOCATION = "android:emergency_location";
+    public static final String OPSTR_RECEIVE_SENSITIVE_NOTIFICATIONS = "android:receive_sensitive_notifications";
+    static final AppOpInfo[] sAppOpInfos = {new AppOpInfo.Builder(0, OPSTR_COARSE_LOCATION, "COARSE_LOCATION").setPermission(Manifest.permission.ACCESS_COARSE_LOCATION).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setAllowSystemRestrictionBypass(new RestrictionBypass(true, false, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(1, OPSTR_FINE_LOCATION, "FINE_LOCATION").setPermission(Manifest.permission.ACCESS_FINE_LOCATION).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setAllowSystemRestrictionBypass(new RestrictionBypass(true, false, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(2, OPSTR_GPS, "GPS").setSwitchCode(0).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(3, OPSTR_VIBRATE, "VIBRATE").setSwitchCode(3).setPermission(Manifest.permission.VIBRATE).setDefaultMode(0).build(), new AppOpInfo.Builder(4, OPSTR_READ_CONTACTS, "READ_CONTACTS").setPermission(Manifest.permission.READ_CONTACTS).setDefaultMode(0).build(), new AppOpInfo.Builder(5, OPSTR_WRITE_CONTACTS, "WRITE_CONTACTS").setPermission(Manifest.permission.WRITE_CONTACTS).setDefaultMode(0).build(), new AppOpInfo.Builder(6, OPSTR_READ_CALL_LOG, "READ_CALL_LOG").setPermission(Manifest.permission.READ_CALL_LOG).setRestriction(UserManager.DISALLOW_OUTGOING_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(7, OPSTR_WRITE_CALL_LOG, "WRITE_CALL_LOG").setPermission(Manifest.permission.WRITE_CALL_LOG).setRestriction(UserManager.DISALLOW_OUTGOING_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(8, OPSTR_READ_CALENDAR, "READ_CALENDAR").setPermission(Manifest.permission.READ_CALENDAR).setDefaultMode(0).build(), new AppOpInfo.Builder(9, OPSTR_WRITE_CALENDAR, "WRITE_CALENDAR").setPermission(Manifest.permission.WRITE_CALENDAR).setDefaultMode(0).build(), new AppOpInfo.Builder(10, OPSTR_WIFI_SCAN, "WIFI_SCAN").setSwitchCode(0).setPermission(Manifest.permission.ACCESS_WIFI_STATE).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(11, OPSTR_POST_NOTIFICATION, "POST_NOTIFICATION").setPermission(Manifest.permission.POST_NOTIFICATIONS).setDefaultMode(0).build(), new AppOpInfo.Builder(12, OPSTR_NEIGHBORING_CELLS, "NEIGHBORING_CELLS").setSwitchCode(0).setDefaultMode(0).build(), new AppOpInfo.Builder(13, OPSTR_CALL_PHONE, "CALL_PHONE").setSwitchCode(13).setPermission(Manifest.permission.CALL_PHONE).setDefaultMode(0).build(), new AppOpInfo.Builder(14, OPSTR_READ_SMS, "READ_SMS").setPermission(Manifest.permission.READ_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(15, OPSTR_WRITE_SMS, "WRITE_SMS").setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(1).setDisableReset(true).build(), new AppOpInfo.Builder(16, OPSTR_RECEIVE_SMS, "RECEIVE_SMS").setPermission(Manifest.permission.RECEIVE_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(17, OPSTR_RECEIVE_EMERGENCY_BROADCAST, "RECEIVE_EMERGENCY_BROADCAST").setSwitchCode(16).setPermission(Manifest.permission.RECEIVE_EMERGENCY_BROADCAST).setDefaultMode(0).build(), new AppOpInfo.Builder(18, OPSTR_RECEIVE_MMS, "RECEIVE_MMS").setPermission(Manifest.permission.RECEIVE_MMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).build(), new AppOpInfo.Builder(19, OPSTR_RECEIVE_WAP_PUSH, "RECEIVE_WAP_PUSH").setPermission(Manifest.permission.RECEIVE_WAP_PUSH).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(20, OPSTR_SEND_SMS, "SEND_SMS").setPermission(Manifest.permission.SEND_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(21, OPSTR_READ_ICC_SMS, "READ_ICC_SMS").setSwitchCode(14).setPermission(Manifest.permission.READ_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).build(), new AppOpInfo.Builder(22, OPSTR_WRITE_ICC_SMS, "WRITE_ICC_SMS").setSwitchCode(15).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).build(), new AppOpInfo.Builder(23, OPSTR_WRITE_SETTINGS, "WRITE_SETTINGS").setPermission(Manifest.permission.WRITE_SETTINGS).build(), new AppOpInfo.Builder(24, OPSTR_SYSTEM_ALERT_WINDOW, "SYSTEM_ALERT_WINDOW").setPermission(Manifest.permission.SYSTEM_ALERT_WINDOW).setRestriction(UserManager.DISALLOW_CREATE_WINDOWS).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(getSystemAlertWindowDefault()).build(), new AppOpInfo.Builder(25, OPSTR_ACCESS_NOTIFICATIONS, "ACCESS_NOTIFICATIONS").setPermission(Manifest.permission.ACCESS_NOTIFICATIONS).build(), new AppOpInfo.Builder(26, OPSTR_CAMERA, AudioTag.TAG_CAMERA).setPermission(Manifest.permission.CAMERA).setRestriction(UserManager.DISALLOW_CAMERA).setDefaultMode(0).build(), new AppOpInfo.Builder(27, OPSTR_RECORD_AUDIO, "RECORD_AUDIO").setPermission(Manifest.permission.RECORD_AUDIO).setRestriction(UserManager.DISALLOW_RECORD_AUDIO).setAllowSystemRestrictionBypass(new RestrictionBypass(false, false, true)).setDefaultMode(0).build(), new AppOpInfo.Builder(28, OPSTR_PLAY_AUDIO, "PLAY_AUDIO").setDefaultMode(0).build(), new AppOpInfo.Builder(29, OPSTR_READ_CLIPBOARD, "READ_CLIPBOARD").setDefaultMode(0).build(), new AppOpInfo.Builder(30, OPSTR_WRITE_CLIPBOARD, "WRITE_CLIPBOARD").setDefaultMode(0).build(), new AppOpInfo.Builder(31, OPSTR_TAKE_MEDIA_BUTTONS, "TAKE_MEDIA_BUTTONS").setDefaultMode(0).build(), new AppOpInfo.Builder(32, OPSTR_TAKE_AUDIO_FOCUS, "TAKE_AUDIO_FOCUS").setDefaultMode(0).build(), new AppOpInfo.Builder(33, OPSTR_AUDIO_MASTER_VOLUME, "AUDIO_MASTER_VOLUME").setSwitchCode(33).setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(34, OPSTR_AUDIO_VOICE_VOLUME, "AUDIO_VOICE_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(35, OPSTR_AUDIO_RING_VOLUME, "AUDIO_RING_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(36, OPSTR_AUDIO_MEDIA_VOLUME, "AUDIO_MEDIA_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(37, OPSTR_AUDIO_ALARM_VOLUME, "AUDIO_ALARM_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(38, OPSTR_AUDIO_NOTIFICATION_VOLUME, "AUDIO_NOTIFICATION_VOLUME").setSwitchCode(38).setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(39, OPSTR_AUDIO_BLUETOOTH_VOLUME, "AUDIO_BLUETOOTH_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(40, OPSTR_WAKE_LOCK, "WAKE_LOCK").setPermission(Manifest.permission.WAKE_LOCK).setDefaultMode(0).build(), new AppOpInfo.Builder(41, OPSTR_MONITOR_LOCATION, "MONITOR_LOCATION").setSwitchCode(0).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(42, OPSTR_MONITOR_HIGH_POWER_LOCATION, "MONITOR_HIGH_POWER_LOCATION").setSwitchCode(0).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(43, OPSTR_GET_USAGE_STATS, "GET_USAGE_STATS").setPermission(Manifest.permission.PACKAGE_USAGE_STATS).build(), new AppOpInfo.Builder(44, OPSTR_MUTE_MICROPHONE, "MUTE_MICROPHONE").setRestriction(UserManager.DISALLOW_UNMUTE_MICROPHONE).setDefaultMode(0).build(), new AppOpInfo.Builder(45, OPSTR_TOAST_WINDOW, "TOAST_WINDOW").setRestriction(UserManager.DISALLOW_CREATE_WINDOWS).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(46, OPSTR_PROJECT_MEDIA, "PROJECT_MEDIA").setDefaultMode(1).build(), new AppOpInfo.Builder(47, OPSTR_ACTIVATE_VPN, "ACTIVATE_VPN").setDefaultMode(1).build(), new AppOpInfo.Builder(48, OPSTR_WRITE_WALLPAPER, "WRITE_WALLPAPER").setRestriction(UserManager.DISALLOW_WALLPAPER).setDefaultMode(0).build(), new AppOpInfo.Builder(49, OPSTR_ASSIST_STRUCTURE, "ASSIST_STRUCTURE").setDefaultMode(0).build(), new AppOpInfo.Builder(50, OPSTR_ASSIST_SCREENSHOT, "ASSIST_SCREENSHOT").setDefaultMode(0).build(), new AppOpInfo.Builder(51, OPSTR_READ_PHONE_STATE, "READ_PHONE_STATE").setPermission(Manifest.permission.READ_PHONE_STATE).setDefaultMode(0).build(), new AppOpInfo.Builder(52, OPSTR_ADD_VOICEMAIL, "ADD_VOICEMAIL").setPermission(Manifest.permission.ADD_VOICEMAIL).setDefaultMode(0).build(), new AppOpInfo.Builder(53, OPSTR_USE_SIP, "USE_SIP").setPermission(Manifest.permission.USE_SIP).setDefaultMode(0).build(), new AppOpInfo.Builder(54, OPSTR_PROCESS_OUTGOING_CALLS, "PROCESS_OUTGOING_CALLS").setSwitchCode(54).setPermission(Manifest.permission.PROCESS_OUTGOING_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(55, OPSTR_USE_FINGERPRINT, "USE_FINGERPRINT").setPermission(Manifest.permission.USE_FINGERPRINT).setDefaultMode(0).build(), new AppOpInfo.Builder(56, OPSTR_BODY_SENSORS, "BODY_SENSORS").setPermission(Manifest.permission.BODY_SENSORS).setDefaultMode(0).build(), new AppOpInfo.Builder(57, OPSTR_READ_CELL_BROADCASTS, "READ_CELL_BROADCASTS").setPermission(Manifest.permission.READ_CELL_BROADCASTS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(58, OPSTR_MOCK_LOCATION, "MOCK_LOCATION").setDefaultMode(2).build(), new AppOpInfo.Builder(59, OPSTR_READ_EXTERNAL_STORAGE, "READ_EXTERNAL_STORAGE").setPermission(Manifest.permission.READ_EXTERNAL_STORAGE).setDefaultMode(0).build(), new AppOpInfo.Builder(60, OPSTR_WRITE_EXTERNAL_STORAGE, "WRITE_EXTERNAL_STORAGE").setPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE).setDefaultMode(0).build(), new AppOpInfo.Builder(61, OPSTR_TURN_SCREEN_ON, "TURN_SCREEN_ON").setPermission(Manifest.permission.TURN_SCREEN_ON).setDefaultMode(3).build(), new AppOpInfo.Builder(62, OPSTR_GET_ACCOUNTS, "GET_ACCOUNTS").setPermission(Manifest.permission.GET_ACCOUNTS).setDefaultMode(0).build(), new AppOpInfo.Builder(63, OPSTR_RUN_IN_BACKGROUND, "RUN_IN_BACKGROUND").setDefaultMode(0).build(), new AppOpInfo.Builder(64, OPSTR_AUDIO_ACCESSIBILITY_VOLUME, "AUDIO_ACCESSIBILITY_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(65, OPSTR_READ_PHONE_NUMBERS, "READ_PHONE_NUMBERS").setPermission(Manifest.permission.READ_PHONE_NUMBERS).setDefaultMode(0).build(), new AppOpInfo.Builder(66, OPSTR_REQUEST_INSTALL_PACKAGES, "REQUEST_INSTALL_PACKAGES").setSwitchCode(66).setPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES).build(), new AppOpInfo.Builder(67, OPSTR_PICTURE_IN_PICTURE, "PICTURE_IN_PICTURE").setSwitchCode(67).setDefaultMode(0).build(), new AppOpInfo.Builder(68, OPSTR_INSTANT_APP_START_FOREGROUND, "INSTANT_APP_START_FOREGROUND").setPermission(Manifest.permission.INSTANT_APP_FOREGROUND_SERVICE).build(), new AppOpInfo.Builder(69, OPSTR_ANSWER_PHONE_CALLS, "ANSWER_PHONE_CALLS").setSwitchCode(69).setPermission(Manifest.permission.ANSWER_PHONE_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(70, OPSTR_RUN_ANY_IN_BACKGROUND, "RUN_ANY_IN_BACKGROUND").setDefaultMode(0).build(), new AppOpInfo.Builder(71, OPSTR_CHANGE_WIFI_STATE, "CHANGE_WIFI_STATE").setSwitchCode(71).setPermission(Manifest.permission.CHANGE_WIFI_STATE).setDefaultMode(0).build(), new AppOpInfo.Builder(72, OPSTR_REQUEST_DELETE_PACKAGES, "REQUEST_DELETE_PACKAGES").setPermission(Manifest.permission.REQUEST_DELETE_PACKAGES).setDefaultMode(0).build(), new AppOpInfo.Builder(73, OPSTR_BIND_ACCESSIBILITY_SERVICE, "BIND_ACCESSIBILITY_SERVICE").setPermission(Manifest.permission.BIND_ACCESSIBILITY_SERVICE).setDefaultMode(0).build(), new AppOpInfo.Builder(74, OPSTR_ACCEPT_HANDOVER, "ACCEPT_HANDOVER").setSwitchCode(74).setPermission(Manifest.permission.ACCEPT_HANDOVER).setDefaultMode(0).build(), new AppOpInfo.Builder(75, OPSTR_MANAGE_IPSEC_TUNNELS, "MANAGE_IPSEC_TUNNELS").setPermission(Manifest.permission.MANAGE_IPSEC_TUNNELS).setDefaultMode(2).build(), new AppOpInfo.Builder(76, OPSTR_START_FOREGROUND, "START_FOREGROUND").setPermission(Manifest.permission.FOREGROUND_SERVICE).setDefaultMode(0).build(), new AppOpInfo.Builder(77, OPSTR_BLUETOOTH_SCAN, "BLUETOOTH_SCAN").setPermission(Manifest.permission.BLUETOOTH_SCAN).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(78, OPSTR_USE_BIOMETRIC, "USE_BIOMETRIC").setPermission(Manifest.permission.USE_BIOMETRIC).setDefaultMode(0).build(), new AppOpInfo.Builder(79, OPSTR_ACTIVITY_RECOGNITION, "ACTIVITY_RECOGNITION").setPermission(Manifest.permission.ACTIVITY_RECOGNITION).setDefaultMode(0).build(), new AppOpInfo.Builder(80, OPSTR_SMS_FINANCIAL_TRANSACTIONS, "SMS_FINANCIAL_TRANSACTIONS").setPermission(Manifest.permission.SMS_FINANCIAL_TRANSACTIONS).setRestriction(UserManager.DISALLOW_SMS).build(), new AppOpInfo.Builder(81, OPSTR_READ_MEDIA_AUDIO, "READ_MEDIA_AUDIO").setPermission(Manifest.permission.READ_MEDIA_AUDIO).setDefaultMode(0).build(), new AppOpInfo.Builder(82, OPSTR_WRITE_MEDIA_AUDIO, "WRITE_MEDIA_AUDIO").setDefaultMode(2).build(), new AppOpInfo.Builder(83, OPSTR_READ_MEDIA_VIDEO, "READ_MEDIA_VIDEO").setPermission(Manifest.permission.READ_MEDIA_VIDEO).setDefaultMode(0).build(), new AppOpInfo.Builder(84, OPSTR_WRITE_MEDIA_VIDEO, "WRITE_MEDIA_VIDEO").setDefaultMode(2).setDisableReset(true).build(), new AppOpInfo.Builder(85, OPSTR_READ_MEDIA_IMAGES, "READ_MEDIA_IMAGES").setPermission(Manifest.permission.READ_MEDIA_IMAGES).setDefaultMode(0).build(), new AppOpInfo.Builder(86, OPSTR_WRITE_MEDIA_IMAGES, "WRITE_MEDIA_IMAGES").setDefaultMode(2).setDisableReset(true).build(), new AppOpInfo.Builder(87, OPSTR_LEGACY_STORAGE, "LEGACY_STORAGE").setDisableReset(true).build(), new AppOpInfo.Builder(88, OPSTR_ACCESS_ACCESSIBILITY, "ACCESS_ACCESSIBILITY").setDefaultMode(0).build(), new AppOpInfo.Builder(89, OPSTR_READ_DEVICE_IDENTIFIERS, "READ_DEVICE_IDENTIFIERS").setDefaultMode(2).build(), new AppOpInfo.Builder(90, OPSTR_ACCESS_MEDIA_LOCATION, "ACCESS_MEDIA_LOCATION").setPermission(Manifest.permission.ACCESS_MEDIA_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(91, OPSTR_QUERY_ALL_PACKAGES, "QUERY_ALL_PACKAGES").build(), new AppOpInfo.Builder(92, OPSTR_MANAGE_EXTERNAL_STORAGE, "MANAGE_EXTERNAL_STORAGE").setPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE).build(), new AppOpInfo.Builder(93, OPSTR_INTERACT_ACROSS_PROFILES, "INTERACT_ACROSS_PROFILES").setPermission(Manifest.permission.INTERACT_ACROSS_PROFILES).build(), new AppOpInfo.Builder(94, OPSTR_ACTIVATE_PLATFORM_VPN, "ACTIVATE_PLATFORM_VPN").setDefaultMode(1).build(), new AppOpInfo.Builder(95, OPSTR_LOADER_USAGE_STATS, "LOADER_USAGE_STATS").setPermission(Manifest.permission.LOADER_USAGE_STATS).build(), new AppOpInfo.Builder(-1, "", "").setDefaultMode(1).build(), new AppOpInfo.Builder(97, OPSTR_AUTO_REVOKE_PERMISSIONS_IF_UNUSED, "AUTO_REVOKE_PERMISSIONS_IF_UNUSED").build(), new AppOpInfo.Builder(98, OPSTR_AUTO_REVOKE_MANAGED_BY_INSTALLER, "AUTO_REVOKE_MANAGED_BY_INSTALLER").setDefaultMode(0).build(), new AppOpInfo.Builder(99, OPSTR_NO_ISOLATED_STORAGE, "NO_ISOLATED_STORAGE").setDefaultMode(2).setDisableReset(true).build(), new AppOpInfo.Builder(100, OPSTR_PHONE_CALL_MICROPHONE, "PHONE_CALL_MICROPHONE").setDefaultMode(0).build(), new AppOpInfo.Builder(101, OPSTR_PHONE_CALL_CAMERA, "PHONE_CALL_CAMERA").setDefaultMode(0).build(), new AppOpInfo.Builder(102, OPSTR_RECORD_AUDIO_HOTWORD, "RECORD_AUDIO_HOTWORD").setDefaultMode(0).build(), new AppOpInfo.Builder(103, OPSTR_MANAGE_ONGOING_CALLS, "MANAGE_ONGOING_CALLS").setPermission(Manifest.permission.MANAGE_ONGOING_CALLS).setDisableReset(true).build(), new AppOpInfo.Builder(104, OPSTR_MANAGE_CREDENTIALS, "MANAGE_CREDENTIALS").build(), new AppOpInfo.Builder(105, OPSTR_USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER, "USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER").setPermission(Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER).setDisableReset(true).build(), new AppOpInfo.Builder(106, OPSTR_RECORD_AUDIO_OUTPUT, "RECORD_AUDIO_OUTPUT").setDefaultMode(0).build(), new AppOpInfo.Builder(107, OPSTR_SCHEDULE_EXACT_ALARM, "SCHEDULE_EXACT_ALARM").setPermission(Manifest.permission.SCHEDULE_EXACT_ALARM).build(), new AppOpInfo.Builder(108, OPSTR_FINE_LOCATION_SOURCE, "FINE_LOCATION_SOURCE").setSwitchCode(1).setDefaultMode(0).build(), new AppOpInfo.Builder(109, OPSTR_COARSE_LOCATION_SOURCE, "COARSE_LOCATION_SOURCE").setSwitchCode(0).setDefaultMode(0).build(), new AppOpInfo.Builder(110, OPSTR_MANAGE_MEDIA, "MANAGE_MEDIA").setPermission(Manifest.permission.MANAGE_MEDIA).build(), new AppOpInfo.Builder(111, OPSTR_BLUETOOTH_CONNECT, "BLUETOOTH_CONNECT").setPermission(Manifest.permission.BLUETOOTH_CONNECT).setDefaultMode(0).build(), new AppOpInfo.Builder(112, OPSTR_UWB_RANGING, "UWB_RANGING").setPermission(Manifest.permission.UWB_RANGING).setDefaultMode(0).build(), new AppOpInfo.Builder(113, OPSTR_ACTIVITY_RECOGNITION_SOURCE, "ACTIVITY_RECOGNITION_SOURCE").setSwitchCode(79).setDefaultMode(0).build(), new AppOpInfo.Builder(114, OPSTR_BLUETOOTH_ADVERTISE, "BLUETOOTH_ADVERTISE").setPermission(Manifest.permission.BLUETOOTH_ADVERTISE).setDefaultMode(0).build(), new AppOpInfo.Builder(115, OPSTR_RECORD_INCOMING_PHONE_AUDIO, "RECORD_INCOMING_PHONE_AUDIO").setDefaultMode(0).build(), new AppOpInfo.Builder(116, OPSTR_NEARBY_WIFI_DEVICES, "NEARBY_WIFI_DEVICES").setPermission(Manifest.permission.NEARBY_WIFI_DEVICES).setDefaultMode(0).build(), new AppOpInfo.Builder(117, OPSTR_ESTABLISH_VPN_SERVICE, "ESTABLISH_VPN_SERVICE").setDefaultMode(0).build(), new AppOpInfo.Builder(118, OPSTR_ESTABLISH_VPN_MANAGER, "ESTABLISH_VPN_MANAGER").setDefaultMode(0).build(), new AppOpInfo.Builder(119, OPSTR_ACCESS_RESTRICTED_SETTINGS, "ACCESS_RESTRICTED_SETTINGS").setDefaultMode(0).setDisableReset(true).setRestrictRead(true).build(), new AppOpInfo.Builder(120, OPSTR_RECEIVE_AMBIENT_TRIGGER_AUDIO, "RECEIVE_SOUNDTRIGGER_AUDIO").setDefaultMode(0).setForceCollectNotes(true).build(), new AppOpInfo.Builder(121, OPSTR_RECEIVE_EXPLICIT_USER_INTERACTION_AUDIO, "RECEIVE_EXPLICIT_USER_INTERACTION_AUDIO").setDefaultMode(0).build(), new AppOpInfo.Builder(122, OPSTR_RUN_USER_INITIATED_JOBS, "RUN_USER_INITIATED_JOBS").setDefaultMode(0).build(), new AppOpInfo.Builder(123, OPSTR_READ_MEDIA_VISUAL_USER_SELECTED, "READ_MEDIA_VISUAL_USER_SELECTED").setPermission(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED).setDefaultMode(0).build(), new AppOpInfo.Builder(124, OPSTR_SYSTEM_EXEMPT_FROM_SUSPENSION, "SYSTEM_EXEMPT_FROM_SUSPENSION").setDisableReset(true).build(), new AppOpInfo.Builder(125, OPSTR_SYSTEM_EXEMPT_FROM_DISMISSIBLE_NOTIFICATIONS, "SYSTEM_EXEMPT_FROM_DISMISSIBLE_NOTIFICATIONS").setDisableReset(true).build(), new AppOpInfo.Builder(126, OPSTR_READ_WRITE_HEALTH_DATA, "READ_WRITE_HEALTH_DATA").setDefaultMode(0).build(), new AppOpInfo.Builder(127, OPSTR_FOREGROUND_SERVICE_SPECIAL_USE, "FOREGROUND_SERVICE_SPECIAL_USE").setPermission(Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE).build(), new AppOpInfo.Builder(128, OPSTR_SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS, "SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS").setDisableReset(true).build(), new AppOpInfo.Builder(129, OPSTR_SYSTEM_EXEMPT_FROM_HIBERNATION, "SYSTEM_EXEMPT_FROM_HIBERNATION").setDisableReset(true).build(), new AppOpInfo.Builder(130, OPSTR_SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION, "SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION").setDisableReset(true).build(), new AppOpInfo.Builder(131, OPSTR_CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD, "CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD").setPermission(Manifest.permission.CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD).build(), new AppOpInfo.Builder(132, OPSTR_DEPRECATED_2, "DEPRECATED_2").setDefaultMode(1).build(), new AppOpInfo.Builder(133, OPSTR_USE_FULL_SCREEN_INTENT, "USE_FULL_SCREEN_INTENT").setPermission(Manifest.permission.USE_FULL_SCREEN_INTENT).build(), new AppOpInfo.Builder(134, OPSTR_CAMERA_SANDBOXED, "CAMERA_SANDBOXED").setDefaultMode(0).build(), new AppOpInfo.Builder(135, OPSTR_RECORD_AUDIO_SANDBOXED, "RECORD_AUDIO_SANDBOXED").setDefaultMode(0).build(), new AppOpInfo.Builder(136, OPSTR_RECEIVE_SANDBOX_TRIGGER_AUDIO, "RECEIVE_SANDBOX_TRIGGER_AUDIO").setPermission(Manifest.permission.RECEIVE_SANDBOX_TRIGGER_AUDIO).setDefaultMode(3).build(), new AppOpInfo.Builder(137, OPSTR_DEPRECATED_3, "DEPRECATED_3").setDefaultMode(1).build(), new AppOpInfo.Builder(138, OPSTR_CREATE_ACCESSIBILITY_OVERLAY, "CREATE_ACCESSIBILITY_OVERLAY").setDefaultMode(0).build(), new AppOpInfo.Builder(139, OPSTR_MEDIA_ROUTING_CONTROL, "MEDIA_ROUTING_CONTROL").setPermission(Manifest.permission.MEDIA_ROUTING_CONTROL).build(), new AppOpInfo.Builder(140, OPSTR_ENABLE_MOBILE_DATA_BY_USER, "ENABLE_MOBILE_DATA_BY_USER").setDefaultMode(0).build(), new AppOpInfo.Builder(141, OPSTR_RESERVED_FOR_TESTING, "OP_RESERVED_FOR_TESTING").setDefaultMode(0).build(), new AppOpInfo.Builder(142, OPSTR_RAPID_CLEAR_NOTIFICATIONS_BY_LISTENER, "RAPID_CLEAR_NOTIFICATIONS_BY_LISTENER").setDefaultMode(0).build(), new AppOpInfo.Builder(143, OPSTR_READ_SYSTEM_GRAMMATICAL_GENDER, "READ_SYSTEM_GRAMMATICAL_GENDER").build(), new AppOpInfo.Builder(144, OPSTR_DEPRECATED_4, "DEPRECATED_4").setDefaultMode(1).build(), new AppOpInfo.Builder(145, OPSTR_ARCHIVE_ICON_OVERLAY, "ARCHIVE_ICON_OVERLAY").setDefaultMode(0).build(), new AppOpInfo.Builder(146, OPSTR_UNARCHIVAL_CONFIRMATION, "UNARCHIVAL_CONFIRMATION").setDefaultMode(0).build(), new AppOpInfo.Builder(147, OPSTR_EMERGENCY_LOCATION, "EMERGENCY_LOCATION").setDefaultMode(0).setPermission(Manifest.permission.LOCATION_BYPASS).build(), new AppOpInfo.Builder(148, OPSTR_RECEIVE_SENSITIVE_NOTIFICATIONS, "RECEIVE_SENSITIVE_NOTIFICATIONS").setDefaultMode(1).build()};
+    private static HashMap<String, Integer> sOpStrToOp = new HashMap<>();
+    private static HashMap<String, Integer> sPermToOp = new HashMap<>();
+    private static final ThreadLocal<Integer> sBinderThreadCallingUid = new ThreadLocal<>();
+    private static final ThreadLocal<ArrayMap<String, BitSet>> sAppOpsNotedInThisBinderTransaction = new ThreadLocal<>();
     private final ArrayMap<OnOpChangedListener, IAppOpsCallback> mModeWatchers = new ArrayMap<>();
     private final ArrayMap<OnOpActiveChangedListener, IAppOpsActiveCallback> mActiveWatchers = new ArrayMap<>();
     private final ArrayMap<OnOpStartedListener, IAppOpsStartedCallback> mStartedWatchers = new ArrayMap<>();
     private final ArrayMap<OnOpNotedListener, IAppOpsNotedCallback> mNotedWatchers = new ArrayMap<>();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface AppOpString {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface AttributionFlags {
     }
 
     @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DataBucketKey {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface HistoricalMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface HistoricalOpsRequestFilter {
     }
 
-    /* loaded from: classes.dex */
     public interface HistoricalOpsVisitor {
         void visitHistoricalAttributionOps(AttributedHistoricalOps attributedHistoricalOps);
 
@@ -700,135 +734,58 @@ public class AppOpsManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Mode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     private @interface NotedOpCollectionMode {
     }
 
-    @SystemApi
-    /* loaded from: classes.dex */
-    public interface OnOpNotedListener {
-        void onOpNoted(String str, int i, String str2, String str3, int i2, int i3);
-    }
-
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface OpFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface OpHistoryFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SamplingStrategy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     private @interface ShouldCollectNoteOp {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface UidState {
     }
 
-    /* renamed from: -$$Nest$smgetFormattedStackTrace */
-    static /* bridge */ /* synthetic */ String m199$$Nest$smgetFormattedStackTrace() {
-        return getFormattedStackTrace();
-    }
-
-    /* renamed from: -$$Nest$smgetService */
-    static /* bridge */ /* synthetic */ IAppOpsService m201$$Nest$smgetService() {
-        return getService();
-    }
-
-    /* renamed from: -$$Nest$smisCollectingStackTraces */
-    static /* bridge */ /* synthetic */ boolean m202$$Nest$smisCollectingStackTraces() {
-        return isCollectingStackTraces();
-    }
-
     static {
-        AppOpInfo[] appOpInfoArr = {new AppOpInfo.Builder(0, OPSTR_COARSE_LOCATION, "COARSE_LOCATION").setPermission(Manifest.permission.ACCESS_COARSE_LOCATION).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setAllowSystemRestrictionBypass(new RestrictionBypass(true, false, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(1, OPSTR_FINE_LOCATION, "FINE_LOCATION").setPermission(Manifest.permission.ACCESS_FINE_LOCATION).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setAllowSystemRestrictionBypass(new RestrictionBypass(true, false, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(2, OPSTR_GPS, "GPS").setSwitchCode(0).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(3, OPSTR_VIBRATE, "VIBRATE").setSwitchCode(3).setPermission(Manifest.permission.VIBRATE).setDefaultMode(0).build(), new AppOpInfo.Builder(4, OPSTR_READ_CONTACTS, "READ_CONTACTS").setPermission(Manifest.permission.READ_CONTACTS).setDefaultMode(0).build(), new AppOpInfo.Builder(5, OPSTR_WRITE_CONTACTS, "WRITE_CONTACTS").setPermission(Manifest.permission.WRITE_CONTACTS).setDefaultMode(0).build(), new AppOpInfo.Builder(6, OPSTR_READ_CALL_LOG, "READ_CALL_LOG").setPermission(Manifest.permission.READ_CALL_LOG).setRestriction(UserManager.DISALLOW_OUTGOING_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(7, OPSTR_WRITE_CALL_LOG, "WRITE_CALL_LOG").setPermission(Manifest.permission.WRITE_CALL_LOG).setRestriction(UserManager.DISALLOW_OUTGOING_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(8, OPSTR_READ_CALENDAR, "READ_CALENDAR").setPermission(Manifest.permission.READ_CALENDAR).setDefaultMode(0).build(), new AppOpInfo.Builder(9, OPSTR_WRITE_CALENDAR, "WRITE_CALENDAR").setPermission(Manifest.permission.WRITE_CALENDAR).setDefaultMode(0).build(), new AppOpInfo.Builder(10, OPSTR_WIFI_SCAN, "WIFI_SCAN").setSwitchCode(0).setPermission(Manifest.permission.ACCESS_WIFI_STATE).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(11, OPSTR_POST_NOTIFICATION, "POST_NOTIFICATION").setPermission(Manifest.permission.POST_NOTIFICATIONS).setDefaultMode(0).build(), new AppOpInfo.Builder(12, OPSTR_NEIGHBORING_CELLS, "NEIGHBORING_CELLS").setSwitchCode(0).setDefaultMode(0).build(), new AppOpInfo.Builder(13, OPSTR_CALL_PHONE, "CALL_PHONE").setSwitchCode(13).setPermission(Manifest.permission.CALL_PHONE).setDefaultMode(0).build(), new AppOpInfo.Builder(14, OPSTR_READ_SMS, "READ_SMS").setPermission(Manifest.permission.READ_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(15, OPSTR_WRITE_SMS, "WRITE_SMS").setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(1).setDisableReset(true).build(), new AppOpInfo.Builder(16, OPSTR_RECEIVE_SMS, "RECEIVE_SMS").setPermission(Manifest.permission.RECEIVE_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(17, OPSTR_RECEIVE_EMERGENCY_BROADCAST, "RECEIVE_EMERGENCY_BROADCAST").setSwitchCode(16).setPermission(Manifest.permission.RECEIVE_EMERGENCY_BROADCAST).setDefaultMode(0).build(), new AppOpInfo.Builder(18, OPSTR_RECEIVE_MMS, "RECEIVE_MMS").setPermission(Manifest.permission.RECEIVE_MMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).build(), new AppOpInfo.Builder(19, OPSTR_RECEIVE_WAP_PUSH, "RECEIVE_WAP_PUSH").setPermission(Manifest.permission.RECEIVE_WAP_PUSH).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(20, OPSTR_SEND_SMS, "SEND_SMS").setPermission(Manifest.permission.SEND_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(21, OPSTR_READ_ICC_SMS, "READ_ICC_SMS").setSwitchCode(14).setPermission(Manifest.permission.READ_SMS).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).build(), new AppOpInfo.Builder(22, OPSTR_WRITE_ICC_SMS, "WRITE_ICC_SMS").setSwitchCode(15).setRestriction(UserManager.DISALLOW_SMS).setDefaultMode(0).build(), new AppOpInfo.Builder(23, OPSTR_WRITE_SETTINGS, "WRITE_SETTINGS").setPermission(Manifest.permission.WRITE_SETTINGS).build(), new AppOpInfo.Builder(24, OPSTR_SYSTEM_ALERT_WINDOW, "SYSTEM_ALERT_WINDOW").setPermission(Manifest.permission.SYSTEM_ALERT_WINDOW).setRestriction(UserManager.DISALLOW_CREATE_WINDOWS).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(getSystemAlertWindowDefault()).build(), new AppOpInfo.Builder(25, OPSTR_ACCESS_NOTIFICATIONS, "ACCESS_NOTIFICATIONS").setPermission(Manifest.permission.ACCESS_NOTIFICATIONS).setDefaultMode(0).build(), new AppOpInfo.Builder(26, OPSTR_CAMERA, AudioTag.TAG_CAMERA).setPermission(Manifest.permission.CAMERA).setRestriction(UserManager.DISALLOW_CAMERA).setDefaultMode(0).build(), new AppOpInfo.Builder(27, OPSTR_RECORD_AUDIO, "RECORD_AUDIO").setPermission(Manifest.permission.RECORD_AUDIO).setRestriction(UserManager.DISALLOW_RECORD_AUDIO).setAllowSystemRestrictionBypass(new RestrictionBypass(false, false, true)).setDefaultMode(0).build(), new AppOpInfo.Builder(28, OPSTR_PLAY_AUDIO, "PLAY_AUDIO").setDefaultMode(0).build(), new AppOpInfo.Builder(29, OPSTR_READ_CLIPBOARD, "READ_CLIPBOARD").setDefaultMode(0).build(), new AppOpInfo.Builder(30, OPSTR_WRITE_CLIPBOARD, "WRITE_CLIPBOARD").setDefaultMode(0).build(), new AppOpInfo.Builder(31, OPSTR_TAKE_MEDIA_BUTTONS, "TAKE_MEDIA_BUTTONS").setDefaultMode(0).build(), new AppOpInfo.Builder(32, OPSTR_TAKE_AUDIO_FOCUS, "TAKE_AUDIO_FOCUS").setDefaultMode(0).build(), new AppOpInfo.Builder(33, OPSTR_AUDIO_MASTER_VOLUME, "AUDIO_MASTER_VOLUME").setSwitchCode(33).setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(34, OPSTR_AUDIO_VOICE_VOLUME, "AUDIO_VOICE_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(35, OPSTR_AUDIO_RING_VOLUME, "AUDIO_RING_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(36, OPSTR_AUDIO_MEDIA_VOLUME, "AUDIO_MEDIA_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(37, OPSTR_AUDIO_ALARM_VOLUME, "AUDIO_ALARM_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(38, OPSTR_AUDIO_NOTIFICATION_VOLUME, "AUDIO_NOTIFICATION_VOLUME").setSwitchCode(38).setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(39, OPSTR_AUDIO_BLUETOOTH_VOLUME, "AUDIO_BLUETOOTH_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(40, OPSTR_WAKE_LOCK, "WAKE_LOCK").setPermission(Manifest.permission.WAKE_LOCK).setDefaultMode(0).build(), new AppOpInfo.Builder(41, OPSTR_MONITOR_LOCATION, "MONITOR_LOCATION").setSwitchCode(0).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(42, OPSTR_MONITOR_HIGH_POWER_LOCATION, "MONITOR_HIGH_POWER_LOCATION").setSwitchCode(0).setRestriction(UserManager.DISALLOW_SHARE_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(43, OPSTR_GET_USAGE_STATS, "GET_USAGE_STATS").setPermission(Manifest.permission.PACKAGE_USAGE_STATS).build(), new AppOpInfo.Builder(44, OPSTR_MUTE_MICROPHONE, "MUTE_MICROPHONE").setRestriction(UserManager.DISALLOW_UNMUTE_MICROPHONE).setDefaultMode(0).build(), new AppOpInfo.Builder(45, OPSTR_TOAST_WINDOW, "TOAST_WINDOW").setRestriction(UserManager.DISALLOW_CREATE_WINDOWS).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(46, OPSTR_PROJECT_MEDIA, "PROJECT_MEDIA").setDefaultMode(1).build(), new AppOpInfo.Builder(47, OPSTR_ACTIVATE_VPN, "ACTIVATE_VPN").setDefaultMode(1).build(), new AppOpInfo.Builder(48, OPSTR_WRITE_WALLPAPER, "WRITE_WALLPAPER").setRestriction(UserManager.DISALLOW_WALLPAPER).setDefaultMode(0).build(), new AppOpInfo.Builder(49, OPSTR_ASSIST_STRUCTURE, "ASSIST_STRUCTURE").setDefaultMode(0).build(), new AppOpInfo.Builder(50, OPSTR_ASSIST_SCREENSHOT, "ASSIST_SCREENSHOT").setDefaultMode(0).build(), new AppOpInfo.Builder(51, OPSTR_READ_PHONE_STATE, "READ_PHONE_STATE").setPermission(Manifest.permission.READ_PHONE_STATE).setDefaultMode(0).build(), new AppOpInfo.Builder(52, OPSTR_ADD_VOICEMAIL, "ADD_VOICEMAIL").setPermission(Manifest.permission.ADD_VOICEMAIL).setDefaultMode(0).build(), new AppOpInfo.Builder(53, OPSTR_USE_SIP, "USE_SIP").setPermission(Manifest.permission.USE_SIP).setDefaultMode(0).build(), new AppOpInfo.Builder(54, OPSTR_PROCESS_OUTGOING_CALLS, "PROCESS_OUTGOING_CALLS").setSwitchCode(54).setPermission(Manifest.permission.PROCESS_OUTGOING_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(55, OPSTR_USE_FINGERPRINT, "USE_FINGERPRINT").setPermission(Manifest.permission.USE_FINGERPRINT).setDefaultMode(0).build(), new AppOpInfo.Builder(56, OPSTR_BODY_SENSORS, "BODY_SENSORS").setPermission(Manifest.permission.BODY_SENSORS).setDefaultMode(0).build(), new AppOpInfo.Builder(57, OPSTR_READ_CELL_BROADCASTS, "READ_CELL_BROADCASTS").setPermission(Manifest.permission.READ_CELL_BROADCASTS).setDefaultMode(0).setDisableReset(true).build(), new AppOpInfo.Builder(58, OPSTR_MOCK_LOCATION, "MOCK_LOCATION").setDefaultMode(2).build(), new AppOpInfo.Builder(59, OPSTR_READ_EXTERNAL_STORAGE, "READ_EXTERNAL_STORAGE").setPermission(Manifest.permission.READ_EXTERNAL_STORAGE).setDefaultMode(0).build(), new AppOpInfo.Builder(60, OPSTR_WRITE_EXTERNAL_STORAGE, "WRITE_EXTERNAL_STORAGE").setPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE).setDefaultMode(0).build(), new AppOpInfo.Builder(61, OPSTR_TURN_SCREEN_ON, "TURN_SCREEN_ON").setPermission(Manifest.permission.TURN_SCREEN_ON).setDefaultMode(3).build(), new AppOpInfo.Builder(62, OPSTR_GET_ACCOUNTS, "GET_ACCOUNTS").setPermission(Manifest.permission.GET_ACCOUNTS).setDefaultMode(0).build(), new AppOpInfo.Builder(63, OPSTR_RUN_IN_BACKGROUND, "RUN_IN_BACKGROUND").setDefaultMode(0).build(), new AppOpInfo.Builder(64, OPSTR_AUDIO_ACCESSIBILITY_VOLUME, "AUDIO_ACCESSIBILITY_VOLUME").setRestriction(UserManager.DISALLOW_ADJUST_VOLUME).setDefaultMode(0).build(), new AppOpInfo.Builder(65, OPSTR_READ_PHONE_NUMBERS, "READ_PHONE_NUMBERS").setPermission(Manifest.permission.READ_PHONE_NUMBERS).setDefaultMode(0).build(), new AppOpInfo.Builder(66, OPSTR_REQUEST_INSTALL_PACKAGES, "REQUEST_INSTALL_PACKAGES").setSwitchCode(66).setPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES).build(), new AppOpInfo.Builder(67, OPSTR_PICTURE_IN_PICTURE, "PICTURE_IN_PICTURE").setSwitchCode(67).setDefaultMode(0).build(), new AppOpInfo.Builder(68, OPSTR_INSTANT_APP_START_FOREGROUND, "INSTANT_APP_START_FOREGROUND").setPermission(Manifest.permission.INSTANT_APP_FOREGROUND_SERVICE).build(), new AppOpInfo.Builder(69, OPSTR_ANSWER_PHONE_CALLS, "ANSWER_PHONE_CALLS").setSwitchCode(69).setPermission(Manifest.permission.ANSWER_PHONE_CALLS).setDefaultMode(0).build(), new AppOpInfo.Builder(70, OPSTR_RUN_ANY_IN_BACKGROUND, "RUN_ANY_IN_BACKGROUND").setDefaultMode(0).build(), new AppOpInfo.Builder(71, OPSTR_CHANGE_WIFI_STATE, "CHANGE_WIFI_STATE").setSwitchCode(71).setPermission(Manifest.permission.CHANGE_WIFI_STATE).setDefaultMode(0).build(), new AppOpInfo.Builder(72, OPSTR_REQUEST_DELETE_PACKAGES, "REQUEST_DELETE_PACKAGES").setPermission(Manifest.permission.REQUEST_DELETE_PACKAGES).setDefaultMode(0).build(), new AppOpInfo.Builder(73, OPSTR_BIND_ACCESSIBILITY_SERVICE, "BIND_ACCESSIBILITY_SERVICE").setPermission(Manifest.permission.BIND_ACCESSIBILITY_SERVICE).setDefaultMode(0).build(), new AppOpInfo.Builder(74, OPSTR_ACCEPT_HANDOVER, "ACCEPT_HANDOVER").setSwitchCode(74).setPermission(Manifest.permission.ACCEPT_HANDOVER).setDefaultMode(0).build(), new AppOpInfo.Builder(75, OPSTR_MANAGE_IPSEC_TUNNELS, "MANAGE_IPSEC_TUNNELS").setPermission(Manifest.permission.MANAGE_IPSEC_TUNNELS).setDefaultMode(2).build(), new AppOpInfo.Builder(76, OPSTR_START_FOREGROUND, "START_FOREGROUND").setPermission(Manifest.permission.FOREGROUND_SERVICE).setDefaultMode(0).build(), new AppOpInfo.Builder(77, OPSTR_BLUETOOTH_SCAN, "BLUETOOTH_SCAN").setPermission(Manifest.permission.BLUETOOTH_SCAN).setAllowSystemRestrictionBypass(new RestrictionBypass(false, true, false)).setDefaultMode(0).build(), new AppOpInfo.Builder(78, OPSTR_USE_BIOMETRIC, "USE_BIOMETRIC").setPermission(Manifest.permission.USE_BIOMETRIC).setDefaultMode(0).build(), new AppOpInfo.Builder(79, OPSTR_ACTIVITY_RECOGNITION, "ACTIVITY_RECOGNITION").setPermission(Manifest.permission.ACTIVITY_RECOGNITION).setDefaultMode(0).build(), new AppOpInfo.Builder(80, OPSTR_SMS_FINANCIAL_TRANSACTIONS, "SMS_FINANCIAL_TRANSACTIONS").setPermission(Manifest.permission.SMS_FINANCIAL_TRANSACTIONS).setRestriction(UserManager.DISALLOW_SMS).build(), new AppOpInfo.Builder(81, OPSTR_READ_MEDIA_AUDIO, "READ_MEDIA_AUDIO").setPermission(Manifest.permission.READ_MEDIA_AUDIO).setDefaultMode(0).build(), new AppOpInfo.Builder(82, OPSTR_WRITE_MEDIA_AUDIO, "WRITE_MEDIA_AUDIO").setDefaultMode(2).build(), new AppOpInfo.Builder(83, OPSTR_READ_MEDIA_VIDEO, "READ_MEDIA_VIDEO").setPermission(Manifest.permission.READ_MEDIA_VIDEO).setDefaultMode(0).build(), new AppOpInfo.Builder(84, OPSTR_WRITE_MEDIA_VIDEO, "WRITE_MEDIA_VIDEO").setDefaultMode(2).setDisableReset(true).build(), new AppOpInfo.Builder(85, OPSTR_READ_MEDIA_IMAGES, "READ_MEDIA_IMAGES").setPermission(Manifest.permission.READ_MEDIA_IMAGES).setDefaultMode(0).build(), new AppOpInfo.Builder(86, OPSTR_WRITE_MEDIA_IMAGES, "WRITE_MEDIA_IMAGES").setDefaultMode(2).setDisableReset(true).build(), new AppOpInfo.Builder(87, OPSTR_LEGACY_STORAGE, "LEGACY_STORAGE").setDisableReset(true).build(), new AppOpInfo.Builder(88, OPSTR_ACCESS_ACCESSIBILITY, "ACCESS_ACCESSIBILITY").setDefaultMode(0).build(), new AppOpInfo.Builder(89, OPSTR_READ_DEVICE_IDENTIFIERS, "READ_DEVICE_IDENTIFIERS").setDefaultMode(2).build(), new AppOpInfo.Builder(90, OPSTR_ACCESS_MEDIA_LOCATION, "ACCESS_MEDIA_LOCATION").setPermission(Manifest.permission.ACCESS_MEDIA_LOCATION).setDefaultMode(0).build(), new AppOpInfo.Builder(91, OPSTR_QUERY_ALL_PACKAGES, "QUERY_ALL_PACKAGES").build(), new AppOpInfo.Builder(92, OPSTR_MANAGE_EXTERNAL_STORAGE, "MANAGE_EXTERNAL_STORAGE").setPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE).build(), new AppOpInfo.Builder(93, OPSTR_INTERACT_ACROSS_PROFILES, "INTERACT_ACROSS_PROFILES").setPermission(Manifest.permission.INTERACT_ACROSS_PROFILES).build(), new AppOpInfo.Builder(94, OPSTR_ACTIVATE_PLATFORM_VPN, "ACTIVATE_PLATFORM_VPN").setDefaultMode(1).build(), new AppOpInfo.Builder(95, OPSTR_LOADER_USAGE_STATS, "LOADER_USAGE_STATS").setPermission(Manifest.permission.LOADER_USAGE_STATS).build(), new AppOpInfo.Builder(-1, "", "").setDefaultMode(1).build(), new AppOpInfo.Builder(97, OPSTR_AUTO_REVOKE_PERMISSIONS_IF_UNUSED, "AUTO_REVOKE_PERMISSIONS_IF_UNUSED").build(), new AppOpInfo.Builder(98, OPSTR_AUTO_REVOKE_MANAGED_BY_INSTALLER, "AUTO_REVOKE_MANAGED_BY_INSTALLER").setDefaultMode(0).build(), new AppOpInfo.Builder(99, OPSTR_NO_ISOLATED_STORAGE, "NO_ISOLATED_STORAGE").setDefaultMode(2).setDisableReset(true).build(), new AppOpInfo.Builder(100, OPSTR_PHONE_CALL_MICROPHONE, "PHONE_CALL_MICROPHONE").setDefaultMode(0).build(), new AppOpInfo.Builder(101, OPSTR_PHONE_CALL_CAMERA, "PHONE_CALL_CAMERA").setDefaultMode(0).build(), new AppOpInfo.Builder(102, OPSTR_RECORD_AUDIO_HOTWORD, "RECORD_AUDIO_HOTWORD").setDefaultMode(0).build(), new AppOpInfo.Builder(103, OPSTR_MANAGE_ONGOING_CALLS, "MANAGE_ONGOING_CALLS").setPermission(Manifest.permission.MANAGE_ONGOING_CALLS).setDisableReset(true).build(), new AppOpInfo.Builder(104, OPSTR_MANAGE_CREDENTIALS, "MANAGE_CREDENTIALS").build(), new AppOpInfo.Builder(105, OPSTR_USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER, "USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER").setPermission(Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER).setDisableReset(true).build(), new AppOpInfo.Builder(106, OPSTR_RECORD_AUDIO_OUTPUT, "RECORD_AUDIO_OUTPUT").setDefaultMode(0).build(), new AppOpInfo.Builder(107, OPSTR_SCHEDULE_EXACT_ALARM, "SCHEDULE_EXACT_ALARM").setPermission(Manifest.permission.SCHEDULE_EXACT_ALARM).build(), new AppOpInfo.Builder(108, OPSTR_FINE_LOCATION_SOURCE, "FINE_LOCATION_SOURCE").setSwitchCode(1).setDefaultMode(0).build(), new AppOpInfo.Builder(109, OPSTR_COARSE_LOCATION_SOURCE, "COARSE_LOCATION_SOURCE").setSwitchCode(0).setDefaultMode(0).build(), new AppOpInfo.Builder(110, OPSTR_MANAGE_MEDIA, "MANAGE_MEDIA").setPermission(Manifest.permission.MANAGE_MEDIA).build(), new AppOpInfo.Builder(111, OPSTR_BLUETOOTH_CONNECT, "BLUETOOTH_CONNECT").setPermission(Manifest.permission.BLUETOOTH_CONNECT).setDefaultMode(0).build(), new AppOpInfo.Builder(112, OPSTR_UWB_RANGING, "UWB_RANGING").setPermission(Manifest.permission.UWB_RANGING).setDefaultMode(0).build(), new AppOpInfo.Builder(113, OPSTR_ACTIVITY_RECOGNITION_SOURCE, "ACTIVITY_RECOGNITION_SOURCE").setSwitchCode(79).setDefaultMode(0).build(), new AppOpInfo.Builder(114, OPSTR_BLUETOOTH_ADVERTISE, "BLUETOOTH_ADVERTISE").setPermission(Manifest.permission.BLUETOOTH_ADVERTISE).setDefaultMode(0).build(), new AppOpInfo.Builder(115, OPSTR_RECORD_INCOMING_PHONE_AUDIO, "RECORD_INCOMING_PHONE_AUDIO").setDefaultMode(0).build(), new AppOpInfo.Builder(116, OPSTR_NEARBY_WIFI_DEVICES, "NEARBY_WIFI_DEVICES").setPermission(Manifest.permission.NEARBY_WIFI_DEVICES).setDefaultMode(0).build(), new AppOpInfo.Builder(117, OPSTR_ESTABLISH_VPN_SERVICE, "ESTABLISH_VPN_SERVICE").setDefaultMode(0).build(), new AppOpInfo.Builder(118, OPSTR_ESTABLISH_VPN_MANAGER, "ESTABLISH_VPN_MANAGER").setDefaultMode(0).build(), new AppOpInfo.Builder(119, OPSTR_ACCESS_RESTRICTED_SETTINGS, "ACCESS_RESTRICTED_SETTINGS").setDefaultMode(0).setDisableReset(true).setRestrictRead(true).build(), new AppOpInfo.Builder(120, OPSTR_RECEIVE_AMBIENT_TRIGGER_AUDIO, "RECEIVE_SOUNDTRIGGER_AUDIO").setDefaultMode(0).setForceCollectNotes(true).build(), new AppOpInfo.Builder(121, OPSTR_RECEIVE_EXPLICIT_USER_INTERACTION_AUDIO, "RECEIVE_EXPLICIT_USER_INTERACTION_AUDIO").setDefaultMode(0).build(), new AppOpInfo.Builder(122, OPSTR_RUN_USER_INITIATED_JOBS, "RUN_USER_INITIATED_JOBS").setDefaultMode(0).build(), new AppOpInfo.Builder(123, OPSTR_READ_MEDIA_VISUAL_USER_SELECTED, "READ_MEDIA_VISUAL_USER_SELECTED").setPermission(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED).setDefaultMode(0).build(), new AppOpInfo.Builder(124, OPSTR_SYSTEM_EXEMPT_FROM_SUSPENSION, "SYSTEM_EXEMPT_FROM_SUSPENSION").setDisableReset(true).build(), new AppOpInfo.Builder(125, OPSTR_SYSTEM_EXEMPT_FROM_DISMISSIBLE_NOTIFICATIONS, "SYSTEM_EXEMPT_FROM_DISMISSIBLE_NOTIFICATIONS").setDisableReset(true).build(), new AppOpInfo.Builder(126, OPSTR_READ_WRITE_HEALTH_DATA, "READ_WRITE_HEALTH_DATA").setDefaultMode(0).build(), new AppOpInfo.Builder(127, OPSTR_FOREGROUND_SERVICE_SPECIAL_USE, "FOREGROUND_SERVICE_SPECIAL_USE").setPermission(Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE).build(), new AppOpInfo.Builder(128, OPSTR_SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS, "SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS").setDisableReset(true).build(), new AppOpInfo.Builder(129, OPSTR_SYSTEM_EXEMPT_FROM_HIBERNATION, "SYSTEM_EXEMPT_FROM_HIBERNATION").setDisableReset(true).build(), new AppOpInfo.Builder(130, OPSTR_SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION, "SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION").setDisableReset(true).build(), new AppOpInfo.Builder(131, OPSTR_CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD, "CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD").setPermission(Manifest.permission.CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD).build(), new AppOpInfo.Builder(132, OPSTR_DEPRECATED_2, "DEPRECATED_2").setDefaultMode(1).build(), new AppOpInfo.Builder(133, OPSTR_USE_FULL_SCREEN_INTENT, "USE_FULL_SCREEN_INTENT").setPermission(Manifest.permission.USE_FULL_SCREEN_INTENT).build(), new AppOpInfo.Builder(134, OPSTR_CAMERA_SANDBOXED, "CAMERA_SANDBOXED").setDefaultMode(0).build(), new AppOpInfo.Builder(135, OPSTR_RECORD_AUDIO_SANDBOXED, "RECORD_AUDIO_SANDBOXED").setDefaultMode(0).build()};
-        sAppOpInfos = appOpInfoArr;
-        sOpStrToOp = new HashMap<>();
-        sPermToOp = new HashMap<>();
-        sBinderThreadCallingUid = new ThreadLocal<>();
-        sAppOpsNotedInThisBinderTransaction = new ThreadLocal<>();
-        if (appOpInfoArr.length != 136) {
-            throw new IllegalStateException("mAppOpInfos length " + appOpInfoArr.length + " should be 136");
+        if (sAppOpInfos.length != 149) {
+            throw new IllegalStateException("mAppOpInfos length " + sAppOpInfos.length + " should be 149");
         }
-        int i = 0;
-        for (int i2 = 136; i < i2; i2 = 136) {
-            AppOpInfo[] appOpInfoArr2 = sAppOpInfos;
-            if (appOpInfoArr2[i].name != null) {
-                sOpStrToOp.put(appOpInfoArr2[i].name, Integer.valueOf(i));
+        for (int i = 0; i < 149; i++) {
+            if (sAppOpInfos[i].name != null) {
+                sOpStrToOp.put(sAppOpInfos[i].name, Integer.valueOf(i));
             }
-            i++;
         }
         for (int op : RUNTIME_PERMISSION_OPS) {
-            AppOpInfo[] appOpInfoArr3 = sAppOpInfos;
-            if (appOpInfoArr3[op].permission != null) {
-                sPermToOp.put(appOpInfoArr3[op].permission, Integer.valueOf(op));
+            if (sAppOpInfos[op].permission != null) {
+                sPermToOp.put(sAppOpInfos[op].permission, Integer.valueOf(op));
             }
         }
         for (int op2 : APP_OP_PERMISSION_PACKAGE_OPS) {
-            AppOpInfo[] appOpInfoArr4 = sAppOpInfos;
-            if (appOpInfoArr4[op2].permission != null) {
-                sPermToOp.put(appOpInfoArr4[op2].permission, Integer.valueOf(op2));
+            if (sAppOpInfos[op2].permission != null) {
+                sPermToOp.put(sAppOpInfos[op2].permission, Integer.valueOf(op2));
             }
         }
         for (int op3 : APP_OP_PERMISSION_UID_OPS) {
-            AppOpInfo[] appOpInfoArr5 = sAppOpInfos;
-            if (appOpInfoArr5[op3].permission != null) {
-                sPermToOp.put(appOpInfoArr5[op3].permission, Integer.valueOf(op3));
+            if (sAppOpInfos[op3].permission != null) {
+                sPermToOp.put(sAppOpInfos[op3].permission, Integer.valueOf(op3));
             }
         }
         sConfig = new MessageSamplingConfig(-1, 0, 0L);
-    }
-
-    /* renamed from: android.app.AppOpsManager$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends OnOpNotedCallback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.app.AppOpsManager.OnOpNotedCallback
-        public void onNoted(SyncNotedAppOp op) {
-            reportStackTraceIfNeeded(op);
-        }
-
-        @Override // android.app.AppOpsManager.OnOpNotedCallback
-        public void onAsyncNoted(AsyncNotedAppOp asyncOp) {
-        }
-
-        @Override // android.app.AppOpsManager.OnOpNotedCallback
-        public void onSelfNoted(SyncNotedAppOp op) {
-            reportStackTraceIfNeeded(op);
-        }
-
-        private void reportStackTraceIfNeeded(SyncNotedAppOp op) {
-            if (!AppOpsManager.m202$$Nest$smisCollectingStackTraces()) {
-                return;
-            }
-            MessageSamplingConfig config = AppOpsManager.sConfig;
-            if (AppOpsManager.leftCircularDistance(AppOpsManager.strOpToOp(op.getOp()), config.getSampledOpCode(), 136) <= config.getAcceptableLeftDistance() || config.getExpirationTimeSinceBootMillis() < SystemClock.elapsedRealtime()) {
-                String stackTrace = AppOpsManager.m199$$Nest$smgetFormattedStackTrace();
-                try {
-                    String packageName = ActivityThread.currentOpPackageName();
-                    AppOpsManager.sConfig = AppOpsManager.m201$$Nest$smgetService().reportRuntimeAppOpAccessMessageAndGetConfig(packageName == null ? "" : packageName, op, stackTrace);
-                } catch (RemoteException e) {
-                    e.rethrowFromSystemServer();
-                }
-            }
-        }
     }
 
     public static int resolveFirstUnrestrictedUidState(int op) {
@@ -855,6 +812,8 @@ public class AppOpsManager {
                 return "bg";
             case 700:
                 return "cch";
+            case Integer.MAX_VALUE:
+                return "gone";
             default:
                 return "unknown";
         }
@@ -909,7 +868,7 @@ public class AppOpsManager {
     }
 
     public static boolean shouldForceCollectNoteForOp(int op) {
-        Preconditions.checkArgumentInRange(op, 0, 135, "opCode");
+        Preconditions.checkArgumentInRange(op, 0, 148, "opCode");
         return sAppOpInfos[op].forceCollectNotes;
     }
 
@@ -918,11 +877,7 @@ public class AppOpsManager {
     }
 
     public static String opToName(int op) {
-        if (op == -1) {
-            return KeyProperties.DIGEST_NONE;
-        }
-        AppOpInfo[] appOpInfoArr = sAppOpInfos;
-        return op < appOpInfoArr.length ? appOpInfoArr[op].simpleName : "Unknown(" + op + NavigationBarInflaterView.KEY_CODE_END;
+        return op == -1 ? KeyProperties.DIGEST_NONE : op < sAppOpInfos.length ? sAppOpInfos[op].simpleName : "Unknown(" + op + NavigationBarInflaterView.KEY_CODE_END;
     }
 
     public static String opToPublicName(int op) {
@@ -930,19 +885,12 @@ public class AppOpsManager {
     }
 
     public static int strDebugOpToOp(String op) {
-        int i = 0;
-        while (true) {
-            AppOpInfo[] appOpInfoArr = sAppOpInfos;
-            if (i < appOpInfoArr.length) {
-                if (!appOpInfoArr[i].simpleName.equals(op)) {
-                    i++;
-                } else {
-                    return i;
-                }
-            } else {
-                throw new IllegalArgumentException("Unknown operation string: " + op);
+        for (int i = 0; i < sAppOpInfos.length; i++) {
+            if (sAppOpInfos[i].simpleName.equals(op)) {
+                return i;
             }
         }
+        throw new IllegalArgumentException("Unknown operation string: " + op);
     }
 
     public static String opToPermission(int op) {
@@ -974,6 +922,9 @@ public class AppOpsManager {
     }
 
     public static int opToDefaultMode(int op) {
+        if (op == 32 && android.media.audio.Flags.roForegroundAudioControl()) {
+            return 4;
+        }
         return sAppOpInfos[op].defaultMode;
     }
 
@@ -983,11 +934,8 @@ public class AppOpsManager {
     }
 
     public static String modeToName(int mode) {
-        if (mode >= 0) {
-            String[] strArr = MODE_NAMES;
-            if (mode < strArr.length) {
-                return strArr[mode];
-            }
+        if (mode >= 0 && mode < MODE_NAMES.length) {
+            return MODE_NAMES[mode];
         }
         return "mode=" + mode;
     }
@@ -1010,7 +958,7 @@ public class AppOpsManager {
 
     public static String toReceiverId(Object obj) {
         if (obj == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         if (obj instanceof PendingIntent) {
             return toReceiverId((PendingIntent) obj);
@@ -1022,7 +970,6 @@ public class AppOpsManager {
         return pendingIntent.getTag("");
     }
 
-    /* loaded from: classes.dex */
     public static class RestrictionBypass {
         public static RestrictionBypass UNRESTRICTED = new RestrictionBypass(false, true, true);
         public boolean isPrivileged;
@@ -1037,17 +984,15 @@ public class AppOpsManager {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class PackageOps implements Parcelable {
         public static final Parcelable.Creator<PackageOps> CREATOR = new Parcelable.Creator<PackageOps>() { // from class: android.app.AppOpsManager.PackageOps.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PackageOps createFromParcel(Parcel source) {
                 return new PackageOps(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PackageOps[] newArray(int size) {
                 return new PackageOps[size];
@@ -1099,63 +1044,52 @@ public class AppOpsManager {
                 this.mEntries.add(OpEntry.CREATOR.createFromParcel(source));
             }
         }
-
-        /* renamed from: android.app.AppOpsManager$PackageOps$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<PackageOps> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PackageOps createFromParcel(Parcel source) {
-                return new PackageOps(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PackageOps[] newArray(int size) {
-                return new PackageOps[size];
-            }
-        }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class OpEventProxyInfo implements Parcelable {
         public static final Parcelable.Creator<OpEventProxyInfo> CREATOR = new Parcelable.Creator<OpEventProxyInfo>() { // from class: android.app.AppOpsManager.OpEventProxyInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public OpEventProxyInfo[] newArray(int size) {
                 return new OpEventProxyInfo[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public OpEventProxyInfo createFromParcel(Parcel in) {
                 return new OpEventProxyInfo(in);
             }
         };
         private String mAttributionTag;
+        private String mDeviceId;
         private String mPackageName;
         private int mUid;
 
-        public void reinit(int uid, String packageName, String attributionTag) {
+        public void reinit(int uid, String packageName, String attributionTag, String deviceId) {
             this.mUid = Preconditions.checkArgumentNonnegative(uid);
             this.mPackageName = packageName;
             this.mAttributionTag = attributionTag;
+            this.mDeviceId = deviceId;
         }
 
         public OpEventProxyInfo(int uid, String packageName, String attributionTag) {
+            this(uid, packageName, attributionTag, VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT);
+        }
+
+        public OpEventProxyInfo(int uid, String packageName, String attributionTag, String deviceId) {
             this.mUid = uid;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, uid, "from", 0L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mUid, "from", 0L);
             this.mPackageName = packageName;
             this.mAttributionTag = attributionTag;
+            this.mDeviceId = deviceId;
         }
 
         public OpEventProxyInfo(OpEventProxyInfo orig) {
             this.mUid = orig.mUid;
             this.mPackageName = orig.mPackageName;
             this.mAttributionTag = orig.mAttributionTag;
+            this.mDeviceId = orig.mDeviceId;
         }
 
         public int getUid() {
@@ -1170,21 +1104,29 @@ public class AppOpsManager {
             return this.mAttributionTag;
         }
 
+        public String getDeviceId() {
+            return this.mDeviceId;
+        }
+
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel dest, int flags) {
             byte flg = this.mPackageName != null ? (byte) (0 | 2) : (byte) 0;
             if (this.mAttributionTag != null) {
                 flg = (byte) (flg | 4);
             }
+            if (this.mDeviceId != null) {
+                flg = (byte) (flg | 8);
+            }
             dest.writeByte(flg);
             dest.writeInt(this.mUid);
-            String str = this.mPackageName;
-            if (str != null) {
-                dest.writeString(str);
+            if (this.mPackageName != null) {
+                dest.writeString(this.mPackageName);
             }
-            String str2 = this.mAttributionTag;
-            if (str2 != null) {
-                dest.writeString(str2);
+            if (this.mAttributionTag != null) {
+                dest.writeString(this.mAttributionTag);
+            }
+            if (this.mDeviceId != null) {
+                dest.writeString(this.mDeviceId);
             }
         }
 
@@ -1197,42 +1139,25 @@ public class AppOpsManager {
             byte flg = in.readByte();
             int uid = in.readInt();
             String packageName = (flg & 2) == 0 ? null : in.readString();
-            String attributionTag = (flg & 4) != 0 ? in.readString() : null;
+            String attributionTag = (flg & 4) == 0 ? null : in.readString();
+            String deviceId = (flg & 8) != 0 ? in.readString() : null;
             this.mUid = uid;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, uid, "from", 0L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mUid, "from", 0L);
             this.mPackageName = packageName;
             this.mAttributionTag = attributionTag;
-        }
-
-        /* renamed from: android.app.AppOpsManager$OpEventProxyInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<OpEventProxyInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public OpEventProxyInfo[] newArray(int size) {
-                return new OpEventProxyInfo[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public OpEventProxyInfo createFromParcel(Parcel in) {
-                return new OpEventProxyInfo(in);
-            }
+            this.mDeviceId = deviceId;
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class NoteOpEvent implements Parcelable {
         public static final Parcelable.Creator<NoteOpEvent> CREATOR = new Parcelable.Creator<NoteOpEvent>() { // from class: android.app.AppOpsManager.NoteOpEvent.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NoteOpEvent[] newArray(int size) {
                 return new NoteOpEvent[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NoteOpEvent createFromParcel(Parcel in) {
                 return new NoteOpEvent(in);
@@ -1245,9 +1170,8 @@ public class AppOpsManager {
         public void reinit(long noteTime, long duration, OpEventProxyInfo proxy, Pools.Pool<OpEventProxyInfo> proxyPool) {
             this.mNoteTime = Preconditions.checkArgumentNonnegative(noteTime);
             this.mDuration = Preconditions.checkArgumentInRange(duration, -1L, Long.MAX_VALUE, "duration");
-            OpEventProxyInfo opEventProxyInfo = this.mProxy;
-            if (opEventProxyInfo != null) {
-                proxyPool.release(opEventProxyInfo);
+            if (this.mProxy != null) {
+                proxyPool.release(this.mProxy);
             }
             this.mProxy = proxy;
         }
@@ -1258,9 +1182,9 @@ public class AppOpsManager {
 
         public NoteOpEvent(long noteTime, long duration, OpEventProxyInfo proxy) {
             this.mNoteTime = noteTime;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, noteTime, "from", 0L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mNoteTime, "from", 0L);
             this.mDuration = duration;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, duration, "from", -1L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mDuration, "from", -1L);
             this.mProxy = proxy;
         }
 
@@ -1282,9 +1206,8 @@ public class AppOpsManager {
             dest.writeByte(flg);
             dest.writeLong(this.mNoteTime);
             dest.writeLong(this.mDuration);
-            OpEventProxyInfo opEventProxyInfo = this.mProxy;
-            if (opEventProxyInfo != null) {
-                dest.writeTypedObject(opEventProxyInfo, flags);
+            if (this.mProxy != null) {
+                dest.writeTypedObject(this.mProxy, flags);
             }
         }
 
@@ -1299,32 +1222,14 @@ public class AppOpsManager {
             long duration = in.readLong();
             OpEventProxyInfo proxy = (flg & 4) == 0 ? null : (OpEventProxyInfo) in.readTypedObject(OpEventProxyInfo.CREATOR);
             this.mNoteTime = noteTime;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, noteTime, "from", 0L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mNoteTime, "from", 0L);
             this.mDuration = duration;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, duration, "from", -1L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mDuration, "from", -1L);
             this.mProxy = proxy;
-        }
-
-        /* renamed from: android.app.AppOpsManager$NoteOpEvent$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<NoteOpEvent> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public NoteOpEvent[] newArray(int size) {
-                return new NoteOpEvent[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public NoteOpEvent createFromParcel(Parcel in) {
-                return new NoteOpEvent(in);
-            }
         }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class AttributedOpEntry implements Parcelable {
         public static final Parcelable.Creator<AttributedOpEntry> CREATOR;
         static Parcelling<LongSparseArray<NoteOpEvent>> sParcellingForAccessEvents;
@@ -1334,31 +1239,23 @@ public class AppOpsManager {
         private final LongSparseArray<NoteOpEvent> mRejectEvents;
         private final boolean mRunning;
 
-        /* synthetic */ AttributedOpEntry(AttributedOpEntry attributedOpEntry, AttributedOpEntryIA attributedOpEntryIA) {
-            this(attributedOpEntry);
-        }
-
         private AttributedOpEntry(AttributedOpEntry other) {
             this.mOp = other.mOp;
             this.mRunning = other.mRunning;
-            LongSparseArray<NoteOpEvent> longSparseArray = other.mAccessEvents;
-            this.mAccessEvents = longSparseArray == null ? null : longSparseArray.m4935clone();
-            LongSparseArray<NoteOpEvent> longSparseArray2 = other.mRejectEvents;
-            this.mRejectEvents = longSparseArray2 != null ? longSparseArray2.m4935clone() : null;
+            this.mAccessEvents = other.mAccessEvents == null ? null : other.mAccessEvents.m5219clone();
+            this.mRejectEvents = other.mRejectEvents != null ? other.mRejectEvents.m5219clone() : null;
         }
 
         public ArraySet<Long> collectKeys() {
             ArraySet<Long> keys = new ArraySet<>();
-            LongSparseArray<NoteOpEvent> longSparseArray = this.mAccessEvents;
-            if (longSparseArray != null) {
-                int numEvents = longSparseArray.size();
+            if (this.mAccessEvents != null) {
+                int numEvents = this.mAccessEvents.size();
                 for (int i = 0; i < numEvents; i++) {
                     keys.add(Long.valueOf(this.mAccessEvents.keyAt(i)));
                 }
             }
-            LongSparseArray<NoteOpEvent> longSparseArray2 = this.mRejectEvents;
-            if (longSparseArray2 != null) {
-                int numEvents2 = longSparseArray2.size();
+            if (this.mRejectEvents != null) {
+                int numEvents2 = this.mRejectEvents.size();
                 for (int i2 = 0; i2 < numEvents2; i2++) {
                     keys.add(Long.valueOf(this.mRejectEvents.keyAt(i2)));
                 }
@@ -1378,6 +1275,7 @@ public class AppOpsManager {
             return getLastAccessTime(AppOpsManager.resolveLastRestrictedUidState(this.mOp), 700, flags);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public NoteOpEvent getLastAccessEvent(int fromUidState, int toUidState, int flags) {
             return AppOpsManager.getLastEvent(this.mAccessEvents, fromUidState, toUidState, flags);
         }
@@ -1402,6 +1300,7 @@ public class AppOpsManager {
             return getLastRejectTime(AppOpsManager.resolveLastRestrictedUidState(this.mOp), 700, flags);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public NoteOpEvent getLastRejectEvent(int fromUidState, int toUidState, int flags) {
             return AppOpsManager.getLastEvent(this.mRejectEvents, fromUidState, toUidState, flags);
         }
@@ -1462,12 +1361,7 @@ public class AppOpsManager {
             return this.mOp;
         }
 
-        /* loaded from: classes.dex */
         private static class LongSparseArrayParceling implements Parcelling<LongSparseArray<NoteOpEvent>> {
-            /* synthetic */ LongSparseArrayParceling(LongSparseArrayParcelingIA longSparseArrayParcelingIA) {
-                this();
-            }
-
             private LongSparseArrayParceling() {
             }
 
@@ -1485,6 +1379,7 @@ public class AppOpsManager {
                 }
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // com.android.internal.util.Parcelling
             public LongSparseArray<NoteOpEvent> unparcel(Parcel source) {
                 int numEntries = source.readInt();
@@ -1501,7 +1396,7 @@ public class AppOpsManager {
 
         public AttributedOpEntry(int op, boolean running, LongSparseArray<NoteOpEvent> accessEvents, LongSparseArray<NoteOpEvent> rejectEvents) {
             this.mOp = op;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, op, "from", 0L, "to", 135L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOp, "from", 0L, "to", 148L);
             this.mRunning = running;
             this.mAccessEvents = accessEvents;
             this.mRejectEvents = rejectEvents;
@@ -1512,25 +1407,22 @@ public class AppOpsManager {
         }
 
         static {
-            Parcelling<LongSparseArray<NoteOpEvent>> parcelling = Parcelling.Cache.get(LongSparseArrayParceling.class);
-            sParcellingForAccessEvents = parcelling;
-            if (parcelling == null) {
+            sParcellingForAccessEvents = Parcelling.Cache.get(LongSparseArrayParceling.class);
+            if (sParcellingForAccessEvents == null) {
                 sParcellingForAccessEvents = Parcelling.Cache.put(new LongSparseArrayParceling());
             }
-            Parcelling<LongSparseArray<NoteOpEvent>> parcelling2 = Parcelling.Cache.get(LongSparseArrayParceling.class);
-            sParcellingForRejectEvents = parcelling2;
-            if (parcelling2 == null) {
+            sParcellingForRejectEvents = Parcelling.Cache.get(LongSparseArrayParceling.class);
+            if (sParcellingForRejectEvents == null) {
                 sParcellingForRejectEvents = Parcelling.Cache.put(new LongSparseArrayParceling());
             }
             CREATOR = new Parcelable.Creator<AttributedOpEntry>() { // from class: android.app.AppOpsManager.AttributedOpEntry.1
-                AnonymousClass1() {
-                }
-
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public AttributedOpEntry[] newArray(int size) {
                     return new AttributedOpEntry[size];
                 }
 
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public AttributedOpEntry createFromParcel(Parcel in) {
                     return new AttributedOpEntry(in);
@@ -1565,42 +1457,23 @@ public class AppOpsManager {
             LongSparseArray<NoteOpEvent> accessEvents = sParcellingForAccessEvents.unparcel(in);
             LongSparseArray<NoteOpEvent> rejectEvents = sParcellingForRejectEvents.unparcel(in);
             this.mOp = op;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, op, "from", 0L, "to", 135L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOp, "from", 0L, "to", 148L);
             this.mRunning = running;
             this.mAccessEvents = accessEvents;
             this.mRejectEvents = rejectEvents;
         }
-
-        /* renamed from: android.app.AppOpsManager$AttributedOpEntry$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<AttributedOpEntry> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AttributedOpEntry[] newArray(int size) {
-                return new AttributedOpEntry[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AttributedOpEntry createFromParcel(Parcel in) {
-                return new AttributedOpEntry(in);
-            }
-        }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class OpEntry implements Parcelable {
         public static final Parcelable.Creator<OpEntry> CREATOR = new Parcelable.Creator<OpEntry>() { // from class: android.app.AppOpsManager.OpEntry.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public OpEntry[] newArray(int size) {
                 return new OpEntry[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public OpEntry createFromParcel(Parcel in) {
                 return new OpEntry(in);
@@ -1672,14 +1545,14 @@ public class AppOpsManager {
         }
 
         private NoteOpEvent getLastRejectEvent(int fromUidState, int toUidState, int flags) {
-            NoteOpEvent lastAccessEvent = null;
+            NoteOpEvent lastRejectEvent = null;
             for (AttributedOpEntry attributionEntry : this.mAttributedOpEntries.values()) {
-                NoteOpEvent lastAttributionAccessEvent = attributionEntry.getLastRejectEvent(fromUidState, toUidState, flags);
-                if (lastAccessEvent == null || (lastAttributionAccessEvent != null && lastAttributionAccessEvent.getNoteTime() > lastAccessEvent.getNoteTime())) {
-                    lastAccessEvent = lastAttributionAccessEvent;
+                NoteOpEvent lastAttributionRejectEvent = attributionEntry.getLastRejectEvent(fromUidState, toUidState, flags);
+                if (lastRejectEvent == null || (lastAttributionRejectEvent != null && lastAttributionRejectEvent.getNoteTime() > lastRejectEvent.getNoteTime())) {
+                    lastRejectEvent = lastAttributionRejectEvent;
                 }
             }
-            return lastAccessEvent;
+            return lastRejectEvent;
         }
 
         public long getLastRejectTime(int fromUidState, int toUidState, int flags) {
@@ -1782,11 +1655,11 @@ public class AppOpsManager {
 
         public OpEntry(int op, int mode, Map<String, AttributedOpEntry> attributedOpEntries) {
             this.mOp = op;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, op, "from", 0L, "to", 135L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOp, "from", 0L, "to", 148L);
             this.mMode = mode;
-            AnnotationValidations.validate((Class<? extends Annotation>) Mode.class, (Annotation) null, mode);
+            AnnotationValidations.validate((Class<? extends Annotation>) Mode.class, (Annotation) null, this.mMode);
             this.mAttributedOpEntries = attributedOpEntries;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) attributedOpEntries);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAttributedOpEntries);
         }
 
         public int getMode() {
@@ -1815,33 +1688,15 @@ public class AppOpsManager {
             Map<String, AttributedOpEntry> attributions = new LinkedHashMap<>();
             in.readMap(attributions, AttributedOpEntry.class.getClassLoader());
             this.mOp = op;
-            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, op, "from", 0L, "to", 135L);
+            AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOp, "from", 0L, "to", 148L);
             this.mMode = mode;
-            AnnotationValidations.validate((Class<? extends Annotation>) Mode.class, (Annotation) null, mode);
+            AnnotationValidations.validate((Class<? extends Annotation>) Mode.class, (Annotation) null, this.mMode);
             this.mAttributedOpEntries = attributions;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) attributions);
-        }
-
-        /* renamed from: android.app.AppOpsManager$OpEntry$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<OpEntry> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public OpEntry[] newArray(int size) {
-                return new OpEntry[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public OpEntry createFromParcel(Parcel in) {
-                return new OpEntry(in);
-            }
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAttributedOpEntries);
         }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class HistoricalOpsRequest {
         private final String mAttributionTag;
         private final long mBeginTimeMillis;
@@ -1852,10 +1707,6 @@ public class AppOpsManager {
         private final List<String> mOpNames;
         private final String mPackageName;
         private final int mUid;
-
-        /* synthetic */ HistoricalOpsRequest(int i, String str, String str2, List list, int i2, int i3, long j, long j2, int i4, HistoricalOpsRequestIA historicalOpsRequestIA) {
-            this(i, str, str2, list, i2, i3, j, j2, i4);
-        }
 
         private HistoricalOpsRequest(int uid, String packageName, String attributionTag, List<String> opNames, int historyFlags, int filter, long beginTimeMillis, long endTimeMillis, int flags) {
             this.mUid = uid;
@@ -1870,7 +1721,6 @@ public class AppOpsManager {
         }
 
         @SystemApi
-        /* loaded from: classes.dex */
         public static final class Builder {
             private String mAttributionTag;
             private final long mBeginTimeMillis;
@@ -1924,7 +1774,7 @@ public class AppOpsManager {
                     }
                 }
                 this.mOpNames = opNames;
-                if (opNames == null) {
+                if (this.mOpNames == null) {
                     this.mFilter &= -9;
                 } else {
                     this.mFilter |= 8;
@@ -1951,17 +1801,15 @@ public class AppOpsManager {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class HistoricalOps implements Parcelable {
         public static final Parcelable.Creator<HistoricalOps> CREATOR = new Parcelable.Creator<HistoricalOps>() { // from class: android.app.AppOpsManager.HistoricalOps.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalOps createFromParcel(Parcel parcel) {
                 return new HistoricalOps(parcel);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalOps[] newArray(int size) {
                 return new HistoricalOps[size];
@@ -1971,10 +1819,6 @@ public class AppOpsManager {
         private long mEndTimeMillis;
         private SparseArray<HistoricalUidOps> mHistoricalUidOps;
 
-        /* synthetic */ HistoricalOps(Parcel parcel, HistoricalOpsIA historicalOpsIA) {
-            this(parcel);
-        }
-
         public HistoricalOps(long beginTimeMillis, long endTimeMillis) {
             Preconditions.checkState(beginTimeMillis <= endTimeMillis);
             this.mBeginTimeMillis = beginTimeMillis;
@@ -1982,11 +1826,9 @@ public class AppOpsManager {
         }
 
         public HistoricalOps(HistoricalOps other) {
-            long j = other.mBeginTimeMillis;
-            this.mBeginTimeMillis = j;
-            long j2 = other.mEndTimeMillis;
-            this.mEndTimeMillis = j2;
-            Preconditions.checkState(j <= j2);
+            this.mBeginTimeMillis = other.mBeginTimeMillis;
+            this.mEndTimeMillis = other.mEndTimeMillis;
+            Preconditions.checkState(this.mBeginTimeMillis <= this.mEndTimeMillis);
             if (other.mHistoricalUidOps != null) {
                 int opCount = other.getUidCount();
                 for (int i = 0; i < opCount; i++) {
@@ -2158,27 +2000,24 @@ public class AppOpsManager {
         }
 
         public int getUidCount() {
-            SparseArray<HistoricalUidOps> sparseArray = this.mHistoricalUidOps;
-            if (sparseArray == null) {
+            if (this.mHistoricalUidOps == null) {
                 return 0;
             }
-            return sparseArray.size();
+            return this.mHistoricalUidOps.size();
         }
 
         public HistoricalUidOps getUidOpsAt(int index) {
-            SparseArray<HistoricalUidOps> sparseArray = this.mHistoricalUidOps;
-            if (sparseArray == null) {
+            if (this.mHistoricalUidOps == null) {
                 throw new IndexOutOfBoundsException();
             }
-            return sparseArray.valueAt(index);
+            return this.mHistoricalUidOps.valueAt(index);
         }
 
         public HistoricalUidOps getUidOps(int uid) {
-            SparseArray<HistoricalUidOps> sparseArray = this.mHistoricalUidOps;
-            if (sparseArray == null) {
+            if (this.mHistoricalUidOps == null) {
                 return null;
             }
-            return sparseArray.get(uid);
+            return this.mHistoricalUidOps.get(uid);
         }
 
         public void clearHistory(int uid, String packageName) {
@@ -2198,9 +2037,8 @@ public class AppOpsManager {
         public void writeToParcel(Parcel parcel, int flags) {
             parcel.writeLong(this.mBeginTimeMillis);
             parcel.writeLong(this.mEndTimeMillis);
-            SparseArray<HistoricalUidOps> sparseArray = this.mHistoricalUidOps;
-            if (sparseArray != null) {
-                int uidCount = sparseArray.size();
+            if (this.mHistoricalUidOps != null) {
+                int uidCount = this.mHistoricalUidOps.size();
                 parcel.writeInt(uidCount);
                 for (int i = 0; i < uidCount; i++) {
                     parcel.writeInt(this.mHistoricalUidOps.keyAt(i));
@@ -2251,57 +2089,36 @@ public class AppOpsManager {
             if (this.mBeginTimeMillis != other.mBeginTimeMillis || this.mEndTimeMillis != other.mEndTimeMillis) {
                 return false;
             }
-            SparseArray<HistoricalUidOps> sparseArray = this.mHistoricalUidOps;
-            if (sparseArray == null) {
+            if (this.mHistoricalUidOps == null) {
                 if (other.mHistoricalUidOps != null) {
                     return false;
                 }
-            } else if (!sparseArray.equals(other.mHistoricalUidOps)) {
+            } else if (!this.mHistoricalUidOps.equals(other.mHistoricalUidOps)) {
                 return false;
             }
             return true;
         }
 
         public int hashCode() {
-            long j = this.mBeginTimeMillis;
-            int result = (int) (j ^ (j >>> 32));
+            int result = (int) (this.mBeginTimeMillis ^ (this.mBeginTimeMillis >>> 32));
             return (result * 31) + this.mHistoricalUidOps.hashCode();
         }
 
         public String toString() {
             return getClass().getSimpleName() + "[from:" + this.mBeginTimeMillis + " to:" + this.mEndTimeMillis + NavigationBarInflaterView.SIZE_MOD_END;
         }
-
-        /* renamed from: android.app.AppOpsManager$HistoricalOps$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<HistoricalOps> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalOps createFromParcel(Parcel parcel) {
-                return new HistoricalOps(parcel);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalOps[] newArray(int size) {
-                return new HistoricalOps[size];
-            }
-        }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class HistoricalUidOps implements Parcelable {
         public static final Parcelable.Creator<HistoricalUidOps> CREATOR = new Parcelable.Creator<HistoricalUidOps>() { // from class: android.app.AppOpsManager.HistoricalUidOps.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalUidOps createFromParcel(Parcel parcel) {
                 return new HistoricalUidOps(parcel);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalUidOps[] newArray(int size) {
                 return new HistoricalUidOps[size];
@@ -2309,14 +2126,6 @@ public class AppOpsManager {
         };
         private ArrayMap<String, HistoricalPackageOps> mHistoricalPackageOps;
         private final int mUid;
-
-        /* synthetic */ HistoricalUidOps(HistoricalUidOps historicalUidOps, HistoricalUidOpsIA historicalUidOpsIA) {
-            this(historicalUidOps);
-        }
-
-        /* synthetic */ HistoricalUidOps(Parcel parcel, HistoricalUidOpsIA historicalUidOpsIA) {
-            this(parcel);
-        }
 
         public HistoricalUidOps(int uid) {
             this.mUid = uid;
@@ -2340,6 +2149,7 @@ public class AppOpsManager {
             this.mHistoricalPackageOps = parcel.createTypedArrayMap(HistoricalPackageOps.CREATOR);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public HistoricalUidOps splice(double fractionToRemove) {
             HistoricalUidOps splice = null;
             int packageCount = getPackageCount();
@@ -2359,6 +2169,7 @@ public class AppOpsManager {
             return splice;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void merge(HistoricalUidOps other) {
             int packageCount = other.getPackageCount();
             for (int i = 0; i < packageCount; i++) {
@@ -2375,6 +2186,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void filter(String packageName, String attributionTag, String[] opNames, int filter, int historyFilter, double fractionToRemove, long beginTimeMillis, long endTimeMillis) {
             int packageCount = getPackageCount();
             for (int i = packageCount - 1; i >= 0; i--) {
@@ -2389,6 +2201,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEmpty() {
             int packageCount = getPackageCount();
             for (int i = packageCount - 1; i >= 0; i--) {
@@ -2400,18 +2213,22 @@ public class AppOpsManager {
             return true;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessCount(int opCode, String packageName, String attributionTag, int uidState, int flags, long increment) {
             getOrCreateHistoricalPackageOps(packageName).increaseAccessCount(opCode, attributionTag, uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseRejectCount(int opCode, String packageName, String attributionTag, int uidState, int flags, long increment) {
             getOrCreateHistoricalPackageOps(packageName).increaseRejectCount(opCode, attributionTag, uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessDuration(int opCode, String packageName, String attributionTag, int uidState, int flags, long increment) {
             getOrCreateHistoricalPackageOps(packageName).increaseAccessDuration(opCode, attributionTag, uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addDiscreteAccess(int opCode, String packageName, String attributionTag, int uidState, int flag, long discreteAccessTime, long discreteAccessDuration, OpEventProxyInfo proxy) {
             getOrCreateHistoricalPackageOps(packageName).addDiscreteAccess(opCode, attributionTag, uidState, flag, discreteAccessTime, discreteAccessDuration, proxy);
         }
@@ -2421,33 +2238,30 @@ public class AppOpsManager {
         }
 
         public int getPackageCount() {
-            ArrayMap<String, HistoricalPackageOps> arrayMap = this.mHistoricalPackageOps;
-            if (arrayMap == null) {
+            if (this.mHistoricalPackageOps == null) {
                 return 0;
             }
-            return arrayMap.size();
+            return this.mHistoricalPackageOps.size();
         }
 
         public HistoricalPackageOps getPackageOpsAt(int index) {
-            ArrayMap<String, HistoricalPackageOps> arrayMap = this.mHistoricalPackageOps;
-            if (arrayMap == null) {
+            if (this.mHistoricalPackageOps == null) {
                 throw new IndexOutOfBoundsException();
             }
-            return arrayMap.valueAt(index);
+            return this.mHistoricalPackageOps.valueAt(index);
         }
 
         public HistoricalPackageOps getPackageOps(String packageName) {
-            ArrayMap<String, HistoricalPackageOps> arrayMap = this.mHistoricalPackageOps;
-            if (arrayMap == null) {
+            if (this.mHistoricalPackageOps == null) {
                 return null;
             }
-            return arrayMap.get(packageName);
+            return this.mHistoricalPackageOps.get(packageName);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void clearHistory(String packageName) {
-            ArrayMap<String, HistoricalPackageOps> arrayMap = this.mHistoricalPackageOps;
-            if (arrayMap != null) {
-                arrayMap.remove(packageName);
+            if (this.mHistoricalPackageOps != null) {
+                this.mHistoricalPackageOps.remove(packageName);
             }
         }
 
@@ -2462,6 +2276,7 @@ public class AppOpsManager {
             parcel.writeTypedArrayMap(this.mHistoricalPackageOps, flags);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void accept(HistoricalOpsVisitor visitor) {
             visitor.visitHistoricalUidOps(this);
             int packageCount = getPackageCount();
@@ -2483,23 +2298,6 @@ public class AppOpsManager {
             return historicalPackageOp;
         }
 
-        /* renamed from: android.app.AppOpsManager$HistoricalUidOps$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<HistoricalUidOps> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalUidOps createFromParcel(Parcel parcel) {
-                return new HistoricalUidOps(parcel);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalUidOps[] newArray(int size) {
-                return new HistoricalUidOps[size];
-            }
-        }
-
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
@@ -2511,12 +2309,11 @@ public class AppOpsManager {
             if (this.mUid != other.mUid) {
                 return false;
             }
-            ArrayMap<String, HistoricalPackageOps> arrayMap = this.mHistoricalPackageOps;
-            if (arrayMap == null) {
+            if (this.mHistoricalPackageOps == null) {
                 if (other.mHistoricalPackageOps != null) {
                     return false;
                 }
-            } else if (!arrayMap.equals(other.mHistoricalPackageOps)) {
+            } else if (!this.mHistoricalPackageOps.equals(other.mHistoricalPackageOps)) {
                 return false;
             }
             return true;
@@ -2524,25 +2321,20 @@ public class AppOpsManager {
 
         public int hashCode() {
             int result = this.mUid;
-            int i = result * 31;
-            ArrayMap<String, HistoricalPackageOps> arrayMap = this.mHistoricalPackageOps;
-            int result2 = i + (arrayMap != null ? arrayMap.hashCode() : 0);
-            return result2;
+            return (result * 31) + (this.mHistoricalPackageOps != null ? this.mHistoricalPackageOps.hashCode() : 0);
         }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class HistoricalPackageOps implements Parcelable {
         public static final Parcelable.Creator<HistoricalPackageOps> CREATOR = new Parcelable.Creator<HistoricalPackageOps>() { // from class: android.app.AppOpsManager.HistoricalPackageOps.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalPackageOps createFromParcel(Parcel parcel) {
                 return new HistoricalPackageOps(parcel);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalPackageOps[] newArray(int size) {
                 return new HistoricalPackageOps[size];
@@ -2550,14 +2342,6 @@ public class AppOpsManager {
         };
         private ArrayMap<String, AttributedHistoricalOps> mAttributedHistoricalOps;
         private final String mPackageName;
-
-        /* synthetic */ HistoricalPackageOps(HistoricalPackageOps historicalPackageOps, HistoricalPackageOpsIA historicalPackageOpsIA) {
-            this(historicalPackageOps);
-        }
-
-        /* synthetic */ HistoricalPackageOps(Parcel parcel, HistoricalPackageOpsIA historicalPackageOpsIA) {
-            this(parcel);
-        }
 
         public HistoricalPackageOps(String packageName) {
             this.mPackageName = packageName;
@@ -2581,6 +2365,7 @@ public class AppOpsManager {
             this.mAttributedHistoricalOps = parcel.createTypedArrayMap(AttributedHistoricalOps.CREATOR);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public HistoricalPackageOps splice(double fractionToRemove) {
             HistoricalPackageOps splice = null;
             int attributionCount = getAttributedOpsCount();
@@ -2600,6 +2385,7 @@ public class AppOpsManager {
             return splice;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void merge(HistoricalPackageOps other) {
             int attributionCount = other.getAttributedOpsCount();
             for (int i = 0; i < attributionCount; i++) {
@@ -2616,6 +2402,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void filter(String attributionTag, String[] opNames, int filter, int historyFilter, double fractionToRemove, long beginTimeMillis, long endTimeMillis) {
             int attributionCount = getAttributedOpsCount();
             for (int i = attributionCount - 1; i >= 0; i--) {
@@ -2630,6 +2417,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void accept(HistoricalOpsVisitor visitor) {
             visitor.visitHistoricalPackageOps(this);
             int attributionCount = getAttributedOpsCount();
@@ -2638,6 +2426,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEmpty() {
             int attributionCount = getAttributedOpsCount();
             for (int i = attributionCount - 1; i >= 0; i--) {
@@ -2649,18 +2438,22 @@ public class AppOpsManager {
             return true;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessCount(int opCode, String attributionTag, int uidState, int flags, long increment) {
             getOrCreateAttributedHistoricalOps(attributionTag).increaseAccessCount(opCode, uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseRejectCount(int opCode, String attributionTag, int uidState, int flags, long increment) {
             getOrCreateAttributedHistoricalOps(attributionTag).increaseRejectCount(opCode, uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessDuration(int opCode, String attributionTag, int uidState, int flags, long increment) {
             getOrCreateAttributedHistoricalOps(attributionTag).increaseAccessDuration(opCode, uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addDiscreteAccess(int opCode, String attributionTag, int uidState, int flag, long discreteAccessTime, long discreteAccessDuration, OpEventProxyInfo proxy) {
             getOrCreateAttributedHistoricalOps(attributionTag).addDiscreteAccess(opCode, uidState, flag, discreteAccessTime, discreteAccessDuration, proxy);
         }
@@ -2685,7 +2478,7 @@ public class AppOpsManager {
         public int getOpCount() {
             int numOps = 0;
             int numAttributions = getAttributedOpsCount();
-            for (int code = 0; code < 136; code++) {
+            for (int code = 0; code < 149; code++) {
                 String opName = AppOpsManager.opToPublicName(code);
                 int attributionNum = 0;
                 while (true) {
@@ -2706,7 +2499,7 @@ public class AppOpsManager {
         public HistoricalOp getOpAt(int index) {
             int numOpsFound = 0;
             int numAttributions = getAttributedOpsCount();
-            for (int code = 0; code < 136; code++) {
+            for (int code = 0; code < 149; code++) {
                 String opName = AppOpsManager.opToPublicName(code);
                 int attributionNum = 0;
                 while (true) {
@@ -2756,23 +2549,6 @@ public class AppOpsManager {
             parcel.writeTypedArrayMap(this.mAttributedHistoricalOps, flags);
         }
 
-        /* renamed from: android.app.AppOpsManager$HistoricalPackageOps$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<HistoricalPackageOps> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalPackageOps createFromParcel(Parcel parcel) {
-                return new HistoricalPackageOps(parcel);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalPackageOps[] newArray(int size) {
-                return new HistoricalPackageOps[size];
-            }
-        }
-
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
@@ -2784,63 +2560,53 @@ public class AppOpsManager {
             if (!this.mPackageName.equals(other.mPackageName)) {
                 return false;
             }
-            ArrayMap<String, AttributedHistoricalOps> arrayMap = this.mAttributedHistoricalOps;
-            if (arrayMap == null) {
+            if (this.mAttributedHistoricalOps == null) {
                 if (other.mAttributedHistoricalOps != null) {
                     return false;
                 }
-            } else if (!arrayMap.equals(other.mAttributedHistoricalOps)) {
+            } else if (!this.mAttributedHistoricalOps.equals(other.mAttributedHistoricalOps)) {
                 return false;
             }
             return true;
         }
 
         public int hashCode() {
-            String str = this.mPackageName;
-            int result = str != null ? str.hashCode() : 0;
-            int i = result * 31;
-            ArrayMap<String, AttributedHistoricalOps> arrayMap = this.mAttributedHistoricalOps;
-            int result2 = i + (arrayMap != null ? arrayMap.hashCode() : 0);
-            return result2;
+            int result = this.mPackageName != null ? this.mPackageName.hashCode() : 0;
+            return (result * 31) + (this.mAttributedHistoricalOps != null ? this.mAttributedHistoricalOps.hashCode() : 0);
         }
 
         public int getAttributedOpsCount() {
-            ArrayMap<String, AttributedHistoricalOps> arrayMap = this.mAttributedHistoricalOps;
-            if (arrayMap == null) {
+            if (this.mAttributedHistoricalOps == null) {
                 return 0;
             }
-            return arrayMap.size();
+            return this.mAttributedHistoricalOps.size();
         }
 
         public AttributedHistoricalOps getAttributedOpsAt(int index) {
-            ArrayMap<String, AttributedHistoricalOps> arrayMap = this.mAttributedHistoricalOps;
-            if (arrayMap == null) {
+            if (this.mAttributedHistoricalOps == null) {
                 throw new IndexOutOfBoundsException();
             }
-            return arrayMap.valueAt(index);
+            return this.mAttributedHistoricalOps.valueAt(index);
         }
 
         public AttributedHistoricalOps getAttributedOps(String attributionTag) {
-            ArrayMap<String, AttributedHistoricalOps> arrayMap = this.mAttributedHistoricalOps;
-            if (arrayMap == null) {
+            if (this.mAttributedHistoricalOps == null) {
                 return null;
             }
-            return arrayMap.get(attributionTag);
+            return this.mAttributedHistoricalOps.get(attributionTag);
         }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class AttributedHistoricalOps implements Parcelable {
         public static final Parcelable.Creator<AttributedHistoricalOps> CREATOR = new Parcelable.Creator<AttributedHistoricalOps>() { // from class: android.app.AppOpsManager.AttributedHistoricalOps.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AttributedHistoricalOps[] newArray(int size) {
                 return new AttributedHistoricalOps[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AttributedHistoricalOps createFromParcel(Parcel in) {
                 return new AttributedHistoricalOps(in);
@@ -2848,10 +2614,6 @@ public class AppOpsManager {
         };
         private ArrayMap<String, HistoricalOp> mHistoricalOps;
         private final String mTag;
-
-        /* synthetic */ AttributedHistoricalOps(AttributedHistoricalOps attributedHistoricalOps, AttributedHistoricalOpsIA attributedHistoricalOpsIA) {
-            this(attributedHistoricalOps);
-        }
 
         public AttributedHistoricalOps(String tag) {
             this.mTag = tag;
@@ -2870,6 +2632,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public AttributedHistoricalOps splice(double fractionToRemove) {
             AttributedHistoricalOps splice = null;
             int opCount = getOpCount();
@@ -2889,6 +2652,7 @@ public class AppOpsManager {
             return splice;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void merge(AttributedHistoricalOps other) {
             int opCount = other.getOpCount();
             for (int i = 0; i < opCount; i++) {
@@ -2905,6 +2669,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void filter(String[] opNames, int filter, int historyFilter, double scaleFactor, long beginTimeMillis, long endTimeMillis) {
             int opCount = getOpCount();
             for (int i = opCount - 1; i >= 0; i--) {
@@ -2916,6 +2681,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEmpty() {
             int opCount = getOpCount();
             for (int i = opCount - 1; i >= 0; i--) {
@@ -2927,46 +2693,48 @@ public class AppOpsManager {
             return true;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessCount(int opCode, int uidState, int flags, long increment) {
             getOrCreateHistoricalOp(opCode).increaseAccessCount(uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseRejectCount(int opCode, int uidState, int flags, long increment) {
             getOrCreateHistoricalOp(opCode).increaseRejectCount(uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessDuration(int opCode, int uidState, int flags, long increment) {
             getOrCreateHistoricalOp(opCode).increaseAccessDuration(uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addDiscreteAccess(int opCode, int uidState, int flag, long discreteAccessTime, long discreteAccessDuration, OpEventProxyInfo proxy) {
             getOrCreateHistoricalOp(opCode).addDiscreteAccess(uidState, flag, discreteAccessTime, discreteAccessDuration, proxy);
         }
 
         public int getOpCount() {
-            ArrayMap<String, HistoricalOp> arrayMap = this.mHistoricalOps;
-            if (arrayMap == null) {
+            if (this.mHistoricalOps == null) {
                 return 0;
             }
-            return arrayMap.size();
+            return this.mHistoricalOps.size();
         }
 
         public HistoricalOp getOpAt(int index) {
-            ArrayMap<String, HistoricalOp> arrayMap = this.mHistoricalOps;
-            if (arrayMap == null) {
+            if (this.mHistoricalOps == null) {
                 throw new IndexOutOfBoundsException();
             }
-            return arrayMap.valueAt(index);
+            return this.mHistoricalOps.valueAt(index);
         }
 
         public HistoricalOp getOp(String opName) {
-            ArrayMap<String, HistoricalOp> arrayMap = this.mHistoricalOps;
-            if (arrayMap == null) {
+            if (this.mHistoricalOps == null) {
                 return null;
             }
-            return arrayMap.get(opName);
+            return this.mHistoricalOps.get(opName);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void accept(HistoricalOpsVisitor visitor) {
             visitor.visitHistoricalAttributionOps(this);
             int opCount = getOpCount();
@@ -3024,13 +2792,11 @@ public class AppOpsManager {
                 flg = (byte) (flg | 2);
             }
             dest.writeByte(flg);
-            String str = this.mTag;
-            if (str != null) {
-                dest.writeString(str);
+            if (this.mTag != null) {
+                dest.writeString(this.mTag);
             }
-            ArrayMap<String, HistoricalOp> arrayMap = this.mHistoricalOps;
-            if (arrayMap != null) {
-                dest.writeMap(arrayMap);
+            if (this.mHistoricalOps != null) {
+                dest.writeMap(this.mHistoricalOps);
             }
         }
 
@@ -3050,37 +2816,18 @@ public class AppOpsManager {
             this.mTag = attributionTag;
             this.mHistoricalOps = historicalOps;
         }
-
-        /* renamed from: android.app.AppOpsManager$AttributedHistoricalOps$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<AttributedHistoricalOps> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AttributedHistoricalOps[] newArray(int size) {
-                return new AttributedHistoricalOps[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AttributedHistoricalOps createFromParcel(Parcel in) {
-                return new AttributedHistoricalOps(in);
-            }
-        }
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class HistoricalOp implements Parcelable {
         public static final Parcelable.Creator<HistoricalOp> CREATOR = new Parcelable.Creator<HistoricalOp>() { // from class: android.app.AppOpsManager.HistoricalOp.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalOp createFromParcel(Parcel source) {
                 return new HistoricalOp(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HistoricalOp[] newArray(int size) {
                 return new HistoricalOp[size];
@@ -3092,31 +2839,20 @@ public class AppOpsManager {
         private final int mOp;
         private LongSparseLongArray mRejectCount;
 
-        /* synthetic */ HistoricalOp(HistoricalOp historicalOp, HistoricalOpIA historicalOpIA) {
-            this(historicalOp);
-        }
-
-        /* synthetic */ HistoricalOp(Parcel parcel, HistoricalOpIA historicalOpIA) {
-            this(parcel);
-        }
-
         public HistoricalOp(int op) {
             this.mOp = op;
         }
 
         private HistoricalOp(HistoricalOp other) {
             this.mOp = other.mOp;
-            LongSparseLongArray longSparseLongArray = other.mAccessCount;
-            if (longSparseLongArray != null) {
-                this.mAccessCount = longSparseLongArray.m4942clone();
+            if (other.mAccessCount != null) {
+                this.mAccessCount = other.mAccessCount.m5226clone();
             }
-            LongSparseLongArray longSparseLongArray2 = other.mRejectCount;
-            if (longSparseLongArray2 != null) {
-                this.mRejectCount = longSparseLongArray2.m4942clone();
+            if (other.mRejectCount != null) {
+                this.mRejectCount = other.mRejectCount.m5226clone();
             }
-            LongSparseLongArray longSparseLongArray3 = other.mAccessDuration;
-            if (longSparseLongArray3 != null) {
-                this.mAccessDuration = longSparseLongArray3.m4942clone();
+            if (other.mAccessDuration != null) {
+                this.mAccessDuration = other.mAccessDuration.m5226clone();
             }
             int historicalOpCount = other.getDiscreteAccessCount();
             for (int i = 0; i < historicalOpCount; i++) {
@@ -3134,6 +2870,7 @@ public class AppOpsManager {
             this.mDiscreteAccesses = AppOpsManager.readDiscreteAccessArrayFromParcel(parcel);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void filter(int historyFlag, double scaleFactor, long beginTimeMillis, long endTimeMillis) {
             if ((historyFlag & 1) == 0) {
                 this.mAccessCount = null;
@@ -3159,6 +2896,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEmpty() {
             return (hasData(this.mAccessCount) || hasData(this.mRejectCount) || hasData(this.mAccessDuration) || this.mDiscreteAccesses != null) ? false : true;
         }
@@ -3167,6 +2905,7 @@ public class AppOpsManager {
             return array != null && array.size() > 0;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public HistoricalOp splice(double fractionToRemove) {
             HistoricalOp splice = new HistoricalOp(this.mOp);
             LongSparseLongArray longSparseLongArray = this.mAccessCount;
@@ -3196,6 +2935,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void merge(HistoricalOp other) {
             merge(new AppOpsManager$HistoricalOp$$ExternalSyntheticLambda0(this), other.mAccessCount);
             merge(new AppOpsManager$HistoricalOp$$ExternalSyntheticLambda1(this), other.mRejectCount);
@@ -3234,14 +2974,17 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessCount(int uidState, int flags, long increment) {
             increaseCount(getOrCreateAccessCount(), uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseRejectCount(int uidState, int flags, long increment) {
             increaseCount(getOrCreateRejectCount(), uidState, flags, increment);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void increaseAccessDuration(int uidState, int flags, long increment) {
             increaseCount(getOrCreateAccessDuration(), uidState, flags, increment);
         }
@@ -3255,6 +2998,7 @@ public class AppOpsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addDiscreteAccess(int uidState, int flag, long discreteAccessTime, long discreteAccessDuration, OpEventProxyInfo proxy) {
             List<AttributedOpEntry> discreteAccesses = getOrCreateDiscreteAccesses();
             LongSparseArray<NoteOpEvent> accessEvents = new LongSparseArray<>();
@@ -3262,13 +3006,10 @@ public class AppOpsManager {
             NoteOpEvent note = new NoteOpEvent(discreteAccessTime, discreteAccessDuration, proxy);
             accessEvents.append(key, note);
             AttributedOpEntry access = new AttributedOpEntry(this.mOp, false, accessEvents, null);
-            int insertionPoint = discreteAccesses.size();
-            do {
+            int insertionPoint = discreteAccesses.size() - 1;
+            while (insertionPoint >= 0 && discreteAccesses.get(insertionPoint).getLastAccessTime(31) >= discreteAccessTime) {
                 insertionPoint--;
-                if (insertionPoint < 0) {
-                    break;
-                }
-            } while (discreteAccesses.get(insertionPoint).getLastAccessTime(31) >= discreteAccessTime);
+            }
             int insertionPoint2 = insertionPoint + 1;
             if (insertionPoint2 < discreteAccesses.size() && discreteAccesses.get(insertionPoint2).getLastAccessTime(31) == discreteAccessTime) {
                 discreteAccesses.set(insertionPoint2, AppOpsManager.mergeAttributedOpEntries(Arrays.asList(discreteAccesses.get(insertionPoint2), access)));
@@ -3286,19 +3027,17 @@ public class AppOpsManager {
         }
 
         public int getDiscreteAccessCount() {
-            List<AttributedOpEntry> list = this.mDiscreteAccesses;
-            if (list == null) {
+            if (this.mDiscreteAccesses == null) {
                 return 0;
             }
-            return list.size();
+            return this.mDiscreteAccesses.size();
         }
 
         public AttributedOpEntry getDiscreteAccessAt(int index) {
-            List<AttributedOpEntry> list = this.mDiscreteAccesses;
-            if (list == null) {
+            if (this.mDiscreteAccesses == null) {
                 throw new IndexOutOfBoundsException();
             }
-            return list.get(index);
+            return this.mDiscreteAccesses.get(index);
         }
 
         public long getForegroundAccessCount(int flags) {
@@ -3374,9 +3113,8 @@ public class AppOpsManager {
             if (this.mOp != other.mOp || !AppOpsManager.equalsLongSparseLongArray(this.mAccessCount, other.mAccessCount) || !AppOpsManager.equalsLongSparseLongArray(this.mRejectCount, other.mRejectCount) || !AppOpsManager.equalsLongSparseLongArray(this.mAccessDuration, other.mAccessDuration)) {
                 return false;
             }
-            List<AttributedOpEntry> list = this.mDiscreteAccesses;
-            if (list != null) {
-                return list.equals(other.mDiscreteAccesses);
+            if (this.mDiscreteAccesses != null) {
+                return this.mDiscreteAccesses.equals(other.mDiscreteAccesses);
             }
             if (other.mDiscreteAccesses == null) {
                 return true;
@@ -3389,10 +3127,12 @@ public class AppOpsManager {
             return (((((((result * 31) + Objects.hashCode(this.mAccessCount)) * 31) + Objects.hashCode(this.mRejectCount)) * 31) + Objects.hashCode(this.mAccessDuration)) * 31) + Objects.hashCode(this.mDiscreteAccesses);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void accept(HistoricalOpsVisitor visitor) {
             visitor.visitHistoricalOp(this);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public LongSparseLongArray getOrCreateAccessCount() {
             if (this.mAccessCount == null) {
                 this.mAccessCount = new LongSparseLongArray();
@@ -3400,6 +3140,7 @@ public class AppOpsManager {
             return this.mAccessCount;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public LongSparseLongArray getOrCreateRejectCount() {
             if (this.mRejectCount == null) {
                 this.mRejectCount = new LongSparseLongArray();
@@ -3407,6 +3148,7 @@ public class AppOpsManager {
             return this.mRejectCount;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public LongSparseLongArray getOrCreateAccessDuration() {
             if (this.mAccessDuration == null) {
                 this.mAccessDuration = new LongSparseLongArray();
@@ -3446,25 +3188,9 @@ public class AppOpsManager {
             LongSparseArray<Object> result = AppOpsManager.collectKeys(this.mAccessCount, null);
             return AppOpsManager.collectKeys(this.mAccessDuration, AppOpsManager.collectKeys(this.mRejectCount, result));
         }
-
-        /* renamed from: android.app.AppOpsManager$HistoricalOp$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<HistoricalOp> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalOp createFromParcel(Parcel source) {
-                return new HistoricalOp(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public HistoricalOp[] newArray(int size) {
-                return new HistoricalOp[size];
-            }
-        }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static long sumForFlagsInStates(LongSparseLongArray counts, int beginUidState, int endUidState, int flags) {
         if (counts == null) {
             return 0L;
@@ -3483,6 +3209,7 @@ public class AppOpsManager {
         return sum;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static List<AttributedOpEntry> listForFlagsInStates(List<AttributedOpEntry> accesses, int beginUidState, int endUidState, int flags) {
         List<AttributedOpEntry> result = new ArrayList<>();
         if (accesses == null) {
@@ -3498,25 +3225,45 @@ public class AppOpsManager {
         return deduplicateDiscreteEvents(result);
     }
 
-    /* loaded from: classes.dex */
     public interface OnOpChangedListener {
         void onOpChanged(String str, String str2);
 
         default void onOpChanged(String op, String packageName, int userId) {
             onOpChanged(op, packageName);
         }
+
+        default void onOpChanged(String op, String packageName, int userId, String persistentDeviceId) {
+            if (Objects.equals(persistentDeviceId, VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT)) {
+                onOpChanged(op, packageName, userId);
+            }
+        }
     }
 
-    /* loaded from: classes.dex */
     public interface OnOpActiveChangedListener {
         void onOpActiveChanged(String str, int i, String str2, boolean z);
 
         default void onOpActiveChanged(String op, int uid, String packageName, String attributionTag, boolean active, int attributionFlags, int attributionChainId) {
             onOpActiveChanged(op, uid, packageName, active);
         }
+
+        default void onOpActiveChanged(String op, int uid, String packageName, String attributionTag, int virtualDeviceId, boolean active, int attributionFlags, int attributionChainId) {
+            if (virtualDeviceId == 0) {
+                onOpActiveChanged(op, uid, packageName, attributionTag, active, attributionFlags, attributionChainId);
+            }
+        }
     }
 
-    /* loaded from: classes.dex */
+    @SystemApi
+    public interface OnOpNotedListener {
+        void onOpNoted(String str, int i, String str2, String str3, int i2, int i3);
+
+        default void onOpNoted(String op, int uid, String packageName, String attributionTag, int virtualDeviceId, int flags, int result) {
+            if (virtualDeviceId == 0) {
+                onOpNoted(op, uid, packageName, attributionTag, flags, result);
+            }
+        }
+    }
+
     public interface OnOpNotedInternalListener extends OnOpNotedListener {
         void onOpNoted(int i, int i2, String str, String str2, int i3, int i4);
 
@@ -3526,7 +3273,6 @@ public class AppOpsManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class OnOpChangedInternalListener implements OnOpChangedListener {
         @Override // android.app.AppOpsManager.OnOpChangedListener
         public void onOpChanged(String op, String packageName) {
@@ -3534,9 +3280,12 @@ public class AppOpsManager {
 
         public void onOpChanged(int op, String packageName) {
         }
+
+        public void onOpChanged(int op, String packageName, String persistentDeviceId) {
+            onOpChanged(op, packageName);
+        }
     }
 
-    /* loaded from: classes.dex */
     public interface OnOpActiveChangedInternalListener extends OnOpActiveChangedListener {
         @Override // android.app.AppOpsManager.OnOpActiveChangedListener
         default void onOpActiveChanged(String op, int uid, String packageName, boolean active) {
@@ -3544,16 +3293,17 @@ public class AppOpsManager {
 
         default void onOpActiveChanged(int op, int uid, String packageName, boolean active) {
         }
+
+        default void onOpActiveChanged(int op, int uid, String packageName, int virtualDeviceId, boolean active) {
+        }
     }
 
-    /* loaded from: classes.dex */
     public interface OnOpStartedListener {
         public static final int START_TYPE_FAILED = 0;
         public static final int START_TYPE_RESUMED = 2;
         public static final int START_TYPE_STARTED = 1;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface StartedType {
         }
 
@@ -3564,16 +3314,22 @@ public class AppOpsManager {
                 onOpStarted(op, uid, packageName, attributionTag, flags, result);
             }
         }
+
+        default void onOpStarted(int op, int uid, String packageName, String attributionTag, int virtualDeviceId, int flags, int result, int startType, int attributionFlags, int attributionChainId) {
+            if (virtualDeviceId == 0) {
+                onOpStarted(op, uid, packageName, attributionTag, flags, result, startType, attributionFlags, attributionChainId);
+            }
+        }
     }
 
-    public AppOpsManager(Context context, IAppOpsService service) {
+    AppOpsManager(Context context, IAppOpsService service) {
         this.mContext = context;
         this.mService = service;
-        if (context != null) {
-            PackageManager pm = context.getPackageManager();
+        if (this.mContext != null) {
+            PackageManager pm = this.mContext.getPackageManager();
             try {
-                if (Build.IS_ENG && pm != null && pm.checkPermission(Manifest.permission.READ_DEVICE_CONFIG, context.getPackageName()) == 0) {
-                    DeviceConfig.addOnPropertiesChangedListener("privacy", context.getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda5
+                if (Build.IS_ENG && pm != null && pm.checkPermission(Manifest.permission.READ_DEVICE_CONFIG, this.mContext.getPackageName()) == 0) {
+                    DeviceConfig.addOnPropertiesChangedListener(KnoxZtInternalConst.Event.LogKeys.PRIVACY, this.mContext.getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda6
                         public final void onPropertiesChanged(DeviceConfig.Properties properties) {
                             AppOpsManager.lambda$new$0(properties);
                         }
@@ -3586,7 +3342,7 @@ public class AppOpsManager {
         sFullLog = false;
     }
 
-    public static /* synthetic */ void lambda$new$0(DeviceConfig.Properties properties) {
+    static /* synthetic */ void lambda$new$0(DeviceConfig.Properties properties) {
         if (properties.getKeyset().contains(FULL_LOG)) {
             sFullLog = Boolean.valueOf(properties.getBoolean(FULL_LOG, false));
         }
@@ -3608,9 +3364,29 @@ public class AppOpsManager {
         return result != null ? result : Collections.emptyList();
     }
 
+    @SystemApi
+    public List<PackageOps> getPackagesForOps(String[] ops, String persistentDeviceId) {
+        int[] opCodes;
+        if (ops != null) {
+            int opCount = ops.length;
+            opCodes = new int[opCount];
+            for (int i = 0; i < opCount; i++) {
+                opCodes[i] = sOpStrToOp.get(ops[i]).intValue();
+            }
+        } else {
+            opCodes = null;
+        }
+        try {
+            List<PackageOps> result = this.mService.getPackagesForOpsForDevice(opCodes, persistentDeviceId);
+            return result != null ? result : Collections.emptyList();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     public List<PackageOps> getPackagesForOps(int[] ops) {
         try {
-            return this.mService.getPackagesForOps(ops);
+            return this.mService.getPackagesForOpsForDevice(ops, VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -3651,7 +3427,7 @@ public class AppOpsManager {
         Objects.requireNonNull(executor, "executor cannot be null");
         Objects.requireNonNull(callback, "callback cannot be null");
         try {
-            this.mService.getHistoricalOps(request.mUid, request.mPackageName, request.mAttributionTag, request.mOpNames, request.mHistoryFlags, request.mFilter, request.mBeginTimeMillis, request.mEndTimeMillis, request.mFlags, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda0
+            this.mService.getHistoricalOps(request.mUid, request.mPackageName, request.mAttributionTag, request.mOpNames, request.mHistoryFlags, request.mFilter, request.mBeginTimeMillis, request.mEndTimeMillis, request.mFlags, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda2
                 @Override // android.os.RemoteCallback.OnResultListener
                 public final void onResult(Bundle bundle) {
                     AppOpsManager.lambda$getHistoricalOps$2(executor, callback, bundle);
@@ -3662,11 +3438,11 @@ public class AppOpsManager {
         }
     }
 
-    public static /* synthetic */ void lambda$getHistoricalOps$2(Executor executor, final Consumer callback, Bundle result) {
+    static /* synthetic */ void lambda$getHistoricalOps$2(Executor executor, final Consumer callback, Bundle result) {
         final HistoricalOps ops = (HistoricalOps) result.getParcelable(KEY_HISTORICAL_OPS, HistoricalOps.class);
         long identity = Binder.clearCallingIdentity();
         try {
-            executor.execute(new Runnable() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda6
+            executor.execute(new Runnable() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     callback.accept(ops);
@@ -3681,7 +3457,7 @@ public class AppOpsManager {
         Objects.requireNonNull(executor, "executor cannot be null");
         Objects.requireNonNull(callback, "callback cannot be null");
         try {
-            this.mService.getHistoricalOpsFromDiskRaw(request.mUid, request.mPackageName, request.mAttributionTag, request.mOpNames, request.mHistoryFlags, request.mFilter, request.mBeginTimeMillis, request.mEndTimeMillis, request.mFlags, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda4
+            this.mService.getHistoricalOpsFromDiskRaw(request.mUid, request.mPackageName, request.mAttributionTag, request.mOpNames, request.mHistoryFlags, request.mFilter, request.mBeginTimeMillis, request.mEndTimeMillis, request.mFlags, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda3
                 @Override // android.os.RemoteCallback.OnResultListener
                 public final void onResult(Bundle bundle) {
                     AppOpsManager.lambda$getHistoricalOpsFromDiskRaw$4(executor, callback, bundle);
@@ -3692,7 +3468,7 @@ public class AppOpsManager {
         }
     }
 
-    public static /* synthetic */ void lambda$getHistoricalOpsFromDiskRaw$4(Executor executor, final Consumer callback, Bundle result) {
+    static /* synthetic */ void lambda$getHistoricalOpsFromDiskRaw$4(Executor executor, final Consumer callback, Bundle result) {
         final HistoricalOps ops = (HistoricalOps) result.getParcelable(KEY_HISTORICAL_OPS, HistoricalOps.class);
         long identity = Binder.clearCallingIdentity();
         try {
@@ -3716,16 +3492,22 @@ public class AppOpsManager {
     }
 
     public void setUidMode(int code, int uid, int mode) {
-        try {
-            this.mService.setUidMode(code, uid, mode);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
+        if (code == 111) {
+            try {
+                Log.i(DEBUG_LOGGING_TAG, "setUidMode called for OP_BLUETOOTH_CONNECT with mode: " + mode + " for uid: " + uid + " calling uid: " + Binder.getCallingUid() + " trace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
         }
+        this.mService.setUidMode(code, uid, mode);
     }
 
     @SystemApi
     public void setUidMode(String appOp, int uid, int mode) {
         try {
+            if (appOp.equals(OPSTR_BLUETOOTH_CONNECT)) {
+                Log.i(DEBUG_LOGGING_TAG, "setUidMode called for OPSTR_BLUETOOTH_CONNECT with mode: " + mode + " for uid: " + uid + " calling uid: " + Binder.getCallingUid() + " trace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+            }
             this.mService.setUidMode(strOpToOp(appOp), uid, mode);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -3748,6 +3530,7 @@ public class AppOpsManager {
         }
     }
 
+    @Deprecated(forRemoval = true, since = "16.0")
     public void semSetSystemAlertWindowRestricted(boolean restricted, IBinder token, String[] exceptionPackages) {
         PackageTagsList excludedPackageTags = null;
         if (!ArrayUtils.isEmpty(exceptionPackages)) {
@@ -3760,10 +3543,12 @@ public class AppOpsManager {
         setUserRestrictionForUser(24, restricted, token, excludedPackageTags, this.mContext.getUserId());
     }
 
+    @Deprecated(forRemoval = true, since = "16.0")
     public void semSetModeWriteSms(int uid, String packageName, int mode) {
         setMode(15, uid, packageName, mode);
     }
 
+    @Deprecated(forRemoval = true, since = "16.0")
     public void semSetBackgroundRestrictionMode(int uid, String packageName, boolean isTargetSdkVersionPreviousO, int mode) {
         if (isTargetSdkVersionPreviousO) {
             setMode(63, uid, packageName, mode);
@@ -3772,16 +3557,22 @@ public class AppOpsManager {
     }
 
     public void setMode(int code, int uid, String packageName, int mode) {
-        try {
-            this.mService.setMode(code, uid, packageName, mode);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
+        if (code == 111) {
+            try {
+                Log.i(DEBUG_LOGGING_TAG, "setMode called for OPSTR_BLUETOOTH_CONNECT with mode: " + mode + " for uid: " + uid + " calling uid: " + Binder.getCallingUid() + " trace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
         }
+        this.mService.setMode(code, uid, packageName, mode);
     }
 
     @SystemApi
     public void setMode(String op, int uid, String packageName, int mode) {
         try {
+            if (op.equals(OPSTR_BLUETOOTH_CONNECT)) {
+                Log.i(DEBUG_LOGGING_TAG, "setMode called for OPSTR_BLUETOOTH_CONNECT with mode: " + mode + " for uid: " + uid + " calling uid: " + Binder.getCallingUid() + " trace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+            }
             this.mService.setMode(strOpToOp(op), uid, packageName, mode);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -3850,29 +3641,32 @@ public class AppOpsManager {
         startWatchingMode(op, packageName, 0, callback);
     }
 
-    public void startWatchingMode(int op, String packageName, int flags, OnOpChangedListener callback) {
+    public void startWatchingMode(int op, String packageName, int flags, final OnOpChangedListener callback) {
         synchronized (this.mModeWatchers) {
             IAppOpsCallback cb = this.mModeWatchers.get(callback);
             if (cb == null) {
                 cb = new IAppOpsCallback.Stub() { // from class: android.app.AppOpsManager.2
-                    final /* synthetic */ OnOpChangedListener val$callback;
-
-                    AnonymousClass2(OnOpChangedListener callback2) {
-                        r2 = callback2;
-                    }
-
                     @Override // com.android.internal.app.IAppOpsCallback
-                    public void opChanged(int op2, int uid, String packageName2) {
-                        OnOpChangedListener onOpChangedListener = r2;
-                        if (onOpChangedListener instanceof OnOpChangedInternalListener) {
-                            ((OnOpChangedInternalListener) onOpChangedListener).onOpChanged(op2, packageName2);
+                    public void opChanged(int op2, int uid, String packageName2, String persistentDeviceId) {
+                        if (com.android.internal.hidden_from_bootclasspath.android.permission.flags.Flags.deviceAwarePermissionApisEnabled()) {
+                            if (callback instanceof OnOpChangedInternalListener) {
+                                ((OnOpChangedInternalListener) callback).onOpChanged(op2, packageName2, persistentDeviceId);
+                            }
+                            if (AppOpsManager.sAppOpInfos[op2].name != null) {
+                                callback.onOpChanged(AppOpsManager.sAppOpInfos[op2].name, packageName2, UserHandle.getUserId(uid), persistentDeviceId);
+                                return;
+                            }
+                            return;
+                        }
+                        if (callback instanceof OnOpChangedInternalListener) {
+                            ((OnOpChangedInternalListener) callback).onOpChanged(op2, packageName2);
                         }
                         if (AppOpsManager.sAppOpInfos[op2].name != null) {
-                            r2.onOpChanged(AppOpsManager.sAppOpInfos[op2].name, packageName2, UserHandle.getUserId(uid));
+                            callback.onOpChanged(AppOpsManager.sAppOpInfos[op2].name, packageName2, UserHandle.getUserId(uid));
                         }
                     }
                 };
-                this.mModeWatchers.put(callback2, cb);
+                this.mModeWatchers.put(callback, cb);
             }
             if (!Compatibility.isChangeEnabled(CALL_BACK_ON_CHANGED_LISTENER_WITH_SWITCHED_OP_CHANGE)) {
                 flags |= 2;
@@ -3881,27 +3675,6 @@ public class AppOpsManager {
                 this.mService.startWatchingModeWithFlags(op, packageName, flags, cb);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
-            }
-        }
-    }
-
-    /* renamed from: android.app.AppOpsManager$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends IAppOpsCallback.Stub {
-        final /* synthetic */ OnOpChangedListener val$callback;
-
-        AnonymousClass2(OnOpChangedListener callback2) {
-            r2 = callback2;
-        }
-
-        @Override // com.android.internal.app.IAppOpsCallback
-        public void opChanged(int op2, int uid, String packageName2) {
-            OnOpChangedListener onOpChangedListener = r2;
-            if (onOpChangedListener instanceof OnOpChangedInternalListener) {
-                ((OnOpChangedInternalListener) onOpChangedListener).onOpChanged(op2, packageName2);
-            }
-            if (AppOpsManager.sAppOpInfos[op2].name != null) {
-                r2.onOpChanged(AppOpsManager.sAppOpInfos[op2].name, packageName2, UserHandle.getUserId(uid));
             }
         }
     }
@@ -3950,9 +3723,8 @@ public class AppOpsManager {
         }
     }
 
-    /* renamed from: android.app.AppOpsManager$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 extends IAppOpsActiveCallback.Stub {
+    /* renamed from: android.app.AppOpsManager$3, reason: invalid class name */
+    class AnonymousClass3 extends IAppOpsActiveCallback.Stub {
         final /* synthetic */ OnOpActiveChangedListener val$callback;
         final /* synthetic */ Executor val$executor;
 
@@ -3962,18 +3734,28 @@ public class AppOpsManager {
         }
 
         @Override // com.android.internal.app.IAppOpsActiveCallback
-        public void opActiveChanged(final int op, final int uid, final String packageName, final String attributionTag, final boolean active, final int attributionFlags, final int attributionChainId) {
+        public void opActiveChanged(final int op, final int uid, final String packageName, final String attributionTag, final int virtualDeviceId, final boolean active, final int attributionFlags, final int attributionChainId) {
             Executor executor = this.val$executor;
             final OnOpActiveChangedListener onOpActiveChangedListener = this.val$callback;
             executor.execute(new Runnable() { // from class: android.app.AppOpsManager$3$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    AppOpsManager.AnonymousClass3.lambda$opActiveChanged$0(AppOpsManager.OnOpActiveChangedListener.this, op, uid, packageName, active, attributionTag, attributionFlags, attributionChainId);
+                    AppOpsManager.AnonymousClass3.lambda$opActiveChanged$0(AppOpsManager.OnOpActiveChangedListener.this, op, uid, packageName, virtualDeviceId, active, attributionTag, attributionFlags, attributionChainId);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$opActiveChanged$0(OnOpActiveChangedListener callback, int op, int uid, String packageName, boolean active, String attributionTag, int attributionFlags, int attributionChainId) {
+        static /* synthetic */ void lambda$opActiveChanged$0(OnOpActiveChangedListener callback, int op, int uid, String packageName, int virtualDeviceId, boolean active, String attributionTag, int attributionFlags, int attributionChainId) {
+            if (com.android.internal.hidden_from_bootclasspath.android.permission.flags.Flags.deviceAwarePermissionApisEnabled()) {
+                if (callback instanceof OnOpActiveChangedInternalListener) {
+                    ((OnOpActiveChangedInternalListener) callback).onOpActiveChanged(op, uid, packageName, virtualDeviceId, active);
+                }
+                if (AppOpsManager.sAppOpInfos[op].name != null) {
+                    callback.onOpActiveChanged(AppOpsManager.sAppOpInfos[op].name, uid, packageName, attributionTag, virtualDeviceId, active, attributionFlags, attributionChainId);
+                    return;
+                }
+                return;
+            }
             if (callback instanceof OnOpActiveChangedInternalListener) {
                 ((OnOpActiveChangedInternalListener) callback).onOpActiveChanged(op, uid, packageName, active);
             }
@@ -3996,44 +3778,23 @@ public class AppOpsManager {
         }
     }
 
-    public void startWatchingStarted(int[] ops, OnOpStartedListener callback) {
+    public void startWatchingStarted(int[] ops, final OnOpStartedListener callback) {
         synchronized (this.mStartedWatchers) {
             if (this.mStartedWatchers.containsKey(callback)) {
                 return;
             }
             IAppOpsStartedCallback cb = new IAppOpsStartedCallback.Stub() { // from class: android.app.AppOpsManager.4
-                final /* synthetic */ OnOpStartedListener val$callback;
-
-                AnonymousClass4(OnOpStartedListener callback2) {
-                    r2 = callback2;
-                }
-
                 @Override // com.android.internal.app.IAppOpsStartedCallback
-                public void opStarted(int op, int uid, String packageName, String attributionTag, int flags, int mode, int startType, int attributionFlags, int attributionChainId) {
-                    r2.onOpStarted(op, uid, packageName, attributionTag, flags, mode, startType, attributionFlags, attributionChainId);
+                public void opStarted(int op, int uid, String packageName, String attributionTag, int virtualDeviceId, int flags, int mode, int startType, int attributionFlags, int attributionChainId) {
+                    callback.onOpStarted(op, uid, packageName, attributionTag, virtualDeviceId, flags, mode, startType, attributionFlags, attributionChainId);
                 }
             };
-            this.mStartedWatchers.put(callback2, cb);
+            this.mStartedWatchers.put(callback, cb);
             try {
                 this.mService.startWatchingStarted(ops, cb);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
-        }
-    }
-
-    /* renamed from: android.app.AppOpsManager$4 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass4 extends IAppOpsStartedCallback.Stub {
-        final /* synthetic */ OnOpStartedListener val$callback;
-
-        AnonymousClass4(OnOpStartedListener callback2) {
-            r2 = callback2;
-        }
-
-        @Override // com.android.internal.app.IAppOpsStartedCallback
-        public void opStarted(int op, int uid, String packageName, String attributionTag, int flags, int mode, int startType, int attributionFlags, int attributionChainId) {
-            r2.onOpStarted(op, uid, packageName, attributionTag, flags, mode, startType, attributionFlags, attributionChainId);
         }
     }
 
@@ -4087,9 +3848,8 @@ public class AppOpsManager {
         }
     }
 
-    /* renamed from: android.app.AppOpsManager$5 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass5 extends IAppOpsNotedCallback.Stub {
+    /* renamed from: android.app.AppOpsManager$5, reason: invalid class name */
+    class AnonymousClass5 extends IAppOpsNotedCallback.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ OnOpNotedListener val$listener;
 
@@ -4099,7 +3859,7 @@ public class AppOpsManager {
         }
 
         @Override // com.android.internal.app.IAppOpsNotedCallback
-        public void opNoted(final int op, final int uid, final String packageName, final String attributionTag, final int flags, final int mode) {
+        public void opNoted(final int op, final int uid, final String packageName, final String attributionTag, final int virtualDeviceId, final int flags, final int mode) {
             long identity = Binder.clearCallingIdentity();
             try {
                 Executor executor = this.val$executor;
@@ -4107,7 +3867,7 @@ public class AppOpsManager {
                 executor.execute(new Runnable() { // from class: android.app.AppOpsManager$5$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
-                        AppOpsManager.AnonymousClass5.lambda$opNoted$0(op, onOpNotedListener, uid, packageName, attributionTag, flags, mode);
+                        AppOpsManager.AnonymousClass5.lambda$opNoted$0(op, onOpNotedListener, uid, packageName, attributionTag, virtualDeviceId, flags, mode);
                     }
                 });
             } finally {
@@ -4115,9 +3875,13 @@ public class AppOpsManager {
             }
         }
 
-        public static /* synthetic */ void lambda$opNoted$0(int op, OnOpNotedListener listener, int uid, String packageName, String attributionTag, int flags, int mode) {
+        static /* synthetic */ void lambda$opNoted$0(int op, OnOpNotedListener listener, int uid, String packageName, String attributionTag, int virtualDeviceId, int flags, int mode) {
             if (AppOpsManager.sAppOpInfos[op].name != null) {
-                listener.onOpNoted(AppOpsManager.sAppOpInfos[op].name, uid, packageName, attributionTag, flags, mode);
+                if (com.android.internal.hidden_from_bootclasspath.android.permission.flags.Flags.deviceAwarePermissionApisEnabled()) {
+                    listener.onOpNoted(AppOpsManager.sAppOpInfos[op].name, uid, packageName, attributionTag, virtualDeviceId, flags, mode);
+                } else {
+                    listener.onOpNoted(AppOpsManager.sAppOpInfos[op].name, uid, packageName, attributionTag, flags, mode);
+                }
             }
         }
     }
@@ -4174,22 +3938,40 @@ public class AppOpsManager {
         return unsafeCheckOpRawNoThrow(strOpToOp(op), uid, packageName);
     }
 
+    public int unsafeCheckOpRawNoThrow(int op, AttributionSource attributionSource) {
+        return unsafeCheckOpRawNoThrow(op, attributionSource.getUid(), attributionSource.getPackageName(), attributionSource.getDeviceId());
+    }
+
+    public int unsafeCheckOpRawNoThrow(String op, AttributionSource attributionSource) {
+        return unsafeCheckOpRawNoThrow(strOpToOp(op), attributionSource);
+    }
+
     public int unsafeCheckOpRawNoThrow(int op, int uid, String packageName) {
+        return unsafeCheckOpRawNoThrow(op, uid, packageName, 0);
+    }
+
+    private int unsafeCheckOpRawNoThrow(int op, int uid, String packageName, int virtualDeviceId) {
         try {
-            return this.mService.checkOperationRaw(op, uid, packageName, null);
+            if (virtualDeviceId == 0) {
+                return this.mService.checkOperationRaw(op, uid, packageName, null);
+            }
+            return this.mService.checkOperationRawForDevice(op, uid, packageName, null, virtualDeviceId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
+    @Deprecated(forRemoval = true, since = "16.0")
     public int semCheckOpWriteSms(int uid, String packageName) {
         return checkOp(15, uid, packageName);
     }
 
+    @Deprecated(forRemoval = true, since = "16.0")
     public int semCheckOpRunAnyInBackground(int uid, String packageName) {
         return checkOp(70, uid, packageName);
     }
 
+    @Deprecated(forRemoval = true, since = "16.0")
     public int semCheckOpSystemAlertWindow(int uid, String packageName) {
         return checkOp(24, uid, packageName);
     }
@@ -4235,28 +4017,39 @@ public class AppOpsManager {
         return noteOpNoThrow(strOpToOp(op), uid, packageName, attributionTag, message);
     }
 
+    public int noteOpNoThrow(int op, AttributionSource attributionSource, String message) {
+        return noteOpNoThrow(op, attributionSource.getUid(), attributionSource.getPackageName(), attributionSource.getAttributionTag(), attributionSource.getDeviceId(), message);
+    }
+
     public int noteOpNoThrow(int op, int uid, String packageName, String attributionTag, String message) {
-        int collectionMode;
+        return noteOpNoThrow(op, uid, packageName, attributionTag, 0, message);
+    }
+
+    private int noteOpNoThrow(int op, int uid, String packageName, String attributionTag, int virtualDeviceId, String message) {
         String message2;
         boolean shouldCollectMessage;
+        SyncNotedAppOp syncOp;
         try {
             collectNoteOpCallsForValidation(op);
-            try {
-                collectionMode = getNotedOpCollectionMode(uid, packageName, op);
-                boolean shouldCollectMessage2 = Process.myUid() == 1000;
-                if (collectionMode == 3 && message == null) {
-                    shouldCollectMessage = true;
-                    message2 = getFormattedStackTrace();
-                } else {
-                    message2 = message;
-                    shouldCollectMessage = shouldCollectMessage2;
-                }
-            } catch (RemoteException e) {
-                e = e;
-                throw e.rethrowFromSystemServer();
+        } catch (RemoteException e) {
+            e = e;
+        }
+        try {
+            int collectionMode = getNotedOpCollectionMode(uid, packageName, op);
+            boolean shouldCollectMessage2 = Process.myUid() == 1000;
+            if (collectionMode == 3 && message == null) {
+                shouldCollectMessage = true;
+                message2 = getFormattedStackTrace();
+            } else {
+                message2 = message;
+                shouldCollectMessage = shouldCollectMessage2;
             }
             try {
-                SyncNotedAppOp syncOp = this.mService.noteOperation(op, uid, packageName, attributionTag, collectionMode == 3, message2, shouldCollectMessage);
+                if (virtualDeviceId == 0) {
+                    syncOp = this.mService.noteOperation(op, uid, packageName, attributionTag, collectionMode == 3, message2, shouldCollectMessage);
+                } else {
+                    syncOp = this.mService.noteOperationForDevice(op, uid, packageName, attributionTag, virtualDeviceId, collectionMode == 3, message2, shouldCollectMessage);
+                }
                 if (syncOp.getOpMode() == 0) {
                     if (collectionMode == 1) {
                         collectNotedOpForSelf(syncOp);
@@ -4271,6 +4064,7 @@ public class AppOpsManager {
             }
         } catch (RemoteException e3) {
             e = e3;
+            throw e.rethrowFromSystemServer();
         }
     }
 
@@ -4315,6 +4109,7 @@ public class AppOpsManager {
     }
 
     public int noteProxyOpNoThrow(int op, AttributionSource attributionSource, String message, boolean skipProxyOperation) {
+        int collectionMode;
         boolean shouldCollectMessage;
         String message2;
         int myUid = Process.myUid();
@@ -4324,7 +4119,7 @@ public class AppOpsManager {
             e = e;
         }
         try {
-            int collectionMode = getNotedOpCollectionMode(attributionSource.getNextUid(), attributionSource.getNextAttributionTag(), op);
+            collectionMode = getNotedOpCollectionMode(attributionSource.getNextUid(), attributionSource.getNextAttributionTag(), op);
             boolean shouldCollectMessage2 = myUid == 1000;
             if (collectionMode == 3 && message == null) {
                 shouldCollectMessage = true;
@@ -4333,20 +4128,20 @@ public class AppOpsManager {
                 shouldCollectMessage = shouldCollectMessage2;
                 message2 = message;
             }
-            try {
-                SyncNotedAppOp syncOp = this.mService.noteProxyOperation(op, attributionSource, collectionMode == 3, message2, shouldCollectMessage, skipProxyOperation);
-                if (syncOp.getOpMode() == 0) {
-                    if (collectionMode == 1) {
-                        collectNotedOpForSelf(syncOp);
-                    } else if (collectionMode == 2 && (this.mContext.checkPermission(Manifest.permission.UPDATE_APP_OPS_STATS, -1, myUid) == 0 || Binder.getCallingUid() == attributionSource.getNextUid())) {
-                        collectNotedOpSync(syncOp);
-                    }
+        } catch (RemoteException e2) {
+            e = e2;
+            throw e.rethrowFromSystemServer();
+        }
+        try {
+            SyncNotedAppOp syncOp = this.mService.noteProxyOperationWithState(op, attributionSource.asState(), collectionMode == 3, message2, shouldCollectMessage, skipProxyOperation);
+            if (syncOp.getOpMode() == 0) {
+                if (collectionMode == 1) {
+                    collectNotedOpForSelf(syncOp);
+                } else if (collectionMode == 2 && (this.mContext.checkPermission(Manifest.permission.UPDATE_APP_OPS_STATS, -1, myUid) == 0 || Binder.getCallingUid() == attributionSource.getNextUid())) {
+                    collectNotedOpSync(syncOp);
                 }
-                return syncOp.getOpMode();
-            } catch (RemoteException e2) {
-                e = e2;
-                throw e.rethrowFromSystemServer();
             }
+            return syncOp.getOpMode();
         } catch (RemoteException e3) {
             e = e3;
             throw e.rethrowFromSystemServer();
@@ -4370,7 +4165,7 @@ public class AppOpsManager {
 
     public int checkOp(int op, int uid, String packageName) {
         try {
-            int mode = this.mService.checkOperation(op, uid, packageName);
+            int mode = this.mService.checkOperationForDevice(op, uid, packageName, 0);
             if (mode == 2) {
                 throw new SecurityException(buildSecurityExceptionMsg(op, uid, packageName));
             }
@@ -4380,9 +4175,22 @@ public class AppOpsManager {
         }
     }
 
+    public int checkOpNoThrow(int op, AttributionSource attributionSource) {
+        return checkOpNoThrow(op, attributionSource.getUid(), attributionSource.getPackageName(), attributionSource.getDeviceId());
+    }
+
     public int checkOpNoThrow(int op, int uid, String packageName) {
+        return checkOpNoThrow(op, uid, packageName, 0);
+    }
+
+    private int checkOpNoThrow(int op, int uid, String packageName, int virtualDeviceId) {
+        int mode;
         try {
-            int mode = this.mService.checkOperation(op, uid, packageName);
+            if (virtualDeviceId == 0) {
+                mode = this.mService.checkOperation(op, uid, packageName);
+            } else {
+                mode = this.mService.checkOperationForDevice(op, uid, packageName, virtualDeviceId);
+            }
             if (mode == 4) {
                 return 0;
             }
@@ -4439,7 +4247,8 @@ public class AppOpsManager {
         return iBinder;
     }
 
-    private static IAppOpsService getService() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static IAppOpsService getService() {
         IAppOpsService iAppOpsService;
         synchronized (sLock) {
             if (sService == null) {
@@ -4509,15 +4318,21 @@ public class AppOpsManager {
         return startOpNoThrow(token, op, uid, packageName, startIfModeDefault, attributionTag, message, 0, -1);
     }
 
+    public int startOpNoThrow(IBinder token, int op, AttributionSource attributionSource, boolean startIfModeDefault, String message, int attributionFlags, int attributionChainId) {
+        return startOpNoThrow(token, op, attributionSource.getUid(), attributionSource.getPackageName(), startIfModeDefault, attributionSource.getAttributionTag(), attributionSource.getDeviceId(), message, attributionFlags, attributionChainId);
+    }
+
     public int startOpNoThrow(IBinder token, int op, int uid, String packageName, boolean startIfModeDefault, String attributionTag, String message, int attributionFlags, int attributionChainId) {
+        return startOpNoThrow(token, op, uid, packageName, startIfModeDefault, attributionTag, 0, message, attributionFlags, attributionChainId);
+    }
+
+    private int startOpNoThrow(IBinder token, int op, int uid, String packageName, boolean startIfModeDefault, String attributionTag, int virtualDeviceId, String message, int attributionFlags, int attributionChainId) {
         String message2;
         boolean shouldCollectMessage;
+        int i;
+        SyncNotedAppOp syncOp;
         try {
             collectNoteOpCallsForValidation(op);
-        } catch (RemoteException e) {
-            e = e;
-        }
-        try {
             int collectionMode = getNotedOpCollectionMode(uid, packageName, op);
             boolean shouldCollectMessage2 = Process.myUid() == 1000;
             if (collectionMode == 3 && message == null) {
@@ -4528,22 +4343,27 @@ public class AppOpsManager {
                 shouldCollectMessage = shouldCollectMessage2;
             }
             try {
-                SyncNotedAppOp syncOp = this.mService.startOperation(token, op, uid, packageName, attributionTag, startIfModeDefault, collectionMode == 3, message2, shouldCollectMessage, attributionFlags, attributionChainId);
+                if (virtualDeviceId == 0) {
+                    i = 1;
+                    syncOp = this.mService.startOperation(token, op, uid, packageName, attributionTag, startIfModeDefault, collectionMode == 3, message2, shouldCollectMessage, attributionFlags, attributionChainId);
+                } else {
+                    i = 1;
+                    syncOp = this.mService.startOperationForDevice(token, op, uid, packageName, attributionTag, virtualDeviceId, startIfModeDefault, collectionMode == 3, message2, shouldCollectMessage, attributionFlags, attributionChainId);
+                }
                 if (syncOp.getOpMode() == 0) {
-                    if (collectionMode == 1) {
+                    if (collectionMode == i) {
                         collectNotedOpForSelf(syncOp);
                     } else if (collectionMode == 2) {
                         collectNotedOpSync(syncOp);
                     }
                 }
                 return syncOp.getOpMode();
-            } catch (RemoteException e2) {
-                e = e2;
+            } catch (RemoteException e) {
+                e = e;
                 throw e.rethrowFromSystemServer();
             }
-        } catch (RemoteException e3) {
-            e = e3;
-            throw e.rethrowFromSystemServer();
+        } catch (RemoteException e2) {
+            e = e2;
         }
     }
 
@@ -4586,7 +4406,7 @@ public class AppOpsManager {
             e = e;
         }
         try {
-            SyncNotedAppOp syncOp = this.mService.startProxyOperation(clientId, op, attributionSource, false, collectionMode == 3, message2, shouldCollectMessage, skipProxyOperation, proxyAttributionFlags, proxiedAttributionFlags, attributionChainId);
+            SyncNotedAppOp syncOp = this.mService.startProxyOperationWithState(clientId, op, attributionSource.asState(), false, collectionMode == 3, message2, shouldCollectMessage, skipProxyOperation, proxyAttributionFlags, proxiedAttributionFlags, attributionChainId);
             if (syncOp.getOpMode() == 0) {
                 if (collectionMode == 1) {
                     collectNotedOpForSelf(syncOp);
@@ -4622,9 +4442,21 @@ public class AppOpsManager {
         finishOp(this.mContext.getAttributionSource().getToken(), op, uid, packageName, attributionTag);
     }
 
+    public void finishOp(IBinder token, int op, AttributionSource attributionSource) {
+        finishOp(token, op, attributionSource.getUid(), attributionSource.getPackageName(), attributionSource.getAttributionTag(), attributionSource.getDeviceId());
+    }
+
     public void finishOp(IBinder token, int op, int uid, String packageName, String attributionTag) {
+        finishOp(token, op, uid, packageName, attributionTag, 0);
+    }
+
+    private void finishOp(IBinder token, int op, int uid, String packageName, String attributionTag, int virtualDeviceId) {
         try {
-            this.mService.finishOperation(token, op, uid, packageName, attributionTag);
+            if (virtualDeviceId == 0) {
+                this.mService.finishOperation(token, op, uid, packageName, attributionTag);
+            } else {
+                this.mService.finishOperationForDevice(token, op, uid, packageName, attributionTag, virtualDeviceId);
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -4637,7 +4469,7 @@ public class AppOpsManager {
 
     public void finishProxyOp(IBinder clientId, String op, AttributionSource attributionSource, boolean skipProxyOperation) {
         try {
-            this.mService.finishProxyOperation(clientId, strOpToOp(op), attributionSource, skipProxyOperation);
+            this.mService.finishProxyOperationWithState(clientId, strOpToOp(op), attributionSource.asState(), skipProxyOperation);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -4667,7 +4499,6 @@ public class AppOpsManager {
         sBinderThreadCallingUid.set(Integer.valueOf(callingUid));
     }
 
-    /* loaded from: classes.dex */
     public static class PausedNotedAppOpsCollection {
         final ArrayMap<String, BitSet> mCollectedNotedAppOps;
         final int mUid;
@@ -4679,13 +4510,11 @@ public class AppOpsManager {
     }
 
     public static PausedNotedAppOpsCollection pauseNotedAppOpsCollection() {
-        ThreadLocal<Integer> threadLocal = sBinderThreadCallingUid;
-        Integer previousUid = threadLocal.get();
+        Integer previousUid = sBinderThreadCallingUid.get();
         if (previousUid != null) {
-            ThreadLocal<ArrayMap<String, BitSet>> threadLocal2 = sAppOpsNotedInThisBinderTransaction;
-            ArrayMap<String, BitSet> previousCollectedNotedAppOps = threadLocal2.get();
-            threadLocal.remove();
-            threadLocal2.remove();
+            ArrayMap<String, BitSet> previousCollectedNotedAppOps = sAppOpsNotedInThisBinderTransaction.get();
+            sBinderThreadCallingUid.remove();
+            sAppOpsNotedInThisBinderTransaction.remove();
             return new PausedNotedAppOpsCollection(previousUid.intValue(), previousCollectedNotedAppOps);
         }
         return null;
@@ -4707,9 +4536,8 @@ public class AppOpsManager {
 
     private void collectNotedOpForSelf(SyncNotedAppOp syncOp) {
         synchronized (sLock) {
-            OnOpNotedCallback onOpNotedCallback = sOnOpNotedCallback;
-            if (onOpNotedCallback != null) {
-                onOpNotedCallback.onSelfNoted(syncOp);
+            if (sOnOpNotedCallback != null) {
+                sOnOpNotedCallback.onSelfNoted(syncOp);
             }
         }
         sMessageCollector.onSelfNoted(syncOp);
@@ -4717,38 +4545,44 @@ public class AppOpsManager {
 
     public static void collectNotedOpSync(SyncNotedAppOp syncOp) {
         int op = sOpStrToOp.get(syncOp.getOp()).intValue();
-        ThreadLocal<ArrayMap<String, BitSet>> threadLocal = sAppOpsNotedInThisBinderTransaction;
-        ArrayMap<String, BitSet> appOpsNoted = threadLocal.get();
+        ArrayMap<String, BitSet> appOpsNoted = sAppOpsNotedInThisBinderTransaction.get();
         if (appOpsNoted == null) {
             appOpsNoted = new ArrayMap<>(1);
-            threadLocal.set(appOpsNoted);
+            sAppOpsNotedInThisBinderTransaction.set(appOpsNoted);
         }
         BitSet appOpsNotedForAttribution = appOpsNoted.get(syncOp.getAttributionTag());
         if (appOpsNotedForAttribution == null) {
-            appOpsNotedForAttribution = new BitSet(136);
+            appOpsNotedForAttribution = new BitSet(149);
             appOpsNoted.put(syncOp.getAttributionTag(), appOpsNotedForAttribution);
         }
         appOpsNotedForAttribution.set(op);
+    }
+
+    @SystemApi
+    public List<PermissionGroupUsage> getPermissionGroupUsageForPrivacyIndicator(boolean includeMicrophoneUsage) {
+        if (this.mUsageHelper == null) {
+            this.mUsageHelper = new PermissionUsageHelper(this.mContext);
+        }
+        return this.mUsageHelper.getOpUsageDataForAllDevices(includeMicrophoneUsage);
     }
 
     private int getNotedOpCollectionMode(int uid, String packageName, int op) {
         if (packageName == null) {
             packageName = "android";
         }
-        byte[] bArr = sAppOpsToNote;
-        if (bArr[op] == 0) {
+        if (sAppOpsToNote[op] == 0) {
             try {
                 boolean shouldCollectNotes = this.mService.shouldCollectNotes(op);
                 if (shouldCollectNotes) {
-                    bArr[op] = 2;
+                    sAppOpsToNote[op] = 2;
                 } else {
-                    bArr[op] = 1;
+                    sAppOpsToNote[op] = 1;
                 }
             } catch (RemoteException e) {
                 return 0;
             }
         }
-        if (bArr[op] != 2) {
+        if (sAppOpsToNote[op] != 2) {
             return 0;
         }
         synchronized (sLock) {
@@ -4793,9 +4627,8 @@ public class AppOpsManager {
             if (!notedAppOps.isEmpty()) {
                 synchronized (sLock) {
                     for (int code = notedAppOps.nextSetBit(0); code != -1; code = notedAppOps.nextSetBit(code + 1)) {
-                        OnOpNotedCallback onOpNotedCallback = sOnOpNotedCallback;
-                        if (onOpNotedCallback != null) {
-                            onOpNotedCallback.onNoted(new SyncNotedAppOp(code, attributionTag));
+                        if (sOnOpNotedCallback != null) {
+                            sOnOpNotedCallback.onNoted(new SyncNotedAppOp(code, attributionTag));
                         } else {
                             String message = getFormattedStackTrace();
                             sUnforwardedOps.add(new AsyncNotedAppOp(code, Process.myUid(), attributionTag, message, System.currentTimeMillis()));
@@ -4839,7 +4672,7 @@ public class AppOpsManager {
                     int numMissedAsyncOps = missedAsyncOps.size();
                     for (int i = 0; i < numMissedAsyncOps; i++) {
                         final AsyncNotedAppOp asyncNotedAppOp = missedAsyncOps.get(i);
-                        onOpNotedCallback.getAsyncNotedExecutor().execute(new Runnable() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda2
+                        onOpNotedCallback.getAsyncNotedExecutor().execute(new Runnable() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda4
                             @Override // java.lang.Runnable
                             public final void run() {
                                 AppOpsManager.OnOpNotedCallback.this.onAsyncNoted(asyncNotedAppOp);
@@ -4852,7 +4685,7 @@ public class AppOpsManager {
                     if (onOpNotedCallback != null) {
                         for (int i2 = 0; i2 < numMissedSyncOps; i2++) {
                             final AsyncNotedAppOp syncNotedAppOp = sUnforwardedOps.get(i2);
-                            onOpNotedCallback.getAsyncNotedExecutor().execute(new Runnable() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda3
+                            onOpNotedCallback.getAsyncNotedExecutor().execute(new Runnable() { // from class: android.app.AppOpsManager$$ExternalSyntheticLambda5
                                 @Override // java.lang.Runnable
                                 public final void run() {
                                     AppOpsManager.OnOpNotedCallback.this.onAsyncNoted(syncNotedAppOp);
@@ -4885,14 +4718,14 @@ public class AppOpsManager {
         return sOnOpNotedCallback != null || isCollectingStackTraces();
     }
 
-    private static boolean isCollectingStackTraces() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean isCollectingStackTraces() {
         if (sConfig.getSampledOpCode() == -1 && sConfig.getAcceptableLeftDistance() == 0 && sConfig.getExpirationTimeSinceBootMillis() >= SystemClock.elapsedRealtime()) {
             return false;
         }
         return true;
     }
 
-    /* loaded from: classes.dex */
     public static abstract class OnOpNotedCallback {
         private final IAppOpsAsyncNotedCallback mAsyncCb = new AnonymousClass1();
         private Executor mAsyncExecutor;
@@ -4903,9 +4736,8 @@ public class AppOpsManager {
 
         public abstract void onSelfNoted(SyncNotedAppOp syncNotedAppOp);
 
-        /* renamed from: android.app.AppOpsManager$OnOpNotedCallback$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 extends IAppOpsAsyncNotedCallback.Stub {
+        /* renamed from: android.app.AppOpsManager$OnOpNotedCallback$1, reason: invalid class name */
+        class AnonymousClass1 extends IAppOpsAsyncNotedCallback.Stub {
             AnonymousClass1() {
             }
 
@@ -4925,6 +4757,7 @@ public class AppOpsManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$opNoted$0(AsyncNotedAppOp op) {
                 OnOpNotedCallback.this.onAsyncNoted(op);
             }
@@ -4937,7 +4770,6 @@ public class AppOpsManager {
 
     @SystemApi
     @Deprecated
-    /* loaded from: classes.dex */
     public static abstract class AppOpsCollector extends OnOpNotedCallback {
         @Override // android.app.AppOpsManager.OnOpNotedCallback
         public Executor getAsyncNotedExecutor() {
@@ -4945,7 +4777,8 @@ public class AppOpsManager {
         }
     }
 
-    private static String getFormattedStackTrace() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String getFormattedStackTrace() {
         StackTraceElement[] trace = new Exception().getStackTrace();
         int firstInteresting = 0;
         for (int i = 0; i < trace.length && (trace[i].getClassName().startsWith(AppOpsManager.class.getName()) || trace[i].getClassName().startsWith(Parcel.class.getName()) || trace[i].getClassName().contains("$Stub$Proxy") || trace[i].getClassName().startsWith(DatabaseUtils.class.getName()) || trace[i].getClassName().startsWith("android.content.ContentProviderProxy") || trace[i].getClassName().startsWith(ContentResolver.class.getName())); i++) {
@@ -4960,7 +4793,7 @@ public class AppOpsManager {
         for (int i4 = firstInteresting; i4 <= lastInteresting; i4++) {
             if (sFullLog == null) {
                 try {
-                    sFullLog = Boolean.valueOf(DeviceConfig.getBoolean("privacy", FULL_LOG, false));
+                    sFullLog = Boolean.valueOf(DeviceConfig.getBoolean(KnoxZtInternalConst.Event.LogKeys.PRIVACY, FULL_LOG, false));
                 } catch (Exception e) {
                     sFullLog = false;
                 }
@@ -4968,10 +4801,11 @@ public class AppOpsManager {
             if (i4 != firstInteresting) {
                 sb.append('\n');
             }
-            if (!sFullLog.booleanValue() && sb.length() + trace[i4].toString().length() > 600) {
+            String traceString = trace[i4].toString();
+            if (!sFullLog.booleanValue() && sb.length() + traceString.length() > 600) {
                 break;
             }
-            sb.append(trace[i4]);
+            sb.append(traceString);
         }
         return sb.toString();
     }
@@ -5044,22 +4878,17 @@ public class AppOpsManager {
     @SystemApi
     public static String[] getOpStrs() {
         String[] opStrs = new String[sAppOpInfos.length];
-        int i = 0;
-        while (true) {
-            AppOpInfo[] appOpInfoArr = sAppOpInfos;
-            if (i < appOpInfoArr.length) {
-                opStrs[i] = appOpInfoArr[i].name;
-                i++;
-            } else {
-                return opStrs;
-            }
+        for (int i = 0; i < sAppOpInfos.length; i++) {
+            opStrs[i] = sAppOpInfos[i].name;
         }
+        return opStrs;
     }
 
     public static int getNumOps() {
-        return 136;
+        return 149;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static NoteOpEvent getLastEvent(LongSparseArray<NoteOpEvent> events, int beginUidState, int endUidState, int flags) {
         if (events == null) {
             return null;
@@ -5082,6 +4911,7 @@ public class AppOpsManager {
         return lastEvent;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean equalsLongSparseLongArray(LongSparseLongArray a, LongSparseLongArray b) {
         if (a == b) {
             return true;
@@ -5098,6 +4928,7 @@ public class AppOpsManager {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void writeLongSparseLongArrayToParcel(LongSparseLongArray array, Parcel parcel) {
         if (array != null) {
             int size = array.size();
@@ -5111,6 +4942,7 @@ public class AppOpsManager {
         parcel.writeInt(-1);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static LongSparseLongArray readLongSparseLongArrayFromParcel(Parcel parcel) {
         int size = parcel.readInt();
         if (size < 0) {
@@ -5123,11 +4955,13 @@ public class AppOpsManager {
         return array;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void writeDiscreteAccessArrayToParcel(List<AttributedOpEntry> array, Parcel parcel, int flags) {
         ParceledListSlice<AttributedOpEntry> listSlice = array == null ? null : new ParceledListSlice<>(array);
         parcel.writeParcelable(listSlice, flags);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static List<AttributedOpEntry> readDiscreteAccessArrayFromParcel(Parcel parcel) {
         ParceledListSlice<AttributedOpEntry> listSlice = (ParceledListSlice) parcel.readParcelable(null, ParceledListSlice.class);
         if (listSlice == null) {
@@ -5136,6 +4970,7 @@ public class AppOpsManager {
         return listSlice.getList();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static LongSparseArray<Object> collectKeys(LongSparseLongArray array, LongSparseArray<Object> result) {
         if (array != null) {
             if (result == null) {
@@ -5239,6 +5074,7 @@ public class AppOpsManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static List<AttributedOpEntry> deduplicateDiscreteEvents(List<AttributedOpEntry> list) {
         int n = list.size();
         int i = 0;
@@ -5260,6 +5096,7 @@ public class AppOpsManager {
         return list;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static AttributedOpEntry mergeAttributedOpEntries(List<AttributedOpEntry> opEntries) {
         int opCount;
         if (opEntries.size() == 1) {

@@ -29,42 +29,39 @@ public class KernelCpuSpeedReader {
     }
 
     public long[] readDelta() {
-        BufferedReader reader;
         String line;
         StrictMode.ThreadPolicy policy = StrictMode.allowThreadDiskReads();
         try {
             try {
-                reader = new BufferedReader(new FileReader(this.mProcFile));
+                BufferedReader reader = new BufferedReader(new FileReader(this.mProcFile));
+                try {
+                    TextUtils.SimpleStringSplitter splitter = new TextUtils.SimpleStringSplitter(' ');
+                    for (int speedIndex = 0; speedIndex < this.mLastSpeedTimesMs.length && (line = reader.readLine()) != null; speedIndex++) {
+                        splitter.setString(line);
+                        splitter.next();
+                        long time = Long.parseLong(splitter.next()) * this.mJiffyMillis;
+                        if (time < this.mLastSpeedTimesMs[speedIndex]) {
+                            this.mDeltaSpeedTimesMs[speedIndex] = time;
+                        } else {
+                            this.mDeltaSpeedTimesMs[speedIndex] = time - this.mLastSpeedTimesMs[speedIndex];
+                        }
+                        this.mLastSpeedTimesMs[speedIndex] = time;
+                    }
+                    reader.close();
+                } catch (Throwable th) {
+                    try {
+                        reader.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                    throw th;
+                }
             } catch (IOException e) {
                 Slog.e(TAG, "Failed to read cpu-freq: " + e.getMessage());
                 Arrays.fill(this.mDeltaSpeedTimesMs, 0L);
             }
-            try {
-                TextUtils.SimpleStringSplitter splitter = new TextUtils.SimpleStringSplitter(' ');
-                for (int speedIndex = 0; speedIndex < this.mLastSpeedTimesMs.length && (line = reader.readLine()) != null; speedIndex++) {
-                    splitter.setString(line);
-                    splitter.next();
-                    long time = Long.parseLong(splitter.next()) * this.mJiffyMillis;
-                    long[] jArr = this.mLastSpeedTimesMs;
-                    long j = jArr[speedIndex];
-                    if (time < j) {
-                        this.mDeltaSpeedTimesMs[speedIndex] = time;
-                    } else {
-                        this.mDeltaSpeedTimesMs[speedIndex] = time - j;
-                    }
-                    jArr[speedIndex] = time;
-                }
-                reader.close();
-                StrictMode.setThreadPolicy(policy);
-                return this.mDeltaSpeedTimesMs;
-            } catch (Throwable th) {
-                try {
-                    reader.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-                throw th;
-            }
+            StrictMode.setThreadPolicy(policy);
+            return this.mDeltaSpeedTimesMs;
         } catch (Throwable th3) {
             StrictMode.setThreadPolicy(policy);
             throw th3;

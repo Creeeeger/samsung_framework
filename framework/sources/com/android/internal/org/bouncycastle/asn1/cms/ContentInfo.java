@@ -60,9 +60,8 @@ public class ContentInfo extends ASN1Object implements CMSObjectIdentifiers {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(this.contentType);
-        ASN1Encodable aSN1Encodable = this.content;
-        if (aSN1Encodable != null) {
-            v.add(new BERTaggedObject(0, aSN1Encodable));
+        if (this.content != null) {
+            v.add(new BERTaggedObject(0, this.content));
         }
         return new BERSequence(v);
     }

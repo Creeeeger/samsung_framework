@@ -49,36 +49,34 @@ public class SessionManager {
     };
     private List<ISessionListener> mSessionListeners = new ArrayList();
 
-    /* loaded from: classes3.dex */
     public interface ICurrentThreadId {
         int get();
     }
 
-    /* loaded from: classes3.dex */
-    public interface ISessionCleanupTimeoutMs {
+    /* JADX INFO: Access modifiers changed from: private */
+    interface ISessionCleanupTimeoutMs {
         long get();
     }
 
-    /* loaded from: classes3.dex */
     public interface ISessionIdQueryHandler {
         String getSessionId();
     }
 
-    /* loaded from: classes3.dex */
     public interface ISessionListener {
         void sessionComplete(String str, long j);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0() {
         cleanupStaleSessions(getSessionCleanupTimeoutMs());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ long lambda$new$1() {
-        Context context = this.mContext;
-        if (context == null) {
+        if (this.mContext == null) {
             return 30000L;
         }
-        return getCleanupTimeout(context);
+        return getCleanupTimeout(this.mContext);
     }
 
     public void setContext(Context context) {
@@ -91,9 +89,8 @@ public class SessionManager {
 
     private synchronized void resetStaleSessionTimer() {
         this.mSessionCleanupHandler.removeCallbacksAndMessages(null);
-        java.lang.Runnable runnable = this.mCleanStaleSessions;
-        if (runnable != null) {
-            this.mSessionCleanupHandler.postDelayed(runnable, getSessionCleanupTimeoutMs());
+        if (this.mCleanStaleSessions != null) {
+            this.mSessionCleanupHandler.postDelayed(this.mCleanStaleSessions, getSessionCleanupTimeoutMs());
         }
     }
 

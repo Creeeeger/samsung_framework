@@ -52,7 +52,7 @@ public class SemSwitchPreferenceScreen extends SwitchPreference {
 
     @Override // android.preference.TwoStatePreference, android.preference.Preference
     @Deprecated
-    public void onClick() {
+    protected void onClick() {
     }
 
     public void performClick() {
@@ -73,37 +73,34 @@ public class SemSwitchPreferenceScreen extends SwitchPreference {
                 if (isRTL && !checked) {
                     if (callChangeListener(true)) {
                         setChecked(true);
+                        break;
                     }
-                    return true;
+                } else if (!isRTL && checked) {
+                    if (callChangeListener(false)) {
+                        setChecked(false);
+                        break;
+                    }
                 }
-                if (isRTL || !checked) {
-                    return false;
-                }
-                if (callChangeListener(false)) {
-                    setChecked(false);
-                }
-                return true;
+                break;
             case 22:
                 if (isRTL && checked) {
                     if (callChangeListener(false)) {
                         setChecked(false);
+                        break;
                     }
-                    return true;
+                } else if (!isRTL && !checked) {
+                    if (callChangeListener(true)) {
+                        setChecked(true);
+                        break;
+                    }
                 }
-                if (isRTL || checked) {
-                    return false;
-                }
-                if (callChangeListener(true)) {
-                    setChecked(true);
-                }
-                return true;
-            default:
-                return false;
+                break;
         }
+        return false;
     }
 
     @Override // android.preference.SwitchPreference, android.preference.Preference
-    public void onBindView(View view) {
+    protected void onBindView(View view) {
         super.onBindView(view);
         TextView titleView = (TextView) view.findViewById(16908310);
         View switchView = view.findViewById(16908352);

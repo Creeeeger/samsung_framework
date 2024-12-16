@@ -3,7 +3,6 @@ package android.privacy.internal.rappor;
 import android.privacy.DifferentialPrivacyEncoder;
 import com.android.internal.midi.MidiConstants;
 import com.google.android.rappor.Encoder;
-import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -13,7 +12,7 @@ import java.util.Random;
 
 /* loaded from: classes3.dex */
 public class RapporEncoder implements DifferentialPrivacyEncoder {
-    private static final byte[] INSECURE_SECRET = {-41, 104, -103, -109, -108, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 83, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -41, 104, -103, -109, -108, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 83, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -41, 104, -103, -109, -108, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 83, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84};
+    private static final byte[] INSECURE_SECRET = {-41, 104, -103, -109, -108, 19, 83, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -41, 104, -103, -109, -108, 19, 83, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -41, 104, -103, -109, -108, 19, 83, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84, -2, MidiConstants.STATUS_CHANNEL_PRESSURE, 126, 84};
     private static final SecureRandom sSecureRandom = new SecureRandom();
     private final RapporConfig mConfig;
     private final Encoder mEncoder;

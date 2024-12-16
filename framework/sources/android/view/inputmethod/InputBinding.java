@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class InputBinding implements Parcelable {
     public static final Parcelable.Creator<InputBinding> CREATOR = new Parcelable.Creator<InputBinding>() { // from class: android.view.inputmethod.InputBinding.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputBinding createFromParcel(Parcel source) {
             return new InputBinding(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputBinding[] newArray(int size) {
             return new InputBinding[size];
@@ -72,23 +71,6 @@ public final class InputBinding implements Parcelable {
         dest.writeStrongBinder(this.mConnectionToken);
         dest.writeInt(this.mUid);
         dest.writeInt(this.mPid);
-    }
-
-    /* renamed from: android.view.inputmethod.InputBinding$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InputBinding> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputBinding createFromParcel(Parcel source) {
-            return new InputBinding(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputBinding[] newArray(int size) {
-            return new InputBinding[size];
-        }
     }
 
     @Override // android.os.Parcelable

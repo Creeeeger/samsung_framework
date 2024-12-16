@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class NetworkProviderInfo implements Parcelable {
     public static final Parcelable.Creator<NetworkProviderInfo> CREATOR = new Parcelable.Creator<NetworkProviderInfo>() { // from class: android.net.wifi.sharedconnectivity.app.NetworkProviderInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkProviderInfo createFromParcel(Parcel in) {
             return NetworkProviderInfo.readFromParcel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkProviderInfo[] newArray(int size) {
             return new NetworkProviderInfo[size];
@@ -32,30 +31,25 @@ public final class NetworkProviderInfo implements Parcelable {
     public static final int DEVICE_TYPE_TABLET = 2;
     public static final int DEVICE_TYPE_UNKNOWN = 0;
     public static final int DEVICE_TYPE_WATCH = 4;
-    public static final String EXTRA_KEY_IS_BATTERY_CHARGING = "is_battery_charging";
     private final int mBatteryPercentage;
     private final int mConnectionStrength;
     private final String mDeviceName;
     private final int mDeviceType;
     private final Bundle mExtras;
+    private final boolean mIsBatteryCharging;
     private final String mModelName;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeviceType {
     }
 
-    /* synthetic */ NetworkProviderInfo(int i, String str, String str2, int i2, int i3, Bundle bundle, NetworkProviderInfoIA networkProviderInfoIA) {
-        this(i, str, str2, i2, i3, bundle);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mBatteryPercentage;
         private int mConnectionStrength;
         private String mDeviceName;
         private int mDeviceType;
         private Bundle mExtras = Bundle.EMPTY;
+        private boolean mIsBatteryCharging;
         private String mModelName;
 
         public Builder(String deviceName, String modelName) {
@@ -87,6 +81,11 @@ public final class NetworkProviderInfo implements Parcelable {
             return this;
         }
 
+        public Builder setBatteryCharging(boolean isBatteryCharging) {
+            this.mIsBatteryCharging = isBatteryCharging;
+            return this;
+        }
+
         public Builder setConnectionStrength(int connectionStrength) {
             this.mConnectionStrength = connectionStrength;
             return this;
@@ -99,7 +98,7 @@ public final class NetworkProviderInfo implements Parcelable {
         }
 
         public NetworkProviderInfo build() {
-            return new NetworkProviderInfo(this.mDeviceType, this.mDeviceName, this.mModelName, this.mBatteryPercentage, this.mConnectionStrength, this.mExtras);
+            return new NetworkProviderInfo(this.mDeviceType, this.mDeviceName, this.mModelName, this.mBatteryPercentage, this.mIsBatteryCharging, this.mConnectionStrength, this.mExtras);
         }
     }
 
@@ -115,12 +114,13 @@ public final class NetworkProviderInfo implements Parcelable {
         }
     }
 
-    private NetworkProviderInfo(int deviceType, String deviceName, String modelName, int batteryPercentage, int connectionStrength, Bundle extras) {
+    private NetworkProviderInfo(int deviceType, String deviceName, String modelName, int batteryPercentage, boolean isBatteryCharging, int connectionStrength, Bundle extras) {
         validate(deviceType, deviceName, modelName, batteryPercentage, connectionStrength);
         this.mDeviceType = deviceType;
         this.mDeviceName = deviceName;
         this.mModelName = modelName;
         this.mBatteryPercentage = batteryPercentage;
+        this.mIsBatteryCharging = isBatteryCharging;
         this.mConnectionStrength = connectionStrength;
         this.mExtras = extras;
     }
@@ -141,6 +141,10 @@ public final class NetworkProviderInfo implements Parcelable {
         return this.mBatteryPercentage;
     }
 
+    public boolean isBatteryCharging() {
+        return this.mIsBatteryCharging;
+    }
+
     public int getConnectionStrength() {
         return this.mConnectionStrength;
     }
@@ -154,11 +158,11 @@ public final class NetworkProviderInfo implements Parcelable {
             return false;
         }
         NetworkProviderInfo other = (NetworkProviderInfo) obj;
-        return this.mDeviceType == other.getDeviceType() && Objects.equals(this.mDeviceName, other.mDeviceName) && Objects.equals(this.mModelName, other.mModelName) && this.mBatteryPercentage == other.mBatteryPercentage && this.mConnectionStrength == other.mConnectionStrength;
+        return this.mDeviceType == other.getDeviceType() && Objects.equals(this.mDeviceName, other.mDeviceName) && Objects.equals(this.mModelName, other.mModelName) && this.mBatteryPercentage == other.mBatteryPercentage && this.mIsBatteryCharging == other.mIsBatteryCharging && this.mConnectionStrength == other.mConnectionStrength;
     }
 
     public int hashCode() {
-        return Objects.hash(Integer.valueOf(this.mDeviceType), this.mDeviceName, this.mModelName, Integer.valueOf(this.mBatteryPercentage), Integer.valueOf(this.mConnectionStrength));
+        return Objects.hash(Integer.valueOf(this.mDeviceType), this.mDeviceName, this.mModelName, Integer.valueOf(this.mBatteryPercentage), Boolean.valueOf(this.mIsBatteryCharging), Integer.valueOf(this.mConnectionStrength));
     }
 
     @Override // android.os.Parcelable
@@ -167,6 +171,7 @@ public final class NetworkProviderInfo implements Parcelable {
         dest.writeString(this.mDeviceName);
         dest.writeString(this.mModelName);
         dest.writeInt(this.mBatteryPercentage);
+        dest.writeBoolean(this.mIsBatteryCharging);
         dest.writeInt(this.mConnectionStrength);
         dest.writeBundle(this.mExtras);
     }
@@ -177,27 +182,10 @@ public final class NetworkProviderInfo implements Parcelable {
     }
 
     public static NetworkProviderInfo readFromParcel(Parcel in) {
-        return new NetworkProviderInfo(in.readInt(), in.readString(), in.readString(), in.readInt(), in.readInt(), in.readBundle());
-    }
-
-    /* renamed from: android.net.wifi.sharedconnectivity.app.NetworkProviderInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkProviderInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkProviderInfo createFromParcel(Parcel in) {
-            return NetworkProviderInfo.readFromParcel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkProviderInfo[] newArray(int size) {
-            return new NetworkProviderInfo[size];
-        }
+        return new NetworkProviderInfo(in.readInt(), in.readString(), in.readString(), in.readInt(), in.readBoolean(), in.readInt(), in.readBundle());
     }
 
     public String toString() {
-        return "NetworkProviderInfo[deviceType=" + this.mDeviceType + ", deviceName=" + this.mDeviceName + ", modelName=" + this.mModelName + ", batteryPercentage=" + this.mBatteryPercentage + ", connectionStrength=" + this.mConnectionStrength + ", extras=" + this.mExtras.toString() + NavigationBarInflaterView.SIZE_MOD_END;
+        return "NetworkProviderInfo[deviceType=" + this.mDeviceType + ", deviceName=" + this.mDeviceName + ", modelName=" + this.mModelName + ", batteryPercentage=" + this.mBatteryPercentage + ", isBatteryCharging=" + this.mIsBatteryCharging + ", connectionStrength=" + this.mConnectionStrength + ", extras=" + this.mExtras.toString() + NavigationBarInflaterView.SIZE_MOD_END;
     }
 }

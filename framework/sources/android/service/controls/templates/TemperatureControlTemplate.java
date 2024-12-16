@@ -34,12 +34,10 @@ public final class TemperatureControlTemplate extends ControlTemplate {
     private final ControlTemplate mTemplate;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Mode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ModeFlag {
     }
 
@@ -59,19 +57,16 @@ public final class TemperatureControlTemplate extends ControlTemplate {
         } else {
             this.mCurrentActiveMode = currentActiveMode;
         }
-        int i = modesFlag & 62;
-        this.mModes = i;
-        int i2 = this.mCurrentMode;
-        if (i2 != 0 && (modeToFlag[i2] & i) == 0) {
+        this.mModes = modesFlag & 62;
+        if (this.mCurrentMode != 0 && (modeToFlag[this.mCurrentMode] & this.mModes) == 0) {
             throw new IllegalArgumentException("Mode " + this.mCurrentMode + " not supported in flag.");
         }
-        int i3 = this.mCurrentActiveMode;
-        if (i3 != 0 && (i & modeToFlag[i3]) == 0) {
+        if (this.mCurrentActiveMode != 0 && (modeToFlag[this.mCurrentActiveMode] & this.mModes) == 0) {
             throw new IllegalArgumentException("Mode " + currentActiveMode + " not supported in flag.");
         }
     }
 
-    public TemperatureControlTemplate(Bundle b) {
+    TemperatureControlTemplate(Bundle b) {
         super(b);
         this.mTemplate = ControlTemplate.createTemplateFromBundle(b.getBundle(KEY_TEMPLATE));
         this.mCurrentMode = b.getInt(KEY_CURRENT_MODE);
@@ -79,9 +74,8 @@ public final class TemperatureControlTemplate extends ControlTemplate {
         this.mModes = b.getInt(KEY_MODES);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.templates.ControlTemplate
-    public Bundle getDataBundle() {
+    Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putBundle(KEY_TEMPLATE, this.mTemplate.getDataBundle());
         b.putInt(KEY_CURRENT_MODE, this.mCurrentMode);

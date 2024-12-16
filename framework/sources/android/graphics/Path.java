@@ -6,11 +6,9 @@ import libcore.util.NativeAllocationRegistry;
 
 /* loaded from: classes.dex */
 public class Path {
-    public final long mNativePath;
-    private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Path.class.getClassLoader(), nGetFinalizer());
     static final FillType[] sFillTypeArray = {FillType.WINDING, FillType.EVEN_ODD, FillType.INVERSE_WINDING, FillType.INVERSE_EVEN_ODD};
+    public final long mNativePath;
 
-    /* loaded from: classes.dex */
     public enum Op {
         DIFFERENCE,
         INTERSECT,
@@ -52,7 +50,8 @@ public class Path {
     @CriticalNative
     private static native int nGetFillType(long j);
 
-    private static native long nGetFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nGetFinalizer();
 
     @CriticalNative
     private static native int nGetGenerationID(long j);
@@ -114,16 +113,21 @@ public class Path {
 
     private static native void nTransform(long j, long j2, long j3);
 
+    private static class NoImagePreloadHolder {
+        static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Path.class.getClassLoader(), Path.nGetFinalizer());
+
+        private NoImagePreloadHolder() {
+        }
+    }
+
     public Path() {
-        long nInit = nInit();
-        this.mNativePath = nInit;
-        sRegistry.registerNativeAllocation(this, nInit);
+        this.mNativePath = nInit();
+        NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, this.mNativePath);
     }
 
     public Path(Path src) {
-        long nInit = nInit(src != null ? src.mNativePath : 0L);
-        this.mNativePath = nInit;
-        sRegistry.registerNativeAllocation(this, nInit);
+        this.mNativePath = nInit(src != null ? src.mNativePath : 0L);
+        NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, this.mNativePath);
     }
 
     public void reset() {
@@ -160,7 +164,6 @@ public class Path {
         return nIsConvex(this.mNativePath);
     }
 
-    /* loaded from: classes.dex */
     public enum FillType {
         WINDING(0),
         EVEN_ODD(1),
@@ -200,7 +203,12 @@ public class Path {
         return nIsRect(this.mNativePath, rect);
     }
 
+    @Deprecated
     public void computeBounds(RectF bounds, boolean exact) {
+        computeBounds(bounds);
+    }
+
+    public void computeBounds(RectF bounds) {
         nComputeBounds(this.mNativePath, bounds);
     }
 
@@ -264,7 +272,6 @@ public class Path {
         nClose(this.mNativePath);
     }
 
-    /* loaded from: classes.dex */
     public enum Direction {
         CW(0),
         CCW(1);
@@ -367,7 +374,7 @@ public class Path {
         return this.mNativePath;
     }
 
-    public final long mutateNI() {
+    final long mutateNI() {
         return this.mNativePath;
     }
 

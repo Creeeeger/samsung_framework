@@ -18,7 +18,6 @@ public interface SurfaceHolder {
     @Deprecated
     public static final int SURFACE_TYPE_PUSH_BUFFERS = 3;
 
-    /* loaded from: classes4.dex */
     public interface Callback {
         void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3);
 
@@ -54,7 +53,6 @@ public interface SurfaceHolder {
 
     void unlockCanvasAndPost(Canvas canvas);
 
-    /* loaded from: classes4.dex */
     public static class BadSurfaceTypeException extends RuntimeException {
         public BadSurfaceTypeException() {
         }
@@ -64,7 +62,6 @@ public interface SurfaceHolder {
         }
     }
 
-    /* loaded from: classes4.dex */
     public interface Callback2 extends Callback {
         void surfaceRedrawNeeded(SurfaceHolder surfaceHolder);
 

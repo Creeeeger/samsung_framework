@@ -22,17 +22,16 @@ import java.util.List;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class UiccAccessRule implements Parcelable {
     public static final Parcelable.Creator<UiccAccessRule> CREATOR = new Parcelable.Creator<UiccAccessRule>() { // from class: android.telephony.UiccAccessRule.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccAccessRule createFromParcel(Parcel in) {
             return new UiccAccessRule(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccAccessRule[] newArray(int size) {
             return new UiccAccessRule[size];
@@ -45,23 +44,6 @@ public final class UiccAccessRule implements Parcelable {
     private final long mAccessType;
     private final byte[] mCertificateHash;
     private final String mPackageName;
-
-    /* renamed from: android.telephony.UiccAccessRule$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UiccAccessRule> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccAccessRule createFromParcel(Parcel in) {
-            return new UiccAccessRule(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccAccessRule[] newArray(int size) {
-            return new UiccAccessRule[size];
-        }
-    }
 
     public static byte[] encodeRules(UiccAccessRule[] accessRules) {
         if (accessRules == null) {

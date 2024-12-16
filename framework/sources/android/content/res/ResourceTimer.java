@@ -35,33 +35,23 @@ public final class ResourceTimer {
 
     private static native int nativeGetTimers(Timer[] timerArr, boolean z);
 
-    /* loaded from: classes.dex */
-    public static class Config {
+    private static class Config {
         int maxBuckets;
         int maxLargest;
         int maxTimer;
         String[] timers;
 
-        /* synthetic */ Config(ConfigIA configIA) {
-            this();
-        }
-
         private Config() {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class Timer {
+    private static class Timer {
         int count;
         int[] largest;
         int maxtime;
         int mintime;
         int[] percentile;
         long total;
-
-        /* synthetic */ Timer(TimerIA timerIA) {
-            this();
-        }
 
         private Timer() {
         }
@@ -85,29 +75,19 @@ public final class ResourceTimer {
                     throw new RuntimeException("ResourceTimer started too early");
                 }
                 mHandler = new Handler(Looper.getMainLooper()) { // from class: android.content.res.ResourceTimer.1
-                    AnonymousClass1(Looper looper) {
-                        super(looper);
-                    }
-
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         ResourceTimer.handleMessage(msg);
                     }
                 };
-                Config config = new Config();
-                sConfig = config;
-                nativeEnableTimers(config);
+                byte b = 0;
+                sConfig = new Config();
+                nativeEnableTimers(sConfig);
                 sTimers = new Timer[sConfig.maxTimer];
-                int i = 0;
-                while (true) {
-                    Timer[] timerArr = sTimers;
-                    if (i >= timerArr.length) {
-                        break;
-                    }
-                    timerArr[i] = new Timer();
+                for (int i = 0; i < sTimers.length; i++) {
+                    sTimers[i] = new Timer();
                     sTimers[i].percentile = new int[sConfig.maxBuckets];
                     sTimers[i].largest = new int[sConfig.maxLargest];
-                    i++;
                 }
                 sApiMap = new int[sConfig.maxTimer];
                 for (int i2 = 0; i2 < sApiMap.length; i2++) {
@@ -125,19 +105,7 @@ public final class ResourceTimer {
         }
     }
 
-    /* renamed from: android.content.res.ResourceTimer$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            ResourceTimer.handleMessage(msg);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static void handleMessage(Message msg) {
         synchronized (sLock) {
             publish();
@@ -146,21 +114,19 @@ public final class ResourceTimer {
     }
 
     private static void startTimer() {
-        long delay;
-        int i = sCurrentPoint;
-        long[] jArr = sPublicationPoints;
-        if (i < jArr.length) {
-            delay = jArr[i];
+        long repeated;
+        if (sCurrentPoint < sPublicationPoints.length) {
+            repeated = sPublicationPoints[sCurrentPoint];
         } else {
-            long repeated = jArr[jArr.length - 1];
-            int prelude = jArr.length - 1;
-            delay = (i - prelude) * repeated;
+            long repeated2 = sPublicationPoints[sPublicationPoints.length - 1];
+            int prelude = sPublicationPoints.length - 1;
+            repeated = (sCurrentPoint - prelude) * repeated2;
         }
-        long delay2 = delay * 60000;
+        long delay = repeated * 60000;
         if (ENABLE_DEBUG) {
-            delay2 /= 60;
+            delay /= 60;
         }
-        mHandler.sendEmptyMessageAtTime(0, sProcessStart + delay2);
+        mHandler.sendEmptyMessageAtTime(0, sProcessStart + delay);
     }
 
     private static void update(boolean reset) {
@@ -170,25 +136,17 @@ public final class ResourceTimer {
 
     private static void publish() {
         update(true);
-        int i = 0;
-        while (true) {
-            Timer[] timerArr = sTimers;
-            if (i < timerArr.length) {
-                Timer timer = timerArr[i];
-                if (timer.count > 0) {
-                    Log.i(TAG, TextUtils.formatSimple("%s count=%d pvalues=%s", sConfig.timers[i], Integer.valueOf(timer.count), packedString(timer.percentile)));
-                    int i2 = sApiMap[i];
-                    if (i2 != 0) {
-                        FrameworkStatsLog.write(517, i2, timer.count, timer.total, timer.percentile[0], timer.percentile[1], timer.percentile[2], timer.percentile[3], timer.largest[0], timer.largest[1], timer.largest[2], timer.largest[3], timer.largest[4]);
-                    }
+        for (int i = 0; i < sTimers.length; i++) {
+            Timer timer = sTimers[i];
+            if (timer.count > 0) {
+                Log.i(TAG, TextUtils.formatSimple("%s count=%d pvalues=%s", sConfig.timers[i], Integer.valueOf(timer.count), packedString(timer.percentile)));
+                if (sApiMap[i] != 0) {
+                    FrameworkStatsLog.write(517, sApiMap[i], timer.count, timer.total, timer.percentile[0], timer.percentile[1], timer.percentile[2], timer.percentile[3], timer.largest[0], timer.largest[1], timer.largest[2], timer.largest[3], timer.largest[4]);
                 }
-                i++;
-            } else {
-                int i3 = sCurrentPoint;
-                sCurrentPoint = i3 + 1;
-                return;
             }
         }
+        int i2 = sCurrentPoint;
+        sCurrentPoint = i2 + 1;
     }
 
     private static String packedString(int[] a) {
@@ -198,36 +156,18 @@ public final class ResourceTimer {
     public static void dumpTimers(ParcelFileDescriptor pfd, String[] args) {
         FileOutputStream fout = new FileOutputStream(pfd.getFileDescriptor());
         PrintWriter pw = new FastPrintWriter(fout);
-        Object obj = sLock;
-        synchronized (obj) {
+        synchronized (sLock) {
             if (sEnabled && sConfig != null) {
                 boolean refresh = Arrays.asList(args).contains("-refresh");
-                synchronized (obj) {
+                synchronized (sLock) {
                     update(refresh);
                     long runtime = sLastUpdated - sProcessStart;
-                    char c = 0;
-                    char c2 = 1;
                     pw.format("  config runtime=%d proc=%s\n", Long.valueOf(runtime), Process.myProcessName());
-                    int i = 0;
-                    while (true) {
-                        Timer[] timerArr = sTimers;
-                        if (i < timerArr.length) {
-                            Timer t = timerArr[i];
-                            if (t.count != 0) {
-                                String name = sConfig.timers[i];
-                                Object[] objArr = new Object[7];
-                                objArr[c] = name;
-                                objArr[c2] = Integer.valueOf(t.count);
-                                objArr[2] = Long.valueOf(t.total / t.count);
-                                objArr[3] = Integer.valueOf(t.mintime);
-                                objArr[4] = Integer.valueOf(t.maxtime);
-                                objArr[5] = packedString(t.percentile);
-                                objArr[6] = packedString(t.largest);
-                                pw.format("  stats timer=%s cnt=%d avg=%d min=%d max=%d pval=%s largest=%s\n", objArr);
-                            }
-                            i++;
-                            c = 0;
-                            c2 = 1;
+                    for (int i = 0; i < sTimers.length; i++) {
+                        Timer t = sTimers[i];
+                        if (t.count != 0) {
+                            String name = sConfig.timers[i];
+                            pw.format("  stats timer=%s cnt=%d avg=%d min=%d max=%d pval=%s largest=%s\n", name, Integer.valueOf(t.count), Long.valueOf(t.total / t.count), Integer.valueOf(t.mintime), Integer.valueOf(t.maxtime), packedString(t.percentile), packedString(t.largest));
                         }
                     }
                 }

@@ -21,7 +21,6 @@ public class SemGridSortAnimator {
     private static final Interpolator FADE_IN_INTERPOLATOR = new PathInterpolator(0.33f, 0.0f, 0.2f, 1.0f);
     private static final Interpolator FADE_OUT_INTERPOLATOR = new AccelerateInterpolator();
 
-    /* loaded from: classes5.dex */
     public interface OnSortListener {
         void onSort();
     }
@@ -36,17 +35,13 @@ public class SemGridSortAnimator {
 
     public void sortTheGrid() {
         int childCount = this.mGridView.getChildCount();
-        Animator.AnimatorListener animatorListener = this.mAnimatorListener;
-        if (animatorListener != null) {
-            animatorListener.onAnimationStart(null);
+        if (this.mAnimatorListener != null) {
+            this.mAnimatorListener.onAnimationStart(null);
         }
         if (childCount == 0) {
             this.mOnSortListener.onSort();
             this.mGridView.invalidate();
             this.mGridView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.samsung.android.animation.SemGridSortAnimator.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     SemGridSortAnimator.this.mGridView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -57,17 +52,9 @@ public class SemGridSortAnimator {
         } else {
             int i = 0;
             while (i < childCount) {
-                boolean isLastChild = i == childCount + (-1);
-                View child = this.mGridView.getChildAt(i);
+                final boolean isLastChild = i == childCount + (-1);
+                final View child = this.mGridView.getChildAt(i);
                 child.animate().alpha(0.0f).setDuration(FADE_OUT_ANIMATION_DURATION).setStartDelay(0L).setInterpolator(FADE_OUT_INTERPOLATOR).setListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemGridSortAnimator.2
-                    final /* synthetic */ View val$child;
-                    final /* synthetic */ boolean val$isLastChild;
-
-                    AnonymousClass2(boolean isLastChild2, View child2) {
-                        isLastChild = isLastChild2;
-                        child = child2;
-                    }
-
                     @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                     public void onAnimationStart(Animator animation) {
                         if (isLastChild) {
@@ -82,9 +69,6 @@ public class SemGridSortAnimator {
                             SemGridSortAnimator.this.mOnSortListener.onSort();
                             SemGridSortAnimator.this.mGridView.invalidate();
                             SemGridSortAnimator.this.mGridView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.samsung.android.animation.SemGridSortAnimator.2.1
-                                AnonymousClass1() {
-                                }
-
                                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                                 public boolean onPreDraw() {
                                     SemGridSortAnimator.this.mGridView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -94,96 +78,14 @@ public class SemGridSortAnimator {
                             });
                         }
                     }
-
-                    /* renamed from: com.samsung.android.animation.SemGridSortAnimator$2$1 */
-                    /* loaded from: classes5.dex */
-                    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
-                        AnonymousClass1() {
-                        }
-
-                        @Override // android.view.ViewTreeObserver.OnPreDrawListener
-                        public boolean onPreDraw() {
-                            SemGridSortAnimator.this.mGridView.getViewTreeObserver().removeOnPreDrawListener(this);
-                            SemGridSortAnimator.this.startFadeInTranslateAnim();
-                            return true;
-                        }
-                    }
                 }).withLayer();
                 i++;
             }
         }
     }
 
-    /* renamed from: com.samsung.android.animation.SemGridSortAnimator$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ViewTreeObserver.OnPreDrawListener
-        public boolean onPreDraw() {
-            SemGridSortAnimator.this.mGridView.getViewTreeObserver().removeOnPreDrawListener(this);
-            SemGridSortAnimator.this.startFadeInTranslateAnim();
-            return true;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.animation.SemGridSortAnimator$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 extends AnimatorListenerAdapter {
-        final /* synthetic */ View val$child;
-        final /* synthetic */ boolean val$isLastChild;
-
-        AnonymousClass2(boolean isLastChild2, View child2) {
-            isLastChild = isLastChild2;
-            child = child2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            if (isLastChild) {
-                SemGridSortAnimator.this.mGridView.setEnabled(false);
-            }
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            child.setAlpha(1.0f);
-            if (isLastChild) {
-                SemGridSortAnimator.this.mOnSortListener.onSort();
-                SemGridSortAnimator.this.mGridView.invalidate();
-                SemGridSortAnimator.this.mGridView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.samsung.android.animation.SemGridSortAnimator.2.1
-                    AnonymousClass1() {
-                    }
-
-                    @Override // android.view.ViewTreeObserver.OnPreDrawListener
-                    public boolean onPreDraw() {
-                        SemGridSortAnimator.this.mGridView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        SemGridSortAnimator.this.startFadeInTranslateAnim();
-                        return true;
-                    }
-                });
-            }
-        }
-
-        /* renamed from: com.samsung.android.animation.SemGridSortAnimator$2$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
-            AnonymousClass1() {
-            }
-
-            @Override // android.view.ViewTreeObserver.OnPreDrawListener
-            public boolean onPreDraw() {
-                SemGridSortAnimator.this.mGridView.getViewTreeObserver().removeOnPreDrawListener(this);
-                SemGridSortAnimator.this.startFadeInTranslateAnim();
-                return true;
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void startFadeInTranslateAnim() {
-        Animator.AnimatorListener animatorListener;
         int childCount = this.mGridView.getChildCount();
         int columnCount = this.mGridView.getNumColumns();
         int childHeight = 0;
@@ -198,9 +100,6 @@ public class SemGridSortAnimator {
             child.animate().alpha(1.0f).translationY(0.0f).setListener(null).setDuration(FADE_IN_TRANSLATE_ANIMATION_DURATION).setStartDelay(DELAY_BETWEEN_ANIMATIONS * columnIndex).setInterpolator(FADE_IN_INTERPOLATOR).withLayer();
             if (i == childCount - 1) {
                 child.animate().setListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemGridSortAnimator.3
-                    AnonymousClass3() {
-                    }
-
                     @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                     public void onAnimationEnd(Animator animation) {
                         SemGridSortAnimator.this.mGridView.setEnabled(true);
@@ -211,23 +110,8 @@ public class SemGridSortAnimator {
                 });
             }
         }
-        if (childCount == 0 && (animatorListener = this.mAnimatorListener) != null) {
-            animatorListener.onAnimationEnd(null);
-        }
-    }
-
-    /* renamed from: com.samsung.android.animation.SemGridSortAnimator$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 extends AnimatorListenerAdapter {
-        AnonymousClass3() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            SemGridSortAnimator.this.mGridView.setEnabled(true);
-            if (SemGridSortAnimator.this.mAnimatorListener != null) {
-                SemGridSortAnimator.this.mAnimatorListener.onAnimationEnd(null);
-            }
+        if (childCount == 0 && this.mAnimatorListener != null) {
+            this.mAnimatorListener.onAnimationEnd(null);
         }
     }
 

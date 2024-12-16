@@ -5,17 +5,16 @@ import android.os.Parcelable;
 import java.lang.Comparable;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class Equal<T extends Comparable<T>> extends GenericEvaluator<T> {
     public static final Parcelable.Creator<Equal<?>> CREATOR = new Parcelable.Creator<Equal<?>>() { // from class: com.samsung.android.sume.core.evaluate.Equal.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Equal<?> createFromParcel(Parcel in) {
             return new Equal<>(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Equal<?>[] newArray(int size) {
             return new Equal[size];
@@ -67,7 +66,7 @@ public class Equal<T extends Comparable<T>> extends GenericEvaluator<T> {
         super.writeToParcel(parcel, i);
     }
 
-    public Equal(T value) {
+    Equal(T value) {
         super(value);
     }
 
@@ -78,22 +77,5 @@ public class Equal<T extends Comparable<T>> extends GenericEvaluator<T> {
 
     Equal(Parcel in) {
         super(in);
-    }
-
-    /* renamed from: com.samsung.android.sume.core.evaluate.Equal$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Equal<?>> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Equal<?> createFromParcel(Parcel in) {
-            return new Equal<>(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Equal<?>[] newArray(int size) {
-            return new Equal[size];
-        }
     }
 }

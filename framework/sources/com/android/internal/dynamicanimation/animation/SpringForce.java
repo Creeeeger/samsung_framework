@@ -3,7 +3,7 @@ package com.android.internal.dynamicanimation.animation;
 import android.hardware.scontext.SContextConstants;
 import com.android.internal.dynamicanimation.animation.DynamicAnimation;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class SpringForce implements Force {
     public static final float DAMPING_RATIO_HIGH_BOUNCY = 0.2f;
     public static final float DAMPING_RATIO_LOW_BOUNCY = 0.75f;
@@ -53,8 +53,7 @@ public final class SpringForce implements Force {
     }
 
     public float getStiffness() {
-        double d = this.mNaturalFreq;
-        return (float) (d * d);
+        return (float) (this.mNaturalFreq * this.mNaturalFreq);
     }
 
     public SpringForce setDampingRatio(float dampingRatio) {
@@ -82,9 +81,8 @@ public final class SpringForce implements Force {
     @Override // com.android.internal.dynamicanimation.animation.Force
     public float getAcceleration(float lastDisplacement, float lastVelocity) {
         float lastDisplacement2 = lastDisplacement - getFinalPosition();
-        double d = this.mNaturalFreq;
-        double k = d * d;
-        double c = d * 2.0d * this.mDampingRatio;
+        double k = this.mNaturalFreq * this.mNaturalFreq;
+        double c = this.mNaturalFreq * 2.0d * this.mDampingRatio;
         return (float) (((-k) * lastDisplacement2) - (lastVelocity * c));
     }
 
@@ -103,70 +101,48 @@ public final class SpringForce implements Force {
         if (this.mFinalPosition == UNSET) {
             throw new IllegalStateException("Error: Final position of the spring must be set before the animation starts");
         }
-        double d = this.mDampingRatio;
-        if (d > 1.0d) {
-            double d2 = this.mNaturalFreq;
-            this.mGammaPlus = ((-d) * d2) + (d2 * Math.sqrt((d * d) - 1.0d));
-            double d3 = this.mDampingRatio;
-            double d4 = this.mNaturalFreq;
-            this.mGammaMinus = ((-d3) * d4) - (d4 * Math.sqrt((d3 * d3) - 1.0d));
-        } else if (d >= SContextConstants.ENVIRONMENT_VALUE_UNKNOWN && d < 1.0d) {
-            this.mDampedFreq = this.mNaturalFreq * Math.sqrt(1.0d - (d * d));
+        if (this.mDampingRatio > 1.0d) {
+            this.mGammaPlus = ((-this.mDampingRatio) * this.mNaturalFreq) + (this.mNaturalFreq * Math.sqrt((this.mDampingRatio * this.mDampingRatio) - 1.0d));
+            this.mGammaMinus = ((-this.mDampingRatio) * this.mNaturalFreq) - (this.mNaturalFreq * Math.sqrt((this.mDampingRatio * this.mDampingRatio) - 1.0d));
+        } else if (this.mDampingRatio >= SContextConstants.ENVIRONMENT_VALUE_UNKNOWN && this.mDampingRatio < 1.0d) {
+            this.mDampedFreq = this.mNaturalFreq * Math.sqrt(1.0d - (this.mDampingRatio * this.mDampingRatio));
         }
         this.mInitialized = true;
     }
 
-    public DynamicAnimation.MassState updateValues(double lastDisplacement, double lastVelocity, long timeElapsed) {
+    DynamicAnimation.MassState updateValues(double lastDisplacement, double lastVelocity, long timeElapsed) {
         double displacement;
-        double cosCoeff;
+        double currentVelocity;
         init();
         double deltaT = timeElapsed / 1000.0d;
         double lastDisplacement2 = lastDisplacement - this.mFinalPosition;
-        double displacement2 = this.mDampingRatio;
-        if (displacement2 > 1.0d) {
-            double d = this.mGammaMinus;
-            double d2 = this.mGammaPlus;
-            double coeffA = lastDisplacement2 - (((d * lastDisplacement2) - lastVelocity) / (d - d2));
-            double coeffB = ((d * lastDisplacement2) - lastVelocity) / (d - d2);
-            displacement = (Math.pow(2.718281828459045d, d * deltaT) * coeffA) + (Math.pow(2.718281828459045d, this.mGammaPlus * deltaT) * coeffB);
-            double d3 = this.mGammaMinus;
-            double pow = coeffA * d3 * Math.pow(2.718281828459045d, d3 * deltaT);
-            double d4 = this.mGammaPlus;
-            double currentVelocity = pow + (coeffB * d4 * Math.pow(2.718281828459045d, d4 * deltaT));
-            cosCoeff = currentVelocity;
-        } else if (displacement2 == 1.0d) {
-            double d5 = this.mNaturalFreq;
-            double coeffB2 = lastVelocity + (d5 * lastDisplacement2);
-            double displacement3 = Math.pow(2.718281828459045d, (-d5) * deltaT) * (lastDisplacement2 + (coeffB2 * deltaT));
-            double pow2 = (lastDisplacement2 + (coeffB2 * deltaT)) * Math.pow(2.718281828459045d, (-this.mNaturalFreq) * deltaT);
-            double d6 = this.mNaturalFreq;
-            double currentVelocity2 = (pow2 * (-d6)) + (Math.pow(2.718281828459045d, (-d6) * deltaT) * coeffB2);
-            displacement = displacement3;
-            cosCoeff = currentVelocity2;
+        if (this.mDampingRatio > 1.0d) {
+            double coeffA = lastDisplacement2 - (((this.mGammaMinus * lastDisplacement2) - lastVelocity) / (this.mGammaMinus - this.mGammaPlus));
+            double coeffB = ((this.mGammaMinus * lastDisplacement2) - lastVelocity) / (this.mGammaMinus - this.mGammaPlus);
+            displacement = (Math.pow(2.718281828459045d, this.mGammaMinus * deltaT) * coeffA) + (Math.pow(2.718281828459045d, this.mGammaPlus * deltaT) * coeffB);
+            currentVelocity = (this.mGammaMinus * coeffA * Math.pow(2.718281828459045d, this.mGammaMinus * deltaT)) + (this.mGammaPlus * coeffB * Math.pow(2.718281828459045d, this.mGammaPlus * deltaT));
+        } else if (this.mDampingRatio != 1.0d) {
+            double sinCoeff = (1.0d / this.mDampedFreq) * ((this.mDampingRatio * this.mNaturalFreq * lastDisplacement2) + lastVelocity);
+            displacement = ((Math.cos(this.mDampedFreq * deltaT) * lastDisplacement2) + (Math.sin(this.mDampedFreq * deltaT) * sinCoeff)) * Math.pow(2.718281828459045d, (-this.mDampingRatio) * this.mNaturalFreq * deltaT);
+            double d = (-this.mNaturalFreq) * displacement * this.mDampingRatio;
+            double d2 = -this.mDampingRatio;
+            double lastDisplacement3 = this.mNaturalFreq;
+            double pow = Math.pow(2.718281828459045d, d2 * lastDisplacement3 * deltaT);
+            double d3 = (-this.mDampedFreq) * lastDisplacement2;
+            double cosCoeff = this.mDampedFreq;
+            currentVelocity = d + (pow * ((d3 * Math.sin(cosCoeff * deltaT)) + (this.mDampedFreq * sinCoeff * Math.cos(this.mDampedFreq * deltaT))));
         } else {
-            double d7 = 1.0d / this.mDampedFreq;
-            double d8 = this.mNaturalFreq;
-            double sinCoeff = d7 * ((displacement2 * d8 * lastDisplacement2) + lastVelocity);
-            double displacement4 = Math.pow(2.718281828459045d, (-displacement2) * d8 * deltaT) * ((Math.cos(this.mDampedFreq * deltaT) * lastDisplacement2) + (Math.sin(this.mDampedFreq * deltaT) * sinCoeff));
-            double d9 = this.mNaturalFreq;
-            double lastDisplacement3 = this.mDampingRatio;
-            double d10 = (-d9) * displacement4 * lastDisplacement3;
-            double pow3 = Math.pow(2.718281828459045d, (-lastDisplacement3) * d9 * deltaT);
-            double d11 = this.mDampedFreq;
-            double sin = (-d11) * lastDisplacement2 * Math.sin(d11 * deltaT);
-            double d12 = this.mDampedFreq;
-            double cos = d10 + (pow3 * (sin + (d12 * sinCoeff * Math.cos(d12 * deltaT))));
-            displacement = displacement4;
-            cosCoeff = cos;
+            double coeffB2 = lastVelocity + (this.mNaturalFreq * lastDisplacement2);
+            displacement = Math.pow(2.718281828459045d, (-this.mNaturalFreq) * deltaT) * ((coeffB2 * deltaT) + lastDisplacement2);
+            currentVelocity = (((coeffB2 * deltaT) + lastDisplacement2) * Math.pow(2.718281828459045d, (-this.mNaturalFreq) * deltaT) * (-this.mNaturalFreq)) + (Math.pow(2.718281828459045d, (-this.mNaturalFreq) * deltaT) * coeffB2);
         }
         this.mMassState.mValue = (float) (this.mFinalPosition + displacement);
-        this.mMassState.mVelocity = (float) cosCoeff;
+        this.mMassState.mVelocity = (float) currentVelocity;
         return this.mMassState;
     }
 
-    public void setValueThreshold(double threshold) {
-        double abs = Math.abs(threshold);
-        this.mValueThreshold = abs;
-        this.mVelocityThreshold = abs * VELOCITY_THRESHOLD_MULTIPLIER;
+    void setValueThreshold(double threshold) {
+        this.mValueThreshold = Math.abs(threshold);
+        this.mVelocityThreshold = this.mValueThreshold * VELOCITY_THRESHOLD_MULTIPLIER;
     }
 }

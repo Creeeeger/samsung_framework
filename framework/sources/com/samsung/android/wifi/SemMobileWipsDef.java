@@ -1,6 +1,7 @@
 package com.samsung.android.wifi;
 
 import android.security.keystore.KeyProperties;
+import com.samsung.android.core.AppJumpBlockTool;
 
 /* loaded from: classes6.dex */
 public class SemMobileWipsDef {
@@ -114,5 +115,5 @@ public class SemMobileWipsDef {
     protected static final String[] STR_MODULE = {"arpspoofing", "karmaap", "fakeap", "softap", "eviltwin", "dnsspoofing", "bigdata", "portscan", "evilcaptiveportal"};
     protected static final String[] DETECION_TYPE = {KeyProperties.DIGEST_NONE, "NOT_DETECTED", "DETECTED", "DETECTING", "SUSPECT", "UNKNOWN", "N/A"};
     protected static final String[] ATTACK_TYPE = {"eviltwin", "arpspoofing", "karma", "advkarma", "filterkarma", "aircrackng", "dnsspoofing", "sslstrip", "beacontiming", "evilcaptiveportal", "portscan", "eveiltwinie", "N/A", "fakeap", "softap", "hostap", "eviltwinbase", "hotspotandroid", "hotspotios", "N/A"};
-    protected static final String[] USER_RESPONSE = {"Exception", "Disconnect", "Dismiss", "Cancel", "NoAlert", "collectTS", "NoAlert_Exception_list", "NoAlert_Enterpise_AP"};
+    protected static final String[] USER_RESPONSE = {"Exception", "Disconnect", "Dismiss", AppJumpBlockTool.BlockDialogReceiver.RESULT_CANCEL, "NoAlert", "collectTS", "NoAlert_Exception_list", "NoAlert_Enterpise_AP"};
 }

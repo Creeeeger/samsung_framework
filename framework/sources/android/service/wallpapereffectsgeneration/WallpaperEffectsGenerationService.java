@@ -25,9 +25,6 @@ public abstract class WallpaperEffectsGenerationService extends Service {
     private static final String TAG = "WallpaperEffectsGenerationService";
     private Handler mHandler;
     private final IWallpaperEffectsGenerationService mInterface = new IWallpaperEffectsGenerationService.Stub() { // from class: android.service.wallpapereffectsgeneration.WallpaperEffectsGenerationService.1
-        AnonymousClass1() {
-        }
-
         @Override // android.service.wallpapereffectsgeneration.IWallpaperEffectsGenerationService
         public void onGenerateCinematicEffect(CinematicEffectRequest request) {
             WallpaperEffectsGenerationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.wallpapereffectsgeneration.WallpaperEffectsGenerationService$1$$ExternalSyntheticLambda0
@@ -41,23 +38,6 @@ public abstract class WallpaperEffectsGenerationService extends Service {
     private IWallpaperEffectsGenerationManager mService;
 
     public abstract void onGenerateCinematicEffect(CinematicEffectRequest cinematicEffectRequest);
-
-    /* renamed from: android.service.wallpapereffectsgeneration.WallpaperEffectsGenerationService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IWallpaperEffectsGenerationService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.service.wallpapereffectsgeneration.IWallpaperEffectsGenerationService
-        public void onGenerateCinematicEffect(CinematicEffectRequest request) {
-            WallpaperEffectsGenerationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.wallpapereffectsgeneration.WallpaperEffectsGenerationService$1$$ExternalSyntheticLambda0
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    ((WallpaperEffectsGenerationService) obj).onGenerateCinematicEffect((CinematicEffectRequest) obj2);
-                }
-            }, WallpaperEffectsGenerationService.this, request));
-        }
-    }
 
     public final void returnCinematicEffectResponse(CinematicEffectResponse response) {
         try {

@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IBluetoothMidiService extends IInterface {
     IBinder addBluetoothDevice(BluetoothDevice bluetoothDevice) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IBluetoothMidiService {
         @Override // android.media.midi.IBluetoothMidiService
         public IBinder addBluetoothDevice(BluetoothDevice bluetoothDevice) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IBluetoothMidiService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IBluetoothMidiService {
         public static final String DESCRIPTOR = "android.media.midi.IBluetoothMidiService";
         static final int TRANSACTION_addBluetoothDevice = 1;
@@ -68,26 +66,23 @@ public interface IBluetoothMidiService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    BluetoothDevice _arg0 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
+                    data.enforceNoDataAvail();
+                    IBinder _result = addBluetoothDevice(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            BluetoothDevice _arg0 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
-                            data.enforceNoDataAvail();
-                            IBinder _result = addBluetoothDevice(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IBluetoothMidiService {
             private IBinder mRemote;
 

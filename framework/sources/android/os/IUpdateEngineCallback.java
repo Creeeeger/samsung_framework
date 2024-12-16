@@ -6,7 +6,6 @@ public interface IUpdateEngineCallback extends IInterface {
 
     void onStatusUpdate(int i, float f) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IUpdateEngineCallback {
         @Override // android.os.IUpdateEngineCallback
         public void onStatusUpdate(int status_code, float percentage) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IUpdateEngineCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IUpdateEngineCallback {
         public static final String DESCRIPTOR = "android.os.IUpdateEngineCallback";
         static final int TRANSACTION_onPayloadApplicationComplete = 2;
@@ -69,32 +67,28 @@ public interface IUpdateEngineCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    float _arg1 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onStatusUpdate(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPayloadApplicationComplete(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            float _arg1 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onStatusUpdate(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPayloadApplicationComplete(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IUpdateEngineCallback {
+        private static class Proxy implements IUpdateEngineCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class SmsMessage {
     public static final int ENCODING_16BIT = 3;
     public static final int ENCODING_7BIT = 1;
@@ -50,16 +50,13 @@ public class SmsMessage {
     private static boolean mIsNoEmsSupportConfigListLoaded = false;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EncodingSize {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Format {
     }
 
-    /* loaded from: classes3.dex */
     public enum MessageClass {
         UNKNOWN,
         CLASS_0,
@@ -76,7 +73,6 @@ public class SmsMessage {
         return this.mSubId;
     }
 
-    /* loaded from: classes3.dex */
     public static class SubmitPdu {
         public byte[] encodedMessage;
         public byte[] encodedScAddress;
@@ -362,42 +358,15 @@ public class SmsMessage {
         return this.mWrappedSmsMessage.getMessageBody();
     }
 
-    /* renamed from: android.telephony.SmsMessage$1 */
-    /* loaded from: classes3.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$android$internal$telephony$SmsConstants$MessageClass;
-
-        static {
-            int[] iArr = new int[SmsConstants.MessageClass.values().length];
-            $SwitchMap$com$android$internal$telephony$SmsConstants$MessageClass = iArr;
-            try {
-                iArr[SmsConstants.MessageClass.CLASS_0.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$android$internal$telephony$SmsConstants$MessageClass[SmsConstants.MessageClass.CLASS_1.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$android$internal$telephony$SmsConstants$MessageClass[SmsConstants.MessageClass.CLASS_2.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$android$internal$telephony$SmsConstants$MessageClass[SmsConstants.MessageClass.CLASS_3.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
-    }
-
     public MessageClass getMessageClass() {
-        switch (AnonymousClass1.$SwitchMap$com$android$internal$telephony$SmsConstants$MessageClass[this.mWrappedSmsMessage.getMessageClass().ordinal()]) {
-            case 1:
+        switch (this.mWrappedSmsMessage.getMessageClass()) {
+            case CLASS_0:
                 return MessageClass.CLASS_0;
-            case 2:
+            case CLASS_1:
                 return MessageClass.CLASS_1;
-            case 3:
+            case CLASS_2:
                 return MessageClass.CLASS_2;
-            case 4:
+            case CLASS_3:
                 return MessageClass.CLASS_3;
             default:
                 return MessageClass.UNKNOWN;
@@ -568,8 +537,7 @@ public class SmsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class NoEmsSupportConfig {
+    private static class NoEmsSupportConfig {
         String mGid1;
         boolean mIsPrefix;
         String mOperatorNumber;
@@ -599,8 +567,7 @@ public class SmsMessage {
                 mIsNoEmsSupportConfigListLoaded = true;
             }
         }
-        NoEmsSupportConfig[] noEmsSupportConfigArr = mNoEmsSupportConfigList;
-        return (noEmsSupportConfigArr == null || noEmsSupportConfigArr.length == 0) ? false : true;
+        return (mNoEmsSupportConfigList == null || mNoEmsSupportConfigList.length == 0) ? false : true;
     }
 
     public String getRecipientAddress() {
@@ -849,6 +816,10 @@ public class SmsMessage {
         return this.mWrappedSmsMessage.getSafeMessageIndication();
     }
 
+    public boolean getLinkWarningIndication() {
+        return this.mWrappedSmsMessage.getLinkWarningIndication();
+    }
+
     public int getMessageType() {
         return this.mWrappedSmsMessage.getMessageType();
     }
@@ -865,7 +836,6 @@ public class SmsMessage {
         return false;
     }
 
-    /* loaded from: classes3.dex */
     public enum MessageTpPid {
         MSG_PID_DEFAULT(0),
         MSG_PID_SMS_HANDLED(64),

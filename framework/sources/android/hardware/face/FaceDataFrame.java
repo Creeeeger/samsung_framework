@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FaceDataFrame implements Parcelable {
     public static final Parcelable.Creator<FaceDataFrame> CREATOR = new Parcelable.Creator<FaceDataFrame>() { // from class: android.hardware.face.FaceDataFrame.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceDataFrame createFromParcel(Parcel source) {
             return new FaceDataFrame(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceDataFrame[] newArray(int size) {
             return new FaceDataFrame[size];
@@ -25,10 +24,6 @@ public final class FaceDataFrame implements Parcelable {
     private final float mPan;
     private final float mTilt;
     private final int mVendorCode;
-
-    /* synthetic */ FaceDataFrame(Parcel parcel, FaceDataFrameIA faceDataFrameIA) {
-        this(parcel);
-    }
 
     public FaceDataFrame(int acquiredInfo, int vendorCode, float pan, float tilt, float distance, boolean isCancellable) {
         this.mAcquiredInfo = acquiredInfo;
@@ -94,22 +89,5 @@ public final class FaceDataFrame implements Parcelable {
         dest.writeFloat(this.mTilt);
         dest.writeFloat(this.mDistance);
         dest.writeBoolean(this.mIsCancellable);
-    }
-
-    /* renamed from: android.hardware.face.FaceDataFrame$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FaceDataFrame> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceDataFrame createFromParcel(Parcel source) {
-            return new FaceDataFrame(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceDataFrame[] newArray(int size) {
-            return new FaceDataFrame[size];
-        }
     }
 }

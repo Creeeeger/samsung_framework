@@ -2,7 +2,6 @@ package android.os;
 
 import android.os.IBinder;
 import android.os.IInterface;
-import android.telecom.TelecomManager;
 import android.util.ArrayMap;
 import android.util.Slog;
 import java.io.PrintWriter;
@@ -18,8 +17,7 @@ public class RemoteCallbackList<E extends IInterface> {
     private int mBroadcastCount = -1;
     private boolean mKilled = false;
 
-    /* loaded from: classes3.dex */
-    public final class Callback implements IBinder.DeathRecipient {
+    private final class Callback implements IBinder.DeathRecipient {
         final E mCallback;
         final Object mCookie;
 
@@ -124,12 +122,12 @@ public class RemoteCallbackList<E extends IInterface> {
 
     public void finishBroadcast() {
         synchronized (this.mCallbacks) {
-            int N = this.mBroadcastCount;
-            if (N < 0) {
+            if (this.mBroadcastCount < 0) {
                 throw new IllegalStateException("finishBroadcast() called outside of a broadcast");
             }
             Object[] active = this.mActiveBroadcast;
             if (active != null) {
+                int N = this.mBroadcastCount;
                 for (int i = 0; i < N; i++) {
                     active[i] = null;
                 }
@@ -216,11 +214,11 @@ public class RemoteCallbackList<E extends IInterface> {
 
     private void logExcessiveCallbacks() {
         long size = this.mCallbacks.size();
-        if (size >= TelecomManager.VERY_SHORT_CALL_TIME_MS) {
-            if (size == TelecomManager.VERY_SHORT_CALL_TIME_MS && this.mRecentCallers == null) {
+        if (size >= 3000) {
+            if (size == 3000 && this.mRecentCallers == null) {
                 this.mRecentCallers = new StringBuilder();
             }
-            if (this.mRecentCallers != null && r6.length() < 1000) {
+            if (this.mRecentCallers != null && this.mRecentCallers.length() < 1000) {
                 this.mRecentCallers.append(Debug.getCallers(5));
                 this.mRecentCallers.append('\n');
                 if (this.mRecentCallers.length() >= 1000) {

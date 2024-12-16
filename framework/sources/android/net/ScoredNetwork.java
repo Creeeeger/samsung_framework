@@ -9,20 +9,19 @@ import java.util.Set;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class ScoredNetwork implements Parcelable {
     public static final String ATTRIBUTES_KEY_BADGING_CURVE = "android.net.attributes.key.BADGING_CURVE";
     public static final String ATTRIBUTES_KEY_HAS_CAPTIVE_PORTAL = "android.net.attributes.key.HAS_CAPTIVE_PORTAL";
     public static final String ATTRIBUTES_KEY_RANKING_SCORE_OFFSET = "android.net.attributes.key.RANKING_SCORE_OFFSET";
     public static final Parcelable.Creator<ScoredNetwork> CREATOR = new Parcelable.Creator<ScoredNetwork>() { // from class: android.net.ScoredNetwork.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScoredNetwork createFromParcel(Parcel in) {
             return new ScoredNetwork(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScoredNetwork[] newArray(int size) {
             return new ScoredNetwork[size];
@@ -32,10 +31,6 @@ public class ScoredNetwork implements Parcelable {
     public final boolean meteredHint;
     public final NetworkKey networkKey;
     public final RssiCurve rssiCurve;
-
-    /* synthetic */ ScoredNetwork(Parcel parcel, ScoredNetworkIA scoredNetworkIA) {
-        this(parcel);
-    }
 
     public ScoredNetwork(NetworkKey networkKey, RssiCurve rssiCurve) {
         this(networkKey, rssiCurve, false);
@@ -119,8 +114,7 @@ public class ScoredNetwork implements Parcelable {
 
     public String toString() {
         StringBuilder out = new StringBuilder("ScoredNetwork{networkKey=" + this.networkKey + ", rssiCurve=" + this.rssiCurve + ", meteredHint=" + this.meteredHint);
-        Bundle bundle = this.attributes;
-        if (bundle != null && !bundle.isEmpty()) {
+        if (this.attributes != null && !this.attributes.isEmpty()) {
             out.append(", attributes=" + this.attributes);
         }
         out.append('}');
@@ -128,18 +122,15 @@ public class ScoredNetwork implements Parcelable {
     }
 
     public boolean hasRankingScore() {
-        Bundle bundle;
-        return this.rssiCurve != null || ((bundle = this.attributes) != null && bundle.containsKey(ATTRIBUTES_KEY_RANKING_SCORE_OFFSET));
+        return this.rssiCurve != null || (this.attributes != null && this.attributes.containsKey(ATTRIBUTES_KEY_RANKING_SCORE_OFFSET));
     }
 
     public int calculateRankingScore(int rssi) throws UnsupportedOperationException {
         if (!hasRankingScore()) {
             throw new UnsupportedOperationException("Either rssiCurve or rankingScoreOffset is required to calculate the ranking score");
         }
-        Bundle bundle = this.attributes;
-        int offset = bundle != null ? 0 + bundle.getInt(ATTRIBUTES_KEY_RANKING_SCORE_OFFSET, 0) : 0;
-        RssiCurve rssiCurve = this.rssiCurve;
-        int score = rssiCurve != null ? rssiCurve.lookupScore(rssi) << 8 : 0;
+        int offset = this.attributes != null ? 0 + this.attributes.getInt(ATTRIBUTES_KEY_RANKING_SCORE_OFFSET, 0) : 0;
+        int score = this.rssiCurve != null ? this.rssiCurve.lookupScore(rssi) << 8 : 0;
         try {
             return Math.addExact(score, offset);
         } catch (ArithmeticException e) {
@@ -148,28 +139,10 @@ public class ScoredNetwork implements Parcelable {
     }
 
     public int calculateBadge(int rssi) {
-        Bundle bundle = this.attributes;
-        if (bundle != null && bundle.containsKey(ATTRIBUTES_KEY_BADGING_CURVE)) {
+        if (this.attributes != null && this.attributes.containsKey(ATTRIBUTES_KEY_BADGING_CURVE)) {
             RssiCurve badgingCurve = (RssiCurve) this.attributes.getParcelable(ATTRIBUTES_KEY_BADGING_CURVE, RssiCurve.class);
             return badgingCurve.lookupScore(rssi);
         }
         return 0;
-    }
-
-    /* renamed from: android.net.ScoredNetwork$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ScoredNetwork> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ScoredNetwork createFromParcel(Parcel in) {
-            return new ScoredNetwork(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ScoredNetwork[] newArray(int size) {
-            return new ScoredNetwork[size];
-        }
     }
 }

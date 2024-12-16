@@ -7,14 +7,13 @@ import android.widget.RemoteViews;
 /* loaded from: classes.dex */
 public class PendingHostUpdate implements Parcelable {
     public static final Parcelable.Creator<PendingHostUpdate> CREATOR = new Parcelable.Creator<PendingHostUpdate>() { // from class: android.appwidget.PendingHostUpdate.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PendingHostUpdate createFromParcel(Parcel parcel) {
             return new PendingHostUpdate(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PendingHostUpdate[] newArray(int size) {
             return new PendingHostUpdate[size];
@@ -29,10 +28,6 @@ public class PendingHostUpdate implements Parcelable {
     int viewId;
     RemoteViews views;
     AppWidgetProviderInfo widgetInfo;
-
-    /* synthetic */ PendingHostUpdate(Parcel parcel, PendingHostUpdateIA pendingHostUpdateIA) {
-        this(parcel);
-    }
 
     public static PendingHostUpdate updateAppWidget(int appWidgetId, RemoteViews views) {
         PendingHostUpdate update = new PendingHostUpdate(appWidgetId, 0);
@@ -63,26 +58,23 @@ public class PendingHostUpdate implements Parcelable {
 
     private PendingHostUpdate(Parcel in) {
         this.appWidgetId = in.readInt();
-        int readInt = in.readInt();
-        this.type = readInt;
-        switch (readInt) {
+        this.type = in.readInt();
+        switch (this.type) {
             case 0:
                 if (in.readInt() != 0) {
                     this.views = new RemoteViews(in);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 1:
                 if (in.readInt() != 0) {
                     this.widgetInfo = new AppWidgetProviderInfo(in);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 2:
                 this.viewId = in.readInt();
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -98,15 +90,13 @@ public class PendingHostUpdate implements Parcelable {
         switch (this.type) {
             case 0:
                 writeNullParcelable(this.views, dest, flags);
-                return;
+                break;
             case 1:
                 writeNullParcelable(this.widgetInfo, dest, flags);
-                return;
+                break;
             case 2:
                 dest.writeInt(this.viewId);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -116,23 +106,6 @@ public class PendingHostUpdate implements Parcelable {
             p.writeToParcel(dest, flags);
         } else {
             dest.writeInt(0);
-        }
-    }
-
-    /* renamed from: android.appwidget.PendingHostUpdate$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PendingHostUpdate> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PendingHostUpdate createFromParcel(Parcel parcel) {
-            return new PendingHostUpdate(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PendingHostUpdate[] newArray(int size) {
-            return new PendingHostUpdate[size];
         }
     }
 }

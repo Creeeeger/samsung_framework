@@ -56,9 +56,8 @@ public class SQLiteDump {
             return;
         }
         try {
-            String createDumpDir = createDumpDir();
-            this.mDumpDirPath = createDumpDir;
-            boolean ret = createCorruptFile(createDumpDir);
+            this.mDumpDirPath = createDumpDir();
+            boolean ret = createCorruptFile(this.mDumpDirPath);
             if (ret) {
                 this.mOutPutStream = new BufferedOutputStream(new FileOutputStream(this.mDumpFile.getAbsoluteFile()));
                 this.mDumpFilePrinter = new PrintStream((OutputStream) this.mOutPutStream, true);
@@ -66,9 +65,8 @@ public class SQLiteDump {
                 SimpleDateFormat opDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                 String formattedCorruptTime = opDF.format(new Date(System.currentTimeMillis()));
                 this.mTeePrinter = new TeePrinter(printer, this.mDumpFilePrinter);
-                PrintStream printStream = this.mDumpFilePrinter;
-                if (printStream != null) {
-                    printStream.println("===== corrupt db name: " + new File(this.mDbPath).getName() + " =====");
+                if (this.mDumpFilePrinter != null) {
+                    this.mDumpFilePrinter.println("===== corrupt db name: " + new File(this.mDbPath).getName() + " =====");
                     this.mDumpFilePrinter.println("===== corrupt time:    " + formattedCorruptTime + " =====");
                     this.mDumpFilePrinter.println("===== dump file name:  " + this.mDumpFile.getName() + " =====");
                 }
@@ -101,9 +99,8 @@ public class SQLiteDump {
                     msg.append(args[i].toString());
                 }
             }
-            PrintStream printStream = this.mDumpFilePrinter;
-            if (printStream != null) {
-                printStream.println(msg.toString());
+            if (this.mDumpFilePrinter != null) {
+                this.mDumpFilePrinter.println(msg.toString());
             }
         } catch (Exception e) {
         }
@@ -138,47 +135,40 @@ public class SQLiteDump {
         }
         try {
             try {
-                BufferedOutputStream bufferedOutputStream = this.mOutPutStream;
-                if (bufferedOutputStream != null) {
-                    bufferedOutputStream.flush();
+                if (this.mOutPutStream != null) {
+                    this.mOutPutStream.flush();
                 }
                 this.isReady.set(false);
                 this.mTeePrinter = null;
-                BufferedOutputStream bufferedOutputStream2 = this.mOutPutStream;
-                if (bufferedOutputStream2 != null) {
-                    bufferedOutputStream2.close();
+                if (this.mOutPutStream != null) {
+                    this.mOutPutStream.close();
                     this.mOutPutStream = null;
                 }
-                PrintStream printStream = this.mDumpFilePrinter;
-                if (printStream != null) {
-                    printStream.close();
+                if (this.mDumpFilePrinter != null) {
+                    this.mDumpFilePrinter.close();
                     this.mDumpFilePrinter = null;
                 }
             } catch (Exception e) {
                 this.isReady.set(false);
                 this.mTeePrinter = null;
-                BufferedOutputStream bufferedOutputStream3 = this.mOutPutStream;
-                if (bufferedOutputStream3 != null) {
-                    bufferedOutputStream3.close();
+                if (this.mOutPutStream != null) {
+                    this.mOutPutStream.close();
                     this.mOutPutStream = null;
                 }
-                PrintStream printStream2 = this.mDumpFilePrinter;
-                if (printStream2 != null) {
-                    printStream2.close();
+                if (this.mDumpFilePrinter != null) {
+                    this.mDumpFilePrinter.close();
                     this.mDumpFilePrinter = null;
                 }
             } catch (Throwable th) {
                 try {
                     this.isReady.set(false);
                     this.mTeePrinter = null;
-                    BufferedOutputStream bufferedOutputStream4 = this.mOutPutStream;
-                    if (bufferedOutputStream4 != null) {
-                        bufferedOutputStream4.close();
+                    if (this.mOutPutStream != null) {
+                        this.mOutPutStream.close();
                         this.mOutPutStream = null;
                     }
-                    PrintStream printStream3 = this.mDumpFilePrinter;
-                    if (printStream3 != null) {
-                        printStream3.close();
+                    if (this.mDumpFilePrinter != null) {
+                        this.mDumpFilePrinter.close();
                         this.mDumpFilePrinter = null;
                     }
                 } catch (Exception e2) {
@@ -190,11 +180,10 @@ public class SQLiteDump {
     }
 
     private boolean isReady() {
-        AtomicBoolean atomicBoolean = this.isReady;
-        if (atomicBoolean == null) {
+        if (this.isReady == null) {
             return false;
         }
-        return atomicBoolean.get();
+        return this.isReady.get();
     }
 
     private String createDumpDir() {
@@ -238,12 +227,10 @@ public class SQLiteDump {
 
     private File getDumpFile(String dumpDir) {
         String dbCreateTime = getDbCreateTime(this.mDbPath);
-        String str = this.mDbPath;
-        String dbName = str.substring(str.lastIndexOf(47) + 1).replace('.', '_');
+        String dbName = this.mDbPath.substring(this.mDbPath.lastIndexOf(47) + 1).replace('.', '_');
         String corruptFileName = "dbcorrupt_dump_" + dbName + Session.SESSION_SEPARATION_CHAR_CHILD + dbCreateTime + ".log";
-        File file = new File(dumpDir, corruptFileName);
-        this.mDumpFile = file;
-        return file;
+        this.mDumpFile = new File(dumpDir, corruptFileName);
+        return this.mDumpFile;
     }
 
     private void deleteOldDumpFiles() {
@@ -253,9 +240,6 @@ public class SQLiteDump {
             return;
         }
         Arrays.sort(dumpFiles, new Comparator<File>() { // from class: android.database.sqlite.SQLiteDump.1
-            AnonymousClass1() {
-            }
-
             @Override // java.util.Comparator
             public int compare(File f1, File f2) {
                 long diff = f1.lastModified() - f2.lastModified();
@@ -268,22 +252,6 @@ public class SQLiteDump {
         dumpFiles[0].delete();
     }
 
-    /* renamed from: android.database.sqlite.SQLiteDump$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Comparator<File> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(File f1, File f2) {
-            long diff = f1.lastModified() - f2.lastModified();
-            if (diff > 0) {
-                return 1;
-            }
-            return diff == 0 ? 0 : -1;
-        }
-    }
-
     private void getLogPrefix(StringBuilder msg) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         msg.append(sdf.format(new Date(System.currentTimeMillis())) + " ");
@@ -292,7 +260,6 @@ public class SQLiteDump {
         msg.append(Process.myTid() + " ");
     }
 
-    /* loaded from: classes.dex */
     public static class TeePrinter implements Printer {
         Printer p1;
         PrintStream p2;
@@ -305,13 +272,11 @@ public class SQLiteDump {
         @Override // android.util.Printer
         public void println(String x) {
             try {
-                Printer printer = this.p1;
-                if (printer != null) {
-                    printer.println(x);
+                if (this.p1 != null) {
+                    this.p1.println(x);
                 }
-                PrintStream printStream = this.p2;
-                if (printStream != null) {
-                    printStream.println(x);
+                if (this.p2 != null) {
+                    this.p2.println(x);
                 }
             } catch (Exception e) {
             }

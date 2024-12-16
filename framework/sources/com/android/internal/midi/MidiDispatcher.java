@@ -6,33 +6,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class MidiDispatcher extends MidiReceiver {
     private final MidiReceiverFailureHandler mFailureHandler;
     private final CopyOnWriteArrayList<MidiReceiver> mReceivers;
     private final MidiSender mSender;
 
-    /* loaded from: classes4.dex */
     public interface MidiReceiverFailureHandler {
         void onReceiverFailure(MidiReceiver midiReceiver, IOException iOException);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.midi.MidiDispatcher$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends MidiSender {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.midi.MidiSender
-        public void onConnect(MidiReceiver receiver) {
-            MidiDispatcher.this.mReceivers.add(receiver);
-        }
-
-        @Override // android.media.midi.MidiSender
-        public void onDisconnect(MidiReceiver receiver) {
-            MidiDispatcher.this.mReceivers.remove(receiver);
-        }
     }
 
     public MidiDispatcher() {
@@ -42,9 +23,6 @@ public final class MidiDispatcher extends MidiReceiver {
     public MidiDispatcher(MidiReceiverFailureHandler failureHandler) {
         this.mReceivers = new CopyOnWriteArrayList<>();
         this.mSender = new MidiSender() { // from class: com.android.internal.midi.MidiDispatcher.1
-            AnonymousClass1() {
-            }
-
             @Override // android.media.midi.MidiSender
             public void onConnect(MidiReceiver receiver) {
                 MidiDispatcher.this.mReceivers.add(receiver);

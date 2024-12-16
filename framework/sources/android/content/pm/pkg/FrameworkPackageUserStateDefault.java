@@ -8,6 +8,9 @@ import java.util.Set;
 @Deprecated
 /* loaded from: classes.dex */
 class FrameworkPackageUserStateDefault implements FrameworkPackageUserState {
+    FrameworkPackageUserStateDefault() {
+    }
+
     @Override // android.content.pm.pkg.FrameworkPackageUserState
     public int getEnabledState() {
         return 0;

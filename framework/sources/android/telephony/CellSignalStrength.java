@@ -3,7 +3,7 @@ package android.telephony;
 import android.annotation.SystemApi;
 import android.os.PersistableBundle;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class CellSignalStrength {
     public static final int NUM_SIGNAL_STRENGTH_BINS = 5;
     protected static final int NUM_SIGNAL_STRENGTH_THRESHOLDS = 4;
@@ -31,6 +31,9 @@ public abstract class CellSignalStrength {
 
     public abstract void updateLevel(PersistableBundle persistableBundle, ServiceState serviceState);
 
+    protected CellSignalStrength() {
+    }
+
     public static final int getRssiDbmFromAsu(int asu) {
         if (asu > 31 || asu < 0) {
             return Integer.MAX_VALUE;
@@ -38,7 +41,7 @@ public abstract class CellSignalStrength {
         return (asu * 2) - 113;
     }
 
-    public static final int getAsuFromRssiDbm(int dbm) {
+    protected static final int getAsuFromRssiDbm(int dbm) {
         if (dbm == Integer.MAX_VALUE) {
             return 99;
         }
@@ -52,7 +55,7 @@ public abstract class CellSignalStrength {
         return asu - 120;
     }
 
-    public static final int getAsuFromRscpDbm(int dbm) {
+    protected static final int getAsuFromRscpDbm(int dbm) {
         if (dbm == Integer.MAX_VALUE) {
             return 255;
         }
@@ -66,14 +69,14 @@ public abstract class CellSignalStrength {
         return (asu / 2) - 24;
     }
 
-    public static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax) {
+    protected static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax) {
         if (value < rangeMin || value > rangeMax) {
             return Integer.MAX_VALUE;
         }
         return value;
     }
 
-    public static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax, int special) {
+    protected static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax, int special) {
         if ((value < rangeMin || value > rangeMax) && value != special) {
             return Integer.MAX_VALUE;
         }

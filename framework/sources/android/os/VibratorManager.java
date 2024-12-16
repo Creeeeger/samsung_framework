@@ -3,17 +3,18 @@ package android.os;
 import android.app.ActivityThread;
 import android.content.Context;
 import android.util.Log;
+import com.samsung.android.vibrator.VibrationDebugInfo;
 
 /* loaded from: classes3.dex */
 public abstract class VibratorManager {
     private static final String TAG = "VibratorManager";
-    private final String mPackageName;
+    protected final String mPackageName;
 
     public abstract void cancel();
 
     public abstract void cancel(int i);
 
-    public abstract String executeVibrationDebugCommand(int i);
+    public abstract String executeVibrationDebugCommand(VibrationDebugInfo vibrationDebugInfo);
 
     public abstract Vibrator getDefaultVibrator();
 
@@ -31,7 +32,7 @@ public abstract class VibratorManager {
         this.mPackageName = ActivityThread.currentPackageName();
     }
 
-    public VibratorManager(Context context) {
+    protected VibratorManager(Context context) {
         this.mPackageName = context.getOpPackageName();
     }
 
@@ -46,5 +47,9 @@ public abstract class VibratorManager {
 
     public final void vibrate(CombinedVibration effect, VibrationAttributes attributes) {
         vibrate(Process.myUid(), this.mPackageName, effect, null, attributes);
+    }
+
+    public void performHapticFeedback(int constant, boolean always, String reason, boolean fromIme) {
+        Log.w(TAG, "performHapticFeedback is not supported");
     }
 }

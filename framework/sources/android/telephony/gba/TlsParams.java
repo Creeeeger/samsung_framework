@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TlsParams {
     public static final int GROUP_SECP256R1 = 23;
     public static final int GROUP_SECP384R1 = 24;
@@ -101,7 +101,6 @@ public class TlsParams {
     private static final int[] CS_EXPECTED = {0, 1, 2, 4, 5, 10, 13, 16, 19, 22, 24, 27, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 103, 104, 105, 106, 107, 108, 109, 156, 157, 158, 159, 170, 171, 4865, 4866, 4867, TLS_AES_128_CCM_SHA256, 49161, 49162, 49171, 49172, 49195, 49196, 49199, 49200, TLS_DHE_RSA_WITH_AES_128_CCM, TLS_DHE_RSA_WITH_AES_256_CCM, TLS_DHE_PSK_WITH_AES_128_CCM, TLS_DHE_PSK_WITH_AES_256_CCM, 52392, 52393, TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256, 52396, TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256, TLS_ECDHE_PSK_WITH_AES_128_GCM_SHA256, TLS_ECDHE_PSK_WITH_AES_256_GCM_SHA384, TLS_ECDHE_PSK_WITH_AES_128_CCM_SHA256};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TlsCipherSuite {
     }
 

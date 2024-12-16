@@ -6,9 +6,8 @@ import com.samsung.android.sume.core.message.Message;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes5.dex */
-public final class CaptureSourceInternal {
+/* loaded from: classes6.dex */
+final class CaptureSourceInternal {
     public static final String KEY_CAMERA_INFO = "camera-info";
     public static final String KEY_CAMERA_INFO_SIZE = "camera-info-size";
     private AMessageJNI msg = new AMessageJNI();
@@ -110,12 +109,11 @@ public final class CaptureSourceInternal {
         return this.msg.getInt("image-role");
     }
 
-    /* loaded from: classes5.dex */
     static class Parser {
         Parser() {
         }
 
-        public static CaptureSourceInternal makeInternalSource(SemInputImage in) {
+        static CaptureSourceInternal makeInternalSource(SemInputImage in) {
             CaptureSourceInternal source = new CaptureSourceInternal();
             source.setWidth(in.getWidth());
             source.setHeight(in.getHeight());

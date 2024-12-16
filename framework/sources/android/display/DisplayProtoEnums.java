@@ -45,11 +45,17 @@ public final class DisplayProtoEnums {
     public static final int REASON_BOOST = 8;
     public static final int REASON_DOZE = 2;
     public static final int REASON_DOZE_DEFAULT = 3;
+    public static final int REASON_DOZE_MANUAL = 12;
     public static final int REASON_FOLLOWER = 10;
     public static final int REASON_MANUAL = 1;
+    public static final int REASON_OFFLOAD = 11;
     public static final int REASON_OVERRIDE = 6;
     public static final int REASON_SCREEN_OFF = 5;
     public static final int REASON_SCREEN_OFF_BRIGHTNESS_SENSOR = 9;
     public static final int REASON_TEMPORARY = 7;
     public static final int REASON_UNKNOWN = 0;
+    public static final int STATUS_ACTIVE = 2;
+    public static final int STATUS_ADDED = 1;
+    public static final int STATUS_REMOVED = 3;
+    public static final int STATUS_UNKNOWN = 0;
 }

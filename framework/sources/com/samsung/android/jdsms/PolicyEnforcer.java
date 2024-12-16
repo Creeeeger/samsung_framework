@@ -4,7 +4,7 @@ import android.content.Context;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Binder;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 final class PolicyEnforcer {
     private static final String SUBTAG = "[POLICY] ";
     private static final UidAllowList mUidAllowList = new UidAllowList();
@@ -13,7 +13,7 @@ final class PolicyEnforcer {
     PolicyEnforcer() {
     }
 
-    public static final boolean isAValidCaller() {
+    static final boolean isAValidCaller() {
         if (!mCallerVerifier.wasCallerValid()) {
             DsmsLog.e("[POLICY] Unauthorized Caller");
             return false;
@@ -21,7 +21,7 @@ final class PolicyEnforcer {
         return true;
     }
 
-    public static final boolean isAValidUser(Context context) {
+    static final boolean isAValidUser(Context context) {
         int uid = Binder.getCallingUid();
         String callingUid = context.getPackageManager().getNameForUid(uid);
         if (callingUid == null) {

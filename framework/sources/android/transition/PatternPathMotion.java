@@ -12,20 +12,15 @@ import com.android.internal.R;
 /* loaded from: classes4.dex */
 public class PatternPathMotion extends PathMotion {
     private Path mOriginalPatternPath;
-    private final Path mPatternPath;
-    private final Matrix mTempMatrix;
+    private final Path mPatternPath = new Path();
+    private final Matrix mTempMatrix = new Matrix();
 
     public PatternPathMotion() {
-        Path path = new Path();
-        this.mPatternPath = path;
-        this.mTempMatrix = new Matrix();
-        path.lineTo(1.0f, 0.0f);
-        this.mOriginalPatternPath = path;
+        this.mPatternPath.lineTo(1.0f, 0.0f);
+        this.mOriginalPatternPath = this.mPatternPath;
     }
 
     public PatternPathMotion(Context context, AttributeSet attrs) {
-        this.mPatternPath = new Path();
-        this.mTempMatrix = new Matrix();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PatternPathMotion);
         try {
             String pathData = a.getString(0);
@@ -40,8 +35,6 @@ public class PatternPathMotion extends PathMotion {
     }
 
     public PatternPathMotion(Path patternPath) {
-        this.mPatternPath = new Path();
-        this.mTempMatrix = new Matrix();
         setPatternPath(patternPath);
     }
 

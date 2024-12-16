@@ -34,7 +34,6 @@ public abstract class ExternalStorageService extends Service {
     private final Handler mHandler = BackgroundThread.getHandler();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SessionFlag {
     }
 
@@ -57,18 +56,14 @@ public abstract class ExternalStorageService extends Service {
         return this.mWrapper;
     }
 
-    /* loaded from: classes3.dex */
-    public class ExternalStorageServiceWrapper extends IExternalStorageService.Stub {
-        /* synthetic */ ExternalStorageServiceWrapper(ExternalStorageService externalStorageService, ExternalStorageServiceWrapperIA externalStorageServiceWrapperIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class ExternalStorageServiceWrapper extends IExternalStorageService.Stub {
         private ExternalStorageServiceWrapper() {
         }
 
         @Override // android.service.storage.IExternalStorageService
         public void startSession(final String sessionId, final int flag, final ParcelFileDescriptor deviceFd, final String upperPath, final String lowerPath, final RemoteCallback callback) throws RemoteException {
-            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda4
+            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExternalStorageService.ExternalStorageServiceWrapper.this.lambda$startSession$0(sessionId, flag, deviceFd, upperPath, lowerPath, callback);
@@ -76,6 +71,7 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startSession$0(String sessionId, int flag, ParcelFileDescriptor deviceFd, String upperPath, String lowerPath, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onStartSession(sessionId, flag, deviceFd, new File(upperPath), new File(lowerPath));
@@ -87,7 +83,7 @@ public abstract class ExternalStorageService extends Service {
 
         @Override // android.service.storage.IExternalStorageService
         public void notifyVolumeStateChanged(final String sessionId, final StorageVolume vol, final RemoteCallback callback) {
-            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda1
+            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExternalStorageService.ExternalStorageServiceWrapper.this.lambda$notifyVolumeStateChanged$1(vol, sessionId, callback);
@@ -95,6 +91,7 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyVolumeStateChanged$1(StorageVolume vol, String sessionId, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onVolumeStateChanged(vol);
@@ -106,7 +103,7 @@ public abstract class ExternalStorageService extends Service {
 
         @Override // android.service.storage.IExternalStorageService
         public void freeCache(final String sessionId, final String volumeUuid, final long bytes, final RemoteCallback callback) {
-            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda2
+            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExternalStorageService.ExternalStorageServiceWrapper.this.lambda$freeCache$2(volumeUuid, bytes, sessionId, callback);
@@ -114,6 +111,7 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$freeCache$2(String volumeUuid, long bytes, String sessionId, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onFreeCache(StorageManager.convert(volumeUuid), bytes);
@@ -125,7 +123,7 @@ public abstract class ExternalStorageService extends Service {
 
         @Override // android.service.storage.IExternalStorageService
         public void endSession(final String sessionId, final RemoteCallback callback) throws RemoteException {
-            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda0
+            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExternalStorageService.ExternalStorageServiceWrapper.this.lambda$endSession$3(sessionId, callback);
@@ -133,6 +131,7 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$endSession$3(String sessionId, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onEndSession(sessionId);
@@ -144,7 +143,7 @@ public abstract class ExternalStorageService extends Service {
 
         @Override // android.service.storage.IExternalStorageService
         public void notifyAnrDelayStarted(final String packageName, final int uid, final int tid, final int reason) throws RemoteException {
-            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda3
+            ExternalStorageService.this.mHandler.post(new Runnable() { // from class: android.service.storage.ExternalStorageService$ExternalStorageServiceWrapper$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     ExternalStorageService.ExternalStorageServiceWrapper.this.lambda$notifyAnrDelayStarted$4(packageName, uid, tid, reason);
@@ -152,6 +151,7 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyAnrDelayStarted$4(String packageName, int uid, int tid, int reason) {
             try {
                 ExternalStorageService.this.onAnrDelayStarted(packageName, uid, tid, reason);

@@ -22,9 +22,8 @@ public abstract class WindowInfosListener {
 
     public WindowInfosListener() {
         NativeAllocationRegistry registry = NativeAllocationRegistry.createMalloced(WindowInfosListener.class.getClassLoader(), nativeGetFinalizer());
-        long nativeCreate = nativeCreate(this);
-        this.mNativeListener = nativeCreate;
-        registry.registerNativeAllocation(this, nativeCreate);
+        this.mNativeListener = nativeCreate(this);
+        registry.registerNativeAllocation(this, this.mNativeListener);
     }
 
     public Pair<InputWindowHandle[], DisplayInfo[]> register() {
@@ -35,7 +34,6 @@ public abstract class WindowInfosListener {
         nativeUnregister(this.mNativeListener);
     }
 
-    /* loaded from: classes4.dex */
     public static final class DisplayInfo {
         public final int mDisplayId;
         public final Size mLogicalSize;

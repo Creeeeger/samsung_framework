@@ -16,7 +16,6 @@ public abstract class FragmentTransaction {
     public static final int TRANSIT_UNSET = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Transit {
     }
 

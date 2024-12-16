@@ -31,14 +31,13 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
     private final ScrollCaptureViewHelper<V> mViewHelper;
     private final WeakReference<V> mWeakView;
 
-    public ScrollCaptureViewSupport(V containingView, ScrollCaptureViewHelper<V> viewHelper) {
+    ScrollCaptureViewSupport(V containingView, ScrollCaptureViewHelper<V> viewHelper) {
         this.mWeakView = new WeakReference<>(containingView);
         this.mViewHelper = viewHelper;
         Context context = containingView.getContext();
         ContentResolver contentResolver = context.getContentResolver();
-        long j = Settings.Global.getLong(contentResolver, SETTING_CAPTURE_DELAY, SETTING_CAPTURE_DELAY_DEFAULT);
-        this.mPostScrollDelayMillis = j;
-        Log.d(TAG, "screenshot.scroll_capture_delay = " + j);
+        this.mPostScrollDelayMillis = Settings.Global.getLong(contentResolver, SETTING_CAPTURE_DELAY, SETTING_CAPTURE_DELAY_DEFAULT);
+        Log.d(TAG, "screenshot.scroll_capture_delay = " + this.mPostScrollDelayMillis);
     }
 
     private static int getColorMode(View containingView) {
@@ -147,7 +146,7 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         if (view == null || !view.isVisibleToUser()) {
             onComplete.accept(new Rect());
         } else {
-            this.mViewHelper.onScrollRequested(view, session.getScrollBounds(), requestRect, signal, new Consumer() { // from class: com.android.internal.view.ScrollCaptureViewSupport$$ExternalSyntheticLambda0
+            this.mViewHelper.onScrollRequested(view, session.getScrollBounds(), requestRect, signal, new Consumer() { // from class: com.android.internal.view.ScrollCaptureViewSupport$$ExternalSyntheticLambda1
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ScrollCaptureViewSupport.this.lambda$onScrollCaptureImageRequest$0(view, signal, onComplete, (ScrollCaptureViewHelper.ScrollResult) obj);
@@ -156,7 +155,8 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         }
     }
 
-    /* renamed from: onScrollResult */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: onScrollResult, reason: merged with bridge method [inline-methods] */
     public void lambda$onScrollCaptureImageRequest$0(final ScrollCaptureViewHelper.ScrollResult scrollResult, final V view, CancellationSignal signal, final Consumer<Rect> onComplete) {
         if (signal.isCanceled()) {
             Log.w(TAG, "onScrollCaptureImageRequest: cancelled! skipping render.");
@@ -167,7 +167,7 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
             }
             final Rect viewCaptureArea = new Rect(scrollResult.availableArea);
             viewCaptureArea.offset(0, -scrollResult.scrollDelta);
-            view.postOnAnimationDelayed(new Runnable() { // from class: com.android.internal.view.ScrollCaptureViewSupport$$ExternalSyntheticLambda1
+            view.postOnAnimationDelayed(new Runnable() { // from class: com.android.internal.view.ScrollCaptureViewSupport$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     ScrollCaptureViewSupport.this.lambda$onScrollResult$1(scrollResult, view, viewCaptureArea, onComplete);
@@ -176,7 +176,8 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         }
     }
 
-    /* renamed from: doCapture */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: doCapture, reason: merged with bridge method [inline-methods] */
     public void lambda$onScrollResult$1(ScrollCaptureViewHelper.ScrollResult scrollResult, V view, Rect viewCaptureArea, Consumer<Rect> onComplete) {
         int result = this.mRenderer.renderView(view, viewCaptureArea);
         if (result == 0 || result == 1) {
@@ -201,28 +202,24 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         onReady.run();
     }
 
-    /* loaded from: classes5.dex */
-    public static final class ViewRenderer {
+    static final class ViewRenderer {
         private static final float AMBIENT_SHADOW_ALPHA = 0.039f;
         private static final float LIGHT_RADIUS_DP = 800.0f;
         private static final float LIGHT_Z_DP = 400.0f;
         private static final float SPOT_SHADOW_ALPHA = 0.039f;
         private static final String TAG = "ViewRenderer";
         private final RenderNode mCaptureRenderNode;
-        private final HardwareRenderer mRenderer;
         private Surface mSurface;
         private final Rect mTempRect = new Rect();
         private final int[] mTempLocation = new int[2];
         private long mLastRenderedSourceDrawingId = -1;
+        private final HardwareRenderer mRenderer = new HardwareRenderer();
 
         ViewRenderer() {
-            HardwareRenderer hardwareRenderer = new HardwareRenderer();
-            this.mRenderer = hardwareRenderer;
-            hardwareRenderer.setName("ScrollCapture");
-            RenderNode renderNode = new RenderNode("ScrollCaptureRoot");
-            this.mCaptureRenderNode = renderNode;
-            hardwareRenderer.setContentRoot(renderNode);
-            hardwareRenderer.setOpaque(false);
+            this.mRenderer.setName("ScrollCapture");
+            this.mCaptureRenderNode = new RenderNode("ScrollCaptureRoot");
+            this.mRenderer.setContentRoot(this.mCaptureRenderNode);
+            this.mRenderer.setOpaque(false);
         }
 
         public void setSurface(Surface surface) {
@@ -287,8 +284,7 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         private void transformToRoot(View local, Rect localRect, Rect outRect) {
             local.getLocationInWindow(this.mTempLocation);
             outRect.set(localRect);
-            int[] iArr = this.mTempLocation;
-            outRect.offset(iArr[0], iArr[1]);
+            outRect.offset(this.mTempLocation[0], this.mTempLocation[1]);
         }
 
         public void setColorMode(int colorMode) {

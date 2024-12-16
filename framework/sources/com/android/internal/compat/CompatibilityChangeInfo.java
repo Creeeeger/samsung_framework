@@ -4,17 +4,16 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class CompatibilityChangeInfo implements Parcelable {
     public static final Parcelable.Creator<CompatibilityChangeInfo> CREATOR = new Parcelable.Creator<CompatibilityChangeInfo>() { // from class: com.android.internal.compat.CompatibilityChangeInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityChangeInfo createFromParcel(Parcel in) {
             return new CompatibilityChangeInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityChangeInfo[] newArray(int size) {
             return new CompatibilityChangeInfo[size];
@@ -27,10 +26,6 @@ public class CompatibilityChangeInfo implements Parcelable {
     private final boolean mLoggingOnly;
     private final String mName;
     private final boolean mOverridable;
-
-    /* synthetic */ CompatibilityChangeInfo(Parcel parcel, CompatibilityChangeInfoIA compatibilityChangeInfoIA) {
-        this(parcel);
-    }
 
     public long getId() {
         return this.mChangeId;
@@ -144,22 +139,5 @@ public class CompatibilityChangeInfo implements Parcelable {
             return true;
         }
         return false;
-    }
-
-    /* renamed from: com.android.internal.compat.CompatibilityChangeInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompatibilityChangeInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityChangeInfo createFromParcel(Parcel in) {
-            return new CompatibilityChangeInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityChangeInfo[] newArray(int size) {
-            return new CompatibilityChangeInfo[size];
-        }
     }
 }

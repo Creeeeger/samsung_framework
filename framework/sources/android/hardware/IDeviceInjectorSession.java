@@ -14,7 +14,6 @@ public interface IDeviceInjectorSession extends IInterface {
 
     void stopDeviceInjector() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IDeviceInjectorSession {
         @Override // android.hardware.IDeviceInjectorSession
         public void stopDeviceInjector() throws RemoteException {
@@ -30,7 +29,6 @@ public interface IDeviceInjectorSession extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IDeviceInjectorSession {
         static final int TRANSACTION_setDeviceInjectorPending = 2;
         static final int TRANSACTION_stopDeviceInjector = 1;
@@ -76,30 +74,27 @@ public interface IDeviceInjectorSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDeviceInjectorSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDeviceInjectorSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeviceInjectorSession.DESCRIPTOR);
+                case 1:
+                    stopDeviceInjector();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDeviceInjectorPending(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            stopDeviceInjector();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDeviceInjectorPending(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IDeviceInjectorSession {
+        private static class Proxy implements IDeviceInjectorSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

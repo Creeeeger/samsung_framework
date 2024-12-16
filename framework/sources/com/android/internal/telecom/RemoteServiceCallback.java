@@ -14,7 +14,6 @@ public interface RemoteServiceCallback extends IInterface {
 
     void onResult(List<ComponentName> list, List<IBinder> list2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements RemoteServiceCallback {
         @Override // com.android.internal.telecom.RemoteServiceCallback
         public void onError() throws RemoteException {
@@ -30,7 +29,6 @@ public interface RemoteServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements RemoteServiceCallback {
         public static final String DESCRIPTOR = "com.android.internal.telecom.RemoteServiceCallback";
         static final int TRANSACTION_onError = 1;
@@ -77,30 +75,26 @@ public interface RemoteServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onError();
+                    return true;
+                case 2:
+                    List<ComponentName> _arg0 = data.createTypedArrayList(ComponentName.CREATOR);
+                    List<IBinder> _arg1 = data.createBinderArrayList();
+                    data.enforceNoDataAvail();
+                    onResult(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onError();
-                            return true;
-                        case 2:
-                            List<ComponentName> _arg0 = data.createTypedArrayList(ComponentName.CREATOR);
-                            List<IBinder> _arg1 = data.createBinderArrayList();
-                            data.enforceNoDataAvail();
-                            onResult(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements RemoteServiceCallback {
+        private static class Proxy implements RemoteServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

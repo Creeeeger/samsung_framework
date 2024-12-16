@@ -12,7 +12,6 @@ public interface ITaskFragmentOrganizer extends IInterface {
 
     void onTransactionReady(TaskFragmentTransaction taskFragmentTransaction) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITaskFragmentOrganizer {
         @Override // android.window.ITaskFragmentOrganizer
         public void onTransactionReady(TaskFragmentTransaction transaction) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ITaskFragmentOrganizer extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITaskFragmentOrganizer {
         static final int TRANSACTION_onTransactionReady = 1;
 
@@ -67,25 +65,22 @@ public interface ITaskFragmentOrganizer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITaskFragmentOrganizer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITaskFragmentOrganizer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITaskFragmentOrganizer.DESCRIPTOR);
+                case 1:
+                    TaskFragmentTransaction _arg0 = (TaskFragmentTransaction) data.readTypedObject(TaskFragmentTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTransactionReady(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            TaskFragmentTransaction _arg0 = (TaskFragmentTransaction) data.readTypedObject(TaskFragmentTransaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTransactionReady(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITaskFragmentOrganizer {
+        private static class Proxy implements ITaskFragmentOrganizer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

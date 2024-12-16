@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ICellInfoCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ICellInfoCallback";
 
@@ -15,7 +15,6 @@ public interface ICellInfoCallback extends IInterface {
 
     void onError(int i, String str, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICellInfoCallback {
         @Override // android.telephony.ICellInfoCallback
         public void onCellInfo(List<CellInfo> state) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ICellInfoCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICellInfoCallback {
         static final int TRANSACTION_onCellInfo = 1;
         static final int TRANSACTION_onError = 2;
@@ -77,32 +75,29 @@ public interface ICellInfoCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICellInfoCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICellInfoCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICellInfoCallback.DESCRIPTOR);
+                case 1:
+                    List<CellInfo> _arg0 = data.createTypedArrayList(CellInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCellInfo(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg02, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<CellInfo> _arg0 = data.createTypedArrayList(CellInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCellInfo(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg02, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICellInfoCallback {
+        private static class Proxy implements ICellInfoCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

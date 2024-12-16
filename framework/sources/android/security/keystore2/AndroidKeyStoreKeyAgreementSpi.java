@@ -1,6 +1,7 @@
 package android.security.keystore2;
 
 import android.hardware.security.keymint.KeyParameter;
+import android.os.StrictMode;
 import android.security.KeyStoreException;
 import android.security.KeyStoreOperation;
 import android.security.keystore.KeyStoreCryptoOperation;
@@ -29,14 +30,12 @@ public class AndroidKeyStoreKeyAgreementSpi extends KeyAgreementSpi implements K
     private long mOperationHandle;
     private PublicKey mOtherPartyKey;
 
-    /* loaded from: classes3.dex */
     public static class ECDH extends AndroidKeyStoreKeyAgreementSpi {
         public ECDH() {
             super(3);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class XDH extends AndroidKeyStoreKeyAgreementSpi {
         public XDH() {
             super(3);
@@ -86,11 +85,10 @@ public class AndroidKeyStoreKeyAgreementSpi extends KeyAgreementSpi implements K
         if (!(key instanceof PublicKey)) {
             throw new InvalidKeyException("Only public keys supported. Key: " + key);
         }
-        AndroidKeyStorePrivateKey androidKeyStorePrivateKey = this.mKey;
-        if ((androidKeyStorePrivateKey instanceof ECKey) && !(key instanceof ECKey)) {
+        if ((this.mKey instanceof ECKey) && !(key instanceof ECKey)) {
             throw new InvalidKeyException("Public and Private key should be of the same type.");
         }
-        if ((androidKeyStorePrivateKey instanceof ECKey) && !((ECKey) key).getParams().getCurve().equals(((ECKey) this.mKey).getParams().getCurve())) {
+        if ((this.mKey instanceof ECKey) && !((ECKey) key).getParams().getCurve().equals(((ECKey) this.mKey).getParams().getCurve())) {
             throw new InvalidKeyException("Public and Private key parameters should be same.");
         }
         if (!lastPhase) {
@@ -107,11 +105,11 @@ public class AndroidKeyStoreKeyAgreementSpi extends KeyAgreementSpi implements K
     protected byte[] engineGenerateSecret() throws IllegalStateException {
         try {
             ensureKeystoreOperationInitialized();
-            PublicKey publicKey = this.mOtherPartyKey;
-            if (publicKey == null) {
+            if (this.mOtherPartyKey == null) {
                 throw new IllegalStateException("Other party key not provided. Call doPhase() first.");
             }
-            byte[] otherPartyKeyEncoded = publicKey.getEncoded();
+            byte[] otherPartyKeyEncoded = this.mOtherPartyKey.getEncoded();
+            StrictMode.noteSlowCall("engineGenerateSecret");
             try {
                 try {
                     return this.mOperation.finish(otherPartyKeyEncoded, null);
@@ -176,6 +174,7 @@ public class AndroidKeyStoreKeyAgreementSpi extends KeyAgreementSpi implements K
         }
         List<KeyParameter> parameters = new ArrayList<>();
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870913, 6));
+        StrictMode.noteDiskWrite();
         try {
             this.mOperation = this.mKey.getSecurityLevel().createOperation(this.mKey.getKeyIdDescriptor(), parameters);
         } catch (KeyStoreException keyStoreException) {

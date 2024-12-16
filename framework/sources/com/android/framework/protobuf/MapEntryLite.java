@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public class MapEntryLite<K, V> {
     private static final int KEY_FIELD_NUMBER = 1;
     private static final int VALUE_FIELD_NUMBER = 2;
@@ -14,8 +14,7 @@ public class MapEntryLite<K, V> {
     private final Metadata<K, V> metadata;
     private final V value;
 
-    /* loaded from: classes4.dex */
-    public static class Metadata<K, V> {
+    static class Metadata<K, V> {
         public final K defaultKey;
         public final V defaultValue;
         public final WireFormat.FieldType keyType;
@@ -53,47 +52,24 @@ public class MapEntryLite<K, V> {
         return new MapEntryLite<>(keyType, defaultKey, valueType, defaultValue);
     }
 
-    public static <K, V> void writeTo(CodedOutputStream output, Metadata<K, V> metadata, K key, V value) throws IOException {
+    static <K, V> void writeTo(CodedOutputStream output, Metadata<K, V> metadata, K key, V value) throws IOException {
         FieldSet.writeElement(output, metadata.keyType, 1, key);
         FieldSet.writeElement(output, metadata.valueType, 2, value);
     }
 
-    public static <K, V> int computeSerializedSize(Metadata<K, V> metadata, K key, V value) {
+    static <K, V> int computeSerializedSize(Metadata<K, V> metadata, K key, V value) {
         return FieldSet.computeElementSize(metadata.keyType, 1, key) + FieldSet.computeElementSize(metadata.valueType, 2, value);
     }
 
-    /* renamed from: com.android.framework.protobuf.MapEntryLite$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
-
-        static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
-            try {
-                iArr[WireFormat.FieldType.MESSAGE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.ENUM.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.GROUP.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-        }
-    }
-
     static <T> T parseField(CodedInputStream codedInputStream, ExtensionRegistryLite extensionRegistryLite, WireFormat.FieldType fieldType, T t) throws IOException {
-        switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$FieldType[fieldType.ordinal()]) {
-            case 1:
+        switch (fieldType) {
+            case WireFormat.FieldType.MESSAGE:
                 MessageLite.Builder builder = ((MessageLite) t).toBuilder();
                 codedInputStream.readMessage(builder, extensionRegistryLite);
                 return (T) builder.buildPartial();
-            case 2:
+            case WireFormat.FieldType.ENUM:
                 return (T) Integer.valueOf(codedInputStream.readEnum());
-            case 3:
+            case WireFormat.FieldType.GROUP:
                 throw new RuntimeException("Groups are not allowed in maps.");
             default:
                 return (T) FieldSet.readPrimitiveField(codedInputStream, fieldType, true);
@@ -157,7 +133,7 @@ public class MapEntryLite<K, V> {
         mapFieldLite.put(obj, obj2);
     }
 
-    public Metadata<K, V> getMetadata() {
+    Metadata<K, V> getMetadata() {
         return this.metadata;
     }
 }

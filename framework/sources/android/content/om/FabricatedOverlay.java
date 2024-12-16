@@ -17,19 +17,13 @@ public class FabricatedOverlay {
     final FabricatedOverlayInternal mOverlay;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface StringTypeOverlayResource {
-    }
-
-    /* synthetic */ FabricatedOverlay(FabricatedOverlayInternal fabricatedOverlayInternal, FabricatedOverlayIA fabricatedOverlayIA) {
-        this(fabricatedOverlayInternal);
     }
 
     public OverlayIdentifier getIdentifier() {
         return new OverlayIdentifier(this.mOverlay.packageName, TextUtils.nullIfEmpty(this.mOverlay.overlayName));
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final String mName;
         private final String mOwningPackage;
@@ -78,7 +72,7 @@ public class FabricatedOverlay {
         @Deprecated(since = "Please use FabricatedOverlay#setResourceValue instead")
         public Builder setResourceValue(String resourceName, ParcelFileDescriptor value, String configuration) {
             FabricatedOverlay.ensureValidResourceName(resourceName);
-            this.mEntries.add(FabricatedOverlay.generateFabricatedOverlayInternalEntry(resourceName, value, configuration));
+            this.mEntries.add(FabricatedOverlay.generateFabricatedOverlayInternalEntry(resourceName, value, configuration, false));
             return this;
         }
 
@@ -94,6 +88,7 @@ public class FabricatedOverlay {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static FabricatedOverlayInternal generateFabricatedOverlayInternal(String owningPackage, String overlayName, String targetPackageName, String targetOverlayable, ArrayList<FabricatedOverlayInternalEntry> entries) {
         FabricatedOverlayInternal overlay = new FabricatedOverlayInternal();
         overlay.packageName = owningPackage;
@@ -113,6 +108,10 @@ public class FabricatedOverlay {
         this(generateFabricatedOverlayInternal("", OverlayManagerImpl.checkOverlayNameValid(overlayName), (String) Preconditions.checkStringNotEmpty(targetPackage, "'targetPackage' must not be empty nor null"), null, new ArrayList()));
     }
 
+    public void setOwningPackage(String owningPackage) {
+        this.mOverlay.packageName = owningPackage;
+    }
+
     public void setTargetOverlayable(String targetOverlayable) {
         this.mOverlay.targetOverlayable = TextUtils.emptyIfNull(targetOverlayable);
     }
@@ -121,6 +120,7 @@ public class FabricatedOverlay {
         return this.mOverlay.targetOverlayable;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String ensureValidResourceName(String name) {
         Objects.requireNonNull(name);
         int slashIndex = name.indexOf(47);
@@ -129,6 +129,7 @@ public class FabricatedOverlay {
         return name;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static FabricatedOverlayInternalEntry generateFabricatedOverlayInternalEntry(String resourceName, int dataType, int value, String configuration) {
         FabricatedOverlayInternalEntry entry = new FabricatedOverlayInternalEntry();
         entry.resourceName = resourceName;
@@ -138,6 +139,7 @@ public class FabricatedOverlay {
         return entry;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static FabricatedOverlayInternalEntry generateFabricatedOverlayInternalEntry(String resourceName, int dataType, String value, String configuration) {
         FabricatedOverlayInternalEntry entry = new FabricatedOverlayInternalEntry();
         entry.resourceName = resourceName;
@@ -147,16 +149,19 @@ public class FabricatedOverlay {
         return entry;
     }
 
-    public static FabricatedOverlayInternalEntry generateFabricatedOverlayInternalEntry(String resourceName, ParcelFileDescriptor parcelFileDescriptor, String configuration) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static FabricatedOverlayInternalEntry generateFabricatedOverlayInternalEntry(String resourceName, ParcelFileDescriptor parcelFileDescriptor, String configuration, boolean isNinePatch) {
         FabricatedOverlayInternalEntry entry = new FabricatedOverlayInternalEntry();
         entry.resourceName = resourceName;
         entry.binaryData = (ParcelFileDescriptor) Objects.requireNonNull(parcelFileDescriptor);
         entry.configuration = configuration;
         entry.binaryDataOffset = 0L;
         entry.binaryDataSize = parcelFileDescriptor.getStatSize();
+        entry.isNinePatch = isNinePatch;
         return entry;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static FabricatedOverlayInternalEntry generateFabricatedOverlayInternalEntry(String resourceName, AssetFileDescriptor assetFileDescriptor, String configuration) {
         FabricatedOverlayInternalEntry entry = new FabricatedOverlayInternalEntry();
         entry.resourceName = resourceName;
@@ -179,7 +184,12 @@ public class FabricatedOverlay {
 
     public void setResourceValue(String resourceName, ParcelFileDescriptor value, String configuration) {
         ensureValidResourceName(resourceName);
-        this.mOverlay.entries.add(generateFabricatedOverlayInternalEntry(resourceName, value, configuration));
+        this.mOverlay.entries.add(generateFabricatedOverlayInternalEntry(resourceName, value, configuration, false));
+    }
+
+    public void setNinePatchResourceValue(String resourceName, ParcelFileDescriptor value, String configuration) {
+        ensureValidResourceName(resourceName);
+        this.mOverlay.entries.add(generateFabricatedOverlayInternalEntry(resourceName, value, configuration, true));
     }
 
     public void setResourceValue(String resourceName, AssetFileDescriptor value, String configuration) {

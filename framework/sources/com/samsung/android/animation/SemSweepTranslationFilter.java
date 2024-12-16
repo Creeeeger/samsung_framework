@@ -32,56 +32,39 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
     private static final int SWIPE_DURATION = 600;
     private static final String TAG = "SemSweepTranslationFilter";
     private int SWEEP_TEXT_PADDING_PX;
-    private final int leftColor;
     private Paint mBgLeftToRight;
     private Paint mBgRightToLeft;
     private Context mContext;
-    private BitmapDrawable mDrawSweepBitmapDrawable;
-    private float mEndXOfActionUpAnimator;
     private ListView mListView;
-    private Bitmap mSweepBitmap;
-    private SemSweepListAnimator.SweepConfiguration mSweepConfiguration;
-    private int mSweepDirection;
-    private SemSweepListAnimator.OnSweepListener mSweepListener;
-    private Rect mSweepRect;
-    private boolean mSweepRectFullyDrawn;
-    private Paint mTextPaint;
-    private int mTextPaintSize;
-    private View mViewForeground;
-    private int mViewTop;
-    private final int rightColor;
     private static Interpolator sDecel = new DecelerateInterpolator();
     private static int VELOCITY_UNITS = 1000;
+    private final int leftColor = Color.parseColor("#6ebd52");
+    private final int rightColor = Color.parseColor("#56c0e5");
+    private Rect mSweepRect = null;
+    private Bitmap mSweepBitmap = null;
+    private SemSweepListAnimator.OnSweepListener mSweepListener = null;
+    private BitmapDrawable mDrawSweepBitmapDrawable = null;
+    private View mViewForeground = null;
+    private float mEndXOfActionUpAnimator = 0.0f;
+    private SemSweepListAnimator.SweepConfiguration mSweepConfiguration = null;
+    private int mTextPaintSize = 80;
+    private int mSweepDirection = -1;
+    private boolean mSweepRectFullyDrawn = false;
+    private int mViewTop = 0;
+    private Paint mTextPaint = initPaintWithAlphaAntiAliasing(Color.parseColor("#ffffff"));
 
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public /* bridge */ /* synthetic */ boolean isAnimationBack() {
         return super.isAnimationBack();
     }
 
-    public SemSweepTranslationFilter(ListView listView, Context context) {
-        int parseColor = Color.parseColor("#6ebd52");
-        this.leftColor = parseColor;
-        int parseColor2 = Color.parseColor("#56c0e5");
-        this.rightColor = parseColor2;
+    SemSweepTranslationFilter(ListView listView, Context context) {
         this.mBgLeftToRight = null;
         this.mBgRightToLeft = null;
-        this.mSweepRect = null;
-        this.mSweepBitmap = null;
-        this.mSweepListener = null;
-        this.mDrawSweepBitmapDrawable = null;
-        this.mViewForeground = null;
-        this.mEndXOfActionUpAnimator = 0.0f;
-        this.mSweepConfiguration = null;
-        this.mTextPaintSize = 80;
-        this.mSweepDirection = -1;
-        this.mSweepRectFullyDrawn = false;
-        this.mViewTop = 0;
         this.mContext = context;
-        this.mBgLeftToRight = initPaintWithAlphaAntiAliasing(parseColor);
-        this.mBgRightToLeft = initPaintWithAlphaAntiAliasing(parseColor2);
-        Paint initPaintWithAlphaAntiAliasing = initPaintWithAlphaAntiAliasing(Color.parseColor("#ffffff"));
-        this.mTextPaint = initPaintWithAlphaAntiAliasing;
-        initPaintWithAlphaAntiAliasing.setTextSize(this.mTextPaintSize);
+        this.mBgLeftToRight = initPaintWithAlphaAntiAliasing(this.leftColor);
+        this.mBgRightToLeft = initPaintWithAlphaAntiAliasing(this.rightColor);
+        this.mTextPaint.setTextSize(this.mTextPaintSize);
         this.mListView = listView;
         this.SWEEP_TEXT_PADDING_PX = convertDipToPixels(this.mContext, 16);
     }
@@ -105,11 +88,8 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
 
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public Rect getBitmapDrawableBound() {
-        new Rect();
-        BitmapDrawable bitmapDrawable = this.mDrawSweepBitmapDrawable;
-        if (bitmapDrawable != null) {
-            Rect rect = bitmapDrawable.getBounds();
-            return rect;
+        if (this.mDrawSweepBitmapDrawable != null) {
+            return this.mDrawSweepBitmapDrawable.getBounds();
         }
         return null;
     }
@@ -121,9 +101,8 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
 
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public void draw(Canvas canvas) {
-        BitmapDrawable bitmapDrawable = this.mDrawSweepBitmapDrawable;
-        if (bitmapDrawable != null) {
-            bitmapDrawable.draw(canvas);
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mDrawSweepBitmapDrawable.draw(canvas);
         }
     }
 
@@ -136,9 +115,8 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
 
     @Override // com.samsung.android.animation.SemAbsSweepAnimationFilter
     public void doRefresh() {
-        View view = this.mViewForeground;
-        if (view != null) {
-            view.setVisibility(0);
+        if (this.mViewForeground != null) {
+            this.mViewForeground.setVisibility(0);
             this.mViewForeground.setTranslationX(0.0f);
             this.mViewForeground.setAlpha(1.0f);
         }
@@ -155,17 +133,15 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
         viewForeground.setTranslationX(deltaX);
         float alphaForeground = 1.0f - (deltaXAbs / viewForeground.getWidth());
         viewForeground.setAlpha(alphaForeground);
-        SemSweepListAnimator.OnSweepListener onSweepListener = this.mSweepListener;
-        if (onSweepListener != null && canvas != null) {
-            onSweepListener.onSweep(position, sweepProgress, canvas);
+        if (this.mSweepListener != null && canvas != null) {
+            this.mSweepListener.onSweep(position, sweepProgress, canvas);
         }
         if (this.mDrawSweepBitmapDrawable == null) {
             this.mDrawSweepBitmapDrawable = new BitmapDrawable();
         }
-        BitmapDrawable bitmapDrawableToSweepBitmap = getBitmapDrawableToSweepBitmap();
-        this.mDrawSweepBitmapDrawable = bitmapDrawableToSweepBitmap;
-        if (bitmapDrawableToSweepBitmap != null) {
-            this.mListView.invalidate(bitmapDrawableToSweepBitmap.getBounds());
+        this.mDrawSweepBitmapDrawable = getBitmapDrawableToSweepBitmap();
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mListView.invalidate(this.mDrawSweepBitmapDrawable.getBounds());
         }
     }
 
@@ -211,8 +187,7 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
             Rect clipLeftRect = new Rect(0, 0, (int) deltaX, viewHeight);
             Rect iconDrawableRect = new Rect(this.mSweepConfiguration.drawablePadding, 0, width + this.mSweepConfiguration.drawablePadding, height);
             iconDrawableRect.offset(0, (viewHeight - height) / 2);
-            SemSweepListAnimator.SweepConfiguration sweepConfiguration = this.mSweepConfiguration;
-            if (sweepConfiguration != null && sweepConfiguration.backgroundColorLeftToRight != 0) {
+            if (this.mSweepConfiguration.backgroundColorLeftToRight != 0) {
                 this.mBgLeftToRight.setColor(this.mSweepConfiguration.backgroundColorLeftToRight);
             }
             drawRectInto(canvas, clipLeftRect, this.mBgLeftToRight, 255, iconDrawableRect, this.mSweepConfiguration.textLeftToRight, this.mSweepConfiguration.textSize, this.mSweepConfiguration.drawableLeftToRight);
@@ -235,8 +210,7 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
         Rect clipRightRect2 = new Rect(viewWidth - ((int) deltaXAbs), 0, viewWidth, viewHeight);
         Rect iconDrawableRect2 = new Rect((viewWidth - width2) - this.mSweepConfiguration.drawablePadding, 0, viewWidth - this.mSweepConfiguration.drawablePadding, height2);
         iconDrawableRect2.offset(0, (viewHeight - height2) / 2);
-        SemSweepListAnimator.SweepConfiguration sweepConfiguration2 = this.mSweepConfiguration;
-        if (sweepConfiguration2 != null && sweepConfiguration2.backgroundColorRightToLeft != 0) {
+        if (this.mSweepConfiguration != null && this.mSweepConfiguration.backgroundColorRightToLeft != 0) {
             this.mBgRightToLeft.setColor(this.mSweepConfiguration.backgroundColorRightToLeft);
         }
         drawRectInto(canvas, clipRightRect2, this.mBgRightToLeft, 255, iconDrawableRect2, this.mSweepConfiguration.textRightToLeft, this.mSweepConfiguration.textSize, this.mSweepConfiguration.drawableRightToLeft);
@@ -276,10 +250,9 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
         float fontHeight = Math.abs(fm.top - fm.bottom);
         float x = 0.0f;
         if (iconDrawableRect != null) {
-            int i = this.mSweepDirection;
-            if (i == 1) {
+            if (this.mSweepDirection == 1) {
                 x = (iconDrawableRect.left - this.mSweepConfiguration.drawablePadding) - r.right;
-            } else if (i == 0) {
+            } else if (this.mSweepDirection == 0) {
                 x = iconDrawableRect.right + this.mSweepConfiguration.drawablePadding;
             }
         }
@@ -352,17 +325,15 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
     public void doUpActionWhenAnimationUpdate(int position, float sweepProgress) {
         Canvas canvas = null;
         if (this.mViewForeground != null) {
-            float deltaX = sweepProgress * r2.getWidth();
+            float deltaX = sweepProgress * this.mViewForeground.getWidth();
             canvas = drawRectToBitmapCanvas(this.mViewForeground, deltaX, sweepProgress);
         }
-        SemSweepListAnimator.OnSweepListener onSweepListener = this.mSweepListener;
-        if (onSweepListener != null && canvas != null) {
-            onSweepListener.onSweep(position, sweepProgress, canvas);
+        if (this.mSweepListener != null && canvas != null) {
+            this.mSweepListener.onSweep(position, sweepProgress, canvas);
         }
-        BitmapDrawable bitmapDrawableToSweepBitmap = getBitmapDrawableToSweepBitmap();
-        this.mDrawSweepBitmapDrawable = bitmapDrawableToSweepBitmap;
-        if (bitmapDrawableToSweepBitmap != null) {
-            this.mListView.invalidate(bitmapDrawableToSweepBitmap.getBounds());
+        this.mDrawSweepBitmapDrawable = getBitmapDrawableToSweepBitmap();
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mListView.invalidate(this.mDrawSweepBitmapDrawable.getBounds());
         }
     }
 
@@ -387,9 +358,8 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
     }
 
     public void removeCachedBitmap() {
-        BitmapDrawable bitmapDrawable = this.mDrawSweepBitmapDrawable;
-        if (bitmapDrawable != null) {
-            bitmapDrawable.getBitmap().recycle();
+        if (this.mDrawSweepBitmapDrawable != null) {
+            this.mDrawSweepBitmapDrawable.getBitmap().recycle();
             this.mDrawSweepBitmapDrawable = null;
             this.mSweepBitmap = null;
         }

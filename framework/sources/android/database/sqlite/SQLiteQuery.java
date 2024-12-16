@@ -9,12 +9,12 @@ public final class SQLiteQuery extends SQLiteProgram {
     private static final String TAG = "SQLiteQuery";
     private final CancellationSignal mCancellationSignal;
 
-    public SQLiteQuery(SQLiteDatabase db, String query, CancellationSignal cancellationSignal) {
+    SQLiteQuery(SQLiteDatabase db, String query, CancellationSignal cancellationSignal) {
         super(db, query, null, cancellationSignal);
         this.mCancellationSignal = cancellationSignal;
     }
 
-    public int fillWindow(CursorWindow window, int startPos, int requiredPos, boolean countAllRows) {
+    int fillWindow(CursorWindow window, int startPos, int requiredPos, boolean countAllRows) {
         acquireReference();
         try {
             window.acquireReference();

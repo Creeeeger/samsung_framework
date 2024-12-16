@@ -102,6 +102,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     final Window mWindow;
     private final WindowManager mWindowManager;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         this.mNeedToUpdate = isNeedToUpdateAttributes(v);
         alignToAnchor();
@@ -115,7 +116,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this(context, themeResId, true);
     }
 
-    public Dialog(Context context, int themeResId, boolean createContextThemeWrapper) {
+    Dialog(Context context, int themeResId, boolean createContextThemeWrapper) {
         ActivityInfo ai;
         this.mCancelable = true;
         this.mCreated = false;
@@ -123,7 +124,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this.mCanceled = false;
         this.mHandler = new Handler();
         this.mActionModeTypeStarting = 0;
-        this.mDismissAction = new Runnable() { // from class: android.app.Dialog$$ExternalSyntheticLambda1
+        this.mDismissAction = new Runnable() { // from class: android.app.Dialog$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 Dialog.this.dismissDialog();
@@ -134,7 +135,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this.mIsSamsungBasicInteraction = false;
         this.mRootViewOrientation = 0;
         this.mRootViewSwWidthDp = 0;
-        this.mOnLayoutChangeListener = new View.OnLayoutChangeListener() { // from class: android.app.Dialog$$ExternalSyntheticLambda2
+        this.mOnLayoutChangeListener = new View.OnLayoutChangeListener() { // from class: android.app.Dialog$$ExternalSyntheticLambda1
             @Override // android.view.View.OnLayoutChangeListener
             public final void onLayoutChange(View view, int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8) {
                 Dialog.this.lambda$new$0(view, i, i2, i3, i4, i5, i6, i7, i8);
@@ -151,19 +152,18 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         } else {
             this.mContext = context;
         }
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        this.mWindowManager = windowManager;
+        this.mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Window w = new PhoneWindow(this.mContext);
         this.mWindow = w;
         w.setCallback(this);
         w.setOnWindowDismissedCallback(this);
-        w.setOnWindowSwipeDismissedCallback(new Window.OnWindowSwipeDismissedCallback() { // from class: android.app.Dialog$$ExternalSyntheticLambda3
+        w.setOnWindowSwipeDismissedCallback(new Window.OnWindowSwipeDismissedCallback() { // from class: android.app.Dialog$$ExternalSyntheticLambda2
             @Override // android.view.Window.OnWindowSwipeDismissedCallback
             public final void onWindowSwipeDismissed() {
                 Dialog.this.lambda$new$1();
             }
         });
-        w.setWindowManager(windowManager, null, null);
+        w.setWindowManager(this.mWindowManager, null, null);
         w.setGravity(17);
         try {
             ApplicationInfo info = this.mContext.getPackageManager().getApplicationInfo(this.mContext.getPackageName(), 128);
@@ -198,6 +198,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this.mListenersHandler = new ListenersHandler(this);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$1() {
         if (this.mCancelable) {
             cancel();
@@ -235,8 +236,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     public boolean isShowing() {
-        View view = this.mDecor;
-        return view != null && view.getVisibility() == 0;
+        return this.mDecor != null && this.mDecor.getVisibility() == 0;
     }
 
     public void create() {
@@ -301,8 +301,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
         if (this.mIsDeviceDefault && l.width > 0) {
             Drawable drawable = this.mContext.getResources().getDrawable(R.drawable.tw_dialog_background_material, this.mContext.getTheme());
-            View view = this.mDecor;
-            if (view != null && view.getBackground() != null && drawable.getConstantState() != null && drawable.getConstantState().equals(this.mDecor.getBackground().getConstantState())) {
+            if (this.mDecor != null && this.mDecor.getBackground() != null && drawable.getConstantState() != null && drawable.getConstantState().equals(this.mDecor.getBackground().getConstantState())) {
                 int bottomInset = this.mContext.getResources().getDimensionPixelSize(R.dimen.sem_dialog_background_inset_vertical);
                 InsetDrawable insetDrawable = new InsetDrawable(drawable, 0, 0, 0, bottomInset);
                 this.mDecor.setBackground(insetDrawable);
@@ -321,12 +320,11 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
             Log.i(TAG, "semSetAnchor anchorView = " + anchor + " , anchorType : " + anchorType);
             this.mAnchorView = anchor;
             this.mAnchorType = anchorType;
-            View rootView = anchor.getRootView();
-            this.mRootView = rootView;
-            if (rootView != null) {
+            this.mRootView = this.mAnchorView.getRootView();
+            if (this.mRootView != null) {
                 semClearAnchorListener();
                 this.mRootView.addOnLayoutChangeListener(this.mOnLayoutChangeListener);
-                this.mRemoveOnLayoutChangeListnerRunnable = new Runnable() { // from class: android.app.Dialog$$ExternalSyntheticLambda0
+                this.mRemoveOnLayoutChangeListnerRunnable = new Runnable() { // from class: android.app.Dialog$$ExternalSyntheticLambda3
                     @Override // java.lang.Runnable
                     public final void run() {
                         Dialog.this.lambda$semSetAnchor$2();
@@ -338,6 +336,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$semSetAnchor$2() {
         this.mRootView.removeOnLayoutChangeListener(this.mOnLayoutChangeListener);
     }
@@ -366,11 +365,10 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     private void alignToAnchor() {
-        View view;
         WindowInsets insets;
         Resources res = this.mContext.getResources();
         WindowManager.LayoutParams params = this.mWindow.getAttributes();
-        if (!isSupportAnchor() || (view = this.mAnchorView) == null) {
+        if (!isSupportAnchor() || this.mAnchorView == null) {
             Log.e(TAG, "AnchorView is null state or not on Large Screen");
             params.gravity = 81;
             params.x = 0;
@@ -383,7 +381,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
         int[] screenPos = new int[2];
         int[] windowPos = new int[2];
-        int width = view.getWidth();
+        int width = this.mAnchorView.getWidth();
         int height = this.mAnchorView.getHeight();
         this.mAnchorView.getLocationOnScreen(screenPos);
         this.mAnchorView.getLocationInWindow(windowPos);
@@ -477,18 +475,16 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     public void hide() {
-        View view = this.mDecor;
-        if (view != null) {
-            view.setVisibility(8);
+        if (this.mDecor != null) {
+            this.mDecor.setVisibility(8);
         }
     }
 
     @Override // android.content.DialogInterface
     public void dismiss() {
         semClearAnchorListener();
-        Runnable runnable = this.mDismissOverride;
-        if (runnable != null) {
-            runnable.run();
+        if (this.mDismissOverride != null) {
+            this.mDismissOverride.run();
         } else if (Looper.myLooper() == this.mHandler.getLooper()) {
             dismissDialog();
         } else {
@@ -496,7 +492,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
     }
 
-    public void dismissDialog() {
+    void dismissDialog() {
         if (this.mDecor == null || !this.mShowing) {
             return;
         }
@@ -507,9 +503,8 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         try {
             this.mWindowManager.removeViewImmediate(this.mDecor);
         } finally {
-            ActionMode actionMode = this.mActionMode;
-            if (actionMode != null) {
-                actionMode.finish();
+            if (this.mActionMode != null) {
+                this.mActionMode.finish();
             }
             this.mDecor = null;
             this.mWindow.closeAllPanels();
@@ -520,36 +515,32 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     private void sendDismissMessage() {
-        Message message = this.mDismissMessage;
-        if (message != null) {
-            Message.obtain(message).sendToTarget();
+        if (this.mDismissMessage != null) {
+            Message.obtain(this.mDismissMessage).sendToTarget();
         }
     }
 
     private void sendShowMessage() {
-        Message message = this.mShowMessage;
-        if (message != null) {
-            Message.obtain(message).sendToTarget();
+        if (this.mShowMessage != null) {
+            Message.obtain(this.mShowMessage).sendToTarget();
         }
     }
 
-    public void dispatchOnCreate(Bundle savedInstanceState) {
+    void dispatchOnCreate(Bundle savedInstanceState) {
         if (!this.mCreated) {
             onCreate(savedInstanceState);
             this.mCreated = true;
         }
     }
 
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
     }
 
-    public void onStart() {
-        ActionBar actionBar = this.mActionBar;
-        if (actionBar != null) {
-            actionBar.setShowHideAnimationEnabled(true);
+    protected void onStart() {
+        if (this.mActionBar != null) {
+            this.mActionBar.setShowHideAnimationEnabled(true);
         }
-        Context context = this.mContext;
-        if (context != null && WindowOnBackInvokedDispatcher.isOnBackInvokedCallbackEnabled(context)) {
+        if (allowsRegisterDefaultOnBackInvokedCallback() && this.mContext != null && WindowOnBackInvokedDispatcher.isOnBackInvokedCallbackEnabled(this.mContext)) {
             this.mDefaultBackCallback = new OnBackInvokedCallback() { // from class: android.app.Dialog$$ExternalSyntheticLambda4
                 @Override // android.window.OnBackInvokedCallback
                 public final void onBackInvoked() {
@@ -557,18 +548,21 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
                 }
             };
             getOnBackInvokedDispatcher().registerSystemOnBackInvokedCallback(this.mDefaultBackCallback);
+        }
+    }
+
+    protected void onStop() {
+        if (this.mActionBar != null) {
+            this.mActionBar.setShowHideAnimationEnabled(false);
+        }
+        if (this.mDefaultBackCallback != null) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(this.mDefaultBackCallback);
             this.mDefaultBackCallback = null;
         }
     }
 
-    public void onStop() {
-        ActionBar actionBar = this.mActionBar;
-        if (actionBar != null) {
-            actionBar.setShowHideAnimationEnabled(false);
-        }
-        if (this.mDefaultBackCallback != null) {
-            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(this.mDefaultBackCallback);
-        }
+    protected boolean allowsRegisterDefaultOnBackInvokedCallback() {
+        return true;
     }
 
     public Bundle onSaveInstanceState() {
@@ -597,9 +591,8 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     public View getCurrentFocus() {
-        Window window = this.mWindow;
-        if (window != null) {
-            return window.getCurrentFocus();
+        if (this.mWindow != null) {
+            return this.mWindow.getCurrentFocus();
         }
         return null;
     }
@@ -642,9 +635,22 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == 4 || keyCode == 111) {
+        if (keyCode == 4) {
             event.startTracking();
             return true;
+        }
+        if (keyCode == 111) {
+            if (this.mCancelable) {
+                cancel();
+                event.startTracking();
+                return true;
+            }
+            if (this.mWindow.shouldCloseOnTouchOutside()) {
+                dismiss();
+                event.startTracking();
+                return true;
+            }
+            return false;
         }
         return false;
     }
@@ -655,8 +661,17 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if ((keyCode == 4 || keyCode == 111) && event.isTracking() && !event.isCanceled() && !WindowOnBackInvokedDispatcher.isOnBackInvokedCallbackEnabled(this.mContext)) {
-            onBackPressed();
+        if (event.isTracking() && !event.isCanceled()) {
+            switch (keyCode) {
+                case 4:
+                    if (!WindowOnBackInvokedDispatcher.isOnBackInvokedCallbackEnabled(this.mContext) || !allowsRegisterDefaultOnBackInvokedCallback()) {
+                        onBackPressed();
+                        break;
+                    }
+                    break;
+                case 111:
+                    break;
+            }
             return true;
         }
         return false;
@@ -696,9 +711,8 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
 
     @Override // android.view.Window.Callback
     public void onWindowAttributesChanged(WindowManager.LayoutParams params) {
-        View view = this.mDecor;
-        if (view != null) {
-            this.mWindowManager.updateViewLayout(view, params);
+        if (this.mDecor != null) {
+            this.mWindowManager.updateViewLayout(this.mDecor, params);
         }
     }
 
@@ -731,12 +745,10 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
 
     @Override // android.view.Window.Callback
     public boolean dispatchKeyEvent(KeyEvent event) {
-        DialogInterface.OnKeyListener onKeyListener = this.mOnKeyListener;
-        if ((onKeyListener != null && onKeyListener.onKey(this, event.getKeyCode(), event)) || this.mWindow.superDispatchKeyEvent(event)) {
-            return true;
+        if ((this.mOnKeyListener == null || !this.mOnKeyListener.onKey(this, event.getKeyCode(), event)) && !this.mWindow.superDispatchKeyEvent(event)) {
+            return event.dispatch(this, this.mDecor != null ? this.mDecor.getKeyDispatcherState() : null, this);
         }
-        View view = this.mDecor;
-        return event.dispatch(this, view != null ? view.getKeyDispatcherState() : null, this);
+        return true;
     }
 
     @Override // android.view.Window.Callback
@@ -903,9 +915,8 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
 
     @Override // android.view.Window.Callback
     public ActionMode onWindowStartingActionMode(ActionMode.Callback callback) {
-        ActionBar actionBar = this.mActionBar;
-        if (actionBar != null && this.mActionModeTypeStarting == 0) {
-            return actionBar.startActionMode(callback);
+        if (this.mActionBar != null && this.mActionModeTypeStarting == 0) {
+            return this.mActionBar.startActionMode(callback);
         }
         return null;
     }
@@ -996,10 +1007,9 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
 
     @Override // android.content.DialogInterface
     public void cancel() {
-        Message message;
-        if (!this.mCanceled && (message = this.mCancelMessage) != null) {
+        if (!this.mCanceled && this.mCancelMessage != null) {
             this.mCanceled = true;
-            Message.obtain(message).sendToTarget();
+            Message.obtain(this.mCancelMessage).sendToTarget();
         }
         dismiss();
     }
@@ -1070,9 +1080,7 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this.mOnKeyListener = onKeyListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static final class ListenersHandler extends Handler {
+    private static final class ListenersHandler extends Handler {
         private final WeakReference<DialogInterface> mDialog;
 
         public ListenersHandler(Dialog dialog) {
@@ -1084,15 +1092,13 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
             switch (msg.what) {
                 case 67:
                     ((DialogInterface.OnDismissListener) msg.obj).onDismiss(this.mDialog.get());
-                    return;
+                    break;
                 case 68:
                     ((DialogInterface.OnCancelListener) msg.obj).onCancel(this.mDialog.get());
-                    return;
+                    break;
                 case 69:
                     ((DialogInterface.OnShowListener) msg.obj).onShow(this.mDialog.get());
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
@@ -1102,11 +1108,10 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     }
 
     private void semClearAnchorListener() {
-        Runnable runnable = this.mRemoveOnLayoutChangeListnerRunnable;
-        if (runnable == null) {
+        if (this.mRemoveOnLayoutChangeListnerRunnable == null) {
             return;
         }
-        runnable.run();
+        this.mRemoveOnLayoutChangeListnerRunnable.run();
         this.mRemoveOnLayoutChangeListnerRunnable = null;
     }
 

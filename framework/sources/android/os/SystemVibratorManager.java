@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.SparseArray;
+import com.samsung.android.vibrator.VibrationDebugInfo;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -19,6 +20,7 @@ public class SystemVibratorManager extends VibratorManager {
     private final Object mLock;
     private final IVibratorManagerService mService;
     private final Binder mToken;
+    private final int mUid;
     private int[] mVibratorIds;
     private final SparseArray<Vibrator> mVibrators;
 
@@ -29,27 +31,25 @@ public class SystemVibratorManager extends VibratorManager {
         this.mVibrators = new SparseArray<>();
         this.mListeners = new ArrayMap<>();
         this.mContext = context;
+        this.mUid = Process.myUid();
         this.mService = IVibratorManagerService.Stub.asInterface(ServiceManager.getService(Context.VIBRATOR_MANAGER_SERVICE));
     }
 
     @Override // android.os.VibratorManager
     public int[] getVibratorIds() {
-        IVibratorManagerService iVibratorManagerService;
         synchronized (this.mLock) {
-            int[] iArr = this.mVibratorIds;
-            if (iArr != null) {
-                return iArr;
+            if (this.mVibratorIds != null) {
+                return this.mVibratorIds;
             }
             try {
-                iVibratorManagerService = this.mService;
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
             }
-            if (iVibratorManagerService == null) {
+            if (this.mService == null) {
                 Log.w(TAG, "Failed to retrieve vibrator ids; no vibrator manager service.");
                 return new int[0];
             }
-            int[] vibratorIds = iVibratorManagerService.getVibratorIds();
+            int[] vibratorIds = this.mService.getVibratorIds();
             this.mVibratorIds = vibratorIds;
             return vibratorIds;
         }
@@ -65,11 +65,10 @@ public class SystemVibratorManager extends VibratorManager {
             }
             VibratorInfo info = null;
             try {
-                IVibratorManagerService iVibratorManagerService = this.mService;
-                if (iVibratorManagerService == null) {
+                if (this.mService == null) {
                     Log.w(TAG, "Failed to retrieve vibrator; no vibrator manager service.");
                 } else {
-                    info = iVibratorManagerService.getVibratorInfo(vibratorId);
+                    info = this.mService.getVibratorInfo(vibratorId);
                 }
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
@@ -91,13 +90,12 @@ public class SystemVibratorManager extends VibratorManager {
 
     @Override // android.os.VibratorManager
     public boolean setAlwaysOnEffect(int uid, String opPkg, int alwaysOnId, CombinedVibration effect, VibrationAttributes attributes) {
-        IVibratorManagerService iVibratorManagerService = this.mService;
-        if (iVibratorManagerService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "Failed to set always-on effect; no vibrator manager service.");
             return false;
         }
         try {
-            return iVibratorManagerService.setAlwaysOnEffect(uid, opPkg, alwaysOnId, effect, attributes);
+            return this.mService.setAlwaysOnEffect(uid, opPkg, alwaysOnId, effect, attributes);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to set always-on effect.", e);
             return false;
@@ -106,15 +104,27 @@ public class SystemVibratorManager extends VibratorManager {
 
     @Override // android.os.VibratorManager
     public void vibrate(int uid, String opPkg, CombinedVibration effect, String reason, VibrationAttributes attributes) {
-        IVibratorManagerService iVibratorManagerService = this.mService;
-        if (iVibratorManagerService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "Failed to vibrate; no vibrator manager service.");
             return;
         }
         try {
-            iVibratorManagerService.vibrate(uid, this.mContext.getAssociatedDisplayId(), opPkg, effect, attributes, reason, this.mToken);
+            this.mService.vibrate(uid, this.mContext.getDeviceId(), opPkg, effect, attributes, reason, this.mToken);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to vibrate.", e);
+        }
+    }
+
+    @Override // android.os.VibratorManager
+    public void performHapticFeedback(int constant, boolean always, String reason, boolean fromIme) {
+        if (this.mService == null) {
+            Log.w(TAG, "Failed to perform haptic feedback; no vibrator manager service.");
+            return;
+        }
+        try {
+            this.mService.performHapticFeedback(this.mUid, this.mContext.getDeviceId(), this.mPackageName, constant, always, reason, fromIme);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to perform haptic feedback.", e);
         }
     }
 
@@ -129,20 +139,19 @@ public class SystemVibratorManager extends VibratorManager {
     }
 
     private void cancelVibration(int usageFilter) {
-        IVibratorManagerService iVibratorManagerService = this.mService;
-        if (iVibratorManagerService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "Failed to cancel vibration; no vibrator manager service.");
             return;
         }
         try {
-            iVibratorManagerService.cancelVibrate(usageFilter, this.mToken);
+            this.mService.cancelVibrate(usageFilter, this.mToken);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to cancel vibration.", e);
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class OnVibratorStateChangedListenerDelegate extends IVibratorStateListener.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class OnVibratorStateChangedListenerDelegate extends IVibratorStateListener.Stub {
         private final Executor mExecutor;
         private final Vibrator.OnVibratorStateChangedListener mListener;
 
@@ -151,6 +160,7 @@ public class SystemVibratorManager extends VibratorManager {
             this.mListener = listener;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVibrating$0(boolean isVibrating) {
             this.mListener.onVibratorStateChanged(isVibrating);
         }
@@ -166,7 +176,6 @@ public class SystemVibratorManager extends VibratorManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     private final class SingleVibrator extends Vibrator {
         private final VibratorInfo mVibratorInfo;
 
@@ -199,6 +208,11 @@ public class SystemVibratorManager extends VibratorManager {
         public void vibrate(int uid, String opPkg, VibrationEffect vibe, String reason, VibrationAttributes attributes) {
             CombinedVibration combined = CombinedVibration.startParallel().addVibrator(this.mVibratorInfo.getId(), vibe).combine();
             SystemVibratorManager.this.vibrate(uid, opPkg, combined, reason, attributes);
+        }
+
+        @Override // android.os.Vibrator
+        public void performHapticFeedback(int effectId, boolean always, String reason, boolean fromIme) {
+            SystemVibratorManager.this.performHapticFeedback(effectId, always, reason, fromIme);
         }
 
         @Override // android.os.Vibrator
@@ -288,13 +302,12 @@ public class SystemVibratorManager extends VibratorManager {
 
     @Override // android.os.VibratorManager
     public int semGetNumberOfSupportedPatterns() {
-        IVibratorManagerService iVibratorManagerService = this.mService;
-        if (iVibratorManagerService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "Failed to get semGetNumberOfSupportedPatterns");
             return 0;
         }
         try {
-            return iVibratorManagerService.semGetNumberOfSupportedPatterns();
+            return this.mService.semGetNumberOfSupportedPatterns();
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to get semGetNumberOfSupportedPatterns", e);
             return 0;
@@ -303,13 +316,12 @@ public class SystemVibratorManager extends VibratorManager {
 
     @Override // android.os.VibratorManager
     public int semGetSupportedVibrationType() {
-        IVibratorManagerService iVibratorManagerService = this.mService;
-        if (iVibratorManagerService == null) {
+        if (this.mService == null) {
             Log.w(TAG, "Failed to get semGetSupportedVibrationType");
             return 0;
         }
         try {
-            return iVibratorManagerService.getSupportedVibratorGroup();
+            return this.mService.getSupportedVibratorGroup();
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to get semGetNumberOfSupportedPatterns", e);
             return 0;
@@ -317,14 +329,13 @@ public class SystemVibratorManager extends VibratorManager {
     }
 
     @Override // android.os.VibratorManager
-    public String executeVibrationDebugCommand(int param) {
-        IVibratorManagerService iVibratorManagerService = this.mService;
-        if (iVibratorManagerService == null) {
+    public String executeVibrationDebugCommand(VibrationDebugInfo param) {
+        if (this.mService == null) {
             Log.w(TAG, "Failed to executeVibrationDebugCommand");
             return "";
         }
         try {
-            return iVibratorManagerService.executeVibrationDebugCommand(param);
+            return this.mService.executeVibrationDebugCommand(param);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to executeVibrationDebugCommand", e);
             return "";

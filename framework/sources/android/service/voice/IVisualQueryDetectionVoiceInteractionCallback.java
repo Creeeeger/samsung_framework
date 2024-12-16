@@ -16,12 +16,17 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
 
     void onQueryRejected() throws RemoteException;
 
+    void onResultDetected(VisualQueryDetectedResult visualQueryDetectedResult) throws RemoteException;
+
     void onVisualQueryDetectionServiceFailure(VisualQueryDetectionServiceFailure visualQueryDetectionServiceFailure) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IVisualQueryDetectionVoiceInteractionCallback {
         @Override // android.service.voice.IVisualQueryDetectionVoiceInteractionCallback
         public void onQueryDetected(String partialQuery) throws RemoteException {
+        }
+
+        @Override // android.service.voice.IVisualQueryDetectionVoiceInteractionCallback
+        public void onResultDetected(VisualQueryDetectedResult partialResult) throws RemoteException {
         }
 
         @Override // android.service.voice.IVisualQueryDetectionVoiceInteractionCallback
@@ -42,12 +47,12 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IVisualQueryDetectionVoiceInteractionCallback {
         static final int TRANSACTION_onQueryDetected = 1;
-        static final int TRANSACTION_onQueryFinished = 2;
-        static final int TRANSACTION_onQueryRejected = 3;
-        static final int TRANSACTION_onVisualQueryDetectionServiceFailure = 4;
+        static final int TRANSACTION_onQueryFinished = 3;
+        static final int TRANSACTION_onQueryRejected = 4;
+        static final int TRANSACTION_onResultDetected = 2;
+        static final int TRANSACTION_onVisualQueryDetectionServiceFailure = 5;
 
         public Stub() {
             attachInterface(this, IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
@@ -74,10 +79,12 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
                 case 1:
                     return "onQueryDetected";
                 case 2:
-                    return "onQueryFinished";
+                    return "onResultDetected";
                 case 3:
-                    return "onQueryRejected";
+                    return "onQueryFinished";
                 case 4:
+                    return "onQueryRejected";
+                case 5:
                     return "onVisualQueryDetectionServiceFailure";
                 default:
                     return null;
@@ -94,36 +101,38 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onQueryDetected(_arg0);
+                    return true;
+                case 2:
+                    VisualQueryDetectedResult _arg02 = (VisualQueryDetectedResult) data.readTypedObject(VisualQueryDetectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResultDetected(_arg02);
+                    return true;
+                case 3:
+                    onQueryFinished();
+                    return true;
+                case 4:
+                    onQueryRejected();
+                    return true;
+                case 5:
+                    VisualQueryDetectionServiceFailure _arg03 = (VisualQueryDetectionServiceFailure) data.readTypedObject(VisualQueryDetectionServiceFailure.CREATOR);
+                    data.enforceNoDataAvail();
+                    onVisualQueryDetectionServiceFailure(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onQueryDetected(_arg0);
-                            return true;
-                        case 2:
-                            onQueryFinished();
-                            return true;
-                        case 3:
-                            onQueryRejected();
-                            return true;
-                        case 4:
-                            VisualQueryDetectionServiceFailure _arg02 = (VisualQueryDetectionServiceFailure) data.readTypedObject(VisualQueryDetectionServiceFailure.CREATOR);
-                            data.enforceNoDataAvail();
-                            onVisualQueryDetectionServiceFailure(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IVisualQueryDetectionVoiceInteractionCallback {
+        private static class Proxy implements IVisualQueryDetectionVoiceInteractionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -152,11 +161,23 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
             }
 
             @Override // android.service.voice.IVisualQueryDetectionVoiceInteractionCallback
+            public void onResultDetected(VisualQueryDetectedResult partialResult) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
+                    _data.writeTypedObject(partialResult, 0);
+                    this.mRemote.transact(2, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.service.voice.IVisualQueryDetectionVoiceInteractionCallback
             public void onQueryFinished() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
-                    this.mRemote.transact(2, _data, null, 1);
+                    this.mRemote.transact(3, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -167,7 +188,7 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
-                    this.mRemote.transact(3, _data, null, 1);
+                    this.mRemote.transact(4, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -179,7 +200,7 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
                 try {
                     _data.writeInterfaceToken(IVisualQueryDetectionVoiceInteractionCallback.DESCRIPTOR);
                     _data.writeTypedObject(visualQueryDetectionServiceFailure, 0);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(5, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -188,7 +209,7 @@ public interface IVisualQueryDetectionVoiceInteractionCallback extends IInterfac
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 3;
+            return 4;
         }
     }
 }

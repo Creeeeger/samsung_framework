@@ -19,7 +19,7 @@ import java.util.concurrent.FutureTask;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class SumeClient implements MediaController<Future<Response>>, MediaController.OnEventListener {
     private static final String TAG = Def.tagOf((Class<?>) SumeClient.class);
     private MediaController.OnEventListener eventListener;
@@ -35,7 +35,7 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
         this.serviceProxy = serviceProxy;
         this.graph = graph;
         if (!graph.getOption().contains(7)) {
-            serviceProxy.setExceptionHandler(new ExceptionHandler() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda5
+            serviceProxy.setExceptionHandler(new ExceptionHandler() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda6
                 @Override // com.samsung.android.sume.core.functional.ExceptionHandler
                 public final boolean accept(Exception exc) {
                     return SumeClient.lambda$new$0(exc);
@@ -46,7 +46,7 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
         serviceProxy.request(Request.of(900, "graph", graph).asOneWay());
     }
 
-    public static /* synthetic */ boolean lambda$new$0(Exception exception) {
+    static /* synthetic */ boolean lambda$new$0(Exception exception) {
         Log.d(TAG, "ignore exception: " + exception.getMessage());
         return true;
     }
@@ -58,16 +58,16 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
     }
 
     @Override // com.samsung.android.sume.core.controller.MediaController
-    /* renamed from: run */
+    /* renamed from: run, reason: avoid collision after fix types in other method */
     public Future<Response> run2(final List<MediaBuffer> inBuffers, final List<MediaBuffer> outBuffers) {
-        return (Future) Optional.ofNullable(this.serviceProxy).map(new Function() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda0
+        return (Future) Optional.ofNullable(this.serviceProxy).map(new Function() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Future request;
                 request = ((ServiceProxy) obj).request(Request.of(901).setInputBuffer((List<MediaBuffer>) inBuffers).setOutputBuffer((List<MediaBuffer>) outBuffers));
                 return request;
             }
-        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda1
+        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda3
             @Override // java.util.function.Supplier
             public final Object get() {
                 return SumeClient.lambda$run$3();
@@ -75,11 +75,11 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
         });
     }
 
-    public static /* synthetic */ void lambda$run$2() {
+    static /* synthetic */ void lambda$run$2() {
     }
 
-    public static /* synthetic */ Future lambda$run$3() {
-        return new FutureTask(new Runnable() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda6
+    static /* synthetic */ Future lambda$run$3() {
+        return new FutureTask(new Runnable() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda4
             @Override // java.lang.Runnable
             public final void run() {
                 SumeClient.lambda$run$2();
@@ -89,14 +89,14 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
 
     @Override // com.samsung.android.sume.core.controller.MediaController
     public Future<Response> request(final Request request) {
-        return (Future) Optional.ofNullable(this.serviceProxy).map(new Function() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda3
+        return (Future) Optional.ofNullable(this.serviceProxy).map(new Function() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Future request2;
                 request2 = ((ServiceProxy) obj).request(Request.this);
                 return request2;
             }
-        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda4
+        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda1
             @Override // java.util.function.Supplier
             public final Object get() {
                 return SumeClient.lambda$request$6();
@@ -104,11 +104,11 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
         });
     }
 
-    public static /* synthetic */ void lambda$request$5() {
+    static /* synthetic */ void lambda$request$5() {
     }
 
-    public static /* synthetic */ Future lambda$request$6() {
-        return new FutureTask(new Runnable() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda2
+    static /* synthetic */ Future lambda$request$6() {
+        return new FutureTask(new Runnable() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda5
             @Override // java.lang.Runnable
             public final void run() {
                 SumeClient.lambda$request$5();
@@ -141,14 +141,12 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
 
     @Override // com.samsung.android.sume.core.controller.MediaController.OnEventListener
     public void onEvent(Event event) {
-        String str = TAG;
-        Log.d(str, "onEvent:  " + event);
+        Log.d(TAG, "onEvent:  " + event);
         if (event.isError()) {
-            Log.d(str, "error occur, do force-release: " + event.getException());
+            Log.d(TAG, "error occur, do force-release: " + event.getException());
         }
-        MediaController.OnEventListener onEventListener = this.eventListener;
-        if (onEventListener != null) {
-            onEventListener.onEvent(event);
+        if (this.eventListener != null) {
+            this.eventListener.onEvent(event);
         }
     }
 

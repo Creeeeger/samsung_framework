@@ -11,7 +11,7 @@ public class LogDecelerateInterpolator implements Interpolator {
     public LogDecelerateInterpolator(int base, int drift) {
         this.mBase = base;
         this.mDrift = drift;
-        this.mLogScale = 1.0f / computeLog(1.0f, base, drift);
+        this.mLogScale = 1.0f / computeLog(1.0f, this.mBase, this.mDrift);
     }
 
     private static float computeLog(float t, int base, int drift) {

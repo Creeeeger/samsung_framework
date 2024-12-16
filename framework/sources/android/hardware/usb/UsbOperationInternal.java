@@ -30,16 +30,14 @@ public final class UsbOperationInternal extends IUsbOperationInternal.Stub {
     private int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     @interface UsbOperationStatus {
     }
 
-    public UsbOperationInternal(int operationID, String id, Executor executor, Consumer<Integer> consumer) {
+    UsbOperationInternal(int operationID, String id, Executor executor, Consumer<Integer> consumer) {
         this.mAsynchronous = false;
         this.mResult = 0;
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.mLock = reentrantLock;
-        this.mOperationWait = reentrantLock.newCondition();
+        this.mLock = new ReentrantLock();
+        this.mOperationWait = this.mLock.newCondition();
         this.mOperationID = operationID;
         this.mId = id;
         this.mExecutor = executor;
@@ -47,12 +45,11 @@ public final class UsbOperationInternal extends IUsbOperationInternal.Stub {
         this.mAsynchronous = true;
     }
 
-    public UsbOperationInternal(int operationID, String id) {
+    UsbOperationInternal(int operationID, String id) {
         this.mAsynchronous = false;
         this.mResult = 0;
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.mLock = reentrantLock;
-        this.mOperationWait = reentrantLock.newCondition();
+        this.mLock = new ReentrantLock();
+        this.mOperationWait = this.mLock.newCondition();
         this.mOperationID = operationID;
         this.mId = id;
     }
@@ -96,6 +93,7 @@ public final class UsbOperationInternal extends IUsbOperationInternal.Stub {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onOperationComplete$0() {
         this.mConsumer.accept(Integer.valueOf(this.mResult));
     }

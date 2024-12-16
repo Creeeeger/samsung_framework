@@ -160,24 +160,20 @@ public class TBSCertificate extends ASN1Object {
             validity.add(this.startDate);
             validity.add(this.endDate);
             v.add(new DERSequence(validity));
-            X500Name x500Name = this.subject;
-            if (x500Name != null) {
-                v.add(x500Name);
+            if (this.subject != null) {
+                v.add(this.subject);
             } else {
                 v.add(new DERSequence());
             }
             v.add(this.subjectPublicKeyInfo);
-            DERBitString dERBitString = this.issuerUniqueId;
-            if (dERBitString != null) {
-                v.add(new DERTaggedObject(false, 1, dERBitString));
+            if (this.issuerUniqueId != null) {
+                v.add(new DERTaggedObject(false, 1, this.issuerUniqueId));
             }
-            DERBitString dERBitString2 = this.subjectUniqueId;
-            if (dERBitString2 != null) {
-                v.add(new DERTaggedObject(false, 2, dERBitString2));
+            if (this.subjectUniqueId != null) {
+                v.add(new DERTaggedObject(false, 2, this.subjectUniqueId));
             }
-            Extensions extensions = this.extensions;
-            if (extensions != null) {
-                v.add(new DERTaggedObject(true, 3, extensions));
+            if (this.extensions != null) {
+                v.add(new DERTaggedObject(true, 3, this.extensions));
             }
             return new DERSequence(v);
         }

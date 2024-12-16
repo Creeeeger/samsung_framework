@@ -1,5 +1,7 @@
 package android.os;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import java.util.List;
 
 /* loaded from: classes3.dex */
@@ -44,15 +46,10 @@ public interface IDeviceIdleController extends IInterface {
 
     void removeSystemPowerWhitelistApp(String str) throws RemoteException;
 
-    void resetPreIdleTimeoutMode() throws RemoteException;
-
     void restoreSystemPowerWhitelistApp(String str) throws RemoteException;
-
-    int setPreIdleTimeoutMode(int i) throws RemoteException;
 
     long whitelistAppTemporarily(String str, int i, int i2, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDeviceIdleController {
         @Override // android.os.IDeviceIdleController
         public void addPowerSaveWhitelistApp(String name) throws RemoteException {
@@ -158,22 +155,12 @@ public interface IDeviceIdleController extends IInterface {
         public void exitIdle(String reason) throws RemoteException {
         }
 
-        @Override // android.os.IDeviceIdleController
-        public int setPreIdleTimeoutMode(int Mode) throws RemoteException {
-            return 0;
-        }
-
-        @Override // android.os.IDeviceIdleController
-        public void resetPreIdleTimeoutMode() throws RemoteException {
-        }
-
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDeviceIdleController {
         public static final String DESCRIPTOR = "android.os.IDeviceIdleController";
         static final int TRANSACTION_addPowerSaveTempWhitelistApp = 18;
@@ -196,13 +183,21 @@ public interface IDeviceIdleController extends IInterface {
         static final int TRANSACTION_isPowerSaveWhitelistExceptIdleApp = 16;
         static final int TRANSACTION_removePowerSaveWhitelistApp = 3;
         static final int TRANSACTION_removeSystemPowerWhitelistApp = 4;
-        static final int TRANSACTION_resetPreIdleTimeoutMode = 24;
         static final int TRANSACTION_restoreSystemPowerWhitelistApp = 5;
-        static final int TRANSACTION_setPreIdleTimeoutMode = 23;
         static final int TRANSACTION_whitelistAppTemporarily = 21;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IDeviceIdleController asInterface(IBinder obj) {
@@ -267,10 +262,6 @@ public interface IDeviceIdleController extends IInterface {
                     return "whitelistAppTemporarily";
                 case 22:
                     return "exitIdle";
-                case 23:
-                    return "setPreIdleTimeoutMode";
-                case 24:
-                    return "resetPreIdleTimeoutMode";
                 default:
                     return null;
             }
@@ -286,173 +277,158 @@ public interface IDeviceIdleController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    addPowerSaveWhitelistApp(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    List<String> _arg02 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    int _result = addPowerSaveWhitelistApps(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    removePowerSaveWhitelistApp(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeSystemPowerWhitelistApp(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    restoreSystemPowerWhitelistApp(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String[] _result2 = getRemovedSystemPowerWhitelistApps();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result2);
+                    return true;
+                case 7:
+                    String[] _result3 = getSystemPowerWhitelistExceptIdle();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result3);
+                    return true;
+                case 8:
+                    String[] _result4 = getSystemPowerWhitelist();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result4);
+                    return true;
+                case 9:
+                    String[] _result5 = getUserPowerWhitelist();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result5);
+                    return true;
+                case 10:
+                    String[] _result6 = getFullPowerWhitelistExceptIdle();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result6);
+                    return true;
+                case 11:
+                    String[] _result7 = getFullPowerWhitelist();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result7);
+                    return true;
+                case 12:
+                    int[] _result8 = getAppIdWhitelistExceptIdle();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result8);
+                    return true;
+                case 13:
+                    int[] _result9 = getAppIdWhitelist();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result9);
+                    return true;
+                case 14:
+                    int[] _result10 = getAppIdUserWhitelist();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result10);
+                    return true;
+                case 15:
+                    int[] _result11 = getAppIdTempWhitelist();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result11);
+                    return true;
+                case 16:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = isPowerSaveWhitelistExceptIdleApp(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 17:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = isPowerSaveWhitelistApp(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 18:
+                    String _arg08 = data.readString();
+                    long _arg1 = data.readLong();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    addPowerSaveTempWhitelistApp(_arg08, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    String _arg09 = data.readString();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result14 = addPowerSaveTempWhitelistAppForMms(_arg09, _arg12, _arg22, _arg32);
+                    reply.writeNoException();
+                    reply.writeLong(_result14);
+                    return true;
+                case 20:
+                    String _arg010 = data.readString();
+                    int _arg13 = data.readInt();
+                    int _arg23 = data.readInt();
+                    String _arg33 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result15 = addPowerSaveTempWhitelistAppForSms(_arg010, _arg13, _arg23, _arg33);
+                    reply.writeNoException();
+                    reply.writeLong(_result15);
+                    return true;
+                case 21:
+                    String _arg011 = data.readString();
+                    int _arg14 = data.readInt();
+                    int _arg24 = data.readInt();
+                    String _arg34 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result16 = whitelistAppTemporarily(_arg011, _arg14, _arg24, _arg34);
+                    reply.writeNoException();
+                    reply.writeLong(_result16);
+                    return true;
+                case 22:
+                    String _arg012 = data.readString();
+                    data.enforceNoDataAvail();
+                    exitIdle(_arg012);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            addPowerSaveWhitelistApp(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            List<String> _arg02 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            int _result = addPowerSaveWhitelistApps(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            removePowerSaveWhitelistApp(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeSystemPowerWhitelistApp(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            restoreSystemPowerWhitelistApp(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String[] _result2 = getRemovedSystemPowerWhitelistApps();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result2);
-                            return true;
-                        case 7:
-                            String[] _result3 = getSystemPowerWhitelistExceptIdle();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result3);
-                            return true;
-                        case 8:
-                            String[] _result4 = getSystemPowerWhitelist();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result4);
-                            return true;
-                        case 9:
-                            String[] _result5 = getUserPowerWhitelist();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result5);
-                            return true;
-                        case 10:
-                            String[] _result6 = getFullPowerWhitelistExceptIdle();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result6);
-                            return true;
-                        case 11:
-                            String[] _result7 = getFullPowerWhitelist();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result7);
-                            return true;
-                        case 12:
-                            int[] _result8 = getAppIdWhitelistExceptIdle();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result8);
-                            return true;
-                        case 13:
-                            int[] _result9 = getAppIdWhitelist();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result9);
-                            return true;
-                        case 14:
-                            int[] _result10 = getAppIdUserWhitelist();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result10);
-                            return true;
-                        case 15:
-                            int[] _result11 = getAppIdTempWhitelist();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result11);
-                            return true;
-                        case 16:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = isPowerSaveWhitelistExceptIdleApp(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 17:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = isPowerSaveWhitelistApp(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 18:
-                            String _arg08 = data.readString();
-                            long _arg1 = data.readLong();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            addPowerSaveTempWhitelistApp(_arg08, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            String _arg09 = data.readString();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result14 = addPowerSaveTempWhitelistAppForMms(_arg09, _arg12, _arg22, _arg32);
-                            reply.writeNoException();
-                            reply.writeLong(_result14);
-                            return true;
-                        case 20:
-                            String _arg010 = data.readString();
-                            int _arg13 = data.readInt();
-                            int _arg23 = data.readInt();
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result15 = addPowerSaveTempWhitelistAppForSms(_arg010, _arg13, _arg23, _arg33);
-                            reply.writeNoException();
-                            reply.writeLong(_result15);
-                            return true;
-                        case 21:
-                            String _arg011 = data.readString();
-                            int _arg14 = data.readInt();
-                            int _arg24 = data.readInt();
-                            String _arg34 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result16 = whitelistAppTemporarily(_arg011, _arg14, _arg24, _arg34);
-                            reply.writeNoException();
-                            reply.writeLong(_result16);
-                            return true;
-                        case 22:
-                            String _arg012 = data.readString();
-                            data.enforceNoDataAvail();
-                            exitIdle(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result17 = setPreIdleTimeoutMode(_arg013);
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 24:
-                            resetPreIdleTimeoutMode();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDeviceIdleController {
+        private static class Proxy implements IDeviceIdleController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -832,42 +808,15 @@ public interface IDeviceIdleController extends IInterface {
                     _data.recycle();
                 }
             }
+        }
 
-            @Override // android.os.IDeviceIdleController
-            public int setPreIdleTimeoutMode(int Mode) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(Mode);
-                    this.mRemote.transact(23, _data, _reply, 0);
-                    _reply.readException();
-                    int _result = _reply.readInt();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.os.IDeviceIdleController
-            public void resetPreIdleTimeoutMode() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(24, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
+        protected void exitIdle_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.DEVICE_POWER, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 23;
+            return 21;
         }
     }
 }

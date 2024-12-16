@@ -13,7 +13,6 @@ public final class TextBoundsInfoResult {
     private final TextBoundsInfo mTextBoundsInfo;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ResultCode {
     }
 

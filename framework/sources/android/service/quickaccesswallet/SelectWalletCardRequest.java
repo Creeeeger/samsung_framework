@@ -6,15 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class SelectWalletCardRequest implements Parcelable {
     public static final Parcelable.Creator<SelectWalletCardRequest> CREATOR = new Parcelable.Creator<SelectWalletCardRequest>() { // from class: android.service.quickaccesswallet.SelectWalletCardRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectWalletCardRequest createFromParcel(Parcel source) {
             String cardId = source.readString();
             return new SelectWalletCardRequest(cardId);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectWalletCardRequest[] newArray(int size) {
             return new SelectWalletCardRequest[size];
@@ -34,24 +33,6 @@ public final class SelectWalletCardRequest implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mCardId);
-    }
-
-    /* renamed from: android.service.quickaccesswallet.SelectWalletCardRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SelectWalletCardRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectWalletCardRequest createFromParcel(Parcel source) {
-            String cardId = source.readString();
-            return new SelectWalletCardRequest(cardId);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectWalletCardRequest[] newArray(int size) {
-            return new SelectWalletCardRequest[size];
-        }
     }
 
     public String getCardId() {

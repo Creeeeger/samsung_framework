@@ -28,7 +28,6 @@ public interface IVoiceInteractionService extends IInterface {
 
     void soundModelsChanged() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IVoiceInteractionService {
         @Override // android.service.voice.IVoiceInteractionService
         public void ready() throws RemoteException {
@@ -68,7 +67,6 @@ public interface IVoiceInteractionService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractionService {
         public static final String DESCRIPTOR = "android.service.voice.IVoiceInteractionService";
         static final int TRANSACTION_detectorRemoteExceptionOccurred = 8;
@@ -133,54 +131,51 @@ public interface IVoiceInteractionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ready();
+                    return true;
+                case 2:
+                    soundModelsChanged();
+                    return true;
+                case 3:
+                    shutdown();
+                    return true;
+                case 4:
+                    launchVoiceAssistFromKeyguard();
+                    return true;
+                case 5:
+                    List<String> _arg0 = data.createStringArrayList();
+                    IVoiceActionCheckCallback _arg1 = IVoiceActionCheckCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getActiveServiceSupportedActions(_arg0, _arg1);
+                    return true;
+                case 6:
+                    Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    prepareToShowSession(_arg02, _arg12);
+                    return true;
+                case 7:
+                    Bundle _arg03 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    showSessionFailed(_arg03);
+                    return true;
+                case 8:
+                    IBinder _arg04 = data.readStrongBinder();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    detectorRemoteExceptionOccurred(_arg04, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ready();
-                            return true;
-                        case 2:
-                            soundModelsChanged();
-                            return true;
-                        case 3:
-                            shutdown();
-                            return true;
-                        case 4:
-                            launchVoiceAssistFromKeyguard();
-                            return true;
-                        case 5:
-                            List<String> _arg0 = data.createStringArrayList();
-                            IVoiceActionCheckCallback _arg1 = IVoiceActionCheckCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getActiveServiceSupportedActions(_arg0, _arg1);
-                            return true;
-                        case 6:
-                            Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            prepareToShowSession(_arg02, _arg12);
-                            return true;
-                        case 7:
-                            Bundle _arg03 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            showSessionFailed(_arg03);
-                            return true;
-                        case 8:
-                            IBinder _arg04 = data.readStrongBinder();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            detectorRemoteExceptionOccurred(_arg04, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IVoiceInteractionService {
             private IBinder mRemote;
 

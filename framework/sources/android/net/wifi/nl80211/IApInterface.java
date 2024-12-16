@@ -18,7 +18,6 @@ public interface IApInterface extends IInterface {
 
     boolean registerCallback(IApInterfaceEventCallback iApInterfaceEventCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IApInterface {
         @Override // android.net.wifi.nl80211.IApInterface
         public boolean registerCallback(IApInterfaceEventCallback callback) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IApInterface extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IApInterface {
         static final int TRANSACTION_getInterfaceName = 2;
         static final int TRANSACTION_registerCallback = 1;
@@ -82,33 +80,29 @@ public interface IApInterface extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IApInterface.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IApInterface.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IApInterface.DESCRIPTOR);
+                case 1:
+                    IApInterfaceEventCallback _arg0 = IApInterfaceEventCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result = registerCallback(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _result2 = getInterfaceName();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IApInterfaceEventCallback _arg0 = IApInterfaceEventCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result = registerCallback(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _result2 = getInterfaceName();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IApInterface {
+        private static class Proxy implements IApInterface {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

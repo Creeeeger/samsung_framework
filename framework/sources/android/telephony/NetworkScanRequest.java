@@ -6,18 +6,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class NetworkScanRequest implements Parcelable {
     public static final Parcelable.Creator<NetworkScanRequest> CREATOR = new Parcelable.Creator<NetworkScanRequest>() { // from class: android.telephony.NetworkScanRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanRequest createFromParcel(Parcel in) {
             return new NetworkScanRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanRequest[] newArray(int size) {
             return new NetworkScanRequest[size];
@@ -44,12 +44,7 @@ public final class NetworkScanRequest implements Parcelable {
     private RadioAccessSpecifier[] mSpecifiers;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ScanType {
-    }
-
-    /* synthetic */ NetworkScanRequest(Parcel parcel, NetworkScanRequestIA networkScanRequestIA) {
-        this(parcel);
     }
 
     public NetworkScanRequest(int scanType, RadioAccessSpecifier[] specifiers, int searchPeriodicity, int maxSearchTime, boolean incrementalResults, int incrementalResultsPeriodicity, ArrayList<String> mccMncs) {
@@ -91,11 +86,10 @@ public final class NetworkScanRequest implements Parcelable {
     }
 
     public RadioAccessSpecifier[] getSpecifiers() {
-        RadioAccessSpecifier[] radioAccessSpecifierArr = this.mSpecifiers;
-        if (radioAccessSpecifierArr == null) {
+        if (this.mSpecifiers == null) {
             return null;
         }
-        return (RadioAccessSpecifier[]) radioAccessSpecifierArr.clone();
+        return (RadioAccessSpecifier[]) this.mSpecifiers.clone();
     }
 
     public ArrayList<String> getPlmns() {
@@ -133,39 +127,22 @@ public final class NetworkScanRequest implements Parcelable {
         this.mMaxSearchTime = in.readInt();
         this.mIncrementalResults = in.readBoolean();
         this.mIncrementalResultsPeriodicity = in.readInt();
-        ArrayList<String> arrayList = new ArrayList<>();
-        this.mMccMncs = arrayList;
-        in.readStringList(arrayList);
+        this.mMccMncs = new ArrayList<>();
+        in.readStringList(this.mMccMncs);
     }
 
-    public boolean equals(Object o) {
-        ArrayList<String> arrayList;
-        try {
-            NetworkScanRequest nsr = (NetworkScanRequest) o;
-            return o != null && this.mScanType == nsr.mScanType && Arrays.equals(this.mSpecifiers, nsr.mSpecifiers) && this.mSearchPeriodicity == nsr.mSearchPeriodicity && this.mMaxSearchTime == nsr.mMaxSearchTime && this.mIncrementalResults == nsr.mIncrementalResults && this.mIncrementalResultsPeriodicity == nsr.mIncrementalResultsPeriodicity && (arrayList = this.mMccMncs) != null && arrayList.equals(nsr.mMccMncs);
-        } catch (ClassCastException e) {
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof NetworkScanRequest)) {
             return false;
         }
+        NetworkScanRequest nsr = (NetworkScanRequest) other;
+        return this.mScanType == nsr.mScanType && Arrays.equals(this.mSpecifiers, nsr.mSpecifiers) && this.mSearchPeriodicity == nsr.mSearchPeriodicity && this.mMaxSearchTime == nsr.mMaxSearchTime && this.mIncrementalResults == nsr.mIncrementalResults && this.mIncrementalResultsPeriodicity == nsr.mIncrementalResultsPeriodicity && Objects.equals(this.mMccMncs, nsr.mMccMncs);
     }
 
     public int hashCode() {
         return (this.mScanType * 31) + (Arrays.hashCode(this.mSpecifiers) * 37) + (this.mSearchPeriodicity * 41) + (this.mMaxSearchTime * 43) + ((!this.mIncrementalResults ? 0 : 1) * 47) + (this.mIncrementalResultsPeriodicity * 53) + (this.mMccMncs.hashCode() * 59);
-    }
-
-    /* renamed from: android.telephony.NetworkScanRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkScanRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanRequest createFromParcel(Parcel in) {
-            return new NetworkScanRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanRequest[] newArray(int size) {
-            return new NetworkScanRequest[size];
-        }
     }
 }

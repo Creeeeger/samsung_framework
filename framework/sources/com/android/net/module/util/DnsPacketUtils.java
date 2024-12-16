@@ -17,7 +17,6 @@ import java.text.FieldPosition;
 /* loaded from: classes5.dex */
 public final class DnsPacketUtils {
 
-    /* loaded from: classes5.dex */
     public static class DnsRecordParser {
         private static final int MAXLABELCOUNT = 128;
         private static final int MAXLABELSIZE = 63;
@@ -67,7 +66,11 @@ public final class DnsPacketUtils {
         }
 
         public static String parseName(ByteBuffer buf, int depth, boolean isNameCompressionSupported) throws BufferUnderflowException, DnsPacket.ParseException {
-            if (depth > 128) {
+            return parseName(buf, depth, 128, isNameCompressionSupported);
+        }
+
+        public static String parseName(ByteBuffer buf, int depth, int maxLabelCount, boolean isNameCompressionSupported) throws BufferUnderflowException, DnsPacket.ParseException {
+            if (depth > maxLabelCount) {
                 throw new DnsPacket.ParseException("Failed to parse name, too many labels");
             }
             int len = Byte.toUnsignedInt(buf.get());
@@ -85,7 +88,7 @@ public final class DnsPacketUtils {
                     throw new DnsPacket.ParseException("Parse compression name fail, invalid compression");
                 }
                 buf.position(offset);
-                String pointed = parseName(buf, depth + 1, isNameCompressionSupported);
+                String pointed = parseName(buf, depth + 1, maxLabelCount, isNameCompressionSupported);
                 buf.position(oldPos);
                 return pointed;
             }
@@ -95,7 +98,7 @@ public final class DnsPacketUtils {
             if (head.length() > 63) {
                 throw new DnsPacket.ParseException("Parse name fail, invalid label length");
             }
-            String tail = parseName(buf, depth + 1, isNameCompressionSupported);
+            String tail = parseName(buf, depth + 1, maxLabelCount, isNameCompressionSupported);
             return TextUtils.isEmpty(tail) ? head : head + MediaMetrics.SEPARATOR + tail;
         }
 

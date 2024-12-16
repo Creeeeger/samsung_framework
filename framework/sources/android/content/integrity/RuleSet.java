@@ -12,10 +12,6 @@ public class RuleSet {
     private final List<Rule> mRules;
     private final String mVersion;
 
-    /* synthetic */ RuleSet(String str, List list, RuleSetIA ruleSetIA) {
-        this(str, list);
-    }
-
     private RuleSet(String version, List<Rule> rules) {
         this.mVersion = version;
         this.mRules = Collections.unmodifiableList(rules);
@@ -29,7 +25,6 @@ public class RuleSet {
         return this.mRules;
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private List<Rule> mRules = new ArrayList();
         private String mVersion;

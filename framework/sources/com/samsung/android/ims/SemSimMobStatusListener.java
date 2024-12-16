@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SemSimMobStatusListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.ims.SemSimMobStatusListener";
 
     void onSimMobilityStateChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements SemSimMobStatusListener {
         @Override // com.samsung.android.ims.SemSimMobStatusListener
         public void onSimMobilityStateChanged(boolean simMobility) throws RemoteException {
@@ -24,7 +23,6 @@ public interface SemSimMobStatusListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements SemSimMobStatusListener {
         static final int TRANSACTION_onSimMobilityStateChanged = 1;
 
@@ -67,26 +65,22 @@ public interface SemSimMobStatusListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(SemSimMobStatusListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(SemSimMobStatusListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(SemSimMobStatusListener.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onSimMobilityStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onSimMobilityStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements SemSimMobStatusListener {
+        private static class Proxy implements SemSimMobStatusListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -19,6 +19,7 @@ public interface SemBiometricConstants {
     public static final int CMD_SYSUI_REQ_SENSOR_ICON_VISIBILITY = 116;
     public static final int CMD_SYSUI_RESUME_SENSOR_ICON = 113;
     public static final int CMD_SYSUI_SCREEN_STATUS = 115;
+    public static final int CMD_SYSUI_SHOW_SENSOR_ICON_FROM_LOCK = 119;
     public static final int DEFAULT_OPTICAL_SENSOR_BRIGHTNESS = 319;
     public static final int DEFAULT_OPTICAL_SENSOR_NITS = 525;
     public static final int DISMISSED_FP_GESTURE_ERROR = 3;
@@ -43,10 +44,10 @@ public interface SemBiometricConstants {
     public static final int EVT_TSP_FOD_TOUCH_UP = 16;
     public static final int FP_HAL_EVENT_TOUCH_DOWN = 2;
     public static final int FP_HAL_EVENT_TOUCH_UP = 1;
-    public static final int FP_ICON_OPTION_WHEN_SCREEN_OFF_NEVER = 0;
-    public static final int FP_ICON_OPTION_WHEN_SCREEN_OFF_NOT_SET = -1;
-    public static final int FP_ICON_OPTION_WHEN_SCREEN_OFF_ON_ALWAYS_ON_DISPLAY = 2;
-    public static final int FP_ICON_OPTION_WHEN_SCREEN_OFF_TAP_TO_SHOW = 1;
+    public static final int FP_ICON_OPTION_ALWAYS_ON_DISPLAY = 2;
+    public static final int FP_ICON_OPTION_NEVER = 0;
+    public static final int FP_ICON_OPTION_NOT_SET = -1;
+    public static final int FP_ICON_OPTION_TAP_TO_SHOW = 1;
     public static final String KEY_AVAILABILITY_BIOMETRIC = "KEY_AVAILABILITY_BIOMETRIC";
     public static final String KEY_BIOMETRICS_ID = "KEY_BIOMETRICS_ID";
     public static final String KEY_BIO_TPA_MODE = "biometric_tpa_mode";
@@ -55,6 +56,7 @@ public interface SemBiometricConstants {
     public static final String KEY_FP_ICON_ADAPTIVE_OPTION_WHEN_SCREEN_OFF = "fingerprint_adaptive_icon";
     public static final String KEY_FP_ICON_OLD_OPTION_WHEN_SCREEN_OFF = "fingerprint_screen_off_icon";
     public static final String KEY_FP_ICON_OPTION_WHEN_SCREEN_OFF = "fingerprint_screen_off_icon_aod";
+    public static final String KEY_FP_ICON_OPTION_WHEN_SCREEN_ON = "fingerprint_screen_on_icon_lock";
     public static final String KEY_FP_MASKVIEW_DEBUG_MODE = "fingerprint_maskview_debug_mode";
     public static final String KEY_FP_PF_GUIDELINE_DISPLAYED = "fingerprint_protective_film_guideline_displayed";
     public static final String KEY_FP_VI_EFFECT_TYPE = "fingerprint_effect";
@@ -72,7 +74,6 @@ public interface SemBiometricConstants {
     public static final String KEY_MANAGED_PROFILE_KNOX_TWO_FACTOR = "MANAGED_PROFILE_KNOX_TWO_FACTOR";
     public static final String KEY_PACKAGE_NAME = "KEY_PACKAGE_NAME";
     public static final String KEY_SECURE_FOLDER = "SECURE_FOLDER";
-    public static final String KEY_SECURE_FOLDER_EFFECTIVE_ID = "KEY_SECURE_FOLDER_EFFECTIVE_ID";
     public static final String KEY_SECURE_FOLDER_NAME = "SECURE_FOLDER_NAME";
     public static final int LOCAL_HBM_MODE_OFF = 0;
     public static final int LOCAL_HBM_MODE_ON_LIGHT_OFF = 1;
@@ -109,57 +110,46 @@ public interface SemBiometricConstants {
     public static final int TSP_STATE_ENABLE = 1;
     public static final int TSP_STATE_ENABLE_HALF = 2;
 
-    /* loaded from: classes5.dex */
     public @interface GestureCalibrationDismissedReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface GestureCalibrationEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface LocalHbmCmd {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SettingDbName {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SysUiBundleKey {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SysUiCommand {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SysUiError {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SysUiPromptEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SysUiRequestCommand {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SysUiTspEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SysUiType {
     }
 }

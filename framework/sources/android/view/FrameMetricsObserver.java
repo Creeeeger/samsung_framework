@@ -7,17 +7,15 @@ import java.lang.ref.WeakReference;
 
 /* loaded from: classes4.dex */
 public class FrameMetricsObserver implements HardwareRendererObserver.OnFrameMetricsAvailableListener {
-    private final FrameMetrics mFrameMetrics;
+    private final FrameMetrics mFrameMetrics = new FrameMetrics();
     final Window.OnFrameMetricsAvailableListener mListener;
     private final HardwareRendererObserver mObserver;
     private final WeakReference<Window> mWindow;
 
-    public FrameMetricsObserver(Window window, Handler handler, Window.OnFrameMetricsAvailableListener listener) {
+    FrameMetricsObserver(Window window, Handler handler, Window.OnFrameMetricsAvailableListener listener) {
         this.mWindow = new WeakReference<>(window);
         this.mListener = listener;
-        FrameMetrics frameMetrics = new FrameMetrics();
-        this.mFrameMetrics = frameMetrics;
-        this.mObserver = new HardwareRendererObserver(this, frameMetrics.mTimingData, handler, false);
+        this.mObserver = new HardwareRendererObserver(this, this.mFrameMetrics.mTimingData, handler, false);
     }
 
     @Override // android.graphics.HardwareRendererObserver.OnFrameMetricsAvailableListener
@@ -27,7 +25,7 @@ public class FrameMetricsObserver implements HardwareRendererObserver.OnFrameMet
         }
     }
 
-    public HardwareRendererObserver getRendererObserver() {
+    HardwareRendererObserver getRendererObserver() {
         return this.mObserver;
     }
 }

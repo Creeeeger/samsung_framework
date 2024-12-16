@@ -5,7 +5,7 @@ public abstract class Violation extends Throwable {
     private int mHashCode;
     private boolean mHashCodeValid;
 
-    public Violation(String message) {
+    Violation(String message) {
         super(message);
     }
 

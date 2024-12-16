@@ -24,11 +24,7 @@ public final class TextLinksParams {
     private final TextClassifier.EntityConfig mEntityConfig;
     private final Function<TextLinks.TextLink, TextLinks.TextLinkSpan> mSpanFactory;
 
-    /* synthetic */ TextLinksParams(int i, Function function, TextLinksParamsIA textLinksParamsIA) {
-        this(i, function);
-    }
-
-    public static /* synthetic */ TextLinks.TextLinkSpan lambda$static$0(TextLinks.TextLink textLink) {
+    static /* synthetic */ TextLinks.TextLinkSpan lambda$static$0(TextLinks.TextLink textLink) {
         return new TextLinks.TextLinkSpan(textLink);
     }
 
@@ -100,7 +96,6 @@ public final class TextLinksParams {
         return applyCount == 0 ? 2 : 0;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private int mApplyStrategy = 0;
         private Function<TextLinks.TextLink, TextLinks.TextLinkSpan> mSpanFactory = TextLinksParams.DEFAULT_SPAN_FACTORY;
@@ -124,6 +119,7 @@ public final class TextLinksParams {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int checkApplyStrategy(int applyStrategy) {
         if (applyStrategy != 0 && applyStrategy != 1) {
             throw new IllegalArgumentException("Invalid apply strategy. See TextLinksParams.ApplyStrategy for options.");

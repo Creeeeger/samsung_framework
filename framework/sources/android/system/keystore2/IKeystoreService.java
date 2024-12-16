@@ -10,8 +10,8 @@ import android.system.keystore2.IKeystoreSecurityLevel;
 /* loaded from: classes3.dex */
 public interface IKeystoreService extends IInterface {
     public static final String DESCRIPTOR = "android$system$keystore2$IKeystoreService".replace('$', '.');
-    public static final String HASH = "4f1c704008e5687ed0d6f1590464aed39fc7f64e";
-    public static final int VERSION = 3;
+    public static final String HASH = "5648acc9b43590ef0a775b6f5c553831c20cccc4";
+    public static final int VERSION = 4;
 
     void deleteKey(KeyDescriptor keyDescriptor) throws RemoteException;
 
@@ -36,7 +36,6 @@ public interface IKeystoreService extends IInterface {
 
     void updateSubcomponent(KeyDescriptor keyDescriptor, byte[] bArr, byte[] bArr2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IKeystoreService {
         @Override // android.system.keystore2.IKeystoreService
         public IKeystoreSecurityLevel getSecurityLevel(int securityLevel) throws RemoteException {
@@ -96,7 +95,6 @@ public interface IKeystoreService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IKeystoreService {
         static final int TRANSACTION_deleteKey = 5;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -171,97 +169,96 @@ public interface IKeystoreService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IKeystoreSecurityLevel _result = getSecurityLevel(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeStrongInterface(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    KeyDescriptor _arg02 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    KeyEntryResponse _result2 = getKeyEntry(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeTypedObject(_result2, 1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    KeyDescriptor _arg03 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
+                    byte[] _arg1 = data.createByteArray();
+                    byte[] _arg2 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    updateSubcomponent(_arg03, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    long _arg12 = data.readLong();
+                    data.enforceNoDataAvail();
+                    KeyDescriptor[] _result3 = listEntries(_arg04, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 5:
+                    KeyDescriptor _arg05 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    deleteKey(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    KeyDescriptor _arg06 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
+                    int _arg13 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    KeyDescriptor _result4 = grant(_arg06, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 7:
+                    KeyDescriptor _arg07 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ungrant(_arg07, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    long _arg15 = data.readLong();
+                    data.enforceNoDataAvail();
+                    int _result5 = getNumberOfEntries(_arg08, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    long _arg16 = data.readLong();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    KeyDescriptor[] _result6 = listEntriesBatched(_arg09, _arg16, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result6, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IKeystoreSecurityLevel _result = getSecurityLevel(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            KeyDescriptor _arg02 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            KeyEntryResponse _result2 = getKeyEntry(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            KeyDescriptor _arg03 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
-                            byte[] _arg1 = data.createByteArray();
-                            byte[] _arg2 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            updateSubcomponent(_arg03, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            long _arg12 = data.readLong();
-                            data.enforceNoDataAvail();
-                            KeyDescriptor[] _result3 = listEntries(_arg04, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 5:
-                            KeyDescriptor _arg05 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            deleteKey(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            KeyDescriptor _arg06 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
-                            int _arg13 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            KeyDescriptor _result4 = grant(_arg06, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 7:
-                            KeyDescriptor _arg07 = (KeyDescriptor) data.readTypedObject(KeyDescriptor.CREATOR);
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ungrant(_arg07, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            long _arg15 = data.readLong();
-                            data.enforceNoDataAvail();
-                            int _result5 = getNumberOfEntries(_arg08, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            long _arg16 = data.readLong();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            KeyDescriptor[] _result6 = listEntriesBatched(_arg09, _arg16, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result6, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IKeystoreService {
+        private static class Proxy implements IKeystoreService {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

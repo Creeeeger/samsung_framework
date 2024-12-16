@@ -13,7 +13,6 @@ public interface IRemoteLockscreenValidationService extends IInterface {
 
     void validateLockscreenGuess(byte[] bArr, IRemoteLockscreenValidationCallback iRemoteLockscreenValidationCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRemoteLockscreenValidationService {
         @Override // android.service.remotelockscreenvalidation.IRemoteLockscreenValidationService
         public void validateLockscreenGuess(byte[] guess, IRemoteLockscreenValidationCallback callback) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IRemoteLockscreenValidationService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRemoteLockscreenValidationService {
         static final int TRANSACTION_validateLockscreenGuess = 1;
 
@@ -68,28 +66,24 @@ public interface IRemoteLockscreenValidationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteLockscreenValidationService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteLockscreenValidationService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteLockscreenValidationService.DESCRIPTOR);
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    IRemoteLockscreenValidationCallback _arg1 = IRemoteLockscreenValidationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    validateLockscreenGuess(_arg0, _arg1);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            IRemoteLockscreenValidationCallback _arg1 = IRemoteLockscreenValidationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            validateLockscreenGuess(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRemoteLockscreenValidationService {
+        private static class Proxy implements IRemoteLockscreenValidationService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

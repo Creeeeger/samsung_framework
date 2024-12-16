@@ -22,7 +22,6 @@ public interface ISecureElementService extends IInterface {
 
     boolean[] isNfcEventAllowed(String str, byte[] bArr, String[] strArr, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISecureElementService {
         @Override // android.se.omapi.ISecureElementService
         public String[] getReaders() throws RemoteException {
@@ -55,7 +54,6 @@ public interface ISecureElementService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISecureElementService {
         public static final String DESCRIPTOR = "android$se$omapi$ISecureElementService".replace('$', '.');
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -91,50 +89,49 @@ public interface ISecureElementService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    String[] _result = getReaders();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeStringArray(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    ISecureElementReader _result2 = getReader(_arg0);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeStrongInterface(_result2);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    String _arg02 = data.readString();
+                    byte[] _arg1 = data.createByteArray();
+                    String[] _arg2 = data.createStringArray();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean[] _result3 = isNfcEventAllowed(_arg02, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeBooleanArray(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String[] _result = getReaders();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            ISecureElementReader _result2 = getReader(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            byte[] _arg1 = data.createByteArray();
-                            String[] _arg2 = data.createStringArray();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean[] _result3 = isNfcEventAllowed(_arg02, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeBooleanArray(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISecureElementService {
+        private static class Proxy implements ISecureElementService {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -34,16 +34,10 @@ public final class IpRange {
         Objects.requireNonNull(prefix, "prefix must not be null");
         this.mStartAddr = prefix.getRawAddress();
         this.mEndAddr = prefix.getRawAddress();
-        int bitIndex = prefix.getPrefixLength();
-        while (true) {
+        for (int bitIndex = prefix.getPrefixLength(); bitIndex < this.mEndAddr.length * 8; bitIndex++) {
             byte[] bArr = this.mEndAddr;
-            if (bitIndex < bArr.length * 8) {
-                int i = bitIndex / 8;
-                bArr[i] = (byte) (bArr[i] | ((byte) (128 >> (bitIndex % 8))));
-                bitIndex++;
-            } else {
-                return;
-            }
+            int i = bitIndex / 8;
+            bArr[i] = (byte) (bArr[i] | ((byte) (128 >> (bitIndex % 8))));
         }
     }
 

@@ -7,10 +7,9 @@ import android.view.Surface;
 import com.android.internal.util.Preconditions;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CallbackProxies {
 
-    /* loaded from: classes.dex */
     public static class SessionStateCallbackProxy extends CameraCaptureSession.StateCallback {
         private final CameraCaptureSession.StateCallback mCallback;
         private final Executor mExecutor;
@@ -24,7 +23,7 @@ public class CallbackProxies {
         public void onConfigured(final CameraCaptureSession session) {
             long ident = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda6
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda5
                     @Override // java.lang.Runnable
                     public final void run() {
                         CallbackProxies.SessionStateCallbackProxy.this.lambda$onConfigured$0(session);
@@ -35,6 +34,7 @@ public class CallbackProxies {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConfigured$0(CameraCaptureSession session) {
             this.mCallback.onConfigured(session);
         }
@@ -43,7 +43,7 @@ public class CallbackProxies {
         public void onConfigureFailed(final CameraCaptureSession session) {
             long ident = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda4
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         CallbackProxies.SessionStateCallbackProxy.this.lambda$onConfigureFailed$1(session);
@@ -54,6 +54,7 @@ public class CallbackProxies {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConfigureFailed$1(CameraCaptureSession session) {
             this.mCallback.onConfigureFailed(session);
         }
@@ -62,7 +63,7 @@ public class CallbackProxies {
         public void onReady(final CameraCaptureSession session) {
             long ident = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda5
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda6
                     @Override // java.lang.Runnable
                     public final void run() {
                         CallbackProxies.SessionStateCallbackProxy.this.lambda$onReady$2(session);
@@ -73,6 +74,7 @@ public class CallbackProxies {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReady$2(CameraCaptureSession session) {
             this.mCallback.onReady(session);
         }
@@ -81,7 +83,7 @@ public class CallbackProxies {
         public void onActive(final CameraCaptureSession session) {
             long ident = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         CallbackProxies.SessionStateCallbackProxy.this.lambda$onActive$3(session);
@@ -92,6 +94,7 @@ public class CallbackProxies {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onActive$3(CameraCaptureSession session) {
             this.mCallback.onActive(session);
         }
@@ -111,6 +114,7 @@ public class CallbackProxies {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureQueueEmpty$4(CameraCaptureSession session) {
             this.mCallback.onCaptureQueueEmpty(session);
         }
@@ -119,7 +123,7 @@ public class CallbackProxies {
         public void onClosed(final CameraCaptureSession session) {
             long ident = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda4
                     @Override // java.lang.Runnable
                     public final void run() {
                         CallbackProxies.SessionStateCallbackProxy.this.lambda$onClosed$5(session);
@@ -130,6 +134,7 @@ public class CallbackProxies {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClosed$5(CameraCaptureSession session) {
             this.mCallback.onClosed(session);
         }
@@ -138,7 +143,7 @@ public class CallbackProxies {
         public void onSurfacePrepared(final CameraCaptureSession session, final Surface surface) {
             long ident = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda2
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CallbackProxies$SessionStateCallbackProxy$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         CallbackProxies.SessionStateCallbackProxy.this.lambda$onSurfacePrepared$6(session, surface);
@@ -149,6 +154,7 @@ public class CallbackProxies {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSurfacePrepared$6(CameraCaptureSession session, Surface surface) {
             this.mCallback.onSurfacePrepared(session, surface);
         }

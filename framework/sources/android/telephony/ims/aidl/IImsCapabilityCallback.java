@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsCapabilityCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsCapabilityCallback";
 
@@ -16,7 +16,6 @@ public interface IImsCapabilityCallback extends IInterface {
 
     void onQueryCapabilityConfiguration(int i, int i2, boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsCapabilityCallback {
         @Override // android.telephony.ims.aidl.IImsCapabilityCallback
         public void onQueryCapabilityConfiguration(int capability, int radioTech, boolean enabled) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IImsCapabilityCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsCapabilityCallback {
         static final int TRANSACTION_onCapabilitiesStatusChanged = 3;
         static final int TRANSACTION_onChangeCapabilityConfigurationError = 2;
@@ -85,39 +83,36 @@ public interface IImsCapabilityCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsCapabilityCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsCapabilityCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsCapabilityCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onQueryCapabilityConfiguration(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onChangeCapabilityConfigurationError(_arg02, _arg12, _arg22);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCapabilitiesStatusChanged(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onQueryCapabilityConfiguration(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onChangeCapabilityConfigurationError(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCapabilitiesStatusChanged(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsCapabilityCallback {
+        private static class Proxy implements IImsCapabilityCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

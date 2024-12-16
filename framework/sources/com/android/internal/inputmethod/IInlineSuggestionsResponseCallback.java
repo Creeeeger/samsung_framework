@@ -8,13 +8,12 @@ import android.os.RemoteException;
 import android.view.autofill.AutofillId;
 import android.view.inputmethod.InlineSuggestionsResponse;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IInlineSuggestionsResponseCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IInlineSuggestionsResponseCallback";
 
     void onInlineSuggestionsResponse(AutofillId autofillId, InlineSuggestionsResponse inlineSuggestionsResponse) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInlineSuggestionsResponseCallback {
         @Override // com.android.internal.inputmethod.IInlineSuggestionsResponseCallback
         public void onInlineSuggestionsResponse(AutofillId fieldId, InlineSuggestionsResponse response) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IInlineSuggestionsResponseCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInlineSuggestionsResponseCallback {
         static final int TRANSACTION_onInlineSuggestionsResponse = 1;
 
@@ -69,27 +67,23 @@ public interface IInlineSuggestionsResponseCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInlineSuggestionsResponseCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInlineSuggestionsResponseCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInlineSuggestionsResponseCallback.DESCRIPTOR);
+                case 1:
+                    AutofillId _arg0 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    InlineSuggestionsResponse _arg1 = (InlineSuggestionsResponse) data.readTypedObject(InlineSuggestionsResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onInlineSuggestionsResponse(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AutofillId _arg0 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            InlineSuggestionsResponse _arg1 = (InlineSuggestionsResponse) data.readTypedObject(InlineSuggestionsResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onInlineSuggestionsResponse(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInlineSuggestionsResponseCallback {
+        private static class Proxy implements IInlineSuggestionsResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

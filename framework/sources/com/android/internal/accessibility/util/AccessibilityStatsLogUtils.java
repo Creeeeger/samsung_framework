@@ -6,7 +6,7 @@ import android.provider.Settings;
 import com.android.internal.accessibility.AccessibilityShortcutController;
 import com.android.internal.util.FrameworkStatsLog;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class AccessibilityStatsLogUtils {
     private static final int UNKNOWN_STATUS = 0;
     public static int ACCESSIBILITY_PRIVACY_WARNING_STATUS_SHOWN = 1;
@@ -30,6 +30,10 @@ public final class AccessibilityStatsLogUtils {
 
     public static void logMagnificationTripleTap(boolean enabled) {
         FrameworkStatsLog.write(266, AccessibilityShortcutController.MAGNIFICATION_COMPONENT_NAME.flattenToString(), 3, convertToLoggingServiceStatus(enabled));
+    }
+
+    public static void logMagnificationTwoFingerTripleTap(boolean enabled) {
+        FrameworkStatsLog.write(266, AccessibilityShortcutController.MAGNIFICATION_COMPONENT_NAME.flattenToString(), 8, convertToLoggingServiceStatus(enabled));
     }
 
     public static void logAccessibilityButtonLongPressStatus(ComponentName componentName) {
@@ -66,7 +70,7 @@ public final class AccessibilityStatsLogUtils {
 
     private static int convertToLoggingShortcutType(Context context, int shortcutType) {
         switch (shortcutType) {
-            case 0:
+            case 1:
                 if (isAccessibilityFloatingMenuEnabled(context)) {
                     return 5;
                 }
@@ -74,8 +78,10 @@ public final class AccessibilityStatsLogUtils {
                     return 6;
                 }
                 return 1;
-            case 1:
+            case 2:
                 return 2;
+            case 16:
+                return 9;
             default:
                 return 0;
         }

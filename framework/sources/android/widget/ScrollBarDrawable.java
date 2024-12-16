@@ -36,7 +36,7 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
 
     public ScrollBarDrawable(View parent) {
         this.mSemParent = parent;
-        TypedArray ta = parent.getContext().obtainStyledAttributes(R.styleable.Theme);
+        TypedArray ta = this.mSemParent.getContext().obtainStyledAttributes(R.styleable.Theme);
         ta.recycle();
     }
 
@@ -101,38 +101,30 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         this.mBoundsChanged = true;
     }
 
     @Override // android.graphics.drawable.Drawable
     public boolean isStateful() {
-        Drawable drawable;
-        Drawable drawable2;
-        Drawable drawable3;
-        Drawable drawable4 = this.mVerticalTrack;
-        return (drawable4 != null && drawable4.isStateful()) || ((drawable = this.mVerticalThumb) != null && drawable.isStateful()) || (((drawable2 = this.mHorizontalTrack) != null && drawable2.isStateful()) || (((drawable3 = this.mHorizontalThumb) != null && drawable3.isStateful()) || super.isStateful()));
+        return (this.mVerticalTrack != null && this.mVerticalTrack.isStateful()) || (this.mVerticalThumb != null && this.mVerticalThumb.isStateful()) || ((this.mHorizontalTrack != null && this.mHorizontalTrack.isStateful()) || ((this.mHorizontalThumb != null && this.mHorizontalThumb.isStateful()) || super.isStateful()));
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] state) {
+    protected boolean onStateChange(int[] state) {
         boolean changed = super.onStateChange(state);
-        Drawable drawable = this.mVerticalTrack;
-        if (drawable != null) {
-            changed |= drawable.setState(state);
+        if (this.mVerticalTrack != null) {
+            changed |= this.mVerticalTrack.setState(state);
         }
-        Drawable drawable2 = this.mVerticalThumb;
-        if (drawable2 != null) {
-            changed |= drawable2.setState(state);
+        if (this.mVerticalThumb != null) {
+            changed |= this.mVerticalThumb.setState(state);
         }
-        Drawable drawable3 = this.mHorizontalTrack;
-        if (drawable3 != null) {
-            changed |= drawable3.setState(state);
+        if (this.mHorizontalTrack != null) {
+            changed |= this.mHorizontalTrack.setState(state);
         }
-        Drawable drawable4 = this.mHorizontalThumb;
-        if (drawable4 != null) {
-            return changed | drawable4.setState(state);
+        if (this.mHorizontalThumb != null) {
+            return changed | this.mHorizontalThumb.setState(state);
         }
         return changed;
     }
@@ -161,9 +153,8 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
                 if (changed) {
                     thumb.setBounds(bounds.left, bounds.top + offset, bounds.right, bounds.top + offset + length);
                     clickableThumbRect.set(thumb.getBounds());
-                    View view = this.mSemParent;
-                    if (view != null) {
-                        view.mSemVerticalScrollbarRect.set(clickableThumbRect);
+                    if (this.mSemParent != null) {
+                        this.mSemParent.mSemVerticalScrollbarRect.set(clickableThumbRect);
                     }
                 }
                 thumb.draw(canvas);
@@ -176,9 +167,8 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
             if (changed) {
                 thumb2.setBounds(bounds.left + offset, bounds.top, bounds.left + offset + length, bounds.bottom);
                 clickableThumbRect.set(thumb2.getBounds());
-                View view2 = this.mSemParent;
-                if (view2 != null) {
-                    view2.mSemHorizontalScrollbarRect.set(clickableThumbRect);
+                if (this.mSemParent != null) {
+                    this.mSemParent.mSemHorizontalScrollbarRect.set(clickableThumbRect);
                 }
             }
             thumb2.draw(canvas);
@@ -186,9 +176,8 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
     }
 
     public void setVerticalThumbDrawable(Drawable thumb) {
-        Drawable drawable = this.mVerticalThumb;
-        if (drawable != null) {
-            drawable.setCallback(null);
+        if (this.mVerticalThumb != null) {
+            this.mVerticalThumb.setCallback(null);
         }
         propagateCurrentState(thumb);
         this.mVerticalThumb = thumb;
@@ -211,27 +200,24 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
     }
 
     public void setVerticalTrackDrawable(Drawable track) {
-        Drawable drawable = this.mVerticalTrack;
-        if (drawable != null) {
-            drawable.setCallback(null);
+        if (this.mVerticalTrack != null) {
+            this.mVerticalTrack.setCallback(null);
         }
         propagateCurrentState(track);
         this.mVerticalTrack = track;
     }
 
     public void setHorizontalThumbDrawable(Drawable thumb) {
-        Drawable drawable = this.mHorizontalThumb;
-        if (drawable != null) {
-            drawable.setCallback(null);
+        if (this.mHorizontalThumb != null) {
+            this.mHorizontalThumb.setCallback(null);
         }
         propagateCurrentState(thumb);
         this.mHorizontalThumb = thumb;
     }
 
     public void setHorizontalTrackDrawable(Drawable track) {
-        Drawable drawable = this.mHorizontalTrack;
-        if (drawable != null) {
-            drawable.setCallback(null);
+        if (this.mHorizontalTrack != null) {
+            this.mHorizontalTrack.setCallback(null);
         }
         propagateCurrentState(track);
         this.mHorizontalTrack = track;
@@ -255,23 +241,19 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
 
     public int getSize(boolean vertical) {
         if (vertical) {
-            Drawable drawable = this.mVerticalTrack;
-            if (drawable != null) {
-                return drawable.getIntrinsicWidth();
+            if (this.mVerticalTrack != null) {
+                return this.mVerticalTrack.getIntrinsicWidth();
             }
-            Drawable drawable2 = this.mVerticalThumb;
-            if (drawable2 != null) {
-                return drawable2.getIntrinsicWidth();
+            if (this.mVerticalThumb != null) {
+                return this.mVerticalThumb.getIntrinsicWidth();
             }
             return 0;
         }
-        Drawable drawable3 = this.mHorizontalTrack;
-        if (drawable3 != null) {
-            return drawable3.getIntrinsicHeight();
+        if (this.mHorizontalTrack != null) {
+            return this.mHorizontalTrack.getIntrinsicHeight();
         }
-        Drawable drawable4 = this.mHorizontalThumb;
-        if (drawable4 != null) {
-            return drawable4.getIntrinsicHeight();
+        if (this.mHorizontalThumb != null) {
+            return this.mHorizontalThumb.getIntrinsicHeight();
         }
         return 0;
     }
@@ -279,21 +261,17 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
     @Override // android.graphics.drawable.Drawable
     public ScrollBarDrawable mutate() {
         if (!this.mMutated && super.mutate() == this) {
-            Drawable drawable = this.mVerticalTrack;
-            if (drawable != null) {
-                drawable.mutate();
+            if (this.mVerticalTrack != null) {
+                this.mVerticalTrack.mutate();
             }
-            Drawable drawable2 = this.mVerticalThumb;
-            if (drawable2 != null) {
-                drawable2.mutate();
+            if (this.mVerticalThumb != null) {
+                this.mVerticalThumb.mutate();
             }
-            Drawable drawable3 = this.mHorizontalTrack;
-            if (drawable3 != null) {
-                drawable3.mutate();
+            if (this.mHorizontalTrack != null) {
+                this.mHorizontalTrack.mutate();
             }
-            Drawable drawable4 = this.mHorizontalThumb;
-            if (drawable4 != null) {
-                drawable4.mutate();
+            if (this.mHorizontalThumb != null) {
+                this.mHorizontalThumb.mutate();
             }
             this.mMutated = true;
         }
@@ -304,21 +282,17 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
     public void setAlpha(int alpha) {
         this.mAlpha = alpha;
         this.mHasSetAlpha = true;
-        Drawable drawable = this.mVerticalTrack;
-        if (drawable != null) {
-            drawable.setAlpha(alpha);
+        if (this.mVerticalTrack != null) {
+            this.mVerticalTrack.setAlpha(alpha);
         }
-        Drawable drawable2 = this.mVerticalThumb;
-        if (drawable2 != null) {
-            drawable2.setAlpha(alpha);
+        if (this.mVerticalThumb != null) {
+            this.mVerticalThumb.setAlpha(alpha);
         }
-        Drawable drawable3 = this.mHorizontalTrack;
-        if (drawable3 != null) {
-            drawable3.setAlpha(alpha);
+        if (this.mHorizontalTrack != null) {
+            this.mHorizontalTrack.setAlpha(alpha);
         }
-        Drawable drawable4 = this.mHorizontalThumb;
-        if (drawable4 != null) {
-            drawable4.setAlpha(alpha);
+        if (this.mHorizontalThumb != null) {
+            this.mHorizontalThumb.setAlpha(alpha);
         }
     }
 
@@ -331,21 +305,17 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
     public void setColorFilter(ColorFilter colorFilter) {
         this.mColorFilter = colorFilter;
         this.mHasSetColorFilter = true;
-        Drawable drawable = this.mVerticalTrack;
-        if (drawable != null) {
-            drawable.setColorFilter(colorFilter);
+        if (this.mVerticalTrack != null) {
+            this.mVerticalTrack.setColorFilter(colorFilter);
         }
-        Drawable drawable2 = this.mVerticalThumb;
-        if (drawable2 != null) {
-            drawable2.setColorFilter(colorFilter);
+        if (this.mVerticalThumb != null) {
+            this.mVerticalThumb.setColorFilter(colorFilter);
         }
-        Drawable drawable3 = this.mHorizontalTrack;
-        if (drawable3 != null) {
-            drawable3.setColorFilter(colorFilter);
+        if (this.mHorizontalTrack != null) {
+            this.mHorizontalTrack.setColorFilter(colorFilter);
         }
-        Drawable drawable4 = this.mHorizontalThumb;
-        if (drawable4 != null) {
-            drawable4.setColorFilter(colorFilter);
+        if (this.mHorizontalThumb != null) {
+            this.mHorizontalThumb.setColorFilter(colorFilter);
         }
     }
 

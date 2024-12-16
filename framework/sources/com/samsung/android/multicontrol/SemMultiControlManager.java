@@ -6,21 +6,19 @@ import android.view.IInputFilter;
 import com.samsung.android.multicontrol.IInputFilterInstallListener;
 import com.samsung.android.multicontrol.IMultiControlDeathChecker;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemMultiControlManager {
     private IMultiControlManager mService;
     public static final String TAG_PREFIX = "MultiControl@";
     private static final String TAG = TAG_PREFIX + SemMultiControlManager.class.getSimpleName();
     private static final Object sLock = new Object();
 
-    /* loaded from: classes5.dex */
     public interface InputFilterInstallListener {
         void onInstalled();
 
         void onUninstalled();
     }
 
-    /* loaded from: classes5.dex */
     public interface MultiControlDeathChecker {
     }
 
@@ -122,18 +120,9 @@ public final class SemMultiControlManager {
         }
     }
 
-    /* renamed from: com.samsung.android.multicontrol.SemMultiControlManager$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements MultiControlDeathChecker {
-        AnonymousClass1() {
-        }
-    }
-
     public void startDeathChecker() {
         try {
             this.mService.startDeathChecker(new MultiControlDeathCheckerDelegate(new MultiControlDeathChecker() { // from class: com.samsung.android.multicontrol.SemMultiControlManager.1
-                AnonymousClass1() {
-                }
             }));
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
@@ -152,7 +141,6 @@ public final class SemMultiControlManager {
         this.mService = service;
     }
 
-    /* loaded from: classes5.dex */
     private static class MultiControlDeathCheckerDelegate extends IMultiControlDeathChecker.Stub {
         private MultiControlDeathChecker mListener;
 
@@ -173,7 +161,6 @@ public final class SemMultiControlManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     private static class InputFilterInstallListenerDelegate extends IInputFilterInstallListener.Stub {
         private InputFilterInstallListener mListener;
 

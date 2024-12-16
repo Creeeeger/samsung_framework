@@ -15,9 +15,8 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public class FocusFinder {
     private static final ThreadLocal<FocusFinder> tlFocusFinder = new ThreadLocal<FocusFinder>() { // from class: android.view.FocusFinder.1
-        AnonymousClass1() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // java.lang.ThreadLocal
         public FocusFinder initialValue() {
             return new FocusFinder();
@@ -31,34 +30,18 @@ public class FocusFinder {
     private final UserSpecifiedFocusComparator mUserSpecifiedClusterComparator;
     private final UserSpecifiedFocusComparator mUserSpecifiedFocusComparator;
 
-    /* synthetic */ FocusFinder(FocusFinderIA focusFinderIA) {
-        this();
-    }
-
-    /* renamed from: android.view.FocusFinder$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends ThreadLocal<FocusFinder> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public FocusFinder initialValue() {
-            return new FocusFinder();
-        }
-    }
-
     public static FocusFinder getInstance() {
         return tlFocusFinder.get();
     }
 
-    public static /* synthetic */ View lambda$new$0(View r, View v) {
+    static /* synthetic */ View lambda$new$0(View r, View v) {
         if (isValidId(v.getNextFocusForwardId())) {
             return v.findUserSetNextFocus(r, 2);
         }
         return null;
     }
 
-    public static /* synthetic */ View lambda$new$1(View r, View v) {
+    static /* synthetic */ View lambda$new$1(View r, View v) {
         if (isValidId(v.getNextClusterForwardId())) {
             return v.findUserSetNextKeyboardNavigationCluster(r, 2);
         }
@@ -121,18 +104,16 @@ public class FocusFinder {
             return root;
         }
         ViewGroup effective = null;
-        ViewParent nextParent = focused.getParent();
-        while (nextParent != root) {
+        for (ViewParent nextParent = focused.getParent(); nextParent instanceof ViewGroup; nextParent = nextParent.getParent()) {
+            if (nextParent == root) {
+                return effective != null ? effective : root;
+            }
             ViewGroup vg = (ViewGroup) nextParent;
             if (vg.getTouchscreenBlocksFocus() && focused.getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN) && vg.isKeyboardNavigationCluster()) {
                 effective = vg;
             }
-            nextParent = nextParent.getParent();
-            if (!(nextParent instanceof ViewGroup)) {
-                return root;
-            }
         }
-        return effective != null ? effective : root;
+        return root;
     }
 
     public View findNextKeyboardNavigationCluster(View root, View currentCluster, int direction) {
@@ -262,14 +243,20 @@ public class FocusFinder {
             if (count < 2) {
                 return null;
             }
+            View next = null;
+            boolean[] looped = new boolean[1];
             switch (direction) {
                 case 1:
-                    return getPreviousFocusable(focused, focusables, count);
+                    next = getPreviousFocusable(focused, focusables, count, looped);
+                    break;
                 case 2:
-                    return getNextFocusable(focused, focusables, count);
-                default:
-                    return focusables.get(count - 1);
+                    next = getNextFocusable(focused, focusables, count, looped);
+                    break;
             }
+            if (root != null && root.mAttachInfo != null && root == root.getRootView()) {
+                root.mAttachInfo.mNextFocusLooped = looped[0];
+            }
+            return next != null ? next : focusables.get(count - 1);
         } catch (Throwable th) {
             this.mUserSpecifiedFocusComparator.recycle();
             throw th;
@@ -320,7 +307,7 @@ public class FocusFinder {
         return closest;
     }
 
-    private static View getNextFocusable(View focused, ArrayList<View> focusables, int count) {
+    private static View getNextFocusable(View focused, ArrayList<View> focusables, int count, boolean[] outLooped) {
         int position;
         if (count < 2) {
             return null;
@@ -328,10 +315,11 @@ public class FocusFinder {
         if (focused != null && (position = focusables.lastIndexOf(focused)) >= 0 && position + 1 < count) {
             return focusables.get(position + 1);
         }
+        outLooped[0] = true;
         return focusables.get(0);
     }
 
-    private static View getPreviousFocusable(View focused, ArrayList<View> focusables, int count) {
+    private static View getPreviousFocusable(View focused, ArrayList<View> focusables, int count, boolean[] outLooped) {
         int position;
         if (count < 2) {
             return null;
@@ -339,6 +327,7 @@ public class FocusFinder {
         if (focused != null && (position = focusables.indexOf(focused)) > 0) {
             return focusables.get(position - 1);
         }
+        outLooped[0] = true;
         return focusables.get(count - 1);
     }
 
@@ -364,7 +353,7 @@ public class FocusFinder {
         return root;
     }
 
-    public boolean isBetterCandidate(int direction, Rect source, Rect rect1, Rect rect2) {
+    boolean isBetterCandidate(int direction, Rect source, Rect rect1, Rect rect2) {
         if (!isCandidate(source, rect1, direction)) {
             return false;
         }
@@ -374,7 +363,7 @@ public class FocusFinder {
         return true;
     }
 
-    public boolean beamBeats(int direction, Rect source, Rect rect1, Rect rect2) {
+    boolean beamBeats(int direction, Rect source, Rect rect1, Rect rect2) {
         boolean rect1InSrcBeam = beamsOverlap(direction, source, rect1);
         boolean rect2InSrcBeam = beamsOverlap(direction, source, rect2);
         if (rect2InSrcBeam || !rect1InSrcBeam) {
@@ -387,7 +376,7 @@ public class FocusFinder {
         return (13 * majorAxisDistance * majorAxisDistance) + (minorAxisDistance * minorAxisDistance);
     }
 
-    public boolean isCandidate(Rect srcRect, Rect destRect, int direction) {
+    boolean isCandidate(Rect srcRect, Rect destRect, int direction) {
         switch (direction) {
             case 17:
                 return (srcRect.right > destRect.right || srcRect.left >= destRect.right) && srcRect.left > destRect.left;
@@ -402,7 +391,7 @@ public class FocusFinder {
         }
     }
 
-    public boolean beamsOverlap(int direction, Rect rect1, Rect rect2) {
+    boolean beamsOverlap(int direction, Rect rect1, Rect rect2) {
         switch (direction) {
             case 17:
             case 66:
@@ -430,7 +419,7 @@ public class FocusFinder {
         }
     }
 
-    public static int majorAxisDistance(int direction, Rect source, Rect dest) {
+    static int majorAxisDistance(int direction, Rect source, Rect dest) {
         return Math.max(0, majorAxisDistanceRaw(direction, source, dest));
     }
 
@@ -449,7 +438,7 @@ public class FocusFinder {
         }
     }
 
-    public static int majorAxisDistanceToFarEdge(int direction, Rect source, Rect dest) {
+    static int majorAxisDistanceToFarEdge(int direction, Rect source, Rect dest) {
         return Math.max(1, majorAxisDistanceToFarEdgeRaw(direction, source, dest));
     }
 
@@ -481,8 +470,6 @@ public class FocusFinder {
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:22:0x0071. Please report as an issue. */
-    /* JADX WARN: Failed to find 'out' block for switch in B:6:0x0041. Please report as an issue. */
     public View findNearestTouchable(ViewGroup root, int x, int y, int direction, int[] deltas) {
         FocusFinder focusFinder = this;
         ArrayList<View> touchables = root.getTouchables();
@@ -559,8 +546,7 @@ public class FocusFinder {
         return (id == 0 || id == -1) ? false : true;
     }
 
-    /* loaded from: classes4.dex */
-    public static final class FocusSorter {
+    static final class FocusSorter {
         private int mLastPoolRect;
         private int mRtlMult;
         private ArrayList<Rect> mRectPool = new ArrayList<>();
@@ -585,6 +571,7 @@ public class FocusFinder {
         FocusSorter() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$new$0(View first, View second) {
             if (first == second) {
                 return 0;
@@ -598,6 +585,7 @@ public class FocusFinder {
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$new$1(View first, View second) {
             if (first == second) {
                 return 0;
@@ -661,8 +649,8 @@ public class FocusFinder {
         getInstance().mFocusSorter.sort(views, start, end, root, isRtl);
     }
 
-    /* loaded from: classes4.dex */
-    public static final class UserSpecifiedFocusComparator implements Comparator<View> {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class UserSpecifiedFocusComparator implements Comparator<View> {
         private final NextFocusGetter mNextFocusGetter;
         private View mRoot;
         private final ArrayMap<View, View> mNextFoci = new ArrayMap<>();
@@ -670,7 +658,6 @@ public class FocusFinder {
         private final ArrayMap<View, View> mHeadsOfChains = new ArrayMap<>();
         private final ArrayMap<View, Integer> mOriginalOrdinal = new ArrayMap<>();
 
-        /* loaded from: classes4.dex */
         public interface NextFocusGetter {
             View get(View view, View view2);
         }

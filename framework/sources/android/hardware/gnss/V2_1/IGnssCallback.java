@@ -110,7 +110,6 @@ public interface IGnssCallback extends android.hardware.gnss.V2_0.IGnssCallback 
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Capabilities {
         public static final int ANTENNA_INFO = 2048;
         public static final int GEOFENCING = 32;
@@ -223,7 +222,6 @@ public interface IGnssCallback extends android.hardware.gnss.V2_0.IGnssCallback 
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssSvInfo {
         public IGnssCallback.GnssSvInfo v2_0 = new IGnssCallback.GnssSvInfo();
         public double basebandCN0DbHz = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
@@ -299,7 +297,6 @@ public interface IGnssCallback extends android.hardware.gnss.V2_0.IGnssCallback 
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssCallback {
         private IHwBinder mRemote;
 
@@ -724,7 +721,6 @@ public interface IGnssCallback extends android.hardware.gnss.V2_0.IGnssCallback 
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssCallback {
         @Override // android.hardware.gnss.V2_1.IGnssCallback, android.hardware.gnss.V2_0.IGnssCallback, android.hardware.gnss.V1_1.IGnssCallback, android.hardware.gnss.V1_0.IGnssCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -747,7 +743,7 @@ public interface IGnssCallback extends android.hardware.gnss.V2_0.IGnssCallback 
 
         @Override // android.hardware.gnss.V2_1.IGnssCallback, android.hardware.gnss.V2_0.IGnssCallback, android.hardware.gnss.V1_1.IGnssCallback, android.hardware.gnss.V1_0.IGnssCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{53, 65, -40, 58, -33, -22, -63, 110, -29, -28, 93, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, 58, 88, -33, -2, 6, 1, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -53, 90, -91, -68, -46, -28, -10, -18, -82, 38, -97, 105, -51}, new byte[]{100, 35, 32, 55, 16, -102, 94, 95, 83, -85, 3, 119, -25, 85, -20, 73, 74, -23, 63, -53, 82, 121, -26, -18, -89, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, -20, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 122, -58, -5, -4}, new byte[]{-118, -43, 91, -61, 91, -77, -88, 62, 101, MidiConstants.STATUS_PROGRAM_CHANGE, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -67, -3, -25, -82, 94, -68, 116, -97, MidiConstants.STATUS_SONG_POSITION, -65, 107, 121, 65, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -19, 11, -58, -56, -101, -105, -40}, new byte[]{-94, -5, -39, 116, Byte.MAX_VALUE, -69, -100, -21, -116, 16, MidiConstants.STATUS_NOTE_ON, -75, -94, 65, 56, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, 70, 80, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 90, -16, 101, 74, -116, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, SprAttributeBase.TYPE_DURATION, 58, -101, -11, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -4}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{53, 65, -40, 58, -33, -22, -63, 110, -29, -28, 93, 24, 58, 88, -33, -2, 6, 1, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -53, 90, -91, -68, -46, -28, -10, -18, -82, 38, -97, 105, -51}, new byte[]{100, 35, 32, 55, 16, -102, 94, 95, 83, -85, 3, 119, -25, 85, -20, 73, 74, -23, 63, -53, 82, 121, -26, -18, -89, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, -20, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 122, -58, -5, -4}, new byte[]{-118, -43, 91, -61, 91, -77, -88, 62, 101, MidiConstants.STATUS_PROGRAM_CHANGE, 24, -67, -3, -25, -82, 94, -68, 116, -97, MidiConstants.STATUS_SONG_POSITION, -65, 107, 121, 65, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -19, 11, -58, -56, -101, -105, -40}, new byte[]{-94, -5, -39, 116, Byte.MAX_VALUE, -69, -100, -21, -116, 16, MidiConstants.STATUS_NOTE_ON, -75, -94, 65, 56, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, 70, 80, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 90, -16, 101, 74, -116, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, SprAttributeBase.TYPE_DURATION, 58, -101, -11, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -4}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V2_1.IGnssCallback, android.hardware.gnss.V2_0.IGnssCallback, android.hardware.gnss.V1_1.IGnssCallback, android.hardware.gnss.V1_0.IGnssCallback, android.internal.hidl.base.V1_0.IBase

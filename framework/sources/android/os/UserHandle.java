@@ -20,7 +20,7 @@ public final class UserHandle implements Parcelable {
     public static final Parcelable.Creator<UserHandle> CREATOR;
     public static final int ERR_GID = -1;
     public static final int MAX_EXTRA_USER_HANDLE_CACHE_SIZE = 32;
-    public static final int MAX_SECONDARY_USER_ID = 21474;
+    public static final int MAX_SECONDARY_USER_ID = 21473;
     public static final int MIN_SECONDARY_USER_ID = 10;
     public static final boolean MU_ENABLED = true;
     private static final int NUM_CACHED_USERS = 8;
@@ -59,33 +59,25 @@ public final class UserHandle implements Parcelable {
     public static final SparseArray<UserHandle> sExtraUserHandleCache = new SparseArray<>(0);
 
     static {
-        int i = 0;
-        while (true) {
-            UserHandle[] userHandleArr = CACHED_USER_HANDLES;
-            if (i < userHandleArr.length) {
-                userHandleArr[i] = new UserHandle(i + 10);
-                i++;
-            } else {
-                CREATOR = new Parcelable.Creator<UserHandle>() { // from class: android.os.UserHandle.1
-                    AnonymousClass1() {
-                    }
-
-                    @Override // android.os.Parcelable.Creator
-                    public UserHandle createFromParcel(Parcel in) {
-                        return UserHandle.of(in.readInt());
-                    }
-
-                    @Override // android.os.Parcelable.Creator
-                    public UserHandle[] newArray(int size) {
-                        return new UserHandle[size];
-                    }
-                };
-                SEM_ALL = ALL;
-                SEM_OWNER = OWNER;
-                SEM_CURRENT = CURRENT;
-                return;
-            }
+        for (int i = 0; i < CACHED_USER_HANDLES.length; i++) {
+            CACHED_USER_HANDLES[i] = new UserHandle(i + 10);
         }
+        CREATOR = new Parcelable.Creator<UserHandle>() { // from class: android.os.UserHandle.1
+            /* JADX WARN: Can't rename method to resolve collision */
+            @Override // android.os.Parcelable.Creator
+            public UserHandle createFromParcel(Parcel in) {
+                return UserHandle.of(in.readInt());
+            }
+
+            /* JADX WARN: Can't rename method to resolve collision */
+            @Override // android.os.Parcelable.Creator
+            public UserHandle[] newArray(int size) {
+                return new UserHandle[size];
+            }
+        };
+        SEM_ALL = ALL;
+        SEM_OWNER = OWNER;
+        SEM_CURRENT = CURRENT;
     }
 
     public static boolean isSameUser(int uid1, int uid2) {
@@ -173,11 +165,8 @@ public final class UserHandle implements Parcelable {
             case -1:
                 return ALL;
             default:
-                if (userId >= 10) {
-                    UserHandle[] userHandleArr = CACHED_USER_HANDLES;
-                    if (userId < userHandleArr.length + 10) {
-                        return userHandleArr[userId - 10];
-                    }
+                if (userId >= 10 && userId < CACHED_USER_HANDLES.length + 10) {
+                    return CACHED_USER_HANDLES[userId - 10];
                 }
                 if (userId == -10000) {
                     return NULL;
@@ -187,17 +176,16 @@ public final class UserHandle implements Parcelable {
     }
 
     public static UserHandle getUserHandleFromExtraCache(int userId) {
-        SparseArray<UserHandle> sparseArray = sExtraUserHandleCache;
-        synchronized (sparseArray) {
-            UserHandle extraCached = sparseArray.get(userId);
+        synchronized (sExtraUserHandleCache) {
+            UserHandle extraCached = sExtraUserHandleCache.get(userId);
             if (extraCached != null) {
                 return extraCached;
             }
-            if (sparseArray.size() >= 32) {
-                sparseArray.removeAt(new Random().nextInt(32));
+            if (sExtraUserHandleCache.size() >= 32) {
+                sExtraUserHandleCache.removeAt(new Random().nextInt(32));
             }
             UserHandle newHandle = new UserHandle(userId);
-            sparseArray.put(userId, newHandle);
+            sExtraUserHandleCache.put(userId, newHandle);
             return newHandle;
         }
     }
@@ -377,14 +365,11 @@ public final class UserHandle implements Parcelable {
     }
 
     public boolean equals(Object obj) {
-        if (obj != null) {
-            try {
-                UserHandle other = (UserHandle) obj;
-                return this.mHandle == other.mHandle;
-            } catch (ClassCastException e) {
-            }
+        if (!(obj instanceof UserHandle)) {
+            return false;
         }
-        return false;
+        UserHandle other = (UserHandle) obj;
+        return this.mHandle == other.mHandle;
     }
 
     public int hashCode() {
@@ -415,23 +400,6 @@ public final class UserHandle implements Parcelable {
             return new UserHandle(h);
         }
         return null;
-    }
-
-    /* renamed from: android.os.UserHandle$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UserHandle> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UserHandle createFromParcel(Parcel in) {
-            return UserHandle.of(in.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UserHandle[] newArray(int size) {
-            return new UserHandle[size];
-        }
     }
 
     public UserHandle(Parcel in) {

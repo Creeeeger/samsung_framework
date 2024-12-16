@@ -12,7 +12,6 @@ public interface IBooleanConsumer extends IInterface {
 
     void accept(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IBooleanConsumer {
         @Override // com.android.internal.telephony.IBooleanConsumer
         public void accept(boolean result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IBooleanConsumer extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IBooleanConsumer {
         static final int TRANSACTION_accept = 1;
 
@@ -67,25 +65,22 @@ public interface IBooleanConsumer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBooleanConsumer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBooleanConsumer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBooleanConsumer.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    accept(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            accept(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IBooleanConsumer {
+        private static class Proxy implements IBooleanConsumer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -12,7 +12,6 @@ public final class CacheManager {
     static final /* synthetic */ boolean $assertionsDisabled = false;
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public static class CacheResult {
         long contentLength;
         String contentdisposition;

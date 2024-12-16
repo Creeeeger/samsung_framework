@@ -6,7 +6,7 @@ import java.security.cert.CRLException;
 class ExtCRLException extends CRLException {
     Throwable cause;
 
-    public ExtCRLException(String message, Throwable cause) {
+    ExtCRLException(String message, Throwable cause) {
         super(message);
         this.cause = cause;
     }

@@ -18,7 +18,6 @@ public interface IRealTimeTokenService extends IInterface {
 
     int unregisterTokenInfo(long j) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRealTimeTokenService {
         @Override // com.android.server.IRealTimeTokenService
         public int registerTokenInfo(long tag, long expiry) throws RemoteException {
@@ -46,7 +45,6 @@ public interface IRealTimeTokenService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRealTimeTokenService {
         static final int TRANSACTION_checkTokenInfoExpiry = 2;
         static final int TRANSACTION_registerTokenInfo = 1;
@@ -98,48 +96,44 @@ public interface IRealTimeTokenService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRealTimeTokenService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRealTimeTokenService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRealTimeTokenService.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    int _result = registerTokenInfo(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    data.enforceNoDataAvail();
+                    int _result2 = checkTokenInfoExpiry(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    long _arg03 = data.readLong();
+                    data.enforceNoDataAvail();
+                    int _result3 = unregisterTokenInfo(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    int _result4 = unregisterAllTokenInfo();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            int _result = registerTokenInfo(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            data.enforceNoDataAvail();
-                            int _result2 = checkTokenInfoExpiry(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            long _arg03 = data.readLong();
-                            data.enforceNoDataAvail();
-                            int _result3 = unregisterTokenInfo(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            int _result4 = unregisterAllTokenInfo();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRealTimeTokenService {
+        private static class Proxy implements IRealTimeTokenService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

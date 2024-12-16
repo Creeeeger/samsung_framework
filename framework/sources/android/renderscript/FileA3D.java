@@ -11,7 +11,6 @@ public class FileA3D extends BaseObj {
     IndexEntry[] mFileEntries;
     InputStream mInputStream;
 
-    /* loaded from: classes3.dex */
     public enum EntryType {
         UNKNOWN(0),
         MESH(1);
@@ -27,7 +26,6 @@ public class FileA3D extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class IndexEntry {
         EntryType mEntryType;
         long mID;
@@ -56,9 +54,8 @@ public class FileA3D extends BaseObj {
 
         static synchronized BaseObj internalCreate(RenderScript rs, IndexEntry entry) {
             synchronized (IndexEntry.class) {
-                BaseObj baseObj = entry.mLoadedObj;
-                if (baseObj != null) {
-                    return baseObj;
+                if (entry.mLoadedObj != null) {
+                    return entry.mLoadedObj;
                 }
                 if (entry.mEntryType == EntryType.UNKNOWN) {
                     return null;
@@ -67,11 +64,10 @@ public class FileA3D extends BaseObj {
                 if (objectID == 0) {
                     return null;
                 }
-                switch (AnonymousClass1.$SwitchMap$android$renderscript$FileA3D$EntryType[entry.mEntryType.ordinal()]) {
+                switch (entry.mEntryType.ordinal()) {
                     case 1:
-                        Mesh mesh = new Mesh(objectID, rs);
-                        entry.mLoadedObj = mesh;
-                        mesh.updateFromNative();
+                        entry.mLoadedObj = new Mesh(objectID, rs);
+                        entry.mLoadedObj.updateFromNative();
                         return entry.mLoadedObj;
                     default:
                         throw new RSRuntimeException("Unrecognized object type in file.");
@@ -85,21 +81,6 @@ public class FileA3D extends BaseObj {
             this.mID = id;
             this.mName = name;
             this.mEntryType = type;
-        }
-    }
-
-    /* renamed from: android.renderscript.FileA3D$1 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$renderscript$FileA3D$EntryType;
-
-        static {
-            int[] iArr = new int[EntryType.values().length];
-            $SwitchMap$android$renderscript$FileA3D$EntryType = iArr;
-            try {
-                iArr[EntryType.MESH.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
         }
     }
 
@@ -124,22 +105,17 @@ public class FileA3D extends BaseObj {
     }
 
     public int getIndexEntryCount() {
-        IndexEntry[] indexEntryArr = this.mFileEntries;
-        if (indexEntryArr == null) {
+        if (this.mFileEntries == null) {
             return 0;
         }
-        return indexEntryArr.length;
+        return this.mFileEntries.length;
     }
 
     public IndexEntry getIndexEntry(int index) {
-        if (getIndexEntryCount() == 0 || index < 0) {
+        if (getIndexEntryCount() == 0 || index < 0 || index >= this.mFileEntries.length) {
             return null;
         }
-        IndexEntry[] indexEntryArr = this.mFileEntries;
-        if (index >= indexEntryArr.length) {
-            return null;
-        }
-        return indexEntryArr[index];
+        return this.mFileEntries[index];
     }
 
     public static FileA3D createFromAsset(RenderScript rs, AssetManager mgr, String path) {

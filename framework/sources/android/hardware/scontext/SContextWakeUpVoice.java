@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextWakeUpVoice extends SContextEventContext {
     public static final Parcelable.Creator<SContextWakeUpVoice> CREATOR = new Parcelable.Creator<SContextWakeUpVoice>() { // from class: android.hardware.scontext.SContextWakeUpVoice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextWakeUpVoice createFromParcel(Parcel in) {
             return new SContextWakeUpVoice(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextWakeUpVoice[] newArray(int size) {
             return new SContextWakeUpVoice[size];
@@ -23,7 +22,7 @@ public class SContextWakeUpVoice extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextWakeUpVoice() {
+    SContextWakeUpVoice() {
         this.mContext = new Bundle();
     }
 
@@ -51,22 +50,5 @@ public class SContextWakeUpVoice extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextWakeUpVoice$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextWakeUpVoice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextWakeUpVoice createFromParcel(Parcel in) {
-            return new SContextWakeUpVoice(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextWakeUpVoice[] newArray(int size) {
-            return new SContextWakeUpVoice[size];
-        }
     }
 }

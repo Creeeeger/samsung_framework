@@ -1,6 +1,6 @@
 package android.hardware.biometrics.fingerprint;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public @interface FingerprintSensorType {
     public static final byte HOME_BUTTON = 5;
     public static final byte POWER_BUTTON = 4;

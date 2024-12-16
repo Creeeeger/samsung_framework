@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioExtraMetaData implements Parcelable {
     public static final Parcelable.Creator<AudioExtraMetaData> CREATOR = new Parcelable.Creator<AudioExtraMetaData>() { // from class: android.hardware.tv.tuner.AudioExtraMetaData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioExtraMetaData createFromParcel(Parcel _aidl_source) {
             AudioExtraMetaData _aidl_out = new AudioExtraMetaData();
@@ -17,6 +15,7 @@ public class AudioExtraMetaData implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioExtraMetaData[] newArray(int _aidl_size) {
             return new AudioExtraMetaData[_aidl_size];
@@ -28,25 +27,6 @@ public class AudioExtraMetaData implements Parcelable {
     public byte adGainCenter = 0;
     public byte adGainFront = 0;
     public byte adGainSurround = 0;
-
-    /* renamed from: android.hardware.tv.tuner.AudioExtraMetaData$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioExtraMetaData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioExtraMetaData createFromParcel(Parcel _aidl_source) {
-            AudioExtraMetaData _aidl_out = new AudioExtraMetaData();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioExtraMetaData[] newArray(int _aidl_size) {
-            return new AudioExtraMetaData[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

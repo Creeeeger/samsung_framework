@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+@Deprecated
 /* loaded from: classes.dex */
 public class SliceManager {
     public static final String ACTION_REQUEST_SLICE_PERMISSION = "com.android.intent.action.REQUEST_SLICE_PERMISSION";
@@ -48,11 +49,6 @@ public class SliceManager {
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
-    }
-
-    @Deprecated
-    public void pinSlice(Uri uri, List<SliceSpec> specs) {
-        pinSlice(uri, new ArraySet(specs));
     }
 
     public void unpinSlice(Uri uri) {
@@ -149,11 +145,6 @@ public class SliceManager {
         } catch (RemoteException e) {
             return null;
         }
-    }
-
-    @Deprecated
-    public Slice bindSlice(Uri uri, List<SliceSpec> supportedSpecs) {
-        return bindSlice(uri, new ArraySet(supportedSpecs));
     }
 
     public Uri mapIntentToUri(Intent intent) {
@@ -267,11 +258,6 @@ public class SliceManager {
         } catch (RemoteException e) {
             return null;
         }
-    }
-
-    @Deprecated
-    public Slice bindSlice(Intent intent, List<SliceSpec> supportedSpecs) {
-        return bindSlice(intent, new ArraySet(supportedSpecs));
     }
 
     public int checkSlicePermission(Uri uri, int pid, int uid) {

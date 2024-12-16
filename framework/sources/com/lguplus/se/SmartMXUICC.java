@@ -39,7 +39,11 @@ public class SmartMXUICC {
     private SmartMXUICC() {
         Log.d(mLogTag, mLogTag);
         pcscInstance = new IccPcscProvider(0);
-        Log.d(mLogTag, "SmartMXUICC pcscInstance retrun : " + pcscInstance);
+        if (pcscInstance == null) {
+            Log.d(mLogTag, "SmartMXUICC pcscInstance return null");
+        } else {
+            Log.d(mLogTag, "SmartMXUICC pcscInstance retrun : " + pcscInstance);
+        }
     }
 
     private int openLogicalChannel() {

@@ -117,16 +117,15 @@ public class PKIXCertPath extends CertPath {
         return retList;
     }
 
-    public PKIXCertPath(List certificates) {
+    PKIXCertPath(List certificates) {
         super("X.509");
         this.helper = new BCJcaJceHelper();
         this.certificates = sortCerts(new ArrayList(certificates));
     }
 
-    public PKIXCertPath(InputStream inStream, String encoding) throws CertificateException {
+    PKIXCertPath(InputStream inStream, String encoding) throws CertificateException {
         super("X.509");
-        BCJcaJceHelper bCJcaJceHelper = new BCJcaJceHelper();
-        this.helper = bCJcaJceHelper;
+        this.helper = new BCJcaJceHelper();
         try {
             if (encoding.equalsIgnoreCase("PkiPath")) {
                 ASN1InputStream derInStream = new ASN1InputStream(inStream);
@@ -136,7 +135,7 @@ public class PKIXCertPath extends CertPath {
                 }
                 Enumeration e = ((ASN1Sequence) derObject).getObjects();
                 this.certificates = new ArrayList();
-                java.security.cert.CertificateFactory certFactory = bCJcaJceHelper.createCertificateFactory("X.509");
+                java.security.cert.CertificateFactory certFactory = this.helper.createCertificateFactory("X.509");
                 while (e.hasMoreElements()) {
                     ASN1Encodable element = (ASN1Encodable) e.nextElement();
                     byte[] encoded = element.toASN1Primitive().getEncoded(ASN1Encoding.DER);
@@ -148,7 +147,7 @@ public class PKIXCertPath extends CertPath {
                 }
                 InputStream inStream2 = new BufferedInputStream(inStream);
                 this.certificates = new ArrayList();
-                java.security.cert.CertificateFactory certFactory2 = bCJcaJceHelper.createCertificateFactory("X.509");
+                java.security.cert.CertificateFactory certFactory2 = this.helper.createCertificateFactory("X.509");
                 while (true) {
                     Certificate cert = certFactory2.generateCertificate(inStream2);
                     if (cert == null) {
@@ -188,8 +187,7 @@ public class PKIXCertPath extends CertPath {
     public byte[] getEncoded(String encoding) throws CertificateEncodingException {
         if (encoding.equalsIgnoreCase("PkiPath")) {
             ASN1EncodableVector v = new ASN1EncodableVector();
-            List list = this.certificates;
-            ListIterator iter = list.listIterator(list.size());
+            ListIterator iter = this.certificates.listIterator(this.certificates.size());
             while (iter.hasPrevious()) {
                 v.add(toASN1Object((X509Certificate) iter.previous()));
             }

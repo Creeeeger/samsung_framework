@@ -8,17 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RouteSelectionDescriptor implements Parcelable {
     public static final Parcelable.Creator<RouteSelectionDescriptor> CREATOR = new Parcelable.Creator<RouteSelectionDescriptor>() { // from class: android.telephony.data.RouteSelectionDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RouteSelectionDescriptor createFromParcel(Parcel source) {
             return new RouteSelectionDescriptor(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RouteSelectionDescriptor[] newArray(int size) {
             return new RouteSelectionDescriptor[size];
@@ -41,29 +40,21 @@ public final class RouteSelectionDescriptor implements Parcelable {
     private final int mSscMode;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RouteSessionType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RouteSscMode {
-    }
-
-    /* synthetic */ RouteSelectionDescriptor(Parcel parcel, RouteSelectionDescriptorIA routeSelectionDescriptorIA) {
-        this(parcel);
     }
 
     public RouteSelectionDescriptor(int precedence, int sessionType, int sscMode, List<NetworkSliceInfo> sliceInfo, List<String> dnn) {
         this.mPrecedence = precedence;
         this.mSessionType = sessionType;
         this.mSscMode = sscMode;
-        ArrayList arrayList = new ArrayList();
-        this.mSliceInfo = arrayList;
-        arrayList.addAll(sliceInfo);
-        ArrayList arrayList2 = new ArrayList();
-        this.mDnn = arrayList2;
-        arrayList2.addAll(dnn);
+        this.mSliceInfo = new ArrayList();
+        this.mSliceInfo.addAll(sliceInfo);
+        this.mDnn = new ArrayList();
+        this.mDnn.addAll(dnn);
     }
 
     private RouteSelectionDescriptor(Parcel p) {
@@ -71,9 +62,8 @@ public final class RouteSelectionDescriptor implements Parcelable {
         this.mSessionType = p.readInt();
         this.mSscMode = p.readInt();
         this.mSliceInfo = p.createTypedArrayList(NetworkSliceInfo.CREATOR);
-        ArrayList arrayList = new ArrayList();
-        this.mDnn = arrayList;
-        p.readStringList(arrayList);
+        this.mDnn = new ArrayList();
+        p.readStringList(this.mDnn);
     }
 
     public int getPrecedence() {
@@ -103,23 +93,6 @@ public final class RouteSelectionDescriptor implements Parcelable {
         dest.writeInt(this.mSscMode);
         dest.writeTypedList(this.mSliceInfo, flags);
         dest.writeStringList(this.mDnn);
-    }
-
-    /* renamed from: android.telephony.data.RouteSelectionDescriptor$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RouteSelectionDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RouteSelectionDescriptor createFromParcel(Parcel source) {
-            return new RouteSelectionDescriptor(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RouteSelectionDescriptor[] newArray(int size) {
-            return new RouteSelectionDescriptor[size];
-        }
     }
 
     @Override // android.os.Parcelable

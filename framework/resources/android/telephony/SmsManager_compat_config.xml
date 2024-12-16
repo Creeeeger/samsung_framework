@@ -1,11 +1,1 @@
-Error decode xml
-java.util.zip.ZipException: invalid END header (bad central directory offset)
-	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
-	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
-	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
-	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
-	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="To check the SDK version for SmsManager.sendResolverResult method." enableAfterTargetSdk="28" id="145147528" name="GET_TARGET_SDK_VERSION_CODE_CHANGE"><meta-data definedIn="android.telephony.SmsManager" sourcePosition="frameworks/base/telephony/java/android/telephony/SmsManager.java:1815"/></compat-change></config>

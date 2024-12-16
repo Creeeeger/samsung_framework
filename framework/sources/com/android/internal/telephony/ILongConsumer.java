@@ -12,7 +12,6 @@ public interface ILongConsumer extends IInterface {
 
     void accept(long j) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ILongConsumer {
         @Override // com.android.internal.telephony.ILongConsumer
         public void accept(long result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ILongConsumer extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ILongConsumer {
         static final int TRANSACTION_accept = 1;
 
@@ -67,24 +65,21 @@ public interface ILongConsumer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILongConsumer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILongConsumer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILongConsumer.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    accept(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            accept(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ILongConsumer {
             private IBinder mRemote;
 

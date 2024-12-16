@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextAutoBrightnessAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextAutoBrightnessAttribute> CREATOR = new Parcelable.Creator<SemContextAutoBrightnessAttribute>() { // from class: com.samsung.android.hardware.context.SemContextAutoBrightnessAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoBrightnessAttribute createFromParcel(Parcel in) {
             return new SemContextAutoBrightnessAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoBrightnessAttribute[] newArray(int size) {
             return new SemContextAutoBrightnessAttribute[size];
@@ -28,24 +27,7 @@ public class SemContextAutoBrightnessAttribute extends SemContextAttribute {
     private byte[] mLuminanceTable;
     private int mMode;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextAutoBrightnessAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextAutoBrightnessAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoBrightnessAttribute createFromParcel(Parcel in) {
-            return new SemContextAutoBrightnessAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoBrightnessAttribute[] newArray(int size) {
-            return new SemContextAutoBrightnessAttribute[size];
-        }
-    }
-
-    public SemContextAutoBrightnessAttribute() {
+    SemContextAutoBrightnessAttribute() {
         this.mLuminanceTable = null;
         this.mDeviceMode = 0;
         this.mMode = -1;
@@ -74,9 +56,8 @@ public class SemContextAutoBrightnessAttribute extends SemContextAttribute {
         this.mMode = -1;
         this.mMode = 1;
         if (luminanceTable != null) {
-            byte[] bArr = new byte[luminanceTable.length];
-            this.mLuminanceTable = bArr;
-            System.arraycopy(luminanceTable, 0, bArr, 0, luminanceTable.length);
+            this.mLuminanceTable = new byte[luminanceTable.length];
+            System.arraycopy(luminanceTable, 0, this.mLuminanceTable, 0, luminanceTable.length);
             setAttribute();
             return;
         }
@@ -85,14 +66,12 @@ public class SemContextAutoBrightnessAttribute extends SemContextAttribute {
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mMode;
-        if (i == 0) {
-            int i2 = this.mDeviceMode;
-            if (i2 < 0 || i2 > 2) {
+        if (this.mMode == 0) {
+            if (this.mDeviceMode < 0 || this.mDeviceMode > 2) {
                 Log.e(TAG, "The device mode is wrong.");
                 return false;
             }
-        } else if (i == 1 && this.mLuminanceTable == null) {
+        } else if (this.mMode == 1 && this.mLuminanceTable == null) {
             Log.e(TAG, "The luminance configuration data is null.");
             return false;
         }
@@ -102,10 +81,9 @@ public class SemContextAutoBrightnessAttribute extends SemContextAttribute {
     private void setAttribute() {
         Bundle attribute = new Bundle();
         attribute.putInt("mode", this.mMode);
-        int i = this.mMode;
-        if (i == 1) {
+        if (this.mMode == 1) {
             attribute.putByteArray("luminance_config_data", this.mLuminanceTable);
-        } else if (i == 0) {
+        } else if (this.mMode == 0) {
             attribute.putInt("device_mode", this.mDeviceMode);
         }
         super.setAttribute(39, attribute);

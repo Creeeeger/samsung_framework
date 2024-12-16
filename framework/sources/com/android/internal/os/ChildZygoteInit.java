@@ -42,7 +42,7 @@ public class ChildZygoteInit {
         return value;
     }
 
-    public static void runZygoteServer(ZygoteServer server, String[] args) {
+    static void runZygoteServer(ZygoteServer server, String[] args) {
         String socketName = parseSocketNameFromArgs(args);
         if (socketName == null) {
             throw new NullPointerException("No socketName specified");

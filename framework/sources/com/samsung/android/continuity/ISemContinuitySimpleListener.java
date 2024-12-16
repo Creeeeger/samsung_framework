@@ -13,7 +13,6 @@ public interface ISemContinuitySimpleListener extends IInterface {
 
     void onNotify(Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemContinuitySimpleListener {
         @Override // com.samsung.android.continuity.ISemContinuitySimpleListener
         public void onNotify(Bundle bundle) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISemContinuitySimpleListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemContinuitySimpleListener {
         static final int TRANSACTION_onNotify = 1;
 
@@ -68,26 +66,22 @@ public interface ISemContinuitySimpleListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemContinuitySimpleListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemContinuitySimpleListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemContinuitySimpleListener.DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotify(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotify(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemContinuitySimpleListener {
+        private static class Proxy implements ISemContinuitySimpleListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -139,7 +139,7 @@ public class BCECPrivateKey implements ECPrivateKey, com.android.internal.org.bo
         this.configuration = configuration;
     }
 
-    public BCECPrivateKey(String algorithm, PrivateKeyInfo info, ProviderConfiguration configuration) throws IOException {
+    BCECPrivateKey(String algorithm, PrivateKeyInfo info, ProviderConfiguration configuration) throws IOException {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
         this.algorithm = algorithm;
@@ -177,11 +177,10 @@ public class BCECPrivateKey implements ECPrivateKey, com.android.internal.org.bo
         int orderBitLength;
         com.android.internal.org.bouncycastle.asn1.sec.ECPrivateKey keyStructure;
         X962Parameters params = ECUtils.getDomainParametersFromName(this.ecSpec, this.withCompression);
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec == null) {
+        if (this.ecSpec == null) {
             orderBitLength = ECUtil.getOrderBitLength(this.configuration, null, getS());
         } else {
-            orderBitLength = ECUtil.getOrderBitLength(this.configuration, eCParameterSpec.getOrder(), getS());
+            orderBitLength = ECUtil.getOrderBitLength(this.configuration, this.ecSpec.getOrder(), getS());
         }
         if (this.publicKey != null) {
             keyStructure = new com.android.internal.org.bouncycastle.asn1.sec.ECPrivateKey(orderBitLength, getS(), this.publicKey, params);
@@ -203,17 +202,15 @@ public class BCECPrivateKey implements ECPrivateKey, com.android.internal.org.bo
 
     @Override // com.android.internal.org.bouncycastle.jce.interfaces.ECKey
     public com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec getParameters() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec == null) {
+        if (this.ecSpec == null) {
             return null;
         }
-        return EC5Util.convertSpec(eCParameterSpec);
+        return EC5Util.convertSpec(this.ecSpec);
     }
 
     com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec engineGetSpec() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec != null) {
-            return EC5Util.convertSpec(eCParameterSpec);
+        if (this.ecSpec != null) {
+            return EC5Util.convertSpec(this.ecSpec);
         }
         return this.configuration.getEcImplicitlyCa();
     }

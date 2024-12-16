@@ -6,14 +6,13 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public class SemModemActivityInfo implements Parcelable {
     public static final Parcelable.Creator<SemModemActivityInfo> CREATOR = new Parcelable.Creator<SemModemActivityInfo>() { // from class: android.os.SemModemActivityInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemModemActivityInfo createFromParcel(Parcel in) {
             return new SemModemActivityInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemModemActivityInfo[] newArray(int size) {
             return new SemModemActivityInfo[size];
@@ -30,37 +29,20 @@ public class SemModemActivityInfo implements Parcelable {
         this.mIdleTimeMs = idleTimeMs;
         if (nr != null) {
             System.arraycopy(nr.getTxTimeMillis(), 0, this.mNr.getTxTimeMillis(), 0, Math.min(nr.getTxTimeLength(), 5));
-            this.mNr.setRxTimeMillis(nr.getRxTimeMillis());
-            this.mNr.setTxBytes(nr.getTxBytes());
-            this.mNr.setRxBytes(nr.getRxBytes());
         }
+        this.mNr.setRxTimeMillis(nr.getRxTimeMillis());
+        this.mNr.setTxBytes(nr.getTxBytes());
+        this.mNr.setRxBytes(nr.getRxBytes());
         if (lc != null) {
             System.arraycopy(lc.getTxTimeMillis(), 0, this.mLc.getTxTimeMillis(), 0, Math.min(lc.getTxTimeLength(), 5));
-            this.mLc.setRxTimeMillis(lc.getRxTimeMillis());
-            this.mLc.setTxBytes(lc.getTxBytes());
-            this.mLc.setRxBytes(lc.getRxBytes());
         }
+        this.mLc.setRxTimeMillis(lc.getRxTimeMillis());
+        this.mLc.setTxBytes(lc.getTxBytes());
+        this.mLc.setRxBytes(lc.getRxBytes());
     }
 
     public String toString() {
         return "SemModemActivityInfo{ SleepTimeMs=" + this.mSleepTimeMs + " IdleTimeMs=" + this.mIdleTimeMs + " mNr=" + this.mNr.toString() + " mLc=" + this.mLc.toString() + " }";
-    }
-
-    /* renamed from: android.os.SemModemActivityInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemModemActivityInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemModemActivityInfo createFromParcel(Parcel in) {
-            return new SemModemActivityInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemModemActivityInfo[] newArray(int size) {
-            return new SemModemActivityInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -195,17 +177,15 @@ public class SemModemActivityInfo implements Parcelable {
         return getIdleTimeMillis() == 0 && getSleepTimeMillis() == 0 && this.mNr.getRxTimeMillis() == 0 && this.mNr.getTxBytes() == 0 && this.mNr.getRxBytes() == 0 && this.mLc.getRxTimeMillis() == 0 && this.mLc.getTxBytes() == 0 && this.mLc.getRxBytes() == 0;
     }
 
-    /* loaded from: classes3.dex */
     public static class MobileActivity implements Parcelable {
         public static final Parcelable.Creator<MobileActivity> CREATOR = new Parcelable.Creator<MobileActivity>() { // from class: android.os.SemModemActivityInfo.MobileActivity.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MobileActivity createFromParcel(Parcel in) {
                 return new MobileActivity(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MobileActivity[] newArray(int size) {
                 return new MobileActivity[size];
@@ -263,23 +243,6 @@ public class SemModemActivityInfo implements Parcelable {
             this.mRxBytes = rxBytes;
         }
 
-        /* renamed from: android.os.SemModemActivityInfo$MobileActivity$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<MobileActivity> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public MobileActivity createFromParcel(Parcel in) {
-                return new MobileActivity(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public MobileActivity[] newArray(int size) {
-                return new MobileActivity[size];
-            }
-        }
-
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -300,9 +263,8 @@ public class SemModemActivityInfo implements Parcelable {
 
         public void readFromParcel(Parcel in) {
             int level = in.readInt();
-            int[] iArr = new int[level];
-            this.mTxTimeMs = iArr;
-            in.readIntArray(iArr);
+            this.mTxTimeMs = new int[level];
+            in.readIntArray(this.mTxTimeMs);
             this.mRxTimeMs = in.readInt();
             this.mTxBytes = in.readLong();
             this.mRxBytes = in.readLong();

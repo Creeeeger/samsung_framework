@@ -16,7 +16,6 @@ public interface IKeyguardStateCallback extends IInterface {
 
     void onTrustedChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKeyguardStateCallback {
         @Override // com.android.internal.policy.IKeyguardStateCallback
         public void onShowingStateChanged(boolean showing, int userId) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IKeyguardStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKeyguardStateCallback {
         public static final String DESCRIPTOR = "com.android.internal.policy.IKeyguardStateCallback";
         static final int TRANSACTION_onInputRestrictedStateChanged = 3;
@@ -93,45 +91,42 @@ public interface IKeyguardStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onShowingStateChanged(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onSimSecureStateChanged(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onInputRestrictedStateChanged(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onTrustedChanged(_arg04);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onShowingStateChanged(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onSimSecureStateChanged(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onInputRestrictedStateChanged(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onTrustedChanged(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IKeyguardStateCallback {
+        private static class Proxy implements IKeyguardStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -196,11 +191,14 @@ public interface IKeyguardStateCallback extends IInterface {
             @Override // com.android.internal.policy.IKeyguardStateCallback
             public void onTrustedChanged(boolean trusted) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(trusted);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(4, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
+                    _reply.recycle();
                     _data.recycle();
                 }
             }

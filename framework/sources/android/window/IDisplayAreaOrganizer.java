@@ -17,7 +17,6 @@ public interface IDisplayAreaOrganizer extends IInterface {
 
     void onDisplayAreaVanished(DisplayAreaInfo displayAreaInfo) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDisplayAreaOrganizer {
         @Override // android.window.IDisplayAreaOrganizer
         public void onDisplayAreaAppeared(DisplayAreaInfo displayAreaInfo, SurfaceControl leash) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IDisplayAreaOrganizer extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDisplayAreaOrganizer {
         static final int TRANSACTION_onDisplayAreaAppeared = 1;
         static final int TRANSACTION_onDisplayAreaInfoChanged = 3;
@@ -86,37 +84,33 @@ public interface IDisplayAreaOrganizer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayAreaOrganizer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayAreaOrganizer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayAreaOrganizer.DESCRIPTOR);
+                case 1:
+                    DisplayAreaInfo _arg0 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
+                    SurfaceControl _arg1 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDisplayAreaAppeared(_arg0, _arg1);
+                    return true;
+                case 2:
+                    DisplayAreaInfo _arg02 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDisplayAreaVanished(_arg02);
+                    return true;
+                case 3:
+                    DisplayAreaInfo _arg03 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDisplayAreaInfoChanged(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            DisplayAreaInfo _arg0 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
-                            SurfaceControl _arg1 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDisplayAreaAppeared(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            DisplayAreaInfo _arg02 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDisplayAreaVanished(_arg02);
-                            return true;
-                        case 3:
-                            DisplayAreaInfo _arg03 = (DisplayAreaInfo) data.readTypedObject(DisplayAreaInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDisplayAreaInfoChanged(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDisplayAreaOrganizer {
+        private static class Proxy implements IDisplayAreaOrganizer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

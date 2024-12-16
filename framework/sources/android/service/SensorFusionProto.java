@@ -6,7 +6,6 @@ public final class SensorFusionProto {
     public static final long FUSION_NOGYRO = 1146756268035L;
     public static final long FUSION_NOMAG = 1146756268034L;
 
-    /* loaded from: classes3.dex */
     public final class FusionProto {
         public static final long ATTITUDE_LENGTH = 1108101562376L;
         public static final long ATTITUDE_W = 1108101562375L;

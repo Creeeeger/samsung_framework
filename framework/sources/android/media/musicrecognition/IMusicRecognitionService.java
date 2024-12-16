@@ -18,7 +18,6 @@ public interface IMusicRecognitionService extends IInterface {
 
     void onAudioStreamStarted(ParcelFileDescriptor parcelFileDescriptor, AudioFormat audioFormat, IMusicRecognitionServiceCallback iMusicRecognitionServiceCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMusicRecognitionService {
         @Override // android.media.musicrecognition.IMusicRecognitionService
         public void onAudioStreamStarted(ParcelFileDescriptor fd, AudioFormat audioFormat, IMusicRecognitionServiceCallback callback) throws RemoteException {
@@ -34,7 +33,6 @@ public interface IMusicRecognitionService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMusicRecognitionService {
         static final int TRANSACTION_getAttributionTag = 2;
         static final int TRANSACTION_onAudioStreamStarted = 1;
@@ -80,31 +78,28 @@ public interface IMusicRecognitionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMusicRecognitionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMusicRecognitionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMusicRecognitionService.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    AudioFormat _arg1 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
+                    IMusicRecognitionServiceCallback _arg2 = IMusicRecognitionServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onAudioStreamStarted(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    IMusicRecognitionAttributionTagCallback _arg02 = IMusicRecognitionAttributionTagCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getAttributionTag(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            AudioFormat _arg1 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
-                            IMusicRecognitionServiceCallback _arg2 = IMusicRecognitionServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onAudioStreamStarted(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            IMusicRecognitionAttributionTagCallback _arg02 = IMusicRecognitionAttributionTagCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getAttributionTag(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IMusicRecognitionService {
             private IBinder mRemote;
 

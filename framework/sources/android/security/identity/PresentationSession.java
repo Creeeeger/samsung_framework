@@ -15,4 +15,7 @@ public abstract class PresentationSession {
     public abstract void setReaderEphemeralPublicKey(PublicKey publicKey) throws InvalidKeyException;
 
     public abstract void setSessionTranscript(byte[] bArr);
+
+    protected PresentationSession() {
+    }
 }

@@ -11,17 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class SignalStrength implements Parcelable {
     public static final Parcelable.Creator<SignalStrength> CREATOR = new Parcelable.Creator<SignalStrength>() { // from class: android.telephony.SignalStrength.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalStrength createFromParcel(Parcel in) {
             return new SignalStrength(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalStrength[] newArray(int size) {
             return new SignalStrength[size];
@@ -30,15 +29,12 @@ public class SignalStrength implements Parcelable {
     private static final boolean DBG = false;
     public static final int INVALID = Integer.MAX_VALUE;
     private static final String LOG_TAG = "SignalStrength";
-    private static final int LTE_RSRP_THRESHOLDS_NUM = 4;
-    private static final String MEASUREMENT_TYPE_RSCP = "rscp";
     public static final int NUM_SIGNAL_STRENGTH_BINS = 5;
     public static final int SIGNAL_STRENGTH_GOOD = 3;
     public static final int SIGNAL_STRENGTH_GREAT = 4;
     public static final int SIGNAL_STRENGTH_MODERATE = 2;
     public static final int SIGNAL_STRENGTH_NONE_OR_UNKNOWN = 0;
     public static final int SIGNAL_STRENGTH_POOR = 1;
-    private static final int WCDMA_RSCP_THRESHOLDS_NUM = 4;
     CellSignalStrengthCdma mCdma;
     CellSignalStrengthGsm mGsm;
     CellSignalStrengthLte mLte;
@@ -49,12 +45,6 @@ public class SignalStrength implements Parcelable {
     CellSignalStrengthTdscdma mTdscdma;
     private long mTimestampMillis;
     CellSignalStrengthWcdma mWcdma;
-
-    public static SignalStrength newFromBundle(Bundle m) {
-        SignalStrength ret = new SignalStrength();
-        ret.setFromNotifierBundle(m);
-        return ret;
-    }
 
     public SignalStrength() {
         this(new CellSignalStrengthCdma(), new CellSignalStrengthGsm(), new CellSignalStrengthWcdma(), new CellSignalStrengthTdscdma(), new CellSignalStrengthLte(), new CellSignalStrengthNr());
@@ -170,23 +160,6 @@ public class SignalStrength implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.SignalStrength$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SignalStrength> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SignalStrength createFromParcel(Parcel in) {
-            return new SignalStrength(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SignalStrength[] newArray(int size) {
-            return new SignalStrength[size];
-        }
     }
 
     @Deprecated
@@ -410,35 +383,12 @@ public class SignalStrength implements Parcelable {
     }
 
     public String toString() {
-        StringBuilder append = new StringBuilder().append("SignalStrength:{").append("mCdma=");
-        CellSignalStrengthCdma cellSignalStrengthCdma = this.mCdma;
         Object obj = "Invalid";
-        StringBuilder append2 = append.append((cellSignalStrengthCdma == null || !cellSignalStrengthCdma.isValid()) ? "Invalid" : this.mCdma).append(",mGsm=");
-        CellSignalStrengthGsm cellSignalStrengthGsm = this.mGsm;
-        StringBuilder append3 = append2.append((cellSignalStrengthGsm == null || !cellSignalStrengthGsm.isValid()) ? "Invalid" : this.mGsm).append(",mWcdma=");
-        CellSignalStrengthWcdma cellSignalStrengthWcdma = this.mWcdma;
-        StringBuilder append4 = append3.append((cellSignalStrengthWcdma == null || !cellSignalStrengthWcdma.isValid()) ? "Invalid" : this.mWcdma).append(",mTdscdma=");
-        CellSignalStrengthTdscdma cellSignalStrengthTdscdma = this.mTdscdma;
-        StringBuilder append5 = append4.append((cellSignalStrengthTdscdma == null || !cellSignalStrengthTdscdma.isValid()) ? "Invalid" : this.mTdscdma).append(",mLte=");
-        CellSignalStrengthLte cellSignalStrengthLte = this.mLte;
-        StringBuilder append6 = append5.append((cellSignalStrengthLte == null || !cellSignalStrengthLte.isValid()) ? "Invalid" : this.mLte).append(",mNr=");
-        CellSignalStrengthNr cellSignalStrengthNr = this.mNr;
-        if (cellSignalStrengthNr != null && cellSignalStrengthNr.isValid()) {
+        StringBuilder append = new StringBuilder().append("SignalStrength:{").append("mCdma=").append((this.mCdma == null || !this.mCdma.isValid()) ? "Invalid" : this.mCdma).append(",mGsm=").append((this.mGsm == null || !this.mGsm.isValid()) ? "Invalid" : this.mGsm).append(",mWcdma=").append((this.mWcdma == null || !this.mWcdma.isValid()) ? "Invalid" : this.mWcdma).append(",mTdscdma=").append((this.mTdscdma == null || !this.mTdscdma.isValid()) ? "Invalid" : this.mTdscdma).append(",mLte=").append((this.mLte == null || !this.mLte.isValid()) ? "Invalid" : this.mLte).append(",mNr=");
+        if (this.mNr != null && this.mNr.isValid()) {
             obj = this.mNr;
         }
-        return append6.append(obj).append(",").append(this.mSignalBarInfos).append(",rat=").append(this.mPrimaryRadioTechnology).append(",primary=").append(getPrimary().getClass().getSimpleName()).append("}").toString();
-    }
-
-    @Deprecated
-    private void setFromNotifierBundle(Bundle m) {
-        this.mCdma = (CellSignalStrengthCdma) m.getParcelable("Cdma", CellSignalStrengthCdma.class);
-        this.mGsm = (CellSignalStrengthGsm) m.getParcelable("Gsm", CellSignalStrengthGsm.class);
-        this.mWcdma = (CellSignalStrengthWcdma) m.getParcelable("Wcdma", CellSignalStrengthWcdma.class);
-        this.mTdscdma = (CellSignalStrengthTdscdma) m.getParcelable("Tdscdma", CellSignalStrengthTdscdma.class);
-        this.mLte = (CellSignalStrengthLte) m.getParcelable("Lte", CellSignalStrengthLte.class);
-        this.mNr = (CellSignalStrengthNr) m.getParcelable("Nr", CellSignalStrengthNr.class);
-        this.mSignalBarInfos = (SignalBarInfo) m.getParcelable("SignalBarInfo");
-        this.mPrimaryRadioTechnology = m.getInt("PrimaryRadioTechnology");
+        return append.append(obj).append(",").append(this.mSignalBarInfos).append(",rat=").append(this.mPrimaryRadioTechnology).append(",primary=").append(getPrimary().getClass().getSimpleName()).append("}").toString();
     }
 
     @Deprecated
@@ -462,23 +412,22 @@ public class SignalStrength implements Parcelable {
     }
 
     public int getVendorLevel() {
-        SignalBarInfo signalBarInfo = this.mSignalBarInfos;
-        if (signalBarInfo != null) {
+        if (this.mSignalBarInfos != null) {
             switch (this.mPrimaryRadioTechnology) {
                 case 3:
-                    return signalBarInfo.getWcdmaLevel();
+                    return this.mSignalBarInfos.getWcdmaLevel();
                 case 6:
-                    return signalBarInfo.getCdmaLevel();
+                    return this.mSignalBarInfos.getCdmaLevel();
                 case 8:
-                    return signalBarInfo.getEvdoLevel();
+                    return this.mSignalBarInfos.getEvdoLevel();
                 case 14:
-                    return signalBarInfo.getLteLevel();
+                    return this.mSignalBarInfos.getLteLevel();
                 case 16:
-                    return signalBarInfo.getGsmLevel();
+                    return this.mSignalBarInfos.getGsmLevel();
                 case 17:
-                    return signalBarInfo.getTdscdmaLevel();
+                    return this.mSignalBarInfos.getTdscdmaLevel();
                 case 20:
-                    return signalBarInfo.getNrLevel();
+                    return this.mSignalBarInfos.getNrLevel();
                 default:
                     loge("getVendorLevel - Invalid radio technology: " + this.mPrimaryRadioTechnology);
                     break;
@@ -490,9 +439,8 @@ public class SignalStrength implements Parcelable {
     }
 
     public SignalBarInfo getSignalBar() {
-        SignalBarInfo signalBarInfo = this.mSignalBarInfos;
-        if (signalBarInfo != null) {
-            return signalBarInfo;
+        if (this.mSignalBarInfos != null) {
+            return this.mSignalBarInfos;
         }
         return null;
     }
@@ -536,12 +484,11 @@ public class SignalStrength implements Parcelable {
             return 14;
         }
         if (this.mCdma.isValid()) {
-            SignalBarInfo signalBarInfo = this.mSignalBarInfos;
-            if (signalBarInfo == null) {
+            if (this.mSignalBarInfos == null) {
                 loge("selectPrimaryRadioTechnology - mSignalBarInfos is null");
                 return 6;
             }
-            int cdmaLevel = signalBarInfo.getCdmaLevel();
+            int cdmaLevel = this.mSignalBarInfos.getCdmaLevel();
             int evdoLevel = this.mSignalBarInfos.getEvdoLevel();
             if (evdoLevel == 0) {
                 return 6;
@@ -561,6 +508,24 @@ public class SignalStrength implements Parcelable {
             return 16;
         }
         return this.mNr.isValid() ? 20 : 14;
+    }
+
+    public static SignalStrength newFromBundle(Bundle m) {
+        SignalStrength ret = new SignalStrength();
+        ret.setFromNotifierBundle(m);
+        return ret;
+    }
+
+    @Deprecated
+    private void setFromNotifierBundle(Bundle m) {
+        this.mCdma = (CellSignalStrengthCdma) m.getParcelable("Cdma", CellSignalStrengthCdma.class);
+        this.mGsm = (CellSignalStrengthGsm) m.getParcelable("Gsm", CellSignalStrengthGsm.class);
+        this.mWcdma = (CellSignalStrengthWcdma) m.getParcelable("Wcdma", CellSignalStrengthWcdma.class);
+        this.mTdscdma = (CellSignalStrengthTdscdma) m.getParcelable("Tdscdma", CellSignalStrengthTdscdma.class);
+        this.mLte = (CellSignalStrengthLte) m.getParcelable("Lte", CellSignalStrengthLte.class);
+        this.mNr = (CellSignalStrengthNr) m.getParcelable("Nr", CellSignalStrengthNr.class);
+        this.mSignalBarInfos = (SignalBarInfo) m.getParcelable("SignalBarInfo");
+        this.mPrimaryRadioTechnology = m.getInt("PrimaryRadioTechnology");
     }
 
     public int semGetVendorLevel() {

@@ -22,7 +22,6 @@ public interface ITextToSpeechCallback extends IInterface {
 
     void onSuccess(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITextToSpeechCallback {
         @Override // android.speech.tts.ITextToSpeechCallback
         public void onStart(String utteranceId) throws RemoteException {
@@ -58,7 +57,6 @@ public interface ITextToSpeechCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITextToSpeechCallback {
         public static final String DESCRIPTOR = "android.speech.tts.ITextToSpeechCallback";
         static final int TRANSACTION_onAudioAvailable = 6;
@@ -120,65 +118,61 @@ public interface ITextToSpeechCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStart(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onStop(_arg03, _arg1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg04, _arg12);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg13 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBeginSynthesis(_arg05, _arg13, _arg2, _arg3);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    byte[] _arg14 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onAudioAvailable(_arg06, _arg14);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    int _arg15 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRangeStart(_arg07, _arg15, _arg22, _arg32);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStart(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onStop(_arg03, _arg1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg13 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBeginSynthesis(_arg05, _arg13, _arg2, _arg3);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            byte[] _arg14 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onAudioAvailable(_arg06, _arg14);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            int _arg15 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRangeStart(_arg07, _arg15, _arg22, _arg32);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITextToSpeechCallback {
+        private static class Proxy implements ITextToSpeechCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

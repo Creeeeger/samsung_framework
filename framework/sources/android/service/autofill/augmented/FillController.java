@@ -16,7 +16,7 @@ public final class FillController {
     private static final String TAG = FillController.class.getSimpleName();
     private final AugmentedAutofillService.AutofillProxy mProxy;
 
-    public FillController(AugmentedAutofillService.AutofillProxy proxy) {
+    FillController(AugmentedAutofillService.AutofillProxy proxy) {
         this.mProxy = proxy;
     }
 

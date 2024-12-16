@@ -12,18 +12,18 @@ import android.util.Printer;
 import android.util.Slog;
 import java.text.Collator;
 import java.util.Comparator;
+import java.util.Objects;
 
 /* loaded from: classes.dex */
 public class ResolveInfo implements Parcelable {
     public static final Parcelable.Creator<ResolveInfo> CREATOR = new Parcelable.Creator<ResolveInfo>() { // from class: android.content.pm.ResolveInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResolveInfo createFromParcel(Parcel source) {
             return new ResolveInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResolveInfo[] newArray(int size) {
             return new ResolveInfo[size];
@@ -56,36 +56,27 @@ public class ResolveInfo implements Parcelable {
     public int targetUserId;
     public UserHandle userHandle;
 
-    /* synthetic */ ResolveInfo(Parcel parcel, ResolveInfoIA resolveInfoIA) {
-        this(parcel);
-    }
-
     public ComponentInfo getComponentInfo() {
-        ActivityInfo activityInfo = this.activityInfo;
-        if (activityInfo != null) {
-            return activityInfo;
+        if (this.activityInfo != null) {
+            return this.activityInfo;
         }
-        ServiceInfo serviceInfo = this.serviceInfo;
-        if (serviceInfo != null) {
-            return serviceInfo;
+        if (this.serviceInfo != null) {
+            return this.serviceInfo;
         }
-        ProviderInfo providerInfo = this.providerInfo;
-        if (providerInfo != null) {
-            return providerInfo;
+        if (this.providerInfo != null) {
+            return this.providerInfo;
         }
         throw new IllegalStateException("Missing ComponentInfo!");
     }
 
     public CharSequence loadLabel(PackageManager pm) {
         CharSequence label;
-        int i;
         CharSequence label2;
-        CharSequence charSequence = this.nonLocalizedLabel;
-        if (charSequence != null) {
-            return charSequence;
+        if (this.nonLocalizedLabel != null) {
+            return this.nonLocalizedLabel;
         }
-        String str = this.resolvePackageName;
-        if (str != null && (i = this.labelRes) != 0 && (label2 = pm.getText(str, i, null)) != null) {
+        Objects.requireNonNull(pm);
+        if (this.resolvePackageName != null && this.labelRes != 0 && (label2 = pm.getText(this.resolvePackageName, this.labelRes, null)) != null) {
             return label2.toString().trim();
         }
         ComponentInfo ci = getComponentInfo();
@@ -98,9 +89,8 @@ public class ResolveInfo implements Parcelable {
     }
 
     public int resolveLabelResId() {
-        int i = this.labelRes;
-        if (i != 0) {
-            return i;
+        if (this.labelRes != 0) {
+            return this.labelRes;
         }
         ComponentInfo componentInfo = getComponentInfo();
         if (componentInfo.labelRes != 0) {
@@ -110,9 +100,8 @@ public class ResolveInfo implements Parcelable {
     }
 
     public int resolveIconResId() {
-        int i = this.icon;
-        if (i != 0) {
-            return i;
+        if (this.icon != 0) {
+            return this.icon;
         }
         ComponentInfo componentInfo = getComponentInfo();
         if (componentInfo.icon != 0) {
@@ -122,11 +111,9 @@ public class ResolveInfo implements Parcelable {
     }
 
     public Drawable loadIcon(PackageManager pm) {
-        int i;
         Drawable dr = null;
-        String str = this.resolvePackageName;
-        if (str != null && (i = this.iconResourceId) != 0) {
-            dr = pm.getDrawable(str, i, null);
+        if (this.resolvePackageName != null && this.iconResourceId != 0) {
+            dr = pm.getDrawable(this.resolvePackageName, this.iconResourceId, null);
         }
         ComponentInfo ci = getComponentInfo();
         if (dr == null && this.iconResourceId != 0) {
@@ -140,9 +127,8 @@ public class ResolveInfo implements Parcelable {
     }
 
     final int getIconResourceInternal() {
-        int i = this.iconResourceId;
-        if (i != 0) {
-            return i;
+        if (this.iconResourceId != 0) {
+            return this.iconResourceId;
         }
         ComponentInfo ci = getComponentInfo();
         if (ci != null) {
@@ -187,8 +173,7 @@ public class ResolveInfo implements Parcelable {
     }
 
     public boolean isCrossProfileIntentForwarderActivity() {
-        ActivityInfo activityInfo = this.activityInfo;
-        return activityInfo != null && INTENT_FORWARDER_ACTIVITY.equals(activityInfo.targetActivity);
+        return this.activityInfo != null && INTENT_FORWARDER_ACTIVITY.equals(this.activityInfo.targetActivity);
     }
 
     public boolean isAutoResolutionAllowed() {
@@ -298,25 +283,7 @@ public class ResolveInfo implements Parcelable {
         parcel.writeInt(this.handleAllWebDataURI ? 1 : 0);
         parcel.writeInt(this.mAutoResolutionAllowed ? 1 : 0);
         parcel.writeInt(this.isInstantAppAvailable ? 1 : 0);
-        UserHandle userHandle = this.userHandle;
-        parcel.writeInt(userHandle != null ? userHandle.getIdentifier() : -2);
-    }
-
-    /* renamed from: android.content.pm.ResolveInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ResolveInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResolveInfo createFromParcel(Parcel source) {
-            return new ResolveInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResolveInfo[] newArray(int size) {
-            return new ResolveInfo[size];
-        }
+        parcel.writeInt(this.userHandle != null ? this.userHandle.getIdentifier() : -2);
     }
 
     private ResolveInfo(Parcel source) {
@@ -362,16 +329,13 @@ public class ResolveInfo implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class DisplayNameComparator implements Comparator<ResolveInfo> {
-        private final Collator mCollator;
-        private PackageManager mPM;
+        private final Collator mCollator = Collator.getInstance();
+        private final PackageManager mPM;
 
         public DisplayNameComparator(PackageManager pm) {
-            Collator collator = Collator.getInstance();
-            this.mCollator = collator;
             this.mPM = pm;
-            collator.setStrength(0);
+            this.mCollator.setStrength(0);
         }
 
         @Override // java.util.Comparator

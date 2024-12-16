@@ -3,15 +3,15 @@ package com.android.internal.os;
 import java.io.EOFException;
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class ZygoteArguments {
+class ZygoteArguments {
     boolean mAbiListQuery;
     String[] mAllowlistedDataInfoList;
     String[] mApiDenylistExemptions;
     String mAppDataDir;
     boolean mBindMountAppDataDirs;
     boolean mBindMountAppStorageDirs;
+    boolean mBindMountSyspropOverrides;
     boolean mBootCompleted;
     private boolean mCapabilitiesSpecified;
     long mEffectiveCapabilities;
@@ -61,149 +61,148 @@ public class ZygoteArguments {
         return new ZygoteArguments(args, argCount);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:246:0x0395, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:250:0x03a3, code lost:
     
-        if (r12.mBootCompleted == false) goto L510;
+        if (r12.mBootCompleted == false) goto L203;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:247:0x0397, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:251:0x03a5, code lost:
     
-        if (r14 > r1) goto L508;
+        if (r14 > r1) goto L201;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:249:0x03a2, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:253:0x03b0, code lost:
     
         throw new java.lang.IllegalArgumentException("Unexpected arguments after --boot-completed");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:251:0x040f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:255:0x041f, code lost:
     
-        if (r12.mStartChildZygote == false) goto L554;
+        if (r12.mStartChildZygote == false) goto L247;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:252:0x0411, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:256:0x0421, code lost:
     
         r5 = false;
         r6 = r12.mRemainingArgs;
         r7 = r6.length;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:253:0x0415, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:257:0x0425, code lost:
     
-        if (r4 >= r7) goto L615;
+        if (r4 >= r7) goto L309;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:255:0x041f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:259:0x042f, code lost:
     
-        if (r6[r4].startsWith(com.android.internal.os.Zygote.CHILD_ZYGOTE_SOCKET_NAME_ARG) == false) goto L549;
+        if (r6[r4].startsWith(com.android.internal.os.Zygote.CHILD_ZYGOTE_SOCKET_NAME_ARG) == false) goto L242;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:256:0x0423, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:260:0x0433, code lost:
     
         r4 = r4 + 1;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:258:0x0421, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:262:0x0431, code lost:
     
         r5 = true;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:259:0x0426, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:263:0x0436, code lost:
     
-        if (r5 == false) goto L552;
+        if (r5 == false) goto L245;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:261:0x0430, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:265:0x0440, code lost:
     
         throw new java.lang.IllegalArgumentException("--start-child-zygote specified without --zygote-socket=");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:262:?, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:266:?, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:264:0x0431, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:268:0x0441, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:266:0x03a5, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:270:0x03b3, code lost:
     
-        if (r12.mAbiListQuery != false) goto L541;
+        if (r12.mAbiListQuery != false) goto L234;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:268:0x03a9, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:272:0x03b7, code lost:
     
-        if (r12.mPidQuery == false) goto L515;
+        if (r12.mPidQuery == false) goto L208;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:270:0x03ae, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:274:0x03bc, code lost:
     
-        if (r12.mPreloadPackage == null) goto L521;
+        if (r12.mPreloadPackage == null) goto L214;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:271:0x03b0, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:275:0x03be, code lost:
     
-        if (r14 > r1) goto L519;
+        if (r14 > r1) goto L212;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:273:0x03ba, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:277:0x03c8, code lost:
     
         throw new java.lang.IllegalArgumentException("Unexpected arguments after --preload-package.");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:275:0x03bd, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:279:0x03cb, code lost:
     
-        if (r12.mPreloadApp == null) goto L527;
+        if (r12.mPreloadApp == null) goto L220;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:276:0x03bf, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:280:0x03cd, code lost:
     
-        if (r14 > r1) goto L525;
+        if (r14 > r1) goto L218;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:278:0x03c9, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:282:0x03d7, code lost:
     
         throw new java.lang.IllegalArgumentException("Unexpected arguments after --preload-app.");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:279:0x03ca, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:283:0x03d8, code lost:
     
-        if (r3 == false) goto L542;
+        if (r3 == false) goto L235;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:280:0x03cc, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:284:0x03da, code lost:
     
-        if (r2 != false) goto L535;
+        if (r2 != false) goto L228;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:281:0x03ce, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:285:0x03dc, code lost:
     
         r5 = new java.lang.StringBuilder().append("Unexpected argument : ");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:282:0x03db, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:286:0x03e9, code lost:
     
-        if (r0 != null) goto L532;
+        if (r0 != null) goto L225;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:283:0x03dd, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:287:0x03eb, code lost:
     
         r6 = r13.nextArg();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:285:0x03ee, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:289:0x03fc, code lost:
     
         throw new java.lang.IllegalArgumentException(r5.append(r6).toString());
      */
-    /* JADX WARN: Code restructure failed: missing block: B:286:0x03e2, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:290:0x03f0, code lost:
     
         r6 = r0;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:287:0x03ef, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:291:0x03fd, code lost:
     
-        r5 = new java.lang.String[r14 - r1];
-        r12.mRemainingArgs = r5;
-        r6 = 0;
+        r12.mRemainingArgs = new java.lang.String[r14 - r1];
+        r5 = 0;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:288:0x03f6, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:292:0x0404, code lost:
     
-        if (r0 == null) goto L618;
+        if (r0 == null) goto L312;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:289:0x03f8, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:293:0x0406, code lost:
     
-        r5[0] = r0;
-        r6 = 0 + 1;
+        r12.mRemainingArgs[0] = r0;
+        r5 = 0 + 1;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:292:0x03fe, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:296:0x040e, code lost:
     
-        if (r6 >= (r14 - r1)) goto L617;
+        if (r5 >= (r14 - r1)) goto L311;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:293:0x0400, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:297:0x0410, code lost:
     
-        r12.mRemainingArgs[r6] = r13.nextArg();
-        r6 = r6 + 1;
+        r12.mRemainingArgs[r5] = r13.nextArg();
+        r5 = r5 + 1;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:295:0x040b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:299:0x041b, code lost:
     
-        if (r14 > r1) goto L555;
+        if (r14 > r1) goto L248;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:297:0x0439, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:301:0x0449, code lost:
     
         throw new java.lang.IllegalArgumentException("Unexpected arguments after --query-abi-list.");
      */
@@ -213,7 +212,7 @@ public class ZygoteArguments {
     */
     private void parseArgs(com.android.internal.os.ZygoteCommandBuffer r13, int r14) throws java.lang.IllegalArgumentException, java.io.EOFException {
         /*
-            Method dump skipped, instructions count: 1082
+            Method dump skipped, instructions count: 1098
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.os.ZygoteArguments.parseArgs(com.android.internal.os.ZygoteCommandBuffer, int):void");

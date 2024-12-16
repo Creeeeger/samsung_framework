@@ -6,14 +6,12 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
-import com.samsung.android.ims.options.SemCapabilities;
-import com.samsung.android.rune.CoreRune;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class RunestoneLogger {
     private static final String ACTION_SCREEN_LOGGING = "com.sec.android.diagmonagent.intent.ACTION_SCREEN_LOGGING";
-    private static final boolean DEBUG = CoreRune.SAFE_DEBUG;
+    private static final boolean DEBUG = false;
     private static final String EXTRA_FOLD_STATE = "fold_state";
     private static final String EXTRA_MULTI_WINDOW_STATE = "multi_window_state";
     private static final String EXTRA_PACKAGES = "packages";
@@ -23,7 +21,6 @@ public class RunestoneLogger {
     private static final String PERMISSION_SCREEN_LOGGING = "com.sec.android.diagmonagent.permission.DIAGMON_SURVEY";
     private static final String TAG = "RunestoneLogger";
 
-    /* loaded from: classes5.dex */
     public enum ScreenType {
         UNKNOWN(0),
         FOLD(1),
@@ -40,7 +37,6 @@ public class RunestoneLogger {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum ScreenState {
         UNKNOWN(0),
         FOLD(1),
@@ -101,9 +97,6 @@ public class RunestoneLogger {
 
     public static void sendRunestoneLogging(Context context, int screenType, int screenState, ArrayList<String> packageList) {
         long timeStamp = System.currentTimeMillis();
-        if (DEBUG) {
-            Log.d(TAG, "insertLog screenType : " + screenType + ", screenState : " + screenState + ", timeStamp : " + timeStamp + ", packageList : " + (packageList != null ? packageList.toString() : SemCapabilities.FEATURE_TAG_NULL));
-        }
         Bundle bundle = new Bundle();
         bundle.putInt(EXTRA_SCREEN_TYPE, screenType);
         if (screenType == ScreenType.FOLD.getValue()) {

@@ -18,11 +18,14 @@ public final class Enums {
     public static final int CODEC_VP9 = 4;
     public static final int FRAMERATE_120 = 12000;
     public static final int FRAMERATE_24 = 2400;
+    public static final int FRAMERATE_240 = 24000;
     public static final int FRAMERATE_24_3_2_PULLDOWN = 2;
     public static final int FRAMERATE_25 = 2500;
     public static final int FRAMERATE_30 = 3000;
+    public static final int FRAMERATE_480 = 48000;
     public static final int FRAMERATE_50 = 5000;
     public static final int FRAMERATE_60 = 6000;
+    public static final int FRAMERATE_960 = 96000;
     public static final int FRAMERATE_UNDETERMINED = 1;
     public static final int FRAMERATE_UNKNOWN = 0;
     public static final int HDR_FORMAT_DOLBY_VISION = 5;

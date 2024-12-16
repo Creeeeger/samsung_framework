@@ -35,18 +35,16 @@ public class PictureDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public int getIntrinsicWidth() {
-        Picture picture = this.mPicture;
-        if (picture != null) {
-            return picture.getWidth();
+        if (this.mPicture != null) {
+            return this.mPicture.getWidth();
         }
         return -1;
     }
 
     @Override // android.graphics.drawable.Drawable
     public int getIntrinsicHeight() {
-        Picture picture = this.mPicture;
-        if (picture != null) {
-            return picture.getHeight();
+        if (this.mPicture != null) {
+            return this.mPicture.getHeight();
         }
         return -1;
     }

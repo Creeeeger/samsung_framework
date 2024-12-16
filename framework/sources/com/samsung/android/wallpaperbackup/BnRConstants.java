@@ -1,6 +1,6 @@
 package com.samsung.android.wallpaperbackup;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class BnRConstants {
     public static final String BNR_SOURCE_SCLOUD = "Scloud";
     public static final String COVER_TYPE_LARGE_SCREEN = "large_screen";
@@ -18,9 +18,7 @@ public class BnRConstants {
     public static final String DEX_FOLDER_NAME = "wallpaper_dex";
     public static final String DEX_LOCK_XML_NAME = "dex_lock_wallpaper.xml";
     public static final String DEX_XML_NAME = "dex_wallpaper.xml";
-    public static final int DISABLE = 0;
     public static final int DOWNLOADED_THEME_WALLPAPER = 3;
-    public static final int ENABLE = 1;
     public static final String ERROR_KEY = "ERR_CODE";
     public static final String EXTRA_ERR_CODE = "EXTRA_ERR_CODE";
     public static final String EXTRA_LIST_PACKAGES = "EXTRA";
@@ -43,7 +41,6 @@ public class BnRConstants {
     public static final String RESPONSE_RESTORE_LOCKSCREEN = "com.samsung.android.intent.action.RESPONSE_RESTORE_LOCKSCREEN";
     public static final String RESPONSE_RESTORE_WALLPAPER = "com.samsung.android.intent.action.RESPONSE_RESTORE_WALLPAPER";
     public static final String RESULT_KEY = "RESULT";
-    public static final int SENSOR_TYPE_INTERRUPT_GYROSCOPE = 65579;
     public static final String SESSION_TIME_KEY = "EXPORT_SESSION_TIME";
     public static final String SETTINGS_KEYGUARD_TRANSPARENCY = "lockscreen_wallpaper_transparent";
     public static final String SETTINGS_KEYGUARD_TRANSPARENCY_DEX = "dex_lockscreen_wallpaper_transparency";
@@ -51,7 +48,6 @@ public class BnRConstants {
     public static final String SETTINGS_SYSTEM_TRANSPARENCY = "android.wallpaper.settings_systemui_transparency";
     public static final String SETTINGS_SYSTEM_TRANSPARENCY_DEX = "dex_system_wallpaper_transparency";
     public static final String SETTINGS_SYSTEM_TRANSPARENCY_SUB_DISPLAY = "sub_display_system_wallpaper_transparency";
-    public static final String SETTINGS_WALLPAPER_TILT_STATUS = "wallpaper_tilt_status";
     public static final String SOURCE_KEY = "SOURCE";
     public static final String SUB_DISPLAY_FOLDER_NAME = "wallpaper_sub_display";
     public static final String SUB_DISPLAY_FOLDER_ORIGINAL_NAME = "wallpaper_sub_display_original";

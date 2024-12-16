@@ -13,7 +13,7 @@ public abstract class AndroidKeyStorePublicKey extends AndroidKeyStoreKey implem
     private final byte[] mCertificateChain;
     private final byte[] mEncoded;
 
-    public abstract AndroidKeyStorePrivateKey getPrivateKey();
+    abstract AndroidKeyStorePrivateKey getPrivateKey();
 
     public AndroidKeyStorePublicKey(KeyDescriptor descriptor, KeyMetadata metadata, byte[] x509EncodedForm, String algorithm, KeyStoreSecurityLevel securityLevel) {
         super(descriptor, metadata.key.nspace, metadata.authorizations, algorithm, securityLevel);

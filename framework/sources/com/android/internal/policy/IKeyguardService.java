@@ -68,17 +68,16 @@ public interface IKeyguardService extends IInterface {
 
     void setSwitchingUser(boolean z) throws RemoteException;
 
+    void showDismissibleKeyguard() throws RemoteException;
+
     void startFingerprintAuthentication() throws RemoteException;
 
     void startKeyguardExitAnimation(long j, long j2) throws RemoteException;
 
     void startedEarlyWakingUp(int i) throws RemoteException;
 
-    void updateCoverLauncherAppWidget() throws RemoteException;
-
     void verifyUnlock(IKeyguardExitCallback iKeyguardExitCallback) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKeyguardService {
         @Override // com.android.internal.policy.IKeyguardService
         public void setOccluded(boolean isOccluded, boolean animate) throws RemoteException {
@@ -177,6 +176,10 @@ public interface IKeyguardService extends IInterface {
         }
 
         @Override // com.android.internal.policy.IKeyguardService
+        public void showDismissibleKeyguard() throws RemoteException {
+        }
+
+        @Override // com.android.internal.policy.IKeyguardService
         public void setPendingIntentAfterUnlock(PendingIntent pendingIntent, Intent fillInIntent) throws RemoteException {
         }
 
@@ -200,17 +203,12 @@ public interface IKeyguardService extends IInterface {
         public void setCoverOccluded(boolean isOccluded) throws RemoteException {
         }
 
-        @Override // com.android.internal.policy.IKeyguardService
-        public void updateCoverLauncherAppWidget() throws RemoteException {
-        }
-
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKeyguardService {
         public static final String DESCRIPTOR = "com.android.internal.policy.IKeyguardService";
         static final int TRANSACTION_addStateMonitorCallback = 2;
@@ -220,7 +218,7 @@ public interface IKeyguardService extends IInterface {
         static final int TRANSACTION_onBootCompleted = 20;
         static final int TRANSACTION_onDreamingStarted = 5;
         static final int TRANSACTION_onDreamingStopped = 6;
-        static final int TRANSACTION_onFinishedBootAnim = 27;
+        static final int TRANSACTION_onFinishedBootAnim = 28;
         static final int TRANSACTION_onFinishedGoingToSleep = 8;
         static final int TRANSACTION_onFinishedWakingUp = 10;
         static final int TRANSACTION_onScreenTurnedOff = 14;
@@ -232,17 +230,17 @@ public interface IKeyguardService extends IInterface {
         static final int TRANSACTION_onStartedWakingUp = 9;
         static final int TRANSACTION_onSystemKeyPressed = 24;
         static final int TRANSACTION_onSystemReady = 16;
-        static final int TRANSACTION_setCoverOccluded = 30;
+        static final int TRANSACTION_setCoverOccluded = 31;
         static final int TRANSACTION_setCurrentUser = 19;
-        static final int TRANSACTION_setDexOccluded = 29;
+        static final int TRANSACTION_setDexOccluded = 30;
         static final int TRANSACTION_setKeyguardEnabled = 15;
         static final int TRANSACTION_setOccluded = 1;
-        static final int TRANSACTION_setPendingIntentAfterUnlock = 25;
+        static final int TRANSACTION_setPendingIntentAfterUnlock = 26;
         static final int TRANSACTION_setSwitchingUser = 18;
-        static final int TRANSACTION_startFingerprintAuthentication = 26;
+        static final int TRANSACTION_showDismissibleKeyguard = 25;
+        static final int TRANSACTION_startFingerprintAuthentication = 27;
         static final int TRANSACTION_startKeyguardExitAnimation = 21;
-        static final int TRANSACTION_startedEarlyWakingUp = 28;
-        static final int TRANSACTION_updateCoverLauncherAppWidget = 31;
+        static final int TRANSACTION_startedEarlyWakingUp = 29;
         static final int TRANSACTION_verifyUnlock = 3;
 
         public Stub() {
@@ -316,19 +314,19 @@ public interface IKeyguardService extends IInterface {
                 case 24:
                     return "onSystemKeyPressed";
                 case 25:
-                    return "setPendingIntentAfterUnlock";
+                    return "showDismissibleKeyguard";
                 case 26:
-                    return "startFingerprintAuthentication";
+                    return "setPendingIntentAfterUnlock";
                 case 27:
-                    return "onFinishedBootAnim";
+                    return "startFingerprintAuthentication";
                 case 28:
-                    return "startedEarlyWakingUp";
+                    return "onFinishedBootAnim";
                 case 29:
-                    return "setDexOccluded";
+                    return "startedEarlyWakingUp";
                 case 30:
-                    return "setCoverOccluded";
+                    return "setDexOccluded";
                 case 31:
-                    return "updateCoverLauncherAppWidget";
+                    return "setCoverOccluded";
                 default:
                     return null;
             }
@@ -344,156 +342,153 @@ public interface IKeyguardService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setOccluded(_arg0, _arg1);
+                    return true;
+                case 2:
+                    IKeyguardStateCallback _arg02 = IKeyguardStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addStateMonitorCallback(_arg02);
+                    return true;
+                case 3:
+                    IKeyguardExitCallback _arg03 = IKeyguardExitCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    verifyUnlock(_arg03);
+                    return true;
+                case 4:
+                    IKeyguardDismissCallback _arg04 = IKeyguardDismissCallback.Stub.asInterface(data.readStrongBinder());
+                    CharSequence _arg12 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    dismiss(_arg04, _arg12);
+                    return true;
+                case 5:
+                    onDreamingStarted();
+                    return true;
+                case 6:
+                    onDreamingStopped();
+                    return true;
+                case 7:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStartedGoingToSleep(_arg05);
+                    return true;
+                case 8:
+                    int _arg06 = data.readInt();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onFinishedGoingToSleep(_arg06, _arg13);
+                    return true;
+                case 9:
+                    int _arg07 = data.readInt();
+                    boolean _arg14 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onStartedWakingUp(_arg07, _arg14);
+                    return true;
+                case 10:
+                    onFinishedWakingUp();
+                    return true;
+                case 11:
+                    IKeyguardDrawnCallback _arg08 = IKeyguardDrawnCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onScreenTurningOn(_arg08);
+                    return true;
+                case 12:
+                    onScreenTurnedOn();
+                    return true;
+                case 13:
+                    onScreenTurningOff();
+                    return true;
+                case 14:
+                    onScreenTurnedOff();
+                    return true;
+                case 15:
+                    boolean _arg09 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setKeyguardEnabled(_arg09);
+                    return true;
+                case 16:
+                    onSystemReady();
+                    return true;
+                case 17:
+                    Bundle _arg010 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    doKeyguardTimeout(_arg010);
+                    return true;
+                case 18:
+                    boolean _arg011 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSwitchingUser(_arg011);
+                    return true;
+                case 19:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCurrentUser(_arg012);
+                    return true;
+                case 20:
+                    onBootCompleted();
+                    return true;
+                case 21:
+                    long _arg013 = data.readLong();
+                    long _arg15 = data.readLong();
+                    data.enforceNoDataAvail();
+                    startKeyguardExitAnimation(_arg013, _arg15);
+                    return true;
+                case 22:
+                    onShortPowerPressedGoHome();
+                    return true;
+                case 23:
+                    Intent _arg014 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    dismissKeyguardToLaunch(_arg014);
+                    return true;
+                case 24:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSystemKeyPressed(_arg015);
+                    return true;
+                case 25:
+                    showDismissibleKeyguard();
+                    return true;
+                case 26:
+                    PendingIntent _arg016 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    Intent _arg16 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPendingIntentAfterUnlock(_arg016, _arg16);
+                    return true;
+                case 27:
+                    startFingerprintAuthentication();
+                    return true;
+                case 28:
+                    onFinishedBootAnim();
+                    return true;
+                case 29:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startedEarlyWakingUp(_arg017);
+                    return true;
+                case 30:
+                    boolean _arg018 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDexOccluded(_arg018);
+                    return true;
+                case 31:
+                    boolean _arg019 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCoverOccluded(_arg019);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setOccluded(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            IKeyguardStateCallback _arg02 = IKeyguardStateCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addStateMonitorCallback(_arg02);
-                            return true;
-                        case 3:
-                            IKeyguardExitCallback _arg03 = IKeyguardExitCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            verifyUnlock(_arg03);
-                            return true;
-                        case 4:
-                            IKeyguardDismissCallback _arg04 = IKeyguardDismissCallback.Stub.asInterface(data.readStrongBinder());
-                            CharSequence _arg12 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            dismiss(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            onDreamingStarted();
-                            return true;
-                        case 6:
-                            onDreamingStopped();
-                            return true;
-                        case 7:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStartedGoingToSleep(_arg05);
-                            return true;
-                        case 8:
-                            int _arg06 = data.readInt();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onFinishedGoingToSleep(_arg06, _arg13);
-                            return true;
-                        case 9:
-                            int _arg07 = data.readInt();
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onStartedWakingUp(_arg07, _arg14);
-                            return true;
-                        case 10:
-                            onFinishedWakingUp();
-                            return true;
-                        case 11:
-                            IKeyguardDrawnCallback _arg08 = IKeyguardDrawnCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onScreenTurningOn(_arg08);
-                            return true;
-                        case 12:
-                            onScreenTurnedOn();
-                            return true;
-                        case 13:
-                            onScreenTurningOff();
-                            return true;
-                        case 14:
-                            onScreenTurnedOff();
-                            return true;
-                        case 15:
-                            boolean _arg09 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setKeyguardEnabled(_arg09);
-                            return true;
-                        case 16:
-                            onSystemReady();
-                            return true;
-                        case 17:
-                            Bundle _arg010 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            doKeyguardTimeout(_arg010);
-                            return true;
-                        case 18:
-                            boolean _arg011 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSwitchingUser(_arg011);
-                            return true;
-                        case 19:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCurrentUser(_arg012);
-                            return true;
-                        case 20:
-                            onBootCompleted();
-                            return true;
-                        case 21:
-                            long _arg013 = data.readLong();
-                            long _arg15 = data.readLong();
-                            data.enforceNoDataAvail();
-                            startKeyguardExitAnimation(_arg013, _arg15);
-                            return true;
-                        case 22:
-                            onShortPowerPressedGoHome();
-                            return true;
-                        case 23:
-                            Intent _arg014 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            dismissKeyguardToLaunch(_arg014);
-                            return true;
-                        case 24:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSystemKeyPressed(_arg015);
-                            return true;
-                        case 25:
-                            PendingIntent _arg016 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            Intent _arg16 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPendingIntentAfterUnlock(_arg016, _arg16);
-                            return true;
-                        case 26:
-                            startFingerprintAuthentication();
-                            return true;
-                        case 27:
-                            onFinishedBootAnim();
-                            return true;
-                        case 28:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startedEarlyWakingUp(_arg017);
-                            return true;
-                        case 29:
-                            boolean _arg018 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDexOccluded(_arg018);
-                            return true;
-                        case 30:
-                            boolean _arg019 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCoverOccluded(_arg019);
-                            return true;
-                        case 31:
-                            updateCoverLauncherAppWidget();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IKeyguardService {
             private IBinder mRemote;
 
@@ -800,13 +795,24 @@ public interface IKeyguardService extends IInterface {
             }
 
             @Override // com.android.internal.policy.IKeyguardService
+            public void showDismissibleKeyguard() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(25, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.policy.IKeyguardService
             public void setPendingIntentAfterUnlock(PendingIntent pendingIntent, Intent fillInIntent) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(pendingIntent, 0);
                     _data.writeTypedObject(fillInIntent, 0);
-                    this.mRemote.transact(25, _data, null, 1);
+                    this.mRemote.transact(26, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -817,7 +823,7 @@ public interface IKeyguardService extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(26, _data, null, 1);
+                    this.mRemote.transact(27, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -828,7 +834,7 @@ public interface IKeyguardService extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(27, _data, null, 1);
+                    this.mRemote.transact(28, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -840,7 +846,7 @@ public interface IKeyguardService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(reason);
-                    this.mRemote.transact(28, _data, null, 1);
+                    this.mRemote.transact(29, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -852,7 +858,7 @@ public interface IKeyguardService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(isOccluded);
-                    this.mRemote.transact(29, _data, null, 1);
+                    this.mRemote.transact(30, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -864,17 +870,6 @@ public interface IKeyguardService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(isOccluded);
-                    this.mRemote.transact(30, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.policy.IKeyguardService
-            public void updateCoverLauncherAppWidget() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     this.mRemote.transact(31, _data, null, 1);
                 } finally {
                     _data.recycle();

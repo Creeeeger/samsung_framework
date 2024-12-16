@@ -4,8 +4,6 @@ import android.annotation.SystemApi;
 import android.app.JobSchedulerImpl;
 import android.app.SystemServiceRegistry;
 import android.app.job.IJobScheduler;
-import android.app.tare.EconomyManager;
-import android.app.tare.IEconomyManager;
 import android.content.Context;
 import android.os.DeviceIdleManager;
 import android.os.IBinder;
@@ -44,23 +42,13 @@ public class JobSchedulerFrameworkInitializer {
                 return new PowerExemptionManager(context);
             }
         });
-        SystemServiceRegistry.registerStaticService(Context.RESOURCE_ECONOMY_SERVICE, EconomyManager.class, new SystemServiceRegistry.StaticServiceProducerWithBinder() { // from class: android.app.job.JobSchedulerFrameworkInitializer$$ExternalSyntheticLambda4
-            @Override // android.app.SystemServiceRegistry.StaticServiceProducerWithBinder
-            public final Object createService(IBinder iBinder) {
-                return JobSchedulerFrameworkInitializer.lambda$registerServiceWrappers$2(iBinder);
-            }
-        });
     }
 
-    public static /* synthetic */ JobScheduler lambda$registerServiceWrappers$0(Context context, IBinder b) {
+    static /* synthetic */ JobScheduler lambda$registerServiceWrappers$0(Context context, IBinder b) {
         return new JobSchedulerImpl(context, IJobScheduler.Stub.asInterface(b));
     }
 
-    public static /* synthetic */ DeviceIdleManager lambda$registerServiceWrappers$1(Context context, IBinder b) {
+    static /* synthetic */ DeviceIdleManager lambda$registerServiceWrappers$1(Context context, IBinder b) {
         return new DeviceIdleManager(context, IDeviceIdleController.Stub.asInterface(b));
-    }
-
-    public static /* synthetic */ EconomyManager lambda$registerServiceWrappers$2(IBinder b) {
-        return new EconomyManager(IEconomyManager.Stub.asInterface(b));
     }
 }

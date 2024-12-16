@@ -10,14 +10,13 @@ import android.util.Base64;
 /* loaded from: classes4.dex */
 public final class WebViewProviderInfo implements Parcelable {
     public static final Parcelable.Creator<WebViewProviderInfo> CREATOR = new Parcelable.Creator<WebViewProviderInfo>() { // from class: android.webkit.WebViewProviderInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WebViewProviderInfo createFromParcel(Parcel in) {
             return new WebViewProviderInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WebViewProviderInfo[] newArray(int size) {
             return new WebViewProviderInfo[size];
@@ -28,10 +27,6 @@ public final class WebViewProviderInfo implements Parcelable {
     public final boolean isFallback;
     public final String packageName;
     public final Signature[] signatures;
-
-    /* synthetic */ WebViewProviderInfo(Parcel parcel, WebViewProviderInfoIA webViewProviderInfoIA) {
-        this(parcel);
-    }
 
     public WebViewProviderInfo(String packageName, String description, boolean availableByDefault, boolean isFallback, String[] signatures) {
         this.packageName = packageName;
@@ -45,23 +40,6 @@ public final class WebViewProviderInfo implements Parcelable {
         this.signatures = new Signature[signatures.length];
         for (int n = 0; n < signatures.length; n++) {
             this.signatures[n] = new Signature(Base64.decode(signatures[n], 0));
-        }
-    }
-
-    /* renamed from: android.webkit.WebViewProviderInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WebViewProviderInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WebViewProviderInfo createFromParcel(Parcel in) {
-            return new WebViewProviderInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WebViewProviderInfo[] newArray(int size) {
-            return new WebViewProviderInfo[size];
         }
     }
 

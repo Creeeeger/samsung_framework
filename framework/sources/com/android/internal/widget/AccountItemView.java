@@ -68,7 +68,7 @@ public class AccountItemView extends LinearLayout {
         if (TextUtils.isEmpty(text)) {
             view.setVisibility(8);
         } else {
-            view.setText(text);
+            view.lambda$setTextAsync$0(text);
             view.setVisibility(0);
         }
     }

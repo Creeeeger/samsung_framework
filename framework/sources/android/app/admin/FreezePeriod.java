@@ -22,9 +22,9 @@ public class FreezePeriod {
 
     public FreezePeriod(MonthDay start, MonthDay end) {
         this.mStart = start;
-        this.mStartDay = start.atYear(2001).getDayOfYear();
+        this.mStartDay = this.mStart.atYear(2001).getDayOfYear();
         this.mEnd = end;
-        this.mEndDay = end.atYear(2001).getDayOfYear();
+        this.mEndDay = this.mEnd.atYear(2001).getDayOfYear();
     }
 
     public MonthDay getStart() {
@@ -57,12 +57,12 @@ public class FreezePeriod {
         return this.mEndDay + 365;
     }
 
-    public boolean contains(LocalDate localDate) {
+    boolean contains(LocalDate localDate) {
         int daysOfYear = dayOfYearDisregardLeapYear(localDate);
         return !isWrapped() ? this.mStartDay <= daysOfYear && daysOfYear <= this.mEndDay : this.mStartDay <= daysOfYear || daysOfYear <= this.mEndDay;
     }
 
-    public boolean after(LocalDate localDate) {
+    boolean after(LocalDate localDate) {
         return this.mStartDay > dayOfYearDisregardLeapYear(localDate);
     }
 
@@ -72,7 +72,7 @@ public class FreezePeriod {
     /* JADX WARN: Type inference failed for: r2v3 */
     /* JADX WARN: Type inference failed for: r2v5 */
     /* JADX WARN: Type inference failed for: r2v6 */
-    public Pair<LocalDate, LocalDate> toCurrentOrFutureRealDates(LocalDate localDate) {
+    Pair<LocalDate, LocalDate> toCurrentOrFutureRealDates(LocalDate localDate) {
         int i;
         ?? r2;
         int dayOfYearDisregardLeapYear = dayOfYearDisregardLeapYear(localDate);
@@ -112,7 +112,7 @@ public class FreezePeriod {
         return (dayOfYearDisregardLeapYear(first) - dayOfYearDisregardLeapYear(second)) + ((first.getYear() - second.getYear()) * 365);
     }
 
-    public static List<FreezePeriod> canonicalizePeriods(List<FreezePeriod> intervals) {
+    static List<FreezePeriod> canonicalizePeriods(List<FreezePeriod> intervals) {
         boolean[] taken = new boolean[365];
         for (FreezePeriod interval : intervals) {
             for (int i = interval.mStartDay; i <= interval.getEffectiveEndDay(); i++) {
@@ -141,7 +141,7 @@ public class FreezePeriod {
         return result;
     }
 
-    public static void validatePeriods(List<FreezePeriod> periods) {
+    static void validatePeriods(List<FreezePeriod> periods) {
         int separation;
         List<FreezePeriod> allPeriods = canonicalizePeriods(periods);
         if (allPeriods.size() != periods.size()) {
@@ -169,7 +169,7 @@ public class FreezePeriod {
         }
     }
 
-    public static void validateAgainstPreviousFreezePeriod(List<FreezePeriod> periods, LocalDate prevPeriodStart, LocalDate prevPeriodEnd, LocalDate now) {
+    static void validateAgainstPreviousFreezePeriod(List<FreezePeriod> periods, LocalDate prevPeriodStart, LocalDate prevPeriodEnd, LocalDate now) {
         if (periods.size() == 0 || prevPeriodStart == null || prevPeriodEnd == null) {
             return;
         }

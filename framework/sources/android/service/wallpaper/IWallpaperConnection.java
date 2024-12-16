@@ -22,7 +22,6 @@ public interface IWallpaperConnection extends IInterface {
 
     ParcelFileDescriptor setWallpaper(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWallpaperConnection {
         @Override // android.service.wallpaper.IWallpaperConnection
         public void attachEngine(IWallpaperEngine engine, int displayId) throws RemoteException {
@@ -51,7 +50,6 @@ public interface IWallpaperConnection extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWallpaperConnection {
         public static final String DESCRIPTOR = "android.service.wallpaper.IWallpaperConnection";
         static final int TRANSACTION_attachEngine = 1;
@@ -107,56 +105,52 @@ public interface IWallpaperConnection extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IWallpaperEngine _arg0 = IWallpaperEngine.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    attachEngine(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IWallpaperEngine _arg02 = IWallpaperEngine.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    engineShown(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result = setWallpaper(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 4:
+                    WallpaperColors _arg04 = (WallpaperColors) data.readTypedObject(WallpaperColors.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onWallpaperColorsChanged(_arg04, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    RectF _arg05 = (RectF) data.readTypedObject(RectF.CREATOR);
+                    WallpaperColors _arg13 = (WallpaperColors) data.readTypedObject(WallpaperColors.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onLocalWallpaperColorsChanged(_arg05, _arg13, _arg2);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IWallpaperEngine _arg0 = IWallpaperEngine.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            attachEngine(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IWallpaperEngine _arg02 = IWallpaperEngine.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            engineShown(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result = setWallpaper(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 4:
-                            WallpaperColors _arg04 = (WallpaperColors) data.readTypedObject(WallpaperColors.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onWallpaperColorsChanged(_arg04, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            RectF _arg05 = (RectF) data.readTypedObject(RectF.CREATOR);
-                            WallpaperColors _arg13 = (WallpaperColors) data.readTypedObject(WallpaperColors.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onLocalWallpaperColorsChanged(_arg05, _arg13, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IWallpaperConnection {
+        private static class Proxy implements IWallpaperConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

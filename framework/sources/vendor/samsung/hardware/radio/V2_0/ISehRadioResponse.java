@@ -183,7 +183,6 @@ public interface ISehRadioResponse extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes6.dex */
     public static final class Proxy implements ISehRadioResponse {
         private IHwBinder mRemote;
 
@@ -941,7 +940,6 @@ public interface ISehRadioResponse extends IBase {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends HwBinder implements ISehRadioResponse {
         @Override // vendor.samsung.hardware.radio.V2_0.ISehRadioResponse, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -964,7 +962,7 @@ public interface ISehRadioResponse extends IBase {
 
         @Override // vendor.samsung.hardware.radio.V2_0.ISehRadioResponse, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-109, -98, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -18, -101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -71, MidiConstants.STATUS_CHANNEL_PRESSURE, 68, MidiConstants.STATUS_SONG_SELECT, 66, 95, 109, -67, -27, -119, 107, -59, SprAttributeBase.TYPE_ANIMATOR_SET, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT, 81, 38, 85, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, 37, 122, 14, 6, -34, 1, MidiConstants.STATUS_PITCH_BEND, -110}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-109, -98, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -18, -101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -71, MidiConstants.STATUS_CHANNEL_PRESSURE, 68, MidiConstants.STATUS_SONG_SELECT, 66, 95, 109, -67, -27, -119, 107, -59, SprAttributeBase.TYPE_ANIMATOR_SET, 21, 81, 38, 85, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, 37, 122, 14, 6, -34, 1, MidiConstants.STATUS_PITCH_BEND, -110}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // vendor.samsung.hardware.radio.V2_0.ISehRadioResponse, android.internal.hidl.base.V1_0.IBase

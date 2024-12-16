@@ -1,5 +1,6 @@
 package android.content.pm.parsing;
 
+import android.content.pm.ArchivedPackageParcel;
 import android.content.pm.PackageInfo;
 import android.content.pm.SigningDetails;
 import android.content.pm.VerifierInfo;
@@ -9,9 +10,11 @@ import java.util.Set;
 
 /* loaded from: classes.dex */
 public class ApkLite {
+    private final ArchivedPackageParcel mArchivedPackage;
     private final String mConfigForSplit;
     private final boolean mCoreApp;
     private final boolean mDebuggable;
+    private final String mEmergencyInstaller;
     private final boolean mExtractNativeLibs;
     private final boolean mFeatureSplit;
     private final boolean mHasDeviceAdminReceiver;
@@ -36,6 +39,7 @@ public class ApkLite {
     private final Set<String> mSplitTypes;
     private final String mTargetPackageName;
     private final int mTargetSdkVersion;
+    private final boolean mUpdatableSystem;
     private final boolean mUse32bitAbi;
     private final boolean mUseEmbeddedDex;
     private final String mUsesSplitName;
@@ -43,7 +47,7 @@ public class ApkLite {
     private final int mVersionCode;
     private final int mVersionCodeMajor;
 
-    public ApkLite(String path, String packageName, String splitName, boolean isFeatureSplit, String configForSplit, String usesSplitName, boolean isSplitRequired, int versionCode, int versionCodeMajor, int revisionCode, int installLocation, List<VerifierInfo> verifiers, SigningDetails signingDetails, boolean coreApp, boolean debuggable, boolean profileableByShell, boolean multiArch, boolean use32bitAbi, boolean useEmbeddedDex, boolean extractNativeLibs, boolean isolatedSplits, String targetPackageName, boolean overlayIsStatic, int overlayPriority, String requiredSystemPropertyName, String requiredSystemPropertyValue, int minSdkVersion, int targetSdkVersion, int rollbackDataPolicy, Set<String> requiredSplitTypes, Set<String> splitTypes, boolean hasDeviceAdminReceiver, boolean isSdkLibrary) {
+    public ApkLite(String path, String packageName, String splitName, boolean isFeatureSplit, String configForSplit, String usesSplitName, boolean isSplitRequired, int versionCode, int versionCodeMajor, int revisionCode, int installLocation, List<VerifierInfo> verifiers, SigningDetails signingDetails, boolean coreApp, boolean debuggable, boolean profileableByShell, boolean multiArch, boolean use32bitAbi, boolean useEmbeddedDex, boolean extractNativeLibs, boolean isolatedSplits, String targetPackageName, boolean overlayIsStatic, int overlayPriority, String requiredSystemPropertyName, String requiredSystemPropertyValue, int minSdkVersion, int targetSdkVersion, int rollbackDataPolicy, Set<String> requiredSplitTypes, Set<String> splitTypes, boolean hasDeviceAdminReceiver, boolean isSdkLibrary, boolean updatableSystem, String emergencyInstaller) {
         this.mPath = path;
         this.mPackageName = packageName;
         this.mSplitName = splitName;
@@ -77,6 +81,48 @@ public class ApkLite {
         this.mRollbackDataPolicy = rollbackDataPolicy;
         this.mHasDeviceAdminReceiver = hasDeviceAdminReceiver;
         this.mIsSdkLibrary = isSdkLibrary;
+        this.mUpdatableSystem = updatableSystem;
+        this.mEmergencyInstaller = emergencyInstaller;
+        this.mArchivedPackage = null;
+    }
+
+    public ApkLite(String path, ArchivedPackageParcel archivedPackage) {
+        this.mPath = path;
+        this.mPackageName = archivedPackage.packageName;
+        this.mSplitName = null;
+        this.mSplitTypes = null;
+        this.mFeatureSplit = false;
+        this.mConfigForSplit = null;
+        this.mUsesSplitName = null;
+        this.mRequiredSplitTypes = null;
+        this.mSplitRequired = hasAnyRequiredSplitTypes();
+        this.mVersionCode = archivedPackage.versionCode;
+        this.mVersionCodeMajor = archivedPackage.versionCodeMajor;
+        this.mRevisionCode = 0;
+        this.mInstallLocation = -1;
+        this.mVerifiers = new VerifierInfo[0];
+        this.mSigningDetails = archivedPackage.signingDetails;
+        this.mCoreApp = false;
+        this.mDebuggable = false;
+        this.mProfileableByShell = false;
+        this.mMultiArch = false;
+        this.mUse32bitAbi = false;
+        this.mUseEmbeddedDex = false;
+        this.mExtractNativeLibs = false;
+        this.mIsolatedSplits = false;
+        this.mTargetPackageName = null;
+        this.mOverlayIsStatic = false;
+        this.mOverlayPriority = 0;
+        this.mRequiredSystemPropertyName = null;
+        this.mRequiredSystemPropertyValue = null;
+        this.mMinSdkVersion = 1;
+        this.mTargetSdkVersion = archivedPackage.targetSdkVersion;
+        this.mRollbackDataPolicy = 0;
+        this.mHasDeviceAdminReceiver = false;
+        this.mIsSdkLibrary = false;
+        this.mUpdatableSystem = true;
+        this.mEmergencyInstaller = null;
+        this.mArchivedPackage = archivedPackage;
     }
 
     public long getLongVersionCode() {
@@ -217,6 +263,18 @@ public class ApkLite {
 
     public boolean isIsSdkLibrary() {
         return this.mIsSdkLibrary;
+    }
+
+    public boolean isUpdatableSystem() {
+        return this.mUpdatableSystem;
+    }
+
+    public String getEmergencyInstaller() {
+        return this.mEmergencyInstaller;
+    }
+
+    public ArchivedPackageParcel getArchivedPackage() {
+        return this.mArchivedPackage;
     }
 
     @Deprecated

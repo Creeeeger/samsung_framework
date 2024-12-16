@@ -8,13 +8,12 @@ import android.os.RemoteException;
 import android.os.SemSimpleNetworkStats;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IBatteryStatsCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.app.IBatteryStatsCallback";
 
     void notifyNetworkStatsUpdated(List<SemSimpleNetworkStats> list) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IBatteryStatsCallback {
         @Override // com.android.internal.app.IBatteryStatsCallback
         public void notifyNetworkStatsUpdated(List<SemSimpleNetworkStats> stats) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IBatteryStatsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IBatteryStatsCallback {
         static final int TRANSACTION_notifyNetworkStatsUpdated = 1;
 
@@ -69,26 +67,22 @@ public interface IBatteryStatsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBatteryStatsCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBatteryStatsCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBatteryStatsCallback.DESCRIPTOR);
+                case 1:
+                    List<SemSimpleNetworkStats> _arg0 = data.createTypedArrayList(SemSimpleNetworkStats.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyNetworkStatsUpdated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SemSimpleNetworkStats> _arg0 = data.createTypedArrayList(SemSimpleNetworkStats.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyNetworkStatsUpdated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IBatteryStatsCallback {
+        private static class Proxy implements IBatteryStatsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

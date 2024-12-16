@@ -21,7 +21,6 @@ public interface IExplicitHealthCheckService extends IInterface {
 
     void setCallback(RemoteCallback remoteCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IExplicitHealthCheckService {
         @Override // android.service.watchdog.IExplicitHealthCheckService
         public void setCallback(RemoteCallback callback) throws RemoteException {
@@ -49,7 +48,6 @@ public interface IExplicitHealthCheckService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IExplicitHealthCheckService {
         static final int TRANSACTION_cancel = 3;
         static final int TRANSACTION_getRequestedPackages = 5;
@@ -104,44 +102,41 @@ public interface IExplicitHealthCheckService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IExplicitHealthCheckService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IExplicitHealthCheckService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IExplicitHealthCheckService.DESCRIPTOR);
+                case 1:
+                    RemoteCallback _arg0 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    request(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    cancel(_arg03);
+                    return true;
+                case 4:
+                    RemoteCallback _arg04 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSupportedPackages(_arg04);
+                    return true;
+                case 5:
+                    RemoteCallback _arg05 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    getRequestedPackages(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RemoteCallback _arg0 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            request(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            cancel(_arg03);
-                            return true;
-                        case 4:
-                            RemoteCallback _arg04 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSupportedPackages(_arg04);
-                            return true;
-                        case 5:
-                            RemoteCallback _arg05 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            getRequestedPackages(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IExplicitHealthCheckService {
             private IBinder mRemote;
 

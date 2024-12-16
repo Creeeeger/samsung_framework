@@ -12,10 +12,15 @@ public interface IDreamOverlayCallback extends IInterface {
 
     void onExitRequested() throws RemoteException;
 
-    /* loaded from: classes3.dex */
+    void onRedirectWake(boolean z) throws RemoteException;
+
     public static class Default implements IDreamOverlayCallback {
         @Override // android.service.dreams.IDreamOverlayCallback
         public void onExitRequested() throws RemoteException {
+        }
+
+        @Override // android.service.dreams.IDreamOverlayCallback
+        public void onRedirectWake(boolean redirect) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -24,9 +29,9 @@ public interface IDreamOverlayCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDreamOverlayCallback {
         static final int TRANSACTION_onExitRequested = 1;
+        static final int TRANSACTION_onRedirectWake = 2;
 
         public Stub() {
             attachInterface(this, IDreamOverlayCallback.DESCRIPTOR);
@@ -52,6 +57,8 @@ public interface IDreamOverlayCallback extends IInterface {
             switch (transactionCode) {
                 case 1:
                     return "onExitRequested";
+                case 2:
+                    return "onRedirectWake";
                 default:
                     return null;
             }
@@ -67,25 +74,25 @@ public interface IDreamOverlayCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDreamOverlayCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDreamOverlayCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDreamOverlayCallback.DESCRIPTOR);
+                case 1:
+                    onExitRequested();
+                    return true;
+                case 2:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onRedirectWake(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onExitRequested();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDreamOverlayCallback {
+        private static class Proxy implements IDreamOverlayCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -104,13 +111,22 @@ public interface IDreamOverlayCallback extends IInterface {
             @Override // android.service.dreams.IDreamOverlayCallback
             public void onExitRequested() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IDreamOverlayCallback.DESCRIPTOR);
-                    this.mRemote.transact(1, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(1, _data, null, 1);
                 } finally {
-                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.service.dreams.IDreamOverlayCallback
+            public void onRedirectWake(boolean redirect) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IDreamOverlayCallback.DESCRIPTOR);
+                    _data.writeBoolean(redirect);
+                    this.mRemote.transact(2, _data, null, 1);
+                } finally {
                     _data.recycle();
                 }
             }
@@ -118,7 +134,7 @@ public interface IDreamOverlayCallback extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 0;
+            return 1;
         }
     }
 }

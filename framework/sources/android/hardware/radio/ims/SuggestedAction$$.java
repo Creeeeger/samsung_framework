@@ -2,19 +2,18 @@ package android.hardware.radio.ims;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.security.keystore.KeyProperties;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.reflect.Array;
 import java.util.StringJoiner;
 
 /* loaded from: classes2.dex */
 public interface SuggestedAction$$ {
     static String toString(int _aidl_v) {
-        return _aidl_v == 0 ? KeyProperties.DIGEST_NONE : _aidl_v == 1 ? "TRIGGER_PLMN_BLOCK" : _aidl_v == 2 ? "TRIGGER_PLMN_BLOCK_WITH_TIMEOUT" : Integer.toString(_aidl_v);
+        return _aidl_v == 0 ? KeyProperties.DIGEST_NONE : _aidl_v == 1 ? "TRIGGER_PLMN_BLOCK" : _aidl_v == 2 ? "TRIGGER_PLMN_BLOCK_WITH_TIMEOUT" : _aidl_v == 3 ? "TRIGGER_RAT_BLOCK" : _aidl_v == 4 ? "TRIGGER_CLEAR_RAT_BLOCKS" : Integer.toString(_aidl_v);
     }
 
     static String arrayToString(Object _aidl_v) {
         if (_aidl_v == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         Class<?> _aidl_cls = _aidl_v.getClass();
         if (!_aidl_cls.isArray()) {

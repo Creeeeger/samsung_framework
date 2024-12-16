@@ -15,7 +15,6 @@ public interface ISessionListener extends IInterface {
 
     void onSessionStarted(int i, InstanceId instanceId) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISessionListener {
         @Override // com.android.internal.statusbar.ISessionListener
         public void onSessionStarted(int sessionType, InstanceId instance) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ISessionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISessionListener {
         static final int TRANSACTION_onSessionEnded = 2;
         static final int TRANSACTION_onSessionStarted = 1;
@@ -77,33 +75,29 @@ public interface ISessionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISessionListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISessionListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISessionListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    InstanceId _arg1 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSessionStarted(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    InstanceId _arg12 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSessionEnded(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            InstanceId _arg1 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSessionStarted(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            InstanceId _arg12 = (InstanceId) data.readTypedObject(InstanceId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSessionEnded(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISessionListener {
+        private static class Proxy implements ISessionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -21,7 +21,6 @@ public class BinderLatencyObserver {
     public static final int SHARDING_MODULO_DEFAULT = 1;
     public static final int STATSD_PUSH_INTERVAL_MINUTES_DEFAULT = 360;
     private static final String TAG = "BinderLatencyObserver";
-    private BinderLatencyBuckets mLatencyBuckets;
     private final Handler mLatencyObserverHandler;
     private final int mProcessSource;
     private final Random mRandom;
@@ -35,9 +34,6 @@ public class BinderLatencyObserver {
     private float mBucketScaleFactor = 1.125f;
     private int mStatsdPushIntervalMinutes = 360;
     private Runnable mLatencyObserverRunnable = new Runnable() { // from class: com.android.internal.os.BinderLatencyObserver.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             ArrayMap<LatencyDims, int[]> histogramMap;
@@ -66,61 +62,26 @@ public class BinderLatencyObserver {
             }
         }
     };
+    private BinderLatencyBuckets mLatencyBuckets = new BinderLatencyBuckets(this.mBucketCount, this.mFirstBucketSize, this.mBucketScaleFactor);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.os.BinderLatencyObserver$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ArrayMap<LatencyDims, int[]> histogramMap;
-            BinderLatencyObserver.this.noteLatencyDelayed();
-            synchronized (BinderLatencyObserver.this.mLock) {
-                histogramMap = new ArrayMap<>((ArrayMap<LatencyDims, int[]>) BinderLatencyObserver.this.mLatencyHistograms);
-                BinderLatencyObserver.this.mLatencyHistograms.clear();
-            }
-            BinderTransactionNameResolver resolver = new BinderTransactionNameResolver();
-            ProtoOutputStream proto = new ProtoOutputStream();
-            int histogramsWritten = 0;
-            for (LatencyDims dims : histogramMap.keySet()) {
-                if (proto.getRawSize() + 1000 > BinderLatencyObserver.this.getMaxAtomSizeBytes()) {
-                    if (histogramsWritten > 0) {
-                        BinderLatencyObserver.this.writeAtomToStatsd(proto);
-                    }
-                    proto = new ProtoOutputStream();
-                    histogramsWritten = 0;
-                }
-                String transactionName = resolver.getMethodName(dims.getBinderClass(), dims.getTransactionCode());
-                BinderLatencyObserver.this.fillApiStatsProto(proto, dims, transactionName, histogramMap.get(dims));
-                histogramsWritten++;
-            }
-            if (histogramsWritten > 0) {
-                BinderLatencyObserver.this.writeAtomToStatsd(proto);
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void fillApiStatsProto(ProtoOutputStream proto, LatencyDims dims, String transactionName, int[] histogram) {
-        int i;
         int firstNonEmptyBucket = 0;
-        int i2 = 0;
+        int i = 0;
         while (true) {
-            i = this.mBucketCount;
-            if (i2 >= i) {
+            if (i >= this.mBucketCount) {
                 break;
             }
-            if (histogram[i2] == 0) {
-                i2++;
+            if (histogram[i] == 0) {
+                i++;
             } else {
-                firstNonEmptyBucket = i2;
+                firstNonEmptyBucket = i;
                 break;
             }
         }
-        int lastNonEmptyBucket = i - 1;
-        int i3 = i - 1;
+        int i2 = this.mBucketCount;
+        int lastNonEmptyBucket = i2 - 1;
+        int i3 = this.mBucketCount - 1;
         while (true) {
             if (i3 < 0) {
                 break;
@@ -152,12 +113,12 @@ public class BinderLatencyObserver {
         FrameworkStatsLog.write(342, atom.getBytes(), this.mPeriodicSamplingInterval, this.mShardingModulo, this.mBucketCount, this.mFirstBucketSize, this.mBucketScaleFactor);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void noteLatencyDelayed() {
         this.mLatencyObserverHandler.removeCallbacks(this.mLatencyObserverRunnable);
         this.mLatencyObserverHandler.postDelayed(this.mLatencyObserverRunnable, this.mStatsdPushIntervalMinutes * 60 * 1000);
     }
 
-    /* loaded from: classes5.dex */
     public static class Injector {
         public Random getRandomGenerator() {
             return new Random();
@@ -169,12 +130,10 @@ public class BinderLatencyObserver {
     }
 
     public BinderLatencyObserver(Injector injector, int processSource) {
-        Random randomGenerator = injector.getRandomGenerator();
-        this.mRandom = randomGenerator;
+        this.mRandom = injector.getRandomGenerator();
         this.mLatencyObserverHandler = injector.getHandler();
-        this.mLatencyBuckets = new BinderLatencyBuckets(this.mBucketCount, this.mFirstBucketSize, this.mBucketScaleFactor);
         this.mProcessSource = processSource;
-        this.mShardingOffset = randomGenerator.nextInt(this.mShardingModulo);
+        this.mShardingOffset = this.mRandom.nextInt(this.mShardingModulo);
         noteLatencyDelayed();
     }
 
@@ -259,7 +218,7 @@ public class BinderLatencyObserver {
                 this.mBucketCount = bucketCount;
                 this.mFirstBucketSize = firstBucketSize;
                 this.mBucketScaleFactor = bucketScaleFactor;
-                this.mLatencyBuckets = new BinderLatencyBuckets(bucketCount, firstBucketSize, bucketScaleFactor);
+                this.mLatencyBuckets = new BinderLatencyBuckets(this.mBucketCount, this.mFirstBucketSize, this.mBucketScaleFactor);
                 reset();
             }
         }
@@ -272,7 +231,6 @@ public class BinderLatencyObserver {
         noteLatencyDelayed();
     }
 
-    /* loaded from: classes5.dex */
     public static class LatencyDims {
         private Class<? extends Binder> mBinderClass;
         private int mHashCode = 0;
@@ -304,9 +262,8 @@ public class BinderLatencyObserver {
         }
 
         public int hashCode() {
-            int i = this.mHashCode;
-            if (i != 0) {
-                return i;
+            if (this.mHashCode != 0) {
+                return this.mHashCode;
             }
             int hash = (this.mTransactionCode * 31) + this.mBinderClass.getName().hashCode();
             this.mHashCode = hash;

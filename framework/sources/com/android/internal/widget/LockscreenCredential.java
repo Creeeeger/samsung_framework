@@ -17,56 +17,56 @@ import libcore.util.HexEncoding;
 /* loaded from: classes5.dex */
 public class LockscreenCredential implements Parcelable, AutoCloseable {
     public static final Parcelable.Creator<LockscreenCredential> CREATOR = new Parcelable.Creator<LockscreenCredential>() { // from class: com.android.internal.widget.LockscreenCredential.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LockscreenCredential createFromParcel(Parcel source) {
-            return new LockscreenCredential(source.readInt(), source.createByteArray());
+            return new LockscreenCredential(source.readInt(), source.createByteArray(), source.readBoolean());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LockscreenCredential[] newArray(int size) {
             return new LockscreenCredential[size];
         }
     };
     private byte[] mCredential;
+    private final boolean mHasInvalidChars;
     private final int mType;
 
-    /* synthetic */ LockscreenCredential(int i, byte[] bArr, LockscreenCredentialIA lockscreenCredentialIA) {
-        this(i, bArr);
-    }
-
-    private LockscreenCredential(int type, byte[] credential) {
+    private LockscreenCredential(int type, byte[] credential, boolean hasInvalidChars) {
         Objects.requireNonNull(credential);
         if (type == -1) {
             Preconditions.checkArgument(credential.length == 0);
         } else {
             Preconditions.checkArgument(type == 3 || type == 4 || type == 1 || type == 6);
-            Preconditions.checkArgument(credential.length > 0);
         }
         this.mType = type;
         this.mCredential = credential;
+        this.mHasInvalidChars = hasInvalidChars;
+    }
+
+    private LockscreenCredential(int type, CharSequence credential) {
+        this(type, charsToBytesForUnicode(credential), hasInvalidChars(credential));
     }
 
     public static LockscreenCredential createNone() {
-        return new LockscreenCredential(-1, new byte[0]);
+        return new LockscreenCredential(-1, new byte[0], false);
     }
 
     public static LockscreenCredential createPattern(List<LockPatternView.Cell> pattern) {
-        return new LockscreenCredential(1, LockPatternUtils.patternToByteArray(pattern));
+        return new LockscreenCredential(1, LockPatternUtils.patternToByteArray(pattern), false);
     }
 
     public static LockscreenCredential createPassword(CharSequence password) {
-        return new LockscreenCredential(4, charSequenceToByteArray(password));
+        return new LockscreenCredential(4, password);
     }
 
-    public static LockscreenCredential createManagedPassword(byte[] password) {
-        return new LockscreenCredential(4, Arrays.copyOf(password, password.length));
+    public static LockscreenCredential createUnifiedProfilePassword(byte[] password) {
+        return new LockscreenCredential(4, Arrays.copyOf(password, password.length), false);
     }
 
     public static LockscreenCredential createPin(CharSequence pin) {
-        return new LockscreenCredential(3, charSequenceToByteArray(pin));
+        return new LockscreenCredential(3, pin);
     }
 
     public static LockscreenCredential createPasswordOrNone(CharSequence password) {
@@ -122,30 +122,45 @@ public class LockscreenCredential implements Parcelable, AutoCloseable {
         return this.mCredential.length;
     }
 
+    public boolean hasInvalidChars() {
+        ensureNotZeroized();
+        return this.mHasInvalidChars;
+    }
+
     public LockscreenCredential duplicate() {
-        int i = this.mType;
-        byte[] bArr = this.mCredential;
-        return new LockscreenCredential(i, bArr != null ? Arrays.copyOf(bArr, bArr.length) : null);
+        return new LockscreenCredential(this.mType, this.mCredential != null ? Arrays.copyOf(this.mCredential, this.mCredential.length) : null, this.mHasInvalidChars);
     }
 
     public void zeroize() {
-        byte[] bArr = this.mCredential;
-        if (bArr != null) {
-            Arrays.fill(bArr, (byte) 0);
+        if (this.mCredential != null) {
+            Arrays.fill(this.mCredential, (byte) 0);
             this.mCredential = null;
         }
     }
 
-    public void checkLength() {
-        if (isNone()) {
-            return;
+    public void validateBasicRequirements() {
+        if (this.mHasInvalidChars) {
+            throw new IllegalArgumentException("credential contains invalid characters");
         }
-        if (isPattern()) {
-            if (size() < 4) {
-                throw new IllegalArgumentException("pattern must not be null and at least 4 dots long.");
-            }
-        } else if ((isPassword() || isPin()) && size() < 4) {
-            throw new IllegalArgumentException("password must not be null and at least of length 4");
+        switch (getType()) {
+            case 1:
+                if (size() < 4) {
+                    throw new IllegalArgumentException("pattern must be at least 4 dots long.");
+                }
+                return;
+            case 2:
+            default:
+                return;
+            case 3:
+                if (size() < 4) {
+                    throw new IllegalArgumentException("PIN must be at least 4 digits long.");
+                }
+                return;
+            case 4:
+                if (size() < 4) {
+                    throw new IllegalArgumentException("password must be at least 4 characters long.");
+                }
+                return;
         }
     }
 
@@ -192,23 +207,7 @@ public class LockscreenCredential implements Parcelable, AutoCloseable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mType);
         dest.writeByteArray(this.mCredential);
-    }
-
-    /* renamed from: com.android.internal.widget.LockscreenCredential$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LockscreenCredential> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LockscreenCredential createFromParcel(Parcel source) {
-            return new LockscreenCredential(source.readInt(), source.createByteArray());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LockscreenCredential[] newArray(int size) {
-            return new LockscreenCredential[size];
-        }
+        dest.writeBoolean(this.mHasInvalidChars);
     }
 
     @Override // android.os.Parcelable
@@ -221,8 +220,12 @@ public class LockscreenCredential implements Parcelable, AutoCloseable {
         zeroize();
     }
 
+    public void finalize() {
+        zeroize();
+    }
+
     public int hashCode() {
-        return Objects.hash(Integer.valueOf(this.mType), Integer.valueOf(Arrays.hashCode(this.mCredential)));
+        return Objects.hash(Integer.valueOf(this.mType), Integer.valueOf(Arrays.hashCode(this.mCredential)), Boolean.valueOf(this.mHasInvalidChars));
     }
 
     public boolean equals(Object o) {
@@ -233,13 +236,28 @@ public class LockscreenCredential implements Parcelable, AutoCloseable {
             return false;
         }
         LockscreenCredential other = (LockscreenCredential) o;
-        return this.mType == other.mType && Arrays.equals(this.mCredential, other.mCredential);
+        return this.mType == other.mType && Arrays.equals(this.mCredential, other.mCredential) && this.mHasInvalidChars == other.mHasInvalidChars;
     }
 
-    private static byte[] charSequenceToByteArray(CharSequence chars) {
-        if (chars == null) {
-            return new byte[0];
+    private static boolean hasInvalidChars(CharSequence chars) {
+        for (int i = 0; i < chars.length(); i++) {
+            char c = chars.charAt(i);
+            if (c < ' ' || c > 127) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    private static byte[] charsToBytesTruncating(CharSequence chars) {
+        byte[] bytes = new byte[chars.length()];
+        for (int i = 0; i < chars.length(); i++) {
+            bytes[i] = (byte) chars.charAt(i);
+        }
+        return bytes;
+    }
+
+    private static byte[] charsToBytesForUnicode(CharSequence chars) {
         byte[] bytes = new byte[chars.length() * 2];
         int pos = 0;
         int i = 0;
@@ -259,11 +277,11 @@ public class LockscreenCredential implements Parcelable, AutoCloseable {
     }
 
     public static LockscreenCredential streamCredential(int type, byte[] credential) {
-        return new LockscreenCredential(type, credential != null ? Arrays.copyOf(credential, credential.length) : null);
+        return new LockscreenCredential(type, credential != null ? Arrays.copyOf(credential, credential.length) : null, false);
     }
 
     public static LockscreenCredential createSmartcardPassword(byte[] password) {
-        return new LockscreenCredential(6, Arrays.copyOf(password, password.length));
+        return new LockscreenCredential(6, Arrays.copyOf(password, password.length), false);
     }
 
     public boolean isUCM() {

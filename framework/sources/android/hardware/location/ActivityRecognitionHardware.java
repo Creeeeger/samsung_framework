@@ -29,6 +29,7 @@ public class ActivityRecognitionHardware extends IActivityRecognitionHardware.St
 
     private static native void nativeClassInit();
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native int nativeDisableActivityEvent(int i, int i2);
 
     private native int nativeEnableActivityEvent(int i, int i2, long j);
@@ -47,7 +48,6 @@ public class ActivityRecognitionHardware extends IActivityRecognitionHardware.St
         nativeClassInit();
     }
 
-    /* loaded from: classes2.dex */
     private static class Event {
         public int activity;
         public long timestamp;
@@ -60,11 +60,9 @@ public class ActivityRecognitionHardware extends IActivityRecognitionHardware.St
     private ActivityRecognitionHardware(Context context) {
         nativeInitialize();
         this.mContext = context;
-        String[] fetchSupportedActivities = fetchSupportedActivities();
-        this.mSupportedActivities = fetchSupportedActivities;
-        int length = fetchSupportedActivities.length;
-        this.mSupportedActivitiesCount = length;
-        this.mSupportedActivitiesEnabledEvents = (int[][]) Array.newInstance((Class<?>) Integer.TYPE, length, 3);
+        this.mSupportedActivities = fetchSupportedActivities();
+        this.mSupportedActivitiesCount = this.mSupportedActivities.length;
+        this.mSupportedActivitiesEnabledEvents = (int[][]) Array.newInstance((Class<?>) Integer.TYPE, this.mSupportedActivitiesCount, 3);
     }
 
     public static ActivityRecognitionHardware getInstance(Context context) {
@@ -173,15 +171,12 @@ public class ActivityRecognitionHardware extends IActivityRecognitionHardware.St
     }
 
     private String getActivityName(int activityType) {
-        if (activityType >= 0) {
-            String[] strArr = this.mSupportedActivities;
-            if (activityType < strArr.length) {
-                return strArr[activityType];
-            }
+        if (activityType < 0 || activityType >= this.mSupportedActivities.length) {
+            String message = String.format("Invalid ActivityType: %d, SupportedActivities: %d", Integer.valueOf(activityType), Integer.valueOf(this.mSupportedActivities.length));
+            Log.e(TAG, message);
+            return null;
         }
-        String message = String.format("Invalid ActivityType: %d, SupportedActivities: %d", Integer.valueOf(activityType), Integer.valueOf(this.mSupportedActivities.length));
-        Log.e(TAG, message);
-        return null;
+        return this.mSupportedActivities[activityType];
     }
 
     private int getActivityType(String activity) {
@@ -209,13 +204,7 @@ public class ActivityRecognitionHardware extends IActivityRecognitionHardware.St
         return new String[0];
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public class SinkList extends RemoteCallbackList<IActivityRecognitionHardwareSink> {
-        /* synthetic */ SinkList(ActivityRecognitionHardware activityRecognitionHardware, SinkListIA sinkListIA) {
-            this();
-        }
-
+    private class SinkList extends RemoteCallbackList<IActivityRecognitionHardwareSink> {
         private SinkList() {
         }
 

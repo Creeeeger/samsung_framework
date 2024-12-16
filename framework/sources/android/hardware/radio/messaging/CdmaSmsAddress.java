@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaSmsAddress implements Parcelable {
     public static final Parcelable.Creator<CdmaSmsAddress> CREATOR = new Parcelable.Creator<CdmaSmsAddress>() { // from class: android.hardware.radio.messaging.CdmaSmsAddress.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsAddress createFromParcel(Parcel _aidl_source) {
             CdmaSmsAddress _aidl_out = new CdmaSmsAddress();
@@ -19,6 +17,7 @@ public class CdmaSmsAddress implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsAddress[] newArray(int _aidl_size) {
             return new CdmaSmsAddress[_aidl_size];
@@ -55,25 +54,6 @@ public class CdmaSmsAddress implements Parcelable {
     public boolean isNumberModeDataNetwork = false;
     public int numberType = 0;
     public int numberPlan = 0;
-
-    /* renamed from: android.hardware.radio.messaging.CdmaSmsAddress$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaSmsAddress> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsAddress createFromParcel(Parcel _aidl_source) {
-            CdmaSmsAddress _aidl_out = new CdmaSmsAddress();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsAddress[] newArray(int _aidl_size) {
-            return new CdmaSmsAddress[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -162,7 +142,7 @@ public class CdmaSmsAddress implements Parcelable {
         _aidl_sj.add("numberType: " + this.numberType);
         _aidl_sj.add("numberPlan: " + this.numberPlan);
         _aidl_sj.add("digits: " + Arrays.toString(this.digits));
-        return "android.hardware.radio.messaging.CdmaSmsAddress" + _aidl_sj.toString();
+        return "CdmaSmsAddress" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

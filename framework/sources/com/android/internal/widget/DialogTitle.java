@@ -27,7 +27,7 @@ public class DialogTitle extends TextView {
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int lineCount;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         Layout layout = getLayout();

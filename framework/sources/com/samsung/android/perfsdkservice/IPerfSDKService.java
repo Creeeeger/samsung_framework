@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IPerfSDKService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.perfsdkservice.IPerfSDKService";
 
@@ -30,7 +30,6 @@ public interface IPerfSDKService extends IInterface {
 
     int setSessionKey(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IPerfSDKService {
         @Override // com.samsung.android.perfsdkservice.IPerfSDKService
         public int initPerfSDK(String serverName) throws RemoteException {
@@ -88,7 +87,6 @@ public interface IPerfSDKService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IPerfSDKService {
         static final int TRANSACTION_connectionRequest = 10;
         static final int TRANSACTION_getAllowedPkgName = 2;
@@ -158,75 +156,72 @@ public interface IPerfSDKService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPerfSDKService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPerfSDKService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPerfSDKService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result = initPerfSDK(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    String _result2 = getAllowedPkgName();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 3:
+                    int[] _result3 = getHighBoostingLevel();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result3);
+                    return true;
+                case 4:
+                    int[] _result4 = getLowBoostingLevel();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result4);
+                    return true;
+                case 5:
+                    int[] _result5 = getThermalTable();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result5);
+                    return true;
+                case 6:
+                    String _result6 = getForegroundPackagename();
+                    reply.writeNoException();
+                    reply.writeString(_result6);
+                    return true;
+                case 7:
+                    String _result7 = getChangedForegroundPackagename();
+                    reply.writeNoException();
+                    reply.writeString(_result7);
+                    return true;
+                case 8:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result8 = setSessionKey(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 9:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result9 = removeSessionKey(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 10:
+                    int _result10 = connectionRequest();
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result = initPerfSDK(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            String _result2 = getAllowedPkgName();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 3:
-                            int[] _result3 = getHighBoostingLevel();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result3);
-                            return true;
-                        case 4:
-                            int[] _result4 = getLowBoostingLevel();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result4);
-                            return true;
-                        case 5:
-                            int[] _result5 = getThermalTable();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result5);
-                            return true;
-                        case 6:
-                            String _result6 = getForegroundPackagename();
-                            reply.writeNoException();
-                            reply.writeString(_result6);
-                            return true;
-                        case 7:
-                            String _result7 = getChangedForegroundPackagename();
-                            reply.writeNoException();
-                            reply.writeString(_result7);
-                            return true;
-                        case 8:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result8 = setSessionKey(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 9:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result9 = removeSessionKey(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 10:
-                            int _result10 = connectionRequest();
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IPerfSDKService {
             private IBinder mRemote;
 

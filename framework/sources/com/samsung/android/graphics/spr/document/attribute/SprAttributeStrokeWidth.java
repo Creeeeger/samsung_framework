@@ -4,7 +4,7 @@ import com.samsung.android.graphics.spr.document.SprInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprAttributeStrokeWidth extends SprAttributeBase {
     public float strokeWidth;
 
@@ -27,9 +27,8 @@ public class SprAttributeStrokeWidth extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     public void fromSPR(SprInputStream in) throws IOException {
-        float readFloat = in.readFloat();
-        this.strokeWidth = readFloat;
-        if (readFloat > 0.0f && readFloat < 0.3f) {
+        this.strokeWidth = in.readFloat();
+        if (this.strokeWidth > 0.0f && this.strokeWidth < 0.3f) {
             this.strokeWidth = 0.3f;
         }
     }

@@ -31,7 +31,6 @@ public interface IContentCaptureService extends IInterface {
 
     void onSessionStarted(ContentCaptureContext contentCaptureContext, int i, int i2, IResultReceiver iResultReceiver, int i3) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IContentCaptureService {
         @Override // android.service.contentcapture.IContentCaptureService
         public void onConnected(IBinder callback, boolean verbose, boolean debug) throws RemoteException {
@@ -71,7 +70,6 @@ public interface IContentCaptureService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IContentCaptureService {
         static final int TRANSACTION_onActivityEvent = 8;
         static final int TRANSACTION_onActivitySnapshot = 5;
@@ -135,65 +133,62 @@ public interface IContentCaptureService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContentCaptureService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContentCaptureService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContentCaptureService.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    boolean _arg1 = data.readBoolean();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onConnected(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    onDisconnected();
+                    return true;
+                case 3:
+                    ContentCaptureContext _arg02 = (ContentCaptureContext) data.readTypedObject(ContentCaptureContext.CREATOR);
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    IResultReceiver _arg3 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSessionStarted(_arg02, _arg12, _arg22, _arg3, _arg4);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSessionFinished(_arg03);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    SnapshotData _arg13 = (SnapshotData) data.readTypedObject(SnapshotData.CREATOR);
+                    data.enforceNoDataAvail();
+                    onActivitySnapshot(_arg04, _arg13);
+                    return true;
+                case 6:
+                    DataRemovalRequest _arg05 = (DataRemovalRequest) data.readTypedObject(DataRemovalRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDataRemovalRequest(_arg05);
+                    return true;
+                case 7:
+                    DataShareRequest _arg06 = (DataShareRequest) data.readTypedObject(DataShareRequest.CREATOR);
+                    IDataShareCallback _arg14 = IDataShareCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onDataShared(_arg06, _arg14);
+                    return true;
+                case 8:
+                    ActivityEvent _arg07 = (ActivityEvent) data.readTypedObject(ActivityEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onActivityEvent(_arg07);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            boolean _arg1 = data.readBoolean();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onConnected(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            onDisconnected();
-                            return true;
-                        case 3:
-                            ContentCaptureContext _arg02 = (ContentCaptureContext) data.readTypedObject(ContentCaptureContext.CREATOR);
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            IResultReceiver _arg3 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSessionStarted(_arg02, _arg12, _arg22, _arg3, _arg4);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSessionFinished(_arg03);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            SnapshotData _arg13 = (SnapshotData) data.readTypedObject(SnapshotData.CREATOR);
-                            data.enforceNoDataAvail();
-                            onActivitySnapshot(_arg04, _arg13);
-                            return true;
-                        case 6:
-                            DataRemovalRequest _arg05 = (DataRemovalRequest) data.readTypedObject(DataRemovalRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDataRemovalRequest(_arg05);
-                            return true;
-                        case 7:
-                            DataShareRequest _arg06 = (DataShareRequest) data.readTypedObject(DataShareRequest.CREATOR);
-                            IDataShareCallback _arg14 = IDataShareCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onDataShared(_arg06, _arg14);
-                            return true;
-                        case 8:
-                            ActivityEvent _arg07 = (ActivityEvent) data.readTypedObject(ActivityEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onActivityEvent(_arg07);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IContentCaptureService {
             private IBinder mRemote;
 

@@ -76,7 +76,6 @@ public interface IVibrator extends IInterface {
 
     void setExternalControl(boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IVibrator {
         @Override // android.hardware.vibrator.IVibrator
         public int getCapabilities() throws RemoteException {
@@ -206,7 +205,6 @@ public interface IVibrator extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IVibrator {
         static final int TRANSACTION_alwaysOnDisable = 15;
         static final int TRANSACTION_alwaysOnEnable = 14;
@@ -262,166 +260,164 @@ public interface IVibrator extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _result = getCapabilities();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeInt(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    off();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg0 = data.readInt();
+                    IVibratorCallback _arg1 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    on(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg02 = data.readInt();
+                    byte _arg12 = data.readByte();
+                    IVibratorCallback _arg2 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result2 = perform(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 5:
+                    int[] _result3 = getSupportedEffects();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result3);
+                    return true;
+                case 6:
+                    float _arg03 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setAmplitude(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setExternalControl(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _result4 = getCompositionDelayMax();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 9:
+                    int _result5 = getCompositionSizeMax();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 10:
+                    int[] _result6 = getSupportedPrimitives();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result6);
+                    return true;
+                case 11:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result7 = getPrimitiveDuration(_arg05);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 12:
+                    CompositeEffect[] _arg06 = (CompositeEffect[]) data.createTypedArray(CompositeEffect.CREATOR);
+                    IVibratorCallback _arg13 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    compose(_arg06, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int[] _result8 = getSupportedAlwaysOnEffects();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result8);
+                    return true;
+                case 14:
+                    int _arg07 = data.readInt();
+                    int _arg14 = data.readInt();
+                    byte _arg22 = data.readByte();
+                    data.enforceNoDataAvail();
+                    alwaysOnEnable(_arg07, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    alwaysOnDisable(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    float _result9 = getResonantFrequency();
+                    reply.writeNoException();
+                    reply.writeFloat(_result9);
+                    return true;
+                case 17:
+                    float _result10 = getQFactor();
+                    reply.writeNoException();
+                    reply.writeFloat(_result10);
+                    return true;
+                case 18:
+                    float _result11 = getFrequencyResolution();
+                    reply.writeNoException();
+                    reply.writeFloat(_result11);
+                    return true;
+                case 19:
+                    float _result12 = getFrequencyMinimum();
+                    reply.writeNoException();
+                    reply.writeFloat(_result12);
+                    return true;
+                case 20:
+                    float[] _result13 = getBandwidthAmplitudeMap();
+                    reply.writeNoException();
+                    reply.writeFloatArray(_result13);
+                    return true;
+                case 21:
+                    int _result14 = getPwlePrimitiveDurationMax();
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 22:
+                    int _result15 = getPwleCompositionSizeMax();
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 23:
+                    int[] _result16 = getSupportedBraking();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result16);
+                    return true;
+                case 24:
+                    PrimitivePwle[] _arg09 = (PrimitivePwle[]) data.createTypedArray(PrimitivePwle.CREATOR);
+                    IVibratorCallback _arg15 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    composePwle(_arg09, _arg15);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = getCapabilities();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            off();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            IVibratorCallback _arg1 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            on(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg02 = data.readInt();
-                            byte _arg12 = data.readByte();
-                            IVibratorCallback _arg2 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result2 = perform(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            int[] _result3 = getSupportedEffects();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result3);
-                            return true;
-                        case 6:
-                            float _arg03 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setAmplitude(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setExternalControl(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _result4 = getCompositionDelayMax();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 9:
-                            int _result5 = getCompositionSizeMax();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 10:
-                            int[] _result6 = getSupportedPrimitives();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result6);
-                            return true;
-                        case 11:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result7 = getPrimitiveDuration(_arg05);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 12:
-                            CompositeEffect[] _arg06 = (CompositeEffect[]) data.createTypedArray(CompositeEffect.CREATOR);
-                            IVibratorCallback _arg13 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            compose(_arg06, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int[] _result8 = getSupportedAlwaysOnEffects();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result8);
-                            return true;
-                        case 14:
-                            int _arg07 = data.readInt();
-                            int _arg14 = data.readInt();
-                            byte _arg22 = data.readByte();
-                            data.enforceNoDataAvail();
-                            alwaysOnEnable(_arg07, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            alwaysOnDisable(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            float _result9 = getResonantFrequency();
-                            reply.writeNoException();
-                            reply.writeFloat(_result9);
-                            return true;
-                        case 17:
-                            float _result10 = getQFactor();
-                            reply.writeNoException();
-                            reply.writeFloat(_result10);
-                            return true;
-                        case 18:
-                            float _result11 = getFrequencyResolution();
-                            reply.writeNoException();
-                            reply.writeFloat(_result11);
-                            return true;
-                        case 19:
-                            float _result12 = getFrequencyMinimum();
-                            reply.writeNoException();
-                            reply.writeFloat(_result12);
-                            return true;
-                        case 20:
-                            float[] _result13 = getBandwidthAmplitudeMap();
-                            reply.writeNoException();
-                            reply.writeFloatArray(_result13);
-                            return true;
-                        case 21:
-                            int _result14 = getPwlePrimitiveDurationMax();
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 22:
-                            int _result15 = getPwleCompositionSizeMax();
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 23:
-                            int[] _result16 = getSupportedBraking();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result16);
-                            return true;
-                        case 24:
-                            PrimitivePwle[] _arg09 = (PrimitivePwle[]) data.createTypedArray(PrimitivePwle.CREATOR);
-                            IVibratorCallback _arg15 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            composePwle(_arg09, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IVibrator {
+        private static class Proxy implements IVibrator {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

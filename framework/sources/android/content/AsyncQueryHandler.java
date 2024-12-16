@@ -22,7 +22,6 @@ public abstract class AsyncQueryHandler extends Handler {
     private Handler mWorkerThreadHandler;
 
     /* JADX INFO: Access modifiers changed from: protected */
-    /* loaded from: classes.dex */
     public static final class WorkerArgs {
         public Object cookie;
         public Handler handler;
@@ -38,7 +37,7 @@ public abstract class AsyncQueryHandler extends Handler {
         }
     }
 
-    /* loaded from: classes.dex */
+    /* JADX INFO: Access modifiers changed from: protected */
     public class WorkerHandler extends Handler {
         public WorkerHandler(Looper looper) {
             super(looper);
@@ -178,18 +177,16 @@ public abstract class AsyncQueryHandler extends Handler {
         switch (event) {
             case 1:
                 onQueryComplete(token, args.cookie, (Cursor) args.result);
-                return;
+                break;
             case 2:
                 onInsertComplete(token, args.cookie, (Uri) args.result);
-                return;
+                break;
             case 3:
                 onUpdateComplete(token, args.cookie, ((Integer) args.result).intValue());
-                return;
+                break;
             case 4:
                 onDeleteComplete(token, args.cookie, ((Integer) args.result).intValue());
-                return;
-            default:
-                return;
+                break;
         }
     }
 }

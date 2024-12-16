@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ClosedSubscriberGroupInfo implements Parcelable {
     public static final Parcelable.Creator<ClosedSubscriberGroupInfo> CREATOR = new Parcelable.Creator<ClosedSubscriberGroupInfo>() { // from class: android.hardware.radio.network.ClosedSubscriberGroupInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClosedSubscriberGroupInfo createFromParcel(Parcel _aidl_source) {
             ClosedSubscriberGroupInfo _aidl_out = new ClosedSubscriberGroupInfo();
@@ -19,6 +17,7 @@ public class ClosedSubscriberGroupInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClosedSubscriberGroupInfo[] newArray(int _aidl_size) {
             return new ClosedSubscriberGroupInfo[_aidl_size];
@@ -27,25 +26,6 @@ public class ClosedSubscriberGroupInfo implements Parcelable {
     public String homeNodebName;
     public boolean csgIndication = false;
     public int csgIdentity = 0;
-
-    /* renamed from: android.hardware.radio.network.ClosedSubscriberGroupInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ClosedSubscriberGroupInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClosedSubscriberGroupInfo createFromParcel(Parcel _aidl_source) {
-            ClosedSubscriberGroupInfo _aidl_out = new ClosedSubscriberGroupInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClosedSubscriberGroupInfo[] newArray(int _aidl_size) {
-            return new ClosedSubscriberGroupInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +94,7 @@ public class ClosedSubscriberGroupInfo implements Parcelable {
         _aidl_sj.add("csgIndication: " + this.csgIndication);
         _aidl_sj.add("homeNodebName: " + Objects.toString(this.homeNodebName));
         _aidl_sj.add("csgIdentity: " + this.csgIdentity);
-        return "android.hardware.radio.network.ClosedSubscriberGroupInfo" + _aidl_sj.toString();
+        return "ClosedSubscriberGroupInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

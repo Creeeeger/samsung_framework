@@ -63,7 +63,7 @@ public abstract class AbsActionBarView extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         TypedArray a = getContext().obtainStyledAttributes(null, R.styleable.ActionBar, 16843470, 0);
         setContentHeight(a.getLayoutDimension(4, 0));
@@ -71,9 +71,8 @@ public abstract class AbsActionBarView extends ViewGroup {
         if (this.mSplitWhenNarrow) {
             setSplitToolbar(getContext().getResources().getBoolean(R.bool.split_action_bar_is_narrow));
         }
-        ActionMenuPresenter actionMenuPresenter = this.mActionMenuPresenter;
-        if (actionMenuPresenter != null) {
-            actionMenuPresenter.onConfigurationChanged(newConfig);
+        if (this.mActionMenuPresenter != null) {
+            this.mActionMenuPresenter.onConfigurationChanged(newConfig);
         }
     }
 
@@ -142,16 +141,14 @@ public abstract class AbsActionBarView extends ViewGroup {
     }
 
     public Animator setupAnimatorToVisibility(int visibility, long duration) {
-        ActionMenuView actionMenuView;
-        Animator animator = this.mVisibilityAnim;
-        if (animator != null) {
-            animator.cancel();
+        if (this.mVisibilityAnim != null) {
+            this.mVisibilityAnim.cancel();
         }
         if (visibility == 0) {
             if (getVisibility() != 0) {
                 setAlpha(0.0f);
-                if (this.mSplitView != null && (actionMenuView = this.mMenuView) != null) {
-                    actionMenuView.setAlpha(0.0f);
+                if (this.mSplitView != null && this.mMenuView != null) {
+                    this.mMenuView.setAlpha(0.0f);
                 }
             }
             ObjectAnimator anim = ObjectAnimator.ofFloat(this, (Property<AbsActionBarView, Float>) View.ALPHA, 1.0f);
@@ -191,40 +188,22 @@ public abstract class AbsActionBarView extends ViewGroup {
     @Override // android.view.View
     public void setVisibility(int visibility) {
         if (visibility != getVisibility()) {
-            Animator animator = this.mVisibilityAnim;
-            if (animator != null) {
-                animator.end();
+            if (this.mVisibilityAnim != null) {
+                this.mVisibilityAnim.end();
             }
             super.setVisibility(visibility);
         }
     }
 
     public boolean showOverflowMenu() {
-        ActionMenuPresenter actionMenuPresenter = this.mActionMenuPresenter;
-        if (actionMenuPresenter != null) {
-            return actionMenuPresenter.showOverflowMenu();
+        if (this.mActionMenuPresenter != null) {
+            return this.mActionMenuPresenter.showOverflowMenu();
         }
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.AbsActionBarView$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            AbsActionBarView.this.showOverflowMenu();
-        }
-    }
-
     public void postShowOverflowMenu() {
         post(new Runnable() { // from class: com.android.internal.widget.AbsActionBarView.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 AbsActionBarView.this.showOverflowMenu();
@@ -233,32 +212,28 @@ public abstract class AbsActionBarView extends ViewGroup {
     }
 
     public boolean hideOverflowMenu() {
-        ActionMenuPresenter actionMenuPresenter = this.mActionMenuPresenter;
-        if (actionMenuPresenter != null) {
-            return actionMenuPresenter.hideOverflowMenu();
+        if (this.mActionMenuPresenter != null) {
+            return this.mActionMenuPresenter.hideOverflowMenu();
         }
         return false;
     }
 
     public boolean isOverflowMenuShowing() {
-        ActionMenuPresenter actionMenuPresenter = this.mActionMenuPresenter;
-        if (actionMenuPresenter != null) {
-            return actionMenuPresenter.isOverflowMenuShowing();
+        if (this.mActionMenuPresenter != null) {
+            return this.mActionMenuPresenter.isOverflowMenuShowing();
         }
         return false;
     }
 
     public boolean isOverflowMenuShowPending() {
-        ActionMenuPresenter actionMenuPresenter = this.mActionMenuPresenter;
-        if (actionMenuPresenter != null) {
-            return actionMenuPresenter.isOverflowMenuShowPending();
+        if (this.mActionMenuPresenter != null) {
+            return this.mActionMenuPresenter.isOverflowMenuShowPending();
         }
         return false;
     }
 
     public boolean isOverflowReserved() {
-        ActionMenuPresenter actionMenuPresenter = this.mActionMenuPresenter;
-        return actionMenuPresenter != null && actionMenuPresenter.isOverflowReserved();
+        return this.mActionMenuPresenter != null && this.mActionMenuPresenter.isOverflowReserved();
     }
 
     public boolean canShowOverflowMenu() {
@@ -266,22 +241,21 @@ public abstract class AbsActionBarView extends ViewGroup {
     }
 
     public void dismissPopupMenus() {
-        ActionMenuPresenter actionMenuPresenter = this.mActionMenuPresenter;
-        if (actionMenuPresenter != null) {
-            actionMenuPresenter.dismissPopupMenus();
+        if (this.mActionMenuPresenter != null) {
+            this.mActionMenuPresenter.dismissPopupMenus();
         }
     }
 
-    public int measureChildView(View child, int availableWidth, int childSpecHeight, int spacing) {
+    protected int measureChildView(View child, int availableWidth, int childSpecHeight, int spacing) {
         child.measure(View.MeasureSpec.makeMeasureSpec(availableWidth, Integer.MIN_VALUE), childSpecHeight);
         return Math.max(0, (availableWidth - child.getMeasuredWidth()) - spacing);
     }
 
-    public static int next(int x, int val, boolean isRtl) {
+    protected static int next(int x, int val, boolean isRtl) {
         return isRtl ? x - val : x + val;
     }
 
-    public int positionChild(View child, int x, int y, int contentHeight, boolean reverse) {
+    protected int positionChild(View child, int x, int y, int contentHeight, boolean reverse) {
         int childWidth = child.getMeasuredWidth();
         int childHeight = child.getMeasuredHeight();
         int childTop = ((contentHeight - childHeight) / 2) + y;
@@ -293,8 +267,7 @@ public abstract class AbsActionBarView extends ViewGroup {
         return reverse ? -childWidth : childWidth;
     }
 
-    /* loaded from: classes5.dex */
-    public class VisibilityAnimListener implements Animator.AnimatorListener {
+    protected class VisibilityAnimListener implements Animator.AnimatorListener {
         private boolean mCanceled = false;
         int mFinalVisibility;
 

@@ -41,11 +41,7 @@ public class NinePatchDrawable extends Drawable {
     private int mTargetDensity;
     private Rect mTempRect;
 
-    /* synthetic */ NinePatchDrawable(NinePatchState ninePatchState, Resources resources, NinePatchDrawableIA ninePatchDrawableIA) {
-        this(ninePatchState, resources);
-    }
-
-    public NinePatchDrawable() {
+    NinePatchDrawable() {
         this.mOpticalInsets = Insets.NONE;
         this.mTargetDensity = 160;
         this.mBitmapWidth = -1;
@@ -156,9 +152,8 @@ public class NinePatchDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public boolean getPadding(Rect padding) {
-        Rect rect = this.mPadding;
-        if (rect != null) {
-            padding.set(rect);
+        if (this.mPadding != null) {
+            padding.set(this.mPadding);
             return (((padding.left | padding.top) | padding.right) | padding.bottom) != 0;
         }
         return super.getPadding(padding);
@@ -171,8 +166,7 @@ public class NinePatchDrawable extends Drawable {
         if (bounds.isEmpty()) {
             return;
         }
-        NinePatchState ninePatchState = this.mNinePatchState;
-        if (ninePatchState != null && this.mOutlineInsets != null && (insets = ninePatchState.mNinePatch.getBitmap().getNinePatchInsets()) != null) {
+        if (this.mNinePatchState != null && this.mOutlineInsets != null && (insets = this.mNinePatchState.mNinePatch.getBitmap().getNinePatchInsets()) != null) {
             outline.setRoundRect(bounds.left + this.mOutlineInsets.left, bounds.top + this.mOutlineInsets.top, bounds.right - this.mOutlineInsets.right, bounds.bottom - this.mOutlineInsets.bottom, this.mOutlineRadius);
             outline.setAlpha(insets.outlineAlpha * (getAlpha() / 255.0f));
         } else {
@@ -325,7 +319,7 @@ public class NinePatchDrawable extends Drawable {
         }
     }
 
-    public static /* synthetic */ void lambda$updateStateFromTypedArray$0(Rect padding, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
+    static /* synthetic */ void lambda$updateStateFromTypedArray$0(Rect padding, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
         decoder.setOutPaddingRect(padding);
         decoder.setAllocator(1);
     }
@@ -357,15 +351,13 @@ public class NinePatchDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        NinePatchState ninePatchState = this.mNinePatchState;
-        return ninePatchState != null && ninePatchState.canApplyTheme();
+        return this.mNinePatchState != null && this.mNinePatchState.canApplyTheme();
     }
 
     public Paint getPaint() {
         if (this.mPaint == null) {
-            Paint paint = new Paint();
-            this.mPaint = paint;
-            paint.setDither(false);
+            this.mPaint = new Paint();
+            this.mPaint.setDither(false);
         }
         return this.mPaint;
     }
@@ -382,8 +374,7 @@ public class NinePatchDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public int getOpacity() {
-        Paint paint;
-        return (this.mNinePatchState.mNinePatch.hasAlpha() || ((paint = this.mPaint) != null && paint.getAlpha() < 255)) ? -3 : -1;
+        return (this.mNinePatchState.mNinePatch.hasAlpha() || (this.mPaint != null && this.mPaint.getAlpha() < 255)) ? -3 : -1;
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -413,7 +404,7 @@ public class NinePatchDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         NinePatchState state = this.mNinePatchState;
         if (state.mTint != null && state.mBlendMode != null) {
             this.mBlendModeFilter = updateBlendModeFilter(this.mBlendModeFilter, state.mTint, state.mBlendMode);
@@ -433,8 +424,7 @@ public class NinePatchDrawable extends Drawable {
         return this.mNinePatchState.mTint != null && this.mNinePatchState.mTint.hasFocusStateSpecified();
     }
 
-    /* loaded from: classes.dex */
-    public static final class NinePatchState extends Drawable.ConstantState {
+    static final class NinePatchState extends Drawable.ConstantState {
         boolean mAutoMirrored;
         float mBaseAlpha;
         BlendMode mBlendMode;
@@ -504,8 +494,7 @@ public class NinePatchDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            ColorStateList colorStateList;
-            return this.mThemeAttrs != null || ((colorStateList = this.mTint) != null && colorStateList.canApplyTheme()) || super.canApplyTheme();
+            return this.mThemeAttrs != null || (this.mTint != null && this.mTint.canApplyTheme()) || super.canApplyTheme();
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -520,9 +509,7 @@ public class NinePatchDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mTint;
-            return i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
     }
 

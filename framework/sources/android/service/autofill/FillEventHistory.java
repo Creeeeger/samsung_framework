@@ -23,9 +23,7 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class FillEventHistory implements Parcelable {
     public static final Parcelable.Creator<FillEventHistory> CREATOR = new Parcelable.Creator<FillEventHistory>() { // from class: android.service.autofill.FillEventHistory.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FillEventHistory createFromParcel(Parcel parcel) {
             ArrayList<ArrayList<String>> manuallyFilledDatasetIds;
@@ -67,6 +65,7 @@ public final class FillEventHistory implements Parcelable {
             return selection;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FillEventHistory[] newArray(int size) {
             return new FillEventHistory[size];
@@ -103,8 +102,7 @@ public final class FillEventHistory implements Parcelable {
     }
 
     public String toString() {
-        List<Event> list = this.mEvents;
-        return list == null ? "no events" : list.toString();
+        return this.mEvents == null ? "no events" : this.mEvents.toString();
     }
 
     @Override // android.os.Parcelable
@@ -115,12 +113,11 @@ public final class FillEventHistory implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBundle(this.mClientState);
-        List<Event> list = this.mEvents;
-        if (list == null) {
+        if (this.mEvents == null) {
             parcel.writeInt(0);
             return;
         }
-        parcel.writeInt(list.size());
+        parcel.writeInt(this.mEvents.size());
         int numEvents = this.mEvents.size();
         for (int i = 0; i < numEvents; i++) {
             Event event = this.mEvents.get(i);
@@ -148,7 +145,6 @@ public final class FillEventHistory implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Event {
         public static final int NO_SAVE_UI_REASON_DATASET_MATCH = 6;
         public static final int NO_SAVE_UI_REASON_FIELD_VALIDATION_FAILED = 5;
@@ -164,6 +160,7 @@ public final class FillEventHistory implements Parcelable {
         public static final int TYPE_DATASET_SELECTED = 0;
         public static final int TYPE_SAVE_SHOWN = 3;
         public static final int TYPE_VIEW_REQUESTED_AUTOFILL = 6;
+        public static final int UI_TYPE_CREDMAN_BOTTOM_SHEET = 4;
         public static final int UI_TYPE_DIALOG = 3;
         public static final int UI_TYPE_INLINE = 2;
         public static final int UI_TYPE_MENU = 1;
@@ -183,17 +180,14 @@ public final class FillEventHistory implements Parcelable {
         private final int mUiType;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         @interface EventIds {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface NoSaveReason {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface UiType {
         }
 
@@ -214,16 +208,14 @@ public final class FillEventHistory implements Parcelable {
         }
 
         public Set<String> getIgnoredDatasetIds() {
-            ArraySet<String> arraySet = this.mIgnoredDatasetIds;
-            return arraySet == null ? Collections.emptySet() : arraySet;
+            return this.mIgnoredDatasetIds == null ? Collections.emptySet() : this.mIgnoredDatasetIds;
         }
 
         public Map<AutofillId, String> getChangedFields() {
-            ArrayList<AutofillId> arrayList = this.mChangedFieldIds;
-            if (arrayList == null || this.mChangedDatasetIds == null) {
+            if (this.mChangedFieldIds == null || this.mChangedDatasetIds == null) {
                 return Collections.emptyMap();
             }
-            int size = arrayList.size();
+            int size = this.mChangedFieldIds.size();
             ArrayMap<AutofillId, String> changedFields = new ArrayMap<>(size);
             for (int i = 0; i < size; i++) {
                 changedFields.put(this.mChangedFieldIds.get(i), this.mChangedDatasetIds.get(i));
@@ -232,11 +224,10 @@ public final class FillEventHistory implements Parcelable {
         }
 
         public Map<AutofillId, FieldClassification> getFieldsClassification() {
-            AutofillId[] autofillIdArr = this.mDetectedFieldIds;
-            if (autofillIdArr == null) {
+            if (this.mDetectedFieldIds == null) {
                 return Collections.emptyMap();
             }
-            int size = autofillIdArr.length;
+            int size = this.mDetectedFieldIds.length;
             ArrayMap<AutofillId, FieldClassification> map = new ArrayMap<>(size);
             for (int i = 0; i < size; i++) {
                 AutofillId id = this.mDetectedFieldIds[i];
@@ -250,11 +241,10 @@ public final class FillEventHistory implements Parcelable {
         }
 
         public Map<AutofillId, Set<String>> getManuallyEnteredField() {
-            ArrayList<AutofillId> arrayList = this.mManuallyFilledFieldIds;
-            if (arrayList == null || this.mManuallyFilledDatasetIds == null) {
+            if (this.mManuallyFilledFieldIds == null || this.mManuallyFilledDatasetIds == null) {
                 return Collections.emptyMap();
             }
-            int size = arrayList.size();
+            int size = this.mManuallyFilledFieldIds.size();
             Map<AutofillId, Set<String>> manuallyFilledFields = new ArrayMap<>(size);
             for (int i = 0; i < size; i++) {
                 AutofillId fieldId = this.mManuallyFilledFieldIds.get(i);
@@ -335,62 +325,11 @@ public final class FillEventHistory implements Parcelable {
                     return "UI_TYPE_INLINE";
                 case 3:
                     return "UI_TYPE_FILL_DIALOG";
+                case 4:
+                    return "UI_TYPE_CREDMAN_BOTTOM_SHEET";
                 default:
                     return "UI_TYPE_UNKNOWN";
             }
-        }
-    }
-
-    /* renamed from: android.service.autofill.FillEventHistory$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FillEventHistory> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FillEventHistory createFromParcel(Parcel parcel) {
-            ArrayList<ArrayList<String>> manuallyFilledDatasetIds;
-            Parcel parcel2 = parcel;
-            FillEventHistory selection = new FillEventHistory(0, parcel.readBundle());
-            int numEvents = parcel.readInt();
-            int i = 0;
-            while (i < numEvents) {
-                int eventType = parcel.readInt();
-                String datasetId = parcel.readString();
-                Bundle clientState = parcel.readBundle();
-                ArrayList<String> selectedDatasetIds = parcel.createStringArrayList();
-                FieldClassification[] fieldClassificationArr = null;
-                ArraySet<? extends Object> readArraySet = parcel2.readArraySet(null);
-                ArrayList<AutofillId> changedFieldIds = parcel2.createTypedArrayList(AutofillId.CREATOR);
-                ArrayList<String> changedDatasetIds = parcel.createStringArrayList();
-                ArrayList<AutofillId> manuallyFilledFieldIds = parcel2.createTypedArrayList(AutofillId.CREATOR);
-                if (manuallyFilledFieldIds != null) {
-                    int size = manuallyFilledFieldIds.size();
-                    ArrayList<ArrayList<String>> manuallyFilledDatasetIds2 = new ArrayList<>(size);
-                    for (int j = 0; j < size; j++) {
-                        manuallyFilledDatasetIds2.add(parcel.createStringArrayList());
-                    }
-                    manuallyFilledDatasetIds = manuallyFilledDatasetIds2;
-                } else {
-                    manuallyFilledDatasetIds = null;
-                }
-                AutofillId[] detectedFieldIds = (AutofillId[]) parcel2.readParcelableArray(null, AutofillId.class);
-                if (detectedFieldIds != null) {
-                    fieldClassificationArr = FieldClassification.readArrayFromParcel(parcel);
-                }
-                FieldClassification[] detectedFieldClassifications = fieldClassificationArr;
-                int saveDialogNotShowReason = parcel.readInt();
-                int uiType = parcel.readInt();
-                selection.addEvent(new Event(eventType, datasetId, clientState, selectedDatasetIds, readArraySet, changedFieldIds, changedDatasetIds, manuallyFilledFieldIds, manuallyFilledDatasetIds, detectedFieldIds, detectedFieldClassifications, saveDialogNotShowReason, uiType));
-                i++;
-                parcel2 = parcel;
-            }
-            return selection;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FillEventHistory[] newArray(int size) {
-            return new FillEventHistory[size];
         }
     }
 }

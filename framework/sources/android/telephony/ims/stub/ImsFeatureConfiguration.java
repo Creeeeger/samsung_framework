@@ -8,17 +8,16 @@ import android.util.ArraySet;
 import java.util.Set;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ImsFeatureConfiguration implements Parcelable {
     public static final Parcelable.Creator<ImsFeatureConfiguration> CREATOR = new Parcelable.Creator<ImsFeatureConfiguration>() { // from class: android.telephony.ims.stub.ImsFeatureConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsFeatureConfiguration createFromParcel(Parcel in) {
             return new ImsFeatureConfiguration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsFeatureConfiguration[] newArray(int size) {
             return new ImsFeatureConfiguration[size];
@@ -26,7 +25,6 @@ public final class ImsFeatureConfiguration implements Parcelable {
     };
     private final Set<FeatureSlotPair> mFeatures;
 
-    /* loaded from: classes3.dex */
     public static final class FeatureSlotPair {
         public final int featureType;
         public final int slotId;
@@ -60,7 +58,6 @@ public final class ImsFeatureConfiguration implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         ImsFeatureConfiguration mConfig = new ImsFeatureConfiguration();
 
@@ -79,10 +76,9 @@ public final class ImsFeatureConfiguration implements Parcelable {
     }
 
     public ImsFeatureConfiguration(Set<FeatureSlotPair> features) {
-        ArraySet arraySet = new ArraySet();
-        this.mFeatures = arraySet;
+        this.mFeatures = new ArraySet();
         if (features != null) {
-            arraySet.addAll(features);
+            this.mFeatures.addAll(features);
         }
     }
 
@@ -99,23 +95,6 @@ public final class ImsFeatureConfiguration implements Parcelable {
         this.mFeatures = new ArraySet(featurePairLength);
         for (int i = 0; i < featurePairLength; i++) {
             this.mFeatures.add(new FeatureSlotPair(in.readInt(), in.readInt()));
-        }
-    }
-
-    /* renamed from: android.telephony.ims.stub.ImsFeatureConfiguration$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsFeatureConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsFeatureConfiguration createFromParcel(Parcel in) {
-            return new ImsFeatureConfiguration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsFeatureConfiguration[] newArray(int size) {
-            return new ImsFeatureConfiguration[size];
         }
     }
 

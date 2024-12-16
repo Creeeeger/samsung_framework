@@ -4,38 +4,24 @@ import java.util.Vector;
 
 /* loaded from: classes6.dex */
 public class Vector3<T> {
-    private final int X;
-    private final int Y;
-    private final int Z;
-    Vector<T> data;
+    private final int X = 0;
+    private final int Y = 1;
+    private final int Z = 2;
+    Vector<T> data = new Vector<>();
 
     public Vector3(T x, T y, T z) {
-        this.X = 0;
-        this.Y = 1;
-        this.Z = 2;
-        Vector<T> vector = new Vector<>();
-        this.data = vector;
-        vector.add(x);
+        this.data.add(x);
         this.data.add(y);
         this.data.add(z);
     }
 
     public Vector3(T[] array) {
-        this.X = 0;
-        this.Y = 1;
-        this.Z = 2;
-        Vector<T> vector = new Vector<>();
-        this.data = vector;
-        vector.add(array[0]);
+        this.data.add(array[0]);
         this.data.add(array[1]);
         this.data.add(array[2]);
     }
 
     public Vector3(Vector3<T> array) {
-        this.X = 0;
-        this.Y = 1;
-        this.Z = 2;
-        this.data = new Vector<>();
         set(array.getX(), array.getY(), array.getZ());
     }
 

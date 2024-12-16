@@ -21,8 +21,12 @@ public abstract class GateKeeper {
     }
 
     public static long getSecureUserId() throws IllegalStateException {
+        return getSecureUserId(UserHandle.myUserId());
+    }
+
+    public static long getSecureUserId(int userId) throws IllegalStateException {
         try {
-            return getService().getSecureUserId(UserHandle.myUserId());
+            return getService().getSecureUserId(userId);
         } catch (RemoteException e) {
             throw new IllegalStateException("Failed to obtain secure user ID from gatekeeper", e);
         }

@@ -13,7 +13,7 @@ import com.android.internal.util.Preconditions;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public abstract class NetworkRecommendationProvider {
     private static final String TAG = "NetworkRecProvider";
     private static final boolean VERBOSE;
@@ -35,9 +35,7 @@ public abstract class NetworkRecommendationProvider {
         return this.mService;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public final class ServiceWrapper extends INetworkRecommendationProvider.Stub {
+    private final class ServiceWrapper extends INetworkRecommendationProvider.Stub {
         private final Context mContext;
         private final Executor mExecutor;
         private final Handler mHandler = null;
@@ -48,16 +46,10 @@ public abstract class NetworkRecommendationProvider {
         }
 
         @Override // android.net.INetworkRecommendationProvider
-        public void requestScores(NetworkKey[] networks) throws RemoteException {
+        public void requestScores(final NetworkKey[] networks) throws RemoteException {
             enforceCallingPermission();
             if (networks != null && networks.length > 0) {
                 execute(new Runnable() { // from class: android.net.NetworkRecommendationProvider.ServiceWrapper.1
-                    final /* synthetic */ NetworkKey[] val$networks;
-
-                    AnonymousClass1(NetworkKey[] networks2) {
-                        networks = networks2;
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         NetworkRecommendationProvider.this.onRequestScores(networks);
@@ -66,34 +58,17 @@ public abstract class NetworkRecommendationProvider {
             }
         }
 
-        /* renamed from: android.net.NetworkRecommendationProvider$ServiceWrapper$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ NetworkKey[] val$networks;
-
-            AnonymousClass1(NetworkKey[] networks2) {
-                networks = networks2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                NetworkRecommendationProvider.this.onRequestScores(networks);
-            }
-        }
-
         private void execute(Runnable command) {
-            Executor executor = this.mExecutor;
-            if (executor != null) {
-                executor.execute(command);
+            if (this.mExecutor != null) {
+                this.mExecutor.execute(command);
             } else {
                 this.mHandler.post(command);
             }
         }
 
         private void enforceCallingPermission() {
-            Context context = this.mContext;
-            if (context != null) {
-                context.enforceCallingOrSelfPermission(Manifest.permission.REQUEST_NETWORK_SCORES, "Permission denied.");
+            if (this.mContext != null) {
+                this.mContext.enforceCallingOrSelfPermission(Manifest.permission.REQUEST_NETWORK_SCORES, "Permission denied.");
             }
         }
     }

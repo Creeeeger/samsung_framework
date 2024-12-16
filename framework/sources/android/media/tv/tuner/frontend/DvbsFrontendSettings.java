@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DvbsFrontendSettings extends FrontendSettings {
     public static final int MODULATION_AUTO = 1;
     public static final int MODULATION_MOD_128APSK = 2048;
@@ -58,37 +58,27 @@ public class DvbsFrontendSettings extends FrontendSettings {
     private final int mVcmMode;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Modulation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Pilot {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Rolloff {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScanType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Standard {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VcmMode {
-    }
-
-    /* synthetic */ DvbsFrontendSettings(long j, int i, DvbsCodeRate dvbsCodeRate, int i2, int i3, int i4, int i5, int i6, int i7, int i8, boolean z, DvbsFrontendSettingsIA dvbsFrontendSettingsIA) {
-        this(j, i, dvbsCodeRate, i2, i3, i4, i5, i6, i7, i8, z);
     }
 
     private DvbsFrontendSettings(long frequency, int modulation, DvbsCodeRate codeRate, int symbolRate, int rolloff, int pilot, int inputStreamId, int standard, int vcm, int scanType, boolean isDiseqcRxMessage) {
@@ -149,7 +139,6 @@ public class DvbsFrontendSettings extends FrontendSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private DvbsCodeRate mCodeRate;
         private long mFrequency;
@@ -162,10 +151,6 @@ public class DvbsFrontendSettings extends FrontendSettings {
         private int mStandard;
         private int mSymbolRate;
         private int mVcmMode;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;

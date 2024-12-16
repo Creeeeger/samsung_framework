@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IActivityRecognitionHardwareSink extends IInterface {
     void onActivityChanged(ActivityChangedEvent activityChangedEvent) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IActivityRecognitionHardwareSink {
         @Override // android.hardware.location.IActivityRecognitionHardwareSink
         public void onActivityChanged(ActivityChangedEvent event) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IActivityRecognitionHardwareSink extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IActivityRecognitionHardwareSink {
         public static final String DESCRIPTOR = "android.hardware.location.IActivityRecognitionHardwareSink";
         static final int TRANSACTION_onActivityChanged = 1;
@@ -66,27 +64,23 @@ public interface IActivityRecognitionHardwareSink extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ActivityChangedEvent _arg0 = (ActivityChangedEvent) data.readTypedObject(ActivityChangedEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onActivityChanged(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ActivityChangedEvent _arg0 = (ActivityChangedEvent) data.readTypedObject(ActivityChangedEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onActivityChanged(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IActivityRecognitionHardwareSink {
+        private static class Proxy implements IActivityRecognitionHardwareSink {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

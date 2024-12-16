@@ -3,7 +3,6 @@ package android.app.servertransaction;
 import android.app.ClientTransactionHandler;
 import android.content.res.CompatibilityInfo;
 import android.content.res.Configuration;
-import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
@@ -11,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class ConfigurationChangeItem extends ClientTransactionItem {
     public static final Parcelable.Creator<ConfigurationChangeItem> CREATOR = new Parcelable.Creator<ConfigurationChangeItem>() { // from class: android.app.servertransaction.ConfigurationChangeItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConfigurationChangeItem createFromParcel(Parcel in) {
             return new ConfigurationChangeItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConfigurationChangeItem[] newArray(int size) {
             return new ConfigurationChangeItem[size];
@@ -27,18 +25,14 @@ public class ConfigurationChangeItem extends ClientTransactionItem {
     private Configuration mConfiguration;
     private int mDeviceId;
 
-    /* synthetic */ ConfigurationChangeItem(Parcel parcel, ConfigurationChangeItemIA configurationChangeItemIA) {
-        this(parcel);
-    }
-
     @Override // android.app.servertransaction.BaseClientRequest
-    public void preExecute(ClientTransactionHandler client, IBinder token) {
+    public void preExecute(ClientTransactionHandler client) {
         CompatibilityInfo.applyOverrideScaleIfNeeded(this.mConfiguration);
         client.updatePendingConfiguration(this.mConfiguration);
     }
 
     @Override // android.app.servertransaction.BaseClientRequest
-    public void execute(ClientTransactionHandler client, IBinder token, PendingTransactionActions pendingActions) {
+    public void execute(ClientTransactionHandler client, PendingTransactionActions pendingActions) {
         client.handleConfigurationChanged(this.mConfiguration, this.mDeviceId);
     }
 
@@ -50,7 +44,7 @@ public class ConfigurationChangeItem extends ClientTransactionItem {
         if (instance == null) {
             instance = new ConfigurationChangeItem();
         }
-        instance.mConfiguration = config;
+        instance.mConfiguration = new Configuration(config);
         instance.mDeviceId = deviceId;
         return instance;
     }
@@ -71,23 +65,6 @@ public class ConfigurationChangeItem extends ClientTransactionItem {
     private ConfigurationChangeItem(Parcel in) {
         this.mConfiguration = (Configuration) in.readTypedObject(Configuration.CREATOR);
         this.mDeviceId = in.readInt();
-    }
-
-    /* renamed from: android.app.servertransaction.ConfigurationChangeItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ConfigurationChangeItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConfigurationChangeItem createFromParcel(Parcel in) {
-            return new ConfigurationChangeItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConfigurationChangeItem[] newArray(int size) {
-            return new ConfigurationChangeItem[size];
-        }
     }
 
     public boolean equals(Object o) {

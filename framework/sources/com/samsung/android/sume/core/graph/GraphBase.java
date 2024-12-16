@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class GraphBase<T> implements Graph<T> {
     private static final String TAG = Def.tagOf((Class<?>) GraphBase.class);
     protected BufferChannel inputChannel;
@@ -36,60 +36,60 @@ public abstract class GraphBase<T> implements Graph<T> {
     protected final ConcurrentHashMap<Integer, MediaBuffer> outBufferMap = new ConcurrentHashMap<>();
     protected final MessageChannelRouter messageChannelRouter = new MessageChannelRouter(32);
 
-    public GraphBase(List<GraphNode<T>> nodes, Graph.Option option) {
+    GraphBase(List<GraphNode<T>> nodes, Graph.Option option) {
         this.nodes = nodes;
         this.option = option;
     }
 
-    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:21:0x0095 -> B:12:0x00a4). Please report as a decompilation issue!!! */
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:16:0x0094 -> B:12:0x00a3). Please report as a decompilation issue!!! */
     private MediaBuffer onReceiveOutputBuffer(MediaBuffer mediaBuffer) {
         MediaType outMediaType = mediaBuffer.getFormat().getMediaType();
         MediaBuffer storedOutput = this.outBufferMap.remove(mediaBuffer.getExtra(Message.KEY_CONTENTS_ID));
-        if (outMediaType != MediaType.SCALA && outMediaType != MediaType.META && storedOutput != null) {
-            Log.d(TAG, "onReceiveOutputBuffer: " + mediaBuffer + " => " + storedOutput);
-            UniImgp.ofUnified().run(mediaBuffer, MediaBuffer.mutableOf(storedOutput));
-            if (storedOutput.getFormat().getMediaType() == MediaType.COMPRESSED_IMAGE) {
-                storedOutput.setExtra(mediaBuffer.getExtra());
-                FileOutputStream os = null;
+        if (outMediaType == MediaType.SCALA || outMediaType == MediaType.META || storedOutput == null) {
+            return mediaBuffer;
+        }
+        Log.d(TAG, "onReceiveOutputBuffer: " + mediaBuffer + " => " + storedOutput);
+        UniImgp.ofUnified().run(mediaBuffer, MediaBuffer.mutableOf(storedOutput));
+        if (storedOutput.getFormat().getMediaType() == MediaType.COMPRESSED_IMAGE) {
+            storedOutput.setExtra(mediaBuffer.getExtra());
+            FileOutputStream os = null;
+            try {
                 try {
                     try {
-                        try {
-                            ParcelFileDescriptor pfd = (ParcelFileDescriptor) storedOutput.getExtra(Message.KEY_FILE_DESCRIPTOR);
-                            os = new FileOutputStream(pfd.getFileDescriptor());
-                            ((Bitmap) storedOutput.getTypedData(Bitmap.class)).compress(Bitmap.CompressFormat.JPEG, 95, os);
-                            os.close();
-                        } catch (Throwable th) {
-                            if (os != null) {
-                                try {
-                                    os.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            throw th;
-                        }
-                    } catch (Exception e2) {
-                        e2.printStackTrace();
+                        ParcelFileDescriptor pfd = (ParcelFileDescriptor) storedOutput.getExtra(Message.KEY_FILE_DESCRIPTOR);
+                        os = new FileOutputStream(pfd.getFileDescriptor());
+                        ((Bitmap) storedOutput.getTypedData(Bitmap.class)).compress(Bitmap.CompressFormat.JPEG, 95, os);
+                        os.close();
+                    } catch (Throwable th) {
                         if (os != null) {
-                            os.close();
+                            try {
+                                os.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
+                        throw th;
                     }
-                } catch (IOException e3) {
-                    e3.printStackTrace();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                    if (os != null) {
+                        os.close();
+                    }
                 }
+            } catch (IOException e3) {
+                e3.printStackTrace();
             }
-            storedOutput.setExtra("freezed", true);
-            return storedOutput;
         }
-        return mediaBuffer;
+        storedOutput.setExtra("freezed", true);
+        return storedOutput;
     }
 
-    public void runBatch(List<MediaBuffer> inBuffers, List<MediaBuffer> outBuffers) {
+    protected void runBatch(List<MediaBuffer> inBuffers, List<MediaBuffer> outBuffers) {
         Log.d(TAG, "runBatch: # of inputs " + inBuffers.size());
-        inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda1
+        inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda4
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                GraphBase.this.m8787lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase((MediaBuffer) obj);
+                GraphBase.this.m9175lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase((MediaBuffer) obj);
             }
         });
         try {
@@ -114,19 +114,19 @@ public abstract class GraphBase<T> implements Graph<T> {
         }
     }
 
-    /* renamed from: lambda$runBatch$0$com-samsung-android-sume-core-graph-GraphBase */
-    public /* synthetic */ void m8787lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase(MediaBuffer it) {
+    /* renamed from: lambda$runBatch$0$com-samsung-android-sume-core-graph-GraphBase, reason: not valid java name */
+    /* synthetic */ void m9175lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase(MediaBuffer it) {
         this.inputChannel.send(it);
         publishEvent(509, it);
     }
 
-    public void runOneByOne(List<MediaBuffer> inBuffers, final List<MediaBuffer> outBuffers) {
+    protected void runOneByOne(List<MediaBuffer> inBuffers, final List<MediaBuffer> outBuffers) {
         Log.d(TAG, "runOneByOne: # of inputs " + inBuffers.size());
         try {
-            inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda0
+            inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda5
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    GraphBase.this.m8788x8ab719a8(outBuffers, (MediaBuffer) obj);
+                    GraphBase.this.m9176x8ab719a8(outBuffers, (MediaBuffer) obj);
                 }
             });
         } catch (CancellationException e) {
@@ -134,8 +134,8 @@ public abstract class GraphBase<T> implements Graph<T> {
         }
     }
 
-    /* renamed from: lambda$runOneByOne$1$com-samsung-android-sume-core-graph-GraphBase */
-    public /* synthetic */ void m8788x8ab719a8(List outBuffers, MediaBuffer it) {
+    /* renamed from: lambda$runOneByOne$1$com-samsung-android-sume-core-graph-GraphBase, reason: not valid java name */
+    /* synthetic */ void m9176x8ab719a8(List outBuffers, MediaBuffer it) {
         this.inputChannel.send(it);
         publishEvent(509, it);
         MediaBuffer obuf = onReceiveOutputBuffer(this.outputChannel.receive());
@@ -147,8 +147,7 @@ public abstract class GraphBase<T> implements Graph<T> {
 
     private void publishEvent(int code, final MediaBuffer mediaBuffer) {
         long durationMs;
-        String str = TAG;
-        Log.d(str, "publishEvent E: code=" + code + ", buffer=" + mediaBuffer);
+        Log.d(TAG, "publishEvent E: code=" + code + ", buffer=" + mediaBuffer);
         if (this.messagePublisher != null) {
             final Event event = Event.of(code);
             event.setPublisher(this.messagePublisher);
@@ -168,14 +167,14 @@ public abstract class GraphBase<T> implements Graph<T> {
                     event.put("width", Integer.valueOf(mediaBuffer.getCols()));
                     event.put("height", Integer.valueOf(mediaBuffer.getRows()));
                     event.put(Message.KEY_END_TIME_MS, Long.valueOf(System.currentTimeMillis()));
-                    Stream.of((Object[]) new String[]{"rotation-degrees", "last-video-timestamp-us", "last-audio-timestamp-us"}).filter(new Predicate() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda2
+                    Stream.of((Object[]) new String[]{"rotation-degrees", "last-video-timestamp-us", "last-audio-timestamp-us"}).filter(new Predicate() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda0
                         @Override // java.util.function.Predicate
                         public final boolean test(Object obj) {
                             boolean contains;
                             contains = MediaBuffer.this.getFormat().contains((String) obj);
                             return contains;
                         }
-                    }).forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda3
+                    }).forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda1
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
                             Event.this.put(r3, mediaBuffer.getFormat().get((String) obj));
@@ -193,8 +192,8 @@ public abstract class GraphBase<T> implements Graph<T> {
                         event.put("duration", Long.valueOf(durationMs));
                     }
                     if (this.option.isOutputOnEventCallback()) {
-                        Log.d(str, "set output buffer to event cb");
-                        event.setBundledDataHandler(new Message.BundledDataHandler() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda4
+                        Log.d(TAG, "set output buffer to event cb");
+                        event.setBundledDataHandler(new Message.BundledDataHandler() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda2
                             @Override // com.samsung.android.sume.core.message.Message.BundledDataHandler
                             public final void accept(Bundle bundle) {
                                 bundle.putParcelableArray("buffer-list", new MediaBuffer[]{MediaBuffer.this});
@@ -205,7 +204,7 @@ public abstract class GraphBase<T> implements Graph<T> {
                     break;
             }
             event.post();
-            Log.d(str, "publishEvent X: code=" + code);
+            Log.d(TAG, "publishEvent X: code=" + code);
         }
     }
 
@@ -222,17 +221,16 @@ public abstract class GraphBase<T> implements Graph<T> {
 
     @Override // com.samsung.android.sume.core.graph.Graph
     public void release() {
-        String str = TAG;
-        Log.d(str, "release...E");
+        Log.d(TAG, "release...E");
         this.inputChannel.cancel();
         this.outputChannel.cancel();
-        this.nodes.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda5
+        this.nodes.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda3
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 ((GraphNode) obj).release();
             }
         });
         this.option.clear();
-        Log.d(str, "release...X");
+        Log.d(TAG, "release...X");
     }
 }

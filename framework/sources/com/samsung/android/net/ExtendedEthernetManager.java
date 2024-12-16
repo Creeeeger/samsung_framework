@@ -4,7 +4,7 @@ import android.net.IpConfiguration;
 import android.os.RemoteException;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ExtendedEthernetManager {
     private static final String TAG = "ExtendedEthernetManager";
     private final IExtendedEthernetManager mService;

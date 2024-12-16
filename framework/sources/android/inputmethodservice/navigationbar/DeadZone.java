@@ -9,14 +9,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 /* loaded from: classes2.dex */
-public final class DeadZone {
+final class DeadZone {
     private static final boolean CHATTY = true;
     public static final boolean DEBUG = false;
     private static final FloatProperty<DeadZone> FLASH_PROPERTY = new FloatProperty<DeadZone>("DeadZoneFlash") { // from class: android.inputmethodservice.navigationbar.DeadZone.1
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
         @Override // android.util.FloatProperty
         public void setValue(DeadZone object, float value) {
             object.setFlash(value);
@@ -41,47 +37,13 @@ public final class DeadZone {
     private boolean mVertical;
     private float mFlashFrac = 0.0f;
     private final Runnable mDebugFlash = new Runnable() { // from class: android.inputmethodservice.navigationbar.DeadZone.2
-        AnonymousClass2() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             ObjectAnimator.ofFloat(DeadZone.this, DeadZone.FLASH_PROPERTY, 1.0f, 0.0f).setDuration(150L).start();
         }
     };
 
-    /* renamed from: android.inputmethodservice.navigationbar.DeadZone$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 extends FloatProperty<DeadZone> {
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(DeadZone object, float value) {
-            object.setFlash(value);
-        }
-
-        @Override // android.util.Property
-        public Float get(DeadZone object) {
-            return Float.valueOf(object.getFlash());
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.inputmethodservice.navigationbar.DeadZone$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ObjectAnimator.ofFloat(DeadZone.this, DeadZone.FLASH_PROPERTY, 1.0f, 0.0f).setDuration(150L).start();
-        }
-    }
-
-    public DeadZone(NavigationBarView view) {
+    DeadZone(NavigationBarView view) {
         this.mNavigationBarView = view;
         onConfigurationChanged(0);
     }
@@ -91,20 +53,17 @@ public final class DeadZone {
     }
 
     private float getSize(long now) {
-        int i = this.mSizeMax;
-        if (i == 0) {
+        if (this.mSizeMax == 0) {
             return 0.0f;
         }
         long dt = now - this.mLastPokeTime;
-        int i2 = this.mHold;
-        int i3 = this.mDecay;
-        if (dt > i2 + i3) {
+        if (dt > this.mHold + this.mDecay) {
             return this.mSizeMin;
         }
-        if (dt < i2) {
-            return i;
+        if (dt < this.mHold) {
+            return this.mSizeMax;
         }
-        return (int) lerp(i, this.mSizeMin, ((float) (dt - i2)) / i3);
+        return (int) lerp(this.mSizeMax, this.mSizeMin, (dt - this.mHold) / this.mDecay);
     }
 
     public void setFlashOnTouchCapture(boolean dbg) {

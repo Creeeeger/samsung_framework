@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /* loaded from: classes.dex */
-public final class LegacySensorManager {
+final class LegacySensorManager {
     private static boolean sInitialized;
     private static int sRotation = 0;
     private static IWindowManager sWindowManager;
@@ -20,14 +20,10 @@ public final class LegacySensorManager {
         this.mSensorManager = sensorManager;
         synchronized (SensorManager.class) {
             if (!sInitialized) {
-                IWindowManager asInterface = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
-                sWindowManager = asInterface;
-                if (asInterface != null) {
+                sWindowManager = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
+                if (sWindowManager != null) {
                     try {
-                        sRotation = asInterface.watchRotation(new IRotationWatcher.Stub() { // from class: android.hardware.LegacySensorManager.1
-                            AnonymousClass1() {
-                            }
-
+                        sRotation = sWindowManager.watchRotation(new IRotationWatcher.Stub() { // from class: android.hardware.LegacySensorManager.1
                             @Override // android.view.IRotationWatcher
                             public void onRotationChanged(int rotation) {
                                 LegacySensorManager.onRotationChanged(rotation);
@@ -37,19 +33,6 @@ public final class LegacySensorManager {
                     }
                 }
             }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.LegacySensorManager$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends IRotationWatcher.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.IRotationWatcher
-        public void onRotationChanged(int rotation) {
-            LegacySensorManager.onRotationChanged(rotation);
         }
     }
 
@@ -143,8 +126,7 @@ public final class LegacySensorManager {
         return i;
     }
 
-    /* loaded from: classes.dex */
-    public static final class LegacyListener implements SensorEventListener {
+    private static final class LegacyListener implements SensorEventListener {
         private SensorListener mTarget;
         private float[] mValues = new float[6];
         private final LmsFilter mYawfilter = new LmsFilter();
@@ -155,21 +137,19 @@ public final class LegacySensorManager {
         }
 
         boolean registerSensor(int legacyType) {
-            int i = this.mSensors;
-            if ((i & legacyType) != 0) {
+            if ((this.mSensors & legacyType) != 0) {
                 return false;
             }
-            boolean alreadyHasOrientationSensor = hasOrientationSensor(i);
+            boolean alreadyHasOrientationSensor = hasOrientationSensor(this.mSensors);
             this.mSensors |= legacyType;
             return (alreadyHasOrientationSensor && hasOrientationSensor(legacyType)) ? false : true;
         }
 
         boolean unregisterSensor(int legacyType) {
-            int i = this.mSensors;
-            if ((i & legacyType) == 0) {
+            if ((this.mSensors & legacyType) == 0) {
                 return false;
             }
-            this.mSensors = i & (~legacyType);
+            this.mSensors &= ~legacyType;
             return (hasOrientationSensor(legacyType) && hasOrientationSensor(this.mSensors)) ? false : true;
         }
 
@@ -263,15 +243,13 @@ public final class LegacySensorManager {
                         values[0] = x2 >= 180.0f ? x2 - 180.0f : 180.0f + x2;
                         values[1] = -y2;
                         values[2] = -z2;
-                        return;
+                        break;
                     case 2:
                     case 8:
                         values[0] = -x2;
                         values[1] = -y2;
                         values[2] = z2;
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         }
@@ -295,9 +273,7 @@ public final class LegacySensorManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static final class LmsFilter {
+    private static final class LmsFilter {
         private static final int COUNT = 12;
         private static final float PREDICTION_RATIO = 0.33333334f;
         private static final float PREDICTION_TIME = 0.08f;
@@ -307,48 +283,45 @@ public final class LegacySensorManager {
         private int mIndex = 12;
 
         public float filter(long time, float in) {
+            LmsFilter lmsFilter = this;
             float v = in;
-            float[] fArr = this.mV;
-            int i = this.mIndex;
-            float v1 = fArr[i];
+            float v1 = lmsFilter.mV[lmsFilter.mIndex];
             if (v - v1 > 180.0f) {
                 v -= 360.0f;
             } else if (v1 - v > 180.0f) {
                 v += 360.0f;
             }
-            int i2 = i + 1;
-            this.mIndex = i2;
-            if (i2 >= 24) {
-                this.mIndex = 12;
+            lmsFilter.mIndex++;
+            if (lmsFilter.mIndex >= 24) {
+                lmsFilter.mIndex = 12;
             }
-            int i3 = this.mIndex;
-            fArr[i3] = v;
-            long[] jArr = this.mT;
-            jArr[i3] = time;
-            fArr[i3 - 12] = v;
-            jArr[i3 - 12] = time;
+            lmsFilter.mV[lmsFilter.mIndex] = v;
+            lmsFilter.mT[lmsFilter.mIndex] = time;
+            lmsFilter.mV[lmsFilter.mIndex - 12] = v;
+            lmsFilter.mT[lmsFilter.mIndex - 12] = time;
             float E = 0.0f;
             float D = 0.0f;
             float C = 0.0f;
             float B = 0.0f;
             float A = 0.0f;
-            for (int i4 = 0; i4 < 11; i4++) {
-                int j = (this.mIndex - 1) - i4;
-                float Z = this.mV[j];
-                long[] jArr2 = this.mT;
-                long j2 = jArr2[j];
-                float T = ((float) (((j2 / 2) + (jArr2[j + 1] / 2)) - time)) * 1.0E-9f;
-                float dT = ((float) (j2 - jArr2[j + 1])) * 1.0E-9f;
+            int i = 0;
+            while (i < 11) {
+                int j = (lmsFilter.mIndex - 1) - i;
+                float Z = lmsFilter.mV[j];
+                float T = (((lmsFilter.mT[j] / 2) + (lmsFilter.mT[j + 1] / 2)) - time) * 1.0E-9f;
+                float dT = (lmsFilter.mT[j] - lmsFilter.mT[j + 1]) * 1.0E-9f;
                 float dT2 = dT * dT;
                 A += Z * dT2;
                 B += T * dT2 * T;
                 C += T * dT2;
                 D += T * dT2 * Z;
                 E += dT2;
+                i++;
+                lmsFilter = this;
+                v = v;
             }
-            float E2 = E;
-            float b = ((A * B) + (C * D)) / ((E2 * B) + (C * C));
-            float a = ((E2 * b) - A) / C;
+            float b = ((A * B) + (C * D)) / ((E * B) + (C * C));
+            float a = ((E * b) - A) / C;
             float f = ((PREDICTION_TIME * a) + b) * 0.0027777778f;
             if ((f >= 0.0f ? f : -f) >= 0.5f) {
                 f = (f - ((float) Math.ceil(0.5f + f))) + 1.0f;

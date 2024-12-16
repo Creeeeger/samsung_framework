@@ -23,13 +23,12 @@ public class LocationPermissionChecker {
     private final Context mContext;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface LocationPermissionCheckStatus {
     }
 
     public LocationPermissionChecker(Context context) {
         this.mContext = context;
-        this.mAppOpsManager = (AppOpsManager) context.getSystemService(AppOpsManager.class);
+        this.mAppOpsManager = (AppOpsManager) this.mContext.getSystemService(AppOpsManager.class);
     }
 
     public boolean checkLocationPermission(String pkgName, String featureId, int uid, String message) {

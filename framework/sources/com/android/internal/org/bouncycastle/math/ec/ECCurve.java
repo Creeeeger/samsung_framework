@@ -35,9 +35,9 @@ public abstract class ECCurve {
 
     protected abstract ECCurve cloneCurve();
 
-    public abstract ECPoint createRawPoint(ECFieldElement eCFieldElement, ECFieldElement eCFieldElement2);
+    protected abstract ECPoint createRawPoint(ECFieldElement eCFieldElement, ECFieldElement eCFieldElement2);
 
-    public abstract ECPoint createRawPoint(ECFieldElement eCFieldElement, ECFieldElement eCFieldElement2, ECFieldElement[] eCFieldElementArr);
+    protected abstract ECPoint createRawPoint(ECFieldElement eCFieldElement, ECFieldElement eCFieldElement2, ECFieldElement[] eCFieldElementArr);
 
     protected abstract ECPoint decompressPoint(int i, BigInteger bigInteger);
 
@@ -57,7 +57,6 @@ public abstract class ECCurve {
         return new int[]{0, 1, 2, 3, 4, 5, 6, 7};
     }
 
-    /* loaded from: classes5.dex */
     public class Config {
         protected int coord;
         protected ECEndomorphism endomorphism;
@@ -122,9 +121,8 @@ public abstract class ECCurve {
     }
 
     protected ECMultiplier createDefaultMultiplier() {
-        ECEndomorphism eCEndomorphism = this.endomorphism;
-        if (eCEndomorphism instanceof GLVEndomorphism) {
-            return new GLVMultiplier(this, (GLVEndomorphism) eCEndomorphism);
+        if (this.endomorphism instanceof GLVEndomorphism) {
+            return new GLVMultiplier(this, (GLVEndomorphism) this.endomorphism);
         }
         return new WNafL2RMultiplier();
     }
@@ -312,9 +310,9 @@ public abstract class ECCurve {
         return p;
     }
 
-    public ECLookupTable createCacheSafeLookupTable(ECPoint[] points, int off, int len) {
-        int FE_BYTES = (getFieldSize() + 7) >>> 3;
-        byte[] table = new byte[len * FE_BYTES * 2];
+    public ECLookupTable createCacheSafeLookupTable(ECPoint[] points, int off, final int len) {
+        final int FE_BYTES = (getFieldSize() + 7) >>> 3;
+        final byte[] table = new byte[len * FE_BYTES * 2];
         int pos = 0;
         for (int i = 0; i < len; i++) {
             ECPoint p = points[off + i];
@@ -333,16 +331,6 @@ public abstract class ECCurve {
             pos = pos2 + FE_BYTES;
         }
         return new AbstractECLookupTable() { // from class: com.android.internal.org.bouncycastle.math.ec.ECCurve.1
-            final /* synthetic */ int val$FE_BYTES;
-            final /* synthetic */ int val$len;
-            final /* synthetic */ byte[] val$table;
-
-            AnonymousClass1(int len2, int FE_BYTES2, byte[] table2) {
-                len = len2;
-                FE_BYTES = FE_BYTES2;
-                table = table2;
-            }
-
             @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
             public int getSize() {
                 return len;
@@ -350,124 +338,37 @@ public abstract class ECCurve {
 
             @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
             public ECPoint lookup(int index) {
-                int i2;
-                int i3 = FE_BYTES;
-                byte[] x = new byte[i3];
-                byte[] y = new byte[i3];
+                byte[] x = new byte[FE_BYTES];
+                byte[] y = new byte[FE_BYTES];
                 int pos3 = 0;
-                for (int i4 = 0; i4 < len; i4++) {
-                    int MASK = ((i4 ^ index) - 1) >> 31;
-                    int j = 0;
-                    while (true) {
-                        i2 = FE_BYTES;
-                        if (j < i2) {
-                            byte b = x[j];
-                            byte[] bArr = table;
-                            x[j] = (byte) (b ^ (bArr[pos3 + j] & MASK));
-                            y[j] = (byte) ((bArr[(i2 + pos3) + j] & MASK) ^ y[j]);
-                            j++;
-                        }
+                for (int i2 = 0; i2 < len; i2++) {
+                    int MASK = ((i2 ^ index) - 1) >> 31;
+                    for (int j = 0; j < FE_BYTES; j++) {
+                        x[j] = (byte) (x[j] ^ (table[pos3 + j] & MASK));
+                        y[j] = (byte) (y[j] ^ (table[(FE_BYTES + pos3) + j] & MASK));
                     }
-                    pos3 += i2 * 2;
+                    int j2 = FE_BYTES;
+                    pos3 += j2 * 2;
                 }
                 return createPoint(x, y);
             }
 
             @Override // com.android.internal.org.bouncycastle.math.ec.AbstractECLookupTable, com.android.internal.org.bouncycastle.math.ec.ECLookupTable
             public ECPoint lookupVar(int index) {
-                int i2 = FE_BYTES;
-                byte[] x = new byte[i2];
-                byte[] y = new byte[i2];
-                int pos3 = i2 * index * 2;
-                int j = 0;
-                while (true) {
-                    int i3 = FE_BYTES;
-                    if (j < i3) {
-                        byte[] bArr = table;
-                        x[j] = bArr[pos3 + j];
-                        y[j] = bArr[i3 + pos3 + j];
-                        j++;
-                    } else {
-                        return createPoint(x, y);
-                    }
+                byte[] x = new byte[FE_BYTES];
+                byte[] y = new byte[FE_BYTES];
+                int pos3 = FE_BYTES * index * 2;
+                for (int j = 0; j < FE_BYTES; j++) {
+                    x[j] = table[pos3 + j];
+                    y[j] = table[FE_BYTES + pos3 + j];
                 }
+                return createPoint(x, y);
             }
 
             private ECPoint createPoint(byte[] x, byte[] y) {
-                ECCurve eCCurve = ECCurve.this;
-                return eCCurve.createRawPoint(eCCurve.fromBigInteger(new BigInteger(1, x)), ECCurve.this.fromBigInteger(new BigInteger(1, y)));
+                return ECCurve.this.createRawPoint(ECCurve.this.fromBigInteger(new BigInteger(1, x)), ECCurve.this.fromBigInteger(new BigInteger(1, y)));
             }
         };
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.math.ec.ECCurve$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends AbstractECLookupTable {
-        final /* synthetic */ int val$FE_BYTES;
-        final /* synthetic */ int val$len;
-        final /* synthetic */ byte[] val$table;
-
-        AnonymousClass1(int len2, int FE_BYTES2, byte[] table2) {
-            len = len2;
-            FE_BYTES = FE_BYTES2;
-            table = table2;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
-        public int getSize() {
-            return len;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
-        public ECPoint lookup(int index) {
-            int i2;
-            int i3 = FE_BYTES;
-            byte[] x = new byte[i3];
-            byte[] y = new byte[i3];
-            int pos3 = 0;
-            for (int i4 = 0; i4 < len; i4++) {
-                int MASK = ((i4 ^ index) - 1) >> 31;
-                int j = 0;
-                while (true) {
-                    i2 = FE_BYTES;
-                    if (j < i2) {
-                        byte b = x[j];
-                        byte[] bArr = table;
-                        x[j] = (byte) (b ^ (bArr[pos3 + j] & MASK));
-                        y[j] = (byte) ((bArr[(i2 + pos3) + j] & MASK) ^ y[j]);
-                        j++;
-                    }
-                }
-                pos3 += i2 * 2;
-            }
-            return createPoint(x, y);
-        }
-
-        @Override // com.android.internal.org.bouncycastle.math.ec.AbstractECLookupTable, com.android.internal.org.bouncycastle.math.ec.ECLookupTable
-        public ECPoint lookupVar(int index) {
-            int i2 = FE_BYTES;
-            byte[] x = new byte[i2];
-            byte[] y = new byte[i2];
-            int pos3 = i2 * index * 2;
-            int j = 0;
-            while (true) {
-                int i3 = FE_BYTES;
-                if (j < i3) {
-                    byte[] bArr = table;
-                    x[j] = bArr[pos3 + j];
-                    y[j] = bArr[i3 + pos3 + j];
-                    j++;
-                } else {
-                    return createPoint(x, y);
-                }
-            }
-        }
-
-        private ECPoint createPoint(byte[] x, byte[] y) {
-            ECCurve eCCurve = ECCurve.this;
-            return eCCurve.createRawPoint(eCCurve.fromBigInteger(new BigInteger(1, x)), ECCurve.this.fromBigInteger(new BigInteger(1, y)));
-        }
     }
 
     protected void checkPoint(ECPoint point) {
@@ -507,9 +408,8 @@ public abstract class ECCurve {
         return (getField().hashCode() ^ Integers.rotateLeft(getA().toBigInteger().hashCode(), 8)) ^ Integers.rotateLeft(getB().toBigInteger().hashCode(), 16);
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class AbstractFp extends ECCurve {
-        public AbstractFp(BigInteger q) {
+        protected AbstractFp(BigInteger q) {
             super(FiniteFields.getPrimeField(q));
         }
 
@@ -566,7 +466,6 @@ public abstract class ECCurve {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Fp extends AbstractFp {
         private static final int FP_DEFAULT_COORDS = 4;
         ECPoint.Fp infinity;
@@ -634,15 +533,13 @@ public abstract class ECCurve {
             return new ECFieldElement.Fp(this.q, this.r, x);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
-        public ECPoint createRawPoint(ECFieldElement x, ECFieldElement y) {
+        protected ECPoint createRawPoint(ECFieldElement x, ECFieldElement y) {
             return new ECPoint.Fp(this, x, y);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
-        public ECPoint createRawPoint(ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
+        protected ECPoint createRawPoint(ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
             return new ECPoint.Fp(this, x, y, zs);
         }
 
@@ -665,7 +562,6 @@ public abstract class ECCurve {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class AbstractF2m extends ECCurve {
         private BigInteger[] si;
 
@@ -767,7 +663,7 @@ public abstract class ECCurve {
             return createRawPoint(x, y);
         }
 
-        public ECFieldElement solveQuadraticEquation(ECFieldElement beta) {
+        protected ECFieldElement solveQuadraticEquation(ECFieldElement beta) {
             ECFieldElement z;
             ECFieldElement t;
             ECFieldElement.AbstractF2m betaF2m = (ECFieldElement.AbstractF2m) beta;
@@ -805,7 +701,7 @@ public abstract class ECCurve {
             return z;
         }
 
-        public synchronized BigInteger[] getSi() {
+        synchronized BigInteger[] getSi() {
             if (this.si == null) {
                 this.si = Tnaf.getSi(this);
             }
@@ -825,7 +721,6 @@ public abstract class ECCurve {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class F2m extends AbstractF2m {
         private static final int F2M_DEFAULT_COORDS = 6;
         private ECPoint.F2m infinity;
@@ -909,15 +804,13 @@ public abstract class ECCurve {
             return new ECFieldElement.F2m(this.m, this.k1, this.k2, this.k3, x);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
-        public ECPoint createRawPoint(ECFieldElement x, ECFieldElement y) {
+        protected ECPoint createRawPoint(ECFieldElement x, ECFieldElement y) {
             return new ECPoint.F2m(this, x, y);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
-        public ECPoint createRawPoint(ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
+        protected ECPoint createRawPoint(ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
             return new ECPoint.F2m(this, x, y, zs);
         }
 
@@ -947,10 +840,10 @@ public abstract class ECCurve {
         }
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
-        public ECLookupTable createCacheSafeLookupTable(ECPoint[] points, int off, int len) {
-            int FE_LONGS = (this.m + 63) >>> 6;
-            int[] ks = isTrinomial() ? new int[]{this.k1} : new int[]{this.k1, this.k2, this.k3};
-            long[] table = new long[len * FE_LONGS * 2];
+        public ECLookupTable createCacheSafeLookupTable(ECPoint[] points, int off, final int len) {
+            final int FE_LONGS = (this.m + 63) >>> 6;
+            final int[] ks = isTrinomial() ? new int[]{this.k1} : new int[]{this.k1, this.k2, this.k3};
+            final long[] table = new long[len * FE_LONGS * 2];
             int pos = 0;
             for (int i = 0; i < len; i++) {
                 ECPoint p = points[off + i];
@@ -960,18 +853,6 @@ public abstract class ECCurve {
                 pos = pos2 + FE_LONGS;
             }
             return new AbstractECLookupTable() { // from class: com.android.internal.org.bouncycastle.math.ec.ECCurve.F2m.1
-                final /* synthetic */ int val$FE_LONGS;
-                final /* synthetic */ int[] val$ks;
-                final /* synthetic */ int val$len;
-                final /* synthetic */ long[] val$table;
-
-                AnonymousClass1(int len2, int FE_LONGS2, long[] table2, int[] ks2) {
-                    len = len2;
-                    FE_LONGS = FE_LONGS2;
-                    table = table2;
-                    ks = ks2;
-                }
-
                 @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
                 public int getSize() {
                     return len;
@@ -979,24 +860,17 @@ public abstract class ECCurve {
 
                 @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
                 public ECPoint lookup(int index) {
-                    int i2;
                     long[] x = Nat.create64(FE_LONGS);
                     long[] y = Nat.create64(FE_LONGS);
                     int pos3 = 0;
-                    for (int i3 = 0; i3 < len; i3++) {
-                        long MASK = ((i3 ^ index) - 1) >> 31;
-                        int j = 0;
-                        while (true) {
-                            i2 = FE_LONGS;
-                            if (j < i2) {
-                                long j2 = x[j];
-                                long[] jArr = table;
-                                x[j] = j2 ^ (jArr[pos3 + j] & MASK);
-                                y[j] = y[j] ^ (jArr[(i2 + pos3) + j] & MASK);
-                                j++;
-                            }
+                    for (int i2 = 0; i2 < len; i2++) {
+                        long MASK = ((i2 ^ index) - 1) >> 31;
+                        for (int j = 0; j < FE_LONGS; j++) {
+                            x[j] = x[j] ^ (table[pos3 + j] & MASK);
+                            y[j] = y[j] ^ (table[(FE_LONGS + pos3) + j] & MASK);
                         }
-                        pos3 += i2 * 2;
+                        int j2 = FE_LONGS;
+                        pos3 += j2 * 2;
                     }
                     return createPoint(x, y);
                 }
@@ -1006,18 +880,11 @@ public abstract class ECCurve {
                     long[] x = Nat.create64(FE_LONGS);
                     long[] y = Nat.create64(FE_LONGS);
                     int pos3 = FE_LONGS * index * 2;
-                    int j = 0;
-                    while (true) {
-                        int i2 = FE_LONGS;
-                        if (j < i2) {
-                            long[] jArr = table;
-                            x[j] = jArr[pos3 + j];
-                            y[j] = jArr[i2 + pos3 + j];
-                            j++;
-                        } else {
-                            return createPoint(x, y);
-                        }
+                    for (int j = 0; j < FE_LONGS; j++) {
+                        x[j] = table[pos3 + j];
+                        y[j] = table[FE_LONGS + pos3 + j];
                     }
+                    return createPoint(x, y);
                 }
 
                 private ECPoint createPoint(long[] x, long[] y) {
@@ -1026,76 +893,6 @@ public abstract class ECCurve {
                     return F2m.this.createRawPoint(X, Y);
                 }
             };
-        }
-
-        /* renamed from: com.android.internal.org.bouncycastle.math.ec.ECCurve$F2m$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 extends AbstractECLookupTable {
-            final /* synthetic */ int val$FE_LONGS;
-            final /* synthetic */ int[] val$ks;
-            final /* synthetic */ int val$len;
-            final /* synthetic */ long[] val$table;
-
-            AnonymousClass1(int len2, int FE_LONGS2, long[] table2, int[] ks2) {
-                len = len2;
-                FE_LONGS = FE_LONGS2;
-                table = table2;
-                ks = ks2;
-            }
-
-            @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
-            public int getSize() {
-                return len;
-            }
-
-            @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
-            public ECPoint lookup(int index) {
-                int i2;
-                long[] x = Nat.create64(FE_LONGS);
-                long[] y = Nat.create64(FE_LONGS);
-                int pos3 = 0;
-                for (int i3 = 0; i3 < len; i3++) {
-                    long MASK = ((i3 ^ index) - 1) >> 31;
-                    int j = 0;
-                    while (true) {
-                        i2 = FE_LONGS;
-                        if (j < i2) {
-                            long j2 = x[j];
-                            long[] jArr = table;
-                            x[j] = j2 ^ (jArr[pos3 + j] & MASK);
-                            y[j] = y[j] ^ (jArr[(i2 + pos3) + j] & MASK);
-                            j++;
-                        }
-                    }
-                    pos3 += i2 * 2;
-                }
-                return createPoint(x, y);
-            }
-
-            @Override // com.android.internal.org.bouncycastle.math.ec.AbstractECLookupTable, com.android.internal.org.bouncycastle.math.ec.ECLookupTable
-            public ECPoint lookupVar(int index) {
-                long[] x = Nat.create64(FE_LONGS);
-                long[] y = Nat.create64(FE_LONGS);
-                int pos3 = FE_LONGS * index * 2;
-                int j = 0;
-                while (true) {
-                    int i2 = FE_LONGS;
-                    if (j < i2) {
-                        long[] jArr = table;
-                        x[j] = jArr[pos3 + j];
-                        y[j] = jArr[i2 + pos3 + j];
-                        j++;
-                    } else {
-                        return createPoint(x, y);
-                    }
-                }
-            }
-
-            private ECPoint createPoint(long[] x, long[] y) {
-                ECFieldElement.F2m X = new ECFieldElement.F2m(F2m.this.m, ks, new LongArray(x));
-                ECFieldElement.F2m Y = new ECFieldElement.F2m(F2m.this.m, ks, new LongArray(y));
-                return F2m.this.createRawPoint(X, Y);
-            }
         }
     }
 }

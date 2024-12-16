@@ -54,9 +54,8 @@ public class RevokedInfo extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(this.revocationTime);
-        CRLReason cRLReason = this.revocationReason;
-        if (cRLReason != null) {
-            v.add(new DERTaggedObject(true, 0, cRLReason));
+        if (this.revocationReason != null) {
+            v.add(new DERTaggedObject(true, 0, this.revocationReason));
         }
         return new DERSequence(v);
     }

@@ -10,14 +10,13 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes4.dex */
 public final class InputMonitor implements Parcelable {
     public static final Parcelable.Creator<InputMonitor> CREATOR = new Parcelable.Creator<InputMonitor>() { // from class: android.view.InputMonitor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMonitor[] newArray(int size) {
             return new InputMonitor[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMonitor createFromParcel(Parcel in) {
             return new InputMonitor(in);
@@ -49,11 +48,11 @@ public final class InputMonitor implements Parcelable {
 
     public InputMonitor(InputChannel inputChannel, IInputMonitorHost host, SurfaceControl surface) {
         this.mInputChannel = inputChannel;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inputChannel);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInputChannel);
         this.mHost = host;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) host);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHost);
         this.mSurface = surface;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) surface);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSurface);
     }
 
     public InputChannel getInputChannel() {
@@ -89,28 +88,11 @@ public final class InputMonitor implements Parcelable {
         IInputMonitorHost host = IInputMonitorHost.Stub.asInterface(in.readStrongBinder());
         SurfaceControl surface = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
         this.mInputChannel = inputChannel;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inputChannel);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInputChannel);
         this.mHost = host;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) host);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHost);
         this.mSurface = surface;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) surface);
-    }
-
-    /* renamed from: android.view.InputMonitor$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InputMonitor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputMonitor[] newArray(int size) {
-            return new InputMonitor[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputMonitor createFromParcel(Parcel in) {
-            return new InputMonitor(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSurface);
     }
 
     @Deprecated

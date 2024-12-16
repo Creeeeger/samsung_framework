@@ -2,7 +2,7 @@ package com.samsung.android.photoremasterservice;
 
 import com.samsung.android.photoremaster.util.LogUtil;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ProgressObserver {
     static final String TAG = "ProgressObserver";
     private boolean updated = false;

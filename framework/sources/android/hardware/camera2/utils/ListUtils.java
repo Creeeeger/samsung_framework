@@ -2,7 +2,7 @@ package android.hardware.camera2.utils;
 
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class ListUtils {
     public static <T> boolean listContains(List<T> list, T needle) {
         if (list == null) {

@@ -46,8 +46,7 @@ public class PKIXCertPathValidatorSpi extends CertPathValidatorSpi {
         this.isForCRLCheck = isForCRLCheck;
     }
 
-    /* loaded from: classes5.dex */
-    public static class NoPreloadHolder {
+    private static class NoPreloadHolder {
         private static final CertBlocklist blocklist = new CertBlocklist();
 
         private NoPreloadHolder() {

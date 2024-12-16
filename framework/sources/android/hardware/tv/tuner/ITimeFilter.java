@@ -26,7 +26,6 @@ public interface ITimeFilter extends IInterface {
 
     void setTimeStamp(long j) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITimeFilter {
         @Override // android.hardware.tv.tuner.ITimeFilter
         public void setTimeStamp(long timeStamp) throws RemoteException {
@@ -66,7 +65,6 @@ public interface ITimeFilter extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITimeFilter {
         static final int TRANSACTION_clearTimeStamp = 2;
         static final int TRANSACTION_close = 5;
@@ -103,53 +101,51 @@ public interface ITimeFilter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setTimeStamp(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    clearTimeStamp();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    long _result = getTimeStamp();
+                    reply.writeNoException();
+                    reply.writeLong(_result);
+                    return true;
+                case 4:
+                    long _result2 = getSourceTime();
+                    reply.writeNoException();
+                    reply.writeLong(_result2);
+                    return true;
+                case 5:
+                    close();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setTimeStamp(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            clearTimeStamp();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            long _result = getTimeStamp();
-                            reply.writeNoException();
-                            reply.writeLong(_result);
-                            return true;
-                        case 4:
-                            long _result2 = getSourceTime();
-                            reply.writeNoException();
-                            reply.writeLong(_result2);
-                            return true;
-                        case 5:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITimeFilter {
+        private static class Proxy implements ITimeFilter {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

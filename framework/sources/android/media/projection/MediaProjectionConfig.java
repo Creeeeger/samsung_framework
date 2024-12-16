@@ -13,14 +13,13 @@ public final class MediaProjectionConfig implements Parcelable {
     public static final int CAPTURE_REGION_FIXED_DISPLAY = 1;
     public static final int CAPTURE_REGION_USER_CHOICE = 0;
     public static final Parcelable.Creator<MediaProjectionConfig> CREATOR = new Parcelable.Creator<MediaProjectionConfig>() { // from class: android.media.projection.MediaProjectionConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaProjectionConfig[] newArray(int size) {
             return new MediaProjectionConfig[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaProjectionConfig createFromParcel(Parcel in) {
             return new MediaProjectionConfig(in);
@@ -30,7 +29,6 @@ public final class MediaProjectionConfig implements Parcelable {
     private int mRegionToCapture;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface CaptureRegion {
     }
 
@@ -111,26 +109,9 @@ public final class MediaProjectionConfig implements Parcelable {
         int displayToCapture = in.readInt();
         int regionToCapture = in.readInt();
         this.mDisplayToCapture = displayToCapture;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, displayToCapture, "from", 0L, "to", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mDisplayToCapture, "from", 0L, "to", 0L);
         this.mRegionToCapture = regionToCapture;
-        AnnotationValidations.validate((Class<? extends Annotation>) CaptureRegion.class, (Annotation) null, regionToCapture);
-    }
-
-    /* renamed from: android.media.projection.MediaProjectionConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MediaProjectionConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaProjectionConfig[] newArray(int size) {
-            return new MediaProjectionConfig[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaProjectionConfig createFromParcel(Parcel in) {
-            return new MediaProjectionConfig(in);
-        }
+        AnnotationValidations.validate((Class<? extends Annotation>) CaptureRegion.class, (Annotation) null, this.mRegionToCapture);
     }
 
     @Deprecated

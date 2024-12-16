@@ -47,7 +47,7 @@ public final class FillRequest {
 
     public FillRequest(AugmentedAutofillService.AutofillProxy proxy, InlineSuggestionsRequest inlineSuggestionsRequest) {
         this.mProxy = proxy;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) proxy);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mProxy);
         this.mInlineSuggestionsRequest = inlineSuggestionsRequest;
     }
 

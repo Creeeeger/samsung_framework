@@ -12,7 +12,6 @@ public interface IStopUserCallback extends IInterface {
 
     void userStopped(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IStopUserCallback {
         @Override // android.app.IStopUserCallback
         public void userStopped(int userId) throws RemoteException {
@@ -28,7 +27,6 @@ public interface IStopUserCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IStopUserCallback {
         public static final String DESCRIPTOR = "android.app.IStopUserCallback";
         static final int TRANSACTION_userStopAborted = 2;
@@ -75,32 +73,29 @@ public interface IStopUserCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    userStopped(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    userStopAborted(_arg02);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            userStopped(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            userStopAborted(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IStopUserCallback {
+        private static class Proxy implements IStopUserCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

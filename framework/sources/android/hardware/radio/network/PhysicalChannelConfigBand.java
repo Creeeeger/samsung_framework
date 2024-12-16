@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class PhysicalChannelConfigBand implements Parcelable {
     public static final Parcelable.Creator<PhysicalChannelConfigBand> CREATOR = new Parcelable.Creator<PhysicalChannelConfigBand>() { // from class: android.hardware.radio.network.PhysicalChannelConfigBand.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfigBand createFromParcel(Parcel _aidl_source) {
             return new PhysicalChannelConfigBand(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfigBand[] newArray(int _aidl_size) {
             return new PhysicalChannelConfigBand[_aidl_size];
@@ -28,17 +27,12 @@ public final class PhysicalChannelConfigBand implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int eutranBand = 3;
         public static final int geranBand = 1;
         public static final int ngranBand = 4;
         public static final int noinit = 0;
         public static final int utranBand = 2;
-    }
-
-    /* synthetic */ PhysicalChannelConfigBand(Parcel parcel, PhysicalChannelConfigBandIA physicalChannelConfigBandIA) {
-        this(parcel);
     }
 
     public PhysicalChannelConfigBand() {
@@ -129,44 +123,25 @@ public final class PhysicalChannelConfigBand implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.radio.network.PhysicalChannelConfigBand$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhysicalChannelConfigBand> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhysicalChannelConfigBand createFromParcel(Parcel _aidl_source) {
-            return new PhysicalChannelConfigBand(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhysicalChannelConfigBand[] newArray(int _aidl_size) {
-            return new PhysicalChannelConfigBand[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getNoinit());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getGeranBand());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getUtranBand());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getEutranBand());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeInt(getNgranBand());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -207,15 +182,15 @@ public final class PhysicalChannelConfigBand implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.hardware.radio.network.PhysicalChannelConfigBand.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
+                return "PhysicalChannelConfigBand.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.hardware.radio.network.PhysicalChannelConfigBand.geranBand(" + GeranBands$$.toString(getGeranBand()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "PhysicalChannelConfigBand.geranBand(" + GeranBands$$.toString(getGeranBand()) + NavigationBarInflaterView.KEY_CODE_END;
             case 2:
-                return "android.hardware.radio.network.PhysicalChannelConfigBand.utranBand(" + UtranBands$$.toString(getUtranBand()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "PhysicalChannelConfigBand.utranBand(" + UtranBands$$.toString(getUtranBand()) + NavigationBarInflaterView.KEY_CODE_END;
             case 3:
-                return "android.hardware.radio.network.PhysicalChannelConfigBand.eutranBand(" + EutranBands$$.toString(getEutranBand()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "PhysicalChannelConfigBand.eutranBand(" + EutranBands$$.toString(getEutranBand()) + NavigationBarInflaterView.KEY_CODE_END;
             case 4:
-                return "android.hardware.radio.network.PhysicalChannelConfigBand.ngranBand(" + NgranBands$$.toString(getNgranBand()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "PhysicalChannelConfigBand.ngranBand(" + NgranBands$$.toString(getNgranBand()) + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

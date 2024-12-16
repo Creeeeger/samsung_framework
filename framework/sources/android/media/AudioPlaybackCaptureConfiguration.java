@@ -14,10 +14,6 @@ public final class AudioPlaybackCaptureConfiguration {
     private final AudioMixingRule mAudioMixingRule;
     private final MediaProjection mProjection;
 
-    /* synthetic */ AudioPlaybackCaptureConfiguration(AudioMixingRule audioMixingRule, MediaProjection mediaProjection, AudioPlaybackCaptureConfigurationIA audioPlaybackCaptureConfigurationIA) {
-        this(audioMixingRule, mediaProjection);
-    }
-
     private AudioPlaybackCaptureConfiguration(AudioMixingRule audioMixingRule, MediaProjection projection) {
         this.mAudioMixingRule = audioMixingRule;
         this.mProjection = projection;
@@ -28,7 +24,7 @@ public final class AudioPlaybackCaptureConfiguration {
     }
 
     public int[] getMatchingUsages() {
-        return getIntPredicates(1, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda3
+        return getIntPredicates(1, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda2
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 int usage;
@@ -39,7 +35,7 @@ public final class AudioPlaybackCaptureConfiguration {
     }
 
     public int[] getMatchingUids() {
-        return getIntPredicates(4, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda0
+        return getIntPredicates(4, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda1
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 int intProp;
@@ -50,7 +46,7 @@ public final class AudioPlaybackCaptureConfiguration {
     }
 
     public int[] getExcludeUsages() {
-        return getIntPredicates(32769, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda2
+        return getIntPredicates(32769, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda4
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 int usage;
@@ -61,7 +57,7 @@ public final class AudioPlaybackCaptureConfiguration {
     }
 
     public int[] getExcludeUids() {
-        return getIntPredicates(32772, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda4
+        return getIntPredicates(32772, new ToIntFunction() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda3
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 int intProp;
@@ -72,7 +68,7 @@ public final class AudioPlaybackCaptureConfiguration {
     }
 
     private int[] getIntPredicates(final int rule, ToIntFunction<AudioMixingRule.AudioMixMatchCriterion> getPredicate) {
-        return this.mAudioMixingRule.getCriteria().stream().filter(new Predicate() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda1
+        return this.mAudioMixingRule.getCriteria().stream().filter(new Predicate() { // from class: android.media.AudioPlaybackCaptureConfiguration$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return AudioPlaybackCaptureConfiguration.lambda$getIntPredicates$4(rule, (AudioMixingRule.AudioMixMatchCriterion) obj);
@@ -80,15 +76,14 @@ public final class AudioPlaybackCaptureConfiguration {
         }).mapToInt(getPredicate).toArray();
     }
 
-    public static /* synthetic */ boolean lambda$getIntPredicates$4(int rule, AudioMixingRule.AudioMixMatchCriterion criterion) {
+    static /* synthetic */ boolean lambda$getIntPredicates$4(int rule, AudioMixingRule.AudioMixMatchCriterion criterion) {
         return criterion.getRule() == rule;
     }
 
-    public android.media.audiopolicy.AudioMix createAudioMix(AudioFormat audioFormat) {
+    android.media.audiopolicy.AudioMix createAudioMix(AudioFormat audioFormat) {
         return new AudioMix.Builder(this.mAudioMixingRule).setFormat(audioFormat).setRouteFlags(3).build();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private static final String ERROR_MESSAGE_MISMATCHED_RULES = "Inclusive and exclusive usage rules cannot be combined";
         private static final String ERROR_MESSAGE_NON_AUDIO_PROJECTION = "MediaProjection can not project audio";

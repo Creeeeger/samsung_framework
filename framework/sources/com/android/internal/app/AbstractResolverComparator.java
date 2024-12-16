@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class AbstractResolverComparator implements Comparator<ResolverActivity.ResolvedComponentInfo> {
     private static final boolean DEBUG = true;
     private static final int NUM_OF_TOP_ANNOTATIONS_TO_USE = 3;
@@ -40,54 +40,17 @@ public abstract class AbstractResolverComparator implements Comparator<ResolverA
     protected final Map<UserHandle, PackageManager> mPmMap;
     protected final Map<UserHandle, UsageStatsManager> mUsmMap;
 
-    /* loaded from: classes4.dex */
-    public interface AfterCompute {
+    interface AfterCompute {
         void afterCompute();
     }
 
-    public abstract int compare(ResolveInfo resolveInfo, ResolveInfo resolveInfo2);
+    abstract int compare(ResolveInfo resolveInfo, ResolveInfo resolveInfo2);
 
     abstract void doCompute(List<ResolverActivity.ResolvedComponentInfo> list);
 
-    public abstract float getScore(TargetInfo targetInfo);
+    abstract float getScore(TargetInfo targetInfo);
 
     abstract void handleResultMessage(Message message);
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.app.AbstractResolverComparator$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    Log.d(AbstractResolverComparator.TAG, "RANKER_SERVICE_RESULT");
-                    if (AbstractResolverComparator.this.mHandler.hasMessages(1)) {
-                        AbstractResolverComparator.this.handleResultMessage(msg);
-                        AbstractResolverComparator.this.mHandler.removeMessages(1);
-                        AbstractResolverComparator.this.afterCompute();
-                        return;
-                    }
-                    return;
-                case 1:
-                    Log.d(AbstractResolverComparator.TAG, "RANKER_RESULT_TIMEOUT; unbinding services");
-                    AbstractResolverComparator.this.mHandler.removeMessages(0);
-                    AbstractResolverComparator.this.afterCompute();
-                    if (AbstractResolverComparator.this.mChooserActivityLogger != null) {
-                        AbstractResolverComparator.this.mChooserActivityLogger.logSharesheetAppShareRankingTimeout();
-                        return;
-                    }
-                    return;
-                default:
-                    super.handleMessage(msg);
-                    return;
-            }
-        }
-    }
 
     public AbstractResolverComparator(Context launchedFromContext, Intent intent, UserHandle targetUserSpace) {
         this(launchedFromContext, intent, Lists.newArrayList(targetUserSpace));
@@ -97,10 +60,6 @@ public abstract class AbstractResolverComparator implements Comparator<ResolverA
         this.mPmMap = new HashMap();
         this.mUsmMap = new HashMap();
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.internal.app.AbstractResolverComparator.1
-            AnonymousClass1(Looper looper) {
-                super(looper);
-            }
-
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -110,21 +69,21 @@ public abstract class AbstractResolverComparator implements Comparator<ResolverA
                             AbstractResolverComparator.this.handleResultMessage(msg);
                             AbstractResolverComparator.this.mHandler.removeMessages(1);
                             AbstractResolverComparator.this.afterCompute();
-                            return;
+                            break;
                         }
-                        return;
+                        break;
                     case 1:
                         Log.d(AbstractResolverComparator.TAG, "RANKER_RESULT_TIMEOUT; unbinding services");
                         AbstractResolverComparator.this.mHandler.removeMessages(0);
                         AbstractResolverComparator.this.afterCompute();
                         if (AbstractResolverComparator.this.mChooserActivityLogger != null) {
                             AbstractResolverComparator.this.mChooserActivityLogger.logSharesheetAppShareRankingTimeout();
-                            return;
+                            break;
                         }
-                        return;
+                        break;
                     default:
                         super.handleMessage(msg);
-                        return;
+                        break;
                 }
             }
         };
@@ -159,19 +118,19 @@ public abstract class AbstractResolverComparator implements Comparator<ResolverA
         }
     }
 
-    public void setCallBack(AfterCompute afterCompute) {
+    void setCallBack(AfterCompute afterCompute) {
         this.mAfterCompute = afterCompute;
     }
 
-    public void setChooserActivityLogger(ChooserActivityLogger chooserActivityLogger) {
+    void setChooserActivityLogger(ChooserActivityLogger chooserActivityLogger) {
         this.mChooserActivityLogger = chooserActivityLogger;
     }
 
-    public ChooserActivityLogger getChooserActivityLogger() {
+    ChooserActivityLogger getChooserActivityLogger() {
         return this.mChooserActivityLogger;
     }
 
-    public final void afterCompute() {
+    protected final void afterCompute() {
         AfterCompute afterCompute = this.mAfterCompute;
         if (afterCompute != null) {
             afterCompute.afterCompute();
@@ -223,40 +182,37 @@ public abstract class AbstractResolverComparator implements Comparator<ResolverA
         return compare(lhs, rhs);
     }
 
-    public final void compute(List<ResolverActivity.ResolvedComponentInfo> targets) {
+    final void compute(List<ResolverActivity.ResolvedComponentInfo> targets) {
         beforeCompute();
         doCompute(targets);
     }
 
-    public final void updateChooserCounts(String packageName, UserHandle user, String action) {
+    final void updateChooserCounts(String packageName, UserHandle user, String action) {
         if (this.mUsmMap.containsKey(user)) {
             this.mUsmMap.get(user).reportChooserSelection(packageName, user.getIdentifier(), this.mContentType, this.mAnnotations, action);
         }
     }
 
-    public void updateModel(TargetInfo targetInfo) {
+    void updateModel(TargetInfo targetInfo) {
     }
 
-    public void beforeCompute() {
+    void beforeCompute() {
         Log.d(TAG, "Setting watchdog timer for 500ms");
-        Handler handler = this.mHandler;
-        if (handler == null) {
+        if (this.mHandler == null) {
             Log.d(TAG, "Error: Handler is Null; Needs to be initialized.");
         } else {
-            handler.sendEmptyMessageDelayed(1, 500L);
+            this.mHandler.sendEmptyMessageDelayed(1, 500L);
         }
     }
 
-    public void destroy() {
+    void destroy() {
         this.mHandler.removeMessages(0);
         this.mHandler.removeMessages(1);
         afterCompute();
         this.mAfterCompute = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public class AzInfoComparator implements Comparator<ResolveInfo> {
+    class AzInfoComparator implements Comparator<ResolveInfo> {
         Collator mCollator;
 
         AzInfoComparator(Context context) {

@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextAnyMotionDetector extends SContextEventContext {
     public static final Parcelable.Creator<SContextAnyMotionDetector> CREATOR = new Parcelable.Creator<SContextAnyMotionDetector>() { // from class: android.hardware.scontext.SContextAnyMotionDetector.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAnyMotionDetector createFromParcel(Parcel in) {
             return new SContextAnyMotionDetector(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAnyMotionDetector[] newArray(int size) {
             return new SContextAnyMotionDetector[size];
@@ -23,7 +22,7 @@ public class SContextAnyMotionDetector extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextAnyMotionDetector() {
+    SContextAnyMotionDetector() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextAnyMotionDetector extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextAnyMotionDetector$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextAnyMotionDetector> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAnyMotionDetector createFromParcel(Parcel in) {
-            return new SContextAnyMotionDetector(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAnyMotionDetector[] newArray(int size) {
-            return new SContextAnyMotionDetector[size];
-        }
     }
 }

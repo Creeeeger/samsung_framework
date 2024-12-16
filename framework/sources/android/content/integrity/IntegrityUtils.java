@@ -42,11 +42,8 @@ public class IntegrityUtils {
     }
 
     private static char decToHex(int dec) {
-        if (dec >= 0) {
-            char[] cArr = HEX_CHARS;
-            if (dec < cArr.length) {
-                return cArr[dec];
-            }
+        if (dec >= 0 && dec < HEX_CHARS.length) {
+            return HEX_CHARS[dec];
         }
         throw new IllegalArgumentException("Invalid dec value to be converted to hex digit " + dec);
     }

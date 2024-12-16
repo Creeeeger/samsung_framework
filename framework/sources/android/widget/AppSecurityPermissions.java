@@ -21,12 +21,12 @@ public class AppSecurityPermissions {
         TextView permGrpView = (TextView) permView.findViewById(R.id.permission_group);
         TextView permDescView = (TextView) permView.findViewById(R.id.permission_list);
         ImageView imgView = (ImageView) permView.findViewById(R.id.perm_icon);
-        imgView.lambda$setImageURIAsync$2(icon);
+        imgView.lambda$setImageURIAsync$0(icon);
         if (grpName != null) {
-            permGrpView.setText(grpName);
-            permDescView.setText(permList);
+            permGrpView.lambda$setTextAsync$0(grpName);
+            permDescView.lambda$setTextAsync$0(permList);
         } else {
-            permGrpView.setText(permList);
+            permGrpView.lambda$setTextAsync$0(permList);
             permDescView.setVisibility(8);
         }
         return permView;

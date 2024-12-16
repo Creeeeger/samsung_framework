@@ -6,13 +6,11 @@ import com.android.framework.protobuf.nano.InternalNano;
 import com.android.framework.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.android.framework.protobuf.nano.MessageNano;
 import com.android.framework.protobuf.nano.WireFormatNano;
-import com.android.internal.logging.nano.MetricsProto;
 import java.io.IOException;
 
 /* loaded from: classes5.dex */
 public interface WindowManagerProtos {
 
-    /* loaded from: classes5.dex */
     public static final class TaskSnapshotProto extends MessageNano {
         private static volatile TaskSnapshotProto[] _emptyArray;
         public int appearance;
@@ -86,41 +84,32 @@ public interface WindowManagerProtos {
 
         @Override // com.android.framework.protobuf.nano.MessageNano
         public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-            int i = this.orientation;
-            if (i != 0) {
-                output.writeInt32(1, i);
+            if (this.orientation != 0) {
+                output.writeInt32(1, this.orientation);
             }
-            int i2 = this.insetLeft;
-            if (i2 != 0) {
-                output.writeInt32(2, i2);
+            if (this.insetLeft != 0) {
+                output.writeInt32(2, this.insetLeft);
             }
-            int i3 = this.insetTop;
-            if (i3 != 0) {
-                output.writeInt32(3, i3);
+            if (this.insetTop != 0) {
+                output.writeInt32(3, this.insetTop);
             }
-            int i4 = this.insetRight;
-            if (i4 != 0) {
-                output.writeInt32(4, i4);
+            if (this.insetRight != 0) {
+                output.writeInt32(4, this.insetRight);
             }
-            int i5 = this.insetBottom;
-            if (i5 != 0) {
-                output.writeInt32(5, i5);
+            if (this.insetBottom != 0) {
+                output.writeInt32(5, this.insetBottom);
             }
-            boolean z = this.isRealSnapshot;
-            if (z) {
-                output.writeBool(6, z);
+            if (this.isRealSnapshot) {
+                output.writeBool(6, this.isRealSnapshot);
             }
-            int i6 = this.windowingMode;
-            if (i6 != 0) {
-                output.writeInt32(7, i6);
+            if (this.windowingMode != 0) {
+                output.writeInt32(7, this.windowingMode);
             }
-            int i7 = this.systemUiVisibility;
-            if (i7 != 0) {
-                output.writeInt32(8, i7);
+            if (this.systemUiVisibility != 0) {
+                output.writeInt32(8, this.systemUiVisibility);
             }
-            boolean z2 = this.isTranslucent;
-            if (z2) {
-                output.writeBool(9, z2);
+            if (this.isTranslucent) {
+                output.writeBool(9, this.isTranslucent);
             }
             if (!this.topActivityComponent.equals("")) {
                 output.writeString(10, this.topActivityComponent);
@@ -128,99 +117,77 @@ public interface WindowManagerProtos {
             if (Float.floatToIntBits(this.legacyScale) != Float.floatToIntBits(0.0f)) {
                 output.writeFloat(11, this.legacyScale);
             }
-            long j = this.id;
-            if (j != 0) {
-                output.writeInt64(12, j);
+            if (this.id != 0) {
+                output.writeInt64(12, this.id);
             }
-            int i8 = this.rotation;
-            if (i8 != 0) {
-                output.writeInt32(13, i8);
+            if (this.rotation != 0) {
+                output.writeInt32(13, this.rotation);
             }
-            int i9 = this.taskWidth;
-            if (i9 != 0) {
-                output.writeInt32(14, i9);
+            if (this.taskWidth != 0) {
+                output.writeInt32(14, this.taskWidth);
             }
-            int i10 = this.taskHeight;
-            if (i10 != 0) {
-                output.writeInt32(15, i10);
+            if (this.taskHeight != 0) {
+                output.writeInt32(15, this.taskHeight);
             }
-            int i11 = this.appearance;
-            if (i11 != 0) {
-                output.writeInt32(16, i11);
+            if (this.appearance != 0) {
+                output.writeInt32(16, this.appearance);
             }
-            int i12 = this.letterboxInsetLeft;
-            if (i12 != 0) {
-                output.writeInt32(17, i12);
+            if (this.letterboxInsetLeft != 0) {
+                output.writeInt32(17, this.letterboxInsetLeft);
             }
-            int i13 = this.letterboxInsetTop;
-            if (i13 != 0) {
-                output.writeInt32(18, i13);
+            if (this.letterboxInsetTop != 0) {
+                output.writeInt32(18, this.letterboxInsetTop);
             }
-            int i14 = this.letterboxInsetRight;
-            if (i14 != 0) {
-                output.writeInt32(19, i14);
+            if (this.letterboxInsetRight != 0) {
+                output.writeInt32(19, this.letterboxInsetRight);
             }
-            int i15 = this.letterboxInsetBottom;
-            if (i15 != 0) {
-                output.writeInt32(20, i15);
+            if (this.letterboxInsetBottom != 0) {
+                output.writeInt32(20, this.letterboxInsetBottom);
             }
-            int i16 = this.cutoutInsetLeft;
-            if (i16 != 0) {
-                output.writeInt32(101, i16);
+            if (this.cutoutInsetLeft != 0) {
+                output.writeInt32(101, this.cutoutInsetLeft);
             }
-            int i17 = this.cutoutInsetTop;
-            if (i17 != 0) {
-                output.writeInt32(102, i17);
+            if (this.cutoutInsetTop != 0) {
+                output.writeInt32(102, this.cutoutInsetTop);
             }
-            int i18 = this.cutoutInsetRight;
-            if (i18 != 0) {
-                output.writeInt32(103, i18);
+            if (this.cutoutInsetRight != 0) {
+                output.writeInt32(103, this.cutoutInsetRight);
             }
-            int i19 = this.cutoutInsetBottom;
-            if (i19 != 0) {
-                output.writeInt32(104, i19);
+            if (this.cutoutInsetBottom != 0) {
+                output.writeInt32(104, this.cutoutInsetBottom);
             }
             super.writeTo(output);
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
-            int i = this.orientation;
-            if (i != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(1, i);
+            if (this.orientation != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(1, this.orientation);
             }
-            int i2 = this.insetLeft;
-            if (i2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(2, i2);
+            if (this.insetLeft != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(2, this.insetLeft);
             }
-            int i3 = this.insetTop;
-            if (i3 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(3, i3);
+            if (this.insetTop != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(3, this.insetTop);
             }
-            int i4 = this.insetRight;
-            if (i4 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(4, i4);
+            if (this.insetRight != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(4, this.insetRight);
             }
-            int i5 = this.insetBottom;
-            if (i5 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(5, i5);
+            if (this.insetBottom != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(5, this.insetBottom);
             }
-            boolean z = this.isRealSnapshot;
-            if (z) {
-                size += CodedOutputByteBufferNano.computeBoolSize(6, z);
+            if (this.isRealSnapshot) {
+                size += CodedOutputByteBufferNano.computeBoolSize(6, this.isRealSnapshot);
             }
-            int i6 = this.windowingMode;
-            if (i6 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(7, i6);
+            if (this.windowingMode != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(7, this.windowingMode);
             }
-            int i7 = this.systemUiVisibility;
-            if (i7 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(8, i7);
+            if (this.systemUiVisibility != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(8, this.systemUiVisibility);
             }
-            boolean z2 = this.isTranslucent;
-            if (z2) {
-                size += CodedOutputByteBufferNano.computeBoolSize(9, z2);
+            if (this.isTranslucent) {
+                size += CodedOutputByteBufferNano.computeBoolSize(9, this.isTranslucent);
             }
             if (!this.topActivityComponent.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(10, this.topActivityComponent);
@@ -228,57 +195,44 @@ public interface WindowManagerProtos {
             if (Float.floatToIntBits(this.legacyScale) != Float.floatToIntBits(0.0f)) {
                 size += CodedOutputByteBufferNano.computeFloatSize(11, this.legacyScale);
             }
-            long j = this.id;
-            if (j != 0) {
-                size += CodedOutputByteBufferNano.computeInt64Size(12, j);
+            if (this.id != 0) {
+                size += CodedOutputByteBufferNano.computeInt64Size(12, this.id);
             }
-            int i8 = this.rotation;
-            if (i8 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(13, i8);
+            if (this.rotation != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(13, this.rotation);
             }
-            int i9 = this.taskWidth;
-            if (i9 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(14, i9);
+            if (this.taskWidth != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(14, this.taskWidth);
             }
-            int i10 = this.taskHeight;
-            if (i10 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(15, i10);
+            if (this.taskHeight != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(15, this.taskHeight);
             }
-            int i11 = this.appearance;
-            if (i11 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(16, i11);
+            if (this.appearance != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(16, this.appearance);
             }
-            int i12 = this.letterboxInsetLeft;
-            if (i12 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(17, i12);
+            if (this.letterboxInsetLeft != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(17, this.letterboxInsetLeft);
             }
-            int i13 = this.letterboxInsetTop;
-            if (i13 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(18, i13);
+            if (this.letterboxInsetTop != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(18, this.letterboxInsetTop);
             }
-            int i14 = this.letterboxInsetRight;
-            if (i14 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(19, i14);
+            if (this.letterboxInsetRight != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(19, this.letterboxInsetRight);
             }
-            int i15 = this.letterboxInsetBottom;
-            if (i15 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(20, i15);
+            if (this.letterboxInsetBottom != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(20, this.letterboxInsetBottom);
             }
-            int i16 = this.cutoutInsetLeft;
-            if (i16 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(101, i16);
+            if (this.cutoutInsetLeft != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(101, this.cutoutInsetLeft);
             }
-            int i17 = this.cutoutInsetTop;
-            if (i17 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(102, i17);
+            if (this.cutoutInsetTop != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(102, this.cutoutInsetTop);
             }
-            int i18 = this.cutoutInsetRight;
-            if (i18 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(103, i18);
+            if (this.cutoutInsetRight != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(103, this.cutoutInsetRight);
             }
-            int i19 = this.cutoutInsetBottom;
-            if (i19 != 0) {
-                return size + CodedOutputByteBufferNano.computeInt32Size(104, i19);
+            if (this.cutoutInsetBottom != 0) {
+                return size + CodedOutputByteBufferNano.computeInt32Size(104, this.cutoutInsetBottom);
             }
             return size;
         }
@@ -359,7 +313,7 @@ public interface WindowManagerProtos {
                     case 824:
                         this.cutoutInsetRight = input.readInt32();
                         break;
-                    case MetricsProto.MetricsEvent.NOTIFICATION_SNOOZED_CRITERIA /* 832 */:
+                    case 832:
                         this.cutoutInsetBottom = input.readInt32();
                         break;
                     default:
@@ -380,7 +334,6 @@ public interface WindowManagerProtos {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class LetterboxProto extends MessageNano {
         public static final int LETTERBOX_HORIZONTAL_REACHABILITY_POSITION_CENTER = 1;
         public static final int LETTERBOX_HORIZONTAL_REACHABILITY_POSITION_LEFT = 0;
@@ -420,43 +373,35 @@ public interface WindowManagerProtos {
 
         @Override // com.android.framework.protobuf.nano.MessageNano
         public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-            int i = this.letterboxPositionForHorizontalReachability;
-            if (i != 0) {
-                output.writeInt32(1, i);
+            if (this.letterboxPositionForHorizontalReachability != 0) {
+                output.writeInt32(1, this.letterboxPositionForHorizontalReachability);
             }
-            int i2 = this.letterboxPositionForVerticalReachability;
-            if (i2 != 0) {
-                output.writeInt32(2, i2);
+            if (this.letterboxPositionForVerticalReachability != 0) {
+                output.writeInt32(2, this.letterboxPositionForVerticalReachability);
             }
-            int i3 = this.letterboxPositionForBookModeReachability;
-            if (i3 != 0) {
-                output.writeInt32(3, i3);
+            if (this.letterboxPositionForBookModeReachability != 0) {
+                output.writeInt32(3, this.letterboxPositionForBookModeReachability);
             }
-            int i4 = this.letterboxPositionForTabletopModeReachability;
-            if (i4 != 0) {
-                output.writeInt32(4, i4);
+            if (this.letterboxPositionForTabletopModeReachability != 0) {
+                output.writeInt32(4, this.letterboxPositionForTabletopModeReachability);
             }
             super.writeTo(output);
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
-            int i = this.letterboxPositionForHorizontalReachability;
-            if (i != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(1, i);
+            if (this.letterboxPositionForHorizontalReachability != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(1, this.letterboxPositionForHorizontalReachability);
             }
-            int i2 = this.letterboxPositionForVerticalReachability;
-            if (i2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(2, i2);
+            if (this.letterboxPositionForVerticalReachability != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(2, this.letterboxPositionForVerticalReachability);
             }
-            int i3 = this.letterboxPositionForBookModeReachability;
-            if (i3 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(3, i3);
+            if (this.letterboxPositionForBookModeReachability != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(3, this.letterboxPositionForBookModeReachability);
             }
-            int i4 = this.letterboxPositionForTabletopModeReachability;
-            if (i4 != 0) {
-                return size + CodedOutputByteBufferNano.computeInt32Size(4, i4);
+            if (this.letterboxPositionForTabletopModeReachability != 0) {
+                return size + CodedOutputByteBufferNano.computeInt32Size(4, this.letterboxPositionForTabletopModeReachability);
             }
             return size;
         }

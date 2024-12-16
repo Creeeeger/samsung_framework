@@ -1,5 +1,6 @@
 package android.print;
 
+import android.adservices.AdservicesProtoEnums;
 import android.app.EventLogTags;
 import android.app.settings.SettingsEnums;
 import android.bluetooth.hci.BluetoothHciProtoEnums;
@@ -18,7 +19,6 @@ import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.telephony.SemRILConstants;
 import com.android.internal.telephony.gsm.SmsCbConstants;
 import com.android.internal.util.Preconditions;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.media.SemMediaPlayer;
 import com.samsung.android.transcode.constants.EncodeConstants;
 import java.lang.annotation.Retention;
@@ -30,14 +30,13 @@ public final class PrintAttributes implements Parcelable {
     public static final int COLOR_MODE_COLOR = 2;
     public static final int COLOR_MODE_MONOCHROME = 1;
     public static final Parcelable.Creator<PrintAttributes> CREATOR = new Parcelable.Creator<PrintAttributes>() { // from class: android.print.PrintAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintAttributes createFromParcel(Parcel parcel) {
             return new PrintAttributes(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintAttributes[] newArray(int size) {
             return new PrintAttributes[size];
@@ -55,17 +54,11 @@ public final class PrintAttributes implements Parcelable {
     private Resolution mResolution;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     @interface ColorMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     @interface DuplexMode {
-    }
-
-    /* synthetic */ PrintAttributes(Parcel parcel, PrintAttributesIA printAttributesIA) {
-        this(parcel);
     }
 
     PrintAttributes() {
@@ -75,15 +68,13 @@ public final class PrintAttributes implements Parcelable {
         this.mMediaSize = parcel.readInt() == 1 ? MediaSize.createFromParcel(parcel) : null;
         this.mResolution = parcel.readInt() == 1 ? Resolution.createFromParcel(parcel) : null;
         this.mMinMargins = parcel.readInt() == 1 ? Margins.createFromParcel(parcel) : null;
-        int readInt = parcel.readInt();
-        this.mColorMode = readInt;
-        if (readInt != 0) {
-            enforceValidColorMode(readInt);
+        this.mColorMode = parcel.readInt();
+        if (this.mColorMode != 0) {
+            enforceValidColorMode(this.mColorMode);
         }
-        int readInt2 = parcel.readInt();
-        this.mDuplexMode = readInt2;
-        if (readInt2 != 0) {
-            enforceValidDuplexMode(readInt2);
+        this.mDuplexMode = parcel.readInt();
+        if (this.mDuplexMode != 0) {
+            enforceValidDuplexMode(this.mDuplexMode);
         }
     }
 
@@ -194,13 +185,7 @@ public final class PrintAttributes implements Parcelable {
 
     public int hashCode() {
         int result = (1 * 31) + this.mColorMode;
-        int result2 = ((result * 31) + this.mDuplexMode) * 31;
-        Margins margins = this.mMinMargins;
-        int result3 = (result2 + (margins == null ? 0 : margins.hashCode())) * 31;
-        MediaSize mediaSize = this.mMediaSize;
-        int result4 = (result3 + (mediaSize == null ? 0 : mediaSize.hashCode())) * 31;
-        Resolution resolution = this.mResolution;
-        return result4 + (resolution != null ? resolution.hashCode() : 0);
+        return (((((((result * 31) + this.mDuplexMode) * 31) + (this.mMinMargins == null ? 0 : this.mMinMargins.hashCode())) * 31) + (this.mMediaSize == null ? 0 : this.mMediaSize.hashCode())) * 31) + (this.mResolution != null ? this.mResolution.hashCode() : 0);
     }
 
     public boolean equals(Object obj) {
@@ -214,28 +199,25 @@ public final class PrintAttributes implements Parcelable {
         if (this.mColorMode != other.mColorMode || this.mDuplexMode != other.mDuplexMode) {
             return false;
         }
-        Margins margins = this.mMinMargins;
-        if (margins == null) {
+        if (this.mMinMargins == null) {
             if (other.mMinMargins != null) {
                 return false;
             }
-        } else if (!margins.equals(other.mMinMargins)) {
+        } else if (!this.mMinMargins.equals(other.mMinMargins)) {
             return false;
         }
-        MediaSize mediaSize = this.mMediaSize;
-        if (mediaSize == null) {
+        if (this.mMediaSize == null) {
             if (other.mMediaSize != null) {
                 return false;
             }
-        } else if (!mediaSize.equals(other.mMediaSize)) {
+        } else if (!this.mMediaSize.equals(other.mMediaSize)) {
             return false;
         }
-        Resolution resolution = this.mResolution;
-        if (resolution == null) {
+        if (this.mResolution == null) {
             if (other.mResolution != null) {
                 return false;
             }
-        } else if (!resolution.equals(other.mResolution)) {
+        } else if (!this.mResolution.equals(other.mResolution)) {
             return false;
         }
         return true;
@@ -248,7 +230,7 @@ public final class PrintAttributes implements Parcelable {
         if (this.mMediaSize != null) {
             builder.append(", orientation: ").append(this.mMediaSize.isPortrait() ? "portrait" : "landscape");
         } else {
-            builder.append(", orientation: ").append(SemCapabilities.FEATURE_TAG_NULL);
+            builder.append(", orientation: ").append("null");
         }
         builder.append(", resolution: ").append(this.mResolution);
         builder.append(", minMargins: ").append(this.mMinMargins);
@@ -274,7 +256,6 @@ public final class PrintAttributes implements Parcelable {
         this.mDuplexMode = other.mDuplexMode;
     }
 
-    /* loaded from: classes3.dex */
     public static final class MediaSize {
         private static final String LOG_TAG = "MediaSize";
         private final int mHeightMils;
@@ -323,18 +304,18 @@ public final class PrintAttributes implements Parcelable {
         public static final MediaSize NA_GOVT_LETTER = new MediaSize("NA_GOVT_LETTER", "android", R.string.mediasize_na_gvrnmt_letter, 8000, 10500);
         public static final MediaSize NA_LEGAL = new MediaSize("NA_LEGAL", "android", R.string.mediasize_na_legal, 8500, 14000);
         public static final MediaSize NA_JUNIOR_LEGAL = new MediaSize("NA_JUNIOR_LEGAL", "android", R.string.mediasize_na_junior_legal, 8000, 5000);
-        public static final MediaSize NA_LEDGER = new MediaSize("NA_LEDGER", "android", R.string.mediasize_na_ledger, 17000, SemRILConstants.UnsolResponse.RIL_OEM_UNSOL_RESPONSE_BASE);
-        public static final MediaSize NA_TABLOID = new MediaSize("NA_TABLOID", "android", R.string.mediasize_na_tabloid, SemRILConstants.UnsolResponse.RIL_OEM_UNSOL_RESPONSE_BASE, 17000);
+        public static final MediaSize NA_LEDGER = new MediaSize("NA_LEDGER", "android", R.string.mediasize_na_ledger, EncodeConstants.BitRate.MM_BITRATE_AVC_FHD_30, SemRILConstants.UnsolResponse.RIL_OEM_UNSOL_RESPONSE_BASE);
+        public static final MediaSize NA_TABLOID = new MediaSize("NA_TABLOID", "android", R.string.mediasize_na_tabloid, SemRILConstants.UnsolResponse.RIL_OEM_UNSOL_RESPONSE_BASE, EncodeConstants.BitRate.MM_BITRATE_AVC_FHD_30);
         public static final MediaSize NA_INDEX_3X5 = new MediaSize("NA_INDEX_3X5", "android", R.string.mediasize_na_index_3x5, 3000, 5000);
         public static final MediaSize NA_INDEX_4X6 = new MediaSize("NA_INDEX_4X6", "android", R.string.mediasize_na_index_4x6, 4000, 6000);
         public static final MediaSize NA_INDEX_5X8 = new MediaSize("NA_INDEX_5X8", "android", R.string.mediasize_na_index_5x8, 5000, 8000);
         public static final MediaSize NA_MONARCH = new MediaSize("NA_MONARCH", "android", R.string.mediasize_na_monarch, 7250, 10500);
         public static final MediaSize NA_QUARTO = new MediaSize("NA_QUARTO", "android", R.string.mediasize_na_quarto, 8000, 10000);
         public static final MediaSize NA_FOOLSCAP = new MediaSize("NA_FOOLSCAP", "android", R.string.mediasize_na_foolscap, 8000, EncodeConstants.BitRate.MM_AVG_FHD_DATARATE);
-        public static final MediaSize ANSI_C = new MediaSize("ANSI_C", "android", R.string.mediasize_na_ansi_c, 17000, 22000);
+        public static final MediaSize ANSI_C = new MediaSize("ANSI_C", "android", R.string.mediasize_na_ansi_c, EncodeConstants.BitRate.MM_BITRATE_AVC_FHD_30, 22000);
         public static final MediaSize ANSI_D = new MediaSize("ANSI_D", "android", R.string.mediasize_na_ansi_d, 22000, 34000);
         public static final MediaSize ANSI_E = new MediaSize("ANSI_E", "android", R.string.mediasize_na_ansi_e, 34000, 44000);
-        public static final MediaSize ANSI_F = new MediaSize("ANSI_F", "android", R.string.mediasize_na_ansi_f, 28000, 40000);
+        public static final MediaSize ANSI_F = new MediaSize("ANSI_F", "android", R.string.mediasize_na_ansi_f, EncodeConstants.BitRate.MM_BITRATE_AVC_FHD_60, 40000);
         public static final MediaSize NA_ARCH_A = new MediaSize("NA_ARCH_A", "android", R.string.mediasize_na_arch_a, 9000, 12000);
         public static final MediaSize NA_ARCH_B = new MediaSize("NA_ARCH_B", "android", R.string.mediasize_na_arch_b, 12000, EncodeConstants.BitRate.MM_AVG_QHD_DATARATE);
         public static final MediaSize NA_ARCH_C = new MediaSize("NA_ARCH_C", "android", R.string.mediasize_na_arch_c, EncodeConstants.BitRate.MM_AVG_QHD_DATARATE, 24000);
@@ -344,8 +325,8 @@ public final class PrintAttributes implements Parcelable {
         public static final MediaSize NA_SUPER_B = new MediaSize("NA_SUPER_B", "android", R.string.mediasize_na_super_b, EncodeConstants.BitRate.MM_AVG_FHD_DATARATE, 19000);
         public static final MediaSize ROC_8K = new MediaSize("ROC_8K", "android", R.string.mediasize_chinese_roc_8k, 10629, 15354);
         public static final MediaSize ROC_16K = new MediaSize("ROC_16K", "android", R.string.mediasize_chinese_roc_16k, 7677, 10629);
-        public static final MediaSize PRC_1 = new MediaSize("PRC_1", "android", R.string.mediasize_chinese_prc_1, 4015, 6496);
-        public static final MediaSize PRC_2 = new MediaSize("PRC_2", "android", R.string.mediasize_chinese_prc_2, 4015, 6929);
+        public static final MediaSize PRC_1 = new MediaSize("PRC_1", "android", R.string.mediasize_chinese_prc_1, AdservicesProtoEnums.RESERVED_ERROR_CODE_4015, 6496);
+        public static final MediaSize PRC_2 = new MediaSize("PRC_2", "android", R.string.mediasize_chinese_prc_2, AdservicesProtoEnums.RESERVED_ERROR_CODE_4015, 6929);
         public static final MediaSize PRC_3 = new MediaSize("PRC_3", "android", R.string.mediasize_chinese_prc_3, 4921, 6929);
         public static final MediaSize PRC_4 = new MediaSize("PRC_4", "android", R.string.mediasize_chinese_prc_4, 4330, 8189);
         public static final MediaSize PRC_5 = new MediaSize("PRC_5", "android", R.string.mediasize_chinese_prc_5, 4330, 8661);
@@ -447,7 +428,7 @@ public final class PrintAttributes implements Parcelable {
             return new MediaSize(this.mId, this.mLabel, this.mPackageName, Math.max(this.mWidthMils, this.mHeightMils), Math.min(this.mWidthMils, this.mHeightMils), this.mLabelResId);
         }
 
-        public void writeToParcel(Parcel parcel) {
+        void writeToParcel(Parcel parcel) {
             parcel.writeString(this.mId);
             parcel.writeString(this.mLabel);
             parcel.writeString(this.mPackageName);
@@ -456,7 +437,7 @@ public final class PrintAttributes implements Parcelable {
             parcel.writeInt(this.mLabelResId);
         }
 
-        public static MediaSize createFromParcel(Parcel parcel) {
+        static MediaSize createFromParcel(Parcel parcel) {
             return new MediaSize(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt());
         }
 
@@ -497,7 +478,6 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Resolution {
         private final int mHorizontalDpi;
         private final String mId;
@@ -539,14 +519,14 @@ public final class PrintAttributes implements Parcelable {
             return this.mVerticalDpi;
         }
 
-        public void writeToParcel(Parcel parcel) {
+        void writeToParcel(Parcel parcel) {
             parcel.writeString(this.mId);
             parcel.writeString(this.mLabel);
             parcel.writeInt(this.mHorizontalDpi);
             parcel.writeInt(this.mVerticalDpi);
         }
 
-        public static Resolution createFromParcel(Parcel parcel) {
+        static Resolution createFromParcel(Parcel parcel) {
             return new Resolution(parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt());
         }
 
@@ -581,7 +561,6 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Margins {
         public static final Margins NO_MARGINS = new Margins(0, 0, 0, 0);
         private final int mBottomMils;
@@ -612,14 +591,14 @@ public final class PrintAttributes implements Parcelable {
             return this.mBottomMils;
         }
 
-        public void writeToParcel(Parcel parcel) {
+        void writeToParcel(Parcel parcel) {
             parcel.writeInt(this.mLeftMils);
             parcel.writeInt(this.mTopMils);
             parcel.writeInt(this.mRightMils);
             parcel.writeInt(this.mBottomMils);
         }
 
-        public static Margins createFromParcel(Parcel parcel) {
+        static Margins createFromParcel(Parcel parcel) {
             return new Margins(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
         }
 
@@ -654,7 +633,7 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    public static String colorModeToString(int colorMode) {
+    static String colorModeToString(int colorMode) {
         switch (colorMode) {
             case 1:
                 return "COLOR_MODE_MONOCHROME";
@@ -665,7 +644,7 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    public static String duplexModeToString(int duplexMode) {
+    static String duplexModeToString(int duplexMode) {
         switch (duplexMode) {
             case 1:
                 return "DUPLEX_MODE_NONE";
@@ -679,19 +658,18 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    public static void enforceValidColorMode(int colorMode) {
+    static void enforceValidColorMode(int colorMode) {
         if ((colorMode & 3) == 0 || Integer.bitCount(colorMode) != 1) {
             throw new IllegalArgumentException("invalid color mode: " + colorMode);
         }
     }
 
-    public static void enforceValidDuplexMode(int duplexMode) {
+    static void enforceValidDuplexMode(int duplexMode) {
         if ((duplexMode & 7) == 0 || Integer.bitCount(duplexMode) != 1) {
             throw new IllegalArgumentException("invalid duplex mode: " + duplexMode);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final PrintAttributes mAttributes = new PrintAttributes();
 
@@ -722,23 +700,6 @@ public final class PrintAttributes implements Parcelable {
 
         public PrintAttributes build() {
             return this.mAttributes;
-        }
-    }
-
-    /* renamed from: android.print.PrintAttributes$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrintAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintAttributes createFromParcel(Parcel parcel) {
-            return new PrintAttributes(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintAttributes[] newArray(int size) {
-            return new PrintAttributes[size];
         }
     }
 }

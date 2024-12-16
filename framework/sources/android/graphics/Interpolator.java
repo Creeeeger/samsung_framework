@@ -8,7 +8,6 @@ public class Interpolator {
     private int mValueCount;
     private long native_instance;
 
-    /* loaded from: classes.dex */
     public enum Result {
         NORMAL,
         FREEZE_START,

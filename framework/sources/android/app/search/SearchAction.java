@@ -15,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SearchAction implements Parcelable {
     public static final Parcelable.Creator<SearchAction> CREATOR = new Parcelable.Creator<SearchAction>() { // from class: android.app.search.SearchAction.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchAction createFromParcel(Parcel in) {
             return new SearchAction(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchAction[] newArray(int size) {
             return new SearchAction[size];
@@ -38,10 +37,6 @@ public final class SearchAction implements Parcelable {
     private final CharSequence mSubtitle;
     private final CharSequence mTitle;
     private final UserHandle mUserHandle;
-
-    /* synthetic */ SearchAction(String str, CharSequence charSequence, Icon icon, CharSequence charSequence2, CharSequence charSequence3, PendingIntent pendingIntent, Intent intent, UserHandle userHandle, Bundle bundle, SearchActionIA searchActionIA) {
-        this(str, charSequence, icon, charSequence2, charSequence3, pendingIntent, intent, userHandle, bundle);
-    }
 
     SearchAction(Parcel in) {
         this.mId = in.readString();
@@ -65,10 +60,10 @@ public final class SearchAction implements Parcelable {
         this.mIntent = intent;
         this.mUserHandle = userHandle;
         this.mExtras = extras != null ? extras : new Bundle();
-        if (pendingIntent == null && intent == null) {
+        if (this.mPendingIntent == null && this.mIntent == null) {
             throw new IllegalStateException("At least one type of intent should be available.");
         }
-        if (pendingIntent != null && intent != null) {
+        if (this.mPendingIntent != null && this.mIntent != null) {
             throw new IllegalStateException("Only one type of intent should be available.");
         }
     }
@@ -143,31 +138,11 @@ public final class SearchAction implements Parcelable {
     }
 
     public String toString() {
-        StringBuilder append = new StringBuilder().append("id=").append(this.mId).append(" title=").append((Object) this.mTitle).append(" contentDescription=").append((Object) this.mContentDescription).append(" subtitle=").append((Object) this.mSubtitle).append(" icon=").append(this.mIcon).append(" pendingIntent=");
-        PendingIntent pendingIntent = this.mPendingIntent;
-        String str = append.append(pendingIntent == null ? "" : pendingIntent.getIntent()).append(" intent=").append(this.mIntent).append(" userHandle=").append(this.mUserHandle).toString();
+        String str = "id=" + this.mId + " title=" + ((Object) this.mTitle) + " contentDescription=" + ((Object) this.mContentDescription) + " subtitle=" + ((Object) this.mSubtitle) + " icon=" + this.mIcon + " pendingIntent=" + (this.mPendingIntent == null ? "" : this.mPendingIntent.getIntent()) + " intent=" + this.mIntent + " userHandle=" + this.mUserHandle;
         return str;
     }
 
-    /* renamed from: android.app.search.SearchAction$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SearchAction> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchAction createFromParcel(Parcel in) {
-            return new SearchAction(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchAction[] newArray(int size) {
-            return new SearchAction[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private CharSequence mContentDescription;
         private Bundle mExtras;

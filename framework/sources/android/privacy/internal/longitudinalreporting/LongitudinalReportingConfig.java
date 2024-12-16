@@ -36,19 +36,19 @@ public class LongitudinalReportingConfig implements DifferentialPrivacyConfig {
         return ALGORITHM_NAME;
     }
 
-    public RapporConfig getIRRConfig() {
+    RapporConfig getIRRConfig() {
         return this.mIRRConfig;
     }
 
-    public double getProbabilityP() {
+    double getProbabilityP() {
         return this.mProbabilityP;
     }
 
-    public double getProbabilityQ() {
+    double getProbabilityQ() {
         return this.mProbabilityQ;
     }
 
-    public String getEncoderId() {
+    String getEncoderId() {
         return this.mEncoderId;
     }
 

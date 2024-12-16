@@ -11,9 +11,8 @@ public class StreamPort extends InputPort {
 
     @Override // android.filterfw.core.FilterPort
     public void clear() {
-        Frame frame = this.mFrame;
-        if (frame != null) {
-            frame.release();
+        if (this.mFrame != null) {
+            this.mFrame.release();
             this.mFrame = null;
         }
     }
@@ -32,28 +31,26 @@ public class StreamPort extends InputPort {
         assertPortIsOpen();
         checkFrameType(frame, persistent);
         if (persistent) {
-            Frame frame2 = this.mFrame;
-            if (frame2 != null) {
-                frame2.release();
+            if (this.mFrame != null) {
+                this.mFrame.release();
             }
         } else if (this.mFrame != null) {
             throw new RuntimeException("Attempting to push more than one frame on port: " + this + "!");
         }
-        Frame retain = frame.retain();
-        this.mFrame = retain;
-        retain.markReadOnly();
+        this.mFrame = frame.retain();
+        this.mFrame.markReadOnly();
         this.mPersistent = persistent;
     }
 
     @Override // android.filterfw.core.FilterPort
     public synchronized Frame pullFrame() {
         Frame result;
-        result = this.mFrame;
-        if (result == null) {
+        if (this.mFrame == null) {
             throw new RuntimeException("No frame available to pull on port: " + this + "!");
         }
+        result = this.mFrame;
         if (this.mPersistent) {
-            result.retain();
+            this.mFrame.retain();
         } else {
             this.mFrame = null;
         }
@@ -72,9 +69,8 @@ public class StreamPort extends InputPort {
 
     @Override // android.filterfw.core.InputPort
     public synchronized void transfer(FilterContext context) {
-        Frame frame = this.mFrame;
-        if (frame != null) {
-            checkFrameManager(frame, context);
+        if (this.mFrame != null) {
+            checkFrameManager(this.mFrame, context);
         }
     }
 }

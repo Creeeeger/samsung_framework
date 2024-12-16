@@ -3,6 +3,8 @@ package android.app.cloudsearch;
 import android.annotation.SystemApi;
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +12,13 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class SearchResponse implements Parcelable {
     public static final Parcelable.Creator<SearchResponse> CREATOR = new Parcelable.Creator<SearchResponse>() { // from class: android.app.cloudsearch.SearchResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchResponse createFromParcel(Parcel p) {
             return new SearchResponse();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchResponse[] newArray(int size) {
             return new SearchResponse[size];
@@ -28,12 +29,8 @@ public final class SearchResponse implements Parcelable {
     public static final int SEARCH_STATUS_TIME_OUT = 1;
     public static final int SEARCH_STATUS_UNKNOWN = -1;
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SearchStatusCode {
-    }
-
-    /* synthetic */ SearchResponse(SearchResponseIA searchResponseIA) {
-        this();
     }
 
     private SearchResponse() {
@@ -54,23 +51,6 @@ public final class SearchResponse implements Parcelable {
     public void setSource(String source) {
     }
 
-    /* renamed from: android.app.cloudsearch.SearchResponse$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SearchResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchResponse createFromParcel(Parcel p) {
-            return new SearchResponse();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchResponse[] newArray(int size) {
-            return new SearchResponse[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
     }
@@ -89,7 +69,6 @@ public final class SearchResponse implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         @SystemApi
         public Builder(int statusCode) {

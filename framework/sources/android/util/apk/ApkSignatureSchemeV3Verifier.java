@@ -370,7 +370,7 @@ public class ApkSignatureSchemeV3Verifier {
         return Pair.create(certChain, por);
     }
 
-    public static byte[] getVerityRootHash(String apkPath) throws IOException, SignatureNotFoundException, SecurityException {
+    static byte[] getVerityRootHash(String apkPath) throws IOException, SignatureNotFoundException, SecurityException {
         RandomAccessFile apk = new RandomAccessFile(apkPath, "r");
         try {
             findSignature(apk);
@@ -388,7 +388,7 @@ public class ApkSignatureSchemeV3Verifier {
         }
     }
 
-    public static byte[] generateApkVerity(String apkPath, ByteBufferFactory bufferFactory) throws IOException, SignatureNotFoundException, SecurityException, DigestException, NoSuchAlgorithmException {
+    static byte[] generateApkVerity(String apkPath, ByteBufferFactory bufferFactory) throws IOException, SignatureNotFoundException, SecurityException, DigestException, NoSuchAlgorithmException {
         RandomAccessFile apk = new RandomAccessFile(apkPath, "r");
         try {
             SignatureInfo signatureInfo = findSignature(apk);
@@ -405,7 +405,6 @@ public class ApkSignatureSchemeV3Verifier {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class VerifiedSigner {
         public final int blockId;
         public final X509Certificate[] certs;
@@ -422,8 +421,7 @@ public class ApkSignatureSchemeV3Verifier {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class PlatformNotSupportedException extends Exception {
+    private static class PlatformNotSupportedException extends Exception {
         PlatformNotSupportedException(String s) {
             super(s);
         }

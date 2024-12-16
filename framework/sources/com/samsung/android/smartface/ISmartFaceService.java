@@ -1,5 +1,6 @@
 package com.samsung.android.smartface;
 
+import android.graphics.rendererpolicy.ScpmApiContract;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
@@ -7,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.smartface.ISmartFaceClient;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISmartFaceService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.smartface.ISmartFaceService";
 
@@ -23,7 +24,6 @@ public interface ISmartFaceService extends IInterface {
 
     void unregisterAsync(ISmartFaceClient iSmartFaceClient) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISmartFaceService {
         @Override // com.samsung.android.smartface.ISmartFaceService
         public boolean register(ISmartFaceClient client, int serviceType) throws RemoteException {
@@ -57,7 +57,6 @@ public interface ISmartFaceService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISmartFaceService {
         static final int TRANSACTION_getSupportedServices = 6;
         static final int TRANSACTION_register = 1;
@@ -89,9 +88,9 @@ public interface ISmartFaceService extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return "register";
+                    return ScpmApiContract.Method.REGISTER;
                 case 2:
-                    return "unregister";
+                    return ScpmApiContract.Method.UNREGISTER;
                 case 3:
                     return "registerAsync";
                 case 4:
@@ -115,59 +114,55 @@ public interface ISmartFaceService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISmartFaceService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISmartFaceService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISmartFaceService.DESCRIPTOR);
+                case 1:
+                    ISmartFaceClient _arg0 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = register(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    ISmartFaceClient _arg02 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregister(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ISmartFaceClient _arg03 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerAsync(_arg03, _arg12);
+                    return true;
+                case 4:
+                    ISmartFaceClient _arg04 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterAsync(_arg04);
+                    return true;
+                case 5:
+                    ISmartFaceClient _arg05 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
+                    String _arg13 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    setValue(_arg05, _arg13, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _result2 = getSupportedServices();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISmartFaceClient _arg0 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = register(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            ISmartFaceClient _arg02 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregister(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ISmartFaceClient _arg03 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerAsync(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            ISmartFaceClient _arg04 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterAsync(_arg04);
-                            return true;
-                        case 5:
-                            ISmartFaceClient _arg05 = ISmartFaceClient.Stub.asInterface(data.readStrongBinder());
-                            String _arg13 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            setValue(_arg05, _arg13, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _result2 = getSupportedServices();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISmartFaceService {
+        private static class Proxy implements ISmartFaceService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -10,7 +10,6 @@ public final class PackageServiceDumpProto {
     public static final long SHARED_USERS = 2246267895814L;
     public static final long VERIFIER_PACKAGE = 1146756268034L;
 
-    /* loaded from: classes3.dex */
     public final class PackageShortProto {
         public static final long NAME = 1138166333441L;
         public static final long UID = 1120986464258L;
@@ -19,7 +18,6 @@ public final class PackageServiceDumpProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class SharedLibraryProto {
         public static final long APK = 1138166333444L;
         public static final long IS_JAR = 1133871366146L;
@@ -30,7 +28,6 @@ public final class PackageServiceDumpProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class SharedUserProto {
         public static final long NAME = 1138166333442L;
         public static final long UID = 1120986464257L;

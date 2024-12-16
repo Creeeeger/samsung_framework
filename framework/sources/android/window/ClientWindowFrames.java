@@ -3,18 +3,18 @@ package android.window;
 import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.util.Objects;
 
 /* loaded from: classes4.dex */
 public class ClientWindowFrames implements Parcelable {
     public static final Parcelable.Creator<ClientWindowFrames> CREATOR = new Parcelable.Creator<ClientWindowFrames>() { // from class: android.window.ClientWindowFrames.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientWindowFrames createFromParcel(Parcel in) {
             return new ClientWindowFrames(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientWindowFrames[] newArray(int size) {
             return new ClientWindowFrames[size];
@@ -27,10 +27,6 @@ public class ClientWindowFrames implements Parcelable {
     public boolean isParentFrameClippedByDisplayCutout;
     public final Rect parentFrame;
 
-    /* synthetic */ ClientWindowFrames(Parcel parcel, ClientWindowFramesIA clientWindowFramesIA) {
-        this(parcel);
-    }
-
     public ClientWindowFrames() {
         this.frame = new Rect();
         this.displayFrame = new Rect();
@@ -39,21 +35,11 @@ public class ClientWindowFrames implements Parcelable {
     }
 
     public ClientWindowFrames(ClientWindowFrames other) {
-        Rect rect = new Rect();
-        this.frame = rect;
-        Rect rect2 = new Rect();
-        this.displayFrame = rect2;
-        Rect rect3 = new Rect();
-        this.parentFrame = rect3;
+        this.frame = new Rect();
+        this.displayFrame = new Rect();
+        this.parentFrame = new Rect();
         this.compatScale = 1.0f;
-        rect.set(other.frame);
-        rect2.set(other.displayFrame);
-        rect3.set(other.parentFrame);
-        if (other.attachedFrame != null) {
-            this.attachedFrame = new Rect(other.attachedFrame);
-        }
-        this.isParentFrameClippedByDisplayCutout = other.isParentFrameClippedByDisplayCutout;
-        this.compatScale = other.compatScale;
+        setTo(other);
     }
 
     private ClientWindowFrames(Parcel in) {
@@ -62,6 +48,17 @@ public class ClientWindowFrames implements Parcelable {
         this.parentFrame = new Rect();
         this.compatScale = 1.0f;
         readFromParcel(in);
+    }
+
+    public void setTo(ClientWindowFrames other) {
+        this.frame.set(other.frame);
+        this.displayFrame.set(other.displayFrame);
+        this.parentFrame.set(other.parentFrame);
+        if (other.attachedFrame != null) {
+            this.attachedFrame = new Rect(other.attachedFrame);
+        }
+        this.isParentFrameClippedByDisplayCutout = other.isParentFrameClippedByDisplayCutout;
+        this.compatScale = other.compatScale;
     }
 
     public void readFromParcel(Parcel in) {
@@ -88,25 +85,26 @@ public class ClientWindowFrames implements Parcelable {
         return "ClientWindowFrames{frame=" + this.frame.toShortString(sb) + " display=" + this.displayFrame.toShortString(sb) + " parentFrame=" + this.parentFrame.toShortString(sb) + (this.attachedFrame != null ? " attachedFrame=" + this.attachedFrame.toShortString() : "") + (this.isParentFrameClippedByDisplayCutout ? " parentClippedByDisplayCutout" : "") + (this.compatScale != 1.0f ? " sizeCompatScale=" + this.compatScale : "") + "}";
     }
 
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ClientWindowFrames other = (ClientWindowFrames) o;
+        if (this.frame.equals(other.frame) && this.displayFrame.equals(other.displayFrame) && this.parentFrame.equals(other.parentFrame) && Objects.equals(this.attachedFrame, other.attachedFrame) && this.isParentFrameClippedByDisplayCutout == other.isParentFrameClippedByDisplayCutout && this.compatScale == other.compatScale) {
+            return true;
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        return Objects.hash(this.frame, this.displayFrame, this.parentFrame, this.attachedFrame, Boolean.valueOf(this.isParentFrameClippedByDisplayCutout), Float.valueOf(this.compatScale));
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.window.ClientWindowFrames$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ClientWindowFrames> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClientWindowFrames createFromParcel(Parcel in) {
-            return new ClientWindowFrames(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClientWindowFrames[] newArray(int size) {
-            return new ClientWindowFrames[size];
-        }
     }
 }

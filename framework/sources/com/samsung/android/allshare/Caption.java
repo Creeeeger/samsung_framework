@@ -10,17 +10,16 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public class Caption implements Parcelable {
     public static final Parcelable.Creator<Caption> CREATOR = new Parcelable.Creator<Caption>() { // from class: com.samsung.android.allshare.Caption.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Caption[] newArray(int size) {
             return new Caption[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Caption createFromParcel(Parcel source) {
             return new Caption(source);
@@ -34,11 +33,6 @@ public class Caption implements Parcelable {
     private String mName;
     private String mResourceUri;
 
-    /* synthetic */ Caption(Parcel parcel, CaptionIA captionIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes5.dex */
     public enum CaptionOperation {
         ENABLE("Enable"),
         DISABLE("Disable"),
@@ -71,7 +65,6 @@ public class Caption implements Parcelable {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum CaptionType {
         SMI("SMI"),
         SRT("SRT"),
@@ -250,7 +243,6 @@ public class Caption implements Parcelable {
         return this.mEncoding;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:17:0x0043. Please report as an issue. */
     public static List<Caption> parseCaption(String captions) {
         if (captions == null) {
             DLog.w_api(TAG, "parseCaption caption is null");
@@ -357,23 +349,6 @@ public class Caption implements Parcelable {
         this.mCaptionType = src.readString();
         this.mLanguage = src.readString();
         this.mEncoding = src.readString();
-    }
-
-    /* renamed from: com.samsung.android.allshare.Caption$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Caption> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Caption[] newArray(int size) {
-            return new Caption[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Caption createFromParcel(Parcel source) {
-            return new Caption(source);
-        }
     }
 
     private Caption(Parcel src) {

@@ -31,7 +31,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class EditableInputConnection extends BaseInputConnection implements DumpableInputConnection {
     private static final boolean DEBUG = false;
     private static final String TAG = "EditableInputConnection";
@@ -71,9 +71,8 @@ public final class EditableInputConnection extends BaseInputConnection implement
                 return false;
             }
             this.mTextView.endBatchEdit();
-            int i = this.mBatchEditNesting - 1;
-            this.mBatchEditNesting = i;
-            return i > 0;
+            this.mBatchEditNesting--;
+            return this.mBatchEditNesting > 0;
         }
     }
 
@@ -170,11 +169,10 @@ public final class EditableInputConnection extends BaseInputConnection implement
 
     @Override // android.view.inputmethod.BaseInputConnection, android.view.inputmethod.InputConnection
     public boolean commitText(CharSequence text, int newCursorPosition) {
-        TextView textView = this.mTextView;
-        if (textView == null) {
+        if (this.mTextView == null) {
             return super.commitText(text, newCursorPosition);
         }
-        textView.resetErrorChangedFlag();
+        this.mTextView.resetErrorChangedFlag();
         boolean success = super.commitText(text, newCursorPosition);
         this.mTextView.hideErrorIfUnchanged();
         return success;
@@ -192,9 +190,8 @@ public final class EditableInputConnection extends BaseInputConnection implement
             return false;
         }
         this.mIMM.setUpdateCursorAnchorInfoMode(cursorUpdateMode);
-        TextView textView = this.mTextView;
-        if (textView != null) {
-            textView.onRequestCursorUpdatesInternal(cursorUpdateMode & 3, cursorUpdateMode & 124);
+        if (this.mTextView != null) {
+            this.mTextView.onRequestCursorUpdatesInternal(cursorUpdateMode & 3, cursorUpdateMode & 124);
             return true;
         }
         return true;
@@ -210,7 +207,7 @@ public final class EditableInputConnection extends BaseInputConnection implement
             resultCode = 2;
         }
         final TextBoundsInfoResult textBoundsInfoResult = new TextBoundsInfoResult(resultCode, textBoundsInfo);
-        executor.execute(new Runnable() { // from class: com.android.internal.inputmethod.EditableInputConnection$$ExternalSyntheticLambda1
+        executor.execute(new Runnable() { // from class: com.android.internal.inputmethod.EditableInputConnection$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 consumer.accept(textBoundsInfoResult);
@@ -220,11 +217,10 @@ public final class EditableInputConnection extends BaseInputConnection implement
 
     @Override // android.view.inputmethod.InputConnection
     public boolean setImeConsumesInput(boolean imeConsumesInput) {
-        TextView textView = this.mTextView;
-        if (textView == null) {
+        if (this.mTextView == null) {
             return super.setImeConsumesInput(imeConsumesInput);
         }
-        textView.setImeConsumesInput(imeConsumesInput);
+        this.mTextView.setImeConsumesInput(imeConsumesInput);
         return true;
     }
 
@@ -251,7 +247,7 @@ public final class EditableInputConnection extends BaseInputConnection implement
             result = 2;
         }
         if (executor != null && consumer != null) {
-            executor.execute(new Runnable() { // from class: com.android.internal.inputmethod.EditableInputConnection$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: com.android.internal.inputmethod.EditableInputConnection$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     consumer.accept(result);
@@ -268,8 +264,6 @@ public final class EditableInputConnection extends BaseInputConnection implement
     @Override // android.view.inputmethod.DumpableInputConnection
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
-        this.mTextView.getText();
-        getSelectedText(0);
         Editable content = getEditable();
         if (content != null) {
             int start = Selection.getSelectionStart(content);

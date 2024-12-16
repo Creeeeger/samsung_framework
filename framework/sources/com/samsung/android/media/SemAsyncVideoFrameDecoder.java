@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemAsyncVideoFrameDecoder {
     private static final int DECODING_COMPLETED = 202;
     private static final int ERROR = 100;
@@ -52,22 +52,18 @@ public class SemAsyncVideoFrameDecoder {
     private OnVideoFrameListener mOnVideoFrameListener;
     private SemMediaResourceHelper mSemMediaResourceHelper;
 
-    /* loaded from: classes5.dex */
     public interface OnDecodingCompleteListener {
         void onDecodingCompleted(SemAsyncVideoFrameDecoder semAsyncVideoFrameDecoder, int i);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnErrorListener {
         boolean onError(SemAsyncVideoFrameDecoder semAsyncVideoFrameDecoder, int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnInitCompleteListener {
         void onInitCompleted(SemAsyncVideoFrameDecoder semAsyncVideoFrameDecoder);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnVideoFrameListener {
         void onVideoFrame(SemAsyncVideoFrameDecoder semAsyncVideoFrameDecoder, Bitmap bitmap, int i, int i2);
     }
@@ -254,9 +250,8 @@ public class SemAsyncVideoFrameDecoder {
 
     public void start() throws IllegalStateException {
         int maxVideoCapacity = 0;
-        SemMediaResourceHelper semMediaResourceHelper = this.mSemMediaResourceHelper;
-        if (semMediaResourceHelper != null) {
-            maxVideoCapacity = semMediaResourceHelper.getMaxVideoCapacity();
+        if (this.mSemMediaResourceHelper != null) {
+            maxVideoCapacity = this.mSemMediaResourceHelper.getMaxVideoCapacity();
         }
         _start(maxVideoCapacity, getCurrentVideoCodecUsage());
     }
@@ -267,9 +262,8 @@ public class SemAsyncVideoFrameDecoder {
 
     public void reset() throws IllegalStateException {
         _reset();
-        EventHandler eventHandler = this.mEventHandler;
-        if (eventHandler != null) {
-            eventHandler.removeCallbacksAndMessages(null);
+        if (this.mEventHandler != null) {
+            this.mEventHandler.removeCallbacksAndMessages(null);
         }
     }
 
@@ -286,7 +280,6 @@ public class SemAsyncVideoFrameDecoder {
         native_finalize();
     }
 
-    /* loaded from: classes5.dex */
     private class EventHandler extends Handler {
         private SemAsyncVideoFrameDecoder mVideoFrameDecoder;
 
@@ -299,7 +292,6 @@ public class SemAsyncVideoFrameDecoder {
         public void handleMessage(Message msg) {
             if (this.mVideoFrameDecoder.mNativeContext == 0) {
                 Log.w(SemAsyncVideoFrameDecoder.TAG, "VideoFrameDecoder went away with unhandled events");
-                return;
             }
             switch (msg.what) {
                 case 1:
@@ -307,9 +299,9 @@ public class SemAsyncVideoFrameDecoder {
                     if (SemAsyncVideoFrameDecoder.this.mOnVideoFrameListener != null) {
                         Bitmap outBitmap = (Bitmap) msg.obj;
                         SemAsyncVideoFrameDecoder.this.mOnVideoFrameListener.onVideoFrame(this.mVideoFrameDecoder, outBitmap, msg.arg1, msg.arg2);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 100:
                     Log.e(SemAsyncVideoFrameDecoder.TAG, "Error (" + msg.arg1 + "," + msg.arg2 + NavigationBarInflaterView.KEY_CODE_END);
                     boolean error_was_handled = false;
@@ -318,30 +310,27 @@ public class SemAsyncVideoFrameDecoder {
                     }
                     if (!error_was_handled) {
                         Log.i(SemAsyncVideoFrameDecoder.TAG, "Error is not handled(" + msg.arg1 + "," + msg.arg2 + NavigationBarInflaterView.KEY_CODE_END);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 200:
                     if (msg.arg1 == 201) {
                         Log.i(SemAsyncVideoFrameDecoder.TAG, "INIT_COMPLETED");
                         if (SemAsyncVideoFrameDecoder.this.mOnInitCompleteListener != null) {
                             SemAsyncVideoFrameDecoder.this.mOnInitCompleteListener.onInitCompleted(this.mVideoFrameDecoder);
-                            return;
+                            break;
                         }
-                        return;
-                    }
-                    if (msg.arg1 == 202) {
+                    } else if (msg.arg1 == 202) {
                         Log.i(SemAsyncVideoFrameDecoder.TAG, "DECODING_COMPLETED");
                         if (SemAsyncVideoFrameDecoder.this.mOnDecodingCompleteListener != null) {
                             SemAsyncVideoFrameDecoder.this.mOnDecodingCompleteListener.onDecodingCompleted(this.mVideoFrameDecoder, msg.arg2);
-                            return;
+                            break;
                         }
-                        return;
                     }
-                    return;
+                    break;
                 default:
                     Log.e(SemAsyncVideoFrameDecoder.TAG, "Unknown message type " + msg.what);
-                    return;
+                    break;
             }
         }
     }
@@ -350,13 +339,10 @@ public class SemAsyncVideoFrameDecoder {
         SemAsyncVideoFrameDecoder vfd = (SemAsyncVideoFrameDecoder) ((WeakReference) ref).get();
         if (vfd == null) {
             Log.w(TAG, "vfd is null");
-            return;
-        }
-        EventHandler eventHandler = vfd.mEventHandler;
-        if (eventHandler == null) {
+        } else if (vfd.mEventHandler == null) {
             Log.w(TAG, "vfd.mEventHandler is null");
         } else {
-            Message m = eventHandler.obtainMessage(what, arg1, arg2, obj);
+            Message m = vfd.mEventHandler.obtainMessage(what, arg1, arg2, obj);
             vfd.mEventHandler.sendMessage(m);
         }
     }

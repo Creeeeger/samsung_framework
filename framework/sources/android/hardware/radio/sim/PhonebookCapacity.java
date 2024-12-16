@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhonebookCapacity implements Parcelable {
     public static final Parcelable.Creator<PhonebookCapacity> CREATOR = new Parcelable.Creator<PhonebookCapacity>() { // from class: android.hardware.radio.sim.PhonebookCapacity.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhonebookCapacity createFromParcel(Parcel _aidl_source) {
             PhonebookCapacity _aidl_out = new PhonebookCapacity();
@@ -18,6 +16,7 @@ public class PhonebookCapacity implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhonebookCapacity[] newArray(int _aidl_size) {
             return new PhonebookCapacity[_aidl_size];
@@ -33,25 +32,6 @@ public class PhonebookCapacity implements Parcelable {
     public int maxNumberLen = 0;
     public int maxEmailLen = 0;
     public int maxAdditionalNumberLen = 0;
-
-    /* renamed from: android.hardware.radio.sim.PhonebookCapacity$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhonebookCapacity> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhonebookCapacity createFromParcel(Parcel _aidl_source) {
-            PhonebookCapacity _aidl_out = new PhonebookCapacity();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhonebookCapacity[] newArray(int _aidl_size) {
-            return new PhonebookCapacity[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -190,7 +170,7 @@ public class PhonebookCapacity implements Parcelable {
         _aidl_sj.add("maxNumberLen: " + this.maxNumberLen);
         _aidl_sj.add("maxEmailLen: " + this.maxEmailLen);
         _aidl_sj.add("maxAdditionalNumberLen: " + this.maxAdditionalNumberLen);
-        return "android.hardware.radio.sim.PhonebookCapacity" + _aidl_sj.toString();
+        return "PhonebookCapacity" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

@@ -110,9 +110,8 @@ public class SemHtmlClipData extends SemClipData {
         }
         this.mHtml = html.toString();
         if (TextUtils.isEmpty(text)) {
-            String replaceAll = this.mHtml.replaceAll(REGEX, "");
-            this.mPlainText = replaceAll;
-            this.mPlainText = Html.fromHtml(replaceAll).toString();
+            this.mPlainText = this.mHtml.replaceAll(REGEX, "");
+            this.mPlainText = Html.fromHtml(this.mPlainText).toString();
         } else {
             this.mPlainText = text.toString();
         }
@@ -255,8 +254,7 @@ public class SemHtmlClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     public void toLoad() {
-        String str = this.mThumbnailImagePath;
-        if (str != null && str.contains(CompatabilityHelper.OLD_CLIPBOARD_ROOT_PATH)) {
+        if (this.mThumbnailImagePath != null && this.mThumbnailImagePath.contains(CompatabilityHelper.OLD_CLIPBOARD_ROOT_PATH)) {
             this.mThumbnailImagePath = CompatabilityHelper.replacePathForCompatability(this.mThumbnailImagePath);
             setClipData();
         }
@@ -281,8 +279,7 @@ public class SemHtmlClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     public void convertForRemote() {
-        String str = this.mThumbnailImagePath;
-        if (str != null && str.contains(ClipboardConstants.CLIPBOARD_ROOT_PATH)) {
+        if (this.mThumbnailImagePath != null && this.mThumbnailImagePath.contains(ClipboardConstants.CLIPBOARD_ROOT_PATH)) {
             this.mThumbnailImagePath = "/data/semclipboard/remote/previewhtmlclipboarditem_thum.jpg";
             setClipData();
             Log.d(TAG, "success converting");

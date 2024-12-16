@@ -18,9 +18,8 @@ public class ByteTransferPipe extends TransferPipe {
 
     @Override // com.android.internal.os.TransferPipe
     protected OutputStream getNewOutputStream() {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        this.mOutputStream = byteArrayOutputStream;
-        return byteArrayOutputStream;
+        this.mOutputStream = new ByteArrayOutputStream();
+        return this.mOutputStream;
     }
 
     public byte[] get() throws IOException {

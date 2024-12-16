@@ -5,7 +5,6 @@ import android.os.Handler;
 /* loaded from: classes2.dex */
 public interface AudioRouting {
 
-    /* loaded from: classes2.dex */
     public interface OnRoutingChangedListener {
         void onRoutingChanged(AudioRouting audioRouting);
     }

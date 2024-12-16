@@ -71,42 +71,36 @@ public class UcmKeyStoreMacSpi extends MacSpi {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class HmacMD5 extends UcmKeyStoreMacSpi {
         public HmacMD5() {
             super("HmacMD5");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class HmacSHA1 extends UcmKeyStoreMacSpi {
         public HmacSHA1() {
             super(KeyProperties.KEY_ALGORITHM_HMAC_SHA1);
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class HmacSHA224 extends UcmKeyStoreMacSpi {
         public HmacSHA224() {
             super(KeyProperties.KEY_ALGORITHM_HMAC_SHA224);
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class HmacSHA256 extends UcmKeyStoreMacSpi {
         public HmacSHA256() {
             super(KeyProperties.KEY_ALGORITHM_HMAC_SHA256);
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class HmacSHA384 extends UcmKeyStoreMacSpi {
         public HmacSHA384() {
             super(KeyProperties.KEY_ALGORITHM_HMAC_SHA384);
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class HmacSHA512 extends UcmKeyStoreMacSpi {
         public HmacSHA512() {
             super(KeyProperties.KEY_ALGORITHM_HMAC_SHA512);

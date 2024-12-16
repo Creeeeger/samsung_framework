@@ -26,9 +26,10 @@ public class CantAddAccountActivity extends Activity {
                 return lambda$onCreate$0;
             }
         });
-        view.setText(text);
+        view.lambda$setTextAsync$0(text);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$onCreate$0() {
         return getString(R.string.error_message_change_not_allowed);
     }

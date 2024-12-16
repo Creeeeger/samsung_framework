@@ -18,19 +18,19 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 
 /* loaded from: classes5.dex */
-public class ECUtils {
+class ECUtils {
     ECUtils() {
     }
 
-    public static AsymmetricKeyParameter generatePublicKeyParameter(PublicKey key) throws InvalidKeyException {
+    static AsymmetricKeyParameter generatePublicKeyParameter(PublicKey key) throws InvalidKeyException {
         return key instanceof BCECPublicKey ? ((BCECPublicKey) key).engineGetKeyParameters() : ECUtil.generatePublicKeyParameter(key);
     }
 
-    public static X9ECParameters getDomainParametersFromGenSpec(ECGenParameterSpec genSpec) {
+    static X9ECParameters getDomainParametersFromGenSpec(ECGenParameterSpec genSpec) {
         return getDomainParametersFromName(genSpec.getName());
     }
 
-    public static X9ECParameters getDomainParametersFromName(String curveName) {
+    static X9ECParameters getDomainParametersFromName(String curveName) {
         X9ECParameters domainParameters;
         try {
             if (curveName.charAt(0) >= '0' && curveName.charAt(0) <= '2') {
@@ -49,7 +49,7 @@ public class ECUtils {
         }
     }
 
-    public static X962Parameters getDomainParametersFromName(ECParameterSpec ecSpec, boolean withCompression) {
+    static X962Parameters getDomainParametersFromName(ECParameterSpec ecSpec, boolean withCompression) {
         if (ecSpec instanceof ECNamedCurveSpec) {
             ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(((ECNamedCurveSpec) ecSpec).getName());
             if (curveOid == null) {

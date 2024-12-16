@@ -57,7 +57,7 @@ public class DefaultDialerManager {
         }
     }
 
-    public static /* synthetic */ void lambda$setDefaultDialerApplication$0(CompletableFuture future, Boolean successful) {
+    static /* synthetic */ void lambda$setDefaultDialerApplication$0(CompletableFuture future, Boolean successful) {
         if (successful.booleanValue()) {
             future.complete(null);
         } else {

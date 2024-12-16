@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.os.PersistableBundle;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellSignalStrengthTdscdma extends CellSignalStrength implements Parcelable {
     private static final boolean DBG = false;
     private static final String LOG_TAG = "CellSignalStrengthTdscdma";
@@ -21,23 +21,18 @@ public final class CellSignalStrengthTdscdma extends CellSignalStrength implemen
     private int mRssi;
     private static final CellSignalStrengthTdscdma sInvalid = new CellSignalStrengthTdscdma();
     public static final Parcelable.Creator<CellSignalStrengthTdscdma> CREATOR = new Parcelable.Creator<CellSignalStrengthTdscdma>() { // from class: android.telephony.CellSignalStrengthTdscdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthTdscdma createFromParcel(Parcel in) {
             return new CellSignalStrengthTdscdma(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthTdscdma[] newArray(int size) {
             return new CellSignalStrengthTdscdma[size];
         }
     };
-
-    /* synthetic */ CellSignalStrengthTdscdma(Parcel parcel, CellSignalStrengthTdscdmaIA cellSignalStrengthTdscdmaIA) {
-        this(parcel);
-    }
 
     public CellSignalStrengthTdscdma() {
         setDefaultValues();
@@ -81,12 +76,11 @@ public final class CellSignalStrengthTdscdma extends CellSignalStrength implemen
 
     @Override // android.telephony.CellSignalStrength
     public void updateLevel(PersistableBundle cc, ServiceState ss) {
-        int i = this.mRscp;
-        if (i <= -24) {
-            if (i < -49) {
-                if (i < -73) {
-                    if (i < -97) {
-                        if (i < -110) {
+        if (this.mRscp <= -24) {
+            if (this.mRscp < -49) {
+                if (this.mRscp < -73) {
+                    if (this.mRscp < -97) {
+                        if (this.mRscp < -110) {
                             this.mLevel = 0;
                             return;
                         } else {
@@ -125,12 +119,7 @@ public final class CellSignalStrengthTdscdma extends CellSignalStrength implemen
 
     @Override // android.telephony.CellSignalStrength
     public int getAsuLevel() {
-        int i = this.mRscp;
-        if (i != Integer.MAX_VALUE) {
-            return getAsuFromRscpDbm(i);
-        }
-        int i2 = this.mRssi;
-        return i2 != Integer.MAX_VALUE ? getAsuFromRssiDbm(i2) : getAsuFromRscpDbm(Integer.MAX_VALUE);
+        return this.mRscp != Integer.MAX_VALUE ? getAsuFromRscpDbm(this.mRscp) : this.mRssi != Integer.MAX_VALUE ? getAsuFromRssiDbm(this.mRssi) : getAsuFromRscpDbm(Integer.MAX_VALUE);
     }
 
     @Override // android.telephony.CellSignalStrength
@@ -174,23 +163,6 @@ public final class CellSignalStrengthTdscdma extends CellSignalStrength implemen
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.CellSignalStrengthTdscdma$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthTdscdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthTdscdma createFromParcel(Parcel in) {
-            return new CellSignalStrengthTdscdma(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthTdscdma[] newArray(int size) {
-            return new CellSignalStrengthTdscdma[size];
-        }
     }
 
     private static void log(String s) {

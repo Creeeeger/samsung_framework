@@ -14,13 +14,11 @@ import android.util.Log;
 import android.util.Pair;
 import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.buffer.MediaBuffer;
-import com.samsung.android.sume.core.buffer.MutableMediaBuffer;
 import com.samsung.android.sume.core.cache.DiskCache;
 import com.samsung.android.sume.core.cache.KeyGenerator;
 import com.samsung.android.sume.core.channel.BufferChannel;
 import com.samsung.android.sume.core.descriptor.MFDescriptor;
 import com.samsung.android.sume.core.descriptor.MediaMuxerDescriptor;
-import com.samsung.android.sume.core.exception.StreamFilterExitException;
 import com.samsung.android.sume.core.format.MutableMediaFormat;
 import com.samsung.android.sume.core.message.Message;
 import com.samsung.android.sume.core.message.MessageProducer;
@@ -32,32 +30,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
     private static final String TAG = Def.tagOf((Class<?>) MediaMuxerFilter.class);
     private String cacheId;
     private int contentId;
     private MutableMediaFormat contentsFormat;
-    private ConditionVariable cvPause;
     private final MediaMuxerDescriptor descriptor;
     private DiskCache diskCache;
     private MessageProducer messageProducer;
@@ -70,12 +63,11 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
     private final ExecutorService threadPool = Executors.newFixedThreadPool(2);
     private final Semaphore readyToStart = new Semaphore(0);
     private AtomicReference<ConditionVariable> channelReady = new AtomicReference<>();
+    private ConditionVariable cvPause = new ConditionVariable();
 
     public MediaMuxerFilter(MediaMuxerDescriptor descriptor) {
-        ConditionVariable conditionVariable = new ConditionVariable();
-        this.cvPause = conditionVariable;
         this.descriptor = descriptor;
-        conditionVariable.open();
+        this.cvPause.open();
     }
 
     @Override // com.samsung.android.sume.core.message.MessageConsumer
@@ -83,10 +75,9 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
         return new int[]{4, 3, 6};
     }
 
-    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:33:0x00f5 -> B:43:0x011e). Please report as a decompilation issue!!! */
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:31:0x00fb -> B:27:0x0125). Please report as a decompilation issue!!! */
     @Override // com.samsung.android.sume.core.message.MessageConsumer
     public boolean onMessageReceived(Message message) throws UnsupportedOperationException {
-        DiskCache diskCache;
         switch (message.getCode()) {
             case 3:
                 MediaType mediaType = (MediaType) message.get(Message.KEY_MEDIA_TYPE);
@@ -103,27 +94,26 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
                     this.contentsFormat.setRows(mediaFormat.getInteger("height"));
                 }
                 int trackIndex = this.muxer.addTrack(mediaFormat);
-                this.trackIndexMap.put(mediaType, new Pair<>(mediaFormat.getString(MediaFormat.KEY_MIME), Integer.valueOf(trackIndex)));
+                this.trackIndexMap.put(mediaType, new Pair<>(mediaFormat.getString("mime"), Integer.valueOf(trackIndex)));
                 message.reply("track-idx", Integer.valueOf(trackIndex));
                 this.readyToStart.release();
                 return true;
             case 4:
-                FileDescriptor fileDescriptor = (FileDescriptor) message.get(Message.KEY_OUT_FILE);
-                this.outputFd = fileDescriptor;
-                Def.require(fileDescriptor != null);
-                String str = TAG;
-                Log.d(str, "outputFd size: " + Def.getFileSize(this.outputFd));
-                String str2 = (String) Optional.ofNullable((String) message.get(Message.KEY_CACHE_ID)).map(new Function() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda1
+                this.outputFd = (FileDescriptor) message.get(Message.KEY_OUT_FILE);
+                Def.require(this.outputFd != null);
+                Log.d(TAG, "outputFd size: " + Def.getFileSize(this.outputFd));
+                this.cacheId = (String) Optional.ofNullable((String) message.get(Message.KEY_CACHE_ID)).map(new Function() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda1
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return KeyGenerator.getSimpleKey((String) obj);
                     }
                 }).orElse(null);
-                this.cacheId = str2;
-                if (!this.storeCache && (diskCache = this.diskCache) != null && str2 != null) {
-                    File cached = diskCache.get(str2);
-                    if (cached != null && cached.exists()) {
-                        Log.d(str, "restore from cache: " + this.cacheId);
+                if (!this.storeCache && this.diskCache != null && this.cacheId != null) {
+                    File cached = this.diskCache.get(this.cacheId);
+                    if (cached == null || !cached.exists()) {
+                        Log.d(TAG, "no cache exist: " + this.cacheId);
+                    } else {
+                        Log.d(TAG, "restore from cache: " + this.cacheId);
                         FileInputStream fis = null;
                         try {
                             try {
@@ -143,15 +133,13 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
                                 }
                             } catch (IOException e2) {
                                 e2.printStackTrace();
+                                if (fis != null) {
+                                    fis.close();
+                                }
                             }
                         } catch (IOException e3) {
                             e3.printStackTrace();
-                            if (fis != null) {
-                                fis.close();
-                            }
                         }
-                    } else {
-                        Log.d(str, "no cache exist: " + this.cacheId);
                     }
                 }
                 try {
@@ -186,10 +174,10 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
         try {
             try {
                 extractor.setDataSource(cachedFd);
-                IntStream.range(0, extractor.getTrackCount()).forEach(new IntConsumer() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda4
+                IntStream.range(0, extractor.getTrackCount()).forEach(new IntConsumer() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda0
                     @Override // java.util.function.IntConsumer
                     public final void accept(int i) {
-                        MediaMuxerFilter.this.m8753x6750d1fc(extractor, i);
+                        MediaMuxerFilter.this.m9141x6750d1fc(extractor, i);
                     }
                 });
             } catch (IOException | IllegalStateException e) {
@@ -200,9 +188,9 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
         }
     }
 
-    /* renamed from: lambda$feedExistFramesToBufferChannel$0$com-samsung-android-sume-core-filter-MediaMuxerFilter */
-    public /* synthetic */ void m8753x6750d1fc(MediaExtractor extractor, int idx) {
-        String mimeType = extractor.getTrackFormat(idx).getString(MediaFormat.KEY_MIME);
+    /* renamed from: lambda$feedExistFramesToBufferChannel$0$com-samsung-android-sume-core-filter-MediaMuxerFilter, reason: not valid java name */
+    /* synthetic */ void m9141x6750d1fc(MediaExtractor extractor, int idx) {
+        String mimeType = extractor.getTrackFormat(idx).getString("mime");
         MediaType mediaType = mimeType.startsWith("video") ? MediaType.RAW_VIDEO : MediaType.RAW_AUDIO;
         BufferChannel bufferChannel = this.receiveChannelQuery.apply(mediaType);
         if (bufferChannel == null) {
@@ -239,117 +227,76 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
         }
     }
 
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0128, code lost:
+    
+        if (r9.muxer != null) goto L44;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x014c, code lost:
+    
+        r0 = com.samsung.android.sume.core.buffer.MediaBuffer.of(r9.contentsFormat, r9.outputFd);
+        r0.setExtra(com.samsung.android.sume.core.message.Message.KEY_CONTENTS_ID, java.lang.Integer.valueOf(r9.contentId));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0161, code lost:
+    
+        if (r9.cacheId == null) goto L48;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x0163, code lost:
+    
+        r0.setExtra(com.samsung.android.sume.core.message.Message.KEY_CACHE_ID, r9.cacheId);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x016a, code lost:
+    
+        r11.put(r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x016d, code lost:
+    
+        return r11;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x0140, code lost:
+    
+        r9.muxer.release();
+        r9.muxer = null;
+        android.util.Log.d(com.samsung.android.sume.core.filter.MediaMuxerFilter.TAG, "muxer released");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x013e, code lost:
+    
+        if (r9.muxer == null) goto L45;
+     */
     @Override // com.samsung.android.sume.core.functional.Operator
-    public MutableMediaBuffer run(MediaBuffer ibuf, MutableMediaBuffer obuf) {
-        MediaMuxer mediaMuxer;
-        File cached;
-        try {
-            try {
-                Log.d(TAG, "run: ibuf=" + ibuf + ", obuf=" + obuf);
-                Def.require(this.receiveChannelCount != 0);
-                this.readyToStart.acquire(this.receiveChannelCount);
-                mediaMuxer = this.muxer;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                MediaMuxer mediaMuxer2 = this.muxer;
-                if (mediaMuxer2 != null) {
-                    mediaMuxer2.release();
-                    this.muxer = null;
-                    Log.d(TAG, "muxer released");
-                }
-            }
-            if (mediaMuxer == null) {
-                ibuf.release();
-                throw new StreamFilterExitException("no muxer is given, might be released");
-            }
-            mediaMuxer.start();
-            final List<Future<Boolean>> results = new ArrayList<>();
-            this.trackIndexMap.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda2
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    MediaMuxerFilter.this.m8755x97443e46(results, (MediaType) obj, (Pair) obj2);
-                }
-            });
-            for (Future<Boolean> result : results) {
-                try {
-                    Log.d(TAG, "result: " + result.get());
-                } catch (CancellationException | ExecutionException e2) {
-                    Log.d(TAG, "task canceled: " + e2.getMessage());
-                }
-            }
-            results.clear();
-            String str = TAG;
-            Log.d(str, "total outputFd size: " + Def.getFileSize(this.outputFd));
-            this.muxer.stop();
-            DiskCache diskCache = this.diskCache;
-            if (diskCache != null) {
-                if (this.storeCache) {
-                    if (this.cacheId == null) {
-                        this.cacheId = "";
-                    }
-                    Log.d(str, "cache output file to " + this.cacheId);
-                    this.diskCache.put(this.cacheId, new Function() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda3
-                        @Override // java.util.function.Function
-                        public final Object apply(Object obj) {
-                            return MediaMuxerFilter.this.m8756xc0989387((File) obj);
-                        }
-                    });
-                } else {
-                    String str2 = this.cacheId;
-                    if (str2 != null && (cached = diskCache.get(str2)) != null && cached.exists()) {
-                        boolean success = cached.delete();
-                        Log.d(str, "cache is consumed, remove it: " + success);
-                    }
-                }
-            }
-            MediaMuxer mediaMuxer3 = this.muxer;
-            if (mediaMuxer3 != null) {
-                mediaMuxer3.release();
-                this.muxer = null;
-                Log.d(str, "muxer released");
-            }
-            MediaBuffer mediaBuffer = MediaBuffer.of(this.contentsFormat, this.outputFd);
-            mediaBuffer.setExtra(Message.KEY_CONTENTS_ID, Integer.valueOf(this.contentId));
-            String str3 = this.cacheId;
-            if (str3 != null) {
-                mediaBuffer.setExtra(Message.KEY_CACHE_ID, str3);
-            }
-            obuf.put(mediaBuffer);
-            return obuf;
-        } catch (Throwable th) {
-            MediaMuxer mediaMuxer4 = this.muxer;
-            if (mediaMuxer4 != null) {
-                mediaMuxer4.release();
-                this.muxer = null;
-                Log.d(TAG, "muxer released");
-            }
-            throw th;
-        }
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public com.samsung.android.sume.core.buffer.MutableMediaBuffer run(com.samsung.android.sume.core.buffer.MediaBuffer r10, com.samsung.android.sume.core.buffer.MutableMediaBuffer r11) {
+        /*
+            Method dump skipped, instructions count: 383
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.sume.core.filter.MediaMuxerFilter.run(com.samsung.android.sume.core.buffer.MediaBuffer, com.samsung.android.sume.core.buffer.MutableMediaBuffer):com.samsung.android.sume.core.buffer.MutableMediaBuffer");
     }
 
-    /* renamed from: lambda$run$2$com-samsung-android-sume-core-filter-MediaMuxerFilter */
-    public /* synthetic */ void m8755x97443e46(List results, final MediaType mediaType, final Pair data) {
-        Future<Boolean> result = this.threadPool.submit(new Callable() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda0
+    /* renamed from: lambda$run$2$com-samsung-android-sume-core-filter-MediaMuxerFilter, reason: not valid java name */
+    /* synthetic */ void m9143x97443e46(List results, final MediaType mediaType, final Pair data) {
+        Future<Boolean> result = this.threadPool.submit(new Callable() { // from class: com.samsung.android.sume.core.filter.MediaMuxerFilter$$ExternalSyntheticLambda2
             @Override // java.util.concurrent.Callable
             public final Object call() {
-                return MediaMuxerFilter.this.m8754x6defe905(data, mediaType);
+                return MediaMuxerFilter.this.m9142x6defe905(data, mediaType);
             }
         });
         results.add(result);
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* renamed from: lambda$run$1$com-samsung-android-sume-core-filter-MediaMuxerFilter */
-    public /* synthetic */ Boolean m8754x6defe905(Pair data, MediaType mediaType) throws Exception {
+    /* renamed from: lambda$run$1$com-samsung-android-sume-core-filter-MediaMuxerFilter, reason: not valid java name */
+    /* synthetic */ Boolean m9142x6defe905(Pair data, MediaType mediaType) throws Exception {
         int i;
         String mime;
         String tag;
         BufferChannel bufferChannel;
-        MediaType mediaType2 = mediaType;
         String mime2 = (String) data.first;
         int trackIndex = ((Integer) data.second).intValue();
         String tag2 = "[enc: " + mime2 + NavigationBarInflaterView.SIZE_MOD_END;
-        BufferChannel bufferChannel2 = this.receiveChannelQuery.apply(mediaType2);
+        BufferChannel bufferChannel2 = this.receiveChannelQuery.apply(mediaType);
         long lastTimestampUs = 0;
         int numFrames = 0;
         int numFrames2 = 0;
@@ -384,18 +331,17 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
                 }
                 Log.d(TAG, "outputFd size: " + Def.getFileSize(this.outputFd));
                 long lastTimestampUs2 = bufferInfo.presentationTimeUs;
-                if (!this.descriptor.isMediaTypeToNotifyEvent(mediaType2)) {
+                if (!this.descriptor.isMediaTypeToNotifyEvent(mediaType)) {
                     mime = mime2;
                     lastTimestampUs = lastTimestampUs2;
                 } else {
-                    numFrames++;
                     mime = mime2;
-                    this.messageProducer.newMessage(508, new Pair(Message.KEY_CONTENTS_ID, Integer.valueOf(this.contentId)), new Pair(Message.KEY_MEDIA_TYPE, mediaType2), new Pair(Message.KEY_PROCESSED_FRAMES, Integer.valueOf(numFrames))).post();
+                    numFrames++;
+                    this.messageProducer.newMessage(508, new Pair<>(Message.KEY_CONTENTS_ID, Integer.valueOf(this.contentId)), new Pair<>(Message.KEY_MEDIA_TYPE, mediaType), new Pair<>(Message.KEY_PROCESSED_FRAMES, Integer.valueOf(numFrames))).post();
                     lastTimestampUs = lastTimestampUs2;
                 }
             }
             mediaBuffer.release();
-            mediaType2 = mediaType;
             numFrames2 = i;
             tag2 = tag;
             bufferChannel2 = bufferChannel;
@@ -405,8 +351,8 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
         return true;
     }
 
-    /* renamed from: lambda$run$3$com-samsung-android-sume-core-filter-MediaMuxerFilter */
-    public /* synthetic */ Boolean m8756xc0989387(File file) {
+    /* renamed from: lambda$run$3$com-samsung-android-sume-core-filter-MediaMuxerFilter, reason: not valid java name */
+    /* synthetic */ Boolean m9144xc0989387(File file) {
         try {
             FileOutputStream fos = new FileOutputStream(file);
             Os.sendfile(fos.getFD(), this.outputFd, new Int64Ref(0L), Def.getFileSize(this.outputFd));
@@ -419,10 +365,9 @@ public class MediaMuxerFilter implements MediaFilter, MediaInputStreamFilter {
 
     @Override // com.samsung.android.sume.core.filter.MediaFilter
     public void release() {
-        String str = TAG;
-        Log.d(str, "release...E");
+        Log.d(TAG, "release...E");
         this.readyToStart.release(this.receiveChannelCount);
-        Log.d(str, "release...X");
+        Log.d(TAG, "release...X");
     }
 
     @Override // com.samsung.android.sume.core.filter.MediaFilter

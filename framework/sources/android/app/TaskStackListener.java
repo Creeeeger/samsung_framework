@@ -103,6 +103,10 @@ public abstract class TaskStackListener extends ITaskStackListener.Stub {
     }
 
     @Override // android.app.ITaskStackListener
+    public void onTaskSnapshotInvalidated(int taskId) {
+    }
+
+    @Override // android.app.ITaskStackListener
     public void onBackPressedOnTaskRoot(ActivityManager.RunningTaskInfo taskInfo) throws RemoteException {
     }
 
@@ -136,7 +140,7 @@ public abstract class TaskStackListener extends ITaskStackListener.Stub {
     }
 
     @Override // android.app.ITaskStackListener
-    public void onOccludeChangeNotice(ComponentName cn, boolean occludesParent) {
+    public void onTaskbarIconVisibleChangeRequest(ComponentName cn, boolean visible) {
     }
 
     @Override // android.app.ITaskStackListener

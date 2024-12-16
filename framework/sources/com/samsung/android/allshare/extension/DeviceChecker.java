@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public class DeviceChecker {
     public static final String AVPLAYER_AUDIO = "AVPLAYER_AUDIO";
     public static final String AVPLAYER_VIDEO = "AVPLAYER_VIDEO";
@@ -101,55 +101,55 @@ public class DeviceChecker {
         return adaptiveList;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x004f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x004d, code lost:
     
         r7 = r6[3];
      */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0058, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0056, code lost:
     
-        if (r7.matches("..:..:..:..:..:..") == false) goto L140;
+        if (r7.matches("..:..:..:..:..:..") == false) goto L67;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x005a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0058, code lost:
     
         r3 = r7.trim();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x005e, code lost:
     
         r4.close();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0069, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0067, code lost:
     
         r0 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x006a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0068, code lost:
     
         com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() IOE", r0);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x0064, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x0062, code lost:
     
         r1 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0065, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0063, code lost:
     
         com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() E", r1);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0071, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x006f, code lost:
     
         r4.close();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x007a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0078, code lost:
     
         r0 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x007b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0079, code lost:
     
         com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() IOE", r0);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0075, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0073, code lost:
     
         r1 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x0076, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x0074, code lost:
     
         com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() E", r1);
      */
@@ -163,108 +163,108 @@ public class DeviceChecker {
             java.lang.String r1 = "getMacAddrFromArpTable br.close() IOE"
             java.lang.String r2 = "DeviceChecker"
             r3 = 0
-            if (r9 != 0) goto Lc
+            if (r9 != 0) goto La
             return r3
-        Lc:
+        La:
             r4 = 0
             java.lang.String r5 = "/"
             java.lang.String r6 = ""
             java.lang.String r9 = r9.replace(r5, r6)
-            java.io.BufferedReader r5 = new java.io.BufferedReader     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
-            java.io.FileReader r6 = new java.io.FileReader     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
+            java.io.BufferedReader r5 = new java.io.BufferedReader     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            java.io.FileReader r6 = new java.io.FileReader     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
             java.lang.String r7 = "/proc/net/arp"
-            r6.<init>(r7)     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
-            r5.<init>(r6)     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
+            r6.<init>(r7)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            r5.<init>(r6)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
             r4 = r5
             r5 = 0
-        L23:
-            java.lang.String r6 = r4.readLine()     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
+        L21:
+            java.lang.String r6 = r4.readLine()     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
             r5 = r6
-            if (r5 != 0) goto L3a
-        L2c:
-            r4.close()     // Catch: java.lang.Exception -> L30 java.io.IOException -> L35
-        L2f:
-            goto L90
-        L30:
+            if (r5 != 0) goto L38
+        L2a:
+            r4.close()     // Catch: java.lang.Exception -> L2e java.io.IOException -> L33
+        L2d:
+            goto L8d
+        L2e:
             r1 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r0, r1)
-            goto L2f
-        L35:
+            goto L2d
+        L33:
             r0 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r1, r0)
-            goto L2f
-        L3a:
+            goto L2d
+        L38:
             java.lang.String r6 = " +"
-            java.lang.String[] r6 = r5.split(r6)     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
-            if (r6 == 0) goto L80
-            int r7 = r6.length     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
+            java.lang.String[] r6 = r5.split(r6)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            if (r6 == 0) goto L7e
+            int r7 = r6.length     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
             r8 = 4
-            if (r7 < r8) goto L80
+            if (r7 < r8) goto L7e
             r7 = 0
-            r7 = r6[r7]     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
-            boolean r7 = r9.equals(r7)     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
-            if (r7 == 0) goto L80
+            r7 = r6[r7]     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            boolean r7 = r9.equals(r7)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            if (r7 == 0) goto L7e
             r7 = 3
-            r7 = r6[r7]     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
+            r7 = r6[r7]     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
             java.lang.String r8 = "..:..:..:..:..:.."
-            boolean r8 = r7.matches(r8)     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
-            if (r8 == 0) goto L6f
-            java.lang.String r3 = r7.trim()     // Catch: java.lang.Throwable -> L81 java.lang.Exception -> L83
-            r4.close()     // Catch: java.lang.Exception -> L64 java.io.IOException -> L69
-        L63:
-            goto L6e
-        L64:
+            boolean r8 = r7.matches(r8)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            if (r8 == 0) goto L6d
+            java.lang.String r3 = r7.trim()     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            r4.close()     // Catch: java.lang.Exception -> L62 java.io.IOException -> L67
+        L61:
+            goto L6c
+        L62:
             r1 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r0, r1)
-            goto L6e
-        L69:
+            goto L6c
+        L67:
             r0 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r1, r0)
-            goto L63
-        L6e:
+            goto L61
+        L6c:
             return r3
-        L6f:
-            r4.close()     // Catch: java.lang.Exception -> L75 java.io.IOException -> L7a
-        L74:
-            goto L7f
-        L75:
+        L6d:
+            r4.close()     // Catch: java.lang.Exception -> L73 java.io.IOException -> L78
+        L72:
+            goto L7d
+        L73:
             r1 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r0, r1)
-            goto L7f
-        L7a:
+            goto L7d
+        L78:
             r0 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r1, r0)
-            goto L74
+            goto L72
+        L7d:
+            return r3
+        L7e:
+            goto L21
         L7f:
-            return r3
-        L80:
-            goto L23
-        L81:
             r3 = move-exception
-            goto L91
-        L83:
+            goto L8e
+        L81:
             r5 = move-exception
             java.lang.String r6 = "getMacAddrFromArpTable Exception"
-            com.samsung.android.allshare.DLog.w_api(r2, r6, r5)     // Catch: java.lang.Throwable -> L81
-            if (r4 == 0) goto L90
-            r4.close()     // Catch: java.lang.Exception -> L30 java.io.IOException -> L35
-            goto L2f
-        L90:
+            com.samsung.android.allshare.DLog.w_api(r2, r6, r5)     // Catch: java.lang.Throwable -> L7f
+            if (r4 == 0) goto L8d
+            r4.close()     // Catch: java.lang.Exception -> L2e java.io.IOException -> L33
+            goto L2d
+        L8d:
             return r3
-        L91:
-            if (r4 == 0) goto La1
-            r4.close()     // Catch: java.lang.Exception -> L97 java.io.IOException -> L9c
-        L96:
-            goto La1
-        L97:
+        L8e:
+            if (r4 == 0) goto L9e
+            r4.close()     // Catch: java.lang.Exception -> L94 java.io.IOException -> L99
+        L93:
+            goto L9e
+        L94:
             r1 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r0, r1)
-            goto La1
-        L9c:
+            goto L9e
+        L99:
             r0 = move-exception
             com.samsung.android.allshare.DLog.w_api(r2, r1, r0)
-            goto L96
-        La1:
+            goto L93
+        L9e:
             throw r3
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.allshare.extension.DeviceChecker.getMacAddrFromArpTable(java.lang.String):java.lang.String");

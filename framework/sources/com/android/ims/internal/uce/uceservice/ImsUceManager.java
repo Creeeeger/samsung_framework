@@ -7,7 +7,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import com.android.ims.internal.uce.uceservice.IUceService;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ImsUceManager {
     public static final String ACTION_UCE_SERVICE_DOWN = "com.android.ims.internal.uce.UCE_SERVICE_DOWN";
     public static final String ACTION_UCE_SERVICE_UP = "com.android.ims.internal.uce.UCE_SERVICE_UP";
@@ -64,12 +64,7 @@ public class ImsUceManager {
         this.mUceService = IUceService.Stub.asInterface(b);
     }
 
-    /* loaded from: classes4.dex */
-    public class UceServiceDeathRecipient implements IBinder.DeathRecipient {
-        /* synthetic */ UceServiceDeathRecipient(ImsUceManager imsUceManager, UceServiceDeathRecipientIA uceServiceDeathRecipientIA) {
-            this();
-        }
-
+    private class UceServiceDeathRecipient implements IBinder.DeathRecipient {
         private UceServiceDeathRecipient() {
         }
 

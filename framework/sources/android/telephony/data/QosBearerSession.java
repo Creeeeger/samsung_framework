@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class QosBearerSession implements Parcelable {
     public static final Parcelable.Creator<QosBearerSession> CREATOR = new Parcelable.Creator<QosBearerSession>() { // from class: android.telephony.data.QosBearerSession.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosBearerSession createFromParcel(Parcel source) {
             return new QosBearerSession(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosBearerSession[] newArray(int size) {
             return new QosBearerSession[size];
@@ -26,24 +25,18 @@ public final class QosBearerSession implements Parcelable {
     final List<QosBearerFilter> qosBearerFilterList;
     final int qosBearerSessionId;
 
-    /* synthetic */ QosBearerSession(Parcel parcel, QosBearerSessionIA qosBearerSessionIA) {
-        this(parcel);
-    }
-
     public QosBearerSession(int qosBearerSessionId, Qos qos, List<QosBearerFilter> qosBearerFilterList) {
         this.qosBearerSessionId = qosBearerSessionId;
         this.qos = qos;
-        ArrayList arrayList = new ArrayList();
-        this.qosBearerFilterList = arrayList;
-        arrayList.addAll(qosBearerFilterList);
+        this.qosBearerFilterList = new ArrayList();
+        this.qosBearerFilterList.addAll(qosBearerFilterList);
     }
 
     private QosBearerSession(Parcel source) {
         this.qosBearerSessionId = source.readInt();
         this.qos = (Qos) source.readParcelable(Qos.class.getClassLoader(), Qos.class);
-        ArrayList arrayList = new ArrayList();
-        this.qosBearerFilterList = arrayList;
-        source.readList(arrayList, QosBearerFilter.class.getClassLoader(), QosBearerFilter.class);
+        this.qosBearerFilterList = new ArrayList();
+        source.readList(this.qosBearerFilterList, QosBearerFilter.class.getClassLoader(), QosBearerFilter.class);
     }
 
     public int getQosBearerSessionId() {
@@ -94,22 +87,5 @@ public final class QosBearerSession implements Parcelable {
             return true;
         }
         return false;
-    }
-
-    /* renamed from: android.telephony.data.QosBearerSession$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<QosBearerSession> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QosBearerSession createFromParcel(Parcel source) {
-            return new QosBearerSession(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QosBearerSession[] newArray(int size) {
-            return new QosBearerSession[size];
-        }
     }
 }

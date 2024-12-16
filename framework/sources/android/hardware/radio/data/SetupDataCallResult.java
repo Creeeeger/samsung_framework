@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SetupDataCallResult implements Parcelable {
     public static final Parcelable.Creator<SetupDataCallResult> CREATOR = new Parcelable.Creator<SetupDataCallResult>() { // from class: android.hardware.radio.data.SetupDataCallResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SetupDataCallResult createFromParcel(Parcel _aidl_source) {
             SetupDataCallResult _aidl_out = new SetupDataCallResult();
@@ -20,6 +18,7 @@ public class SetupDataCallResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SetupDataCallResult[] newArray(int _aidl_size) {
             return new SetupDataCallResult[_aidl_size];
@@ -50,25 +49,6 @@ public class SetupDataCallResult implements Parcelable {
     public int mtuV6 = 0;
     public byte handoverFailureMode = 0;
     public int pduSessionId = 0;
-
-    /* renamed from: android.hardware.radio.data.SetupDataCallResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SetupDataCallResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SetupDataCallResult createFromParcel(Parcel _aidl_source) {
-            SetupDataCallResult _aidl_out = new SetupDataCallResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SetupDataCallResult[] newArray(int _aidl_size) {
-            return new SetupDataCallResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -287,7 +267,7 @@ public class SetupDataCallResult implements Parcelable {
         _aidl_sj.add("pduSessionId: " + this.pduSessionId);
         _aidl_sj.add("sliceInfo: " + Objects.toString(this.sliceInfo));
         _aidl_sj.add("trafficDescriptors: " + Arrays.toString(this.trafficDescriptors));
-        return "android.hardware.radio.data.SetupDataCallResult" + _aidl_sj.toString();
+        return "SetupDataCallResult" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

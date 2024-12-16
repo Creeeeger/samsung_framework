@@ -3,7 +3,7 @@ package com.android.framework.protobuf;
 import com.android.framework.protobuf.Internal;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class ProtobufLists {
     private ProtobufLists() {
     }

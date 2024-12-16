@@ -2,7 +2,7 @@ package android.media;
 
 /* loaded from: classes2.dex */
 public class AudioDevicePortConfig extends AudioPortConfig {
-    public AudioDevicePortConfig(AudioDevicePort devicePort, int samplingRate, int channelMask, int format, AudioGainConfig gain) {
+    AudioDevicePortConfig(AudioDevicePort devicePort, int samplingRate, int channelMask, int format, AudioGainConfig gain) {
         super(devicePort, samplingRate, channelMask, format, gain);
     }
 

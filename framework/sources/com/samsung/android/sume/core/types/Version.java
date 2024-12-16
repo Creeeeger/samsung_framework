@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class Version implements Serializable {
     private static final int MAXNUM_VERSION_UNITS = 3;
     private final int major;

@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class EffectDescriptor implements Parcelable {
     public static final Parcelable.Creator<EffectDescriptor> CREATOR = new Parcelable.Creator<EffectDescriptor>() { // from class: android.media.EffectDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EffectDescriptor createFromParcel(Parcel _aidl_source) {
             EffectDescriptor _aidl_out = new EffectDescriptor();
@@ -18,6 +16,7 @@ public class EffectDescriptor implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EffectDescriptor[] newArray(int _aidl_size) {
             return new EffectDescriptor[_aidl_size];
@@ -31,25 +30,6 @@ public class EffectDescriptor implements Parcelable {
     public int flags = 0;
     public int cpuLoad = 0;
     public int memoryUsage = 0;
-
-    /* renamed from: android.media.EffectDescriptor$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EffectDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EffectDescriptor createFromParcel(Parcel _aidl_source) {
-            EffectDescriptor _aidl_out = new EffectDescriptor();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EffectDescriptor[] newArray(int _aidl_size) {
-            return new EffectDescriptor[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

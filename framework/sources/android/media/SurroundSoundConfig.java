@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SurroundSoundConfig implements Parcelable {
     public static final Parcelable.Creator<SurroundSoundConfig> CREATOR = new Parcelable.Creator<SurroundSoundConfig>() { // from class: android.media.SurroundSoundConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SurroundSoundConfig createFromParcel(Parcel _aidl_source) {
             SurroundSoundConfig _aidl_out = new SurroundSoundConfig();
@@ -18,31 +16,13 @@ public class SurroundSoundConfig implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SurroundSoundConfig[] newArray(int _aidl_size) {
             return new SurroundSoundConfig[_aidl_size];
         }
     };
     public SurroundFormatFamily[] formatFamilies;
-
-    /* renamed from: android.media.SurroundSoundConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SurroundSoundConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SurroundSoundConfig createFromParcel(Parcel _aidl_source) {
-            SurroundSoundConfig _aidl_out = new SurroundSoundConfig();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SurroundSoundConfig[] newArray(int _aidl_size) {
-            return new SurroundSoundConfig[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -106,12 +86,9 @@ public class SurroundSoundConfig implements Parcelable {
         return ((Parcelable) _v).describeContents();
     }
 
-    /* loaded from: classes2.dex */
     public static class SurroundFormatFamily implements Parcelable {
         public static final Parcelable.Creator<SurroundFormatFamily> CREATOR = new Parcelable.Creator<SurroundFormatFamily>() { // from class: android.media.SurroundSoundConfig.SurroundFormatFamily.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SurroundFormatFamily createFromParcel(Parcel _aidl_source) {
                 SurroundFormatFamily _aidl_out = new SurroundFormatFamily();
@@ -119,6 +96,7 @@ public class SurroundSoundConfig implements Parcelable {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SurroundFormatFamily[] newArray(int _aidl_size) {
                 return new SurroundFormatFamily[_aidl_size];
@@ -126,25 +104,6 @@ public class SurroundSoundConfig implements Parcelable {
         };
         public AudioFormatDescription primaryFormat;
         public AudioFormatDescription[] subFormats;
-
-        /* renamed from: android.media.SurroundSoundConfig$SurroundFormatFamily$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SurroundFormatFamily> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SurroundFormatFamily createFromParcel(Parcel _aidl_source) {
-                SurroundFormatFamily _aidl_out = new SurroundFormatFamily();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SurroundFormatFamily[] newArray(int _aidl_size) {
-                return new SurroundFormatFamily[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

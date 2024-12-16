@@ -8,7 +8,7 @@ import android.os.RemoteException;
 import com.samsung.android.cover.CoverManager;
 import com.samsung.android.cover.ICoverStateListenerCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class CoverStateListenerDelegate extends ICoverStateListenerCallback.Stub {
     private static final int MSG_LISTEN_COVER_ATTACH_STATE_CHANGE = 1;
     private static final int MSG_LISTEN_COVER_SWITCH_STATE_CHANGE = 0;
@@ -16,10 +16,10 @@ class CoverStateListenerDelegate extends ICoverStateListenerCallback.Stub {
     private ListenerDelegateHandler mHandler;
     private final CoverManager.CoverStateListener mListener;
 
-    public CoverStateListenerDelegate(CoverManager.CoverStateListener listener, Handler handler, Context context) {
+    CoverStateListenerDelegate(CoverManager.CoverStateListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
-        this.mHandler = new ListenerDelegateHandler(looper, listener);
+        this.mHandler = new ListenerDelegateHandler(looper, this.mListener);
     }
 
     public CoverManager.CoverStateListener getListener() {
@@ -41,9 +41,7 @@ class CoverStateListenerDelegate extends ICoverStateListenerCallback.Stub {
         return this.mListener.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class ListenerDelegateHandler extends Handler {
+    private static class ListenerDelegateHandler extends Handler {
         private final CoverManager.CoverStateListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.CoverStateListener listener) {
@@ -57,12 +55,10 @@ class CoverStateListenerDelegate extends ICoverStateListenerCallback.Stub {
                 switch (msg.what) {
                     case 0:
                         this.mListener.onCoverSwitchStateChanged(msg.arg1 == 1);
-                        return;
+                        break;
                     case 1:
                         this.mListener.onCoverAttachStateChanged(msg.arg1 == 1);
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         }

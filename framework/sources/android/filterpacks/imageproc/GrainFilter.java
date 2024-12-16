@@ -8,7 +8,6 @@ import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
-import android.os.BatteryManager;
 import java.util.Date;
 import java.util.Random;
 
@@ -72,15 +71,14 @@ public class GrainFilter extends Filter {
     private void updateParameters() {
         float[] seed = {this.mRandom.nextFloat(), this.mRandom.nextFloat()};
         this.mNoiseProgram.setHostValue("seed", seed);
-        this.mGrainProgram.setHostValue(BatteryManager.EXTRA_SCALE, Float.valueOf(this.mScale));
+        this.mGrainProgram.setHostValue("scale", Float.valueOf(this.mScale));
     }
 
     private void updateFrameSize(int width, int height) {
         this.mWidth = width;
         this.mHeight = height;
-        Program program = this.mGrainProgram;
-        if (program != null) {
-            program.setHostValue("stepX", Float.valueOf(0.5f / width));
+        if (this.mGrainProgram != null) {
+            this.mGrainProgram.setHostValue("stepX", Float.valueOf(0.5f / this.mWidth));
             this.mGrainProgram.setHostValue("stepY", Float.valueOf(0.5f / this.mHeight));
             updateParameters();
         }

@@ -64,20 +64,14 @@ public final class SystemLightsManager extends LightsManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public final class SystemLightsSession extends LightsManager.LightsSession implements AutoCloseable {
         private final CloseGuard mCloseGuard;
         private boolean mClosed;
 
-        /* synthetic */ SystemLightsSession(SystemLightsManager systemLightsManager, SystemLightsSessionIA systemLightsSessionIA) {
-            this();
-        }
-
         private SystemLightsSession() {
-            CloseGuard closeGuard = new CloseGuard();
-            this.mCloseGuard = closeGuard;
+            this.mCloseGuard = new CloseGuard();
             this.mClosed = false;
-            closeGuard.open("SystemLightsSession.close");
+            this.mCloseGuard.open("SystemLightsSession.close");
         }
 
         @Override // android.hardware.lights.LightsManager.LightsSession

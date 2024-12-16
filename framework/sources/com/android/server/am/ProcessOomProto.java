@@ -23,7 +23,6 @@ public final class ProcessOomProto {
     public static final long STATE = 1159641169927L;
     public static final long TRIM_MEMORY_LEVEL = 1120986464264L;
 
-    /* loaded from: classes5.dex */
     public final class Detail {
         public static final long CACHED = 1133871366156L;
         public static final long CURRENT_STATE = 1159641169927L;
@@ -43,7 +42,6 @@ public final class ProcessOomProto {
         public Detail() {
         }
 
-        /* loaded from: classes5.dex */
         public final class CpuRunTime {
             public static final long OVER_MS = 1112396529665L;
             public static final long ULTILIZATION = 1108101562371L;

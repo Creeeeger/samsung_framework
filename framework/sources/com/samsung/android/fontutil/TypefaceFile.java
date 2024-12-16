@@ -1,21 +1,9 @@
 package com.samsung.android.fontutil;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class TypefaceFile {
-    private String mDroidName;
-    private String mFileName;
-
-    public TypefaceFile() {
-        this.mFileName = null;
-        this.mDroidName = null;
-    }
-
-    public TypefaceFile(String fileName, String droidName) {
-        this.mFileName = null;
-        this.mDroidName = null;
-        this.mFileName = fileName;
-        this.mDroidName = droidName;
-    }
+    private String mFileName = null;
+    private String mDroidName = null;
 
     public String getFileName() {
         return this.mFileName;

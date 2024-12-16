@@ -19,7 +19,7 @@ final class Utils {
     Utils() {
     }
 
-    public static void writeStringMap(Parcel dest, Map<String, String> map) {
+    static void writeStringMap(Parcel dest, Map<String, String> map) {
         if (map == null) {
             dest.writeInt(0);
             return;
@@ -31,7 +31,7 @@ final class Utils {
         }
     }
 
-    public static Map<String, String> readStringMap(Parcel in) {
+    static Map<String, String> readStringMap(Parcel in) {
         int size = in.readInt();
         Map<String, String> map = new HashMap<>(size);
         while (true) {
@@ -47,7 +47,7 @@ final class Utils {
         }
     }
 
-    public static void writeStringIntMap(Parcel dest, Map<String, Integer> map) {
+    static void writeStringIntMap(Parcel dest, Map<String, Integer> map) {
         if (map == null) {
             dest.writeInt(0);
             return;
@@ -59,7 +59,7 @@ final class Utils {
         }
     }
 
-    public static Map<String, Integer> readStringIntMap(Parcel in) {
+    static Map<String, Integer> readStringIntMap(Parcel in) {
         int size = in.readInt();
         Map<String, Integer> map = new HashMap<>(size);
         while (true) {
@@ -75,7 +75,7 @@ final class Utils {
         }
     }
 
-    public static <T extends Parcelable> void writeSet(final Parcel dest, Set<T> set) {
+    static <T extends Parcelable> void writeSet(final Parcel dest, Set<T> set) {
         if (set == null) {
             dest.writeInt(0);
         } else {
@@ -89,7 +89,7 @@ final class Utils {
         }
     }
 
-    public static <T> Set<T> createSet(Parcel in, Parcelable.Creator<T> c) {
+    static <T> Set<T> createSet(Parcel in, Parcelable.Creator<T> c) {
         int size = in.readInt();
         HashSet hashSet = new HashSet(size);
         while (true) {
@@ -103,7 +103,7 @@ final class Utils {
         }
     }
 
-    public static void writeIntSet(final Parcel dest, Set<Integer> set) {
+    static void writeIntSet(final Parcel dest, Set<Integer> set) {
         if (set == null) {
             dest.writeInt(0);
         } else {
@@ -117,7 +117,7 @@ final class Utils {
         }
     }
 
-    public static Set<Integer> createIntSet(Parcel in) {
+    static Set<Integer> createIntSet(Parcel in) {
         int size = in.readInt();
         Set<Integer> set = new HashSet<>(size);
         while (true) {
@@ -131,7 +131,7 @@ final class Utils {
         }
     }
 
-    public static <T extends Parcelable> void writeTypedCollection(Parcel dest, Collection<T> coll) {
+    static <T extends Parcelable> void writeTypedCollection(Parcel dest, Collection<T> coll) {
         ArrayList<T> list = null;
         if (coll != null) {
             if (coll instanceof ArrayList) {
@@ -143,7 +143,7 @@ final class Utils {
         dest.writeTypedList(list);
     }
 
-    public static void close(ICloseHandle handle) {
+    static void close(ICloseHandle handle) {
         try {
             handle.close();
         } catch (RemoteException ex) {

@@ -14,7 +14,6 @@ public interface IResolverRankerService extends IInterface {
 
     void train(List<ResolverTarget> list, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IResolverRankerService {
         @Override // android.service.resolver.IResolverRankerService
         public void predict(List<ResolverTarget> targets, IResolverRankerResult result) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IResolverRankerService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IResolverRankerService {
         public static final String DESCRIPTOR = "android.service.resolver.IResolverRankerService";
         static final int TRANSACTION_predict = 1;
@@ -77,33 +75,29 @@ public interface IResolverRankerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<ResolverTarget> _arg0 = data.createTypedArrayList(ResolverTarget.CREATOR);
+                    IResolverRankerResult _arg1 = IResolverRankerResult.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    predict(_arg0, _arg1);
+                    return true;
+                case 2:
+                    List<ResolverTarget> _arg02 = data.createTypedArrayList(ResolverTarget.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    train(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<ResolverTarget> _arg0 = data.createTypedArrayList(ResolverTarget.CREATOR);
-                            IResolverRankerResult _arg1 = IResolverRankerResult.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            predict(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            List<ResolverTarget> _arg02 = data.createTypedArrayList(ResolverTarget.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            train(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IResolverRankerService {
+        private static class Proxy implements IResolverRankerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

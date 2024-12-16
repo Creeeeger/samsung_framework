@@ -53,9 +53,6 @@ public class FontsContract {
     private static final Object sLock = new Object();
     private static final LruCache<String, Typeface> sTypefaceCache = new LruCache<>(16);
     private static final Runnable sReplaceDispatcherThreadRunnable = new Runnable() { // from class: android.provider.FontsContract.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (FontsContract.sLock) {
@@ -67,7 +64,7 @@ public class FontsContract {
             }
         }
     };
-    private static final Comparator<byte[]> sByteArrayComparator = new Comparator() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda0
+    private static final Comparator<byte[]> sByteArrayComparator = new Comparator() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda12
         @Override // java.util.Comparator
         public final int compare(Object obj, Object obj2) {
             return FontsContract.lambda$static$13((byte[]) obj, (byte[]) obj2);
@@ -75,7 +72,6 @@ public class FontsContract {
     };
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Columns implements BaseColumns {
         public static final String FILE_ID = "file_id";
         public static final String ITALIC = "font_italic";
@@ -100,7 +96,6 @@ public class FontsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class FontInfo {
         private final FontVariationAxis[] mAxes;
         private final boolean mItalic;
@@ -144,7 +139,6 @@ public class FontsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class FontFamilyResult {
         public static final int STATUS_OK = 0;
         public static final int STATUS_REJECTED = 3;
@@ -154,7 +148,6 @@ public class FontsContract {
         private final int mStatusCode;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         @interface FontResultStatus {
         }
 
@@ -172,39 +165,22 @@ public class FontsContract {
         }
     }
 
-    /* renamed from: android.provider.FontsContract$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (FontsContract.sLock) {
-                if (FontsContract.sThread != null) {
-                    FontsContract.sThread.quitSafely();
-                    FontsContract.sThread = null;
-                    FontsContract.sHandler = null;
-                }
-            }
-        }
-    }
-
     /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
-        jadx.core.utils.exceptions.JadxRuntimeException: Can't find top splitter block for handler:B:53:0x00f5
-        	at jadx.core.utils.BlockUtils.getTopSplitterForHandler(BlockUtils.java:1166)
-        	at jadx.core.dex.visitors.regions.RegionMaker.processTryCatchBlocks(RegionMaker.java:1022)
-        	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:55)
+        jadx.core.utils.exceptions.JadxRuntimeException: Can't find top splitter block for handler:B:53:0x00fc
+        	at jadx.core.utils.BlockUtils.getTopSplitterForHandler(BlockUtils.java:1179)
+        	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.collectHandlerRegions(ExcHandlersRegionMaker.java:53)
+        	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.process(ExcHandlersRegionMaker.java:38)
+        	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:27)
         */
     public static android.graphics.Typeface getFontSync(final android.provider.FontRequest r17) {
         /*
-            Method dump skipped, instructions count: 248
+            Method dump skipped, instructions count: 255
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.provider.FontsContract.getFontSync(android.provider.FontRequest):android.graphics.Typeface");
     }
 
-    public static /* synthetic */ void lambda$getFontSync$0(FontRequest request, String id, AtomicReference holder, Lock lock, AtomicBoolean timeout, AtomicBoolean waiting, Condition cond) {
+    static /* synthetic */ void lambda$getFontSync$0(FontRequest request, String id, AtomicReference holder, Lock lock, AtomicBoolean timeout, AtomicBoolean waiting, Condition cond) {
         try {
             FontFamilyResult result = fetchFonts(sContext, null, request);
             if (result.getStatusCode() == 0) {
@@ -228,7 +204,6 @@ public class FontsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class FontRequestCallback {
         public static final int FAIL_REASON_FONT_LOAD_ERROR = -3;
         public static final int FAIL_REASON_FONT_NOT_FOUND = 1;
@@ -238,7 +213,6 @@ public class FontsContract {
         public static final int FAIL_REASON_WRONG_CERTIFICATES = -2;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         @interface FontRequestFailReason {
         }
 
@@ -253,14 +227,14 @@ public class FontsContract {
         final Handler callerThreadHandler = new Handler();
         final Typeface cachedTypeface = sTypefaceCache.get(request.getIdentifier());
         if (cachedTypeface != null) {
-            callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda12
+            callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
                     FontsContract.FontRequestCallback.this.onTypefaceRetrieved(cachedTypeface);
                 }
             });
         } else {
-            handler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda13
+            handler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda11
                 @Override // java.lang.Runnable
                 public final void run() {
                     FontsContract.lambda$requestFonts$12(Context.this, cancellationSignal, request, callerThreadHandler, callback);
@@ -269,12 +243,12 @@ public class FontsContract {
         }
     }
 
-    public static /* synthetic */ void lambda$requestFonts$12(Context context, CancellationSignal cancellationSignal, FontRequest request, Handler callerThreadHandler, final FontRequestCallback callback) {
+    static /* synthetic */ void lambda$requestFonts$12(Context context, CancellationSignal cancellationSignal, FontRequest request, Handler callerThreadHandler, final FontRequestCallback callback) {
         try {
             FontFamilyResult result = fetchFonts(context, cancellationSignal, request);
             final Typeface anotherCachedTypeface = sTypefaceCache.get(request.getIdentifier());
             if (anotherCachedTypeface != null) {
-                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda3
+                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         FontsContract.FontRequestCallback.this.onTypefaceRetrieved(anotherCachedTypeface);
@@ -285,34 +259,35 @@ public class FontsContract {
             if (result.getStatusCode() != 0) {
                 switch (result.getStatusCode()) {
                     case 1:
-                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda4
+                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda2
                             @Override // java.lang.Runnable
                             public final void run() {
                                 FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(-2);
                             }
                         });
-                        return;
+                        break;
                     case 2:
-                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda5
+                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda3
                             @Override // java.lang.Runnable
                             public final void run() {
                                 FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(-3);
                             }
                         });
-                        return;
+                        break;
                     default:
-                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda6
+                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda4
                             @Override // java.lang.Runnable
                             public final void run() {
                                 FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(-3);
                             }
                         });
-                        return;
+                        break;
                 }
+                return;
             }
             FontInfo[] fonts = result.getFonts();
             if (fonts == null || fonts.length == 0) {
-                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda7
+                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda5
                     @Override // java.lang.Runnable
                     public final void run() {
                         FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(1);
@@ -324,7 +299,7 @@ public class FontsContract {
                 if (font.getResultCode() != 0) {
                     final int resultCode = font.getResultCode();
                     if (resultCode < 0) {
-                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda8
+                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda6
                             @Override // java.lang.Runnable
                             public final void run() {
                                 FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(-3);
@@ -332,7 +307,7 @@ public class FontsContract {
                         });
                         return;
                     } else {
-                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda9
+                        callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda7
                             @Override // java.lang.Runnable
                             public final void run() {
                                 FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(resultCode);
@@ -344,7 +319,7 @@ public class FontsContract {
             }
             final Typeface typeface = buildTypeface(context, cancellationSignal, fonts);
             if (typeface == null) {
-                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda10
+                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda8
                     @Override // java.lang.Runnable
                     public final void run() {
                         FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(-3);
@@ -352,7 +327,7 @@ public class FontsContract {
                 });
             } else {
                 sTypefaceCache.put(request.getIdentifier(), typeface);
-                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda11
+                callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda9
                     @Override // java.lang.Runnable
                     public final void run() {
                         FontsContract.FontRequestCallback.this.onTypefaceRetrieved(typeface);
@@ -360,7 +335,7 @@ public class FontsContract {
                 });
             }
         } catch (PackageManager.NameNotFoundException e) {
-            callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda2
+            callerThreadHandler.post(new Runnable() { // from class: android.provider.FontsContract$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     FontsContract.FontRequestCallback.this.onTypefaceRequestFailed(-1);
@@ -448,7 +423,6 @@ public class FontsContract {
                                     buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0L, size);
                                     fis.close();
                                 } finally {
-                                    break;
                                 }
                             } catch (IOException e) {
                             } catch (Throwable th) {
@@ -502,7 +476,7 @@ public class FontsContract {
         return null;
     }
 
-    public static /* synthetic */ int lambda$static$13(byte[] l, byte[] r) {
+    static /* synthetic */ int lambda$static$13(byte[] l, byte[] r) {
         if (l.length != r.length) {
             return l.length - r.length;
         }

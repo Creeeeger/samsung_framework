@@ -70,7 +70,6 @@ public interface IPrintManager extends IInterface {
 
     void validatePrinters(List<PrinterId> list, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintManager {
         @Override // android.print.IPrintManager
         public List<PrintJobInfo> getPrintJobInfos(int appId, int userId) throws RemoteException {
@@ -186,7 +185,6 @@ public interface IPrintManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintManager {
         public static final String DESCRIPTOR = "android.print.IPrintManager";
         static final int TRANSACTION_addPrintJobStateChangeListener = 6;
@@ -302,212 +300,208 @@ public interface IPrintManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<PrintJobInfo> _result = getPrintJobInfos(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    PrintJobId _arg02 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PrintJobInfo _result2 = getPrintJobInfo(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    IPrintDocumentAdapter _arg13 = IPrintDocumentAdapter.Stub.asInterface(data.readStrongBinder());
+                    PrintAttributes _arg22 = (PrintAttributes) data.readTypedObject(PrintAttributes.CREATOR);
+                    String _arg3 = data.readString();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result3 = print(_arg03, _arg13, _arg22, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    PrintJobId _arg04 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    int _arg14 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancelPrintJob(_arg04, _arg14, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    PrintJobId _arg05 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    int _arg15 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restartPrintJob(_arg05, _arg15, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IPrintJobStateChangeListener _arg06 = IPrintJobStateChangeListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg16 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addPrintJobStateChangeListener(_arg06, _arg16, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    IPrintJobStateChangeListener _arg07 = IPrintJobStateChangeListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removePrintJobStateChangeListener(_arg07, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IPrintServicesChangeListener _arg08 = IPrintServicesChangeListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg18 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addPrintServicesChangeListener(_arg08, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IPrintServicesChangeListener _arg09 = IPrintServicesChangeListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removePrintServicesChangeListener(_arg09, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<PrintServiceInfo> _result4 = getPrintServices(_arg010, _arg110);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result4, 1);
+                    return true;
+                case 11:
+                    ComponentName _arg011 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg111 = data.readBoolean();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPrintServiceEnabled(_arg011, _arg111, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    ComponentName _arg012 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isPrintServiceEnabled(_arg012, _arg112);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 13:
+                    IRecommendationsChangeListener _arg013 = IRecommendationsChangeListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addPrintServiceRecommendationsChangeListener(_arg013, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IRecommendationsChangeListener _arg014 = IRecommendationsChangeListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg114 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removePrintServiceRecommendationsChangeListener(_arg014, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<RecommendationInfo> _result6 = getPrintServiceRecommendations(_arg015);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result6, 1);
+                    return true;
+                case 16:
+                    IPrinterDiscoveryObserver _arg016 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg115 = data.readInt();
+                    data.enforceNoDataAvail();
+                    createPrinterDiscoverySession(_arg016, _arg115);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    IPrinterDiscoveryObserver _arg017 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
+                    List<PrinterId> _arg116 = data.createTypedArrayList(PrinterId.CREATOR);
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startPrinterDiscovery(_arg017, _arg116, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    IPrinterDiscoveryObserver _arg018 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopPrinterDiscovery(_arg018, _arg117);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    List<PrinterId> _arg019 = data.createTypedArrayList(PrinterId.CREATOR);
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    validatePrinters(_arg019, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    PrinterId _arg020 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    int _arg119 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startPrinterStateTracking(_arg020, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    PrinterId _arg021 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Icon _result7 = getCustomPrinterIcon(_arg021, _arg120);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 22:
+                    PrinterId _arg022 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    int _arg121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopPrinterStateTracking(_arg022, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    IPrinterDiscoveryObserver _arg023 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    destroyPrinterDiscoverySession(_arg023, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = getBindInstantServiceAllowed(_arg024);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 25:
+                    int _arg025 = data.readInt();
+                    boolean _arg123 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBindInstantServiceAllowed(_arg025, _arg123);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<PrintJobInfo> _result = getPrintJobInfos(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            PrintJobId _arg02 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PrintJobInfo _result2 = getPrintJobInfo(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            IPrintDocumentAdapter _arg13 = IPrintDocumentAdapter.Stub.asInterface(data.readStrongBinder());
-                            PrintAttributes _arg22 = (PrintAttributes) data.readTypedObject(PrintAttributes.CREATOR);
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result3 = print(_arg03, _arg13, _arg22, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            PrintJobId _arg04 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            int _arg14 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancelPrintJob(_arg04, _arg14, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            PrintJobId _arg05 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            int _arg15 = data.readInt();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restartPrintJob(_arg05, _arg15, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IPrintJobStateChangeListener _arg06 = IPrintJobStateChangeListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg16 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addPrintJobStateChangeListener(_arg06, _arg16, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            IPrintJobStateChangeListener _arg07 = IPrintJobStateChangeListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removePrintJobStateChangeListener(_arg07, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IPrintServicesChangeListener _arg08 = IPrintServicesChangeListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg18 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addPrintServicesChangeListener(_arg08, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IPrintServicesChangeListener _arg09 = IPrintServicesChangeListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removePrintServicesChangeListener(_arg09, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<PrintServiceInfo> _result4 = getPrintServices(_arg010, _arg110);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result4, 1);
-                            return true;
-                        case 11:
-                            ComponentName _arg011 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg111 = data.readBoolean();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPrintServiceEnabled(_arg011, _arg111, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            ComponentName _arg012 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isPrintServiceEnabled(_arg012, _arg112);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 13:
-                            IRecommendationsChangeListener _arg013 = IRecommendationsChangeListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg113 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addPrintServiceRecommendationsChangeListener(_arg013, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IRecommendationsChangeListener _arg014 = IRecommendationsChangeListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removePrintServiceRecommendationsChangeListener(_arg014, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<RecommendationInfo> _result6 = getPrintServiceRecommendations(_arg015);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result6, 1);
-                            return true;
-                        case 16:
-                            IPrinterDiscoveryObserver _arg016 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            createPrinterDiscoverySession(_arg016, _arg115);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            IPrinterDiscoveryObserver _arg017 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
-                            List<PrinterId> _arg116 = data.createTypedArrayList(PrinterId.CREATOR);
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startPrinterDiscovery(_arg017, _arg116, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            IPrinterDiscoveryObserver _arg018 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopPrinterDiscovery(_arg018, _arg117);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            List<PrinterId> _arg019 = data.createTypedArrayList(PrinterId.CREATOR);
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            validatePrinters(_arg019, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            PrinterId _arg020 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            int _arg119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startPrinterStateTracking(_arg020, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            PrinterId _arg021 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Icon _result7 = getCustomPrinterIcon(_arg021, _arg120);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 22:
-                            PrinterId _arg022 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            int _arg121 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopPrinterStateTracking(_arg022, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            IPrinterDiscoveryObserver _arg023 = IPrinterDiscoveryObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            destroyPrinterDiscoverySession(_arg023, _arg122);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = getBindInstantServiceAllowed(_arg024);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 25:
-                            int _arg025 = data.readInt();
-                            boolean _arg123 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBindInstantServiceAllowed(_arg025, _arg123);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPrintManager {
+        private static class Proxy implements IPrintManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AlsaDevicesParser {
     protected static final boolean DEBUG = false;
     public static final int SCANSTATUS_EMPTY = 2;
@@ -33,7 +33,6 @@ public class AlsaDevicesParser {
     private int mScanStatus = -1;
     private final ArrayList<AlsaDeviceRecord> mDeviceRecords = new ArrayList<>();
 
-    /* loaded from: classes4.dex */
     public class AlsaDeviceRecord {
         public static final int kDeviceDir_Capture = 0;
         public static final int kDeviceDir_Playback = 1;

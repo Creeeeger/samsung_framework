@@ -33,12 +33,12 @@ public class BCDSAPrivateKey implements DSAPrivateKey, PKCS12BagAttributeCarrier
     protected BCDSAPrivateKey() {
     }
 
-    public BCDSAPrivateKey(DSAPrivateKey key) {
+    BCDSAPrivateKey(DSAPrivateKey key) {
         this.x = key.getX();
         this.dsaSpec = key.getParams();
     }
 
-    public BCDSAPrivateKey(DSAPrivateKeySpec spec) {
+    BCDSAPrivateKey(DSAPrivateKeySpec spec) {
         this.x = spec.getX();
         this.dsaSpec = new DSAParameterSpec(spec.getP(), spec.getQ(), spec.getG());
     }
@@ -50,7 +50,7 @@ public class BCDSAPrivateKey implements DSAPrivateKey, PKCS12BagAttributeCarrier
         this.dsaSpec = new DSAParameterSpec(params.getP(), params.getQ(), params.getG());
     }
 
-    public BCDSAPrivateKey(DSAPrivateKeyParameters params) {
+    BCDSAPrivateKey(DSAPrivateKeyParameters params) {
         this.x = params.getX();
         this.dsaSpec = new DSAParameterSpec(params.getParameters().getP(), params.getParameters().getQ(), params.getParameters().getG());
     }

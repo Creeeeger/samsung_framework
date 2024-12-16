@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.view.WindowlessWindowManager;
 import android.view.accessibility.IAccessibilityEmbeddedConnection;
 import android.window.ISurfaceSyncGroup;
+import android.window.InputTransferToken;
 import android.window.WindowTokenClient;
 import dalvik.system.CloseGuard;
 import java.util.Objects;
@@ -24,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
 
 /* loaded from: classes4.dex */
 public class SurfaceControlViewHost {
@@ -35,14 +37,10 @@ public class SurfaceControlViewHost {
     private ISurfaceControlViewHost mRemoteInterface;
     private SurfaceControl mSurfaceControl;
     private ViewRootImpl mViewRoot;
-    private WindowlessWindowManager mWm;
+    private final WindowlessWindowManager mWm;
 
-    /* loaded from: classes4.dex */
-    public final class ISurfaceControlViewHostImpl extends ISurfaceControlViewHost.Stub {
-        /* synthetic */ ISurfaceControlViewHostImpl(SurfaceControlViewHost surfaceControlViewHost, ISurfaceControlViewHostImplIA iSurfaceControlViewHostImplIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class ISurfaceControlViewHostImpl extends ISurfaceControlViewHost.Stub {
         private ISurfaceControlViewHostImpl() {
         }
 
@@ -59,10 +57,9 @@ public class SurfaceControlViewHost {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConfigurationChanged$0(Configuration configuration) {
-            if (SurfaceControlViewHost.this.mWm != null) {
-                SurfaceControlViewHost.this.mWm.setConfiguration(configuration);
-            }
+            SurfaceControlViewHost.this.mWm.setConfiguration(configuration);
             if (SurfaceControlViewHost.this.mViewRoot != null) {
                 SurfaceControlViewHost.this.mViewRoot.forceWmRelayout();
             }
@@ -73,7 +70,7 @@ public class SurfaceControlViewHost {
             if (SurfaceControlViewHost.this.mViewRoot == null) {
                 return;
             }
-            SurfaceControlViewHost.this.mViewRoot.mHandler.post(new Runnable() { // from class: android.view.SurfaceControlViewHost$ISurfaceControlViewHostImpl$$ExternalSyntheticLambda3
+            SurfaceControlViewHost.this.mViewRoot.mHandler.post(new Runnable() { // from class: android.view.SurfaceControlViewHost$ISurfaceControlViewHostImpl$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     SurfaceControlViewHost.ISurfaceControlViewHostImpl.this.lambda$onDispatchDetachedFromWindow$1();
@@ -81,6 +78,7 @@ public class SurfaceControlViewHost {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDispatchDetachedFromWindow$1() {
             SurfaceControlViewHost.this.release();
         }
@@ -88,7 +86,7 @@ public class SurfaceControlViewHost {
         @Override // android.view.ISurfaceControlViewHost
         public void onInsetsChanged(InsetsState state, final Rect frame) {
             if (SurfaceControlViewHost.this.mViewRoot != null) {
-                SurfaceControlViewHost.this.mViewRoot.mHandler.post(new Runnable() { // from class: android.view.SurfaceControlViewHost$ISurfaceControlViewHostImpl$$ExternalSyntheticLambda0
+                SurfaceControlViewHost.this.mViewRoot.mHandler.post(new Runnable() { // from class: android.view.SurfaceControlViewHost$ISurfaceControlViewHostImpl$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         SurfaceControlViewHost.ISurfaceControlViewHostImpl.this.lambda$onInsetsChanged$2(frame);
@@ -98,6 +96,7 @@ public class SurfaceControlViewHost {
             SurfaceControlViewHost.this.mWm.setInsetsState(state);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onInsetsChanged$2(Rect frame) {
             SurfaceControlViewHost.this.mViewRoot.setOverrideInsetsFrame(frame);
         }
@@ -108,7 +107,7 @@ public class SurfaceControlViewHost {
             if (Thread.currentThread() == SurfaceControlViewHost.this.mViewRoot.mThread) {
                 return SurfaceControlViewHost.this.mViewRoot.getOrCreateSurfaceSyncGroup().mISurfaceSyncGroup;
             }
-            SurfaceControlViewHost.this.mViewRoot.mHandler.post(new Runnable() { // from class: android.view.SurfaceControlViewHost$ISurfaceControlViewHostImpl$$ExternalSyntheticLambda2
+            SurfaceControlViewHost.this.mViewRoot.mHandler.post(new Runnable() { // from class: android.view.SurfaceControlViewHost$ISurfaceControlViewHostImpl$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     SurfaceControlViewHost.ISurfaceControlViewHostImpl.this.lambda$getSurfaceSyncGroup$3(surfaceSyncGroup);
@@ -122,40 +121,54 @@ public class SurfaceControlViewHost {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getSurfaceSyncGroup$3(CompletableFuture surfaceSyncGroup) {
             surfaceSyncGroup.complete(SurfaceControlViewHost.this.mViewRoot.getOrCreateSurfaceSyncGroup().mISurfaceSyncGroup);
         }
+
+        @Override // android.view.ISurfaceControlViewHost
+        public void attachParentInterface(final ISurfaceControlViewHostParent parentInterface) {
+            if (SurfaceControlViewHost.this.mViewRoot == null) {
+                Log.d(SurfaceControlViewHost.TAG, "attachParentInterface called but mViewRoot is null. return here.");
+            } else {
+                SurfaceControlViewHost.this.mViewRoot.mHandler.post(new Runnable() { // from class: android.view.SurfaceControlViewHost$ISurfaceControlViewHostImpl$$ExternalSyntheticLambda3
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        SurfaceControlViewHost.ISurfaceControlViewHostImpl.this.lambda$attachParentInterface$4(parentInterface);
+                    }
+                });
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$attachParentInterface$4(ISurfaceControlViewHostParent parentInterface) {
+            SurfaceControlViewHost.this.mWm.setParentInterface(parentInterface);
+        }
     }
 
-    /* loaded from: classes4.dex */
     public static final class SurfacePackage implements Parcelable {
         public static final Parcelable.Creator<SurfacePackage> CREATOR = new Parcelable.Creator<SurfacePackage>() { // from class: android.view.SurfaceControlViewHost.SurfacePackage.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SurfacePackage createFromParcel(Parcel in) {
                 return new SurfacePackage(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SurfacePackage[] newArray(int size) {
                 return new SurfacePackage[size];
             }
         };
         private final IAccessibilityEmbeddedConnection mAccessibilityEmbeddedConnection;
-        private final IBinder mInputToken;
+        private final InputTransferToken mInputTransferToken;
         private final ISurfaceControlViewHost mRemoteInterface;
         private SurfaceControl mSurfaceControl;
 
-        /* synthetic */ SurfacePackage(Parcel parcel, SurfacePackageIA surfacePackageIA) {
-            this(parcel);
-        }
-
-        SurfacePackage(SurfaceControl sc, IAccessibilityEmbeddedConnection connection, IBinder inputToken, ISurfaceControlViewHost ri) {
+        SurfacePackage(SurfaceControl sc, IAccessibilityEmbeddedConnection connection, InputTransferToken inputTransferToken, ISurfaceControlViewHost ri) {
             this.mSurfaceControl = sc;
             this.mAccessibilityEmbeddedConnection = connection;
-            this.mInputToken = inputToken;
+            this.mInputTransferToken = inputTransferToken;
             this.mRemoteInterface = ri;
         }
 
@@ -165,17 +178,16 @@ public class SurfaceControlViewHost {
                 this.mSurfaceControl = new SurfaceControl(otherSurfaceControl, "SurfacePackage");
             }
             this.mAccessibilityEmbeddedConnection = other.mAccessibilityEmbeddedConnection;
-            this.mInputToken = other.mInputToken;
+            this.mInputTransferToken = other.mInputTransferToken;
             this.mRemoteInterface = other.mRemoteInterface;
         }
 
         private SurfacePackage(Parcel in) {
-            SurfaceControl surfaceControl = new SurfaceControl();
-            this.mSurfaceControl = surfaceControl;
-            surfaceControl.readFromParcel(in);
+            this.mSurfaceControl = new SurfaceControl();
+            this.mSurfaceControl.readFromParcel(in);
             this.mSurfaceControl.setUnreleasedWarningCallSite("SurfacePackage(Parcel)");
             this.mAccessibilityEmbeddedConnection = IAccessibilityEmbeddedConnection.Stub.asInterface(in.readStrongBinder());
-            this.mInputToken = in.readStrongBinder();
+            this.mInputTransferToken = InputTransferToken.CREATOR.createFromParcel(in);
             this.mRemoteInterface = ISurfaceControlViewHost.Stub.asInterface(in.readStrongBinder());
         }
 
@@ -216,67 +228,55 @@ public class SurfaceControlViewHost {
         public void writeToParcel(Parcel out, int flags) {
             this.mSurfaceControl.writeToParcel(out, flags);
             out.writeStrongBinder(this.mAccessibilityEmbeddedConnection.asBinder());
-            out.writeStrongBinder(this.mInputToken);
+            this.mInputTransferToken.writeToParcel(out, flags);
             out.writeStrongBinder(this.mRemoteInterface.asBinder());
         }
 
         public void release() {
-            SurfaceControl surfaceControl = this.mSurfaceControl;
-            if (surfaceControl != null) {
-                surfaceControl.release();
+            if (this.mSurfaceControl != null) {
+                this.mSurfaceControl.release();
             }
             this.mSurfaceControl = null;
         }
 
-        public IBinder getInputToken() {
-            return this.mInputToken;
+        public InputTransferToken getInputTransferToken() {
+            return this.mInputTransferToken;
         }
 
-        /* renamed from: android.view.SurfaceControlViewHost$SurfacePackage$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SurfacePackage> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SurfacePackage createFromParcel(Parcel in) {
-                return new SurfacePackage(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SurfacePackage[] newArray(int size) {
-                return new SurfacePackage[size];
-            }
+        public String toString() {
+            return "{inputTransferToken=" + getInputTransferToken() + " remoteInterface=" + getRemoteInterface() + "}";
         }
     }
 
     public SurfaceControlViewHost(Context c, Display d, WindowlessWindowManager wwm, String callsite) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
+        this.mCloseGuard = CloseGuard.get();
         this.mReleased = false;
         this.mRemoteInterface = new ISurfaceControlViewHostImpl();
         this.mSurfaceControl = wwm.mRootSurface;
         this.mWm = wwm;
         this.mViewRoot = new ViewRootImpl(c, d, this.mWm, new WindowlessWindowLayout());
-        closeGuard.openWithCallSite("release", callsite);
+        this.mCloseGuard.openWithCallSite("release", callsite);
         setConfigCallback(c, d);
         WindowManagerGlobal.getInstance().addWindowlessRoot(this.mViewRoot);
         this.mAccessibilityEmbeddedConnection = this.mViewRoot.getAccessibilityEmbeddedConnection();
     }
 
     public SurfaceControlViewHost(Context context, Display display, IBinder hostToken) {
-        this(context, display, hostToken, "untracked");
+        this(context, display, hostToken == null ? null : new InputTransferToken(hostToken), "untracked");
     }
 
-    public SurfaceControlViewHost(Context context, Display display, IBinder hostToken, String callsite) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
+    public SurfaceControlViewHost(Context context, Display display, InputTransferToken hostInputTransferToken) {
+        this(context, display, hostInputTransferToken, "untracked");
+    }
+
+    public SurfaceControlViewHost(Context context, Display display, InputTransferToken hostToken, String callsite) {
+        this.mCloseGuard = CloseGuard.get();
         this.mReleased = false;
         this.mRemoteInterface = new ISurfaceControlViewHostImpl();
         this.mSurfaceControl = new SurfaceControl.Builder().setContainerLayer().setName(TAG).setCallsite("SurfaceControlViewHost[" + callsite + NavigationBarInflaterView.SIZE_MOD_END).build();
         this.mWm = new WindowlessWindowManager(context.getResources().getConfiguration(), this.mSurfaceControl, hostToken);
         this.mViewRoot = new ViewRootImpl(context, display, this.mWm, new WindowlessWindowLayout());
-        closeGuard.openWithCallSite("release", callsite);
+        this.mCloseGuard.openWithCallSite("release", callsite);
         setConfigCallback(context, display);
         WindowManagerGlobal.getInstance().addWindowlessRoot(this.mViewRoot);
         this.mAccessibilityEmbeddedConnection = this.mViewRoot.getAccessibilityEmbeddedConnection();
@@ -284,17 +284,16 @@ public class SurfaceControlViewHost {
 
     private void setConfigCallback(Context c, final Display d) {
         final IBinder token = c.getWindowContextToken();
-        ViewRootImpl.ConfigChangedCallback configChangedCallback = new ViewRootImpl.ConfigChangedCallback() { // from class: android.view.SurfaceControlViewHost$$ExternalSyntheticLambda0
+        this.mConfigChangedCallback = new ViewRootImpl.ConfigChangedCallback() { // from class: android.view.SurfaceControlViewHost$$ExternalSyntheticLambda0
             @Override // android.view.ViewRootImpl.ConfigChangedCallback
             public final void onConfigurationChanged(Configuration configuration) {
                 SurfaceControlViewHost.lambda$setConfigCallback$0(IBinder.this, d, configuration);
             }
         };
-        this.mConfigChangedCallback = configChangedCallback;
-        ViewRootImpl.addConfigCallback(configChangedCallback);
+        ViewRootImpl.addConfigCallback(this.mConfigChangedCallback);
     }
 
-    public static /* synthetic */ void lambda$setConfigCallback$0(IBinder token, Display d, Configuration conf) {
+    static /* synthetic */ void lambda$setConfigCallback$0(IBinder token, Display d, Configuration conf) {
         if (token instanceof WindowTokenClient) {
             WindowTokenClient w = (WindowTokenClient) token;
             w.onConfigurationChanged(conf, d.getDisplayId(), true);
@@ -305,16 +304,15 @@ public class SurfaceControlViewHost {
         if (this.mReleased) {
             return;
         }
-        CloseGuard closeGuard = this.mCloseGuard;
-        if (closeGuard != null) {
-            closeGuard.warnIfOpen();
+        if (this.mCloseGuard != null) {
+            this.mCloseGuard.warnIfOpen();
         }
         doRelease(false);
     }
 
     public SurfacePackage getSurfacePackage() {
         if (this.mSurfaceControl != null && this.mAccessibilityEmbeddedConnection != null) {
-            return new SurfacePackage(new SurfaceControl(this.mSurfaceControl, "getSurfacePackage"), this.mAccessibilityEmbeddedConnection, getFocusGrantToken(), this.mRemoteInterface);
+            return new SurfacePackage(new SurfaceControl(this.mSurfaceControl, "getSurfacePackage"), this.mAccessibilityEmbeddedConnection, getInputTransferToken(), this.mRemoteInterface);
         }
         return null;
     }
@@ -334,12 +332,20 @@ public class SurfaceControlViewHost {
         addWindowToken(attrs);
         view.setLayoutParams(attrs);
         this.mViewRoot.setView(view, attrs, null);
+        ViewRootImpl viewRootImpl = this.mViewRoot;
+        final WindowlessWindowManager windowlessWindowManager = this.mWm;
+        Objects.requireNonNull(windowlessWindowManager);
+        viewRootImpl.setBackKeyCallbackForWindowlessWindow(new Predicate() { // from class: android.view.SurfaceControlViewHost$$ExternalSyntheticLambda1
+            @Override // java.util.function.Predicate
+            public final boolean test(Object obj) {
+                return WindowlessWindowManager.this.forwardBackKeyToParent((KeyEvent) obj);
+            }
+        });
     }
 
     public View getView() {
-        ViewRootImpl viewRootImpl = this.mViewRoot;
-        if (viewRootImpl != null) {
-            return viewRootImpl.getView();
+        if (this.mViewRoot != null) {
+            return this.mViewRoot.getView();
         }
         return null;
     }
@@ -376,9 +382,8 @@ public class SurfaceControlViewHost {
     }
 
     private void doRelease(boolean immediate) {
-        ViewRootImpl.ConfigChangedCallback configChangedCallback = this.mConfigChangedCallback;
-        if (configChangedCallback != null) {
-            ViewRootImpl.removeConfigCallback(configChangedCallback);
+        if (this.mConfigChangedCallback != null) {
+            ViewRootImpl.removeConfigCallback(this.mConfigChangedCallback);
             this.mConfigChangedCallback = null;
         }
         this.mViewRoot.die(immediate);
@@ -388,25 +393,27 @@ public class SurfaceControlViewHost {
         this.mViewRoot = null;
     }
 
-    public IBinder getFocusGrantToken() {
-        return this.mWm.getFocusGrantToken(getWindowToken().asBinder());
+    public InputTransferToken getInputTransferToken() {
+        return this.mWm.getInputTransferToken(getWindowToken().asBinder());
     }
 
     private void addWindowToken(WindowManager.LayoutParams attrs) {
-        WindowManagerImpl wm = (WindowManagerImpl) this.mViewRoot.mContext.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) this.mViewRoot.mContext.getSystemService(Context.WINDOW_SERVICE);
         attrs.token = wm.getDefaultToken();
     }
 
+    @Deprecated
     public boolean transferTouchGestureToHost() {
         if (this.mViewRoot == null) {
             return false;
         }
-        IWindowSession realWm = WindowManagerGlobal.getWindowSession();
-        try {
-            return realWm.transferEmbeddedTouchFocusToHost(this.mViewRoot.mWindow);
-        } catch (RemoteException e) {
-            e.rethrowAsRuntimeException();
+        WindowManager wm = (WindowManager) this.mViewRoot.mContext.getSystemService(Context.WINDOW_SERVICE);
+        InputTransferToken embeddedToken = getInputTransferToken();
+        InputTransferToken hostToken = this.mWm.mHostInputTransferToken;
+        if (embeddedToken == null || hostToken == null) {
+            Log.w(TAG, "Failed to transferTouchGestureToHost. Host or embedded token is null");
             return false;
         }
+        return wm.transferTouchGesture(getInputTransferToken(), this.mWm.mHostInputTransferToken);
     }
 }

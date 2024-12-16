@@ -36,7 +36,6 @@ public abstract class AlgorithmParametersSpi extends java.security.AlgorithmPara
         return localEngineGetParameterSpec(paramSpec);
     }
 
-    /* loaded from: classes5.dex */
     public static class OAEP extends AlgorithmParametersSpi {
         OAEPParameterSpec currentSpec;
 
@@ -109,7 +108,6 @@ public abstract class AlgorithmParametersSpi extends java.security.AlgorithmPara
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PSS extends AlgorithmParametersSpi {
         PSSParameterSpec currentSpec;
 

@@ -66,36 +66,34 @@ public class BCPBEKey implements PBEKey, Destroyable {
     public byte[] getEncoded() {
         KeyParameter kParam;
         checkDestroyed(this);
-        CipherParameters cipherParameters = this.param;
-        if (cipherParameters != null) {
-            if (cipherParameters instanceof ParametersWithIV) {
-                kParam = (KeyParameter) ((ParametersWithIV) cipherParameters).getParameters();
+        if (this.param != null) {
+            if (this.param instanceof ParametersWithIV) {
+                kParam = (KeyParameter) ((ParametersWithIV) this.param).getParameters();
             } else {
-                kParam = (KeyParameter) cipherParameters;
+                kParam = (KeyParameter) this.param;
             }
             return kParam.getKey();
         }
-        int i = this.type;
-        if (i == 2) {
+        if (this.type == 2) {
             return PBEParametersGenerator.PKCS12PasswordToBytes(this.password);
         }
-        if (i == 5) {
+        if (this.type == 5) {
             return PBEParametersGenerator.PKCS5PasswordToUTF8Bytes(this.password);
         }
         return PBEParametersGenerator.PKCS5PasswordToBytes(this.password);
     }
 
-    public int getType() {
+    int getType() {
         checkDestroyed(this);
         return this.type;
     }
 
-    public int getDigest() {
+    int getDigest() {
         checkDestroyed(this);
         return this.digest;
     }
 
-    public int getKeySize() {
+    int getKeySize() {
         checkDestroyed(this);
         return this.keySize;
     }
@@ -113,11 +111,10 @@ public class BCPBEKey implements PBEKey, Destroyable {
     @Override // javax.crypto.interfaces.PBEKey
     public char[] getPassword() {
         checkDestroyed(this);
-        char[] cArr = this.password;
-        if (cArr == null) {
+        if (this.password == null) {
             throw new IllegalStateException("no password available");
         }
-        return Arrays.clone(cArr);
+        return Arrays.clone(this.password);
     }
 
     @Override // javax.crypto.interfaces.PBEKey
@@ -141,20 +138,18 @@ public class BCPBEKey implements PBEKey, Destroyable {
         this.tryWrong = tryWrong;
     }
 
-    public boolean shouldTryWrongPKCS12() {
+    boolean shouldTryWrongPKCS12() {
         return this.tryWrong;
     }
 
     @Override // javax.security.auth.Destroyable
     public void destroy() {
         if (!this.hasBeenDestroyed.getAndSet(true)) {
-            char[] cArr = this.password;
-            if (cArr != null) {
-                Arrays.fill(cArr, (char) 0);
+            if (this.password != null) {
+                Arrays.fill(this.password, (char) 0);
             }
-            byte[] bArr = this.salt;
-            if (bArr != null) {
-                Arrays.fill(bArr, (byte) 0);
+            if (this.salt != null) {
+                Arrays.fill(this.salt, (byte) 0);
             }
         }
     }

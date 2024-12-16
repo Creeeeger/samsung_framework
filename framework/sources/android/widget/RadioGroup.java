@@ -27,7 +27,6 @@ public class RadioGroup extends LinearLayout {
     private PassThroughHierarchyChangeListener mPassThroughListener;
     private boolean mProtectFromCheckedChange;
 
-    /* loaded from: classes4.dex */
     public interface OnCheckedChangeListener {
         void onCheckedChanged(RadioGroup radioGroup, int i);
     }
@@ -65,9 +64,8 @@ public class RadioGroup extends LinearLayout {
 
     private void init() {
         this.mChildOnCheckedChangeListener = new CheckedStateTracker();
-        PassThroughHierarchyChangeListener passThroughHierarchyChangeListener = new PassThroughHierarchyChangeListener();
-        this.mPassThroughListener = passThroughHierarchyChangeListener;
-        super.setOnHierarchyChangeListener(passThroughHierarchyChangeListener);
+        this.mPassThroughListener = new PassThroughHierarchyChangeListener();
+        super.setOnHierarchyChangeListener(this.mPassThroughListener);
     }
 
     @Override // android.view.ViewGroup
@@ -76,12 +74,11 @@ public class RadioGroup extends LinearLayout {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
-        int i = this.mCheckedId;
-        if (i != -1) {
+        if (this.mCheckedId != -1) {
             this.mProtectFromCheckedChange = true;
-            setCheckedStateForView(i, true);
+            setCheckedStateForView(this.mCheckedId, true);
             this.mProtectFromCheckedChange = false;
             setCheckedId(this.mCheckedId);
         }
@@ -93,9 +90,8 @@ public class RadioGroup extends LinearLayout {
             RadioButton button = (RadioButton) child;
             if (button.isChecked()) {
                 this.mProtectFromCheckedChange = true;
-                int i = this.mCheckedId;
-                if (i != -1) {
-                    setCheckedStateForView(i, false);
+                if (this.mCheckedId != -1) {
+                    setCheckedStateForView(this.mCheckedId, false);
                 }
                 this.mProtectFromCheckedChange = false;
                 setCheckedId(button.getId());
@@ -105,32 +101,31 @@ public class RadioGroup extends LinearLayout {
     }
 
     public void check(int id) {
-        if (id != -1 && id == this.mCheckedId) {
-            return;
+        if (id == -1 || id != this.mCheckedId) {
+            if (this.mCheckedId != -1) {
+                setCheckedStateForView(this.mCheckedId, false);
+            }
+            if (id != -1) {
+                setCheckedStateForView(id, true);
+            }
+            setCheckedId(id);
         }
-        int i = this.mCheckedId;
-        if (i != -1) {
-            setCheckedStateForView(i, false);
-        }
-        if (id != -1) {
-            setCheckedStateForView(id, true);
-        }
-        setCheckedId(id);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setCheckedId(int id) {
         AutofillManager afm;
         boolean changed = id != this.mCheckedId;
         this.mCheckedId = id;
-        OnCheckedChangeListener onCheckedChangeListener = this.mOnCheckedChangeListener;
-        if (onCheckedChangeListener != null) {
-            onCheckedChangeListener.onCheckedChanged(this, id);
+        if (this.mOnCheckedChangeListener != null) {
+            this.mOnCheckedChangeListener.onCheckedChanged(this, this.mCheckedId);
         }
         if (changed && (afm = (AutofillManager) this.mContext.getSystemService(AutofillManager.class)) != null) {
             afm.notifyValueChanged(this);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setCheckedStateForView(int viewId, boolean checked) {
         View checkedView = findViewById(viewId);
         if (checkedView != null && (checkedView instanceof RadioButton)) {
@@ -156,10 +151,11 @@ public class RadioGroup extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-2, -2);
@@ -170,7 +166,6 @@ public class RadioGroup extends LinearLayout {
         return RadioGroup.class.getName();
     }
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends LinearLayout.LayoutParams {
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
@@ -207,12 +202,7 @@ public class RadioGroup extends LinearLayout {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class CheckedStateTracker implements CompoundButton.OnCheckedChangeListener {
-        /* synthetic */ CheckedStateTracker(RadioGroup radioGroup, CheckedStateTrackerIA checkedStateTrackerIA) {
-            this();
-        }
-
+    private class CheckedStateTracker implements CompoundButton.OnCheckedChangeListener {
         private CheckedStateTracker() {
         }
 
@@ -223,8 +213,7 @@ public class RadioGroup extends LinearLayout {
             }
             RadioGroup.this.mProtectFromCheckedChange = true;
             if (RadioGroup.this.mCheckedId != -1) {
-                RadioGroup radioGroup = RadioGroup.this;
-                radioGroup.setCheckedStateForView(radioGroup.mCheckedId, false);
+                RadioGroup.this.setCheckedStateForView(RadioGroup.this.mCheckedId, false);
             }
             RadioGroup.this.mProtectFromCheckedChange = false;
             int id = buttonView.getId();
@@ -232,13 +221,8 @@ public class RadioGroup extends LinearLayout {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class PassThroughHierarchyChangeListener implements ViewGroup.OnHierarchyChangeListener {
+    private class PassThroughHierarchyChangeListener implements ViewGroup.OnHierarchyChangeListener {
         private ViewGroup.OnHierarchyChangeListener mOnHierarchyChangeListener;
-
-        /* synthetic */ PassThroughHierarchyChangeListener(RadioGroup radioGroup, PassThroughHierarchyChangeListenerIA passThroughHierarchyChangeListenerIA) {
-            this();
-        }
 
         private PassThroughHierarchyChangeListener() {
         }
@@ -253,9 +237,8 @@ public class RadioGroup extends LinearLayout {
                 }
                 ((RadioButton) child).setOnCheckedChangeWidgetListener(RadioGroup.this.mChildOnCheckedChangeListener);
             }
-            ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener = this.mOnHierarchyChangeListener;
-            if (onHierarchyChangeListener != null) {
-                onHierarchyChangeListener.onChildViewAdded(parent, child);
+            if (this.mOnHierarchyChangeListener != null) {
+                this.mOnHierarchyChangeListener.onChildViewAdded(parent, child);
             }
         }
 
@@ -264,15 +247,14 @@ public class RadioGroup extends LinearLayout {
             if (parent == RadioGroup.this && (child instanceof RadioButton)) {
                 ((RadioButton) child).setOnCheckedChangeWidgetListener(null);
             }
-            ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener = this.mOnHierarchyChangeListener;
-            if (onHierarchyChangeListener != null) {
-                onHierarchyChangeListener.onChildViewRemoved(parent, child);
+            if (this.mOnHierarchyChangeListener != null) {
+                this.mOnHierarchyChangeListener.onChildViewRemoved(parent, child);
             }
         }
     }
 
     @Override // android.view.View
-    public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
+    protected void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         super.onProvideStructure(structure, viewFor, flags);
         if (viewFor == 1) {
             structure.setDataIsSensitive(this.mCheckedId != this.mInitialCheckedId);
@@ -336,7 +318,7 @@ public class RadioGroup extends LinearLayout {
         return count;
     }
 
-    public int getIndexWithinVisibleButtons(View child) {
+    int getIndexWithinVisibleButtons(View child) {
         if (!(child instanceof RadioButton)) {
             return -1;
         }

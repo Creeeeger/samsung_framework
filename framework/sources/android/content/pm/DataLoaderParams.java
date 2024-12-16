@@ -26,7 +26,7 @@ public class DataLoaderParams {
         this.mData = data;
     }
 
-    public DataLoaderParams(DataLoaderParamsParcel data) {
+    DataLoaderParams(DataLoaderParamsParcel data) {
         this.mData = data;
     }
 

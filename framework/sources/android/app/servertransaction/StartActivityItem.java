@@ -3,6 +3,7 @@ package android.app.servertransaction;
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.app.ClientTransactionHandler;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Trace;
@@ -10,30 +11,25 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class StartActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<StartActivityItem> CREATOR = new Parcelable.Creator<StartActivityItem>() { // from class: android.app.servertransaction.StartActivityItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StartActivityItem createFromParcel(Parcel in) {
             return new StartActivityItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StartActivityItem[] newArray(int size) {
             return new StartActivityItem[size];
         }
     };
     private static final String TAG = "StartActivityItem";
-    private ActivityOptions mActivityOptions;
-
-    /* synthetic */ StartActivityItem(Parcel parcel, StartActivityItemIA startActivityItemIA) {
-        this(parcel);
-    }
+    private ActivityOptions.SceneTransitionInfo mSceneTransitionInfo;
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
         Trace.traceBegin(64L, "startActivityItem");
-        client.handleStartActivity(r, pendingActions, this.mActivityOptions);
+        client.handleStartActivity(r, pendingActions, this.mSceneTransitionInfo);
         Trace.traceEnd(64L);
     }
 
@@ -45,81 +41,54 @@ public class StartActivityItem extends ActivityLifecycleItem {
     private StartActivityItem() {
     }
 
-    public static StartActivityItem obtain(ActivityOptions activityOptions) {
+    public static StartActivityItem obtain(IBinder activityToken, ActivityOptions.SceneTransitionInfo sceneTransitionInfo) {
         StartActivityItem instance = (StartActivityItem) ObjectPool.obtain(StartActivityItem.class);
         if (instance == null) {
             instance = new StartActivityItem();
         }
-        instance.mActivityOptions = activityOptions;
+        instance.setActivityToken(activityToken);
+        instance.mSceneTransitionInfo = sceneTransitionInfo;
         return instance;
     }
 
-    @Override // android.app.servertransaction.ActivityLifecycleItem, android.app.servertransaction.ObjectPoolItem
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.app.servertransaction.ObjectPoolItem
     public void recycle() {
         super.recycle();
-        this.mActivityOptions = null;
+        this.mSceneTransitionInfo = null;
         ObjectPool.recycle(this);
     }
 
-    @Override // android.os.Parcelable
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
-        ActivityOptions activityOptions = this.mActivityOptions;
-        dest.writeBundle(activityOptions != null ? activityOptions.toBundle() : null);
+        super.writeToParcel(dest, flags);
+        dest.writeTypedObject(this.mSceneTransitionInfo, flags);
     }
 
     private StartActivityItem(Parcel in) {
-        this.mActivityOptions = ActivityOptions.fromBundle(in.readBundle());
+        super(in);
+        this.mSceneTransitionInfo = (ActivityOptions.SceneTransitionInfo) in.readTypedObject(ActivityOptions.SceneTransitionInfo.CREATOR);
     }
 
-    /* renamed from: android.app.servertransaction.StartActivityItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StartActivityItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StartActivityItem createFromParcel(Parcel in) {
-            return new StartActivityItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StartActivityItem[] newArray(int size) {
-            return new StartActivityItem[size];
-        }
-    }
-
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public boolean equals(Object o) {
-        boolean z;
-        boolean z2;
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!super.equals(o)) {
             return false;
         }
         StartActivityItem other = (StartActivityItem) o;
-        if (this.mActivityOptions == null) {
-            z = true;
-        } else {
-            z = false;
-        }
-        if (other.mActivityOptions == null) {
-            z2 = true;
-        } else {
-            z2 = false;
-        }
-        if (z == z2) {
-            return true;
-        }
-        return false;
+        return (this.mSceneTransitionInfo == null) == (other.mSceneTransitionInfo == null);
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public int hashCode() {
-        int result = (17 * 31) + (this.mActivityOptions != null ? 1 : 0);
-        return result;
+        int result = (17 * 31) + super.hashCode();
+        return (result * 31) + (this.mSceneTransitionInfo != null ? 1 : 0);
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public String toString() {
-        return "StartActivityItem{options=" + this.mActivityOptions + "}";
+        return "StartActivityItem{" + super.toString() + ",sceneTransitionInfo=" + this.mSceneTransitionInfo + "}";
     }
 }

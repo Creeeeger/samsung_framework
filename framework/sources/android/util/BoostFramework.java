@@ -83,19 +83,11 @@ public class BoostFramework {
     private static Class<?> sUxPerfClass = null;
     private static Method sUxIOPStart = null;
 
-    /* loaded from: classes4.dex */
-    public class Scroll {
-        public static final int HORIZONTAL = 2;
-        public static final int PANEL_VIEW = 3;
-        public static final int PREFILING = 4;
-        public static final int VERTICAL = 1;
-
-        public Scroll() {
-        }
+    public static class Draw {
+        public static final int EVENT_TYPE_V1 = 1;
     }
 
-    /* loaded from: classes4.dex */
-    public class Launch {
+    public static class Launch {
         public static final int ACTIVITY_LAUNCH_BOOST = 10;
         public static final int BOOST_GAME = 4;
         public static final int BOOST_V1 = 1;
@@ -110,29 +102,21 @@ public class BoostFramework {
         public static final int TYPE_SERVICE_START = 100;
         public static final int TYPE_START_APP_FROM_BG = 102;
         public static final int TYPE_START_PROC = 101;
-
-        public Launch() {
-        }
     }
 
-    /* loaded from: classes4.dex */
-    public class Draw {
-        public static final int EVENT_TYPE_V1 = 1;
-
-        public Draw() {
-        }
+    public static class Scroll {
+        public static final int HORIZONTAL = 2;
+        public static final int PANEL_VIEW = 3;
+        public static final int PREFILING = 4;
+        public static final int VERTICAL = 1;
     }
 
-    /* loaded from: classes4.dex */
-    public class WorkloadType {
+    public static class WorkloadType {
         public static final int APP = 1;
         public static final int BROWSER = 3;
         public static final int GAME = 2;
         public static final int NOT_KNOWN = 0;
         public static final int PREPROAPP = 4;
-
-        public WorkloadType() {
-        }
     }
 
     public BoostFramework() {
@@ -146,13 +130,11 @@ public class BoostFramework {
         }
         initFunctions();
         try {
-            Class<?> cls = sPerfClass;
-            if (cls != null) {
-                this.mPerf = cls.newInstance();
+            if (sPerfClass != null) {
+                this.mPerf = sPerfClass.newInstance();
             }
-            Class<?> cls2 = sUxPerfClass;
-            if (cls2 != null) {
-                this.mUxPerf = cls2.newInstance();
+            if (sUxPerfClass != null) {
+                this.mUxPerf = sUxPerfClass.newInstance();
             }
         } catch (Exception e) {
             Log.e(TAG, "BoostFramework() : Exception_2 = " + e);
@@ -175,20 +157,18 @@ public class BoostFramework {
         }
         initFunctions();
         try {
-            Class<?> cls = sPerfClass;
-            if (cls != null && (cons = cls.getConstructor(Context.class)) != null) {
+            if (sPerfClass != null && (cons = sPerfClass.getConstructor(Context.class)) != null) {
                 this.mPerf = cons.newInstance(context);
             }
-            Class<?> cls2 = sUxPerfClass;
-            if (cls2 != null) {
+            if (sUxPerfClass != null) {
                 if (isTrusted) {
-                    Constructor cons2 = cls2.getConstructor(Context.class);
+                    Constructor cons2 = sUxPerfClass.getConstructor(Context.class);
                     if (cons2 != null) {
                         this.mUxPerf = cons2.newInstance(context);
                     }
                     return;
                 }
-                this.mUxPerf = cls2.newInstance();
+                this.mUxPerf = sUxPerfClass.newInstance();
             }
         } catch (Exception e) {
             Log.e(TAG, "BoostFramework() : Exception_3 = " + e);
@@ -203,13 +183,11 @@ public class BoostFramework {
         this.mUxPerf = null;
         initFunctions();
         try {
-            Class<?> cls = sPerfClass;
-            if (cls != null && (cons = cls.getConstructor(Boolean.TYPE)) != null) {
+            if (sPerfClass != null && (cons = sPerfClass.getConstructor(Boolean.TYPE)) != null) {
                 this.mPerf = cons.newInstance(Boolean.valueOf(isUntrustedDomain));
             }
-            Class<?> cls2 = sUxPerfClass;
-            if (cls2 != null) {
-                this.mUxPerf = cls2.newInstance();
+            if (sUxPerfClass != null) {
+                this.mUxPerf = sUxPerfClass.newInstance();
             }
         } catch (Exception e) {
             Log.e(TAG, "BoostFramework() : Exception_5 = " + e);
@@ -278,12 +256,11 @@ public class BoostFramework {
     }
 
     public int perfLockAcquire(int duration, int... list) {
-        Method method = sAcquireFunc;
-        if (method == null || method == null) {
+        if (sAcquireFunc == null) {
             return -1;
         }
         try {
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(duration), list);
+            Object retVal = sAcquireFunc.invoke(this.mPerf, Integer.valueOf(duration), list);
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -293,12 +270,11 @@ public class BoostFramework {
     }
 
     public int perfLockRelease() {
-        Method method = sReleaseFunc;
-        if (method == null || method == null) {
+        if (sReleaseFunc == null) {
             return -1;
         }
         try {
-            Object retVal = method.invoke(this.mPerf, new Object[0]);
+            Object retVal = sReleaseFunc.invoke(this.mPerf, new Object[0]);
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -308,12 +284,11 @@ public class BoostFramework {
     }
 
     public int perfLockReleaseHandler(int handle) {
-        Method method = sReleaseHandlerFunc;
-        if (method == null || method == null) {
+        if (sReleaseHandlerFunc == null) {
             return -1;
         }
         try {
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(handle));
+            Object retVal = sReleaseHandlerFunc.invoke(this.mPerf, Integer.valueOf(handle));
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -331,12 +306,11 @@ public class BoostFramework {
     }
 
     public int perfHint(int hint, String userDataStr, int userData1, int userData2) {
-        Method method = sPerfHintFunc;
-        if (method == null || method == null) {
+        if (sPerfHintFunc == null) {
             return -1;
         }
         try {
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(hint), userDataStr, Integer.valueOf(userData1), Integer.valueOf(userData2));
+            Object retVal = sPerfHintFunc.invoke(this.mPerf, Integer.valueOf(hint), userDataStr, Integer.valueOf(userData1), Integer.valueOf(userData2));
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -347,11 +321,10 @@ public class BoostFramework {
 
     public double getPerfHalVersion() {
         try {
-            Method method = sPerfGetPerfHalVerFunc;
-            if (method == null) {
+            if (sPerfGetPerfHalVerFunc == null) {
                 return 2.200000047683716d;
             }
-            Object ret = method.invoke(this.mPerf, new Object[0]);
+            Object ret = sPerfGetPerfHalVerFunc.invoke(this.mPerf, new Object[0]);
             double retVal = ((Double) ret).doubleValue();
             return retVal;
         } catch (Exception e) {
@@ -362,11 +335,10 @@ public class BoostFramework {
 
     public int perfGetFeedback(int req, String pkg_name) {
         try {
-            Method method = sFeedbackFunc;
-            if (method == null) {
+            if (sFeedbackFunc == null) {
                 return -1;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(req), pkg_name);
+            Object retVal = sFeedbackFunc.invoke(this.mPerf, Integer.valueOf(req), pkg_name);
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -377,11 +349,10 @@ public class BoostFramework {
 
     public int perfGetFeedbackExtn(int req, String pkg_name, int numArgs, int... list) {
         try {
-            Method method = sFeedbackFuncExtn;
-            if (method == null) {
+            if (sFeedbackFuncExtn == null) {
                 return -1;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(req), pkg_name, Integer.valueOf(numArgs), list);
+            Object retVal = sFeedbackFuncExtn.invoke(this.mPerf, Integer.valueOf(req), pkg_name, Integer.valueOf(numArgs), list);
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -425,11 +396,10 @@ public class BoostFramework {
 
     public int perfUXEngine_events(int opcode, int pid, String pkgName, int lat, String codePath) {
         try {
-            Method method = sUXEngineEvents;
-            if (method == null) {
+            if (sUXEngineEvents == null) {
                 return -1;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(opcode), Integer.valueOf(pid), pkgName, Integer.valueOf(lat), codePath);
+            Object retVal = sUXEngineEvents.invoke(this.mPerf, Integer.valueOf(opcode), Integer.valueOf(pid), pkgName, Integer.valueOf(lat), codePath);
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -440,11 +410,10 @@ public class BoostFramework {
 
     public String perfUXEngine_trigger(int opcode) {
         try {
-            Method method = sUXEngineTrigger;
-            if (method == null) {
+            if (sUXEngineTrigger == null) {
                 return null;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(opcode));
+            Object retVal = sUXEngineTrigger.invoke(this.mPerf, Integer.valueOf(opcode));
             String ret = (String) retVal;
             return ret;
         } catch (Exception e) {
@@ -455,11 +424,10 @@ public class BoostFramework {
 
     public String perfSyncRequest(int opcode) {
         try {
-            Method method = sPerfSyncRequest;
-            if (method == null) {
+            if (sPerfSyncRequest == null) {
                 return null;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(opcode));
+            Object retVal = sPerfSyncRequest.invoke(this.mPerf, Integer.valueOf(opcode));
             String ret = (String) retVal;
             return ret;
         } catch (Exception e) {
@@ -470,9 +438,8 @@ public class BoostFramework {
 
     public String perfGetProp(String prop_name, String def_val) {
         try {
-            Method method = sPerfGetPropFunc;
-            if (method != null) {
-                Object retVal = method.invoke(this.mPerf, prop_name, def_val);
+            if (sPerfGetPropFunc != null) {
+                Object retVal = sPerfGetPropFunc.invoke(this.mPerf, prop_name, def_val);
                 String ret = (String) retVal;
                 return ret;
             }
@@ -485,11 +452,10 @@ public class BoostFramework {
 
     public int perfLockAcqAndRelease(int handle, int duration, int numArgs, int reserveNumArgs, int... list) {
         try {
-            Method method = sAcqAndReleaseFunc;
-            if (method == null) {
+            if (sAcqAndReleaseFunc == null) {
                 return -1;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(handle), Integer.valueOf(duration), Integer.valueOf(numArgs), Integer.valueOf(reserveNumArgs), list);
+            Object retVal = sAcqAndReleaseFunc.invoke(this.mPerf, Integer.valueOf(handle), Integer.valueOf(duration), Integer.valueOf(numArgs), Integer.valueOf(reserveNumArgs), list);
             int ret = ((Integer) retVal).intValue();
             return ret;
         } catch (Exception e) {
@@ -504,9 +470,8 @@ public class BoostFramework {
 
     public void perfEvent(int eventId, String pkg_name, int numArgs, int... list) {
         try {
-            Method method = sPerfEventFunc;
-            if (method != null) {
-                method.invoke(this.mPerf, Integer.valueOf(eventId), pkg_name, Integer.valueOf(numArgs), list);
+            if (sPerfEventFunc != null) {
+                sPerfEventFunc.invoke(this.mPerf, Integer.valueOf(eventId), pkg_name, Integer.valueOf(numArgs), list);
             }
         } catch (Exception e) {
             Log.e(TAG, "Exception " + e);
@@ -527,16 +492,20 @@ public class BoostFramework {
 
     public int perfHintAcqRel(int handle, int hint, String pkg_name, int duration, int hintType, int numArgs, int... list) {
         try {
-            Method method = sperfHintAcqRelFunc;
-            if (method == null) {
+            if (sperfHintAcqRelFunc == null) {
                 return -1;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(handle), Integer.valueOf(hint), pkg_name, Integer.valueOf(duration), Integer.valueOf(hintType), Integer.valueOf(numArgs), list);
-            int ret = ((Integer) retVal).intValue();
-            return ret;
-        } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
-            return -1;
+            try {
+                Object retVal = sperfHintAcqRelFunc.invoke(this.mPerf, Integer.valueOf(handle), Integer.valueOf(hint), pkg_name, Integer.valueOf(duration), Integer.valueOf(hintType), Integer.valueOf(numArgs), list);
+                int ret = ((Integer) retVal).intValue();
+                return ret;
+            } catch (Exception e) {
+                retVal = e;
+                Log.e(TAG, "Exception " + retVal);
+                return -1;
+            }
+        } catch (Exception e2) {
+            retVal = e2;
         }
     }
 
@@ -554,20 +523,23 @@ public class BoostFramework {
 
     public int perfHintRenew(int handle, int hint, String pkg_name, int duration, int hintType, int numArgs, int... list) {
         try {
-            Method method = sperfHintRenewFunc;
-            if (method == null) {
+            if (sperfHintRenewFunc == null) {
                 return -1;
             }
-            Object retVal = method.invoke(this.mPerf, Integer.valueOf(handle), Integer.valueOf(hint), pkg_name, Integer.valueOf(duration), Integer.valueOf(hintType), Integer.valueOf(numArgs), list);
-            int ret = ((Integer) retVal).intValue();
-            return ret;
-        } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
-            return -1;
+            try {
+                Object retVal = sperfHintRenewFunc.invoke(this.mPerf, Integer.valueOf(handle), Integer.valueOf(hint), pkg_name, Integer.valueOf(duration), Integer.valueOf(hintType), Integer.valueOf(numArgs), list);
+                int ret = ((Integer) retVal).intValue();
+                return ret;
+            } catch (Exception e) {
+                retVal = e;
+                Log.e(TAG, "Exception " + retVal);
+                return -1;
+            }
+        } catch (Exception e2) {
+            retVal = e2;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ScrollOptimizer {
         public static final int FLING_END = 0;
         public static final int FLING_START = 1;
@@ -588,14 +560,14 @@ public class BoostFramework {
         private static Method sGetFrameDelay = null;
         private static Method sGetAdjustedAnimationClock = null;
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static void initQXPerfFuncs() {
             if (sQXIsLoaded) {
                 return;
             }
             try {
-                boolean z = SystemProperties.getBoolean(SCROLL_OPT_PROP, false);
-                sScrollOptProp = z;
-                if (!z) {
+                sScrollOptProp = SystemProperties.getBoolean(SCROLL_OPT_PROP, false);
+                if (!sScrollOptProp) {
                     sScrollOptEnable = false;
                     sQXIsLoaded = true;
                     return;
@@ -626,12 +598,11 @@ public class BoostFramework {
             }
         }
 
-        public static void setFrameInterval(long frameIntervalNanos) {
-            Method method;
+        public static void setFrameInterval(final long frameIntervalNanos) {
             if (sQXIsLoaded) {
-                if (sScrollOptEnable && (method = sSetFrameInterval) != null) {
+                if (sScrollOptEnable && sSetFrameInterval != null) {
                     try {
-                        method.invoke(null, Long.valueOf(frameIntervalNanos));
+                        sSetFrameInterval.invoke(null, Long.valueOf(frameIntervalNanos));
                         return;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -641,12 +612,6 @@ public class BoostFramework {
                 return;
             }
             Thread initThread = new Thread(new Runnable() { // from class: android.util.BoostFramework.ScrollOptimizer.1
-                final /* synthetic */ long val$frameIntervalNanos;
-
-                AnonymousClass1(long frameIntervalNanos2) {
-                    frameIntervalNanos = frameIntervalNanos2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -664,35 +629,10 @@ public class BoostFramework {
             initThread.start();
         }
 
-        /* renamed from: android.util.BoostFramework$ScrollOptimizer$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ long val$frameIntervalNanos;
-
-            AnonymousClass1(long frameIntervalNanos2) {
-                frameIntervalNanos = frameIntervalNanos2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    ScrollOptimizer.initQXPerfFuncs();
-                    if (ScrollOptimizer.sScrollOptProp && ScrollOptimizer.sSetFrameInterval != null) {
-                        ScrollOptimizer.sSetFrameInterval.invoke(null, Long.valueOf(frameIntervalNanos));
-                        ScrollOptimizer.sScrollOptEnable = true;
-                    }
-                } catch (Exception e2) {
-                    Log.e(BoostFramework.TAG, "Failed to run initThread.");
-                    e2.printStackTrace();
-                }
-            }
-        }
-
         public static void setBLASTBufferQueue(BLASTBufferQueue blastBufferQueue) {
-            Method method;
-            if (sScrollOptEnable && (method = sSetBLASTBufferQueue) != null) {
+            if (sScrollOptEnable && sSetBLASTBufferQueue != null) {
                 try {
-                    method.invoke(null, blastBufferQueue);
+                    sSetBLASTBufferQueue.invoke(null, blastBufferQueue);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -700,10 +640,9 @@ public class BoostFramework {
         }
 
         public static void setMotionType(int eventType) {
-            Method method;
-            if (sScrollOptEnable && (method = sSetMotionType) != null) {
+            if (sScrollOptEnable && sSetMotionType != null) {
                 try {
-                    method.invoke(null, Integer.valueOf(eventType));
+                    sSetMotionType.invoke(null, Integer.valueOf(eventType));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -711,10 +650,9 @@ public class BoostFramework {
         }
 
         public static void setVsyncTime(long vsyncTimeNanos) {
-            Method method;
-            if (sScrollOptEnable && (method = sSetVsyncTime) != null) {
+            if (sScrollOptEnable && sSetVsyncTime != null) {
                 try {
-                    method.invoke(null, Long.valueOf(vsyncTimeNanos));
+                    sSetVsyncTime.invoke(null, Long.valueOf(vsyncTimeNanos));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -722,10 +660,9 @@ public class BoostFramework {
         }
 
         public static void setUITaskStatus(boolean running) {
-            Method method;
-            if (sScrollOptEnable && (method = sSetUITaskStatus) != null) {
+            if (sScrollOptEnable && sSetUITaskStatus != null) {
                 try {
-                    method.invoke(null, Boolean.valueOf(running));
+                    sSetUITaskStatus.invoke(null, Boolean.valueOf(running));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -733,10 +670,9 @@ public class BoostFramework {
         }
 
         public static void setFlingFlag(int flag) {
-            Method method;
-            if (sScrollOptEnable && (method = sSetFlingFlag) != null) {
+            if (sScrollOptEnable && sSetFlingFlag != null) {
                 try {
-                    method.invoke(null, Integer.valueOf(flag));
+                    sSetFlingFlag.invoke(null, Integer.valueOf(flag));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -744,12 +680,11 @@ public class BoostFramework {
         }
 
         public static boolean shouldUseVsync(boolean defaultVsyncFlag) {
-            Method method;
-            if (!sScrollOptEnable || (method = sShouldUseVsync) == null) {
+            if (!sScrollOptEnable || sShouldUseVsync == null) {
                 return defaultVsyncFlag;
             }
             try {
-                Object retVal = method.invoke(null, new Object[0]);
+                Object retVal = sShouldUseVsync.invoke(null, new Object[0]);
                 boolean useVsync = ((Boolean) retVal).booleanValue();
                 return useVsync;
             } catch (Exception e) {
@@ -759,12 +694,11 @@ public class BoostFramework {
         }
 
         public static long getFrameDelay(long defaultDelay, long lastFrameTimeNanos) {
-            Method method;
-            if (!sScrollOptEnable || (method = sGetFrameDelay) == null) {
+            if (!sScrollOptEnable || sGetFrameDelay == null) {
                 return defaultDelay;
             }
             try {
-                Object retVal = method.invoke(null, Long.valueOf(lastFrameTimeNanos));
+                Object retVal = sGetFrameDelay.invoke(null, Long.valueOf(lastFrameTimeNanos));
                 long frameDelay = ((Long) retVal).longValue();
                 return frameDelay;
             } catch (Exception e) {
@@ -774,12 +708,11 @@ public class BoostFramework {
         }
 
         public static long getAdjustedAnimationClock(long frameTimeNanos) {
-            Method method;
-            if (!sScrollOptEnable || (method = sGetAdjustedAnimationClock) == null) {
+            if (!sScrollOptEnable || sGetAdjustedAnimationClock == null) {
                 return frameTimeNanos;
             }
             try {
-                Object retVal = method.invoke(null, Long.valueOf(frameTimeNanos));
+                Object retVal = sGetAdjustedAnimationClock.invoke(null, Long.valueOf(frameTimeNanos));
                 long newFrameTimeNanos = ((Long) retVal).longValue();
                 return newFrameTimeNanos;
             } catch (Exception e) {

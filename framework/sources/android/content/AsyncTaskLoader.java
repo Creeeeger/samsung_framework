@@ -24,14 +24,14 @@ public abstract class AsyncTaskLoader<D> extends Loader<D> {
 
     public abstract D loadInBackground();
 
-    /* loaded from: classes.dex */
-    public final class LoadTask extends AsyncTask<Void, Void, D> implements Runnable {
+    final class LoadTask extends AsyncTask<Void, Void, D> implements Runnable {
         private final CountDownLatch mDone = new CountDownLatch(1);
         boolean waiting;
 
         LoadTask() {
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public D doInBackground(Void... voidArr) {
             try {
@@ -94,7 +94,7 @@ public abstract class AsyncTaskLoader<D> extends Loader<D> {
     }
 
     @Override // android.content.Loader
-    public void onForceLoad() {
+    protected void onForceLoad() {
         super.onForceLoad();
         cancelLoad();
         this.mTask = new LoadTask();

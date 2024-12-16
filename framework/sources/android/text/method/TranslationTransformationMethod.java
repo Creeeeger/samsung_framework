@@ -13,11 +13,11 @@ import android.view.translation.ViewTranslationResponse;
 import android.widget.TextView;
 import java.util.regex.Pattern;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TranslationTransformationMethod implements TransformationMethod2 {
     private static final Pattern PATTERN_WHITESPACE = Pattern.compile("\\s+");
     private static final String TAG = "TranslationTransformationMethod";
-    private Float SEP_VERSION = Float.valueOf(Float.parseFloat("15.5"));
+    private Float SEP_VERSION = Float.valueOf(Float.parseFloat("16.0"));
     private boolean mAllowLengthChanges;
     private TransformationMethod mOriginalTranslationMethod;
     private final ViewTranslationResponse mTranslationResponse;

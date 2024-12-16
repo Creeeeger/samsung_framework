@@ -3,7 +3,7 @@ package com.samsung.android.service.EngineeringMode.token;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class GroupItemCollection extends InfoCollection {
     private ArrayList<GroupItem> mGroupItems;
 

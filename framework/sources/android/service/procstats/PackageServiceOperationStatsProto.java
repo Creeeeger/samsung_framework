@@ -6,7 +6,6 @@ public final class PackageServiceOperationStatsProto {
     public static final long OPERATION = 1159641169921L;
     public static final long STATE_STATS = 2246267895811L;
 
-    /* loaded from: classes3.dex */
     public final class StateStats {
         public static final long DURATION_MS = 1112396529667L;
         public static final long MEMORY_STATE = 1159641169922L;

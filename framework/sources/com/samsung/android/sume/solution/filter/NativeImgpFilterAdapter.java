@@ -1,6 +1,5 @@
 package com.samsung.android.sume.solution.filter;
 
-import android.os.BatteryManager;
 import android.util.Log;
 import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.buffer.MediaBuffer;
@@ -18,16 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class NativeImgpFilterAdapter implements Operator {
     private static final String TAG = Def.tagOf((Class<?>) NativeImgpFilterAdapter.class);
     private final NativeUniImgpPlugin plugin;
 
     public NativeImgpFilterAdapter(MediaFormat inputFormat, MediaFormat outputFormat, ColorFormat preferredColorFormat) {
-        String str = TAG;
-        Log.d(str, "inputFormat=" + inputFormat);
-        Log.d(str, "outputFormat=" + outputFormat);
-        Log.d(str, "preferred-ColorFormat=" + preferredColorFormat);
+        Log.d(TAG, "inputFormat=" + inputFormat);
+        Log.d(TAG, "outputFormat=" + outputFormat);
+        Log.d(TAG, "preferred-ColorFormat=" + preferredColorFormat);
         List<ImgpType> opList = new ArrayList<>();
         if (inputFormat != null) {
             if (inputFormat.getMediaType() == MediaType.COMPRESSED_IMAGE) {
@@ -35,7 +33,7 @@ public class NativeImgpFilterAdapter implements Operator {
             }
             OperatorMap.inferOperations(inputFormat.toMutableFormat(), outputFormat);
         }
-        if (outputFormat.contains(BatteryManager.EXTRA_SCALE)) {
+        if (outputFormat.contains("scale")) {
             opList.add(ImgpType.RESIZE);
         }
         if (outputFormat.getShape() != null) {
@@ -66,7 +64,7 @@ public class NativeImgpFilterAdapter implements Operator {
                 opList.add(ImgpType.ENCODE);
             }
         }
-        Log.d(str, "opList=" + opList.size());
+        Log.d(TAG, "opList=" + opList.size());
         this.plugin = new NativeUniImgpPlugin((List) Objects.requireNonNull(opList), inputFormat, outputFormat, preferredColorFormat);
     }
 

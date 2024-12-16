@@ -8,6 +8,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.ArrayMap;
+import android.util.ArraySet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -16,8 +17,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 @SystemApi
 /* loaded from: classes2.dex */
@@ -26,21 +25,21 @@ public final class ProgramList implements AutoCloseable {
     private boolean mIsComplete;
     private OnCloseListener mOnCloseListener;
     private final Object mLock = new Object();
-    private final Map<ProgramSelector.Identifier, RadioManager.ProgramInfo> mPrograms = new ArrayMap();
+    private final ArrayMap<ProgramSelector.Identifier, ArrayMap<UniqueProgramIdentifier, RadioManager.ProgramInfo>> mPrograms = new ArrayMap<>();
     private final List<ListCallback> mListCallbacks = new ArrayList();
     private final List<OnCompleteListener> mOnCompleteListeners = new ArrayList();
 
-    /* loaded from: classes2.dex */
-    public interface OnCloseListener {
+    interface OnCloseListener {
         void onClose();
     }
 
-    /* loaded from: classes2.dex */
     public interface OnCompleteListener {
         void onComplete();
     }
 
-    /* loaded from: classes2.dex */
+    ProgramList() {
+    }
+
     public static abstract class ListCallback {
         public void onItemChanged(ProgramSelector.Identifier id) {
         }
@@ -49,8 +48,7 @@ public final class ProgramList implements AutoCloseable {
         }
     }
 
-    /* renamed from: android.hardware.radio.ProgramList$1 */
-    /* loaded from: classes2.dex */
+    /* renamed from: android.hardware.radio.ProgramList$1, reason: invalid class name */
     class AnonymousClass1 extends ListCallback {
         final /* synthetic */ ListCallback val$callback;
         final /* synthetic */ Executor val$executor;
@@ -107,7 +105,7 @@ public final class ProgramList implements AutoCloseable {
         }
     }
 
-    public static /* synthetic */ void lambda$addOnCompleteListener$0(Executor executor, final OnCompleteListener listener) {
+    static /* synthetic */ void lambda$addOnCompleteListener$0(Executor executor, final OnCompleteListener listener) {
         Objects.requireNonNull(listener);
         executor.execute(new Runnable() { // from class: android.hardware.radio.ProgramList$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
@@ -147,7 +145,7 @@ public final class ProgramList implements AutoCloseable {
         }
     }
 
-    public void setOnCloseListener(OnCloseListener listener) {
+    void setOnCloseListener(OnCloseListener listener) {
         synchronized (this.mLock) {
             if (this.mOnCloseListener != null) {
                 throw new IllegalStateException("Close callback is already set");
@@ -167,9 +165,8 @@ public final class ProgramList implements AutoCloseable {
             this.mPrograms.clear();
             this.mListCallbacks.clear();
             this.mOnCompleteListeners.clear();
-            OnCloseListener onCloseListener = this.mOnCloseListener;
-            if (onCloseListener != null) {
-                onCompleteListenersCopied = onCloseListener;
+            if (this.mOnCloseListener != null) {
+                onCompleteListenersCopied = this.mOnCloseListener;
                 this.mOnCloseListener = null;
             }
             if (onCompleteListenersCopied != null) {
@@ -178,9 +175,9 @@ public final class ProgramList implements AutoCloseable {
         }
     }
 
-    public void apply(Chunk chunk) {
-        final List<ProgramSelector.Identifier> removedList = new ArrayList<>();
-        final List<ProgramSelector.Identifier> changedList = new ArrayList<>();
+    void apply(Chunk chunk) {
+        List<ProgramSelector.Identifier> removedList = new ArrayList<>();
+        Set<ProgramSelector.Identifier> changedSet = new ArraySet<>();
         List<OnCompleteListener> onCompleteListenersCopied = new ArrayList<>();
         synchronized (this.mLock) {
             if (this.mIsClosed) {
@@ -189,27 +186,23 @@ public final class ProgramList implements AutoCloseable {
             this.mIsComplete = false;
             List<ListCallback> listCallbacksCopied = new ArrayList<>(this.mListCallbacks);
             if (chunk.isPurge()) {
-                Iterator<Map.Entry<ProgramSelector.Identifier, RadioManager.ProgramInfo>> programsIterator = this.mPrograms.entrySet().iterator();
+                Iterator<Map.Entry<ProgramSelector.Identifier, ArrayMap<UniqueProgramIdentifier, RadioManager.ProgramInfo>>> programsIterator = this.mPrograms.entrySet().iterator();
                 while (programsIterator.hasNext()) {
-                    RadioManager.ProgramInfo removed = programsIterator.next().getValue();
-                    if (removed != null) {
-                        removedList.add(removed.getSelector().getPrimaryId());
+                    Map.Entry<ProgramSelector.Identifier, ArrayMap<UniqueProgramIdentifier, RadioManager.ProgramInfo>> removed = programsIterator.next();
+                    if (removed.getValue() != null) {
+                        removedList.add(removed.getKey());
                     }
                     programsIterator.remove();
                 }
             }
-            chunk.getRemoved().stream().forEach(new Consumer() { // from class: android.hardware.radio.ProgramList$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ProgramList.this.lambda$apply$1(removedList, (ProgramSelector.Identifier) obj);
-                }
-            });
-            chunk.getModified().stream().forEach(new Consumer() { // from class: android.hardware.radio.ProgramList$$ExternalSyntheticLambda3
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ProgramList.this.lambda$apply$2(changedList, (RadioManager.ProgramInfo) obj);
-                }
-            });
+            Iterator<UniqueProgramIdentifier> removedIterator = chunk.getRemoved().iterator();
+            while (removedIterator.hasNext()) {
+                removeLocked(removedIterator.next(), removedList);
+            }
+            Iterator<RadioManager.ProgramInfo> modifiedIterator = chunk.getModified().iterator();
+            while (modifiedIterator.hasNext()) {
+                putLocked(modifiedIterator.next(), changedSet);
+            }
             if (chunk.isComplete()) {
                 this.mIsComplete = true;
                 onCompleteListenersCopied = new ArrayList<>(this.mOnCompleteListeners);
@@ -219,9 +212,9 @@ public final class ProgramList implements AutoCloseable {
                     listCallbacksCopied.get(cbIndex).onItemRemoved(removedList.get(i));
                 }
             }
-            for (int i2 = 0; i2 < changedList.size(); i2++) {
+            for (ProgramSelector.Identifier changedId : changedSet) {
                 for (int cbIndex2 = 0; cbIndex2 < listCallbacksCopied.size(); cbIndex2++) {
-                    listCallbacksCopied.get(cbIndex2).onItemChanged(changedList.get(i2));
+                    listCallbacksCopied.get(cbIndex2).onItemChanged(changedId);
                 }
             }
             if (chunk.isComplete()) {
@@ -232,51 +225,72 @@ public final class ProgramList implements AutoCloseable {
         }
     }
 
-    /* renamed from: putLocked */
-    public void lambda$apply$2(RadioManager.ProgramInfo value, List<ProgramSelector.Identifier> changedIdentifierList) {
-        ProgramSelector.Identifier key = value.getSelector().getPrimaryId();
-        this.mPrograms.put((ProgramSelector.Identifier) Objects.requireNonNull(key), value);
-        ProgramSelector.Identifier sel = value.getSelector().getPrimaryId();
-        changedIdentifierList.add(sel);
+    private void putLocked(RadioManager.ProgramInfo value, Set<ProgramSelector.Identifier> changedIdentifierSet) {
+        UniqueProgramIdentifier key = new UniqueProgramIdentifier(value.getSelector());
+        ProgramSelector.Identifier primaryKey = (ProgramSelector.Identifier) Objects.requireNonNull(key.getPrimaryId());
+        if (!this.mPrograms.containsKey(primaryKey)) {
+            this.mPrograms.put(primaryKey, new ArrayMap<>());
+        }
+        this.mPrograms.get(primaryKey).put(key, value);
+        changedIdentifierSet.add(primaryKey);
     }
 
-    /* renamed from: removeLocked */
-    public void lambda$apply$1(ProgramSelector.Identifier key, List<ProgramSelector.Identifier> removedIdentifierList) {
-        RadioManager.ProgramInfo removed = this.mPrograms.remove(Objects.requireNonNull(key));
-        if (removed == null) {
+    private void removeLocked(UniqueProgramIdentifier key, List<ProgramSelector.Identifier> removedIdentifierList) {
+        ProgramSelector.Identifier primaryKey = (ProgramSelector.Identifier) Objects.requireNonNull(key.getPrimaryId());
+        if (!this.mPrograms.containsKey(primaryKey)) {
             return;
         }
-        ProgramSelector.Identifier sel = removed.getSelector().getPrimaryId();
-        removedIdentifierList.add(sel);
+        Map<UniqueProgramIdentifier, RadioManager.ProgramInfo> entries = this.mPrograms.get(primaryKey);
+        RadioManager.ProgramInfo removed = entries.remove(Objects.requireNonNull(key));
+        if (removed != null && entries.size() == 0) {
+            removedIdentifierList.add(primaryKey);
+        }
     }
 
     public List<RadioManager.ProgramInfo> toList() {
-        List<RadioManager.ProgramInfo> list;
+        List<RadioManager.ProgramInfo> list = new ArrayList<>();
         synchronized (this.mLock) {
-            list = (List) this.mPrograms.values().stream().collect(Collectors.toList());
+            for (int index = 0; index < this.mPrograms.size(); index++) {
+                ArrayMap<UniqueProgramIdentifier, RadioManager.ProgramInfo> entries = this.mPrograms.valueAt(index);
+                list.addAll(entries.values());
+            }
         }
         return list;
     }
 
+    @Deprecated
     public RadioManager.ProgramInfo get(ProgramSelector.Identifier id) {
-        RadioManager.ProgramInfo programInfo;
+        Map<UniqueProgramIdentifier, RadioManager.ProgramInfo> entries;
         synchronized (this.mLock) {
-            programInfo = this.mPrograms.get(Objects.requireNonNull(id));
+            entries = this.mPrograms.get(Objects.requireNonNull(id, "Primary identifier can not be null"));
         }
-        return programInfo;
+        if (entries == null) {
+            return null;
+        }
+        return entries.entrySet().iterator().next().getValue();
     }
 
-    /* loaded from: classes2.dex */
+    public List<RadioManager.ProgramInfo> getProgramInfos(ProgramSelector.Identifier id) {
+        ArrayMap<UniqueProgramIdentifier, RadioManager.ProgramInfo> entries;
+        Objects.requireNonNull(id, "Primary identifier can not be null");
+        synchronized (this.mLock) {
+            entries = this.mPrograms.get(id);
+        }
+        if (entries == null) {
+            return new ArrayList();
+        }
+        return new ArrayList(entries.values());
+    }
+
     public static final class Filter implements Parcelable {
         public static final Parcelable.Creator<Filter> CREATOR = new Parcelable.Creator<Filter>() { // from class: android.hardware.radio.ProgramList.Filter.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Filter createFromParcel(Parcel in) {
                 return new Filter(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Filter[] newArray(int size) {
                 return new Filter[size];
@@ -287,10 +301,6 @@ public final class ProgramList implements AutoCloseable {
         private final Set<ProgramSelector.Identifier> mIdentifiers;
         private final boolean mIncludeCategories;
         private final Map<String, String> mVendorFilter;
-
-        /* synthetic */ Filter(Parcel parcel, FilterIA filterIA) {
-            this(parcel);
-        }
 
         public Filter(Set<Integer> identifierTypes, Set<ProgramSelector.Identifier> identifiers, boolean includeCategories, boolean excludeModifications) {
             this.mIdentifierTypes = (Set) Objects.requireNonNull(identifierTypes);
@@ -338,23 +348,6 @@ public final class ProgramList implements AutoCloseable {
             return 0;
         }
 
-        /* renamed from: android.hardware.radio.ProgramList$Filter$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Filter> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Filter createFromParcel(Parcel in) {
-                return new Filter(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Filter[] newArray(int size) {
-                return new Filter[size];
-            }
-        }
-
         public Map<String, String> getVendorFilter() {
             return this.mVendorFilter;
         }
@@ -395,17 +388,15 @@ public final class ProgramList implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Chunk implements Parcelable {
         public static final Parcelable.Creator<Chunk> CREATOR = new Parcelable.Creator<Chunk>() { // from class: android.hardware.radio.ProgramList.Chunk.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Chunk createFromParcel(Parcel in) {
                 return new Chunk(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Chunk[] newArray(int size) {
                 return new Chunk[size];
@@ -414,13 +405,9 @@ public final class ProgramList implements AutoCloseable {
         private final boolean mComplete;
         private final Set<RadioManager.ProgramInfo> mModified;
         private final boolean mPurge;
-        private final Set<ProgramSelector.Identifier> mRemoved;
+        private final Set<UniqueProgramIdentifier> mRemoved;
 
-        /* synthetic */ Chunk(Parcel parcel, ChunkIA chunkIA) {
-            this(parcel);
-        }
-
-        public Chunk(boolean purge, boolean complete, Set<RadioManager.ProgramInfo> modified, Set<ProgramSelector.Identifier> removed) {
+        public Chunk(boolean purge, boolean complete, Set<RadioManager.ProgramInfo> modified, Set<UniqueProgramIdentifier> removed) {
             this.mPurge = purge;
             this.mComplete = complete;
             this.mModified = modified != null ? modified : Collections.emptySet();
@@ -431,7 +418,7 @@ public final class ProgramList implements AutoCloseable {
             this.mPurge = in.readByte() != 0;
             this.mComplete = in.readByte() != 0;
             this.mModified = Utils.createSet(in, RadioManager.ProgramInfo.CREATOR);
-            this.mRemoved = Utils.createSet(in, ProgramSelector.Identifier.CREATOR);
+            this.mRemoved = Utils.createSet(in, UniqueProgramIdentifier.CREATOR);
         }
 
         @Override // android.os.Parcelable
@@ -447,23 +434,6 @@ public final class ProgramList implements AutoCloseable {
             return 0;
         }
 
-        /* renamed from: android.hardware.radio.ProgramList$Chunk$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Chunk> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Chunk createFromParcel(Parcel in) {
-                return new Chunk(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Chunk[] newArray(int size) {
-                return new Chunk[size];
-            }
-        }
-
         public boolean isPurge() {
             return this.mPurge;
         }
@@ -476,7 +446,7 @@ public final class ProgramList implements AutoCloseable {
             return this.mModified;
         }
 
-        public Set<ProgramSelector.Identifier> getRemoved() {
+        public Set<UniqueProgramIdentifier> getRemoved() {
             return this.mRemoved;
         }
 

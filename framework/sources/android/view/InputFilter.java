@@ -50,9 +50,8 @@ public abstract class InputFilter extends IInputFilter.Stub {
         if (this.mHost == null) {
             throw new IllegalStateException("Cannot send input event because the input filter is not installed.");
         }
-        InputEventConsistencyVerifier inputEventConsistencyVerifier = this.mOutboundInputEventConsistencyVerifier;
-        if (inputEventConsistencyVerifier != null) {
-            inputEventConsistencyVerifier.onInputEvent(event, 0);
+        if (this.mOutboundInputEventConsistencyVerifier != null) {
+            this.mOutboundInputEventConsistencyVerifier.onInputEvent(event, 0);
         }
         try {
             this.mHost.sendInputEvent(event, policyFlags);
@@ -70,7 +69,6 @@ public abstract class InputFilter extends IInputFilter.Stub {
     public void onUninstalled() {
     }
 
-    /* loaded from: classes4.dex */
     private final class H extends Handler {
         public H(Looper looper) {
             super(looper);

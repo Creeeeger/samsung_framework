@@ -16,7 +16,6 @@ public interface IAODDozeCallback extends IInterface {
 
     void onDozeReleased() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IAODDozeCallback {
         @Override // com.samsung.android.aod.IAODDozeCallback
         public void onDozeAcquired() throws RemoteException {
@@ -36,7 +35,6 @@ public interface IAODDozeCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IAODDozeCallback {
         static final int TRANSACTION_onAODToastRequested = 3;
         static final int TRANSACTION_onDozeAcquired = 1;
@@ -85,30 +83,27 @@ public interface IAODDozeCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAODDozeCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAODDozeCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAODDozeCallback.DESCRIPTOR);
+                case 1:
+                    onDozeAcquired();
+                    return true;
+                case 2:
+                    onDozeReleased();
+                    return true;
+                case 3:
+                    AODToast _arg0 = (AODToast) data.readTypedObject(AODToast.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAODToastRequested(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onDozeAcquired();
-                            return true;
-                        case 2:
-                            onDozeReleased();
-                            return true;
-                        case 3:
-                            AODToast _arg0 = (AODToast) data.readTypedObject(AODToast.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAODToastRequested(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IAODDozeCallback {
             private IBinder mRemote;
 

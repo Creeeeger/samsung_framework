@@ -3,7 +3,7 @@ package android.telephony.ims;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface DelegateMessageCallback {
     void onMessageReceived(SipMessage sipMessage);
 

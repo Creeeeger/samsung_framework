@@ -8,7 +8,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.util.StateMachine;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ public class StateMachine {
     private SmHandler mSmHandler;
     private HandlerThread mSmThread;
 
-    /* loaded from: classes5.dex */
     public static class LogRec {
         private IState mDstState;
         private String mInfo;
@@ -84,17 +82,13 @@ public class StateMachine {
             c.setTimeInMillis(this.mTime);
             sb.append(String.format("%tm-%td %tH:%tM:%tS.%tL", c, c, c, c, c, c));
             sb.append(" processed=");
-            IState iState = this.mState;
-            sb.append(iState == null ? "<null>" : iState.getName());
+            sb.append(this.mState == null ? "<null>" : this.mState.getName());
             sb.append(" org=");
-            IState iState2 = this.mOrgState;
-            sb.append(iState2 == null ? "<null>" : iState2.getName());
+            sb.append(this.mOrgState == null ? "<null>" : this.mOrgState.getName());
             sb.append(" dest=");
-            IState iState3 = this.mDstState;
-            sb.append(iState3 != null ? iState3.getName() : "<null>");
+            sb.append(this.mDstState != null ? this.mDstState.getName() : "<null>");
             sb.append(" what=");
-            StateMachine stateMachine = this.mSm;
-            String what = stateMachine != null ? stateMachine.getWhatToString(this.mWhat) : "";
+            String what = this.mSm != null ? this.mSm.getWhatToString(this.mWhat) : "";
             if (TextUtils.isEmpty(what)) {
                 sb.append(this.mWhat);
                 sb.append("(0x");
@@ -111,18 +105,13 @@ public class StateMachine {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class LogRecords {
+    private static class LogRecords {
         private static final int DEFAULT_SIZE = 20;
         private int mCount;
         private boolean mLogOnlyTransitions;
         private Vector<LogRec> mLogRecVector;
         private int mMaxSize;
         private int mOldestIndex;
-
-        /* synthetic */ LogRecords(LogRecordsIA logRecordsIA) {
-            this();
-        }
 
         private LogRecords() {
             this.mLogRecVector = new Vector<>();
@@ -161,9 +150,8 @@ public class StateMachine {
 
         synchronized LogRec get(int index) {
             int nextIndex = this.mOldestIndex + index;
-            int i = this.mMaxSize;
-            if (nextIndex >= i) {
-                nextIndex -= i;
+            if (nextIndex >= this.mMaxSize) {
+                nextIndex -= this.mMaxSize;
             }
             if (nextIndex >= size()) {
                 return null;
@@ -177,9 +165,8 @@ public class StateMachine {
                 this.mLogRecVector.add(new LogRec(sm, msg, messageInfo, state, orgState, transToState));
             } else {
                 LogRec pmi = this.mLogRecVector.get(this.mOldestIndex);
-                int i = this.mOldestIndex + 1;
-                this.mOldestIndex = i;
-                if (i >= this.mMaxSize) {
+                this.mOldestIndex++;
+                if (this.mOldestIndex >= this.mMaxSize) {
                     this.mOldestIndex = 0;
                 }
                 pmi.update(sm, msg, messageInfo, state, orgState, transToState);
@@ -187,57 +174,44 @@ public class StateMachine {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class SmHandler extends Handler {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class SmHandler extends Handler {
         private static final Object mSmHandlerObj = new Object();
         private boolean mDbg;
-        private ArrayList<Message> mDeferredMessages;
+        private final ArrayList<Message> mDeferredMessages;
         private State mDestState;
-        private HaltingState mHaltingState;
+        private final HaltingState mHaltingState;
         private boolean mHasQuit;
         private State mInitialState;
         private boolean mIsConstructionCompleted;
-        private LogRecords mLogRecords;
+        private final LogRecords mLogRecords;
         private Message mMsg;
-        private QuittingState mQuittingState;
+        private final QuittingState mQuittingState;
         private StateMachine mSm;
-        private HashMap<State, StateInfo> mStateInfo;
+        private final HashMap<State, StateInfo> mStateInfo;
         private StateInfo[] mStateStack;
         private int mStateStackTopIndex;
         private StateInfo[] mTempStateStack;
         private int mTempStateStackCount;
         private boolean mTransitionInProgress;
 
-        /* synthetic */ SmHandler(Looper looper, StateMachine stateMachine, SmHandlerIA smHandlerIA) {
-            this(looper, stateMachine);
-        }
+        /* JADX INFO: Access modifiers changed from: private */
+        static class StateInfo {
+            boolean active = false;
+            final StateInfo parentStateInfo;
+            final State state;
 
-        /* loaded from: classes5.dex */
-        public class StateInfo {
-            boolean active;
-            StateInfo parentStateInfo;
-            State state;
-
-            /* synthetic */ StateInfo(SmHandler smHandler, StateInfoIA stateInfoIA) {
-                this();
-            }
-
-            private StateInfo() {
+            StateInfo(State state, StateInfo parent) {
+                this.state = state;
+                this.parentStateInfo = parent;
             }
 
             public String toString() {
-                StringBuilder append = new StringBuilder().append("state=").append(this.state.getName()).append(",active=").append(this.active).append(",parent=");
-                StateInfo stateInfo = this.parentStateInfo;
-                return append.append(stateInfo == null ? SemCapabilities.FEATURE_TAG_NULL : stateInfo.state.getName()).toString();
+                return "state=" + this.state.getName() + ",active=" + this.active + ",parent=" + (this.parentStateInfo == null ? "null" : this.parentStateInfo.state.getName());
             }
         }
 
-        /* loaded from: classes5.dex */
-        public class HaltingState extends State {
-            /* synthetic */ HaltingState(SmHandler smHandler, HaltingStateIA haltingStateIA) {
-                this();
-            }
-
+        private class HaltingState extends State {
             private HaltingState() {
             }
 
@@ -248,12 +222,7 @@ public class StateMachine {
             }
         }
 
-        /* loaded from: classes5.dex */
-        public class QuittingState extends State {
-            /* synthetic */ QuittingState(SmHandler smHandler, QuittingStateIA quittingStateIA) {
-                this();
-            }
-
+        private static class QuittingState extends State {
             private QuittingState() {
             }
 
@@ -265,7 +234,6 @@ public class StateMachine {
 
         @Override // android.os.Handler
         public final void handleMessage(Message msg) {
-            StateMachine stateMachine;
             if (!this.mHasQuit) {
                 if (this.mSm != null && msg.what != -2 && msg.what != -1) {
                     this.mSm.onPreHandleMessage(msg);
@@ -275,17 +243,17 @@ public class StateMachine {
                 }
                 this.mMsg = msg;
                 State msgProcessedState = null;
-                if (this.mIsConstructionCompleted || msg.what == -1) {
+                if (this.mIsConstructionCompleted || this.mMsg.what == -1) {
                     msgProcessedState = processMsg(msg);
-                } else if (!this.mIsConstructionCompleted && this.mMsg.what == -2 && this.mMsg.obj == mSmHandlerObj) {
+                } else if (this.mMsg.what == -2 && this.mMsg.obj == mSmHandlerObj) {
                     this.mIsConstructionCompleted = true;
                     invokeEnterMethods(0);
                 } else {
                     throw new RuntimeException("StateMachine.handleMessage: The start method not called, received msg: " + msg);
                 }
                 performTransitions(msgProcessedState, msg);
-                if (this.mDbg && (stateMachine = this.mSm) != null) {
-                    stateMachine.log("handleMessage: X");
+                if (this.mDbg && this.mSm != null) {
+                    this.mSm.log("handleMessage: X");
                 }
                 if (this.mSm != null && msg.what != -2 && msg.what != -1) {
                     this.mSm.onPostHandleMessage(msg);
@@ -298,16 +266,10 @@ public class StateMachine {
             boolean recordLogMsg = this.mSm.recordLogRec(this.mMsg) && msg.obj != mSmHandlerObj;
             if (this.mLogRecords.logOnlyTransitions()) {
                 if (this.mDestState != null) {
-                    LogRecords logRecords = this.mLogRecords;
-                    StateMachine stateMachine = this.mSm;
-                    Message message = this.mMsg;
-                    logRecords.add(stateMachine, message, stateMachine.getLogRecString(message), msgProcessedState, orgState, this.mDestState);
+                    this.mLogRecords.add(this.mSm, this.mMsg, this.mSm.getLogRecString(this.mMsg), msgProcessedState, orgState, this.mDestState);
                 }
             } else if (recordLogMsg) {
-                LogRecords logRecords2 = this.mLogRecords;
-                StateMachine stateMachine2 = this.mSm;
-                Message message2 = this.mMsg;
-                logRecords2.add(stateMachine2, message2, stateMachine2.getLogRecString(message2), msgProcessedState, orgState, this.mDestState);
+                this.mLogRecords.add(this.mSm, this.mMsg, this.mSm.getLogRecString(this.mMsg), msgProcessedState, orgState, this.mDestState);
             }
             State destState = this.mDestState;
             if (destState != null) {
@@ -357,6 +319,7 @@ public class StateMachine {
             this.mHasQuit = true;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final void completeConstruction() {
             if (this.mDbg) {
                 this.mSm.log("completeConstruction: E");
@@ -414,42 +377,29 @@ public class StateMachine {
         }
 
         private final void invokeExitMethods(StateInfo commonStateInfo) {
-            StateInfo stateInfo;
-            while (true) {
-                int i = this.mStateStackTopIndex;
-                if (i >= 0 && (stateInfo = this.mStateStack[i]) != commonStateInfo) {
-                    State curState = stateInfo.state;
-                    if (this.mDbg) {
-                        this.mSm.log("invokeExitMethods: " + curState.getName());
-                    }
-                    curState.exit();
-                    this.mStateStack[this.mStateStackTopIndex].active = false;
-                    this.mStateStackTopIndex--;
-                } else {
-                    return;
+            while (this.mStateStackTopIndex >= 0 && this.mStateStack[this.mStateStackTopIndex] != commonStateInfo) {
+                State curState = this.mStateStack[this.mStateStackTopIndex].state;
+                if (this.mDbg) {
+                    this.mSm.log("invokeExitMethods: " + curState.getName());
                 }
+                curState.exit();
+                this.mStateStack[this.mStateStackTopIndex].active = false;
+                this.mStateStackTopIndex--;
             }
         }
 
         private final void invokeEnterMethods(int stateStackEnteringIndex) {
-            int i = stateStackEnteringIndex;
-            while (true) {
-                int i2 = this.mStateStackTopIndex;
-                if (i <= i2) {
-                    if (stateStackEnteringIndex == i2) {
-                        this.mTransitionInProgress = false;
-                    }
-                    if (this.mDbg) {
-                        this.mSm.log("invokeEnterMethods: " + this.mStateStack[i].state.getName());
-                    }
-                    this.mStateStack[i].state.enter();
-                    this.mStateStack[i].active = true;
-                    i++;
-                } else {
+            for (int i = stateStackEnteringIndex; i <= this.mStateStackTopIndex; i++) {
+                if (stateStackEnteringIndex == this.mStateStackTopIndex) {
                     this.mTransitionInProgress = false;
-                    return;
                 }
+                if (this.mDbg) {
+                    this.mSm.log("invokeEnterMethods: " + this.mStateStack[i].state.getName());
+                }
+                this.mStateStack[i].state.enter();
+                this.mStateStack[i].active = true;
             }
+            this.mTransitionInProgress = false;
         }
 
         private final void moveDeferredMessageAtFrontOfQueue() {
@@ -519,14 +469,17 @@ public class StateMachine {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final Message getCurrentMessage() {
             return this.mMsg;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final IState getCurrentState() {
             return this.mStateStack[this.mStateStackTopIndex].state;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final StateInfo addState(State state, State parent) {
             if (this.mDbg) {
                 this.mSm.log("addStateInternal: E state=" + state.getName() + ",parent=" + (parent == null ? "" : parent.getName()));
@@ -541,43 +494,41 @@ public class StateMachine {
             }
             StateInfo stateInfo = this.mStateInfo.get(state);
             if (stateInfo == null) {
-                stateInfo = new StateInfo();
+                stateInfo = new StateInfo(state, parentStateInfo);
                 this.mStateInfo.put(state, stateInfo);
             }
             if (stateInfo.parentStateInfo != null && stateInfo.parentStateInfo != parentStateInfo) {
                 throw new RuntimeException("state already added");
             }
-            stateInfo.state = state;
-            stateInfo.parentStateInfo = parentStateInfo;
-            stateInfo.active = false;
             if (this.mDbg) {
                 this.mSm.log("addStateInternal: X stateInfo: " + stateInfo);
             }
             return stateInfo;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void removeState(State state) {
             final StateInfo stateInfo = this.mStateInfo.get(state);
             if (stateInfo == null || stateInfo.active) {
                 return;
             }
-            boolean isParent = this.mStateInfo.values().stream().filter(new Predicate() { // from class: com.android.internal.util.StateMachine$SmHandler$$ExternalSyntheticLambda0
+            boolean isParent = this.mStateInfo.values().stream().anyMatch(new Predicate() { // from class: com.android.internal.util.StateMachine$SmHandler$$ExternalSyntheticLambda0
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     return StateMachine.SmHandler.lambda$removeState$0(StateMachine.SmHandler.StateInfo.this, (StateMachine.SmHandler.StateInfo) obj);
                 }
-            }).findAny().isPresent();
+            });
             if (isParent) {
                 return;
             }
             this.mStateInfo.remove(state);
         }
 
-        public static /* synthetic */ boolean lambda$removeState$0(StateInfo stateInfo, StateInfo si) {
+        static /* synthetic */ boolean lambda$removeState$0(StateInfo stateInfo, StateInfo si) {
             return si.parentStateInfo == stateInfo;
         }
 
-        private SmHandler(Looper looper, StateMachine sm) {
+        private SmHandler(Looper looper, StateMachine stateMachine) {
             super(looper);
             this.mHasQuit = false;
             this.mDbg = false;
@@ -588,11 +539,12 @@ public class StateMachine {
             this.mStateInfo = new HashMap<>();
             this.mTransitionInProgress = false;
             this.mDeferredMessages = new ArrayList<>();
-            this.mSm = sm;
+            this.mSm = stateMachine;
             addState(this.mHaltingState, null);
             addState(this.mQuittingState, null);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final void setInitialState(State initialState) {
             if (this.mDbg) {
                 this.mSm.log("setInitialState: initialState=" + initialState.getName());
@@ -600,6 +552,7 @@ public class StateMachine {
             this.mInitialState = initialState;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final void transitionTo(IState destState) {
             if (this.mTransitionInProgress) {
                 Log.wtf(this.mSm.mName, "transitionTo called while transition already in progress to " + this.mDestState + ", new target state=" + destState);
@@ -610,6 +563,7 @@ public class StateMachine {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final void deferMessage(Message msg) {
             if (this.mDbg) {
                 this.mSm.log("deferMessage: msg=" + msg.what);
@@ -619,6 +573,7 @@ public class StateMachine {
             this.mDeferredMessages.add(newMsg);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final void quit() {
             if (this.mDbg) {
                 this.mSm.log("quit:");
@@ -626,6 +581,7 @@ public class StateMachine {
             sendMessage(obtainMessage(-1, mSmHandlerObj));
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final void quitNow() {
             if (this.mDbg) {
                 this.mSm.log("quitNow:");
@@ -633,14 +589,17 @@ public class StateMachine {
             sendMessageAtFrontOfQueue(obtainMessage(-1, mSmHandlerObj));
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final boolean isQuit(Message msg) {
             return msg.what == -1 && msg.obj == mSmHandlerObj;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final boolean isDbg() {
             return this.mDbg;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public final void setDbg(boolean dbg) {
             this.mDbg = dbg;
         }
@@ -652,9 +611,8 @@ public class StateMachine {
     }
 
     protected StateMachine(String name) {
-        HandlerThread handlerThread = new HandlerThread(name);
-        this.mSmThread = handlerThread;
-        handlerThread.start();
+        this.mSmThread = new HandlerThread(name);
+        this.mSmThread.start();
         Looper looper = this.mSmThread.getLooper();
         initStateMachine(name, looper);
     }
@@ -710,8 +668,7 @@ public class StateMachine {
     }
 
     public final void transitionToHaltingState() {
-        SmHandler smHandler = this.mSmHandler;
-        smHandler.transitionTo(smHandler.mHaltingState);
+        this.mSmHandler.transitionTo(this.mSmHandler.mHaltingState);
     }
 
     public final void deferMessage(Message msg) {
@@ -1087,14 +1044,12 @@ public class StateMachine {
     }
 
     public String toString() {
-        String name = "(null)";
-        String state = "(null)";
+        String state = "null";
         try {
-            name = this.mName.toString();
             state = this.mSmHandler.getCurrentState().getName().toString();
         } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
         }
-        return "name=" + name + " state=" + state;
+        return "name=" + this.mName + " state=" + state;
     }
 
     protected void logAndAddLogRec(String s) {

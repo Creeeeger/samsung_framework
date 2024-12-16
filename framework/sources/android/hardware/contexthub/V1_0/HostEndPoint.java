@@ -22,7 +22,7 @@ public final class HostEndPoint {
         short flipped = 0;
         if ((o & (-1)) == -1) {
             list.add("BROADCAST");
-            flipped = (short) (0 | (-1));
+            flipped = (short) (-1);
         }
         if ((o & (-2)) == -2) {
             list.add("UNSPECIFIED");

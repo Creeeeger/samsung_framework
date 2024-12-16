@@ -9,7 +9,7 @@ import android.os.ServiceSpecificException;
 import android.security.identity.ICredentialStoreFactory;
 
 /* loaded from: classes3.dex */
-public class CredstoreIdentityCredentialStore extends IdentityCredentialStore {
+class CredstoreIdentityCredentialStore extends IdentityCredentialStore {
     private static final String TAG = "CredstoreIdentityCredentialStore";
     private static CredstoreIdentityCredentialStore sInstanceDefault = null;
     private static CredstoreIdentityCredentialStore sInstanceDirectAccess = null;
@@ -36,7 +36,7 @@ public class CredstoreIdentityCredentialStore extends IdentityCredentialStore {
         this.mStore = null;
         this.mContext = context;
         this.mStore = store;
-        this.mFeatureVersion = getFeatureVersion(context);
+        this.mFeatureVersion = getFeatureVersion(this.mContext);
     }
 
     static CredstoreIdentityCredentialStore getInstanceForType(Context context, int credentialStoreType) {

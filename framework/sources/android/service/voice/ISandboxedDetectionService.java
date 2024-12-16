@@ -12,6 +12,7 @@ import android.os.ParcelFileDescriptor;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.os.SharedMemory;
+import android.service.voice.IDetectorSessionStorageService;
 import android.service.voice.IDetectorSessionVisualQueryDetectionCallback;
 import android.service.voice.IDspHotwordDetectionCallback;
 import android.speech.IRecognitionServiceManager;
@@ -29,6 +30,8 @@ public interface ISandboxedDetectionService extends IInterface {
 
     void ping(IRemoteCallback iRemoteCallback) throws RemoteException;
 
+    void registerRemoteStorageService(IDetectorSessionStorageService iDetectorSessionStorageService) throws RemoteException;
+
     void stopDetection() throws RemoteException;
 
     void updateAudioFlinger(IBinder iBinder) throws RemoteException;
@@ -39,7 +42,6 @@ public interface ISandboxedDetectionService extends IInterface {
 
     void updateState(PersistableBundle persistableBundle, SharedMemory sharedMemory, IRemoteCallback iRemoteCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISandboxedDetectionService {
         @Override // android.service.voice.ISandboxedDetectionService
         public void detectFromDspSource(SoundTrigger.KeyphraseRecognitionEvent event, AudioFormat audioFormat, long timeoutMillis, IDspHotwordDetectionCallback callback) throws RemoteException {
@@ -77,18 +79,22 @@ public interface ISandboxedDetectionService extends IInterface {
         public void stopDetection() throws RemoteException {
         }
 
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void registerRemoteStorageService(IDetectorSessionStorageService detectorSessionStorageService) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISandboxedDetectionService {
         static final int TRANSACTION_detectFromDspSource = 1;
         static final int TRANSACTION_detectFromMicrophoneSource = 2;
         static final int TRANSACTION_detectWithVisualSignals = 3;
         static final int TRANSACTION_ping = 8;
+        static final int TRANSACTION_registerRemoteStorageService = 10;
         static final int TRANSACTION_stopDetection = 9;
         static final int TRANSACTION_updateAudioFlinger = 5;
         static final int TRANSACTION_updateContentCaptureManager = 6;
@@ -135,6 +141,8 @@ public interface ISandboxedDetectionService extends IInterface {
                     return "ping";
                 case 9:
                     return "stopDetection";
+                case 10:
+                    return "registerRemoteStorageService";
                 default:
                     return null;
             }
@@ -150,72 +158,74 @@ public interface ISandboxedDetectionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISandboxedDetectionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISandboxedDetectionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISandboxedDetectionService.DESCRIPTOR);
+                case 1:
+                    SoundTrigger.KeyphraseRecognitionEvent _arg0 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
+                    AudioFormat _arg1 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
+                    long _arg2 = data.readLong();
+                    IDspHotwordDetectionCallback _arg3 = IDspHotwordDetectionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    detectFromDspSource(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg12 = data.readInt();
+                    AudioFormat _arg22 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
+                    PersistableBundle _arg32 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    IDspHotwordDetectionCallback _arg4 = IDspHotwordDetectionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    detectFromMicrophoneSource(_arg02, _arg12, _arg22, _arg32, _arg4);
+                    return true;
+                case 3:
+                    IDetectorSessionVisualQueryDetectionCallback _arg03 = IDetectorSessionVisualQueryDetectionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    detectWithVisualSignals(_arg03);
+                    return true;
+                case 4:
+                    PersistableBundle _arg04 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    SharedMemory _arg13 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
+                    IRemoteCallback _arg23 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    updateState(_arg04, _arg13, _arg23);
+                    return true;
+                case 5:
+                    IBinder _arg05 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    updateAudioFlinger(_arg05);
+                    return true;
+                case 6:
+                    IContentCaptureManager _arg06 = IContentCaptureManager.Stub.asInterface(data.readStrongBinder());
+                    ContentCaptureOptions _arg14 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateContentCaptureManager(_arg06, _arg14);
+                    return true;
+                case 7:
+                    IRecognitionServiceManager _arg07 = IRecognitionServiceManager.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    updateRecognitionServiceManager(_arg07);
+                    return true;
+                case 8:
+                    IRemoteCallback _arg08 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ping(_arg08);
+                    return true;
+                case 9:
+                    stopDetection();
+                    return true;
+                case 10:
+                    IDetectorSessionStorageService _arg09 = IDetectorSessionStorageService.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerRemoteStorageService(_arg09);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SoundTrigger.KeyphraseRecognitionEvent _arg0 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
-                            AudioFormat _arg1 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
-                            long _arg2 = data.readLong();
-                            IDspHotwordDetectionCallback _arg3 = IDspHotwordDetectionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            detectFromDspSource(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg12 = data.readInt();
-                            AudioFormat _arg22 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
-                            PersistableBundle _arg32 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            IDspHotwordDetectionCallback _arg4 = IDspHotwordDetectionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            detectFromMicrophoneSource(_arg02, _arg12, _arg22, _arg32, _arg4);
-                            return true;
-                        case 3:
-                            IDetectorSessionVisualQueryDetectionCallback _arg03 = IDetectorSessionVisualQueryDetectionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            detectWithVisualSignals(_arg03);
-                            return true;
-                        case 4:
-                            PersistableBundle _arg04 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            SharedMemory _arg13 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
-                            IRemoteCallback _arg23 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            updateState(_arg04, _arg13, _arg23);
-                            return true;
-                        case 5:
-                            IBinder _arg05 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            updateAudioFlinger(_arg05);
-                            return true;
-                        case 6:
-                            IContentCaptureManager _arg06 = IContentCaptureManager.Stub.asInterface(data.readStrongBinder());
-                            ContentCaptureOptions _arg14 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateContentCaptureManager(_arg06, _arg14);
-                            return true;
-                        case 7:
-                            IRecognitionServiceManager _arg07 = IRecognitionServiceManager.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            updateRecognitionServiceManager(_arg07);
-                            return true;
-                        case 8:
-                            IRemoteCallback _arg08 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ping(_arg08);
-                            return true;
-                        case 9:
-                            stopDetection();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ISandboxedDetectionService {
             private IBinder mRemote;
 
@@ -348,11 +358,23 @@ public interface ISandboxedDetectionService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.service.voice.ISandboxedDetectionService
+            public void registerRemoteStorageService(IDetectorSessionStorageService detectorSessionStorageService) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISandboxedDetectionService.DESCRIPTOR);
+                    _data.writeStrongInterface(detectorSessionStorageService);
+                    this.mRemote.transact(10, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 8;
+            return 9;
         }
     }
 }

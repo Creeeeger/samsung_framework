@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IMbmsDownloadSessionCallback extends IInterface {
     void onError(int i, String str) throws RemoteException;
 
@@ -15,7 +15,6 @@ public interface IMbmsDownloadSessionCallback extends IInterface {
 
     void onMiddlewareReady() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IMbmsDownloadSessionCallback {
         @Override // android.telephony.mbms.IMbmsDownloadSessionCallback
         public void onError(int errorCode, String message) throws RemoteException {
@@ -35,7 +34,6 @@ public interface IMbmsDownloadSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IMbmsDownloadSessionCallback {
         public static final String DESCRIPTOR = "android.telephony.mbms.IMbmsDownloadSessionCallback";
         static final int TRANSACTION_onError = 1;
@@ -85,35 +83,31 @@ public interface IMbmsDownloadSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg0, _arg1);
+                    return true;
+                case 2:
+                    List<FileServiceInfo> _arg02 = data.createTypedArrayList(FileServiceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onFileServicesUpdated(_arg02);
+                    return true;
+                case 3:
+                    onMiddlewareReady();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            List<FileServiceInfo> _arg02 = data.createTypedArrayList(FileServiceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onFileServicesUpdated(_arg02);
-                            return true;
-                        case 3:
-                            onMiddlewareReady();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IMbmsDownloadSessionCallback {
+        private static class Proxy implements IMbmsDownloadSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

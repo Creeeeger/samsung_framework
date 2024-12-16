@@ -8,9 +8,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehSlotPortMapping implements Parcelable {
     public static final Parcelable.Creator<SehSlotPortMapping> CREATOR = new Parcelable.Creator<SehSlotPortMapping>() { // from class: vendor.samsung.hardware.radio.sim.SehSlotPortMapping.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehSlotPortMapping createFromParcel(Parcel _aidl_source) {
             SehSlotPortMapping _aidl_out = new SehSlotPortMapping();
@@ -25,25 +22,6 @@ public class SehSlotPortMapping implements Parcelable {
     };
     public int physicalSlotId = 0;
     public int portId = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.sim.SehSlotPortMapping$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehSlotPortMapping> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehSlotPortMapping createFromParcel(Parcel _aidl_source) {
-            SehSlotPortMapping _aidl_out = new SehSlotPortMapping();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehSlotPortMapping[] newArray(int _aidl_size) {
-            return new SehSlotPortMapping[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -102,7 +80,7 @@ public class SehSlotPortMapping implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("physicalSlotId: " + this.physicalSlotId);
         _aidl_sj.add("portId: " + this.portId);
-        return "vendor.samsung.hardware.radio.sim.SehSlotPortMapping" + _aidl_sj.toString();
+        return "SehSlotPortMapping" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

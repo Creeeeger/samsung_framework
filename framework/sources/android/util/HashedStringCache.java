@@ -82,19 +82,17 @@ public class HashedStringCache {
 
     private void populateSaltValues(Context context, String tag, int saltExpirationDays) {
         synchronized (this.mPreferenceLock) {
-            SharedPreferences hashSharedPreferences = getHashSharedPreferences(context);
-            this.mSharedPreferences = hashSharedPreferences;
-            long saltDate = hashSharedPreferences.getLong(tag + HASH_SALT_DATE, 0L);
+            this.mSharedPreferences = getHashSharedPreferences(context);
+            long saltDate = this.mSharedPreferences.getLong(tag + HASH_SALT_DATE, 0L);
             boolean needsNewSalt = checkNeedsNewSalt(tag, saltExpirationDays, saltDate);
             if (needsNewSalt) {
                 this.mHashes.evictAll();
             }
             if (this.mSalt == null || needsNewSalt) {
                 String saltString = this.mSharedPreferences.getString(tag + HASH_SALT, null);
-                int i = this.mSharedPreferences.getInt(tag + HASH_SALT_GEN, 0);
-                this.mSaltGen = i;
+                this.mSaltGen = this.mSharedPreferences.getInt(tag + HASH_SALT_GEN, 0);
                 if (saltString == null || needsNewSalt) {
-                    this.mSaltGen = i + 1;
+                    this.mSaltGen++;
                     byte[] saltBytes = new byte[16];
                     this.mSecureRandom.nextBytes(saltBytes);
                     saltString = Base64.encodeToString(saltBytes, 3);
@@ -110,7 +108,6 @@ public class HashedStringCache {
         return context.getSharedPreferences(prefsFile, 0);
     }
 
-    /* loaded from: classes4.dex */
     public class HashResult {
         public String hashedString;
         public int saltGeneration;

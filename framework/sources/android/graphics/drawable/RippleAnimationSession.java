@@ -32,16 +32,16 @@ public final class RippleAnimationSession {
     private static final TimeInterpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
     private static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0.0f, 0.2f, 1.0f);
 
-    public RippleAnimationSession(AnimationProperties<Float, Paint> properties, boolean forceSoftware) {
+    RippleAnimationSession(AnimationProperties<Float, Paint> properties, boolean forceSoftware) {
         this.mProperties = properties;
         this.mForceSoftware = forceSoftware;
     }
 
-    public boolean isForceSoftware() {
+    boolean isForceSoftware() {
         return this.mForceSoftware;
     }
 
-    public RippleAnimationSession enter(Canvas canvas) {
+    RippleAnimationSession enter(Canvas canvas) {
         this.mStartTime = AnimationUtils.currentAnimationTimeMillis();
         if (useRTAnimations(canvas)) {
             enterHardware((RecordingCanvas) canvas);
@@ -51,14 +51,13 @@ public final class RippleAnimationSession {
         return this;
     }
 
-    public void end() {
-        Animator animator = this.mCurrentAnimation;
-        if (animator != null) {
-            animator.end();
+    void end() {
+        if (this.mCurrentAnimation != null) {
+            this.mCurrentAnimation.end();
         }
     }
 
-    public RippleAnimationSession exit(Canvas canvas) {
+    RippleAnimationSession exit(Canvas canvas) {
         if (useRTAnimations(canvas)) {
             exitHardware((RecordingCanvas) canvas);
         } else {
@@ -67,16 +66,17 @@ public final class RippleAnimationSession {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onAnimationEnd(Animator anim) {
         notifyUpdate();
     }
 
-    public RippleAnimationSession setOnSessionEnd(Consumer<RippleAnimationSession> onSessionEnd) {
+    RippleAnimationSession setOnSessionEnd(Consumer<RippleAnimationSession> onSessionEnd) {
         this.mOnSessionEnd = onSessionEnd;
         return this;
     }
 
-    public RippleAnimationSession setOnAnimationUpdated(Runnable run) {
+    RippleAnimationSession setOnAnimationUpdated(Runnable run) {
         this.mOnUpdate = run;
         return this;
     }
@@ -100,14 +100,6 @@ public final class RippleAnimationSession {
             }
         });
         expand.addListener(new AnimatorListener(this) { // from class: android.graphics.drawable.RippleAnimationSession.1
-            final /* synthetic */ ValueAnimator val$expand;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(RippleAnimationSession this, final ValueAnimator expand2) {
-                super(this);
-                expand = expand2;
-            }
-
             @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -123,41 +115,15 @@ public final class RippleAnimationSession {
                 }
             }
         });
-        expand2.setInterpolator(LINEAR_INTERPOLATOR);
-        expand2.start();
-        this.mCurrentAnimation = expand2;
+        expand.setInterpolator(LINEAR_INTERPOLATOR);
+        expand.start();
+        this.mCurrentAnimation = expand;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$exitSoftware$0(ValueAnimator expand, ValueAnimator updatedAnimation) {
         notifyUpdate();
         this.mProperties.getShader().setProgress(((Float) expand.getAnimatedValue()).floatValue());
-    }
-
-    /* renamed from: android.graphics.drawable.RippleAnimationSession$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends AnimatorListener {
-        final /* synthetic */ ValueAnimator val$expand;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass1(RippleAnimationSession this, final ValueAnimator expand2) {
-            super(this);
-            expand = expand2;
-        }
-
-        @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-            if (RippleAnimationSession.this.mLoopAnimation != null) {
-                RippleAnimationSession.this.mLoopAnimation.cancel();
-            }
-            Consumer<RippleAnimationSession> onEnd = RippleAnimationSession.this.mOnSessionEnd;
-            if (onEnd != null) {
-                onEnd.accept(RippleAnimationSession.this);
-            }
-            if (RippleAnimationSession.this.mCurrentAnimation == expand) {
-                RippleAnimationSession.this.mCurrentAnimation = null;
-            }
-        }
     }
 
     private long computeDelay() {
@@ -166,30 +132,21 @@ public final class RippleAnimationSession {
     }
 
     private void notifyUpdate() {
-        Runnable runnable = this.mOnUpdate;
-        if (runnable != null) {
-            runnable.run();
+        if (this.mOnUpdate != null) {
+            this.mOnUpdate.run();
         }
     }
 
-    public RippleAnimationSession setForceSoftwareAnimation(boolean forceSw) {
+    RippleAnimationSession setForceSoftwareAnimation(boolean forceSw) {
         this.mForceSoftware = forceSw;
         return this;
     }
 
     private void exitHardware(RecordingCanvas canvas) {
         AnimationProperties<CanvasProperty<Float>, CanvasProperty<Paint>> props = getCanvasProperties();
-        RenderNodeAnimator exit = new RenderNodeAnimator(props.getProgress(), 1.0f);
+        final RenderNodeAnimator exit = new RenderNodeAnimator(props.getProgress(), 1.0f);
         exit.setDuration(375L);
         exit.addListener(new AnimatorListener(this) { // from class: android.graphics.drawable.RippleAnimationSession.2
-            final /* synthetic */ RenderNodeAnimator val$exit;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass2(RippleAnimationSession this, RenderNodeAnimator exit2) {
-                super(this);
-                exit = exit2;
-            }
-
             @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -205,46 +162,19 @@ public final class RippleAnimationSession {
                 }
             }
         });
-        exit2.setTarget(canvas);
-        exit2.setInterpolator(LINEAR_INTERPOLATOR);
+        exit.setTarget(canvas);
+        exit.setInterpolator(LINEAR_INTERPOLATOR);
         long delay = computeDelay();
-        exit2.setStartDelay(delay);
-        exit2.start();
-        this.mCurrentAnimation = exit2;
-    }
-
-    /* renamed from: android.graphics.drawable.RippleAnimationSession$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends AnimatorListener {
-        final /* synthetic */ RenderNodeAnimator val$exit;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass2(RippleAnimationSession this, RenderNodeAnimator exit2) {
-            super(this);
-            exit = exit2;
-        }
-
-        @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-            if (RippleAnimationSession.this.mLoopAnimation != null) {
-                RippleAnimationSession.this.mLoopAnimation.cancel();
-            }
-            Consumer<RippleAnimationSession> onEnd = RippleAnimationSession.this.mOnSessionEnd;
-            if (onEnd != null) {
-                onEnd.accept(RippleAnimationSession.this);
-            }
-            if (RippleAnimationSession.this.mCurrentAnimation == exit) {
-                RippleAnimationSession.this.mCurrentAnimation = null;
-            }
-        }
+        exit.setStartDelay(delay);
+        exit.start();
+        this.mCurrentAnimation = exit;
     }
 
     private void enterHardware(RecordingCanvas canvas) {
         AnimationProperties<CanvasProperty<Float>, CanvasProperty<Paint>> props = getCanvasProperties();
         RenderNodeAnimator expand = new RenderNodeAnimator(props.getProgress(), 0.5f);
         expand.setTarget(canvas);
-        RenderNodeAnimator loop = new RenderNodeAnimator(props.getNoisePhase(), (float) (this.mStartTime + 32));
+        RenderNodeAnimator loop = new RenderNodeAnimator(props.getNoisePhase(), this.mStartTime + 32);
         loop.setTarget(canvas);
         startAnimation(expand, loop);
         this.mCurrentAnimation = expand;
@@ -257,10 +187,6 @@ public final class RippleAnimationSession {
         expand.start();
         loop.setDuration(NOISE_ANIMATION_DURATION);
         loop.addListener(new AnimatorListener(this) { // from class: android.graphics.drawable.RippleAnimationSession.3
-            AnonymousClass3(RippleAnimationSession this) {
-                super(this);
-            }
-
             @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -269,25 +195,10 @@ public final class RippleAnimationSession {
         });
         loop.setInterpolator(LINEAR_INTERPOLATOR);
         loop.start();
-        Animator animator = this.mLoopAnimation;
-        if (animator != null) {
-            animator.cancel();
+        if (this.mLoopAnimation != null) {
+            this.mLoopAnimation.cancel();
         }
         this.mLoopAnimation = loop;
-    }
-
-    /* renamed from: android.graphics.drawable.RippleAnimationSession$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 extends AnimatorListener {
-        AnonymousClass3(RippleAnimationSession this) {
-            super(this);
-        }
-
-        @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-            RippleAnimationSession.this.mLoopAnimation = null;
-        }
     }
 
     private void enterSoftware() {
@@ -298,8 +209,7 @@ public final class RippleAnimationSession {
                 RippleAnimationSession.this.lambda$enterSoftware$1(expand, valueAnimator);
             }
         });
-        long j = this.mStartTime;
-        final ValueAnimator loop = ValueAnimator.ofFloat((float) j, (float) (j + 32));
+        final ValueAnimator loop = ValueAnimator.ofFloat(this.mStartTime, this.mStartTime + 32);
         loop.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.graphics.drawable.RippleAnimationSession$$ExternalSyntheticLambda2
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
             public final void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -310,39 +220,39 @@ public final class RippleAnimationSession {
         this.mCurrentAnimation = expand;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$enterSoftware$1(ValueAnimator expand, ValueAnimator updatedAnimation) {
         notifyUpdate();
         this.mProperties.getShader().setProgress(((Float) expand.getAnimatedValue()).floatValue());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$enterSoftware$2(ValueAnimator loop, ValueAnimator updatedAnimation) {
         notifyUpdate();
         this.mProperties.getShader().setNoisePhase(((Float) loop.getAnimatedValue()).floatValue());
     }
 
-    public void setRadius(float radius) {
+    void setRadius(float radius) {
         this.mProperties.setRadius(Float.valueOf(radius));
         this.mProperties.getShader().setRadius(radius);
-        AnimationProperties<CanvasProperty<Float>, CanvasProperty<Paint>> animationProperties = this.mCanvasProperties;
-        if (animationProperties != null) {
-            animationProperties.setRadius(CanvasProperty.createFloat(radius));
+        if (this.mCanvasProperties != null) {
+            this.mCanvasProperties.setRadius(CanvasProperty.createFloat(radius));
             this.mCanvasProperties.getShader().setRadius(radius);
         }
     }
 
-    public AnimationProperties<Float, Paint> getProperties() {
+    AnimationProperties<Float, Paint> getProperties() {
         return this.mProperties;
     }
 
-    public AnimationProperties<CanvasProperty<Float>, CanvasProperty<Paint>> getCanvasProperties() {
+    AnimationProperties<CanvasProperty<Float>, CanvasProperty<Paint>> getCanvasProperties() {
         if (this.mCanvasProperties == null) {
             this.mCanvasProperties = new AnimationProperties<>(CanvasProperty.createFloat(this.mProperties.getX().floatValue()), CanvasProperty.createFloat(this.mProperties.getY().floatValue()), CanvasProperty.createFloat(this.mProperties.getMaxRadius().floatValue()), CanvasProperty.createFloat(this.mProperties.getNoisePhase().floatValue()), CanvasProperty.createPaint(this.mProperties.getPaint()), CanvasProperty.createFloat(this.mProperties.getProgress().floatValue()), this.mProperties.getColor(), this.mProperties.getShader());
         }
         return this.mCanvasProperties;
     }
 
-    /* loaded from: classes.dex */
-    public static class AnimatorListener implements Animator.AnimatorListener {
+    private static class AnimatorListener implements Animator.AnimatorListener {
         private final RippleAnimationSession mSession;
 
         AnimatorListener(RippleAnimationSession session) {
@@ -367,8 +277,7 @@ public final class RippleAnimationSession {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class AnimationProperties<FloatType, PaintType> {
+    static class AnimationProperties<FloatType, PaintType> {
         private final int mColor;
         private FloatType mMaxRadius;
         private final FloatType mNoisePhase;
@@ -378,7 +287,7 @@ public final class RippleAnimationSession {
         private FloatType mX;
         private FloatType mY;
 
-        public AnimationProperties(FloatType x, FloatType y, FloatType maxRadius, FloatType noisePhase, PaintType paint, FloatType progress, int color, RippleShader shader) {
+        AnimationProperties(FloatType x, FloatType y, FloatType maxRadius, FloatType noisePhase, PaintType paint, FloatType progress, int color, RippleShader shader) {
             this.mY = y;
             this.mX = x;
             this.mMaxRadius = maxRadius;
@@ -389,7 +298,7 @@ public final class RippleAnimationSession {
             this.mColor = color;
         }
 
-        public FloatType getProgress() {
+        FloatType getProgress() {
             return this.mProgress;
         }
 
@@ -397,36 +306,36 @@ public final class RippleAnimationSession {
             this.mMaxRadius = radius;
         }
 
-        public void setOrigin(FloatType x, FloatType y) {
+        void setOrigin(FloatType x, FloatType y) {
             this.mX = x;
             this.mY = y;
         }
 
-        public FloatType getX() {
+        FloatType getX() {
             return this.mX;
         }
 
-        public FloatType getY() {
+        FloatType getY() {
             return this.mY;
         }
 
-        public FloatType getMaxRadius() {
+        FloatType getMaxRadius() {
             return this.mMaxRadius;
         }
 
-        public PaintType getPaint() {
+        PaintType getPaint() {
             return this.mPaint;
         }
 
-        public RippleShader getShader() {
+        RippleShader getShader() {
             return this.mShader;
         }
 
-        public FloatType getNoisePhase() {
+        FloatType getNoisePhase() {
             return this.mNoisePhase;
         }
 
-        public int getColor() {
+        int getColor() {
             return this.mColor;
         }
     }

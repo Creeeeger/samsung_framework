@@ -17,25 +17,24 @@ import java.util.Collections;
 import java.util.List;
 import org.json.JSONException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxAnalyticsQueryResolver {
     private static final String TAG = "[KnoxAnalytics] " + KnoxAnalyticsQueryResolver.class.getSimpleName();
 
     public static long addEvent(Context context, long id, String data, int type) {
-        String str = TAG;
-        Log.d(str, "addEvent()");
+        Log.d(TAG, "addEvent()");
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", Long.valueOf(id));
         contentValues.put("data", data);
         Uri uri = getUriFromType(type);
         if (uri == null) {
-            Log.d(str, "addEvent(): null ret uri");
+            Log.d(TAG, "addEvent(): null ret uri");
             return -1L;
         }
         Uri ret = contentResolver.insert(uri, contentValues);
         if (ret == null) {
-            Log.d(str, "addEvent(): null ret uri");
+            Log.d(TAG, "addEvent(): null ret uri");
             return -1L;
         }
         long actualId = -1;
@@ -49,13 +48,12 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static long addBulkEvents(Context context, long id, Bundle data, int type) {
-        String str = TAG;
-        Log.d(str, "addBulkEvents()");
+        Log.d(TAG, "addBulkEvents()");
         ContentResolver contentResolver = context.getContentResolver();
         data.putLong("id", id);
         Bundle result = contentResolver.call(Contract.CONTENT_URI, Contract.Events.Extra.INSERT_BULK_EVENTS, (String) null, data);
         long lastId = result.getLong("lastEventId");
-        Log.d(str, "addBulkEvents(): lastId = " + lastId);
+        Log.d(TAG, "addBulkEvents(): lastId = " + lastId);
         return lastId;
     }
 
@@ -137,8 +135,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static long getLastEventId(Context context) {
-        String str = TAG;
-        Log.d(str, "getLastEventId()");
+        Log.d(TAG, "getLastEventId()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.Events.CONTENT_URI, new String[]{"lastEventId"}, null, null);
@@ -158,7 +155,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getLastEventId(): empty cursor");
+            Log.d(TAG, "getLastEventId(): empty cursor");
             if (cursor != null) {
                 cursor.close();
                 return -1L;
@@ -171,8 +168,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static long getEventCount(Context context) {
-        String str = TAG;
-        Log.d(str, "getEventCount()");
+        Log.d(TAG, "getEventCount()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.Events.CONTENT_URI, new String[]{Contract.Events.Projection.COUNT_ONLY}, null, null);
@@ -189,7 +185,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getEventCount(): empty cursor");
+            Log.d(TAG, "getEventCount(): empty cursor");
             if (cursor != null) {
                 cursor.close();
             }
@@ -201,8 +197,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static List<BlacklistedFeature> getFeaturesBlacklist(Context context) {
-        String str = TAG;
-        Log.d(str, "getFeaturesBlacklist()");
+        Log.d(TAG, "getFeaturesBlacklist()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.FeaturesBlacklist.CONTENT_URI, null, null, null);
@@ -226,7 +221,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getFeaturesBlacklist(): empty cursor");
+            Log.d(TAG, "getFeaturesBlacklist(): empty cursor");
             List<BlacklistedFeature> emptyList = Collections.emptyList();
             if (cursor != null) {
                 cursor.close();
@@ -252,8 +247,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static String[] getVersioningBlob(Context context) {
-        String str = TAG;
-        Log.d(str, "getVersioningBlob()");
+        Log.d(TAG, "getVersioningBlob()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.Versioning.CONTENT_URI, null, null, null);
@@ -263,14 +257,14 @@ public class KnoxAnalyticsQueryResolver {
                     if (cursor.moveToLast()) {
                         res[0] = String.valueOf(cursor.getInt(cursor.getColumnIndex("id")));
                         res[1] = cursor.getString(cursor.getColumnIndex("data"));
-                        Log.d(str, "getVersioningBlob() - id = " + res[0] + ", data = " + res[1]);
+                        Log.d(TAG, "getVersioningBlob() - id = " + res[0] + ", data = " + res[1]);
                     }
                     if (cursor != null) {
                         cursor.close();
                     }
                     return res;
                 }
-                Log.d(str, "getVersioningBlob(): empty cursor");
+                Log.d(TAG, "getVersioningBlob(): empty cursor");
                 if (cursor != null) {
                     cursor.close();
                 }
@@ -284,8 +278,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static long addVersioningBlob(Context context, int id, String data, long eventId) {
-        String str = TAG;
-        Log.d(str, "addVersioningBlob()");
+        Log.d(TAG, "addVersioningBlob()");
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", Integer.valueOf(id));
@@ -293,7 +286,7 @@ public class KnoxAnalyticsQueryResolver {
         contentValues.put(Contract.Versioning.AUX_FIELD_EVENT_ID, Long.valueOf(eventId));
         Uri ret = contentResolver.insert(Contract.Versioning.CONTENT_URI, contentValues);
         if (ret == null) {
-            Log.d(str, "addVersioningBlob(): null ret uri");
+            Log.d(TAG, "addVersioningBlob(): null ret uri");
             return -1L;
         }
         try {
@@ -306,8 +299,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static long getDatabaseSize(Context context) {
-        String str = TAG;
-        Log.d(str, "getDatabaseSize()");
+        Log.d(TAG, "getDatabaseSize()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.DatabaseSize.CONTENT_URI, null, null, null);
@@ -327,7 +319,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getDatabaseSize(): empty cursor");
+            Log.d(TAG, "getDatabaseSize(): empty cursor");
             if (cursor != null) {
                 cursor.close();
                 return -1L;
@@ -346,8 +338,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static List<WhitelistedFeature> getFeaturesWhitelist(Context context) {
-        String str = TAG;
-        Log.d(str, "getFeaturesWhitelist()");
+        Log.d(TAG, "getFeaturesWhitelist()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.FeaturesWhitelist.CONTENT_URI, null, null, null);
@@ -370,7 +361,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getFeaturesWhitelist(): empty cursor");
+            Log.d(TAG, "getFeaturesWhitelist(): empty cursor");
             List<WhitelistedFeature> emptyList = Collections.emptyList();
             if (cursor != null) {
                 cursor.close();
@@ -383,8 +374,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static List<String> getB2CFeaturePackageList(Context context) {
-        String str = TAG;
-        Log.d(str, "getB2CFeaturePackages()");
+        Log.d(TAG, "getB2CFeaturePackages()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.B2CFeatures.CONTENT_URI, null, null, null);
@@ -406,7 +396,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getB2CFeaturePackages(): empty cursor");
+            Log.d(TAG, "getB2CFeaturePackages(): empty cursor");
             List<String> emptyList = Collections.emptyList();
             if (cursor != null) {
                 cursor.close();
@@ -419,8 +409,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static List<String> getB2CFeaturesList(Context context) {
-        String str = TAG;
-        Log.d(str, "getB2CFeatureFeaturesList()");
+        Log.d(TAG, "getB2CFeatureFeaturesList()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.B2CFeatures.CONTENT_URI, null, null, null);
@@ -442,7 +431,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getB2CFeatureFeaturesList(): empty cursor");
+            Log.d(TAG, "getB2CFeatureFeaturesList(): empty cursor");
             List<String> emptyList = Collections.emptyList();
             if (cursor != null) {
                 cursor.close();
@@ -455,8 +444,7 @@ public class KnoxAnalyticsQueryResolver {
     }
 
     public static String getB2CFeatureByPackage(Context context, String packageName) {
-        String str = TAG;
-        Log.d(str, "getB2CFeatureFeaturesList()");
+        Log.d(TAG, "getB2CFeatureFeaturesList()");
         ContentResolver contentResolver = context.getContentResolver();
         try {
             Cursor cursor = contentResolver.query(Contract.B2CFeatures.CONTENT_URI, new String[]{"feature_name"}, "packageName", new String[]{packageName}, null);
@@ -474,7 +462,7 @@ public class KnoxAnalyticsQueryResolver {
                 } finally {
                 }
             }
-            Log.d(str, "getB2CFeatureFeaturesList(): empty cursor");
+            Log.d(TAG, "getB2CFeatureFeaturesList(): empty cursor");
             if (cursor != null) {
                 cursor.close();
             }

@@ -9,4 +9,5 @@ public final class InsetsSourceConsumerProto {
     public static final long PENDING_FRAME = 1146756268037L;
     public static final long PENDING_VISIBLE_FRAME = 1146756268038L;
     public static final long SOURCE_CONTROL = 1146756268036L;
+    public static final long TYPE_NUMBER = 1120986464264L;
 }

@@ -9,7 +9,7 @@ import android.telephony.ims.RcsContactTerminatedReason;
 import android.telephony.ims.SipDetails;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISubscribeResponseCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.ISubscribeResponseCallback";
 
@@ -23,7 +23,6 @@ public interface ISubscribeResponseCallback extends IInterface {
 
     void onTerminated(String str, long j) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISubscribeResponseCallback {
         @Override // android.telephony.ims.aidl.ISubscribeResponseCallback
         public void onCommandError(int code) throws RemoteException {
@@ -51,7 +50,6 @@ public interface ISubscribeResponseCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISubscribeResponseCallback {
         static final int TRANSACTION_onCommandError = 1;
         static final int TRANSACTION_onNetworkResponse = 2;
@@ -106,47 +104,43 @@ public interface ISubscribeResponseCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISubscribeResponseCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISubscribeResponseCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISubscribeResponseCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCommandError(_arg0);
+                    return true;
+                case 2:
+                    SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNetworkResponse(_arg02);
+                    return true;
+                case 3:
+                    List<String> _arg03 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    onNotifyCapabilitiesUpdate(_arg03);
+                    return true;
+                case 4:
+                    List<RcsContactTerminatedReason> _arg04 = data.createTypedArrayList(RcsContactTerminatedReason.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResourceTerminated(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onTerminated(_arg05, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCommandError(_arg0);
-                            return true;
-                        case 2:
-                            SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNetworkResponse(_arg02);
-                            return true;
-                        case 3:
-                            List<String> _arg03 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            onNotifyCapabilitiesUpdate(_arg03);
-                            return true;
-                        case 4:
-                            List<RcsContactTerminatedReason> _arg04 = data.createTypedArrayList(RcsContactTerminatedReason.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResourceTerminated(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onTerminated(_arg05, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISubscribeResponseCallback {
+        private static class Proxy implements ISubscribeResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

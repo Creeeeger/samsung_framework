@@ -71,17 +71,14 @@ public class DistributionPoint extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
-        DistributionPointName distributionPointName = this.distributionPoint;
-        if (distributionPointName != null) {
-            v.add(new DERTaggedObject(0, distributionPointName));
+        if (this.distributionPoint != null) {
+            v.add(new DERTaggedObject(0, this.distributionPoint));
         }
-        ReasonFlags reasonFlags = this.reasons;
-        if (reasonFlags != null) {
-            v.add(new DERTaggedObject(false, 1, reasonFlags));
+        if (this.reasons != null) {
+            v.add(new DERTaggedObject(false, 1, this.reasons));
         }
-        GeneralNames generalNames = this.cRLIssuer;
-        if (generalNames != null) {
-            v.add(new DERTaggedObject(false, 2, generalNames));
+        if (this.cRLIssuer != null) {
+            v.add(new DERTaggedObject(false, 2, this.cRLIssuer));
         }
         return new DERSequence(v);
     }
@@ -91,17 +88,14 @@ public class DistributionPoint extends ASN1Object {
         StringBuffer buf = new StringBuffer();
         buf.append("DistributionPoint: [");
         buf.append(sep);
-        DistributionPointName distributionPointName = this.distributionPoint;
-        if (distributionPointName != null) {
-            appendObject(buf, sep, "distributionPoint", distributionPointName.toString());
+        if (this.distributionPoint != null) {
+            appendObject(buf, sep, "distributionPoint", this.distributionPoint.toString());
         }
-        ReasonFlags reasonFlags = this.reasons;
-        if (reasonFlags != null) {
-            appendObject(buf, sep, "reasons", reasonFlags.toString());
+        if (this.reasons != null) {
+            appendObject(buf, sep, "reasons", this.reasons.toString());
         }
-        GeneralNames generalNames = this.cRLIssuer;
-        if (generalNames != null) {
-            appendObject(buf, sep, "cRLIssuer", generalNames.toString());
+        if (this.cRLIssuer != null) {
+            appendObject(buf, sep, "cRLIssuer", this.cRLIssuer.toString());
         }
         buf.append(NavigationBarInflaterView.SIZE_MOD_END);
         buf.append(sep);

@@ -16,9 +16,8 @@ public class CTSBlockCipher extends BufferedBlockCipher {
             throw new IllegalArgumentException("CTSBlockCipher can only accept ECB, or CBC ciphers");
         }
         this.cipher = cipher;
-        int blockSize = cipher.getBlockSize();
-        this.blockSize = blockSize;
-        this.buf = new byte[blockSize * 2];
+        this.blockSize = cipher.getBlockSize();
+        this.buf = new byte[this.blockSize * 2];
         this.bufOff = 0;
     }
 

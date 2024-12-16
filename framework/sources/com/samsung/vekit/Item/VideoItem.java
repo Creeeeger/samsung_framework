@@ -1,32 +1,43 @@
 package com.samsung.vekit.Item;
 
 import android.util.Log;
+import com.samsung.vekit.Common.Object.AudioSegment;
 import com.samsung.vekit.Common.Object.Filter;
+import com.samsung.vekit.Common.Object.FilterOption;
 import com.samsung.vekit.Common.Object.Region;
-import com.samsung.vekit.Common.Object.Tone;
+import com.samsung.vekit.Common.Object.SpeakerIDInfo;
+import com.samsung.vekit.Common.Object.ToneInfo;
 import com.samsung.vekit.Common.Type.ContentType;
 import com.samsung.vekit.Common.Type.ItemType;
 import com.samsung.vekit.Common.Type.MeshType;
 import com.samsung.vekit.Common.Type.ToneType;
 import com.samsung.vekit.Common.VEContext;
 import com.samsung.vekit.Content.Content;
+import com.samsung.vekit.Content.Video;
+import com.samsung.vekit.Interface.AudioSegmentInterface;
+import com.samsung.vekit.Interface.SpeakerIDInfoInterface;
 import com.samsung.vekit.Layer.Layer;
+import com.samsung.vekit.Listener.PcmInfoListener;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /* loaded from: classes6.dex */
-public class VideoItem extends Item {
-    private boolean enableDeflicker;
-    private boolean enableFRC;
-    private long endContentTime;
-    private long fadeInDuration;
-    private long fadeOutDuration;
-    private Filter filter;
-    private float filterIntensity;
-    private float opacity;
-    private long startContentTime;
-    protected HashMap<Integer, Tone> toneMap;
-    private int volume;
+public class VideoItem extends Item implements AudioSegmentInterface<VideoItem>, SpeakerIDInfoInterface<VideoItem> {
+    protected HashMap<String, AudioSegment> audioSegmentMap;
+    protected boolean enableDeflicker;
+    protected boolean enableFRC;
+    protected long endContentTime;
+    protected long fadeInDuration;
+    protected long fadeOutDuration;
+    protected Filter filter;
+    protected float filterIntensity;
+    protected FilterOption filterOption;
+    protected float opacity;
+    protected PcmInfoListener pcmInfoListener;
+    protected HashMap<String, SpeakerIDInfo> speakerIDInfoMap;
+    protected long startContentTime;
+    protected ToneInfo toneInfo;
+    protected int volume;
 
     public VideoItem(VEContext context, int id, String name) {
         super(context, ItemType.VIDEO, id, name);
@@ -37,7 +48,10 @@ public class VideoItem extends Item {
         this.enableFRC = false;
         this.fadeInDuration = 0L;
         this.fadeOutDuration = 0L;
-        initializeTone();
+        this.audioSegmentMap = new HashMap<>();
+        this.toneInfo = new ToneInfo();
+        this.speakerIDInfoMap = new HashMap<>();
+        this.filterOption = new FilterOption();
     }
 
     @Override // com.samsung.vekit.Item.Item
@@ -147,27 +161,56 @@ public class VideoItem extends Item {
         return this.opacity;
     }
 
-    @Override // com.samsung.vekit.Item.Item
+    @Override // com.samsung.vekit.Item.Item, com.samsung.vekit.Common.Object.Element
     public VideoItem setOpacity(float opacity) {
         this.opacity = opacity;
         return this;
     }
 
+    @Override // com.samsung.vekit.Item.Item
     public VideoItem setToneIntensity(ToneType type, int intensity) {
-        ((Tone) Objects.requireNonNull(this.toneMap.get(Integer.valueOf(type.ordinal())))).setIntensity(intensity);
+        this.toneInfo.setTone(type, intensity);
         return this;
     }
 
+    @Override // com.samsung.vekit.Item.Item
     public int getToneIntensity(ToneType type) {
-        return ((Tone) Objects.requireNonNull(this.toneMap.get(Integer.valueOf(type.ordinal())))).getIntensity();
+        return (int) this.toneInfo.getTone(type);
     }
 
-    private void initializeTone() {
-        this.toneMap = new HashMap<>();
-        ToneType[] values = ToneType.values();
-        for (ToneType type : values) {
-            this.toneMap.put(Integer.valueOf(type.ordinal()), new Tone(type, 0));
-        }
+    @Override // com.samsung.vekit.Interface.SpeakerIDInfoInterface
+    public HashMap<String, SpeakerIDInfo> getSpeakerIDInfoMap() {
+        return this.speakerIDInfoMap;
+    }
+
+    @Override // com.samsung.vekit.Interface.SpeakerIDInfoInterface
+    public void setSpeakerIDInfoMap(HashMap<String, SpeakerIDInfo> speakerIDInfoMap) {
+        this.speakerIDInfoMap = speakerIDInfoMap;
+    }
+
+    @Override // com.samsung.vekit.Interface.SpeakerIDInfoInterface
+    public SpeakerIDInfo getSpeakerIDInfo(String key) {
+        return this.speakerIDInfoMap.get(key);
+    }
+
+    @Override // com.samsung.vekit.Interface.SpeakerIDInfoInterface
+    public void addSpeakerIDInfo(String key, SpeakerIDInfo speakerIDInfo) {
+        this.speakerIDInfoMap.put(key, speakerIDInfo);
+    }
+
+    @Override // com.samsung.vekit.Interface.SpeakerIDInfoInterface
+    public void removeSpeakerIDInfo(String key) {
+        this.speakerIDInfoMap.remove(key);
+    }
+
+    @Override // com.samsung.vekit.Interface.SpeakerIDInfoInterface
+    public void clearSpeakerIDInfo() {
+        this.speakerIDInfoMap.clear();
+    }
+
+    @Override // com.samsung.vekit.Interface.SpeakerIDInfoInterface
+    public int getSpeakerIDInfoMapSize() {
+        return this.speakerIDInfoMap.size();
     }
 
     public VideoItem setMeshType(MeshType meshType) {
@@ -213,5 +256,79 @@ public class VideoItem extends Item {
 
     public long getFadeOutDuration() {
         return this.fadeOutDuration;
+    }
+
+    public boolean loadAudioSegment() {
+        Log.i(this.TAG, "loadAudioSegment()");
+        if (this.content == null) {
+            Log.e(this.TAG, "Failed loadAudioSegment(), content is null.");
+            return false;
+        }
+        this.audioSegmentMap.clear();
+        ((Video) this.content).getAudioSegmentMap().forEach(new BiConsumer() { // from class: com.samsung.vekit.Item.VideoItem$$ExternalSyntheticLambda0
+            @Override // java.util.function.BiConsumer
+            public final void accept(Object obj, Object obj2) {
+                VideoItem.this.m9388lambda$loadAudioSegment$0$comsamsungvekitItemVideoItem((String) obj, (AudioSegment) obj2);
+            }
+        });
+        update();
+        return true;
+    }
+
+    /* renamed from: lambda$loadAudioSegment$0$com-samsung-vekit-Item-VideoItem, reason: not valid java name */
+    /* synthetic */ void m9388lambda$loadAudioSegment$0$comsamsungvekitItemVideoItem(String key, AudioSegment audioSegment) {
+        this.audioSegmentMap.put(key, audioSegment.m9384clone());
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public HashMap<String, AudioSegment> getAudioSegmentMap() {
+        return this.audioSegmentMap;
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void setAudioSegmentMap(HashMap<String, AudioSegment> audioSegmentMap) {
+        this.audioSegmentMap = audioSegmentMap;
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public AudioSegment getAudioSegment(String key) {
+        return this.audioSegmentMap.get(key);
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void addAudioSegment(String key, AudioSegment audioSegment) {
+        this.audioSegmentMap.put(key, audioSegment);
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void removeAudioSegment(String key) {
+        this.audioSegmentMap.remove(key);
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public void clearAudioSegment() {
+        this.audioSegmentMap.clear();
+    }
+
+    @Override // com.samsung.vekit.Interface.AudioSegmentInterface
+    public int getAudioSegmentMapSize() {
+        return this.audioSegmentMap.size();
+    }
+
+    @Override // com.samsung.vekit.Item.Item
+    public PcmInfoListener getPcmInfoListener() {
+        return this.pcmInfoListener;
+    }
+
+    public void setPcmInfoListener(PcmInfoListener pcmInfoListener) {
+        this.pcmInfoListener = pcmInfoListener;
+    }
+
+    public void setFilterOption(FilterOption filterOption) {
+        this.filterOption = filterOption;
+    }
+
+    public FilterOption getFilterOption() {
+        return this.filterOption;
     }
 }

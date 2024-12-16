@@ -11,7 +11,6 @@ public interface MicrophoneDirection {
     public static final int MIC_DIRECTION_UNSPECIFIED = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DirectionMode {
     }
 

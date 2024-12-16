@@ -12,7 +12,6 @@ public interface ISelectBackupTransportCallback extends IInterface {
 
     void onSuccess(String str) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISelectBackupTransportCallback {
         @Override // android.app.backup.ISelectBackupTransportCallback
         public void onSuccess(String transportName) throws RemoteException {
@@ -28,7 +27,6 @@ public interface ISelectBackupTransportCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISelectBackupTransportCallback {
         public static final String DESCRIPTOR = "android.app.backup.ISelectBackupTransportCallback";
         static final int TRANSACTION_onFailure = 2;
@@ -75,30 +73,27 @@ public interface ISelectBackupTransportCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFailure(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFailure(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISelectBackupTransportCallback {
+        private static class Proxy implements ISelectBackupTransportCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

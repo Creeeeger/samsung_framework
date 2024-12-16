@@ -10,7 +10,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IPreviewExtenderImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IPreviewExtenderImpl";
     public static final int PROCESSOR_TYPE_IMAGE_PROCESSOR = 1;
@@ -43,7 +43,6 @@ public interface IPreviewExtenderImpl extends IInterface {
 
     CaptureStageImpl onPresetSession() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPreviewExtenderImpl {
         @Override // android.hardware.camera2.extension.IPreviewExtenderImpl
         public void onInit(IBinder token, String cameraId, CameraMetadataNative cameraCharacteristics) throws RemoteException {
@@ -113,7 +112,6 @@ public interface IPreviewExtenderImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPreviewExtenderImpl {
         static final int TRANSACTION_getCaptureStage = 8;
         static final int TRANSACTION_getPreviewImageProcessor = 11;
@@ -192,95 +190,91 @@ public interface IPreviewExtenderImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPreviewExtenderImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPreviewExtenderImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPreviewExtenderImpl.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    String _arg1 = data.readString();
+                    CameraMetadataNative _arg2 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    onInit(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onDeInit(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    CaptureStageImpl _result = onPresetSession();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 4:
+                    CaptureStageImpl _result2 = onEnableSession();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    CaptureStageImpl _result3 = onDisableSession();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 6:
+                    String _arg03 = data.readString();
+                    CameraMetadataNative _arg12 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    init(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg04 = data.readString();
+                    CameraMetadataNative _arg13 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result4 = isExtensionAvailable(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 8:
+                    CaptureStageImpl _result5 = getCaptureStage();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 9:
+                    int _result6 = getSessionType();
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 10:
+                    int _result7 = getProcessorType();
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 11:
+                    IPreviewImageProcessorImpl _result8 = getPreviewImageProcessor();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result8);
+                    return true;
+                case 12:
+                    IRequestUpdateProcessorImpl _result9 = getRequestUpdateProcessor();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result9);
+                    return true;
+                case 13:
+                    List<SizeList> _result10 = getSupportedResolutions();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result10, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            String _arg1 = data.readString();
-                            CameraMetadataNative _arg2 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            onInit(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onDeInit(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            CaptureStageImpl _result = onPresetSession();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 4:
-                            CaptureStageImpl _result2 = onEnableSession();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            CaptureStageImpl _result3 = onDisableSession();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 6:
-                            String _arg03 = data.readString();
-                            CameraMetadataNative _arg12 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            init(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg04 = data.readString();
-                            CameraMetadataNative _arg13 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isExtensionAvailable(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            CaptureStageImpl _result5 = getCaptureStage();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 9:
-                            int _result6 = getSessionType();
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 10:
-                            int _result7 = getProcessorType();
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 11:
-                            IPreviewImageProcessorImpl _result8 = getPreviewImageProcessor();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result8);
-                            return true;
-                        case 12:
-                            IRequestUpdateProcessorImpl _result9 = getRequestUpdateProcessor();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result9);
-                            return true;
-                        case 13:
-                            List<SizeList> _result10 = getSupportedResolutions();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result10, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPreviewExtenderImpl {
+        private static class Proxy implements IPreviewExtenderImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

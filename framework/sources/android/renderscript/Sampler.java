@@ -10,7 +10,6 @@ public class Sampler extends BaseObj {
     Value mWrapS;
     Value mWrapT;
 
-    /* loaded from: classes3.dex */
     public enum Value {
         NEAREST(0),
         LINEAR(1),
@@ -196,7 +195,6 @@ public class Sampler extends BaseObj {
         return rs.mSampler_MIRRORED_REPEAT_LINEAR_MIP_LINEAR;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         RenderScript mRS;
         Value mMin = Value.NEAREST;

@@ -23,9 +23,8 @@ public final class SelectedProcessCpuThreadReader {
             return this.mKernelCpuThreadReader.getProcessCpuUsage();
         }
         this.mPid = pid;
-        KernelSingleProcessCpuThreadReader create = KernelSingleProcessCpuThreadReader.create(pid);
-        this.mKernelCpuThreadReader = create;
-        create.startTrackingThreadCpuTimes();
+        this.mKernelCpuThreadReader = KernelSingleProcessCpuThreadReader.create(this.mPid);
+        this.mKernelCpuThreadReader.startTrackingThreadCpuTimes();
         return null;
     }
 }

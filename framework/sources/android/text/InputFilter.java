@@ -3,11 +3,10 @@ package android.text;
 import com.android.internal.util.Preconditions;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface InputFilter {
     CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4);
 
-    /* loaded from: classes3.dex */
     public static class AllCaps implements InputFilter {
         private final Locale mLocale;
 
@@ -43,7 +42,6 @@ public interface InputFilter {
             return null;
         }
 
-        /* loaded from: classes3.dex */
         private static class CharSequenceWrapper implements CharSequence, Spanned {
             private final int mEnd;
             private final int mLength;
@@ -75,9 +73,7 @@ public interface InputFilter {
                 if (start < 0 || end < 0 || end > this.mLength || start > end) {
                     throw new IndexOutOfBoundsException();
                 }
-                CharSequence charSequence = this.mSource;
-                int i = this.mStart;
-                return new CharSequenceWrapper(charSequence, i + start, i + end);
+                return new CharSequenceWrapper(this.mSource, this.mStart + start, this.mStart + end);
             }
 
             @Override // java.lang.CharSequence
@@ -87,9 +83,7 @@ public interface InputFilter {
 
             @Override // android.text.Spanned
             public <T> T[] getSpans(int i, int i2, Class<T> cls) {
-                Spanned spanned = (Spanned) this.mSource;
-                int i3 = this.mStart;
-                return (T[]) spanned.getSpans(i3 + i, i3 + i2, cls);
+                return (T[]) ((Spanned) this.mSource).getSpans(this.mStart + i, this.mStart + i2, cls);
             }
 
             @Override // android.text.Spanned
@@ -109,14 +103,11 @@ public interface InputFilter {
 
             @Override // android.text.Spanned
             public int nextSpanTransition(int start, int limit, Class type) {
-                Spanned spanned = (Spanned) this.mSource;
-                int i = this.mStart;
-                return spanned.nextSpanTransition(i + start, i + limit, type) - this.mStart;
+                return ((Spanned) this.mSource).nextSpanTransition(this.mStart + start, this.mStart + limit, type) - this.mStart;
             }
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class LengthFilter implements InputFilter {
         private final int mMax;
 

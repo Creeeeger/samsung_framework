@@ -1,6 +1,7 @@
 package android.view.contentcapture;
 
 import android.content.ComponentName;
+import android.content.pm.ParceledListSlice;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
@@ -24,6 +25,8 @@ public interface IContentCaptureManager extends IInterface {
 
     void isContentCaptureFeatureEnabled(IResultReceiver iResultReceiver) throws RemoteException;
 
+    void onLoginDetected(ParceledListSlice<ContentCaptureEvent> parceledListSlice) throws RemoteException;
+
     void registerContentCaptureOptionsCallback(String str, IContentCaptureOptionsCallback iContentCaptureOptionsCallback) throws RemoteException;
 
     void removeData(DataRemovalRequest dataRemovalRequest) throws RemoteException;
@@ -38,7 +41,6 @@ public interface IContentCaptureManager extends IInterface {
 
     void startSession(IBinder iBinder, IBinder iBinder2, ComponentName componentName, int i, int i2, IResultReceiver iResultReceiver) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IContentCaptureManager {
         @Override // android.view.contentcapture.IContentCaptureManager
         public void startSession(IBinder activityToken, IBinder shareableActivityToken, ComponentName componentName, int sessionId, int flags, IResultReceiver result) throws RemoteException {
@@ -88,19 +90,23 @@ public interface IContentCaptureManager extends IInterface {
         public void registerContentCaptureOptionsCallback(String packageName, IContentCaptureOptionsCallback callback) throws RemoteException {
         }
 
+        @Override // android.view.contentcapture.IContentCaptureManager
+        public void onLoginDetected(ParceledListSlice<ContentCaptureEvent> events) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IContentCaptureManager {
         static final int TRANSACTION_finishSession = 2;
         static final int TRANSACTION_getContentCaptureConditions = 8;
         static final int TRANSACTION_getServiceComponentName = 3;
         static final int TRANSACTION_getServiceSettingsActivity = 7;
         static final int TRANSACTION_isContentCaptureFeatureEnabled = 6;
+        static final int TRANSACTION_onLoginDetected = 13;
         static final int TRANSACTION_registerContentCaptureOptionsCallback = 12;
         static final int TRANSACTION_removeData = 4;
         static final int TRANSACTION_resetTemporaryService = 9;
@@ -155,6 +161,8 @@ public interface IContentCaptureManager extends IInterface {
                     return "setDefaultServiceEnabled";
                 case 12:
                     return "registerContentCaptureOptionsCallback";
+                case 13:
+                    return "onLoginDetected";
                 default:
                     return null;
             }
@@ -170,91 +178,93 @@ public interface IContentCaptureManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContentCaptureManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContentCaptureManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContentCaptureManager.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    IBinder _arg1 = data.readStrongBinder();
+                    ComponentName _arg2 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    IResultReceiver _arg5 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startSession(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    finishSession(_arg02);
+                    return true;
+                case 3:
+                    IResultReceiver _arg03 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getServiceComponentName(_arg03);
+                    return true;
+                case 4:
+                    DataRemovalRequest _arg04 = (DataRemovalRequest) data.readTypedObject(DataRemovalRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeData(_arg04);
+                    return true;
+                case 5:
+                    DataShareRequest _arg05 = (DataShareRequest) data.readTypedObject(DataShareRequest.CREATOR);
+                    IDataShareWriteAdapter _arg12 = IDataShareWriteAdapter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    shareData(_arg05, _arg12);
+                    return true;
+                case 6:
+                    IResultReceiver _arg06 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    isContentCaptureFeatureEnabled(_arg06);
+                    return true;
+                case 7:
+                    IResultReceiver _arg07 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getServiceSettingsActivity(_arg07);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    IResultReceiver _arg13 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getContentCaptureConditions(_arg08, _arg13);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetTemporaryService(_arg09);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    String _arg14 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTemporaryService(_arg010, _arg14, _arg22);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    boolean _arg15 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDefaultServiceEnabled(_arg011, _arg15);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    IContentCaptureOptionsCallback _arg16 = IContentCaptureOptionsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerContentCaptureOptionsCallback(_arg012, _arg16);
+                    return true;
+                case 13:
+                    ParceledListSlice<ContentCaptureEvent> _arg013 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onLoginDetected(_arg013);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            IBinder _arg1 = data.readStrongBinder();
-                            ComponentName _arg2 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            IResultReceiver _arg5 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startSession(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            finishSession(_arg02);
-                            return true;
-                        case 3:
-                            IResultReceiver _arg03 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getServiceComponentName(_arg03);
-                            return true;
-                        case 4:
-                            DataRemovalRequest _arg04 = (DataRemovalRequest) data.readTypedObject(DataRemovalRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeData(_arg04);
-                            return true;
-                        case 5:
-                            DataShareRequest _arg05 = (DataShareRequest) data.readTypedObject(DataShareRequest.CREATOR);
-                            IDataShareWriteAdapter _arg12 = IDataShareWriteAdapter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            shareData(_arg05, _arg12);
-                            return true;
-                        case 6:
-                            IResultReceiver _arg06 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            isContentCaptureFeatureEnabled(_arg06);
-                            return true;
-                        case 7:
-                            IResultReceiver _arg07 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getServiceSettingsActivity(_arg07);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            IResultReceiver _arg13 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getContentCaptureConditions(_arg08, _arg13);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetTemporaryService(_arg09);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            String _arg14 = data.readString();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTemporaryService(_arg010, _arg14, _arg22);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDefaultServiceEnabled(_arg011, _arg15);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            IContentCaptureOptionsCallback _arg16 = IContentCaptureOptionsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerContentCaptureOptionsCallback(_arg012, _arg16);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IContentCaptureManager {
+        private static class Proxy implements IContentCaptureManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -424,11 +434,23 @@ public interface IContentCaptureManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.view.contentcapture.IContentCaptureManager
+            public void onLoginDetected(ParceledListSlice<ContentCaptureEvent> events) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IContentCaptureManager.DESCRIPTOR);
+                    _data.writeTypedObject(events, 0);
+                    this.mRemote.transact(13, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 11;
+            return 12;
         }
     }
 }

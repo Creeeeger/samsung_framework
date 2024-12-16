@@ -3,11 +3,10 @@ package com.android.framework.protobuf.nano;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class MapFactories {
     private static volatile MapFactory mapFactory = new DefaultMapFactory();
 
-    /* loaded from: classes4.dex */
     public interface MapFactory {
         <K, V> Map<K, V> forMap(Map<K, V> map);
     }
@@ -20,13 +19,8 @@ public final class MapFactories {
         return mapFactory;
     }
 
-    /* loaded from: classes4.dex */
     private static class DefaultMapFactory implements MapFactory {
         private DefaultMapFactory() {
-        }
-
-        /* synthetic */ DefaultMapFactory(AnonymousClass1 x0) {
-            this();
         }
 
         @Override // com.android.framework.protobuf.nano.MapFactories.MapFactory

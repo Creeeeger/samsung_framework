@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.UUID;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemSoundTrigger {
     public static final int RECOGNITION_MODE_USER_AUTHENTICATION = 4;
     public static final int RECOGNITION_MODE_USER_IDENTIFICATION = 2;
@@ -30,7 +30,6 @@ public class SemSoundTrigger {
     public static final int STATUS_DEAD_OBJECT = SoundTrigger.STATUS_DEAD_OBJECT;
     public static final int STATUS_INVALID_OPERATION = SoundTrigger.STATUS_INVALID_OPERATION;
 
-    /* loaded from: classes5.dex */
     public interface StatusListener {
         void onRecognition(RecognitionEvent recognitionEvent);
 
@@ -42,7 +41,6 @@ public class SemSoundTrigger {
     private SemSoundTrigger() {
     }
 
-    /* loaded from: classes5.dex */
     public static class ModuleProperties {
         public final int id;
         public final boolean supportsConcurrentCapture;
@@ -59,7 +57,6 @@ public class SemSoundTrigger {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Keyphrase {
         private final int id;
         SoundTrigger.Keyphrase instance;
@@ -71,11 +68,10 @@ public class SemSoundTrigger {
         public Keyphrase(int id, int recognitionModes, String locale, String text, int[] users) {
             this.id = id;
             this.recognitionModes = recognitionModes;
-            Locale locale2 = new Locale(locale);
-            this.locale = locale2;
+            this.locale = new Locale(locale);
             this.text = text;
             this.users = users;
-            this.instance = new SoundTrigger.Keyphrase(id, recognitionModes, locale2, text, users);
+            this.instance = new SoundTrigger.Keyphrase(this.id, this.recognitionModes, this.locale, this.text, this.users);
         }
 
         public String toString() {
@@ -83,7 +79,6 @@ public class SemSoundTrigger {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyphraseSoundModel {
         SoundTrigger.KeyphraseSoundModel instance;
         public final Keyphrase[] keyphrases;
@@ -100,7 +95,6 @@ public class SemSoundTrigger {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class RecognitionEvent {
         public final boolean captureAvailable;
         public final int captureDelayMs;
@@ -112,7 +106,7 @@ public class SemSoundTrigger {
         public final int status;
         public final boolean triggerInData;
 
-        public RecognitionEvent(int status, int soundModelHandle, boolean captureAvailable, int captureSession, int captureDelayMs, int capturePreambleMs, boolean triggerInData, AudioFormat captureFormat, byte[] data) {
+        RecognitionEvent(int status, int soundModelHandle, boolean captureAvailable, int captureSession, int captureDelayMs, int capturePreambleMs, boolean triggerInData, AudioFormat captureFormat, byte[] data) {
             this.status = status;
             this.soundModelHandle = soundModelHandle;
             this.captureAvailable = captureAvailable;
@@ -125,13 +119,10 @@ public class SemSoundTrigger {
         }
 
         public String toString() {
-            StringBuilder append = new StringBuilder().append("RecognitionEvent [status=").append(this.status).append(", soundModelHandle=").append(this.soundModelHandle).append(", captureAvailable=").append(this.captureAvailable).append(", captureSession=").append(this.captureSession).append(", captureDelayMs=").append(this.captureDelayMs).append(", capturePreambleMs=").append(this.capturePreambleMs).append(", triggerInData=").append(this.triggerInData).append(this.captureFormat == null ? "" : ", sampleRate=" + this.captureFormat.getSampleRate()).append(this.captureFormat == null ? "" : ", encoding=" + this.captureFormat.getEncoding()).append(this.captureFormat != null ? ", channelMask=" + this.captureFormat.getChannelMask() : "").append(", data=");
-            byte[] bArr = this.data;
-            return append.append(bArr == null ? 0 : bArr.length).append(NavigationBarInflaterView.SIZE_MOD_END).toString();
+            return "RecognitionEvent [status=" + this.status + ", soundModelHandle=" + this.soundModelHandle + ", captureAvailable=" + this.captureAvailable + ", captureSession=" + this.captureSession + ", captureDelayMs=" + this.captureDelayMs + ", capturePreambleMs=" + this.capturePreambleMs + ", triggerInData=" + this.triggerInData + (this.captureFormat == null ? "" : ", sampleRate=" + this.captureFormat.getSampleRate()) + (this.captureFormat == null ? "" : ", encoding=" + this.captureFormat.getEncoding()) + (this.captureFormat != null ? ", channelMask=" + this.captureFormat.getChannelMask() : "") + ", data=" + (this.data == null ? 0 : this.data.length) + NavigationBarInflaterView.SIZE_MOD_END;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class RecognitionConfig {
         private final boolean allowMultipleTriggers;
         private final boolean captureRequested;
@@ -156,21 +147,18 @@ public class SemSoundTrigger {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ConfidenceLevel {
         public final int confidenceLevel;
         SoundTrigger.ConfidenceLevel instance;
         public final int userId;
 
         public ConfidenceLevel(int userId, int confidenceLevel) {
-            SoundTrigger.ConfidenceLevel confidenceLevel2 = new SoundTrigger.ConfidenceLevel(userId, confidenceLevel);
-            this.instance = confidenceLevel2;
-            this.userId = confidenceLevel2.userId;
+            this.instance = new SoundTrigger.ConfidenceLevel(userId, confidenceLevel);
+            this.userId = this.instance.userId;
             this.confidenceLevel = this.instance.confidenceLevel;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyphraseRecognitionExtra {
         public final int coarseConfidenceLevel;
         public final ConfidenceLevel[] confidenceLevels;
@@ -191,7 +179,6 @@ public class SemSoundTrigger {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyphraseRecognitionEvent extends RecognitionEvent {
         public final KeyphraseRecognitionExtra[] keyphraseExtras;
 

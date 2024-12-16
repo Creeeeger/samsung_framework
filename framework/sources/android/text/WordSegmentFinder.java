@@ -3,16 +3,15 @@ package android.text;
 import android.icu.util.ULocale;
 import android.text.method.WordIterator;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class WordSegmentFinder extends SegmentFinder {
     private final CharSequence mText;
     private final WordIterator mWordIterator;
 
     public WordSegmentFinder(CharSequence text, ULocale locale) {
         this.mText = text;
-        WordIterator wordIterator = new WordIterator(locale);
-        this.mWordIterator = wordIterator;
-        wordIterator.setCharSequence(text, 0, text.length());
+        this.mWordIterator = new WordIterator(locale);
+        this.mWordIterator.setCharSequence(text, 0, text.length());
     }
 
     public WordSegmentFinder(CharSequence text, WordIterator wordIterator) {

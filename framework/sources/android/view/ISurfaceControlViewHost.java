@@ -7,11 +7,14 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.view.ISurfaceControlViewHostParent;
 import android.window.ISurfaceSyncGroup;
 
 /* loaded from: classes4.dex */
 public interface ISurfaceControlViewHost extends IInterface {
     public static final String DESCRIPTOR = "android.view.ISurfaceControlViewHost";
+
+    void attachParentInterface(ISurfaceControlViewHostParent iSurfaceControlViewHostParent) throws RemoteException;
 
     ISurfaceSyncGroup getSurfaceSyncGroup() throws RemoteException;
 
@@ -21,7 +24,6 @@ public interface ISurfaceControlViewHost extends IInterface {
 
     void onInsetsChanged(InsetsState insetsState, Rect rect) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ISurfaceControlViewHost {
         @Override // android.view.ISurfaceControlViewHost
         public void onConfigurationChanged(Configuration newConfig) throws RemoteException {
@@ -40,14 +42,18 @@ public interface ISurfaceControlViewHost extends IInterface {
             return null;
         }
 
+        @Override // android.view.ISurfaceControlViewHost
+        public void attachParentInterface(ISurfaceControlViewHostParent parentInterface) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ISurfaceControlViewHost {
+        static final int TRANSACTION_attachParentInterface = 5;
         static final int TRANSACTION_getSurfaceSyncGroup = 4;
         static final int TRANSACTION_onConfigurationChanged = 1;
         static final int TRANSACTION_onDispatchDetachedFromWindow = 2;
@@ -83,6 +89,8 @@ public interface ISurfaceControlViewHost extends IInterface {
                     return "onInsetsChanged";
                 case 4:
                     return "getSurfaceSyncGroup";
+                case 5:
+                    return "attachParentInterface";
                 default:
                     return null;
             }
@@ -98,39 +106,41 @@ public interface ISurfaceControlViewHost extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISurfaceControlViewHost.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISurfaceControlViewHost.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISurfaceControlViewHost.DESCRIPTOR);
+                case 1:
+                    Configuration _arg0 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConfigurationChanged(_arg0);
+                    return true;
+                case 2:
+                    onDispatchDetachedFromWindow();
+                    return true;
+                case 3:
+                    InsetsState _arg02 = (InsetsState) data.readTypedObject(InsetsState.CREATOR);
+                    Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    onInsetsChanged(_arg02, _arg1);
+                    return true;
+                case 4:
+                    ISurfaceSyncGroup _result = getSurfaceSyncGroup();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 5:
+                    ISurfaceControlViewHostParent _arg03 = ISurfaceControlViewHostParent.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    attachParentInterface(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Configuration _arg0 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConfigurationChanged(_arg0);
-                            return true;
-                        case 2:
-                            onDispatchDetachedFromWindow();
-                            return true;
-                        case 3:
-                            InsetsState _arg02 = (InsetsState) data.readTypedObject(InsetsState.CREATOR);
-                            Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            onInsetsChanged(_arg02, _arg1);
-                            return true;
-                        case 4:
-                            ISurfaceSyncGroup _result = getSurfaceSyncGroup();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ISurfaceControlViewHost {
+        private static class Proxy implements ISurfaceControlViewHost {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -197,11 +207,23 @@ public interface ISurfaceControlViewHost extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.view.ISurfaceControlViewHost
+            public void attachParentInterface(ISurfaceControlViewHostParent parentInterface) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISurfaceControlViewHost.DESCRIPTOR);
+                    _data.writeStrongInterface(parentInterface);
+                    this.mRemote.transact(5, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 3;
+            return 4;
         }
     }
 }

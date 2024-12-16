@@ -5,18 +5,18 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /* loaded from: classes.dex */
 public final class Person implements Parcelable {
     public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() { // from class: android.app.Person.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Person createFromParcel(Parcel in) {
             return new Person(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Person[] newArray(int size) {
             return new Person[size];
@@ -28,14 +28,6 @@ public final class Person implements Parcelable {
     private String mKey;
     private CharSequence mName;
     private String mUri;
-
-    /* synthetic */ Person(Builder builder, PersonIA personIA) {
-        this(builder);
-    }
-
-    /* synthetic */ Person(Parcel parcel, PersonIA personIA) {
-        this(parcel);
-    }
 
     private Person(Parcel in) {
         this.mName = in.readCharSequence();
@@ -86,9 +78,8 @@ public final class Person implements Parcelable {
     }
 
     public String resolveToLegacyUri() {
-        String str = this.mUri;
-        if (str != null) {
-            return str;
+        if (this.mUri != null) {
+            return this.mUri;
         }
         if (this.mName != null) {
             return "name:" + ((Object) this.mName);
@@ -97,9 +88,8 @@ public final class Person implements Parcelable {
     }
 
     public Uri getIconUri() {
-        Icon icon = this.mIcon;
-        if (icon != null) {
-            if (icon.getType() == 4 || this.mIcon.getType() == 6) {
+        if (this.mIcon != null) {
+            if (this.mIcon.getType() == 4 || this.mIcon.getType() == 6) {
                 return this.mIcon.getUri();
             }
             return null;
@@ -115,13 +105,11 @@ public final class Person implements Parcelable {
         if (!Objects.equals(this.mName, other.mName)) {
             return false;
         }
-        Icon icon = this.mIcon;
-        if (icon != null) {
-            Icon icon2 = other.mIcon;
-            if (icon2 == null || !icon.sameAs(icon2)) {
+        if (this.mIcon == null) {
+            if (other.mIcon != null) {
                 return false;
             }
-        } else if (other.mIcon != null) {
+        } else if (other.mIcon == null || !this.mIcon.sameAs(other.mIcon)) {
             return false;
         }
         return Objects.equals(this.mUri, other.mUri) && Objects.equals(this.mKey, other.mKey) && this.mIsBot == other.mIsBot && this.mIsImportant == other.mIsImportant;
@@ -151,7 +139,13 @@ public final class Person implements Parcelable {
         dest.writeBoolean(this.mIsBot);
     }
 
-    /* loaded from: classes.dex */
+    public void visitUris(Consumer<Uri> visitor) {
+        visitor.accept(getIconUri());
+        if (Flags.visitPersonUri() && this.mUri != null && !this.mUri.isEmpty()) {
+            visitor.accept(Uri.parse(this.mUri));
+        }
+    }
+
     public static class Builder {
         private Icon mIcon;
         private boolean mIsBot;
@@ -159,10 +153,6 @@ public final class Person implements Parcelable {
         private String mKey;
         private CharSequence mName;
         private String mUri;
-
-        /* synthetic */ Builder(Person person, BuilderIA builderIA) {
-            this(person);
-        }
 
         public Builder() {
         }
@@ -208,23 +198,6 @@ public final class Person implements Parcelable {
 
         public Person build() {
             return new Person(this);
-        }
-    }
-
-    /* renamed from: android.app.Person$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Person> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Person createFromParcel(Parcel in) {
-            return new Person(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Person[] newArray(int size) {
-            return new Person[size];
         }
     }
 }

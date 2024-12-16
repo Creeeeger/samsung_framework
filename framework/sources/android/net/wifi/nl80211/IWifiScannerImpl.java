@@ -48,7 +48,6 @@ public interface IWifiScannerImpl extends IInterface {
 
     void unsubscribeScanEvents() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWifiScannerImpl {
         @Override // android.net.wifi.nl80211.IWifiScannerImpl
         public NativeScanResult[] getScanResults() throws RemoteException {
@@ -115,7 +114,6 @@ public interface IWifiScannerImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWifiScannerImpl {
         static final int TRANSACTION_abortScan = 12;
         static final int TRANSACTION_disableRandomMac = 13;
@@ -194,86 +192,82 @@ public interface IWifiScannerImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWifiScannerImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWifiScannerImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWifiScannerImpl.DESCRIPTOR);
+                case 1:
+                    NativeScanResult[] _result = getScanResults();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
+                    return true;
+                case 2:
+                    NativeScanResult[] _result2 = getPnoScanResults();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result2, 1);
+                    return true;
+                case 3:
+                    int _result3 = getMaxSsidsPerScan();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    SingleScanSettings _arg0 = (SingleScanSettings) data.readTypedObject(SingleScanSettings.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result4 = scan(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    SingleScanSettings _arg02 = (SingleScanSettings) data.readTypedObject(SingleScanSettings.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result5 = scanRequest(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    IScanEvent _arg03 = IScanEvent.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    subscribeScanEvents(_arg03);
+                    return true;
+                case 7:
+                    unsubscribeScanEvents();
+                    return true;
+                case 8:
+                    IPnoScanEvent _arg04 = IPnoScanEvent.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    subscribePnoScanEvents(_arg04);
+                    return true;
+                case 9:
+                    unsubscribePnoScanEvents();
+                    return true;
+                case 10:
+                    PnoSettings _arg05 = (PnoSettings) data.readTypedObject(PnoSettings.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result6 = startPnoScan(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 11:
+                    boolean _result7 = stopPnoScan();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 12:
+                    abortScan();
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    disableRandomMac();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            NativeScanResult[] _result = getScanResults();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 2:
-                            NativeScanResult[] _result2 = getPnoScanResults();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result2, 1);
-                            return true;
-                        case 3:
-                            int _result3 = getMaxSsidsPerScan();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            SingleScanSettings _arg0 = (SingleScanSettings) data.readTypedObject(SingleScanSettings.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result4 = scan(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            SingleScanSettings _arg02 = (SingleScanSettings) data.readTypedObject(SingleScanSettings.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result5 = scanRequest(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            IScanEvent _arg03 = IScanEvent.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            subscribeScanEvents(_arg03);
-                            return true;
-                        case 7:
-                            unsubscribeScanEvents();
-                            return true;
-                        case 8:
-                            IPnoScanEvent _arg04 = IPnoScanEvent.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            subscribePnoScanEvents(_arg04);
-                            return true;
-                        case 9:
-                            unsubscribePnoScanEvents();
-                            return true;
-                        case 10:
-                            PnoSettings _arg05 = (PnoSettings) data.readTypedObject(PnoSettings.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result6 = startPnoScan(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 11:
-                            boolean _result7 = stopPnoScan();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 12:
-                            abortScan();
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            disableRandomMac();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IWifiScannerImpl {
+        private static class Proxy implements IWifiScannerImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

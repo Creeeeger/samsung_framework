@@ -6,11 +6,10 @@ import android.util.NtpTrustedTime;
 public final class SelectionSessionLogger {
     private static final String CLASSIFIER_ID = "androidtc";
 
-    public static boolean isPlatformLocalTextClassifierSmartSelection(String signature) {
+    static boolean isPlatformLocalTextClassifierSmartSelection(String signature) {
         return "androidtc".equals(SignatureParser.getClassifierId(signature));
     }
 
-    /* loaded from: classes4.dex */
     public static final class SignatureParser {
         static String getClassifierId(String signature) {
             int end;

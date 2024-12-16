@@ -8,9 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class Temperature implements Parcelable {
     public static final Parcelable.Creator<Temperature> CREATOR = new Parcelable.Creator<Temperature>() { // from class: android.os.Temperature.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Temperature createFromParcel(Parcel p) {
             float value = p.readFloat();
@@ -20,6 +18,7 @@ public final class Temperature implements Parcelable {
             return new Temperature(value, type, name, status);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Temperature[] newArray(int size) {
             return new Temperature[size];
@@ -32,38 +31,42 @@ public final class Temperature implements Parcelable {
     public static final int THROTTLING_NONE = 0;
     public static final int THROTTLING_SEVERE = 3;
     public static final int THROTTLING_SHUTDOWN = 6;
+    public static final int TYPE_AMBIENT = 18;
     public static final int TYPE_BATTERY = 2;
     public static final int TYPE_BCL_CURRENT = 7;
     public static final int TYPE_BCL_PERCENTAGE = 8;
     public static final int TYPE_BCL_VOLTAGE = 6;
+    public static final int TYPE_CAMERA = 15;
     public static final int TYPE_CPU = 0;
     public static final int TYPE_DISPLAY = 11;
+    public static final int TYPE_FLASHLIGHT = 16;
     public static final int TYPE_GPU = 1;
     public static final int TYPE_MODEM = 12;
     public static final int TYPE_NPU = 9;
+    public static final int TYPE_POGO = 19;
     public static final int TYPE_POWER_AMPLIFIER = 5;
     public static final int TYPE_SKIN = 3;
     public static final int TYPE_SOC = 13;
+    public static final int TYPE_SPEAKER = 17;
     public static final int TYPE_TPU = 10;
     public static final int TYPE_UNKNOWN = -1;
     public static final int TYPE_USB_PORT = 4;
+    public static final int TYPE_WIFI = 14;
     private final String mName;
     private final int mStatus;
     private final int mType;
     private final float mValue;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ThrottlingStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Type {
     }
 
     public static boolean isValidType(int type) {
-        return type >= -1 && type <= 13;
+        return type >= -1 && type <= 19;
     }
 
     public static boolean isValidStatus(int status) {
@@ -118,27 +121,6 @@ public final class Temperature implements Parcelable {
         p.writeInt(this.mType);
         p.writeString(this.mName);
         p.writeInt(this.mStatus);
-    }
-
-    /* renamed from: android.os.Temperature$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Temperature> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Temperature createFromParcel(Parcel p) {
-            float value = p.readFloat();
-            int type = p.readInt();
-            String name = p.readString();
-            int status = p.readInt();
-            return new Temperature(value, type, name, status);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Temperature[] newArray(int size) {
-            return new Temperature[size];
-        }
     }
 
     @Override // android.os.Parcelable

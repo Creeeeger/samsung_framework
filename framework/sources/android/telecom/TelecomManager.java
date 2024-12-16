@@ -18,7 +18,6 @@ import android.text.TextUtils;
 import com.android.internal.telecom.ClientTransactionalServiceRepository;
 import com.android.internal.telecom.ClientTransactionalServiceWrapper;
 import com.android.internal.telecom.ITelecomService;
-import com.android.internal.telephony.SemTelephonyUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ public class TelecomManager {
     public static final int AUDIO_OUTPUT_DEFAULT = 0;
     public static final int AUDIO_OUTPUT_DISABLE_SPEAKER = 1;
     public static final int AUDIO_OUTPUT_ENABLE_SPEAKER = 0;
-    private static final Object CACHE_LOCK;
     public static final String CALL_AUTO_DISCONNECT_MESSAGE_STRING = "Call dropped by lower layers";
 
     @SystemApi
@@ -70,11 +68,9 @@ public class TelecomManager {
     public static final int DURATION_MEDIUM = 2;
     public static final int DURATION_SHORT = 1;
     public static final int DURATION_VERY_SHORT = 0;
-    private static final String EMERGENCY_DIALER_CLASS_NAME = ".emergencydialer.view.EmergencyDialerActivity";
-    public static final ComponentName EMERGENCY_DIALER_COMPONENT;
-    private static final String EMERGENCY_DIALER_PACKAGE_NAME;
     public static final long ENABLE_GET_CALL_STATE_PERMISSION_PROTECTION = 157233955;
     public static final long ENABLE_GET_PHONE_ACCOUNT_PERMISSION_PROTECTION = 183407956;
+    public static final String EXTRA_CALL_ANSWERED_TIME_MILLIS = "android.telecom.extra.CALL_ANSWERED_TIME_MILLIS";
     public static final String EXTRA_CALL_AUDIO_STATE = "android.telecom.extra.CALL_AUDIO_STATE";
 
     @SystemApi
@@ -88,6 +84,7 @@ public class TelecomManager {
 
     @SystemApi
     public static final String EXTRA_CALL_HAS_IN_BAND_RINGTONE = "android.telecom.extra.CALL_HAS_IN_BAND_RINGTONE";
+    public static final String EXTRA_CALL_LOG_URI = "android.telecom.extra.CALL_LOG_URI";
     public static final String EXTRA_CALL_NETWORK_TYPE = "android.telecom.extra.CALL_NETWORK_TYPE";
 
     @SystemApi
@@ -111,6 +108,7 @@ public class TelecomManager {
     public static final String EXTRA_CURRENT_TTY_MODE = "android.telecom.extra.CURRENT_TTY_MODE";
     public static final String EXTRA_DEFAULT_CALL_SCREENING_APP_COMPONENT_NAME = "android.telecom.extra.DEFAULT_CALL_SCREENING_APP_COMPONENT_NAME";
     public static final String EXTRA_DISCONNECT_CAUSE = "android.telecom.extra.DISCONNECT_CAUSE";
+    public static final String EXTRA_DO_NOT_LOG_CALL = "android.telecom.extra.DO_NOT_LOG_CALL";
     public static final String EXTRA_HANDLE = "android.telecom.extra.HANDLE";
     public static final String EXTRA_HANDOVER_FROM_PHONE_ACCOUNT = "android.telecom.extra.HANDOVER_FROM_PHONE_ACCOUNT";
     public static final String EXTRA_HAS_PICTURE = "android.telecom.extra.HAS_PICTURE";
@@ -158,6 +156,7 @@ public class TelecomManager {
     public static final int PRESENTATION_UNKNOWN = 3;
     public static final int PRIORITY_NORMAL = 0;
     public static final int PRIORITY_URGENT = 1;
+    public static final String PROPERTY_VIDEOCALL_AUDIO_OUTPUT = "persist.radio.call.audio.output";
     public static final String SEM_ACTION_TTY_PREFERRED_MODE_CHANGED = "android.telecom.action.TTY_PREFERRED_MODE_CHANGED";
     public static final String SEM_EXTRA_TTY_PREFERRED_MODE = "android.telecom.intent.extra.TTY_PREFERRED";
     public static final String SEM_EXTRA_TTY_PREFERRED_MODE_R = "android.telecom.extra.TTY_PREFERRED_MODE";
@@ -165,7 +164,6 @@ public class TelecomManager {
     public static final int SEM_TTY_MODE_HCO = 2;
     public static final int SEM_TTY_MODE_OFF = 0;
     public static final int SEM_TTY_MODE_VCO = 3;
-    private static final DeathRecipient SERVICE_DEATH;
     public static final long SHORT_CALL_TIME_MS = 60000;
     private static final String TAG = "TelecomManager";
     public static final int TELECOM_TRANSACTION_SUCCESS = 0;
@@ -187,23 +185,18 @@ public class TelecomManager {
     private final Context mContext;
     private final ITelecomService mTelecomServiceOverride;
     private final ClientTransactionalServiceRepository mTransactionalServiceRepository;
+    private static final String EMERGENCY_DIALER_PACKAGE_NAME = "com.samsung.android.emergency";
+    private static final String EMERGENCY_DIALER_CLASS_NAME = ".emergencydialer.view.EmergencyDialerActivity";
+    public static final ComponentName EMERGENCY_DIALER_COMPONENT = ComponentName.createRelative(EMERGENCY_DIALER_PACKAGE_NAME, EMERGENCY_DIALER_CLASS_NAME);
+    private static final Object CACHE_LOCK = new Object();
+    private static final DeathRecipient SERVICE_DEATH = new DeathRecipient();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Presentation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TtyMode {
-    }
-
-    static {
-        String str = "60000".equals(SemTelephonyUtils.ONEUI_VERSION) ? "com.samsung.android.app.telephonyui" : "com.samsung.android.emergency";
-        EMERGENCY_DIALER_PACKAGE_NAME = str;
-        EMERGENCY_DIALER_COMPONENT = ComponentName.createRelative(str, EMERGENCY_DIALER_CLASS_NAME);
-        CACHE_LOCK = new Object();
-        SERVICE_DEATH = new DeathRecipient();
     }
 
     public static TelecomManager from(Context context) {
@@ -328,6 +321,10 @@ public class TelecomManager {
         return getCallCapablePhoneAccounts(false);
     }
 
+    public List<PhoneAccountHandle> getCallCapablePhoneAccountsAcrossProfiles() {
+        return getCallCapablePhoneAccountsAcrossProfiles(false);
+    }
+
     public List<PhoneAccountHandle> getSelfManagedPhoneAccounts() {
         ITelecomService service = getTelecomService();
         if (service != null) {
@@ -352,12 +349,24 @@ public class TelecomManager {
         throw new IllegalStateException("Telecom is not available");
     }
 
+    public List<PhoneAccount> getRegisteredPhoneAccounts() {
+        ITelecomService service = getTelecomService();
+        if (service != null) {
+            try {
+                return service.getRegisteredPhoneAccounts(this.mContext.getOpPackageName(), this.mContext.getAttributionTag()).getList();
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        throw new IllegalStateException("Telecom is not available");
+    }
+
     @SystemApi
     public List<PhoneAccountHandle> getCallCapablePhoneAccounts(boolean includeDisabledAccounts) {
         ITelecomService service = getTelecomService();
         if (service != null) {
             try {
-                return service.getCallCapablePhoneAccounts(includeDisabledAccounts, this.mContext.getOpPackageName(), this.mContext.getAttributionTag()).getList();
+                return service.getCallCapablePhoneAccounts(includeDisabledAccounts, this.mContext.getOpPackageName(), this.mContext.getAttributionTag(), false).getList();
             } catch (RemoteException e) {
                 android.util.Log.e(TAG, "Error calling ITelecomService#getCallCapablePhoneAccounts(" + includeDisabledAccounts + NavigationBarInflaterView.KEY_CODE_END, e);
             }
@@ -367,6 +376,19 @@ public class TelecomManager {
 
     public List<PhoneAccountHandle> semGetCallCapablePhoneAccounts(boolean includeDisabledAccounts) {
         return getCallCapablePhoneAccounts(includeDisabledAccounts);
+    }
+
+    @SystemApi
+    public List<PhoneAccountHandle> getCallCapablePhoneAccountsAcrossProfiles(boolean includeDisabledAccounts) {
+        ITelecomService service = getTelecomService();
+        if (service == null) {
+            throw new IllegalStateException("telecom service is null.");
+        }
+        try {
+            return service.getCallCapablePhoneAccounts(includeDisabledAccounts, this.mContext.getOpPackageName(), this.mContext.getAttributionTag(), true).getList();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     @SystemApi
@@ -1008,6 +1030,7 @@ public class TelecomManager {
         }
     }
 
+    @SystemApi
     public boolean isInSelfManagedCall(String packageName, UserHandle userHandle) {
         ITelecomService service = getTelecomService();
         if (service != null) {
@@ -1060,9 +1083,8 @@ public class TelecomManager {
     }
 
     private ITelecomService getTelecomService() {
-        ITelecomService iTelecomService = this.mTelecomServiceOverride;
-        if (iTelecomService != null) {
-            return iTelecomService;
+        if (this.mTelecomServiceOverride != null) {
+            return this.mTelecomServiceOverride;
         }
         if (sTelecomService == null) {
             ITelecomService temp = ITelecomService.Stub.asInterface(ServiceManager.getService(Context.TELECOM_SERVICE));
@@ -1070,7 +1092,7 @@ public class TelecomManager {
                 if (sTelecomService == null && temp != null) {
                     try {
                         sTelecomService = temp;
-                        temp.asBinder().linkToDeath(SERVICE_DEATH, 0);
+                        sTelecomService.asBinder().linkToDeath(SERVICE_DEATH, 0);
                     } catch (Exception e) {
                         sTelecomService = null;
                     }
@@ -1080,12 +1102,7 @@ public class TelecomManager {
         return sTelecomService;
     }
 
-    /* loaded from: classes3.dex */
-    public static class DeathRecipient implements IBinder.DeathRecipient {
-        /* synthetic */ DeathRecipient(DeathRecipientIA deathRecipientIA) {
-            this();
-        }
-
+    private static class DeathRecipient implements IBinder.DeathRecipient {
         private DeathRecipient() {
         }
 
@@ -1095,11 +1112,11 @@ public class TelecomManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void resetServiceCache() {
         synchronized (CACHE_LOCK) {
-            ITelecomService iTelecomService = sTelecomService;
-            if (iTelecomService != null) {
-                iTelecomService.asBinder().unlinkToDeath(SERVICE_DEATH, 0);
+            if (sTelecomService != null) {
+                sTelecomService.asBinder().unlinkToDeath(SERVICE_DEATH, 0);
                 sTelecomService = null;
             }
         }

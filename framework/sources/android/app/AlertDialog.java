@@ -40,7 +40,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
     public static final int THEME_TRADITIONAL = 1;
     private AlertController mAlert;
 
-    public AlertDialog(Context context) {
+    protected AlertDialog(Context context) {
         this(context, 0);
     }
 
@@ -50,7 +50,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         setOnCancelListener(cancelListener);
     }
 
-    public AlertDialog(Context context, int themeResId) {
+    protected AlertDialog(Context context, int themeResId) {
         this(context, themeResId, true);
     }
 
@@ -126,7 +126,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         this.mAlert.setView(view, viewSpacingLeft, viewSpacingTop, viewSpacingRight, viewSpacingBottom);
     }
 
-    public void setButtonPanelLayoutHint(int layoutHint) {
+    void setButtonPanelLayoutHint(int layoutHint) {
         this.mAlert.setButtonPanelLayoutHint(layoutHint);
     }
 
@@ -187,7 +187,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
     }
 
     @Override // android.app.Dialog
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mAlert.installContent();
     }
@@ -208,7 +208,6 @@ public class AlertDialog extends Dialog implements DialogInterface {
         return super.onKeyUp(keyCode, event);
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private final AlertController.AlertParams P;
         private boolean mIsDeviceDefault;
@@ -233,8 +232,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setTitle(int titleId) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mTitle = alertParams.mContext.getText(titleId);
+            this.P.mTitle = this.P.mContext.getText(titleId);
             return this;
         }
 
@@ -249,8 +247,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setMessage(int messageId) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mMessage = alertParams.mContext.getText(messageId);
+            this.P.mMessage = this.P.mContext.getText(messageId);
             return this;
         }
 
@@ -277,8 +274,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setPositiveButton(int textId, DialogInterface.OnClickListener listener) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mPositiveButtonText = alertParams.mContext.getText(textId);
+            this.P.mPositiveButtonText = this.P.mContext.getText(textId);
             this.P.mPositiveButtonListener = listener;
             return this;
         }
@@ -290,8 +286,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setNegativeButton(int textId, DialogInterface.OnClickListener listener) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mNegativeButtonText = alertParams.mContext.getText(textId);
+            this.P.mNegativeButtonText = this.P.mContext.getText(textId);
             this.P.mNegativeButtonListener = listener;
             return this;
         }
@@ -303,8 +298,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setNeutralButton(int textId, DialogInterface.OnClickListener listener) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mNeutralButtonText = alertParams.mContext.getText(textId);
+            this.P.mNeutralButtonText = this.P.mContext.getText(textId);
             this.P.mNeutralButtonListener = listener;
             return this;
         }
@@ -336,8 +330,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setItems(int itemsId, DialogInterface.OnClickListener listener) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mItems = alertParams.mContext.getResources().getTextArray(itemsId);
+            this.P.mItems = this.P.mContext.getResources().getTextArray(itemsId);
             this.P.mOnClickListener = listener;
             return this;
         }
@@ -362,8 +355,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setMultiChoiceItems(int itemsId, boolean[] checkedItems, DialogInterface.OnMultiChoiceClickListener listener) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mItems = alertParams.mContext.getResources().getTextArray(itemsId);
+            this.P.mItems = this.P.mContext.getResources().getTextArray(itemsId);
             this.P.mOnCheckboxClickListener = listener;
             this.P.mCheckedItems = checkedItems;
             this.P.mIsMultiChoice = true;
@@ -388,8 +380,7 @@ public class AlertDialog extends Dialog implements DialogInterface {
         }
 
         public Builder setSingleChoiceItems(int itemsId, int checkedItem, DialogInterface.OnClickListener listener) {
-            AlertController.AlertParams alertParams = this.P;
-            alertParams.mItems = alertParams.mContext.getResources().getTextArray(itemsId);
+            this.P.mItems = this.P.mContext.getResources().getTextArray(itemsId);
             this.P.mOnClickListener = listener;
             this.P.mCheckedItem = checkedItem;
             this.P.mIsSingleChoice = true;

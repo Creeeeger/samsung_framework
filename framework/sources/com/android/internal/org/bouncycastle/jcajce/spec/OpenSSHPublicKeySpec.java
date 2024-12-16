@@ -22,24 +22,16 @@ public class OpenSSHPublicKeySpec extends EncodedKeySpec {
         if (pos4 + i4 >= encodedKey.length) {
             throw new IllegalArgumentException("invalid public key blob: type field longer than blob");
         }
-        String fromByteArray = Strings.fromByteArray(Arrays.copyOfRange(encodedKey, pos4, pos4 + i4));
-        this.type = fromByteArray;
-        if (fromByteArray.startsWith("ecdsa")) {
+        this.type = Strings.fromByteArray(Arrays.copyOfRange(encodedKey, pos4, pos4 + i4));
+        if (this.type.startsWith("ecdsa")) {
             return;
         }
-        int t = 0;
-        while (true) {
-            String[] strArr = allowedTypes;
-            if (t < strArr.length) {
-                if (!strArr[t].equals(this.type)) {
-                    t++;
-                } else {
-                    return;
-                }
-            } else {
-                throw new IllegalArgumentException("unrecognised public key type " + this.type);
+        for (int t = 0; t < allowedTypes.length; t++) {
+            if (allowedTypes[t].equals(this.type)) {
+                return;
             }
         }
+        throw new IllegalArgumentException("unrecognised public key type " + this.type);
     }
 
     @Override // java.security.spec.EncodedKeySpec

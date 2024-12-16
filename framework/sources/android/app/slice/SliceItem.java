@@ -15,17 +15,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
 /* loaded from: classes.dex */
 public final class SliceItem implements Parcelable {
     public static final Parcelable.Creator<SliceItem> CREATOR = new Parcelable.Creator<SliceItem>() { // from class: android.app.slice.SliceItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SliceItem createFromParcel(Parcel in) {
             return new SliceItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SliceItem[] newArray(int size) {
             return new SliceItem[size];
@@ -39,9 +39,6 @@ public final class SliceItem implements Parcelable {
     public static final String FORMAT_REMOTE_INPUT = "input";
     public static final String FORMAT_SLICE = "slice";
     public static final String FORMAT_TEXT = "text";
-
-    @Deprecated
-    public static final String FORMAT_TIMESTAMP = "long";
     private static final String TAG = "SliceItem";
     private final String mFormat;
     protected String[] mHints;
@@ -49,7 +46,6 @@ public final class SliceItem implements Parcelable {
     private final String mSubType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SliceType {
     }
 
@@ -121,21 +117,15 @@ public final class SliceItem implements Parcelable {
         return ((Long) this.mObj).longValue();
     }
 
-    @Deprecated
-    public long getTimestamp() {
-        return ((Long) this.mObj).longValue();
-    }
-
     public boolean hasHint(String hint) {
         return ArrayUtils.contains(this.mHints, hint);
     }
 
     public SliceItem(Parcel in) {
         this.mHints = in.readStringArray();
-        String readString = in.readString();
-        this.mFormat = readString;
+        this.mFormat = in.readString();
         this.mSubType = in.readString();
-        this.mObj = readObj(readString, in);
+        this.mObj = readObj(this.mFormat, in);
     }
 
     @Override // android.os.Parcelable
@@ -211,7 +201,7 @@ public final class SliceItem implements Parcelable {
                 c = 65535;
                 break;
             case 3327612:
-                if (baseType.equals("long")) {
+                if (baseType.equals(FORMAT_LONG)) {
                     c = 7;
                     break;
                 }
@@ -255,22 +245,20 @@ public final class SliceItem implements Parcelable {
             case 2:
             case 3:
                 ((Parcelable) obj).writeToParcel(dest, flags);
-                return;
+                break;
             case 4:
                 ((PendingIntent) ((Pair) obj).first).writeToParcel(dest, flags);
                 ((Slice) ((Pair) obj).second).writeToParcel(dest, flags);
-                return;
+                break;
             case 5:
                 TextUtils.writeToParcel((CharSequence) obj, dest, flags);
-                return;
+                break;
             case 6:
                 dest.writeInt(((Integer) obj).intValue());
-                return;
+                break;
             case 7:
                 dest.writeLong(((Long) obj).longValue());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -301,7 +289,7 @@ public final class SliceItem implements Parcelable {
                 c = 65535;
                 break;
             case 3327612:
-                if (baseType.equals("long")) {
+                if (baseType.equals(FORMAT_LONG)) {
                     c = 5;
                     break;
                 }
@@ -358,23 +346,6 @@ public final class SliceItem implements Parcelable {
                 return Bundle.CREATOR.createFromParcel(in);
             default:
                 throw new RuntimeException("Unsupported type " + type);
-        }
-    }
-
-    /* renamed from: android.app.slice.SliceItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SliceItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SliceItem createFromParcel(Parcel in) {
-            return new SliceItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SliceItem[] newArray(int size) {
-            return new SliceItem[size];
         }
     }
 }

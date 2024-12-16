@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextActivityLocationLoggingAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityLocationLoggingAttribute> CREATOR = new Parcelable.Creator<SemContextActivityLocationLoggingAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityLocationLoggingAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityLocationLoggingAttribute createFromParcel(Parcel in) {
             return new SemContextActivityLocationLoggingAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityLocationLoggingAttribute[] newArray(int size) {
             return new SemContextActivityLocationLoggingAttribute[size];
@@ -28,24 +27,7 @@ public class SemContextActivityLocationLoggingAttribute extends SemContextAttrib
     private int mStopPeriod;
     private int mWaitPeriod;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextActivityLocationLoggingAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityLocationLoggingAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityLocationLoggingAttribute createFromParcel(Parcel in) {
-            return new SemContextActivityLocationLoggingAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityLocationLoggingAttribute[] newArray(int size) {
-            return new SemContextActivityLocationLoggingAttribute[size];
-        }
-    }
-
-    public SemContextActivityLocationLoggingAttribute() {
+    SemContextActivityLocationLoggingAttribute() {
         this.mStopPeriod = 60;
         this.mWaitPeriod = 120;
         this.mStayingRadius = 50;
@@ -95,8 +77,7 @@ public class SemContextActivityLocationLoggingAttribute extends SemContextAttrib
             Log.e(TAG, "The area radius is wrong.");
             return false;
         }
-        int i = this.mLppResolution;
-        if (i < 0 || i > 2) {
+        if (this.mLppResolution < 0 || this.mLppResolution > 2) {
             Log.e(TAG, "The lpp resolution is wrong.");
             return false;
         }

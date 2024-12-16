@@ -1,67 +1,67 @@
 package com.android.internal.protolog;
 
-import com.android.internal.protolog.BaseProtoLogImpl;
+import android.tracing.Flags;
+import com.android.internal.protolog.common.IProtoLog;
 import com.android.internal.protolog.common.IProtoLogGroup;
-import java.io.File;
+import com.android.internal.protolog.common.LogLevel;
+import java.util.TreeMap;
 
 /* loaded from: classes5.dex */
-public class ProtoLogImpl extends BaseProtoLogImpl {
-    private static final int BUFFER_CAPACITY = 1048576;
-    private static final String LOG_FILENAME = "/data/misc/wmtrace/wm_log.winscope";
-    private static final int PER_CHUNK_SIZE = 1024;
-    private static final String VIEWER_CONFIG_FILENAME = "/system/etc/protolog.conf.json.gz";
-    private static ProtoLogImpl sServiceInstance = null;
+public class ProtoLogImpl {
+    private static Runnable sCacheUpdater;
+    private static String sLegacyOutputFilePath;
+    private static String sLegacyViewerConfigPath;
+    private static TreeMap<String, IProtoLogGroup> sLogGroups;
+    private static IProtoLog sServiceInstance = null;
+    private static String sViewerConfigPath;
 
-    static {
-        addLogGroupEnum(ProtoLogGroup.values());
+    public static void d(IProtoLogGroup group, long messageHash, int paramsMask, String messageString, Object... args) {
+        getSingleInstance().log(LogLevel.DEBUG, group, messageHash, paramsMask, messageString, args);
     }
 
-    public static void d(IProtoLogGroup group, int messageHash, int paramsMask, String messageString, Object... args) {
-        getSingleInstance().log(BaseProtoLogImpl.LogLevel.DEBUG, group, messageHash, paramsMask, messageString, args);
+    public static void v(IProtoLogGroup group, long messageHash, int paramsMask, String messageString, Object... args) {
+        getSingleInstance().log(LogLevel.VERBOSE, group, messageHash, paramsMask, messageString, args);
     }
 
-    public static void v(IProtoLogGroup group, int messageHash, int paramsMask, String messageString, Object... args) {
-        getSingleInstance().log(BaseProtoLogImpl.LogLevel.VERBOSE, group, messageHash, paramsMask, messageString, args);
+    public static void i(IProtoLogGroup group, long messageHash, int paramsMask, String messageString, Object... args) {
+        getSingleInstance().log(LogLevel.INFO, group, messageHash, paramsMask, messageString, args);
     }
 
-    public static void i(IProtoLogGroup group, int messageHash, int paramsMask, String messageString, Object... args) {
-        getSingleInstance().log(BaseProtoLogImpl.LogLevel.INFO, group, messageHash, paramsMask, messageString, args);
+    public static void w(IProtoLogGroup group, long messageHash, int paramsMask, String messageString, Object... args) {
+        getSingleInstance().log(LogLevel.WARN, group, messageHash, paramsMask, messageString, args);
     }
 
-    public static void w(IProtoLogGroup group, int messageHash, int paramsMask, String messageString, Object... args) {
-        getSingleInstance().log(BaseProtoLogImpl.LogLevel.WARN, group, messageHash, paramsMask, messageString, args);
+    public static void e(IProtoLogGroup group, long messageHash, int paramsMask, String messageString, Object... args) {
+        getSingleInstance().log(LogLevel.ERROR, group, messageHash, paramsMask, messageString, args);
     }
 
-    public static void e(IProtoLogGroup group, int messageHash, int paramsMask, String messageString, Object... args) {
-        getSingleInstance().log(BaseProtoLogImpl.LogLevel.ERROR, group, messageHash, paramsMask, messageString, args);
+    public static void wtf(IProtoLogGroup group, long messageHash, int paramsMask, String messageString, Object... args) {
+        getSingleInstance().log(LogLevel.WTF, group, messageHash, paramsMask, messageString, args);
     }
 
-    public static void wtf(IProtoLogGroup group, int messageHash, int paramsMask, String messageString, Object... args) {
-        getSingleInstance().log(BaseProtoLogImpl.LogLevel.WTF, group, messageHash, paramsMask, messageString, args);
+    public static boolean isEnabled(IProtoLogGroup group, LogLevel level) {
+        return getSingleInstance().isEnabled(group, level);
     }
 
-    public static boolean isEnabled(IProtoLogGroup group) {
-        return group.isLogToLogcat() || (group.isLogToProto() && getSingleInstance().isProtoEnabled());
-    }
-
-    public static synchronized ProtoLogImpl getSingleInstance() {
-        ProtoLogImpl protoLogImpl;
+    public static synchronized IProtoLog getSingleInstance() {
+        IProtoLog iProtoLog;
         synchronized (ProtoLogImpl.class) {
             if (sServiceInstance == null) {
-                sServiceInstance = new ProtoLogImpl(new File(LOG_FILENAME), 1048576, new ProtoLogViewerConfigReader(), 1024);
+                if (Flags.perfettoProtologTracing()) {
+                    sServiceInstance = new PerfettoProtoLogImpl(sViewerConfigPath, sLogGroups, sCacheUpdater);
+                } else {
+                    sServiceInstance = new LegacyProtoLogImpl(sLegacyOutputFilePath, sLegacyViewerConfigPath, sLogGroups, sCacheUpdater);
+                }
+                sCacheUpdater.run();
             }
-            protoLogImpl = sServiceInstance;
+            iProtoLog = sServiceInstance;
         }
-        return protoLogImpl;
+        return iProtoLog;
     }
 
-    public static synchronized void setSingleInstance(ProtoLogImpl instance) {
+    public static synchronized void setSingleInstance(IProtoLog instance) {
         synchronized (ProtoLogImpl.class) {
             sServiceInstance = instance;
         }
-    }
-
-    public ProtoLogImpl(File logFile, int bufferCapacity, ProtoLogViewerConfigReader viewConfigReader, int perChunkSize) {
-        super(logFile, VIEWER_CONFIG_FILENAME, bufferCapacity, viewConfigReader, perChunkSize);
     }
 }

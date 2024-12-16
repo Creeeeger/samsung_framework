@@ -29,11 +29,10 @@ public class ObservableTextView extends TextView {
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onVisibilityChanged(View changedView, int visibility) {
-        Consumer<Integer> consumer;
+    protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
-        if (changedView == this && (consumer = this.mOnVisibilityChangedListener) != null) {
-            consumer.accept(Integer.valueOf(visibility));
+        if (changedView == this && this.mOnVisibilityChangedListener != null) {
+            this.mOnVisibilityChangedListener.accept(Integer.valueOf(visibility));
         }
     }
 

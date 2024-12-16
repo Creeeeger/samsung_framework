@@ -1,6 +1,6 @@
 package android.hardware.biometrics.fingerprint;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public @interface Error {
     public static final byte BAD_CALIBRATION = 8;
     public static final byte CANCELED = 5;

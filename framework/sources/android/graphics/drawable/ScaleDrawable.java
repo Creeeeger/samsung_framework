@@ -18,11 +18,7 @@ public class ScaleDrawable extends DrawableWrapper {
     private ScaleState mState;
     private final Rect mTmpRect;
 
-    /* synthetic */ ScaleDrawable(ScaleState scaleState, Resources resources, ScaleDrawableIA scaleDrawableIA) {
-        this(scaleState, resources);
-    }
-
-    public ScaleDrawable() {
+    ScaleDrawable() {
         this(new ScaleState(null, null), null);
     }
 
@@ -124,7 +120,7 @@ public class ScaleDrawable extends DrawableWrapper {
     }
 
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         super.onLevelChange(level);
         onBoundsChange(getBounds());
         invalidateSelf();
@@ -132,7 +128,7 @@ public class ScaleDrawable extends DrawableWrapper {
     }
 
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         int w;
         int h;
         Drawable d = getDrawable();
@@ -162,13 +158,11 @@ public class ScaleDrawable extends DrawableWrapper {
 
     @Override // android.graphics.drawable.DrawableWrapper
     DrawableWrapper.DrawableWrapperState mutateConstantState() {
-        ScaleState scaleState = new ScaleState(this.mState, null);
-        this.mState = scaleState;
-        return scaleState;
+        this.mState = new ScaleState(this.mState, null);
+        return this.mState;
     }
 
-    /* loaded from: classes.dex */
-    public static final class ScaleState extends DrawableWrapper.DrawableWrapperState {
+    static final class ScaleState extends DrawableWrapper.DrawableWrapperState {
         private static final float DO_NOT_SCALE = -1.0f;
         int mGravity;
         int mInitialLevel;

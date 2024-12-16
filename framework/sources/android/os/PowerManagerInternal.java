@@ -9,6 +9,7 @@ public abstract class PowerManagerInternal {
     public static final int BOOST_DISPLAY_UPDATE_IMMINENT = 1;
     public static final int BOOST_INTERACTION = 0;
     public static final int MODE_DEVICE_IDLE = 8;
+    public static final int MODE_DISPLAY_CHANGE = 17;
     public static final int MODE_DISPLAY_INACTIVE = 9;
     public static final int MODE_DOUBLE_TAP_TO_WAKE = 0;
     public static final int MODE_EXPENSIVE_RENDERING = 6;
@@ -26,17 +27,19 @@ public abstract class PowerManagerInternal {
     public static final int WAKEFULNESS_DOZING = 3;
     public static final int WAKEFULNESS_DREAMING = 2;
 
-    /* loaded from: classes3.dex */
     public interface LowPowerModeListener {
         int getServiceType();
 
         void onLowPowerModeChanged(PowerSaveState powerSaveState);
     }
 
-    /* loaded from: classes3.dex */
     public interface UserActivityStateListener {
         void onChanged(int i);
     }
+
+    public abstract void disableWakeUpPrevention(IBinder iBinder, boolean z);
+
+    public abstract void enableWakeUpPrevention(IBinder iBinder);
 
     public abstract void finishUidChanges();
 
@@ -68,13 +71,11 @@ public abstract class PowerManagerInternal {
 
     public abstract void setDeviceIdleWhitelist(int[] iArr);
 
-    public abstract void setDozeOverrideFromDreamManager(int i, int i2);
+    public abstract void setDozeOverrideFromDreamManager(int i, int i2, int i3);
 
-    public abstract void setDozeOverrideFromDreamManager(int i, int i2, int i3, boolean z);
+    public abstract void setDozeOverrideFromDreamManager(int i, int i2, int i3, int i4, boolean z);
 
     public abstract void setDrawWakeLockOverrideFromSidekick(boolean z);
-
-    public abstract void setFreezeBrightnessMode(boolean z);
 
     public abstract void setGoToSleepPrevention(boolean z);
 
@@ -94,7 +95,7 @@ public abstract class PowerManagerInternal {
 
     public abstract void setPowerMode(int i, boolean z);
 
-    public abstract void setScreenBrightnessOverrideFromWindowManager(float f);
+    public abstract void setScreenBrightnessOverrideFromWindowManager(float f, String str);
 
     public abstract void setScreenDimDurationOverrideFromSqd(boolean z);
 
@@ -160,38 +161,8 @@ public abstract class PowerManagerInternal {
         return wakefulness == 1 || wakefulness == 2;
     }
 
-    /* renamed from: android.os.PowerManagerInternal$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements LowPowerModeListener {
-        final /* synthetic */ Consumer val$listener;
-        final /* synthetic */ int val$serviceType;
-
-        AnonymousClass1(int i, Consumer consumer) {
-            serviceType = i;
-            listener = consumer;
-        }
-
-        @Override // android.os.PowerManagerInternal.LowPowerModeListener
-        public int getServiceType() {
-            return serviceType;
-        }
-
-        @Override // android.os.PowerManagerInternal.LowPowerModeListener
-        public void onLowPowerModeChanged(PowerSaveState state) {
-            listener.accept(state);
-        }
-    }
-
-    public void registerLowPowerModeObserver(int serviceType, Consumer<PowerSaveState> listener) {
+    public void registerLowPowerModeObserver(final int serviceType, final Consumer<PowerSaveState> listener) {
         registerLowPowerModeObserver(new LowPowerModeListener() { // from class: android.os.PowerManagerInternal.1
-            final /* synthetic */ Consumer val$listener;
-            final /* synthetic */ int val$serviceType;
-
-            AnonymousClass1(int serviceType2, Consumer listener2) {
-                serviceType = serviceType2;
-                listener = listener2;
-            }
-
             @Override // android.os.PowerManagerInternal.LowPowerModeListener
             public int getServiceType() {
                 return serviceType;

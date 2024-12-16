@@ -82,22 +82,17 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     private boolean mUpdateLayoutBySplitChange = false;
     private View.OnLayoutChangeListener mSplitBarLayoutChangeListner = null;
     private Handler mHandler = new Handler() { // from class: android.preference.PreferenceActivity.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
-            PreferenceActivity preferenceActivity;
             Header mappedHeader;
             switch (msg.what) {
                 case 1:
                     PreferenceActivity.this.bindPreferences();
-                    return;
+                    break;
                 case 2:
                     ArrayList<Header> oldHeaders = new ArrayList<>(PreferenceActivity.this.mHeaders);
                     PreferenceActivity.this.mHeaders.clear();
-                    PreferenceActivity preferenceActivity2 = PreferenceActivity.this;
-                    preferenceActivity2.onBuildHeaders(preferenceActivity2.mHeaders);
+                    PreferenceActivity.this.onBuildHeaders(PreferenceActivity.this.mHeaders);
                     if (PreferenceActivity.this.mAdapter instanceof BaseAdapter) {
                         ((BaseAdapter) PreferenceActivity.this.mAdapter).notifyDataSetChanged();
                     }
@@ -106,82 +101,28 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
                         Header mappedHeader2 = PreferenceActivity.this.findBestMatchingHeader(header, oldHeaders);
                         if (mappedHeader2 == null || PreferenceActivity.this.mCurHeader != mappedHeader2) {
                             PreferenceActivity.this.switchToHeader(header);
-                            return;
+                            break;
                         }
-                        return;
-                    }
-                    if (PreferenceActivity.this.mCurHeader != null && (mappedHeader = (preferenceActivity = PreferenceActivity.this).findBestMatchingHeader(preferenceActivity.mCurHeader, PreferenceActivity.this.mHeaders)) != null) {
+                    } else if (PreferenceActivity.this.mCurHeader != null && (mappedHeader = PreferenceActivity.this.findBestMatchingHeader(PreferenceActivity.this.mCurHeader, PreferenceActivity.this.mHeaders)) != null) {
                         PreferenceActivity.this.setSelectedHeader(mappedHeader);
-                        return;
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     };
     private boolean mEnableSplitBar = true;
     private boolean mIsMultiPane = false;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.PreferenceActivity$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            PreferenceActivity preferenceActivity;
-            Header mappedHeader;
-            switch (msg.what) {
-                case 1:
-                    PreferenceActivity.this.bindPreferences();
-                    return;
-                case 2:
-                    ArrayList<Header> oldHeaders = new ArrayList<>(PreferenceActivity.this.mHeaders);
-                    PreferenceActivity.this.mHeaders.clear();
-                    PreferenceActivity preferenceActivity2 = PreferenceActivity.this;
-                    preferenceActivity2.onBuildHeaders(preferenceActivity2.mHeaders);
-                    if (PreferenceActivity.this.mAdapter instanceof BaseAdapter) {
-                        ((BaseAdapter) PreferenceActivity.this.mAdapter).notifyDataSetChanged();
-                    }
-                    Header header = PreferenceActivity.this.onGetNewHeader();
-                    if (header != null && header.fragment != null) {
-                        Header mappedHeader2 = PreferenceActivity.this.findBestMatchingHeader(header, oldHeaders);
-                        if (mappedHeader2 == null || PreferenceActivity.this.mCurHeader != mappedHeader2) {
-                            PreferenceActivity.this.switchToHeader(header);
-                            return;
-                        }
-                        return;
-                    }
-                    if (PreferenceActivity.this.mCurHeader != null && (mappedHeader = (preferenceActivity = PreferenceActivity.this).findBestMatchingHeader(preferenceActivity.mCurHeader, PreferenceActivity.this.mHeaders)) != null) {
-                        PreferenceActivity.this.setSelectedHeader(mappedHeader);
-                        return;
-                    }
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class HeaderAdapter extends ArrayAdapter<Header> {
+    private static class HeaderAdapter extends ArrayAdapter<Header> {
         private LayoutInflater mInflater;
         private int mLayoutResId;
         private boolean mRemoveIconIfEmpty;
 
-        /* loaded from: classes3.dex */
         private static class HeaderViewHolder {
             ImageView icon;
             TextView summary;
             TextView title;
-
-            /* synthetic */ HeaderViewHolder(HeaderViewHolderIA headerViewHolderIA) {
-                this();
-            }
 
             private HeaderViewHolder() {
             }
@@ -220,11 +161,11 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
             } else {
                 holder.icon.setImageResource(header.iconRes);
             }
-            holder.title.setText(header.getTitle(getContext().getResources()));
+            holder.title.lambda$setTextAsync$0(header.getTitle(getContext().getResources()));
             CharSequence summary = header.getSummary(getContext().getResources());
             if (!TextUtils.isEmpty(summary)) {
                 holder.summary.setVisibility(0);
-                holder.summary.setText(summary);
+                holder.summary.lambda$setTextAsync$0(summary);
             } else {
                 holder.summary.setVisibility(8);
             }
@@ -233,17 +174,15 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Header implements Parcelable {
         public static final Parcelable.Creator<Header> CREATOR = new Parcelable.Creator<Header>() { // from class: android.preference.PreferenceActivity.Header.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Header createFromParcel(Parcel source) {
                 return new Header(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Header[] newArray(int size) {
                 return new Header[size];
@@ -268,33 +207,29 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         }
 
         public CharSequence getTitle(Resources res) {
-            int i = this.titleRes;
-            if (i != 0) {
-                return res.getText(i);
+            if (this.titleRes != 0) {
+                return res.getText(this.titleRes);
             }
             return this.title;
         }
 
         public CharSequence getSummary(Resources res) {
-            int i = this.summaryRes;
-            if (i != 0) {
-                return res.getText(i);
+            if (this.summaryRes != 0) {
+                return res.getText(this.summaryRes);
             }
             return this.summary;
         }
 
         public CharSequence getBreadCrumbTitle(Resources res) {
-            int i = this.breadCrumbTitleRes;
-            if (i != 0) {
-                return res.getText(i);
+            if (this.breadCrumbTitleRes != 0) {
+                return res.getText(this.breadCrumbTitleRes);
             }
             return this.breadCrumbTitle;
         }
 
         public CharSequence getBreadCrumbShortTitle(Resources res) {
-            int i = this.breadCrumbShortTitleRes;
-            if (i != 0) {
-                return res.getText(i);
+            if (this.breadCrumbShortTitleRes != 0) {
+                return res.getText(this.breadCrumbShortTitleRes);
             }
             return this.breadCrumbShortTitle;
         }
@@ -349,23 +284,6 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         Header(Parcel in) {
             readFromParcel(in);
         }
-
-        /* renamed from: android.preference.PreferenceActivity$Header$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Header> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Header createFromParcel(Parcel source) {
-                return new Header(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Header[] newArray(int size) {
-                return new Header[size];
-            }
-        }
     }
 
     @Override // android.app.Activity
@@ -378,8 +296,7 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     }
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
-        Header header;
+    protected void onCreate(Bundle savedInstanceState) {
         int i;
         super.onCreate(savedInstanceState);
         this.mInsideOnCreate = true;
@@ -402,29 +319,26 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         int initialTitle = getIntent().getIntExtra(EXTRA_SHOW_FRAGMENT_TITLE, 0);
         int initialShortTitle = getIntent().getIntExtra(EXTRA_SHOW_FRAGMENT_SHORT_TITLE, 0);
         this.mActivityTitle = getTitle();
-        if (this.mIsDeviceDefault && !this.mSinglePane) {
-            View findViewById = findViewById(R.id.prefs_split_bar);
-            this.mSplitBarView = findViewById;
-            if (findViewById != null) {
+        if (!this.mIsDeviceDefault || this.mSinglePane) {
+            this.mSplitBarView = findViewById(R.id.prefs_split_bar);
+            if (this.mSplitBarView != null) {
+                this.mSplitBarView.setVisibility(8);
+                this.mSplitBarView = null;
+            }
+        } else {
+            this.mSplitBarView = findViewById(R.id.prefs_split_bar);
+            if (this.mSplitBarView != null) {
                 LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams) this.mHeadersContainer.getLayoutParams();
                 LinearLayout.LayoutParams rlp = (LinearLayout.LayoutParams) this.mPrefsContainer.getLayoutParams();
                 float leftPanelWeight = llp.weight;
                 float rightPanelWeight = rlp.weight;
                 float weightSum = leftPanelWeight + rightPanelWeight;
-                float f = mSplitBarMovedLeftWeight;
-                if (f > 0.0f) {
-                    llp.weight = f;
+                if (mSplitBarMovedLeftWeight > 0.0f) {
+                    llp.weight = mSplitBarMovedLeftWeight;
                     rlp.weight = weightSum - mSplitBarMovedLeftWeight;
                     this.mHeadersContainer.setLayoutParams(llp);
                     this.mPrefsContainer.setLayoutParams(rlp);
                 }
-            }
-        } else {
-            View findViewById2 = findViewById(R.id.prefs_split_bar);
-            this.mSplitBarView = findViewById2;
-            if (findViewById2 != null) {
-                findViewById2.setVisibility(8);
-                this.mSplitBarView = null;
             }
         }
         if (savedInstanceState != null) {
@@ -478,9 +392,8 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
             setContentView(i);
             this.mListFooter = (FrameLayout) findViewById(R.id.list_footer);
             this.mPrefsContainer = (ViewGroup) findViewById(R.id.prefs);
-            PreferenceManager preferenceManager = new PreferenceManager(this, 100);
-            this.mPreferenceManager = preferenceManager;
-            preferenceManager.setOnPreferenceTreeClickListener(this);
+            this.mPreferenceManager = new PreferenceManager(this, 100);
+            this.mPreferenceManager.setOnPreferenceTreeClickListener(this);
             this.mHeadersContainer = null;
         } else if (this.mSinglePane) {
             if (initialFragment != null || this.mCurHeader != null) {
@@ -490,17 +403,14 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
             }
             ViewGroup container = (ViewGroup) findViewById(R.id.prefs_container);
             container.setLayoutTransition(new LayoutTransition());
-        } else if (this.mHeaders.size() > 0 && (header = this.mCurHeader) != null) {
-            setSelectedHeader(header);
+        } else if (this.mHeaders.size() > 0 && this.mCurHeader != null) {
+            setSelectedHeader(this.mCurHeader);
         }
         Intent intent = getIntent();
         if (intent.getBooleanExtra(EXTRA_PREFS_SHOW_BUTTON_BAR, false)) {
             findViewById(R.id.button_bar).setVisibility(0);
             Button backButton = (Button) findViewById(R.id.back_button);
             backButton.setOnClickListener(new View.OnClickListener() { // from class: android.preference.PreferenceActivity.2
-                AnonymousClass2() {
-                }
-
                 @Override // android.view.View.OnClickListener
                 public void onClick(View v) {
                     PreferenceActivity.this.setResult(0);
@@ -509,21 +419,14 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
             });
             Button skipButton = (Button) findViewById(R.id.skip_button);
             skipButton.setOnClickListener(new View.OnClickListener() { // from class: android.preference.PreferenceActivity.3
-                AnonymousClass3() {
-                }
-
                 @Override // android.view.View.OnClickListener
                 public void onClick(View v) {
                     PreferenceActivity.this.setResult(-1);
                     PreferenceActivity.this.finish();
                 }
             });
-            Button button = (Button) findViewById(R.id.next_button);
-            this.mNextButton = button;
-            button.setOnClickListener(new View.OnClickListener() { // from class: android.preference.PreferenceActivity.4
-                AnonymousClass4() {
-                }
-
+            this.mNextButton = (Button) findViewById(R.id.next_button);
+            this.mNextButton.setOnClickListener(new View.OnClickListener() { // from class: android.preference.PreferenceActivity.4
                 @Override // android.view.View.OnClickListener
                 public void onClick(View v) {
                     PreferenceActivity.this.setResult(-1);
@@ -535,7 +438,7 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
                 if (TextUtils.isEmpty(buttonText)) {
                     this.mNextButton.setVisibility(8);
                 } else {
-                    this.mNextButton.setText(buttonText);
+                    this.mNextButton.lambda$setTextAsync$0(buttonText);
                 }
             }
             if (intent.hasExtra(EXTRA_PREFS_SET_BACK_TEXT)) {
@@ -543,7 +446,7 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
                 if (TextUtils.isEmpty(buttonText2)) {
                     backButton.setVisibility(8);
                 } else {
-                    backButton.setText(buttonText2);
+                    backButton.lambda$setTextAsync$0(buttonText2);
                 }
             }
             if (intent.getBooleanExtra(EXTRA_PREFS_SHOW_SKIP, false)) {
@@ -555,9 +458,6 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         if (this.mIsDeviceDefault && !this.mSinglePane && this.mSplitBarView != null) {
             if (this.mSplitBarLayoutChangeListner == null) {
                 this.mSplitBarLayoutChangeListner = new View.OnLayoutChangeListener() { // from class: android.preference.PreferenceActivity.5
-                    AnonymousClass5() {
-                    }
-
                     @Override // android.view.View.OnLayoutChangeListener
                     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                         float mRightLayoutStartPosition;
@@ -583,9 +483,6 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
             }
             this.mSplitBarView.addOnLayoutChangeListener(this.mSplitBarLayoutChangeListner);
             this.mSplitBarView.setOnTouchListener(new View.OnTouchListener() { // from class: android.preference.PreferenceActivity.6
-                AnonymousClass6() {
-                }
-
                 @Override // android.view.View.OnTouchListener
                 public boolean onTouch(View v, MotionEvent event) {
                     if (!PreferenceActivity.this.mEnableSplitBar) {
@@ -706,211 +603,14 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         this.mInsideOnCreate = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.PreferenceActivity$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements View.OnClickListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            PreferenceActivity.this.setResult(0);
-            PreferenceActivity.this.finish();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.PreferenceActivity$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements View.OnClickListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            PreferenceActivity.this.setResult(-1);
-            PreferenceActivity.this.finish();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.PreferenceActivity$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 implements View.OnClickListener {
-        AnonymousClass4() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            PreferenceActivity.this.setResult(-1);
-            PreferenceActivity.this.finish();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.PreferenceActivity$5 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass5 implements View.OnLayoutChangeListener {
-        AnonymousClass5() {
-        }
-
-        @Override // android.view.View.OnLayoutChangeListener
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            float mRightLayoutStartPosition;
-            if (!PreferenceActivity.this.mEnableSplitBar) {
-                return;
-            }
-            if (PreferenceActivity.this.mIsRTL) {
-                mRightLayoutStartPosition = PreferenceActivity.this.mHeadersContainer.getX();
-            } else {
-                mRightLayoutStartPosition = PreferenceActivity.this.mPrefsContainer.getX();
-            }
-            if (PreferenceActivity.this.mIsDeviceDefault && PreferenceActivity.this.mSplitBarView != null) {
-                float x = mRightLayoutStartPosition - (PreferenceActivity.this.mSplitBarView.getWidth() / 2.0f);
-                if (x < 0.0f) {
-                    x = 0.0f;
-                }
-                if (PreferenceActivity.this.mSplitBarView.getX() != x) {
-                    PreferenceActivity.this.mSplitBarView.setX(x);
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.preference.PreferenceActivity$6 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass6 implements View.OnTouchListener {
-        AnonymousClass6() {
-        }
-
-        @Override // android.view.View.OnTouchListener
-        public boolean onTouch(View v, MotionEvent event) {
-            if (!PreferenceActivity.this.mEnableSplitBar) {
-                return false;
-            }
-            int action = event.getAction();
-            View splitBar = null;
-            if (v instanceof ViewGroup) {
-                splitBar = ((ViewGroup) v).getChildAt(0);
-            }
-            if (splitBar == null) {
-                return false;
-            }
-            if (action == 0) {
-                splitBar.setVisibility(0);
-                PreferenceActivity.this.mUpdateLayoutBySplitChange = false;
-                return true;
-            }
-            if (action != 2) {
-                if (action != 1) {
-                    float x = PreferenceActivity.this.mPrefsContainer.getX() - (PreferenceActivity.this.mSplitBarView.getWidth() / 2.0f);
-                    if (x < 0.0f) {
-                        x = 0.0f;
-                    }
-                    if (action != 3 || !PreferenceActivity.this.mIsDeviceDefault) {
-                        PreferenceActivity.this.mSplitBarView.setX(x);
-                    }
-                    PreferenceActivity.this.mUpdateLayoutBySplitChange = false;
-                    splitBar.setVisibility(4);
-                    return true;
-                }
-                LinearLayout.LayoutParams llp2 = (LinearLayout.LayoutParams) PreferenceActivity.this.mHeadersContainer.getLayoutParams();
-                if (PreferenceActivity.mSplitBarMovedLeftWeight != llp2.weight) {
-                    PreferenceActivity.mSplitBarMovedLeftWeight = llp2.weight;
-                }
-                splitBar.setVisibility(4);
-                splitBar.requestLayout();
-                return true;
-            }
-            int splitBarwidth = PreferenceActivity.this.mSplitBarView.getWidth();
-            int parentLayoutWidth = ((View) PreferenceActivity.this.mSplitBarView.getParent()).getWidth();
-            float touchX = event.getX();
-            float newSplitBarPosX = PreferenceActivity.this.mSplitBarView.getX();
-            float newSplitBarCenterPosX = (splitBarwidth / 2.0f) + newSplitBarPosX;
-            float touchXInParentRect = newSplitBarPosX + touchX;
-            if (PreferenceActivity.this.mIsDeviceDefault && PreferenceActivity.this.mIsRTL) {
-                if (touchX > splitBarwidth && touchXInParentRect <= parentLayoutWidth) {
-                    newSplitBarCenterPosX += touchX - splitBarwidth;
-                    if (newSplitBarCenterPosX / parentLayoutWidth > 0.8f) {
-                        DisplayMetrics d = PreferenceActivity.this.getResources().getDisplayMetrics();
-                        float splitXinFullview = TypedValue.applyDimension(1, PreferenceActivity.SPLIT_BAR_SPLIT_X_IN_FULLVIEW, d);
-                        newSplitBarCenterPosX = parentLayoutWidth - splitXinFullview;
-                    }
-                    PreferenceActivity.this.mSplitBarView.setX(newSplitBarCenterPosX - (splitBarwidth / 2.0f));
-                    PreferenceActivity.this.mUpdateLayoutBySplitChange = true;
-                } else if (touchX < 0.0f && touchXInParentRect >= 0.0f) {
-                    newSplitBarCenterPosX += touchX;
-                    float splitRatio = newSplitBarCenterPosX / parentLayoutWidth;
-                    if (splitRatio < 0.33999997f) {
-                        newSplitBarCenterPosX = parentLayoutWidth * 0.33999997f;
-                    } else if (splitRatio > 0.8f) {
-                        DisplayMetrics d2 = PreferenceActivity.this.getResources().getDisplayMetrics();
-                        float splitXinFullview2 = TypedValue.applyDimension(1, PreferenceActivity.SPLIT_BAR_SPLIT_X_IN_FULLVIEW, d2);
-                        newSplitBarCenterPosX = parentLayoutWidth - splitXinFullview2;
-                    }
-                    PreferenceActivity.this.mSplitBarView.setX(newSplitBarCenterPosX - (splitBarwidth / 2.0f));
-                    PreferenceActivity.this.mUpdateLayoutBySplitChange = true;
-                }
-            } else if (touchX > splitBarwidth && touchXInParentRect <= parentLayoutWidth) {
-                newSplitBarCenterPosX += touchX - splitBarwidth;
-                float splitRatio2 = newSplitBarCenterPosX / parentLayoutWidth;
-                if (splitRatio2 > PreferenceActivity.SPLIT_BAR_MOVEABLE_AREA_MAX) {
-                    newSplitBarCenterPosX = parentLayoutWidth * PreferenceActivity.SPLIT_BAR_MOVEABLE_AREA_MAX;
-                } else if (splitRatio2 < 0.2f) {
-                    DisplayMetrics d3 = PreferenceActivity.this.getResources().getDisplayMetrics();
-                    float splitXinFullview3 = TypedValue.applyDimension(1, PreferenceActivity.SPLIT_BAR_SPLIT_X_IN_FULLVIEW, d3);
-                    newSplitBarCenterPosX = splitXinFullview3;
-                }
-                PreferenceActivity.this.mSplitBarView.setX(newSplitBarCenterPosX - (splitBarwidth / 2.0f));
-                PreferenceActivity.this.mUpdateLayoutBySplitChange = true;
-            } else if (touchX < 0.0f && touchXInParentRect >= 0.0f) {
-                newSplitBarCenterPosX += touchX;
-                if (newSplitBarCenterPosX / parentLayoutWidth < 0.2f) {
-                    DisplayMetrics d4 = PreferenceActivity.this.getResources().getDisplayMetrics();
-                    float splitXinFullview4 = TypedValue.applyDimension(1, PreferenceActivity.SPLIT_BAR_SPLIT_X_IN_FULLVIEW, d4);
-                    newSplitBarCenterPosX = splitXinFullview4;
-                }
-                PreferenceActivity.this.mSplitBarView.setX(newSplitBarCenterPosX - (splitBarwidth / 2.0f));
-                PreferenceActivity.this.mUpdateLayoutBySplitChange = true;
-            }
-            if (PreferenceActivity.this.mUpdateLayoutBySplitChange) {
-                PreferenceActivity.mUserUpdateSplit = true;
-                LinearLayout.LayoutParams llp3 = (LinearLayout.LayoutParams) PreferenceActivity.this.mHeadersContainer.getLayoutParams();
-                LinearLayout.LayoutParams rlp2 = (LinearLayout.LayoutParams) PreferenceActivity.this.mPrefsContainer.getLayoutParams();
-                float leftPanelWeight2 = llp3.weight;
-                float rightPanelWeight2 = rlp2.weight;
-                float weightSum2 = leftPanelWeight2 + rightPanelWeight2;
-                float leftPanelWidthRatio = newSplitBarCenterPosX / parentLayoutWidth;
-                float newLeftPanelWeight = weightSum2 * leftPanelWidthRatio;
-                float newRightPanelWeight = weightSum2 - newLeftPanelWeight;
-                llp3.weight = newLeftPanelWeight;
-                rlp2.weight = newRightPanelWeight;
-                if (PreferenceActivity.this.mIsDeviceDefault) {
-                    if (PreferenceActivity.this.mIsRTL) {
-                        PreferenceActivity.this.mHeadersContainer.setLayoutParams(rlp2);
-                        PreferenceActivity.this.mPrefsContainer.setLayoutParams(llp3);
-                    } else {
-                        PreferenceActivity.this.mHeadersContainer.setLayoutParams(llp3);
-                        PreferenceActivity.this.mPrefsContainer.setLayoutParams(rlp2);
-                    }
-                }
-            }
-            PreferenceActivity.this.mUpdateLayoutBySplitChange = false;
-            return true;
-        }
-    }
-
     @Override // android.app.Activity
     public void onBackPressed() {
         if (this.mCurHeader != null && this.mSinglePane && getFragmentManager().getBackStackEntryCount() == 0 && getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) == null) {
             this.mCurHeader = null;
             this.mPrefsContainer.setVisibility(8);
             this.mHeadersContainer.setVisibility(0);
-            CharSequence charSequence = this.mActivityTitle;
-            if (charSequence != null) {
-                showBreadCrumbs(charSequence, null);
+            if (this.mActivityTitle != null) {
+                showBreadCrumbs(this.mActivityTitle, null);
             }
             getListView().clearChoices();
             return;
@@ -919,8 +619,7 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     }
 
     public boolean hasHeaders() {
-        ViewGroup viewGroup = this.mHeadersContainer;
-        return viewGroup != null && viewGroup.getVisibility() == 0;
+        return this.mHeadersContainer != null && this.mHeadersContainer.getVisibility() == 0;
     }
 
     public List<Header> getHeaders() {
@@ -971,44 +670,44 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:102:0x0113, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:102:0x0112, code lost:
     
         r16 = r2.getName();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:103:0x011f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:103:0x011e, code lost:
     
-        if (r16.equals(com.samsung.android.share.SemShareConstants.SURVEY_CONTENT_EXTRA) == false) goto L244;
+        if (r16.equals(com.samsung.android.share.SemShareConstants.SURVEY_CONTENT_EXTRA) == false) goto L80;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:104:0x0121, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:104:0x0120, code lost:
     
         getResources().parseBundleExtra(com.samsung.android.share.SemShareConstants.SURVEY_CONTENT_EXTRA, r3, r9);
         com.android.internal.util.XmlUtils.skipCurrentTag(r2);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:107:0x0133, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:107:0x0132, code lost:
     
-        if (r16.equals("intent") == false) goto L247;
+        if (r16.equals("intent") == false) goto L83;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:108:0x0135, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:108:0x0134, code lost:
     
         r13.intent = android.content.Intent.parseIntent(getResources(), r2, r3);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:110:0x0140, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:110:0x013f, code lost:
     
         com.android.internal.util.XmlUtils.skipCurrentTag(r2);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:114:0x00f5, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:114:0x00f4, code lost:
     
         r9 = r18;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:116:0x015d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:116:0x015c, code lost:
     
         r0 = e;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:121:0x0160, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:121:0x015f, code lost:
     
         r0 = e;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:126:0x015a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:126:0x0159, code lost:
     
         r0 = th;
      */
@@ -1018,194 +717,194 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
      */
     /* JADX WARN: Code restructure failed: missing block: B:32:0x004c, code lost:
     
-        if (r11 != 4) goto L310;
+        if (r11 != 4) goto L146;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0062, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x0061, code lost:
     
-        if (android.provider.Downloads.Impl.RequestHeaders.COLUMN_HEADER.equals(r2.getName()) == false) goto L314;
+        if (android.provider.Downloads.Impl.RequestHeaders.COLUMN_HEADER.equals(r2.getName()) == false) goto L150;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x0163, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0162, code lost:
     
         r18 = r9;
         com.android.internal.util.XmlUtils.skipCurrentTag(r2);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x016c, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x016b, code lost:
     
         r9 = r18;
         r7 = 2;
         r8 = 1;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x0064, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0063, code lost:
     
         r13 = new android.preference.PreferenceActivity.Header();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:45:0x006d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x006c, code lost:
     
         r14 = obtainStyledAttributes(r3, com.android.internal.R.styleable.PreferenceHeader);
         r18 = r9;
         r13.id = r14.getResourceId(r8, -1);
         r8 = r14.peekValue(r7);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x007f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x007e, code lost:
     
-        if (r8 == null) goto L201;
+        if (r8 == null) goto L37;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:48:0x0083, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x0082, code lost:
     
-        if (r8.type != 3) goto L201;
+        if (r8.type != 3) goto L37;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x0087, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x0086, code lost:
     
-        if (r8.resourceId == 0) goto L200;
+        if (r8.resourceId == 0) goto L36;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x0089, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x0088, code lost:
     
         r13.titleRes = r8.resourceId;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x008e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x008d, code lost:
     
         r13.title = r8.string;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x0092, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x0091, code lost:
     
         r9 = r14.peekValue(3);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x0097, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x0096, code lost:
     
-        if (r9 == null) goto L209;
+        if (r9 == null) goto L45;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x009b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x009a, code lost:
     
-        if (r9.type != 3) goto L209;
+        if (r9.type != 3) goto L45;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x009f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x009e, code lost:
     
-        if (r9.resourceId == 0) goto L208;
+        if (r9.resourceId == 0) goto L44;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x00a1, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x00a0, code lost:
     
         r13.summaryRes = r9.resourceId;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x00a6, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x00a5, code lost:
     
         r13.summary = r9.string;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00aa, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00a9, code lost:
     
         r9 = r14.peekValue(5);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x00b0, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x00af, code lost:
     
-        if (r9 == null) goto L217;
+        if (r9 == null) goto L53;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x00b4, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x00b3, code lost:
     
-        if (r9.type != 3) goto L217;
+        if (r9.type != 3) goto L53;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:66:0x00b8, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x00b7, code lost:
     
-        if (r9.resourceId == 0) goto L216;
+        if (r9.resourceId == 0) goto L52;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x00ba, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x00b9, code lost:
     
         r13.breadCrumbTitleRes = r9.resourceId;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x00bf, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:68:0x00be, code lost:
     
         r13.breadCrumbTitle = r9.string;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x00c3, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x00c2, code lost:
     
         r9 = r14.peekValue(6);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:70:0x00c9, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:70:0x00c8, code lost:
     
-        if (r9 == null) goto L225;
+        if (r9 == null) goto L61;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:72:0x00cd, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:72:0x00cc, code lost:
     
-        if (r9.type != 3) goto L225;
+        if (r9.type != 3) goto L61;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:74:0x00d1, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:74:0x00d0, code lost:
     
-        if (r9.resourceId == 0) goto L224;
+        if (r9.resourceId == 0) goto L60;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:75:0x00d3, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x00d2, code lost:
     
         r13.breadCrumbShortTitleRes = r9.resourceId;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:76:0x00d8, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x00d7, code lost:
     
         r13.breadCrumbShortTitle = r9.string;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:77:0x00dc, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:77:0x00db, code lost:
     
         r13.iconRes = r14.getResourceId(0, 0);
         r13.fragment = r14.getString(4);
         r14.recycle();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:78:0x00ed, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:78:0x00ec, code lost:
     
-        if (r18 != null) goto L228;
+        if (r18 != null) goto L64;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:79:0x00ef, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x00ee, code lost:
     
         r9 = new android.os.Bundle();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:80:0x00f7, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:80:0x00f6, code lost:
     
         r12 = r2.getDepth();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:81:0x00fb, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:81:0x00fa, code lost:
     
         r7 = r2.next();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:82:0x0101, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x0100, code lost:
     
-        if (r7 == 1) goto L320;
+        if (r7 == 1) goto L156;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:84:0x0104, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:84:0x0103, code lost:
     
-        if (r7 != 3) goto L236;
+        if (r7 != 3) goto L72;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:86:0x010a, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:86:0x0109, code lost:
     
-        if (r2.getDepth() <= r12) goto L321;
+        if (r2.getDepth() <= r12) goto L157;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:89:0x014b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:89:0x014a, code lost:
     
-        if (r9.size() <= 0) goto L254;
+        if (r9.size() <= 0) goto L90;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:90:0x014d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:90:0x014c, code lost:
     
         r13.fragmentArguments = r9;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:91:0x014f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:91:0x014e, code lost:
     
         r9 = null;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:93:0x0153, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:93:0x0152, code lost:
     
         r21.add(r13);
         r7 = 2;
         r8 = 1;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:96:0x010d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:96:0x010c, code lost:
     
-        if (r7 == 3) goto L322;
+        if (r7 == 3) goto L158;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:98:0x0110, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:98:0x010f, code lost:
     
-        if (r7 != 4) goto L241;
+        if (r7 != 4) goto L77;
      */
-    /* JADX WARN: Removed duplicated region for block: B:130:0x01ea  */
+    /* JADX WARN: Removed duplicated region for block: B:130:0x01e9  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public void loadHeadersFromResource(int r20, java.util.List<android.preference.PreferenceActivity.Header> r21) {
         /*
-            Method dump skipped, instructions count: 494
+            Method dump skipped, instructions count: 493
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.preference.PreferenceActivity.loadHeadersFromResource(int, java.util.List):void");
@@ -1224,34 +923,31 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     }
 
     @Override // android.app.Activity
-    public void onStop() {
+    protected void onStop() {
         super.onStop();
-        PreferenceManager preferenceManager = this.mPreferenceManager;
-        if (preferenceManager != null) {
-            preferenceManager.dispatchActivityStop();
+        if (this.mPreferenceManager != null) {
+            this.mPreferenceManager.dispatchActivityStop();
         }
     }
 
     @Override // android.app.ListActivity, android.app.Activity
-    public void onDestroy() {
+    protected void onDestroy() {
         this.mHandler.removeMessages(1);
         this.mHandler.removeMessages(2);
         super.onDestroy();
-        PreferenceManager preferenceManager = this.mPreferenceManager;
-        if (preferenceManager != null) {
-            preferenceManager.dispatchActivityDestroy();
+        if (this.mPreferenceManager != null) {
+            this.mPreferenceManager.dispatchActivityDestroy();
         }
     }
 
     @Override // android.app.Activity
-    public void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         PreferenceScreen preferenceScreen;
         int index;
         super.onSaveInstanceState(outState);
         if (this.mHeaders.size() > 0) {
             outState.putParcelableArrayList(HEADERS_TAG, this.mHeaders);
-            Header header = this.mCurHeader;
-            if (header != null && (index = this.mHeaders.indexOf(header)) >= 0) {
+            if (this.mCurHeader != null && (index = this.mHeaders.indexOf(this.mCurHeader)) >= 0) {
                 outState.putInt(CUR_HEADER_TAG, index);
             }
         }
@@ -1263,8 +959,7 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     }
 
     @Override // android.app.ListActivity, android.app.Activity
-    public void onRestoreInstanceState(Bundle state) {
-        Header header;
+    protected void onRestoreInstanceState(Bundle state) {
         Bundle container;
         PreferenceScreen preferenceScreen;
         if (this.mPreferenceManager != null && (container = state.getBundle(PREFERENCES_TAG)) != null && (preferenceScreen = getPreferenceScreen()) != null) {
@@ -1273,17 +968,16 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
             return;
         }
         super.onRestoreInstanceState(state);
-        if (!this.mSinglePane && (header = this.mCurHeader) != null) {
-            setSelectedHeader(header);
+        if (!this.mSinglePane && this.mCurHeader != null) {
+            setSelectedHeader(this.mCurHeader);
         }
     }
 
     @Override // android.app.Activity
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        PreferenceManager preferenceManager = this.mPreferenceManager;
-        if (preferenceManager != null) {
-            preferenceManager.dispatchActivityResult(requestCode, resultCode, data);
+        if (this.mPreferenceManager != null) {
+            this.mPreferenceManager.dispatchActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -1296,7 +990,7 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     }
 
     @Override // android.app.ListActivity
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    protected void onListItemClick(ListView l, View v, int position, long id) {
         if (!isResumed()) {
             return;
         }
@@ -1345,9 +1039,8 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         if (this.mFragmentBreadCrumbs == null) {
             View crumbs = findViewById(16908310);
             try {
-                FragmentBreadCrumbs fragmentBreadCrumbs = (FragmentBreadCrumbs) crumbs;
-                this.mFragmentBreadCrumbs = fragmentBreadCrumbs;
-                if (fragmentBreadCrumbs == null) {
+                this.mFragmentBreadCrumbs = (FragmentBreadCrumbs) crumbs;
+                if (this.mFragmentBreadCrumbs == null) {
                     if (title != null) {
                         setTitle(title);
                         return;
@@ -1355,7 +1048,7 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
                     return;
                 }
                 if (this.mSinglePane) {
-                    fragmentBreadCrumbs.setVisibility(8);
+                    this.mFragmentBreadCrumbs.setVisibility(8);
                     View bcSection = findViewById(R.id.breadcrumb_section);
                     if (bcSection != null) {
                         bcSection.setVisibility(8);
@@ -1379,9 +1072,8 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
     }
 
     public void setParentTitle(CharSequence title, CharSequence shortTitle, View.OnClickListener listener) {
-        FragmentBreadCrumbs fragmentBreadCrumbs = this.mFragmentBreadCrumbs;
-        if (fragmentBreadCrumbs != null) {
-            fragmentBreadCrumbs.setParentTitle(title, shortTitle, listener);
+        if (this.mFragmentBreadCrumbs != null) {
+            this.mFragmentBreadCrumbs.setParentTitle(title, shortTitle, listener);
         }
     }
 
@@ -1558,13 +1250,13 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
         this.mHandler.obtainMessage(1).sendToTarget();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void bindPreferences() {
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
             preferenceScreen.bind(getListView());
-            Bundle bundle = this.mSavedInstanceState;
-            if (bundle != null) {
-                super.onRestoreInstanceState(bundle);
+            if (this.mSavedInstanceState != null) {
+                super.onRestoreInstanceState(this.mSavedInstanceState);
                 this.mSavedInstanceState = null;
             }
         }
@@ -1598,9 +1290,8 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
 
     @Deprecated
     public PreferenceScreen getPreferenceScreen() {
-        PreferenceManager preferenceManager = this.mPreferenceManager;
-        if (preferenceManager != null) {
-            return preferenceManager.getPreferenceScreen();
+        if (this.mPreferenceManager != null) {
+            return this.mPreferenceManager.getPreferenceScreen();
         }
         return null;
     }
@@ -1625,18 +1316,16 @@ public abstract class PreferenceActivity extends ListActivity implements Prefere
 
     @Deprecated
     public Preference findPreference(CharSequence key) {
-        PreferenceManager preferenceManager = this.mPreferenceManager;
-        if (preferenceManager == null) {
+        if (this.mPreferenceManager == null) {
             return null;
         }
-        return preferenceManager.findPreference(key);
+        return this.mPreferenceManager.findPreference(key);
     }
 
     @Override // android.app.Activity
-    public void onNewIntent(Intent intent) {
-        PreferenceManager preferenceManager = this.mPreferenceManager;
-        if (preferenceManager != null) {
-            preferenceManager.dispatchNewIntent(intent);
+    protected void onNewIntent(Intent intent) {
+        if (this.mPreferenceManager != null) {
+            this.mPreferenceManager.dispatchNewIntent(intent);
         }
     }
 

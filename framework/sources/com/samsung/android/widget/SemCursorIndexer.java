@@ -12,8 +12,8 @@ public class SemCursorIndexer extends SemAbstractIndexer {
 
     @Deprecated
     public static final String EXTRA_INDEX_TITLES = "indexscroll_index_titles";
+    private static final boolean debug = true;
     private final String TAG;
-    private final boolean debug;
     protected int mColumnIndex;
     protected Cursor mCursor;
     protected int mSavedCursorPos;
@@ -22,7 +22,6 @@ public class SemCursorIndexer extends SemAbstractIndexer {
     public SemCursorIndexer(Cursor cursor, int sortedColumnIndex, CharSequence indexCharacters) {
         super(indexCharacters);
         this.TAG = "SemCursorIndexer";
-        this.debug = true;
         this.mCursor = cursor;
         this.mColumnIndex = sortedColumnIndex;
         Log.d("SemCursorIndexer", "SemCursorIndexer constructor");
@@ -37,7 +36,6 @@ public class SemCursorIndexer extends SemAbstractIndexer {
     public SemCursorIndexer(Cursor cursor, int sortedColumnIndex, String[] indexCharacters, int aLangIndex) {
         super(indexCharacters, aLangIndex);
         this.TAG = "SemCursorIndexer";
-        this.debug = true;
         this.mCursor = cursor;
         this.mColumnIndex = sortedColumnIndex;
         Log.d("SemCursorIndexer", "SemCursorIndexer constructor");
@@ -51,7 +49,6 @@ public class SemCursorIndexer extends SemAbstractIndexer {
     public SemCursorIndexer(Cursor cursor, int sortedColumnIndex, CharSequence indexCharacters, int profileCount, int favoriteCount) {
         super(indexCharacters, profileCount, favoriteCount);
         this.TAG = "SemCursorIndexer";
-        this.debug = true;
         this.mCursor = cursor;
         this.mColumnIndex = sortedColumnIndex;
         Log.e("SemCursorIndexer", "SemCursorIndexer constructor, profileCount:" + profileCount + ", favoriteCount:" + favoriteCount);
@@ -65,7 +62,6 @@ public class SemCursorIndexer extends SemAbstractIndexer {
     public SemCursorIndexer(Cursor cursor, int sortedColumnIndex, String[] indexCharacters, int aLangIndex, int profileCount, int favoriteCount) {
         super(indexCharacters, aLangIndex, profileCount, favoriteCount);
         this.TAG = "SemCursorIndexer";
-        this.debug = true;
         this.mCursor = cursor;
         this.mColumnIndex = sortedColumnIndex;
         Log.e("SemCursorIndexer", "SemCursorIndexer constructor, profileCount:" + profileCount + ", favoriteCount:" + favoriteCount);

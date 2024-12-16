@@ -3,7 +3,7 @@ package com.samsung.android.continuity;
 import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
-import com.samsung.android.feature.SemFloatingFeature;
+import com.samsung.android.continuity.sem.SemWrapper;
 
 /* loaded from: classes5.dex */
 public class SemContinuityManager {
@@ -26,7 +26,7 @@ public class SemContinuityManager {
     }
 
     private static int getContinuityFeature() {
-        int continuityFeature = SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_MCF_SUPPORT_CONTINUITY");
+        int continuityFeature = SemWrapper.getFloatingFeatureInt("SEC_FLOATING_FEATURE_MCF_SUPPORT_CONTINUITY");
         return Math.max(continuityFeature, 0);
     }
 

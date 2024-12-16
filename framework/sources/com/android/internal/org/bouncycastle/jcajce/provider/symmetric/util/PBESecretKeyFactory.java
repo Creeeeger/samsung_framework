@@ -26,7 +26,7 @@ public class PBESecretKeyFactory extends BaseSecretKeyFactory implements PBE {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
-    public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
+    protected SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
         CipherParameters param;
         if (keySpec instanceof PBEKeySpec) {
             PBEKeySpec pbeSpec = (PBEKeySpec) keySpec;

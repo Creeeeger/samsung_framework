@@ -9,14 +9,13 @@ import android.os.PersistableBundle;
 /* loaded from: classes.dex */
 public final class JobWorkItem implements Parcelable {
     public static final Parcelable.Creator<JobWorkItem> CREATOR = new Parcelable.Creator<JobWorkItem>() { // from class: android.app.job.JobWorkItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobWorkItem createFromParcel(Parcel in) {
             return new JobWorkItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobWorkItem[] newArray(int size) {
             return new JobWorkItem[size];
@@ -30,10 +29,6 @@ public final class JobWorkItem implements Parcelable {
     private final long mNetworkDownloadBytes;
     private final long mNetworkUploadBytes;
     int mWorkId;
-
-    /* synthetic */ JobWorkItem(Builder builder, JobWorkItemIA jobWorkItemIA) {
-        this(builder);
-    }
 
     public JobWorkItem(Intent intent) {
         this(intent, -1L, -1L);
@@ -133,7 +128,6 @@ public final class JobWorkItem implements Parcelable {
         return sb.toString();
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private int mDeliveryCount;
         private Intent mIntent;
@@ -194,30 +188,23 @@ public final class JobWorkItem implements Parcelable {
     public void enforceValidity(boolean rejectNegativeNetworkEstimates) {
         long estimatedTransfer;
         if (rejectNegativeNetworkEstimates) {
-            long j = this.mNetworkUploadBytes;
-            if (j != -1 && j < 0) {
+            if (this.mNetworkUploadBytes != -1 && this.mNetworkUploadBytes < 0) {
                 throw new IllegalArgumentException("Invalid network upload bytes: " + this.mNetworkUploadBytes);
             }
-            long j2 = this.mNetworkDownloadBytes;
-            if (j2 != -1 && j2 < 0) {
+            if (this.mNetworkDownloadBytes != -1 && this.mNetworkDownloadBytes < 0) {
                 throw new IllegalArgumentException("Invalid network download bytes: " + this.mNetworkDownloadBytes);
             }
         }
-        long j3 = this.mNetworkUploadBytes;
-        if (j3 == -1) {
+        if (this.mNetworkUploadBytes == -1) {
             estimatedTransfer = this.mNetworkDownloadBytes;
         } else {
-            long j4 = this.mNetworkDownloadBytes;
-            if (j4 == -1) {
-                j4 = 0;
-            }
-            estimatedTransfer = j3 + j4;
+            long estimatedTransfer2 = this.mNetworkUploadBytes;
+            estimatedTransfer = estimatedTransfer2 + (this.mNetworkDownloadBytes == -1 ? 0L : this.mNetworkDownloadBytes);
         }
-        long j5 = this.mMinimumChunkBytes;
-        if (j5 != -1 && estimatedTransfer != -1 && j5 > estimatedTransfer) {
+        if (this.mMinimumChunkBytes != -1 && estimatedTransfer != -1 && this.mMinimumChunkBytes > estimatedTransfer) {
             throw new IllegalArgumentException("Minimum chunk size can't be greater than estimated network usage");
         }
-        if (j5 != -1 && j5 <= 0) {
+        if (this.mMinimumChunkBytes != -1 && this.mMinimumChunkBytes <= 0) {
             throw new IllegalArgumentException("Minimum chunk size must be positive");
         }
     }
@@ -241,23 +228,6 @@ public final class JobWorkItem implements Parcelable {
         out.writeLong(this.mMinimumChunkBytes);
         out.writeInt(this.mDeliveryCount);
         out.writeInt(this.mWorkId);
-    }
-
-    /* renamed from: android.app.job.JobWorkItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<JobWorkItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public JobWorkItem createFromParcel(Parcel in) {
-            return new JobWorkItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public JobWorkItem[] newArray(int size) {
-            return new JobWorkItem[size];
-        }
     }
 
     JobWorkItem(Parcel in) {

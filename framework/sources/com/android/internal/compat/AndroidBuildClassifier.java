@@ -2,7 +2,7 @@ package com.android.internal.compat;
 
 import android.os.Build;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AndroidBuildClassifier {
     public boolean isDebuggableBuild() {
         return Build.IS_DEBUGGABLE;

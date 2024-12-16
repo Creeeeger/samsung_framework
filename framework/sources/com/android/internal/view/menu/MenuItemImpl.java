@@ -67,7 +67,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
     private int mFlags = 16;
     private boolean mIsActionViewExpanded = false;
 
-    public MenuItemImpl(MenuBuilder menu, int group, int id, int categoryOrder, int ordering, CharSequence title, int showAsAction) {
+    MenuItemImpl(MenuBuilder menu, int group, int id, int categoryOrder, int ordering, CharSequence title, int showAsAction) {
         this.mShowAsAction = 0;
         this.mMenu = menu;
         this.mId = id;
@@ -79,17 +79,11 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
     }
 
     public boolean invoke() {
-        MenuItem.OnMenuItemClickListener onMenuItemClickListener = this.mClickListener;
-        if (onMenuItemClickListener != null && onMenuItemClickListener.onMenuItemClick(this)) {
+        if ((this.mClickListener != null && this.mClickListener.onMenuItemClick(this)) || this.mMenu.dispatchMenuItemSelected(this.mMenu, this)) {
             return true;
         }
-        MenuBuilder menuBuilder = this.mMenu;
-        if (menuBuilder.dispatchMenuItemSelected(menuBuilder, this)) {
-            return true;
-        }
-        Runnable runnable = this.mItemCallback;
-        if (runnable != null) {
-            runnable.run();
+        if (this.mItemCallback != null) {
+            this.mItemCallback.run();
             return true;
         }
         if (this.mIntent != null) {
@@ -100,8 +94,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
                 Log.e(TAG, "Can't find activity to handle intent; ignoring", e);
             }
         }
-        ActionProvider actionProvider = this.mActionProvider;
-        return actionProvider != null && actionProvider.onPerformDefaultAction();
+        return this.mActionProvider != null && this.mActionProvider.onPerformDefaultAction();
     }
 
     @Override // android.view.MenuItem
@@ -240,11 +233,11 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this;
     }
 
-    public char getShortcut() {
+    char getShortcut() {
         return this.mMenu.isQwertyMode() ? this.mShortcutAlphabeticChar : this.mShortcutNumericChar;
     }
 
-    public String getShortcutLabel() {
+    String getShortcutLabel() {
         char shortcut = getShortcut();
         if (shortcut == 0) {
             return "";
@@ -284,7 +277,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         }
     }
 
-    public boolean shouldShowShortcut() {
+    boolean shouldShowShortcut() {
         return this.mMenu.isShortcutsVisible() && getShortcut() != 0;
     }
 
@@ -298,7 +291,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this.mSubMenu != null;
     }
 
-    public void setSubMenu(SubMenuBuilder subMenu) {
+    void setSubMenu(SubMenuBuilder subMenu) {
         this.mSubMenu = subMenu;
         subMenu.setHeaderTitle(getTitle());
     }
@@ -309,7 +302,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this.mTitle;
     }
 
-    public CharSequence getTitleForItemView(MenuView.ItemView itemView) {
+    CharSequence getTitleForItemView(MenuView.ItemView itemView) {
         if (itemView != null && itemView.prefersCondensedTitle()) {
             return getTitleCondensed();
         }
@@ -320,9 +313,8 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
     public MenuItem setTitle(CharSequence title) {
         this.mTitle = title;
         this.mMenu.onItemsChanged(false);
-        SubMenuBuilder subMenuBuilder = this.mSubMenu;
-        if (subMenuBuilder != null) {
-            subMenuBuilder.setHeaderTitle(title);
+        if (this.mSubMenu != null) {
+            this.mSubMenu.setHeaderTitle(title);
         }
         return this;
     }
@@ -334,8 +326,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
 
     @Override // android.view.MenuItem
     public CharSequence getTitleCondensed() {
-        CharSequence charSequence = this.mTitleCondensed;
-        return charSequence != null ? charSequence : this.mTitle;
+        return this.mTitleCondensed != null ? this.mTitleCondensed : this.mTitle;
     }
 
     @Override // android.view.MenuItem
@@ -350,9 +341,8 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
 
     @Override // android.view.MenuItem
     public Drawable getIcon() {
-        Drawable drawable = this.mIconDrawable;
-        if (drawable != null) {
-            return applyIconTintIfNecessary(drawable);
+        if (this.mIconDrawable != null) {
+            return applyIconTintIfNecessary(this.mIconDrawable);
         }
         if (this.mIconResId != 0) {
             Drawable icon = this.mMenu.getContext().getDrawable(this.mIconResId);
@@ -431,9 +421,8 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
     @Override // android.view.MenuItem
     public MenuItem setCheckable(boolean z) {
         int i = this.mFlags;
-        int i2 = (this.mFlags & (-2)) | (z ? 1 : 0);
-        this.mFlags = i2;
-        if (i != i2) {
+        this.mFlags = (this.mFlags & (-2)) | (z ? 1 : 0);
+        if (i != this.mFlags) {
             this.mMenu.onItemsChanged(false);
         }
         return this;
@@ -462,26 +451,23 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this;
     }
 
-    public void setCheckedInt(boolean checked) {
+    void setCheckedInt(boolean checked) {
         int oldFlags = this.mFlags;
-        int i = (this.mFlags & (-3)) | (checked ? 2 : 0);
-        this.mFlags = i;
-        if (oldFlags != i) {
+        this.mFlags = (this.mFlags & (-3)) | (checked ? 2 : 0);
+        if (oldFlags != this.mFlags) {
             this.mMenu.onItemsChanged(false);
         }
     }
 
     @Override // android.view.MenuItem
     public boolean isVisible() {
-        ActionProvider actionProvider = this.mActionProvider;
-        return (actionProvider == null || !actionProvider.overridesItemVisibility()) ? (this.mFlags & 8) == 0 : (this.mFlags & 8) == 0 && this.mActionProvider.isVisible();
+        return (this.mActionProvider == null || !this.mActionProvider.overridesItemVisibility()) ? (this.mFlags & 8) == 0 : (this.mFlags & 8) == 0 && this.mActionProvider.isVisible();
     }
 
-    public boolean setVisibleInt(boolean shown) {
+    boolean setVisibleInt(boolean shown) {
         int oldFlags = this.mFlags;
-        int i = (this.mFlags & (-9)) | (shown ? 0 : 8);
-        this.mFlags = i;
-        return oldFlags != i;
+        this.mFlags = (this.mFlags & (-9)) | (shown ? 0 : 8);
+        return oldFlags != this.mFlags;
     }
 
     @Override // android.view.MenuItem
@@ -499,14 +485,13 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
     }
 
     public String toString() {
-        CharSequence charSequence = this.mTitle;
-        if (charSequence != null) {
-            return charSequence.toString();
+        if (this.mTitle != null) {
+            return this.mTitle.toString();
         }
         return null;
     }
 
-    public void setMenuInfo(ContextMenu.ContextMenuInfo menuInfo) {
+    void setMenuInfo(ContextMenu.ContextMenuInfo menuInfo) {
         this.mMenuInfo = menuInfo;
     }
 
@@ -569,11 +554,10 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
 
     @Override // android.view.MenuItem
     public MenuItem setActionView(View view) {
-        int i;
         this.mActionView = view;
         this.mActionProvider = null;
-        if (view != null && view.getId() == -1 && (i = this.mId) > 0) {
-            view.setId(i);
+        if (view != null && view.getId() == -1 && this.mId > 0) {
+            view.setId(this.mId);
         }
         this.mMenu.onItemActionRequestChanged(this);
         return this;
@@ -589,15 +573,12 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
 
     @Override // android.view.MenuItem
     public View getActionView() {
-        View view = this.mActionView;
-        if (view != null) {
-            return view;
+        if (this.mActionView != null) {
+            return this.mActionView;
         }
-        ActionProvider actionProvider = this.mActionProvider;
-        if (actionProvider != null) {
-            View onCreateActionView = actionProvider.onCreateActionView(this);
-            this.mActionView = onCreateActionView;
-            return onCreateActionView;
+        if (this.mActionProvider != null) {
+            this.mActionView = this.mActionProvider.onCreateActionView(this);
+            return this.mActionView;
         }
         return null;
     }
@@ -609,19 +590,14 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
 
     @Override // android.view.MenuItem
     public MenuItem setActionProvider(ActionProvider actionProvider) {
-        ActionProvider actionProvider2 = this.mActionProvider;
-        if (actionProvider2 != null) {
-            actionProvider2.reset();
+        if (this.mActionProvider != null) {
+            this.mActionProvider.reset();
         }
         this.mActionView = null;
         this.mActionProvider = actionProvider;
         this.mMenu.onItemsChanged(true);
-        ActionProvider actionProvider3 = this.mActionProvider;
-        if (actionProvider3 != null) {
-            actionProvider3.setVisibilityListener(new ActionProvider.VisibilityListener() { // from class: com.android.internal.view.menu.MenuItemImpl.1
-                AnonymousClass1() {
-                }
-
+        if (this.mActionProvider != null) {
+            this.mActionProvider.setVisibilityListener(new ActionProvider.VisibilityListener() { // from class: com.android.internal.view.menu.MenuItemImpl.1
                 @Override // android.view.ActionProvider.VisibilityListener
                 public void onActionProviderVisibilityChanged(boolean isVisible) {
                     MenuItemImpl.this.mMenu.onItemVisibleChanged(MenuItemImpl.this);
@@ -629,18 +605,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
             });
         }
         return this;
-    }
-
-    /* renamed from: com.android.internal.view.menu.MenuItemImpl$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements ActionProvider.VisibilityListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ActionProvider.VisibilityListener
-        public void onActionProviderVisibilityChanged(boolean isVisible) {
-            MenuItemImpl.this.mMenu.onItemVisibleChanged(MenuItemImpl.this);
-        }
     }
 
     @Override // android.view.MenuItem
@@ -654,8 +618,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         if (!hasCollapsibleActionView()) {
             return false;
         }
-        MenuItem.OnActionExpandListener onActionExpandListener = this.mOnActionExpandListener;
-        if (onActionExpandListener == null || onActionExpandListener.onMenuItemActionExpand(this)) {
+        if (this.mOnActionExpandListener == null || this.mOnActionExpandListener.onMenuItemActionExpand(this)) {
             return this.mMenu.expandItemActionView(this);
         }
         return false;
@@ -669,8 +632,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         if (this.mActionView == null) {
             return true;
         }
-        MenuItem.OnActionExpandListener onActionExpandListener = this.mOnActionExpandListener;
-        if (onActionExpandListener == null || onActionExpandListener.onMenuItemActionCollapse(this)) {
+        if (this.mOnActionExpandListener == null || this.mOnActionExpandListener.onMenuItemActionCollapse(this)) {
             return this.mMenu.collapseItemActionView(this);
         }
         return false;
@@ -683,12 +645,11 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
     }
 
     public boolean hasCollapsibleActionView() {
-        ActionProvider actionProvider;
         if ((this.mShowAsAction & 8) == 0) {
             return false;
         }
-        if (this.mActionView == null && (actionProvider = this.mActionProvider) != null) {
-            this.mActionView = actionProvider.onCreateActionView(this);
+        if (this.mActionView == null && this.mActionProvider != null) {
+            this.mActionView = this.mActionProvider.onCreateActionView(this);
         }
         return this.mActionView != null;
     }
@@ -734,8 +695,7 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
 
     @Override // android.view.SemMenuItem
     public void setBadgeText(String text) {
-        String str = this.mBadgeText;
-        if (str != null && str.equals(text)) {
+        if (this.mBadgeText != null && this.mBadgeText.equals(text)) {
             return;
         }
         this.mBadgeText = text;

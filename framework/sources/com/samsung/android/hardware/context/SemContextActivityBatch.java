@@ -4,20 +4,19 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextActivityBatch extends SemContextEventContext {
     public static final int ACCURACY_HIGH = 2;
     public static final int ACCURACY_LOW = 0;
     public static final int ACCURACY_MID = 1;
     public static final Parcelable.Creator<SemContextActivityBatch> CREATOR = new Parcelable.Creator<SemContextActivityBatch>() { // from class: com.samsung.android.hardware.context.SemContextActivityBatch.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityBatch createFromParcel(Parcel in) {
             return new SemContextActivityBatch(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityBatch[] newArray(int size) {
             return new SemContextActivityBatch[size];
@@ -34,24 +33,7 @@ public class SemContextActivityBatch extends SemContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextActivityBatch$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityBatch> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityBatch createFromParcel(Parcel in) {
-            return new SemContextActivityBatch(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityBatch[] newArray(int size) {
-            return new SemContextActivityBatch[size];
-        }
-    }
-
-    public SemContextActivityBatch() {
+    SemContextActivityBatch() {
         this.mContext = new Bundle();
         this.mMode = 0;
     }
@@ -61,24 +43,23 @@ public class SemContextActivityBatch extends SemContextEventContext {
     }
 
     public long[] getTimeStampArray() {
-        int i = this.mMode;
-        if (i == 0) {
+        if (this.mMode == 0) {
             int size = this.mContext.getInt("Count");
             long[] duration = this.mContext.getLongArray("Duration");
             if (duration == null) {
                 return null;
             }
             long[] timestamp = new long[size];
-            for (int i2 = 0; i2 < size; i2++) {
-                if (i2 == 0) {
-                    timestamp[i2] = this.mContext.getLong("TimeStamp");
+            for (int i = 0; i < size; i++) {
+                if (i == 0) {
+                    timestamp[i] = this.mContext.getLong("TimeStamp");
                 } else {
-                    timestamp[i2] = timestamp[i2 - 1] + duration[i2 - 1];
+                    timestamp[i] = timestamp[i - 1] + duration[i - 1];
                 }
             }
             return timestamp;
         }
-        if (i != 1) {
+        if (this.mMode != 1) {
             return null;
         }
         return this.mContext.getLongArray("TimeStampArray");
@@ -103,7 +84,7 @@ public class SemContextActivityBatch extends SemContextEventContext {
     @Override // com.samsung.android.hardware.context.SemContextEventContext
     public void setValues(Bundle context) {
         this.mContext = context;
-        this.mMode = context.getInt("Mode");
+        this.mMode = this.mContext.getInt("Mode");
     }
 
     @Override // com.samsung.android.hardware.context.SemContextEventContext, android.os.Parcelable

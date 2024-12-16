@@ -9,15 +9,12 @@ import android.util.Log;
 import java.util.Collections;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class Palette {
     static final int DEFAULT_CALCULATE_NUMBER_COLORS = 16;
     static final Filter DEFAULT_FILTER = new Filter() { // from class: com.android.internal.graphics.palette.Palette.1
         private static final float BLACK_MAX_LIGHTNESS = 0.05f;
         private static final float WHITE_MIN_LIGHTNESS = 0.95f;
-
-        AnonymousClass1() {
-        }
 
         @Override // com.android.internal.graphics.palette.Palette.Filter
         public boolean isAllowed(int rgb, float[] hsl) {
@@ -41,12 +38,10 @@ public final class Palette {
     private final Swatch mDominantSwatch = findDominantSwatch();
     private final List<Swatch> mSwatches;
 
-    /* loaded from: classes4.dex */
     public interface Filter {
         boolean isAllowed(int i, float[] fArr);
     }
 
-    /* loaded from: classes4.dex */
     public interface PaletteAsyncListener {
         void onGenerated(Palette palette);
     }
@@ -85,7 +80,6 @@ public final class Palette {
         return maxSwatch;
     }
 
-    /* loaded from: classes4.dex */
     public static class Swatch {
         private final Color mColor;
         private final int mPopulation;
@@ -126,7 +120,6 @@ public final class Palette {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class Builder {
         static final /* synthetic */ boolean $assertionsDisabled = false;
         private final Bitmap mBitmap;
@@ -195,20 +188,19 @@ public final class Palette {
 
         public Palette generate() {
             List<Swatch> swatches;
-            Bitmap bitmap = this.mBitmap;
-            if (bitmap != null) {
-                Bitmap bitmap2 = scaleBitmapDown(bitmap);
+            if (this.mBitmap != null) {
+                Bitmap bitmap = scaleBitmapDown(this.mBitmap);
                 Rect region = this.mRegion;
-                if (bitmap2 != this.mBitmap && region != null) {
-                    double scale = bitmap2.getWidth() / this.mBitmap.getWidth();
+                if (bitmap != this.mBitmap && region != null) {
+                    double scale = bitmap.getWidth() / this.mBitmap.getWidth();
                     region.left = (int) Math.floor(region.left * scale);
                     region.top = (int) Math.floor(region.top * scale);
-                    region.right = Math.min((int) Math.ceil(region.right * scale), bitmap2.getWidth());
-                    region.bottom = Math.min((int) Math.ceil(region.bottom * scale), bitmap2.getHeight());
+                    region.right = Math.min((int) Math.ceil(region.right * scale), bitmap.getWidth());
+                    region.bottom = Math.min((int) Math.ceil(region.bottom * scale), bitmap.getHeight());
                 }
-                this.mQuantizer.quantize(getPixelsFromBitmap(bitmap2), this.mMaxColors);
-                if (bitmap2 != this.mBitmap) {
-                    bitmap2.recycle();
+                this.mQuantizer.quantize(getPixelsFromBitmap(bitmap), this.mMaxColors);
+                if (bitmap != this.mBitmap) {
+                    bitmap.recycle();
                 }
                 swatches = this.mQuantizer.getQuantizedColors();
             } else {
@@ -224,14 +216,9 @@ public final class Palette {
         }
 
         @Deprecated
-        public AsyncTask<Bitmap, Void, Palette> generate(PaletteAsyncListener listener) {
+        public AsyncTask<Bitmap, Void, Palette> generate(final PaletteAsyncListener listener) {
             return new AsyncTask<Bitmap, Void, Palette>() { // from class: com.android.internal.graphics.palette.Palette.Builder.1
-                final /* synthetic */ PaletteAsyncListener val$listener;
-
-                AnonymousClass1(PaletteAsyncListener listener2) {
-                    listener = listener2;
-                }
-
+                /* JADX INFO: Access modifiers changed from: protected */
                 @Override // android.os.AsyncTask
                 public Palette doInBackground(Bitmap... params) {
                     try {
@@ -242,6 +229,7 @@ public final class Palette {
                     }
                 }
 
+                /* JADX INFO: Access modifiers changed from: protected */
                 @Override // android.os.AsyncTask
                 public void onPostExecute(Palette colorExtractor) {
                     listener.onGenerated(colorExtractor);
@@ -249,41 +237,15 @@ public final class Palette {
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.mBitmap);
         }
 
-        /* renamed from: com.android.internal.graphics.palette.Palette$Builder$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 extends AsyncTask<Bitmap, Void, Palette> {
-            final /* synthetic */ PaletteAsyncListener val$listener;
-
-            AnonymousClass1(PaletteAsyncListener listener2) {
-                listener = listener2;
-            }
-
-            @Override // android.os.AsyncTask
-            public Palette doInBackground(Bitmap... params) {
-                try {
-                    return Builder.this.generate();
-                } catch (Exception e) {
-                    Log.e(Palette.LOG_TAG, "Exception thrown during async generate", e);
-                    return null;
-                }
-            }
-
-            @Override // android.os.AsyncTask
-            public void onPostExecute(Palette colorExtractor) {
-                listener.onGenerated(colorExtractor);
-            }
-        }
-
         private int[] getPixelsFromBitmap(Bitmap bitmap) {
             int bitmapWidth = bitmap.getWidth();
             int bitmapHeight = bitmap.getHeight();
             int[] pixels = new int[bitmapWidth * bitmapHeight];
             bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-            Rect rect = this.mRegion;
-            if (rect == null) {
+            if (this.mRegion == null) {
                 return pixels;
             }
-            int regionWidth = rect.width();
+            int regionWidth = this.mRegion.width();
             int regionHeight = this.mRegion.height();
             int[] subsetPixels = new int[regionWidth * regionHeight];
             for (int row = 0; row < regionHeight; row++) {
@@ -294,48 +256,19 @@ public final class Palette {
 
         private Bitmap scaleBitmapDown(Bitmap bitmap) {
             int maxDimension;
-            int i;
             double scaleRatio = -1.0d;
             if (this.mResizeArea > 0) {
                 int bitmapArea = bitmap.getWidth() * bitmap.getHeight();
-                int i2 = this.mResizeArea;
-                if (bitmapArea > i2) {
-                    scaleRatio = Math.sqrt(i2 / bitmapArea);
+                if (bitmapArea > this.mResizeArea) {
+                    scaleRatio = Math.sqrt(this.mResizeArea / bitmapArea);
                 }
-            } else if (this.mResizeMaxDimension > 0 && (maxDimension = Math.max(bitmap.getWidth(), bitmap.getHeight())) > (i = this.mResizeMaxDimension)) {
-                scaleRatio = i / maxDimension;
+            } else if (this.mResizeMaxDimension > 0 && (maxDimension = Math.max(bitmap.getWidth(), bitmap.getHeight())) > this.mResizeMaxDimension) {
+                scaleRatio = this.mResizeMaxDimension / maxDimension;
             }
             if (scaleRatio <= SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
                 return bitmap;
             }
             return Bitmap.createScaledBitmap(bitmap, (int) Math.ceil(bitmap.getWidth() * scaleRatio), (int) Math.ceil(bitmap.getHeight() * scaleRatio), false);
-        }
-    }
-
-    /* renamed from: com.android.internal.graphics.palette.Palette$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Filter {
-        private static final float BLACK_MAX_LIGHTNESS = 0.05f;
-        private static final float WHITE_MIN_LIGHTNESS = 0.95f;
-
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.internal.graphics.palette.Palette.Filter
-        public boolean isAllowed(int rgb, float[] hsl) {
-            return (isWhite(hsl) || isBlack(hsl) || isNearRedILine(hsl)) ? false : true;
-        }
-
-        private boolean isBlack(float[] hslColor) {
-            return hslColor[2] <= BLACK_MAX_LIGHTNESS;
-        }
-
-        private boolean isWhite(float[] hslColor) {
-            return hslColor[2] >= WHITE_MIN_LIGHTNESS;
-        }
-
-        private boolean isNearRedILine(float[] hslColor) {
-            return hslColor[0] >= 10.0f && hslColor[0] <= 37.0f && hslColor[1] <= 0.82f;
         }
     }
 }

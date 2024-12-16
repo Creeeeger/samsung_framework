@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.media.fmradio.internal.IFMEventListener;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IFMPlayer extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.media.fmradio.internal.IFMPlayer";
 
@@ -116,7 +116,6 @@ public interface IFMPlayer extends IInterface {
 
     void tune(long j) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IFMPlayer {
         @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
         public void setListener(IFMEventListener listener) throws RemoteException {
@@ -361,7 +360,6 @@ public interface IFMPlayer extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IFMPlayer {
         static final int TRANSACTION_cancelAFSwitching = 29;
         static final int TRANSACTION_cancelScan = 13;
@@ -557,298 +555,294 @@ public interface IFMPlayer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFMPlayer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFMPlayer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFMPlayer.DESCRIPTOR);
+                case 1:
+                    IFMEventListener _arg0 = IFMEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setListener(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IFMEventListener _arg02 = IFMEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeListener(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    long _arg03 = data.readLong();
+                    data.enforceNoDataAvail();
+                    tune(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _result = on();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 5:
+                    boolean _result2 = on_in_testmode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 6:
+                    boolean _result3 = off();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 7:
+                    boolean _result4 = isOn();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 8:
+                    long _result5 = seekUp();
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    return true;
+                case 9:
+                    long _result6 = seekDown();
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
+                    return true;
+                case 10:
+                    cancelSeek();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    long _result7 = getCurrentChannel();
+                    reply.writeNoException();
+                    reply.writeLong(_result7);
+                    return true;
+                case 12:
+                    scan();
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    boolean _result8 = cancelScan();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 14:
+                    boolean _result9 = isScanning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 15:
+                    boolean _result10 = isSeeking();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 16:
+                    long _result11 = searchDown();
+                    reply.writeNoException();
+                    reply.writeLong(_result11);
+                    return true;
+                case 17:
+                    long _result12 = searchUp();
+                    reply.writeNoException();
+                    reply.writeLong(_result12);
+                    return true;
+                case 18:
+                    long _result13 = searchAll();
+                    reply.writeNoException();
+                    reply.writeLong(_result13);
+                    return true;
+                case 19:
+                    long _result14 = getPlayedFreq();
+                    reply.writeNoException();
+                    reply.writeLong(_result14);
+                    return true;
+                case 20:
+                    enableRDS();
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    disableRDS();
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    enableAF();
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    disableAF();
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setBand(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setChannelSpacing(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    int _result15 = isBusy();
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 27:
+                    boolean _result16 = isRDSEnable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 28:
+                    boolean _result17 = isAFEnable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 29:
+                    cancelAFSwitching();
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    long[] _result18 = getLastScanResult();
+                    reply.writeNoException();
+                    reply.writeLongArray(_result18);
+                    return true;
+                case 31:
+                    setStereo();
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    setMono();
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    long _arg06 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setVolume(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    long _result19 = getVolume();
+                    reply.writeNoException();
+                    reply.writeLong(_result19);
+                    return true;
+                case 35:
+                    boolean _result20 = isHeadsetPlugged();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 36:
+                    boolean _result21 = isTvOutPlugged();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result21);
+                    return true;
+                case 37:
+                    boolean _arg07 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSpeakerOn(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    boolean _arg08 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setRecordMode(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    long _result22 = getMaxVolume();
+                    reply.writeNoException();
+                    reply.writeLong(_result22);
+                    return true;
+                case 40:
+                    boolean _result23 = isAirPlaneMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result23);
+                    return true;
+                case 41:
+                    boolean _arg09 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    mute(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    boolean _result24 = isBatteryLow();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result24);
+                    return true;
+                case 43:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setFMIntenna(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    boolean _arg011 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSoftmute(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    boolean _result25 = getSoftMuteMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result25);
+                    return true;
+                case 46:
+                    String _arg012 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setIntegerTunningParameter(_arg012, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    String _arg013 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result26 = getIntegerTunningParameter(_arg013, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result26);
+                    return true;
+                case 48:
+                    String _arg014 = data.readString();
+                    long _arg13 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setLongTunningParameter(_arg014, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    String _arg015 = data.readString();
+                    long _arg14 = data.readLong();
+                    data.enforceNoDataAvail();
+                    long _result27 = getLongTunningParameter(_arg015, _arg14);
+                    reply.writeNoException();
+                    reply.writeLong(_result27);
+                    return true;
+                case 50:
+                    String _arg016 = data.readString();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    setStringTunningParameter(_arg016, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    String _arg017 = data.readString();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result28 = getStringTunningParameter(_arg017, _arg16);
+                    reply.writeNoException();
+                    reply.writeString(_result28);
+                    return true;
+                case 52:
+                    boolean _result29 = isDeviceSpeakerEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result29);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IFMEventListener _arg0 = IFMEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setListener(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IFMEventListener _arg02 = IFMEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeListener(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            long _arg03 = data.readLong();
-                            data.enforceNoDataAvail();
-                            tune(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _result = on();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 5:
-                            boolean _result2 = on_in_testmode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 6:
-                            boolean _result3 = off();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 7:
-                            boolean _result4 = isOn();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            long _result5 = seekUp();
-                            reply.writeNoException();
-                            reply.writeLong(_result5);
-                            return true;
-                        case 9:
-                            long _result6 = seekDown();
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        case 10:
-                            cancelSeek();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            long _result7 = getCurrentChannel();
-                            reply.writeNoException();
-                            reply.writeLong(_result7);
-                            return true;
-                        case 12:
-                            scan();
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            boolean _result8 = cancelScan();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 14:
-                            boolean _result9 = isScanning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 15:
-                            boolean _result10 = isSeeking();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 16:
-                            long _result11 = searchDown();
-                            reply.writeNoException();
-                            reply.writeLong(_result11);
-                            return true;
-                        case 17:
-                            long _result12 = searchUp();
-                            reply.writeNoException();
-                            reply.writeLong(_result12);
-                            return true;
-                        case 18:
-                            long _result13 = searchAll();
-                            reply.writeNoException();
-                            reply.writeLong(_result13);
-                            return true;
-                        case 19:
-                            long _result14 = getPlayedFreq();
-                            reply.writeNoException();
-                            reply.writeLong(_result14);
-                            return true;
-                        case 20:
-                            enableRDS();
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            disableRDS();
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            enableAF();
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            disableAF();
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setBand(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setChannelSpacing(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            int _result15 = isBusy();
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 27:
-                            boolean _result16 = isRDSEnable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 28:
-                            boolean _result17 = isAFEnable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 29:
-                            cancelAFSwitching();
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            long[] _result18 = getLastScanResult();
-                            reply.writeNoException();
-                            reply.writeLongArray(_result18);
-                            return true;
-                        case 31:
-                            setStereo();
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            setMono();
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            long _arg06 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setVolume(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            long _result19 = getVolume();
-                            reply.writeNoException();
-                            reply.writeLong(_result19);
-                            return true;
-                        case 35:
-                            boolean _result20 = isHeadsetPlugged();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 36:
-                            boolean _result21 = isTvOutPlugged();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result21);
-                            return true;
-                        case 37:
-                            boolean _arg07 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSpeakerOn(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            boolean _arg08 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRecordMode(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            long _result22 = getMaxVolume();
-                            reply.writeNoException();
-                            reply.writeLong(_result22);
-                            return true;
-                        case 40:
-                            boolean _result23 = isAirPlaneMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result23);
-                            return true;
-                        case 41:
-                            boolean _arg09 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            mute(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            boolean _result24 = isBatteryLow();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result24);
-                            return true;
-                        case 43:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setFMIntenna(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            boolean _arg011 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSoftmute(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            boolean _result25 = getSoftMuteMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result25);
-                            return true;
-                        case 46:
-                            String _arg012 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setIntegerTunningParameter(_arg012, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            String _arg013 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result26 = getIntegerTunningParameter(_arg013, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 48:
-                            String _arg014 = data.readString();
-                            long _arg13 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setLongTunningParameter(_arg014, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            String _arg015 = data.readString();
-                            long _arg14 = data.readLong();
-                            data.enforceNoDataAvail();
-                            long _result27 = getLongTunningParameter(_arg015, _arg14);
-                            reply.writeNoException();
-                            reply.writeLong(_result27);
-                            return true;
-                        case 50:
-                            String _arg016 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            setStringTunningParameter(_arg016, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            String _arg017 = data.readString();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result28 = getStringTunningParameter(_arg017, _arg16);
-                            reply.writeNoException();
-                            reply.writeString(_result28);
-                            return true;
-                        case 52:
-                            boolean _result29 = isDeviceSpeakerEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result29);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IFMPlayer {
+        private static class Proxy implements IFMPlayer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

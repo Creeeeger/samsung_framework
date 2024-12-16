@@ -2,21 +2,20 @@ package android.os.vibrator;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Vibrator;
+import android.os.VibratorInfo;
 import com.samsung.android.vibrator.SemHapticFeedbackConstants;
 
 /* loaded from: classes3.dex */
 public final class SemHapticSegment extends VibrationEffectSegment {
     public static final Parcelable.Creator<SemHapticSegment> CREATOR = new Parcelable.Creator<SemHapticSegment>() { // from class: android.os.vibrator.SemHapticSegment.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemHapticSegment createFromParcel(Parcel in) {
             in.readInt();
             return new SemHapticSegment(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemHapticSegment[] newArray(int size) {
             return new SemHapticSegment[size];
@@ -25,7 +24,7 @@ public final class SemHapticSegment extends VibrationEffectSegment {
     private int mMagnitude;
     private int mType;
 
-    public SemHapticSegment(Parcel in) {
+    SemHapticSegment(Parcel in) {
         this(in.readInt(), in.readInt());
     }
 
@@ -50,12 +49,12 @@ public final class SemHapticSegment extends VibrationEffectSegment {
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
-    public boolean isHapticFeedbackCandidate() {
-        return true;
+    public boolean areVibrationFeaturesSupported(VibratorInfo vibratorInfo) {
+        return false;
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
-    public boolean hasNonZeroAmplitude() {
+    public boolean isHapticFeedbackCandidate() {
         return true;
     }
 
@@ -72,6 +71,16 @@ public final class SemHapticSegment extends VibrationEffectSegment {
         if (!SemHapticFeedbackConstants.isValidatedVibeIndex(this.mType)) {
             throw new IllegalArgumentException("invalid haptic type=" + this.mType);
         }
+    }
+
+    @Override // android.os.vibrator.VibrationEffectSegment
+    public SemHapticSegment scaleLinearly(float scaleFactor) {
+        return new SemHapticSegment(this.mType);
+    }
+
+    @Override // android.os.vibrator.VibrationEffectSegment
+    public String toDebugString() {
+        return String.format("SemHaptic: mType=%d, mMagnitude=%d", Integer.valueOf(this.mType), Integer.valueOf(this.mMagnitude));
     }
 
     public int hashCode() {
@@ -116,24 +125,6 @@ public final class SemHapticSegment extends VibrationEffectSegment {
         return "SemHaptic{mType=" + this.mType + ", mMagnitude=" + this.mMagnitude + "}";
     }
 
-    /* renamed from: android.os.vibrator.SemHapticSegment$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemHapticSegment> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemHapticSegment createFromParcel(Parcel in) {
-            in.readInt();
-            return new SemHapticSegment(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemHapticSegment[] newArray(int size) {
-            return new SemHapticSegment[size];
-        }
-    }
-
     public int getSepIndex() {
         return this.mType - SemHapticFeedbackConstants.INTERNAL_INDEX_OFFSET;
     }
@@ -172,10 +163,5 @@ public final class SemHapticSegment extends VibrationEffectSegment {
 
     public boolean isEffectSilent() {
         return this.mType == 50084;
-    }
-
-    @Override // android.os.vibrator.VibrationEffectSegment
-    public boolean areVibrationFeaturesSupported(Vibrator vibrator) {
-        return true;
     }
 }

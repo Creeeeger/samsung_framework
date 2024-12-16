@@ -12,7 +12,6 @@ public interface IUpdateVerifierCallback extends IInterface {
 
     void onReceiveSaGuid(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IUpdateVerifierCallback {
         @Override // com.android.internal.widget.IUpdateVerifierCallback
         public void onReceiveSaGuid(String saGuid) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IUpdateVerifierCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IUpdateVerifierCallback {
         static final int TRANSACTION_onReceiveSaGuid = 1;
 
@@ -67,27 +65,23 @@ public interface IUpdateVerifierCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUpdateVerifierCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUpdateVerifierCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUpdateVerifierCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onReceiveSaGuid(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onReceiveSaGuid(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IUpdateVerifierCallback {
+        private static class Proxy implements IUpdateVerifierCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

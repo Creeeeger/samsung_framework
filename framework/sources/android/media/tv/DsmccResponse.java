@@ -8,22 +8,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class DsmccResponse extends BroadcastInfoResponse implements Parcelable {
     public static final String BIOP_MESSAGE_TYPE_DIRECTORY = "directory";
     public static final String BIOP_MESSAGE_TYPE_FILE = "file";
     public static final String BIOP_MESSAGE_TYPE_SERVICE_GATEWAY = "service_gateway";
     public static final String BIOP_MESSAGE_TYPE_STREAM = "stream";
     public static final Parcelable.Creator<DsmccResponse> CREATOR = new Parcelable.Creator<DsmccResponse>() { // from class: android.media.tv.DsmccResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DsmccResponse createFromParcel(Parcel source) {
             source.readInt();
             return DsmccResponse.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DsmccResponse[] newArray(int size) {
             return new DsmccResponse[size];
@@ -37,29 +36,10 @@ public final class DsmccResponse extends BroadcastInfoResponse implements Parcel
     private final ParcelFileDescriptor mFileDescriptor;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface BiopMessageType {
     }
 
-    /* renamed from: android.media.tv.DsmccResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DsmccResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DsmccResponse createFromParcel(Parcel source) {
-            source.readInt();
-            return DsmccResponse.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DsmccResponse[] newArray(int size) {
-            return new DsmccResponse[size];
-        }
-    }
-
-    public static DsmccResponse createFromParcelBody(Parcel in) {
+    static DsmccResponse createFromParcelBody(Parcel in) {
         return new DsmccResponse(in);
     }
 
@@ -101,32 +81,32 @@ public final class DsmccResponse extends BroadcastInfoResponse implements Parcel
     private DsmccResponse(Parcel source) {
         super(6, source);
         char c;
-        String readString = source.readString();
-        this.mBiopMessageType = readString;
-        switch (readString.hashCode()) {
+        this.mBiopMessageType = source.readString();
+        String str = this.mBiopMessageType;
+        switch (str.hashCode()) {
             case -962584979:
-                if (readString.equals("directory")) {
+                if (str.equals("directory")) {
                     c = 1;
                     break;
                 }
                 c = 65535;
                 break;
             case -959828294:
-                if (readString.equals(BIOP_MESSAGE_TYPE_SERVICE_GATEWAY)) {
+                if (str.equals(BIOP_MESSAGE_TYPE_SERVICE_GATEWAY)) {
                     c = 0;
                     break;
                 }
                 c = 65535;
                 break;
             case -891990144:
-                if (readString.equals("stream")) {
+                if (str.equals("stream")) {
                     c = 3;
                     break;
                 }
                 c = 65535;
                 break;
             case 3143036:
-                if (readString.equals("file")) {
+                if (str.equals("file")) {
                     c = 2;
                     break;
                 }
@@ -198,19 +178,17 @@ public final class DsmccResponse extends BroadcastInfoResponse implements Parcel
     }
 
     public int[] getStreamEventIds() {
-        if (!this.mBiopMessageType.equals("stream")) {
-            throw new IllegalStateException("Not stream event object");
+        if (this.mBiopMessageType.equals("stream")) {
+            return this.mEventIds != null ? this.mEventIds : new int[0];
         }
-        int[] iArr = this.mEventIds;
-        return iArr != null ? iArr : new int[0];
+        throw new IllegalStateException("Not stream event object");
     }
 
     public String[] getStreamEventNames() {
-        if (!this.mBiopMessageType.equals("stream")) {
-            throw new IllegalStateException("Not stream event object");
+        if (this.mBiopMessageType.equals("stream")) {
+            return this.mEventNames != null ? this.mEventNames : new String[0];
         }
-        String[] strArr = this.mEventNames;
-        return strArr != null ? strArr : new String[0];
+        throw new IllegalStateException("Not stream event object");
     }
 
     @Override // android.media.tv.BroadcastInfoResponse, android.os.Parcelable
@@ -261,8 +239,7 @@ public final class DsmccResponse extends BroadcastInfoResponse implements Parcel
         switch (c) {
             case 0:
             case 1:
-                List<String> list = this.mChildList;
-                if (list != null && list.size() > 0) {
+                if (this.mChildList != null && this.mChildList.size() > 0) {
                     dest.writeInt(this.mChildList.size());
                     for (String child : this.mChildList) {
                         dest.writeString(child);
@@ -275,25 +252,16 @@ public final class DsmccResponse extends BroadcastInfoResponse implements Parcel
                 dest.writeFileDescriptor(this.mFileDescriptor.getFileDescriptor());
                 return;
             case 3:
-                int[] iArr = this.mEventIds;
-                if (iArr != null && iArr.length > 0) {
-                    dest.writeInt(iArr.length);
-                    int i = 0;
-                    while (true) {
-                        int[] iArr2 = this.mEventIds;
-                        if (i < iArr2.length) {
-                            dest.writeInt(iArr2[i]);
-                            dest.writeString(this.mEventNames[i]);
-                            i++;
-                        } else {
-                            return;
-                        }
+                if (this.mEventIds != null && this.mEventIds.length > 0) {
+                    dest.writeInt(this.mEventIds.length);
+                    for (int i = 0; i < this.mEventIds.length; i++) {
+                        dest.writeInt(this.mEventIds[i]);
+                        dest.writeString(this.mEventNames[i]);
                     }
-                } else {
-                    dest.writeInt(0);
                     return;
                 }
-                break;
+                dest.writeInt(0);
+                return;
             default:
                 throw new IllegalStateException("unexpected BIOP message type");
         }

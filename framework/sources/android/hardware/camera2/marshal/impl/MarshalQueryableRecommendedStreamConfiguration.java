@@ -6,11 +6,10 @@ import android.hardware.camera2.params.RecommendedStreamConfiguration;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableRecommendedStreamConfiguration implements MarshalQueryable<RecommendedStreamConfiguration> {
     private static final int SIZE = 20;
 
-    /* loaded from: classes.dex */
     private class MarshalerRecommendedStreamConfiguration extends Marshaler<RecommendedStreamConfiguration> {
         protected MarshalerRecommendedStreamConfiguration(TypeReference<RecommendedStreamConfiguration> typeReference, int nativeType) {
             super(MarshalQueryableRecommendedStreamConfiguration.this, typeReference, nativeType);
@@ -25,6 +24,7 @@ public class MarshalQueryableRecommendedStreamConfiguration implements MarshalQu
             byteBuffer.putInt(recommendedStreamConfiguration.getUsecaseBitmap());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public RecommendedStreamConfiguration unmarshal(ByteBuffer buffer) {
             int width = buffer.getInt();

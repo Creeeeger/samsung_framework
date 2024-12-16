@@ -8,29 +8,23 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class ByteBufferWriter {
-    private static final ThreadLocal<SoftReference<byte[]>> BUFFER = new ThreadLocal<>();
     private static final float BUFFER_REALLOCATION_THRESHOLD = 0.5f;
-    private static final long CHANNEL_FIELD_OFFSET;
-    private static final Class<?> FILE_OUTPUT_STREAM_CLASS;
     private static final int MAX_CACHED_BUFFER_SIZE = 16384;
     private static final int MIN_CACHED_BUFFER_SIZE = 1024;
+    private static final ThreadLocal<SoftReference<byte[]>> BUFFER = new ThreadLocal<>();
+    private static final Class<?> FILE_OUTPUT_STREAM_CLASS = safeGetClass("java.io.FileOutputStream");
+    private static final long CHANNEL_FIELD_OFFSET = getChannelFieldOffset(FILE_OUTPUT_STREAM_CLASS);
 
     private ByteBufferWriter() {
-    }
-
-    static {
-        Class<?> safeGetClass = safeGetClass("java.io.FileOutputStream");
-        FILE_OUTPUT_STREAM_CLASS = safeGetClass;
-        CHANNEL_FIELD_OFFSET = getChannelFieldOffset(safeGetClass);
     }
 
     static void clearCachedBuffer() {
         BUFFER.set(null);
     }
 
-    public static void write(ByteBuffer buffer, OutputStream output) throws IOException {
+    static void write(ByteBuffer buffer, OutputStream output) throws IOException {
         int initialPos = buffer.position();
         try {
             if (buffer.hasArray()) {
@@ -77,11 +71,10 @@ final class ByteBufferWriter {
     }
 
     private static boolean writeToChannel(ByteBuffer buffer, OutputStream output) throws IOException {
-        long j = CHANNEL_FIELD_OFFSET;
-        if (j >= 0 && FILE_OUTPUT_STREAM_CLASS.isInstance(output)) {
+        if (CHANNEL_FIELD_OFFSET >= 0 && FILE_OUTPUT_STREAM_CLASS.isInstance(output)) {
             WritableByteChannel channel = null;
             try {
-                channel = (WritableByteChannel) UnsafeUtil.getObject(output, j);
+                channel = (WritableByteChannel) UnsafeUtil.getObject(output, CHANNEL_FIELD_OFFSET);
             } catch (ClassCastException e) {
             }
             if (channel != null) {

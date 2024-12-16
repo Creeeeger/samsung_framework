@@ -22,7 +22,6 @@ public interface IStorageEventListener extends IInterface {
 
     void onVolumeStateChanged(VolumeInfo volumeInfo, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IStorageEventListener {
         @Override // android.os.storage.IStorageEventListener
         public void onUsbMassStorageConnectionChanged(boolean connected) throws RemoteException {
@@ -58,7 +57,6 @@ public interface IStorageEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IStorageEventListener {
         public static final String DESCRIPTOR = "android.os.storage.IStorageEventListener";
         static final int TRANSACTION_onDiskDestroyed = 7;
@@ -120,60 +118,57 @@ public interface IStorageEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUsbMassStorageConnectionChanged(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStorageStateChanged(_arg02, _arg1, _arg2);
+                    return true;
+                case 3:
+                    VolumeInfo _arg03 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVolumeStateChanged(_arg03, _arg12, _arg22);
+                    return true;
+                case 4:
+                    VolumeRecord _arg04 = (VolumeRecord) data.readTypedObject(VolumeRecord.CREATOR);
+                    data.enforceNoDataAvail();
+                    onVolumeRecordChanged(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    onVolumeForgotten(_arg05);
+                    return true;
+                case 6:
+                    DiskInfo _arg06 = (DiskInfo) data.readTypedObject(DiskInfo.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDiskScanned(_arg06, _arg13);
+                    return true;
+                case 7:
+                    DiskInfo _arg07 = (DiskInfo) data.readTypedObject(DiskInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDiskDestroyed(_arg07);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUsbMassStorageConnectionChanged(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStorageStateChanged(_arg02, _arg1, _arg2);
-                            return true;
-                        case 3:
-                            VolumeInfo _arg03 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onVolumeStateChanged(_arg03, _arg12, _arg22);
-                            return true;
-                        case 4:
-                            VolumeRecord _arg04 = (VolumeRecord) data.readTypedObject(VolumeRecord.CREATOR);
-                            data.enforceNoDataAvail();
-                            onVolumeRecordChanged(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            onVolumeForgotten(_arg05);
-                            return true;
-                        case 6:
-                            DiskInfo _arg06 = (DiskInfo) data.readTypedObject(DiskInfo.CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDiskScanned(_arg06, _arg13);
-                            return true;
-                        case 7:
-                            DiskInfo _arg07 = (DiskInfo) data.readTypedObject(DiskInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDiskDestroyed(_arg07);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IStorageEventListener {
+        private static class Proxy implements IStorageEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

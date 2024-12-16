@@ -16,14 +16,13 @@ import java.util.function.IntFunction;
 /* loaded from: classes4.dex */
 public final class TranslationRequest implements Parcelable {
     public static final Parcelable.Creator<TranslationRequest> CREATOR = new Parcelable.Creator<TranslationRequest>() { // from class: android.view.translation.TranslationRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationRequest[] newArray(int size) {
             return new TranslationRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationRequest createFromParcel(Parcel in) {
             return new TranslationRequest(in);
@@ -38,40 +37,25 @@ public final class TranslationRequest implements Parcelable {
     private final List<ViewTranslationRequest> mViewTranslationRequests;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface RequestFlags {
     }
 
-    /* renamed from: -$$Nest$smdefaultFlags */
-    static /* bridge */ /* synthetic */ int m5846$$Nest$smdefaultFlags() {
-        return defaultFlags();
-    }
-
-    /* renamed from: -$$Nest$smdefaultTranslationRequestValues */
-    static /* bridge */ /* synthetic */ List m5847$$Nest$smdefaultTranslationRequestValues() {
-        return defaultTranslationRequestValues();
-    }
-
-    /* renamed from: -$$Nest$smdefaultViewTranslationRequests */
-    static /* bridge */ /* synthetic */ List m5848$$Nest$smdefaultViewTranslationRequests() {
-        return defaultViewTranslationRequests();
-    }
-
-    private static int defaultFlags() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultFlags() {
         return 1;
     }
 
-    private static List<TranslationRequestValue> defaultTranslationRequestValues() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static List<TranslationRequestValue> defaultTranslationRequestValues() {
         return Collections.emptyList();
     }
 
-    private static List<ViewTranslationRequest> defaultViewTranslationRequests() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static List<ViewTranslationRequest> defaultViewTranslationRequests() {
         return Collections.emptyList();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public static abstract class BaseBuilder {
+    static abstract class BaseBuilder {
         @Deprecated
         public abstract Builder addTranslationRequestValue(TranslationRequestValue translationRequestValue);
 
@@ -91,7 +75,7 @@ public final class TranslationRequest implements Parcelable {
         });
     }
 
-    public static String singleRequestFlagsToString(int value) {
+    static String singleRequestFlagsToString(int value) {
         switch (value) {
             case 1:
                 return "FLAG_TRANSLATION_RESULT";
@@ -108,11 +92,11 @@ public final class TranslationRequest implements Parcelable {
 
     TranslationRequest(int flags, List<TranslationRequestValue> translationRequestValues, List<ViewTranslationRequest> viewTranslationRequests) {
         this.mFlags = flags;
-        Preconditions.checkFlagsArgument(flags, 15);
+        Preconditions.checkFlagsArgument(this.mFlags, 15);
         this.mTranslationRequestValues = translationRequestValues;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) translationRequestValues);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTranslationRequestValues);
         this.mViewTranslationRequests = viewTranslationRequests;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) viewTranslationRequests);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mViewTranslationRequests);
     }
 
     public int getFlags() {
@@ -150,31 +134,13 @@ public final class TranslationRequest implements Parcelable {
         ArrayList arrayList2 = new ArrayList();
         in.readParcelableList(arrayList2, ViewTranslationRequest.class.getClassLoader(), ViewTranslationRequest.class);
         this.mFlags = flags;
-        Preconditions.checkFlagsArgument(flags, 15);
+        Preconditions.checkFlagsArgument(this.mFlags, 15);
         this.mTranslationRequestValues = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTranslationRequestValues);
         this.mViewTranslationRequests = arrayList2;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList2);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mViewTranslationRequests);
     }
 
-    /* renamed from: android.view.translation.TranslationRequest$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TranslationRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TranslationRequest[] newArray(int size) {
-            return new TranslationRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TranslationRequest createFromParcel(Parcel in) {
-            return new TranslationRequest(in);
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
         private int mFlags;
@@ -224,16 +190,15 @@ public final class TranslationRequest implements Parcelable {
 
         public TranslationRequest build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 8;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mFlags = TranslationRequest.m5846$$Nest$smdefaultFlags();
+            this.mBuilderFieldsSet |= 8;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mFlags = TranslationRequest.defaultFlags();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {
-                this.mTranslationRequestValues = TranslationRequest.m5847$$Nest$smdefaultTranslationRequestValues();
+                this.mTranslationRequestValues = TranslationRequest.defaultTranslationRequestValues();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mViewTranslationRequests = TranslationRequest.m5848$$Nest$smdefaultViewTranslationRequests();
+                this.mViewTranslationRequests = TranslationRequest.defaultViewTranslationRequests();
             }
             TranslationRequest o = new TranslationRequest(this.mFlags, this.mTranslationRequestValues, this.mViewTranslationRequests);
             return o;

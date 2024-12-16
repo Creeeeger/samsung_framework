@@ -9,7 +9,7 @@ import com.android.internal.inputmethod.IAccessibilityInputMethodSession;
 import com.android.internal.inputmethod.IRemoteAccessibilityInputConnection;
 
 /* loaded from: classes4.dex */
-public final class IAccessibilityInputMethodSessionInvoker {
+final class IAccessibilityInputMethodSessionInvoker {
     private static final String TAG = "IAccessibilityInputMethodSessionInvoker";
     private static Handler sAsyncBinderEmulationHandler;
     private static final Object sAsyncBinderEmulationHandlerLock = new Object();
@@ -41,12 +41,11 @@ public final class IAccessibilityInputMethodSessionInvoker {
         return new IAccessibilityInputMethodSessionInvoker(session, customHandler);
     }
 
-    public void finishInput() {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void finishInput() {
+        if (this.mCustomHandler == null) {
             finishInputInternal();
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IAccessibilityInputMethodSessionInvoker$$ExternalSyntheticLambda2
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IAccessibilityInputMethodSessionInvoker$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     IAccessibilityInputMethodSessionInvoker.this.finishInputInternal();
@@ -55,6 +54,7 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void finishInputInternal() {
         try {
             this.mSession.finishInput();
@@ -63,12 +63,11 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    public void updateSelection(final int oldSelStart, final int oldSelEnd, final int selStart, final int selEnd, final int candidatesStart, final int candidatesEnd) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void updateSelection(final int oldSelStart, final int oldSelEnd, final int selStart, final int selEnd, final int candidatesStart, final int candidatesEnd) {
+        if (this.mCustomHandler == null) {
             lambda$updateSelection$0(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IAccessibilityInputMethodSessionInvoker$$ExternalSyntheticLambda0
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IAccessibilityInputMethodSessionInvoker$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     IAccessibilityInputMethodSessionInvoker.this.lambda$updateSelection$0(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
@@ -77,7 +76,8 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: updateSelectionInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: updateSelectionInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$updateSelection$0(int oldSelStart, int oldSelEnd, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
         try {
             this.mSession.updateSelection(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
@@ -86,12 +86,12 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateInput(final EditorInfo editorInfo, final IRemoteAccessibilityInputConnection connection, final int sessionId) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+        if (this.mCustomHandler == null) {
             lambda$invalidateInput$1(editorInfo, connection, sessionId);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IAccessibilityInputMethodSessionInvoker$$ExternalSyntheticLambda1
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IAccessibilityInputMethodSessionInvoker$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     IAccessibilityInputMethodSessionInvoker.this.lambda$invalidateInput$1(editorInfo, connection, sessionId);
@@ -100,7 +100,8 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: invalidateInputInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: invalidateInputInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$invalidateInput$1(EditorInfo editorInfo, IRemoteAccessibilityInputConnection connection, int sessionId) {
         try {
             this.mSession.invalidateInput(editorInfo, connection, sessionId);

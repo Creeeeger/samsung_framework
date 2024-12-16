@@ -20,9 +20,8 @@ public final class LocalLog {
     }
 
     public LocalLog(int maxLines, boolean useLocalTimestamps) {
-        int max = Math.max(0, maxLines);
-        this.mMaxLines = max;
-        this.mLog = new ArrayDeque(max);
+        this.mMaxLines = Math.max(0, maxLines);
+        this.mLog = new ArrayDeque(this.mMaxLines);
         this.mUseLocalTimestamps = useLocalTimestamps;
     }
 
@@ -72,7 +71,6 @@ public final class LocalLog {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ReadOnlyLocalLog {
         private final LocalLog mLog;
 

@@ -74,14 +74,10 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class ScaledLayout extends ViewGroup {
+    static class ScaledLayout extends ViewGroup {
         private static final boolean DEBUG = false;
         private static final String TAG = "ScaledLayout";
         private static final Comparator<Rect> mRectTopLeftSorter = new Comparator<Rect>() { // from class: android.media.Cea708CCWidget.ScaledLayout.1
-            AnonymousClass1() {
-            }
-
             @Override // java.util.Comparator
             public int compare(Rect lhs, Rect rhs) {
                 if (lhs.top != rhs.top) {
@@ -92,29 +88,12 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         };
         private Rect[] mRectArray;
 
-        /* compiled from: Cea708CaptionRenderer.java */
-        /* renamed from: android.media.Cea708CCWidget$ScaledLayout$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Comparator<Rect> {
-            AnonymousClass1() {
-            }
-
-            @Override // java.util.Comparator
-            public int compare(Rect lhs, Rect rhs) {
-                if (lhs.top != rhs.top) {
-                    return lhs.top - rhs.top;
-                }
-                return lhs.left - rhs.left;
-            }
-        }
-
         public ScaledLayout(Context context) {
             super(context);
         }
 
         /* compiled from: Cea708CaptionRenderer.java */
-        /* loaded from: classes2.dex */
-        public static class ScaledLayoutParams extends ViewGroup.LayoutParams {
+        static class ScaledLayoutParams extends ViewGroup.LayoutParams {
             public static final float SCALE_UNSPECIFIED = -1.0f;
             public float scaleEndCol;
             public float scaleEndRow;
@@ -140,12 +119,12 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
 
         @Override // android.view.ViewGroup
-        public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
             return p instanceof ScaledLayoutParams;
         }
 
         @Override // android.view.View
-        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             int widthSpecSize = View.MeasureSpec.getSize(widthMeasureSpec);
             int heightSpecSize = View.MeasureSpec.getSize(heightMeasureSpec);
             int width = (widthSpecSize - getPaddingLeft()) - getPaddingRight();
@@ -235,7 +214,7 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public void onLayout(boolean changed, int l, int t, int r, int b) {
+        protected void onLayout(boolean changed, int l, int t, int r, int b) {
             int paddingLeft = getPaddingLeft();
             int paddingTop = getPaddingTop();
             int count = getChildCount();
@@ -259,9 +238,8 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
             for (int i = 0; i < count; i++) {
                 View child = getChildAt(i);
                 if (child.getVisibility() != 8) {
-                    Rect[] rectArr = this.mRectArray;
-                    if (i < rectArr.length) {
-                        int childLeft = rectArr[i].left + paddingLeft;
+                    if (i < this.mRectArray.length) {
+                        int childLeft = this.mRectArray[i].left + paddingLeft;
                         int childTop = this.mRectArray[i].top + paddingTop;
                         int saveCount = canvas.save();
                         canvas.translate(childLeft, childTop);
@@ -276,8 +254,7 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCLayout extends ScaledLayout implements ClosedCaptionWidget.ClosedCaptionLayout {
+    static class CCLayout extends ScaledLayout implements ClosedCaptionWidget.ClosedCaptionLayout {
         private static final float SAFE_TITLE_AREA_SCALE_END_X = 0.9f;
         private static final float SAFE_TITLE_AREA_SCALE_END_Y = 0.9f;
         private static final float SAFE_TITLE_AREA_SCALE_START_X = 0.1f;
@@ -286,9 +263,8 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
 
         public CCLayout(Context context) {
             super(context);
-            ScaledLayout scaledLayout = new ScaledLayout(context);
-            this.mSafeTitleAreaLayout = scaledLayout;
-            addView(scaledLayout, new ScaledLayout.ScaledLayoutParams(0.1f, 0.9f, 0.1f, 0.9f));
+            this.mSafeTitleAreaLayout = new ScaledLayout(context);
+            addView(this.mSafeTitleAreaLayout, new ScaledLayout.ScaledLayoutParams(0.1f, 0.9f, 0.1f, 0.9f));
         }
 
         public void addOrUpdateViewToSafeTitleArea(CCWindowLayout captionWindowLayout, ScaledLayout.ScaledLayoutParams scaledLayoutParams) {
@@ -323,10 +299,8 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCHandler implements Handler.Callback {
+    static class CCHandler implements Handler.Callback {
         private static final int CAPTION_ALL_WINDOWS_BITMAP = 255;
         private static final long CAPTION_CLEAR_INTERVAL_MS = 60000;
         private static final int CAPTION_WINDOWS_MAX = 8;
@@ -351,81 +325,73 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
             switch (msg.what) {
                 case 1:
                     delayCancel();
-                    return true;
+                    break;
                 case 2:
                     clearWindows(255);
-                    return true;
-                default:
-                    return false;
+                    break;
             }
+            return true;
         }
 
         public void processCaptionEvent(Cea708CCParser.CaptionEvent event) {
             if (this.mIsDelayed) {
                 this.mPendingCaptionEvents.add(event);
-                return;
             }
             switch (event.type) {
                 case 1:
                     sendBufferToCurrentWindow((String) event.obj);
-                    return;
+                    break;
                 case 2:
                     sendControlToCurrentWindow(((Character) event.obj).charValue());
-                    return;
+                    break;
                 case 3:
                     setCurrentWindowLayout(((Integer) event.obj).intValue());
-                    return;
+                    break;
                 case 4:
                     clearWindows(((Integer) event.obj).intValue());
-                    return;
+                    break;
                 case 5:
                     displayWindows(((Integer) event.obj).intValue());
-                    return;
+                    break;
                 case 6:
                     hideWindows(((Integer) event.obj).intValue());
-                    return;
+                    break;
                 case 7:
                     toggleWindows(((Integer) event.obj).intValue());
-                    return;
+                    break;
                 case 8:
                     deleteWindows(((Integer) event.obj).intValue());
-                    return;
+                    break;
                 case 9:
                     delay(((Integer) event.obj).intValue());
-                    return;
+                    break;
                 case 10:
                     delayCancel();
-                    return;
+                    break;
                 case 11:
                     reset();
-                    return;
+                    break;
                 case 12:
                     setPenAttr((Cea708CCParser.CaptionPenAttr) event.obj);
-                    return;
+                    break;
                 case 13:
                     setPenColor((Cea708CCParser.CaptionPenColor) event.obj);
-                    return;
+                    break;
                 case 14:
                     setPenLocation((Cea708CCParser.CaptionPenLocation) event.obj);
-                    return;
+                    break;
                 case 15:
                     setWindowAttr((Cea708CCParser.CaptionWindowAttr) event.obj);
-                    return;
+                    break;
                 case 16:
                     defineWindow((Cea708CCParser.CaptionWindow) event.obj);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
         private void setCurrentWindowLayout(int windowId) {
             CCWindowLayout windowLayout;
-            if (windowId < 0) {
-                return;
-            }
-            CCWindowLayout[] cCWindowLayoutArr = this.mCaptionWindowLayouts;
-            if (windowId >= cCWindowLayoutArr.length || (windowLayout = cCWindowLayoutArr[windowId]) == null) {
+            if (windowId < 0 || windowId >= this.mCaptionWindowLayouts.length || (windowLayout = this.mCaptionWindowLayouts[windowId]) == null) {
                 return;
             }
             this.mCurrentWindowLayout = windowLayout;
@@ -507,9 +473,8 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
             this.mIsDelayed = false;
             this.mPendingCaptionEvents.clear();
             for (int i = 0; i < 8; i++) {
-                CCWindowLayout cCWindowLayout = this.mCaptionWindowLayouts[i];
-                if (cCWindowLayout != null) {
-                    cCWindowLayout.removeFromCaptionView();
+                if (this.mCaptionWindowLayouts[i] != null) {
+                    this.mCaptionWindowLayouts[i].removeFromCaptionView();
                 }
                 this.mCaptionWindowLayouts[i] = null;
             }
@@ -518,27 +483,23 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
 
         private void setWindowAttr(Cea708CCParser.CaptionWindowAttr windowAttr) {
-            CCWindowLayout cCWindowLayout = this.mCurrentWindowLayout;
-            if (cCWindowLayout != null) {
-                cCWindowLayout.setWindowAttr(windowAttr);
+            if (this.mCurrentWindowLayout != null) {
+                this.mCurrentWindowLayout.setWindowAttr(windowAttr);
             }
         }
 
         private void defineWindow(Cea708CCParser.CaptionWindow window) {
             int windowId;
-            if (window != null && (windowId = window.id) >= 0) {
-                CCWindowLayout[] cCWindowLayoutArr = this.mCaptionWindowLayouts;
-                if (windowId >= cCWindowLayoutArr.length) {
-                    return;
-                }
-                CCWindowLayout windowLayout = cCWindowLayoutArr[windowId];
-                if (windowLayout == null) {
-                    windowLayout = new CCWindowLayout(this.mCCLayout.getContext());
-                }
-                windowLayout.initWindow(this.mCCLayout, window);
-                this.mCaptionWindowLayouts[windowId] = windowLayout;
-                this.mCurrentWindowLayout = windowLayout;
+            if (window == null || (windowId = window.id) < 0 || windowId >= this.mCaptionWindowLayouts.length) {
+                return;
             }
+            CCWindowLayout windowLayout = this.mCaptionWindowLayouts[windowId];
+            if (windowLayout == null) {
+                windowLayout = new CCWindowLayout(this.mCCLayout.getContext());
+            }
+            windowLayout.initWindow(this.mCCLayout, window);
+            this.mCaptionWindowLayouts[windowId] = windowLayout;
+            this.mCurrentWindowLayout = windowLayout;
         }
 
         private void delay(int tenthsOfSeconds) {
@@ -546,8 +507,7 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
                 return;
             }
             this.mIsDelayed = true;
-            Handler handler = this.mHandler;
-            handler.sendMessageDelayed(handler.obtainMessage(1), tenthsOfSeconds * 100);
+            this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1), tenthsOfSeconds * 100);
         }
 
         private void delayCancel() {
@@ -565,47 +525,40 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
 
         private void sendControlToCurrentWindow(char control) {
-            CCWindowLayout cCWindowLayout = this.mCurrentWindowLayout;
-            if (cCWindowLayout != null) {
-                cCWindowLayout.sendControl(control);
+            if (this.mCurrentWindowLayout != null) {
+                this.mCurrentWindowLayout.sendControl(control);
             }
         }
 
         private void sendBufferToCurrentWindow(String buffer) {
-            CCWindowLayout cCWindowLayout = this.mCurrentWindowLayout;
-            if (cCWindowLayout != null) {
-                cCWindowLayout.sendBuffer(buffer);
+            if (this.mCurrentWindowLayout != null) {
+                this.mCurrentWindowLayout.sendBuffer(buffer);
                 this.mHandler.removeMessages(2);
-                Handler handler = this.mHandler;
-                handler.sendMessageDelayed(handler.obtainMessage(2), 60000L);
+                this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(2), 60000L);
             }
         }
 
         private void setPenAttr(Cea708CCParser.CaptionPenAttr attr) {
-            CCWindowLayout cCWindowLayout = this.mCurrentWindowLayout;
-            if (cCWindowLayout != null) {
-                cCWindowLayout.setPenAttr(attr);
+            if (this.mCurrentWindowLayout != null) {
+                this.mCurrentWindowLayout.setPenAttr(attr);
             }
         }
 
         private void setPenColor(Cea708CCParser.CaptionPenColor color) {
-            CCWindowLayout cCWindowLayout = this.mCurrentWindowLayout;
-            if (cCWindowLayout != null) {
-                cCWindowLayout.setPenColor(color);
+            if (this.mCurrentWindowLayout != null) {
+                this.mCurrentWindowLayout.setPenColor(color);
             }
         }
 
         private void setPenLocation(Cea708CCParser.CaptionPenLocation location) {
-            CCWindowLayout cCWindowLayout = this.mCurrentWindowLayout;
-            if (cCWindowLayout != null) {
-                cCWindowLayout.setPenLocation(location.row, location.column);
+            if (this.mCurrentWindowLayout != null) {
+                this.mCurrentWindowLayout.setPenLocation(location.row, location.column);
             }
         }
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCWindowLayout extends RelativeLayout implements View.OnLayoutChangeListener {
+    static class CCWindowLayout extends RelativeLayout implements View.OnLayoutChangeListener {
         private static final int ANCHOR_HORIZONTAL_16_9_MAX = 209;
         private static final int ANCHOR_HORIZONTAL_MODE_CENTER = 1;
         private static final int ANCHOR_HORIZONTAL_MODE_LEFT = 0;
@@ -714,13 +667,10 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
             switch (penAttr.penOffset) {
                 case 0:
                     this.mCharacterStyles.add(new SubscriptSpan());
-                    return;
-                case 1:
-                default:
-                    return;
+                    break;
                 case 2:
                     this.mCharacterStyles.add(new SuperscriptSpan());
-                    return;
+                    break;
             }
         }
 
@@ -747,13 +697,12 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
 
         public void initWindow(CCLayout ccLayout, Cea708CCParser.CaptionWindow captionWindow) {
-            CCLayout cCLayout = this.mCCLayout;
-            if (cCLayout != ccLayout) {
-                if (cCLayout != null) {
-                    cCLayout.removeOnLayoutChangeListener(this);
+            if (this.mCCLayout != ccLayout) {
+                if (this.mCCLayout != null) {
+                    this.mCCLayout.removeOnLayoutChangeListener(this);
                 }
                 this.mCCLayout = ccLayout;
-                ccLayout.addOnLayoutChangeListener(this);
+                this.mCCLayout.addOnLayoutChangeListener(this);
                 updateWidestChar();
             }
             float scaleRow = captionWindow.anchorVertical / (captionWindow.relativePositioning ? 99 : 74);
@@ -890,9 +839,8 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
                     endFontSize = testTextSize - 0.01f;
                 }
             }
-            float f = this.mFontScale * endFontSize;
-            this.mTextSize = f;
-            this.mCCView.setTextSize(f);
+            this.mTextSize = this.mFontScale * endFontSize;
+            this.mCCView.setTextSize(this.mTextSize);
         }
 
         private int getScreenColumnCount() {
@@ -900,9 +848,8 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
 
         public void removeFromCaptionView() {
-            CCLayout cCLayout = this.mCCLayout;
-            if (cCLayout != null) {
-                cCLayout.removeViewFromSafeTitleArea(this);
+            if (this.mCCLayout != null) {
+                this.mCCLayout.removeViewFromSafeTitleArea(this);
                 this.mCCLayout.removeOnLayoutChangeListener(this);
                 this.mCCLayout = null;
             }
@@ -929,14 +876,12 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
                 int length = this.mBuilder.length();
                 this.mBuilder.append((CharSequence) text);
                 for (CharacterStyle characterStyle : this.mCharacterStyles) {
-                    SpannableStringBuilder spannableStringBuilder = this.mBuilder;
-                    spannableStringBuilder.setSpan(characterStyle, length, spannableStringBuilder.length(), 33);
+                    this.mBuilder.setSpan(characterStyle, length, this.mBuilder.length(), 33);
                 }
             }
             String[] lines = TextUtils.split(this.mBuilder.toString(), "\n");
             String truncatedText = TextUtils.join("\n", Arrays.copyOfRange(lines, Math.max(0, lines.length - (this.mRowLimit + 1)), lines.length));
-            SpannableStringBuilder spannableStringBuilder2 = this.mBuilder;
-            spannableStringBuilder2.delete(0, spannableStringBuilder2.length() - truncatedText.length());
+            this.mBuilder.delete(0, this.mBuilder.length() - truncatedText.length());
             int start = 0;
             int last = this.mBuilder.length() - 1;
             int end = last;
@@ -970,8 +915,7 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCView extends SubtitleView {
+    static class CCView extends SubtitleView {
         private static final CaptioningManager.CaptionStyle DEFAULT_CAPTION_STYLE = CaptioningManager.CaptionStyle.DEFAULT;
 
         public CCView(Context context) {

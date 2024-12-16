@@ -22,7 +22,6 @@ public interface ISkpmService extends IInterface {
 
     int SkpmServiceReleaseGetKeySession() throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISkpmService {
         @Override // com.skms.android.agent.ISkpmService
         public int SkpmServiceKeyInjection(byte injection_type, byte key_type, String key_name, byte[] key_data, byte encoding_type) throws RemoteException {
@@ -60,7 +59,6 @@ public interface ISkpmService extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISkpmService {
         static final int TRANSACTION_SkpmChangeOtaServer = 6;
         static final int TRANSACTION_SkpmReadInjectedKeyUID = 3;
@@ -118,74 +116,71 @@ public interface ISkpmService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISkpmService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISkpmService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISkpmService.DESCRIPTOR);
+                case 1:
+                    byte _arg0 = data.readByte();
+                    byte _arg1 = data.readByte();
+                    String _arg2 = data.readString();
+                    byte[] _arg3 = data.createByteArray();
+                    byte _arg4 = data.readByte();
+                    data.enforceNoDataAvail();
+                    int _result = SkpmServiceKeyInjection(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    byte _arg02 = data.readByte();
+                    byte _arg12 = data.readByte();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = SkpmServiceInjectedKeyVerification(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    byte _arg03 = data.readByte();
+                    byte _arg13 = data.readByte();
+                    String _arg23 = data.readString();
+                    byte[] _arg32 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result3 = SkpmReadInjectedKeyUID(_arg03, _arg13, _arg23, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    reply.writeByteArray(_arg32);
+                    return true;
+                case 4:
+                    byte _arg04 = data.readByte();
+                    String _arg14 = data.readString();
+                    byte[] _arg24 = data.createByteArray();
+                    byte _arg33 = data.readByte();
+                    data.enforceNoDataAvail();
+                    int _result4 = SkpmServiceCreateGetKeySession(_arg04, _arg14, _arg24, _arg33);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    reply.writeByteArray(_arg24);
+                    return true;
+                case 5:
+                    int _result5 = SkpmServiceReleaseGetKeySession();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result6 = SkpmChangeOtaServer(_arg05, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte _arg0 = data.readByte();
-                            byte _arg1 = data.readByte();
-                            String _arg2 = data.readString();
-                            byte[] _arg3 = data.createByteArray();
-                            byte _arg4 = data.readByte();
-                            data.enforceNoDataAvail();
-                            int _result = SkpmServiceKeyInjection(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            byte _arg02 = data.readByte();
-                            byte _arg12 = data.readByte();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = SkpmServiceInjectedKeyVerification(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            byte _arg03 = data.readByte();
-                            byte _arg13 = data.readByte();
-                            String _arg23 = data.readString();
-                            byte[] _arg32 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result3 = SkpmReadInjectedKeyUID(_arg03, _arg13, _arg23, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            reply.writeByteArray(_arg32);
-                            return true;
-                        case 4:
-                            byte _arg04 = data.readByte();
-                            String _arg14 = data.readString();
-                            byte[] _arg24 = data.createByteArray();
-                            byte _arg33 = data.readByte();
-                            data.enforceNoDataAvail();
-                            int _result4 = SkpmServiceCreateGetKeySession(_arg04, _arg14, _arg24, _arg33);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            reply.writeByteArray(_arg24);
-                            return true;
-                        case 5:
-                            int _result5 = SkpmServiceReleaseGetKeySession();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result6 = SkpmChangeOtaServer(_arg05, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISkpmService {
             private IBinder mRemote;
 

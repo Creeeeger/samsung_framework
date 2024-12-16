@@ -141,7 +141,7 @@ public final class HidlMemoryUtil {
         }
     }
 
-    public static /* synthetic */ void lambda$getBuffer$0(long address, int size) {
+    static /* synthetic */ void lambda$getBuffer$0(long address, int size) {
         try {
             Os.munmap(address, size);
         } catch (ErrnoException e) {

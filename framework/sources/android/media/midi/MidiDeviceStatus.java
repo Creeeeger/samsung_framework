@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class MidiDeviceStatus implements Parcelable {
     public static final Parcelable.Creator<MidiDeviceStatus> CREATOR = new Parcelable.Creator<MidiDeviceStatus>() { // from class: android.media.midi.MidiDeviceStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MidiDeviceStatus createFromParcel(Parcel in) {
             ClassLoader classLoader = MidiDeviceInfo.class.getClassLoader();
@@ -19,6 +17,7 @@ public final class MidiDeviceStatus implements Parcelable {
             return new MidiDeviceStatus(deviceInfo, inputPortOpen, outputPortOpenCount);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MidiDeviceStatus[] newArray(int size) {
             return new MidiDeviceStatus[size];
@@ -31,12 +30,10 @@ public final class MidiDeviceStatus implements Parcelable {
 
     public MidiDeviceStatus(MidiDeviceInfo deviceInfo, boolean[] inputPortOpen, int[] outputPortOpenCount) {
         this.mDeviceInfo = deviceInfo;
-        boolean[] zArr = new boolean[inputPortOpen.length];
-        this.mInputPortOpen = zArr;
-        System.arraycopy(inputPortOpen, 0, zArr, 0, inputPortOpen.length);
-        int[] iArr = new int[outputPortOpenCount.length];
-        this.mOutputPortOpenCount = iArr;
-        System.arraycopy(outputPortOpenCount, 0, iArr, 0, outputPortOpenCount.length);
+        this.mInputPortOpen = new boolean[inputPortOpen.length];
+        System.arraycopy(inputPortOpen, 0, this.mInputPortOpen, 0, inputPortOpen.length);
+        this.mOutputPortOpenCount = new int[outputPortOpenCount.length];
+        System.arraycopy(outputPortOpenCount, 0, this.mOutputPortOpenCount, 0, outputPortOpenCount.length);
     }
 
     public MidiDeviceStatus(MidiDeviceInfo deviceInfo) {
@@ -76,27 +73,6 @@ public final class MidiDeviceStatus implements Parcelable {
         }
         builder.append(NavigationBarInflaterView.SIZE_MOD_END);
         return builder.toString();
-    }
-
-    /* renamed from: android.media.midi.MidiDeviceStatus$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MidiDeviceStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MidiDeviceStatus createFromParcel(Parcel in) {
-            ClassLoader classLoader = MidiDeviceInfo.class.getClassLoader();
-            MidiDeviceInfo deviceInfo = (MidiDeviceInfo) in.readParcelable(classLoader, MidiDeviceInfo.class);
-            boolean[] inputPortOpen = in.createBooleanArray();
-            int[] outputPortOpenCount = in.createIntArray();
-            return new MidiDeviceStatus(deviceInfo, inputPortOpen, outputPortOpenCount);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MidiDeviceStatus[] newArray(int size) {
-            return new MidiDeviceStatus[size];
-        }
     }
 
     @Override // android.os.Parcelable

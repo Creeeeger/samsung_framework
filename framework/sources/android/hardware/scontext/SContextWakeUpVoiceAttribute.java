@@ -23,7 +23,7 @@ public class SContextWakeUpVoiceAttribute extends SContextAttribute {
         setAttribute();
     }
 
-    public SContextWakeUpVoiceAttribute(int mode) {
+    SContextWakeUpVoiceAttribute(int mode) {
         this.mMode = -1;
         this.mVoiceMode = 1;
         this.mNetData = null;
@@ -47,8 +47,7 @@ public class SContextWakeUpVoiceAttribute extends SContextAttribute {
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
         if (this.mMode == MODE_REGISTER) {
-            int i = this.mVoiceMode;
-            return i == 1 || i == 2;
+            return this.mVoiceMode == 1 || this.mVoiceMode == 2;
         }
         if (this.mNetData == null) {
             Log.e(TAG, "The net data is null.");

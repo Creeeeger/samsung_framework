@@ -15,16 +15,14 @@ public class PrintedPdfDocument extends PdfDocument {
 
     public PrintedPdfDocument(Context context, PrintAttributes attributes) {
         PrintAttributes.MediaSize mediaSize = attributes.getMediaSize();
-        int widthMils = (int) ((mediaSize.getWidthMils() / 1000.0f) * 72.0f);
-        this.mPageWidth = widthMils;
-        int heightMils = (int) ((mediaSize.getHeightMils() / 1000.0f) * 72.0f);
-        this.mPageHeight = heightMils;
+        this.mPageWidth = (int) ((mediaSize.getWidthMils() / 1000.0f) * 72.0f);
+        this.mPageHeight = (int) ((mediaSize.getHeightMils() / 1000.0f) * 72.0f);
         PrintAttributes.Margins minMargins = attributes.getMinMargins();
         int marginLeft = (int) ((minMargins.getLeftMils() / 1000.0f) * 72.0f);
         int marginTop = (int) ((minMargins.getTopMils() / 1000.0f) * 72.0f);
         int marginRight = (int) ((minMargins.getRightMils() / 1000.0f) * 72.0f);
         int marginBottom = (int) ((minMargins.getBottomMils() / 1000.0f) * 72.0f);
-        this.mContentRect = new Rect(marginLeft, marginTop, widthMils - marginRight, heightMils - marginBottom);
+        this.mContentRect = new Rect(marginLeft, marginTop, this.mPageWidth - marginRight, this.mPageHeight - marginBottom);
     }
 
     public PdfDocument.Page startPage(int pageNumber) {

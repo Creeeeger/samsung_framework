@@ -14,10 +14,9 @@ public class BackupManagerMonitorWrapper extends IBackupManagerMonitor.Stub {
 
     @Override // android.app.backup.IBackupManagerMonitor
     public void onEvent(Bundle event) throws RemoteException {
-        BackupManagerMonitor backupManagerMonitor = this.mMonitor;
-        if (backupManagerMonitor == null) {
+        if (this.mMonitor == null) {
             return;
         }
-        backupManagerMonitor.onEvent(event);
+        this.mMonitor.onEvent(event);
     }
 }

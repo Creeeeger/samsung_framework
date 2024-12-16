@@ -24,9 +24,7 @@ public final class VerifyCredentialResponse implements Parcelable {
     public static final VerifyCredentialResponse ERROR = fromError();
     public static final VerifyCredentialResponse SKIP = fromTimeout(0);
     public static final Parcelable.Creator<VerifyCredentialResponse> CREATOR = new Parcelable.Creator<VerifyCredentialResponse>() { // from class: com.android.internal.widget.VerifyCredentialResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifyCredentialResponse createFromParcel(Parcel source) {
             int responseCode = source.readInt();
@@ -36,6 +34,7 @@ public final class VerifyCredentialResponse implements Parcelable {
             return new VerifyCredentialResponse(responseCode, timeout, gatekeeperHAT, gatekeeperPasswordHandle);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifyCredentialResponse[] newArray(int size) {
             return new VerifyCredentialResponse[size];
@@ -43,36 +42,9 @@ public final class VerifyCredentialResponse implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     @interface ResponseCode {
     }
 
-    /* synthetic */ VerifyCredentialResponse(int i, int i2, byte[] bArr, long j, VerifyCredentialResponseIA verifyCredentialResponseIA) {
-        this(i, i2, bArr, j);
-    }
-
-    /* renamed from: com.android.internal.widget.VerifyCredentialResponse$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VerifyCredentialResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerifyCredentialResponse createFromParcel(Parcel source) {
-            int responseCode = source.readInt();
-            int timeout = source.readInt();
-            byte[] gatekeeperHAT = source.createByteArray();
-            long gatekeeperPasswordHandle = source.readLong();
-            return new VerifyCredentialResponse(responseCode, timeout, gatekeeperHAT, gatekeeperPasswordHandle);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerifyCredentialResponse[] newArray(int size) {
-            return new VerifyCredentialResponse[size];
-        }
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         private byte[] mGatekeeperHAT;
         private long mGatekeeperPasswordHandle;
@@ -185,9 +157,8 @@ public final class VerifyCredentialResponse implements Parcelable {
     }
 
     public void destroy() {
-        byte[] bArr = this.mSecret;
-        if (bArr != null) {
-            Arrays.fill(bArr, 0, bArr.length, (byte) 0);
+        if (this.mSecret != null) {
+            Arrays.fill(this.mSecret, 0, this.mSecret.length, (byte) 0);
         }
     }
 }

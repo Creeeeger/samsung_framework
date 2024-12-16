@@ -7,14 +7,13 @@ import android.os.Parcelable;
 public final class MostRecent<V> extends ResolutionMechanism<V> {
     public static final MostRecent<?> MOST_RECENT = new MostRecent<>();
     public static final Parcelable.Creator<MostRecent<?>> CREATOR = new Parcelable.Creator<MostRecent<?>>() { // from class: android.app.admin.MostRecent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MostRecent<?> createFromParcel(Parcel source) {
             return new MostRecent<>();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MostRecent<?>[] newArray(int size) {
             return new MostRecent[size];
@@ -43,22 +42,5 @@ public final class MostRecent<V> extends ResolutionMechanism<V> {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    /* renamed from: android.app.admin.MostRecent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MostRecent<?>> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MostRecent<?> createFromParcel(Parcel source) {
-            return new MostRecent<>();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MostRecent<?>[] newArray(int size) {
-            return new MostRecent[size];
-        }
     }
 }

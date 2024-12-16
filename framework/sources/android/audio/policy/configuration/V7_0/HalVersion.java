@@ -15,7 +15,7 @@ public enum HalVersion {
         return this.rawName;
     }
 
-    public static HalVersion fromString(String rawString) {
+    static HalVersion fromString(String rawString) {
         for (HalVersion _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

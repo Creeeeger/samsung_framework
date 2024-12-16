@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class OverlayManagerImpl {
     private static final boolean DEBUG = false;
     private static final String FRRO_EXTENSION = ".frro";
@@ -52,17 +52,9 @@ public class OverlayManagerImpl {
 
     private static void cleanExpiredOverlays(Path selfTargetingBasePath, Path folderForCurrentBaseApk) {
         try {
-            String currentBaseFolder = folderForCurrentBaseApk.toString();
-            String selfTargetingDir = selfTargetingBasePath.getFileName().toString();
+            final String currentBaseFolder = folderForCurrentBaseApk.toString();
+            final String selfTargetingDir = selfTargetingBasePath.getFileName().toString();
             Files.walkFileTree(selfTargetingBasePath, new SimpleFileVisitor<Path>() { // from class: com.android.internal.content.om.OverlayManagerImpl.1
-                final /* synthetic */ String val$currentBaseFolder;
-                final /* synthetic */ String val$selfTargetingDir;
-
-                AnonymousClass1(String currentBaseFolder2, String selfTargetingDir2) {
-                    currentBaseFolder = currentBaseFolder2;
-                    selfTargetingDir = selfTargetingDir2;
-                }
-
                 @Override // java.nio.file.SimpleFileVisitor, java.nio.file.FileVisitor
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     String fileName = dir.getFileName().toString();
@@ -91,44 +83,6 @@ public class OverlayManagerImpl {
             });
         } catch (IOException e) {
             Log.w(TAG, "Unknown fail " + e);
-        }
-    }
-
-    /* renamed from: com.android.internal.content.om.OverlayManagerImpl$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends SimpleFileVisitor<Path> {
-        final /* synthetic */ String val$currentBaseFolder;
-        final /* synthetic */ String val$selfTargetingDir;
-
-        AnonymousClass1(String currentBaseFolder2, String selfTargetingDir2) {
-            currentBaseFolder = currentBaseFolder2;
-            selfTargetingDir = selfTargetingDir2;
-        }
-
-        @Override // java.nio.file.SimpleFileVisitor, java.nio.file.FileVisitor
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-            String fileName = dir.getFileName().toString();
-            if (fileName.equals(currentBaseFolder)) {
-                return FileVisitResult.SKIP_SUBTREE;
-            }
-            return super.preVisitDirectory((AnonymousClass1) dir, attrs);
-        }
-
-        @Override // java.nio.file.SimpleFileVisitor, java.nio.file.FileVisitor
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            if (!file.toFile().delete()) {
-                Log.w(OverlayManagerImpl.TAG, "Failed to delete file " + file);
-            }
-            return super.visitFile((AnonymousClass1) file, attrs);
-        }
-
-        @Override // java.nio.file.SimpleFileVisitor, java.nio.file.FileVisitor
-        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-            String fileName = dir.getFileName().toString();
-            if (!fileName.equals(currentBaseFolder) && !fileName.equals(selfTargetingDir) && !dir.toFile().delete()) {
-                Log.w(OverlayManagerImpl.TAG, "Failed to delete dir " + dir);
-            }
-            return super.postVisitDirectory((AnonymousClass1) dir, exc);
         }
     }
 
@@ -336,7 +290,7 @@ public class OverlayManagerImpl {
         return overlayInfos;
     }
 
-    public static /* synthetic */ boolean lambda$getOverlayInfosForTarget$0(File dir, String name) {
+    static /* synthetic */ boolean lambda$getOverlayInfosForTarget$0(File dir, String name) {
         if (!name.endsWith(FRRO_EXTENSION)) {
             return false;
         }

@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Slog;
 import com.android.internal.accessibility.common.ShortcutConstants;
+import com.android.internal.ravenwood.RavenwoodEnvironment;
 import dalvik.system.VMRuntime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,61 +24,61 @@ import java.util.stream.Collectors;
 
 /* loaded from: classes3.dex */
 public class Build {
+    public static final String BOARD;
+    public static final String BOOTLOADER;
+    public static final String BRAND;
+    public static final String BRAND_FOR_ATTESTATION;
 
     @Deprecated
     public static final String CPU_ABI;
 
     @Deprecated
     public static final String CPU_ABI2;
+    public static final String DEVICE;
+    public static final String DEVICE_FOR_ATTESTATION;
+    public static final String DISPLAY;
     public static final String FINGERPRINT;
+    public static final String HARDWARE;
     public static final String HOST;
     public static final int HW_TIMEOUT_MULTIPLIER;
+    public static final String ID;
     public static final boolean IS_ARC;
     public static final boolean IS_DEBUGGABLE;
+    public static final boolean IS_EMULATOR;
     public static final boolean IS_ENG;
     public static final boolean IS_TREBLE_ENABLED;
     public static final boolean IS_USER;
     public static final boolean IS_USERDEBUG;
+    public static final String MANUFACTURER;
+    public static final String MANUFACTURER_FOR_ATTESTATION;
+    public static final String MODEL;
+    public static final String MODEL_FOR_ATTESTATION;
+    public static final String ODM_SKU;
 
     @SystemApi
     public static final boolean PERMISSIONS_REVIEW_REQUIRED = true;
+    public static final String PRODUCT;
+    public static final String PRODUCT_FOR_ATTESTATION;
+
+    @Deprecated
+    public static final String RADIO;
+
+    @Deprecated
+    public static final String SERIAL;
+    public static final String SKU;
+    public static final String SOC_MANUFACTURER;
+    public static final String SOC_MODEL;
+    public static final String[] SUPPORTED_32_BIT_ABIS;
+    public static final String[] SUPPORTED_64_BIT_ABIS;
+    public static final String[] SUPPORTED_ABIS;
     private static final String TAG = "Build";
     public static final String TAGS;
     public static final long TIME;
     public static final String TYPE;
     public static final String UNKNOWN = "unknown";
     public static final String USER;
-    public static final String ID = getString("ro.build.id");
-    public static final String DISPLAY = getString("ro.build.display.id");
-    public static final String PRODUCT = getString("ro.product.name");
-    public static final String PRODUCT_FOR_ATTESTATION = getVendorDeviceIdProperty("name");
-    public static final String DEVICE = getString("ro.product.device");
-    public static final String DEVICE_FOR_ATTESTATION = getVendorDeviceIdProperty("device");
-    public static final String BOARD = getString("ro.product.board");
-    public static final String MANUFACTURER = getString("ro.product.manufacturer");
-    public static final String MANUFACTURER_FOR_ATTESTATION = getVendorDeviceIdProperty(MidiDeviceInfo.PROPERTY_MANUFACTURER);
-    public static final String BRAND = getString("ro.product.brand");
-    public static final String BRAND_FOR_ATTESTATION = getVendorDeviceIdProperty("brand");
-    public static final String MODEL = getString("ro.product.model");
-    public static final String MODEL_FOR_ATTESTATION = getVendorDeviceIdProperty("model");
-    public static final String SOC_MANUFACTURER = SocProperties.soc_manufacturer().orElse("unknown");
-    public static final String SOC_MODEL = SocProperties.soc_model().orElse("unknown");
-    public static final String BOOTLOADER = getString("ro.bootloader");
+    public static final int VENDOR_API_2024_Q2 = 202404;
 
-    @Deprecated
-    public static final String RADIO = joinListOrElse(TelephonyProperties.baseband_version(), "unknown");
-    public static final String HARDWARE = getString("ro.hardware");
-    public static final String SKU = getString("ro.boot.hardware.sku");
-    public static final String ODM_SKU = getString("ro.boot.product.hardware.sku");
-    public static final boolean IS_EMULATOR = getString("ro.boot.qemu").equals("1");
-
-    @Deprecated
-    public static final String SERIAL = getString("no.such.thing");
-    public static final String[] SUPPORTED_ABIS = getStringList("ro.product.cpu.abilist", ",");
-    public static final String[] SUPPORTED_32_BIT_ABIS = getStringList("ro.product.cpu.abilist32", ",");
-    public static final String[] SUPPORTED_64_BIT_ABIS = getStringList("ro.product.cpu.abilist64", ",");
-
-    /* loaded from: classes3.dex */
     public static class VERSION_CODES {
         public static final int BASE = 1;
         public static final int BASE_1_1 = 2;
@@ -115,11 +116,38 @@ public class Build {
         public static final int S_V2 = 32;
         public static final int TIRAMISU = 33;
         public static final int UPSIDE_DOWN_CAKE = 34;
+        public static final int VANILLA_ICE_CREAM = 35;
     }
 
     static {
         String[] abiList;
-        if (VMRuntime.getRuntime().is64Bit()) {
+        RavenwoodEnvironment.ensureRavenwoodInitialized();
+        ID = getString("ro.build.id");
+        DISPLAY = getString("ro.build.display.id");
+        PRODUCT = getString("ro.product.name");
+        PRODUCT_FOR_ATTESTATION = getVendorDeviceIdProperty("name");
+        DEVICE = getString("ro.product.device");
+        DEVICE_FOR_ATTESTATION = getVendorDeviceIdProperty("device");
+        BOARD = getString("ro.product.board");
+        MANUFACTURER = getString("ro.product.manufacturer");
+        MANUFACTURER_FOR_ATTESTATION = getVendorDeviceIdProperty(MidiDeviceInfo.PROPERTY_MANUFACTURER);
+        BRAND = getString("ro.product.brand");
+        BRAND_FOR_ATTESTATION = getVendorDeviceIdProperty("brand");
+        MODEL = getString("ro.product.model");
+        MODEL_FOR_ATTESTATION = getVendorDeviceIdProperty("model");
+        SOC_MANUFACTURER = SocProperties.soc_manufacturer().orElse("unknown");
+        SOC_MODEL = SocProperties.soc_model().orElse("unknown");
+        BOOTLOADER = getString("ro.bootloader");
+        RADIO = joinListOrElse(TelephonyProperties.baseband_version(), "unknown");
+        HARDWARE = getString("ro.hardware");
+        SKU = getString("ro.boot.hardware.sku");
+        ODM_SKU = getString("ro.boot.product.hardware.sku");
+        IS_EMULATOR = getString("ro.boot.qemu").equals("1");
+        SERIAL = getString("no.such.thing");
+        SUPPORTED_ABIS = getStringList("ro.product.cpu.abilist", ",");
+        SUPPORTED_32_BIT_ABIS = getStringList("ro.product.cpu.abilist32", ",");
+        SUPPORTED_64_BIT_ABIS = getStringList("ro.product.cpu.abilist64", ",");
+        if (Process.is64Bit()) {
             abiList = SUPPORTED_64_BIT_ABIS;
         } else {
             abiList = SUPPORTED_32_BIT_ABIS;
@@ -130,8 +158,7 @@ public class Build {
         } else {
             CPU_ABI2 = "";
         }
-        String string = getString("ro.build.type");
-        TYPE = string;
+        TYPE = getString("ro.build.type");
         TAGS = getString("ro.build.tags");
         FINGERPRINT = deriveFingerprint();
         HW_TIMEOUT_MULTIPLIER = SystemProperties.getInt("ro.hw_timeout_multiplier", 1);
@@ -140,9 +167,9 @@ public class Build {
         USER = getString("ro.build.user");
         HOST = getString("ro.build.host");
         IS_DEBUGGABLE = SystemProperties.getInt("ro.debuggable", 0) == 1;
-        IS_ENG = "eng".equals(string);
-        IS_USERDEBUG = "userdebug".equals(string);
-        IS_USER = "user".equals(string);
+        IS_ENG = "eng".equals(TYPE);
+        IS_USERDEBUG = "userdebug".equals(TYPE);
+        IS_USER = "user".equals(TYPE);
         IS_ARC = SystemProperties.getBoolean("ro.boot.container", false);
     }
 
@@ -162,27 +189,10 @@ public class Build {
         return VMRuntime.is64BitAbi(abi);
     }
 
-    /* loaded from: classes3.dex */
     public static class VERSION {
         public static final String[] ACTIVE_CODENAMES;
-        private static final String[] ALL_CODENAMES;
-        public static final String CODENAME;
-
-        @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-        public static final int DEVICE_INITIAL_SDK_INT;
-
-        @SystemApi
-        public static final Set<String> KNOWN_CODENAMES;
         public static final int MIN_SUPPORTED_TARGET_SDK_INT;
-
-        @SystemApi
-        public static final String PREVIEW_SDK_FINGERPRINT;
-        public static final int PREVIEW_SDK_INT;
         public static final int RESOURCES_SDK_INT;
-        public static final int SDK_INT;
-        public static final int SEM_FIRST_SDK_INT;
-        public static final int SEM_INT;
-        public static final int SEM_PLATFORM_INT;
         public static final String INCREMENTAL = Build.getString("ro.build.version.incremental");
         public static final String RELEASE = Build.getString("ro.build.version.release");
         public static final String RELEASE_OR_CODENAME = Build.getString("ro.build.version.release_or_codename");
@@ -194,26 +204,26 @@ public class Build {
 
         @Deprecated
         public static final String SDK = Build.getString("ro.build.version.sdk");
+        public static final int SDK_INT = SystemProperties.getInt("ro.build.version.sdk", 0);
+
+        @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+        public static final int DEVICE_INITIAL_SDK_INT = SystemProperties.getInt("ro.product.first_api_level", 0);
+        public static final int SEM_FIRST_SDK_INT = DEVICE_INITIAL_SDK_INT;
+        public static final int PREVIEW_SDK_INT = SystemProperties.getInt("ro.build.version.preview_sdk", 0);
+        public static final int SEM_INT = SystemProperties.getInt("ro.build.version.sem", 0);
+        public static final int SEM_PLATFORM_INT = SystemProperties.getInt("ro.build.version.sep", 0);
+
+        @SystemApi
+        public static final String PREVIEW_SDK_FINGERPRINT = SystemProperties.get("ro.build.version.preview_sdk_fingerprint", "REL");
+        public static final String CODENAME = Build.getString("ro.build.version.codename");
+
+        @SystemApi
+        public static final Set<String> KNOWN_CODENAMES = new ArraySet(Build.getStringList("ro.build.version.known_codenames", ","));
+        private static final String[] ALL_CODENAMES = Build.getStringList("ro.build.version.all_codenames", ",");
 
         static {
-            int i = SystemProperties.getInt("ro.build.version.sdk", 0);
-            SDK_INT = i;
-            int i2 = SystemProperties.getInt("ro.product.first_api_level", 0);
-            DEVICE_INITIAL_SDK_INT = i2;
-            SEM_FIRST_SDK_INT = i2;
-            PREVIEW_SDK_INT = SystemProperties.getInt("ro.build.version.preview_sdk", 0);
-            SEM_INT = SystemProperties.getInt("ro.build.version.sem", 0);
-            SEM_PLATFORM_INT = SystemProperties.getInt("ro.build.version.sep", 0);
-            PREVIEW_SDK_FINGERPRINT = SystemProperties.get("ro.build.version.preview_sdk_fingerprint", "REL");
-            CODENAME = Build.getString("ro.build.version.codename");
-            KNOWN_CODENAMES = new ArraySet(Build.getStringList("ro.build.version.known_codenames", ","));
-            String[] stringList = Build.getStringList("ro.build.version.all_codenames", ",");
-            ALL_CODENAMES = stringList;
-            if ("REL".equals(stringList[0])) {
-                stringList = new String[0];
-            }
-            ACTIVE_CODENAMES = stringList;
-            RESOURCES_SDK_INT = i + stringList.length;
+            ACTIVE_CODENAMES = "REL".equals(ALL_CODENAMES[0]) ? new String[0] : ALL_CODENAMES;
+            RESOURCES_SDK_INT = SDK_INT + ACTIVE_CODENAMES.length;
             MIN_SUPPORTED_TARGET_SDK_INT = SystemProperties.getInt("ro.build.version.min_supported_target_sdk", 0);
         }
     }
@@ -241,7 +251,7 @@ public class Build {
             return true;
         }
         if (IS_TREBLE_ENABLED) {
-            int result = VintfObject.verifyWithoutAvb();
+            int result = VintfObject.verifyBuildAtBoot();
             if (result != 0) {
                 Slog.e(TAG, "Vendor interface is incompatible, error=" + String.valueOf(result));
             }
@@ -265,7 +275,6 @@ public class Build {
         return false;
     }
 
-    /* loaded from: classes3.dex */
     public static class Partition {
         public static final String PARTITION_NAME_BOOTIMAGE = "bootimage";
         public static final String PARTITION_NAME_ODM = "odm";
@@ -277,10 +286,6 @@ public class Build {
         private final String mFingerprint;
         private final String mName;
         private final long mTimeMs;
-
-        /* synthetic */ Partition(String str, String str2, long j, PartitionIA partitionIA) {
-            this(str, str2, j);
-        }
 
         private Partition(String name, String fingerprint, long timeMs) {
             this.mName = name;
@@ -335,18 +340,17 @@ public class Build {
         return joinListOrElse(TelephonyProperties.baseband_version(), null);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String getString(String property) {
         return SystemProperties.get(property, "unknown");
     }
 
     private static String getVendorDeviceIdProperty(String property) {
         String attestProp = getString(TextUtils.formatSimple("ro.product.%s_for_attestation", property));
-        if (!attestProp.equals("unknown")) {
-            return "unknown";
-        }
-        return getString(TextUtils.formatSimple("ro.product.vendor.%s", property));
+        return attestProp.equals("unknown") ? getString(TextUtils.formatSimple("ro.product.vendor.%s", property)) : attestProp;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String[] getStringList(String property, String separator) {
         String value = SystemProperties.get(property);
         if (value.isEmpty()) {
@@ -373,7 +377,7 @@ public class Build {
         return ret.isEmpty() ? defaultValue : ret;
     }
 
-    public static /* synthetic */ String lambda$joinListOrElse$0(Object elem) {
+    static /* synthetic */ String lambda$joinListOrElse$0(Object elem) {
         return elem == null ? "" : elem.toString();
     }
 }

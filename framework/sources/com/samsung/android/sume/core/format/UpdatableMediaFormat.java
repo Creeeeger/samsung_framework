@@ -4,12 +4,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.BiConsumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface UpdatableMediaFormat extends MediaFormat {
     public static final String UPDATE_AT_ALLOC = "update-at-alloc";
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface UpdatableAttribute {
     }
 

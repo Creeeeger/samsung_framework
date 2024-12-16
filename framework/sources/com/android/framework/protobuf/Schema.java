@@ -4,8 +4,8 @@ import com.android.framework.protobuf.ArrayDecoders;
 import java.io.IOException;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public interface Schema<T> {
+/* loaded from: classes3.dex */
+interface Schema<T> {
     boolean equals(T t, T t2);
 
     int getSerializedSize(T t);

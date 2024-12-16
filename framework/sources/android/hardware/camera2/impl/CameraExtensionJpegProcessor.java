@@ -15,42 +15,41 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Surface;
+import com.android.internal.camera.flags.Flags;
 import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
     private static final int JPEG_APP_SEGMENT_SIZE = 65536;
     private static final int JPEG_QUEUE_SIZE = 1;
     public static final String TAG = "CameraExtensionJpeg";
     private final Handler mHandler;
-    private final HandlerThread mHandlerThread;
     private final ICaptureProcessorImpl mProcessor;
     private ImageReader mYuvReader = null;
     private ImageReader mPostviewYuvReader = null;
     private Size mResolution = null;
     private Size mPostviewResolution = null;
     private int mFormat = -1;
+    private int mPostviewFormat = -1;
+    private int mCaptureFormat = -1;
     private Surface mOutputSurface = null;
     private ImageWriter mOutputWriter = null;
     private Surface mPostviewOutputSurface = null;
     private ImageWriter mPostviewOutputWriter = null;
     private ConcurrentLinkedQueue<JpegParameters> mJpegParameters = new ConcurrentLinkedQueue<>();
+    private final HandlerThread mHandlerThread = new HandlerThread(TAG);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native int compressJpegFromYUV420pNative(int i, int i2, ByteBuffer byteBuffer, int i3, int i4, ByteBuffer byteBuffer2, int i5, int i6, ByteBuffer byteBuffer3, int i7, int i8, ByteBuffer byteBuffer4, int i9, int i10, int i11, int i12, int i13, int i14, int i15);
 
-    /* loaded from: classes.dex */
-    public static final class JpegParameters {
+    private static final class JpegParameters {
         public int mQuality;
         public int mRotation;
         public HashSet<Long> mTimeStamps;
-
-        /* synthetic */ JpegParameters(JpegParametersIA jpegParametersIA) {
-            this();
-        }
 
         private JpegParameters() {
             this.mTimeStamps = new HashSet<>();
@@ -61,22 +60,18 @@ public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
 
     public CameraExtensionJpegProcessor(ICaptureProcessorImpl processor) {
         this.mProcessor = processor;
-        HandlerThread handlerThread = new HandlerThread(TAG);
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mHandler = new Handler(handlerThread.getLooper());
+        this.mHandlerThread.start();
+        this.mHandler = new Handler(this.mHandlerThread.getLooper());
     }
 
     public void close() {
         this.mHandlerThread.quitSafely();
-        ImageWriter imageWriter = this.mOutputWriter;
-        if (imageWriter != null) {
-            imageWriter.close();
+        if (this.mOutputWriter != null) {
+            this.mOutputWriter.close();
             this.mOutputWriter = null;
         }
-        ImageReader imageReader = this.mYuvReader;
-        if (imageReader != null) {
-            imageReader.close();
+        if (this.mYuvReader != null) {
+            this.mYuvReader.close();
             this.mYuvReader = null;
         }
     }
@@ -122,23 +117,26 @@ public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
 
     @Override // android.hardware.camera2.extension.ICaptureProcessorImpl
     public void onOutputSurface(Surface surface, int format) throws RemoteException {
-        if (format != 256) {
+        if (!Flags.extension10Bit() && format != 256) {
             Log.e(TAG, "Unsupported output format: " + format);
-        } else {
-            this.mOutputSurface = surface;
-            initializePipeline();
+            return;
         }
+        CameraExtensionUtils.SurfaceInfo surfaceInfo = CameraExtensionUtils.querySurface(surface);
+        this.mCaptureFormat = surfaceInfo.mFormat;
+        this.mOutputSurface = surface;
+        initializePipeline();
     }
 
     @Override // android.hardware.camera2.extension.ICaptureProcessorImpl
     public void onPostviewOutputSurface(Surface surface) throws RemoteException {
         CameraExtensionUtils.SurfaceInfo postviewSurfaceInfo = CameraExtensionUtils.querySurface(surface);
-        if (postviewSurfaceInfo.mFormat != 256) {
+        if (!Flags.extension10Bit() && postviewSurfaceInfo.mFormat != 256) {
             Log.e(TAG, "Unsupported output format: " + postviewSurfaceInfo.mFormat);
-        } else {
-            this.mPostviewOutputSurface = surface;
-            initializePostviewPipeline();
+            return;
         }
+        this.mPostviewFormat = postviewSurfaceInfo.mFormat;
+        this.mPostviewOutputSurface = surface;
+        initializePostviewPipeline();
     }
 
     @Override // android.hardware.camera2.extension.ICaptureProcessorImpl
@@ -150,7 +148,7 @@ public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
 
     @Override // android.hardware.camera2.extension.ICaptureProcessorImpl
     public void onImageFormatUpdate(int format) throws RemoteException {
-        if (format != 35) {
+        if (!Flags.extension10Bit() && format != 35) {
             Log.e(TAG, "Unsupported input format: " + format);
         } else {
             this.mFormat = format;
@@ -159,30 +157,32 @@ public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
     }
 
     private void initializePipeline() throws RemoteException {
-        Surface surface;
-        Size size;
-        if (this.mFormat != -1 && (surface = this.mOutputSurface) != null && (size = this.mResolution) != null && this.mYuvReader == null) {
-            this.mOutputWriter = ImageWriter.newInstance(surface, 1, 256, (((size.width * this.mResolution.height) * 3) / 2) + 65536, 1);
-            ImageReader newInstance = ImageReader.newInstance(this.mResolution.width, this.mResolution.height, this.mFormat, 1);
-            this.mYuvReader = newInstance;
-            newInstance.setOnImageAvailableListener(new YuvCallback(newInstance, this.mOutputWriter), this.mHandler);
-            this.mProcessor.onOutputSurface(this.mYuvReader.getSurface(), this.mFormat);
+        if (this.mFormat != -1 && this.mOutputSurface != null && this.mResolution != null && this.mYuvReader == null) {
+            if (Flags.extension10Bit() && this.mCaptureFormat == 35) {
+                this.mProcessor.onOutputSurface(this.mOutputSurface, this.mCaptureFormat);
+            } else {
+                this.mOutputWriter = ImageWriter.newInstance(this.mOutputSurface, 1, 256, (((this.mResolution.width * this.mResolution.height) * 3) / 2) + 65536, 1);
+                this.mYuvReader = ImageReader.newInstance(this.mResolution.width, this.mResolution.height, this.mFormat, 1);
+                this.mYuvReader.setOnImageAvailableListener(new YuvCallback(this.mYuvReader, this.mOutputWriter), this.mHandler);
+                this.mProcessor.onOutputSurface(this.mYuvReader.getSurface(), this.mFormat);
+            }
             this.mProcessor.onResolutionUpdate(this.mResolution, this.mPostviewResolution);
-            this.mProcessor.onImageFormatUpdate(this.mFormat);
+            this.mProcessor.onImageFormatUpdate(35);
         }
     }
 
     private void initializePostviewPipeline() throws RemoteException {
-        Surface surface;
-        Size size;
-        if (this.mFormat != -1 && (surface = this.mPostviewOutputSurface) != null && (size = this.mPostviewResolution) != null && this.mPostviewYuvReader == null) {
-            this.mPostviewOutputWriter = ImageWriter.newInstance(surface, 1, 256, size.width * this.mPostviewResolution.height, 1);
-            ImageReader newInstance = ImageReader.newInstance(this.mPostviewResolution.width, this.mPostviewResolution.height, this.mFormat, 1);
-            this.mPostviewYuvReader = newInstance;
-            newInstance.setOnImageAvailableListener(new YuvCallback(newInstance, this.mPostviewOutputWriter), this.mHandler);
-            this.mProcessor.onPostviewOutputSurface(this.mPostviewYuvReader.getSurface());
+        if (this.mFormat != -1 && this.mPostviewOutputSurface != null && this.mPostviewResolution != null && this.mPostviewYuvReader == null) {
+            if (Flags.extension10Bit() && this.mPostviewFormat == 35) {
+                this.mProcessor.onPostviewOutputSurface(this.mPostviewOutputSurface);
+            } else {
+                this.mPostviewOutputWriter = ImageWriter.newInstance(this.mPostviewOutputSurface, 1, 256, this.mPostviewResolution.width * this.mPostviewResolution.height, 1);
+                this.mPostviewYuvReader = ImageReader.newInstance(this.mPostviewResolution.width, this.mPostviewResolution.height, this.mFormat, 1);
+                this.mPostviewYuvReader.setOnImageAvailableListener(new YuvCallback(this.mPostviewYuvReader, this.mPostviewOutputWriter), this.mHandler);
+                this.mProcessor.onPostviewOutputSurface(this.mPostviewYuvReader.getSurface());
+            }
             this.mProcessor.onResolutionUpdate(this.mResolution, this.mPostviewResolution);
-            this.mProcessor.onImageFormatUpdate(this.mFormat);
+            this.mProcessor.onImageFormatUpdate(35);
         }
     }
 
@@ -191,8 +191,7 @@ public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
         throw new UnsupportedOperationException("Binder IPC not supported!");
     }
 
-    /* loaded from: classes.dex */
-    public class YuvCallback implements ImageReader.OnImageAvailableListener {
+    private class YuvCallback implements ImageReader.OnImageAvailableListener {
         private ImageReader mImageReader;
         private ImageWriter mImageWriter;
 

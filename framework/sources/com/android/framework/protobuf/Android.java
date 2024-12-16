@@ -1,6 +1,6 @@
 package com.android.framework.protobuf;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class Android {
     private static boolean ASSUME_ANDROID;
     private static final boolean IS_ROBOLECTRIC;
@@ -13,11 +13,11 @@ final class Android {
         IS_ROBOLECTRIC = (ASSUME_ANDROID || getClassForName("org.robolectric.Robolectric") == null) ? false : true;
     }
 
-    public static boolean isOnAndroidDevice() {
+    static boolean isOnAndroidDevice() {
         return ASSUME_ANDROID || !(MEMORY_CLASS == null || IS_ROBOLECTRIC);
     }
 
-    public static Class<?> getMemoryClass() {
+    static Class<?> getMemoryClass() {
         return MEMORY_CLASS;
     }
 

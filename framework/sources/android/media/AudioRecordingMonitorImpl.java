@@ -30,9 +30,6 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
     private final Object mRecordCallbackLock = new Object();
     private LinkedList<AudioRecordingCallbackInfo> mRecordCallbackList = new LinkedList<>();
     private final IRecordingConfigDispatcher mRecordingCallback = new IRecordingConfigDispatcher.Stub() { // from class: android.media.AudioRecordingMonitorImpl.1
-        AnonymousClass1() {
-        }
-
         @Override // android.media.IRecordingConfigDispatcher
         public void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> configs) {
             AudioRecordingConfiguration config = AudioRecordingMonitorImpl.this.getMyConfig(configs);
@@ -47,7 +44,7 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         }
     };
 
-    public AudioRecordingMonitorImpl(AudioRecordingMonitorClient client) {
+    AudioRecordingMonitorImpl(AudioRecordingMonitorClient client) {
         this.mClient = client;
     }
 
@@ -103,8 +100,8 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class AudioRecordingCallbackInfo {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class AudioRecordingCallbackInfo {
         final AudioManager.AudioRecordingCallback mCb;
         final Executor mExecutor;
 
@@ -114,32 +111,10 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.AudioRecordingMonitorImpl$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IRecordingConfigDispatcher.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.IRecordingConfigDispatcher
-        public void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> configs) {
-            AudioRecordingConfiguration config = AudioRecordingMonitorImpl.this.getMyConfig(configs);
-            if (config != null) {
-                synchronized (AudioRecordingMonitorImpl.this.mRecordCallbackLock) {
-                    if (AudioRecordingMonitorImpl.this.mRecordingCallbackHandler != null) {
-                        Message m = AudioRecordingMonitorImpl.this.mRecordingCallbackHandler.obtainMessage(1, config);
-                        AudioRecordingMonitorImpl.this.mRecordingCallbackHandler.sendMessage(m);
-                    }
-                }
-            }
-        }
-    }
-
     private void beginRecordingCallbackHandling() {
         if (this.mRecordingCallbackHandlerThread == null) {
-            HandlerThread handlerThread = new HandlerThread("android.media.AudioRecordingMonitor.RecordingCallback");
-            this.mRecordingCallbackHandlerThread = handlerThread;
-            handlerThread.start();
+            this.mRecordingCallbackHandlerThread = new HandlerThread("android.media.AudioRecordingMonitor.RecordingCallback");
+            this.mRecordingCallbackHandlerThread.start();
             Looper looper = this.mRecordingCallbackHandlerThread.getLooper();
             if (looper != null) {
                 this.mRecordingCallbackHandler = new AnonymousClass2(looper);
@@ -153,9 +128,8 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         }
     }
 
-    /* renamed from: android.media.AudioRecordingMonitorImpl$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends Handler {
+    /* renamed from: android.media.AudioRecordingMonitorImpl$2, reason: invalid class name */
+    class AnonymousClass2 extends Handler {
         AnonymousClass2(Looper looper) {
             super(looper);
         }
@@ -222,13 +196,11 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
     }
 
     private static IAudioService getService() {
-        IAudioService iAudioService = sService;
-        if (iAudioService != null) {
-            return iAudioService;
+        if (sService != null) {
+            return sService;
         }
         IBinder b = ServiceManager.getService("audio");
-        IAudioService asInterface = IAudioService.Stub.asInterface(b);
-        sService = asInterface;
-        return asInterface;
+        sService = IAudioService.Stub.asInterface(b);
+        return sService;
     }
 }

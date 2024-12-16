@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.presence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresCmdId implements Parcelable {
     public static final Parcelable.Creator<PresCmdId> CREATOR = new Parcelable.Creator<PresCmdId>() { // from class: com.android.ims.internal.uce.presence.PresCmdId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresCmdId createFromParcel(Parcel source) {
             return new PresCmdId(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresCmdId[] newArray(int size) {
             return new PresCmdId[size];
@@ -27,10 +26,6 @@ public class PresCmdId implements Parcelable {
     public static final int UCE_PRES_CMD_SETNEWFEATURETAG = 4;
     public static final int UCE_PRES_CMD_UNKNOWN = 6;
     private int mCmdId;
-
-    /* synthetic */ PresCmdId(Parcel parcel, PresCmdIdIA presCmdIdIA) {
-        this(parcel);
-    }
 
     public int getCmdId() {
         return this.mCmdId;
@@ -52,23 +47,6 @@ public class PresCmdId implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mCmdId);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresCmdId$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresCmdId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresCmdId createFromParcel(Parcel source) {
-            return new PresCmdId(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresCmdId[] newArray(int size) {
-            return new PresCmdId[size];
-        }
     }
 
     private PresCmdId(Parcel source) {

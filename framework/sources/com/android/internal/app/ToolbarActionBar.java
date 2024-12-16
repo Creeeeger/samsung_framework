@@ -21,67 +21,32 @@ import com.android.internal.widget.DecorToolbar;
 import com.android.internal.widget.ToolbarWidgetWrapper;
 import java.util.ArrayList;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ToolbarActionBar extends ActionBar {
     private DecorToolbar mDecorToolbar;
     private boolean mLastMenuVisibility;
     private boolean mMenuCallbackSet;
-    private final Toolbar.OnMenuItemClickListener mMenuClicker;
     private boolean mToolbarMenuPrepared;
     private Window.Callback mWindowCallback;
     private ArrayList<ActionBar.OnMenuVisibilityListener> mMenuVisibilityListeners = new ArrayList<>();
     private final Runnable mMenuInvalidator = new Runnable() { // from class: com.android.internal.app.ToolbarActionBar.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             ToolbarActionBar.this.populateOptionsMenu();
         }
     };
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.app.ToolbarActionBar$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ToolbarActionBar.this.populateOptionsMenu();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.app.ToolbarActionBar$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Toolbar.OnMenuItemClickListener {
-        AnonymousClass2() {
-        }
-
+    private final Toolbar.OnMenuItemClickListener mMenuClicker = new Toolbar.OnMenuItemClickListener() { // from class: com.android.internal.app.ToolbarActionBar.2
         @Override // android.widget.Toolbar.OnMenuItemClickListener
         public boolean onMenuItemClick(MenuItem item) {
             return ToolbarActionBar.this.mWindowCallback.onMenuItemSelected(0, item);
         }
-    }
+    };
 
     public ToolbarActionBar(Toolbar toolbar, CharSequence title, Window.Callback windowCallback) {
-        AnonymousClass2 anonymousClass2 = new Toolbar.OnMenuItemClickListener() { // from class: com.android.internal.app.ToolbarActionBar.2
-            AnonymousClass2() {
-            }
-
-            @Override // android.widget.Toolbar.OnMenuItemClickListener
-            public boolean onMenuItemClick(MenuItem item) {
-                return ToolbarActionBar.this.mWindowCallback.onMenuItemSelected(0, item);
-            }
-        };
-        this.mMenuClicker = anonymousClass2;
         this.mDecorToolbar = new ToolbarWidgetWrapper(toolbar, false);
-        ToolbarCallbackWrapper toolbarCallbackWrapper = new ToolbarCallbackWrapper(windowCallback);
-        this.mWindowCallback = toolbarCallbackWrapper;
-        this.mDecorToolbar.setWindowCallback(toolbarCallbackWrapper);
-        toolbar.setOnMenuItemClickListener(anonymousClass2);
+        this.mWindowCallback = new ToolbarCallbackWrapper(windowCallback);
+        this.mDecorToolbar.setWindowCallback(this.mWindowCallback);
+        toolbar.setOnMenuItemClickListener(this.mMenuClicker);
         this.mDecorToolbar.setWindowTitle(title);
     }
 
@@ -231,8 +196,7 @@ public class ToolbarActionBar extends ActionBar {
 
     @Override // android.app.ActionBar
     public void setTitle(int resId) {
-        DecorToolbar decorToolbar = this.mDecorToolbar;
-        decorToolbar.setTitle(resId != 0 ? decorToolbar.getContext().getText(resId) : null);
+        this.mDecorToolbar.setTitle(resId != 0 ? this.mDecorToolbar.getContext().getText(resId) : null);
     }
 
     @Override // android.app.ActionBar
@@ -247,8 +211,7 @@ public class ToolbarActionBar extends ActionBar {
 
     @Override // android.app.ActionBar
     public void setSubtitle(int resId) {
-        DecorToolbar decorToolbar = this.mDecorToolbar;
-        decorToolbar.setSubtitle(resId != 0 ? decorToolbar.getContext().getText(resId) : null);
+        this.mDecorToolbar.setSubtitle(resId != 0 ? this.mDecorToolbar.getContext().getText(resId) : null);
     }
 
     @Override // android.app.ActionBar
@@ -432,14 +395,15 @@ public class ToolbarActionBar extends ActionBar {
     }
 
     void populateOptionsMenu() {
+        byte b = 0;
         if (!this.mMenuCallbackSet) {
             this.mDecorToolbar.setMenuCallbacks(new ActionMenuPresenterCallback(), new MenuBuilderCallback());
             this.mMenuCallbackSet = true;
         }
         Menu menu = this.mDecorToolbar.getMenu();
-        MenuBuilder mb = menu instanceof MenuBuilder ? (MenuBuilder) menu : null;
-        if (mb != null) {
-            mb.stopDispatchingItemsChanged();
+        MenuBuilder menuBuilder = menu instanceof MenuBuilder ? (MenuBuilder) menu : null;
+        if (menuBuilder != null) {
+            menuBuilder.stopDispatchingItemsChanged();
         }
         try {
             menu.clear();
@@ -447,8 +411,8 @@ public class ToolbarActionBar extends ActionBar {
                 menu.clear();
             }
         } finally {
-            if (mb != null) {
-                mb.startDispatchingItemsChanged();
+            if (menuBuilder != null) {
+                menuBuilder.startDispatchingItemsChanged();
             }
         }
     }
@@ -499,9 +463,7 @@ public class ToolbarActionBar extends ActionBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public class ToolbarCallbackWrapper extends WindowCallbackWrapper {
+    private class ToolbarCallbackWrapper extends WindowCallbackWrapper {
         public ToolbarCallbackWrapper(Window.Callback wrapped) {
             super(wrapped);
         }
@@ -525,13 +487,8 @@ public class ToolbarActionBar extends ActionBar {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public final class ActionMenuPresenterCallback implements MenuPresenter.Callback {
+    private final class ActionMenuPresenterCallback implements MenuPresenter.Callback {
         private boolean mClosingActionMenu;
-
-        /* synthetic */ ActionMenuPresenterCallback(ToolbarActionBar toolbarActionBar, ActionMenuPresenterCallbackIA actionMenuPresenterCallbackIA) {
-            this();
-        }
 
         private ActionMenuPresenterCallback() {
         }
@@ -559,12 +516,7 @@ public class ToolbarActionBar extends ActionBar {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public final class MenuBuilderCallback implements MenuBuilder.Callback {
-        /* synthetic */ MenuBuilderCallback(ToolbarActionBar toolbarActionBar, MenuBuilderCallbackIA menuBuilderCallbackIA) {
-            this();
-        }
-
+    private final class MenuBuilderCallback implements MenuBuilder.Callback {
         private MenuBuilderCallback() {
         }
 

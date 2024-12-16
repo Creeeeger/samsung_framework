@@ -7,6 +7,8 @@ import android.app.time.LocationTimeZoneManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.rendererpolicy.GraphicsRendererPolicy;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.Handler;
@@ -44,17 +46,23 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
     public static final String GRAPHICS_STATS_SERVICE = "graphicsstats";
     private static final int SAVE_BUFFER = 1;
     private static final String TAG = "GraphicsStatsService";
-    private ArrayList<ActiveBuffer> mActive;
     private final AlarmManager mAlarmManager;
     private final AppOpsManager mAppOps;
-    private final int mAshmemSize;
     private final Context mContext;
-    private final Object mFileAccessLock;
+    private final GraphicsRendererPolicy mGraphicsRendererPolicy;
     private File mGraphicsStatsDir;
-    private final Object mLock;
-    private boolean mRotateIsScheduled;
     private Handler mWriteOutHandler;
-    private final byte[] mZeroData;
+    private final int mAshmemSize = nGetAshmemSize();
+    private final byte[] mZeroData = new byte[this.mAshmemSize];
+    private final Object mLock = new Object();
+    private ArrayList<ActiveBuffer> mActive = new ArrayList<>();
+    private final Object mFileAccessLock = new Object();
+    private boolean mRotateIsScheduled = false;
+
+    public enum GraphicsStatsRenderEngine {
+        GL,
+        VK
+    }
 
     private static native void nAddToDump(long j, String str);
 
@@ -75,65 +83,33 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
     private native void nativeInit();
 
     public GraphicsStatsService(Context context) {
-        int nGetAshmemSize = nGetAshmemSize();
-        this.mAshmemSize = nGetAshmemSize;
-        this.mZeroData = new byte[nGetAshmemSize];
-        this.mLock = new Object();
-        this.mActive = new ArrayList<>();
-        this.mFileAccessLock = new Object();
-        this.mRotateIsScheduled = false;
         this.mContext = context;
         this.mAppOps = (AppOpsManager) context.getSystemService(AppOpsManager.class);
         this.mAlarmManager = (AlarmManager) context.getSystemService(AlarmManager.class);
         File systemDataDir = new File(Environment.getDataDirectory(), "system");
-        File file = new File(systemDataDir, GRAPHICS_STATS_SERVICE);
-        this.mGraphicsStatsDir = file;
-        file.mkdirs();
+        this.mGraphicsStatsDir = new File(systemDataDir, GRAPHICS_STATS_SERVICE);
+        this.mGraphicsStatsDir.mkdirs();
         if (!this.mGraphicsStatsDir.exists()) {
             throw new IllegalStateException("Graphics stats directory does not exist: " + this.mGraphicsStatsDir.getAbsolutePath());
         }
         HandlerThread bgthread = new HandlerThread("GraphicsStats-disk", 10);
         bgthread.start();
+        this.mGraphicsRendererPolicy = new GraphicsRendererPolicy(context);
         this.mWriteOutHandler = new Handler(bgthread.getLooper(), new Handler.Callback() { // from class: android.graphics.GraphicsStatsService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.os.Handler.Callback
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case 1:
                         GraphicsStatsService.this.saveBuffer((HistoricalBuffer) msg.obj);
-                        return true;
+                        break;
                     case 2:
                         GraphicsStatsService.this.deleteOldBuffers();
-                        return true;
-                    default:
-                        return true;
+                        break;
                 }
+                return true;
             }
         });
         nativeInit();
-    }
-
-    /* renamed from: android.graphics.GraphicsStatsService$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Handler.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler.Callback
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    GraphicsStatsService.this.saveBuffer((HistoricalBuffer) msg.obj);
-                    return true;
-                case 2:
-                    GraphicsStatsService.this.deleteOldBuffers();
-                    return true;
-                default:
-                    return true;
-            }
-        }
     }
 
     private void scheduleRotateLocked() {
@@ -151,6 +127,7 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }, this.mWriteOutHandler);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onAlarm() {
         int i;
         ActiveBuffer[] activeCopy;
@@ -192,6 +169,27 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
                     th = th2;
                 }
             } catch (PackageManager.NameNotFoundException e) {
+                throw new RemoteException("Unable to find package: '" + packageName + "'");
+            }
+        } finally {
+            Binder.restoreCallingIdentity(callingIdentity);
+        }
+    }
+
+    @Override // android.view.IGraphicsStats
+    public int requestRenderEngineFor(String packageName) throws RemoteException {
+        Log.d(TAG, "requestRenderEngineFor(" + packageName + NavigationBarInflaterView.KEY_CODE_END);
+        if (packageName == null) {
+            Log.w(TAG, "packageName is null.");
+            return GraphicsStatsRenderEngine.VK.ordinal();
+        }
+        int uid = Binder.getCallingUid();
+        long callingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                this.mAppOps.checkPackage(uid, packageName);
+                return this.mGraphicsRendererPolicy.getRendererType(packageName);
+            } catch (Exception e) {
                 throw new RemoteException("Unable to find package: '" + packageName + "'");
             }
         } finally {
@@ -241,71 +239,74 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
                         th = th;
                         while (true) {
                             try {
-                                break;
+                                throw th;
                             } catch (Throwable th2) {
                                 th = th2;
                             }
                         }
-                        throw th;
                     }
                 }
                 long dump = nCreateDump(-1, true);
                 try {
-                    synchronized (this.mFileAccessLock) {
-                        try {
-                            HashSet<File> skipList = dumpActiveLocked(dump, buffers);
-                            buffers.clear();
-                            int i2 = 0;
-                            String subPath = String.format("%d", Long.valueOf(targetDay));
-                            File dateDir = new File(this.mGraphicsStatsDir, subPath);
-                            if (dateDir.exists()) {
-                                File[] listFiles = dateDir.listFiles();
-                                int length = listFiles.length;
-                                while (i2 < length) {
-                                    File pkg = listFiles[i2];
-                                    File[] listFiles2 = pkg.listFiles();
-                                    long targetDay3 = targetDay;
-                                    try {
-                                        int length2 = listFiles2.length;
-                                        int i3 = 0;
-                                        while (i3 < length2) {
-                                            File version = listFiles2[i3];
-                                            File[] fileArr = listFiles2;
-                                            int i4 = length2;
-                                            String subPath2 = subPath;
-                                            File data = new File(version, "total");
-                                            if (!skipList.contains(data)) {
-                                                nAddToDump(dump, data.getAbsolutePath());
-                                            }
-                                            i3++;
-                                            listFiles2 = fileArr;
-                                            length2 = i4;
-                                            subPath = subPath2;
-                                        }
-                                        i2++;
-                                        targetDay = targetDay3;
-                                    } catch (Throwable th3) {
-                                        th = th3;
+                    try {
+                        synchronized (this.mFileAccessLock) {
+                            try {
+                                HashSet<File> skipList = dumpActiveLocked(dump, buffers);
+                                buffers.clear();
+                                String subPath = String.format("%d", Long.valueOf(targetDay));
+                                File dateDir = new File(this.mGraphicsStatsDir, subPath);
+                                if (dateDir.exists()) {
+                                    File[] listFiles = dateDir.listFiles();
+                                    int length = listFiles.length;
+                                    int i2 = 0;
+                                    while (i2 < length) {
+                                        File pkg = listFiles[i2];
+                                        File[] listFiles2 = pkg.listFiles();
+                                        long targetDay3 = targetDay;
                                         try {
-                                            throw th;
-                                        } catch (Throwable th4) {
-                                            th = th4;
-                                            nFinishDumpInMemory(dump, pulledData, lastFullDay);
-                                            throw th;
+                                            int length2 = listFiles2.length;
+                                            int i3 = 0;
+                                            while (i3 < length2) {
+                                                File version = listFiles2[i3];
+                                                File[] fileArr = listFiles2;
+                                                int i4 = length2;
+                                                ArrayList<HistoricalBuffer> buffers2 = buffers;
+                                                File data = new File(version, "total");
+                                                if (!skipList.contains(data)) {
+                                                    nAddToDump(dump, data.getAbsolutePath());
+                                                }
+                                                i3++;
+                                                listFiles2 = fileArr;
+                                                length2 = i4;
+                                                buffers = buffers2;
+                                            }
+                                            i2++;
+                                            targetDay = targetDay3;
+                                        } catch (Throwable th3) {
+                                            th = th3;
+                                            try {
+                                                throw th;
+                                            } catch (Throwable th4) {
+                                                th = th4;
+                                                nFinishDumpInMemory(dump, pulledData, lastFullDay);
+                                                throw th;
+                                            }
                                         }
                                     }
                                 }
+                                nFinishDumpInMemory(dump, pulledData, lastFullDay);
+                            } catch (Throwable th5) {
+                                th = th5;
                             }
-                            nFinishDumpInMemory(dump, pulledData, lastFullDay);
-                        } catch (Throwable th5) {
-                            th = th5;
                         }
+                    } catch (Throwable th6) {
+                        th = th6;
                     }
-                } catch (Throwable th6) {
-                    th = th6;
+                } catch (Throwable th7) {
+                    th = th7;
                 }
-            } catch (Throwable th7) {
-                th = th7;
+            } catch (Throwable th8) {
+                th = th8;
             }
         }
     }
@@ -331,6 +332,7 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         return new File(this.mGraphicsStatsDir, subPath);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void saveBuffer(HistoricalBuffer buffer) {
         if (Trace.isTagEnabled(524288L)) {
             Trace.traceBegin(524288L, "saving graphicsstats for " + buffer.mInfo.mPackageName);
@@ -359,6 +361,7 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void deleteOldBuffers() {
         Trace.traceBegin(524288L, "deleting old graphicsstats buffers");
         synchronized (this.mFileAccessLock) {
@@ -394,6 +397,7 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         buffer.closeAllBuffers();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void processDied(ActiveBuffer buffer) {
         synchronized (this.mLock) {
             this.mActive.remove(buffer);
@@ -569,8 +573,7 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         nativeDestructor();
     }
 
-    /* loaded from: classes.dex */
-    public final class BufferInfo {
+    private final class BufferInfo {
         long mEndTime;
         final String mPackageName;
         long mStartTime;
@@ -583,8 +586,7 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class ActiveBuffer implements IBinder.DeathRecipient {
+    private final class ActiveBuffer implements IBinder.DeathRecipient {
         final IGraphicsStatsCallback mCallback;
         final BufferInfo mInfo;
         ByteBuffer mMapping;
@@ -594,17 +596,15 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         final int mUid;
 
         ActiveBuffer(IGraphicsStatsCallback token, int uid, int pid, String packageName, long versionCode) throws RemoteException, IOException {
-            this.mInfo = new BufferInfo(packageName, versionCode, System.currentTimeMillis());
+            this.mInfo = GraphicsStatsService.this.new BufferInfo(packageName, versionCode, System.currentTimeMillis());
             this.mUid = uid;
             this.mPid = pid;
             this.mCallback = token;
-            IBinder asBinder = token.asBinder();
-            this.mToken = asBinder;
-            asBinder.linkToDeath(this, 0);
+            this.mToken = this.mCallback.asBinder();
+            this.mToken.linkToDeath(this, 0);
             try {
-                SharedMemory create = SharedMemory.create("GFXStats-" + pid, GraphicsStatsService.this.mAshmemSize);
-                this.mProcessBuffer = create;
-                this.mMapping = create.mapReadWrite();
+                this.mProcessBuffer = SharedMemory.create("GFXStats-" + pid, GraphicsStatsService.this.mAshmemSize);
+                this.mMapping = this.mProcessBuffer.mapReadWrite();
             } catch (ErrnoException ex) {
                 ex.rethrowAsIOException();
             }
@@ -619,14 +619,12 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }
 
         void closeAllBuffers() {
-            ByteBuffer byteBuffer = this.mMapping;
-            if (byteBuffer != null) {
-                SharedMemory.unmap(byteBuffer);
+            if (this.mMapping != null) {
+                SharedMemory.unmap(this.mMapping);
                 this.mMapping = null;
             }
-            SharedMemory sharedMemory = this.mProcessBuffer;
-            if (sharedMemory != null) {
-                sharedMemory.close();
+            if (this.mProcessBuffer != null) {
+                this.mProcessBuffer.close();
                 this.mProcessBuffer = null;
             }
         }
@@ -640,27 +638,23 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }
 
         void readBytes(byte[] buffer, int count) throws IOException {
-            ByteBuffer byteBuffer = this.mMapping;
-            if (byteBuffer == null) {
+            if (this.mMapping == null) {
                 throw new IOException("SharedMemory has been deactivated");
             }
-            byteBuffer.position(0);
+            this.mMapping.position(0);
             this.mMapping.get(buffer, 0, count);
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class HistoricalBuffer {
+    private final class HistoricalBuffer {
         final byte[] mData;
         final BufferInfo mInfo;
 
         HistoricalBuffer(ActiveBuffer active) throws IOException {
-            byte[] bArr = new byte[GraphicsStatsService.this.mAshmemSize];
-            this.mData = bArr;
-            BufferInfo bufferInfo = active.mInfo;
-            this.mInfo = bufferInfo;
-            bufferInfo.mEndTime = System.currentTimeMillis();
-            active.readBytes(bArr, GraphicsStatsService.this.mAshmemSize);
+            this.mData = new byte[GraphicsStatsService.this.mAshmemSize];
+            this.mInfo = active.mInfo;
+            this.mInfo.mEndTime = System.currentTimeMillis();
+            active.readBytes(this.mData, GraphicsStatsService.this.mAshmemSize);
         }
     }
 }

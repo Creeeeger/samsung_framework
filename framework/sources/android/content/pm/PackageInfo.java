@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class PackageInfo implements Parcelable {
     public static final Parcelable.Creator<PackageInfo> CREATOR = new Parcelable.Creator<PackageInfo>() { // from class: android.content.pm.PackageInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageInfo createFromParcel(Parcel source) {
             return new PackageInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageInfo[] newArray(int size) {
             return new PackageInfo[size];
@@ -44,6 +43,8 @@ public class PackageInfo implements Parcelable {
     public boolean isApex;
     public boolean isStub;
     public long lastUpdateTime;
+    private String mApexPackageName;
+    private long mArchiveTimeMillis;
     public boolean mOverlayIsStatic;
     public String overlayCategory;
     public int overlayPriority;
@@ -74,10 +75,6 @@ public class PackageInfo implements Parcelable {
     public int versionCodeMajor;
     public String versionName;
 
-    /* synthetic */ PackageInfo(Parcel parcel, PackageInfoIA packageInfoIA) {
-        this(parcel);
-    }
-
     public long getLongVersionCode() {
         return composeLongVersionCode(this.versionCodeMajor, this.versionCode);
     }
@@ -101,6 +98,22 @@ public class PackageInfo implements Parcelable {
 
     public boolean isStaticOverlayPackage() {
         return this.overlayTarget != null && this.mOverlayIsStatic;
+    }
+
+    public long getArchiveTimeMillis() {
+        return this.mArchiveTimeMillis;
+    }
+
+    public void setArchiveTimeMillis(long value) {
+        this.mArchiveTimeMillis = value;
+    }
+
+    public String getApexPackageName() {
+        return this.mApexPackageName;
+    }
+
+    public void setApexPackageName(String apexPackageName) {
+        this.mApexPackageName = apexPackageName;
     }
 
     public String toString() {
@@ -166,24 +179,14 @@ public class PackageInfo implements Parcelable {
         }
         parcel.writeBoolean(this.isApex);
         parcel.writeBoolean(this.isActiveApex);
+        parcel.writeLong(this.mArchiveTimeMillis);
+        if (this.mApexPackageName != null) {
+            parcel.writeInt(1);
+            parcel.writeString8(this.mApexPackageName);
+        } else {
+            parcel.writeInt(0);
+        }
         parcel.restoreAllowSquashing(allowSquashing);
-    }
-
-    /* renamed from: android.content.pm.PackageInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PackageInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageInfo createFromParcel(Parcel source) {
-            return new PackageInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageInfo[] newArray(int size) {
-            return new PackageInfo[size];
-        }
     }
 
     private PackageInfo(Parcel source) {
@@ -235,5 +238,10 @@ public class PackageInfo implements Parcelable {
         }
         this.isApex = source.readBoolean();
         this.isActiveApex = source.readBoolean();
+        this.mArchiveTimeMillis = source.readLong();
+        int hasApexPackageName = source.readInt();
+        if (hasApexPackageName != 0) {
+            this.mApexPackageName = source.readString8();
+        }
     }
 }

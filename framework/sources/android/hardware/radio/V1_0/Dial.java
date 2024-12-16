@@ -55,7 +55,7 @@ public final class Dial {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.address = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.address.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.clir = _hidl_blob.getInt32(_hidl_offset + 16);
         int _hidl_vec_size = _hidl_blob.getInt32(_hidl_offset + 24 + 8);
         HwBlob childBlob = parcel.readEmbeddedBuffer(_hidl_vec_size * 24, _hidl_blob.handle(), _hidl_offset + 24 + 0, true);

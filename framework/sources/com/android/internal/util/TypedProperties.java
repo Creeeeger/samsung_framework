@@ -1,8 +1,8 @@
 package com.android.internal.util;
 
+import android.app.slice.SliceItem;
 import android.hardware.scontext.SContextConstants;
 import android.widget.SemRemoteViewsValueAnimation;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -50,7 +50,6 @@ public class TypedProperties extends HashMap<String, Object> {
         return st;
     }
 
-    /* loaded from: classes5.dex */
     public static class ParseException extends IllegalArgumentException {
         ParseException(StreamTokenizer state, String expected) {
             super("expected " + expected + ", saw " + state.toString());
@@ -73,7 +72,7 @@ public class TypedProperties extends HashMap<String, Object> {
         if ("int".equals(typeName)) {
             return 1097;
         }
-        if ("long".equals(typeName)) {
+        if (SliceItem.FORMAT_LONG.equals(typeName)) {
             return 2121;
         }
         if (SemRemoteViewsValueAnimation.VALUE_TYPE_FLOAT.equals(typeName)) {
@@ -190,7 +189,7 @@ public class TypedProperties extends HashMap<String, Object> {
                 if (token == 34) {
                     return st.sval;
                 }
-                if (token == -3 && SemCapabilities.FEATURE_TAG_NULL.equals(st.sval)) {
+                if (token == -3 && "null".equals(st.sval)) {
                     return NULL_STRING;
                 }
                 throw new ParseException(st, "double-quoted string or 'null'");
@@ -228,7 +227,6 @@ public class TypedProperties extends HashMap<String, Object> {
         return value;
     }
 
-    /* loaded from: classes5.dex */
     public static class TypeException extends IllegalArgumentException {
         TypeException(String property, Object value, String requestedType) {
             super(property + " has type " + value.getClass().getName() + ", not " + requestedType);
@@ -287,7 +285,7 @@ public class TypedProperties extends HashMap<String, Object> {
         if (value instanceof Long) {
             return ((Long) value).longValue();
         }
-        throw new TypeException(property, value, "long");
+        throw new TypeException(property, value, SliceItem.FORMAT_LONG);
     }
 
     public float getFloat(String property, float def) {

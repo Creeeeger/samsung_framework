@@ -91,9 +91,9 @@ public class JsDialogHelper {
         } else {
             View view = LayoutInflater.from(context).inflate(R.layout.js_prompt, (ViewGroup) null);
             EditText edit = (EditText) view.findViewById(R.id.value);
-            edit.setText(this.mDefaultValue);
+            edit.lambda$setTextAsync$0(this.mDefaultValue);
             builder.setPositiveButton(positiveTextId, new PositiveListener(edit));
-            ((TextView) view.findViewById(16908299)).setText(this.mMessage);
+            ((TextView) view.findViewById(16908299)).lambda$setTextAsync$0(this.mMessage);
             builder.setView(view);
         }
         if (this.mType != 1) {
@@ -102,12 +102,7 @@ public class JsDialogHelper {
         builder.show();
     }
 
-    /* loaded from: classes4.dex */
     private class CancelListener implements DialogInterface.OnCancelListener, DialogInterface.OnClickListener {
-        /* synthetic */ CancelListener(JsDialogHelper jsDialogHelper, CancelListenerIA cancelListenerIA) {
-            this();
-        }
-
         private CancelListener() {
         }
 
@@ -122,7 +117,6 @@ public class JsDialogHelper {
         }
     }
 
-    /* loaded from: classes4.dex */
     private class PositiveListener implements DialogInterface.OnClickListener {
         private final EditText mEdit;
 

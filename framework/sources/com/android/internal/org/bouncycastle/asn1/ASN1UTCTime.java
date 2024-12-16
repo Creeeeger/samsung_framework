@@ -59,7 +59,7 @@ public class ASN1UTCTime extends ASN1Primitive {
         this.time = Strings.toByteArray(dateF.format(time));
     }
 
-    public ASN1UTCTime(byte[] time) {
+    ASN1UTCTime(byte[] time) {
         if (time.length < 2) {
             throw new IllegalArgumentException("UTCTime string too short");
         }
@@ -108,29 +108,27 @@ public class ASN1UTCTime extends ASN1Primitive {
     }
 
     private boolean isDigit(int pos) {
-        byte b;
-        byte[] bArr = this.time;
-        return bArr.length > pos && (b = bArr[pos]) >= 48 && b <= 57;
+        return this.time.length > pos && this.time[pos] >= 48 && this.time[pos] <= 57;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         int length = this.time.length;
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 23, this.time);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1UTCTime)) {
             return false;
         }

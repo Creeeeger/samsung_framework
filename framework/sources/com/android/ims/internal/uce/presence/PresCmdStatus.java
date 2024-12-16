@@ -4,17 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.android.ims.internal.uce.common.StatusCode;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresCmdStatus implements Parcelable {
     public static final Parcelable.Creator<PresCmdStatus> CREATOR = new Parcelable.Creator<PresCmdStatus>() { // from class: com.android.ims.internal.uce.presence.PresCmdStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresCmdStatus createFromParcel(Parcel source) {
             return new PresCmdStatus(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresCmdStatus[] newArray(int size) {
             return new PresCmdStatus[size];
@@ -24,10 +23,6 @@ public class PresCmdStatus implements Parcelable {
     private int mRequestId;
     private StatusCode mStatus;
     private int mUserData;
-
-    /* synthetic */ PresCmdStatus(Parcel parcel, PresCmdStatusIA presCmdStatusIA) {
-        this(parcel);
-    }
 
     public PresCmdId getCmdId() {
         return this.mCmdId;
@@ -78,23 +73,6 @@ public class PresCmdStatus implements Parcelable {
         dest.writeInt(this.mRequestId);
         dest.writeParcelable(this.mCmdId, flags);
         dest.writeParcelable(this.mStatus, flags);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresCmdStatus$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresCmdStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresCmdStatus createFromParcel(Parcel source) {
-            return new PresCmdStatus(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresCmdStatus[] newArray(int size) {
-            return new PresCmdStatus[size];
-        }
     }
 
     private PresCmdStatus(Parcel source) {

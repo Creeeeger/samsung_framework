@@ -29,12 +29,10 @@ public abstract class AtomicFormula extends IntegrityFormula {
     private final int mKey;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Key {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Operator {
     }
 
@@ -43,17 +41,15 @@ public abstract class AtomicFormula extends IntegrityFormula {
         this.mKey = key;
     }
 
-    /* loaded from: classes.dex */
     public static final class LongAtomicFormula extends AtomicFormula implements Parcelable {
         public static final Parcelable.Creator<LongAtomicFormula> CREATOR = new Parcelable.Creator<LongAtomicFormula>() { // from class: android.content.integrity.AtomicFormula.LongAtomicFormula.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public LongAtomicFormula createFromParcel(Parcel in) {
                 return new LongAtomicFormula(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public LongAtomicFormula[] newArray(int size) {
                 return new LongAtomicFormula[size];
@@ -81,23 +77,6 @@ public abstract class AtomicFormula extends IntegrityFormula {
             super(in.readInt());
             this.mValue = Long.valueOf(in.readLong());
             this.mOperator = Integer.valueOf(in.readInt());
-        }
-
-        /* renamed from: android.content.integrity.AtomicFormula$LongAtomicFormula$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<LongAtomicFormula> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public LongAtomicFormula createFromParcel(Parcel in) {
-                return new LongAtomicFormula(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public LongAtomicFormula[] newArray(int size) {
-                return new LongAtomicFormula[size];
-            }
         }
 
         @Override // android.content.integrity.IntegrityFormula
@@ -200,17 +179,15 @@ public abstract class AtomicFormula extends IntegrityFormula {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class StringAtomicFormula extends AtomicFormula implements Parcelable {
         public static final Parcelable.Creator<StringAtomicFormula> CREATOR = new Parcelable.Creator<StringAtomicFormula>() { // from class: android.content.integrity.AtomicFormula.StringAtomicFormula.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public StringAtomicFormula createFromParcel(Parcel in) {
                 return new StringAtomicFormula(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public StringAtomicFormula[] newArray(int size) {
                 return new StringAtomicFormula[size];
@@ -244,32 +221,14 @@ public abstract class AtomicFormula extends IntegrityFormula {
         public StringAtomicFormula(int key, String value) {
             super(key);
             Preconditions.checkArgument(key == 0 || key == 1 || key == 3 || key == 2 || key == 7 || key == 8, "Key %s cannot be used with StringAtomicFormula", keyToString(key));
-            String hashValue = hashValue(key, value);
-            this.mValue = hashValue;
-            this.mIsHashedValue = Boolean.valueOf(key == 1 || key == 3 || key == 7 || key == 8 || !hashValue.equals(value));
+            this.mValue = hashValue(key, value);
+            this.mIsHashedValue = Boolean.valueOf(key == 1 || key == 3 || key == 7 || key == 8 || !this.mValue.equals(value));
         }
 
         StringAtomicFormula(Parcel in) {
             super(in.readInt());
             this.mValue = in.readStringNoHelper();
             this.mIsHashedValue = Boolean.valueOf(in.readByte() != 0);
-        }
-
-        /* renamed from: android.content.integrity.AtomicFormula$StringAtomicFormula$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<StringAtomicFormula> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public StringAtomicFormula createFromParcel(Parcel in) {
-                return new StringAtomicFormula(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public StringAtomicFormula[] newArray(int size) {
-                return new StringAtomicFormula[size];
-            }
         }
 
         @Override // android.content.integrity.IntegrityFormula
@@ -388,17 +347,15 @@ public abstract class AtomicFormula extends IntegrityFormula {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class BooleanAtomicFormula extends AtomicFormula implements Parcelable {
         public static final Parcelable.Creator<BooleanAtomicFormula> CREATOR = new Parcelable.Creator<BooleanAtomicFormula>() { // from class: android.content.integrity.AtomicFormula.BooleanAtomicFormula.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BooleanAtomicFormula createFromParcel(Parcel in) {
                 return new BooleanAtomicFormula(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BooleanAtomicFormula[] newArray(int size) {
                 return new BooleanAtomicFormula[size];
@@ -421,23 +378,6 @@ public abstract class AtomicFormula extends IntegrityFormula {
         BooleanAtomicFormula(Parcel in) {
             super(in.readInt());
             this.mValue = Boolean.valueOf(in.readByte() != 0);
-        }
-
-        /* renamed from: android.content.integrity.AtomicFormula$BooleanAtomicFormula$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<BooleanAtomicFormula> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BooleanAtomicFormula createFromParcel(Parcel in) {
-                return new BooleanAtomicFormula(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BooleanAtomicFormula[] newArray(int size) {
-                return new BooleanAtomicFormula[size];
-            }
         }
 
         @Override // android.content.integrity.IntegrityFormula

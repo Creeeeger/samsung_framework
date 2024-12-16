@@ -25,11 +25,9 @@ public class UTF8 {
     private static final byte S_P4A = 80;
     private static final byte S_P4B = 96;
     private static final short[] firstUnitTable = new short[128];
-    private static final byte[] transitionTable;
+    private static final byte[] transitionTable = new byte[112];
 
     static {
-        byte[] bArr = new byte[112];
-        transitionTable = bArr;
         byte[] categories = new byte[128];
         fill(categories, 0, 15, (byte) 1);
         fill(categories, 16, 31, (byte) 2);
@@ -44,14 +42,14 @@ public class UTF8 {
         fill(categories, 113, 115, (byte) 9);
         fill(categories, 116, 116, (byte) 10);
         fill(categories, 117, 127, (byte) 0);
-        fill(bArr, 0, bArr.length - 1, (byte) -2);
-        fill(bArr, 8, 11, (byte) -1);
-        fill(bArr, 24, 27, (byte) 0);
-        fill(bArr, 40, 43, (byte) 16);
-        fill(bArr, 58, 59, (byte) 0);
-        fill(bArr, 72, 73, (byte) 0);
-        fill(bArr, 89, 91, (byte) 16);
-        fill(bArr, 104, 104, (byte) 16);
+        fill(transitionTable, 0, transitionTable.length - 1, (byte) -2);
+        fill(transitionTable, 8, 11, (byte) -1);
+        fill(transitionTable, 24, 27, (byte) 0);
+        fill(transitionTable, 40, 43, (byte) 16);
+        fill(transitionTable, 58, 59, (byte) 0);
+        fill(transitionTable, 72, 73, (byte) 0);
+        fill(transitionTable, 89, 91, (byte) 16);
+        fill(transitionTable, 104, 104, (byte) 16);
         byte[] firstUnitMasks = {0, 0, 0, 0, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, 15, 15, 15, 7, 7, 7};
         byte[] firstUnitTransitions = {-2, -2, -2, -2, 0, 48, 16, 64, S_P4A, 32, 96};
         for (int i = 0; i < 128; i++) {

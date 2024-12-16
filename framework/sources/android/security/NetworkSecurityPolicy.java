@@ -29,6 +29,10 @@ public class NetworkSecurityPolicy {
         libcore.net.NetworkSecurityPolicy.setInstance(policy);
     }
 
+    public boolean isCertificateTransparencyVerificationRequired(String hostname) {
+        return libcore.net.NetworkSecurityPolicy.getInstance().isCertificateTransparencyVerificationRequired(hostname);
+    }
+
     public void handleTrustStorageUpdate() {
         ApplicationConfig config = ApplicationConfig.getDefaultInstance();
         if (config != null) {

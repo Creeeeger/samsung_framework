@@ -22,7 +22,6 @@ public class V4Signature {
     public final byte[] signingInfos;
     public final int version;
 
-    /* loaded from: classes3.dex */
     public static class HashingInfo {
         public final int hashAlgorithm;
         public final byte log2BlockSize;
@@ -46,7 +45,6 @@ public class V4Signature {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class SigningInfo {
         public final byte[] additionalData;
         public final byte[] apkDigest;
@@ -79,7 +77,6 @@ public class V4Signature {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class SigningInfoBlock {
         public final int blockId;
         public final byte[] signingInfo;
@@ -96,7 +93,6 @@ public class V4Signature {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class SigningInfos {
         public final SigningInfo signingInfo;
         public final SigningInfoBlock[] signingInfoBlocks;
@@ -197,7 +193,7 @@ public class V4Signature {
         this.signingInfos = signingInfos;
     }
 
-    private static V4Signature readFrom(InputStream stream) throws IOException {
+    public static V4Signature readFrom(InputStream stream) throws IOException {
         int version = readIntLE(stream);
         int maxSize = INCFS_MAX_SIGNATURE_SIZE;
         byte[] hashingInfo = readBytes(stream, INCFS_MAX_SIGNATURE_SIZE);
@@ -255,6 +251,7 @@ public class V4Signature {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static byte[] readBytes(ByteBuffer buffer) throws IOException {
         if (buffer.remaining() < 4) {
             throw new EOFException();

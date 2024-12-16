@@ -5,17 +5,16 @@ import android.os.Parcelable;
 import java.lang.Comparable;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class GreaterThan<T extends Comparable<T>> extends GenericEvaluator<T> {
     public static final Parcelable.Creator<GreaterThan<?>> CREATOR = new Parcelable.Creator<GreaterThan<?>>() { // from class: com.samsung.android.sume.core.evaluate.GreaterThan.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GreaterThan<?> createFromParcel(Parcel in) {
             return new GreaterThan<>(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GreaterThan<?>[] newArray(int size) {
             return new GreaterThan[size];
@@ -67,7 +66,7 @@ public class GreaterThan<T extends Comparable<T>> extends GenericEvaluator<T> {
         super.writeToParcel(parcel, i);
     }
 
-    public GreaterThan(T value) {
+    GreaterThan(T value) {
         super(value);
     }
 
@@ -78,22 +77,5 @@ public class GreaterThan<T extends Comparable<T>> extends GenericEvaluator<T> {
 
     GreaterThan(Parcel in) {
         super(in);
-    }
-
-    /* renamed from: com.samsung.android.sume.core.evaluate.GreaterThan$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GreaterThan<?>> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GreaterThan<?> createFromParcel(Parcel in) {
-            return new GreaterThan<>(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GreaterThan<?>[] newArray(int size) {
-            return new GreaterThan[size];
-        }
     }
 }

@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 import com.samsung.android.audio.SoundTheme;
-import com.samsung.android.core.CoreSaConstant;
 import com.samsung.android.wallpaper.Rune;
 import com.samsung.android.wallpaper.colortheme.ColorPaletteCreator5;
 import com.samsung.android.wallpaper.colortheme.ColorThemeExtractor;
@@ -50,14 +49,13 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     public static final int COMPARE_COLOR = 0;
     public static final int COMPARE_SHADOW = 1;
     public static final Parcelable.Creator<SemWallpaperColors> CREATOR = new Parcelable.Creator<SemWallpaperColors>() { // from class: android.app.SemWallpaperColors.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWallpaperColors createFromParcel(Parcel in) {
             return new SemWallpaperColors(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWallpaperColors[] newArray(int size) {
             return new SemWallpaperColors[size];
@@ -105,13 +103,8 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     private String mCurrentResolution;
     private float mDarkModeDimOpacity;
     private ArrayList<WallpaperColorsData> mDataList;
-    private int mRotation;
     private int[] mSeedColors;
     private int mWhich;
-
-    /* synthetic */ SemWallpaperColors(int i, Item item, Bitmap bitmap, SemWallpaperColorsIA semWallpaperColorsIA) {
-        this(i, item, bitmap);
-    }
 
     public static int getDeviceVersion() {
         Log.d(TAG, "version 22");
@@ -155,9 +148,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
 
     public static SemWallpaperColors fromBitmap(Context context, Bitmap bitmap, int which, int rotation, Rect[] rects, WallpaperColorOverrideAreas baseOverrideColorArea) {
         Log.d(TAG, "fromBitmap " + which);
-        if (bitmap == null) {
-            throw new IllegalArgumentException("Bitmap can't be null");
-        }
         if (rects != null) {
             for (Rect rect : rects) {
                 if (rect.left < 0 || rect.top < 0 || rect.right > bitmap.getWidth() || rect.bottom > bitmap.getHeight()) {
@@ -293,7 +283,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
 
     public SemWallpaperColors(Parcel in) {
         this.mWhich = 0;
-        this.mRotation = 0;
         this.mCurrentResolution = null;
         this.mAdaptiveDimOpacity = 0.0f;
         this.mAdaptiveDimColor = 0;
@@ -303,15 +292,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         this.mColorTableListGoogle = new ArrayList();
         int which = in.readInt();
         int count = in.readInt();
-        int rotation = in.readInt();
-        Context context = null;
-        try {
-            context = AppGlobals.getInitialApplication();
-        } catch (Exception e) {
-            Log.e(TAG, "SemWallpaperColors: from parcel: null context mode: " + e);
-        }
-        init(context, which, rotation);
-        Log.d(TAG, "SemWallpaperColors: mWhich = " + this.mWhich + ", mRotation = " + this.mRotation + ", context = " + context);
+        init(null, which, 0);
         for (int i = 0; i < count; i++) {
             Rect rect = (Rect) in.readParcelable(Rect.class.getClassLoader());
             Item item = new Item();
@@ -337,7 +318,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
 
     private SemWallpaperColors(String xml) {
         this.mWhich = 0;
-        this.mRotation = 0;
         this.mCurrentResolution = null;
         this.mAdaptiveDimOpacity = 0.0f;
         this.mAdaptiveDimColor = 0;
@@ -351,7 +331,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
 
     private SemWallpaperColors(int which, Item item, Bitmap bitmap) {
         this.mWhich = 0;
-        this.mRotation = 0;
         this.mCurrentResolution = null;
         this.mAdaptiveDimOpacity = 0.0f;
         this.mAdaptiveDimColor = 0;
@@ -378,7 +357,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     private SemWallpaperColors(Context context, Bitmap bitmap, int which, int rotation, Rect[] rects, WallpaperColorOverrideAreas baseOverrideColorArea) {
         int[][] colorWeightList;
         this.mWhich = 0;
-        this.mRotation = 0;
         this.mCurrentResolution = null;
         this.mAdaptiveDimOpacity = 0.0f;
         this.mAdaptiveDimColor = 0;
@@ -392,7 +370,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
                 if (isLock(which)) {
                     colorWeightList = new int[][]{new int[]{1, 2}};
                 } else {
-                    colorWeightList = new int[0];
+                    colorWeightList = new int[0][];
                 }
                 calc(bitmap, 0, true, colorWeightList);
                 calc(bitmap, 1, true, colorWeightList);
@@ -431,7 +409,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     private void init(Context context, int which, int rotation, WallpaperColorOverrideAreas baseOverrideColorArea) {
         this.mContext = context;
         this.mWhich = which;
-        this.mRotation = rotation;
         this.mArea = new SemWallpaperColorsArea(context, which, rotation, baseOverrideColorArea);
         if (isLock(this.mWhich)) {
             this.mDataList.add(new WallpaperColorsData(this, 16L, 0));
@@ -722,7 +699,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             Log.e(TAG, "dominantColorResult == null");
             return;
         }
-        float[][] hsvColors = new float[dominantColorResults.length];
+        float[][] hsvColors = new float[dominantColorResults.length][];
         float avgBrightness = 0.0f;
         for (int i = 0; i < dominantColorResults.length; i++) {
             if (dominantColorResults[i].percentage == 0.0f) {
@@ -765,8 +742,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             serial.startTag(null, "DarkModeDimOpacity");
             serial.text("" + this.mDarkModeDimOpacity);
             serial.endTag(null, "DarkModeDimOpacity");
-            int[] iArr = this.mSeedColors;
-            if (iArr != null && iArr.length > 0) {
+            if (this.mSeedColors != null && this.mSeedColors.length > 0) {
                 serial.startTag(null, "SeedColors");
                 serial.text(Arrays.toString(this.mSeedColors));
                 serial.endTag(null, "SeedColors");
@@ -787,15 +763,15 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         if (rect != null && item != null) {
             try {
                 serial.startTag(null, "Rect");
-                serial.startTag(null, CoreSaConstant.DETAIL_FREEFORM_HIDE_LEFT);
+                serial.startTag(null, "Left");
                 serial.text("" + rect.left);
-                serial.endTag(null, CoreSaConstant.DETAIL_FREEFORM_HIDE_LEFT);
+                serial.endTag(null, "Left");
                 serial.startTag(null, "Top");
                 serial.text("" + rect.top);
                 serial.endTag(null, "Top");
-                serial.startTag(null, CoreSaConstant.DETAIL_FREEFORM_HIDE_RIGHT);
+                serial.startTag(null, "Right");
                 serial.text("" + rect.right);
-                serial.endTag(null, CoreSaConstant.DETAIL_FREEFORM_HIDE_RIGHT);
+                serial.endTag(null, "Right");
                 serial.startTag(null, "Bottom");
                 serial.text("" + rect.bottom);
                 serial.endTag(null, "Bottom");
@@ -838,8 +814,12 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:11:0x0041. Please report as an issue. */
     private void xmlParser(String xml) {
+        XmlPullParser parser;
+        int eventType;
+        Rect rect;
+        Item item;
+        int count;
         Log.d(TAG, "xmlParser");
         InputStream is = null;
         try {
@@ -849,103 +829,107 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         }
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser parser = factory.newPullParser();
+            parser = factory.newPullParser();
             parser.setInput(new InputStreamReader(is, "UTF-8"));
-            Rect rect = new Rect();
-            Item item = new Item();
-            int count = 0;
-            for (int eventType = parser.getEventType(); eventType != 1; eventType = parser.next()) {
-                switch (eventType) {
-                    case 2:
-                        String startTag = parser.getName();
-                        if (startTag.equals("Which")) {
-                            int which = Integer.parseInt(parser.nextText());
-                            init(null, which, 0);
-                        }
-                        if (startTag.equals(SoundTheme.Default)) {
-                            init(null, 2, 0);
-                        }
-                        if (startTag.equals("AdaptiveDimOpacity")) {
-                            this.mAdaptiveDimOpacity = Float.parseFloat(parser.nextText());
-                        }
-                        if (startTag.equals("AdaptieDimColor")) {
-                            this.mAdaptiveDimColor = Integer.parseInt(parser.nextText());
-                        }
-                        if (startTag.equals("DarkModeDimOpacity")) {
-                            this.mDarkModeDimOpacity = Float.parseFloat(parser.nextText());
-                        }
-                        if (startTag.equals("Rect")) {
-                            rect = new Rect();
-                        }
-                        if (startTag.equals(CoreSaConstant.DETAIL_FREEFORM_HIDE_LEFT)) {
-                            rect.left = Integer.parseInt(parser.nextText());
-                        }
-                        if (startTag.equals("Top")) {
-                            rect.top = Integer.parseInt(parser.nextText());
-                        }
-                        if (startTag.equals(CoreSaConstant.DETAIL_FREEFORM_HIDE_RIGHT)) {
-                            rect.right = Integer.parseInt(parser.nextText());
-                        }
-                        if (startTag.equals("Bottom")) {
-                            rect.bottom = Integer.parseInt(parser.nextText());
-                        }
-                        if (startTag.equals("Legibility")) {
-                            item = new Item();
-                        }
-                        if (startTag.equals("avgHSV")) {
-                            float[] hsv = new float[3];
-                            int color = Integer.parseInt(parser.nextText());
-                            ColorHSV.colorToHSV(color, hsv);
-                            item.setHSV(hsv);
-                        }
-                        if (startTag.equals("FontColor")) {
-                            item.setFontColor(Integer.parseInt(parser.nextText()));
-                        }
-                        if (startTag.equals("FontColorRgb")) {
-                            item.setFontColorRgb(Integer.parseInt(parser.nextText()));
-                        }
-                        if (startTag.equals("ShadowSize")) {
-                            item.setShadowSize(Float.parseFloat(parser.nextText()));
-                        }
-                        if (startTag.equals("ShadowOpacity")) {
-                            item.setShadowOpacity(Float.parseFloat(parser.nextText()));
-                        }
-                        if (startTag.equals("SeedColors")) {
-                            String seeds = parser.nextText();
-                            if (!TextUtils.isEmpty(seeds)) {
-                                this.mSeedColors = stringToIntArray(seeds);
-                            }
-                        }
-                    case 3:
-                        String endTag = parser.getName();
-                        if (endTag.equals("Legibility") && count < this.mDataList.size()) {
-                            int count2 = count + 1;
-                            WallpaperColorsData data = this.mDataList.get(count);
-                            if (data != null) {
-                                if (item.getFontColorRgb() == 0) {
-                                    if (item.getFontColor() == 0) {
-                                        item.setFontColorRgb(-1);
-                                    } else {
-                                        item.setFontColorRgb(-16777216);
-                                    }
-                                }
-                                data.setRect(rect);
-                                data.setItem(item);
-                            } else {
-                                this.mDataList.add(new WallpaperColorsData(this, rect, item));
-                            }
-                            count = count2;
-                        }
-                        break;
-                    default:
-                }
-            }
+            rect = new Rect();
+            item = new Item();
+            count = 0;
         } catch (UnsupportedEncodingException e2) {
             e2.printStackTrace();
+            return;
         } catch (IOException e3) {
             e3.printStackTrace();
+            return;
         } catch (XmlPullParserException e4) {
             e4.printStackTrace();
+            return;
+        }
+        for (eventType = parser.getEventType(); eventType != 1; eventType = parser.next()) {
+            switch (eventType) {
+                case 2:
+                    String startTag = parser.getName();
+                    if (startTag.equals("Which")) {
+                        int which = Integer.parseInt(parser.nextText());
+                        init(null, which, 0);
+                    }
+                    if (startTag.equals(SoundTheme.Default)) {
+                        init(null, 2, 0);
+                    }
+                    if (startTag.equals("AdaptiveDimOpacity")) {
+                        this.mAdaptiveDimOpacity = Float.parseFloat(parser.nextText());
+                    }
+                    if (startTag.equals("AdaptieDimColor")) {
+                        this.mAdaptiveDimColor = Integer.parseInt(parser.nextText());
+                    }
+                    if (startTag.equals("DarkModeDimOpacity")) {
+                        this.mDarkModeDimOpacity = Float.parseFloat(parser.nextText());
+                    }
+                    if (startTag.equals("Rect")) {
+                        rect = new Rect();
+                    }
+                    if (startTag.equals("Left")) {
+                        rect.left = Integer.parseInt(parser.nextText());
+                    }
+                    if (startTag.equals("Top")) {
+                        rect.top = Integer.parseInt(parser.nextText());
+                    }
+                    if (startTag.equals("Right")) {
+                        rect.right = Integer.parseInt(parser.nextText());
+                    }
+                    if (startTag.equals("Bottom")) {
+                        rect.bottom = Integer.parseInt(parser.nextText());
+                    }
+                    if (startTag.equals("Legibility")) {
+                        item = new Item();
+                    }
+                    if (startTag.equals("avgHSV")) {
+                        float[] hsv = new float[3];
+                        int color = Integer.parseInt(parser.nextText());
+                        ColorHSV.colorToHSV(color, hsv);
+                        item.setHSV(hsv);
+                    }
+                    if (startTag.equals("FontColor")) {
+                        item.setFontColor(Integer.parseInt(parser.nextText()));
+                    }
+                    if (startTag.equals("FontColorRgb")) {
+                        item.setFontColorRgb(Integer.parseInt(parser.nextText()));
+                    }
+                    if (startTag.equals("ShadowSize")) {
+                        item.setShadowSize(Float.parseFloat(parser.nextText()));
+                    }
+                    if (startTag.equals("ShadowOpacity")) {
+                        item.setShadowOpacity(Float.parseFloat(parser.nextText()));
+                    }
+                    if (startTag.equals("SeedColors")) {
+                        String seeds = parser.nextText();
+                        if (!TextUtils.isEmpty(seeds)) {
+                            this.mSeedColors = stringToIntArray(seeds);
+                        }
+                    }
+                case 3:
+                    String endTag = parser.getName();
+                    if (endTag.equals("Legibility") && count < this.mDataList.size()) {
+                        int count2 = count + 1;
+                        WallpaperColorsData data = this.mDataList.get(count);
+                        if (data != null) {
+                            if (item.getFontColorRgb() == 0) {
+                                if (item.getFontColor() == 0) {
+                                    item.setFontColorRgb(-1);
+                                } else {
+                                    item.setFontColorRgb(-16777216);
+                                }
+                            }
+                            data.setRect(rect);
+                            data.setItem(item);
+                        } else {
+                            this.mDataList.add(new WallpaperColorsData(this, rect, item));
+                        }
+                        count = count2;
+                    }
+                    break;
+                default:
+            }
+            return;
         }
     }
 
@@ -985,9 +969,8 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
 
     private String getCurrentResolution() {
         String currentResolution;
-        String str = this.mCurrentResolution;
-        if (str != null) {
-            return str;
+        if (this.mCurrentResolution != null) {
+            return this.mCurrentResolution;
         }
         int width = Resources.getSystem().getDisplayMetrics().widthPixels;
         if (width >= 1440) {
@@ -1013,7 +996,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mWhich);
         dest.writeInt(this.mDataList.size());
-        dest.writeInt(this.mRotation);
         Iterator<WallpaperColorsData> it = this.mDataList.iterator();
         while (it.hasNext()) {
             WallpaperColorsData data = it.next();
@@ -1035,11 +1017,9 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         StringBuilder result = new StringBuilder();
         result.append("[version:22");
         result.append(", which:" + this.mWhich);
-        result.append(", rotation:" + this.mRotation);
         result.append(", adaptive dim:" + this.mAdaptiveDimOpacity + "/" + Integer.toHexString(this.mAdaptiveDimColor));
         result.append(", darkmode dim:" + this.mDarkModeDimOpacity + NavigationBarInflaterView.SIZE_MOD_END);
-        int[] iArr = this.mSeedColors;
-        if (iArr != null && iArr.length > 0) {
+        if (this.mSeedColors != null && this.mSeedColors.length > 0) {
             result.append("\n\t[SeedColors, " + Arrays.toString(this.mSeedColors) + NavigationBarInflaterView.SIZE_MOD_END);
         }
         Iterator<WallpaperColorsData> it = this.mDataList.iterator();
@@ -1061,9 +1041,8 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     public String toSimpleString() {
         StringBuilder stringBuilder = new StringBuilder();
         if (!isLock(this.mWhich)) {
-            ArrayList<WallpaperColorsData> arrayList = this.mDataList;
-            if (arrayList != null) {
-                Iterator<WallpaperColorsData> it = arrayList.iterator();
+            if (this.mDataList != null) {
+                Iterator<WallpaperColorsData> it = this.mDataList.iterator();
                 while (it.hasNext()) {
                     WallpaperColorsData data = it.next();
                     Rect rect = data.getRect();
@@ -1073,44 +1052,24 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
                     }
                 }
             }
-        } else {
-            ArrayList<WallpaperColorsData> arrayList2 = this.mDataList;
-            if (arrayList2 != null) {
-                int size = arrayList2.size();
-                Iterator<WallpaperColorsData> it2 = this.mDataList.iterator();
-                while (it2.hasNext()) {
-                    WallpaperColorsData data2 = it2.next();
-                    data2.getRect();
-                    Item item2 = data2.getItem();
-                    int index = this.mDataList.indexOf(data2);
-                    if (item2 != null) {
-                        if (index > 0 && index < size) {
-                            stringBuilder.append(", ");
-                        }
-                        String name = SemWallpaperColorsArea.name(data2.getInternalKey());
-                        stringBuilder.append(name + NavigationBarInflaterView.SIZE_MOD_START + item2.getFontColor() + NavigationBarInflaterView.SIZE_MOD_END);
+        } else if (this.mDataList != null) {
+            int size = this.mDataList.size();
+            Iterator<WallpaperColorsData> it2 = this.mDataList.iterator();
+            while (it2.hasNext()) {
+                WallpaperColorsData data2 = it2.next();
+                data2.getRect();
+                Item item2 = data2.getItem();
+                int index = this.mDataList.indexOf(data2);
+                if (item2 != null) {
+                    if (index > 0 && index < size) {
+                        stringBuilder.append(", ");
                     }
+                    String name = SemWallpaperColorsArea.name(data2.getInternalKey());
+                    stringBuilder.append(name + NavigationBarInflaterView.SIZE_MOD_START + item2.getFontColor() + NavigationBarInflaterView.SIZE_MOD_END);
                 }
             }
         }
         return stringBuilder.toString();
-    }
-
-    /* renamed from: android.app.SemWallpaperColors$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemWallpaperColors> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWallpaperColors createFromParcel(Parcel in) {
-            return new SemWallpaperColors(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWallpaperColors[] newArray(int size) {
-            return new SemWallpaperColors[size];
-        }
     }
 
     public int[] getSeedColors() {
@@ -1123,18 +1082,13 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
 
     public List<int[][]> getColorTableList(boolean fromGoogle) {
         if (fromGoogle) {
-            List<int[][]> list = this.mColorTableListGoogle;
-            if (list != null && list.size() > 0) {
+            if (this.mColorTableListGoogle != null && this.mColorTableListGoogle.size() > 0) {
                 return this.mColorTableListGoogle;
             }
-        } else {
-            List<int[][]> list2 = this.mColorTableList;
-            if (list2 != null && list2.size() > 0) {
-                return this.mColorTableList;
-            }
+        } else if (this.mColorTableList != null && this.mColorTableList.size() > 0) {
+            return this.mColorTableList;
         }
-        int[] iArr = this.mSeedColors;
-        if (iArr != null && iArr.length > 0) {
+        if (this.mSeedColors != null && this.mSeedColors.length > 0) {
             ColorPaletteCreator5 paletteCreator = new ColorPaletteCreator5();
             paletteCreator.setColors(this.mSeedColors);
             paletteCreator.generateColorPalette(fromGoogle);
@@ -1190,8 +1144,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     }
 
     public int getColorThemeColor(long key) {
-        int[] iArr = this.mSeedColors;
-        if (iArr == null || iArr.length <= 0) {
+        if (this.mSeedColors == null || this.mSeedColors.length <= 0) {
             Log.e(TAG, "getColorThemeColor: We don't have seed colors.");
             return getItemFontColor(key);
         }
@@ -1292,35 +1245,30 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         return this.mDataList.size();
     }
 
-    /* renamed from: clone */
-    public SemWallpaperColors m498clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SemWallpaperColors m540clone() {
         try {
             SemWallpaperColors clone = (SemWallpaperColors) super.clone();
-            clone.mArea = this.mArea.m511clone();
-            clone.mWhich = this.mWhich;
-            clone.mRotation = this.mRotation;
+            clone.mArea = this.mArea.m553clone();
             clone.mCurrentResolution = this.mCurrentResolution;
             if (this.mDataList != null) {
                 clone.mDataList = new ArrayList<>();
                 Iterator<WallpaperColorsData> it = this.mDataList.iterator();
                 while (it.hasNext()) {
                     WallpaperColorsData wallpaperColorsData = it.next();
-                    clone.mDataList.add(wallpaperColorsData.m510clone());
+                    clone.mDataList.add(wallpaperColorsData.m552clone());
                 }
             }
-            int[] iArr = this.mSeedColors;
-            if (iArr != null) {
-                clone.mSeedColors = (int[]) iArr.clone();
+            if (this.mSeedColors != null) {
+                clone.mSeedColors = (int[]) this.mSeedColors.clone();
             }
             if (this.mColorTableList != null) {
-                ArrayList arrayList = new ArrayList();
-                clone.mColorTableList = arrayList;
-                arrayList.addAll(this.mColorTableList);
+                clone.mColorTableList = new ArrayList();
+                clone.mColorTableList.addAll(this.mColorTableList);
             }
             if (this.mColorTableListGoogle != null) {
-                ArrayList arrayList2 = new ArrayList();
-                clone.mColorTableListGoogle = arrayList2;
-                arrayList2.addAll(this.mColorTableListGoogle);
+                clone.mColorTableListGoogle = new ArrayList();
+                clone.mColorTableListGoogle.addAll(this.mColorTableListGoogle);
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -1329,7 +1277,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Item implements Cloneable {
         private int mFontColor;
         private int mFontColorRgb;
@@ -1339,10 +1286,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         private LegibilityLogic.LegibilityResult mRightLegibilityResult;
         private float mShadowOpacity;
         private float mShadowSize;
-
-        /* synthetic */ Item(ItemIA itemIA) {
-            this();
-        }
 
         private Item() {
             this.mHSV = new float[3];
@@ -1357,7 +1300,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             this.mLeftLegibilityResult = null;
             this.mRightLegibilityResult = null;
             this.mFontColor = fontColor;
-            if (fontColor == 0) {
+            if (this.mFontColor == 0) {
                 this.mFontColorRgb = -1;
             } else {
                 this.mFontColorRgb = -16777216;
@@ -1392,22 +1335,27 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             this.mLegibilityResult = legibilityResult;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setFontColor(int fontColor) {
             this.mFontColor = fontColor;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setFontColorRgb(int fontColorRgb) {
             this.mFontColorRgb = fontColorRgb;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setShadowSize(float shadowSize) {
             this.mShadowSize = shadowSize;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setShadowOpacity(float shadowOpacity) {
             this.mShadowOpacity = shadowOpacity;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setHSV(float[] hsv) {
             this.mHSV = hsv;
         }
@@ -1433,21 +1381,23 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         }
 
         public float[] getHSV() {
-            float[] fArr = this.mHSV;
-            if (fArr == null || 3 != fArr.length) {
+            if (this.mHSV == null || 3 != this.mHSV.length) {
                 return null;
             }
-            return new float[]{fArr[0], fArr[1], fArr[2]};
+            return new float[]{this.mHSV[0], this.mHSV[1], this.mHSV[2]};
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public LegibilityLogic.LegibilityResult getLegibilityResult() {
             return this.mLegibilityResult;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public LegibilityLogic.LegibilityResult getLeftLegibilityResult() {
             return this.mLeftLegibilityResult;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public LegibilityLogic.LegibilityResult getRightLegibilityResult() {
             return this.mRightLegibilityResult;
         }
@@ -1471,25 +1421,22 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             switch (compareType) {
                 case 0:
                     if (item.mFontColor != this.mFontColor) {
-                        return false;
                     }
-                    return true;
+                    break;
                 case 1:
-                    if (Math.abs(item.mShadowSize - this.mShadowSize) >= 1.0f || Math.abs(item.mShadowOpacity - this.mShadowOpacity) >= 0.01f) {
-                        return false;
+                    if (Math.abs(item.mShadowSize - this.mShadowSize) < 1.0f && Math.abs(item.mShadowOpacity - this.mShadowOpacity) < 0.01f) {
                     }
-                    return true;
+                    break;
                 case 2:
                     if (item.mFontColorRgb != this.mFontColorRgb) {
-                        return false;
                     }
-                    return true;
+                    break;
                 default:
                     if (item.mFontColor != this.mFontColor) {
-                        return false;
                     }
-                    return true;
+                    break;
             }
+            return false;
         }
 
         public int hashCode() {
@@ -1510,34 +1457,24 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             return result;
         }
 
-        /* renamed from: clone */
-        public Item m509clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public Item m551clone() {
             try {
                 Item item = (Item) super.clone();
-                float[] fArr = this.mHSV;
-                if (fArr != null) {
-                    item.mHSV = new float[fArr.length];
-                    int i = 0;
-                    while (true) {
-                        float[] fArr2 = this.mHSV;
-                        if (i >= fArr2.length) {
-                            break;
-                        }
-                        item.mHSV[i] = fArr2[i];
-                        i++;
+                if (this.mHSV != null) {
+                    item.mHSV = new float[this.mHSV.length];
+                    for (int i = 0; i < this.mHSV.length; i++) {
+                        item.mHSV[i] = this.mHSV[i];
                     }
                 }
-                LegibilityLogic.LegibilityResult legibilityResult = this.mLegibilityResult;
-                if (legibilityResult != null) {
-                    item.mLegibilityResult = legibilityResult.m8838clone();
+                if (this.mLegibilityResult != null) {
+                    item.mLegibilityResult = this.mLegibilityResult.m9226clone();
                 }
-                LegibilityLogic.LegibilityResult legibilityResult2 = this.mLeftLegibilityResult;
-                if (legibilityResult2 != null) {
-                    item.mLeftLegibilityResult = legibilityResult2.m8838clone();
+                if (this.mLeftLegibilityResult != null) {
+                    item.mLeftLegibilityResult = this.mLeftLegibilityResult.m9226clone();
                 }
-                LegibilityLogic.LegibilityResult legibilityResult3 = this.mRightLegibilityResult;
-                if (legibilityResult3 != null) {
-                    item.mRightLegibilityResult = legibilityResult3.m8838clone();
+                if (this.mRightLegibilityResult != null) {
+                    item.mRightLegibilityResult = this.mRightLegibilityResult.m9226clone();
                 }
                 return item;
             } catch (CloneNotSupportedException e) {
@@ -1547,7 +1484,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private int mWhich = 2;
         private int mColorType = 0;
@@ -1577,8 +1513,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class WallpaperColorsData implements Cloneable {
+    class WallpaperColorsData implements Cloneable {
         private long mExternalKey;
         private int mInternalKey;
         private Item mItem;
@@ -1631,12 +1566,12 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             return this.mItem;
         }
 
-        /* renamed from: clone */
-        public WallpaperColorsData m510clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public WallpaperColorsData m552clone() {
             try {
                 WallpaperColorsData clone = (WallpaperColorsData) super.clone();
                 clone.mRect = new Rect(this.mRect);
-                clone.mItem = this.mItem.m509clone();
+                clone.mItem = this.mItem.m551clone();
                 return clone;
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();

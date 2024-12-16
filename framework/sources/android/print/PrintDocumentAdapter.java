@@ -18,7 +18,6 @@ public abstract class PrintDocumentAdapter {
     public void onFinish() {
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class WriteResultCallback {
         public void onWriteFinished(PageRange[] pages) {
         }
@@ -30,7 +29,6 @@ public abstract class PrintDocumentAdapter {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class LayoutResultCallback {
         public void onLayoutFinished(PrintDocumentInfo info, boolean changed) {
         }

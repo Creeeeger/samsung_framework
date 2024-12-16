@@ -32,6 +32,7 @@ public class SemWifiApMacInfo {
         return uniqueInstance;
     }
 
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:17:0x0034 -> B:11:0x0037). Please report as a decompilation issue!!! */
     private void createOrChangePermission() {
         File file = new File(WIFI_MAC_INFO);
         if (!file.exists()) {
@@ -91,35 +92,34 @@ public class SemWifiApMacInfo {
 
     public void writeWifiMacInfo(String str) {
         OutputStreamWriter fw = null;
-        if (str == null || str.isEmpty() || !isMacAddress(str) || str.length() < 17) {
-            return;
-        }
-        if (str.length() == 17 && str.substring(9).equals("00:00:00")) {
-            return;
-        }
-        synchronized (this) {
-            try {
+        if (str != null && !str.isEmpty() && isMacAddress(str) && str.length() >= 17) {
+            if (str.length() == 17 && str.substring(9).equals("00:00:00")) {
+                return;
+            }
+            synchronized (this) {
                 try {
-                    fw = new OutputStreamWriter(new FileOutputStream(WIFI_MAC_INFO), StandardCharsets.UTF_8);
-                    fw.write(str);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    if (fw != null) {
-                        try {
-                            fw.close();
-                        } catch (IOException e2) {
-                            e = e2;
-                            e.printStackTrace();
+                    try {
+                        fw = new OutputStreamWriter(new FileOutputStream(WIFI_MAC_INFO), StandardCharsets.UTF_8);
+                        fw.write(str);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        if (fw != null) {
+                            try {
+                                fw.close();
+                            } catch (IOException e2) {
+                                e = e2;
+                                e.printStackTrace();
+                            }
                         }
                     }
+                    try {
+                        fw.close();
+                    } catch (IOException e3) {
+                        e = e3;
+                        e.printStackTrace();
+                    }
+                } finally {
                 }
-                try {
-                    fw.close();
-                } catch (IOException e3) {
-                    e = e3;
-                    e.printStackTrace();
-                }
-            } finally {
             }
         }
     }

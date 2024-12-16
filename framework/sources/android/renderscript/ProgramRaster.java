@@ -6,7 +6,6 @@ public class ProgramRaster extends BaseObj {
     CullMode mCullMode;
     boolean mPointSprite;
 
-    /* loaded from: classes3.dex */
     public enum CullMode {
         BACK(0),
         FRONT(1),
@@ -60,7 +59,6 @@ public class ProgramRaster extends BaseObj {
         return rs.mProgramRaster_CULL_NONE;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         RenderScript mRS;
         boolean mPointSprite = false;

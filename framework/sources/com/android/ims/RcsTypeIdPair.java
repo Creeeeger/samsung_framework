@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class RcsTypeIdPair implements Parcelable {
     public static final Parcelable.Creator<RcsTypeIdPair> CREATOR = new Parcelable.Creator<RcsTypeIdPair>() { // from class: com.android.ims.RcsTypeIdPair.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsTypeIdPair createFromParcel(Parcel in) {
             return new RcsTypeIdPair(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsTypeIdPair[] newArray(int size) {
             return new RcsTypeIdPair[size];
@@ -57,22 +56,5 @@ public class RcsTypeIdPair implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mType);
         dest.writeInt(this.mId);
-    }
-
-    /* renamed from: com.android.ims.RcsTypeIdPair$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RcsTypeIdPair> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsTypeIdPair createFromParcel(Parcel in) {
-            return new RcsTypeIdPair(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsTypeIdPair[] newArray(int size) {
-            return new RcsTypeIdPair[size];
-        }
     }
 }

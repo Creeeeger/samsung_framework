@@ -28,7 +28,7 @@ public class TransactionTracker {
         }
     }
 
-    public TransactionTracker() {
+    TransactionTracker() {
         resetTraces();
     }
 
@@ -36,8 +36,7 @@ public class TransactionTracker {
         String trace = Log.getStackTraceString(tr);
         synchronized (this) {
             if (this.mTraces.containsKey(trace)) {
-                Map<String, Long> map = this.mTraces;
-                map.put(trace, Long.valueOf(map.get(trace).longValue() + 1));
+                this.mTraces.put(trace, Long.valueOf(this.mTraces.get(trace).longValue() + 1));
             } else {
                 this.mTraces.put(trace, 1L);
             }

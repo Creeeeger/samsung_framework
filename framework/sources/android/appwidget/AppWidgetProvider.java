@@ -4,14 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 /* loaded from: classes.dex */
 public class AppWidgetProvider extends BroadcastReceiver {
+    private static final String TAG = "AppWidgetProvider";
+
     @Override // android.content.BroadcastReceiver
     public void onReceive(Context context, Intent intent) {
         Bundle extras;
         int[] appWidgetIds;
         String action = intent.getAction();
+        Log.d(TAG, "onReceive:" + action);
         if (AppWidgetManager.ACTION_APPWIDGET_ENABLE_AND_UPDATE.equals(action)) {
             onReceive(context, new Intent(intent).setAction(AppWidgetManager.ACTION_APPWIDGET_ENABLED));
             onReceive(context, new Intent(intent).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE));

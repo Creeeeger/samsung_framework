@@ -35,9 +35,6 @@ public class FuseAppLoop implements Handler.Callback {
     private static final String TAG = "FuseAppLoop";
     private static final boolean DEBUG = Log.isLoggable(TAG, 3);
     private static final ThreadFactory sDefaultThreadFactory = new ThreadFactory() { // from class: com.android.internal.os.FuseAppLoop.1
-        AnonymousClass1() {
-        }
-
         @Override // java.util.concurrent.ThreadFactory
         public Thread newThread(Runnable r) {
             return new Thread(r, FuseAppLoop.TAG);
@@ -49,7 +46,6 @@ public class FuseAppLoop implements Handler.Callback {
     private final LinkedList<Args> mArgsPool = new LinkedList<>();
     private int mNextInode = 2;
 
-    /* loaded from: classes5.dex */
     public static class UnmountedException extends Exception {
     }
 
@@ -71,32 +67,20 @@ public class FuseAppLoop implements Handler.Callback {
 
     native void native_start(long j);
 
-    /* renamed from: com.android.internal.os.FuseAppLoop$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements ThreadFactory {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.concurrent.ThreadFactory
-        public Thread newThread(Runnable r) {
-            return new Thread(r, FuseAppLoop.TAG);
-        }
-    }
-
     public FuseAppLoop(int mountPointId, ParcelFileDescriptor fd, ThreadFactory factory) {
         this.mMountPointId = mountPointId;
         factory = factory == null ? sDefaultThreadFactory : factory;
         this.mInstance = native_new(fd.detachFd());
-        Thread newThread = factory.newThread(new Runnable() { // from class: com.android.internal.os.FuseAppLoop$$ExternalSyntheticLambda0
+        this.mThread = factory.newThread(new Runnable() { // from class: com.android.internal.os.FuseAppLoop$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 FuseAppLoop.this.lambda$new$0();
             }
         });
-        this.mThread = newThread;
-        newThread.start();
+        this.mThread.start();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0() {
         native_start(this.mInstance);
         synchronized (this.mLock) {
@@ -118,9 +102,8 @@ public class FuseAppLoop implements Handler.Callback {
             }
             do {
                 id = this.mNextInode;
-                int i = id + 1;
-                this.mNextInode = i;
-                if (i < 0) {
+                this.mNextInode++;
+                if (this.mNextInode < 0) {
                     this.mNextInode = 2;
                 }
             } while (this.mCallbackMap.get(id) != null);
@@ -170,11 +153,11 @@ public class FuseAppLoop implements Handler.Callback {
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:68)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.visit(DebugInfoApplyVisitor.java:55)
      */
-    /* JADX WARN: Not initialized variable reg: 19, insn: 0x00ba: MOVE (r14 I:??[long, double] A[D('inode' long)]) = (r19 I:??[long, double] A[D('offset' long)]), block:B:192:0x00b1 */
+    /* JADX WARN: Not initialized variable reg: 20, insn: 0x00c4: MOVE (r14 I:??[long, double] A[D('inode' long)]) = (r20 I:??[long, double] A[D('offset' long)]), block:B:193:0x00bd */
     @Override // android.os.Handler.Callback
     public boolean handleMessage(android.os.Message r26) {
         /*
-            Method dump skipped, instructions count: 604
+            Method dump skipped, instructions count: 624
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.os.FuseAppLoop.handleMessage(android.os.Message):boolean");
@@ -215,9 +198,8 @@ public class FuseAppLoop implements Handler.Callback {
             if (entry.opened) {
                 throw new ErrnoException("onOpen", OsConstants.EMFILE);
             }
-            long j = this.mInstance;
-            if (j != 0) {
-                native_replyOpen(j, unique, inode);
+            if (this.mInstance != 0) {
+                native_replyOpen(this.mInstance, unique, inode);
                 entry.opened = true;
                 return this.mBytesMap.startUsing(inode);
             }
@@ -248,9 +230,8 @@ public class FuseAppLoop implements Handler.Callback {
     }
 
     private void replySimpleLocked(long unique, int result) {
-        long j = this.mInstance;
-        if (j != 0) {
-            native_replySimple(j, unique, result);
+        if (this.mInstance != 0) {
+            native_replySimple(this.mInstance, unique, result);
         }
     }
 
@@ -259,8 +240,7 @@ public class FuseAppLoop implements Handler.Callback {
         return (int) inode;
     }
 
-    /* loaded from: classes5.dex */
-    public static class CallbackEntry {
+    private static class CallbackEntry {
         final ProxyFileDescriptorCallback callback;
         final Handler handler;
         boolean opened;
@@ -275,14 +255,9 @@ public class FuseAppLoop implements Handler.Callback {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class BytesMapEntry {
+    private static class BytesMapEntry {
         byte[] bytes;
         int counter;
-
-        /* synthetic */ BytesMapEntry(BytesMapEntryIA bytesMapEntryIA) {
-            this();
-        }
 
         private BytesMapEntry() {
             this.counter = 0;
@@ -290,13 +265,8 @@ public class FuseAppLoop implements Handler.Callback {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class BytesMap {
+    private static class BytesMap {
         final Map<Long, BytesMapEntry> mEntries;
-
-        /* synthetic */ BytesMap(BytesMapIA bytesMapIA) {
-            this();
-        }
 
         private BytesMap() {
             this.mEntries = new HashMap();
@@ -326,19 +296,13 @@ public class FuseAppLoop implements Handler.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class Args {
+    private static class Args {
         byte[] data;
         CallbackEntry entry;
         long inode;
         long offset;
         int size;
         long unique;
-
-        /* synthetic */ Args(ArgsIA argsIA) {
-            this();
-        }
 
         private Args() {
         }

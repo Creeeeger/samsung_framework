@@ -11,18 +11,15 @@ import java.util.concurrent.Executor;
 /* loaded from: classes.dex */
 public class ScreenCaptureCallbackHandler {
     private final IBinder mActivityToken;
-    private final ScreenCaptureObserver mObserver;
-    private final ArrayMap<Activity.ScreenCaptureCallback, ScreenCaptureRegistration> mScreenCaptureRegistrations;
+    private final ArrayMap<Activity.ScreenCaptureCallback, ScreenCaptureRegistration> mScreenCaptureRegistrations = new ArrayMap<>();
+    private final ScreenCaptureObserver mObserver = new ScreenCaptureObserver(this.mScreenCaptureRegistrations);
 
     public ScreenCaptureCallbackHandler(IBinder activityToken) {
-        ArrayMap<Activity.ScreenCaptureCallback, ScreenCaptureRegistration> arrayMap = new ArrayMap<>();
-        this.mScreenCaptureRegistrations = arrayMap;
         this.mActivityToken = activityToken;
-        this.mObserver = new ScreenCaptureObserver(arrayMap);
     }
 
-    /* loaded from: classes.dex */
-    public static class ScreenCaptureRegistration {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ScreenCaptureRegistration {
         Activity.ScreenCaptureCallback mCallback;
         Executor mExecutor;
 
@@ -32,8 +29,8 @@ public class ScreenCaptureCallbackHandler {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ScreenCaptureObserver extends IScreenCaptureObserver.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ScreenCaptureObserver extends IScreenCaptureObserver.Stub {
         ArrayMap<Activity.ScreenCaptureCallback, ScreenCaptureRegistration> mRegistrations;
 
         ScreenCaptureObserver(ArrayMap<Activity.ScreenCaptureCallback, ScreenCaptureRegistration> registrations) {

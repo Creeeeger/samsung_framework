@@ -59,9 +59,6 @@ public class CameraSource extends Filter {
         this.mFps = 30;
         this.mWaitForNewFrame = true;
         this.onCameraFrameAvailableListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.filterpacks.videosrc.CameraSource.1
-            AnonymousClass1() {
-            }
-
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                 if (CameraSource.this.mLogVerbose) {
@@ -104,12 +101,10 @@ public class CameraSource extends Filter {
         getCameraParameters();
         this.mCamera.setParameters(this.mCameraParameters);
         createFormats();
-        GLFrame gLFrame = (GLFrame) context.getFrameManager().newBoundFrame(this.mOutputFormat, 104, 0L);
-        this.mCameraFrame = gLFrame;
-        SurfaceTexture surfaceTexture = new SurfaceTexture(gLFrame.getTextureId());
-        this.mSurfaceTexture = surfaceTexture;
+        this.mCameraFrame = (GLFrame) context.getFrameManager().newBoundFrame(this.mOutputFormat, 104, 0L);
+        this.mSurfaceTexture = new SurfaceTexture(this.mCameraFrame.getTextureId());
         try {
-            this.mCamera.setPreviewTexture(surfaceTexture);
+            this.mCamera.setPreviewTexture(this.mSurfaceTexture);
             this.mSurfaceTexture.setOnFrameAvailableListener(this.onCameraFrameAvailableListener);
             this.mNewFrameAvailable = false;
             this.mCamera.startPreview();
@@ -148,9 +143,7 @@ public class CameraSource extends Filter {
         }
         this.mSurfaceTexture.getTransformMatrix(this.mCameraTransform);
         Matrix.multiplyMM(this.mMappedCoords, 0, this.mCameraTransform, 0, mSourceCoords, 0);
-        ShaderProgram shaderProgram = this.mFrameExtractor;
-        float[] fArr = this.mMappedCoords;
-        shaderProgram.setSourceRegion(fArr[0], fArr[1], fArr[4], fArr[5], fArr[8], fArr[9], fArr[12], fArr[13]);
+        this.mFrameExtractor.setSourceRegion(this.mMappedCoords[0], this.mMappedCoords[1], this.mMappedCoords[4], this.mMappedCoords[5], this.mMappedCoords[8], this.mMappedCoords[9], this.mMappedCoords[12], this.mMappedCoords[13]);
         Frame output = context.getFrameManager().newFrame(this.mOutputFormat);
         this.mFrameExtractor.process(this.mCameraFrame, output);
         long timestamp = this.mSurfaceTexture.getTimestamp();
@@ -178,9 +171,8 @@ public class CameraSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        GLFrame gLFrame = this.mCameraFrame;
-        if (gLFrame != null) {
-            gLFrame.release();
+        if (this.mCameraFrame != null) {
+            this.mCameraFrame.release();
         }
     }
 
@@ -208,11 +200,9 @@ public class CameraSource extends Filter {
             }
         }
         int[] closestSize = findClosestSize(this.mWidth, this.mHeight, this.mCameraParameters);
-        int i = closestSize[0];
-        this.mWidth = i;
-        int i2 = closestSize[1];
-        this.mHeight = i2;
-        this.mCameraParameters.setPreviewSize(i, i2);
+        this.mWidth = closestSize[0];
+        this.mHeight = closestSize[1];
+        this.mCameraParameters.setPreviewSize(this.mWidth, this.mHeight);
         int[] closestRange = findClosestFpsRange(this.mFps, this.mCameraParameters);
         this.mCameraParameters.setPreviewFpsRange(closestRange[0], closestRange[1]);
         return this.mCameraParameters;
@@ -265,23 +255,5 @@ public class CameraSource extends Filter {
             Log.v(TAG, "Requested fps: " + fps + ".Closest frame rate range: [" + (closestRange[0] / 1000.0d) + "," + (closestRange[1] / 1000.0d) + NavigationBarInflaterView.SIZE_MOD_END);
         }
         return closestRange;
-    }
-
-    /* renamed from: android.filterpacks.videosrc.CameraSource$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements SurfaceTexture.OnFrameAvailableListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
-        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-            if (CameraSource.this.mLogVerbose) {
-                Log.v(CameraSource.TAG, "New frame from camera");
-            }
-            synchronized (CameraSource.this) {
-                CameraSource.this.mNewFrameAvailable = true;
-                CameraSource.this.notify();
-            }
-        }
     }
 }

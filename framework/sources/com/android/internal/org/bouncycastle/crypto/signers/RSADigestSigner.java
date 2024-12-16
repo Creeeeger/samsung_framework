@@ -25,23 +25,21 @@ import java.util.Hashtable;
 
 /* loaded from: classes5.dex */
 public class RSADigestSigner implements Signer {
-    private static final Hashtable oidMap;
+    private static final Hashtable oidMap = new Hashtable();
     private final AlgorithmIdentifier algId;
     private final Digest digest;
     private boolean forSigning;
     private final AsymmetricBlockCipher rsaEngine;
 
     static {
-        Hashtable hashtable = new Hashtable();
-        oidMap = hashtable;
-        hashtable.put("SHA-1", X509ObjectIdentifiers.id_SHA1);
-        hashtable.put(KeyProperties.DIGEST_SHA224, NISTObjectIdentifiers.id_sha224);
-        hashtable.put("SHA-256", NISTObjectIdentifiers.id_sha256);
-        hashtable.put(KeyProperties.DIGEST_SHA384, NISTObjectIdentifiers.id_sha384);
-        hashtable.put(KeyProperties.DIGEST_SHA512, NISTObjectIdentifiers.id_sha512);
-        hashtable.put("SHA-512/224", NISTObjectIdentifiers.id_sha512_224);
-        hashtable.put("SHA-512/256", NISTObjectIdentifiers.id_sha512_256);
-        hashtable.put(KeyProperties.DIGEST_MD5, PKCSObjectIdentifiers.md5);
+        oidMap.put("SHA-1", X509ObjectIdentifiers.id_SHA1);
+        oidMap.put(KeyProperties.DIGEST_SHA224, NISTObjectIdentifiers.id_sha224);
+        oidMap.put("SHA-256", NISTObjectIdentifiers.id_sha256);
+        oidMap.put(KeyProperties.DIGEST_SHA384, NISTObjectIdentifiers.id_sha384);
+        oidMap.put(KeyProperties.DIGEST_SHA512, NISTObjectIdentifiers.id_sha512);
+        oidMap.put("SHA-512/224", NISTObjectIdentifiers.id_sha512_224);
+        oidMap.put("SHA-512/256", NISTObjectIdentifiers.id_sha512_256);
+        oidMap.put(KeyProperties.DIGEST_MD5, PKCSObjectIdentifiers.md5);
     }
 
     public RSADigestSigner(Digest digest) {
@@ -146,8 +144,7 @@ public class RSADigestSigner implements Signer {
     }
 
     private byte[] derEncode(byte[] hash) throws IOException {
-        AlgorithmIdentifier algorithmIdentifier = this.algId;
-        if (algorithmIdentifier == null) {
+        if (this.algId == null) {
             try {
                 DigestInfo.getInstance(hash);
                 return hash;
@@ -155,7 +152,7 @@ public class RSADigestSigner implements Signer {
                 throw new IOException("malformed DigestInfo for NONEwithRSA hash: " + e.getMessage());
             }
         }
-        DigestInfo dInfo = new DigestInfo(algorithmIdentifier, hash);
+        DigestInfo dInfo = new DigestInfo(this.algId, hash);
         return dInfo.getEncoded(ASN1Encoding.DER);
     }
 }

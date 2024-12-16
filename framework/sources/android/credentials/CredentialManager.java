@@ -1,5 +1,6 @@
 package android.credentials;
 
+import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,12 +8,15 @@ import android.content.IntentSender;
 import android.credentials.CredentialManager;
 import android.credentials.IClearCredentialStateCallback;
 import android.credentials.ICreateCredentialCallback;
+import android.credentials.IGetCandidateCredentialsCallback;
 import android.credentials.IGetCredentialCallback;
 import android.credentials.IPrepareGetCredentialCallback;
 import android.credentials.ISetEnabledProvidersCallback;
 import android.credentials.PrepareGetCredentialResponse;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.IBinder;
 import android.os.ICancellationSignal;
 import android.os.OutcomeReceiver;
 import android.os.RemoteException;
@@ -28,21 +32,43 @@ import java.util.concurrent.Executor;
 public final class CredentialManager {
     private static final String DEVICE_CONFIG_ENABLE_CREDENTIAL_DESC_API = "enable_credential_description_api";
     public static final String DEVICE_CONFIG_ENABLE_CREDENTIAL_MANAGER = "enable_credential_manager";
+    public static final String EXTRA_AUTOFILL_RESULT_RECEIVER = "android.credentials.AUTOFILL_RESULT_RECEIVER";
+    private static final Bundle OPTIONS_SENDER_BAL_OPTIN = ActivityOptions.makeBasic().setPendingIntentBackgroundActivityStartMode(1).toBundle();
     public static final int PROVIDER_FILTER_ALL_PROVIDERS = 0;
     public static final int PROVIDER_FILTER_SYSTEM_PROVIDERS_ONLY = 1;
+    public static final int PROVIDER_FILTER_USER_PROVIDERS_INCLUDING_HIDDEN = 3;
     public static final int PROVIDER_FILTER_USER_PROVIDERS_ONLY = 2;
-    private static final String TAG = "CredentialManager";
+    public static final String TAG = "CredentialManager";
     private final Context mContext;
     private final ICredentialManager mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProviderFilter {
     }
 
     public CredentialManager(Context context, ICredentialManager service) {
         this.mContext = context;
         this.mService = service;
+    }
+
+    public void getCandidateCredentials(GetCredentialRequest request, String callingPackage, CancellationSignal cancellationSignal, Executor executor, OutcomeReceiver<GetCandidateCredentialsResponse, GetCandidateCredentialsException> callback, IBinder clientCallback) {
+        Objects.requireNonNull(request, "request must not be null");
+        Objects.requireNonNull(callingPackage, "callingPackage must not be null");
+        Objects.requireNonNull(executor, "executor must not be null");
+        Objects.requireNonNull(callback, "callback must not be null");
+        if (cancellationSignal != null && cancellationSignal.isCanceled()) {
+            Log.w(TAG, "getCandidateCredentials already canceled");
+            return;
+        }
+        ICancellationSignal cancelRemote = null;
+        try {
+            cancelRemote = this.mService.getCandidateCredentials(request, new GetCandidateCredentialsTransport(executor, callback), clientCallback, callingPackage);
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+        if (cancellationSignal != null && cancelRemote != null) {
+            cancellationSignal.setRemote(cancelRemote);
+        }
     }
 
     public void getCredential(Context context, GetCredentialRequest request, CancellationSignal cancellationSignal, Executor executor, OutcomeReceiver<GetCredentialResponse, GetCredentialException> callback) {
@@ -77,23 +103,24 @@ public final class CredentialManager {
         }
     }
 
-    public void prepareGetCredential(GetCredentialRequest request, CancellationSignal cancellationSignal, Executor executor, OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> callback) {
-        Objects.requireNonNull(request, "request must not be null");
+    public void prepareGetCredential(GetCredentialRequest getCredentialRequest, CancellationSignal cancellationSignal, Executor executor, OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> outcomeReceiver) {
+        Objects.requireNonNull(getCredentialRequest, "request must not be null");
         Objects.requireNonNull(executor, "executor must not be null");
-        Objects.requireNonNull(callback, "callback must not be null");
+        Objects.requireNonNull(outcomeReceiver, "callback must not be null");
         if (cancellationSignal != null && cancellationSignal.isCanceled()) {
             Log.w(TAG, "prepareGetCredential already canceled");
             return;
         }
-        ICancellationSignal cancelRemote = null;
-        GetCredentialTransportPendingUseCase getCredentialTransport = new GetCredentialTransportPendingUseCase();
+        ICancellationSignal iCancellationSignal = null;
+        byte b = 0;
+        GetCredentialTransportPendingUseCase getCredentialTransportPendingUseCase = new GetCredentialTransportPendingUseCase();
         try {
-            cancelRemote = this.mService.executePrepareGetCredential(request, new PrepareGetCredentialTransport(executor, callback, getCredentialTransport), getCredentialTransport, this.mContext.getOpPackageName());
+            iCancellationSignal = this.mService.executePrepareGetCredential(getCredentialRequest, new PrepareGetCredentialTransport(executor, outcomeReceiver, getCredentialTransportPendingUseCase), getCredentialTransportPendingUseCase, this.mContext.getOpPackageName());
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
-        if (cancellationSignal != null && cancelRemote != null) {
-            cancellationSignal.setRemote(cancelRemote);
+        if (cancellationSignal != null && iCancellationSignal != null) {
+            cancellationSignal.setRemote(iCancellationSignal);
         }
     }
 
@@ -176,7 +203,7 @@ public final class CredentialManager {
     public static boolean isServiceEnabled(Context context) {
         CredentialManager credentialManager;
         Objects.requireNonNull(context, "context must not be null");
-        if (context == null || (credentialManager = (CredentialManager) context.getSystemService(Context.CREDENTIAL_SERVICE)) == null) {
+        if (context == null || (credentialManager = (CredentialManager) context.getSystemService("credential")) == null) {
             return false;
         }
         return credentialManager.isServiceEnabled();
@@ -192,7 +219,7 @@ public final class CredentialManager {
 
     public static boolean isCredentialDescriptionApiEnabled(Context context) {
         CredentialManager credentialManager;
-        if (context == null || (credentialManager = (CredentialManager) context.getSystemService(Context.CREDENTIAL_SERVICE)) == null) {
+        if (context == null || (credentialManager = (CredentialManager) context.getSystemService("credential")) == null) {
             return false;
         }
         return credentialManager.isCredentialDescriptionApiEnabled();
@@ -220,15 +247,11 @@ public final class CredentialManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class PrepareGetCredentialTransport extends IPrepareGetCredentialCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class PrepareGetCredentialTransport extends IPrepareGetCredentialCallback.Stub {
         private final OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> mCallback;
         private final Executor mExecutor;
         private final GetCredentialTransportPendingUseCase mGetCredentialTransport;
-
-        /* synthetic */ PrepareGetCredentialTransport(Executor executor, OutcomeReceiver outcomeReceiver, GetCredentialTransportPendingUseCase getCredentialTransportPendingUseCase, PrepareGetCredentialTransportIA prepareGetCredentialTransportIA) {
-            this(executor, outcomeReceiver, getCredentialTransportPendingUseCase);
-        }
 
         private PrepareGetCredentialTransport(Executor executor, OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> callback, GetCredentialTransportPendingUseCase getCredentialTransport) {
             this.mExecutor = executor;
@@ -240,7 +263,7 @@ public final class CredentialManager {
         public void onResponse(final PrepareGetCredentialResponseInternal response) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$PrepareGetCredentialTransport$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$PrepareGetCredentialTransport$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.PrepareGetCredentialTransport.this.lambda$onResponse$0(response);
@@ -251,6 +274,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$0(PrepareGetCredentialResponseInternal response) {
             this.mCallback.onResult(new PrepareGetCredentialResponse(response, this.mGetCredentialTransport));
         }
@@ -259,7 +283,7 @@ public final class CredentialManager {
         public void onError(final String errorType, final String message) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$PrepareGetCredentialTransport$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$PrepareGetCredentialTransport$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.PrepareGetCredentialTransport.this.lambda$onError$1(errorType, message);
@@ -270,18 +294,14 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$1(String errorType, String message) {
             this.mCallback.onError(new GetCredentialException(errorType, message));
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class GetCredentialTransportPendingUseCase extends IGetCredentialCallback.Stub {
+    protected static class GetCredentialTransportPendingUseCase extends IGetCredentialCallback.Stub {
         private PrepareGetCredentialResponse.GetPendingCredentialInternalCallback mCallback;
-
-        /* synthetic */ GetCredentialTransportPendingUseCase(GetCredentialTransportPendingUseCaseIA getCredentialTransportPendingUseCaseIA) {
-            this();
-        }
 
         private GetCredentialTransportPendingUseCase() {
             this.mCallback = null;
@@ -297,9 +317,8 @@ public final class CredentialManager {
 
         @Override // android.credentials.IGetCredentialCallback
         public void onPendingIntent(PendingIntent pendingIntent) {
-            PrepareGetCredentialResponse.GetPendingCredentialInternalCallback getPendingCredentialInternalCallback = this.mCallback;
-            if (getPendingCredentialInternalCallback != null) {
-                getPendingCredentialInternalCallback.onPendingIntent(pendingIntent);
+            if (this.mCallback != null) {
+                this.mCallback.onPendingIntent(pendingIntent);
             } else {
                 Log.d(CredentialManager.TAG, "Unexpected onPendingIntent call before the show invocation");
             }
@@ -334,15 +353,62 @@ public final class CredentialManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class GetCredentialTransport extends IGetCredentialCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class GetCandidateCredentialsTransport extends IGetCandidateCredentialsCallback.Stub {
+        private final OutcomeReceiver<GetCandidateCredentialsResponse, GetCandidateCredentialsException> mCallback;
+        private final Executor mExecutor;
+
+        private GetCandidateCredentialsTransport(Executor executor, OutcomeReceiver<GetCandidateCredentialsResponse, GetCandidateCredentialsException> callback) {
+            this.mExecutor = executor;
+            this.mCallback = callback;
+        }
+
+        @Override // android.credentials.IGetCandidateCredentialsCallback
+        public void onResponse(final GetCandidateCredentialsResponse response) {
+            long identity = Binder.clearCallingIdentity();
+            try {
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCandidateCredentialsTransport$$ExternalSyntheticLambda1
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        CredentialManager.GetCandidateCredentialsTransport.this.lambda$onResponse$0(response);
+                    }
+                });
+            } finally {
+                Binder.restoreCallingIdentity(identity);
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onResponse$0(GetCandidateCredentialsResponse response) {
+            this.mCallback.onResult(response);
+        }
+
+        @Override // android.credentials.IGetCandidateCredentialsCallback
+        public void onError(final String errorType, final String message) {
+            long identity = Binder.clearCallingIdentity();
+            try {
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCandidateCredentialsTransport$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        CredentialManager.GetCandidateCredentialsTransport.this.lambda$onError$1(errorType, message);
+                    }
+                });
+            } finally {
+                Binder.restoreCallingIdentity(identity);
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onError$1(String errorType, String message) {
+            this.mCallback.onError(new GetCandidateCredentialsException(errorType, message));
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    static class GetCredentialTransport extends IGetCredentialCallback.Stub {
         private final OutcomeReceiver<GetCredentialResponse, GetCredentialException> mCallback;
         private final Context mContext;
         private final Executor mExecutor;
-
-        /* synthetic */ GetCredentialTransport(Context context, Executor executor, OutcomeReceiver outcomeReceiver, GetCredentialTransportIA getCredentialTransportIA) {
-            this(context, executor, outcomeReceiver);
-        }
 
         private GetCredentialTransport(Context context, Executor executor, OutcomeReceiver<GetCredentialResponse, GetCredentialException> callback) {
             this.mContext = context;
@@ -353,12 +419,12 @@ public final class CredentialManager {
         @Override // android.credentials.IGetCredentialCallback
         public void onPendingIntent(PendingIntent pendingIntent) {
             try {
-                this.mContext.startIntentSender(pendingIntent.getIntentSender(), null, 0, 0, 0);
+                this.mContext.startIntentSender(pendingIntent.getIntentSender(), null, 0, 0, 0, CredentialManager.OPTIONS_SENDER_BAL_OPTIN);
             } catch (IntentSender.SendIntentException e) {
                 Log.e(CredentialManager.TAG, "startIntentSender() failed for intent:" + pendingIntent.getIntentSender(), e);
                 long identity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCredentialTransport$$ExternalSyntheticLambda1
+                    this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCredentialTransport$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
                             CredentialManager.GetCredentialTransport.this.lambda$onPendingIntent$0();
@@ -370,6 +436,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPendingIntent$0() {
             this.mCallback.onError(new GetCredentialException(GetCredentialException.TYPE_UNKNOWN));
         }
@@ -378,7 +445,7 @@ public final class CredentialManager {
         public void onResponse(final GetCredentialResponse response) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCredentialTransport$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCredentialTransport$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.GetCredentialTransport.this.lambda$onResponse$1(response);
@@ -389,6 +456,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$1(GetCredentialResponse response) {
             this.mCallback.onResult(response);
         }
@@ -397,7 +465,7 @@ public final class CredentialManager {
         public void onError(final String errorType, final String message) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCredentialTransport$$ExternalSyntheticLambda2
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$GetCredentialTransport$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.GetCredentialTransport.this.lambda$onError$2(errorType, message);
@@ -408,20 +476,17 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$2(String errorType, String message) {
             this.mCallback.onError(new GetCredentialException(errorType, message));
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class CreateCredentialTransport extends ICreateCredentialCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class CreateCredentialTransport extends ICreateCredentialCallback.Stub {
         private final OutcomeReceiver<CreateCredentialResponse, CreateCredentialException> mCallback;
         private final Context mContext;
         private final Executor mExecutor;
-
-        /* synthetic */ CreateCredentialTransport(Context context, Executor executor, OutcomeReceiver outcomeReceiver, CreateCredentialTransportIA createCredentialTransportIA) {
-            this(context, executor, outcomeReceiver);
-        }
 
         private CreateCredentialTransport(Context context, Executor executor, OutcomeReceiver<CreateCredentialResponse, CreateCredentialException> callback) {
             this.mContext = context;
@@ -432,7 +497,7 @@ public final class CredentialManager {
         @Override // android.credentials.ICreateCredentialCallback
         public void onPendingIntent(PendingIntent pendingIntent) {
             try {
-                this.mContext.startIntentSender(pendingIntent.getIntentSender(), null, 0, 0, 0);
+                this.mContext.startIntentSender(pendingIntent.getIntentSender(), null, 0, 0, 0, CredentialManager.OPTIONS_SENDER_BAL_OPTIN);
             } catch (IntentSender.SendIntentException e) {
                 Log.e(CredentialManager.TAG, "startIntentSender() failed for intent:" + pendingIntent.getIntentSender(), e);
                 long identity = Binder.clearCallingIdentity();
@@ -449,6 +514,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPendingIntent$0() {
             this.mCallback.onError(new CreateCredentialException(CreateCredentialException.TYPE_UNKNOWN));
         }
@@ -457,7 +523,7 @@ public final class CredentialManager {
         public void onResponse(final CreateCredentialResponse response) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$CreateCredentialTransport$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$CreateCredentialTransport$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.CreateCredentialTransport.this.lambda$onResponse$1(response);
@@ -468,6 +534,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$1(CreateCredentialResponse response) {
             this.mCallback.onResult(response);
         }
@@ -476,7 +543,7 @@ public final class CredentialManager {
         public void onError(final String errorType, final String message) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$CreateCredentialTransport$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$CreateCredentialTransport$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.CreateCredentialTransport.this.lambda$onError$2(errorType, message);
@@ -487,19 +554,16 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$2(String errorType, String message) {
             this.mCallback.onError(new CreateCredentialException(errorType, message));
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ClearCredentialStateTransport extends IClearCredentialStateCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ClearCredentialStateTransport extends IClearCredentialStateCallback.Stub {
         private final OutcomeReceiver<Void, ClearCredentialStateException> mCallback;
         private final Executor mExecutor;
-
-        /* synthetic */ ClearCredentialStateTransport(Executor executor, OutcomeReceiver outcomeReceiver, ClearCredentialStateTransportIA clearCredentialStateTransportIA) {
-            this(executor, outcomeReceiver);
-        }
 
         private ClearCredentialStateTransport(Executor executor, OutcomeReceiver<Void, ClearCredentialStateException> callback) {
             this.mExecutor = executor;
@@ -531,19 +595,16 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$0(String errorType, String message) {
             this.mCallback.onError(new ClearCredentialStateException(errorType, message));
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class SetEnabledProvidersTransport extends ISetEnabledProvidersCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class SetEnabledProvidersTransport extends ISetEnabledProvidersCallback.Stub {
         private final OutcomeReceiver<Void, SetEnabledProvidersException> mCallback;
         private final Executor mExecutor;
-
-        /* synthetic */ SetEnabledProvidersTransport(Executor executor, OutcomeReceiver outcomeReceiver, SetEnabledProvidersTransportIA setEnabledProvidersTransportIA) {
-            this(executor, outcomeReceiver);
-        }
 
         private SetEnabledProvidersTransport(Executor executor, OutcomeReceiver<Void, SetEnabledProvidersException> callback) {
             this.mExecutor = executor;
@@ -553,7 +614,7 @@ public final class CredentialManager {
         public void onResponse(final Void result) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$SetEnabledProvidersTransport$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$SetEnabledProvidersTransport$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.SetEnabledProvidersTransport.this.lambda$onResponse$0(result);
@@ -564,6 +625,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$0(Void result) {
             this.mCallback.onResult(result);
         }
@@ -583,6 +645,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$1() {
             this.mCallback.onResult(null);
         }
@@ -591,7 +654,7 @@ public final class CredentialManager {
         public void onError(final String errorType, final String message) {
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$SetEnabledProvidersTransport$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.credentials.CredentialManager$SetEnabledProvidersTransport$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         CredentialManager.SetEnabledProvidersTransport.this.lambda$onError$2(errorType, message);
@@ -602,6 +665,7 @@ public final class CredentialManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$2(String errorType, String message) {
             this.mCallback.onError(new SetEnabledProvidersException(errorType, message));
         }

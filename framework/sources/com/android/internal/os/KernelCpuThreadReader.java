@@ -18,9 +18,7 @@ import java.util.function.Predicate;
 public class KernelCpuThreadReader {
     private static final String CPU_STATISTICS_FILENAME = "time_in_state";
     private static final boolean DEBUG = false;
-    private static final Path DEFAULT_INITIAL_TIME_IN_STATE_PATH;
     private static final String DEFAULT_PROCESS_NAME = "unknown_process";
-    private static final Path DEFAULT_PROC_PATH;
     private static final String DEFAULT_THREAD_NAME = "unknown_thread";
     private static final int ID_ERROR = -1;
     private static final String PROCESS_DIRECTORY_FILTER = "[0-9]*";
@@ -33,12 +31,8 @@ public class KernelCpuThreadReader {
     private final Path mProcPath;
     private final ProcTimeInStateReader mProcTimeInStateReader;
     private Predicate<Integer> mUidPredicate;
-
-    static {
-        Path path = Paths.get("/proc", new String[0]);
-        DEFAULT_PROC_PATH = path;
-        DEFAULT_INITIAL_TIME_IN_STATE_PATH = path.resolve("self/time_in_state");
-    }
+    private static final Path DEFAULT_PROC_PATH = Paths.get("/proc", new String[0]);
+    private static final Path DEFAULT_INITIAL_TIME_IN_STATE_PATH = DEFAULT_PROC_PATH.resolve("self/time_in_state");
 
     public KernelCpuThreadReader(int numBuckets, Predicate<Integer> uidPredicate, Path procPath, Path initialTimeInStatePath, Injector injector) throws IOException {
         this.mUidPredicate = uidPredicate;
@@ -90,22 +84,20 @@ public class KernelCpuThreadReader {
         return this.mFrequenciesKhz;
     }
 
-    public void setNumBuckets(int numBuckets) {
-        int[] iArr = this.mFrequenciesKhz;
-        if (iArr != null && iArr.length == numBuckets) {
+    void setNumBuckets(int numBuckets) {
+        if (this.mFrequenciesKhz != null && this.mFrequenciesKhz.length == numBuckets) {
             return;
         }
         long[] frequenciesKhz = this.mProcTimeInStateReader.getFrequenciesKhz();
         if (numBuckets != 0) {
-            FrequencyBucketCreator frequencyBucketCreator = new FrequencyBucketCreator(frequenciesKhz, numBuckets);
-            this.mFrequencyBucketCreator = frequencyBucketCreator;
-            this.mFrequenciesKhz = frequencyBucketCreator.bucketFrequencies(frequenciesKhz);
-        } else {
-            this.mFrequencyBucketCreator = null;
-            this.mFrequenciesKhz = new int[frequenciesKhz.length];
-            for (int i = 0; i < frequenciesKhz.length; i++) {
-                this.mFrequenciesKhz[i] = (int) frequenciesKhz[i];
-            }
+            this.mFrequencyBucketCreator = new FrequencyBucketCreator(frequenciesKhz, numBuckets);
+            this.mFrequenciesKhz = this.mFrequencyBucketCreator.bucketFrequencies(frequenciesKhz);
+            return;
+        }
+        this.mFrequencyBucketCreator = null;
+        this.mFrequenciesKhz = new int[frequenciesKhz.length];
+        for (int i = 0; i < frequenciesKhz.length; i++) {
+            this.mFrequenciesKhz[i] = (int) frequenciesKhz[i];
         }
     }
 
@@ -158,9 +150,8 @@ public class KernelCpuThreadReader {
             if (cpuUsagesLong == null) {
                 return null;
             }
-            FrequencyBucketCreator frequencyBucketCreator = this.mFrequencyBucketCreator;
-            if (frequencyBucketCreator != null) {
-                cpuUsages = frequencyBucketCreator.bucketValues(cpuUsagesLong);
+            if (this.mFrequencyBucketCreator != null) {
+                cpuUsages = this.mFrequencyBucketCreator.bucketValues(cpuUsagesLong);
             } else {
                 cpuUsages = new int[cpuUsagesLong.length];
                 for (int i = 0; i < cpuUsagesLong.length; i++) {
@@ -202,19 +193,16 @@ public class KernelCpuThreadReader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class FrequencyBucketCreator {
         private final int[] mBucketStartIndices;
         private final int mNumBuckets;
         private final int mNumFrequencies;
 
         public FrequencyBucketCreator(long[] frequencies, int targetNumBuckets) {
-            int length = frequencies.length;
-            this.mNumFrequencies = length;
+            this.mNumFrequencies = frequencies.length;
             int[] clusterStartIndices = getClusterStartIndices(frequencies);
-            int[] bucketStartIndices = getBucketStartIndices(clusterStartIndices, targetNumBuckets, length);
-            this.mBucketStartIndices = bucketStartIndices;
-            this.mNumBuckets = bucketStartIndices.length;
+            this.mBucketStartIndices = getBucketStartIndices(clusterStartIndices, targetNumBuckets, this.mNumFrequencies);
+            this.mNumBuckets = this.mBucketStartIndices.length;
         }
 
         public int[] bucketValues(long[] values) {
@@ -291,7 +279,6 @@ public class KernelCpuThreadReader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ProcessCpuUsage {
         public final int processId;
         public final String processName;
@@ -306,7 +293,6 @@ public class KernelCpuThreadReader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ThreadCpuUsage {
         public final int threadId;
         public final String threadName;
@@ -319,7 +305,6 @@ public class KernelCpuThreadReader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Injector {
         public int getUidForPid(int pid) {
             return Process.getUidForPid(pid);

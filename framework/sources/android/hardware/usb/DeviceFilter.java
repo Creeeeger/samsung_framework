@@ -2,6 +2,7 @@ package android.hardware.usb;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.util.Slog;
+import com.android.internal.hidden_from_bootclasspath.android.hardware.usb.flags.Flags;
 import com.android.internal.util.dump.DualDumpOutputStream;
 import java.io.IOException;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import org.xmlpull.v1.XmlSerializer;
 public class DeviceFilter {
     private static final String TAG = DeviceFilter.class.getSimpleName();
     public final int mClass;
+    public final String mInterfaceName;
     public final String mManufacturerName;
     public final int mProductId;
     public final String mProductName;
@@ -21,7 +23,7 @@ public class DeviceFilter {
     public final int mSubclass;
     public final int mVendorId;
 
-    public DeviceFilter(int vid, int pid, int clasz, int subclass, int protocol, String manufacturer, String product, String serialnum) {
+    public DeviceFilter(int vid, int pid, int clasz, int subclass, int protocol, String manufacturer, String product, String serialnum, String interfaceName) {
         this.mVendorId = vid;
         this.mProductId = pid;
         this.mClass = clasz;
@@ -30,6 +32,7 @@ public class DeviceFilter {
         this.mManufacturerName = manufacturer;
         this.mProductName = product;
         this.mSerialNumber = serialnum;
+        this.mInterfaceName = interfaceName;
     }
 
     public DeviceFilter(UsbDevice device) {
@@ -41,6 +44,7 @@ public class DeviceFilter {
         this.mManufacturerName = device.getManufacturerName();
         this.mProductName = device.getProductName();
         this.mSerialNumber = device.getSerialNumber();
+        this.mInterfaceName = null;
     }
 
     public DeviceFilter(DeviceFilter filter) {
@@ -52,17 +56,18 @@ public class DeviceFilter {
         this.mManufacturerName = filter.mManufacturerName;
         this.mProductName = filter.mProductName;
         this.mSerialNumber = filter.mSerialNumber;
+        this.mInterfaceName = filter.mInterfaceName;
     }
 
     public static DeviceFilter read(XmlPullParser parser) throws XmlPullParserException, IOException {
-        int radix;
         String value;
         int count;
         XmlPullParser xmlPullParser = parser;
         int count2 = parser.getAttributeCount();
         int i = 0;
+        String interfaceName = null;
+        String interfaceName2 = null;
         String serialNumber = null;
-        String serialNumber2 = null;
         String manufacturerName = null;
         int deviceProtocol = -1;
         int deviceProtocol2 = -1;
@@ -76,17 +81,20 @@ public class DeviceFilter {
                 manufacturerName = value2;
                 count = count2;
             } else if ("product-name".equals(name)) {
-                serialNumber2 = value2;
-                count = count2;
-            } else if ("serial-number".equals(name)) {
                 serialNumber = value2;
                 count = count2;
+            } else if ("serial-number".equals(name)) {
+                interfaceName2 = value2;
+                count = count2;
+            } else if ("interface-name".equals(name)) {
+                interfaceName = value2;
+                count = count2;
             } else {
+                int radix = 10;
                 if (value2 != null && value2.length() > 2 && value2.charAt(0) == '0' && (value2.charAt(1) == 'x' || value2.charAt(1) == 'X')) {
                     radix = 16;
                     value = value2.substring(2);
                 } else {
-                    radix = 10;
                     value = value2;
                 }
                 try {
@@ -118,51 +126,50 @@ public class DeviceFilter {
             xmlPullParser = parser;
             count2 = count;
         }
-        return new DeviceFilter(productId, deviceClass, deviceSubclass, deviceProtocol2, deviceProtocol, manufacturerName, serialNumber2, serialNumber);
+        return new DeviceFilter(productId, deviceClass, deviceSubclass, deviceProtocol2, deviceProtocol, manufacturerName, serialNumber, interfaceName2, interfaceName);
     }
 
     public void write(XmlSerializer serializer) throws IOException {
         serializer.startTag(null, "usb-device");
-        int i = this.mVendorId;
-        if (i != -1) {
-            serializer.attribute(null, "vendor-id", Integer.toString(i));
+        if (this.mVendorId != -1) {
+            serializer.attribute(null, "vendor-id", Integer.toString(this.mVendorId));
         }
-        int i2 = this.mProductId;
-        if (i2 != -1) {
-            serializer.attribute(null, "product-id", Integer.toString(i2));
+        if (this.mProductId != -1) {
+            serializer.attribute(null, "product-id", Integer.toString(this.mProductId));
         }
-        int i3 = this.mClass;
-        if (i3 != -1) {
-            serializer.attribute(null, "class", Integer.toString(i3));
+        if (this.mClass != -1) {
+            serializer.attribute(null, "class", Integer.toString(this.mClass));
         }
-        int i4 = this.mSubclass;
-        if (i4 != -1) {
-            serializer.attribute(null, "subclass", Integer.toString(i4));
+        if (this.mSubclass != -1) {
+            serializer.attribute(null, "subclass", Integer.toString(this.mSubclass));
         }
-        int i5 = this.mProtocol;
-        if (i5 != -1) {
-            serializer.attribute(null, "protocol", Integer.toString(i5));
+        if (this.mProtocol != -1) {
+            serializer.attribute(null, "protocol", Integer.toString(this.mProtocol));
         }
-        String str = this.mManufacturerName;
-        if (str != null) {
-            serializer.attribute(null, "manufacturer-name", str);
+        if (this.mManufacturerName != null) {
+            serializer.attribute(null, "manufacturer-name", this.mManufacturerName);
         }
-        String str2 = this.mProductName;
-        if (str2 != null) {
-            serializer.attribute(null, "product-name", str2);
+        if (this.mProductName != null) {
+            serializer.attribute(null, "product-name", this.mProductName);
         }
-        String str3 = this.mSerialNumber;
-        if (str3 != null) {
-            serializer.attribute(null, "serial-number", str3);
+        if (this.mSerialNumber != null) {
+            serializer.attribute(null, "serial-number", this.mSerialNumber);
+        }
+        if (this.mInterfaceName != null) {
+            serializer.attribute(null, "interface-name", this.mInterfaceName);
         }
         serializer.endTag(null, "usb-device");
     }
 
-    private boolean matches(int clasz, int subclass, int protocol) {
-        int i;
-        int i2;
-        int i3 = this.mClass;
-        return (i3 == -1 || clasz == i3) && ((i = this.mSubclass) == -1 || subclass == i) && ((i2 = this.mProtocol) == -1 || protocol == i2);
+    private boolean matches(int usbClass, int subclass, int protocol) {
+        return (this.mClass == -1 || usbClass == this.mClass) && (this.mSubclass == -1 || subclass == this.mSubclass) && (this.mProtocol == -1 || protocol == this.mProtocol);
+    }
+
+    private boolean matches(int usbClass, int subclass, int protocol, String interfaceName) {
+        if (Flags.enableInterfaceNameDeviceFilter()) {
+            return matches(usbClass, subclass, protocol) && (this.mInterfaceName == null || this.mInterfaceName.equals(interfaceName));
+        }
+        return matches(usbClass, subclass, protocol);
     }
 
     public boolean matches(UsbDevice device) {
@@ -201,35 +208,32 @@ public class DeviceFilter {
                 UsbInterface intf = device.getInterface(intfNum2);
                 intfToCheck = intf;
                 intfNum = intfNum2;
-                String str = TAG;
-                Slog.d(str, "matches Interface intfNum=" + intfNum);
+                Slog.d(TAG, "matches Interface intfNum=" + intfNum);
                 if (intf != null) {
-                    if (matches(intf.getInterfaceClass(), intf.getInterfaceSubclass(), intf.getInterfaceProtocol())) {
+                    if (matches(intf.getInterfaceClass(), intf.getInterfaceSubclass(), intf.getInterfaceProtocol(), intf.getName())) {
                         return true;
                     }
                 } else {
-                    Slog.d(str, "matches delivered UsbDevice=" + device);
-                    Slog.d(str, "matches Interface Count=" + count);
-                    Slog.d(str, "matches interface(" + intfNum + ") -> [null]");
+                    Slog.d(TAG, "matches delivered UsbDevice=" + device);
+                    Slog.d(TAG, "matches Interface Count=" + count);
+                    Slog.d(TAG, "matches interface(" + intfNum + ") -> [null]");
                     throw new NullPointerException("DeviceFilter's matches met interface null");
                 }
             } catch (NullPointerException npe) {
-                String str2 = TAG;
-                Slog.e(str2, "matches got NPE ", npe);
-                Slog.d(str2, "matches delivered UsbDevice=" + device);
-                Slog.d(str2, "matches Interface Count=" + count);
+                Slog.e(TAG, "matches got NPE ", npe);
+                Slog.d(TAG, "matches delivered UsbDevice=" + device);
+                Slog.d(TAG, "matches Interface Count=" + count);
                 if (intfToCheck != null) {
-                    Slog.d(str2, "matches interface(" + intfNum + ") -> [" + intfToCheck.toString() + NavigationBarInflaterView.SIZE_MOD_END);
+                    Slog.d(TAG, "matches interface(" + intfNum + ") -> [" + intfToCheck.toString() + NavigationBarInflaterView.SIZE_MOD_END);
                     return false;
                 }
                 return false;
             } catch (Exception e) {
-                String str3 = TAG;
-                Slog.w(str3, "matches got Exception ", e);
-                Slog.d(str3, "matches delivered UsbDevice=" + device);
-                Slog.d(str3, "matches Interface Count=" + count);
+                Slog.w(TAG, "matches got Exception ", e);
+                Slog.d(TAG, "matches delivered UsbDevice=" + device);
+                Slog.d(TAG, "matches Interface Count=" + count);
                 if (intfToCheck != null) {
-                    Slog.d(str3, "matches interface(" + intfNum + ") -> [" + intfToCheck.toString() + NavigationBarInflaterView.SIZE_MOD_END);
+                    Slog.d(TAG, "matches interface(" + intfNum + ") -> [" + intfToCheck.toString() + NavigationBarInflaterView.SIZE_MOD_END);
                     return false;
                 }
                 return false;
@@ -239,53 +243,35 @@ public class DeviceFilter {
     }
 
     public boolean contains(DeviceFilter device) {
-        int i = this.mVendorId;
-        if (i != -1 && device.mVendorId != i) {
+        if (this.mVendorId != -1 && device.mVendorId != this.mVendorId) {
             return false;
         }
-        int i2 = this.mProductId;
-        if (i2 != -1 && device.mProductId != i2) {
+        if (this.mProductId != -1 && device.mProductId != this.mProductId) {
             return false;
         }
-        String str = this.mManufacturerName;
-        if (str != null && !Objects.equals(str, device.mManufacturerName)) {
+        if (this.mManufacturerName != null && !Objects.equals(this.mManufacturerName, device.mManufacturerName)) {
             return false;
         }
-        String str2 = this.mProductName;
-        if (str2 != null && !Objects.equals(str2, device.mProductName)) {
+        if (this.mProductName != null && !Objects.equals(this.mProductName, device.mProductName)) {
             return false;
         }
-        String str3 = this.mSerialNumber;
-        if (str3 == null || Objects.equals(str3, device.mSerialNumber)) {
+        if (this.mSerialNumber == null || Objects.equals(this.mSerialNumber, device.mSerialNumber)) {
             return matches(device.mClass, device.mSubclass, device.mProtocol);
         }
         return false;
     }
 
     public boolean equals(Object obj) {
-        int i;
-        int i2;
-        int i3;
-        int i4;
-        String str;
-        String str2;
-        String str3;
-        String str4;
-        String str5;
-        String str6;
-        String str7;
-        int i5 = this.mVendorId;
-        if (i5 == -1 || (i = this.mProductId) == -1 || (i2 = this.mClass) == -1 || (i3 = this.mSubclass) == -1 || (i4 = this.mProtocol) == -1) {
+        if (this.mVendorId == -1 || this.mProductId == -1 || this.mClass == -1 || this.mSubclass == -1 || this.mProtocol == -1) {
             return false;
         }
         if (obj instanceof DeviceFilter) {
             DeviceFilter filter = (DeviceFilter) obj;
-            if (filter.mVendorId != i5 || filter.mProductId != i || filter.mClass != i2 || filter.mSubclass != i3 || filter.mProtocol != i4) {
+            if (filter.mVendorId != this.mVendorId || filter.mProductId != this.mProductId || filter.mClass != this.mClass || filter.mSubclass != this.mSubclass || filter.mProtocol != this.mProtocol) {
                 return false;
             }
-            String str8 = filter.mManufacturerName;
-            if ((str8 == null || this.mManufacturerName != null) && ((str8 != null || this.mManufacturerName == null) && (((str = filter.mProductName) == null || this.mProductName != null) && ((str != null || this.mProductName == null) && (((str2 = filter.mSerialNumber) == null || this.mSerialNumber != null) && (str2 != null || this.mSerialNumber == null)))))) {
-                return (str8 == null || (str7 = this.mManufacturerName) == null || str7.equals(str8)) && ((str3 = filter.mProductName) == null || (str6 = this.mProductName) == null || str6.equals(str3)) && ((str4 = filter.mSerialNumber) == null || (str5 = this.mSerialNumber) == null || str5.equals(str4));
+            if ((filter.mManufacturerName == null || this.mManufacturerName != null) && ((filter.mManufacturerName != null || this.mManufacturerName == null) && ((filter.mProductName == null || this.mProductName != null) && ((filter.mProductName != null || this.mProductName == null) && ((filter.mSerialNumber == null || this.mSerialNumber != null) && (filter.mSerialNumber != null || this.mSerialNumber == null)))))) {
+                return (filter.mManufacturerName == null || this.mManufacturerName == null || this.mManufacturerName.equals(filter.mManufacturerName)) && (filter.mProductName == null || this.mProductName == null || this.mProductName.equals(filter.mProductName)) && (filter.mSerialNumber == null || this.mSerialNumber == null || this.mSerialNumber.equals(filter.mSerialNumber));
             }
             return false;
         }
@@ -307,7 +293,7 @@ public class DeviceFilter {
     }
 
     public String toString() {
-        return "DeviceFilter[mVendorId=" + this.mVendorId + ",mProductId=" + this.mProductId + ",mClass=" + this.mClass + ",mSubclass=" + this.mSubclass + ",mProtocol=" + this.mProtocol + ",mManufacturerName=" + this.mManufacturerName + ",mProductName=" + this.mProductName + ",mSerialNumber=" + this.mSerialNumber + NavigationBarInflaterView.SIZE_MOD_END;
+        return "DeviceFilter[mVendorId=" + this.mVendorId + ",mProductId=" + this.mProductId + ",mClass=" + this.mClass + ",mSubclass=" + this.mSubclass + ",mProtocol=" + this.mProtocol + ",mManufacturerName=" + this.mManufacturerName + ",mProductName=" + this.mProductName + ",mSerialNumber=" + this.mSerialNumber + ",mInterfaceName=" + this.mInterfaceName + NavigationBarInflaterView.SIZE_MOD_END;
     }
 
     public void dump(DualDumpOutputStream dump, String idName, long id) {

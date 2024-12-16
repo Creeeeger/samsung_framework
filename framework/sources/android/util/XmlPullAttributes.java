@@ -4,7 +4,7 @@ import com.android.internal.util.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 
 /* loaded from: classes4.dex */
-public class XmlPullAttributes implements AttributeSet {
+class XmlPullAttributes implements AttributeSet {
     XmlPullParser mParser;
 
     public XmlPullAttributes(XmlPullParser parser) {

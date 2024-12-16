@@ -1,7 +1,6 @@
 package android.media.effect.effects;
 
 import android.app.slice.Slice;
-import android.content.om.WallpaperThemeConstants;
 import android.filterfw.core.Filter;
 import android.filterfw.core.OneShotScheduler;
 import android.filterpacks.videoproc.BackDropperFilter;
@@ -16,27 +15,10 @@ public class BackDropperEffect extends FilterGraphEffect {
     private EffectUpdateListener mEffectListener;
     private BackDropperFilter.LearningDoneListener mLearningListener;
 
-    /* renamed from: android.media.effect.effects.BackDropperEffect$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements BackDropperFilter.LearningDoneListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener
-        public void onLearningDone(BackDropperFilter filter) {
-            if (BackDropperEffect.this.mEffectListener != null) {
-                BackDropperEffect.this.mEffectListener.onEffectUpdated(BackDropperEffect.this, null);
-            }
-        }
-    }
-
     public BackDropperEffect(EffectContext context, String name) {
         super(context, name, mGraphDefinition, "foreground", "output", OneShotScheduler.class);
         this.mEffectListener = null;
         this.mLearningListener = new BackDropperFilter.LearningDoneListener() { // from class: android.media.effect.effects.BackDropperEffect.1
-            AnonymousClass1() {
-            }
-
             @Override // android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener
             public void onLearningDone(BackDropperFilter filter) {
                 if (BackDropperEffect.this.mEffectListener != null) {
@@ -51,10 +33,10 @@ public class BackDropperEffect extends FilterGraphEffect {
     @Override // android.media.effect.FilterGraphEffect, android.media.effect.Effect
     public void setParameter(String parameterKey, Object value) {
         if (parameterKey.equals(Slice.SUBTYPE_SOURCE)) {
-            Filter background = this.mGraph.getFilter(WallpaperThemeConstants.NAME_BACKGROUND);
+            Filter background = this.mGraph.getFilter("background");
             background.setInputValue("sourceUrl", value);
         } else if (parameterKey.equals(SemSmartClipMetaTagType.CONTEXT)) {
-            Filter background2 = this.mGraph.getFilter(WallpaperThemeConstants.NAME_BACKGROUND);
+            Filter background2 = this.mGraph.getFilter("background");
             background2.setInputValue(SemSmartClipMetaTagType.CONTEXT, value);
         }
     }

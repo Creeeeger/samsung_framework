@@ -12,11 +12,11 @@ public abstract class TypeConverter<T, V> {
         this.mToClass = toClass;
     }
 
-    public Class<V> getTargetType() {
+    Class<V> getTargetType() {
         return this.mToClass;
     }
 
-    public Class<T> getSourceType() {
+    Class<T> getSourceType() {
         return this.mFromClass;
     }
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.hardware.BatteryState;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,6 +21,7 @@ import android.view.PointerIcon;
 import android.view.VerifiedInputEvent;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
+import com.android.internal.hidden_from_bootclasspath.com.android.hardware.input.Flags;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -58,18 +60,16 @@ public final class InputManager {
     private static final int SW_NOTE_PAPER_COVER_ATTACH = 29;
     public static final int SW_NOTE_PAPER_COVER_ATTACH_BIT = 536870912;
     private final Context mContext;
-    private final InputManagerGlobal mGlobal;
-    private final IInputManager mIm;
-    private Boolean mIsStylusPointerIconEnabled = null;
     private static final String TAG = "InputManager";
     private static final boolean DEBUG = Log.isLoggable(TAG, 3);
+    private Boolean mIsStylusPointerIconEnabled = null;
+    private final InputManagerGlobal mGlobal = InputManagerGlobal.getInstance();
+    private final IInputManager mIm = this.mGlobal.getInputManagerService();
 
-    /* loaded from: classes2.dex */
     public interface InputDeviceBatteryListener {
         void onBatteryStateChanged(int i, long j, BatteryState batteryState);
     }
 
-    /* loaded from: classes2.dex */
     public interface InputDeviceListener {
         void onInputDeviceAdded(int i);
 
@@ -78,18 +78,15 @@ public final class InputManager {
         void onInputDeviceRemoved(int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface KeyboardBacklightListener {
         void onKeyboardBacklightChanged(int i, KeyboardBacklightState keyboardBacklightState, boolean z);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnTabletModeChangedListener {
         void onTabletModeChanged(long j, boolean z);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RemappableModifierKey {
         public static final int REMAPPABLE_MODIFIER_KEY_ALT_LEFT = 57;
         public static final int REMAPPABLE_MODIFIER_KEY_ALT_RIGHT = 58;
@@ -102,35 +99,31 @@ public final class InputManager {
         public static final int REMAPPABLE_MODIFIER_KEY_SHIFT_RIGHT = 60;
     }
 
-    /* loaded from: classes2.dex */
     public interface SemOnLidStateChangedListener {
         void onLidStateChanged(long j, int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface SemOnMultiFingerGestureListener {
         void onMultiFingerGesture(int i, int i2);
     }
 
-    /* loaded from: classes2.dex */
     public interface SemOnPointerIconChangedListener {
         void onPointerIconChanged(int i, Bitmap bitmap, float f, float f2);
     }
 
-    /* loaded from: classes2.dex */
     public interface SemOnSwitchEventChangedListener {
         void onSwitchEventChanged(int i, int i2, int i3, int i4);
     }
 
+    public interface StickyModifierStateListener {
+        void onStickyModifierStateChanged(StickyModifierState stickyModifierState);
+    }
+
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SwitchState {
     }
 
     public InputManager(Context context) {
-        InputManagerGlobal inputManagerGlobal = InputManagerGlobal.getInstance();
-        this.mGlobal = inputManagerGlobal;
-        this.mIm = inputManagerGlobal.getInputManagerService();
         this.mContext = context;
     }
 
@@ -147,6 +140,14 @@ public final class InputManager {
         return this.mGlobal.getInputDevice(id);
     }
 
+    public InputDevice.ViewBehavior getInputDeviceViewBehavior(int deviceId) {
+        InputDevice device = getInputDevice(deviceId);
+        if (device == null) {
+            return null;
+        }
+        return device.getViewBehavior();
+    }
+
     public InputDevice getInputDeviceByDescriptor(String descriptor) {
         return this.mGlobal.getInputDeviceByDescriptor(descriptor);
     }
@@ -155,16 +156,16 @@ public final class InputManager {
         return this.mGlobal.getInputDeviceIds();
     }
 
-    public boolean isInputDeviceEnabled(int id) {
-        return this.mGlobal.isInputDeviceEnabled(id);
-    }
-
     public void enableInputDevice(int id) {
         this.mGlobal.enableInputDevice(id);
     }
 
     public void disableInputDevice(int id) {
         this.mGlobal.disableInputDevice(id);
+    }
+
+    public void controlSpenWithToken(IBinder token, boolean enable) {
+        this.mGlobal.controlSpenWithToken(token, enable);
     }
 
     public void registerInputDeviceListener(InputDeviceListener listener, Handler handler) {
@@ -239,8 +240,8 @@ public final class InputManager {
         }
     }
 
-    public List<String> getKeyboardLayoutDescriptorsForInputDevice(InputDevice device) {
-        KeyboardLayout[] layouts = getKeyboardLayoutsForInputDevice(device.getIdentifier());
+    public List<String> getKeyboardLayoutDescriptors() {
+        KeyboardLayout[] layouts = getKeyboardLayouts();
         List<String> res = new ArrayList<>();
         for (KeyboardLayout kl : layouts) {
             res.add(kl.getDescriptor());
@@ -249,17 +250,12 @@ public final class InputManager {
     }
 
     public String getKeyboardLayoutTypeForLayoutDescriptor(String layoutDescriptor) {
-        KeyboardLayout[] layouts = getKeyboardLayouts();
-        for (KeyboardLayout kl : layouts) {
-            if (layoutDescriptor.equals(kl.getDescriptor())) {
-                return kl.getLayoutType();
-            }
-        }
-        return "";
+        KeyboardLayout layout = getKeyboardLayout(layoutDescriptor);
+        return layout == null ? "" : layout.getLayoutType();
     }
 
     public KeyboardLayout[] getKeyboardLayoutsForInputDevice(InputDeviceIdentifier identifier) {
-        return this.mGlobal.getKeyboardLayoutsForInputDevice(identifier);
+        return new KeyboardLayout[0];
     }
 
     public KeyboardLayout getKeyboardLayout(String keyboardLayoutDescriptor) {
@@ -274,61 +270,20 @@ public final class InputManager {
     }
 
     public String getCurrentKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier) {
-        try {
-            return this.mIm.getCurrentKeyboardLayoutForInputDevice(identifier);
-        } catch (RemoteException ex) {
-            throw ex.rethrowFromSystemServer();
-        }
-    }
-
-    public void setCurrentKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, String keyboardLayoutDescriptor) {
-        this.mGlobal.setCurrentKeyboardLayoutForInputDevice(identifier, keyboardLayoutDescriptor);
-    }
-
-    public String[] getEnabledKeyboardLayoutsForInputDevice(InputDeviceIdentifier identifier) {
-        if (identifier == null) {
-            throw new IllegalArgumentException("inputDeviceDescriptor must not be null");
-        }
-        try {
-            return this.mIm.getEnabledKeyboardLayoutsForInputDevice(identifier);
-        } catch (RemoteException ex) {
-            throw ex.rethrowFromSystemServer();
-        }
-    }
-
-    public void addKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, String keyboardLayoutDescriptor) {
-        if (identifier == null) {
-            throw new IllegalArgumentException("inputDeviceDescriptor must not be null");
-        }
-        if (keyboardLayoutDescriptor == null) {
-            throw new IllegalArgumentException("keyboardLayoutDescriptor must not be null");
-        }
-        try {
-            this.mIm.addKeyboardLayoutForInputDevice(identifier, keyboardLayoutDescriptor);
-        } catch (RemoteException ex) {
-            throw ex.rethrowFromSystemServer();
-        }
-    }
-
-    public void removeKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, String keyboardLayoutDescriptor) {
-        if (identifier == null) {
-            throw new IllegalArgumentException("inputDeviceDescriptor must not be null");
-        }
-        if (keyboardLayoutDescriptor == null) {
-            throw new IllegalArgumentException("keyboardLayoutDescriptor must not be null");
-        }
-        try {
-            this.mIm.removeKeyboardLayoutForInputDevice(identifier, keyboardLayoutDescriptor);
-        } catch (RemoteException ex) {
-            throw ex.rethrowFromSystemServer();
-        }
-    }
-
-    public KeyboardLayout getKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, InputMethodInfo inputMethodInfo, InputMethodSubtype inputMethodSubtype) {
         return null;
     }
 
-    public void setKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, InputMethodInfo inputMethodInfo, InputMethodSubtype inputMethodSubtype, String keyboardLayoutDescriptor) {
+    public void setCurrentKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, String keyboardLayoutDescriptor) {
+    }
+
+    public String[] getEnabledKeyboardLayoutsForInputDevice(InputDeviceIdentifier identifier) {
+        return new String[0];
+    }
+
+    public void addKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, String keyboardLayoutDescriptor) {
+    }
+
+    public void removeKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, String keyboardLayoutDescriptor) {
     }
 
     public void remapModifierKey(int fromKey, int toKey) {
@@ -371,7 +326,7 @@ public final class InputManager {
         }
     }
 
-    public String getKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, int userId, InputMethodInfo imeInfo, InputMethodSubtype imeSubtype) {
+    public KeyboardLayoutSelectionResult getKeyboardLayoutForInputDevice(InputDeviceIdentifier identifier, int userId, InputMethodInfo imeInfo, InputMethodSubtype imeSubtype) {
         try {
             return this.mIm.getKeyboardLayoutForInputDevice(identifier, userId, imeInfo, imeSubtype);
         } catch (RemoteException ex) {
@@ -404,6 +359,14 @@ public final class InputManager {
         }
     }
 
+    public int getMousePointerSpeed() {
+        try {
+            return this.mIm.getMousePointerSpeed();
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
     public void tryPointerSpeed(int speed) {
         if (speed < -7 || speed > 7) {
             throw new IllegalArgumentException("speed out of range");
@@ -431,6 +394,14 @@ public final class InputManager {
         return this.mGlobal.getKeyCodeForKeyLocation(deviceId, locationKeyCode);
     }
 
+    public Drawable getKeyboardLayoutPreview(KeyboardLayout keyboardLayout, int width, int height) {
+        if (!Flags.keyboardLayoutPreviewFlag()) {
+            return null;
+        }
+        PhysicalKeyLayout keyLayout = new PhysicalKeyLayout(this.mGlobal.getKeyCharacterMap(keyboardLayout), keyboardLayout);
+        return new KeyboardLayoutPreviewDrawable(this.mContext, keyLayout, width, height);
+    }
+
     public boolean injectInputEvent(InputEvent event, int mode, int targetUid) {
         return this.mGlobal.injectInputEvent(event, mode, targetUid);
     }
@@ -452,15 +423,11 @@ public final class InputManager {
     }
 
     public void setPointerIconType(int iconId) {
-        this.mGlobal.setPointerIconType(iconId);
+        Log.e(TAG, "setPointerIcon: Unsupported app usage!");
     }
 
-    private void hidden_setPointerIconType(int iconId) {
-        setPointerIconType(iconId);
-    }
-
-    public void setCustomPointerIcon(PointerIcon icon) {
-        this.mGlobal.setCustomPointerIcon(icon);
+    public boolean setPointerIcon(PointerIcon icon, int displayId, int deviceId, int pointerId, IBinder inputToken) {
+        return this.mGlobal.setPointerIcon(icon, displayId, deviceId, pointerId, inputToken);
     }
 
     public boolean isStylusPointerIconEnabled() {
@@ -490,30 +457,6 @@ public final class InputManager {
         return this.mGlobal.monitorInput(inputChannelName, displayId, filter);
     }
 
-    public InputSensorInfo[] getSensorList(int deviceId) {
-        return this.mGlobal.getSensorList(deviceId);
-    }
-
-    public boolean enableSensor(int deviceId, int sensorType, int samplingPeriodUs, int maxBatchReportLatencyUs) {
-        return this.mGlobal.enableSensor(deviceId, sensorType, samplingPeriodUs, maxBatchReportLatencyUs);
-    }
-
-    public void disableSensor(int deviceId, int sensorType) {
-        this.mGlobal.disableSensor(deviceId, sensorType);
-    }
-
-    public boolean flushSensor(int deviceId, int sensorType) {
-        return this.mGlobal.flushSensor(deviceId, sensorType);
-    }
-
-    public boolean registerSensorListener(IInputSensorEventListener listener) {
-        return this.mGlobal.registerSensorListener(listener);
-    }
-
-    public void unregisterSensorListener(IInputSensorEventListener listener) {
-        this.mGlobal.unregisterSensorListener(listener);
-    }
-
     public void addPortAssociation(String inputPort, int displayPort) {
         try {
             this.mIm.addPortAssociation(inputPort, displayPort);
@@ -530,12 +473,20 @@ public final class InputManager {
         }
     }
 
-    public void addUniqueIdAssociation(String inputPort, String displayUniqueId) {
-        this.mGlobal.addUniqueIdAssociation(inputPort, displayUniqueId);
+    public void addUniqueIdAssociationByPort(String inputPort, String displayUniqueId) {
+        this.mGlobal.addUniqueIdAssociationByPort(inputPort, displayUniqueId);
     }
 
-    public void removeUniqueIdAssociation(String inputPort) {
-        this.mGlobal.removeUniqueIdAssociation(inputPort);
+    public void removeUniqueIdAssociationByPort(String inputPort) {
+        this.mGlobal.removeUniqueIdAssociationByPort(inputPort);
+    }
+
+    public void addUniqueIdAssociationByDescriptor(String inputDeviceDescriptor, String displayUniqueId) {
+        this.mGlobal.addUniqueIdAssociationByDescriptor(inputDeviceDescriptor, displayUniqueId);
+    }
+
+    public void removeUniqueIdAssociationByDescriptor(String inputDeviceDescriptor) {
+        this.mGlobal.removeUniqueIdAssociationByDescriptor(inputDeviceDescriptor);
     }
 
     public HostUsiVersion getHostUsiVersion(Display display) {
@@ -578,8 +529,18 @@ public final class InputManager {
         this.mGlobal.unregisterKeyboardBacklightListener(listener);
     }
 
-    public void setIsStylusFromTouchpad(boolean isStylusFromTouchpad) {
-        this.mGlobal.setIsStylusFromTouchpad(isStylusFromTouchpad);
+    public void registerStickyModifierStateListener(Executor executor, StickyModifierStateListener listener) throws IllegalArgumentException {
+        if (!InputSettings.isAccessibilityStickyKeysFeatureEnabled()) {
+            return;
+        }
+        this.mGlobal.registerStickyModifierStateListener(executor, listener);
+    }
+
+    public void unregisterStickyModifierStateListener(StickyModifierStateListener listener) {
+        if (!InputSettings.isAccessibilityStickyKeysFeatureEnabled()) {
+            return;
+        }
+        this.mGlobal.unregisterStickyModifierStateListener(listener);
     }
 
     public int getCurrentSwitchEventState(int mask, boolean isSwitch) {
@@ -598,11 +559,7 @@ public final class InputManager {
     }
 
     public long getLastLidEventTimeNanos() {
-        try {
-            return this.mIm.getLastLidEventTimeNanos();
-        } catch (RemoteException e) {
-            return -1L;
-        }
+        return -1L;
     }
 
     public boolean isUidTouched(int uid) {
@@ -712,6 +669,50 @@ public final class InputManager {
         }
     }
 
+    public void updateDeviceToGamepadProfile(String btDevice, int id) {
+        this.mGlobal.updateDeviceToGamepadProfile(btDevice, id);
+    }
+
+    public void removeDeviceToGamepadProfile(String btDevice) {
+        this.mGlobal.removeDeviceToGamepadProfile(btDevice);
+    }
+
+    public void removeAllDeviceToGamepadProfile() {
+        this.mGlobal.removeAllDeviceToGamepadProfile();
+    }
+
+    public void removeAllGamepadProfiles() {
+        this.mGlobal.removeAllGamepadProfiles();
+    }
+
+    public void removeGamepadProfile(int id) {
+        this.mGlobal.removeGamepadProfile(id);
+    }
+
+    public boolean setGamepadProfileName(int id, String name) {
+        return this.mGlobal.setGamepadProfileName(id, name);
+    }
+
+    public boolean setRemapGamepadButton(int id, int fromButton, int toButton) {
+        return this.mGlobal.setRemapGamepadButton(id, fromButton, toButton);
+    }
+
+    public boolean setRemapGamepadStick(int id, int fromStick, int toStick, boolean inverseH, boolean inverseV, boolean inverseRot) {
+        return this.mGlobal.setRemapGamepadStick(id, fromStick, toStick, inverseH, inverseV, inverseRot);
+    }
+
+    public String getSupportButtonNStick() {
+        return this.mGlobal.getSupportButtonNStick();
+    }
+
+    public String getGamepadProfile(int id) {
+        return this.mGlobal.getGamepadProfile(id);
+    }
+
+    public int[] getGamepadProfileIds() {
+        return this.mGlobal.getGamepadProfileIds();
+    }
+
     public long semGetMotionIdleTimeMillis() {
         try {
             return this.mIm.semGetMotionIdleTimeMillis(false);
@@ -748,7 +749,6 @@ public final class InputManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public enum SemTspCommandType {
         EMPTY(0),
         SPAY(1),
@@ -764,6 +764,10 @@ public final class InputManager {
         public int getvalue() {
             return this.mValue;
         }
+    }
+
+    public void setIsStylusFromTouchpad(boolean isStylusFromTouchpad) {
+        this.mGlobal.setIsStylusFromTouchpad(isStylusFromTouchpad);
     }
 
     public void semRegisterOnPointerIconChangedListener(SemOnPointerIconChangedListener listener, Handler handler) {

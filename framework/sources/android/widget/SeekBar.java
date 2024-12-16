@@ -9,7 +9,6 @@ public class SeekBar extends AbsSeekBar {
     private OnSeekBarChangeListener mOnSeekBarChangeListener;
     private SemOnSeekBarHoverListener mOnSeekBarHoverListener;
 
-    /* loaded from: classes4.dex */
     public interface OnSeekBarChangeListener {
         void onProgressChanged(SeekBar seekBar, int i, boolean z);
 
@@ -18,7 +17,6 @@ public class SeekBar extends AbsSeekBar {
         void onStopTrackingTouch(SeekBar seekBar);
     }
 
-    /* loaded from: classes4.dex */
     public interface SemOnSeekBarHoverListener {
         void onHoverChanged(SeekBar seekBar, int i, boolean z);
 
@@ -44,11 +42,10 @@ public class SeekBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar, android.widget.ProgressBar
-    public void onProgressRefresh(float scale, boolean fromUser, int progress) {
+    void onProgressRefresh(float scale, boolean fromUser, int progress) {
         super.onProgressRefresh(scale, fromUser, progress);
-        OnSeekBarChangeListener onSeekBarChangeListener = this.mOnSeekBarChangeListener;
-        if (onSeekBarChangeListener != null) {
-            onSeekBarChangeListener.onProgressChanged(this, progress, fromUser);
+        if (this.mOnSeekBarChangeListener != null) {
+            this.mOnSeekBarChangeListener.onProgressChanged(this, progress, fromUser);
         }
     }
 
@@ -57,20 +54,18 @@ public class SeekBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onStartTrackingTouch() {
+    void onStartTrackingTouch() {
         super.onStartTrackingTouch();
-        OnSeekBarChangeListener onSeekBarChangeListener = this.mOnSeekBarChangeListener;
-        if (onSeekBarChangeListener != null) {
-            onSeekBarChangeListener.onStartTrackingTouch(this);
+        if (this.mOnSeekBarChangeListener != null) {
+            this.mOnSeekBarChangeListener.onStartTrackingTouch(this);
         }
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onStopTrackingTouch() {
+    void onStopTrackingTouch() {
         super.onStopTrackingTouch();
-        OnSeekBarChangeListener onSeekBarChangeListener = this.mOnSeekBarChangeListener;
-        if (onSeekBarChangeListener != null) {
-            onSeekBarChangeListener.onStopTrackingTouch(this);
+        if (this.mOnSeekBarChangeListener != null) {
+            this.mOnSeekBarChangeListener.onStopTrackingTouch(this);
         }
     }
 
@@ -92,28 +87,25 @@ public class SeekBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onStartTrackingHover(int hoverLevel, int posX, int posY) {
-        SemOnSeekBarHoverListener semOnSeekBarHoverListener = this.mOnSeekBarHoverListener;
-        if (semOnSeekBarHoverListener != null) {
-            semOnSeekBarHoverListener.onStartTrackingHover(this, hoverLevel);
+    void onStartTrackingHover(int hoverLevel, int posX, int posY) {
+        if (this.mOnSeekBarHoverListener != null) {
+            this.mOnSeekBarHoverListener.onStartTrackingHover(this, hoverLevel);
         }
         super.onStartTrackingHover(hoverLevel, posX, posY);
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onStopTrackingHover() {
-        SemOnSeekBarHoverListener semOnSeekBarHoverListener = this.mOnSeekBarHoverListener;
-        if (semOnSeekBarHoverListener != null) {
-            semOnSeekBarHoverListener.onStopTrackingHover(this);
+    void onStopTrackingHover() {
+        if (this.mOnSeekBarHoverListener != null) {
+            this.mOnSeekBarHoverListener.onStopTrackingHover(this);
         }
         super.onStopTrackingHover();
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onHoverChanged(int hoverLevel, int posX, int posY) {
-        SemOnSeekBarHoverListener semOnSeekBarHoverListener = this.mOnSeekBarHoverListener;
-        if (semOnSeekBarHoverListener != null) {
-            semOnSeekBarHoverListener.onHoverChanged(this, hoverLevel, true);
+    void onHoverChanged(int hoverLevel, int posX, int posY) {
+        if (this.mOnSeekBarHoverListener != null) {
+            this.mOnSeekBarHoverListener.onHoverChanged(this, hoverLevel, true);
         }
         super.onHoverChanged(hoverLevel, posX, posY);
     }

@@ -1,12 +1,15 @@
 package android.renderscript;
 
+import android.app.compat.CompatChanges;
 import android.content.res.Resources;
+import android.util.Slog;
 import java.io.IOException;
 import java.io.InputStream;
 
 @Deprecated
 /* loaded from: classes3.dex */
 public class ScriptC extends Script {
+    private static final long RENDERSCRIPT_SCRIPTC_DEPRECATION_CHANGE_ID = 297019750;
     private static final String TAG = "ScriptC";
 
     protected ScriptC(int id, RenderScript rs) {
@@ -40,9 +43,22 @@ public class ScriptC extends Script {
         setID(id);
     }
 
+    private static void throwExceptionIfScriptCUnsupported() {
+        try {
+            System.loadLibrary("RS");
+            Slog.w(TAG, "ScriptC scripts are not supported when targeting an API Level >= 36. Please refer to https://developer.android.com/guide/topics/renderscript/migration-guide for proposed alternatives.");
+            if (CompatChanges.isChangeEnabled(RENDERSCRIPT_SCRIPTC_DEPRECATION_CHANGE_ID)) {
+                throw new UnsupportedOperationException("ScriptC scripts are not supported when targeting an API Level >= 36. Please refer to https://developer.android.com/guide/topics/renderscript/migration-guide for proposed alternatives.");
+            }
+        } catch (UnsatisfiedLinkError e) {
+            throw new UnsupportedOperationException("This device does not have an ABI that supports ScriptC.");
+        }
+    }
+
     private static synchronized long internalCreate(RenderScript rs, Resources resources, int resourceID) {
         long nScriptCCreate;
         synchronized (ScriptC.class) {
+            throwExceptionIfScriptCUnsupported();
             InputStream is = resources.openRawResource(resourceID);
             try {
                 try {
@@ -77,6 +93,7 @@ public class ScriptC extends Script {
     private static synchronized long internalStringCreate(RenderScript rs, String resName, byte[] bitcode) {
         long nScriptCCreate;
         synchronized (ScriptC.class) {
+            throwExceptionIfScriptCUnsupported();
             nScriptCCreate = rs.nScriptCCreate(resName, RenderScript.getCachePath(), bitcode, bitcode.length);
         }
         return nScriptCCreate;

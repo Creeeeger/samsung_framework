@@ -38,7 +38,6 @@ public interface ISemMobileWipsService extends IInterface {
 
     void updateWifiChipInfo(String str, String str2) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemMobileWipsService {
         @Override // com.samsung.android.wifi.ISemMobileWipsService
         public boolean registerCallback(ISemMobileWipsFramework callback) throws RemoteException {
@@ -100,7 +99,6 @@ public interface ISemMobileWipsService extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemMobileWipsService {
         static final int TRANSACTION_broadcastBcnEventAbort = 4;
         static final int TRANSACTION_broadcastBcnIntervalEvent = 3;
@@ -176,111 +174,108 @@ public interface ISemMobileWipsService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemMobileWipsService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemMobileWipsService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemMobileWipsService.DESCRIPTOR);
+                case 1:
+                    ISemMobileWipsFramework _arg0 = ISemMobileWipsFramework.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result = registerCallback(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    ISemMobileWipsFramework _arg02 = ISemMobileWipsFramework.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result2 = unregisterCallback(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    long _arg5 = data.readLong();
+                    long _arg6 = data.readLong();
+                    data.enforceNoDataAvail();
+                    broadcastBcnIntervalEvent(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    broadcastBcnEventAbort(_arg04, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = checkMWIPS(_arg05, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    Message _arg06 = (Message) data.readTypedObject(Message.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendMessage(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    updateWifiChipInfo(_arg07, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    String _arg15 = data.readString();
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    byte[] _arg42 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = setCurrentBss(_arg08, _arg15, _arg22, _arg32, _arg42);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 9:
+                    List<SemMobileWipsScanResult> _arg09 = data.createTypedArrayList(SemMobileWipsScanResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onScanResults(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    List<String> _arg010 = data.createStringArrayList();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    onDnsResponses(_arg010, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    ISemMobileWipsPacketSender _arg011 = ISemMobileWipsPacketSender.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result5 = registerPacketSender(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 12:
+                    ISemMobileWipsPacketSender _arg012 = ISemMobileWipsPacketSender.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result6 = unregisterPacketSender(_arg012);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISemMobileWipsFramework _arg0 = ISemMobileWipsFramework.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result = registerCallback(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            ISemMobileWipsFramework _arg02 = ISemMobileWipsFramework.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result2 = unregisterCallback(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            long _arg5 = data.readLong();
-                            long _arg6 = data.readLong();
-                            data.enforceNoDataAvail();
-                            broadcastBcnIntervalEvent(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            broadcastBcnEventAbort(_arg04, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = checkMWIPS(_arg05, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            Message _arg06 = (Message) data.readTypedObject(Message.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendMessage(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            updateWifiChipInfo(_arg07, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            String _arg15 = data.readString();
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            byte[] _arg42 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = setCurrentBss(_arg08, _arg15, _arg22, _arg32, _arg42);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 9:
-                            List<SemMobileWipsScanResult> _arg09 = data.createTypedArrayList(SemMobileWipsScanResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onScanResults(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            List<String> _arg010 = data.createStringArrayList();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            onDnsResponses(_arg010, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            ISemMobileWipsPacketSender _arg011 = ISemMobileWipsPacketSender.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result5 = registerPacketSender(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 12:
-                            ISemMobileWipsPacketSender _arg012 = ISemMobileWipsPacketSender.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result6 = unregisterPacketSender(_arg012);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISemMobileWipsService {
             private IBinder mRemote;
 

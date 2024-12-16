@@ -6,7 +6,6 @@ import java.util.Set;
 /* loaded from: classes4.dex */
 public class GeolocationPermissions {
 
-    /* loaded from: classes4.dex */
     public interface Callback {
         void invoke(String str, boolean z, boolean z2);
     }

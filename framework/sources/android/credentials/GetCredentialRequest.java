@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class GetCredentialRequest implements Parcelable {
     public static final Parcelable.Creator<GetCredentialRequest> CREATOR = new Parcelable.Creator<GetCredentialRequest>() { // from class: android.credentials.GetCredentialRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetCredentialRequest[] newArray(int size) {
             return new GetCredentialRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetCredentialRequest createFromParcel(Parcel in) {
             return new GetCredentialRequest(in);
@@ -30,14 +29,6 @@ public final class GetCredentialRequest implements Parcelable {
     private final List<CredentialOption> mCredentialOptions;
     private final Bundle mData;
     private String mOrigin;
-
-    /* synthetic */ GetCredentialRequest(Parcel parcel, GetCredentialRequestIA getCredentialRequestIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ GetCredentialRequest(List list, Bundle bundle, boolean z, String str, GetCredentialRequestIA getCredentialRequestIA) {
-        this(list, bundle, z, str);
-    }
 
     public List<CredentialOption> getCredentialOptions() {
         return this.mCredentialOptions;
@@ -85,32 +76,14 @@ public final class GetCredentialRequest implements Parcelable {
         ArrayList arrayList = new ArrayList();
         in.readTypedList(arrayList, CredentialOption.CREATOR);
         this.mCredentialOptions = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mCredentialOptions);
         Bundle data = in.readBundle();
         this.mData = data;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) data);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mData);
         this.mAlwaysSendAppInfoToProvider = in.readBoolean();
         this.mOrigin = in.readString8();
     }
 
-    /* renamed from: android.credentials.GetCredentialRequest$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GetCredentialRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetCredentialRequest[] newArray(int size) {
-            return new GetCredentialRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetCredentialRequest createFromParcel(Parcel in) {
-            return new GetCredentialRequest(in);
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final Bundle mData;
         private String mOrigin;

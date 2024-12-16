@@ -13,14 +13,13 @@ public final class DeviceProductInfo implements Parcelable {
     public static final int CONNECTION_TO_SINK_TRANSITIVE = 3;
     public static final int CONNECTION_TO_SINK_UNKNOWN = 0;
     public static final Parcelable.Creator<DeviceProductInfo> CREATOR = new Parcelable.Creator<DeviceProductInfo>() { // from class: android.hardware.display.DeviceProductInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceProductInfo createFromParcel(Parcel in) {
             return new DeviceProductInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceProductInfo[] newArray(int size) {
             return new DeviceProductInfo[size];
@@ -34,12 +33,7 @@ public final class DeviceProductInfo implements Parcelable {
     private final String mProductId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ConnectionToSinkType {
-    }
-
-    /* synthetic */ DeviceProductInfo(Parcel parcel, DeviceProductInfoIA deviceProductInfoIA) {
-        this(parcel);
     }
 
     public DeviceProductInfo(String name, String manufacturerPnpId, String productId, Integer modelYear, ManufactureDate manufactureDate, int connectionToSinkType) {
@@ -82,24 +76,21 @@ public final class DeviceProductInfo implements Parcelable {
     }
 
     public int getModelYear() {
-        Integer num = this.mModelYear;
-        if (num != null) {
-            return num.intValue();
+        if (this.mModelYear != null) {
+            return this.mModelYear.intValue();
         }
         return -1;
     }
 
     public int getManufactureYear() {
-        ManufactureDate manufactureDate = this.mManufactureDate;
-        if (manufactureDate == null || manufactureDate.mYear == null) {
+        if (this.mManufactureDate == null || this.mManufactureDate.mYear == null) {
             return -1;
         }
         return this.mManufactureDate.mYear.intValue();
     }
 
     public int getManufactureWeek() {
-        ManufactureDate manufactureDate = this.mManufactureDate;
-        if (manufactureDate == null || manufactureDate.mWeek == null) {
+        if (this.mManufactureDate == null || this.mManufactureDate.mWeek == null) {
             return -1;
         }
         return this.mManufactureDate.mWeek.intValue();
@@ -135,23 +126,6 @@ public final class DeviceProductInfo implements Parcelable {
         return Objects.hash(this.mName, this.mManufacturerPnpId, this.mProductId, this.mModelYear, this.mManufactureDate, Integer.valueOf(this.mConnectionToSinkType));
     }
 
-    /* renamed from: android.hardware.display.DeviceProductInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DeviceProductInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceProductInfo createFromParcel(Parcel in) {
-            return new DeviceProductInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceProductInfo[] newArray(int size) {
-            return new DeviceProductInfo[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -167,17 +141,15 @@ public final class DeviceProductInfo implements Parcelable {
         dest.writeInt(this.mConnectionToSinkType);
     }
 
-    /* loaded from: classes2.dex */
     public static class ManufactureDate implements Parcelable {
         public static final Parcelable.Creator<ManufactureDate> CREATOR = new Parcelable.Creator<ManufactureDate>() { // from class: android.hardware.display.DeviceProductInfo.ManufactureDate.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ManufactureDate createFromParcel(Parcel in) {
                 return new ManufactureDate(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ManufactureDate[] newArray(int size) {
                 return new ManufactureDate[size];
@@ -205,23 +177,6 @@ public final class DeviceProductInfo implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
-        }
-
-        /* renamed from: android.hardware.display.DeviceProductInfo$ManufactureDate$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ManufactureDate> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ManufactureDate createFromParcel(Parcel in) {
-                return new ManufactureDate(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ManufactureDate[] newArray(int size) {
-                return new ManufactureDate[size];
-            }
         }
 
         public Integer getYear() {

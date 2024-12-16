@@ -14,7 +14,6 @@ public interface IResourcesManager extends IInterface {
 
     boolean dumpResources(String str, ParcelFileDescriptor parcelFileDescriptor, RemoteCallback remoteCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IResourcesManager {
         @Override // android.content.res.IResourcesManager
         public boolean dumpResources(String process, ParcelFileDescriptor fd, RemoteCallback finishCallback) throws RemoteException {
@@ -27,7 +26,6 @@ public interface IResourcesManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IResourcesManager {
         static final int TRANSACTION_dumpResources = 1;
 
@@ -70,28 +68,25 @@ public interface IResourcesManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IResourcesManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IResourcesManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IResourcesManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = dumpResources(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = dumpResources(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IResourcesManager {
             private IBinder mRemote;
 

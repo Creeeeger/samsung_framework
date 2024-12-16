@@ -14,15 +14,14 @@ import com.samsung.android.rune.CoreRune;
 import java.util.Objects;
 
 /* loaded from: classes2.dex */
-public final class InkWindow extends PhoneWindow {
+final class InkWindow extends PhoneWindow {
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
     private View mInkView;
     private InkVisibilityListener mInkViewVisibilityListener;
     private boolean mIsViewAdded;
     private final WindowManager mWindowManager;
 
-    /* loaded from: classes2.dex */
-    public interface InkVisibilityListener {
+    interface InkVisibilityListener {
         void onInkViewVisible();
     }
 
@@ -30,7 +29,7 @@ public final class InkWindow extends PhoneWindow {
         super(context);
         setType(2011);
         WindowManager.LayoutParams attrs = getAttributes();
-        if (CoreRune.FW_DIRECT_WRITING) {
+        if (CoreRune.DIRECT_WRITING) {
             attrs.setTitle("InkWindow");
         }
         attrs.layoutInDisplayCutoutMode = 3;
@@ -41,16 +40,16 @@ public final class InkWindow extends PhoneWindow {
         setBackgroundDrawableResource(17170445);
         setLayout(-1, -1);
         this.mWindowManager = (WindowManager) context.getSystemService(WindowManager.class);
-        if (CoreRune.FW_DIRECT_WRITING) {
+        if (CoreRune.DIRECT_WRITING) {
             setDecorFitsSystemWindows(false);
         }
     }
 
-    public void initOnly() {
+    void initOnly() {
         show(true);
     }
 
-    public void show() {
+    void show() {
         show(false);
     }
 
@@ -61,24 +60,22 @@ public final class InkWindow extends PhoneWindow {
         }
         getDecorView().setVisibility(keepInvisible ? 4 : 0);
         if (!this.mIsViewAdded) {
-            try {
-                this.mWindowManager.addView(getDecorView(), getAttributes());
-                this.mIsViewAdded = true;
-            } catch (WindowManager.BadTokenException e) {
-                Slog.w("InputMethodService", "ime window token already removed.");
+            this.mWindowManager.addView(getDecorView(), getAttributes());
+            this.mIsViewAdded = true;
+        }
+    }
+
+    void hide(boolean remove) {
+        if (getDecorView() != null) {
+            if (remove) {
+                this.mWindowManager.removeViewImmediate(getDecorView());
+            } else {
+                getDecorView().setVisibility(4);
             }
         }
     }
 
-    public void hide(boolean remove) {
-        if (remove) {
-            this.mWindowManager.removeViewImmediate(getDecorView());
-        } else {
-            getDecorView().setVisibility(4);
-        }
-    }
-
-    public void setToken(IBinder token) {
+    void setToken(IBinder token) {
         WindowManager.LayoutParams lp = getAttributes();
         lp.token = token;
         setAttributes(lp);
@@ -86,10 +83,9 @@ public final class InkWindow extends PhoneWindow {
 
     @Override // com.android.internal.policy.PhoneWindow, android.view.Window
     public void addContentView(View view, ViewGroup.LayoutParams params) {
-        View view2 = this.mInkView;
-        if (view2 == null) {
+        if (this.mInkView == null) {
             this.mInkView = view;
-        } else if (view2 != view) {
+        } else if (this.mInkView != view) {
             throw new IllegalStateException("Only one Child Inking view is permitted.");
         }
         super.addContentView(view, params);
@@ -112,16 +108,15 @@ public final class InkWindow extends PhoneWindow {
 
     @Override // com.android.internal.policy.PhoneWindow, android.view.Window
     public void clearContentView() {
-        View view;
-        if (this.mGlobalLayoutListener != null && (view = this.mInkView) != null) {
-            view.getViewTreeObserver().removeOnGlobalLayoutListener(this.mGlobalLayoutListener);
+        if (this.mGlobalLayoutListener != null && this.mInkView != null) {
+            this.mInkView.getViewTreeObserver().removeOnGlobalLayoutListener(this.mGlobalLayoutListener);
         }
         this.mGlobalLayoutListener = null;
         this.mInkView = null;
         super.clearContentView();
     }
 
-    public void setInkViewVisibilityListener(InkVisibilityListener listener) {
+    void setInkViewVisibilityListener(InkVisibilityListener listener) {
         this.mInkViewVisibilityListener = listener;
         initInkViewVisibilityListener();
     }
@@ -131,9 +126,6 @@ public final class InkWindow extends PhoneWindow {
             return;
         }
         this.mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: android.inputmethodservice.InkWindow.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public void onGlobalLayout() {
                 if (InkWindow.this.mInkView != null && InkWindow.this.mInkView.isVisibleToUser()) {
@@ -148,30 +140,11 @@ public final class InkWindow extends PhoneWindow {
         this.mInkView.getViewTreeObserver().addOnGlobalLayoutListener(this.mGlobalLayoutListener);
     }
 
-    /* renamed from: android.inputmethodservice.InkWindow$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements ViewTreeObserver.OnGlobalLayoutListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
-        public void onGlobalLayout() {
-            if (InkWindow.this.mInkView != null && InkWindow.this.mInkView.isVisibleToUser()) {
-                if (InkWindow.this.mInkViewVisibilityListener != null) {
-                    InkWindow.this.mInkViewVisibilityListener.onInkViewVisible();
-                }
-                InkWindow.this.mInkView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                InkWindow.this.mGlobalLayoutListener = null;
-            }
-        }
+    boolean isInkViewVisible() {
+        return getDecorView().getVisibility() == 0 && this.mInkView != null && this.mInkView.isVisibleToUser();
     }
 
-    public boolean isInkViewVisible() {
-        View view;
-        return getDecorView().getVisibility() == 0 && (view = this.mInkView) != null && view.isVisibleToUser();
-    }
-
-    public void dispatchHandwritingEvent(MotionEvent event) {
+    void dispatchHandwritingEvent(MotionEvent event) {
         View decor = getDecorView();
         Objects.requireNonNull(decor);
         ViewRootImpl viewRoot = decor.getViewRootImpl();

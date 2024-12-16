@@ -23,13 +23,13 @@ public class CdmaSmsAddress extends SmsAddress {
     public static final int TON_RESERVED = 7;
     public static final int TON_SUBSCRIBER = 4;
     public static final int TON_UNKNOWN = 0;
-    private static final SparseBooleanArray numericCharDialableMap;
-    private static final char[] numericCharsDialable;
-    private static final char[] numericCharsSugar;
     public int digitMode;
     public int numberMode;
     public int numberOfDigits;
     public int numberPlan;
+    private static final char[] numericCharsDialable = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '#'};
+    private static final char[] numericCharsSugar = {'(', ')', ' ', '-', '+', '.', '/', '\\'};
+    private static final SparseBooleanArray numericCharDialableMap = new SparseBooleanArray(numericCharsDialable.length + numericCharsSugar.length);
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -69,29 +69,11 @@ public class CdmaSmsAddress extends SmsAddress {
     }
 
     static {
-        char[] cArr = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '#'};
-        numericCharsDialable = cArr;
-        char[] cArr2 = {'(', ')', ' ', '-', '+', '.', '/', '\\'};
-        numericCharsSugar = cArr2;
-        numericCharDialableMap = new SparseBooleanArray(cArr.length + cArr2.length);
-        int i = 0;
-        while (true) {
-            char[] cArr3 = numericCharsDialable;
-            if (i >= cArr3.length) {
-                break;
-            }
-            numericCharDialableMap.put(cArr3[i], true);
-            i++;
+        for (int i = 0; i < numericCharsDialable.length; i++) {
+            numericCharDialableMap.put(numericCharsDialable[i], true);
         }
-        int i2 = 0;
-        while (true) {
-            char[] cArr4 = numericCharsSugar;
-            if (i2 < cArr4.length) {
-                numericCharDialableMap.put(cArr4[i2], false);
-                i2++;
-            } else {
-                return;
-            }
+        for (int i2 = 0; i2 < numericCharsSugar.length; i2++) {
+            numericCharDialableMap.put(numericCharsSugar[i2], false);
         }
     }
 
@@ -100,12 +82,11 @@ public class CdmaSmsAddress extends SmsAddress {
         int len = address.length();
         for (int i = 0; i < len; i++) {
             char c = address.charAt(i);
-            SparseBooleanArray sparseBooleanArray = numericCharDialableMap;
-            int mapIndex = sparseBooleanArray.indexOfKey(c);
+            int mapIndex = numericCharDialableMap.indexOfKey(c);
             if (mapIndex < 0) {
                 return null;
             }
-            if (sparseBooleanArray.valueAt(mapIndex)) {
+            if (numericCharDialableMap.valueAt(mapIndex)) {
                 builder.append(c);
             }
         }

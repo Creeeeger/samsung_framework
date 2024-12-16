@@ -10,6 +10,7 @@ public class EventLogTags {
     public static final int IMF_IME_REMOTE_ANIM_CANCEL = 32011;
     public static final int IMF_IME_REMOTE_ANIM_END = 32010;
     public static final int IMF_IME_REMOTE_ANIM_START = 32009;
+    public static final int VIEWROOT_DRAW_EVENT = 60004;
     public static final int VIEW_ENQUEUE_INPUT_EVENT = 62002;
 
     private EventLogTags() {
@@ -41,5 +42,9 @@ public class EventLogTags {
 
     public static void writeViewEnqueueInputEvent(String eventtype, String action) {
         EventLog.writeEvent(VIEW_ENQUEUE_INPUT_EVENT, eventtype, action);
+    }
+
+    public static void writeViewrootDrawEvent(String window, String event) {
+        EventLog.writeEvent(VIEWROOT_DRAW_EVENT, window, event);
     }
 }

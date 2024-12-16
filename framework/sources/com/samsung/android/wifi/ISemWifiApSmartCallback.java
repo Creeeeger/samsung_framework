@@ -12,7 +12,6 @@ public interface ISemWifiApSmartCallback extends IInterface {
 
     void onStateChanged(int i, String str) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemWifiApSmartCallback {
         @Override // com.samsung.android.wifi.ISemWifiApSmartCallback
         public void onStateChanged(int state, String mhsMac) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISemWifiApSmartCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemWifiApSmartCallback {
         static final int TRANSACTION_onStateChanged = 1;
 
@@ -67,27 +65,23 @@ public interface ISemWifiApSmartCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemWifiApSmartCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemWifiApSmartCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemWifiApSmartCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStateChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStateChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemWifiApSmartCallback {
+        private static class Proxy implements ISemWifiApSmartCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

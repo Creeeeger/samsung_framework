@@ -79,9 +79,8 @@ public class SmsCbHeader {
                 throw new IllegalArgumentException("Unsupported message type " + messageType);
             }
         }
-        int messageType2 = this.mDataCodingScheme;
-        if (messageType2 != -1) {
-            this.mDataCodingSchemeStructedData = new DataCodingScheme(messageType2);
+        if (this.mDataCodingScheme != -1) {
+            this.mDataCodingSchemeStructedData = new DataCodingScheme(this.mDataCodingScheme);
         }
         if (isEtwsMessage()) {
             boolean emergencyUserAlert2 = isEtwsEmergencyUserAlert();
@@ -141,8 +140,7 @@ public class SmsCbHeader {
     }
 
     public boolean isEmergencyMessage() {
-        int i = this.mMessageIdentifier;
-        return i >= 4352 && i <= 6399;
+        return this.mMessageIdentifier >= 4352 && this.mMessageIdentifier <= 6399;
     }
 
     private boolean isEtwsMessage() {
@@ -158,8 +156,7 @@ public class SmsCbHeader {
     }
 
     private boolean isCmasMessage() {
-        int i = this.mMessageIdentifier;
-        return i >= 4370 && i <= 4400;
+        return this.mMessageIdentifier >= 4370 && this.mMessageIdentifier <= 4400;
     }
 
     private boolean isEtwsPopupAlert() {
@@ -308,7 +305,6 @@ public class SmsCbHeader {
         return "SmsCbHeader{GS=" + this.mGeographicalScope + ", serialNumber=0x" + Integer.toHexString(this.mSerialNumber) + ", messageIdentifier=0x" + Integer.toHexString(this.mMessageIdentifier) + ", format=" + this.mFormat + ", DCS=0x" + Integer.toHexString(this.mDataCodingScheme) + ", page " + this.mPageIndex + " of " + this.mNrOfPages + '}';
     }
 
-    /* loaded from: classes5.dex */
     public static final class DataCodingScheme {
         public final int encoding;
         public final boolean hasLanguageIndicator;

@@ -61,9 +61,8 @@ public final class Scene {
     }
 
     public void exit() {
-        Runnable runnable;
-        if (getCurrentScene(this.mSceneRoot) == this && (runnable = this.mExitAction) != null) {
-            runnable.run();
+        if (getCurrentScene(this.mSceneRoot) == this && this.mExitAction != null) {
+            this.mExitAction.run();
         }
     }
 
@@ -76,14 +75,13 @@ public final class Scene {
                 this.mSceneRoot.addView(this.mLayout);
             }
         }
-        Runnable runnable = this.mEnterAction;
-        if (runnable != null) {
-            runnable.run();
+        if (this.mEnterAction != null) {
+            this.mEnterAction.run();
         }
         setCurrentScene(this.mSceneRoot, this);
     }
 
-    public static void setCurrentScene(ViewGroup sceneRoot, Scene scene) {
+    static void setCurrentScene(ViewGroup sceneRoot, Scene scene) {
         sceneRoot.setTagInternal(R.id.current_scene, scene);
     }
 
@@ -99,7 +97,7 @@ public final class Scene {
         this.mExitAction = action;
     }
 
-    public boolean isCreatedFromLayoutResource() {
+    boolean isCreatedFromLayoutResource() {
         return this.mLayoutId > 0;
     }
 }

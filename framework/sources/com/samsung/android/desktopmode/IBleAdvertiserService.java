@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IBleAdvertiserService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.desktopmode.IBleAdvertiserService";
 
     boolean needToKeepBinding() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IBleAdvertiserService {
         @Override // com.samsung.android.desktopmode.IBleAdvertiserService
         public boolean needToKeepBinding() throws RemoteException {
@@ -25,7 +24,6 @@ public interface IBleAdvertiserService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IBleAdvertiserService {
         static final int TRANSACTION_needToKeepBinding = 1;
 
@@ -68,24 +66,21 @@ public interface IBleAdvertiserService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBleAdvertiserService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBleAdvertiserService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBleAdvertiserService.DESCRIPTOR);
+                case 1:
+                    boolean _result = needToKeepBinding();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = needToKeepBinding();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IBleAdvertiserService {
             private IBinder mRemote;
 

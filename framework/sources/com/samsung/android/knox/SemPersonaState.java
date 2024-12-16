@@ -3,7 +3,7 @@ package com.samsung.android.knox;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public enum SemPersonaState implements Parcelable {
     INVALID(-1),
     CREATING(1),
@@ -19,14 +19,13 @@ public enum SemPersonaState implements Parcelable {
     CONTAINER_APPS_URGENT_UPDATE(-1);
 
     public static final Parcelable.Creator<SemPersonaState> CREATOR = new Parcelable.Creator<SemPersonaState>() { // from class: com.samsung.android.knox.SemPersonaState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemPersonaState createFromParcel(Parcel source) {
             return SemPersonaState.valueOf(source.readString());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemPersonaState[] newArray(int size) {
             return new SemPersonaState[size];
@@ -51,22 +50,5 @@ public enum SemPersonaState implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name());
-    }
-
-    /* renamed from: com.samsung.android.knox.SemPersonaState$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemPersonaState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemPersonaState createFromParcel(Parcel source) {
-            return SemPersonaState.valueOf(source.readString());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemPersonaState[] newArray(int size) {
-            return new SemPersonaState[size];
-        }
     }
 }

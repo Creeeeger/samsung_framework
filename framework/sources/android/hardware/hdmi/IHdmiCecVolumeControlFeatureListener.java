@@ -12,7 +12,6 @@ public interface IHdmiCecVolumeControlFeatureListener extends IInterface {
 
     void onHdmiCecVolumeControlFeature(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiCecVolumeControlFeatureListener {
         @Override // android.hardware.hdmi.IHdmiCecVolumeControlFeatureListener
         public void onHdmiCecVolumeControlFeature(int hdmiCecVolumeControl) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IHdmiCecVolumeControlFeatureListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiCecVolumeControlFeatureListener {
         static final int TRANSACTION_onHdmiCecVolumeControlFeature = 1;
 
@@ -67,25 +65,22 @@ public interface IHdmiCecVolumeControlFeatureListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IHdmiCecVolumeControlFeatureListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IHdmiCecVolumeControlFeatureListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IHdmiCecVolumeControlFeatureListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onHdmiCecVolumeControlFeature(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onHdmiCecVolumeControlFeature(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiCecVolumeControlFeatureListener {
+        private static class Proxy implements IHdmiCecVolumeControlFeatureListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

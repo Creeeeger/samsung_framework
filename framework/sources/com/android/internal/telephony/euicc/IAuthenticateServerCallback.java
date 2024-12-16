@@ -12,7 +12,6 @@ public interface IAuthenticateServerCallback extends IInterface {
 
     void onComplete(int i, byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IAuthenticateServerCallback {
         @Override // com.android.internal.telephony.euicc.IAuthenticateServerCallback
         public void onComplete(int resultCode, byte[] response) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAuthenticateServerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IAuthenticateServerCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,27 +65,23 @@ public interface IAuthenticateServerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAuthenticateServerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAuthenticateServerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAuthenticateServerCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IAuthenticateServerCallback {
+        private static class Proxy implements IAuthenticateServerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,6 +8,7 @@ public final class AudioIntent {
     public static final String ACTION_AUDIO_RECEIVER_SAR = "android.samsung.media.action.receiver_sar";
     public static final String ACTION_AUDIO_REMOTEMIC_SCO_RESUME = "android.samsung.media.action.ACTION_AUDIO_REMOTEMIC_SCO_RESUME";
     public static final String ACTION_AUDIO_SOUND_MUTE = "android.settings.ALL_SOUND_MUTE";
+    public static final String ACTION_BATTERY_CONNECTION_STATE_CHANGED = "com.samsung.server.BatteryService.action.BATTERY_CONNECTION_STATE_CHANGED";
     public static final String ACTION_BT_CAST_CONNECTION_STATE_CHANGED = "com.samsung.android.bluetooth.audiocast.action.device.CONNECTION_STATE_CHANGED";
     public static final String ACTION_BT_DEVICE_TYPE_CHANGED = "com.samsung.bluetooth.device.action.AUDIO_TYPE_CHANGED";
     public static final String ACTION_CAR_CONNECTION_UPDATED = "androidx.car.app.connection.action.CAR_CONNECTION_UPDATED";
@@ -44,6 +45,7 @@ public final class AudioIntent {
     public static final String ACTION_USER_STARTED = "android.intent.action.USER_STARTED";
     public static final String ACTION_VOIP_LIVE_TRANSLATE_ALLOW = "com.samsung.android.scpm.policy.UPDATE.voip-live-translate-allow-list-a7f6";
     public static final String ACTION_VOLUME_STAR_SETTING_CHANGED = "android.intent.action.VOLUMESTAR_SETTING_CHANGED";
+    public static final String EXTRA_ALL_BATTERY_CONNECTED = "all_battery_connected";
     public static final String EXTRA_CAR_CONNECTION_STATE = "CarConnectionState";
     public static final String EXTRA_VALUE_AUDIO_MODE_CHANGE = "android.samsung.media.extra.AUDIO_MODE";
     public static final String EXTRA_VALUE_AUDIO_MODE_OWNER = "modeOwner";

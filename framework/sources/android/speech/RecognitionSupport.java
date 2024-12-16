@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class RecognitionSupport implements Parcelable {
     public static final Parcelable.Creator<RecognitionSupport> CREATOR = new Parcelable.Creator<RecognitionSupport>() { // from class: android.speech.RecognitionSupport.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionSupport[] newArray(int size) {
             return new RecognitionSupport[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionSupport createFromParcel(Parcel in) {
             return new RecognitionSupport(in);
@@ -35,13 +34,13 @@ public final class RecognitionSupport implements Parcelable {
         this.mSupportedOnDeviceLanguages = List.of();
         this.mOnlineLanguages = List.of();
         this.mInstalledOnDeviceLanguages = installedOnDeviceLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) installedOnDeviceLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInstalledOnDeviceLanguages);
         this.mPendingOnDeviceLanguages = pendingOnDeviceLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) pendingOnDeviceLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPendingOnDeviceLanguages);
         this.mSupportedOnDeviceLanguages = supportedOnDeviceLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) supportedOnDeviceLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSupportedOnDeviceLanguages);
         this.mOnlineLanguages = onlineLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) onlineLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOnlineLanguages);
     }
 
     public List<String> getInstalledOnDeviceLanguages() {
@@ -110,33 +109,15 @@ public final class RecognitionSupport implements Parcelable {
         List<String> onlineLanguages = new ArrayList<>();
         in.readStringList(onlineLanguages);
         this.mInstalledOnDeviceLanguages = installedOnDeviceLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) installedOnDeviceLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInstalledOnDeviceLanguages);
         this.mPendingOnDeviceLanguages = pendingOnDeviceLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) pendingOnDeviceLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPendingOnDeviceLanguages);
         this.mSupportedOnDeviceLanguages = supportedOnDeviceLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) supportedOnDeviceLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSupportedOnDeviceLanguages);
         this.mOnlineLanguages = onlineLanguages;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) onlineLanguages);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOnlineLanguages);
     }
 
-    /* renamed from: android.speech.RecognitionSupport$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecognitionSupport> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionSupport[] newArray(int size) {
-            return new RecognitionSupport[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionSupport createFromParcel(Parcel in) {
-            return new RecognitionSupport(in);
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private long mBuilderFieldsSet = 0;
         private List<String> mInstalledOnDeviceLanguages;
@@ -206,9 +187,8 @@ public final class RecognitionSupport implements Parcelable {
 
         public RecognitionSupport build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 16;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
+            this.mBuilderFieldsSet |= 16;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
                 this.mInstalledOnDeviceLanguages = List.of();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {

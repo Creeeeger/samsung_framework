@@ -20,7 +20,6 @@ public interface IPinItemRequest extends IInterface {
 
     boolean isValid() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPinItemRequest {
         @Override // android.content.pm.IPinItemRequest
         public boolean isValid() throws RemoteException {
@@ -53,7 +52,6 @@ public interface IPinItemRequest extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPinItemRequest {
         public static final String DESCRIPTOR = "android.content.pm.IPinItemRequest";
         static final int TRANSACTION_accept = 2;
@@ -109,48 +107,44 @@ public interface IPinItemRequest extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _result = isValid();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result2 = accept(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    ShortcutInfo _result3 = getShortcutInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    AppWidgetProviderInfo _result4 = getAppWidgetProviderInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 5:
+                    Bundle _result5 = getExtras();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isValid();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result2 = accept(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            ShortcutInfo _result3 = getShortcutInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            AppWidgetProviderInfo _result4 = getAppWidgetProviderInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 5:
-                            Bundle _result5 = getExtras();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPinItemRequest {
+        private static class Proxy implements IPinItemRequest {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

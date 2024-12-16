@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaRedirectingNumberInfoRecord implements Parcelable {
     public static final Parcelable.Creator<CdmaRedirectingNumberInfoRecord> CREATOR = new Parcelable.Creator<CdmaRedirectingNumberInfoRecord>() { // from class: android.hardware.radio.voice.CdmaRedirectingNumberInfoRecord.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaRedirectingNumberInfoRecord createFromParcel(Parcel _aidl_source) {
             CdmaRedirectingNumberInfoRecord _aidl_out = new CdmaRedirectingNumberInfoRecord();
@@ -19,6 +17,7 @@ public class CdmaRedirectingNumberInfoRecord implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaRedirectingNumberInfoRecord[] newArray(int _aidl_size) {
             return new CdmaRedirectingNumberInfoRecord[_aidl_size];
@@ -33,25 +32,6 @@ public class CdmaRedirectingNumberInfoRecord implements Parcelable {
     public static final int REDIRECTING_REASON_UNKNOWN = 0;
     public CdmaNumberInfoRecord redirectingNumber;
     public int redirectingReason = 0;
-
-    /* renamed from: android.hardware.radio.voice.CdmaRedirectingNumberInfoRecord$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaRedirectingNumberInfoRecord> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaRedirectingNumberInfoRecord createFromParcel(Parcel _aidl_source) {
-            CdmaRedirectingNumberInfoRecord _aidl_out = new CdmaRedirectingNumberInfoRecord();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaRedirectingNumberInfoRecord[] newArray(int _aidl_size) {
-            return new CdmaRedirectingNumberInfoRecord[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -110,7 +90,7 @@ public class CdmaRedirectingNumberInfoRecord implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("redirectingNumber: " + Objects.toString(this.redirectingNumber));
         _aidl_sj.add("redirectingReason: " + this.redirectingReason);
-        return "android.hardware.radio.voice.CdmaRedirectingNumberInfoRecord" + _aidl_sj.toString();
+        return "CdmaRedirectingNumberInfoRecord" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

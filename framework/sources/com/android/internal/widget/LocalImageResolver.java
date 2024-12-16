@@ -23,7 +23,7 @@ public class LocalImageResolver {
     public static Drawable resolveImage(Uri uri, Context context) throws IOException {
         try {
             ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
-            return ImageDecoder.decodeDrawable(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: com.android.internal.widget.LocalImageResolver$$ExternalSyntheticLambda0
+            return ImageDecoder.decodeDrawable(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: com.android.internal.widget.LocalImageResolver$$ExternalSyntheticLambda1
                 @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
                 public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source2) {
                     LocalImageResolver.onHeaderDecoded(imageDecoder, imageInfo, 480, 480);
@@ -66,7 +66,11 @@ public class LocalImageResolver {
                 break;
         }
         try {
-            return icon.loadDrawable(context);
+            Drawable iconDrawable = icon.loadDrawable(context);
+            if (iconDrawable == null) {
+                Log.w(TAG, "Couldn't load drawable for icon: " + icon);
+            }
+            return iconDrawable;
         } catch (Resources.NotFoundException e) {
             return null;
         }
@@ -116,7 +120,7 @@ public class LocalImageResolver {
 
     private static Drawable resolveImage(ImageDecoder.Source source, final int maxWidth, final int maxHeight) {
         try {
-            return ImageDecoder.decodeDrawable(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: com.android.internal.widget.LocalImageResolver$$ExternalSyntheticLambda1
+            return ImageDecoder.decodeDrawable(source, new ImageDecoder.OnHeaderDecodedListener() { // from class: com.android.internal.widget.LocalImageResolver$$ExternalSyntheticLambda0
                 @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
                 public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source2) {
                     LocalImageResolver.lambda$resolveImage$1(maxWidth, maxHeight, imageDecoder, imageInfo, source2);
@@ -128,7 +132,7 @@ public class LocalImageResolver {
         }
     }
 
-    public static /* synthetic */ void lambda$resolveImage$1(int maxWidth, int maxHeight, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source unused) {
+    static /* synthetic */ void lambda$resolveImage$1(int maxWidth, int maxHeight, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source unused) {
         if (maxWidth <= 0 || maxHeight <= 0) {
             return;
         }
@@ -155,6 +159,7 @@ public class LocalImageResolver {
         return Math.max(1, k);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void onHeaderDecoded(ImageDecoder decoder, ImageDecoder.ImageInfo info, int maxWidth, int maxHeight) {
         double ratio;
         Size size = info.getSize();

@@ -1,6 +1,6 @@
 package com.samsung.android.knox.analytics.util;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ZipResult {
     private byte[] content;
     private int length;

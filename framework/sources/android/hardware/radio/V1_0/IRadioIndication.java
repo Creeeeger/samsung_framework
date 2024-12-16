@@ -191,7 +191,6 @@ public interface IRadioIndication extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IRadioIndication {
         private IHwBinder mRemote;
 
@@ -1029,7 +1028,6 @@ public interface IRadioIndication extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IRadioIndication {
         @Override // android.hardware.radio.V1_0.IRadioIndication, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -1052,7 +1050,7 @@ public interface IRadioIndication extends IBase {
 
         @Override // android.hardware.radio.V1_0.IRadioIndication, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-119, -41, -113, -92, -101, 9, -30, MidiConstants.STATUS_SONG_SELECT, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_CIRCEASEINOUT, -69, 99, -31, -65, -84, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, MidiConstants.STATUS_SONG_SELECT, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -87, 86, 20, 115, -58, MidiConstants.STATUS_CONTROL_CHANGE, -19, 105, 4, -50, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, 55, 125, 84}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-119, -41, -113, -92, -101, 9, -30, MidiConstants.STATUS_SONG_SELECT, 24, 18, -69, 99, -31, -65, -84, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, MidiConstants.STATUS_SONG_SELECT, 24, -87, 86, 20, 115, -58, MidiConstants.STATUS_CONTROL_CHANGE, -19, 105, 4, -50, 24, 55, 125, 84}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.radio.V1_0.IRadioIndication, android.internal.hidl.base.V1_0.IBase

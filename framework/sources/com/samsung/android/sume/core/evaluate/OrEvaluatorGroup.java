@@ -2,9 +2,9 @@ package com.samsung.android.sume.core.evaluate;
 
 import java.util.function.Predicate;
 
-/* loaded from: classes4.dex */
-public class OrEvaluatorGroup extends EvaluatorGroup {
-    public OrEvaluatorGroup(Evaluator... evaluators) {
+/* loaded from: classes6.dex */
+class OrEvaluatorGroup extends EvaluatorGroup {
+    OrEvaluatorGroup(Evaluator... evaluators) {
         super(evaluators);
     }
 

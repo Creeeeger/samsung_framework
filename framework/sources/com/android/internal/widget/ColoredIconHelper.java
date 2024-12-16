@@ -13,7 +13,7 @@ final class ColoredIconHelper {
     private ColoredIconHelper() {
     }
 
-    public static void applyGrayTint(Context ctx, Drawable drawable, boolean apply, int originalColor) {
+    static void applyGrayTint(Context ctx, Drawable drawable, boolean apply, int originalColor) {
         if (originalColor == 1) {
             return;
         }

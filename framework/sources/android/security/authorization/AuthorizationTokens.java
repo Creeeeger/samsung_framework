@@ -9,9 +9,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class AuthorizationTokens implements Parcelable {
     public static final Parcelable.Creator<AuthorizationTokens> CREATOR = new Parcelable.Creator<AuthorizationTokens>() { // from class: android.security.authorization.AuthorizationTokens.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthorizationTokens createFromParcel(Parcel _aidl_source) {
             AuthorizationTokens _aidl_out = new AuthorizationTokens();
@@ -19,6 +17,7 @@ public class AuthorizationTokens implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthorizationTokens[] newArray(int _aidl_size) {
             return new AuthorizationTokens[_aidl_size];
@@ -26,25 +25,6 @@ public class AuthorizationTokens implements Parcelable {
     };
     public HardwareAuthToken authToken;
     public TimeStampToken timestampToken;
-
-    /* renamed from: android.security.authorization.AuthorizationTokens$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AuthorizationTokens> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthorizationTokens createFromParcel(Parcel _aidl_source) {
-            AuthorizationTokens _aidl_out = new AuthorizationTokens();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthorizationTokens[] newArray(int _aidl_size) {
-            return new AuthorizationTokens[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

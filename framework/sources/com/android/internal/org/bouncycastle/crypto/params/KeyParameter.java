@@ -11,9 +11,8 @@ public class KeyParameter implements CipherParameters {
     }
 
     public KeyParameter(byte[] key, int keyOff, int keyLen) {
-        byte[] bArr = new byte[keyLen];
-        this.key = bArr;
-        System.arraycopy(key, keyOff, bArr, 0, keyLen);
+        this.key = new byte[keyLen];
+        System.arraycopy(key, keyOff, this.key, 0, keyLen);
     }
 
     public byte[] getKey() {

@@ -42,7 +42,6 @@ public final class PowerServiceSettingsAndConfigurationDumpProto {
     public static final long STAY_ON_WHILE_PLUGGED_IN = 1146756268058L;
     public static final long USER_ACTIVITY_TIMEOUT_OVERRIDE_FROM_WINDOW_MANAGER_MS = 1176821039133L;
 
-    /* loaded from: classes5.dex */
     public final class StayOnWhilePluggedInProto {
         public static final long IS_STAY_ON_WHILE_PLUGGED_IN_AC = 1133871366145L;
         public static final long IS_STAY_ON_WHILE_PLUGGED_IN_DOCK = 1133871366148L;
@@ -53,7 +52,6 @@ public final class PowerServiceSettingsAndConfigurationDumpProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ScreenBrightnessSettingLimitsProto {
         public static final long SETTING_DEFAULT_FLOAT = 1108101562374L;
         public static final long SETTING_MAXIMUM_FLOAT = 1108101562373L;

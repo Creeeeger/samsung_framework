@@ -9,18 +9,17 @@ import com.android.internal.accessibility.util.ShortcutUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes4.dex */
-public class ToggleAccessibilityServiceTarget extends AccessibilityServiceTarget {
+/* loaded from: classes5.dex */
+class ToggleAccessibilityServiceTarget extends AccessibilityServiceTarget {
     private Context mContext;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface StatusViewAlphaScale {
         public static final float DISABLED = 0.5f;
         public static final float OPAQUE = 1.0f;
     }
 
-    public ToggleAccessibilityServiceTarget(Context context, int shortcutType, AccessibilityServiceInfo serviceInfo) {
+    ToggleAccessibilityServiceTarget(Context context, int shortcutType, AccessibilityServiceInfo serviceInfo) {
         super(context, shortcutType, 2, serviceInfo);
         int statusResId;
         if (AccessibilityUtils.isAccessibilityServiceEnabled(getContext(), getId())) {
@@ -38,7 +37,7 @@ public class ToggleAccessibilityServiceTarget extends AccessibilityServiceTarget
         boolean isAllowed = AccessibilityTargetHelper.isAccessibilityTargetAllowed(getContext(), getComponentName().getPackageName(), getUid());
         boolean isEditMenuMode = shortcutMenuMode == 1;
         holder.mStatusView.setVisibility(isEditMenuMode ? 8 : 0);
-        holder.mStatusView.setText(getStateDescription());
+        holder.mStatusView.lambda$setTextAsync$0(getStateDescription());
         holder.mStatusView.setAlpha(isAllowed ? 1.0f : 0.5f);
         if (AccessibilityUtils.isAccessibilityServiceEnabled(getContext(), getId())) {
             holder.mStatusView.setTextColor(ShortcutUtils.getPrimaryDarkColorId(this.mContext));

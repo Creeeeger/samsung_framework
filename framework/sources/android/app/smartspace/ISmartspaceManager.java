@@ -23,7 +23,6 @@ public interface ISmartspaceManager extends IInterface {
 
     void unregisterSmartspaceUpdates(SmartspaceSessionId smartspaceSessionId, ISmartspaceCallback iSmartspaceCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISmartspaceManager {
         @Override // android.app.smartspace.ISmartspaceManager
         public void createSmartspaceSession(SmartspaceConfig config, SmartspaceSessionId sessionId, IBinder token) throws RemoteException {
@@ -55,7 +54,6 @@ public interface ISmartspaceManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISmartspaceManager {
         static final int TRANSACTION_createSmartspaceSession = 1;
         static final int TRANSACTION_destroySmartspaceSession = 6;
@@ -113,56 +111,52 @@ public interface ISmartspaceManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISmartspaceManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISmartspaceManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISmartspaceManager.DESCRIPTOR);
+                case 1:
+                    SmartspaceConfig _arg0 = (SmartspaceConfig) data.readTypedObject(SmartspaceConfig.CREATOR);
+                    SmartspaceSessionId _arg1 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
+                    IBinder _arg2 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    createSmartspaceSession(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    SmartspaceSessionId _arg02 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
+                    SmartspaceTargetEvent _arg12 = (SmartspaceTargetEvent) data.readTypedObject(SmartspaceTargetEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySmartspaceEvent(_arg02, _arg12);
+                    return true;
+                case 3:
+                    SmartspaceSessionId _arg03 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestSmartspaceUpdate(_arg03);
+                    return true;
+                case 4:
+                    SmartspaceSessionId _arg04 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
+                    ISmartspaceCallback _arg13 = ISmartspaceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerSmartspaceUpdates(_arg04, _arg13);
+                    return true;
+                case 5:
+                    SmartspaceSessionId _arg05 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
+                    ISmartspaceCallback _arg14 = ISmartspaceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterSmartspaceUpdates(_arg05, _arg14);
+                    return true;
+                case 6:
+                    SmartspaceSessionId _arg06 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    destroySmartspaceSession(_arg06);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SmartspaceConfig _arg0 = (SmartspaceConfig) data.readTypedObject(SmartspaceConfig.CREATOR);
-                            SmartspaceSessionId _arg1 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
-                            IBinder _arg2 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            createSmartspaceSession(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            SmartspaceSessionId _arg02 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
-                            SmartspaceTargetEvent _arg12 = (SmartspaceTargetEvent) data.readTypedObject(SmartspaceTargetEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySmartspaceEvent(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            SmartspaceSessionId _arg03 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestSmartspaceUpdate(_arg03);
-                            return true;
-                        case 4:
-                            SmartspaceSessionId _arg04 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
-                            ISmartspaceCallback _arg13 = ISmartspaceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerSmartspaceUpdates(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            SmartspaceSessionId _arg05 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
-                            ISmartspaceCallback _arg14 = ISmartspaceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterSmartspaceUpdates(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            SmartspaceSessionId _arg06 = (SmartspaceSessionId) data.readTypedObject(SmartspaceSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            destroySmartspaceSession(_arg06);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISmartspaceManager {
+        private static class Proxy implements ISmartspaceManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

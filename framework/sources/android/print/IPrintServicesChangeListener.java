@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IPrintServicesChangeListener extends IInterface {
     void onPrintServicesChanged() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintServicesChangeListener {
         @Override // android.print.IPrintServicesChangeListener
         public void onPrintServicesChanged() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IPrintServicesChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintServicesChangeListener {
         public static final String DESCRIPTOR = "android.print.IPrintServicesChangeListener";
         static final int TRANSACTION_onPrintServicesChanged = 1;
@@ -66,23 +64,20 @@ public interface IPrintServicesChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onPrintServicesChanged();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onPrintServicesChanged();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPrintServicesChangeListener {
+        private static class Proxy implements IPrintServicesChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

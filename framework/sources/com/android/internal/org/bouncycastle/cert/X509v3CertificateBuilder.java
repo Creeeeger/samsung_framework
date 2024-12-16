@@ -40,9 +40,8 @@ public class X509v3CertificateBuilder {
     }
 
     public X509v3CertificateBuilder(X500Name issuer, BigInteger serial, Time notBefore, Time notAfter, X500Name subject, SubjectPublicKeyInfo publicKeyInfo) {
-        V3TBSCertificateGenerator v3TBSCertificateGenerator = new V3TBSCertificateGenerator();
-        this.tbsGen = v3TBSCertificateGenerator;
-        v3TBSCertificateGenerator.setSerialNumber(new ASN1Integer(serial));
+        this.tbsGen = new V3TBSCertificateGenerator();
+        this.tbsGen.setSerialNumber(new ASN1Integer(serial));
         this.tbsGen.setIssuer(issuer);
         this.tbsGen.setStartDate(notBefore);
         this.tbsGen.setEndDate(notAfter);
@@ -52,9 +51,8 @@ public class X509v3CertificateBuilder {
     }
 
     public X509v3CertificateBuilder(X509CertificateHolder template) {
-        V3TBSCertificateGenerator v3TBSCertificateGenerator = new V3TBSCertificateGenerator();
-        this.tbsGen = v3TBSCertificateGenerator;
-        v3TBSCertificateGenerator.setSerialNumber(new ASN1Integer(template.getSerialNumber()));
+        this.tbsGen = new V3TBSCertificateGenerator();
+        this.tbsGen.setSerialNumber(new ASN1Integer(template.getSerialNumber()));
         this.tbsGen.setIssuer(template.getIssuer());
         this.tbsGen.setStartDate(new Time(template.getNotBefore()));
         this.tbsGen.setEndDate(new Time(template.getNotAfter()));

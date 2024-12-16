@@ -20,26 +20,9 @@ public abstract class SimpleClock extends Clock {
         return this.zone;
     }
 
-    /* renamed from: android.os.SimpleClock$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends SimpleClock {
-        AnonymousClass1(ZoneId zone) {
-            super(zone);
-        }
-
-        @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
-        public long millis() {
-            return SimpleClock.this.millis();
-        }
-    }
-
     @Override // java.time.Clock, java.time.InstantSource
     public Clock withZone(ZoneId zone) {
         return new SimpleClock(zone) { // from class: android.os.SimpleClock.1
-            AnonymousClass1(ZoneId zone2) {
-                super(zone2);
-            }
-
             @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
             public long millis() {
                 return SimpleClock.this.millis();

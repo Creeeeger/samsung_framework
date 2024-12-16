@@ -24,35 +24,30 @@ public abstract class AndroidKeyStoreHmacSpi extends MacSpi implements KeyStoreC
     private AndroidKeyStoreSecretKey mKey = null;
     private KeyStoreCryptoOperationChunkedStreamer mChunkedStreamer = null;
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA1 extends AndroidKeyStoreHmacSpi {
         public HmacSHA1() {
             super(2);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA224 extends AndroidKeyStoreHmacSpi {
         public HmacSHA224() {
             super(3);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA256 extends AndroidKeyStoreHmacSpi {
         public HmacSHA256() {
             super(4);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA384 extends AndroidKeyStoreHmacSpi {
         public HmacSHA384() {
             super(5);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA512 extends AndroidKeyStoreHmacSpi {
         public HmacSHA512() {
             super(6);

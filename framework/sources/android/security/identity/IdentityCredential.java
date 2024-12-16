@@ -44,6 +44,9 @@ public abstract class IdentityCredential {
     @Deprecated
     public abstract void storeStaticAuthenticationData(X509Certificate x509Certificate, byte[] bArr) throws UnknownAuthenticationKeyException;
 
+    protected IdentityCredential() {
+    }
+
     @Deprecated
     public void setAllowUsingExpiredKeys(boolean allowUsingExpiredKeys) {
         throw new UnsupportedOperationException();

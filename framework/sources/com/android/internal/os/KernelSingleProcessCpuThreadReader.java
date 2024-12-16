@@ -15,7 +15,6 @@ public class KernelSingleProcessCpuThreadReader {
     private final int mPid;
     private int[] mSelectedThreadNativeTids = new int[0];
 
-    /* loaded from: classes5.dex */
     public interface CpuTimeInStateReader {
         String[] getAggregatedTaskCpuFreqTimes(int i);
 
@@ -54,8 +53,7 @@ public class KernelSingleProcessCpuThreadReader {
                 Slog.wtf(TAG, "Failed to start tracking process CPU times for " + this.mPid);
                 Counter.logIncrement("cpu.value_process_tracking_start_failure_count");
             }
-            int[] iArr = this.mSelectedThreadNativeTids;
-            if (iArr.length > 0 && !startAggregatingThreadCpuTimes(iArr, this.mCpuTimeInStateReader)) {
+            if (this.mSelectedThreadNativeTids.length > 0 && !startAggregatingThreadCpuTimes(this.mSelectedThreadNativeTids, this.mCpuTimeInStateReader)) {
                 Slog.wtf(TAG, "Failed to start tracking aggregated thread CPU times for " + Arrays.toString(this.mSelectedThreadNativeTids));
                 Counter.logIncrement("cpu.value_aggregated_thread_tracking_start_failure_count");
             }
@@ -64,10 +62,9 @@ public class KernelSingleProcessCpuThreadReader {
     }
 
     public void setSelectedThreadIds(int[] nativeTids) {
-        int[] iArr = (int[]) nativeTids.clone();
-        this.mSelectedThreadNativeTids = iArr;
+        this.mSelectedThreadNativeTids = (int[]) nativeTids.clone();
         if (this.mIsTracking) {
-            startAggregatingThreadCpuTimes(iArr, this.mCpuTimeInStateReader);
+            startAggregatingThreadCpuTimes(this.mSelectedThreadNativeTids, this.mCpuTimeInStateReader);
         }
     }
 
@@ -87,7 +84,6 @@ public class KernelSingleProcessCpuThreadReader {
         return processCpuUsage;
     }
 
-    /* loaded from: classes5.dex */
     public static class ProcessCpuUsage {
         public long[] selectedThreadCpuTimesMillis;
         public long[] threadCpuTimesMillis;

@@ -15,11 +15,6 @@ public class PKIXExtendedBuilderParameters implements CertPathParameters {
     private final Set<X509Certificate> excludedCerts;
     private final int maxPathLength;
 
-    /* synthetic */ PKIXExtendedBuilderParameters(Builder builder, PKIXExtendedBuilderParametersIA pKIXExtendedBuilderParametersIA) {
-        this(builder);
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         private final PKIXExtendedParameters baseParameters;
         private Set<X509Certificate> excludedCerts;

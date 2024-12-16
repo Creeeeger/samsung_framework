@@ -56,7 +56,6 @@ public class AllShareEvent {
     public static final String EVENT_WIFI_P2P_DISCONNECTED = "com.sec.android.allshare.event.EVENT_WIFI_P2P_DISABLED";
     public static final String EVENT_WIFI_UNKNOWN = "com.sec.android.allshare.event.EVENT_WIFI_UNKNOWN";
 
-    /* loaded from: classes6.dex */
     public static class FileReceiverEvent {
         public static final String EVENT_FILE_RECEIVER_COMPLETED = "com.sec.android.allshare.event.EVENT_FILE_RECEIVER_COMPLECTED";
         public static final String EVENT_FILE_RECEIVER_FAILED = "com.sec.android.allshare.event.EVENT_FILE_RECEIVER_FAILED";

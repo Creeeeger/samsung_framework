@@ -10,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class CinematicEffectRequest implements Parcelable {
     public static final Parcelable.Creator<CinematicEffectRequest> CREATOR = new Parcelable.Creator<CinematicEffectRequest>() { // from class: android.app.wallpapereffectsgeneration.CinematicEffectRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CinematicEffectRequest createFromParcel(Parcel in) {
             return new CinematicEffectRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CinematicEffectRequest[] newArray(int size) {
             return new CinematicEffectRequest[size];
@@ -25,10 +24,6 @@ public final class CinematicEffectRequest implements Parcelable {
     };
     private Bitmap mBitmap;
     private String mTaskId;
-
-    /* synthetic */ CinematicEffectRequest(Parcel parcel, CinematicEffectRequestIA cinematicEffectRequestIA) {
-        this(parcel);
-    }
 
     private CinematicEffectRequest(Parcel in) {
         this.mTaskId = in.readString();
@@ -72,22 +67,5 @@ public final class CinematicEffectRequest implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(this.mTaskId);
         this.mBitmap.writeToParcel(out, flags);
-    }
-
-    /* renamed from: android.app.wallpapereffectsgeneration.CinematicEffectRequest$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CinematicEffectRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CinematicEffectRequest createFromParcel(Parcel in) {
-            return new CinematicEffectRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CinematicEffectRequest[] newArray(int size) {
-            return new CinematicEffectRequest[size];
-        }
     }
 }

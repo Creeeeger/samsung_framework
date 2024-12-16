@@ -7,14 +7,13 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public class BluetoothBatteryStats implements Parcelable {
     public static final Parcelable.Creator<BluetoothBatteryStats> CREATOR = new Parcelable.Creator<BluetoothBatteryStats>() { // from class: android.os.BluetoothBatteryStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BluetoothBatteryStats createFromParcel(Parcel in) {
             return new BluetoothBatteryStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BluetoothBatteryStats[] newArray(int size) {
             return new BluetoothBatteryStats[size];
@@ -22,7 +21,6 @@ public class BluetoothBatteryStats implements Parcelable {
     };
     private final List<UidStats> mUidStats;
 
-    /* loaded from: classes3.dex */
     public static class UidStats {
         public final long rxTimeMs;
         public final int scanResultCount;
@@ -30,10 +28,6 @@ public class BluetoothBatteryStats implements Parcelable {
         public final long txTimeMs;
         public final int uid;
         public final long unoptimizedScanTimeMs;
-
-        /* synthetic */ UidStats(Parcel parcel, UidStatsIA uidStatsIA) {
-            this(parcel);
-        }
 
         public UidStats(int uid, long scanTimeMs, long unoptimizedScanTimeMs, int scanResultCount, long rxTimeMs, long txTimeMs) {
             this.uid = uid;
@@ -53,6 +47,7 @@ public class BluetoothBatteryStats implements Parcelable {
             this.txTimeMs = in.readLong();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void writeToParcel(Parcel out) {
             out.writeInt(this.uid);
             out.writeLong(this.scanTimeMs);
@@ -90,23 +85,6 @@ public class BluetoothBatteryStats implements Parcelable {
         for (int i = 0; i < size; i++) {
             UidStats stats = this.mUidStats.get(i);
             stats.writeToParcel(out);
-        }
-    }
-
-    /* renamed from: android.os.BluetoothBatteryStats$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BluetoothBatteryStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BluetoothBatteryStats createFromParcel(Parcel in) {
-            return new BluetoothBatteryStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BluetoothBatteryStats[] newArray(int size) {
-            return new BluetoothBatteryStats[size];
         }
     }
 

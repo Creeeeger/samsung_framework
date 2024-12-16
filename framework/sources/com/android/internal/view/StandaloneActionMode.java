@@ -26,9 +26,8 @@ public class StandaloneActionMode extends ActionMode implements MenuBuilder.Call
         this.mContext = context;
         this.mContextView = view;
         this.mCallback = callback;
-        MenuBuilder defaultShowAsAction = new MenuBuilder(view.getContext()).setDefaultShowAsAction(1);
-        this.mMenu = defaultShowAsAction;
-        defaultShowAsAction.setCallback(this);
+        this.mMenu = new MenuBuilder(view.getContext()).setDefaultShowAsAction(1);
+        this.mMenu.setCallback(this);
         this.mFocusable = isFocusable;
     }
 
@@ -101,9 +100,8 @@ public class StandaloneActionMode extends ActionMode implements MenuBuilder.Call
 
     @Override // android.view.ActionMode
     public View getCustomView() {
-        WeakReference<View> weakReference = this.mCustomView;
-        if (weakReference != null) {
-            return weakReference.get();
+        if (this.mCustomView != null) {
+            return this.mCustomView.get();
         }
         return null;
     }

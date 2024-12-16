@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class IptvFrontendSettings extends FrontendSettings {
     public static final int IGMP_UNDEFINED = 0;
     public static final int IGMP_V1 = 1;
@@ -25,17 +25,11 @@ public final class IptvFrontendSettings extends FrontendSettings {
     private final int mSrcPort;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Igmp {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Protocol {
-    }
-
-    /* synthetic */ IptvFrontendSettings(byte[] bArr, byte[] bArr2, int i, int i2, IptvFrontendSettingsFec iptvFrontendSettingsFec, int i3, int i4, long j, String str, IptvFrontendSettingsIA iptvFrontendSettingsIA) {
-        this(bArr, bArr2, i, i2, iptvFrontendSettingsFec, i3, i4, j, str);
     }
 
     private IptvFrontendSettings(byte[] srcIpAddress, byte[] dstIpAddress, int srcPort, int dstPort, IptvFrontendSettingsFec fec, int protocol, int igmp, long bitrate, String contentUrl) {
@@ -87,7 +81,6 @@ public final class IptvFrontendSettings extends FrontendSettings {
         return this.mContentUrl;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private byte[] mSrcIpAddress = {0, 0, 0, 0};
         private byte[] mDstIpAddress = {0, 0, 0, 0};

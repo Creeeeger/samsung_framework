@@ -9,20 +9,17 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class EncryptedCursor extends AbstractCursor {
     private static int INITIAL_VALUE = -99;
-    private final String TAG;
     CryptoHandler mCryptoHandler;
     final Cursor mDatabaseCursor;
     final DatabaseHelper mDatabaseHelper;
-    private int mSyntheticRowId;
+    private final String TAG = "[KnoxAnalytics] " + EncryptedCursor.class.getSimpleName();
+    private int mSyntheticRowId = INITIAL_VALUE;
 
     public EncryptedCursor(DatabaseHelper dbHelper, CryptoHandler cryptoHandler, Integer size) {
-        String str = "[KnoxAnalytics] " + EncryptedCursor.class.getSimpleName();
-        this.TAG = str;
-        this.mSyntheticRowId = INITIAL_VALUE;
-        Log.d(str, "constructor()");
+        Log.d(this.TAG, "constructor()");
         this.mDatabaseHelper = dbHelper;
         this.mDatabaseCursor = dbHelper.getEventChunk(size);
         this.mCryptoHandler = cryptoHandler;
@@ -77,8 +74,7 @@ class EncryptedCursor extends AbstractCursor {
             Log.d(this.TAG, "useLegacyKey(): There is no marked event ID");
             return false;
         }
-        Cursor cursor = this.mDatabaseCursor;
-        if (cursor.getInt(cursor.getColumnIndex("id")) > this.mSyntheticRowId) {
+        if (this.mDatabaseCursor.getInt(this.mDatabaseCursor.getColumnIndex("id")) > this.mSyntheticRowId) {
             this.mCryptoHandler.deleteAnalyticsLegacyKey();
             return false;
         }

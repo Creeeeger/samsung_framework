@@ -14,14 +14,13 @@ import com.android.internal.util.BitUtils;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class IpConnectivityLog {
     private static final boolean DBG = false;
     public static final String SERVICE_NAME = "connmetrics";
     private static final String TAG = IpConnectivityLog.class.getSimpleName();
     private IIpConnectivityMetrics mService;
 
-    /* loaded from: classes2.dex */
     public interface Event extends Parcelable {
     }
 

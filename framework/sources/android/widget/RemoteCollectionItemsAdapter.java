@@ -1,6 +1,6 @@
 package android.widget;
 
-import android.util.SizeF;
+import android.appwidget.AppWidgetHostView;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +11,14 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 /* loaded from: classes4.dex */
-public class RemoteCollectionItemsAdapter extends BaseAdapter {
+class RemoteCollectionItemsAdapter extends BaseAdapter {
     private RemoteViews.ColorResources mColorResources;
     private RemoteViews.InteractionHandler mInteractionHandler;
     private RemoteViews.RemoteCollectionItems mItems;
     private SparseIntArray mLayoutIdToViewType;
     private final int mViewTypeCount;
 
-    public RemoteCollectionItemsAdapter(RemoteViews.RemoteCollectionItems items, RemoteViews.InteractionHandler interactionHandler, RemoteViews.ColorResources colorResources) {
+    RemoteCollectionItemsAdapter(RemoteViews.RemoteCollectionItems items, RemoteViews.InteractionHandler interactionHandler, RemoteViews.ColorResources colorResources) {
         this.mViewTypeCount = items.getViewTypeCount();
         this.mItems = items;
         this.mInteractionHandler = interactionHandler;
@@ -26,7 +26,7 @@ public class RemoteCollectionItemsAdapter extends BaseAdapter {
         initLayoutIdToViewType();
     }
 
-    public void setData(RemoteViews.RemoteCollectionItems items, RemoteViews.InteractionHandler interactionHandler, RemoteViews.ColorResources colorResources) {
+    void setData(RemoteViews.RemoteCollectionItems items, RemoteViews.InteractionHandler interactionHandler, RemoteViews.ColorResources colorResources) {
         if (this.mViewTypeCount < items.getViewTypeCount()) {
             throw new IllegalArgumentException("RemoteCollectionItemsAdapter cannot increase view type count after creation");
         }
@@ -48,32 +48,30 @@ public class RemoteCollectionItemsAdapter extends BaseAdapter {
                 return lambda$initLayoutIdToViewType$0;
             }
         }).distinct().toArray();
-        int length = layoutIds.length;
-        int i = this.mViewTypeCount;
-        if (length > i) {
+        if (layoutIds.length > this.mViewTypeCount) {
             throw new IllegalArgumentException("Collection items uses " + layoutIds.length + " distinct layouts, which is more than view type count of " + this.mViewTypeCount);
         }
         boolean[] processedLayoutIdIndices = new boolean[layoutIds.length];
-        final boolean[] assignedViewTypes = new boolean[i];
+        final boolean[] assignedViewTypes = new boolean[this.mViewTypeCount];
         if (previousLayoutIdToViewType != null) {
-            for (int i2 = 0; i2 < layoutIds.length; i2++) {
-                int layoutId = layoutIds[i2];
+            for (int i = 0; i < layoutIds.length; i++) {
+                int layoutId = layoutIds[i];
                 int previousViewType = previousLayoutIdToViewType.get(layoutId, -1);
                 if (previousViewType >= 0) {
                     this.mLayoutIdToViewType.put(layoutId, previousViewType);
-                    processedLayoutIdIndices[i2] = true;
+                    processedLayoutIdIndices[i] = true;
                     assignedViewTypes[previousViewType] = true;
                 }
             }
         }
         int lastViewType = -1;
-        for (int i3 = 0; i3 < layoutIds.length; i3++) {
-            if (!processedLayoutIdIndices[i3]) {
-                int layoutId2 = layoutIds[i3];
+        for (int i2 = 0; i2 < layoutIds.length; i2++) {
+            if (!processedLayoutIdIndices[i2]) {
+                int layoutId2 = layoutIds[i2];
                 int viewType = IntStream.range(lastViewType + 1, layoutIds.length).filter(new IntPredicate() { // from class: android.widget.RemoteCollectionItemsAdapter$$ExternalSyntheticLambda1
                     @Override // java.util.function.IntPredicate
-                    public final boolean test(int i4) {
-                        return RemoteCollectionItemsAdapter.lambda$initLayoutIdToViewType$1(assignedViewTypes, i4);
+                    public final boolean test(int i3) {
+                        return RemoteCollectionItemsAdapter.lambda$initLayoutIdToViewType$1(assignedViewTypes, i3);
                     }
                 }).findFirst().orElseThrow(new Supplier() { // from class: android.widget.RemoteCollectionItemsAdapter$$ExternalSyntheticLambda2
                     @Override // java.util.function.Supplier
@@ -82,22 +80,23 @@ public class RemoteCollectionItemsAdapter extends BaseAdapter {
                     }
                 });
                 this.mLayoutIdToViewType.put(layoutId2, viewType);
-                processedLayoutIdIndices[i3] = true;
+                processedLayoutIdIndices[i2] = true;
                 assignedViewTypes[viewType] = true;
                 lastViewType = viewType;
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ int lambda$initLayoutIdToViewType$0(int position) {
         return this.mItems.getItemView(position).getLayoutId();
     }
 
-    public static /* synthetic */ boolean lambda$initLayoutIdToViewType$1(boolean[] assignedViewTypes, int type) {
+    static /* synthetic */ boolean lambda$initLayoutIdToViewType$1(boolean[] assignedViewTypes, int type) {
         return !assignedViewTypes[type];
     }
 
-    public static /* synthetic */ IllegalStateException lambda$initLayoutIdToViewType$2() {
+    static /* synthetic */ IllegalStateException lambda$initLayoutIdToViewType$2() {
         return new IllegalStateException("RemoteCollectionItems has more distinct layout ids than its view type count");
     }
 
@@ -138,25 +137,10 @@ public class RemoteCollectionItemsAdapter extends BaseAdapter {
         }
         RemoteViews item = this.mItems.getItemView(position);
         item.addFlags(2);
-        View reapplyView = getViewToReapply(convertView, item);
-        if (reapplyView != null) {
-            try {
-                item.reapply(parent.getContext(), reapplyView, this.mInteractionHandler, null, this.mColorResources);
-                return reapplyView;
-            } catch (RuntimeException e) {
-            }
-        }
-        return item.apply(parent.getContext(), parent, this.mInteractionHandler, (SizeF) null, this.mColorResources);
-    }
-
-    private static View getViewToReapply(View convertView, RemoteViews item) {
-        if (convertView == null) {
-            return null;
-        }
-        Object layoutIdTag = convertView.getTag(16908312);
-        if ((layoutIdTag instanceof Integer) && item.getLayoutId() == ((Integer) layoutIdTag).intValue()) {
-            return convertView;
-        }
-        return null;
+        AppWidgetHostView newView = convertView instanceof AppWidgetHostView.AdapterChildHostView ? (AppWidgetHostView.AdapterChildHostView) convertView : new AppWidgetHostView.AdapterChildHostView(parent.getContext());
+        newView.setInteractionHandler(this.mInteractionHandler);
+        newView.setColorResourcesNoReapply(this.mColorResources);
+        newView.updateAppWidget(item);
+        return newView;
     }
 }

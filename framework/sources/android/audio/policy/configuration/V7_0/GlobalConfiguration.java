@@ -12,11 +12,10 @@ public class GlobalConfiguration {
     private Boolean speaker_drc_enabled;
 
     public boolean getSpeaker_drc_enabled() {
-        Boolean bool = this.speaker_drc_enabled;
-        if (bool == null) {
+        if (this.speaker_drc_enabled == null) {
             return false;
         }
-        return bool.booleanValue();
+        return this.speaker_drc_enabled.booleanValue();
     }
 
     boolean hasSpeaker_drc_enabled() {
@@ -31,11 +30,10 @@ public class GlobalConfiguration {
     }
 
     public boolean getCall_screen_mode_supported() {
-        Boolean bool = this.call_screen_mode_supported;
-        if (bool == null) {
+        if (this.call_screen_mode_supported == null) {
             return false;
         }
-        return bool.booleanValue();
+        return this.call_screen_mode_supported.booleanValue();
     }
 
     boolean hasCall_screen_mode_supported() {
@@ -64,7 +62,7 @@ public class GlobalConfiguration {
         this.engine_library = engine_library;
     }
 
-    public static GlobalConfiguration read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static GlobalConfiguration read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         GlobalConfiguration _instance = new GlobalConfiguration();
         String _raw = _parser.getAttributeValue(null, "speaker_drc_enabled");
         if (_raw != null) {

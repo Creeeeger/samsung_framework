@@ -14,4 +14,5 @@ public final class IntentFilterProto {
     public static final long HAS_PARTIAL_TYPES = 1133871366153L;
     public static final long MIME_GROUPS = 2237677961227L;
     public static final long PRIORITY = 1120986464264L;
+    public static final long URI_RELATIVE_FILTER_GROUPS = 2246267895821L;
 }

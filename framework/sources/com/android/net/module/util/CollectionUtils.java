@@ -229,4 +229,19 @@ public final class CollectionUtils {
         }
         return dest;
     }
+
+    public static <T> int getIndexForValue(SparseArray<T> sparseArray, T value) {
+        int nsize = sparseArray.size();
+        for (int i = 0; i < nsize; i++) {
+            T valueAt = sparseArray.valueAt(i);
+            if (valueAt == null) {
+                if (value == null) {
+                    return i;
+                }
+            } else if (valueAt.equals(value)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

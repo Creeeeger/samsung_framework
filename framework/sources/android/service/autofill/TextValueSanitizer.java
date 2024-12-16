@@ -13,14 +13,13 @@ import java.util.regex.Pattern;
 /* loaded from: classes3.dex */
 public final class TextValueSanitizer extends InternalSanitizer implements Sanitizer, Parcelable {
     public static final Parcelable.Creator<TextValueSanitizer> CREATOR = new Parcelable.Creator<TextValueSanitizer>() { // from class: android.service.autofill.TextValueSanitizer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextValueSanitizer createFromParcel(Parcel parcel) {
             return new TextValueSanitizer((Pattern) parcel.readSerializable(Pattern.class.getClassLoader(), Pattern.class), parcel.readString());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextValueSanitizer[] newArray(int size) {
             return new TextValueSanitizer[size];
@@ -77,22 +76,5 @@ public final class TextValueSanitizer extends InternalSanitizer implements Sanit
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeSerializable(this.mRegex);
         parcel.writeString(this.mSubst);
-    }
-
-    /* renamed from: android.service.autofill.TextValueSanitizer$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TextValueSanitizer> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextValueSanitizer createFromParcel(Parcel parcel) {
-            return new TextValueSanitizer((Pattern) parcel.readSerializable(Pattern.class.getClassLoader(), Pattern.class), parcel.readString());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextValueSanitizer[] newArray(int size) {
-            return new TextValueSanitizer[size];
-        }
     }
 }

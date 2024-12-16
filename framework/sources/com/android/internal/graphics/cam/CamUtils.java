@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.hardware.scontext.SContextConstants;
 import com.android.internal.graphics.ColorUtils;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class CamUtils {
     static final float[][] XYZ_TO_CAM16RGB = {new float[]{0.401288f, 0.650173f, -0.051461f}, new float[]{-0.250268f, 1.204414f, 0.045854f}, new float[]{-0.002079f, 0.048952f, 0.953127f}};
     static final float[][] CAM16RGB_TO_XYZ = {new float[]{1.8620678f, -1.0112547f, 0.14918678f}, new float[]{0.38752654f, 0.62144744f, -0.00897398f}, new float[]{-0.0158415f, -0.03412294f, 1.0499644f}};
@@ -93,7 +93,7 @@ public final class CamUtils {
         return ((red & 255) << 16) | (-16777216) | ((green & 255) << 8) | (blue & 255);
     }
 
-    public static int intFromLstar(float lstar) {
+    static int intFromLstar(float lstar) {
         float xT;
         float zT;
         if (lstar < 1.0f) {
@@ -116,8 +116,7 @@ public final class CamUtils {
         } else {
             zT = ((116.0f * fy) - 16.0f) / 903.2963f;
         }
-        float[] fArr = WHITE_POINT_D65;
-        return ColorUtils.XYZToColor(fArr[0] * xT, fArr[1] * yT, fArr[2] * zT);
+        return ColorUtils.XYZToColor(WHITE_POINT_D65[0] * xT, WHITE_POINT_D65[1] * yT, WHITE_POINT_D65[2] * zT);
     }
 
     public static float lstarFromInt(int argb) {
@@ -142,7 +141,7 @@ public final class CamUtils {
         return (float) y;
     }
 
-    public static float[] xyzFromInt(int argb) {
+    static float[] xyzFromInt(int argb) {
         float r = linearized(Color.red(argb));
         float g = linearized(Color.green(argb));
         float b = linearized(Color.blue(argb));

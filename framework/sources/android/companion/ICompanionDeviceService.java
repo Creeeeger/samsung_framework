@@ -14,7 +14,8 @@ public interface ICompanionDeviceService extends IInterface {
 
     void onDeviceDisappeared(AssociationInfo associationInfo) throws RemoteException;
 
-    /* loaded from: classes.dex */
+    void onDevicePresenceEvent(DevicePresenceEvent devicePresenceEvent) throws RemoteException;
+
     public static class Default implements ICompanionDeviceService {
         @Override // android.companion.ICompanionDeviceService
         public void onDeviceAppeared(AssociationInfo associationInfo) throws RemoteException {
@@ -24,16 +25,20 @@ public interface ICompanionDeviceService extends IInterface {
         public void onDeviceDisappeared(AssociationInfo associationInfo) throws RemoteException {
         }
 
+        @Override // android.companion.ICompanionDeviceService
+        public void onDevicePresenceEvent(DevicePresenceEvent event) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICompanionDeviceService {
         static final int TRANSACTION_onDeviceAppeared = 1;
         static final int TRANSACTION_onDeviceDisappeared = 2;
+        static final int TRANSACTION_onDevicePresenceEvent = 3;
 
         public Stub() {
             attachInterface(this, ICompanionDeviceService.DESCRIPTOR);
@@ -61,6 +66,8 @@ public interface ICompanionDeviceService extends IInterface {
                     return "onDeviceAppeared";
                 case 2:
                     return "onDeviceDisappeared";
+                case 3:
+                    return "onDevicePresenceEvent";
                 default:
                     return null;
             }
@@ -76,29 +83,31 @@ public interface ICompanionDeviceService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICompanionDeviceService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICompanionDeviceService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICompanionDeviceService.DESCRIPTOR);
+                case 1:
+                    AssociationInfo _arg0 = (AssociationInfo) data.readTypedObject(AssociationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeviceAppeared(_arg0);
+                    return true;
+                case 2:
+                    AssociationInfo _arg02 = (AssociationInfo) data.readTypedObject(AssociationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeviceDisappeared(_arg02);
+                    return true;
+                case 3:
+                    DevicePresenceEvent _arg03 = (DevicePresenceEvent) data.readTypedObject(DevicePresenceEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDevicePresenceEvent(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AssociationInfo _arg0 = (AssociationInfo) data.readTypedObject(AssociationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeviceAppeared(_arg0);
-                            return true;
-                        case 2:
-                            AssociationInfo _arg02 = (AssociationInfo) data.readTypedObject(AssociationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeviceDisappeared(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements ICompanionDeviceService {
             private IBinder mRemote;
 
@@ -138,11 +147,23 @@ public interface ICompanionDeviceService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.companion.ICompanionDeviceService
+            public void onDevicePresenceEvent(DevicePresenceEvent event) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ICompanionDeviceService.DESCRIPTOR);
+                    _data.writeTypedObject(event, 0);
+                    this.mRemote.transact(3, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 1;
+            return 2;
         }
     }
 }

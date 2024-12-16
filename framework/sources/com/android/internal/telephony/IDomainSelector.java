@@ -11,18 +11,11 @@ import android.telephony.DomainSelectionService;
 public interface IDomainSelector extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.telephony.IDomainSelector";
 
-    void cancelSelection() throws RemoteException;
-
     void finishSelection() throws RemoteException;
 
     void reselectDomain(DomainSelectionService.SelectionAttributes selectionAttributes) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDomainSelector {
-        @Override // com.android.internal.telephony.IDomainSelector
-        public void cancelSelection() throws RemoteException {
-        }
-
         @Override // com.android.internal.telephony.IDomainSelector
         public void reselectDomain(DomainSelectionService.SelectionAttributes attr) throws RemoteException {
         }
@@ -37,11 +30,9 @@ public interface IDomainSelector extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDomainSelector {
-        static final int TRANSACTION_cancelSelection = 1;
-        static final int TRANSACTION_finishSelection = 3;
-        static final int TRANSACTION_reselectDomain = 2;
+        static final int TRANSACTION_finishSelection = 2;
+        static final int TRANSACTION_reselectDomain = 1;
 
         public Stub() {
             attachInterface(this, IDomainSelector.DESCRIPTOR);
@@ -66,10 +57,8 @@ public interface IDomainSelector extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return "cancelSelection";
-                case 2:
                     return "reselectDomain";
-                case 3:
+                case 2:
                     return "finishSelection";
                 default:
                     return null;
@@ -86,32 +75,25 @@ public interface IDomainSelector extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDomainSelector.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDomainSelector.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDomainSelector.DESCRIPTOR);
+                case 1:
+                    DomainSelectionService.SelectionAttributes _arg0 = (DomainSelectionService.SelectionAttributes) data.readTypedObject(DomainSelectionService.SelectionAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    reselectDomain(_arg0);
+                    return true;
+                case 2:
+                    finishSelection();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            cancelSelection();
-                            return true;
-                        case 2:
-                            DomainSelectionService.SelectionAttributes _arg0 = (DomainSelectionService.SelectionAttributes) data.readTypedObject(DomainSelectionService.SelectionAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            reselectDomain(_arg0);
-                            return true;
-                        case 3:
-                            finishSelection();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDomainSelector {
+        private static class Proxy implements IDomainSelector {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -128,23 +110,12 @@ public interface IDomainSelector extends IInterface {
             }
 
             @Override // com.android.internal.telephony.IDomainSelector
-            public void cancelSelection() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(IDomainSelector.DESCRIPTOR);
-                    this.mRemote.transact(1, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.telephony.IDomainSelector
             public void reselectDomain(DomainSelectionService.SelectionAttributes attr) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IDomainSelector.DESCRIPTOR);
                     _data.writeTypedObject(attr, 0);
-                    this.mRemote.transact(2, _data, null, 1);
+                    this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -155,7 +126,7 @@ public interface IDomainSelector extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IDomainSelector.DESCRIPTOR);
-                    this.mRemote.transact(3, _data, null, 1);
+                    this.mRemote.transact(2, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -164,7 +135,7 @@ public interface IDomainSelector extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 2;
+            return 1;
         }
     }
 }

@@ -2,7 +2,7 @@ package com.samsung.android.globalactions.presentation.view;
 
 import com.samsung.android.globalactions.util.LogWrapper;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SamsungGlobalActionsAnimatorFSM {
     private static final String TAG = "SamsungGlobalActionsAnimatorFSM";
     private final GlobalActionsAnimator mAnimator;
@@ -11,7 +11,6 @@ public class SamsungGlobalActionsAnimatorFSM {
     public State mState;
     private ViewStateController mViewStateController;
 
-    /* loaded from: classes5.dex */
     public enum Event {
         SHOW,
         HIDE,
@@ -21,7 +20,6 @@ public class SamsungGlobalActionsAnimatorFSM {
         SECURE_CONFIRM
     }
 
-    /* loaded from: classes5.dex */
     public enum State {
         IDLE,
         MAIN,
@@ -45,8 +43,8 @@ public class SamsungGlobalActionsAnimatorFSM {
         if (this.mViewStateController.getState() != ViewAnimationState.IDLE && (event != Event.CONFIGURATION_CHANGED || this.mState != State.MAIN)) {
             return;
         }
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$globalactions$presentation$view$SamsungGlobalActionsAnimatorFSM$State[this.mState.ordinal()]) {
-            case 1:
+        switch (this.mState) {
+            case IDLE:
                 if (event == Event.SHOW) {
                     if (this.mIsPortrait) {
                         this.mAnimator.showMainViewPort();
@@ -55,46 +53,42 @@ public class SamsungGlobalActionsAnimatorFSM {
                     }
                     this.mAnimator.startShowAnimation();
                     setState(State.MAIN);
-                    return;
+                    break;
                 }
-                return;
-            case 2:
+                break;
+            case MAIN:
                 if (event == Event.CONFIGURATION_CHANGED) {
                     if (this.mIsPortrait) {
                         this.mAnimator.showMainViewPort();
-                        return;
+                        break;
                     } else {
                         this.mAnimator.showMainViewLand();
-                        return;
+                        break;
                     }
-                }
-                if (event == Event.SHOW_CONFIRM) {
+                } else if (event == Event.SHOW_CONFIRM) {
                     if (this.mAnimator.isHideConfirmAnimationRunning()) {
                         this.mAnimator.cancelHideConfirmAnimation();
                     }
                     if (this.mAnimator.isSafeModeConfirm()) {
                         this.mAnimator.startShowSafeModeAnimation();
                         setState(State.SAFE_MODE);
-                        return;
+                        break;
                     } else {
                         this.mAnimator.startShowConfirmAnimation();
                         setState(State.CONFIRM);
-                        return;
+                        break;
                     }
-                }
-                if (event == Event.HIDE) {
+                } else if (event == Event.HIDE) {
                     this.mAnimator.startDismissAnimation(false);
                     setState(State.IDLE);
-                    return;
-                } else {
-                    if (event == Event.SECURE_CONFIRM) {
-                        this.mAnimator.startDismissAnimation(true);
-                        setState(State.IDLE);
-                        return;
-                    }
-                    return;
+                    break;
+                } else if (event == Event.SECURE_CONFIRM) {
+                    this.mAnimator.startDismissAnimation(true);
+                    setState(State.IDLE);
+                    break;
                 }
-            case 3:
+                break;
+            case CONFIRM:
                 if (event == Event.CONFIGURATION_CHANGED) {
                     if (this.mIsPortrait) {
                         this.mAnimator.setListViewPort();
@@ -102,33 +96,29 @@ public class SamsungGlobalActionsAnimatorFSM {
                         this.mAnimator.setListViewLand();
                     }
                     this.mAnimator.initializeSelectedActionView();
-                    return;
-                }
-                if (event == Event.HIDE_CONFIRM) {
+                    break;
+                } else if (event == Event.HIDE_CONFIRM) {
                     if (this.mAnimator.isShowConfirmAnimationRunning()) {
                         this.mAnimator.cancelShowConfirmAnimation();
                     }
                     this.mAnimator.startDismissConfirmAnimation();
                     setState(State.MAIN);
-                    return;
-                }
-                if (event == Event.SHOW_CONFIRM) {
+                    break;
+                } else if (event == Event.SHOW_CONFIRM) {
                     this.mAnimator.startSetSafeModeAnimation();
                     setState(State.SAFE_MODE);
-                    return;
+                    break;
                 } else if (event == Event.HIDE) {
                     this.mAnimator.startDismissAnimation(false);
                     setState(State.IDLE);
-                    return;
-                } else {
-                    if (event == Event.SECURE_CONFIRM) {
-                        this.mAnimator.startDismissAnimation(true);
-                        setState(State.IDLE);
-                        return;
-                    }
-                    return;
+                    break;
+                } else if (event == Event.SECURE_CONFIRM) {
+                    this.mAnimator.startDismissAnimation(true);
+                    setState(State.IDLE);
+                    break;
                 }
-            case 4:
+                break;
+            case SAFE_MODE:
                 if (event == Event.CONFIGURATION_CHANGED) {
                     if (this.mIsPortrait) {
                         this.mAnimator.setListViewPort();
@@ -136,58 +126,24 @@ public class SamsungGlobalActionsAnimatorFSM {
                         this.mAnimator.setListViewLand();
                     }
                     this.mAnimator.initializeSelectedActionView();
-                    return;
-                }
-                if (event == Event.HIDE_CONFIRM) {
+                    break;
+                } else if (event == Event.HIDE_CONFIRM) {
                     if (this.mAnimator.isShowConfirmAnimationRunning()) {
                         this.mAnimator.cancelShowConfirmAnimation();
                     }
                     this.mAnimator.startDismissSafeModeAnimation();
                     setState(State.MAIN);
-                    return;
-                }
-                if (event == Event.HIDE) {
+                    break;
+                } else if (event == Event.HIDE) {
                     this.mAnimator.startDismissAnimation(false);
                     setState(State.IDLE);
-                    return;
-                } else {
-                    if (event == Event.SECURE_CONFIRM) {
-                        this.mAnimator.startDismissAnimation(true);
-                        setState(State.IDLE);
-                        return;
-                    }
-                    return;
+                    break;
+                } else if (event == Event.SECURE_CONFIRM) {
+                    this.mAnimator.startDismissAnimation(true);
+                    setState(State.IDLE);
+                    break;
                 }
-            default:
-                return;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimatorFSM$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$globalactions$presentation$view$SamsungGlobalActionsAnimatorFSM$State;
-
-        static {
-            int[] iArr = new int[State.values().length];
-            $SwitchMap$com$samsung$android$globalactions$presentation$view$SamsungGlobalActionsAnimatorFSM$State = iArr;
-            try {
-                iArr[State.IDLE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$globalactions$presentation$view$SamsungGlobalActionsAnimatorFSM$State[State.MAIN.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$globalactions$presentation$view$SamsungGlobalActionsAnimatorFSM$State[State.CONFIRM.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$globalactions$presentation$view$SamsungGlobalActionsAnimatorFSM$State[State.SAFE_MODE.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
+                break;
         }
     }
 

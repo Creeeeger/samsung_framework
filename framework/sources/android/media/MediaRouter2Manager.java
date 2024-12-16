@@ -1,6 +1,5 @@
 package android.media;
 
-import android.app.job.JobInfo;
 import android.content.Context;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.IMediaRouter2Manager;
@@ -12,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -47,9 +47,8 @@ public final class MediaRouter2Manager {
     public static final int TRANSFER_TIMEOUT_MS = 30000;
     private static MediaRouter2Manager sInstance;
     private static final Object sLock = new Object();
-    private final Client mClient;
+    private final Context mContext;
     final Handler mHandler;
-    private final IMediaRouterService mMediaRouterService;
     private final MediaSessionManager mMediaSessionManager;
     private final AtomicInteger mScanRequestCount = new AtomicInteger(0);
     final CopyOnWriteArrayList<CallbackRecord> mCallbackRecords = new CopyOnWriteArrayList<>();
@@ -59,6 +58,8 @@ public final class MediaRouter2Manager {
     private final ConcurrentMap<String, RouteListingPreference> mPackageToRouteListingPreferenceMap = new ConcurrentHashMap();
     private final AtomicInteger mNextRequestId = new AtomicInteger(1);
     private final CopyOnWriteArrayList<TransferRequest> mTransferRequests = new CopyOnWriteArrayList<>();
+    private final IMediaRouterService mMediaRouterService = IMediaRouterService.Stub.asInterface(ServiceManager.getService(Context.MEDIA_ROUTER_SERVICE));
+    private final Client mClient = new Client();
 
     public static MediaRouter2Manager getInstance(Context context) {
         MediaRouter2Manager mediaRouter2Manager;
@@ -73,14 +74,11 @@ public final class MediaRouter2Manager {
     }
 
     private MediaRouter2Manager(Context context) {
-        IMediaRouterService asInterface = IMediaRouterService.Stub.asInterface(ServiceManager.getService(Context.MEDIA_ROUTER_SERVICE));
-        this.mMediaRouterService = asInterface;
+        this.mContext = context.getApplicationContext();
         this.mMediaSessionManager = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
         this.mHandler = new Handler(context.getMainLooper());
-        Client client = new Client();
-        this.mClient = client;
         try {
-            asInterface.registerManager(client, context.getPackageName());
+            this.mMediaRouterService.registerManager(this.mClient, context.getPackageName());
         } catch (RemoteException ex) {
             throw ex.rethrowFromSystemServer();
         }
@@ -105,7 +103,7 @@ public final class MediaRouter2Manager {
     public void registerScanRequest() {
         if (this.mScanRequestCount.getAndIncrement() == 0) {
             try {
-                this.mMediaRouterService.startScan(this.mClient);
+                this.mMediaRouterService.updateScanningState(this.mClient, 1);
             } catch (RemoteException ex) {
                 throw ex.rethrowFromSystemServer();
             }
@@ -113,21 +111,21 @@ public final class MediaRouter2Manager {
     }
 
     public void unregisterScanRequest() {
-        if (this.mScanRequestCount.updateAndGet(new IntUnaryOperator() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda5
+        if (this.mScanRequestCount.updateAndGet(new IntUnaryOperator() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda12
             @Override // java.util.function.IntUnaryOperator
             public final int applyAsInt(int i) {
                 return MediaRouter2Manager.lambda$unregisterScanRequest$0(i);
             }
         }) == 0) {
             try {
-                this.mMediaRouterService.stopScan(this.mClient);
+                this.mMediaRouterService.updateScanningState(this.mClient, 0);
             } catch (RemoteException ex) {
                 throw ex.rethrowFromSystemServer();
             }
         }
     }
 
-    public static /* synthetic */ int lambda$unregisterScanRequest$0(int count) {
+    static /* synthetic */ int lambda$unregisterScanRequest$0(int count) {
         if (count == 0) {
             throw new IllegalStateException("No active scan requests to unregister.");
         }
@@ -160,7 +158,7 @@ public final class MediaRouter2Manager {
     }
 
     public List<MediaRoute2Info> getTransferableRoutes(final RoutingSessionInfo sessionInfo) {
-        return getFilteredRoutes(sessionInfo, false, new Predicate() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda6
+        return getFilteredRoutes(sessionInfo, false, new Predicate() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return MediaRouter2Manager.lambda$getTransferableRoutes$1(RoutingSessionInfo.this, (MediaRoute2Info) obj);
@@ -168,7 +166,7 @@ public final class MediaRouter2Manager {
         });
     }
 
-    public static /* synthetic */ boolean lambda$getTransferableRoutes$1(RoutingSessionInfo sessionInfo, MediaRoute2Info route) {
+    static /* synthetic */ boolean lambda$getTransferableRoutes$1(RoutingSessionInfo sessionInfo, MediaRoute2Info route) {
         return sessionInfo.isSystemSession() ^ route.isSystemRoute();
     }
 
@@ -189,7 +187,7 @@ public final class MediaRouter2Manager {
         synchronized (this.mRoutesLock) {
             routes = new ArrayList<>(this.mRoutes.values());
         }
-        routes.sort(Comparator.comparingInt(new ToIntFunction() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda9
+        routes.sort(Comparator.comparingInt(new ToIntFunction() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda1
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 return MediaRouter2Manager.lambda$getSortedRoutes$2(packagePriority, (MediaRoute2Info) obj);
@@ -198,7 +196,7 @@ public final class MediaRouter2Manager {
         return routes;
     }
 
-    public static /* synthetic */ int lambda$getSortedRoutes$2(Map packagePriority, MediaRoute2Info r) {
+    static /* synthetic */ int lambda$getSortedRoutes$2(Map packagePriority, MediaRoute2Info r) {
         return -((Integer) packagePriority.getOrDefault(r.getPackageName(), 0)).intValue();
     }
 
@@ -239,9 +237,9 @@ public final class MediaRouter2Manager {
         return this.mPackageToRouteListingPreferenceMap.get(packageName);
     }
 
-    public RoutingSessionInfo getSystemRoutingSession(String packageName) {
+    public RoutingSessionInfo getSystemRoutingSession(String targetPackageName) {
         try {
-            return this.mMediaRouterService.getSystemSessionInfoForPackage(this.mClient, packageName);
+            return this.mMediaRouterService.getSystemSessionInfoForPackage(this.mContext.getPackageName(), targetPackageName);
         } catch (RemoteException ex) {
             throw ex.rethrowFromSystemServer();
         }
@@ -249,9 +247,6 @@ public final class MediaRouter2Manager {
 
     public RoutingSessionInfo getRoutingSessionForMediaController(MediaController mediaController) {
         MediaController.PlaybackInfo playbackInfo = mediaController.getPlaybackInfo();
-        if (playbackInfo == null) {
-            return null;
-        }
         if (playbackInfo.getPlaybackType() == 1) {
             return getSystemRoutingSession(mediaController.getPackageName());
         }
@@ -291,26 +286,28 @@ public final class MediaRouter2Manager {
         return routes;
     }
 
-    public void transfer(String packageName, MediaRoute2Info route) {
+    public void transfer(String packageName, MediaRoute2Info route, UserHandle userHandle) {
         Objects.requireNonNull(packageName, "packageName must not be null");
         Objects.requireNonNull(route, "route must not be null");
         List<RoutingSessionInfo> sessionInfos = getRoutingSessions(packageName);
         RoutingSessionInfo targetSession = sessionInfos.get(sessionInfos.size() - 1);
-        transfer(targetSession, route);
+        transfer(targetSession, route, userHandle, packageName);
     }
 
-    public void transfer(RoutingSessionInfo sessionInfo, MediaRoute2Info route) {
+    public void transfer(RoutingSessionInfo sessionInfo, MediaRoute2Info route, UserHandle transferInitiatorUserHandle, String transferInitiatorPackageName) {
         Objects.requireNonNull(sessionInfo, "sessionInfo must not be null");
         Objects.requireNonNull(route, "route must not be null");
+        Objects.requireNonNull(transferInitiatorUserHandle);
+        Objects.requireNonNull(transferInitiatorPackageName);
         Log.v(TAG, "Transferring routing session. session= " + sessionInfo + ", route=" + route);
         synchronized (this.mRoutesLock) {
             if (!this.mRoutes.containsKey(route.getId())) {
                 Log.w(TAG, "transfer: Ignoring an unknown route id=" + route.getId());
                 notifyTransferFailed(sessionInfo, route);
             } else if (sessionInfo.getTransferableRoutes().contains(route.getId())) {
-                transferToRoute(sessionInfo, route);
+                transferToRoute(sessionInfo, route, transferInitiatorUserHandle, transferInitiatorPackageName);
             } else {
-                requestCreateSession(sessionInfo, route);
+                requestCreateSession(sessionInfo, route, transferInitiatorUserHandle, transferInitiatorPackageName);
             }
         }
     }
@@ -351,7 +348,7 @@ public final class MediaRouter2Manager {
         }
     }
 
-    public void updateRoutesOnHandler(List<MediaRoute2Info> routes) {
+    void updateRoutesOnHandler(List<MediaRoute2Info> routes) {
         synchronized (this.mRoutesLock) {
             this.mRoutes.clear();
             for (MediaRoute2Info route : routes) {
@@ -361,7 +358,7 @@ public final class MediaRouter2Manager {
         notifyRoutesUpdated();
     }
 
-    public void createSessionOnHandler(int requestId, RoutingSessionInfo sessionInfo) {
+    void createSessionOnHandler(int requestId, RoutingSessionInfo sessionInfo) {
         TransferRequest matchingRequest = null;
         Iterator<TransferRequest> it = this.mTransferRequests.iterator();
         while (true) {
@@ -394,7 +391,7 @@ public final class MediaRouter2Manager {
         }
     }
 
-    public void handleFailureOnHandler(int requestId, int reason) {
+    void handleFailureOnHandler(int requestId, int reason) {
         TransferRequest matchingRequest = null;
         Iterator<TransferRequest> it = this.mTransferRequests.iterator();
         while (true) {
@@ -415,7 +412,7 @@ public final class MediaRouter2Manager {
         }
     }
 
-    public void handleSessionsUpdatedOnHandler(RoutingSessionInfo sessionInfo) {
+    void handleSessionsUpdatedOnHandler(RoutingSessionInfo sessionInfo) {
         Iterator<TransferRequest> it = this.mTransferRequests.iterator();
         while (true) {
             if (!it.hasNext()) {
@@ -449,7 +446,7 @@ public final class MediaRouter2Manager {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
             final CallbackRecord record = it.next();
-            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda4
+            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaRouter2Manager.CallbackRecord.this.mCallback.onSessionUpdated(sessionInfo);
@@ -458,11 +455,11 @@ public final class MediaRouter2Manager {
         }
     }
 
-    public void notifySessionReleased(final RoutingSessionInfo session) {
+    void notifySessionReleased(final RoutingSessionInfo session) {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
             final CallbackRecord record = it.next();
-            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda2
+            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaRouter2Manager.CallbackRecord.this.mCallback.onSessionReleased(session);
@@ -475,7 +472,7 @@ public final class MediaRouter2Manager {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
             final CallbackRecord record = it.next();
-            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda8
+            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda9
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaRouter2Manager.CallbackRecord.this.mCallback.onRequestFailed(reason);
@@ -488,7 +485,7 @@ public final class MediaRouter2Manager {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
             final CallbackRecord record = it.next();
-            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda11
+            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda13
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaRouter2Manager.CallbackRecord.this.mCallback.onTransferred(oldSession, newSession);
@@ -501,7 +498,7 @@ public final class MediaRouter2Manager {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
             final CallbackRecord record = it.next();
-            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda1
+            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaRouter2Manager.CallbackRecord.this.mCallback.onTransferFailed(sessionInfo, route);
@@ -510,7 +507,7 @@ public final class MediaRouter2Manager {
         }
     }
 
-    public void updateDiscoveryPreference(final String packageName, final RouteDiscoveryPreference preference) {
+    void updateDiscoveryPreference(final String packageName, final RouteDiscoveryPreference preference) {
         if (preference == null) {
             this.mDiscoveryPreferenceMap.remove(packageName);
             return;
@@ -522,7 +519,7 @@ public final class MediaRouter2Manager {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
             final CallbackRecord record = it.next();
-            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda7
+            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda8
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaRouter2Manager.CallbackRecord.this.mCallback.onDiscoveryPreferenceChanged(packageName, preference);
@@ -531,6 +528,7 @@ public final class MediaRouter2Manager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateRouteListingPreference(final String packageName, final RouteListingPreference routeListingPreference) {
         RouteListingPreference oldRouteListingPreference;
         if (routeListingPreference == null) {
@@ -544,7 +542,7 @@ public final class MediaRouter2Manager {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
             final CallbackRecord record = it.next();
-            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda10
+            record.mExecutor.execute(new Runnable() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaRouter2Manager.CallbackRecord.this.mCallback.onRouteListingPreferenceUpdated(packageName, routeListingPreference);
@@ -560,7 +558,7 @@ public final class MediaRouter2Manager {
             Stream<String> stream = sessionInfo.getSelectedRoutes().stream();
             Map<String, MediaRoute2Info> map = this.mRoutes;
             Objects.requireNonNull(map);
-            list = (List) stream.map(new MediaRouter2$RoutingController$$ExternalSyntheticLambda2(map)).filter(new MediaRouter2$RoutingController$$ExternalSyntheticLambda3()).collect(Collectors.toList());
+            list = (List) stream.map(new MediaRouter2$$ExternalSyntheticLambda10(map)).filter(new MediaRouter2$$ExternalSyntheticLambda11()).collect(Collectors.toList());
         }
         return list;
     }
@@ -570,7 +568,7 @@ public final class MediaRouter2Manager {
         Objects.requireNonNull(sessionInfo, "sessionInfo must not be null");
         final List<String> selectedRouteIds = sessionInfo.getSelectedRoutes();
         synchronized (this.mRoutesLock) {
-            Stream<String> filter = sessionInfo.getSelectableRoutes().stream().filter(new Predicate() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda0
+            Stream<String> filter = sessionInfo.getSelectableRoutes().stream().filter(new Predicate() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda6
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     return MediaRouter2Manager.lambda$getSelectableRoutes$11(selectedRouteIds, (String) obj);
@@ -578,12 +576,12 @@ public final class MediaRouter2Manager {
             });
             Map<String, MediaRoute2Info> map = this.mRoutes;
             Objects.requireNonNull(map);
-            list = (List) filter.map(new MediaRouter2$RoutingController$$ExternalSyntheticLambda2(map)).filter(new MediaRouter2$RoutingController$$ExternalSyntheticLambda3()).collect(Collectors.toList());
+            list = (List) filter.map(new MediaRouter2$$ExternalSyntheticLambda10(map)).filter(new MediaRouter2$$ExternalSyntheticLambda11()).collect(Collectors.toList());
         }
         return list;
     }
 
-    public static /* synthetic */ boolean lambda$getSelectableRoutes$11(List selectedRouteIds, String routeId) {
+    static /* synthetic */ boolean lambda$getSelectableRoutes$11(List selectedRouteIds, String routeId) {
         return !selectedRouteIds.contains(routeId);
     }
 
@@ -592,7 +590,7 @@ public final class MediaRouter2Manager {
         Objects.requireNonNull(sessionInfo, "sessionInfo must not be null");
         final List<String> selectedRouteIds = sessionInfo.getSelectedRoutes();
         synchronized (this.mRoutesLock) {
-            Stream<String> filter = sessionInfo.getDeselectableRoutes().stream().filter(new Predicate() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda12
+            Stream<String> filter = sessionInfo.getDeselectableRoutes().stream().filter(new Predicate() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda4
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean contains;
@@ -602,7 +600,7 @@ public final class MediaRouter2Manager {
             });
             Map<String, MediaRoute2Info> map = this.mRoutes;
             Objects.requireNonNull(map);
-            list = (List) filter.map(new MediaRouter2$RoutingController$$ExternalSyntheticLambda2(map)).filter(new MediaRouter2$RoutingController$$ExternalSyntheticLambda3()).collect(Collectors.toList());
+            list = (List) filter.map(new MediaRouter2$$ExternalSyntheticLambda10(map)).filter(new MediaRouter2$$ExternalSyntheticLambda11()).collect(Collectors.toList());
         }
         return list;
     }
@@ -655,23 +653,23 @@ public final class MediaRouter2Manager {
         }
     }
 
-    private void transferToRoute(RoutingSessionInfo session, MediaRoute2Info route) {
+    private void transferToRoute(RoutingSessionInfo session, MediaRoute2Info route, UserHandle transferInitiatorUserHandle, String transferInitiatorPackageName) {
         int requestId = createTransferRequest(session, route);
         try {
-            this.mMediaRouterService.transferToRouteWithManager(this.mClient, requestId, session.getId(), route);
+            this.mMediaRouterService.transferToRouteWithManager(this.mClient, requestId, session.getId(), route, transferInitiatorUserHandle, transferInitiatorPackageName);
         } catch (RemoteException ex) {
             throw ex.rethrowFromSystemServer();
         }
     }
 
-    private void requestCreateSession(RoutingSessionInfo oldSession, MediaRoute2Info route) {
+    private void requestCreateSession(RoutingSessionInfo oldSession, MediaRoute2Info route, UserHandle transferInitiatorUserHandle, String transferInitiationPackageName) {
         if (TextUtils.isEmpty(oldSession.getClientPackageName())) {
             Log.w(TAG, "requestCreateSession: Can't create a session without package name.");
             notifyTransferFailed(oldSession, route);
         } else {
             int requestId = createTransferRequest(oldSession, route);
             try {
-                this.mMediaRouterService.requestCreateSessionWithManager(this.mClient, requestId, oldSession, route);
+                this.mMediaRouterService.requestCreateSessionWithManager(this.mClient, requestId, oldSession, route, transferInitiatorUserHandle, transferInitiationPackageName);
             } catch (RemoteException ex) {
                 throw ex.rethrowFromSystemServer();
             }
@@ -682,16 +680,17 @@ public final class MediaRouter2Manager {
         int requestId = this.mNextRequestId.getAndIncrement();
         TransferRequest transferRequest = new TransferRequest(requestId, session, route);
         this.mTransferRequests.add(transferRequest);
-        Message timeoutMessage = PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda13
+        Message timeoutMessage = PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$$ExternalSyntheticLambda11
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 ((MediaRouter2Manager) obj).handleTransferTimeout((MediaRouter2Manager.TransferRequest) obj2);
             }
         }, this, transferRequest);
-        this.mHandler.sendMessageDelayed(timeoutMessage, JobInfo.DEFAULT_INITIAL_BACKOFF_MILLIS);
+        this.mHandler.sendMessageDelayed(timeoutMessage, 30000L);
         return requestId;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleTransferTimeout(TransferRequest request) {
         boolean removed = this.mTransferRequests.remove(request);
         if (removed) {
@@ -700,9 +699,9 @@ public final class MediaRouter2Manager {
     }
 
     private boolean areSessionsMatched(MediaController mediaController, RoutingSessionInfo sessionInfo) {
-        String volumeControlId;
         MediaController.PlaybackInfo playbackInfo = mediaController.getPlaybackInfo();
-        if (playbackInfo == null || (volumeControlId = playbackInfo.getVolumeControlId()) == null) {
+        String volumeControlId = playbackInfo.getVolumeControlId();
+        if (volumeControlId == null) {
             return false;
         }
         if (TextUtils.equals(volumeControlId, sessionInfo.getId())) {
@@ -711,7 +710,6 @@ public final class MediaRouter2Manager {
         return TextUtils.equals(volumeControlId, sessionInfo.getOriginalId()) && TextUtils.equals(mediaController.getPackageName(), sessionInfo.getOwnerPackageName());
     }
 
-    /* loaded from: classes2.dex */
     public interface Callback {
         default void onRoutesUpdated() {
         }
@@ -742,8 +740,7 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class CallbackRecord {
+    final class CallbackRecord {
         public final Callback mCallback;
         public final Executor mExecutor;
 
@@ -764,8 +761,7 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class TransferRequest {
+    static final class TransferRequest {
         public final RoutingSessionInfo mOldSessionInfo;
         public final int mRequestId;
         public final MediaRoute2Info mTargetRoute;
@@ -777,14 +773,13 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class Client extends IMediaRouter2Manager.Stub {
+    class Client extends IMediaRouter2Manager.Stub {
         Client() {
         }
 
         @Override // android.media.IMediaRouter2Manager
         public void notifySessionCreated(int requestId, RoutingSessionInfo session) {
-            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda3
+            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda2
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((MediaRouter2Manager) obj).createSessionOnHandler(((Integer) obj2).intValue(), (RoutingSessionInfo) obj3);
@@ -794,7 +789,7 @@ public final class MediaRouter2Manager {
 
         @Override // android.media.IMediaRouter2Manager
         public void notifySessionUpdated(RoutingSessionInfo session) {
-            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda6
+            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda0
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((MediaRouter2Manager) obj).handleSessionsUpdatedOnHandler((RoutingSessionInfo) obj2);
@@ -804,7 +799,7 @@ public final class MediaRouter2Manager {
 
         @Override // android.media.IMediaRouter2Manager
         public void notifySessionReleased(RoutingSessionInfo session) {
-            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda2
+            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda5
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((MediaRouter2Manager) obj).notifySessionReleased((RoutingSessionInfo) obj2);
@@ -814,7 +809,7 @@ public final class MediaRouter2Manager {
 
         @Override // android.media.IMediaRouter2Manager
         public void notifyRequestFailed(int requestId, int reason) {
-            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda0
+            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda4
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((MediaRouter2Manager) obj).handleFailureOnHandler(((Integer) obj2).intValue(), ((Integer) obj3).intValue());
@@ -834,7 +829,7 @@ public final class MediaRouter2Manager {
 
         @Override // android.media.IMediaRouter2Manager
         public void notifyRouteListingPreferenceChange(String packageName, RouteListingPreference routeListingPreference) {
-            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda4
+            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda3
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((MediaRouter2Manager) obj).updateRouteListingPreference((String) obj2, (RouteListingPreference) obj3);
@@ -844,12 +839,16 @@ public final class MediaRouter2Manager {
 
         @Override // android.media.IMediaRouter2Manager
         public void notifyRoutesUpdated(List<MediaRoute2Info> routes) {
-            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda5
+            MediaRouter2Manager.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.media.MediaRouter2Manager$Client$$ExternalSyntheticLambda6
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((MediaRouter2Manager) obj).updateRoutesOnHandler((List) obj2);
                 }
             }, MediaRouter2Manager.this, routes));
+        }
+
+        @Override // android.media.IMediaRouter2Manager
+        public void invalidateInstance() {
         }
     }
 }

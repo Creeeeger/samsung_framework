@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextGyroTemperature extends SContextEventContext {
     public static final Parcelable.Creator<SContextGyroTemperature> CREATOR = new Parcelable.Creator<SContextGyroTemperature>() { // from class: android.hardware.scontext.SContextGyroTemperature.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextGyroTemperature createFromParcel(Parcel in) {
             return new SContextGyroTemperature(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextGyroTemperature[] newArray(int size) {
             return new SContextGyroTemperature[size];
@@ -23,7 +22,7 @@ public class SContextGyroTemperature extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextGyroTemperature() {
+    SContextGyroTemperature() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextGyroTemperature extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextGyroTemperature$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextGyroTemperature> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextGyroTemperature createFromParcel(Parcel in) {
-            return new SContextGyroTemperature(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextGyroTemperature[] newArray(int size) {
-            return new SContextGyroTemperature[size];
-        }
     }
 }

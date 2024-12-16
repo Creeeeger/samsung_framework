@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IDataServiceCallback extends IInterface {
     void onApnUnthrottled(String str) throws RemoteException;
 
@@ -29,7 +29,6 @@ public interface IDataServiceCallback extends IInterface {
 
     void onSetupDataCallComplete(int i, DataCallResponse dataCallResponse) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDataServiceCallback {
         @Override // android.telephony.data.IDataServiceCallback
         public void onSetupDataCallComplete(int result, DataCallResponse dataCallResponse) throws RemoteException {
@@ -77,7 +76,6 @@ public interface IDataServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDataServiceCallback {
         public static final String DESCRIPTOR = "android.telephony.data.IDataServiceCallback";
         static final int TRANSACTION_onApnUnthrottled = 9;
@@ -148,73 +146,69 @@ public interface IDataServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    DataCallResponse _arg1 = (DataCallResponse) data.readTypedObject(DataCallResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSetupDataCallComplete(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDeactivateDataCallComplete(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSetInitialAttachApnComplete(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSetDataProfileComplete(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    List<DataCallResponse> _arg12 = data.createTypedArrayList(DataCallResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRequestDataCallListComplete(_arg05, _arg12);
+                    return true;
+                case 6:
+                    List<DataCallResponse> _arg06 = data.createTypedArrayList(DataCallResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDataCallListChanged(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onHandoverStarted(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onHandoverCancelled(_arg08);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    onApnUnthrottled(_arg09);
+                    return true;
+                case 10:
+                    DataProfile _arg010 = (DataProfile) data.readTypedObject(DataProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDataProfileUnthrottled(_arg010);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            DataCallResponse _arg1 = (DataCallResponse) data.readTypedObject(DataCallResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSetupDataCallComplete(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDeactivateDataCallComplete(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSetInitialAttachApnComplete(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSetDataProfileComplete(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            List<DataCallResponse> _arg12 = data.createTypedArrayList(DataCallResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRequestDataCallListComplete(_arg05, _arg12);
-                            return true;
-                        case 6:
-                            List<DataCallResponse> _arg06 = data.createTypedArrayList(DataCallResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDataCallListChanged(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onHandoverStarted(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onHandoverCancelled(_arg08);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            onApnUnthrottled(_arg09);
-                            return true;
-                        case 10:
-                            DataProfile _arg010 = (DataProfile) data.readTypedObject(DataProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDataProfileUnthrottled(_arg010);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDataServiceCallback {
+        private static class Proxy implements IDataServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -4,6 +4,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.util.Printer;
 import android.util.SparseArray;
 import android.util.proto.ProtoOutputStream;
+import com.android.internal.hidden_from_bootclasspath.android.os.Flags;
 import java.io.FileDescriptor;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,8 +14,10 @@ import java.util.ArrayList;
 public final class MessageQueue {
     private static final boolean DEBUG = false;
     private static final String TAG = "MessageQueue";
+    private int mAsyncMessageCount;
     private boolean mBlocked;
     private SparseArray<FileDescriptorRecord> mFileDescriptorRecords;
+    private Message mLast;
     Message mMessages;
     private int mNextBarrierToken;
     private IdleHandler[] mPendingIdleHandlers;
@@ -23,19 +26,16 @@ public final class MessageQueue {
     private final ArrayList<IdleHandler> mIdleHandlers = new ArrayList<>();
     private long mPtr = nativeInit();
 
-    /* loaded from: classes3.dex */
     public interface IdleHandler {
         boolean queueIdle();
     }
 
-    /* loaded from: classes3.dex */
     public interface OnFileDescriptorEventListener {
         public static final int EVENT_ERROR = 4;
         public static final int EVENT_INPUT = 1;
         public static final int EVENT_OUTPUT = 2;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface Events {
         }
 
@@ -54,7 +54,7 @@ public final class MessageQueue {
 
     private static native void nativeWake(long j);
 
-    public MessageQueue(boolean quitAllowed) {
+    MessageQueue(boolean quitAllowed) {
         this.mQuitAllowed = quitAllowed;
     }
 
@@ -67,9 +67,8 @@ public final class MessageQueue {
     }
 
     private void dispose() {
-        long j = this.mPtr;
-        if (j != 0) {
-            nativeDestroy(j);
+        if (this.mPtr != 0) {
+            nativeDestroy(this.mPtr);
             this.mPtr = 0L;
         }
     }
@@ -78,8 +77,7 @@ public final class MessageQueue {
         boolean z;
         synchronized (this) {
             long now = SystemClock.uptimeMillis();
-            Message message = this.mMessages;
-            z = message == null || now < message.when;
+            z = this.mMessages == null || now < this.mMessages.when;
         }
         return z;
     }
@@ -136,8 +134,7 @@ public final class MessageQueue {
         int fdNum = fd.getInt$();
         int index = -1;
         FileDescriptorRecord record = null;
-        SparseArray<FileDescriptorRecord> sparseArray = this.mFileDescriptorRecords;
-        if (sparseArray != null && (index = sparseArray.indexOfKey(fdNum)) >= 0 && (record = this.mFileDescriptorRecords.valueAt(index)) != null && record.mEvents == events) {
+        if (this.mFileDescriptorRecords != null && (index = this.mFileDescriptorRecords.indexOfKey(fdNum)) >= 0 && (record = this.mFileDescriptorRecords.valueAt(index)) != null && record.mEvents == events) {
             return;
         }
         if (events != 0) {
@@ -194,51 +191,33 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0020, code lost:
-    
-        if (r8.target == null) goto L102;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0022, code lost:
-    
-        r7 = r8;
-        r8 = r8.next;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0026, code lost:
-    
-        if (r8 == null) goto L170;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x002c, code lost:
-    
-        if (r8.isAsynchronous() == false) goto L172;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x0095, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x00af, code lost:
     
         r5 = 0;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x0096, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x00b0, code lost:
     
-        if (r5 >= r2) goto L173;
+        if (r5 >= r2) goto L92;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x0098, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00b2, code lost:
     
-        r6 = r13.mPendingIdleHandlers;
-        r7 = r6[r5];
-        r6[r5] = null;
-        r6 = false;
+        r6 = r14.mPendingIdleHandlers[r5];
+        r14.mPendingIdleHandlers[r5] = null;
+        r7 = false;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00a3, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x00bf, code lost:
     
-        r6 = r7.queueIdle();
+        r7 = r6.queueIdle();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00a5, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x00c1, code lost:
     
         r8 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x00a6, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x00c2, code lost:
     
         android.util.Log.wtf(android.os.MessageQueue.TAG, "IdleHandler threw exception", r8);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x00bd, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:65:0x00d9, code lost:
     
         r2 = 0;
         r4 = 0;
@@ -247,15 +226,15 @@ public final class MessageQueue {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public android.os.Message next() {
+    android.os.Message next() {
         /*
-            Method dump skipped, instructions count: 196
+            Method dump skipped, instructions count: 224
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.next():android.os.Message");
     }
 
-    public void quit(boolean safe) {
+    void quit(boolean safe) {
         if (!this.mQuitAllowed) {
             throw new IllegalStateException("Main thread not allowed to quit.");
         }
@@ -278,14 +257,19 @@ public final class MessageQueue {
     }
 
     private int postSyncBarrier(long when) {
-        int token;
         synchronized (this) {
-            token = this.mNextBarrierToken;
+            int token = this.mNextBarrierToken;
             this.mNextBarrierToken = token + 1;
             Message msg = Message.obtain();
             msg.markInUse();
             msg.when = when;
             msg.arg1 = token;
+            if (Flags.messageQueueTailTracking() && this.mLast != null && this.mLast.when <= when) {
+                this.mLast.next = msg;
+                this.mLast = msg;
+                msg.next = null;
+                return token;
+            }
             Message prev = null;
             Message p = this.mMessages;
             if (when != 0) {
@@ -294,6 +278,9 @@ public final class MessageQueue {
                     p = p.next;
                 }
             }
+            if (p == null) {
+                this.mLast = msg;
+            }
             if (prev != null) {
                 msg.next = p;
                 prev.next = msg;
@@ -301,8 +288,8 @@ public final class MessageQueue {
                 msg.next = p;
                 this.mMessages = msg;
             }
+            return token;
         }
-        return token;
     }
 
     public void removeSyncBarrier(int token) {
@@ -319,11 +306,16 @@ public final class MessageQueue {
             }
             if (prev != null) {
                 prev.next = p.next;
+                if (prev.next == null) {
+                    this.mLast = prev;
+                }
                 needWake = false;
             } else {
-                Message message = p.next;
-                this.mMessages = message;
-                if (message != null && message.target == null) {
+                this.mMessages = p.next;
+                if (this.mMessages == null) {
+                    this.mLast = null;
+                }
+                if (this.mMessages != null && this.mMessages.target == null) {
                     needWake = false;
                 }
                 needWake = true;
@@ -335,112 +327,21 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:46:0x0082 A[Catch: all -> 0x00a2, TryCatch #0 {, blocks: (B:5:0x0005, B:7:0x000b, B:9:0x0010, B:10:0x0036, B:13:0x0038, B:17:0x0048, B:20:0x004f, B:22:0x0053, B:24:0x0057, B:28:0x005e, B:30:0x0064, B:34:0x006d, B:44:0x0075, B:46:0x0082, B:47:0x0087, B:50:0x007a, B:51:0x0089, B:52:0x00a1), top: B:4:0x0005 }] */
+    /* JADX WARN: Removed duplicated region for block: B:38:0x00d2 A[Catch: all -> 0x00f9, TryCatch #0 {, blocks: (B:5:0x0005, B:7:0x000b, B:9:0x0010, B:10:0x0036, B:13:0x0038, B:17:0x0048, B:20:0x0050, B:22:0x0054, B:24:0x0058, B:27:0x0061, B:29:0x0068, B:32:0x0072, B:35:0x0077, B:36:0x00cc, B:38:0x00d2, B:40:0x00d9, B:41:0x00de, B:43:0x0080, B:45:0x0086, B:49:0x008f, B:60:0x0099, B:61:0x009b, B:63:0x00a1, B:65:0x00a7, B:69:0x00b0, B:79:0x00b8, B:82:0x00c0, B:84:0x00c8, B:85:0x00e0, B:86:0x00f8), top: B:4:0x0005 }] */
+    /* JADX WARN: Removed duplicated region for block: B:40:0x00d9 A[Catch: all -> 0x00f9, TryCatch #0 {, blocks: (B:5:0x0005, B:7:0x000b, B:9:0x0010, B:10:0x0036, B:13:0x0038, B:17:0x0048, B:20:0x0050, B:22:0x0054, B:24:0x0058, B:27:0x0061, B:29:0x0068, B:32:0x0072, B:35:0x0077, B:36:0x00cc, B:38:0x00d2, B:40:0x00d9, B:41:0x00de, B:43:0x0080, B:45:0x0086, B:49:0x008f, B:60:0x0099, B:61:0x009b, B:63:0x00a1, B:65:0x00a7, B:69:0x00b0, B:79:0x00b8, B:82:0x00c0, B:84:0x00c8, B:85:0x00e0, B:86:0x00f8), top: B:4:0x0005 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean enqueueMessage(android.os.Message r7, long r8) {
+    boolean enqueueMessage(android.os.Message r9, long r10) {
         /*
-            r6 = this;
-            android.os.Handler r0 = r7.target
-            if (r0 == 0) goto La5
-            monitor-enter(r6)
-            boolean r0 = r7.isInUse()     // Catch: java.lang.Throwable -> La2
-            if (r0 != 0) goto L89
-            boolean r0 = r6.mQuitting     // Catch: java.lang.Throwable -> La2
-            r1 = 0
-            if (r0 == 0) goto L38
-            java.lang.IllegalStateException r0 = new java.lang.IllegalStateException     // Catch: java.lang.Throwable -> La2
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> La2
-            r2.<init>()     // Catch: java.lang.Throwable -> La2
-            android.os.Handler r3 = r7.target     // Catch: java.lang.Throwable -> La2
-            java.lang.StringBuilder r2 = r2.append(r3)     // Catch: java.lang.Throwable -> La2
-            java.lang.String r3 = " sending message to a Handler on a dead thread"
-            java.lang.StringBuilder r2 = r2.append(r3)     // Catch: java.lang.Throwable -> La2
-            java.lang.String r2 = r2.toString()     // Catch: java.lang.Throwable -> La2
-            r0.<init>(r2)     // Catch: java.lang.Throwable -> La2
-            java.lang.String r2 = "MessageQueue"
-            java.lang.String r3 = r0.getMessage()     // Catch: java.lang.Throwable -> La2
-            android.util.Log.w(r2, r3, r0)     // Catch: java.lang.Throwable -> La2
-            r7.recycle()     // Catch: java.lang.Throwable -> La2
-            monitor-exit(r6)     // Catch: java.lang.Throwable -> La2
-            return r1
-        L38:
-            r7.markInUse()     // Catch: java.lang.Throwable -> La2
-            r7.when = r8     // Catch: java.lang.Throwable -> La2
-            android.os.Message r0 = r6.mMessages     // Catch: java.lang.Throwable -> La2
-            r2 = 1
-            if (r0 == 0) goto L7a
-            r3 = 0
-            int r3 = (r8 > r3 ? 1 : (r8 == r3 ? 0 : -1))
-            if (r3 == 0) goto L7a
-            long r3 = r0.when     // Catch: java.lang.Throwable -> La2
-            int r3 = (r8 > r3 ? 1 : (r8 == r3 ? 0 : -1))
-            if (r3 >= 0) goto L4f
-            goto L7a
-        L4f:
-            boolean r3 = r6.mBlocked     // Catch: java.lang.Throwable -> La2
-            if (r3 == 0) goto L5e
-            android.os.Handler r3 = r0.target     // Catch: java.lang.Throwable -> La2
-            if (r3 != 0) goto L5e
-            boolean r3 = r7.isAsynchronous()     // Catch: java.lang.Throwable -> La2
-            if (r3 == 0) goto L5e
-            r1 = r2
-        L5e:
-            r3 = r0
-            android.os.Message r4 = r0.next     // Catch: java.lang.Throwable -> La2
-            r0 = r4
-            if (r0 == 0) goto L75
-            long r4 = r0.when     // Catch: java.lang.Throwable -> La2
-            int r4 = (r8 > r4 ? 1 : (r8 == r4 ? 0 : -1))
-            if (r4 >= 0) goto L6b
-            goto L75
-        L6b:
-            if (r1 == 0) goto L5e
-            boolean r4 = r0.isAsynchronous()     // Catch: java.lang.Throwable -> La2
-            if (r4 == 0) goto L5e
-            r1 = 0
-            goto L5e
-        L75:
-            r7.next = r0     // Catch: java.lang.Throwable -> La2
-            r3.next = r7     // Catch: java.lang.Throwable -> La2
-            goto L80
-        L7a:
-            r7.next = r0     // Catch: java.lang.Throwable -> La2
-            r6.mMessages = r7     // Catch: java.lang.Throwable -> La2
-            boolean r1 = r6.mBlocked     // Catch: java.lang.Throwable -> La2
-        L80:
-            if (r1 == 0) goto L87
-            long r3 = r6.mPtr     // Catch: java.lang.Throwable -> La2
-            nativeWake(r3)     // Catch: java.lang.Throwable -> La2
-        L87:
-            monitor-exit(r6)     // Catch: java.lang.Throwable -> La2
-            return r2
-        L89:
-            java.lang.IllegalStateException r0 = new java.lang.IllegalStateException     // Catch: java.lang.Throwable -> La2
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> La2
-            r1.<init>()     // Catch: java.lang.Throwable -> La2
-            java.lang.StringBuilder r1 = r1.append(r7)     // Catch: java.lang.Throwable -> La2
-            java.lang.String r2 = " This message is already in use."
-            java.lang.StringBuilder r1 = r1.append(r2)     // Catch: java.lang.Throwable -> La2
-            java.lang.String r1 = r1.toString()     // Catch: java.lang.Throwable -> La2
-            r0.<init>(r1)     // Catch: java.lang.Throwable -> La2
-            throw r0     // Catch: java.lang.Throwable -> La2
-        La2:
-            r0 = move-exception
-            monitor-exit(r6)     // Catch: java.lang.Throwable -> La2
-            throw r0
-        La5:
-            java.lang.IllegalArgumentException r0 = new java.lang.IllegalArgumentException
-            java.lang.String r1 = "Message must have a target."
-            r0.<init>(r1)
-            throw r0
+            Method dump skipped, instructions count: 260
+            To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.enqueueMessage(android.os.Message, long):boolean");
     }
 
-    public boolean hasMessages(Handler h, int what, Object object) {
+    boolean hasMessages(Handler h, int what, Object object) {
         if (h == null) {
             return false;
         }
@@ -454,7 +355,7 @@ public final class MessageQueue {
         }
     }
 
-    public boolean hasEqualMessages(Handler h, int what, Object object) {
+    boolean hasEqualMessages(Handler h, int what, Object object) {
         if (h == null) {
             return false;
         }
@@ -468,7 +369,7 @@ public final class MessageQueue {
         }
     }
 
-    public boolean hasMessages(Handler h, Runnable r, Object object) {
+    boolean hasMessages(Handler h, Runnable r, Object object) {
         if (h == null) {
             return false;
         }
@@ -482,7 +383,7 @@ public final class MessageQueue {
         }
     }
 
-    public boolean hasMessages(Handler h) {
+    boolean hasMessages(Handler h) {
         if (h == null) {
             return false;
         }
@@ -496,154 +397,488 @@ public final class MessageQueue {
         }
     }
 
-    public void removeMessages(Handler h, int what, Object object) {
-        if (h == null) {
-            return;
-        }
-        synchronized (this) {
-            Message p = this.mMessages;
-            while (p != null && p.target == h && p.what == what && (object == null || p.obj == object)) {
-                Message n = p.next;
-                this.mMessages = n;
-                p.recycleUnchecked();
-                p = n;
-            }
-            while (p != null) {
-                Message n2 = p.next;
-                if (n2 != null && n2.target == h && n2.what == what && (object == null || n2.obj == object)) {
-                    Message nn = n2.next;
-                    n2.recycleUnchecked();
-                    p.next = nn;
-                } else {
-                    p = n2;
-                }
-            }
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x002d, code lost:
+    
+        r4.mLast = r4.mMessages;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    void removeMessages(android.os.Handler r5, int r6, java.lang.Object r7) {
+        /*
+            r4 = this;
+            if (r5 != 0) goto L3
+            return
+        L3:
+            monitor-enter(r4)
+            android.os.Message r0 = r4.mMessages     // Catch: java.lang.Throwable -> L63
+        L6:
+            if (r0 == 0) goto L2b
+            android.os.Handler r1 = r0.target     // Catch: java.lang.Throwable -> L63
+            if (r1 != r5) goto L2b
+            int r1 = r0.what     // Catch: java.lang.Throwable -> L63
+            if (r1 != r6) goto L2b
+            if (r7 == 0) goto L16
+            java.lang.Object r1 = r0.obj     // Catch: java.lang.Throwable -> L63
+            if (r1 != r7) goto L2b
+        L16:
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L63
+            r4.mMessages = r1     // Catch: java.lang.Throwable -> L63
+            boolean r2 = r0.isAsynchronous()     // Catch: java.lang.Throwable -> L63
+            if (r2 == 0) goto L26
+            int r2 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L63
+            int r2 = r2 + (-1)
+            r4.mAsyncMessageCount = r2     // Catch: java.lang.Throwable -> L63
+        L26:
+            r0.recycleUnchecked()     // Catch: java.lang.Throwable -> L63
+            r0 = r1
+            goto L6
+        L2b:
+            if (r0 != 0) goto L31
+            android.os.Message r1 = r4.mMessages     // Catch: java.lang.Throwable -> L63
+            r4.mLast = r1     // Catch: java.lang.Throwable -> L63
+        L31:
+            if (r0 == 0) goto L61
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L63
+            if (r1 == 0) goto L5f
+            android.os.Handler r2 = r1.target     // Catch: java.lang.Throwable -> L63
+            if (r2 != r5) goto L5f
+            int r2 = r1.what     // Catch: java.lang.Throwable -> L63
+            if (r2 != r6) goto L5f
+            if (r7 == 0) goto L45
+            java.lang.Object r2 = r1.obj     // Catch: java.lang.Throwable -> L63
+            if (r2 != r7) goto L5f
+        L45:
+            android.os.Message r2 = r1.next     // Catch: java.lang.Throwable -> L63
+            boolean r3 = r1.isAsynchronous()     // Catch: java.lang.Throwable -> L63
+            if (r3 == 0) goto L53
+            int r3 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L63
+            int r3 = r3 + (-1)
+            r4.mAsyncMessageCount = r3     // Catch: java.lang.Throwable -> L63
+        L53:
+            r1.recycleUnchecked()     // Catch: java.lang.Throwable -> L63
+            r0.next = r2     // Catch: java.lang.Throwable -> L63
+            android.os.Message r3 = r0.next     // Catch: java.lang.Throwable -> L63
+            if (r3 != 0) goto L31
+            r4.mLast = r0     // Catch: java.lang.Throwable -> L63
+            goto L31
+        L5f:
+            r0 = r1
+            goto L31
+        L61:
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L63
+            return
+        L63:
+            r0 = move-exception
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L63
+            throw r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.removeMessages(android.os.Handler, int, java.lang.Object):void");
     }
 
-    public void removeEqualMessages(Handler h, int what, Object object) {
-        if (h == null) {
-            return;
-        }
-        synchronized (this) {
-            Message p = this.mMessages;
-            while (p != null && p.target == h && p.what == what && (object == null || object.equals(p.obj))) {
-                Message n = p.next;
-                this.mMessages = n;
-                p.recycleUnchecked();
-                p = n;
-            }
-            while (p != null) {
-                Message n2 = p.next;
-                if (n2 != null && n2.target == h && n2.what == what && (object == null || object.equals(n2.obj))) {
-                    Message nn = n2.next;
-                    n2.recycleUnchecked();
-                    p.next = nn;
-                } else {
-                    p = n2;
-                }
-            }
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0031, code lost:
+    
+        r4.mLast = r4.mMessages;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    void removeEqualMessages(android.os.Handler r5, int r6, java.lang.Object r7) {
+        /*
+            r4 = this;
+            if (r5 != 0) goto L3
+            return
+        L3:
+            monitor-enter(r4)
+            android.os.Message r0 = r4.mMessages     // Catch: java.lang.Throwable -> L6b
+        L6:
+            if (r0 == 0) goto L2f
+            android.os.Handler r1 = r0.target     // Catch: java.lang.Throwable -> L6b
+            if (r1 != r5) goto L2f
+            int r1 = r0.what     // Catch: java.lang.Throwable -> L6b
+            if (r1 != r6) goto L2f
+            if (r7 == 0) goto L1a
+            java.lang.Object r1 = r0.obj     // Catch: java.lang.Throwable -> L6b
+            boolean r1 = r7.equals(r1)     // Catch: java.lang.Throwable -> L6b
+            if (r1 == 0) goto L2f
+        L1a:
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L6b
+            r4.mMessages = r1     // Catch: java.lang.Throwable -> L6b
+            boolean r2 = r0.isAsynchronous()     // Catch: java.lang.Throwable -> L6b
+            if (r2 == 0) goto L2a
+            int r2 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L6b
+            int r2 = r2 + (-1)
+            r4.mAsyncMessageCount = r2     // Catch: java.lang.Throwable -> L6b
+        L2a:
+            r0.recycleUnchecked()     // Catch: java.lang.Throwable -> L6b
+            r0 = r1
+            goto L6
+        L2f:
+            if (r0 != 0) goto L35
+            android.os.Message r1 = r4.mMessages     // Catch: java.lang.Throwable -> L6b
+            r4.mLast = r1     // Catch: java.lang.Throwable -> L6b
+        L35:
+            if (r0 == 0) goto L69
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L6b
+            if (r1 == 0) goto L67
+            android.os.Handler r2 = r1.target     // Catch: java.lang.Throwable -> L6b
+            if (r2 != r5) goto L67
+            int r2 = r1.what     // Catch: java.lang.Throwable -> L6b
+            if (r2 != r6) goto L67
+            if (r7 == 0) goto L4d
+            java.lang.Object r2 = r1.obj     // Catch: java.lang.Throwable -> L6b
+            boolean r2 = r7.equals(r2)     // Catch: java.lang.Throwable -> L6b
+            if (r2 == 0) goto L67
+        L4d:
+            android.os.Message r2 = r1.next     // Catch: java.lang.Throwable -> L6b
+            boolean r3 = r1.isAsynchronous()     // Catch: java.lang.Throwable -> L6b
+            if (r3 == 0) goto L5b
+            int r3 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L6b
+            int r3 = r3 + (-1)
+            r4.mAsyncMessageCount = r3     // Catch: java.lang.Throwable -> L6b
+        L5b:
+            r1.recycleUnchecked()     // Catch: java.lang.Throwable -> L6b
+            r0.next = r2     // Catch: java.lang.Throwable -> L6b
+            android.os.Message r3 = r0.next     // Catch: java.lang.Throwable -> L6b
+            if (r3 != 0) goto L35
+            r4.mLast = r0     // Catch: java.lang.Throwable -> L6b
+            goto L35
+        L67:
+            r0 = r1
+            goto L35
+        L69:
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L6b
+            return
+        L6b:
+            r0 = move-exception
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L6b
+            throw r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.removeEqualMessages(android.os.Handler, int, java.lang.Object):void");
     }
 
-    public void removeMessages(Handler h, Runnable r, Object object) {
-        if (h == null || r == null) {
-            return;
-        }
-        synchronized (this) {
-            Message p = this.mMessages;
-            while (p != null && p.target == h && p.callback == r && (object == null || p.obj == object)) {
-                Message n = p.next;
-                this.mMessages = n;
-                p.recycleUnchecked();
-                p = n;
-            }
-            while (p != null) {
-                Message n2 = p.next;
-                if (n2 != null && n2.target == h && n2.callback == r && (object == null || n2.obj == object)) {
-                    Message nn = n2.next;
-                    n2.recycleUnchecked();
-                    p.next = nn;
-                } else {
-                    p = n2;
-                }
-            }
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x002f, code lost:
+    
+        r4.mLast = r4.mMessages;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    void removeMessages(android.os.Handler r5, java.lang.Runnable r6, java.lang.Object r7) {
+        /*
+            r4 = this;
+            if (r5 == 0) goto L68
+            if (r6 != 0) goto L5
+            goto L68
+        L5:
+            monitor-enter(r4)
+            android.os.Message r0 = r4.mMessages     // Catch: java.lang.Throwable -> L65
+        L8:
+            if (r0 == 0) goto L2d
+            android.os.Handler r1 = r0.target     // Catch: java.lang.Throwable -> L65
+            if (r1 != r5) goto L2d
+            java.lang.Runnable r1 = r0.callback     // Catch: java.lang.Throwable -> L65
+            if (r1 != r6) goto L2d
+            if (r7 == 0) goto L18
+            java.lang.Object r1 = r0.obj     // Catch: java.lang.Throwable -> L65
+            if (r1 != r7) goto L2d
+        L18:
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L65
+            r4.mMessages = r1     // Catch: java.lang.Throwable -> L65
+            boolean r2 = r0.isAsynchronous()     // Catch: java.lang.Throwable -> L65
+            if (r2 == 0) goto L28
+            int r2 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L65
+            int r2 = r2 + (-1)
+            r4.mAsyncMessageCount = r2     // Catch: java.lang.Throwable -> L65
+        L28:
+            r0.recycleUnchecked()     // Catch: java.lang.Throwable -> L65
+            r0 = r1
+            goto L8
+        L2d:
+            if (r0 != 0) goto L33
+            android.os.Message r1 = r4.mMessages     // Catch: java.lang.Throwable -> L65
+            r4.mLast = r1     // Catch: java.lang.Throwable -> L65
+        L33:
+            if (r0 == 0) goto L63
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L65
+            if (r1 == 0) goto L61
+            android.os.Handler r2 = r1.target     // Catch: java.lang.Throwable -> L65
+            if (r2 != r5) goto L61
+            java.lang.Runnable r2 = r1.callback     // Catch: java.lang.Throwable -> L65
+            if (r2 != r6) goto L61
+            if (r7 == 0) goto L47
+            java.lang.Object r2 = r1.obj     // Catch: java.lang.Throwable -> L65
+            if (r2 != r7) goto L61
+        L47:
+            android.os.Message r2 = r1.next     // Catch: java.lang.Throwable -> L65
+            boolean r3 = r1.isAsynchronous()     // Catch: java.lang.Throwable -> L65
+            if (r3 == 0) goto L55
+            int r3 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L65
+            int r3 = r3 + (-1)
+            r4.mAsyncMessageCount = r3     // Catch: java.lang.Throwable -> L65
+        L55:
+            r1.recycleUnchecked()     // Catch: java.lang.Throwable -> L65
+            r0.next = r2     // Catch: java.lang.Throwable -> L65
+            android.os.Message r3 = r0.next     // Catch: java.lang.Throwable -> L65
+            if (r3 != 0) goto L33
+            r4.mLast = r0     // Catch: java.lang.Throwable -> L65
+            goto L33
+        L61:
+            r0 = r1
+            goto L33
+        L63:
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L65
+            return
+        L65:
+            r0 = move-exception
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L65
+            throw r0
+        L68:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.removeMessages(android.os.Handler, java.lang.Runnable, java.lang.Object):void");
     }
 
-    void removeEqualMessages(Handler h, Runnable r, Object object) {
-        if (h == null || r == null) {
-            return;
-        }
-        synchronized (this) {
-            Message p = this.mMessages;
-            while (p != null && p.target == h && p.callback == r && (object == null || object.equals(p.obj))) {
-                Message n = p.next;
-                this.mMessages = n;
-                p.recycleUnchecked();
-                p = n;
-            }
-            while (p != null) {
-                Message n2 = p.next;
-                if (n2 != null && n2.target == h && n2.callback == r && (object == null || object.equals(n2.obj))) {
-                    Message nn = n2.next;
-                    n2.recycleUnchecked();
-                    p.next = nn;
-                } else {
-                    p = n2;
-                }
-            }
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0034, code lost:
+    
+        r4.mLast = r4.mMessages;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    void removeEqualMessages(android.os.Handler r5, java.lang.Runnable r6, java.lang.Object r7) {
+        /*
+            r4 = this;
+            if (r5 == 0) goto L71
+            if (r6 != 0) goto L6
+            goto L71
+        L6:
+            monitor-enter(r4)
+            android.os.Message r0 = r4.mMessages     // Catch: java.lang.Throwable -> L6e
+        L9:
+            if (r0 == 0) goto L32
+            android.os.Handler r1 = r0.target     // Catch: java.lang.Throwable -> L6e
+            if (r1 != r5) goto L32
+            java.lang.Runnable r1 = r0.callback     // Catch: java.lang.Throwable -> L6e
+            if (r1 != r6) goto L32
+            if (r7 == 0) goto L1d
+            java.lang.Object r1 = r0.obj     // Catch: java.lang.Throwable -> L6e
+            boolean r1 = r7.equals(r1)     // Catch: java.lang.Throwable -> L6e
+            if (r1 == 0) goto L32
+        L1d:
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L6e
+            r4.mMessages = r1     // Catch: java.lang.Throwable -> L6e
+            boolean r2 = r0.isAsynchronous()     // Catch: java.lang.Throwable -> L6e
+            if (r2 == 0) goto L2d
+            int r2 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L6e
+            int r2 = r2 + (-1)
+            r4.mAsyncMessageCount = r2     // Catch: java.lang.Throwable -> L6e
+        L2d:
+            r0.recycleUnchecked()     // Catch: java.lang.Throwable -> L6e
+            r0 = r1
+            goto L9
+        L32:
+            if (r0 != 0) goto L38
+            android.os.Message r1 = r4.mMessages     // Catch: java.lang.Throwable -> L6e
+            r4.mLast = r1     // Catch: java.lang.Throwable -> L6e
+        L38:
+            if (r0 == 0) goto L6c
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L6e
+            if (r1 == 0) goto L6a
+            android.os.Handler r2 = r1.target     // Catch: java.lang.Throwable -> L6e
+            if (r2 != r5) goto L6a
+            java.lang.Runnable r2 = r1.callback     // Catch: java.lang.Throwable -> L6e
+            if (r2 != r6) goto L6a
+            if (r7 == 0) goto L50
+            java.lang.Object r2 = r1.obj     // Catch: java.lang.Throwable -> L6e
+            boolean r2 = r7.equals(r2)     // Catch: java.lang.Throwable -> L6e
+            if (r2 == 0) goto L6a
+        L50:
+            android.os.Message r2 = r1.next     // Catch: java.lang.Throwable -> L6e
+            boolean r3 = r1.isAsynchronous()     // Catch: java.lang.Throwable -> L6e
+            if (r3 == 0) goto L5e
+            int r3 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L6e
+            int r3 = r3 + (-1)
+            r4.mAsyncMessageCount = r3     // Catch: java.lang.Throwable -> L6e
+        L5e:
+            r1.recycleUnchecked()     // Catch: java.lang.Throwable -> L6e
+            r0.next = r2     // Catch: java.lang.Throwable -> L6e
+            android.os.Message r3 = r0.next     // Catch: java.lang.Throwable -> L6e
+            if (r3 != 0) goto L38
+            r4.mLast = r0     // Catch: java.lang.Throwable -> L6e
+            goto L38
+        L6a:
+            r0 = r1
+            goto L38
+        L6c:
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L6e
+            return
+        L6e:
+            r0 = move-exception
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L6e
+            throw r0
+        L71:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.removeEqualMessages(android.os.Handler, java.lang.Runnable, java.lang.Object):void");
     }
 
-    public void removeCallbacksAndMessages(Handler h, Object object) {
-        if (h == null) {
-            return;
-        }
-        synchronized (this) {
-            Message p = this.mMessages;
-            while (p != null && p.target == h && (object == null || p.obj == object)) {
-                Message n = p.next;
-                this.mMessages = n;
-                p.recycleUnchecked();
-                p = n;
-            }
-            while (p != null) {
-                Message n2 = p.next;
-                if (n2 != null && n2.target == h && (object == null || n2.obj == object)) {
-                    Message nn = n2.next;
-                    n2.recycleUnchecked();
-                    p.next = nn;
-                } else {
-                    p = n2;
-                }
-            }
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0029, code lost:
+    
+        r4.mLast = r4.mMessages;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    void removeCallbacksAndMessages(android.os.Handler r5, java.lang.Object r6) {
+        /*
+            r4 = this;
+            if (r5 != 0) goto L3
+            return
+        L3:
+            monitor-enter(r4)
+            android.os.Message r0 = r4.mMessages     // Catch: java.lang.Throwable -> L5b
+        L6:
+            if (r0 == 0) goto L27
+            android.os.Handler r1 = r0.target     // Catch: java.lang.Throwable -> L5b
+            if (r1 != r5) goto L27
+            if (r6 == 0) goto L12
+            java.lang.Object r1 = r0.obj     // Catch: java.lang.Throwable -> L5b
+            if (r1 != r6) goto L27
+        L12:
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L5b
+            r4.mMessages = r1     // Catch: java.lang.Throwable -> L5b
+            boolean r2 = r0.isAsynchronous()     // Catch: java.lang.Throwable -> L5b
+            if (r2 == 0) goto L22
+            int r2 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L5b
+            int r2 = r2 + (-1)
+            r4.mAsyncMessageCount = r2     // Catch: java.lang.Throwable -> L5b
+        L22:
+            r0.recycleUnchecked()     // Catch: java.lang.Throwable -> L5b
+            r0 = r1
+            goto L6
+        L27:
+            if (r0 != 0) goto L2d
+            android.os.Message r1 = r4.mMessages     // Catch: java.lang.Throwable -> L5b
+            r4.mLast = r1     // Catch: java.lang.Throwable -> L5b
+        L2d:
+            if (r0 == 0) goto L59
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L5b
+            if (r1 == 0) goto L57
+            android.os.Handler r2 = r1.target     // Catch: java.lang.Throwable -> L5b
+            if (r2 != r5) goto L57
+            if (r6 == 0) goto L3d
+            java.lang.Object r2 = r1.obj     // Catch: java.lang.Throwable -> L5b
+            if (r2 != r6) goto L57
+        L3d:
+            android.os.Message r2 = r1.next     // Catch: java.lang.Throwable -> L5b
+            boolean r3 = r1.isAsynchronous()     // Catch: java.lang.Throwable -> L5b
+            if (r3 == 0) goto L4b
+            int r3 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L5b
+            int r3 = r3 + (-1)
+            r4.mAsyncMessageCount = r3     // Catch: java.lang.Throwable -> L5b
+        L4b:
+            r1.recycleUnchecked()     // Catch: java.lang.Throwable -> L5b
+            r0.next = r2     // Catch: java.lang.Throwable -> L5b
+            android.os.Message r3 = r0.next     // Catch: java.lang.Throwable -> L5b
+            if (r3 != 0) goto L2d
+            r4.mLast = r0     // Catch: java.lang.Throwable -> L5b
+            goto L2d
+        L57:
+            r0 = r1
+            goto L2d
+        L59:
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L5b
+            return
+        L5b:
+            r0 = move-exception
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L5b
+            throw r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.removeCallbacksAndMessages(android.os.Handler, java.lang.Object):void");
     }
 
-    public void removeCallbacksAndEqualMessages(Handler h, Object object) {
-        if (h == null) {
-            return;
-        }
-        synchronized (this) {
-            Message p = this.mMessages;
-            while (p != null && p.target == h && (object == null || object.equals(p.obj))) {
-                Message n = p.next;
-                this.mMessages = n;
-                p.recycleUnchecked();
-                p = n;
-            }
-            while (p != null) {
-                Message n2 = p.next;
-                if (n2 != null && n2.target == h && (object == null || object.equals(n2.obj))) {
-                    Message nn = n2.next;
-                    n2.recycleUnchecked();
-                    p.next = nn;
-                } else {
-                    p = n2;
-                }
-            }
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x002d, code lost:
+    
+        r4.mLast = r4.mMessages;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    void removeCallbacksAndEqualMessages(android.os.Handler r5, java.lang.Object r6) {
+        /*
+            r4 = this;
+            if (r5 != 0) goto L3
+            return
+        L3:
+            monitor-enter(r4)
+            android.os.Message r0 = r4.mMessages     // Catch: java.lang.Throwable -> L63
+        L6:
+            if (r0 == 0) goto L2b
+            android.os.Handler r1 = r0.target     // Catch: java.lang.Throwable -> L63
+            if (r1 != r5) goto L2b
+            if (r6 == 0) goto L16
+            java.lang.Object r1 = r0.obj     // Catch: java.lang.Throwable -> L63
+            boolean r1 = r6.equals(r1)     // Catch: java.lang.Throwable -> L63
+            if (r1 == 0) goto L2b
+        L16:
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L63
+            r4.mMessages = r1     // Catch: java.lang.Throwable -> L63
+            boolean r2 = r0.isAsynchronous()     // Catch: java.lang.Throwable -> L63
+            if (r2 == 0) goto L26
+            int r2 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L63
+            int r2 = r2 + (-1)
+            r4.mAsyncMessageCount = r2     // Catch: java.lang.Throwable -> L63
+        L26:
+            r0.recycleUnchecked()     // Catch: java.lang.Throwable -> L63
+            r0 = r1
+            goto L6
+        L2b:
+            if (r0 != 0) goto L31
+            android.os.Message r1 = r4.mMessages     // Catch: java.lang.Throwable -> L63
+            r4.mLast = r1     // Catch: java.lang.Throwable -> L63
+        L31:
+            if (r0 == 0) goto L61
+            android.os.Message r1 = r0.next     // Catch: java.lang.Throwable -> L63
+            if (r1 == 0) goto L5f
+            android.os.Handler r2 = r1.target     // Catch: java.lang.Throwable -> L63
+            if (r2 != r5) goto L5f
+            if (r6 == 0) goto L45
+            java.lang.Object r2 = r1.obj     // Catch: java.lang.Throwable -> L63
+            boolean r2 = r6.equals(r2)     // Catch: java.lang.Throwable -> L63
+            if (r2 == 0) goto L5f
+        L45:
+            android.os.Message r2 = r1.next     // Catch: java.lang.Throwable -> L63
+            boolean r3 = r1.isAsynchronous()     // Catch: java.lang.Throwable -> L63
+            if (r3 == 0) goto L53
+            int r3 = r4.mAsyncMessageCount     // Catch: java.lang.Throwable -> L63
+            int r3 = r3 + (-1)
+            r4.mAsyncMessageCount = r3     // Catch: java.lang.Throwable -> L63
+        L53:
+            r1.recycleUnchecked()     // Catch: java.lang.Throwable -> L63
+            r0.next = r2     // Catch: java.lang.Throwable -> L63
+            android.os.Message r3 = r0.next     // Catch: java.lang.Throwable -> L63
+            if (r3 != 0) goto L31
+            r4.mLast = r0     // Catch: java.lang.Throwable -> L63
+            goto L31
+        L5f:
+            r0 = r1
+            goto L31
+        L61:
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L63
+            return
+        L63:
+            r0 = move-exception
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> L63
+            throw r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.removeCallbacksAndEqualMessages(android.os.Handler, java.lang.Object):void");
     }
 
     private void removeAllMessagesLocked() {
@@ -654,6 +889,8 @@ public final class MessageQueue {
             p = n;
         }
         this.mMessages = null;
+        this.mLast = null;
+        this.mAsyncMessageCount = 0;
     }
 
     private void removeAllFutureMessagesLocked() {
@@ -675,9 +912,13 @@ public final class MessageQueue {
                 p = n;
             } else {
                 p.next = null;
+                this.mLast = p;
                 do {
                     Message p2 = n;
                     n = p2.next;
+                    if (p2.isAsynchronous()) {
+                        this.mAsyncMessageCount--;
+                    }
                     p2.recycleUnchecked();
                 } while (n != null);
                 return;
@@ -685,7 +926,7 @@ public final class MessageQueue {
         }
     }
 
-    public void dump(Printer pw, String prefix, Handler h) {
+    void dump(Printer pw, String prefix, Handler h) {
         synchronized (this) {
             long now = SystemClock.uptimeMillis();
             int n = 0;
@@ -699,7 +940,7 @@ public final class MessageQueue {
         }
     }
 
-    public void dumpDebug(ProtoOutputStream proto, long fieldId) {
+    void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long messageQueueToken = proto.start(fieldId);
         synchronized (this) {
             for (Message msg = this.mMessages; msg != null; msg = msg.next) {
@@ -711,8 +952,7 @@ public final class MessageQueue {
         proto.end(messageQueueToken);
     }
 
-    /* loaded from: classes3.dex */
-    public static final class FileDescriptorRecord {
+    private static final class FileDescriptorRecord {
         public final FileDescriptor mDescriptor;
         public int mEvents;
         public OnFileDescriptorEventListener mListener;

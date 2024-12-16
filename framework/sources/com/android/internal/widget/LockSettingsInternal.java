@@ -17,7 +17,6 @@ public abstract class LockSettingsInternal {
     public static final int ARM_REBOOT_ERROR_UNSPECIFIED = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ArmRebootEscrowErrorCode {
     }
 
@@ -45,6 +44,8 @@ public abstract class LockSettingsInternal {
 
     public abstract void refreshStrongAuthTimeout(int i);
 
+    public abstract void registerLockSettingsStateListener(LockSettingsStateListener lockSettingsStateListener);
+
     public abstract boolean removeEscrowToken(long j, int i);
 
     public abstract void removeUser(int i);
@@ -53,7 +54,7 @@ public abstract class LockSettingsInternal {
 
     public abstract void setRebootEscrowListener(RebootEscrowListener rebootEscrowListener);
 
-    public abstract void unlockUserKeyIfUnsecured(int i);
-
     public abstract boolean unlockUserWithToken(long j, byte[] bArr, int i);
+
+    public abstract void unregisterLockSettingsStateListener(LockSettingsStateListener lockSettingsStateListener);
 }

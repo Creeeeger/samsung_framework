@@ -7,13 +7,11 @@ import android.icu.util.Calendar;
 import android.icu.util.ULocale;
 import android.util.LruCache;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 class DateTimeFormat {
     private static final FormatterCache CACHED_FORMATTERS = new FormatterCache();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public static class FormatterCache extends LruCache<String, android.icu.text.DateFormat> {
+    static class FormatterCache extends LruCache<String, android.icu.text.DateFormat> {
         FormatterCache() {
             super(8);
         }
@@ -26,13 +24,12 @@ class DateTimeFormat {
         String format;
         String skeleton = DateUtilsBridge.toSkeleton(time, flags);
         String key = skeleton + "\t" + icuLocale + "\t" + time.getTimeZone();
-        FormatterCache formatterCache = CACHED_FORMATTERS;
-        synchronized (formatterCache) {
-            android.icu.text.DateFormat formatter = formatterCache.get(key);
+        synchronized (CACHED_FORMATTERS) {
+            android.icu.text.DateFormat formatter = CACHED_FORMATTERS.get(key);
             if (formatter == null) {
                 DateTimePatternGenerator generator = DateTimePatternGenerator.getInstance(icuLocale);
                 formatter = new SimpleDateFormat(generator.getBestPattern(skeleton), icuLocale);
-                formatterCache.put(key, formatter);
+                CACHED_FORMATTERS.put(key, formatter);
             }
             formatter.setContext(displayContext);
             format = formatter.format(time);

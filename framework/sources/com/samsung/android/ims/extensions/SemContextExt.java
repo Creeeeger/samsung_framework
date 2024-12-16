@@ -7,7 +7,7 @@ import android.os.UserHandle;
 import com.samsung.android.hardware.secinputdev.SemInputDeviceManager;
 import java.lang.reflect.Method;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextExt {
     public static final UserHandle OWNER = (UserHandle) SemReflectionUtils.getValueOf("OWNER", (Class<?>) UserHandle.class);
     public static final UserHandle CURRENT_OR_SELF = (UserHandle) SemReflectionUtils.getValueOf("CURRENT_OR_SELF", (Class<?>) UserHandle.class);

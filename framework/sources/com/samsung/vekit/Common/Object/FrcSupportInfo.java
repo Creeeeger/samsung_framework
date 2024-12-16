@@ -10,7 +10,7 @@ public class FrcSupportInfo {
     public FrcSupportInfo() {
         int fpsSize = FpsType.values().length;
         int speedSize = SpeedType.values().length;
-        this.frcSupportInfo = new boolean[fpsSize];
+        this.frcSupportInfo = new boolean[fpsSize][];
         for (int i = 0; i < fpsSize; i++) {
             this.frcSupportInfo[i] = new boolean[speedSize];
             for (int j = 0; j < speedSize; j++) {

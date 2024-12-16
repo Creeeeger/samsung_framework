@@ -19,7 +19,6 @@ public class BrowserContract {
     public static final String CALLER_IS_SYNCADAPTER = "caller_is_syncadapter";
     public static final String PARAM_LIMIT = "limit";
 
-    /* loaded from: classes3.dex */
     public static final class Accounts {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
@@ -27,7 +26,6 @@ public class BrowserContract {
         public static final String ROOT_ID = "root_id";
     }
 
-    /* loaded from: classes3.dex */
     interface BaseSyncColumns {
         public static final String SYNC1 = "sync1";
         public static final String SYNC2 = "sync2";
@@ -36,7 +34,6 @@ public class BrowserContract {
         public static final String SYNC5 = "sync5";
     }
 
-    /* loaded from: classes3.dex */
     interface CommonColumns {
         public static final String DATE_CREATED = "created";
         public static final String TITLE = "title";
@@ -44,27 +41,23 @@ public class BrowserContract {
         public static final String _ID = "_id";
     }
 
-    /* loaded from: classes3.dex */
     interface HistoryColumns {
         public static final String DATE_LAST_VISITED = "date";
         public static final String USER_ENTERED = "user_entered";
         public static final String VISITS = "visits";
     }
 
-    /* loaded from: classes3.dex */
     interface ImageColumns {
         public static final String FAVICON = "favicon";
         public static final String THUMBNAIL = "thumbnail";
         public static final String TOUCH_ICON = "touch_icon";
     }
 
-    /* loaded from: classes3.dex */
     interface ImageMappingColumns {
         public static final String IMAGE_ID = "image_id";
         public static final String URL = "url";
     }
 
-    /* loaded from: classes3.dex */
     interface SyncColumns extends BaseSyncColumns {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
@@ -74,7 +67,6 @@ public class BrowserContract {
         public static final String VERSION = "version";
     }
 
-    /* loaded from: classes3.dex */
     public static final class ChromeSyncColumns {
         public static final String CLIENT_UNIQUE = "sync4";
         public static final String FOLDER_NAME_BOOKMARKS = "google_chrome_bookmarks";
@@ -87,7 +79,6 @@ public class BrowserContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Bookmarks implements CommonColumns, ImageColumns, SyncColumns {
         public static final int BOOKMARK_TYPE_BOOKMARK = 1;
         public static final int BOOKMARK_TYPE_BOOKMARK_BAR_FOLDER = 3;
@@ -96,8 +87,8 @@ public class BrowserContract {
         public static final int BOOKMARK_TYPE_OTHER_FOLDER = 4;
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/bookmark";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/bookmark";
-        public static final Uri CONTENT_URI;
-        public static final Uri CONTENT_URI_DEFAULT_FOLDER;
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BrowserContract.AUTHORITY_URI, "bookmarks");
+        public static final Uri CONTENT_URI_DEFAULT_FOLDER = Uri.withAppendedPath(CONTENT_URI, "folder");
         public static final String INSERT_AFTER = "insert_after";
         public static final String INSERT_AFTER_SOURCE_ID = "insert_after_source";
         public static final String IS_DELETED = "deleted";
@@ -113,18 +104,11 @@ public class BrowserContract {
         private Bookmarks() {
         }
 
-        static {
-            Uri withAppendedPath = Uri.withAppendedPath(BrowserContract.AUTHORITY_URI, "bookmarks");
-            CONTENT_URI = withAppendedPath;
-            CONTENT_URI_DEFAULT_FOLDER = Uri.withAppendedPath(withAppendedPath, "folder");
-        }
-
         public static final Uri buildFolderUri(long folderId) {
             return ContentUris.withAppendedId(CONTENT_URI_DEFAULT_FOLDER, folderId);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class History implements CommonColumns, HistoryColumns, ImageColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/browser-history";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/browser-history";
@@ -134,7 +118,6 @@ public class BrowserContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Searches {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/searches";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/searches";
@@ -147,7 +130,6 @@ public class BrowserContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SyncState implements SyncStateContract.Columns {
         public static final String CONTENT_DIRECTORY = "syncstate";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BrowserContract.AUTHORITY_URI, "syncstate");
@@ -172,7 +154,6 @@ public class BrowserContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Images implements ImageColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/images";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/images";
@@ -188,7 +169,6 @@ public class BrowserContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ImageMappings implements ImageMappingColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/image_mappings";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/image_mappings";
@@ -198,7 +178,6 @@ public class BrowserContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Combined implements CommonColumns, HistoryColumns, ImageColumns {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BrowserContract.AUTHORITY_URI, "combined");
         public static final String IS_BOOKMARK = "bookmark";
@@ -207,7 +186,6 @@ public class BrowserContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Settings {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BrowserContract.AUTHORITY_URI, "settings");
         public static final String KEY = "key";
@@ -217,7 +195,7 @@ public class BrowserContract {
         private Settings() {
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:17:0x003a, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:17:0x0038, code lost:
         
             r0.close();
          */
@@ -225,48 +203,43 @@ public class BrowserContract {
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
         */
-        public static boolean isSyncEnabled(android.content.Context r9) {
+        public static boolean isSyncEnabled(android.content.Context r7) {
             /*
                 r0 = 0
-                android.content.ContentResolver r1 = r9.getContentResolver()     // Catch: java.lang.Throwable -> L3e
-                android.net.Uri r2 = android.provider.BrowserContract.Settings.CONTENT_URI     // Catch: java.lang.Throwable -> L3e
-                r7 = 1
-                java.lang.String[] r3 = new java.lang.String[r7]     // Catch: java.lang.Throwable -> L3e
-                java.lang.String r4 = "value"
-                r8 = 0
-                r3[r8] = r4     // Catch: java.lang.Throwable -> L3e
+                android.content.ContentResolver r1 = r7.getContentResolver()     // Catch: java.lang.Throwable -> L3c
+                android.net.Uri r2 = android.provider.BrowserContract.Settings.CONTENT_URI     // Catch: java.lang.Throwable -> L3c
+                java.lang.String r3 = "value"
+                java.lang.String[] r3 = new java.lang.String[]{r3}     // Catch: java.lang.Throwable -> L3c
                 java.lang.String r4 = "key=?"
-                java.lang.String[] r5 = new java.lang.String[r7]     // Catch: java.lang.Throwable -> L3e
-                java.lang.String r6 = "sync_enabled"
-                r5[r8] = r6     // Catch: java.lang.Throwable -> L3e
+                java.lang.String r5 = "sync_enabled"
+                java.lang.String[] r5 = new java.lang.String[]{r5}     // Catch: java.lang.Throwable -> L3c
                 r6 = 0
-                android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Throwable -> L3e
+                android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Throwable -> L3c
                 r0 = r1
-                if (r0 == 0) goto L37
-                boolean r1 = r0.moveToFirst()     // Catch: java.lang.Throwable -> L3e
-                if (r1 != 0) goto L29
-                goto L37
-            L29:
-                int r1 = r0.getInt(r8)     // Catch: java.lang.Throwable -> L3e
-                if (r1 == 0) goto L30
-                goto L31
-            L30:
-                r7 = r8
-            L31:
-                if (r0 == 0) goto L36
+                r1 = 0
+                if (r0 == 0) goto L35
+                boolean r2 = r0.moveToFirst()     // Catch: java.lang.Throwable -> L3c
+                if (r2 != 0) goto L28
+                goto L35
+            L28:
+                int r2 = r0.getInt(r1)     // Catch: java.lang.Throwable -> L3c
+                if (r2 == 0) goto L2f
+                r1 = 1
+            L2f:
+                if (r0 == 0) goto L34
                 r0.close()
-            L36:
-                return r7
-            L37:
-                if (r0 == 0) goto L3d
+            L34:
+                return r1
+            L35:
+                if (r0 == 0) goto L3b
                 r0.close()
-            L3d:
-                return r8
-            L3e:
+            L3b:
+                return r1
+            L3c:
                 r1 = move-exception
-                if (r0 == 0) goto L44
+                if (r0 == 0) goto L42
                 r0.close()
-            L44:
+            L42:
                 throw r1
             */
             throw new UnsupportedOperationException("Method not decompiled: android.provider.BrowserContract.Settings.isSyncEnabled(android.content.Context):boolean");

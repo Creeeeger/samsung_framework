@@ -20,11 +20,7 @@ public class InsetDrawable extends DrawableWrapper {
     private final Rect mTmpInsetRect;
     private final Rect mTmpRect;
 
-    /* synthetic */ InsetDrawable(InsetState insetState, Resources resources, InsetDrawableIA insetDrawableIA) {
-        this(insetState, resources);
-    }
-
-    public InsetDrawable() {
+    InsetDrawable() {
         this(new InsetState(null, null), (Resources) null);
     }
 
@@ -165,9 +161,8 @@ public class InsetDrawable extends DrawableWrapper {
         return opacity;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         Rect r = this.mTmpRect;
         r.set(bounds);
         r.left += this.mState.mInsetLeft.getDimension(bounds.width());
@@ -204,13 +199,11 @@ public class InsetDrawable extends DrawableWrapper {
 
     @Override // android.graphics.drawable.DrawableWrapper
     DrawableWrapper.DrawableWrapperState mutateConstantState() {
-        InsetState insetState = new InsetState(this.mState, null);
-        this.mState = insetState;
-        return insetState;
+        this.mState = new InsetState(this.mState, null);
+        return this.mState;
     }
 
-    /* loaded from: classes.dex */
-    public static final class InsetState extends DrawableWrapper.DrawableWrapperState {
+    static final class InsetState extends DrawableWrapper.DrawableWrapperState {
         InsetValue mInsetBottom;
         InsetValue mInsetLeft;
         InsetValue mInsetRight;
@@ -220,10 +213,10 @@ public class InsetDrawable extends DrawableWrapper {
         InsetState(InsetState orig, Resources res) {
             super(orig, res);
             if (orig != null) {
-                this.mInsetLeft = orig.mInsetLeft.m1202clone();
-                this.mInsetTop = orig.mInsetTop.m1202clone();
-                this.mInsetRight = orig.mInsetRight.m1202clone();
-                this.mInsetBottom = orig.mInsetBottom.m1202clone();
+                this.mInsetLeft = orig.mInsetLeft.m1297clone();
+                this.mInsetTop = orig.mInsetTop.m1297clone();
+                this.mInsetRight = orig.mInsetRight.m1297clone();
+                this.mInsetBottom = orig.mInsetBottom.m1297clone();
                 if (orig.mDensity != this.mDensity) {
                     applyDensityScaling(orig.mDensity, this.mDensity);
                     return;
@@ -236,9 +229,8 @@ public class InsetDrawable extends DrawableWrapper {
             this.mInsetBottom = new InsetValue();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.graphics.drawable.DrawableWrapper.DrawableWrapperState
-        public void onDensityChanged(int sourceDensity, int targetDensity) {
+        void onDensityChanged(int sourceDensity, int targetDensity) {
             super.onDensityChanged(sourceDensity, targetDensity);
             applyDensityScaling(sourceDensity, targetDensity);
         }
@@ -268,8 +260,7 @@ public class InsetDrawable extends DrawableWrapper {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class InsetValue implements Cloneable {
+    static final class InsetValue implements Cloneable {
         int mDimension;
         final float mFraction;
 
@@ -287,14 +278,13 @@ public class InsetDrawable extends DrawableWrapper {
         }
 
         void scaleFromDensity(int sourceDensity, int targetDensity) {
-            int i = this.mDimension;
-            if (i != 0) {
-                this.mDimension = Bitmap.scaleFromDensity(i, sourceDensity, targetDensity);
+            if (this.mDimension != 0) {
+                this.mDimension = Bitmap.scaleFromDensity(this.mDimension, sourceDensity, targetDensity);
             }
         }
 
-        /* renamed from: clone */
-        public InsetValue m1202clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public InsetValue m1297clone() {
             return new InsetValue(this.mFraction, this.mDimension);
         }
     }

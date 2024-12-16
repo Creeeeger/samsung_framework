@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class CameraCaptureSession implements AutoCloseable {
     public static final int SESSION_ID_NONE = -1;
 
@@ -69,7 +69,6 @@ public abstract class CameraCaptureSession implements AutoCloseable {
         throw new UnsupportedOperationException("Subclasses must override this method");
     }
 
-    /* loaded from: classes.dex */
     public static abstract class StateCallback {
         public abstract void onConfigureFailed(CameraCaptureSession cameraCaptureSession);
 
@@ -91,7 +90,6 @@ public abstract class CameraCaptureSession implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class CaptureCallback {
         public static final int NO_FRAMES_CAPTURED = -1;
 

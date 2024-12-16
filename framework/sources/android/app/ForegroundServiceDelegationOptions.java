@@ -23,6 +23,8 @@ public class ForegroundServiceDelegationOptions {
     public static final int DELEGATION_SERVICE_SYSTEM_EXEMPTED = 11;
     public final IApplicationThread mClientAppThread;
     public String mClientInstanceName;
+    public final Notification mClientNotification;
+    public final int mClientNotificationId;
     public final String mClientPackageName;
     public final int mClientPid;
     public final int mClientUid;
@@ -31,11 +33,14 @@ public class ForegroundServiceDelegationOptions {
     public final boolean mSticky;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DelegationService {
     }
 
     public ForegroundServiceDelegationOptions(int clientPid, int clientUid, String clientPackageName, IApplicationThread clientAppThread, boolean isSticky, String clientInstanceName, int foregroundServiceTypes, int delegationService) {
+        this(clientPid, clientUid, clientPackageName, clientAppThread, isSticky, clientInstanceName, foregroundServiceTypes, delegationService, 0, null);
+    }
+
+    public ForegroundServiceDelegationOptions(int clientPid, int clientUid, String clientPackageName, IApplicationThread clientAppThread, boolean isSticky, String clientInstanceName, int foregroundServiceTypes, int delegationService, int clientNotificationId, Notification clientNotification) {
         this.mClientPid = clientPid;
         this.mClientUid = clientUid;
         this.mClientPackageName = clientPackageName;
@@ -44,6 +49,8 @@ public class ForegroundServiceDelegationOptions {
         this.mClientInstanceName = clientInstanceName;
         this.mForegroundServiceTypes = foregroundServiceTypes;
         this.mDelegationService = delegationService;
+        this.mClientNotificationId = clientNotificationId;
+        this.mClientNotification = clientNotification;
     }
 
     public boolean isSameDelegate(ForegroundServiceDelegationOptions that) {
@@ -93,10 +100,10 @@ public class ForegroundServiceDelegationOptions {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         IApplicationThread mClientAppThread;
         String mClientInstanceName;
+        Notification mClientNotification;
         int mClientNotificationId;
         String mClientPackageName;
         int mClientPid;
@@ -120,8 +127,9 @@ public class ForegroundServiceDelegationOptions {
             return this;
         }
 
-        public Builder setClientNotificationId(int clientNotificationId) {
+        public Builder setClientNotification(int clientNotificationId, Notification clientNotification) {
             this.mClientNotificationId = clientNotificationId;
+            this.mClientNotification = clientNotification;
             return this;
         }
 
@@ -151,7 +159,7 @@ public class ForegroundServiceDelegationOptions {
         }
 
         public ForegroundServiceDelegationOptions build() {
-            return new ForegroundServiceDelegationOptions(this.mClientPid, this.mClientUid, this.mClientPackageName, this.mClientAppThread, this.mSticky, this.mClientInstanceName, this.mForegroundServiceTypes, this.mDelegationService);
+            return new ForegroundServiceDelegationOptions(this.mClientPid, this.mClientUid, this.mClientPackageName, this.mClientAppThread, this.mSticky, this.mClientInstanceName, this.mForegroundServiceTypes, this.mDelegationService, this.mClientNotificationId, this.mClientNotification);
         }
     }
 }

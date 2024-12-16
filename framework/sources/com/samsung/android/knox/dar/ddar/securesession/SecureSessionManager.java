@@ -2,6 +2,7 @@ package com.samsung.android.knox.dar.ddar.securesession;
 
 import android.security.keystore.KeyProperties;
 import com.samsung.android.security.mdf.MdfUtils;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -18,19 +19,19 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.security.auth.DestroyFailedException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class SecureSessionManager {
     private static final String CRYPTO_PROVIDER = "AndroidOpenSSL";
+    private static final SecureRandom sSecureRandom = new SecureRandom();
 
     SecureSessionManager() {
     }
 
-    /* loaded from: classes5.dex */
-    public static class PrivateSessionEndpoint {
+    static class PrivateSessionEndpoint {
         private PrivateKey privateKey;
         private PublicKey publicKey;
 
-        public PrivateSessionEndpoint() throws Exception {
+        PrivateSessionEndpoint() throws Exception {
             try {
                 KeyPair keyPair = createKeyPair();
                 this.publicKey = keyPair.getPublic();
@@ -41,7 +42,7 @@ class SecureSessionManager {
             }
         }
 
-        public String getPublicKeyString() {
+        String getPublicKeyString() {
             return Util.byteArrayToHexString(this.publicKey.getEncoded());
         }
 
@@ -53,7 +54,7 @@ class SecureSessionManager {
             return this.privateKey;
         }
 
-        public void destroy() throws Exception {
+        void destroy() throws Exception {
             try {
                 this.privateKey.destroy();
                 this.privateKey = null;
@@ -69,11 +70,10 @@ class SecureSessionManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class PublicSessionEndpoint {
-        private PublicKey publicKey;
+    static class PublicSessionEndpoint {
+        private final PublicKey publicKey;
 
-        public PublicSessionEndpoint(String publicKeyString) throws Exception {
+        PublicSessionEndpoint(String publicKeyString) throws Exception {
             try {
                 this.publicKey = createPublicKey(publicKeyString);
             } catch (Exception e) {
@@ -99,14 +99,13 @@ class SecureSessionManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     static class SecureSession {
-        private PrivateSessionEndpoint privateSessionEndpoint;
-        private PublicSessionEndpoint publicSessionEndpoint;
+        private final PrivateSessionEndpoint privateSessionEndpoint;
+        private final PublicSessionEndpoint publicSessionEndpoint;
         private SecretKey sessionKey;
         private byte[] xorMask;
 
-        public SecureSession(PrivateSessionEndpoint privSessionEndPoint, PublicSessionEndpoint pubSessionEndPoint) throws Exception {
+        SecureSession(PrivateSessionEndpoint privSessionEndPoint, PublicSessionEndpoint pubSessionEndPoint) throws Exception {
             this.privateSessionEndpoint = privSessionEndPoint;
             this.publicSessionEndpoint = pubSessionEndPoint;
             generateSessionKey();
@@ -124,42 +123,43 @@ class SecureSessionManager {
             Wiper.wipe(trunckey);
         }
 
-        public void destroySessionkey() throws Exception {
+        void destroySessionkey() throws Exception {
             Wiper.wipe(this.xorMask);
             this.sessionKey.destroy();
         }
 
-        public String encryptString(String plaintext) throws Exception {
+        String encryptString(String plaintext) throws Exception {
             if (plaintext == null) {
                 return null;
             }
-            return encryptData(generateIV(), plaintext.getBytes());
+            return encryptData(generateIV(), plaintext.getBytes(StandardCharsets.UTF_8));
         }
 
-        public byte[] encryptBytes(byte[] plaintext) throws Exception {
+        byte[] encryptBytes(byte[] plaintext) throws Exception {
             if (plaintext == null) {
                 return null;
             }
-            return encryptData(generateIV(), plaintext).getBytes();
+            return encryptData(generateIV(), plaintext).getBytes(StandardCharsets.UTF_8);
         }
 
-        public String decryptString(String ciphertext) throws Exception {
+        String decryptString(String ciphertext) throws Exception {
             if (ciphertext == null) {
                 return null;
             }
-            return new String(decryptData(ciphertext));
+            return new String(decryptData(ciphertext), StandardCharsets.UTF_8);
         }
 
-        public byte[] decryptBytes(byte[] ciphertext) throws Exception {
+        byte[] decryptBytes(byte[] ciphertext) throws Exception {
             if (ciphertext == null) {
                 return null;
             }
-            return decryptData(new String(ciphertext));
+            return decryptData(new String(ciphertext, StandardCharsets.UTF_8));
         }
 
         private String encryptData(byte[] iv, byte[] plaintext) throws Exception {
             byte[] encrypted = encrypt(iv, plaintext);
-            return Util.encodeBase64(iv) + ":" + Util.encodeBase64(encrypted);
+            String ciphertext = Util.encodeBase64(iv) + ":" + Util.encodeBase64(encrypted);
+            return ciphertext;
         }
 
         private byte[] decryptData(String ciphertext) throws Exception {
@@ -171,9 +171,8 @@ class SecureSessionManager {
         }
 
         private byte[] generateIV() {
-            SecureRandom random = new SecureRandom();
             byte[] iv = new byte[12];
-            random.nextBytes(iv);
+            SecureSessionManager.sSecureRandom.nextBytes(iv);
             return iv;
         }
 
@@ -196,11 +195,10 @@ class SecureSessionManager {
             int i = 0;
             int j = 0;
             while (i < data.length) {
-                byte[] bArr = this.xorMask;
-                if (j >= bArr.length) {
+                if (j >= this.xorMask.length) {
                     j = 0;
                 }
-                data[i] = (byte) (bArr[j] ^ data[i]);
+                data[i] = (byte) (data[i] ^ this.xorMask[j]);
                 i++;
                 j++;
             }

@@ -4,7 +4,7 @@ import android.system.Os;
 import android.system.OsConstants;
 import java.io.FileDescriptor;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class NetworkUtilsInternal {
     private static final int[] ADDRESS_FAMILIES = {OsConstants.AF_INET, OsConstants.AF_INET6};
 

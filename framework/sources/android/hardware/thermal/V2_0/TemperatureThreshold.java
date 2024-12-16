@@ -59,7 +59,7 @@ public final class TemperatureThreshold {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.type = _hidl_blob.getInt32(_hidl_offset + 0);
         this.name = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         long _hidl_array_offset_0 = _hidl_offset + 24;
         _hidl_blob.copyToFloatArray(_hidl_array_offset_0, this.hotThrottlingThresholds, 7);
         long _hidl_array_offset_02 = _hidl_offset + 52;

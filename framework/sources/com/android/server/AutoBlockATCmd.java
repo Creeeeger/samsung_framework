@@ -49,15 +49,13 @@ public class AutoBlockATCmd implements IWorkOnAt {
             String result3 = params[0] + ",";
             if (supportedParams[0].equals(cmd.substring(0, supportedParams[0].length()))) {
                 Slog.i(TAG, "AT+ABSTACHK=0,0");
-                EngineeringModeManager engineeringModeManager = this.mEMMgr;
-                if (engineeringModeManager != null && engineeringModeManager.isConnected()) {
+                if (this.mEMMgr != null && this.mEMMgr.isConnected()) {
                     int emStat = this.mEMMgr.getStatus(61);
                     if (emStat == 1) {
                         Intent rampartResetIntent = new Intent(ACTION_MODE_RESET_AUTOBLOCKER);
                         rampartResetIntent.setPackage(RAMPART);
                         rampartResetIntent.addFlags(32);
                         mContext.sendBroadcast(rampartResetIntent, "com.samsung.android.permission.ACCESS_AUTOBLOCKER");
-                        setSUWSwitchOff();
                         result2 = result3 + "OK";
                     } else {
                         result2 = result3 + AT_RESPONSE_NG_NOTOKEN;
@@ -99,9 +97,5 @@ public class AutoBlockATCmd implements IWorkOnAt {
 
     private boolean isRampartBlockedAdbCommand() {
         return Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.RAMPART_MAIN_SWITCH_ENABLED, 0) == 1;
-    }
-
-    private void setSUWSwitchOff() {
-        Settings.System.putInt(mContext.getContentResolver(), Settings.System.RAMPART_SUW_MAIN_ON, 0);
     }
 }

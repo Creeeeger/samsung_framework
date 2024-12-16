@@ -23,6 +23,7 @@ public class DragEvent implements Parcelable {
     boolean mDragResult;
     private SurfaceControl mDragSurface;
     boolean mEventHandlerWasCalled;
+    private int mFlags;
     private boolean mIsEavesDropEvent;
     private boolean mIsStickyEvent;
     Object mLocalState;
@@ -37,9 +38,7 @@ public class DragEvent implements Parcelable {
     private static int gRecyclerUsed = 0;
     private static DragEvent gRecyclerTop = null;
     public static final Parcelable.Creator<DragEvent> CREATOR = new Parcelable.Creator<DragEvent>() { // from class: android.view.DragEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DragEvent createFromParcel(Parcel in) {
             DragEvent event = DragEvent.obtain();
@@ -48,6 +47,7 @@ public class DragEvent implements Parcelable {
             event.mY = in.readFloat();
             event.mOffsetX = in.readFloat();
             event.mOffsetY = in.readFloat();
+            event.mFlags = in.readInt();
             event.mDragResult = in.readInt() != 0;
             event.mIsEavesDropEvent = in.readBoolean();
             event.mIsStickyEvent = in.readBoolean();
@@ -67,6 +67,7 @@ public class DragEvent implements Parcelable {
             return event;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DragEvent[] newArray(int size) {
             return new DragEvent[size];
@@ -76,12 +77,13 @@ public class DragEvent implements Parcelable {
     private DragEvent() {
     }
 
-    private void init(int action, float x, float y, float offsetX, float offsetY, ClipDescription description, ClipData data, SurfaceControl dragSurface, IDragAndDropPermissions dragAndDropPermissions, Object localState, boolean result) {
+    private void init(int action, float x, float y, float offsetX, float offsetY, int flags, ClipDescription description, ClipData data, SurfaceControl dragSurface, IDragAndDropPermissions dragAndDropPermissions, Object localState, boolean result) {
         this.mAction = action;
         this.mX = x;
         this.mY = y;
         this.mOffsetX = offsetX;
         this.mOffsetY = offsetY;
+        this.mFlags = flags;
         this.mClipDescription = description;
         this.mClipData = data;
         this.mDragSurface = dragSurface;
@@ -91,35 +93,35 @@ public class DragEvent implements Parcelable {
     }
 
     static DragEvent obtain() {
-        return obtain(0, 0.0f, 0.0f, 0.0f, 0.0f, null, null, null, null, null, false);
+        return obtain(0, 0.0f, 0.0f, 0.0f, 0.0f, 0, null, null, null, null, null, false);
     }
 
-    public static DragEvent obtain(int action, float x, float y, float offsetX, float offsetY, Object localState, ClipDescription description, ClipData data, SurfaceControl dragSurface, IDragAndDropPermissions dragAndDropPermissions, boolean result) {
-        return obtain(action, x, y, offsetX, offsetY, localState, description, data, dragSurface, dragAndDropPermissions, result, false);
+    public static DragEvent obtain(int action, float x, float y, float offsetX, float offsetY, int flags, Object localState, ClipDescription description, ClipData data, SurfaceControl dragSurface, IDragAndDropPermissions dragAndDropPermissions, boolean result) {
+        return obtain(action, x, y, offsetX, offsetY, flags, localState, description, data, dragSurface, dragAndDropPermissions, result, false);
     }
 
-    public static DragEvent obtain(int action, float x, float y, float offsetX, float offsetY, Object localState, ClipDescription description, ClipData data, SurfaceControl dragSurface, IDragAndDropPermissions dragAndDropPermissions, boolean result, boolean isStickyEvent) {
+    public static DragEvent obtain(int action, float x, float y, float offsetX, float offsetY, int flags, Object localState, ClipDescription description, ClipData data, SurfaceControl dragSurface, IDragAndDropPermissions dragAndDropPermissions, boolean result, boolean isStickyEvent) {
         synchronized (gRecyclerLock) {
-            DragEvent ev = gRecyclerTop;
-            if (ev == null) {
-                DragEvent ev2 = new DragEvent();
-                ev2.init(action, x, y, offsetX, offsetY, description, data, dragSurface, dragAndDropPermissions, localState, result);
-                ev2.mIsStickyEvent = isStickyEvent;
-                return ev2;
+            if (gRecyclerTop == null) {
+                DragEvent ev = new DragEvent();
+                ev.init(action, x, y, offsetX, offsetY, flags, description, data, dragSurface, dragAndDropPermissions, localState, result);
+                ev.mIsStickyEvent = isStickyEvent;
+                return ev;
             }
-            gRecyclerTop = ev.mNext;
+            DragEvent ev2 = gRecyclerTop;
+            gRecyclerTop = ev2.mNext;
             gRecyclerUsed--;
-            ev.mRecycledLocation = null;
-            ev.mRecycled = false;
-            ev.mNext = null;
-            ev.init(action, x, y, offsetX, offsetY, description, data, dragSurface, dragAndDropPermissions, localState, result);
-            ev.mIsStickyEvent = isStickyEvent;
-            return ev;
+            ev2.mRecycledLocation = null;
+            ev2.mRecycled = false;
+            ev2.mNext = null;
+            ev2.init(action, x, y, offsetX, offsetY, flags, description, data, dragSurface, dragAndDropPermissions, localState, result);
+            ev2.mIsStickyEvent = isStickyEvent;
+            return ev2;
         }
     }
 
     public static DragEvent obtain(DragEvent source) {
-        return obtain(source.mAction, source.mX, source.mY, source.mOffsetX, source.mOffsetY, source.mLocalState, source.mClipDescription, source.mClipData, source.mDragSurface, source.mDragAndDropPermissions, source.mDragResult, source.mIsStickyEvent);
+        return obtain(source.mAction, source.mX, source.mY, source.mOffsetX, source.mOffsetY, source.mFlags, source.mLocalState, source.mClipDescription, source.mClipData, source.mDragSurface, source.mDragAndDropPermissions, source.mDragResult, source.mIsStickyEvent);
     }
 
     public int getAction() {
@@ -154,6 +156,10 @@ public class DragEvent implements Parcelable {
         return this.mDragSurface;
     }
 
+    public int getDragFlags() {
+        return this.mFlags;
+    }
+
     public IDragAndDropPermissions getDragAndDropPermissions() {
         return this.mDragAndDropPermissions;
     }
@@ -178,9 +184,8 @@ public class DragEvent implements Parcelable {
         this.mIsEavesDropEvent = false;
         this.mIsStickyEvent = false;
         synchronized (gRecyclerLock) {
-            int i = gRecyclerUsed;
-            if (i < 10) {
-                gRecyclerUsed = i + 1;
+            if (gRecyclerUsed < 10) {
+                gRecyclerUsed++;
                 this.mNext = gRecyclerTop;
                 gRecyclerTop = this;
             }
@@ -222,6 +227,7 @@ public class DragEvent implements Parcelable {
         parcel.writeFloat(this.mY);
         parcel.writeFloat(this.mOffsetX);
         parcel.writeFloat(this.mOffsetY);
+        parcel.writeInt(this.mFlags);
         parcel.writeInt(this.mDragResult ? 1 : 0);
         parcel.writeBoolean(this.mIsEavesDropEvent);
         parcel.writeBoolean(this.mIsStickyEvent);
@@ -251,43 +257,12 @@ public class DragEvent implements Parcelable {
         }
     }
 
-    /* renamed from: android.view.DragEvent$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DragEvent> {
-        AnonymousClass1() {
-        }
+    public void setIsStickyEvent(boolean isStickyEvent) {
+        this.mIsStickyEvent = isStickyEvent;
+    }
 
-        @Override // android.os.Parcelable.Creator
-        public DragEvent createFromParcel(Parcel in) {
-            DragEvent event = DragEvent.obtain();
-            event.mAction = in.readInt();
-            event.mX = in.readFloat();
-            event.mY = in.readFloat();
-            event.mOffsetX = in.readFloat();
-            event.mOffsetY = in.readFloat();
-            event.mDragResult = in.readInt() != 0;
-            event.mIsEavesDropEvent = in.readBoolean();
-            event.mIsStickyEvent = in.readBoolean();
-            if (in.readInt() != 0) {
-                event.mClipData = ClipData.CREATOR.createFromParcel(in);
-            }
-            if (in.readInt() != 0) {
-                event.mClipDescription = ClipDescription.CREATOR.createFromParcel(in);
-            }
-            if (in.readInt() != 0) {
-                event.mDragSurface = SurfaceControl.CREATOR.createFromParcel(in);
-                event.mDragSurface.setUnreleasedWarningCallSite("DragEvent");
-            }
-            if (in.readInt() != 0) {
-                event.mDragAndDropPermissions = IDragAndDropPermissions.Stub.asInterface(in.readStrongBinder());
-            }
-            return event;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DragEvent[] newArray(int size) {
-            return new DragEvent[size];
-        }
+    public boolean isStickyEvent() {
+        return this.mIsStickyEvent;
     }
 
     public void setEavesDrop(boolean eavesDrop) {
@@ -296,13 +271,5 @@ public class DragEvent implements Parcelable {
 
     public boolean isEavesDrop() {
         return this.mIsEavesDropEvent;
-    }
-
-    public void setIsStickyEvent(boolean isStickyEvent) {
-        this.mIsStickyEvent = isStickyEvent;
-    }
-
-    public boolean isStickyEvent() {
-        return this.mIsStickyEvent;
     }
 }

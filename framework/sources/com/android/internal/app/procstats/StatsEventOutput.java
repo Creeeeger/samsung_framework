@@ -4,7 +4,7 @@ import android.util.StatsEvent;
 import com.android.internal.util.FrameworkStatsLog;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class StatsEventOutput {
     List<StatsEvent> mOutput;
 

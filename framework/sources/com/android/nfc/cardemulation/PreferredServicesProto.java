@@ -9,4 +9,5 @@ public final class PreferredServicesProto {
     public static final long NEXT_TAP_DEFAULT = 1146756268035L;
     public static final long PREFER_FOREGROUND = 1133871366151L;
     public static final long SETTINGS_DEFAULT = 1146756268038L;
+    public static final long WALLET_ROLE_HOLDER_PAYMENT_SERVICE = 1146756268040L;
 }

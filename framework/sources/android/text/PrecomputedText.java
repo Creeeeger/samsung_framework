@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class PrecomputedText implements Spannable {
     private static final char LINE_FEED = '\n';
     private final int mEnd;
@@ -20,7 +20,6 @@ public class PrecomputedText implements Spannable {
     private final int mStart;
     private final SpannableString mText;
 
-    /* loaded from: classes3.dex */
     public static final class Params {
         public static final int NEED_RECOMPUTE = 1;
         public static final int UNUSABLE = 0;
@@ -32,11 +31,9 @@ public class PrecomputedText implements Spannable {
         private final TextDirectionHeuristic mTextDir;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface CheckResultUsableResult {
         }
 
-        /* loaded from: classes3.dex */
         public static class Builder {
             private int mBreakStrategy;
             private int mHyphenationFrequency;
@@ -139,21 +136,14 @@ public class PrecomputedText implements Spannable {
         }
 
         public int hashCode() {
-            LineBreakConfig lineBreakConfig = this.mLineBreakConfig;
-            int lineBreakStyle = lineBreakConfig != null ? lineBreakConfig.getLineBreakStyle() : 0;
-            return Objects.hash(Float.valueOf(this.mPaint.getTextSize()), Float.valueOf(this.mPaint.getTextScaleX()), Float.valueOf(this.mPaint.getTextSkewX()), Float.valueOf(this.mPaint.getLetterSpacing()), Float.valueOf(this.mPaint.getWordSpacing()), Integer.valueOf(this.mPaint.getFlags()), this.mPaint.getTextLocales(), this.mPaint.getTypeface(), this.mPaint.getFontVariationSettings(), Boolean.valueOf(this.mPaint.isElegantTextHeight()), this.mTextDir, Integer.valueOf(this.mBreakStrategy), Integer.valueOf(this.mHyphenationFrequency), Integer.valueOf(lineBreakStyle));
+            return Objects.hash(Float.valueOf(this.mPaint.getTextSize()), Float.valueOf(this.mPaint.getTextScaleX()), Float.valueOf(this.mPaint.getTextSkewX()), Float.valueOf(this.mPaint.getLetterSpacing()), Float.valueOf(this.mPaint.getWordSpacing()), Integer.valueOf(this.mPaint.getFlags()), this.mPaint.getTextLocales(), this.mPaint.getTypeface(), this.mPaint.getFontVariationSettings(), Boolean.valueOf(this.mPaint.isElegantTextHeight()), this.mTextDir, Integer.valueOf(this.mBreakStrategy), Integer.valueOf(this.mHyphenationFrequency), Integer.valueOf(LineBreakConfig.getResolvedLineBreakStyle(this.mLineBreakConfig)), Integer.valueOf(LineBreakConfig.getResolvedLineBreakWordStyle(this.mLineBreakConfig)));
         }
 
         public String toString() {
-            LineBreakConfig lineBreakConfig = this.mLineBreakConfig;
-            int lineBreakStyle = lineBreakConfig != null ? lineBreakConfig.getLineBreakStyle() : 0;
-            LineBreakConfig lineBreakConfig2 = this.mLineBreakConfig;
-            int lineBreakWordStyle = lineBreakConfig2 != null ? lineBreakConfig2.getLineBreakWordStyle() : 0;
-            return "{textSize=" + this.mPaint.getTextSize() + ", textScaleX=" + this.mPaint.getTextScaleX() + ", textSkewX=" + this.mPaint.getTextSkewX() + ", letterSpacing=" + this.mPaint.getLetterSpacing() + ", textLocale=" + this.mPaint.getTextLocales() + ", typeface=" + this.mPaint.getTypeface() + ", variationSettings=" + this.mPaint.getFontVariationSettings() + ", elegantTextHeight=" + this.mPaint.isElegantTextHeight() + ", textDir=" + this.mTextDir + ", breakStrategy=" + this.mBreakStrategy + ", hyphenationFrequency=" + this.mHyphenationFrequency + ", lineBreakStyle=" + lineBreakStyle + ", lineBreakWordStyle=" + lineBreakWordStyle + "}";
+            return "{textSize=" + this.mPaint.getTextSize() + ", textScaleX=" + this.mPaint.getTextScaleX() + ", textSkewX=" + this.mPaint.getTextSkewX() + ", letterSpacing=" + this.mPaint.getLetterSpacing() + ", textLocale=" + this.mPaint.getTextLocales() + ", typeface=" + this.mPaint.getTypeface() + ", variationSettings=" + this.mPaint.getFontVariationSettings() + ", elegantTextHeight=" + this.mPaint.isElegantTextHeight() + ", textDir=" + this.mTextDir + ", breakStrategy=" + this.mBreakStrategy + ", hyphenationFrequency=" + this.mHyphenationFrequency + ", lineBreakStyle=" + LineBreakConfig.getResolvedLineBreakStyle(this.mLineBreakConfig) + ", lineBreakWordStyle=" + LineBreakConfig.getResolvedLineBreakWordStyle(this.mLineBreakConfig) + "}";
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ParagraphInfo {
         public final MeasuredParagraph measured;
         public final int paragraphEnd;
@@ -182,7 +172,7 @@ public class PrecomputedText implements Spannable {
             }
         }
         if (paraInfo == null) {
-            paraInfo = createMeasuredParagraphs(text, params, 0, text.length(), true);
+            paraInfo = createMeasuredParagraphs(text, params, 0, text.length(), true, true);
         }
         return new PrecomputedText(text, 0, text.length(), params, paraInfo);
     }
@@ -193,34 +183,43 @@ public class PrecomputedText implements Spannable {
 
     private static ParagraphInfo[] createMeasuredParagraphsFromPrecomputedText(PrecomputedText pct, Params params, boolean computeLayout) {
         int hyphenationMode;
-        PrecomputedText precomputedText = pct;
+        LineBreakConfig config;
+        int i;
         boolean needHyphenation = (params.getBreakStrategy() == 0 || params.getHyphenationFrequency() == 0) ? false : true;
         if (needHyphenation) {
-            hyphenationMode = isFastHyphenation(params.getHyphenationFrequency()) ? 2 : 1;
+            if (isFastHyphenation(params.getHyphenationFrequency())) {
+                i = 2;
+            } else {
+                i = 1;
+            }
+            hyphenationMode = i;
         } else {
             hyphenationMode = 0;
         }
+        LineBreakConfig config2 = params.getLineBreakConfig();
+        if (config2.getLineBreakWordStyle() == 2 && pct.getParagraphCount() != 1) {
+            config = new LineBreakConfig.Builder().merge(config2).setLineBreakWordStyle(0).build();
+        } else {
+            config = config2;
+        }
         ArrayList<ParagraphInfo> result = new ArrayList<>();
-        int i = 0;
-        while (i < pct.getParagraphCount()) {
-            int paraStart = precomputedText.getParagraphStart(i);
-            int paraEnd = precomputedText.getParagraphEnd(i);
-            result.add(new ParagraphInfo(paraEnd, MeasuredParagraph.buildForStaticLayout(params.getTextPaint(), params.getLineBreakConfig(), pct, paraStart, paraEnd, params.getTextDirection(), hyphenationMode, computeLayout, precomputedText.getMeasuredParagraph(i), null)));
-            i++;
-            precomputedText = pct;
-            needHyphenation = needHyphenation;
+        for (int i2 = 0; i2 < pct.getParagraphCount(); i2++) {
+            int paraStart = pct.getParagraphStart(i2);
+            int paraEnd = pct.getParagraphEnd(i2);
+            result.add(new ParagraphInfo(paraEnd, MeasuredParagraph.buildForStaticLayout(params.getTextPaint(), config, pct, paraStart, paraEnd, params.getTextDirection(), hyphenationMode, computeLayout, true, pct.getMeasuredParagraph(i2), null)));
         }
         return (ParagraphInfo[]) result.toArray(new ParagraphInfo[result.size()]);
     }
 
-    public static ParagraphInfo[] createMeasuredParagraphs(CharSequence text, Params params, int start, int end, boolean computeLayout) {
+    public static ParagraphInfo[] createMeasuredParagraphs(CharSequence text, Params params, int start, int end, boolean computeLayout, boolean computeBounds) {
         int paraEnd;
-        int i = end;
         ArrayList<ParagraphInfo> result = new ArrayList<>();
         Preconditions.checkNotNull(text);
         Preconditions.checkNotNull(params);
+        int i = 0;
         int hyphenationMode = 1;
         boolean needHyphenation = (params.getBreakStrategy() == 0 || params.getHyphenationFrequency() == 0) ? false : true;
+        int paraEnd2 = 2;
         if (needHyphenation) {
             if (isFastHyphenation(params.getHyphenationFrequency())) {
                 hyphenationMode = 2;
@@ -228,19 +227,28 @@ public class PrecomputedText implements Spannable {
         } else {
             hyphenationMode = 0;
         }
+        LineBreakConfig config = null;
         int paraStart = start;
-        while (paraStart < i) {
-            int paraEnd2 = TextUtils.indexOf(text, LINE_FEED, paraStart, i);
-            if (paraEnd2 < 0) {
+        while (paraStart < end) {
+            int paraEnd3 = TextUtils.indexOf(text, LINE_FEED, paraStart, end);
+            if (paraEnd3 < 0) {
                 paraEnd = end;
             } else {
-                paraEnd = paraEnd2 + 1;
+                paraEnd = paraEnd3 + 1;
             }
-            int paraEnd3 = paraEnd;
-            result.add(new ParagraphInfo(paraEnd3, MeasuredParagraph.buildForStaticLayout(params.getTextPaint(), params.getLineBreakConfig(), text, paraStart, paraEnd3, params.getTextDirection(), hyphenationMode, computeLayout, null, null)));
-            paraStart = paraEnd3;
-            i = end;
-            needHyphenation = needHyphenation;
+            if (config == null) {
+                config = params.getLineBreakConfig();
+                if (config.getLineBreakWordStyle() == paraEnd2 && (paraStart != start || paraEnd != end)) {
+                    config = new LineBreakConfig.Builder().merge(config).setLineBreakWordStyle(i).build();
+                }
+            }
+            LineBreakConfig config2 = config;
+            int paraEnd4 = paraEnd;
+            result.add(new ParagraphInfo(paraEnd4, MeasuredParagraph.buildForStaticLayout(params.getTextPaint(), config2, text, paraStart, paraEnd, params.getTextDirection(), hyphenationMode, computeLayout, computeBounds, null, null)));
+            paraStart = paraEnd4;
+            config = config2;
+            i = 0;
+            paraEnd2 = 2;
         }
         return (ParagraphInfo[]) result.toArray(new ParagraphInfo[result.size()]);
     }
@@ -299,19 +307,12 @@ public class PrecomputedText implements Spannable {
     }
 
     public int findParaIndex(int pos) {
-        int i = 0;
-        while (true) {
-            ParagraphInfo[] paragraphInfoArr = this.mParagraphInfo;
-            if (i < paragraphInfoArr.length) {
-                if (pos >= paragraphInfoArr[i].paragraphEnd) {
-                    i++;
-                } else {
-                    return i;
-                }
-            } else {
-                throw new IndexOutOfBoundsException(new StringBuilder().append("pos must be less than ").append(this.mParagraphInfo[r2.length - 1].paragraphEnd).append(", gave ").append(pos).toString());
+        for (int i = 0; i < this.mParagraphInfo.length; i++) {
+            if (pos < this.mParagraphInfo[i].paragraphEnd) {
+                return i;
             }
         }
+        throw new IndexOutOfBoundsException("pos must be less than " + this.mParagraphInfo[this.mParagraphInfo.length - 1].paragraphEnd + ", gave " + pos);
     }
 
     public float getWidth(int start, int end) {

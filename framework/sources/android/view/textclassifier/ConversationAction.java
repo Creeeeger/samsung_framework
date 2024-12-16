@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ConversationAction implements Parcelable {
     public static final Parcelable.Creator<ConversationAction> CREATOR = new Parcelable.Creator<ConversationAction>() { // from class: android.view.textclassifier.ConversationAction.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationAction createFromParcel(Parcel in) {
             return new ConversationAction(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationAction[] newArray(int size) {
             return new ConversationAction[size];
@@ -43,33 +42,7 @@ public final class ConversationAction implements Parcelable {
     private final String mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ActionType {
-    }
-
-    /* synthetic */ ConversationAction(Parcel parcel, ConversationActionIA conversationActionIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ ConversationAction(String str, RemoteAction remoteAction, CharSequence charSequence, float f, Bundle bundle, ConversationActionIA conversationActionIA) {
-        this(str, remoteAction, charSequence, f, bundle);
-    }
-
-    /* renamed from: android.view.textclassifier.ConversationAction$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ConversationAction> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConversationAction createFromParcel(Parcel in) {
-            return new ConversationAction(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConversationAction[] newArray(int size) {
-            return new ConversationAction[size];
-        }
     }
 
     private ConversationAction(String type, RemoteAction action, CharSequence textReply, float score, Bundle extras) {
@@ -126,7 +99,6 @@ public final class ConversationAction implements Parcelable {
         return new Builder(this.mType).setTextReply(this.mTextReply).setAction(this.mAction).setConfidenceScore(this.mScore).setExtras(this.mExtras);
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private RemoteAction mAction;
         private Bundle mExtras;
@@ -159,15 +131,7 @@ public final class ConversationAction implements Parcelable {
         }
 
         public ConversationAction build() {
-            String str = this.mType;
-            RemoteAction remoteAction = this.mAction;
-            CharSequence charSequence = this.mTextReply;
-            float f = this.mScore;
-            Bundle bundle = this.mExtras;
-            if (bundle == null) {
-                bundle = Bundle.EMPTY;
-            }
-            return new ConversationAction(str, remoteAction, charSequence, f, bundle);
+            return new ConversationAction(this.mType, this.mAction, this.mTextReply, this.mScore, this.mExtras == null ? Bundle.EMPTY : this.mExtras);
         }
     }
 }

@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeZoneState implements Parcelable {
     public static final Parcelable.Creator<TimeZoneState> CREATOR = new Parcelable.Creator<TimeZoneState>() { // from class: android.app.time.TimeZoneState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneState createFromParcel(Parcel in) {
             return TimeZoneState.createFromParcel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneState[] newArray(int size) {
             return new TimeZoneState[size];
@@ -27,28 +26,12 @@ public final class TimeZoneState implements Parcelable {
     private final String mId;
     private final boolean mUserShouldConfirmId;
 
-    /* renamed from: android.app.time.TimeZoneState$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimeZoneState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneState createFromParcel(Parcel in) {
-            return TimeZoneState.createFromParcel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneState[] newArray(int size) {
-            return new TimeZoneState[size];
-        }
-    }
-
     public TimeZoneState(String id, boolean userShouldConfirmId) {
         this.mId = (String) Objects.requireNonNull(id);
         this.mUserShouldConfirmId = userShouldConfirmId;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static TimeZoneState createFromParcel(Parcel in) {
         String zoneId = in.readString8();
         boolean userShouldConfirmId = in.readBoolean();
@@ -62,7 +45,6 @@ public final class TimeZoneState implements Parcelable {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:5:0x000d. Please report as an issue. */
     public static TimeZoneState parseCommandLineArgs(ShellCommand cmd) {
         char c;
         String zoneIdString = null;

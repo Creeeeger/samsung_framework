@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextActivityCalibrationAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityCalibrationAttribute> CREATOR = new Parcelable.Creator<SemContextActivityCalibrationAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityCalibrationAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityCalibrationAttribute createFromParcel(Parcel in) {
             return new SemContextActivityCalibrationAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityCalibrationAttribute[] newArray(int size) {
             return new SemContextActivityCalibrationAttribute[size];
@@ -26,24 +25,7 @@ public class SemContextActivityCalibrationAttribute extends SemContextAttribute 
     private float mSpeed;
     private int mStatus;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextActivityCalibrationAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityCalibrationAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityCalibrationAttribute createFromParcel(Parcel in) {
-            return new SemContextActivityCalibrationAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityCalibrationAttribute[] newArray(int size) {
-            return new SemContextActivityCalibrationAttribute[size];
-        }
-    }
-
-    public SemContextActivityCalibrationAttribute() {
+    SemContextActivityCalibrationAttribute() {
         this.mStatus = 0;
         this.mData = 0;
         this.mSpeed = 0.0f;
@@ -78,13 +60,11 @@ public class SemContextActivityCalibrationAttribute extends SemContextAttribute 
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mStatus;
-        if (i < 0 || i > 2) {
+        if (this.mStatus < 0 || this.mStatus > 2) {
             Log.e(TAG, "Moving Status is wrong!!");
             return false;
         }
-        int i2 = this.mData;
-        if (i2 < 0 || i2 > 3) {
+        if (this.mData < 0 || this.mData > 3) {
             Log.e(TAG, "Data of calibration is wrong!!");
             return false;
         }

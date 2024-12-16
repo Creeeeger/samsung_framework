@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendDvbcCapabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendDvbcCapabilities> CREATOR = new Parcelable.Creator<FrontendDvbcCapabilities>() { // from class: android.hardware.tv.tuner.FrontendDvbcCapabilities.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendDvbcCapabilities createFromParcel(Parcel _aidl_source) {
             FrontendDvbcCapabilities _aidl_out = new FrontendDvbcCapabilities();
@@ -17,6 +15,7 @@ public class FrontendDvbcCapabilities implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendDvbcCapabilities[] newArray(int _aidl_size) {
             return new FrontendDvbcCapabilities[_aidl_size];
@@ -25,25 +24,6 @@ public class FrontendDvbcCapabilities implements Parcelable {
     public int modulationCap = 0;
     public long fecCap = 0;
     public byte annexCap = 0;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendDvbcCapabilities$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendDvbcCapabilities> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendDvbcCapabilities createFromParcel(Parcel _aidl_source) {
-            FrontendDvbcCapabilities _aidl_out = new FrontendDvbcCapabilities();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendDvbcCapabilities[] newArray(int _aidl_size) {
-            return new FrontendDvbcCapabilities[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

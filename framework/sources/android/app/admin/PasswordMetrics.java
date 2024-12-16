@@ -19,9 +19,7 @@ public final class PasswordMetrics implements Parcelable {
     private static final int CHAR_SYMBOL = 3;
     private static final int CHAR_UPPER_CASE = 1;
     public static final Parcelable.Creator<PasswordMetrics> CREATOR = new Parcelable.Creator<PasswordMetrics>() { // from class: android.app.admin.PasswordMetrics.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PasswordMetrics createFromParcel(Parcel in) {
             int credType = in.readInt();
@@ -37,6 +35,7 @@ public final class PasswordMetrics implements Parcelable {
             return new PasswordMetrics(credType, length, letters, upperCase, lowerCase, numeric, symbols, nonLetter, nonNumeric, seqLength);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PasswordMetrics[] newArray(int size) {
             return new PasswordMetrics[size];
@@ -56,7 +55,6 @@ public final class PasswordMetrics implements Parcelable {
     public int upperCase;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     private @interface CharacterCatagory {
     }
 
@@ -112,16 +110,6 @@ public final class PasswordMetrics implements Parcelable {
         }
     }
 
-    private static boolean hasInvalidCharacters(byte[] password) {
-        for (byte b : password) {
-            char c = (char) b;
-            if (c < ' ' || c > 127) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -141,39 +129,14 @@ public final class PasswordMetrics implements Parcelable {
         dest.writeInt(this.seqLength);
     }
 
-    /* renamed from: android.app.admin.PasswordMetrics$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PasswordMetrics> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PasswordMetrics createFromParcel(Parcel in) {
-            int credType = in.readInt();
-            int length = in.readInt();
-            int letters = in.readInt();
-            int upperCase = in.readInt();
-            int lowerCase = in.readInt();
-            int numeric = in.readInt();
-            int symbols = in.readInt();
-            int nonLetter = in.readInt();
-            int nonNumeric = in.readInt();
-            int seqLength = in.readInt();
-            return new PasswordMetrics(credType, length, letters, upperCase, lowerCase, numeric, symbols, nonLetter, nonNumeric, seqLength);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PasswordMetrics[] newArray(int size) {
-            return new PasswordMetrics[size];
-        }
-    }
-
     public static PasswordMetrics computeForCredential(LockscreenCredential credential) {
         if (credential.isPassword() || credential.isPin()) {
             return computeForPasswordOrPin(credential.getCredential(), credential.isPin());
         }
         if (credential.isPattern()) {
-            return new PasswordMetrics(1);
+            PasswordMetrics metrics = new PasswordMetrics(1);
+            metrics.length = credential.size();
+            return metrics;
         }
         if (credential.isNone()) {
             return new PasswordMetrics(-1);
@@ -184,7 +147,7 @@ public final class PasswordMetrics implements Parcelable {
         throw new IllegalArgumentException("Unknown credential type " + credential.getType());
     }
 
-    public static PasswordMetrics computeForPasswordOrPin(byte[] password, boolean isPin) {
+    private static PasswordMetrics computeForPasswordOrPin(byte[] credential, boolean isPin) {
         int letters = 0;
         int upperCase = 0;
         int lowerCase = 0;
@@ -192,8 +155,8 @@ public final class PasswordMetrics implements Parcelable {
         int symbols = 0;
         int nonLetter = 0;
         int nonNumeric = 0;
-        int length = password.length;
-        for (byte b : password) {
+        int length = credential.length;
+        for (byte b : credential) {
             switch (categoryChar((char) b)) {
                 case 0:
                     letters++;
@@ -217,7 +180,7 @@ public final class PasswordMetrics implements Parcelable {
             }
         }
         int credType = isPin ? 3 : 4;
-        int seqLength = maxLengthSequence(password);
+        int seqLength = maxLengthSequence(credential);
         int length2 = symbols;
         return new PasswordMetrics(credType, length, letters, upperCase, lowerCase, numeric, length2, nonLetter, nonNumeric, seqLength);
     }
@@ -286,9 +249,8 @@ public final class PasswordMetrics implements Parcelable {
     }
 
     public void maxWith(PasswordMetrics other) {
-        int max = Math.max(this.credType, other.credType);
-        this.credType = max;
-        if (max != 4 && max != 3) {
+        this.credType = Math.max(this.credType, other.credType);
+        if (this.credType != 4 && this.credType != 3) {
             return;
         }
         this.length = Math.max(this.length, other.length);
@@ -314,18 +276,15 @@ public final class PasswordMetrics implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static abstract class ComplexityBucket extends Enum<ComplexityBucket> {
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    private static abstract class ComplexityBucket {
+        public static final ComplexityBucket BUCKET_HIGH;
+        public static final ComplexityBucket BUCKET_NONE;
         int mComplexityLevel;
-        public static final ComplexityBucket BUCKET_HIGH = new AnonymousClass1("BUCKET_HIGH", 0, 327680);
         public static final ComplexityBucket BUCKET_MEDIUM = new AnonymousClass2("BUCKET_MEDIUM", 1, 196608);
         public static final ComplexityBucket BUCKET_LOW = new AnonymousClass3("BUCKET_LOW", 2, 65536);
-        public static final ComplexityBucket BUCKET_NONE = new AnonymousClass4("BUCKET_NONE", 3, 0);
         private static final /* synthetic */ ComplexityBucket[] $VALUES = $values();
-
-        /* synthetic */ ComplexityBucket(String str, int i, int i2, ComplexityBucketIA complexityBucketIA) {
-            this(str, i, i2);
-        }
 
         abstract boolean allowsCredType(int i);
 
@@ -345,13 +304,8 @@ public final class PasswordMetrics implements Parcelable {
             return (ComplexityBucket[]) $VALUES.clone();
         }
 
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$1 */
-        /* loaded from: classes.dex */
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$1, reason: invalid class name */
         enum AnonymousClass1 extends ComplexityBucket {
-            /* synthetic */ AnonymousClass1(String str, int i, int i2, C1IA c1ia) {
-                this(str, i, i2);
-            }
-
             private AnonymousClass1(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -372,13 +326,14 @@ public final class PasswordMetrics implements Parcelable {
             }
         }
 
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$2 */
-        /* loaded from: classes.dex */
-        enum AnonymousClass2 extends ComplexityBucket {
-            /* synthetic */ AnonymousClass2(String str, int i, int i2, C2IA c2ia) {
-                this(str, i, i2);
-            }
+        static {
+            int i = 0;
+            BUCKET_HIGH = new AnonymousClass1("BUCKET_HIGH", i, 327680);
+            BUCKET_NONE = new AnonymousClass4("BUCKET_NONE", 3, i);
+        }
 
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$2, reason: invalid class name */
+        enum AnonymousClass2 extends ComplexityBucket {
             private AnonymousClass2(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -399,13 +354,8 @@ public final class PasswordMetrics implements Parcelable {
             }
         }
 
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$3 */
-        /* loaded from: classes.dex */
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$3, reason: invalid class name */
         enum AnonymousClass3 extends ComplexityBucket {
-            /* synthetic */ AnonymousClass3(String str, int i, int i2, C3IA c3ia) {
-                this(str, i, i2);
-            }
-
             private AnonymousClass3(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -426,13 +376,8 @@ public final class PasswordMetrics implements Parcelable {
             }
         }
 
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$4 */
-        /* loaded from: classes.dex */
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$4, reason: invalid class name */
         enum AnonymousClass4 extends ComplexityBucket {
-            /* synthetic */ AnonymousClass4(String str, int i, int i2, C4IA c4ia) {
-                this(str, i, i2);
-            }
-
             private AnonymousClass4(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -454,7 +399,6 @@ public final class PasswordMetrics implements Parcelable {
         }
 
         private ComplexityBucket(String str, int i, int complexityLevel) {
-            super(str, i);
             this.mComplexityLevel = complexityLevel;
         }
 
@@ -472,8 +416,7 @@ public final class PasswordMetrics implements Parcelable {
         if (!bucket.allowsCredType(this.credType)) {
             return false;
         }
-        int i = this.credType;
-        if (i != 4 && i != 3) {
+        if (this.credType != 4 && this.credType != 3) {
             return true;
         }
         if (bucket.canHaveSequence() || this.seqLength <= 3) {
@@ -491,25 +434,29 @@ public final class PasswordMetrics implements Parcelable {
         throw new IllegalStateException("Failed to figure out complexity for a given metrics");
     }
 
-    public static List<PasswordValidationError> validatePassword(PasswordMetrics adminMetrics, int minComplexity, boolean isPin, byte[] password) {
-        if (hasInvalidCharacters(password)) {
+    public static List<PasswordValidationError> validateCredential(PasswordMetrics adminMetrics, int minComplexity, LockscreenCredential credential) {
+        if (credential.hasInvalidChars()) {
             return Collections.singletonList(new PasswordValidationError(2, 0));
         }
-        PasswordMetrics enteredMetrics = computeForPasswordOrPin(password, isPin);
-        return validatePasswordMetrics(adminMetrics, minComplexity, enteredMetrics);
+        PasswordMetrics actualMetrics = computeForCredential(credential);
+        return validatePasswordMetrics(adminMetrics, minComplexity, actualMetrics);
     }
 
     public static List<PasswordValidationError> validatePasswordMetrics(PasswordMetrics adminMetrics, int minComplexity, PasswordMetrics actualMetrics) {
         ComplexityBucket bucket = ComplexityBucket.forComplexity(minComplexity);
-        int i = actualMetrics.credType;
-        if (i < adminMetrics.credType || !bucket.allowsCredType(i)) {
+        if (actualMetrics.credType < adminMetrics.credType || !bucket.allowsCredType(actualMetrics.credType)) {
             return Collections.singletonList(new PasswordValidationError(1, 0));
         }
-        int i2 = actualMetrics.credType;
-        if (i2 != 4 && i2 != 3) {
+        if (actualMetrics.credType == 1) {
+            if (actualMetrics.length != 0 && actualMetrics.length < 4) {
+                return Collections.singletonList(new PasswordValidationError(3, 4));
+            }
             return Collections.emptyList();
         }
-        if (i2 == 3 && actualMetrics.nonNumeric > 0) {
+        if (actualMetrics.credType == -1) {
+            return Collections.emptyList();
+        }
+        if (actualMetrics.credType == 3 && actualMetrics.nonNumeric > 0) {
             return Collections.singletonList(new PasswordValidationError(2, 0));
         }
         ArrayList<PasswordValidationError> result = new ArrayList<>();
@@ -525,48 +472,32 @@ public final class PasswordMetrics implements Parcelable {
 
     private static void comparePasswordMetrics(PasswordMetrics minMetrics, ComplexityBucket bucket, PasswordMetrics actualMetrics, ArrayList<PasswordValidationError> result) {
         int allNumericMinimumLength;
-        int i = actualMetrics.length;
-        int i2 = minMetrics.length;
-        if (i < i2) {
-            result.add(new PasswordValidationError(3, i2));
+        if (actualMetrics.length < minMetrics.length) {
+            result.add(new PasswordValidationError(3, minMetrics.length));
         }
         if (actualMetrics.nonNumeric == 0 && minMetrics.nonNumeric == 0 && minMetrics.letters == 0 && minMetrics.lowerCase == 0 && minMetrics.upperCase == 0 && minMetrics.symbols == 0 && (allNumericMinimumLength = bucket.getMinimumLength(false)) > minMetrics.length && allNumericMinimumLength > minMetrics.numeric && actualMetrics.length < allNumericMinimumLength) {
             result.add(new PasswordValidationError(4, allNumericMinimumLength));
         }
-        int allNumericMinimumLength2 = actualMetrics.letters;
-        int i3 = minMetrics.letters;
-        if (allNumericMinimumLength2 < i3) {
-            result.add(new PasswordValidationError(7, i3));
+        if (actualMetrics.letters < minMetrics.letters) {
+            result.add(new PasswordValidationError(7, minMetrics.letters));
         }
-        int i4 = actualMetrics.upperCase;
-        int i5 = minMetrics.upperCase;
-        if (i4 < i5) {
-            result.add(new PasswordValidationError(8, i5));
+        if (actualMetrics.upperCase < minMetrics.upperCase) {
+            result.add(new PasswordValidationError(8, minMetrics.upperCase));
         }
-        int i6 = actualMetrics.lowerCase;
-        int i7 = minMetrics.lowerCase;
-        if (i6 < i7) {
-            result.add(new PasswordValidationError(9, i7));
+        if (actualMetrics.lowerCase < minMetrics.lowerCase) {
+            result.add(new PasswordValidationError(9, minMetrics.lowerCase));
         }
-        int i8 = actualMetrics.numeric;
-        int i9 = minMetrics.numeric;
-        if (i8 < i9) {
-            result.add(new PasswordValidationError(10, i9));
+        if (actualMetrics.numeric < minMetrics.numeric) {
+            result.add(new PasswordValidationError(10, minMetrics.numeric));
         }
-        int i10 = actualMetrics.symbols;
-        int i11 = minMetrics.symbols;
-        if (i10 < i11) {
-            result.add(new PasswordValidationError(11, i11));
+        if (actualMetrics.symbols < minMetrics.symbols) {
+            result.add(new PasswordValidationError(11, minMetrics.symbols));
         }
-        int i12 = actualMetrics.nonLetter;
-        int i13 = minMetrics.nonLetter;
-        if (i12 < i13) {
-            result.add(new PasswordValidationError(12, i13));
+        if (actualMetrics.nonLetter < minMetrics.nonLetter) {
+            result.add(new PasswordValidationError(12, minMetrics.nonLetter));
         }
-        int i14 = actualMetrics.nonNumeric;
-        int i15 = minMetrics.nonNumeric;
-        if (i14 < i15) {
-            result.add(new PasswordValidationError(13, i15));
+        if (actualMetrics.nonNumeric < minMetrics.nonNumeric) {
+            result.add(new PasswordValidationError(13, minMetrics.nonNumeric));
         }
         if (actualMetrics.seqLength > minMetrics.seqLength) {
             result.add(new PasswordValidationError(6, 0));

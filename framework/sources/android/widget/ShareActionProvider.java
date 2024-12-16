@@ -24,7 +24,6 @@ public class ShareActionProvider extends ActionProvider {
     private OnShareTargetSelectedListener mOnShareTargetSelectedListener;
     private String mShareHistoryFileName;
 
-    /* loaded from: classes4.dex */
     public interface OnShareTargetSelectedListener {
         boolean onShareTargetSelected(ShareActionProvider shareActionProvider, Intent intent);
     }
@@ -100,12 +99,7 @@ public class ShareActionProvider extends ActionProvider {
         dataModel.setIntent(shareIntent);
     }
 
-    /* loaded from: classes4.dex */
     private class ShareMenuItemOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
-        /* synthetic */ ShareMenuItemOnMenuItemClickListener(ShareActionProvider shareActionProvider, ShareMenuItemOnMenuItemClickListenerIA shareMenuItemOnMenuItemClickListenerIA) {
-            this();
-        }
-
         private ShareMenuItemOnMenuItemClickListener() {
         }
 
@@ -137,12 +131,7 @@ public class ShareActionProvider extends ActionProvider {
         dataModel.setOnChooseActivityListener(this.mOnChooseActivityListener);
     }
 
-    /* loaded from: classes4.dex */
-    public class ShareActivityChooserModelPolicy implements ActivityChooserModel.OnChooseActivityListener {
-        /* synthetic */ ShareActivityChooserModelPolicy(ShareActionProvider shareActionProvider, ShareActivityChooserModelPolicyIA shareActivityChooserModelPolicyIA) {
-            this();
-        }
-
+    private class ShareActivityChooserModelPolicy implements ActivityChooserModel.OnChooseActivityListener {
         private ShareActivityChooserModelPolicy() {
         }
 

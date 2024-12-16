@@ -14,7 +14,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 @Deprecated
 /* loaded from: classes3.dex */
-public abstract class GenericInflater<T, P extends Parent> {
+abstract class GenericInflater<T, P extends Parent> {
     private static final Class[] mConstructorSignature = {Context.class, AttributeSet.class};
     private static final HashMap sConstructorMap = new HashMap();
     private final boolean DEBUG;
@@ -24,19 +24,16 @@ public abstract class GenericInflater<T, P extends Parent> {
     private Factory<T> mFactory;
     private boolean mFactorySet;
 
-    /* loaded from: classes3.dex */
     public interface Factory<T> {
         T onCreateItem(String str, Context context, AttributeSet attributeSet);
     }
 
-    /* loaded from: classes3.dex */
     public interface Parent<T> {
         void addItemFromInflater(T t);
     }
 
     public abstract GenericInflater cloneInContext(Context context);
 
-    /* loaded from: classes3.dex */
     private static class FactoryMerger<T> implements Factory<T> {
         private final Factory<T> mF1;
         private final Factory<T> mF2;
@@ -53,13 +50,13 @@ public abstract class GenericInflater<T, P extends Parent> {
         }
     }
 
-    public GenericInflater(Context context) {
+    protected GenericInflater(Context context) {
         this.DEBUG = false;
         this.mConstructorArgs = new Object[2];
         this.mContext = context;
     }
 
-    public GenericInflater(GenericInflater<T, P> original, Context newContext) {
+    protected GenericInflater(GenericInflater<T, P> original, Context newContext) {
         this.DEBUG = false;
         this.mConstructorArgs = new Object[2];
         this.mContext = newContext;
@@ -90,11 +87,10 @@ public abstract class GenericInflater<T, P extends Parent> {
             throw new NullPointerException("Given factory can not be null");
         }
         this.mFactorySet = true;
-        Factory<T> factory2 = this.mFactory;
-        if (factory2 == null) {
+        if (this.mFactory == null) {
             this.mFactory = factory;
         } else {
-            this.mFactory = new FactoryMerger(factory, factory2);
+            this.mFactory = new FactoryMerger(factory, this.mFactory);
         }
     }
 
@@ -150,14 +146,13 @@ public abstract class GenericInflater<T, P extends Parent> {
     }
 
     public final T createItem(String name, String prefix, AttributeSet attrs) throws ClassNotFoundException, InflateException {
-        HashMap hashMap = sConstructorMap;
-        Constructor constructor = (Constructor) hashMap.get(name);
+        Constructor constructor = (Constructor) sConstructorMap.get(name);
         if (constructor == null) {
             try {
                 Class clazz = this.mContext.getClassLoader().loadClass(prefix != null ? prefix + name : name);
                 constructor = clazz.getConstructor(mConstructorSignature);
                 constructor.setAccessible(true);
-                hashMap.put(name, constructor);
+                sConstructorMap.put(name, constructor);
             } catch (ClassNotFoundException e) {
                 throw e;
             } catch (NoSuchMethodException e2) {
@@ -181,8 +176,7 @@ public abstract class GenericInflater<T, P extends Parent> {
 
     private final T createItemFromTag(XmlPullParser parser, String name, AttributeSet attrs) {
         try {
-            Factory<T> factory = this.mFactory;
-            T item = factory == null ? null : factory.onCreateItem(name, this.mContext, attrs);
+            T item = this.mFactory == null ? null : this.mFactory.onCreateItem(name, this.mContext, attrs);
             if (item == null) {
                 if (-1 == name.indexOf(46)) {
                     return onCreateItem(name, attrs);

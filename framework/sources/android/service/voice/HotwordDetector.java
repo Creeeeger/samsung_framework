@@ -51,7 +51,6 @@ public interface HotwordDetector {
         throw new UnsupportedOperationException("Not implemented. Must override in a subclass.");
     }
 
-    /* loaded from: classes3.dex */
     public interface Callback {
         void onDetected(AlwaysOnHotwordDetector.EventPayload eventPayload);
 

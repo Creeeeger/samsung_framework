@@ -4,17 +4,16 @@ import android.hardware.camera2.params.SessionConfiguration;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraIdAndSessionConfiguration implements Parcelable {
     public static final Parcelable.Creator<CameraIdAndSessionConfiguration> CREATOR = new Parcelable.Creator<CameraIdAndSessionConfiguration>() { // from class: android.hardware.camera2.utils.CameraIdAndSessionConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraIdAndSessionConfiguration createFromParcel(Parcel in) {
             return new CameraIdAndSessionConfiguration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraIdAndSessionConfiguration[] newArray(int size) {
             return new CameraIdAndSessionConfiguration[size];
@@ -23,30 +22,9 @@ public class CameraIdAndSessionConfiguration implements Parcelable {
     private String mCameraId;
     private SessionConfiguration mSessionConfiguration;
 
-    /* synthetic */ CameraIdAndSessionConfiguration(Parcel parcel, CameraIdAndSessionConfigurationIA cameraIdAndSessionConfigurationIA) {
-        this(parcel);
-    }
-
     public CameraIdAndSessionConfiguration(String cameraId, SessionConfiguration sessionConfiguration) {
         this.mCameraId = cameraId;
         this.mSessionConfiguration = sessionConfiguration;
-    }
-
-    /* renamed from: android.hardware.camera2.utils.CameraIdAndSessionConfiguration$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CameraIdAndSessionConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraIdAndSessionConfiguration createFromParcel(Parcel in) {
-            return new CameraIdAndSessionConfiguration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraIdAndSessionConfiguration[] newArray(int size) {
-            return new CameraIdAndSessionConfiguration[size];
-        }
     }
 
     private CameraIdAndSessionConfiguration(Parcel in) {

@@ -7,7 +7,6 @@ public class ConsoleMessage {
     private String mMessage;
     private String mSourceId;
 
-    /* loaded from: classes4.dex */
     public enum MessageLevel {
         TIP,
         LOG,

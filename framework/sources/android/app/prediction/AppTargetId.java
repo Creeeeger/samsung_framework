@@ -8,24 +8,19 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class AppTargetId implements Parcelable {
     public static final Parcelable.Creator<AppTargetId> CREATOR = new Parcelable.Creator<AppTargetId>() { // from class: android.app.prediction.AppTargetId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTargetId createFromParcel(Parcel parcel) {
             return new AppTargetId(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTargetId[] newArray(int size) {
             return new AppTargetId[size];
         }
     };
     private final String mId;
-
-    /* synthetic */ AppTargetId(Parcel parcel, AppTargetIdIA appTargetIdIA) {
-        this(parcel);
-    }
 
     @SystemApi
     public AppTargetId(String id) {
@@ -60,22 +55,5 @@ public final class AppTargetId implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mId);
-    }
-
-    /* renamed from: android.app.prediction.AppTargetId$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppTargetId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppTargetId createFromParcel(Parcel parcel) {
-            return new AppTargetId(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppTargetId[] newArray(int size) {
-            return new AppTargetId[size];
-        }
     }
 }

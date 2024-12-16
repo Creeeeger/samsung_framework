@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ICompatChangeableManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.core.ICompatChangeableManager";
 
@@ -23,7 +23,6 @@ public interface ICompatChangeableManager extends IInterface {
 
     boolean isOrientationOverrideDisallowed(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICompatChangeableManager {
         @Override // com.samsung.android.core.ICompatChangeableManager
         public List<String> getCompatChangeablePackageNameList() throws RemoteException {
@@ -61,7 +60,6 @@ public interface ICompatChangeableManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICompatChangeableManager {
         static final int TRANSACTION_getCompatChangeablePackageNameList = 2;
         static final int TRANSACTION_getUid = 3;
@@ -119,59 +117,56 @@ public interface ICompatChangeableManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICompatChangeableManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICompatChangeableManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICompatChangeableManager.DESCRIPTOR);
+                case 2:
+                    List<String> _result = getCompatChangeablePackageNameList();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
+                    return true;
+                case 3:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = getUid(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 4:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = hasLauncherActivity(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 5:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = hasGameCategory(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 101:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isOrientationOverrideDisallowed(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 102:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = isMinAspectRatioOverrideDisallowed(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 2:
-                            List<String> _result = getCompatChangeablePackageNameList();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        case 3:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = getUid(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 4:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = hasLauncherActivity(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 5:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = hasGameCategory(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 101:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isOrientationOverrideDisallowed(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 102:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = isMinAspectRatioOverrideDisallowed(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICompatChangeableManager {
             private IBinder mRemote;
 

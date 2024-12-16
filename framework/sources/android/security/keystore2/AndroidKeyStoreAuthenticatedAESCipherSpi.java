@@ -5,7 +5,6 @@ import android.security.KeyStoreException;
 import android.security.KeyStoreOperation;
 import android.security.keystore.ArrayUtils;
 import android.security.keystore2.KeyStoreCryptoOperationChunkedStreamer;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.security.mdf.MdfUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,14 +22,13 @@ import javax.crypto.spec.GCMParameterSpec;
 import libcore.util.EmptyArray;
 
 /* loaded from: classes3.dex */
-public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKeyStoreCipherSpiBase {
+abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKeyStoreCipherSpiBase {
     private static final int BLOCK_SIZE_BYTES = 16;
     private byte[] mIv;
     private boolean mIvHasBeenUsed;
     private final int mKeymasterBlockMode;
     private final int mKeymasterPadding;
 
-    /* loaded from: classes3.dex */
     static abstract class GCM extends AndroidKeyStoreAuthenticatedAESCipherSpi {
         private static final int DEFAULT_TAG_LENGTH_BITS = 128;
         private static final int IV_LENGTH_BYTES = 12;
@@ -48,15 +46,14 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
             return MdfUtils.MDF_CIPHER_MODE;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.security.keystore2.AndroidKeyStoreAuthenticatedAESCipherSpi, android.security.keystore2.AndroidKeyStoreCipherSpiBase
-        public final void resetAll() {
+        protected final void resetAll() {
             this.mTagLengthBits = 128;
             super.resetAll();
         }
 
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-        public final void resetWhilePreservingInitState() {
+        protected final void resetWhilePreservingInitState() {
             super.resetWhilePreservingInitState();
         }
 
@@ -170,7 +167,6 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
             return this.mTagLengthBits;
         }
 
-        /* loaded from: classes3.dex */
         public static final class NoPadding extends GCM {
             @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
             public /* bridge */ /* synthetic */ void finalize() throws Throwable {
@@ -208,7 +204,7 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
-    public void resetAll() {
+    protected void resetAll() {
         this.mIv = null;
         this.mIvHasBeenUsed = false;
         super.resetAll();
@@ -217,7 +213,7 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     protected final void initKey(int opmode, Key key) throws InvalidKeyException {
         if (!(key instanceof AndroidKeyStoreSecretKey)) {
-            throw new InvalidKeyException("Unsupported key: " + (key != null ? key.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL));
+            throw new InvalidKeyException("Unsupported key: " + (key != null ? key.getClass().getName() : "null"));
         }
         if (!"AES".equalsIgnoreCase(key.getAlgorithm())) {
             throw new InvalidKeyException("Unsupported key algorithm: " + key.getAlgorithm() + ". Only AES supported");
@@ -233,9 +229,8 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
         parameters.add(KeyStore2ParameterUtils.makeEnum(268435458, 32));
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870916, this.mKeymasterBlockMode));
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870918, this.mKeymasterPadding));
-        byte[] bArr = this.mIv;
-        if (bArr != null) {
-            parameters.add(KeyStore2ParameterUtils.makeBytes(-1879047191, bArr));
+        if (this.mIv != null) {
+            parameters.add(KeyStore2ParameterUtils.makeBytes(-1879047191, this.mIv));
         }
     }
 
@@ -259,10 +254,9 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
                 }
             }
         }
-        byte[] bArr = this.mIv;
-        if (bArr == null) {
+        if (this.mIv == null) {
             this.mIv = returnedIv;
-        } else if (returnedIv != null && !Arrays.equals(returnedIv, bArr)) {
+        } else if (returnedIv != null && !Arrays.equals(returnedIv, this.mIv)) {
             throw new ProviderException("IV in use differs from provided IV");
         }
     }
@@ -285,15 +279,10 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
         return this.mIv;
     }
 
-    /* loaded from: classes3.dex */
     private static class BufferAllOutputUntilDoFinalStreamer implements KeyStoreCryptoOperationStreamer {
         private ByteArrayOutputStream mBufferedOutput;
         private final KeyStoreCryptoOperationStreamer mDelegate;
         private long mProducedOutputSizeBytes;
-
-        /* synthetic */ BufferAllOutputUntilDoFinalStreamer(KeyStoreCryptoOperationStreamer keyStoreCryptoOperationStreamer, BufferAllOutputUntilDoFinalStreamerIA bufferAllOutputUntilDoFinalStreamerIA) {
-            this(keyStoreCryptoOperationStreamer);
-        }
 
         private BufferAllOutputUntilDoFinalStreamer(KeyStoreCryptoOperationStreamer delegate) {
             this.mBufferedOutput = new ByteArrayOutputStream();
@@ -340,13 +329,8 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class AdditionalAuthenticationDataStream implements KeyStoreCryptoOperationChunkedStreamer.Stream {
         private final KeyStoreOperation mOperation;
-
-        /* synthetic */ AdditionalAuthenticationDataStream(KeyStoreOperation keyStoreOperation, AdditionalAuthenticationDataStreamIA additionalAuthenticationDataStreamIA) {
-            this(keyStoreOperation);
-        }
 
         private AdditionalAuthenticationDataStream(KeyStoreOperation operation) {
             this.mOperation = operation;

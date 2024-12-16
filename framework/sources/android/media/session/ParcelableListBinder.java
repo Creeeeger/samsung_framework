@@ -27,7 +27,7 @@ public class ParcelableListBinder<T extends Parcelable> extends Binder {
     }
 
     @Override // android.os.Binder
-    public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
+    protected boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
         List<T> list;
         if (i != 1) {
             return super.onTransact(i, parcel, parcel2, i2);

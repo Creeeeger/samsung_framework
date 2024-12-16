@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ContentCaptureCondition implements Parcelable {
     public static final Parcelable.Creator<ContentCaptureCondition> CREATOR = new Parcelable.Creator<ContentCaptureCondition>() { // from class: android.view.contentcapture.ContentCaptureCondition.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureCondition createFromParcel(Parcel parcel) {
             return new ContentCaptureCondition((LocusId) parcel.readParcelable(null, LocusId.class), parcel.readInt());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureCondition[] newArray(int size) {
             return new ContentCaptureCondition[size];
@@ -29,7 +28,6 @@ public final class ContentCaptureCondition implements Parcelable {
     private final LocusId mLocusId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface Flags {
     }
 
@@ -48,9 +46,7 @@ public final class ContentCaptureCondition implements Parcelable {
 
     public int hashCode() {
         int result = (1 * 31) + this.mFlags;
-        int result2 = result * 31;
-        LocusId locusId = this.mLocusId;
-        return result2 + (locusId == null ? 0 : locusId.hashCode());
+        return (result * 31) + (this.mLocusId == null ? 0 : this.mLocusId.hashCode());
     }
 
     public boolean equals(Object obj) {
@@ -64,12 +60,11 @@ public final class ContentCaptureCondition implements Parcelable {
         if (this.mFlags != other.mFlags) {
             return false;
         }
-        LocusId locusId = this.mLocusId;
-        if (locusId == null) {
+        if (this.mLocusId == null) {
             if (other.mLocusId != null) {
                 return false;
             }
-        } else if (!locusId.equals(other.mLocusId)) {
+        } else if (!this.mLocusId.equals(other.mLocusId)) {
             return false;
         }
         return true;
@@ -92,22 +87,5 @@ public final class ContentCaptureCondition implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelable(this.mLocusId, flags);
         parcel.writeInt(this.mFlags);
-    }
-
-    /* renamed from: android.view.contentcapture.ContentCaptureCondition$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContentCaptureCondition> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureCondition createFromParcel(Parcel parcel) {
-            return new ContentCaptureCondition((LocusId) parcel.readParcelable(null, LocusId.class), parcel.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentCaptureCondition[] newArray(int size) {
-            return new ContentCaptureCondition[size];
-        }
     }
 }

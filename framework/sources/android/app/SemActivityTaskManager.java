@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.os.Debug;
 import android.os.RemoteException;
 import android.util.Log;
-import com.samsung.android.rune.CoreRune;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -83,20 +82,10 @@ public class SemActivityTaskManager {
     }
 
     private static void warningException(Exception e) {
-        if (CoreRune.SAFE_DEBUG) {
-            e.printStackTrace();
-        } else {
-            Log.w(TAG, "warningException() : caller=" + Debug.getCaller() + e.getMessage());
-        }
+        Log.w(TAG, "warningException() : caller=" + Debug.getCaller() + e.getMessage());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class TaskChangeController extends TaskStackListener {
-        /* synthetic */ TaskChangeController(SemActivityTaskManager semActivityTaskManager, TaskChangeControllerIA taskChangeControllerIA) {
-            this();
-        }
-
+    private class TaskChangeController extends TaskStackListener {
         private TaskChangeController() {
         }
 

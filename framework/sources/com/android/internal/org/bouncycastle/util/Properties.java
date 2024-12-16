@@ -41,11 +41,10 @@ public class Properties {
 
     public static boolean setThreadOverride(String propertyName, boolean enable) {
         boolean isSet = isOverrideSet(propertyName);
-        ThreadLocal threadLocal = threadProperties;
-        Map localProps = (Map) threadLocal.get();
+        Map localProps = (Map) threadProperties.get();
         if (localProps == null) {
             localProps = new HashMap();
-            threadLocal.set(localProps);
+            threadProperties.set(localProps);
         }
         localProps.put(propertyName, enable ? "true" : "false");
         return isSet;
@@ -53,11 +52,10 @@ public class Properties {
 
     public static boolean removeThreadOverride(String propertyName) {
         String p;
-        ThreadLocal threadLocal = threadProperties;
-        Map localProps = (Map) threadLocal.get();
+        Map localProps = (Map) threadProperties.get();
         if (localProps != null && (p = (String) localProps.remove(propertyName)) != null) {
             if (localProps.isEmpty()) {
-                threadLocal.remove();
+                threadProperties.remove();
             }
             return "true".equals(Strings.toLowerCase(p));
         }
@@ -84,30 +82,9 @@ public class Properties {
         return Collections.unmodifiableSet(set);
     }
 
-    /* renamed from: com.android.internal.org.bouncycastle.util.Properties$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements PrivilegedAction {
-        final /* synthetic */ String val$propertyName;
-
-        AnonymousClass1(String str) {
-            propertyName = str;
-        }
-
-        @Override // java.security.PrivilegedAction
-        public Object run() {
-            return Security.getProperty(propertyName);
-        }
-    }
-
-    public static String getPropertyValue(String propertyName) {
+    public static String getPropertyValue(final String propertyName) {
         String p;
         String val = (String) AccessController.doPrivileged(new PrivilegedAction() { // from class: com.android.internal.org.bouncycastle.util.Properties.1
-            final /* synthetic */ String val$propertyName;
-
-            AnonymousClass1(String propertyName2) {
-                propertyName = propertyName2;
-            }
-
             @Override // java.security.PrivilegedAction
             public Object run() {
                 return Security.getProperty(propertyName);
@@ -117,36 +94,15 @@ public class Properties {
             return val;
         }
         Map localProps = (Map) threadProperties.get();
-        if (localProps != null && (p = (String) localProps.get(propertyName2)) != null) {
+        if (localProps != null && (p = (String) localProps.get(propertyName)) != null) {
             return p;
         }
         return (String) AccessController.doPrivileged(new PrivilegedAction() { // from class: com.android.internal.org.bouncycastle.util.Properties.2
-            final /* synthetic */ String val$propertyName;
-
-            AnonymousClass2(String propertyName2) {
-                propertyName = propertyName2;
-            }
-
             @Override // java.security.PrivilegedAction
             public Object run() {
                 return System.getProperty(propertyName);
             }
         });
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.util.Properties$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements PrivilegedAction {
-        final /* synthetic */ String val$propertyName;
-
-        AnonymousClass2(String propertyName2) {
-            propertyName = propertyName2;
-        }
-
-        @Override // java.security.PrivilegedAction
-        public Object run() {
-            return System.getProperty(propertyName);
-        }
     }
 
     private static boolean isSetFalse(String p) {

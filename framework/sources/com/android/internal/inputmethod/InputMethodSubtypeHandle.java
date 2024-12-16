@@ -13,17 +13,16 @@ import java.lang.annotation.Target;
 import java.security.InvalidParameterException;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InputMethodSubtypeHandle implements Parcelable {
     public static final Parcelable.Creator<InputMethodSubtypeHandle> CREATOR = new Parcelable.Creator<InputMethodSubtypeHandle>() { // from class: com.android.internal.inputmethod.InputMethodSubtypeHandle.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMethodSubtypeHandle createFromParcel(Parcel in) {
             return InputMethodSubtypeHandle.of(in.readString8());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMethodSubtypeHandle[] newArray(int size) {
             return new InputMethodSubtypeHandle[size];
@@ -35,7 +34,6 @@ public final class InputMethodSubtypeHandle implements Parcelable {
 
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.PARAMETER})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface RawHandle {
     }
 
@@ -96,8 +94,7 @@ public final class InputMethodSubtypeHandle implements Parcelable {
     }
 
     public String getImeId() {
-        String str = this.mHandle;
-        return str.substring(0, str.indexOf(58));
+        return this.mHandle.substring(0, this.mHandle.indexOf(58));
     }
 
     public String toStringHandle() {
@@ -118,23 +115,6 @@ public final class InputMethodSubtypeHandle implements Parcelable {
 
     public String toString() {
         return "InputMethodSubtypeHandle{mHandle=" + this.mHandle + "}";
-    }
-
-    /* renamed from: com.android.internal.inputmethod.InputMethodSubtypeHandle$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InputMethodSubtypeHandle> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputMethodSubtypeHandle createFromParcel(Parcel in) {
-            return InputMethodSubtypeHandle.of(in.readString8());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputMethodSubtypeHandle[] newArray(int size) {
-            return new InputMethodSubtypeHandle[size];
-        }
     }
 
     @Override // android.os.Parcelable

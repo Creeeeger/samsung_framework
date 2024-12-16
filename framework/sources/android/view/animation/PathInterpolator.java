@@ -146,18 +146,14 @@ public class PathInterpolator extends BaseInterpolator implements NativeInterpol
                 startIndex = midIndex;
             }
         }
-        float[] fArr = this.mX;
-        float f = fArr[endIndex];
-        float f2 = fArr[startIndex];
-        float xRange = f - f2;
+        float xRange = this.mX[endIndex] - this.mX[startIndex];
         if (xRange == 0.0f) {
             return this.mY[startIndex];
         }
-        float tInRange = t - f2;
+        float tInRange = t - this.mX[startIndex];
         float fraction = tInRange / xRange;
-        float[] fArr2 = this.mY;
-        float startY = fArr2[startIndex];
-        float endY = fArr2[endIndex];
+        float startY = this.mY[startIndex];
+        float endY = this.mY[endIndex];
         return ((endY - startY) * fraction) + startY;
     }
 

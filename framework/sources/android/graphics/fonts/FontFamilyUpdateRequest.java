@@ -13,20 +13,10 @@ public final class FontFamilyUpdateRequest {
     private final List<FontFamily> mFontFamilies;
     private final List<FontFileUpdateRequest> mFontFiles;
 
-    /* synthetic */ FontFamilyUpdateRequest(List list, List list2, FontFamilyUpdateRequestIA fontFamilyUpdateRequestIA) {
-        this(list, list2);
-    }
-
-    /* loaded from: classes.dex */
     public static final class FontFamily {
         private final List<Font> mFonts;
         private final String mName;
 
-        /* synthetic */ FontFamily(String str, List list, FontFamilyIA fontFamilyIA) {
-            this(str, list);
-        }
-
-        /* loaded from: classes.dex */
         public static final class Builder {
             private final List<Font> mFonts;
             private final String mName;
@@ -65,18 +55,12 @@ public final class FontFamilyUpdateRequest {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Font {
         private final List<FontVariationAxis> mAxes;
         private final int mIndex;
         private final String mPostScriptName;
         private final FontStyle mStyle;
 
-        /* synthetic */ Font(String str, FontStyle fontStyle, int i, List list, FontIA fontIA) {
-            this(str, fontStyle, i, list);
-        }
-
-        /* loaded from: classes.dex */
         public static final class Builder {
             private List<FontVariationAxis> mAxes = Collections.emptyList();
             private int mIndex = 0;
@@ -133,7 +117,6 @@ public final class FontFamilyUpdateRequest {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final List<FontFileUpdateRequest> mFontFileUpdateRequests = new ArrayList();
         private final List<FontFamily> mFontFamilies = new ArrayList();

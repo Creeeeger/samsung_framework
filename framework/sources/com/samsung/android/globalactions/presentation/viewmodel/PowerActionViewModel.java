@@ -17,7 +17,7 @@ import com.samsung.android.globalactions.util.ToastController;
 import com.samsung.android.globalactions.util.UsageStatsWrapper;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class PowerActionViewModel implements ActionViewModel {
     private final ConditionChecker mConditionChecker;
     private String mExtraInfo;
@@ -62,6 +62,7 @@ public class PowerActionViewModel implements ActionViewModel {
     public void onPress() {
         boolean needSecureConfirm;
         int res;
+        int res2;
         List<ActionInteractionStrategy> strategies = this.mFeatureFactory.createActionInteractionStrategies(this.mInfo.getName());
         for (ActionInteractionStrategy strategy : strategies) {
             if (strategy.onPressPowerAction()) {
@@ -77,9 +78,18 @@ public class PowerActionViewModel implements ActionViewModel {
         }
         if (this.mConditionChecker.isEnabled(SystemConditions.IS_FMM_LOCKED)) {
             if (this.mConditionChecker.isEnabled(SystemConditions.IS_TABLET_DEVICE)) {
-                res = R.string.globalactions_unable_power_off_msg_fmm_tablet;
+                res2 = R.string.globalactions_unable_power_off_msg_fmm_tablet;
             } else {
-                res = R.string.globalactions_unable_power_off_msg_fmm;
+                res2 = R.string.globalactions_unable_power_off_msg_fmm;
+            }
+            this.mToastController.showToast(this.mResourcesWrapper.getString(res2), 1);
+            return;
+        }
+        if (this.mConditionChecker.isEnabled(SystemConditions.IS_SIM_LOCK)) {
+            if (this.mConditionChecker.isEnabled(SystemConditions.IS_TABLET_DEVICE)) {
+                res = R.string.globalactions_unable_power_off_msg_sim_card_locked_tablet;
+            } else {
+                res = R.string.globalactions_unable_power_off_msg_sim_card_locked;
             }
             this.mToastController.showToast(this.mResourcesWrapper.getString(res), 1);
             return;
@@ -160,8 +170,7 @@ public class PowerActionViewModel implements ActionViewModel {
         this.mIsRMMLocked = this.mConditionChecker.isEnabled(SystemConditions.IS_RMM_LOCKED);
         this.mIsSIMLocked = this.mConditionChecker.isEnabled(SystemConditions.IS_SIM_LOCK);
         this.mIsSecureKeyguard = this.mConditionChecker.isEnabled(SystemConditions.IS_SECURE_KEYGUARD);
-        boolean isEnabled = this.mConditionChecker.isEnabled(SystemConditions.IS_LOCK_NETWORK_AND_SECURITY);
-        this.mIsLockNetworkAndSecurity = isEnabled;
-        return !this.mIsRMMLocked && !this.mIsSIMLocked && this.mIsSecureKeyguard && isEnabled;
+        this.mIsLockNetworkAndSecurity = this.mConditionChecker.isEnabled(SystemConditions.IS_LOCK_NETWORK_AND_SECURITY);
+        return !this.mIsRMMLocked && !this.mIsSIMLocked && this.mIsSecureKeyguard && this.mIsLockNetworkAndSecurity;
     }
 }

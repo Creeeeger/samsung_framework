@@ -61,6 +61,7 @@ public class PowerExemptionManager {
     public static final int REASON_OTHER = 1;
     public static final int REASON_PACKAGE_INSTALLER = 326;
     public static final int REASON_PACKAGE_REPLACED = 311;
+    public static final int REASON_PACKAGE_UNARCHIVE = 328;
     public static final int REASON_PACKAGE_VERIFIER = 305;
     public static final int REASON_PRE_BOOT_COMPLETED = 201;
     public static final int REASON_PROC_STATE_BFGS = 15;
@@ -87,6 +88,7 @@ public class PowerExemptionManager {
     public static final int REASON_SYSTEM_MODULE = 320;
     public static final int REASON_SYSTEM_UID = 51;
     public static final int REASON_TEMP_ALLOWED_WHILE_IN_USE = 70;
+    public static final int REASON_TILE_ONCLICK = 329;
     public static final int REASON_TIMEZONE_CHANGED = 204;
     public static final int REASON_TIME_CHANGED = 205;
     public static final int REASON_UID_VISIBLE = 50;
@@ -100,17 +102,14 @@ public class PowerExemptionManager {
     private final IDeviceIdleController mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AllowListEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ReasonCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TempAllowListType {
     }
 

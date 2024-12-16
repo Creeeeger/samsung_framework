@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class MandatoryStreamCombination {
     private static final long STREAM_USE_CASE_CROPPED_RAW = 6;
     private static final long STREAM_USE_CASE_PREVIEW = 1;
@@ -28,7 +28,7 @@ public final class MandatoryStreamCombination {
     private static final String TAG = "MandatoryStreamCombination";
     private final String mDescription;
     private final boolean mIsReprocessable;
-    private final ArrayList<MandatoryStreamInformation> mStreamsInformation;
+    private final ArrayList<MandatoryStreamInformation> mStreamsInformation = new ArrayList<>();
     private static StreamCombinationTemplate[] sLegacyCombinations = {new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.MAXIMUM)}, "Simple preview, GPU video processing, or no-preview video recording"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(256, SizeThreshold.MAXIMUM)}, "No-viewfinder still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.MAXIMUM)}, "In-application video/image processing"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(256, SizeThreshold.MAXIMUM)}, "Standard still imaging"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW), new StreamTemplate(256, SizeThreshold.MAXIMUM)}, "In-app processing plus still capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(34, SizeThreshold.PREVIEW)}, "Standard recording"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.PREVIEW)}, "Preview plus in-app processing"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.PREVIEW), new StreamTemplate(256, SizeThreshold.MAXIMUM)}, "Still capture plus in-app processing")};
     private static StreamCombinationTemplate[] sLimitedCombinations = {new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(34, SizeThreshold.RECORD)}, "High-resolution video recording with preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.RECORD)}, "High-resolution in-app video processing with preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.RECORD)}, "Two-input in-app video processing"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(34, SizeThreshold.RECORD), new StreamTemplate(256, SizeThreshold.RECORD)}, "High-resolution recording with video snapshot"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.RECORD), new StreamTemplate(256, SizeThreshold.RECORD)}, "High-resolution in-app processing with video snapshot"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.PREVIEW), new StreamTemplate(256, SizeThreshold.MAXIMUM)}, "Two-input in-app processing with still capture")};
     private static StreamCombinationTemplate[] sBurstCombinations = {new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(34, SizeThreshold.MAXIMUM)}, "Maximum-resolution GPU processing with preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.MAXIMUM)}, "Maximum-resolution in-app processing with preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW), new StreamTemplate(35, SizeThreshold.MAXIMUM)}, "Maximum-resolution two-input in-app processsing")};
@@ -54,16 +54,14 @@ public final class MandatoryStreamCombination {
     private static StreamCombinationTemplate[] sCroppedRawStreamUseCaseCombinations = {new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Cropped RAW still image capture without preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Cropped RAW still image capture with preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "In-app image processing with cropped RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with YUV and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "In-app image processing with YUV and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(256, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with JPEG and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(256, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "In-app image processing with JPEG and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(34, SizeThreshold.PREVIEW, 3), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with video recording and RAW snapshot"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with in-app image processing and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Two input in-app processing and RAW still image capture")};
     private static StreamCombinationTemplate[] sPreviewStabilizedStreamCombinations = {new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.s1440p)}, "Stabilized preview, GPU video processing, or no-preview stabilized recording"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.s1440p)}, "Stabilized preview, GPU video processing, or no-preview stabilized recording"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(256, SizeThreshold.MAXIMUM), new StreamTemplate(34, SizeThreshold.s1440p)}, "Standard JPEG still imaging with stabilized preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.MAXIMUM), new StreamTemplate(34, SizeThreshold.s1440p)}, "Standard YUV still imaging with stabilized preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.MAXIMUM), new StreamTemplate(35, SizeThreshold.s1440p)}, "Standard YUV still imaging with stabilized in-app image processing stream"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(256, SizeThreshold.MAXIMUM), new StreamTemplate(35, SizeThreshold.s1440p)}, "Standard JPEG still imaging with stabilized in-app image processing stream"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.s1440p), new StreamTemplate(34, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.s1440p), new StreamTemplate(35, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.s1440p), new StreamTemplate(35, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.s1440p), new StreamTemplate(34, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized")};
 
-    /* loaded from: classes.dex */
-    public enum ReprocessType {
+    private enum ReprocessType {
         NONE,
         PRIVATE,
         YUV,
         REMOSAIC
     }
 
-    /* loaded from: classes.dex */
-    public enum SizeThreshold {
+    private enum SizeThreshold {
         VGA,
         PREVIEW,
         RECORD,
@@ -73,7 +71,6 @@ public final class MandatoryStreamCombination {
         FULL_RES
     }
 
-    /* loaded from: classes.dex */
     public static final class MandatoryStreamInformation {
         private final ArrayList<Size> mAvailableSizes;
         private final int mFormat;
@@ -100,12 +97,11 @@ public final class MandatoryStreamCombination {
         }
 
         public MandatoryStreamInformation(List<Size> availableSizes, int format, boolean isMaximumSize, boolean isInput, boolean isUltraHighResolution, boolean is10BitCapable, long streamUseCase) {
-            ArrayList<Size> arrayList = new ArrayList<>();
-            this.mAvailableSizes = arrayList;
+            this.mAvailableSizes = new ArrayList<>();
             if (availableSizes.isEmpty()) {
                 throw new IllegalArgumentException("No available sizes");
             }
-            arrayList.addAll(availableSizes);
+            this.mAvailableSizes.addAll(availableSizes);
             this.mFormat = StreamConfigurationMap.checkArgumentFormat(format);
             this.mIsMaximumSize = isMaximumSize;
             this.mIsInput = isInput;
@@ -170,17 +166,15 @@ public final class MandatoryStreamCombination {
         }
 
         public int hashCode() {
-            return HashCodeHelpers.hashCode(this.mFormat, Boolean.hashCode(this.mIsInput), Boolean.hashCode(this.mIsUltraHighResolution), this.mAvailableSizes.hashCode(), (float) this.mStreamUseCase);
+            return HashCodeHelpers.hashCode(this.mFormat, Boolean.hashCode(this.mIsInput), Boolean.hashCode(this.mIsUltraHighResolution), this.mAvailableSizes.hashCode(), this.mStreamUseCase);
         }
     }
 
     public MandatoryStreamCombination(List<MandatoryStreamInformation> streamsInformation, String description, boolean isReprocessable) {
-        ArrayList<MandatoryStreamInformation> arrayList = new ArrayList<>();
-        this.mStreamsInformation = arrayList;
         if (streamsInformation.isEmpty()) {
             throw new IllegalArgumentException("Empty stream information");
         }
-        arrayList.addAll(streamsInformation);
+        this.mStreamsInformation.addAll(streamsInformation);
         this.mDescription = description;
         this.mIsReprocessable = isReprocessable;
     }
@@ -218,8 +212,7 @@ public final class MandatoryStreamCombination {
         return HashCodeHelpers.hashCode(Boolean.hashCode(this.mIsReprocessable), this.mDescription.hashCode(), this.mStreamsInformation.hashCode());
     }
 
-    /* loaded from: classes.dex */
-    public static final class StreamTemplate {
+    private static final class StreamTemplate {
         public int mFormat;
         public SizeThreshold mSizeThreshold;
         public long mStreamUseCase;
@@ -235,8 +228,7 @@ public final class MandatoryStreamCombination {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class StreamCombinationTemplate {
+    private static final class StreamCombinationTemplate {
         public String mDescription;
         public ReprocessType mReprocessType;
         public StreamTemplate[] mStreamTemplates;
@@ -263,7 +255,6 @@ public final class MandatoryStreamCombination {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final Size kPreviewSizeBound = new Size(1920, 1088);
         private int mCameraId;
@@ -285,7 +276,7 @@ public final class MandatoryStreamCombination {
             this.mStreamConfigMap = sm;
             this.mStreamConfigMapMaximumResolution = smMaxResolution;
             this.mHwLevel = hwLevel;
-            this.mIsHiddenPhysicalCamera = CameraManager.isHiddenPhysicalCamera(Integer.toString(cameraId));
+            this.mIsHiddenPhysicalCamera = CameraManager.isHiddenPhysicalCamera(Integer.toString(this.mCameraId));
             this.mIsPreviewStabilizationSupported = previewStabilization;
             this.mIsCroppedRawSupported = isCroppedRawSupported;
         }
@@ -435,7 +426,6 @@ public final class MandatoryStreamCombination {
         public List<MandatoryStreamCombination> getAvailableMandatoryConcurrentStreamCombinations() {
             StreamCombinationTemplate[] chosenStreamCombinations;
             Size formatSize;
-            Size sizeVGAp;
             StreamCombinationTemplate[] chosenStreamCombinations2 = MandatoryStreamCombination.sConcurrentStreamCombinations;
             if (isColorOutputSupported()) {
                 chosenStreamCombinations = chosenStreamCombinations2;
@@ -444,7 +434,7 @@ public final class MandatoryStreamCombination {
                 StreamCombinationTemplate[] chosenStreamCombinations3 = MandatoryStreamCombination.sConcurrentDepthOnlyStreamCombinations;
                 chosenStreamCombinations = chosenStreamCombinations3;
             }
-            Size sizeVGAp2 = new Size(640, 480);
+            Size sizeVGAp = new Size(640, 480);
             Size size720p = new Size(1280, 720);
             Size size1440p = new Size(1920, 1440);
             ArrayList<MandatoryStreamCombination> availableConcurrentStreamCombinations = new ArrayList<>();
@@ -461,12 +451,12 @@ public final class MandatoryStreamCombination {
                 while (i2 < length2) {
                     StreamTemplate template = streamTemplateArr[i2];
                     List<Size> sizes = new ArrayList<>();
-                    switch (AnonymousClass1.$SwitchMap$android$hardware$camera2$params$MandatoryStreamCombination$SizeThreshold[template.mSizeThreshold.ordinal()]) {
-                        case 1:
-                            formatSize = size1440p;
+                    switch (template.mSizeThreshold.ordinal()) {
+                        case 0:
+                            formatSize = sizeVGAp;
                             break;
-                        case 2:
-                            formatSize = sizeVGAp2;
+                        case 5:
+                            formatSize = size1440p;
                             break;
                         default:
                             formatSize = size720p;
@@ -478,36 +468,36 @@ public final class MandatoryStreamCombination {
                     sizes.add(sizeChosen);
                     try {
                         try {
-                            sizeVGAp = sizeVGAp2;
-                        } catch (IllegalArgumentException e) {
-                            e = e;
+                            Size sizeVGAp2 = sizeVGAp;
+                            try {
+                                MandatoryStreamInformation streamInfo = new MandatoryStreamInformation(sizes, template.mFormat, false);
+                                streamsInfo.add(streamInfo);
+                                i2++;
+                                length = i3;
+                                chosenStreamCombinations = chosenStreamCombinations4;
+                                sizeVGAp = sizeVGAp2;
+                            } catch (IllegalArgumentException e) {
+                                e = e;
+                                String cause = "No available sizes found for format: " + template.mFormat + " size threshold: " + template.mSizeThreshold + " combination: " + combTemplate.mDescription;
+                                throw new RuntimeException(cause, e);
+                            }
+                        } catch (IllegalArgumentException e2) {
+                            e = e2;
                         }
-                    } catch (IllegalArgumentException e2) {
-                        e = e2;
-                    }
-                    try {
-                        MandatoryStreamInformation streamInfo = new MandatoryStreamInformation(sizes, template.mFormat, false);
-                        streamsInfo.add(streamInfo);
-                        i2++;
-                        length = i3;
-                        chosenStreamCombinations = chosenStreamCombinations4;
-                        sizeVGAp2 = sizeVGAp;
                     } catch (IllegalArgumentException e3) {
                         e = e3;
-                        String cause = "No available sizes found for format: " + template.mFormat + " size threshold: " + template.mSizeThreshold + " combination: " + combTemplate.mDescription;
-                        throw new RuntimeException(cause, e);
                     }
                 }
                 int i4 = length;
                 StreamCombinationTemplate[] chosenStreamCombinations5 = chosenStreamCombinations;
-                Size sizeVGAp3 = sizeVGAp2;
+                Size sizeVGAp3 = sizeVGAp;
                 try {
                     MandatoryStreamCombination streamCombination = new MandatoryStreamCombination(streamsInfo, combTemplate.mDescription, false);
                     availableConcurrentStreamCombinations.add(streamCombination);
                     i++;
                     length = i4;
                     chosenStreamCombinations = chosenStreamCombinations5;
-                    sizeVGAp2 = sizeVGAp3;
+                    sizeVGAp = sizeVGAp3;
                 } catch (IllegalArgumentException e4) {
                     String cause2 = "No stream information for mandatory combination: " + combTemplate.mDescription;
                     throw new RuntimeException(cause2, e4);
@@ -548,7 +538,7 @@ public final class MandatoryStreamCombination {
         private MandatoryStreamCombination createUHSensorMandatoryStreamCombination(StreamCombinationTemplate combTemplate, int substitutedFormat) {
             String formatString;
             Size[] defaultRawSizes;
-            Size maxHighResolutionSize;
+            Size chosenMaxSize;
             int format;
             Builder builder = this;
             ArrayList<MandatoryStreamInformation> streamsInfo = new ArrayList<>();
@@ -598,15 +588,15 @@ public final class MandatoryStreamCombination {
                     Size[] outputSizes = sm.getOutputSizes(formatChosen);
                     Size[] highResolutionOutputSizes = sm.getHighResolutionOutputSizes(formatChosen);
                     Size maxBurstSize = getMaxSizeOrNull(outputSizes);
-                    Size maxHighResolutionSize2 = getMaxSizeOrNull(highResolutionOutputSizes);
-                    Size chosenMaxSize = maxBurstSize != null ? maxBurstSize : maxHighResolutionSize2;
-                    if (maxBurstSize == null || maxHighResolutionSize2 == null) {
-                        maxHighResolutionSize = chosenMaxSize;
+                    Size maxHighResolutionSize = getMaxSizeOrNull(highResolutionOutputSizes);
+                    Size chosenMaxSize2 = maxBurstSize != null ? maxBurstSize : maxHighResolutionSize;
+                    if (maxBurstSize == null || maxHighResolutionSize == null) {
+                        chosenMaxSize = chosenMaxSize2;
                     } else {
-                        Size chosenMaxSize2 = getMaxSize(maxBurstSize, maxHighResolutionSize2);
-                        maxHighResolutionSize = chosenMaxSize2;
+                        Size chosenMaxSize3 = getMaxSize(maxBurstSize, maxHighResolutionSize);
+                        chosenMaxSize = chosenMaxSize3;
                     }
-                    sizes.add(maxHighResolutionSize);
+                    sizes.add(chosenMaxSize);
                     defaultRawSizes = defaultRawSizes2;
                 } else if (formatChosen == 32) {
                     sizes = availableDefaultRawSizes;
@@ -1035,7 +1025,6 @@ public final class MandatoryStreamCombination {
             return this.kPreviewSizeBound;
         }
 
-        /* loaded from: classes.dex */
         public static class SizeComparator implements Comparator<Size> {
             @Override // java.util.Comparator
             public int compare(Size lhs, Size rhs) {
@@ -1052,25 +1041,6 @@ public final class MandatoryStreamCombination {
                 Collections.reverse(sortedSizes);
             }
             return sortedSizes;
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.params.MandatoryStreamCombination$1 */
-    /* loaded from: classes.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$hardware$camera2$params$MandatoryStreamCombination$SizeThreshold;
-
-        static {
-            int[] iArr = new int[SizeThreshold.values().length];
-            $SwitchMap$android$hardware$camera2$params$MandatoryStreamCombination$SizeThreshold = iArr;
-            try {
-                iArr[SizeThreshold.s1440p.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$hardware$camera2$params$MandatoryStreamCombination$SizeThreshold[SizeThreshold.VGA.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
         }
     }
 }

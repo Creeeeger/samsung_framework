@@ -68,17 +68,14 @@ public class BroadcastOptions extends ComponentOptions {
     private int mTemporaryAppAllowlistType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DeferralPolicy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DeliveryGroupPolicy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Flags {
     }
 
@@ -286,12 +283,11 @@ public class BroadcastOptions extends ComponentOptions {
     }
 
     public boolean testRequireCompatChange(int uid) {
-        long j = this.mRequireCompatChangeId;
-        if (j == Long.MIN_VALUE) {
+        if (this.mRequireCompatChangeId == Long.MIN_VALUE) {
             return true;
         }
         boolean requireEnabled = (this.mFlags & 4) != 0;
-        return CompatChanges.isChangeEnabled(j, uid) == requireEnabled;
+        return CompatChanges.isChangeEnabled(this.mRequireCompatChangeId, uid) == requireEnabled;
     }
 
     @SystemApi
@@ -336,12 +332,10 @@ public class BroadcastOptions extends ComponentOptions {
     }
 
     public String getDeliveryGroupMatchingKey() {
-        String str;
-        String str2 = this.mDeliveryGroupMatchingNamespaceFragment;
-        if (str2 == null || (str = this.mDeliveryGroupMatchingKeyFragment) == null) {
+        if (this.mDeliveryGroupMatchingNamespaceFragment == null || this.mDeliveryGroupMatchingKeyFragment == null) {
             return null;
         }
-        return String.join(":", str2, str);
+        return String.join(":", this.mDeliveryGroupMatchingNamespaceFragment, this.mDeliveryGroupMatchingKeyFragment);
     }
 
     public String getDeliveryGroupMatchingNamespaceFragment() {
@@ -426,9 +420,8 @@ public class BroadcastOptions extends ComponentOptions {
     @Override // android.app.ComponentOptions
     public Bundle toBundle() {
         Bundle b = super.toBundle();
-        int i = this.mFlags;
-        if (i != 0) {
-            b.putInt(KEY_FLAGS, i);
+        if (this.mFlags != 0) {
+            b.putInt(KEY_FLAGS, this.mFlags);
         }
         if (isTemporaryAppAllowlistSet()) {
             b.putLong(KEY_TEMPORARY_APP_ALLOWLIST_DURATION, this.mTemporaryAppAllowlistDuration);
@@ -436,57 +429,45 @@ public class BroadcastOptions extends ComponentOptions {
             b.putInt(KEY_TEMPORARY_APP_ALLOWLIST_REASON_CODE, this.mTemporaryAppAllowlistReasonCode);
             b.putString(KEY_TEMPORARY_APP_ALLOWLIST_REASON, this.mTemporaryAppAllowlistReason);
         }
-        int i2 = this.mMinManifestReceiverApiLevel;
-        if (i2 != 0) {
-            b.putInt(KEY_MIN_MANIFEST_RECEIVER_API_LEVEL, i2);
+        if (this.mMinManifestReceiverApiLevel != 0) {
+            b.putInt(KEY_MIN_MANIFEST_RECEIVER_API_LEVEL, this.mMinManifestReceiverApiLevel);
         }
-        int i3 = this.mMaxManifestReceiverApiLevel;
-        if (i3 != 10000) {
-            b.putInt(KEY_MAX_MANIFEST_RECEIVER_API_LEVEL, i3);
+        if (this.mMaxManifestReceiverApiLevel != 10000) {
+            b.putInt(KEY_MAX_MANIFEST_RECEIVER_API_LEVEL, this.mMaxManifestReceiverApiLevel);
         }
-        String[] strArr = this.mRequireAllOfPermissions;
-        if (strArr != null) {
-            b.putStringArray(KEY_REQUIRE_ALL_OF_PERMISSIONS, strArr);
+        if (this.mRequireAllOfPermissions != null) {
+            b.putStringArray(KEY_REQUIRE_ALL_OF_PERMISSIONS, this.mRequireAllOfPermissions);
         }
-        String[] strArr2 = this.mRequireNoneOfPermissions;
-        if (strArr2 != null) {
-            b.putStringArray(KEY_REQUIRE_NONE_OF_PERMISSIONS, strArr2);
+        if (this.mRequireNoneOfPermissions != null) {
+            b.putStringArray(KEY_REQUIRE_NONE_OF_PERMISSIONS, this.mRequireNoneOfPermissions);
         }
-        long j = this.mRequireCompatChangeId;
-        if (j != Long.MIN_VALUE) {
-            b.putLong(KEY_REQUIRE_COMPAT_CHANGE_ID, j);
+        if (this.mRequireCompatChangeId != Long.MIN_VALUE) {
+            b.putLong(KEY_REQUIRE_COMPAT_CHANGE_ID, this.mRequireCompatChangeId);
         }
-        long j2 = this.mIdForResponseEvent;
-        if (j2 != 0) {
-            b.putLong(KEY_ID_FOR_RESPONSE_EVENT, j2);
+        if (this.mIdForResponseEvent != 0) {
+            b.putLong(KEY_ID_FOR_RESPONSE_EVENT, this.mIdForResponseEvent);
         }
-        int i4 = this.mDeliveryGroupPolicy;
-        if (i4 != 0) {
-            b.putInt(KEY_DELIVERY_GROUP_POLICY, i4);
+        if (this.mDeliveryGroupPolicy != 0) {
+            b.putInt(KEY_DELIVERY_GROUP_POLICY, this.mDeliveryGroupPolicy);
         }
-        String str = this.mDeliveryGroupMatchingNamespaceFragment;
-        if (str != null) {
-            b.putString(KEY_DELIVERY_GROUP_NAMESPACE, str);
+        if (this.mDeliveryGroupMatchingNamespaceFragment != null) {
+            b.putString(KEY_DELIVERY_GROUP_NAMESPACE, this.mDeliveryGroupMatchingNamespaceFragment);
         }
-        String str2 = this.mDeliveryGroupMatchingKeyFragment;
-        if (str2 != null) {
-            b.putString(KEY_DELIVERY_GROUP_KEY, str2);
+        if (this.mDeliveryGroupMatchingKeyFragment != null) {
+            b.putString(KEY_DELIVERY_GROUP_KEY, this.mDeliveryGroupMatchingKeyFragment);
         }
         if (this.mDeliveryGroupPolicy == 2) {
-            BundleMerger bundleMerger = this.mDeliveryGroupExtrasMerger;
-            if (bundleMerger != null) {
-                b.putParcelable(KEY_DELIVERY_GROUP_EXTRAS_MERGER, bundleMerger);
+            if (this.mDeliveryGroupExtrasMerger != null) {
+                b.putParcelable(KEY_DELIVERY_GROUP_EXTRAS_MERGER, this.mDeliveryGroupExtrasMerger);
             } else {
                 throw new IllegalStateException("Extras merger cannot be empty when delivery group policy is 'MERGED'");
             }
         }
-        IntentFilter intentFilter = this.mDeliveryGroupMatchingFilter;
-        if (intentFilter != null) {
-            b.putParcelable(KEY_DELIVERY_GROUP_MATCHING_FILTER, intentFilter);
+        if (this.mDeliveryGroupMatchingFilter != null) {
+            b.putParcelable(KEY_DELIVERY_GROUP_MATCHING_FILTER, this.mDeliveryGroupMatchingFilter);
         }
-        int i5 = this.mDeferralPolicy;
-        if (i5 != 0) {
-            b.putInt(KEY_DEFERRAL_POLICY, i5);
+        if (this.mDeferralPolicy != 0) {
+            b.putInt(KEY_DEFERRAL_POLICY, this.mDeferralPolicy);
         }
         return b;
     }

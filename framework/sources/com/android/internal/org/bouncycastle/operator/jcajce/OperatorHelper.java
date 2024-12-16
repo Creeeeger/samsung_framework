@@ -46,75 +46,65 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
 
 /* loaded from: classes5.dex */
-public class OperatorHelper {
-    private static final Map asymmetricWrapperAlgNames;
-    private static final Map oids;
-    private static final Map symmetricKeyAlgNames;
-    private static final Map symmetricWrapperAlgNames;
-    private static final Map symmetricWrapperKeySizes;
+class OperatorHelper {
     private JcaJceHelper helper;
+    private static final Map oids = new HashMap();
+    private static final Map asymmetricWrapperAlgNames = new HashMap();
+    private static final Map symmetricWrapperAlgNames = new HashMap();
+    private static final Map symmetricKeyAlgNames = new HashMap();
+    private static final Map symmetricWrapperKeySizes = new HashMap();
 
     static {
-        HashMap hashMap = new HashMap();
-        oids = hashMap;
-        HashMap hashMap2 = new HashMap();
-        asymmetricWrapperAlgNames = hashMap2;
-        HashMap hashMap3 = new HashMap();
-        symmetricWrapperAlgNames = hashMap3;
-        HashMap hashMap4 = new HashMap();
-        symmetricKeyAlgNames = hashMap4;
-        HashMap hashMap5 = new HashMap();
-        symmetricWrapperKeySizes = hashMap5;
-        hashMap.put(new ASN1ObjectIdentifier("1.2.840.113549.1.1.5"), "SHA1WITHRSA");
-        hashMap.put(PKCSObjectIdentifiers.sha224WithRSAEncryption, "SHA224WITHRSA");
-        hashMap.put(PKCSObjectIdentifiers.sha256WithRSAEncryption, "SHA256WITHRSA");
-        hashMap.put(PKCSObjectIdentifiers.sha384WithRSAEncryption, "SHA384WITHRSA");
-        hashMap.put(PKCSObjectIdentifiers.sha512WithRSAEncryption, "SHA512WITHRSA");
-        hashMap.put(new ASN1ObjectIdentifier("1.2.840.113549.1.1.4"), "MD5WITHRSA");
-        hashMap.put(new ASN1ObjectIdentifier("1.2.840.10040.4.3"), "SHA1WITHDSA");
-        hashMap.put(X9ObjectIdentifiers.ecdsa_with_SHA1, "SHA1WITHECDSA");
-        hashMap.put(X9ObjectIdentifiers.ecdsa_with_SHA224, "SHA224WITHECDSA");
-        hashMap.put(X9ObjectIdentifiers.ecdsa_with_SHA256, "SHA256WITHECDSA");
-        hashMap.put(X9ObjectIdentifiers.ecdsa_with_SHA384, "SHA384WITHECDSA");
-        hashMap.put(X9ObjectIdentifiers.ecdsa_with_SHA512, "SHA512WITHECDSA");
-        hashMap.put(OIWObjectIdentifiers.sha1WithRSA, "SHA1WITHRSA");
-        hashMap.put(OIWObjectIdentifiers.dsaWithSHA1, "SHA1WITHDSA");
-        hashMap.put(NISTObjectIdentifiers.dsa_with_sha224, "SHA224WITHDSA");
-        hashMap.put(NISTObjectIdentifiers.dsa_with_sha256, "SHA256WITHDSA");
-        hashMap.put(OIWObjectIdentifiers.idSHA1, "SHA1");
-        hashMap.put(NISTObjectIdentifiers.id_sha224, "SHA224");
-        hashMap.put(NISTObjectIdentifiers.id_sha256, "SHA256");
-        hashMap.put(NISTObjectIdentifiers.id_sha384, "SHA384");
-        hashMap.put(NISTObjectIdentifiers.id_sha512, "SHA512");
-        hashMap2.put(PKCSObjectIdentifiers.rsaEncryption, "RSA/ECB/PKCS1Padding");
-        hashMap3.put(PKCSObjectIdentifiers.id_alg_CMS3DESwrap, "DESEDEWrap");
-        hashMap3.put(PKCSObjectIdentifiers.id_alg_CMSRC2wrap, "RC2Wrap");
-        hashMap3.put(NISTObjectIdentifiers.id_aes128_wrap, "AESWrap");
-        hashMap3.put(NISTObjectIdentifiers.id_aes192_wrap, "AESWrap");
-        hashMap3.put(NISTObjectIdentifiers.id_aes256_wrap, "AESWrap");
-        hashMap3.put(NTTObjectIdentifiers.id_camellia128_wrap, "CamelliaWrap");
-        hashMap3.put(NTTObjectIdentifiers.id_camellia192_wrap, "CamelliaWrap");
-        hashMap3.put(NTTObjectIdentifiers.id_camellia256_wrap, "CamelliaWrap");
-        hashMap3.put(KISAObjectIdentifiers.id_npki_app_cmsSeed_wrap, "SEEDWrap");
-        hashMap3.put(PKCSObjectIdentifiers.des_EDE3_CBC, KeyProperties.KEY_ALGORITHM_3DES);
-        hashMap5.put(PKCSObjectIdentifiers.id_alg_CMS3DESwrap, Integers.valueOf(192));
-        hashMap5.put(NISTObjectIdentifiers.id_aes128_wrap, Integers.valueOf(128));
-        hashMap5.put(NISTObjectIdentifiers.id_aes192_wrap, Integers.valueOf(192));
-        hashMap5.put(NISTObjectIdentifiers.id_aes256_wrap, Integers.valueOf(256));
-        hashMap5.put(NTTObjectIdentifiers.id_camellia128_wrap, Integers.valueOf(128));
-        hashMap5.put(NTTObjectIdentifiers.id_camellia192_wrap, Integers.valueOf(192));
-        hashMap5.put(NTTObjectIdentifiers.id_camellia256_wrap, Integers.valueOf(256));
-        hashMap5.put(KISAObjectIdentifiers.id_npki_app_cmsSeed_wrap, Integers.valueOf(128));
-        hashMap5.put(PKCSObjectIdentifiers.des_EDE3_CBC, Integers.valueOf(192));
-        hashMap4.put(NISTObjectIdentifiers.aes, "AES");
-        hashMap4.put(NISTObjectIdentifiers.id_aes128_CBC, "AES");
-        hashMap4.put(NISTObjectIdentifiers.id_aes192_CBC, "AES");
-        hashMap4.put(NISTObjectIdentifiers.id_aes256_CBC, "AES");
-        hashMap4.put(PKCSObjectIdentifiers.des_EDE3_CBC, KeyProperties.KEY_ALGORITHM_3DES);
-        hashMap4.put(PKCSObjectIdentifiers.RC2_CBC, "RC2");
+        oids.put(new ASN1ObjectIdentifier("1.2.840.113549.1.1.5"), "SHA1WITHRSA");
+        oids.put(PKCSObjectIdentifiers.sha224WithRSAEncryption, "SHA224WITHRSA");
+        oids.put(PKCSObjectIdentifiers.sha256WithRSAEncryption, "SHA256WITHRSA");
+        oids.put(PKCSObjectIdentifiers.sha384WithRSAEncryption, "SHA384WITHRSA");
+        oids.put(PKCSObjectIdentifiers.sha512WithRSAEncryption, "SHA512WITHRSA");
+        oids.put(new ASN1ObjectIdentifier("1.2.840.113549.1.1.4"), "MD5WITHRSA");
+        oids.put(new ASN1ObjectIdentifier("1.2.840.10040.4.3"), "SHA1WITHDSA");
+        oids.put(X9ObjectIdentifiers.ecdsa_with_SHA1, "SHA1WITHECDSA");
+        oids.put(X9ObjectIdentifiers.ecdsa_with_SHA224, "SHA224WITHECDSA");
+        oids.put(X9ObjectIdentifiers.ecdsa_with_SHA256, "SHA256WITHECDSA");
+        oids.put(X9ObjectIdentifiers.ecdsa_with_SHA384, "SHA384WITHECDSA");
+        oids.put(X9ObjectIdentifiers.ecdsa_with_SHA512, "SHA512WITHECDSA");
+        oids.put(OIWObjectIdentifiers.sha1WithRSA, "SHA1WITHRSA");
+        oids.put(OIWObjectIdentifiers.dsaWithSHA1, "SHA1WITHDSA");
+        oids.put(NISTObjectIdentifiers.dsa_with_sha224, "SHA224WITHDSA");
+        oids.put(NISTObjectIdentifiers.dsa_with_sha256, "SHA256WITHDSA");
+        oids.put(OIWObjectIdentifiers.idSHA1, "SHA1");
+        oids.put(NISTObjectIdentifiers.id_sha224, "SHA224");
+        oids.put(NISTObjectIdentifiers.id_sha256, "SHA256");
+        oids.put(NISTObjectIdentifiers.id_sha384, "SHA384");
+        oids.put(NISTObjectIdentifiers.id_sha512, "SHA512");
+        asymmetricWrapperAlgNames.put(PKCSObjectIdentifiers.rsaEncryption, "RSA/ECB/PKCS1Padding");
+        symmetricWrapperAlgNames.put(PKCSObjectIdentifiers.id_alg_CMS3DESwrap, "DESEDEWrap");
+        symmetricWrapperAlgNames.put(PKCSObjectIdentifiers.id_alg_CMSRC2wrap, "RC2Wrap");
+        symmetricWrapperAlgNames.put(NISTObjectIdentifiers.id_aes128_wrap, "AESWrap");
+        symmetricWrapperAlgNames.put(NISTObjectIdentifiers.id_aes192_wrap, "AESWrap");
+        symmetricWrapperAlgNames.put(NISTObjectIdentifiers.id_aes256_wrap, "AESWrap");
+        symmetricWrapperAlgNames.put(NTTObjectIdentifiers.id_camellia128_wrap, "CamelliaWrap");
+        symmetricWrapperAlgNames.put(NTTObjectIdentifiers.id_camellia192_wrap, "CamelliaWrap");
+        symmetricWrapperAlgNames.put(NTTObjectIdentifiers.id_camellia256_wrap, "CamelliaWrap");
+        symmetricWrapperAlgNames.put(KISAObjectIdentifiers.id_npki_app_cmsSeed_wrap, "SEEDWrap");
+        symmetricWrapperAlgNames.put(PKCSObjectIdentifiers.des_EDE3_CBC, KeyProperties.KEY_ALGORITHM_3DES);
+        symmetricWrapperKeySizes.put(PKCSObjectIdentifiers.id_alg_CMS3DESwrap, Integers.valueOf(192));
+        symmetricWrapperKeySizes.put(NISTObjectIdentifiers.id_aes128_wrap, Integers.valueOf(128));
+        symmetricWrapperKeySizes.put(NISTObjectIdentifiers.id_aes192_wrap, Integers.valueOf(192));
+        symmetricWrapperKeySizes.put(NISTObjectIdentifiers.id_aes256_wrap, Integers.valueOf(256));
+        symmetricWrapperKeySizes.put(NTTObjectIdentifiers.id_camellia128_wrap, Integers.valueOf(128));
+        symmetricWrapperKeySizes.put(NTTObjectIdentifiers.id_camellia192_wrap, Integers.valueOf(192));
+        symmetricWrapperKeySizes.put(NTTObjectIdentifiers.id_camellia256_wrap, Integers.valueOf(256));
+        symmetricWrapperKeySizes.put(KISAObjectIdentifiers.id_npki_app_cmsSeed_wrap, Integers.valueOf(128));
+        symmetricWrapperKeySizes.put(PKCSObjectIdentifiers.des_EDE3_CBC, Integers.valueOf(192));
+        symmetricKeyAlgNames.put(NISTObjectIdentifiers.aes, "AES");
+        symmetricKeyAlgNames.put(NISTObjectIdentifiers.id_aes128_CBC, "AES");
+        symmetricKeyAlgNames.put(NISTObjectIdentifiers.id_aes192_CBC, "AES");
+        symmetricKeyAlgNames.put(NISTObjectIdentifiers.id_aes256_CBC, "AES");
+        symmetricKeyAlgNames.put(PKCSObjectIdentifiers.des_EDE3_CBC, KeyProperties.KEY_ALGORITHM_3DES);
+        symmetricKeyAlgNames.put(PKCSObjectIdentifiers.RC2_CBC, "RC2");
     }
 
-    public OperatorHelper(JcaJceHelper helper) {
+    OperatorHelper(JcaJceHelper helper) {
         this.helper = helper;
     }
 
@@ -223,7 +213,7 @@ public class OperatorHelper {
         }
     }
 
-    public MessageDigest createDigest(AlgorithmIdentifier digAlgId) throws GeneralSecurityException {
+    MessageDigest createDigest(AlgorithmIdentifier digAlgId) throws GeneralSecurityException {
         MessageDigest dig;
         try {
             if (digAlgId.getAlgorithm().equals((ASN1Primitive) NISTObjectIdentifiers.id_shake256_len)) {
@@ -233,9 +223,8 @@ public class OperatorHelper {
             }
             return dig;
         } catch (NoSuchAlgorithmException e) {
-            Map map = oids;
-            if (map.get(digAlgId.getAlgorithm()) != null) {
-                String digestAlgorithm = (String) map.get(digAlgId.getAlgorithm());
+            if (oids.get(digAlgId.getAlgorithm()) != null) {
+                String digestAlgorithm = (String) oids.get(digAlgId.getAlgorithm());
                 MessageDigest dig2 = this.helper.createMessageDigest(digestAlgorithm);
                 return dig2;
             }
@@ -243,7 +232,7 @@ public class OperatorHelper {
         }
     }
 
-    public Signature createSignature(AlgorithmIdentifier sigAlgId) throws GeneralSecurityException {
+    Signature createSignature(AlgorithmIdentifier sigAlgId) throws GeneralSecurityException {
         Signature sig;
         String sigName = getSignatureName(sigAlgId);
         try {
@@ -253,15 +242,12 @@ public class OperatorHelper {
                 String signatureAlgorithm = sigName.substring(0, sigName.indexOf(87)) + "WITHRSASSA-PSS";
                 Signature sig2 = this.helper.createSignature(signatureAlgorithm);
                 sig = sig2;
+            } else if (oids.get(sigAlgId.getAlgorithm()) != null) {
+                String signatureAlgorithm2 = (String) oids.get(sigAlgId.getAlgorithm());
+                Signature sig3 = this.helper.createSignature(signatureAlgorithm2);
+                sig = sig3;
             } else {
-                Map map = oids;
-                if (map.get(sigAlgId.getAlgorithm()) != null) {
-                    String signatureAlgorithm2 = (String) map.get(sigAlgId.getAlgorithm());
-                    Signature sig3 = this.helper.createSignature(signatureAlgorithm2);
-                    sig = sig3;
-                } else {
-                    throw e;
-                }
+                throw e;
             }
         }
         if (sigAlgId.getAlgorithm().equals((ASN1Primitive) PKCSObjectIdentifiers.id_RSASSA_PSS)) {
@@ -302,9 +288,8 @@ public class OperatorHelper {
             RSASSAPSSparams rsaParams = RSASSAPSSparams.getInstance(params);
             return getDigestName(rsaParams.getHashAlgorithm().getAlgorithm()) + "WITHRSAANDMGF1";
         }
-        Map map = oids;
-        if (map.containsKey(sigAlgId.getAlgorithm())) {
-            return (String) map.get(sigAlgId.getAlgorithm());
+        if (oids.containsKey(sigAlgId.getAlgorithm())) {
+            return (String) oids.get(sigAlgId.getAlgorithm());
         }
         return sigAlgId.getAlgorithm().getId();
     }
@@ -344,9 +329,7 @@ public class OperatorHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class OpCertificateException extends CertificateException {
+    private static class OpCertificateException extends CertificateException {
         private Throwable cause;
 
         public OpCertificateException(String msg, Throwable cause) {

@@ -31,16 +31,11 @@ public class DropBoxManager {
     private final IDropBoxManagerService mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Flags {
     }
 
-    /* loaded from: classes3.dex */
     public static class Entry implements Parcelable, Closeable {
         public static final Parcelable.Creator<Entry> CREATOR = new Parcelable.Creator() { // from class: android.os.DropBoxManager.Entry.1
-            AnonymousClass1() {
-            }
-
             @Override // android.os.Parcelable.Creator
             public Entry[] newArray(int size) {
                 return new Entry[size];
@@ -134,9 +129,8 @@ public class DropBoxManager {
         @Override // java.io.Closeable, java.lang.AutoCloseable
         public void close() {
             try {
-                ParcelFileDescriptor parcelFileDescriptor = this.mFileDescriptor;
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
+                if (this.mFileDescriptor != null) {
+                    this.mFileDescriptor.close();
                 }
             } catch (IOException e) {
             }
@@ -158,9 +152,8 @@ public class DropBoxManager {
             if ((this.mFlags & 2) == 0) {
                 return null;
             }
-            byte[] bArr = this.mData;
-            if (bArr != null) {
-                return new String(bArr, 0, Math.min(maxBytes, bArr.length));
+            if (this.mData != null) {
+                return new String(this.mData, 0, Math.min(maxBytes, this.mData.length));
             }
             InputStream is = null;
             try {
@@ -222,30 +215,6 @@ public class DropBoxManager {
                 return null;
             }
             return (this.mFlags & 4) != 0 ? new GZIPInputStream(new BufferedInputStream(is)) : is;
-        }
-
-        /* renamed from: android.os.DropBoxManager$Entry$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Entry[] newArray(int size) {
-                return new Entry[size];
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Entry createFromParcel(Parcel in) {
-                String tag = in.readString();
-                long millis = in.readLong();
-                int flags = in.readInt();
-                if ((flags & 8) != 0) {
-                    return new Entry(tag, millis, in.createByteArray(), flags & (-9));
-                }
-                ParcelFileDescriptor pfd = ParcelFileDescriptor.CREATOR.createFromParcel(in);
-                return new Entry(tag, millis, pfd, flags);
-            }
         }
 
         @Override // android.os.Parcelable

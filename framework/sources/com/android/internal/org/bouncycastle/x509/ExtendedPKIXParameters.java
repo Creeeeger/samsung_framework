@@ -53,7 +53,7 @@ public class ExtendedPKIXParameters extends PKIXParameters {
         }
     }
 
-    public void setParams(PKIXParameters params) {
+    protected void setParams(PKIXParameters params) {
         setDate(params.getDate());
         setCertPathCheckers(params.getCertPathCheckers());
         setCertStores(params.getCertStores());
@@ -72,8 +72,7 @@ public class ExtendedPKIXParameters extends PKIXParameters {
                 this.validityModel = _params.validityModel;
                 this.useDeltas = _params.useDeltas;
                 this.additionalLocationsEnabled = _params.additionalLocationsEnabled;
-                Selector selector = _params.selector;
-                this.selector = selector == null ? null : (Selector) selector.clone();
+                this.selector = _params.selector == null ? null : (Selector) _params.selector.clone();
                 this.stores = new ArrayList(_params.stores);
                 this.additionalStores = new ArrayList(_params.additionalStores);
                 this.trustedACIssuers = new HashSet(_params.trustedACIssuers);
@@ -170,9 +169,8 @@ public class ExtendedPKIXParameters extends PKIXParameters {
     }
 
     public Selector getTargetConstraints() {
-        Selector selector = this.selector;
-        if (selector != null) {
-            return (Selector) selector.clone();
+        if (this.selector != null) {
+            return (Selector) this.selector.clone();
         }
         return null;
     }

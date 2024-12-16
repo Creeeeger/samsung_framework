@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextWakeUpVoiceAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextWakeUpVoiceAttribute> CREATOR = new Parcelable.Creator<SemContextWakeUpVoiceAttribute>() { // from class: com.samsung.android.hardware.context.SemContextWakeUpVoiceAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWakeUpVoiceAttribute createFromParcel(Parcel in) {
             return new SemContextWakeUpVoiceAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWakeUpVoiceAttribute[] newArray(int size) {
             return new SemContextWakeUpVoiceAttribute[size];
@@ -28,23 +27,6 @@ public class SemContextWakeUpVoiceAttribute extends SemContextAttribute {
     private int mMode;
     private byte[] mNetData;
     private int mVoiceMode;
-
-    /* renamed from: com.samsung.android.hardware.context.SemContextWakeUpVoiceAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextWakeUpVoiceAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWakeUpVoiceAttribute createFromParcel(Parcel in) {
-            return new SemContextWakeUpVoiceAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWakeUpVoiceAttribute[] newArray(int size) {
-            return new SemContextWakeUpVoiceAttribute[size];
-        }
-    }
 
     SemContextWakeUpVoiceAttribute() {
         this.mMode = -1;
@@ -63,7 +45,7 @@ public class SemContextWakeUpVoiceAttribute extends SemContextAttribute {
         this.mGramData = null;
     }
 
-    public SemContextWakeUpVoiceAttribute(int mode) {
+    SemContextWakeUpVoiceAttribute(int mode) {
         this.mMode = -1;
         this.mVoiceMode = 1;
         this.mNetData = null;
@@ -79,20 +61,17 @@ public class SemContextWakeUpVoiceAttribute extends SemContextAttribute {
         this.mNetData = null;
         this.mGramData = null;
         this.mMode = 1;
-        byte[] bArr = new byte[netData.length];
-        this.mNetData = bArr;
-        System.arraycopy(netData, 0, bArr, 0, netData.length);
-        byte[] bArr2 = new byte[gramData.length];
-        this.mGramData = bArr2;
-        System.arraycopy(gramData, 0, bArr2, 0, gramData.length);
+        this.mNetData = new byte[netData.length];
+        System.arraycopy(netData, 0, this.mNetData, 0, netData.length);
+        this.mGramData = new byte[gramData.length];
+        System.arraycopy(gramData, 0, this.mGramData, 0, gramData.length);
         setAttribute();
     }
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
         if (this.mMode == 0) {
-            int i = this.mVoiceMode;
-            return i == 1 || i == 2;
+            return this.mVoiceMode == 1 || this.mVoiceMode == 2;
         }
         if (this.mNetData == null) {
             Log.e(TAG, "The net data is null.");

@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMPOSService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.mpos.IMPOSService";
 
@@ -17,7 +17,6 @@ public interface IMPOSService extends IInterface {
 
     boolean unloadTa(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMPOSService {
         @Override // com.samsung.android.knox.mpos.IMPOSService
         public boolean loadTa(int taId, ParcelFileDescriptor pFd, long offset, long len, MposTZServiceConfig config) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IMPOSService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMPOSService {
         static final int TRANSACTION_loadTa = 1;
         static final int TRANSACTION_processTACommand = 3;
@@ -89,45 +87,42 @@ public interface IMPOSService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMPOSService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMPOSService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMPOSService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg2 = data.readLong();
+                    long _arg3 = data.readLong();
+                    MposTZServiceConfig _arg4 = (MposTZServiceConfig) data.readTypedObject(MposTZServiceConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = loadTa(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = unloadTa(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    TACommandRequest _arg12 = (TACommandRequest) data.readTypedObject(TACommandRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    TACommandResponse _result3 = processTACommand(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg2 = data.readLong();
-                            long _arg3 = data.readLong();
-                            MposTZServiceConfig _arg4 = (MposTZServiceConfig) data.readTypedObject(MposTZServiceConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = loadTa(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = unloadTa(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            TACommandRequest _arg12 = (TACommandRequest) data.readTypedObject(TACommandRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            TACommandResponse _result3 = processTACommand(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IMPOSService {
             private IBinder mRemote;
 

@@ -34,7 +34,6 @@ public class WebViewClient {
     public static final int SAFE_BROWSING_THREAT_UNWANTED_SOFTWARE = 3;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface SafeBrowsingThreat {
     }
 

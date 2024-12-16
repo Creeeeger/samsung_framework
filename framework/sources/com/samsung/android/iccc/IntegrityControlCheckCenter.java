@@ -4,7 +4,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import java.nio.charset.Charset;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class IntegrityControlCheckCenter {
     public static final int COMPONENT_TYPE_HARD_INTEGRITY = 1;
     public static final int COMPONENT_TYPE_SOFT_INTEGRITY = 2;
@@ -43,36 +43,32 @@ public class IntegrityControlCheckCenter {
 
     public synchronized int getSecureData(int type) throws RemoteException {
         Log.d("ICCC", "Method getSecureData in IntegrityControlCheckCenter Class");
-        IIntegrityControlCheckCenter iIntegrityControlCheckCenter = this.mService;
-        if (iIntegrityControlCheckCenter == null) {
+        if (this.mService == null) {
             return -1;
         }
-        return iIntegrityControlCheckCenter.getSecureData(type);
+        return this.mService.getSecureData(type);
     }
 
     public synchronized int setSecureData(int type, int value) throws RemoteException {
         Log.d("ICCC", "Method setSecureData in IntegrityControlCheckCenter Class");
-        IIntegrityControlCheckCenter iIntegrityControlCheckCenter = this.mService;
-        if (iIntegrityControlCheckCenter == null) {
+        if (this.mService == null) {
             return -1;
         }
-        return iIntegrityControlCheckCenter.setSecureData(type, value);
+        return this.mService.setSecureData(type, value);
     }
 
     public synchronized int getTrustedBootData() throws RemoteException {
         Log.d("ICCC", "Method getTrustedBootData in IntegrityControlCheckCenter Class");
-        IIntegrityControlCheckCenter iIntegrityControlCheckCenter = this.mService;
-        if (iIntegrityControlCheckCenter == null) {
+        if (this.mService == null) {
             return -1;
         }
-        return iIntegrityControlCheckCenter.getTrustedBootData();
+        return this.mService.getTrustedBootData();
     }
 
     public synchronized String getDeviceStatus(int comp_type, String nonce) throws RemoteException {
         byte[] responseBytes;
         Log.d("ICCC", "Method getDeviceStatus in IntegrityControlCheckCenter Class");
-        IIntegrityControlCheckCenter iIntegrityControlCheckCenter = this.mService;
-        if (iIntegrityControlCheckCenter == null || nonce == null || (responseBytes = iIntegrityControlCheckCenter.getDeviceStatus(comp_type, nonce.getBytes(Charset.defaultCharset()))) == null || responseBytes.length <= 1) {
+        if (this.mService == null || nonce == null || (responseBytes = this.mService.getDeviceStatus(comp_type, nonce.getBytes(Charset.defaultCharset()))) == null || responseBytes.length <= 1) {
             return null;
         }
         return new String(responseBytes, Charset.defaultCharset());
@@ -81,10 +77,20 @@ public class IntegrityControlCheckCenter {
     public synchronized String getDeviceInfo(String nonce) throws RemoteException {
         byte[] responseBytes;
         Log.d("ICCC", "Method getDeviceInfo in IntegrityControlCheckCenter Class");
-        IIntegrityControlCheckCenter iIntegrityControlCheckCenter = this.mService;
-        if (iIntegrityControlCheckCenter == null || nonce == null || (responseBytes = iIntegrityControlCheckCenter.getDeviceInfo(nonce.getBytes(Charset.defaultCharset()))) == null || responseBytes.length <= 1) {
+        if (this.mService == null || nonce == null || (responseBytes = this.mService.getDeviceInfo(nonce.getBytes(Charset.defaultCharset()))) == null || responseBytes.length <= 1) {
             return null;
         }
         return new String(responseBytes, Charset.defaultCharset());
+    }
+
+    public synchronized byte[] getBldpData() throws RemoteException {
+        byte[] responseBytes;
+        Log.d("ICCC", "Method getBldpData in IntegrityControlCheckCenter Class");
+        if (this.mService != null && (responseBytes = this.mService.getBldpData()) != null) {
+            if (responseBytes.length > 1) {
+                return responseBytes;
+            }
+        }
+        return null;
     }
 }

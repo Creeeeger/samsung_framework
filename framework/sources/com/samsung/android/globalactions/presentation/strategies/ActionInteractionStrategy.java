@@ -1,6 +1,6 @@
 package com.samsung.android.globalactions.presentation.strategies;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ActionInteractionStrategy {
     default boolean onPressPowerAction() {
         return false;

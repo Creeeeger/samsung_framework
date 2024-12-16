@@ -11,14 +11,15 @@ import java.lang.annotation.RetentionPolicy;
 public class TimeoutRecord {
     public final boolean mEndTakenBeforeLocks;
     public final long mEndUptimeMillis;
+    private AutoCloseable mExpiredTimer = null;
     public final int mKind;
     public final AnrLatencyTracker mLatencyTracker;
     public final String mReason;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface TimeoutKind {
         public static final int APP_REGISTERED = 7;
+        public static final int APP_START = 10;
         public static final int BROADCAST_RECEIVER = 3;
         public static final int CONTENT_PROVIDER = 6;
         public static final int INPUT_DISPATCH_NO_FOCUSED_WINDOW = 1;
@@ -86,7 +87,8 @@ public class TimeoutRecord {
         return endingNow(2, reason);
     }
 
-    public static TimeoutRecord forServiceExec(String reason) {
+    public static TimeoutRecord forServiceExec(String shortInstanceName, long timeoutDurationMs) {
+        String reason = "executing service " + shortInstanceName + ", waited " + timeoutDurationMs + "ms";
         return endingNow(5, reason);
     }
 
@@ -108,5 +110,24 @@ public class TimeoutRecord {
 
     public static TimeoutRecord forJobService(String reason) {
         return endingNow(9, reason);
+    }
+
+    public static TimeoutRecord forAppStart(String reason) {
+        return endingNow(10, reason);
+    }
+
+    public TimeoutRecord setExpiredTimer(AutoCloseable handle) {
+        this.mExpiredTimer = handle;
+        return this;
+    }
+
+    public void closeExpiredTimer() {
+        try {
+            if (this.mExpiredTimer != null) {
+                this.mExpiredTimer.close();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -32,7 +32,6 @@ public class PBES2AlgorithmParameters {
     private PBES2AlgorithmParameters() {
     }
 
-    /* loaded from: classes5.dex */
     private static abstract class BasePBEWithHmacAlgorithmParameters extends BaseAlgorithmParameters {
         private final ASN1ObjectIdentifier cipherAlgorithm;
         private final String cipherAlgorithmShortName;
@@ -40,10 +39,6 @@ public class PBES2AlgorithmParameters {
         private final String kdfShortName;
         private final int keySize;
         private PBES2Parameters params;
-
-        /* synthetic */ BasePBEWithHmacAlgorithmParameters(ASN1ObjectIdentifier aSN1ObjectIdentifier, String str, int i, ASN1ObjectIdentifier aSN1ObjectIdentifier2, String str2, BasePBEWithHmacAlgorithmParametersIA basePBEWithHmacAlgorithmParametersIA) {
-            this(aSN1ObjectIdentifier, str, i, aSN1ObjectIdentifier2, str2);
-        }
 
         private BasePBEWithHmacAlgorithmParameters(ASN1ObjectIdentifier kdf, String kdfShortName, int keySize, ASN1ObjectIdentifier cipherAlgorithm, String cipherAlgorithmShortName) {
             this.kdf = new AlgorithmIdentifier(kdf, DERNull.INSTANCE);
@@ -121,77 +116,66 @@ public class PBES2AlgorithmParameters {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA1AES128AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA1AES128AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA1, KeyProperties.KEY_ALGORITHM_HMAC_SHA1, 16, NISTObjectIdentifiers.id_aes128_CBC, "AES128");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA224AES128AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA224AES128AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA224, KeyProperties.KEY_ALGORITHM_HMAC_SHA224, 16, NISTObjectIdentifiers.id_aes128_CBC, "AES128");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA256AES128AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA256AES128AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA256, KeyProperties.KEY_ALGORITHM_HMAC_SHA256, 16, NISTObjectIdentifiers.id_aes128_CBC, "AES128");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA384AES128AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA384AES128AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA384, KeyProperties.KEY_ALGORITHM_HMAC_SHA384, 16, NISTObjectIdentifiers.id_aes128_CBC, "AES128");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA512AES128AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA512AES128AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA512, KeyProperties.KEY_ALGORITHM_HMAC_SHA512, 16, NISTObjectIdentifiers.id_aes128_CBC, "AES128");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA1AES256AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA1AES256AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA1, KeyProperties.KEY_ALGORITHM_HMAC_SHA1, 32, NISTObjectIdentifiers.id_aes256_CBC, "AES256");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA224AES256AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA224AES256AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA224, KeyProperties.KEY_ALGORITHM_HMAC_SHA224, 32, NISTObjectIdentifiers.id_aes256_CBC, "AES256");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA256AES256AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA256AES256AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA256, KeyProperties.KEY_ALGORITHM_HMAC_SHA256, 32, NISTObjectIdentifiers.id_aes256_CBC, "AES256");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA384AES256AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA384AES256AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA384, KeyProperties.KEY_ALGORITHM_HMAC_SHA384, 32, NISTObjectIdentifiers.id_aes256_CBC, "AES256");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithHmacSHA512AES256AlgorithmParameters extends BasePBEWithHmacAlgorithmParameters {
         public PBEWithHmacSHA512AES256AlgorithmParameters() {
             super(PKCSObjectIdentifiers.id_hmacWithSHA512, KeyProperties.KEY_ALGORITHM_HMAC_SHA512, 32, NISTObjectIdentifiers.id_aes256_CBC, "AES256");
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AlgorithmProvider {
         private static final String PREFIX = PBES2AlgorithmParameters.class.getName();
 
@@ -207,6 +191,7 @@ public class PBES2AlgorithmParameters {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static PBEParameterSpec createPBEParameterSpec(byte[] salt, int iterationCount, byte[] iv) {
         try {
             return (PBEParameterSpec) PBES2AlgorithmParameters.class.getClassLoader().loadClass("javax.crypto.spec.PBEParameterSpec").getConstructor(byte[].class, Integer.TYPE, AlgorithmParameterSpec.class).newInstance(salt, Integer.valueOf(iterationCount), new IvParameterSpec(iv));

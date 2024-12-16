@@ -1,6 +1,7 @@
 package android.app.admin;
 
 import android.annotation.SystemApi;
+import android.app.admin.flags.Flags;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.HashSet;
@@ -11,14 +12,13 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
     public static final Parcelable.Creator<LockTaskPolicy> CREATOR = new Parcelable.Creator<LockTaskPolicy>() { // from class: android.app.admin.LockTaskPolicy.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LockTaskPolicy createFromParcel(Parcel source) {
             return new LockTaskPolicy(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LockTaskPolicy[] newArray(int size) {
             return new LockTaskPolicy[size];
@@ -28,10 +28,6 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
     private int mFlags;
     private Set<String> mPackages;
 
-    /* synthetic */ LockTaskPolicy(Parcel parcel, LockTaskPolicyIA lockTaskPolicyIA) {
-        this(parcel);
-    }
-
     public Set<String> getPackages() {
         return this.mPackages;
     }
@@ -40,17 +36,17 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
         return this.mFlags;
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.app.admin.PolicyValue
     public LockTaskPolicy getValue() {
         return this;
     }
 
     public LockTaskPolicy(Set<String> packages) {
-        HashSet hashSet = new HashSet();
-        this.mPackages = hashSet;
+        this.mPackages = new HashSet();
         this.mFlags = 16;
         if (packages != null) {
-            hashSet.addAll(packages);
+            setPackagesInternal(packages);
         }
         setValue(this);
     }
@@ -63,11 +59,10 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
     }
 
     public LockTaskPolicy(Set<String> packages, int flags) {
-        HashSet hashSet = new HashSet();
-        this.mPackages = hashSet;
+        this.mPackages = new HashSet();
         this.mFlags = 16;
         if (packages != null) {
-            hashSet.addAll(packages);
+            setPackagesInternal(packages);
         }
         this.mFlags = flags;
         setValue(this);
@@ -96,11 +91,20 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
 
     public void setPackages(Set<String> packages) {
         Objects.requireNonNull(packages);
-        this.mPackages = new HashSet(packages);
+        setPackagesInternal(packages);
     }
 
     public void setFlags(int flags) {
         this.mFlags = flags;
+    }
+
+    private void setPackagesInternal(Set<String> packages) {
+        if (Flags.devicePolicySizeTrackingInternalBugFixEnabled()) {
+            for (String p : packages) {
+                PolicySizeVerifier.enforceMaxPackageNameLength(p);
+            }
+        }
+        this.mPackages = new HashSet(packages);
     }
 
     public boolean equals(Object o) {
@@ -137,22 +141,5 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
             dest.writeString(p);
         }
         dest.writeInt(this.mFlags);
-    }
-
-    /* renamed from: android.app.admin.LockTaskPolicy$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LockTaskPolicy> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LockTaskPolicy createFromParcel(Parcel source) {
-            return new LockTaskPolicy(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LockTaskPolicy[] newArray(int size) {
-            return new LockTaskPolicy[size];
-        }
     }
 }

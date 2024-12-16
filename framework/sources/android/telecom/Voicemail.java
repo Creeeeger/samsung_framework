@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class Voicemail implements Parcelable {
     public static final Parcelable.Creator<Voicemail> CREATOR = new Parcelable.Creator<Voicemail>() { // from class: android.telecom.Voicemail.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Voicemail createFromParcel(Parcel in) {
             return new Voicemail(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Voicemail[] newArray(int size) {
             return new Voicemail[size];
@@ -31,14 +30,6 @@ public class Voicemail implements Parcelable {
     private final Long mTimestamp;
     private final String mTranscription;
     private final Uri mUri;
-
-    /* synthetic */ Voicemail(Parcel parcel, VoicemailIA voicemailIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ Voicemail(Long l, String str, PhoneAccountHandle phoneAccountHandle, Long l2, Long l3, String str2, String str3, Uri uri, Boolean bool, Boolean bool2, String str4, VoicemailIA voicemailIA) {
-        this(l, str, phoneAccountHandle, l2, l3, str2, str3, uri, bool, bool2, str4);
-    }
 
     private Voicemail(Long timestamp, String number, PhoneAccountHandle phoneAccountHandle, Long id, Long duration, String source, String providerData, Uri uri, Boolean isRead, Boolean hasContent, String transcription) {
         this.mTimestamp = timestamp;
@@ -62,7 +53,6 @@ public class Voicemail implements Parcelable {
         return new Builder().setId(id).setSourceData(sourceData);
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         private Long mBuilderDuration;
         private boolean mBuilderHasContent;
@@ -75,10 +65,6 @@ public class Voicemail implements Parcelable {
         private Long mBuilderTimestamp;
         private String mBuilderTranscription;
         private Uri mBuilderUri;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
         }
@@ -139,14 +125,10 @@ public class Voicemail implements Parcelable {
         }
 
         public Voicemail build() {
-            Long l = this.mBuilderId;
-            this.mBuilderId = Long.valueOf(l == null ? -1L : l.longValue());
-            Long l2 = this.mBuilderTimestamp;
-            this.mBuilderTimestamp = Long.valueOf(l2 == null ? 0L : l2.longValue());
-            Long l3 = this.mBuilderDuration;
-            this.mBuilderDuration = Long.valueOf(l3 != null ? l3.longValue() : 0L);
-            Boolean bool = this.mBuilderIsRead;
-            this.mBuilderIsRead = Boolean.valueOf(bool == null ? false : bool.booleanValue());
+            this.mBuilderId = Long.valueOf(this.mBuilderId == null ? -1L : this.mBuilderId.longValue());
+            this.mBuilderTimestamp = Long.valueOf(this.mBuilderTimestamp == null ? 0L : this.mBuilderTimestamp.longValue());
+            this.mBuilderDuration = Long.valueOf(this.mBuilderDuration != null ? this.mBuilderDuration.longValue() : 0L);
+            this.mBuilderIsRead = Boolean.valueOf(this.mBuilderIsRead == null ? false : this.mBuilderIsRead.booleanValue());
             return new Voicemail(this.mBuilderTimestamp, this.mBuilderNumber, this.mBuilderPhoneAccount, this.mBuilderId, this.mBuilderDuration, this.mBuilderSourcePackage, this.mBuilderSourceData, this.mBuilderUri, this.mBuilderIsRead, Boolean.valueOf(this.mBuilderHasContent), this.mBuilderTranscription);
         }
     }
@@ -231,23 +213,6 @@ public class Voicemail implements Parcelable {
             dest.writeInt(0);
         }
         dest.writeCharSequence(this.mTranscription);
-    }
-
-    /* renamed from: android.telecom.Voicemail$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Voicemail> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Voicemail createFromParcel(Parcel in) {
-            return new Voicemail(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Voicemail[] newArray(int size) {
-            return new Voicemail[size];
-        }
     }
 
     private Voicemail(Parcel in) {

@@ -8,7 +8,6 @@ import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
-import android.os.BatteryManager;
 
 /* loaded from: classes.dex */
 public class SaturateFilter extends Filter {
@@ -17,7 +16,7 @@ public class SaturateFilter extends Filter {
     private Program mHerfProgram;
     private final String mHerfSaturateShader;
 
-    @GenerateFieldPort(hasDefault = true, name = BatteryManager.EXTRA_SCALE)
+    @GenerateFieldPort(hasDefault = true, name = "scale")
     private float mScale;
     private int mTarget;
 
@@ -94,12 +93,11 @@ public class SaturateFilter extends Filter {
     }
 
     private void updateParameters() {
-        float f = this.mScale;
-        if (f > 0.0f) {
-            float[] exponents = {(0.9f * f) + 1.0f, (2.1f * f) + 1.0f, (f * 2.7f) + 1.0f};
+        if (this.mScale > 0.0f) {
+            float[] exponents = {(this.mScale * 0.9f) + 1.0f, (this.mScale * 2.1f) + 1.0f, (this.mScale * 2.7f) + 1.0f};
             this.mHerfProgram.setHostValue("exponents", exponents);
         } else {
-            this.mBenProgram.setHostValue(BatteryManager.EXTRA_SCALE, Float.valueOf(f + 1.0f));
+            this.mBenProgram.setHostValue("scale", Float.valueOf(this.mScale + 1.0f));
         }
     }
 }

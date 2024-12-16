@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IOnKeyguardExitResult extends IInterface {
     void onKeyguardExitResult(boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IOnKeyguardExitResult {
         @Override // android.view.IOnKeyguardExitResult
         public void onKeyguardExitResult(boolean success) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IOnKeyguardExitResult extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IOnKeyguardExitResult {
         public static final String DESCRIPTOR = "android.view.IOnKeyguardExitResult";
         static final int TRANSACTION_onKeyguardExitResult = 1;
@@ -66,25 +64,22 @@ public interface IOnKeyguardExitResult extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onKeyguardExitResult(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onKeyguardExitResult(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IOnKeyguardExitResult {
+        private static class Proxy implements IOnKeyguardExitResult {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

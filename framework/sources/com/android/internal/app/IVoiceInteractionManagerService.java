@@ -24,14 +24,16 @@ import android.service.voice.IVisualQueryDetectionVoiceInteractionCallback;
 import android.service.voice.IVoiceInteractionSession;
 import com.android.internal.app.IHotwordRecognitionStatusCallback;
 import com.android.internal.app.IVisualQueryDetectionAttentionListener;
+import com.android.internal.app.IVisualQueryRecognitionStatusListener;
 import com.android.internal.app.IVoiceActionCheckCallback;
+import com.android.internal.app.IVoiceInteractionAccessibilitySettingsListener;
 import com.android.internal.app.IVoiceInteractionSessionListener;
 import com.android.internal.app.IVoiceInteractionSessionShowCallback;
 import com.android.internal.app.IVoiceInteractionSoundTriggerSession;
 import com.android.internal.app.IVoiceInteractor;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IVoiceInteractionManagerService extends IInterface {
     boolean activeServiceSupportsAssist() throws RemoteException;
 
@@ -52,6 +54,8 @@ public interface IVoiceInteractionManagerService extends IInterface {
     void enableVisualQueryDetection(IVisualQueryDetectionAttentionListener iVisualQueryDetectionAttentionListener) throws RemoteException;
 
     void finish(IBinder iBinder) throws RemoteException;
+
+    boolean getAccessibilityDetectionEnabled() throws RemoteException;
 
     ComponentName getActiveServiceComponentName() throws RemoteException;
 
@@ -84,6 +88,8 @@ public interface IVoiceInteractionManagerService extends IInterface {
     void onLockscreenShown() throws RemoteException;
 
     void performDirectAction(IBinder iBinder, String str, Bundle bundle, int i, IBinder iBinder2, RemoteCallback remoteCallback, RemoteCallback remoteCallback2) throws RemoteException;
+
+    void registerAccessibilityDetectionSettingsListener(IVoiceInteractionAccessibilitySettingsListener iVoiceInteractionAccessibilitySettingsListener) throws RemoteException;
 
     void registerVoiceInteractionSessionListener(IVoiceInteractionSessionListener iVoiceInteractionSessionListener) throws RemoteException;
 
@@ -127,13 +133,16 @@ public interface IVoiceInteractionManagerService extends IInterface {
 
     void stopPerceiving() throws RemoteException;
 
+    void subscribeVisualQueryRecognitionStatus(IVisualQueryRecognitionStatusListener iVisualQueryRecognitionStatusListener) throws RemoteException;
+
     void triggerHardwareRecognitionEventForTest(SoundTrigger.KeyphraseRecognitionEvent keyphraseRecognitionEvent, IHotwordRecognitionStatusCallback iHotwordRecognitionStatusCallback) throws RemoteException;
+
+    void unregisterAccessibilityDetectionSettingsListener(IVoiceInteractionAccessibilitySettingsListener iVoiceInteractionAccessibilitySettingsListener) throws RemoteException;
 
     int updateKeyphraseSoundModel(SoundTrigger.KeyphraseSoundModel keyphraseSoundModel) throws RemoteException;
 
     void updateState(PersistableBundle persistableBundle, SharedMemory sharedMemory, IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IVoiceInteractionManagerService {
         @Override // com.android.internal.app.IVoiceInteractionManagerService
         public void showSession(Bundle sessionArgs, int flags, String attributionTag) throws RemoteException {
@@ -307,6 +316,10 @@ public interface IVoiceInteractionManagerService extends IInterface {
         }
 
         @Override // com.android.internal.app.IVoiceInteractionManagerService
+        public void subscribeVisualQueryRecognitionStatus(IVisualQueryRecognitionStatusListener listener) throws RemoteException {
+        }
+
+        @Override // com.android.internal.app.IVoiceInteractionManagerService
         public void enableVisualQueryDetection(IVisualQueryDetectionAttentionListener Listener) throws RemoteException {
         }
 
@@ -354,13 +367,25 @@ public interface IVoiceInteractionManagerService extends IInterface {
         public void notifyActivityEventChanged(IBinder activityToken, int type) throws RemoteException {
         }
 
+        @Override // com.android.internal.app.IVoiceInteractionManagerService
+        public boolean getAccessibilityDetectionEnabled() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.app.IVoiceInteractionManagerService
+        public void registerAccessibilityDetectionSettingsListener(IVoiceInteractionAccessibilitySettingsListener listener) throws RemoteException {
+        }
+
+        @Override // com.android.internal.app.IVoiceInteractionManagerService
+        public void unregisterAccessibilityDetectionSettingsListener(IVoiceInteractionAccessibilitySettingsListener listener) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractionManagerService {
         public static final String DESCRIPTOR = "com.android.internal.app.IVoiceInteractionManagerService";
         static final int TRANSACTION_activeServiceSupportsAssist = 24;
@@ -370,9 +395,10 @@ public interface IVoiceInteractionManagerService extends IInterface {
         static final int TRANSACTION_deleteKeyphraseSoundModel = 15;
         static final int TRANSACTION_deliverNewSession = 2;
         static final int TRANSACTION_destroyDetector = 37;
-        static final int TRANSACTION_disableVisualQueryDetection = 40;
-        static final int TRANSACTION_enableVisualQueryDetection = 39;
+        static final int TRANSACTION_disableVisualQueryDetection = 41;
+        static final int TRANSACTION_enableVisualQueryDetection = 40;
         static final int TRANSACTION_finish = 9;
+        static final int TRANSACTION_getAccessibilityDetectionEnabled = 52;
         static final int TRANSACTION_getActiveServiceComponentName = 19;
         static final int TRANSACTION_getActiveServiceSupportedActions = 28;
         static final int TRANSACTION_getDisabledShowContext = 11;
@@ -386,31 +412,34 @@ public interface IVoiceInteractionManagerService extends IInterface {
         static final int TRANSACTION_isSessionRunning = 23;
         static final int TRANSACTION_launchVoiceAssistFromKeyguard = 22;
         static final int TRANSACTION_listModuleProperties = 34;
-        static final int TRANSACTION_notifyActivityEventChanged = 50;
+        static final int TRANSACTION_notifyActivityEventChanged = 51;
         static final int TRANSACTION_onLockscreenShown = 26;
         static final int TRANSACTION_performDirectAction = 31;
+        static final int TRANSACTION_registerAccessibilityDetectionSettingsListener = 53;
         static final int TRANSACTION_registerVoiceInteractionSessionListener = 27;
         static final int TRANSACTION_requestDirectActions = 30;
         static final int TRANSACTION_setDisabled = 32;
         static final int TRANSACTION_setDisabledShowContext = 10;
         static final int TRANSACTION_setKeepAwake = 7;
         static final int TRANSACTION_setModelDatabaseForTestEnabled = 16;
-        static final int TRANSACTION_setSessionWindowVisible = 49;
+        static final int TRANSACTION_setSessionWindowVisible = 50;
         static final int TRANSACTION_setUiHints = 29;
         static final int TRANSACTION_showSession = 1;
         static final int TRANSACTION_showSessionForActiveService = 20;
         static final int TRANSACTION_showSessionFromSession = 3;
         static final int TRANSACTION_shutdownHotwordDetectionService = 38;
         static final int TRANSACTION_startAssistantActivity = 6;
-        static final int TRANSACTION_startListeningFromExternalSource = 45;
-        static final int TRANSACTION_startListeningFromMic = 43;
-        static final int TRANSACTION_startListeningVisibleActivityChanged = 47;
-        static final int TRANSACTION_startPerceiving = 41;
+        static final int TRANSACTION_startListeningFromExternalSource = 46;
+        static final int TRANSACTION_startListeningFromMic = 44;
+        static final int TRANSACTION_startListeningVisibleActivityChanged = 48;
+        static final int TRANSACTION_startPerceiving = 42;
         static final int TRANSACTION_startVoiceActivity = 5;
-        static final int TRANSACTION_stopListeningFromMic = 44;
-        static final int TRANSACTION_stopListeningVisibleActivityChanged = 48;
-        static final int TRANSACTION_stopPerceiving = 42;
-        static final int TRANSACTION_triggerHardwareRecognitionEventForTest = 46;
+        static final int TRANSACTION_stopListeningFromMic = 45;
+        static final int TRANSACTION_stopListeningVisibleActivityChanged = 49;
+        static final int TRANSACTION_stopPerceiving = 43;
+        static final int TRANSACTION_subscribeVisualQueryRecognitionStatus = 39;
+        static final int TRANSACTION_triggerHardwareRecognitionEventForTest = 47;
+        static final int TRANSACTION_unregisterAccessibilityDetectionSettingsListener = 54;
         static final int TRANSACTION_updateKeyphraseSoundModel = 14;
         static final int TRANSACTION_updateState = 35;
         private final PermissionEnforcer mEnforcer;
@@ -523,29 +552,37 @@ public interface IVoiceInteractionManagerService extends IInterface {
                 case 38:
                     return "shutdownHotwordDetectionService";
                 case 39:
-                    return "enableVisualQueryDetection";
+                    return "subscribeVisualQueryRecognitionStatus";
                 case 40:
-                    return "disableVisualQueryDetection";
+                    return "enableVisualQueryDetection";
                 case 41:
-                    return "startPerceiving";
+                    return "disableVisualQueryDetection";
                 case 42:
-                    return "stopPerceiving";
+                    return "startPerceiving";
                 case 43:
-                    return "startListeningFromMic";
+                    return "stopPerceiving";
                 case 44:
-                    return "stopListeningFromMic";
+                    return "startListeningFromMic";
                 case 45:
-                    return "startListeningFromExternalSource";
+                    return "stopListeningFromMic";
                 case 46:
-                    return "triggerHardwareRecognitionEventForTest";
+                    return "startListeningFromExternalSource";
                 case 47:
-                    return "startListeningVisibleActivityChanged";
+                    return "triggerHardwareRecognitionEventForTest";
                 case 48:
-                    return "stopListeningVisibleActivityChanged";
+                    return "startListeningVisibleActivityChanged";
                 case 49:
-                    return "setSessionWindowVisible";
+                    return "stopListeningVisibleActivityChanged";
                 case 50:
+                    return "setSessionWindowVisible";
+                case 51:
                     return "notifyActivityEventChanged";
+                case 52:
+                    return "getAccessibilityDetectionEnabled";
+                case 53:
+                    return "registerAccessibilityDetectionSettingsListener";
+                case 54:
+                    return "unregisterAccessibilityDetectionSettingsListener";
                 default:
                     return null;
             }
@@ -561,364 +598,382 @@ public interface IVoiceInteractionManagerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    showSession(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    IVoiceInteractionSession _arg12 = IVoiceInteractionSession.Stub.asInterface(data.readStrongBinder());
+                    IVoiceInteractor _arg22 = IVoiceInteractor.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result = deliverNewSession(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg23 = data.readInt();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = showSessionFromSession(_arg03, _arg13, _arg23, _arg3);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = hideSessionFromSession(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 5:
+                    IBinder _arg05 = data.readStrongBinder();
+                    Intent _arg14 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg24 = data.readString();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result4 = startVoiceActivity(_arg05, _arg14, _arg24, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 6:
+                    IBinder _arg06 = data.readStrongBinder();
+                    Intent _arg15 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg25 = data.readString();
+                    String _arg33 = data.readString();
+                    Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result5 = startAssistantActivity(_arg06, _arg15, _arg25, _arg33, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 7:
+                    IBinder _arg07 = data.readStrongBinder();
+                    boolean _arg16 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setKeepAwake(_arg07, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IBinder _arg08 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    closeSystemDialogs(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IBinder _arg09 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    finish(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDisabledShowContext(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _result6 = getDisabledShowContext();
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 12:
+                    int _result7 = getUserDisabledShowContext();
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 13:
+                    int _arg011 = data.readInt();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    SoundTrigger.KeyphraseSoundModel _result8 = getKeyphraseSoundModel(_arg011, _arg17);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 14:
+                    SoundTrigger.KeyphraseSoundModel _arg012 = (SoundTrigger.KeyphraseSoundModel) data.readTypedObject(SoundTrigger.KeyphraseSoundModel.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result9 = updateKeyphraseSoundModel(_arg012);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 15:
+                    int _arg013 = data.readInt();
+                    String _arg18 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result10 = deleteKeyphraseSoundModel(_arg013, _arg18);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 16:
+                    boolean _arg014 = data.readBoolean();
+                    IBinder _arg19 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    setModelDatabaseForTestEnabled(_arg014, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg015 = data.readInt();
+                    String _arg110 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = isEnrolledForKeyphrase(_arg015, _arg110);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 18:
+                    String _arg016 = data.readString();
+                    String _arg111 = data.readString();
+                    data.enforceNoDataAvail();
+                    KeyphraseMetadata _result12 = getEnrolledKeyphraseMetadata(_arg016, _arg111);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 19:
+                    ComponentName _result13 = getActiveServiceComponentName();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 20:
+                    Bundle _arg017 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg112 = data.readInt();
+                    String _arg26 = data.readString();
+                    IVoiceInteractionSessionShowCallback _arg34 = IVoiceInteractionSessionShowCallback.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg42 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = showSessionForActiveService(_arg017, _arg112, _arg26, _arg34, _arg42);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 21:
+                    hideCurrentSession();
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    launchVoiceAssistFromKeyguard();
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    boolean _result15 = isSessionRunning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 24:
+                    boolean _result16 = activeServiceSupportsAssist();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 25:
+                    boolean _result17 = activeServiceSupportsLaunchFromKeyguard();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 26:
+                    onLockscreenShown();
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    IVoiceInteractionSessionListener _arg018 = IVoiceInteractionSessionListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerVoiceInteractionSessionListener(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    List<String> _arg019 = data.createStringArrayList();
+                    IVoiceActionCheckCallback _arg113 = IVoiceActionCheckCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getActiveServiceSupportedActions(_arg019, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    Bundle _arg020 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUiHints(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    IBinder _arg021 = data.readStrongBinder();
+                    int _arg114 = data.readInt();
+                    IBinder _arg27 = data.readStrongBinder();
+                    RemoteCallback _arg35 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    RemoteCallback _arg43 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestDirectActions(_arg021, _arg114, _arg27, _arg35, _arg43);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    IBinder _arg022 = data.readStrongBinder();
+                    String _arg115 = data.readString();
+                    Bundle _arg28 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg36 = data.readInt();
+                    IBinder _arg44 = data.readStrongBinder();
+                    RemoteCallback _arg5 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    RemoteCallback _arg6 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    performDirectAction(_arg022, _arg115, _arg28, _arg36, _arg44, _arg5, _arg6);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    boolean _arg023 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDisabled(_arg023);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    Identity _arg024 = (Identity) data.readTypedObject(Identity.CREATOR);
+                    IBinder _arg116 = data.readStrongBinder();
+                    SoundTrigger.ModuleProperties _arg29 = (SoundTrigger.ModuleProperties) data.readTypedObject(SoundTrigger.ModuleProperties.CREATOR);
+                    data.enforceNoDataAvail();
+                    IVoiceInteractionSoundTriggerSession _result18 = createSoundTriggerSessionAsOriginator(_arg024, _arg116, _arg29);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result18);
+                    return true;
+                case 34:
+                    Identity _arg025 = (Identity) data.readTypedObject(Identity.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<SoundTrigger.ModuleProperties> _result19 = listModuleProperties(_arg025);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result19, 1);
+                    return true;
+                case 35:
+                    PersistableBundle _arg026 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    SharedMemory _arg117 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
+                    IBinder _arg210 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    updateState(_arg026, _arg117, _arg210);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    Identity _arg027 = (Identity) data.readTypedObject(Identity.CREATOR);
+                    PersistableBundle _arg118 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    SharedMemory _arg211 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
+                    IBinder _arg37 = data.readStrongBinder();
+                    IHotwordRecognitionStatusCallback _arg45 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg52 = data.readInt();
+                    data.enforceNoDataAvail();
+                    initAndVerifyDetector(_arg027, _arg118, _arg211, _arg37, _arg45, _arg52);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    IBinder _arg028 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    destroyDetector(_arg028);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    shutdownHotwordDetectionService();
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    IVisualQueryRecognitionStatusListener _arg029 = IVisualQueryRecognitionStatusListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    subscribeVisualQueryRecognitionStatus(_arg029);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    IVisualQueryDetectionAttentionListener _arg030 = IVisualQueryDetectionAttentionListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    enableVisualQueryDetection(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    disableVisualQueryDetection();
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    IVisualQueryDetectionVoiceInteractionCallback _arg031 = IVisualQueryDetectionVoiceInteractionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startPerceiving(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    stopPerceiving();
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    AudioFormat _arg032 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
+                    IMicrophoneHotwordDetectionVoiceInteractionCallback _arg119 = IMicrophoneHotwordDetectionVoiceInteractionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startListeningFromMic(_arg032, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    stopListeningFromMic();
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    ParcelFileDescriptor _arg033 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    AudioFormat _arg120 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
+                    PersistableBundle _arg212 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    IBinder _arg38 = data.readStrongBinder();
+                    IMicrophoneHotwordDetectionVoiceInteractionCallback _arg46 = IMicrophoneHotwordDetectionVoiceInteractionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startListeningFromExternalSource(_arg033, _arg120, _arg212, _arg38, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    SoundTrigger.KeyphraseRecognitionEvent _arg034 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
+                    IHotwordRecognitionStatusCallback _arg121 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    triggerHardwareRecognitionEventForTest(_arg034, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    IBinder _arg035 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    startListeningVisibleActivityChanged(_arg035);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    IBinder _arg036 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    stopListeningVisibleActivityChanged(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    IBinder _arg037 = data.readStrongBinder();
+                    boolean _arg122 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSessionWindowVisible(_arg037, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    IBinder _arg038 = data.readStrongBinder();
+                    int _arg123 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyActivityEventChanged(_arg038, _arg123);
+                    return true;
+                case 52:
+                    boolean _result20 = getAccessibilityDetectionEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 53:
+                    IVoiceInteractionAccessibilitySettingsListener _arg039 = IVoiceInteractionAccessibilitySettingsListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerAccessibilityDetectionSettingsListener(_arg039);
+                    return true;
+                case 54:
+                    IVoiceInteractionAccessibilitySettingsListener _arg040 = IVoiceInteractionAccessibilitySettingsListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterAccessibilityDetectionSettingsListener(_arg040);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            showSession(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            IVoiceInteractionSession _arg12 = IVoiceInteractionSession.Stub.asInterface(data.readStrongBinder());
-                            IVoiceInteractor _arg22 = IVoiceInteractor.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result = deliverNewSession(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg23 = data.readInt();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = showSessionFromSession(_arg03, _arg13, _arg23, _arg3);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = hideSessionFromSession(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 5:
-                            IBinder _arg05 = data.readStrongBinder();
-                            Intent _arg14 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg24 = data.readString();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result4 = startVoiceActivity(_arg05, _arg14, _arg24, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 6:
-                            IBinder _arg06 = data.readStrongBinder();
-                            Intent _arg15 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg25 = data.readString();
-                            String _arg33 = data.readString();
-                            Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result5 = startAssistantActivity(_arg06, _arg15, _arg25, _arg33, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 7:
-                            IBinder _arg07 = data.readStrongBinder();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setKeepAwake(_arg07, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IBinder _arg08 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            closeSystemDialogs(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IBinder _arg09 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            finish(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDisabledShowContext(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _result6 = getDisabledShowContext();
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 12:
-                            int _result7 = getUserDisabledShowContext();
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 13:
-                            int _arg011 = data.readInt();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            SoundTrigger.KeyphraseSoundModel _result8 = getKeyphraseSoundModel(_arg011, _arg17);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 14:
-                            SoundTrigger.KeyphraseSoundModel _arg012 = (SoundTrigger.KeyphraseSoundModel) data.readTypedObject(SoundTrigger.KeyphraseSoundModel.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result9 = updateKeyphraseSoundModel(_arg012);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 15:
-                            int _arg013 = data.readInt();
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result10 = deleteKeyphraseSoundModel(_arg013, _arg18);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 16:
-                            boolean _arg014 = data.readBoolean();
-                            IBinder _arg19 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            setModelDatabaseForTestEnabled(_arg014, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg015 = data.readInt();
-                            String _arg110 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = isEnrolledForKeyphrase(_arg015, _arg110);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 18:
-                            String _arg016 = data.readString();
-                            String _arg111 = data.readString();
-                            data.enforceNoDataAvail();
-                            KeyphraseMetadata _result12 = getEnrolledKeyphraseMetadata(_arg016, _arg111);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 19:
-                            ComponentName _result13 = getActiveServiceComponentName();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        case 20:
-                            Bundle _arg017 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg112 = data.readInt();
-                            String _arg26 = data.readString();
-                            IVoiceInteractionSessionShowCallback _arg34 = IVoiceInteractionSessionShowCallback.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg42 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = showSessionForActiveService(_arg017, _arg112, _arg26, _arg34, _arg42);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 21:
-                            hideCurrentSession();
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            launchVoiceAssistFromKeyguard();
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            boolean _result15 = isSessionRunning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 24:
-                            boolean _result16 = activeServiceSupportsAssist();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 25:
-                            boolean _result17 = activeServiceSupportsLaunchFromKeyguard();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 26:
-                            onLockscreenShown();
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            IVoiceInteractionSessionListener _arg018 = IVoiceInteractionSessionListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerVoiceInteractionSessionListener(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            List<String> _arg019 = data.createStringArrayList();
-                            IVoiceActionCheckCallback _arg113 = IVoiceActionCheckCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getActiveServiceSupportedActions(_arg019, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            Bundle _arg020 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUiHints(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            IBinder _arg021 = data.readStrongBinder();
-                            int _arg114 = data.readInt();
-                            IBinder _arg27 = data.readStrongBinder();
-                            RemoteCallback _arg35 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            RemoteCallback _arg43 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestDirectActions(_arg021, _arg114, _arg27, _arg35, _arg43);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            IBinder _arg022 = data.readStrongBinder();
-                            String _arg115 = data.readString();
-                            Bundle _arg28 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg36 = data.readInt();
-                            IBinder _arg44 = data.readStrongBinder();
-                            RemoteCallback _arg5 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            RemoteCallback _arg6 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            performDirectAction(_arg022, _arg115, _arg28, _arg36, _arg44, _arg5, _arg6);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            boolean _arg023 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDisabled(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            Identity _arg024 = (Identity) data.readTypedObject(Identity.CREATOR);
-                            IBinder _arg116 = data.readStrongBinder();
-                            SoundTrigger.ModuleProperties _arg29 = (SoundTrigger.ModuleProperties) data.readTypedObject(SoundTrigger.ModuleProperties.CREATOR);
-                            data.enforceNoDataAvail();
-                            IVoiceInteractionSoundTriggerSession _result18 = createSoundTriggerSessionAsOriginator(_arg024, _arg116, _arg29);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result18);
-                            return true;
-                        case 34:
-                            Identity _arg025 = (Identity) data.readTypedObject(Identity.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<SoundTrigger.ModuleProperties> _result19 = listModuleProperties(_arg025);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result19, 1);
-                            return true;
-                        case 35:
-                            PersistableBundle _arg026 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            SharedMemory _arg117 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
-                            IBinder _arg210 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            updateState(_arg026, _arg117, _arg210);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            Identity _arg027 = (Identity) data.readTypedObject(Identity.CREATOR);
-                            PersistableBundle _arg118 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            SharedMemory _arg211 = (SharedMemory) data.readTypedObject(SharedMemory.CREATOR);
-                            IBinder _arg37 = data.readStrongBinder();
-                            IHotwordRecognitionStatusCallback _arg45 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg52 = data.readInt();
-                            data.enforceNoDataAvail();
-                            initAndVerifyDetector(_arg027, _arg118, _arg211, _arg37, _arg45, _arg52);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            IBinder _arg028 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            destroyDetector(_arg028);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            shutdownHotwordDetectionService();
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            IVisualQueryDetectionAttentionListener _arg029 = IVisualQueryDetectionAttentionListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            enableVisualQueryDetection(_arg029);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            disableVisualQueryDetection();
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            IVisualQueryDetectionVoiceInteractionCallback _arg030 = IVisualQueryDetectionVoiceInteractionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startPerceiving(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            stopPerceiving();
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            AudioFormat _arg031 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
-                            IMicrophoneHotwordDetectionVoiceInteractionCallback _arg119 = IMicrophoneHotwordDetectionVoiceInteractionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startListeningFromMic(_arg031, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            stopListeningFromMic();
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            ParcelFileDescriptor _arg032 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            AudioFormat _arg120 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
-                            PersistableBundle _arg212 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            IBinder _arg38 = data.readStrongBinder();
-                            IMicrophoneHotwordDetectionVoiceInteractionCallback _arg46 = IMicrophoneHotwordDetectionVoiceInteractionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startListeningFromExternalSource(_arg032, _arg120, _arg212, _arg38, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            SoundTrigger.KeyphraseRecognitionEvent _arg033 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
-                            IHotwordRecognitionStatusCallback _arg121 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            triggerHardwareRecognitionEventForTest(_arg033, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            IBinder _arg034 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            startListeningVisibleActivityChanged(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            IBinder _arg035 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            stopListeningVisibleActivityChanged(_arg035);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            IBinder _arg036 = data.readStrongBinder();
-                            boolean _arg122 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSessionWindowVisible(_arg036, _arg122);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            IBinder _arg037 = data.readStrongBinder();
-                            int _arg123 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyActivityEventChanged(_arg037, _arg123);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IVoiceInteractionManagerService {
+        private static class Proxy implements IVoiceInteractionManagerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1577,13 +1632,28 @@ public interface IVoiceInteractionManagerService extends IInterface {
             }
 
             @Override // com.android.internal.app.IVoiceInteractionManagerService
+            public void subscribeVisualQueryRecognitionStatus(IVisualQueryRecognitionStatusListener listener) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
+                    this.mRemote.transact(39, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IVoiceInteractionManagerService
             public void enableVisualQueryDetection(IVisualQueryDetectionAttentionListener Listener) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(Listener);
-                    this.mRemote.transact(39, _data, _reply, 0);
+                    this.mRemote.transact(40, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1597,7 +1667,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(40, _data, _reply, 0);
+                    this.mRemote.transact(41, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1612,7 +1682,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(41, _data, _reply, 0);
+                    this.mRemote.transact(42, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1626,7 +1696,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(42, _data, _reply, 0);
+                    this.mRemote.transact(43, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1642,7 +1712,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(audioFormat, 0);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(43, _data, _reply, 0);
+                    this.mRemote.transact(44, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1656,7 +1726,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(44, _data, _reply, 0);
+                    this.mRemote.transact(45, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1675,7 +1745,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                     _data.writeTypedObject(options, 0);
                     _data.writeStrongBinder(token);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(45, _data, _reply, 0);
+                    this.mRemote.transact(46, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1691,7 +1761,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(event, 0);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(46, _data, _reply, 0);
+                    this.mRemote.transact(47, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1706,7 +1776,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
-                    this.mRemote.transact(47, _data, _reply, 0);
+                    this.mRemote.transact(48, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1721,7 +1791,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
-                    this.mRemote.transact(48, _data, _reply, 0);
+                    this.mRemote.transact(49, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1737,7 +1807,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeBoolean(visible);
-                    this.mRemote.transact(49, _data, _reply, 0);
+                    this.mRemote.transact(50, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1752,7 +1822,47 @@ public interface IVoiceInteractionManagerService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(activityToken);
                     _data.writeInt(type);
-                    this.mRemote.transact(50, _data, null, 1);
+                    this.mRemote.transact(51, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IVoiceInteractionManagerService
+            public boolean getAccessibilityDetectionEnabled() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(52, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IVoiceInteractionManagerService
+            public void registerAccessibilityDetectionSettingsListener(IVoiceInteractionAccessibilitySettingsListener listener) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
+                    this.mRemote.transact(53, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IVoiceInteractionManagerService
+            public void unregisterAccessibilityDetectionSettingsListener(IVoiceInteractionAccessibilitySettingsListener listener) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
+                    this.mRemote.transact(54, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -1811,6 +1921,10 @@ public interface IVoiceInteractionManagerService extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_HOTWORD_DETECTION, getCallingPid(), getCallingUid());
         }
 
+        protected void subscribeVisualQueryRecognitionStatus_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.ACCESS_VOICE_INTERACTION_SERVICE, getCallingPid(), getCallingUid());
+        }
+
         protected void enableVisualQueryDetection_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCESS_VOICE_INTERACTION_SERVICE, getCallingPid(), getCallingUid());
         }
@@ -1821,7 +1935,7 @@ public interface IVoiceInteractionManagerService extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 49;
+            return 53;
         }
     }
 }

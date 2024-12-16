@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CellIdentityLte implements Parcelable {
     public static final Parcelable.Creator<CellIdentityLte> CREATOR = new Parcelable.Creator<CellIdentityLte>() { // from class: android.hardware.radio.network.CellIdentityLte.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityLte createFromParcel(Parcel _aidl_source) {
             CellIdentityLte _aidl_out = new CellIdentityLte();
@@ -20,6 +18,7 @@ public class CellIdentityLte implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityLte[] newArray(int _aidl_size) {
             return new CellIdentityLte[_aidl_size];
@@ -36,25 +35,6 @@ public class CellIdentityLte implements Parcelable {
     public int tac = 0;
     public int earfcn = 0;
     public int bandwidth = 0;
-
-    /* renamed from: android.hardware.radio.network.CellIdentityLte$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentityLte> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityLte createFromParcel(Parcel _aidl_source) {
-            CellIdentityLte _aidl_out = new CellIdentityLte();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityLte[] newArray(int _aidl_size) {
-            return new CellIdentityLte[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -203,7 +183,7 @@ public class CellIdentityLte implements Parcelable {
         _aidl_sj.add("additionalPlmns: " + Arrays.toString(this.additionalPlmns));
         _aidl_sj.add("csgInfo: " + Objects.toString(this.csgInfo));
         _aidl_sj.add("bands: " + EutranBands$$.arrayToString(this.bands));
-        return "android.hardware.radio.network.CellIdentityLte" + _aidl_sj.toString();
+        return "CellIdentityLte" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

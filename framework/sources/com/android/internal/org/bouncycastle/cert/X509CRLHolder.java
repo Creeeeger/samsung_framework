@@ -72,9 +72,8 @@ public class X509CRLHolder implements Encodable, Serializable {
 
     private void init(CertificateList x509CRL) {
         this.x509CRL = x509CRL;
-        Extensions extensions = x509CRL.getTBSCertList().getExtensions();
-        this.extensions = extensions;
-        this.isIndirect = isIndirectCRL(extensions);
+        this.extensions = x509CRL.getTBSCertList().getExtensions();
+        this.isIndirect = isIndirectCRL(this.extensions);
         this.issuerName = new GeneralNames(new GeneralName(x509CRL.getIssuer()));
     }
 
@@ -134,9 +133,8 @@ public class X509CRLHolder implements Encodable, Serializable {
     }
 
     public Extension getExtension(ASN1ObjectIdentifier oid) {
-        Extensions extensions = this.extensions;
-        if (extensions != null) {
-            return extensions.getExtension(oid);
+        if (this.extensions != null) {
+            return this.extensions.getExtension(oid);
         }
         return null;
     }

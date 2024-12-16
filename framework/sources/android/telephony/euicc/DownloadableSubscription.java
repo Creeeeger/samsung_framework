@@ -9,17 +9,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class DownloadableSubscription implements Parcelable {
     public static final Parcelable.Creator<DownloadableSubscription> CREATOR = new Parcelable.Creator<DownloadableSubscription>() { // from class: android.telephony.euicc.DownloadableSubscription.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DownloadableSubscription createFromParcel(Parcel in) {
             return new DownloadableSubscription(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DownloadableSubscription[] newArray(int size) {
             return new DownloadableSubscription[size];
@@ -31,31 +30,6 @@ public final class DownloadableSubscription implements Parcelable {
 
     @Deprecated
     public final String encodedActivationCode;
-
-    /* synthetic */ DownloadableSubscription(Parcel parcel, DownloadableSubscriptionIA downloadableSubscriptionIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ DownloadableSubscription(String str, String str2, String str3, List list, DownloadableSubscriptionIA downloadableSubscriptionIA) {
-        this(str, str2, str3, list);
-    }
-
-    /* renamed from: android.telephony.euicc.DownloadableSubscription$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DownloadableSubscription> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DownloadableSubscription createFromParcel(Parcel in) {
-            return new DownloadableSubscription(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DownloadableSubscription[] newArray(int size) {
-            return new DownloadableSubscription[size];
-        }
-    }
 
     public String getEncodedActivationCode() {
         return this.encodedActivationCode;
@@ -69,9 +43,8 @@ public final class DownloadableSubscription implements Parcelable {
         this.encodedActivationCode = in.readString();
         this.confirmationCode = in.readString();
         this.carrierName = in.readString();
-        ArrayList arrayList = new ArrayList();
-        this.accessRules = arrayList;
-        in.readTypedList(arrayList, UiccAccessRule.CREATOR);
+        this.accessRules = new ArrayList();
+        in.readTypedList(this.accessRules, UiccAccessRule.CREATOR);
     }
 
     private DownloadableSubscription(String encodedActivationCode, String confirmationCode, String carrierName, List<UiccAccessRule> accessRules) {
@@ -81,7 +54,6 @@ public final class DownloadableSubscription implements Parcelable {
         this.accessRules = accessRules;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         List<UiccAccessRule> accessRules;
         private String carrierName;

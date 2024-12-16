@@ -1,6 +1,5 @@
 package com.android.internal.telephony.cdma.sms;
 
-import android.app.settings.SettingsEnums;
 import android.content.res.Resources;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.telephony.SmsCbCmasInfo;
@@ -156,7 +155,6 @@ public final class BearerData {
     public int messageStatus = 255;
     public boolean userResponseCodeSet = false;
 
-    /* loaded from: classes5.dex */
     public static class TimeStamp {
         public int hour;
         private ZoneId mZoneId = ZoneId.systemDefault();
@@ -172,7 +170,7 @@ public final class BearerData {
             if (year > 99 || year < 0) {
                 return null;
             }
-            ts.year = year >= 96 ? year + SettingsEnums.ACCESSIBILITY_MENU : year + 2000;
+            ts.year = year >= 96 ? year + 1900 : year + 2000;
             int month = IccUtils.cdmaBcdByteToInt(data[1]);
             if (month < 1 || month > 12) {
                 return null;
@@ -222,16 +220,11 @@ public final class BearerData {
             int year = this.year % 100;
             ByteArrayOutputStream outStream = new ByteArrayOutputStream(6);
             outStream.write((((year / 10) & 15) << 4) | ((year % 10) & 15));
-            int i = this.monthOrdinal;
-            outStream.write(((i % 10) & 15) | (((i / 10) << 4) & 240));
-            int i2 = this.monthDay;
-            outStream.write(((i2 % 10) & 15) | (((i2 / 10) << 4) & 240));
-            int i3 = this.hour;
-            outStream.write(((i3 % 10) & 15) | (((i3 / 10) << 4) & 240));
-            int i4 = this.minute;
-            outStream.write(((i4 % 10) & 15) | (((i4 / 10) << 4) & 240));
-            int i5 = this.second;
-            outStream.write(((i5 % 10) & 15) | (((i5 / 10) << 4) & 240));
+            outStream.write((((this.monthOrdinal / 10) << 4) & 240) | ((this.monthOrdinal % 10) & 15));
+            outStream.write((((this.monthDay / 10) << 4) & 240) | ((this.monthDay % 10) & 15));
+            outStream.write((((this.hour / 10) << 4) & 240) | ((this.hour % 10) & 15));
+            outStream.write((((this.minute / 10) << 4) & 240) | ((this.minute % 10) & 15));
+            outStream.write((((this.second / 10) << 4) & 240) | ((this.second % 10) & 15));
             return outStream.toByteArray();
         }
 
@@ -260,8 +253,7 @@ public final class BearerData {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class CodingException extends Exception {
+    private static class CodingException extends Exception {
         public CodingException(String s) {
             super(s);
         }
@@ -304,25 +296,10 @@ public final class BearerData {
         builder.append(", language=" + (this.languageIndicatorSet ? Integer.valueOf(this.language) : "unset"));
         builder.append(", errorClass=" + (this.messageStatusSet ? Integer.valueOf(this.errorClass) : "unset"));
         builder.append(", msgStatus=" + (this.messageStatusSet ? Integer.valueOf(this.messageStatus) : "unset"));
-        StringBuilder append = new StringBuilder().append(", msgCenterTimeStamp=");
-        Object obj = this.msgCenterTimeStamp;
-        if (obj == null) {
-            obj = "unset";
-        }
-        builder.append(append.append(obj).toString());
-        StringBuilder append2 = new StringBuilder().append(", validityPeriodAbsolute=");
-        Object obj2 = this.validityPeriodAbsolute;
-        if (obj2 == null) {
-            obj2 = "unset";
-        }
-        builder.append(append2.append(obj2).toString());
+        builder.append(", msgCenterTimeStamp=" + (this.msgCenterTimeStamp != null ? this.msgCenterTimeStamp : "unset"));
+        builder.append(", validityPeriodAbsolute=" + (this.validityPeriodAbsolute != null ? this.validityPeriodAbsolute : "unset"));
         builder.append(", validityPeriodRelative=" + (this.validityPeriodRelativeSet ? Integer.valueOf(this.validityPeriodRelative) : "unset"));
-        StringBuilder append3 = new StringBuilder().append(", deferredDeliveryTimeAbsolute=");
-        Object obj3 = this.deferredDeliveryTimeAbsolute;
-        if (obj3 == null) {
-            obj3 = "unset";
-        }
-        builder.append(append3.append(obj3).toString());
+        builder.append(", deferredDeliveryTimeAbsolute=" + (this.deferredDeliveryTimeAbsolute != null ? this.deferredDeliveryTimeAbsolute : "unset"));
         builder.append(", deferredDeliveryTimeRelative=" + (this.deferredDeliveryTimeRelativeSet ? Integer.valueOf(this.deferredDeliveryTimeRelative) : "unset"));
         builder.append(", userAckReq=" + this.userAckReq);
         builder.append(", deliveryAckReq=" + this.deliveryAckReq);
@@ -431,14 +408,9 @@ public final class BearerData {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class Gsm7bitCodingResult {
+    private static class Gsm7bitCodingResult {
         byte[] data;
         int septets;
-
-        /* synthetic */ Gsm7bitCodingResult(Gsm7bitCodingResultIA gsm7bitCodingResultIA) {
-            this();
-        }
 
         private Gsm7bitCodingResult() {
         }
@@ -671,8 +643,7 @@ public final class BearerData {
             throw new CodingException("encoded user data too large (" + bData.userData.payload.length + " > 140 bytes)");
         }
         if (bData.userData.msgEncoding == 2) {
-            UserData userData = bData.userData;
-            userData.paddingBits = (userData.payload.length * 8) - (bData.userData.numFields * 7);
+            bData.userData.paddingBits = (bData.userData.payload.length * 8) - (bData.userData.numFields * 7);
         } else {
             bData.userData.paddingBits = 0;
         }
@@ -836,8 +807,7 @@ public final class BearerData {
     }
 
     public static byte[] encode(BearerData bData) {
-        UserData userData = bData.userData;
-        bData.hasUserDataHeader = (userData == null || userData.userDataHeader == null) ? false : true;
+        bData.hasUserDataHeader = (bData.userData == null || bData.userData.userDataHeader == null) ? false : true;
         try {
             BitwiseOutputStream outStream = new BitwiseOutputStream(200);
             outStream.write(8, 0);
@@ -911,9 +881,8 @@ public final class BearerData {
             paramBits -= 24;
             decodeSuccess = true;
             bData.messageType = inStream.read(4);
-            int read = inStream.read(8) << 8;
-            bData.messageId = read;
-            bData.messageId = inStream.read(8) | read;
+            bData.messageId = inStream.read(8) << 8;
+            bData.messageId = inStream.read(8) | bData.messageId;
             bData.hasUserDataHeader = inStream.read(1) == 1;
             inStream.skip(3);
         }
@@ -941,9 +910,8 @@ public final class BearerData {
 
     private static boolean decodeUserData(BearerData bData, BitwiseInputStream inStream) throws BitwiseInputStream.AccessException {
         int paramBits = inStream.read(8) * 8;
-        UserData userData = new UserData();
-        bData.userData = userData;
-        userData.msgEncoding = inStream.read(5);
+        bData.userData = new UserData();
+        bData.userData.msgEncoding = inStream.read(5);
         bData.userData.msgEncodingSet = true;
         bData.userData.msgType = 0;
         int consumedBits = 5;
@@ -965,17 +933,14 @@ public final class BearerData {
         int padding = offset % 2;
         int numFields2 = numFields - ((offset + padding) / 2);
         if (!android.telephony.SmsMessage.getCDMASmsReassembly()) {
-            int i = (numFields2 * 2) + offset;
-            userLength = i;
-            char c = (char) ((data[i - 2] & 255) << 8);
-            compChar = c;
-            char c2 = (char) (c | ((char) (data[i - 1] & 255)));
-            compChar = c2;
-            if ((c2 == 55357 || c2 == 55356 || c2 == 55358) && i == 140) {
+            userLength = (numFields2 * 2) + offset;
+            compChar = (char) ((data[userLength - 2] & 255) << 8);
+            compChar = (char) (compChar | ((char) (data[userLength - 1] & 255)));
+            if ((compChar == 55357 || compChar == 55356 || compChar == 55358) && userLength == 140) {
                 Rlog.d(LOG_TAG, "emoji is broken in the end of segment");
-                mlastByte = r1;
-                int i2 = userLength;
-                byte[] bArr = {data[i2 - 2], data[i2 - 1]};
+                mlastByte = new byte[2];
+                mlastByte[0] = data[userLength - 2];
+                mlastByte[1] = data[userLength - 1];
                 mBodyOffset = offset;
                 mIsfourBytesUnicode = true;
             } else {
@@ -1992,7 +1957,6 @@ public final class BearerData {
 
     private static void extractPagination(String payloadStr, UserData userData) {
         String payload;
-        int i;
         String payloadStr2 = payloadStr;
         int segNum = 0;
         int totNum = 0;
@@ -2053,20 +2017,20 @@ public final class BearerData {
                         char[] totalNumber = tempPage[1].toCharArray();
                         try {
                             segNum = Integer.parseInt(tempPage[0].trim());
-                            int i2 = 0;
-                            while (Character.isDigit(totalNumber[i2])) {
-                                if (i2 == 0) {
-                                    totNum = Character.getNumericValue(totalNumber[i2]);
-                                } else if (i2 == 1) {
+                            int i = 0;
+                            while (Character.isDigit(totalNumber[i])) {
+                                if (i == 0) {
+                                    totNum = Character.getNumericValue(totalNumber[i]);
+                                } else if (i == 1) {
                                     totNum = (Character.getNumericValue(totalNumber[0]) * 10) + Character.getNumericValue(totalNumber[1]);
-                                } else if (i2 == 2) {
+                                } else if (i == 2) {
                                     totNum = (Character.getNumericValue(totalNumber[0]) * 100) + (Character.getNumericValue(totalNumber[1]) * 10) + Character.getNumericValue(totalNumber[2]);
-                                } else if (i2 == 3) {
+                                } else if (i == 3) {
                                     totNum = (Character.getNumericValue(totalNumber[0]) * 1000) + (Character.getNumericValue(totalNumber[1]) * 100) + (Character.getNumericValue(totalNumber[2]) * 10) + Character.getNumericValue(totalNumber[3]);
                                 }
-                                i2++;
+                                i++;
                             }
-                            payload = payloadStr2.substring(tempPage[0].length() + i2 + 1);
+                            payload = payloadStr2.substring(tempPage[0].length() + i + 1);
                             paginationSuccess = true;
                         } catch (ArrayIndexOutOfBoundsException ex2) {
                             Rlog.e(LOG_TAG, "extractPagination : " + ex2);
@@ -2082,16 +2046,14 @@ public final class BearerData {
             byte[] data = payload.getBytes();
             userLength = data.length;
             Rlog.d(LOG_TAG, "spr segment length : " + userLength);
-            if (userData.msgEncoding == 3 && (i = userLength) > 1) {
-                char c = (char) ((data[i - 2] & 255) << 8);
-                compChar = c;
-                char c2 = (char) (((char) (data[i - 1] & 255)) | c);
-                compChar = c2;
-                if (c2 == 55357 || c2 == 55356 || c2 == 55358) {
+            if (userData.msgEncoding == 3 && userLength > 1) {
+                compChar = (char) ((data[userLength - 2] & 255) << 8);
+                compChar = (char) (compChar | ((char) (data[userLength - 1] & 255)));
+                if (compChar == 55357 || compChar == 55356 || compChar == 55358) {
                     Rlog.d(LOG_TAG, "spr emoji is broken in the end of segment");
-                    mlastByte = r7;
-                    int i3 = userLength;
-                    byte[] bArr = {data[i3 - 2], data[i3 - 1]};
+                    mlastByte = new byte[2];
+                    mlastByte[0] = data[userLength - 2];
+                    mlastByte[1] = data[userLength - 1];
                     mIsfourBytesUnicode = true;
                     mBodyOffset = 0;
                 } else {

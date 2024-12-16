@@ -153,7 +153,6 @@ public class AllShareAction {
     public static final String ACTION_WHA_JOIN_PARTY = "com.sec.android.allshare.action.ACTION_WHA_JOIN_PARTY";
     public static final String ACTION_WHA_LEAVE_PARTY = "com.sec.android.allshare.action.ACTION_WHA_LEAVE_PARTY";
 
-    /* loaded from: classes6.dex */
     public static class FileReceiverAction {
         public static final String ACTION_FILE_ARRAYLIST_RECEIVER_CANCEL = "com.sec.android.allshare.action.ACTION_FILE_ARRAYLIST_RECEIVER_CANCEL";
         public static final String ACTION_FILE_ARRAYLIST_RECEIVER_PROGRESS = "com.sec.android.allshare.action.ACTION_FILE_ARRAYLIST_RECEIVER_PROGRESS";

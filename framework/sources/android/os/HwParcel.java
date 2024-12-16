@@ -17,7 +17,6 @@ public class HwParcel {
     private long mNativeContext;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Status {
     }
 

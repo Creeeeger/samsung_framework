@@ -22,111 +22,36 @@ public class BcDefaultDigestProvider implements BcDigestProvider {
     private static Map createTable() {
         Map table = new HashMap();
         table.put(OIWObjectIdentifiers.idSHA1, new BcDigestProvider() { // from class: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider.1
-            AnonymousClass1() {
-            }
-
             @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
             public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
                 return new SHA1Digest();
             }
         });
         table.put(NISTObjectIdentifiers.id_sha224, new BcDigestProvider() { // from class: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider.2
-            AnonymousClass2() {
-            }
-
             @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
             public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
                 return new SHA224Digest();
             }
         });
         table.put(NISTObjectIdentifiers.id_sha256, new BcDigestProvider() { // from class: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider.3
-            AnonymousClass3() {
-            }
-
             @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
             public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
                 return new SHA256Digest();
             }
         });
         table.put(NISTObjectIdentifiers.id_sha384, new BcDigestProvider() { // from class: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider.4
-            AnonymousClass4() {
-            }
-
             @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
             public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
                 return new SHA384Digest();
             }
         });
         table.put(NISTObjectIdentifiers.id_sha512, new BcDigestProvider() { // from class: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider.5
-            AnonymousClass5() {
-            }
-
             @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
             public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
                 return new SHA512Digest();
             }
         });
         return Collections.unmodifiableMap(table);
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements BcDigestProvider {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
-        public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
-            return new SHA1Digest();
-        }
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements BcDigestProvider {
-        AnonymousClass2() {
-        }
-
-        @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
-        public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
-            return new SHA224Digest();
-        }
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 implements BcDigestProvider {
-        AnonymousClass3() {
-        }
-
-        @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
-        public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
-            return new SHA256Digest();
-        }
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 implements BcDigestProvider {
-        AnonymousClass4() {
-        }
-
-        @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
-        public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
-            return new SHA384Digest();
-        }
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.operator.bc.BcDefaultDigestProvider$5 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass5 implements BcDigestProvider {
-        AnonymousClass5() {
-        }
-
-        @Override // com.android.internal.org.bouncycastle.operator.bc.BcDigestProvider
-        public ExtendedDigest get(AlgorithmIdentifier digestAlgorithmIdentifier) {
-            return new SHA512Digest();
-        }
     }
 
     private BcDefaultDigestProvider() {

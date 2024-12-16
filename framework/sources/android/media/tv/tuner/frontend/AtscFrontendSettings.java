@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class AtscFrontendSettings extends FrontendSettings {
     public static final int MODULATION_AUTO = 1;
     public static final int MODULATION_MOD_16VSB = 8;
@@ -14,12 +14,7 @@ public class AtscFrontendSettings extends FrontendSettings {
     private final int mModulation;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Modulation {
-    }
-
-    /* synthetic */ AtscFrontendSettings(long j, int i, AtscFrontendSettingsIA atscFrontendSettingsIA) {
-        this(j, i);
     }
 
     private AtscFrontendSettings(long frequency, int modulation) {
@@ -35,14 +30,9 @@ public class AtscFrontendSettings extends FrontendSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private long mFrequency;
         private int mModulation;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;

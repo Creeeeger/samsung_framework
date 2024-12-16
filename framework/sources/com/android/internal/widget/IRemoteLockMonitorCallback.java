@@ -14,7 +14,6 @@ public interface IRemoteLockMonitorCallback extends IInterface {
 
     int checkRemoteLockPassword(byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRemoteLockMonitorCallback {
         @Override // com.android.internal.widget.IRemoteLockMonitorCallback
         public void changeRemoteLockState(RemoteLockInfo data) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IRemoteLockMonitorCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRemoteLockMonitorCallback {
         static final int TRANSACTION_changeRemoteLockState = 1;
         static final int TRANSACTION_checkRemoteLockPassword = 2;
@@ -77,32 +75,29 @@ public interface IRemoteLockMonitorCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteLockMonitorCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteLockMonitorCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteLockMonitorCallback.DESCRIPTOR);
+                case 1:
+                    RemoteLockInfo _arg0 = (RemoteLockInfo) data.readTypedObject(RemoteLockInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    changeRemoteLockState(_arg0);
+                    return true;
+                case 2:
+                    byte[] _arg02 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result = checkRemoteLockPassword(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RemoteLockInfo _arg0 = (RemoteLockInfo) data.readTypedObject(RemoteLockInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            changeRemoteLockState(_arg0);
-                            return true;
-                        case 2:
-                            byte[] _arg02 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result = checkRemoteLockPassword(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRemoteLockMonitorCallback {
+        private static class Proxy implements IRemoteLockMonitorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

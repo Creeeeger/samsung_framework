@@ -62,19 +62,16 @@ public final class PrintManager {
     private final IPrintManager mService;
     private final int mUserId;
 
-    /* loaded from: classes3.dex */
     public interface PrintJobStateChangeListener {
         void onPrintJobStateChanged(PrintJobId printJobId);
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public interface PrintServiceRecommendationsChangeListener {
         void onPrintServiceRecommendationsChanged();
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public interface PrintServicesChangeListener {
         void onPrintServicesChanged();
     }
@@ -85,10 +82,6 @@ public final class PrintManager {
         this.mUserId = userId;
         this.mAppId = appId;
         this.mHandler = new Handler(context.getMainLooper(), null, false) { // from class: android.print.PrintManager.1
-            AnonymousClass1(Looper looper, Handler.Callback callback, boolean async) {
-                super(looper, callback, async);
-            }
-
             @Override // android.os.Handler
             public void handleMessage(Message message) {
                 switch (message.what) {
@@ -101,51 +94,21 @@ public final class PrintManager {
                             listener.onPrintJobStateChanged(printJobId);
                         }
                         args.recycle();
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.print.PrintManager$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper, Handler.Callback callback, boolean async) {
-            super(looper, callback, async);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            switch (message.what) {
-                case 1:
-                    SomeArgs args = (SomeArgs) message.obj;
-                    PrintJobStateChangeListenerWrapper wrapper = (PrintJobStateChangeListenerWrapper) args.arg1;
-                    PrintJobStateChangeListener listener = wrapper.getListener();
-                    if (listener != null) {
-                        PrintJobId printJobId = (PrintJobId) args.arg2;
-                        listener.onPrintJobStateChanged(printJobId);
-                    }
-                    args.recycle();
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
     public PrintManager getGlobalPrintManagerForUser(int userId) {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return null;
         }
-        return new PrintManager(this.mContext, iPrintManager, userId, -2);
+        return new PrintManager(this.mContext, this.mService, userId, -2);
     }
 
-    public PrintJobInfo getPrintJobInfo(PrintJobId printJobId) {
+    PrintJobInfo getPrintJobInfo(PrintJobId printJobId) {
         try {
             return this.mService.getPrintJobInfo(printJobId, this.mAppId, this.mUserId);
         } catch (RemoteException re) {
@@ -176,8 +139,7 @@ public final class PrintManager {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return;
         }
-        Map<PrintJobStateChangeListener, PrintJobStateChangeListenerWrapper> map = this.mPrintJobStateChangeListeners;
-        if (map == null || (wrappedListener = map.remove(listener)) == null) {
+        if (this.mPrintJobStateChangeListeners == null || (wrappedListener = this.mPrintJobStateChangeListeners.remove(listener)) == null) {
             return;
         }
         if (this.mPrintJobStateChangeListeners.isEmpty()) {
@@ -192,13 +154,12 @@ public final class PrintManager {
     }
 
     public PrintJob getPrintJob(PrintJobId printJobId) {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return null;
         }
         try {
-            PrintJobInfo printJob = iPrintManager.getPrintJobInfo(printJobId, this.mAppId, this.mUserId);
+            PrintJobInfo printJob = this.mService.getPrintJobInfo(printJobId, this.mAppId, this.mUserId);
             if (printJob != null) {
                 return new PrintJob(printJob, this);
             }
@@ -209,26 +170,24 @@ public final class PrintManager {
     }
 
     public Icon getCustomPrinterIcon(PrinterId printerId) {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return null;
         }
         try {
-            return iPrintManager.getCustomPrinterIcon(printerId, this.mUserId);
+            return this.mService.getCustomPrinterIcon(printerId, this.mUserId);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
     }
 
     public List<PrintJob> getPrintJobs() {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return Collections.emptyList();
         }
         try {
-            List<PrintJobInfo> printJobInfos = iPrintManager.getPrintJobInfos(this.mAppId, this.mUserId);
+            List<PrintJobInfo> printJobInfos = this.mService.getPrintJobInfos(this.mAppId, this.mUserId);
             if (printJobInfos == null) {
                 return Collections.emptyList();
             }
@@ -243,27 +202,25 @@ public final class PrintManager {
         }
     }
 
-    public void cancelPrintJob(PrintJobId printJobId) {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+    void cancelPrintJob(PrintJobId printJobId) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return;
         }
         try {
-            iPrintManager.cancelPrintJob(printJobId, this.mAppId, this.mUserId);
+            this.mService.cancelPrintJob(printJobId, this.mAppId, this.mUserId);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
     }
 
-    public void restartPrintJob(PrintJobId printJobId) {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+    void restartPrintJob(PrintJobId printJobId) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return;
         }
         try {
-            iPrintManager.restartPrintJob(printJobId, this.mAppId, this.mUserId);
+            this.mService.restartPrintJob(printJobId, this.mAppId, this.mUserId);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -336,8 +293,7 @@ public final class PrintManager {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return;
         }
-        Map<PrintServicesChangeListener, PrintServicesChangeListenerWrapper> map = this.mPrintServicesChangeListeners;
-        if (map == null || (wrappedListener = map.remove(listener)) == null) {
+        if (this.mPrintServicesChangeListeners == null || (wrappedListener = this.mPrintServicesChangeListeners.remove(listener)) == null) {
             return;
         }
         if (this.mPrintServicesChangeListeners.isEmpty()) {
@@ -395,8 +351,7 @@ public final class PrintManager {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return;
         }
-        Map<PrintServiceRecommendationsChangeListener, PrintServiceRecommendationsChangeListenerWrapper> map = this.mPrintServiceRecommendationsChangeListeners;
-        if (map == null || (wrappedListener = map.remove(listener)) == null) {
+        if (this.mPrintServiceRecommendationsChangeListeners == null || (wrappedListener = this.mPrintServiceRecommendationsChangeListeners.remove(listener)) == null) {
             return;
         }
         if (this.mPrintServiceRecommendationsChangeListeners.isEmpty()) {
@@ -424,42 +379,38 @@ public final class PrintManager {
     }
 
     public PrinterDiscoverySession createPrinterDiscoverySession() {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return null;
         }
-        return new PrinterDiscoverySession(iPrintManager, this.mContext, this.mUserId);
+        return new PrinterDiscoverySession(this.mService, this.mContext, this.mUserId);
     }
 
     public void setPrintServiceEnabled(ComponentName service, boolean isEnabled) {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return;
         }
         try {
-            iPrintManager.setPrintServiceEnabled(service, isEnabled, this.mUserId);
+            this.mService.setPrintServiceEnabled(service, isEnabled, this.mUserId);
         } catch (RemoteException re) {
             Log.e(LOG_TAG, "Error enabling or disabling " + service, re);
         }
     }
 
     public boolean isPrintServiceEnabled(ComponentName service) {
-        IPrintManager iPrintManager = this.mService;
-        if (iPrintManager == null) {
+        if (this.mService == null) {
             Log.w(LOG_TAG, "Feature android.software.print not available");
             return false;
         }
         try {
-            return iPrintManager.isPrintServiceEnabled(service, this.mUserId);
+            return this.mService.isPrintServiceEnabled(service, this.mUserId);
         } catch (RemoteException re) {
             Log.e(LOG_TAG, "Error sampling enabled/disabled " + service, re);
             return false;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PrintDocumentAdapterDelegate extends IPrintDocumentAdapter.Stub implements Application.ActivityLifecycleCallbacks {
         private Activity mActivity;
         private PrintDocumentAdapter mDocumentAdapter;
@@ -468,8 +419,7 @@ public final class PrintManager {
         private IPrintDocumentAdapterObserver mObserver;
         private DestroyableCallback mPendingCallback;
 
-        /* loaded from: classes3.dex */
-        public interface DestroyableCallback {
+        private interface DestroyableCallback {
             void destroy();
         }
 
@@ -619,6 +569,7 @@ public final class PrintManager {
             return this.mActivity == null;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void destroyLocked() {
             this.mActivity.getApplication().unregisterActivityLifecycleCallbacks(this);
             this.mActivity = null;
@@ -629,16 +580,13 @@ public final class PrintManager {
             this.mHandler.removeMessages(4);
             this.mHandler = null;
             this.mObserver = null;
-            DestroyableCallback destroyableCallback = this.mPendingCallback;
-            if (destroyableCallback != null) {
-                destroyableCallback.destroy();
+            if (this.mPendingCallback != null) {
+                this.mPendingCallback.destroy();
                 this.mPendingCallback = null;
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public final class MyHandler extends Handler {
+        private final class MyHandler extends Handler {
             public static final int MSG_ON_FINISH = 4;
             public static final int MSG_ON_KILL = 5;
             public static final int MSG_ON_LAYOUT = 2;
@@ -691,7 +639,6 @@ public final class PrintManager {
             }
         }
 
-        /* loaded from: classes3.dex */
         private final class MyLayoutResultCallback extends PrintDocumentAdapter.LayoutResultCallback implements DestroyableCallback {
             private ILayoutResultCallback mCallback;
             private final int mSequence;
@@ -776,7 +723,6 @@ public final class PrintManager {
             }
         }
 
-        /* loaded from: classes3.dex */
         private final class MyWriteResultCallback extends PrintDocumentAdapter.WriteResultCallback implements DestroyableCallback {
             private IWriteResultCallback mCallback;
             private ParcelFileDescriptor mFd;
@@ -871,7 +817,6 @@ public final class PrintManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PrintJobStateChangeListenerWrapper extends IPrintJobStateChangeListener.Stub {
         private final WeakReference<Handler> mWeakHandler;
         private final WeakReference<PrintJobStateChangeListener> mWeakListener;
@@ -902,7 +847,6 @@ public final class PrintManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PrintServicesChangeListenerWrapper extends IPrintServicesChangeListener.Stub {
         private final WeakReference<Handler> mWeakHandler;
         private final WeakReference<PrintServicesChangeListener> mWeakListener;
@@ -932,7 +876,6 @@ public final class PrintManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PrintServiceRecommendationsChangeListenerWrapper extends IRecommendationsChangeListener.Stub {
         private final WeakReference<Handler> mWeakHandler;
         private final WeakReference<PrintServiceRecommendationsChangeListener> mWeakListener;

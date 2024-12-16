@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Touch {
     private Touch() {
     }
@@ -123,8 +123,7 @@ public class Touch {
         return -1;
     }
 
-    /* loaded from: classes3.dex */
-    public static class DragState implements NoCopySpan {
+    private static class DragState implements NoCopySpan {
         public boolean mFarEnough;
         public int mScrollX;
         public int mScrollY;

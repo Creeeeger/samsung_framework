@@ -9,7 +9,7 @@ public class SContextStepCountAlertAttribute extends SContextAttribute {
     private static final String TAG = "SContextStepCountAlertAttribute";
     private int mStepCount;
 
-    public SContextStepCountAlertAttribute() {
+    SContextStepCountAlertAttribute() {
         this.mStepCount = 10;
         setAttribute();
     }

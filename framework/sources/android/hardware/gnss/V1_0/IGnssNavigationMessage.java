@@ -106,7 +106,6 @@ public interface IGnssNavigationMessage extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssNavigationMessageStatus {
         public static final int ERROR_ALREADY_INIT = -100;
         public static final int ERROR_GENERIC = -101;
@@ -144,7 +143,6 @@ public interface IGnssNavigationMessage extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssNavigationMessage {
         private IHwBinder mRemote;
 
@@ -346,7 +344,6 @@ public interface IGnssNavigationMessage extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssNavigationMessage {
         @Override // android.hardware.gnss.V1_0.IGnssNavigationMessage, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -369,7 +366,7 @@ public interface IGnssNavigationMessage extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IGnssNavigationMessage, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-81, -123, -86, 15, 72, -82, -103, -93, -97, 70, -120, -61, 68, -28, 65, -109, 4, -10, -127, -7, -81, -127, -118, 92, -115, 117, -110, -122, -4, 68, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -34}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-81, -123, -86, 15, 72, -82, -103, -93, -97, 70, -120, -61, 68, -28, 65, -109, 4, -10, -127, -7, -81, -127, -118, 92, -115, 117, -110, -122, -4, 68, 24, -34}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IGnssNavigationMessage, android.internal.hidl.base.V1_0.IBase

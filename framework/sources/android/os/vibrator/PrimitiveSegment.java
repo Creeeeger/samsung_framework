@@ -1,35 +1,35 @@
 package android.os.vibrator;
 
-import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.VibrationEffect;
-import android.os.Vibrator;
+import android.os.VibratorInfo;
 import com.android.internal.util.Preconditions;
 import java.util.Objects;
 
 /* loaded from: classes3.dex */
 public final class PrimitiveSegment extends VibrationEffectSegment {
     public static final Parcelable.Creator<PrimitiveSegment> CREATOR = new Parcelable.Creator<PrimitiveSegment>() { // from class: android.os.vibrator.PrimitiveSegment.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrimitiveSegment createFromParcel(Parcel in) {
             in.readInt();
             return new PrimitiveSegment(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrimitiveSegment[] newArray(int size) {
             return new PrimitiveSegment[size];
         }
     };
+    public static final int DEFAULT_DELAY_MILLIS = 0;
+    public static final float DEFAULT_SCALE = 1.0f;
     private final int mDelay;
     private final int mPrimitiveId;
     private final float mScale;
 
-    public PrimitiveSegment(Parcel in) {
+    PrimitiveSegment(Parcel in) {
         this(in.readInt(), in.readFloat(), in.readInt());
     }
 
@@ -57,17 +57,12 @@ public final class PrimitiveSegment extends VibrationEffectSegment {
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
-    public boolean areVibrationFeaturesSupported(Vibrator vibrator) {
-        return vibrator.areAllPrimitivesSupported(this.mPrimitiveId);
+    public boolean areVibrationFeaturesSupported(VibratorInfo vibratorInfo) {
+        return vibratorInfo.isPrimitiveSupported(this.mPrimitiveId);
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
     public boolean isHapticFeedbackCandidate() {
-        return true;
-    }
-
-    @Override // android.os.vibrator.VibrationEffectSegment
-    public boolean hasNonZeroAmplitude() {
         return true;
     }
 
@@ -78,7 +73,20 @@ public final class PrimitiveSegment extends VibrationEffectSegment {
 
     @Override // android.os.vibrator.VibrationEffectSegment
     public PrimitiveSegment scale(float scaleFactor) {
-        return new PrimitiveSegment(this.mPrimitiveId, VibrationEffect.scale(this.mScale, scaleFactor), this.mDelay);
+        float newScale = VibrationEffect.scale(this.mScale, scaleFactor);
+        if (Float.compare(this.mScale, newScale) == 0) {
+            return this;
+        }
+        return new PrimitiveSegment(this.mPrimitiveId, newScale, this.mDelay);
+    }
+
+    @Override // android.os.vibrator.VibrationEffectSegment
+    public PrimitiveSegment scaleLinearly(float scaleFactor) {
+        float newScale = VibrationEffect.scaleLinearly(this.mScale, scaleFactor);
+        if (Float.compare(this.mScale, newScale) == 0) {
+            return this;
+        }
+        return new PrimitiveSegment(this.mPrimitiveId, newScale, this.mDelay);
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
@@ -89,7 +97,7 @@ public final class PrimitiveSegment extends VibrationEffectSegment {
     @Override // android.os.vibrator.VibrationEffectSegment
     public void validate() {
         Preconditions.checkArgumentInRange(this.mPrimitiveId, 0, 8, "primitiveId");
-        Preconditions.checkArgumentInRange(this.mScale, 0.0f, 1.0f, BatteryManager.EXTRA_SCALE);
+        Preconditions.checkArgumentInRange(this.mScale, 0.0f, 1.0f, "scale");
         VibrationEffectSegment.checkDurationArgument(this.mDelay, "delay");
     }
 
@@ -110,6 +118,11 @@ public final class PrimitiveSegment extends VibrationEffectSegment {
         return "Primitive{primitive=" + VibrationEffect.Composition.primitiveToString(this.mPrimitiveId) + ", scale=" + this.mScale + ", delay=" + this.mDelay + '}';
     }
 
+    @Override // android.os.vibrator.VibrationEffectSegment
+    public String toDebugString() {
+        return String.format("Primitive=%s(scale=%.2f, delay=%dms)", VibrationEffect.Composition.primitiveToString(this.mPrimitiveId), Float.valueOf(this.mScale), Integer.valueOf(this.mDelay));
+    }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -126,23 +139,5 @@ public final class PrimitiveSegment extends VibrationEffectSegment {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mPrimitiveId), Float.valueOf(this.mScale), Integer.valueOf(this.mDelay));
-    }
-
-    /* renamed from: android.os.vibrator.PrimitiveSegment$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrimitiveSegment> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrimitiveSegment createFromParcel(Parcel in) {
-            in.readInt();
-            return new PrimitiveSegment(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrimitiveSegment[] newArray(int size) {
-            return new PrimitiveSegment[size];
-        }
     }
 }

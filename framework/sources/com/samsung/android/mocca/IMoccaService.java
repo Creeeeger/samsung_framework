@@ -8,7 +8,7 @@ import android.os.RemoteException;
 import com.samsung.android.mocca.IMoccaEventListener;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMoccaService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.mocca.IMoccaService";
 
@@ -28,7 +28,6 @@ public interface IMoccaService extends IInterface {
 
     void unregisterContextListener(IMoccaEventListener iMoccaEventListener, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMoccaService {
         @Override // com.samsung.android.mocca.IMoccaService
         public List<String> getSupportedTypes() throws RemoteException {
@@ -74,7 +73,6 @@ public interface IMoccaService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMoccaService {
         static final int TRANSACTION_getSupportedTypes = 1;
         static final int TRANSACTION_hasContextAvailabilityListener = 5;
@@ -138,76 +136,73 @@ public interface IMoccaService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMoccaService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMoccaService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMoccaService.DESCRIPTOR);
+                case 1:
+                    List<String> _result = getSupportedTypes();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isAvailableType(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    IMoccaEventListener _arg02 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = registerContextAvailabilityListener(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    IMoccaEventListener _arg03 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    unregisterContextAvailabilityListener(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IMoccaEventListener _arg04 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result4 = hasContextAvailabilityListener(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 6:
+                    IMoccaEventListener _arg05 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg13 = data.readString();
+                    ContextParam _arg2 = (ContextParam) data.readTypedObject(ContextParam.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = registerContextListener(_arg05, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 7:
+                    IMoccaEventListener _arg06 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    unregisterContextListener(_arg06, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IMoccaEventListener _arg07 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result6 = hasContextListener(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<String> _result = getSupportedTypes();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isAvailableType(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            IMoccaEventListener _arg02 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = registerContextAvailabilityListener(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            IMoccaEventListener _arg03 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            unregisterContextAvailabilityListener(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IMoccaEventListener _arg04 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result4 = hasContextAvailabilityListener(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 6:
-                            IMoccaEventListener _arg05 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg13 = data.readString();
-                            ContextParam _arg2 = (ContextParam) data.readTypedObject(ContextParam.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = registerContextListener(_arg05, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 7:
-                            IMoccaEventListener _arg06 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            unregisterContextListener(_arg06, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IMoccaEventListener _arg07 = IMoccaEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result6 = hasContextListener(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IMoccaService {
             private IBinder mRemote;
 

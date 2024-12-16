@@ -28,7 +28,6 @@ public interface ILegacyPermissionManager extends IInterface {
 
     void revokeDefaultPermissionsFromLuiApps(String[] strArr, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ILegacyPermissionManager {
         @Override // android.permission.ILegacyPermissionManager
         public int checkDeviceIdentifierAccess(String packageName, String message, String callingFeatureId, int pid, int uid) throws RemoteException {
@@ -74,7 +73,6 @@ public interface ILegacyPermissionManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ILegacyPermissionManager {
         static final int TRANSACTION_checkDeviceIdentifierAccess = 1;
         static final int TRANSACTION_checkPhoneNumberAccess = 2;
@@ -141,92 +139,88 @@ public interface ILegacyPermissionManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILegacyPermissionManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILegacyPermissionManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILegacyPermissionManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = checkDeviceIdentifierAccess(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = checkPhoneNumberAccess(_arg02, _arg12, _arg22, _arg32, _arg42);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    String[] _arg03 = data.createStringArray();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    grantDefaultPermissionsToEnabledCarrierApps(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String[] _arg04 = data.createStringArray();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    grantDefaultPermissionsToEnabledImsServices(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String[] _arg05 = data.createStringArray();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    grantDefaultPermissionsToEnabledTelephonyDataServices(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String[] _arg06 = data.createStringArray();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    revokeDefaultPermissionsFromDisabledTelephonyDataServices(_arg06, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    grantDefaultPermissionsToActiveLuiApp(_arg07, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String[] _arg08 = data.createStringArray();
+                    int _arg18 = data.readInt();
+                    data.enforceNoDataAvail();
+                    revokeDefaultPermissionsFromLuiApps(_arg08, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    grantDefaultPermissionsToCarrierServiceApp(_arg09, _arg19);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = checkDeviceIdentifierAccess(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = checkPhoneNumberAccess(_arg02, _arg12, _arg22, _arg32, _arg42);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            String[] _arg03 = data.createStringArray();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantDefaultPermissionsToEnabledCarrierApps(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String[] _arg04 = data.createStringArray();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantDefaultPermissionsToEnabledImsServices(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String[] _arg05 = data.createStringArray();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantDefaultPermissionsToEnabledTelephonyDataServices(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String[] _arg06 = data.createStringArray();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            revokeDefaultPermissionsFromDisabledTelephonyDataServices(_arg06, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantDefaultPermissionsToActiveLuiApp(_arg07, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String[] _arg08 = data.createStringArray();
-                            int _arg18 = data.readInt();
-                            data.enforceNoDataAvail();
-                            revokeDefaultPermissionsFromLuiApps(_arg08, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantDefaultPermissionsToCarrierServiceApp(_arg09, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ILegacyPermissionManager {
+        private static class Proxy implements ILegacyPermissionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

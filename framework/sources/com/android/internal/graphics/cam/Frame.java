@@ -3,7 +3,7 @@ package com.android.internal.graphics.cam;
 import android.hardware.scontext.SContextConstants;
 import android.util.MathUtils;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class Frame {
     public static final Frame DEFAULT = make(CamUtils.WHITE_POINT_D65, (float) ((CamUtils.yFromLstar(50.0d) * 63.66197723675813d) / 100.0d), 50.0f, 2.0f, false);
     private final float mAw;
@@ -29,15 +29,15 @@ public final class Frame {
         return this.mNbb;
     }
 
-    public float getNcb() {
+    float getNcb() {
         return this.mNcb;
     }
 
-    public float getC() {
+    float getC() {
         return this.mC;
     }
 
-    public float getNc() {
+    float getNc() {
         return this.mNc;
     }
 
@@ -45,7 +45,7 @@ public final class Frame {
         return this.mRgbD;
     }
 
-    public float getFl() {
+    float getFl() {
         return this.mFl;
     }
 
@@ -53,7 +53,7 @@ public final class Frame {
         return this.mFlRoot;
     }
 
-    public float getZ() {
+    float getZ() {
         return this.mZ;
     }
 

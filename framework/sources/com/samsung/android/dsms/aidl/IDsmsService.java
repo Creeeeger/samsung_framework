@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDsmsService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.dsms.aidl.IDsmsService";
 
     void sendMessage(String str, String str2, long j) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDsmsService {
         @Override // com.samsung.android.dsms.aidl.IDsmsService
         public void sendMessage(String featureCode, String detail, long value) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDsmsService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDsmsService {
         static final int TRANSACTION_sendMessage = 1;
 
@@ -67,26 +65,23 @@ public interface IDsmsService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDsmsService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDsmsService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDsmsService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    sendMessage(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            sendMessage(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IDsmsService {
             private IBinder mRemote;
 

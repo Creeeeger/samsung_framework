@@ -14,10 +14,12 @@ import java.util.Set;
 
 /* loaded from: classes3.dex */
 public final class NetworkSecurityConfig {
+    public static final boolean DEFAULT_CERTIFICATE_TRANSPARENCY_VERIFICATION_REQUIRED = false;
     public static final boolean DEFAULT_CLEARTEXT_TRAFFIC_PERMITTED = true;
     public static final boolean DEFAULT_HSTS_ENFORCED = false;
     private Set<TrustAnchor> mAnchors;
     private final Object mAnchorsLock;
+    private final boolean mCertificateTransparencyVerificationRequired;
     private final List<CertificatesEntryRef> mCertificatesEntryRefs;
     private final boolean mCleartextTrafficPermitted;
     private final boolean mHstsEnforced;
@@ -25,21 +27,15 @@ public final class NetworkSecurityConfig {
     private NetworkSecurityTrustManager mTrustManager;
     private final Object mTrustManagerLock;
 
-    /* synthetic */ NetworkSecurityConfig(boolean z, boolean z2, PinSet pinSet, List list, NetworkSecurityConfigIA networkSecurityConfigIA) {
-        this(z, z2, pinSet, list);
-    }
-
-    private NetworkSecurityConfig(boolean cleartextTrafficPermitted, boolean hstsEnforced, PinSet pins, List<CertificatesEntryRef> certificatesEntryRefs) {
+    private NetworkSecurityConfig(boolean cleartextTrafficPermitted, boolean hstsEnforced, boolean certificateTransparencyVerificationRequired, PinSet pins, List<CertificatesEntryRef> certificatesEntryRefs) {
         this.mAnchorsLock = new Object();
         this.mTrustManagerLock = new Object();
         this.mCleartextTrafficPermitted = cleartextTrafficPermitted;
         this.mHstsEnforced = hstsEnforced;
+        this.mCertificateTransparencyVerificationRequired = certificateTransparencyVerificationRequired;
         this.mPins = pins;
         this.mCertificatesEntryRefs = certificatesEntryRefs;
-        Collections.sort(certificatesEntryRefs, new Comparator<CertificatesEntryRef>() { // from class: android.security.net.config.NetworkSecurityConfig.1
-            AnonymousClass1() {
-            }
-
+        Collections.sort(this.mCertificatesEntryRefs, new Comparator<CertificatesEntryRef>() { // from class: android.security.net.config.NetworkSecurityConfig.1
             @Override // java.util.Comparator
             public int compare(CertificatesEntryRef certificatesEntryRef, CertificatesEntryRef certificatesEntryRef2) {
                 return certificatesEntryRef.overridesPins() ? certificatesEntryRef2.overridesPins() ? 0 : -1 : certificatesEntryRef2.overridesPins() ? 1 : 0;
@@ -47,24 +43,10 @@ public final class NetworkSecurityConfig {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.security.net.config.NetworkSecurityConfig$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Comparator<CertificatesEntryRef> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(CertificatesEntryRef certificatesEntryRef, CertificatesEntryRef certificatesEntryRef2) {
-            return certificatesEntryRef.overridesPins() ? certificatesEntryRef2.overridesPins() ? 0 : -1 : certificatesEntryRef2.overridesPins() ? 1 : 0;
-        }
-    }
-
     public Set<TrustAnchor> getTrustAnchors() {
         synchronized (this.mAnchorsLock) {
-            Set<TrustAnchor> set = this.mAnchors;
-            if (set != null) {
-                return set;
+            if (this.mAnchors != null) {
+                return this.mAnchors;
             }
             Map<X509Certificate, TrustAnchor> anchorMap = new ArrayMap<>();
             for (CertificatesEntryRef ref : this.mCertificatesEntryRefs) {
@@ -78,7 +60,7 @@ public final class NetworkSecurityConfig {
             ArraySet<TrustAnchor> anchors = new ArraySet<>(anchorMap.size());
             anchors.addAll(anchorMap.values());
             this.mAnchors = anchors;
-            return anchors;
+            return this.mAnchors;
         }
     }
 
@@ -88,6 +70,10 @@ public final class NetworkSecurityConfig {
 
     public boolean isHstsEnforced() {
         return this.mHstsEnforced;
+    }
+
+    public boolean isCertificateTransparencyVerificationRequired() {
+        return this.mCertificateTransparencyVerificationRequired;
     }
 
     public PinSet getPins() {
@@ -153,7 +139,6 @@ public final class NetworkSecurityConfig {
         return builder;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private List<CertificatesEntryRef> mCertificatesEntryRefs;
         private Builder mParentBuilder;
@@ -162,6 +147,8 @@ public final class NetworkSecurityConfig {
         private boolean mHstsEnforced = false;
         private boolean mCleartextTrafficPermittedSet = false;
         private boolean mHstsEnforcedSet = false;
+        private boolean mCertificateTransparencyVerificationRequired = false;
+        private boolean mCertificateTransparencyVerificationRequiredSet = false;
 
         public Builder setParent(Builder parent) {
             for (Builder current = parent; current != null; current = current.getParent()) {
@@ -183,13 +170,11 @@ public final class NetworkSecurityConfig {
         }
 
         private PinSet getEffectivePinSet() {
-            PinSet pinSet = this.mPinSet;
-            if (pinSet != null) {
-                return pinSet;
+            if (this.mPinSet != null) {
+                return this.mPinSet;
             }
-            Builder builder = this.mParentBuilder;
-            if (builder != null) {
-                return builder.getEffectivePinSet();
+            if (this.mParentBuilder != null) {
+                return this.mParentBuilder.getEffectivePinSet();
             }
             return PinSet.EMPTY_PINSET;
         }
@@ -204,9 +189,8 @@ public final class NetworkSecurityConfig {
             if (this.mCleartextTrafficPermittedSet) {
                 return this.mCleartextTrafficPermitted;
             }
-            Builder builder = this.mParentBuilder;
-            if (builder != null) {
-                return builder.getEffectiveCleartextTrafficPermitted();
+            if (this.mParentBuilder != null) {
+                return this.mParentBuilder.getEffectiveCleartextTrafficPermitted();
             }
             return true;
         }
@@ -221,9 +205,8 @@ public final class NetworkSecurityConfig {
             if (this.mHstsEnforcedSet) {
                 return this.mHstsEnforced;
             }
-            Builder builder = this.mParentBuilder;
-            if (builder != null) {
-                return builder.getEffectiveHstsEnforced();
+            if (this.mParentBuilder != null) {
+                return this.mParentBuilder.getEffectiveHstsEnforced();
             }
             return false;
         }
@@ -245,13 +228,11 @@ public final class NetworkSecurityConfig {
         }
 
         private List<CertificatesEntryRef> getEffectiveCertificatesEntryRefs() {
-            List<CertificatesEntryRef> list = this.mCertificatesEntryRefs;
-            if (list != null) {
-                return list;
+            if (this.mCertificatesEntryRefs != null) {
+                return this.mCertificatesEntryRefs;
             }
-            Builder builder = this.mParentBuilder;
-            if (builder != null) {
-                return builder.getEffectiveCertificatesEntryRefs();
+            if (this.mParentBuilder != null) {
+                return this.mParentBuilder.getEffectiveCertificatesEntryRefs();
             }
             return Collections.emptyList();
         }
@@ -260,16 +241,33 @@ public final class NetworkSecurityConfig {
             return this.mCertificatesEntryRefs != null;
         }
 
-        public List<CertificatesEntryRef> getCertificatesEntryRefs() {
+        List<CertificatesEntryRef> getCertificatesEntryRefs() {
             return this.mCertificatesEntryRefs;
+        }
+
+        Builder setCertificateTransparencyVerificationRequired(boolean required) {
+            this.mCertificateTransparencyVerificationRequired = required;
+            this.mCertificateTransparencyVerificationRequiredSet = true;
+            return this;
+        }
+
+        private boolean getCertificateTransparencyVerificationRequired() {
+            if (this.mCertificateTransparencyVerificationRequiredSet) {
+                return this.mCertificateTransparencyVerificationRequired;
+            }
+            if (this.mParentBuilder != null) {
+                return this.mParentBuilder.getCertificateTransparencyVerificationRequired();
+            }
+            return false;
         }
 
         public NetworkSecurityConfig build() {
             boolean cleartextPermitted = getEffectiveCleartextTrafficPermitted();
             boolean hstsEnforced = getEffectiveHstsEnforced();
+            boolean certificateTransparencyVerificationRequired = getCertificateTransparencyVerificationRequired();
             PinSet pinSet = getEffectivePinSet();
             List<CertificatesEntryRef> entryRefs = getEffectiveCertificatesEntryRefs();
-            return new NetworkSecurityConfig(cleartextPermitted, hstsEnforced, pinSet, entryRefs);
+            return new NetworkSecurityConfig(cleartextPermitted, hstsEnforced, certificateTransparencyVerificationRequired, pinSet, entryRefs);
         }
     }
 }

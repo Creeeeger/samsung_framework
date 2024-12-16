@@ -25,18 +25,16 @@ public final class Field {
     }
 
     public Pattern getFilter() {
-        Dataset.DatasetFieldFilter datasetFieldFilter = this.mFilter;
-        if (datasetFieldFilter == null) {
+        if (this.mFilter == null) {
             return null;
         }
-        return datasetFieldFilter.pattern;
+        return this.mFilter.pattern;
     }
 
     public Presentations getPresentations() {
         return this.mPresentations;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private AutofillValue mValue = null;
         private Dataset.DatasetFieldFilter mFilter = null;

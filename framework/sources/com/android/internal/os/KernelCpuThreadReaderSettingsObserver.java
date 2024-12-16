@@ -38,12 +38,11 @@ public class KernelCpuThreadReaderSettingsObserver extends ContentObserver {
         super(BackgroundThread.getHandler());
         KernelCpuThreadReaderDiff kernelCpuThreadReaderDiff;
         this.mContext = context;
-        KernelCpuThreadReader create = KernelCpuThreadReader.create(8, UidPredicate.fromString(COLLECTED_UIDS_DEFAULT));
-        this.mKernelCpuThreadReader = create;
-        if (create == null) {
+        this.mKernelCpuThreadReader = KernelCpuThreadReader.create(8, UidPredicate.fromString(COLLECTED_UIDS_DEFAULT));
+        if (this.mKernelCpuThreadReader == null) {
             kernelCpuThreadReaderDiff = null;
         } else {
-            kernelCpuThreadReaderDiff = new KernelCpuThreadReaderDiff(create, 10000);
+            kernelCpuThreadReaderDiff = new KernelCpuThreadReaderDiff(this.mKernelCpuThreadReader, 10000);
         }
         this.mKernelCpuThreadReaderDiff = kernelCpuThreadReaderDiff;
     }
@@ -73,7 +72,6 @@ public class KernelCpuThreadReaderSettingsObserver extends ContentObserver {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class UidPredicate implements Predicate<Integer> {
         private static final Pattern UID_RANGE_PATTERN = Pattern.compile("([0-9]+)-([0-9]+)");
         private static final String UID_SPECIFIER_DELIMITER = ";";

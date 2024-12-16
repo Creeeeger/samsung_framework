@@ -61,11 +61,9 @@ public class GridView extends AbsListView {
     private int mVerticalSpacing;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface StretchMode {
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<GridView> {
         private int mColumnWidthId;
         private int mGravityId;
@@ -160,27 +158,11 @@ public class GridView extends AbsListView {
         this.mDndGridAnimator = animator;
         setChildrenDrawingOrderEnabled(true);
         this.mDndGridAnimator.setAutoScrollListener(new SemAbsDragAndDropAnimator.SemDragAutoScrollListener() { // from class: android.widget.GridView.1
-            AnonymousClass1() {
-            }
-
             @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
             public void onAutoScroll(int delta) {
                 GridView.this.trackMotionScroll(delta, delta);
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.GridView$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements SemAbsDragAndDropAnimator.SemDragAutoScrollListener {
-        AnonymousClass1() {
-        }
-
-        @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
-        public void onAutoScroll(int delta) {
-            GridView.this.trackMotionScroll(delta, delta);
-        }
     }
 
     @Override // android.widget.AdapterView
@@ -230,7 +212,7 @@ public class GridView extends AbsListView {
     }
 
     @Override // android.widget.AdapterView
-    public int lookForSelectablePosition(int position, boolean lookDown) {
+    int lookForSelectablePosition(int position, boolean lookDown) {
         ListAdapter adapter = this.mAdapter;
         if (adapter == null || isInTouchMode() || position < 0 || position >= this.mItemCount) {
             return -1;
@@ -310,13 +292,11 @@ public class GridView extends AbsListView {
         } else {
             int last2 = startPos + 1;
             int startPos3 = Math.max(0, (startPos - this.mNumColumns) + 1);
-            int i = last2 - startPos3;
-            int i2 = this.mNumColumns;
-            if (i >= i2) {
+            if (last2 - startPos3 >= this.mNumColumns) {
                 last = last2;
                 startPos2 = startPos3;
             } else {
-                int deltaLeft = (i2 - (last2 - startPos3)) * (columnWidth + horizontalSpacing);
+                int deltaLeft = (this.mNumColumns - (last2 - startPos3)) * (columnWidth + horizontalSpacing);
                 nextLeft += (isLayoutRtl ? -1 : 1) * deltaLeft;
                 last = last2;
                 startPos2 = startPos3;
@@ -347,10 +327,9 @@ public class GridView extends AbsListView {
             selectedPosition = selectedPosition2;
             z = false;
         }
-        View child2 = child;
-        this.mReferenceView = child2;
+        this.mReferenceView = child;
         if (selectedView != null) {
-            this.mReferenceViewInSelectedRow = child2;
+            this.mReferenceViewInSelectedRow = this.mReferenceView;
         }
         return selectedView;
     }
@@ -655,6 +634,7 @@ public class GridView extends AbsListView {
         int oldBottom;
         View referenceView;
         View sel;
+        int oldTop;
         int fadingEdgeLength = getVerticalFadingEdgeLength();
         int selectedPosition = this.mSelectedPosition;
         int numColumns = this.mNumColumns;
@@ -677,24 +657,25 @@ public class GridView extends AbsListView {
         int bottomSelectionPixel = getBottomSelectionPixel(childrenBottom, fadingEdgeLength, numColumns, rowStart);
         this.mFirstPosition = rowStart;
         if (invertedSelection3 > 0) {
-            View view = this.mReferenceViewInSelectedRow;
-            oldBottom = view != null ? view.getBottom() : 0;
+            oldBottom = this.mReferenceViewInSelectedRow != null ? this.mReferenceViewInSelectedRow.getBottom() : 0;
             sel = makeRow(this.mStackFromBottom ? rowEnd : rowStart, oldBottom + verticalSpacing, true);
             referenceView = this.mReferenceView;
             adjustForBottomFadingEdge(referenceView, topSelectionPixel, bottomSelectionPixel);
-        } else if (invertedSelection3 < 0) {
-            View view2 = this.mReferenceViewInSelectedRow;
-            int oldTop = view2 == null ? 0 : view2.getTop();
-            View sel2 = makeRow(this.mStackFromBottom ? rowEnd : rowStart, oldTop - verticalSpacing, false);
+        } else if (invertedSelection3 >= 0) {
+            oldBottom = this.mReferenceViewInSelectedRow != null ? this.mReferenceViewInSelectedRow.getTop() : 0;
+            int oldTop2 = oldBottom;
+            View sel2 = makeRow(this.mStackFromBottom ? rowEnd : rowStart, oldTop2, true);
             referenceView = this.mReferenceView;
-            adjustForTopFadingEdge(referenceView, topSelectionPixel, bottomSelectionPixel);
             sel = sel2;
         } else {
-            View view3 = this.mReferenceViewInSelectedRow;
-            oldBottom = view3 != null ? view3.getTop() : 0;
-            int oldTop2 = oldBottom;
-            View sel3 = makeRow(this.mStackFromBottom ? rowEnd : rowStart, oldTop2, true);
+            if (this.mReferenceViewInSelectedRow != null) {
+                oldTop = this.mReferenceViewInSelectedRow.getTop();
+            } else {
+                oldTop = 0;
+            }
+            View sel3 = makeRow(this.mStackFromBottom ? rowEnd : rowStart, oldTop - verticalSpacing, false);
             referenceView = this.mReferenceView;
+            adjustForTopFadingEdge(referenceView, topSelectionPixel, bottomSelectionPixel);
             sel = sel3;
         }
         if (!this.mStackFromBottom) {
@@ -715,15 +696,14 @@ public class GridView extends AbsListView {
         int stretchMode = this.mStretchMode;
         int requestedColumnWidth = this.mRequestedColumnWidth;
         boolean didNotInitiallyFit = false;
-        int i = this.mRequestedNumColumns;
-        if (i == -1) {
+        if (this.mRequestedNumColumns == -1) {
             if (requestedColumnWidth > 0) {
                 this.mNumColumns = (availableSpace + requestedHorizontalSpacing) / (requestedColumnWidth + requestedHorizontalSpacing);
             } else {
                 this.mNumColumns = 2;
             }
         } else {
-            this.mNumColumns = i;
+            this.mNumColumns = this.mRequestedNumColumns;
         }
         if (this.mNumColumns <= 0) {
             this.mNumColumns = 1;
@@ -734,29 +714,28 @@ public class GridView extends AbsListView {
                 this.mHorizontalSpacing = requestedHorizontalSpacing;
                 return didNotInitiallyFit;
             default:
-                int i2 = this.mNumColumns;
-                int spaceLeftOver = (availableSpace - (i2 * requestedColumnWidth)) - ((i2 - 1) * requestedHorizontalSpacing);
+                int spaceLeftOver = (availableSpace - (this.mNumColumns * requestedColumnWidth)) - ((this.mNumColumns - 1) * requestedHorizontalSpacing);
                 if (spaceLeftOver < 0) {
                     didNotInitiallyFit = true;
                 }
                 switch (stretchMode) {
                     case 1:
                         this.mColumnWidth = requestedColumnWidth;
-                        if (i2 > 1) {
-                            this.mHorizontalSpacing = (spaceLeftOver / (i2 - 1)) + requestedHorizontalSpacing;
+                        if (this.mNumColumns > 1) {
+                            this.mHorizontalSpacing = (spaceLeftOver / (this.mNumColumns - 1)) + requestedHorizontalSpacing;
                             break;
                         } else {
                             this.mHorizontalSpacing = requestedHorizontalSpacing + spaceLeftOver;
                             break;
                         }
                     case 2:
-                        this.mColumnWidth = (spaceLeftOver / i2) + requestedColumnWidth;
+                        this.mColumnWidth = (spaceLeftOver / this.mNumColumns) + requestedColumnWidth;
                         this.mHorizontalSpacing = requestedHorizontalSpacing;
                         break;
                     case 3:
                         this.mColumnWidth = requestedColumnWidth;
-                        if (i2 > 1) {
-                            this.mHorizontalSpacing = (spaceLeftOver / (i2 + 1)) + requestedHorizontalSpacing;
+                        if (this.mNumColumns > 1) {
+                            this.mHorizontalSpacing = (spaceLeftOver / (this.mNumColumns + 1)) + requestedHorizontalSpacing;
                             break;
                         } else {
                             this.mHorizontalSpacing = requestedHorizontalSpacing + spaceLeftOver;
@@ -767,16 +746,14 @@ public class GridView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int i;
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = View.MeasureSpec.getSize(heightMeasureSpec);
         if (widthMode == 0) {
-            int i2 = this.mColumnWidth;
-            int widthSize2 = i2 > 0 ? i2 + this.mListPadding.left + this.mListPadding.right : this.mListPadding.left + this.mListPadding.right;
+            int widthSize2 = this.mColumnWidth > 0 ? this.mColumnWidth + this.mListPadding.left + this.mListPadding.right : this.mListPadding.left + this.mListPadding.right;
             int widthSize3 = getVerticalScrollbarWidth();
             widthSize = widthSize3 + widthSize2;
         }
@@ -810,17 +787,17 @@ public class GridView extends AbsListView {
         if (heightMode == Integer.MIN_VALUE) {
             int ourSize = this.mListPadding.top + this.mListPadding.bottom;
             int numColumns = this.mNumColumns;
-            int i3 = 0;
+            int i = 0;
             while (true) {
-                if (i3 >= count) {
+                if (i >= count) {
                     break;
                 }
                 ourSize += childHeight;
-                if (i3 + numColumns < count) {
+                if (i + numColumns < count) {
                     ourSize += this.mVerticalSpacing;
                 }
                 if (ourSize < heightSize) {
-                    i3 += numColumns;
+                    i += numColumns;
                 } else {
                     ourSize = heightSize;
                     break;
@@ -828,8 +805,8 @@ public class GridView extends AbsListView {
             }
             heightSize = ourSize;
         }
-        if (widthMode == Integer.MIN_VALUE && (i = this.mRequestedNumColumns) != -1) {
-            int ourSize2 = (this.mColumnWidth * i) + ((i - 1) * this.mHorizontalSpacing) + this.mListPadding.left + this.mListPadding.right;
+        if (widthMode == Integer.MIN_VALUE && this.mRequestedNumColumns != -1) {
+            int ourSize2 = (this.mRequestedNumColumns * this.mColumnWidth) + ((this.mRequestedNumColumns - 1) * this.mHorizontalSpacing) + this.mListPadding.left + this.mListPadding.right;
             if (ourSize2 > widthSize || didNotInitiallyFit) {
                 widthSize |= 16777216;
             }
@@ -854,16 +831,14 @@ public class GridView extends AbsListView {
             animationParams.row = index / this.mNumColumns;
         } else {
             int invertedIndex = (count - 1) - index;
-            int i = this.mNumColumns;
-            animationParams.column = (i - 1) - (invertedIndex % i);
+            animationParams.column = (this.mNumColumns - 1) - (invertedIndex % this.mNumColumns);
             animationParams.row = (animationParams.rowsCount - 1) - (invertedIndex / this.mNumColumns);
         }
     }
 
     @Override // android.widget.AbsListView, android.view.ViewGroup
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        SemDragAndDropGridAnimator semDragAndDropGridAnimator = this.mDndGridAnimator;
-        if (semDragAndDropGridAnimator == null || !semDragAndDropGridAnimator.onInterceptTouchEvent(ev)) {
+        if (this.mDndGridAnimator == null || !this.mDndGridAnimator.onInterceptTouchEvent(ev)) {
             return super.onInterceptTouchEvent(ev);
         }
         return true;
@@ -871,43 +846,37 @@ public class GridView extends AbsListView {
 
     @Override // android.widget.AbsListView, android.view.View
     public boolean onTouchEvent(MotionEvent ev) {
-        SemDragAndDropGridAnimator semDragAndDropGridAnimator = this.mDndGridAnimator;
-        if (semDragAndDropGridAnimator == null || !semDragAndDropGridAnimator.onTouchEvent(ev)) {
+        if (this.mDndGridAnimator == null || !this.mDndGridAnimator.onTouchEvent(ev)) {
             return super.onTouchEvent(ev);
         }
         return true;
     }
 
     @Override // android.view.ViewGroup
-    public int getChildDrawingOrder(int childCount, int i) {
-        SemDragAndDropGridAnimator semDragAndDropGridAnimator = this.mDndGridAnimator;
-        return semDragAndDropGridAnimator != null ? semDragAndDropGridAnimator.getChildDrawingOrder(childCount, i) : super.getChildDrawingOrder(childCount, i);
+    protected int getChildDrawingOrder(int childCount, int i) {
+        return this.mDndGridAnimator != null ? this.mDndGridAnimator.getChildDrawingOrder(childCount, i) : super.getChildDrawingOrder(childCount, i);
     }
 
     @Override // android.view.ViewGroup
-    public boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        SemDragAndDropGridAnimator semDragAndDropGridAnimator = this.mDndGridAnimator;
-        if (semDragAndDropGridAnimator != null && !semDragAndDropGridAnimator.preDrawChild(canvas, child, drawingTime)) {
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        if (this.mDndGridAnimator != null && !this.mDndGridAnimator.preDrawChild(canvas, child, drawingTime)) {
             return false;
         }
         boolean retVal = super.drawChild(canvas, child, drawingTime);
-        SemDragAndDropGridAnimator semDragAndDropGridAnimator2 = this.mDndGridAnimator;
-        if (semDragAndDropGridAnimator2 != null) {
-            semDragAndDropGridAnimator2.postDrawChild(canvas, child, drawingTime);
+        if (this.mDndGridAnimator != null) {
+            this.mDndGridAnimator.postDrawChild(canvas, child, drawingTime);
         }
         return retVal;
     }
 
     @Override // android.widget.AbsListView, android.view.ViewGroup, android.view.View
-    public void dispatchDraw(Canvas canvas) {
-        SemAddDeleteGridAnimator semAddDeleteGridAnimator = this.mAddDeleteGridAnimator;
-        if (semAddDeleteGridAnimator != null) {
-            semAddDeleteGridAnimator.draw(canvas);
+    protected void dispatchDraw(Canvas canvas) {
+        if (this.mAddDeleteGridAnimator != null) {
+            this.mAddDeleteGridAnimator.draw(canvas);
         }
         super.dispatchDraw(canvas);
-        SemDragAndDropGridAnimator semDragAndDropGridAnimator = this.mDndGridAnimator;
-        if (semDragAndDropGridAnimator != null) {
-            semDragAndDropGridAnimator.dispatchDraw(canvas);
+        if (this.mDndGridAnimator != null) {
+            this.mDndGridAnimator.dispatchDraw(canvas);
         }
     }
 
@@ -916,26 +885,11 @@ public class GridView extends AbsListView {
         super.onWindowFocusChanged(hasWindowFocus);
         if (hasWindowFocus && this.mDndGridAnimator != null) {
             post(new Runnable() { // from class: android.widget.GridView.2
-                AnonymousClass2() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
                 }
             });
-        }
-    }
-
-    /* renamed from: android.widget.GridView$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
         }
     }
 
@@ -965,7 +919,7 @@ public class GridView extends AbsListView {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void layoutChildren() {
+    protected void layoutChildren() {
         /*
             Method dump skipped, instructions count: 780
             To view this dump change 'Code comments level' option to 'DEBUG'
@@ -1095,9 +1049,8 @@ public class GridView extends AbsListView {
         layoutChildren();
         int next = this.mStackFromBottom ? (this.mItemCount - 1) - this.mNextSelectedPosition : this.mNextSelectedPosition;
         int previous = this.mStackFromBottom ? (this.mItemCount - 1) - previousSelectedPosition : previousSelectedPosition;
-        int i = this.mNumColumns;
-        int nextRow = next / i;
-        int previousRow = previous / i;
+        int nextRow = next / this.mNumColumns;
+        int previousRow = previous / this.mNumColumns;
         if (tmpFirstPosition != this.mFirstPosition) {
             semShowGoToTOP();
         }
@@ -1376,7 +1329,7 @@ public class GridView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.view.View
-    public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         int closestChildIndex = -1;
         if (gainFocus && previouslyFocusedRect != null) {
@@ -1404,26 +1357,11 @@ public class GridView extends AbsListView {
         }
         if (gainFocus && this.mDndGridAnimator != null) {
             post(new Runnable() { // from class: android.widget.GridView.3
-                AnonymousClass3() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
                 }
             });
-        }
-    }
-
-    /* renamed from: android.widget.GridView$3 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
         }
     }
 
@@ -1433,13 +1371,12 @@ public class GridView extends AbsListView {
         int count = getChildCount();
         int invertedIndex = (count - 1) - childIndex;
         if (!this.mStackFromBottom) {
-            int i = this.mNumColumns;
-            rowStart = childIndex - (childIndex % i);
-            rowEnd = Math.min((i + rowStart) - 1, count);
+            rowStart = childIndex - (childIndex % this.mNumColumns);
+            rowEnd = Math.min((this.mNumColumns + rowStart) - 1, count);
         } else {
-            int i2 = this.mNumColumns;
-            rowEnd = (count - 1) - (invertedIndex - (invertedIndex % i2));
-            rowStart = Math.max(0, (rowEnd - i2) + 1);
+            int rowStart2 = count - 1;
+            rowEnd = rowStart2 - (invertedIndex - (invertedIndex % this.mNumColumns));
+            rowStart = Math.max(0, (rowEnd - this.mNumColumns) + 1);
         }
         switch (direction) {
             case 1:
@@ -1570,7 +1507,7 @@ public class GridView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.view.View
-    public int computeVerticalScrollExtent() {
+    protected int computeVerticalScrollExtent() {
         int count = getChildCount();
         if (count <= 0) {
             return 0;
@@ -1594,7 +1531,7 @@ public class GridView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.view.View
-    public int computeVerticalScrollOffset() {
+    protected int computeVerticalScrollOffset() {
         if (this.mFirstPosition >= 0 && getChildCount() > 0) {
             View view = getChildAt(0);
             int top = view.getTop();
@@ -1611,7 +1548,7 @@ public class GridView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.view.View
-    public int computeVerticalScrollRange() {
+    protected int computeVerticalScrollRange() {
         int numColumns = this.mNumColumns;
         int rowCount = ((this.mItemCount + numColumns) - 1) / numColumns;
         int result = Math.max(rowCount * 100, 0);
@@ -1651,12 +1588,11 @@ public class GridView extends AbsListView {
                 int position = Math.min(row * numColumns, getCount() - 1);
                 if (row >= 0) {
                     smoothScrollToPosition(position);
-                    return true;
+                    break;
                 }
-                return false;
-            default:
-                return false;
+                break;
         }
+        return true;
     }
 
     @Override // android.widget.AbsListView
@@ -1686,7 +1622,7 @@ public class GridView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.widget.AdapterView, android.view.ViewGroup, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("numColumns", getNumColumns());
     }

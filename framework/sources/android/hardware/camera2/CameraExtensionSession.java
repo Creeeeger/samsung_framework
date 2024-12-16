@@ -4,10 +4,9 @@ import android.hardware.camera2.utils.HashCodeHelpers;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class CameraExtensionSession implements AutoCloseable {
 
-    /* loaded from: classes.dex */
     public static abstract class ExtensionCaptureCallback {
         public void onCaptureStarted(CameraExtensionSession session, CaptureRequest request, long timestamp) {
         }
@@ -16,6 +15,9 @@ public abstract class CameraExtensionSession implements AutoCloseable {
         }
 
         public void onCaptureFailed(CameraExtensionSession session, CaptureRequest request) {
+        }
+
+        public void onCaptureFailed(CameraExtensionSession session, CaptureRequest request, int failure) {
         }
 
         public void onCaptureSequenceCompleted(CameraExtensionSession session, int sequenceId) {
@@ -31,7 +33,6 @@ public abstract class CameraExtensionSession implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class StateCallback {
         public abstract void onConfigureFailed(CameraExtensionSession cameraExtensionSession);
 
@@ -57,7 +58,6 @@ public abstract class CameraExtensionSession implements AutoCloseable {
         throw new UnsupportedOperationException("Subclasses must override this method");
     }
 
-    /* loaded from: classes.dex */
     public static final class StillCaptureLatency {
         private final long mCaptureLatency;
         private final long mProcessingLatency;
@@ -90,7 +90,7 @@ public abstract class CameraExtensionSession implements AutoCloseable {
         }
 
         public int hashCode() {
-            return HashCodeHelpers.hashCode((float) this.mCaptureLatency, (float) this.mProcessingLatency);
+            return HashCodeHelpers.hashCode(this.mCaptureLatency, this.mProcessingLatency);
         }
 
         public String toString() {

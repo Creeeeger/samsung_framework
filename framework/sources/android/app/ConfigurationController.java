@@ -1,5 +1,6 @@
 package android.app;
 
+import android.app.servertransaction.ClientTransactionListenerController;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.CompatibilityInfo;
@@ -13,12 +14,12 @@ import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.WindowManagerGlobal;
 import android.window.ConfigurationHelper;
-import com.samsung.android.rune.CoreRune;
+import com.samsung.android.core.CompatSandbox;
 import java.util.ArrayList;
 import java.util.Locale;
 
 /* loaded from: classes.dex */
-public class ConfigurationController {
+class ConfigurationController {
     private static final String TAG = "ConfigurationController";
     private final ActivityThreadInternal mActivityThread;
     private Configuration mCompatConfiguration;
@@ -26,27 +27,25 @@ public class ConfigurationController {
     private Configuration mPendingConfiguration;
     private final ResourcesManager mResourcesManager = ResourcesManager.getInstance();
 
-    public ConfigurationController(ActivityThreadInternal activityThread) {
+    ConfigurationController(ActivityThreadInternal activityThread) {
         this.mActivityThread = activityThread;
     }
 
-    public Configuration updatePendingConfiguration(Configuration config) {
+    Configuration updatePendingConfiguration(Configuration config) {
         synchronized (this.mResourcesManager) {
-            Configuration configuration = this.mPendingConfiguration;
-            if (configuration != null && !configuration.isOtherSeqNewer(config)) {
+            if (this.mPendingConfiguration != null && !this.mPendingConfiguration.isOtherSeqNewer(config)) {
                 return null;
             }
             this.mPendingConfiguration = config;
-            return config;
+            return this.mPendingConfiguration;
         }
     }
 
-    public Configuration getPendingConfiguration(boolean clearPending) {
+    Configuration getPendingConfiguration(boolean clearPending) {
         Configuration outConfig = null;
         synchronized (this.mResourcesManager) {
-            Configuration configuration = this.mPendingConfiguration;
-            if (configuration != null) {
-                outConfig = configuration;
+            if (this.mPendingConfiguration != null) {
+                outConfig = this.mPendingConfiguration;
                 if (clearPending) {
                     this.mPendingConfiguration = null;
                 }
@@ -55,15 +54,15 @@ public class ConfigurationController {
         return outConfig;
     }
 
-    public void setCompatConfiguration(Configuration config) {
+    void setCompatConfiguration(Configuration config) {
         this.mCompatConfiguration = new Configuration(config);
     }
 
-    public Configuration getCompatConfiguration() {
+    Configuration getCompatConfiguration() {
         return this.mCompatConfiguration;
     }
 
-    public final Configuration applyCompatConfiguration() {
+    final Configuration applyCompatConfiguration() {
         Configuration config = this.mConfiguration;
         int displayDensity = config.densityDpi;
         if (this.mCompatConfiguration == null) {
@@ -76,33 +75,43 @@ public class ConfigurationController {
         return config;
     }
 
-    public void setConfiguration(Configuration config) {
+    void setConfiguration(Configuration config) {
         this.mConfiguration = new Configuration(config);
     }
 
-    public Configuration getConfiguration() {
+    Configuration getConfiguration() {
         return this.mConfiguration;
     }
 
-    public void handleConfigurationChanged(Configuration config) {
+    void handleConfigurationChanged(Configuration config) {
         Trace.traceBegin(64L, "configChanged");
         handleConfigurationChanged(config, null);
         Trace.traceEnd(64L);
     }
 
-    public void handleConfigurationChanged(CompatibilityInfo compat) {
+    void handleConfigurationChanged(CompatibilityInfo compat) {
         handleConfigurationChanged(this.mConfiguration, compat);
         WindowManagerGlobal.getInstance().reportNewConfiguration(this.mConfiguration);
     }
 
-    public void handleConfigurationChanged(Configuration config, CompatibilityInfo compat) {
+    void handleConfigurationChanged(Configuration config, CompatibilityInfo compat) {
+        ClientTransactionListenerController controller = ClientTransactionListenerController.getInstance();
+        Context contextToUpdate = ActivityThread.currentApplication();
+        controller.onContextConfigurationPreChanged(contextToUpdate);
+        try {
+            handleConfigurationChangedInner(config, compat);
+        } finally {
+            controller.onContextConfigurationPostChanged(contextToUpdate);
+        }
+    }
+
+    private void handleConfigurationChangedInner(Configuration config, CompatibilityInfo compat) {
         Resources.Theme systemTheme = this.mActivityThread.getSystemContext().getTheme();
         ContextImpl systemUiContext = this.mActivityThread.getSystemUiContextNoCreate();
         Resources.Theme systemUiTheme = systemUiContext != null ? systemUiContext.getTheme() : null;
         synchronized (this.mResourcesManager) {
-            Configuration configuration = this.mPendingConfiguration;
-            if (configuration != null) {
-                if (!configuration.isOtherSeqNewer(config)) {
+            if (this.mPendingConfiguration != null) {
+                if (!this.mPendingConfiguration.isOtherSeqNewer(config)) {
                     config = this.mPendingConfiguration;
                     updateDefaultDensity(config.densityDpi);
                 }
@@ -111,8 +120,7 @@ public class ConfigurationController {
             if (config == null) {
                 return;
             }
-            Configuration configuration2 = this.mConfiguration;
-            boolean equivalent = configuration2 != null && configuration2.diffPublicOnly(config) == 0;
+            boolean equivalent = this.mConfiguration != null && this.mConfiguration.diffPublicOnly(config) == 0;
             Application app = this.mActivityThread.getApplication();
             app.getResources();
             this.mResourcesManager.applyConfigurationToResources(config, compat);
@@ -156,18 +164,18 @@ public class ConfigurationController {
         componentCallbacks2.onConfigurationChanged(configToReport);
     }
 
-    public void updateDefaultDensity(int densityDpi) {
+    void updateDefaultDensity(int densityDpi) {
         if (!this.mActivityThread.isInDensityCompatMode() && densityDpi != 0 && densityDpi != DisplayMetrics.DENSITY_DEVICE) {
             DisplayMetrics.DENSITY_DEVICE = densityDpi;
             Bitmap.setDefaultDensity(densityDpi);
         }
     }
 
-    public int getCurDefaultDisplayDpi() {
+    int getCurDefaultDisplayDpi() {
         return this.mConfiguration.densityDpi;
     }
 
-    public void updateLocaleListFromAppContext(Context context) {
+    void updateLocaleListFromAppContext(Context context) {
         Locale bestLocale = context.getResources().getConfiguration().getLocales().get(0);
         LocaleList newLocaleList = this.mResourcesManager.getConfiguration().getLocales();
         int newLocaleListSize = newLocaleList.size();
@@ -180,14 +188,12 @@ public class ConfigurationController {
         LocaleList.setDefault(new LocaleList(bestLocale, newLocaleList));
     }
 
-    public static Configuration createNewConfigAndUpdateIfNotNull(Configuration base, Configuration override) {
-        int compatSandboxFlags;
+    static Configuration createNewConfigAndUpdateIfNotNull(Configuration base, Configuration override) {
         if (override == null) {
             return base;
         }
         Configuration newConfig = new Configuration(base);
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX && ((compatSandboxFlags = base.windowConfiguration.getCompatSandboxFlags()) != 0 || compatSandboxFlags != override.windowConfiguration.getCompatSandboxFlags())) {
-            newConfig.updateFrom(override, true);
+        if (CompatSandbox.updateConfigWithoutWindowConfigurationIfNeeded(newConfig, base, override)) {
             return newConfig;
         }
         newConfig.updateFrom(override);

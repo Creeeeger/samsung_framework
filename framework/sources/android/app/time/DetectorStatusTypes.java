@@ -19,13 +19,11 @@ public final class DetectorStatusTypes {
 
     @Target({ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DetectionAlgorithmStatus {
     }
 
     @Target({ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DetectorStatus {
     }
 

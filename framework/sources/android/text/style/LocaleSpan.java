@@ -8,7 +8,7 @@ import android.text.TextPaint;
 import com.android.internal.util.Preconditions;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class LocaleSpan extends MetricAffectingSpan implements ParcelableSpan {
     private final LocaleList mLocales;
 

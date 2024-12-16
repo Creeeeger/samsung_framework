@@ -118,7 +118,7 @@ public abstract class Filter {
     protected void parametersUpdated(Set<String> updated) {
     }
 
-    public void delayNextProcess(int millisecs) {
+    protected void delayNextProcess(int millisecs) {
         this.mSleepDelay = millisecs;
         this.mStatus = 4;
     }
@@ -180,11 +180,10 @@ public abstract class Filter {
     }
 
     public final InputPort getInputPort(String portName) {
-        HashMap<String, InputPort> hashMap = this.mInputPorts;
-        if (hashMap == null) {
+        if (this.mInputPorts == null) {
             throw new NullPointerException("Attempting to access input port '" + portName + "' of " + this + " before Filter has been initialized!");
         }
-        InputPort result = hashMap.get(portName);
+        InputPort result = this.mInputPorts.get(portName);
         if (result == null) {
             throw new IllegalArgumentException("Unknown input port '" + portName + "' on filter " + this + "!");
         }
@@ -202,7 +201,7 @@ public abstract class Filter {
         return result;
     }
 
-    public final void pushOutput(String name, Frame frame) {
+    protected final void pushOutput(String name, Frame frame) {
         if (frame.getTimestamp() == -2) {
             if (this.mLogVerbose) {
                 Log.v(TAG, "Default-setting output Frame timestamp on port " + name + " to " + this.mCurrentTimestamp);
@@ -212,7 +211,7 @@ public abstract class Filter {
         getOutputPort(name).pushFrame(frame);
     }
 
-    public final Frame pullInput(String name) {
+    protected final Frame pullInput(String name) {
         Frame result = getInputPort(name).pullFrame();
         if (this.mCurrentTimestamp == -1) {
             this.mCurrentTimestamp = result.getTimestamp();
@@ -231,7 +230,7 @@ public abstract class Filter {
         getInputPort(name).transfer(context);
     }
 
-    public void initProgramInputs(Program program, FilterContext context) {
+    protected void initProgramInputs(Program program, FilterContext context) {
         if (program != null) {
             for (InputPort inputPort : this.mInputPorts.values()) {
                 if (inputPort.getTarget() == program) {
@@ -241,11 +240,11 @@ public abstract class Filter {
         }
     }
 
-    public void addInputPort(String name) {
+    protected void addInputPort(String name) {
         addMaskedInputPort(name, null);
     }
 
-    public void addMaskedInputPort(String name, FrameFormat formatMask) {
+    protected void addMaskedInputPort(String name, FrameFormat formatMask) {
         InputPort port = new StreamPort(this, name);
         if (this.mLogVerbose) {
             Log.v(TAG, "Filter " + this + " adding " + port);
@@ -254,7 +253,7 @@ public abstract class Filter {
         port.setPortFormat(formatMask);
     }
 
-    public void addOutputPort(String name, FrameFormat format) {
+    protected void addOutputPort(String name, FrameFormat format) {
         OutputPort port = new OutputPort(this, name);
         if (this.mLogVerbose) {
             Log.v(TAG, "Filter " + this + " adding " + port);
@@ -263,7 +262,7 @@ public abstract class Filter {
         this.mOutputPorts.put(name, port);
     }
 
-    public void addOutputBasedOnInput(String outputName, String inputName) {
+    protected void addOutputBasedOnInput(String outputName, String inputName) {
         OutputPort port = new OutputPort(this, outputName);
         if (this.mLogVerbose) {
             Log.v(TAG, "Filter " + this + " adding " + port);
@@ -288,7 +287,7 @@ public abstract class Filter {
         this.mInputPorts.put(name, fieldPort);
     }
 
-    public void addProgramPort(String name, String varName, Field field, Class varType, boolean hasDefault) {
+    protected void addProgramPort(String name, String varName, Field field, Class varType, boolean hasDefault) {
         field.setAccessible(true);
         InputPort programPort = new ProgramPort(this, name, varName, field, hasDefault);
         if (this.mLogVerbose) {
@@ -299,11 +298,11 @@ public abstract class Filter {
         this.mInputPorts.put(name, programPort);
     }
 
-    public void closeOutputPort(String name) {
+    protected void closeOutputPort(String name) {
         getOutputPort(name).close();
     }
 
-    public void setWaitsOnInputPort(String portName, boolean waits) {
+    protected void setWaitsOnInputPort(String portName, boolean waits) {
         getInputPort(portName).setBlocking(waits);
     }
 
@@ -315,19 +314,19 @@ public abstract class Filter {
         return "'" + getName() + "' (" + getFilterClassName() + NavigationBarInflaterView.KEY_CODE_END;
     }
 
-    public final Collection<InputPort> getInputPorts() {
+    final Collection<InputPort> getInputPorts() {
         return this.mInputPorts.values();
     }
 
-    public final Collection<OutputPort> getOutputPorts() {
+    final Collection<OutputPort> getOutputPorts() {
         return this.mOutputPorts.values();
     }
 
-    public final synchronized int getStatus() {
+    final synchronized int getStatus() {
         return this.mStatus;
     }
 
-    public final synchronized void unsetStatus(int flag) {
+    final synchronized void unsetStatus(int flag) {
         this.mStatus &= ~flag;
     }
 
@@ -354,7 +353,7 @@ public abstract class Filter {
         }
     }
 
-    public final synchronized void performProcess(FilterContext context) {
+    final synchronized void performProcess(FilterContext context) {
         if (this.mStatus == 7) {
             throw new RuntimeException("Filter " + this + " is already torn down!");
         }
@@ -373,7 +372,7 @@ public abstract class Filter {
         }
     }
 
-    public final synchronized void performClose(FilterContext context) {
+    final synchronized void performClose(FilterContext context) {
         if (this.mIsOpen) {
             if (this.mLogVerbose) {
                 Log.v(TAG, "Closing " + this);
@@ -385,7 +384,7 @@ public abstract class Filter {
         }
     }
 
-    public final synchronized void performTearDown(FilterContext context) {
+    final synchronized void performTearDown(FilterContext context) {
         performClose(context);
         if (this.mStatus != 7) {
             tearDown(context);
@@ -393,7 +392,7 @@ public abstract class Filter {
         }
     }
 
-    public final synchronized boolean canProcess() {
+    final synchronized boolean canProcess() {
         if (this.mLogVerbose) {
             Log.v(TAG, "Checking if can process: " + this + " (" + this.mStatus + ").");
         }
@@ -409,7 +408,7 @@ public abstract class Filter {
         return z;
     }
 
-    public final void openOutputs() {
+    final void openOutputs() {
         if (this.mLogVerbose) {
             Log.v(TAG, "Opening all output ports on " + this + "!");
         }
@@ -426,20 +425,19 @@ public abstract class Filter {
         }
     }
 
-    public final void clearOutputs() {
+    final void clearOutputs() {
         for (OutputPort outputPort : this.mOutputPorts.values()) {
             outputPort.clear();
         }
     }
 
-    public final void notifyFieldPortValueUpdated(String name, FilterContext context) {
-        int i = this.mStatus;
-        if (i == 3 || i == 2) {
+    final void notifyFieldPortValueUpdated(String name, FilterContext context) {
+        if (this.mStatus == 3 || this.mStatus == 2) {
             fieldPortValueUpdated(name, context);
         }
     }
 
-    public final synchronized void pushInputFrame(String inputName, Frame frame) {
+    final synchronized void pushInputFrame(String inputName, Frame frame) {
         FilterPort port = getInputPort(inputName);
         if (!port.isOpen()) {
             port.open();
@@ -447,7 +445,7 @@ public abstract class Filter {
         port.pushFrame(frame);
     }
 
-    public final synchronized void pushInputValue(String inputName, Object value) {
+    final synchronized void pushInputValue(String inputName, Object value) {
         pushInputFrame(inputName, wrapInputValue(inputName, value));
     }
 

@@ -29,8 +29,7 @@ public class EGLSurfaceImpl extends EGLSurface {
     }
 
     public int hashCode() {
-        long j = this.mEGLSurface;
-        int result = (17 * 31) + ((int) (j ^ (j >>> 32)));
+        int result = (17 * 31) + ((int) (this.mEGLSurface ^ (this.mEGLSurface >>> 32)));
         return result;
     }
 }

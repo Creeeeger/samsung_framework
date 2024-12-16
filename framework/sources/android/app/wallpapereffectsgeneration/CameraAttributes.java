@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class CameraAttributes implements Parcelable {
     public static final Parcelable.Creator<CameraAttributes> CREATOR = new Parcelable.Creator<CameraAttributes>() { // from class: android.app.wallpapereffectsgeneration.CameraAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraAttributes createFromParcel(Parcel in) {
             return new CameraAttributes(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraAttributes[] newArray(int size) {
             return new CameraAttributes[size];
@@ -29,14 +28,6 @@ public final class CameraAttributes implements Parcelable {
     private float mFrustumFarInWorldSpace;
     private float mFrustumNearInWorldSpace;
     private float mVerticalFovDegrees;
-
-    /* synthetic */ CameraAttributes(Parcel parcel, CameraAttributesIA cameraAttributesIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ CameraAttributes(float[] fArr, float[] fArr2, float f, float f2, float f3, float f4, float f5, float f6, CameraAttributesIA cameraAttributesIA) {
-        this(fArr, fArr2, f, f2, f3, f4, f5, f6);
-    }
 
     private CameraAttributes(Parcel in) {
         this.mCameraOrbitYawDegrees = in.readFloat();
@@ -92,23 +83,6 @@ public final class CameraAttributes implements Parcelable {
         return this.mFrustumFarInWorldSpace;
     }
 
-    /* renamed from: android.app.wallpapereffectsgeneration.CameraAttributes$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CameraAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraAttributes createFromParcel(Parcel in) {
-            return new CameraAttributes(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraAttributes[] newArray(int size) {
-            return new CameraAttributes[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeFloat(this.mCameraOrbitYawDegrees);
@@ -127,7 +101,6 @@ public final class CameraAttributes implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private float[] mAnchorPointInOutputUvSpace;
         private float[] mAnchorPointInWorldSpace;

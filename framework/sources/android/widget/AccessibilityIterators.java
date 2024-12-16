@@ -10,8 +10,7 @@ final class AccessibilityIterators {
     AccessibilityIterators() {
     }
 
-    /* loaded from: classes4.dex */
-    public static class LineTextSegmentIterator extends AccessibilityIterators.AbstractTextSegmentIterator {
+    static class LineTextSegmentIterator extends AccessibilityIterators.AbstractTextSegmentIterator {
         protected static final int DIRECTION_END = 1;
         protected static final int DIRECTION_START = -1;
         private static LineTextSegmentIterator sLineInstance;
@@ -89,7 +88,6 @@ final class AccessibilityIterators {
         }
     }
 
-    /* loaded from: classes4.dex */
     static class PageTextSegmentIterator extends LineTextSegmentIterator {
         private static PageTextSegmentIterator sPageInstance;
         private final Rect mTempRect = new Rect();

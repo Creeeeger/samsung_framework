@@ -14,14 +14,13 @@ import java.security.InvalidParameterException;
 /* loaded from: classes4.dex */
 public final class InputContentInfo implements Parcelable {
     public static final Parcelable.Creator<InputContentInfo> CREATOR = new Parcelable.Creator<InputContentInfo>() { // from class: android.view.inputmethod.InputContentInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputContentInfo createFromParcel(Parcel source) {
             return new InputContentInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputContentInfo[] newArray(int size) {
             return new InputContentInfo[size];
@@ -33,10 +32,6 @@ public final class InputContentInfo implements Parcelable {
     private final Uri mLinkUri;
     private IInputContentUriToken mUriToken;
 
-    /* synthetic */ InputContentInfo(Parcel parcel, InputContentInfoIA inputContentInfoIA) {
-        this(parcel);
-    }
-
     public InputContentInfo(Uri contentUri, ClipDescription description) {
         this(contentUri, description, null);
     }
@@ -44,7 +39,7 @@ public final class InputContentInfo implements Parcelable {
     public InputContentInfo(Uri contentUri, ClipDescription description, Uri linkUri) {
         validateInternal(contentUri, description, linkUri, true);
         this.mContentUri = contentUri;
-        this.mContentUriOwnerUserId = ContentProvider.getUserIdFromUri(contentUri, UserHandle.myUserId());
+        this.mContentUriOwnerUserId = ContentProvider.getUserIdFromUri(this.mContentUri, UserHandle.myUserId());
         this.mDescription = description;
         this.mLinkUri = linkUri;
     }
@@ -109,24 +104,22 @@ public final class InputContentInfo implements Parcelable {
     }
 
     public void requestPermission() {
-        IInputContentUriToken iInputContentUriToken = this.mUriToken;
-        if (iInputContentUriToken == null) {
+        if (this.mUriToken == null) {
             return;
         }
         try {
-            iInputContentUriToken.take();
+            this.mUriToken.take();
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
     }
 
     public void releasePermission() {
-        IInputContentUriToken iInputContentUriToken = this.mUriToken;
-        if (iInputContentUriToken == null) {
+        if (this.mUriToken == null) {
             return;
         }
         try {
-            iInputContentUriToken.release();
+            this.mUriToken.release();
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
@@ -155,23 +148,6 @@ public final class InputContentInfo implements Parcelable {
             this.mUriToken = IInputContentUriToken.Stub.asInterface(source.readStrongBinder());
         } else {
             this.mUriToken = null;
-        }
-    }
-
-    /* renamed from: android.view.inputmethod.InputContentInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InputContentInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputContentInfo createFromParcel(Parcel source) {
-            return new InputContentInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputContentInfo[] newArray(int size) {
-            return new InputContentInfo[size];
         }
     }
 

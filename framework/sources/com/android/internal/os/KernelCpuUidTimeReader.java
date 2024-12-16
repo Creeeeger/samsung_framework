@@ -8,16 +8,12 @@ import android.util.SparseArray;
 import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.os.KernelCpuProcStringReader;
 import com.android.internal.os.KernelCpuUidBpfMapReader;
-import com.android.internal.util.Preconditions;
 import com.samsung.android.core.pm.runtimemanifest.RuntimeManifestUtils;
-import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.CharBuffer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 /* loaded from: classes5.dex */
 public abstract class KernelCpuUidTimeReader<T> {
@@ -33,7 +29,6 @@ public abstract class KernelCpuUidTimeReader<T> {
     final String mTag;
     final boolean mThrottle;
 
-    /* loaded from: classes5.dex */
     public interface Callback<T> {
         void onUidCpuTime(int i, T t);
     }
@@ -51,7 +46,7 @@ public abstract class KernelCpuUidTimeReader<T> {
         this.mThrottle = throttle;
         this.mBpfReader = bpfReader;
         this.mClock = clock;
-        this.mBpfTimesAvailable = bpfReader != null;
+        this.mBpfTimesAvailable = this.mBpfReader != null;
     }
 
     KernelCpuUidTimeReader(KernelCpuProcStringReader reader, boolean throttle, Clock clock) {
@@ -116,7 +111,6 @@ public abstract class KernelCpuUidTimeReader<T> {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidUserSysTimeReader extends KernelCpuUidTimeReader<long[]> {
         private static final String REMOVE_UID_PROC_FILE = "/proc/uid_cputime/remove_uid_range";
         private final long[] mBuffer;
@@ -138,18 +132,18 @@ public abstract class KernelCpuUidTimeReader<T> {
             this.mUsrSysTime = new long[2];
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:37:0x0092, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:37:0x00a6, code lost:
         
-            r2.onUidCpuTime(r4, r13);
+            r2.onUidCpuTime(r4, r1.mUsrSysTime);
          */
         @Override // com.android.internal.os.KernelCpuUidTimeReader
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
         */
-        void readDeltaImpl(com.android.internal.os.KernelCpuUidTimeReader.Callback<long[]> r22, boolean r23) {
+        void readDeltaImpl(com.android.internal.os.KernelCpuUidTimeReader.Callback<long[]> r19, boolean r20) {
             /*
-                Method dump skipped, instructions count: 257
+                Method dump skipped, instructions count: 279
                 To view this dump change 'Code comments level' option to 'DEBUG'
             */
             throw new UnsupportedOperationException("Method not decompiled: com.android.internal.os.KernelCpuUidTimeReader.KernelCpuUidUserSysTimeReader.readDeltaImpl(com.android.internal.os.KernelCpuUidTimeReader$Callback, boolean):void");
@@ -174,11 +168,9 @@ public abstract class KernelCpuUidTimeReader<T> {
                     if (KernelCpuProcStringReader.asLongs(buf, this.mBuffer) < 3) {
                         Slog.wtf(this.mTag, "Invalid line: " + buf.toString());
                     } else {
-                        long[] jArr = this.mUsrSysTime;
-                        long[] jArr2 = this.mBuffer;
-                        jArr[0] = jArr2[1];
-                        jArr[1] = jArr2[2];
-                        cb.onUidCpuTime((int) jArr2[0], jArr);
+                        this.mUsrSysTime[0] = this.mBuffer[1];
+                        this.mUsrSysTime[1] = this.mBuffer[2];
+                        cb.onUidCpuTime((int) this.mBuffer[0], this.mUsrSysTime);
                     }
                 } catch (Throwable th) {
                     if (iter != null) {
@@ -235,7 +227,6 @@ public abstract class KernelCpuUidTimeReader<T> {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidFreqTimeReader extends KernelCpuUidTimeReader<long[]> {
         private static final int MAX_ERROR_COUNT = 5;
         private static final String UID_TIMES_PROC_FILE = "/proc/uid_time_in_state";
@@ -265,12 +256,18 @@ public abstract class KernelCpuUidTimeReader<T> {
             super(reader, bpfReader, throttle, clock);
             this.mFreqCount = 0;
             this.mErrors = 0;
-            this.mAllUidTimesAvailable = true;
             this.mProcFilePath = Paths.get(procFile, new String[0]);
         }
 
+        public void onSystemReady() {
+            if (this.mBpfTimesAvailable && this.mCpuFreqs == null) {
+                readFreqsThroughBpf();
+                this.mAllUidTimesAvailable = this.mCpuFreqs != null;
+            }
+        }
+
         public boolean perClusterTimesAvailable() {
-            return this.mPerClusterTimesAvailable;
+            return this.mBpfTimesAvailable;
         }
 
         public boolean allUidTimesAvailable() {
@@ -281,92 +278,19 @@ public abstract class KernelCpuUidTimeReader<T> {
             return this.mLastTimes;
         }
 
-        public long[] readFreqs(PowerProfile powerProfile) {
-            Preconditions.checkNotNull(powerProfile);
-            long[] jArr = this.mCpuFreqs;
-            if (jArr != null) {
-                return jArr;
-            }
-            if (!this.mAllUidTimesAvailable) {
-                return null;
-            }
-            if (this.mBpfTimesAvailable) {
-                readFreqsThroughBpf();
-            }
-            if (this.mCpuFreqs == null) {
-                int oldMask = StrictMode.allowThreadDiskReadsMask();
-                try {
-                    BufferedReader reader = Files.newBufferedReader(this.mProcFilePath);
-                    try {
-                        if (readFreqs(reader.readLine()) == null) {
-                            if (reader != null) {
-                                reader.close();
-                            }
-                            return null;
-                        }
-                        if (reader != null) {
-                            reader.close();
-                        }
-                    } catch (Throwable th) {
-                        if (reader != null) {
-                            try {
-                                reader.close();
-                            } catch (Throwable th2) {
-                                th.addSuppressed(th2);
-                            }
-                        }
-                        throw th;
-                    }
-                } catch (IOException e) {
-                    int i = this.mErrors + 1;
-                    this.mErrors = i;
-                    if (i >= 5) {
-                        this.mAllUidTimesAvailable = false;
-                    }
-                    Slog.e(this.mTag, "Failed to read /proc/uid_time_in_state: " + e);
-                    return null;
-                } finally {
-                    StrictMode.setThreadPolicyMask(oldMask);
-                }
-            }
-            IntArray numClusterFreqs = extractClusterInfoFromProcFileFreqs();
-            int numClusters = powerProfile.getNumCpuClusters();
-            if (numClusterFreqs.size() == numClusters) {
-                this.mPerClusterTimesAvailable = true;
-                int i2 = 0;
-                while (true) {
-                    if (i2 >= numClusters) {
-                        break;
-                    }
-                    if (numClusterFreqs.get(i2) != powerProfile.getNumSpeedStepsInCpuCluster(i2)) {
-                        this.mPerClusterTimesAvailable = false;
-                        break;
-                    }
-                    i2++;
-                }
-            } else {
-                this.mPerClusterTimesAvailable = false;
-            }
-            Slog.i(this.mTag, "mPerClusterTimesAvailable=" + this.mPerClusterTimesAvailable);
-            return this.mCpuFreqs;
-        }
-
         private long[] readFreqsThroughBpf() {
             if (!this.mBpfTimesAvailable || this.mBpfReader == null) {
                 return null;
             }
             this.mCpuFreqs = this.mBpfReader.getDataDimensions();
-            Slog.i(this.mTag, "mCpuFreqs=" + Arrays.toString(this.mCpuFreqs));
-            long[] jArr = this.mCpuFreqs;
-            if (jArr == null) {
+            if (this.mCpuFreqs == null) {
                 return null;
             }
-            int length = jArr.length;
-            this.mFreqCount = length;
-            this.mCurTimes = new long[length];
-            this.mDeltaTimes = new long[length];
-            this.mBuffer = new long[length + 1];
-            return jArr;
+            this.mFreqCount = this.mCpuFreqs.length;
+            this.mCurTimes = new long[this.mFreqCount];
+            this.mDeltaTimes = new long[this.mFreqCount];
+            this.mBuffer = new long[this.mFreqCount + 1];
+            return this.mCpuFreqs;
         }
 
         private long[] readFreqs(String line) {
@@ -378,12 +302,11 @@ public abstract class KernelCpuUidTimeReader<T> {
                 Slog.wtf(this.mTag, "Malformed freq line: " + line);
                 return null;
             }
-            int length = lineArray.length - 1;
-            this.mFreqCount = length;
-            this.mCpuFreqs = new long[length];
-            this.mCurTimes = new long[length];
-            this.mDeltaTimes = new long[length];
-            this.mBuffer = new long[length + 1];
+            this.mFreqCount = lineArray.length - 1;
+            this.mCpuFreqs = new long[this.mFreqCount];
+            this.mCurTimes = new long[this.mFreqCount];
+            this.mDeltaTimes = new long[this.mFreqCount];
+            this.mBuffer = new long[this.mFreqCount + 1];
             for (int i = 0; i < this.mFreqCount; i++) {
                 this.mCpuFreqs[i] = Long.parseLong(lineArray[i + 1], 10);
             }
@@ -399,30 +322,19 @@ public abstract class KernelCpuUidTimeReader<T> {
             }
             copyToCurTimes();
             boolean z = false;
-            int i2 = 0;
-            while (true) {
-                int i3 = this.mFreqCount;
-                if (i2 < i3) {
-                    long[] jArr2 = this.mDeltaTimes;
-                    long j = this.mCurTimes[i2] - jArr[i2];
-                    jArr2[i2] = j;
-                    if (j >= 0) {
-                        z |= j > 0;
-                        i2++;
-                    } else {
-                        Slog.e(this.mTag, "Negative delta from freq time for uid: " + i + ", delta: " + this.mDeltaTimes[i2]);
-                        return;
-                    }
+            for (int i2 = 0; i2 < this.mFreqCount; i2++) {
+                this.mDeltaTimes[i2] = this.mCurTimes[i2] - jArr[i2];
+                if (this.mDeltaTimes[i2] >= 0) {
+                    z |= this.mDeltaTimes[i2] > 0;
                 } else {
-                    if (z) {
-                        System.arraycopy(this.mCurTimes, 0, jArr, 0, i3);
-                        if (callback != null) {
-                            callback.onUidCpuTime(i, this.mDeltaTimes);
-                            return;
-                        }
-                        return;
-                    }
+                    Slog.e(this.mTag, "Negative delta from freq time for uid: " + i + ", delta: " + this.mDeltaTimes[i2]);
                     return;
+                }
+            }
+            if (z) {
+                System.arraycopy(this.mCurTimes, 0, jArr, 0, this.mFreqCount);
+                if (callback != null) {
+                    callback.onUidCpuTime(i, this.mDeltaTimes);
                 }
             }
         }
@@ -584,23 +496,16 @@ public abstract class KernelCpuUidTimeReader<T> {
         }
 
         private IntArray extractClusterInfoFromProcFileFreqs() {
-            int i;
             IntArray numClusterFreqs = new IntArray();
             int freqsFound = 0;
-            while (true) {
-                int i2 = this.mFreqCount;
-                if (i < i2) {
-                    freqsFound++;
-                    if (i + 1 != i2) {
-                        long[] jArr = this.mCpuFreqs;
-                        i = jArr[i + 1] > jArr[i] ? i + 1 : 0;
-                    }
+            for (int i = 0; i < this.mFreqCount; i++) {
+                freqsFound++;
+                if (i + 1 == this.mFreqCount || this.mCpuFreqs[i + 1] <= this.mCpuFreqs[i]) {
                     numClusterFreqs.add(freqsFound);
                     freqsFound = 0;
-                } else {
-                    return numClusterFreqs;
                 }
             }
+            return numClusterFreqs;
         }
 
         public boolean isFastCpuTimesReader() {
@@ -608,7 +513,6 @@ public abstract class KernelCpuUidTimeReader<T> {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidFullTimeReader extends KernelCpuUidTimeReader<long[]> {
         private long[] mBuffer;
         private long[] mCurTimes;
@@ -633,31 +537,20 @@ public abstract class KernelCpuUidTimeReader<T> {
             }
             copyToCurTimes();
             boolean z = false;
-            int i2 = 0;
-            while (true) {
-                int i3 = this.mNumClusters;
-                if (i2 < i3) {
-                    long[] jArr2 = this.mDeltaTimes;
-                    long j = this.mCurTimes[i2] - jArr[i2];
-                    jArr2[i2] = j;
-                    if (j >= 0) {
-                        z |= j > 0;
-                        i2++;
-                    } else {
-                        Slog.e(this.mTag, "Negative delta from freq time for uid: " + i + ", delta: " + this.mDeltaTimes[i2]);
-                        System.arraycopy(this.mCurTimes, 0, jArr, 0, this.mNumClusters);
-                        return;
-                    }
+            for (int i2 = 0; i2 < this.mNumClusters; i2++) {
+                this.mDeltaTimes[i2] = this.mCurTimes[i2] - jArr[i2];
+                if (this.mDeltaTimes[i2] >= 0) {
+                    z |= this.mDeltaTimes[i2] > 0;
                 } else {
-                    if (z) {
-                        System.arraycopy(this.mCurTimes, 0, jArr, 0, i3);
-                        if (callback != null) {
-                            callback.onUidCpuTime(i, this.mDeltaTimes);
-                            return;
-                        }
-                        return;
-                    }
+                    Slog.e(this.mTag, "Negative delta from freq time for uid: " + i + ", delta: " + this.mDeltaTimes[i2]);
+                    System.arraycopy(this.mCurTimes, 0, jArr, 0, this.mNumClusters);
                     return;
+                }
+            }
+            if (z) {
+                System.arraycopy(this.mCurTimes, 0, jArr, 0, this.mNumClusters);
+                if (callback != null) {
+                    callback.onUidCpuTime(i, this.mDeltaTimes);
                 }
             }
         }
@@ -745,16 +638,14 @@ public abstract class KernelCpuUidTimeReader<T> {
                 this.mBpfTimesAvailable = false;
                 return false;
             }
-            int length = coresOnClusters.length;
-            this.mNumClusters = length;
-            this.mBuffer = new long[length + 1];
-            this.mCurTimes = new long[length];
-            this.mDeltaTimes = new long[length];
+            this.mNumClusters = coresOnClusters.length;
+            this.mBuffer = new long[this.mNumClusters + 1];
+            this.mCurTimes = new long[this.mNumClusters];
+            this.mDeltaTimes = new long[this.mNumClusters];
             return this.mBpfTimesAvailable;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidActiveTimeReader extends KernelCpuUidTimeReader<Long> {
         private long[] mBuffer;
         private int mCores;
@@ -774,9 +665,8 @@ public abstract class KernelCpuUidTimeReader<T> {
         }
 
         private void processUidDelta(Callback<Long> callback) {
-            long[] jArr = this.mBuffer;
-            int i = (int) jArr[0];
-            long sumActiveTime = sumActiveTime(jArr, this.mBpfTimesAvailable ? 1.0d : 10.0d);
+            int i = (int) this.mBuffer[0];
+            long sumActiveTime = sumActiveTime(this.mBuffer, this.mBpfTimesAvailable ? 1.0d : 10.0d);
             if (sumActiveTime > 0) {
                 long longValue = sumActiveTime - ((Long) this.mLastTimes.get(i, 0L)).longValue();
                 if (longValue <= 0) {
@@ -946,9 +836,8 @@ public abstract class KernelCpuUidTimeReader<T> {
                 this.mBpfTimesAvailable = false;
                 return false;
             }
-            int i = (int) cores[0];
-            this.mCores = i;
-            this.mBuffer = new long[i + 1];
+            this.mCores = (int) cores[0];
+            this.mBuffer = new long[this.mCores + 1];
             return true;
         }
 
@@ -975,12 +864,11 @@ public abstract class KernelCpuUidTimeReader<T> {
                 return false;
             }
             this.mCores = cores;
-            this.mBuffer = new long[cores + 1];
+            this.mBuffer = new long[this.mCores + 1];
             return true;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidClusterTimeReader extends KernelCpuUidTimeReader<long[]> {
         private long[] mBuffer;
         private int[] mCoresOnClusters;
@@ -1010,30 +898,19 @@ public abstract class KernelCpuUidTimeReader<T> {
             }
             sumClusterTime();
             boolean z = false;
-            int i2 = 0;
-            while (true) {
-                int i3 = this.mNumClusters;
-                if (i2 < i3) {
-                    long[] jArr2 = this.mDeltaTime;
-                    long j = this.mCurTime[i2] - jArr[i2];
-                    jArr2[i2] = j;
-                    if (j >= 0) {
-                        z |= j > 0;
-                        i2++;
-                    } else {
-                        Slog.e(this.mTag, "Negative delta from cluster time for uid: " + i + ", delta: " + this.mDeltaTime[i2]);
-                        return;
-                    }
+            for (int i2 = 0; i2 < this.mNumClusters; i2++) {
+                this.mDeltaTime[i2] = this.mCurTime[i2] - jArr[i2];
+                if (this.mDeltaTime[i2] >= 0) {
+                    z |= this.mDeltaTime[i2] > 0;
                 } else {
-                    if (z) {
-                        System.arraycopy(this.mCurTime, 0, jArr, 0, i3);
-                        if (callback != null) {
-                            callback.onUidCpuTime(i, this.mDeltaTime);
-                            return;
-                        }
-                        return;
-                    }
+                    Slog.e(this.mTag, "Negative delta from cluster time for uid: " + i + ", delta: " + this.mDeltaTime[i2]);
                     return;
+                }
+            }
+            if (z) {
+                System.arraycopy(this.mCurTime, 0, jArr, 0, this.mNumClusters);
+                if (callback != null) {
+                    callback.onUidCpuTime(i, this.mDeltaTime);
                 }
             }
         }
@@ -1195,27 +1072,18 @@ public abstract class KernelCpuUidTimeReader<T> {
                 this.mBpfTimesAvailable = false;
                 return false;
             }
-            int length = coresOnClusters.length;
-            this.mNumClusters = length;
-            this.mCoresOnClusters = new int[length];
+            this.mNumClusters = coresOnClusters.length;
+            this.mCoresOnClusters = new int[this.mNumClusters];
             int cores = 0;
-            int i = 0;
-            while (true) {
-                int i2 = this.mNumClusters;
-                if (i < i2) {
-                    int[] iArr = this.mCoresOnClusters;
-                    int i3 = (int) coresOnClusters[i];
-                    iArr[i] = i3;
-                    cores += i3;
-                    i++;
-                } else {
-                    this.mNumCores = cores;
-                    this.mBuffer = new long[cores + 1];
-                    this.mCurTime = new long[i2];
-                    this.mDeltaTime = new long[i2];
-                    return true;
-                }
+            for (int i = 0; i < this.mNumClusters; i++) {
+                this.mCoresOnClusters[i] = (int) coresOnClusters[i];
+                cores += this.mCoresOnClusters[i];
             }
+            this.mNumCores = cores;
+            this.mBuffer = new long[cores + 1];
+            this.mCurTime = new long[this.mNumClusters];
+            this.mDeltaTime = new long[this.mNumClusters];
+            return true;
         }
 
         private boolean checkPrecondition(KernelCpuProcStringReader.ProcFileIterator iter) {
@@ -1246,13 +1114,12 @@ public abstract class KernelCpuUidTimeReader<T> {
                 clusters[i] = Integer.parseInt(lineArray[(i * 2) + 1], 10);
                 cores += clusters[i];
             }
-            int length = clusters.length;
-            this.mNumClusters = length;
+            this.mNumClusters = clusters.length;
             this.mNumCores = cores;
             this.mCoresOnClusters = clusters;
             this.mBuffer = new long[cores + 1];
-            this.mCurTime = new long[length];
-            this.mDeltaTime = new long[length];
+            this.mCurTime = new long[this.mNumClusters];
+            this.mDeltaTime = new long[this.mNumClusters];
             return true;
         }
     }

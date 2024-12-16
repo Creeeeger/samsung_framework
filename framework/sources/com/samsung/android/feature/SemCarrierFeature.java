@@ -1,41 +1,55 @@
 package com.samsung.android.feature;
 
-import android.os.Debug;
 import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.Log;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemCarrierFeature {
     private static final String DEBUG_LEVEL_HIGH = "0x4948";
+    private Map<Integer, Integer> mCanonicalId;
+    private Map<Integer, Map<String, String>> mDefaultFeatureList;
+    private Map<Integer, Integer> mFeatureVersion;
+    private Map<Integer, Map<String, String>> mLastFeatureList;
+    private Map<Integer, String> mLastMatchedCode;
+    private Map<Integer, String> mMatchedCode;
+    private Map<Integer, Map<String, String>> mSpecificFeatureList;
     private static final String LOG_TAG = SemCarrierFeature.class.getSimpleName();
     static final boolean DEBUG = isDebugEnabled();
     static final boolean TEST = isTestEnabled();
-    private static SemCarrierFeature sInstance = null;
-    private Map<Integer, String> mMatchedCode = new LinkedHashMap();
-    private Map<Integer, String> mLastMatchedCode = new LinkedHashMap();
-    private Map<Integer, Integer> mFeatureVersion = new LinkedHashMap();
-    private Map<Integer, Integer> mCanonicalId = new LinkedHashMap();
-    private Map<Integer, Map<String, String>> mDefaultFeatureList = new LinkedHashMap();
-    private Map<Integer, Map<String, String>> mSpecificFeatureList = new LinkedHashMap();
-    private Map<Integer, Map<String, String>> mLastFeatureList = new LinkedHashMap();
 
-    public static SemCarrierFeature getInstance() {
-        if (sInstance == null) {
-            sInstance = new SemCarrierFeature();
+    private static class SemCarrierFeatureHolder {
+        private static SemCarrierFeature INSTANCE = new SemCarrierFeature();
+
+        private SemCarrierFeatureHolder() {
         }
-        return sInstance;
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public static void createInstance() {
+            INSTANCE = new SemCarrierFeature();
+        }
     }
 
+    public static SemCarrierFeature getInstance() {
+        return SemCarrierFeatureHolder.INSTANCE;
+    }
+
+    @Deprecated(forRemoval = true, since = "16.0")
     public static SemCarrierFeature createInstance() {
-        SemCarrierFeature semCarrierFeature = new SemCarrierFeature();
-        sInstance = semCarrierFeature;
-        return semCarrierFeature;
+        SemCarrierFeatureHolder.createInstance();
+        return SemCarrierFeatureHolder.INSTANCE;
     }
 
     private SemCarrierFeature() {
+        this.mMatchedCode = new LinkedHashMap();
+        this.mLastMatchedCode = new LinkedHashMap();
+        this.mFeatureVersion = new LinkedHashMap();
+        this.mCanonicalId = new LinkedHashMap();
+        this.mDefaultFeatureList = new LinkedHashMap();
+        this.mSpecificFeatureList = new LinkedHashMap();
+        this.mLastFeatureList = new LinkedHashMap();
         for (int phoneId = 0; phoneId < FeatureUtil.readSimCount(); phoneId++) {
             this.mMatchedCode.put(Integer.valueOf(phoneId), FeatureUtil.getMatchedCode(phoneId, false));
             this.mLastMatchedCode.put(Integer.valueOf(phoneId), FeatureUtil.getMatchedCode(phoneId, true));
@@ -48,14 +62,15 @@ public class SemCarrierFeature {
 
     private static boolean isDebugEnabled() {
         String debugLevel = SystemProperties.get("ro.boot.debug_level", "");
-        return debugLevel.equals(DEBUG_LEVEL_HIGH) && Debug.semIsProductDev();
+        boolean isShipBuild = SystemProperties.getBoolean("ro.product_ship", true);
+        return DEBUG_LEVEL_HIGH.equals(debugLevel) && !isShipBuild;
     }
 
     private static boolean isTestEnabled() {
-        return Debug.semIsProductDev();
+        return !SystemProperties.getBoolean("ro.product_ship", true);
     }
 
-    private String get(int phoneId, String key, boolean checkLastSim) {
+    private synchronized String get(int phoneId, String key, boolean checkLastSim) {
         if (DEBUG) {
             Log.d(LOG_TAG, "[get] phoneId:" + phoneId + " key:" + key + " checkLastSim:" + checkLastSim);
         }

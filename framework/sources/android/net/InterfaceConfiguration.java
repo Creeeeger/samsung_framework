@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import java.util.HashSet;
 import java.util.Iterator;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class InterfaceConfiguration implements Parcelable {
     private static final String FLAG_DOWN = "down";
     private static final String FLAG_UP = "up";
@@ -14,9 +14,7 @@ public class InterfaceConfiguration implements Parcelable {
     private String mHwAddr;
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Parcelable.Creator<InterfaceConfiguration> CREATOR = new Parcelable.Creator<InterfaceConfiguration>() { // from class: android.net.InterfaceConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InterfaceConfiguration createFromParcel(Parcel in) {
             InterfaceConfiguration info = new InterfaceConfiguration();
@@ -31,6 +29,7 @@ public class InterfaceConfiguration implements Parcelable {
             return info;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InterfaceConfiguration[] newArray(int size) {
             return new InterfaceConfiguration[size];
@@ -133,32 +132,6 @@ public class InterfaceConfiguration implements Parcelable {
         while (it.hasNext()) {
             String flag = it.next();
             dest.writeString(flag);
-        }
-    }
-
-    /* renamed from: android.net.InterfaceConfiguration$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InterfaceConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InterfaceConfiguration createFromParcel(Parcel in) {
-            InterfaceConfiguration info = new InterfaceConfiguration();
-            info.mHwAddr = in.readString();
-            if (in.readByte() == 1) {
-                info.mAddr = (LinkAddress) in.readParcelable(null);
-            }
-            int size = in.readInt();
-            for (int i = 0; i < size; i++) {
-                info.mFlags.add(in.readString());
-            }
-            return info;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InterfaceConfiguration[] newArray(int size) {
-            return new InterfaceConfiguration[size];
         }
     }
 

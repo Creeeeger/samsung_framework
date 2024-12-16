@@ -8,14 +8,13 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class LeaseInfo implements Parcelable {
     public static final Parcelable.Creator<LeaseInfo> CREATOR = new Parcelable.Creator<LeaseInfo>() { // from class: android.app.blob.LeaseInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LeaseInfo createFromParcel(Parcel source) {
             return new LeaseInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LeaseInfo[] newArray(int size) {
             return new LeaseInfo[size];
@@ -25,10 +24,6 @@ public final class LeaseInfo implements Parcelable {
     private final int mDescriptionResId;
     private final long mExpiryTimeMillis;
     private final String mPackageName;
-
-    /* synthetic */ LeaseInfo(Parcel parcel, LeaseInfoIA leaseInfoIA) {
-        this(parcel);
-    }
 
     public LeaseInfo(String packageName, long expiryTimeMs, int descriptionResId, CharSequence description) {
         this.mPackageName = packageName;
@@ -76,7 +71,7 @@ public final class LeaseInfo implements Parcelable {
         return this.mPackageName;
     }
 
-    public static String toShortString(List<LeaseInfo> leaseInfos) {
+    static String toShortString(List<LeaseInfo> leaseInfos) {
         StringBuilder sb = new StringBuilder();
         sb.append(NavigationBarInflaterView.SIZE_MOD_START);
         int size = leaseInfos.size();
@@ -91,22 +86,5 @@ public final class LeaseInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.app.blob.LeaseInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LeaseInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LeaseInfo createFromParcel(Parcel source) {
-            return new LeaseInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LeaseInfo[] newArray(int size) {
-            return new LeaseInfo[size];
-        }
     }
 }

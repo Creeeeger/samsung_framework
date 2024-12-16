@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class NNFWDescriptor extends MFDescriptorBase implements Cloneable {
     private static final String TAG = Def.tagOf((Class<?>) NNFWDescriptor.class);
     private final NNFW fw;
@@ -41,7 +41,7 @@ public class NNFWDescriptor extends MFDescriptorBase implements Cloneable {
 
     public NNFWDescriptor(NNFW fw, HwUnit hw, final LoadType loadType, NNDescriptor nnDescriptor) {
         this(fw, hw, nnDescriptor);
-        this.loadTypeSupplier = new Supplier() { // from class: com.samsung.android.sume.core.descriptor.nn.NNFWDescriptor$$ExternalSyntheticLambda0
+        this.loadTypeSupplier = new Supplier() { // from class: com.samsung.android.sume.core.descriptor.nn.NNFWDescriptor$$ExternalSyntheticLambda3
             @Override // java.util.function.Supplier
             public final Object get() {
                 return NNFWDescriptor.lambda$new$0(LoadType.this);
@@ -49,7 +49,7 @@ public class NNFWDescriptor extends MFDescriptorBase implements Cloneable {
         };
     }
 
-    public static /* synthetic */ LoadType lambda$new$0(LoadType loadType) {
+    static /* synthetic */ LoadType lambda$new$0(LoadType loadType) {
         return loadType;
     }
 
@@ -128,7 +128,7 @@ public class NNFWDescriptor extends MFDescriptorBase implements Cloneable {
 
     @Override // com.samsung.android.sume.core.descriptor.MFDescriptorBase, com.samsung.android.sume.core.descriptor.MFDescriptor
     public MediaFilter.Option getOption() {
-        return (MediaFilter.Option) Optional.ofNullable(this.nnDescriptor.get()).map(new Function() { // from class: com.samsung.android.sume.core.descriptor.nn.NNFWDescriptor$$ExternalSyntheticLambda3
+        return (MediaFilter.Option) Optional.ofNullable(this.nnDescriptor.get()).map(new Function() { // from class: com.samsung.android.sume.core.descriptor.nn.NNFWDescriptor$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return ((NNDescriptor) obj).getOption();
@@ -136,8 +136,8 @@ public class NNFWDescriptor extends MFDescriptorBase implements Cloneable {
         }).orElse(null);
     }
 
-    /* renamed from: clone */
-    public NNFWDescriptor m8744clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public NNFWDescriptor m9133clone() {
         try {
             NNFWDescriptor clone = (NNFWDescriptor) super.clone();
             return clone;

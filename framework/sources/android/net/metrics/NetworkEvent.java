@@ -11,17 +11,16 @@ import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class NetworkEvent implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<NetworkEvent> CREATOR = new Parcelable.Creator<NetworkEvent>() { // from class: android.net.metrics.NetworkEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkEvent createFromParcel(Parcel in) {
             return new NetworkEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkEvent[] newArray(int size) {
             return new NetworkEvent[size];
@@ -44,12 +43,7 @@ public final class NetworkEvent implements IpConnectivityLog.Event {
     public final int eventType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface EventType {
-    }
-
-    /* synthetic */ NetworkEvent(Parcel parcel, NetworkEventIA networkEventIA) {
-        this(parcel);
     }
 
     public NetworkEvent(int eventType, long durationMs) {
@@ -77,23 +71,6 @@ public final class NetworkEvent implements IpConnectivityLog.Event {
         return 0;
     }
 
-    /* renamed from: android.net.metrics.NetworkEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkEvent createFromParcel(Parcel in) {
-            return new NetworkEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkEvent[] newArray(int size) {
-            return new NetworkEvent[size];
-        }
-    }
-
     public String toString() {
         return String.format("NetworkEvent(%s, %dms)", Decoder.constants.get(this.eventType), Long.valueOf(this.durationMs));
     }
@@ -106,7 +83,6 @@ public final class NetworkEvent implements IpConnectivityLog.Event {
         return this.eventType == other.eventType && this.durationMs == other.durationMs;
     }
 
-    /* loaded from: classes2.dex */
     static final class Decoder {
         static final SparseArray<String> constants = MessageUtils.findMessageNames(new Class[]{NetworkEvent.class}, new String[]{"NETWORK_"});
 

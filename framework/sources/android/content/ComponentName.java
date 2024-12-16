@@ -9,14 +9,13 @@ import java.io.PrintWriter;
 /* loaded from: classes.dex */
 public final class ComponentName implements Parcelable, Cloneable, Comparable<ComponentName> {
     public static final Parcelable.Creator<ComponentName> CREATOR = new Parcelable.Creator<ComponentName>() { // from class: android.content.ComponentName.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ComponentName createFromParcel(Parcel in) {
             return new ComponentName(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ComponentName[] newArray(int size) {
             return new ComponentName[size];
@@ -26,7 +25,6 @@ public final class ComponentName implements Parcelable, Cloneable, Comparable<Co
     private final String mPackage;
 
     @FunctionalInterface
-    /* loaded from: classes.dex */
     public interface WithComponentName {
         ComponentName getComponentName();
     }
@@ -72,8 +70,8 @@ public final class ComponentName implements Parcelable, Cloneable, Comparable<Co
         this.mClass = cls.getName();
     }
 
-    /* renamed from: clone */
-    public ComponentName m780clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public ComponentName m840clone() {
         return new ComponentName(this.mPackage, this.mClass);
     }
 
@@ -222,32 +220,13 @@ public final class ComponentName implements Parcelable, Cloneable, Comparable<Co
         return null;
     }
 
-    /* renamed from: android.content.ComponentName$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ComponentName> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ComponentName createFromParcel(Parcel in) {
-            return new ComponentName(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ComponentName[] newArray(int size) {
-            return new ComponentName[size];
-        }
-    }
-
     public ComponentName(Parcel in) {
-        String readString = in.readString();
-        this.mPackage = readString;
-        if (readString == null) {
+        this.mPackage = in.readString();
+        if (this.mPackage == null) {
             throw new NullPointerException("package name is null");
         }
-        String readString2 = in.readString();
-        this.mClass = readString2;
-        if (readString2 == null) {
+        this.mClass = in.readString();
+        if (this.mClass == null) {
             throw new NullPointerException("class name is null");
         }
     }

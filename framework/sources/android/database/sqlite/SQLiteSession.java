@@ -2,8 +2,12 @@ package android.database.sqlite;
 
 import android.database.CursorWindow;
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteConnection;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayDeque;
 
 /* loaded from: classes.dex */
 public final class SQLiteSession {
@@ -15,6 +19,7 @@ public final class SQLiteSession {
     private int mConnectionFlags;
     private final SQLiteConnectionPool mConnectionPool;
     private int mConnectionUseCount;
+    private final ArrayDeque<Closeable> mOpenDependents = new ArrayDeque<>();
     private Transaction mTransactionPool;
     private Transaction mTransactionStack;
 
@@ -30,8 +35,7 @@ public final class SQLiteSession {
     }
 
     public boolean hasNestedTransaction() {
-        Transaction transaction = this.mTransactionStack;
-        return (transaction == null || transaction.mParent == null) ? false : true;
+        return (this.mTransactionStack == null || this.mTransactionStack.mParent == null) ? false : true;
     }
 
     public boolean hasConnection() {
@@ -53,6 +57,9 @@ public final class SQLiteSession {
         try {
             if (this.mTransactionStack == null) {
                 switch (transactionMode) {
+                    case 0:
+                        this.mConnection.execute("BEGIN DEFERRED;", null, cancellationSignal);
+                        break;
                     case 1:
                         this.mConnection.execute("BEGIN IMMEDIATE;", null, cancellationSignal);
                         break;
@@ -77,14 +84,10 @@ public final class SQLiteSession {
             Transaction transaction = obtainTransaction(transactionMode, transactionListener);
             transaction.mParent = this.mTransactionStack;
             this.mTransactionStack = transaction;
-            if (transaction == null) {
-                releaseConnection();
-            }
-        } catch (Throwable th) {
+        } finally {
             if (this.mTransactionStack == null) {
                 releaseConnection();
             }
-            throw th;
         }
     }
 
@@ -92,6 +95,7 @@ public final class SQLiteSession {
         throwIfNoTransaction();
         throwIfTransactionMarkedSuccessful();
         this.mTransactionStack.mMarkedSuccessful = true;
+        closeOpenDependents();
     }
 
     public void endTransaction(CancellationSignal cancellationSignal) {
@@ -121,12 +125,12 @@ public final class SQLiteSession {
         }
         this.mTransactionStack = top.mParent;
         recycleTransaction(top);
-        Transaction transaction = this.mTransactionStack;
-        if (transaction != null) {
+        if (this.mTransactionStack != null) {
             if (!successful) {
-                transaction.mChildFailed = true;
+                this.mTransactionStack.mChildFailed = true;
             }
         } else {
+            closeOpenDependents();
             try {
                 if (successful) {
                     this.mConnection.execute("COMMIT;", null, cancellationSignal);
@@ -147,11 +151,8 @@ public final class SQLiteSession {
             throwIfNoTransaction();
             throwIfTransactionMarkedSuccessful();
             throwIfNestedTransaction();
-        } else {
-            Transaction transaction = this.mTransactionStack;
-            if (transaction == null || transaction.mMarkedSuccessful || this.mTransactionStack.mParent != null) {
-                return false;
-            }
+        } else if (this.mTransactionStack == null || this.mTransactionStack.mMarkedSuccessful || this.mTransactionStack.mParent != null) {
+            return false;
         }
         if (this.mTransactionStack.mChildFailed) {
             return false;
@@ -330,17 +331,16 @@ public final class SQLiteSession {
         switch (type) {
             case 4:
                 beginTransaction(2, null, connectionFlags, cancellationSignal);
-                return true;
+                break;
             case 5:
                 setTransactionSuccessful();
                 endTransaction(cancellationSignal);
-                return true;
+                break;
             case 6:
                 endTransaction(cancellationSignal);
-                return true;
-            default:
-                return false;
+                break;
         }
+        return true;
     }
 
     private void acquireConnection(String sql, int connectionFlags, CancellationSignal cancellationSignal) {
@@ -363,15 +363,58 @@ public final class SQLiteSession {
         }
     }
 
-    private void throwIfNoTransaction() {
+    SQLiteConnection.PreparedStatement acquirePersistentStatement(String query, Closeable dependent) {
+        throwIfNoTransaction();
+        throwIfTransactionMarkedSuccessful();
+        this.mOpenDependents.addFirst(dependent);
+        try {
+            return this.mConnection.acquirePersistentStatement(query);
+        } catch (Throwable e) {
+            this.mOpenDependents.remove(dependent);
+            throw e;
+        }
+    }
+
+    void releasePersistentStatement(SQLiteConnection.PreparedStatement statement, Closeable dependent) {
+        this.mConnection.releasePreparedStatement(statement);
+        this.mOpenDependents.remove(dependent);
+    }
+
+    void closeOpenDependents() {
+        while (this.mOpenDependents.size() > 0) {
+            Closeable dependent = this.mOpenDependents.pollFirst();
+            if (dependent != null) {
+                try {
+                    dependent.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+    long getLastInsertRowId() {
+        throwIfNoTransaction();
+        return this.mConnection.getLastInsertRowId();
+    }
+
+    long getLastChangedRowCount() {
+        throwIfNoTransaction();
+        return this.mConnection.getLastChangedRowCount();
+    }
+
+    long getTotalChangedRowCount() {
+        throwIfNoTransaction();
+        return this.mConnection.getTotalChangedRowCount();
+    }
+
+    void throwIfNoTransaction() {
         if (this.mTransactionStack == null) {
             throw new IllegalStateException("Cannot perform this operation because there is no current transaction.");
         }
     }
 
     private void throwIfTransactionMarkedSuccessful() {
-        Transaction transaction = this.mTransactionStack;
-        if (transaction != null && transaction.mMarkedSuccessful) {
+        if (this.mTransactionStack != null && this.mTransactionStack.mMarkedSuccessful) {
             throw new IllegalStateException("Cannot perform this operation because the transaction has already been marked successful.  The only thing you can do now is call endTransaction().");
         }
     }
@@ -403,17 +446,12 @@ public final class SQLiteSession {
         this.mTransactionPool = transaction;
     }
 
-    /* loaded from: classes.dex */
-    public static final class Transaction {
+    private static final class Transaction {
         public boolean mChildFailed;
         public SQLiteTransactionListener mListener;
         public boolean mMarkedSuccessful;
         public int mMode;
         public Transaction mParent;
-
-        /* synthetic */ Transaction(TransactionIA transactionIA) {
-            this();
-        }
 
         private Transaction() {
         }

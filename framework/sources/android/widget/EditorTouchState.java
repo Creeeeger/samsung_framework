@@ -20,7 +20,6 @@ public class EditorTouchState {
     private int mMultiTapStatus = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface MultiTapStatus {
         public static final int DOUBLE_TAP = 2;
         public static final int FIRST_TAP = 1;
@@ -53,8 +52,7 @@ public class EditorTouchState {
     }
 
     public boolean isMultiTap() {
-        int i = this.mMultiTapStatus;
-        return i == 2 || i == 3;
+        return this.mMultiTapStatus == 2 || this.mMultiTapStatus == 3;
     }
 
     public boolean isMultiTapInSameArea() {
@@ -78,16 +76,13 @@ public class EditorTouchState {
     }
 
     public void update(MotionEvent event, ViewConfiguration config) {
-        int i;
         int action = event.getActionMasked();
         if (action == 0) {
             boolean isMouse = event.isFromSource(8194);
-            long eventTime = event.getEventTime();
-            long j = this.mLastUpMillis;
-            long millisSinceLastUp = eventTime - j;
-            long millisBetweenLastDownAndLastUp = j - this.mLastDownMillis;
-            if (millisSinceLastUp <= ViewConfiguration.getDoubleTapTimeout() && millisBetweenLastDownAndLastUp <= ViewConfiguration.getDoubleTapTimeout() && ((i = this.mMultiTapStatus) == 1 || (i == 2 && isMouse))) {
-                if (i == 1) {
+            long millisSinceLastUp = event.getEventTime() - this.mLastUpMillis;
+            long millisBetweenLastDownAndLastUp = this.mLastUpMillis - this.mLastDownMillis;
+            if (millisSinceLastUp <= ViewConfiguration.getDoubleTapTimeout() && millisBetweenLastDownAndLastUp <= ViewConfiguration.getDoubleTapTimeout() && (this.mMultiTapStatus == 1 || (this.mMultiTapStatus == 2 && isMouse))) {
+                if (this.mMultiTapStatus == 1) {
                     this.mMultiTapStatus = 2;
                 } else {
                     this.mMultiTapStatus = 3;
@@ -119,9 +114,8 @@ public class EditorTouchState {
                 float deltaXSquared = deltaX * deltaX;
                 float distanceSquared = (deltaY * deltaY) + deltaXSquared;
                 int touchSlop = config.getScaledTouchSlop();
-                boolean z = distanceSquared > ((float) (touchSlop * touchSlop));
-                this.mMovedEnoughForDrag = z;
-                if (z) {
+                this.mMovedEnoughForDrag = distanceSquared > ((float) (touchSlop * touchSlop));
+                if (this.mMovedEnoughForDrag) {
                     this.mInitialDragDirectionXYRatio = deltaY == 0.0f ? Float.MAX_VALUE : Math.abs(deltaX / deltaY);
                     return;
                 }

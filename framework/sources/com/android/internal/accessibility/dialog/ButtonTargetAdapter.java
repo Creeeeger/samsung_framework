@@ -9,11 +9,11 @@ import android.widget.TextView;
 import com.android.internal.R;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 class ButtonTargetAdapter extends TargetAdapter {
     private List<AccessibilityTarget> mTargets;
 
-    public ButtonTargetAdapter(List<AccessibilityTarget> targets) {
+    ButtonTargetAdapter(List<AccessibilityTarget> targets) {
         this.mTargets = targets;
     }
 
@@ -39,8 +39,8 @@ class ButtonTargetAdapter extends TargetAdapter {
         AccessibilityTarget target = this.mTargets.get(position);
         ImageView iconView = (ImageView) root.findViewById(R.id.accessibility_button_target_icon);
         TextView labelView = (TextView) root.findViewById(R.id.accessibility_button_target_label);
-        iconView.lambda$setImageURIAsync$2(target.getIcon());
-        labelView.setText(target.getLabel());
+        iconView.lambda$setImageURIAsync$0(target.getIcon());
+        labelView.lambda$setTextAsync$0(target.getLabel());
         return root;
     }
 }

@@ -10,9 +10,7 @@ import java.util.Locale;
 /* loaded from: classes3.dex */
 public class AudioState implements Parcelable {
     public static final Parcelable.Creator<AudioState> CREATOR = new Parcelable.Creator<AudioState>() { // from class: android.telecom.AudioState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioState createFromParcel(Parcel source) {
             boolean isMuted = source.readByte() != 0;
@@ -21,6 +19,7 @@ public class AudioState implements Parcelable {
             return new AudioState(isMuted, route, supportedRouteMask);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioState[] newArray(int size) {
             return new AudioState[size];
@@ -91,26 +90,6 @@ public class AudioState implements Parcelable {
             buffer.append(", ");
         }
         buffer.append(str);
-    }
-
-    /* renamed from: android.telecom.AudioState$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioState createFromParcel(Parcel source) {
-            boolean isMuted = source.readByte() != 0;
-            int route = source.readInt();
-            int supportedRouteMask = source.readInt();
-            return new AudioState(isMuted, route, supportedRouteMask);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioState[] newArray(int size) {
-            return new AudioState[size];
-        }
     }
 
     @Override // android.os.Parcelable

@@ -10,7 +10,6 @@ import java.util.Map;
 /* loaded from: classes4.dex */
 public final class VelocityTracker {
     private static final int ACTIVE_POINTER_ID = -1;
-    private static final Map<String, Integer> STRATEGIES;
     public static final int VELOCITY_TRACKER_STRATEGY_DEFAULT = -1;
     public static final int VELOCITY_TRACKER_STRATEGY_IMPULSE = 0;
     public static final int VELOCITY_TRACKER_STRATEGY_INT1 = 7;
@@ -22,17 +21,16 @@ public final class VelocityTracker {
     public static final int VELOCITY_TRACKER_STRATEGY_WLSQ2_CENTRAL = 5;
     public static final int VELOCITY_TRACKER_STRATEGY_WLSQ2_DELTA = 4;
     public static final int VELOCITY_TRACKER_STRATEGY_WLSQ2_RECENT = 6;
-    private static final Pools.SynchronizedPool<VelocityTracker> sPool = new Pools.SynchronizedPool<>(2);
     private long mPtr;
     private final int mStrategy;
+    private static final Pools.SynchronizedPool<VelocityTracker> sPool = new Pools.SynchronizedPool<>(2);
+    private static final Map<String, Integer> STRATEGIES = new ArrayMap();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface VelocityTrackableMotionEventAxis {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface VelocityTrackerStrategy {
     }
 
@@ -51,24 +49,21 @@ public final class VelocityTracker {
     private static native boolean nativeIsAxisSupported(int i);
 
     static {
-        ArrayMap arrayMap = new ArrayMap();
-        STRATEGIES = arrayMap;
-        arrayMap.put("impulse", 0);
-        arrayMap.put("lsq1", 1);
-        arrayMap.put("lsq2", 2);
-        arrayMap.put("lsq3", 3);
-        arrayMap.put("wlsq2-delta", 4);
-        arrayMap.put("wlsq2-central", 5);
-        arrayMap.put("wlsq2-recent", 6);
-        arrayMap.put("int1", 7);
-        arrayMap.put("int2", 8);
-        arrayMap.put("legacy", 9);
+        STRATEGIES.put("impulse", 0);
+        STRATEGIES.put("lsq1", 1);
+        STRATEGIES.put("lsq2", 2);
+        STRATEGIES.put("lsq3", 3);
+        STRATEGIES.put("wlsq2-delta", 4);
+        STRATEGIES.put("wlsq2-central", 5);
+        STRATEGIES.put("wlsq2-recent", 6);
+        STRATEGIES.put("int1", 7);
+        STRATEGIES.put("int2", 8);
+        STRATEGIES.put("legacy", 9);
     }
 
     private static int toStrategyId(String strStrategy) {
-        Map<String, Integer> map = STRATEGIES;
-        if (map.containsKey(strStrategy)) {
-            return map.get(strStrategy).intValue();
+        if (STRATEGIES.containsKey(strStrategy)) {
+            return STRATEGIES.get(strStrategy).intValue();
         }
         return -1;
     }
@@ -87,6 +82,9 @@ public final class VelocityTracker {
     }
 
     public static VelocityTracker obtain(int strategy) {
+        if (strategy == -1) {
+            return obtain();
+        }
         return new VelocityTracker(strategy);
     }
 
@@ -117,9 +115,8 @@ public final class VelocityTracker {
 
     protected void finalize() throws Throwable {
         try {
-            long j = this.mPtr;
-            if (j != 0) {
-                nativeDispose(j);
+            if (this.mPtr != 0) {
+                nativeDispose(this.mPtr);
                 this.mPtr = 0L;
             }
         } finally {

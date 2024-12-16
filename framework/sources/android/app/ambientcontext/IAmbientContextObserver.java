@@ -15,7 +15,6 @@ public interface IAmbientContextObserver extends IInterface {
 
     void onRegistrationComplete(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAmbientContextObserver {
         @Override // android.app.ambientcontext.IAmbientContextObserver
         public void onEvents(List<AmbientContextEvent> events) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IAmbientContextObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAmbientContextObserver {
         static final int TRANSACTION_onEvents = 1;
         static final int TRANSACTION_onRegistrationComplete = 2;
@@ -77,30 +75,27 @@ public interface IAmbientContextObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAmbientContextObserver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAmbientContextObserver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAmbientContextObserver.DESCRIPTOR);
+                case 1:
+                    List<AmbientContextEvent> _arg0 = data.createTypedArrayList(AmbientContextEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEvents(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRegistrationComplete(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<AmbientContextEvent> _arg0 = data.createTypedArrayList(AmbientContextEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEvents(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRegistrationComplete(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAmbientContextObserver {
+        private static class Proxy implements IAmbientContextObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

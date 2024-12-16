@@ -2,7 +2,6 @@ package android.sec.clipboard.data;
 
 import android.net.Uri;
 import android.os.Build;
-import android.os.SystemProperties;
 
 /* loaded from: classes3.dex */
 public class ClipboardConstants {
@@ -74,8 +73,6 @@ public class ClipboardConstants {
     public static final String USER_SWITCHED = "SWITCHED";
     public static boolean DEBUG = "eng".equals(Build.TYPE);
     public static boolean INFO_DEBUG = "eng".equals(Build.TYPE);
-    public static final boolean KNOX_V1_ENABLED = "1".equals(SystemProperties.get("ro.config.knox", "0"));
-    public static final boolean KNOX_V2_ENABLED = "v30".equals(SystemProperties.get("ro.config.knox", "0"));
     public static final Uri CLIPBOARD_ALLOWED_URI = Uri.parse("content://com.sec.knox.provider/RestrictionPolicy1/isClipboardAllowed");
     public static final Uri CLIPBOARD_SHARED_ALLOWED_URI = Uri.parse("content://com.sec.knox.provider/RestrictionPolicy1/isClipboardShareAllowed");
     public static final String RCP_URL = "content://com.sec.knox.rcppolicyprovider/RCP_DATA";

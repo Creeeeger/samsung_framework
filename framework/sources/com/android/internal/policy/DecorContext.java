@@ -32,7 +32,7 @@ public class DecorContext extends ContextThemeWrapper {
         attachBaseContext(displayContext);
     }
 
-    public void setPhoneWindow(PhoneWindow phoneWindow) {
+    void setPhoneWindow(PhoneWindow phoneWindow) {
         this.mPhoneWindow = phoneWindow;
         Context context = phoneWindow.getContext();
         this.mContext = new WeakReference<>(context);
@@ -102,9 +102,5 @@ public class DecorContext extends ContextThemeWrapper {
             return context.isConfigurationContext();
         }
         return false;
-    }
-
-    public void resetContextCaptureManager() {
-        this.mContentCaptureManager = null;
     }
 }

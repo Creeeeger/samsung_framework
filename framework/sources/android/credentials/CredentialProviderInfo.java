@@ -7,55 +7,47 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import com.android.internal.hidden_from_bootclasspath.android.credentials.flags.Flags;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /* loaded from: classes.dex */
 public final class CredentialProviderInfo implements Parcelable {
     public static final Parcelable.Creator<CredentialProviderInfo> CREATOR = new Parcelable.Creator<CredentialProviderInfo>() { // from class: android.credentials.CredentialProviderInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialProviderInfo[] newArray(int size) {
             return new CredentialProviderInfo[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialProviderInfo createFromParcel(Parcel in) {
             return new CredentialProviderInfo(in);
         }
     };
-    private final Set<String> mCapabilities;
+    private final List<String> mCapabilities;
     private final boolean mIsEnabled;
     private final boolean mIsPrimary;
     private final boolean mIsSystemProvider;
     private final CharSequence mOverrideLabel;
     private final ServiceInfo mServiceInfo;
+    private CharSequence mSettingsActivity;
     private CharSequence mSettingsSubtitle;
 
-    /* synthetic */ CredentialProviderInfo(Builder builder, CredentialProviderInfoIA credentialProviderInfoIA) {
-        this(builder);
-    }
-
-    /* synthetic */ CredentialProviderInfo(Parcel parcel, CredentialProviderInfoIA credentialProviderInfoIA) {
-        this(parcel);
-    }
-
     private CredentialProviderInfo(Builder builder) {
-        HashSet hashSet = new HashSet();
-        this.mCapabilities = hashSet;
+        this.mCapabilities = new ArrayList();
         this.mSettingsSubtitle = null;
+        this.mSettingsActivity = null;
         this.mServiceInfo = builder.mServiceInfo;
-        hashSet.addAll(builder.mCapabilities);
+        this.mCapabilities.addAll(builder.mCapabilities);
         this.mIsSystemProvider = builder.mIsSystemProvider;
         this.mSettingsSubtitle = builder.mSettingsSubtitle;
         this.mIsEnabled = builder.mIsEnabled;
         this.mIsPrimary = builder.mIsPrimary;
         this.mOverrideLabel = builder.mOverrideLabel;
+        this.mSettingsActivity = builder.mSettingsActivity;
     }
 
     public boolean hasCapability(String credentialType) {
@@ -75,19 +67,14 @@ public final class CredentialProviderInfo implements Parcelable {
     }
 
     public CharSequence getLabel(Context context) {
-        CharSequence charSequence = this.mOverrideLabel;
-        if (charSequence != null) {
-            return charSequence;
+        if (this.mOverrideLabel != null) {
+            return this.mOverrideLabel;
         }
         return this.mServiceInfo.loadSafeLabel(context.getPackageManager());
     }
 
     public List<String> getCapabilities() {
-        List<String> capabilities = new ArrayList<>();
-        for (String capability : this.mCapabilities) {
-            capabilities.add(capability);
-        }
-        return Collections.unmodifiableList(capabilities);
+        return Collections.unmodifiableList(this.mCapabilities);
     }
 
     public boolean isEnabled() {
@@ -102,6 +89,13 @@ public final class CredentialProviderInfo implements Parcelable {
         return this.mSettingsSubtitle;
     }
 
+    public CharSequence getSettingsActivity() {
+        if (!Flags.settingsActivityEnabled()) {
+            return null;
+        }
+        return this.mSettingsActivity;
+    }
+
     public ComponentName getComponentName() {
         return this.mServiceInfo.getComponentName();
     }
@@ -110,12 +104,12 @@ public final class CredentialProviderInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedObject(this.mServiceInfo, flags);
         dest.writeBoolean(this.mIsSystemProvider);
+        dest.writeStringList(this.mCapabilities);
         dest.writeBoolean(this.mIsEnabled);
         dest.writeBoolean(this.mIsPrimary);
         TextUtils.writeToParcel(this.mOverrideLabel, dest, flags);
         TextUtils.writeToParcel(this.mSettingsSubtitle, dest, flags);
-        List<String> capabilities = getCapabilities();
-        dest.writeStringList(capabilities);
+        TextUtils.writeToParcel(this.mSettingsActivity, dest, flags);
     }
 
     @Override // android.os.Parcelable
@@ -124,47 +118,29 @@ public final class CredentialProviderInfo implements Parcelable {
     }
 
     public String toString() {
-        return "CredentialProviderInfo {serviceInfo=" + this.mServiceInfo + ", isSystemProvider=" + this.mIsSystemProvider + ", isEnabled=" + this.mIsEnabled + ", isPrimary=" + this.mIsPrimary + ", overrideLabel=" + ((Object) this.mOverrideLabel) + ", settingsSubtitle=" + ((Object) this.mSettingsSubtitle) + ", capabilities=" + String.join(",", this.mCapabilities) + "}";
+        return "CredentialProviderInfo {serviceInfo=" + this.mServiceInfo + ", isSystemProvider=" + this.mIsSystemProvider + ", isEnabled=" + this.mIsEnabled + ", isPrimary=" + this.mIsPrimary + ", overrideLabel=" + ((Object) this.mOverrideLabel) + ", settingsSubtitle=" + ((Object) this.mSettingsSubtitle) + ", settingsActivity=" + ((Object) this.mSettingsActivity) + ", capabilities=" + String.join(",", this.mCapabilities) + "}";
     }
 
     private CredentialProviderInfo(Parcel in) {
-        HashSet hashSet = new HashSet();
-        this.mCapabilities = hashSet;
+        this.mCapabilities = new ArrayList();
         this.mSettingsSubtitle = null;
+        this.mSettingsActivity = null;
         this.mServiceInfo = (ServiceInfo) in.readTypedObject(ServiceInfo.CREATOR);
         this.mIsSystemProvider = in.readBoolean();
+        in.readStringList(this.mCapabilities);
         this.mIsEnabled = in.readBoolean();
         this.mIsPrimary = in.readBoolean();
         this.mOverrideLabel = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
         this.mSettingsSubtitle = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
-        ArrayList arrayList = new ArrayList();
-        in.readStringList(arrayList);
-        hashSet.addAll(arrayList);
+        this.mSettingsActivity = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
     }
 
-    /* renamed from: android.credentials.CredentialProviderInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CredentialProviderInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialProviderInfo[] newArray(int size) {
-            return new CredentialProviderInfo[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialProviderInfo createFromParcel(Parcel in) {
-            return new CredentialProviderInfo(in);
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private ServiceInfo mServiceInfo;
-        private Set<String> mCapabilities = new HashSet();
+        private List<String> mCapabilities = new ArrayList();
         private boolean mIsSystemProvider = false;
         private CharSequence mSettingsSubtitle = null;
+        private CharSequence mSettingsActivity = null;
         private boolean mIsEnabled = false;
         private boolean mIsPrimary = false;
         private CharSequence mOverrideLabel = null;
@@ -188,12 +164,12 @@ public final class CredentialProviderInfo implements Parcelable {
             return this;
         }
 
-        public Builder addCapabilities(List<String> capabilities) {
-            this.mCapabilities.addAll(capabilities);
+        public Builder setSettingsActivity(CharSequence settingsActivity) {
+            this.mSettingsActivity = settingsActivity;
             return this;
         }
 
-        public Builder addCapabilities(Set<String> capabilities) {
+        public Builder addCapabilities(List<String> capabilities) {
             this.mCapabilities.addAll(capabilities);
             return this;
         }

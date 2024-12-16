@@ -17,7 +17,6 @@ public interface IAudioConfigChangedCallback extends IInterface {
 
     void onRecordingConfigChanged(List<AudioRecordingConfiguration> list) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAudioConfigChangedCallback {
         @Override // android.companion.virtual.audio.IAudioConfigChangedCallback
         public void onPlaybackConfigChanged(List<AudioPlaybackConfiguration> configs) throws RemoteException {
@@ -33,7 +32,6 @@ public interface IAudioConfigChangedCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAudioConfigChangedCallback {
         static final int TRANSACTION_onPlaybackConfigChanged = 1;
         static final int TRANSACTION_onRecordingConfigChanged = 2;
@@ -79,30 +77,27 @@ public interface IAudioConfigChangedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAudioConfigChangedCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAudioConfigChangedCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAudioConfigChangedCallback.DESCRIPTOR);
+                case 1:
+                    List<AudioPlaybackConfiguration> _arg0 = data.createTypedArrayList(AudioPlaybackConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPlaybackConfigChanged(_arg0);
+                    return true;
+                case 2:
+                    List<AudioRecordingConfiguration> _arg02 = data.createTypedArrayList(AudioRecordingConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRecordingConfigChanged(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<AudioPlaybackConfiguration> _arg0 = data.createTypedArrayList(AudioPlaybackConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPlaybackConfigChanged(_arg0);
-                            return true;
-                        case 2:
-                            List<AudioRecordingConfiguration> _arg02 = data.createTypedArrayList(AudioRecordingConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRecordingConfigChanged(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAudioConfigChangedCallback {
+        private static class Proxy implements IAudioConfigChangedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

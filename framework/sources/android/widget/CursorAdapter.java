@@ -70,13 +70,11 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
             this.mDataSetObserver = null;
         }
         if (cursorPresent) {
-            ChangeObserver changeObserver = this.mChangeObserver;
-            if (changeObserver != null) {
-                c.registerContentObserver(changeObserver);
+            if (this.mChangeObserver != null) {
+                c.registerContentObserver(this.mChangeObserver);
             }
-            DataSetObserver dataSetObserver = this.mDataSetObserver;
-            if (dataSetObserver != null) {
-                c.registerDataSetObserver(dataSetObserver);
+            if (this.mDataSetObserver != null) {
+                c.registerDataSetObserver(this.mDataSetObserver);
             }
         }
     }
@@ -94,11 +92,10 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
 
     @Override // android.widget.ThemedSpinnerAdapter
     public Resources.Theme getDropDownViewTheme() {
-        Context context = this.mDropDownContext;
-        if (context == null) {
+        if (this.mDropDownContext == null) {
             return null;
         }
-        return context.getTheme();
+        return this.mDropDownContext.getTheme();
     }
 
     @Override // android.widget.CursorFilter.CursorFilterClient
@@ -108,18 +105,16 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
 
     @Override // android.widget.Adapter
     public int getCount() {
-        Cursor cursor;
-        if (this.mDataValid && (cursor = this.mCursor) != null) {
-            return cursor.getCount();
+        if (this.mDataValid && this.mCursor != null) {
+            return this.mCursor.getCount();
         }
         return 0;
     }
 
     @Override // android.widget.Adapter
     public Object getItem(int position) {
-        Cursor cursor;
-        if (this.mDataValid && (cursor = this.mCursor) != null) {
-            cursor.moveToPosition(position);
+        if (this.mDataValid && this.mCursor != null) {
+            this.mCursor.moveToPosition(position);
             return this.mCursor;
         }
         return null;
@@ -127,8 +122,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
 
     @Override // android.widget.Adapter
     public long getItemId(int position) {
-        Cursor cursor;
-        if (this.mDataValid && (cursor = this.mCursor) != null && cursor.moveToPosition(position)) {
+        if (this.mDataValid && this.mCursor != null && this.mCursor.moveToPosition(position)) {
             return this.mCursor.getLong(this.mRowIDColumn);
         }
         return 0L;
@@ -161,10 +155,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         View v;
         if (this.mDataValid) {
-            Context context = this.mDropDownContext;
-            if (context == null) {
-                context = this.mContext;
-            }
+            Context context = this.mDropDownContext == null ? this.mContext : this.mDropDownContext;
             this.mCursor.moveToPosition(position);
             if (convertView == null) {
                 v = newDropDownView(context, this.mCursor, parent);
@@ -195,24 +186,20 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         }
         Cursor oldCursor = this.mCursor;
         if (oldCursor != null) {
-            ChangeObserver changeObserver = this.mChangeObserver;
-            if (changeObserver != null) {
-                oldCursor.unregisterContentObserver(changeObserver);
+            if (this.mChangeObserver != null) {
+                oldCursor.unregisterContentObserver(this.mChangeObserver);
             }
-            DataSetObserver dataSetObserver = this.mDataSetObserver;
-            if (dataSetObserver != null) {
-                oldCursor.unregisterDataSetObserver(dataSetObserver);
+            if (this.mDataSetObserver != null) {
+                oldCursor.unregisterDataSetObserver(this.mDataSetObserver);
             }
         }
         this.mCursor = newCursor;
         if (newCursor != null) {
-            ChangeObserver changeObserver2 = this.mChangeObserver;
-            if (changeObserver2 != null) {
-                newCursor.registerContentObserver(changeObserver2);
+            if (this.mChangeObserver != null) {
+                newCursor.registerContentObserver(this.mChangeObserver);
             }
-            DataSetObserver dataSetObserver2 = this.mDataSetObserver;
-            if (dataSetObserver2 != null) {
-                newCursor.registerDataSetObserver(dataSetObserver2);
+            if (this.mDataSetObserver != null) {
+                newCursor.registerDataSetObserver(this.mDataSetObserver);
             }
             this.mRowIDColumn = newCursor.getColumnIndexOrThrow("_id");
             this.mDataValid = true;
@@ -232,9 +219,8 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
 
     @Override // android.widget.CursorFilter.CursorFilterClient
     public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-        FilterQueryProvider filterQueryProvider = this.mFilterQueryProvider;
-        if (filterQueryProvider != null) {
-            return filterQueryProvider.runQuery(constraint);
+        if (this.mFilterQueryProvider != null) {
+            return this.mFilterQueryProvider.runQuery(constraint);
         }
         return this.mCursor;
     }
@@ -256,14 +242,12 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
     }
 
     protected void onContentChanged() {
-        Cursor cursor;
-        if (this.mAutoRequery && (cursor = this.mCursor) != null && !cursor.isClosed()) {
+        if (this.mAutoRequery && this.mCursor != null && !this.mCursor.isClosed()) {
             this.mDataValid = this.mCursor.requery();
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class ChangeObserver extends ContentObserver {
+    private class ChangeObserver extends ContentObserver {
         public ChangeObserver() {
             super(new Handler());
         }
@@ -279,12 +263,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class MyDataSetObserver extends DataSetObserver {
-        /* synthetic */ MyDataSetObserver(CursorAdapter cursorAdapter, MyDataSetObserverIA myDataSetObserverIA) {
-            this();
-        }
-
+    private class MyDataSetObserver extends DataSetObserver {
         private MyDataSetObserver() {
         }
 

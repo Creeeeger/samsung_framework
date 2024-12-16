@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class AnomalyReporter {
     private static final String KEY_IS_TELEPHONY_ANOMALY_REPORT_ENABLED = "is_telephony_anomaly_report_enabled";
     private static final String TAG = "AnomalyReporter";
@@ -67,7 +67,7 @@ public final class AnomalyReporter {
         }
         context.enforceCallingOrSelfPermission(Manifest.permission.MODIFY_PHONE_STATE, "This app does not have privileges to send debug events");
         sContext = context;
-        PackageManager pm = context.getPackageManager();
+        PackageManager pm = sContext.getPackageManager();
         if (pm == null || (packages = pm.queryBroadcastReceivers(new Intent(TelephonyManager.ACTION_ANOMALY_REPORTED), BatteryStats.HistoryItem.MOST_INTERESTING_STATES)) == null || packages.isEmpty()) {
             return;
         }
@@ -75,8 +75,10 @@ public final class AnomalyReporter {
             com.android.telephony.Rlog.e(TAG, "Multiple Anomaly Receivers installed.");
         }
         for (ResolveInfo r : packages) {
-            if (r.activityInfo == null || pm.checkPermission(Manifest.permission.READ_PRIVILEGED_PHONE_STATE, r.activityInfo.packageName) != 0) {
-                com.android.telephony.Rlog.w(TAG, "Found package without proper permissions or no activity" + r.activityInfo.packageName);
+            if (r.activityInfo == null) {
+                com.android.telephony.Rlog.w(TAG, "Found package without activity");
+            } else if (pm.checkPermission(Manifest.permission.READ_PRIVILEGED_PHONE_STATE, r.activityInfo.packageName) != 0) {
+                com.android.telephony.Rlog.w(TAG, "Found package without proper permissions" + r.activityInfo.packageName);
             } else {
                 com.android.telephony.Rlog.d(TAG, "Found a valid package " + r.activityInfo.packageName);
                 sDebugPackageName = r.activityInfo.packageName;

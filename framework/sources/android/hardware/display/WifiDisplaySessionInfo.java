@@ -6,9 +6,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class WifiDisplaySessionInfo implements Parcelable {
     public static final Parcelable.Creator<WifiDisplaySessionInfo> CREATOR = new Parcelable.Creator<WifiDisplaySessionInfo>() { // from class: android.hardware.display.WifiDisplaySessionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiDisplaySessionInfo createFromParcel(Parcel in) {
             boolean client = in.readInt() != 0;
@@ -19,6 +17,7 @@ public final class WifiDisplaySessionInfo implements Parcelable {
             return new WifiDisplaySessionInfo(client, session, group, pp, ip);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiDisplaySessionInfo[] newArray(int size) {
             return new WifiDisplaySessionInfo[size];
@@ -29,28 +28,6 @@ public final class WifiDisplaySessionInfo implements Parcelable {
     private final String mIP;
     private final String mPassphrase;
     private final int mSessionId;
-
-    /* renamed from: android.hardware.display.WifiDisplaySessionInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WifiDisplaySessionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiDisplaySessionInfo createFromParcel(Parcel in) {
-            boolean client = in.readInt() != 0;
-            int session = in.readInt();
-            String group = in.readString();
-            String pp = in.readString();
-            String ip = in.readString();
-            return new WifiDisplaySessionInfo(client, session, group, pp, ip);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiDisplaySessionInfo[] newArray(int size) {
-            return new WifiDisplaySessionInfo[size];
-        }
-    }
 
     public WifiDisplaySessionInfo() {
         this(true, 0, "", "", "");

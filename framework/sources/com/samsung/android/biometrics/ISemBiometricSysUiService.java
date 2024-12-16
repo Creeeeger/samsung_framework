@@ -28,7 +28,6 @@ public interface ISemBiometricSysUiService extends IInterface {
 
     void showBiometricDialog(int i, int i2, Bundle bundle, ISemBiometricSysUiCallback iSemBiometricSysUiCallback, boolean z, int i3, String str, long j, PromptInfo promptInfo) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemBiometricSysUiService {
         @Override // com.samsung.android.biometrics.ISemBiometricSysUiService
         public void showBiometricDialog(int sessionId, int type, Bundle bundle, ISemBiometricSysUiCallback receiver, boolean requireConfirmation, int userId, String opPackageName, long operationId, PromptInfo promptInfo) throws RemoteException {
@@ -64,7 +63,6 @@ public interface ISemBiometricSysUiService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemBiometricSysUiService {
         static final int TRANSACTION_hideBiometricDialog = 5;
         static final int TRANSACTION_onBiometricAuthenticated = 2;
@@ -125,81 +123,78 @@ public interface ISemBiometricSysUiService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemBiometricSysUiService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemBiometricSysUiService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemBiometricSysUiService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ISemBiometricSysUiCallback _arg3 = ISemBiometricSysUiCallback.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg4 = data.readBoolean();
+                    int _arg5 = data.readInt();
+                    String _arg6 = data.readString();
+                    long _arg7 = data.readLong();
+                    PromptInfo _arg8 = (PromptInfo) data.readTypedObject(PromptInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    showBiometricDialog(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    onBiometricAuthenticated(_arg02, _arg12, _arg22, _arg32);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    int _arg23 = data.readInt();
+                    int _arg33 = data.readInt();
+                    String _arg42 = data.readString();
+                    data.enforceNoDataAvail();
+                    onBiometricHelp(_arg03, _arg13, _arg23, _arg33, _arg42);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg24 = data.readInt();
+                    int _arg34 = data.readInt();
+                    String _arg43 = data.readString();
+                    data.enforceNoDataAvail();
+                    onBiometricError(_arg04, _arg14, _arg24, _arg34, _arg43);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    hideBiometricDialog(_arg05, _arg15, _arg25);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg16 = data.readInt();
+                    int _arg26 = data.readInt();
+                    Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCommand(_arg06, _arg16, _arg26, _arg35);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String _arg17 = data.readString();
+                    byte[] _arg27 = data.createByteArray();
+                    FileDescriptor _arg36 = data.readRawFileDescriptor();
+                    data.enforceNoDataAvail();
+                    setBiometricTheme(_arg07, _arg17, _arg27, _arg36);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ISemBiometricSysUiCallback _arg3 = ISemBiometricSysUiCallback.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg4 = data.readBoolean();
-                            int _arg5 = data.readInt();
-                            String _arg6 = data.readString();
-                            long _arg7 = data.readLong();
-                            PromptInfo _arg8 = (PromptInfo) data.readTypedObject(PromptInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            showBiometricDialog(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            onBiometricAuthenticated(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            int _arg23 = data.readInt();
-                            int _arg33 = data.readInt();
-                            String _arg42 = data.readString();
-                            data.enforceNoDataAvail();
-                            onBiometricHelp(_arg03, _arg13, _arg23, _arg33, _arg42);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg24 = data.readInt();
-                            int _arg34 = data.readInt();
-                            String _arg43 = data.readString();
-                            data.enforceNoDataAvail();
-                            onBiometricError(_arg04, _arg14, _arg24, _arg34, _arg43);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            hideBiometricDialog(_arg05, _arg15, _arg25);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg26 = data.readInt();
-                            Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCommand(_arg06, _arg16, _arg26, _arg35);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            String _arg17 = data.readString();
-                            byte[] _arg27 = data.createByteArray();
-                            FileDescriptor _arg36 = data.readRawFileDescriptor();
-                            data.enforceNoDataAvail();
-                            setBiometricTheme(_arg07, _arg17, _arg27, _arg36);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISemBiometricSysUiService {
             private IBinder mRemote;
 

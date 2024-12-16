@@ -28,8 +28,7 @@ public class Base64InputStream extends FilterInputStream {
         } else {
             this.coder = new Base64.Decoder(flags, null);
         }
-        Base64.Coder coder = this.coder;
-        coder.output = new byte[coder.maxOutputSize(2048)];
+        this.coder.output = new byte[this.coder.maxOutputSize(2048)];
         this.outputStart = 0;
         this.outputEnd = 0;
     }
@@ -68,7 +67,7 @@ public class Base64InputStream extends FilterInputStream {
         if (this.outputStart >= this.outputEnd) {
             return 0L;
         }
-        long bytes = Math.min(n, r1 - r0);
+        long bytes = Math.min(n, this.outputEnd - this.outputStart);
         this.outputStart = (int) (this.outputStart + bytes);
         return bytes;
     }
@@ -92,12 +91,10 @@ public class Base64InputStream extends FilterInputStream {
         if (this.outputStart >= this.outputEnd) {
             refill();
         }
-        int i = this.outputStart;
-        int i2 = this.outputEnd;
-        if (i >= i2) {
+        if (this.outputStart >= this.outputEnd) {
             return -1;
         }
-        int bytes = Math.min(len, i2 - i);
+        int bytes = Math.min(len, this.outputEnd - this.outputStart);
         System.arraycopy(this.coder.output, this.outputStart, b, off, bytes);
         this.outputStart += bytes;
         return bytes;

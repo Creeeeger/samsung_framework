@@ -125,7 +125,6 @@ public interface AppStandbyInternal {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class AppIdleStateChangeListener {
         public abstract void onAppIdleStateChanged(String str, int i, boolean z, int i2, int i3);
 

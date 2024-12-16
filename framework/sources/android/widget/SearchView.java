@@ -64,7 +64,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     private static final String SEM_SVI_PACKAGE = "com.samsung.android.honeyboard";
     private static final int SEM_SVI_VERSION_SUPPORTING_SEARCH_QUERY = 220002001;
     private static final int SHOW_IME_WITH_HARDKEY = 1;
-    private static final int TW_SEARCH_ICON_RES_ID = 17304542;
+    private static final int TW_SEARCH_ICON_RES_ID = 17304772;
     private Bundle mAppSearchData;
     private final ImageView mBackButton;
     private boolean mClearingFocus;
@@ -125,26 +125,22 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     private boolean mVoiceButtonEnabled;
     private final Intent mVoiceWebSearchIntent;
 
-    /* loaded from: classes4.dex */
     public interface OnCloseListener {
         boolean onClose();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnQueryTextListener {
         boolean onQueryTextChange(String str);
 
         boolean onQueryTextSubmit(String str);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnSuggestionListener {
         boolean onSuggestionClick(int i);
 
         boolean onSuggestionSelect(int i);
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<SearchView> {
         private int mIconifiedByDefaultId;
         private int mIconifiedId;
@@ -181,72 +177,38 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     }
 
     public void semSetUpButtonIcon(Drawable drawable) {
-        ImageView imageView = this.mBackButton;
-        if (imageView != null) {
-            imageView.lambda$setImageURIAsync$2(drawable);
+        if (this.mBackButton != null) {
+            this.mBackButton.lambda$setImageURIAsync$0(drawable);
         }
     }
 
     public void semSetOverflowMenuButtonIcon(Drawable drawable) {
-        ImageView imageView = this.mMoreButton;
-        if (imageView != null) {
-            imageView.lambda$setImageURIAsync$2(drawable);
+        if (this.mMoreButton != null) {
+            this.mMoreButton.lambda$setImageURIAsync$0(drawable);
         }
     }
 
     public void semSetUpButtonVisibility(int visibility) {
-        ImageView imageView = this.mBackButton;
-        if (imageView != null) {
-            imageView.setVisibility(visibility);
+        if (this.mBackButton != null) {
+            this.mBackButton.setVisibility(visibility);
         }
     }
 
     public void semSetOverflowMenuButtonVisibility(int visibility) {
-        ImageView imageView = this.mMoreButton;
-        if (imageView != null) {
-            imageView.setVisibility(visibility);
+        if (this.mMoreButton != null) {
+            this.mMoreButton.setVisibility(visibility);
         }
     }
 
     public void semSetOnUpButtonClickListener(View.OnClickListener listener) {
-        ImageView imageView = this.mBackButton;
-        if (imageView != null) {
-            imageView.setOnClickListener(listener);
+        if (this.mBackButton != null) {
+            this.mBackButton.setOnClickListener(listener);
         }
     }
 
     public void semSetOnOverflowMenuButtonClickListener(View.OnClickListener listener) {
-        ImageView imageView = this.mMoreButton;
-        if (imageView != null) {
-            imageView.setOnClickListener(listener);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SearchView.this.updateFocusedState();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (SearchView.this.mSuggestionsAdapter != null && (SearchView.this.mSuggestionsAdapter instanceof SuggestionsAdapter)) {
-                SearchView.this.mSuggestionsAdapter.changeCursor(null);
-            }
+        if (this.mMoreButton != null) {
+            this.mMoreButton.setOnClickListener(listener);
         }
     }
 
@@ -266,8 +228,6 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         super(context, attrs, defStyleAttr, defStyleRes);
         boolean z;
         boolean z2;
-        ImageView imageView;
-        ImageView imageView2;
         this.mSearchSrcTextViewBounds = new Rect();
         this.mSearchSrtTextViewBoundsExpanded = new Rect();
         this.mTemp = new int[2];
@@ -277,18 +237,12 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         this.mUseSVI = false;
         this.mSVISearchIntent = null;
         this.mUpdateDrawableStateRunnable = new Runnable() { // from class: android.widget.SearchView.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 SearchView.this.updateFocusedState();
             }
         };
         this.mReleaseCursorRunnable = new Runnable() { // from class: android.widget.SearchView.2
-            AnonymousClass2() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 if (SearchView.this.mSuggestionsAdapter != null && (SearchView.this.mSuggestionsAdapter instanceof SuggestionsAdapter)) {
@@ -297,10 +251,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             }
         };
         this.mOutsideDrawablesCache = new WeakHashMap<>();
-        AnonymousClass5 anonymousClass5 = new View.OnClickListener() { // from class: android.widget.SearchView.5
-            AnonymousClass5() {
-            }
-
+        this.mOnClickListener = new View.OnClickListener() { // from class: android.widget.SearchView.5
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 if (v == SearchView.this.mSearchButton) {
@@ -320,11 +271,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
                 }
             }
         };
-        this.mOnClickListener = anonymousClass5;
         this.mTextKeyListener = new View.OnKeyListener() { // from class: android.widget.SearchView.6
-            AnonymousClass6() {
-            }
-
             @Override // android.view.View.OnKeyListener
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 SearchableInfo.ActionKeyInfo actionKey;
@@ -345,8 +292,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
                 if (!SearchView.this.mSearchSrcTextView.isEmpty() && event.hasNoModifiers()) {
                     if (event.getAction() == 1 && (keyCode == 66 || keyCode == 160)) {
                         v.cancelLongPress();
-                        SearchView searchView = SearchView.this;
-                        searchView.launchQuerySearch(0, null, searchView.mSearchSrcTextView.getText().toString());
+                        SearchView.this.launchQuerySearch(0, null, SearchView.this.mSearchSrcTextView.getText().toString());
                         return true;
                     }
                     if (event.getAction() == 0 && (actionKey = SearchView.this.mSearchable.findActionKey(keyCode)) != null && actionKey.getQueryActionMsg() != null) {
@@ -357,31 +303,20 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
                 return false;
             }
         };
-        AnonymousClass7 anonymousClass7 = new TextView.OnEditorActionListener() { // from class: android.widget.SearchView.7
-            AnonymousClass7() {
-            }
-
+        this.mOnEditorActionListener = new TextView.OnEditorActionListener() { // from class: android.widget.SearchView.7
             @Override // android.widget.TextView.OnEditorActionListener
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 SearchView.this.onSubmitQuery();
                 return true;
             }
         };
-        this.mOnEditorActionListener = anonymousClass7;
-        AnonymousClass8 anonymousClass8 = new AdapterView.OnItemClickListener() { // from class: android.widget.SearchView.8
-            AnonymousClass8() {
-            }
-
+        this.mOnItemClickListener = new AdapterView.OnItemClickListener() { // from class: android.widget.SearchView.8
             @Override // android.widget.AdapterView.OnItemClickListener
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SearchView.this.onItemClicked(position, 0, null);
             }
         };
-        this.mOnItemClickListener = anonymousClass8;
-        AnonymousClass9 anonymousClass9 = new AdapterView.OnItemSelectedListener() { // from class: android.widget.SearchView.9
-            AnonymousClass9() {
-            }
-
+        this.mOnItemSelectedListener = new AdapterView.OnItemSelectedListener() { // from class: android.widget.SearchView.9
             @Override // android.widget.AdapterView.OnItemSelectedListener
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SearchView.this.onItemSelected(position);
@@ -391,11 +326,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         };
-        this.mOnItemSelectedListener = anonymousClass9;
         this.mTextWatcher = new TextWatcher() { // from class: android.widget.SearchView.10
-            AnonymousClass10() {
-            }
-
             @Override // android.text.TextWatcher
             public void beforeTextChanged(CharSequence s, int start, int before, int after) {
             }
@@ -429,37 +360,26 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             z2 = true;
         }
         this.mIsNight = z2;
-        SearchAutoComplete searchAutoComplete = (SearchAutoComplete) findViewById(R.id.search_src_text);
-        this.mSearchSrcTextView = searchAutoComplete;
-        searchAutoComplete.setSearchView(this);
+        this.mSearchSrcTextView = (SearchAutoComplete) findViewById(R.id.search_src_text);
+        this.mSearchSrcTextView.setSearchView(this);
         this.mSearchEditFrame = findViewById(R.id.search_edit_frame);
-        View findViewById = findViewById(R.id.search_plate);
-        this.mSearchPlate = findViewById;
-        View findViewById2 = findViewById(R.id.submit_area);
-        this.mSubmitArea = findViewById2;
-        ImageView imageView3 = (ImageView) findViewById(R.id.search_button);
-        this.mSearchButton = imageView3;
-        ImageView imageView4 = (ImageView) findViewById(R.id.search_go_btn);
-        this.mGoButton = imageView4;
-        ImageView imageView5 = (ImageView) findViewById(R.id.search_close_btn);
-        this.mCloseButton = imageView5;
-        ImageView imageView6 = (ImageView) findViewById(R.id.search_voice_btn);
-        this.mVoiceButton = imageView6;
-        ImageView imageView7 = (ImageView) findViewById(R.id.search_mag_icon);
-        this.mCollapsedIcon = imageView7;
-        ImageView imageView8 = (ImageView) findViewById(R.id.search_more_btn);
-        this.mMoreButton = imageView8;
-        ImageView imageView9 = (ImageView) findViewById(R.id.search_back_btn);
-        this.mBackButton = imageView9;
-        findViewById.setBackground(a.getDrawable(12));
-        findViewById2.setBackground(a.getDrawable(13));
-        int resourceId = a.getResourceId(8, 0);
-        this.mSearchIconResId = resourceId;
-        imageView3.setImageResource(resourceId);
-        imageView4.lambda$setImageURIAsync$2(a.getDrawable(7));
-        imageView5.lambda$setImageURIAsync$2(a.getDrawable(6));
-        imageView6.lambda$setImageURIAsync$2(a.getDrawable(9));
-        imageView7.lambda$setImageURIAsync$2(a.getDrawable(8));
+        this.mSearchPlate = findViewById(R.id.search_plate);
+        this.mSubmitArea = findViewById(R.id.submit_area);
+        this.mSearchButton = (ImageView) findViewById(R.id.search_button);
+        this.mGoButton = (ImageView) findViewById(R.id.search_go_btn);
+        this.mCloseButton = (ImageView) findViewById(R.id.search_close_btn);
+        this.mVoiceButton = (ImageView) findViewById(R.id.search_voice_btn);
+        this.mCollapsedIcon = (ImageView) findViewById(R.id.search_mag_icon);
+        this.mMoreButton = (ImageView) findViewById(R.id.search_more_btn);
+        this.mBackButton = (ImageView) findViewById(R.id.search_back_btn);
+        this.mSearchPlate.setBackground(a.getDrawable(12));
+        this.mSubmitArea.setBackground(a.getDrawable(13));
+        this.mSearchIconResId = a.getResourceId(8, 0);
+        this.mSearchButton.setImageResource(this.mSearchIconResId);
+        this.mGoButton.lambda$setImageURIAsync$0(a.getDrawable(7));
+        this.mCloseButton.lambda$setImageURIAsync$0(a.getDrawable(6));
+        this.mVoiceButton.lambda$setImageURIAsync$0(a.getDrawable(9));
+        this.mCollapsedIcon.lambda$setImageURIAsync$0(a.getDrawable(8));
         if (a.hasValueOrEmpty(14)) {
             this.mSearchHintIcon = a.getDrawable(14);
         } else {
@@ -467,34 +387,25 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         }
         this.mSuggestionRowLayout = a.getResourceId(11, R.layout.search_dropdown_item_icons_2line);
         this.mSuggestionCommitIconResId = a.getResourceId(10, 0);
-        imageView3.setOnClickListener(anonymousClass5);
-        imageView5.setOnClickListener(anonymousClass5);
-        imageView4.setOnClickListener(anonymousClass5);
-        imageView6.setOnClickListener(anonymousClass5);
-        searchAutoComplete.setOnClickListener(anonymousClass5);
-        searchAutoComplete.addTextChangedListener(this.mTextWatcher);
-        searchAutoComplete.setOnEditorActionListener(anonymousClass7);
-        searchAutoComplete.setOnItemClickListener(anonymousClass8);
-        searchAutoComplete.setOnItemSelectedListener(anonymousClass9);
-        searchAutoComplete.setOnKeyListener(this.mTextKeyListener);
-        imageView3.setTooltipText(imageView3.getContentDescription());
-        imageView5.setTooltipText(imageView5.getContentDescription());
-        imageView4.setTooltipText(imageView4.getContentDescription());
-        imageView6.setTooltipText(imageView6.getContentDescription());
-        if (layoutResId != 17367491) {
-            imageView = imageView8;
-            imageView2 = imageView9;
-        } else {
-            CharSequence contentDescription = imageView8.getContentDescription();
-            imageView = imageView8;
-            imageView.setTooltipText(contentDescription);
-            imageView2 = imageView9;
-            imageView2.setTooltipText(imageView9.getContentDescription());
+        this.mSearchButton.setOnClickListener(this.mOnClickListener);
+        this.mCloseButton.setOnClickListener(this.mOnClickListener);
+        this.mGoButton.setOnClickListener(this.mOnClickListener);
+        this.mVoiceButton.setOnClickListener(this.mOnClickListener);
+        this.mSearchSrcTextView.setOnClickListener(this.mOnClickListener);
+        this.mSearchSrcTextView.addTextChangedListener(this.mTextWatcher);
+        this.mSearchSrcTextView.setOnEditorActionListener(this.mOnEditorActionListener);
+        this.mSearchSrcTextView.setOnItemClickListener(this.mOnItemClickListener);
+        this.mSearchSrcTextView.setOnItemSelectedListener(this.mOnItemSelectedListener);
+        this.mSearchSrcTextView.setOnKeyListener(this.mTextKeyListener);
+        this.mSearchButton.setTooltipText(this.mSearchButton.getContentDescription());
+        this.mCloseButton.setTooltipText(this.mCloseButton.getContentDescription());
+        this.mGoButton.setTooltipText(this.mGoButton.getContentDescription());
+        this.mVoiceButton.setTooltipText(this.mVoiceButton.getContentDescription());
+        if (layoutResId == 17367499) {
+            this.mMoreButton.setTooltipText(this.mMoreButton.getContentDescription());
+            this.mBackButton.setTooltipText(this.mBackButton.getContentDescription());
         }
-        searchAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() { // from class: android.widget.SearchView.3
-            AnonymousClass3() {
-            }
-
+        this.mSearchSrcTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() { // from class: android.widget.SearchView.3
             @Override // android.view.View.OnFocusChangeListener
             public void onFocusChange(View v, boolean hasFocus) {
                 if (SearchView.this.mOnQueryTextFocusChangeListener != null) {
@@ -521,66 +432,60 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             setFocusable(1);
         }
         if (this.mThemeIsDeviceDefault) {
-            if (resourceId == 0) {
-                imageView7.lambda$setImageURIAsync$2(getContext().getResources().getDrawable(17304542));
-                imageView3.lambda$setImageURIAsync$2(getContext().getResources().getDrawable(17304542));
+            if (this.mSearchIconResId == 0) {
+                this.mCollapsedIcon.lambda$setImageURIAsync$0(getContext().getResources().getDrawable(17304772));
+                this.mSearchButton.lambda$setImageURIAsync$0(getContext().getResources().getDrawable(17304772));
             }
             Resources resources = this.mContext.getResources();
             if (!this.mIsNight) {
-                if (findViewById.getBackground() == null) {
-                    searchAutoComplete.setTextColor(resources.getColor(R.color.sem_search_view_no_background_text_color_light));
-                    searchAutoComplete.setHintTextColor(resources.getColor(R.color.sem_search_view_no_background_hint_text_color_light));
-                    imageView4.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
-                    imageView5.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
-                    imageView6.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
-                    imageView.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
-                    imageView2.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
-                    imageView3.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
+                if (this.mSearchPlate.getBackground() == null) {
+                    this.mSearchSrcTextView.setTextColor(resources.getColor(R.color.sem_search_view_no_background_text_color_light));
+                    this.mSearchSrcTextView.setHintTextColor(resources.getColor(R.color.sem_search_view_no_background_hint_text_color_light));
+                    this.mGoButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
+                    this.mCloseButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
+                    this.mVoiceButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
+                    this.mMoreButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
+                    this.mBackButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
+                    this.mSearchButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_light));
                 } else {
-                    searchAutoComplete.setTextColor(resources.getColor(R.color.tw_searchview_text_material));
-                    searchAutoComplete.setHintTextColor(resources.getColor(R.color.tw_searchview_hint_text_material));
-                    imageView4.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
-                    imageView5.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
-                    imageView6.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
-                    imageView.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
-                    imageView2.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
-                    imageView3.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
+                    this.mSearchSrcTextView.setTextColor(resources.getColor(R.color.tw_searchview_text_material));
+                    this.mSearchSrcTextView.setHintTextColor(resources.getColor(R.color.tw_searchview_hint_text_material));
+                    this.mGoButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
+                    this.mCloseButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
+                    this.mVoiceButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
+                    this.mMoreButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
+                    this.mBackButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
+                    this.mSearchButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material));
                 }
-            } else if (findViewById.getBackground() == null) {
-                searchAutoComplete.setTextColor(resources.getColor(R.color.sem_search_view_no_background_text_color_dark));
-                searchAutoComplete.setHintTextColor(resources.getColor(R.color.sem_search_view_no_background_hint_text_color_dark));
-                imageView4.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
-                imageView5.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
-                imageView6.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
-                imageView.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
-                imageView2.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
-                imageView3.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
+            } else if (this.mSearchPlate.getBackground() == null) {
+                this.mSearchSrcTextView.setTextColor(resources.getColor(R.color.sem_search_view_no_background_text_color_dark));
+                this.mSearchSrcTextView.setHintTextColor(resources.getColor(R.color.sem_search_view_no_background_hint_text_color_dark));
+                this.mGoButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
+                this.mCloseButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
+                this.mVoiceButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
+                this.mMoreButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
+                this.mBackButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
+                this.mSearchButton.setColorFilter(resources.getColor(R.color.sem_search_view_no_background_icon_color_dark));
             } else {
-                searchAutoComplete.setTextColor(resources.getColor(R.color.tw_searchview_text_material_dark));
-                searchAutoComplete.setHintTextColor(resources.getColor(R.color.tw_searchview_hint_text_material_dark));
-                imageView4.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
-                imageView5.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
-                imageView6.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
-                imageView.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
-                imageView2.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
-                imageView3.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
+                this.mSearchSrcTextView.setTextColor(resources.getColor(R.color.tw_searchview_text_material_dark));
+                this.mSearchSrcTextView.setHintTextColor(resources.getColor(R.color.tw_searchview_hint_text_material_dark));
+                this.mGoButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
+                this.mCloseButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
+                this.mVoiceButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
+                this.mMoreButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
+                this.mBackButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
+                this.mSearchButton.setColorFilter(resources.getColor(R.color.tw_searchview_search_icon_color_material_dark));
             }
         }
         a.recycle();
-        Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
-        this.mVoiceWebSearchIntent = intent;
-        intent.addFlags(268435456);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-        Intent intent2 = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        this.mVoiceAppSearchIntent = intent2;
-        intent2.addFlags(268435456);
-        View findViewById3 = findViewById(searchAutoComplete.getDropDownAnchor());
-        this.mDropDownAnchor = findViewById3;
-        if (findViewById3 != null) {
-            findViewById3.addOnLayoutChangeListener(new View.OnLayoutChangeListener() { // from class: android.widget.SearchView.4
-                AnonymousClass4() {
-                }
-
+        this.mVoiceWebSearchIntent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+        this.mVoiceWebSearchIntent.addFlags(268435456);
+        this.mVoiceWebSearchIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+        this.mVoiceAppSearchIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        this.mVoiceAppSearchIntent.addFlags(268435456);
+        this.mDropDownAnchor = findViewById(this.mSearchSrcTextView.getDropDownAnchor());
+        if (this.mDropDownAnchor != null) {
+            this.mDropDownAnchor.addOnLayoutChangeListener(new View.OnLayoutChangeListener() { // from class: android.widget.SearchView.4
                 @Override // android.view.View.OnLayoutChangeListener
                 public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                     SearchView.this.adjustDropDownSizeAndPosition();
@@ -590,60 +495,30 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         updateViewsVisibility(this.mIconifiedByDefault);
         updateQueryHint();
         if (ViewRune.WIDGET_SEARCHVIEW_USE_SVI) {
-            Intent intent3 = new Intent(SEM_SVI_ACTION);
-            this.mSVISearchIntent = intent3;
-            intent3.addFlags(268435456);
+            this.mSVISearchIntent = new Intent(SEM_SVI_ACTION);
+            this.mSVISearchIntent.addFlags(268435456);
         }
         if (this.mThemeIsDeviceDefault) {
             semCheckMaxFontSize();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements View.OnFocusChangeListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.view.View.OnFocusChangeListener
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (SearchView.this.mOnQueryTextFocusChangeListener != null) {
-                SearchView.this.mOnQueryTextFocusChangeListener.onFocusChange(SearchView.this, hasFocus);
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$4 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass4 implements View.OnLayoutChangeListener {
-        AnonymousClass4() {
-        }
-
-        @Override // android.view.View.OnLayoutChangeListener
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            SearchView.this.adjustDropDownSizeAndPosition();
-        }
-    }
-
-    public int getSuggestionRowLayout() {
+    int getSuggestionRowLayout() {
         return this.mSuggestionRowLayout;
     }
 
-    public int getSuggestionCommitIconResId() {
+    int getSuggestionCommitIconResId() {
         return this.mSuggestionCommitIconResId;
     }
 
     public void setSearchableInfo(SearchableInfo searchable) {
         this.mSearchable = searchable;
-        if (searchable != null) {
+        if (this.mSearchable != null) {
             updateSearchAutoComplete();
             updateQueryHint();
         }
-        boolean hasVoiceSearch = hasVoiceSearch();
-        this.mVoiceButtonEnabled = hasVoiceSearch;
-        if (hasVoiceSearch && !this.mThemeIsDeviceDefault) {
+        this.mVoiceButtonEnabled = hasVoiceSearch();
+        if (this.mVoiceButtonEnabled && !this.mThemeIsDeviceDefault) {
             this.mSearchSrcTextView.setPrivateImeOptions(IME_OPTION_NO_MICROPHONE);
         }
         updateViewsVisibility(isIconified());
@@ -725,10 +600,9 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     }
 
     public void setQuery(CharSequence query, boolean submit) {
-        this.mSearchSrcTextView.setText(query);
+        this.mSearchSrcTextView.lambda$setTextAsync$0(query);
         if (query != null) {
-            SearchAutoComplete searchAutoComplete = this.mSearchSrcTextView;
-            searchAutoComplete.setSelection(searchAutoComplete.length());
+            this.mSearchSrcTextView.setSelection(this.mSearchSrcTextView.length());
             this.mUserQuery = query;
         }
         if (submit && !TextUtils.isEmpty(query)) {
@@ -746,8 +620,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             CharSequence hint = this.mQueryHint;
             return hint;
         }
-        SearchableInfo searchableInfo = this.mSearchable;
-        if (searchableInfo != null && searchableInfo.getHintId() != 0) {
+        if (this.mSearchable != null && this.mSearchable.getHintId() != 0) {
             CharSequence hint2 = getContext().getText(this.mSearchable.getHintId());
             return hint2;
         }
@@ -796,9 +669,8 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
 
     public void setQueryRefinementEnabled(boolean enable) {
         this.mQueryRefinement = enable;
-        CursorAdapter cursorAdapter = this.mSuggestionsAdapter;
-        if (cursorAdapter instanceof SuggestionsAdapter) {
-            ((SuggestionsAdapter) cursorAdapter).setQueryRefinement(enable ? 2 : 1);
+        if (this.mSuggestionsAdapter instanceof SuggestionsAdapter) {
+            ((SuggestionsAdapter) this.mSuggestionsAdapter).setQueryRefinement(enable ? 2 : 1);
         }
     }
 
@@ -808,7 +680,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
 
     public void setSuggestionsAdapter(CursorAdapter adapter) {
         this.mSuggestionsAdapter = adapter;
-        this.mSearchSrcTextView.setAdapter(adapter);
+        this.mSearchSrcTextView.setAdapter(this.mSuggestionsAdapter);
     }
 
     public CursorAdapter getSuggestionsAdapter() {
@@ -825,7 +697,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (isIconified()) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
@@ -834,9 +706,8 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         int width = View.MeasureSpec.getSize(widthMeasureSpec);
         switch (widthMode) {
             case Integer.MIN_VALUE:
-                int i = this.mMaxWidth;
-                if (i > 0) {
-                    width = Math.min(i, width);
+                if (this.mMaxWidth > 0) {
+                    width = Math.min(this.mMaxWidth, width);
                     break;
                 } else if (!this.mThemeIsDeviceDefault) {
                     width = Math.min(getPreferredWidth(), width);
@@ -844,16 +715,11 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
                 }
                 break;
             case 0:
-                int i2 = this.mMaxWidth;
-                if (i2 <= 0) {
-                    i2 = getPreferredWidth();
-                }
-                width = i2;
+                width = this.mMaxWidth > 0 ? this.mMaxWidth : getPreferredWidth();
                 break;
             case 1073741824:
-                int i3 = this.mMaxWidth;
-                if (i3 > 0) {
-                    width = Math.min(i3, width);
+                if (this.mMaxWidth > 0) {
+                    width = Math.min(this.mMaxWidth, width);
                     break;
                 }
                 break;
@@ -872,30 +738,25 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
             getChildBoundsWithinSearchView(this.mSearchSrcTextView, this.mSearchSrcTextViewBounds);
             this.mSearchSrtTextViewBoundsExpanded.set(this.mSearchSrcTextViewBounds.left, 0, this.mSearchSrcTextViewBounds.right, bottom - top);
-            UpdatableTouchDelegate updatableTouchDelegate = this.mTouchDelegate;
-            if (updatableTouchDelegate == null) {
-                UpdatableTouchDelegate updatableTouchDelegate2 = new UpdatableTouchDelegate(this.mSearchSrtTextViewBoundsExpanded, this.mSearchSrcTextViewBounds, this.mSearchSrcTextView);
-                this.mTouchDelegate = updatableTouchDelegate2;
-                setTouchDelegate(updatableTouchDelegate2);
-                return;
+            if (this.mTouchDelegate == null) {
+                this.mTouchDelegate = new UpdatableTouchDelegate(this.mSearchSrtTextViewBoundsExpanded, this.mSearchSrcTextViewBounds, this.mSearchSrcTextView);
+                setTouchDelegate(this.mTouchDelegate);
+            } else {
+                this.mTouchDelegate.setBounds(this.mSearchSrtTextViewBoundsExpanded, this.mSearchSrcTextViewBounds);
             }
-            updatableTouchDelegate.setBounds(this.mSearchSrtTextViewBoundsExpanded, this.mSearchSrcTextViewBounds);
         }
     }
 
     private void getChildBoundsWithinSearchView(View view, Rect rect) {
         view.getLocationInWindow(this.mTemp);
         getLocationInWindow(this.mTemp2);
-        int[] iArr = this.mTemp;
-        int i = iArr[1];
-        int[] iArr2 = this.mTemp2;
-        int top = i - iArr2[1];
-        int left = iArr[0] - iArr2[0];
+        int top = this.mTemp[1] - this.mTemp2[1];
+        int left = this.mTemp[0] - this.mTemp2[0];
         rect.set(left, top, view.getWidth() + left, view.getHeight() + top);
     }
 
@@ -927,8 +788,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     }
 
     private boolean hasVoiceSearch() {
-        SearchableInfo searchableInfo = this.mSearchable;
-        if (searchableInfo != null && searchableInfo.getVoiceSearchEnabled()) {
+        if (this.mSearchable != null && this.mSearchable.getVoiceSearchEnabled()) {
             Intent testIntent = null;
             if (this.mSearchable.getVoiceSearchLaunchWebSearch()) {
                 testIntent = this.mVoiceWebSearchIntent;
@@ -988,6 +848,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         post(this.mUpdateDrawableStateRunnable);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateFocusedState() {
         boolean focused = this.mSearchSrcTextView.hasFocus();
         int[] stateSet = focused ? FOCUSED_STATE_SET : EMPTY_STATE_SET;
@@ -1003,50 +864,22 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         removeCallbacks(this.mUpdateDrawableStateRunnable);
         post(this.mReleaseCursorRunnable);
         super.onDetachedFromWindow();
     }
 
-    public void onQueryRefine(CharSequence queryText) {
+    void onQueryRefine(CharSequence queryText) {
         setQuery(queryText);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$5 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass5 implements View.OnClickListener {
-        AnonymousClass5() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            if (v == SearchView.this.mSearchButton) {
-                SearchView.this.onSearchClicked();
-                return;
-            }
-            if (v == SearchView.this.mCloseButton) {
-                SearchView.this.onCloseClicked();
-                return;
-            }
-            if (v == SearchView.this.mGoButton) {
-                SearchView.this.onSubmitQuery();
-            } else if (v == SearchView.this.mVoiceButton) {
-                SearchView.this.onVoiceClicked();
-            } else if (v == SearchView.this.mSearchSrcTextView) {
-                SearchView.this.forceSuggestionQuery();
-            }
-        }
     }
 
     @Override // android.view.View, android.view.KeyEvent.Callback
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        SearchableInfo searchableInfo = this.mSearchable;
-        if (searchableInfo == null) {
+        if (this.mSearchable == null) {
             return false;
         }
-        SearchableInfo.ActionKeyInfo actionKey = searchableInfo.findActionKey(keyCode);
+        SearchableInfo.ActionKeyInfo actionKey = this.mSearchable.findActionKey(keyCode);
         if (actionKey != null && actionKey.getQueryActionMsg() != null) {
             launchQuerySearch(keyCode, actionKey.getQueryActionMsg(), this.mSearchSrcTextView.getText().toString());
             return true;
@@ -1054,46 +887,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         return super.onKeyDown(keyCode, event);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$6 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass6 implements View.OnKeyListener {
-        AnonymousClass6() {
-        }
-
-        @Override // android.view.View.OnKeyListener
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            SearchableInfo.ActionKeyInfo actionKey;
-            boolean isFolderTypeFeature = SearchView.this.getContext().getPackageManager().hasSystemFeature(PackageManager.SEM_FEATURE_FOLDER_TYPE);
-            if (isFolderTypeFeature) {
-                InputMethodManager imm = (InputMethodManager) SearchView.this.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (keyCode == 23) {
-                    imm.viewClicked(v);
-                    imm.showSoftInput(v, 1);
-                }
-            }
-            if (SearchView.this.mSearchable == null) {
-                return false;
-            }
-            if (SearchView.this.mSearchSrcTextView.isPopupShowing() && SearchView.this.mSearchSrcTextView.getListSelection() != -1) {
-                return SearchView.this.onSuggestionsKey(v, keyCode, event);
-            }
-            if (!SearchView.this.mSearchSrcTextView.isEmpty() && event.hasNoModifiers()) {
-                if (event.getAction() == 1 && (keyCode == 66 || keyCode == 160)) {
-                    v.cancelLongPress();
-                    SearchView searchView = SearchView.this;
-                    searchView.launchQuerySearch(0, null, searchView.mSearchSrcTextView.getText().toString());
-                    return true;
-                }
-                if (event.getAction() == 0 && (actionKey = SearchView.this.mSearchable.findActionKey(keyCode)) != null && actionKey.getQueryActionMsg() != null) {
-                    SearchView.this.launchQuerySearch(keyCode, actionKey.getQueryActionMsg(), SearchView.this.mSearchSrcTextView.getText().toString());
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean onSuggestionsKey(View v, int keyCode, KeyEvent event) {
         SearchableInfo.ActionKeyInfo actionKey;
         int position;
@@ -1177,14 +971,12 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             }
         }
         this.mSearchSrcTextView.setInputType(inputType);
-        CursorAdapter cursorAdapter = this.mSuggestionsAdapter;
-        if (cursorAdapter != null) {
-            cursorAdapter.changeCursor(null);
+        if (this.mSuggestionsAdapter != null) {
+            this.mSuggestionsAdapter.changeCursor(null);
         }
         if (this.mSearchable.getSuggestAuthority() != null) {
-            SuggestionsAdapter suggestionsAdapter = new SuggestionsAdapter(getContext(), this, this.mSearchable, this.mOutsideDrawablesCache);
-            this.mSuggestionsAdapter = suggestionsAdapter;
-            this.mSearchSrcTextView.setAdapter(suggestionsAdapter);
+            this.mSuggestionsAdapter = new SuggestionsAdapter(getContext(), this, this.mSearchable, this.mOutsideDrawablesCache);
+            this.mSearchSrcTextView.setAdapter(this.mSuggestionsAdapter);
             ((SuggestionsAdapter) this.mSuggestionsAdapter).setQueryRefinement(this.mQueryRefinement ? 2 : 1);
         }
     }
@@ -1198,20 +990,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         this.mVoiceButton.setVisibility(visibility);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$7 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass7 implements TextView.OnEditorActionListener {
-        AnonymousClass7() {
-        }
-
-        @Override // android.widget.TextView.OnEditorActionListener
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            SearchView.this.onSubmitQuery();
-            return true;
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void onTextChanged(CharSequence newText) {
         CharSequence text = this.mSearchSrcTextView.getText();
         this.mUserQuery = text;
@@ -1222,18 +1001,17 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         updateSubmitArea();
         if (!TextUtils.equals(newText, this.mOldQueryText)) {
             this.mOldQueryText = newText.toString();
-            OnQueryTextListener onQueryTextListener = this.mOnQueryChangeListener;
-            if (onQueryTextListener != null) {
-                onQueryTextListener.onQueryTextChange(newText.toString());
+            if (this.mOnQueryChangeListener != null) {
+                this.mOnQueryChangeListener.onQueryTextChange(newText.toString());
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onSubmitQuery() {
         CharSequence query = this.mSearchSrcTextView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            OnQueryTextListener onQueryTextListener = this.mOnQueryChangeListener;
-            if (onQueryTextListener == null || !onQueryTextListener.onQueryTextSubmit(query.toString())) {
+            if (this.mOnQueryChangeListener == null || !this.mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
                 if (this.mSearchable != null) {
                     launchQuerySearch(0, null, query.toString());
                 }
@@ -1247,12 +1025,12 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         this.mSearchSrcTextView.dismissDropDown();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onCloseClicked() {
         CharSequence text = this.mSearchSrcTextView.getText();
         if (TextUtils.isEmpty(text)) {
             if (this.mIconifiedByDefault) {
-                OnCloseListener onCloseListener = this.mOnCloseListener;
-                if (onCloseListener == null || !onCloseListener.onClose()) {
+                if (this.mOnCloseListener == null || !this.mOnCloseListener.onClose()) {
                     clearFocus();
                     updateViewsVisibility(true);
                     return;
@@ -1261,7 +1039,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             }
             return;
         }
-        this.mSearchSrcTextView.setText("");
+        this.mSearchSrcTextView.lambda$setTextAsync$0("");
         this.mSearchSrcTextView.requestFocus();
         if (semIsForceHideSoftInput()) {
             this.mSearchSrcTextView.setImeVisibility(false);
@@ -1282,6 +1060,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         return (mKeyboard == 0 || mShowImeWithHardKeyboard == 1) ? false : true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onSearchClicked() {
         updateViewsVisibility(false);
         this.mSearchSrcTextView.requestFocus();
@@ -1290,12 +1069,12 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         } else {
             this.mSearchSrcTextView.setImeVisibility(true);
         }
-        View.OnClickListener onClickListener = this.mOnSearchClickListener;
-        if (onClickListener != null) {
-            onClickListener.onClick(this);
+        if (this.mOnSearchClickListener != null) {
+            this.mOnSearchClickListener.onClick(this);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onVoiceClicked() {
         if (this.mSearchable == null) {
             return;
@@ -1375,24 +1154,21 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             return;
         }
         this.mExpandedInActionView = true;
-        int imeOptions = this.mSearchSrcTextView.getImeOptions();
-        this.mCollapsedImeOptions = imeOptions;
-        this.mSearchSrcTextView.setImeOptions(imeOptions | 33554432);
-        this.mSearchSrcTextView.setText("");
+        this.mCollapsedImeOptions = this.mSearchSrcTextView.getImeOptions();
+        this.mSearchSrcTextView.setImeOptions(this.mCollapsedImeOptions | 33554432);
+        this.mSearchSrcTextView.lambda$setTextAsync$0("");
         setIconified(false);
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.SearchView.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1418,25 +1194,9 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         public String toString() {
             return "SearchView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " isIconified=" + this.isIconified + "}";
         }
-
-        /* renamed from: android.widget.SearchView$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -1445,6 +1205,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         return ss;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
@@ -1458,6 +1219,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         return SearchView.class.getName();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void adjustDropDownSizeAndPosition() {
         int iconOffset;
         int offset;
@@ -1491,9 +1253,9 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean onItemClicked(int position, int actionKey, String actionMsg) {
-        OnSuggestionListener onSuggestionListener = this.mOnSuggestionListener;
-        if (onSuggestionListener != null && onSuggestionListener.onSuggestionClick(position)) {
+        if (this.mOnSuggestionListener != null && this.mOnSuggestionListener.onSuggestionClick(position)) {
             return false;
         }
         launchSuggestion(position, 0, null);
@@ -1502,43 +1264,13 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean onItemSelected(int position) {
-        OnSuggestionListener onSuggestionListener = this.mOnSuggestionListener;
-        if (onSuggestionListener == null || !onSuggestionListener.onSuggestionSelect(position)) {
+        if (this.mOnSuggestionListener == null || !this.mOnSuggestionListener.onSuggestionSelect(position)) {
             rewriteQueryFromSuggestion(position);
             return true;
         }
         return false;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$8 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass8 implements AdapterView.OnItemClickListener {
-        AnonymousClass8() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemClickListener
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            SearchView.this.onItemClicked(position, 0, null);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$9 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass9 implements AdapterView.OnItemSelectedListener {
-        AnonymousClass9() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemSelectedListener
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            SearchView.this.onItemSelected(position);
-        }
-
-        @Override // android.widget.AdapterView.OnItemSelectedListener
-        public void onNothingSelected(AdapterView<?> parent) {
-        }
     }
 
     private void rewriteQueryFromSuggestion(int position) {
@@ -1586,6 +1318,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         this.mSearchSrcTextView.setSelection(TextUtils.isEmpty(query) ? 0 : query.length());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void launchQuerySearch(int actionKey, String actionMsg, String query) {
         Intent intent = createIntent(Intent.ACTION_SEARCH, null, null, query, actionKey, actionMsg);
         getContext().startActivity(intent);
@@ -1604,9 +1337,8 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         if (extraData != null) {
             intent.putExtra(SearchManager.EXTRA_DATA_KEY, extraData);
         }
-        Bundle bundle = this.mAppSearchData;
-        if (bundle != null) {
-            intent.putExtra(SearchManager.APP_DATA, bundle);
+        if (this.mAppSearchData != null) {
+            intent.putExtra(SearchManager.APP_DATA, this.mAppSearchData);
         }
         if (actionKey != 0) {
             intent.putExtra(SearchManager.ACTION_KEY, actionKey);
@@ -1629,9 +1361,8 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         queryIntent.setComponent(searchActivity);
         PendingIntent pending = PendingIntent.getActivity(getContext(), 0, queryIntent, 1107296256);
         Bundle queryExtras = new Bundle();
-        Bundle bundle = this.mAppSearchData;
-        if (bundle != null) {
-            queryExtras.putParcelable(SearchManager.APP_DATA, bundle);
+        if (this.mAppSearchData != null) {
+            queryExtras.putParcelable(SearchManager.APP_DATA, this.mAppSearchData);
         }
         Intent voiceIntent = new Intent(baseIntent);
         String languageModel = RecognizerIntent.LANGUAGE_MODEL_FREE_FORM;
@@ -1697,6 +1428,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void forceSuggestionQuery() {
         this.mSearchSrcTextView.doBeforeTextChanged();
         this.mSearchSrcTextView.doAfterTextChanged();
@@ -1706,28 +1438,6 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         return context.getResources().getConfiguration().orientation == 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.SearchView$10 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass10 implements TextWatcher {
-        AnonymousClass10() {
-        }
-
-        @Override // android.text.TextWatcher
-        public void beforeTextChanged(CharSequence s, int start, int before, int after) {
-        }
-
-        @Override // android.text.TextWatcher
-        public void onTextChanged(CharSequence s, int start, int before, int after) {
-            SearchView.this.onTextChanged(s);
-        }
-
-        @Override // android.text.TextWatcher
-        public void afterTextChanged(Editable s) {
-        }
-    }
-
-    /* loaded from: classes4.dex */
     private static class UpdatableTouchDelegate extends TouchDelegate {
         private final Rect mActualBounds;
         private boolean mDelegateTargeted;
@@ -1749,9 +1459,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         public void setBounds(Rect desiredBounds, Rect actualBounds) {
             this.mTargetBounds.set(desiredBounds);
             this.mSlopBounds.set(desiredBounds);
-            Rect rect = this.mSlopBounds;
-            int i = this.mSlop;
-            rect.inset(-i, -i);
+            this.mSlopBounds.inset(-this.mSlop, -this.mSlop);
             this.mActualBounds.set(actualBounds);
         }
 
@@ -1795,7 +1503,6 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class SearchAutoComplete extends AutoCompleteTextView {
         private boolean mHasPendingShowSoftInputRequest;
         final Runnable mRunShowSoftInputIfNecessary;
@@ -1847,7 +1554,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         }
 
         @Override // android.view.View
-        public void onFinishInflate() {
+        protected void onFinishInflate() {
             super.onFinishInflate();
             DisplayMetrics metrics = getResources().getDisplayMetrics();
             setMinWidth((int) TypedValue.applyDimension(1, getSearchViewTextMinWidthDp(), metrics));
@@ -1863,6 +1570,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             this.mThreshold = threshold;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEmpty() {
             return TextUtils.getTrimmedLength(getText()) == 0;
         }
@@ -1887,7 +1595,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         }
 
         @Override // android.widget.AutoCompleteTextView, android.widget.TextView, android.view.View
-        public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
             super.onFocusChanged(focused, direction, previouslyFocusedRect);
             this.mSearchView.onTextFocusChanged();
         }
@@ -1941,7 +1649,8 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             return view == this.mSearchView;
         }
 
-        /* renamed from: showSoftInputIfNecessary */
+        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: showSoftInputIfNecessary, reason: merged with bridge method [inline-methods] */
         public void lambda$new$0() {
             if (this.mHasPendingShowSoftInputRequest) {
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(InputMethodManager.class);
@@ -1950,6 +1659,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setImeVisibility(boolean visible) {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(InputMethodManager.class);
             if (!visible) {
@@ -1957,7 +1667,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
                 removeCallbacks(this.mRunShowSoftInputIfNecessary);
                 imm.hideSoftInputFromWindow(getWindowToken(), 0);
             } else {
-                if (imm.isActive(this)) {
+                if (imm.hasActiveInputConnection(this)) {
                     this.mHasPendingShowSoftInputRequest = false;
                     removeCallbacks(this.mRunShowSoftInputIfNecessary);
                     imm.showSoftInput(this, 0);
@@ -1974,9 +1684,8 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
         queryIntent.setComponent(searchActivity);
         PendingIntent pending = PendingIntent.getActivity(getContext(), 0, queryIntent, 1073741824);
         Bundle queryExtras = new Bundle();
-        Bundle bundle = this.mAppSearchData;
-        if (bundle != null) {
-            queryExtras.putParcelable(SearchManager.APP_DATA, bundle);
+        if (this.mAppSearchData != null) {
+            queryExtras.putParcelable(SearchManager.APP_DATA, this.mAppSearchData);
         }
         Intent voiceIntent = new Intent(baseIntent);
         voiceIntent.putExtra("calling_package", searchActivity == null ? null : searchActivity.flattenToShortString());
@@ -1992,7 +1701,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
             return false;
         }
         this.mUseSVI = enabled;
-        if (enabled) {
+        if (this.mUseSVI) {
             try {
                 PackageManager packageManager = getContext().getPackageManager();
                 PackageInfo packageInfo = packageManager.getPackageInfo("com.samsung.android.honeyboard", 0);
@@ -2048,7 +1757,7 @@ public class SearchView extends LinearLayout implements CollapsibleActionView {
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (this.mThemeIsDeviceDefault) {
             semCheckMaxFontSize();

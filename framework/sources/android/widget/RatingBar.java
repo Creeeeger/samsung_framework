@@ -21,12 +21,10 @@ public class RatingBar extends AbsSeekBar {
     private OnRatingBarChangeListener mOnRatingBarChangeListener;
     private int mProgressOnStartTracking;
 
-    /* loaded from: classes4.dex */
     public interface OnRatingBarChangeListener {
         void onRatingChanged(RatingBar ratingBar, float f, boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<RatingBar> {
         private int mIsIndicatorId;
         private int mNumStarsId;
@@ -159,7 +157,7 @@ public class RatingBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar, android.widget.ProgressBar
-    public void onProgressRefresh(float scale, boolean fromUser, int progress) {
+    void onProgressRefresh(float scale, boolean fromUser, int progress) {
         super.onProgressRefresh(scale, fromUser, progress);
         updateSecondaryProgress(progress);
         if (!fromUser) {
@@ -177,7 +175,7 @@ public class RatingBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar, android.widget.ProgressBar, android.view.View
-    public synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (this.mSampleWidth > 0) {
             int width = this.mSampleWidth * this.mNumStars;
@@ -186,13 +184,13 @@ public class RatingBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onStartTrackingTouch() {
+    void onStartTrackingTouch() {
         this.mProgressOnStartTracking = getProgress();
         super.onStartTrackingTouch();
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onStopTrackingTouch() {
+    void onStopTrackingTouch() {
         super.onStopTrackingTouch();
         if (getProgress() != this.mProgressOnStartTracking) {
             dispatchRatingChange(true);
@@ -200,15 +198,14 @@ public class RatingBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar
-    public void onKeyChange() {
+    void onKeyChange() {
         super.onKeyChange();
         dispatchRatingChange(true);
     }
 
     void dispatchRatingChange(boolean fromUser) {
-        OnRatingBarChangeListener onRatingBarChangeListener = this.mOnRatingBarChangeListener;
-        if (onRatingBarChangeListener != null) {
-            onRatingBarChangeListener.onRatingChanged(this, getRating(), fromUser);
+        if (this.mOnRatingBarChangeListener != null) {
+            this.mOnRatingBarChangeListener.onRatingChanged(this, getRating(), fromUser);
         }
     }
 
@@ -239,7 +236,7 @@ public class RatingBar extends AbsSeekBar {
     }
 
     @Override // android.widget.AbsSeekBar
-    public boolean canUserSetProgress() {
+    boolean canUserSetProgress() {
         return super.canUserSetProgress() && !isIndicator();
     }
 }

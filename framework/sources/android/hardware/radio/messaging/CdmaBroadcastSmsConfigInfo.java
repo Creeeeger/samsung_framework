@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaBroadcastSmsConfigInfo implements Parcelable {
     public static final Parcelable.Creator<CdmaBroadcastSmsConfigInfo> CREATOR = new Parcelable.Creator<CdmaBroadcastSmsConfigInfo>() { // from class: android.hardware.radio.messaging.CdmaBroadcastSmsConfigInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaBroadcastSmsConfigInfo createFromParcel(Parcel _aidl_source) {
             CdmaBroadcastSmsConfigInfo _aidl_out = new CdmaBroadcastSmsConfigInfo();
@@ -18,6 +16,7 @@ public class CdmaBroadcastSmsConfigInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaBroadcastSmsConfigInfo[] newArray(int _aidl_size) {
             return new CdmaBroadcastSmsConfigInfo[_aidl_size];
@@ -26,25 +25,6 @@ public class CdmaBroadcastSmsConfigInfo implements Parcelable {
     public int serviceCategory = 0;
     public int language = 0;
     public boolean selected = false;
-
-    /* renamed from: android.hardware.radio.messaging.CdmaBroadcastSmsConfigInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaBroadcastSmsConfigInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaBroadcastSmsConfigInfo createFromParcel(Parcel _aidl_source) {
-            CdmaBroadcastSmsConfigInfo _aidl_out = new CdmaBroadcastSmsConfigInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaBroadcastSmsConfigInfo[] newArray(int _aidl_size) {
-            return new CdmaBroadcastSmsConfigInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -113,7 +93,7 @@ public class CdmaBroadcastSmsConfigInfo implements Parcelable {
         _aidl_sj.add("serviceCategory: " + this.serviceCategory);
         _aidl_sj.add("language: " + this.language);
         _aidl_sj.add("selected: " + this.selected);
-        return "android.hardware.radio.messaging.CdmaBroadcastSmsConfigInfo" + _aidl_sj.toString();
+        return "CdmaBroadcastSmsConfigInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

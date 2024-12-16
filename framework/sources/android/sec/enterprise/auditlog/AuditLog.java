@@ -1,7 +1,10 @@
 package android.sec.enterprise.auditlog;
 
+import android.os.Process;
 import android.sec.enterprise.EnterpriseDeviceManager;
 import android.sec.enterprise.IEDMProxy;
+import java.util.ArrayList;
+import java.util.List;
 
 /* loaded from: classes3.dex */
 public class AuditLog {
@@ -21,7 +24,7 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.AuditLogger(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage);
+                lService.auditLogger(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage);
             }
         } catch (Exception e) {
         }
@@ -31,7 +34,7 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.RedactedAuditLogger(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage, redactedLogMessage);
+                lService.redactedAuditLogger(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage, redactedLogMessage);
             }
         } catch (Exception e) {
         }
@@ -41,7 +44,7 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.AuditLogger(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage);
+                lService.auditLogger(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage);
             }
         } catch (Exception e) {
         }
@@ -51,17 +54,65 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.AuditLoggerAsUser(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage, userId);
+                lService.auditLoggerAsUser(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage, userId);
             }
         } catch (Exception e) {
         }
+    }
+
+    public static void logEvent(int eventTag, Object... params) {
+        try {
+            IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
+            if (lService != null) {
+                lService.logEvent(Process.myPid(), eventTag, convertToStringList(params));
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public static void logEventForComponent(String componentName, int eventTag, Object... params) {
+        try {
+            IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
+            if (lService != null) {
+                lService.logEventForComponent(Process.myPid(), componentName, eventTag, convertToStringList(params));
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public static void logSecurityLogEvent(int eventTag, List<String> params) {
+        try {
+            IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
+            if (lService != null) {
+                lService.logEvent(Process.myPid(), eventTag, params);
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public static void logEventAsUser(int userId, int eventTag, Object... params) {
+        try {
+            IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
+            if (lService != null) {
+                lService.logEventAsUser(userId, Process.myPid(), eventTag, convertToStringList(params));
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private static List<String> convertToStringList(Object... params) {
+        List<String> paramsList = new ArrayList<>();
+        for (Object param : params) {
+            paramsList.add(param.toString());
+        }
+        return paramsList;
     }
 
     public static void logAsUser(int severityGrade, int moduleGroup, boolean outcome, int uid, String swComponent, String logMessage, String redactedLogMessage, int userId) {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.RedactedAuditLoggerAsUser(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage, redactedLogMessage, userId);
+                lService.redactedAuditLoggerAsUser(severityGrade, moduleGroup, outcome, uid, swComponent, logMessage, redactedLogMessage, userId);
             }
         } catch (Exception e) {
         }
@@ -71,7 +122,7 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.AuditLoggerPrivileged(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage);
+                lService.auditLoggerPrivileged(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage);
             }
         } catch (Exception e) {
         }
@@ -81,7 +132,7 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.RedactedAuditLoggerPrivileged(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage, redactedLogMessage);
+                lService.redactedAuditLoggerPrivileged(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage, redactedLogMessage);
             }
         } catch (Exception e) {
         }
@@ -91,7 +142,7 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.AuditLoggerPrivilegedAsUser(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage, userId);
+                lService.auditLoggerPrivilegedAsUser(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage, userId);
             }
         } catch (Exception e) {
         }
@@ -101,7 +152,7 @@ public class AuditLog {
         try {
             IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
             if (lService != null) {
-                lService.RedactedAuditLoggerPrivilegedAsUser(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage, redactedLogMessage, userId);
+                lService.redactedAuditLoggerPrivilegedAsUser(severityGrade, moduleGroup, outcome, pid, swComponent, logMessage, redactedLogMessage, userId);
             }
         } catch (Exception e) {
         }

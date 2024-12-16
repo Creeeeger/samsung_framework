@@ -17,9 +17,7 @@ public class Image extends Content {
     private int targetHeight;
     private int targetWidth;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes6.dex */
-    public enum ImageStorageType {
+    enum ImageStorageType {
         BUFFER,
         PATH
     }
@@ -116,8 +114,7 @@ public class Image extends Content {
 
     private void resetBitmap() {
         this.filePath = null;
-        Bitmap bitmap = this.bitmap;
-        if (bitmap != null && !bitmap.isRecycled()) {
+        if (this.bitmap != null && !this.bitmap.isRecycled()) {
             this.bitmap.recycle();
         }
         this.bitmap = null;

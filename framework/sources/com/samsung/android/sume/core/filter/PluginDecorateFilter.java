@@ -5,11 +5,11 @@ import com.samsung.android.sume.core.plugin.NNPlugin;
 import com.samsung.android.sume.core.plugin.PluginFixture;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class PluginDecorateFilter<T extends PluginFixture<?>> extends DecorateFilter {
     protected T plugin;
 
-    public PluginDecorateFilter(T plugin, MediaFilter filter) {
+    PluginDecorateFilter(T plugin, MediaFilter filter) {
         super(filter);
         final ExecuteDelegator delegator;
         this.plugin = plugin;
@@ -29,7 +29,7 @@ public abstract class PluginDecorateFilter<T extends PluginFixture<?>> extends D
         }
     }
 
-    public static /* synthetic */ void lambda$new$0(ExecuteDelegator delegator, MediaFilter mediaFilter) {
+    static /* synthetic */ void lambda$new$0(ExecuteDelegator delegator, MediaFilter mediaFilter) {
         if (mediaFilter instanceof NNFWFilter) {
             ((NNFWFilter) mediaFilter).setExecuteDelegator(delegator);
         }

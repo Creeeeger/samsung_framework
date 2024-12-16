@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class WakeLockInfo implements Parcelable {
     public static final Parcelable.Creator<WakeLockInfo> CREATOR = new Parcelable.Creator<WakeLockInfo>() { // from class: android.system.suspend.internal.WakeLockInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WakeLockInfo createFromParcel(Parcel _aidl_source) {
             WakeLockInfo _aidl_out = new WakeLockInfo();
@@ -17,6 +15,7 @@ public class WakeLockInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WakeLockInfo[] newArray(int _aidl_size) {
             return new WakeLockInfo[_aidl_size];
@@ -35,25 +34,6 @@ public class WakeLockInfo implements Parcelable {
     public long expireCount = 0;
     public long preventSuspendTime = 0;
     public long wakeupCount = 0;
-
-    /* renamed from: android.system.suspend.internal.WakeLockInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WakeLockInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WakeLockInfo createFromParcel(Parcel _aidl_source) {
-            WakeLockInfo _aidl_out = new WakeLockInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WakeLockInfo[] newArray(int _aidl_size) {
-            return new WakeLockInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel parcel, int i) {

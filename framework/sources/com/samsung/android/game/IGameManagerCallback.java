@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IGameManagerCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.game.IGameManagerCallback";
 
@@ -14,7 +14,6 @@ public interface IGameManagerCallback extends IInterface {
 
     void onGameFocusOut(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGameManagerCallback {
         @Override // com.samsung.android.game.IGameManagerCallback
         public void onGameFocusIn(String pkgName) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IGameManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGameManagerCallback {
         static final int TRANSACTION_onGameFocusIn = 1;
         static final int TRANSACTION_onGameFocusOut = 2;
@@ -76,31 +74,27 @@ public interface IGameManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGameManagerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGameManagerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGameManagerCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onGameFocusIn(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onGameFocusOut(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onGameFocusIn(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onGameFocusOut(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IGameManagerCallback {
+        private static class Proxy implements IGameManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

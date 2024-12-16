@@ -12,7 +12,6 @@ public interface ISemWifiApClientUpdateCallback extends IInterface {
 
     void onClientUpdated(SemWifiApClientDetails semWifiApClientDetails) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemWifiApClientUpdateCallback {
         @Override // com.samsung.android.wifi.ISemWifiApClientUpdateCallback
         public void onClientUpdated(SemWifiApClientDetails clientDetails) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISemWifiApClientUpdateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemWifiApClientUpdateCallback {
         static final int TRANSACTION_onClientUpdated = 1;
 
@@ -67,26 +65,22 @@ public interface ISemWifiApClientUpdateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemWifiApClientUpdateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemWifiApClientUpdateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemWifiApClientUpdateCallback.DESCRIPTOR);
+                case 1:
+                    SemWifiApClientDetails _arg0 = (SemWifiApClientDetails) data.readTypedObject(SemWifiApClientDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    onClientUpdated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SemWifiApClientDetails _arg0 = (SemWifiApClientDetails) data.readTypedObject(SemWifiApClientDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            onClientUpdated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemWifiApClientUpdateCallback {
+        private static class Proxy implements ISemWifiApClientUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

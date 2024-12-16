@@ -36,40 +36,26 @@ public final class CriticalEventLogStorageProto extends MessageNano {
 
     @Override // com.android.framework.protobuf.nano.MessageNano
     public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-        CriticalEventProto[] criticalEventProtoArr = this.events;
-        if (criticalEventProtoArr != null && criticalEventProtoArr.length > 0) {
-            int i = 0;
-            while (true) {
-                CriticalEventProto[] criticalEventProtoArr2 = this.events;
-                if (i >= criticalEventProtoArr2.length) {
-                    break;
-                }
-                CriticalEventProto element = criticalEventProtoArr2[i];
+        if (this.events != null && this.events.length > 0) {
+            for (int i = 0; i < this.events.length; i++) {
+                CriticalEventProto element = this.events[i];
                 if (element != null) {
                     output.writeMessage(1, element);
                 }
-                i++;
             }
         }
         super.writeTo(output);
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
-        CriticalEventProto[] criticalEventProtoArr = this.events;
-        if (criticalEventProtoArr != null && criticalEventProtoArr.length > 0) {
-            int i = 0;
-            while (true) {
-                CriticalEventProto[] criticalEventProtoArr2 = this.events;
-                if (i >= criticalEventProtoArr2.length) {
-                    break;
-                }
-                CriticalEventProto element = criticalEventProtoArr2[i];
+        if (this.events != null && this.events.length > 0) {
+            for (int i = 0; i < this.events.length; i++) {
+                CriticalEventProto element = this.events[i];
                 if (element != null) {
                     size += CodedOutputByteBufferNano.computeMessageSize(1, element);
                 }
-                i++;
             }
         }
         return size;
@@ -84,11 +70,10 @@ public final class CriticalEventLogStorageProto extends MessageNano {
                     return this;
                 case 10:
                     int arrayLength = WireFormatNano.getRepeatedFieldArrayLength(input, 10);
-                    CriticalEventProto[] criticalEventProtoArr = this.events;
-                    int i = criticalEventProtoArr == null ? 0 : criticalEventProtoArr.length;
+                    int i = this.events == null ? 0 : this.events.length;
                     CriticalEventProto[] newArray = new CriticalEventProto[i + arrayLength];
                     if (i != 0) {
-                        System.arraycopy(criticalEventProtoArr, 0, newArray, 0, i);
+                        System.arraycopy(this.events, 0, newArray, 0, i);
                     }
                     while (i < newArray.length - 1) {
                         newArray[i] = new CriticalEventProto();

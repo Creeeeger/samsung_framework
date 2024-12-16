@@ -19,7 +19,6 @@ public interface IZtd extends IInterface {
 
     void stopTracing(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IZtd {
         @Override // android.os.IZtd
         public void startTracing(int traceType, int uid, long period, IZtdListener listener) throws RemoteException {
@@ -55,7 +54,6 @@ public interface IZtd extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IZtd {
         static final int TRANSACTION_startMonitoringDomains = 5;
         static final int TRANSACTION_startMonitoringFiles = 3;
@@ -113,68 +111,65 @@ public interface IZtd extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IZtd.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IZtd.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IZtd.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    long _arg2 = data.readLong();
+                    IZtdListener _arg3 = IZtdListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startTracing(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopTracing(_arg02, _arg12);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int[] _arg13 = data.createIntArray();
+                    List<String> _arg22 = data.createStringArrayList();
+                    List<String> _arg32 = data.createStringArrayList();
+                    IZtdListener _arg4 = IZtdListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result = startMonitoringFiles(_arg03, _arg13, _arg22, _arg32, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = stopMonitoringFiles(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int[] _arg14 = data.createIntArray();
+                    List<String> _arg23 = data.createStringArrayList();
+                    IZtdListener _arg33 = IZtdListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result3 = startMonitoringDomains(_arg05, _arg14, _arg23, _arg33);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = stopMonitoringDomains(_arg06);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            long _arg2 = data.readLong();
-                            IZtdListener _arg3 = IZtdListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startTracing(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopTracing(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int[] _arg13 = data.createIntArray();
-                            List<String> _arg22 = data.createStringArrayList();
-                            List<String> _arg32 = data.createStringArrayList();
-                            IZtdListener _arg4 = IZtdListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result = startMonitoringFiles(_arg03, _arg13, _arg22, _arg32, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = stopMonitoringFiles(_arg04);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int[] _arg14 = data.createIntArray();
-                            List<String> _arg23 = data.createStringArrayList();
-                            IZtdListener _arg33 = IZtdListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result3 = startMonitoringDomains(_arg05, _arg14, _arg23, _arg33);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = stopMonitoringDomains(_arg06);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IZtd {
             private IBinder mRemote;
 

@@ -20,7 +20,6 @@ public final class JobSchedulerServiceDumpProto {
     public static final long SETTINGS = 1146756268033L;
     public static final long STARTED_USERS = 2220498092034L;
 
-    /* loaded from: classes5.dex */
     public final class JobRestriction {
         public static final long IS_RESTRICTING = 1133871366146L;
         public static final long REASON = 1159641169921L;
@@ -29,7 +28,6 @@ public final class JobSchedulerServiceDumpProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class RegisteredJob {
         public static final long ARE_USERS_STARTED = 1133871366148L;
         public static final long DUMP = 1146756268034L;
@@ -47,7 +45,6 @@ public final class JobSchedulerServiceDumpProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class PriorityOverride {
         public static final long OVERRIDE_VALUE = 1172526071810L;
         public static final long UID = 1120986464257L;
@@ -56,7 +53,6 @@ public final class JobSchedulerServiceDumpProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class PendingJob {
         public static final long DUMP = 1146756268034L;
         public static final long EVALUATED_PRIORITY = 1172526071811L;
@@ -67,7 +63,6 @@ public final class JobSchedulerServiceDumpProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ActiveJob {
         public static final long INACTIVE = 1146756268033L;
         public static final long RUNNING = 1146756268034L;
@@ -75,7 +70,6 @@ public final class JobSchedulerServiceDumpProto {
         public ActiveJob() {
         }
 
-        /* loaded from: classes5.dex */
         public final class InactiveJob {
             public static final long STOPPED_REASON = 1138166333442L;
             public static final long TIME_SINCE_STOPPED_MS = 1112396529665L;
@@ -84,7 +78,6 @@ public final class JobSchedulerServiceDumpProto {
             }
         }
 
-        /* loaded from: classes5.dex */
         public final class RunningJob {
             public static final long DUMP = 1146756268036L;
             public static final long EVALUATED_PRIORITY = 1172526071813L;

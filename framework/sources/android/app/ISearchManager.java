@@ -20,13 +20,10 @@ public interface ISearchManager extends IInterface {
 
     List<SearchableInfo> getSearchablesInGlobalSearch() throws RemoteException;
 
-    List<SearchableInfo> getSearchablesInInsightSearch(boolean z) throws RemoteException;
-
     ComponentName getWebSearchActivity() throws RemoteException;
 
     void launchAssist(int i, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISearchManager {
         @Override // android.app.ISearchManager
         public SearchableInfo getSearchableInfo(ComponentName launchActivity) throws RemoteException {
@@ -57,25 +54,18 @@ public interface ISearchManager extends IInterface {
         public void launchAssist(int userHandle, Bundle args) throws RemoteException {
         }
 
-        @Override // android.app.ISearchManager
-        public List<SearchableInfo> getSearchablesInInsightSearch(boolean includeGlobalSearch) throws RemoteException {
-            return null;
-        }
-
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISearchManager {
         public static final String DESCRIPTOR = "android.app.ISearchManager";
         static final int TRANSACTION_getGlobalSearchActivities = 3;
         static final int TRANSACTION_getGlobalSearchActivity = 4;
         static final int TRANSACTION_getSearchableInfo = 1;
         static final int TRANSACTION_getSearchablesInGlobalSearch = 2;
-        static final int TRANSACTION_getSearchablesInInsightSearch = 7;
         static final int TRANSACTION_getWebSearchActivity = 5;
         static final int TRANSACTION_launchAssist = 6;
 
@@ -113,8 +103,6 @@ public interface ISearchManager extends IInterface {
                     return "getWebSearchActivity";
                 case 6:
                     return "launchAssist";
-                case 7:
-                    return "getSearchablesInInsightSearch";
                 default:
                     return null;
             }
@@ -130,61 +118,51 @@ public interface ISearchManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    SearchableInfo _result = getSearchableInfo(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    List<SearchableInfo> _result2 = getSearchablesInGlobalSearch();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result2, 1);
+                    return true;
+                case 3:
+                    List<ResolveInfo> _result3 = getGlobalSearchActivities();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 4:
+                    ComponentName _result4 = getGlobalSearchActivity();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 5:
+                    ComponentName _result5 = getWebSearchActivity();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 6:
+                    int _arg02 = data.readInt();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    launchAssist(_arg02, _arg1);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            SearchableInfo _result = getSearchableInfo(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            List<SearchableInfo> _result2 = getSearchablesInGlobalSearch();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result2, 1);
-                            return true;
-                        case 3:
-                            List<ResolveInfo> _result3 = getGlobalSearchActivities();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 4:
-                            ComponentName _result4 = getGlobalSearchActivity();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 5:
-                            ComponentName _result5 = getWebSearchActivity();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 6:
-                            int _arg02 = data.readInt();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            launchAssist(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            List<SearchableInfo> _result6 = getSearchablesInInsightSearch(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result6, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISearchManager {
+        private static class Proxy implements ISearchManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -296,28 +274,11 @@ public interface ISearchManager extends IInterface {
                     _data.recycle();
                 }
             }
-
-            @Override // android.app.ISearchManager
-            public List<SearchableInfo> getSearchablesInInsightSearch(boolean includeGlobalSearch) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeBoolean(includeGlobalSearch);
-                    this.mRemote.transact(7, _data, _reply, 0);
-                    _reply.readException();
-                    List<SearchableInfo> _result = _reply.createTypedArrayList(SearchableInfo.CREATOR);
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 6;
+            return 5;
         }
     }
 }

@@ -12,7 +12,6 @@ import android.view.KeyEvent;
 public interface IOnMediaKeyListener extends IInterface {
     void onMediaKey(KeyEvent keyEvent, ResultReceiver resultReceiver) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IOnMediaKeyListener {
         @Override // android.media.session.IOnMediaKeyListener
         public void onMediaKey(KeyEvent event, ResultReceiver result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IOnMediaKeyListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IOnMediaKeyListener {
         public static final String DESCRIPTOR = "android.media.session.IOnMediaKeyListener";
         static final int TRANSACTION_onMediaKey = 1;
@@ -68,27 +66,23 @@ public interface IOnMediaKeyListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    KeyEvent _arg0 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    ResultReceiver _arg1 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMediaKey(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            KeyEvent _arg0 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            ResultReceiver _arg1 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMediaKey(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IOnMediaKeyListener {
+        private static class Proxy implements IOnMediaKeyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

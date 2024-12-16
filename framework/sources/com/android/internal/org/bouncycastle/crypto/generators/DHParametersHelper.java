@@ -15,7 +15,7 @@ class DHParametersHelper {
     DHParametersHelper() {
     }
 
-    public static BigInteger[] generateSafePrimes(int size, int certainty, SecureRandom random) {
+    static BigInteger[] generateSafePrimes(int size, int certainty, SecureRandom random) {
         logger.info("Generating safe primes. This may take a long time.");
         long start = System.currentTimeMillis();
         int tries = 0;
@@ -36,16 +36,12 @@ class DHParametersHelper {
         }
     }
 
-    public static BigInteger selectGenerator(BigInteger p, BigInteger q, SecureRandom random) {
-        BigInteger g;
+    static BigInteger selectGenerator(BigInteger p, BigInteger q, SecureRandom random) {
         BigInteger h;
         BigInteger pMinusTwo = p.subtract(TWO);
         do {
-            BigInteger bigInteger = TWO;
-            BigInteger h2 = BigIntegers.createRandomInRange(bigInteger, pMinusTwo, random);
-            g = h2.modPow(bigInteger, p);
-            h = ONE;
-        } while (g.equals(h));
-        return g;
+            h = BigIntegers.createRandomInRange(TWO, pMinusTwo, random).modPow(TWO, p);
+        } while (h.equals(ONE));
+        return h;
     }
 }

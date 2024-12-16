@@ -41,7 +41,6 @@ public class Browser {
     public static final Uri SEARCHES_URI = Uri.parse("content://browser/searches");
     public static final String[] SEARCHES_PROJECTION = {"_id", "search", "date"};
 
-    /* loaded from: classes3.dex */
     public static class BookmarkColumns implements BaseColumns {
         public static final String BOOKMARK = "bookmark";
         public static final String CREATED = "created";
@@ -55,7 +54,6 @@ public class Browser {
         public static final String VISITS = "visits";
     }
 
-    /* loaded from: classes3.dex */
     public static class SearchColumns implements BaseColumns {
         public static final String DATE = "date";
         public static final String SEARCH = "search";

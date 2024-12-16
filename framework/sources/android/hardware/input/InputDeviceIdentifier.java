@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class InputDeviceIdentifier implements Parcelable {
     public static final Parcelable.Creator<InputDeviceIdentifier> CREATOR = new Parcelable.Creator<InputDeviceIdentifier>() { // from class: android.hardware.input.InputDeviceIdentifier.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputDeviceIdentifier createFromParcel(Parcel source) {
             return new InputDeviceIdentifier(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputDeviceIdentifier[] newArray(int size) {
             return new InputDeviceIdentifier[size];
@@ -24,10 +23,6 @@ public final class InputDeviceIdentifier implements Parcelable {
     private final String mDescriptor;
     private final int mProductId;
     private final int mVendorId;
-
-    /* synthetic */ InputDeviceIdentifier(Parcel parcel, InputDeviceIdentifierIA inputDeviceIdentifierIA) {
-        this(parcel);
-    }
 
     public InputDeviceIdentifier(String descriptor, int vendorId, int productId) {
         this.mDescriptor = descriptor;
@@ -85,22 +80,5 @@ public final class InputDeviceIdentifier implements Parcelable {
 
     public String toString() {
         return "InputDeviceIdentifier: vendorId: " + this.mVendorId + ", productId: " + this.mProductId + ", descriptor: " + this.mDescriptor;
-    }
-
-    /* renamed from: android.hardware.input.InputDeviceIdentifier$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InputDeviceIdentifier> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputDeviceIdentifier createFromParcel(Parcel source) {
-            return new InputDeviceIdentifier(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputDeviceIdentifier[] newArray(int size) {
-            return new InputDeviceIdentifier[size];
-        }
     }
 }

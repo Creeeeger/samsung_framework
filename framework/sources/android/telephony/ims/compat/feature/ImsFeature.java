@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class ImsFeature {
     public static final int EMERGENCY_MMTEL = 0;
     public static final int INVALID = -1;
@@ -29,7 +29,6 @@ public abstract class ImsFeature {
     private int mSlotId = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ImsState {
     }
 

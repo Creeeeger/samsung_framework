@@ -16,7 +16,6 @@ public class PBEPKCS12 {
     private PBEPKCS12() {
     }
 
-    /* loaded from: classes5.dex */
     public static class AlgParams extends BaseAlgorithmParameters {
         PKCS12PBEParams params;
 
@@ -74,7 +73,6 @@ public class PBEPKCS12 {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AlgorithmProvider {
         private static final String PREFIX = PBEPKCS12.class.getName();
 

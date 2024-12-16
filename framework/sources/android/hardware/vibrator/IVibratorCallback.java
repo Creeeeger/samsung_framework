@@ -18,7 +18,6 @@ public interface IVibratorCallback extends IInterface {
 
     void onComplete() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IVibratorCallback {
         @Override // android.hardware.vibrator.IVibratorCallback
         public void onComplete() throws RemoteException {
@@ -40,7 +39,6 @@ public interface IVibratorCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IVibratorCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -73,32 +71,29 @@ public interface IVibratorCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            onComplete();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    onComplete();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IVibratorCallback {
+        private static class Proxy implements IVibratorCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

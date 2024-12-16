@@ -63,8 +63,6 @@ public final class Size {
     }
 
     public int hashCode() {
-        int i = this.mHeight;
-        int i2 = this.mWidth;
-        return i ^ ((i2 >>> 16) | (i2 << 16));
+        return this.mHeight ^ ((this.mWidth << 16) | (this.mWidth >>> 16));
     }
 }

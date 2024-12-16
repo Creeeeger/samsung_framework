@@ -3,30 +3,27 @@ package android.app.servertransaction;
 import android.app.ActivityThread;
 import android.app.ClientTransactionHandler;
 import android.app.PictureInPictureUiState;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.util.Objects;
 
 /* loaded from: classes.dex */
 public final class PipStateTransactionItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<PipStateTransactionItem> CREATOR = new Parcelable.Creator<PipStateTransactionItem>() { // from class: android.app.servertransaction.PipStateTransactionItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PipStateTransactionItem createFromParcel(Parcel in) {
             return new PipStateTransactionItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PipStateTransactionItem[] newArray(int size) {
             return new PipStateTransactionItem[size];
         }
     };
     private PictureInPictureUiState mPipState;
-
-    /* synthetic */ PipStateTransactionItem(Parcel parcel, PipStateTransactionItemIA pipStateTransactionItemIA) {
-        this(parcel);
-    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -36,52 +33,54 @@ public final class PipStateTransactionItem extends ActivityTransactionItem {
     private PipStateTransactionItem() {
     }
 
-    public static PipStateTransactionItem obtain(PictureInPictureUiState pipState) {
+    public static PipStateTransactionItem obtain(IBinder activityToken, PictureInPictureUiState pipState) {
         PipStateTransactionItem instance = (PipStateTransactionItem) ObjectPool.obtain(PipStateTransactionItem.class);
         if (instance == null) {
             instance = new PipStateTransactionItem();
         }
+        instance.setActivityToken(activityToken);
         instance.mPipState = pipState;
         return instance;
     }
 
-    @Override // android.app.servertransaction.ObjectPoolItem
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.app.servertransaction.ObjectPoolItem
     public void recycle() {
+        super.recycle();
         this.mPipState = null;
         ObjectPool.recycle(this);
     }
 
-    @Override // android.os.Parcelable
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         this.mPipState.writeToParcel(dest, flags);
     }
 
     private PipStateTransactionItem(Parcel in) {
+        super(in);
         this.mPipState = PictureInPictureUiState.CREATOR.createFromParcel(in);
     }
 
-    /* renamed from: android.app.servertransaction.PipStateTransactionItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PipStateTransactionItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PipStateTransactionItem createFromParcel(Parcel in) {
-            return new PipStateTransactionItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PipStateTransactionItem[] newArray(int size) {
-            return new PipStateTransactionItem[size];
-        }
-    }
-
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public boolean equals(Object o) {
-        return this == o;
+        if (this == o) {
+            return true;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        PipStateTransactionItem other = (PipStateTransactionItem) o;
+        return Objects.equals(this.mPipState, other.mPipState);
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
+    public int hashCode() {
+        int result = (17 * 31) + super.hashCode();
+        return (result * 31) + Objects.hashCode(this.mPipState);
+    }
+
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public String toString() {
-        return "PipStateTransactionItem{}";
+        return "PipStateTransactionItem{" + super.toString() + "}";
     }
 }

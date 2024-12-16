@@ -1,81 +1,127 @@
 package android.net.wifi;
 
 import android.annotation.SystemApi;
-import android.os.ServiceManager;
+import android.os.Binder;
 import android.os.ServiceSpecificException;
-import android.security.legacykeystore.ILegacyKeystore;
 import android.util.Log;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-@SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+@SystemApi
 /* loaded from: classes3.dex */
 public final class WifiKeystore {
-    private static final String LEGACY_KEYSTORE_SERVICE_NAME = "android.security.legacykeystore";
     private static final String TAG = "WifiKeystore";
+    private static final String sPrimaryDbName;
 
-    private static ILegacyKeystore getService() {
-        return ILegacyKeystore.Stub.asInterface(ServiceManager.checkService(LEGACY_KEYSTORE_SERVICE_NAME));
+    static {
+        sPrimaryDbName = WifiBlobStore.supplicantCanAccessBlobstore() ? "WifiBlobstore" : "LegacyKeystore";
     }
 
     WifiKeystore() {
     }
 
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    @SystemApi
     public static boolean put(String alias, byte[] blob) {
+        long identity = Binder.clearCallingIdentity();
         try {
-            Log.i(TAG, "put blob. alias " + alias);
-            getService().put(alias, 1010, blob);
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to put blob.", e);
-            return false;
-        }
-    }
-
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    public static byte[] get(String alias) {
-        try {
-            Log.i(TAG, "get blob. alias " + alias);
-            return getService().get(alias, 1010);
-        } catch (ServiceSpecificException e) {
-            if (e.errorCode != 7) {
-                Log.e(TAG, "Failed to get blob.", e);
-                return null;
-            }
-            return null;
-        } catch (Exception e2) {
-            Log.e(TAG, "Failed to get blob.", e2);
-            return null;
-        }
-    }
-
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    public static boolean remove(String alias) {
-        try {
-            getService().remove(alias, 1010);
-            return true;
-        } catch (ServiceSpecificException e) {
-            if (e.errorCode != 7) {
-                Log.e(TAG, "Failed to remove blob.", e);
+            try {
+                Log.i(TAG, "put blob. alias=" + alias + ", primaryDb=" + sPrimaryDbName);
+                if (WifiBlobStore.supplicantCanAccessBlobstore()) {
+                    return WifiBlobStore.getInstance().put(alias, blob);
+                }
+                WifiBlobStore.getLegacyKeystore().put(alias, 1010, blob);
+                Binder.restoreCallingIdentity(identity);
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to put blob.", e);
+                Binder.restoreCallingIdentity(identity);
                 return false;
             }
-            return false;
-        } catch (Exception e2) {
-            Log.e(TAG, "Failed to remove blob.", e2);
-            return false;
+        } finally {
+            Binder.restoreCallingIdentity(identity);
         }
     }
 
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    public static String[] list(String prefix) {
+    @SystemApi
+    public static byte[] get(String alias) {
+        long identity = Binder.clearCallingIdentity();
         try {
-            String[] aliases = getService().list(prefix, 1010);
-            for (int i = 0; i < aliases.length; i++) {
-                aliases[i] = aliases[i].substring(prefix.length());
+            try {
+                Log.i(TAG, "get blob. alias=" + alias + ", primaryDb=" + sPrimaryDbName);
+                byte[] blob = WifiBlobStore.getInstance().get(alias);
+                if (blob != null) {
+                    return blob;
+                }
+                Log.i(TAG, "Searching for blob in Legacy Keystore");
+                return WifiBlobStore.getLegacyKeystore().get(alias, 1010);
+            } catch (ServiceSpecificException e) {
+                if (e.errorCode != 7) {
+                    Log.e(TAG, "Failed to get blob.", e);
+                }
+                Binder.restoreCallingIdentity(identity);
+                return new byte[0];
+            } catch (Exception e2) {
+                Log.e(TAG, "Failed to get blob.", e2);
+                Binder.restoreCallingIdentity(identity);
+                return new byte[0];
             }
-            return aliases;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to list blobs.", e);
-            return new String[0];
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
+    }
+
+    @SystemApi
+    public static boolean remove(String alias) {
+        boolean blobStoreSuccess = false;
+        boolean legacyKsSuccess = false;
+        long identity = Binder.clearCallingIdentity();
+        try {
+            try {
+                try {
+                    Log.i(TAG, "remove blob. alias=" + alias + ", primaryDb=" + sPrimaryDbName);
+                    blobStoreSuccess = WifiBlobStore.getInstance().remove(alias);
+                    WifiBlobStore.getLegacyKeystore().remove(alias, 1010);
+                    legacyKsSuccess = true;
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to remove blob.", e);
+                }
+            } catch (ServiceSpecificException e2) {
+                if (e2.errorCode != 7) {
+                    Log.e(TAG, "Failed to remove blob.", e2);
+                }
+            }
+            Binder.restoreCallingIdentity(identity);
+            Log.i(TAG, "Removal status: wifiBlobStore=" + blobStoreSuccess + ", legacyKeystore=" + legacyKsSuccess);
+            return blobStoreSuccess || legacyKsSuccess;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(identity);
+            throw th;
+        }
+    }
+
+    @SystemApi
+    public static String[] list(String prefix) {
+        long identity = Binder.clearCallingIdentity();
+        try {
+            try {
+                String[] blobStoreAliases = WifiBlobStore.getInstance().list(prefix);
+                String[] legacyAliases = WifiBlobStore.getLegacyKeystore().list(prefix, 1010);
+                for (int i = 0; i < legacyAliases.length; i++) {
+                    legacyAliases[i] = legacyAliases[i].substring(prefix.length());
+                }
+                Set<String> uniqueAliases = new HashSet<>();
+                uniqueAliases.addAll(Arrays.asList(blobStoreAliases));
+                uniqueAliases.addAll(Arrays.asList(legacyAliases));
+                String[] uniqueAliasArray = new String[uniqueAliases.size()];
+                return (String[]) uniqueAliases.toArray(uniqueAliasArray);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to list blobs.", e);
+                Binder.restoreCallingIdentity(identity);
+                return new String[0];
+            }
+        } finally {
+            Binder.restoreCallingIdentity(identity);
         }
     }
 }

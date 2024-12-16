@@ -17,9 +17,8 @@ public class RC4Engine implements StreamCipher {
     @Override // com.android.internal.org.bouncycastle.crypto.StreamCipher
     public void init(boolean forEncryption, CipherParameters params) {
         if (params instanceof KeyParameter) {
-            byte[] key = ((KeyParameter) params).getKey();
-            this.workingKey = key;
-            setKey(key);
+            this.workingKey = ((KeyParameter) params).getKey();
+            setKey(this.workingKey);
             return;
         }
         throw new IllegalArgumentException("invalid parameter passed to RC4 init - " + params.getClass().getName());
@@ -32,15 +31,12 @@ public class RC4Engine implements StreamCipher {
 
     @Override // com.android.internal.org.bouncycastle.crypto.StreamCipher
     public byte returnByte(byte in) {
-        int i = (this.x + 1) & 255;
-        this.x = i;
-        byte[] bArr = this.engineState;
-        int i2 = (bArr[i] + this.y) & 255;
-        this.y = i2;
-        byte tmp = bArr[i];
-        bArr[i] = bArr[i2];
-        bArr[i2] = tmp;
-        return (byte) (bArr[(bArr[i] + tmp) & 255] ^ in);
+        this.x = (this.x + 1) & 255;
+        this.y = (this.engineState[this.x] + this.y) & 255;
+        byte tmp = this.engineState[this.x];
+        this.engineState[this.x] = this.engineState[this.y];
+        this.engineState[this.y] = tmp;
+        return (byte) (this.engineState[(this.engineState[this.x] + this.engineState[this.y]) & 255] ^ in);
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.StreamCipher
@@ -52,15 +48,12 @@ public class RC4Engine implements StreamCipher {
             throw new OutputLengthException("output buffer too short");
         }
         for (int i = 0; i < len; i++) {
-            int i2 = (this.x + 1) & 255;
-            this.x = i2;
-            byte[] bArr = this.engineState;
-            int i3 = (bArr[i2] + this.y) & 255;
-            this.y = i3;
-            byte tmp = bArr[i2];
-            bArr[i2] = bArr[i3];
-            bArr[i3] = tmp;
-            out[i + outOff] = (byte) (bArr[(bArr[i2] + tmp) & 255] ^ in[i + inOff]);
+            this.x = (this.x + 1) & 255;
+            this.y = (this.engineState[this.x] + this.y) & 255;
+            byte tmp = this.engineState[this.x];
+            this.engineState[this.x] = this.engineState[this.y];
+            this.engineState[this.y] = tmp;
+            out[i + outOff] = (byte) (in[i + inOff] ^ this.engineState[(this.engineState[this.x] + this.engineState[this.y]) & 255]);
         }
         return len;
     }
@@ -83,12 +76,10 @@ public class RC4Engine implements StreamCipher {
         int i1 = 0;
         int i2 = 0;
         for (int i3 = 0; i3 < 256; i3++) {
-            int i4 = keyBytes[i1] & 255;
-            byte[] bArr = this.engineState;
-            i2 = (i4 + bArr[i3] + i2) & 255;
-            byte tmp = bArr[i3];
-            bArr[i3] = bArr[i2];
-            bArr[i2] = tmp;
+            i2 = ((keyBytes[i1] & 255) + this.engineState[i3] + i2) & 255;
+            byte tmp = this.engineState[i3];
+            this.engineState[i3] = this.engineState[i2];
+            this.engineState[i2] = tmp;
             i1 = (i1 + 1) % keyBytes.length;
         }
     }

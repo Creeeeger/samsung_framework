@@ -12,12 +12,11 @@ public final class EpicManager {
     }
 
     IEpicObject Create(int scenario_id) {
-        IEpicManager iEpicManager = this.mService;
-        if (iEpicManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            IEpicObject ret = iEpicManager.Create(scenario_id);
+            IEpicObject ret = this.mService.Create(scenario_id);
             return ret;
         } catch (RemoteException e) {
             return null;
@@ -25,12 +24,11 @@ public final class EpicManager {
     }
 
     IEpicObject Creates(int[] scenario_id_list) {
-        IEpicManager iEpicManager = this.mService;
-        if (iEpicManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            IEpicObject ret = iEpicManager.Creates(scenario_id_list);
+            IEpicObject ret = this.mService.Creates(scenario_id_list);
             return ret;
         } catch (RemoteException e) {
             return null;

@@ -67,9 +67,8 @@ import java.util.List;
 import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public abstract class X509CertificateImpl extends X509Certificate implements BCX509Certificate {
+abstract class X509CertificateImpl extends X509Certificate implements BCX509Certificate {
     protected BasicConstraints basicConstraints;
     protected JcaJceHelper bcHelper;
     protected Certificate c;
@@ -77,7 +76,7 @@ public abstract class X509CertificateImpl extends X509Certificate implements BCX
     protected String sigAlgName;
     protected byte[] sigAlgParams;
 
-    public X509CertificateImpl(JcaJceHelper bcHelper, Certificate c, BasicConstraints basicConstraints, boolean[] keyUsage, String sigAlgName, byte[] sigAlgParams) {
+    X509CertificateImpl(JcaJceHelper bcHelper, Certificate c, BasicConstraints basicConstraints, boolean[] keyUsage, String sigAlgName, byte[] sigAlgParams) {
         this.bcHelper = bcHelper;
         this.c = c;
         this.basicConstraints = basicConstraints;
@@ -248,8 +247,7 @@ public abstract class X509CertificateImpl extends X509Certificate implements BCX
 
     @Override // java.security.cert.X509Certificate
     public int getBasicConstraints() {
-        BasicConstraints basicConstraints = this.basicConstraints;
-        if (basicConstraints == null || !basicConstraints.isCA()) {
+        if (this.basicConstraints == null || !this.basicConstraints.isCA()) {
             return -1;
         }
         if (this.basicConstraints.getPathLenConstraint() == null) {
@@ -413,28 +411,9 @@ public abstract class X509CertificateImpl extends X509Certificate implements BCX
         return buf.toString();
     }
 
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.X509CertificateImpl$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements SignatureCreator {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.SignatureCreator
-        public Signature createSignature(String sigName) throws NoSuchAlgorithmException {
-            try {
-                return X509CertificateImpl.this.bcHelper.createSignature(sigName);
-            } catch (Exception e) {
-                return Signature.getInstance(sigName);
-            }
-        }
-    }
-
     @Override // java.security.cert.Certificate
     public final void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
         doVerify(key, new SignatureCreator() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.X509CertificateImpl.1
-            AnonymousClass1() {
-            }
-
             @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.SignatureCreator
             public Signature createSignature(String sigName) throws NoSuchAlgorithmException {
                 try {
@@ -446,79 +425,27 @@ public abstract class X509CertificateImpl extends X509Certificate implements BCX
         });
     }
 
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.X509CertificateImpl$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 implements SignatureCreator {
-        final /* synthetic */ String val$sigProvider;
-
-        AnonymousClass2(String str) {
-            sigProvider = str;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.SignatureCreator
-        public Signature createSignature(String sigName) throws NoSuchAlgorithmException, NoSuchProviderException {
-            String str = sigProvider;
-            if (str != null) {
-                return Signature.getInstance(sigName, str);
-            }
-            return Signature.getInstance(sigName);
-        }
-    }
-
     @Override // java.security.cert.Certificate
-    public final void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+    public final void verify(PublicKey key, final String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
         doVerify(key, new SignatureCreator() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.X509CertificateImpl.2
-            final /* synthetic */ String val$sigProvider;
-
-            AnonymousClass2(String sigProvider2) {
-                sigProvider = sigProvider2;
-            }
-
             @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.SignatureCreator
             public Signature createSignature(String sigName) throws NoSuchAlgorithmException, NoSuchProviderException {
-                String str = sigProvider;
-                if (str != null) {
-                    return Signature.getInstance(sigName, str);
+                if (sigProvider != null) {
+                    return Signature.getInstance(sigName, sigProvider);
                 }
                 return Signature.getInstance(sigName);
             }
         });
     }
 
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.X509CertificateImpl$3 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass3 implements SignatureCreator {
-        final /* synthetic */ Provider val$sigProvider;
-
-        AnonymousClass3(Provider provider) {
-            sigProvider = provider;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.SignatureCreator
-        public Signature createSignature(String sigName) throws NoSuchAlgorithmException {
-            Provider provider = sigProvider;
-            if (provider != null) {
-                return Signature.getInstance(sigName, provider);
-            }
-            return Signature.getInstance(sigName);
-        }
-    }
-
     @Override // java.security.cert.X509Certificate, java.security.cert.Certificate
-    public final void verify(PublicKey key, Provider sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    public final void verify(PublicKey key, final Provider sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         try {
             doVerify(key, new SignatureCreator() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.X509CertificateImpl.3
-                final /* synthetic */ Provider val$sigProvider;
-
-                AnonymousClass3(Provider sigProvider2) {
-                    sigProvider = sigProvider2;
-                }
-
                 @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.x509.SignatureCreator
                 public Signature createSignature(String sigName) throws NoSuchAlgorithmException {
-                    Provider provider = sigProvider;
-                    if (provider != null) {
-                        return Signature.getInstance(sigName, provider);
+                    if (sigProvider != null) {
+                        return Signature.getInstance(sigName, sigProvider);
                     }
                     return Signature.getInstance(sigName);
                 }
@@ -635,7 +562,6 @@ public abstract class X509CertificateImpl extends X509Certificate implements BCX
         return true;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:10:0x0037. Please report as an issue. */
     private static Collection getAlternativeNames(Certificate c, String oid) throws CertificateParsingException {
         byte[] extOctets = getExtensionOctets(c, oid);
         if (extOctets == null) {
@@ -686,7 +612,7 @@ public abstract class X509CertificateImpl extends X509Certificate implements BCX
         }
     }
 
-    public static byte[] getExtensionOctets(Certificate c, String oid) {
+    protected static byte[] getExtensionOctets(Certificate c, String oid) {
         ASN1OctetString extValue = getExtensionValue(c, oid);
         if (extValue != null) {
             return extValue.getOctets();

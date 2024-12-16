@@ -38,7 +38,7 @@ public class ConversationHeaderLinearLayout extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int containerWidth = getMeasuredWidth();
         int contentsWidth = calculateTotalChildLength();
@@ -104,8 +104,7 @@ public class ConversationHeaderLinearLayout extends LinearLayout {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class ViewInfo {
+    static class ViewInfo {
         final int mStartWidth;
         final View mView;
         final float mWeight;

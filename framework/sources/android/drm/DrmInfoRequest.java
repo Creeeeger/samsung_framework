@@ -69,12 +69,11 @@ public class DrmInfoRequest {
         return this.mRequestInformation.values().iterator();
     }
 
-    public boolean isValid() {
-        String str = this.mMimeType;
-        return (str == null || str.equals("") || this.mRequestInformation == null || !isValidType(this.mInfoType)) ? false : true;
+    boolean isValid() {
+        return (this.mMimeType == null || this.mMimeType.equals("") || this.mRequestInformation == null || !isValidType(this.mInfoType)) ? false : true;
     }
 
-    public static boolean isValidType(int infoType) {
+    static boolean isValidType(int infoType) {
         switch (infoType) {
             case 1:
             case 2:

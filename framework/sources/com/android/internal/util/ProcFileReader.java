@@ -22,20 +22,17 @@ public class ProcFileReader implements Closeable {
         this.mStream = stream;
         this.mBuffer = new byte[bufferSize];
         if (stream.markSupported()) {
-            stream.mark(0);
+            this.mStream.mark(0);
         }
         fillBuf();
     }
 
     private int fillBuf() throws IOException {
-        byte[] bArr = this.mBuffer;
-        int length = bArr.length;
-        int i = this.mTail;
-        int length2 = length - i;
-        if (length2 == 0) {
+        int length = this.mBuffer.length - this.mTail;
+        if (length == 0) {
             throw new IOException("attempting to fill already-full buffer");
         }
-        int read = this.mStream.read(bArr, i, length2);
+        int read = this.mStream.read(this.mBuffer, this.mTail, length);
         if (read != -1) {
             this.mTail += read;
         }
@@ -43,21 +40,16 @@ public class ProcFileReader implements Closeable {
     }
 
     private void consumeBuf(int count) throws IOException {
-        int i;
-        while (true) {
-            i = this.mTail;
-            if (count >= i || this.mBuffer[count] != 32) {
-                break;
-            } else {
-                count++;
-            }
+        while (count < this.mTail && this.mBuffer[count] == 32) {
+            count++;
         }
-        byte[] bArr = this.mBuffer;
-        System.arraycopy(bArr, count, bArr, 0, i - count);
-        int i2 = this.mTail - count;
-        this.mTail = i2;
-        if (i2 == 0) {
+        System.arraycopy(this.mBuffer, count, this.mBuffer, 0, this.mTail - count);
+        this.mTail -= count;
+        if (this.mTail == 0) {
             fillBuf();
+            if (this.mTail > 0 && this.mBuffer[0] == 32) {
+                consumeBuf(0);
+            }
         }
     }
 
@@ -228,10 +220,9 @@ public class ProcFileReader implements Closeable {
     }
 
     public void rewind() throws IOException {
-        InputStream inputStream = this.mStream;
-        if (inputStream instanceof FileInputStream) {
-            ((FileInputStream) inputStream).getChannel().position(0L);
-        } else if (inputStream.markSupported()) {
+        if (this.mStream instanceof FileInputStream) {
+            ((FileInputStream) this.mStream).getChannel().position(0L);
+        } else if (this.mStream.markSupported()) {
             this.mStream.reset();
         } else {
             throw new IOException("The InputStream is NOT markable");

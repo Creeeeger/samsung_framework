@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.os.PersistableBundle;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellSignalStrengthCdma extends CellSignalStrength implements Parcelable {
     private static final boolean DBG = false;
     private static final String LOG_TAG = "CellSignalStrengthCdma";
@@ -17,23 +17,18 @@ public final class CellSignalStrengthCdma extends CellSignalStrength implements 
     private int mLevel;
     private static final CellSignalStrengthCdma sInvalid = new CellSignalStrengthCdma();
     public static final Parcelable.Creator<CellSignalStrengthCdma> CREATOR = new Parcelable.Creator<CellSignalStrengthCdma>() { // from class: android.telephony.CellSignalStrengthCdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthCdma createFromParcel(Parcel in) {
             return new CellSignalStrengthCdma(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthCdma[] newArray(int size) {
             return new CellSignalStrengthCdma[size];
         }
     };
-
-    /* synthetic */ CellSignalStrengthCdma(Parcel parcel, CellSignalStrengthCdmaIA cellSignalStrengthCdmaIA) {
-        this(parcel);
-    }
 
     public CellSignalStrengthCdma() {
         setDefaultValues();
@@ -331,23 +326,6 @@ public final class CellSignalStrengthCdma extends CellSignalStrength implements 
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.CellSignalStrengthCdma$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthCdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthCdma createFromParcel(Parcel in) {
-            return new CellSignalStrengthCdma(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthCdma[] newArray(int size) {
-            return new CellSignalStrengthCdma[size];
-        }
     }
 
     private static void log(String s) {

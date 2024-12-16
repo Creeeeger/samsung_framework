@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class RcsCapabilityExchangeImplBase {
     public static final int COMMAND_CODE_FETCH_ERROR = 3;
     public static final int COMMAND_CODE_GENERIC_FAILURE = 1;
@@ -30,18 +30,15 @@ public class RcsCapabilityExchangeImplBase {
     private static final String LOG_TAG = "RcsCapExchangeImplBase";
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface CommandCode {
     }
 
-    /* loaded from: classes3.dex */
     public interface OptionsResponseCallback {
         void onCommandError(int i) throws ImsException;
 
         void onNetworkResponse(int i, String str, List<String> list) throws ImsException;
     }
 
-    /* loaded from: classes3.dex */
     public interface PublishResponseCallback {
         void onCommandError(int i) throws ImsException;
 
@@ -60,7 +57,6 @@ public class RcsCapabilityExchangeImplBase {
         }
     }
 
-    /* loaded from: classes3.dex */
     public interface SubscribeResponseCallback {
         void onCommandError(int i) throws ImsException;
 

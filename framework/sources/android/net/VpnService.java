@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class VpnService extends Service {
     private static final boolean DBG = Debug.semIsProductDev();
     private static final String FAST_PACKAGE_NAME = "com.samsung.android.fast";
@@ -40,11 +40,6 @@ public class VpnService extends Service {
     public static final String SERVICE_META_DATA_SUPPORTS_ALWAYS_ON = "android.net.VpnService.SUPPORTS_ALWAYS_ON";
     private static final int SYSTEM_VPN = 0;
     private static final String TAG = "VpnService";
-
-    /* renamed from: -$$Nest$smgetService */
-    static /* bridge */ /* synthetic */ IVpnManager m2976$$Nest$smgetService() {
-        return getService();
-    }
 
     private static boolean isSecureWifiPackage(Context context) {
         if (FAST_PACKAGE_NAME.equals(context.getPackageName())) {
@@ -58,7 +53,8 @@ public class VpnService extends Service {
         return false;
     }
 
-    private static IVpnManager getService() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static IVpnManager getService() {
         return IVpnManager.Stub.asInterface(ServiceManager.getService(Context.VPN_MANAGEMENT_SERVICE));
     }
 
@@ -204,17 +200,12 @@ public class VpnService extends Service {
         stopSelf();
     }
 
-    /* loaded from: classes2.dex */
     private class Callback extends Binder {
-        /* synthetic */ Callback(VpnService vpnService, CallbackIA callbackIA) {
-            this();
-        }
-
         private Callback() {
         }
 
         @Override // android.os.Binder
-        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) {
+        protected boolean onTransact(int code, Parcel data, Parcel reply, int flags) {
             if (code == 16777215) {
                 VpnService.this.onRevoke();
                 return true;
@@ -223,6 +214,7 @@ public class VpnService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void check(InetAddress address, int prefixLength) {
         if (address.isLoopbackAddress()) {
             throw new IllegalArgumentException("Bad address");
@@ -242,6 +234,7 @@ public class VpnService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkNonPrefixBytes(InetAddress address, int prefixLength) {
         IpPrefix prefix = new IpPrefix(address, prefixLength);
         if (!prefix.getAddress().equals(address)) {
@@ -249,18 +242,13 @@ public class VpnService extends Service {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class Builder {
-        private final List<LinkAddress> mAddresses;
-        private final VpnConfig mConfig;
-        private final List<RouteInfo> mRoutes;
+        private final VpnConfig mConfig = new VpnConfig();
+        private final List<LinkAddress> mAddresses = new ArrayList();
+        private final List<RouteInfo> mRoutes = new ArrayList();
 
         public Builder() {
-            VpnConfig vpnConfig = new VpnConfig();
-            this.mConfig = vpnConfig;
-            this.mAddresses = new ArrayList();
-            this.mRoutes = new ArrayList();
-            vpnConfig.user = VpnService.this.getClass().getName();
+            this.mConfig.user = VpnService.this.getClass().getName();
         }
 
         public Builder setSession(String session) {
@@ -371,50 +359,7 @@ public class VpnService extends Service {
             }
         }
 
-        private boolean isSecureWifiUid(int callingUid) {
-            IPackageManager pm = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
-            try {
-                String[] packages = pm.getPackagesForUid(callingUid);
-                if (packages != null && packages.length > 0 && VpnService.FAST_PACKAGE_NAME.equals(packages[0])) {
-                    if (pm.checkSignatures("android", VpnService.FAST_PACKAGE_NAME, UserHandle.getCallingUserId()) == 0) {
-                        return true;
-                    }
-                    Log.e(VpnService.TAG, "Secure Wi-Fi signature mismatched");
-                }
-            } catch (Exception e) {
-            }
-            return false;
-        }
-
-        private void verifyAppAsUser(String packageName, int userId) throws PackageManager.NameNotFoundException {
-            IPackageManager pm = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
-            try {
-                if (pm.getPackageUid(packageName, 0L, userId) < 0) {
-                    throw new PackageManager.NameNotFoundException(packageName);
-                }
-            } catch (RemoteException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
         public Builder addAllowedApplication(String packageName) throws PackageManager.NameNotFoundException {
-            int callingUid = Binder.getCallingUid();
-            if (isSecureWifiUid(callingUid)) {
-                String[] packageUserId = packageName.split(":");
-                if (packageUserId.length == 2) {
-                    if (this.mConfig.disallowedSecureFolderApps != null) {
-                        throw new UnsupportedOperationException("addDisallowedSecureFolderApps already called");
-                    }
-                    String packageName2 = packageUserId[0];
-                    int userId = Integer.parseInt(packageUserId[1]);
-                    verifyAppAsUser(packageName2, userId);
-                    if (this.mConfig.allowedSecureFolderApps == null) {
-                        this.mConfig.allowedSecureFolderApps = new ArrayList();
-                    }
-                    this.mConfig.allowedSecureFolderApps.add(packageName2);
-                    return this;
-                }
-            }
             if (this.mConfig.disallowedApplications != null) {
                 throw new UnsupportedOperationException("addDisallowedApplication already called");
             }
@@ -430,23 +375,6 @@ public class VpnService extends Service {
         }
 
         public Builder addDisallowedApplication(String packageName) throws PackageManager.NameNotFoundException {
-            int callingUid = Binder.getCallingUid();
-            if (isSecureWifiUid(callingUid)) {
-                String[] packageUserId = packageName.split(":");
-                if (packageUserId.length == 2) {
-                    if (this.mConfig.allowedSecureFolderApps != null) {
-                        throw new UnsupportedOperationException("addAllowedSecureFolderApps already called");
-                    }
-                    String packageName2 = packageUserId[0];
-                    int userId = Integer.parseInt(packageUserId[1]);
-                    verifyAppAsUser(packageName2, userId);
-                    if (this.mConfig.disallowedSecureFolderApps == null) {
-                        this.mConfig.disallowedSecureFolderApps = new ArrayList();
-                    }
-                    this.mConfig.disallowedSecureFolderApps.add(packageName2);
-                    return this;
-                }
-            }
             if (this.mConfig.allowedApplications != null) {
                 throw new UnsupportedOperationException("addAllowedApplication already called");
             }
@@ -489,7 +417,7 @@ public class VpnService extends Service {
             this.mConfig.addresses = this.mAddresses;
             this.mConfig.routes = this.mRoutes;
             try {
-                return VpnService.m2976$$Nest$smgetService().establishVpn(this.mConfig);
+                return VpnService.getService().establishVpn(this.mConfig);
             } catch (RemoteException e2) {
                 throw new IllegalStateException(e2);
             }

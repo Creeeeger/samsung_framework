@@ -16,23 +16,18 @@ public final class SyncFence implements AutoCloseable, Parcelable {
     private long mNativePtr;
     private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createNonmalloced(SyncFence.class.getClassLoader(), nGetDestructor(), 4);
     public static final Parcelable.Creator<SyncFence> CREATOR = new Parcelable.Creator<SyncFence>() { // from class: android.hardware.SyncFence.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncFence createFromParcel(Parcel in) {
             return new SyncFence(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncFence[] newArray(int size) {
             return new SyncFence[size];
         }
     };
-
-    /* synthetic */ SyncFence(Parcel parcel, SyncFenceIA syncFenceIA) {
-        this(parcel);
-    }
 
     private static native long nCreate(int i);
 
@@ -42,42 +37,42 @@ public final class SyncFence implements AutoCloseable, Parcelable {
 
     private static native long nGetSignalTime(long j);
 
+    private static native void nIncRef(long j);
+
     private static native boolean nIsValid(long j);
 
     private static native boolean nWait(long j, long j2);
 
     private SyncFence(int fileDescriptor) {
-        long nCreate = nCreate(fileDescriptor);
-        this.mNativePtr = nCreate;
-        this.mCloser = sRegistry.registerNativeAllocation(this, nCreate);
+        this.mNativePtr = nCreate(fileDescriptor);
+        this.mCloser = sRegistry.registerNativeAllocation(this, this.mNativePtr);
     }
 
     private SyncFence(Parcel parcel) {
         boolean valid = parcel.readBoolean();
         FileDescriptor fileDescriptor = valid ? parcel.readRawFileDescriptor() : null;
         if (fileDescriptor != null) {
-            long nCreate = nCreate(fileDescriptor.getInt$());
-            this.mNativePtr = nCreate;
-            this.mCloser = sRegistry.registerNativeAllocation(this, nCreate);
-            return;
+            this.mNativePtr = nCreate(fileDescriptor.getInt$());
+            this.mCloser = sRegistry.registerNativeAllocation(this, this.mNativePtr);
+        } else {
+            this.mCloser = new Runnable() { // from class: android.hardware.SyncFence$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    SyncFence.lambda$new$0();
+                }
+            };
         }
-        this.mCloser = new Runnable() { // from class: android.hardware.SyncFence$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                SyncFence.lambda$new$0();
-            }
-        };
     }
 
-    public static /* synthetic */ void lambda$new$0() {
+    static /* synthetic */ void lambda$new$0() {
     }
 
     public SyncFence(long nativeFencePtr) {
         this.mNativePtr = nativeFencePtr;
         if (nativeFencePtr != 0) {
-            this.mCloser = sRegistry.registerNativeAllocation(this, nativeFencePtr);
+            this.mCloser = sRegistry.registerNativeAllocation(this, this.mNativePtr);
         } else {
-            this.mCloser = new Runnable() { // from class: android.hardware.SyncFence$$ExternalSyntheticLambda2
+            this.mCloser = new Runnable() { // from class: android.hardware.SyncFence$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     SyncFence.lambda$new$1();
@@ -86,11 +81,18 @@ public final class SyncFence implements AutoCloseable, Parcelable {
         }
     }
 
-    public static /* synthetic */ void lambda$new$1() {
+    static /* synthetic */ void lambda$new$1() {
+    }
+
+    public SyncFence(SyncFence other) {
+        this(other.mNativePtr);
+        if (this.mNativePtr != 0) {
+            nIncRef(this.mNativePtr);
+        }
     }
 
     private SyncFence() {
-        this.mCloser = new Runnable() { // from class: android.hardware.SyncFence$$ExternalSyntheticLambda1
+        this.mCloser = new Runnable() { // from class: android.hardware.SyncFence$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 SyncFence.lambda$new$2();
@@ -98,7 +100,7 @@ public final class SyncFence implements AutoCloseable, Parcelable {
         };
     }
 
-    public static /* synthetic */ void lambda$new$2() {
+    static /* synthetic */ void lambda$new$2() {
     }
 
     public static SyncFence createEmpty() {
@@ -116,8 +118,7 @@ public final class SyncFence implements AutoCloseable, Parcelable {
     public ParcelFileDescriptor getFdDup() throws IOException {
         ParcelFileDescriptor fromFd;
         synchronized (this.mCloser) {
-            long j = this.mNativePtr;
-            int fd = j != 0 ? nGetFd(j) : -1;
+            int fd = this.mNativePtr != 0 ? nGetFd(this.mNativePtr) : -1;
             if (fd == -1) {
                 throw new IllegalStateException("Cannot dup the FD of an invalid SyncFence");
             }
@@ -129,8 +130,7 @@ public final class SyncFence implements AutoCloseable, Parcelable {
     public boolean isValid() {
         boolean z;
         synchronized (this.mCloser) {
-            long j = this.mNativePtr;
-            z = j != 0 && nIsValid(j);
+            z = this.mNativePtr != 0 && nIsValid(this.mNativePtr);
         }
         return z;
     }
@@ -152,8 +152,7 @@ public final class SyncFence implements AutoCloseable, Parcelable {
     private boolean await(long timeoutNanos) {
         boolean z;
         synchronized (this.mCloser) {
-            long j = this.mNativePtr;
-            z = j != 0 && nWait(j, timeoutNanos);
+            z = this.mNativePtr != 0 && nWait(this.mNativePtr, timeoutNanos);
         }
         return z;
     }
@@ -161,8 +160,7 @@ public final class SyncFence implements AutoCloseable, Parcelable {
     public long getSignalTime() {
         long nGetSignalTime;
         synchronized (this.mCloser) {
-            long j = this.mNativePtr;
-            nGetSignalTime = j != 0 ? nGetSignalTime(j) : -1L;
+            nGetSignalTime = this.mNativePtr != 0 ? nGetSignalTime(this.mNativePtr) : -1L;
         }
         return nGetSignalTime;
     }
@@ -194,8 +192,7 @@ public final class SyncFence implements AutoCloseable, Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         synchronized (this.mCloser) {
-            long j = this.mNativePtr;
-            int fd = j != 0 ? nGetFd(j) : -1;
+            int fd = this.mNativePtr != 0 ? nGetFd(this.mNativePtr) : -1;
             if (fd == -1) {
                 out.writeBoolean(false);
             } else {
@@ -204,23 +201,6 @@ public final class SyncFence implements AutoCloseable, Parcelable {
                 temp.setInt$(fd);
                 out.writeFileDescriptor(temp);
             }
-        }
-    }
-
-    /* renamed from: android.hardware.SyncFence$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SyncFence> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncFence createFromParcel(Parcel in) {
-            return new SyncFence(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncFence[] newArray(int size) {
-            return new SyncFence[size];
         }
     }
 }

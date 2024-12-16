@@ -13,7 +13,6 @@ public interface IContentCaptureOptionsCallback extends IInterface {
 
     void setContentCaptureOptions(ContentCaptureOptions contentCaptureOptions) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IContentCaptureOptionsCallback {
         @Override // android.view.contentcapture.IContentCaptureOptionsCallback
         public void setContentCaptureOptions(ContentCaptureOptions options) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IContentCaptureOptionsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IContentCaptureOptionsCallback {
         static final int TRANSACTION_setContentCaptureOptions = 1;
 
@@ -68,26 +66,22 @@ public interface IContentCaptureOptionsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContentCaptureOptionsCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContentCaptureOptionsCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContentCaptureOptionsCallback.DESCRIPTOR);
+                case 1:
+                    ContentCaptureOptions _arg0 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
+                    data.enforceNoDataAvail();
+                    setContentCaptureOptions(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ContentCaptureOptions _arg0 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
-                            data.enforceNoDataAvail();
-                            setContentCaptureOptions(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IContentCaptureOptionsCallback {
+        private static class Proxy implements IContentCaptureOptionsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

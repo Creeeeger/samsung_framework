@@ -3,17 +3,16 @@ package android.telephony;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class IccOpenLogicalChannelResponse implements Parcelable {
     public static final Parcelable.Creator<IccOpenLogicalChannelResponse> CREATOR = new Parcelable.Creator<IccOpenLogicalChannelResponse>() { // from class: android.telephony.IccOpenLogicalChannelResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IccOpenLogicalChannelResponse createFromParcel(Parcel in) {
             return new IccOpenLogicalChannelResponse(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IccOpenLogicalChannelResponse[] newArray(int size) {
             return new IccOpenLogicalChannelResponse[size];
@@ -28,10 +27,6 @@ public class IccOpenLogicalChannelResponse implements Parcelable {
     private final byte[] mSelectResponse;
     private final int mStatus;
 
-    /* synthetic */ IccOpenLogicalChannelResponse(Parcel parcel, IccOpenLogicalChannelResponseIA iccOpenLogicalChannelResponseIA) {
-        this(parcel);
-    }
-
     public IccOpenLogicalChannelResponse(int channel, int status, byte[] selectResponse) {
         this.mChannel = channel;
         this.mStatus = status;
@@ -43,12 +38,11 @@ public class IccOpenLogicalChannelResponse implements Parcelable {
         this.mStatus = in.readInt();
         int arrayLength = in.readInt();
         if (arrayLength > 0) {
-            byte[] bArr = new byte[arrayLength];
-            this.mSelectResponse = bArr;
-            in.readByteArray(bArr);
-            return;
+            this.mSelectResponse = new byte[arrayLength];
+            in.readByteArray(this.mSelectResponse);
+        } else {
+            this.mSelectResponse = null;
         }
-        this.mSelectResponse = null;
     }
 
     public int getChannel() {
@@ -72,29 +66,11 @@ public class IccOpenLogicalChannelResponse implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.mChannel);
         out.writeInt(this.mStatus);
-        byte[] bArr = this.mSelectResponse;
-        if (bArr != null && bArr.length > 0) {
-            out.writeInt(bArr.length);
+        if (this.mSelectResponse != null && this.mSelectResponse.length > 0) {
+            out.writeInt(this.mSelectResponse.length);
             out.writeByteArray(this.mSelectResponse);
         } else {
             out.writeInt(0);
-        }
-    }
-
-    /* renamed from: android.telephony.IccOpenLogicalChannelResponse$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IccOpenLogicalChannelResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IccOpenLogicalChannelResponse createFromParcel(Parcel in) {
-            return new IccOpenLogicalChannelResponse(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IccOpenLogicalChannelResponse[] newArray(int size) {
-            return new IccOpenLogicalChannelResponse[size];
         }
     }
 

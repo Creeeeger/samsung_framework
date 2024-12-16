@@ -12,7 +12,6 @@ public interface ISemBiometricSysUiDisplayBrightnessCallback extends IInterface 
 
     void onBrightnessChanged(float f) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemBiometricSysUiDisplayBrightnessCallback {
         @Override // com.samsung.android.biometrics.ISemBiometricSysUiDisplayBrightnessCallback
         public void onBrightnessChanged(float v) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISemBiometricSysUiDisplayBrightnessCallback extends IInterface 
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemBiometricSysUiDisplayBrightnessCallback {
         static final int TRANSACTION_onBrightnessChanged = 1;
 
@@ -67,26 +65,22 @@ public interface ISemBiometricSysUiDisplayBrightnessCallback extends IInterface 
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemBiometricSysUiDisplayBrightnessCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemBiometricSysUiDisplayBrightnessCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemBiometricSysUiDisplayBrightnessCallback.DESCRIPTOR);
+                case 1:
+                    float _arg0 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onBrightnessChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            float _arg0 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onBrightnessChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemBiometricSysUiDisplayBrightnessCallback {
+        private static class Proxy implements ISemBiometricSysUiDisplayBrightnessCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

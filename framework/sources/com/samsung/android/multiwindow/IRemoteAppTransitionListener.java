@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IRemoteAppTransitionListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multiwindow.IRemoteAppTransitionListener";
 
@@ -18,7 +18,6 @@ public interface IRemoteAppTransitionListener extends IInterface {
 
     void onWallpaperVisibilityChanged(boolean z, boolean z2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRemoteAppTransitionListener {
         @Override // com.samsung.android.multiwindow.IRemoteAppTransitionListener
         public void onStartRecentsAnimation(boolean isHomeOrRecentsVisible) throws RemoteException {
@@ -42,7 +41,6 @@ public interface IRemoteAppTransitionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRemoteAppTransitionListener {
         static final int TRANSACTION_onFinishRecentsAnimation = 2;
         static final int TRANSACTION_onStartHomeAnimation = 3;
@@ -94,41 +92,38 @@ public interface IRemoteAppTransitionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteAppTransitionListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteAppTransitionListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteAppTransitionListener.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onStartRecentsAnimation(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onFinishRecentsAnimation(_arg02);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onStartHomeAnimation(_arg03);
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onWallpaperVisibilityChanged(_arg04, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onStartRecentsAnimation(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onFinishRecentsAnimation(_arg02);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onStartHomeAnimation(_arg03);
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onWallpaperVisibilityChanged(_arg04, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRemoteAppTransitionListener {
+        private static class Proxy implements IRemoteAppTransitionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

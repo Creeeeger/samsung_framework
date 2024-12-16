@@ -39,7 +39,6 @@ public interface ISharedConnectivityService extends IInterface {
 
     void unregisterCallback(ISharedConnectivityCallback iSharedConnectivityCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISharedConnectivityService {
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityService
         public void registerCallback(ISharedConnectivityCallback callback) throws RemoteException {
@@ -96,7 +95,6 @@ public interface ISharedConnectivityService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISharedConnectivityService {
         static final int TRANSACTION_connectHotspotNetwork = 3;
         static final int TRANSACTION_connectKnownNetwork = 5;
@@ -169,82 +167,78 @@ public interface ISharedConnectivityService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISharedConnectivityService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISharedConnectivityService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISharedConnectivityService.DESCRIPTOR);
+                case 1:
+                    ISharedConnectivityCallback _arg0 = ISharedConnectivityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ISharedConnectivityCallback _arg02 = ISharedConnectivityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCallback(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    HotspotNetwork _arg03 = (HotspotNetwork) data.readTypedObject(HotspotNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    connectHotspotNetwork(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    HotspotNetwork _arg04 = (HotspotNetwork) data.readTypedObject(HotspotNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    disconnectHotspotNetwork(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    KnownNetwork _arg05 = (KnownNetwork) data.readTypedObject(KnownNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    connectKnownNetwork(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    KnownNetwork _arg06 = (KnownNetwork) data.readTypedObject(KnownNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    forgetKnownNetwork(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    List<HotspotNetwork> _result = getHotspotNetworks();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 8:
+                    List<KnownNetwork> _result2 = getKnownNetworks();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result2, 1);
+                    return true;
+                case 9:
+                    SharedConnectivitySettingsState _result3 = getSettingsState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 10:
+                    HotspotNetworkConnectionStatus _result4 = getHotspotNetworkConnectionStatus();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 11:
+                    KnownNetworkConnectionStatus _result5 = getKnownNetworkConnectionStatus();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISharedConnectivityCallback _arg0 = ISharedConnectivityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ISharedConnectivityCallback _arg02 = ISharedConnectivityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterCallback(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            HotspotNetwork _arg03 = (HotspotNetwork) data.readTypedObject(HotspotNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            connectHotspotNetwork(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            HotspotNetwork _arg04 = (HotspotNetwork) data.readTypedObject(HotspotNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            disconnectHotspotNetwork(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            KnownNetwork _arg05 = (KnownNetwork) data.readTypedObject(KnownNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            connectKnownNetwork(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            KnownNetwork _arg06 = (KnownNetwork) data.readTypedObject(KnownNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            forgetKnownNetwork(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            List<HotspotNetwork> _result = getHotspotNetworks();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 8:
-                            List<KnownNetwork> _result2 = getKnownNetworks();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result2, 1);
-                            return true;
-                        case 9:
-                            SharedConnectivitySettingsState _result3 = getSettingsState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 10:
-                            HotspotNetworkConnectionStatus _result4 = getHotspotNetworkConnectionStatus();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 11:
-                            KnownNetworkConnectionStatus _result5 = getKnownNetworkConnectionStatus();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISharedConnectivityService {
+        private static class Proxy implements ISharedConnectivityService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

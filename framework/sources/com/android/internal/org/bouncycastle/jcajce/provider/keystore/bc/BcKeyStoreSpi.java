@@ -79,8 +79,7 @@ public class BcKeyStoreSpi extends KeyStoreSpi implements BCKeyStore {
         this.version = version;
     }
 
-    /* loaded from: classes5.dex */
-    public class StoreEntry {
+    private class StoreEntry {
         String alias;
         Certificate[] certChain;
         Date date;
@@ -155,11 +154,8 @@ public class BcKeyStoreSpi extends KeyStoreSpi implements BCKeyStore {
 
         Object getObject(char[] password) throws NoSuchAlgorithmException, UnrecoverableKeyException {
             Key k;
-            if (password == null || password.length == 0) {
-                Object obj = this.obj;
-                if (obj instanceof Key) {
-                    return obj;
-                }
+            if ((password == null || password.length == 0) && (this.obj instanceof Key)) {
+                return this.obj;
             }
             if (this.type == 4) {
                 ByteArrayInputStream bIn = new ByteArrayInputStream((byte[]) this.obj);
@@ -249,6 +245,7 @@ public class BcKeyStoreSpi extends KeyStoreSpi implements BCKeyStore {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void encodeKey(Key key, DataOutputStream dOut) throws IOException {
         byte[] enc = key.getEncoded();
         if (key instanceof PrivateKey) {
@@ -264,6 +261,7 @@ public class BcKeyStoreSpi extends KeyStoreSpi implements BCKeyStore {
         dOut.write(enc);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Key decodeKey(DataInputStream dIn) throws IOException {
         KeySpec spec;
         int keyType = dIn.read();
@@ -606,7 +604,6 @@ public class BcKeyStoreSpi extends KeyStoreSpi implements BCKeyStore {
         return salt.length == 20;
     }
 
-    /* loaded from: classes5.dex */
     public static class BouncyCastleStore extends BcKeyStoreSpi {
         public BouncyCastleStore() {
             super(1);
@@ -687,21 +684,18 @@ public class BcKeyStoreSpi extends KeyStoreSpi implements BCKeyStore {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Std extends BcKeyStoreSpi {
         public Std() {
             super(2);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Version1 extends BcKeyStoreSpi {
         public Version1() {
             super(1);
         }
     }
 
-    /* loaded from: classes5.dex */
     private static class BCKeyStoreException extends KeyStoreException {
         private final Exception cause;
 

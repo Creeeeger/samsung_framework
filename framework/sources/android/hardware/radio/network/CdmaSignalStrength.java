@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaSignalStrength implements Parcelable {
     public static final Parcelable.Creator<CdmaSignalStrength> CREATOR = new Parcelable.Creator<CdmaSignalStrength>() { // from class: android.hardware.radio.network.CdmaSignalStrength.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSignalStrength createFromParcel(Parcel _aidl_source) {
             CdmaSignalStrength _aidl_out = new CdmaSignalStrength();
@@ -18,6 +16,7 @@ public class CdmaSignalStrength implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSignalStrength[] newArray(int _aidl_size) {
             return new CdmaSignalStrength[_aidl_size];
@@ -25,25 +24,6 @@ public class CdmaSignalStrength implements Parcelable {
     };
     public int dbm = 0;
     public int ecio = 0;
-
-    /* renamed from: android.hardware.radio.network.CdmaSignalStrength$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaSignalStrength> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSignalStrength createFromParcel(Parcel _aidl_source) {
-            CdmaSignalStrength _aidl_out = new CdmaSignalStrength();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSignalStrength[] newArray(int _aidl_size) {
-            return new CdmaSignalStrength[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -102,7 +82,7 @@ public class CdmaSignalStrength implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("dbm: " + this.dbm);
         _aidl_sj.add("ecio: " + this.ecio);
-        return "android.hardware.radio.network.CdmaSignalStrength" + _aidl_sj.toString();
+        return "CdmaSignalStrength" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

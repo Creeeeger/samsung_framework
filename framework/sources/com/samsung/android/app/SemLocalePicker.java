@@ -11,14 +11,9 @@ public class SemLocalePicker {
     private SemLocalePicker() {
     }
 
-    /* loaded from: classes5.dex */
     public static class LocaleInfo {
         String label;
         Locale locale;
-
-        /* synthetic */ LocaleInfo(LocalePicker.LocaleInfo localeInfo, LocaleInfoIA localeInfoIA) {
-            this(localeInfo);
-        }
 
         private LocaleInfo(LocalePicker.LocaleInfo info) {
             if (info != null) {

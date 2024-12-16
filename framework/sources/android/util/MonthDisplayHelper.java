@@ -15,9 +15,8 @@ public class MonthDisplayHelper {
             throw new IllegalArgumentException();
         }
         this.mWeekStartDay = weekStartDay;
-        Calendar calendar = Calendar.getInstance();
-        this.mCalendar = calendar;
-        calendar.set(1, year);
+        this.mCalendar = Calendar.getInstance();
+        this.mCalendar.set(1, year);
         this.mCalendar.set(2, month);
         this.mCalendar.set(5, 1);
         this.mCalendar.set(11, 0);
@@ -67,13 +66,11 @@ public class MonthDisplayHelper {
     }
 
     public int getDayAt(int row, int column) {
-        int i;
-        if (row == 0 && column < (i = this.mOffset)) {
-            return ((this.mNumDaysInPrevMonth + column) - i) + 1;
+        if (row == 0 && column < this.mOffset) {
+            return ((this.mNumDaysInPrevMonth + column) - this.mOffset) + 1;
         }
         int day = (((row * 7) + column) - this.mOffset) + 1;
-        int i2 = this.mNumDaysInMonth;
-        return day > i2 ? day - i2 : day;
+        return day > this.mNumDaysInMonth ? day - this.mNumDaysInMonth : day;
     }
 
     public int getRowOf(int day) {

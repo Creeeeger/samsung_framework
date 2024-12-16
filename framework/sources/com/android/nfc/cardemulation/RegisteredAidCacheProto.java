@@ -7,7 +7,6 @@ public final class RegisteredAidCacheProto {
     public static final long PREFERRED_PAYMENT_SERVICE = 1146756268035L;
     public static final long ROUTING_MANAGER = 1146756268036L;
 
-    /* loaded from: classes5.dex */
     public final class AidCacheEntry {
         public static final long CATEGORY = 1138166333442L;
         public static final long DEFAULT_COMPONENT = 1146756268035L;

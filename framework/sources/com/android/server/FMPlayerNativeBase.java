@@ -7,8 +7,7 @@ public class FMPlayerNativeBase {
     public FMPlayerNativeBase(FMRadioService service) {
     }
 
-    /* loaded from: classes5.dex */
-    public static class RDSData {
+    static class RDSData {
         public String mChannelName;
         public long mFreq;
         public String mRadioText;
@@ -46,8 +45,7 @@ public class FMPlayerNativeBase {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class RTPlusData {
+    static class RTPlusData {
         public int mAdditionalLen1;
         public int mAdditionalLen2;
         public int mContentType1;
@@ -65,8 +63,7 @@ public class FMPlayerNativeBase {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class PIECCData {
+    static class PIECCData {
         public int mECC;
         public int mPI;
 

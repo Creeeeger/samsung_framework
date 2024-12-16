@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AmbientContextDetectionServiceStatus implements Parcelable {
     public static final Parcelable.Creator<AmbientContextDetectionServiceStatus> CREATOR = new Parcelable.Creator<AmbientContextDetectionServiceStatus>() { // from class: android.service.ambientcontext.AmbientContextDetectionServiceStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionServiceStatus[] newArray(int size) {
             return new AmbientContextDetectionServiceStatus[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionServiceStatus createFromParcel(Parcel in) {
             return new AmbientContextDetectionServiceStatus(in);
@@ -32,7 +31,7 @@ public final class AmbientContextDetectionServiceStatus implements Parcelable {
 
     AmbientContextDetectionServiceStatus(int statusCode, String packageName) {
         this.mStatusCode = statusCode;
-        AnnotationValidations.validate((Class<? extends Annotation>) AmbientContextManager.StatusCode.class, (Annotation) null, statusCode);
+        AnnotationValidations.validate((Class<? extends Annotation>) AmbientContextManager.StatusCode.class, (Annotation) null, this.mStatusCode);
         this.mPackageName = packageName;
     }
 
@@ -65,29 +64,11 @@ public final class AmbientContextDetectionServiceStatus implements Parcelable {
         int statusCode = in.readInt();
         String packageName = in.readString();
         this.mStatusCode = statusCode;
-        AnnotationValidations.validate((Class<? extends Annotation>) AmbientContextManager.StatusCode.class, (Annotation) null, statusCode);
+        AnnotationValidations.validate((Class<? extends Annotation>) AmbientContextManager.StatusCode.class, (Annotation) null, this.mStatusCode);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
     }
 
-    /* renamed from: android.service.ambientcontext.AmbientContextDetectionServiceStatus$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AmbientContextDetectionServiceStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AmbientContextDetectionServiceStatus[] newArray(int size) {
-            return new AmbientContextDetectionServiceStatus[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AmbientContextDetectionServiceStatus createFromParcel(Parcel in) {
-            return new AmbientContextDetectionServiceStatus(in);
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private long mBuilderFieldsSet = 0;
         private String mPackageName;
@@ -107,9 +88,8 @@ public final class AmbientContextDetectionServiceStatus implements Parcelable {
 
         public AmbientContextDetectionServiceStatus build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 2;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
+            this.mBuilderFieldsSet |= 2;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
                 this.mStatusCode = 0;
             }
             AmbientContextDetectionServiceStatus o = new AmbientContextDetectionServiceStatus(this.mStatusCode, this.mPackageName);

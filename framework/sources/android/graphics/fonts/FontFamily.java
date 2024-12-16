@@ -4,7 +4,10 @@ import android.util.SparseIntArray;
 import com.android.internal.util.Preconditions;
 import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Set;
 import libcore.util.NativeAllocationRegistry;
 
 /* loaded from: classes.dex */
@@ -24,30 +27,43 @@ public final class FontFamily {
     @CriticalNative
     private static native int nGetVariant(long j);
 
-    /* loaded from: classes.dex */
     public static final class Builder {
-        private static final NativeAllocationRegistry sFamilyRegistory = NativeAllocationRegistry.createMalloced(FontFamily.class.getClassLoader(), nGetReleaseNativeFamily());
-        private final ArrayList<Font> mFonts;
-        private final SparseIntArray mStyles;
+        private static final int TAG_ital = 1769234796;
+        private static final int TAG_wght = 2003265652;
+        public static final int VARIABLE_FONT_FAMILY_TYPE_NONE = 0;
+        public static final int VARIABLE_FONT_FAMILY_TYPE_SINGLE_FONT_WGHT_ITAL = 2;
+        public static final int VARIABLE_FONT_FAMILY_TYPE_SINGLE_FONT_WGHT_ONLY = 1;
+        public static final int VARIABLE_FONT_FAMILY_TYPE_TWO_FONTS_WGHT = 3;
+        public static final int VARIABLE_FONT_FAMILY_TYPE_UNKNOWN = -1;
+        private final ArrayList<Font> mFonts = new ArrayList<>();
+        private final SparseIntArray mStyles = new SparseIntArray(4);
+
+        @Retention(RetentionPolicy.SOURCE)
+        public @interface VariableFontFamilyType {
+        }
 
         @CriticalNative
         private static native void nAddFont(long j, long j2);
 
-        private static native long nBuild(long j, String str, int i, boolean z, boolean z2);
+        private static native long nBuild(long j, String str, int i, boolean z, boolean z2, int i2);
 
+        /* JADX INFO: Access modifiers changed from: private */
         @CriticalNative
-        private static native long nGetReleaseNativeFamily();
+        public static native long nGetReleaseNativeFamily();
 
         private static native long nInitBuilder();
 
+        private static class NoImagePreloadHolder {
+            private static final NativeAllocationRegistry sFamilyRegistry = NativeAllocationRegistry.createMalloced(FontFamily.class.getClassLoader(), Builder.nGetReleaseNativeFamily());
+
+            private NoImagePreloadHolder() {
+            }
+        }
+
         public Builder(Font font) {
-            ArrayList<Font> arrayList = new ArrayList<>();
-            this.mFonts = arrayList;
-            SparseIntArray sparseIntArray = new SparseIntArray(4);
-            this.mStyles = sparseIntArray;
             Preconditions.checkNotNull(font, "font can not be null");
-            sparseIntArray.append(makeStyleIdentifier(font), 0);
-            arrayList.add(font);
+            this.mStyles.append(makeStyleIdentifier(font), 0);
+            this.mFonts.add(font);
         }
 
         public Builder addFont(Font font) {
@@ -61,23 +77,63 @@ public final class FontFamily {
             return this;
         }
 
-        public FontFamily build() {
-            return build("", 0, true, false);
+        public FontFamily buildVariableFamily() {
+            int variableFamilyType = analyzeAndResolveVariableType(this.mFonts);
+            if (variableFamilyType == -1) {
+                return null;
+            }
+            return build("", 0, true, false, variableFamilyType);
         }
 
-        public FontFamily build(String langTags, int variant, boolean isCustomFallback, boolean isDefaultFallback) {
+        public FontFamily build() {
+            return build("", 0, true, false, 0);
+        }
+
+        public FontFamily build(String langTags, int variant, boolean isCustomFallback, boolean isDefaultFallback, int variableFamilyType) {
             long builderPtr = nInitBuilder();
             for (int i = 0; i < this.mFonts.size(); i++) {
                 nAddFont(builderPtr, this.mFonts.get(i).getNativePtr());
             }
-            long ptr = nBuild(builderPtr, langTags, variant, isCustomFallback, isDefaultFallback);
+            long ptr = nBuild(builderPtr, langTags, variant, isCustomFallback, isDefaultFallback, variableFamilyType);
             FontFamily family = new FontFamily(ptr);
-            sFamilyRegistory.registerNativeAllocation(family, ptr);
+            NoImagePreloadHolder.sFamilyRegistry.registerNativeAllocation(family, ptr);
             return family;
         }
 
         private static int makeStyleIdentifier(Font font) {
             return font.getStyle().getWeight() | (font.getStyle().getSlant() << 16);
+        }
+
+        public static int analyzeAndResolveVariableType(ArrayList<Font> fonts) {
+            if (fonts.size() > 2) {
+                return -1;
+            }
+            if (fonts.size() == 1) {
+                Font font = fonts.get(0);
+                Set<Integer> supportedAxes = FontFileUtil.getSupportedAxes(font.getBuffer(), font.getTtcIndex());
+                if (supportedAxes.contains(Integer.valueOf(TAG_wght))) {
+                    return supportedAxes.contains(Integer.valueOf(TAG_ital)) ? 2 : 1;
+                }
+                return -1;
+            }
+            for (int i = 0; i < fonts.size(); i++) {
+                Font font2 = fonts.get(i);
+                if (!FontFileUtil.getSupportedAxes(font2.getBuffer(), font2.getTtcIndex()).contains(Integer.valueOf(TAG_wght))) {
+                    return -1;
+                }
+            }
+            boolean italic1 = fonts.get(0).getStyle().getSlant() == 1;
+            boolean italic2 = fonts.get(1).getStyle().getSlant() == 1;
+            if (italic1 == italic2) {
+                return -1;
+            }
+            if (italic1) {
+                Font firstFont = fonts.get(0);
+                fonts.set(0, fonts.get(1));
+                fonts.set(1, firstFont);
+                return 3;
+            }
+            return 3;
         }
     }
 

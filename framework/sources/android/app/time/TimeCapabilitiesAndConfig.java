@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeCapabilitiesAndConfig implements Parcelable {
     public static final Parcelable.Creator<TimeCapabilitiesAndConfig> CREATOR = new Parcelable.Creator<TimeCapabilitiesAndConfig>() { // from class: android.app.time.TimeCapabilitiesAndConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeCapabilitiesAndConfig createFromParcel(Parcel source) {
             return TimeCapabilitiesAndConfig.readFromParcel(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeCapabilitiesAndConfig[] newArray(int size) {
             return new TimeCapabilitiesAndConfig[size];
@@ -25,28 +24,12 @@ public final class TimeCapabilitiesAndConfig implements Parcelable {
     private final TimeCapabilities mCapabilities;
     private final TimeConfiguration mConfiguration;
 
-    /* renamed from: android.app.time.TimeCapabilitiesAndConfig$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimeCapabilitiesAndConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeCapabilitiesAndConfig createFromParcel(Parcel source) {
-            return TimeCapabilitiesAndConfig.readFromParcel(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeCapabilitiesAndConfig[] newArray(int size) {
-            return new TimeCapabilitiesAndConfig[size];
-        }
-    }
-
     public TimeCapabilitiesAndConfig(TimeCapabilities timeCapabilities, TimeConfiguration timeConfiguration) {
         this.mCapabilities = (TimeCapabilities) Objects.requireNonNull(timeCapabilities);
         this.mConfiguration = (TimeConfiguration) Objects.requireNonNull(timeConfiguration);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static TimeCapabilitiesAndConfig readFromParcel(Parcel in) {
         TimeCapabilities capabilities = (TimeCapabilities) in.readParcelable(null, TimeCapabilities.class);
         TimeConfiguration configuration = (TimeConfiguration) in.readParcelable(null, TimeConfiguration.class);

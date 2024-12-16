@@ -43,6 +43,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
     private boolean mCurDown;
     private int mCurNumPointers;
     private final Paint mCurrentPointPaint;
+    private float mDensity;
     private int mHeaderBottom;
     private int mHeaderPaddingTop;
     private final InputManager mIm;
@@ -69,7 +70,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
     private final VelocityTracker mVelocity;
     private Insets mWaterfallInsets;
 
-    /* loaded from: classes5.dex */
     public static class PointerState {
         private static final int MAX_DRAW_COUNT = 50000;
         private static int mMaxTraceCntByPointerCnt = 50000;
@@ -99,13 +99,11 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         }
 
         public void addTrace(float x, float y, boolean current) {
-            float[] fArr = this.mTraceX;
-            int traceCapacity = fArr.length;
-            int i = this.mTraceCount;
-            if (i == traceCapacity) {
+            int traceCapacity = this.mTraceX.length;
+            if (this.mTraceCount == traceCapacity) {
                 int traceCapacity2 = traceCapacity * 2;
                 float[] newTraceX = new float[traceCapacity2];
-                System.arraycopy(fArr, 0, newTraceX, 0, i);
+                System.arraycopy(this.mTraceX, 0, newTraceX, 0, this.mTraceCount);
                 this.mTraceX = newTraceX;
                 float[] newTraceY = new float[traceCapacity2];
                 System.arraycopy(this.mTraceY, 0, newTraceY, 0, this.mTraceCount);
@@ -114,14 +112,11 @@ public class PointerLocationView extends View implements InputManager.InputDevic
                 System.arraycopy(this.mTraceCurrent, 0, newTraceCurrent, 0, this.mTraceCount);
                 this.mTraceCurrent = newTraceCurrent;
             }
-            float[] newTraceY2 = this.mTraceX;
-            int i2 = this.mTraceCount;
-            newTraceY2[i2] = x;
-            this.mTraceY[i2] = y;
-            this.mTraceCurrent[i2] = current;
-            int i3 = i2 + 1;
-            this.mTraceCount = i3;
-            if (i3 > mMaxTraceCntByPointerCnt) {
+            this.mTraceX[this.mTraceCount] = x;
+            this.mTraceY[this.mTraceCount] = y;
+            this.mTraceCurrent[this.mTraceCount] = current;
+            this.mTraceCount++;
+            if (this.mTraceCount > mMaxTraceCntByPointerCnt) {
                 clearTrace();
                 Log.i(PointerLocationView.TAG, "point drawn is initialized because there is a risk of overflow due to too many draws.");
             }
@@ -145,46 +140,37 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         setFocusableInTouchMode(true);
         this.mIm = (InputManager) c.getSystemService(InputManager.class);
         this.mVC = ViewConfiguration.get(c);
-        Paint paint = new Paint();
-        this.mTextPaint = paint;
-        paint.setAntiAlias(true);
-        paint.setARGB(255, 0, 0, 0);
-        Paint paint2 = new Paint();
-        this.mTextBackgroundPaint = paint2;
-        paint2.setAntiAlias(false);
-        paint2.setARGB(128, 255, 255, 255);
-        Paint paint3 = new Paint();
-        this.mTextLevelPaint = paint3;
-        paint3.setAntiAlias(false);
-        paint3.setARGB(192, 255, 0, 0);
-        Paint paint4 = new Paint();
-        this.mPaint = paint4;
-        paint4.setAntiAlias(true);
-        paint4.setARGB(255, 255, 255, 255);
-        paint4.setStyle(Paint.Style.STROKE);
-        Paint paint5 = new Paint();
-        this.mCurrentPointPaint = paint5;
-        paint5.setAntiAlias(true);
-        paint5.setARGB(255, 255, 0, 0);
-        paint5.setStyle(Paint.Style.STROKE);
-        Paint paint6 = new Paint();
-        this.mTargetPaint = paint6;
-        paint6.setAntiAlias(false);
-        paint6.setARGB(255, 0, 0, 192);
-        Paint paint7 = new Paint();
-        this.mPathPaint = paint7;
-        paint7.setAntiAlias(false);
-        paint7.setARGB(255, 0, 96, 255);
-        paint7.setStyle(Paint.Style.STROKE);
+        this.mTextPaint = new Paint();
+        this.mTextPaint.setAntiAlias(true);
+        this.mTextPaint.setARGB(255, 0, 0, 0);
+        this.mTextBackgroundPaint = new Paint();
+        this.mTextBackgroundPaint.setAntiAlias(false);
+        this.mTextBackgroundPaint.setARGB(128, 255, 255, 255);
+        this.mTextLevelPaint = new Paint();
+        this.mTextLevelPaint.setAntiAlias(false);
+        this.mTextLevelPaint.setARGB(192, 255, 0, 0);
+        this.mPaint = new Paint();
+        this.mPaint.setAntiAlias(true);
+        this.mPaint.setARGB(255, 255, 255, 255);
+        this.mPaint.setStyle(Paint.Style.STROKE);
+        this.mCurrentPointPaint = new Paint();
+        this.mCurrentPointPaint.setAntiAlias(true);
+        this.mCurrentPointPaint.setARGB(255, 255, 0, 0);
+        this.mCurrentPointPaint.setStyle(Paint.Style.STROKE);
+        this.mTargetPaint = new Paint();
+        this.mTargetPaint.setAntiAlias(false);
+        this.mTargetPaint.setARGB(255, 0, 0, 192);
+        this.mPathPaint = new Paint();
+        this.mPathPaint.setAntiAlias(false);
+        this.mPathPaint.setARGB(255, 0, 96, 255);
+        this.mPathPaint.setStyle(Paint.Style.STROKE);
         configureDensityDependentFactors();
-        Paint paint8 = new Paint();
-        this.mSystemGestureExclusionPaint = paint8;
-        paint8.setARGB(25, 255, 0, 0);
-        paint8.setStyle(Paint.Style.FILL_AND_STROKE);
-        Paint paint9 = new Paint();
-        this.mSystemGestureExclusionRejectedPaint = paint9;
-        paint9.setARGB(25, 0, 0, 255);
-        paint9.setStyle(Paint.Style.FILL_AND_STROKE);
+        this.mSystemGestureExclusionPaint = new Paint();
+        this.mSystemGestureExclusionPaint.setARGB(25, 255, 0, 0);
+        this.mSystemGestureExclusionPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        this.mSystemGestureExclusionRejectedPaint = new Paint();
+        this.mSystemGestureExclusionRejectedPaint.setARGB(25, 0, 0, 255);
+        this.mSystemGestureExclusionRejectedPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         this.mActivePointerId = 0;
         this.mVelocity = VelocityTracker.obtain();
         String altStrategy = SystemProperties.get(ALT_STRATEGY_PROPERY_KEY);
@@ -222,7 +208,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         this.mTextPaint.getFontMetricsInt(this.mTextMetrics);
         this.mHeaderBottom = (this.mHeaderPaddingTop - this.mTextMetrics.ascent) + this.mTextMetrics.descent + 2;
@@ -240,9 +226,8 @@ public class PointerLocationView extends View implements InputManager.InputDevic
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         int NP;
-        float arrowSize;
         int i;
         if (!this.mSystemGestureExclusion.isEmpty()) {
             this.mSystemGestureExclusionPath.reset();
@@ -315,12 +300,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
                 drawOval(canvas, ps.mCoords.x, ps.mCoords.y, ps.mCoords.touchMajor, ps.mCoords.touchMinor, ps.mCoords.orientation, this.mPaint);
                 this.mPaint.setARGB(255, pressureLevel, 128, 255 - pressureLevel);
                 drawOval(canvas, ps.mCoords.x, ps.mCoords.y, ps.mCoords.toolMajor, ps.mCoords.toolMinor, ps.mCoords.orientation, this.mPaint);
-                float arrowSize2 = ps.mCoords.toolMajor * 0.7f;
-                if (arrowSize2 >= 20.0f) {
-                    arrowSize = arrowSize2;
-                } else {
-                    arrowSize = 20.0f;
-                }
+                float arrowSize = Math.max(ps.mCoords.toolMajor * 0.7f, this.mDensity * 24.0f);
                 this.mPaint.setARGB(255, pressureLevel, 255, 0);
                 float orientationVectorX = (float) (Math.sin(ps.mCoords.orientation) * arrowSize);
                 float orientationVectorY = (float) ((-Math.cos(ps.mCoords.orientation)) * arrowSize);
@@ -330,7 +310,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
                     canvas.drawLine(ps.mCoords.x - orientationVectorX, ps.mCoords.y - orientationVectorY, ps.mCoords.x + orientationVectorX, ps.mCoords.y + orientationVectorY, this.mPaint);
                 }
                 float tiltScale = (float) Math.sin(ps.mCoords.getAxisValue(25));
-                canvas.drawCircle(ps.mCoords.x + (orientationVectorX * tiltScale), ps.mCoords.y + (orientationVectorY * tiltScale), 3.0f, this.mPaint);
+                canvas.drawCircle(ps.mCoords.x + (orientationVectorX * tiltScale), ps.mCoords.y + (orientationVectorY * tiltScale), this.mDensity * 3.0f, this.mPaint);
                 if (ps.mHasBoundingBox) {
                     canvas.drawRect(ps.mBoundingLeft, ps.mBoundingTop, ps.mBoundingRight, ps.mBoundingBottom, this.mPaint);
                 }
@@ -471,7 +451,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
 
     /* JADX WARN: Type inference failed for: r4v10 */
     /* JADX WARN: Type inference failed for: r4v7 */
-    /* JADX WARN: Type inference failed for: r4v8, types: [int, boolean] */
+    /* JADX WARN: Type inference failed for: r4v8, types: [boolean, int] */
     @Override // android.view.WindowManagerPolicyConstants.PointerEventListener
     public void onPointerEvent(MotionEvent event) {
         ?? r4;
@@ -492,15 +472,13 @@ public class PointerLocationView extends View implements InputManager.InputDevic
                 this.mCurNumPointers = 0;
                 this.mMaxNumPointers = 0;
                 this.mVelocity.clear();
-                VelocityTracker velocityTracker = this.mAltVelocity;
-                if (velocityTracker != null) {
-                    velocityTracker.clear();
+                if (this.mAltVelocity != null) {
+                    this.mAltVelocity.clear();
                 }
             }
-            int i2 = this.mCurNumPointers + 1;
-            this.mCurNumPointers = i2;
-            if (this.mMaxNumPointers < i2) {
-                this.mMaxNumPointers = i2;
+            this.mCurNumPointers++;
+            if (this.mMaxNumPointers < this.mCurNumPointers) {
+                this.mMaxNumPointers = this.mCurNumPointers;
             }
             int id2 = event.getPointerId(index);
             PointerState ps3 = this.mPointers.get(id2);
@@ -519,46 +497,45 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         PointerState.setMaxTraceCnt(NI);
         this.mVelocity.addMovement(event);
         this.mVelocity.computeCurrentVelocity(1);
-        VelocityTracker velocityTracker2 = this.mAltVelocity;
-        if (velocityTracker2 != null) {
-            velocityTracker2.addMovement(event);
+        if (this.mAltVelocity != null) {
+            this.mAltVelocity.addMovement(event);
             this.mAltVelocity.computeCurrentVelocity(1);
         }
         int N = event.getHistorySize();
         int historyPos2 = 0;
         while (historyPos2 < N) {
-            int i3 = 0;
-            while (i3 < NI) {
-                int id3 = event.getPointerId(i3);
+            int i2 = 0;
+            while (i2 < NI) {
+                int id3 = event.getPointerId(i2);
                 PointerState ps4 = this.mCurDown ? this.mPointers.get(id3) : null;
                 MotionEvent.PointerCoords coords3 = ps4 != null ? ps4.mCoords : this.mTempCoords;
-                event.getHistoricalPointerCoords(i3, historyPos2, coords3);
+                event.getHistoricalPointerCoords(i2, historyPos2, coords3);
                 if (!this.mPrintCoords) {
                     coords2 = coords3;
                     ps2 = ps4;
-                    i = i3;
+                    i = i2;
                     historyPos = historyPos2;
                 } else {
                     coords2 = coords3;
                     ps2 = ps4;
-                    i = i3;
+                    i = i2;
                     historyPos = historyPos2;
-                    logCoords(TAG, action, i3, coords2, id3, event);
+                    logCoords(TAG, action, i2, coords2, id3, event);
                 }
                 if (ps2 != null) {
                     MotionEvent.PointerCoords coords4 = coords2;
                     ps2.addTrace(coords4.x, coords4.y, false);
                 }
-                i3 = i + 1;
+                i2 = i + 1;
                 historyPos2 = historyPos;
             }
             historyPos2++;
         }
-        for (int i4 = 0; i4 < NI; i4++) {
-            int id4 = event.getPointerId(i4);
+        for (int i3 = 0; i3 < NI; i3++) {
+            int id4 = event.getPointerId(i3);
             PointerState ps5 = this.mCurDown ? this.mPointers.get(id4) : null;
             MotionEvent.PointerCoords coords5 = ps5 != null ? ps5.mCoords : this.mTempCoords;
-            event.getPointerCoords(i4, coords5);
+            event.getPointerCoords(i3, coords5);
             if (!this.mPrintCoords) {
                 coords = coords5;
                 ps = ps5;
@@ -567,27 +544,26 @@ public class PointerLocationView extends View implements InputManager.InputDevic
                 coords = coords5;
                 ps = ps5;
                 id = id4;
-                logCoords(TAG, action, i4, coords5, id4, event);
+                logCoords(TAG, action, i3, coords5, id4, event);
             }
             if (ps != null) {
                 MotionEvent.PointerCoords coords6 = coords;
                 ps.addTrace(coords6.x, coords6.y, true);
                 ps.mXVelocity = this.mVelocity.getXVelocity(id);
                 ps.mYVelocity = this.mVelocity.getYVelocity(id);
-                VelocityTracker velocityTracker3 = this.mAltVelocity;
-                if (velocityTracker3 != null) {
-                    ps.mAltXVelocity = velocityTracker3.getXVelocity(id);
+                if (this.mAltVelocity != null) {
+                    ps.mAltXVelocity = this.mAltVelocity.getXVelocity(id);
                     ps.mAltYVelocity = this.mAltVelocity.getYVelocity(id);
                 }
-                ps.mToolType = event.getToolType(i4);
+                ps.mToolType = event.getToolType(i3);
                 if (!ps.mHasBoundingBox) {
                     c = ' ';
                 } else {
                     c = ' ';
-                    ps.mBoundingLeft = event.getAxisValue(32, i4);
-                    ps.mBoundingTop = event.getAxisValue(33, i4);
-                    ps.mBoundingRight = event.getAxisValue(34, i4);
-                    ps.mBoundingBottom = event.getAxisValue(35, i4);
+                    ps.mBoundingLeft = event.getAxisValue(32, i3);
+                    ps.mBoundingTop = event.getAxisValue(33, i3);
+                    ps.mBoundingRight = event.getAxisValue(34, i3);
+                    ps.mBoundingBottom = event.getAxisValue(35, i3);
                 }
             } else {
                 c = ' ';
@@ -680,13 +656,13 @@ public class PointerLocationView extends View implements InputManager.InputDevic
             case 21:
             case 22:
             case 23:
-                return true;
+                break;
             default:
                 if (KeyEvent.isGamepadButton(keyCode) || KeyEvent.isModifierKey(keyCode)) {
-                    return true;
                 }
-                return false;
+                break;
         }
+        return true;
     }
 
     @Override // android.view.View
@@ -696,7 +672,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
     }
 
     @Override // android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.mIm.registerInputDeviceListener(this, getHandler());
         if (shouldShowSystemGestureExclusion()) {
@@ -715,7 +691,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
     }
 
     @Override // android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         this.mIm.unregisterInputDeviceListener(this);
         try {
@@ -770,8 +746,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         return x;
     }
 
-    /* loaded from: classes5.dex */
-    public static final class FasterStringBuilder {
+    private static final class FasterStringBuilder {
         private char[] mChars = new char[64];
         private int mLength;
 
@@ -872,9 +847,8 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         }
     }
 
-    /* renamed from: com.android.internal.widget.PointerLocationView$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends ISystemGestureExclusionListener.Stub {
+    /* renamed from: com.android.internal.widget.PointerLocationView$1, reason: invalid class name */
+    class AnonymousClass1 extends ISystemGestureExclusionListener.Stub {
         AnonymousClass1() {
         }
 
@@ -897,6 +871,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSystemGestureExclusionChanged$0(Region exclusion, Region rejected) {
             PointerLocationView.this.mSystemGestureExclusion.set(exclusion);
             PointerLocationView.this.mSystemGestureExclusionRejected.set(rejected);
@@ -906,16 +881,16 @@ public class PointerLocationView extends View implements InputManager.InputDevic
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         configureDensityDependentFactors();
     }
 
     private void configureDensityDependentFactors() {
-        float density = getResources().getDisplayMetrics().density;
-        this.mTextPaint.setTextSize(10.0f * density);
-        this.mPaint.setStrokeWidth(density * 1.0f);
-        this.mCurrentPointPaint.setStrokeWidth(density * 1.0f);
-        this.mPathPaint.setStrokeWidth(1.0f * density);
+        this.mDensity = getResources().getDisplayMetrics().density;
+        this.mTextPaint.setTextSize(this.mDensity * 10.0f);
+        this.mPaint.setStrokeWidth(this.mDensity * 1.0f);
+        this.mCurrentPointPaint.setStrokeWidth(this.mDensity * 1.0f);
+        this.mPathPaint.setStrokeWidth(this.mDensity * 1.0f);
     }
 }

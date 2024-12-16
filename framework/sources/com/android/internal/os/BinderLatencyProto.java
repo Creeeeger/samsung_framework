@@ -3,7 +3,6 @@ package com.android.internal.os;
 /* loaded from: classes5.dex */
 public final class BinderLatencyProto {
 
-    /* loaded from: classes5.dex */
     public final class RepeatedApiStats {
         public static final long API_STATS = 2246267895809L;
 
@@ -11,7 +10,6 @@ public final class BinderLatencyProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Dims {
         public static final int BLUETOOTH = 3;
         public static final long PROCESS_SOURCE = 1159641169921L;
@@ -30,7 +28,6 @@ public final class BinderLatencyProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ApiStats {
         public static final long BUCKETS = 2220498092035L;
         public static final long BUCKET_COUNT = 1120986464260L;

@@ -23,16 +23,16 @@ public class Transformation {
     }
 
     public void clear() {
-        Matrix matrix = this.mMatrix;
-        if (matrix == null) {
+        if (this.mMatrix == null) {
             this.mMatrix = new Matrix();
         } else {
-            matrix.reset();
+            this.mMatrix.reset();
         }
         this.mClipRect.setEmpty();
         this.mHasClipRect = false;
         this.mAlpha = 1.0f;
         this.mTransformationType = 3;
+        this.mInsets = Insets.NONE;
     }
 
     public int getTransformationType() {

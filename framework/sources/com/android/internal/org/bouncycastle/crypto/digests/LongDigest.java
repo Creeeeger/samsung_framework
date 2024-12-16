@@ -23,22 +23,21 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
     private byte[] xBuf;
     private int xBufOff;
 
-    public LongDigest() {
+    protected LongDigest() {
         this.xBuf = new byte[8];
         this.W = new long[80];
         this.xBufOff = 0;
         reset();
     }
 
-    public LongDigest(LongDigest t) {
+    protected LongDigest(LongDigest t) {
         this.xBuf = new byte[8];
         this.W = new long[80];
         copyIn(t);
     }
 
-    public void copyIn(LongDigest t) {
-        byte[] bArr = t.xBuf;
-        System.arraycopy(bArr, 0, this.xBuf, 0, bArr.length);
+    protected void copyIn(LongDigest t) {
+        System.arraycopy(t.xBuf, 0, this.xBuf, 0, t.xBuf.length);
         this.xBufOff = t.xBufOff;
         this.byteCount1 = t.byteCount1;
         this.byteCount2 = t.byteCount2;
@@ -50,12 +49,11 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         this.H6 = t.H6;
         this.H7 = t.H7;
         this.H8 = t.H8;
-        long[] jArr = t.W;
-        System.arraycopy(jArr, 0, this.W, 0, jArr.length);
+        System.arraycopy(t.W, 0, this.W, 0, t.W.length);
         this.wOff = t.wOff;
     }
 
-    public void populateState(byte[] state) {
+    protected void populateState(byte[] state) {
         System.arraycopy(this.xBuf, 0, state, 0, this.xBufOff);
         Pack.intToBigEndian(this.xBufOff, state, 8);
         Pack.longToBigEndian(this.byteCount1, state, 12);
@@ -74,10 +72,9 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         }
     }
 
-    public void restoreState(byte[] encodedState) {
-        int bigEndianToInt = Pack.bigEndianToInt(encodedState, 8);
-        this.xBufOff = bigEndianToInt;
-        System.arraycopy(encodedState, 0, this.xBuf, 0, bigEndianToInt);
+    protected void restoreState(byte[] encodedState) {
+        this.xBufOff = Pack.bigEndianToInt(encodedState, 8);
+        System.arraycopy(encodedState, 0, this.xBuf, 0, this.xBufOff);
         this.byteCount1 = Pack.bigEndianToLong(encodedState, 12);
         this.byteCount2 = Pack.bigEndianToLong(encodedState, 20);
         this.H1 = Pack.bigEndianToLong(encodedState, 28);
@@ -94,7 +91,7 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         }
     }
 
-    public int getEncodedStateSize() {
+    protected int getEncodedStateSize() {
         return (this.wOff * 8) + 96;
     }
 
@@ -102,11 +99,10 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
     public void update(byte in) {
         byte[] bArr = this.xBuf;
         int i = this.xBufOff;
-        int i2 = i + 1;
-        this.xBufOff = i2;
+        this.xBufOff = i + 1;
         bArr[i] = in;
-        if (i2 == bArr.length) {
-            processWord(bArr, 0);
+        if (this.xBufOff == this.xBuf.length) {
+            processWord(this.xBuf, 0);
             this.xBufOff = 0;
         }
         this.byteCount1++;
@@ -121,10 +117,9 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         }
         while (len > this.xBuf.length) {
             processWord(in, inOff);
-            byte[] bArr = this.xBuf;
-            inOff += bArr.length;
-            len -= bArr.length;
-            this.byteCount1 += bArr.length;
+            inOff += this.xBuf.length;
+            len -= this.xBuf.length;
+            this.byteCount1 += this.xBuf.length;
         }
         while (len > 0) {
             update(in[inOff]);
@@ -150,25 +145,12 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         this.byteCount1 = 0L;
         this.byteCount2 = 0L;
         this.xBufOff = 0;
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.xBuf;
-            if (i >= bArr.length) {
-                break;
-            }
-            bArr[i] = 0;
-            i++;
+        for (int i = 0; i < this.xBuf.length; i++) {
+            this.xBuf[i] = 0;
         }
         this.wOff = 0;
-        int i2 = 0;
-        while (true) {
-            long[] jArr = this.W;
-            if (i2 != jArr.length) {
-                jArr[i2] = 0;
-                i2++;
-            } else {
-                return;
-            }
+        for (int i2 = 0; i2 != this.W.length; i2++) {
+            this.W[i2] = 0;
         }
     }
 
@@ -187,10 +169,9 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
     }
 
     private void adjustByteCounts() {
-        long j = this.byteCount1;
-        if (j > 2305843009213693951L) {
-            this.byteCount2 += j >>> 61;
-            this.byteCount1 = j & 2305843009213693951L;
+        if (this.byteCount1 > 2305843009213693951L) {
+            this.byteCount2 += this.byteCount1 >>> 61;
+            this.byteCount1 &= 2305843009213693951L;
         }
     }
 
@@ -198,18 +179,14 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         if (this.wOff > 14) {
             processBlock();
         }
-        long[] jArr = this.W;
-        jArr[14] = hiW;
-        jArr[15] = lowW;
+        this.W[14] = hiW;
+        this.W[15] = lowW;
     }
 
     protected void processBlock() {
         adjustByteCounts();
         for (int t = 16; t <= 79; t++) {
-            long[] jArr = this.W;
-            long Sigma1 = Sigma1(jArr[t - 2]);
-            long[] jArr2 = this.W;
-            jArr[t] = Sigma1 + jArr2[t - 7] + Sigma0(jArr2[t - 15]) + this.W[t - 16];
+            this.W[t] = Sigma1(this.W[t - 2]) + this.W[t - 7] + Sigma0(this.W[t - 15]) + this.W[t - 16];
         }
         long a = this.H1;
         long b = this.H2;
@@ -233,45 +210,43 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
             long Sum1 = Sum1(e2);
             long e4 = e2;
             long e5 = g2;
-            long Ch = Sum1 + Ch(e2, f2, e5);
-            long[] jArr3 = K;
             int t3 = t2 + 1;
-            long h2 = e3 + Ch + jArr3[t2] + this.W[t2];
+            long h2 = e3 + Sum1 + Ch(e2, f2, e5) + K[t2] + this.W[t2];
             long d3 = d2 + h2;
             long b3 = g3;
             long d4 = h;
             long h3 = h2 + Sum0(b2) + Maj(b2, g3, d4);
             int t4 = t3 + 1;
-            long g4 = g2 + Sum1(d3) + Ch(d3, e4, f2) + jArr3[t3] + this.W[t3];
+            long g4 = g2 + Sum1(d3) + Ch(d3, e4, f2) + K[t3] + this.W[t3];
             long c2 = h + g4;
             long g5 = g4 + Sum0(h3) + Maj(h3, b2, b3);
             int t5 = t4 + 1;
-            long f3 = f2 + Sum1(c2) + Ch(c2, d3, e4) + jArr3[t4] + this.W[t4];
+            long f3 = f2 + Sum1(c2) + Ch(c2, d3, e4) + K[t4] + this.W[t4];
             long b4 = b3 + f3;
             long f4 = f3 + Sum0(g5) + Maj(g5, h3, b2);
             int t6 = t5 + 1;
-            long e6 = e4 + Sum1(b4) + Ch(b4, c2, d3) + jArr3[t5] + this.W[t5];
+            long e6 = e4 + Sum1(b4) + Ch(b4, c2, d3) + K[t5] + this.W[t5];
             long a3 = b2 + e6;
             long e7 = e6 + Sum0(f4) + Maj(f4, g5, h3);
             long e8 = Sum1(a3);
             int t7 = t6 + 1;
-            long d5 = d3 + e8 + Ch(a3, b4, c2) + jArr3[t6] + this.W[t6];
+            long d5 = d3 + e8 + Ch(a3, b4, c2) + K[t6] + this.W[t6];
             long h4 = h3 + d5;
             long d6 = d5 + Sum0(e7) + Maj(e7, f4, g5);
             long d7 = Sum1(h4);
             int t8 = t7 + 1;
-            long c3 = c2 + d7 + Ch(h4, a3, b4) + jArr3[t7] + this.W[t7];
+            long c3 = c2 + d7 + Ch(h4, a3, b4) + K[t7] + this.W[t7];
             long g6 = g5 + c3;
             long c4 = c3 + Sum0(d6) + Maj(d6, e7, f4);
             long c5 = Sum1(g6);
             h = c4;
             int t9 = t8 + 1;
-            long b5 = b4 + c5 + Ch(g6, h4, a3) + jArr3[t8] + this.W[t8];
+            long b5 = b4 + c5 + Ch(g6, h4, a3) + K[t8] + this.W[t8];
             long f5 = f4 + b5;
             long b6 = b5 + Sum0(h) + Maj(h, d6, e7);
             long b7 = Sum1(f5);
             int t10 = t9 + 1;
-            long a4 = a3 + b7 + Ch(f5, g6, h4) + jArr3[t9] + this.W[t9];
+            long a4 = a3 + b7 + Ch(f5, g6, h4) + K[t9] + this.W[t9];
             long a5 = a4 + Sum0(b6) + Maj(b6, h, d6);
             i++;
             e2 = e7 + a4;

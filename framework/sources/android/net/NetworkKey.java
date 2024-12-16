@@ -13,17 +13,16 @@ import java.util.Objects;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class NetworkKey implements Parcelable {
     public static final Parcelable.Creator<NetworkKey> CREATOR = new Parcelable.Creator<NetworkKey>() { // from class: android.net.NetworkKey.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkKey createFromParcel(Parcel in) {
             return new NetworkKey(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkKey[] newArray(int size) {
             return new NetworkKey[size];
@@ -35,12 +34,7 @@ public class NetworkKey implements Parcelable {
     public final WifiKey wifiKey;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface NetworkType {
-    }
-
-    /* synthetic */ NetworkKey(Parcel parcel, NetworkKeyIA networkKeyIA) {
-        this(parcel);
     }
 
     public static NetworkKey createFromScanResult(ScanResult result) {
@@ -85,14 +79,13 @@ public class NetworkKey implements Parcelable {
     }
 
     private NetworkKey(Parcel in) {
-        int readInt = in.readInt();
-        this.type = readInt;
-        switch (readInt) {
+        this.type = in.readInt();
+        switch (this.type) {
             case 1:
                 this.wifiKey = WifiKey.CREATOR.createFromParcel(in);
                 return;
             default:
-                throw new IllegalArgumentException("Parcel has unknown type: " + readInt);
+                throw new IllegalArgumentException("Parcel has unknown type: " + this.type);
         }
     }
 
@@ -137,23 +130,6 @@ public class NetworkKey implements Parcelable {
                 return this.wifiKey.toString();
             default:
                 return "InvalidKey";
-        }
-    }
-
-    /* renamed from: android.net.NetworkKey$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkKey> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkKey createFromParcel(Parcel in) {
-            return new NetworkKey(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkKey[] newArray(int size) {
-            return new NetworkKey[size];
         }
     }
 }

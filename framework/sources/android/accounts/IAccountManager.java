@@ -105,7 +105,6 @@ public interface IAccountManager extends IInterface {
 
     void updateCredentials(IAccountManagerResponse iAccountManagerResponse, Account account, String str, boolean z, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAccountManager {
         @Override // android.accounts.IAccountManager
         public String getPassword(Account account) throws RemoteException {
@@ -316,7 +315,6 @@ public interface IAccountManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAccountManager {
         public static final String DESCRIPTOR = "android.accounts.IAccountManager";
         static final int TRANSACTION_accountAuthenticated = 27;
@@ -495,413 +493,410 @@ public interface IAccountManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Account _arg0 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result = getPassword(_arg0);
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    Account _arg02 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result2 = getUserData(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    AuthenticatorDescription[] _result3 = getAuthenticatorTypes(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg12 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    Account[] _result4 = getAccountsForPackage(_arg04, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result4, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg13 = data.readString();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    Account[] _result5 = getAccountsByTypeForPackage(_arg05, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result5, 1);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    int _arg14 = data.readInt();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    Account[] _result6 = getAccountsAsUser(_arg06, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result6, 1);
+                    return true;
+                case 7:
+                    IAccountManagerResponse _arg07 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg15 = (Account) data.readTypedObject(Account.CREATOR);
+                    String[] _arg24 = data.createStringArray();
+                    int _arg3 = data.readInt();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    hasFeatures(_arg07, _arg15, _arg24, _arg3, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IAccountManagerResponse _arg08 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg16 = data.readString();
+                    String[] _arg25 = data.createStringArray();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    getAccountByTypeAndFeatures(_arg08, _arg16, _arg25, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IAccountManagerResponse _arg09 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg17 = data.readString();
+                    String[] _arg26 = data.createStringArray();
+                    String _arg33 = data.readString();
+                    data.enforceNoDataAvail();
+                    getAccountsByFeatures(_arg09, _arg17, _arg26, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    Account _arg010 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg18 = data.readString();
+                    Bundle _arg27 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg34 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = addAccountExplicitly(_arg010, _arg18, _arg27, _arg34);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 11:
+                    IAccountManagerResponse _arg011 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg19 = (Account) data.readTypedObject(Account.CREATOR);
+                    boolean _arg28 = data.readBoolean();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeAccountAsUser(_arg011, _arg19, _arg28, _arg35);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    Account _arg012 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result8 = removeAccountExplicitly(_arg012);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 13:
+                    IAccountManagerResponse _arg013 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg110 = (Account) data.readTypedObject(Account.CREATOR);
+                    int _arg29 = data.readInt();
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    copyAccountToUser(_arg013, _arg110, _arg29, _arg36);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    String _arg111 = data.readString();
+                    data.enforceNoDataAvail();
+                    invalidateAuthToken(_arg014, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    Account _arg015 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg112 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result9 = peekAuthToken(_arg015, _arg112);
+                    reply.writeNoException();
+                    reply.writeString(_result9);
+                    return true;
+                case 16:
+                    Account _arg016 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg113 = data.readString();
+                    String _arg210 = data.readString();
+                    data.enforceNoDataAvail();
+                    setAuthToken(_arg016, _arg113, _arg210);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    Account _arg017 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg114 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPassword(_arg017, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    Account _arg018 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    clearPassword(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    Account _arg019 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg115 = data.readString();
+                    String _arg211 = data.readString();
+                    data.enforceNoDataAvail();
+                    setUserData(_arg019, _arg115, _arg211);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    Account _arg020 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg116 = data.readString();
+                    int _arg212 = data.readInt();
+                    boolean _arg37 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    updateAppPermission(_arg020, _arg116, _arg212, _arg37);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    IAccountManagerResponse _arg021 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg117 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg213 = data.readString();
+                    boolean _arg38 = data.readBoolean();
+                    boolean _arg42 = data.readBoolean();
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAuthToken(_arg021, _arg117, _arg213, _arg38, _arg42, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    IAccountManagerResponse _arg022 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg118 = data.readString();
+                    String _arg214 = data.readString();
+                    String[] _arg39 = data.createStringArray();
+                    boolean _arg43 = data.readBoolean();
+                    Bundle _arg52 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    addAccount(_arg022, _arg118, _arg214, _arg39, _arg43, _arg52);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    IAccountManagerResponse _arg023 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg119 = data.readString();
+                    String _arg215 = data.readString();
+                    String[] _arg310 = data.createStringArray();
+                    boolean _arg44 = data.readBoolean();
+                    Bundle _arg53 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addAccountAsUser(_arg023, _arg119, _arg215, _arg310, _arg44, _arg53, _arg6);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    IAccountManagerResponse _arg024 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg120 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg216 = data.readString();
+                    boolean _arg311 = data.readBoolean();
+                    Bundle _arg45 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateCredentials(_arg024, _arg120, _arg216, _arg311, _arg45);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    IAccountManagerResponse _arg025 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg121 = data.readString();
+                    boolean _arg217 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    editProperties(_arg025, _arg121, _arg217);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    IAccountManagerResponse _arg026 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg122 = (Account) data.readTypedObject(Account.CREATOR);
+                    Bundle _arg218 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    boolean _arg312 = data.readBoolean();
+                    int _arg46 = data.readInt();
+                    data.enforceNoDataAvail();
+                    confirmCredentialsAsUser(_arg026, _arg122, _arg218, _arg312, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    Account _arg027 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result10 = accountAuthenticated(_arg027);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 28:
+                    IAccountManagerResponse _arg028 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg123 = data.readString();
+                    String _arg219 = data.readString();
+                    data.enforceNoDataAvail();
+                    getAuthTokenLabel(_arg028, _arg123, _arg219);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    int _arg029 = data.readInt();
+                    int _arg124 = data.readInt();
+                    String _arg220 = data.readString();
+                    data.enforceNoDataAvail();
+                    addSharedAccountsFromParentUser(_arg029, _arg124, _arg220);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    IAccountManagerResponse _arg030 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg125 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg221 = data.readString();
+                    data.enforceNoDataAvail();
+                    renameAccount(_arg030, _arg125, _arg221);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    Account _arg031 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result11 = getPreviousName(_arg031);
+                    reply.writeNoException();
+                    reply.writeString(_result11);
+                    return true;
+                case 32:
+                    IAccountManagerResponse _arg032 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    String _arg126 = data.readString();
+                    String _arg222 = data.readString();
+                    String[] _arg313 = data.createStringArray();
+                    boolean _arg47 = data.readBoolean();
+                    Bundle _arg54 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startAddAccountSession(_arg032, _arg126, _arg222, _arg313, _arg47, _arg54);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    IAccountManagerResponse _arg033 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg127 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg223 = data.readString();
+                    boolean _arg314 = data.readBoolean();
+                    Bundle _arg48 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startUpdateCredentialsSession(_arg033, _arg127, _arg223, _arg314, _arg48);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    IAccountManagerResponse _arg034 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Bundle _arg128 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    boolean _arg224 = data.readBoolean();
+                    Bundle _arg315 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg49 = data.readInt();
+                    data.enforceNoDataAvail();
+                    finishSessionAsUser(_arg034, _arg128, _arg224, _arg315, _arg49);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    Account _arg035 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result12 = someUserHasAccount(_arg035);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 36:
+                    IAccountManagerResponse _arg036 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
+                    Account _arg129 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg225 = data.readString();
+                    data.enforceNoDataAvail();
+                    isCredentialsUpdateSuggested(_arg036, _arg129, _arg225);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    Account _arg037 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    Map _result13 = getPackagesAndVisibilityForAccount(_arg037);
+                    reply.writeNoException();
+                    reply.writeMap(_result13);
+                    return true;
+                case 38:
+                    Account _arg038 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg130 = data.readString();
+                    Bundle _arg226 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ClassLoader cl = getClass().getClassLoader();
+                    Map _arg316 = data.readHashMap(cl);
+                    String _arg410 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = addAccountExplicitlyWithVisibility(_arg038, _arg130, _arg226, _arg316, _arg410);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 39:
+                    Account _arg039 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg131 = data.readString();
+                    int _arg227 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = setAccountVisibility(_arg039, _arg131, _arg227);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 40:
+                    Account _arg040 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg132 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result16 = getAccountVisibility(_arg040, _arg132);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 41:
+                    String _arg041 = data.readString();
+                    String _arg133 = data.readString();
+                    data.enforceNoDataAvail();
+                    Map _result17 = getAccountsAndVisibilityForPackage(_arg041, _arg133);
+                    reply.writeNoException();
+                    reply.writeMap(_result17);
+                    return true;
+                case 42:
+                    String[] _arg042 = data.createStringArray();
+                    String _arg134 = data.readString();
+                    data.enforceNoDataAvail();
+                    registerAccountListener(_arg042, _arg134);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    String[] _arg043 = data.createStringArray();
+                    String _arg135 = data.readString();
+                    data.enforceNoDataAvail();
+                    unregisterAccountListener(_arg043, _arg135);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    Account _arg044 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg136 = data.readString();
+                    UserHandle _arg228 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result18 = hasAccountAccess(_arg044, _arg136, _arg228);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 45:
+                    Account _arg045 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg137 = data.readString();
+                    UserHandle _arg229 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IntentSender _result19 = createRequestAccountAccessIntentSenderAsUser(_arg045, _arg137, _arg229);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result19, 1);
+                    return true;
+                case 46:
+                    String _arg046 = data.readString();
+                    data.enforceNoDataAvail();
+                    onAccountAccessed(_arg046);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Account _arg0 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result = getPassword(_arg0);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            Account _arg02 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result2 = getUserData(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            AuthenticatorDescription[] _result3 = getAuthenticatorTypes(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg12 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            Account[] _result4 = getAccountsForPackage(_arg04, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result4, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg13 = data.readString();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            Account[] _result5 = getAccountsByTypeForPackage(_arg05, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result5, 1);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            int _arg14 = data.readInt();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            Account[] _result6 = getAccountsAsUser(_arg06, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result6, 1);
-                            return true;
-                        case 7:
-                            IAccountManagerResponse _arg07 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg15 = (Account) data.readTypedObject(Account.CREATOR);
-                            String[] _arg24 = data.createStringArray();
-                            int _arg3 = data.readInt();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            hasFeatures(_arg07, _arg15, _arg24, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IAccountManagerResponse _arg08 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg16 = data.readString();
-                            String[] _arg25 = data.createStringArray();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            getAccountByTypeAndFeatures(_arg08, _arg16, _arg25, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IAccountManagerResponse _arg09 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg17 = data.readString();
-                            String[] _arg26 = data.createStringArray();
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            getAccountsByFeatures(_arg09, _arg17, _arg26, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            Account _arg010 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg18 = data.readString();
-                            Bundle _arg27 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            String _arg34 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = addAccountExplicitly(_arg010, _arg18, _arg27, _arg34);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 11:
-                            IAccountManagerResponse _arg011 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg19 = (Account) data.readTypedObject(Account.CREATOR);
-                            boolean _arg28 = data.readBoolean();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeAccountAsUser(_arg011, _arg19, _arg28, _arg35);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            Account _arg012 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result8 = removeAccountExplicitly(_arg012);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 13:
-                            IAccountManagerResponse _arg013 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg110 = (Account) data.readTypedObject(Account.CREATOR);
-                            int _arg29 = data.readInt();
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            copyAccountToUser(_arg013, _arg110, _arg29, _arg36);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            String _arg111 = data.readString();
-                            data.enforceNoDataAvail();
-                            invalidateAuthToken(_arg014, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            Account _arg015 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg112 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result9 = peekAuthToken(_arg015, _arg112);
-                            reply.writeNoException();
-                            reply.writeString(_result9);
-                            return true;
-                        case 16:
-                            Account _arg016 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg113 = data.readString();
-                            String _arg210 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAuthToken(_arg016, _arg113, _arg210);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            Account _arg017 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg114 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPassword(_arg017, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            Account _arg018 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            clearPassword(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            Account _arg019 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg115 = data.readString();
-                            String _arg211 = data.readString();
-                            data.enforceNoDataAvail();
-                            setUserData(_arg019, _arg115, _arg211);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            Account _arg020 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg116 = data.readString();
-                            int _arg212 = data.readInt();
-                            boolean _arg37 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            updateAppPermission(_arg020, _arg116, _arg212, _arg37);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            IAccountManagerResponse _arg021 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg117 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg213 = data.readString();
-                            boolean _arg38 = data.readBoolean();
-                            boolean _arg42 = data.readBoolean();
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAuthToken(_arg021, _arg117, _arg213, _arg38, _arg42, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            IAccountManagerResponse _arg022 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg118 = data.readString();
-                            String _arg214 = data.readString();
-                            String[] _arg39 = data.createStringArray();
-                            boolean _arg43 = data.readBoolean();
-                            Bundle _arg52 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            addAccount(_arg022, _arg118, _arg214, _arg39, _arg43, _arg52);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            IAccountManagerResponse _arg023 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg119 = data.readString();
-                            String _arg215 = data.readString();
-                            String[] _arg310 = data.createStringArray();
-                            boolean _arg44 = data.readBoolean();
-                            Bundle _arg53 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addAccountAsUser(_arg023, _arg119, _arg215, _arg310, _arg44, _arg53, _arg6);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            IAccountManagerResponse _arg024 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg120 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg216 = data.readString();
-                            boolean _arg311 = data.readBoolean();
-                            Bundle _arg45 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateCredentials(_arg024, _arg120, _arg216, _arg311, _arg45);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            IAccountManagerResponse _arg025 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg121 = data.readString();
-                            boolean _arg217 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            editProperties(_arg025, _arg121, _arg217);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            IAccountManagerResponse _arg026 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg122 = (Account) data.readTypedObject(Account.CREATOR);
-                            Bundle _arg218 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            boolean _arg312 = data.readBoolean();
-                            int _arg46 = data.readInt();
-                            data.enforceNoDataAvail();
-                            confirmCredentialsAsUser(_arg026, _arg122, _arg218, _arg312, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            Account _arg027 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result10 = accountAuthenticated(_arg027);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 28:
-                            IAccountManagerResponse _arg028 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg123 = data.readString();
-                            String _arg219 = data.readString();
-                            data.enforceNoDataAvail();
-                            getAuthTokenLabel(_arg028, _arg123, _arg219);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            int _arg029 = data.readInt();
-                            int _arg124 = data.readInt();
-                            String _arg220 = data.readString();
-                            data.enforceNoDataAvail();
-                            addSharedAccountsFromParentUser(_arg029, _arg124, _arg220);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            IAccountManagerResponse _arg030 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg125 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg221 = data.readString();
-                            data.enforceNoDataAvail();
-                            renameAccount(_arg030, _arg125, _arg221);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            Account _arg031 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result11 = getPreviousName(_arg031);
-                            reply.writeNoException();
-                            reply.writeString(_result11);
-                            return true;
-                        case 32:
-                            IAccountManagerResponse _arg032 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            String _arg126 = data.readString();
-                            String _arg222 = data.readString();
-                            String[] _arg313 = data.createStringArray();
-                            boolean _arg47 = data.readBoolean();
-                            Bundle _arg54 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startAddAccountSession(_arg032, _arg126, _arg222, _arg313, _arg47, _arg54);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            IAccountManagerResponse _arg033 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg127 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg223 = data.readString();
-                            boolean _arg314 = data.readBoolean();
-                            Bundle _arg48 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startUpdateCredentialsSession(_arg033, _arg127, _arg223, _arg314, _arg48);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            IAccountManagerResponse _arg034 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Bundle _arg128 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            boolean _arg224 = data.readBoolean();
-                            Bundle _arg315 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg49 = data.readInt();
-                            data.enforceNoDataAvail();
-                            finishSessionAsUser(_arg034, _arg128, _arg224, _arg315, _arg49);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            Account _arg035 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result12 = someUserHasAccount(_arg035);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 36:
-                            IAccountManagerResponse _arg036 = IAccountManagerResponse.Stub.asInterface(data.readStrongBinder());
-                            Account _arg129 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg225 = data.readString();
-                            data.enforceNoDataAvail();
-                            isCredentialsUpdateSuggested(_arg036, _arg129, _arg225);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            Account _arg037 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            Map _result13 = getPackagesAndVisibilityForAccount(_arg037);
-                            reply.writeNoException();
-                            reply.writeMap(_result13);
-                            return true;
-                        case 38:
-                            Account _arg038 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg130 = data.readString();
-                            Bundle _arg226 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ClassLoader cl = getClass().getClassLoader();
-                            Map _arg316 = data.readHashMap(cl);
-                            String _arg410 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = addAccountExplicitlyWithVisibility(_arg038, _arg130, _arg226, _arg316, _arg410);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 39:
-                            Account _arg039 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg131 = data.readString();
-                            int _arg227 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = setAccountVisibility(_arg039, _arg131, _arg227);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 40:
-                            Account _arg040 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg132 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result16 = getAccountVisibility(_arg040, _arg132);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 41:
-                            String _arg041 = data.readString();
-                            String _arg133 = data.readString();
-                            data.enforceNoDataAvail();
-                            Map _result17 = getAccountsAndVisibilityForPackage(_arg041, _arg133);
-                            reply.writeNoException();
-                            reply.writeMap(_result17);
-                            return true;
-                        case 42:
-                            String[] _arg042 = data.createStringArray();
-                            String _arg134 = data.readString();
-                            data.enforceNoDataAvail();
-                            registerAccountListener(_arg042, _arg134);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            String[] _arg043 = data.createStringArray();
-                            String _arg135 = data.readString();
-                            data.enforceNoDataAvail();
-                            unregisterAccountListener(_arg043, _arg135);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            Account _arg044 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg136 = data.readString();
-                            UserHandle _arg228 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result18 = hasAccountAccess(_arg044, _arg136, _arg228);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 45:
-                            Account _arg045 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg137 = data.readString();
-                            UserHandle _arg229 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IntentSender _result19 = createRequestAccountAccessIntentSenderAsUser(_arg045, _arg137, _arg229);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result19, 1);
-                            return true;
-                        case 46:
-                            String _arg046 = data.readString();
-                            data.enforceNoDataAvail();
-                            onAccountAccessed(_arg046);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAccountManager {
+        private static class Proxy implements IAccountManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

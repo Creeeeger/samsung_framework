@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class HardwareConfigSim implements Parcelable {
     public static final Parcelable.Creator<HardwareConfigSim> CREATOR = new Parcelable.Creator<HardwareConfigSim>() { // from class: android.hardware.radio.modem.HardwareConfigSim.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HardwareConfigSim createFromParcel(Parcel _aidl_source) {
             HardwareConfigSim _aidl_out = new HardwareConfigSim();
@@ -19,31 +17,13 @@ public class HardwareConfigSim implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HardwareConfigSim[] newArray(int _aidl_size) {
             return new HardwareConfigSim[_aidl_size];
         }
     };
     public String modemUuid;
-
-    /* renamed from: android.hardware.radio.modem.HardwareConfigSim$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HardwareConfigSim> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HardwareConfigSim createFromParcel(Parcel _aidl_source) {
-            HardwareConfigSim _aidl_out = new HardwareConfigSim();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HardwareConfigSim[] newArray(int _aidl_size) {
-            return new HardwareConfigSim[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -92,7 +72,7 @@ public class HardwareConfigSim implements Parcelable {
     public String toString() {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("modemUuid: " + Objects.toString(this.modemUuid));
-        return "android.hardware.radio.modem.HardwareConfigSim" + _aidl_sj.toString();
+        return "HardwareConfigSim" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

@@ -7,12 +7,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
-public abstract class EvaluatorGroup implements Evaluator {
+/* loaded from: classes6.dex */
+abstract class EvaluatorGroup implements Evaluator {
     private List<Evaluator> evaluators;
     private volatile boolean sorted = false;
 
-    public EvaluatorGroup(Evaluator... evaluators) {
+    EvaluatorGroup(Evaluator... evaluators) {
         this.evaluators = Arrays.asList(evaluators);
     }
 
@@ -31,7 +31,7 @@ public abstract class EvaluatorGroup implements Evaluator {
         throw new UnsupportedOperationException("EvaluatorGroup doesn't support this!!!");
     }
 
-    public EvaluatorGroup add(Evaluator evaluator) {
+    EvaluatorGroup add(Evaluator evaluator) {
         this.evaluators.add(evaluator);
         this.sorted = false;
         return this;
@@ -46,14 +46,14 @@ public abstract class EvaluatorGroup implements Evaluator {
         return this.evaluators;
     }
 
-    public void sort() {
+    void sort() {
         if (!this.sorted) {
             this.evaluators = (List) stream().sorted().collect(Collectors.toList());
             this.sorted = true;
         }
     }
 
-    public <T extends Comparable> T front() {
+    <T extends Comparable> T front() {
         sort();
         Evaluator evaluator = this.evaluators.get(0);
         if (evaluator instanceof GenericEvaluator) {
@@ -64,7 +64,7 @@ public abstract class EvaluatorGroup implements Evaluator {
 
     <T extends Comparable> T back() {
         sort();
-        Evaluator evaluator = this.evaluators.get(r0.size() - 1);
+        Evaluator evaluator = this.evaluators.get(this.evaluators.size() - 1);
         if (evaluator instanceof GenericEvaluator) {
             return (T) ((GenericEvaluator) evaluator).getValue();
         }
@@ -117,7 +117,7 @@ public abstract class EvaluatorGroup implements Evaluator {
         }).collect(Collectors.joining(delimiter));
     }
 
-    public static /* synthetic */ String lambda$toString$0(Evaluator it) {
+    static /* synthetic */ String lambda$toString$0(Evaluator it) {
         return NavigationBarInflaterView.SIZE_MOD_START + it + NavigationBarInflaterView.SIZE_MOD_END;
     }
 }

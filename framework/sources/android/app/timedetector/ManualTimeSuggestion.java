@@ -11,43 +11,20 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class ManualTimeSuggestion implements Parcelable {
     public static final Parcelable.Creator<ManualTimeSuggestion> CREATOR = new Parcelable.Creator<ManualTimeSuggestion>() { // from class: android.app.timedetector.ManualTimeSuggestion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ManualTimeSuggestion createFromParcel(Parcel in) {
             TimeSuggestionHelper helper = TimeSuggestionHelper.handleCreateFromParcel(ManualTimeSuggestion.class, in);
             return new ManualTimeSuggestion(helper);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ManualTimeSuggestion[] newArray(int size) {
             return new ManualTimeSuggestion[size];
         }
     };
     private final TimeSuggestionHelper mTimeSuggestionHelper;
-
-    /* synthetic */ ManualTimeSuggestion(TimeSuggestionHelper timeSuggestionHelper, ManualTimeSuggestionIA manualTimeSuggestionIA) {
-        this(timeSuggestionHelper);
-    }
-
-    /* renamed from: android.app.timedetector.ManualTimeSuggestion$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ManualTimeSuggestion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ManualTimeSuggestion createFromParcel(Parcel in) {
-            TimeSuggestionHelper helper = TimeSuggestionHelper.handleCreateFromParcel(ManualTimeSuggestion.class, in);
-            return new ManualTimeSuggestion(helper);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ManualTimeSuggestion[] newArray(int size) {
-            return new ManualTimeSuggestion[size];
-        }
-    }
 
     public ManualTimeSuggestion(UnixEpochTime unixEpochTime) {
         this.mTimeSuggestionHelper = new TimeSuggestionHelper(ManualTimeSuggestion.class, unixEpochTime);

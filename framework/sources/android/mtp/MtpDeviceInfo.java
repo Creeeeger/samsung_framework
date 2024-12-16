@@ -1,6 +1,6 @@
 package android.mtp;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class MtpDeviceInfo {
     private int[] mDevicePropertySupported;
     private int[] mEventsSupported;

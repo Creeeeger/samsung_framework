@@ -26,7 +26,6 @@ public interface IPrintDocumentAdapter extends IInterface {
 
     void write(PageRange[] pageRangeArr, ParcelFileDescriptor parcelFileDescriptor, IWriteResultCallback iWriteResultCallback, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintDocumentAdapter {
         @Override // android.print.IPrintDocumentAdapter
         public void setObserver(IPrintDocumentAdapterObserver observer) throws RemoteException {
@@ -58,7 +57,6 @@ public interface IPrintDocumentAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintDocumentAdapter {
         public static final String DESCRIPTOR = "android.print.IPrintDocumentAdapter";
         static final int TRANSACTION_finish = 5;
@@ -117,54 +115,50 @@ public interface IPrintDocumentAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IPrintDocumentAdapterObserver _arg0 = IPrintDocumentAdapterObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setObserver(_arg0);
+                    return true;
+                case 2:
+                    start();
+                    return true;
+                case 3:
+                    PrintAttributes _arg02 = (PrintAttributes) data.readTypedObject(PrintAttributes.CREATOR);
+                    PrintAttributes _arg1 = (PrintAttributes) data.readTypedObject(PrintAttributes.CREATOR);
+                    ILayoutResultCallback _arg2 = ILayoutResultCallback.Stub.asInterface(data.readStrongBinder());
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    layout(_arg02, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 4:
+                    PageRange[] _arg03 = (PageRange[]) data.createTypedArray(PageRange.CREATOR);
+                    ParcelFileDescriptor _arg12 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    IWriteResultCallback _arg22 = IWriteResultCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    write(_arg03, _arg12, _arg22, _arg32);
+                    return true;
+                case 5:
+                    finish();
+                    return true;
+                case 6:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    kill(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IPrintDocumentAdapterObserver _arg0 = IPrintDocumentAdapterObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setObserver(_arg0);
-                            return true;
-                        case 2:
-                            start();
-                            return true;
-                        case 3:
-                            PrintAttributes _arg02 = (PrintAttributes) data.readTypedObject(PrintAttributes.CREATOR);
-                            PrintAttributes _arg1 = (PrintAttributes) data.readTypedObject(PrintAttributes.CREATOR);
-                            ILayoutResultCallback _arg2 = ILayoutResultCallback.Stub.asInterface(data.readStrongBinder());
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            layout(_arg02, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 4:
-                            PageRange[] _arg03 = (PageRange[]) data.createTypedArray(PageRange.CREATOR);
-                            ParcelFileDescriptor _arg12 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            IWriteResultCallback _arg22 = IWriteResultCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            write(_arg03, _arg12, _arg22, _arg32);
-                            return true;
-                        case 5:
-                            finish();
-                            return true;
-                        case 6:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            kill(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPrintDocumentAdapter {
+        private static class Proxy implements IPrintDocumentAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

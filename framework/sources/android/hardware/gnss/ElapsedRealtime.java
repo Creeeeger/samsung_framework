@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class ElapsedRealtime implements Parcelable {
     public static final Parcelable.Creator<ElapsedRealtime> CREATOR = new Parcelable.Creator<ElapsedRealtime>() { // from class: android.hardware.gnss.ElapsedRealtime.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ElapsedRealtime createFromParcel(Parcel _aidl_source) {
             ElapsedRealtime _aidl_out = new ElapsedRealtime();
@@ -18,6 +16,7 @@ public class ElapsedRealtime implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ElapsedRealtime[] newArray(int _aidl_size) {
             return new ElapsedRealtime[_aidl_size];
@@ -28,25 +27,6 @@ public class ElapsedRealtime implements Parcelable {
     public int flags = 0;
     public long timestampNs = 0;
     public double timeUncertaintyNs = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-
-    /* renamed from: android.hardware.gnss.ElapsedRealtime$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ElapsedRealtime> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ElapsedRealtime createFromParcel(Parcel _aidl_source) {
-            ElapsedRealtime _aidl_out = new ElapsedRealtime();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ElapsedRealtime[] newArray(int _aidl_size) {
-            return new ElapsedRealtime[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

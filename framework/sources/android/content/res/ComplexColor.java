@@ -18,7 +18,7 @@ public abstract class ComplexColor {
         return false;
     }
 
-    public final void setBaseChangingConfigurations(int changingConfigurations) {
+    final void setBaseChangingConfigurations(int changingConfigurations) {
         this.mChangingConfigurations = changingConfigurations;
     }
 

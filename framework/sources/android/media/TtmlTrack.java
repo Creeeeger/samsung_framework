@@ -22,7 +22,7 @@ class TtmlTrack extends SubtitleTrack implements TtmlNodeListener {
     private final TreeSet<Long> mTimeEvents;
     private final ArrayList<TtmlNode> mTtmlNodes;
 
-    public TtmlTrack(TtmlRenderingWidget renderingWidget, MediaFormat format) {
+    TtmlTrack(TtmlRenderingWidget renderingWidget, MediaFormat format) {
         super(format);
         this.mParser = new TtmlParser(this);
         this.mTtmlNodes = new ArrayList<>();
@@ -41,16 +41,14 @@ class TtmlTrack extends SubtitleTrack implements TtmlNodeListener {
         try {
             String str = new String(data, "UTF-8");
             synchronized (this.mParser) {
-                Long l = this.mCurrentRunID;
-                if (l != null && runID != l.longValue()) {
+                if (this.mCurrentRunID != null && runID != this.mCurrentRunID.longValue()) {
                     throw new IllegalStateException("Run #" + this.mCurrentRunID + " in progress.  Cannot process run #" + runID);
                 }
                 this.mCurrentRunID = Long.valueOf(runID);
-                String str2 = this.mParsingData + str;
-                this.mParsingData = str2;
+                this.mParsingData += str;
                 if (eos) {
                     try {
-                        this.mParser.parse(str2, this.mCurrentRunID.longValue());
+                        this.mParser.parse(this.mParsingData, this.mCurrentRunID.longValue());
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (XmlPullParserException e2) {

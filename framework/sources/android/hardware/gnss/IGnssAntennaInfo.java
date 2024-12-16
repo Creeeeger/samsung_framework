@@ -21,7 +21,6 @@ public interface IGnssAntennaInfo extends IInterface {
 
     void setCallback(IGnssAntennaInfoCallback iGnssAntennaInfoCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssAntennaInfo {
         @Override // android.hardware.gnss.IGnssAntennaInfo
         public void setCallback(IGnssAntennaInfoCallback callback) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IGnssAntennaInfo extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssAntennaInfo {
         static final int TRANSACTION_close = 2;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -101,39 +99,37 @@ public interface IGnssAntennaInfo extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    IGnssAntennaInfoCallback _arg0 = IGnssAntennaInfoCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    close();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGnssAntennaInfoCallback _arg0 = IGnssAntennaInfoCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssAntennaInfo {
+        private static class Proxy implements IGnssAntennaInfo {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -13,7 +13,6 @@ public abstract class WebMessagePort {
 
     public abstract void setWebMessageCallback(WebMessageCallback webMessageCallback, Handler handler);
 
-    /* loaded from: classes4.dex */
     public static abstract class WebMessageCallback {
         public void onMessage(WebMessagePort port, WebMessage message) {
         }

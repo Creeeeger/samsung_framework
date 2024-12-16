@@ -3,12 +3,10 @@ package android.hardware;
 /* loaded from: classes.dex */
 public abstract class SensorPrivacyManagerInternal {
 
-    /* loaded from: classes.dex */
     public interface OnSensorPrivacyChangedListener {
         void onSensorPrivacyChanged(boolean z);
     }
 
-    /* loaded from: classes.dex */
     public interface OnUserSensorPrivacyChangedListener {
         void onSensorPrivacyChanged(int i, boolean z);
     }

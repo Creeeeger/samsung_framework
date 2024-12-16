@@ -69,9 +69,8 @@ public class BasicOCSPResponse extends ASN1Object {
         v.add(this.tbsResponseData);
         v.add(this.signatureAlgorithm);
         v.add(this.signature);
-        ASN1Sequence aSN1Sequence = this.certs;
-        if (aSN1Sequence != null) {
-            v.add(new DERTaggedObject(true, 0, aSN1Sequence));
+        if (this.certs != null) {
+            v.add(new DERTaggedObject(true, 0, this.certs));
         }
         return new DERSequence(v);
     }

@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Collections;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-public class ExpandableListConnector extends BaseAdapter implements Filterable {
+class ExpandableListConnector extends BaseAdapter implements Filterable {
     private ExpandableListAdapter mExpandableListAdapter;
     private int mTotalExpChildrenCount;
     private int mMaxExpGroupCount = Integer.MAX_VALUE;
@@ -23,15 +22,14 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
     }
 
     public void setExpandableListAdapter(ExpandableListAdapter expandableListAdapter) {
-        ExpandableListAdapter expandableListAdapter2 = this.mExpandableListAdapter;
-        if (expandableListAdapter2 != null) {
-            expandableListAdapter2.unregisterDataSetObserver(this.mDataSetObserver);
+        if (this.mExpandableListAdapter != null) {
+            this.mExpandableListAdapter.unregisterDataSetObserver(this.mDataSetObserver);
         }
         this.mExpandableListAdapter = expandableListAdapter;
         expandableListAdapter.registerDataSetObserver(this.mDataSetObserver);
     }
 
-    public PositionMetadata getUnflattenedPos(int flPos) {
+    PositionMetadata getUnflattenedPos(int flPos) {
         int insertPosition;
         int groupPos;
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
@@ -77,7 +75,7 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         return PositionMetadata.obtain(flPos, 2, groupPos, -1, null, insertPosition);
     }
 
-    public PositionMetadata getFlattenedPos(ExpandableListPosition pos) {
+    PositionMetadata getFlattenedPos(ExpandableListPosition pos) {
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
         int numExpGroups = egml.size();
         int leftExpGroupIndex = 0;
@@ -199,9 +197,8 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         int retValue;
         PositionMetadata metadata = getUnflattenedPos(flatListPos);
         ExpandableListPosition pos = metadata.position;
-        ExpandableListAdapter expandableListAdapter = this.mExpandableListAdapter;
-        if (expandableListAdapter instanceof HeterogeneousExpandableList) {
-            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) expandableListAdapter;
+        if (this.mExpandableListAdapter instanceof HeterogeneousExpandableList) {
+            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) this.mExpandableListAdapter;
             if (pos.type == 2) {
                 retValue = adapter.getGroupType(pos.groupPos);
             } else {
@@ -220,9 +217,8 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
 
     @Override // android.widget.BaseAdapter, android.widget.Adapter
     public int getViewTypeCount() {
-        ExpandableListAdapter expandableListAdapter = this.mExpandableListAdapter;
-        if (expandableListAdapter instanceof HeterogeneousExpandableList) {
-            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) expandableListAdapter;
+        if (this.mExpandableListAdapter instanceof HeterogeneousExpandableList) {
+            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) this.mExpandableListAdapter;
             return adapter.getGroupTypeCount() + adapter.getChildTypeCount();
         }
         return 2;
@@ -233,6 +229,7 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         return this.mExpandableListAdapter.hasStableIds();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void refreshExpGroupMetadataList(boolean forceChildrenCountRefresh, boolean syncGroupPositions) {
         int gChildrenCount;
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
@@ -276,7 +273,7 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         }
     }
 
-    public boolean collapseGroup(int groupPos) {
+    boolean collapseGroup(int groupPos) {
         ExpandableListPosition elGroupPos = ExpandableListPosition.obtain(2, groupPos, -1, -1);
         PositionMetadata pm = getFlattenedPos(elGroupPos);
         elGroupPos.recycle();
@@ -288,7 +285,7 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         return retValue;
     }
 
-    public boolean collapseGroup(PositionMetadata posMetadata) {
+    boolean collapseGroup(PositionMetadata posMetadata) {
         if (posMetadata.groupMetadata == null) {
             return false;
         }
@@ -308,7 +305,7 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         return retValue;
     }
 
-    public boolean expandGroup(PositionMetadata posMetadata) {
+    boolean expandGroup(PositionMetadata posMetadata) {
         if (posMetadata.position.groupPos < 0) {
             throw new RuntimeException("Need group");
         }
@@ -345,7 +342,7 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         this.mMaxExpGroupCount = maxExpGroupCount;
     }
 
-    public ExpandableListAdapter getAdapter() {
+    ExpandableListAdapter getAdapter() {
         return this.mExpandableListAdapter;
     }
 
@@ -358,16 +355,15 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         return null;
     }
 
-    public ArrayList<GroupMetadata> getExpandedGroupMetadataList() {
+    ArrayList<GroupMetadata> getExpandedGroupMetadataList() {
         return this.mExpGroupMetadataList;
     }
 
-    public void setExpandedGroupMetadataList(ArrayList<GroupMetadata> expandedGroupMetadataList) {
-        ExpandableListAdapter expandableListAdapter;
-        if (expandedGroupMetadataList == null || (expandableListAdapter = this.mExpandableListAdapter) == null) {
+    void setExpandedGroupMetadataList(ArrayList<GroupMetadata> expandedGroupMetadataList) {
+        if (expandedGroupMetadataList == null || this.mExpandableListAdapter == null) {
             return;
         }
-        int numGroups = expandableListAdapter.getGroupCount();
+        int numGroups = this.mExpandableListAdapter.getGroupCount();
         for (int i = expandedGroupMetadataList.size() - 1; i >= 0; i--) {
             if (expandedGroupMetadataList.get(i).gPos >= numGroups) {
                 return;
@@ -423,9 +419,7 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* loaded from: classes4.dex */
-    public class MyDataSetObserver extends DataSetObserver {
+    protected class MyDataSetObserver extends DataSetObserver {
         protected MyDataSetObserver() {
         }
 
@@ -442,18 +436,16 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class GroupMetadata implements Parcelable, Comparable<GroupMetadata> {
+    static class GroupMetadata implements Parcelable, Comparable<GroupMetadata> {
         public static final Parcelable.Creator<GroupMetadata> CREATOR = new Parcelable.Creator<GroupMetadata>() { // from class: android.widget.ExpandableListConnector.GroupMetadata.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GroupMetadata createFromParcel(Parcel in) {
                 GroupMetadata gm = GroupMetadata.obtain(in.readInt(), in.readInt(), in.readInt(), in.readLong());
                 return gm;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GroupMetadata[] newArray(int size) {
                 return new GroupMetadata[size];
@@ -497,27 +489,8 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
             dest.writeInt(this.gPos);
             dest.writeLong(this.gId);
         }
-
-        /* renamed from: android.widget.ExpandableListConnector$GroupMetadata$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<GroupMetadata> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GroupMetadata createFromParcel(Parcel in) {
-                GroupMetadata gm = GroupMetadata.obtain(in.readInt(), in.readInt(), in.readInt(), in.readLong());
-                return gm;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GroupMetadata[] newArray(int size) {
-                return new GroupMetadata[size];
-            }
-        }
     }
 
-    /* loaded from: classes4.dex */
     public static class PositionMetadata {
         private static final int MAX_POOL_SIZE = 5;
         private static ArrayList<PositionMetadata> sPool = new ArrayList<>(5);
@@ -526,9 +499,8 @@ public class ExpandableListConnector extends BaseAdapter implements Filterable {
         public ExpandableListPosition position;
 
         private void resetState() {
-            ExpandableListPosition expandableListPosition = this.position;
-            if (expandableListPosition != null) {
-                expandableListPosition.recycle();
+            if (this.position != null) {
+                this.position.recycle();
                 this.position = null;
             }
             this.groupMetadata = null;

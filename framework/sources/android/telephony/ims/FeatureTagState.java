@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class FeatureTagState implements Parcelable {
     public static final Parcelable.Creator<FeatureTagState> CREATOR = new Parcelable.Creator<FeatureTagState>() { // from class: android.telephony.ims.FeatureTagState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FeatureTagState createFromParcel(Parcel source) {
             return new FeatureTagState(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FeatureTagState[] newArray(int size) {
             return new FeatureTagState[size];
@@ -24,10 +23,6 @@ public final class FeatureTagState implements Parcelable {
     };
     private final String mFeatureTag;
     private final int mState;
-
-    /* synthetic */ FeatureTagState(Parcel parcel, FeatureTagStateIA featureTagStateIA) {
-        this(parcel);
-    }
 
     public FeatureTagState(String featureTag, int state) {
         this.mFeatureTag = featureTag;
@@ -56,23 +51,6 @@ public final class FeatureTagState implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mFeatureTag);
         dest.writeInt(this.mState);
-    }
-
-    /* renamed from: android.telephony.ims.FeatureTagState$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FeatureTagState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FeatureTagState createFromParcel(Parcel source) {
-            return new FeatureTagState(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FeatureTagState[] newArray(int size) {
-            return new FeatureTagState[size];
-        }
     }
 
     public boolean equals(Object o) {

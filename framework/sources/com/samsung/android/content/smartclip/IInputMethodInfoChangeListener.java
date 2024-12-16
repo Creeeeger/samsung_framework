@@ -16,7 +16,6 @@ public interface IInputMethodInfoChangeListener extends IInterface {
 
     void onKeyboardClosed() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInputMethodInfoChangeListener {
         @Override // com.samsung.android.content.smartclip.IInputMethodInfoChangeListener
         public void onInputInfoChanged(IRemoteInputConnection inputConnection, EditorInfo editorInfo) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IInputMethodInfoChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInputMethodInfoChangeListener {
         static final int TRANSACTION_onInputInfoChanged = 1;
         static final int TRANSACTION_onKeyboardClosed = 2;
@@ -78,30 +76,26 @@ public interface IInputMethodInfoChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputMethodInfoChangeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputMethodInfoChangeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputMethodInfoChangeListener.DESCRIPTOR);
+                case 1:
+                    IRemoteInputConnection _arg0 = IRemoteInputConnection.Stub.asInterface(data.readStrongBinder());
+                    EditorInfo _arg1 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onInputInfoChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onKeyboardClosed();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IRemoteInputConnection _arg0 = IRemoteInputConnection.Stub.asInterface(data.readStrongBinder());
-                            EditorInfo _arg1 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onInputInfoChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onKeyboardClosed();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IInputMethodInfoChangeListener {
+        private static class Proxy implements IInputMethodInfoChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

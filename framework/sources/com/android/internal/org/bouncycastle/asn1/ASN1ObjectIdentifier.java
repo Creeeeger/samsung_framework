@@ -44,7 +44,7 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         return fromOctetString(ASN1OctetString.getInstance(o).getOctets());
     }
 
-    public ASN1ObjectIdentifier(byte[] bytes) {
+    ASN1ObjectIdentifier(byte[] bytes) {
         StringBuffer objId = new StringBuffer();
         long value = 0;
         BigInteger bigValue = null;
@@ -103,7 +103,7 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         this.identifier = identifier.intern();
     }
 
-    public ASN1ObjectIdentifier(ASN1ObjectIdentifier oid, String branchID) {
+    ASN1ObjectIdentifier(ASN1ObjectIdentifier oid, String branchID) {
         if (!isValidBranchID(branchID, 0)) {
             throw new IllegalArgumentException("string " + branchID + " not a valid OID branch");
         }
@@ -182,18 +182,18 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         int length = getBody().length;
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 6, getBody());
     }
 
@@ -203,7 +203,7 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (o == this) {
             return true;
         }
@@ -283,10 +283,9 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
 
     public ASN1ObjectIdentifier intern() {
         OidHandle hdl = new OidHandle(getBody());
-        ConcurrentMap<OidHandle, ASN1ObjectIdentifier> concurrentMap = pool;
-        ASN1ObjectIdentifier oid = concurrentMap.get(hdl);
+        ASN1ObjectIdentifier oid = pool.get(hdl);
         if (oid == null) {
-            ASN1ObjectIdentifier oid2 = concurrentMap.putIfAbsent(hdl, this);
+            ASN1ObjectIdentifier oid2 = pool.putIfAbsent(hdl, this);
             if (oid2 == null) {
                 return this;
             }
@@ -295,8 +294,7 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         return oid;
     }
 
-    /* loaded from: classes5.dex */
-    public static class OidHandle {
+    private static class OidHandle {
         private final byte[] enc;
         private final int key;
 
@@ -317,7 +315,7 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         }
     }
 
-    public static ASN1ObjectIdentifier fromOctetString(byte[] enc) {
+    static ASN1ObjectIdentifier fromOctetString(byte[] enc) {
         OidHandle hdl = new OidHandle(enc);
         ASN1ObjectIdentifier oid = pool.get(hdl);
         if (oid == null) {

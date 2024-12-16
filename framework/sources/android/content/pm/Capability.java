@@ -7,14 +7,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class Capability implements Parcelable {
     public static final Parcelable.Creator<Capability> CREATOR = new Parcelable.Creator<Capability>() { // from class: android.content.pm.Capability.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Capability[] newArray(int size) {
             return new Capability[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Capability createFromParcel(Parcel in) {
             return new Capability(in);
@@ -22,15 +21,7 @@ public final class Capability implements Parcelable {
     };
     private final String mName;
 
-    /* synthetic */ Capability(Builder builder, CapabilityIA capabilityIA) {
-        this(builder);
-    }
-
-    /* synthetic */ Capability(Parcel parcel, CapabilityIA capabilityIA) {
-        this(parcel);
-    }
-
-    public Capability(String name) {
+    Capability(String name) {
         Objects.requireNonNull(name);
         if (name.contains("/")) {
             throw new IllegalArgumentException("'/' is not permitted in the capability name");
@@ -75,24 +66,6 @@ public final class Capability implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.content.pm.Capability$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Capability> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Capability[] newArray(int size) {
-            return new Capability[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Capability createFromParcel(Parcel in) {
-            return new Capability(in);
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final String mName;
 

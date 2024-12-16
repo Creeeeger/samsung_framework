@@ -1,6 +1,5 @@
 package android.content.integrity;
 
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,6 @@ public final class AppInstallMetadata {
     private final String mPackageName;
     private final String mStampCertificateHash;
     private final long mVersionCode;
-
-    /* synthetic */ AppInstallMetadata(Builder builder, AppInstallMetadataIA appInstallMetadataIA) {
-        this(builder);
-    }
 
     private AppInstallMetadata(Builder builder) {
         this.mPackageName = builder.mPackageName;
@@ -89,35 +84,9 @@ public final class AppInstallMetadata {
     }
 
     public String toString() {
-        Object[] objArr = new Object[11];
-        objArr[0] = this.mPackageName;
-        objArr[1] = this.mAppCertificates;
-        objArr[2] = this.mAppCertificateLineage;
-        String str = this.mInstallerName;
-        String str2 = SemCapabilities.FEATURE_TAG_NULL;
-        if (str == null) {
-            str = SemCapabilities.FEATURE_TAG_NULL;
-        }
-        objArr[3] = str;
-        Object obj = this.mInstallerCertificates;
-        if (obj == null) {
-            obj = SemCapabilities.FEATURE_TAG_NULL;
-        }
-        objArr[4] = obj;
-        objArr[5] = Long.valueOf(this.mVersionCode);
-        objArr[6] = Boolean.valueOf(this.mIsPreInstalled);
-        objArr[7] = Boolean.valueOf(this.mIsStampPresent);
-        objArr[8] = Boolean.valueOf(this.mIsStampVerified);
-        objArr[9] = Boolean.valueOf(this.mIsStampTrusted);
-        String str3 = this.mStampCertificateHash;
-        if (str3 != null) {
-            str2 = str3;
-        }
-        objArr[10] = str2;
-        return String.format("AppInstallMetadata { PackageName = %s, AppCerts = %s, AppCertsLineage = %s, InstallerName = %s, InstallerCerts = %s, VersionCode = %d, PreInstalled = %b, StampPresent = %b, StampVerified = %b, StampTrusted = %b, StampCert = %s }", objArr);
+        return String.format("AppInstallMetadata { PackageName = %s, AppCerts = %s, AppCertsLineage = %s, InstallerName = %s, InstallerCerts = %s, VersionCode = %d, PreInstalled = %b, StampPresent = %b, StampVerified = %b, StampTrusted = %b, StampCert = %s }", this.mPackageName, this.mAppCertificates, this.mAppCertificateLineage, this.mInstallerName == null ? "null" : this.mInstallerName, this.mInstallerCertificates == null ? "null" : this.mInstallerCertificates, Long.valueOf(this.mVersionCode), Boolean.valueOf(this.mIsPreInstalled), Boolean.valueOf(this.mIsStampPresent), Boolean.valueOf(this.mIsStampVerified), Boolean.valueOf(this.mIsStampTrusted), this.mStampCertificateHash != null ? this.mStampCertificateHash : "null");
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private Map<String, String> mAllowedInstallersAndCertificates = new HashMap();
         private List<String> mAppCertificateLineage;

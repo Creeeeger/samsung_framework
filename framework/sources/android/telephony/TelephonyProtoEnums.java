@@ -1,6 +1,6 @@
 package android.telephony;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class TelephonyProtoEnums {
     public static final int APN_PROTOCOL_IPV4 = 0;
     public static final int APN_PROTOCOL_IPV4V6 = 2;
@@ -9,6 +9,10 @@ public final class TelephonyProtoEnums {
     public static final int CALL_BEARER_CS = 1;
     public static final int CALL_BEARER_IMS = 2;
     public static final int CALL_BEARER_UNKNOWN = 0;
+    public static final int CALL_COMPOSER_STATUS_BUSINESS_ONLY = 3;
+    public static final int CALL_COMPOSER_STATUS_OFF = 1;
+    public static final int CALL_COMPOSER_STATUS_ON = 2;
+    public static final int CALL_COMPOSER_UNKNOWN = 0;
     public static final int CALL_DIRECTION_MO = 1;
     public static final int CALL_DIRECTION_MT = 2;
     public static final int CALL_DIRECTION_UNKNOWN = 0;
@@ -56,6 +60,7 @@ public final class TelephonyProtoEnums {
     public static final int DEACTIVATE_REASON_DATA_PROFILE_INVALID = 29;
     public static final int DEACTIVATE_REASON_DATA_PROFILE_NOT_PREFERRED = 30;
     public static final int DEACTIVATE_REASON_DATA_SERVICE_NOT_READY = 14;
+    public static final int DEACTIVATE_REASON_DATA_SERVICE_OPTION_NOT_SUPPORTED = 13;
     public static final int DEACTIVATE_REASON_DATA_STALL = 16;
     public static final int DEACTIVATE_REASON_DATA_THROTTLED = 28;
     public static final int DEACTIVATE_REASON_DEFAULT_DATA_UNSELECTED = 21;
@@ -139,6 +144,10 @@ public final class TelephonyProtoEnums {
     public static final int NETWORK_TYPE_TD_SCDMA = 17;
     public static final int NETWORK_TYPE_UMTS = 3;
     public static final int NETWORK_TYPE_UNKNOWN = 0;
+    public static final int RADIO_POWER_STATE_OFF = 1;
+    public static final int RADIO_POWER_STATE_ON = 2;
+    public static final int RADIO_POWER_STATE_UNAVAILABLE = 3;
+    public static final int RADIO_POWER_STATE_UNKNOWN = 0;
     public static final int RECOVERED_REASON_DSRM = 1;
     public static final int RECOVERED_REASON_MODEM = 2;
     public static final int RECOVERED_REASON_NONE = 0;
@@ -309,4 +318,9 @@ public final class TelephonyProtoEnums {
     public static final int STATE_HALF_OPENED = 2;
     public static final int STATE_OPENED = 3;
     public static final int STATE_UNKNOWN = 0;
+    public static final int VALIDATION_RESULT_ALREADY_IN_PROGRESS = 2;
+    public static final int VALIDATION_RESULT_FAILURE = 4;
+    public static final int VALIDATION_RESULT_NOT_SUPPORTED = 1;
+    public static final int VALIDATION_RESULT_SUCCESS = 3;
+    public static final int VALIDATION_RESULT_UNSPECIFIED = 0;
 }

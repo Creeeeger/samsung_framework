@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ICoverService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.cover.ICoverService";
 
@@ -16,7 +16,6 @@ public interface ICoverService extends IInterface {
 
     void onUpdateCoverState(CoverState coverState) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICoverService {
         @Override // com.samsung.android.cover.ICoverService
         public void onSystemReady() throws RemoteException {
@@ -37,7 +36,6 @@ public interface ICoverService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICoverService {
         static final int TRANSACTION_onCoverAppCovered = 3;
         static final int TRANSACTION_onSystemReady = 1;
@@ -86,34 +84,31 @@ public interface ICoverService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICoverService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICoverService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICoverService.DESCRIPTOR);
+                case 1:
+                    onSystemReady();
+                    return true;
+                case 2:
+                    CoverState _arg0 = (CoverState) data.readTypedObject(CoverState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUpdateCoverState(_arg0);
+                    return true;
+                case 3:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result = onCoverAppCovered(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onSystemReady();
-                            return true;
-                        case 2:
-                            CoverState _arg0 = (CoverState) data.readTypedObject(CoverState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUpdateCoverState(_arg0);
-                            return true;
-                        case 3:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result = onCoverAppCovered(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICoverService {
             private IBinder mRemote;
 

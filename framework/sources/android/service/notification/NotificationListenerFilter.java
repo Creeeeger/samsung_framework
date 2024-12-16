@@ -8,14 +8,13 @@ import android.util.ArraySet;
 /* loaded from: classes3.dex */
 public class NotificationListenerFilter implements Parcelable {
     public static final Parcelable.Creator<NotificationListenerFilter> CREATOR = new Parcelable.Creator<NotificationListenerFilter>() { // from class: android.service.notification.NotificationListenerFilter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationListenerFilter createFromParcel(Parcel in) {
             return new NotificationListenerFilter(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationListenerFilter[] newArray(int size) {
             return new NotificationListenerFilter[size];
@@ -44,23 +43,6 @@ public class NotificationListenerFilter implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mAllowedNotificationTypes);
         dest.writeArraySet(this.mDisallowedPackages);
-    }
-
-    /* renamed from: android.service.notification.NotificationListenerFilter$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NotificationListenerFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationListenerFilter createFromParcel(Parcel in) {
-            return new NotificationListenerFilter(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationListenerFilter[] newArray(int size) {
-            return new NotificationListenerFilter[size];
-        }
     }
 
     public boolean isTypeAllowed(int type) {

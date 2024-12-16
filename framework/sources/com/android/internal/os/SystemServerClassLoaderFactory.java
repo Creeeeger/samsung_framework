@@ -8,13 +8,12 @@ import dalvik.system.PathClassLoader;
 public final class SystemServerClassLoaderFactory {
     private static final ArrayMap<String, PathClassLoader> sLoadedPaths = new ArrayMap<>();
 
-    public static PathClassLoader createClassLoader(String path, ClassLoader parent) {
-        ArrayMap<String, PathClassLoader> arrayMap = sLoadedPaths;
-        if (arrayMap.containsKey(path)) {
+    static PathClassLoader createClassLoader(String path, ClassLoader parent) {
+        if (sLoadedPaths.containsKey(path)) {
             throw new IllegalStateException("A ClassLoader for " + path + " already exists");
         }
         PathClassLoader pathClassLoader = (PathClassLoader) ClassLoaderFactory.createClassLoader(path, null, null, parent, Build.VERSION.SDK_INT, true, null);
-        arrayMap.put(path, pathClassLoader);
+        sLoadedPaths.put(path, pathClassLoader);
         return pathClassLoader;
     }
 

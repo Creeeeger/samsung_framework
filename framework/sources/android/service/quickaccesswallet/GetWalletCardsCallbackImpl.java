@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /* loaded from: classes3.dex */
-public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback {
+final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback {
     private static final String TAG = "QAWalletCallback";
     private final IQuickAccessWalletServiceCallbacks mCallback;
     private boolean mCalled;
@@ -18,7 +18,7 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
     private final Handler mHandler;
     private final GetWalletCardsRequest mRequest;
 
-    public GetWalletCardsCallbackImpl(GetWalletCardsRequest request, IQuickAccessWalletServiceCallbacks callback, Handler handler, Context context) {
+    GetWalletCardsCallbackImpl(GetWalletCardsRequest request, IQuickAccessWalletServiceCallbacks callback, Handler handler, Context context) {
         this.mRequest = request;
         this.mCallback = callback;
         this.mHandler = handler;
@@ -31,7 +31,7 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
             if (!this.mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WALLET_LOCATION_BASED_SUGGESTIONS)) {
                 removeLocationsFromResponse(response);
             }
-            this.mHandler.post(new Runnable() { // from class: android.service.quickaccesswallet.GetWalletCardsCallbackImpl$$ExternalSyntheticLambda0
+            this.mHandler.post(new Runnable() { // from class: android.service.quickaccesswallet.GetWalletCardsCallbackImpl$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     GetWalletCardsCallbackImpl.this.lambda$onSuccess$0(response);
@@ -39,7 +39,7 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
             });
         } else {
             Log.w(TAG, "Invalid GetWalletCards response");
-            this.mHandler.post(new Runnable() { // from class: android.service.quickaccesswallet.GetWalletCardsCallbackImpl$$ExternalSyntheticLambda1
+            this.mHandler.post(new Runnable() { // from class: android.service.quickaccesswallet.GetWalletCardsCallbackImpl$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     GetWalletCardsCallbackImpl.this.lambda$onSuccess$1();
@@ -48,13 +48,14 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSuccess$1() {
         lambda$onFailure$2(new GetWalletCardsError(null, null));
     }
 
     @Override // android.service.quickaccesswallet.GetWalletCardsCallback
     public void onFailure(final GetWalletCardsError error) {
-        this.mHandler.post(new Runnable() { // from class: android.service.quickaccesswallet.GetWalletCardsCallbackImpl$$ExternalSyntheticLambda2
+        this.mHandler.post(new Runnable() { // from class: android.service.quickaccesswallet.GetWalletCardsCallbackImpl$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 GetWalletCardsCallbackImpl.this.lambda$onFailure$2(error);
@@ -62,7 +63,8 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
         });
     }
 
-    /* renamed from: onSuccessInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: onSuccessInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$onSuccess$0(GetWalletCardsResponse response) {
         if (this.mCalled) {
             Log.w(TAG, "already called");
@@ -76,7 +78,8 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
         }
     }
 
-    /* renamed from: onFailureInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: onFailureInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$onFailure$2(GetWalletCardsError error) {
         if (this.mCalled) {
             Log.w(TAG, "already called");

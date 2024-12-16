@@ -15,12 +15,13 @@ import com.android.internal.app.IVoiceInteractionManagerService;
 import java.util.ArrayList;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AssistUtils {
     public static final int INVOCATION_TYPE_ASSIST_BUTTON = 7;
     public static final int INVOCATION_TYPE_GESTURE = 1;
     public static final int INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS = 5;
     public static final String INVOCATION_TYPE_KEY = "invocation_type";
+    public static final int INVOCATION_TYPE_NAV_HANDLE_LONG_PRESS = 8;
     public static final int INVOCATION_TYPE_PHYSICAL_GESTURE = 2;
     public static final int INVOCATION_TYPE_POWER_BUTTON_LONG_PRESS = 6;
     public static final int INVOCATION_TYPE_QUICK_SEARCH_BAR = 4;
@@ -45,9 +46,8 @@ public class AssistUtils {
 
     private boolean showSessionForActiveServiceInternal(Bundle args, int sourceFlags, String attributionTag, IVoiceInteractionSessionShowCallback showCallback, IBinder activityToken) {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                return iVoiceInteractionManagerService.showSessionForActiveService(args, sourceFlags, attributionTag, showCallback, activityToken);
+            if (this.mVoiceInteractionManagerService != null) {
+                return this.mVoiceInteractionManagerService.showSessionForActiveService(args, sourceFlags, attributionTag, showCallback, activityToken);
             }
             return false;
         } catch (RemoteException e) {
@@ -58,9 +58,8 @@ public class AssistUtils {
 
     public void getActiveServiceSupportedActions(Set<String> voiceActions, IVoiceActionCheckCallback callback) {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                iVoiceInteractionManagerService.getActiveServiceSupportedActions(new ArrayList(voiceActions), callback);
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.getActiveServiceSupportedActions(new ArrayList(voiceActions), callback);
             }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to call activeServiceSupportedActions", e);
@@ -73,9 +72,8 @@ public class AssistUtils {
 
     public void launchVoiceAssistFromKeyguard() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                iVoiceInteractionManagerService.launchVoiceAssistFromKeyguard();
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.launchVoiceAssistFromKeyguard();
             }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to call launchVoiceAssistFromKeyguard", e);
@@ -84,9 +82,8 @@ public class AssistUtils {
 
     public boolean activeServiceSupportsAssistGesture() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                return iVoiceInteractionManagerService.activeServiceSupportsAssist();
+            if (this.mVoiceInteractionManagerService != null) {
+                return this.mVoiceInteractionManagerService.activeServiceSupportsAssist();
             }
             return false;
         } catch (RemoteException e) {
@@ -97,9 +94,8 @@ public class AssistUtils {
 
     public boolean activeServiceSupportsLaunchFromKeyguard() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                return iVoiceInteractionManagerService.activeServiceSupportsLaunchFromKeyguard();
+            if (this.mVoiceInteractionManagerService != null) {
+                return this.mVoiceInteractionManagerService.activeServiceSupportsLaunchFromKeyguard();
             }
             return false;
         } catch (RemoteException e) {
@@ -110,11 +106,10 @@ public class AssistUtils {
 
     public ComponentName getActiveServiceComponentName() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService == null) {
+            if (this.mVoiceInteractionManagerService == null) {
                 return null;
             }
-            return iVoiceInteractionManagerService.getActiveServiceComponentName();
+            return this.mVoiceInteractionManagerService.getActiveServiceComponentName();
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to call getActiveServiceComponentName", e);
             return null;
@@ -123,9 +118,8 @@ public class AssistUtils {
 
     public boolean isSessionRunning() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                return iVoiceInteractionManagerService.isSessionRunning();
+            if (this.mVoiceInteractionManagerService != null) {
+                return this.mVoiceInteractionManagerService.isSessionRunning();
             }
             return false;
         } catch (RemoteException e) {
@@ -136,9 +130,8 @@ public class AssistUtils {
 
     public void hideCurrentSession() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                iVoiceInteractionManagerService.hideCurrentSession();
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.hideCurrentSession();
             }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to call hideCurrentSession", e);
@@ -147,9 +140,8 @@ public class AssistUtils {
 
     public void onLockscreenShown() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                iVoiceInteractionManagerService.onLockscreenShown();
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.onLockscreenShown();
             }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to call onLockscreenShown", e);
@@ -158,20 +150,28 @@ public class AssistUtils {
 
     public void registerVoiceInteractionSessionListener(IVoiceInteractionSessionListener listener) {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                iVoiceInteractionManagerService.registerVoiceInteractionSessionListener(listener);
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.registerVoiceInteractionSessionListener(listener);
             }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to register voice interaction listener", e);
         }
     }
 
+    public void subscribeVisualQueryRecognitionStatus(IVisualQueryRecognitionStatusListener listener) {
+        try {
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.subscribeVisualQueryRecognitionStatus(listener);
+            }
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to register visual query detection start listener", e);
+        }
+    }
+
     public void enableVisualQueryDetection(IVisualQueryDetectionAttentionListener listener) {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                iVoiceInteractionManagerService.enableVisualQueryDetection(listener);
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.enableVisualQueryDetection(listener);
             }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to register visual query detection attention listener", e);
@@ -180,9 +180,8 @@ public class AssistUtils {
 
     public void disableVisualQueryDetection() {
         try {
-            IVoiceInteractionManagerService iVoiceInteractionManagerService = this.mVoiceInteractionManagerService;
-            if (iVoiceInteractionManagerService != null) {
-                iVoiceInteractionManagerService.disableVisualQueryDetection();
+            if (this.mVoiceInteractionManagerService != null) {
+                this.mVoiceInteractionManagerService.disableVisualQueryDetection();
             }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to register visual query detection attention listener", e);

@@ -35,7 +35,7 @@ public class Registrant {
         internalNotifyRegistrant(ar.result, ar.exception);
     }
 
-    public void internalNotifyRegistrant(Object result, Throwable exception) {
+    void internalNotifyRegistrant(Object result, Throwable exception) {
         Handler h = getHandler();
         if (h == null) {
             clear();
@@ -60,10 +60,9 @@ public class Registrant {
     }
 
     public Handler getHandler() {
-        WeakReference weakReference = this.refH;
-        if (weakReference == null) {
+        if (this.refH == null) {
             return null;
         }
-        return (Handler) weakReference.get();
+        return (Handler) this.refH.get();
     }
 }

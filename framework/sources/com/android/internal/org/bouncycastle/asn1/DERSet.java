@@ -29,7 +29,7 @@ public class DERSet extends ASN1Set {
         this.bodyLength = -1;
     }
 
-    public DERSet(boolean isSorted, ASN1Encodable[] elements) {
+    DERSet(boolean isSorted, ASN1Encodable[] elements) {
         super(checkSorted(isSorted), elements);
         this.bodyLength = -1;
     }
@@ -49,13 +49,13 @@ public class DERSet extends ASN1Set {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         int length = getBodyLength();
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Set, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         if (withTag) {
             out.write(49);
         }
@@ -84,12 +84,12 @@ public class DERSet extends ASN1Set {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Set, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return this.isSorted ? this : super.toDERObject();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Set, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return this;
     }
 

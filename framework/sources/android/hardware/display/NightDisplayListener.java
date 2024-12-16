@@ -28,16 +28,11 @@ public class NightDisplayListener {
     }
 
     public NightDisplayListener(Context context, int userId, Handler handler) {
-        Context applicationContext = context.getApplicationContext();
-        this.mContext = applicationContext;
-        this.mManager = (ColorDisplayManager) applicationContext.getSystemService(ColorDisplayManager.class);
+        this.mContext = context.getApplicationContext();
+        this.mManager = (ColorDisplayManager) this.mContext.getSystemService(ColorDisplayManager.class);
         this.mUserId = userId;
         this.mHandler = handler;
-        this.mContentObserver = new ContentObserver(handler) { // from class: android.hardware.display.NightDisplayListener.1
-            AnonymousClass1(Handler handler2) {
-                super(handler2);
-            }
-
+        this.mContentObserver = new ContentObserver(this.mHandler) { // from class: android.hardware.display.NightDisplayListener.1
             /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange, Uri uri) {
@@ -88,103 +83,23 @@ public class NightDisplayListener {
                     switch (c) {
                         case 0:
                             NightDisplayListener.this.mCallback.onActivated(NightDisplayListener.this.mManager.isNightDisplayActivated());
-                            return;
+                            break;
                         case 1:
                             NightDisplayListener.this.mCallback.onAutoModeChanged(NightDisplayListener.this.mManager.getNightDisplayAutoMode());
-                            return;
+                            break;
                         case 2:
                             NightDisplayListener.this.mCallback.onCustomStartTimeChanged(NightDisplayListener.this.mManager.getNightDisplayCustomStartTime());
-                            return;
+                            break;
                         case 3:
                             NightDisplayListener.this.mCallback.onCustomEndTimeChanged(NightDisplayListener.this.mManager.getNightDisplayCustomEndTime());
-                            return;
+                            break;
                         case 4:
                             NightDisplayListener.this.mCallback.onColorTemperatureChanged(NightDisplayListener.this.mManager.getNightDisplayColorTemperature());
-                            return;
-                        default:
-                            return;
+                            break;
                     }
                 }
             }
         };
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.display.NightDisplayListener$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends ContentObserver {
-        AnonymousClass1(Handler handler2) {
-            super(handler2);
-        }
-
-        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        @Override // android.database.ContentObserver
-        public void onChange(boolean selfChange, Uri uri) {
-            char c;
-            super.onChange(selfChange, uri);
-            String setting = uri == null ? null : uri.getLastPathSegment();
-            if (setting != null && NightDisplayListener.this.mCallback != null) {
-                switch (setting.hashCode()) {
-                    case -2038150513:
-                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_AUTO_MODE)) {
-                            c = 1;
-                            break;
-                        }
-                        c = 65535;
-                        break;
-                    case -1761668069:
-                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_CUSTOM_END_TIME)) {
-                            c = 3;
-                            break;
-                        }
-                        c = 65535;
-                        break;
-                    case -969458956:
-                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_COLOR_TEMPERATURE)) {
-                            c = 4;
-                            break;
-                        }
-                        c = 65535;
-                        break;
-                    case 800115245:
-                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_ACTIVATED)) {
-                            c = 0;
-                            break;
-                        }
-                        c = 65535;
-                        break;
-                    case 1578271348:
-                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_CUSTOM_START_TIME)) {
-                            c = 2;
-                            break;
-                        }
-                        c = 65535;
-                        break;
-                    default:
-                        c = 65535;
-                        break;
-                }
-                switch (c) {
-                    case 0:
-                        NightDisplayListener.this.mCallback.onActivated(NightDisplayListener.this.mManager.isNightDisplayActivated());
-                        return;
-                    case 1:
-                        NightDisplayListener.this.mCallback.onAutoModeChanged(NightDisplayListener.this.mManager.getNightDisplayAutoMode());
-                        return;
-                    case 2:
-                        NightDisplayListener.this.mCallback.onCustomStartTimeChanged(NightDisplayListener.this.mManager.getNightDisplayCustomStartTime());
-                        return;
-                    case 3:
-                        NightDisplayListener.this.mCallback.onCustomEndTimeChanged(NightDisplayListener.this.mManager.getNightDisplayCustomEndTime());
-                        return;
-                    case 4:
-                        NightDisplayListener.this.mCallback.onColorTemperatureChanged(NightDisplayListener.this.mManager.getNightDisplayColorTemperature());
-                        return;
-                    default:
-                        return;
-                }
-            }
-        }
     }
 
     public void setCallback(final Callback callback) {
@@ -199,12 +114,13 @@ public class NightDisplayListener {
         lambda$setCallback$0(callback);
     }
 
-    /* renamed from: setCallbackInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: setCallbackInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$setCallback$0(Callback newCallback) {
         Callback oldCallback = this.mCallback;
         if (oldCallback != newCallback) {
             this.mCallback = newCallback;
-            if (newCallback == null) {
+            if (this.mCallback == null) {
                 this.mContext.getContentResolver().unregisterContentObserver(this.mContentObserver);
                 return;
             }
@@ -219,7 +135,6 @@ public class NightDisplayListener {
         }
     }
 
-    /* loaded from: classes2.dex */
     public interface Callback {
         default void onActivated(boolean activated) {
         }

@@ -14,12 +14,7 @@ public class DeviceAdminService extends Service {
         return this.mImpl.asBinder();
     }
 
-    /* loaded from: classes.dex */
     private class IDeviceAdminServiceImpl extends IDeviceAdminService.Stub {
-        /* synthetic */ IDeviceAdminServiceImpl(DeviceAdminService deviceAdminService, IDeviceAdminServiceImplIA iDeviceAdminServiceImplIA) {
-            this();
-        }
-
         private IDeviceAdminServiceImpl() {
         }
     }

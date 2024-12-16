@@ -1,5 +1,6 @@
 package com.samsung.android.media.codec;
 
+import android.graphics.rendererpolicy.ScpmApiContract;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
@@ -7,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.media.codec.IVideoTranscodingServiceCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IVideoTranscodingService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.media.codec.IVideoTranscodingService";
 
@@ -17,7 +18,6 @@ public interface IVideoTranscodingService extends IInterface {
 
     void stopTask(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IVideoTranscodingService {
         @Override // com.samsung.android.media.codec.IVideoTranscodingService
         public String register(int mode, IVideoTranscodingServiceCallback callback) throws RemoteException {
@@ -38,7 +38,6 @@ public interface IVideoTranscodingService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IVideoTranscodingService {
         static final int TRANSACTION_register = 1;
         static final int TRANSACTION_startTask = 2;
@@ -67,7 +66,7 @@ public interface IVideoTranscodingService extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return "register";
+                    return ScpmApiContract.Method.REGISTER;
                 case 2:
                     return "startTask";
                 case 3:
@@ -87,41 +86,37 @@ public interface IVideoTranscodingService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVideoTranscodingService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVideoTranscodingService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVideoTranscodingService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    IVideoTranscodingServiceCallback _arg1 = IVideoTranscodingServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    String _result = register(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    startTask(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    stopTask(_arg03);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            IVideoTranscodingServiceCallback _arg1 = IVideoTranscodingServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            String _result = register(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            startTask(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            stopTask(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IVideoTranscodingService {
+        private static class Proxy implements IVideoTranscodingService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

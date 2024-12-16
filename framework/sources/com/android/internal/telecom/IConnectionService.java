@@ -114,7 +114,6 @@ public interface IConnectionService extends IInterface {
 
     void unhold(String str, Session.Info info) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IConnectionService {
         @Override // com.android.internal.telecom.IConnectionService
         public void addConnectionServiceAdapter(IConnectionServiceAdapter adapter, Session.Info sessionInfo) throws RemoteException {
@@ -306,7 +305,6 @@ public interface IConnectionService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IConnectionService {
         public static final String DESCRIPTOR = "com.android.internal.telecom.IConnectionService";
         static final int TRANSACTION_abort = 9;
@@ -485,335 +483,332 @@ public interface IConnectionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IConnectionServiceAdapter _arg0 = IConnectionServiceAdapter.Stub.asInterface(data.readStrongBinder());
+                    Session.Info _arg1 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    addConnectionServiceAdapter(_arg0, _arg1);
+                    return true;
+                case 2:
+                    IConnectionServiceAdapter _arg02 = IConnectionServiceAdapter.Stub.asInterface(data.readStrongBinder());
+                    Session.Info _arg12 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeConnectionServiceAdapter(_arg02, _arg12);
+                    return true;
+                case 3:
+                    PhoneAccountHandle _arg03 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    String _arg13 = data.readString();
+                    ConnectionRequest _arg2 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    boolean _arg4 = data.readBoolean();
+                    Session.Info _arg5 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    createConnection(_arg03, _arg13, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    Session.Info _arg14 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    createConnectionComplete(_arg04, _arg14);
+                    return true;
+                case 5:
+                    PhoneAccountHandle _arg05 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    String _arg15 = data.readString();
+                    ConnectionRequest _arg22 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
+                    boolean _arg32 = data.readBoolean();
+                    Session.Info _arg42 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    createConnectionFailed(_arg05, _arg15, _arg22, _arg32, _arg42);
+                    return true;
+                case 6:
+                    PhoneAccountHandle _arg06 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    String _arg16 = data.readString();
+                    ConnectionRequest _arg23 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
+                    boolean _arg33 = data.readBoolean();
+                    boolean _arg43 = data.readBoolean();
+                    Session.Info _arg52 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    createConference(_arg06, _arg16, _arg23, _arg33, _arg43, _arg52);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    Session.Info _arg17 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    createConferenceComplete(_arg07, _arg17);
+                    return true;
+                case 8:
+                    PhoneAccountHandle _arg08 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    String _arg18 = data.readString();
+                    ConnectionRequest _arg24 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
+                    boolean _arg34 = data.readBoolean();
+                    Session.Info _arg44 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    createConferenceFailed(_arg08, _arg18, _arg24, _arg34, _arg44);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    Session.Info _arg19 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    abort(_arg09, _arg19);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    int _arg110 = data.readInt();
+                    Session.Info _arg25 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    answerVideo(_arg010, _arg110, _arg25);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    Session.Info _arg111 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    answer(_arg011, _arg111);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    Uri _arg112 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Session.Info _arg26 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    deflect(_arg012, _arg112, _arg26);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    Session.Info _arg113 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    reject(_arg013, _arg113);
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    int _arg114 = data.readInt();
+                    Session.Info _arg27 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    rejectWithReason(_arg014, _arg114, _arg27);
+                    return true;
+                case 15:
+                    String _arg015 = data.readString();
+                    String _arg115 = data.readString();
+                    Session.Info _arg28 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    rejectWithMessage(_arg015, _arg115, _arg28);
+                    return true;
+                case 16:
+                    String _arg016 = data.readString();
+                    Uri _arg116 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    boolean _arg29 = data.readBoolean();
+                    Session.Info _arg35 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    transfer(_arg016, _arg116, _arg29, _arg35);
+                    return true;
+                case 17:
+                    String _arg017 = data.readString();
+                    String _arg117 = data.readString();
+                    Session.Info _arg210 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    consultativeTransfer(_arg017, _arg117, _arg210);
+                    return true;
+                case 18:
+                    String _arg018 = data.readString();
+                    Session.Info _arg118 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    disconnect(_arg018, _arg118);
+                    return true;
+                case 19:
+                    String _arg019 = data.readString();
+                    Session.Info _arg119 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    silence(_arg019, _arg119);
+                    return true;
+                case 20:
+                    String _arg020 = data.readString();
+                    Session.Info _arg120 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    hold(_arg020, _arg120);
+                    return true;
+                case 21:
+                    String _arg021 = data.readString();
+                    Session.Info _arg121 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    unhold(_arg021, _arg121);
+                    return true;
+                case 22:
+                    String _arg022 = data.readString();
+                    CallAudioState _arg122 = (CallAudioState) data.readTypedObject(CallAudioState.CREATOR);
+                    Session.Info _arg211 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallAudioStateChanged(_arg022, _arg122, _arg211);
+                    return true;
+                case 23:
+                    String _arg023 = data.readString();
+                    CallEndpoint _arg123 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
+                    Session.Info _arg212 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallEndpointChanged(_arg023, _arg123, _arg212);
+                    return true;
+                case 24:
+                    String _arg024 = data.readString();
+                    List<CallEndpoint> _arg124 = data.createTypedArrayList(CallEndpoint.CREATOR);
+                    Session.Info _arg213 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAvailableCallEndpointsChanged(_arg024, _arg124, _arg213);
+                    return true;
+                case 25:
+                    String _arg025 = data.readString();
+                    boolean _arg125 = data.readBoolean();
+                    Session.Info _arg214 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMuteStateChanged(_arg025, _arg125, _arg214);
+                    return true;
+                case 26:
+                    String _arg026 = data.readString();
+                    char _arg126 = (char) data.readInt();
+                    Session.Info _arg215 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    playDtmfTone(_arg026, _arg126, _arg215);
+                    return true;
+                case 27:
+                    String _arg027 = data.readString();
+                    Session.Info _arg127 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    stopDtmfTone(_arg027, _arg127);
+                    return true;
+                case 28:
+                    String _arg028 = data.readString();
+                    String _arg128 = data.readString();
+                    Session.Info _arg216 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    conference(_arg028, _arg128, _arg216);
+                    return true;
+                case 29:
+                    String _arg029 = data.readString();
+                    Session.Info _arg129 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    splitFromConference(_arg029, _arg129);
+                    return true;
+                case 30:
+                    String _arg030 = data.readString();
+                    Session.Info _arg130 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    mergeConference(_arg030, _arg130);
+                    return true;
+                case 31:
+                    String _arg031 = data.readString();
+                    Session.Info _arg131 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    swapConference(_arg031, _arg131);
+                    return true;
+                case 32:
+                    String _arg032 = data.readString();
+                    List<Uri> _arg132 = data.createTypedArrayList(Uri.CREATOR);
+                    Session.Info _arg217 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    addConferenceParticipants(_arg032, _arg132, _arg217);
+                    return true;
+                case 33:
+                    String _arg033 = data.readString();
+                    boolean _arg133 = data.readBoolean();
+                    Session.Info _arg218 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPostDialContinue(_arg033, _arg133, _arg218);
+                    return true;
+                case 34:
+                    String _arg034 = data.readString();
+                    Session.Info _arg134 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    pullExternalCall(_arg034, _arg134);
+                    return true;
+                case 35:
+                    String _arg035 = data.readString();
+                    String _arg135 = data.readString();
+                    Bundle _arg219 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    Session.Info _arg36 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCallEvent(_arg035, _arg135, _arg219, _arg36);
+                    return true;
+                case 36:
+                    String _arg036 = data.readString();
+                    Connection.CallFilteringCompletionInfo _arg136 = (Connection.CallFilteringCompletionInfo) data.readTypedObject(Connection.CallFilteringCompletionInfo.CREATOR);
+                    Session.Info _arg220 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallFilteringCompleted(_arg036, _arg136, _arg220);
+                    return true;
+                case 37:
+                    String _arg037 = data.readString();
+                    Bundle _arg137 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    Session.Info _arg221 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onExtrasChanged(_arg037, _arg137, _arg221);
+                    return true;
+                case 38:
+                    String _arg038 = data.readString();
+                    ParcelFileDescriptor _arg138 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ParcelFileDescriptor _arg222 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    Session.Info _arg37 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    startRtt(_arg038, _arg138, _arg222, _arg37);
+                    return true;
+                case 39:
+                    String _arg039 = data.readString();
+                    Session.Info _arg139 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    stopRtt(_arg039, _arg139);
+                    return true;
+                case 40:
+                    String _arg040 = data.readString();
+                    ParcelFileDescriptor _arg140 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ParcelFileDescriptor _arg223 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    Session.Info _arg38 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    respondToRttUpgradeRequest(_arg040, _arg140, _arg223, _arg38);
+                    return true;
+                case 41:
+                    Session.Info _arg041 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    connectionServiceFocusLost(_arg041);
+                    return true;
+                case 42:
+                    Session.Info _arg042 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    connectionServiceFocusGained(_arg042);
+                    return true;
+                case 43:
+                    String _arg043 = data.readString();
+                    ConnectionRequest _arg141 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
+                    int _arg224 = data.readInt();
+                    Session.Info _arg39 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    handoverFailed(_arg043, _arg141, _arg224, _arg39);
+                    return true;
+                case 44:
+                    String _arg044 = data.readString();
+                    Session.Info _arg142 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    handoverComplete(_arg044, _arg142);
+                    return true;
+                case 45:
+                    String _arg045 = data.readString();
+                    boolean _arg143 = data.readBoolean();
+                    Session.Info _arg225 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUsingAlternativeUi(_arg045, _arg143, _arg225);
+                    return true;
+                case 46:
+                    String _arg046 = data.readString();
+                    boolean _arg144 = data.readBoolean();
+                    Session.Info _arg226 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTrackedByNonUiService(_arg046, _arg144, _arg226);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IConnectionServiceAdapter _arg0 = IConnectionServiceAdapter.Stub.asInterface(data.readStrongBinder());
-                            Session.Info _arg1 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            addConnectionServiceAdapter(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            IConnectionServiceAdapter _arg02 = IConnectionServiceAdapter.Stub.asInterface(data.readStrongBinder());
-                            Session.Info _arg12 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeConnectionServiceAdapter(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            PhoneAccountHandle _arg03 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            String _arg13 = data.readString();
-                            ConnectionRequest _arg2 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            boolean _arg4 = data.readBoolean();
-                            Session.Info _arg5 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            createConnection(_arg03, _arg13, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            Session.Info _arg14 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            createConnectionComplete(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            PhoneAccountHandle _arg05 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            String _arg15 = data.readString();
-                            ConnectionRequest _arg22 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
-                            boolean _arg32 = data.readBoolean();
-                            Session.Info _arg42 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            createConnectionFailed(_arg05, _arg15, _arg22, _arg32, _arg42);
-                            return true;
-                        case 6:
-                            PhoneAccountHandle _arg06 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            String _arg16 = data.readString();
-                            ConnectionRequest _arg23 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
-                            boolean _arg33 = data.readBoolean();
-                            boolean _arg43 = data.readBoolean();
-                            Session.Info _arg52 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            createConference(_arg06, _arg16, _arg23, _arg33, _arg43, _arg52);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            Session.Info _arg17 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            createConferenceComplete(_arg07, _arg17);
-                            return true;
-                        case 8:
-                            PhoneAccountHandle _arg08 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            String _arg18 = data.readString();
-                            ConnectionRequest _arg24 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
-                            boolean _arg34 = data.readBoolean();
-                            Session.Info _arg44 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            createConferenceFailed(_arg08, _arg18, _arg24, _arg34, _arg44);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            Session.Info _arg19 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            abort(_arg09, _arg19);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            int _arg110 = data.readInt();
-                            Session.Info _arg25 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            answerVideo(_arg010, _arg110, _arg25);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            Session.Info _arg111 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            answer(_arg011, _arg111);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            Uri _arg112 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Session.Info _arg26 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            deflect(_arg012, _arg112, _arg26);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            Session.Info _arg113 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            reject(_arg013, _arg113);
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            int _arg114 = data.readInt();
-                            Session.Info _arg27 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            rejectWithReason(_arg014, _arg114, _arg27);
-                            return true;
-                        case 15:
-                            String _arg015 = data.readString();
-                            String _arg115 = data.readString();
-                            Session.Info _arg28 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            rejectWithMessage(_arg015, _arg115, _arg28);
-                            return true;
-                        case 16:
-                            String _arg016 = data.readString();
-                            Uri _arg116 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            boolean _arg29 = data.readBoolean();
-                            Session.Info _arg35 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            transfer(_arg016, _arg116, _arg29, _arg35);
-                            return true;
-                        case 17:
-                            String _arg017 = data.readString();
-                            String _arg117 = data.readString();
-                            Session.Info _arg210 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            consultativeTransfer(_arg017, _arg117, _arg210);
-                            return true;
-                        case 18:
-                            String _arg018 = data.readString();
-                            Session.Info _arg118 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            disconnect(_arg018, _arg118);
-                            return true;
-                        case 19:
-                            String _arg019 = data.readString();
-                            Session.Info _arg119 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            silence(_arg019, _arg119);
-                            return true;
-                        case 20:
-                            String _arg020 = data.readString();
-                            Session.Info _arg120 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            hold(_arg020, _arg120);
-                            return true;
-                        case 21:
-                            String _arg021 = data.readString();
-                            Session.Info _arg121 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            unhold(_arg021, _arg121);
-                            return true;
-                        case 22:
-                            String _arg022 = data.readString();
-                            CallAudioState _arg122 = (CallAudioState) data.readTypedObject(CallAudioState.CREATOR);
-                            Session.Info _arg211 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallAudioStateChanged(_arg022, _arg122, _arg211);
-                            return true;
-                        case 23:
-                            String _arg023 = data.readString();
-                            CallEndpoint _arg123 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
-                            Session.Info _arg212 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallEndpointChanged(_arg023, _arg123, _arg212);
-                            return true;
-                        case 24:
-                            String _arg024 = data.readString();
-                            List<CallEndpoint> _arg124 = data.createTypedArrayList(CallEndpoint.CREATOR);
-                            Session.Info _arg213 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAvailableCallEndpointsChanged(_arg024, _arg124, _arg213);
-                            return true;
-                        case 25:
-                            String _arg025 = data.readString();
-                            boolean _arg125 = data.readBoolean();
-                            Session.Info _arg214 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMuteStateChanged(_arg025, _arg125, _arg214);
-                            return true;
-                        case 26:
-                            String _arg026 = data.readString();
-                            char _arg126 = (char) data.readInt();
-                            Session.Info _arg215 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            playDtmfTone(_arg026, _arg126, _arg215);
-                            return true;
-                        case 27:
-                            String _arg027 = data.readString();
-                            Session.Info _arg127 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            stopDtmfTone(_arg027, _arg127);
-                            return true;
-                        case 28:
-                            String _arg028 = data.readString();
-                            String _arg128 = data.readString();
-                            Session.Info _arg216 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            conference(_arg028, _arg128, _arg216);
-                            return true;
-                        case 29:
-                            String _arg029 = data.readString();
-                            Session.Info _arg129 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            splitFromConference(_arg029, _arg129);
-                            return true;
-                        case 30:
-                            String _arg030 = data.readString();
-                            Session.Info _arg130 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            mergeConference(_arg030, _arg130);
-                            return true;
-                        case 31:
-                            String _arg031 = data.readString();
-                            Session.Info _arg131 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            swapConference(_arg031, _arg131);
-                            return true;
-                        case 32:
-                            String _arg032 = data.readString();
-                            List<Uri> _arg132 = data.createTypedArrayList(Uri.CREATOR);
-                            Session.Info _arg217 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            addConferenceParticipants(_arg032, _arg132, _arg217);
-                            return true;
-                        case 33:
-                            String _arg033 = data.readString();
-                            boolean _arg133 = data.readBoolean();
-                            Session.Info _arg218 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPostDialContinue(_arg033, _arg133, _arg218);
-                            return true;
-                        case 34:
-                            String _arg034 = data.readString();
-                            Session.Info _arg134 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            pullExternalCall(_arg034, _arg134);
-                            return true;
-                        case 35:
-                            String _arg035 = data.readString();
-                            String _arg135 = data.readString();
-                            Bundle _arg219 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            Session.Info _arg36 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCallEvent(_arg035, _arg135, _arg219, _arg36);
-                            return true;
-                        case 36:
-                            String _arg036 = data.readString();
-                            Connection.CallFilteringCompletionInfo _arg136 = (Connection.CallFilteringCompletionInfo) data.readTypedObject(Connection.CallFilteringCompletionInfo.CREATOR);
-                            Session.Info _arg220 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallFilteringCompleted(_arg036, _arg136, _arg220);
-                            return true;
-                        case 37:
-                            String _arg037 = data.readString();
-                            Bundle _arg137 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            Session.Info _arg221 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onExtrasChanged(_arg037, _arg137, _arg221);
-                            return true;
-                        case 38:
-                            String _arg038 = data.readString();
-                            ParcelFileDescriptor _arg138 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ParcelFileDescriptor _arg222 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            Session.Info _arg37 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            startRtt(_arg038, _arg138, _arg222, _arg37);
-                            return true;
-                        case 39:
-                            String _arg039 = data.readString();
-                            Session.Info _arg139 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            stopRtt(_arg039, _arg139);
-                            return true;
-                        case 40:
-                            String _arg040 = data.readString();
-                            ParcelFileDescriptor _arg140 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ParcelFileDescriptor _arg223 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            Session.Info _arg38 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            respondToRttUpgradeRequest(_arg040, _arg140, _arg223, _arg38);
-                            return true;
-                        case 41:
-                            Session.Info _arg041 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            connectionServiceFocusLost(_arg041);
-                            return true;
-                        case 42:
-                            Session.Info _arg042 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            connectionServiceFocusGained(_arg042);
-                            return true;
-                        case 43:
-                            String _arg043 = data.readString();
-                            ConnectionRequest _arg141 = (ConnectionRequest) data.readTypedObject(ConnectionRequest.CREATOR);
-                            int _arg224 = data.readInt();
-                            Session.Info _arg39 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            handoverFailed(_arg043, _arg141, _arg224, _arg39);
-                            return true;
-                        case 44:
-                            String _arg044 = data.readString();
-                            Session.Info _arg142 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            handoverComplete(_arg044, _arg142);
-                            return true;
-                        case 45:
-                            String _arg045 = data.readString();
-                            boolean _arg143 = data.readBoolean();
-                            Session.Info _arg225 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUsingAlternativeUi(_arg045, _arg143, _arg225);
-                            return true;
-                        case 46:
-                            String _arg046 = data.readString();
-                            boolean _arg144 = data.readBoolean();
-                            Session.Info _arg226 = (Session.Info) data.readTypedObject(Session.Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTrackedByNonUiService(_arg046, _arg144, _arg226);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IConnectionService {
+        private static class Proxy implements IConnectionService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

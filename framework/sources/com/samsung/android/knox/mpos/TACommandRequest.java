@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class TACommandRequest implements Parcelable {
     public static final Parcelable.Creator<TACommandRequest> CREATOR = new Parcelable.Creator<TACommandRequest>() { // from class: com.samsung.android.knox.mpos.TACommandRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandRequest createFromParcel(Parcel in) {
             return new TACommandRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandRequest[] newArray(int size) {
             return new TACommandRequest[size];
@@ -33,10 +32,6 @@ public class TACommandRequest implements Parcelable {
     public int mOffset;
     public byte[] mRequest;
     public int mVersion;
-
-    /* synthetic */ TACommandRequest(Parcel parcel, TACommandRequestIA tACommandRequestIA) {
-        this(parcel);
-    }
 
     public TACommandRequest() {
         this.mVersion = -1;
@@ -60,23 +55,6 @@ public class TACommandRequest implements Parcelable {
         this.mOffset = 0;
     }
 
-    /* renamed from: com.samsung.android.knox.mpos.TACommandRequest$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TACommandRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TACommandRequest createFromParcel(Parcel in) {
-            return new TACommandRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TACommandRequest[] newArray(int size) {
-            return new TACommandRequest[size];
-        }
-    }
-
     private TACommandRequest(Parcel in) {
         this.mVersion = -1;
         this.mMagicNum = null;
@@ -90,16 +68,19 @@ public class TACommandRequest implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flag) {
         out.writeInt(this.mVersion);
-        out.writeInt(this.mMagicNum.length);
-        out.writeByteArray(this.mMagicNum);
+        if (this.mMagicNum == null || this.mMagicNum.length != 4) {
+            out.writeInt(0);
+        } else {
+            out.writeInt(this.mMagicNum.length);
+            out.writeByteArray(this.mMagicNum);
+        }
         out.writeInt(this.mCommandId);
         out.writeInt(this.mLength);
         out.writeInt(this.mOffset);
-        byte[] bArr = this.mRequest;
-        if (bArr == null || bArr.length == 0) {
+        if (this.mRequest == null || this.mRequest.length == 0) {
             out.writeInt(0);
         } else {
-            out.writeInt(bArr.length);
+            out.writeInt(this.mRequest.length);
             out.writeByteArray(this.mRequest);
         }
     }
@@ -108,18 +89,16 @@ public class TACommandRequest implements Parcelable {
         this.mVersion = in.readInt();
         int len = in.readInt();
         if (len > 0) {
-            byte[] bArr = new byte[len];
-            this.mMagicNum = bArr;
-            in.readByteArray(bArr);
+            this.mMagicNum = new byte[len];
+            in.readByteArray(this.mMagicNum);
         }
         this.mCommandId = in.readInt();
         this.mLength = in.readInt();
         this.mOffset = in.readInt();
         int len2 = in.readInt();
         if (len2 > 0) {
-            byte[] bArr2 = new byte[len2];
-            this.mRequest = bArr2;
-            in.readByteArray(bArr2);
+            this.mRequest = new byte[len2];
+            in.readByteArray(this.mRequest);
         }
     }
 
@@ -157,26 +136,20 @@ public class TACommandRequest implements Parcelable {
 
     public List<TACommandRequest> disassemble() {
         List<TACommandRequest> arr = new ArrayList<>();
-        byte[] bArr = this.mRequest;
-        if (bArr == null) {
+        if (this.mRequest == null) {
             return null;
         }
-        if (bArr.length <= 2972) {
+        if (this.mRequest.length <= 2972) {
             arr.add(this);
             return arr;
         }
         int offset = 0;
-        while (true) {
-            int i = offset + 2972;
-            int i2 = this.mLength;
-            if (i < i2) {
-                arr.add(new TACommandRequest(this.mVersion, this.mMagicNum, this.mCommandId, i2, offset, Arrays.copyOfRange(this.mRequest, offset, offset + 2972)));
-                offset += 2972;
-            } else {
-                arr.add(new TACommandRequest(this.mVersion, this.mMagicNum, this.mCommandId, i2, offset, Arrays.copyOfRange(this.mRequest, offset, i2)));
-                return arr;
-            }
+        while (offset + 2972 < this.mLength) {
+            arr.add(new TACommandRequest(this.mVersion, this.mMagicNum, this.mCommandId, this.mLength, offset, Arrays.copyOfRange(this.mRequest, offset, offset + 2972)));
+            offset += 2972;
         }
+        arr.add(new TACommandRequest(this.mVersion, this.mMagicNum, this.mCommandId, this.mLength, offset, Arrays.copyOfRange(this.mRequest, offset, this.mLength)));
+        return arr;
     }
 
     public void dump() {

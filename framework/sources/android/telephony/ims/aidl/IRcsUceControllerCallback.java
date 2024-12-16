@@ -9,7 +9,7 @@ import android.telephony.ims.RcsContactUceCapability;
 import android.telephony.ims.SipDetails;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IRcsUceControllerCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IRcsUceControllerCallback";
 
@@ -19,7 +19,6 @@ public interface IRcsUceControllerCallback extends IInterface {
 
     void onError(int i, long j, SipDetails sipDetails) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRcsUceControllerCallback {
         @Override // android.telephony.ims.aidl.IRcsUceControllerCallback
         public void onCapabilitiesReceived(List<RcsContactUceCapability> contactCapabilities) throws RemoteException {
@@ -39,7 +38,6 @@ public interface IRcsUceControllerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRcsUceControllerCallback {
         static final int TRANSACTION_onCapabilitiesReceived = 1;
         static final int TRANSACTION_onComplete = 2;
@@ -88,38 +86,34 @@ public interface IRcsUceControllerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRcsUceControllerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRcsUceControllerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRcsUceControllerCallback.DESCRIPTOR);
+                case 1:
+                    List<RcsContactUceCapability> _arg0 = data.createTypedArrayList(RcsContactUceCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCapabilitiesReceived(_arg0);
+                    return true;
+                case 2:
+                    SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    onComplete(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    long _arg1 = data.readLong();
+                    SipDetails _arg2 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    onError(_arg03, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<RcsContactUceCapability> _arg0 = data.createTypedArrayList(RcsContactUceCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCapabilitiesReceived(_arg0);
-                            return true;
-                        case 2:
-                            SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            onComplete(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            long _arg1 = data.readLong();
-                            SipDetails _arg2 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            onError(_arg03, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRcsUceControllerCallback {
+        private static class Proxy implements IRcsUceControllerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

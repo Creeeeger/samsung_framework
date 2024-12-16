@@ -14,7 +14,6 @@ public interface IRecognitionSupportCallback extends IInterface {
 
     void onSupportResult(RecognitionSupport recognitionSupport) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecognitionSupportCallback {
         @Override // android.speech.IRecognitionSupportCallback
         public void onSupportResult(RecognitionSupport recognitionSupport) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IRecognitionSupportCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecognitionSupportCallback {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onSupportResult = 1;
@@ -76,31 +74,27 @@ public interface IRecognitionSupportCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRecognitionSupportCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRecognitionSupportCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRecognitionSupportCallback.DESCRIPTOR);
+                case 1:
+                    RecognitionSupport _arg0 = (RecognitionSupport) data.readTypedObject(RecognitionSupport.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSupportResult(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RecognitionSupport _arg0 = (RecognitionSupport) data.readTypedObject(RecognitionSupport.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSupportResult(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecognitionSupportCallback {
+        private static class Proxy implements IRecognitionSupportCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

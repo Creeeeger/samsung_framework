@@ -13,7 +13,6 @@ public interface IPackageInstallerSessionFileSystemConnector extends IInterface 
 
     void writeData(String str, long j, long j2, ParcelFileDescriptor parcelFileDescriptor) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPackageInstallerSessionFileSystemConnector {
         @Override // android.content.pm.IPackageInstallerSessionFileSystemConnector
         public void writeData(String name, long offsetBytes, long lengthBytes, ParcelFileDescriptor fd) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IPackageInstallerSessionFileSystemConnector extends IInterface 
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPackageInstallerSessionFileSystemConnector {
         static final int TRANSACTION_writeData = 1;
 
@@ -68,29 +66,26 @@ public interface IPackageInstallerSessionFileSystemConnector extends IInterface 
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPackageInstallerSessionFileSystemConnector.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPackageInstallerSessionFileSystemConnector.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPackageInstallerSessionFileSystemConnector.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    long _arg1 = data.readLong();
+                    long _arg2 = data.readLong();
+                    ParcelFileDescriptor _arg3 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    writeData(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            long _arg1 = data.readLong();
-                            long _arg2 = data.readLong();
-                            ParcelFileDescriptor _arg3 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            writeData(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPackageInstallerSessionFileSystemConnector {
+        private static class Proxy implements IPackageInstallerSessionFileSystemConnector {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

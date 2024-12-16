@@ -2,12 +2,14 @@ package com.android.net.module.util;
 
 import android.os.Parcel;
 import android.util.Log;
+import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /* loaded from: classes5.dex */
 public class InetAddressUtils {
+    private static final int INET4_ADDR_LENGTH = 4;
     private static final int INET6_ADDR_LENGTH = 16;
     private static final String TAG = InetAddressUtils.class.getSimpleName();
 
@@ -49,6 +51,19 @@ public class InetAddressUtils {
             return Inet6Address.getByAddress((String) null, addr.getAddress(), scopeid);
         } catch (UnknownHostException impossible) {
             Log.wtf(TAG, "Cannot construct scoped Inet6Address with Inet6Address.getAddress(" + addr.getHostAddress() + "): ", impossible);
+            return null;
+        }
+    }
+
+    public static Inet6Address v4MappedV6Address(Inet4Address v4Addr) {
+        byte[] v6AddrBytes = new byte[16];
+        v6AddrBytes[10] = -1;
+        v6AddrBytes[11] = -1;
+        System.arraycopy(v4Addr.getAddress(), 0, v6AddrBytes, 12, 4);
+        try {
+            return Inet6Address.getByAddress((String) null, v6AddrBytes, -1);
+        } catch (UnknownHostException impossible) {
+            Log.wtf(TAG, "Failed to generate v4-mapped v6 address from " + v4Addr, impossible);
             return null;
         }
     }

@@ -98,7 +98,7 @@ class X509Util {
         return new RSASSAPSSparams(hashAlgId, new AlgorithmIdentifier(PKCSObjectIdentifiers.id_mgf1, hashAlgId), new ASN1Integer(saltSize), new ASN1Integer(1L));
     }
 
-    public static ASN1ObjectIdentifier getAlgorithmOID(String algorithmName) {
+    static ASN1ObjectIdentifier getAlgorithmOID(String algorithmName) {
         String algorithmName2 = Strings.toUpperCase(algorithmName);
         if (algorithms.containsKey(algorithmName2)) {
             return (ASN1ObjectIdentifier) algorithms.get(algorithmName2);
@@ -106,7 +106,7 @@ class X509Util {
         return new ASN1ObjectIdentifier(algorithmName2);
     }
 
-    public static AlgorithmIdentifier getSigAlgID(ASN1ObjectIdentifier sigOid, String algorithmName) {
+    static AlgorithmIdentifier getSigAlgID(ASN1ObjectIdentifier sigOid, String algorithmName) {
         if (noParams.contains(sigOid)) {
             return new AlgorithmIdentifier(sigOid);
         }
@@ -117,7 +117,7 @@ class X509Util {
         return new AlgorithmIdentifier(sigOid, DERNull.INSTANCE);
     }
 
-    public static Iterator getAlgNames() {
+    static Iterator getAlgNames() {
         Enumeration e = algorithms.keys();
         List l = new ArrayList();
         while (e.hasMoreElements()) {
@@ -137,7 +137,7 @@ class X509Util {
         return Signature.getInstance(algorithm);
     }
 
-    public static byte[] calculateSignature(ASN1ObjectIdentifier sigOid, String sigName, PrivateKey key, SecureRandom random, ASN1Encodable object) throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    static byte[] calculateSignature(ASN1ObjectIdentifier sigOid, String sigName, PrivateKey key, SecureRandom random, ASN1Encodable object) throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (sigOid == null) {
             throw new IllegalStateException("no signature algorithm specified");
         }
@@ -151,7 +151,7 @@ class X509Util {
         return sig.sign();
     }
 
-    public static byte[] calculateSignature(ASN1ObjectIdentifier sigOid, String sigName, String provider, PrivateKey key, SecureRandom random, ASN1Encodable object) throws IOException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    static byte[] calculateSignature(ASN1ObjectIdentifier sigOid, String sigName, String provider, PrivateKey key, SecureRandom random, ASN1Encodable object) throws IOException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (sigOid == null) {
             throw new IllegalStateException("no signature algorithm specified");
         }
@@ -165,7 +165,7 @@ class X509Util {
         return sig.sign();
     }
 
-    public static X509Principal convertPrincipal(X500Principal principal) {
+    static X509Principal convertPrincipal(X500Principal principal) {
         try {
             return new X509Principal(principal.getEncoded());
         } catch (IOException e) {
@@ -173,8 +173,7 @@ class X509Util {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class Implementation {
+    static class Implementation {
         Object engine;
         Provider provider;
 

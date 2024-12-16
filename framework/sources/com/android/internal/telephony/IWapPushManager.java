@@ -17,7 +17,6 @@ public interface IWapPushManager extends IInterface {
 
     boolean updatePackage(String str, String str2, String str3, String str4, int i, boolean z, boolean z2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IWapPushManager {
         @Override // com.android.internal.telephony.IWapPushManager
         public int processMessage(String app_id, String content_type, Intent intent) throws RemoteException {
@@ -45,7 +44,6 @@ public interface IWapPushManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IWapPushManager {
         public static final String DESCRIPTOR = "com.android.internal.telephony.IWapPushManager";
         static final int TRANSACTION_addPackage = 2;
@@ -98,64 +96,61 @@ public interface IWapPushManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    Intent _arg2 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result = processMessage(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    String _arg3 = data.readString();
+                    int _arg4 = data.readInt();
+                    boolean _arg5 = data.readBoolean();
+                    boolean _arg6 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = addPackage(_arg02, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    String _arg23 = data.readString();
+                    String _arg32 = data.readString();
+                    int _arg42 = data.readInt();
+                    boolean _arg52 = data.readBoolean();
+                    boolean _arg62 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = updatePackage(_arg03, _arg13, _arg23, _arg32, _arg42, _arg52, _arg62);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg14 = data.readString();
+                    String _arg24 = data.readString();
+                    String _arg33 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = deletePackage(_arg04, _arg14, _arg24, _arg33);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            Intent _arg2 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result = processMessage(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            boolean _arg5 = data.readBoolean();
-                            boolean _arg6 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = addPackage(_arg02, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            String _arg23 = data.readString();
-                            String _arg32 = data.readString();
-                            int _arg42 = data.readInt();
-                            boolean _arg52 = data.readBoolean();
-                            boolean _arg62 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = updatePackage(_arg03, _arg13, _arg23, _arg32, _arg42, _arg52, _arg62);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg14 = data.readString();
-                            String _arg24 = data.readString();
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = deletePackage(_arg04, _arg14, _arg24, _arg33);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IWapPushManager {
             private IBinder mRemote;
 

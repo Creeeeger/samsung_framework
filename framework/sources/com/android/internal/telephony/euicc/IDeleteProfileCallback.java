@@ -12,7 +12,6 @@ public interface IDeleteProfileCallback extends IInterface {
 
     void onComplete(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDeleteProfileCallback {
         @Override // com.android.internal.telephony.euicc.IDeleteProfileCallback
         public void onComplete(int resultCode) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDeleteProfileCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDeleteProfileCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,26 +65,22 @@ public interface IDeleteProfileCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDeleteProfileCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDeleteProfileCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeleteProfileCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDeleteProfileCallback {
+        private static class Proxy implements IDeleteProfileCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

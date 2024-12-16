@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IDexModuleRegisterCallback extends IInterface {
     void onDexModuleRegistered(String str, boolean z, String str2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IDexModuleRegisterCallback {
         @Override // android.content.pm.IDexModuleRegisterCallback
         public void onDexModuleRegistered(String dexModulePath, boolean success, String message) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IDexModuleRegisterCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IDexModuleRegisterCallback {
         public static final String DESCRIPTOR = "android.content.pm.IDexModuleRegisterCallback";
         static final int TRANSACTION_onDexModuleRegistered = 1;
@@ -66,27 +64,24 @@ public interface IDexModuleRegisterCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onDexModuleRegistered(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onDexModuleRegistered(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IDexModuleRegisterCallback {
+        private static class Proxy implements IDexModuleRegisterCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

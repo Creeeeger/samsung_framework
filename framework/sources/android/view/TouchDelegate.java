@@ -21,10 +21,8 @@ public class TouchDelegate {
     public TouchDelegate(Rect bounds, View delegateView) {
         this.mBounds = bounds;
         this.mSlop = ViewConfiguration.get(delegateView.getContext()).getScaledTouchSlop();
-        Rect rect = new Rect(bounds);
-        this.mSlopBounds = rect;
-        int i = this.mSlop;
-        rect.inset(-i, -i);
+        this.mSlopBounds = new Rect(bounds);
+        this.mSlopBounds.inset(-this.mSlop, -this.mSlop);
         this.mDelegateView = delegateView;
     }
 

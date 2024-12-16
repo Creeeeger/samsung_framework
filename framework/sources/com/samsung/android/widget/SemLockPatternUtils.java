@@ -45,6 +45,10 @@ public class SemLockPatternUtils {
         return this.mLockPatternUtils.isRMMLockEnabled(userId);
     }
 
+    public boolean isKnoxguardLockEnabled(int userId) {
+        return this.mLockPatternUtils.isKnoxguardLockEnabled(userId);
+    }
+
     public boolean isCarrierLockEnabled(int userId) {
         return this.mLockPatternUtils.isCarrierLockEnabled(userId);
     }

@@ -10,10 +10,12 @@ import com.samsung.vekit.Common.Type.ElementType;
 import com.samsung.vekit.Common.Type.ItemErrorType;
 import com.samsung.vekit.Common.Type.ItemType;
 import com.samsung.vekit.Common.Type.MeshType;
+import com.samsung.vekit.Common.Type.ToneType;
 import com.samsung.vekit.Common.VEContext;
 import com.samsung.vekit.Content.Content;
 import com.samsung.vekit.Layer.Layer;
 import com.samsung.vekit.Listener.ItemStatusListener;
+import com.samsung.vekit.Listener.PcmInfoListener;
 import com.samsung.vekit.Panel.Panel;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +37,7 @@ public class Item extends Element implements ItemStatusListener {
     protected ArrayList<Region> regionList;
     protected float speed;
 
-    public Item(VEContext context, ItemType type, int id, String name) {
+    protected Item(VEContext context, ItemType type, int id, String name) {
         super(context, ElementType.ITEM, id, name);
         this.speed = 1.0f;
         this.meshType = MeshType.PLANE;
@@ -65,7 +67,7 @@ public class Item extends Element implements ItemStatusListener {
     }
 
     public Item setPanel(Panel panel) {
-        this.panel = panel.m8985clone();
+        this.panel = panel.m9389clone();
         return this;
     }
 
@@ -164,6 +166,7 @@ public class Item extends Element implements ItemStatusListener {
             checkValidAnimation(animation);
             this.context.getNativeInterface().detachAnimation(this, animation.getId());
             this.animationList.remove(animation);
+            animation.rollback();
             animation.setTarget(null);
         } catch (Exception e) {
             Log.e(this.TAG, "detachAnimation: ", e);
@@ -182,6 +185,7 @@ public class Item extends Element implements ItemStatusListener {
         Iterator<Animation<?>> it = this.animationList.iterator();
         while (it.hasNext()) {
             Animation animation = it.next();
+            animation.rollback();
             animation.setTarget(null);
         }
         this.animationList.clear();
@@ -206,12 +210,11 @@ public class Item extends Element implements ItemStatusListener {
 
     public long getAbsoluteStartTime() {
         Item item;
-        Layer layer = this.parent;
-        if (layer == null) {
+        if (this.parent == null) {
             return this.padding;
         }
         long startTime = this.padding;
-        List<Item> itemList = layer.getChildren();
+        List<Item> itemList = this.parent.getChildren();
         Iterator<Item> it = itemList.iterator();
         while (it.hasNext() && (item = it.next()) != this) {
             startTime += item.getItemEndTime();
@@ -252,8 +255,17 @@ public class Item extends Element implements ItemStatusListener {
         return 0.0f;
     }
 
+    @Override // com.samsung.vekit.Common.Object.Element
     public Item setOpacity(float opacity) {
         return this;
+    }
+
+    public Item setToneIntensity(ToneType type, int intensity) {
+        return this;
+    }
+
+    public int getToneIntensity(ToneType type) {
+        return 0;
     }
 
     public void checkValidAnimation(Animation animation) throws Exception {
@@ -265,13 +277,16 @@ public class Item extends Element implements ItemStatusListener {
 
     @Override // com.samsung.vekit.Listener.ItemStatusListener
     public void onError(ItemErrorType errorType) {
-        ItemStatusListener itemStatusListener = this.listener;
-        if (itemStatusListener != null) {
-            itemStatusListener.onError(errorType);
+        if (this.listener != null) {
+            this.listener.onError(errorType);
         }
     }
 
     public void setStatusListener(ItemStatusListener listener) {
         this.listener = listener;
+    }
+
+    public PcmInfoListener getPcmInfoListener() {
+        return null;
     }
 }

@@ -206,7 +206,6 @@ public class GLES31Ext {
     public static final int GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_EXT = 36879;
     public static final int GL_VERTEX_ARRAY_KHR = 32884;
 
-    /* loaded from: classes3.dex */
     public interface DebugProcKHR {
         void onMessage(int i, int i2, int i3, int i4, String str);
     }

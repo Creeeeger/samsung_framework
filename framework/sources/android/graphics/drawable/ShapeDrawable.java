@@ -27,13 +27,8 @@ public class ShapeDrawable extends Drawable {
     private boolean mMutated;
     private ShapeState mShapeState;
 
-    /* loaded from: classes.dex */
     public static abstract class ShaderFactory {
         public abstract Shader resize(int i, int i2);
-    }
-
-    /* synthetic */ ShapeDrawable(ShapeState shapeState, Resources resources, ShapeDrawableIA shapeDrawableIA) {
-        this(shapeState, resources);
     }
 
     public ShapeDrawable() {
@@ -226,13 +221,13 @@ public class ShapeDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         updateShape();
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         ShapeState state = this.mShapeState;
         if (state.mTint != null && state.mBlendMode != null) {
             this.mBlendModeColorFilter = updateBlendModeFilter(this.mBlendModeColorFilter, state.mTint, state.mBlendMode);
@@ -252,7 +247,7 @@ public class ShapeDrawable extends Drawable {
         return this.mShapeState.mTint != null && this.mShapeState.mTint.hasFocusStateSpecified();
     }
 
-    public boolean inflateTag(String name, Resources r, XmlPullParser parser, AttributeSet attrs) {
+    protected boolean inflateTag(String name, Resources r, XmlPullParser parser, AttributeSet attrs) {
         if (!"padding".equals(name)) {
             return false;
         }
@@ -366,8 +361,7 @@ public class ShapeDrawable extends Drawable {
         this.mMutated = false;
     }
 
-    /* loaded from: classes.dex */
-    public static final class ShapeState extends Drawable.ConstantState {
+    static final class ShapeState extends Drawable.ConstantState {
         int mAlpha;
         BlendMode mBlendMode;
         int mChangingConfigurations;
@@ -392,10 +386,9 @@ public class ShapeDrawable extends Drawable {
             this.mChangingConfigurations = orig.mChangingConfigurations;
             this.mPaint = new Paint(orig.mPaint);
             this.mThemeAttrs = orig.mThemeAttrs;
-            Shape shape = orig.mShape;
-            if (shape != null) {
+            if (orig.mShape != null) {
                 try {
-                    this.mShape = shape.mo1293clone();
+                    this.mShape = orig.mShape.mo1387clone();
                 } catch (CloneNotSupportedException e) {
                     this.mShape = orig.mShape;
                 }
@@ -413,8 +406,7 @@ public class ShapeDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            ColorStateList colorStateList;
-            return this.mThemeAttrs != null || ((colorStateList = this.mTint) != null && colorStateList.canApplyTheme());
+            return this.mThemeAttrs != null || (this.mTint != null && this.mTint.canApplyTheme());
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -429,9 +421,7 @@ public class ShapeDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mTint;
-            return i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
     }
 

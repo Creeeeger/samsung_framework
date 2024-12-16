@@ -12,7 +12,7 @@ public abstract class CursorEntityIterator implements EntityIterator {
 
     public CursorEntityIterator(Cursor cursor) {
         this.mCursor = cursor;
-        cursor.moveToFirst();
+        this.mCursor.moveToFirst();
     }
 
     @Override // java.util.Iterator
@@ -23,6 +23,7 @@ public abstract class CursorEntityIterator implements EntityIterator {
         return !this.mCursor.isAfterLast();
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.Iterator
     public Entity next() {
         if (this.mIsClosed) {

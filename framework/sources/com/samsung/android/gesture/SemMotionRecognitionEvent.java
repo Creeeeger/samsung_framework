@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.security.keystore.KeyProperties;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemMotionRecognitionEvent implements Parcelable {
     public static final int BLOW = 66;
     public static final int BOUNCE = 46;
@@ -17,14 +17,13 @@ public class SemMotionRecognitionEvent implements Parcelable {
     public static final int CALLPOSE_NONE = 100;
     public static final int CALLPOSE_R = 77;
     public static final Parcelable.Creator<SemMotionRecognitionEvent> CREATOR = new Parcelable.Creator<SemMotionRecognitionEvent>() { // from class: com.samsung.android.gesture.SemMotionRecognitionEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMotionRecognitionEvent createFromParcel(Parcel in) {
             return new SemMotionRecognitionEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMotionRecognitionEvent[] newArray(int size) {
             return new SemMotionRecognitionEvent[size];
@@ -316,22 +315,5 @@ public class SemMotionRecognitionEvent implements Parcelable {
         this.panningDzImage = src.readInt();
         this.tilt = src.readInt();
         this.walkingStatus = src.readInt();
-    }
-
-    /* renamed from: com.samsung.android.gesture.SemMotionRecognitionEvent$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemMotionRecognitionEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemMotionRecognitionEvent createFromParcel(Parcel in) {
-            return new SemMotionRecognitionEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemMotionRecognitionEvent[] newArray(int size) {
-            return new SemMotionRecognitionEvent[size];
-        }
     }
 }

@@ -27,7 +27,6 @@ import android.util.Xml;
 import android.widget.ProgressBar;
 import com.android.internal.R;
 import com.android.internal.util.VirtualRefBasePtr;
-import com.samsung.android.rune.ViewRune;
 import com.samsung.android.wallpaperbackup.GenerateXML;
 import dalvik.annotation.optimization.FastNative;
 import dalvik.system.VMRuntime;
@@ -62,103 +61,111 @@ public class VectorDrawable extends Drawable {
     private final Rect mTmpBounds;
     private VectorDrawableState mVectorState;
 
-    /* renamed from: -$$Nest$smnCreateClipPath */
-    static /* bridge */ /* synthetic */ long m1239$$Nest$smnCreateClipPath() {
-        return nCreateClipPath();
-    }
-
-    /* renamed from: -$$Nest$smnCreateFullPath */
-    static /* bridge */ /* synthetic */ long m1241$$Nest$smnCreateFullPath() {
-        return nCreateFullPath();
-    }
-
-    /* renamed from: -$$Nest$smnCreateGroup */
-    static /* bridge */ /* synthetic */ long m1243$$Nest$smnCreateGroup() {
-        return nCreateGroup();
-    }
-
-    /* synthetic */ VectorDrawable(VectorDrawableState vectorDrawableState, Resources resources, VectorDrawableIA vectorDrawableIA) {
-        this(vectorDrawableState, resources);
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nAddChild(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
-    private static native long nCreateClipPath();
+    public static native long nCreateClipPath();
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreateClipPath(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
-    private static native long nCreateFullPath();
+    public static native long nCreateFullPath();
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreateFullPath(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
-    private static native long nCreateGroup();
+    public static native long nCreateGroup();
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreateGroup(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreateTree(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreateTreeFromCopy(long j, long j2);
 
     private static native int nDraw(long j, long j2, long j3, Rect rect, boolean z, boolean z2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetFillAlpha(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native int nGetFillColor(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native boolean nGetFullPathProperties(long j, byte[] bArr, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native boolean nGetGroupProperties(long j, float[] fArr, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetPivotX(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetPivotY(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetRootAlpha(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetRotation(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetScaleX(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetScaleY(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetStrokeAlpha(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native int nGetStrokeColor(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetStrokeWidth(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetTranslateX(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetTranslateY(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetTrimPathEnd(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetTrimPathOffset(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native float nGetTrimPathStart(long j);
 
@@ -168,73 +175,97 @@ public class VectorDrawable extends Drawable {
     @FastNative
     private static native void nSetAntiAlias(long j, boolean z);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetFillAlpha(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetFillColor(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetName(long j, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetPathData(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetPathString(long j, String str, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetPivotX(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetPivotY(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetRendererViewportSize(long j, float f, float f2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native boolean nSetRootAlpha(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetRotation(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetScaleX(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetScaleY(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetStrokeAlpha(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetStrokeColor(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetStrokeWidth(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetTranslateX(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetTranslateY(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetTrimPathEnd(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetTrimPathOffset(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetTrimPathStart(long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nUpdateFullPathFillGradient(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nUpdateFullPathProperties(long j, float f, int i, float f2, int i2, float f3, float f4, float f5, float f6, float f7, int i3, int i4, int i5);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nUpdateFullPathStrokeGradient(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nUpdateGroupProperties(long j, float f, float f2, float f3, float f4, float f5, float f6, float f7);
 
@@ -276,7 +307,7 @@ public class VectorDrawable extends Drawable {
         this.mMutated = false;
     }
 
-    public Object getTargetByName(String name) {
+    Object getTargetByName(String name) {
         return this.mVectorState.mVGTargetsMap.get(name);
     }
 
@@ -293,10 +324,7 @@ public class VectorDrawable extends Drawable {
         if (this.mTmpBounds.width() <= 0 || this.mTmpBounds.height() <= 0) {
             return;
         }
-        ColorFilter colorFilter = this.mColorFilter;
-        if (colorFilter == null) {
-            colorFilter = this.mBlendModeColorFilter;
-        }
+        ColorFilter colorFilter = this.mColorFilter == null ? this.mBlendModeColorFilter : this.mColorFilter;
         long colorFilterNativeInstance = colorFilter == null ? 0L : colorFilter.getNativeInstance();
         boolean canReuseCache = this.mVectorState.canReuseCache();
         int pixelCount = nDraw(this.mVectorState.getNativeRenderer(), canvas.getNativeCanvasWrapper(), colorFilterNativeInstance, this.mTmpBounds, needMirroring(), canReuseCache);
@@ -360,70 +388,18 @@ public class VectorDrawable extends Drawable {
         }
     }
 
-    public void setPathStrokeColor(String pathName, int color) {
-        VectorDrawableState vectorDrawableState;
-        if (pathName == null || pathName.isEmpty() || (vectorDrawableState = this.mVectorState) == null || vectorDrawableState.mRootGroup == null) {
-            return;
-        }
-        this.mVectorState.mRootGroup.updatePathColorTraversal(pathName, color, 0);
-    }
-
-    public void setPathFillColor(String pathName, int color) {
-        VectorDrawableState vectorDrawableState;
-        if (pathName == null || pathName.isEmpty() || (vectorDrawableState = this.mVectorState) == null || vectorDrawableState.mRootGroup == null) {
-            return;
-        }
-        this.mVectorState.mRootGroup.updatePathColorTraversal(pathName, color, 1);
-    }
-
-    public void setPathColor(String pathName, int color) {
-        VectorDrawableState vectorDrawableState;
-        if (pathName == null || pathName.isEmpty() || (vectorDrawableState = this.mVectorState) == null || vectorDrawableState.mRootGroup == null) {
-            return;
-        }
-        this.mVectorState.mRootGroup.updatePathColorTraversal(pathName, color, 2);
-    }
-
-    public static void updatePathColor(VFullPath path, int color, int updateMode) {
-        switch (updateMode) {
-            case 0:
-                path.setStrokeColor(color);
-                return;
-            case 1:
-                path.setFillColor(color);
-                return;
-            case 2:
-                int strokeColor = path.getStrokeColor();
-                int strokeAlpha = strokeColor & (-16777216);
-                if (strokeAlpha != 0) {
-                    path.setStrokeColor(color);
-                }
-                int fillColor = path.getFillColor();
-                int fillAlpha = (-16777216) & fillColor;
-                if (fillAlpha != 0) {
-                    path.setFillColor(color);
-                    return;
-                }
-                return;
-            default:
-                return;
-        }
-    }
-
     @Override // android.graphics.drawable.Drawable
     public boolean isStateful() {
-        VectorDrawableState vectorDrawableState;
-        return super.isStateful() || ((vectorDrawableState = this.mVectorState) != null && vectorDrawableState.isStateful());
+        return super.isStateful() || (this.mVectorState != null && this.mVectorState.isStateful());
     }
 
     @Override // android.graphics.drawable.Drawable
     public boolean hasFocusStateSpecified() {
-        VectorDrawableState vectorDrawableState = this.mVectorState;
-        return vectorDrawableState != null && vectorDrawableState.hasFocusStateSpecified();
+        return this.mVectorState != null && this.mVectorState.hasFocusStateSpecified();
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         boolean changed = false;
         if (isStateful()) {
             mutate();
@@ -499,8 +475,7 @@ public class VectorDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        VectorDrawableState vectorDrawableState = this.mVectorState;
-        return (vectorDrawableState != null && vectorDrawableState.canApplyTheme()) || super.canApplyTheme();
+        return (this.mVectorState != null && this.mVectorState.canApplyTheme()) || super.canApplyTheme();
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -531,16 +506,14 @@ public class VectorDrawable extends Drawable {
         if (state.mTint != null && state.mTint.canApplyTheme()) {
             state.mTint = state.mTint.obtainForTheme(t);
         }
-        VectorDrawableState vectorDrawableState = this.mVectorState;
-        if (vectorDrawableState != null && vectorDrawableState.canApplyTheme()) {
+        if (this.mVectorState != null && this.mVectorState.canApplyTheme()) {
             this.mVectorState.applyTheme(t);
         }
         updateLocalState(t.getResources());
     }
 
     public float getPixelSize() {
-        VectorDrawableState vectorDrawableState = this.mVectorState;
-        if (vectorDrawableState == null || vectorDrawableState.mBaseWidth == 0 || this.mVectorState.mBaseHeight == 0 || this.mVectorState.mViewportHeight == 0.0f || this.mVectorState.mViewportWidth == 0.0f) {
+        if (this.mVectorState == null || this.mVectorState.mBaseWidth == 0 || this.mVectorState.mBaseHeight == 0 || this.mVectorState.mViewportHeight == 0.0f || this.mVectorState.mViewportWidth == 0.0f) {
             return 1.0f;
         }
         float intrinsicWidth = this.mVectorState.mBaseWidth;
@@ -550,6 +523,74 @@ public class VectorDrawable extends Drawable {
         float scaleX = viewportWidth / intrinsicWidth;
         float scaleY = viewportHeight / intrinsicHeight;
         return Math.min(scaleX, scaleY);
+    }
+
+    @Override // android.graphics.drawable.Drawable
+    protected boolean onLevelChange(int level) {
+        if (this.mVectorState == null || this.mVectorState.mRootGroup == null) {
+            return false;
+        }
+        Object path = getTargetByName(ProgressBar.SEM_PROGRESS_PATH_NAME_PRIMARY);
+        if (path instanceof VFullPath) {
+            ((VFullPath) path).setTrimPathEnd(level * 1.0E-4f);
+            invalidateSelf();
+            return true;
+        }
+        Object path2 = getTargetByName(ProgressBar.SEM_PROGRESS_PATH_NAME_MEASURES);
+        if (!(path2 instanceof VFullPath)) {
+            return false;
+        }
+        float trimPathStart = level * 1.0E-4f;
+        ((VFullPath) path2).setTrimPathStart(trimPathStart);
+        ((VFullPath) path2).setTrimPathEnd(1.0E-4f + trimPathStart);
+        invalidateSelf();
+        return true;
+    }
+
+    public void setPathStrokeColor(String pathName, int color) {
+        if (pathName == null || pathName.isEmpty() || this.mVectorState == null || this.mVectorState.mRootGroup == null) {
+            return;
+        }
+        this.mVectorState.mRootGroup.updatePathColorTraversal(pathName, color, 0);
+    }
+
+    public void setPathFillColor(String pathName, int color) {
+        if (pathName == null || pathName.isEmpty() || this.mVectorState == null || this.mVectorState.mRootGroup == null) {
+            return;
+        }
+        this.mVectorState.mRootGroup.updatePathColorTraversal(pathName, color, 1);
+    }
+
+    public void setPathColor(String pathName, int color) {
+        if (pathName == null || pathName.isEmpty() || this.mVectorState == null || this.mVectorState.mRootGroup == null) {
+            return;
+        }
+        this.mVectorState.mRootGroup.updatePathColorTraversal(pathName, color, 2);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void updatePathColor(VFullPath path, int color, int updateMode) {
+        switch (updateMode) {
+            case 0:
+                path.setStrokeColor(color);
+                break;
+            case 1:
+                path.setFillColor(color);
+                break;
+            case 2:
+                int strokeColor = path.getStrokeColor();
+                int strokeAlpha = strokeColor & (-16777216);
+                if (strokeAlpha != 0) {
+                    path.setStrokeColor(strokeAlpha | color);
+                }
+                int fillColor = path.getFillColor();
+                int fillAlpha = (-16777216) & fillColor;
+                if (fillAlpha != 0) {
+                    path.setFillColor(fillAlpha | color);
+                    break;
+                }
+                break;
+        }
     }
 
     public static VectorDrawable create(Resources resources, int rid) {
@@ -592,8 +633,7 @@ public class VectorDrawable extends Drawable {
                     VMRuntime.getRuntime().registerNativeFree(316);
                     this.mVectorState.mNativeTree.release();
                 }
-                VectorDrawableState vectorDrawableState = this.mVectorState;
-                vectorDrawableState.createNativeTree(vectorDrawableState.mRootGroup);
+                this.mVectorState.createNativeTree(this.mVectorState.mRootGroup);
             }
             VectorDrawableState state = this.mVectorState;
             state.setDensity(Drawable.resolveDensity(r, 0));
@@ -712,7 +752,7 @@ public class VectorDrawable extends Drawable {
         return super.getChangingConfigurations() | this.mVectorState.getChangingConfigurations();
     }
 
-    public void setAllowCaching(boolean allowCaching) {
+    void setAllowCaching(boolean allowCaching) {
         nSetAllowCaching(this.mVectorState.getNativeRenderer(), allowCaching);
     }
 
@@ -741,39 +781,8 @@ public class VectorDrawable extends Drawable {
         nSetAntiAlias(this.mVectorState.mNativeTree.get(), aa);
     }
 
-    public boolean hasPath(String pathName) {
-        VectorDrawableState vectorDrawableState;
-        return (pathName == null || pathName.isEmpty() || (vectorDrawableState = this.mVectorState) == null || vectorDrawableState.mRootGroup == null || getTargetByName(pathName) == null) ? false : true;
-    }
-
-    @Override // android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
-        VectorDrawableState vectorDrawableState;
-        if (!ViewRune.APPWIDGET_COMPLICATION || (vectorDrawableState = this.mVectorState) == null || vectorDrawableState.mRootGroup == null) {
-            return false;
-        }
-        Object path = getTargetByName(ProgressBar.SEM_PROGRESS_PATH_NAME_PRIMARY);
-        if (path instanceof VFullPath) {
-            ((VFullPath) path).setTrimPathEnd(level * 1.0E-4f);
-            return true;
-        }
-        Object path2 = getTargetByName(ProgressBar.SEM_PROGRESS_PATH_NAME_MEASURES);
-        if (path2 instanceof VFullPath) {
-            float trimPathStart = level * 1.0E-4f;
-            ((VFullPath) path2).setTrimPathStart(trimPathStart);
-            ((VFullPath) path2).setTrimPathEnd(1.0E-4f + trimPathStart);
-            return true;
-        }
-        return false;
-    }
-
-    /* loaded from: classes.dex */
-    public static class VectorDrawableState extends Drawable.ConstantState {
+    static class VectorDrawableState extends Drawable.ConstantState {
         static final Property<VectorDrawableState, Float> ALPHA = new FloatProperty<VectorDrawableState>("alpha") { // from class: android.graphics.drawable.VectorDrawable.VectorDrawableState.1
-            AnonymousClass1(String name) {
-                super(name);
-            }
-
             @Override // android.util.FloatProperty
             public void setValue(VectorDrawableState state, float value) {
                 state.setAlpha(value);
@@ -785,7 +794,6 @@ public class VectorDrawable extends Drawable {
             }
         };
         private static final int NATIVE_ALLOCATION_SIZE = 316;
-        private int mAllocationOfAllNodes;
         boolean mAutoMirrored;
         int mBaseHeight;
         int mBaseWidth;
@@ -797,40 +805,22 @@ public class VectorDrawable extends Drawable {
         ColorStateList mCachedTint;
         int mChangingConfigurations;
         int mDensity;
-        int mLastHWCachePixelCount;
-        int mLastSWCachePixelCount;
         Insets mOpticalInsets;
         VGroup mRootGroup;
         String mRootName;
         int[] mThemeAttrs;
         ColorStateList mTint;
-        final ArrayMap<String, Object> mVGTargetsMap;
         float mViewportWidth = 0.0f;
         float mViewportHeight = 0.0f;
         VirtualRefBasePtr mNativeTree = null;
+        final ArrayMap<String, Object> mVGTargetsMap = new ArrayMap<>();
+        int mLastSWCachePixelCount = 0;
+        int mLastHWCachePixelCount = 0;
+        private int mAllocationOfAllNodes = 0;
 
-        /* renamed from: android.graphics.drawable.VectorDrawable$VectorDrawableState$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 extends FloatProperty<VectorDrawableState> {
-            AnonymousClass1(String name) {
-                super(name);
-            }
-
-            @Override // android.util.FloatProperty
-            public void setValue(VectorDrawableState state, float value) {
-                state.setAlpha(value);
-            }
-
-            @Override // android.util.Property
-            public Float get(VectorDrawableState state) {
-                return Float.valueOf(state.getAlpha());
-            }
-        }
-
-        public Property getProperty(String propertyName) {
-            Property<VectorDrawableState, Float> property = ALPHA;
-            if (property.getName().equals(propertyName)) {
-                return property;
+        Property getProperty(String propertyName) {
+            if (ALPHA.getName().equals(propertyName)) {
+                return ALPHA;
             }
             return null;
         }
@@ -843,38 +833,31 @@ public class VectorDrawable extends Drawable {
             this.mOpticalInsets = Insets.NONE;
             this.mRootName = null;
             this.mDensity = 160;
-            ArrayMap<String, Object> arrayMap = new ArrayMap<>();
-            this.mVGTargetsMap = arrayMap;
-            this.mLastSWCachePixelCount = 0;
-            this.mLastHWCachePixelCount = 0;
-            this.mAllocationOfAllNodes = 0;
             if (copy != null) {
                 this.mThemeAttrs = copy.mThemeAttrs;
                 this.mChangingConfigurations = copy.mChangingConfigurations;
                 this.mTint = copy.mTint;
                 this.mBlendMode = copy.mBlendMode;
                 this.mAutoMirrored = copy.mAutoMirrored;
-                VGroup vGroup = new VGroup(copy.mRootGroup, arrayMap);
-                this.mRootGroup = vGroup;
-                createNativeTreeFromCopy(copy, vGroup);
+                this.mRootGroup = new VGroup(copy.mRootGroup, this.mVGTargetsMap);
+                createNativeTreeFromCopy(copy, this.mRootGroup);
                 this.mBaseWidth = copy.mBaseWidth;
                 this.mBaseHeight = copy.mBaseHeight;
                 setViewportSize(copy.mViewportWidth, copy.mViewportHeight);
                 this.mOpticalInsets = copy.mOpticalInsets;
                 this.mRootName = copy.mRootName;
                 this.mDensity = copy.mDensity;
-                String str = copy.mRootName;
-                if (str != null) {
-                    arrayMap.put(str, this);
+                if (copy.mRootName != null) {
+                    this.mVGTargetsMap.put(copy.mRootName, this);
                 }
             } else {
-                VGroup vGroup2 = new VGroup();
-                this.mRootGroup = vGroup2;
-                createNativeTree(vGroup2);
+                this.mRootGroup = new VGroup();
+                createNativeTree(this.mRootGroup);
             }
             onTreeConstructionFinished();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void createNativeTree(VGroup rootGroup) {
             this.mNativeTree = new VirtualRefBasePtr(VectorDrawable.nCreateTree(rootGroup.mNativePtr));
             VMRuntime.getRuntime().registerNativeAllocation(316);
@@ -891,12 +874,11 @@ public class VectorDrawable extends Drawable {
             VMRuntime.getRuntime().registerNativeAllocation(this.mAllocationOfAllNodes);
         }
 
-        public long getNativeRenderer() {
-            VirtualRefBasePtr virtualRefBasePtr = this.mNativeTree;
-            if (virtualRefBasePtr == null) {
+        long getNativeRenderer() {
+            if (this.mNativeTree == null) {
                 return 0L;
             }
-            return virtualRefBasePtr.get();
+            return this.mNativeTree.get();
         }
 
         public boolean canReuseCache() {
@@ -921,9 +903,7 @@ public class VectorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            VGroup vGroup;
-            ColorStateList colorStateList;
-            return this.mThemeAttrs != null || ((vGroup = this.mRootGroup) != null && vGroup.canApplyTheme()) || (((colorStateList = this.mTint) != null && colorStateList.canApplyTheme()) || super.canApplyTheme());
+            return this.mThemeAttrs != null || (this.mRootGroup != null && this.mRootGroup.canApplyTheme()) || ((this.mTint != null && this.mTint.canApplyTheme()) || super.canApplyTheme());
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -938,21 +918,15 @@ public class VectorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mTint;
-            return i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
 
         public boolean isStateful() {
-            VGroup vGroup;
-            ColorStateList colorStateList = this.mTint;
-            return (colorStateList != null && colorStateList.isStateful()) || ((vGroup = this.mRootGroup) != null && vGroup.isStateful());
+            return (this.mTint != null && this.mTint.isStateful()) || (this.mRootGroup != null && this.mRootGroup.isStateful());
         }
 
         public boolean hasFocusStateSpecified() {
-            VGroup vGroup;
-            ColorStateList colorStateList = this.mTint;
-            return (colorStateList != null && colorStateList.hasFocusStateSpecified()) || ((vGroup = this.mRootGroup) != null && vGroup.hasFocusStateSpecified());
+            return (this.mTint != null && this.mTint.hasFocusStateSpecified()) || (this.mRootGroup != null && this.mRootGroup.hasFocusStateSpecified());
         }
 
         void setViewportSize(float viewportWidth, float viewportHeight) {
@@ -1000,26 +974,16 @@ public class VectorDrawable extends Drawable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class VGroup extends VObject {
+    static class VGroup extends VObject {
         private static final int NATIVE_ALLOCATION_SIZE = 100;
-        private static final Property<VGroup, Float> PIVOT_X;
         private static final int PIVOT_X_INDEX = 1;
-        private static final Property<VGroup, Float> PIVOT_Y;
         private static final int PIVOT_Y_INDEX = 2;
-        private static final Property<VGroup, Float> ROTATION;
         private static final int ROTATION_INDEX = 0;
-        private static final Property<VGroup, Float> SCALE_X;
         private static final int SCALE_X_INDEX = 3;
-        private static final Property<VGroup, Float> SCALE_Y;
         private static final int SCALE_Y_INDEX = 4;
         private static final int TRANSFORM_PROPERTY_COUNT = 7;
-        private static final Property<VGroup, Float> TRANSLATE_X;
         private static final int TRANSLATE_X_INDEX = 5;
-        private static final Property<VGroup, Float> TRANSLATE_Y;
         private static final int TRANSLATE_Y_INDEX = 6;
-        private static final Map<String, Integer> sPropertyIndexMap = Map.of("translateX", 5, "translateY", 6, "scaleX", 3, "scaleY", 4, "pivotX", 1, "pivotY", 2, GenerateXML.ROTATION, 0);
-        private static final Map<String, Property> sPropertyMap;
         private int mChangingConfigurations;
         private final ArrayList<VObject> mChildren;
         private String mGroupName;
@@ -1027,138 +991,8 @@ public class VectorDrawable extends Drawable {
         private final long mNativePtr;
         private int[] mThemeAttrs;
         private float[] mTransform;
-
-        static {
-            AnonymousClass1 anonymousClass1 = new FloatProperty<VGroup>("translateX") { // from class: android.graphics.drawable.VectorDrawable.VGroup.1
-                AnonymousClass1(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VGroup object, float value) {
-                    object.setTranslateX(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VGroup object) {
-                    return Float.valueOf(object.getTranslateX());
-                }
-            };
-            TRANSLATE_X = anonymousClass1;
-            AnonymousClass2 anonymousClass2 = new FloatProperty<VGroup>("translateY") { // from class: android.graphics.drawable.VectorDrawable.VGroup.2
-                AnonymousClass2(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VGroup object, float value) {
-                    object.setTranslateY(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VGroup object) {
-                    return Float.valueOf(object.getTranslateY());
-                }
-            };
-            TRANSLATE_Y = anonymousClass2;
-            AnonymousClass3 anonymousClass3 = new FloatProperty<VGroup>("scaleX") { // from class: android.graphics.drawable.VectorDrawable.VGroup.3
-                AnonymousClass3(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VGroup object, float value) {
-                    object.setScaleX(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VGroup object) {
-                    return Float.valueOf(object.getScaleX());
-                }
-            };
-            SCALE_X = anonymousClass3;
-            AnonymousClass4 anonymousClass4 = new FloatProperty<VGroup>("scaleY") { // from class: android.graphics.drawable.VectorDrawable.VGroup.4
-                AnonymousClass4(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VGroup object, float value) {
-                    object.setScaleY(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VGroup object) {
-                    return Float.valueOf(object.getScaleY());
-                }
-            };
-            SCALE_Y = anonymousClass4;
-            AnonymousClass5 anonymousClass5 = new FloatProperty<VGroup>("pivotX") { // from class: android.graphics.drawable.VectorDrawable.VGroup.5
-                AnonymousClass5(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VGroup object, float value) {
-                    object.setPivotX(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VGroup object) {
-                    return Float.valueOf(object.getPivotX());
-                }
-            };
-            PIVOT_X = anonymousClass5;
-            AnonymousClass6 anonymousClass6 = new FloatProperty<VGroup>("pivotY") { // from class: android.graphics.drawable.VectorDrawable.VGroup.6
-                AnonymousClass6(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VGroup object, float value) {
-                    object.setPivotY(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VGroup object) {
-                    return Float.valueOf(object.getPivotY());
-                }
-            };
-            PIVOT_Y = anonymousClass6;
-            AnonymousClass7 anonymousClass7 = new FloatProperty<VGroup>(GenerateXML.ROTATION) { // from class: android.graphics.drawable.VectorDrawable.VGroup.7
-                AnonymousClass7(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VGroup object, float value) {
-                    object.setRotation(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VGroup object) {
-                    return Float.valueOf(object.getRotation());
-                }
-            };
-            ROTATION = anonymousClass7;
-            sPropertyMap = Map.of("translateX", anonymousClass1, "translateY", anonymousClass2, "scaleX", anonymousClass3, "scaleY", anonymousClass4, "pivotX", anonymousClass5, "pivotY", anonymousClass6, GenerateXML.ROTATION, anonymousClass7);
-        }
-
-        public static int getPropertyIndex(String propertyName) {
-            Map<String, Integer> map = sPropertyIndexMap;
-            if (map.containsKey(propertyName)) {
-                return map.get(propertyName).intValue();
-            }
-            return -1;
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VGroup$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 extends FloatProperty<VGroup> {
-            AnonymousClass1(String name) {
-                super(name);
-            }
-
+        private static final Map<String, Integer> sPropertyIndexMap = Map.of("translateX", 5, "translateY", 6, "scaleX", 3, "scaleY", 4, "pivotX", 1, "pivotY", 2, GenerateXML.ROTATION, 0);
+        private static final Property<VGroup, Float> TRANSLATE_X = new FloatProperty<VGroup>("translateX") { // from class: android.graphics.drawable.VectorDrawable.VGroup.1
             @Override // android.util.FloatProperty
             public void setValue(VGroup object, float value) {
                 object.setTranslateX(value);
@@ -1168,15 +1002,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VGroup object) {
                 return Float.valueOf(object.getTranslateX());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VGroup$2 */
-        /* loaded from: classes.dex */
-        class AnonymousClass2 extends FloatProperty<VGroup> {
-            AnonymousClass2(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VGroup, Float> TRANSLATE_Y = new FloatProperty<VGroup>("translateY") { // from class: android.graphics.drawable.VectorDrawable.VGroup.2
             @Override // android.util.FloatProperty
             public void setValue(VGroup object, float value) {
                 object.setTranslateY(value);
@@ -1186,15 +1013,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VGroup object) {
                 return Float.valueOf(object.getTranslateY());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VGroup$3 */
-        /* loaded from: classes.dex */
-        class AnonymousClass3 extends FloatProperty<VGroup> {
-            AnonymousClass3(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VGroup, Float> SCALE_X = new FloatProperty<VGroup>("scaleX") { // from class: android.graphics.drawable.VectorDrawable.VGroup.3
             @Override // android.util.FloatProperty
             public void setValue(VGroup object, float value) {
                 object.setScaleX(value);
@@ -1204,15 +1024,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VGroup object) {
                 return Float.valueOf(object.getScaleX());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VGroup$4 */
-        /* loaded from: classes.dex */
-        class AnonymousClass4 extends FloatProperty<VGroup> {
-            AnonymousClass4(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VGroup, Float> SCALE_Y = new FloatProperty<VGroup>("scaleY") { // from class: android.graphics.drawable.VectorDrawable.VGroup.4
             @Override // android.util.FloatProperty
             public void setValue(VGroup object, float value) {
                 object.setScaleY(value);
@@ -1222,15 +1035,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VGroup object) {
                 return Float.valueOf(object.getScaleY());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VGroup$5 */
-        /* loaded from: classes.dex */
-        class AnonymousClass5 extends FloatProperty<VGroup> {
-            AnonymousClass5(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VGroup, Float> PIVOT_X = new FloatProperty<VGroup>("pivotX") { // from class: android.graphics.drawable.VectorDrawable.VGroup.5
             @Override // android.util.FloatProperty
             public void setValue(VGroup object, float value) {
                 object.setPivotX(value);
@@ -1240,15 +1046,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VGroup object) {
                 return Float.valueOf(object.getPivotX());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VGroup$6 */
-        /* loaded from: classes.dex */
-        class AnonymousClass6 extends FloatProperty<VGroup> {
-            AnonymousClass6(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VGroup, Float> PIVOT_Y = new FloatProperty<VGroup>("pivotY") { // from class: android.graphics.drawable.VectorDrawable.VGroup.6
             @Override // android.util.FloatProperty
             public void setValue(VGroup object, float value) {
                 object.setPivotY(value);
@@ -1258,15 +1057,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VGroup object) {
                 return Float.valueOf(object.getPivotY());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VGroup$7 */
-        /* loaded from: classes.dex */
-        class AnonymousClass7 extends FloatProperty<VGroup> {
-            AnonymousClass7(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VGroup, Float> ROTATION = new FloatProperty<VGroup>(GenerateXML.ROTATION) { // from class: android.graphics.drawable.VectorDrawable.VGroup.7
             @Override // android.util.FloatProperty
             public void setValue(VGroup object, float value) {
                 object.setRotation(value);
@@ -1276,6 +1068,14 @@ public class VectorDrawable extends Drawable {
             public Float get(VGroup object) {
                 return Float.valueOf(object.getRotation());
             }
+        };
+        private static final Map<String, Property> sPropertyMap = Map.of("translateX", TRANSLATE_X, "translateY", TRANSLATE_Y, "scaleX", SCALE_X, "scaleY", SCALE_Y, "pivotX", PIVOT_X, "pivotY", PIVOT_Y, GenerateXML.ROTATION, ROTATION);
+
+        static int getPropertyIndex(String propertyName) {
+            if (sPropertyIndexMap.containsKey(propertyName)) {
+                return sPropertyIndexMap.get(propertyName).intValue();
+            }
+            return -1;
         }
 
         public VGroup(VGroup copy, ArrayMap<String, Object> targetsMap) {
@@ -1284,11 +1084,10 @@ public class VectorDrawable extends Drawable {
             this.mGroupName = null;
             this.mIsStateful = copy.mIsStateful;
             this.mThemeAttrs = copy.mThemeAttrs;
-            String str = copy.mGroupName;
-            this.mGroupName = str;
+            this.mGroupName = copy.mGroupName;
             this.mChangingConfigurations = copy.mChangingConfigurations;
-            if (str != null) {
-                targetsMap.put(str, this);
+            if (this.mGroupName != null) {
+                targetsMap.put(this.mGroupName, this);
             }
             this.mNativePtr = VectorDrawable.nCreateGroup(copy.mNativePtr);
             ArrayList<VObject> children = copy.mChildren;
@@ -1316,15 +1115,13 @@ public class VectorDrawable extends Drawable {
         public VGroup() {
             this.mChildren = new ArrayList<>();
             this.mGroupName = null;
-            this.mNativePtr = VectorDrawable.m1243$$Nest$smnCreateGroup();
+            this.mNativePtr = VectorDrawable.nCreateGroup();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.graphics.drawable.VectorDrawable.VObject
-        public Property getProperty(String propertyName) {
-            Map<String, Property> map = sPropertyMap;
-            if (map.containsKey(propertyName)) {
-                return map.get(propertyName);
+        Property getProperty(String propertyName) {
+            if (sPropertyMap.containsKey(propertyName)) {
+                return sPropertyMap.get(propertyName);
             }
             return null;
         }
@@ -1379,7 +1176,7 @@ public class VectorDrawable extends Drawable {
             String groupName = a.getString(0);
             if (groupName != null) {
                 this.mGroupName = groupName;
-                VectorDrawable.nSetName(this.mNativePtr, groupName);
+                VectorDrawable.nSetName(this.mNativePtr, this.mGroupName);
             }
             VectorDrawable.nUpdateGroupProperties(this.mNativePtr, rotate, pivotX, pivotY, scaleX, scaleY, translateX, translateY);
         }
@@ -1444,9 +1241,8 @@ public class VectorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.VectorDrawable.VObject
         public void applyTheme(Resources.Theme t) {
-            int[] iArr = this.mThemeAttrs;
-            if (iArr != null) {
-                TypedArray a = t.resolveAttributes(iArr, R.styleable.VectorDrawableGroup);
+            if (this.mThemeAttrs != null) {
+                TypedArray a = t.resolveAttributes(this.mThemeAttrs, R.styleable.VectorDrawableGroup);
                 updateStateFromTypedArray(a);
                 a.recycle();
             }
@@ -1561,13 +1357,8 @@ public class VectorDrawable extends Drawable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static abstract class VPath extends VObject {
+    static abstract class VPath extends VObject {
         private static final Property<VPath, PathParser.PathData> PATH_DATA = new Property<VPath, PathParser.PathData>(PathParser.PathData.class, "pathData") { // from class: android.graphics.drawable.VectorDrawable.VPath.1
-            AnonymousClass1(Class cls, String name) {
-                super(cls, name);
-            }
-
             @Override // android.util.Property
             public void set(VPath object, PathParser.PathData data) {
                 object.setPathData(data);
@@ -1582,29 +1373,10 @@ public class VectorDrawable extends Drawable {
         protected PathParser.PathData mPathData;
         String mPathName;
 
-        /* renamed from: android.graphics.drawable.VectorDrawable$VPath$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 extends Property<VPath, PathParser.PathData> {
-            AnonymousClass1(Class cls, String name) {
-                super(cls, name);
-            }
-
-            @Override // android.util.Property
-            public void set(VPath object, PathParser.PathData data) {
-                object.setPathData(data);
-            }
-
-            @Override // android.util.Property
-            public PathParser.PathData get(VPath object) {
-                return object.getPathData();
-            }
-        }
-
         @Override // android.graphics.drawable.VectorDrawable.VObject
-        public Property getProperty(String propertyName) {
-            Property<VPath, PathParser.PathData> property = PATH_DATA;
-            if (property.getName().equals(propertyName)) {
-                return property;
+        Property getProperty(String propertyName) {
+            if (PATH_DATA.getName().equals(propertyName)) {
+                return PATH_DATA;
             }
             return null;
         }
@@ -1617,8 +1389,7 @@ public class VectorDrawable extends Drawable {
             this.mPathData = null;
             this.mPathName = copy.mPathName;
             this.mChangingConfigurations = copy.mChangingConfigurations;
-            PathParser.PathData pathData = copy.mPathData;
-            this.mPathData = pathData != null ? new PathParser.PathData(pathData) : null;
+            this.mPathData = copy.mPathData != null ? new PathParser.PathData(copy.mPathData) : null;
         }
 
         public String getPathName() {
@@ -1637,13 +1408,12 @@ public class VectorDrawable extends Drawable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class VClipPath extends VPath {
+    private static class VClipPath extends VPath {
         private static final int NATIVE_ALLOCATION_SIZE = 120;
         private final long mNativePtr;
 
         public VClipPath() {
-            this.mNativePtr = VectorDrawable.m1239$$Nest$smnCreateClipPath();
+            this.mNativePtr = VectorDrawable.nCreateClipPath();
         }
 
         public VClipPath(VClipPath copy) {
@@ -1707,177 +1477,28 @@ public class VectorDrawable extends Drawable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class VFullPath extends VPath {
-        private static final Property<VFullPath, Float> FILL_ALPHA;
+    static class VFullPath extends VPath {
         private static final int FILL_ALPHA_INDEX = 4;
-        private static final Property<VFullPath, Integer> FILL_COLOR;
         private static final int FILL_COLOR_INDEX = 3;
         private static final int FILL_TYPE_INDEX = 11;
         private static final int NATIVE_ALLOCATION_SIZE = 264;
-        private static final Property<VFullPath, Float> STROKE_ALPHA;
         private static final int STROKE_ALPHA_INDEX = 2;
-        private static final Property<VFullPath, Integer> STROKE_COLOR;
         private static final int STROKE_COLOR_INDEX = 1;
         private static final int STROKE_LINE_CAP_INDEX = 8;
         private static final int STROKE_LINE_JOIN_INDEX = 9;
         private static final int STROKE_MITER_LIMIT_INDEX = 10;
-        private static final Property<VFullPath, Float> STROKE_WIDTH;
         private static final int STROKE_WIDTH_INDEX = 0;
         private static final int TOTAL_PROPERTY_COUNT = 12;
-        private static final Property<VFullPath, Float> TRIM_PATH_END;
         private static final int TRIM_PATH_END_INDEX = 6;
-        private static final Property<VFullPath, Float> TRIM_PATH_OFFSET;
         private static final int TRIM_PATH_OFFSET_INDEX = 7;
-        private static final Property<VFullPath, Float> TRIM_PATH_START;
         private static final int TRIM_PATH_START_INDEX = 5;
-        private static final Map<String, Integer> sPropertyIndexMap = Map.of("strokeWidth", 0, "strokeColor", 1, "strokeAlpha", 2, "fillColor", 3, "fillAlpha", 4, "trimPathStart", 5, "trimPathEnd", 6, "trimPathOffset", 7);
-        private static final Map<String, Property> sPropertyMap;
         ComplexColor mFillColors;
         private final long mNativePtr;
         private byte[] mPropertyData;
         ComplexColor mStrokeColors;
         private int[] mThemeAttrs;
-
-        static {
-            AnonymousClass1 anonymousClass1 = new FloatProperty<VFullPath>("strokeWidth") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.1
-                AnonymousClass1(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VFullPath object, float value) {
-                    object.setStrokeWidth(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VFullPath object) {
-                    return Float.valueOf(object.getStrokeWidth());
-                }
-            };
-            STROKE_WIDTH = anonymousClass1;
-            AnonymousClass2 anonymousClass2 = new IntProperty<VFullPath>("strokeColor") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.2
-                AnonymousClass2(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.IntProperty
-                public void setValue(VFullPath object, int value) {
-                    object.setStrokeColor(value);
-                }
-
-                @Override // android.util.Property
-                public Integer get(VFullPath object) {
-                    return Integer.valueOf(object.getStrokeColor());
-                }
-            };
-            STROKE_COLOR = anonymousClass2;
-            AnonymousClass3 anonymousClass3 = new FloatProperty<VFullPath>("strokeAlpha") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.3
-                AnonymousClass3(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VFullPath object, float value) {
-                    object.setStrokeAlpha(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VFullPath object) {
-                    return Float.valueOf(object.getStrokeAlpha());
-                }
-            };
-            STROKE_ALPHA = anonymousClass3;
-            AnonymousClass4 anonymousClass4 = new IntProperty<VFullPath>("fillColor") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.4
-                AnonymousClass4(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.IntProperty
-                public void setValue(VFullPath object, int value) {
-                    object.setFillColor(value);
-                }
-
-                @Override // android.util.Property
-                public Integer get(VFullPath object) {
-                    return Integer.valueOf(object.getFillColor());
-                }
-            };
-            FILL_COLOR = anonymousClass4;
-            AnonymousClass5 anonymousClass5 = new FloatProperty<VFullPath>("fillAlpha") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.5
-                AnonymousClass5(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VFullPath object, float value) {
-                    object.setFillAlpha(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VFullPath object) {
-                    return Float.valueOf(object.getFillAlpha());
-                }
-            };
-            FILL_ALPHA = anonymousClass5;
-            AnonymousClass6 anonymousClass6 = new FloatProperty<VFullPath>("trimPathStart") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.6
-                AnonymousClass6(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VFullPath object, float value) {
-                    object.setTrimPathStart(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VFullPath object) {
-                    return Float.valueOf(object.getTrimPathStart());
-                }
-            };
-            TRIM_PATH_START = anonymousClass6;
-            AnonymousClass7 anonymousClass7 = new FloatProperty<VFullPath>("trimPathEnd") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.7
-                AnonymousClass7(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VFullPath object, float value) {
-                    object.setTrimPathEnd(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VFullPath object) {
-                    return Float.valueOf(object.getTrimPathEnd());
-                }
-            };
-            TRIM_PATH_END = anonymousClass7;
-            AnonymousClass8 anonymousClass8 = new FloatProperty<VFullPath>("trimPathOffset") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.8
-                AnonymousClass8(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.FloatProperty
-                public void setValue(VFullPath object, float value) {
-                    object.setTrimPathOffset(value);
-                }
-
-                @Override // android.util.Property
-                public Float get(VFullPath object) {
-                    return Float.valueOf(object.getTrimPathOffset());
-                }
-            };
-            TRIM_PATH_OFFSET = anonymousClass8;
-            sPropertyMap = Map.of("strokeWidth", anonymousClass1, "strokeColor", anonymousClass2, "strokeAlpha", anonymousClass3, "fillColor", anonymousClass4, "fillAlpha", anonymousClass5, "trimPathStart", anonymousClass6, "trimPathEnd", anonymousClass7, "trimPathOffset", anonymousClass8);
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 extends FloatProperty<VFullPath> {
-            AnonymousClass1(String name) {
-                super(name);
-            }
-
+        private static final Map<String, Integer> sPropertyIndexMap = Map.of("strokeWidth", 0, "strokeColor", 1, "strokeAlpha", 2, "fillColor", 3, "fillAlpha", 4, "trimPathStart", 5, "trimPathEnd", 6, "trimPathOffset", 7);
+        private static final Property<VFullPath, Float> STROKE_WIDTH = new FloatProperty<VFullPath>("strokeWidth") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.1
             @Override // android.util.FloatProperty
             public void setValue(VFullPath object, float value) {
                 object.setStrokeWidth(value);
@@ -1887,15 +1508,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VFullPath object) {
                 return Float.valueOf(object.getStrokeWidth());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$2 */
-        /* loaded from: classes.dex */
-        class AnonymousClass2 extends IntProperty<VFullPath> {
-            AnonymousClass2(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VFullPath, Integer> STROKE_COLOR = new IntProperty<VFullPath>("strokeColor") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.2
             @Override // android.util.IntProperty
             public void setValue(VFullPath object, int value) {
                 object.setStrokeColor(value);
@@ -1905,15 +1519,8 @@ public class VectorDrawable extends Drawable {
             public Integer get(VFullPath object) {
                 return Integer.valueOf(object.getStrokeColor());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$3 */
-        /* loaded from: classes.dex */
-        class AnonymousClass3 extends FloatProperty<VFullPath> {
-            AnonymousClass3(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VFullPath, Float> STROKE_ALPHA = new FloatProperty<VFullPath>("strokeAlpha") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.3
             @Override // android.util.FloatProperty
             public void setValue(VFullPath object, float value) {
                 object.setStrokeAlpha(value);
@@ -1923,15 +1530,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VFullPath object) {
                 return Float.valueOf(object.getStrokeAlpha());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$4 */
-        /* loaded from: classes.dex */
-        class AnonymousClass4 extends IntProperty<VFullPath> {
-            AnonymousClass4(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VFullPath, Integer> FILL_COLOR = new IntProperty<VFullPath>("fillColor") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.4
             @Override // android.util.IntProperty
             public void setValue(VFullPath object, int value) {
                 object.setFillColor(value);
@@ -1941,15 +1541,8 @@ public class VectorDrawable extends Drawable {
             public Integer get(VFullPath object) {
                 return Integer.valueOf(object.getFillColor());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$5 */
-        /* loaded from: classes.dex */
-        class AnonymousClass5 extends FloatProperty<VFullPath> {
-            AnonymousClass5(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VFullPath, Float> FILL_ALPHA = new FloatProperty<VFullPath>("fillAlpha") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.5
             @Override // android.util.FloatProperty
             public void setValue(VFullPath object, float value) {
                 object.setFillAlpha(value);
@@ -1959,15 +1552,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VFullPath object) {
                 return Float.valueOf(object.getFillAlpha());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$6 */
-        /* loaded from: classes.dex */
-        class AnonymousClass6 extends FloatProperty<VFullPath> {
-            AnonymousClass6(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VFullPath, Float> TRIM_PATH_START = new FloatProperty<VFullPath>("trimPathStart") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.6
             @Override // android.util.FloatProperty
             public void setValue(VFullPath object, float value) {
                 object.setTrimPathStart(value);
@@ -1977,15 +1563,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VFullPath object) {
                 return Float.valueOf(object.getTrimPathStart());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$7 */
-        /* loaded from: classes.dex */
-        class AnonymousClass7 extends FloatProperty<VFullPath> {
-            AnonymousClass7(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VFullPath, Float> TRIM_PATH_END = new FloatProperty<VFullPath>("trimPathEnd") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.7
             @Override // android.util.FloatProperty
             public void setValue(VFullPath object, float value) {
                 object.setTrimPathEnd(value);
@@ -1995,15 +1574,8 @@ public class VectorDrawable extends Drawable {
             public Float get(VFullPath object) {
                 return Float.valueOf(object.getTrimPathEnd());
             }
-        }
-
-        /* renamed from: android.graphics.drawable.VectorDrawable$VFullPath$8 */
-        /* loaded from: classes.dex */
-        class AnonymousClass8 extends FloatProperty<VFullPath> {
-            AnonymousClass8(String name) {
-                super(name);
-            }
-
+        };
+        private static final Property<VFullPath, Float> TRIM_PATH_OFFSET = new FloatProperty<VFullPath>("trimPathOffset") { // from class: android.graphics.drawable.VectorDrawable.VFullPath.8
             @Override // android.util.FloatProperty
             public void setValue(VFullPath object, float value) {
                 object.setTrimPathOffset(value);
@@ -2013,12 +1585,13 @@ public class VectorDrawable extends Drawable {
             public Float get(VFullPath object) {
                 return Float.valueOf(object.getTrimPathOffset());
             }
-        }
+        };
+        private static final Map<String, Property> sPropertyMap = Map.of("strokeWidth", STROKE_WIDTH, "strokeColor", STROKE_COLOR, "strokeAlpha", STROKE_ALPHA, "fillColor", FILL_COLOR, "fillAlpha", FILL_ALPHA, "trimPathStart", TRIM_PATH_START, "trimPathEnd", TRIM_PATH_END, "trimPathOffset", TRIM_PATH_OFFSET);
 
         public VFullPath() {
             this.mStrokeColors = null;
             this.mFillColors = null;
-            this.mNativePtr = VectorDrawable.m1241$$Nest$smnCreateFullPath();
+            this.mNativePtr = VectorDrawable.nCreateFullPath();
         }
 
         public VFullPath(VFullPath copy) {
@@ -2031,33 +1604,29 @@ public class VectorDrawable extends Drawable {
             this.mFillColors = copy.mFillColors;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.graphics.drawable.VectorDrawable.VPath, android.graphics.drawable.VectorDrawable.VObject
-        public Property getProperty(String propertyName) {
+        Property getProperty(String propertyName) {
             Property p = super.getProperty(propertyName);
             if (p != null) {
                 return p;
             }
-            Map<String, Property> map = sPropertyMap;
-            if (map.containsKey(propertyName)) {
-                return map.get(propertyName);
+            if (sPropertyMap.containsKey(propertyName)) {
+                return sPropertyMap.get(propertyName);
             }
             return null;
         }
 
-        public int getPropertyIndex(String propertyName) {
-            Map<String, Integer> map = sPropertyIndexMap;
-            if (!map.containsKey(propertyName)) {
+        int getPropertyIndex(String propertyName) {
+            if (!sPropertyIndexMap.containsKey(propertyName)) {
                 return -1;
             }
-            return map.get(propertyName).intValue();
+            return sPropertyIndexMap.get(propertyName).intValue();
         }
 
         @Override // android.graphics.drawable.VectorDrawable.VObject
         public boolean onStateChange(int[] stateSet) {
             boolean changed = false;
-            ComplexColor complexColor = this.mStrokeColors;
-            if (complexColor != null && (complexColor instanceof ColorStateList)) {
+            if (this.mStrokeColors != null && (this.mStrokeColors instanceof ColorStateList)) {
                 int oldStrokeColor = getStrokeColor();
                 int newStrokeColor = ((ColorStateList) this.mStrokeColors).getColorForState(stateSet, oldStrokeColor);
                 changed = false | (oldStrokeColor != newStrokeColor);
@@ -2065,8 +1634,7 @@ public class VectorDrawable extends Drawable {
                     VectorDrawable.nSetStrokeColor(this.mNativePtr, newStrokeColor);
                 }
             }
-            ComplexColor complexColor2 = this.mFillColors;
-            if (complexColor2 != null && (complexColor2 instanceof ColorStateList)) {
+            if (this.mFillColors != null && (this.mFillColors instanceof ColorStateList)) {
                 int oldFillColor = getFillColor();
                 int newFillColor = ((ColorStateList) this.mFillColors).getColorForState(stateSet, oldFillColor);
                 changed |= oldFillColor != newFillColor;
@@ -2084,9 +1652,7 @@ public class VectorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.VectorDrawable.VObject
         public boolean hasFocusStateSpecified() {
-            ComplexColor complexColor;
-            ComplexColor complexColor2 = this.mStrokeColors;
-            return complexColor2 != null && (complexColor2 instanceof ColorStateList) && ((ColorStateList) complexColor2).hasFocusStateSpecified() && (complexColor = this.mFillColors) != null && (complexColor instanceof ColorStateList) && ((ColorStateList) complexColor).hasFocusStateSpecified();
+            return this.mStrokeColors != null && (this.mStrokeColors instanceof ColorStateList) && ((ColorStateList) this.mStrokeColors).hasFocusStateSpecified() && this.mFillColors != null && (this.mFillColors instanceof ColorStateList) && ((ColorStateList) this.mFillColors).hasFocusStateSpecified();
         }
 
         @Override // android.graphics.drawable.VectorDrawable.VObject
@@ -2217,30 +1783,27 @@ public class VectorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.VectorDrawable.VObject
         public void applyTheme(Resources.Theme t) {
-            int[] iArr = this.mThemeAttrs;
-            if (iArr != null) {
-                TypedArray a = t.resolveAttributes(iArr, R.styleable.VectorDrawablePath);
+            if (this.mThemeAttrs != null) {
+                TypedArray a = t.resolveAttributes(this.mThemeAttrs, R.styleable.VectorDrawablePath);
                 updateStateFromTypedArray(a);
                 a.recycle();
             }
             boolean fillCanApplyTheme = canComplexColorApplyTheme(this.mFillColors);
             boolean strokeCanApplyTheme = canComplexColorApplyTheme(this.mStrokeColors);
             if (fillCanApplyTheme) {
-                ComplexColor obtainForTheme = this.mFillColors.obtainForTheme(t);
-                this.mFillColors = obtainForTheme;
-                if (obtainForTheme instanceof GradientColor) {
-                    VectorDrawable.nUpdateFullPathFillGradient(this.mNativePtr, ((GradientColor) obtainForTheme).getShader().getNativeInstance());
-                } else if (obtainForTheme instanceof ColorStateList) {
-                    VectorDrawable.nSetFillColor(this.mNativePtr, obtainForTheme.getDefaultColor());
+                this.mFillColors = this.mFillColors.obtainForTheme(t);
+                if (this.mFillColors instanceof GradientColor) {
+                    VectorDrawable.nUpdateFullPathFillGradient(this.mNativePtr, ((GradientColor) this.mFillColors).getShader().getNativeInstance());
+                } else if (this.mFillColors instanceof ColorStateList) {
+                    VectorDrawable.nSetFillColor(this.mNativePtr, this.mFillColors.getDefaultColor());
                 }
             }
             if (strokeCanApplyTheme) {
-                ComplexColor obtainForTheme2 = this.mStrokeColors.obtainForTheme(t);
-                this.mStrokeColors = obtainForTheme2;
-                if (obtainForTheme2 instanceof GradientColor) {
-                    VectorDrawable.nUpdateFullPathStrokeGradient(this.mNativePtr, ((GradientColor) obtainForTheme2).getShader().getNativeInstance());
-                } else if (obtainForTheme2 instanceof ColorStateList) {
-                    VectorDrawable.nSetStrokeColor(this.mNativePtr, obtainForTheme2.getDefaultColor());
+                this.mStrokeColors = this.mStrokeColors.obtainForTheme(t);
+                if (this.mStrokeColors instanceof GradientColor) {
+                    VectorDrawable.nUpdateFullPathStrokeGradient(this.mNativePtr, ((GradientColor) this.mStrokeColors).getShader().getNativeInstance());
+                } else if (this.mStrokeColors instanceof ColorStateList) {
+                    VectorDrawable.nSetStrokeColor(this.mNativePtr, this.mStrokeColors.getDefaultColor());
                 }
             }
         }
@@ -2357,25 +1920,24 @@ public class VectorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.VectorDrawable.VObject
         void updatePathColorTraversal(String name, int color, int updateMode) {
-            if (this.mPathName != null && this.mPathName.equals(name)) {
+            if ("all".equals(name) || (this.mPathName != null && this.mPathName.equals(name))) {
                 VectorDrawable.updatePathColor(this, color, updateMode);
             }
         }
     }
 
-    /* loaded from: classes.dex */
-    public static abstract class VObject {
+    static abstract class VObject {
         VirtualRefBasePtr mTreePtr = null;
 
         abstract void applyTheme(Resources.Theme theme);
 
         abstract boolean canApplyTheme();
 
-        public abstract long getNativePtr();
+        abstract long getNativePtr();
 
         abstract int getNativeSize();
 
-        public abstract Property getProperty(String str);
+        abstract Property getProperty(String str);
 
         abstract boolean hasFocusStateSpecified();
 
@@ -2389,8 +1951,7 @@ public class VectorDrawable extends Drawable {
         }
 
         boolean isTreeValid() {
-            VirtualRefBasePtr virtualRefBasePtr = this.mTreePtr;
-            return (virtualRefBasePtr == null || virtualRefBasePtr.get() == 0) ? false : true;
+            return (this.mTreePtr == null || this.mTreePtr.get() == 0) ? false : true;
         }
 
         void setTree(VirtualRefBasePtr ptr) {

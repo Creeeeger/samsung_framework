@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class OperationResult implements Parcelable {
     public static final Parcelable.Creator<OperationResult> CREATOR = new Parcelable.Creator<OperationResult>() { // from class: android.security.keymaster.OperationResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OperationResult createFromParcel(Parcel in) {
             return new OperationResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OperationResult[] newArray(int length) {
             return new OperationResult[length];
@@ -26,23 +25,6 @@ public class OperationResult implements Parcelable {
     public final byte[] output;
     public final int resultCode;
     public final IBinder token;
-
-    /* renamed from: android.security.keymaster.OperationResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OperationResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OperationResult createFromParcel(Parcel in) {
-            return new OperationResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OperationResult[] newArray(int length) {
-            return new OperationResult[length];
-        }
-    }
 
     public OperationResult(int resultCode, IBinder token, long operationHandle, int inputConsumed, byte[] output, KeymasterArguments outParams) {
         this.resultCode = resultCode;

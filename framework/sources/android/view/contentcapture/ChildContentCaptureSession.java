@@ -1,86 +1,127 @@
 package android.view.contentcapture;
 
+import android.content.ComponentName;
 import android.graphics.Insets;
+import android.graphics.Rect;
+import android.os.IBinder;
+import android.util.SparseArray;
 import android.view.autofill.AutofillId;
 import android.view.contentcapture.ViewNode;
+import java.util.ArrayList;
 
 /* loaded from: classes4.dex */
 final class ChildContentCaptureSession extends ContentCaptureSession {
     private final ContentCaptureSession mParent;
 
-    public ChildContentCaptureSession(ContentCaptureSession parent, ContentCaptureContext clientContext) {
+    protected ChildContentCaptureSession(ContentCaptureSession parent, ContentCaptureContext clientContext) {
         super(clientContext);
         this.mParent = parent;
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    public MainContentCaptureSession getMainCaptureSession() {
-        ContentCaptureSession contentCaptureSession = this.mParent;
-        if (contentCaptureSession instanceof MainContentCaptureSession) {
-            return (MainContentCaptureSession) contentCaptureSession;
-        }
-        return contentCaptureSession.getMainCaptureSession();
+    ContentCaptureSession getMainCaptureSession() {
+        return this.mParent.getMainCaptureSession();
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    void start(IBinder token, IBinder shareableActivityToken, ComponentName component, int flags) {
+        getMainCaptureSession().start(token, shareableActivityToken, component, flags);
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    boolean isDisabled() {
+        return getMainCaptureSession().isDisabled();
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    boolean setDisabled(boolean disabled) {
+        return getMainCaptureSession().setDisabled(disabled);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
     ContentCaptureSession newChild(ContentCaptureContext clientContext) {
         ContentCaptureSession child = new ChildContentCaptureSession(this, clientContext);
-        getMainCaptureSession().notifyChildSessionStarted(this.mId, child.mId, clientContext);
+        internalNotifyChildSessionStarted(this.mId, child.mId, clientContext);
         return child;
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    public void flush(int reason) {
+    void flush(int reason) {
         this.mParent.flush(reason);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
     public void updateContentCaptureContext(ContentCaptureContext context) {
-        getMainCaptureSession().notifyContextUpdated(this.mId, context);
+        internalNotifyContextUpdated(this.mId, context);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
     void onDestroy() {
-        getMainCaptureSession().notifyChildSessionFinished(this.mParent.mId, this.mId);
+        internalNotifyChildSessionFinished(this.mParent.mId, this.mId);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    void internalNotifyViewAppeared(ViewNode.ViewStructureImpl node) {
-        getMainCaptureSession().notifyViewAppeared(this.mId, node);
+    void internalNotifyChildSessionStarted(int parentSessionId, int childSessionId, ContentCaptureContext clientContext) {
+        getMainCaptureSession().internalNotifyChildSessionStarted(parentSessionId, childSessionId, clientContext);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    void internalNotifyViewDisappeared(AutofillId id) {
-        getMainCaptureSession().notifyViewDisappeared(this.mId, id);
+    void internalNotifyChildSessionFinished(int parentSessionId, int childSessionId) {
+        getMainCaptureSession().internalNotifyChildSessionFinished(parentSessionId, childSessionId);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    void internalNotifyViewTextChanged(AutofillId id, CharSequence text) {
-        getMainCaptureSession().notifyViewTextChanged(this.mId, id, text);
+    void internalNotifyContextUpdated(int sessionId, ContentCaptureContext context) {
+        getMainCaptureSession().internalNotifyContextUpdated(sessionId, context);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    void internalNotifyViewInsetsChanged(Insets viewInsets) {
-        getMainCaptureSession().notifyViewInsetsChanged(this.mId, viewInsets);
+    void internalNotifyViewAppeared(int sessionId, ViewNode.ViewStructureImpl node) {
+        getMainCaptureSession().internalNotifyViewAppeared(sessionId, node);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    public void internalNotifyViewTreeEvent(boolean started) {
-        getMainCaptureSession().notifyViewTreeEvent(this.mId, started);
+    void internalNotifyViewDisappeared(int sessionId, AutofillId id) {
+        getMainCaptureSession().internalNotifyViewDisappeared(sessionId, id);
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    void internalNotifyViewTextChanged(int sessionId, AutofillId id, CharSequence text) {
+        getMainCaptureSession().internalNotifyViewTextChanged(sessionId, id, text);
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    void internalNotifyViewInsetsChanged(int sessionId, Insets viewInsets) {
+        getMainCaptureSession().internalNotifyViewInsetsChanged(this.mId, viewInsets);
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    public void internalNotifyViewTreeEvent(int sessionId, boolean started) {
+        getMainCaptureSession().internalNotifyViewTreeEvent(sessionId, started);
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
     void internalNotifySessionResumed() {
-        getMainCaptureSession().notifySessionResumed();
+        getMainCaptureSession().internalNotifySessionResumed();
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
     void internalNotifySessionPaused() {
-        getMainCaptureSession().notifySessionPaused();
+        getMainCaptureSession().internalNotifySessionPaused();
     }
 
     @Override // android.view.contentcapture.ContentCaptureSession
-    public boolean isContentCaptureEnabled() {
+    boolean isContentCaptureEnabled() {
         return getMainCaptureSession().isContentCaptureEnabled();
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    public void notifyWindowBoundsChanged(int sessionId, Rect bounds) {
+        getMainCaptureSession().notifyWindowBoundsChanged(sessionId, bounds);
+    }
+
+    @Override // android.view.contentcapture.ContentCaptureSession
+    public void notifyContentCaptureEvents(SparseArray<ArrayList<Object>> contentCaptureEvents) {
+        getMainCaptureSession().notifyContentCaptureEvents(contentCaptureEvents);
     }
 }

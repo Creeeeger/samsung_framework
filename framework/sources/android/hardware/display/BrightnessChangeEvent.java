@@ -10,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class BrightnessChangeEvent implements Parcelable {
     public static final Parcelable.Creator<BrightnessChangeEvent> CREATOR = new Parcelable.Creator<BrightnessChangeEvent>() { // from class: android.hardware.display.BrightnessChangeEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessChangeEvent createFromParcel(Parcel source) {
             return new BrightnessChangeEvent(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessChangeEvent[] newArray(int size) {
             return new BrightnessChangeEvent[size];
@@ -42,14 +41,6 @@ public final class BrightnessChangeEvent implements Parcelable {
     public final long timeStamp;
     public final String uniqueDisplayId;
     public final int userId;
-
-    /* synthetic */ BrightnessChangeEvent(float f, long j, String str, int i, String str2, float[] fArr, long[] jArr, float f2, float f3, boolean z, int i2, boolean z2, int i3, float f4, float f5, boolean z3, boolean z4, long[] jArr2, long j2, BrightnessChangeEventIA brightnessChangeEventIA) {
-        this(f, j, str, i, str2, fArr, jArr, f2, f3, z, i2, z2, i3, f4, f5, z3, z4, jArr2, j2);
-    }
-
-    /* synthetic */ BrightnessChangeEvent(Parcel parcel, BrightnessChangeEventIA brightnessChangeEventIA) {
-        this(parcel);
-    }
 
     private BrightnessChangeEvent(float brightness, long timeStamp, String packageName, int userId, String uniqueDisplayId, float[] luxValues, long[] luxTimestamps, float batteryLevel, float powerBrightnessFactor, boolean nightMode, int colorTemperature, boolean reduceBrightColors, int reduceBrightColorsStrength, float reduceBrightColorsOffset, float lastBrightness, boolean isDefaultBrightnessConfig, boolean isUserSetBrightness, long[] colorValueBuckets, long colorSampleDuration) {
         this.brightness = brightness;
@@ -117,23 +108,6 @@ public final class BrightnessChangeEvent implements Parcelable {
         this.colorSampleDuration = source.readLong();
     }
 
-    /* renamed from: android.hardware.display.BrightnessChangeEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BrightnessChangeEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrightnessChangeEvent createFromParcel(Parcel source) {
-            return new BrightnessChangeEvent(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrightnessChangeEvent[] newArray(int size) {
-            return new BrightnessChangeEvent[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -166,7 +140,6 @@ public final class BrightnessChangeEvent implements Parcelable {
         return "BrightnessChangeEvent{brightness: " + this.brightness + ", timeStamp: " + this.timeStamp + ", packageName: " + this.packageName + ", userId: " + this.userId + ", uniqueDisplayId: " + this.uniqueDisplayId + ", luxValues: " + Arrays.toString(this.luxValues) + ", luxTimestamps: " + Arrays.toString(this.luxTimestamps) + ", batteryLevel: " + this.batteryLevel + ", powerBrightnessFactor: " + this.powerBrightnessFactor + ", nightMode: " + this.nightMode + ", colorTemperature: " + this.colorTemperature + ", reduceBrightColors: " + this.reduceBrightColors + ", reduceBrightColorsStrength: " + this.reduceBrightColorsStrength + ", reduceBrightColorsOffset: " + this.reduceBrightColorsOffset + ", lastBrightness: " + this.lastBrightness + ", isDefaultBrightnessConfig: " + this.isDefaultBrightnessConfig + ", isUserSetBrightness: " + this.isUserSetBrightness + ", colorValueBuckets: " + Arrays.toString(this.colorValueBuckets) + ", colorSampleDuration: " + this.colorSampleDuration + "}";
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private float mBatteryLevel;
         private float mBrightness;

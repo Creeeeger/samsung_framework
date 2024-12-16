@@ -9,7 +9,7 @@ import android.util.LruCache;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RelativeDateTimeFormatter {
     private static final FormatterCache CACHED_FORMATTERS = new FormatterCache();
     public static final long DAY_IN_MILLIS = 86400000;
@@ -21,8 +21,7 @@ public final class RelativeDateTimeFormatter {
     public static final long WEEK_IN_MILLIS = 604800000;
     public static final long YEAR_IN_MILLIS = 31449600000L;
 
-    /* loaded from: classes3.dex */
-    public static class FormatterCache extends LruCache<String, android.icu.text.RelativeDateTimeFormatter> {
+    static class FormatterCache extends LruCache<String, android.icu.text.RelativeDateTimeFormatter> {
         FormatterCache() {
             super(8);
         }
@@ -254,11 +253,10 @@ public final class RelativeDateTimeFormatter {
 
     private static android.icu.text.RelativeDateTimeFormatter getFormatter(ULocale locale, RelativeDateTimeFormatter.Style style, DisplayContext displayContext) {
         String key = locale + "\t" + style + "\t" + displayContext;
-        FormatterCache formatterCache = CACHED_FORMATTERS;
-        android.icu.text.RelativeDateTimeFormatter formatter = formatterCache.get(key);
+        android.icu.text.RelativeDateTimeFormatter formatter = CACHED_FORMATTERS.get(key);
         if (formatter == null) {
             android.icu.text.RelativeDateTimeFormatter formatter2 = android.icu.text.RelativeDateTimeFormatter.getInstance(locale, null, style, displayContext);
-            formatterCache.put(key, formatter2);
+            CACHED_FORMATTERS.put(key, formatter2);
             return formatter2;
         }
         return formatter;

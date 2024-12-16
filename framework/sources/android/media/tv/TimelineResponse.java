@@ -4,18 +4,17 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TimelineResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<TimelineResponse> CREATOR = new Parcelable.Creator<TimelineResponse>() { // from class: android.media.tv.TimelineResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimelineResponse createFromParcel(Parcel source) {
             source.readInt();
             return TimelineResponse.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimelineResponse[] newArray(int size) {
             return new TimelineResponse[size];
@@ -28,25 +27,7 @@ public final class TimelineResponse extends BroadcastInfoResponse implements Par
     private final int mUnitsPerTick;
     private final long mWallClock;
 
-    /* renamed from: android.media.tv.TimelineResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimelineResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimelineResponse createFromParcel(Parcel source) {
-            source.readInt();
-            return TimelineResponse.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimelineResponse[] newArray(int size) {
-            return new TimelineResponse[size];
-        }
-    }
-
-    public static TimelineResponse createFromParcelBody(Parcel in) {
+    static TimelineResponse createFromParcelBody(Parcel in) {
         return new TimelineResponse(in);
     }
 

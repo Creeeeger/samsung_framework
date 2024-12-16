@@ -21,8 +21,7 @@ public class ComponentCallbacksController {
 
     public void unregisterCallbacks(ComponentCallbacks callbacks) {
         synchronized (this.mLock) {
-            List<ComponentCallbacks> list = this.mComponentCallbacks;
-            if (list != null && !list.isEmpty()) {
+            if (this.mComponentCallbacks != null && !this.mComponentCallbacks.isEmpty()) {
                 this.mComponentCallbacks.remove(callbacks);
             }
         }
@@ -30,9 +29,8 @@ public class ComponentCallbacksController {
 
     public void clearCallbacks() {
         synchronized (this.mLock) {
-            List<ComponentCallbacks> list = this.mComponentCallbacks;
-            if (list != null) {
-                list.clear();
+            if (this.mComponentCallbacks != null) {
+                this.mComponentCallbacks.clear();
             }
         }
     }
@@ -64,7 +62,7 @@ public class ComponentCallbacksController {
         });
     }
 
-    public static /* synthetic */ void lambda$dispatchTrimMemory$1(int level, ComponentCallbacks callbacks) {
+    static /* synthetic */ void lambda$dispatchTrimMemory$1(int level, ComponentCallbacks callbacks) {
         if (callbacks instanceof ComponentCallbacks2) {
             ((ComponentCallbacks2) callbacks).onTrimMemory(level);
         }
@@ -72,8 +70,7 @@ public class ComponentCallbacksController {
 
     private void forAllComponentCallbacks(Consumer<ComponentCallbacks> callbacksConsumer) {
         synchronized (this.mLock) {
-            List<ComponentCallbacks> list = this.mComponentCallbacks;
-            if (list != null && !list.isEmpty()) {
+            if (this.mComponentCallbacks != null && !this.mComponentCallbacks.isEmpty()) {
                 ComponentCallbacks[] callbacksArray = new ComponentCallbacks[this.mComponentCallbacks.size()];
                 this.mComponentCallbacks.toArray(callbacksArray);
                 for (ComponentCallbacks callbacks : callbacksArray) {

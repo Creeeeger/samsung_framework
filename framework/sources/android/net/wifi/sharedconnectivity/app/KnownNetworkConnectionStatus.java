@@ -16,14 +16,13 @@ public final class KnownNetworkConnectionStatus implements Parcelable {
     public static final int CONNECTION_STATUS_SAVE_FAILED = 2;
     public static final int CONNECTION_STATUS_UNKNOWN = 0;
     public static final Parcelable.Creator<KnownNetworkConnectionStatus> CREATOR = new Parcelable.Creator<KnownNetworkConnectionStatus>() { // from class: android.net.wifi.sharedconnectivity.app.KnownNetworkConnectionStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnownNetworkConnectionStatus createFromParcel(Parcel in) {
             return KnownNetworkConnectionStatus.readFromParcel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnownNetworkConnectionStatus[] newArray(int size) {
             return new KnownNetworkConnectionStatus[size];
@@ -34,15 +33,9 @@ public final class KnownNetworkConnectionStatus implements Parcelable {
     private final int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ConnectionStatus {
     }
 
-    /* synthetic */ KnownNetworkConnectionStatus(int i, KnownNetwork knownNetwork, Bundle bundle, KnownNetworkConnectionStatusIA knownNetworkConnectionStatusIA) {
-        this(i, knownNetwork, bundle);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private Bundle mExtras = Bundle.EMPTY;
         private KnownNetwork mKnownNetwork;
@@ -119,23 +112,6 @@ public final class KnownNetworkConnectionStatus implements Parcelable {
 
     public static KnownNetworkConnectionStatus readFromParcel(Parcel in) {
         return new KnownNetworkConnectionStatus(in.readInt(), KnownNetwork.readFromParcel(in), in.readBundle());
-    }
-
-    /* renamed from: android.net.wifi.sharedconnectivity.app.KnownNetworkConnectionStatus$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KnownNetworkConnectionStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KnownNetworkConnectionStatus createFromParcel(Parcel in) {
-            return KnownNetworkConnectionStatus.readFromParcel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KnownNetworkConnectionStatus[] newArray(int size) {
-            return new KnownNetworkConnectionStatus[size];
-        }
     }
 
     public String toString() {

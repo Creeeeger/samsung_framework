@@ -11,9 +11,6 @@ public class SystemService {
 
     static {
         SystemProperties.addChangeCallback(new Runnable() { // from class: android.os.SystemService.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 synchronized (SystemService.sPropertyLock) {
@@ -23,7 +20,6 @@ public class SystemService {
         });
     }
 
-    /* loaded from: classes3.dex */
     public enum State {
         RUNNING("running"),
         STOPPING("stopping"),
@@ -32,20 +28,6 @@ public class SystemService {
 
         State(String state) {
             SystemService.sStates.put(state, this);
-        }
-    }
-
-    /* renamed from: android.os.SystemService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (SystemService.sPropertyLock) {
-                SystemService.sPropertyLock.notifyAll();
-            }
         }
     }
 

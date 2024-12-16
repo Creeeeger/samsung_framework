@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Properties implements Parcelable {
     public static final Parcelable.Creator<Properties> CREATOR = new Parcelable.Creator<Properties>() { // from class: android.media.soundtrigger.Properties.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Properties createFromParcel(Parcel _aidl_source) {
             Properties _aidl_out = new Properties();
@@ -20,6 +18,7 @@ public class Properties implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Properties[] newArray(int _aidl_size) {
             return new Properties[_aidl_size];
@@ -40,25 +39,6 @@ public class Properties implements Parcelable {
     public boolean triggerInEvent = false;
     public int powerConsumptionMw = 0;
     public int audioCapabilities = 0;
-
-    /* renamed from: android.media.soundtrigger.Properties$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Properties> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Properties createFromParcel(Parcel _aidl_source) {
-            Properties _aidl_out = new Properties();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Properties[] newArray(int _aidl_size) {
-            return new Properties[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -247,7 +227,7 @@ public class Properties implements Parcelable {
         _aidl_sj.add("triggerInEvent: " + this.triggerInEvent);
         _aidl_sj.add("powerConsumptionMw: " + this.powerConsumptionMw);
         _aidl_sj.add("audioCapabilities: " + this.audioCapabilities);
-        return "android.media.soundtrigger.Properties" + _aidl_sj.toString();
+        return "Properties" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

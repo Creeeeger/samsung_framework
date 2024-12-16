@@ -6,17 +6,15 @@ import android.text.ParcelableSpan;
 import android.text.TextPaint;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface LineHeightSpan extends ParagraphStyle, WrapTogetherSpan {
 
-    /* loaded from: classes3.dex */
     public interface WithDensity extends LineHeightSpan {
         void chooseHeight(CharSequence charSequence, int i, int i2, int i3, int i4, Paint.FontMetricsInt fontMetricsInt, TextPaint textPaint);
     }
 
     void chooseHeight(CharSequence charSequence, int i, int i2, int i3, int i4, Paint.FontMetricsInt fontMetricsInt);
 
-    /* loaded from: classes3.dex */
     public static class Standard implements LineHeightSpan, ParcelableSpan {
         private final int mHeight;
 

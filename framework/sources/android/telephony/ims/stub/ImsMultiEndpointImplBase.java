@@ -1,7 +1,7 @@
 package android.telephony.ims.stub;
 
 import android.annotation.SystemApi;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.os.RemoteException;
 import android.telephony.ims.ImsExternalCallState;
 import android.telephony.ims.stub.ImsMultiEndpointImplBase;
@@ -17,23 +17,22 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsMultiEndpointImplBase {
     private static final String TAG = "MultiEndpointImplBase";
     private IImsExternalCallStateListener mListener;
     private final Object mLock = new Object();
-    private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda1();
+    private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda0();
     private final IImsMultiEndpoint mImsMultiEndpoint = new AnonymousClass1();
 
-    /* renamed from: android.telephony.ims.stub.ImsMultiEndpointImplBase$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IImsMultiEndpoint.Stub {
+    /* renamed from: android.telephony.ims.stub.ImsMultiEndpointImplBase$1, reason: invalid class name */
+    class AnonymousClass1 extends IImsMultiEndpoint.Stub {
         AnonymousClass1() {
         }
 
         @Override // com.android.ims.internal.IImsMultiEndpoint
         public void setListener(final IImsExternalCallStateListener listener) throws RemoteException {
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsMultiEndpointImplBase$1$$ExternalSyntheticLambda0
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsMultiEndpointImplBase$1$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsMultiEndpointImplBase.AnonymousClass1.this.lambda$setListener$0(listener);
@@ -41,6 +40,7 @@ public class ImsMultiEndpointImplBase {
             }, "setListener");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$0(IImsExternalCallStateListener listener) {
             if (ImsMultiEndpointImplBase.this.mListener != null && !ImsMultiEndpointImplBase.this.mListener.asBinder().isBinderAlive()) {
                 Log.w(ImsMultiEndpointImplBase.TAG, "setListener: discarding dead Binder");
@@ -59,13 +59,14 @@ public class ImsMultiEndpointImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestImsExternalCallStateInfo$1() {
             ImsMultiEndpointImplBase.this.requestImsExternalCallStateInfo();
         }
 
         @Override // com.android.ims.internal.IImsMultiEndpoint
         public void requestImsExternalCallStateInfo() throws RemoteException {
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsMultiEndpointImplBase$1$$ExternalSyntheticLambda1
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsMultiEndpointImplBase$1$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsMultiEndpointImplBase.AnonymousClass1.this.lambda$requestImsExternalCallStateInfo$1();
@@ -75,7 +76,7 @@ public class ImsMultiEndpointImplBase {
 
         private void executeMethodAsync(final Runnable r, String errorLogName) {
             try {
-                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsMultiEndpointImplBase$1$$ExternalSyntheticLambda2
+                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsMultiEndpointImplBase$1$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         TelephonyUtils.runWithCleanCallingIdentity(r);

@@ -97,7 +97,7 @@ public class ExtendAnimation extends Animation {
     }
 
     @Override // android.view.animation.Animation
-    public void applyTransformation(float it, Transformation tr) {
+    protected void applyTransformation(float it, Transformation tr) {
         int l = this.mFromInsets.left + ((int) ((this.mToInsets.left - this.mFromInsets.left) * it));
         int t = this.mFromInsets.top + ((int) ((this.mToInsets.top - this.mFromInsets.top) * it));
         int r = this.mFromInsets.right + ((int) ((this.mToInsets.right - this.mFromInsets.right) * it));

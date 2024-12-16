@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class SipDelegateManager {
     public static final int DENIED_REASON_INVALID = 4;
     public static final int DENIED_REASON_IN_USE_BY_ANOTHER_DELEGATE = 1;
@@ -34,7 +34,7 @@ public class SipDelegateManager {
     public static final int MESSAGE_FAILURE_REASON_NETWORK_NOT_AVAILABLE = 8;
     public static final int MESSAGE_FAILURE_REASON_NOT_REGISTERED = 9;
     public static final int MESSAGE_FAILURE_REASON_STALE_IMS_CONFIGURATION = 10;
-    public static final ArrayMap<Integer, String> MESSAGE_FAILURE_REASON_STRING_MAP;
+    public static final ArrayMap<Integer, String> MESSAGE_FAILURE_REASON_STRING_MAP = new ArrayMap<>(11);
     public static final int MESSAGE_FAILURE_REASON_TAG_NOT_ENABLED_FOR_DELEGATE = 7;
     public static final int MESSAGE_FAILURE_REASON_UNKNOWN = 0;
     public static final int SIP_DELEGATE_DESTROY_REASON_REQUESTED_BY_APP = 2;
@@ -48,34 +48,29 @@ public class SipDelegateManager {
     private final BinderCacheManager<ITelephony> mTelephonyBinderCache;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeniedReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface MessageFailureReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SipDelegateDestroyReason {
     }
 
     static {
-        ArrayMap<Integer, String> arrayMap = new ArrayMap<>(11);
-        MESSAGE_FAILURE_REASON_STRING_MAP = arrayMap;
-        arrayMap.append(0, "MESSAGE_FAILURE_REASON_UNKNOWN");
-        arrayMap.append(1, "MESSAGE_FAILURE_REASON_DELEGATE_DEAD");
-        arrayMap.append(2, "MESSAGE_FAILURE_REASON_DELEGATE_CLOSED");
-        arrayMap.append(4, "MESSAGE_FAILURE_REASON_INVALID_HEADER_FIELDS");
-        arrayMap.append(5, "MESSAGE_FAILURE_REASON_INVALID_BODY_CONTENT");
-        arrayMap.append(6, "MESSAGE_FAILURE_REASON_INVALID_FEATURE_TAG");
-        arrayMap.append(7, "MESSAGE_FAILURE_REASON_TAG_NOT_ENABLED_FOR_DELEGATE");
-        arrayMap.append(8, "MESSAGE_FAILURE_REASON_NETWORK_NOT_AVAILABLE");
-        arrayMap.append(9, "MESSAGE_FAILURE_REASON_NOT_REGISTERED");
-        arrayMap.append(10, "MESSAGE_FAILURE_REASON_STALE_IMS_CONFIGURATION");
-        arrayMap.append(11, "MESSAGE_FAILURE_REASON_INTERNAL_DELEGATE_STATE_TRANSITION");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(0, "MESSAGE_FAILURE_REASON_UNKNOWN");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(1, "MESSAGE_FAILURE_REASON_DELEGATE_DEAD");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(2, "MESSAGE_FAILURE_REASON_DELEGATE_CLOSED");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(4, "MESSAGE_FAILURE_REASON_INVALID_HEADER_FIELDS");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(5, "MESSAGE_FAILURE_REASON_INVALID_BODY_CONTENT");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(6, "MESSAGE_FAILURE_REASON_INVALID_FEATURE_TAG");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(7, "MESSAGE_FAILURE_REASON_TAG_NOT_ENABLED_FOR_DELEGATE");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(8, "MESSAGE_FAILURE_REASON_NETWORK_NOT_AVAILABLE");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(9, "MESSAGE_FAILURE_REASON_NOT_REGISTERED");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(10, "MESSAGE_FAILURE_REASON_STALE_IMS_CONFIGURATION");
+        MESSAGE_FAILURE_REASON_STRING_MAP.append(11, "MESSAGE_FAILURE_REASON_INTERNAL_DELEGATE_STATE_TRANSITION");
     }
 
     public SipDelegateManager(Context context, int subId, BinderCacheManager<IImsRcsController> binderCache, BinderCacheManager<ITelephony> telephonyBinderCache) {
@@ -108,7 +103,7 @@ public class SipDelegateManager {
             final SipDelegateConnectionAidlWrapper wrapper = new SipDelegateConnectionAidlWrapper(executor, dc, mc);
             BinderCacheManager<IImsRcsController> binderCacheManager = this.mBinderCache;
             Objects.requireNonNull(wrapper);
-            IImsRcsController controller = binderCacheManager.listenOnBinder(wrapper, new Runnable() { // from class: android.telephony.ims.SipDelegateManager$$ExternalSyntheticLambda0
+            IImsRcsController controller = binderCacheManager.listenOnBinder(wrapper, new Runnable() { // from class: android.telephony.ims.SipDelegateManager$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     SipDelegateConnectionAidlWrapper.this.binderDied();
@@ -166,7 +161,7 @@ public class SipDelegateManager {
         callback.init(executor);
         BinderCacheManager<ITelephony> binderCacheManager = this.mTelephonyBinderCache;
         Objects.requireNonNull(callback);
-        ITelephony telephony = binderCacheManager.listenOnBinder(callback, new ImsMmTelManager$$ExternalSyntheticLambda2(callback));
+        ITelephony telephony = binderCacheManager.listenOnBinder(callback, new ImsMmTelManager$$ExternalSyntheticLambda3(callback));
         if (telephony == null) {
             throw new ImsException("Telephony server is down", 1);
         }
@@ -197,7 +192,7 @@ public class SipDelegateManager {
         try {
             BinderCacheManager<IImsRcsController> binderCacheManager = this.mBinderCache;
             Objects.requireNonNull(callback);
-            IImsRcsController controller = binderCacheManager.listenOnBinder(callback, new Runnable() { // from class: android.telephony.ims.SipDelegateManager$$ExternalSyntheticLambda1
+            IImsRcsController controller = binderCacheManager.listenOnBinder(callback, new Runnable() { // from class: android.telephony.ims.SipDelegateManager$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     SipDialogStateCallback.this.binderDied();

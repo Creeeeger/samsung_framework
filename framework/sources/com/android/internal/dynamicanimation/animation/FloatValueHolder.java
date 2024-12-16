@@ -1,6 +1,6 @@
 package com.android.internal.dynamicanimation.animation;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class FloatValueHolder {
     private float mValue = 0.0f;
 

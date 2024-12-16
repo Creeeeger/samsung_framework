@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DvbcFrontendSettings extends FrontendSettings {
     public static final int ANNEX_A = 1;
     public static final int ANNEX_B = 2;
@@ -57,38 +57,28 @@ public class DvbcFrontendSettings extends FrontendSettings {
     private final int mSymbolRate;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Annex {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Bandwidth {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Modulation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface OuterFec {
     }
 
     @Retention(RetentionPolicy.SOURCE)
     @Deprecated
-    /* loaded from: classes2.dex */
     public @interface SpectralInversion {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TimeInterleaveMode {
-    }
-
-    /* synthetic */ DvbcFrontendSettings(long j, int i, long j2, int i2, int i3, int i4, int i5, int i6, int i7, DvbcFrontendSettingsIA dvbcFrontendSettingsIA) {
-        this(j, i, j2, i2, i3, i4, i5, i6, i7);
     }
 
     private DvbcFrontendSettings(long frequency, int modulation, long innerFec, int symbolRate, int outerFec, int annex, int spectralInversion, int interleaveMode, int bandwidth) {
@@ -139,7 +129,6 @@ public class DvbcFrontendSettings extends FrontendSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mAnnex;
         private int mBandwidth;
@@ -150,10 +139,6 @@ public class DvbcFrontendSettings extends FrontendSettings {
         private int mOuterFec;
         private int mSpectralInversion;
         private int mSymbolRate;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;

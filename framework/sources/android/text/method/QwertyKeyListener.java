@@ -9,19 +9,17 @@ import android.text.method.TextKeyListener;
 import android.util.SparseArray;
 import android.view.View;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class QwertyKeyListener extends BaseKeyListener {
-    private static SparseArray<String> PICKER_SETS;
     private static QwertyKeyListener sFullKeyboardInstance;
-    private static QwertyKeyListener[] sInstance = new QwertyKeyListener[TextKeyListener.Capitalize.values().length * 2];
     private TextKeyListener.Capitalize mAutoCap;
     private boolean mAutoText;
     private boolean mFullKeyboard;
+    private static QwertyKeyListener[] sInstance = new QwertyKeyListener[TextKeyListener.Capitalize.values().length * 2];
+    private static SparseArray<String> PICKER_SETS = new SparseArray<>();
 
     static {
-        SparseArray<String> sparseArray = new SparseArray<>();
-        PICKER_SETS = sparseArray;
-        sparseArray.put(65, "ÀÁÂÄÆÃÅĄĀ");
+        PICKER_SETS.put(65, "ÀÁÂÄÆÃÅĄĀ");
         PICKER_SETS.put(67, "ÇĆČ");
         PICKER_SETS.put(68, "Ď");
         PICKER_SETS.put(69, "ÈÉÊËĘĚĒ");
@@ -88,9 +86,8 @@ public class QwertyKeyListener extends BaseKeyListener {
 
     public static QwertyKeyListener getInstance(boolean z, TextKeyListener.Capitalize capitalize) {
         int ordinal = (capitalize.ordinal() * 2) + (z ? 1 : 0);
-        QwertyKeyListener[] qwertyKeyListenerArr = sInstance;
-        if (qwertyKeyListenerArr[ordinal] == null) {
-            qwertyKeyListenerArr[ordinal] = new QwertyKeyListener(capitalize, z);
+        if (sInstance[ordinal] == null) {
+            sInstance[ordinal] = new QwertyKeyListener(capitalize, z);
         }
         return sInstance[ordinal];
     }
@@ -109,7 +106,7 @@ public class QwertyKeyListener extends BaseKeyListener {
 
     /* JADX WARN: Code restructure failed: missing block: B:163:0x02aa, code lost:
     
-        if (r25.hasModifiers(2) != false) goto L395;
+        if (r25.hasModifiers(2) != false) goto L175;
      */
     @Override // android.text.method.BaseKeyListener, android.text.method.MetaKeyKeyListener, android.text.method.KeyListener
     /*
@@ -186,9 +183,7 @@ public class QwertyKeyListener extends BaseKeyListener {
         return Character.toUpperCase(src.charAt(0)) + src.substring(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public static class Replaced implements NoCopySpan {
+    static class Replaced implements NoCopySpan {
         private char[] mText;
 
         public Replaced(char[] text) {

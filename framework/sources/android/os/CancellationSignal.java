@@ -9,7 +9,6 @@ public final class CancellationSignal {
     private OnCancelListener mOnCancelListener;
     private ICancellationSignal mRemote;
 
-    /* loaded from: classes3.dex */
     public interface OnCancelListener {
         void onCancel();
     }
@@ -110,14 +109,8 @@ public final class CancellationSignal {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static final class Transport extends ICancellationSignal.Stub {
+    private static final class Transport extends ICancellationSignal.Stub {
         final CancellationSignal mCancellationSignal;
-
-        /* synthetic */ Transport(TransportIA transportIA) {
-            this();
-        }
 
         private Transport() {
             this.mCancellationSignal = new CancellationSignal();

@@ -14,24 +14,22 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.Window;
+import com.samsung.android.core.AppJumpBlockTool;
 import com.samsung.android.feature.SemFloatingFeature;
-import com.samsung.android.sm.iafdlib.CheckUpdateCallback;
-import com.samsung.android.sm.iafdlib.IafdConstant;
-import com.samsung.android.sm.iafdlib.IafdSmAPIManager;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /* loaded from: classes6.dex */
-public class IAFDServiceImpl {
+class IAFDServiceImpl {
     private static final String TAG = "IAFDServiceImpl";
-    private IafdSmAPIManager apiSMManager;
+    private SmLib_IafdSmAPIManager apiSMManager;
     private Context mContext;
     private ServiceHandler mHandler;
     private IAFDSocketFdServer mIAFDGetHotfixDataService = null;
     private IAFDRepair mIAFDRepair;
     private Looper mLooper;
 
-    public IAFDServiceImpl(Context context, IAFDDiagnosis miafd) {
+    IAFDServiceImpl(Context context, IAFDDiagnosis miafd) {
         this.mContext = context;
         init();
     }
@@ -42,11 +40,11 @@ public class IAFDServiceImpl {
         this.mLooper = mHandlerThread.getLooper();
         this.mHandler = new ServiceHandler(this.mLooper);
         this.mIAFDRepair = new IAFDRepair();
-        this.apiSMManager = new IafdSmAPIManager(this.mContext);
+        this.apiSMManager = new SmLib_IafdSmAPIManager(this.mContext);
         this.mIAFDGetHotfixDataService = new IAFDSocketFdServer(this.mContext);
     }
 
-    public void IAFDServiceHandlerMessage(Message msg) {
+    void IAFDServiceHandlerMessage(Message msg) {
         this.mHandler.handleMessage(msg);
     }
 
@@ -79,8 +77,7 @@ public class IAFDServiceImpl {
         return dualuserid;
     }
 
-    /* loaded from: classes6.dex */
-    public final class ServiceHandler extends Handler {
+    private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
             super(looper);
         }
@@ -98,7 +95,7 @@ public class IAFDServiceImpl {
                         msg.what = 6;
                     }
                     IAFDServiceImpl.this.mHandler.sendMessage(msg);
-                    return;
+                    break;
                 case 2:
                     Bundle bundle2 = msg.getData();
                     boolean repairResult = IAFDServiceImpl.this.mIAFDRepair.repairHandle(IAFDServiceImpl.this.mContext, bundle2);
@@ -112,36 +109,27 @@ public class IAFDServiceImpl {
                             intent.putExtra("repairResult", repairResult);
                             intent.addFlags(268435456);
                             IAFDServiceImpl.this.mContext.startActivity(intent);
-                            return;
+                            break;
                         }
-                        return;
                     }
-                    return;
-                case 3:
-                case 4:
-                case 7:
-                case 8:
-                case 10:
-                case 11:
-                case 12:
-                default:
-                    return;
+                    break;
                 case 5:
                     Bundle bundle3 = msg.getData();
                     Log.d(IAFDServiceImpl.TAG, "CMD_TYPE_GETUPDATESTATUS");
                     IAFDServiceImpl.this.checkUpdate(bundle3);
-                    return;
+                    break;
                 case 6:
                     Log.d(IAFDServiceImpl.TAG, "CMD_TYPE_GETUPDATESTATUS_RESULT");
                     IAFDServiceImpl.this.IAFDstartApp(msg.getData(), true);
-                    return;
+                    break;
                 case 9:
                     IAFDServiceImpl.this.mIAFDGetHotfixDataService.getDataFromClient(msg.getData().getString("hotfixdata"));
-                    return;
+                    break;
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean IAFDstartApp(Bundle bundle, boolean hasGetUpdateResult) {
         boolean hasUpdated = false;
         if (hasGetUpdateResult) {
@@ -186,18 +174,10 @@ public class IAFDServiceImpl {
         return true;
     }
 
-    private void showSystemAppDiaglog(Bundle bundle, String trigApp) {
+    private void showSystemAppDiaglog(final Bundle bundle, final String trigApp) {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
             builder.setTitle("System hint").setMessage("Happened exception in the running application, you can try to resolve it with the button of [Try to resolve]").setCancelable(true).setPositiveButton("Try to resolve", new DialogInterface.OnClickListener() { // from class: com.sec.android.iaft.IAFDServiceImpl.2
-                final /* synthetic */ Bundle val$bundle;
-                final /* synthetic */ String val$trigApp;
-
-                AnonymousClass2(String trigApp2, Bundle bundle2) {
-                    trigApp = trigApp2;
-                    bundle = bundle2;
-                }
-
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int which) {
                     if (trigApp.equals("SmartMApp")) {
@@ -212,10 +192,7 @@ public class IAFDServiceImpl {
                     msg.what = 2;
                     IAFDServiceImpl.this.mHandler.sendMessage(msg);
                 }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() { // from class: com.sec.android.iaft.IAFDServiceImpl.1
-                AnonymousClass1() {
-                }
-
+            }).setNegativeButton(AppJumpBlockTool.BlockDialogReceiver.RESULT_CANCEL, new DialogInterface.OnClickListener() { // from class: com.sec.android.iaft.IAFDServiceImpl.1
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -238,74 +215,11 @@ public class IAFDServiceImpl {
         }
     }
 
-    /* renamed from: com.sec.android.iaft.IAFDServiceImpl$2 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass2 implements DialogInterface.OnClickListener {
-        final /* synthetic */ Bundle val$bundle;
-        final /* synthetic */ String val$trigApp;
-
-        AnonymousClass2(String trigApp2, Bundle bundle2) {
-            trigApp = trigApp2;
-            bundle = bundle2;
-        }
-
-        @Override // android.content.DialogInterface.OnClickListener
-        public void onClick(DialogInterface dialog, int which) {
-            if (trigApp.equals("SmartMApp")) {
-                Intent intent = new Intent("com.samsung.android.sm.ACTION_START_THIRD_APP_ERROR_DIALOG");
-                intent.setPackage("com.samsung.android.sm_cn");
-                intent.putExtras(bundle);
-                IAFDServiceImpl.this.mContext.startService(intent);
-                return;
-            }
-            Message msg = new Message();
-            msg.setData(bundle);
-            msg.what = 2;
-            IAFDServiceImpl.this.mHandler.sendMessage(msg);
-        }
-    }
-
-    /* renamed from: com.sec.android.iaft.IAFDServiceImpl$1 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass1 implements DialogInterface.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.DialogInterface.OnClickListener
-        public void onClick(DialogInterface dialog, int which) {
-            dialog.cancel();
-        }
-    }
-
-    /* renamed from: com.sec.android.iaft.IAFDServiceImpl$3 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass3 implements CheckUpdateCallback {
-        final /* synthetic */ Bundle val$bundle;
-
-        AnonymousClass3(Bundle bundle) {
-            bundle = bundle;
-        }
-
-        @Override // com.samsung.android.sm.iafdlib.CheckUpdateCallback
-        public void onResult(int resultCode, long versionCode, String versionName, String pkgName) {
-            Message msg = new Message();
-            bundle.putBoolean("hasUpdate", resultCode == 2);
-            msg.setData(bundle);
-            msg.what = 6;
-            IAFDServiceImpl.this.mHandler.sendMessage(msg);
-        }
-    }
-
-    public void checkUpdate(Bundle bundle) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void checkUpdate(final Bundle bundle) {
         try {
-            this.apiSMManager.checkUpdate(bundle.getString(IafdConstant.KEY_PACKAGE_NAME), bundle.getLong(IafdConstant.KEY_VERSION_CODE), new CheckUpdateCallback() { // from class: com.sec.android.iaft.IAFDServiceImpl.3
-                final /* synthetic */ Bundle val$bundle;
-
-                AnonymousClass3(Bundle bundle2) {
-                    bundle = bundle2;
-                }
-
-                @Override // com.samsung.android.sm.iafdlib.CheckUpdateCallback
+            this.apiSMManager.checkUpdate(bundle.getString(SmLib_IafdConstant.KEY_PACKAGE_NAME), bundle.getLong(SmLib_IafdConstant.KEY_VERSION_CODE), new SmLib_CheckUpdateCallback() { // from class: com.sec.android.iaft.IAFDServiceImpl.3
+                @Override // com.sec.android.iaft.SmLib_CheckUpdateCallback
                 public void onResult(int resultCode, long versionCode, String versionName, String pkgName) {
                     Message msg = new Message();
                     bundle.putBoolean("hasUpdate", resultCode == 2);
@@ -316,8 +230,8 @@ public class IAFDServiceImpl {
             });
         } catch (Exception e) {
             Message msg = new Message();
-            bundle2.putBoolean("hasUpdate", false);
-            msg.setData(bundle2);
+            bundle.putBoolean("hasUpdate", false);
+            msg.setData(bundle);
             msg.what = 6;
             this.mHandler.sendMessage(msg);
         }
@@ -325,12 +239,12 @@ public class IAFDServiceImpl {
 
     public void reportErrorDataToServer(Bundle bundle) {
         try {
-            String pkgName = bundle.getString(IafdConstant.KEY_PACKAGE_NAME);
-            int userId = bundle.getInt(IafdConstant.KEY_USER_ID);
+            String pkgName = bundle.getString(SmLib_IafdConstant.KEY_PACKAGE_NAME);
+            int userId = bundle.getInt(SmLib_IafdConstant.KEY_USER_ID);
             int errorType = bundle.getInt("type");
-            String errorStack = bundle.getString(IafdConstant.KEY_ERROR_STACK);
+            String errorStack = bundle.getString(SmLib_IafdConstant.KEY_ERROR_STACK);
             String errorComponent = bundle.getString("component");
-            long versionCode = bundle.getLong(IafdConstant.KEY_VERSION_CODE);
+            long versionCode = bundle.getLong(SmLib_IafdConstant.KEY_VERSION_CODE);
             String appName = bundle.getString("appName");
             String versionName = bundle.getString("versionName");
             this.apiSMManager.reportErrorDataToServer(pkgName, userId, errorType, errorStack, errorComponent, versionCode, appName, versionName);

@@ -12,7 +12,6 @@ import android.webkit.WebStorage;
 /* loaded from: classes4.dex */
 public class WebChromeClient {
 
-    /* loaded from: classes4.dex */
     public interface CustomViewCallback {
         void onCustomViewHidden();
     }
@@ -117,7 +116,6 @@ public class WebChromeClient {
         return false;
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class FileChooserParams {
         public static final int MODE_OPEN = 0;
         public static final int MODE_OPEN_FOLDER = 2;

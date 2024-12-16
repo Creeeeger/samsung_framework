@@ -5,8 +5,9 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Build;
 import android.os.SystemProperties;
 import android.security.keystore.KeyProperties;
-import android.telephony.Rlog;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import com.android.telephony.Rlog;
 import com.samsung.android.feature.SemCarrierFeature;
 import com.samsung.android.wallpaperbackup.BnRConstants;
 import com.samsung.telephony.sysprop.SemTelephonyProps;
@@ -14,7 +15,6 @@ import java.util.List;
 
 /* loaded from: classes5.dex */
 public class TelephonyFeatures {
-    public static final String DEVICE_TYPE;
     public static final int DUALSIM_WITH_ONE_SLOT_NR = 1;
     public static final int DUALSIM_WITH_TWO_SLOT_NR = 2;
     public static final String HARDWARE_TYPE;
@@ -23,16 +23,15 @@ public class TelephonyFeatures {
     public static final boolean IS_MTK;
     public static final boolean IS_PHONE;
     public static final boolean IS_QCOM;
-    public static final boolean IS_TABLET;
-    public static final boolean IS_WATCH;
     public static final boolean IS_WIFI_ONLY;
     private static final String LOG_TAG = "TelephonyFeatures";
-    public static final String MULTI_SIM_CONFIG;
     public static final int NO_DUALSIM_NR_MODEL = 0;
     public static final int NTC_FEATURE_ALLOW_HANGUP_WHEN_DIALING = 5;
     public static final int NTC_FEATURE_BLOCK_NETMODE_CHANGE_WITH_CARRIER_CONFIG_CHANGED = 14;
     public static final int NTC_FEATURE_CHECK_OPPOSITE_SLOT_NETMODE_BEFORE_CHANGE = 15;
+    public static final int NTC_FEATURE_CHECK_VOLTE_SUBSCRIBER_FOR_CALL_WAITING = 27;
     public static final int NTC_FEATURE_CSC_SPRINT_CHAMELEON = 2;
+    public static final int NTC_FEATURE_DEFAULT_NETWORK_TYPE_2G_REASON_DISABLE = 28;
     public static final int NTC_FEATURE_DISPLAY_RESCAN_DIALOG = 12;
     public static final int NTC_FEATURE_DISPLAY_TOAST_AFTER_RTT_E911_FAILED = 11;
     public static final int NTC_FEATURE_ERI_ON_AP = 4;
@@ -42,62 +41,53 @@ public class TelephonyFeatures {
     public static final int NTC_FEATURE_FORCELY_SET_2G_ENABLED = 20;
     public static final int NTC_FEATURE_FORCELY_SET_3G_4G_ENABLED = 21;
     public static final int NTC_FEATURE_IS_3G_NOT_ALLOWED_OPERATOR = 16;
-    public static final int NTC_FEATURE_MAX = 25;
+    public static final int NTC_FEATURE_MAX = 29;
+    public static final int NTC_FEATURE_NEED_FORCE_NETWORK_MODE = 24;
     public static final int NTC_FEATURE_RESUME_HELD_CALL_AFTER_MO_FAIL = 18;
     public static final int NTC_FEATURE_RESUME_HELD_CALL_IF_BG_ONLY = 19;
     public static final int NTC_FEATURE_RETRY_EMERGENCY_SEARCH_IN_ALERTING = 17;
     public static final int NTC_FEATURE_SET_CLIR_TO_BOTH_SIDES = 13;
+    public static final int NTC_FEATURE_SHOW_VOICE_AS_DATA_NETWORK_TYPE = 25;
     public static final int NTC_FEATURE_SPR_US_INTERNATIONAL_DIALING = 1;
     public static final int NTC_FEATURE_SUPPORT_IMSCALL_ECBM = 8;
     public static final int NTC_FEATURE_SUPPORT_IMSCALL_ONLY = 7;
-    public static final int NTC_FEATURE_SUPPORT_SATELLITE_FOR_CARRIER = 24;
+    public static final int NTC_FEATURE_SUPPORT_WAKELOCK_LOGGING = 26;
     public static final int NTC_FEATURE_UPDATE_ADDRESS_FOR_CALL_CONTROL = 10;
     public static final int NTC_FEATURE_UPDATE_NETWORK_LIST_WITH_EONS = 6;
     public static final int NTC_FEATURE_USE_SECOND_TTY_MODE_IN_DUAL_SIM = 9;
     public static final int PRIMARY_PHONE_ID = 0;
-    private static final int PROJECT_SIM_NUM;
+    public static final String RIL_FEATURES = "onebinary entitlement_sa";
     public static final int SECONDARY_PHONE_ID = 1;
-    private static boolean mSimHotswapSupported;
-    private static String[] mSimbasedChangeType;
+    private static boolean sSimHotswapSupported;
+    private static String[] sSimbasedChangeType;
     public static final boolean SHIP_BUILD = SystemProperties.getBoolean("ro.product_ship", true);
     private static final String SALES_CODE = SystemProperties.get("ro.csc.sales_code", KeyProperties.DIGEST_NONE);
+    public static final String DEVICE_TYPE = SystemProperties.get("ro.build.characteristics", "");
+    public static final boolean IS_TABLET = DEVICE_TYPE.contains(BnRConstants.DEVICETYPE_TABLET);
+    public static final boolean IS_WATCH = DEVICE_TYPE.contains("watch");
 
     static {
-        boolean z = true;
-        String str = SystemProperties.get("ro.build.characteristics", "");
-        DEVICE_TYPE = str;
-        boolean contains = str.contains(BnRConstants.DEVICETYPE_TABLET);
-        IS_TABLET = contains;
-        boolean contains2 = str.contains("watch");
-        IS_WATCH = contains2;
-        IS_PHONE = (contains || contains2) ? false : true;
-        String str2 = SystemProperties.get("ro.boot.hardware", "");
-        HARDWARE_TYPE = str2;
-        IS_QCOM = str2.contains("qcom");
-        if (!str2.contains("exynos") && !str2.contains("s5e")) {
-            z = false;
-        }
-        IS_EXYNOS = z;
-        IS_MTK = str2.contains("mt");
+        IS_PHONE = (IS_TABLET || IS_WATCH) ? false : true;
+        HARDWARE_TYPE = SystemProperties.get("ro.boot.hardware", "");
+        IS_QCOM = HARDWARE_TYPE.contains("qcom");
+        IS_EXYNOS = HARDWARE_TYPE.contains("exynos") || HARDWARE_TYPE.contains("s5e");
+        IS_MTK = HARDWARE_TYPE.contains("mt");
         IS_WIFI_ONLY = "wifi-only".equals(SemTelephonyProps.carrier().orElse("unknown"));
         IS_FACTORY_BIN = "factory".equalsIgnoreCase(SystemProperties.get("ro.factory.factory_binary", "Unknown"));
-        MULTI_SIM_CONFIG = android.sysprop.TelephonyProperties.multi_sim_config().orElse("");
-        PROJECT_SIM_NUM = TelephonyManager.getDefault().getActiveModemCount();
-        mSimHotswapSupported = false;
-        mSimbasedChangeType = null;
+        sSimHotswapSupported = true;
+        sSimbasedChangeType = null;
     }
 
     private static void InitializeSimbasedType() {
         String changeType = SystemProperties.get("ro.simbased.changetype", KeyProperties.DIGEST_NONE);
-        String[] split = changeType.split(",");
-        mSimbasedChangeType = split;
-        if (split == null || split.length < 2) {
-            mSimbasedChangeType = r2;
-            String[] strArr = {KeyProperties.DIGEST_NONE, "DISABLED"};
+        sSimbasedChangeType = changeType.split(",");
+        if (sSimbasedChangeType == null || sSimbasedChangeType.length < 2) {
+            sSimbasedChangeType = new String[2];
+            sSimbasedChangeType[0] = KeyProperties.DIGEST_NONE;
+            sSimbasedChangeType[1] = "DISABLED";
         } else {
-            split[0] = split[0].trim();
-            String[] strArr2 = mSimbasedChangeType;
-            strArr2[1] = strArr2[1].trim();
+            sSimbasedChangeType[0] = sSimbasedChangeType[0].trim();
+            sSimbasedChangeType[1] = sSimbasedChangeType[1].trim();
         }
     }
 
@@ -121,20 +111,12 @@ public class TelephonyFeatures {
         return SemTelephonyUtils.getCountry(ntcRawData);
     }
 
-    public static String getNotAllowedNetworkMode(int phoneId) {
-        String mNotAllowedNetworkMode = SemCarrierFeature.getInstance().getString(phoneId, "CarrierFeature_RIL_NotAllowedNetworkMode", "", true);
-        Rlog.d(LOG_TAG, "getNotAllowedNetworkMode() feature = " + mNotAllowedNetworkMode);
-        return mNotAllowedNetworkMode;
-    }
-
-    public static boolean isLatinSubOperator(int phoneId) {
-        boolean isLtnSub = isSubOperatorSpecific(phoneId, "LTN", "ICE", "IUS", "MNX");
-        Rlog.d(LOG_TAG, "isLatinSubOperator: " + isLtnSub);
-        return isLtnSub;
-    }
-
     public static String getSalesCode() {
         return SALES_CODE;
+    }
+
+    public static String getCarrierGroup(int phoneId) {
+        return SemCarrierFeature.getInstance().getString(phoneId, "CarrierFeature_Common_CarrierGroup", "", true);
     }
 
     public static String getNetworkCode(int phoneId) {
@@ -142,6 +124,10 @@ public class TelephonyFeatures {
     }
 
     public static boolean getNtcFeature(int phoneId, int ntcFeature) {
+        return getNtcFeature(phoneId, ntcFeature, -1);
+    }
+
+    public static boolean getNtcFeature(int phoneId, int ntcFeature, int carrierId) {
         switch (ntcFeature) {
             case 1:
                 return "SPR".equals(getMainOperatorName(phoneId));
@@ -187,16 +173,11 @@ public class TelephonyFeatures {
             case 13:
                 return true;
             case 14:
-                int i = PROJECT_SIM_NUM;
-                if (i <= 1 || !isCountrySpecific(phoneId, "CHN", "HKG", "TPE")) {
-                    return i > 1 && isSalesCodeSpecific("INU", "INS") && 1 == Integer.parseInt(SemTelephonyProps.support_dual_rat().orElse("0"));
-                }
-                return true;
+                return isCountrySpecific(phoneId, "CHN", "HKG", "TPE") ? TelephonyManager.getDefault().getActiveModemCount() > 1 : isSalesCodeSpecific("INU", "INS") && TelephonyManager.getDefault().getActiveModemCount() > 1 && Integer.parseInt(SemTelephonyProps.support_dual_rat().orElse("0")) == 1;
             case 15:
                 return 1 == Integer.parseInt(SemTelephonyProps.support_dual_rat().orElse("0")) && !isCountrySpecific(phoneId, "USA", "CAN");
             case 16:
-                String str = SALES_CODE;
-                return (("XXV".equalsIgnoreCase(str) || "XEV".equalsIgnoreCase(str)) && isIccOperatorNumericSpecific(phoneId, "45204")) || !getNotAllowedNetworkMode(phoneId).isEmpty();
+                return (("XXV".equalsIgnoreCase(SALES_CODE) || "XEV".equalsIgnoreCase(SALES_CODE)) && isIccOperatorNumericSpecific(phoneId, "45204")) || !TextUtils.isEmpty(getNotAllowedNetworkMode(phoneId));
             case 17:
                 return !isMainOperatorSpecific(phoneId, "BMC");
             case 18:
@@ -212,7 +193,15 @@ public class TelephonyFeatures {
             case 23:
                 return isMainOperatorSpecific(phoneId, "VZW");
             case 24:
-                return "TMB".equalsIgnoreCase(SALES_CODE) && SemCarrierFeature.getInstance().getBoolean(phoneId, "CarrierFeature_Common_Support_Satellite", false, true);
+                return carrierId == 1187 || carrierId == 1779 || carrierId == 1 || carrierId == 1943 || carrierId == 1433;
+            case 25:
+                return isCountrySpecific(phoneId, "CHN", "HKG", "TPE");
+            case 26:
+                return (IS_WATCH || IS_WIFI_ONLY) ? false : true;
+            case 27:
+                return isIccOperatorNumericSpecific(phoneId, "23001", "24001", "26201", "50501");
+            case 28:
+                return isMainOperatorSpecific(phoneId, "EUR") && carrierId == 1505;
             default:
                 log("Unknown NTC feature: " + ntcFeature);
                 return false;
@@ -235,8 +224,8 @@ public class TelephonyFeatures {
         return "GLB".equals(getOperatorType(phoneId));
     }
 
-    public static boolean isSimHotswapSupported() {
-        return mSimHotswapSupported;
+    public static boolean isLatinSubOperator(int phoneId) {
+        return isSubOperatorSpecific(phoneId, "LTN", "ICE", "IUS", "MNX");
     }
 
     public static boolean isMainOperatorSpecific(int phoneId, String... mainOperators) {
@@ -299,27 +288,31 @@ public class TelephonyFeatures {
         return false;
     }
 
-    public static boolean needToCheckVolteSubscriber(int phoneId) {
-        if (isIccOperatorNumericSpecific(phoneId, "23001", "24001", "26201", "50501")) {
-            return true;
+    public static boolean hasRilFeature(String feature) {
+        if (TextUtils.isEmpty(RIL_FEATURES) || TextUtils.isEmpty(feature)) {
+            return false;
+        }
+        String[] rilFeatures = RIL_FEATURES.split(" ");
+        for (String rilFeature : rilFeatures) {
+            if (rilFeature.equalsIgnoreCase(feature)) {
+                return true;
+            }
         }
         return false;
     }
 
-    public static boolean needToRunLteRoaming(int phoneId) {
-        if (!isMainOperatorSpecific(phoneId, "SKT", "KTT", "LGT", "KOO")) {
-            return false;
-        }
-        String simType = SemTelephonyUtils.getTelephonyProperty(phoneId, "ril.simtype", "");
-        if (("2".equals(simType) && "KTT".equals(getMainOperatorName(phoneId))) || (("3".equals(simType) && "LGT".equals(getMainOperatorName(phoneId))) || ("4".equals(simType) && "SKT".equals(getMainOperatorName(phoneId))))) {
-            return true;
-        }
-        return "KOO".equals(getMainOperatorName(phoneId)) && ("2".equals(simType) || "3".equals(simType) || "4".equals(simType));
+    public static boolean isSimHotswapSupported() {
+        return sSimHotswapSupported;
+    }
+
+    public static String getNotAllowedNetworkMode(int phoneId) {
+        return SemCarrierFeature.getInstance().getString(phoneId, "CarrierFeature_RIL_NotAllowedNetworkMode", "", true);
     }
 
     public static boolean needToCheckEmergencyNumberForEachSlot(int phoneId) {
         String countryIso = TelephonyManager.getDefault().getNetworkCountryIso(phoneId);
-        if ("vn".equals(countryIso)) {
+        String lastCountryIso = TelephonyManager.getDefault().getLastNetworkCountryIso(phoneId);
+        if ("vn".equals(countryIso) || "vn".equals(lastCountryIso) || "th".equals(countryIso) || "th".equals(lastCountryIso)) {
             return true;
         }
         return false;
@@ -336,33 +329,19 @@ public class TelephonyFeatures {
     }
 
     public static boolean isGCFMode(int phoneId) {
-        String gcfMode = SystemProperties.get("persist.radio.gcfmode", "0");
-        return "GCF".equals(getMainOperatorName(phoneId)) || "1".equals(gcfMode);
-    }
-
-    public static boolean showVoiceAsDataNetworkType(int phoneId) {
-        if (isCountrySpecific(phoneId, "CHN", "HKG", "TPE")) {
-            return true;
-        }
-        return false;
+        return "GCF".equals(getMainOperatorName(phoneId)) || "1".equals(SystemProperties.get("persist.radio.gcfmode", "0"));
     }
 
     public static boolean supportDualLte() {
-        return PROJECT_SIM_NUM > 1;
-    }
-
-    public static boolean isNotAllowedMoCall(int phoneId) {
-        String carrierId = SystemProperties.get("ro.boot.carrierid", "UNKNOWN");
-        if ("AIS".equals(carrierId) && !isIccOperatorNumericSpecific(phoneId, "52001", "52003")) {
-            log("Non AIS carrier. Blocked MO Call");
-            return true;
-        }
-        return false;
+        return TelephonyManager.getDefault().getActiveModemCount() > 1;
     }
 
     public static boolean isOneTray() {
-        if (!"1".equals("1")) {
+        if ("2".equals("1")) {
             return false;
+        }
+        if (TelephonyManager.getDefault().getActiveModemCount() <= 1) {
+            return true;
         }
         String sim1Path = SystemProperties.get("ril.simslottype1", "0");
         String sim2Path = SystemProperties.get("ril.simslottype2", "0");
@@ -370,26 +349,10 @@ public class TelephonyFeatures {
     }
 
     public static String getSimbasedChangeType() {
-        String[] strArr = mSimbasedChangeType;
-        if (strArr == null || strArr.length < 2) {
+        if (sSimbasedChangeType == null || sSimbasedChangeType.length < 2) {
             InitializeSimbasedType();
         }
-        return mSimbasedChangeType[1];
-    }
-
-    public static String getPropertyMultiSimBased(String prop, int phoneId) {
-        if (prop == null || prop.length() < 1) {
-            log("Property is wrong");
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append(prop);
-        if (phoneId == 0) {
-            sb.append(0);
-        } else {
-            sb.append(1);
-        }
-        return sb.toString();
+        return sSimbasedChangeType[1];
     }
 
     public static boolean isKorSimInKorDevice(int phoneId) {
@@ -400,11 +363,8 @@ public class TelephonyFeatures {
         return "2".equals(simType) || "3".equals(simType) || "4".equals(simType);
     }
 
-    public static boolean isSupportWakelockLogging() {
-        if (IS_WATCH || IS_WIFI_ONLY) {
-            return false;
-        }
-        return true;
+    public static boolean isSupportTiantong() {
+        return hasRilFeature("tiantong");
     }
 
     private static <T> T getTelephonyProperty(int phoneId, List<T> prop, T defaultValue) {
@@ -427,19 +387,13 @@ public class TelephonyFeatures {
         log("getCountryName: " + getCountryName(phoneId));
         log("SHIP_BUILD: " + SHIP_BUILD);
         log("SALES_CODE: " + SALES_CODE);
-        log("DEVICE_TYPE: " + DEVICE_TYPE);
-        log("IS_PHONE: " + IS_PHONE);
-        log("IS_TABLET: " + IS_TABLET);
-        log("IS_WATCH: " + IS_WATCH);
-        log("HARDWARE_TYPE: " + HARDWARE_TYPE);
+        log("DEVICE_TYPE: " + DEVICE_TYPE + " (IS_PHONE: " + IS_PHONE + ", IS_TABLET: " + IS_TABLET + ", IS_WATCH: " + IS_WATCH + NavigationBarInflaterView.KEY_CODE_END);
+        log("HARDWARE_TYPE: " + HARDWARE_TYPE + " (IS_QCOM: " + IS_QCOM + ", IS_EXYNOS: " + IS_EXYNOS + ", IS_MTK: " + IS_MTK + NavigationBarInflaterView.KEY_CODE_END);
         log("IS_WIFI_ONLY: " + IS_WIFI_ONLY);
-        log("IS_QCOM: " + IS_QCOM);
-        log("IS_EXYNOS: " + IS_EXYNOS);
-        log("IS_MTK: " + IS_MTK);
-        log("MULTI_SIM_CONFIG: " + MULTI_SIM_CONFIG);
+        log("IS_FACTORY_BIN: " + IS_FACTORY_BIN);
         log("getNetworkCode: " + getNetworkCode(phoneId));
-        for (int i = 1; i < 25; i++) {
-            log("  getNtcFeature(" + featureToString(i) + "): " + getNtcFeature(phoneId, i));
+        for (int i = 1; i < 29; i++) {
+            log("  " + featureToString(i) + ": " + getNtcFeature(phoneId, i));
         }
     }
 
@@ -492,7 +446,15 @@ public class TelephonyFeatures {
             case 23:
                 return "NTC_FEATURE_FAKE_RADIO_ON_USING_EXTENDED_PARAMETER";
             case 24:
-                return "NTC_FEATURE_SUPPORT_SATELLITE_FOR_CARRIER";
+                return "NTC_FEATURE_NEED_FORCE_NETWORK_MODE";
+            case 25:
+                return "NTC_FEATURE_SHOW_VOICE_AS_DATA_NETWORK_TYPE";
+            case 26:
+                return "NTC_FEATURE_SUPPORT_WAKELOCK_LOGGING";
+            case 27:
+                return "NTC_FEATURE_CHECK_VOLTE_SUBSCRIBER_FOR_CALL_WAITING";
+            case 28:
+                return "NTC_FEATURE_DEFAULT_NETWORK_TYPE_2G_REASON_DISABLE";
             default:
                 return "Unknown NTC_FEATURE(" + ntcFeature + NavigationBarInflaterView.KEY_CODE_END;
         }

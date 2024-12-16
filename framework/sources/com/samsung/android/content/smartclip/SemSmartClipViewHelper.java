@@ -27,7 +27,7 @@ public class SemSmartClipViewHelper {
 
     public static int removeMetaTag(View view, String tagType) {
         SemSmartClipMetaTagArray tagArray;
-        if (view == null || tagType == null || (tagArray = view.semGetSmartClipTags()) == null || tagType == null) {
+        if (view == null || tagType == null || (tagArray = view.semGetSmartClipTags()) == null) {
             return 0;
         }
         return tagArray.removeMetaTags(tagType);

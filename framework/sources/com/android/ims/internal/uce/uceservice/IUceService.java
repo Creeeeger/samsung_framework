@@ -12,7 +12,7 @@ import com.android.ims.internal.uce.presence.IPresenceListener;
 import com.android.ims.internal.uce.presence.IPresenceService;
 import com.android.ims.internal.uce.uceservice.IUceListener;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IUceService extends IInterface {
     @Deprecated
     int createOptionsService(IOptionsListener iOptionsListener, UceLong uceLong) throws RemoteException;
@@ -46,7 +46,6 @@ public interface IUceService extends IInterface {
 
     boolean stopService() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IUceService {
         @Override // com.android.ims.internal.uce.uceservice.IUceService
         public boolean startService(IUceListener uceListener) throws RemoteException {
@@ -122,7 +121,6 @@ public interface IUceService extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IUceService {
         public static final String DESCRIPTOR = "com.android.ims.internal.uce.uceservice.IUceService";
         static final int TRANSACTION_createOptionsService = 4;
@@ -205,117 +203,113 @@ public interface IUceService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IUceListener _arg0 = IUceListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result = startService(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    boolean _result2 = stopService();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    boolean _result3 = isServiceStarted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    IOptionsListener _arg02 = IOptionsListener.Stub.asInterface(data.readStrongBinder());
+                    UceLong _arg1 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result4 = createOptionsService(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    reply.writeTypedObject(_arg1, 1);
+                    return true;
+                case 5:
+                    IOptionsListener _arg03 = IOptionsListener.Stub.asInterface(data.readStrongBinder());
+                    UceLong _arg12 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result5 = createOptionsServiceForSubscription(_arg03, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    reply.writeTypedObject(_arg12, 1);
+                    return true;
+                case 6:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    destroyOptionsService(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    IPresenceListener _arg05 = IPresenceListener.Stub.asInterface(data.readStrongBinder());
+                    UceLong _arg13 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result6 = createPresenceService(_arg05, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    reply.writeTypedObject(_arg13, 1);
+                    return true;
+                case 8:
+                    IPresenceListener _arg06 = IPresenceListener.Stub.asInterface(data.readStrongBinder());
+                    UceLong _arg14 = (UceLong) data.readTypedObject(UceLong.CREATOR);
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result7 = createPresenceServiceForSubscription(_arg06, _arg14, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    reply.writeTypedObject(_arg14, 1);
+                    return true;
+                case 9:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    destroyPresenceService(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    boolean _result8 = getServiceStatus();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 11:
+                    IPresenceService _result9 = getPresenceService();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result9);
+                    return true;
+                case 12:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    IPresenceService _result10 = getPresenceServiceForSubscription(_arg08);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result10);
+                    return true;
+                case 13:
+                    IOptionsService _result11 = getOptionsService();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result11);
+                    return true;
+                case 14:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    IOptionsService _result12 = getOptionsServiceForSubscription(_arg09);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IUceListener _arg0 = IUceListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result = startService(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            boolean _result2 = stopService();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            boolean _result3 = isServiceStarted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            IOptionsListener _arg02 = IOptionsListener.Stub.asInterface(data.readStrongBinder());
-                            UceLong _arg1 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result4 = createOptionsService(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            reply.writeTypedObject(_arg1, 1);
-                            return true;
-                        case 5:
-                            IOptionsListener _arg03 = IOptionsListener.Stub.asInterface(data.readStrongBinder());
-                            UceLong _arg12 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result5 = createOptionsServiceForSubscription(_arg03, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            reply.writeTypedObject(_arg12, 1);
-                            return true;
-                        case 6:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            destroyOptionsService(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            IPresenceListener _arg05 = IPresenceListener.Stub.asInterface(data.readStrongBinder());
-                            UceLong _arg13 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result6 = createPresenceService(_arg05, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            reply.writeTypedObject(_arg13, 1);
-                            return true;
-                        case 8:
-                            IPresenceListener _arg06 = IPresenceListener.Stub.asInterface(data.readStrongBinder());
-                            UceLong _arg14 = (UceLong) data.readTypedObject(UceLong.CREATOR);
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result7 = createPresenceServiceForSubscription(_arg06, _arg14, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            reply.writeTypedObject(_arg14, 1);
-                            return true;
-                        case 9:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            destroyPresenceService(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            boolean _result8 = getServiceStatus();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 11:
-                            IPresenceService _result9 = getPresenceService();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result9);
-                            return true;
-                        case 12:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            IPresenceService _result10 = getPresenceServiceForSubscription(_arg08);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result10);
-                            return true;
-                        case 13:
-                            IOptionsService _result11 = getOptionsService();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result11);
-                            return true;
-                        case 14:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            IOptionsService _result12 = getOptionsServiceForSubscription(_arg09);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IUceService {
+        private static class Proxy implements IUceService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

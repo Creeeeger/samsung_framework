@@ -25,24 +25,25 @@ public class UserInfo implements Parcelable {
     public static final int ATTR_SUPER_LOCKED = 12;
     public static final int ATTR_TRUST_AGENT_UI_ENABLED = 256;
     public static final Parcelable.Creator<UserInfo> CREATOR = new Parcelable.Creator<UserInfo>() { // from class: android.content.pm.UserInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserInfo createFromParcel(Parcel source) {
             return new UserInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserInfo[] newArray(int size) {
             return new UserInfo[size];
         }
     };
     public static final int FLAG_ADMIN = 2;
-    public static final int FLAG_BMODE = 65536;
+    public static final int FLAG_BMODE = 134217728;
+    public static final int FLAG_BMODE_LEGACY = 65536;
 
     @Deprecated
     public static final int FLAG_DEMO = 512;
+    public static final int FLAG_DIGITAL_LEGACY_MODE = 16777216;
     public static final int FLAG_DISABLED = 64;
     public static final int FLAG_DUALAPP_PROFILE = 536870912;
     public static final int FLAG_DUAL_DAR_CUSTOM_CRYPTO = 67108864;
@@ -75,11 +76,7 @@ public class UserInfo implements Parcelable {
     public static final int FLAG_SECURE_FOLDER = 131072;
     public static final int FLAG_SYSTEM = 2048;
     public static final int FLAG_VIRTUAL_USER = Integer.MIN_VALUE;
-    public static final int MAINTENANCE_MODE_USER_ID = 77;
     public static final int NO_PROFILE_GROUP_ID = -10000;
-    public static final int REPAIR_MODE_USER_ID = 77;
-    public static final int VOLT_LEGACY_RESET_CREDENTIAL_REQUESTED = 1;
-    public static final int VOLT_NONE = 0;
     private int attributes;
     public boolean convertedFromPreCreated;
     public long creationTime;
@@ -97,15 +94,9 @@ public class UserInfo implements Parcelable {
     public int restrictedProfileParentId;
     public int serialNumber;
     public String userType;
-    private int volatiles;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface UserInfoFlag {
-    }
-
-    /* synthetic */ UserInfo(Parcel parcel, UserInfoIA userInfoIA) {
-        this(parcel);
     }
 
     public UserInfo(int id, String name, int flags) {
@@ -125,7 +116,6 @@ public class UserInfo implements Parcelable {
         this.profileGroupId = -10000;
         this.restrictedProfileParentId = -10000;
         this.attributes = 0;
-        this.volatiles = 0;
     }
 
     public static String getDefaultUserType(int userInfoFlag) {
@@ -177,6 +167,14 @@ public class UserInfo implements Parcelable {
         return UserManager.isUserTypeCloneProfile(this.userType);
     }
 
+    public boolean isCommunalProfile() {
+        return UserManager.isUserTypeCommunalProfile(this.userType);
+    }
+
+    public boolean isPrivateProfile() {
+        return UserManager.isUserTypePrivateProfile(this.userType);
+    }
+
     public boolean isEnabled() {
         return (this.flags & 64) != 64;
     }
@@ -202,15 +200,11 @@ public class UserInfo implements Parcelable {
     }
 
     public boolean isBMode() {
-        return (this.flags & 65536) == 65536;
+        return (this.flags & 134217728) == 134217728 || (this.flags & 65536) == 65536;
     }
 
     public boolean isFull() {
         return (this.flags & 1024) == 1024;
-    }
-
-    public boolean isMaintenanceMode() {
-        return (this.flags & 524288) == 524288 && this.id == 77;
     }
 
     public boolean isMain() {
@@ -281,11 +275,7 @@ public class UserInfo implements Parcelable {
     }
 
     public boolean needSetupCredential() {
-        return (this.attributes & 536870912) == 536870912 || (this.volatiles & 1) == 1;
-    }
-
-    public boolean isLegacyResetCredentialRequested() {
-        return (this.volatiles & 1) == 1;
+        return (this.attributes & 536870912) == 536870912;
     }
 
     public boolean isVirtualUser() {
@@ -318,7 +308,6 @@ public class UserInfo implements Parcelable {
         this.guestToRemove = orig.guestToRemove;
         this.profileBadge = orig.profileBadge;
         this.attributes = orig.attributes;
-        this.volatiles = orig.volatiles;
     }
 
     public UserHandle getUserHandle() {
@@ -360,24 +349,6 @@ public class UserInfo implements Parcelable {
         dest.writeInt(this.restrictedProfileParentId);
         dest.writeInt(this.profileBadge);
         dest.writeInt(this.attributes);
-        dest.writeInt(this.volatiles);
-    }
-
-    /* renamed from: android.content.pm.UserInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UserInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UserInfo createFromParcel(Parcel source) {
-            return new UserInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
     }
 
     private UserInfo(Parcel source) {
@@ -397,7 +368,6 @@ public class UserInfo implements Parcelable {
         this.restrictedProfileParentId = source.readInt();
         this.profileBadge = source.readInt();
         this.attributes = source.readInt();
-        this.volatiles = source.readInt();
     }
 
     public int getAttributes() {
@@ -406,13 +376,5 @@ public class UserInfo implements Parcelable {
 
     public void setAttributes(int attributes) {
         this.attributes = attributes;
-    }
-
-    public int getVolatiles() {
-        return this.volatiles;
-    }
-
-    public void setVolatiles(int volatiles) {
-        this.volatiles = volatiles;
     }
 }

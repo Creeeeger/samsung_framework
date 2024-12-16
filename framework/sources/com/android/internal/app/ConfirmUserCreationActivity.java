@@ -14,7 +14,7 @@ import android.util.Log;
 import com.android.internal.R;
 import com.android.internal.app.AlertController;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ConfirmUserCreationActivity extends AlertActivity implements DialogInterface.OnClickListener {
     private static final String TAG = "CreateUser";
     private static final String USER_TYPE = "android.os.usertype.full.SECONDARY";
@@ -54,7 +54,6 @@ public class ConfirmUserCreationActivity extends AlertActivity implements Dialog
     }
 
     private String checkUserCreationRequirements() {
-        PersistableBundle persistableBundle;
         String callingPackage = getCallingPackage();
         if (callingPackage == null) {
             throw new SecurityException("User Creation intent must be launched with startActivityForResult");
@@ -74,7 +73,7 @@ public class ConfirmUserCreationActivity extends AlertActivity implements Dialog
                 setResult(1);
                 return null;
             }
-            if (!isUserPropertyWithinLimit(this.mUserName, 100) || !isUserPropertyWithinLimit(this.mAccountName, 500) || !isUserPropertyWithinLimit(this.mAccountType, 500) || ((persistableBundle = this.mAccountOptions) != null && !persistableBundle.isBundleContentsWithinLengthLimit(1000))) {
+            if (!isUserPropertyWithinLimit(this.mUserName, 100) || !isUserPropertyWithinLimit(this.mAccountName, 500) || !isUserPropertyWithinLimit(this.mAccountType, 500) || (this.mAccountOptions != null && !this.mAccountOptions.isBundleContentsWithinLengthLimit(1000))) {
                 setResult(1);
                 Log.i(TAG, "User properties must not exceed their character limits");
                 return null;

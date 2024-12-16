@@ -34,7 +34,6 @@ public interface ICrossProfileApps extends IInterface {
 
     void startActivityAsUserByIntent(IApplicationThread iApplicationThread, String str, String str2, Intent intent, int i, IBinder iBinder, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICrossProfileApps {
         @Override // android.content.pm.ICrossProfileApps
         public void startActivityAsUser(IApplicationThread caller, String callingPackage, String callingFeatureId, ComponentName component, int userId, boolean launchMainActivity, IBinder task, Bundle options) throws RemoteException {
@@ -87,7 +86,6 @@ public interface ICrossProfileApps extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICrossProfileApps {
         public static final String DESCRIPTOR = "android.content.pm.ICrossProfileApps";
         static final int TRANSACTION_canConfigureInteractAcrossProfiles = 7;
@@ -158,103 +156,100 @@ public interface ICrossProfileApps extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    ComponentName _arg3 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg4 = data.readInt();
+                    boolean _arg5 = data.readBoolean();
+                    IBinder _arg6 = data.readStrongBinder();
+                    Bundle _arg7 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startActivityAsUser(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IApplicationThread _arg02 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    Intent _arg32 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg42 = data.readInt();
+                    IBinder _arg52 = data.readStrongBinder();
+                    Bundle _arg62 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startActivityAsUserByIntent(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<UserHandle> _result = getTargetUserProfiles(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = canInteractAcrossProfiles(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = canRequestInteractAcrossProfiles(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg13 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setInteractAcrossProfilesAppOp(_arg06, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = canConfigureInteractAcrossProfiles(_arg07, _arg14);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = canUserAttemptToConfigureInteractAcrossProfiles(_arg08, _arg15);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    List<String> _arg16 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    resetInteractAcrossProfilesAppOps(_arg09, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearInteractAcrossProfilesAppOps(_arg010);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            ComponentName _arg3 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg4 = data.readInt();
-                            boolean _arg5 = data.readBoolean();
-                            IBinder _arg6 = data.readStrongBinder();
-                            Bundle _arg7 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startActivityAsUser(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IApplicationThread _arg02 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            Intent _arg32 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg42 = data.readInt();
-                            IBinder _arg52 = data.readStrongBinder();
-                            Bundle _arg62 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startActivityAsUserByIntent(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<UserHandle> _result = getTargetUserProfiles(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = canInteractAcrossProfiles(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = canRequestInteractAcrossProfiles(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg13 = data.readString();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setInteractAcrossProfilesAppOp(_arg06, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = canConfigureInteractAcrossProfiles(_arg07, _arg14);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = canUserAttemptToConfigureInteractAcrossProfiles(_arg08, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            List<String> _arg16 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            resetInteractAcrossProfilesAppOps(_arg09, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearInteractAcrossProfilesAppOps(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICrossProfileApps {
+        private static class Proxy implements ICrossProfileApps {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

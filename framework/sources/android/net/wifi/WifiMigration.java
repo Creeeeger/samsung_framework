@@ -2,19 +2,27 @@ package android.net.wifi;
 
 import android.annotation.SystemApi;
 import android.content.Context;
+import android.os.Binder;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.ServiceSpecificException;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.security.legacykeystore.ILegacyKeystore;
 import android.util.AtomicFile;
+import android.util.Log;
 import android.util.SparseArray;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @SystemApi
 /* loaded from: classes3.dex */
@@ -25,33 +33,21 @@ public final class WifiMigration {
     public static final int STORE_FILE_USER_GENERAL = 2;
     public static final int STORE_FILE_USER_NETWORK_SUGGESTIONS = 3;
     private static final SparseArray<String> STORE_ID_TO_FILE_NAME = new SparseArray<String>() { // from class: android.net.wifi.WifiMigration.1
-        AnonymousClass1() {
+        {
             put(0, "WifiConfigStore.xml");
             put(1, "WifiConfigStoreSoftAp.xml");
             put(2, "WifiConfigStore.xml");
             put(3, "WifiConfigStoreNetworkSuggestions.xml");
         }
     };
+    private static final String TAG = "WifiMigration";
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SharedStoreFileId {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface UserStoreFileId {
-    }
-
-    /* renamed from: android.net.wifi.WifiMigration$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends SparseArray<String> {
-        AnonymousClass1() {
-            put(0, "WifiConfigStore.xml");
-            put(1, "WifiConfigStoreSoftAp.xml");
-            put(2, "WifiConfigStore.xml");
-            put(3, "WifiConfigStoreNetworkSuggestions.xml");
-        }
     }
 
     private static File getLegacyWifiSharedDirectory() {
@@ -122,12 +118,9 @@ public final class WifiMigration {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SettingsMigrationData implements Parcelable {
         public static final Parcelable.Creator<SettingsMigrationData> CREATOR = new Parcelable.Creator<SettingsMigrationData>() { // from class: android.net.wifi.WifiMigration.SettingsMigrationData.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SettingsMigrationData createFromParcel(Parcel in) {
                 boolean scanAlwaysAvailable = in.readBoolean();
@@ -140,6 +133,7 @@ public final class WifiMigration {
                 return new SettingsMigrationData(scanAlwaysAvailable, p2pFactoryResetPending, p2pDeviceName, softApTimeoutEnabled, wakeupEnabled, scanThrottleEnabled, verboseLoggingEnabled);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SettingsMigrationData[] newArray(int size) {
                 return new SettingsMigrationData[size];
@@ -153,10 +147,6 @@ public final class WifiMigration {
         private final boolean mVerboseLoggingEnabled;
         private final boolean mWakeupEnabled;
 
-        /* synthetic */ SettingsMigrationData(boolean z, boolean z2, String str, boolean z3, boolean z4, boolean z5, boolean z6, SettingsMigrationDataIA settingsMigrationDataIA) {
-            this(z, z2, str, z3, z4, z5, z6);
-        }
-
         private SettingsMigrationData(boolean scanAlwaysAvailable, boolean p2pFactoryResetPending, String p2pDeviceName, boolean softApTimeoutEnabled, boolean wakeupEnabled, boolean scanThrottleEnabled, boolean verboseLoggingEnabled) {
             this.mScanAlwaysAvailable = scanAlwaysAvailable;
             this.mP2pFactoryResetPending = p2pFactoryResetPending;
@@ -165,30 +155,6 @@ public final class WifiMigration {
             this.mWakeupEnabled = wakeupEnabled;
             this.mScanThrottleEnabled = scanThrottleEnabled;
             this.mVerboseLoggingEnabled = verboseLoggingEnabled;
-        }
-
-        /* renamed from: android.net.wifi.WifiMigration$SettingsMigrationData$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SettingsMigrationData> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SettingsMigrationData createFromParcel(Parcel in) {
-                boolean scanAlwaysAvailable = in.readBoolean();
-                boolean p2pFactoryResetPending = in.readBoolean();
-                String p2pDeviceName = in.readString();
-                boolean softApTimeoutEnabled = in.readBoolean();
-                boolean wakeupEnabled = in.readBoolean();
-                boolean scanThrottleEnabled = in.readBoolean();
-                boolean verboseLoggingEnabled = in.readBoolean();
-                return new SettingsMigrationData(scanAlwaysAvailable, p2pFactoryResetPending, p2pDeviceName, softApTimeoutEnabled, wakeupEnabled, scanThrottleEnabled, verboseLoggingEnabled);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SettingsMigrationData[] newArray(int size) {
-                return new SettingsMigrationData[size];
-            }
         }
 
         @Override // android.os.Parcelable
@@ -235,7 +201,6 @@ public final class WifiMigration {
             return this.mVerboseLoggingEnabled;
         }
 
-        /* loaded from: classes3.dex */
         public static final class Builder {
             private String mP2pDeviceName;
             private boolean mP2pFactoryResetPending;
@@ -290,8 +255,47 @@ public final class WifiMigration {
         if (Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_MIGRATION_COMPLETED, 0) == 1) {
             return null;
         }
-        SettingsMigrationData data = new SettingsMigrationData.Builder().setScanAlwaysAvailable(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_SCAN_ALWAYS_AVAILABLE, 0) == 1).setP2pFactoryResetPending(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_P2P_PENDING_FACTORY_RESET, 0) == 1).setP2pDeviceName(Settings.Global.getString(context.getContentResolver(), "wifi_p2p_device_name")).setSoftApTimeoutEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.SOFT_AP_TIMEOUT_ENABLED, 1) == 1).setWakeUpEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_WAKEUP_ENABLED, 0) == 1).setScanThrottleEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_SCAN_THROTTLE_ENABLED, 1) == 1).setVerboseLoggingEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_VERBOSE_LOGGING_ENABLED, 0) == 1).build();
+        SettingsMigrationData data = new SettingsMigrationData.Builder().setScanAlwaysAvailable(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_SCAN_ALWAYS_AVAILABLE, 0) == 1).setP2pFactoryResetPending(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_P2P_PENDING_FACTORY_RESET, 0) == 1).setP2pDeviceName(Settings.Global.getString(context.getContentResolver(), Settings.Global.WIFI_P2P_DEVICE_NAME)).setSoftApTimeoutEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.SOFT_AP_TIMEOUT_ENABLED, 1) == 1).setWakeUpEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_WAKEUP_ENABLED, 0) == 1).setScanThrottleEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_SCAN_THROTTLE_ENABLED, 1) == 1).setVerboseLoggingEnabled(Settings.Global.getInt(context.getContentResolver(), Settings.Global.WIFI_VERBOSE_LOGGING_ENABLED, 0) == 1).build();
         Settings.Global.putInt(context.getContentResolver(), Settings.Global.WIFI_MIGRATION_COMPLETED, 1);
         return data;
+    }
+
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    public static void migrateLegacyKeystoreToWifiBlobstore() {
+        ILegacyKeystore legacyKeystore;
+        String[] legacyAliases;
+        long identity = Binder.clearCallingIdentity();
+        try {
+            try {
+                legacyKeystore = WifiBlobStore.getLegacyKeystore();
+                legacyAliases = legacyKeystore.list("", 1010);
+            } catch (ServiceSpecificException e) {
+                if (e.errorCode == 4) {
+                    Log.i(TAG, "Legacy Keystore service has been deprecated");
+                } else {
+                    Log.e(TAG, "Encountered an exception while migrating aliases. " + e);
+                }
+            } catch (Exception e2) {
+                Log.e(TAG, "Encountered an exception while migrating aliases. " + e2);
+            }
+            if (legacyAliases != null && legacyAliases.length != 0) {
+                WifiBlobStore wifiBlobStore = WifiBlobStore.getInstance();
+                Collection<? extends String> blobstoreAliasList = Arrays.asList(wifiBlobStore.list(""));
+                Set<String> blobstoreAliases = new HashSet<>();
+                blobstoreAliases.addAll(blobstoreAliasList);
+                for (String legacyAlias : legacyAliases) {
+                    if (!blobstoreAliases.contains(legacyAlias)) {
+                        byte[] value = legacyKeystore.get(legacyAlias, 1010);
+                        wifiBlobStore.put(legacyAlias, value);
+                    }
+                    legacyKeystore.remove(legacyAlias, 1010);
+                }
+                Log.i(TAG, "Successfully migrated aliases from Legacy Keystore");
+                return;
+            }
+            Log.i(TAG, "No aliases need to be migrated");
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
     }
 }

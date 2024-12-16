@@ -13,16 +13,13 @@ import java.util.Map;
 /* loaded from: classes5.dex */
 public class RSA {
     private static final String PREFIX = "com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.rsa.";
-    private static final Map<String, String> generalRsaAttributes;
+    private static final Map<String, String> generalRsaAttributes = new HashMap();
 
     static {
-        HashMap hashMap = new HashMap();
-        generalRsaAttributes = hashMap;
-        hashMap.put("SupportedKeyClasses", "javax.crypto.interfaces.RSAPublicKey|javax.crypto.interfaces.RSAPrivateKey");
-        hashMap.put("SupportedKeyFormats", "PKCS#8|X.509");
+        generalRsaAttributes.put("SupportedKeyClasses", "javax.crypto.interfaces.RSAPublicKey|javax.crypto.interfaces.RSAPrivateKey");
+        generalRsaAttributes.put("SupportedKeyFormats", "PKCS#8|X.509");
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AsymmetricAlgorithmProvider {
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvider
         public void configure(ConfigurableProvider provider) {

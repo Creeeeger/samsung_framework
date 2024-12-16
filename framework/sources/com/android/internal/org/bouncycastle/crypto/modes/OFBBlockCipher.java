@@ -32,21 +32,13 @@ public class OFBBlockCipher extends StreamBlockCipher {
         if (params instanceof ParametersWithIV) {
             ParametersWithIV ivParam = (ParametersWithIV) params;
             byte[] iv = ivParam.getIV();
-            int length = iv.length;
-            byte[] bArr = this.IV;
-            if (length < bArr.length) {
-                System.arraycopy(iv, 0, bArr, bArr.length - iv.length, iv.length);
-                int i = 0;
-                while (true) {
-                    byte[] bArr2 = this.IV;
-                    if (i >= bArr2.length - iv.length) {
-                        break;
-                    }
-                    bArr2[i] = 0;
-                    i++;
+            if (iv.length < this.IV.length) {
+                System.arraycopy(iv, 0, this.IV, this.IV.length - iv.length, iv.length);
+                for (int i = 0; i < this.IV.length - iv.length; i++) {
+                    this.IV[i] = 0;
                 }
             } else {
-                System.arraycopy(iv, 0, bArr, 0, bArr.length);
+                System.arraycopy(iv, 0, this.IV, 0, this.IV.length);
             }
             reset();
             if (ivParam.getParameters() != null) {
@@ -79,8 +71,7 @@ public class OFBBlockCipher extends StreamBlockCipher {
 
     @Override // com.android.internal.org.bouncycastle.crypto.BlockCipher
     public void reset() {
-        byte[] bArr = this.IV;
-        System.arraycopy(bArr, 0, this.ofbV, 0, bArr.length);
+        System.arraycopy(this.IV, 0, this.ofbV, 0, this.IV.length);
         this.byteCount = 0;
         this.cipher.reset();
     }
@@ -92,19 +83,12 @@ public class OFBBlockCipher extends StreamBlockCipher {
         }
         byte[] bArr = this.ofbOutV;
         int i = this.byteCount;
-        int i2 = i + 1;
-        this.byteCount = i2;
+        this.byteCount = i + 1;
         byte rv = (byte) (bArr[i] ^ in);
-        int i3 = this.blockSize;
-        if (i2 == i3) {
+        if (this.byteCount == this.blockSize) {
             this.byteCount = 0;
-            byte[] bArr2 = this.ofbV;
-            System.arraycopy(bArr2, i3, bArr2, 0, bArr2.length - i3);
-            byte[] bArr3 = this.ofbOutV;
-            byte[] bArr4 = this.ofbV;
-            int length = bArr4.length;
-            int i4 = this.blockSize;
-            System.arraycopy(bArr3, 0, bArr4, length - i4, i4);
+            System.arraycopy(this.ofbV, this.blockSize, this.ofbV, 0, this.ofbV.length - this.blockSize);
+            System.arraycopy(this.ofbOutV, 0, this.ofbV, this.ofbV.length - this.blockSize, this.blockSize);
         }
         return rv;
     }

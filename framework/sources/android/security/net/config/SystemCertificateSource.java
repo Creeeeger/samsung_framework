@@ -10,12 +10,7 @@ import java.util.Set;
 public final class SystemCertificateSource extends DirectoryCertificateSource {
     private final File mUserRemovedCaDir;
 
-    /* synthetic */ SystemCertificateSource(SystemCertificateSourceIA systemCertificateSourceIA) {
-        this();
-    }
-
-    /* loaded from: classes3.dex */
-    public static class NoPreloadHolder {
+    private static class NoPreloadHolder {
         private static final SystemCertificateSource INSTANCE = new SystemCertificateSource();
 
         private NoPreloadHolder() {

@@ -24,7 +24,7 @@ public class AlphaAnimation extends Animation {
     }
 
     @Override // android.view.animation.Animation
-    public void applyTransformation(float interpolatedTime, Transformation t) {
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
         float alpha = this.mFromAlpha;
         t.setAlpha(((this.mToAlpha - alpha) * interpolatedTime) + alpha);
     }

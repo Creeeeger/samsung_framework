@@ -4,9 +4,12 @@ import android.content.pm.Signature;
 import android.content.pm.SigningDetails;
 import android.content.pm.parsing.result.ParseInput;
 import android.content.pm.parsing.result.ParseResult;
+import android.os.Build;
 import android.os.Trace;
 import android.os.incremental.V4Signature;
+import android.util.ArrayMap;
 import android.util.Pair;
+import android.util.Slog;
 import android.util.apk.ApkSignatureSchemeV2Verifier;
 import android.util.apk.ApkSignatureSchemeV3Verifier;
 import android.util.apk.ApkSignatureSchemeV4Verifier;
@@ -20,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +33,9 @@ import libcore.io.IoUtils;
 
 /* loaded from: classes4.dex */
 public class ApkSignatureVerifier {
+    private static final String LOG_TAG = "ApkSignatureVerifier";
     private static final AtomicReference<byte[]> sBuffer = new AtomicReference<>();
+    private static final ArrayMap<SigningDetails, SigningDetails> sOverrideSigningDetails = new ArrayMap<>();
 
     public static ParseResult<SigningDetails> verify(ParseInput input, String apkPath, int minSignatureSchemeVersion) {
         return verifySignatures(input, apkPath, minSignatureSchemeVersion, true);
@@ -40,11 +46,40 @@ public class ApkSignatureVerifier {
     }
 
     private static ParseResult<SigningDetails> verifySignatures(ParseInput input, String apkPath, int minSignatureSchemeVersion, boolean verifyFull) {
+        SigningDetails overrideSigningDetails;
         ParseResult<SigningDetailsWithDigests> result = verifySignaturesInternal(input, apkPath, minSignatureSchemeVersion, verifyFull);
         if (result.isError()) {
             return input.error(result);
         }
-        return input.success(result.getResult().signingDetails);
+        SigningDetails signingDetails = result.getResult().signingDetails;
+        if (Build.isDebuggable()) {
+            synchronized (sOverrideSigningDetails) {
+                overrideSigningDetails = sOverrideSigningDetails.get(signingDetails);
+            }
+            if (overrideSigningDetails != null) {
+                Slog.i(LOG_TAG, "Applying override signing details for APK " + apkPath);
+                signingDetails = overrideSigningDetails;
+            }
+        }
+        return input.success(signingDetails);
+    }
+
+    public static void addOverrideSigningDetails(SigningDetails oldSigningDetails, SigningDetails newSigningDetails) {
+        synchronized (sOverrideSigningDetails) {
+            sOverrideSigningDetails.put(oldSigningDetails, newSigningDetails);
+        }
+    }
+
+    public static void removeOverrideSigningDetails(SigningDetails oldSigningDetails) {
+        synchronized (sOverrideSigningDetails) {
+            sOverrideSigningDetails.remove(oldSigningDetails);
+        }
+    }
+
+    public static void clearOverrideSigningDetails() {
+        synchronized (sOverrideSigningDetails) {
+            sOverrideSigningDetails.clear();
+        }
     }
 
     public static ParseResult<SigningDetailsWithDigests> verifySignaturesInternal(ParseInput input, String apkPath, int minSignatureSchemeVersion, boolean verifyFull) {
@@ -282,7 +317,7 @@ public class ApkSignatureVerifier {
                     }
                     Signature[] entrySigs = convertToSignatures(entryCerts);
                     Iterator<ZipEntry> it2 = it;
-                    if (!Signature.areExactMatch(lastSigs, entrySigs)) {
+                    if (!Arrays.equals(lastSigs, entrySigs)) {
                         return input.error(-104, "Package " + apkPath + " has mismatched certificates at entry " + entry2.getName());
                     }
                     it = it2;
@@ -353,7 +388,6 @@ public class ApkSignatureVerifier {
         return 1;
     }
 
-    /* loaded from: classes4.dex */
     public static class Result {
         public final Certificate[][] certs;
         public final int signatureSchemeVersion;
@@ -386,7 +420,6 @@ public class ApkSignatureVerifier {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class SigningDetailsWithDigests {
         public final Map<Integer, byte[]> contentDigests;
         public final SigningDetails signingDetails;

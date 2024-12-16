@@ -22,14 +22,13 @@ public final class MediaRoute2Info implements Parcelable {
     public static final int CONNECTION_STATE_CONNECTING = 1;
     public static final int CONNECTION_STATE_DISCONNECTED = 0;
     public static final Parcelable.Creator<MediaRoute2Info> CREATOR = new Parcelable.Creator<MediaRoute2Info>() { // from class: android.media.MediaRoute2Info.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaRoute2Info createFromParcel(Parcel in) {
             return new MediaRoute2Info(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaRoute2Info[] newArray(int size) {
             return new MediaRoute2Info[size];
@@ -46,12 +45,17 @@ public final class MediaRoute2Info implements Parcelable {
     public static final int PLAYBACK_VOLUME_VARIABLE = 1;
     public static final String ROUTE_ID_DEFAULT = "DEFAULT_ROUTE";
     public static final String ROUTE_ID_DEVICE = "DEVICE_ROUTE";
+    public static final int SUITABILITY_STATUS_NOT_SUITABLE_FOR_TRANSFER = 2;
+    public static final int SUITABILITY_STATUS_SUITABLE_FOR_DEFAULT_TRANSFER = 0;
+    public static final int SUITABILITY_STATUS_SUITABLE_FOR_MANUAL_TRANSFER = 1;
     public static final int TYPE_BLE_HEADSET = 26;
     public static final int TYPE_BLUETOOTH_A2DP = 8;
     public static final int TYPE_BUILTIN_SPEAKER = 2;
     public static final int TYPE_DOCK = 13;
     public static final int TYPE_GROUP = 2000;
     public static final int TYPE_HDMI = 9;
+    public static final int TYPE_HDMI_ARC = 10;
+    public static final int TYPE_HDMI_EARC = 29;
     public static final int TYPE_HEARING_AID = 23;
     public static final int TYPE_REMOTE_AUDIO_VIDEO_RECEIVER = 1003;
     public static final int TYPE_REMOTE_CAR = 1008;
@@ -70,56 +74,41 @@ public final class MediaRoute2Info implements Parcelable {
     public static final int TYPE_USB_HEADSET = 22;
     public static final int TYPE_WIRED_HEADPHONES = 4;
     public static final int TYPE_WIRED_HEADSET = 3;
-    final String mAddress;
-    final Set<String> mAllowedPackages;
-    final String mClientPackageName;
-    final int mConnectionState;
-    final Set<String> mDeduplicationIds;
-    final CharSequence mDescription;
-    final Bundle mExtras;
-    final List<String> mFeatures;
-    final Uri mIconUri;
-    final String mId;
-    final boolean mIsSystem;
-    final boolean mIsVisibilityRestricted;
-    final CharSequence mName;
-    final String mPackageName;
-    final String mProviderId;
-    final int mType;
-    final int mVolume;
-    final int mVolumeHandling;
-    final int mVolumeMax;
+    private final String mAddress;
+    private final Set<String> mAllowedPackages;
+    private final String mClientPackageName;
+    private final int mConnectionState;
+    private final Set<String> mDeduplicationIds;
+    private final CharSequence mDescription;
+    private final Bundle mExtras;
+    private final List<String> mFeatures;
+    private final Uri mIconUri;
+    private final String mId;
+    private final boolean mIsSystem;
+    private final boolean mIsVisibilityRestricted;
+    private final CharSequence mName;
+    private final String mPackageName;
+    private final String mProviderId;
+    private final int mSuitabilityStatus;
+    private final int mType;
+    private final int mVolume;
+    private final int mVolumeHandling;
+    private final int mVolumeMax;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ConnectionState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PlaybackVolume {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
-    public @interface Type {
+    public @interface SuitabilityStatus {
     }
 
-    /* renamed from: android.media.MediaRoute2Info$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MediaRoute2Info> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaRoute2Info createFromParcel(Parcel in) {
-            return new MediaRoute2Info(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaRoute2Info[] newArray(int size) {
-            return new MediaRoute2Info[size];
-        }
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
     }
 
     MediaRoute2Info(Builder builder) {
@@ -142,11 +131,12 @@ public final class MediaRoute2Info implements Parcelable {
         this.mProviderId = builder.mProviderId;
         this.mIsVisibilityRestricted = builder.mIsVisibilityRestricted;
         this.mAllowedPackages = builder.mAllowedPackages;
+        this.mSuitabilityStatus = builder.mSuitabilityStatus;
     }
 
     MediaRoute2Info(Parcel in) {
         this.mId = in.readString();
-        Preconditions.checkArgument(!TextUtils.isEmpty(r0));
+        Preconditions.checkArgument(!TextUtils.isEmpty(this.mId));
         this.mName = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
         this.mFeatures = in.createStringArrayList();
         this.mType = in.readInt();
@@ -165,6 +155,7 @@ public final class MediaRoute2Info implements Parcelable {
         this.mProviderId = in.readString();
         this.mIsVisibilityRestricted = in.readBoolean();
         this.mAllowedPackages = Set.of((Object[]) in.createString8Array());
+        this.mSuitabilityStatus = in.readInt();
     }
 
     public String getId() {
@@ -276,6 +267,31 @@ public final class MediaRoute2Info implements Parcelable {
         return !this.mIsVisibilityRestricted || getPackageName().equals(packageName) || this.mAllowedPackages.contains(packageName);
     }
 
+    public boolean isSystemRouteType() {
+        switch (this.mType) {
+            case 2:
+            case 3:
+            case 4:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 22:
+            case 23:
+            case 26:
+            case 29:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public int getSuitabilityStatus() {
+        return this.mSuitabilityStatus;
+    }
+
     public void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "MediaRoute2Info");
         String indent = prefix + "  ";
@@ -296,23 +312,11 @@ public final class MediaRoute2Info implements Parcelable {
         pw.println(indent + "mProviderId=" + this.mProviderId);
         pw.println(indent + "mIsVisibilityRestricted=" + this.mIsVisibilityRestricted);
         pw.println(indent + "mAllowedPackages=" + this.mAllowedPackages);
+        pw.println(indent + "mSuitabilityStatus=" + this.mSuitabilityStatus);
     }
 
     private void dumpVolume(PrintWriter pw, String prefix) {
-        String volumeHandlingName;
-        switch (this.mVolumeHandling) {
-            case 0:
-                volumeHandlingName = "FIXED";
-                break;
-            case 1:
-                volumeHandlingName = "VARIABLE";
-                break;
-            default:
-                volumeHandlingName = "UNKNOWN";
-                break;
-        }
-        String volume = String.format(Locale.US, "volume(current=%d, max=%d, handling=%s(%d))", Integer.valueOf(this.mVolume), Integer.valueOf(this.mVolumeMax), volumeHandlingName, Integer.valueOf(this.mVolumeHandling));
-        pw.println(prefix + volume);
+        pw.println(prefix + getVolumeString(this.mVolume, this.mVolumeMax, this.mVolumeHandling));
     }
 
     public boolean equals(Object obj) {
@@ -323,16 +327,15 @@ public final class MediaRoute2Info implements Parcelable {
             return false;
         }
         MediaRoute2Info other = (MediaRoute2Info) obj;
-        return Objects.equals(this.mId, other.mId) && Objects.equals(this.mName, other.mName) && Objects.equals(this.mFeatures, other.mFeatures) && this.mType == other.mType && this.mIsSystem == other.mIsSystem && Objects.equals(this.mIconUri, other.mIconUri) && Objects.equals(this.mDescription, other.mDescription) && this.mConnectionState == other.mConnectionState && Objects.equals(this.mClientPackageName, other.mClientPackageName) && Objects.equals(this.mPackageName, other.mPackageName) && this.mVolumeHandling == other.mVolumeHandling && this.mVolumeMax == other.mVolumeMax && this.mVolume == other.mVolume && Objects.equals(this.mAddress, other.mAddress) && Objects.equals(this.mDeduplicationIds, other.mDeduplicationIds) && Objects.equals(this.mProviderId, other.mProviderId) && this.mIsVisibilityRestricted == other.mIsVisibilityRestricted && Objects.equals(this.mAllowedPackages, other.mAllowedPackages);
+        return Objects.equals(this.mId, other.mId) && Objects.equals(this.mName, other.mName) && Objects.equals(this.mFeatures, other.mFeatures) && this.mType == other.mType && this.mIsSystem == other.mIsSystem && Objects.equals(this.mIconUri, other.mIconUri) && Objects.equals(this.mDescription, other.mDescription) && this.mConnectionState == other.mConnectionState && Objects.equals(this.mClientPackageName, other.mClientPackageName) && Objects.equals(this.mPackageName, other.mPackageName) && this.mVolumeHandling == other.mVolumeHandling && this.mVolumeMax == other.mVolumeMax && this.mVolume == other.mVolume && Objects.equals(this.mAddress, other.mAddress) && Objects.equals(this.mDeduplicationIds, other.mDeduplicationIds) && Objects.equals(this.mProviderId, other.mProviderId) && this.mIsVisibilityRestricted == other.mIsVisibilityRestricted && Objects.equals(this.mAllowedPackages, other.mAllowedPackages) && this.mSuitabilityStatus == other.mSuitabilityStatus;
     }
 
     public int hashCode() {
-        return Objects.hash(this.mId, this.mName, this.mFeatures, Integer.valueOf(this.mType), Boolean.valueOf(this.mIsSystem), this.mIconUri, this.mDescription, Integer.valueOf(this.mConnectionState), this.mClientPackageName, this.mPackageName, Integer.valueOf(this.mVolumeHandling), Integer.valueOf(this.mVolumeMax), Integer.valueOf(this.mVolume), this.mAddress, this.mDeduplicationIds, this.mProviderId, Boolean.valueOf(this.mIsVisibilityRestricted), this.mAllowedPackages);
+        return Objects.hash(this.mId, this.mName, this.mFeatures, Integer.valueOf(this.mType), Boolean.valueOf(this.mIsSystem), this.mIconUri, this.mDescription, Integer.valueOf(this.mConnectionState), this.mClientPackageName, this.mPackageName, Integer.valueOf(this.mVolumeHandling), Integer.valueOf(this.mVolumeMax), Integer.valueOf(this.mVolume), this.mAddress, this.mDeduplicationIds, this.mProviderId, Boolean.valueOf(this.mIsVisibilityRestricted), this.mAllowedPackages, Integer.valueOf(this.mSuitabilityStatus));
     }
 
     public String toString() {
-        StringBuilder result = new StringBuilder().append("MediaRoute2Info{ ").append("id=").append(getId()).append(", name=").append(getName()).append(", features=").append(getFeatures()).append(", iconUri=").append(getIconUri()).append(", description=").append(getDescription()).append(", connectionState=").append(getConnectionState()).append(", clientPackageName=").append(getClientPackageName()).append(", volumeHandling=").append(getVolumeHandling()).append(", volumeMax=").append(getVolumeMax()).append(", volume=").append(getVolume()).append(", deduplicationIds=").append(String.join(",", getDeduplicationIds())).append(", providerId=").append(getProviderId()).append(", isVisibilityRestricted=").append(this.mIsVisibilityRestricted).append(", allowedPackages=").append(String.join(",", this.mAllowedPackages)).append(" }");
-        return result.toString();
+        return "MediaRoute2Info{ id=" + getId() + ", name=" + getName() + ", type=" + getDeviceTypeString(getType()) + ", isSystem=" + isSystemRoute() + ", features=" + getFeatures() + ", iconUri=" + getIconUri() + ", description=" + getDescription() + ", connectionState=" + getConnectionState() + ", clientPackageName=" + getClientPackageName() + ", " + getVolumeString(this.mVolume, this.mVolumeMax, this.mVolumeHandling) + ", address=" + getAddress() + ", deduplicationIds=" + String.join(",", getDeduplicationIds()) + ", providerId=" + getProviderId() + ", isVisibilityRestricted=" + this.mIsVisibilityRestricted + ", allowedPackages=" + String.join(",", this.mAllowedPackages) + ", suitabilityStatus=" + this.mSuitabilityStatus + " }";
     }
 
     @Override // android.os.Parcelable
@@ -356,12 +359,28 @@ public final class MediaRoute2Info implements Parcelable {
         dest.writeInt(this.mVolumeMax);
         dest.writeInt(this.mVolume);
         dest.writeString(this.mAddress);
-        Set<String> set = this.mDeduplicationIds;
-        dest.writeStringArray((String[]) set.toArray(new String[set.size()]));
+        dest.writeStringArray((String[]) this.mDeduplicationIds.toArray(new String[this.mDeduplicationIds.size()]));
         dest.writeBundle(this.mExtras);
         dest.writeString(this.mProviderId);
         dest.writeBoolean(this.mIsVisibilityRestricted);
         dest.writeString8Array((String[]) this.mAllowedPackages.toArray(new String[0]));
+        dest.writeInt(this.mSuitabilityStatus);
+    }
+
+    static String getVolumeString(int volume, int maxVolume, int volumeHandling) {
+        String volumeHandlingName;
+        switch (volumeHandling) {
+            case 0:
+                volumeHandlingName = "FIXED";
+                break;
+            case 1:
+                volumeHandlingName = "VARIABLE";
+                break;
+            default:
+                volumeHandlingName = "UNKNOWN";
+                break;
+        }
+        return String.format(Locale.US, "volume(current=%d, max=%d, handling=%s(%d))", Integer.valueOf(volume), Integer.valueOf(maxVolume), volumeHandlingName, Integer.valueOf(volumeHandling));
     }
 
     private static String getDeviceTypeString(int deviceType) {
@@ -376,6 +395,8 @@ public final class MediaRoute2Info implements Parcelable {
                 return "BLUETOOTH_A2DP";
             case 9:
                 return "HDMI";
+            case 10:
+                return "HDMI_ARC";
             case 11:
                 return "USB_DEVICE";
             case 12:
@@ -386,6 +407,8 @@ public final class MediaRoute2Info implements Parcelable {
                 return "USB_HEADSET";
             case 23:
                 return "HEARING_AID";
+            case 29:
+                return "HDMI_EARC";
             case 1001:
                 return "REMOTE_TV";
             case 1002:
@@ -413,27 +436,27 @@ public final class MediaRoute2Info implements Parcelable {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
-        String mAddress;
-        Set<String> mAllowedPackages;
-        String mClientPackageName;
-        int mConnectionState;
-        Set<String> mDeduplicationIds;
-        CharSequence mDescription;
-        Bundle mExtras;
-        final List<String> mFeatures;
-        Uri mIconUri;
-        final String mId;
-        boolean mIsSystem;
-        boolean mIsVisibilityRestricted;
-        final CharSequence mName;
-        String mPackageName;
-        String mProviderId;
-        int mType;
-        int mVolume;
-        int mVolumeHandling;
-        int mVolumeMax;
+        private String mAddress;
+        private Set<String> mAllowedPackages;
+        private String mClientPackageName;
+        private int mConnectionState;
+        private Set<String> mDeduplicationIds;
+        private CharSequence mDescription;
+        private Bundle mExtras;
+        private final List<String> mFeatures;
+        private Uri mIconUri;
+        private final String mId;
+        private boolean mIsSystem;
+        private boolean mIsVisibilityRestricted;
+        private final CharSequence mName;
+        private String mPackageName;
+        private String mProviderId;
+        private int mSuitabilityStatus;
+        private int mType;
+        private int mVolume;
+        private int mVolumeHandling;
+        private int mVolumeMax;
 
         public Builder(String id, CharSequence name) {
             this.mType = 0;
@@ -449,6 +472,7 @@ public final class MediaRoute2Info implements Parcelable {
             this.mFeatures = new ArrayList();
             this.mDeduplicationIds = Set.of();
             this.mAllowedPackages = Set.of();
+            this.mSuitabilityStatus = 0;
         }
 
         public Builder(MediaRoute2Info routeInfo) {
@@ -483,6 +507,7 @@ public final class MediaRoute2Info implements Parcelable {
             this.mProviderId = routeInfo.mProviderId;
             this.mIsVisibilityRestricted = routeInfo.mIsVisibilityRestricted;
             this.mAllowedPackages = routeInfo.mAllowedPackages;
+            this.mSuitabilityStatus = routeInfo.mSuitabilityStatus;
         }
 
         public Builder addFeature(String feature) {
@@ -592,6 +617,11 @@ public final class MediaRoute2Info implements Parcelable {
         public Builder setVisibilityRestricted(Set<String> allowedPackages) {
             this.mIsVisibilityRestricted = true;
             this.mAllowedPackages = Set.copyOf(allowedPackages);
+            return this;
+        }
+
+        public Builder setSuitabilityStatus(int suitabilityStatus) {
+            this.mSuitabilityStatus = suitabilityStatus;
             return this;
         }
 

@@ -1,6 +1,6 @@
 package android.mtp;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class MtpStorageInfo {
     private String mDescription;
     private long mFreeSpace;

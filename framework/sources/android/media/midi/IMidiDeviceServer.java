@@ -23,7 +23,6 @@ public interface IMidiDeviceServer extends IInterface {
 
     void setDeviceInfo(MidiDeviceInfo midiDeviceInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMidiDeviceServer {
         @Override // android.media.midi.IMidiDeviceServer
         public FileDescriptor openInputPort(IBinder token, int portNumber) throws RemoteException {
@@ -63,7 +62,6 @@ public interface IMidiDeviceServer extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMidiDeviceServer {
         public static final String DESCRIPTOR = "android.media.midi.IMidiDeviceServer";
         static final int TRANSACTION_closeDevice = 4;
@@ -125,65 +123,61 @@ public interface IMidiDeviceServer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    FileDescriptor _result = openInputPort(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeRawFileDescriptor(_result);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    FileDescriptor _result2 = openOutputPort(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeRawFileDescriptor(_result2);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    closePort(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    closeDevice();
+                    return true;
+                case 5:
+                    IBinder _arg04 = data.readStrongBinder();
+                    FileDescriptor _arg13 = data.readRawFileDescriptor();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = connectPorts(_arg04, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 6:
+                    MidiDeviceInfo _result4 = getDeviceInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 7:
+                    MidiDeviceInfo _arg05 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDeviceInfo(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            FileDescriptor _result = openInputPort(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeRawFileDescriptor(_result);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            FileDescriptor _result2 = openOutputPort(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeRawFileDescriptor(_result2);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            closePort(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            closeDevice();
-                            return true;
-                        case 5:
-                            IBinder _arg04 = data.readStrongBinder();
-                            FileDescriptor _arg13 = data.readRawFileDescriptor();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = connectPorts(_arg04, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 6:
-                            MidiDeviceInfo _result4 = getDeviceInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 7:
-                            MidiDeviceInfo _arg05 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDeviceInfo(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMidiDeviceServer {
+        private static class Proxy implements IMidiDeviceServer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

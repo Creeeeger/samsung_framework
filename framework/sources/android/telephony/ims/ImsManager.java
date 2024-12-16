@@ -8,7 +8,7 @@ import android.telephony.TelephonyFrameworkInitializer;
 import android.telephony.ims.aidl.IImsRcsController;
 import com.android.internal.telephony.ITelephony;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsManager {
     public static final String ACTION_FORBIDDEN_NO_SERVICE_AUTHORIZATION = "com.android.internal.intent.action.ACTION_FORBIDDEN_NO_SERVICE_AUTHORIZATION";
     public static final String ACTION_WFC_IMS_REGISTRATION_ERROR = "android.telephony.ims.action.WFC_IMS_REGISTRATION_ERROR";
@@ -65,10 +65,12 @@ public class ImsManager {
         return new ProvisioningManager(subscriptionId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static IImsRcsController getIImsRcsControllerInterface() {
         return IImsRcsController.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyImsServiceRegisterer().get());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ITelephony getITelephonyInterface() {
         return ITelephony.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyServiceRegisterer().get());
     }

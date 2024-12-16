@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IStatusBarNotificationHolder extends IInterface {
     StatusBarNotification get() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IStatusBarNotificationHolder {
         @Override // android.service.notification.IStatusBarNotificationHolder
         public StatusBarNotification get() throws RemoteException {
@@ -23,7 +22,6 @@ public interface IStatusBarNotificationHolder extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IStatusBarNotificationHolder {
         public static final String DESCRIPTOR = "android.service.notification.IStatusBarNotificationHolder";
         static final int TRANSACTION_get = 1;
@@ -67,25 +65,22 @@ public interface IStatusBarNotificationHolder extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    StatusBarNotification _result = get();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            StatusBarNotification _result = get();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IStatusBarNotificationHolder {
+        private static class Proxy implements IStatusBarNotificationHolder {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.internal.app.IHotwordRecognitionStatusCallback;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IVoiceInteractionSoundTriggerSession extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.app.IVoiceInteractionSoundTriggerSession";
 
@@ -26,7 +26,6 @@ public interface IVoiceInteractionSoundTriggerSession extends IInterface {
 
     int stopRecognition(int i, IHotwordRecognitionStatusCallback iHotwordRecognitionStatusCallback) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IVoiceInteractionSoundTriggerSession {
         @Override // com.android.internal.app.IVoiceInteractionSoundTriggerSession
         public SoundTrigger.ModuleProperties getDspModuleProperties() throws RemoteException {
@@ -68,7 +67,6 @@ public interface IVoiceInteractionSoundTriggerSession extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractionSoundTriggerSession {
         static final int TRANSACTION_detach = 7;
         static final int TRANSACTION_getDspModuleProperties = 1;
@@ -129,73 +127,70 @@ public interface IVoiceInteractionSoundTriggerSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVoiceInteractionSoundTriggerSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVoiceInteractionSoundTriggerSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVoiceInteractionSoundTriggerSession.DESCRIPTOR);
+                case 1:
+                    SoundTrigger.ModuleProperties _result = getDspModuleProperties();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    IHotwordRecognitionStatusCallback _arg2 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    SoundTrigger.RecognitionConfig _arg3 = (SoundTrigger.RecognitionConfig) data.readTypedObject(SoundTrigger.RecognitionConfig.CREATOR);
+                    boolean _arg4 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result2 = startRecognition(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    IHotwordRecognitionStatusCallback _arg12 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result3 = stopRecognition(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = setParameter(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = getParameter(_arg04, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SoundTrigger.ModelParamRange _result6 = queryParameter(_arg05, _arg15);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 7:
+                    detach();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SoundTrigger.ModuleProperties _result = getDspModuleProperties();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            IHotwordRecognitionStatusCallback _arg2 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            SoundTrigger.RecognitionConfig _arg3 = (SoundTrigger.RecognitionConfig) data.readTypedObject(SoundTrigger.RecognitionConfig.CREATOR);
-                            boolean _arg4 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result2 = startRecognition(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            IHotwordRecognitionStatusCallback _arg12 = IHotwordRecognitionStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result3 = stopRecognition(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = setParameter(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = getParameter(_arg04, _arg14);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SoundTrigger.ModelParamRange _result6 = queryParameter(_arg05, _arg15);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 7:
-                            detach();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IVoiceInteractionSoundTriggerSession {
+        private static class Proxy implements IVoiceInteractionSoundTriggerSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

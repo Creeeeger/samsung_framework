@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import com.samsung.android.graphics.spr.document.SprDocument;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprDrawableAnimationFrame extends SprDrawableAnimation {
     private int mCurrentFrameIndex;
     private final int mFrameCount;
@@ -13,9 +13,8 @@ public class SprDrawableAnimationFrame extends SprDrawableAnimation {
     public SprDrawableAnimationFrame(Drawable drawable, SprDocument document) {
         super((byte) 2, drawable, document);
         this.mCurrentFrameIndex = 0;
-        int frameAnimationCount = this.mDocument.getFrameAnimationCount();
-        this.mFrameCount = frameAnimationCount;
-        this.mTotalFrameCount = frameAnimationCount * this.mDocument.mRepeatCount;
+        this.mFrameCount = this.mDocument.getFrameAnimationCount();
+        this.mTotalFrameCount = this.mFrameCount * this.mDocument.mRepeatCount;
     }
 
     @Override // com.samsung.android.graphics.spr.animation.SprDrawableAnimation
@@ -32,9 +31,8 @@ public class SprDrawableAnimationFrame extends SprDrawableAnimation {
             return result;
         }
         int result2 = this.mCurrentFrameIndex;
-        int i = this.mFrameCount;
-        int index = result2 % (i * 2);
-        int result3 = index < i ? index : (i - (index % i)) - 1;
+        int index = result2 % (this.mFrameCount * 2);
+        int result3 = index < this.mFrameCount ? index : (this.mFrameCount - (index % this.mFrameCount)) - 1;
         return result3;
     }
 
@@ -43,12 +41,8 @@ public class SprDrawableAnimationFrame extends SprDrawableAnimation {
         this.mCurrentFrameIndex++;
         if (this.mDocument.mRepeatCount == 0 || this.mCurrentFrameIndex < this.mTotalFrameCount) {
             this.mDrawable.scheduleSelf(this, SystemClock.uptimeMillis() + this.mInterval);
-            if (this.mDocument.mRepeatCount == 0) {
-                int i = this.mCurrentFrameIndex;
-                int i2 = this.mFrameCount;
-                if (i > i2 * 2) {
-                    this.mCurrentFrameIndex = i - (i2 * 2);
-                }
+            if (this.mDocument.mRepeatCount == 0 && this.mCurrentFrameIndex > this.mFrameCount * 2) {
+                this.mCurrentFrameIndex -= this.mFrameCount * 2;
             }
         } else {
             this.mIsRunning = false;

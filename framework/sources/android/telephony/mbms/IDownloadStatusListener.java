@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IDownloadStatusListener extends IInterface {
     void onStatusUpdated(DownloadRequest downloadRequest, FileInfo fileInfo, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDownloadStatusListener {
         @Override // android.telephony.mbms.IDownloadStatusListener
         public void onStatusUpdated(DownloadRequest request, FileInfo fileInfo, int status) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IDownloadStatusListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDownloadStatusListener {
         public static final String DESCRIPTOR = "android.telephony.mbms.IDownloadStatusListener";
         static final int TRANSACTION_onStatusUpdated = 1;
@@ -66,29 +64,25 @@ public interface IDownloadStatusListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    DownloadRequest _arg0 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    FileInfo _arg1 = (FileInfo) data.readTypedObject(FileInfo.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStatusUpdated(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            DownloadRequest _arg0 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            FileInfo _arg1 = (FileInfo) data.readTypedObject(FileInfo.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStatusUpdated(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDownloadStatusListener {
+        private static class Proxy implements IDownloadStatusListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -21,7 +21,6 @@ public interface IGnssPsds extends IInterface {
 
     void setCallback(IGnssPsdsCallback iGnssPsdsCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssPsds {
         @Override // android.hardware.gnss.IGnssPsds
         public void injectPsdsData(int psdsType, byte[] psdsData) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IGnssPsds extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssPsds {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -101,42 +99,40 @@ public interface IGnssPsds extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    injectPsdsData(_arg0, _arg1);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    IGnssPsdsCallback _arg02 = IGnssPsdsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            injectPsdsData(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IGnssPsdsCallback _arg02 = IGnssPsdsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssPsds {
+        private static class Proxy implements IGnssPsds {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

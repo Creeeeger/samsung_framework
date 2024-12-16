@@ -3,7 +3,7 @@ package com.samsung.android.sume.core.filter;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface MediaFilterGroup extends MediaFilter {
     MediaFilterGroup addFilter(List<MediaFilter> list);
 

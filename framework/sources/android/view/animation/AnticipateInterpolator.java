@@ -40,8 +40,7 @@ public class AnticipateInterpolator extends BaseInterpolator implements NativeIn
 
     @Override // android.animation.TimeInterpolator
     public float getInterpolation(float t) {
-        float f = this.mTension;
-        return t * t * (((1.0f + f) * t) - f);
+        return t * t * (((this.mTension + 1.0f) * t) - this.mTension);
     }
 
     @Override // android.graphics.animation.NativeInterpolator

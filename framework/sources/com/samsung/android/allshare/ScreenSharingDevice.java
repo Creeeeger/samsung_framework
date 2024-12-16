@@ -3,17 +3,15 @@ package com.samsung.android.allshare;
 import android.net.Uri;
 import com.samsung.android.allshare.Device;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public abstract class ScreenSharingDevice extends Device {
 
-    /* loaded from: classes5.dex */
     public interface IScreenSharingActionResponseListner {
         void onConnectScreenSharingM2TV(String str, String str2, String str3);
 
         void onConnectScreenSharingTV2M(String str, String str2, String str3, String str4);
     }
 
-    /* loaded from: classes5.dex */
     public interface IScreenSharingEventListener {
         void onEventReceived(String str, String str2, ERROR error);
     }
@@ -25,6 +23,9 @@ public abstract class ScreenSharingDevice extends Device {
     public abstract ERROR setEventListener(IScreenSharingEventListener iScreenSharingEventListener);
 
     public abstract void setResponseListener(IScreenSharingActionResponseListner iScreenSharingActionResponseListner);
+
+    protected ScreenSharingDevice() {
+    }
 
     @Override // com.samsung.android.allshare.Device
     public Device.DeviceDomain getDeviceDomain() {
@@ -38,11 +39,6 @@ public abstract class ScreenSharingDevice extends Device {
 
     @Override // com.samsung.android.allshare.Device
     public String getID() {
-        return null;
-    }
-
-    @Override // com.samsung.android.allshare.Device
-    public String getIPAdress() {
         return null;
     }
 

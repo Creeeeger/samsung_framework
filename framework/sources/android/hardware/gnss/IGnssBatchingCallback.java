@@ -18,7 +18,6 @@ public interface IGnssBatchingCallback extends IInterface {
 
     void gnssLocationBatchCb(GnssLocation[] gnssLocationArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssBatchingCallback {
         @Override // android.hardware.gnss.IGnssBatchingCallback
         public void gnssLocationBatchCb(GnssLocation[] locations) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IGnssBatchingCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssBatchingCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -91,35 +89,32 @@ public interface IGnssBatchingCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            GnssLocation[] _arg0 = (GnssLocation[]) data.createTypedArray(GnssLocation.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssLocationBatchCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    GnssLocation[] _arg0 = (GnssLocation[]) data.createTypedArray(GnssLocation.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssLocationBatchCb(_arg0);
+                    reply.writeNoException();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssBatchingCallback {
+        private static class Proxy implements IGnssBatchingCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

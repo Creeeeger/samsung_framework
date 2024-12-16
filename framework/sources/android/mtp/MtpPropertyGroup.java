@@ -4,9 +4,8 @@ import android.drm.DrmInfoRequest;
 import android.util.Log;
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes2.dex */
-public class MtpPropertyGroup {
+/* loaded from: classes3.dex */
+class MtpPropertyGroup {
     private static final String PATH_WHERE = "_data=?";
     private static final String TAG = MtpPropertyGroup.class.getSimpleName();
     private String[] mColumns;
@@ -14,8 +13,7 @@ public class MtpPropertyGroup {
 
     private native String format_date_time(long j);
 
-    /* loaded from: classes2.dex */
-    public class Property {
+    private class Property {
         int code;
         int column;
         int type;

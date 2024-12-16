@@ -36,7 +36,7 @@ public class ColorItem extends Item {
         return this.opacity;
     }
 
-    @Override // com.samsung.vekit.Item.Item
+    @Override // com.samsung.vekit.Item.Item, com.samsung.vekit.Common.Object.Element
     public ColorItem setOpacity(float opacity) {
         this.opacity = opacity;
         return this;

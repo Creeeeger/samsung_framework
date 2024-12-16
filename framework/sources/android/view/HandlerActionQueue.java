@@ -75,8 +75,7 @@ public class HandlerActionQueue {
         return this.mActions[index].delay;
     }
 
-    /* loaded from: classes4.dex */
-    public static class HandlerAction {
+    private static class HandlerAction {
         final Runnable action;
         final long delay;
 
@@ -86,8 +85,7 @@ public class HandlerActionQueue {
         }
 
         public boolean matches(Runnable otherAction) {
-            Runnable runnable;
-            return (otherAction == null && this.action == null) || ((runnable = this.action) != null && runnable.equals(otherAction));
+            return (otherAction == null && this.action == null) || (this.action != null && this.action.equals(otherAction));
         }
     }
 }

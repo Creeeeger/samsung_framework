@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.android.internal.R;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class NotificationAccessConfirmationActivityContract {
     public static final String EXTRA_COMPONENT_NAME = "component_name";
     public static final String EXTRA_USER_ID = "user_id";

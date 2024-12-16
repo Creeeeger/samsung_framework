@@ -10,9 +10,8 @@ import java.io.FileInputStream;
 import vendor.samsung.hardware.authfw.ISehAuthenticationFramework;
 import vendor.samsung.hardware.authfw.SehResult;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public final class AidlHalService implements XidlHalService, IBinder.DeathRecipient {
+final class AidlHalService implements XidlHalService, IBinder.DeathRecipient {
     private static final String TAG = "AHS";
     private ISehAuthenticationFramework mService = null;
 
@@ -25,10 +24,9 @@ public final class AidlHalService implements XidlHalService, IBinder.DeathRecipi
     private synchronized ISehAuthenticationFramework getService() {
         if (this.mService == null) {
             try {
-                ISehAuthenticationFramework asInterface = ISehAuthenticationFramework.Stub.asInterface(ServiceManager.waitForDeclaredService(ISehAuthenticationFramework.DESCRIPTOR + "/default"));
-                this.mService = asInterface;
-                if (asInterface != null) {
-                    asInterface.asBinder().linkToDeath(this, 0);
+                this.mService = ISehAuthenticationFramework.Stub.asInterface(ServiceManager.waitForDeclaredService(ISehAuthenticationFramework.DESCRIPTOR + "/default"));
+                if (this.mService != null) {
+                    this.mService.asBinder().linkToDeath(this, 0);
                 }
             } catch (RemoteException e) {
                 return null;
@@ -198,57 +196,23 @@ public final class AidlHalService implements XidlHalService, IBinder.DeathRecipi
     }
 
     private int translateTaType(SemTrustedApplicationExecutor.TrustedAppType type) {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType[type.ordinal()]) {
-            case 1:
+        switch (type) {
+            case FINGERPRINT_TRUSTED_APP:
                 return 1;
-            case 2:
+            case DEVICE_ROOT_KEY_TRUSTED_APP:
                 return 2;
-            case 3:
+            case ASSET_DOWNLOADER_TRUSTED_APP:
                 return 3;
             default:
                 return 0;
         }
     }
 
-    /* renamed from: com.samsung.android.authenticator.AidlHalService$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppAssetType;
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType;
-
-        static {
-            int[] iArr = new int[SemTrustedApplicationExecutor.TrustedAppAssetType.values().length];
-            $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppAssetType = iArr;
-            try {
-                iArr[SemTrustedApplicationExecutor.TrustedAppAssetType.PASS_AUTHENTICATOR.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppAssetType[SemTrustedApplicationExecutor.TrustedAppAssetType.PASS_ESE.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            int[] iArr2 = new int[SemTrustedApplicationExecutor.TrustedAppType.values().length];
-            $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType = iArr2;
-            try {
-                iArr2[SemTrustedApplicationExecutor.TrustedAppType.FINGERPRINT_TRUSTED_APP.ordinal()] = 1;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType[SemTrustedApplicationExecutor.TrustedAppType.DEVICE_ROOT_KEY_TRUSTED_APP.ordinal()] = 2;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType[SemTrustedApplicationExecutor.TrustedAppType.ASSET_DOWNLOADER_TRUSTED_APP.ordinal()] = 3;
-            } catch (NoSuchFieldError e5) {
-            }
-        }
-    }
-
     private int translateTaType(SemTrustedApplicationExecutor.TrustedAppAssetType type) {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppAssetType[type.ordinal()]) {
-            case 1:
+        switch (type) {
+            case PASS_AUTHENTICATOR:
                 return 10000;
-            case 2:
+            case PASS_ESE:
                 return 10001;
             default:
                 return 0;

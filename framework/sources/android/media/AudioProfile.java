@@ -16,14 +16,13 @@ public class AudioProfile implements Parcelable {
     public static final int AUDIO_ENCAPSULATION_TYPE_NONE = 0;
     public static final int AUDIO_ENCAPSULATION_TYPE_PCM = 2;
     public static final Parcelable.Creator<AudioProfile> CREATOR = new Parcelable.Creator<AudioProfile>() { // from class: android.media.AudioProfile.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioProfile createFromParcel(Parcel p) {
             return new AudioProfile(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioProfile[] newArray(int size) {
             return new AudioProfile[size];
@@ -36,12 +35,7 @@ public class AudioProfile implements Parcelable {
     private final int[] mSamplingRates;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface EncapsulationType {
-    }
-
-    /* synthetic */ AudioProfile(Parcel parcel, AudioProfileIA audioProfileIA) {
-        this(parcel);
     }
 
     @SystemApi
@@ -94,16 +88,13 @@ public class AudioProfile implements Parcelable {
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append(AudioFormat.toLogFriendlyEncoding(this.mFormat));
-        int[] iArr = this.mSamplingRates;
-        if (iArr != null && iArr.length > 0) {
+        if (this.mSamplingRates != null && this.mSamplingRates.length > 0) {
             sb.append(", sampling rates=").append(Arrays.toString(this.mSamplingRates));
         }
-        int[] iArr2 = this.mChannelMasks;
-        if (iArr2 != null && iArr2.length > 0) {
+        if (this.mChannelMasks != null && this.mChannelMasks.length > 0) {
             sb.append(", channel masks=").append(toHexString(this.mChannelMasks));
         }
-        int[] iArr3 = this.mChannelIndexMasks;
-        if (iArr3 != null && iArr3.length > 0) {
+        if (this.mChannelIndexMasks != null && this.mChannelIndexMasks.length > 0) {
             sb.append(", channel index masks=").append(Arrays.toString(this.mChannelIndexMasks));
         }
         sb.append(", encapsulation type=" + this.mEncapsulationType);
@@ -153,22 +144,5 @@ public class AudioProfile implements Parcelable {
         this.mChannelMasks = in.createIntArray();
         this.mChannelIndexMasks = in.createIntArray();
         this.mEncapsulationType = in.readInt();
-    }
-
-    /* renamed from: android.media.AudioProfile$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioProfile> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioProfile createFromParcel(Parcel p) {
-            return new AudioProfile(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioProfile[] newArray(int size) {
-            return new AudioProfile[size];
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.samsung.android.multiwindow;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import com.samsung.android.core.CompatUtils;
@@ -7,7 +8,7 @@ import com.samsung.android.core.SizeCompatInfo;
 import com.samsung.android.util.InterpolatorUtils;
 import java.util.function.Consumer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DexSizeCompatResizeGuide extends SizeCompatResizeGuide {
     private static final int DELTA_ADJUSTMENT = 4;
     private static final int MAX_SIZE_THRESHOLD = 200;
@@ -15,8 +16,8 @@ public class DexSizeCompatResizeGuide extends SizeCompatResizeGuide {
     private static final boolean PROVIDE_SNAP_TO_FULLSCREEN = false;
     private final Rect mTmpRect;
 
-    public DexSizeCompatResizeGuide(Context context, String packageName) {
-        super(context, packageName);
+    public DexSizeCompatResizeGuide(Context context, ComponentName componentName) {
+        super(context, componentName);
         this.mTmpRect = new Rect();
     }
 

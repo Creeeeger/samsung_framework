@@ -15,7 +15,6 @@ public interface ITextClassifierCallback extends IInterface {
 
     void onSuccess(Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITextClassifierCallback {
         @Override // android.service.textclassifier.ITextClassifierCallback
         public void onSuccess(Bundle result) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ITextClassifierCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITextClassifierCallback {
         static final int TRANSACTION_onFailure = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -77,29 +75,25 @@ public interface ITextClassifierCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITextClassifierCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITextClassifierCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITextClassifierCallback.DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    onFailure();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            onFailure();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITextClassifierCallback {
+        private static class Proxy implements ITextClassifierCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

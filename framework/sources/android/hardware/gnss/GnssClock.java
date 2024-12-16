@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class GnssClock implements Parcelable {
     public static final Parcelable.Creator<GnssClock> CREATOR = new Parcelable.Creator<GnssClock>() { // from class: android.hardware.gnss.GnssClock.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssClock createFromParcel(Parcel _aidl_source) {
             GnssClock _aidl_out = new GnssClock();
@@ -18,6 +16,7 @@ public class GnssClock implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssClock[] newArray(int _aidl_size) {
             return new GnssClock[_aidl_size];
@@ -41,25 +40,6 @@ public class GnssClock implements Parcelable {
     public double driftNsps = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
     public double driftUncertaintyNsps = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
     public int hwClockDiscontinuityCount = 0;
-
-    /* renamed from: android.hardware.gnss.GnssClock$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GnssClock> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GnssClock createFromParcel(Parcel _aidl_source) {
-            GnssClock _aidl_out = new GnssClock();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GnssClock[] newArray(int _aidl_size) {
-            return new GnssClock[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

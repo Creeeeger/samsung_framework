@@ -7,12 +7,11 @@ import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemWallpaperProperties {
     private static final String KEY_AOD_THUMBNAIL = "aodThumbnail";
     private static final String KEY_AOD_THUMBNAIL_ERASEBG = "bgErasedAodThumbnail";
     public static final String KEY_CONTENT_ATTRIBUTES = "contentAttributes";
-    public static final String KEY_CONTENT_NAME = "contentName";
     public static final String KEY_CONTENT_TYPE = "contentType";
     private static final String KEY_FIXED_ORIENTATION = "isFixedOrientation";
     private static final String KEY_HAS_CROPPED_OBJECT = "hasCroppedObject";
@@ -20,7 +19,12 @@ public class SemWallpaperProperties {
     public static final String KEY_IMAGE_CATEGORY = "imageCategory";
     public static final String KEY_IMAGE_FILTER_PARAMS = "imageFilterParams";
     public static final String KEY_IS_PRELOADED = "isPreloaded";
+    public static final String KEY_LEGIBILITY_COLORS_ROTATION_0 = "rotation0";
+    public static final String KEY_LEGIBILITY_COLORS_ROTATION_270 = "rotation270";
+    public static final String KEY_LEGIBILITY_COLORS_ROTATION_90 = "rotation90";
+    public static final String KEY_LOCK_LEGIBILITY_COLORS = "lockLegibilityColors";
     public static final String KEY_SERVICE_SETTINGS = "serviceSettings";
+    public static final String KEY_SYSTEM_LEGIBILITY_COLORS = "systemLegibilityColors";
     private static final String TAG = SemWallpaperProperties.class.getSimpleName();
     private static final String VALUE_CONTENT_TYPE_LAYERED = "layered";
     private static final String VALUE_CONTENT_TYPE_WEATHER = "weather";
@@ -41,9 +45,8 @@ public class SemWallpaperProperties {
         if (!WhichChecker.isSingleType(which)) {
             throw new IllegalArgumentException("The type of 'which' should be one of FLAG_LOCK or FLAG_SYSTEM");
         }
-        Context applicationContext = context.getApplicationContext();
-        this.mContext = applicationContext;
-        this.mWallpaperManager = WallpaperManager.getInstance(applicationContext);
+        this.mContext = context.getApplicationContext();
+        this.mWallpaperManager = WallpaperManager.getInstance(this.mContext);
         this.mUserId = userId;
         this.mOriginalWhich = which;
         refresh();
@@ -69,7 +72,7 @@ public class SemWallpaperProperties {
         int wpType = getWallpaperType();
         switch (wpType) {
             case 7:
-                return this.mWallpaperManager.isPreloadedLiveWallpaper(this.mTargetWhich);
+                return this.mWallpaperManager.isStockLiveWallpaper(this.mTargetWhich);
             default:
                 return true;
         }
@@ -97,11 +100,8 @@ public class SemWallpaperProperties {
                 break;
         }
         switch (c) {
-            case 0:
-                return hasCroppedObject();
-            default:
-                return false;
         }
+        return false;
     }
 
     public boolean hasProperty(String key) {
@@ -121,24 +121,6 @@ public class SemWallpaperProperties {
     }
 
     public String getContentType() {
-        Bundle attributes = getContentAttributes();
-        if (attributes != null) {
-            String contentType = attributes.getString("contentType");
-            if (!TextUtils.isEmpty(contentType)) {
-                return contentType;
-            }
-        }
-        return getStringProperty("contentType");
-    }
-
-    public String getContentName() {
-        Bundle attributes = getContentAttributes();
-        if (attributes != null) {
-            String contentType = attributes.getString(KEY_CONTENT_NAME);
-            if (!TextUtils.isEmpty(contentType)) {
-                return contentType;
-            }
-        }
         return getStringProperty("contentType");
     }
 
@@ -165,7 +147,7 @@ public class SemWallpaperProperties {
         return isFixedOrientation();
     }
 
-    private boolean isFixedOrientation() {
+    public boolean isFixedOrientation() {
         Bundle attributes = getContentAttributes();
         if (attributes != null && attributes.getBoolean(KEY_FIXED_ORIENTATION, false)) {
             return true;

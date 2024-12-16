@@ -37,19 +37,19 @@ public class KernelCpuProcStringReader {
     private static final String PROC_UID_USER_SYS_TIME = "/proc/uid_cputime/show_uid_stat";
     private static final KernelCpuProcStringReader USER_SYS_TIME_READER = new KernelCpuProcStringReader(PROC_UID_USER_SYS_TIME);
 
-    public static KernelCpuProcStringReader getFreqTimeReaderInstance() {
+    static KernelCpuProcStringReader getFreqTimeReaderInstance() {
         return FREQ_TIME_READER;
     }
 
-    public static KernelCpuProcStringReader getActiveTimeReaderInstance() {
+    static KernelCpuProcStringReader getActiveTimeReaderInstance() {
         return ACTIVE_TIME_READER;
     }
 
-    public static KernelCpuProcStringReader getClusterTimeReaderInstance() {
+    static KernelCpuProcStringReader getClusterTimeReaderInstance() {
         return CLUSTER_TIME_READER;
     }
 
-    public static KernelCpuProcStringReader getUserSysTimeReaderInstance() {
+    static KernelCpuProcStringReader getUserSysTimeReaderInstance() {
         return USER_SYS_TIME_READER;
     }
 
@@ -60,10 +60,9 @@ public class KernelCpuProcStringReader {
     public KernelCpuProcStringReader(String file, Clock clock) {
         this.mErrors = 0;
         this.mLastReadTime = 0L;
-        ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
-        this.mLock = reentrantReadWriteLock;
-        this.mReadLock = reentrantReadWriteLock.readLock();
-        this.mWriteLock = reentrantReadWriteLock.writeLock();
+        this.mLock = new ReentrantReadWriteLock();
+        this.mReadLock = this.mLock.readLock();
+        this.mWriteLock = this.mLock.writeLock();
         this.mFile = Paths.get(file, new String[0]);
         this.mClock = clock;
     }
@@ -103,8 +102,7 @@ public class KernelCpuProcStringReader {
                             this.mBuf = new char[1024];
                         }
                         while (true) {
-                            char[] cArr = this.mBuf;
-                            int curr = r.read(cArr, total, cArr.length - total);
+                            int curr = r.read(this.mBuf, total, this.mBuf.length - total);
                             if (curr < 0) {
                                 this.mSize = total;
                                 this.mLastReadTime = this.mClock.elapsedRealtime();
@@ -116,9 +114,8 @@ public class KernelCpuProcStringReader {
                                 return procFileIterator;
                             }
                             total += curr;
-                            char[] cArr2 = this.mBuf;
-                            if (total == cArr2.length) {
-                                if (cArr2.length == 1048576) {
+                            if (total == this.mBuf.length) {
+                                if (this.mBuf.length == 1048576) {
                                     this.mErrors++;
                                     Slog.e(TAG, "Proc file too large: " + this.mFile);
                                     if (r != null) {
@@ -126,7 +123,7 @@ public class KernelCpuProcStringReader {
                                     }
                                     return null;
                                 }
-                                this.mBuf = Arrays.copyOf(cArr2, Math.min(cArr2.length << 1, 1048576));
+                                this.mBuf = Arrays.copyOf(this.mBuf, Math.min(this.mBuf.length << 1, 1048576));
                             }
                         }
                     } catch (Throwable th) {
@@ -159,7 +156,6 @@ public class KernelCpuProcStringReader {
         return this.mSize > 0 && this.mClock.elapsedRealtime() - this.mLastReadTime < FRESHNESS;
     }
 
-    /* loaded from: classes5.dex */
     public class ProcFileIterator implements AutoCloseable {
         private int mPos;
         private final int mSize;

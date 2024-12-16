@@ -25,7 +25,6 @@ public class SimpleAdapter extends BaseAdapter implements Filterable, ThemedSpin
     private ArrayList<Map<String, ?>> mUnfilteredData;
     private ViewBinder mViewBinder;
 
-    /* loaded from: classes4.dex */
     public interface ViewBinder {
         boolean setViewValue(View view, Object obj, String str);
     }
@@ -88,20 +87,15 @@ public class SimpleAdapter extends BaseAdapter implements Filterable, ThemedSpin
 
     @Override // android.widget.ThemedSpinnerAdapter
     public Resources.Theme getDropDownViewTheme() {
-        LayoutInflater layoutInflater = this.mDropDownInflater;
-        if (layoutInflater == null) {
+        if (this.mDropDownInflater == null) {
             return null;
         }
-        return layoutInflater.getContext().getTheme();
+        return this.mDropDownInflater.getContext().getTheme();
     }
 
     @Override // android.widget.BaseAdapter, android.widget.SpinnerAdapter
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater layoutInflater = this.mDropDownInflater;
-        if (layoutInflater == null) {
-            layoutInflater = this.mInflater;
-        }
-        LayoutInflater inflater = layoutInflater;
+        LayoutInflater inflater = this.mDropDownInflater == null ? this.mInflater : this.mDropDownInflater;
         return createViewFromResource(inflater, position, convertView, parent, this.mDropDownResource);
     }
 
@@ -173,7 +167,7 @@ public class SimpleAdapter extends BaseAdapter implements Filterable, ThemedSpin
     }
 
     public void setViewText(TextView v, String text) {
-        v.setText(text);
+        v.lambda$setTextAsync$0(text);
     }
 
     @Override // android.widget.Filterable
@@ -184,12 +178,7 @@ public class SimpleAdapter extends BaseAdapter implements Filterable, ThemedSpin
         return this.mFilter;
     }
 
-    /* loaded from: classes4.dex */
     private class SimpleFilter extends Filter {
-        /* synthetic */ SimpleFilter(SimpleAdapter simpleAdapter, SimpleFilterIA simpleFilterIA) {
-            this();
-        }
-
         private SimpleFilter() {
         }
 

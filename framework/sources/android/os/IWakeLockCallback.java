@@ -6,7 +6,6 @@ public interface IWakeLockCallback extends IInterface {
 
     void onStateChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWakeLockCallback {
         @Override // android.os.IWakeLockCallback
         public void onStateChanged(boolean enabled) throws RemoteException {
@@ -18,7 +17,6 @@ public interface IWakeLockCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWakeLockCallback {
         static final int TRANSACTION_onStateChanged = 1;
 
@@ -61,25 +59,22 @@ public interface IWakeLockCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWakeLockCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWakeLockCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWakeLockCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IWakeLockCallback {
+        private static class Proxy implements IWakeLockCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

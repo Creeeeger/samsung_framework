@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RecognitionConfig implements Parcelable {
     public static final Parcelable.Creator<RecognitionConfig> CREATOR = new Parcelable.Creator<RecognitionConfig>() { // from class: android.media.soundtrigger.RecognitionConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionConfig createFromParcel(Parcel _aidl_source) {
             RecognitionConfig _aidl_out = new RecognitionConfig();
@@ -20,6 +18,7 @@ public class RecognitionConfig implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionConfig[] newArray(int _aidl_size) {
             return new RecognitionConfig[_aidl_size];
@@ -29,25 +28,6 @@ public class RecognitionConfig implements Parcelable {
     public PhraseRecognitionExtra[] phraseRecognitionExtras;
     public boolean captureRequested = false;
     public int audioCapabilities = 0;
-
-    /* renamed from: android.media.soundtrigger.RecognitionConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecognitionConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionConfig createFromParcel(Parcel _aidl_source) {
-            RecognitionConfig _aidl_out = new RecognitionConfig();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionConfig[] newArray(int _aidl_size) {
-            return new RecognitionConfig[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -126,7 +106,7 @@ public class RecognitionConfig implements Parcelable {
         _aidl_sj.add("phraseRecognitionExtras: " + Arrays.toString(this.phraseRecognitionExtras));
         _aidl_sj.add("audioCapabilities: " + this.audioCapabilities);
         _aidl_sj.add("data: " + Arrays.toString(this.data));
-        return "android.media.soundtrigger.RecognitionConfig" + _aidl_sj.toString();
+        return "RecognitionConfig" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

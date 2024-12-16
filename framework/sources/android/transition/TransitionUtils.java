@@ -19,7 +19,7 @@ import android.widget.ImageView;
 public class TransitionUtils {
     private static int MAX_IMAGE_SIZE = 1048576;
 
-    public static Animator mergeAnimators(Animator animator1, Animator animator2) {
+    static Animator mergeAnimators(Animator animator1, Animator animator2) {
         if (animator1 == null) {
             return animator2;
         }
@@ -138,7 +138,6 @@ public class TransitionUtils {
         return bitmap;
     }
 
-    /* loaded from: classes4.dex */
     public static class MatrixEvaluator implements TypeEvaluator<Matrix> {
         float[] mTempStartValues = new float[9];
         float[] mTempEndValues = new float[9];
@@ -149,11 +148,8 @@ public class TransitionUtils {
             startValue.getValues(this.mTempStartValues);
             endValue.getValues(this.mTempEndValues);
             for (int i = 0; i < 9; i++) {
-                float[] fArr = this.mTempEndValues;
-                float f = fArr[i];
-                float f2 = this.mTempStartValues[i];
-                float diff = f - f2;
-                fArr[i] = f2 + (fraction * diff);
+                float diff = this.mTempEndValues[i] - this.mTempStartValues[i];
+                this.mTempEndValues[i] = this.mTempStartValues[i] + (fraction * diff);
             }
             this.mTempMatrix.setValues(this.mTempEndValues);
             return this.mTempMatrix;

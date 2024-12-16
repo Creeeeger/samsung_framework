@@ -3,17 +3,16 @@ package com.samsung.android.knox.mpos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class TACommandResponse implements Parcelable {
     public static final Parcelable.Creator<TACommandResponse> CREATOR = new Parcelable.Creator<TACommandResponse>() { // from class: com.samsung.android.knox.mpos.TACommandResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandResponse createFromParcel(Parcel in) {
             return new TACommandResponse(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandResponse[] newArray(int size) {
             return new TACommandResponse[size];
@@ -23,10 +22,6 @@ public class TACommandResponse implements Parcelable {
     public String mErrorMsg;
     public byte[] mResponse;
     public int mResponseCode;
-
-    /* synthetic */ TACommandResponse(Parcel parcel, TACommandResponseIA tACommandResponseIA) {
-        this(parcel);
-    }
 
     public TACommandResponse() {
         this.mResponseCode = -1;
@@ -43,23 +38,6 @@ public class TACommandResponse implements Parcelable {
         this.mResponse = response;
     }
 
-    /* renamed from: com.samsung.android.knox.mpos.TACommandResponse$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TACommandResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TACommandResponse createFromParcel(Parcel in) {
-            return new TACommandResponse(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TACommandResponse[] newArray(int size) {
-            return new TACommandResponse[size];
-        }
-    }
-
     private TACommandResponse(Parcel in) {
         this.mResponseCode = -1;
         this.mErrorMsg = null;
@@ -71,8 +49,7 @@ public class TACommandResponse implements Parcelable {
     public void writeToParcel(Parcel out, int flag) {
         out.writeInt(this.mResponseCode);
         out.writeString(this.mErrorMsg);
-        byte[] bArr = this.mResponse;
-        int len = bArr == null ? 0 : bArr.length;
+        int len = this.mResponse == null ? 0 : this.mResponse.length;
         out.writeInt(len);
         if (len > 0) {
             out.writeByteArray(this.mResponse);
@@ -84,9 +61,8 @@ public class TACommandResponse implements Parcelable {
         this.mErrorMsg = in.readString();
         int len = in.readInt();
         if (len > 0) {
-            byte[] bArr = new byte[len];
-            this.mResponse = bArr;
-            in.readByteArray(bArr);
+            this.mResponse = new byte[len];
+            in.readByteArray(this.mResponse);
         }
     }
 

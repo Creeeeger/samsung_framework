@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 /* loaded from: classes4.dex */
-public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDelegate {
+class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDelegate {
     private static final String DATE_FORMAT = "MM/dd/yyyy";
     private static final boolean DEFAULT_CALENDAR_VIEW_SHOWN = true;
     private static final boolean DEFAULT_ENABLED_STATE = true;
@@ -47,7 +47,7 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
     private final NumberPicker mYearSpinner;
     private final EditText mYearSpinnerInput;
 
-    public DatePickerSpinnerDelegate(DatePicker delegator, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    DatePickerSpinnerDelegate(DatePicker delegator, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(delegator, context);
         this.mDateFormat = new SimpleDateFormat(DATE_FORMAT);
         this.mIsEnabled = true;
@@ -67,9 +67,6 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         View view = inflater.inflate(layoutResourceId, (ViewGroup) this.mDelegator, true);
         view.setSaveFromParentEnabled(false);
         NumberPicker.OnValueChangeListener onChangeListener = new NumberPicker.OnValueChangeListener() { // from class: android.widget.DatePickerSpinnerDelegate.1
-            AnonymousClass1() {
-            }
-
             @Override // android.widget.NumberPicker.OnValueChangeListener
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 DatePickerSpinnerDelegate.this.updateInputState();
@@ -96,8 +93,7 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
                 } else {
                     throw new IllegalArgumentException();
                 }
-                DatePickerSpinnerDelegate datePickerSpinnerDelegate = DatePickerSpinnerDelegate.this;
-                datePickerSpinnerDelegate.setDate(datePickerSpinnerDelegate.mTempDate.get(1), DatePickerSpinnerDelegate.this.mTempDate.get(2), DatePickerSpinnerDelegate.this.mTempDate.get(5));
+                DatePickerSpinnerDelegate.this.setDate(DatePickerSpinnerDelegate.this.mTempDate.get(1), DatePickerSpinnerDelegate.this.mTempDate.get(2), DatePickerSpinnerDelegate.this.mTempDate.get(5));
                 DatePickerSpinnerDelegate.this.updateSpinners();
                 DatePickerSpinnerDelegate.this.updateCalendarView();
                 DatePickerSpinnerDelegate.this.notifyDateChanged();
@@ -105,12 +101,8 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         };
         View view2 = this.mDelegator;
         this.mSpinners = (LinearLayout) view2.findViewById(R.id.pickers);
-        CalendarView calendarView = (CalendarView) this.mDelegator.findViewById(R.id.calendar_view);
-        this.mCalendarView = calendarView;
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() { // from class: android.widget.DatePickerSpinnerDelegate.2
-            AnonymousClass2() {
-            }
-
+        this.mCalendarView = (CalendarView) this.mDelegator.findViewById(R.id.calendar_view);
+        this.mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() { // from class: android.widget.DatePickerSpinnerDelegate.2
             @Override // android.widget.CalendarView.OnDateChangeListener
             public void onSelectedDayChange(CalendarView view3, int year, int month, int monthDay) {
                 DatePickerSpinnerDelegate.this.setDate(year, month, monthDay);
@@ -118,25 +110,22 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
                 DatePickerSpinnerDelegate.this.notifyDateChanged();
             }
         });
-        NumberPicker numberPicker = (NumberPicker) this.mDelegator.findViewById(R.id.day);
-        this.mDaySpinner = numberPicker;
-        numberPicker.setFormatter(NumberPicker.getTwoDigitFormatter());
-        numberPicker.setOnLongPressUpdateInterval(100L);
-        numberPicker.setOnValueChangedListener(onChangeListener);
-        this.mDaySpinnerInput = (EditText) numberPicker.findViewById(R.id.numberpicker_input);
-        NumberPicker numberPicker2 = (NumberPicker) this.mDelegator.findViewById(R.id.month);
-        this.mMonthSpinner = numberPicker2;
-        numberPicker2.setMinValue(0);
-        numberPicker2.setMaxValue(this.mNumberOfMonths - 1);
-        numberPicker2.setDisplayedValues(this.mShortMonths);
-        numberPicker2.setOnLongPressUpdateInterval(200L);
-        numberPicker2.setOnValueChangedListener(onChangeListener);
-        this.mMonthSpinnerInput = (EditText) numberPicker2.findViewById(R.id.numberpicker_input);
-        NumberPicker numberPicker3 = (NumberPicker) this.mDelegator.findViewById(R.id.year);
-        this.mYearSpinner = numberPicker3;
-        numberPicker3.setOnLongPressUpdateInterval(100L);
-        numberPicker3.setOnValueChangedListener(onChangeListener);
-        this.mYearSpinnerInput = (EditText) numberPicker3.findViewById(R.id.numberpicker_input);
+        this.mDaySpinner = (NumberPicker) this.mDelegator.findViewById(R.id.day);
+        this.mDaySpinner.setFormatter(NumberPicker.getTwoDigitFormatter());
+        this.mDaySpinner.setOnLongPressUpdateInterval(100L);
+        this.mDaySpinner.setOnValueChangedListener(onChangeListener);
+        this.mDaySpinnerInput = (EditText) this.mDaySpinner.findViewById(R.id.numberpicker_input);
+        this.mMonthSpinner = (NumberPicker) this.mDelegator.findViewById(R.id.month);
+        this.mMonthSpinner.setMinValue(0);
+        this.mMonthSpinner.setMaxValue(this.mNumberOfMonths - 1);
+        this.mMonthSpinner.setDisplayedValues(this.mShortMonths);
+        this.mMonthSpinner.setOnLongPressUpdateInterval(200L);
+        this.mMonthSpinner.setOnValueChangedListener(onChangeListener);
+        this.mMonthSpinnerInput = (EditText) this.mMonthSpinner.findViewById(R.id.numberpicker_input);
+        this.mYearSpinner = (NumberPicker) this.mDelegator.findViewById(R.id.year);
+        this.mYearSpinner.setOnLongPressUpdateInterval(100L);
+        this.mYearSpinner.setOnValueChangedListener(onChangeListener);
+        this.mYearSpinnerInput = (EditText) this.mYearSpinner.findViewById(R.id.numberpicker_input);
         if (!spinnersShown && !calendarViewShown) {
             setSpinnersShown(true);
         } else {
@@ -167,62 +156,6 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         setContentDescriptions();
         if (this.mDelegator.getImportantForAccessibility() == 0) {
             this.mDelegator.setImportantForAccessibility(1);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DatePickerSpinnerDelegate$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements NumberPicker.OnValueChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.NumberPicker.OnValueChangeListener
-        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            DatePickerSpinnerDelegate.this.updateInputState();
-            DatePickerSpinnerDelegate.this.mTempDate.setTimeInMillis(DatePickerSpinnerDelegate.this.mCurrentDate.getTimeInMillis());
-            if (picker == DatePickerSpinnerDelegate.this.mDaySpinner) {
-                int maxDayOfMonth = DatePickerSpinnerDelegate.this.mTempDate.getActualMaximum(5);
-                if (oldVal == maxDayOfMonth && newVal == 1) {
-                    DatePickerSpinnerDelegate.this.mTempDate.add(5, 1);
-                } else if (oldVal == 1 && newVal == maxDayOfMonth) {
-                    DatePickerSpinnerDelegate.this.mTempDate.add(5, -1);
-                } else {
-                    DatePickerSpinnerDelegate.this.mTempDate.add(5, newVal - oldVal);
-                }
-            } else if (picker == DatePickerSpinnerDelegate.this.mMonthSpinner) {
-                if (oldVal == 11 && newVal == 0) {
-                    DatePickerSpinnerDelegate.this.mTempDate.add(2, 1);
-                } else if (oldVal == 0 && newVal == 11) {
-                    DatePickerSpinnerDelegate.this.mTempDate.add(2, -1);
-                } else {
-                    DatePickerSpinnerDelegate.this.mTempDate.add(2, newVal - oldVal);
-                }
-            } else if (picker == DatePickerSpinnerDelegate.this.mYearSpinner) {
-                DatePickerSpinnerDelegate.this.mTempDate.set(1, newVal);
-            } else {
-                throw new IllegalArgumentException();
-            }
-            DatePickerSpinnerDelegate datePickerSpinnerDelegate = DatePickerSpinnerDelegate.this;
-            datePickerSpinnerDelegate.setDate(datePickerSpinnerDelegate.mTempDate.get(1), DatePickerSpinnerDelegate.this.mTempDate.get(2), DatePickerSpinnerDelegate.this.mTempDate.get(5));
-            DatePickerSpinnerDelegate.this.updateSpinners();
-            DatePickerSpinnerDelegate.this.updateCalendarView();
-            DatePickerSpinnerDelegate.this.notifyDateChanged();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DatePickerSpinnerDelegate$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements CalendarView.OnDateChangeListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.CalendarView.OnDateChangeListener
-        public void onSelectedDayChange(CalendarView view3, int year, int month, int monthDay) {
-            DatePickerSpinnerDelegate.this.setDate(year, month, monthDay);
-            DatePickerSpinnerDelegate.this.updateSpinners();
-            DatePickerSpinnerDelegate.this.notifyDateChanged();
         }
     }
 
@@ -380,7 +313,7 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
     }
 
     @Override // android.widget.DatePicker.AbstractDatePickerDelegate
-    public void setCurrentLocale(Locale locale) {
+    protected void setCurrentLocale(Locale locale) {
         super.setCurrentLocale(locale);
         this.mTempDate = getCalendarForLocale(this.mTempDate, locale);
         this.mMinDate = getCalendarForLocale(this.mMinDate, locale);
@@ -449,6 +382,7 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         return (this.mCurrentDate.get(1) == year && this.mCurrentDate.get(2) == month && this.mCurrentDate.get(5) == dayOfMonth) ? false : true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setDate(int year, int month, int dayOfMonth) {
         this.mCurrentDate.set(year, month, dayOfMonth);
         resetAutofilledValue();
@@ -459,6 +393,7 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateSpinners() {
         if (this.mCurrentDate.equals(this.mMinDate)) {
             this.mDaySpinner.setMinValue(this.mCurrentDate.get(5));
@@ -498,10 +433,12 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateCalendarView() {
         this.mCalendarView.setDate(this.mCurrentDate.getTimeInMillis(), false, false);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyDateChanged() {
         this.mDelegator.sendAccessibilityEvent(4);
         if (this.mOnDateChangedListener != null) {
@@ -539,18 +476,19 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateInputState() {
         InputMethodManager inputMethodManager = (InputMethodManager) this.mContext.getSystemService(InputMethodManager.class);
         if (inputMethodManager != null) {
-            if (inputMethodManager.isActive(this.mYearSpinnerInput)) {
+            if (this.mYearSpinnerInput.hasFocus()) {
+                inputMethodManager.hideSoftInputFromView(this.mYearSpinnerInput, 0);
                 this.mYearSpinnerInput.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(this.mDelegator.getWindowToken(), 0);
-            } else if (inputMethodManager.isActive(this.mMonthSpinnerInput)) {
+            } else if (this.mMonthSpinnerInput.hasFocus()) {
+                inputMethodManager.hideSoftInputFromView(this.mMonthSpinnerInput, 0);
                 this.mMonthSpinnerInput.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(this.mDelegator.getWindowToken(), 0);
-            } else if (inputMethodManager.isActive(this.mDaySpinnerInput)) {
+            } else if (this.mDaySpinnerInput.hasFocus()) {
+                inputMethodManager.hideSoftInputFromView(this.mDaySpinnerInput, 0);
                 this.mDaySpinnerInput.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(this.mDelegator.getWindowToken(), 0);
             }
         }
     }

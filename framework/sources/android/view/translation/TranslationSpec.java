@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TranslationSpec implements Parcelable {
     public static final Parcelable.Creator<TranslationSpec> CREATOR = new Parcelable.Creator<TranslationSpec>() { // from class: android.view.translation.TranslationSpec.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationSpec[] newArray(int size) {
             return new TranslationSpec[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationSpec createFromParcel(Parcel in) {
             return new TranslationSpec(in);
@@ -34,7 +33,6 @@ public final class TranslationSpec implements Parcelable {
     private final ULocale mLocale;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface DataFormat {
     }
 
@@ -113,29 +111,12 @@ public final class TranslationSpec implements Parcelable {
         ULocale locale = unparcelLocale(in);
         int dataFormat = in.readInt();
         this.mLanguage = language;
-        AnnotationValidations.validate((Class<? extends Annotation>) Deprecated.class, (Annotation) null, language);
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) language);
+        AnnotationValidations.validate((Class<? extends Annotation>) Deprecated.class, (Annotation) null, this.mLanguage);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mLanguage);
         this.mLocale = locale;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) locale);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mLocale);
         this.mDataFormat = dataFormat;
-        AnnotationValidations.validate((Class<? extends Annotation>) DataFormat.class, (Annotation) null, dataFormat);
-    }
-
-    /* renamed from: android.view.translation.TranslationSpec$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TranslationSpec> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TranslationSpec[] newArray(int size) {
-            return new TranslationSpec[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TranslationSpec createFromParcel(Parcel in) {
-            return new TranslationSpec(in);
-        }
+        AnnotationValidations.validate((Class<? extends Annotation>) DataFormat.class, (Annotation) null, this.mDataFormat);
     }
 
     @Deprecated

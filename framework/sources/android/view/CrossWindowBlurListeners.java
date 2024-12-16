@@ -87,6 +87,7 @@ public final class CrossWindowBlurListeners {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyListener(final Consumer<Boolean> listener, Executor executor, final boolean enabled) {
         executor.execute(new Runnable() { // from class: android.view.CrossWindowBlurListeners$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
@@ -96,12 +97,7 @@ public final class CrossWindowBlurListeners {
         });
     }
 
-    /* loaded from: classes4.dex */
-    public final class BlurEnabledListenerInternal extends ICrossWindowBlurEnabledListener.Stub {
-        /* synthetic */ BlurEnabledListenerInternal(CrossWindowBlurListeners crossWindowBlurListeners, BlurEnabledListenerInternalIA blurEnabledListenerInternalIA) {
-            this();
-        }
-
+    private final class BlurEnabledListenerInternal extends ICrossWindowBlurEnabledListener.Stub {
         private BlurEnabledListenerInternal() {
         }
 
@@ -112,8 +108,7 @@ public final class CrossWindowBlurListeners {
                 long token = Binder.clearCallingIdentity();
                 for (int i = 0; i < CrossWindowBlurListeners.this.mListeners.size(); i++) {
                     try {
-                        CrossWindowBlurListeners crossWindowBlurListeners = CrossWindowBlurListeners.this;
-                        crossWindowBlurListeners.notifyListener((Consumer) crossWindowBlurListeners.mListeners.keyAt(i), (Executor) CrossWindowBlurListeners.this.mListeners.valueAt(i), enabled);
+                        CrossWindowBlurListeners.this.notifyListener((Consumer) CrossWindowBlurListeners.this.mListeners.keyAt(i), (Executor) CrossWindowBlurListeners.this.mListeners.valueAt(i), enabled);
                     } finally {
                         Binder.restoreCallingIdentity(token);
                     }

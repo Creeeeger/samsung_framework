@@ -7,10 +7,9 @@ import android.hardware.camera2.utils.TypeReference;
 import android.util.Rational;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class MarshalQueryablePrimitive<T> implements MarshalQueryable<T> {
 
-    /* loaded from: classes.dex */
     private class MarshalerPrimitive extends Marshaler<T> {
         private final Class<T> mClass;
 

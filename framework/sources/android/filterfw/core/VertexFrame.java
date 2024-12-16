@@ -19,7 +19,7 @@ public class VertexFrame extends Frame {
 
     private native boolean setNativeInts(int[] iArr);
 
-    public VertexFrame(FrameFormat format, FrameManager frameManager) {
+    VertexFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         this.vertexFrameId = -1;
         if (getFormat().getSize() <= 0) {
@@ -31,12 +31,12 @@ public class VertexFrame extends Frame {
     }
 
     @Override // android.filterfw.core.Frame
-    public synchronized boolean hasNativeAllocation() {
+    protected synchronized boolean hasNativeAllocation() {
         return this.vertexFrameId != -1;
     }
 
     @Override // android.filterfw.core.Frame
-    public synchronized void releaseNativeAllocation() {
+    protected synchronized void releaseNativeAllocation() {
         nativeDeallocate();
         this.vertexFrameId = -1;
     }

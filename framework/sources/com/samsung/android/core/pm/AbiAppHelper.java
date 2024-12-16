@@ -7,7 +7,7 @@ import android.os.Build;
 import dalvik.system.VMRuntime;
 import java.io.File;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class AbiAppHelper {
     private static final String TAG = "ApplicationPackageManager";
     private boolean is32bitAppRunningInAbi64;

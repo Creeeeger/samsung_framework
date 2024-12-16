@@ -7,14 +7,13 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public class SemUidPowerInfo implements Parcelable {
     public static final Parcelable.Creator<SemUidPowerInfo> CREATOR = new Parcelable.Creator<SemUidPowerInfo>() { // from class: android.os.SemUidPowerInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemUidPowerInfo createFromParcel(Parcel in) {
             return new SemUidPowerInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemUidPowerInfo[] newArray(int size) {
             return new SemUidPowerInfo[size];
@@ -77,9 +76,8 @@ public class SemUidPowerInfo implements Parcelable {
         this.audioTime = 0L;
         this.networkWakeup = 0L;
         this.syncTime = 0L;
-        long[] jArr = new long[getNumDisplays()];
-        this.displayTopActivityTime = jArr;
-        Arrays.fill(jArr, 0L);
+        this.displayTopActivityTime = new long[getNumDisplays()];
+        Arrays.fill(this.displayTopActivityTime, 0L);
     }
 
     public String toString() {
@@ -113,15 +111,8 @@ public class SemUidPowerInfo implements Parcelable {
         this.audioTime = info.audioTime;
         this.networkWakeup = info.networkWakeup;
         this.syncTime = info.syncTime;
-        int i = 0;
-        while (true) {
-            long[] jArr = this.displayTopActivityTime;
-            if (i < jArr.length) {
-                jArr[i] = info.displayTopActivityTime[i];
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 0; i < this.displayTopActivityTime.length; i++) {
+            this.displayTopActivityTime[i] = info.displayTopActivityTime[i];
         }
     }
 
@@ -181,15 +172,9 @@ public class SemUidPowerInfo implements Parcelable {
         this.audioTime += delta.audioTime;
         this.networkWakeup += delta.networkWakeup;
         this.syncTime += delta.syncTime;
-        int i = 0;
-        while (true) {
+        for (int i = 0; i < this.displayTopActivityTime.length; i++) {
             long[] jArr = this.displayTopActivityTime;
-            if (i < jArr.length) {
-                jArr[i] = jArr[i] + delta.displayTopActivityTime[i];
-                i++;
-            } else {
-                return;
-            }
+            jArr[i] = jArr[i] + delta.displayTopActivityTime[i];
         }
     }
 
@@ -222,32 +207,8 @@ public class SemUidPowerInfo implements Parcelable {
         this.networkWakeup = in.readLong();
         this.syncTime = in.readLong();
         this.displayTopActivityTime = new long[getNumDisplays()];
-        int i = 0;
-        while (true) {
-            long[] jArr = this.displayTopActivityTime;
-            if (i < jArr.length) {
-                jArr[i] = in.readLong();
-                i++;
-            } else {
-                return;
-            }
-        }
-    }
-
-    /* renamed from: android.os.SemUidPowerInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemUidPowerInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemUidPowerInfo createFromParcel(Parcel in) {
-            return new SemUidPowerInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemUidPowerInfo[] newArray(int size) {
-            return new SemUidPowerInfo[size];
+        for (int i = 0; i < this.displayTopActivityTime.length; i++) {
+            this.displayTopActivityTime[i] = in.readLong();
         }
     }
 
@@ -285,15 +246,8 @@ public class SemUidPowerInfo implements Parcelable {
         dest.writeLong(this.audioTime);
         dest.writeLong(this.networkWakeup);
         dest.writeLong(this.syncTime);
-        int i = 0;
-        while (true) {
-            long[] jArr = this.displayTopActivityTime;
-            if (i < jArr.length) {
-                dest.writeLong(jArr[i]);
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 0; i < this.displayTopActivityTime.length; i++) {
+            dest.writeLong(this.displayTopActivityTime[i]);
         }
     }
 

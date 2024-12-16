@@ -11,32 +11,18 @@ public class HexEncoder implements Encoder {
     protected final byte[] decodingTable = new byte[128];
 
     protected void initialiseDecodingTable() {
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.decodingTable;
-            if (i >= bArr.length) {
-                break;
-            }
-            bArr[i] = -1;
-            i++;
+        for (int i = 0; i < this.decodingTable.length; i++) {
+            this.decodingTable[i] = -1;
         }
-        int i2 = 0;
-        while (true) {
-            byte[] bArr2 = this.encodingTable;
-            if (i2 < bArr2.length) {
-                this.decodingTable[bArr2[i2]] = (byte) i2;
-                i2++;
-            } else {
-                byte[] bArr3 = this.decodingTable;
-                bArr3[65] = bArr3[97];
-                bArr3[66] = bArr3[98];
-                bArr3[67] = bArr3[99];
-                bArr3[68] = bArr3[100];
-                bArr3[69] = bArr3[101];
-                bArr3[70] = bArr3[102];
-                return;
-            }
+        for (int i2 = 0; i2 < this.encodingTable.length; i2++) {
+            this.decodingTable[this.encodingTable[i2]] = (byte) i2;
         }
+        this.decodingTable[65] = this.decodingTable[97];
+        this.decodingTable[66] = this.decodingTable[98];
+        this.decodingTable[67] = this.decodingTable[99];
+        this.decodingTable[68] = this.decodingTable[100];
+        this.decodingTable[69] = this.decodingTable[101];
+        this.decodingTable[70] = this.decodingTable[102];
     }
 
     public HexEncoder() {
@@ -52,10 +38,9 @@ public class HexEncoder implements Encoder {
             int inPos2 = inBuf[b];
             int b2 = inPos2 & 255;
             int outPos2 = outPos + 1;
-            byte[] bArr = this.encodingTable;
-            outBuf[outPos] = bArr[b2 >>> 4];
+            outBuf[outPos] = this.encodingTable[b2 >>> 4];
             outPos = outPos2 + 1;
-            outBuf[outPos2] = bArr[b2 & 15];
+            outBuf[outPos2] = this.encodingTable[b2 & 15];
             b = inPos;
         }
         int inPos3 = outPos - outOff;
@@ -161,7 +146,7 @@ public class HexEncoder implements Encoder {
         return length;
     }
 
-    public byte[] decodeStrict(String str, int off, int len) throws IOException {
+    byte[] decodeStrict(String str, int off, int len) throws IOException {
         if (str == null) {
             throw new NullPointerException("'str' cannot be null");
         }

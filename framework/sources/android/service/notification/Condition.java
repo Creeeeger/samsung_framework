@@ -1,11 +1,13 @@
 package android.service.notification;
 
+import android.app.Flags;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.security.keystore.KeyProperties;
 import android.util.proto.ProtoOutputStream;
+import com.android.internal.util.Preconditions;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
@@ -13,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class Condition implements Parcelable {
     public static final Parcelable.Creator<Condition> CREATOR = new Parcelable.Creator<Condition>() { // from class: android.service.notification.Condition.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Condition createFromParcel(Parcel source) {
             return new Condition(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Condition[] newArray(int size) {
             return new Condition[size];
@@ -30,6 +31,10 @@ public final class Condition implements Parcelable {
     public static final int FLAG_RELEVANT_NOW = 1;
     public static final int MAX_STRING_LENGTH = 1000;
     public static final String SCHEME = "condition";
+    public static final int SOURCE_CONTEXT = 3;
+    public static final int SOURCE_SCHEDULE = 2;
+    public static final int SOURCE_UNKNOWN = 0;
+    public static final int SOURCE_USER_ACTION = 1;
     public static final int STATE_ERROR = 3;
     public static final int STATE_FALSE = 0;
     public static final int STATE_TRUE = 1;
@@ -39,19 +44,31 @@ public final class Condition implements Parcelable {
     public final Uri id;
     public final String line1;
     public final String line2;
+    public final int source;
     public final int state;
     public final String summary;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
+    public @interface Source {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface State {
     }
 
     public Condition(Uri id, String summary, int state) {
-        this(id, summary, "", "", -1, state, 2);
+        this(id, summary, "", "", -1, state, 0, 2);
+    }
+
+    public Condition(Uri id, String summary, int state, int source) {
+        this(id, summary, "", "", -1, state, source, 2);
     }
 
     public Condition(Uri id, String summary, String line1, String line2, int icon, int state, int flags) {
+        this(id, summary, line1, line2, icon, state, 0, flags);
+    }
+
+    public Condition(Uri id, String summary, String line1, String line2, int icon, int state, int source, int flags) {
         if (id == null) {
             throw new IllegalArgumentException("id is required");
         }
@@ -67,15 +84,29 @@ public final class Condition implements Parcelable {
         this.line2 = getTrimmedString(line2);
         this.icon = icon;
         this.state = state;
+        this.source = checkValidSource(source);
         this.flags = flags;
     }
 
     public Condition(Parcel source) {
-        this((Uri) source.readParcelable(Condition.class.getClassLoader(), Uri.class), source.readString(), source.readString(), source.readString(), source.readInt(), source.readInt(), source.readInt());
+        this((Uri) source.readParcelable(Condition.class.getClassLoader(), Uri.class), source.readString(), source.readString(), source.readString(), source.readInt(), source.readInt(), Flags.modesApi() ? source.readInt() : 0, source.readInt());
+    }
+
+    public void validate() {
+        if (Flags.modesApi()) {
+            checkValidSource(this.source);
+        }
     }
 
     private static boolean isValidState(int state) {
         return state >= 0 && state <= 3;
+    }
+
+    private static int checkValidSource(int source) {
+        if (Flags.modesApi()) {
+            Preconditions.checkArgument(source >= 0 && source <= 3, "Condition source must be one of SOURCE_UNKNOWN, SOURCE_USER_ACTION, SOURCE_SCHEDULE, or SOURCE_CONTEXT");
+        }
+        return source;
     }
 
     @Override // android.os.Parcelable
@@ -86,11 +117,18 @@ public final class Condition implements Parcelable {
         dest.writeString(this.line2);
         dest.writeInt(this.icon);
         dest.writeInt(this.state);
+        if (Flags.modesApi()) {
+            dest.writeInt(this.source);
+        }
         dest.writeInt(this.flags);
     }
 
     public String toString() {
-        return Condition.class.getSimpleName() + "[state=" + stateToString(this.state) + ",id=" + this.id + ",summary=" + this.summary + ",line1=" + this.line1 + ",line2=" + this.line2 + ",icon=" + this.icon + ",flags=" + this.flags + ']';
+        StringBuilder sb = new StringBuilder(Condition.class.getSimpleName()).append('[').append("state=").append(stateToString(this.state)).append(",id=").append(this.id).append(",summary=").append(this.summary).append(",line1=").append(this.line1).append(",line2=").append(this.line2).append(",icon=").append(this.icon);
+        if (Flags.modesApi()) {
+            sb.append(",source=").append(sourceToString(this.source));
+        }
+        return sb.append(",flags=").append(this.flags).append(']').toString();
     }
 
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
@@ -121,6 +159,22 @@ public final class Condition implements Parcelable {
         throw new IllegalArgumentException("state is invalid: " + state);
     }
 
+    public static String sourceToString(int source) {
+        if (source == 0) {
+            return "SOURCE_UNKNOWN";
+        }
+        if (source == 1) {
+            return "SOURCE_USER_ACTION";
+        }
+        if (source == 2) {
+            return "SOURCE_SCHEDULE";
+        }
+        if (source == 3) {
+            return "SOURCE_CONTEXT";
+        }
+        throw new IllegalArgumentException("source is invalid: " + source);
+    }
+
     public static String relevanceToString(int flags) {
         boolean now = (flags & 1) != 0;
         boolean always = (flags & 2) != 0;
@@ -135,10 +189,17 @@ public final class Condition implements Parcelable {
             return true;
         }
         Condition other = (Condition) o;
-        return Objects.equals(other.id, this.id) && Objects.equals(other.summary, this.summary) && Objects.equals(other.line1, this.line1) && Objects.equals(other.line2, this.line2) && other.icon == this.icon && other.state == this.state && other.flags == this.flags;
+        boolean finalEquals = Objects.equals(other.id, this.id) && Objects.equals(other.summary, this.summary) && Objects.equals(other.line1, this.line1) && Objects.equals(other.line2, this.line2) && other.icon == this.icon && other.state == this.state && other.flags == this.flags;
+        if (Flags.modesApi()) {
+            return finalEquals && other.source == this.source;
+        }
+        return finalEquals;
     }
 
     public int hashCode() {
+        if (Flags.modesApi()) {
+            return Objects.hash(this.id, this.summary, this.line1, this.line2, Integer.valueOf(this.icon), Integer.valueOf(this.state), Integer.valueOf(this.source), Integer.valueOf(this.flags));
+        }
         return Objects.hash(this.id, this.summary, this.line1, this.line2, Integer.valueOf(this.icon), Integer.valueOf(this.state), Integer.valueOf(this.flags));
     }
 
@@ -164,23 +225,6 @@ public final class Condition implements Parcelable {
 
     public static boolean isValidId(Uri id, String pkg) {
         return id != null && "condition".equals(id.getScheme()) && pkg.equals(id.getAuthority());
-    }
-
-    /* renamed from: android.service.notification.Condition$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Condition> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Condition createFromParcel(Parcel source) {
-            return new Condition(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Condition[] newArray(int size) {
-            return new Condition[size];
-        }
     }
 
     private static String getTrimmedString(String input) {

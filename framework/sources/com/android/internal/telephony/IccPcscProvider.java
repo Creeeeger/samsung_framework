@@ -71,9 +71,8 @@ public class IccPcscProvider {
                 int i = bArr[0];
                 Log.d(mLogTag, "pscsPowerup ATR:" + bytesToHexString(bArr));
                 Log.d(mLogTag, "pscsPowerup atrLength:" + i);
-                byte[] bArr2 = new byte[i];
-                this._atr = bArr2;
-                System.arraycopy(bArr, 2, bArr2, 0, i);
+                this._atr = new byte[i];
+                System.arraycopy(bArr, 2, this._atr, 0, i);
                 this.isInitiated = true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -222,13 +221,12 @@ public class IccPcscProvider {
     }
 
     public int getATR(byte[] atr) {
-        byte[] bArr = this._atr;
-        int size = bArr.length;
+        int size = this._atr.length;
         if (atr == null || atr.length < size) {
             Log.d(mLogTag, "getATR SMARTCARD_IO_ERROR_ATR_BUFFER");
             return -6;
         }
-        System.arraycopy(bArr, 0, atr, 0, size);
+        System.arraycopy(this._atr, 0, atr, 0, size);
         return size;
     }
 

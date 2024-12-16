@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class PointF implements Parcelable {
     public static final Parcelable.Creator<PointF> CREATOR = new Parcelable.Creator<PointF>() { // from class: android.graphics.PointF.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PointF createFromParcel(Parcel in) {
             PointF r = new PointF();
@@ -17,6 +15,7 @@ public class PointF implements Parcelable {
             return r;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PointF[] newArray(int size) {
             return new PointF[size];
@@ -82,12 +81,8 @@ public class PointF implements Parcelable {
     }
 
     public int hashCode() {
-        float f = this.x;
-        int result = f != 0.0f ? Float.floatToIntBits(f) : 0;
-        int i = result * 31;
-        float f2 = this.y;
-        int result2 = i + (f2 != 0.0f ? Float.floatToIntBits(f2) : 0);
-        return result2;
+        int result = this.x != 0.0f ? Float.floatToIntBits(this.x) : 0;
+        return (result * 31) + (this.y != 0.0f ? Float.floatToIntBits(this.y) : 0);
     }
 
     public String toString() {
@@ -111,25 +106,6 @@ public class PointF implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeFloat(this.x);
         out.writeFloat(this.y);
-    }
-
-    /* renamed from: android.graphics.PointF$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PointF> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PointF createFromParcel(Parcel in) {
-            PointF r = new PointF();
-            r.readFromParcel(in);
-            return r;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PointF[] newArray(int size) {
-            return new PointF[size];
-        }
     }
 
     public void readFromParcel(Parcel in) {

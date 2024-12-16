@@ -16,30 +16,30 @@ import java.util.function.Function;
 /* loaded from: classes3.dex */
 public final class PackageTagsList implements Parcelable {
     public static final Parcelable.Creator<PackageTagsList> CREATOR = new Parcelable.Creator<PackageTagsList>() { // from class: android.os.PackageTagsList.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageTagsList createFromParcel(Parcel in) {
             int count = in.readInt();
             ArrayMap arrayMap = new ArrayMap(count);
-            for (int i = 0; i < count; i++) {
-                String key = in.readString8();
-                arrayMap.append(key, in.readArraySet(null));
+            int i = 0;
+            while (true) {
+                if (i < count) {
+                    String key = in.readString8();
+                    arrayMap.append(key, in.readArraySet(null));
+                    i++;
+                } else {
+                    return new PackageTagsList(arrayMap);
+                }
             }
-            return new PackageTagsList(arrayMap);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageTagsList[] newArray(int size) {
             return new PackageTagsList[size];
         }
     };
     private final ArrayMap<String, ArraySet<String>> mPackageTags;
-
-    /* synthetic */ PackageTagsList(ArrayMap arrayMap, PackageTagsListIA packageTagsListIA) {
-        this(arrayMap);
-    }
 
     private PackageTagsList(ArrayMap<String, ArraySet<String>> packageTags) {
         this.mPackageTags = (ArrayMap) Objects.requireNonNull(packageTags);
@@ -106,29 +106,6 @@ public final class PackageTagsList implements Parcelable {
         return new ArrayList(this.mPackageTags.keySet());
     }
 
-    /* renamed from: android.os.PackageTagsList$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PackageTagsList> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageTagsList createFromParcel(Parcel in) {
-            int count = in.readInt();
-            ArrayMap arrayMap = new ArrayMap(count);
-            for (int i = 0; i < count; i++) {
-                String key = in.readString8();
-                arrayMap.append(key, in.readArraySet(null));
-            }
-            return new PackageTagsList(arrayMap);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageTagsList[] newArray(int size) {
-            return new PackageTagsList[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         int count = this.mPackageTags.size();
@@ -189,7 +166,6 @@ public final class PackageTagsList implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final ArrayMap<String, ArraySet<String>> mPackageTags;
 
@@ -201,7 +177,7 @@ public final class PackageTagsList implements Parcelable {
             this.mPackageTags = new ArrayMap<>(capacity);
         }
 
-        public static /* synthetic */ ArraySet lambda$add$0(String p) {
+        static /* synthetic */ ArraySet lambda$add$0(String p) {
             return new ArraySet();
         }
 

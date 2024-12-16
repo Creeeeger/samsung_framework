@@ -71,22 +71,18 @@ public class AudioEffect {
     private int mState;
     private final Object mStateLock;
 
-    /* loaded from: classes2.dex */
     public interface OnControlStatusChangeListener {
         void onControlStatusChange(AudioEffect audioEffect, boolean z);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnEnableStatusChangeListener {
         void onEnableStatusChange(AudioEffect audioEffect, boolean z);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnErrorListener {
         void onError();
     }
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(AudioEffect audioEffect, int i, byte[] bArr, byte[] bArr2);
     }
@@ -132,7 +128,6 @@ public class AudioEffect {
         EFFECT_TYPE_NULL = UUID.fromString("ec7178ec-e5e1-4432-a3f4-4657e6795210");
     }
 
-    /* loaded from: classes2.dex */
     public static class Descriptor {
         public String connectMode;
         public String implementor;
@@ -205,8 +200,7 @@ public class AudioEffect {
         Throwable th;
         int deviceType2;
         this.mState = 0;
-        Object obj = new Object();
-        this.mStateLock = obj;
+        this.mStateLock = new Object();
         this.mEnableStatusChangeListener = null;
         this.mControlChangeStatusListener = null;
         this.mParameterChangeListener = null;
@@ -242,7 +236,7 @@ public class AudioEffect {
                 this.mId = id[0];
                 this.mDescriptor = desc[0];
                 if (!probe) {
-                    synchronized (obj) {
+                    synchronized (this.mStateLock) {
                         this.mState = 1;
                     }
                     return;
@@ -553,8 +547,7 @@ public class AudioEffect {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class NativeEventHandler extends Handler {
+    private class NativeEventHandler extends Handler {
         private AudioEffect mAudioEffect;
 
         public NativeEventHandler(AudioEffect ae, Looper looper) {
@@ -615,10 +608,9 @@ public class AudioEffect {
     }
 
     private static void postEventFromNative(Object effect_ref, int what, int arg1, int arg2, Object obj) {
-        NativeEventHandler nativeEventHandler;
         AudioEffect effect = (AudioEffect) ((WeakReference) effect_ref).get();
-        if (effect != null && (nativeEventHandler = effect.mNativeEventHandler) != null) {
-            Message m = nativeEventHandler.obtainMessage(what, arg1, arg2, obj);
+        if (effect != null && effect.mNativeEventHandler != null) {
+            Message m = effect.mNativeEventHandler.obtainMessage(what, arg1, arg2, obj);
             effect.mNativeEventHandler.sendMessage(m);
         }
     }

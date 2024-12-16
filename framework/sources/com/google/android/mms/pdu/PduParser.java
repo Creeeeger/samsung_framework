@@ -1,10 +1,8 @@
 package com.google.android.mms.pdu;
 
-import android.provider.Telephony;
 import android.util.Log;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.InvalidHeaderValueException;
-import com.samsung.android.feature.SemCscFeature;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -31,43 +29,38 @@ public class PduParser {
     private static final int TYPE_QUOTED_STRING = 1;
     private static final int TYPE_TEXT_STRING = 0;
     private static final int TYPE_TOKEN_STRING = 2;
+    private PduBody mBody;
+    private PduHeaders mHeaders;
     private final boolean mParseContentDisposition;
     private ByteArrayInputStream mPduDataStream;
     private static byte[] mTypeParam = null;
     private static byte[] mStartParam = null;
-    private static boolean mEnableMmsServerTime = true;
-    private PduHeaders mHeaders = null;
-    private PduBody mBody = null;
 
     public PduParser(byte[] pduDataStream, boolean parseContentDisposition) {
         this.mPduDataStream = null;
+        this.mHeaders = null;
+        this.mBody = null;
         this.mPduDataStream = new ByteArrayInputStream(pduDataStream);
         this.mParseContentDisposition = parseContentDisposition;
-        SemCscFeature cscFeature = SemCscFeature.getInstance();
-        String displayMmsTimeAs = cscFeature.getString("CscFeature_Message_DisplayMmsTimeAs");
-        mEnableMmsServerTime = isServerTime(displayMmsTimeAs, true);
     }
 
     public GenericPdu parse() {
-        ByteArrayInputStream byteArrayInputStream = this.mPduDataStream;
-        if (byteArrayInputStream == null) {
+        if (this.mPduDataStream == null) {
             return null;
         }
-        PduHeaders parseHeaders = parseHeaders(byteArrayInputStream);
-        this.mHeaders = parseHeaders;
-        if (parseHeaders == null) {
+        this.mHeaders = parseHeaders(this.mPduDataStream);
+        if (this.mHeaders == null) {
             return null;
         }
-        int messageType = parseHeaders.getOctet(140);
+        int messageType = this.mHeaders.getOctet(140);
         byte[] contType = this.mHeaders.getTextString(132);
         if (!checkMandatoryHeader(this.mHeaders)) {
             log("check mandatory headers failed!");
             return null;
         }
         if (128 == messageType || 132 == messageType) {
-            PduBody parseParts = parseParts(this.mPduDataStream, contType);
-            this.mBody = parseParts;
-            if (parseParts == null) {
+            this.mBody = parseParts(this.mPduDataStream, contType);
+            if (this.mBody == null) {
                 return null;
             }
             if (new String(contType).equals("text/plain")) {
@@ -77,49 +70,48 @@ public class PduParser {
         switch (messageType) {
             case 128:
                 SendReq sendReq = new SendReq(this.mHeaders, this.mBody);
-                return sendReq;
+                break;
             case 129:
                 SendConf sendConf = new SendConf(this.mHeaders);
-                return sendConf;
+                break;
             case 130:
                 NotificationInd notificationInd = new NotificationInd(this.mHeaders);
-                return notificationInd;
+                break;
             case 131:
                 NotifyRespInd notifyRespInd = new NotifyRespInd(this.mHeaders);
-                return notifyRespInd;
+                break;
             case 132:
                 RetrieveConf retrieveConf = new RetrieveConf(this.mHeaders, this.mBody);
                 byte[] contentType = retrieveConf.getContentType();
-                if (contentType == null) {
-                    return null;
+                if (contentType != null) {
+                    String ctTypeStr = new String(contentType);
+                    if (!ctTypeStr.equals(ContentType.MULTIPART_MIXED) && !ctTypeStr.equals(ContentType.MULTIPART_RELATED) && !ctTypeStr.equals("text/plain") && !ctTypeStr.equals(ContentType.MULTIPART_ALTERNATIVE)) {
+                        if (ctTypeStr.equals(ContentType.MULTIPART_ALTERNATIVE)) {
+                            PduPart firstPart = this.mBody.getPart(0);
+                            this.mBody.removeAll();
+                            this.mBody.addPart(0, firstPart);
+                            break;
+                        }
+                    }
                 }
-                String ctTypeStr = new String(contentType);
-                if (ctTypeStr.equals(ContentType.MULTIPART_MIXED) || ctTypeStr.equals(ContentType.MULTIPART_RELATED) || ctTypeStr.equals("text/plain") || ctTypeStr.equals(ContentType.MULTIPART_ALTERNATIVE)) {
-                    return retrieveConf;
-                }
-                if (!ctTypeStr.equals(ContentType.MULTIPART_ALTERNATIVE)) {
-                    return null;
-                }
-                PduPart firstPart = this.mBody.getPart(0);
-                this.mBody.removeAll();
-                this.mBody.addPart(0, firstPart);
-                return retrieveConf;
+                break;
             case 133:
                 AcknowledgeInd acknowledgeInd = new AcknowledgeInd(this.mHeaders);
-                return acknowledgeInd;
+                break;
             case 134:
                 DeliveryInd deliveryInd = new DeliveryInd(this.mHeaders);
-                return deliveryInd;
+                break;
             case 135:
                 ReadRecInd readRecInd = new ReadRecInd(this.mHeaders);
-                return readRecInd;
+                break;
             case 136:
                 ReadOrigInd readOrigInd = new ReadOrigInd(this.mHeaders);
-                return readOrigInd;
+                break;
             default:
                 log("Parser doesn't support this message type in this version!");
-                return null;
+                break;
         }
+        return null;
     }
 
     protected PduHeaders parseHeaders(ByteArrayInputStream pduDataStream) {
@@ -216,13 +208,10 @@ public class PduParser {
                         keepParsing = false;
                         break;
                     case 133:
+                    case 142:
+                    case 159:
                         try {
-                            long value3 = parseLongInteger(pduDataStream);
-                            if (!mEnableMmsServerTime) {
-                                value3 = System.currentTimeMillis() / 1000;
-                                log("mEnableMmsServerTime = " + mEnableMmsServerTime + " Time value = " + value3);
-                            }
-                            headers.setLongInteger(value3, headerField);
+                            headers.setLongInteger(parseLongInteger(pduDataStream), headerField);
                             break;
                         } catch (RuntimeException e8) {
                             log(headerField + "is not Long-Integer header field!");
@@ -250,12 +239,12 @@ public class PduParser {
                     case 187:
                     case 188:
                     case 191:
-                        int value4 = extractByteValue(pduDataStream);
+                        int value3 = extractByteValue(pduDataStream);
                         try {
-                            headers.setOctet(value4, headerField);
+                            headers.setOctet(value3, headerField);
                             break;
                         } catch (InvalidHeaderValueException e9) {
-                            log("Set invalid Octet value: " + value4 + " into the header filed: " + headerField);
+                            log("Set invalid Octet value: " + value3 + " into the header filed: " + headerField);
                             return null;
                         } catch (RuntimeException e10) {
                             log(headerField + "is not Octet header field!");
@@ -418,45 +407,36 @@ public class PduParser {
                             log(headerField + "is not Octet header field!");
                             return null;
                         }
-                    case 142:
-                    case 159:
-                        try {
-                            headers.setLongInteger(parseLongInteger(pduDataStream), headerField);
-                            break;
-                        } catch (RuntimeException e27) {
-                            log(headerField + "is not Long-Integer header field!");
-                            return null;
-                        }
                     case 147:
                     case 154:
                     case 166:
                     case 181:
                     case 182:
-                        EncodedStringValue value5 = parseEncodedStringValue(pduDataStream);
-                        if (value5 == null) {
+                        EncodedStringValue value4 = parseEncodedStringValue(pduDataStream);
+                        if (value4 == null) {
                             break;
                         } else {
                             try {
-                                headers.setEncodedStringValue(value5, headerField);
+                                headers.setEncodedStringValue(value4, headerField);
                                 break;
-                            } catch (NullPointerException e28) {
+                            } catch (NullPointerException e27) {
                                 log("null pointer error!");
                                 break;
-                            } catch (RuntimeException e29) {
+                            } catch (RuntimeException e28) {
                                 log(headerField + "is not Encoded-String-Value header field!");
                                 return null;
                             }
                         }
                     case 150:
-                        EncodedStringValue value6 = parseEncodedSubjectValue(pduDataStream);
-                        if (value6 != null) {
+                        EncodedStringValue value5 = parseEncodedSubjectValue(pduDataStream);
+                        if (value5 != null) {
                             try {
-                                headers.setEncodedStringValue(value6, headerField);
+                                headers.setEncodedStringValue(value5, headerField);
                                 break;
-                            } catch (NullPointerException e30) {
+                            } catch (NullPointerException e29) {
                                 log("null pointer error!");
                                 break;
-                            } catch (RuntimeException e31) {
+                            } catch (RuntimeException e30) {
                                 log(headerField + "is not Encoded-String-Value header field!");
                                 return null;
                             }
@@ -476,19 +456,19 @@ public class PduParser {
                                     try {
                                         headers.setEncodedStringValue(previouslySentBy, 160);
                                         break;
-                                    } catch (NullPointerException e32) {
+                                    } catch (NullPointerException e31) {
                                         log("null pointer error!");
                                         break;
-                                    } catch (RuntimeException e33) {
+                                    } catch (RuntimeException e32) {
                                         log(headerField + "is not Encoded-String-Value header field!");
                                         return null;
                                     }
                                 }
-                            } catch (RuntimeException e34) {
+                            } catch (RuntimeException e33) {
                                 log(headerField + " is not Integer-Value");
                                 return null;
                             }
-                        } catch (IllegalArgumentException e35) {
+                        } catch (IllegalArgumentException e34) {
                             log("parseValueLength Exception!");
                             return null;
                         }
@@ -501,15 +481,15 @@ public class PduParser {
                                     long perviouslySentDate = parseLongInteger(pduDataStream);
                                     headers.setLongInteger(perviouslySentDate, 161);
                                     break;
-                                } catch (RuntimeException e36) {
+                                } catch (RuntimeException e35) {
                                     log(headerField + "is not Long-Integer header field!");
                                     return null;
                                 }
-                            } catch (RuntimeException e37) {
+                            } catch (RuntimeException e36) {
                                 log(headerField + " is not Integer-Value");
                                 return null;
                             }
-                        } catch (IllegalArgumentException e38) {
+                        } catch (IllegalArgumentException e37) {
                             log("parseValueLength Exception!");
                             return null;
                         }
@@ -519,7 +499,7 @@ public class PduParser {
                             extractByteValue(pduDataStream);
                             parseEncodedStringValue(pduDataStream);
                             break;
-                        } catch (IllegalArgumentException e39) {
+                        } catch (IllegalArgumentException e38) {
                             log("parseValueLength Exception!");
                             return null;
                         }
@@ -537,11 +517,11 @@ public class PduParser {
                             try {
                                 parseIntegerValue(pduDataStream);
                                 break;
-                            } catch (RuntimeException e40) {
+                            } catch (RuntimeException e39) {
                                 log(headerField + " is not Integer-Value");
                                 return null;
                             }
-                        } catch (IllegalArgumentException e41) {
+                        } catch (IllegalArgumentException e40) {
                             log("parseValueLength Exception!");
                             return null;
                         }
@@ -551,7 +531,7 @@ public class PduParser {
                         try {
                             headers.setLongInteger(parseIntegerValue(pduDataStream), headerField);
                             break;
-                        } catch (RuntimeException e42) {
+                        } catch (RuntimeException e41) {
                             log(headerField + "is not Long-Integer header field!");
                             return null;
                         }
@@ -574,11 +554,11 @@ public class PduParser {
      */
     /* JADX WARN: Code restructure failed: missing block: B:43:0x0156, code lost:
     
-        if (r6 != (-1)) goto L150;
+        if (r6 != (-1)) goto L57;
      */
     /* JADX WARN: Code restructure failed: missing block: B:45:0x0160, code lost:
     
-        if (r3.equalsIgnoreCase(com.google.android.mms.ContentType.MULTIPART_ALTERNATIVE) == false) goto L157;
+        if (r3.equalsIgnoreCase(com.google.android.mms.ContentType.MULTIPART_ALTERNATIVE) == false) goto L64;
      */
     /* JADX WARN: Code restructure failed: missing block: B:46:0x0162, code lost:
     
@@ -586,7 +566,7 @@ public class PduParser {
      */
     /* JADX WARN: Code restructure failed: missing block: B:47:0x016b, code lost:
     
-        if (r5 != null) goto L155;
+        if (r5 != null) goto L62;
      */
     /* JADX WARN: Code restructure failed: missing block: B:48:0x016d, code lost:
     
@@ -606,7 +586,7 @@ public class PduParser {
      */
     /* JADX WARN: Code restructure failed: missing block: B:59:0x017e, code lost:
     
-        if (r0 == null) goto L165;
+        if (r0 == null) goto L72;
      */
     /* JADX WARN: Code restructure failed: missing block: B:60:0x0180, code lost:
     
@@ -614,7 +594,7 @@ public class PduParser {
      */
     /* JADX WARN: Code restructure failed: missing block: B:61:0x018d, code lost:
     
-        if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_BASE64) == false) goto L162;
+        if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_BASE64) == false) goto L69;
      */
     /* JADX WARN: Code restructure failed: missing block: B:62:0x018f, code lost:
     
@@ -622,7 +602,7 @@ public class PduParser {
      */
     /* JADX WARN: Code restructure failed: missing block: B:63:0x01a4, code lost:
     
-        if (r2 != null) goto L169;
+        if (r2 != null) goto L76;
      */
     /* JADX WARN: Code restructure failed: missing block: B:64:0x01ad, code lost:
     
@@ -639,7 +619,7 @@ public class PduParser {
      */
     /* JADX WARN: Code restructure failed: missing block: B:69:0x019b, code lost:
     
-        if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_QUOTED_PRINTABLE) == false) goto L166;
+        if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_QUOTED_PRINTABLE) == false) goto L73;
      */
     /* JADX WARN: Code restructure failed: missing block: B:70:0x019d, code lost:
     
@@ -762,10 +742,9 @@ public class PduParser {
             case 93:
             case 123:
             case 125:
-                return false;
-            default:
-                return true;
+                break;
         }
+        return false;
     }
 
     protected static boolean isText(int ch) {
@@ -773,15 +752,8 @@ public class PduParser {
             return true;
         }
         switch (ch) {
-            case 9:
-            case 10:
-            case 13:
-                return true;
-            case 11:
-            case 12:
-            default:
-                return false;
         }
+        return true;
     }
 
     protected static byte[] getWapString(ByteArrayInputStream pduDataStream, int stringType) {
@@ -1083,15 +1055,14 @@ public class PduParser {
 
     private static int checkPartPosition(PduPart part) {
         byte[] contentType;
-        byte[] contentId = mTypeParam;
-        if (contentId == null && mStartParam == null) {
+        if (mTypeParam == null && mStartParam == null) {
             return 1;
         }
         if (mStartParam == null) {
-            return (contentId == null || (contentType = part.getContentType()) == null || true != Arrays.equals(mTypeParam, contentType)) ? 1 : 0;
+            return (mTypeParam == null || (contentType = part.getContentType()) == null || true != Arrays.equals(mTypeParam, contentType)) ? 1 : 0;
         }
-        byte[] contentId2 = part.getContentId();
-        return (contentId2 == null || true != Arrays.equals(mStartParam, contentId2)) ? 1 : 0;
+        byte[] contentId = part.getContentId();
+        return (contentId == null || true != Arrays.equals(mStartParam, contentId)) ? 1 : 0;
     }
 
     protected static boolean checkMandatoryHeader(PduHeaders headers) {
@@ -1106,159 +1077,116 @@ public class PduParser {
         switch (messageType) {
             case 128:
                 byte[] srContentType = headers.getTextString(132);
-                if (srContentType == null) {
-                    return false;
+                if (srContentType != null) {
+                    EncodedStringValue srFrom = headers.getEncodedStringValue(137);
+                    if (srFrom != null) {
+                        byte[] srTransactionId = headers.getTextString(152);
+                        if (srTransactionId == null) {
+                        }
+                    }
                 }
-                EncodedStringValue srFrom = headers.getEncodedStringValue(137);
-                if (srFrom == null) {
-                    return false;
-                }
-                byte[] srTransactionId = headers.getTextString(152);
-                if (srTransactionId == null) {
-                    return false;
-                }
-                return true;
+                break;
             case 129:
                 int scResponseStatus = headers.getOctet(146);
-                if (scResponseStatus == 0) {
-                    return false;
+                if (scResponseStatus != 0) {
+                    byte[] scTransactionId = headers.getTextString(152);
+                    if (scTransactionId == null) {
+                    }
                 }
-                byte[] scTransactionId = headers.getTextString(152);
-                if (scTransactionId == null) {
-                    return false;
-                }
-                return true;
+                break;
             case 130:
                 byte[] niContentLocation = headers.getTextString(131);
-                if (niContentLocation == null) {
-                    return false;
+                if (niContentLocation != null) {
+                    long niExpiry = headers.getLongInteger(136);
+                    if (-1 != niExpiry) {
+                        byte[] niMessageClass = headers.getTextString(138);
+                        if (niMessageClass != null) {
+                            long niMessageSize = headers.getLongInteger(142);
+                            if (-1 != niMessageSize) {
+                                byte[] niTransactionId = headers.getTextString(152);
+                                if (niTransactionId == null) {
+                                }
+                            }
+                        }
+                    }
                 }
-                long niExpiry = headers.getLongInteger(136);
-                if (-1 == niExpiry) {
-                    return false;
-                }
-                byte[] niMessageClass = headers.getTextString(138);
-                if (niMessageClass == null) {
-                    return false;
-                }
-                long niMessageSize = headers.getLongInteger(142);
-                if (-1 == niMessageSize) {
-                    return false;
-                }
-                byte[] niTransactionId = headers.getTextString(152);
-                if (niTransactionId == null) {
-                    return false;
-                }
-                return true;
+                break;
             case 131:
                 int nriStatus = headers.getOctet(149);
-                if (nriStatus == 0) {
-                    return false;
+                if (nriStatus != 0) {
+                    byte[] nriTransactionId = headers.getTextString(152);
+                    if (nriTransactionId == null) {
+                    }
                 }
-                byte[] nriTransactionId = headers.getTextString(152);
-                if (nriTransactionId == null) {
-                    return false;
-                }
-                return true;
+                break;
             case 132:
                 byte[] rcContentType = headers.getTextString(132);
-                if (rcContentType == null) {
-                    return false;
+                if (rcContentType != null) {
+                    long rcDate = headers.getLongInteger(133);
+                    if (-1 == rcDate) {
+                    }
                 }
-                long rcDate = headers.getLongInteger(133);
-                if (-1 == rcDate) {
-                    return false;
-                }
-                return true;
+                break;
             case 133:
                 byte[] aiTransactionId = headers.getTextString(152);
                 if (aiTransactionId == null) {
-                    return false;
                 }
-                return true;
+                break;
             case 134:
                 long diDate = headers.getLongInteger(133);
-                if (-1 == diDate) {
-                    return false;
+                if (-1 != diDate) {
+                    byte[] diMessageId = headers.getTextString(139);
+                    if (diMessageId != null) {
+                        int diStatus = headers.getOctet(149);
+                        if (diStatus != 0) {
+                            EncodedStringValue[] diTo = headers.getEncodedStringValues(151);
+                            if (diTo == null) {
+                            }
+                        }
+                    }
                 }
-                byte[] diMessageId = headers.getTextString(139);
-                if (diMessageId == null) {
-                    return false;
-                }
-                int diStatus = headers.getOctet(149);
-                if (diStatus == 0) {
-                    return false;
-                }
-                EncodedStringValue[] diTo = headers.getEncodedStringValues(151);
-                if (diTo == null) {
-                    return false;
-                }
-                return true;
+                break;
             case 135:
                 EncodedStringValue rrFrom = headers.getEncodedStringValue(137);
-                if (rrFrom == null) {
-                    return false;
+                if (rrFrom != null) {
+                    byte[] rrMessageId = headers.getTextString(139);
+                    if (rrMessageId != null) {
+                        int rrReadStatus = headers.getOctet(155);
+                        if (rrReadStatus != 0) {
+                            EncodedStringValue[] rrTo = headers.getEncodedStringValues(151);
+                            if (rrTo == null) {
+                            }
+                        }
+                    }
                 }
-                byte[] rrMessageId = headers.getTextString(139);
-                if (rrMessageId == null) {
-                    return false;
-                }
-                int rrReadStatus = headers.getOctet(155);
-                if (rrReadStatus == 0) {
-                    return false;
-                }
-                EncodedStringValue[] rrTo = headers.getEncodedStringValues(151);
-                if (rrTo == null) {
-                    return false;
-                }
-                return true;
+                break;
             case 136:
                 long roDate = headers.getLongInteger(133);
-                if (-1 == roDate) {
-                    return false;
+                if (-1 != roDate) {
+                    EncodedStringValue roFrom = headers.getEncodedStringValue(137);
+                    if (roFrom != null) {
+                        byte[] roMessageId = headers.getTextString(139);
+                        if (roMessageId != null) {
+                            int roReadStatus = headers.getOctet(155);
+                            if (roReadStatus != 0) {
+                                EncodedStringValue[] roTo = headers.getEncodedStringValues(151);
+                                if (roTo == null) {
+                                }
+                            }
+                        }
+                    }
                 }
-                EncodedStringValue roFrom = headers.getEncodedStringValue(137);
-                if (roFrom == null) {
-                    return false;
-                }
-                byte[] roMessageId = headers.getTextString(139);
-                if (roMessageId == null) {
-                    return false;
-                }
-                int roReadStatus = headers.getOctet(155);
-                if (roReadStatus == 0) {
-                    return false;
-                }
-                EncodedStringValue[] roTo = headers.getEncodedStringValues(151);
-                if (roTo == null) {
-                    return false;
-                }
-                return true;
-            default:
-                return false;
+                break;
         }
+        return false;
     }
 
     public PduParser(byte[] pduDataStream) {
         this.mPduDataStream = null;
+        this.mHeaders = null;
+        this.mBody = null;
         this.mPduDataStream = new ByteArrayInputStream(pduDataStream);
-        SemCscFeature cscFeature = SemCscFeature.getInstance();
         this.mParseContentDisposition = true;
-        String displayMmsTimeAs = cscFeature.getString("CscFeature_Message_DisplayMmsTimeAs");
-        mEnableMmsServerTime = isServerTime(displayMmsTimeAs, true);
-    }
-
-    private static boolean isServerTime(String displayTimeAs, boolean initValue) {
-        if (displayTimeAs == null) {
-            return initValue;
-        }
-        if ("phone".equals(displayTimeAs)) {
-            return false;
-        }
-        if (Telephony.Carriers.SERVER.equals(displayTimeAs)) {
-            return true;
-        }
-        return initValue;
     }
 
     protected static EncodedStringValue parseEncodedSubjectValue(ByteArrayInputStream pduDataStream) {

@@ -2,8 +2,9 @@ package android.media.tv.tuner;
 
 import android.Manifest;
 import android.annotation.SystemApi;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.content.Context;
+import android.media.MediaCodec;
 import android.media.MediaMetrics;
 import android.media.tv.tuner.Tuner;
 import android.media.tv.tuner.dvr.DvrPlayback;
@@ -52,7 +53,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class Tuner implements AutoCloseable {
     public static final int DVR_TYPE_PLAYBACK = 1;
     public static final int DVR_TYPE_RECORD = 0;
@@ -101,7 +102,6 @@ public class Tuner implements AutoCloseable {
     private Executor mOnTuneEventExecutor;
     private OnTuneEventListener mOnTuneEventListener;
     private int mRequestedCiCamId;
-    private final TunerResourceManager.ResourcesReclaimListener mResourceListener;
     private ScanCallback mScanCallback;
     private Executor mScanCallbackExecutor;
     private final TunerResourceManager mTunerResourceManager;
@@ -122,24 +122,30 @@ public class Tuner implements AutoCloseable {
     private final ReentrantLock mDemuxLock = new ReentrantLock();
     private Map<Integer, WeakReference<Descrambler>> mDescramblers = new HashMap();
     private List<WeakReference<Filter>> mFilters = new ArrayList();
+    private final TunerResourceManager.ResourcesReclaimListener mResourceListener = new TunerResourceManager.ResourcesReclaimListener() { // from class: android.media.tv.tuner.Tuner.1
+        @Override // android.media.tv.tunerresourcemanager.TunerResourceManager.ResourcesReclaimListener
+        public void onReclaimResources() {
+            if (Tuner.this.mFrontend != null) {
+                FrameworkStatsLog.write(276, Tuner.this.mUserId, 0);
+            }
+            Tuner.this.releaseAll();
+            Tuner.this.mHandler.sendMessage(Tuner.this.mHandler.obtainMessage(1));
+        }
+    };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DvrType {
     }
 
-    /* loaded from: classes2.dex */
     public interface OnResourceLostListener {
         void onResourceLost(Tuner tuner);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Result {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScanType {
     }
 
@@ -235,53 +241,24 @@ public class Tuner implements AutoCloseable {
         try {
             System.loadLibrary("media_tv_tuner");
             nativeInit();
-        } catch (UnsatisfiedLinkError e) {
+            Class.forName(MediaCodec.class.getName());
+        } catch (ClassNotFoundException e) {
+            Log.e(TAG, "MediaCodec class not found!", e);
+        } catch (UnsatisfiedLinkError e2) {
             Log.d(TAG, "tuner JNI library not found!");
         }
         sTunerVersion = 0;
     }
 
-    /* renamed from: android.media.tv.tuner.Tuner$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 extends TunerResourceManager.ResourcesReclaimListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.tv.tunerresourcemanager.TunerResourceManager.ResourcesReclaimListener
-        public void onReclaimResources() {
-            if (Tuner.this.mFrontend != null) {
-                FrameworkStatsLog.write(276, Tuner.this.mUserId, 0);
-            }
-            Tuner.this.releaseAll();
-            Tuner.this.mHandler.sendMessage(Tuner.this.mHandler.obtainMessage(1));
-        }
-    }
-
     public Tuner(Context context, String tvInputSessionId, int useCase) {
-        AnonymousClass1 anonymousClass1 = new TunerResourceManager.ResourcesReclaimListener() { // from class: android.media.tv.tuner.Tuner.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.media.tv.tunerresourcemanager.TunerResourceManager.ResourcesReclaimListener
-            public void onReclaimResources() {
-                if (Tuner.this.mFrontend != null) {
-                    FrameworkStatsLog.write(276, Tuner.this.mUserId, 0);
-                }
-                Tuner.this.releaseAll();
-                Tuner.this.mHandler.sendMessage(Tuner.this.mHandler.obtainMessage(1));
-            }
-        };
-        this.mResourceListener = anonymousClass1;
         this.mContext = context;
-        TunerResourceManager tunerResourceManager = (TunerResourceManager) context.getSystemService(TunerResourceManager.class);
-        this.mTunerResourceManager = tunerResourceManager;
-        if (tunerResourceManager == null) {
+        this.mTunerResourceManager = (TunerResourceManager) this.mContext.getSystemService(TunerResourceManager.class);
+        if (this.mTunerResourceManager == null) {
             throw new IllegalStateException("Tuner instance is created, but the device doesn't have tuner feature");
         }
         nativeSetup();
-        int nativeGetTunerVersion = nativeGetTunerVersion();
-        sTunerVersion = nativeGetTunerVersion;
-        if (nativeGetTunerVersion == 0) {
+        sTunerVersion = nativeGetTunerVersion();
+        if (sTunerVersion == 0) {
             Log.e(TAG, "Unknown Tuner version!");
         } else {
             Log.d(TAG, "Current Tuner version is " + TunerVersionChecker.getMajorVersion(sTunerVersion) + MediaMetrics.SEPARATOR + TunerVersionChecker.getMinorVersion(sTunerVersion) + MediaMetrics.SEPARATOR);
@@ -293,7 +270,7 @@ public class Tuner implements AutoCloseable {
         ResourceClientProfile profile = new ResourceClientProfile();
         profile.tvInputSessionId = tvInputSessionId;
         profile.useCase = useCase;
-        tunerResourceManager.registerClientProfile(profile, new PendingIntent$$ExternalSyntheticLambda1(), anonymousClass1, clientId);
+        this.mTunerResourceManager.registerClientProfile(profile, new PendingIntent$$ExternalSyntheticLambda0(), this.mResourceListener, clientId);
         this.mClientId = clientId[0];
         this.mUserId = Process.myUid();
     }
@@ -313,12 +290,12 @@ public class Tuner implements AutoCloseable {
                 infos[i] = frontendInfo;
             }
         }
-        return (FrontendInfo[]) Arrays.stream(infos).filter(new Predicate() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda9
+        return (FrontendInfo[]) Arrays.stream(infos).filter(new Predicate() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda12
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return Objects.nonNull((FrontendInfo) obj);
             }
-        }).toArray(new IntFunction() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda10
+        }).toArray(new IntFunction() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda13
             @Override // java.util.function.IntFunction
             public final Object apply(int i2) {
                 return Tuner.lambda$getFrontendInfoListInternal$0(i2);
@@ -326,7 +303,7 @@ public class Tuner implements AutoCloseable {
         });
     }
 
-    public static /* synthetic */ FrontendInfo[] lambda$getFrontendInfoListInternal$0(int x$0) {
+    static /* synthetic */ FrontendInfo[] lambda$getFrontendInfoListInternal$0(int x$0) {
         return new FrontendInfo[x$0];
     }
 
@@ -363,14 +340,17 @@ public class Tuner implements AutoCloseable {
         acquireTRMSLock("shareFrontendFromTuner()");
         this.mFrontendLock.lock();
         try {
+            if (this.mFeOwnerTuner != null) {
+                this.mFeOwnerTuner.unregisterFrontendCallbackListener(this);
+                this.mFeOwnerTuner = null;
+                nativeUnshareFrontend();
+            }
             this.mTunerResourceManager.shareFrontend(this.mClientId, tuner.mClientId);
             this.mFeOwnerTuner = tuner;
-            tuner.registerFrontendCallbackListener(this);
-            Tuner tuner2 = this.mFeOwnerTuner;
-            this.mFrontendHandle = tuner2.mFrontendHandle;
-            Frontend frontend = tuner2.mFrontend;
-            this.mFrontend = frontend;
-            nativeShareFrontend(frontend.mId);
+            this.mFeOwnerTuner.registerFrontendCallbackListener(this);
+            this.mFrontendHandle = this.mFeOwnerTuner.mFrontendHandle;
+            this.mFrontend = this.mFeOwnerTuner.mFrontend;
+            nativeShareFrontend(this.mFrontend.mId);
         } finally {
             releaseTRMSLock();
             this.mFrontendLock.unlock();
@@ -535,12 +515,11 @@ public class Tuner implements AutoCloseable {
     }
 
     private int transferLnbOwner(Tuner newOwner) {
-        Lnb lnb = this.mLnb;
-        boolean notAnOwner = lnb == null;
+        boolean notAnOwner = this.mLnb == null;
         if (notAnOwner) {
             return 0;
         }
-        lnb.setOwner(newOwner);
+        this.mLnb.setOwner(newOwner);
         newOwner.replicateLnbSettings(this);
         replicateLnbSettings(null);
         return this.mTunerResourceManager.transferOwner(3, this.mClientId, newOwner.mClientId) ? 0 : 6;
@@ -592,25 +571,24 @@ public class Tuner implements AutoCloseable {
     }
 
     private void releaseFrontend() {
-        boolean z = DEBUG;
-        if (z) {
+        if (DEBUG) {
             Log.d(TAG, "Tuner#releaseFrontend");
         }
         this.mFrontendLock.lock();
         try {
             if (this.mFrontendHandle != null) {
-                if (z) {
+                if (DEBUG) {
                     Log.d(TAG, "mFrontendHandle not null");
                 }
                 if (this.mFeOwnerTuner != null) {
-                    if (z) {
+                    if (DEBUG) {
                         Log.d(TAG, "mFeOwnerTuner not null - sharee");
                     }
                     this.mFeOwnerTuner.unregisterFrontendCallbackListener(this);
                     this.mFeOwnerTuner = null;
                     nativeUnshareFrontend();
                 } else {
-                    if (z) {
+                    if (DEBUG) {
                         Log.d(TAG, "mFeOwnerTuner null - owner");
                     }
                     int res = nativeCloseFrontend(this.mFrontendHandle.intValue());
@@ -618,7 +596,7 @@ public class Tuner implements AutoCloseable {
                         TunerUtils.throwExceptionForResult(res, "failed to close frontend");
                     }
                 }
-                if (z) {
+                if (DEBUG) {
                     Log.d(TAG, "call TRM#releaseFrontend :" + this.mFrontendHandle + ", " + this.mClientId);
                 }
                 this.mTunerResourceManager.releaseFrontend(this.mFrontendHandle.intValue(), this.mClientId);
@@ -659,7 +637,7 @@ public class Tuner implements AutoCloseable {
                 if (DEBUG) {
                     Log.d(TAG, "calling mLnb.close() : " + this.mClientId);
                 }
-                this.mLnb.close();
+                this.mLnb.closeInternal();
             } else if (DEBUG) {
                 Log.d(TAG, "NOT calling mLnb.close() : " + this.mClientId);
             }
@@ -700,9 +678,8 @@ public class Tuner implements AutoCloseable {
     private void releaseDemux() {
         this.mDemuxLock.lock();
         try {
-            Integer num = this.mDemuxHandle;
-            if (num != null) {
-                int res = nativeCloseDemux(num.intValue());
+            if (this.mDemuxHandle != null) {
+                int res = nativeCloseDemux(this.mDemuxHandle.intValue());
                 if (res != 0) {
                     TunerUtils.throwExceptionForResult(res, "failed to close demux");
                 }
@@ -714,6 +691,7 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void releaseAll() {
         releaseCiCam();
         releaseFrontend();
@@ -735,12 +713,8 @@ public class Tuner implements AutoCloseable {
         return null;
     }
 
-    /* loaded from: classes2.dex */
-    public class EventHandler extends Handler {
-        /* synthetic */ EventHandler(Tuner tuner, Looper looper, EventHandlerIA eventHandlerIA) {
-            this(looper);
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class EventHandler extends Handler {
         private EventHandler(Looper looper) {
             super(looper);
         }
@@ -773,6 +747,7 @@ public class Tuner implements AutoCloseable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$0() {
             synchronized (Tuner.this.mOnResourceLostListenerLock) {
                 if (Tuner.this.mOnResourceLostListener != null) {
@@ -782,8 +757,7 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class Frontend {
+    private class Frontend {
         private int mId;
 
         private Frontend(int id) {
@@ -819,7 +793,7 @@ public class Tuner implements AutoCloseable {
             }
             Log.d(TAG, "Tune to " + settings.getFrequencyLong());
             this.mFrontendType = type;
-            if (type == 10 && !TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "Tuner with DTMB Frontend")) {
+            if (this.mFrontendType == 10 && !TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "Tuner with DTMB Frontend")) {
                 return 1;
             }
             if (this.mFrontendType == 11 && !TunerVersionChecker.checkHigherOrEqualVersionTo(196608, "Tuner with IPTV Frontend")) {
@@ -853,7 +827,6 @@ public class Tuner implements AutoCloseable {
     }
 
     public int scan(FrontendSettings settings, int scanType, Executor executor, ScanCallback scanCallback) {
-        Executor executor2;
         this.mFrontendLock.lock();
         try {
             if (this.mFeOwnerTuner != null) {
@@ -862,13 +835,11 @@ public class Tuner implements AutoCloseable {
                 return 3;
             }
             synchronized (this.mScanCallbackLock) {
-                ScanCallback scanCallback2 = this.mScanCallback;
-                if ((scanCallback2 != null && scanCallback2 != scanCallback) || ((executor2 = this.mScanCallbackExecutor) != null && executor2 != executor)) {
+                if ((this.mScanCallback != null && this.mScanCallback != scanCallback) || (this.mScanCallbackExecutor != null && this.mScanCallbackExecutor != executor)) {
                     throw new IllegalStateException("Different Scan session already in progress.  stopScan must be called before a new scan session can be started.");
                 }
-                int type = settings.getType();
-                this.mFrontendType = type;
-                if (type == 10 && !TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "Scan with DTMB Frontend")) {
+                this.mFrontendType = settings.getType();
+                if (this.mFrontendType == 10 && !TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "Scan with DTMB Frontend")) {
                     return 1;
                 }
                 if (this.mFrontendType == 11 && !TunerVersionChecker.checkHigherOrEqualVersionTo(196608, "Tuner with IPTV Frontend")) {
@@ -911,31 +882,27 @@ public class Tuner implements AutoCloseable {
 
     private boolean requestFrontend() {
         int intValue;
-        Lnb lnb;
         int[] feHandle = new int[1];
         try {
             TunerFrontendRequest request = new TunerFrontendRequest();
             request.clientId = this.mClientId;
             request.frontendType = this.mFrontendType;
-            Integer num = this.mDesiredFrontendId;
-            if (num == null) {
+            if (this.mDesiredFrontendId == null) {
                 intValue = -1;
             } else {
-                intValue = num.intValue();
+                intValue = this.mDesiredFrontendId.intValue();
             }
             request.desiredId = intValue;
             boolean granted = this.mTunerResourceManager.requestFrontend(request, feHandle);
             if (granted) {
-                Integer valueOf = Integer.valueOf(feHandle[0]);
-                this.mFrontendHandle = valueOf;
-                this.mFrontend = nativeOpenFrontendByHandle(valueOf.intValue());
+                this.mFrontendHandle = Integer.valueOf(feHandle[0]);
+                this.mFrontend = nativeOpenFrontendByHandle(this.mFrontendHandle.intValue());
             }
-            int i = this.mFrontendType;
-            if (i == 5 || i == 7 || i == 8) {
+            if (this.mFrontendType == 5 || this.mFrontendType == 7 || this.mFrontendType == 8) {
                 this.mLnbLock.lock();
                 try {
-                    if (this.mLnbHandle != null && (lnb = this.mLnb) != null) {
-                        nativeSetLnb(lnb);
+                    if (this.mLnbHandle != null && this.mLnb != null) {
+                        nativeSetLnb(this.mLnb);
                     }
                 } finally {
                     this.mLnbLock.unlock();
@@ -1033,11 +1000,12 @@ public class Tuner implements AutoCloseable {
         this.mFrontendCiCamLock.lock();
         this.mFrontendLock.lock();
         try {
+            if (this.mFrontendHandle == null) {
+                Log.d(TAG, "Operation cannot be done without frontend");
+                return 3;
+            }
             if (this.mFeOwnerTuner != null) {
                 Log.d(TAG, "Operation cannot be done by sharee of tuner");
-                releaseTRMSLock();
-                this.mFrontendCiCamLock.unlock();
-                this.mFrontendLock.unlock();
                 return 3;
             }
             if (TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "linkFrontendToCiCam")) {
@@ -1070,11 +1038,13 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX WARN: Finally extract failed */
     public int disconnectFrontendToCiCam(int ciCamId) {
-        Integer num;
         acquireTRMSLock("disconnectFrontendToCiCam()");
         try {
+            if (this.mFrontendHandle == null) {
+                Log.d(TAG, "Operation cannot be done without frontend");
+                return 3;
+            }
             if (this.mFeOwnerTuner != null) {
                 Log.d(TAG, "Operation cannot be done by sharee of tuner");
                 if (this.mFrontendCiCamLock.isLocked()) {
@@ -1085,7 +1055,7 @@ public class Tuner implements AutoCloseable {
             }
             if (TunerVersionChecker.checkHigherOrEqualVersionTo(65537, "unlinkFrontendToCiCam")) {
                 this.mFrontendCiCamLock.lock();
-                if (this.mFrontendCiCamHandle != null && (num = this.mFrontendCiCamId) != null && num.intValue() == ciCamId) {
+                if (this.mFrontendCiCamHandle != null && this.mFrontendCiCamId != null && this.mFrontendCiCamId.intValue() == ciCamId) {
                     int result = nativeUnlinkCiCam(ciCamId);
                     if (result == 0) {
                         this.mTunerResourceManager.releaseCiCam(this.mFrontendCiCamHandle.intValue(), this.mClientId);
@@ -1104,12 +1074,11 @@ public class Tuner implements AutoCloseable {
             }
             releaseTRMSLock();
             return 1;
-        } catch (Throwable th) {
+        } finally {
             if (this.mFrontendCiCamLock.isLocked()) {
                 this.mFrontendCiCamLock.unlock();
             }
             releaseTRMSLock();
-            throw th;
         }
     }
 
@@ -1157,12 +1126,11 @@ public class Tuner implements AutoCloseable {
         this.mFrontendLock.lock();
         try {
             if (checkResource(0, this.mFrontendLock)) {
-                Frontend frontend = this.mFrontend;
-                if (frontend == null) {
+                if (this.mFrontend == null) {
                     throw new IllegalStateException("frontend is not initialized");
                 }
                 if (this.mFrontendInfo == null) {
-                    this.mFrontendInfo = getFrontendInfoById(frontend.mId);
+                    this.mFrontendInfo = getFrontendInfoById(this.mFrontend.mId);
                 }
                 return this.mFrontendInfo;
             }
@@ -1251,9 +1219,8 @@ public class Tuner implements AutoCloseable {
     public DemuxInfo getCurrentDemuxInfo() {
         this.mDemuxLock.lock();
         try {
-            Integer num = this.mDemuxHandle;
-            if (num != null) {
-                return nativeGetDemuxInfo(num.intValue());
+            if (this.mDemuxHandle != null) {
+                return nativeGetDemuxInfo(this.mDemuxHandle.intValue());
             }
             this.mDemuxLock.unlock();
             return null;
@@ -1269,9 +1236,8 @@ public class Tuner implements AutoCloseable {
     private void onFrontendEvent(final int eventType) {
         Log.d(TAG, "Got event from tuning. Event type: " + eventType + " for " + this);
         synchronized (this.mOnTuneEventLock) {
-            Executor executor = this.mOnTuneEventExecutor;
-            if (executor != null && this.mOnTuneEventListener != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda7
+            if (this.mOnTuneEventExecutor != null && this.mOnTuneEventListener != null) {
+                this.mOnTuneEventExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda21
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onFrontendEvent$1(eventType);
@@ -1289,11 +1255,11 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFrontendEvent$1(int eventType) {
         synchronized (this.mOnTuneEventLock) {
-            OnTuneEventListener onTuneEventListener = this.mOnTuneEventListener;
-            if (onTuneEventListener != null) {
-                onTuneEventListener.onTuneEvent(eventType);
+            if (this.mOnTuneEventListener != null) {
+                this.mOnTuneEventListener.onTuneEvent(eventType);
             }
         }
     }
@@ -1302,9 +1268,8 @@ public class Tuner implements AutoCloseable {
         Log.d(TAG, "Wrote Stats Log for locked event from scanning.");
         FrameworkStatsLog.write(276, this.mUserId, 2);
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda14
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda19
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onLocked$2();
@@ -1314,11 +1279,11 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onLocked$2() {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onLocked();
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onLocked();
             }
         }
     }
@@ -1327,9 +1292,8 @@ public class Tuner implements AutoCloseable {
         Log.d(TAG, "Wrote Stats Log for unlocked event from scanning.");
         FrameworkStatsLog.write(276, this.mUserId, 2);
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda15
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda6
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onUnlocked$3();
@@ -1339,20 +1303,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onUnlocked$3() {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onUnlocked();
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onUnlocked();
             }
         }
     }
 
     private void onScanStopped() {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda4
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda20
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onScanStopped$4();
@@ -1362,20 +1325,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onScanStopped$4() {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onScanStopped();
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onScanStopped();
             }
         }
     }
 
     private void onProgress(final int percent) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda12
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda4
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onProgress$5(percent);
@@ -1385,20 +1347,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onProgress$5(int percent) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onProgress(percent);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onProgress(percent);
             }
         }
     }
 
     private void onFrequenciesReport(final long[] frequencies) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda3
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda3
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onFrequenciesReport$6(frequencies);
@@ -1408,20 +1369,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFrequenciesReport$6(long[] frequencies) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onFrequenciesLongReported(frequencies);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onFrequenciesLongReported(frequencies);
             }
         }
     }
 
     private void onSymbolRates(final int[] rate) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda11
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda16
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onSymbolRates$7(rate);
@@ -1431,20 +1391,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSymbolRates$7(int[] rate) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onSymbolRatesReported(rate);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onSymbolRatesReported(rate);
             }
         }
     }
 
     private void onHierarchy(final int hierarchy) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda16
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda8
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onHierarchy$8(hierarchy);
@@ -1454,20 +1413,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onHierarchy$8(int hierarchy) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onHierarchyReported(hierarchy);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onHierarchyReported(hierarchy);
             }
         }
     }
 
     private void onSignalType(final int signalType) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda8
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda14
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onSignalType$9(signalType);
@@ -1477,20 +1435,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSignalType$9(int signalType) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onSignalTypeReported(signalType);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onSignalTypeReported(signalType);
             }
         }
     }
 
     private void onPlpIds(final int[] plpIds) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda1
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda18
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onPlpIds$10(plpIds);
@@ -1500,20 +1457,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPlpIds$10(int[] plpIds) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onPlpIdsReported(plpIds);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onPlpIdsReported(plpIds);
             }
         }
     }
 
     private void onGroupIds(final int[] groupIds) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda21
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda7
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onGroupIds$11(groupIds);
@@ -1523,20 +1479,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onGroupIds$11(int[] groupIds) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onGroupIdsReported(groupIds);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onGroupIdsReported(groupIds);
             }
         }
     }
 
     private void onInputStreamIds(final int[] inputStreamIds) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda19
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onInputStreamIds$12(inputStreamIds);
@@ -1546,20 +1501,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInputStreamIds$12(int[] inputStreamIds) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onInputStreamIdsReported(inputStreamIds);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onInputStreamIdsReported(inputStreamIds);
             }
         }
     }
 
     private void onDvbsStandard(final int dvbsStandandard) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda18
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda9
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onDvbsStandard$13(dvbsStandandard);
@@ -1569,20 +1523,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbsStandard$13(int dvbsStandandard) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onDvbsStandardReported(dvbsStandandard);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onDvbsStandardReported(dvbsStandandard);
             }
         }
     }
 
     private void onDvbtStandard(final int dvbtStandard) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda5
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda11
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onDvbtStandard$14(dvbtStandard);
@@ -1592,20 +1545,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbtStandard$14(int dvbtStandard) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onDvbtStandardReported(dvbtStandard);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onDvbtStandardReported(dvbtStandard);
             }
         }
     }
 
     private void onAnalogSifStandard(final int sif) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda13
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda15
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onAnalogSifStandard$15(sif);
@@ -1615,20 +1567,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onAnalogSifStandard$15(int sif) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onAnalogSifStandardReported(sif);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onAnalogSifStandardReported(sif);
             }
         }
     }
 
     private void onAtsc3PlpInfos(final Atsc3PlpInfo[] atsc3PlpInfos) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda6
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda17
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onAtsc3PlpInfos$16(atsc3PlpInfos);
@@ -1638,20 +1589,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onAtsc3PlpInfos$16(Atsc3PlpInfo[] atsc3PlpInfos) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onAtsc3PlpInfosReported(atsc3PlpInfos);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onAtsc3PlpInfosReported(atsc3PlpInfos);
             }
         }
     }
 
     private void onModulationReported(final int modulation) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda20
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onModulationReported$17(modulation);
@@ -1661,20 +1611,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onModulationReported$17(int modulation) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onModulationReported(modulation);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onModulationReported(modulation);
             }
         }
     }
 
     private void onPriorityReported(final boolean isHighPriority) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda0
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda10
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onPriorityReported$18(isHighPriority);
@@ -1684,20 +1633,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPriorityReported$18(boolean isHighPriority) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onPriorityReported(isHighPriority);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onPriorityReported(isHighPriority);
             }
         }
     }
 
     private void onDvbcAnnexReported(final int dvbcAnnex) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda2
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda5
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onDvbcAnnexReported$19(dvbcAnnex);
@@ -1707,20 +1655,19 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbcAnnexReported$19(int dvbcAnnex) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onDvbcAnnexReported(dvbcAnnex);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onDvbcAnnexReported(dvbcAnnex);
             }
         }
     }
 
     private void onDvbtCellIdsReported(final int[] dvbtCellIds) {
         synchronized (this.mScanCallbackLock) {
-            Executor executor = this.mScanCallbackExecutor;
-            if (executor != null && this.mScanCallback != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda17
+            if (this.mScanCallbackExecutor != null && this.mScanCallback != null) {
+                this.mScanCallbackExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.Tuner$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         Tuner.this.lambda$onDvbtCellIdsReported$20(dvbtCellIds);
@@ -1730,11 +1677,11 @@ public class Tuner implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbtCellIdsReported$20(int[] dvbtCellIds) {
         synchronized (this.mScanCallbackLock) {
-            ScanCallback scanCallback = this.mScanCallback;
-            if (scanCallback != null) {
-                scanCallback.onDvbtCellIdsReported(dvbtCellIds);
+            if (this.mScanCallback != null) {
+                this.mScanCallback.onDvbtCellIdsReported(dvbtCellIds);
             }
         }
     }
@@ -1782,21 +1729,19 @@ public class Tuner implements AutoCloseable {
     }
 
     public Lnb openLnb(Executor executor, LnbCallback cb) {
-        Lnb lnb;
         this.mLnbLock.lock();
         try {
             Objects.requireNonNull(executor, "executor must not be null");
             Objects.requireNonNull(cb, "LnbCallback must not be null");
-            Lnb lnb2 = this.mLnb;
-            if (lnb2 != null) {
-                lnb2.setCallbackAndOwner(this, executor, cb);
+            if (this.mLnb != null) {
+                this.mLnb.setCallbackAndOwner(this, executor, cb);
                 return this.mLnb;
             }
-            if (!checkResource(3, this.mLnbLock) || (lnb = this.mLnb) == null) {
+            if (!checkResource(3, this.mLnbLock) || this.mLnb == null) {
                 this.mLnbLock.unlock();
                 return null;
             }
-            lnb.setCallbackAndOwner(this, executor, cb);
+            this.mLnb.setCallbackAndOwner(this, executor, cb);
             if (this.mFrontendHandle != null && this.mFrontend != null) {
                 setLnb(this.mLnb);
             }
@@ -1807,6 +1752,7 @@ public class Tuner implements AutoCloseable {
     }
 
     public Lnb openLnbByName(String name, Executor executor, LnbCallback cb) {
+        acquireTRMSLock("openLnbByName");
         this.mLnbLock.lock();
         try {
             Objects.requireNonNull(name, "LNB name must not be null");
@@ -1814,19 +1760,19 @@ public class Tuner implements AutoCloseable {
             Objects.requireNonNull(cb, "LnbCallback must not be null");
             Lnb newLnb = nativeOpenLnbByName(name);
             if (newLnb != null) {
-                Lnb lnb = this.mLnb;
-                if (lnb != null) {
-                    lnb.close();
+                if (this.mLnb != null) {
+                    this.mLnb.closeInternal();
                     this.mLnbHandle = null;
                 }
                 this.mLnb = newLnb;
-                newLnb.setCallbackAndOwner(this, executor, cb);
+                this.mLnb.setCallbackAndOwner(this, executor, cb);
                 if (this.mFrontendHandle != null && this.mFrontend != null) {
                     setLnb(this.mLnb);
                 }
             }
             return this.mLnb;
         } finally {
+            releaseTRMSLock();
             this.mLnbLock.unlock();
         }
     }
@@ -1837,9 +1783,8 @@ public class Tuner implements AutoCloseable {
         request.clientId = this.mClientId;
         boolean granted = this.mTunerResourceManager.requestLnb(request, lnbHandle);
         if (granted) {
-            Integer valueOf = Integer.valueOf(lnbHandle[0]);
-            this.mLnbHandle = valueOf;
-            this.mLnb = nativeOpenLnbByHandle(valueOf.intValue());
+            this.mLnbHandle = Integer.valueOf(lnbHandle[0]);
+            this.mLnb = nativeOpenLnbByHandle(this.mLnbHandle.intValue());
         }
         return granted;
     }
@@ -1858,14 +1803,15 @@ public class Tuner implements AutoCloseable {
     }
 
     public Descrambler openDescrambler() {
+        acquireTRMSLock("openDescrambler()");
         this.mDemuxLock.lock();
         try {
-            if (checkResource(1, this.mDemuxLock)) {
+            if (checkResource(1, null)) {
                 return requestDescrambler();
             }
-            this.mDemuxLock.unlock();
             return null;
         } finally {
+            releaseTRMSLock();
             this.mDemuxLock.unlock();
         }
     }
@@ -2003,8 +1949,7 @@ public class Tuner implements AutoCloseable {
             Log.e(TAG, "configureDemuxInternal: requested caps:" + desiredFilterTypes + " is not supported by the system");
             return 1;
         }
-        Integer num = this.mDemuxHandle;
-        if (num != null && desiredFilterTypes != 0 && (currentDemuxInfo = nativeGetDemuxInfo(num.intValue())) != null && (currentDemuxInfo.getFilterTypes() & desiredFilterTypes) != desiredFilterTypes) {
+        if (this.mDemuxHandle != null && desiredFilterTypes != 0 && (currentDemuxInfo = nativeGetDemuxInfo(this.mDemuxHandle.intValue())) != null && (currentDemuxInfo.getFilterTypes() & desiredFilterTypes) != desiredFilterTypes) {
             releaseFilters();
             releaseDemux();
         }
@@ -2019,9 +1964,8 @@ public class Tuner implements AutoCloseable {
         request.desiredFilterTypes = this.mDesiredDemuxInfo.getFilterTypes();
         boolean granted = this.mTunerResourceManager.requestDemux(request, demuxHandle);
         if (granted) {
-            Integer valueOf = Integer.valueOf(demuxHandle[0]);
-            this.mDemuxHandle = valueOf;
-            nativeOpenDemuxByhandle(valueOf.intValue());
+            this.mDemuxHandle = Integer.valueOf(demuxHandle[0]);
+            nativeOpenDemuxByhandle(this.mDemuxHandle.intValue());
         }
         return granted;
     }
@@ -2063,30 +2007,23 @@ public class Tuner implements AutoCloseable {
     private boolean checkResource(int resourceType, ReentrantLock localLock) {
         switch (resourceType) {
             case 0:
-                if (this.mFrontendHandle == null && !requestResource(resourceType, localLock)) {
-                    return false;
+                if (this.mFrontendHandle != null || requestResource(resourceType, localLock)) {
                 }
-                return true;
+                break;
             case 1:
-                if (this.mDemuxHandle == null && !requestResource(resourceType, localLock)) {
-                    return false;
+                if (this.mDemuxHandle != null || requestResource(resourceType, localLock)) {
                 }
-                return true;
-            case 2:
-            case 4:
-            default:
-                return false;
+                break;
             case 3:
-                if (this.mLnb == null && !requestResource(resourceType, localLock)) {
-                    return false;
+                if (this.mLnb != null || requestResource(resourceType, localLock)) {
                 }
-                return true;
+                break;
             case 5:
-                if (this.mFrontendCiCamHandle == null && !requestResource(resourceType, localLock)) {
-                    return false;
+                if (this.mFrontendCiCamHandle != null || requestResource(resourceType, localLock)) {
                 }
-                return true;
+                break;
         }
+        return false;
     }
 
     private boolean requestResource(int resourceType, ReentrantLock localLock) {
@@ -2140,8 +2077,7 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    public void releaseLnb() {
-        acquireTRMSLock("releaseLnb()");
+    void releaseLnb() {
         this.mLnbLock.lock();
         try {
             if (this.mLnbHandle != null) {
@@ -2155,13 +2091,16 @@ public class Tuner implements AutoCloseable {
             }
             this.mLnb = null;
         } finally {
-            releaseTRMSLock();
             this.mLnbLock.unlock();
         }
     }
 
     public int getClientId() {
         return this.mClientId;
+    }
+
+    TunerResourceManager getTunerResourceManager() {
+        return this.mTunerResourceManager;
     }
 
     private void acquireTRMSLock(String functionNameForLog) {

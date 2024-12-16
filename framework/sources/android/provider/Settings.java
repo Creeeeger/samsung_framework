@@ -5,6 +5,8 @@ import android.annotation.SystemApi;
 import android.app.ActivityThread;
 import android.app.AppOpsManager;
 import android.app.Application;
+import android.app.Flags;
+import android.app.GrammaticalInflectionManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,8 +25,8 @@ import android.location.ILocationManager;
 import android.media.MediaMetrics;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.IBinder;
 import android.os.LocaleList;
 import android.os.Process;
@@ -45,6 +47,7 @@ import android.util.Slog;
 import android.view.accessibility.AccessibilityManager;
 import com.android.internal.util.Preconditions;
 import com.samsung.android.feature.SemFloatingFeature;
+import com.samsung.android.wallpaperbackup.BnRConstants;
 import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -53,12 +56,10 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -67,11 +68,13 @@ import java.util.function.Consumer;
 
 /* loaded from: classes3.dex */
 public final class Settings {
+    public static final String ACTION_ACCESSIBILITY_COLOR_CONTRAST_SETTINGS = "android.settings.ACCESSIBILITY_COLOR_CONTRAST_SETTINGS";
     public static final String ACTION_ACCESSIBILITY_COLOR_MOTION_SETTINGS = "android.settings.ACCESSIBILITY_COLOR_MOTION_SETTINGS";
 
     @SystemApi
     public static final String ACTION_ACCESSIBILITY_DETAILS_SETTINGS = "android.settings.ACCESSIBILITY_DETAILS_SETTINGS";
     public static final String ACTION_ACCESSIBILITY_SETTINGS = "android.settings.ACCESSIBILITY_SETTINGS";
+    public static final String ACTION_ACCESSIBILITY_SHORTCUT_SETTINGS = "android.settings.ACCESSIBILITY_SHORTCUT_SETTINGS";
     public static final String ACTION_ADD_ACCOUNT = "android.settings.ADD_ACCOUNT_SETTINGS";
     public static final String ACTION_ADVANCED_MEMORY_PROTECTION_SETTINGS = "android.settings.ADVANCED_MEMORY_PROTECTION_SETTINGS";
     public static final String ACTION_AIRPLANE_MODE_SETTINGS = "android.settings.AIRPLANE_MODE_SETTINGS";
@@ -87,9 +90,13 @@ public final class Settings {
     public static final String ACTION_APP_NOTIFICATION_SETTINGS = "android.settings.APP_NOTIFICATION_SETTINGS";
     public static final String ACTION_APP_OPEN_BY_DEFAULT_SETTINGS = "android.settings.APP_OPEN_BY_DEFAULT_SETTINGS";
     public static final String ACTION_APP_OPS_SETTINGS = "android.settings.APP_OPS_SETTINGS";
+
+    @SystemApi
+    public static final String ACTION_APP_PERMISSIONS_SETTINGS = "android.settings.APP_PERMISSIONS_SETTINGS";
     public static final String ACTION_APP_SEARCH_SETTINGS = "android.settings.APP_SEARCH_SETTINGS";
     public static final String ACTION_APP_USAGE_SETTINGS = "android.settings.action.APP_USAGE_SETTINGS";
     public static final String ACTION_ASSIST_GESTURE_SETTINGS = "android.settings.ASSIST_GESTURE_SETTINGS";
+    public static final String ACTION_AUTOMATIC_ZEN_RULE_SETTINGS = "android.settings.AUTOMATIC_ZEN_RULE_SETTINGS";
     public static final String ACTION_AUTO_ROTATE_SETTINGS = "android.settings.AUTO_ROTATE_SETTINGS";
     public static final String ACTION_BATTERY_SAVER_SETTINGS = "android.settings.BATTERY_SAVER_SETTINGS";
 
@@ -109,6 +116,7 @@ public final class Settings {
     public static final String ACTION_COMMUNAL_SETTING = "android.settings.COMMUNAL_SETTINGS";
     public static final String ACTION_CONDITION_PROVIDER_SETTINGS = "android.settings.ACTION_CONDITION_PROVIDER_SETTINGS";
     public static final String ACTION_CONVERSATION_SETTINGS = "android.settings.CONVERSATION_SETTINGS";
+    public static final String ACTION_CREDENTIAL_PROVIDER = "android.settings.CREDENTIAL_PROVIDER";
     public static final String ACTION_DARK_THEME_SETTINGS = "android.settings.DARK_THEME_SETTINGS";
     public static final String ACTION_DATA_ROAMING_SETTINGS = "android.settings.DATA_ROAMING_SETTINGS";
     public static final String ACTION_DATA_SAVER_SETTINGS = "android.settings.DATA_SAVER_SETTINGS";
@@ -127,6 +135,8 @@ public final class Settings {
     public static final String ACTION_FINGERPRINT_ENROLL = "android.settings.FINGERPRINT_ENROLL";
     public static final String ACTION_FOREGROUND_SERVICES_SETTINGS = "android.settings.FOREGROUND_SERVICES_SETTINGS";
     public static final String ACTION_HARD_KEYBOARD_SETTINGS = "android.settings.HARD_KEYBOARD_SETTINGS";
+    public static final String ACTION_HEARING_DEVICES_SETTINGS = "android.settings.HEARING_DEVICES_SETTINGS";
+    public static final String ACTION_HEARING_DEVICE_PAIRING_SETTINGS = "android.settings.HEARING_DEVICES_PAIRING_SETTINGS";
     public static final String ACTION_HOME_SETTINGS = "android.settings.HOME_SETTINGS";
     public static final String ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS = "android.settings.IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS";
     public static final String ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS = "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS";
@@ -163,6 +173,7 @@ public final class Settings {
     public static final String ACTION_MANAGE_OVERLAY_PERMISSION = "android.settings.action.MANAGE_OVERLAY_PERMISSION";
     public static final String ACTION_MANAGE_SUPERVISOR_RESTRICTED_SETTING = "android.settings.MANAGE_SUPERVISOR_RESTRICTED_SETTING";
     public static final String ACTION_MANAGE_UNKNOWN_APP_SOURCES = "android.settings.MANAGE_UNKNOWN_APP_SOURCES";
+    public static final String ACTION_MANAGE_USER_ASPECT_RATIO_SETTINGS = "android.settings.MANAGE_USER_ASPECT_RATIO_SETTINGS";
     public static final String ACTION_MANAGE_WRITE_SETTINGS = "android.settings.action.MANAGE_WRITE_SETTINGS";
     public static final String ACTION_MEDIA_CONTROLS_SETTINGS = "android.settings.ACTION_MEDIA_CONTROLS_SETTINGS";
     public static final String ACTION_MEMORY_CARD_SETTINGS = "android.settings.MEMORY_CARD_SETTINGS";
@@ -170,6 +181,7 @@ public final class Settings {
     public static final String ACTION_MOBILE_DATA_USAGE = "android.settings.MOBILE_DATA_USAGE";
     public static final String ACTION_MONITORING_CERT_INFO = "com.android.settings.MONITORING_CERT_INFO";
     public static final String ACTION_NETWORK_OPERATOR_SETTINGS = "android.settings.NETWORK_OPERATOR_SETTINGS";
+    public static final String ACTION_NETWORK_PROVIDER_SETTINGS = "android.settings.NETWORK_PROVIDER_SETTINGS";
     public static final String ACTION_NFCSHARING_SETTINGS = "android.settings.NFCSHARING_SETTINGS";
     public static final String ACTION_NFC_PAYMENT_SETTINGS = "android.settings.NFC_PAYMENT_SETTINGS";
     public static final String ACTION_NFC_SETTINGS = "android.settings.NFC_SETTINGS";
@@ -189,6 +201,7 @@ public final class Settings {
     public static final String ACTION_PICTURE_IN_PICTURE_SETTINGS = "android.settings.PICTURE_IN_PICTURE_SETTINGS";
     public static final String ACTION_POWER_MENU_SETTINGS = "android.settings.ACTION_POWER_MENU_SETTINGS";
     public static final String ACTION_PRINT_SETTINGS = "android.settings.ACTION_PRINT_SETTINGS";
+    public static final String ACTION_PRIVACY_CONTROLS = "android.settings.PRIVACY_CONTROLS";
     public static final String ACTION_PRIVACY_SETTINGS = "android.settings.PRIVACY_SETTINGS";
     public static final String ACTION_PROCESS_WIFI_EASY_CONNECT_URI = "android.settings.PROCESS_WIFI_EASY_CONNECT_URI";
     public static final String ACTION_QUICK_ACCESS_WALLET_SETTINGS = "android.settings.QUICK_ACCESS_WALLET_SETTINGS";
@@ -200,6 +213,7 @@ public final class Settings {
     public static final String ACTION_REQUEST_ENABLE_CONTENT_CAPTURE = "android.settings.REQUEST_ENABLE_CONTENT_CAPTURE";
     public static final String ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS = "android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS";
     public static final String ACTION_REQUEST_MANAGE_MEDIA = "android.settings.REQUEST_MANAGE_MEDIA";
+    public static final String ACTION_REQUEST_MEDIA_ROUTING_CONTROL = "android.settings.REQUEST_MEDIA_ROUTING_CONTROL";
     public static final String ACTION_REQUEST_SCHEDULE_EXACT_ALARM = "android.settings.REQUEST_SCHEDULE_EXACT_ALARM";
     public static final String ACTION_REQUEST_SET_AUTOFILL_SERVICE = "android.settings.REQUEST_SET_AUTOFILL_SERVICE";
     public static final String ACTION_SATELLITE_SETTING = "android.settings.SATELLITE_SETTING";
@@ -210,6 +224,7 @@ public final class Settings {
 
     @SystemApi
     public static final String ACTION_SHOW_ADMIN_SUPPORT_DETAILS = "android.settings.SHOW_ADMIN_SUPPORT_DETAILS";
+    public static final String ACTION_SHOW_ENABLED_ESIM_PROFILE = "android.settings.SHOW_ENABLED_ESIM_PROFILE";
     public static final String ACTION_SHOW_REGULATORY_INFO = "android.settings.SHOW_REGULATORY_INFO";
     public static final String ACTION_SHOW_REMOTE_BUGREPORT_DIALOG = "android.settings.SHOW_REMOTE_BUGREPORT_DIALOG";
 
@@ -293,6 +308,7 @@ public final class Settings {
     public static final String CALL_METHOD_RESET_GLOBAL = "RESET_global";
     public static final String CALL_METHOD_RESET_MODE_KEY = "_reset_mode";
     public static final String CALL_METHOD_RESET_SECURE = "RESET_secure";
+    public static final String CALL_METHOD_RESET_SYSTEM = "RESET_system";
     public static final String CALL_METHOD_SET_ALL_CONFIG = "SET_ALL_config";
     public static final String CALL_METHOD_SET_SYNC_DISABLED_MODE_CONFIG = "SET_SYNC_DISABLED_MODE_config";
     public static final String CALL_METHOD_SYNC_DISABLED_MODE_KEY = "_disabled_mode";
@@ -310,6 +326,7 @@ public final class Settings {
     public static final String EXTRA_APP_PACKAGE = "android.provider.extra.APP_PACKAGE";
     public static final String EXTRA_APP_UID = "app_uid";
     public static final String EXTRA_AUTHORITIES = "authorities";
+    public static final String EXTRA_AUTOMATIC_ZEN_RULE_ID = "android.provider.extra.AUTOMATIC_ZEN_RULE_ID";
     public static final String EXTRA_BATTERY_SAVER_MODE_ENABLED = "android.settings.extra.battery_saver_mode_enabled";
     public static final String EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED = "android.provider.extra.BIOMETRIC_AUTHENTICATORS_ALLOWED";
     public static final String EXTRA_CALLING_PACKAGE = "calling_package";
@@ -323,6 +340,7 @@ public final class Settings {
     public static final String EXTRA_EASY_CONNECT_CHANNEL_LIST = "android.provider.extra.EASY_CONNECT_CHANNEL_LIST";
     public static final String EXTRA_EASY_CONNECT_ERROR_CODE = "android.provider.extra.EASY_CONNECT_ERROR_CODE";
     public static final String EXTRA_ENABLE_MMS_DATA_REQUEST_REASON = "android.settings.extra.ENABLE_MMS_DATA_REQUEST_REASON";
+    public static final String EXTRA_ENTRYPOINT = "com.android.settings.inputmethod.EXTRA_ENTRYPOINT";
     public static final String EXTRA_EXPLICIT_LOCALES = "android.provider.extra.EXPLICIT_LOCALES";
     public static final String EXTRA_INPUT_DEVICE_IDENTIFIER = "input_device_identifier";
     public static final String EXTRA_INPUT_METHOD_ID = "input_method_id";
@@ -358,7 +376,7 @@ public final class Settings {
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static final int RESET_MODE_UNTRUSTED_DEFAULTS = 2;
-    public static final Set<String> SAMSUNG_NOTIFY_NO_DELAY;
+    public static final Set<String> SAMSUNG_NOTIFY_NO_DELAY = new ArraySet();
     public static final int SET_ALL_RESULT_DISABLED = 2;
     public static final int SET_ALL_RESULT_FAILURE = 0;
     public static final int SET_ALL_RESULT_SUCCESS = 1;
@@ -372,171 +390,165 @@ public final class Settings {
     private static final Object sInSystemServerLock;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AddWifiResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EnableMmsDataReason {
     }
 
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes3.dex */
-    public @interface Readable {
+    private @interface Readable {
         int maxTargetSdk() default 0;
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ResetMode {
     }
 
     @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SetAllResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SupervisorVerificationSetting {
     }
 
+    /* renamed from: -$$Nest$smmaybeCloseGenerationArray, reason: not valid java name */
+    static /* bridge */ /* synthetic */ void m3617$$Nest$smmaybeCloseGenerationArray(MemoryIntArray memoryIntArray) {
+        maybeCloseGenerationArray(memoryIntArray);
+    }
+
     static {
-        ArraySet arraySet = new ArraySet();
-        SAMSUNG_NOTIFY_NO_DELAY = arraySet;
-        arraySet.add("current_sec_active_themepackage");
-        arraySet.add(System.SEM_CURRENT_APP_ICON_PACKAGE);
-        arraySet.add("wallpapertheme_state");
-        arraySet.add("any_screen_enabled");
-        arraySet.add(System.SEM_ONE_HANDED_OP_WAKEUP_TYPE);
-        arraySet.add(System.SEM_ONE_HAND_ANY_SCREEN_RUNNING);
-        arraySet.add("edge_handler_position_percent");
-        arraySet.add(Secure.EDGE_HANDLE_SIZE_PERCENT);
-        arraySet.add("navigation_bar_gesture_disabled_by_policy");
-        arraySet.add(Secure.NAVIGATION_MODE);
-        arraySet.add("onehand_direction");
-        arraySet.add(Secure.SHOW_IME_WITH_HARD_KEYBOARD);
-        arraySet.add(Global.GOOGLE_CORE_CONTROL);
-        arraySet.add(System.DTMF_TONE_WHEN_DIALING);
-        arraySet.add(System.DTMF_TONE_TYPE_WHEN_DIALING);
-        arraySet.add(System.LOCKSCREEN_SOUNDS_ENABLED);
-        arraySet.add(System.SEM_SIP_KEY_FEEDBACK_SOUND);
-        arraySet.add(System.SOUND_EFFECTS_ENABLED);
-        arraySet.add(System.CAMERA_FEEDBACK_VIBRATE);
-        arraySet.add(System.DIALING_KEYPAD_VIBRATE);
-        arraySet.add(System.HAPTIC_FEEDBACK_ENABLED);
-        arraySet.add(System.NAVIGATION_GESTURES_VIBRATE);
-        arraySet.add(System.SEM_SIP_KEY_FEEDBACK_VIBRATION);
-        arraySet.add("charging_sounds_enabled");
-        arraySet.add("charging_vibration_enabled");
-        arraySet.add(System.SEM_SYSTEM_SOUND);
-        arraySet.add(System.VIB_RECVCALL_MAGNITUDE);
-        arraySet.add(System.VIB_FEEDBACK_MAGNITUDE);
-        arraySet.add(System.SEM_VIBRATION_FORCE_TOUCH_INTENSITY);
-        arraySet.add(System.MEDIA_VIBRATION_INTENSITY);
-        arraySet.add("edge_enable");
-        arraySet.add("active_edge_area");
-        arraySet.add("show_recent_apps");
-        arraySet.add("show_label");
-        arraySet.add(Secure.STYLUS_HANDWRITING_ENABLED);
-        arraySet.add(Secure.SEM_DIRECT_WRITING_TOOLBAR);
-        arraySet.add(System.SEM_MOTION_PICK_UP);
-        arraySet.add(System.SEM_MOTION_MUTE);
-        arraySet.add(System.SEM_MOTION_OVERTURN);
-        arraySet.add(System.SEM_PALM_TOUCH);
-        arraySet.add(System.SEM_PALM_SWIPE);
-        arraySet.add(System.LIFT_TO_WAKE);
-        arraySet.add(System.DOUBLE_TAP_TO_SLEEP);
-        arraySet.add(System.DOUBLE_TAB_TO_WAKE_UP);
-        arraySet.add(System.PALM_TOUCH_TO_SLEEP);
-        arraySet.add(System.INTELLIGENT_SLEEP_MODE);
-        arraySet.add(System.LARGE_COVER_SCREEN_NAVIGATION);
-        arraySet.add(System.LARGE_COVER_SCREEN_APPS);
-        arraySet.add("colortheme_app_icon");
-        arraySet.add("lockstar_enabled");
-        arraySet.add("plugin_lock_sub_enabled");
-        arraySet.add(System.BLUE_LIGHT_FILTER);
-        arraySet.add(System.BLUE_LIGHT_FILTER_OPACITY);
-        arraySet.add(System.BLUE_LIGHT_FILTER_SCHEDULED);
-        arraySet.add(System.BLUE_LIGHT_FILTER_TYPE);
-        arraySet.add(System.BLUE_LIGHT_FILTER_ON_TIME);
-        arraySet.add(System.BLUE_LIGHT_FILTER_OFF_TIME);
-        arraySet.add(System.BLUE_LIGHT_FILTER_ADAPTIVE_MODE);
-        arraySet.add(System.BLUE_LIGHT_FILTER_NIGHT_DIM);
-        arraySet.add("spam_call_enable");
-        arraySet.add("contact_setting_sort_order");
-        arraySet.add("contact_setting_display_order");
-        arraySet.add("contact_setting_show_frequently_contacted");
-        arraySet.add("contact_setting_business_card_sort_order");
-        arraySet.add(Global.CONTACT_ONLY_CONTACTS_WITH_PHONE_NUMBER);
-        arraySet.add("carrier_matching_status");
-        arraySet.add("airplane_mode_on");
-        arraySet.add("select_icon_1");
-        arraySet.add("select_icon_2");
-        arraySet.add("select_name_1");
-        arraySet.add("select_name_2");
-        arraySet.add("contact_setting_list_filter");
-        arraySet.add("rcs_user_setting");
-        arraySet.add("rcs_user_setting2");
-        arraySet.add("show_message_logs");
-        arraySet.add("voicecall_type");
-        arraySet.add("videocall_type");
-        arraySet.add("voicecall_type2");
-        arraySet.add("videocall_type2");
-        arraySet.add("video_calling_mode");
-        arraySet.add(System.DATE_FORMAT);
-        arraySet.add(System.SEM_PREFERED_VOICE_CALL);
-        arraySet.add(Global.MOBILE_DATA);
-        arraySet.add(Secure.ENABLED_ACCESSIBILITY_SERVICES);
-        arraySet.add("default_key_sound_path");
-        arraySet.add("backspace_key_sound_path");
-        arraySet.add(System.SEM_EMERGENCY_MODE);
-        arraySet.add("device_provisioned");
-        arraySet.add(System.SEM_MINIMAL_BATTERY_USE);
-        arraySet.add("enable_language_change_combination_key");
-        arraySet.add("com.sec.android.inputmethod.previous_inputmethod_dex");
-        arraySet.add(WallpaperThemeConstants.SETTING_NAME_WALLPAPERTHEME_COLOR);
-        arraySet.add("bold_text");
-        arraySet.add(Secure.SHOW_KEYBOARD_BUTTON);
-        arraySet.add(Global.NAVIGATION_BAR_BUTTON_TO_HIDE_KEYBOARD);
-        arraySet.add("game_no_interruption_white_list");
-        arraySet.add("game_no_interruption");
-        arraySet.add(Global.NAVIGATION_BAR_GESTURE_WHILE_HIDDEN);
-        arraySet.add(System.SCREEN_BRIGHTNESS_MODE);
-        arraySet.add("game_edgescreen_touch_lock");
-        arraySet.add("game_autobrightness_lock");
-        arraySet.add("game_touchscreen_lock");
-        arraySet.add("game_bixby_block");
-        arraySet.add("game_auto_temperature_control");
-        arraySet.add("allow_more_heat_value");
-        arraySet.add("game_double_swipe_enable");
-        arraySet.add("game_show_floating_icon");
-        arraySet.add("game_display_hz_48");
-        arraySet.add(Global.ZEN_MODE);
-        arraySet.add(Global.ZEN_MODE_CONFIG_ETAG);
-        arraySet.add("game_immersive_mode");
-        arraySet.add(Secure.RAMPART_BLOCKED_ADB_CMD);
-        arraySet.add(Secure.RAMPART_BLOCKED_AT_CMD);
-        arraySet.add(Secure.RAMPART_BLOCKED_AUTO_DOWNLOAD_MESSAGES);
-        arraySet.add(Secure.RAMPART_BLOCKED_COMMANDS);
-        arraySet.add(Secure.RAMPART_BLOCKED_DEVICE_ADMIN_APPS);
-        arraySet.add(Secure.RAMPART_BLOCKED_KEYSTRING);
-        arraySet.add(Secure.RAMPART_BLOCKED_LINK_PREVIEW_MESSAGES);
-        arraySet.add(Secure.RAMPART_BLOCKED_LOCATION_GALLERY);
-        arraySet.add(Secure.RAMPART_BLOCKED_LOCATION_MESSAGES);
-        arraySet.add(Secure.RAMPART_BLOCKED_SHARED_ALBUM_GALLERY);
-        arraySet.add(Secure.RAMPART_BLOCKED_UNKNOWN_APPS);
-        arraySet.add(Secure.RAMPART_ENABLED_DEVICE_PROTECTION);
-        arraySet.add(Secure.RAMPART_ENABLED_MESSAGE_GUARD);
-        arraySet.add(Secure.RAMPART_MAIN_SWITCH_ENABLED);
-        arraySet.add(Secure.RAMPART_MISC_SETTINGS);
-        arraySet.add(Secure.RAMPART_STRICT_PROTECTION_SWITCH_ENABLED);
-        arraySet.add(Secure.RAMPART_BLOCKED_USB_DATA_TRANSFER);
-        arraySet.add(System.RAMPART_SUW_MAIN_ON);
-        arraySet.add(Secure.RAMPART_IS_RESET_BY_AT_COMMAND);
+        SAMSUNG_NOTIFY_NO_DELAY.add("current_sec_active_themepackage");
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_CURRENT_APP_ICON_PACKAGE);
+        SAMSUNG_NOTIFY_NO_DELAY.add("any_screen_enabled");
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_ONE_HANDED_OP_WAKEUP_TYPE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_ONE_HAND_ANY_SCREEN_RUNNING);
+        SAMSUNG_NOTIFY_NO_DELAY.add("edge_handler_position_percent");
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.EDGE_HANDLE_SIZE_PERCENT);
+        SAMSUNG_NOTIFY_NO_DELAY.add("navigation_bar_gesture_disabled_by_policy");
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.NAVIGATION_MODE);
+        SAMSUNG_NOTIFY_NO_DELAY.add("onehand_direction");
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.SHOW_IME_WITH_HARD_KEYBOARD);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.EDGE_ENABLE);
+        SAMSUNG_NOTIFY_NO_DELAY.add("active_edge_area");
+        SAMSUNG_NOTIFY_NO_DELAY.add("show_recent_apps");
+        SAMSUNG_NOTIFY_NO_DELAY.add("show_label");
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.DTMF_TONE_WHEN_DIALING);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.DTMF_TONE_TYPE_WHEN_DIALING);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.LOCKSCREEN_SOUNDS_ENABLED);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_SIP_KEY_FEEDBACK_SOUND);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SOUND_EFFECTS_ENABLED);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.CAMERA_FEEDBACK_VIBRATE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.DIALING_KEYPAD_VIBRATE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.HAPTIC_FEEDBACK_ENABLED);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.NAVIGATION_GESTURES_VIBRATE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_SIP_KEY_FEEDBACK_VIBRATION);
+        SAMSUNG_NOTIFY_NO_DELAY.add("charging_sounds_enabled");
+        SAMSUNG_NOTIFY_NO_DELAY.add("charging_vibration_enabled");
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_SYSTEM_SOUND);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.VIB_RECVCALL_MAGNITUDE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.VIB_FEEDBACK_MAGNITUDE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_VIBRATION_FORCE_TOUCH_INTENSITY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.MEDIA_VIBRATION_INTENSITY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER_OPACITY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER_SCHEDULED);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER_TYPE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER_ON_TIME);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER_OFF_TIME);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER_ADAPTIVE_MODE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.BLUE_LIGHT_FILTER_NIGHT_DIM);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_ADB_CMD);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_AT_CMD);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_AUTO_DOWNLOAD_MESSAGES);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_COMMANDS);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_DEVICE_ADMIN_APPS);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_KEYSTRING);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_LINK_PREVIEW_MESSAGES);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_LOCATION_GALLERY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_LOCATION_MESSAGES);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_SHARED_ALBUM_GALLERY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_UNKNOWN_APPS);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_ENABLED_DEVICE_PROTECTION);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_ENABLED_MESSAGE_GUARD);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_MAIN_SWITCH_ENABLED);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_MISC_SETTINGS);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_STRICT_PROTECTION_SWITCH_ENABLED);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_USB_DATA_TRANSFER);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_2G_NETWORK);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_BLOCKED_UNSECURE_WIFI_AUTOJOIN);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.RAMPART_SUW_MAIN_ON);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.RAMPART_IS_RESET_BY_AT_COMMAND);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Global.GOOGLE_CORE_CONTROL);
+        SAMSUNG_NOTIFY_NO_DELAY.add("colortheme_app_icon");
+        SAMSUNG_NOTIFY_NO_DELAY.add("lockstar_enabled");
+        SAMSUNG_NOTIFY_NO_DELAY.add("plugin_lock_sub_enabled");
+        SAMSUNG_NOTIFY_NO_DELAY.add(BnRConstants.SETTINGS_KEYGUARD_TRANSPARENCY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(BnRConstants.SETTINGS_KEYGUARD_TRANSPARENCY_SUB_DISPLAY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(BnRConstants.SETTINGS_SYSTEM_TRANSPARENCY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(BnRConstants.SETTINGS_SYSTEM_TRANSPARENCY_SUB_DISPLAY);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        SAMSUNG_NOTIFY_NO_DELAY.add("default_key_sound_path");
+        SAMSUNG_NOTIFY_NO_DELAY.add("backspace_key_sound_path");
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_EMERGENCY_MODE);
+        SAMSUNG_NOTIFY_NO_DELAY.add("device_provisioned");
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_MINIMAL_BATTERY_USE);
+        SAMSUNG_NOTIFY_NO_DELAY.add("enable_language_change_combination_key");
+        SAMSUNG_NOTIFY_NO_DELAY.add("com.sec.android.inputmethod.previous_inputmethod_dex");
+        SAMSUNG_NOTIFY_NO_DELAY.add(WallpaperThemeConstants.SETTING_NAME_WALLPAPERTHEME_COLOR);
+        SAMSUNG_NOTIFY_NO_DELAY.add("bold_text");
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.SHOW_KEYBOARD_BUTTON);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.SHOW_KEYBOARD_BUTTON_POSITION);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Global.NAVIGATION_BAR_BUTTON_TO_HIDE_KEYBOARD);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.VOICE_SEARCH_WIDGET_STATE);
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_no_interruption_white_list");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_no_interruption");
+        SAMSUNG_NOTIFY_NO_DELAY.add(Global.NAVIGATION_BAR_GESTURE_WHILE_HIDDEN);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SCREEN_BRIGHTNESS_MODE);
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_edgescreen_touch_lock");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_autobrightness_lock");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_touchscreen_lock");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_bixby_block");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_auto_temperature_control");
+        SAMSUNG_NOTIFY_NO_DELAY.add("allow_more_heat_value");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_double_swipe_enable");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_show_floating_icon");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_display_hz_48");
+        SAMSUNG_NOTIFY_NO_DELAY.add(Global.ZEN_MODE);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Global.ZEN_MODE_CONFIG_ETAG);
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_immersive_mode");
+        SAMSUNG_NOTIFY_NO_DELAY.add("game_touch_fast_response");
+        SAMSUNG_NOTIFY_NO_DELAY.add("spam_call_enable");
+        SAMSUNG_NOTIFY_NO_DELAY.add("contact_setting_sort_order");
+        SAMSUNG_NOTIFY_NO_DELAY.add("contact_setting_display_order");
+        SAMSUNG_NOTIFY_NO_DELAY.add("contact_setting_show_frequently_contacted");
+        SAMSUNG_NOTIFY_NO_DELAY.add("contact_setting_business_card_sort_order");
+        SAMSUNG_NOTIFY_NO_DELAY.add(Global.CONTACT_ONLY_CONTACTS_WITH_PHONE_NUMBER);
+        SAMSUNG_NOTIFY_NO_DELAY.add("carrier_matching_status");
+        SAMSUNG_NOTIFY_NO_DELAY.add("airplane_mode_on");
+        SAMSUNG_NOTIFY_NO_DELAY.add("select_icon_1");
+        SAMSUNG_NOTIFY_NO_DELAY.add("select_icon_2");
+        SAMSUNG_NOTIFY_NO_DELAY.add("select_name_1");
+        SAMSUNG_NOTIFY_NO_DELAY.add("select_name_2");
+        SAMSUNG_NOTIFY_NO_DELAY.add("contact_setting_list_filter");
+        SAMSUNG_NOTIFY_NO_DELAY.add("rcs_user_setting");
+        SAMSUNG_NOTIFY_NO_DELAY.add("rcs_user_setting2");
+        SAMSUNG_NOTIFY_NO_DELAY.add("show_message_logs");
+        SAMSUNG_NOTIFY_NO_DELAY.add("voicecall_type");
+        SAMSUNG_NOTIFY_NO_DELAY.add("videocall_type");
+        SAMSUNG_NOTIFY_NO_DELAY.add("voicecall_type2");
+        SAMSUNG_NOTIFY_NO_DELAY.add("videocall_type2");
+        SAMSUNG_NOTIFY_NO_DELAY.add("video_calling_mode");
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.DATE_FORMAT);
+        SAMSUNG_NOTIFY_NO_DELAY.add(System.SEM_PREFERED_VOICE_CALL);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Global.MOBILE_DATA);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.STYLUS_HANDWRITING_ENABLED);
+        SAMSUNG_NOTIFY_NO_DELAY.add(Secure.SEM_DIRECT_WRITING_TOOLBAR);
+        SAMSUNG_NOTIFY_NO_DELAY.add("sec_superhdr");
         sInSystemServer = false;
         sInSystemServerLock = new Object();
         PM_WRITE_SETTINGS = new String[]{Manifest.permission.WRITE_SETTINGS};
@@ -558,14 +570,12 @@ public final class Settings {
         return z;
     }
 
-    /* loaded from: classes3.dex */
     public static class SettingNotFoundException extends AndroidException {
         public SettingNotFoundException(String msg) {
             super(msg);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class NameValueTable implements BaseColumns {
         public static final String IS_PRESERVED_IN_RESTORE = "is_preserved_in_restore";
         public static final String NAME = "name";
@@ -589,9 +599,8 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class GenerationTracker {
-        private static final boolean DEBUG = "eng".equals(Build.TYPE);
+    private static final class GenerationTracker {
+        private static final boolean SEC_PROVIDER_DEBUG = Debug.semIsProductDev();
         private final MemoryIntArray mArray;
         private int mCurrentGeneration;
         private final Consumer<String> mErrorHandler;
@@ -608,14 +617,14 @@ public final class Settings {
 
         public boolean isGenerationChanged() {
             int currentGeneration = readCurrentGeneration();
-            if (DEBUG) {
-                Log.d(Settings.TAG, "isGenerationChanged() : " + currentGeneration + " : " + this.mCurrentGeneration);
-            }
             if (currentGeneration >= 0) {
                 if (currentGeneration == this.mCurrentGeneration) {
                     return false;
                 }
                 this.mCurrentGeneration = currentGeneration;
+            }
+            if (SEC_PROVIDER_DEBUG) {
+                Log.d(Settings.TAG, "isGenerationChanged() for " + this.mName + " is true. " + currentGeneration + ":" + this.mCurrentGeneration);
                 return true;
             }
             return true;
@@ -636,13 +645,7 @@ public final class Settings {
         }
 
         public void destroy() {
-            try {
-                if (!Settings.isInSystemServer() && !this.mArray.isClosed()) {
-                    this.mArray.close();
-                }
-            } catch (IOException e) {
-                Log.e(Settings.TAG, "Error closing backing array", e);
-            }
+            Settings.maybeCloseGenerationArray(this.mArray);
         }
 
         protected void finalize() throws Throwable {
@@ -654,11 +657,29 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class ContentProviderHolder {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void maybeCloseGenerationArray(MemoryIntArray array) {
+        if (array == null) {
+            return;
+        }
+        try {
+            if (!isInSystemServer() && !array.isClosed()) {
+                array.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error closing the generation tracking array", e);
+        }
+    }
+
+    private static final class ContentProviderHolder {
         private IContentProvider mContentProvider;
         private final Object mLock = new Object();
         private final Uri mUri;
+
+        /* renamed from: -$$Nest$fgetmUri, reason: not valid java name */
+        static /* bridge */ /* synthetic */ Uri m3624$$Nest$fgetmUri(ContentProviderHolder contentProviderHolder) {
+            return contentProviderHolder.mUri;
+        }
 
         public ContentProviderHolder(Uri uri) {
             this.mUri = uri;
@@ -682,9 +703,12 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class NameValueCache {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class NameValueCache {
+        private static final boolean DEBUG = false;
         private static final String NAME_EQ_PLACEHOLDER = "name=?";
+        private static final boolean SEC_PROVIDER = true;
+        private static final String[] SELECT_VALUE_PROJECTION;
         private final ArraySet<String> mAllFields;
         private final String mCallDeleteCommand;
         private final String mCallGetCommand;
@@ -693,18 +717,21 @@ public final class Settings {
         private final String mCallSetCommand;
         private Consumer<String> mGenerationTrackerErrorHandler;
         private ArrayMap<String, GenerationTracker> mGenerationTrackers;
+        private final ArrayMap<String, ArrayMap<String, String>> mPrefixToValues;
         private final ContentProviderHolder mProviderHolder;
         private final ArraySet<String> mReadableFields;
         private final ArrayMap<String, Integer> mReadableFieldsWithMaxTargetSdk;
         private final Uri mUri;
         private final ArrayMap<String, String> mValues;
-        private static final boolean DEBUG = "eng".equals(Build.TYPE);
-        private static final String[] SELECT_VALUE_PROJECTION = {"value"};
+        private static final boolean SEC_PROVIDER_DEBUG = Debug.semIsProductDev();
+        private static final Set<String> SEC_GENERATION_TRACKER_DEBUG = new ArraySet();
 
-        /* synthetic */ NameValueCache(Uri uri, String str, String str2, String str3, String str4, String str5, ContentProviderHolder contentProviderHolder, Class cls, NameValueCacheIA nameValueCacheIA) {
-            this(uri, str, str2, str3, str4, str5, contentProviderHolder, cls);
+        static {
+            SEC_GENERATION_TRACKER_DEBUG.add("voicecall_type");
+            SELECT_VALUE_PROJECTION = new String[]{"value"};
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$0(String name) {
             synchronized (this) {
                 Log.e(Settings.TAG, "Error accessing generation tracker - removing");
@@ -723,6 +750,7 @@ public final class Settings {
 
         private <T extends NameValueTable> NameValueCache(Uri uri, String getCommand, String setCommand, String deleteCommand, String listCommand, String setAllCommand, ContentProviderHolder providerHolder, Class<T> callerClass) {
             this.mValues = new ArrayMap<>();
+            this.mPrefixToValues = new ArrayMap<>();
             this.mGenerationTrackers = new ArrayMap<>();
             this.mGenerationTrackerErrorHandler = new Consumer() { // from class: android.provider.Settings$NameValueCache$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
@@ -737,13 +765,10 @@ public final class Settings {
             this.mCallListCommand = listCommand;
             this.mCallSetAllCommand = setAllCommand;
             this.mProviderHolder = providerHolder;
-            ArraySet<String> arraySet = new ArraySet<>();
-            this.mReadableFields = arraySet;
-            ArraySet<String> arraySet2 = new ArraySet<>();
-            this.mAllFields = arraySet2;
-            ArrayMap<String, Integer> arrayMap = new ArrayMap<>();
-            this.mReadableFieldsWithMaxTargetSdk = arrayMap;
-            Settings.getPublicSettingsForClass(callerClass, arraySet2, arraySet, arrayMap);
+            this.mReadableFields = new ArraySet<>();
+            this.mAllFields = new ArraySet<>();
+            this.mReadableFieldsWithMaxTargetSdk = new ArrayMap<>();
+            Settings.getPublicSettingsForClass(callerClass, this.mAllFields, this.mReadableFields, this.mReadableFieldsWithMaxTargetSdk);
         }
 
         public boolean putStringForUser(ContentResolver cr, String name, String value, String tag, boolean makeDefault, int userHandle, boolean overrideableByRestore) {
@@ -825,12 +850,15 @@ public final class Settings {
             Cursor c;
             boolean isSelf = userHandle == UserHandle.myUserId();
             boolean useCache = isSelf && !Settings.isInSystemServer();
+            if (SEC_PROVIDER_DEBUG) {
+                Log.d(Settings.TAG, "GET_req(" + this.mUri.getPath() + "/" + name + ") userHandle:" + userHandle + ", myUserId:" + UserHandle.myUserId() + ", isInSystemServer:" + Settings.isInSystemServer() + ", isSelf:" + isSelf + ", useCache:" + useCache + ", callingPackage:" + cr.getPackageName());
+            }
             if (useCache) {
                 synchronized (this) {
                     GenerationTracker generationTracker = this.mGenerationTrackers.get(name);
                     if (generationTracker != null) {
                         if (generationTracker.isGenerationChanged()) {
-                            if (DEBUG) {
+                            if (SEC_GENERATION_TRACKER_DEBUG.contains(name)) {
                                 Log.i(Settings.TAG, "Generation changed for setting:" + name + " type:" + this.mUri.getPath() + " in package:" + cr.getPackageName() + " and user:" + userHandle);
                             }
                             this.mValues.remove(name);
@@ -838,21 +866,15 @@ public final class Settings {
                             this.mGenerationTrackers.remove(name);
                         } else if (this.mValues.containsKey(name)) {
                             String value2 = this.mValues.get(name);
-                            if (DEBUG) {
-                                Log.d(Settings.TAG, "GET name: " + name + ", value: " + value2 + ", user: " + userHandle + ", callingPackage: " + cr.getPackageName() + " (Cached)");
+                            if (SEC_PROVIDER_DEBUG) {
+                                Log.d(Settings.TAG, "GET_ret(" + this.mUri.getPath() + "/" + name + ") value:" + value2 + ", user:" + userHandle + ", callingPackage:" + cr.getPackageName() + " (Cached)");
                             }
                             return value2;
                         }
                     }
-                    if (DEBUG) {
-                        Log.i(Settings.TAG, "Cache miss for setting:" + name + " for user:" + userHandle);
-                    }
                     needsGenerationTracker = true;
                 }
             } else {
-                if (DEBUG) {
-                    Log.v(Settings.TAG, "get setting for user " + userHandle + " by user " + UserHandle.myUserId() + " so skipping cache");
-                }
                 needsGenerationTracker = false;
             }
             if (!isCallerExemptFromReadableRestriction() && this.mAllFields.contains(name)) {
@@ -880,7 +902,7 @@ public final class Settings {
                     }
                     if (needsGenerationTracker) {
                         args.putString(Settings.CALL_METHOD_TRACK_GENERATION_KEY, null);
-                        if (DEBUG) {
+                        if (SEC_GENERATION_TRACKER_DEBUG.contains(name)) {
                             Log.i(Settings.TAG, "Requested generation tracker for setting:" + name + " type:" + this.mUri.getPath() + " in package:" + cr.getPackageName() + " and user:" + userHandle);
                         }
                     }
@@ -889,16 +911,16 @@ public final class Settings {
                     } else {
                         token = Binder.clearCallingIdentity();
                         try {
-                            try {
-                                Bundle b2 = cp.call(cr.getAttributionSource(), this.mProviderHolder.mUri.getAuthority(), this.mCallGetCommand, name, args);
-                                Binder.restoreCallingIdentity(token);
-                                b = b2;
-                            } catch (Throwable th) {
-                                th = th;
-                                throw th;
-                            }
+                        } catch (Throwable th) {
+                            th = th;
+                        }
+                        try {
+                            Bundle b2 = cp.call(cr.getAttributionSource(), this.mProviderHolder.mUri.getAuthority(), this.mCallGetCommand, name, args);
+                            Binder.restoreCallingIdentity(token);
+                            b = b2;
                         } catch (Throwable th2) {
                             th = th2;
+                            throw th;
                         }
                     }
                     if (b != null) {
@@ -913,15 +935,20 @@ public final class Settings {
                                                 int index = b.getInt(Settings.CALL_METHOD_GENERATION_INDEX_KEY, -1);
                                                 if (array == null || index < 0) {
                                                     value = value3;
+                                                    Settings.maybeCloseGenerationArray(array);
                                                 } else {
                                                     int generation = b.getInt(Settings.CALL_METHOD_GENERATION_KEY, 0);
-                                                    if (DEBUG) {
+                                                    if (SEC_GENERATION_TRACKER_DEBUG.contains(name)) {
                                                         try {
                                                             Log.i(Settings.TAG, "Received generation tracker for setting:" + name + " type:" + this.mUri.getPath() + " in package:" + cr.getPackageName() + " and user:" + userHandle + " with index:" + index);
                                                         } catch (Throwable th3) {
                                                             th = th3;
                                                             throw th;
                                                         }
+                                                    }
+                                                    GenerationTracker oldTracker = this.mGenerationTrackers.get(name);
+                                                    if (oldTracker != null) {
+                                                        oldTracker.destroy();
                                                     }
                                                     value = value3;
                                                     this.mGenerationTrackers.put(name, new GenerationTracker(name, array, index, generation, this.mGenerationTrackerErrorHandler));
@@ -933,7 +960,7 @@ public final class Settings {
                                             value = value3;
                                         }
                                         if (this.mGenerationTrackers.get(name) != null && !this.mGenerationTrackers.get(name).isGenerationChanged()) {
-                                            if (DEBUG) {
+                                            if (SEC_GENERATION_TRACKER_DEBUG.contains(name)) {
                                                 Log.i(Settings.TAG, "Updating cache for setting:" + name);
                                             }
                                             this.mValues.put(name, value);
@@ -944,12 +971,9 @@ public final class Settings {
                                 }
                             } else {
                                 value = value3;
-                                if (DEBUG) {
-                                    Log.i(Settings.TAG, "call-query of user " + userHandle + " by " + UserHandle.myUserId() + (Settings.isInSystemServer() ? " in system_server" : "") + " so not updating cache");
-                                }
                             }
-                            if (DEBUG) {
-                                Log.d(Settings.TAG, "GET name: " + name + ", value: " + value + ", user: " + userHandle + ", callingPackage: " + cr.getPackageName() + " (ProviderCall)");
+                            if (SEC_PROVIDER_DEBUG) {
+                                Log.d(Settings.TAG, "GET_ret(" + this.mUri.getPath() + "/" + name + ") value:" + value + ", user:" + userHandle + ", by user:" + UserHandle.myUserId() + ", callingPackage:" + cr.getPackageName() + " (ProviderCall)");
                             }
                             return value;
                         } catch (RemoteException e2) {
@@ -992,13 +1016,13 @@ public final class Settings {
                         String value4 = c2.moveToNext() ? c2.getString(0) : str;
                         synchronized (this) {
                             if (this.mGenerationTrackers.get(name) != null && !this.mGenerationTrackers.get(name).isGenerationChanged()) {
-                                if (DEBUG) {
+                                if (SEC_GENERATION_TRACKER_DEBUG.contains(name)) {
                                     Log.i(Settings.TAG, "Updating cache for setting:" + name + " using query");
                                 }
                                 this.mValues.put(name, value4);
                             }
-                            if (DEBUG) {
-                                Log.d(Settings.TAG, "GET name: " + name + ", value: " + value4 + ", user: " + userHandle + ", callingPackage: " + cr.getPackageName() + " (Query)");
+                            if (SEC_PROVIDER_DEBUG) {
+                                Log.d(Settings.TAG, "GET_ret(" + this.mUri.getPath() + "/" + name + ") value: " + value4 + ", user: " + userHandle + ", by user: " + UserHandle.myUserId() + ", callingPackage: " + cr.getPackageName() + " (Query)");
                             }
                             if (c2 != null) {
                                 c2.close();
@@ -1033,17 +1057,45 @@ public final class Settings {
             return isTestOnly || applicationInfo.isSystemApp() || applicationInfo.isPrivilegedApp() || applicationInfo.isSignedWithPlatformKey();
         }
 
-        /* JADX WARN: Removed duplicated region for block: B:44:0x0318 A[Catch: all -> 0x033c, TryCatch #11 {all -> 0x033c, blocks: (B:38:0x02fe, B:40:0x0306, B:42:0x0314, B:44:0x0318, B:45:0x0330, B:46:0x033a, B:62:0x033d), top: B:34:0x024f }] */
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public android.util.ArrayMap<java.lang.String, java.lang.String> getStringsForPrefix(android.content.ContentResolver r24, java.lang.String r25, java.util.List<java.lang.String> r26) {
+        /*  JADX ERROR: Types fix failed
+            java.lang.NullPointerException: Cannot invoke "jadx.core.dex.instructions.args.InsnArg.getType()" because "changeArg" is null
+            	at jadx.core.dex.visitors.typeinference.TypeUpdate.moveListener(TypeUpdate.java:439)
+            	at jadx.core.dex.visitors.typeinference.TypeUpdate.runListeners(TypeUpdate.java:232)
+            	at jadx.core.dex.visitors.typeinference.TypeUpdate.requestUpdate(TypeUpdate.java:212)
+            	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeForSsaVar(TypeUpdate.java:183)
+            	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeChecked(TypeUpdate.java:112)
+            	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:83)
+            	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:56)
+            	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.tryPossibleTypes(FixTypesVisitor.java:183)
+            	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.deduceType(FixTypesVisitor.java:242)
+            	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.tryDeduceTypes(FixTypesVisitor.java:221)
+            	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.visit(FixTypesVisitor.java:91)
+            */
+        /* JADX INFO: Access modifiers changed from: private */
+        /* JADX WARN: Failed to apply debug info
+        java.lang.NullPointerException: Cannot invoke "jadx.core.dex.instructions.args.InsnArg.getType()" because "changeArg" is null
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.moveListener(TypeUpdate.java:439)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.runListeners(TypeUpdate.java:232)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.requestUpdate(TypeUpdate.java:212)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeForSsaVar(TypeUpdate.java:183)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeChecked(TypeUpdate.java:112)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:83)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.applyWithWiderIgnoreUnknown(TypeUpdate.java:74)
+        	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:137)
+        	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:133)
+        	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.searchAndApplyVarDebugInfo(DebugInfoApplyVisitor.java:75)
+        	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.lambda$applyDebugInfo$0(DebugInfoApplyVisitor.java:68)
+        	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+        	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:68)
+        	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.visit(DebugInfoApplyVisitor.java:55)
+         */
+        /* JADX WARN: Not initialized variable reg: 22, insn: 0x01dd: MOVE (r12 I:??[int, float, boolean, short, byte, char, OBJECT, ARRAY]) = (r22 I:??[int, float, boolean, short, byte, char, OBJECT, ARRAY] A[D('currentGeneration' int)]), block:B:86:0x01dd */
+        public java.util.Map<java.lang.String, java.lang.String> getStringsForPrefixStripPrefix(android.content.ContentResolver r26, java.lang.String r27, java.util.List<java.lang.String> r28) {
             /*
-                Method dump skipped, instructions count: 859
+                Method dump skipped, instructions count: 620
                 To view this dump change 'Code comments level' option to 'DEBUG'
             */
-            throw new UnsupportedOperationException("Method not decompiled: android.provider.Settings.NameValueCache.getStringsForPrefix(android.content.ContentResolver, java.lang.String, java.util.List):android.util.ArrayMap");
+            throw new UnsupportedOperationException("Method not decompiled: android.provider.Settings.NameValueCache.getStringsForPrefixStripPrefix(android.content.ContentResolver, java.lang.String, java.util.List):java.util.Map");
         }
 
         public void clearGenerationTrackerForTest() {
@@ -1061,6 +1113,7 @@ public final class Settings {
         return isCallingPackageAllowedToDrawOverlays(context, Process.myUid(), context.getOpPackageName(), false) || context.checkSelfPermission(Manifest.permission.SYSTEM_APPLICATION_OVERLAY) == 0;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends NameValueTable> void getPublicSettingsForClass(Class<T> callerClass, Set<String> allKeys, Set<String> readableKeys, ArrayMap<String, Integer> keysWithMaxTargetSdk) {
         Field[] allFields = callerClass.getDeclaredFields();
         for (Field field : allFields) {
@@ -1086,6 +1139,7 @@ public final class Settings {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static float parseFloatSetting(String settingValue, String settingName) throws SettingNotFoundException {
         if (settingValue == null) {
             throw new SettingNotFoundException(settingName);
@@ -1097,6 +1151,7 @@ public final class Settings {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static float parseFloatSettingWithDefault(String settingValue, float defaultValue) {
         if (settingValue == null) {
             return defaultValue;
@@ -1108,6 +1163,7 @@ public final class Settings {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int parseIntSetting(String settingValue, String settingName) throws SettingNotFoundException {
         if (settingValue == null) {
             throw new SettingNotFoundException(settingName);
@@ -1119,6 +1175,7 @@ public final class Settings {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int parseIntSettingWithDefault(String settingValue, int defaultValue) {
         if (settingValue == null) {
             return defaultValue;
@@ -1130,6 +1187,7 @@ public final class Settings {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static long parseLongSetting(String settingValue, String settingName) throws SettingNotFoundException {
         if (settingValue == null) {
             throw new SettingNotFoundException(settingName);
@@ -1141,6 +1199,7 @@ public final class Settings {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static long parseLongSettingWithDefault(String settingValue, long defaultValue) {
         if (settingValue == null) {
             return defaultValue;
@@ -1152,7 +1211,6 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class System extends NameValueTable {
 
         @Readable
@@ -1347,7 +1405,6 @@ public final class Settings {
 
         @Readable
         public static final String COCKTAIL_BAR_ENABLED_COCKTAILS = "cocktail_bar_enabled_cocktails";
-        public static final Uri CONTENT_URI;
 
         @Deprecated
         public static final String DATA_ROAMING = "data_roaming";
@@ -1368,6 +1425,9 @@ public final class Settings {
 
         @Readable
         public static final String DEFAULT_ASSIST_VIBRATION_FEEDBACK = "default_assist_vibration_feedback";
+
+        @Readable
+        public static final String DEFAULT_DEVICE_FONT_SCALE = "device_font_scale";
         private static final float DEFAULT_FONT_SCALE = 1.0f;
         private static final int DEFAULT_FONT_WEIGHT = 0;
         public static final Uri DEFAULT_NOTIFICATION_URI;
@@ -1375,9 +1435,6 @@ public final class Settings {
         public static final Uri DEFAULT_RINGTONE_URI;
         public static final Uri DEFAULT_RINGTONE_URI_2;
         public static final Uri DEFAULT_RINGTONE_URI_3;
-
-        @Readable
-        public static final String DESKTOP_MODE = "desktop_mode";
 
         @Deprecated
         public static final String DESK_DOCK_SOUND = "desk_dock_sound";
@@ -1387,6 +1444,9 @@ public final class Settings {
 
         @Deprecated
         public static final String DEVICE_PROVISIONED = "device_provisioned";
+
+        @Readable
+        public static final String DEX_AUTO_START = "dex_auto_start";
 
         @Readable
         public static final String DIALING_KEYPAD_VIBRATE = "dialing_keypad_vibrate";
@@ -1488,6 +1548,9 @@ public final class Settings {
         public static final String FOLDER_SOUNDS_ENABLED = "folder_sounds_enabled";
 
         @Readable
+        public static final String FOLD_LOCK_BEHAVIOR = "fold_lock_behavior_setting";
+
+        @Readable
         public static final String FONT_SCALE = "font_scale";
 
         @Readable
@@ -1522,6 +1585,9 @@ public final class Settings {
 
         @Readable
         public static final String INTELLIGENT_SLEEP_MODE = "intelligent_sleep_mode";
+
+        @Readable
+        public static final String KEYBOARD_VIBRATION_ENABLED = "keyboard_vibration_enabled";
 
         @Readable
         public static final String KEY_BACKLIGHT_TIMEOUT = "key_backlight_timeout";
@@ -1565,9 +1631,6 @@ public final class Settings {
 
         @Readable
         public static final String LOCK_NOTICARD_OPACITY = "lock_noticard_opacity";
-
-        @Readable
-        public static final String LOCK_NOTICARD_OPACITY_DARK_MODE = "lock_noticard_opacity_dark_mode";
 
         @Deprecated
         public static final String LOCK_PATTERN_ENABLED = "lock_pattern_autolock";
@@ -1648,7 +1711,6 @@ public final class Settings {
         @Readable
         public static final String MOUSE_SECONDARY_OPTION = "mouse_secondary_button_option";
         private static final HashSet<String> MOVED_TO_GLOBAL;
-        private static final HashSet<String> MOVED_TO_SECURE;
         private static final HashSet<String> MOVED_TO_SECURE_THEN_GLOBAL;
         public static final String MPTCP_PROXY_DEMO = "mptcp_proxy_demo";
         public static final String MPTCP_VALUE = "mptcp_value";
@@ -1662,9 +1724,6 @@ public final class Settings {
 
         @Readable
         public static final String MULTISOUND_DEVICE_TYPE = "multisound_devicetype";
-
-        @Readable
-        public static final String MULTISOUND_STATE = "multisound_state";
 
         @Readable
         public static final String MULTI_AUDIO_FOCUS_ENABLED = "multi_audio_focus_enabled";
@@ -1700,6 +1759,9 @@ public final class Settings {
         @Readable
         @Deprecated
         public static final String NOTIFICATIONS_USE_RING_VOLUME = "notifications_use_ring_volume";
+        public static final String NOTIFICATION_COOLDOWN_ALL = "notification_cooldown_all";
+        public static final String NOTIFICATION_COOLDOWN_ENABLED = "notification_cooldown_enabled";
+        public static final String NOTIFICATION_COOLDOWN_VIBRATE_UNLOCKED = "notification_cooldown_vibrate_unlocked";
 
         @Readable
         public static final String NOTIFICATION_LIGHT_PULSE = "notification_light_pulse";
@@ -1760,7 +1822,13 @@ public final class Settings {
         public static final String PEOPLE_STRIPE = "people_stripe";
 
         @Readable
+        public static final String POINTER_FILL_STYLE = "pointer_fill_style";
+
+        @Readable
         public static final String POINTER_LOCATION = "pointer_location";
+
+        @Readable
+        public static final String POINTER_SCALE = "pointer_scale";
 
         @Readable
         public static final String POINTER_SPEED = "pointer_speed";
@@ -1804,9 +1872,6 @@ public final class Settings {
         public static final String RAMPART_SUW_MAIN_ON = "rampart_suw_main_on";
 
         @Readable
-        public static final String RCP_POLICY_MIGRATION_COMPLETED = "rcp_profile_migration_completed";
-
-        @Readable
         public static final String REMOVE_ANIMATIONS = "remove_animations";
 
         @Readable
@@ -1821,8 +1886,6 @@ public final class Settings {
 
         @Readable
         public static final String RINGTONE_3 = "ringtone_3";
-
-        @Readable
         public static final String RINGTONE_CACHE = "ringtone_cache";
         public static final Uri RINGTONE_CACHE_URI;
 
@@ -1842,9 +1905,10 @@ public final class Settings {
 
         @Readable
         public static final String SCREEN_BRIGHTNESS = "screen_brightness";
-
-        @Readable
-        public static final String SCREEN_BRIGHTNESS_FLOAT = "screen_brightness_float";
+        public static final int SCREEN_BRIGHTNESS_AUTOMATIC_BRIGHT = 1;
+        public static final int SCREEN_BRIGHTNESS_AUTOMATIC_DIM = 3;
+        public static final int SCREEN_BRIGHTNESS_AUTOMATIC_NORMAL = 2;
+        public static final String SCREEN_BRIGHTNESS_FOR_ALS = "screen_brightness_for_als";
 
         @Readable
         public static final String SCREEN_BRIGHTNESS_MODE = "screen_brightness_mode";
@@ -1990,9 +2054,11 @@ public final class Settings {
         public static final String SEM_EASY_MODE_VIDEO = "easy_mode_video";
 
         @Readable
+        @Deprecated
         public static final String SEM_EMERGENCY_MODE = "emergency_mode";
 
         @Readable
+        @Deprecated
         public static final String SEM_EMERGENCY_MODE_USER_AGREEMENT = "safety_care_user_agree";
 
         @Readable
@@ -2174,6 +2240,7 @@ public final class Settings {
         public static final String SEM_TORCH_LIGHT = "torch_light";
 
         @Readable
+        @Deprecated
         public static final String SEM_ULTRA_POWERSAVING_MODE = "ultra_powersaving_mode";
         public static final String SEM_VIBRATION_FORCE_TOUCH_INTENSITY = "SEM_VIBRATION_FORCE_TOUCH_INTENSITY";
 
@@ -2185,6 +2252,12 @@ public final class Settings {
 
         @Deprecated
         public static final String SETTINGS_CLASSNAME = "settings_classname";
+
+        @Readable
+        public static final String SETTINGS_COVER_TYPE_ID_KEY = "cover_type_id";
+
+        @Readable
+        public static final String SETTINGS_FLIPSUIT_ACCESSORY_COVER_URI = "accessory_cover_uri";
 
         @Readable
         public static final String SETUP_WIZARD_HAS_RUN = "setup_wizard_has_run";
@@ -2202,6 +2275,7 @@ public final class Settings {
 
         @Deprecated
         public static final String SHOW_PROCESSES = "show_processes";
+        public static final String SHOW_ROTARY_INPUT = "show_rotary_input";
 
         @Readable
         public static final String SHOW_TOUCHES = "show_touches";
@@ -2225,6 +2299,12 @@ public final class Settings {
 
         @Readable
         public static final String SIP_RECEIVE_CALLS = "sip_receive_calls";
+
+        @Readable
+        public static final String SMARTVIEW_DND_ENABLED = "smartview_dnd_enabled";
+
+        @Readable
+        public static final String SMARTVIEW_DND_PLAYED = "smartview_dnd_played";
 
         @Readable
         public static final String SOUND_EFFECTS_ENABLED = "sound_effects_enabled";
@@ -2301,9 +2381,12 @@ public final class Settings {
 
         @Readable
         public static final String TOOLBOX_ONOFF = "toolbox_onoff";
+
+        @Readable
         public static final String TOUCHPAD_NATURAL_SCROLLING = "touchpad_natural_scrolling";
         public static final String TOUCHPAD_POINTER_SPEED = "touchpad_pointer_speed";
         public static final String TOUCHPAD_RIGHT_CLICK_ZONE = "touchpad_right_click_zone";
+        public static final String TOUCHPAD_TAP_DRAGGING = "touchpad_tap_dragging";
         public static final String TOUCHPAD_TAP_TO_CLICK = "touchpad_tap_to_click";
 
         @Deprecated
@@ -2413,6 +2496,8 @@ public final class Settings {
         @Deprecated
         public static final String WALLPAPER_ACTIVITY = "wallpaper_activity";
         public static final String WEAR_ACCESSIBILITY_GESTURE_ENABLED = "wear_accessibility_gesture_enabled";
+        public static final String WEAR_ACCESSIBILITY_GESTURE_ENABLED_DURING_OOBE = "wear_accessibility_gesture_enabled_during_oobe";
+        public static final String WEAR_TTS_PREWARM_ENABLED = "wear_tts_prewarm_enabled";
 
         @Readable
         public static final String WHEN_TO_MAKE_WIFI_CALLS = "when_to_make_wifi_calls";
@@ -2521,8 +2606,10 @@ public final class Settings {
 
         @Readable
         public static final String WINDOW_ORIENTATION_LISTENER_LOG = "window_orientation_listener_log";
-        private static final NameValueCache sNameValueCache;
-        private static final ContentProviderHolder sProviderHolder;
+        public static final Uri CONTENT_URI = Uri.parse("content://settings/system");
+        private static final ContentProviderHolder sProviderHolder = new ContentProviderHolder(CONTENT_URI);
+        private static final NameValueCache sNameValueCache = new NameValueCache(CONTENT_URI, Settings.CALL_METHOD_GET_SYSTEM, Settings.CALL_METHOD_PUT_SYSTEM, Settings.CALL_METHOD_DELETE_SYSTEM, sProviderHolder, System.class);
+        private static final HashSet<String> MOVED_TO_SECURE = new HashSet<>(30);
 
         private static final String hidden_SEM_PEN_HOVERING() {
             return SEM_PEN_HOVERING;
@@ -2533,105 +2620,92 @@ public final class Settings {
         }
 
         static {
-            Uri parse = Uri.parse("content://settings/system");
-            CONTENT_URI = parse;
-            ContentProviderHolder contentProviderHolder = new ContentProviderHolder(parse);
-            sProviderHolder = contentProviderHolder;
-            sNameValueCache = new NameValueCache(parse, Settings.CALL_METHOD_GET_SYSTEM, Settings.CALL_METHOD_PUT_SYSTEM, Settings.CALL_METHOD_DELETE_SYSTEM, contentProviderHolder, System.class);
-            HashSet<String> hashSet = new HashSet<>(30);
-            MOVED_TO_SECURE = hashSet;
-            hashSet.add("adaptive_sleep");
-            hashSet.add("android_id");
-            hashSet.add("http_proxy");
-            hashSet.add("location_providers_allowed");
-            hashSet.add(Secure.LOCK_BIOMETRIC_WEAK_FLAGS);
-            hashSet.add("lock_pattern_autolock");
-            hashSet.add("lock_pattern_visible_pattern");
-            hashSet.add("lock_pattern_tactile_feedback_enabled");
-            hashSet.add("logging_id");
-            hashSet.add("parental_control_enabled");
-            hashSet.add("parental_control_last_update");
-            hashSet.add("parental_control_redirect_url");
-            hashSet.add("settings_classname");
-            hashSet.add("use_google_mail");
-            hashSet.add("wifi_networks_available_notification_on");
-            hashSet.add("wifi_networks_available_repeat_delay");
-            hashSet.add("wifi_num_open_networks_kept");
-            hashSet.add("wifi_on");
-            hashSet.add("wifi_watchdog_acceptable_packet_loss_percentage");
-            hashSet.add("wifi_watchdog_ap_count");
-            hashSet.add("wifi_watchdog_background_check_delay_ms");
-            hashSet.add("wifi_watchdog_background_check_enabled");
-            hashSet.add("wifi_watchdog_background_check_timeout_ms");
-            hashSet.add("wifi_watchdog_initial_ignored_ping_count");
-            hashSet.add("wifi_watchdog_max_ap_checks");
-            hashSet.add("wifi_watchdog_on");
-            hashSet.add("wifi_watchdog_ping_count");
-            hashSet.add("wifi_watchdog_ping_delay_ms");
-            hashSet.add("wifi_watchdog_ping_timeout_ms");
-            hashSet.add("install_non_market_apps");
-            HashSet<String> hashSet2 = new HashSet<>();
-            MOVED_TO_GLOBAL = hashSet2;
-            HashSet<String> hashSet3 = new HashSet<>();
-            MOVED_TO_SECURE_THEN_GLOBAL = hashSet3;
-            hashSet3.add("adb_enabled");
-            hashSet3.add("bluetooth_on");
-            hashSet3.add("data_roaming");
-            hashSet3.add("device_provisioned");
-            hashSet3.add("http_proxy");
-            hashSet3.add("network_preference");
-            hashSet3.add("usb_mass_storage_enabled");
-            hashSet3.add("wifi_mobile_data_transition_wakelock_timeout_ms");
-            hashSet3.add("wifi_max_dhcp_retry_count");
-            hashSet2.add("airplane_mode_on");
-            hashSet2.add("airplane_mode_radios");
-            hashSet2.add("airplane_mode_toggleable_radios");
-            hashSet2.add("auto_time");
-            hashSet2.add("auto_time_zone");
-            hashSet2.add("car_dock_sound");
-            hashSet2.add("car_undock_sound");
-            hashSet2.add("desk_dock_sound");
-            hashSet2.add("desk_undock_sound");
-            hashSet2.add("dock_sounds_enabled");
-            hashSet2.add("lock_sound");
-            hashSet2.add("unlock_sound");
-            hashSet2.add("low_battery_sound");
-            hashSet2.add("power_sounds_enabled");
-            hashSet2.add("stay_on_while_plugged_in");
-            hashSet2.add("wifi_sleep_policy");
-            hashSet2.add("mode_ringer");
-            hashSet2.add("window_animation_scale");
-            hashSet2.add("transition_animation_scale");
-            hashSet2.add("animator_duration_scale");
-            hashSet2.add(Global.FANCY_IME_ANIMATIONS);
-            hashSet2.add(Global.COMPATIBILITY_MODE);
-            hashSet2.add(Global.EMERGENCY_TONE);
-            hashSet2.add(Global.CALL_AUTO_RETRY);
-            hashSet2.add("debug_app");
-            hashSet2.add("wait_for_debugger");
-            hashSet2.add("always_finish_activities");
-            hashSet2.add(Global.TZINFO_UPDATE_CONTENT_URL);
-            hashSet2.add(Global.TZINFO_UPDATE_METADATA_URL);
-            hashSet2.add(Global.SELINUX_UPDATE_CONTENT_URL);
-            hashSet2.add(Global.SELINUX_UPDATE_METADATA_URL);
-            hashSet2.add(Global.SMS_SHORT_CODES_UPDATE_CONTENT_URL);
-            hashSet2.add(Global.SMS_SHORT_CODES_UPDATE_METADATA_URL);
-            hashSet2.add(Global.CERT_PIN_UPDATE_CONTENT_URL);
-            hashSet2.add(Global.CERT_PIN_UPDATE_METADATA_URL);
-            hashSet2.add("nfc");
-            hashSet2.add("cell");
-            hashSet2.add("wifi");
-            hashSet2.add("bluetooth");
-            hashSet2.add("wimax");
-            hashSet2.add("show_processes");
-            hashSet2.add("remove_animations");
-            hashSet2.add("all_sound_off");
-            hashSet2.add("show_button_background");
-            hashSet2.add("accessibility_reduce_transparency");
-            hashSet2.add(Global.WIFI_NUM_OF_SWITCH_TO_MOBILE_DATA_TOGGLE);
-            hashSet2.add(Global.WIFI_SWITCH_FOR_INDIVIDUAL_APPS_ENABLED);
-            hashSet2.add(Global.WIFI_SWITCH_FOR_INDIVIDUAL_APPS_EVER_DETECTED);
-            hashSet2.add(Global.WIFI_SWITCH_FOR_INDIVIDUAL_APPS_DETECTION_MODE);
+            MOVED_TO_SECURE.add("adaptive_sleep");
+            MOVED_TO_SECURE.add("android_id");
+            MOVED_TO_SECURE.add("http_proxy");
+            MOVED_TO_SECURE.add("location_providers_allowed");
+            MOVED_TO_SECURE.add(Secure.LOCK_BIOMETRIC_WEAK_FLAGS);
+            MOVED_TO_SECURE.add("lock_pattern_autolock");
+            MOVED_TO_SECURE.add("lock_pattern_visible_pattern");
+            MOVED_TO_SECURE.add("lock_pattern_tactile_feedback_enabled");
+            MOVED_TO_SECURE.add("logging_id");
+            MOVED_TO_SECURE.add("parental_control_enabled");
+            MOVED_TO_SECURE.add("parental_control_last_update");
+            MOVED_TO_SECURE.add("parental_control_redirect_url");
+            MOVED_TO_SECURE.add("settings_classname");
+            MOVED_TO_SECURE.add("use_google_mail");
+            MOVED_TO_SECURE.add("wifi_networks_available_notification_on");
+            MOVED_TO_SECURE.add("wifi_networks_available_repeat_delay");
+            MOVED_TO_SECURE.add("wifi_num_open_networks_kept");
+            MOVED_TO_SECURE.add("wifi_on");
+            MOVED_TO_SECURE.add("wifi_watchdog_acceptable_packet_loss_percentage");
+            MOVED_TO_SECURE.add("wifi_watchdog_ap_count");
+            MOVED_TO_SECURE.add("wifi_watchdog_background_check_delay_ms");
+            MOVED_TO_SECURE.add("wifi_watchdog_background_check_enabled");
+            MOVED_TO_SECURE.add("wifi_watchdog_background_check_timeout_ms");
+            MOVED_TO_SECURE.add("wifi_watchdog_initial_ignored_ping_count");
+            MOVED_TO_SECURE.add("wifi_watchdog_max_ap_checks");
+            MOVED_TO_SECURE.add("wifi_watchdog_on");
+            MOVED_TO_SECURE.add("wifi_watchdog_ping_count");
+            MOVED_TO_SECURE.add("wifi_watchdog_ping_delay_ms");
+            MOVED_TO_SECURE.add("wifi_watchdog_ping_timeout_ms");
+            MOVED_TO_SECURE.add("install_non_market_apps");
+            MOVED_TO_GLOBAL = new HashSet<>();
+            MOVED_TO_SECURE_THEN_GLOBAL = new HashSet<>();
+            MOVED_TO_SECURE_THEN_GLOBAL.add("adb_enabled");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("bluetooth_on");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("data_roaming");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("device_provisioned");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("http_proxy");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("network_preference");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("usb_mass_storage_enabled");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("wifi_mobile_data_transition_wakelock_timeout_ms");
+            MOVED_TO_SECURE_THEN_GLOBAL.add("wifi_max_dhcp_retry_count");
+            MOVED_TO_GLOBAL.add("airplane_mode_on");
+            MOVED_TO_GLOBAL.add("airplane_mode_radios");
+            MOVED_TO_GLOBAL.add("airplane_mode_toggleable_radios");
+            MOVED_TO_GLOBAL.add("auto_time");
+            MOVED_TO_GLOBAL.add("auto_time_zone");
+            MOVED_TO_GLOBAL.add("car_dock_sound");
+            MOVED_TO_GLOBAL.add("car_undock_sound");
+            MOVED_TO_GLOBAL.add("desk_dock_sound");
+            MOVED_TO_GLOBAL.add("desk_undock_sound");
+            MOVED_TO_GLOBAL.add("dock_sounds_enabled");
+            MOVED_TO_GLOBAL.add("lock_sound");
+            MOVED_TO_GLOBAL.add("unlock_sound");
+            MOVED_TO_GLOBAL.add("low_battery_sound");
+            MOVED_TO_GLOBAL.add("power_sounds_enabled");
+            MOVED_TO_GLOBAL.add("stay_on_while_plugged_in");
+            MOVED_TO_GLOBAL.add("wifi_sleep_policy");
+            MOVED_TO_GLOBAL.add("mode_ringer");
+            MOVED_TO_GLOBAL.add("window_animation_scale");
+            MOVED_TO_GLOBAL.add("transition_animation_scale");
+            MOVED_TO_GLOBAL.add("animator_duration_scale");
+            MOVED_TO_GLOBAL.add(Global.FANCY_IME_ANIMATIONS);
+            MOVED_TO_GLOBAL.add(Global.COMPATIBILITY_MODE);
+            MOVED_TO_GLOBAL.add(Global.EMERGENCY_TONE);
+            MOVED_TO_GLOBAL.add(Global.CALL_AUTO_RETRY);
+            MOVED_TO_GLOBAL.add("debug_app");
+            MOVED_TO_GLOBAL.add("wait_for_debugger");
+            MOVED_TO_GLOBAL.add("always_finish_activities");
+            MOVED_TO_GLOBAL.add(Global.TZINFO_UPDATE_CONTENT_URL);
+            MOVED_TO_GLOBAL.add(Global.TZINFO_UPDATE_METADATA_URL);
+            MOVED_TO_GLOBAL.add(Global.SELINUX_UPDATE_CONTENT_URL);
+            MOVED_TO_GLOBAL.add(Global.SELINUX_UPDATE_METADATA_URL);
+            MOVED_TO_GLOBAL.add(Global.SMS_SHORT_CODES_UPDATE_CONTENT_URL);
+            MOVED_TO_GLOBAL.add(Global.SMS_SHORT_CODES_UPDATE_METADATA_URL);
+            MOVED_TO_GLOBAL.add(Global.CERT_PIN_UPDATE_CONTENT_URL);
+            MOVED_TO_GLOBAL.add(Global.CERT_PIN_UPDATE_METADATA_URL);
+            MOVED_TO_GLOBAL.add("nfc");
+            MOVED_TO_GLOBAL.add("cell");
+            MOVED_TO_GLOBAL.add("wifi");
+            MOVED_TO_GLOBAL.add("bluetooth");
+            MOVED_TO_GLOBAL.add("wimax");
+            MOVED_TO_GLOBAL.add("show_processes");
+            MOVED_TO_GLOBAL.add("remove_animations");
+            MOVED_TO_GLOBAL.add("all_sound_off");
+            MOVED_TO_GLOBAL.add("show_button_background");
+            MOVED_TO_GLOBAL.add("accessibility_reduce_transparency");
             VOLUME_SETTINGS = new String[]{VOLUME_VOICE, VOLUME_SYSTEM, VOLUME_RING, VOLUME_MUSIC, VOLUME_ALARM, VOLUME_NOTIFICATION, VOLUME_BLUETOOTH_SCO};
             VOLUME_SETTINGS_INT = new String[]{VOLUME_VOICE, VOLUME_SYSTEM, VOLUME_RING, VOLUME_MUSIC, VOLUME_ALARM, VOLUME_NOTIFICATION, VOLUME_BLUETOOTH_SCO, "", "", "", VOLUME_ACCESSIBILITY, VOLUME_ASSISTANT};
             DEFAULT_RINGTONE_URI = getUriFor(RINGTONE);
@@ -2646,220 +2720,225 @@ public final class Settings {
             DEFAULT_RINGTONE_URI_3 = getUriFor(RINGTONE_3);
             DEFAULT_NOTIFICATION_URI_2 = getUriFor(NOTIFICATION_SOUND_2);
             LEGACY_RESTORE_SETTINGS = new String[0];
-            ArraySet arraySet = new ArraySet();
-            PUBLIC_SETTINGS = arraySet;
-            arraySet.add(END_BUTTON_BEHAVIOR);
-            arraySet.add(WIFI_USE_STATIC_IP);
-            arraySet.add(WIFI_STATIC_IP);
-            arraySet.add(WIFI_STATIC_GATEWAY);
-            arraySet.add(WIFI_STATIC_NETMASK);
-            arraySet.add(WIFI_STATIC_DNS1);
-            arraySet.add(WIFI_STATIC_DNS2);
-            arraySet.add(BLUETOOTH_DISCOVERABILITY);
-            arraySet.add(BLUETOOTH_DISCOVERABILITY_TIMEOUT);
-            arraySet.add(NEXT_ALARM_FORMATTED);
-            arraySet.add(FONT_SCALE);
-            arraySet.add(SYSTEM_LOCALES);
-            arraySet.add(DIM_SCREEN);
-            arraySet.add(SCREEN_OFF_TIMEOUT);
-            arraySet.add(SCREEN_BRIGHTNESS);
-            arraySet.add(SCREEN_BRIGHTNESS_FLOAT);
-            arraySet.add(SCREEN_BRIGHTNESS_MODE);
-            arraySet.add(MODE_RINGER_STREAMS_AFFECTED);
-            arraySet.add(MUTE_STREAMS_AFFECTED);
-            arraySet.add(VIBRATE_ON);
-            arraySet.add(VOLUME_RING);
-            arraySet.add(VOLUME_SYSTEM);
-            arraySet.add(VOLUME_VOICE);
-            arraySet.add(VOLUME_MUSIC);
-            arraySet.add(VOLUME_ALARM);
-            arraySet.add(VOLUME_NOTIFICATION);
-            arraySet.add(VOLUME_BLUETOOTH_SCO);
-            arraySet.add(VOLUME_ASSISTANT);
-            arraySet.add(RINGTONE);
-            arraySet.add(NOTIFICATION_SOUND);
-            arraySet.add(ALARM_ALERT);
-            arraySet.add(TEXT_AUTO_REPLACE);
-            arraySet.add(TEXT_AUTO_CAPS);
-            arraySet.add(TEXT_AUTO_PUNCTUATE);
-            arraySet.add(TEXT_SHOW_PASSWORD);
-            arraySet.add(SHOW_GTALK_SERVICE_STATUS);
-            arraySet.add(WALLPAPER_ACTIVITY);
-            arraySet.add(TIME_12_24);
-            arraySet.add(DATE_FORMAT);
-            arraySet.add(SETUP_WIZARD_HAS_RUN);
-            arraySet.add(ACCELEROMETER_ROTATION);
-            arraySet.add(USER_ROTATION);
-            arraySet.add(DTMF_TONE_WHEN_DIALING);
-            arraySet.add(SOUND_EFFECTS_ENABLED);
-            arraySet.add(HAPTIC_FEEDBACK_ENABLED);
-            arraySet.add(SHOW_WEB_SUGGESTIONS);
-            arraySet.add(VIBRATE_WHEN_RINGING);
-            arraySet.add("apply_ramping_ringer");
-            ArraySet arraySet2 = new ArraySet();
-            SAMSUNG_PUBLIC_SETTINGS = arraySet2;
-            arraySet2.add("ringtone_CONSTANT_PATH");
-            arraySet2.add("ringtone_2_CONSTANT_PATH");
-            arraySet2.add("notification_sound_CONSTANT_PATH");
-            arraySet2.add("notification_sound_2_CONSTANT_PATH");
-            arraySet2.add("alarm_alert_CONSTANT_PATH");
-            arraySet2.add(RINGTONE_2);
-            arraySet2.add(SEM_SYSTEM_SOUND);
-            arraySet2.add(SEM_PREV_SYSTEM_SOUND);
-            arraySet2.add(DIALING_KEYPAD_VIBRATE);
-            arraySet2.add(CAMERA_FEEDBACK_VIBRATE);
-            arraySet2.add("multisound_app");
-            arraySet2.add("multisound_devicetype");
-            arraySet2.add("multi_audio_focus_enabled");
-            arraySet2.add("app_volume_enabled");
-            arraySet2.add(RINGTONE_VIBRATION_SEP_INDEX);
-            arraySet2.add(NOTIFICATION_VIBRATION_SEP_INDEX);
-            arraySet2.add(SYNC_VIBRATION_WITH_RINGTONE);
-            arraySet2.add(SYNC_VIBRATION_WITH_NOTIFICATION);
-            arraySet2.add(MONO_AUDIO_TYPE);
-            arraySet2.add(SPEAKER_BALANCE);
-            arraySet2.add(VIBRATION_SOUND_ENABLED);
-            arraySet2.add(VOIP_EXTRA_VOLUME);
-            arraySet2.add(VOIP_ANTI_HOWLING);
-            arraySet2.add(WIFISPEAKER_CHROMECAST_MODE_ENABLED);
-            arraySet2.add("onehand_direction");
-            arraySet2.add("any_screen_enabled");
-            arraySet2.add(SEM_ONE_HAND_ANY_SCREEN_RUNNING);
-            arraySet2.add("reduce_screen_running_info");
-            arraySet2.add("lockstar_enabled");
-            arraySet2.add("plugin_lock_sub_enabled");
-            arraySet2.add("enable_smart_capture");
-            arraySet2.add("exclude_systemui_screenshots");
-            arraySet2.add("delete_shared_screenshots");
-            arraySet2.add("smart_capture_screenshot_format");
-            arraySet2.add("save_original_screenshots");
-            arraySet2.add("screenshot_current_save_dir");
-            arraySet2.add(SEM_SIP_KEY_FEEDBACK_SOUND);
-            arraySet2.add(SEM_SIP_KEY_FEEDBACK_VIBRATION);
-            arraySet2.add("sip_speak_keyboard_input_aloud");
-            arraySet2.add("pen_digitizer_enabled");
-            arraySet2.add("pen_usage_detected");
-            arraySet2.add(PEN_DETECT_MODE_DISABLED);
-            arraySet2.add("air_cmd_mode");
-            arraySet2.add(PEN_DEVICE_BOOT_ID);
-            arraySet2.add("bixby_touch_enable");
-            arraySet2.add("home_mode_master");
-            arraySet2.add("recommendation_time");
-            arraySet2.add("recommendation_time_2");
-            arraySet2.add(SEM_DISPLAY_BATTERY_PERCENTAGE);
-            arraySet2.add("charging_info_always");
-            arraySet2.add("add_info_music_control");
-            arraySet2.add("aod_mode");
-            arraySet2.add("lock_adaptive_color");
-            arraySet2.add("lock_adaptive_color_sub");
-            arraySet2.add(LOCK_APPLICATION_SHORTCUT);
-            arraySet2.add("ai_info_confirmed");
-            arraySet2.add("prevent_online_processing");
-            arraySet2.add("smartview_dnd_enabled");
-            arraySet2.add("smartview_dnd_played");
-            arraySet2.add("rcs_user_setting");
-            arraySet2.add("rcs_user_setting2");
-            arraySet2.add(RAMPART_SUW_MAIN_ON);
-            ArraySet arraySet3 = new ArraySet();
-            PRIVATE_SETTINGS = arraySet3;
-            arraySet3.add(WIFI_USE_STATIC_IP);
-            arraySet3.add(END_BUTTON_BEHAVIOR);
-            arraySet3.add(ADVANCED_SETTINGS);
-            arraySet3.add(WEAR_ACCESSIBILITY_GESTURE_ENABLED);
-            arraySet3.add(SCREEN_AUTO_BRIGHTNESS_ADJ);
-            arraySet3.add(VIBRATE_INPUT_DEVICES);
-            arraySet3.add(VOLUME_MASTER);
-            arraySet3.add("master_mono");
-            arraySet3.add("master_balance");
-            arraySet3.add(NOTIFICATIONS_USE_RING_VOLUME);
-            arraySet3.add(VIBRATE_IN_SILENT);
-            arraySet3.add(MEDIA_BUTTON_RECEIVER);
-            arraySet3.add(HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY);
-            arraySet3.add(DTMF_TONE_TYPE_WHEN_DIALING);
-            arraySet3.add("hearing_aid");
-            arraySet3.add(TTY_MODE);
-            arraySet3.add(NOTIFICATION_LIGHT_PULSE);
-            arraySet3.add(POINTER_LOCATION);
-            arraySet3.add(SHOW_TOUCHES);
-            arraySet3.add(SHOW_KEY_PRESSES);
-            arraySet3.add(WINDOW_ORIENTATION_LISTENER_LOG);
-            arraySet3.add("power_sounds_enabled");
-            arraySet3.add("dock_sounds_enabled");
-            arraySet3.add(LOCKSCREEN_SOUNDS_ENABLED);
-            arraySet3.add("lockscreen.disabled");
-            arraySet3.add("low_battery_sound");
-            arraySet3.add("desk_dock_sound");
-            arraySet3.add("desk_undock_sound");
-            arraySet3.add("car_dock_sound");
-            arraySet3.add("car_undock_sound");
-            arraySet3.add("lock_sound");
-            arraySet3.add("unlock_sound");
-            arraySet3.add(SIP_RECEIVE_CALLS);
-            arraySet3.add(SIP_CALL_OPTIONS);
-            arraySet3.add(SIP_ALWAYS);
-            arraySet3.add(SIP_ADDRESS_ONLY);
-            arraySet3.add(SIP_ASK_ME_EACH_TIME);
-            arraySet3.add(POINTER_SPEED);
-            arraySet3.add(LOCK_TO_APP_ENABLED);
-            arraySet3.add(EGG_MODE);
-            arraySet3.add(SHOW_BATTERY_PERCENT);
-            arraySet3.add(DISPLAY_COLOR_MODE);
-            arraySet3.add(DISPLAY_COLOR_MODE_VENDOR_HINT);
-            arraySet3.add(DESKTOP_MODE);
-            arraySet3.add(LOCALE_PREFERENCES);
-            arraySet3.add(TOUCHPAD_POINTER_SPEED);
-            arraySet3.add(TOUCHPAD_NATURAL_SCROLLING);
-            arraySet3.add(TOUCHPAD_TAP_TO_CLICK);
-            arraySet3.add(TOUCHPAD_RIGHT_CLICK_ZONE);
-            arraySet3.add("camera_flash_notification");
-            arraySet3.add("screen_flash_notification");
-            arraySet3.add(SCREEN_FLASH_NOTIFICATION_COLOR);
-            arraySet3.add(SEM_EASY_MODE_SWITCH);
-            ArraySet arraySet4 = new ArraySet();
-            CLONE_TO_MANAGED_PROFILE = arraySet4;
-            arraySet4.add(DATE_FORMAT);
-            arraySet4.add(HAPTIC_FEEDBACK_ENABLED);
-            arraySet4.add(SOUND_EFFECTS_ENABLED);
-            arraySet4.add(TEXT_SHOW_PASSWORD);
-            arraySet4.add(TIME_12_24);
-            arraySet4.add(ACCELEROMETER_ROTATION);
-            arraySet4.add(SEM_CURRENT_APP_ICON_PACKAGE);
-            arraySet4.add("current_sec_active_themepackage");
-            arraySet4.add("smart_capture_screenshot_format");
-            arraySet4.add("reduce_screen_running_info");
-            arraySet4.add(SEM_PEN_HOVERING);
-            ArrayMap arrayMap = new ArrayMap();
-            CLONE_FROM_PARENT_ON_VALUE = arrayMap;
-            arrayMap.put(RINGTONE, Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put(NOTIFICATION_SOUND, Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put(ALARM_ALERT, Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put(RINGTONE_2, Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put(NOTIFICATION_SOUND_2, Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("ringtone_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("notification_sound_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("ringtone_2_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("notification_sound_2_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("alarm_alert_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("ringtone_set", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("notification_sound_set", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("alarm_alert_set", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("ringtone_2_set", Secure.SYNC_PARENT_SOUNDS);
-            arrayMap.put("notification_sound_2_set", Secure.SYNC_PARENT_SOUNDS);
-            ArraySet arraySet5 = new ArraySet();
-            INSTANT_APP_SETTINGS = arraySet5;
-            arraySet5.add(TEXT_AUTO_REPLACE);
-            arraySet5.add(TEXT_AUTO_CAPS);
-            arraySet5.add(TEXT_AUTO_PUNCTUATE);
-            arraySet5.add(TEXT_SHOW_PASSWORD);
-            arraySet5.add(DATE_FORMAT);
-            arraySet5.add(FONT_SCALE);
-            arraySet5.add(HAPTIC_FEEDBACK_ENABLED);
-            arraySet5.add(TIME_12_24);
-            arraySet5.add(SOUND_EFFECTS_ENABLED);
-            arraySet5.add(ACCELEROMETER_ROTATION);
-            arraySet5.add(SEM_EMERGENCY_MODE);
-            arraySet5.add(SEM_ULTRA_POWERSAVING_MODE);
-            arraySet5.add(SEM_MINIMAL_BATTERY_USE);
+            PUBLIC_SETTINGS = new ArraySet();
+            PUBLIC_SETTINGS.add(END_BUTTON_BEHAVIOR);
+            PUBLIC_SETTINGS.add(WIFI_USE_STATIC_IP);
+            PUBLIC_SETTINGS.add(WIFI_STATIC_IP);
+            PUBLIC_SETTINGS.add(WIFI_STATIC_GATEWAY);
+            PUBLIC_SETTINGS.add(WIFI_STATIC_NETMASK);
+            PUBLIC_SETTINGS.add(WIFI_STATIC_DNS1);
+            PUBLIC_SETTINGS.add(WIFI_STATIC_DNS2);
+            PUBLIC_SETTINGS.add(BLUETOOTH_DISCOVERABILITY);
+            PUBLIC_SETTINGS.add(BLUETOOTH_DISCOVERABILITY_TIMEOUT);
+            PUBLIC_SETTINGS.add(NEXT_ALARM_FORMATTED);
+            PUBLIC_SETTINGS.add(FONT_SCALE);
+            PUBLIC_SETTINGS.add(SYSTEM_LOCALES);
+            PUBLIC_SETTINGS.add(DIM_SCREEN);
+            PUBLIC_SETTINGS.add(SCREEN_OFF_TIMEOUT);
+            PUBLIC_SETTINGS.add(SCREEN_BRIGHTNESS);
+            PUBLIC_SETTINGS.add(SCREEN_BRIGHTNESS_MODE);
+            PUBLIC_SETTINGS.add(MODE_RINGER_STREAMS_AFFECTED);
+            PUBLIC_SETTINGS.add(MUTE_STREAMS_AFFECTED);
+            PUBLIC_SETTINGS.add(VIBRATE_ON);
+            PUBLIC_SETTINGS.add(VOLUME_RING);
+            PUBLIC_SETTINGS.add(VOLUME_SYSTEM);
+            PUBLIC_SETTINGS.add(VOLUME_VOICE);
+            PUBLIC_SETTINGS.add(VOLUME_MUSIC);
+            PUBLIC_SETTINGS.add(VOLUME_ALARM);
+            PUBLIC_SETTINGS.add(VOLUME_NOTIFICATION);
+            PUBLIC_SETTINGS.add(VOLUME_BLUETOOTH_SCO);
+            PUBLIC_SETTINGS.add(VOLUME_ASSISTANT);
+            PUBLIC_SETTINGS.add(RINGTONE);
+            PUBLIC_SETTINGS.add(NOTIFICATION_SOUND);
+            PUBLIC_SETTINGS.add(ALARM_ALERT);
+            PUBLIC_SETTINGS.add(TEXT_AUTO_REPLACE);
+            PUBLIC_SETTINGS.add(TEXT_AUTO_CAPS);
+            PUBLIC_SETTINGS.add(TEXT_AUTO_PUNCTUATE);
+            PUBLIC_SETTINGS.add(TEXT_SHOW_PASSWORD);
+            PUBLIC_SETTINGS.add(SHOW_GTALK_SERVICE_STATUS);
+            PUBLIC_SETTINGS.add(WALLPAPER_ACTIVITY);
+            PUBLIC_SETTINGS.add(TIME_12_24);
+            PUBLIC_SETTINGS.add(DATE_FORMAT);
+            PUBLIC_SETTINGS.add(SETUP_WIZARD_HAS_RUN);
+            PUBLIC_SETTINGS.add(ACCELEROMETER_ROTATION);
+            PUBLIC_SETTINGS.add(USER_ROTATION);
+            PUBLIC_SETTINGS.add(DTMF_TONE_WHEN_DIALING);
+            PUBLIC_SETTINGS.add(SOUND_EFFECTS_ENABLED);
+            PUBLIC_SETTINGS.add(HAPTIC_FEEDBACK_ENABLED);
+            PUBLIC_SETTINGS.add(SHOW_WEB_SUGGESTIONS);
+            PUBLIC_SETTINGS.add(VIBRATE_WHEN_RINGING);
+            PUBLIC_SETTINGS.add("apply_ramping_ringer");
+            SAMSUNG_PUBLIC_SETTINGS = new ArraySet();
+            SAMSUNG_PUBLIC_SETTINGS.add("ringtone_CONSTANT_PATH");
+            SAMSUNG_PUBLIC_SETTINGS.add("ringtone_2_CONSTANT_PATH");
+            SAMSUNG_PUBLIC_SETTINGS.add("notification_sound_CONSTANT_PATH");
+            SAMSUNG_PUBLIC_SETTINGS.add("notification_sound_2_CONSTANT_PATH");
+            SAMSUNG_PUBLIC_SETTINGS.add("alarm_alert_CONSTANT_PATH");
+            SAMSUNG_PUBLIC_SETTINGS.add(RINGTONE_2);
+            SAMSUNG_PUBLIC_SETTINGS.add(SEM_SYSTEM_SOUND);
+            SAMSUNG_PUBLIC_SETTINGS.add(SEM_PREV_SYSTEM_SOUND);
+            SAMSUNG_PUBLIC_SETTINGS.add(DIALING_KEYPAD_VIBRATE);
+            SAMSUNG_PUBLIC_SETTINGS.add(CAMERA_FEEDBACK_VIBRATE);
+            SAMSUNG_PUBLIC_SETTINGS.add("multisound_app");
+            SAMSUNG_PUBLIC_SETTINGS.add("multisound_devicetype");
+            SAMSUNG_PUBLIC_SETTINGS.add("multi_audio_focus_enabled");
+            SAMSUNG_PUBLIC_SETTINGS.add("app_volume_enabled");
+            SAMSUNG_PUBLIC_SETTINGS.add(RINGTONE_VIBRATION_SEP_INDEX);
+            SAMSUNG_PUBLIC_SETTINGS.add(NOTIFICATION_VIBRATION_SEP_INDEX);
+            SAMSUNG_PUBLIC_SETTINGS.add(SYNC_VIBRATION_WITH_RINGTONE);
+            SAMSUNG_PUBLIC_SETTINGS.add(SYNC_VIBRATION_WITH_NOTIFICATION);
+            SAMSUNG_PUBLIC_SETTINGS.add(MONO_AUDIO_TYPE);
+            SAMSUNG_PUBLIC_SETTINGS.add(SPEAKER_BALANCE);
+            SAMSUNG_PUBLIC_SETTINGS.add(VIBRATION_SOUND_ENABLED);
+            SAMSUNG_PUBLIC_SETTINGS.add(VOIP_EXTRA_VOLUME);
+            SAMSUNG_PUBLIC_SETTINGS.add(VOIP_ANTI_HOWLING);
+            SAMSUNG_PUBLIC_SETTINGS.add(WIFISPEAKER_CHROMECAST_MODE_ENABLED);
+            SAMSUNG_PUBLIC_SETTINGS.add("onehand_direction");
+            SAMSUNG_PUBLIC_SETTINGS.add("any_screen_enabled");
+            SAMSUNG_PUBLIC_SETTINGS.add(SEM_ONE_HAND_ANY_SCREEN_RUNNING);
+            SAMSUNG_PUBLIC_SETTINGS.add("reduce_screen_running_info");
+            SAMSUNG_PUBLIC_SETTINGS.add(SEM_SIP_KEY_FEEDBACK_SOUND);
+            SAMSUNG_PUBLIC_SETTINGS.add(SEM_SIP_KEY_FEEDBACK_VIBRATION);
+            SAMSUNG_PUBLIC_SETTINGS.add("sip_speak_keyboard_input_aloud");
+            SAMSUNG_PUBLIC_SETTINGS.add(WallpaperThemeConstants.SETTING_NAME_THEMEPARK_SINGLETHEME_STATE);
+            SAMSUNG_PUBLIC_SETTINGS.add("pen_digitizer_enabled");
+            SAMSUNG_PUBLIC_SETTINGS.add("pen_usage_detected");
+            SAMSUNG_PUBLIC_SETTINGS.add(PEN_DETECT_MODE_DISABLED);
+            SAMSUNG_PUBLIC_SETTINGS.add("air_cmd_mode");
+            SAMSUNG_PUBLIC_SETTINGS.add(PEN_DEVICE_BOOT_ID);
+            SAMSUNG_PUBLIC_SETTINGS.add("ai_info_confirmed");
+            SAMSUNG_PUBLIC_SETTINGS.add("enable_smart_capture");
+            SAMSUNG_PUBLIC_SETTINGS.add("exclude_systemui_screenshots");
+            SAMSUNG_PUBLIC_SETTINGS.add("delete_shared_screenshots");
+            SAMSUNG_PUBLIC_SETTINGS.add("smart_capture_screenshot_format");
+            SAMSUNG_PUBLIC_SETTINGS.add("save_original_screenshots");
+            SAMSUNG_PUBLIC_SETTINGS.add("screenshot_current_save_dir");
+            SAMSUNG_PUBLIC_SETTINGS.add("lockstar_enabled");
+            SAMSUNG_PUBLIC_SETTINGS.add("plugin_lock_sub_enabled");
+            SAMSUNG_PUBLIC_SETTINGS.add(RAMPART_SUW_MAIN_ON);
+            SAMSUNG_PUBLIC_SETTINGS.add("edge_handler_position_percent");
+            SAMSUNG_PUBLIC_SETTINGS.add(SMARTVIEW_DND_ENABLED);
+            SAMSUNG_PUBLIC_SETTINGS.add(SMARTVIEW_DND_PLAYED);
+            SAMSUNG_PUBLIC_SETTINGS.add("bixby_touch_enable");
+            SAMSUNG_PUBLIC_SETTINGS.add("add_info_music_control");
+            SAMSUNG_PUBLIC_SETTINGS.add("aod_mode");
+            SAMSUNG_PUBLIC_SETTINGS.add("lock_adaptive_color");
+            SAMSUNG_PUBLIC_SETTINGS.add("lock_adaptive_color_sub");
+            SAMSUNG_PUBLIC_SETTINGS.add(LOCK_APPLICATION_SHORTCUT);
+            SAMSUNG_PUBLIC_SETTINGS.add(SEM_DISPLAY_BATTERY_PERCENTAGE);
+            SAMSUNG_PUBLIC_SETTINGS.add("charging_info_always");
+            SAMSUNG_PUBLIC_SETTINGS.add("recommendation_time");
+            SAMSUNG_PUBLIC_SETTINGS.add("recommendation_time_2");
+            SAMSUNG_PUBLIC_SETTINGS.add("rcs_user_setting");
+            SAMSUNG_PUBLIC_SETTINGS.add("rcs_user_setting2");
+            PRIVATE_SETTINGS = new ArraySet();
+            PRIVATE_SETTINGS.add(WIFI_USE_STATIC_IP);
+            PRIVATE_SETTINGS.add(END_BUTTON_BEHAVIOR);
+            PRIVATE_SETTINGS.add(ADVANCED_SETTINGS);
+            PRIVATE_SETTINGS.add(WEAR_ACCESSIBILITY_GESTURE_ENABLED);
+            PRIVATE_SETTINGS.add(WEAR_ACCESSIBILITY_GESTURE_ENABLED_DURING_OOBE);
+            PRIVATE_SETTINGS.add(WEAR_TTS_PREWARM_ENABLED);
+            PRIVATE_SETTINGS.add(SCREEN_AUTO_BRIGHTNESS_ADJ);
+            PRIVATE_SETTINGS.add(VIBRATE_INPUT_DEVICES);
+            PRIVATE_SETTINGS.add(VOLUME_MASTER);
+            PRIVATE_SETTINGS.add("master_mono");
+            PRIVATE_SETTINGS.add("master_balance");
+            PRIVATE_SETTINGS.add(NOTIFICATIONS_USE_RING_VOLUME);
+            PRIVATE_SETTINGS.add(VIBRATE_IN_SILENT);
+            PRIVATE_SETTINGS.add(MEDIA_BUTTON_RECEIVER);
+            PRIVATE_SETTINGS.add(HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY);
+            PRIVATE_SETTINGS.add(DTMF_TONE_TYPE_WHEN_DIALING);
+            PRIVATE_SETTINGS.add("hearing_aid");
+            PRIVATE_SETTINGS.add(TTY_MODE);
+            PRIVATE_SETTINGS.add(NOTIFICATION_LIGHT_PULSE);
+            PRIVATE_SETTINGS.add(POINTER_LOCATION);
+            PRIVATE_SETTINGS.add(SHOW_TOUCHES);
+            PRIVATE_SETTINGS.add(SHOW_KEY_PRESSES);
+            PRIVATE_SETTINGS.add(WINDOW_ORIENTATION_LISTENER_LOG);
+            PRIVATE_SETTINGS.add("power_sounds_enabled");
+            PRIVATE_SETTINGS.add("dock_sounds_enabled");
+            PRIVATE_SETTINGS.add(LOCKSCREEN_SOUNDS_ENABLED);
+            PRIVATE_SETTINGS.add("lockscreen.disabled");
+            PRIVATE_SETTINGS.add("low_battery_sound");
+            PRIVATE_SETTINGS.add("desk_dock_sound");
+            PRIVATE_SETTINGS.add("desk_undock_sound");
+            PRIVATE_SETTINGS.add("car_dock_sound");
+            PRIVATE_SETTINGS.add("car_undock_sound");
+            PRIVATE_SETTINGS.add("lock_sound");
+            PRIVATE_SETTINGS.add("unlock_sound");
+            PRIVATE_SETTINGS.add(SIP_RECEIVE_CALLS);
+            PRIVATE_SETTINGS.add(SIP_CALL_OPTIONS);
+            PRIVATE_SETTINGS.add(SIP_ALWAYS);
+            PRIVATE_SETTINGS.add(SIP_ADDRESS_ONLY);
+            PRIVATE_SETTINGS.add(SIP_ASK_ME_EACH_TIME);
+            PRIVATE_SETTINGS.add(POINTER_SPEED);
+            PRIVATE_SETTINGS.add(POINTER_FILL_STYLE);
+            PRIVATE_SETTINGS.add(POINTER_SCALE);
+            PRIVATE_SETTINGS.add(LOCK_TO_APP_ENABLED);
+            PRIVATE_SETTINGS.add(EGG_MODE);
+            PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
+            PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
+            PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE_VENDOR_HINT);
+            PRIVATE_SETTINGS.add(LOCALE_PREFERENCES);
+            PRIVATE_SETTINGS.add(TOUCHPAD_POINTER_SPEED);
+            PRIVATE_SETTINGS.add(TOUCHPAD_NATURAL_SCROLLING);
+            PRIVATE_SETTINGS.add(TOUCHPAD_TAP_TO_CLICK);
+            PRIVATE_SETTINGS.add(TOUCHPAD_TAP_DRAGGING);
+            PRIVATE_SETTINGS.add(TOUCHPAD_RIGHT_CLICK_ZONE);
+            PRIVATE_SETTINGS.add("camera_flash_notification");
+            PRIVATE_SETTINGS.add("screen_flash_notification");
+            PRIVATE_SETTINGS.add(SCREEN_FLASH_NOTIFICATION_COLOR);
+            PRIVATE_SETTINGS.add(DEFAULT_DEVICE_FONT_SCALE);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER_OPACITY);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER_ADAPTIVE_MODE);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER_SCHEDULED);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER_TYPE);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER_ON_TIME);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER_OFF_TIME);
+            PRIVATE_SETTINGS.add(BLUE_LIGHT_FILTER_NIGHT_DIM);
+            CLONE_TO_MANAGED_PROFILE = new ArraySet();
+            CLONE_TO_MANAGED_PROFILE.add(DATE_FORMAT);
+            CLONE_TO_MANAGED_PROFILE.add(HAPTIC_FEEDBACK_ENABLED);
+            CLONE_TO_MANAGED_PROFILE.add(SOUND_EFFECTS_ENABLED);
+            CLONE_TO_MANAGED_PROFILE.add(TEXT_SHOW_PASSWORD);
+            CLONE_TO_MANAGED_PROFILE.add(TIME_12_24);
+            CLONE_TO_MANAGED_PROFILE.add(ACCELEROMETER_ROTATION);
+            CLONE_TO_MANAGED_PROFILE.add(SEM_CURRENT_APP_ICON_PACKAGE);
+            CLONE_TO_MANAGED_PROFILE.add("current_sec_active_themepackage");
+            CLONE_TO_MANAGED_PROFILE.add("smart_capture_screenshot_format");
+            CLONE_TO_MANAGED_PROFILE.add("reduce_screen_running_info");
+            CLONE_TO_MANAGED_PROFILE.add(SEM_PEN_HOVERING);
+            CLONE_FROM_PARENT_ON_VALUE = new ArrayMap();
+            CLONE_FROM_PARENT_ON_VALUE.put(RINGTONE, Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put(NOTIFICATION_SOUND, Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put(ALARM_ALERT, Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put(RINGTONE_2, Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put(NOTIFICATION_SOUND_2, Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("ringtone_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("notification_sound_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("ringtone_2_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("notification_sound_2_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("alarm_alert_CONSTANT_PATH", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("ringtone_set", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("notification_sound_set", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("alarm_alert_set", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("ringtone_2_set", Secure.SYNC_PARENT_SOUNDS);
+            CLONE_FROM_PARENT_ON_VALUE.put("notification_sound_2_set", Secure.SYNC_PARENT_SOUNDS);
+            INSTANT_APP_SETTINGS = new ArraySet();
+            INSTANT_APP_SETTINGS.add(TEXT_AUTO_REPLACE);
+            INSTANT_APP_SETTINGS.add(TEXT_AUTO_CAPS);
+            INSTANT_APP_SETTINGS.add(TEXT_AUTO_PUNCTUATE);
+            INSTANT_APP_SETTINGS.add(TEXT_SHOW_PASSWORD);
+            INSTANT_APP_SETTINGS.add(DATE_FORMAT);
+            INSTANT_APP_SETTINGS.add(FONT_SCALE);
+            INSTANT_APP_SETTINGS.add(HAPTIC_FEEDBACK_ENABLED);
+            INSTANT_APP_SETTINGS.add(TIME_12_24);
+            INSTANT_APP_SETTINGS.add(SOUND_EFFECTS_ENABLED);
+            INSTANT_APP_SETTINGS.add(ACCELEROMETER_ROTATION);
+            INSTANT_APP_SETTINGS.add(SEM_EMERGENCY_MODE);
+            INSTANT_APP_SETTINGS.add(SEM_ULTRA_POWERSAVING_MODE);
+            INSTANT_APP_SETTINGS.add(SEM_MINIMAL_BATTERY_USE);
         }
 
         public static void getMovedToGlobalSettings(Set<String> outKeySet) {
@@ -2909,6 +2988,11 @@ public final class Settings {
             return putStringForUser(resolver, name, value, resolver.getUserId(), overrideableByRestore);
         }
 
+        @SystemApi
+        public static boolean putString(ContentResolver resolver, String name, String value, boolean makeDefault, boolean overrideableByRestore) {
+            return putStringForUser(resolver, name, value, null, makeDefault, resolver.getUserId(), overrideableByRestore);
+        }
+
         public static boolean putStringForUser(ContentResolver resolver, String name, String value, int userHandle) {
             return putStringForUser(resolver, name, value, userHandle, false);
         }
@@ -2917,6 +3001,7 @@ public final class Settings {
             return putStringForUser(resolver, name, value, null, false, userHandle, overrideableByRestore);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static boolean putStringForUser(ContentResolver resolver, String name, String value, String tag, boolean makeDefault, int userHandle, boolean overrideableByRestore) {
             if (MOVED_TO_SECURE.contains(name)) {
                 Log.w(Settings.TAG, "Setting " + name + " has moved from android.provider.Settings.System to android.provider.Settings.Secure, value is unchanged.");
@@ -2927,6 +3012,26 @@ public final class Settings {
                 return false;
             }
             return sNameValueCache.putStringForUser(resolver, name, value, tag, makeDefault, userHandle, overrideableByRestore);
+        }
+
+        @SystemApi
+        public static void resetToDefaults(ContentResolver resolver, String tag) {
+            resetToDefaultsAsUser(resolver, tag, 1, resolver.getUserId());
+        }
+
+        public static void resetToDefaultsAsUser(ContentResolver resolver, String tag, int mode, int userHandle) {
+            try {
+                Bundle arg = new Bundle();
+                arg.putInt(Settings.CALL_METHOD_USER_KEY, userHandle);
+                if (tag != null) {
+                    arg.putString(Settings.CALL_METHOD_TAG_KEY, tag);
+                }
+                arg.putInt(Settings.CALL_METHOD_RESET_MODE_KEY, mode);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_RESET_SYSTEM, null, arg);
+            } catch (RemoteException e) {
+                Log.w(Settings.TAG, "Can't reset do defaults for " + CONTENT_URI, e);
+            }
         }
 
         public static Uri getUriFor(String name) {
@@ -3040,17 +3145,29 @@ public final class Settings {
         }
 
         public static void adjustConfigurationForUser(ContentResolver cr, Configuration outConfig, int userHandle, boolean updateSettingsIfEmpty) {
-            outConfig.fontScale = getFloatForUser(cr, FONT_SCALE, 1.0f, userHandle);
+            float defaultFontScale = getDefaultFontScale(cr, userHandle);
+            outConfig.fontScale = getFloatForUser(cr, FONT_SCALE, defaultFontScale, userHandle);
             if (outConfig.fontScale < 0.0f) {
-                outConfig.fontScale = 1.0f;
+                outConfig.fontScale = defaultFontScale;
             }
             outConfig.fontWeightAdjustment = Secure.getIntForUser(cr, Secure.FONT_WEIGHT_ADJUSTMENT, 0, userHandle);
+            if (Flags.systemTermsOfAddressEnabled()) {
+                GrammaticalInflectionManager manager = (GrammaticalInflectionManager) ActivityThread.currentApplication().getApplicationContext().getSystemService(GrammaticalInflectionManager.class);
+                outConfig.setGrammaticalGender(manager.peekSystemGrammaticalGenderByUserId(userHandle));
+            }
             String localeValue = getStringForUser(cr, SYSTEM_LOCALES, userHandle);
             if (localeValue != null) {
                 outConfig.setLocales(LocaleList.forLanguageTags(localeValue));
             } else if (updateSettingsIfEmpty) {
                 putStringForUser(cr, SYSTEM_LOCALES, outConfig.getLocales().toLanguageTags(), userHandle, false);
             }
+        }
+
+        private static float getDefaultFontScale(ContentResolver cr, int userHandle) {
+            if (com.android.window.flags.Flags.configurableFontScaleDefault()) {
+                return getFloatForUser(cr, DEFAULT_DEVICE_FONT_SCALE, 1.0f, userHandle);
+            }
+            return 1.0f;
         }
 
         public static void clearConfiguration(Configuration inoutConfig) {
@@ -3106,7 +3223,6 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Secure extends NameValueTable {
         public static final String ACCESSIBILITY_ALLOW_DIAGONAL_SCROLLING = "accessibility_allow_diagonal_scrolling";
 
@@ -3115,6 +3231,9 @@ public final class Settings {
 
         @Readable
         public static final String ACCESSIBILITY_AUTOCLICK_ENABLED = "accessibility_autoclick_enabled";
+
+        @Readable
+        public static final String ACCESSIBILITY_BOUNCE_KEYS = "accessibility_bounce_keys";
         public static final String ACCESSIBILITY_BUTTON_MODE = "accessibility_button_mode";
         public static final int ACCESSIBILITY_BUTTON_MODE_FLOATING_MENU = 1;
         public static final int ACCESSIBILITY_BUTTON_MODE_GESTURE = 2;
@@ -3170,6 +3289,7 @@ public final class Settings {
 
         @Readable
         public static final String ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
+        public static final String ACCESSIBILITY_DISPLAY_DALTONIZER_SATURATION_LEVEL = "accessibility_display_daltonizer_saturation_level";
 
         @Readable
         public static final String ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
@@ -3177,6 +3297,7 @@ public final class Settings {
         @Readable
         @Deprecated
         public static final String ACCESSIBILITY_DISPLAY_MAGNIFICATION_AUTO_UPDATE = "accessibility_display_magnification_auto_update";
+        public static final String ACCESSIBILITY_DISPLAY_MAGNIFICATION_EDGE_HAPTIC_ENABLED = "accessibility_display_magnification_edge_haptic_enabled";
 
         @Readable
         public static final String ACCESSIBILITY_DISPLAY_MAGNIFICATION_ENABLED = "accessibility_display_magnification_enabled";
@@ -3201,6 +3322,12 @@ public final class Settings {
 
         @Readable
         public static final String ACCESSIBILITY_FONT_SCALING_HAS_BEEN_CHANGED = "accessibility_font_scaling_has_been_changed";
+
+        @Readable
+        public static final String ACCESSIBILITY_FORCE_INVERT_COLOR_ENABLED = "accessibility_force_invert_color_enabled";
+
+        @Readable
+        public static final String ACCESSIBILITY_GESTURE_TARGETS = "accessibility_gesture_targets";
 
         @Readable
         public static final String ACCESSIBILITY_HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
@@ -3229,9 +3356,12 @@ public final class Settings {
         public static final int ACCESSIBILITY_MAGNIFICATION_MODE_FULLSCREEN = 1;
         public static final int ACCESSIBILITY_MAGNIFICATION_MODE_NONE = 0;
         public static final int ACCESSIBILITY_MAGNIFICATION_MODE_WINDOW = 2;
+        public static final String ACCESSIBILITY_MAGNIFICATION_TWO_FINGER_TRIPLE_TAP_ENABLED = "accessibility_magnification_two_finger_triple_tap_enabled";
 
         @Readable
         public static final String ACCESSIBILITY_NON_INTERACTIVE_UI_TIMEOUT_MS = "accessibility_non_interactive_ui_timeout_ms";
+        public static final String ACCESSIBILITY_PINCH_TO_ZOOM_ANYWHERE_ENABLED = "accessibility_pinch_to_zoom_anywhere_enabled";
+        public static final String ACCESSIBILITY_QS_TARGETS = "accessibility_qs_targets";
 
         @Readable
         public static final String ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN = "accessibility_shortcut_dialog_shown";
@@ -3245,6 +3375,10 @@ public final class Settings {
         @Readable
         public static final String ACCESSIBILITY_SHORTCUT_TARGET_SERVICE = "accessibility_shortcut_target_service";
         public static final String ACCESSIBILITY_SHOW_WINDOW_MAGNIFICATION_PROMPT = "accessibility_show_window_magnification_prompt";
+        public static final String ACCESSIBILITY_SINGLE_FINGER_PANNING_ENABLED = "accessibility_single_finger_panning_enabled";
+
+        @Readable
+        public static final String ACCESSIBILITY_SLOW_KEYS = "accessibility_slow_keys";
 
         @Readable
         public static final String ACCESSIBILITY_SOFT_KEYBOARD_MODE = "accessibility_soft_keyboard_mode";
@@ -3252,10 +3386,14 @@ public final class Settings {
         @Readable
         @Deprecated
         public static final String ACCESSIBILITY_SPEAK_PASSWORD = "speak_password";
+
+        @Readable
+        public static final String ACCESSIBILITY_STICKY_KEYS = "accessibility_sticky_keys";
         public static final String ACTIVE_UNLOCK_ON_BIOMETRIC_FAIL = "active_unlock_on_biometric_fail";
         public static final String ACTIVE_UNLOCK_ON_FACE_ACQUIRE_INFO = "active_unlock_on_face_acquire_info";
         public static final String ACTIVE_UNLOCK_ON_FACE_ERRORS = "active_unlock_on_face_errors";
         public static final String ACTIVE_UNLOCK_ON_UNLOCK_INTENT = "active_unlock_on_unlock_intent";
+        public static final String ACTIVE_UNLOCK_ON_UNLOCK_INTENT_LEGACY = "active_unlock_on_unlock_intent_legacy";
         public static final String ACTIVE_UNLOCK_ON_UNLOCK_INTENT_WHEN_BIOMETRIC_ENROLLED = "active_unlock_on_unlock_intent_when_biometric_enrolled";
         public static final String ACTIVE_UNLOCK_ON_WAKE = "active_unlock_on_wake";
         public static final String ACTIVE_UNLOCK_WAKEUPS_CONSIDERED_UNLOCK_INTENTS = "active_unlock_wakeups_considered_unlock_intents";
@@ -3275,6 +3413,7 @@ public final class Settings {
         @Readable
         @Deprecated
         public static final String ALLOW_MOCK_LOCATION = "mock_location";
+        public static final String ALLOW_PRIMARY_GAIA_ACCOUNT_REMOVAL_FOR_TESTS = "allow_primary_gaia_account_removal_for_tests";
         public static final String ALWAYS_ON_VPN_APP = "always_on_vpn_app";
 
         @Readable
@@ -3329,6 +3468,8 @@ public final class Settings {
 
         @Readable
         public static final String ATTENTIVE_TIMEOUT = "attentive_timeout";
+        public static final String AUDIO_DEVICE_INVENTORY = "audio_device_inventory";
+        public static final String AUDIO_SAFE_CSD_AS_A_FEATURE_ENABLED = "audio_safe_csd_as_a_feature_enabled";
         public static final String AUTOCSP_ENABLED = "autocsp_enabled";
         public static final String AUTOCSP_OPERATOR_CODE = "data_operator_code";
 
@@ -3427,13 +3568,12 @@ public final class Settings {
         public static final String BACK_GESTURE_INSET_SCALE_RIGHT = "back_gesture_inset_scale_right";
 
         @Readable
-        public static final String BADGE_APP_ICON_TYPE = "badge_app_icon_type";
-
-        @Readable
         public static final String BIOMETRIC_APP_ENABLED = "biometric_app_enabled";
 
         @Readable
         public static final String BIOMETRIC_DEBUG_ENABLED = "biometric_debug_enabled";
+        public static final String BIOMETRIC_FACE_VIRTUAL_ENABLED = "biometric_face_virtual_enabled";
+        public static final String BIOMETRIC_FINGERPRINT_VIRTUAL_ENABLED = "biometric_fingerprint_virtual_enabled";
 
         @Readable
         public static final String BIOMETRIC_KEYGUARD_ENABLED = "biometric_keyguard_enabled";
@@ -3453,6 +3593,8 @@ public final class Settings {
         public static final String BLUETOOTH_ADDR_VALID = "bluetooth_addr_valid";
         public static final String BLUETOOTH_LE_BROADCAST_APP_SOURCE_NAME = "bluetooth_le_broadcast_app_source_name";
         public static final String BLUETOOTH_LE_BROADCAST_CODE = "bluetooth_le_broadcast_code";
+        public static final String BLUETOOTH_LE_BROADCAST_FALLBACK_ACTIVE_DEVICE_ADDRESS = "bluetooth_le_broadcast_fallback_active_device_address";
+        public static final String BLUETOOTH_LE_BROADCAST_IMPROVE_COMPATIBILITY = "bluetooth_le_broadcast_improve_compatibility";
         public static final String BLUETOOTH_LE_BROADCAST_NAME = "bluetooth_le_broadcast_name";
         public static final String BLUETOOTH_LE_BROADCAST_NAME_INFO = "bluetooth_le_broadcast_name_info";
         public static final String BLUETOOTH_LE_BROADCAST_NEED_START_POPUP = "need_auracast_start_popup";
@@ -3463,11 +3605,17 @@ public final class Settings {
         @Readable(maxTargetSdk = 31)
         public static final String BLUETOOTH_NAME = "bluetooth_name";
 
+        @Readable
+        public static final String BLUETOOTH_NAP_AUTO_TETHERING = "bluetooth_nap_auto_tethering";
+
         @Deprecated
         public static final String BLUETOOTH_ON = "bluetooth_on";
 
         @Readable
         public static final String BLUETOOTH_ON_WHILE_DRIVING = "bluetooth_on_while_driving";
+
+        @Readable
+        public static final String BLUETOOTH_PANU_AUTO_TETHERING = "bluetooth_panu_auto_tethering";
 
         @Readable
         public static final String BUBBLE_IMPORTANT_CONVERSATIONS = "bubble_important_conversations";
@@ -3490,6 +3638,9 @@ public final class Settings {
 
         @Readable
         public static final String CAMERA_DOUBLE_TWIST_TO_FLIP_ENABLED = "camera_double_twist_to_flip_enabled";
+
+        @Readable
+        public static final String CAMERA_EXTENSIONS_FALLBACK = "camera_extensions_fallback";
         public static final String CAMERA_FLASH_NOTIFICATION_APP_LIST = "camera_flash_notification_app_list";
 
         @Readable
@@ -3517,6 +3668,7 @@ public final class Settings {
 
         @Readable
         public static final String CHAMELEON_TETHEREDDATA = "chameleon_tethereddata";
+        public static final String CHARGE_OPTIMIZATION_MODE = "charge_optimization_mode";
 
         @Readable
         public static final String CHARGING_SOUNDS_ENABLED = "charging_sounds_enabled";
@@ -3551,7 +3703,10 @@ public final class Settings {
 
         @Readable
         public static final String CONTENT_CAPTURE_ENABLED = "content_capture_enabled";
-        public static final Uri CONTENT_URI;
+        public static final String CONTEXTUAL_SCREEN_TIMEOUT_ENABLED = "contextual_screen_timeout_enabled";
+
+        @Readable
+        public static final String CONTEXTUAL_SEARCH_PACKAGE = "contextual_search_package";
         public static final String CONTRAST_LEVEL = "contrast_level";
 
         @Readable
@@ -3579,9 +3734,11 @@ public final class Settings {
 
         @Deprecated
         public static final String DATA_ROAMING = "data_roaming";
+        public static final String DEFAULT_DEVICE_INPUT_METHOD = "default_device_input_method";
 
         @Readable
         public static final String DEFAULT_INPUT_METHOD = "default_input_method";
+        public static final String DEFAULT_NOTE_TASK_PROFILE = "default_note_task_profile";
         public static final String DEFAULT_VOICE_INPUT_METHOD = "default_voice_input_method";
         public static final String DEVELOPMENT_CUSTOM_BUGREPORT_WRITER = "development_custom_bugreport_writer";
 
@@ -3614,12 +3771,14 @@ public final class Settings {
 
         @Readable(maxTargetSdk = 33)
         public static final String DISABLED_SYSTEM_INPUT_METHODS = "disabled_system_input_methods";
+        public static final String DISABLE_SECURE_WINDOWS = "disable_secure_windows";
 
         @Readable
         public static final String DISPLAY_DENSITY_FORCED = "display_density_forced";
 
         @Readable
         public static final String DISPLAY_WHITE_BALANCE_ENABLED = "display_white_balance_enabled";
+        public static final String DND_CONFIGS_MIGRATED = "dnd_settings_migrated";
 
         @Readable
         public static final String DOCKED_CLOCK_FACE = "docked_clock_face";
@@ -3685,6 +3844,7 @@ public final class Settings {
         public static final String EMERGENCY_GESTURE_SOUND_ENABLED = "emergency_gesture_sound_enabled";
         public static final String EMERGENCY_GESTURE_UI_LAST_STARTED_MILLIS = "emergency_gesture_ui_last_started_millis";
         public static final String EMERGENCY_GESTURE_UI_SHOWING = "emergency_gesture_ui_showing";
+        public static final String EMERGENCY_THERMAL_ALERT_DISABLED = "emergency_thermal_alert_disabled";
         public static final String ENABLED_ACCESSIBILITY_AUDIO_DESCRIPTION_BY_DEFAULT = "enabled_accessibility_audio_description_by_default";
 
         @Readable
@@ -3716,6 +3876,8 @@ public final class Settings {
 
         @Readable
         public static final String ENHANCED_VOICE_PRIVACY_ENABLED = "enhanced_voice_privacy_enabled";
+        public static final String EVEN_DIMMER_ACTIVATED = "even_dimmer_activated";
+        public static final String EVEN_DIMMER_MIN_NITS = "even_dimmer_min_nits";
         public static final String EXTRA_AUTOMATIC_POWER_SAVE_MODE = "extra_automatic_power_save_mode";
         public static final String EXTRA_LOW_POWER_WARNING_ACKNOWLEDGED = "extra_low_power_warning_acknowledged";
 
@@ -3772,6 +3934,7 @@ public final class Settings {
 
         @Readable
         public static final String GESTURE_IMMERSIVE_MODE_CONFIRMATIONS = "gesture_immersive_mode_confirmations";
+        public static final String GLANCEABLE_HUB_ENABLED = "glanceable_hub_enabled";
 
         @Readable
         public static final String GLOBAL_ACTIONS_PANEL_AVAILABLE = "global_actions_panel_available";
@@ -3785,8 +3948,9 @@ public final class Settings {
         public static final String HDMI_CEC_SET_MENU_LANGUAGE_DENYLIST = "hdmi_cec_set_menu_language_denylist";
         public static final String HEARING_AID_CALL_ROUTING = "hearing_aid_call_routing";
         public static final String HEARING_AID_MEDIA_ROUTING = "hearing_aid_media_routing";
+        public static final String HEARING_AID_NOTIFICATION_ROUTING = "hearing_aid_notification_routing";
         public static final String HEARING_AID_RINGTONE_ROUTING = "hearing_aid_ringtone_routing";
-        public static final String HEARING_AID_SYSTEM_SOUNDS_ROUTING = "hearing_aid_system_sounds_routing";
+        public static final String HIDE_PRIVATESPACE_ENTRY_POINT = "hide_privatespace_entry_point";
 
         @Readable
         public static final String HIDE_SECURE_FOLDER_FLAG = "hide_secure_folder_flag";
@@ -3805,6 +3969,10 @@ public final class Settings {
 
         @Deprecated
         public static final String HTTP_PROXY = "http_proxy";
+        public static final int HUB_MODE_TUTORIAL_COMPLETED = 10;
+        public static final int HUB_MODE_TUTORIAL_NOT_STARTED = 0;
+        public static final int HUB_MODE_TUTORIAL_STARTED = 1;
+        public static final String HUB_MODE_TUTORIAL_STATE = "hub_mode_tutorial_state";
 
         @SystemApi
         @Readable
@@ -3878,6 +4046,8 @@ public final class Settings {
 
         @Readable
         public static final String KEYGUARD_SLICE_URI = "keyguard_slice_uri";
+        public static final String KEY_REPEAT_DELAY_MS = "key_repeat_delay";
+        public static final String KEY_REPEAT_TIMEOUT_MS = "key_repeat_timeout";
         public static final String KNOWN_TRUST_AGENTS_INITIALIZED = "known_trust_agents_initialized";
 
         @Readable
@@ -3885,6 +4055,9 @@ public final class Settings {
 
         @Readable
         public static final String KNOX_SCREEN_OFF_TIMEOUT = "knox_screen_off_timeout";
+
+        @Readable
+        public static final String LAST_SECURE_UI_NIGHT_MODE_POWER_MODE = "last_secure_ui_night_mode_power_mode";
 
         @SystemApi
         @Readable
@@ -4018,9 +4191,6 @@ public final class Settings {
         public static final String LOCK_SCREEN_WEATHER_ENABLED = "lockscreen_weather_enabled";
 
         @Readable
-        public static final String LOCK_SCREEN_WHEN_TRUST_LOST = "lock_screen_when_trust_lost";
-
-        @Readable
         public static final String LOCK_TO_APP_EXIT_LOCKED = "lock_to_app_exit_locked";
 
         @Readable
@@ -4044,6 +4214,8 @@ public final class Settings {
 
         @Readable
         public static final String MANAGED_PROVISIONING_DPC_DOWNLOADED = "managed_provisioning_dpc_downloaded";
+        public static final String MANDATORY_BIOMETRICS = "mandatory_biometrics";
+        public static final String MANDATORY_BIOMETRICS_REQUIREMENTS_SATISFIED = "mandatory_biometrics_requirements_satisfied";
 
         @Readable
         public static final String MANUAL_RINGER_TOGGLE_COUNT = "manual_ringer_toggle_count";
@@ -4075,7 +4247,6 @@ public final class Settings {
         @Readable
         public static final String MOUNT_UMS_PROMPT = "mount_ums_prompt";
         private static final HashSet<String> MOVED_TO_GLOBAL;
-        private static final HashSet<String> MOVED_TO_LOCK_SETTINGS;
 
         @Readable
         public static final String MULTI_CONTROL_CONNECTION_STATE = "multi_control_connection_state";
@@ -4088,6 +4259,7 @@ public final class Settings {
 
         @Readable
         public static final String NAVIGATION_MODE = "navigation_mode";
+        public static final String NAVIGATION_MODE_RESTORE = "navigation_mode_restore";
         public static final String NAV_BAR_FORCE_VISIBLE = "nav_bar_force_visible";
         public static final String NAV_BAR_KIDS_MODE = "nav_bar_kids_mode";
         public static final String NEARBY_FAST_PAIR_SETTINGS_DEVICES_COMPONENT = "nearby_fast_pair_settings_devices_component";
@@ -4098,6 +4270,8 @@ public final class Settings {
 
         @Deprecated
         public static final String NETWORK_PREFERENCE = "network_preference";
+
+        @Deprecated
         public static final String NFC_PAYMENT_DEFAULT_COMPONENT = "nfc_payment_default_component";
 
         @Readable
@@ -4134,6 +4308,9 @@ public final class Settings {
         public static final String NOTIFICATION_HISTORY_ENABLED = "notification_history_enabled";
 
         @Readable
+        public static final String NOTIFICATION_PANEL_SHOW_FAVORITE_APP_NOTIFICATIONS = "notification_panel_show_favorite_app_notifications";
+
+        @Readable
         public static final String NOTIFIED_NON_ACCESSIBILITY_CATEGORY_SERVICES = "notified_non_accessibility_category_services";
 
         @Readable
@@ -4147,6 +4324,9 @@ public final class Settings {
         public static final String ONE_HANDED_MODE_ENABLED = "one_handed_mode_enabled";
         public static final String ONE_HANDED_MODE_TIMEOUT = "one_handed_mode_timeout";
         public static final String ONE_HANDED_TUTORIAL_SHOW_COUNT = "one_handed_tutorial_show_count";
+        public static final String ON_DEVICE_INFERENCE_UNBIND_TIMEOUT_MS = "on_device_inference_unbind_timeout_ms";
+        public static final String ON_DEVICE_INTELLIGENCE_IDLE_TIMEOUT_MS = "on_device_intelligence_idle_timeout_ms";
+        public static final String ON_DEVICE_INTELLIGENCE_UNBIND_TIMEOUT_MS = "on_device_intelligence_unbind_timeout_ms";
 
         @Readable
         public static final String PACKAGES_IN_SMART_POP_UP_VIEW = "floating_noti_package_list";
@@ -4170,28 +4350,33 @@ public final class Settings {
         public static final String PEOPLE_STRIP = "people_strip";
 
         @Readable
+        public static final String PMS_OVERRIDE_REFRESH_RATE_MODE = "pms_override_refresh_rate_mode";
+
+        @Readable
+        public static final String PMS_OVERRIDE_REFRESH_RATE_MODE_COVER = "pms_override_refresh_rate_mode_cover";
+
+        @Readable
         public static final String POWER_MENU_LOCKED_SHOW_CONTENT = "power_menu_locked_show_content";
 
         @Readable
         public static final String PPPD_EXIT_CODE = "pppd_exit_port";
 
         @Readable
-        public static final String PREFERRED_TIME_ZONE_DETECTION_METHOD = "preferred_time_zone_detection_method";
-
-        @Readable
         public static final String PREFERRED_TTY_MODE = "preferred_tty_mode";
 
         @Readable
         public static final String PRINT_SERVICE_SEARCH_URI = "print_service_search_uri";
+        public static final String PRIVATE_SPACE_AUTO_LOCK = "private_space_auto_lock";
+        public static final int PRIVATE_SPACE_AUTO_LOCK_AFTER_DEVICE_RESTART = 2;
+        public static final int PRIVATE_SPACE_AUTO_LOCK_AFTER_INACTIVITY = 1;
+        public static final int PRIVATE_SPACE_AUTO_LOCK_ON_DEVICE_LOCK = 0;
 
         @Readable
         public static final String QS_AUTO_ADDED_TILES = "qs_auto_tiles";
 
         @Readable(maxTargetSdk = 33)
         public static final String QS_TILES = "sysui_qs_tiles";
-
-        @Readable
-        public static final String RAKUTEN_DENWA_PREFIX = "rakuten_denwa_prefix";
+        public static final String RAMPART_BLOCKED_2G_NETWORK = "rampart_blocked_2g_network";
         public static final String RAMPART_BLOCKED_ADB_CMD = "rampart_blocked_adb_cmd";
         public static final String RAMPART_BLOCKED_AT_CMD = "rampart_blocked_at_cmd";
         public static final String RAMPART_BLOCKED_AUTO_DOWNLOAD_MESSAGES = "rampart_blocked_auto_download_messages";
@@ -4203,6 +4388,7 @@ public final class Settings {
         public static final String RAMPART_BLOCKED_LOCATION_MESSAGES = "rampart_blocked_location_messages";
         public static final String RAMPART_BLOCKED_SHARED_ALBUM_GALLERY = "rampart_blocked_shared_album_gallery";
         public static final String RAMPART_BLOCKED_UNKNOWN_APPS = "rampart_blocked_unknown_apps";
+        public static final String RAMPART_BLOCKED_UNSECURE_WIFI_AUTOJOIN = "rampart_blocked_unsecure_wifi_autojoin";
         public static final String RAMPART_BLOCKED_USB_DATA_TRANSFER = "rampart_blocked_usb_data_transfer";
         public static final String RAMPART_ENABLED_DEVICE_PROTECTION = "rampart_enabled_device_protection";
         public static final String RAMPART_ENABLED_MESSAGE_GUARD = "rampart_enabled_message_guard";
@@ -4225,6 +4411,9 @@ public final class Settings {
         public static final int REFRESH_RATE_MODE_PASSIVE = 3;
         public static final int REFRESH_RATE_MODE_SEAMLESS = 1;
         public static final String RELEASE_COMPRESS_BLOCKS_ON_INSTALL = "release_compress_blocks_on_install";
+        public static final int RESOLUTION_MODE_FULL = 2;
+        public static final int RESOLUTION_MODE_HIGH = 1;
+        public static final int RESOLUTION_MODE_UNKNOWN = 0;
 
         @Readable
         public static final String RGB_GAIN_API_DISPLAY_ACTIVATED = "rgb_gain_api_display_activated";
@@ -4276,6 +4465,10 @@ public final class Settings {
         @Readable
         public static final String SCREEN_EXTRA_BRIGHTNESS = "screen_extra_brightness";
         public static final String SCREEN_FLASH_NOTIFICATION_COLOR_APPS = "screen_flash_notification_color_apps";
+
+        @Readable
+        public static final String SCREEN_RESOLUTION_MODE = "screen_resolution_mode";
+        public static final String SEARCH_ALL_ENTRYPOINTS_ENABLED = "search_all_entrypoints_enabled";
 
         @Readable
         public static final String SEARCH_GLOBAL_SEARCH_ACTIVITY = "search_global_search_activity";
@@ -4383,6 +4576,9 @@ public final class Settings {
         public static final String SEM_APPLOCK_LOCKED_APPS_PACKAGES = "applock_locked_apps_packages";
 
         @Readable
+        public static final String SEM_APPLOCK_LOCKED_PACKAGES = "applock_locked_packages";
+
+        @Readable
         public static final String SEM_APPLOCK_LOCK_TYPE = "applock_lock_type";
 
         @Readable
@@ -4438,9 +4634,6 @@ public final class Settings {
         public static final String SEM_NFC_PAYMENT_DEFAULT_COMPONENT = "nfc_payment_default_component";
 
         @Readable
-        public static final String SEM_PERFORMANCE_MODE = "sem_perfomance_mode";
-
-        @Readable
         public static final String SEM_PREDEFINED_COLOR_BLIND_INTENSITY = "predefined_color_blind_intensity";
 
         @Readable
@@ -4469,6 +4662,7 @@ public final class Settings {
         @Readable
         public static final String SHOW_IME_WITH_HARD_KEYBOARD = "show_ime_with_hard_keyboard";
         public static final String SHOW_KEYBOARD_BUTTON = "show_keyboard_button";
+        public static final String SHOW_KEYBOARD_BUTTON_POSITION = "show_keyboard_button_position";
 
         @Readable
         public static final String SHOW_MEDIA_WHEN_BYPASSING = "show_media_when_bypassing";
@@ -4582,6 +4776,9 @@ public final class Settings {
         public static final String STYLUS_HANDWRITING_ENABLED = "stylus_handwriting_enabled";
 
         @Readable
+        public static final String STYLUS_POINTER_ICON_ENABLED = "stylus_pointer_icon_enabled";
+
+        @Readable
         public static final String SUPPRESS_AUTO_BATTERY_SAVER_SUGGESTION = "suppress_auto_battery_saver_suggestion";
 
         @Readable
@@ -4626,9 +4823,6 @@ public final class Settings {
         public static final String TRACKPAD_GESTURE_NOTIFICATION_ENABLED = "trackpad_gesture_notification_enabled";
         public static final String TRACKPAD_GESTURE_OVERVIEW_ENABLED = "trackpad_gesture_overview_enabled";
         public static final String TRACKPAD_GESTURE_QUICK_SWITCH_ENABLED = "trackpad_gesture_quick_switch_enabled";
-
-        @Readable
-        public static final String TRUST_AGENTS_EXTEND_UNLOCK = "trust_agents_extend_unlock";
 
         @Readable
         public static final String TRUST_AGENTS_INITIALIZED = "trust_agents_initialized";
@@ -4739,12 +4933,15 @@ public final class Settings {
 
         @Deprecated
         public static final String USE_GOOGLE_MAIL = "use_google_mail";
+        public static final String VISUAL_QUERY_ACCESSIBILITY_DETECTION_ENABLED = "visual_query_accessibility_detection_enabled";
 
         @Readable
         public static final String VOICE_INTERACTION_SERVICE = "voice_interaction_service";
 
         @Readable
         public static final String VOICE_RECOGNITION_SERVICE = "voice_recognition_service";
+        public static final String VOICE_SEARCH_WIDGET_STATE = "voice_search_widget_state";
+        public static final String VOLUME_DIALOG_DISMISS_TIMEOUT = "volume_dialog_dismiss_timeout";
 
         @SystemApi
         @Readable
@@ -4766,6 +4963,8 @@ public final class Settings {
         public static final String VR_DISPLAY_MODE = "vr_display_mode";
         public static final int VR_DISPLAY_MODE_LOW_PERSISTENCE = 0;
         public static final int VR_DISPLAY_MODE_OFF = 1;
+        public static final String V_TO_U_RESTORE_ALLOWLIST = "v_to_u_restore_allowlist";
+        public static final String V_TO_U_RESTORE_DENYLIST = "v_to_u_restore_denylist";
 
         @Readable
         public static final String WAKE_GESTURE_ENABLED = "wake_gesture_enabled";
@@ -4925,16 +5124,12 @@ public final class Settings {
 
         @Readable
         public static final String WIFI_CLIENT_SMART_TETHERING = "wifi_client_smart_tethering_settings";
-        public static final String WIFI_HOTSPOT20_CONNECTED_HISTORY = "wifi_hotspot20_connected_history";
-        public static final String WIFI_HOTSPOT20_ENABLE = "wifi_hotspot20_enable";
-        public static final String WIFI_HOTSPOT20_USEABLE_VENDOR_USIM = "wifi_hotspot20_useable_vendor_usim";
 
         @Deprecated
         public static final String WIFI_IDLE_MS = "wifi_idle_ms";
 
         @Readable
-        @Deprecated
-        public static final String WIFI_INTERNET_SERVICE_CHECK_WARNING = "wifi_internet_service_check_warning";
+        public static final String WIFI_IOT_SETUP_ENABLED = "sec_wifi_iot_setup_enabled";
 
         @Deprecated
         public static final String WIFI_MAX_DHCP_RETRY_COUNT = "wifi_max_dhcp_retry_count";
@@ -4962,10 +5157,6 @@ public final class Settings {
         public static final String WIFI_ON = "wifi_on";
 
         @Readable
-        @Deprecated
-        public static final String WIFI_POOR_CONNECTION_WARNING = "wifi_poor_connection_warning";
-
-        @Readable
         public static final String WIFI_SAVED_STATE = "wifi_saved_state";
 
         @Readable
@@ -4976,9 +5167,6 @@ public final class Settings {
 
         @Readable
         public static final String WIFI_SNS_DIALOG_FOR_STARTING_SETTINGS = "wifi_sns_dialog_for_starting_settings";
-
-        @Readable
-        public static final String WIFI_SNS_VISITED_COUNTRY_ISO = "wifi_sns_visited_country_iso";
 
         @Readable
         public static final String WIFI_SUSPEND_HOTSPOT_CONNECTION_DURING_SLEEP = "smart_wifi_ap_advanced_connect_lcd_off";
@@ -5032,24 +5220,6 @@ public final class Settings {
         public static final String WIFI_WATCHDOG_WATCH_LIST = "wifi_watchdog_watch_list";
 
         @Readable
-        public static final String WIFI_WWSM_PATCH_KEY = "wifi_wwsm_patch_key";
-
-        @Readable
-        public static final String WIFI_WWSM_PATCH_NEED_TO_CHECK_APPSTORE = "wifi_wwsm_patch_need_to_check_appstore";
-
-        @Readable
-        public static final String WIFI_WWSM_PATCH_REMOVE_SNS_MENU_FROM_SETTINGS = "wifi_wwsm_patch_remove_sns_menu_from_settings";
-
-        @Readable
-        public static final String WIFI_WWSM_PATCH_RESTORE_SNS_ENABLED = "wifi_wwsm_patch_restore_sns_enabled";
-
-        @Readable
-        public static final String WIFI_WWSM_PATCH_TEST_MODE_ENABLED = "wifi_wwsm_patch_test_mode_enabled";
-
-        @Readable
-        public static final String WIFI_WWSM_PATCH_UPDATE_AVAILABLE = "wifi_wwsm_patch_update_available";
-
-        @Readable
         public static final String ZEN_DURATION = "zen_duration";
         public static final int ZEN_DURATION_FOREVER = 0;
         public static final int ZEN_DURATION_PROMPT = -1;
@@ -5059,192 +5229,195 @@ public final class Settings {
 
         @Readable
         public static final String ZEN_SETTINGS_UPDATED = "zen_settings_updated";
-        private static final NameValueCache sNameValueCache;
-        private static final ContentProviderHolder sProviderHolder;
+        public static final Uri CONTENT_URI = Uri.parse("content://settings/secure");
+        private static final ContentProviderHolder sProviderHolder = new ContentProviderHolder(CONTENT_URI);
+        private static final NameValueCache sNameValueCache = new NameValueCache(CONTENT_URI, Settings.CALL_METHOD_GET_SECURE, Settings.CALL_METHOD_PUT_SECURE, Settings.CALL_METHOD_DELETE_SECURE, sProviderHolder, Secure.class);
+        private static final HashSet<String> MOVED_TO_LOCK_SETTINGS = new HashSet<>(3);
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface DeviceStateRotationLockKey {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface DeviceStateRotationLockSetting {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface DockSetupState {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
+        public @interface HubModeTutorialState {
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
+        public @interface PrivateSpaceAutoLockOption {
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
+        public @interface ResolutionMode {
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
         public @interface UserSetupPersonalization {
         }
 
         static {
-            Uri parse = Uri.parse("content://settings/secure");
-            CONTENT_URI = parse;
-            ContentProviderHolder contentProviderHolder = new ContentProviderHolder(parse);
-            sProviderHolder = contentProviderHolder;
-            sNameValueCache = new NameValueCache(parse, Settings.CALL_METHOD_GET_SECURE, Settings.CALL_METHOD_PUT_SECURE, Settings.CALL_METHOD_DELETE_SECURE, contentProviderHolder, Secure.class);
-            HashSet<String> hashSet = new HashSet<>(3);
-            MOVED_TO_LOCK_SETTINGS = hashSet;
-            hashSet.add("lock_pattern_autolock");
-            hashSet.add("lock_pattern_visible_pattern");
-            hashSet.add("lock_pattern_tactile_feedback_enabled");
-            HashSet<String> hashSet2 = new HashSet<>();
-            MOVED_TO_GLOBAL = hashSet2;
-            hashSet2.add("adb_enabled");
-            hashSet2.add(Global.ASSISTED_GPS_ENABLED);
-            hashSet2.add("bluetooth_on");
-            hashSet2.add(Global.CDMA_CELL_BROADCAST_SMS);
-            hashSet2.add(Global.CDMA_ROAMING_MODE);
-            hashSet2.add(Global.CDMA_SUBSCRIPTION_MODE);
-            hashSet2.add(Global.DATA_ACTIVITY_TIMEOUT_MOBILE);
-            hashSet2.add(Global.DATA_ACTIVITY_TIMEOUT_WIFI);
-            hashSet2.add("data_roaming");
-            hashSet2.add("development_settings_enabled");
-            hashSet2.add("device_provisioned");
-            hashSet2.add(Global.DISPLAY_SIZE_FORCED);
-            hashSet2.add(Global.DOWNLOAD_MAX_BYTES_OVER_MOBILE);
-            hashSet2.add(Global.DOWNLOAD_RECOMMENDED_MAX_BYTES_OVER_MOBILE);
-            hashSet2.add(Global.MOBILE_DATA);
-            hashSet2.add(Global.NETSTATS_DEV_BUCKET_DURATION);
-            hashSet2.add(Global.NETSTATS_DEV_DELETE_AGE);
-            hashSet2.add(Global.NETSTATS_DEV_PERSIST_BYTES);
-            hashSet2.add(Global.NETSTATS_DEV_ROTATE_AGE);
-            hashSet2.add(Global.NETSTATS_ENABLED);
-            hashSet2.add(Global.NETSTATS_GLOBAL_ALERT_BYTES);
-            hashSet2.add(Global.NETSTATS_POLL_INTERVAL);
-            hashSet2.add(Global.NETSTATS_SAMPLE_ENABLED);
-            hashSet2.add(Global.NETSTATS_TIME_CACHE_MAX_AGE);
-            hashSet2.add(Global.NETSTATS_UID_BUCKET_DURATION);
-            hashSet2.add(Global.NETSTATS_UID_DELETE_AGE);
-            hashSet2.add(Global.NETSTATS_UID_PERSIST_BYTES);
-            hashSet2.add(Global.NETSTATS_UID_ROTATE_AGE);
-            hashSet2.add(Global.NETSTATS_UID_TAG_BUCKET_DURATION);
-            hashSet2.add(Global.NETSTATS_UID_TAG_DELETE_AGE);
-            hashSet2.add(Global.NETSTATS_UID_TAG_PERSIST_BYTES);
-            hashSet2.add(Global.NETSTATS_UID_TAG_ROTATE_AGE);
-            hashSet2.add("network_preference");
-            hashSet2.add(Global.NITZ_UPDATE_DIFF);
-            hashSet2.add(Global.NITZ_UPDATE_SPACING);
-            hashSet2.add(Global.NTP_SERVER);
-            hashSet2.add(Global.NTP_TIMEOUT);
-            hashSet2.add(Global.PDP_WATCHDOG_ERROR_POLL_COUNT);
-            hashSet2.add(Global.PDP_WATCHDOG_LONG_POLL_INTERVAL_MS);
-            hashSet2.add(Global.PDP_WATCHDOG_MAX_PDP_RESET_FAIL_COUNT);
-            hashSet2.add(Global.PDP_WATCHDOG_POLL_INTERVAL_MS);
-            hashSet2.add(Global.PDP_WATCHDOG_TRIGGER_PACKET_COUNT);
-            hashSet2.add(Global.SETUP_PREPAID_DATA_SERVICE_URL);
-            hashSet2.add(Global.SETUP_PREPAID_DETECTION_REDIR_HOST);
-            hashSet2.add(Global.SETUP_PREPAID_DETECTION_TARGET_URL);
-            hashSet2.add(Global.TETHER_DUN_APN);
-            hashSet2.add(Global.TETHER_DUN_REQUIRED);
-            hashSet2.add(Global.TETHER_SUPPORTED);
-            hashSet2.add("usb_mass_storage_enabled");
-            hashSet2.add("use_google_mail");
-            hashSet2.add(Global.WIFI_COUNTRY_CODE);
-            hashSet2.add(Global.WIFI_FRAMEWORK_SCAN_INTERVAL_MS);
-            hashSet2.add(Global.WIFI_FREQUENCY_BAND);
-            hashSet2.add("wifi_idle_ms");
-            hashSet2.add("wifi_max_dhcp_retry_count");
-            hashSet2.add("wifi_mobile_data_transition_wakelock_timeout_ms");
-            hashSet2.add("wifi_networks_available_notification_on");
-            hashSet2.add("wifi_networks_available_repeat_delay");
-            hashSet2.add("wifi_num_open_networks_kept");
-            hashSet2.add("wifi_on");
-            hashSet2.add("wifi_p2p_device_name");
-            hashSet2.add(Global.WIFI_SUPPLICANT_SCAN_INTERVAL_MS);
-            hashSet2.add(Global.WIFI_VERBOSE_LOGGING_ENABLED);
-            hashSet2.add(Global.WIFI_ENHANCED_AUTO_JOIN);
-            hashSet2.add(Global.WIFI_NETWORK_SHOW_RSSI);
-            hashSet2.add("wifi_watchdog_on");
-            hashSet2.add(Global.WIFI_WATCHDOG_POOR_NETWORK_TEST_ENABLED);
-            hashSet2.add(Global.WIFI_P2P_PENDING_FACTORY_RESET);
-            hashSet2.add(Global.WIMAX_NETWORKS_AVAILABLE_NOTIFICATION_ON);
-            hashSet2.add(Global.PACKAGE_VERIFIER_TIMEOUT);
-            hashSet2.add(Global.PACKAGE_VERIFIER_DEFAULT_RESPONSE);
-            hashSet2.add(Global.DATA_STALL_ALARM_NON_AGGRESSIVE_DELAY_IN_MS);
-            hashSet2.add(Global.DATA_STALL_ALARM_AGGRESSIVE_DELAY_IN_MS);
-            hashSet2.add(Global.GPRS_REGISTER_CHECK_PERIOD_MS);
-            hashSet2.add(Global.WTF_IS_FATAL);
-            hashSet2.add(Global.BATTERY_DISCHARGE_DURATION_THRESHOLD);
-            hashSet2.add(Global.BATTERY_DISCHARGE_THRESHOLD);
-            hashSet2.add(Global.SEND_ACTION_APP_ERROR);
-            hashSet2.add(Global.DROPBOX_AGE_SECONDS);
-            hashSet2.add(Global.DROPBOX_MAX_FILES);
-            hashSet2.add(Global.DROPBOX_QUOTA_KB);
-            hashSet2.add(Global.DROPBOX_QUOTA_PERCENT);
-            hashSet2.add(Global.DROPBOX_RESERVE_PERCENT);
-            hashSet2.add(Global.DROPBOX_TAG_PREFIX);
-            hashSet2.add(Global.ERROR_LOGCAT_PREFIX);
-            hashSet2.add(Global.SYS_FREE_STORAGE_LOG_INTERVAL);
-            hashSet2.add(Global.DISK_FREE_CHANGE_REPORTING_THRESHOLD);
-            hashSet2.add(Global.SYS_STORAGE_THRESHOLD_PERCENTAGE);
-            hashSet2.add(Global.SYS_STORAGE_THRESHOLD_MAX_BYTES);
-            hashSet2.add(Global.SYS_STORAGE_FULL_THRESHOLD_BYTES);
-            hashSet2.add(Global.SYNC_MAX_RETRY_DELAY_IN_SECONDS);
-            hashSet2.add(Global.CONNECTIVITY_CHANGE_DELAY);
-            hashSet2.add(Global.CAPTIVE_PORTAL_DETECTION_ENABLED);
-            hashSet2.add(Global.CAPTIVE_PORTAL_SERVER);
-            hashSet2.add(Global.SET_INSTALL_LOCATION);
-            hashSet2.add(Global.DEFAULT_INSTALL_LOCATION);
-            hashSet2.add(Global.INET_CONDITION_DEBOUNCE_UP_DELAY);
-            hashSet2.add(Global.INET_CONDITION_DEBOUNCE_DOWN_DELAY);
-            hashSet2.add(Global.READ_EXTERNAL_STORAGE_ENFORCED_DEFAULT);
-            hashSet2.add("http_proxy");
-            hashSet2.add(Global.GLOBAL_HTTP_PROXY_HOST);
-            hashSet2.add(Global.GLOBAL_HTTP_PROXY_PORT);
-            hashSet2.add(Global.GLOBAL_HTTP_PROXY_EXCLUSION_LIST);
-            hashSet2.add(Global.SET_GLOBAL_HTTP_PROXY);
-            hashSet2.add(Global.DEFAULT_DNS_SERVER);
-            hashSet2.add(Global.PREFERRED_NETWORK_MODE);
-            hashSet2.add(Global.WEBVIEW_DATA_REDUCTION_PROXY_KEY);
-            hashSet2.add("secure_frp_mode");
-            hashSet2.add("bold_text");
+            MOVED_TO_LOCK_SETTINGS.add("lock_pattern_autolock");
+            MOVED_TO_LOCK_SETTINGS.add("lock_pattern_visible_pattern");
+            MOVED_TO_LOCK_SETTINGS.add("lock_pattern_tactile_feedback_enabled");
+            MOVED_TO_GLOBAL = new HashSet<>();
+            MOVED_TO_GLOBAL.add("adb_enabled");
+            MOVED_TO_GLOBAL.add(Global.ASSISTED_GPS_ENABLED);
+            MOVED_TO_GLOBAL.add("bluetooth_on");
+            MOVED_TO_GLOBAL.add(Global.CDMA_CELL_BROADCAST_SMS);
+            MOVED_TO_GLOBAL.add(Global.CDMA_ROAMING_MODE);
+            MOVED_TO_GLOBAL.add(Global.CDMA_SUBSCRIPTION_MODE);
+            MOVED_TO_GLOBAL.add(Global.DATA_ACTIVITY_TIMEOUT_MOBILE);
+            MOVED_TO_GLOBAL.add(Global.DATA_ACTIVITY_TIMEOUT_WIFI);
+            MOVED_TO_GLOBAL.add("data_roaming");
+            MOVED_TO_GLOBAL.add("development_settings_enabled");
+            MOVED_TO_GLOBAL.add("device_provisioned");
+            MOVED_TO_GLOBAL.add(Global.DISPLAY_SIZE_FORCED);
+            MOVED_TO_GLOBAL.add(Global.DOWNLOAD_MAX_BYTES_OVER_MOBILE);
+            MOVED_TO_GLOBAL.add(Global.DOWNLOAD_RECOMMENDED_MAX_BYTES_OVER_MOBILE);
+            MOVED_TO_GLOBAL.add(Global.MOBILE_DATA);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_DEV_BUCKET_DURATION);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_DEV_DELETE_AGE);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_DEV_PERSIST_BYTES);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_DEV_ROTATE_AGE);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_ENABLED);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_GLOBAL_ALERT_BYTES);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_POLL_INTERVAL);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_SAMPLE_ENABLED);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_TIME_CACHE_MAX_AGE);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_BUCKET_DURATION);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_DELETE_AGE);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_PERSIST_BYTES);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_ROTATE_AGE);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_TAG_BUCKET_DURATION);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_TAG_DELETE_AGE);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_TAG_PERSIST_BYTES);
+            MOVED_TO_GLOBAL.add(Global.NETSTATS_UID_TAG_ROTATE_AGE);
+            MOVED_TO_GLOBAL.add("network_preference");
+            MOVED_TO_GLOBAL.add(Global.NITZ_UPDATE_DIFF);
+            MOVED_TO_GLOBAL.add(Global.NITZ_UPDATE_SPACING);
+            MOVED_TO_GLOBAL.add(Global.NTP_SERVER);
+            MOVED_TO_GLOBAL.add(Global.NTP_TIMEOUT);
+            MOVED_TO_GLOBAL.add(Global.PDP_WATCHDOG_ERROR_POLL_COUNT);
+            MOVED_TO_GLOBAL.add(Global.PDP_WATCHDOG_LONG_POLL_INTERVAL_MS);
+            MOVED_TO_GLOBAL.add(Global.PDP_WATCHDOG_MAX_PDP_RESET_FAIL_COUNT);
+            MOVED_TO_GLOBAL.add(Global.PDP_WATCHDOG_POLL_INTERVAL_MS);
+            MOVED_TO_GLOBAL.add(Global.PDP_WATCHDOG_TRIGGER_PACKET_COUNT);
+            MOVED_TO_GLOBAL.add(Global.SETUP_PREPAID_DATA_SERVICE_URL);
+            MOVED_TO_GLOBAL.add(Global.SETUP_PREPAID_DETECTION_REDIR_HOST);
+            MOVED_TO_GLOBAL.add(Global.SETUP_PREPAID_DETECTION_TARGET_URL);
+            MOVED_TO_GLOBAL.add(Global.TETHER_DUN_APN);
+            MOVED_TO_GLOBAL.add(Global.TETHER_DUN_REQUIRED);
+            MOVED_TO_GLOBAL.add(Global.TETHER_SUPPORTED);
+            MOVED_TO_GLOBAL.add("usb_mass_storage_enabled");
+            MOVED_TO_GLOBAL.add("use_google_mail");
+            MOVED_TO_GLOBAL.add(Global.WIFI_COUNTRY_CODE);
+            MOVED_TO_GLOBAL.add(Global.WIFI_FRAMEWORK_SCAN_INTERVAL_MS);
+            MOVED_TO_GLOBAL.add(Global.WIFI_FREQUENCY_BAND);
+            MOVED_TO_GLOBAL.add("wifi_idle_ms");
+            MOVED_TO_GLOBAL.add("wifi_max_dhcp_retry_count");
+            MOVED_TO_GLOBAL.add("wifi_mobile_data_transition_wakelock_timeout_ms");
+            MOVED_TO_GLOBAL.add("wifi_networks_available_notification_on");
+            MOVED_TO_GLOBAL.add("wifi_networks_available_repeat_delay");
+            MOVED_TO_GLOBAL.add("wifi_num_open_networks_kept");
+            MOVED_TO_GLOBAL.add("wifi_on");
+            MOVED_TO_GLOBAL.add(Global.WIFI_P2P_DEVICE_NAME);
+            MOVED_TO_GLOBAL.add(Global.WIFI_SUPPLICANT_SCAN_INTERVAL_MS);
+            MOVED_TO_GLOBAL.add(Global.WIFI_VERBOSE_LOGGING_ENABLED);
+            MOVED_TO_GLOBAL.add(Global.WIFI_ENHANCED_AUTO_JOIN);
+            MOVED_TO_GLOBAL.add(Global.WIFI_NETWORK_SHOW_RSSI);
+            MOVED_TO_GLOBAL.add("wifi_watchdog_on");
+            MOVED_TO_GLOBAL.add(Global.WIFI_WATCHDOG_POOR_NETWORK_TEST_ENABLED);
+            MOVED_TO_GLOBAL.add(Global.WIFI_P2P_PENDING_FACTORY_RESET);
+            MOVED_TO_GLOBAL.add(Global.WIMAX_NETWORKS_AVAILABLE_NOTIFICATION_ON);
+            MOVED_TO_GLOBAL.add(Global.PACKAGE_VERIFIER_TIMEOUT);
+            MOVED_TO_GLOBAL.add(Global.PACKAGE_VERIFIER_TIMEOUT_SAMSUNG);
+            MOVED_TO_GLOBAL.add(Global.PACKAGE_VERIFIER_DEFAULT_RESPONSE);
+            MOVED_TO_GLOBAL.add(Global.DATA_STALL_ALARM_NON_AGGRESSIVE_DELAY_IN_MS);
+            MOVED_TO_GLOBAL.add(Global.DATA_STALL_ALARM_AGGRESSIVE_DELAY_IN_MS);
+            MOVED_TO_GLOBAL.add(Global.GPRS_REGISTER_CHECK_PERIOD_MS);
+            MOVED_TO_GLOBAL.add(Global.WTF_IS_FATAL);
+            MOVED_TO_GLOBAL.add(Global.BATTERY_DISCHARGE_DURATION_THRESHOLD);
+            MOVED_TO_GLOBAL.add(Global.BATTERY_DISCHARGE_THRESHOLD);
+            MOVED_TO_GLOBAL.add(Global.SEND_ACTION_APP_ERROR);
+            MOVED_TO_GLOBAL.add(Global.DROPBOX_AGE_SECONDS);
+            MOVED_TO_GLOBAL.add(Global.DROPBOX_MAX_FILES);
+            MOVED_TO_GLOBAL.add(Global.DROPBOX_QUOTA_KB);
+            MOVED_TO_GLOBAL.add(Global.DROPBOX_QUOTA_PERCENT);
+            MOVED_TO_GLOBAL.add(Global.DROPBOX_RESERVE_PERCENT);
+            MOVED_TO_GLOBAL.add(Global.DROPBOX_TAG_PREFIX);
+            MOVED_TO_GLOBAL.add(Global.ERROR_LOGCAT_PREFIX);
+            MOVED_TO_GLOBAL.add(Global.SYS_FREE_STORAGE_LOG_INTERVAL);
+            MOVED_TO_GLOBAL.add(Global.DISK_FREE_CHANGE_REPORTING_THRESHOLD);
+            MOVED_TO_GLOBAL.add(Global.SYS_STORAGE_THRESHOLD_PERCENTAGE);
+            MOVED_TO_GLOBAL.add(Global.SYS_STORAGE_THRESHOLD_MAX_BYTES);
+            MOVED_TO_GLOBAL.add(Global.SYS_STORAGE_FULL_THRESHOLD_BYTES);
+            MOVED_TO_GLOBAL.add(Global.SYNC_MAX_RETRY_DELAY_IN_SECONDS);
+            MOVED_TO_GLOBAL.add(Global.CONNECTIVITY_CHANGE_DELAY);
+            MOVED_TO_GLOBAL.add(Global.CAPTIVE_PORTAL_DETECTION_ENABLED);
+            MOVED_TO_GLOBAL.add(Global.CAPTIVE_PORTAL_SERVER);
+            MOVED_TO_GLOBAL.add(Global.SET_INSTALL_LOCATION);
+            MOVED_TO_GLOBAL.add(Global.DEFAULT_INSTALL_LOCATION);
+            MOVED_TO_GLOBAL.add(Global.INET_CONDITION_DEBOUNCE_UP_DELAY);
+            MOVED_TO_GLOBAL.add(Global.INET_CONDITION_DEBOUNCE_DOWN_DELAY);
+            MOVED_TO_GLOBAL.add(Global.READ_EXTERNAL_STORAGE_ENFORCED_DEFAULT);
+            MOVED_TO_GLOBAL.add("http_proxy");
+            MOVED_TO_GLOBAL.add(Global.GLOBAL_HTTP_PROXY_HOST);
+            MOVED_TO_GLOBAL.add(Global.GLOBAL_HTTP_PROXY_PORT);
+            MOVED_TO_GLOBAL.add(Global.GLOBAL_HTTP_PROXY_EXCLUSION_LIST);
+            MOVED_TO_GLOBAL.add(Global.SET_GLOBAL_HTTP_PROXY);
+            MOVED_TO_GLOBAL.add(Global.DEFAULT_DNS_SERVER);
+            MOVED_TO_GLOBAL.add(Global.PREFERRED_NETWORK_MODE);
+            MOVED_TO_GLOBAL.add(Global.WEBVIEW_DATA_REDUCTION_PROXY_KEY);
+            MOVED_TO_GLOBAL.add("secure_frp_mode");
+            MOVED_TO_GLOBAL.add("bold_text");
             LEGACY_RESTORE_SETTINGS = new String[]{ENABLED_NOTIFICATION_LISTENERS, ENABLED_NOTIFICATION_ASSISTANT, ENABLED_NOTIFICATION_POLICY_ACCESS_PACKAGES};
-            ArraySet arraySet = new ArraySet();
-            CLONE_TO_MANAGED_PROFILE = arraySet;
-            arraySet.add(ACCESSIBILITY_ENABLED);
-            arraySet.add(ALLOW_MOCK_LOCATION);
-            arraySet.add(ALLOWED_GEOLOCATION_ORIGINS);
-            arraySet.add(ENABLED_ACCESSIBILITY_SERVICES);
-            arraySet.add(LOCATION_CHANGER);
-            arraySet.add(LOCATION_MODE);
-            arraySet.add(SHOW_IME_WITH_HARD_KEYBOARD);
-            arraySet.add("notification_bubbles");
-            ArraySet arraySet2 = new ArraySet();
-            CLONE_TO_CLONE_PROFILE = arraySet2;
-            arraySet2.add(DEFAULT_INPUT_METHOD);
-            ArraySet arraySet3 = new ArraySet();
-            CLONE_TO_SECURE_FOLDER_EXCLUSIVE = arraySet3;
-            arraySet3.add(DEFAULT_INPUT_METHOD);
-            ArraySet arraySet4 = new ArraySet();
-            INSTANT_APP_SETTINGS = arraySet4;
-            arraySet4.add(ENABLED_ACCESSIBILITY_SERVICES);
-            arraySet4.add(ACCESSIBILITY_SPEAK_PASSWORD);
-            arraySet4.add(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED);
-            arraySet4.add("accessibility_captioning_enabled");
-            arraySet4.add("accessibility_captioning_preset");
-            arraySet4.add("accessibility_captioning_edge_type");
-            arraySet4.add("accessibility_captioning_edge_color");
-            arraySet4.add("accessibility_captioning_locale");
-            arraySet4.add("accessibility_captioning_background_color");
-            arraySet4.add("accessibility_captioning_foreground_color");
-            arraySet4.add("accessibility_captioning_typeface");
-            arraySet4.add("accessibility_captioning_font_scale");
-            arraySet4.add("accessibility_captioning_window_color");
-            arraySet4.add(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED);
-            arraySet4.add(ACCESSIBILITY_DISPLAY_DALTONIZER);
-            arraySet4.add(ACCESSIBILITY_AUTOCLICK_DELAY);
-            arraySet4.add(ACCESSIBILITY_AUTOCLICK_ENABLED);
-            arraySet4.add(ACCESSIBILITY_LARGE_POINTER_ICON);
-            arraySet4.add(DEFAULT_INPUT_METHOD);
-            arraySet4.add(ENABLED_INPUT_METHODS);
-            arraySet4.add("android_id");
-            arraySet4.add(ALLOW_MOCK_LOCATION);
+            CLONE_TO_MANAGED_PROFILE = new ArraySet();
+            CLONE_TO_MANAGED_PROFILE.add(ACCESSIBILITY_ENABLED);
+            CLONE_TO_MANAGED_PROFILE.add(ALLOW_MOCK_LOCATION);
+            CLONE_TO_MANAGED_PROFILE.add(ALLOWED_GEOLOCATION_ORIGINS);
+            CLONE_TO_MANAGED_PROFILE.add(ENABLED_ACCESSIBILITY_SERVICES);
+            CLONE_TO_MANAGED_PROFILE.add(LOCATION_CHANGER);
+            CLONE_TO_MANAGED_PROFILE.add(LOCATION_MODE);
+            CLONE_TO_MANAGED_PROFILE.add(SHOW_IME_WITH_HARD_KEYBOARD);
+            CLONE_TO_MANAGED_PROFILE.add(ACCESSIBILITY_BOUNCE_KEYS);
+            CLONE_TO_MANAGED_PROFILE.add(ACCESSIBILITY_SLOW_KEYS);
+            CLONE_TO_MANAGED_PROFILE.add(ACCESSIBILITY_STICKY_KEYS);
+            CLONE_TO_MANAGED_PROFILE.add("notification_bubbles");
+            CLONE_TO_MANAGED_PROFILE.add(NOTIFICATION_HISTORY_ENABLED);
+            CLONE_TO_CLONE_PROFILE = new ArraySet();
+            CLONE_TO_CLONE_PROFILE.add(DEFAULT_INPUT_METHOD);
+            CLONE_TO_SECURE_FOLDER_EXCLUSIVE = new ArraySet();
+            CLONE_TO_SECURE_FOLDER_EXCLUSIVE.add(DEFAULT_INPUT_METHOD);
+            INSTANT_APP_SETTINGS = new ArraySet();
+            INSTANT_APP_SETTINGS.add(ENABLED_ACCESSIBILITY_SERVICES);
+            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_SPEAK_PASSWORD);
+            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED);
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_enabled");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_preset");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_edge_type");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_edge_color");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_locale");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_background_color");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_foreground_color");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_typeface");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_font_scale");
+            INSTANT_APP_SETTINGS.add("accessibility_captioning_window_color");
+            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED);
+            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_DISPLAY_DALTONIZER);
+            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_AUTOCLICK_DELAY);
+            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_AUTOCLICK_ENABLED);
+            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_LARGE_POINTER_ICON);
+            INSTANT_APP_SETTINGS.add(DEFAULT_INPUT_METHOD);
+            INSTANT_APP_SETTINGS.add(ENABLED_INPUT_METHODS);
+            INSTANT_APP_SETTINGS.add("android_id");
+            INSTANT_APP_SETTINGS.add(ALLOW_MOCK_LOCATION);
         }
 
         public static void getMovedToGlobalSettings(Set<String> outKeySet) {
@@ -5321,9 +5494,8 @@ public final class Settings {
                     arg.putString(Settings.CALL_METHOD_TAG_KEY, tag);
                 }
                 arg.putInt(Settings.CALL_METHOD_RESET_MODE_KEY, mode);
-                ContentProviderHolder contentProviderHolder = sProviderHolder;
-                IContentProvider cp = contentProviderHolder.getProvider(resolver);
-                cp.call(resolver.getAttributionSource(), contentProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_RESET_SECURE, null, arg);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_RESET_SECURE, null, arg);
             } catch (RemoteException e) {
                 Log.w(Settings.TAG, "Can't reset do defaults for " + CONTENT_URI, e);
             }
@@ -5436,6 +5608,7 @@ public final class Settings {
 
         public static void getCloneToCloneProfileSettings(Set<String> outKeySet) {
             outKeySet.addAll(CLONE_TO_CLONE_PROFILE);
+            outKeySet.addAll(CLONE_TO_MANAGED_PROFILE);
         }
 
         public static void getCloneToSecureFolderSettings(Set<String> outKeySet) {
@@ -5459,7 +5632,6 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Global extends NameValueTable {
 
         @Readable
@@ -5613,6 +5785,9 @@ public final class Settings {
         public static final String AUTOMATIC_POWER_SAVE_MODE = "automatic_power_save_mode";
 
         @Readable
+        public static final String AUTO_DIM_SCREEN = "auto_dim_screen";
+
+        @Readable
         public static final String AUTO_OMC_UPDATE = "auto_omc_update";
 
         @Readable
@@ -5637,6 +5812,7 @@ public final class Settings {
 
         @Readable
         public static final String BACKUP_AGENT_TIMEOUT_PARAMETERS = "backup_agent_timeout_parameters";
+        public static final String BATTERY_CHARGING_STATE_ENFORCE_LEVEL = "battery_charging_state_enforce_level";
 
         @Readable
         public static final String BATTERY_CHARGING_STATE_UPDATE_DELAY = "battery_charging_state_update_delay";
@@ -5650,6 +5826,9 @@ public final class Settings {
         @Readable
         @Deprecated
         public static final String BATTERY_ESTIMATES_LAST_UPDATE_TIME = "battery_estimates_last_update_time";
+
+        @Readable
+        public static final String BATTERY_PROTECTION_DEFAULT_VALUE = "battery_protection_default_value";
 
         @Readable
         public static final String BATTERY_PROTECTION_RECHARGE_LEVEL = "battery_protection_recharge_level";
@@ -5677,9 +5856,6 @@ public final class Settings {
 
         @Readable
         public static final String BINDER_CALLS_STATS = "binder_calls_stats";
-
-        @Readable
-        public static final String BIXBY_TEXT_CALL_LANGUAGE = "screen_call_language";
 
         @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
         @Readable
@@ -5721,7 +5897,6 @@ public final class Settings {
 
         @Readable
         public static final String BLOCKING_HELPER_STREAK_LIMIT = "blocking_helper_streak_limit";
-        public static final String BLUETOOTH_A2DP_ENABLED_LDAC_PREFIX = "bluetooth_a2dp_enabled_ldac_";
 
         @Readable
         public static final String BLUETOOTH_A2DP_OPTIONAL_CODECS_ENABLED_PREFIX = "bluetooth_a2dp_optional_codecs_enabled_";
@@ -5731,7 +5906,6 @@ public final class Settings {
 
         @Readable
         public static final String BLUETOOTH_A2DP_SRC_PRIORITY_PREFIX = "bluetooth_a2dp_src_priority_";
-        public static final String BLUETOOTH_A2DP_SUPPORTS_LDAC_PREFIX = "bluetooth_a2dp_supports_ldac_";
 
         @Readable
         public static final String BLUETOOTH_A2DP_SUPPORTS_OPTIONAL_CODECS_PREFIX = "bluetooth_a2dp_supports_optional_codecs_";
@@ -5900,10 +6074,15 @@ public final class Settings {
         public static final String CHECK_PRIVATE_IP_MODE = "check_private_ip_mode";
         public static final int CHECK_PRIVATE_IP_MODE_DISABLED = 0;
         public static final int CHECK_PRIVATE_IP_MODE_ENABLED = 1;
-        public static final String CLOCKWORK_HOME_READY = "clockwork_home_ready";
 
         @Readable
         public static final String COMPATIBILITY_MODE = "compatibility_mode";
+
+        @Readable
+        public static final String CONNECTED_APPS_ALLOWED_PACKAGES = "connected_apps_allowed_packages";
+
+        @Readable
+        public static final String CONNECTED_APPS_DISALLOWED_PACKAGES = "connected_apps_disallowed_packages";
 
         @Readable
         public static final String CONNECTIVITY_CHANGE_DELAY = "connectivity_change_delay";
@@ -5927,7 +6106,6 @@ public final class Settings {
 
         @Readable
         public static final String CONTACT_SWIPE_TO_CALL_MESSAGE = "swipe_to_call_message";
-        public static final Uri CONTENT_URI;
 
         @Readable
         public static final String CONVERSATION_ACTIONS_UPDATE_CONTENT_URL = "conversation_actions_content_url";
@@ -5936,12 +6114,18 @@ public final class Settings {
         public static final String CONVERSATION_ACTIONS_UPDATE_METADATA_URL = "conversation_actions_metadata_url";
 
         @Readable
+        public static final String CROSS_LAYER_OPTIMIZER_FOR_MOBILE_NETWORK = "cross_layer_optimizer_for_mobile_network";
+
+        @Readable
         @Deprecated
         public static final String CUSTOM_BUGREPORT_HANDLER_APP = "custom_bugreport_handler_app";
 
         @Readable
         @Deprecated
         public static final String CUSTOM_BUGREPORT_HANDLER_USER = "custom_bugreport_handler_user";
+
+        @Readable
+        public static final String DARK_MODE_TAG = "dark_mode_state_tag";
 
         @Readable
         public static final String DATABASE_CREATION_BUILDID = "database_creation_buildid";
@@ -5966,9 +6150,6 @@ public final class Settings {
 
         @Readable
         public static final String DATA_STALL_RECOVERY_ON_BAD_NETWORK = "data_stall_recovery_on_bad_network";
-
-        @Readable
-        public static final String DBSC_CONSENT_CROSS_BORDER_AGREE_VALUE = "dbsc_consent_cross_border_agree_value";
 
         @Readable
         public static final String DBSC_CONSENT_CUSTOMIZED_SERVICE_AGREE_DATE = "dbsc_consent_customized_service_agree_date";
@@ -6055,15 +6236,13 @@ public final class Settings {
 
         @Readable
         public static final String DEVELOPMENT_SETTINGS_ENABLED = "development_settings_enabled";
-
-        @Readable
-        public static final String DEVELOPMENT_USE_BLAST_ADAPTER_VR = "use_blast_adapter_vr";
         public static final String DEVELOPMENT_WM_DISPLAY_SETTINGS_PATH = "wm_display_settings_path";
         public static final String DEVICE_CONFIG_SYNC_DISABLED = "device_config_sync_disabled";
 
         @SystemApi
         @Readable
         public static final String DEVICE_DEMO_MODE = "device_demo_mode";
+        public static final String DEVICE_IDLE_CONSTANTS = "device_idle_constants";
 
         @Readable
         public static final String DEVICE_NAME = "device_name";
@@ -6077,7 +6256,9 @@ public final class Settings {
         @SystemApi
         @Readable
         public static final String DEVICE_PROVISIONING_MOBILE_DATA_ENABLED = "device_provisioning_mobile_data";
-        public static final String DIAGNOSTIC_LOCATION_AGREEMENT = "diagnostic_location_agree";
+
+        @Readable
+        public static final String DISABLE_SCREEN_SHARE_PROTECTIONS_FOR_APPS_AND_NOTIFICATIONS = "disable_screen_share_protections_for_apps_and_notifications";
 
         @Readable
         public static final String DISABLE_WINDOW_BLURS = "disable_window_blurs";
@@ -6138,16 +6319,14 @@ public final class Settings {
 
         @Readable
         public static final String DROPBOX_TAG_PREFIX = "dropbox:";
+        public static final String DSRM_DURATION_MILLIS = "dsrm_duration_millis";
+        public static final String DSRM_ENABLED_ACTIONS = "dsrm_enabled_actions";
 
         @Readable
         public static final String DYNAMIC_POWER_SAVINGS_DISABLE_THRESHOLD = "dynamic_power_savings_disable_threshold";
 
         @Readable
         public static final String DYNAMIC_POWER_SAVINGS_ENABLED = "dynamic_power_savings_enabled";
-
-        @Readable
-        @Deprecated
-        public static final String EDGE_ENABLE = "edge_enable";
 
         @Readable
         public static final String EMERGENCY_AFFORDANCE_NEEDED = "emergency_affordance_needed";
@@ -6165,6 +6344,9 @@ public final class Settings {
 
         @Readable
         public static final String ENABLED_SUBSCRIPTION_FOR_SLOT = "enabled_subscription_for_slot";
+
+        @Readable
+        public static final String ENABLE_16K_PAGES = "enable_16k_pages";
 
         @Readable
         public static final String ENABLE_ACCESSIBILITY_GLOBAL_GESTURE_ENABLED = "enable_accessibility_global_gesture_enabled";
@@ -6200,7 +6382,6 @@ public final class Settings {
 
         @Readable
         public static final String ENABLE_RADIO_BUG_DETECTION = "enable_radio_bug_detection";
-        public static final String ENABLE_TARE = "enable_tare";
 
         @Readable
         public static final String ENCODED_SURROUND_OUTPUT = "encoded_surround_output";
@@ -6219,6 +6400,9 @@ public final class Settings {
 
         @Readable
         public static final String EPHEMERAL_COOKIE_MAX_SIZE_BYTES = "ephemeral_cookie_max_size_bytes";
+
+        @Readable
+        public static final String ERROR_KERNEL_LOG_PREFIX = "kernel_logs_for_";
 
         @Readable
         public static final String ERROR_LOGCAT_PREFIX = "logcat_for_";
@@ -6257,6 +6441,9 @@ public final class Settings {
 
         @Readable
         public static final String FORCE_ALLOW_ON_EXTERNAL = "force_allow_on_external";
+
+        @Readable
+        public static final String FORCE_ENABLE_PSS_PROFILING = "force_enable_pss_profiling";
         public static final String FORCE_NON_DEBUGGABLE_FINAL_BUILD_FOR_COMPAT = "force_non_debuggable_final_build_for_compat";
 
         @Readable
@@ -6264,8 +6451,9 @@ public final class Settings {
 
         @Readable
         public static final String FPS_DEVISOR = "fps_divisor";
+
+        @Readable
         public static final String FREEFORM_CAPTION_TYPE = "freeform_caption_type";
-        public static final String FREEFORM_CAPTION_TYPE_NEW_DEX = "freeform_caption_type_new_dex";
         public static final String FREEFORM_CORNER_AREA_LEVEL = "freeform_corner_gesture_level";
 
         @Readable
@@ -6297,6 +6485,9 @@ public final class Settings {
         public static final String GPRS_REGISTER_CHECK_PERIOD_MS = "gprs_register_check_period_ms";
 
         @Readable
+        public static final String GPU_CONTROL_LAYER_APPS = "gpu_control_layer_apps";
+
+        @Readable
         public static final String GPU_DEBUG_APP = "gpu_debug_app";
 
         @Readable
@@ -6318,6 +6509,21 @@ public final class Settings {
         public static final String HEADS_UP_NOTIFICATIONS_ENABLED = "heads_up_notifications_enabled";
         public static final int HEADS_UP_OFF = 0;
         public static final int HEADS_UP_ON = 1;
+
+        @Readable
+        public static final String HEIMDALL_ALWAYS_RUNNING_GLOBAL_QUOTA = "heimdall_always_running_global_quota";
+
+        @Readable
+        public static final String HEIMDALL_ANOMALY_TYPE_ENABLE = "heimdall_anomaly_type_enable";
+
+        @Readable
+        public static final String HEIMDALL_RANDOM_SAMPLE_RATE = "heimdall_random_sample_rate";
+
+        @Readable
+        public static final String HEIMDALL_REPORT_HOUR_INTERVAL = "heimdall_report_hour_interval";
+
+        @Readable
+        public static final String HEIMDALL_SPEC_UPDATE = "heimdall_spec_update";
 
         @Readable
         public static final String HIDDEN_API_BLACKLIST_EXEMPTIONS = "hidden_api_blacklist_exemptions";
@@ -6384,7 +6590,6 @@ public final class Settings {
 
         @Readable
         public static final String LANG_ID_UPDATE_METADATA_URL = "lang_id_metadata_url";
-        public static final String[] LEGACY_RESTORE_SETTINGS;
 
         @Readable
         public static final String LID_BEHAVIOR = "lid_behavior";
@@ -6514,8 +6719,13 @@ public final class Settings {
 
         @Readable
         public static final String MODE_RINGER_MUTE_TIME_ON = "mode_ringer_time_on";
-        private static final HashSet<String> MOVED_TO_SECURE;
         private static final HashSet<String> MOVED_TO_SYSTEM;
+
+        @Readable
+        public static final String MULTICORE_PACKET_SCHEDULER = "multicore_packet_scheduler";
+
+        @Readable
+        public static final String MULTISOUND_STATE = "multisound_state";
 
         @Readable
         public static final String MULTI_SIM_DATACROSS_SLOT = "multi_sim_datacross_slot";
@@ -6549,6 +6759,8 @@ public final class Settings {
 
         @Readable
         public static final String MULTI_SIM_VOICE_PROMPT = "multi_sim_voice_prompt";
+        public static final String MUTE_ALARM_STREAM_WITH_RINGER_MODE = "mute_alarm_stream_with_ringer_mode";
+        public static final String MUTE_ALARM_STREAM_WITH_RINGER_MODE_USER_PREFERENCE = "mute_alarm_stream_with_ringer_mode_user_preference";
 
         @Readable
         public static final String NATIVE_FLAGS_HEALTH_CHECK_ENABLED = "native_flags_health_check_enabled";
@@ -6803,16 +7015,31 @@ public final class Settings {
         public static final String PEOPLE_SPACE_CONVERSATION_TYPE = "people_space_conversation_type";
 
         @Readable
+        public static final String PMS_SETTINGS_DARK_MODE_ENABLED = "pms_settings_dark_mode_enabled";
+
+        @Readable
+        public static final String PMS_SETTINGS_REFRESH_RATE_COVER_ENABLED = "pms_settings_refresh_rate_cover_enabled";
+
+        @Readable
+        public static final String PMS_SETTINGS_REFRESH_RATE_ENABLED = "pms_settings_refresh_rate_enabled";
+
+        @Readable
+        public static final String PMS_SETTINGS_SCREEN_TIME_OUT_ENABLED = "pms_settings_screen_time_out_enabled";
+
+        @Readable
         public static final String POLICY_CONTROL = "policy_control";
+        public static final String POWER_BUTTON_DOUBLE_PRESS = "power_button_double_press";
 
         @Readable
         public static final String POWER_BUTTON_LONG_PRESS = "power_button_long_press";
 
         @Readable
         public static final String POWER_BUTTON_LONG_PRESS_DURATION_MS = "power_button_long_press_duration_ms";
+        public static final String POWER_BUTTON_SHORT_PRESS = "power_button_short_press";
 
         @Readable
         public static final String POWER_BUTTON_SUPPRESSION_DELAY_AFTER_GESTURE_WAKE = "power_button_suppression_delay_after_gesture_wake";
+        public static final String POWER_BUTTON_TRIPLE_PRESS = "power_button_triple_press";
 
         @Readable
         public static final String POWER_BUTTON_VERY_LONG_PRESS = "power_button_very_long_press";
@@ -6872,13 +7099,21 @@ public final class Settings {
         public static final String RECOMMENDED_NETWORK_EVALUATOR_CACHE_EXPIRY_MS = "recommended_network_evaluator_cache_expiry_ms";
 
         @Readable
+        public static final String REFRESH_RATE_COVER_TAG = "psm_refresh_rate_cover_tag";
+
+        @Readable
+        public static final String REFRESH_RATE_TAG = "psm_refresh_rate_tag";
+
+        @Readable
         public static final String REMOVE_ANIMATIONS = "remove_animations";
         public static final String REMOVE_GUEST_ON_EXIT = "remove_guest_on_exit";
+        public static final String REPAIR_MODE_ACTIVE = "repair_mode_active";
 
         @SystemApi
         @Readable
         public static final String REQUIRE_PASSWORD_TO_DECRYPT = "require_password_to_decrypt";
         public static final String RESTRICTED_NETWORKING_MODE = "restricted_networking_mode";
+        public static final String REVERSE_CHARGING_AUTO_ON = "settings_key_reverse_charging_auto_turn_on";
         public static final String REVIEW_PERMISSIONS_NOTIFICATION_STATE = "review_permissions_notification_state";
 
         @Readable
@@ -6894,7 +7129,7 @@ public final class Settings {
         public static final String SATELLITE_MODE_RADIOS = "satellite_mode_radios";
 
         @Readable
-        public static final String SCREEN_CALLS = "screen_call";
+        public static final String SCREEN_TIME_OUT_TAG = "screen_time_out_tag";
 
         @Readable
         public static final String SECURE_FRP_MODE = "secure_frp_mode";
@@ -6917,6 +7152,15 @@ public final class Settings {
 
         @Readable
         public static final String SEM_AUTO_BRIGHTNESS_LIMIT = "auto_brightness_limit";
+
+        @Readable
+        public static final String SEM_AUTO_WIFI_ABTEST_PARAM = "sem_auto_wifi_abtest_param";
+
+        @Readable
+        public static final String SEM_AUTO_WIFI_ABTEST_REPORT = "sem_auto_wifi_abtest_report";
+
+        @Readable
+        public static final String SEM_AUTO_WIFI_BUBBLETIP_DO_NOT_SHOW_AGAIN = "sem_auto_wifi_bubbletip_do_not_show_again";
 
         @Readable
         public static final String SEM_AUTO_WIFI_FAVORITE_AP_COUNT = "sem_auto_wifi_favorite_ap_count";
@@ -6971,13 +7215,13 @@ public final class Settings {
         public static final String SEM_TASKBAR_RECENT_APPS_ENABLED = "taskbar_recent_apps_enabled";
 
         @Readable
-        public static final String SEM_TASKBAR_SHOW_HIDE_ON_HOLD_ENABLED = "taskbar_show_hide_on_hold_enabled";
-
-        @Readable
         public static final String SEM_TASKBAR_TYPE = "task_bar_type";
 
         @Readable
         public static final String SEM_TASK_BAR = "task_bar";
+
+        @Readable
+        public static final String SEM_WIFI_ABTEST_USER_ACTIVATION = "sem_wifi_abtest_user_activation";
 
         @Readable
         public static final String SEM_WIFI_ALLOWED_OAUTH_PROVIDER = "sem_wifi_allowed_oauth_provider";
@@ -6996,13 +7240,13 @@ public final class Settings {
         public static final String SEM_WIFI_INTELLIGENT_WIFI_ADDED_REMOVED_LIST = "sem_auto_wifi_added_removed_list";
 
         @Readable
+        public static final String SEM_WIFI_L4S_ENABLED = "sem_wifi_l4s_enabled";
+
+        @Readable
         public static final String SEM_WIFI_LAST_NETWORK_RATING_SCORER = "sem_wifi_last_network_rating_scorer";
 
         @Readable
-        public static final String SEM_WIFI_NETWORK_RATING_ENABLED = "sem_wifi_network_rating_scorer_enabled";
-
-        @Readable
-        public static final String SEM_WIFI_P2P_DEVICE_NAME = "wifi_p2p_device_name";
+        public static final String SEM_WIFI_NETWORK_RATING_ENABLED = "sem_wifi_network_rating_scorer_enabled_labs";
 
         @Readable
         public static final String SEM_WIFI_RECOMMEND_LEARNING_SCORE = "sem_wifi_recommend_learning_score";
@@ -7018,6 +7262,9 @@ public final class Settings {
 
         @Readable
         public static final String SEM_WIFI_SWITCH_TO_BETTER_WIFI_ENABLED = "sem_wifi_switch_to_better_wifi_enabled";
+
+        @Readable
+        public static final String SEM_WIFI_SWITCH_TO_BETTER_WIFI_ON_SCREEN_ENABLED = "sem_wifi_switch_to_better_wifi_on_screen_enabled";
 
         @Readable
         public static final String SEM_WIFI_SWITCH_TO_BETTER_WIFI_SUPPORTED = "sem_wifi_switch_to_better_wifi_supported";
@@ -7090,7 +7337,6 @@ public final class Settings {
 
         @Readable
         public static final String SHOW_RESTART_IN_CRASH_DIALOG = "show_restart_in_crash_dialog";
-        public static final String SHOW_TARE_DEVELOPER_OPTIONS = "show_tare_developer_options";
 
         @Readable
         public static final String SHOW_TEMPERATURE_WARNING = "show_temperature_warning";
@@ -7175,6 +7421,10 @@ public final class Settings {
 
         @Readable
         public static final String STAY_ON_WHILE_PLUGGED_IN = "stay_on_while_plugged_in";
+        public static final String STEM_PRIMARY_BUTTON_DOUBLE_PRESS = "stem_primary_button_double_press";
+        public static final String STEM_PRIMARY_BUTTON_LONG_PRESS = "stem_primary_button_long_press";
+        public static final String STEM_PRIMARY_BUTTON_SHORT_PRESS = "stem_primary_button_short_press";
+        public static final String STEM_PRIMARY_BUTTON_TRIPLE_PRESS = "stem_primary_button_triple_press";
 
         @Readable
         public static final String STORAGE_BENCHMARK_INTERVAL = "storage_benchmark_interval";
@@ -7214,8 +7464,6 @@ public final class Settings {
 
         @Readable
         public static final String SYS_UIDCPUPOWER = "sys_uidcpupower";
-        public static final String TARE_ALARM_MANAGER_CONSTANTS = "tare_alarm_manager_constants";
-        public static final String TARE_JOB_SCHEDULER_CONSTANTS = "tare_job_scheduler_constants";
 
         @Readable
         public static final String TCP_DEFAULT_INIT_RWND = "tcp_default_init_rwnd";
@@ -7264,7 +7512,6 @@ public final class Settings {
         @Readable
         @Deprecated
         public static final String TIME_REMAINING_ESTIMATE_MILLIS = "time_remaining_estimate_millis";
-        public static final String[] TRANSIENT_SETTINGS;
 
         @Readable
         public static final String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
@@ -7434,6 +7681,9 @@ public final class Settings {
         public static final String WIFI_GUIDER_FEATURE_CONTROL = "wifi_guider_feature_control";
 
         @Readable
+        public static final String WIFI_HANDOVER_AI_MODE = "wifi_handover_ai_mode";
+
+        @Readable
         public static final String WIFI_IDLE_MS = "wifi_idle_ms";
 
         @Readable
@@ -7525,6 +7775,9 @@ public final class Settings {
         public static final String WIFI_SWITCH_FOR_INDIVIDUAL_APPS_EVER_DETECTED = "wifi_switch_for_individual_apps_ever_detected";
 
         @Readable
+        public static final String WIFI_SWITCH_TO_MOBILE_DATA_AI_MODE = "wifi_switch_to_mobile_data_ai_mode";
+
+        @Readable
         public static final String WIFI_SWITCH_TO_MOBILE_DATA_SUPER_AGGRESSIVE_MODE_ON = "wifi_switch_to_mobile_data_super_aggressive_mode_on";
 
         @Readable
@@ -7595,11 +7848,15 @@ public final class Settings {
 
         @Readable
         public static final String ZRAM_ENABLED = "zram_enabled";
-        private static final NameValueCache sNameValueCache;
-        private static final ContentProviderHolder sProviderHolder;
+        public static final Uri CONTENT_URI = Uri.parse("content://settings/global");
+        public static final String CLOCKWORK_HOME_READY = "clockwork_home_ready";
+        public static final String[] TRANSIENT_SETTINGS = {CLOCKWORK_HOME_READY};
+        public static final String[] LEGACY_RESTORE_SETTINGS = new String[0];
+        private static final ContentProviderHolder sProviderHolder = new ContentProviderHolder(CONTENT_URI);
+        private static final NameValueCache sNameValueCache = new NameValueCache(CONTENT_URI, Settings.CALL_METHOD_GET_GLOBAL, Settings.CALL_METHOD_PUT_GLOBAL, Settings.CALL_METHOD_DELETE_GLOBAL, sProviderHolder, Global.class);
+        private static final HashSet<String> MOVED_TO_SECURE = new HashSet<>(8);
 
-        /* loaded from: classes3.dex */
-        public static class Wearable {
+        public static final class Wearable extends NameValueTable {
             public static final String ACCESSIBILITY_VIBRATION_WATCH_ENABLED = "a11y_vibration_watch_enabled";
             public static final String ACCESSIBILITY_VIBRATION_WATCH_SPEED = "vibration_speed";
             public static final int ACCESSIBILITY_VIBRATION_WATCH_SPEED_FAST = 3;
@@ -7610,21 +7867,46 @@ public final class Settings {
             public static final String ACCESSIBILITY_VIBRATION_WATCH_TYPE = "a11y_vibration_watch_type";
             public static final int ACCESSIBILITY_VIBRATION_WATCH_TYPE_DIGIT = 0;
             public static final int ACCESSIBILITY_VIBRATION_WATCH_TYPE_TERSE = 1;
+
+            @Readable(maxTargetSdk = 34)
             public static final String ALT_BYPASS_WIFI_REQUIREMENT_TIME_MILLIS = "alt_bypass_wifi_requirement_time_millis";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_ENABLED = "ambient_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_FORCE_WHEN_DOCKED = "ambient_force_when_docked";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_LOW_BIT_ENABLED = "ambient_low_bit_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_LOW_BIT_ENABLED_DEV = "ambient_low_bit_enabled_dev";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_PLUGGED_TIMEOUT_MIN = "ambient_plugged_timeout_min";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_TILT_TO_BRIGHT = "ambient_tilt_to_bright";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_TILT_TO_WAKE = "ambient_tilt_to_wake";
+
+            @Readable(maxTargetSdk = 34)
             public static final String AMBIENT_TOUCH_TO_WAKE = "ambient_touch_to_wake";
+
+            @Readable(maxTargetSdk = 34)
             public static final String ANDROID_WEAR_VERSION = "android_wear_version";
+            public static final String AUTO_BEDTIME_MODE = "auto_bedtime_mode";
             public static final int AUTO_TIME_OFF = 2;
             public static final int AUTO_TIME_ZONE_OFF = 2;
+
+            @Readable(maxTargetSdk = 34)
             public static final String AUTO_WIFI = "auto_wifi";
             public static final int AUTO_WIFI_DISABLED = 0;
             public static final int AUTO_WIFI_ENABLED = 1;
+
+            @Readable(maxTargetSdk = 34)
             public static final String BATTERY_SAVER_MODE = "battery_saver_mode";
             public static final int BATTERY_SAVER_MODE_CUSTOM = 4;
             public static final int BATTERY_SAVER_MODE_LIGHT = 1;
@@ -7632,48 +7914,90 @@ public final class Settings {
             public static final int BATTERY_SAVER_MODE_TIME_ONLY = 3;
             public static final int BATTERY_SAVER_MODE_TRADITIONAL_WATCH = 2;
             public static final String BEDTIME_HARD_MODE = "bedtime_hard_mode";
+
+            @Readable(maxTargetSdk = 34)
             public static final String BEDTIME_MODE = "bedtime_mode";
             public static final int BLUETOOTH_ROLE_CENTRAL = 1;
             public static final int BLUETOOTH_ROLE_PERIPHERAL = 2;
+
+            @Readable(maxTargetSdk = 34)
             public static final String BUG_REPORT = "bug_report";
             public static final int BUG_REPORT_DISABLED = 0;
             public static final int BUG_REPORT_ENABLED = 1;
+
+            @Readable(maxTargetSdk = 34)
             public static final String BURN_IN_PROTECTION_ENABLED = "burn_in_protection";
             public static final int CALL_FORWARD_ACTION_OFF = 2;
             public static final int CALL_FORWARD_ACTION_ON = 1;
             public static final int CALL_FORWARD_NO_LAST_ACTION = -1;
+
+            @Readable(maxTargetSdk = 34)
             public static final String CHARGING_SOUNDS_ENABLED = "wear_charging_sounds_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String CLOCKWORK_24HR_TIME = "clockwork_24hr_time";
+
+            @Readable(maxTargetSdk = 34)
             public static final String CLOCKWORK_AUTO_TIME = "clockwork_auto_time";
+
+            @Readable(maxTargetSdk = 34)
             public static final String CLOCKWORK_AUTO_TIME_ZONE = "clockwork_auto_time_zone";
             public static final String CLOCKWORK_LONG_PRESS_TO_ASSISTANT_ENABLED = "clockwork_long_press_to_assistant_enabled";
             public static final String CLOCKWORK_SYSUI_MAIN_ACTIVITY = "clockwork_sysui_main_activity";
+
+            @Readable(maxTargetSdk = 34)
             public static final String CLOCKWORK_SYSUI_PACKAGE = "clockwork_sysui_package";
 
             @Deprecated
-            public static final String COMBINED_LOCATION_ENABLED = "combined_location_enable";
+            public static final String COMBINED_LOCATION_ENABLE = "combined_location_enable";
+
+            @Readable(maxTargetSdk = 34)
             public static final String COMPANION_APP_NAME = "wear_companion_app_name";
             public static final String COMPANION_BLE_ROLE = "companion_ble_role";
             public static final String COMPANION_NAME = "companion_bt_name";
             public static final String COMPANION_OS_VERSION = "wear_companion_os_version";
             public static final int COMPANION_OS_VERSION_UNDEFINED = -1;
+
+            @Readable(maxTargetSdk = 34)
+            public static final String CONNECTIVITY_KEEP_DATA_ON = "wear_connectivity_keep_data_on";
+
+            @Readable
+            public static final String CONSISTENT_NOTIFICATION_BLOCKING_ENABLED = "consistent_notification_blocking_enabled";
             public static final String COOLDOWN_MODE_ON = "cooldown_mode_on";
+
+            @Readable(maxTargetSdk = 34)
             public static final String CUSTOM_COLOR_BACKGROUND = "custom_background_color";
+
+            @Readable(maxTargetSdk = 34)
             public static final String CUSTOM_COLOR_FOREGROUND = "custom_foreground_color";
+
+            @Readable(maxTargetSdk = 34)
             public static final String DECOMPOSABLE_WATCHFACE = "current_watchface_decomposable";
+
+            @Readable(maxTargetSdk = 34)
             public static final String DEFAULT_VIBRATION = "default_vibration";
             public static final String DISABLE_AOD_WHILE_PLUGGED = "disable_aod_while_plugged";
+
+            @Readable(maxTargetSdk = 34)
             public static final String DYNAMIC_COLOR_THEME_ENABLED = "dynamic_color_theme_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String ENABLE_ALL_LANGUAGES = "enable_all_languages";
+
+            @Readable(maxTargetSdk = 34)
             public static final String GESTURE_TOUCH_AND_HOLD_WATCH_FACE_ENABLED = "gesture_touch_and_hold_watchface_enabled";
             public static final String GMS_CHECKIN_TIMEOUT_MIN = "gms_checkin_timeout_min";
             public static final String HAS_PAY_TOKENS = "has_pay_tokens";
             public static final int HFP_CLIENT_DISABLED = 2;
             public static final int HFP_CLIENT_ENABLED = 1;
             public static final int HFP_CLIENT_UNSET = 0;
+
+            @Readable(maxTargetSdk = 34)
             public static final String HOTWORD_DETECTION_ENABLED = "hotword_detection_enabled";
             public static final int INVALID_AUTO_TIME_STATE = 3;
             public static final int INVALID_AUTO_TIME_ZONE_STATE = 3;
+
+            @Readable(maxTargetSdk = 34)
             public static final String LAST_CALL_FORWARD_ACTION = "last_call_forward_action";
             public static final String LOCK_SCREEN_STATE = "lock_screen_state";
             public static final int LOCK_SCREEN_STATE_NONE = 0;
@@ -7681,21 +8005,33 @@ public final class Settings {
             public static final int LOCK_SCREEN_STATE_PIN = 1;
             public static final String MASTER_GESTURES_ENABLED = "master_gestures_enabled";
             public static final String MOBILE_SIGNAL_DETECTOR = "mobile_signal_detector";
+
+            @Readable(maxTargetSdk = 34)
             public static final String MUTE_WHEN_OFF_BODY_ENABLED = "obtain_mute_when_off_body";
             public static final String NETWORK_LOCATION_OPT_IN = "network_location_opt_in";
+
+            @Readable(maxTargetSdk = 34)
             public static final String OBTAIN_PAIRED_DEVICE_LOCATION = "obtain_paired_device_location";
             public static final int OEM_SETUP_COMPLETED_FAILURE = 0;
             public static final String OEM_SETUP_COMPLETED_STATUS = "oem_setup_completed_status";
             public static final int OEM_SETUP_COMPLETED_SUCCESS = 1;
+
+            @Readable(maxTargetSdk = 34)
             public static final String OEM_SETUP_VERSION = "oem_setup_version";
+
+            @Readable(maxTargetSdk = 34)
             public static final String PAIRED_DEVICE_OS_TYPE = "paired_device_os_type";
             public static final int PAIRED_DEVICE_OS_TYPE_ANDROID = 1;
             public static final int PAIRED_DEVICE_OS_TYPE_IOS = 2;
             public static final int PAIRED_DEVICE_OS_TYPE_UNKNOWN = 0;
+
+            @Readable(maxTargetSdk = 34)
             public static final String PHONE_PLAY_STORE_AVAILABILITY = "phone_play_store_availability";
             public static final int PHONE_PLAY_STORE_AVAILABILITY_UNKNOWN = 0;
             public static final int PHONE_PLAY_STORE_AVAILABLE = 1;
             public static final int PHONE_PLAY_STORE_UNAVAILABLE = 2;
+
+            @Readable(maxTargetSdk = 34)
             public static final String PHONE_SWITCHING_STATUS = "phone_switching_status";
             public static final int PHONE_SWITCHING_STATUS_CANCELLED = 3;
             public static final int PHONE_SWITCHING_STATUS_FAILED = 4;
@@ -7710,27 +8046,55 @@ public final class Settings {
             public static final int PHONE_SWITCHING_STATUS_STARTED = 1;
             public static final int PHONE_SWITCHING_STATUS_SUCCESS = 2;
             public static final String PHONE_SWITCHING_SUPPORTED = "phone_switching_supported";
+
+            @Readable(maxTargetSdk = 34)
             public static final String REDUCE_MOTION = "reduce_motion";
             public static final String RSB_WAKE_ENABLED = "rsb_wake_enabled";
             public static final String RTL_SWIPE_TO_DISMISS_ENABLED_DEV = "rtl_swipe_to_dismiss_enabled_dev";
             public static final String SCREENSHOT_ENABLED = "screenshot_enabled";
             public static final String SCREEN_UNLOCK_SOUND_ENABLED = "screen_unlock_sound_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String SETUP_LOCALE = "setup_locale";
+
+            @Readable(maxTargetSdk = 34)
             public static final String SETUP_SKIPPED = "setup_skipped";
             public static final int SETUP_SKIPPED_NO = 2;
             public static final int SETUP_SKIPPED_UNKNOWN = 0;
             public static final int SETUP_SKIPPED_YES = 1;
             public static final String SIDE_BUTTON = "side_button";
+
+            @Readable(maxTargetSdk = 34)
             public static final String SMART_ILLUMINATE_ENABLED = "smart_illuminate_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String SMART_REPLIES_ENABLED = "smart_replies_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_1_DATA = "STEM_1_DATA";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_1_DEFAULT_DATA = "STEM_1_DEFAULT_DATA";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_1_TYPE = "STEM_1_TYPE";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_2_DATA = "STEM_2_DATA";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_2_DEFAULT_DATA = "STEM_2_DEFAULT_DATA";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_2_TYPE = "STEM_2_TYPE";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_3_DATA = "STEM_3_DATA";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_3_DEFAULT_DATA = "STEM_3_DEFAULT_DATA";
+
+            @Readable(maxTargetSdk = 34)
             public static final String STEM_3_TYPE = "STEM_3_TYPE";
             public static final int STEM_TYPE_APP_LAUNCH = 0;
             public static final int STEM_TYPE_CONTACT_LAUNCH = 1;
@@ -7739,8 +8103,13 @@ public final class Settings {
             public static final int SYNC_TIME_FROM_PHONE = 0;
             public static final int SYNC_TIME_ZONE_FROM_NETWORK = 1;
             public static final int SYNC_TIME_ZONE_FROM_PHONE = 0;
+
+            @Readable(maxTargetSdk = 34)
             public static final String SYSTEM_CAPABILITIES = "system_capabilities";
+
+            @Readable(maxTargetSdk = 34)
             public static final String SYSTEM_EDITION = "android_wear_system_edition";
+            public static final int TETHERED_CONFIG_RESTRICTED = 3;
             public static final int TETHERED_CONFIG_STANDALONE = 1;
             public static final int TETHERED_CONFIG_TETHERED = 2;
             public static final int TETHERED_CONFIG_UNKNOWN = 0;
@@ -7749,62 +8118,77 @@ public final class Settings {
             public static final int UPGRADE_DATA_MIGRATION_DONE = 2;
             public static final int UPGRADE_DATA_MIGRATION_NOT_NEEDED = 0;
             public static final int UPGRADE_DATA_MIGRATION_PENDING = 1;
+
+            @Readable(maxTargetSdk = 34)
             public static final String UPGRADE_DATA_MIGRATION_STATUS = "upgrade_data_migration_status";
+
+            @Readable(maxTargetSdk = 34)
             public static final String USER_HFP_CLIENT_SETTING = "user_hfp_client_setting";
+            public static final String VIBRATE_FOR_ACTIVE_UNLOCK = "wear_vibrate_for_active_unlock";
+
+            @Readable(maxTargetSdk = 34)
             public static final String WEAR_ACTIVITY_AUTO_RESUME_TIMEOUT_MS = "wear_activity_auto_resume_timeout_ms";
             public static final String WEAR_ACTIVITY_AUTO_RESUME_TIMEOUT_SET_BY_USER = "wear_activity_auto_resume_timeout_set_by_user";
+
+            @Readable(maxTargetSdk = 34)
+            public static final String WEAR_LAUNCHER_UI_MODE = "wear_launcher_ui_mode";
+
+            @Readable
             public static final String WEAR_MEDIA_CONTROLS_PACKAGE = "wear_media_controls_package";
+
+            @Readable
             public static final String WEAR_MEDIA_SESSIONS_PACKAGE = "wear_media_sessions_package";
+
+            @Readable(maxTargetSdk = 34)
             public static final String WEAR_OS_VERSION_STRING = "wear_os_version_string";
+
+            @Readable(maxTargetSdk = 34)
             public static final String WEAR_PLATFORM_MR_NUMBER = "wear_platform_mr_number";
+            public static final String WEAR_POWER_ANOMALY_SERVICE_ENABLED = "wear_power_anomaly_service_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String WET_MODE_ON = "wet_mode_on";
             public static final String WIFI_POWER_SAVE = "wifi_power_save";
+
+            @Readable
+            public static final String WRIST_DETECTION_AUTO_LOCKING_ENABLED = "wear_wrist_detection_auto_locking_enabled";
+
+            @Readable(maxTargetSdk = 34)
             public static final String WRIST_ORIENTATION_MODE = "wear_wrist_orientation_mode";
         }
 
         static {
-            Uri parse = Uri.parse("content://settings/global");
-            CONTENT_URI = parse;
-            TRANSIENT_SETTINGS = new String[]{CLOCKWORK_HOME_READY};
-            LEGACY_RESTORE_SETTINGS = new String[0];
-            BATTERY_PROTECTION_THRESHOLD_DEFAULT_VALUE = (SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_BATTERY_DISABLE_ECO_BATTERY") || SystemProperties.getInt("ro.build.version.sep", 0) < 150100) ? 85 : 80;
-            ContentProviderHolder contentProviderHolder = new ContentProviderHolder(parse);
-            sProviderHolder = contentProviderHolder;
-            sNameValueCache = new NameValueCache(parse, Settings.CALL_METHOD_GET_GLOBAL, Settings.CALL_METHOD_PUT_GLOBAL, Settings.CALL_METHOD_DELETE_GLOBAL, contentProviderHolder, Global.class);
-            HashSet<String> hashSet = new HashSet<>(8);
-            MOVED_TO_SECURE = hashSet;
-            hashSet.add("install_non_market_apps");
-            hashSet.add("zen_duration");
-            hashSet.add("show_zen_upgrade_notification");
-            hashSet.add("show_zen_settings_suggestion");
-            hashSet.add("zen_settings_updated");
-            hashSet.add("zen_settings_suggestion_viewed");
-            hashSet.add("charging_sounds_enabled");
-            hashSet.add("charging_vibration_enabled");
-            hashSet.add("notification_bubbles");
-            hashSet.add("bugreport_in_power_menu");
-            hashSet.add("custom_bugreport_handler_app");
-            hashSet.add("custom_bugreport_handler_user");
-            HashSet<String> hashSet2 = new HashSet<>(1);
-            MOVED_TO_SYSTEM = hashSet2;
-            hashSet2.add("apply_ramping_ringer");
+            MOVED_TO_SECURE.add("install_non_market_apps");
+            MOVED_TO_SECURE.add("zen_duration");
+            MOVED_TO_SECURE.add("show_zen_upgrade_notification");
+            MOVED_TO_SECURE.add("show_zen_settings_suggestion");
+            MOVED_TO_SECURE.add("zen_settings_updated");
+            MOVED_TO_SECURE.add("zen_settings_suggestion_viewed");
+            MOVED_TO_SECURE.add("charging_sounds_enabled");
+            MOVED_TO_SECURE.add("charging_vibration_enabled");
+            MOVED_TO_SECURE.add("notification_bubbles");
+            MOVED_TO_SECURE.add("bugreport_in_power_menu");
+            MOVED_TO_SECURE.add("custom_bugreport_handler_app");
+            MOVED_TO_SECURE.add("custom_bugreport_handler_user");
+            MOVED_TO_SYSTEM = new HashSet<>(1);
+            MOVED_TO_SYSTEM.add("apply_ramping_ringer");
             MULTI_SIM_USER_PREFERRED_SUBS = new String[]{"user_preferred_sub1", "user_preferred_sub2", "user_preferred_sub3"};
-            ArraySet arraySet = new ArraySet();
-            INSTANT_APP_SETTINGS = arraySet;
-            arraySet.add("wait_for_debugger");
-            arraySet.add("device_provisioned");
-            arraySet.add(DEVELOPMENT_FORCE_RESIZABLE_ACTIVITIES);
-            arraySet.add(DEVELOPMENT_FORCE_RTL);
-            arraySet.add(EPHEMERAL_COOKIE_MAX_SIZE_BYTES);
-            arraySet.add("airplane_mode_on");
-            arraySet.add("window_animation_scale");
-            arraySet.add("transition_animation_scale");
-            arraySet.add("animator_duration_scale");
-            arraySet.add(DEBUG_VIEW_ATTRIBUTES);
-            arraySet.add(DEBUG_VIEW_ATTRIBUTES_APPLICATION_PACKAGE);
-            arraySet.add(WTF_IS_FATAL);
-            arraySet.add(SEND_ACTION_APP_ERROR);
-            arraySet.add(ZEN_MODE);
+            INSTANT_APP_SETTINGS = new ArraySet();
+            INSTANT_APP_SETTINGS.add("wait_for_debugger");
+            INSTANT_APP_SETTINGS.add("device_provisioned");
+            INSTANT_APP_SETTINGS.add(DEVELOPMENT_FORCE_RESIZABLE_ACTIVITIES);
+            INSTANT_APP_SETTINGS.add(DEVELOPMENT_FORCE_RTL);
+            INSTANT_APP_SETTINGS.add(EPHEMERAL_COOKIE_MAX_SIZE_BYTES);
+            INSTANT_APP_SETTINGS.add("airplane_mode_on");
+            INSTANT_APP_SETTINGS.add("window_animation_scale");
+            INSTANT_APP_SETTINGS.add("transition_animation_scale");
+            INSTANT_APP_SETTINGS.add("animator_duration_scale");
+            INSTANT_APP_SETTINGS.add(DEBUG_VIEW_ATTRIBUTES);
+            INSTANT_APP_SETTINGS.add(DEBUG_VIEW_ATTRIBUTES_APPLICATION_PACKAGE);
+            INSTANT_APP_SETTINGS.add(WTF_IS_FATAL);
+            INSTANT_APP_SETTINGS.add(SEND_ACTION_APP_ERROR);
+            INSTANT_APP_SETTINGS.add(ZEN_MODE);
+            BATTERY_PROTECTION_THRESHOLD_DEFAULT_VALUE = (SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_BATTERY_DISABLE_ECO_BATTERY") || SystemProperties.getInt("ro.build.version.sep", 0) < 150100) ? 85 : 80;
         }
 
         public static String zenModeToString(int mode) {
@@ -7823,14 +8207,6 @@ public final class Settings {
             }
         }
 
-        public static final String getBluetoothA2dpSupportsLdacKey(String address) {
-            return BLUETOOTH_A2DP_SUPPORTS_LDAC_PREFIX + address.toUpperCase(Locale.ROOT);
-        }
-
-        public static final String getBluetoothA2dpEnabledLdacKey(String address) {
-            return BLUETOOTH_A2DP_ENABLED_LDAC_PREFIX + address.toUpperCase(Locale.ROOT);
-        }
-
         public static void getMovedToSecureSettings(Set<String> outKeySet) {
             outKeySet.addAll(MOVED_TO_SECURE);
         }
@@ -7846,6 +8222,9 @@ public final class Settings {
 
         public static void getPublicSettings(Set<String> allKeys, Set<String> readableKeys, ArrayMap<String, Integer> readableKeysWithMaxTargetSdk) {
             Settings.getPublicSettingsForClass(Global.class, allKeys, readableKeys, readableKeysWithMaxTargetSdk);
+            if (ActivityThread.currentApplication().getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+                Settings.getPublicSettingsForClass(Wearable.class, allKeys, readableKeys, readableKeysWithMaxTargetSdk);
+            }
         }
 
         public static String getString(ContentResolver resolver, String name) {
@@ -7890,9 +8269,8 @@ public final class Settings {
                     arg.putString(Settings.CALL_METHOD_TAG_KEY, tag);
                 }
                 arg.putInt(Settings.CALL_METHOD_RESET_MODE_KEY, mode);
-                ContentProviderHolder contentProviderHolder = sProviderHolder;
-                IContentProvider cp = contentProviderHolder.getProvider(resolver);
-                cp.call(resolver.getAttributionSource(), contentProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_RESET_GLOBAL, null, arg);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_RESET_GLOBAL, null, arg);
             } catch (RemoteException e) {
                 Log.w(Settings.TAG, "Can't reset do defaults for " + CONTENT_URI, e);
             }
@@ -7962,9 +8340,7 @@ public final class Settings {
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    /* loaded from: classes3.dex */
     public static final class Config extends NameValueTable {
-        public static final Uri CONTENT_URI;
 
         @Deprecated
         public static final int SYNC_DISABLED_MODE_NONE = 0;
@@ -7974,21 +8350,13 @@ public final class Settings {
 
         @Deprecated
         public static final int SYNC_DISABLED_MODE_UNTIL_REBOOT = 2;
-        private static final NameValueCache sNameValueCache;
-        private static final ContentProviderHolder sProviderHolder;
+        public static final Uri CONTENT_URI = Uri.parse("content://settings/config");
+        private static final ContentProviderHolder sProviderHolder = new ContentProviderHolder(CONTENT_URI);
+        private static final NameValueCache sNameValueCache = new NameValueCache(CONTENT_URI, Settings.CALL_METHOD_GET_CONFIG, Settings.CALL_METHOD_PUT_CONFIG, Settings.CALL_METHOD_DELETE_CONFIG, Settings.CALL_METHOD_LIST_CONFIG, Settings.CALL_METHOD_SET_ALL_CONFIG, sProviderHolder, Config.class);
 
         @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface SyncDisabledMode {
-        }
-
-        static {
-            Uri parse = Uri.parse("content://settings/config");
-            CONTENT_URI = parse;
-            ContentProviderHolder contentProviderHolder = new ContentProviderHolder(parse);
-            sProviderHolder = contentProviderHolder;
-            sNameValueCache = new NameValueCache(parse, Settings.CALL_METHOD_GET_CONFIG, Settings.CALL_METHOD_PUT_CONFIG, Settings.CALL_METHOD_DELETE_CONFIG, Settings.CALL_METHOD_LIST_CONFIG, Settings.CALL_METHOD_SET_ALL_CONFIG, contentProviderHolder, Config.class);
         }
 
         private Config() {
@@ -8005,20 +8373,28 @@ public final class Settings {
             return getStrings(getContentResolver(), namespace, names);
         }
 
+        @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+        public static Map<String, String> getAllStrings() {
+            HashMap<String, String> allFlags = new HashMap<>();
+            try {
+                ContentResolver resolver = getContentResolver();
+                Bundle arg = new Bundle();
+                arg.putInt(Settings.CALL_METHOD_USER_KEY, resolver.getUserId());
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                Bundle b = cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_LIST_CONFIG, null, arg);
+                if (b != null) {
+                    Map<String, String> flagsToValues = (HashMap) b.getSerializable("value", HashMap.class);
+                    allFlags.putAll(flagsToValues);
+                }
+            } catch (RemoteException e) {
+                Log.w(Settings.TAG, "Can't query configuration table for " + CONTENT_URI, e);
+            }
+            return allFlags;
+        }
+
         public static Map<String, String> getStrings(ContentResolver resolver, String namespace, List<String> names) {
-            List<String> compositeNames = new ArrayList<>(names.size());
-            for (String name : names) {
-                compositeNames.add(createCompositeName(namespace, name));
-            }
             String prefix = createPrefix(namespace);
-            ArrayMap<String, String> rawKeyValues = sNameValueCache.getStringsForPrefix(resolver, prefix, compositeNames);
-            int size = rawKeyValues.size();
-            int substringLength = prefix.length();
-            ArrayMap<String, String> keyValues = new ArrayMap<>(size);
-            for (int i = 0; i < size; i++) {
-                keyValues.put(rawKeyValues.keyAt(i).substring(substringLength), rawKeyValues.valueAt(i));
-            }
-            return keyValues;
+            return sNameValueCache.getStringsForPrefixStripPrefix(resolver, prefix, names);
         }
 
         @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
@@ -8063,9 +8439,8 @@ public final class Settings {
                 if (namespace != null) {
                     arg.putString(Settings.CALL_METHOD_PREFIX_KEY, createPrefix(namespace));
                 }
-                ContentProviderHolder contentProviderHolder = sProviderHolder;
-                IContentProvider cp = contentProviderHolder.getProvider(resolver);
-                cp.call(resolver.getAttributionSource(), contentProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_RESET_CONFIG, null, arg);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_RESET_CONFIG, null, arg);
             } catch (RemoteException e) {
                 Log.w(Settings.TAG, "Can't reset to defaults for " + CONTENT_URI, e);
             }
@@ -8077,9 +8452,8 @@ public final class Settings {
                 ContentResolver resolver = getContentResolver();
                 Bundle args = new Bundle();
                 args.putInt(Settings.CALL_METHOD_SYNC_DISABLED_MODE_KEY, disableSyncMode);
-                ContentProviderHolder contentProviderHolder = sProviderHolder;
-                IContentProvider cp = contentProviderHolder.getProvider(resolver);
-                cp.call(resolver.getAttributionSource(), contentProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_SET_SYNC_DISABLED_MODE_CONFIG, null, args);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_SET_SYNC_DISABLED_MODE_CONFIG, null, args);
             } catch (RemoteException e) {
                 Log.w(Settings.TAG, "Can't set sync disabled mode " + CONTENT_URI, e);
             }
@@ -8090,9 +8464,8 @@ public final class Settings {
             try {
                 ContentResolver resolver = getContentResolver();
                 Bundle args = Bundle.EMPTY;
-                ContentProviderHolder contentProviderHolder = sProviderHolder;
-                IContentProvider cp = contentProviderHolder.getProvider(resolver);
-                Bundle bundle = cp.call(resolver.getAttributionSource(), contentProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_GET_SYNC_DISABLED_MODE_CONFIG, null, args);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                Bundle bundle = cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_GET_SYNC_DISABLED_MODE_CONFIG, null, args);
                 return bundle.getInt(Settings.KEY_CONFIG_GET_SYNC_DISABLED_MODE_RETURN);
             } catch (RemoteException e) {
                 Log.w(Settings.TAG, "Can't query sync disabled mode " + CONTENT_URI, e);
@@ -8110,9 +8483,8 @@ public final class Settings {
             try {
                 Bundle arg = new Bundle();
                 arg.putInt(Settings.CALL_METHOD_USER_KEY, resolver.getUserId());
-                ContentProviderHolder contentProviderHolder = sProviderHolder;
-                IContentProvider cp = contentProviderHolder.getProvider(resolver);
-                cp.call(resolver.getAttributionSource(), contentProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_UNREGISTER_MONITOR_CALLBACK_CONFIG, null, arg);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_UNREGISTER_MONITOR_CALLBACK_CONFIG, null, arg);
             } catch (RemoteException e) {
                 Log.w(Settings.TAG, "Can't clear config monitor callback", e);
             }
@@ -8132,25 +8504,18 @@ public final class Settings {
             return ActivityThread.currentApplication().getApplicationContext().checkCallingOrSelfPermission(permission);
         }
 
-        public static void enforceReadPermission(String namespace) {
-            if (ActivityThread.currentApplication().getApplicationContext().checkCallingOrSelfPermission(Manifest.permission.READ_DEVICE_CONFIG) != 0 && !DeviceConfig.getPublicNamespaces().contains(namespace)) {
-                throw new SecurityException("Permission denial: reading from settings requires:android.permission.READ_DEVICE_CONFIG");
-            }
-        }
-
         private static void setMonitorCallbackAsUser(final Executor executor, ContentResolver resolver, int userHandle, final DeviceConfig.MonitorCallback callback) {
             try {
                 Bundle arg = new Bundle();
                 arg.putInt(Settings.CALL_METHOD_USER_KEY, userHandle);
-                arg.putParcelable(Settings.CALL_METHOD_MONITOR_CALLBACK_KEY, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.provider.Settings$Config$$ExternalSyntheticLambda2
+                arg.putParcelable(Settings.CALL_METHOD_MONITOR_CALLBACK_KEY, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.provider.Settings$Config$$ExternalSyntheticLambda0
                     @Override // android.os.RemoteCallback.OnResultListener
                     public final void onResult(Bundle bundle) {
                         Settings.Config.handleMonitorCallback(bundle, executor, callback);
                     }
                 }));
-                ContentProviderHolder contentProviderHolder = sProviderHolder;
-                IContentProvider cp = contentProviderHolder.getProvider(resolver);
-                cp.call(resolver.getAttributionSource(), contentProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_REGISTER_MONITOR_CALLBACK_CONFIG, null, arg);
+                IContentProvider cp = sProviderHolder.getProvider(resolver);
+                cp.call(resolver.getAttributionSource(), sProviderHolder.mUri.getAuthority(), Settings.CALL_METHOD_REGISTER_MONITOR_CALLBACK_CONFIG, null, arg);
             } catch (RemoteException e) {
                 Log.w(Settings.TAG, "Can't set config monitor callback", e);
             }
@@ -8161,6 +8526,7 @@ public final class Settings {
             sNameValueCache.clearGenerationTrackerForTest();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         public static void handleMonitorCallback(Bundle result, Executor executor, final DeviceConfig.MonitorCallback monitorCallback) {
             char c;
@@ -8188,43 +8554,44 @@ public final class Settings {
                 case 0:
                     final String updatedNamespace = result.getString(Settings.EXTRA_NAMESPACE);
                     if (updatedNamespace != null) {
-                        executor.execute(new Runnable() { // from class: android.provider.Settings$Config$$ExternalSyntheticLambda0
+                        executor.execute(new Runnable() { // from class: android.provider.Settings$Config$$ExternalSyntheticLambda1
                             @Override // java.lang.Runnable
                             public final void run() {
                                 monitorCallback.onNamespaceUpdate(updatedNamespace);
                             }
                         });
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 1:
                     final String callingPackage = result.getString("calling_package", null);
                     final String namespace = result.getString(Settings.EXTRA_NAMESPACE, null);
                     if (namespace != null && callingPackage != null) {
-                        executor.execute(new Runnable() { // from class: android.provider.Settings$Config$$ExternalSyntheticLambda1
+                        executor.execute(new Runnable() { // from class: android.provider.Settings$Config$$ExternalSyntheticLambda2
                             @Override // java.lang.Runnable
                             public final void run() {
                                 monitorCallback.onDeviceConfigAccess(callingPackage, namespace);
                             }
                         });
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 default:
                     Slog.w(Settings.TAG, "Unrecognized DeviceConfig callback");
-                    return;
+                    break;
             }
         }
 
-        private static String createCompositeName(String namespace, String name) {
+        static String createCompositeName(String namespace, String name) {
             Preconditions.checkNotNull(namespace);
             Preconditions.checkNotNull(name);
-            return createPrefix(namespace) + name;
+            StringBuilder sb = new StringBuilder(namespace.length() + 1 + name.length());
+            return sb.append(namespace).append('/').append(name).toString();
         }
 
         private static String createPrefix(String namespace) {
             Preconditions.checkNotNull(namespace);
-            return namespace + "/";
+            return namespace + '/';
         }
 
         private static Uri createNamespaceUri(String namespace) {
@@ -8237,7 +8604,6 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Bookmarks implements BaseColumns {
         public static final String FOLDER = "folder";
         public static final String ID = "_id";
@@ -8323,7 +8689,6 @@ public final class Settings {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Panel {
         public static final String ACTION_INTERNET_CONNECTIVITY = "android.settings.panel.action.INTERNET_CONNECTIVITY";
         public static final String ACTION_NFC = "android.settings.panel.action.NFC";

@@ -75,9 +75,7 @@ public class DrmRights {
         return this.mSubscriptionId;
     }
 
-    public boolean isValid() {
-        byte[] bArr;
-        String str = this.mMimeType;
-        return (str == null || str.equals("") || (bArr = this.mData) == null || bArr.length <= 0) ? false : true;
+    boolean isValid() {
+        return (this.mMimeType == null || this.mMimeType.equals("") || this.mData == null || this.mData.length <= 0) ? false : true;
     }
 }

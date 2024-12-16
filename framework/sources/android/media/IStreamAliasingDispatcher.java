@@ -12,7 +12,6 @@ public interface IStreamAliasingDispatcher extends IInterface {
 
     void dispatchStreamAliasingChanged() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IStreamAliasingDispatcher {
         @Override // android.media.IStreamAliasingDispatcher
         public void dispatchStreamAliasingChanged() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IStreamAliasingDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IStreamAliasingDispatcher {
         static final int TRANSACTION_dispatchStreamAliasingChanged = 1;
 
@@ -67,23 +65,20 @@ public interface IStreamAliasingDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStreamAliasingDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStreamAliasingDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStreamAliasingDispatcher.DESCRIPTOR);
+                case 1:
+                    dispatchStreamAliasingChanged();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            dispatchStreamAliasingChanged();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IStreamAliasingDispatcher {
+        private static class Proxy implements IStreamAliasingDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

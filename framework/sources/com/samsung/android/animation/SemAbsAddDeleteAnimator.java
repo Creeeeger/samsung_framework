@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /* loaded from: classes5.dex */
-public abstract class SemAbsAddDeleteAnimator {
+abstract class SemAbsAddDeleteAnimator {
     Runnable mDeleteRunnable;
     View mHostView;
     Runnable mInsertDeleteRunnable;
@@ -26,9 +26,6 @@ public abstract class SemAbsAddDeleteAnimator {
     Rect mBitmapUpdateBounds = new Rect();
     ArrayList<ViewInfo> mGhostViewSnapshots = new ArrayList<>();
     ValueAnimator.AnimatorUpdateListener mBitmapUpdateListener = new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemAbsAddDeleteAnimator.1
-        AnonymousClass1() {
-        }
-
         @Override // android.animation.ValueAnimator.AnimatorUpdateListener
         public void onAnimationUpdate(ValueAnimator anim) {
             int ghostViewCount = SemAbsAddDeleteAnimator.this.mGhostViewSnapshots.size();
@@ -56,7 +53,10 @@ public abstract class SemAbsAddDeleteAnimator {
 
     abstract void setInsertPending(ArrayList<Integer> arrayList);
 
-    public int getShiftCount(int currentPos, ArrayList<Integer> insertedItemPositions) {
+    SemAbsAddDeleteAnimator() {
+    }
+
+    int getShiftCount(int currentPos, ArrayList<Integer> insertedItemPositions) {
         int shiftCount = 0;
         Iterator<Integer> it = insertedItemPositions.iterator();
         while (it.hasNext()) {
@@ -69,7 +69,7 @@ public abstract class SemAbsAddDeleteAnimator {
         return shiftCount;
     }
 
-    public int getShiftCount(int currentPos, ArrayList<Integer> insertedItemPositions, ArrayList<Integer> deletingItemPositions) {
+    int getShiftCount(int currentPos, ArrayList<Integer> insertedItemPositions, ArrayList<Integer> deletingItemPositions) {
         int shiftCount = 0;
         Iterator<Integer> it = insertedItemPositions.iterator();
         while (it.hasNext()) {
@@ -90,7 +90,7 @@ public abstract class SemAbsAddDeleteAnimator {
         return shiftCount;
     }
 
-    public int getNewPositionForInsert(int oldPosition, ArrayList<Integer> insertedItems) {
+    int getNewPositionForInsert(int oldPosition, ArrayList<Integer> insertedItems) {
         int newPosition = oldPosition;
         Iterator<Integer> it = insertedItems.iterator();
         while (it.hasNext()) {
@@ -103,7 +103,7 @@ public abstract class SemAbsAddDeleteAnimator {
         return newPosition;
     }
 
-    public int getNewPosition(int oldPosition, ArrayList<Integer> deletedItems) {
+    int getNewPosition(int oldPosition, ArrayList<Integer> deletedItems) {
         int newPosition = oldPosition;
         Iterator<Integer> it = deletedItems.iterator();
         while (it.hasNext()) {
@@ -116,7 +116,7 @@ public abstract class SemAbsAddDeleteAnimator {
         return newPosition;
     }
 
-    public int getNewPosition(int oldPosition, ArrayList<Integer> insertedItems, ArrayList<Integer> deletedItems) {
+    int getNewPosition(int oldPosition, ArrayList<Integer> insertedItems, ArrayList<Integer> deletedItems) {
         int newPosition = oldPosition;
         Iterator<Integer> it = deletedItems.iterator();
         while (it.hasNext()) {
@@ -147,8 +147,7 @@ public abstract class SemAbsAddDeleteAnimator {
         return PropertyValuesHolder.ofFloat(property, value);
     }
 
-    /* loaded from: classes5.dex */
-    public static class ViewInfo {
+    static class ViewInfo {
         int bottom;
         int left;
         int oldPosition;
@@ -170,29 +169,7 @@ public abstract class SemAbsAddDeleteAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.animation.SemAbsAddDeleteAnimator$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-        public void onAnimationUpdate(ValueAnimator anim) {
-            int ghostViewCount = SemAbsAddDeleteAnimator.this.mGhostViewSnapshots.size();
-            if (ghostViewCount == 0) {
-                return;
-            }
-            SemAbsAddDeleteAnimator.this.mBitmapUpdateBounds.setEmpty();
-            for (int i = 0; i < ghostViewCount; i++) {
-                ViewInfo vInfo = SemAbsAddDeleteAnimator.this.mGhostViewSnapshots.get(i);
-                SemAbsAddDeleteAnimator.this.mBitmapUpdateBounds.union(vInfo.viewSnapshot.getBounds());
-            }
-            SemAbsAddDeleteAnimator.this.mHostView.invalidate(SemAbsAddDeleteAnimator.this.mBitmapUpdateBounds);
-        }
-    }
-
-    public ObjectAnimator getInsertTranslateAlphaScaleAnim(View child, float translationX, float translationY) {
+    ObjectAnimator getInsertTranslateAlphaScaleAnim(View child, float translationX, float translationY) {
         child.setTranslationX(translationX);
         child.setTranslationY(translationY);
         child.setAlpha(0.0f);
@@ -201,7 +178,7 @@ public abstract class SemAbsAddDeleteAnimator {
         return ObjectAnimator.ofPropertyValuesHolder(child, getPropertyValuesHolder(View.TRANSLATION_X, 0.0f), getPropertyValuesHolder(View.TRANSLATION_Y, 0.0f), getPropertyValuesHolder(View.SCALE_X, 1.0f), getPropertyValuesHolder(View.SCALE_Y, 1.0f), getPropertyValuesHolder(View.ALPHA, 1.0f));
     }
 
-    public ObjectAnimator getTranslateAnim(View child, float translationX, float translationY) {
+    ObjectAnimator getTranslateAnim(View child, float translationX, float translationY) {
         child.setTranslationX(translationX);
         child.setTranslationY(translationY);
         return ObjectAnimator.ofPropertyValuesHolder(child, getPropertyValuesHolder(View.TRANSLATION_X, 0.0f), getPropertyValuesHolder(View.TRANSLATION_Y, 0.0f));
@@ -218,15 +195,13 @@ public abstract class SemAbsAddDeleteAnimator {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class SetDeletePendingIsNotCalledBefore extends RuntimeException {
+    class SetDeletePendingIsNotCalledBefore extends RuntimeException {
         public SetDeletePendingIsNotCalledBefore() {
             super("setDeletePending() should be called prior to calling deleteFromAdapterCompleted()");
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class SetInsertPendingIsNotCalledBefore extends RuntimeException {
+    class SetInsertPendingIsNotCalledBefore extends RuntimeException {
         public SetInsertPendingIsNotCalledBefore() {
             super("setInsertPending() should be called prior to calling insertFromAdapterCompleted()");
         }

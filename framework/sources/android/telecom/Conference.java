@@ -6,9 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.telecom.Call;
 import android.telecom.Connection;
-import android.telephony.Rlog;
 import android.util.ArraySet;
-import com.android.internal.telephony.SemTelephonyUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,7 +19,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /* loaded from: classes3.dex */
 public abstract class Conference extends Conferenceable {
     public static final long CONNECT_TIME_NOT_SPECIFIED = 0;
-    private static final String LOG_TAG = "Telecom-Conference";
     private Uri mAddress;
     private int mAddressPresentation;
     private CallAudioState mCallAudioState;
@@ -29,30 +26,39 @@ public abstract class Conference extends Conferenceable {
     private CallEndpoint mCallEndpoint;
     private String mCallerDisplayName;
     private int mCallerDisplayNamePresentation;
-    private final List<Connection> mChildConnections;
-    private final List<Connection> mConferenceableConnections;
-    private long mConnectTimeMillis;
     private int mConnectionCapabilities;
-    private final Connection.Listener mConnectionDeathListener;
     private int mConnectionProperties;
-    private long mConnectionStartElapsedRealTime;
     private DisconnectCause mDisconnectCause;
     private String mDisconnectMessage;
     private Bundle mExtras;
-    private final Object mExtrasLock;
-    private boolean mIsMultiparty;
-    private final Set<Listener> mListeners = new CopyOnWriteArraySet();
     private PhoneAccountHandle mPhoneAccount;
     private Set<String> mPreviousExtraKeys;
-    private boolean mRingbackRequested;
-    private int mState;
     private StatusHints mStatusHints;
     private String mTelecomCallId;
-    private final List<Connection> mUnmodifiableChildConnections;
-    private final List<Connection> mUnmodifiableConferenceableConnections;
+    private final Set<Listener> mListeners = new CopyOnWriteArraySet();
+    private final List<Connection> mChildConnections = new CopyOnWriteArrayList();
+    private final List<Connection> mUnmodifiableChildConnections = Collections.unmodifiableList(this.mChildConnections);
+    private final List<Connection> mConferenceableConnections = new ArrayList();
+    private final List<Connection> mUnmodifiableConferenceableConnections = Collections.unmodifiableList(this.mConferenceableConnections);
+    private int mState = 1;
+    private long mConnectTimeMillis = 0;
+    private long mConnectionStartElapsedRealTime = 0;
+    private final Object mExtrasLock = new Object();
+    private boolean mRingbackRequested = false;
+    private boolean mIsMultiparty = true;
+    private final Connection.Listener mConnectionDeathListener = new Connection.Listener() { // from class: android.telecom.Conference.1
+        @Override // android.telecom.Connection.Listener
+        public void onDestroyed(Connection c) {
+            if (Conference.this.mConferenceableConnections.remove(c)) {
+                Conference.this.fireOnConferenceableConnectionsChanged();
+            }
+        }
+    };
 
-    /* loaded from: classes3.dex */
-    public static abstract class Listener {
+    static abstract class Listener {
+        Listener() {
+        }
+
         public void onStateChanged(Conference conference, int oldState, int newState) {
         }
 
@@ -111,45 +117,7 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.Conference$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends Connection.Listener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.telecom.Connection.Listener
-        public void onDestroyed(Connection c) {
-            if (Conference.this.mConferenceableConnections.remove(c)) {
-                Conference.this.fireOnConferenceableConnectionsChanged();
-            }
-        }
-    }
-
     public Conference(PhoneAccountHandle phoneAccount) {
-        CopyOnWriteArrayList copyOnWriteArrayList = new CopyOnWriteArrayList();
-        this.mChildConnections = copyOnWriteArrayList;
-        this.mUnmodifiableChildConnections = Collections.unmodifiableList(copyOnWriteArrayList);
-        ArrayList arrayList = new ArrayList();
-        this.mConferenceableConnections = arrayList;
-        this.mUnmodifiableConferenceableConnections = Collections.unmodifiableList(arrayList);
-        this.mState = 1;
-        this.mConnectTimeMillis = 0L;
-        this.mConnectionStartElapsedRealTime = 0L;
-        this.mExtrasLock = new Object();
-        this.mRingbackRequested = false;
-        this.mIsMultiparty = true;
-        this.mConnectionDeathListener = new Connection.Listener() { // from class: android.telecom.Conference.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.telecom.Connection.Listener
-            public void onDestroyed(Connection c) {
-                if (Conference.this.mConferenceableConnections.remove(c)) {
-                    Conference.this.fireOnConferenceableConnectionsChanged();
-                }
-            }
-        };
         this.mPhoneAccount = phoneAccount;
     }
 
@@ -374,6 +342,7 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final void fireOnConferenceableConnectionsChanged() {
         for (Listener l : this.mListeners) {
             l.onConferenceableConnectionsChanged(this, getConferenceableConnections());
@@ -399,22 +368,19 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
-    public final Conference addListener(Listener listener) {
-        Rlog.d(LOG_TAG, "addListener - listener: " + listener);
+    final Conference addListener(Listener listener) {
         this.mListeners.add(listener);
         return this;
     }
 
-    public final Conference removeListener(Listener listener) {
-        Rlog.d(LOG_TAG, "removeListener - listener: " + listener);
+    final Conference removeListener(Listener listener) {
         this.mListeners.remove(listener);
         return this;
     }
 
     @SystemApi
     public Connection getPrimaryConnection() {
-        List<Connection> list = this.mUnmodifiableChildConnections;
-        if (list == null || list.isEmpty()) {
+        if (this.mUnmodifiableChildConnections == null || this.mUnmodifiableChildConnections.isEmpty()) {
             return null;
         }
         return this.mUnmodifiableChildConnections.get(0);
@@ -453,25 +419,25 @@ public abstract class Conference extends Conferenceable {
         return this.mConnectionStartElapsedRealTime;
     }
 
-    public final void setCallAudioState(CallAudioState state) {
+    final void setCallAudioState(CallAudioState state) {
         Log.d(this, "setCallAudioState %s", state);
         this.mCallAudioState = state;
         onAudioStateChanged(getAudioState());
         onCallAudioStateChanged(state);
     }
 
-    public final void setCallEndpoint(CallEndpoint endpoint) {
+    final void setCallEndpoint(CallEndpoint endpoint) {
         Log.d(this, "setCallEndpoint %s", endpoint);
         this.mCallEndpoint = endpoint;
         onCallEndpointChanged(endpoint);
     }
 
-    public final void setAvailableCallEndpoints(List<CallEndpoint> availableEndpoints) {
+    final void setAvailableCallEndpoints(List<CallEndpoint> availableEndpoints) {
         Log.d(this, "setAvailableCallEndpoints", new Object[0]);
         onAvailableCallEndpointsChanged(availableEndpoints);
     }
 
-    public final void setMuteState(boolean isMuted) {
+    final void setMuteState(boolean isMuted) {
         Log.d(this, "setMuteState %s", Boolean.valueOf(isMuted));
         onMuteStateChanged(isMuted);
     }
@@ -486,9 +452,7 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class FailureSignalingConference extends Conference {
+    private static class FailureSignalingConference extends Conference {
         private boolean mImmutable;
 
         public FailureSignalingConference(DisconnectCause disconnectCause, PhoneAccountHandle phoneAccount) {
@@ -517,15 +481,7 @@ public abstract class Conference extends Conferenceable {
     }
 
     public String toString() {
-        Locale locale = Locale.US;
-        Object[] objArr = new Object[6];
-        objArr[0] = Connection.stateToString(this.mState);
-        objArr[1] = Call.Details.capabilitiesToString(this.mConnectionCapabilities);
-        objArr[2] = Integer.valueOf(getVideoState());
-        objArr[3] = getVideoProvider();
-        objArr[4] = isRingbackRequested() ? GnssSignalType.CODE_TYPE_Y : GnssSignalType.CODE_TYPE_N;
-        objArr[5] = super.toString();
-        return String.format(locale, "[State: %s,Capabilites: %s, VideoState: %s, VideoProvider: %s,isRingbackRequested: %s, ThisObject %s]", objArr);
+        return String.format(Locale.US, "[State: %s,Capabilites: %s, VideoState: %s, VideoProvider: %s,isRingbackRequested: %s, ThisObject %s]", Connection.stateToString(this.mState), Call.Details.capabilitiesToString(this.mConnectionCapabilities), Integer.valueOf(getVideoState()), getVideoProvider(), isRingbackRequested() ? GnssSignalType.CODE_TYPE_Y : GnssSignalType.CODE_TYPE_N, super.toString());
     }
 
     public final void setStatusHints(StatusHints statusHints) {
@@ -648,6 +604,7 @@ public abstract class Conference extends Conferenceable {
 
     @SystemApi
     public final void setAddress(Uri address, int presentation) {
+        Log.d(this, "setAddress %s", Log.maskPii(address));
         this.mAddress = address;
         this.mAddressPresentation = presentation;
         for (Listener l : this.mListeners) {
@@ -677,7 +634,7 @@ public abstract class Conference extends Conferenceable {
 
     @SystemApi
     public final void setCallerDisplayName(String callerDisplayName, int presentation) {
-        Log.d(this, "setCallerDisplayName %s", SemTelephonyUtils.maskPii(callerDisplayName));
+        Log.d(this, "setCallerDisplayName %s", Log.maskPii(callerDisplayName));
         this.mCallerDisplayName = callerDisplayName;
         this.mCallerDisplayNamePresentation = presentation;
         for (Listener l : this.mListeners) {
@@ -685,11 +642,11 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
-    public final void handleExtrasChanged(Bundle extras) {
+    final void handleExtrasChanged(Bundle extras) {
         Bundle b = null;
         synchronized (this.mExtrasLock) {
             this.mExtras = extras;
-            if (extras != null) {
+            if (this.mExtras != null) {
                 b = new Bundle(this.mExtras);
             }
         }

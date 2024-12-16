@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.RandomAccess;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class SchemaUtil {
+/* loaded from: classes3.dex */
+final class SchemaUtil {
     private static final int DEFAULT_LOOK_UP_START_NUMBER = 40;
     private static final Class<?> GENERATED_MESSAGE_CLASS = getGeneratedMessageClass();
     private static final UnknownFieldSchema<?, ?> PROTO2_UNKNOWN_FIELD_SET_SCHEMA = getUnknownFieldSetSchema(false);
@@ -21,8 +21,7 @@ public final class SchemaUtil {
     }
 
     public static void requireGeneratedMessage(Class<?> messageType) {
-        Class<?> cls;
-        if (!GeneratedMessageLite.class.isAssignableFrom(messageType) && (cls = GENERATED_MESSAGE_CLASS) != null && !cls.isAssignableFrom(messageType)) {
+        if (!GeneratedMessageLite.class.isAssignableFrom(messageType) && GENERATED_MESSAGE_CLASS != null && !GENERATED_MESSAGE_CLASS.isAssignableFrom(messageType)) {
             throw new IllegalArgumentException("Message classes must extend GeneratedMessageV3 or GeneratedMessageLite");
         }
     }
@@ -265,7 +264,7 @@ public final class SchemaUtil {
         }
     }
 
-    public static int computeSizeInt64ListNoTag(List<Long> list) {
+    static int computeSizeInt64ListNoTag(List<Long> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -284,7 +283,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeInt64List(int fieldNumber, List<Long> list, boolean packed) {
+    static int computeSizeInt64List(int fieldNumber, List<Long> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -296,7 +295,7 @@ public final class SchemaUtil {
         return (list.size() * CodedOutputStream.computeTagSize(fieldNumber)) + size;
     }
 
-    public static int computeSizeUInt64ListNoTag(List<Long> list) {
+    static int computeSizeUInt64ListNoTag(List<Long> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -315,7 +314,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeUInt64List(int fieldNumber, List<Long> list, boolean packed) {
+    static int computeSizeUInt64List(int fieldNumber, List<Long> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -327,7 +326,7 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    public static int computeSizeSInt64ListNoTag(List<Long> list) {
+    static int computeSizeSInt64ListNoTag(List<Long> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -346,7 +345,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeSInt64List(int fieldNumber, List<Long> list, boolean packed) {
+    static int computeSizeSInt64List(int fieldNumber, List<Long> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -358,7 +357,7 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    public static int computeSizeEnumListNoTag(List<Integer> list) {
+    static int computeSizeEnumListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -377,7 +376,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeEnumList(int fieldNumber, List<Integer> list, boolean packed) {
+    static int computeSizeEnumList(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -389,7 +388,7 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    public static int computeSizeInt32ListNoTag(List<Integer> list) {
+    static int computeSizeInt32ListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -408,7 +407,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeInt32List(int fieldNumber, List<Integer> list, boolean packed) {
+    static int computeSizeInt32List(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -420,7 +419,7 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    public static int computeSizeUInt32ListNoTag(List<Integer> list) {
+    static int computeSizeUInt32ListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -439,7 +438,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeUInt32List(int fieldNumber, List<Integer> list, boolean packed) {
+    static int computeSizeUInt32List(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -451,7 +450,7 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    public static int computeSizeSInt32ListNoTag(List<Integer> list) {
+    static int computeSizeSInt32ListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -470,7 +469,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeSInt32List(int fieldNumber, List<Integer> list, boolean packed) {
+    static int computeSizeSInt32List(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -482,11 +481,11 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    public static int computeSizeFixed32ListNoTag(List<?> list) {
+    static int computeSizeFixed32ListNoTag(List<?> list) {
         return list.size() * 4;
     }
 
-    public static int computeSizeFixed32List(int fieldNumber, List<?> list, boolean packed) {
+    static int computeSizeFixed32List(int fieldNumber, List<?> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -499,11 +498,11 @@ public final class SchemaUtil {
         return dataSize2 * length;
     }
 
-    public static int computeSizeFixed64ListNoTag(List<?> list) {
+    static int computeSizeFixed64ListNoTag(List<?> list) {
         return list.size() * 8;
     }
 
-    public static int computeSizeFixed64List(int fieldNumber, List<?> list, boolean packed) {
+    static int computeSizeFixed64List(int fieldNumber, List<?> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -515,11 +514,11 @@ public final class SchemaUtil {
         return CodedOutputStream.computeFixed64Size(fieldNumber, 0L) * length;
     }
 
-    public static int computeSizeBoolListNoTag(List<?> list) {
+    static int computeSizeBoolListNoTag(List<?> list) {
         return list.size();
     }
 
-    public static int computeSizeBoolList(int fieldNumber, List<?> list, boolean packed) {
+    static int computeSizeBoolList(int fieldNumber, List<?> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -530,7 +529,7 @@ public final class SchemaUtil {
         return CodedOutputStream.computeBoolSize(fieldNumber, true) * length;
     }
 
-    public static int computeSizeStringList(int fieldNumber, List<?> list) {
+    static int computeSizeStringList(int fieldNumber, List<?> list) {
         int computeStringSizeNoTag;
         int computeStringSizeNoTag2;
         int length = list.size();
@@ -563,7 +562,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeMessage(int fieldNumber, Object value, Schema schema) {
+    static int computeSizeMessage(int fieldNumber, Object value, Schema schema) {
         if (value instanceof LazyFieldLite) {
             return CodedOutputStream.computeLazyFieldSize(fieldNumber, (LazyFieldLite) value);
         }
@@ -589,7 +588,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeMessageList(int fieldNumber, List<?> list, Schema schema) {
+    static int computeSizeMessageList(int fieldNumber, List<?> list, Schema schema) {
         int computeMessageSizeNoTag;
         int length = list.size();
         if (length == 0) {
@@ -608,7 +607,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeByteStringList(int fieldNumber, List<ByteString> list) {
+    static int computeSizeByteStringList(int fieldNumber, List<ByteString> list) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -632,7 +631,7 @@ public final class SchemaUtil {
         return size;
     }
 
-    public static int computeSizeGroupList(int fieldNumber, List<MessageLite> list, Schema schema) {
+    static int computeSizeGroupList(int fieldNumber, List<MessageLite> list, Schema schema) {
         int length = list.size();
         if (length == 0) {
             return 0;
@@ -744,16 +743,16 @@ public final class SchemaUtil {
         return sb.toString();
     }
 
-    public static boolean safeEquals(Object a, Object b) {
+    static boolean safeEquals(Object a, Object b) {
         return a == b || (a != null && a.equals(b));
     }
 
-    public static <T> void mergeMap(MapFieldSchema mapFieldSchema, T message, T o, long offset) {
+    static <T> void mergeMap(MapFieldSchema mapFieldSchema, T message, T o, long offset) {
         Object merged = mapFieldSchema.mergeFrom(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(o, offset));
         UnsafeUtil.putObject(message, offset, merged);
     }
 
-    public static <T, FT extends FieldSet.FieldDescriptorLite<FT>> void mergeExtensions(ExtensionSchema<FT> schema, T message, T other) {
+    static <T, FT extends FieldSet.FieldDescriptorLite<FT>> void mergeExtensions(ExtensionSchema<FT> schema, T message, T other) {
         FieldSet<FT> otherExtensions = schema.getExtensions(other);
         if (!otherExtensions.isEmpty()) {
             FieldSet<FT> messageExtensions = schema.getMutableExtensions(message);
@@ -761,14 +760,14 @@ public final class SchemaUtil {
         }
     }
 
-    public static <T, UT, UB> void mergeUnknownFields(UnknownFieldSchema<UT, UB> schema, T message, T other) {
+    static <T, UT, UB> void mergeUnknownFields(UnknownFieldSchema<UT, UB> schema, T message, T other) {
         UT messageUnknowns = schema.getFromMessage(message);
         UT otherUnknowns = schema.getFromMessage(other);
         UT merged = schema.merge(messageUnknowns, otherUnknowns);
         schema.setToMessage(message, merged);
     }
 
-    public static <UT, UB> UB filterUnknownEnumList(Object obj, int i, List<Integer> list, Internal.EnumLiteMap<?> enumLiteMap, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
+    static <UT, UB> UB filterUnknownEnumList(Object obj, int i, List<Integer> list, Internal.EnumLiteMap<?> enumLiteMap, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
         if (enumLiteMap == null) {
             return ub;
         }
@@ -802,7 +801,7 @@ public final class SchemaUtil {
         return ub;
     }
 
-    public static <UT, UB> UB filterUnknownEnumList(Object obj, int i, List<Integer> list, Internal.EnumVerifier enumVerifier, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
+    static <UT, UB> UB filterUnknownEnumList(Object obj, int i, List<Integer> list, Internal.EnumVerifier enumVerifier, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
         if (enumVerifier == null) {
             return ub;
         }
@@ -836,7 +835,7 @@ public final class SchemaUtil {
         return ub;
     }
 
-    public static <UT, UB> UB storeUnknownEnum(Object obj, int i, int i2, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
+    static <UT, UB> UB storeUnknownEnum(Object obj, int i, int i2, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
         if (ub == null) {
             ub = unknownFieldSchema.getBuilderFromMessage(obj);
         }

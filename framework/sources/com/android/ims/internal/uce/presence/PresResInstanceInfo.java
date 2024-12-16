@@ -4,17 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Arrays;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresResInstanceInfo implements Parcelable {
     public static final Parcelable.Creator<PresResInstanceInfo> CREATOR = new Parcelable.Creator<PresResInstanceInfo>() { // from class: com.android.ims.internal.uce.presence.PresResInstanceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresResInstanceInfo createFromParcel(Parcel source) {
             return new PresResInstanceInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresResInstanceInfo[] newArray(int size) {
             return new PresResInstanceInfo[size];
@@ -30,10 +29,6 @@ public class PresResInstanceInfo implements Parcelable {
     private String mReason;
     private int mResInstanceState;
     private PresTupleInfo[] mTupleInfoArray;
-
-    /* synthetic */ PresResInstanceInfo(Parcel parcel, PresResInstanceInfoIA presResInstanceInfoIA) {
-        this(parcel);
-    }
 
     public int getResInstanceState() {
         return this.mResInstanceState;
@@ -94,23 +89,6 @@ public class PresResInstanceInfo implements Parcelable {
         dest.writeInt(this.mResInstanceState);
         dest.writeString(this.mPresentityUri);
         dest.writeParcelableArray(this.mTupleInfoArray, flags);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresResInstanceInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresResInstanceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresResInstanceInfo createFromParcel(Parcel source) {
-            return new PresResInstanceInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresResInstanceInfo[] newArray(int size) {
-            return new PresResInstanceInfo[size];
-        }
     }
 
     private PresResInstanceInfo(Parcel source) {

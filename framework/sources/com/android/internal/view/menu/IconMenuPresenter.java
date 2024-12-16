@@ -48,14 +48,12 @@ public class IconMenuPresenter extends BaseMenuPresenter {
     @Override // com.android.internal.view.menu.BaseMenuPresenter
     public boolean shouldIncludeItem(int childIndex, MenuItemImpl item) {
         ArrayList<MenuItemImpl> itemsToShow = this.mMenu.getNonActionItems();
-        int size = itemsToShow.size();
-        int i = this.mMaxItems;
-        boolean fits = (size == i && childIndex < i) || childIndex < i - 1;
+        boolean fits = (itemsToShow.size() == this.mMaxItems && childIndex < this.mMaxItems) || childIndex < this.mMaxItems - 1;
         return fits && !item.isActionButton();
     }
 
     @Override // com.android.internal.view.menu.BaseMenuPresenter
-    public void addItemView(View itemView, int childIndex) {
+    protected void addItemView(View itemView, int childIndex) {
         IconMenuItemView v = (IconMenuItemView) itemView;
         IconMenuView parent = (IconMenuView) this.mMenuView;
         v.setIconMenuView(parent);
@@ -80,8 +78,6 @@ public class IconMenuPresenter extends BaseMenuPresenter {
 
     @Override // com.android.internal.view.menu.BaseMenuPresenter, com.android.internal.view.menu.MenuPresenter
     public void updateMenuView(boolean cleared) {
-        IconMenuItemView iconMenuItemView;
-        IconMenuItemView iconMenuItemView2;
         IconMenuView menuView = (IconMenuView) this.mMenuView;
         if (this.mMaxItems < 0) {
             this.mMaxItems = menuView.getMaxItems();
@@ -89,21 +85,20 @@ public class IconMenuPresenter extends BaseMenuPresenter {
         ArrayList<MenuItemImpl> itemsToShow = this.mMenu.getNonActionItems();
         boolean needsMore = itemsToShow.size() > this.mMaxItems;
         super.updateMenuView(cleared);
-        if (needsMore && ((iconMenuItemView2 = this.mMoreView) == null || iconMenuItemView2.getParent() != menuView)) {
+        if (needsMore && (this.mMoreView == null || this.mMoreView.getParent() != menuView)) {
             if (this.mMoreView == null) {
-                IconMenuItemView createMoreItemView = menuView.createMoreItemView();
-                this.mMoreView = createMoreItemView;
-                createMoreItemView.setBackgroundDrawable(menuView.getItemBackgroundDrawable());
+                this.mMoreView = menuView.createMoreItemView();
+                this.mMoreView.setBackgroundDrawable(menuView.getItemBackgroundDrawable());
             }
             menuView.addView(this.mMoreView);
-        } else if (!needsMore && (iconMenuItemView = this.mMoreView) != null) {
-            menuView.removeView(iconMenuItemView);
+        } else if (!needsMore && this.mMoreView != null) {
+            menuView.removeView(this.mMoreView);
         }
         menuView.setNumActualItemsShown(needsMore ? this.mMaxItems - 1 : itemsToShow.size());
     }
 
     @Override // com.android.internal.view.menu.BaseMenuPresenter
-    public boolean filterLeftoverView(ViewGroup parent, int childIndex) {
+    protected boolean filterLeftoverView(ViewGroup parent, int childIndex) {
         if (parent.getChildAt(childIndex) != this.mMoreView) {
             return super.filterLeftoverView(parent, childIndex);
         }
@@ -141,9 +136,8 @@ public class IconMenuPresenter extends BaseMenuPresenter {
         }
         Bundle state = new Bundle();
         saveHierarchyState(state);
-        int i = this.mOpenSubMenuId;
-        if (i > 0) {
-            state.putInt(OPEN_SUBMENU_KEY, i);
+        if (this.mOpenSubMenuId > 0) {
+            state.putInt(OPEN_SUBMENU_KEY, this.mOpenSubMenuId);
         }
         return state;
     }
@@ -153,8 +147,7 @@ public class IconMenuPresenter extends BaseMenuPresenter {
         restoreHierarchyState((Bundle) state);
     }
 
-    /* loaded from: classes5.dex */
-    public class SubMenuPresenterCallback implements MenuPresenter.Callback {
+    class SubMenuPresenterCallback implements MenuPresenter.Callback {
         SubMenuPresenterCallback() {
         }
 

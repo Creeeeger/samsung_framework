@@ -1,11 +1,10 @@
 package com.samsung.android.motionphoto.utils;
 
-import android.media.MediaFormat;
 import android.util.Log;
 import java.io.InputStream;
 import java.util.Vector;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class HEIFParser {
     private static final String TAG = "HEIFParser";
     InputStream mData;
@@ -25,9 +24,7 @@ public class HEIFParser {
     int mFoundirefChunk = 0;
     int mFoundilocChunk = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes5.dex */
-    public class XMPInformation {
+    class XMPInformation {
         public long offset;
         public long size;
 
@@ -37,8 +34,7 @@ public class HEIFParser {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class ItemReference {
+    class ItemReference {
         int itemID;
         Vector<Integer> referenceItems = new Vector<>();
 
@@ -46,8 +42,7 @@ public class HEIFParser {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class ItemLocation {
+    class ItemLocation {
         public long base_offset;
         public int construction_method;
         public long itemID;
@@ -59,38 +54,11 @@ public class HEIFParser {
     }
 
     private long byte2toUInt32(byte[] input) {
-        int i = input[0];
-        if (i < 0) {
-            i += 256;
-        }
-        long j = i;
-        int i2 = input[1];
-        if (i2 < 0) {
-            i2 += 256;
-        }
-        long j2 = i2;
-        int i3 = input[2];
-        if (i3 < 0) {
-            i3 += 256;
-        }
-        long j3 = i3;
-        int i4 = input[3];
-        if (i4 < 0) {
-            i4 += 256;
-        }
-        return (j << 24) + (j2 << 16) + (j3 << 8) + i4;
+        return ((input[0] < 0 ? input[0] + 256 : input[0]) << 24) + ((input[1] < 0 ? input[1] + 256 : input[1]) << 16) + ((input[2] < 0 ? input[2] + 256 : input[2]) << 8) + (input[3] < 0 ? input[3] + 256 : input[3]);
     }
 
     private int bytetoUInt16(byte[] input) {
-        int i = input[0];
-        if (i < 0) {
-            i += 256;
-        }
-        int i2 = input[1];
-        if (i2 < 0) {
-            i2 += 256;
-        }
-        return (i << 8) + (i2 << 0);
+        return ((input[0] < 0 ? input[0] + 256 : input[0]) << 8) + ((input[1] < 0 ? input[1] + 256 : input[1]) << 0);
     }
 
     private int parseFullBoxHeader() {
@@ -315,7 +283,7 @@ public class HEIFParser {
                                         }
                                         this.mOffset += 4;
                                         long j7 = j6 - 4;
-                                        if (!new String(bArr).equals(MediaFormat.KEY_MIME)) {
+                                        if (!new String(bArr).equals("mime")) {
                                             this.mOffset += j7;
                                         } else {
                                             this.mXMPMetadataIDs.add(Integer.valueOf(byte2toUInt322));

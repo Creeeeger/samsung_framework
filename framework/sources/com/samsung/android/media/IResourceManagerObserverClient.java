@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IResourceManagerObserverClient extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.media.IResourceManagerObserverClient";
 
     void notify(int i, int i2, int i3, MediaResourceNotifyInfoParcel mediaResourceNotifyInfoParcel) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IResourceManagerObserverClient {
         @Override // com.samsung.android.media.IResourceManagerObserverClient
         public void notify(int msg, int ext1, int ext2, MediaResourceNotifyInfoParcel obj) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IResourceManagerObserverClient extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IResourceManagerObserverClient {
         static final int TRANSACTION_notify = 1;
 
@@ -67,29 +65,25 @@ public interface IResourceManagerObserverClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IResourceManagerObserverClient.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IResourceManagerObserverClient.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IResourceManagerObserverClient.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    MediaResourceNotifyInfoParcel _arg3 = (MediaResourceNotifyInfoParcel) data.readTypedObject(MediaResourceNotifyInfoParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    notify(_arg0, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            MediaResourceNotifyInfoParcel _arg3 = (MediaResourceNotifyInfoParcel) data.readTypedObject(MediaResourceNotifyInfoParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            notify(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IResourceManagerObserverClient {
+        private static class Proxy implements IResourceManagerObserverClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

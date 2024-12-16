@@ -29,7 +29,7 @@ public class DERSequence extends ASN1Sequence {
         this.bodyLength = -1;
     }
 
-    public DERSequence(ASN1Encodable[] elements, boolean clone) {
+    DERSequence(ASN1Encodable[] elements, boolean clone) {
         super(elements, clone);
         this.bodyLength = -1;
     }
@@ -49,13 +49,13 @@ public class DERSequence extends ASN1Sequence {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         int length = getBodyLength();
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         if (withTag) {
             out.write(48);
         }
@@ -84,12 +84,12 @@ public class DERSequence extends ASN1Sequence {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return this;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return this;
     }
 }

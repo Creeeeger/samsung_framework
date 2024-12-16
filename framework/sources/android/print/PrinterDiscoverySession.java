@@ -23,24 +23,21 @@ public final class PrinterDiscoverySession {
     private final Handler mHandler;
     private boolean mIsPrinterDiscoveryStarted;
     private OnPrintersChangeListener mListener;
-    private IPrinterDiscoveryObserver mObserver;
     private final IPrintManager mPrintManager;
-    private final LinkedHashMap<PrinterId, PrinterInfo> mPrinters = new LinkedHashMap<>();
     private final int mUserId;
+    private final LinkedHashMap<PrinterId, PrinterInfo> mPrinters = new LinkedHashMap<>();
+    private IPrinterDiscoveryObserver mObserver = new PrinterDiscoveryObserver(this);
 
-    /* loaded from: classes3.dex */
     public interface OnPrintersChangeListener {
         void onPrintersChanged();
     }
 
-    public PrinterDiscoverySession(IPrintManager printManager, Context context, int userId) {
+    PrinterDiscoverySession(IPrintManager printManager, Context context, int userId) {
         this.mPrintManager = printManager;
         this.mUserId = userId;
         this.mHandler = new SessionHandler(context.getMainLooper());
-        PrinterDiscoveryObserver printerDiscoveryObserver = new PrinterDiscoveryObserver(this);
-        this.mObserver = printerDiscoveryObserver;
         try {
-            printManager.createPrinterDiscoverySession(printerDiscoveryObserver, userId);
+            this.mPrintManager.createPrinterDiscoverySession(this.mObserver, this.mUserId);
         } catch (RemoteException re) {
             Log.e(LOG_TAG, "Error creating printer discovery session", re);
         }
@@ -175,6 +172,7 @@ public final class PrinterDiscoverySession {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handlePrintersAdded(List<PrinterInfo> addedPrinters) {
         if (isDestroyed()) {
             return;
@@ -204,6 +202,7 @@ public final class PrinterDiscoverySession {
         notifyOnPrintersChanged();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handlePrintersRemoved(List<PrinterId> printerIds) {
         if (isDestroyed()) {
             return;
@@ -222,9 +221,8 @@ public final class PrinterDiscoverySession {
     }
 
     private void notifyOnPrintersChanged() {
-        OnPrintersChangeListener onPrintersChangeListener = this.mListener;
-        if (onPrintersChangeListener != null) {
-            onPrintersChangeListener.onPrintersChanged();
+        if (this.mListener != null) {
+            this.mListener.onPrintersChanged();
         }
     }
 
@@ -234,9 +232,7 @@ public final class PrinterDiscoverySession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public final class SessionHandler extends Handler {
+    private final class SessionHandler extends Handler {
         public SessionHandler(Looper looper) {
             super(looper, null, false);
         }
@@ -247,18 +243,15 @@ public final class PrinterDiscoverySession {
                 case 1:
                     List<PrinterInfo> printers = (List) message.obj;
                     PrinterDiscoverySession.this.handlePrintersAdded(printers);
-                    return;
+                    break;
                 case 2:
                     List<PrinterId> printerIds = (List) message.obj;
                     PrinterDiscoverySession.this.handlePrintersRemoved(printerIds);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PrinterDiscoveryObserver extends IPrinterDiscoveryObserver.Stub {
         private final WeakReference<PrinterDiscoverySession> mWeakSession;
 

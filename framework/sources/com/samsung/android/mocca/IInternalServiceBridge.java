@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.mocca.IInternalServiceBridgeListener;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IInternalServiceBridge extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.mocca.IInternalServiceBridge";
 
@@ -24,7 +24,6 @@ public interface IInternalServiceBridge extends IInterface {
 
     void stop() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInternalServiceBridge {
         @Override // com.samsung.android.mocca.IInternalServiceBridge
         public void start() throws RemoteException {
@@ -58,7 +57,6 @@ public interface IInternalServiceBridge extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInternalServiceBridge {
         static final int TRANSACTION_clearAllListeners = 6;
         static final int TRANSACTION_getValue = 4;
@@ -116,52 +114,49 @@ public interface IInternalServiceBridge extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInternalServiceBridge.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInternalServiceBridge.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInternalServiceBridge.DESCRIPTOR);
+                case 1:
+                    start();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    stop();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = isAvailable(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    Bundle _result2 = getValue(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    String _arg03 = data.readString();
+                    IInternalServiceBridgeListener _arg1 = IInternalServiceBridgeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setListener(_arg03, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    clearAllListeners();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            start();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            stop();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = isAvailable(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            Bundle _result2 = getValue(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            String _arg03 = data.readString();
-                            IInternalServiceBridgeListener _arg1 = IInternalServiceBridgeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setListener(_arg03, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            clearAllListeners();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IInternalServiceBridge {
             private IBinder mRemote;
 

@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IOneHandOpWatcher extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.onehandop.IOneHandOpWatcher";
 
@@ -17,7 +17,6 @@ public interface IOneHandOpWatcher extends IInterface {
 
     void onMagnificationSpecChanged() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IOneHandOpWatcher {
         @Override // com.samsung.android.onehandop.IOneHandOpWatcher
         public void onMagnificationSpecChanged() throws RemoteException {
@@ -33,7 +32,6 @@ public interface IOneHandOpWatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IOneHandOpWatcher {
         static final int TRANSACTION_onInputFilterChanged = 2;
         static final int TRANSACTION_onMagnificationSpecChanged = 1;
@@ -89,26 +87,23 @@ public interface IOneHandOpWatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOneHandOpWatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOneHandOpWatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOneHandOpWatcher.DESCRIPTOR);
+                case 1:
+                    onMagnificationSpecChanged();
+                    return true;
+                case 2:
+                    onInputFilterChanged();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onMagnificationSpecChanged();
-                            return true;
-                        case 2:
-                            onInputFilterChanged();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IOneHandOpWatcher {
+        private static class Proxy implements IOneHandOpWatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

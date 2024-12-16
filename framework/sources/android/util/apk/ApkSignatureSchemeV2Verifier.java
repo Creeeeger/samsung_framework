@@ -118,7 +118,7 @@ public class ApkSignatureSchemeV2Verifier {
                     byte[] verityDigest = contentDigests.get(3);
                     verityRootHash = ApkSigningBlockUtils.parseVerityDigestAndVerifySourceLength(verityDigest, apk.getChannel().size(), signatureInfo);
                 }
-                return new VerifiedSigner((X509Certificate[][]) signerCerts.toArray(new X509Certificate[signerCerts.size()]), verityRootHash, contentDigests);
+                return new VerifiedSigner((X509Certificate[][]) signerCerts.toArray(new X509Certificate[signerCerts.size()][]), verityRootHash, contentDigests);
             } catch (IOException e2) {
                 throw new SecurityException("Failed to read list of signers", e2);
             }
@@ -283,7 +283,7 @@ public class ApkSignatureSchemeV2Verifier {
         }
     }
 
-    public static byte[] getVerityRootHash(String apkPath) throws IOException, SignatureNotFoundException, SecurityException {
+    static byte[] getVerityRootHash(String apkPath) throws IOException, SignatureNotFoundException, SecurityException {
         RandomAccessFile apk = new RandomAccessFile(apkPath, "r");
         try {
             findSignature(apk);
@@ -301,7 +301,7 @@ public class ApkSignatureSchemeV2Verifier {
         }
     }
 
-    public static byte[] generateApkVerity(String apkPath, ByteBufferFactory bufferFactory) throws IOException, SignatureNotFoundException, SecurityException, DigestException, NoSuchAlgorithmException {
+    static byte[] generateApkVerity(String apkPath, ByteBufferFactory bufferFactory) throws IOException, SignatureNotFoundException, SecurityException, DigestException, NoSuchAlgorithmException {
         RandomAccessFile apk = new RandomAccessFile(apkPath, "r");
         try {
             SignatureInfo signatureInfo = findSignature(apk);
@@ -318,7 +318,6 @@ public class ApkSignatureSchemeV2Verifier {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class VerifiedSigner {
         public final X509Certificate[][] certs;
         public final Map<Integer, byte[]> contentDigests;

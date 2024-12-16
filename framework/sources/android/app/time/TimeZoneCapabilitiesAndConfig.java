@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeZoneCapabilitiesAndConfig implements Parcelable {
     public static final Parcelable.Creator<TimeZoneCapabilitiesAndConfig> CREATOR = new Parcelable.Creator<TimeZoneCapabilitiesAndConfig>() { // from class: android.app.time.TimeZoneCapabilitiesAndConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneCapabilitiesAndConfig createFromParcel(Parcel in) {
             return TimeZoneCapabilitiesAndConfig.createFromParcel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneCapabilitiesAndConfig[] newArray(int size) {
             return new TimeZoneCapabilitiesAndConfig[size];
@@ -26,29 +25,13 @@ public final class TimeZoneCapabilitiesAndConfig implements Parcelable {
     private final TimeZoneConfiguration mConfiguration;
     private final TimeZoneDetectorStatus mDetectorStatus;
 
-    /* renamed from: android.app.time.TimeZoneCapabilitiesAndConfig$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimeZoneCapabilitiesAndConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneCapabilitiesAndConfig createFromParcel(Parcel in) {
-            return TimeZoneCapabilitiesAndConfig.createFromParcel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneCapabilitiesAndConfig[] newArray(int size) {
-            return new TimeZoneCapabilitiesAndConfig[size];
-        }
-    }
-
     public TimeZoneCapabilitiesAndConfig(TimeZoneDetectorStatus detectorStatus, TimeZoneCapabilities capabilities, TimeZoneConfiguration configuration) {
         this.mDetectorStatus = (TimeZoneDetectorStatus) Objects.requireNonNull(detectorStatus);
         this.mCapabilities = (TimeZoneCapabilities) Objects.requireNonNull(capabilities);
         this.mConfiguration = (TimeZoneConfiguration) Objects.requireNonNull(configuration);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static TimeZoneCapabilitiesAndConfig createFromParcel(Parcel in) {
         TimeZoneDetectorStatus detectorStatus = (TimeZoneDetectorStatus) in.readParcelable(null, TimeZoneDetectorStatus.class);
         TimeZoneCapabilities capabilities = (TimeZoneCapabilities) in.readParcelable(null, TimeZoneCapabilities.class);

@@ -8,11 +8,10 @@ import android.os.RemoteException;
 
 /* loaded from: classes3.dex */
 public interface IKeystoreMetrics extends IInterface {
-    public static final String DESCRIPTOR = "android$security$metrics$IKeystoreMetrics".replace('$', '.');
+    public static final String DESCRIPTOR = "android.security.metrics.IKeystoreMetrics";
 
     KeystoreAtom[] pullMetrics(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IKeystoreMetrics {
         @Override // android.security.metrics.IKeystoreMetrics
         public KeystoreAtom[] pullMetrics(int atomID) throws RemoteException {
@@ -25,19 +24,18 @@ public interface IKeystoreMetrics extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IKeystoreMetrics {
         static final int TRANSACTION_pullMetrics = 1;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, IKeystoreMetrics.DESCRIPTOR);
         }
 
         public static IKeystoreMetrics asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(IKeystoreMetrics.DESCRIPTOR);
             if (iin != null && (iin instanceof IKeystoreMetrics)) {
                 return (IKeystoreMetrics) iin;
             }
@@ -65,30 +63,26 @@ public interface IKeystoreMetrics extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            String descriptor = DESCRIPTOR;
             if (code >= 1 && code <= 16777215) {
-                data.enforceInterface(descriptor);
+                data.enforceInterface(IKeystoreMetrics.DESCRIPTOR);
+            }
+            if (code == 1598968902) {
+                reply.writeString(IKeystoreMetrics.DESCRIPTOR);
+                return true;
             }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    KeystoreAtom[] _result = pullMetrics(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            KeystoreAtom[] _result = pullMetrics(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IKeystoreMetrics {
             private IBinder mRemote;
 
@@ -102,7 +96,7 @@ public interface IKeystoreMetrics extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return IKeystoreMetrics.DESCRIPTOR;
             }
 
             @Override // android.security.metrics.IKeystoreMetrics
@@ -110,7 +104,7 @@ public interface IKeystoreMetrics extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IKeystoreMetrics.DESCRIPTOR);
                     _data.writeInt(atomID);
                     this.mRemote.transact(1, _data, _reply, 0);
                     _reply.readException();

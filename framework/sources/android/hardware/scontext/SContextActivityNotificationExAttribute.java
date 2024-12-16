@@ -12,7 +12,7 @@ public class SContextActivityNotificationExAttribute extends SContextAttribute {
     private int[] mActivityFilter;
     private int mDuration;
 
-    public SContextActivityNotificationExAttribute() {
+    SContextActivityNotificationExAttribute() {
         this.mActivityFilter = new int[]{4};
         this.mDuration = 30;
         setAttribute();
@@ -32,32 +32,25 @@ public class SContextActivityNotificationExAttribute extends SContextAttribute {
             return false;
         }
         ArrayList<Integer> list = new ArrayList<>();
-        int i = 0;
-        while (true) {
-            int[] iArr = this.mActivityFilter;
-            if (i < iArr.length) {
-                int i2 = iArr[i];
-                if ((i2 < 0 || i2 > 5) && i2 != 30) {
-                    Log.e(TAG, "The activity status is wrong.");
+        for (int i = 0; i < this.mActivityFilter.length; i++) {
+            if ((this.mActivityFilter[i] < 0 || this.mActivityFilter[i] > 5) && this.mActivityFilter[i] != 30) {
+                Log.e(TAG, "The activity status is wrong.");
+                return false;
+            }
+            list.add(Integer.valueOf(this.mActivityFilter[i]));
+            for (int j = 0; j < i; j++) {
+                if (list.get(i) == list.get(j)) {
+                    Log.e(TAG, "This activity status cannot have duplicated status.");
                     return false;
                 }
-                list.add(Integer.valueOf(i2));
-                for (int j = 0; j < i; j++) {
-                    if (list.get(i) == list.get(j)) {
-                        Log.e(TAG, "This activity status cannot have duplicated status.");
-                        return false;
-                    }
-                }
-                i++;
-            } else {
-                int i3 = this.mDuration;
-                if (i3 < 0) {
-                    Log.e(TAG, "The duration is wrong.");
-                    return false;
-                }
-                return true;
             }
         }
+        int i2 = this.mDuration;
+        if (i2 < 0) {
+            Log.e(TAG, "The duration is wrong.");
+            return false;
+        }
+        return true;
     }
 
     private void setAttribute() {

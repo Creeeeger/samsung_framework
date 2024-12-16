@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ThemeChecker {
     private static final String TAG = "ThemeChecker";
     private final Context mContext;
@@ -13,8 +13,7 @@ public class ThemeChecker {
     private final ScreenCaptureUtil mScreenCaptureUtil;
     private State mState = State.NEED_CHECKING;
 
-    /* loaded from: classes5.dex */
-    public enum State {
+    enum State {
         NEED_CHECKING,
         WHITE,
         BLACK

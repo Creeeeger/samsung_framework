@@ -7,14 +7,13 @@ import com.samsung.android.graphics.spr.document.debug.SprDebug;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprCacheManager {
     private ArrayList<SprCache> mCacheList = new ArrayList<>();
     private String mHashCode;
     private String mName;
 
-    /* loaded from: classes5.dex */
-    public static class SprCache {
+    private static class SprCache {
         public final Bitmap bitmap;
         public final int dpi;
         public final int height;
@@ -24,8 +23,8 @@ public class SprCacheManager {
         public SprCache(Bitmap b, int d) {
             this.refCount = 0;
             this.bitmap = b;
-            this.width = b.getWidth();
-            this.height = b.getHeight();
+            this.width = this.bitmap.getWidth();
+            this.height = this.bitmap.getHeight();
             this.dpi = d;
             this.refCount = 0;
         }

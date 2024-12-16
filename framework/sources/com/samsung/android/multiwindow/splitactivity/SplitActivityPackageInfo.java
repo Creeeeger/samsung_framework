@@ -12,59 +12,35 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SplitActivityPackageInfo implements Parcelable {
     public static final Parcelable.Creator<SplitActivityPackageInfo> CREATOR = new Parcelable.Creator<SplitActivityPackageInfo>() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitActivityPackageInfo createFromParcel(Parcel in) {
             return new SplitActivityPackageInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitActivityPackageInfo[] newArray(int size) {
             return new SplitActivityPackageInfo[size];
         }
     };
-    private final Set<String> mFullscreenActivities;
-    private final List<SplitActivityInfo> mInfos;
     private final String mPackageName;
+    private final List<SplitActivityInfo> mInfos = new ArrayList();
+    private final Set<String> mFullscreenActivities = new ArraySet();
 
     public SplitActivityPackageInfo(String packageName) {
-        this.mInfos = new ArrayList();
-        this.mFullscreenActivities = new ArraySet();
         this.mPackageName = packageName;
     }
 
     protected SplitActivityPackageInfo(Parcel in) {
-        ArrayList arrayList = new ArrayList();
-        this.mInfos = arrayList;
-        ArraySet arraySet = new ArraySet();
-        this.mFullscreenActivities = arraySet;
         this.mPackageName = in.readString();
-        in.readTypedList(arrayList, SplitActivityInfo.CREATOR);
+        in.readTypedList(this.mInfos, SplitActivityInfo.CREATOR);
         String[] fullscreenActivities = in.readStringArray();
         if (fullscreenActivities != null) {
-            Collections.addAll(arraySet, fullscreenActivities);
-        }
-    }
-
-    /* renamed from: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SplitActivityPackageInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SplitActivityPackageInfo createFromParcel(Parcel in) {
-            return new SplitActivityPackageInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SplitActivityPackageInfo[] newArray(int size) {
-            return new SplitActivityPackageInfo[size];
+            Collections.addAll(this.mFullscreenActivities, fullscreenActivities);
         }
     }
 
@@ -73,7 +49,7 @@ public class SplitActivityPackageInfo implements Parcelable {
     }
 
     public void remove(final String sourceName, final String targetName) {
-        this.mInfos.removeIf(new Predicate() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo$$ExternalSyntheticLambda2
+        this.mInfos.removeIf(new Predicate() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean match;
@@ -131,7 +107,7 @@ public class SplitActivityPackageInfo implements Parcelable {
     }
 
     public String toShortString() {
-        return this.mPackageName + " : " + ((String) this.mInfos.stream().map(new Function() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo$$ExternalSyntheticLambda1
+        return this.mPackageName + " : " + ((String) this.mInfos.stream().map(new Function() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return ((SplitActivityInfo) obj).toShortString();

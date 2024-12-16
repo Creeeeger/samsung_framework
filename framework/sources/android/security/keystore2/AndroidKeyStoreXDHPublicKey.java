@@ -22,12 +22,11 @@ public class AndroidKeyStoreXDHPublicKey extends AndroidKeyStorePublicKey implem
     public AndroidKeyStoreXDHPublicKey(KeyDescriptor descriptor, KeyMetadata metadata, String algorithm, KeyStoreSecurityLevel iSecurityLevel, byte[] encodedKey) {
         super(descriptor, metadata, encodedKey, algorithm, iSecurityLevel);
         this.mEncodedKey = encodedKey;
-        if (encodedKey == null) {
+        if (this.mEncodedKey == null) {
             throw new IllegalArgumentException("empty encoded key.");
         }
-        int matchesPreamble = matchesPreamble(X509_PREAMBLE, encodedKey) | matchesPreamble(X509_PREAMBLE_WITH_NULL, encodedKey);
-        this.mPreambleLength = matchesPreamble;
-        if (matchesPreamble == 0) {
+        this.mPreambleLength = matchesPreamble(X509_PREAMBLE, this.mEncodedKey) | matchesPreamble(X509_PREAMBLE_WITH_NULL, this.mEncodedKey);
+        if (this.mPreambleLength == 0) {
             throw new IllegalArgumentException("Key size is not correct size");
         }
     }
@@ -40,14 +39,13 @@ public class AndroidKeyStoreXDHPublicKey extends AndroidKeyStorePublicKey implem
     }
 
     @Override // android.security.keystore2.AndroidKeyStorePublicKey
-    public AndroidKeyStorePrivateKey getPrivateKey() {
+    AndroidKeyStorePrivateKey getPrivateKey() {
         return new AndroidKeyStoreXDHPrivateKey(getUserKeyDescriptor(), getKeyIdDescriptor().nspace, getAuthorizations(), KeyProperties.KEY_ALGORITHM_XDH, getSecurityLevel());
     }
 
     @Override // java.security.interfaces.XECPublicKey
     public BigInteger getU() {
-        byte[] bArr = this.mEncodedKey;
-        return new BigInteger(Arrays.copyOfRange(bArr, this.mPreambleLength, bArr.length));
+        return new BigInteger(Arrays.copyOfRange(this.mEncodedKey, this.mPreambleLength, this.mEncodedKey.length));
     }
 
     @Override // android.security.keystore2.AndroidKeyStorePublicKey, android.security.keystore2.AndroidKeyStoreKey, java.security.Key

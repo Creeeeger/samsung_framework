@@ -10,9 +10,7 @@ public class Region implements Parcelable {
     public long mNativeRegion;
     private static final Pools.SynchronizedPool<Region> sPool = new Pools.SynchronizedPool<>(10);
     public static final Parcelable.Creator<Region> CREATOR = new Parcelable.Creator<Region>() { // from class: android.graphics.Region.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Region createFromParcel(Parcel p) {
             long ni = Region.nativeCreateFromParcel(p);
@@ -22,6 +20,7 @@ public class Region implements Parcelable {
             return new Region(ni);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Region[] newArray(int size) {
             return new Region[size];
@@ -30,6 +29,7 @@ public class Region implements Parcelable {
 
     private static native long nativeConstructor();
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeCreateFromParcel(Parcel parcel);
 
     private static native void nativeDestructor(long j);
@@ -74,7 +74,6 @@ public class Region implements Parcelable {
 
     public native void translate(int i, int i2, Region region);
 
-    /* loaded from: classes.dex */
     public enum Op {
         DIFFERENCE(0),
         INTERSECT(1),
@@ -100,15 +99,13 @@ public class Region implements Parcelable {
     }
 
     public Region(Rect r) {
-        long nativeConstructor = nativeConstructor();
-        this.mNativeRegion = nativeConstructor;
-        nativeSetRect(nativeConstructor, r.left, r.top, r.right, r.bottom);
+        this.mNativeRegion = nativeConstructor();
+        nativeSetRect(this.mNativeRegion, r.left, r.top, r.right, r.bottom);
     }
 
     public Region(int left, int top, int right, int bottom) {
-        long nativeConstructor = nativeConstructor();
-        this.mNativeRegion = nativeConstructor;
-        nativeSetRect(nativeConstructor, left, top, right, bottom);
+        this.mNativeRegion = nativeConstructor();
+        nativeSetRect(this.mNativeRegion, left, top, right, bottom);
     }
 
     public void setEmpty() {
@@ -215,27 +212,6 @@ public class Region implements Parcelable {
         sPool.release(this);
     }
 
-    /* renamed from: android.graphics.Region$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Region> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Region createFromParcel(Parcel p) {
-            long ni = Region.nativeCreateFromParcel(p);
-            if (ni == 0) {
-                throw new RuntimeException();
-            }
-            return new Region(ni);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Region[] newArray(int size) {
-            return new Region[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -265,7 +241,7 @@ public class Region implements Parcelable {
         }
     }
 
-    public Region(long ni) {
+    Region(long ni) {
         if (ni == 0) {
             throw new RuntimeException();
         }
@@ -276,7 +252,7 @@ public class Region implements Parcelable {
         this(ni);
     }
 
-    public final long ni() {
+    final long ni() {
         return this.mNativeRegion;
     }
 }

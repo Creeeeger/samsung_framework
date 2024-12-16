@@ -1,6 +1,6 @@
 package com.samsung.android.sume.core.types;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public enum HwUnit implements NumericEnum {
     NONE(-1),
     CPU(0),

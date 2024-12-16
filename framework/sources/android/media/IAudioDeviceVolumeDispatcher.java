@@ -14,7 +14,6 @@ public interface IAudioDeviceVolumeDispatcher extends IInterface {
 
     void dispatchDeviceVolumeChanged(AudioDeviceAttributes audioDeviceAttributes, VolumeInfo volumeInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAudioDeviceVolumeDispatcher {
         @Override // android.media.IAudioDeviceVolumeDispatcher
         public void dispatchDeviceVolumeChanged(AudioDeviceAttributes device, VolumeInfo vol) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IAudioDeviceVolumeDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAudioDeviceVolumeDispatcher {
         static final int TRANSACTION_dispatchDeviceVolumeAdjusted = 2;
         static final int TRANSACTION_dispatchDeviceVolumeChanged = 1;
@@ -76,34 +74,31 @@ public interface IAudioDeviceVolumeDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAudioDeviceVolumeDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAudioDeviceVolumeDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAudioDeviceVolumeDispatcher.DESCRIPTOR);
+                case 1:
+                    AudioDeviceAttributes _arg0 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    VolumeInfo _arg1 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchDeviceVolumeChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    AudioDeviceAttributes _arg02 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    VolumeInfo _arg12 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchDeviceVolumeAdjusted(_arg02, _arg12, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AudioDeviceAttributes _arg0 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            VolumeInfo _arg1 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchDeviceVolumeChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            AudioDeviceAttributes _arg02 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            VolumeInfo _arg12 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchDeviceVolumeAdjusted(_arg02, _arg12, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAudioDeviceVolumeDispatcher {
+        private static class Proxy implements IAudioDeviceVolumeDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

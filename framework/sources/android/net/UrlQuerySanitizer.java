@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class UrlQuerySanitizer {
     private boolean mAllowUnregisteredParamaters;
     private boolean mPreferFirstRepeatedParameter;
@@ -28,12 +28,10 @@ public class UrlQuerySanitizer {
     private final ArrayList<ParameterValuePair> mEntriesList = new ArrayList<>();
     private ValueSanitizer mUnregisteredParameterValueSanitizer = getAllIllegal();
 
-    /* loaded from: classes2.dex */
     public interface ValueSanitizer {
         String sanitize(String str);
     }
 
-    /* loaded from: classes2.dex */
     public class ParameterValuePair {
         public String mParameter;
         public String mValue;
@@ -44,7 +42,6 @@ public class UrlQuerySanitizer {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class IllegalCharacterValueSanitizer implements ValueSanitizer {
         public static final int ALL_BUT_NUL_AND_ANGLE_BRACKETS_LEGAL = 1439;
         public static final int ALL_BUT_NUL_LEGAL = 1535;
@@ -141,30 +138,61 @@ public class UrlQuerySanitizer {
         private boolean characterIsLegal(char c) {
             switch (c) {
                 case 0:
-                    return (this.mFlags & 512) != 0;
+                    if ((this.mFlags & 512) != 0) {
+                        break;
+                    }
+                    break;
                 case '\t':
                 case '\n':
                 case 11:
                 case '\f':
                 case '\r':
-                    return (this.mFlags & 2) != 0;
+                    if ((this.mFlags & 2) != 0) {
+                        break;
+                    }
+                    break;
                 case ' ':
-                    return (this.mFlags & 1) != 0;
+                    if ((this.mFlags & 1) != 0) {
+                        break;
+                    }
+                    break;
                 case '\"':
-                    return (this.mFlags & 8) != 0;
+                    if ((this.mFlags & 8) != 0) {
+                        break;
+                    }
+                    break;
                 case '%':
-                    return (this.mFlags & 256) != 0;
+                    if ((this.mFlags & 256) != 0) {
+                        break;
+                    }
+                    break;
                 case '&':
-                    return (this.mFlags & 128) != 0;
+                    if ((this.mFlags & 128) != 0) {
+                        break;
+                    }
+                    break;
                 case '\'':
-                    return (this.mFlags & 16) != 0;
+                    if ((this.mFlags & 16) != 0) {
+                        break;
+                    }
+                    break;
                 case '<':
-                    return (32 & this.mFlags) != 0;
+                    if ((32 & this.mFlags) != 0) {
+                        break;
+                    }
+                    break;
                 case '>':
-                    return (this.mFlags & 64) != 0;
+                    if ((this.mFlags & 64) != 0) {
+                        break;
+                    }
+                    break;
                 default:
-                    return (c >= ' ' && c < 127) || (c >= 128 && (this.mFlags & 4) != 0);
+                    if ((c >= ' ' && c < 127) || (c >= 128 && (this.mFlags & 4) != 0)) {
+                        break;
+                    }
+                    break;
             }
+            return true;
         }
     }
 

@@ -26,21 +26,11 @@ public abstract class SharedElementCallback {
     private static final String BUNDLE_SNAPSHOT_IMAGE_MATRIX = "sharedElement:snapshot:imageMatrix";
     private static final String BUNDLE_SNAPSHOT_IMAGE_SCALETYPE = "sharedElement:snapshot:imageScaleType";
     static final SharedElementCallback NULL_CALLBACK = new SharedElementCallback() { // from class: android.app.SharedElementCallback.1
-        AnonymousClass1() {
-        }
     };
     private Matrix mTempMatrix;
 
-    /* loaded from: classes.dex */
     public interface OnSharedElementsReadyListener {
         void onSharedElementsReady();
-    }
-
-    /* renamed from: android.app.SharedElementCallback$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends SharedElementCallback {
-        AnonymousClass1() {
-        }
     }
 
     public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
@@ -83,11 +73,10 @@ public abstract class SharedElementCallback {
                 return bundle;
             }
         }
-        Matrix matrix2 = this.mTempMatrix;
-        if (matrix2 == null) {
+        if (this.mTempMatrix == null) {
             this.mTempMatrix = new Matrix(viewToGlobalMatrix);
         } else {
-            matrix2.set(viewToGlobalMatrix);
+            this.mTempMatrix.set(viewToGlobalMatrix);
         }
         ViewGroup parent = (ViewGroup) sharedElement.getParent();
         return TransitionUtils.createViewBitmap(sharedElement, this.mTempMatrix, screenBounds, parent);

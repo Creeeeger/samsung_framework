@@ -19,7 +19,6 @@ public interface ISecureClock extends IInterface {
 
     int getInterfaceVersion() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISecureClock {
         @Override // android.hardware.security.secureclock.ISecureClock
         public TimeStampToken generateTimeStamp(long challenge) throws RemoteException {
@@ -42,7 +41,6 @@ public interface ISecureClock extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISecureClock {
         static final int TRANSACTION_generateTimeStamp = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -93,34 +91,32 @@ public interface ISecureClock extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            TimeStampToken _result = generateTimeStamp(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    TimeStampToken _result = generateTimeStamp(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    break;
+            }
+            return true;
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements ISecureClock {
             private IBinder mRemote;
             private int mCachedVersion = -1;

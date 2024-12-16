@@ -15,8 +15,6 @@ import libcore.util.NativeAllocationRegistry;
 /* loaded from: classes.dex */
 public class FontFamily {
     private static String TAG = "FontFamily";
-    private static final NativeAllocationRegistry sBuilderRegistry = NativeAllocationRegistry.createMalloced(FontFamily.class.getClassLoader(), nGetBuilderReleaseFunc());
-    private static final NativeAllocationRegistry sFamilyRegistry = NativeAllocationRegistry.createMalloced(FontFamily.class.getClassLoader(), nGetFamilyReleaseFunc());
     private long mBuilderPtr;
     private Runnable mNativeBuilderCleaner;
     public long mNativePtr;
@@ -31,18 +29,27 @@ public class FontFamily {
     @CriticalNative
     private static native long nCreateFamily(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
-    private static native long nGetBuilderReleaseFunc();
+    public static native long nGetBuilderReleaseFunc();
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
-    private static native long nGetFamilyReleaseFunc();
+    public static native long nGetFamilyReleaseFunc();
 
     private static native long nInitBuilder(String str, int i);
 
+    private static class NoImagePreloadHolder {
+        private static final NativeAllocationRegistry sBuilderRegistry = NativeAllocationRegistry.createMalloced(FontFamily.class.getClassLoader(), FontFamily.nGetBuilderReleaseFunc());
+        private static final NativeAllocationRegistry sFamilyRegistry = NativeAllocationRegistry.createMalloced(FontFamily.class.getClassLoader(), FontFamily.nGetFamilyReleaseFunc());
+
+        private NoImagePreloadHolder() {
+        }
+    }
+
     public FontFamily() {
-        long nInitBuilder = nInitBuilder(null, 0);
-        this.mBuilderPtr = nInitBuilder;
-        this.mNativeBuilderCleaner = sBuilderRegistry.registerNativeAllocation(this, nInitBuilder);
+        this.mBuilderPtr = nInitBuilder(null, 0);
+        this.mNativeBuilderCleaner = NoImagePreloadHolder.sBuilderRegistry.registerNativeAllocation(this, this.mBuilderPtr);
     }
 
     public FontFamily(String[] langs, int variant) {
@@ -54,22 +61,19 @@ public class FontFamily {
         } else {
             langsString = TextUtils.join(",", langs);
         }
-        long nInitBuilder = nInitBuilder(langsString, variant);
-        this.mBuilderPtr = nInitBuilder;
-        this.mNativeBuilderCleaner = sBuilderRegistry.registerNativeAllocation(this, nInitBuilder);
+        this.mBuilderPtr = nInitBuilder(langsString, variant);
+        this.mNativeBuilderCleaner = NoImagePreloadHolder.sBuilderRegistry.registerNativeAllocation(this, this.mBuilderPtr);
     }
 
     public boolean freeze() {
-        long j = this.mBuilderPtr;
-        if (j == 0) {
+        if (this.mBuilderPtr == 0) {
             throw new IllegalStateException("This FontFamily is already frozen");
         }
-        this.mNativePtr = nCreateFamily(j);
+        this.mNativePtr = nCreateFamily(this.mBuilderPtr);
         this.mNativeBuilderCleaner.run();
         this.mBuilderPtr = 0L;
-        long j2 = this.mNativePtr;
-        if (j2 != 0) {
-            sFamilyRegistry.registerNativeAllocation(this, j2);
+        if (this.mNativePtr != 0) {
+            NoImagePreloadHolder.sFamilyRegistry.registerNativeAllocation(this, this.mNativePtr);
         }
         return this.mNativePtr != 0;
     }

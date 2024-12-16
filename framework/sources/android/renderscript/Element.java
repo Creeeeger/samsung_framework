@@ -43,7 +43,6 @@ public class Element extends BaseObj {
         return this.mVectorSize;
     }
 
-    /* loaded from: classes3.dex */
     public enum DataType {
         NONE(0, 0),
         FLOAT_16(1, 2),
@@ -93,7 +92,6 @@ public class Element extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public enum DataKind {
         USER(0),
         PIXEL_L(7),
@@ -115,70 +113,59 @@ public class Element extends BaseObj {
         if (this.mElements == null) {
             return false;
         }
-        int ct = 0;
-        while (true) {
-            Element[] elementArr = this.mElements;
-            if (ct >= elementArr.length) {
-                return false;
-            }
-            if (elementArr[ct].mElements == null) {
-                ct++;
-            } else {
+        for (int ct = 0; ct < this.mElements.length; ct++) {
+            if (this.mElements[ct].mElements != null) {
                 return true;
             }
         }
+        return false;
     }
 
     public int getSubElementCount() {
-        int[] iArr = this.mVisibleElementMap;
-        if (iArr == null) {
+        if (this.mVisibleElementMap == null) {
             return 0;
         }
-        return iArr.length;
+        return this.mVisibleElementMap.length;
     }
 
     public Element getSubElement(int index) {
-        int[] iArr = this.mVisibleElementMap;
-        if (iArr == null) {
+        if (this.mVisibleElementMap == null) {
             throw new RSIllegalArgumentException("Element contains no sub-elements");
         }
-        if (index < 0 || index >= iArr.length) {
+        if (index < 0 || index >= this.mVisibleElementMap.length) {
             throw new RSIllegalArgumentException("Illegal sub-element index");
         }
-        return this.mElements[iArr[index]];
+        return this.mElements[this.mVisibleElementMap[index]];
     }
 
     public String getSubElementName(int index) {
-        int[] iArr = this.mVisibleElementMap;
-        if (iArr == null) {
+        if (this.mVisibleElementMap == null) {
             throw new RSIllegalArgumentException("Element contains no sub-elements");
         }
-        if (index < 0 || index >= iArr.length) {
+        if (index < 0 || index >= this.mVisibleElementMap.length) {
             throw new RSIllegalArgumentException("Illegal sub-element index");
         }
-        return this.mElementNames[iArr[index]];
+        return this.mElementNames[this.mVisibleElementMap[index]];
     }
 
     public int getSubElementArraySize(int index) {
-        int[] iArr = this.mVisibleElementMap;
-        if (iArr == null) {
+        if (this.mVisibleElementMap == null) {
             throw new RSIllegalArgumentException("Element contains no sub-elements");
         }
-        if (index < 0 || index >= iArr.length) {
+        if (index < 0 || index >= this.mVisibleElementMap.length) {
             throw new RSIllegalArgumentException("Illegal sub-element index");
         }
-        return this.mArraySizes[iArr[index]];
+        return this.mArraySizes[this.mVisibleElementMap[index]];
     }
 
     public int getSubElementOffsetBytes(int index) {
-        int[] iArr = this.mVisibleElementMap;
-        if (iArr == null) {
+        if (this.mVisibleElementMap == null) {
             throw new RSIllegalArgumentException("Element contains no sub-elements");
         }
-        if (index < 0 || index >= iArr.length) {
+        if (index < 0 || index >= this.mVisibleElementMap.length) {
             throw new RSIllegalArgumentException("Illegal sub-element index");
         }
-        return this.mOffsetInBytes[iArr[index]];
+        return this.mOffsetInBytes[this.mVisibleElementMap[index]];
     }
 
     public DataType getDataType() {
@@ -929,20 +916,11 @@ public class Element extends BaseObj {
         this.mType = DataType.NONE;
         this.mKind = DataKind.USER;
         this.mOffsetInBytes = new int[this.mElements.length];
-        int ct = 0;
-        while (true) {
-            Element[] elementArr = this.mElements;
-            if (ct < elementArr.length) {
-                int[] iArr = this.mOffsetInBytes;
-                int i = this.mSize;
-                iArr[ct] = i;
-                this.mSize = i + (elementArr[ct].mSize * this.mArraySizes[ct]);
-                ct++;
-            } else {
-                updateVisibleSubElements();
-                return;
-            }
+        for (int ct = 0; ct < this.mElements.length; ct++) {
+            this.mOffsetInBytes[ct] = this.mSize;
+            this.mSize += this.mElements[ct].mSize * this.mArraySizes[ct];
         }
+        updateVisibleSubElements();
     }
 
     Element(long id, RenderScript rs, DataType dt, DataKind dk, boolean norm, int size) {
@@ -962,12 +940,12 @@ public class Element extends BaseObj {
         this.mVectorSize = size;
     }
 
-    public Element(long id, RenderScript rs) {
+    Element(long id, RenderScript rs) {
         super(id, rs);
     }
 
     @Override // android.renderscript.BaseObj
-    public void updateFromNative() {
+    void updateFromNative() {
         super.updateFromNative();
         int[] dataBuffer = new int[5];
         this.mRS.nElementGetNativeData(getID(this.mRS), dataBuffer);
@@ -977,7 +955,7 @@ public class Element extends BaseObj {
         for (DataType dt : DataType.values()) {
             if (dt.mID == dataBuffer[0]) {
                 this.mType = dt;
-                this.mSize = dt.mSize * this.mVectorSize;
+                this.mSize = this.mType.mSize * this.mVectorSize;
             }
         }
         for (DataKind dk : DataKind.values()) {
@@ -996,10 +974,8 @@ public class Element extends BaseObj {
             for (int i = 0; i < numSubElements; i++) {
                 this.mElements[i] = new Element(subElementIds[i], this.mRS);
                 this.mElements[i].updateFromNative();
-                int[] iArr = this.mOffsetInBytes;
-                int i2 = this.mSize;
-                iArr[i] = i2;
-                this.mSize = i2 + (this.mElements[i].mSize * this.mArraySizes[i]);
+                this.mOffsetInBytes[i] = this.mSize;
+                this.mSize += this.mElements[i].mSize * this.mArraySizes[i];
             }
         }
         updateVisibleSubElements();
@@ -1015,7 +991,7 @@ public class Element extends BaseObj {
         if (size < 2 || size > 4) {
             throw new RSIllegalArgumentException("Vector size out of range 2-4.");
         }
-        switch (AnonymousClass1.$SwitchMap$android$renderscript$Element$DataType[dt.ordinal()]) {
+        switch (dt.ordinal()) {
             case 1:
             case 2:
             case 3:
@@ -1056,100 +1032,22 @@ public class Element extends BaseObj {
             throw new RSIllegalArgumentException("Bad kind and type combo");
         }
         int size = 1;
-        switch (AnonymousClass1.$SwitchMap$android$renderscript$Element$DataKind[dk.ordinal()]) {
-            case 1:
+        switch (dk.ordinal()) {
+            case 3:
                 size = 2;
                 break;
-            case 2:
+            case 4:
                 size = 3;
                 break;
-            case 3:
+            case 5:
                 size = 4;
                 break;
-            case 4:
+            case 6:
                 size = 2;
                 break;
         }
         long id = rs.nElementCreate(dt.mID, dk.mID, true, size);
         return new Element(id, rs, dt, dk, true, size);
-    }
-
-    /* renamed from: android.renderscript.Element$1 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$renderscript$Element$DataKind;
-        static final /* synthetic */ int[] $SwitchMap$android$renderscript$Element$DataType;
-
-        static {
-            int[] iArr = new int[DataKind.values().length];
-            $SwitchMap$android$renderscript$Element$DataKind = iArr;
-            try {
-                iArr[DataKind.PIXEL_LA.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataKind[DataKind.PIXEL_RGB.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataKind[DataKind.PIXEL_RGBA.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataKind[DataKind.PIXEL_DEPTH.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            int[] iArr2 = new int[DataType.values().length];
-            $SwitchMap$android$renderscript$Element$DataType = iArr2;
-            try {
-                iArr2[DataType.FLOAT_16.ordinal()] = 1;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.FLOAT_32.ordinal()] = 2;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.FLOAT_64.ordinal()] = 3;
-            } catch (NoSuchFieldError e7) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.SIGNED_8.ordinal()] = 4;
-            } catch (NoSuchFieldError e8) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.SIGNED_16.ordinal()] = 5;
-            } catch (NoSuchFieldError e9) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.SIGNED_32.ordinal()] = 6;
-            } catch (NoSuchFieldError e10) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.SIGNED_64.ordinal()] = 7;
-            } catch (NoSuchFieldError e11) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.UNSIGNED_8.ordinal()] = 8;
-            } catch (NoSuchFieldError e12) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.UNSIGNED_16.ordinal()] = 9;
-            } catch (NoSuchFieldError e13) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.UNSIGNED_32.ordinal()] = 10;
-            } catch (NoSuchFieldError e14) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.UNSIGNED_64.ordinal()] = 11;
-            } catch (NoSuchFieldError e15) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Element$DataType[DataType.BOOLEAN.ordinal()] = 12;
-            } catch (NoSuchFieldError e16) {
-            }
-        }
     }
 
     public boolean isCompatible(Element e) {
@@ -1159,7 +1057,6 @@ public class Element extends BaseObj {
         return this.mSize == e.mSize && this.mType != DataType.NONE && this.mType == e.mType && this.mVectorSize == e.mVectorSize;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         RenderScript mRS;
         int mSkipPadding;
@@ -1185,25 +1082,21 @@ public class Element extends BaseObj {
             } else {
                 this.mSkipPadding = 0;
             }
-            int i = this.mCount;
-            Element[] elementArr = this.mElements;
-            if (i == elementArr.length) {
-                Element[] e = new Element[i + 8];
-                String[] s = new String[i + 8];
-                int[] as = new int[i + 8];
-                System.arraycopy(elementArr, 0, e, 0, i);
+            if (this.mCount == this.mElements.length) {
+                Element[] e = new Element[this.mCount + 8];
+                String[] s = new String[this.mCount + 8];
+                int[] as = new int[this.mCount + 8];
+                System.arraycopy(this.mElements, 0, e, 0, this.mCount);
                 System.arraycopy(this.mElementNames, 0, s, 0, this.mCount);
                 System.arraycopy(this.mArraySizes, 0, as, 0, this.mCount);
                 this.mElements = e;
                 this.mElementNames = s;
                 this.mArraySizes = as;
             }
-            Element[] elementArr2 = this.mElements;
-            int i2 = this.mCount;
-            elementArr2[i2] = element;
-            this.mElementNames[i2] = name;
-            this.mArraySizes[i2] = arraySize;
-            this.mCount = i2 + 1;
+            this.mElements[this.mCount] = element;
+            this.mElementNames[this.mCount] = name;
+            this.mArraySizes[this.mCount] = arraySize;
+            this.mCount++;
             return this;
         }
 
@@ -1213,11 +1106,10 @@ public class Element extends BaseObj {
 
         public Element create() {
             this.mRS.validate();
-            int i = this.mCount;
-            Element[] ein = new Element[i];
-            String[] sin = new String[i];
-            int[] asin = new int[i];
-            System.arraycopy(this.mElements, 0, ein, 0, i);
+            Element[] ein = new Element[this.mCount];
+            String[] sin = new String[this.mCount];
+            int[] asin = new int[this.mCount];
+            System.arraycopy(this.mElements, 0, ein, 0, this.mCount);
             System.arraycopy(this.mElementNames, 0, sin, 0, this.mCount);
             System.arraycopy(this.mArraySizes, 0, asin, 0, this.mCount);
             long[] ids = new long[ein.length];

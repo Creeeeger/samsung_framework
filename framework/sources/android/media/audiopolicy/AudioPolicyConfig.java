@@ -1,26 +1,28 @@
 package android.media.audiopolicy;
 
-import android.media.AudioFormat;
-import android.media.audiopolicy.AudioMix;
 import android.media.audiopolicy.AudioMixingRule;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.util.Pair;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /* loaded from: classes2.dex */
 public class AudioPolicyConfig implements Parcelable {
     public static final Parcelable.Creator<AudioPolicyConfig> CREATOR = new Parcelable.Creator<AudioPolicyConfig>() { // from class: android.media.audiopolicy.AudioPolicyConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPolicyConfig createFromParcel(Parcel p) {
             return new AudioPolicyConfig(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPolicyConfig[] newArray(int size) {
             return new AudioPolicyConfig[size];
@@ -31,10 +33,6 @@ public class AudioPolicyConfig implements Parcelable {
     private int mMixCounter;
     protected final ArrayList<AudioMix> mMixes;
     private String mRegistrationId;
-
-    /* synthetic */ AudioPolicyConfig(Parcel parcel, AudioPolicyConfigIA audioPolicyConfigIA) {
-        this(parcel);
-    }
 
     protected AudioPolicyConfig(AudioPolicyConfig conf) {
         this.mDuckingPolicy = 0;
@@ -76,23 +74,7 @@ public class AudioPolicyConfig implements Parcelable {
         Iterator<AudioMix> it = this.mMixes.iterator();
         while (it.hasNext()) {
             AudioMix mix = it.next();
-            dest.writeInt(mix.getRouteFlags());
-            dest.writeInt(mix.mCallbackFlags);
-            dest.writeInt(mix.mDeviceSystemType);
-            dest.writeString(mix.mDeviceAddress);
-            dest.writeInt(mix.getFormat().getSampleRate());
-            dest.writeInt(mix.getFormat().getEncoding());
-            dest.writeInt(mix.getFormat().getChannelMask());
-            dest.writeBoolean(mix.getRule().allowPrivilegedMediaPlaybackCapture());
-            dest.writeBoolean(mix.getRule().voiceCommunicationCaptureAllowed());
-            dest.writeInt(mix.getRule().getTargetMixRole());
-            ArrayList<AudioMixingRule.AudioMixMatchCriterion> criteria = mix.getRule().getCriteria();
-            dest.writeInt(criteria.size());
-            Iterator<AudioMixingRule.AudioMixMatchCriterion> it2 = criteria.iterator();
-            while (it2.hasNext()) {
-                AudioMixingRule.AudioMixMatchCriterion criterion = it2.next();
-                criterion.writeToParcel(dest);
-            }
+            mix.writeToParcel(dest, flags);
         }
     }
 
@@ -100,46 +82,10 @@ public class AudioPolicyConfig implements Parcelable {
         this.mDuckingPolicy = 0;
         this.mRegistrationId = null;
         this.mMixCounter = 0;
-        this.mMixes = new ArrayList<>();
         int nbMixes = in.readInt();
+        this.mMixes = new ArrayList<>(nbMixes);
         for (int i = 0; i < nbMixes; i++) {
-            AudioMix.Builder mixBuilder = new AudioMix.Builder();
-            int routeFlags = in.readInt();
-            mixBuilder.setRouteFlags(routeFlags);
-            mixBuilder.setCallbackFlags(in.readInt());
-            mixBuilder.setDevice(in.readInt(), in.readString());
-            int sampleRate = in.readInt();
-            int encoding = in.readInt();
-            int channelMask = in.readInt();
-            AudioFormat format = new AudioFormat.Builder().setSampleRate(sampleRate).setChannelMask(channelMask).setEncoding(encoding).build();
-            mixBuilder.setFormat(format);
-            AudioMixingRule.Builder ruleBuilder = new AudioMixingRule.Builder();
-            ruleBuilder.allowPrivilegedPlaybackCapture(in.readBoolean());
-            ruleBuilder.voiceCommunicationCaptureAllowed(in.readBoolean());
-            ruleBuilder.setTargetMixRole(in.readInt());
-            int nbRules = in.readInt();
-            for (int j = 0; j < nbRules; j++) {
-                ruleBuilder.addRuleFromParcel(in);
-            }
-            mixBuilder.setMixingRule(ruleBuilder.build());
-            this.mMixes.add(mixBuilder.build());
-        }
-    }
-
-    /* renamed from: android.media.audiopolicy.AudioPolicyConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioPolicyConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPolicyConfig createFromParcel(Parcel p) {
-            return new AudioPolicyConfig(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPolicyConfig[] newArray(int size) {
-            return new AudioPolicyConfig[size];
+            this.mMixes.add(AudioMix.CREATOR.createFromParcel(in));
         }
     }
 
@@ -219,13 +165,12 @@ public class AudioPolicyConfig implements Parcelable {
         }
     }
 
-    public void reset() {
+    protected void reset() {
         this.mMixCounter = 0;
     }
 
-    public void setRegistration(String regId) {
-        String str = this.mRegistrationId;
-        boolean currentRegNull = str == null || str.isEmpty();
+    protected void setRegistration(String regId) {
+        boolean currentRegNull = this.mRegistrationId == null || this.mRegistrationId.isEmpty();
         boolean newRegNull = regId == null || regId.isEmpty();
         if (!currentRegNull && !newRegNull && !this.mRegistrationId.equals(regId)) {
             Log.e(TAG, "Invalid registration transition from " + this.mRegistrationId + " to " + regId);
@@ -239,7 +184,7 @@ public class AudioPolicyConfig implements Parcelable {
         }
     }
 
-    private void setMixRegistration(AudioMix mix) {
+    protected void setMixRegistration(AudioMix mix) {
         if (!this.mRegistrationId.isEmpty()) {
             if ((mix.getRouteFlags() & 2) == 2) {
                 StringBuilder append = new StringBuilder().append(this.mRegistrationId).append("mix").append(mixTypeId(mix.getMixType())).append(":");
@@ -257,21 +202,54 @@ public class AudioPolicyConfig implements Parcelable {
         mix.setRegistration("");
     }
 
-    public void add(ArrayList<AudioMix> mixes) {
+    protected void add(ArrayList<AudioMix> mixes) {
         Iterator<AudioMix> it = mixes.iterator();
         while (it.hasNext()) {
             AudioMix mix = it.next();
-            setMixRegistration(mix);
+            if (mix.getRegistration() == null || mix.getRegistration().isEmpty()) {
+                setMixRegistration(mix);
+            }
             this.mMixes.add(mix);
         }
     }
 
-    public void remove(ArrayList<AudioMix> mixes) {
+    protected void remove(ArrayList<AudioMix> mixes) {
         Iterator<AudioMix> it = mixes.iterator();
         while (it.hasNext()) {
             AudioMix mix = it.next();
             this.mMixes.remove(mix);
         }
+    }
+
+    public void updateMixingRules(List<Pair<AudioMix, AudioMixingRule>> audioMixingRuleUpdates) {
+        ((List) Objects.requireNonNull(audioMixingRuleUpdates)).forEach(new Consumer() { // from class: android.media.audiopolicy.AudioPolicyConfig$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                AudioPolicyConfig.this.lambda$updateMixingRules$0((Pair) obj);
+            }
+        });
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX WARN: Multi-variable type inference failed */
+    public /* synthetic */ void lambda$updateMixingRules$0(Pair update) {
+        updateMixingRule((AudioMix) update.first, (AudioMixingRule) update.second);
+    }
+
+    private void updateMixingRule(final AudioMix audioMixToUpdate, final AudioMixingRule audioMixingRule) {
+        Stream stream = this.mMixes.stream();
+        Objects.requireNonNull(audioMixToUpdate);
+        stream.filter(new Predicate() { // from class: android.media.audiopolicy.AudioPolicyConfig$$ExternalSyntheticLambda1
+            @Override // java.util.function.Predicate
+            public final boolean test(Object obj) {
+                return AudioMix.this.equals((AudioMix) obj);
+            }
+        }).findAny().ifPresent(new Consumer() { // from class: android.media.audiopolicy.AudioPolicyConfig$$ExternalSyntheticLambda2
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                ((AudioMix) obj).setAudioMixingRule(AudioMixingRule.this);
+            }
+        });
     }
 
     private static String mixTypeId(int type) {

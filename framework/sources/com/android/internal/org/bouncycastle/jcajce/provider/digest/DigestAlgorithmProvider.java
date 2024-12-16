@@ -6,6 +6,9 @@ import com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvi
 
 /* loaded from: classes5.dex */
 abstract class DigestAlgorithmProvider extends AlgorithmProvider {
+    DigestAlgorithmProvider() {
+    }
+
     protected void addHMACAlgorithm(ConfigurableProvider provider, String algorithm, String algorithmClassName, String keyGeneratorClassName) {
         String mainName = "HMAC" + algorithm;
         provider.addAlgorithm("Mac." + mainName, algorithmClassName);

@@ -10,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class NetworkEvent extends Event implements Parcelable {
     public static final Parcelable.Creator<NetworkEvent> CREATOR = new Parcelable.Creator<NetworkEvent>() { // from class: android.media.metrics.NetworkEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkEvent[] newArray(int size) {
             return new NetworkEvent[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkEvent createFromParcel(Parcel in) {
             return new NetworkEvent(in);
@@ -37,16 +36,7 @@ public final class NetworkEvent extends Event implements Parcelable {
     private final long mTimeSinceCreatedMillis;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface NetworkType {
-    }
-
-    /* synthetic */ NetworkEvent(int i, long j, Bundle bundle, NetworkEventIA networkEventIA) {
-        this(i, j, bundle);
-    }
-
-    /* synthetic */ NetworkEvent(Parcel parcel, NetworkEventIA networkEventIA) {
-        this(parcel);
     }
 
     public static String networkTypeToString(int value) {
@@ -139,24 +129,6 @@ public final class NetworkEvent extends Event implements Parcelable {
         this.mMetricsBundle = extras;
     }
 
-    /* renamed from: android.media.metrics.NetworkEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkEvent[] newArray(int size) {
-            return new NetworkEvent[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkEvent createFromParcel(Parcel in) {
-            return new NetworkEvent(in);
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mNetworkType = 0;
         private long mTimeSinceCreatedMillis = -1;

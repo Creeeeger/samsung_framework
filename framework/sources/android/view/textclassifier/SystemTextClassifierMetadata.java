@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class SystemTextClassifierMetadata implements Parcelable {
     public static final Parcelable.Creator<SystemTextClassifierMetadata> CREATOR = new Parcelable.Creator<SystemTextClassifierMetadata>() { // from class: android.view.textclassifier.SystemTextClassifierMetadata.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SystemTextClassifierMetadata createFromParcel(Parcel in) {
             return SystemTextClassifierMetadata.readFromParcel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SystemTextClassifierMetadata[] newArray(int size) {
             return new SystemTextClassifierMetadata[size];
@@ -48,6 +47,7 @@ public final class SystemTextClassifierMetadata implements Parcelable {
         return String.format(Locale.US, "SystemTextClassifierMetadata {callingPackageName=%s, userId=%d, useDefaultTextClassifier=%b}", this.mCallingPackageName, Integer.valueOf(this.mUserId), Boolean.valueOf(this.mUseDefaultTextClassifier));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static SystemTextClassifierMetadata readFromParcel(Parcel in) {
         String packageName = in.readString();
         int userId = in.readInt();
@@ -65,22 +65,5 @@ public final class SystemTextClassifierMetadata implements Parcelable {
         dest.writeString(this.mCallingPackageName);
         dest.writeInt(this.mUserId);
         dest.writeBoolean(this.mUseDefaultTextClassifier);
-    }
-
-    /* renamed from: android.view.textclassifier.SystemTextClassifierMetadata$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SystemTextClassifierMetadata> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SystemTextClassifierMetadata createFromParcel(Parcel in) {
-            return SystemTextClassifierMetadata.readFromParcel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SystemTextClassifierMetadata[] newArray(int size) {
-            return new SystemTextClassifierMetadata[size];
-        }
     }
 }

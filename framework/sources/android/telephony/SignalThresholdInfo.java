@@ -7,17 +7,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SignalThresholdInfo implements Parcelable {
     public static final Parcelable.Creator<SignalThresholdInfo> CREATOR = new Parcelable.Creator<SignalThresholdInfo>() { // from class: android.telephony.SignalThresholdInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalThresholdInfo createFromParcel(Parcel in) {
             return new SignalThresholdInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalThresholdInfo[] newArray(int size) {
             return new SignalThresholdInfo[size];
@@ -64,16 +63,7 @@ public final class SignalThresholdInfo implements Parcelable {
     private final int[] mThresholds;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SignalMeasurementType {
-    }
-
-    /* synthetic */ SignalThresholdInfo(int i, int i2, int i3, int i4, int[] iArr, boolean z, SignalThresholdInfoIA signalThresholdInfoIA) {
-        this(i, i2, i3, i4, iArr, z);
-    }
-
-    /* synthetic */ SignalThresholdInfo(Parcel parcel, SignalThresholdInfoIA signalThresholdInfoIA) {
-        this(parcel);
     }
 
     private SignalThresholdInfo(int ran, int signalMeasurementType, int hysteresisMs, int hysteresisDb, int[] thresholds, boolean isEnabled) {
@@ -88,7 +78,6 @@ public final class SignalThresholdInfo implements Parcelable {
         this.mIsEnabled = isEnabled;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mRan = 0;
         private int mSignalMeasurementType = 0;
@@ -129,9 +118,8 @@ public final class SignalThresholdInfo implements Parcelable {
             if (!isSystem && (thresholds.length < 1 || thresholds.length > 4)) {
                 throw new IllegalArgumentException("thresholds length must between 1 and 4");
             }
-            int[] iArr = (int[]) thresholds.clone();
-            this.mThresholds = iArr;
-            Arrays.sort(iArr);
+            this.mThresholds = (int[]) thresholds.clone();
+            Arrays.sort(this.mThresholds);
             return this;
         }
 
@@ -216,23 +204,6 @@ public final class SignalThresholdInfo implements Parcelable {
         return Objects.hash(Integer.valueOf(this.mRan), Integer.valueOf(this.mSignalMeasurementType), Integer.valueOf(this.mHysteresisMs), Integer.valueOf(this.mHysteresisDb), Integer.valueOf(Arrays.hashCode(this.mThresholds)), Boolean.valueOf(this.mIsEnabled));
     }
 
-    /* renamed from: android.telephony.SignalThresholdInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SignalThresholdInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SignalThresholdInfo createFromParcel(Parcel in) {
-            return new SignalThresholdInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SignalThresholdInfo[] newArray(int size) {
-            return new SignalThresholdInfo[size];
-        }
-    }
-
     public String toString() {
         return "SignalThresholdInfo{mRan=" + this.mRan + " mSignalMeasurementType=" + this.mSignalMeasurementType + " mHysteresisMs=" + this.mHysteresisMs + " mHysteresisDb=" + this.mHysteresisDb + " mThresholds=" + Arrays.toString(this.mThresholds) + " mIsEnabled=" + this.mIsEnabled + "}";
     }
@@ -240,26 +211,49 @@ public final class SignalThresholdInfo implements Parcelable {
     private static boolean isValidThreshold(int type, int threshold) {
         switch (type) {
             case 1:
-                return threshold >= -113 && threshold <= -51;
+                if (threshold < -113 || threshold > -51) {
+                    break;
+                }
+                break;
             case 2:
-                return threshold >= -120 && threshold <= -25;
+                if (threshold < -120 || threshold > -25) {
+                    break;
+                }
+                break;
             case 3:
-                return threshold >= -140 && threshold <= -44;
+                if (threshold < -140 || threshold > -44) {
+                    break;
+                }
             case 4:
-                return threshold >= -34 && threshold <= 3;
+                if (threshold < -34 || threshold > 3) {
+                    break;
+                }
+                break;
             case 5:
-                return threshold >= -20 && threshold <= 30;
+                if (threshold < -20 || threshold > 30) {
+                    break;
+                }
+                break;
             case 6:
-                return threshold >= -140 && threshold <= -44;
+                if (threshold < -140 || threshold > -44) {
+                    break;
+                }
             case 7:
-                return threshold >= -43 && threshold <= 20;
+                if (threshold < -43 || threshold > 20) {
+                    break;
+                }
+                break;
             case 8:
-                return threshold >= -23 && threshold <= 40;
+                if (threshold < -23 || threshold > 40) {
+                    break;
+                }
+                break;
             case 9:
-                return threshold >= -24 && threshold <= 1;
-            default:
-                return false;
+                if (threshold < -24 || threshold > 1) {
+                    break;
+                }
         }
+        return false;
     }
 
     private static boolean isValidRanWithMeasurementType(int ran, int type) {

@@ -3,7 +3,7 @@ package com.samsung.android.hardware.display;
 import android.os.RemoteException;
 import android.util.Slog;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemMdnieManager {
     public static final int CONTENT_MODE_BROWSER = 8;
     public static final int CONTENT_MODE_CAMERA = 4;
@@ -49,36 +49,33 @@ public final class SemMdnieManager {
     }
 
     public int getScreenMode() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return RETURN_ERROR;
         }
         try {
-            return iSemMdnieManager.getScreenMode();
+            return this.mService.getScreenMode();
         } catch (RemoteException e) {
             return RETURN_ERROR;
         }
     }
 
     public int getContentMode() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return RETURN_ERROR;
         }
         try {
-            return iSemMdnieManager.getContentMode();
+            return this.mService.getContentMode();
         } catch (RemoteException e) {
             return RETURN_ERROR;
         }
     }
 
     public boolean isScreenModeSupported() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.isScreenModeSupported();
+            return this.mService.isScreenModeSupported();
         } catch (RemoteException e) {
             return false;
         }
@@ -86,24 +83,22 @@ public final class SemMdnieManager {
 
     public int[] getSupportedScreenMode() {
         int[] emptyArray = new int[0];
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return emptyArray;
         }
         try {
-            return iSemMdnieManager.getSupportedScreenMode();
+            return this.mService.getSupportedScreenMode();
         } catch (RemoteException e) {
             return emptyArray;
         }
     }
 
     public boolean isContentModeSupported() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.isContentModeSupported();
+            return this.mService.isContentModeSupported();
         } catch (RemoteException e) {
             return false;
         }
@@ -111,252 +106,271 @@ public final class SemMdnieManager {
 
     public int[] getSupportedContentMode() {
         int[] emptyArray = new int[0];
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return emptyArray;
         }
         try {
-            return iSemMdnieManager.getSupportedContentMode();
+            return this.mService.getSupportedContentMode();
         } catch (RemoteException e) {
             return emptyArray;
         }
     }
 
     public boolean setScreenMode(int mode) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setScreenMode(mode);
+            return this.mService.setScreenMode(mode);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setContentMode(int mode) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setContentMode(mode);
-        } catch (RemoteException e) {
-            return false;
-        }
-    }
-
-    public boolean setAmoledACL(int mode) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
-            return false;
-        }
-        try {
-            return iSemMdnieManager.setAmoledACL(mode);
+            return this.mService.setContentMode(mode);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setWhiteRGB(int red, int green, int blue, int red_sub, int green_sub, int blue_sub) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setWhiteRGB(red, green, blue, red_sub, green_sub, blue_sub);
+            return this.mService.setWhiteRGB(red, green, blue, red_sub, green_sub, blue_sub);
         } catch (RemoteException e) {
             return false;
         }
     }
 
+    public void setEadMode(int index, int[] arr) {
+        try {
+            if (this.mService != null) {
+                this.mService.setEadMode(index, arr);
+            }
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
+    public void setEadModeSub(int index, int[] arr) {
+        try {
+            if (this.mService != null) {
+                this.mService.setEadModeSub(index, arr);
+            }
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
     public boolean isNightModeSupported() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.isNightModeSupported();
+            return this.mService.isNightModeSupported();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean enableNightMode(int opacityIndex) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setNightMode(true, opacityIndex);
+            return this.mService.setNightMode(true, opacityIndex);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean disableNightMode() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.disableNightMode();
+            return this.mService.disableNightMode();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setNightModeBlock(boolean support) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setNightModeBlock(support);
+            return this.mService.setNightModeBlock(support);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean getNightModeBlock() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.getNightModeBlock();
+            return this.mService.getNightModeBlock();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setNightModeStep(int index) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setNightModeStep(index);
+            return this.mService.setNightModeStep(index);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public int getNightModeStep() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return RETURN_ERROR;
         }
         try {
-            return iSemMdnieManager.getNightModeStep();
+            return this.mService.getNightModeStep();
         } catch (RemoteException e) {
             return RETURN_ERROR;
         }
     }
 
     public boolean setNightMode(boolean enable, int index) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setNightMode(enable, index);
+            return this.mService.setNightMode(enable, index);
+        } catch (RemoteException e) {
+            return false;
+        }
+    }
+
+    public void setExtraDimMode(int opacity) {
+        try {
+            if (this.mService != null) {
+                this.mService.setExtraDimMode(opacity);
+            }
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
+    public void setHighBrightnessMode(int id, int lux, int index) {
+        try {
+            if (this.mService != null) {
+                this.mService.setHighBrightnessMode(id, lux, index);
+            }
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
+    public boolean setHighDynamicRangeMode(boolean enable) {
+        if (this.mService == null) {
+            return false;
+        }
+        try {
+            return this.mService.setHighDynamicRangeMode(enable);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setColorFadeNightDim(boolean enable) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setColorFadeNightDim(enable);
+            return this.mService.setColorFadeNightDim(enable);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setColorVision(boolean enable, int color, int level) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setColorVision(enable, color, level);
+            return this.mService.setColorVision(enable, color, level);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setmDNIeColorBlind(boolean enable, int[] result) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setmDNIeColorBlind(enable, result);
+            return this.mService.setmDNIeColorBlind(enable, result);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setmDNIeNegative(boolean enable) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setmDNIeNegative(enable);
+            return this.mService.setmDNIeNegative(enable);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setmDNIeScreenCurtain(boolean enable) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setmDNIeScreenCurtain(enable);
+            return this.mService.setmDNIeScreenCurtain(enable);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setmDNIeEmergencyMode(boolean enable) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setmDNIeEmergencyMode(enable);
+            return this.mService.setmDNIeEmergencyMode(enable);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setmDNIeAccessibilityMode(int mode, boolean enable) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setmDNIeAccessibilityMode(mode, enable);
+            return this.mService.setmDNIeAccessibilityMode(mode, enable);
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean setLightNotificationMode(boolean enable) {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.setLightNotificationMode(enable);
+            return this.mService.setLightNotificationMode(enable);
         } catch (RemoteException e) {
             return false;
         }
@@ -364,9 +378,8 @@ public final class SemMdnieManager {
 
     public void updateAlwaysOnDisplay(boolean enable, int aodbrightness) {
         try {
-            ISemMdnieManager iSemMdnieManager = this.mService;
-            if (iSemMdnieManager != null) {
-                iSemMdnieManager.updateAlwaysOnDisplay(enable, aodbrightness);
+            if (this.mService != null) {
+                this.mService.updateAlwaysOnDisplay(enable, aodbrightness);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -374,60 +387,55 @@ public final class SemMdnieManager {
     }
 
     public boolean afpcDataVerify() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.afpcDataVerify();
+            return this.mService.afpcDataVerify();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean afpcDataWrite() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.afpcDataWrite();
+            return this.mService.afpcDataWrite();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean afpcDataApply() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.afpcDataApply();
+            return this.mService.afpcDataApply();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean afpcDataOff() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.afpcDataOff();
+            return this.mService.afpcDataOff();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean afpcWorkOff() {
-        ISemMdnieManager iSemMdnieManager = this.mService;
-        if (iSemMdnieManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemMdnieManager.afpcWorkOff();
+            return this.mService.afpcWorkOff();
         } catch (RemoteException e) {
             return false;
         }

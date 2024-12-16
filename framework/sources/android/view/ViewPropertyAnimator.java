@@ -46,9 +46,6 @@ public class ViewPropertyAnimator {
     private AnimatorEventListener mAnimatorEventListener = new AnimatorEventListener();
     ArrayList<NameValuesHolder> mPendingAnimations = new ArrayList<>();
     private Runnable mAnimationStarter = new Runnable() { // from class: android.view.ViewPropertyAnimator.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             ViewPropertyAnimator.this.startAnimation();
@@ -56,21 +53,7 @@ public class ViewPropertyAnimator {
     };
     private HashMap<Animator, PropertyBundle> mAnimatorMap = new HashMap<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewPropertyAnimator$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ViewPropertyAnimator.this.startAnimation();
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public static class PropertyBundle {
+    private static class PropertyBundle {
         ArrayList<NameValuesHolder> mNameValuesHolder;
         int mPropertyMask;
 
@@ -80,9 +63,8 @@ public class ViewPropertyAnimator {
         }
 
         boolean cancel(int propertyConstant) {
-            ArrayList<NameValuesHolder> arrayList;
-            if ((this.mPropertyMask & propertyConstant) != 0 && (arrayList = this.mNameValuesHolder) != null) {
-                int count = arrayList.size();
+            if ((this.mPropertyMask & propertyConstant) != 0 && this.mNameValuesHolder != null) {
+                int count = this.mNameValuesHolder.size();
                 for (int i = 0; i < count; i++) {
                     NameValuesHolder nameValuesHolder = this.mNameValuesHolder.get(i);
                     if (nameValuesHolder.mNameConstant == propertyConstant) {
@@ -97,8 +79,7 @@ public class ViewPropertyAnimator {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class NameValuesHolder {
+    static class NameValuesHolder {
         float mDeltaValue;
         float mFromValue;
         int mNameConstant;
@@ -110,7 +91,7 @@ public class ViewPropertyAnimator {
         }
     }
 
-    public ViewPropertyAnimator(View view) {
+    ViewPropertyAnimator(View view) {
         this.mView = view;
         view.ensureTransformationInfo();
     }
@@ -325,27 +306,8 @@ public class ViewPropertyAnimator {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewPropertyAnimator$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ViewPropertyAnimator.this.mView.setLayerType(2, null);
-            if (ViewPropertyAnimator.this.mView.isAttachedToWindow()) {
-                ViewPropertyAnimator.this.mView.buildLayer();
-            }
-        }
-    }
-
     public ViewPropertyAnimator withLayer() {
         this.mPendingSetupAction = new Runnable() { // from class: android.view.ViewPropertyAnimator.2
-            AnonymousClass2() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ViewPropertyAnimator.this.mView.setLayerType(2, null);
@@ -354,14 +316,8 @@ public class ViewPropertyAnimator {
                 }
             }
         };
-        int currentLayerType = this.mView.getLayerType();
+        final int currentLayerType = this.mView.getLayerType();
         this.mPendingCleanupAction = new Runnable() { // from class: android.view.ViewPropertyAnimator.3
-            final /* synthetic */ int val$currentLayerType;
-
-            AnonymousClass3(int currentLayerType2) {
-                currentLayerType = currentLayerType2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ViewPropertyAnimator.this.mView.setLayerType(currentLayerType, null);
@@ -374,22 +330,6 @@ public class ViewPropertyAnimator {
             this.mAnimatorCleanupMap = new HashMap<>();
         }
         return this;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewPropertyAnimator$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements Runnable {
-        final /* synthetic */ int val$currentLayerType;
-
-        AnonymousClass3(int currentLayerType2) {
-            currentLayerType = currentLayerType2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ViewPropertyAnimator.this.mView.setLayerType(currentLayerType, null);
-        }
     }
 
     public ViewPropertyAnimator withStartAction(Runnable runnable) {
@@ -412,6 +352,7 @@ public class ViewPropertyAnimator {
         return (this.mPendingSetupAction == null && this.mPendingCleanupAction == null && this.mPendingOnStartAction == null && this.mPendingOnEndAction == null) ? false : true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void startAnimation() {
         this.mView.setHasTransientState(true);
         ValueAnimator animator = ValueAnimator.ofFloat(1.0f);
@@ -424,24 +365,20 @@ public class ViewPropertyAnimator {
             propertyMask |= nameValuesHolder.mNameConstant;
         }
         this.mAnimatorMap.put(animator, new PropertyBundle(propertyMask, nameValueList));
-        Runnable runnable = this.mPendingSetupAction;
-        if (runnable != null) {
-            this.mAnimatorSetupMap.put(animator, runnable);
+        if (this.mPendingSetupAction != null) {
+            this.mAnimatorSetupMap.put(animator, this.mPendingSetupAction);
             this.mPendingSetupAction = null;
         }
-        Runnable runnable2 = this.mPendingCleanupAction;
-        if (runnable2 != null) {
-            this.mAnimatorCleanupMap.put(animator, runnable2);
+        if (this.mPendingCleanupAction != null) {
+            this.mAnimatorCleanupMap.put(animator, this.mPendingCleanupAction);
             this.mPendingCleanupAction = null;
         }
-        Runnable runnable3 = this.mPendingOnStartAction;
-        if (runnable3 != null) {
-            this.mAnimatorOnStartMap.put(animator, runnable3);
+        if (this.mPendingOnStartAction != null) {
+            this.mAnimatorOnStartMap.put(animator, this.mPendingOnStartAction);
             this.mPendingOnStartAction = null;
         }
-        Runnable runnable4 = this.mPendingOnEndAction;
-        if (runnable4 != null) {
-            this.mAnimatorOnEndMap.put(animator, runnable4);
+        if (this.mPendingOnEndAction != null) {
+            this.mAnimatorOnEndMap.put(animator, this.mPendingOnEndAction);
             this.mPendingOnEndAction = null;
         }
         animator.addUpdateListener(this.mAnimatorEventListener);
@@ -495,48 +432,47 @@ public class ViewPropertyAnimator {
         this.mView.postOnAnimation(this.mAnimationStarter);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setValue(int propertyConstant, float value) {
         RenderNode renderNode = this.mView.mRenderNode;
         switch (propertyConstant) {
             case 1:
                 renderNode.setTranslationX(value);
-                return;
+                break;
             case 2:
                 renderNode.setTranslationY(value);
-                return;
+                break;
             case 4:
                 renderNode.setTranslationZ(value);
-                return;
+                break;
             case 8:
                 renderNode.setScaleX(value);
-                return;
+                break;
             case 16:
                 renderNode.setScaleY(value);
-                return;
+                break;
             case 32:
                 renderNode.setRotationZ(value);
-                return;
+                break;
             case 64:
                 renderNode.setRotationX(value);
-                return;
+                break;
             case 128:
                 renderNode.setRotationY(value);
-                return;
+                break;
             case 256:
                 renderNode.setTranslationX(value - this.mView.mLeft);
-                return;
+                break;
             case 512:
                 renderNode.setTranslationY(value - this.mView.mTop);
-                return;
+                break;
             case 1024:
                 renderNode.setTranslationZ(value - renderNode.getElevation());
-                return;
+                break;
             case 2048:
                 this.mView.setAlphaInternal(value);
                 renderNode.setAlpha(value);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -572,12 +508,7 @@ public class ViewPropertyAnimator {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class AnimatorEventListener implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
-        /* synthetic */ AnimatorEventListener(ViewPropertyAnimator viewPropertyAnimator, AnimatorEventListenerIA animatorEventListenerIA) {
-            this();
-        }
-
+    private class AnimatorEventListener implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
         private AnimatorEventListener() {
         }
 

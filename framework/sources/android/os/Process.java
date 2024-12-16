@@ -8,10 +8,13 @@ import android.system.Os;
 import android.system.OsConstants;
 import android.util.Pair;
 import android.webkit.WebViewZygote;
+import com.android.internal.os.SomeArgs;
+import com.android.internal.util.Preconditions;
 import dalvik.system.VMRuntime;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import libcore.io.IoUtils;
 
 /* loaded from: classes3.dex */
@@ -53,6 +56,7 @@ public class Process {
     public static final int INVALID_UID = -1;
     public static final int IPS_GEOFENCE_UID = 5022;
     public static final int ISSUETRACKER_UID = 2919;
+    public static final int KER_UID = 5554;
     public static final int KEYSTORE_UID = 1017;
     public static final int KNOXCORE_UID = 5250;
     public static final int LAST_APPLICATION_CACHE_GID = 29999;
@@ -105,12 +109,12 @@ public class Process {
     public static final int SCLOUD_SERVICE_UID = 5009;
     public static final int SDCARD_RW_GID = 1015;
     public static final int SDK_SANDBOX_VIRTUAL_UID = 1090;
-    public static final int SENDHELPMSG_UID = 5003;
     public static final int SE_UID = 1068;
     public static final int SHARED_RELRO_UID = 1037;
     public static final int SHARED_USER_GID = 9997;
     public static final int SHARE_LIVE_UID = 5026;
     public static final int SHELL_UID = 2000;
+    public static final int SIGNAL_DEFAULT = 0;
     public static final int SIGNAL_KILL = 9;
     public static final int SIGNAL_QUIT = 3;
     public static final int SIGNAL_USR1 = 10;
@@ -143,6 +147,7 @@ public class Process {
     public static final int THREAD_PRIORITY_URGENT_DISPLAY = -8;
     public static final int THREAD_PRIORITY_VIDEO = -10;
     public static final int UWB_UID = 1083;
+    public static final int VENDOR_DATA_UID = 2918;
     public static final int VIDEOCALL_UID = 2901;
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
@@ -154,6 +159,7 @@ public class Process {
     public static final int ZYGOTE_POLICY_FLAG_LATENCY_SENSITIVE = 1;
     public static final int ZYGOTE_POLICY_FLAG_SYSTEM_PROCESS = 4;
     private static String sArgV0;
+    private static volatile ThreadLocal<SomeArgs> sIdentity$ravenwood;
     private static long sStartElapsedRealtime;
     private static long sStartRequestedElapsedRealtime;
     private static long sStartRequestedUptimeMillis;
@@ -161,13 +167,10 @@ public class Process {
     private static int sPidFdSupported = 0;
     public static final ZygoteProcess ZYGOTE_PROCESS = new ZygoteProcess();
 
-    /* loaded from: classes3.dex */
     public static final class ProcessStartResult {
         public int pid;
         public boolean usingWrapper;
     }
-
-    public static final native int cleanUpCgroup(int i, int i2);
 
     public static final native int createProcessGroup(int i, int i2);
 
@@ -229,7 +232,11 @@ public class Process {
 
     public static final native void sendSignalQuiet(int i, int i2);
 
-    public static final native int sendSignalToProcessGroup(int i, int i2, int i3);
+    private static native void sendSignalThrows(int i, int i2) throws IllegalArgumentException, SecurityException, NoSuchElementException;
+
+    public static final native boolean sendSignalToProcessGroup(int i, int i2, int i3);
+
+    private static native void sendTgSignalThrows(int i, int i2, int i3) throws IllegalArgumentException, SecurityException, NoSuchElementException;
 
     private static native void setArgV0Native(String str);
 
@@ -259,12 +266,12 @@ public class Process {
 
     public static final native int setUid(int i);
 
-    public static ProcessStartResult start(String processClass, String niceName, int uid, int gid, int[] gids, int runtimeFlags, int mountExternal, int targetSdkVersion, String seInfo, String abi, String instructionSet, String appDataDir, String invokeWith, String packageName, int zygotePolicyFlags, boolean isTopApp, long[] disabledCompatChanges, Map<String, Pair<String, Long>> pkgDataInfoMap, Map<String, Pair<String, Long>> whitelistedDataInfoMap, boolean bindMountAppsData, boolean bindMountAppStorageDirs, String[] zygoteArgs) {
-        return ZYGOTE_PROCESS.start(processClass, niceName, uid, gid, gids, runtimeFlags, mountExternal, targetSdkVersion, seInfo, abi, instructionSet, appDataDir, invokeWith, packageName, zygotePolicyFlags, isTopApp, disabledCompatChanges, pkgDataInfoMap, whitelistedDataInfoMap, bindMountAppsData, bindMountAppStorageDirs, zygoteArgs);
+    public static ProcessStartResult start(String processClass, String niceName, int uid, int gid, int[] gids, int runtimeFlags, int mountExternal, int targetSdkVersion, String seInfo, String abi, String instructionSet, String appDataDir, String invokeWith, String packageName, int zygotePolicyFlags, boolean isTopApp, long[] disabledCompatChanges, Map<String, Pair<String, Long>> pkgDataInfoMap, Map<String, Pair<String, Long>> whitelistedDataInfoMap, boolean bindMountAppsData, boolean bindMountAppStorageDirs, boolean bindMountSystemOverrides, String[] zygoteArgs) {
+        return ZYGOTE_PROCESS.start(processClass, niceName, uid, gid, gids, runtimeFlags, mountExternal, targetSdkVersion, seInfo, abi, instructionSet, appDataDir, invokeWith, packageName, zygotePolicyFlags, isTopApp, disabledCompatChanges, pkgDataInfoMap, whitelistedDataInfoMap, bindMountAppsData, bindMountAppStorageDirs, bindMountSystemOverrides, zygoteArgs);
     }
 
     public static ProcessStartResult startWebView(String processClass, String niceName, int uid, int gid, int[] gids, int runtimeFlags, int mountExternal, int targetSdkVersion, String seInfo, String abi, String instructionSet, String appDataDir, String invokeWith, String packageName, long[] disabledCompatChanges, String[] zygoteArgs) {
-        return WebViewZygote.getProcess().start(processClass, niceName, uid, gid, gids, runtimeFlags, mountExternal, targetSdkVersion, seInfo, abi, instructionSet, appDataDir, invokeWith, packageName, 0, false, disabledCompatChanges, null, null, false, false, zygoteArgs);
+        return WebViewZygote.getProcess().start(processClass, niceName, uid, gid, gids, runtimeFlags, mountExternal, targetSdkVersion, seInfo, abi, instructionSet, appDataDir, invokeWith, packageName, 0, false, disabledCompatChanges, null, null, false, false, false, zygoteArgs);
     }
 
     public static long getStartElapsedRealtime() {
@@ -292,6 +299,16 @@ public class Process {
 
     public static final boolean is64Bit() {
         return VMRuntime.getRuntime().is64Bit();
+    }
+
+    static /* synthetic */ SomeArgs lambda$init$ravenwood$0(int uid, int pid) {
+        SomeArgs args = SomeArgs.obtain();
+        args.argi1 = uid;
+        args.argi2 = pid;
+        args.argi3 = Long.hashCode(Thread.currentThread().getId());
+        args.argi4 = 0;
+        args.arg1 = Boolean.TRUE;
+        return args;
     }
 
     public static final int myPid() {
@@ -336,19 +353,27 @@ public class Process {
         return (uid2 >= 99000 && uid2 <= 99999) || (uid2 >= 90000 && uid2 <= 98999);
     }
 
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static final boolean isSdkSandboxUid(int uid) {
         int uid2 = UserHandle.getAppId(uid);
         return uid2 >= 20000 && uid2 <= 29999;
     }
 
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static final int getAppUidForSdkSandboxUid(int uid) {
+        if (!isSdkSandboxUid(uid)) {
+            throw new IllegalArgumentException("Input UID is not an SDK sandbox UID");
+        }
         return uid - 10000;
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static final int toSdkSandboxUid(int uid) {
+        return uid + 10000;
+    }
+
+    public static final int getSdkSandboxUidForAppUid(int uid) {
+        if (!isApplicationUid(uid)) {
+            throw new IllegalArgumentException("Input UID is not an app UID");
+        }
         return uid + 10000;
     }
 
@@ -377,6 +402,32 @@ public class Process {
         return (int) procStatusValues[0];
     }
 
+    public static final void setThreadPriority$ravenwood(int tid, int priority) {
+        SomeArgs args = (SomeArgs) ((ThreadLocal) Preconditions.requireNonNullViaRavenwoodRule(sIdentity$ravenwood)).get();
+        if (args.argi3 == tid) {
+            boolean backgroundOk = args.arg1 == Boolean.TRUE;
+            if (priority >= 10 && !backgroundOk) {
+                throw new IllegalArgumentException("Priority " + priority + " blocked by setCanSelfBackground()");
+            }
+            args.argi4 = priority;
+            return;
+        }
+        throw new UnsupportedOperationException("Cross-thread priority management not yet available in Ravenwood");
+    }
+
+    public static final void setCanSelfBackground$ravenwood(boolean backgroundOk) {
+        SomeArgs args = (SomeArgs) ((ThreadLocal) Preconditions.requireNonNullViaRavenwoodRule(sIdentity$ravenwood)).get();
+        args.arg1 = Boolean.valueOf(backgroundOk);
+    }
+
+    public static final int getThreadPriority$ravenwood(int tid) {
+        SomeArgs args = (SomeArgs) ((ThreadLocal) Preconditions.requireNonNullViaRavenwoodRule(sIdentity$ravenwood)).get();
+        if (args.argi3 == tid) {
+            return args.argi4;
+        }
+        throw new UnsupportedOperationException("Cross-thread priority management not yet available in Ravenwood");
+    }
+
     @Deprecated
     public static final boolean supportsProcesses() {
         return true;
@@ -393,6 +444,14 @@ public class Process {
 
     public static final void killProcess(int pid) {
         sendSignal(pid, 9);
+    }
+
+    public static final void checkTid(int tgid, int tid) throws IllegalArgumentException, SecurityException, NoSuchElementException {
+        sendTgSignalThrows(tgid, tid, 0);
+    }
+
+    public static final void checkPid(int pid) throws IllegalArgumentException, SecurityException, NoSuchElementException {
+        sendSignalThrows(pid, 0);
     }
 
     public static final void killProcessQuiet(int pid) {
@@ -429,7 +488,7 @@ public class Process {
 
     /* JADX WARN: Code restructure failed: missing block: B:20:0x004e, code lost:
     
-        if (r3 != null) goto L80;
+        if (r3 != null) goto L20;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.

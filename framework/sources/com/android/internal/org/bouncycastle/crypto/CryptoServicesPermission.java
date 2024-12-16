@@ -13,9 +13,8 @@ public class CryptoServicesPermission extends Permission {
 
     public CryptoServicesPermission(String name) {
         super(name);
-        HashSet hashSet = new HashSet();
-        this.actions = hashSet;
-        hashSet.add(name);
+        this.actions = new HashSet();
+        this.actions.add(name);
     }
 
     @Override // java.security.Permission

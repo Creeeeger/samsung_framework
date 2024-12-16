@@ -42,12 +42,10 @@ public class AODManager {
     private final Object mAODCallbackLock = new Object();
     private CopyOnWriteArrayList<AODCallbackDelegate> mAODCallbackDelegates = new CopyOnWriteArrayList<>();
 
-    /* loaded from: classes5.dex */
     public interface AODChangeListener {
         void readyToScreenTurningOn();
     }
 
-    /* loaded from: classes5.dex */
     public interface AODDozeCallback {
         void onAODToastRequested(AODToast aODToast);
 
@@ -57,13 +55,12 @@ public class AODManager {
     }
 
     public static AODManager getInstance(Context context) {
-        AODManager aODManager = sInstance;
-        if (aODManager != null) {
-            return aODManager;
+        if (sInstance != null) {
+            return sInstance;
         }
-        AODManager aODManager2 = new AODManager(context);
-        sInstance = aODManager2;
-        return aODManager2;
+        AODManager aODManager = new AODManager(context);
+        sInstance = aODManager;
+        return aODManager;
     }
 
     public AODManager(Context context) {
@@ -110,6 +107,39 @@ public class AODManager {
         }
         try {
             this.mService.updateAODTspRect(width, height, x, y, packageName);
+        } catch (RemoteException e) {
+            Log.w(TAG, "AODManagerService RuntimeException?\n" + Log.getStackTraceString(e));
+        }
+    }
+
+    public void updateAODNotiTspRect(int width, int height, int x, int y) {
+        if (getService() == null) {
+            return;
+        }
+        try {
+            this.mService.updateAODNotiTspRect(width, height, x, y, AOD_PACKAGE_NAME);
+        } catch (RemoteException e) {
+            Log.w(TAG, "AODManagerService RuntimeException?\n" + Log.getStackTraceString(e));
+        }
+    }
+
+    public void setGripData(String cmd) {
+        if (getService() == null) {
+            return;
+        }
+        try {
+            this.mService.setGripData(cmd);
+        } catch (RemoteException e) {
+            Log.w(TAG, "AODManagerService RuntimeException?\n" + Log.getStackTraceString(e));
+        }
+    }
+
+    public void updateAODNotiTspRect(int width, int height, int x, int y, String packageName) {
+        if (getService() == null) {
+            return;
+        }
+        try {
+            this.mService.updateAODNotiTspRect(width, height, x, y, packageName);
         } catch (RemoteException e) {
             Log.w(TAG, "AODManagerService RuntimeException?\n" + Log.getStackTraceString(e));
         }
@@ -300,8 +330,8 @@ public class AODManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class AODCallbackDelegate extends IAODCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class AODCallbackDelegate extends IAODCallback.Stub {
         private Handler mHandler;
         private AODListener mListener;
 
@@ -320,10 +350,10 @@ public class AODManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onScreenTurningOn$0() {
-            AODListener aODListener = this.mListener;
-            if (aODListener != null) {
-                aODListener.onScreenTurningOn();
+            if (this.mListener != null) {
+                this.mListener.onScreenTurningOn();
             }
         }
 
@@ -344,10 +374,9 @@ public class AODManager {
             Log.w(TAG, "registerAODDozeCallback: listener already registered");
             return;
         }
-        AODDozeCallbackDelegate aODDozeCallbackDelegate = new AODDozeCallbackDelegate(callback);
-        this.mAODDozeCallbackDelegate = aODDozeCallbackDelegate;
+        this.mAODDozeCallbackDelegate = new AODDozeCallbackDelegate(callback);
         try {
-            this.mService.registerAODDozeCallback(aODDozeCallbackDelegate);
+            this.mService.registerAODDozeCallback(this.mAODDozeCallbackDelegate);
         } catch (RemoteException e) {
             Log.w(TAG, "AODManagerService RuntimeException?\n" + Log.getStackTraceString(e));
         }
@@ -361,13 +390,12 @@ public class AODManager {
             Log.w(TAG, "unregisterAODDozeCallback: callback is null");
             return;
         }
-        AODDozeCallbackDelegate aODDozeCallbackDelegate = this.mAODDozeCallbackDelegate;
-        if (aODDozeCallbackDelegate == null) {
+        if (this.mAODDozeCallbackDelegate == null) {
             Log.w(TAG, "unregisterAODDozeCallback: not registered yet");
             return;
         }
         try {
-            this.mService.unregisterAODDozeCallback(aODDozeCallbackDelegate);
+            this.mService.unregisterAODDozeCallback(this.mAODDozeCallbackDelegate);
         } catch (RemoteException e) {
             Log.w(TAG, "AODManagerService RuntimeException?\n" + Log.getStackTraceString(e));
         }
@@ -385,7 +413,6 @@ public class AODManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class AODDozeLock {
         private boolean mHeld;
         private final String mPackageName;
@@ -397,7 +424,6 @@ public class AODManager {
             this.mPackageName = packageName;
         }
 
-        /* JADX WARN: Failed to find 'out' block for switch in B:11:0x001e. Please report as an issue. */
         public void acquire() {
             synchronized (this.mToken) {
                 Display display = AODManager.this.mContext.getDisplay();
@@ -425,7 +451,6 @@ public class AODManager {
             }
         }
 
-        /* JADX WARN: Failed to find 'out' block for switch in B:11:0x001f. Please report as an issue. */
         public void release() {
             synchronized (this.mToken) {
                 Display display = AODManager.this.mContext.getDisplay();
@@ -462,14 +487,11 @@ public class AODManager {
         }
 
         public AODDozeLock newAODDozeLock(String tag) {
-            AODManager aODManager = AODManager.this;
-            return new AODDozeLock(tag, aODManager.mContext.getOpPackageName());
+            return AODManager.this.new AODDozeLock(tag, AODManager.this.mContext.getOpPackageName());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class AODDozeCallbackDelegate extends IAODDozeCallback.Stub {
+    private class AODDozeCallbackDelegate extends IAODDozeCallback.Stub {
         private WeakReference<AODDozeCallback> mCallback;
         private Handler mHandler;
 
@@ -478,27 +500,9 @@ public class AODManager {
             this.mCallback = new WeakReference<>(callback);
         }
 
-        /* renamed from: com.samsung.android.aod.AODManager$AODDozeCallbackDelegate$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Runnable {
-            AnonymousClass1() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
-                if (callback != null) {
-                    callback.onDozeAcquired();
-                }
-            }
-        }
-
         @Override // com.samsung.android.aod.IAODDozeCallback
         public void onDozeAcquired() throws RemoteException {
             this.mHandler.post(new Runnable() { // from class: com.samsung.android.aod.AODManager.AODDozeCallbackDelegate.1
-                AnonymousClass1() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
@@ -509,27 +513,9 @@ public class AODManager {
             });
         }
 
-        /* renamed from: com.samsung.android.aod.AODManager$AODDozeCallbackDelegate$2 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass2 implements Runnable {
-            AnonymousClass2() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
-                if (callback != null) {
-                    callback.onDozeReleased();
-                }
-            }
-        }
-
         @Override // com.samsung.android.aod.IAODDozeCallback
         public void onDozeReleased() throws RemoteException {
             this.mHandler.post(new Runnable() { // from class: com.samsung.android.aod.AODManager.AODDozeCallbackDelegate.2
-                AnonymousClass2() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
@@ -540,33 +526,9 @@ public class AODManager {
             });
         }
 
-        /* renamed from: com.samsung.android.aod.AODManager$AODDozeCallbackDelegate$3 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass3 implements Runnable {
-            final /* synthetic */ AODToast val$toast;
-
-            AnonymousClass3(AODToast aODToast) {
-                toast = aODToast;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
-                if (callback != null) {
-                    callback.onAODToastRequested(toast);
-                }
-            }
-        }
-
         @Override // com.samsung.android.aod.IAODDozeCallback
-        public void onAODToastRequested(AODToast toast) throws RemoteException {
+        public void onAODToastRequested(final AODToast toast) throws RemoteException {
             this.mHandler.post(new Runnable() { // from class: com.samsung.android.aod.AODManager.AODDozeCallbackDelegate.3
-                final /* synthetic */ AODToast val$toast;
-
-                AnonymousClass3(AODToast toast2) {
-                    toast = toast2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();

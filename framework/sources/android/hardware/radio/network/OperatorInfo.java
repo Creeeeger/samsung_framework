@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class OperatorInfo implements Parcelable {
     public static final Parcelable.Creator<OperatorInfo> CREATOR = new Parcelable.Creator<OperatorInfo>() { // from class: android.hardware.radio.network.OperatorInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OperatorInfo createFromParcel(Parcel _aidl_source) {
             OperatorInfo _aidl_out = new OperatorInfo();
@@ -19,6 +17,7 @@ public class OperatorInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OperatorInfo[] newArray(int _aidl_size) {
             return new OperatorInfo[_aidl_size];
@@ -32,25 +31,6 @@ public class OperatorInfo implements Parcelable {
     public String alphaShort;
     public String operatorNumeric;
     public int status = 0;
-
-    /* renamed from: android.hardware.radio.network.OperatorInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OperatorInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OperatorInfo createFromParcel(Parcel _aidl_source) {
-            OperatorInfo _aidl_out = new OperatorInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OperatorInfo[] newArray(int _aidl_size) {
-            return new OperatorInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -129,7 +109,7 @@ public class OperatorInfo implements Parcelable {
         _aidl_sj.add("alphaShort: " + Objects.toString(this.alphaShort));
         _aidl_sj.add("operatorNumeric: " + Objects.toString(this.operatorNumeric));
         _aidl_sj.add("status: " + this.status);
-        return "android.hardware.radio.network.OperatorInfo" + _aidl_sj.toString();
+        return "OperatorInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

@@ -9,7 +9,7 @@ import com.samsung.android.sume.core.filter.factory.MediaFilterCreator;
 import com.samsung.android.sume.core.filter.factory.MediaFilterFactory;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class MFGraphUnitFactory {
     private final MediaFilterFactory mediaFilterFactory;
 
@@ -19,7 +19,7 @@ public abstract class MFGraphUnitFactory {
 
     public abstract GraphNode<MediaFilter> newNode(MediaFilter mediaFilter);
 
-    public abstract MediaFilter parallelizeFilter(MediaFilterFactory mediaFilterFactory, MFDescriptor mFDescriptor, MediaFilter mediaFilter);
+    protected abstract MediaFilter parallelizeFilter(MediaFilterFactory mediaFilterFactory, MFDescriptor mFDescriptor, MediaFilter mediaFilter);
 
     protected MFGraphUnitFactory(Consumer<MediaFilterFactory.Builder> builderConstitutor) {
         MediaFilterFactory.Builder builder = new MediaFilterFactory.Builder();

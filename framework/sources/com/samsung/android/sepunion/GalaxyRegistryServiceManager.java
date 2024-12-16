@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.IBinder;
 import com.samsung.android.sepunion.IGalaxyRegistryService;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class GalaxyRegistryServiceManager {
     private static final String TAG = GalaxyRegistryServiceManager.class.getSimpleName();
     private Context mContext;

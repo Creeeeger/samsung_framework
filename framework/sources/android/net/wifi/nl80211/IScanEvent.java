@@ -16,7 +16,6 @@ public interface IScanEvent extends IInterface {
 
     void OnScanResultReady() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IScanEvent {
         @Override // android.net.wifi.nl80211.IScanEvent
         public void OnScanResultReady() throws RemoteException {
@@ -36,7 +35,6 @@ public interface IScanEvent extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IScanEvent {
         static final int TRANSACTION_OnScanFailed = 2;
         static final int TRANSACTION_OnScanRequestFailed = 3;
@@ -85,32 +83,28 @@ public interface IScanEvent extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IScanEvent.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IScanEvent.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IScanEvent.DESCRIPTOR);
+                case 1:
+                    OnScanResultReady();
+                    return true;
+                case 2:
+                    OnScanFailed();
+                    return true;
+                case 3:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    OnScanRequestFailed(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            OnScanResultReady();
-                            return true;
-                        case 2:
-                            OnScanFailed();
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            OnScanRequestFailed(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IScanEvent {
+        private static class Proxy implements IScanEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

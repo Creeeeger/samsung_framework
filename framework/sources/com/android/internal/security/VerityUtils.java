@@ -2,6 +2,7 @@ package com.android.internal.security;
 
 import android.os.Build;
 import android.os.SystemProperties;
+import android.os.incremental.V4Signature;
 import android.system.Os;
 import android.system.OsConstants;
 import android.util.Slog;
@@ -20,6 +21,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.security.DigestException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -136,6 +140,25 @@ public abstract class VerityUtils {
             return null;
         }
         return result;
+    }
+
+    public static byte[] generateFsVerityDigest(long fileSize, V4Signature.HashingInfo hashingInfo) throws DigestException, NoSuchAlgorithmException {
+        if (hashingInfo.rawRootHash == null || hashingInfo.rawRootHash.length != 32) {
+            throw new IllegalArgumentException("Expect a 32-byte rootHash for SHA256");
+        }
+        if (hashingInfo.log2BlockSize != 12) {
+            throw new IllegalArgumentException("Unsupported log2BlockSize: " + ((int) hashingInfo.log2BlockSize));
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(256);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.put((byte) 1);
+        buffer.put((byte) 1);
+        buffer.put(hashingInfo.log2BlockSize);
+        buffer.put((byte) 0);
+        buffer.putInt(0);
+        buffer.putLong(fileSize);
+        buffer.put(hashingInfo.rawRootHash);
+        return MessageDigest.getInstance("SHA-256").digest(buffer.array());
     }
 
     public static byte[] toFormattedDigest(byte[] digest) {

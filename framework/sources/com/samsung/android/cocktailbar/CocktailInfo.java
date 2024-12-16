@@ -10,9 +10,7 @@ import android.widget.RemoteViews;
 /* loaded from: classes5.dex */
 public class CocktailInfo implements Parcelable {
     public static final Parcelable.Creator<CocktailInfo> CREATOR = new Parcelable.Creator<CocktailInfo>() { // from class: com.samsung.android.cocktailbar.CocktailInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CocktailInfo createFromParcel(Parcel in) {
             CocktailInfo data = new CocktailInfo();
@@ -20,6 +18,7 @@ public class CocktailInfo implements Parcelable {
             return data;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CocktailInfo[] newArray(int size) {
             return new CocktailInfo[size];
@@ -34,7 +33,6 @@ public class CocktailInfo implements Parcelable {
     private Bundle mContentInfo = null;
     private ComponentName mClassInfo = null;
 
-    /* loaded from: classes5.dex */
     public static class Builder {
         private Context mContext;
         private int mOrientation = 1;
@@ -132,18 +130,16 @@ public class CocktailInfo implements Parcelable {
     }
 
     public void updateContentView(RemoteViews contentView, boolean isPartialUpdate) {
-        RemoteViews remoteViews;
-        if (isPartialUpdate && (remoteViews = this.mContentView) != null) {
-            remoteViews.mergeRemoteViews(contentView);
+        if (isPartialUpdate && this.mContentView != null) {
+            this.mContentView.mergeRemoteViews(contentView);
         } else {
             this.mContentView = contentView;
         }
     }
 
     public void updateHelpView(RemoteViews helpView, boolean isPartialUpdate) {
-        RemoteViews remoteViews;
-        if (isPartialUpdate && (remoteViews = this.mHelpView) != null) {
-            remoteViews.mergeRemoteViews(helpView);
+        if (isPartialUpdate && this.mHelpView != null) {
+            this.mHelpView.mergeRemoteViews(helpView);
         } else {
             this.mHelpView = helpView;
         }
@@ -153,23 +149,19 @@ public class CocktailInfo implements Parcelable {
         this.mOrientation = info.mOrientation;
         this.mCategory = info.mCategory;
         this.mDisplayPolicy = info.mDisplayPolicy;
-        Bundle bundle = info.mContentInfo;
-        if (bundle != null) {
-            this.mContentInfo = bundle;
+        if (info.mContentInfo != null) {
+            this.mContentInfo = info.mContentInfo;
             this.mContentView = null;
         }
-        RemoteViews remoteViews = info.mContentView;
-        if (remoteViews != null) {
-            this.mContentView = remoteViews;
+        if (info.mContentView != null) {
+            this.mContentView = info.mContentView;
             this.mContentInfo = null;
         }
-        RemoteViews remoteViews2 = info.mHelpView;
-        if (remoteViews2 != null) {
-            this.mHelpView = remoteViews2;
+        if (info.mHelpView != null) {
+            this.mHelpView = info.mHelpView;
         }
-        ComponentName componentName = info.mClassInfo;
-        if (componentName != null) {
-            this.mClassInfo = componentName;
+        if (info.mClassInfo != null) {
+            this.mClassInfo = info.mClassInfo;
         }
     }
 
@@ -221,24 +213,5 @@ public class CocktailInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.samsung.android.cocktailbar.CocktailInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CocktailInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CocktailInfo createFromParcel(Parcel in) {
-            CocktailInfo data = new CocktailInfo();
-            data.readFromParcel(in);
-            return data;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CocktailInfo[] newArray(int size) {
-            return new CocktailInfo[size];
-        }
     }
 }

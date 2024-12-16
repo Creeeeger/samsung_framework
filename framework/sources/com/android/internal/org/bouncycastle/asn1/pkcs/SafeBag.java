@@ -64,9 +64,8 @@ public class SafeBag extends ASN1Object {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
         v.add(this.bagId);
         v.add(new DLTaggedObject(true, 0, this.bagValue));
-        ASN1Set aSN1Set = this.bagAttributes;
-        if (aSN1Set != null) {
-            v.add(aSN1Set);
+        if (this.bagAttributes != null) {
+            v.add(this.bagAttributes);
         }
         return new DLSequence(v);
     }

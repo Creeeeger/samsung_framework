@@ -13,7 +13,6 @@ public interface IOnMediaKeyEventSessionChangedListener extends IInterface {
 
     void onMediaKeyEventSessionChanged(String str, MediaSession.Token token) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IOnMediaKeyEventSessionChangedListener {
         @Override // android.media.session.IOnMediaKeyEventSessionChangedListener
         public void onMediaKeyEventSessionChanged(String packageName, MediaSession.Token mediaKeyEventSessionToken) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IOnMediaKeyEventSessionChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IOnMediaKeyEventSessionChangedListener {
         static final int TRANSACTION_onMediaKeyEventSessionChanged = 1;
 
@@ -68,27 +66,23 @@ public interface IOnMediaKeyEventSessionChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnMediaKeyEventSessionChangedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnMediaKeyEventSessionChangedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnMediaKeyEventSessionChangedListener.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    MediaSession.Token _arg1 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMediaKeyEventSessionChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            MediaSession.Token _arg1 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMediaKeyEventSessionChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IOnMediaKeyEventSessionChangedListener {
+        private static class Proxy implements IOnMediaKeyEventSessionChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

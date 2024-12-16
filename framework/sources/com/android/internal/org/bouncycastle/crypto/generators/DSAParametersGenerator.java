@@ -82,26 +82,25 @@ public class DSAParametersGenerator {
         byte[] part1 = new byte[20];
         byte[] part2 = new byte[20];
         byte[] u = new byte[20];
-        int i = this.L;
-        int n = (i - 1) / 160;
-        byte[] w = new byte[i / 8];
+        byte b = 1;
+        int n = (this.L - 1) / 160;
+        byte[] w = new byte[this.L / 8];
         if (!this.digest.getAlgorithmName().equals("SHA-1")) {
             throw new IllegalStateException("can only use SHA-1 for generating FIPS 186-2 parameters");
         }
         while (true) {
             this.random.nextBytes(seed);
-            int i2 = 0;
             hash(this.digest, seed, part1, 0);
             System.arraycopy(seed, 0, part2, 0, seed.length);
             inc(part2);
             hash(this.digest, part2, part2, 0);
-            for (int i3 = 0; i3 != u.length; i3++) {
-                u[i3] = (byte) (part1[i3] ^ part2[i3]);
+            for (int i = 0; i != u.length; i++) {
+                u[i] = (byte) (part1[i] ^ part2[i]);
             }
-            int i4 = u[0];
-            u[0] = (byte) (i4 | (-128));
-            u[19] = (byte) (u[19] | 1);
-            BigInteger q = new BigInteger(1, u);
+            int i2 = u[0];
+            u[0] = (byte) (i2 | (-128));
+            u[19] = (byte) (u[19] | b);
+            BigInteger q = new BigInteger(b, u);
             if (isProbablePrime(q)) {
                 byte[] offset = Arrays.clone(seed);
                 inc(offset);
@@ -114,20 +113,21 @@ public class DSAParametersGenerator {
                     int k2 = w.length;
                     int remaining = k2 - (part1.length * n);
                     inc(offset);
-                    hash(this.digest, offset, part1, i2);
-                    System.arraycopy(part1, part1.length - remaining, w, i2, remaining);
-                    w[i2] = (byte) (w[i2] | Byte.MIN_VALUE);
-                    BigInteger x = new BigInteger(1, w);
-                    BigInteger c = x.mod(q.shiftLeft(1));
+                    hash(this.digest, offset, part1, 0);
+                    System.arraycopy(part1, part1.length - remaining, w, 0, remaining);
+                    w[0] = (byte) (w[0] | Byte.MIN_VALUE);
+                    BigInteger x = new BigInteger(b, w);
+                    BigInteger c = x.mod(q.shiftLeft(b));
                     BigInteger p = x.subtract(c.subtract(ONE));
                     if (p.bitLength() != this.L || !isProbablePrime(p)) {
                         counter++;
-                        i2 = 0;
+                        b = 1;
                     } else {
                         BigInteger g = calculateGenerator_FIPS186_2(p, q, this.random);
                         return new DSAParameters(p, q, g, new DSAValidationParameters(seed, counter));
                     }
                 }
+                b = 1;
             }
         }
     }
@@ -152,16 +152,16 @@ public class DSAParametersGenerator {
         int outlen = d.getDigestSize() * 8;
         int seedlen = this.N;
         byte[] seed = new byte[seedlen / 8];
-        int i = this.L;
-        int n = (i - 1) / outlen;
-        int i2 = (i - 1) % outlen;
-        byte[] w = new byte[i / 8];
+        int i = 1;
+        int n = (this.L - 1) / outlen;
+        int i2 = (this.L - 1) % outlen;
+        byte[] w = new byte[this.L / 8];
         byte[] output = new byte[d.getDigestSize()];
         loop0: while (true) {
             this.random.nextBytes(seed);
             hash(d, seed, output, 0);
-            BigInteger U = new BigInteger(1, output).mod(ONE.shiftLeft(this.N - 1));
-            q = U.setBit(0).setBit(this.N - 1);
+            BigInteger U = new BigInteger(i, output).mod(ONE.shiftLeft(this.N - i));
+            q = U.setBit(0).setBit(this.N - i);
             if (isProbablePrime(q)) {
                 byte[] offset = Arrays.clone(seed);
                 int counterLimit = this.L * 4;
@@ -191,13 +191,14 @@ public class DSAParametersGenerator {
                     outlen = outlen2;
                     seedlen = seedlen2;
                     d = d;
-                    w = w;
+                    n = n;
                 }
+                i = 1;
             }
         }
-        int i3 = this.usageIndex;
-        if (i3 >= 0 && (g = calculateGenerator_FIPS186_3_Verifiable(d, p, q, seed, i3)) != null) {
-            return new DSAParameters(p, q, g, new DSAValidationParameters(seed, counter, this.usageIndex));
+        if (this.usageIndex >= 0 && (g = calculateGenerator_FIPS186_3_Verifiable(d, p, q, seed, this.usageIndex)) != null) {
+            int n2 = this.usageIndex;
+            return new DSAParameters(p, q, g, new DSAValidationParameters(seed, counter, n2));
         }
         return new DSAParameters(p, q, calculateGenerator_FIPS186_3_Unverifiable(p, q, this.random), new DSAValidationParameters(seed, counter));
     }

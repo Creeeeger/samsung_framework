@@ -10,6 +10,13 @@ public final class WebViewUpdateService {
     }
 
     public static WebViewProviderInfo[] getAllWebViewPackages() {
+        if (Flags.updateServiceIpcWrapper()) {
+            WebViewUpdateManager manager = WebViewUpdateManager.getInstance();
+            if (manager == null) {
+                return new WebViewProviderInfo[0];
+            }
+            return manager.getAllWebViewPackages();
+        }
         IWebViewUpdateService service = getUpdateService();
         if (service == null) {
             return new WebViewProviderInfo[0];
@@ -22,6 +29,13 @@ public final class WebViewUpdateService {
     }
 
     public static WebViewProviderInfo[] getValidWebViewPackages() {
+        if (Flags.updateServiceIpcWrapper()) {
+            WebViewUpdateManager manager = WebViewUpdateManager.getInstance();
+            if (manager == null) {
+                return new WebViewProviderInfo[0];
+            }
+            return manager.getValidWebViewPackages();
+        }
         IWebViewUpdateService service = getUpdateService();
         if (service == null) {
             return new WebViewProviderInfo[0];
@@ -34,6 +48,13 @@ public final class WebViewUpdateService {
     }
 
     public static String getCurrentWebViewPackageName() {
+        if (Flags.updateServiceIpcWrapper()) {
+            WebViewUpdateManager manager = WebViewUpdateManager.getInstance();
+            if (manager == null) {
+                return null;
+            }
+            return manager.getCurrentWebViewPackageName();
+        }
         IWebViewUpdateService service = getUpdateService();
         if (service == null) {
             return null;

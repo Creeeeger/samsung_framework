@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.net.LinkProperties;
 import android.os.Handler;
+import android.os.HandlerExecutor;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
@@ -13,6 +14,8 @@ import android.os.RemoteException;
 import android.telephony.data.IDataService;
 import android.util.Log;
 import android.util.SparseArray;
+import com.android.internal.telephony.IIntegerConsumer;
+import com.android.internal.util.FunctionalUtils;
 import com.android.telephony.Rlog;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,9 +23,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class DataService extends Service {
     private static final int DATA_SERVICE_CREATE_DATA_SERVICE_PROVIDER = 1;
     private static final int DATA_SERVICE_INDICATION_APN_UNTHROTTLED = 16;
@@ -40,6 +45,7 @@ public abstract class DataService extends Service {
     private static final int DATA_SERVICE_REQUEST_START_HANDOVER = 12;
     private static final int DATA_SERVICE_REQUEST_UNREGISTER_APN_UNTHROTTLED = 15;
     private static final int DATA_SERVICE_REQUEST_UNREGISTER_DATA_CALL_LIST_CHANGED = 10;
+    private static final int DATA_SERVICE_REQUEST_VALIDATION = 17;
     public static final int REQUEST_REASON_APN_CHANGE = 5;
     public static final int REQUEST_REASON_HANDOVER = 3;
     public static final int REQUEST_REASON_NORMAL = 1;
@@ -49,23 +55,21 @@ public abstract class DataService extends Service {
     public static final String SERVICE_INTERFACE = "android.telephony.data.DataService";
     private static final String TAG = DataService.class.getSimpleName();
     private final DataServiceHandler mHandler;
-    private final HandlerThread mHandlerThread;
+    private final Executor mHandlerExecutor;
     private final SparseArray<DataServiceProvider> mServiceMap = new SparseArray<>();
     public final IDataServiceWrapper mBinder = new IDataServiceWrapper();
+    private final HandlerThread mHandlerThread = new HandlerThread(TAG);
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeactivateDataReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SetupDataReason {
     }
 
     public abstract DataServiceProvider onCreateDataServiceProvider(int i);
 
-    /* loaded from: classes3.dex */
     public abstract class DataServiceProvider implements AutoCloseable {
         private final int mSlotIndex;
         private final List<IDataServiceCallback> mDataCallListChangedCallbacks = new ArrayList();
@@ -126,28 +130,44 @@ public abstract class DataService extends Service {
             callback.onRequestDataCallListComplete(1, Collections.EMPTY_LIST);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void registerForDataCallListChanged(IDataServiceCallback callback) {
             synchronized (this.mDataCallListChangedCallbacks) {
                 this.mDataCallListChangedCallbacks.add(callback);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void unregisterForDataCallListChanged(IDataServiceCallback callback) {
             synchronized (this.mDataCallListChangedCallbacks) {
                 this.mDataCallListChangedCallbacks.remove(callback);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void registerForApnUnthrottled(IDataServiceCallback callback) {
             synchronized (this.mApnUnthrottledCallbacks) {
                 this.mApnUnthrottledCallbacks.add(callback);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void unregisterForApnUnthrottled(IDataServiceCallback callback) {
             synchronized (this.mApnUnthrottledCallbacks) {
                 this.mApnUnthrottledCallbacks.remove(callback);
             }
+        }
+
+        public void requestNetworkValidation(int cid, Executor executor, final Consumer<Integer> resultCodeCallback) {
+            Objects.requireNonNull(executor, "executor cannot be null");
+            Objects.requireNonNull(resultCodeCallback, "resultCodeCallback cannot be null");
+            Log.d(DataService.TAG, "requestNetworkValidation: " + cid);
+            executor.execute(new Runnable() { // from class: android.telephony.data.DataService$DataServiceProvider$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    resultCodeCallback.accept(1);
+                }
+            });
         }
 
         public final void notifyDataCallListChanged(List<DataCallResponse> dataCallList) {
@@ -175,7 +195,6 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class SetupDataCallRequest {
         public final int accessNetworkType;
         public final boolean allowRoaming;
@@ -204,7 +223,6 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class DeactivateDataCallRequest {
         public final IDataServiceCallback callback;
         public final int cid;
@@ -217,7 +235,6 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class SetInitialAttachApnRequest {
         public final IDataServiceCallback callback;
         public final DataProfile dataProfile;
@@ -230,7 +247,6 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class SetDataProfileRequest {
         public final IDataServiceCallback callback;
         public final List<DataProfile> dps;
@@ -243,7 +259,6 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class BeginCancelHandoverRequest {
         public final IDataServiceCallback callback;
         public final int cid;
@@ -254,7 +269,6 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class DataCallListChangedIndication {
         public final IDataServiceCallback callback;
         public final List<DataCallResponse> dataCallList;
@@ -265,7 +279,6 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class ApnUnthrottledIndication {
         public final String apn;
         public final IDataServiceCallback callback;
@@ -284,13 +297,23 @@ public abstract class DataService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
+    private static final class ValidationRequest {
+        public final IIntegerConsumer callback;
+        public final int cid;
+        public final Executor executor;
+
+        ValidationRequest(int cid, Executor executor, IIntegerConsumer callback) {
+            this.cid = cid;
+            this.executor = executor;
+            this.callback = callback;
+        }
+    }
+
     private class DataServiceHandler extends Handler {
         DataServiceHandler(Looper looper) {
             super(looper);
         }
 
-        /* JADX WARN: Failed to find 'out' block for switch in B:2:0x0015. Please report as an issue. */
         @Override // android.os.Handler
         public void handleMessage(Message message) {
             DataServiceProvider serviceProvider;
@@ -313,8 +336,10 @@ public abstract class DataService extends Service {
                     if (serviceProvider != null) {
                         serviceProvider.close();
                         DataService.this.mServiceMap.remove(slotIndex);
+                        break;
+                    } else {
+                        break;
                     }
-                    return;
                 case 3:
                     for (int i = 0; i < DataService.this.mServiceMap.size(); i++) {
                         DataServiceProvider serviceProvider4 = (DataServiceProvider) DataService.this.mServiceMap.get(i);
@@ -327,6 +352,7 @@ public abstract class DataService extends Service {
                 case 4:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         SetupDataCallRequest setupDataCallRequest = (SetupDataCallRequest) message.obj;
                         int i2 = setupDataCallRequest.accessNetworkType;
@@ -346,11 +372,12 @@ public abstract class DataService extends Service {
                         }
                         serviceProvider = serviceProvider2;
                         serviceProvider2.setupDataCall(i2, dataProfile, z, z2, i3, linkProperties, i4, networkSliceInfo, trafficDescriptor, z3, dataServiceCallback);
+                        break;
                     }
-                    return;
                 case 5:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         DeactivateDataCallRequest deactivateDataCallRequest = (DeactivateDataCallRequest) message.obj;
                         int i5 = deactivateDataCallRequest.cid;
@@ -362,11 +389,12 @@ public abstract class DataService extends Service {
                         }
                         serviceProvider2.deactivateDataCall(i5, i6, dataServiceCallback2);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 6:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         SetInitialAttachApnRequest setInitialAttachApnRequest = (SetInitialAttachApnRequest) message.obj;
                         DataProfile dataProfile2 = setInitialAttachApnRequest.dataProfile;
@@ -378,11 +406,12 @@ public abstract class DataService extends Service {
                         }
                         serviceProvider2.setInitialAttachApn(dataProfile2, z4, dataServiceCallback3);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 7:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         SetDataProfileRequest setDataProfileRequest = (SetDataProfileRequest) message.obj;
                         List<DataProfile> list = setDataProfileRequest.dps;
@@ -394,85 +423,95 @@ public abstract class DataService extends Service {
                         }
                         serviceProvider2.setDataProfile(list, z5, dataServiceCallback4);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 8:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         serviceProvider2.requestDataCallList(new DataServiceCallback((IDataServiceCallback) message.obj));
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 9:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         serviceProvider2.registerForDataCallListChanged((IDataServiceCallback) message.obj);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 10:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         IDataServiceCallback callback = (IDataServiceCallback) message.obj;
                         serviceProvider2.unregisterForDataCallListChanged(callback);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 11:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         DataCallListChangedIndication indication = (DataCallListChangedIndication) message.obj;
                         try {
                             indication.callback.onDataCallListChanged(indication.dataCallList);
                             serviceProvider = serviceProvider2;
+                            break;
                         } catch (RemoteException e) {
                             DataService.this.loge("Failed to call onDataCallListChanged. " + e);
                             serviceProvider = serviceProvider2;
+                            break;
                         }
                     }
-                    return;
                 case 12:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         BeginCancelHandoverRequest bReq = (BeginCancelHandoverRequest) message.obj;
                         serviceProvider2.startHandover(bReq.cid, bReq.callback != null ? new DataServiceCallback(bReq.callback) : null);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 13:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         BeginCancelHandoverRequest cReq = (BeginCancelHandoverRequest) message.obj;
                         serviceProvider2.cancelHandover(cReq.cid, cReq.callback != null ? new DataServiceCallback(cReq.callback) : null);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 14:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         serviceProvider2.registerForApnUnthrottled((IDataServiceCallback) message.obj);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 15:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         IDataServiceCallback callback2 = (IDataServiceCallback) message.obj;
                         serviceProvider2.unregisterForApnUnthrottled(callback2);
                         serviceProvider = serviceProvider2;
+                        break;
                     }
-                    return;
                 case 16:
                     if (serviceProvider2 == null) {
                         serviceProvider = serviceProvider2;
+                        break;
                     } else {
                         ApnUnthrottledIndication apnUnthrottledIndication = (ApnUnthrottledIndication) message.obj;
                         try {
@@ -482,24 +521,38 @@ public abstract class DataService extends Service {
                                 apnUnthrottledIndication.callback.onApnUnthrottled(apnUnthrottledIndication.apn);
                             }
                             serviceProvider = serviceProvider2;
+                            break;
                         } catch (RemoteException e2) {
                             DataService.this.loge("Failed to call onApnUnthrottled. " + e2);
                             serviceProvider = serviceProvider2;
+                            break;
                         }
                     }
-                    return;
+                case 17:
+                    if (serviceProvider2 == null) {
+                        serviceProvider = serviceProvider2;
+                        break;
+                    } else {
+                        ValidationRequest validationRequest = (ValidationRequest) message.obj;
+                        int i7 = validationRequest.cid;
+                        Executor executor = validationRequest.executor;
+                        IIntegerConsumer iIntegerConsumer = validationRequest.callback;
+                        Objects.requireNonNull(iIntegerConsumer);
+                        serviceProvider2.requestNetworkValidation(i7, executor, FunctionalUtils.ignoreRemoteException(new DataService$DataServiceHandler$$ExternalSyntheticLambda0(iIntegerConsumer)));
+                        serviceProvider = serviceProvider2;
+                        break;
+                    }
                 default:
                     serviceProvider = serviceProvider2;
-                    return;
+                    break;
             }
         }
     }
 
     public DataService() {
-        HandlerThread handlerThread = new HandlerThread(TAG);
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mHandler = new DataServiceHandler(handlerThread.getLooper());
+        this.mHandlerThread.start();
+        this.mHandler = new DataServiceHandler(this.mHandlerThread.getLooper());
+        this.mHandlerExecutor = new HandlerExecutor(this.mHandler);
         log("Data service created");
     }
 
@@ -524,12 +577,7 @@ public abstract class DataService extends Service {
         super.onDestroy();
     }
 
-    /* loaded from: classes3.dex */
     private class IDataServiceWrapper extends IDataService.Stub {
-        /* synthetic */ IDataServiceWrapper(DataService dataService, IDataServiceWrapperIA iDataServiceWrapperIA) {
-            this();
-        }
-
         private IDataServiceWrapper() {
         }
 
@@ -627,12 +675,23 @@ public abstract class DataService extends Service {
                 DataService.this.mHandler.obtainMessage(15, slotIndex, 0, callback).sendToTarget();
             }
         }
+
+        @Override // android.telephony.data.IDataService
+        public void requestNetworkValidation(int slotIndex, int cid, IIntegerConsumer resultCodeCallback) {
+            if (resultCodeCallback == null) {
+                DataService.this.loge("requestNetworkValidation: resultCodeCallback is null");
+            } else {
+                ValidationRequest validationRequest = new ValidationRequest(cid, DataService.this.mHandlerExecutor, resultCodeCallback);
+                DataService.this.mHandler.obtainMessage(17, slotIndex, 0, validationRequest).sendToTarget();
+            }
+        }
     }
 
     private void log(String s) {
         Rlog.d(TAG, s);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void loge(String s) {
         Rlog.e(TAG, s);
     }

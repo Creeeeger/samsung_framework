@@ -20,7 +20,6 @@ public interface IGnssNavigationMessageCallback extends IInterface {
 
     void gnssNavigationMessageCb(GnssNavigationMessage gnssNavigationMessage) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssNavigationMessageCallback {
         @Override // android.hardware.gnss.IGnssNavigationMessageCallback
         public void gnssNavigationMessageCb(GnssNavigationMessage message) throws RemoteException {
@@ -42,7 +41,6 @@ public interface IGnssNavigationMessageCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssNavigationMessageCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -93,35 +91,32 @@ public interface IGnssNavigationMessageCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            GnssNavigationMessage _arg0 = (GnssNavigationMessage) data.readTypedObject(GnssNavigationMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssNavigationMessageCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    GnssNavigationMessage _arg0 = (GnssNavigationMessage) data.readTypedObject(GnssNavigationMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssNavigationMessageCb(_arg0);
+                    reply.writeNoException();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssNavigationMessageCallback {
+        private static class Proxy implements IGnssNavigationMessageCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -203,12 +198,9 @@ public interface IGnssNavigationMessageCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class GnssNavigationMessage implements Parcelable {
         public static final Parcelable.Creator<GnssNavigationMessage> CREATOR = new Parcelable.Creator<GnssNavigationMessage>() { // from class: android.hardware.gnss.IGnssNavigationMessageCallback.GnssNavigationMessage.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssNavigationMessage createFromParcel(Parcel _aidl_source) {
                 GnssNavigationMessage _aidl_out = new GnssNavigationMessage();
@@ -216,6 +208,7 @@ public interface IGnssNavigationMessageCallback extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssNavigationMessage[] newArray(int _aidl_size) {
                 return new GnssNavigationMessage[_aidl_size];
@@ -231,7 +224,6 @@ public interface IGnssNavigationMessageCallback extends IInterface {
         public int messageId = 0;
         public int submessageId = 0;
 
-        /* loaded from: classes2.dex */
         public @interface GnssNavigationMessageType {
             public static final int BDS_CNAV1 = 1283;
             public static final int BDS_CNAV2 = 1284;
@@ -248,25 +240,6 @@ public interface IGnssNavigationMessageCallback extends IInterface {
             public static final int QZS_L1CA = 1025;
             public static final int SBS = 513;
             public static final int UNKNOWN = 0;
-        }
-
-        /* renamed from: android.hardware.gnss.IGnssNavigationMessageCallback$GnssNavigationMessage$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<GnssNavigationMessage> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssNavigationMessage createFromParcel(Parcel _aidl_source) {
-                GnssNavigationMessage _aidl_out = new GnssNavigationMessage();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssNavigationMessage[] newArray(int _aidl_size) {
-                return new GnssNavigationMessage[_aidl_size];
-            }
         }
 
         @Override // android.os.Parcelable

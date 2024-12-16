@@ -25,7 +25,6 @@ public interface IRecognitionStatusCallback extends IInterface {
 
     void onResumeFailed(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRecognitionStatusCallback {
         @Override // android.hardware.soundtrigger.IRecognitionStatusCallback
         public void onKeyphraseDetected(SoundTrigger.KeyphraseRecognitionEvent recognitionEvent) throws RemoteException {
@@ -65,7 +64,6 @@ public interface IRecognitionStatusCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRecognitionStatusCallback {
         public static final String DESCRIPTOR = "android.hardware.soundtrigger.IRecognitionStatusCallback";
         static final int TRANSACTION_onGenericSoundTriggerDetected = 2;
@@ -130,53 +128,49 @@ public interface IRecognitionStatusCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    SoundTrigger.KeyphraseRecognitionEvent _arg0 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onKeyphraseDetected(_arg0);
+                    return true;
+                case 2:
+                    SoundTrigger.GenericRecognitionEvent _arg02 = (SoundTrigger.GenericRecognitionEvent) data.readTypedObject(SoundTrigger.GenericRecognitionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGenericSoundTriggerDetected(_arg02);
+                    return true;
+                case 3:
+                    onRecognitionPaused();
+                    return true;
+                case 4:
+                    onRecognitionResumed();
+                    return true;
+                case 5:
+                    onPreempted();
+                    return true;
+                case 6:
+                    onModuleDied();
+                    return true;
+                case 7:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onResumeFailed(_arg03);
+                    return true;
+                case 8:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPauseFailed(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SoundTrigger.KeyphraseRecognitionEvent _arg0 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onKeyphraseDetected(_arg0);
-                            return true;
-                        case 2:
-                            SoundTrigger.GenericRecognitionEvent _arg02 = (SoundTrigger.GenericRecognitionEvent) data.readTypedObject(SoundTrigger.GenericRecognitionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGenericSoundTriggerDetected(_arg02);
-                            return true;
-                        case 3:
-                            onRecognitionPaused();
-                            return true;
-                        case 4:
-                            onRecognitionResumed();
-                            return true;
-                        case 5:
-                            onPreempted();
-                            return true;
-                        case 6:
-                            onModuleDied();
-                            return true;
-                        case 7:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onResumeFailed(_arg03);
-                            return true;
-                        case 8:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPauseFailed(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRecognitionStatusCallback {
+        private static class Proxy implements IRecognitionStatusCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -86,7 +86,6 @@ public class PreferenceFrameLayout extends FrameLayout {
         super.addView(child);
     }
 
-    /* loaded from: classes3.dex */
     public static class LayoutParams extends FrameLayout.LayoutParams {
         public boolean removeBorders;
 

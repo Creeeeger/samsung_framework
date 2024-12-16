@@ -4,7 +4,6 @@ package android.os;
 public interface IRecoverySystemProgressListener extends IInterface {
     void onProgress(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecoverySystemProgressListener {
         @Override // android.os.IRecoverySystemProgressListener
         public void onProgress(int progress) throws RemoteException {
@@ -16,7 +15,6 @@ public interface IRecoverySystemProgressListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecoverySystemProgressListener {
         public static final String DESCRIPTOR = "android.os.IRecoverySystemProgressListener";
         static final int TRANSACTION_onProgress = 1;
@@ -60,26 +58,22 @@ public interface IRecoverySystemProgressListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgress(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgress(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecoverySystemProgressListener {
+        private static class Proxy implements IRecoverySystemProgressListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

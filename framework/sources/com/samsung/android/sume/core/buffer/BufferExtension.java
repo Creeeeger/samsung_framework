@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class BufferExtension {
     private static final String TAG = Def.tagOf((Class<?>) BufferExtension.class);
     private static final String binaryKeySEP = "->";
@@ -45,11 +45,8 @@ public class BufferExtension {
     private final List<Integer> wrappedTransformList = new ArrayList();
     private final Map<Long, Consumer<?>> internalBufferHandlerMap = new ConcurrentHashMap();
 
-    static /* synthetic */ BufferExtension access$200() {
-        return getInstance();
-    }
-
-    private static BufferExtension getInstance() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static BufferExtension getInstance() {
         if (sInstance == null) {
             synchronized (BufferExtension.class) {
                 if (sInstance == null) {
@@ -204,7 +201,7 @@ public class BufferExtension {
         registerWrappedTransform(registry.getWrappedTransform());
     }
 
-    public static /* synthetic */ MutableMediaFormat lambda$new$0(Number number) {
+    static /* synthetic */ MutableMediaFormat lambda$new$0(Number number) {
         MutableMediaFormat format = MediaFormat.mutableOf(MediaType.SCALA, Shape.of(1, 1));
         if (number instanceof Byte) {
             format.setDataType(DataType.U8C1);
@@ -218,12 +215,12 @@ public class BufferExtension {
         return format;
     }
 
-    public static /* synthetic */ MutableMediaFormat lambda$new$2(Bitmap bitmap) {
+    static /* synthetic */ MutableMediaFormat lambda$new$2(Bitmap bitmap) {
         MutableMediaFormat fmt = MediaFormat.mutableImageOf(Shape.rectOf(bitmap.getWidth(), bitmap.getHeight()));
         fmt.setDataType(DataType.U8C3);
         fmt.setColorFormat(ColorFormat.RGB);
         fmt.setColorSpace(ColorSpace.of(bitmap));
-        float ratio = ((float) fmt.size()) / bitmap.getByteCount();
+        float ratio = fmt.size() / bitmap.getByteCount();
         if (Math.round(ratio * 100.0f) / 100.0f == 0.75f) {
             fmt.setDataType(DataType.U8C4);
             fmt.setColorFormat(ColorFormat.RGBA);
@@ -241,7 +238,7 @@ public class BufferExtension {
         return fmt;
     }
 
-    public static /* synthetic */ ByteBuffer lambda$new$3(MediaFormat format, Number number) {
+    static /* synthetic */ ByteBuffer lambda$new$3(MediaFormat format, Number number) {
         if (number instanceof Integer) {
             ByteBuffer buffer = ByteBuffer.allocate(32);
             buffer.asIntBuffer().put(((Integer) number).intValue());
@@ -270,7 +267,7 @@ public class BufferExtension {
         throw new UnsupportedOperationException("not supported number type");
     }
 
-    public static /* synthetic */ Number lambda$new$4(MediaFormat format, ByteBuffer byteBuffer) {
+    static /* synthetic */ Number lambda$new$4(MediaFormat format, ByteBuffer byteBuffer) {
         Def.check(format.getMediaType().isScala(), "media is not scala", new Object[0]);
         if (format.getDataType().isInt()) {
             return Integer.valueOf(byteBuffer.asIntBuffer().get(0));
@@ -290,41 +287,43 @@ public class BufferExtension {
         throw new UnsupportedOperationException("not supported scala type");
     }
 
-    public static /* synthetic */ HardwareBuffer lambda$new$6(MediaFormat format, ByteBuffer srcBuffer) {
+    static /* synthetic */ HardwareBuffer lambda$new$6(MediaFormat format, ByteBuffer srcBuffer) {
         HardwareBuffer dstBuffer = SharedBufferManager.create(format);
         SharedBufferManager.copyFromByteBuffer(format, srcBuffer, dstBuffer);
         return dstBuffer;
     }
 
-    public static /* synthetic */ ByteBuffer lambda$new$7(MediaFormat format, HardwareBuffer srcBuffer) {
+    static /* synthetic */ ByteBuffer lambda$new$7(MediaFormat format, HardwareBuffer srcBuffer) {
         ByteBuffer dstBuffer = ByteBuffer.allocateDirect((int) format.size());
         SharedBufferManager.copyToByteBuffer(format, srcBuffer, dstBuffer);
         return dstBuffer;
     }
 
-    public static /* synthetic */ ByteBuffer lambda$new$8(MediaFormat format, Bitmap srcBuffer) {
+    static /* synthetic */ ByteBuffer lambda$new$8(MediaFormat format, Bitmap srcBuffer) {
         ByteBuffer dstBuffer = ByteBuffer.allocateDirect(srcBuffer.getByteCount());
         srcBuffer.copyPixelsToBuffer(dstBuffer);
         dstBuffer.rewind();
         return dstBuffer;
     }
 
-    public static /* synthetic */ Bitmap lambda$new$9(MediaFormat format, ByteBuffer srcBuffer) {
+    static /* synthetic */ Bitmap lambda$new$9(MediaFormat format, ByteBuffer srcBuffer) {
         Def.check(format.getColorFormat() == ColorFormat.RGBA);
         Bitmap dstBuffer = Bitmap.createBitmap(format.getCols(), format.getRows(), Bitmap.Config.ARGB_8888);
         dstBuffer.copyPixelsFromBuffer(srcBuffer);
         return dstBuffer;
     }
 
-    public static /* synthetic */ UniExifInterface lambda$new$10(MediaFormat format, ByteBuffer srcBuffer) {
+    static /* synthetic */ UniExifInterface lambda$new$10(MediaFormat format, ByteBuffer srcBuffer) {
         Def.check(format.contains("exif"));
         return UniExifInterface.of(srcBuffer);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T> String getUnaryKey(Class<T> clazz) {
         return clazz.getName();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public <T, R> String getBinaryKey(Class<T> from, Class<R> to) {
         return from.getName() + "->" + to.getName();
     }
@@ -335,29 +334,31 @@ public class BufferExtension {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension registerDescribe(Map<Class<?>, Function<?, MutableMediaFormat>> describeMap) {
-        Map<String, Function<?, MutableMediaFormat>> map = (Map) describeMap.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda0
+        Map<String, Function<?, MutableMediaFormat>> map = (Map) describeMap.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda8
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return BufferExtension.this.m8715x94e37bf4((Map.Entry) obj);
+                return BufferExtension.this.m9104x94e37bf4((Map.Entry) obj);
             }
-        }, new BufferExtension$$ExternalSyntheticLambda1()));
+        }, new BufferExtension$$ExternalSyntheticLambda9()));
         this.describeMap.putAll(map);
         return this;
     }
 
-    /* renamed from: lambda$registerDescribe$12$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ String m8715x94e37bf4(Map.Entry it) {
+    /* renamed from: lambda$registerDescribe$12$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ String m9104x94e37bf4(Map.Entry it) {
         addToClassMap((Class) it.getKey());
         return getUnaryKey((Class) it.getKey());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension unRegisterDescribe(final List<String> deallocList) {
-        this.describeMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda17
+        this.describeMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda18
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean anyMatch;
-                anyMatch = deallocList.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda40
+                anyMatch = deallocList.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda15
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj2) {
                         boolean equals;
@@ -371,29 +372,31 @@ public class BufferExtension {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension registerAlloc(Map<Class<?>, Function<MediaFormat, ?>> allocMap) {
-        Map<String, Function<MediaFormat, ?>> map = (Map) allocMap.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda36
+        Map<String, Function<MediaFormat, ?>> map = (Map) allocMap.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda37
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return BufferExtension.this.m8713xe9dbe83b((Map.Entry) obj);
+                return BufferExtension.this.m9102xe9dbe83b((Map.Entry) obj);
             }
-        }, new BufferExtension$$ExternalSyntheticLambda1()));
+        }, new BufferExtension$$ExternalSyntheticLambda9()));
         this.allocMap.putAll(map);
         return this;
     }
 
-    /* renamed from: lambda$registerAlloc$15$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ String m8713xe9dbe83b(Map.Entry it) {
+    /* renamed from: lambda$registerAlloc$15$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ String m9102xe9dbe83b(Map.Entry it) {
         addToClassMap((Class) it.getKey());
         return getUnaryKey((Class) it.getKey());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension unRegisterAlloc(final List<String> allocList) {
-        this.allocMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda37
+        this.allocMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda14
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean anyMatch;
-                anyMatch = allocList.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda2
+                anyMatch = allocList.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda10
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj2) {
                         boolean equals;
@@ -407,13 +410,14 @@ public class BufferExtension {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension registerDealloc(Map<Class<?>, Consumer<?>> deallocMap) {
-        Map<String, Consumer<?>> map = (Map) deallocMap.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda6
+        Map<String, Consumer<?>> map = (Map) deallocMap.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda4
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return BufferExtension.this.m8714xdd0ed737((Map.Entry) obj);
+                return BufferExtension.this.m9103xdd0ed737((Map.Entry) obj);
             }
-        }, new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda7
+        }, new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return (Consumer) ((Map.Entry) obj).getValue();
@@ -423,18 +427,19 @@ public class BufferExtension {
         return this;
     }
 
-    /* renamed from: lambda$registerDealloc$18$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ String m8714xdd0ed737(Map.Entry it) {
+    /* renamed from: lambda$registerDealloc$18$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ String m9103xdd0ed737(Map.Entry it) {
         addToClassMap((Class) it.getKey());
         return getUnaryKey((Class) it.getKey());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension unRegisterDealloc(final List<String> deallocList) {
-        this.deallocMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda5
+        this.deallocMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda17
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean anyMatch;
-                anyMatch = deallocList.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda4
+                anyMatch = deallocList.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda41
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj2) {
                         boolean equals;
@@ -448,13 +453,14 @@ public class BufferExtension {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension registerTransform(Map<Pair<Class<?>, Class<?>>, BiFunction<MediaFormat, ?, ?>> transforms) {
-        Map<String, TransformFunction> map = (Map) transforms.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda11
+        Map<String, TransformFunction> map = (Map) transforms.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda6
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return BufferExtension.this.m8717x297a7a37((Map.Entry) obj);
+                return BufferExtension.this.m9106x297a7a37((Map.Entry) obj);
             }
-        }, new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda12
+        }, new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda7
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return BufferExtension.lambda$registerTransform$22((Map.Entry) obj);
@@ -465,8 +471,8 @@ public class BufferExtension {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* renamed from: lambda$registerTransform$21$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ String m8717x297a7a37(Map.Entry it) {
+    /* renamed from: lambda$registerTransform$21$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ String m9106x297a7a37(Map.Entry it) {
         Class<?> from = (Class) ((Pair) it.getKey()).first;
         Class<?> to = (Class) ((Pair) it.getKey()).second;
         addToClassMap(from);
@@ -474,21 +480,23 @@ public class BufferExtension {
         return getBinaryKey(from, to);
     }
 
-    public static /* synthetic */ TransformFunction lambda$registerTransform$22(Map.Entry it) {
+    static /* synthetic */ TransformFunction lambda$registerTransform$22(Map.Entry it) {
         return new TransformFunction((BiFunction<MediaFormat, ?, ?>[]) new BiFunction[]{(BiFunction) it.getValue()});
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension registerWrappedTransform(List<Integer> wrappedTransforms) {
         this.wrappedTransformList.addAll(wrappedTransforms);
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension unRegisterTransform(final List<String> transforms) {
-        this.transformMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda35
+        this.transformMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean anyMatch;
-                anyMatch = transforms.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda41
+                anyMatch = transforms.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda16
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj2) {
                         boolean equals;
@@ -502,29 +510,31 @@ public class BufferExtension {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension registerStringfy(Map<Class<?>, Function<?, String>> stringfy) {
-        Map<String, Function<?, String>> map = (Map) stringfy.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda13
+        Map<String, Function<?, String>> map = (Map) stringfy.entrySet().stream().collect(Collectors.toMap(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda42
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return BufferExtension.this.m8716x6defe3eb((Map.Entry) obj);
+                return BufferExtension.this.m9105x6defe3eb((Map.Entry) obj);
             }
-        }, new BufferExtension$$ExternalSyntheticLambda1()));
+        }, new BufferExtension$$ExternalSyntheticLambda9()));
         this.stringfyMap.putAll(map);
         return this;
     }
 
-    /* renamed from: lambda$registerStringfy$25$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ String m8716x6defe3eb(Map.Entry it) {
+    /* renamed from: lambda$registerStringfy$25$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ String m9105x6defe3eb(Map.Entry it) {
         addToClassMap((Class) it.getKey());
         return getUnaryKey((Class) it.getKey());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public BufferExtension unRegisterStringfy(final List<String> stringfy) {
-        this.stringfyMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda14
+        this.stringfyMap.entrySet().removeIf(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda3
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean anyMatch;
-                anyMatch = stringfy.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda3
+                anyMatch = stringfy.stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda20
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj2) {
                         boolean equals;
@@ -572,7 +582,7 @@ public class BufferExtension {
     private <T> String doStringfy(final T data) {
         String key = findAvailableUnaryKey(data.getClass(), this.stringfyMap);
         Optional<Function<T, String>> stringfy = Optional.ofNullable(this.stringfyMap.get(key));
-        return (String) stringfy.map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda42
+        return (String) stringfy.map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda19
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return BufferExtension.lambda$doStringfy$28(data, (Function) obj);
@@ -580,19 +590,19 @@ public class BufferExtension {
         }).orElse(data.toString());
     }
 
-    public static /* synthetic */ String lambda$doStringfy$28(Object data, Function it) {
+    static /* synthetic */ String lambda$doStringfy$28(Object data, Function it) {
         return (String) it.apply(data);
     }
 
     private <T, R> String findAvailableUnaryKey(final Class<T> clazz, Map<String, R> registry) {
         String key = getUnaryKey(clazz);
         if (!registry.containsKey(key)) {
-            String found = registry.keySet().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda15
+            String found = registry.keySet().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda1
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     return BufferExtension.lambda$findAvailableUnaryKey$29(clazz, (String) obj);
                 }
-            }).findFirst().orElseThrow(new Supplier() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda16
+            }).findFirst().orElseThrow(new Supplier() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda2
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     return BufferExtension.lambda$findAvailableUnaryKey$30(clazz);
@@ -603,7 +613,7 @@ public class BufferExtension {
         return key;
     }
 
-    public static /* synthetic */ boolean lambda$findAvailableUnaryKey$29(Class clazz, String it) {
+    static /* synthetic */ boolean lambda$findAvailableUnaryKey$29(Class clazz, String it) {
         try {
             return Class.forName(it).isAssignableFrom(clazz);
         } catch (ClassNotFoundException e) {
@@ -611,7 +621,7 @@ public class BufferExtension {
         }
     }
 
-    public static /* synthetic */ UnsupportedOperationException lambda$findAvailableUnaryKey$30(Class clazz) {
+    static /* synthetic */ UnsupportedOperationException lambda$findAvailableUnaryKey$30(Class clazz) {
         return new UnsupportedOperationException("no extension exist for " + clazz);
     }
 
@@ -623,30 +633,30 @@ public class BufferExtension {
         Log.d(TAG, "no transform exist for " + key + ", find alternatives");
         final List<Pair<Class<?>, Class<?>>> fromList = new ArrayList<>();
         final List<Pair<Class<?>, Class<?>>> toList = new ArrayList<>();
-        Optional<String> findFirst = registry.keySet().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda8
+        Optional<String> findFirst = registry.keySet().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda38
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return BufferExtension.this.m8709x6a4f7af7(from, to, key, fromList, toList, (String) obj);
+                return BufferExtension.this.m9098x6a4f7af7(from, to, key, fromList, toList, (String) obj);
             }
         }).findFirst();
         Objects.requireNonNull(registry);
-        TransformFunction found = (TransformFunction) findFirst.map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda9
+        TransformFunction found = (TransformFunction) findFirst.map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda39
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return (BufferExtension.TransformFunction) registry.get((String) obj);
             }
-        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda10
+        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda40
             @Override // java.util.function.Supplier
             public final Object get() {
-                return BufferExtension.this.m8712xecd8f412(fromList, toList, key, registry, from, to);
+                return BufferExtension.this.m9101xecd8f412(fromList, toList, key, registry, from, to);
             }
         });
         registry.put(key, found);
         return key;
     }
 
-    /* renamed from: lambda$findAvailableBinaryKey$31$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ boolean m8709x6a4f7af7(Class from, Class to, String key, List fromList, List toList, String it) {
+    /* renamed from: lambda$findAvailableBinaryKey$31$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ boolean m9098x6a4f7af7(Class from, Class to, String key, List fromList, List toList, String it) {
         try {
             String[] token = it.split("->");
             Class<?> fromClass = this.extensionClassMap.get(token[0]);
@@ -674,48 +684,48 @@ public class BufferExtension {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* renamed from: lambda$findAvailableBinaryKey$33$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ TransformFunction m8710x9e867835(Pair it1, String key, Map registry, Pair it2) {
+    /* renamed from: lambda$findAvailableBinaryKey$33$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ TransformFunction m9099x9e867835(Pair it1, String key, Map registry, Pair it2) {
         String first = getBinaryKey((Class) it1.first, (Class) it1.second);
         String second = getBinaryKey((Class) it2.first, (Class) it2.second);
         Log.d(TAG, "find 2nd order combinations for" + key + ": " + first + " => " + second);
         return new TransformFunction((TransformFunction) registry.get(first), (TransformFunction) registry.get(second));
     }
 
-    /* renamed from: lambda$findAvailableBinaryKey$34$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ TransformFunction m8711xb8a1f6d4(List toList, final String key, final Map registry, final Pair it1) {
-        return (TransformFunction) toList.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda38
+    /* renamed from: lambda$findAvailableBinaryKey$34$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ TransformFunction m9100xb8a1f6d4(List toList, final String key, final Map registry, final Pair it1) {
+        return (TransformFunction) toList.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda35
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean isAssignableFrom;
                 isAssignableFrom = ((Class) Pair.this.second).isAssignableFrom((Class) ((Pair) obj).first);
                 return isAssignableFrom;
             }
-        }).findFirst().map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda39
+        }).findFirst().map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda36
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return BufferExtension.this.m8710x9e867835(it1, key, registry, (Pair) obj);
+                return BufferExtension.this.m9099x9e867835(it1, key, registry, (Pair) obj);
             }
         }).orElse(null);
     }
 
-    public static /* synthetic */ UnsupportedOperationException lambda$findAvailableBinaryKey$35(Class from, Class to) {
+    static /* synthetic */ UnsupportedOperationException lambda$findAvailableBinaryKey$35(Class from, Class to) {
         return new UnsupportedOperationException("no extension exist for " + from + " -> " + to);
     }
 
-    /* renamed from: lambda$findAvailableBinaryKey$36$com-samsung-android-sume-core-buffer-BufferExtension */
-    public /* synthetic */ TransformFunction m8712xecd8f412(List fromList, final List toList, final String key, final Map registry, final Class from, final Class to) {
-        return (TransformFunction) fromList.stream().map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda18
+    /* renamed from: lambda$findAvailableBinaryKey$36$com-samsung-android-sume-core-buffer-BufferExtension, reason: not valid java name */
+    /* synthetic */ TransformFunction m9101xecd8f412(List fromList, final List toList, final String key, final Map registry, final Class from, final Class to) {
+        return (TransformFunction) fromList.stream().map(new Function() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda11
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return BufferExtension.this.m8711xb8a1f6d4(toList, key, registry, (Pair) obj);
+                return BufferExtension.this.m9100xb8a1f6d4(toList, key, registry, (Pair) obj);
             }
-        }).filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda19
+        }).filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda12
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return Objects.nonNull((BufferExtension.TransformFunction) obj);
             }
-        }).findFirst().orElseThrow(new Supplier() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda20
+        }).findFirst().orElseThrow(new Supplier() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$$ExternalSyntheticLambda13
             @Override // java.util.function.Supplier
             public final Object get() {
                 return BufferExtension.lambda$findAvailableBinaryKey$35(from, to);
@@ -723,8 +733,8 @@ public class BufferExtension {
         });
     }
 
-    /* loaded from: classes4.dex */
-    public static final class TransformFunction {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class TransformFunction {
         private final List<BiFunction<MediaFormat, ?, ?>> functionList;
 
         @SafeVarargs
@@ -737,13 +747,13 @@ public class BufferExtension {
             Arrays.asList(transforms).forEach(new Consumer() { // from class: com.samsung.android.sume.core.buffer.BufferExtension$TransformFunction$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    BufferExtension.TransformFunction.this.m8718x3e8b297f((BufferExtension.TransformFunction) obj);
+                    BufferExtension.TransformFunction.this.m9107x3e8b297f((BufferExtension.TransformFunction) obj);
                 }
             });
         }
 
-        /* renamed from: lambda$new$0$com-samsung-android-sume-core-buffer-BufferExtension$TransformFunction */
-        public /* synthetic */ void m8718x3e8b297f(TransformFunction it) {
+        /* renamed from: lambda$new$0$com-samsung-android-sume-core-buffer-BufferExtension$TransformFunction, reason: not valid java name */
+        /* synthetic */ void m9107x3e8b297f(TransformFunction it) {
             this.functionList.addAll(it.functionList);
         }
 
@@ -763,7 +773,6 @@ public class BufferExtension {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class Registry {
         private final Map<Class<?>, Function<MediaFormat, ?>> allocMap;
         private final Map<Class<?>, Consumer<?>> deallocMap;
@@ -771,10 +780,6 @@ public class BufferExtension {
         private final Map<Class<?>, Function<?, String>> stringfyMap;
         private final Map<Pair<Class<?>, Class<?>>, BiFunction<MediaFormat, ?, ?>> transformMap;
         private final List<Integer> wrappedTransformList;
-
-        /* synthetic */ Registry(AnonymousClass1 x0) {
-            this();
-        }
 
         private Registry() {
             this.describeMap = new HashMap();
@@ -841,21 +846,16 @@ public class BufferExtension {
         }
 
         public void register() {
-            BufferExtension.access$200().registerDescribe(this.describeMap).registerAlloc(this.allocMap).registerDealloc(this.deallocMap).registerTransform(this.transformMap).registerWrappedTransform(this.wrappedTransformList).registerStringfy(this.stringfyMap);
+            BufferExtension.getInstance().registerDescribe(this.describeMap).registerAlloc(this.allocMap).registerDealloc(this.deallocMap).registerTransform(this.transformMap).registerWrappedTransform(this.wrappedTransformList).registerStringfy(this.stringfyMap);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class Unregistry {
         private final List<String> allocList;
         private final List<String> deallocList;
         private final List<String> describeList;
         private final List<String> stringfyList;
         private final List<String> transformList;
-
-        /* synthetic */ Unregistry(AnonymousClass1 x0) {
-            this();
-        }
 
         private Unregistry() {
             this.describeList = new ArrayList();
@@ -866,32 +866,32 @@ public class BufferExtension {
         }
 
         public <T> Unregistry removeDescribe(Class<T> clazz) {
-            this.describeList.add(BufferExtension.access$200().getUnaryKey(clazz));
+            this.describeList.add(BufferExtension.getInstance().getUnaryKey(clazz));
             return this;
         }
 
         public <T> Unregistry removeAlloc(Class<T> clazz) {
-            this.allocList.add(BufferExtension.access$200().getUnaryKey(clazz));
+            this.allocList.add(BufferExtension.getInstance().getUnaryKey(clazz));
             return this;
         }
 
         public <T> Unregistry removeDealloc(Class<T> clazz) {
-            this.deallocList.add(BufferExtension.access$200().getUnaryKey(clazz));
+            this.deallocList.add(BufferExtension.getInstance().getUnaryKey(clazz));
             return this;
         }
 
         public <T, R> Unregistry removeTransform(Class<T> from, Class<R> to) {
-            this.transformList.add(BufferExtension.access$200().getBinaryKey(from, to));
+            this.transformList.add(BufferExtension.getInstance().getBinaryKey(from, to));
             return this;
         }
 
         public <T> Unregistry removeStringfy(Class<T> clazz) {
-            this.stringfyList.add(BufferExtension.access$200().getUnaryKey(clazz));
+            this.stringfyList.add(BufferExtension.getInstance().getUnaryKey(clazz));
             return this;
         }
 
         public void unregister() {
-            BufferExtension.access$200().unRegisterDescribe(this.describeList).unRegisterAlloc(this.allocList).unRegisterDealloc(this.deallocList).unRegisterTransform(this.transformList).unRegisterStringfy(this.stringfyList);
+            BufferExtension.getInstance().unRegisterDescribe(this.describeList).unRegisterAlloc(this.allocList).unRegisterDealloc(this.deallocList).unRegisterTransform(this.transformList).unRegisterStringfy(this.stringfyList);
         }
     }
 }

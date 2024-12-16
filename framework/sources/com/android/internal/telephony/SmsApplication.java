@@ -39,7 +39,9 @@ import com.android.internal.telephony.vzwavslibrary.VZWAVSLibrary;
 import com.google.android.mms.ContentType;
 import com.samsung.android.feature.SemCscFeature;
 import com.samsung.android.feature.SemFloatingFeature;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -99,12 +101,6 @@ public final class SmsApplication {
     private static StringBuffer mLogStb = new StringBuffer();
     private static SemDMACdata sDMACdata = new SemDMACdata();
 
-    /* renamed from: -$$Nest$smgetIncomingUserId */
-    static /* bridge */ /* synthetic */ int m7526$$Nest$smgetIncomingUserId() {
-        return getIncomingUserId();
-    }
-
-    /* loaded from: classes5.dex */
     public static class SmsApplicationData {
         private String mApplicationName;
         private String mMmsReceiverClass;
@@ -147,7 +143,8 @@ public final class SmsApplication {
         }
     }
 
-    private static int getIncomingUserId() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int getIncomingUserId() {
         int contextUserId = UserHandle.myUserId();
         int callingUid = Binder.getCallingUid();
         if (UserHandle.getAppId(callingUid) < 10000) {
@@ -355,8 +352,13 @@ public final class SmsApplication {
         return applicationData;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String getDefaultSmsPackage(Context context, int userId) {
-        return ((RoleManager) context.getSystemService(RoleManager.class)).getSmsRoleHolder(userId);
+        RoleManager roleManager = (RoleManager) context.getSystemService(RoleManager.class);
+        if (roleManager == null) {
+            return "";
+        }
+        return roleManager.getSmsRoleHolder(userId);
     }
 
     private static void defaultSmsAppChanged(Context context) {
@@ -424,21 +426,17 @@ public final class SmsApplication {
             Rlog.e(LOG_TAG, "Block setDefaultApplication by admin");
             return;
         }
-        if (context != null) {
-            TelephonyManager tm = (TelephonyManager) context.getSystemService("phone");
-            RoleManager roleManager = (RoleManager) context.getSystemService(Context.ROLE_SERVICE);
-            if (!tm.isSmsCapable() && (roleManager == null || !roleManager.isRoleAvailable("android.app.role.SMS"))) {
-                return;
-            }
-            long token = Binder.clearCallingIdentity();
-            try {
-                setDefaultApplicationInternal(packageName, context, userId);
-                return;
-            } finally {
-                Binder.restoreCallingIdentity(token);
-            }
+        TelephonyManager tm = (TelephonyManager) context.getSystemService("phone");
+        RoleManager roleManager = (RoleManager) context.getSystemService(Context.ROLE_SERVICE);
+        if (!tm.isSmsCapable() && (roleManager == null || !roleManager.isRoleAvailable("android.app.role.SMS"))) {
+            return;
         }
-        Rlog.e(LOG_TAG, "context in DefaultApplication is null");
+        long token = Binder.clearCallingIdentity();
+        try {
+            setDefaultApplicationInternal(packageName, context, userId);
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
     }
 
     private static void setDefaultApplicationInternal(String packageName, Context context, int userId) {
@@ -466,7 +464,7 @@ public final class SmsApplication {
             Rlog.e(LOG_TAG, "update the default app to : " + applicationData.mPackageName + " oldPackageName: " + oldPackageName);
             sendBroadcast_SMS_BIG_DATA_INFO(context, oldPackageName, applicationData.mPackageName, null);
             final CompletableFuture<Void> future = new CompletableFuture<>();
-            Consumer<Boolean> callback = new Consumer() { // from class: com.android.internal.telephony.SmsApplication$$ExternalSyntheticLambda1
+            Consumer<Boolean> callback = new Consumer() { // from class: com.android.internal.telephony.SmsApplication$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     SmsApplication.lambda$setDefaultApplicationInternal$0(future, (Boolean) obj);
@@ -482,7 +480,7 @@ public final class SmsApplication {
         }
     }
 
-    public static /* synthetic */ void lambda$setDefaultApplicationInternal$0(CompletableFuture future, Boolean successful) {
+    static /* synthetic */ void lambda$setDefaultApplicationInternal$0(CompletableFuture future, Boolean successful) {
         if (successful.booleanValue()) {
             future.complete(null);
         } else {
@@ -509,6 +507,7 @@ public final class SmsApplication {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void broadcastSmsAppChange(Context context, UserHandle userHandle, String oldPackage, String newPackage) {
         Collection<SmsApplicationData> apps = getApplicationCollection(context);
         broadcastSmsAppChange(context, userHandle, getApplicationForPackage(apps, oldPackage), getApplicationForPackage(apps, newPackage));
@@ -561,9 +560,7 @@ public final class SmsApplication {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static final class SmsPackageMonitor extends PackageChangeReceiver {
+    private static final class SmsPackageMonitor extends PackageChangeReceiver {
         private static ThreadPoolExecutor threadPool = new ThreadPoolExecutor(1, 30, 60, TimeUnit.MINUTES, new LinkedBlockingQueue());
         final Context mContext;
 
@@ -596,19 +593,12 @@ public final class SmsApplication {
             Context userContext = this.mContext;
             if (userId != UserHandle.SYSTEM.getIdentifier()) {
                 try {
-                    Context context = this.mContext;
-                    userContext = context.createPackageContextAsUser(context.getPackageName(), 0, UserHandle.of(userId));
+                    userContext = this.mContext.createPackageContextAsUser(this.mContext.getPackageName(), 0, UserHandle.of(userId));
                 } catch (PackageManager.NameNotFoundException e2) {
                 }
             }
-            Context threadContext = userContext;
+            final Context threadContext = userContext;
             threadPool.execute(new Runnable() { // from class: com.android.internal.telephony.SmsApplication.SmsPackageMonitor.1
-                final /* synthetic */ Context val$threadContext;
-
-                AnonymousClass1(Context threadContext2) {
-                    threadContext = threadContext2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     Rlog.d(SmsApplication.LOG_TAG, "onPackageChanged: run");
@@ -621,30 +611,8 @@ public final class SmsApplication {
                 }
             });
         }
-
-        /* renamed from: com.android.internal.telephony.SmsApplication$SmsPackageMonitor$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 implements Runnable {
-            final /* synthetic */ Context val$threadContext;
-
-            AnonymousClass1(Context threadContext2) {
-                threadContext = threadContext2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                Rlog.d(SmsApplication.LOG_TAG, "onPackageChanged: run");
-                PackageManager packageManager = threadContext.getPackageManager();
-                ComponentName componentName = SmsApplication.getDefaultSendToApplication(threadContext, true);
-                if (componentName != null) {
-                    SmsApplication.configurePreferredActivity(packageManager, componentName);
-                }
-                Rlog.d(SmsApplication.LOG_TAG, "onPackageChanged: end");
-            }
-        }
     }
 
-    /* loaded from: classes5.dex */
     private static final class SmsRoleListener implements OnRoleHoldersChangedListener {
         private final Context mContext;
         private final RoleManager mRoleManager;
@@ -682,12 +650,12 @@ public final class SmsApplication {
     }
 
     public static void initSmsPackageMonitor(Context context) {
-        SmsPackageMonitor smsPackageMonitor = new SmsPackageMonitor(context);
-        sSmsPackageMonitor = smsPackageMonitor;
-        smsPackageMonitor.register(context, context.getMainLooper(), UserHandle.ALL);
+        sSmsPackageMonitor = new SmsPackageMonitor(context);
+        sSmsPackageMonitor.register(context, context.getMainLooper(), UserHandle.ALL);
         sSmsRoleListener = new SmsRoleListener(context);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void configurePreferredActivity(PackageManager packageManager, ComponentName componentName) {
         replacePreferredActivity(packageManager, componentName, "sms");
         replacePreferredActivity(packageManager, componentName, SCHEME_SMSTO);
@@ -698,7 +666,7 @@ public final class SmsApplication {
     private static void replacePreferredActivity(PackageManager packageManager, ComponentName componentName, String scheme) {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(scheme, "", null));
         List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(intent, Sensor.SEM_TYPE_HALLIC);
-        List<ComponentName> components = (List) resolveInfoList.stream().map(new Function() { // from class: com.android.internal.telephony.SmsApplication$$ExternalSyntheticLambda0
+        List<ComponentName> components = (List) resolveInfoList.stream().map(new Function() { // from class: com.android.internal.telephony.SmsApplication$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return SmsApplication.lambda$replacePreferredActivity$1((ResolveInfo) obj);
@@ -711,7 +679,7 @@ public final class SmsApplication {
         packageManager.replacePreferredActivity(intentFilter, 2129920, components, componentName);
     }
 
-    public static /* synthetic */ ComponentName lambda$replacePreferredActivity$1(ResolveInfo info) {
+    static /* synthetic */ ComponentName lambda$replacePreferredActivity$1(ResolveInfo info) {
         return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
     }
 
@@ -949,11 +917,11 @@ public final class SmsApplication {
                 return true;
             }
         }
-        if (!SemCscFeature.getInstance().getBoolean("CscFeature_Common_SupportHuxAvs")) {
+        if (!isVzwAuthorizedApp(context, packageName)) {
             Rlog.d(LOG_TAG, "No PackageName Pattern : " + packageName);
             return false;
         }
-        return isVzwAuthorizedApp(context, packageName);
+        return true;
     }
 
     private static boolean isVzwAuthorizedApp(Context context, String packageName) {
@@ -1009,7 +977,6 @@ public final class SmsApplication {
         }
     }
 
-    /* loaded from: classes5.dex */
     private static final class DefaultMessageAppConfig {
         final Context mContext;
 
@@ -1031,106 +998,49 @@ public final class SmsApplication {
             return true;
         }
 
-        /* JADX WARN: Removed duplicated region for block: B:27:0x0050 A[Catch: all -> 0x0072, IOException | XmlPullParserException -> 0x0074, LOOP:0: B:15:0x0025->B:27:0x0050, LOOP_END, TryCatch #1 {IOException | XmlPullParserException -> 0x0074, blocks: (B:6:0x0015, B:8:0x001b, B:9:0x0056, B:14:0x0021, B:17:0x0028, B:20:0x002e, B:21:0x0039, B:25:0x0047, B:27:0x0050), top: B:5:0x0015, outer: #0 }] */
-        /* JADX WARN: Removed duplicated region for block: B:28:0x004f A[SYNTHETIC] */
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        private java.lang.String getActiveOperatorIdByCountryiso(java.lang.String r8) {
-            /*
-                r7 = this;
-                java.lang.String r0 = "SmsApplication"
-                java.lang.String r1 = "NONE"
-                r2 = 0
-                java.io.FileInputStream r3 = new java.io.FileInputStream     // Catch: java.io.FileNotFoundException -> L7c
-                java.io.File r4 = new java.io.File     // Catch: java.io.FileNotFoundException -> L7c
-                java.lang.String r5 = "/system/etc/countryISO_openBuyer_config.xml"
-                r4.<init>(r5)     // Catch: java.io.FileNotFoundException -> L7c
-                r3.<init>(r4)     // Catch: java.io.FileNotFoundException -> L7c
-                r2 = r3
-                r3 = 0
-                org.xmlpull.v1.XmlPullParser r4 = getParser(r2)     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                if (r4 != 0) goto L21
-                java.lang.String r5 = "XmlPullParser is null"
-                android.util.Log.e(r0, r5)     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                goto L56
-            L21:
-                int r5 = r4.getEventType()     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-            L25:
-                r6 = 1
-                if (r5 == r6) goto L56
-                switch(r5) {
-                    case 0: goto L46;
-                    case 1: goto L45;
-                    case 2: goto L39;
-                    case 3: goto L2b;
-                    case 4: goto L2c;
-                    default: goto L2b;
-                }     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-            L2b:
-                goto L47
-            L2c:
-                if (r3 == 0) goto L47
-                java.lang.String r6 = r4.getText()     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                java.lang.String r6 = r6.trim()     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                r1 = r6
-                r3 = 0
-                goto L47
-            L39:
-                java.lang.String r6 = r4.getName()     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                boolean r6 = r8.equals(r6)     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                if (r6 == 0) goto L47
-                r3 = 1
-                goto L47
-            L45:
-                goto L47
-            L46:
-            L47:
-                java.lang.String r6 = "NONE"
-                boolean r6 = r6.equals(r1)     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                if (r6 != 0) goto L50
-                goto L56
-            L50:
-                int r6 = r4.next()     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                r5 = r6
-                goto L25
-            L56:
-                java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                r5.<init>()     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                java.lang.String r6 = "xml parsing result- activeOperatorId: "
-                java.lang.StringBuilder r5 = r5.append(r6)     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                java.lang.StringBuilder r5 = r5.append(r1)     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                java.lang.String r5 = r5.toString()     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-                android.util.Log.d(r0, r5)     // Catch: java.lang.Throwable -> L72 java.lang.Throwable -> L74
-            L6d:
-            L6e:
-                closeFileInputStream(r2)
-                return r1
-            L72:
-                r0 = move-exception
-                goto L6d
-            L74:
-                r4 = move-exception
-                java.lang.String r5 = "Error while parsing"
-                android.util.Log.e(r0, r5, r4)     // Catch: java.lang.Throwable -> L72
-                goto L6e
-            L7c:
-                r3 = move-exception
-                java.lang.StringBuilder r4 = new java.lang.StringBuilder
-                r4.<init>()
-                java.lang.Class r5 = r3.getClass()
-                java.lang.String r5 = r5.getSimpleName()
-                java.lang.StringBuilder r4 = r4.append(r5)
-                java.lang.String r5 = "!! "
-                java.lang.StringBuilder r4 = r4.append(r5)
-                java.lang.String r5 = r3.getMessage()
-                java.lang.StringBuilder r4 = r4.append(r5)
-                java.lang.String r4 = r4.toString()
-                android.util.Log.e(r0, r4)
-                return r1
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.internal.telephony.SmsApplication.DefaultMessageAppConfig.getActiveOperatorIdByCountryiso(java.lang.String):java.lang.String");
+        private String getActiveOperatorIdByCountryiso(String countryIso) {
+            String activeOperatorId = "NONE";
+            try {
+                FileInputStream stream = new FileInputStream(new File(SmsApplication.COUNTRYISO_OPENBUYER_CONFIG_XML));
+                boolean bFind = false;
+                try {
+                    try {
+                        XmlPullParser xpp = getParser(stream);
+                        if (xpp == null) {
+                            Log.e(SmsApplication.LOG_TAG, "XmlPullParser is null");
+                        } else {
+                            for (int eventType = xpp.getEventType(); eventType != 1; eventType = xpp.next()) {
+                                switch (eventType) {
+                                    case 2:
+                                        if (countryIso.equals(xpp.getName())) {
+                                            bFind = true;
+                                            break;
+                                        }
+                                        break;
+                                    case 4:
+                                        if (bFind) {
+                                            activeOperatorId = xpp.getText().trim();
+                                            bFind = false;
+                                            break;
+                                        }
+                                        break;
+                                }
+                                if ("NONE".equals(activeOperatorId)) {
+                                }
+                            }
+                        }
+                        Log.d(SmsApplication.LOG_TAG, "xml parsing result- activeOperatorId: " + activeOperatorId);
+                    } catch (IOException | XmlPullParserException exp) {
+                        Log.e(SmsApplication.LOG_TAG, "Error while parsing", exp);
+                    }
+                } catch (Throwable th) {
+                }
+                closeFileInputStream(stream);
+                return activeOperatorId;
+            } catch (FileNotFoundException e) {
+                Log.e(SmsApplication.LOG_TAG, e.getClass().getSimpleName() + "!! " + e.getMessage());
+                return "NONE";
+            }
         }
 
         private boolean isWifiSkipCarrier() {
@@ -1242,6 +1152,16 @@ public final class SmsApplication {
             }
         }
 
+        private boolean isSMInstalled() {
+            PackageManager pm = this.mContext.getPackageManager();
+            try {
+                pm.getApplicationInfo(SmsApplication.NEW_SEC_SMS_PACKAGE_NAME, 0);
+                return true;
+            } catch (PackageManager.NameNotFoundException e) {
+                return false;
+            }
+        }
+
         private boolean isPackageEnabled(Context context, String packageName) {
             try {
                 int enable = context.getPackageManager().getApplicationEnabledSetting(packageName);
@@ -1292,7 +1212,7 @@ public final class SmsApplication {
             String activeOperatorId = getActiveOperatorId();
             Log.i(SmsApplication.LOG_TAG, "setDefaultMsgAppFromConfig");
             SmsApplication.mLogStb.append("setDefaultMsgApp Config Info =");
-            int userId = SmsApplication.m7526$$Nest$smgetIncomingUserId();
+            int userId = SmsApplication.getIncomingUserId();
             String oldPackageName = SmsApplication.getDefaultSmsPackage(this.mContext, userId);
             boolean carrierApp = false;
             if ("SBM".equals(activeOperatorId) || "DCM".equals(activeOperatorId) || "KDI".equals(activeOperatorId)) {
@@ -1301,6 +1221,10 @@ public final class SmsApplication {
             if (!isAMInstalled()) {
                 SemSystemProperties.set(SmsApplication.DEFAULT_MSGAPP_SYSTEMPROPERTY, SmsApplication.SM_TAG);
                 SmsApplication.sDMACdata.setPreInstalledMsgAppError("NoAM");
+            } else if (!carrierApp && !isSMInstalled()) {
+                SemSystemProperties.set(SmsApplication.DEFAULT_MSGAPP_SYSTEMPROPERTY, "AM");
+                SmsApplication.sDMACdata.setPreInstalledMsgAppError("NoSM");
+                Log.i(SmsApplication.LOG_TAG, "SM is not installed ");
             } else if ("NONE".equals(activeOperatorId) || carrierApp) {
                 SemSystemProperties.set(SmsApplication.DEFAULT_MSGAPP_SYSTEMPROPERTY, SmsApplication.SM_TAG);
             } else {
@@ -1325,7 +1249,7 @@ public final class SmsApplication {
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         /* JADX WARN: Code restructure failed: missing block: B:34:0x0050, code lost:
         
-            if (r0.equals("DCM") != false) goto L63;
+            if (r0.equals("DCM") != false) goto L22;
          */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -1468,9 +1392,8 @@ public final class SmsApplication {
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         /* JADX WARN: Code restructure failed: missing block: B:64:0x02c8, code lost:
         
-            if (r5.equals("111111") != false) goto L268;
+            if (r5.equals("111111") != false) goto L99;
          */
-        /* JADX WARN: Failed to find 'out' block for switch in B:121:0x011b. Please report as an issue. */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences

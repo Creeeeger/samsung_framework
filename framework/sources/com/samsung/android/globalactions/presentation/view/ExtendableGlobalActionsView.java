@@ -3,7 +3,7 @@ package com.samsung.android.globalactions.presentation.view;
 import com.samsung.android.globalactions.presentation.strategies.WindowDecorationStrategy;
 import com.samsung.android.globalactions.presentation.viewmodel.ActionViewModel;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ExtendableGlobalActionsView {
     void addWindowDecorator(WindowDecorationStrategy windowDecorationStrategy);
 

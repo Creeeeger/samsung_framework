@@ -31,8 +31,7 @@ public final class TextureLayer implements AutoCloseable {
     }
 
     private boolean isValid() {
-        VirtualRefBasePtr virtualRefBasePtr = this.mFinalizer;
-        return (virtualRefBasePtr == null || virtualRefBasePtr.get() == 0) ? false : true;
+        return (this.mFinalizer == null || this.mFinalizer.get() == 0) ? false : true;
     }
 
     @Override // java.lang.AutoCloseable
@@ -46,7 +45,7 @@ public final class TextureLayer implements AutoCloseable {
         this.mFinalizer = null;
     }
 
-    public long getDeferredLayerUpdater() {
+    long getDeferredLayerUpdater() {
         return this.mFinalizer.get();
     }
 
@@ -67,7 +66,7 @@ public final class TextureLayer implements AutoCloseable {
         this.mRenderer.detachSurfaceTexture(this.mFinalizer.get());
     }
 
-    public long getLayerHandle() {
+    long getLayerHandle() {
         return this.mFinalizer.get();
     }
 
@@ -81,7 +80,7 @@ public final class TextureLayer implements AutoCloseable {
         this.mRenderer.pushLayerUpdate(this);
     }
 
-    public static TextureLayer adoptTextureLayer(HardwareRenderer renderer, long layer) {
+    static TextureLayer adoptTextureLayer(HardwareRenderer renderer, long layer) {
         return new TextureLayer(renderer, layer);
     }
 }

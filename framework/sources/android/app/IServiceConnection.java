@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IServiceConnection extends IInterface {
     void connected(ComponentName componentName, IBinder iBinder, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IServiceConnection {
         @Override // android.app.IServiceConnection
         public void connected(ComponentName name, IBinder service, boolean dead) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IServiceConnection extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IServiceConnection {
         public static final String DESCRIPTOR = "android.app.IServiceConnection";
         static final int TRANSACTION_connected = 1;
@@ -67,27 +65,24 @@ public interface IServiceConnection extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    IBinder _arg1 = data.readStrongBinder();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    connected(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            IBinder _arg1 = data.readStrongBinder();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            connected(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IServiceConnection {
+        private static class Proxy implements IServiceConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

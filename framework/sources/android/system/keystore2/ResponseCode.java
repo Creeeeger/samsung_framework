@@ -3,6 +3,7 @@ package android.system.keystore2;
 /* loaded from: classes3.dex */
 public @interface ResponseCode {
     public static final int BACKEND_BUSY = 18;
+    public static final int GET_ATTESTATION_APPLICATION_ID_FAILED = 27;
     public static final int INVALID_ARGUMENT = 20;
     public static final int KEY_NOT_FOUND = 7;
     public static final int KEY_PERMANENTLY_INVALIDATED = 17;

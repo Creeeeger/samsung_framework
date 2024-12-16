@@ -39,7 +39,6 @@ public interface IDemux extends IInterface {
 
     void setFrontendDataSource(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDemux {
         @Override // android.hardware.tv.tuner.IDemux
         public void setFrontendDataSource(int frontendId) throws RemoteException {
@@ -98,7 +97,6 @@ public interface IDemux extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDemux {
         static final int TRANSACTION_close = 6;
         static final int TRANSACTION_connectCiCam = 8;
@@ -139,86 +137,84 @@ public interface IDemux extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setFrontendDataSource(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    DemuxFilterType _arg02 = (DemuxFilterType) data.readTypedObject(DemuxFilterType.CREATOR);
+                    int _arg1 = data.readInt();
+                    IFilterCallback _arg2 = IFilterCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    IFilter _result = openFilter(_arg02, _arg1, _arg2);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeStrongInterface(_result);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    ITimeFilter _result2 = openTimeFilter();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 4:
+                    IFilter _arg03 = IFilter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result3 = getAvSyncHwId(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long _result4 = getAvSyncTime(_arg04);
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    return true;
+                case 6:
+                    close();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    byte _arg05 = data.readByte();
+                    int _arg12 = data.readInt();
+                    IDvrCallback _arg22 = IDvrCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    IDvr _result5 = openDvr(_arg05, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 8:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    connectCiCam(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    disconnectCiCam();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setFrontendDataSource(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            DemuxFilterType _arg02 = (DemuxFilterType) data.readTypedObject(DemuxFilterType.CREATOR);
-                            int _arg1 = data.readInt();
-                            IFilterCallback _arg2 = IFilterCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            IFilter _result = openFilter(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 3:
-                            ITimeFilter _result2 = openTimeFilter();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 4:
-                            IFilter _arg03 = IFilter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result3 = getAvSyncHwId(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            long _result4 = getAvSyncTime(_arg04);
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        case 6:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            byte _arg05 = data.readByte();
-                            int _arg12 = data.readInt();
-                            IDvrCallback _arg22 = IDvrCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            IDvr _result5 = openDvr(_arg05, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 8:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            connectCiCam(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            disconnectCiCam();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IDemux {
+        private static class Proxy implements IDemux {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -12,9 +12,7 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class DnsEvent extends NetworkEvent implements Parcelable {
     public static final Parcelable.Creator<DnsEvent> CREATOR = new Parcelable.Creator<DnsEvent>() { // from class: android.app.admin.DnsEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DnsEvent createFromParcel(Parcel in) {
             if (in.readInt() != 1) {
@@ -23,6 +21,7 @@ public final class DnsEvent extends NetworkEvent implements Parcelable {
             return new DnsEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DnsEvent[] newArray(int size) {
             return new DnsEvent[size];
@@ -31,10 +30,6 @@ public final class DnsEvent extends NetworkEvent implements Parcelable {
     private final String mHostname;
     private final String[] mIpAddresses;
     private final int mIpAddressesCount;
-
-    /* synthetic */ DnsEvent(Parcel parcel, DnsEventIA dnsEventIA) {
-        this(parcel);
-    }
 
     public DnsEvent(String hostname, String[] ipAddresses, int ipAddressesCount, String packageName, long timestamp) {
         super(packageName, timestamp);
@@ -57,8 +52,7 @@ public final class DnsEvent extends NetworkEvent implements Parcelable {
     }
 
     public List<InetAddress> getInetAddresses() {
-        String[] strArr = this.mIpAddresses;
-        if (strArr == null || strArr.length == 0) {
+        if (this.mIpAddresses == null || this.mIpAddresses.length == 0) {
             return Collections.emptyList();
         }
         List<InetAddress> inetAddresses = new ArrayList<>(this.mIpAddresses.length);
@@ -76,35 +70,7 @@ public final class DnsEvent extends NetworkEvent implements Parcelable {
     }
 
     public String toString() {
-        Object[] objArr = new Object[6];
-        objArr[0] = Long.valueOf(this.mId);
-        objArr[1] = this.mHostname;
-        String[] strArr = this.mIpAddresses;
-        objArr[2] = strArr == null ? KeyProperties.DIGEST_NONE : String.join(" ", strArr);
-        objArr[3] = Integer.valueOf(this.mIpAddressesCount);
-        objArr[4] = Long.valueOf(this.mTimestamp);
-        objArr[5] = this.mPackageName;
-        return String.format("DnsEvent(%d, %s, %s, %d, %d, %s)", objArr);
-    }
-
-    /* renamed from: android.app.admin.DnsEvent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DnsEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DnsEvent createFromParcel(Parcel in) {
-            if (in.readInt() != 1) {
-                return null;
-            }
-            return new DnsEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DnsEvent[] newArray(int size) {
-            return new DnsEvent[size];
-        }
+        return String.format("DnsEvent(%d, %s, %s, %d, %d, %s)", Long.valueOf(this.mId), this.mHostname, this.mIpAddresses == null ? KeyProperties.DIGEST_NONE : String.join(" ", this.mIpAddresses), Integer.valueOf(this.mIpAddressesCount), Long.valueOf(this.mTimestamp), this.mPackageName);
     }
 
     @Override // android.app.admin.NetworkEvent, android.os.Parcelable

@@ -29,7 +29,6 @@ public final class ConfigSettingsProto {
     public static final long TELEPHONY_SETTINGS = 2246267895829L;
     public static final long TEXTCLASSIFIER_SETTINGS = 2246267895830L;
 
-    /* loaded from: classes3.dex */
     public final class NamespaceProto {
         public static final long NAMESPACE = 1138166333441L;
         public static final long SETTINGS = 2246267895810L;

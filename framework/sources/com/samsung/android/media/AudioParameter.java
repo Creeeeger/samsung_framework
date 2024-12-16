@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.function.Predicate;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class AudioParameter {
     public static final String AOSP_BT_A2DP_SUSPENDED = "A2dpSuspended";
     public static final String AOSP_BT_HEADSET_NREC = "bt_headset_nrec";
@@ -17,6 +17,7 @@ public class AudioParameter {
     public static final String AOSP_CALL_HAC = "HACSetting";
     public static final String AOSP_DEVICE_SHUTDOWN = "dev_shutdown";
     public static final String SEC_GLOBAL_A2DP_DELAY_REPORT = "g_a2dp_delay_report";
+    public static final String SEC_GLOBAL_ACH_SUPPORTED = "g_ach_supported";
     public static final String SEC_GLOBAL_BT_REMOTE_VOLUME_CONTROL_SUPPORT = "g_sco_rvc_support";
     public static final String SEC_GLOBAL_BT_SCO_CODEC_TYPE = "g_bt_sco_codec_type";
     public static final String SEC_GLOBAL_CALL_BAND = "g_call_band";
@@ -26,6 +27,7 @@ public class AudioParameter {
     public static final String SEC_GLOBAL_CALL_MEMO_STATE = "g_call_memo_state";
     public static final String SEC_GLOBAL_CALL_RINGBACKTONE_STATE = "g_call_ringbacktone_state";
     public static final String SEC_GLOBAL_CALL_SAR_BACKOFF_ENABLE = "g_call_sar_backoff_enable";
+    public static final String SEC_GLOBAL_CALL_SATELLITE_ENABLE = "g_call_satellite_enable";
     public static final String SEC_GLOBAL_CALL_SIM_SLOT = "g_call_sim_slot";
     public static final String SEC_GLOBAL_CALL_SPECTRO_ENABLE = "g_call_spectro_enable";
     public static final String SEC_GLOBAL_CALL_STATE = "g_call_state";
@@ -107,7 +109,6 @@ public class AudioParameter {
     public static final String SEC_LOCAL_EFFECT_UPSCALER_MODE = "l_effect_upscaler_mode";
     public static final String SEC_LOCAL_FAST_TRACK_ENABLE = "l_fast_track_enable";
     public static final String SEC_LOCAL_FMRADIO_RECORD_ACTIVE = "l_fmradio_record_active";
-    public static final String SEC_LOCAL_FORCED_DEVICE = "l_forced_device";
     public static final String SEC_LOCAL_GAME_CHAT_ENABLE = "l_game_chat_enable";
     public static final String SEC_LOCAL_GUARD_CALL_MODE = "l_guard_call_mode";
     public static final String SEC_LOCAL_GUARD_CALL_MODE_CALLING_PID = "l_guard_call_mode_calling_pid";
@@ -254,16 +255,14 @@ public class AudioParameter {
     }
 
     public String get(String strKey) {
-        LinkedHashMap<String, String> linkedHashMap;
-        if (strKey != null && (linkedHashMap = this.mAudioParams) != null && !linkedHashMap.isEmpty()) {
+        if (strKey != null && this.mAudioParams != null && !this.mAudioParams.isEmpty()) {
             return this.mAudioParams.get(strKey);
         }
         return null;
     }
 
     public int getInt(String strKey, int defaultVal) {
-        LinkedHashMap<String, String> linkedHashMap;
-        if (strKey != null && (linkedHashMap = this.mAudioParams) != null && !linkedHashMap.isEmpty()) {
+        if (strKey != null && this.mAudioParams != null && !this.mAudioParams.isEmpty()) {
             String value = this.mAudioParams.get(strKey);
             if (value == null) {
                 return defaultVal;
@@ -277,9 +276,8 @@ public class AudioParameter {
     }
 
     public boolean hasKey(String key) {
-        LinkedHashMap<String, String> linkedHashMap = this.mAudioParams;
-        if (linkedHashMap != null) {
-            return linkedHashMap.containsKey(key);
+        if (this.mAudioParams != null) {
+            return this.mAudioParams.containsKey(key);
         }
         return false;
     }
@@ -290,8 +288,7 @@ public class AudioParameter {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        LinkedHashMap<String, String> linkedHashMap = this.mAudioParams;
-        if (linkedHashMap != null && !linkedHashMap.isEmpty()) {
+        if (this.mAudioParams != null && !this.mAudioParams.isEmpty()) {
             Iterator i = this.mAudioParams.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry<String, String> m = i.next();
@@ -308,7 +305,6 @@ public class AudioParameter {
         return sb.toString();
     }
 
-    /* loaded from: classes5.dex */
     public static class Builder {
         private LinkedHashMap<String, String> mAudioParams = new LinkedHashMap<>();
 

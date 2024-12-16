@@ -24,7 +24,7 @@ public class AttributeCertificateHolder implements Selector {
     private static DigestCalculatorProvider digestCalculatorProvider;
     final Holder holder;
 
-    public AttributeCertificateHolder(ASN1Sequence seq) {
+    AttributeCertificateHolder(ASN1Sequence seq) {
         this.holder = Holder.getInstance(seq);
     }
 

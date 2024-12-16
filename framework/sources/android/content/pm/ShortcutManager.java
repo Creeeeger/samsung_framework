@@ -29,7 +29,6 @@ public class ShortcutManager {
     private final IShortcutService mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ShortcutMatchFlags {
     }
 
@@ -281,17 +280,15 @@ public class ShortcutManager {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class ShareShortcutInfo implements Parcelable {
         public static final Parcelable.Creator<ShareShortcutInfo> CREATOR = new Parcelable.Creator<ShareShortcutInfo>() { // from class: android.content.pm.ShortcutManager.ShareShortcutInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ShareShortcutInfo createFromParcel(Parcel in) {
                 return new ShareShortcutInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ShareShortcutInfo[] newArray(int size) {
                 return new ShareShortcutInfo[size];
@@ -299,10 +296,6 @@ public class ShortcutManager {
         };
         private final ShortcutInfo mShortcutInfo;
         private final ComponentName mTargetComponent;
-
-        /* synthetic */ ShareShortcutInfo(Parcel parcel, ShareShortcutInfoIA shareShortcutInfoIA) {
-            this(parcel);
-        }
 
         public ShareShortcutInfo(ShortcutInfo shortcutInfo, ComponentName targetComponent) {
             if (shortcutInfo == null) {
@@ -337,23 +330,6 @@ public class ShortcutManager {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeParcelable(this.mShortcutInfo, flags);
             dest.writeParcelable(this.mTargetComponent, flags);
-        }
-
-        /* renamed from: android.content.pm.ShortcutManager$ShareShortcutInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ShareShortcutInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ShareShortcutInfo createFromParcel(Parcel in) {
-                return new ShareShortcutInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ShareShortcutInfo[] newArray(int size) {
-                return new ShareShortcutInfo[size];
-            }
         }
     }
 

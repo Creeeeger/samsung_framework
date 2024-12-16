@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ColorExtractor {
     static final String TAG = "ColorExtractor";
     public static final String VERSION = "1.0.0";
@@ -44,10 +44,9 @@ public class ColorExtractor {
     }
 
     public static void setHsvDistanceWeight(float h, float s, float v) {
-        float[] fArr = sClusterHsvDistanceWeight;
-        fArr[0] = h;
-        fArr[1] = s;
-        fArr[2] = v;
+        sClusterHsvDistanceWeight[0] = h;
+        sClusterHsvDistanceWeight[1] = s;
+        sClusterHsvDistanceWeight[2] = v;
     }
 
     public static void setGrayscaleDistanceWeight(float[] grayscaleWeight) {
@@ -55,10 +54,9 @@ public class ColorExtractor {
     }
 
     public static void setGrayscaleDistanceWeight(float h, float s, float v) {
-        float[] fArr = sClusterGrayscaleDistanceWeight;
-        fArr[0] = h;
-        fArr[1] = s;
-        fArr[2] = v;
+        sClusterGrayscaleDistanceWeight[0] = h;
+        sClusterGrayscaleDistanceWeight[1] = s;
+        sClusterGrayscaleDistanceWeight[2] = v;
     }
 
     public static int[] makeClusterrGroup_preset1(int clusterNum) {
@@ -165,10 +163,10 @@ public class ColorExtractor {
         DominantColorResult[] dominantColorResults2 = new DominantColorResult[clusterSize];
         int[] clusterGroups_copied = new int[clusterSize];
         boolean[] grayScaleFlags = new boolean[clusterSize];
-        float[][] clusterGroups_hsv_copied2 = new float[clusterSize];
+        float[][] clusterGroups_hsv_copied2 = new float[clusterSize][];
         boolean[] clusterGroupGrayColors = new boolean[clusterSize];
         int[] aN = new int[clusterSize];
-        long[][] aColorAvg = new long[clusterSize];
+        long[][] aColorAvg = new long[clusterSize][];
         float[] clusterCalcWeightColor2 = sClusterHsvDistanceWeight;
         float[] clusterCalcWeightGrayScale2 = sClusterGrayscaleDistanceWeight;
         float saturationThresholdForGrayscale = sSaturationThresholdForGrayscale;
@@ -348,7 +346,6 @@ public class ColorExtractor {
         int clusterNum = dominantColoResults.length;
         int pixelLength = pixels.length;
         int[] sampleColors = new int[clusterNum];
-        float[] fArr = new float[3];
         float[] resultClusterColorHSV = new float[3];
         float saturationThresholdForGrayscale = sSaturationThresholdForGrayscale;
         float brightnessThresholdForGrayscale = sBrightnessThresholdForGrayscale;
@@ -400,7 +397,7 @@ public class ColorExtractor {
         return (((float) Math.pow(Color.red(c1) - Color.red(c2), 2.0d)) * 0.9f) + (((float) Math.pow(Color.green(c1) - Color.green(c2), 2.0d)) * 1.2f) + (((float) Math.pow(Color.blue(c1) - Color.blue(c2), 2.0d)) * 0.9f);
     }
 
-    public static boolean checkGayScaleWithSV(float[] hsv, float offsetValue_s, float offsetValue_b) {
+    protected static boolean checkGayScaleWithSV(float[] hsv, float offsetValue_s, float offsetValue_b) {
         return hsv[1] <= offsetValue_s || hsv[2] <= offsetValue_b;
     }
 
@@ -518,7 +515,7 @@ public class ColorExtractor {
             saturationThresholdForGrayscale2 = saturationThresholdForGrayscale2;
             clusterCalcWeightGrayscale2 = clusterCalcWeightGrayscale2;
         }
-        Arrays.sort(dominantColorArray, new Comparator() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.ColorExtractor$$ExternalSyntheticLambda0
+        Arrays.sort(dominantColorArray, new Comparator() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.ColorExtractor$$ExternalSyntheticLambda2
             @Override // java.util.Comparator
             public final int compare(Object obj, Object obj2) {
                 int compare;
@@ -528,7 +525,7 @@ public class ColorExtractor {
         });
     }
 
-    public static void mergeDominantColorUnit(DominantColorResult dominantColorResultA, DominantColorResult dominantColorResultB, ColorPaletteExtractor.ColorMergeType colorMergeType) {
+    static void mergeDominantColorUnit(DominantColorResult dominantColorResultA, DominantColorResult dominantColorResultB, ColorPaletteExtractor.ColorMergeType colorMergeType) {
         float percentageSum = dominantColorResultA.percentage + dominantColorResultB.percentage;
         if (colorMergeType != ColorPaletteExtractor.ColorMergeType.A) {
             if (colorMergeType == ColorPaletteExtractor.ColorMergeType.B) {
@@ -549,8 +546,8 @@ public class ColorExtractor {
         return Color.argb((int) ((Color.alpha(colorA) * weightA) + (Color.alpha(colorB) * weightB)), (int) ((Color.red(colorA) * weightA) + (Color.red(colorB) * weightB)), (int) ((Color.green(colorA) * weightA) + (Color.green(colorB) * weightB)), (int) ((Color.blue(colorA) * weightA) + (Color.blue(colorB) * weightB)));
     }
 
-    public static void sortColorResult(DominantColorResult[] dominantColorArray) {
-        Arrays.sort(dominantColorArray, new Comparator() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.ColorExtractor$$ExternalSyntheticLambda2
+    static void sortColorResult(DominantColorResult[] dominantColorArray) {
+        Arrays.sort(dominantColorArray, new Comparator() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.ColorExtractor$$ExternalSyntheticLambda0
             @Override // java.util.Comparator
             public final int compare(Object obj, Object obj2) {
                 int compare;
@@ -560,7 +557,6 @@ public class ColorExtractor {
         });
     }
 
-    /* loaded from: classes5.dex */
     public static class DominantColorResult implements Cloneable {
         private static final String TAG = "DominantColorResult";
         public int color;
@@ -569,19 +565,17 @@ public class ColorExtractor {
         public float percentage;
 
         public DominantColorResult(int color, float percentage) {
-            float[] fArr = new float[3];
-            this.hsv = fArr;
+            this.hsv = new float[3];
             this.color = color;
-            IUXColorUtils.colorToHSV(color, fArr);
+            IUXColorUtils.colorToHSV(color, this.hsv);
             this.isGrayScale = false;
             this.percentage = percentage;
         }
 
         public DominantColorResult(int color, float percentage, boolean isGrayScale) {
-            float[] fArr = new float[3];
-            this.hsv = fArr;
+            this.hsv = new float[3];
             this.color = color;
-            IUXColorUtils.colorToHSV(color, fArr);
+            IUXColorUtils.colorToHSV(color, this.hsv);
             this.isGrayScale = isGrayScale;
             this.percentage = percentage;
         }
@@ -592,10 +586,9 @@ public class ColorExtractor {
         }
 
         public void copyHSV(float[] dst) {
-            float[] fArr = this.hsv;
-            dst[0] = fArr[0];
-            dst[1] = fArr[1];
-            dst[2] = fArr[2];
+            dst[0] = this.hsv[0];
+            dst[1] = this.hsv[1];
+            dst[2] = this.hsv[2];
         }
 
         public int hashCode() {
@@ -617,21 +610,14 @@ public class ColorExtractor {
             return "\nDominantColorResult{\ncolor=" + Integer.toHexString(this.color) + "\npercentage=" + this.percentage + "\n\nisGrayScale=" + this.isGrayScale + '}';
         }
 
-        /* renamed from: clone */
-        public DominantColorResult m8839clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public DominantColorResult m9227clone() {
             try {
                 DominantColorResult clone = (DominantColorResult) super.clone();
-                float[] fArr = this.hsv;
-                if (fArr != null) {
-                    clone.hsv = new float[fArr.length];
-                    int i = 0;
-                    while (true) {
-                        float[] fArr2 = this.hsv;
-                        if (i >= fArr2.length) {
-                            break;
-                        }
-                        clone.hsv[i] = fArr2[i];
-                        i++;
+                if (this.hsv != null) {
+                    clone.hsv = new float[this.hsv.length];
+                    for (int i = 0; i < this.hsv.length; i++) {
+                        clone.hsv[i] = this.hsv[i];
                     }
                 }
                 return clone;

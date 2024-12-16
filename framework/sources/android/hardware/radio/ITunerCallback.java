@@ -42,7 +42,6 @@ public interface ITunerCallback extends IInterface {
 
     void onTuneFailed(int i, ProgramSelector programSelector) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITunerCallback {
         @Override // android.hardware.radio.ITunerCallback
         public void onError(int status) throws RemoteException {
@@ -102,7 +101,6 @@ public interface ITunerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITunerCallback {
         public static final String DESCRIPTOR = "android.hardware.radio.ITunerCallback";
         static final int TRANSACTION_onAntennaState = 7;
@@ -182,96 +180,94 @@ public interface ITunerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    ProgramSelector _arg1 = (ProgramSelector) data.readTypedObject(ProgramSelector.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTuneFailed(_arg02, _arg1);
+                    return true;
+                case 3:
+                    RadioManager.BandConfig _arg03 = (RadioManager.BandConfig) data.readTypedObject(RadioManager.BandConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConfigurationChanged(_arg03);
+                    return true;
+                case 4:
+                    RadioManager.ProgramInfo _arg04 = (RadioManager.ProgramInfo) data.readTypedObject(RadioManager.ProgramInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCurrentProgramInfoChanged(_arg04);
+                    return true;
+                case 5:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onTrafficAnnouncement(_arg05);
+                    return true;
+                case 6:
+                    boolean _arg06 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onEmergencyAnnouncement(_arg06);
+                    return true;
+                case 7:
+                    boolean _arg07 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onAntennaState(_arg07);
+                    return true;
+                case 8:
+                    boolean _arg08 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onBackgroundScanAvailabilityChange(_arg08);
+                    return true;
+                case 9:
+                    onBackgroundScanComplete();
+                    return true;
+                case 10:
+                    onProgramListChanged();
+                    return true;
+                case 11:
+                    ProgramList.Chunk _arg09 = (ProgramList.Chunk) data.readTypedObject(ProgramList.Chunk.CREATOR);
+                    data.enforceNoDataAvail();
+                    onProgramListUpdated(_arg09);
+                    return true;
+                case 12:
+                    int _arg010 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onConfigFlagUpdated(_arg010, _arg12);
+                    return true;
+                case 13:
+                    int N = data.readInt();
+                    final Map<String, String> _arg011 = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITunerCallback$Stub$$ExternalSyntheticLambda0
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            ITunerCallback.Stub.lambda$onTransact$0(Parcel.this, _arg011, i);
+                        }
+                    });
+                    data.enforceNoDataAvail();
+                    onParametersUpdated(_arg011);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            ProgramSelector _arg1 = (ProgramSelector) data.readTypedObject(ProgramSelector.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTuneFailed(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            RadioManager.BandConfig _arg03 = (RadioManager.BandConfig) data.readTypedObject(RadioManager.BandConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConfigurationChanged(_arg03);
-                            return true;
-                        case 4:
-                            RadioManager.ProgramInfo _arg04 = (RadioManager.ProgramInfo) data.readTypedObject(RadioManager.ProgramInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCurrentProgramInfoChanged(_arg04);
-                            return true;
-                        case 5:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onTrafficAnnouncement(_arg05);
-                            return true;
-                        case 6:
-                            boolean _arg06 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onEmergencyAnnouncement(_arg06);
-                            return true;
-                        case 7:
-                            boolean _arg07 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onAntennaState(_arg07);
-                            return true;
-                        case 8:
-                            boolean _arg08 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onBackgroundScanAvailabilityChange(_arg08);
-                            return true;
-                        case 9:
-                            onBackgroundScanComplete();
-                            return true;
-                        case 10:
-                            onProgramListChanged();
-                            return true;
-                        case 11:
-                            ProgramList.Chunk _arg09 = (ProgramList.Chunk) data.readTypedObject(ProgramList.Chunk.CREATOR);
-                            data.enforceNoDataAvail();
-                            onProgramListUpdated(_arg09);
-                            return true;
-                        case 12:
-                            int _arg010 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onConfigFlagUpdated(_arg010, _arg12);
-                            return true;
-                        case 13:
-                            int N = data.readInt();
-                            final Map<String, String> _arg011 = N < 0 ? null : new HashMap<>();
-                            IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITunerCallback$Stub$$ExternalSyntheticLambda0
-                                @Override // java.util.function.IntConsumer
-                                public final void accept(int i) {
-                                    ITunerCallback.Stub.lambda$onTransact$0(Parcel.this, _arg011, i);
-                                }
-                            });
-                            data.enforceNoDataAvail();
-                            onParametersUpdated(_arg011);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg0, int i) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg0, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg0.put(k, v);
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITunerCallback {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class Proxy implements ITunerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -453,7 +449,7 @@ public interface ITunerCallback extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$onParametersUpdated$0(Parcel _data, String k, String v) {
+            static /* synthetic */ void lambda$onParametersUpdated$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);
             }

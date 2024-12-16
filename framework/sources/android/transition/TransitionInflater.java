@@ -92,13 +92,12 @@ public class TransitionInflater {
             throw new InflateException(tag + " tag must have a 'class' attribute");
         }
         try {
-            ArrayMap<String, Constructor> arrayMap = sConstructors;
-            synchronized (arrayMap) {
-                Constructor constructor = arrayMap.get(className);
+            synchronized (sConstructors) {
+                Constructor constructor = sConstructors.get(className);
                 if (constructor == null && (c = this.mContext.getClassLoader().loadClass(className).asSubclass(expectedType)) != null) {
                     constructor = c.getConstructor(sConstructorSignature);
                     constructor.setAccessible(true);
-                    arrayMap.put(className, constructor);
+                    sConstructors.put(className, constructor);
                 }
                 newInstance = constructor.newInstance(this.mContext, attrs);
             }

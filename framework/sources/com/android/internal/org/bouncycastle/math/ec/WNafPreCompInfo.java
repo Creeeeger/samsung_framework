@@ -9,7 +9,7 @@ public class WNafPreCompInfo implements PreCompInfo {
     protected ECPoint twice = null;
     protected int width = -1;
 
-    public int decrementPromotionCountdown() {
+    int decrementPromotionCountdown() {
         int t = this.promotionCountdown;
         if (t > 0) {
             int t2 = t - 1;
@@ -19,11 +19,11 @@ public class WNafPreCompInfo implements PreCompInfo {
         return t;
     }
 
-    public int getPromotionCountdown() {
+    int getPromotionCountdown() {
         return this.promotionCountdown;
     }
 
-    public void setPromotionCountdown(int promotionCountdown) {
+    void setPromotionCountdown(int promotionCountdown) {
         this.promotionCountdown = promotionCountdown;
     }
 

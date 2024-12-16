@@ -11,14 +11,13 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class GetDefaultDownloadableSubscriptionListResult implements Parcelable {
     public static final Parcelable.Creator<GetDefaultDownloadableSubscriptionListResult> CREATOR = new Parcelable.Creator<GetDefaultDownloadableSubscriptionListResult>() { // from class: android.service.euicc.GetDefaultDownloadableSubscriptionListResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetDefaultDownloadableSubscriptionListResult createFromParcel(Parcel in) {
             return new GetDefaultDownloadableSubscriptionListResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetDefaultDownloadableSubscriptionListResult[] newArray(int size) {
             return new GetDefaultDownloadableSubscriptionListResult[size];
@@ -29,42 +28,20 @@ public final class GetDefaultDownloadableSubscriptionListResult implements Parce
     @Deprecated
     public final int result;
 
-    /* synthetic */ GetDefaultDownloadableSubscriptionListResult(Parcel parcel, GetDefaultDownloadableSubscriptionListResultIA getDefaultDownloadableSubscriptionListResultIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.service.euicc.GetDefaultDownloadableSubscriptionListResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GetDefaultDownloadableSubscriptionListResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetDefaultDownloadableSubscriptionListResult createFromParcel(Parcel in) {
-            return new GetDefaultDownloadableSubscriptionListResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetDefaultDownloadableSubscriptionListResult[] newArray(int size) {
-            return new GetDefaultDownloadableSubscriptionListResult[size];
-        }
-    }
-
     public int getResult() {
         return this.result;
     }
 
     public List<DownloadableSubscription> getDownloadableSubscriptions() {
-        DownloadableSubscription[] downloadableSubscriptionArr = this.mSubscriptions;
-        if (downloadableSubscriptionArr == null) {
+        if (this.mSubscriptions == null) {
             return null;
         }
-        return Arrays.asList(downloadableSubscriptionArr);
+        return Arrays.asList(this.mSubscriptions);
     }
 
     public GetDefaultDownloadableSubscriptionListResult(int result, DownloadableSubscription[] subscriptions) {
         this.result = result;
-        if (result == 0) {
+        if (this.result == 0) {
             this.mSubscriptions = subscriptions;
         } else {
             if (subscriptions != null) {

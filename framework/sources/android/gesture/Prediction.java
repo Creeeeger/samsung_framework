@@ -5,7 +5,7 @@ public class Prediction {
     public final String name;
     public double score;
 
-    public Prediction(String label, double predictionScore) {
+    Prediction(String label, double predictionScore) {
         this.name = label;
         this.score = predictionScore;
     }

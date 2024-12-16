@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class NetworkServiceCallback {
     public static final int RESULT_ERROR_BUSY = 3;
     public static final int RESULT_ERROR_FAILED = 5;
@@ -18,7 +18,6 @@ public class NetworkServiceCallback {
     private final INetworkServiceCallback mCallback;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Result {
     }
 
@@ -27,10 +26,9 @@ public class NetworkServiceCallback {
     }
 
     public void onRequestNetworkRegistrationInfoComplete(int result, NetworkRegistrationInfo state) {
-        INetworkServiceCallback iNetworkServiceCallback = this.mCallback;
-        if (iNetworkServiceCallback != null) {
+        if (this.mCallback != null) {
             try {
-                iNetworkServiceCallback.onRequestNetworkRegistrationInfoComplete(result, state);
+                this.mCallback.onRequestNetworkRegistrationInfoComplete(result, state);
                 return;
             } catch (RemoteException e) {
                 com.android.telephony.Rlog.e(mTag, "Failed to onRequestNetworkRegistrationInfoComplete on the remote");

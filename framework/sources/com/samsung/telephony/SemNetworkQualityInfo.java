@@ -1,7 +1,7 @@
 package com.samsung.telephony;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import android.telephony.Rlog;
+import com.android.telephony.Rlog;
 import java.util.HashMap;
 import java.util.Locale;
 

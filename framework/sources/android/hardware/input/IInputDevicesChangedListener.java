@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IInputDevicesChangedListener extends IInterface {
     void onInputDevicesChanged(int[] iArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IInputDevicesChangedListener {
         @Override // android.hardware.input.IInputDevicesChangedListener
         public void onInputDevicesChanged(int[] deviceIdAndGeneration) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IInputDevicesChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IInputDevicesChangedListener {
         public static final String DESCRIPTOR = "android.hardware.input.IInputDevicesChangedListener";
         static final int TRANSACTION_onInputDevicesChanged = 1;
@@ -66,26 +64,22 @@ public interface IInputDevicesChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int[] _arg0 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onInputDevicesChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _arg0 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onInputDevicesChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IInputDevicesChangedListener {
+        private static class Proxy implements IInputDevicesChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,7 +1,6 @@
 package android.util;
 
 import com.android.internal.util.StringPool;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
@@ -76,29 +75,28 @@ public final class JsonReader implements Closeable {
     }
 
     public JsonToken peek() throws IOException {
-        JsonToken jsonToken = this.token;
-        if (jsonToken != null) {
-            return jsonToken;
+        if (this.token != null) {
+            return this.token;
         }
-        switch (AnonymousClass1.$SwitchMap$android$util$JsonScope[peekStack().ordinal()]) {
-            case 1:
+        switch (peekStack()) {
+            case EMPTY_DOCUMENT:
                 replaceTop(JsonScope.NONEMPTY_DOCUMENT);
                 JsonToken firstToken = nextValue();
                 if (!this.lenient && this.token != JsonToken.BEGIN_ARRAY && this.token != JsonToken.BEGIN_OBJECT) {
                     throw new IOException("Expected JSON document to start with '[' or '{' but was " + this.token);
                 }
                 return firstToken;
-            case 2:
+            case EMPTY_ARRAY:
                 return nextInArray(true);
-            case 3:
+            case NONEMPTY_ARRAY:
                 return nextInArray(false);
-            case 4:
+            case EMPTY_OBJECT:
                 return nextInObject(true);
-            case 5:
+            case DANGLING_NAME:
                 return objectValue();
-            case 6:
+            case NONEMPTY_OBJECT:
                 return nextInObject(false);
-            case 7:
+            case NONEMPTY_DOCUMENT:
                 try {
                     JsonToken token = nextValue();
                     if (this.lenient) {
@@ -106,57 +104,14 @@ public final class JsonReader implements Closeable {
                     }
                     throw syntaxError("Expected EOF");
                 } catch (EOFException e) {
-                    JsonToken jsonToken2 = JsonToken.END_DOCUMENT;
-                    this.token = jsonToken2;
-                    return jsonToken2;
+                    JsonToken jsonToken = JsonToken.END_DOCUMENT;
+                    this.token = jsonToken;
+                    return jsonToken;
                 }
-            case 8:
+            case CLOSED:
                 throw new IllegalStateException("JsonReader is closed");
             default:
                 throw new AssertionError();
-        }
-    }
-
-    /* renamed from: android.util.JsonReader$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$util$JsonScope;
-
-        static {
-            int[] iArr = new int[JsonScope.values().length];
-            $SwitchMap$android$util$JsonScope = iArr;
-            try {
-                iArr[JsonScope.EMPTY_DOCUMENT.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.EMPTY_ARRAY.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.NONEMPTY_ARRAY.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.EMPTY_OBJECT.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.DANGLING_NAME.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.NONEMPTY_OBJECT.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.NONEMPTY_DOCUMENT.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.CLOSED.ordinal()] = 8;
-            } catch (NoSuchFieldError e8) {
-            }
         }
     }
 
@@ -288,11 +243,11 @@ public final class JsonReader implements Closeable {
     }
 
     private JsonScope peekStack() {
-        return this.stack.get(r0.size() - 1);
+        return this.stack.get(this.stack.size() - 1);
     }
 
     private JsonScope pop() {
-        return this.stack.remove(r0.size() - 1);
+        return this.stack.remove(this.stack.size() - 1);
     }
 
     private void push(JsonScope newTop) {
@@ -300,7 +255,7 @@ public final class JsonReader implements Closeable {
     }
 
     private void replaceTop(JsonScope newTop) {
-        this.stack.set(r0.size() - 1, newTop);
+        this.stack.set(this.stack.size() - 1, newTop);
     }
 
     private JsonToken nextInArray(boolean firstElement) throws IOException {
@@ -340,13 +295,12 @@ public final class JsonReader implements Closeable {
         }
         checkLenient();
         this.pos--;
-        this.value = SemCapabilities.FEATURE_TAG_NULL;
+        this.value = "null";
         JsonToken jsonToken3 = JsonToken.NULL;
         this.token = jsonToken3;
         return jsonToken3;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:6:0x0033. Please report as an issue. */
     private JsonToken nextInObject(boolean firstElement) throws IOException {
         if (firstElement) {
             switch (nextNonWhitespace()) {
@@ -386,9 +340,8 @@ public final class JsonReader implements Closeable {
             default:
                 checkLenient();
                 this.pos--;
-                String nextLiteral = nextLiteral(false);
-                this.name = nextLiteral;
-                if (nextLiteral.isEmpty()) {
+                this.name = nextLiteral(false);
+                if (this.name.isEmpty()) {
                     throw syntaxError("Expected name");
                 }
                 replaceTop(JsonScope.DANGLING_NAME);
@@ -404,13 +357,9 @@ public final class JsonReader implements Closeable {
                 break;
             case 61:
                 checkLenient();
-                if (this.pos < this.limit || fillBuffer(1)) {
-                    char[] cArr = this.buffer;
-                    int i = this.pos;
-                    if (cArr[i] == '>') {
-                        this.pos = i + 1;
-                        break;
-                    }
+                if ((this.pos < this.limit || fillBuffer(1)) && this.buffer[this.pos] == '>') {
+                    this.pos++;
+                    break;
                 }
                 break;
             default:
@@ -449,48 +398,33 @@ public final class JsonReader implements Closeable {
     }
 
     private boolean fillBuffer(int minimum) throws IOException {
-        int i;
-        int i2;
-        int i3;
-        int i4 = 0;
-        while (true) {
-            i = this.pos;
-            if (i4 >= i) {
-                break;
-            }
-            if (this.buffer[i4] == '\n') {
+        for (int i = 0; i < this.pos; i++) {
+            if (this.buffer[i] == '\n') {
                 this.bufferStartLine++;
                 this.bufferStartColumn = 1;
             } else {
                 this.bufferStartColumn++;
             }
-            i4++;
         }
-        int i5 = this.limit;
-        if (i5 != i) {
-            int i6 = i5 - i;
-            this.limit = i6;
-            char[] cArr = this.buffer;
-            System.arraycopy(cArr, i, cArr, 0, i6);
+        int i2 = this.limit;
+        if (i2 != this.pos) {
+            this.limit -= this.pos;
+            System.arraycopy(this.buffer, this.pos, this.buffer, 0, this.limit);
         } else {
             this.limit = 0;
         }
         this.pos = 0;
         do {
-            Reader reader = this.in;
-            char[] cArr2 = this.buffer;
-            int i7 = this.limit;
-            int total = reader.read(cArr2, i7, cArr2.length - i7);
+            int total = this.in.read(this.buffer, this.limit, this.buffer.length - this.limit);
             if (total == -1) {
                 return false;
             }
-            i2 = this.limit + total;
-            this.limit = i2;
-            if (this.bufferStartLine == 1 && (i3 = this.bufferStartColumn) == 1 && i2 > 0 && this.buffer[0] == 65279) {
+            this.limit += total;
+            if (this.bufferStartLine == 1 && this.bufferStartColumn == 1 && this.limit > 0 && this.buffer[0] == 65279) {
                 this.pos++;
-                this.bufferStartColumn = i3 - 1;
+                this.bufferStartColumn--;
             }
-        } while (i2 < minimum);
+        } while (this.limit < minimum);
         return true;
     }
 
@@ -521,8 +455,7 @@ public final class JsonReader implements Closeable {
             if (this.pos < this.limit || fillBuffer(1)) {
                 char[] cArr = this.buffer;
                 int i = this.pos;
-                int i2 = i + 1;
-                this.pos = i2;
+                this.pos = i + 1;
                 char c = cArr[i];
                 switch (c) {
                     case '\t':
@@ -535,23 +468,21 @@ public final class JsonReader implements Closeable {
                         skipToEndOfLine();
                         break;
                     case '/':
-                        if (i2 == this.limit && !fillBuffer(1)) {
+                        if (this.pos == this.limit && !fillBuffer(1)) {
                             return c;
                         }
                         checkLenient();
-                        char[] cArr2 = this.buffer;
-                        int i3 = this.pos;
-                        char peek = cArr2[i3];
+                        char peek = this.buffer[this.pos];
                         switch (peek) {
                             case '*':
-                                this.pos = i3 + 1;
+                                this.pos++;
                                 if (!skipTo("*/")) {
                                     throw syntaxError("Unterminated comment");
                                 }
                                 this.pos += 2;
                                 break;
                             case '/':
-                                this.pos = i3 + 1;
+                                this.pos++;
                                 skipToEndOfLine();
                                 break;
                             default:
@@ -605,92 +536,40 @@ public final class JsonReader implements Closeable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0050, code lost:
-    
-        if (r0 != null) goto L63;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0052, code lost:
-    
-        r0 = new java.lang.StringBuilder();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0058, code lost:
-    
-        r0.append(r7.buffer, r1, r7.pos - r1);
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private java.lang.String nextString(char r8) throws java.io.IOException {
-        /*
-            r7 = this;
-            r0 = 0
-        L1:
-            int r1 = r7.pos
-        L3:
-            int r2 = r7.pos
-            int r3 = r7.limit
-            r4 = 1
-            if (r2 >= r3) goto L50
-            char[] r3 = r7.buffer
-            int r5 = r2 + 1
-            r7.pos = r5
-            char r2 = r3[r2]
-            if (r2 != r8) goto L31
-            boolean r6 = r7.skipping
-            if (r6 == 0) goto L1c
-            java.lang.String r3 = "skipped!"
-            return r3
-        L1c:
-            if (r0 != 0) goto L27
-            com.android.internal.util.StringPool r6 = r7.stringPool
-            int r5 = r5 - r1
-            int r5 = r5 - r4
-            java.lang.String r3 = r6.get(r3, r1, r5)
-            return r3
-        L27:
-            int r5 = r5 - r1
-            int r5 = r5 - r4
-            r0.append(r3, r1, r5)
-            java.lang.String r3 = r0.toString()
-            return r3
-        L31:
-            r3 = 92
-            if (r2 != r3) goto L4f
-            if (r0 != 0) goto L3d
-            java.lang.StringBuilder r3 = new java.lang.StringBuilder
-            r3.<init>()
-            r0 = r3
-        L3d:
-            char[] r3 = r7.buffer
-            int r5 = r7.pos
-            int r5 = r5 - r1
-            int r5 = r5 - r4
-            r0.append(r3, r1, r5)
-            char r3 = r7.readEscapeCharacter()
-            r0.append(r3)
-            int r1 = r7.pos
-        L4f:
-            goto L3
-        L50:
-            if (r0 != 0) goto L58
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder
-            r2.<init>()
-            r0 = r2
-        L58:
-            char[] r2 = r7.buffer
-            int r3 = r7.pos
-            int r3 = r3 - r1
-            r0.append(r2, r1, r3)
-            boolean r1 = r7.fillBuffer(r4)
-            if (r1 == 0) goto L67
-            goto L1
-        L67:
-            java.lang.String r1 = "Unterminated string"
-            java.io.IOException r1 = r7.syntaxError(r1)
-            throw r1
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.util.JsonReader.nextString(char):java.lang.String");
+    private String nextString(char quote) throws IOException {
+        StringBuilder builder = null;
+        do {
+            int start = this.pos;
+            while (this.pos < this.limit) {
+                char[] cArr = this.buffer;
+                int i = this.pos;
+                this.pos = i + 1;
+                char c = cArr[i];
+                if (c == quote) {
+                    if (this.skipping) {
+                        return "skipped!";
+                    }
+                    if (builder == null) {
+                        return this.stringPool.get(this.buffer, start, (this.pos - start) - 1);
+                    }
+                    builder.append(this.buffer, start, (this.pos - start) - 1);
+                    return builder.toString();
+                }
+                if (c == '\\') {
+                    if (builder == null) {
+                        builder = new StringBuilder();
+                    }
+                    builder.append(this.buffer, start, (this.pos - start) - 1);
+                    builder.append(readEscapeCharacter());
+                    start = this.pos;
+                }
+            }
+            if (builder == null) {
+                builder = new StringBuilder();
+            }
+            builder.append(this.buffer, start, this.pos - start);
+        } while (fillBuffer(1));
+        throw syntaxError("Unterminated string");
     }
 
     private String nextLiteral(boolean assignOffsetsOnly) throws IOException {
@@ -700,9 +579,8 @@ public final class JsonReader implements Closeable {
         this.valueLength = 0;
         int i = 0;
         while (true) {
-            int i2 = this.pos;
-            if (i2 + i < this.limit) {
-                switch (this.buffer[i2 + i]) {
+            if (this.pos + i < this.limit) {
+                switch (this.buffer[this.pos + i]) {
                     case '\t':
                     case '\n':
                     case '\f':
@@ -724,7 +602,7 @@ public final class JsonReader implements Closeable {
                         break;
                     default:
                         i++;
-                        break;
+                        continue;
                 }
             } else if (i < this.buffer.length) {
                 if (!fillBuffer(i + 1)) {
@@ -768,8 +646,7 @@ public final class JsonReader implements Closeable {
         }
         char[] cArr = this.buffer;
         int i = this.pos;
-        int i2 = i + 1;
-        this.pos = i2;
+        this.pos = i + 1;
         char escaped = cArr[i];
         switch (escaped) {
             case 'b':
@@ -783,12 +660,12 @@ public final class JsonReader implements Closeable {
             case 't':
                 return '\t';
             case 'u':
-                if (i2 + 4 <= this.limit || fillBuffer(4)) {
-                    String hex = this.stringPool.get(this.buffer, this.pos, 4);
-                    this.pos += 4;
-                    return (char) Integer.parseInt(hex, 16);
+                if (this.pos + 4 > this.limit && !fillBuffer(4)) {
+                    throw syntaxError("Unterminated escape sequence");
                 }
-                throw syntaxError("Unterminated escape sequence");
+                String hex = this.stringPool.get(this.buffer, this.pos, 4);
+                this.pos += 4;
+                return (char) Integer.parseInt(hex, 16);
             default:
                 return escaped;
         }
@@ -799,39 +676,30 @@ public final class JsonReader implements Closeable {
         if (this.valueLength == 0) {
             throw syntaxError("Expected literal value");
         }
-        JsonToken decodeLiteral = decodeLiteral();
-        this.token = decodeLiteral;
-        if (decodeLiteral == JsonToken.STRING) {
+        this.token = decodeLiteral();
+        if (this.token == JsonToken.STRING) {
             checkLenient();
         }
         return this.token;
     }
 
     private JsonToken decodeLiteral() throws IOException {
-        char[] cArr;
-        char c;
-        char[] cArr2;
-        char c2;
-        char[] cArr3;
-        char c3;
-        int i = this.valuePos;
-        if (i == -1) {
+        if (this.valuePos == -1) {
             return JsonToken.STRING;
         }
-        int i2 = this.valueLength;
-        if (i2 == 4 && (('n' == (c3 = (cArr3 = this.buffer)[i]) || 'N' == c3) && (('u' == cArr3[i + 1] || 'U' == cArr3[i + 1]) && (('l' == cArr3[i + 2] || 'L' == cArr3[i + 2]) && ('l' == cArr3[i + 3] || 'L' == cArr3[i + 3]))))) {
-            this.value = SemCapabilities.FEATURE_TAG_NULL;
+        if (this.valueLength == 4 && (('n' == this.buffer[this.valuePos] || 'N' == this.buffer[this.valuePos]) && (('u' == this.buffer[this.valuePos + 1] || 'U' == this.buffer[this.valuePos + 1]) && (('l' == this.buffer[this.valuePos + 2] || 'L' == this.buffer[this.valuePos + 2]) && ('l' == this.buffer[this.valuePos + 3] || 'L' == this.buffer[this.valuePos + 3]))))) {
+            this.value = "null";
             return JsonToken.NULL;
         }
-        if (i2 == 4 && (('t' == (c2 = (cArr2 = this.buffer)[i]) || 'T' == c2) && (('r' == cArr2[i + 1] || 'R' == cArr2[i + 1]) && (('u' == cArr2[i + 2] || 'U' == cArr2[i + 2]) && ('e' == cArr2[i + 3] || 'E' == cArr2[i + 3]))))) {
+        if (this.valueLength == 4 && (('t' == this.buffer[this.valuePos] || 'T' == this.buffer[this.valuePos]) && (('r' == this.buffer[this.valuePos + 1] || 'R' == this.buffer[this.valuePos + 1]) && (('u' == this.buffer[this.valuePos + 2] || 'U' == this.buffer[this.valuePos + 2]) && ('e' == this.buffer[this.valuePos + 3] || 'E' == this.buffer[this.valuePos + 3]))))) {
             this.value = "true";
             return JsonToken.BOOLEAN;
         }
-        if (i2 == 5 && (('f' == (c = (cArr = this.buffer)[i]) || 'F' == c) && (('a' == cArr[i + 1] || 'A' == cArr[i + 1]) && (('l' == cArr[i + 2] || 'L' == cArr[i + 2]) && (('s' == cArr[i + 3] || 'S' == cArr[i + 3]) && ('e' == cArr[i + 4] || 'E' == cArr[i + 4])))))) {
+        if (this.valueLength == 5 && (('f' == this.buffer[this.valuePos] || 'F' == this.buffer[this.valuePos]) && (('a' == this.buffer[this.valuePos + 1] || 'A' == this.buffer[this.valuePos + 1]) && (('l' == this.buffer[this.valuePos + 2] || 'L' == this.buffer[this.valuePos + 2]) && (('s' == this.buffer[this.valuePos + 3] || 'S' == this.buffer[this.valuePos + 3]) && ('e' == this.buffer[this.valuePos + 4] || 'E' == this.buffer[this.valuePos + 4])))))) {
             this.value = "false";
             return JsonToken.BOOLEAN;
         }
-        this.value = this.stringPool.get(this.buffer, i, i2);
+        this.value = this.stringPool.get(this.buffer, this.valuePos, this.valueLength);
         return decodeNumber(this.buffer, this.valuePos, this.valueLength);
     }
 

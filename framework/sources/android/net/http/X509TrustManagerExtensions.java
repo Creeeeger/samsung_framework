@@ -9,7 +9,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import javax.net.ssl.X509TrustManager;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class X509TrustManagerExtensions {
     private final Method mCheckServerTrusted;
     private final TrustManagerImpl mDelegate;
@@ -40,9 +40,8 @@ public class X509TrustManagerExtensions {
     }
 
     public List<X509Certificate> checkServerTrusted(X509Certificate[] chain, String authType, String host) throws CertificateException {
-        TrustManagerImpl trustManagerImpl = this.mDelegate;
-        if (trustManagerImpl != null) {
-            return trustManagerImpl.checkServerTrusted(chain, authType, host);
+        if (this.mDelegate != null) {
+            return this.mDelegate.checkServerTrusted(chain, authType, host);
         }
         try {
             return (List) this.mCheckServerTrusted.invoke(this.mTrustManager, chain, authType, host);
@@ -64,12 +63,11 @@ public class X509TrustManagerExtensions {
     }
 
     public boolean isSameTrustConfiguration(String hostname1, String hostname2) {
-        Method method = this.mIsSameTrustConfiguration;
-        if (method == null) {
+        if (this.mIsSameTrustConfiguration == null) {
             return true;
         }
         try {
-            return ((Boolean) method.invoke(this.mTrustManager, hostname1, hostname2)).booleanValue();
+            return ((Boolean) this.mIsSameTrustConfiguration.invoke(this.mTrustManager, hostname1, hostname2)).booleanValue();
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Failed to call isSameTrustConfiguration", e);
         } catch (InvocationTargetException e2) {

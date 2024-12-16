@@ -81,9 +81,8 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
 
     @Override // android.widget.AdapterView
     public void setAdapter(SpinnerAdapter adapter) {
-        SpinnerAdapter spinnerAdapter = this.mAdapter;
-        if (spinnerAdapter != null) {
-            spinnerAdapter.unregisterDataSetObserver(this.mDataSetObserver);
+        if (this.mAdapter != null) {
+            this.mAdapter.unregisterDataSetObserver(this.mDataSetObserver);
             resetList();
         }
         this.mAdapter = adapter;
@@ -93,9 +92,8 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
             this.mOldItemCount = this.mItemCount;
             this.mItemCount = this.mAdapter.getCount();
             checkFocus();
-            AdapterView.AdapterDataSetObserver adapterDataSetObserver = new AdapterView.AdapterDataSetObserver();
-            this.mDataSetObserver = adapterDataSetObserver;
-            this.mAdapter.registerDataSetObserver(adapterDataSetObserver);
+            this.mDataSetObserver = new AdapterView.AdapterDataSetObserver();
+            this.mAdapter.registerDataSetObserver(this.mDataSetObserver);
             int position = this.mItemCount > 0 ? 0 : -1;
             setSelectedPositionInt(position);
             setNextSelectedPositionInt(position);
@@ -110,7 +108,7 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         requestLayout();
     }
 
-    public void resetList() {
+    void resetList() {
         this.mDataChanged = false;
         this.mNeedSync = false;
         removeAllViewsInLayout();
@@ -122,37 +120,12 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        SpinnerAdapter spinnerAdapter;
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
-        Rect rect = this.mSpinnerPadding;
-        int i = this.mPaddingLeft;
-        int i2 = this.mSelectionLeftPadding;
-        if (i > i2) {
-            i2 = this.mPaddingLeft;
-        }
-        rect.left = i2;
-        Rect rect2 = this.mSpinnerPadding;
-        int i3 = this.mPaddingTop;
-        int i4 = this.mSelectionTopPadding;
-        if (i3 > i4) {
-            i4 = this.mPaddingTop;
-        }
-        rect2.top = i4;
-        Rect rect3 = this.mSpinnerPadding;
-        int i5 = this.mPaddingRight;
-        int i6 = this.mSelectionRightPadding;
-        if (i5 > i6) {
-            i6 = this.mPaddingRight;
-        }
-        rect3.right = i6;
-        Rect rect4 = this.mSpinnerPadding;
-        int i7 = this.mPaddingBottom;
-        int i8 = this.mSelectionBottomPadding;
-        if (i7 > i8) {
-            i8 = this.mPaddingBottom;
-        }
-        rect4.bottom = i8;
+        this.mSpinnerPadding.left = this.mPaddingLeft > this.mSelectionLeftPadding ? this.mPaddingLeft : this.mSelectionLeftPadding;
+        this.mSpinnerPadding.top = this.mPaddingTop > this.mSelectionTopPadding ? this.mPaddingTop : this.mSelectionTopPadding;
+        this.mSpinnerPadding.right = this.mPaddingRight > this.mSelectionRightPadding ? this.mPaddingRight : this.mSelectionRightPadding;
+        this.mSpinnerPadding.bottom = this.mPaddingBottom > this.mSelectionBottomPadding ? this.mPaddingBottom : this.mSelectionBottomPadding;
         if (this.mDataChanged) {
             handleDataChanged();
         }
@@ -160,7 +133,7 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         int preferredWidth = 0;
         boolean needsMeasuring = true;
         int selectedPosition = getSelectedItemPosition();
-        if (selectedPosition >= 0 && (spinnerAdapter = this.mAdapter) != null && selectedPosition < spinnerAdapter.getCount()) {
+        if (selectedPosition >= 0 && this.mAdapter != null && selectedPosition < this.mAdapter.getCount()) {
             View view = this.mRecycler.get(selectedPosition);
             if (view == null) {
                 view = this.mAdapter.getView(selectedPosition, null, this);
@@ -205,11 +178,11 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
     }
 
     @Override // android.view.ViewGroup
-    public ViewGroup.LayoutParams generateDefaultLayoutParams() {
+    protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new ViewGroup.LayoutParams(-1, -2);
     }
 
-    public void recycleAllViews() {
+    void recycleAllViews() {
         int childCount = getChildCount();
         RecycleBin recycleBin = this.mRecycler;
         int position = this.mFirstPosition;
@@ -222,7 +195,7 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
 
     /* JADX WARN: Code restructure failed: missing block: B:5:0x000f, code lost:
     
-        if (r3 <= ((r2.mFirstPosition + getChildCount()) - 1)) goto L20;
+        if (r3 <= ((r2.mFirstPosition + getChildCount()) - 1)) goto L9;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -313,22 +286,20 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
     }
 
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
-    public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         super.dispatchRestoreInstanceState(container);
         handleDataChanged();
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.AbsSpinner.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -337,11 +308,11 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         int position;
         long selectedId;
 
-        public SavedState(Parcelable superState) {
+        SavedState(Parcelable superState) {
             super(superState);
         }
 
-        public SavedState(Parcel in) {
+        SavedState(Parcel in) {
             super(in);
             this.selectedId = in.readLong();
             this.position = in.readInt();
@@ -356,23 +327,6 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
 
         public String toString() {
             return "AbsSpinner.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " selectedId=" + this.selectedId + " position=" + this.position + "}";
-        }
-
-        /* renamed from: android.widget.AbsSpinner$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 
@@ -403,8 +357,7 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class RecycleBin {
+    class RecycleBin {
         private final SparseArray<View> mScrapHeap = new SparseArray<>();
 
         RecycleBin() {
@@ -414,7 +367,7 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
             this.mScrapHeap.put(position, v);
         }
 
-        public View get(int position) {
+        View get(int position) {
             View result = this.mScrapHeap.get(position);
             if (result != null) {
                 this.mScrapHeap.delete(position);
@@ -422,7 +375,7 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
             return result;
         }
 
-        public void clear() {
+        void clear() {
             SparseArray<View> scrapHeap = this.mScrapHeap;
             int count = scrapHeap.size();
             for (int i = 0; i < count; i++) {

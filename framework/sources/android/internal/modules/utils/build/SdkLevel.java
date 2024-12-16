@@ -28,7 +28,7 @@ public final class SdkLevel {
     }
 
     public static boolean isAtLeastV() {
-        return isAtLeastPreReleaseCodename("VanillaIceCream");
+        return true;
     }
 
     private static boolean isAtLeastPreReleaseCodename(String codename) {

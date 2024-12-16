@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.Queue;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public abstract class BinaryWriter extends ByteOutput implements Writer {
+/* loaded from: classes3.dex */
+abstract class BinaryWriter extends ByteOutput implements Writer {
     public static final int DEFAULT_CHUNK_SIZE = 4096;
     private static final int MAP_KEY_NUMBER = 1;
     private static final int MAP_VALUE_NUMBER = 2;
@@ -82,7 +82,7 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
     }
 
     static boolean isUnsafeDirectSupported() {
-        return UnsafeDirectWriter.access$000();
+        return UnsafeDirectWriter.isSupported();
     }
 
     static BinaryWriter newSafeHeapInstance(BufferAllocator alloc, int chunkSize) {
@@ -631,16 +631,13 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* renamed from: com.android.framework.protobuf.BinaryWriter$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
+    /* renamed from: com.android.framework.protobuf.BinaryWriter$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType = new int[WireFormat.FieldType.values().length];
 
         static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
             try {
-                iArr[WireFormat.FieldType.BOOL.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.BOOL.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {
@@ -870,6 +867,7 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         return this.alloc.allocateDirectBuffer(Math.max(capacity, this.chunkSize));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static byte computeUInt64SizeNoTag(long value) {
         if (((-128) & value) == 0) {
             return (byte) 1;
@@ -892,8 +890,7 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         return n;
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SafeHeapWriter extends BinaryWriter {
+    private static final class SafeHeapWriter extends BinaryWriter {
         private AllocatedBuffer allocatedBuffer;
         private byte[] buffer;
         private int limit;
@@ -911,8 +908,7 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         void finishCurrentBuffer() {
             if (this.allocatedBuffer != null) {
                 this.totalDoneBytes += bytesWrittenToCurrentBuffer();
-                AllocatedBuffer allocatedBuffer = this.allocatedBuffer;
-                allocatedBuffer.position((this.pos - allocatedBuffer.arrayOffset()) + 1);
+                this.allocatedBuffer.position((this.pos - this.allocatedBuffer.arrayOffset()) + 1);
                 this.allocatedBuffer = null;
                 this.pos = 0;
                 this.limitMinusOne = 0;
@@ -937,12 +933,10 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             this.buffer = allocatedBuffer.array();
             int arrayOffset = allocatedBuffer.arrayOffset();
             this.limit = allocatedBuffer.limit() + arrayOffset;
-            int position = allocatedBuffer.position() + arrayOffset;
-            this.offset = position;
-            this.offsetMinusOne = position - 1;
-            int i = this.limit - 1;
-            this.limitMinusOne = i;
-            this.pos = i;
+            this.offset = allocatedBuffer.position() + arrayOffset;
+            this.offsetMinusOne = this.offset - 1;
+            this.limitMinusOne = this.limit - 1;
+            this.pos = this.limitMinusOne;
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
@@ -1139,59 +1133,69 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         private void writeVarint32TwoBytes(int value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 7);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
             this.pos = i2 - 1;
-            bArr[i2] = (byte) ((value & 127) | 128);
+            bArr2[i2] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint32ThreeBytes(int value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 14);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
             this.pos = i3 - 1;
-            bArr[i3] = (byte) ((value & 127) | 128);
+            bArr3[i3] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint32FourBytes(int value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 21);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 14) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
             this.pos = i4 - 1;
-            bArr[i4] = (byte) ((value & 127) | 128);
+            bArr4[i4] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint32FiveBytes(int value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 28);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 21) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 14) & 127) | 128);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 21) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
             this.pos = i5 - 1;
-            bArr[i5] = (byte) ((value & 127) | 128);
+            bArr5[i5] = (byte) ((value & 127) | 128);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
@@ -1199,36 +1203,34 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             switch (BinaryWriter.computeUInt64SizeNoTag(value)) {
                 case 1:
                     writeVarint64OneByte(value);
-                    return;
+                    break;
                 case 2:
                     writeVarint64TwoBytes(value);
-                    return;
+                    break;
                 case 3:
                     writeVarint64ThreeBytes(value);
-                    return;
+                    break;
                 case 4:
                     writeVarint64FourBytes(value);
-                    return;
+                    break;
                 case 5:
                     writeVarint64FiveBytes(value);
-                    return;
+                    break;
                 case 6:
                     writeVarint64SixBytes(value);
-                    return;
+                    break;
                 case 7:
                     writeVarint64SevenBytes(value);
-                    return;
+                    break;
                 case 8:
                     writeVarint64EightBytes(value);
-                    return;
+                    break;
                 case 9:
                     writeVarint64NineBytes(value);
-                    return;
+                    break;
                 case 10:
                     writeVarint64TenBytes(value);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -1242,316 +1244,377 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         private void writeVarint64TwoBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 7);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
             this.pos = i2 - 1;
-            bArr[i2] = (byte) ((((int) value) & 127) | 128);
+            bArr2[i2] = (byte) ((((int) value) & 127) | 128);
         }
 
         private void writeVarint64ThreeBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (((int) value) >>> 14);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
             this.pos = i3 - 1;
-            bArr[i3] = (byte) ((value & 127) | 128);
+            bArr3[i3] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint64FourBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 21);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 14) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
             this.pos = i4 - 1;
-            bArr[i4] = (byte) ((value & 127) | 128);
+            bArr4[i4] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint64FiveBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 28);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 21) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 14) & 127) | 128);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 21) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
             this.pos = i5 - 1;
-            bArr[i5] = (byte) ((value & 127) | 128);
+            bArr5[i5] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint64SixBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 35);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 28) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 21) & 127) | 128);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((value >>> 14) & 127) | 128);
-            int i6 = i5 - 1;
-            this.pos = i6;
-            bArr[i5] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 28) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 21) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
+            this.pos = i5 - 1;
+            bArr5[i5] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr6 = this.buffer;
+            int i6 = this.pos;
             this.pos = i6 - 1;
-            bArr[i6] = (byte) ((value & 127) | 128);
+            bArr6[i6] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint64SevenBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 42);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 35) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 28) & 127) | 128);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((value >>> 21) & 127) | 128);
-            int i6 = i5 - 1;
-            this.pos = i6;
-            bArr[i5] = (byte) (((value >>> 14) & 127) | 128);
-            int i7 = i6 - 1;
-            this.pos = i7;
-            bArr[i6] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 35) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 28) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((value >>> 21) & 127) | 128);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
+            this.pos = i5 - 1;
+            bArr5[i5] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr6 = this.buffer;
+            int i6 = this.pos;
+            this.pos = i6 - 1;
+            bArr6[i6] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr7 = this.buffer;
+            int i7 = this.pos;
             this.pos = i7 - 1;
-            bArr[i7] = (byte) ((value & 127) | 128);
+            bArr7[i7] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint64EightBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 49);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 42) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 35) & 127) | 128);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((value >>> 28) & 127) | 128);
-            int i6 = i5 - 1;
-            this.pos = i6;
-            bArr[i5] = (byte) (((value >>> 21) & 127) | 128);
-            int i7 = i6 - 1;
-            this.pos = i7;
-            bArr[i6] = (byte) (((value >>> 14) & 127) | 128);
-            int i8 = i7 - 1;
-            this.pos = i8;
-            bArr[i7] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 42) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 35) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((value >>> 28) & 127) | 128);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
+            this.pos = i5 - 1;
+            bArr5[i5] = (byte) (((value >>> 21) & 127) | 128);
+            byte[] bArr6 = this.buffer;
+            int i6 = this.pos;
+            this.pos = i6 - 1;
+            bArr6[i6] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr7 = this.buffer;
+            int i7 = this.pos;
+            this.pos = i7 - 1;
+            bArr7[i7] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr8 = this.buffer;
+            int i8 = this.pos;
             this.pos = i8 - 1;
-            bArr[i8] = (byte) ((value & 127) | 128);
+            bArr8[i8] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint64NineBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 56);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 49) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 42) & 127) | 128);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((value >>> 35) & 127) | 128);
-            int i6 = i5 - 1;
-            this.pos = i6;
-            bArr[i5] = (byte) (((value >>> 28) & 127) | 128);
-            int i7 = i6 - 1;
-            this.pos = i7;
-            bArr[i6] = (byte) (((value >>> 21) & 127) | 128);
-            int i8 = i7 - 1;
-            this.pos = i8;
-            bArr[i7] = (byte) (((value >>> 14) & 127) | 128);
-            int i9 = i8 - 1;
-            this.pos = i9;
-            bArr[i8] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 49) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 42) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((value >>> 35) & 127) | 128);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
+            this.pos = i5 - 1;
+            bArr5[i5] = (byte) (((value >>> 28) & 127) | 128);
+            byte[] bArr6 = this.buffer;
+            int i6 = this.pos;
+            this.pos = i6 - 1;
+            bArr6[i6] = (byte) (((value >>> 21) & 127) | 128);
+            byte[] bArr7 = this.buffer;
+            int i7 = this.pos;
+            this.pos = i7 - 1;
+            bArr7[i7] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr8 = this.buffer;
+            int i8 = this.pos;
+            this.pos = i8 - 1;
+            bArr8[i8] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr9 = this.buffer;
+            int i9 = this.pos;
             this.pos = i9 - 1;
-            bArr[i9] = (byte) ((value & 127) | 128);
+            bArr9[i9] = (byte) ((value & 127) | 128);
         }
 
         private void writeVarint64TenBytes(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (value >>> 63);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((value >>> 56) & 127) | 128);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((value >>> 49) & 127) | 128);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((value >>> 42) & 127) | 128);
-            int i6 = i5 - 1;
-            this.pos = i6;
-            bArr[i5] = (byte) (((value >>> 35) & 127) | 128);
-            int i7 = i6 - 1;
-            this.pos = i7;
-            bArr[i6] = (byte) (((value >>> 28) & 127) | 128);
-            int i8 = i7 - 1;
-            this.pos = i8;
-            bArr[i7] = (byte) (((value >>> 21) & 127) | 128);
-            int i9 = i8 - 1;
-            this.pos = i9;
-            bArr[i8] = (byte) (((value >>> 14) & 127) | 128);
-            int i10 = i9 - 1;
-            this.pos = i10;
-            bArr[i9] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((value >>> 56) & 127) | 128);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((value >>> 49) & 127) | 128);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((value >>> 42) & 127) | 128);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
+            this.pos = i5 - 1;
+            bArr5[i5] = (byte) (((value >>> 35) & 127) | 128);
+            byte[] bArr6 = this.buffer;
+            int i6 = this.pos;
+            this.pos = i6 - 1;
+            bArr6[i6] = (byte) (((value >>> 28) & 127) | 128);
+            byte[] bArr7 = this.buffer;
+            int i7 = this.pos;
+            this.pos = i7 - 1;
+            bArr7[i7] = (byte) (((value >>> 21) & 127) | 128);
+            byte[] bArr8 = this.buffer;
+            int i8 = this.pos;
+            this.pos = i8 - 1;
+            bArr8[i8] = (byte) (((value >>> 14) & 127) | 128);
+            byte[] bArr9 = this.buffer;
+            int i9 = this.pos;
+            this.pos = i9 - 1;
+            bArr9[i9] = (byte) (((value >>> 7) & 127) | 128);
+            byte[] bArr10 = this.buffer;
+            int i10 = this.pos;
             this.pos = i10 - 1;
-            bArr[i10] = (byte) ((value & 127) | 128);
+            bArr10[i10] = (byte) ((value & 127) | 128);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
         void writeFixed32(int value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) ((value >> 24) & 255);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) ((value >> 16) & 255);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) ((value >> 8) & 255);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) ((value >> 16) & 255);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) ((value >> 8) & 255);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
             this.pos = i4 - 1;
-            bArr[i4] = (byte) (value & 255);
+            bArr4[i4] = (byte) (value & 255);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
         void writeFixed64(long value) {
             byte[] bArr = this.buffer;
             int i = this.pos;
-            int i2 = i - 1;
-            this.pos = i2;
+            this.pos = i - 1;
             bArr[i] = (byte) (((int) (value >> 56)) & 255);
-            int i3 = i2 - 1;
-            this.pos = i3;
-            bArr[i2] = (byte) (((int) (value >> 48)) & 255);
-            int i4 = i3 - 1;
-            this.pos = i4;
-            bArr[i3] = (byte) (((int) (value >> 40)) & 255);
-            int i5 = i4 - 1;
-            this.pos = i5;
-            bArr[i4] = (byte) (((int) (value >> 32)) & 255);
-            int i6 = i5 - 1;
-            this.pos = i6;
-            bArr[i5] = (byte) (((int) (value >> 24)) & 255);
-            int i7 = i6 - 1;
-            this.pos = i7;
-            bArr[i6] = (byte) (((int) (value >> 16)) & 255);
-            int i8 = i7 - 1;
-            this.pos = i8;
-            bArr[i7] = (byte) (((int) (value >> 8)) & 255);
+            byte[] bArr2 = this.buffer;
+            int i2 = this.pos;
+            this.pos = i2 - 1;
+            bArr2[i2] = (byte) (((int) (value >> 48)) & 255);
+            byte[] bArr3 = this.buffer;
+            int i3 = this.pos;
+            this.pos = i3 - 1;
+            bArr3[i3] = (byte) (((int) (value >> 40)) & 255);
+            byte[] bArr4 = this.buffer;
+            int i4 = this.pos;
+            this.pos = i4 - 1;
+            bArr4[i4] = (byte) (((int) (value >> 32)) & 255);
+            byte[] bArr5 = this.buffer;
+            int i5 = this.pos;
+            this.pos = i5 - 1;
+            bArr5[i5] = (byte) (((int) (value >> 24)) & 255);
+            byte[] bArr6 = this.buffer;
+            int i6 = this.pos;
+            this.pos = i6 - 1;
+            bArr6[i6] = (byte) (((int) (value >> 16)) & 255);
+            byte[] bArr7 = this.buffer;
+            int i7 = this.pos;
+            this.pos = i7 - 1;
+            bArr7[i7] = (byte) (((int) (value >> 8)) & 255);
+            byte[] bArr8 = this.buffer;
+            int i8 = this.pos;
             this.pos = i8 - 1;
-            bArr[i8] = (byte) (((int) value) & 255);
+            bArr8[i8] = (byte) (((int) value) & 255);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
         void writeString(String in) {
-            int i;
-            int i2;
-            int i3;
             char c;
             requireSpace(in.length());
-            int i4 = in.length() - 1;
-            this.pos -= i4;
-            while (i4 >= 0 && (c = in.charAt(i4)) < 128) {
-                this.buffer[this.pos + i4] = (byte) c;
-                i4--;
+            int i = in.length() - 1;
+            this.pos -= i;
+            while (i >= 0 && (c = in.charAt(i)) < 128) {
+                this.buffer[this.pos + i] = (byte) c;
+                i--;
             }
-            if (i4 == -1) {
+            if (i == -1) {
                 this.pos--;
                 return;
             }
-            this.pos += i4;
-            while (i4 >= 0) {
-                char c2 = in.charAt(i4);
-                if (c2 < 128 && (i3 = this.pos) > this.offsetMinusOne) {
+            this.pos += i;
+            while (i >= 0) {
+                char c2 = in.charAt(i);
+                if (c2 < 128 && this.pos > this.offsetMinusOne) {
                     byte[] bArr = this.buffer;
-                    this.pos = i3 - 1;
-                    bArr[i3] = (byte) c2;
-                } else if (c2 < 2048 && (i2 = this.pos) > this.offset) {
+                    int i2 = this.pos;
+                    this.pos = i2 - 1;
+                    bArr[i2] = (byte) c2;
+                } else if (c2 < 2048 && this.pos > this.offset) {
                     byte[] bArr2 = this.buffer;
-                    int i5 = i2 - 1;
-                    this.pos = i5;
-                    bArr2[i2] = (byte) ((c2 & '?') | 128);
-                    this.pos = i5 - 1;
-                    bArr2[i5] = (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960);
-                } else if ((c2 < 55296 || 57343 < c2) && (i = this.pos) > this.offset + 1) {
+                    int i3 = this.pos;
+                    this.pos = i3 - 1;
+                    bArr2[i3] = (byte) ((c2 & '?') | 128);
                     byte[] bArr3 = this.buffer;
-                    int i6 = i - 1;
-                    this.pos = i6;
-                    bArr3[i] = (byte) ((c2 & '?') | 128);
-                    int i7 = i6 - 1;
-                    this.pos = i7;
-                    bArr3[i6] = (byte) (((c2 >>> 6) & 63) | 128);
+                    int i4 = this.pos;
+                    this.pos = i4 - 1;
+                    bArr3[i4] = (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960);
+                } else if ((c2 < 55296 || 57343 < c2) && this.pos > this.offset + 1) {
+                    byte[] bArr4 = this.buffer;
+                    int i5 = this.pos;
+                    this.pos = i5 - 1;
+                    bArr4[i5] = (byte) ((c2 & '?') | 128);
+                    byte[] bArr5 = this.buffer;
+                    int i6 = this.pos;
+                    this.pos = i6 - 1;
+                    bArr5[i6] = (byte) (((c2 >>> 6) & 63) | 128);
+                    byte[] bArr6 = this.buffer;
+                    int i7 = this.pos;
                     this.pos = i7 - 1;
-                    bArr3[i7] = (byte) ((c2 >>> '\f') | 480);
+                    bArr6[i7] = (byte) ((c2 >>> '\f') | 480);
                 } else {
                     if (this.pos > this.offset + 2) {
-                        if (i4 != 0) {
-                            char high = in.charAt(i4 - 1);
+                        if (i != 0) {
+                            char high = in.charAt(i - 1);
                             if (Character.isSurrogatePair(high, c2)) {
-                                i4--;
+                                i--;
                                 int codePoint = Character.toCodePoint(high, c2);
-                                byte[] bArr4 = this.buffer;
+                                byte[] bArr7 = this.buffer;
                                 int i8 = this.pos;
-                                int i9 = i8 - 1;
-                                this.pos = i9;
-                                bArr4[i8] = (byte) ((codePoint & 63) | 128);
-                                int i10 = i9 - 1;
-                                this.pos = i10;
-                                bArr4[i9] = (byte) (((codePoint >>> 6) & 63) | 128);
-                                int i11 = i10 - 1;
-                                this.pos = i11;
-                                bArr4[i10] = (byte) (((codePoint >>> 12) & 63) | 128);
+                                this.pos = i8 - 1;
+                                bArr7[i8] = (byte) ((codePoint & 63) | 128);
+                                byte[] bArr8 = this.buffer;
+                                int i9 = this.pos;
+                                this.pos = i9 - 1;
+                                bArr8[i9] = (byte) (((codePoint >>> 6) & 63) | 128);
+                                byte[] bArr9 = this.buffer;
+                                int i10 = this.pos;
+                                this.pos = i10 - 1;
+                                bArr9[i10] = (byte) (((codePoint >>> 12) & 63) | 128);
+                                byte[] bArr10 = this.buffer;
+                                int i11 = this.pos;
                                 this.pos = i11 - 1;
-                                bArr4[i11] = (byte) ((codePoint >>> 18) | 240);
+                                bArr10[i11] = (byte) ((codePoint >>> 18) | 240);
                             }
                         }
-                        throw new Utf8.UnpairedSurrogateException(i4 - 1, i4);
+                        throw new Utf8.UnpairedSurrogateException(i - 1, i);
                     }
-                    requireSpace(i4);
-                    i4++;
+                    requireSpace(i);
+                    i++;
                 }
-                i4--;
+                i--;
             }
         }
 
@@ -1568,9 +1631,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             if (spaceLeft() < length) {
                 nextBuffer(length);
             }
-            int i = this.pos - length;
-            this.pos = i;
-            System.arraycopy(value, offset, this.buffer, i + 1, length);
+            this.pos -= length;
+            System.arraycopy(value, offset, this.buffer, this.pos + 1, length);
         }
 
         @Override // com.android.framework.protobuf.ByteOutput
@@ -1580,9 +1642,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
                 this.buffers.addFirst(AllocatedBuffer.wrap(value, offset, length));
                 nextBuffer();
             } else {
-                int i = this.pos - length;
-                this.pos = i;
-                System.arraycopy(value, offset, this.buffer, i + 1, length);
+                this.pos -= length;
+                System.arraycopy(value, offset, this.buffer, this.pos + 1, length);
             }
         }
 
@@ -1592,9 +1653,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             if (spaceLeft() < length) {
                 nextBuffer(length);
             }
-            int i = this.pos - length;
-            this.pos = i;
-            value.get(this.buffer, i + 1, length);
+            this.pos -= length;
+            value.get(this.buffer, this.pos + 1, length);
         }
 
         @Override // com.android.framework.protobuf.ByteOutput
@@ -1605,9 +1665,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
                 this.buffers.addFirst(AllocatedBuffer.wrap(value));
                 nextBuffer();
             }
-            int i = this.pos - length;
-            this.pos = i;
-            value.get(this.buffer, i + 1, length);
+            this.pos -= length;
+            value.get(this.buffer, this.pos + 1, length);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
@@ -1618,8 +1677,7 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class UnsafeHeapWriter extends BinaryWriter {
+    private static final class UnsafeHeapWriter extends BinaryWriter {
         private AllocatedBuffer allocatedBuffer;
         private byte[] buffer;
         private long limit;
@@ -1670,12 +1728,10 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             this.buffer = allocatedBuffer.array();
             int arrayOffset = allocatedBuffer.arrayOffset();
             this.limit = arrayOffset + allocatedBuffer.limit();
-            long position = arrayOffset + allocatedBuffer.position();
-            this.offset = position;
-            this.offsetMinusOne = position - 1;
-            long j = this.limit - 1;
-            this.limitMinusOne = j;
-            this.pos = j;
+            this.offset = arrayOffset + allocatedBuffer.position();
+            this.offsetMinusOne = this.offset - 1;
+            this.limitMinusOne = this.limit - 1;
+            this.pos = this.limitMinusOne;
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
@@ -1941,36 +1997,34 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             switch (BinaryWriter.computeUInt64SizeNoTag(value)) {
                 case 1:
                     writeVarint64OneByte(value);
-                    return;
+                    break;
                 case 2:
                     writeVarint64TwoBytes(value);
-                    return;
+                    break;
                 case 3:
                     writeVarint64ThreeBytes(value);
-                    return;
+                    break;
                 case 4:
                     writeVarint64FourBytes(value);
-                    return;
+                    break;
                 case 5:
                     writeVarint64FiveBytes(value);
-                    return;
+                    break;
                 case 6:
                     writeVarint64SixBytes(value);
-                    return;
+                    break;
                 case 7:
                     writeVarint64SevenBytes(value);
-                    return;
+                    break;
                 case 8:
                     writeVarint64EightBytes(value);
-                    return;
+                    break;
                 case 9:
                     writeVarint64NineBytes(value);
-                    return;
+                    break;
                 case 10:
                     writeVarint64TenBytes(value);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -2300,73 +2354,63 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             }
             while (i >= 0) {
                 char c2 = in.charAt(i);
-                if (c2 < 128) {
+                if (c2 < 128 && this.pos > this.offsetMinusOne) {
+                    byte[] bArr2 = this.buffer;
                     long j2 = this.pos;
-                    if (j2 > this.offsetMinusOne) {
-                        byte[] bArr2 = this.buffer;
-                        this.pos = j2 - 1;
-                        UnsafeUtil.putByte(bArr2, j2, (byte) c2);
-                        i--;
-                    }
-                }
-                if (c2 < 2048) {
+                    this.pos = j2 - 1;
+                    UnsafeUtil.putByte(bArr2, j2, (byte) c2);
+                } else if (c2 < 2048 && this.pos > this.offset) {
+                    byte[] bArr3 = this.buffer;
                     long j3 = this.pos;
-                    if (j3 > this.offset) {
-                        byte[] bArr3 = this.buffer;
-                        this.pos = j3 - 1;
-                        UnsafeUtil.putByte(bArr3, j3, (byte) ((c2 & '?') | 128));
-                        byte[] bArr4 = this.buffer;
-                        long j4 = this.pos;
-                        this.pos = j4 - 1;
-                        UnsafeUtil.putByte(bArr4, j4, (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
-                        i--;
-                    }
-                }
-                if (c2 < 55296 || 57343 < c2) {
+                    this.pos = j3 - 1;
+                    UnsafeUtil.putByte(bArr3, j3, (byte) ((c2 & '?') | 128));
+                    byte[] bArr4 = this.buffer;
+                    long j4 = this.pos;
+                    this.pos = j4 - 1;
+                    UnsafeUtil.putByte(bArr4, j4, (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
+                } else if ((c2 < 55296 || 57343 < c2) && this.pos > this.offset + 1) {
+                    byte[] bArr5 = this.buffer;
                     long j5 = this.pos;
-                    if (j5 > this.offset + 1) {
-                        byte[] bArr5 = this.buffer;
-                        this.pos = j5 - 1;
-                        UnsafeUtil.putByte(bArr5, j5, (byte) ((c2 & '?') | 128));
-                        byte[] bArr6 = this.buffer;
-                        long j6 = this.pos;
-                        this.pos = j6 - 1;
-                        UnsafeUtil.putByte(bArr6, j6, (byte) (((c2 >>> 6) & 63) | 128));
-                        byte[] bArr7 = this.buffer;
-                        long j7 = this.pos;
-                        this.pos = j7 - 1;
-                        UnsafeUtil.putByte(bArr7, j7, (byte) ((c2 >>> '\f') | 480));
-                        i--;
-                    }
-                }
-                if (this.pos > this.offset + 2) {
-                    if (i != 0) {
-                        char high = in.charAt(i - 1);
-                        if (Character.isSurrogatePair(high, c2)) {
-                            i--;
-                            int codePoint = Character.toCodePoint(high, c2);
-                            byte[] bArr8 = this.buffer;
-                            long j8 = this.pos;
-                            this.pos = j8 - 1;
-                            UnsafeUtil.putByte(bArr8, j8, (byte) ((codePoint & 63) | 128));
-                            byte[] bArr9 = this.buffer;
-                            long j9 = this.pos;
-                            this.pos = j9 - 1;
-                            UnsafeUtil.putByte(bArr9, j9, (byte) (((codePoint >>> 6) & 63) | 128));
-                            byte[] bArr10 = this.buffer;
-                            long j10 = this.pos;
-                            this.pos = j10 - 1;
-                            UnsafeUtil.putByte(bArr10, j10, (byte) (((codePoint >>> 12) & 63) | 128));
-                            byte[] bArr11 = this.buffer;
-                            long j11 = this.pos;
-                            this.pos = j11 - 1;
-                            UnsafeUtil.putByte(bArr11, j11, (byte) ((codePoint >>> 18) | 240));
+                    this.pos = j5 - 1;
+                    UnsafeUtil.putByte(bArr5, j5, (byte) ((c2 & '?') | 128));
+                    byte[] bArr6 = this.buffer;
+                    long j6 = this.pos;
+                    this.pos = j6 - 1;
+                    UnsafeUtil.putByte(bArr6, j6, (byte) (((c2 >>> 6) & 63) | 128));
+                    byte[] bArr7 = this.buffer;
+                    long j7 = this.pos;
+                    this.pos = j7 - 1;
+                    UnsafeUtil.putByte(bArr7, j7, (byte) ((c2 >>> '\f') | 480));
+                } else {
+                    if (this.pos > this.offset + 2) {
+                        if (i != 0) {
+                            char high = in.charAt(i - 1);
+                            if (Character.isSurrogatePair(high, c2)) {
+                                i--;
+                                int codePoint = Character.toCodePoint(high, c2);
+                                byte[] bArr8 = this.buffer;
+                                long j8 = this.pos;
+                                this.pos = j8 - 1;
+                                UnsafeUtil.putByte(bArr8, j8, (byte) ((codePoint & 63) | 128));
+                                byte[] bArr9 = this.buffer;
+                                long j9 = this.pos;
+                                this.pos = j9 - 1;
+                                UnsafeUtil.putByte(bArr9, j9, (byte) (((codePoint >>> 6) & 63) | 128));
+                                byte[] bArr10 = this.buffer;
+                                long j10 = this.pos;
+                                this.pos = j10 - 1;
+                                UnsafeUtil.putByte(bArr10, j10, (byte) (((codePoint >>> 12) & 63) | 128));
+                                byte[] bArr11 = this.buffer;
+                                long j11 = this.pos;
+                                this.pos = j11 - 1;
+                                UnsafeUtil.putByte(bArr11, j11, (byte) ((codePoint >>> 18) | 240));
+                            }
                         }
+                        throw new Utf8.UnpairedSurrogateException(i - 1, i);
                     }
-                    throw new Utf8.UnpairedSurrogateException(i - 1, i);
+                    requireSpace(i);
+                    i++;
                 }
-                requireSpace(i);
-                i++;
                 i--;
             }
         }
@@ -2432,8 +2476,7 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SafeDirectWriter extends BinaryWriter {
+    private static final class SafeDirectWriter extends BinaryWriter {
         private ByteBuffer buffer;
         private int limitMinusOne;
         private int pos;
@@ -2462,12 +2505,11 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             finishCurrentBuffer();
             this.buffers.addFirst(allocatedBuffer);
             this.buffer = nioBuffer;
-            nioBuffer.limit(nioBuffer.capacity());
+            this.buffer.limit(this.buffer.capacity());
             this.buffer.position(0);
             this.buffer.order(ByteOrder.LITTLE_ENDIAN);
-            int limit = this.buffer.limit() - 1;
-            this.limitMinusOne = limit;
-            this.pos = limit;
+            this.limitMinusOne = this.buffer.limit() - 1;
+            this.pos = this.limitMinusOne;
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
@@ -2675,21 +2717,18 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
 
         private void writeVarint32TwoBytes(int value) {
-            int i = this.pos - 2;
-            this.pos = i;
-            this.buffer.putShort(i + 1, (short) (((value & 16256) << 1) | (value & 127) | 128));
+            this.pos -= 2;
+            this.buffer.putShort(this.pos + 1, (short) (((value & 16256) << 1) | (value & 127) | 128));
         }
 
         private void writeVarint32ThreeBytes(int value) {
-            int i = this.pos - 3;
-            this.pos = i;
-            this.buffer.putInt(i, ((2080768 & value) << 10) | (((value & 16256) | 16384) << 9) | (((value & 127) | 128) << 8));
+            this.pos -= 3;
+            this.buffer.putInt(this.pos, ((2080768 & value) << 10) | (((value & 16256) | 16384) << 9) | (((value & 127) | 128) << 8));
         }
 
         private void writeVarint32FourBytes(int value) {
-            int i = this.pos - 4;
-            this.pos = i;
-            this.buffer.putInt(i + 1, ((266338304 & value) << 3) | (((2080768 & value) | 2097152) << 2) | (((value & 16256) | 16384) << 1) | (value & 127) | 128);
+            this.pos -= 4;
+            this.buffer.putInt(this.pos + 1, ((266338304 & value) << 3) | (((2080768 & value) | 2097152) << 2) | (((value & 16256) | 16384) << 1) | (value & 127) | 128);
         }
 
         private void writeVarint32FiveBytes(int value) {
@@ -2697,9 +2736,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             int i = this.pos;
             this.pos = i - 1;
             byteBuffer.put(i, (byte) (value >>> 28));
-            int i2 = this.pos - 4;
-            this.pos = i2;
-            this.buffer.putInt(i2 + 1, ((((value >>> 21) & 127) | 128) << 24) | ((((value >>> 14) & 127) | 128) << 16) | ((((value >>> 7) & 127) | 128) << 8) | (value & 127) | 128);
+            this.pos -= 4;
+            this.buffer.putInt(this.pos + 1, ((((value >>> 21) & 127) | 128) << 24) | ((((value >>> 14) & 127) | 128) << 16) | ((((value >>> 7) & 127) | 128) << 8) | (value & 127) | 128);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
@@ -2707,36 +2745,34 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             switch (BinaryWriter.computeUInt64SizeNoTag(value)) {
                 case 1:
                     writeVarint64OneByte(value);
-                    return;
+                    break;
                 case 2:
                     writeVarint64TwoBytes(value);
-                    return;
+                    break;
                 case 3:
                     writeVarint64ThreeBytes(value);
-                    return;
+                    break;
                 case 4:
                     writeVarint64FourBytes(value);
-                    return;
+                    break;
                 case 5:
                     writeVarint64FiveBytes(value);
-                    return;
+                    break;
                 case 6:
                     writeVarint64SixBytes(value);
-                    return;
+                    break;
                 case 7:
                     writeVarint64SevenBytes(value);
-                    return;
+                    break;
                 case 8:
                     writeVarint64EightBytes(value);
-                    return;
+                    break;
                 case 9:
                     writeVarint64NineBytes(value);
-                    return;
+                    break;
                 case 10:
                     writeVarint64TenBytes(value);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -2757,33 +2793,28 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
 
         private void writeVarint64FiveBytes(long value) {
-            int i = this.pos - 5;
-            this.pos = i;
-            this.buffer.putLong(i - 2, ((34091302912L & value) << 28) | (((266338304 & value) | 268435456) << 27) | (((2080768 & value) | 2097152) << 26) | (((16256 & value) | 16384) << 25) | (((127 & value) | 128) << 24));
+            this.pos -= 5;
+            this.buffer.putLong(this.pos - 2, ((34091302912L & value) << 28) | (((266338304 & value) | 268435456) << 27) | (((2080768 & value) | 2097152) << 26) | (((16256 & value) | 16384) << 25) | (((127 & value) | 128) << 24));
         }
 
         private void writeVarint64SixBytes(long value) {
-            int i = this.pos - 6;
-            this.pos = i;
-            this.buffer.putLong(i - 1, ((4363686772736L & value) << 21) | (((34091302912L & value) | 34359738368L) << 20) | (((266338304 & value) | 268435456) << 19) | (((2080768 & value) | 2097152) << 18) | (((16256 & value) | 16384) << 17) | (((127 & value) | 128) << 16));
+            this.pos -= 6;
+            this.buffer.putLong(this.pos - 1, ((4363686772736L & value) << 21) | (((34091302912L & value) | 34359738368L) << 20) | (((266338304 & value) | 268435456) << 19) | (((2080768 & value) | 2097152) << 18) | (((16256 & value) | 16384) << 17) | (((127 & value) | 128) << 16));
         }
 
         private void writeVarint64SevenBytes(long value) {
-            int i = this.pos - 7;
-            this.pos = i;
-            this.buffer.putLong(i, ((558551906910208L & value) << 14) | (((4363686772736L & value) | 4398046511104L) << 13) | (((34091302912L & value) | 34359738368L) << 12) | (((266338304 & value) | 268435456) << 11) | (((2080768 & value) | 2097152) << 10) | (((16256 & value) | 16384) << 9) | (((127 & value) | 128) << 8));
+            this.pos -= 7;
+            this.buffer.putLong(this.pos, ((558551906910208L & value) << 14) | (((4363686772736L & value) | 4398046511104L) << 13) | (((34091302912L & value) | 34359738368L) << 12) | (((266338304 & value) | 268435456) << 11) | (((2080768 & value) | 2097152) << 10) | (((16256 & value) | 16384) << 9) | (((127 & value) | 128) << 8));
         }
 
         private void writeVarint64EightBytes(long value) {
-            int i = this.pos - 8;
-            this.pos = i;
-            this.buffer.putLong(i + 1, ((71494644084506624L & value) << 7) | (((558551906910208L & value) | 562949953421312L) << 6) | (((4363686772736L & value) | 4398046511104L) << 5) | (((34091302912L & value) | 34359738368L) << 4) | (((266338304 & value) | 268435456) << 3) | (((2080768 & value) | 2097152) << 2) | (((16256 & value) | 16384) << 1) | (127 & value) | 128);
+            this.pos -= 8;
+            this.buffer.putLong(this.pos + 1, ((71494644084506624L & value) << 7) | (((558551906910208L & value) | 562949953421312L) << 6) | (((4363686772736L & value) | 4398046511104L) << 5) | (((34091302912L & value) | 34359738368L) << 4) | (((266338304 & value) | 268435456) << 3) | (((2080768 & value) | 2097152) << 2) | (((16256 & value) | 16384) << 1) | (127 & value) | 128);
         }
 
         private void writeVarint64EightBytesWithSign(long value) {
-            int i = this.pos - 8;
-            this.pos = i;
-            this.buffer.putLong(i + 1, (((71494644084506624L & value) | 72057594037927936L) << 7) | (((558551906910208L & value) | 562949953421312L) << 6) | (((4363686772736L & value) | 4398046511104L) << 5) | (((34091302912L & value) | 34359738368L) << 4) | (((266338304 & value) | 268435456) << 3) | (((2080768 & value) | 2097152) << 2) | (((16256 & value) | 16384) << 1) | (127 & value) | 128);
+            this.pos -= 8;
+            this.buffer.putLong(this.pos + 1, (((71494644084506624L & value) | 72057594037927936L) << 7) | (((558551906910208L & value) | 562949953421312L) << 6) | (((4363686772736L & value) | 4398046511104L) << 5) | (((34091302912L & value) | 34359738368L) << 4) | (((266338304 & value) | 268435456) << 3) | (((2080768 & value) | 2097152) << 2) | (((16256 & value) | 16384) << 1) | (127 & value) | 128);
         }
 
         private void writeVarint64NineBytes(long value) {
@@ -2808,54 +2839,52 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
 
         @Override // com.android.framework.protobuf.BinaryWriter
         void writeFixed32(int value) {
-            int i = this.pos - 4;
-            this.pos = i;
-            this.buffer.putInt(i + 1, value);
+            this.pos -= 4;
+            this.buffer.putInt(this.pos + 1, value);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
         void writeFixed64(long value) {
-            int i = this.pos - 8;
-            this.pos = i;
-            this.buffer.putLong(i + 1, value);
+            this.pos -= 8;
+            this.buffer.putLong(this.pos + 1, value);
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
         void writeString(String in) {
-            int i;
-            int i2;
-            int i3;
             char c;
             requireSpace(in.length());
-            int i4 = in.length() - 1;
-            this.pos -= i4;
-            while (i4 >= 0 && (c = in.charAt(i4)) < 128) {
-                this.buffer.put(this.pos + i4, (byte) c);
-                i4--;
+            int i = in.length() - 1;
+            this.pos -= i;
+            while (i >= 0 && (c = in.charAt(i)) < 128) {
+                this.buffer.put(this.pos + i, (byte) c);
+                i--;
             }
-            if (i4 == -1) {
+            if (i == -1) {
                 this.pos--;
                 return;
             }
-            this.pos += i4;
-            while (i4 >= 0) {
-                char c2 = in.charAt(i4);
-                if (c2 < 128 && (i3 = this.pos) >= 0) {
+            this.pos += i;
+            while (i >= 0) {
+                char c2 = in.charAt(i);
+                if (c2 < 128 && this.pos >= 0) {
                     ByteBuffer byteBuffer = this.buffer;
-                    this.pos = i3 - 1;
-                    byteBuffer.put(i3, (byte) c2);
-                } else if (c2 < 2048 && (i2 = this.pos) > 0) {
-                    ByteBuffer byteBuffer2 = this.buffer;
+                    int i2 = this.pos;
                     this.pos = i2 - 1;
-                    byteBuffer2.put(i2, (byte) ((c2 & '?') | 128));
+                    byteBuffer.put(i2, (byte) c2);
+                } else if (c2 < 2048 && this.pos > 0) {
+                    ByteBuffer byteBuffer2 = this.buffer;
+                    int i3 = this.pos;
+                    this.pos = i3 - 1;
+                    byteBuffer2.put(i3, (byte) ((c2 & '?') | 128));
                     ByteBuffer byteBuffer3 = this.buffer;
+                    int i4 = this.pos;
+                    this.pos = i4 - 1;
+                    byteBuffer3.put(i4, (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
+                } else if ((c2 < 55296 || 57343 < c2) && this.pos > 1) {
+                    ByteBuffer byteBuffer4 = this.buffer;
                     int i5 = this.pos;
                     this.pos = i5 - 1;
-                    byteBuffer3.put(i5, (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
-                } else if ((c2 < 55296 || 57343 < c2) && (i = this.pos) > 1) {
-                    ByteBuffer byteBuffer4 = this.buffer;
-                    this.pos = i - 1;
-                    byteBuffer4.put(i, (byte) ((c2 & '?') | 128));
+                    byteBuffer4.put(i5, (byte) ((c2 & '?') | 128));
                     ByteBuffer byteBuffer5 = this.buffer;
                     int i6 = this.pos;
                     this.pos = i6 - 1;
@@ -2866,10 +2895,10 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
                     byteBuffer6.put(i7, (byte) ((c2 >>> '\f') | 480));
                 } else {
                     if (this.pos > 2) {
-                        if (i4 != 0) {
-                            char high = in.charAt(i4 - 1);
+                        if (i != 0) {
+                            char high = in.charAt(i - 1);
                             if (Character.isSurrogatePair(high, c2)) {
-                                i4--;
+                                i--;
                                 int codePoint = Character.toCodePoint(high, c2);
                                 ByteBuffer byteBuffer7 = this.buffer;
                                 int i8 = this.pos;
@@ -2889,12 +2918,12 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
                                 byteBuffer10.put(i11, (byte) ((codePoint >>> 18) | 240));
                             }
                         }
-                        throw new Utf8.UnpairedSurrogateException(i4 - 1, i4);
+                        throw new Utf8.UnpairedSurrogateException(i - 1, i);
                     }
-                    requireSpace(i4);
-                    i4++;
+                    requireSpace(i);
+                    i++;
                 }
-                i4--;
+                i--;
             }
         }
 
@@ -2911,9 +2940,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             if (spaceLeft() < length) {
                 nextBuffer(length);
             }
-            int i = this.pos - length;
-            this.pos = i;
-            this.buffer.position(i + 1);
+            this.pos -= length;
+            this.buffer.position(this.pos + 1);
             this.buffer.put(value, offset, length);
         }
 
@@ -2924,9 +2952,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
                 this.buffers.addFirst(AllocatedBuffer.wrap(value, offset, length));
                 nextBuffer();
             } else {
-                int i = this.pos - length;
-                this.pos = i;
-                this.buffer.position(i + 1);
+                this.pos -= length;
+                this.buffer.position(this.pos + 1);
                 this.buffer.put(value, offset, length);
             }
         }
@@ -2937,9 +2964,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             if (spaceLeft() < length) {
                 nextBuffer(length);
             }
-            int i = this.pos - length;
-            this.pos = i;
-            this.buffer.position(i + 1);
+            this.pos -= length;
+            this.buffer.position(this.pos + 1);
             this.buffer.put(value);
         }
 
@@ -2951,9 +2977,8 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
                 this.buffers.addFirst(AllocatedBuffer.wrap(value));
                 nextBuffer();
             } else {
-                int i = this.pos - length;
-                this.pos = i;
-                this.buffer.position(i + 1);
+                this.pos -= length;
+                this.buffer.position(this.pos + 1);
                 this.buffer.put(value);
             }
         }
@@ -2966,23 +2991,19 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class UnsafeDirectWriter extends BinaryWriter {
+    private static final class UnsafeDirectWriter extends BinaryWriter {
         private ByteBuffer buffer;
         private long bufferOffset;
         private long limitMinusOne;
         private long pos;
-
-        static /* synthetic */ boolean access$000() {
-            return isSupported();
-        }
 
         UnsafeDirectWriter(BufferAllocator alloc, int chunkSize) {
             super(alloc, chunkSize, null);
             nextBuffer();
         }
 
-        private static boolean isSupported() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static boolean isSupported() {
             return UnsafeUtil.hasUnsafeByteBufferOperations();
         }
 
@@ -3005,13 +3026,11 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             finishCurrentBuffer();
             this.buffers.addFirst(allocatedBuffer);
             this.buffer = nioBuffer;
-            nioBuffer.limit(nioBuffer.capacity());
+            this.buffer.limit(this.buffer.capacity());
             this.buffer.position(0);
-            long addressOffset = UnsafeUtil.addressOffset(this.buffer);
-            this.bufferOffset = addressOffset;
-            long limit = addressOffset + (this.buffer.limit() - 1);
-            this.limitMinusOne = limit;
-            this.pos = limit;
+            this.bufferOffset = UnsafeUtil.addressOffset(this.buffer);
+            this.limitMinusOne = this.bufferOffset + (this.buffer.limit() - 1);
+            this.pos = this.limitMinusOne;
         }
 
         @Override // com.android.framework.protobuf.BinaryWriter
@@ -3279,36 +3298,34 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             switch (BinaryWriter.computeUInt64SizeNoTag(value)) {
                 case 1:
                     writeVarint64OneByte(value);
-                    return;
+                    break;
                 case 2:
                     writeVarint64TwoBytes(value);
-                    return;
+                    break;
                 case 3:
                     writeVarint64ThreeBytes(value);
-                    return;
+                    break;
                 case 4:
                     writeVarint64FourBytes(value);
-                    return;
+                    break;
                 case 5:
                     writeVarint64FiveBytes(value);
-                    return;
+                    break;
                 case 6:
                     writeVarint64SixBytes(value);
-                    return;
+                    break;
                 case 7:
                     writeVarint64SevenBytes(value);
-                    return;
+                    break;
                 case 8:
                     writeVarint64EightBytes(value);
-                    return;
+                    break;
                 case 9:
                     writeVarint64NineBytes(value);
-                    return;
+                    break;
                 case 10:
                     writeVarint64TenBytes(value);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -3570,63 +3587,53 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
             }
             while (i >= 0) {
                 char c2 = in.charAt(i);
-                if (c2 < 128) {
+                if (c2 < 128 && this.pos >= this.bufferOffset) {
                     long j2 = this.pos;
-                    if (j2 >= this.bufferOffset) {
-                        this.pos = j2 - 1;
-                        UnsafeUtil.putByte(j2, (byte) c2);
-                        i--;
-                    }
-                }
-                if (c2 < 2048) {
+                    this.pos = j2 - 1;
+                    UnsafeUtil.putByte(j2, (byte) c2);
+                } else if (c2 < 2048 && this.pos > this.bufferOffset) {
                     long j3 = this.pos;
-                    if (j3 > this.bufferOffset) {
-                        this.pos = j3 - 1;
-                        UnsafeUtil.putByte(j3, (byte) ((c2 & '?') | 128));
-                        long j4 = this.pos;
-                        this.pos = j4 - 1;
-                        UnsafeUtil.putByte(j4, (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
-                        i--;
-                    }
-                }
-                if (c2 < 55296 || 57343 < c2) {
+                    this.pos = j3 - 1;
+                    UnsafeUtil.putByte(j3, (byte) ((c2 & '?') | 128));
+                    long j4 = this.pos;
+                    this.pos = j4 - 1;
+                    UnsafeUtil.putByte(j4, (byte) ((c2 >>> 6) | EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
+                } else if ((c2 < 55296 || 57343 < c2) && this.pos > this.bufferOffset + 1) {
                     long j5 = this.pos;
-                    if (j5 > this.bufferOffset + 1) {
-                        this.pos = j5 - 1;
-                        UnsafeUtil.putByte(j5, (byte) ((c2 & '?') | 128));
-                        long j6 = this.pos;
-                        this.pos = j6 - 1;
-                        UnsafeUtil.putByte(j6, (byte) (((c2 >>> 6) & 63) | 128));
-                        long j7 = this.pos;
-                        this.pos = j7 - 1;
-                        UnsafeUtil.putByte(j7, (byte) ((c2 >>> '\f') | 480));
-                        i--;
-                    }
-                }
-                if (this.pos > this.bufferOffset + 2) {
-                    if (i != 0) {
-                        char high = in.charAt(i - 1);
-                        if (Character.isSurrogatePair(high, c2)) {
-                            i--;
-                            int codePoint = Character.toCodePoint(high, c2);
-                            long j8 = this.pos;
-                            this.pos = j8 - 1;
-                            UnsafeUtil.putByte(j8, (byte) ((codePoint & 63) | 128));
-                            long j9 = this.pos;
-                            this.pos = j9 - 1;
-                            UnsafeUtil.putByte(j9, (byte) (((codePoint >>> 6) & 63) | 128));
-                            long j10 = this.pos;
-                            this.pos = j10 - 1;
-                            UnsafeUtil.putByte(j10, (byte) (((codePoint >>> 12) & 63) | 128));
-                            long j11 = this.pos;
-                            this.pos = j11 - 1;
-                            UnsafeUtil.putByte(j11, (byte) ((codePoint >>> 18) | 240));
+                    this.pos = j5 - 1;
+                    UnsafeUtil.putByte(j5, (byte) ((c2 & '?') | 128));
+                    long j6 = this.pos;
+                    this.pos = j6 - 1;
+                    UnsafeUtil.putByte(j6, (byte) (((c2 >>> 6) & 63) | 128));
+                    long j7 = this.pos;
+                    this.pos = j7 - 1;
+                    UnsafeUtil.putByte(j7, (byte) ((c2 >>> '\f') | 480));
+                } else {
+                    if (this.pos > this.bufferOffset + 2) {
+                        if (i != 0) {
+                            char high = in.charAt(i - 1);
+                            if (Character.isSurrogatePair(high, c2)) {
+                                i--;
+                                int codePoint = Character.toCodePoint(high, c2);
+                                long j8 = this.pos;
+                                this.pos = j8 - 1;
+                                UnsafeUtil.putByte(j8, (byte) ((codePoint & 63) | 128));
+                                long j9 = this.pos;
+                                this.pos = j9 - 1;
+                                UnsafeUtil.putByte(j9, (byte) (((codePoint >>> 6) & 63) | 128));
+                                long j10 = this.pos;
+                                this.pos = j10 - 1;
+                                UnsafeUtil.putByte(j10, (byte) (((codePoint >>> 12) & 63) | 128));
+                                long j11 = this.pos;
+                                this.pos = j11 - 1;
+                                UnsafeUtil.putByte(j11, (byte) ((codePoint >>> 18) | 240));
+                            }
                         }
+                        throw new Utf8.UnpairedSurrogateException(i - 1, i);
                     }
-                    throw new Utf8.UnpairedSurrogateException(i - 1, i);
+                    requireSpace(i);
+                    i++;
                 }
-                requireSpace(i);
-                i++;
                 i--;
             }
         }

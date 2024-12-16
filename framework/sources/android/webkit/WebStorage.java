@@ -7,12 +7,10 @@ import java.util.Map;
 public class WebStorage {
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public interface QuotaUpdater {
         void updateQuota(long j);
     }
 
-    /* loaded from: classes4.dex */
     public static class Origin {
         private String mOrigin;
         private long mQuota;

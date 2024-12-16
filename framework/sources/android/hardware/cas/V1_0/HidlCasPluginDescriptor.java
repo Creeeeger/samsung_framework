@@ -6,7 +6,7 @@ import android.os.HwParcel;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class HidlCasPluginDescriptor {
     public int caSystemId = 0;
     public String name = new String();
@@ -55,7 +55,7 @@ public final class HidlCasPluginDescriptor {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.caSystemId = _hidl_blob.getInt32(_hidl_offset + 0);
         this.name = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

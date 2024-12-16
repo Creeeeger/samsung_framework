@@ -8,7 +8,6 @@ public class BluetoothPolicy {
     public static final int NO_PROFILE = -1;
     private static String TAG = "BluetoothPolicy";
 
-    /* loaded from: classes3.dex */
     public class BluetoothUUID {
         public static final String A2DP_ADVAUDIODIST_UUID = "0000110D-0000-1000-8000-00805F9B34FB";
         public static final String A2DP_AUDIOSINK_UUID = "0000110B-0000-1000-8000-00805F9B34FB";
@@ -36,7 +35,6 @@ public class BluetoothPolicy {
         }
     }
 
-    /* loaded from: classes3.dex */
     public class BluetoothProfile {
         public static final int BLUETOOTH_A2DP_PROFILE = 8;
         public static final int BLUETOOTH_AVRCP_PROFILE = 16;

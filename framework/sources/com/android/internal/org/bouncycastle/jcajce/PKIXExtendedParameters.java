@@ -32,11 +32,6 @@ public class PKIXExtendedParameters implements CertPathParameters {
     private final Date validityDate;
     private final int validityModel;
 
-    /* synthetic */ PKIXExtendedParameters(Builder builder, PKIXExtendedParametersIA pKIXExtendedParametersIA) {
-        this(builder);
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         private final PKIXParameters baseParameters;
         private final Date date;
@@ -63,9 +58,8 @@ public class PKIXExtendedParameters implements CertPathParameters {
             if (constraints != null) {
                 this.targetConstraints = new PKIXCertStoreSelector.Builder(constraints).build();
             }
-            Date date = baseParameters.getDate();
-            this.validityDate = date;
-            this.date = date == null ? new Date() : date;
+            this.validityDate = baseParameters.getDate();
+            this.date = this.validityDate == null ? new Date() : this.validityDate;
             this.revocationEnabled = baseParameters.isRevocationEnabled();
             this.trustAnchors = baseParameters.getTrustAnchors();
         }

@@ -42,6 +42,7 @@ public class SemFingerprintManager {
     public static final int FINGERPRINT_ACQUIRED_PARTIAL = 1;
     public static final int FINGERPRINT_ACQUIRED_TOO_FAST = 5;
     public static final int FINGERPRINT_ACQUIRED_TOO_SLOW = 4;
+    public static final int FINGERPRINT_ACQUIRED_VENDOR = 6;
     public static final int FINGERPRINT_ERROR_CANCELED = 5;
     public static final int FINGERPRINT_ERROR_HW_UNAVAILABLE = 1;
     public static final int FINGERPRINT_ERROR_LOCKOUT = 7;
@@ -67,275 +68,11 @@ public class SemFingerprintManager {
     private final FingerprintManager mFingerprintManager;
     private Handler mHandler;
     private final IFingerprintService mService;
-    private final IFingerprintServiceReceiver mServiceReceiver;
     private final IBinder mToken = new Binder();
-
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
-    public @interface ExtraKey {
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
-    public @interface FingerprintAcquired {
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
-    public @interface FingerprintError {
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
-    public @interface PrivilegedFlag {
-    }
-
-    /* loaded from: classes5.dex */
-    public class MyHandler extends Handler {
-        /* synthetic */ MyHandler(SemFingerprintManager semFingerprintManager, Context context, MyHandlerIA myHandlerIA) {
-            this(context);
-        }
-
-        /* synthetic */ MyHandler(SemFingerprintManager semFingerprintManager, Looper looper, MyHandlerIA myHandlerIA) {
-            this(looper);
-        }
-
-        private MyHandler(Context context) {
-            super(context.getMainLooper());
-        }
-
-        private MyHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            Slog.i(SemFingerprintManager.TAG, "handleMessage = " + msg.what + ", " + msg.arg1 + ", " + msg.arg2);
-            switch (msg.what) {
-                case 100:
-                    SemFingerprintManager.this.sendAcquiredResult(msg.arg1, (String) msg.obj);
-                    return;
-                case 101:
-                    SemFingerprintManager.this.sendAuthenticatedSucceeded((Fingerprint) msg.obj, msg.arg1, null);
-                    return;
-                case 102:
-                    SemFingerprintManager.this.sendAuthenticatedFailed();
-                    return;
-                case 103:
-                    SemFingerprintManager.this.sendErrorResult(msg.arg1, (String) msg.obj);
-                    return;
-                default:
-                    Slog.w(SemFingerprintManager.TAG, "handleMessage : Unknown msg");
-                    return;
-            }
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static final class CryptoObject {
-        private android.hardware.biometrics.CryptoObject mBioCryptoObject;
-        private final byte[] mFidoRequestData;
-        private byte[] mFidoResultData = null;
-
-        public CryptoObject(Signature signature, byte[] fidoRequestData) {
-            this.mBioCryptoObject = new android.hardware.biometrics.CryptoObject(signature);
-            this.mFidoRequestData = fidoRequestData;
-        }
-
-        public CryptoObject(Cipher cipher, byte[] fidoRequestData) {
-            this.mBioCryptoObject = new android.hardware.biometrics.CryptoObject(cipher);
-            this.mFidoRequestData = fidoRequestData;
-        }
-
-        public CryptoObject(Mac mac, byte[] fidoRequestData) {
-            this.mBioCryptoObject = new android.hardware.biometrics.CryptoObject(mac);
-            this.mFidoRequestData = fidoRequestData;
-        }
-
-        public Signature getSignature() {
-            return this.mBioCryptoObject.getSignature();
-        }
-
-        public Cipher getCipher() {
-            return this.mBioCryptoObject.getCipher();
-        }
-
-        public Mac getMac() {
-            return this.mBioCryptoObject.getMac();
-        }
-
-        public long getOpId() {
-            return this.mBioCryptoObject.getOpId();
-        }
-
-        public byte[] getFidoResultData() {
-            return this.mFidoResultData;
-        }
-
-        public void setFidoResultData(byte[] fidoResultData) {
-            this.mFidoResultData = fidoResultData;
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static class AuthenticationResult {
-        private final CryptoObject mCryptoObject;
-        private final Fingerprint mFingerprint;
-
-        public AuthenticationResult(CryptoObject crypto, Fingerprint fp) {
-            this.mCryptoObject = crypto;
-            this.mFingerprint = fp;
-        }
-
-        public CryptoObject getCryptoObject() {
-            return this.mCryptoObject;
-        }
-
-        public Fingerprint getFingerprint() {
-            return this.mFingerprint;
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static abstract class AuthenticationCallback {
-        public void onAuthenticationError(int errorCode, CharSequence errString) {
-        }
-
-        public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
-        }
-
-        public void onAuthenticationSucceeded(AuthenticationResult result) {
-        }
-
-        public void onAuthenticationFailed() {
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static class Characteristics {
-        public static final int SENSOR_POSITION_HOME_KEY = 1;
-        public static final int SENSOR_POSITION_IN_DISPLAY = 2;
-        public static final int SENSOR_POSITION_POWER_KEY = 4;
-        public static final int SENSOR_POSITION_REAR = 3;
-        public static final int SENSOR_TYPE_CAPACITANCE = 1;
-        public static final int SENSOR_TYPE_OPTICAL = 2;
-        public static final int SENSOR_TYPE_ULTRASONIC = 3;
-        private static final String mConfig = "google_touch_display_optical,settings=3,screen_off";
-        private final FingerprintManager mFingerprintManager;
-
-        /* synthetic */ Characteristics(FingerprintManager fingerprintManager, CharacteristicsIA characteristicsIA) {
-            this(fingerprintManager);
-        }
-
-        private Characteristics(FingerprintManager fm) {
-            this.mFingerprintManager = fm;
-        }
-
-        public int getSensorType() {
-            if (mConfig.contains("ultrasonic")) {
-                return 3;
-            }
-            if (mConfig.contains("optical")) {
-                return 2;
-            }
-            return 1;
-        }
-
-        public int getSensorPosition() {
-            return FingerprintManager.semGetSensorPosition();
-        }
-
-        public int getMaxFingerprintCount() {
-            return this.mFingerprintManager.semGetMaxEnrollmentNumber();
-        }
-
-        public Rect getSensorAreaInDisplay() {
-            return this.mFingerprintManager.semGetFingerIconRectInDisplay();
-        }
-    }
-
-    public static SemFingerprintManager createInstance(Context context) {
-        return new SemFingerprintManager(context);
-    }
-
-    private SemFingerprintManager(Context context) {
-        this.mContext = context;
-        this.mHandler = new MyHandler(context);
-        FingerprintManager fingerprintManager = (FingerprintManager) context.getSystemService(FingerprintManager.class);
-        this.mFingerprintManager = fingerprintManager;
-        this.mService = fingerprintManager.semGetService();
-        this.mServiceReceiver = new IFingerprintServiceReceiver.Stub() { // from class: com.samsung.android.bio.fingerprint.SemFingerprintManager.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onAcquired(int acquireInfo, int vendorCode) {
-                SemFingerprintManager.this.mHandler.obtainMessage(100, SemFingerprintManager.this.convertAcquiredCode(acquireInfo), 0, FingerprintManager.getAcquiredString(SemFingerprintManager.this.mContext, acquireInfo, vendorCode)).sendToTarget();
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onAuthenticationSucceeded(Fingerprint fp, int userId, boolean isStrongBiometric) {
-                SemFingerprintManager.this.mHandler.obtainMessage(101, userId, 0, fp).sendToTarget();
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onAuthenticationFailed() {
-                SemFingerprintManager.this.mHandler.obtainMessage(102).sendToTarget();
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onFingerprintDetected(int sensorId, int userId, boolean isStrongBiometric) {
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onError(int fpErrorCode, int vendor2) {
-                int errorCode = fpErrorCode;
-                switch (fpErrorCode) {
-                    case 7:
-                        errorCode = 7;
-                        break;
-                    case 9:
-                        errorCode = 9;
-                        break;
-                    case 10:
-                        errorCode = 10;
-                        break;
-                }
-                SemFingerprintManager.this.mHandler.obtainMessage(103, errorCode, 0, FingerprintManager.getErrorString(SemFingerprintManager.this.mContext, fpErrorCode, vendor2)).sendToTarget();
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onEnrollResult(Fingerprint fp, int remaining) {
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onRemoved(Fingerprint fp, int remaining) {
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onChallengeGenerated(int sensorId, int userId, long challenge) {
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onUdfpsPointerDown(int sensorId) {
-            }
-
-            @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
-            public void onUdfpsPointerUp(int sensorId) {
-            }
-        };
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.bio.fingerprint.SemFingerprintManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends IFingerprintServiceReceiver.Stub {
-        AnonymousClass1() {
-        }
-
+    private final IFingerprintServiceReceiver mServiceReceiver = new IFingerprintServiceReceiver.Stub() { // from class: com.samsung.android.bio.fingerprint.SemFingerprintManager.1
         @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
         public void onAcquired(int acquireInfo, int vendorCode) {
-            SemFingerprintManager.this.mHandler.obtainMessage(100, SemFingerprintManager.this.convertAcquiredCode(acquireInfo), 0, FingerprintManager.getAcquiredString(SemFingerprintManager.this.mContext, acquireInfo, vendorCode)).sendToTarget();
+            SemFingerprintManager.this.mHandler.obtainMessage(100, acquireInfo, vendorCode).sendToTarget();
         }
 
         @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
@@ -388,6 +125,193 @@ public class SemFingerprintManager {
         @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
         public void onUdfpsPointerUp(int sensorId) {
         }
+
+        @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
+        public void onUdfpsOverlayShown() {
+        }
+    };
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ExtraKey {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FingerprintAcquired {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FingerprintError {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PrivilegedFlag {
+    }
+
+    private class MyHandler extends Handler {
+        private MyHandler(Context context) {
+            super(context.getMainLooper());
+        }
+
+        private MyHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            Slog.i(SemFingerprintManager.TAG, "handleMessage = " + msg.what + ", " + msg.arg1 + ", " + msg.arg2);
+            switch (msg.what) {
+                case 100:
+                    SemFingerprintManager.this.sendAcquiredResult(msg.arg1, msg.arg2);
+                    break;
+                case 101:
+                    SemFingerprintManager.this.sendAuthenticatedSucceeded((Fingerprint) msg.obj, msg.arg1, null);
+                    break;
+                case 102:
+                    SemFingerprintManager.this.sendAuthenticatedFailed();
+                    break;
+                case 103:
+                    SemFingerprintManager.this.sendErrorResult(msg.arg1, (String) msg.obj);
+                    break;
+                default:
+                    Slog.w(SemFingerprintManager.TAG, "handleMessage : Unknown msg");
+                    break;
+            }
+        }
+    }
+
+    public static final class CryptoObject {
+        private final android.hardware.biometrics.CryptoObject mBioCryptoObject;
+        private final byte[] mFidoRequestData;
+        private byte[] mFidoResultData = null;
+
+        public CryptoObject(Signature signature, byte[] fidoRequestData) {
+            this.mBioCryptoObject = new android.hardware.biometrics.CryptoObject(signature);
+            this.mFidoRequestData = fidoRequestData;
+        }
+
+        public CryptoObject(Cipher cipher, byte[] fidoRequestData) {
+            this.mBioCryptoObject = new android.hardware.biometrics.CryptoObject(cipher);
+            this.mFidoRequestData = fidoRequestData;
+        }
+
+        public CryptoObject(Mac mac, byte[] fidoRequestData) {
+            this.mBioCryptoObject = new android.hardware.biometrics.CryptoObject(mac);
+            this.mFidoRequestData = fidoRequestData;
+        }
+
+        public Signature getSignature() {
+            return this.mBioCryptoObject.getSignature();
+        }
+
+        public Cipher getCipher() {
+            return this.mBioCryptoObject.getCipher();
+        }
+
+        public Mac getMac() {
+            return this.mBioCryptoObject.getMac();
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public long getOpId() {
+            return this.mBioCryptoObject.getOpId();
+        }
+
+        public byte[] getFidoResultData() {
+            return this.mFidoResultData;
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public void setFidoResultData(byte[] fidoResultData) {
+            this.mFidoResultData = fidoResultData;
+        }
+    }
+
+    public static class AuthenticationResult {
+        private final CryptoObject mCryptoObject;
+        private final Fingerprint mFingerprint;
+
+        public AuthenticationResult(CryptoObject crypto, Fingerprint fp) {
+            this.mCryptoObject = crypto;
+            this.mFingerprint = fp;
+        }
+
+        public CryptoObject getCryptoObject() {
+            return this.mCryptoObject;
+        }
+
+        public Fingerprint getFingerprint() {
+            return this.mFingerprint;
+        }
+    }
+
+    public static abstract class AuthenticationCallback {
+        public void onAuthenticationError(int errorCode, CharSequence errString) {
+        }
+
+        public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
+        }
+
+        public void onAuthenticationSucceeded(AuthenticationResult result) {
+        }
+
+        public void onAuthenticationFailed() {
+        }
+
+        public void onAuthenticationAcquired(int event) {
+        }
+    }
+
+    public static class Characteristics {
+        public static final int SENSOR_POSITION_HOME_KEY = 1;
+        public static final int SENSOR_POSITION_IN_DISPLAY = 2;
+        public static final int SENSOR_POSITION_POWER_KEY = 4;
+        public static final int SENSOR_POSITION_REAR = 3;
+        public static final int SENSOR_TYPE_CAPACITANCE = 1;
+        public static final int SENSOR_TYPE_OPTICAL = 2;
+        public static final int SENSOR_TYPE_ULTRASONIC = 3;
+        private static final String mConfig = "google_touch_display_ultrasonic";
+        private final FingerprintManager mFingerprintManager;
+
+        private Characteristics(FingerprintManager fm) {
+            this.mFingerprintManager = fm;
+        }
+
+        public int getSensorType() {
+            if (mConfig.contains("ultrasonic")) {
+                return 3;
+            }
+            if (mConfig.contains("optical")) {
+                return 2;
+            }
+            return 1;
+        }
+
+        public int getSensorPosition() {
+            return FingerprintManager.semGetSensorPosition();
+        }
+
+        public int getMaxFingerprintCount() {
+            return this.mFingerprintManager.semGetMaxEnrollmentNumber();
+        }
+
+        public Rect getSensorAreaInDisplay() {
+            return this.mFingerprintManager.semGetFingerIconRectInDisplay();
+        }
+    }
+
+    public static SemFingerprintManager createInstance(Context context) {
+        FingerprintManager fpMgr = (FingerprintManager) context.getSystemService(FingerprintManager.class);
+        if (fpMgr != null) {
+            return new SemFingerprintManager(context, fpMgr);
+        }
+        return null;
+    }
+
+    private SemFingerprintManager(Context context, FingerprintManager fm) {
+        this.mContext = context;
+        this.mHandler = new MyHandler(context);
+        this.mFingerprintManager = fm;
+        this.mService = this.mFingerprintManager.semGetService();
     }
 
     public void authenticate(CryptoObject crypto, CancellationSignal cancel, AuthenticationCallback callback, Handler handler, int userId, Bundle attr) {
@@ -501,7 +425,23 @@ public class SemFingerprintManager {
         if (context.checkSelfPermission(Manifest.permission.BIOMETRICS_PRIVILEGED) == -1) {
             throw new SecurityException("Must have com.samsung.android.permission.BIOMETRICS_PRIVILEGED permission.");
         }
-        return "google_touch_display_optical,settings=3,screen_off";
+        return "google_touch_display_ultrasonic";
+    }
+
+    public static int getMaxTemplateNumberFromSPF() {
+        String[] params = "google_touch_display_ultrasonic".split(",");
+        int length = params.length;
+        for (int i = 0; i < length; i++) {
+            String p = params[i];
+            if (p.startsWith("settings=")) {
+                try {
+                    return Integer.parseInt(p.substring("settings=".length()));
+                } catch (Exception e) {
+                    Slog.e(TAG, "getMaxTemplateNumberFromSPF: failed to read sensor config", e);
+                }
+            }
+        }
+        return 4;
     }
 
     private void useHandler(Handler handler) {
@@ -518,12 +458,12 @@ public class SemFingerprintManager {
         }
     }
 
-    /* renamed from: cancelAuthentication */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: cancelAuthentication, reason: merged with bridge method [inline-methods] */
     public void lambda$authenticate$0(long requestId) {
-        IFingerprintService iFingerprintService = this.mService;
-        if (iFingerprintService != null) {
+        if (this.mService != null) {
             try {
-                iFingerprintService.cancelAuthentication(this.mToken, this.mContext.getOpPackageName(), this.mContext.getAttributionTag(), requestId);
+                this.mService.cancelAuthentication(this.mToken, this.mContext.getOpPackageName(), this.mContext.getAttributionTag(), requestId);
             } catch (RemoteException e) {
                 Slog.w(TAG, "Remote exception while canceling authentication : " + e.getMessage());
             }
@@ -539,11 +479,12 @@ public class SemFingerprintManager {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleDefaultError$1(AuthenticationCallback callback) {
         callback.onAuthenticationError(2, FingerprintManager.getErrorString(this.mContext, 2, 0));
     }
 
-    public int convertAcquiredCode(int code) {
+    private int convertAcquiredCode(int code) {
         switch (code) {
             case 1:
                 return 1;
@@ -560,35 +501,44 @@ public class SemFingerprintManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendErrorResult(int errMsgId, String errMsg) {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
+        if (this.mAuthenticationCallback != null) {
             if (errMsg == null) {
                 errMsg = "";
             }
-            authenticationCallback.onAuthenticationError(errMsgId, errMsg);
+            this.mAuthenticationCallback.onAuthenticationError(errMsgId, errMsg);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedFailed() {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
-            authenticationCallback.onAuthenticationFailed();
+        if (this.mAuthenticationCallback != null) {
+            this.mAuthenticationCallback.onAuthenticationFailed();
         }
     }
 
-    public void sendAcquiredResult(int acquireInfo, String helpMsg) {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null && helpMsg != null) {
-            authenticationCallback.onAuthenticationHelp(acquireInfo, helpMsg);
+    /* JADX INFO: Access modifiers changed from: private */
+    public void sendAcquiredResult(int acquireInfo, int vendor2) {
+        if (this.mAuthenticationCallback != null) {
+            String helpMsg = FingerprintManager.getAcquiredString(this.mContext, acquireInfo, vendor2);
+            int clientInfo = convertAcquiredCode(acquireInfo);
+            if (acquireInfo == 6) {
+                clientInfo = helpMsg == null ? vendor2 : acquireInfo;
+            }
+            if (helpMsg == null) {
+                this.mAuthenticationCallback.onAuthenticationAcquired(clientInfo);
+            } else {
+                this.mAuthenticationCallback.onAuthenticationHelp(clientInfo, helpMsg);
+            }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedSucceeded(Fingerprint fp, int userId, Bundle data) {
         if (this.mAuthenticationCallback != null) {
-            CryptoObject cryptoObject = this.mCryptoObject;
-            if (cryptoObject != null && data != null) {
-                cryptoObject.setFidoResultData(data.getByteArray("fidoResult"));
+            if (this.mCryptoObject != null && data != null) {
+                this.mCryptoObject.setFidoResultData(data.getByteArray("fidoResult"));
             }
             AuthenticationResult result = new AuthenticationResult(this.mCryptoObject, fp);
             this.mAuthenticationCallback.onAuthenticationSucceeded(result);

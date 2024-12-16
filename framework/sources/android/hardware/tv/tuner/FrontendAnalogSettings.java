@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendAnalogSettings implements Parcelable {
     public static final Parcelable.Creator<FrontendAnalogSettings> CREATOR = new Parcelable.Creator<FrontendAnalogSettings>() { // from class: android.hardware.tv.tuner.FrontendAnalogSettings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendAnalogSettings createFromParcel(Parcel _aidl_source) {
             FrontendAnalogSettings _aidl_out = new FrontendAnalogSettings();
@@ -17,6 +15,7 @@ public class FrontendAnalogSettings implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendAnalogSettings[] newArray(int _aidl_size) {
             return new FrontendAnalogSettings[_aidl_size];
@@ -28,25 +27,6 @@ public class FrontendAnalogSettings implements Parcelable {
     public int type = 0;
     public int aftFlag = 0;
     public int sifStandard = 0;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendAnalogSettings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendAnalogSettings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendAnalogSettings createFromParcel(Parcel _aidl_source) {
-            FrontendAnalogSettings _aidl_out = new FrontendAnalogSettings();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendAnalogSettings[] newArray(int _aidl_size) {
-            return new FrontendAnalogSettings[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

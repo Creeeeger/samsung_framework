@@ -83,7 +83,6 @@ public interface IInCallAdapter extends IInterface {
 
     void unholdCall(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInCallAdapter {
         @Override // com.android.internal.telecom.IInCallAdapter
         public void answerCall(String callId, int videoState) throws RemoteException {
@@ -227,7 +226,6 @@ public interface IInCallAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInCallAdapter {
         public static final String DESCRIPTOR = "com.android.internal.telecom.IInCallAdapter";
         static final int TRANSACTION_addConferenceParticipants = 23;
@@ -370,217 +368,213 @@ public interface IInCallAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    answerCall(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    Uri _arg12 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    deflectCall(_arg02, _arg12);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    boolean _arg13 = data.readBoolean();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    rejectCall(_arg03, _arg13, _arg2);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    rejectCallWithReason(_arg04, _arg14);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    Uri _arg15 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    transferCall(_arg05, _arg15, _arg22);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    consultativeTransfer(_arg06, _arg16);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    disconnectCall(_arg07);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    holdCall(_arg08);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    unholdCall(_arg09);
+                    return true;
+                case 10:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    mute(_arg010);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    setAudioRoute(_arg011, _arg17);
+                    return true;
+                case 12:
+                    CallEndpoint _arg012 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
+                    ResultReceiver _arg18 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestCallEndpointChange(_arg012, _arg18);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    data.enforceNoDataAvail();
+                    enterBackgroundAudioProcessing(_arg013);
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    boolean _arg19 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    exitBackgroundAudioProcessing(_arg014, _arg19);
+                    return true;
+                case 15:
+                    String _arg015 = data.readString();
+                    char _arg110 = (char) data.readInt();
+                    data.enforceNoDataAvail();
+                    playDtmfTone(_arg015, _arg110);
+                    return true;
+                case 16:
+                    String _arg016 = data.readString();
+                    data.enforceNoDataAvail();
+                    stopDtmfTone(_arg016);
+                    return true;
+                case 17:
+                    String _arg017 = data.readString();
+                    boolean _arg111 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    postDialContinue(_arg017, _arg111);
+                    return true;
+                case 18:
+                    String _arg018 = data.readString();
+                    PhoneAccountHandle _arg112 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    boolean _arg23 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    phoneAccountSelected(_arg018, _arg112, _arg23);
+                    return true;
+                case 19:
+                    String _arg019 = data.readString();
+                    String _arg113 = data.readString();
+                    data.enforceNoDataAvail();
+                    conference(_arg019, _arg113);
+                    return true;
+                case 20:
+                    String _arg020 = data.readString();
+                    data.enforceNoDataAvail();
+                    splitFromConference(_arg020);
+                    return true;
+                case 21:
+                    String _arg021 = data.readString();
+                    data.enforceNoDataAvail();
+                    mergeConference(_arg021);
+                    return true;
+                case 22:
+                    String _arg022 = data.readString();
+                    data.enforceNoDataAvail();
+                    swapConference(_arg022);
+                    return true;
+                case 23:
+                    String _arg023 = data.readString();
+                    List<Uri> _arg114 = data.createTypedArrayList(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    addConferenceParticipants(_arg023, _arg114);
+                    return true;
+                case 24:
+                    turnOnProximitySensor();
+                    return true;
+                case 25:
+                    boolean _arg024 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    turnOffProximitySensor(_arg024);
+                    return true;
+                case 26:
+                    String _arg025 = data.readString();
+                    data.enforceNoDataAvail();
+                    pullExternalCall(_arg025);
+                    return true;
+                case 27:
+                    String _arg026 = data.readString();
+                    String _arg115 = data.readString();
+                    int _arg24 = data.readInt();
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCallEvent(_arg026, _arg115, _arg24, _arg3);
+                    return true;
+                case 28:
+                    String _arg027 = data.readString();
+                    Bundle _arg116 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    putExtras(_arg027, _arg116);
+                    return true;
+                case 29:
+                    String _arg028 = data.readString();
+                    List<String> _arg117 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    removeExtras(_arg028, _arg117);
+                    return true;
+                case 30:
+                    String _arg029 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendRttRequest(_arg029);
+                    return true;
+                case 31:
+                    String _arg030 = data.readString();
+                    int _arg118 = data.readInt();
+                    boolean _arg25 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    respondToRttRequest(_arg030, _arg118, _arg25);
+                    return true;
+                case 32:
+                    String _arg031 = data.readString();
+                    data.enforceNoDataAvail();
+                    stopRtt(_arg031);
+                    return true;
+                case 33:
+                    String _arg032 = data.readString();
+                    int _arg119 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRttMode(_arg032, _arg119);
+                    return true;
+                case 34:
+                    String _arg033 = data.readString();
+                    PhoneAccountHandle _arg120 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    int _arg26 = data.readInt();
+                    Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    handoverTo(_arg033, _arg120, _arg26, _arg32);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            answerCall(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            Uri _arg12 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            deflectCall(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            boolean _arg13 = data.readBoolean();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            rejectCall(_arg03, _arg13, _arg2);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            rejectCallWithReason(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            Uri _arg15 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            transferCall(_arg05, _arg15, _arg22);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            consultativeTransfer(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            disconnectCall(_arg07);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            holdCall(_arg08);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            unholdCall(_arg09);
-                            return true;
-                        case 10:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            mute(_arg010);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAudioRoute(_arg011, _arg17);
-                            return true;
-                        case 12:
-                            CallEndpoint _arg012 = (CallEndpoint) data.readTypedObject(CallEndpoint.CREATOR);
-                            ResultReceiver _arg18 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestCallEndpointChange(_arg012, _arg18);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            data.enforceNoDataAvail();
-                            enterBackgroundAudioProcessing(_arg013);
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            boolean _arg19 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            exitBackgroundAudioProcessing(_arg014, _arg19);
-                            return true;
-                        case 15:
-                            String _arg015 = data.readString();
-                            char _arg110 = (char) data.readInt();
-                            data.enforceNoDataAvail();
-                            playDtmfTone(_arg015, _arg110);
-                            return true;
-                        case 16:
-                            String _arg016 = data.readString();
-                            data.enforceNoDataAvail();
-                            stopDtmfTone(_arg016);
-                            return true;
-                        case 17:
-                            String _arg017 = data.readString();
-                            boolean _arg111 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            postDialContinue(_arg017, _arg111);
-                            return true;
-                        case 18:
-                            String _arg018 = data.readString();
-                            PhoneAccountHandle _arg112 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            boolean _arg23 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            phoneAccountSelected(_arg018, _arg112, _arg23);
-                            return true;
-                        case 19:
-                            String _arg019 = data.readString();
-                            String _arg113 = data.readString();
-                            data.enforceNoDataAvail();
-                            conference(_arg019, _arg113);
-                            return true;
-                        case 20:
-                            String _arg020 = data.readString();
-                            data.enforceNoDataAvail();
-                            splitFromConference(_arg020);
-                            return true;
-                        case 21:
-                            String _arg021 = data.readString();
-                            data.enforceNoDataAvail();
-                            mergeConference(_arg021);
-                            return true;
-                        case 22:
-                            String _arg022 = data.readString();
-                            data.enforceNoDataAvail();
-                            swapConference(_arg022);
-                            return true;
-                        case 23:
-                            String _arg023 = data.readString();
-                            List<Uri> _arg114 = data.createTypedArrayList(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            addConferenceParticipants(_arg023, _arg114);
-                            return true;
-                        case 24:
-                            turnOnProximitySensor();
-                            return true;
-                        case 25:
-                            boolean _arg024 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            turnOffProximitySensor(_arg024);
-                            return true;
-                        case 26:
-                            String _arg025 = data.readString();
-                            data.enforceNoDataAvail();
-                            pullExternalCall(_arg025);
-                            return true;
-                        case 27:
-                            String _arg026 = data.readString();
-                            String _arg115 = data.readString();
-                            int _arg24 = data.readInt();
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCallEvent(_arg026, _arg115, _arg24, _arg3);
-                            return true;
-                        case 28:
-                            String _arg027 = data.readString();
-                            Bundle _arg116 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            putExtras(_arg027, _arg116);
-                            return true;
-                        case 29:
-                            String _arg028 = data.readString();
-                            List<String> _arg117 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            removeExtras(_arg028, _arg117);
-                            return true;
-                        case 30:
-                            String _arg029 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendRttRequest(_arg029);
-                            return true;
-                        case 31:
-                            String _arg030 = data.readString();
-                            int _arg118 = data.readInt();
-                            boolean _arg25 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            respondToRttRequest(_arg030, _arg118, _arg25);
-                            return true;
-                        case 32:
-                            String _arg031 = data.readString();
-                            data.enforceNoDataAvail();
-                            stopRtt(_arg031);
-                            return true;
-                        case 33:
-                            String _arg032 = data.readString();
-                            int _arg119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRttMode(_arg032, _arg119);
-                            return true;
-                        case 34:
-                            String _arg033 = data.readString();
-                            PhoneAccountHandle _arg120 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            int _arg26 = data.readInt();
-                            Bundle _arg32 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            handoverTo(_arg033, _arg120, _arg26, _arg32);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IInCallAdapter {
+        private static class Proxy implements IInCallAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

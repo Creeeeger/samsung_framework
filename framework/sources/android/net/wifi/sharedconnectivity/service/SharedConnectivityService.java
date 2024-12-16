@@ -35,8 +35,8 @@ public abstract class SharedConnectivityService extends Service {
     private List<HotspotNetwork> mHotspotNetworks = Collections.emptyList();
     private List<KnownNetwork> mKnownNetworks = Collections.emptyList();
     private SharedConnectivitySettingsState mSettingsState = null;
-    private HotspotNetworkConnectionStatus mHotspotNetworkConnectionStatus = new HotspotNetworkConnectionStatus.Builder().setStatus(0).setExtras(Bundle.EMPTY).build();
-    private KnownNetworkConnectionStatus mKnownNetworkConnectionStatus = new KnownNetworkConnectionStatus.Builder().setStatus(0).setExtras(Bundle.EMPTY).build();
+    private HotspotNetworkConnectionStatus mHotspotNetworkConnectionStatus = null;
+    private KnownNetworkConnectionStatus mKnownNetworkConnectionStatus = null;
 
     public abstract void onConnectHotspotNetwork(HotspotNetwork hotspotNetwork);
 
@@ -55,16 +55,15 @@ public abstract class SharedConnectivityService extends Service {
         return serviceStub;
     }
 
-    /* renamed from: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends ISharedConnectivityService.Stub {
+    /* renamed from: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1, reason: invalid class name */
+    class AnonymousClass1 extends ISharedConnectivityService.Stub {
         AnonymousClass1() {
         }
 
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityService
         public void registerCallback(final ISharedConnectivityCallback callback) {
             checkPermissions();
-            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda3
+            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     SharedConnectivityService.AnonymousClass1.this.lambda$registerCallback$0(callback);
@@ -72,6 +71,7 @@ public abstract class SharedConnectivityService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$registerCallback$0(ISharedConnectivityCallback callback) {
             SharedConnectivityService.this.onRegisterCallback(callback);
         }
@@ -79,7 +79,7 @@ public abstract class SharedConnectivityService extends Service {
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityService
         public void unregisterCallback(final ISharedConnectivityCallback callback) {
             checkPermissions();
-            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda2
+            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     SharedConnectivityService.AnonymousClass1.this.lambda$unregisterCallback$1(callback);
@@ -87,6 +87,7 @@ public abstract class SharedConnectivityService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$unregisterCallback$1(ISharedConnectivityCallback callback) {
             SharedConnectivityService.this.onUnregisterCallback(callback);
         }
@@ -94,7 +95,7 @@ public abstract class SharedConnectivityService extends Service {
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityService
         public void connectHotspotNetwork(final HotspotNetwork network) {
             checkPermissions();
-            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda5
+            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     SharedConnectivityService.AnonymousClass1.this.lambda$connectHotspotNetwork$2(network);
@@ -102,6 +103,7 @@ public abstract class SharedConnectivityService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$connectHotspotNetwork$2(HotspotNetwork network) {
             SharedConnectivityService.this.onConnectHotspotNetwork(network);
         }
@@ -109,7 +111,7 @@ public abstract class SharedConnectivityService extends Service {
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityService
         public void disconnectHotspotNetwork(final HotspotNetwork network) {
             checkPermissions();
-            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda4
+            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     SharedConnectivityService.AnonymousClass1.this.lambda$disconnectHotspotNetwork$3(network);
@@ -117,6 +119,7 @@ public abstract class SharedConnectivityService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$disconnectHotspotNetwork$3(HotspotNetwork network) {
             SharedConnectivityService.this.onDisconnectHotspotNetwork(network);
         }
@@ -124,7 +127,7 @@ public abstract class SharedConnectivityService extends Service {
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityService
         public void connectKnownNetwork(final KnownNetwork network) {
             checkPermissions();
-            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda0
+            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     SharedConnectivityService.AnonymousClass1.this.lambda$connectKnownNetwork$4(network);
@@ -132,6 +135,7 @@ public abstract class SharedConnectivityService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$connectKnownNetwork$4(KnownNetwork network) {
             SharedConnectivityService.this.onConnectKnownNetwork(network);
         }
@@ -139,7 +143,7 @@ public abstract class SharedConnectivityService extends Service {
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityService
         public void forgetKnownNetwork(final KnownNetwork network) {
             checkPermissions();
-            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda1
+            SharedConnectivityService.this.mHandler.post(new Runnable() { // from class: android.net.wifi.sharedconnectivity.service.SharedConnectivityService$1$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     SharedConnectivityService.AnonymousClass1.this.lambda$forgetKnownNetwork$5(network);
@@ -147,6 +151,7 @@ public abstract class SharedConnectivityService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$forgetKnownNetwork$5(KnownNetwork network) {
             SharedConnectivityService.this.onForgetKnownNetwork(network);
         }
@@ -198,19 +203,24 @@ public abstract class SharedConnectivityService extends Service {
         this.mCountDownLatch = latch;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onRegisterCallback(ISharedConnectivityCallback callback) {
         this.mRemoteCallbackList.register(callback);
-        CountDownLatch countDownLatch = this.mCountDownLatch;
-        if (countDownLatch != null) {
-            countDownLatch.countDown();
+        try {
+            callback.onServiceConnected();
+        } catch (RemoteException e) {
+            Log.w(TAG, "Exception in onRegisterCallback", e);
+        }
+        if (this.mCountDownLatch != null) {
+            this.mCountDownLatch.countDown();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onUnregisterCallback(ISharedConnectivityCallback callback) {
         this.mRemoteCallbackList.unregister(callback);
-        CountDownLatch countDownLatch = this.mCountDownLatch;
-        if (countDownLatch != null) {
-            countDownLatch.countDown();
+        if (this.mCountDownLatch != null) {
+            this.mCountDownLatch.countDown();
         }
     }
 

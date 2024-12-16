@@ -4,13 +4,12 @@ import android.app.settings.SettingsEnums;
 import android.telephony.AccessNetworkConstants;
 import android.view.KeyEvent;
 import com.android.internal.logging.nano.MetricsProto;
-import com.android.internal.util.FrameworkStatsLog;
 import com.samsung.android.media.SemExtendedFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class AccessNetworkUtils {
     private static final int FREQUENCY_KHZ = 1000;
     private static final int FREQUENCY_RANGE_HIGH_KHZ = 6000000;
@@ -20,20 +19,18 @@ public class AccessNetworkUtils {
     public static final int INVALID_FREQUENCY = -1;
     private static final String JAPAN_ISO_COUNTRY_CODE = "jp";
     private static final String TAG = "AccessNetworkUtils";
-    private static final Set<Integer> UARFCN_NOT_GENERAL_BAND;
+    private static final Set<Integer> UARFCN_NOT_GENERAL_BAND = new HashSet();
 
     private AccessNetworkUtils() {
     }
 
     static {
-        HashSet hashSet = new HashSet();
-        UARFCN_NOT_GENERAL_BAND = hashSet;
-        hashSet.add(101);
-        hashSet.add(102);
-        hashSet.add(103);
-        hashSet.add(104);
-        hashSet.add(105);
-        hashSet.add(106);
+        UARFCN_NOT_GENERAL_BAND.add(101);
+        UARFCN_NOT_GENERAL_BAND.add(102);
+        UARFCN_NOT_GENERAL_BAND.add(103);
+        UARFCN_NOT_GENERAL_BAND.add(104);
+        UARFCN_NOT_GENERAL_BAND.add(105);
+        UARFCN_NOT_GENERAL_BAND.add(106);
     }
 
     public static int getDuplexModeForEutranBand(int band) {
@@ -419,8 +416,8 @@ public class AccessNetworkUtils {
     }
 
     public static int getOperatingBandForUarfcn(int uarfcn) {
-        int[] addlBand2 = {412, FrameworkStatsLog.BOOT_COMPLETED_BROADCAST_COMPLETION_LATENCY_REPORTED, 462, 487, 512, MetricsProto.MetricsEvent.DIALOG_NO_HOME, 562, 587, MetricsProto.MetricsEvent.PROVISIONING_EXTRA, MetricsProto.MetricsEvent.ACTION_PERMISSION_REVOKE_READ_CALENDAR, MetricsProto.MetricsEvent.ACTION_PERMISSION_REQUEST_ACCESS_COARSE_LOCATION, MetricsProto.MetricsEvent.ACTION_PERMISSION_GRANT_ADD_VOICEMAIL};
-        int[] addlBand4 = {SettingsEnums.SECURITY_WARNINGS, SettingsEnums.ACCESSIBILITY_TEXT_READING_OPTIONS, 1937, 1962, SettingsEnums.DIALOG_SPECIFIC_DDS_SIM_PICKER, 2012, 2037, 2062, 2087};
+        int[] addlBand2 = {412, 437, 462, 487, 512, MetricsProto.MetricsEvent.DIALOG_NO_HOME, 562, 587, MetricsProto.MetricsEvent.PROVISIONING_EXTRA, MetricsProto.MetricsEvent.ACTION_PERMISSION_REVOKE_READ_CALENDAR, MetricsProto.MetricsEvent.ACTION_PERMISSION_REQUEST_ACCESS_COARSE_LOCATION, MetricsProto.MetricsEvent.ACTION_PERMISSION_GRANT_ADD_VOICEMAIL};
+        int[] addlBand4 = {1887, 1912, SettingsEnums.ACTION_AUDIO_SHARING_LEAVE_FAILED, 1962, SettingsEnums.DIALOG_SPECIFIC_DDS_SIM_PICKER, 2012, 2037, 2062, 2087};
         int[] addlBand5 = {1007, 1012, 1032, 1037, KeyEvent.KEYCODE_VOICE_WAKEUP, 1087};
         int[] addlBand6 = {1037, KeyEvent.KEYCODE_VOICE_WAKEUP};
         int[] addlBand7 = {2587, 2612, 2637, 2662, 2687, 2712, SemExtendedFormat.DataType.DUAL_SHOT_DEPTHMAP, 2762, 2787, 2812, 2837, 2862, 2887, 2912};
@@ -428,7 +425,7 @@ public class AccessNetworkUtils {
         int[] addlBand12 = {3932, 3957, 3962, 3987, 3992};
         int[] addlBand13 = {4067, 4092};
         int[] addlBand14 = {4167, 4192};
-        int[] addlBand19 = {787, 812, MetricsProto.MetricsEvent.WIFI_NETWORK_RECOMMENDATION_CONNECTION_SUCCESS};
+        int[] addlBand19 = {787, 812, 837};
         int[] addlBand25 = {6292, 6317, 6342, 6367, ServiceState.RIL_RADIO_CDMA_TECHNOLOGY_BITMASK, 6417, 6442, 6467, 6492, 6517, 6542, 6567, 6592};
         int[] addlBand26 = {5937, 5962, 5987, 5992, 6012, 6017, 6037, 6042, 6062, 6067, 6087};
         if (uarfcn < 10562 || uarfcn > 10838) {

@@ -1,9 +1,9 @@
 package com.samsung.android.sume.core.message;
 
+import android.app.PendingIntent$$ExternalSyntheticLambda2;
 import android.util.Log;
+import android.view.contentprotection.ContentProtectionEventProcessor$$ExternalSyntheticLambda8;
 import com.samsung.android.sume.core.Def;
-import com.samsung.android.sume.core.channel.ChannelRouterBase$$ExternalSyntheticLambda6;
-import com.samsung.android.sume.core.filter.factory.MediaFilterFactory$$ExternalSyntheticLambda3;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class MessageChannelRouter {
     private static final String TAG = Def.tagOf((Class<?>) MessageChannelRouter.class);
     private final List<MessageChannel> errorListener = new LinkedList();
@@ -27,13 +27,12 @@ public class MessageChannelRouter {
     private final Map<Integer, List<MessageChannel>> messageSubscribers = new HashMap();
     private ReplayMessageChannel replayChannel;
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static class ReplayMessageChannel extends BlockingMessageChannel {
+    private static class ReplayMessageChannel extends BlockingMessageChannel {
         public ReplayMessageChannel(int replay) {
             super("", replay);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.samsung.android.sume.core.message.BlockingMessageChannel, com.samsung.android.sume.core.channel.Channel
         public void send(Message data) {
             Log.d(MessageChannelRouter.TAG, "send replay message: " + data.getCode());
@@ -56,7 +55,7 @@ public class MessageChannelRouter {
     }
 
     public MessagePublisher newMessagePublisher() {
-        return new MessagePublisher(new Function() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda3
+        return new MessagePublisher(new Function() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda4
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return MessageChannelRouter.this.queryMessageChannel(((Integer) obj).intValue());
@@ -64,14 +63,12 @@ public class MessageChannelRouter {
         });
     }
 
-    public List<MessageChannel> queryMessageChannel(int code) {
-        ReplayMessageChannel replayMessageChannel;
-        String str = TAG;
-        Log.d(str, "code=" + code);
+    List<MessageChannel> queryMessageChannel(int code) {
+        Log.d(TAG, "code=" + code);
         if (Message.isError(code)) {
             return this.errorListener;
         }
-        List<MessageChannel> messageChannels = (List) Stream.concat((Stream) Optional.ofNullable(this.messageSubscribers.get(Integer.valueOf(code))).map(new MediaFilterFactory$$ExternalSyntheticLambda3()).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda0
+        List<MessageChannel> messageChannels = (List) Stream.concat((Stream) Optional.ofNullable(this.messageSubscribers.get(Integer.valueOf(code))).map(new ContentProtectionEventProcessor$$ExternalSyntheticLambda8()).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda0
             @Override // java.util.function.Supplier
             public final Object get() {
                 Stream of;
@@ -79,9 +76,9 @@ public class MessageChannelRouter {
                 return of;
             }
         }), this.eventListener.stream()).collect(Collectors.toList());
-        Log.d(str, "messageChannels: " + Arrays.toString(messageChannels.toArray()));
-        if (messageChannels.isEmpty() && (replayMessageChannel = this.replayChannel) != null) {
-            messageChannels.add(replayMessageChannel);
+        Log.d(TAG, "messageChannels: " + Arrays.toString(messageChannels.toArray()));
+        if (messageChannels.isEmpty() && this.replayChannel != null) {
+            messageChannels.add(this.replayChannel);
         }
         return messageChannels;
     }
@@ -104,19 +101,19 @@ public class MessageChannelRouter {
         if (this.replayChannel != null) {
             List<Message> replayMessages = new ArrayList<>();
             this.replayChannel.drainTo(replayMessages);
-            Map<Boolean, List<Message>> partitions = (Map) replayMessages.stream().collect(Collectors.partitioningBy(new Predicate() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda1
+            Map<Boolean, List<Message>> partitions = (Map) replayMessages.stream().collect(Collectors.partitioningBy(new Predicate() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda2
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
-                    return MessageChannelRouter.this.m8802xbafa26ef((Message) obj);
+                    return MessageChannelRouter.this.m9190xbafa26ef((Message) obj);
                 }
             }));
             if (partitions.containsKey(false)) {
                 this.replayChannel.queue.addAll(partitions.get(false));
             }
-            for (final Message message : (List) Optional.ofNullable(partitions.get(true)).orElseGet(new ChannelRouterBase$$ExternalSyntheticLambda6())) {
+            for (final Message message : (List) Optional.ofNullable(partitions.get(true)).orElseGet(new PendingIntent$$ExternalSyntheticLambda2())) {
                 List<MessageChannel> channels = this.messageSubscribers.get(Integer.valueOf(message.getCode()));
                 if (channels != null) {
-                    channels.forEach(new Consumer() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda2
+                    channels.forEach(new Consumer() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda3
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
                             ((MessageChannel) obj).send(Message.this);
@@ -127,13 +124,13 @@ public class MessageChannelRouter {
         }
     }
 
-    /* renamed from: lambda$addMessageSubscriber$1$com-samsung-android-sume-core-message-MessageChannelRouter */
-    public /* synthetic */ boolean m8802xbafa26ef(Message it) {
+    /* renamed from: lambda$addMessageSubscriber$1$com-samsung-android-sume-core-message-MessageChannelRouter, reason: not valid java name */
+    /* synthetic */ boolean m9190xbafa26ef(Message it) {
         return this.messageSubscribers.containsKey(Integer.valueOf(it.getCode()));
     }
 
     public void removeMessageSubscriber(final MessageSubscriber messageSubscriber) {
-        this.messageSubscribers.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda4
+        this.messageSubscribers.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda1
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 ((List) obj2).remove(MessageSubscriber.this);

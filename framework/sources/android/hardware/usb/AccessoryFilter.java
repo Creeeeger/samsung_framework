@@ -53,17 +53,14 @@ public class AccessoryFilter {
 
     public void write(XmlSerializer serializer) throws IOException {
         serializer.startTag(null, "usb-accessory");
-        String str = this.mManufacturer;
-        if (str != null) {
-            serializer.attribute(null, MidiDeviceInfo.PROPERTY_MANUFACTURER, str);
+        if (this.mManufacturer != null) {
+            serializer.attribute(null, MidiDeviceInfo.PROPERTY_MANUFACTURER, this.mManufacturer);
         }
-        String str2 = this.mModel;
-        if (str2 != null) {
-            serializer.attribute(null, "model", str2);
+        if (this.mModel != null) {
+            serializer.attribute(null, "model", this.mModel);
         }
-        String str3 = this.mVersion;
-        if (str3 != null) {
-            serializer.attribute(null, "version", str3);
+        if (this.mVersion != null) {
+            serializer.attribute(null, "version", this.mVersion);
         }
         serializer.endTag(null, "usb-accessory");
     }
@@ -79,41 +76,32 @@ public class AccessoryFilter {
     }
 
     public boolean contains(AccessoryFilter accessory) {
-        String str = this.mManufacturer;
-        if (str != null && !Objects.equals(accessory.mManufacturer, str)) {
+        if (this.mManufacturer != null && !Objects.equals(accessory.mManufacturer, this.mManufacturer)) {
             return false;
         }
-        String str2 = this.mModel;
-        if (str2 != null && !Objects.equals(accessory.mModel, str2)) {
-            return false;
+        if (this.mModel == null || Objects.equals(accessory.mModel, this.mModel)) {
+            return this.mVersion == null || Objects.equals(accessory.mVersion, this.mVersion);
         }
-        String str3 = this.mVersion;
-        return str3 == null || Objects.equals(accessory.mVersion, str3);
+        return false;
     }
 
     public boolean equals(Object obj) {
-        String str = this.mManufacturer;
-        if (str == null || this.mModel == null || this.mVersion == null) {
+        if (this.mManufacturer == null || this.mModel == null || this.mVersion == null) {
             return false;
         }
         if (obj instanceof AccessoryFilter) {
             AccessoryFilter filter = (AccessoryFilter) obj;
-            return str.equals(filter.mManufacturer) && this.mModel.equals(filter.mModel) && this.mVersion.equals(filter.mVersion);
+            return this.mManufacturer.equals(filter.mManufacturer) && this.mModel.equals(filter.mModel) && this.mVersion.equals(filter.mVersion);
         }
         if (!(obj instanceof UsbAccessory)) {
             return false;
         }
         UsbAccessory accessory = (UsbAccessory) obj;
-        return str.equals(accessory.getManufacturer()) && this.mModel.equals(accessory.getModel()) && this.mVersion.equals(accessory.getVersion());
+        return this.mManufacturer.equals(accessory.getManufacturer()) && this.mModel.equals(accessory.getModel()) && this.mVersion.equals(accessory.getVersion());
     }
 
     public int hashCode() {
-        String str = this.mManufacturer;
-        int hashCode = str == null ? 0 : str.hashCode();
-        String str2 = this.mModel;
-        int hashCode2 = hashCode ^ (str2 == null ? 0 : str2.hashCode());
-        String str3 = this.mVersion;
-        return hashCode2 ^ (str3 != null ? str3.hashCode() : 0);
+        return ((this.mManufacturer == null ? 0 : this.mManufacturer.hashCode()) ^ (this.mModel == null ? 0 : this.mModel.hashCode())) ^ (this.mVersion != null ? this.mVersion.hashCode() : 0);
     }
 
     public String toString() {

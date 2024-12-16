@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SsInfoData implements Parcelable {
     public static final Parcelable.Creator<SsInfoData> CREATOR = new Parcelable.Creator<SsInfoData>() { // from class: android.hardware.radio.voice.SsInfoData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SsInfoData createFromParcel(Parcel _aidl_source) {
             SsInfoData _aidl_out = new SsInfoData();
@@ -19,6 +17,7 @@ public class SsInfoData implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SsInfoData[] newArray(int _aidl_size) {
             return new SsInfoData[_aidl_size];
@@ -26,25 +25,6 @@ public class SsInfoData implements Parcelable {
     };
     public static final int SS_INFO_MAX = 4;
     public int[] ssInfo;
-
-    /* renamed from: android.hardware.radio.voice.SsInfoData$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SsInfoData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SsInfoData createFromParcel(Parcel _aidl_source) {
-            SsInfoData _aidl_out = new SsInfoData();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SsInfoData[] newArray(int _aidl_size) {
-            return new SsInfoData[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -93,7 +73,7 @@ public class SsInfoData implements Parcelable {
     public String toString() {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("ssInfo: " + Arrays.toString(this.ssInfo));
-        return "android.hardware.radio.voice.SsInfoData" + _aidl_sj.toString();
+        return "SsInfoData" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

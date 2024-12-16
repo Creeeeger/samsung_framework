@@ -12,7 +12,7 @@ public class SContextSpecificPoseAlertAttribute extends SContextAttribute {
     private int mMovingThrs;
     private int mRetentionTime;
 
-    public SContextSpecificPoseAlertAttribute() {
+    SContextSpecificPoseAlertAttribute() {
         this.mRetentionTime = 1;
         this.mMinimumAngle = -90;
         this.mMaximumAngle = 90;
@@ -38,17 +38,15 @@ public class SContextSpecificPoseAlertAttribute extends SContextAttribute {
             Log.e(TAG, "The retention time is wrong.");
             return false;
         }
-        int i = this.mMinimumAngle;
-        if (i < -90 || i > 90) {
+        if (this.mMinimumAngle < -90 || this.mMinimumAngle > 90) {
             Log.e(TAG, "The minimum angle is wrong. The angle must be between -90 and 90.");
             return false;
         }
-        int i2 = this.mMaximumAngle;
-        if (i2 < -90 || i2 > 90) {
+        if (this.mMaximumAngle < -90 || this.mMaximumAngle > 90) {
             Log.e(TAG, "The maximum angle is wrong. The angle must be between -90 and 90.");
             return false;
         }
-        if (i > i2) {
+        if (this.mMinimumAngle > this.mMaximumAngle) {
             Log.e(TAG, "The minimum angle must be less than the maximum angle.");
             return false;
         }

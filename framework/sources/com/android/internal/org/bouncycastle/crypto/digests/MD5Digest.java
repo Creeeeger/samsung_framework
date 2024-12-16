@@ -60,8 +60,7 @@ public class MD5Digest extends GeneralDigest implements EncodableDigest {
         this.H2 = t.H2;
         this.H3 = t.H3;
         this.H4 = t.H4;
-        int[] iArr = t.X;
-        System.arraycopy(iArr, 0, this.X, 0, iArr.length);
+        System.arraycopy(t.X, 0, this.X, 0, t.X.length);
         this.xOff = t.xOff;
     }
 
@@ -79,10 +78,9 @@ public class MD5Digest extends GeneralDigest implements EncodableDigest {
     protected void processWord(byte[] in, int inOff) {
         int[] iArr = this.X;
         int i = this.xOff;
-        int i2 = i + 1;
-        this.xOff = i2;
+        this.xOff = i + 1;
         iArr[i] = (in[inOff] & 255) | ((in[inOff + 1] & 255) << 8) | ((in[inOff + 2] & 255) << 16) | ((in[inOff + 3] & 255) << 24);
-        if (i2 == 16) {
+        if (this.xOff == 16) {
             processBlock();
         }
     }
@@ -92,9 +90,8 @@ public class MD5Digest extends GeneralDigest implements EncodableDigest {
         if (this.xOff > 14) {
             processBlock();
         }
-        int[] iArr = this.X;
-        iArr[14] = (int) ((-1) & bitLength);
-        iArr[15] = (int) (bitLength >>> 32);
+        this.X[14] = (int) ((-1) & bitLength);
+        this.X[15] = (int) (bitLength >>> 32);
     }
 
     private void unpackWord(int word, byte[] out, int outOff) {
@@ -123,15 +120,8 @@ public class MD5Digest extends GeneralDigest implements EncodableDigest {
         this.H3 = -1732584194;
         this.H4 = 271733878;
         this.xOff = 0;
-        int i = 0;
-        while (true) {
-            int[] iArr = this.X;
-            if (i != iArr.length) {
-                iArr[i] = 0;
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 0; i != this.X.length; i++) {
+            this.X[i] = 0;
         }
     }
 
@@ -230,15 +220,8 @@ public class MD5Digest extends GeneralDigest implements EncodableDigest {
         this.H3 += c17;
         this.H4 += d17;
         this.xOff = 0;
-        int i = 0;
-        while (true) {
-            int[] iArr = this.X;
-            if (i != iArr.length) {
-                iArr[i] = 0;
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 0; i != this.X.length; i++) {
+            this.X[i] = 0;
         }
     }
 

@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class Text implements Parcelable {
     public static final Parcelable.Creator<Text> CREATOR = new Parcelable.Creator<Text>() { // from class: android.app.smartspace.uitemplatedata.Text.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Text createFromParcel(Parcel in) {
             return new Text(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Text[] newArray(int size) {
             return new Text[size];
@@ -27,10 +26,6 @@ public final class Text implements Parcelable {
     private final int mMaxLines;
     private final CharSequence mText;
     private final TextUtils.TruncateAt mTruncateAtType;
-
-    /* synthetic */ Text(CharSequence charSequence, TextUtils.TruncateAt truncateAt, int i, TextIA textIA) {
-        this(charSequence, truncateAt, i);
-    }
 
     Text(Parcel in) {
         this.mText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
@@ -54,23 +49,6 @@ public final class Text implements Parcelable {
 
     public int getMaxLines() {
         return this.mMaxLines;
-    }
-
-    /* renamed from: android.app.smartspace.uitemplatedata.Text$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Text> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Text createFromParcel(Parcel in) {
-            return new Text(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Text[] newArray(int size) {
-            return new Text[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -105,7 +83,6 @@ public final class Text implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final CharSequence mText;
         private TextUtils.TruncateAt mTruncateAtType = TextUtils.TruncateAt.END;

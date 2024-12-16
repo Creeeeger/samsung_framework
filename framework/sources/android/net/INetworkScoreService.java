@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface INetworkScoreService extends IInterface {
     boolean clearScores() throws RemoteException;
 
@@ -32,7 +32,6 @@ public interface INetworkScoreService extends IInterface {
 
     boolean updateScores(ScoredNetwork[] scoredNetworkArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INetworkScoreService {
         @Override // android.net.INetworkScoreService
         public boolean updateScores(ScoredNetwork[] networks) throws RemoteException {
@@ -92,7 +91,6 @@ public interface INetworkScoreService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INetworkScoreService {
         public static final String DESCRIPTOR = "android.net.INetworkScoreService";
         static final int TRANSACTION_clearScores = 2;
@@ -166,88 +164,84 @@ public interface INetworkScoreService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ScoredNetwork[] _arg0 = (ScoredNetwork[]) data.createTypedArray(ScoredNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = updateScores(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    boolean _result2 = clearScores();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = setActiveScorer(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    disableScoring();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg03 = data.readInt();
+                    INetworkScoreCache _arg1 = INetworkScoreCache.Stub.asInterface(data.readStrongBinder());
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerNetworkScoreCache(_arg03, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg04 = data.readInt();
+                    INetworkScoreCache _arg12 = INetworkScoreCache.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterNetworkScoreCache(_arg04, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    NetworkKey[] _arg05 = (NetworkKey[]) data.createTypedArray(NetworkKey.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result4 = requestScores(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 8:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isCallerActiveScorer(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 9:
+                    String _result6 = getActiveScorerPackage();
+                    reply.writeNoException();
+                    reply.writeString(_result6);
+                    return true;
+                case 10:
+                    NetworkScorerAppData _result7 = getActiveScorer();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 11:
+                    List<NetworkScorerAppData> _result8 = getAllValidScorers();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result8, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ScoredNetwork[] _arg0 = (ScoredNetwork[]) data.createTypedArray(ScoredNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = updateScores(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            boolean _result2 = clearScores();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = setActiveScorer(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            disableScoring();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg03 = data.readInt();
-                            INetworkScoreCache _arg1 = INetworkScoreCache.Stub.asInterface(data.readStrongBinder());
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerNetworkScoreCache(_arg03, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg04 = data.readInt();
-                            INetworkScoreCache _arg12 = INetworkScoreCache.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterNetworkScoreCache(_arg04, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            NetworkKey[] _arg05 = (NetworkKey[]) data.createTypedArray(NetworkKey.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result4 = requestScores(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isCallerActiveScorer(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 9:
-                            String _result6 = getActiveScorerPackage();
-                            reply.writeNoException();
-                            reply.writeString(_result6);
-                            return true;
-                        case 10:
-                            NetworkScorerAppData _result7 = getActiveScorer();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 11:
-                            List<NetworkScorerAppData> _result8 = getAllValidScorers();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result8, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INetworkScoreService {
+        private static class Proxy implements INetworkScoreService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

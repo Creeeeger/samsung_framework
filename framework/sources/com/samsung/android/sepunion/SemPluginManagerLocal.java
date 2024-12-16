@@ -7,7 +7,7 @@ import com.samsung.android.cover.CoverState;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SemPluginManagerLocal {
     public abstract void addLedNotification(Bundle bundle);
 

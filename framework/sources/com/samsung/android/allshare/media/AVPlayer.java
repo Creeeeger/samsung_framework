@@ -4,23 +4,19 @@ import com.samsung.android.allshare.Caption;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.ERROR;
 import com.samsung.android.allshare.Item;
-import com.samsung.android.allshare.WHADeviceInfo;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public abstract class AVPlayer extends Device {
 
-    /* loaded from: classes5.dex */
     public interface IAVPlayerEventListener {
         void onDeviceChanged(AVPlayerState aVPlayerState, ERROR error);
     }
 
-    /* loaded from: classes5.dex */
     public interface IAVPlayerExtensionEventListener {
         void onExtensionEvent(String str, String str2, ERROR error);
     }
 
-    /* loaded from: classes5.dex */
     public interface IAVPlayerExtensionResponseListener {
         void onAspectRatioStateResponseReceived(String str, ERROR error);
 
@@ -37,7 +33,6 @@ public abstract class AVPlayer extends Device {
         void onZoom360ViewResponseReceived(ERROR error);
     }
 
-    /* loaded from: classes5.dex */
     public interface IAVPlayerPlaybackResponseListener {
         void onGetMediaInfoResponseReceived(MediaInfo mediaInfo, ERROR error);
 
@@ -56,7 +51,6 @@ public abstract class AVPlayer extends Device {
         void onStopResponseReceived(ERROR error);
     }
 
-    /* loaded from: classes5.dex */
     public interface IAVPlayerVolumeResponseListener {
         void onGetMuteResponseReceived(boolean z, ERROR error);
 
@@ -66,27 +60,6 @@ public abstract class AVPlayer extends Device {
 
         void onSetVolumeResponseReceived(int i, ERROR error);
     }
-
-    /* loaded from: classes5.dex */
-    public interface IAVPlayerWHAResponseListener {
-        void onCreateWHAParty(String str, ERROR error);
-
-        void onGetWHADeviceStatusInfo(WHADeviceInfo wHADeviceInfo, ERROR error);
-
-        void onJoinWHAParty(ERROR error);
-
-        void onLeaveWHAParty(ERROR error);
-    }
-
-    public abstract void CreateWHAParty();
-
-    public abstract void GetWHADeviceStatusInfo();
-
-    public abstract void JoinWHAParty(String str);
-
-    public abstract void LeaveWHAParty();
-
-    public abstract void SetWHAResponseListener(IAVPlayerWHAResponseListener iAVPlayerWHAResponseListener);
 
     public abstract void controlCaption(Caption.CaptionOperation captionOperation, Caption caption);
 
@@ -99,8 +72,6 @@ public abstract class AVPlayer extends Device {
     public abstract void getPlayPosition();
 
     public abstract AVPlayerState getPlayerState();
-
-    public abstract PlaylistPlayer getPlaylistPlayer();
 
     public abstract void getState();
 
@@ -163,7 +134,9 @@ public abstract class AVPlayer extends Device {
 
     public abstract void zoom360View(float f);
 
-    /* loaded from: classes5.dex */
+    protected AVPlayer() {
+    }
+
     public enum AVPlayerState {
         STOPPED("STOPPED"),
         BUFFERING("BUFFERING"),

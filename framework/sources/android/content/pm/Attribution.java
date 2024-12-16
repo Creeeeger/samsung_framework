@@ -10,27 +10,26 @@ import java.lang.annotation.Annotation;
 /* loaded from: classes.dex */
 public final class Attribution implements Parcelable {
     public static final Parcelable.Creator<Attribution> CREATOR = new Parcelable.Creator<Attribution>() { // from class: android.content.pm.Attribution.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Attribution[] newArray(int size) {
             return new Attribution[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Attribution createFromParcel(Parcel in) {
             return new Attribution(in);
         }
     };
     private final int mLabel;
-    private String mTag;
+    private final String mTag;
 
     public Attribution(String tag, int label) {
         this.mTag = tag;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) tag);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTag);
         this.mLabel = label;
-        AnnotationValidations.validate((Class<? extends Annotation>) IdRes.class, (Annotation) null, label);
+        AnnotationValidations.validate((Class<? extends Annotation>) IdRes.class, (Annotation) null, this.mLabel);
     }
 
     public String getTag() {
@@ -56,26 +55,9 @@ public final class Attribution implements Parcelable {
         String tag = in.readString();
         int label = in.readInt();
         this.mTag = tag;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) tag);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTag);
         this.mLabel = label;
-        AnnotationValidations.validate((Class<? extends Annotation>) IdRes.class, (Annotation) null, label);
-    }
-
-    /* renamed from: android.content.pm.Attribution$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Attribution> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Attribution[] newArray(int size) {
-            return new Attribution[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Attribution createFromParcel(Parcel in) {
-            return new Attribution(in);
-        }
+        AnnotationValidations.validate((Class<? extends Annotation>) IdRes.class, (Annotation) null, this.mLabel);
     }
 
     @Deprecated

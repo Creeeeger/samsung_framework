@@ -1,7 +1,6 @@
 package android.view.autofill;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -16,7 +15,7 @@ public final class Helper {
     }
 
     public static String getRedacted(CharSequence value) {
-        return value == null ? SemCapabilities.FEATURE_TAG_NULL : value.length() + "_chars";
+        return value == null ? "null" : value.length() + "_chars";
     }
 
     public static void appendRedacted(StringBuilder builder, String[] values) {

@@ -41,7 +41,6 @@ public interface IServiceManager extends IInterface {
 
     String updatableViaApex(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IServiceManager {
         @Override // android.os.IServiceManager
         public IBinder getService(String name) throws RemoteException {
@@ -114,7 +113,6 @@ public interface IServiceManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IServiceManager {
         static final int TRANSACTION_addService = 3;
         static final int TRANSACTION_checkService = 2;
@@ -196,120 +194,116 @@ public interface IServiceManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IServiceManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IServiceManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IServiceManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    IBinder _result = getService(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    IBinder _result2 = checkService(_arg02);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    IBinder _arg1 = data.readStrongBinder();
+                    boolean _arg2 = data.readBoolean();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addService(_arg03, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result3 = listServices(_arg04);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result3);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    IServiceCallback _arg12 = IServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerForNotifications(_arg05, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    IServiceCallback _arg13 = IServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForNotifications(_arg06, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = isDeclared(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    String[] _result5 = getDeclaredInstances(_arg08);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result5);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result6 = updatableViaApex(_arg09);
+                    reply.writeNoException();
+                    reply.writeString(_result6);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    String[] _result7 = getUpdatableNames(_arg010);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result7);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    ConnectionInfo _result8 = getConnectionInfo(_arg011);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    IBinder _arg14 = data.readStrongBinder();
+                    IClientCallback _arg22 = IClientCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerClientCallback(_arg012, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    IBinder _arg15 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    tryUnregisterService(_arg013, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    ServiceDebugInfo[] _result9 = getServiceDebugInfo();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result9, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            IBinder _result = getService(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            IBinder _result2 = checkService(_arg02);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            IBinder _arg1 = data.readStrongBinder();
-                            boolean _arg2 = data.readBoolean();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addService(_arg03, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result3 = listServices(_arg04);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result3);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            IServiceCallback _arg12 = IServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerForNotifications(_arg05, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            IServiceCallback _arg13 = IServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterForNotifications(_arg06, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isDeclared(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            String[] _result5 = getDeclaredInstances(_arg08);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result5);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result6 = updatableViaApex(_arg09);
-                            reply.writeNoException();
-                            reply.writeString(_result6);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            String[] _result7 = getUpdatableNames(_arg010);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result7);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            ConnectionInfo _result8 = getConnectionInfo(_arg011);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            IBinder _arg14 = data.readStrongBinder();
-                            IClientCallback _arg22 = IClientCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerClientCallback(_arg012, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            IBinder _arg15 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            tryUnregisterService(_arg013, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            ServiceDebugInfo[] _result9 = getServiceDebugInfo();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result9, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IServiceManager {
+        private static class Proxy implements IServiceManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

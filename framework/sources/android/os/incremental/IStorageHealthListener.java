@@ -16,7 +16,6 @@ public interface IStorageHealthListener extends IInterface {
 
     void onHealthStatus(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IStorageHealthListener {
         @Override // android.os.incremental.IStorageHealthListener
         public void onHealthStatus(int storageId, int status) throws RemoteException {
@@ -28,7 +27,6 @@ public interface IStorageHealthListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IStorageHealthListener {
         static final int TRANSACTION_onHealthStatus = 1;
 
@@ -71,26 +69,23 @@ public interface IStorageHealthListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStorageHealthListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStorageHealthListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStorageHealthListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onHealthStatus(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onHealthStatus(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IStorageHealthListener {
+        private static class Proxy implements IStorageHealthListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

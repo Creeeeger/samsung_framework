@@ -8,11 +8,10 @@ import android.os.RemoteException;
 
 /* loaded from: classes2.dex */
 public interface IInjectModelEvent extends IInterface {
-    public static final String DESCRIPTOR = "android$media$soundtrigger_middleware$IInjectModelEvent".replace('$', '.');
+    public static final String DESCRIPTOR = "android.media.soundtrigger_middleware.IInjectModelEvent";
 
     void triggerUnloadModel() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IInjectModelEvent {
         @Override // android.media.soundtrigger_middleware.IInjectModelEvent
         public void triggerUnloadModel() throws RemoteException {
@@ -24,19 +23,18 @@ public interface IInjectModelEvent extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IInjectModelEvent {
         static final int TRANSACTION_triggerUnloadModel = 1;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, IInjectModelEvent.DESCRIPTOR);
         }
 
         public static IInjectModelEvent asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(IInjectModelEvent.DESCRIPTOR);
             if (iin != null && (iin instanceof IInjectModelEvent)) {
                 return (IInjectModelEvent) iin;
             }
@@ -50,28 +48,23 @@ public interface IInjectModelEvent extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            String descriptor = DESCRIPTOR;
             if (code >= 1 && code <= 16777215) {
-                data.enforceInterface(descriptor);
+                data.enforceInterface(IInjectModelEvent.DESCRIPTOR);
+            }
+            if (code == 1598968902) {
+                reply.writeString(IInjectModelEvent.DESCRIPTOR);
+                return true;
             }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 1:
+                    triggerUnloadModel();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            triggerUnloadModel();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IInjectModelEvent {
+        private static class Proxy implements IInjectModelEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -84,14 +77,14 @@ public interface IInjectModelEvent extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return IInjectModelEvent.DESCRIPTOR;
             }
 
             @Override // android.media.soundtrigger_middleware.IInjectModelEvent
             public void triggerUnloadModel() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IInjectModelEvent.DESCRIPTOR);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();

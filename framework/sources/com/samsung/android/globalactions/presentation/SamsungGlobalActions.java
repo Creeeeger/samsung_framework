@@ -4,7 +4,7 @@ import android.net.Uri;
 import com.samsung.android.globalactions.presentation.view.ExtendableGlobalActionsView;
 import com.samsung.android.globalactions.presentation.viewmodel.ActionViewModel;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SamsungGlobalActions {
     void addAction(ActionViewModel actionViewModel);
 

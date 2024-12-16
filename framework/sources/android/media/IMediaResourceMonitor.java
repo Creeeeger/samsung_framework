@@ -12,7 +12,6 @@ public interface IMediaResourceMonitor extends IInterface {
 
     void notifyResourceGranted(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaResourceMonitor {
         @Override // android.media.IMediaResourceMonitor
         public void notifyResourceGranted(int pid, int type) throws RemoteException {
@@ -28,7 +27,6 @@ public interface IMediaResourceMonitor extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaResourceMonitor {
         public static final String DESCRIPTOR = "android.media.IMediaResourceMonitor";
         static final int TRANSACTION_notifyMediaInfo = 2;
@@ -75,31 +73,28 @@ public interface IMediaResourceMonitor extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyResourceGranted(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    MediaMonitorEvent _arg12 = (MediaMonitorEvent) data.readTypedObject(MediaMonitorEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyMediaInfo(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyResourceGranted(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            MediaMonitorEvent _arg12 = (MediaMonitorEvent) data.readTypedObject(MediaMonitorEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyMediaInfo(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IMediaResourceMonitor {
             private IBinder mRemote;
 

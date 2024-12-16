@@ -9,7 +9,6 @@ import com.android.internal.inputmethod.IRemoteInputConnection;
 /* loaded from: classes4.dex */
 public interface InputMethodSession {
 
-    /* loaded from: classes4.dex */
     public interface EventCallback {
         void finishedEvent(int i, boolean z);
     }

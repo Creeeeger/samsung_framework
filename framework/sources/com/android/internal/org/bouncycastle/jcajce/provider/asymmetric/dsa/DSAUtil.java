@@ -23,22 +23,15 @@ public class DSAUtil {
     public static final ASN1ObjectIdentifier[] dsaOids = {X9ObjectIdentifiers.id_dsa, OIWObjectIdentifiers.dsaWithSHA1, X9ObjectIdentifiers.id_dsa_with_sha1};
 
     public static boolean isDsaOid(ASN1ObjectIdentifier algOid) {
-        int i = 0;
-        while (true) {
-            ASN1ObjectIdentifier[] aSN1ObjectIdentifierArr = dsaOids;
-            if (i != aSN1ObjectIdentifierArr.length) {
-                if (!algOid.equals((ASN1Primitive) aSN1ObjectIdentifierArr[i])) {
-                    i++;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
+        for (int i = 0; i != dsaOids.length; i++) {
+            if (algOid.equals((ASN1Primitive) dsaOids[i])) {
+                return true;
             }
         }
+        return false;
     }
 
-    public static DSAParameters toDSAParameters(DSAParams spec) {
+    static DSAParameters toDSAParameters(DSAParams spec) {
         if (spec != null) {
             return new DSAParameters(spec.getP(), spec.getQ(), spec.getG());
         }
@@ -69,7 +62,7 @@ public class DSAUtil {
         throw new InvalidKeyException("can't identify DSA private key.");
     }
 
-    public static String generateKeyFingerprint(BigInteger y, DSAParams params) {
+    static String generateKeyFingerprint(BigInteger y, DSAParams params) {
         return new Fingerprint(Arrays.concatenate(y.toByteArray(), params.getP().toByteArray(), params.getQ().toByteArray(), params.getG().toByteArray())).toString();
     }
 }

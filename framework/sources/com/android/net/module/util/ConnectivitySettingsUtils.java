@@ -63,15 +63,8 @@ public class ConnectivitySettingsUtils {
                 break;
         }
         switch (c) {
-            case 0:
-                return 1;
-            case 1:
-                return 3;
-            case 2:
-                return 2;
-            default:
-                return 2;
         }
+        return 2;
     }
 
     public static int getPrivateDnsMode(Context context) {

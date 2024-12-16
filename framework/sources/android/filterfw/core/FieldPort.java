@@ -74,7 +74,7 @@ public class FieldPort extends InputPort {
         return "field " + super.toString();
     }
 
-    public synchronized void setFieldFrame(Frame frame, boolean isAssignment) {
+    protected synchronized void setFieldFrame(Frame frame, boolean isAssignment) {
         assertPortIsOpen();
         checkFrameType(frame, isAssignment);
         Object value = frame.getObjectValue();

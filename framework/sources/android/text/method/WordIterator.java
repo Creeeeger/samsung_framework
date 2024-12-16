@@ -10,7 +10,7 @@ import android.text.Selection;
 import android.text.TextUtils;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class WordIterator implements Selection.PositionIterator {
     private static final int WINDOW_WIDTH = 50;
     private CharSequence mCharSeq;
@@ -34,9 +34,8 @@ public class WordIterator implements Selection.PositionIterator {
         if (start >= 0 && end <= charSequence.length()) {
             this.mCharSeq = charSequence;
             this.mStart = Math.max(0, start - 50);
-            int min = Math.min(charSequence.length(), end + 50);
-            this.mEnd = min;
-            this.mIterator.setText(new CharSequenceCharacterIterator(charSequence, this.mStart, min));
+            this.mEnd = Math.min(charSequence.length(), end + 50);
+            this.mIterator.setText(new CharSequenceCharacterIterator(charSequence, this.mStart, this.mEnd));
             return;
         }
         throw new IndexOutOfBoundsException("input indexes are outside the CharSequence");

@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextTemperatureAlert extends SContextEventContext {
     public static final Parcelable.Creator<SContextTemperatureAlert> CREATOR = new Parcelable.Creator<SContextTemperatureAlert>() { // from class: android.hardware.scontext.SContextTemperatureAlert.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextTemperatureAlert createFromParcel(Parcel in) {
             return new SContextTemperatureAlert(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextTemperatureAlert[] newArray(int size) {
             return new SContextTemperatureAlert[size];
@@ -23,7 +22,7 @@ public class SContextTemperatureAlert extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextTemperatureAlert() {
+    SContextTemperatureAlert() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextTemperatureAlert extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextTemperatureAlert$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextTemperatureAlert> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextTemperatureAlert createFromParcel(Parcel in) {
-            return new SContextTemperatureAlert(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextTemperatureAlert[] newArray(int size) {
-            return new SContextTemperatureAlert[size];
-        }
     }
 }

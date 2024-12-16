@@ -4,6 +4,7 @@ package android.media.audio.common;
 public @interface AudioDeviceType {
     public static final int IN_ACCESSORY = 2;
     public static final int IN_AFE_PROXY = 3;
+    public static final int IN_BUS = 4;
     public static final int IN_DEFAULT = 1;
     public static final int IN_DEVICE = 4;
     public static final int IN_DOCK = 14;
@@ -13,6 +14,7 @@ public @interface AudioDeviceType {
     public static final int IN_LOOPBACK = 8;
     public static final int IN_MICROPHONE = 9;
     public static final int IN_MICROPHONE_BACK = 10;
+    public static final int IN_MICROPHONE_MULTI = 15;
     public static final int IN_SUBMIX = 11;
     public static final int IN_TELEPHONY_RX = 12;
     public static final int IN_TV_TUNER = 13;
@@ -20,6 +22,7 @@ public @interface AudioDeviceType {
     public static final int OUT_ACCESSORY = 130;
     public static final int OUT_AFE_PROXY = 131;
     public static final int OUT_BROADCAST = 146;
+    public static final int OUT_BUS = 133;
     public static final int OUT_CARKIT = 132;
     public static final int OUT_DEFAULT = 129;
     public static final int OUT_DEVICE = 133;

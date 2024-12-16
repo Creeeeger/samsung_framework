@@ -14,7 +14,6 @@ public final class PackageProto {
     public static final long VERSION_CODE = 1120986464259L;
     public static final long VERSION_STRING = 1138166333444L;
 
-    /* loaded from: classes3.dex */
     public final class SplitProto {
         public static final long NAME = 1138166333441L;
         public static final long REVISION_CODE = 1120986464258L;
@@ -23,8 +22,8 @@ public final class PackageProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class UserInfoProto {
+        public static final long ARCHIVE_STATE = 1146756268044L;
         public static final int COMPONENT_ENABLED_STATE_DEFAULT = 0;
         public static final int COMPONENT_ENABLED_STATE_DISABLED = 2;
         public static final int COMPONENT_ENABLED_STATE_DISABLED_UNTIL_USED = 4;
@@ -44,12 +43,30 @@ public final class PackageProto {
         public static final long LAST_DISABLED_APP_CALLER = 1138166333448L;
         public static final int NOT_INSTALLED_FOR_USER = 0;
         public static final long SUSPENDING_PACKAGE = 2237677961225L;
+        public static final long SUSPENDING_USER = 2220498092045L;
 
         public UserInfoProto() {
         }
+
+        public final class ArchiveState {
+            public static final long ACTIVITY_INFOS = 2246267895809L;
+            public static final long INSTALLER_TITLE = 1138166333442L;
+
+            public ArchiveState() {
+            }
+
+            public final class ArchiveActivityInfo {
+                public static final long ICON_BITMAP_PATH = 1138166333442L;
+                public static final long MONOCHROME_ICON_BITMAP_PATH = 1138166333443L;
+                public static final long ORIGINAL_COMPONENT_NAME = 1138166333444L;
+                public static final long TITLE = 1138166333441L;
+
+                public ArchiveActivityInfo() {
+                }
+            }
+        }
     }
 
-    /* loaded from: classes3.dex */
     public final class InstallSourceProto {
         public static final long INITIATING_PACKAGE_NAME = 1138166333441L;
         public static final long ORIGINATING_PACKAGE_NAME = 1138166333442L;
@@ -59,7 +76,6 @@ public final class PackageProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class StatesProto {
         public static final long IS_LOADING = 1133871366146L;
 
@@ -67,7 +83,6 @@ public final class PackageProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class UserPermissionsProto {
         public static final long GRANTED_PERMISSIONS = 2237677961218L;
         public static final long ID = 1120986464257L;

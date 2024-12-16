@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IRemoteVolumeObserver extends IInterface {
     void dispatchRemoteVolumeUpdate(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRemoteVolumeObserver {
         @Override // android.media.IRemoteVolumeObserver
         public void dispatchRemoteVolumeUpdate(int direction, int value) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IRemoteVolumeObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRemoteVolumeObserver {
         public static final String DESCRIPTOR = "android.media.IRemoteVolumeObserver";
         static final int TRANSACTION_dispatchRemoteVolumeUpdate = 1;
@@ -66,25 +64,22 @@ public interface IRemoteVolumeObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchRemoteVolumeUpdate(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchRemoteVolumeUpdate(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRemoteVolumeObserver {
             private IBinder mRemote;
 

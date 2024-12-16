@@ -4,18 +4,17 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class DsmccRequest extends BroadcastInfoRequest implements Parcelable {
     public static final Parcelable.Creator<DsmccRequest> CREATOR = new Parcelable.Creator<DsmccRequest>() { // from class: android.media.tv.DsmccRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DsmccRequest createFromParcel(Parcel source) {
             source.readInt();
             return DsmccRequest.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DsmccRequest[] newArray(int size) {
             return new DsmccRequest[size];
@@ -24,25 +23,7 @@ public final class DsmccRequest extends BroadcastInfoRequest implements Parcelab
     private static final int REQUEST_TYPE = 6;
     private final Uri mUri;
 
-    /* renamed from: android.media.tv.DsmccRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DsmccRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DsmccRequest createFromParcel(Parcel source) {
-            source.readInt();
-            return DsmccRequest.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DsmccRequest[] newArray(int size) {
-            return new DsmccRequest[size];
-        }
-    }
-
-    public static DsmccRequest createFromParcelBody(Parcel in) {
+    static DsmccRequest createFromParcelBody(Parcel in) {
         return new DsmccRequest(in);
     }
 
@@ -69,8 +50,7 @@ public final class DsmccRequest extends BroadcastInfoRequest implements Parcelab
     @Override // android.media.tv.BroadcastInfoRequest, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        Uri uri = this.mUri;
-        String uriString = uri == null ? null : uri.toString();
+        String uriString = this.mUri == null ? null : this.mUri.toString();
         dest.writeString(uriString);
     }
 }

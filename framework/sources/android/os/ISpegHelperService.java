@@ -8,7 +8,6 @@ public interface ISpegHelperService extends IInterface {
 
     boolean storePrimaryProf(String str, String str2, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISpegHelperService {
         @Override // android.os.ISpegHelperService
         public boolean createOrDeleteMarkerFiles(String path, boolean isCreate, int userId) throws RemoteException {
@@ -26,7 +25,6 @@ public interface ISpegHelperService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISpegHelperService {
         static final int TRANSACTION_createOrDeleteMarkerFiles = 1;
         static final int TRANSACTION_storePrimaryProf = 2;
@@ -72,37 +70,34 @@ public interface ISpegHelperService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpegHelperService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpegHelperService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpegHelperService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = createOrDeleteMarkerFiles(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = storePrimaryProf(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = createOrDeleteMarkerFiles(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = storePrimaryProf(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ISpegHelperService {
             private IBinder mRemote;
 

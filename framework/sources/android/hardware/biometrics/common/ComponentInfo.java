@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class ComponentInfo implements Parcelable {
     public static final Parcelable.Creator<ComponentInfo> CREATOR = new Parcelable.Creator<ComponentInfo>() { // from class: android.hardware.biometrics.common.ComponentInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ComponentInfo createFromParcel(Parcel _aidl_source) {
             ComponentInfo _aidl_out = new ComponentInfo();
@@ -17,6 +15,7 @@ public class ComponentInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ComponentInfo[] newArray(int _aidl_size) {
             return new ComponentInfo[_aidl_size];
@@ -27,25 +26,6 @@ public class ComponentInfo implements Parcelable {
     public String hardwareVersion;
     public String serialNumber;
     public String softwareVersion;
-
-    /* renamed from: android.hardware.biometrics.common.ComponentInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ComponentInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ComponentInfo createFromParcel(Parcel _aidl_source) {
-            ComponentInfo _aidl_out = new ComponentInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ComponentInfo[] newArray(int _aidl_size) {
-            return new ComponentInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

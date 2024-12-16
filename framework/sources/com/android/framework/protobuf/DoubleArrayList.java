@@ -5,23 +5,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* loaded from: classes4.dex */
-public final class DoubleArrayList extends AbstractProtobufList<Double> implements Internal.DoubleList, RandomAccess, PrimitiveNonBoxingCollection {
-    private static final DoubleArrayList EMPTY_LIST;
+/* loaded from: classes3.dex */
+final class DoubleArrayList extends AbstractProtobufList<Double> implements Internal.DoubleList, RandomAccess, PrimitiveNonBoxingCollection {
+    private static final DoubleArrayList EMPTY_LIST = new DoubleArrayList(new double[0], 0);
     private double[] array;
     private int size;
 
     static {
-        DoubleArrayList doubleArrayList = new DoubleArrayList(new double[0], 0);
-        EMPTY_LIST = doubleArrayList;
-        doubleArrayList.makeImmutable();
+        EMPTY_LIST.makeImmutable();
     }
 
     public static DoubleArrayList emptyList() {
         return EMPTY_LIST;
     }
 
-    public DoubleArrayList() {
+    DoubleArrayList() {
         this(new double[10], 0);
     }
 
@@ -36,8 +34,7 @@ public final class DoubleArrayList extends AbstractProtobufList<Double> implemen
         if (toIndex < fromIndex) {
             throw new IndexOutOfBoundsException("toIndex < fromIndex");
         }
-        double[] dArr = this.array;
-        System.arraycopy(dArr, toIndex, dArr, fromIndex, this.size - toIndex);
+        System.arraycopy(this.array, toIndex, this.array, fromIndex, this.size - toIndex);
         this.size -= toIndex - fromIndex;
         this.modCount++;
     }
@@ -127,9 +124,8 @@ public final class DoubleArrayList extends AbstractProtobufList<Double> implemen
     public double setDouble(int index, double element) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        double[] dArr = this.array;
-        double previousValue = dArr[index];
-        dArr[index] = element;
+        double previousValue = this.array[index];
+        this.array[index] = element;
         return previousValue;
     }
 
@@ -147,33 +143,29 @@ public final class DoubleArrayList extends AbstractProtobufList<Double> implemen
     @Override // com.android.framework.protobuf.Internal.DoubleList
     public void addDouble(double element) {
         ensureIsMutable();
-        int i = this.size;
-        double[] dArr = this.array;
-        if (i == dArr.length) {
-            int length = ((i * 3) / 2) + 1;
+        if (this.size == this.array.length) {
+            int length = ((this.size * 3) / 2) + 1;
             double[] newArray = new double[length];
-            System.arraycopy(dArr, 0, newArray, 0, i);
+            System.arraycopy(this.array, 0, newArray, 0, this.size);
             this.array = newArray;
         }
-        double[] dArr2 = this.array;
-        int i2 = this.size;
-        this.size = i2 + 1;
-        dArr2[i2] = element;
+        double[] dArr = this.array;
+        int i = this.size;
+        this.size = i + 1;
+        dArr[i] = element;
     }
 
     private void addDouble(int index, double element) {
-        int i;
         ensureIsMutable();
-        if (index < 0 || index > (i = this.size)) {
+        if (index < 0 || index > this.size) {
             throw new IndexOutOfBoundsException(makeOutOfBoundsExceptionMessage(index));
         }
-        double[] dArr = this.array;
-        if (i < dArr.length) {
-            System.arraycopy(dArr, index, dArr, index + 1, i - index);
+        if (this.size < this.array.length) {
+            System.arraycopy(this.array, index, this.array, index + 1, this.size - index);
         } else {
-            int length = ((i * 3) / 2) + 1;
+            int length = ((this.size * 3) / 2) + 1;
             double[] newArray = new double[length];
-            System.arraycopy(dArr, 0, newArray, 0, index);
+            System.arraycopy(this.array, 0, newArray, 0, index);
             System.arraycopy(this.array, index, newArray, index + 1, this.size - index);
             this.array = newArray;
         }
@@ -190,19 +182,16 @@ public final class DoubleArrayList extends AbstractProtobufList<Double> implemen
             return super.addAll(collection);
         }
         DoubleArrayList list = (DoubleArrayList) collection;
-        int i = list.size;
-        if (i == 0) {
+        if (list.size == 0) {
             return false;
         }
-        int i2 = this.size;
-        int overflow = Integer.MAX_VALUE - i2;
-        if (overflow < i) {
+        int overflow = Integer.MAX_VALUE - this.size;
+        if (overflow < list.size) {
             throw new OutOfMemoryError();
         }
-        int newSize = i2 + i;
-        double[] dArr = this.array;
-        if (newSize > dArr.length) {
-            this.array = Arrays.copyOf(dArr, newSize);
+        int newSize = this.size + list.size;
+        if (newSize > this.array.length) {
+            this.array = Arrays.copyOf(this.array, newSize);
         }
         System.arraycopy(list.array, 0, this.array, this.size, list.size);
         this.size = newSize;
@@ -214,10 +203,9 @@ public final class DoubleArrayList extends AbstractProtobufList<Double> implemen
     public Double remove(int index) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        double[] dArr = this.array;
-        double value = dArr[index];
+        double value = this.array[index];
         if (index < this.size - 1) {
-            System.arraycopy(dArr, index + 1, dArr, index, (r3 - index) - 1);
+            System.arraycopy(this.array, index + 1, this.array, index, (this.size - index) - 1);
         }
         this.size--;
         this.modCount++;

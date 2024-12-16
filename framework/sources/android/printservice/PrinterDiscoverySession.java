@@ -41,7 +41,7 @@ public abstract class PrinterDiscoverySession {
         this.mId = i;
     }
 
-    public void setObserver(IPrintServiceClient observer) {
+    void setObserver(IPrintServiceClient observer) {
         this.mObserver = observer;
         if (!this.mPrinters.isEmpty()) {
             try {
@@ -52,7 +52,7 @@ public abstract class PrinterDiscoverySession {
         }
     }
 
-    public int getId() {
+    int getId() {
         return this.mId;
     }
 
@@ -142,8 +142,7 @@ public abstract class PrinterDiscoverySession {
     }
 
     private void sendOutOfDiscoveryPeriodPrinterChanges() {
-        ArrayMap<PrinterId, PrinterInfo> arrayMap = this.mLastSentPrinters;
-        if (arrayMap == null || arrayMap.isEmpty()) {
+        if (this.mLastSentPrinters == null || this.mLastSentPrinters.isEmpty()) {
             this.mLastSentPrinters = null;
             return;
         }
@@ -204,7 +203,7 @@ public abstract class PrinterDiscoverySession {
         return this.mIsDiscoveryStarted;
     }
 
-    public void startPrinterDiscovery(List<PrinterId> priorityList) {
+    void startPrinterDiscovery(List<PrinterId> priorityList) {
         if (!this.mIsDestroyed) {
             this.mIsDiscoveryStarted = true;
             sendOutOfDiscoveryPeriodPrinterChanges();
@@ -215,41 +214,40 @@ public abstract class PrinterDiscoverySession {
         }
     }
 
-    public void stopPrinterDiscovery() {
+    void stopPrinterDiscovery() {
         if (!this.mIsDestroyed) {
             this.mIsDiscoveryStarted = false;
             onStopPrinterDiscovery();
         }
     }
 
-    public void validatePrinters(List<PrinterId> printerIds) {
+    void validatePrinters(List<PrinterId> printerIds) {
         if (!this.mIsDestroyed && this.mObserver != null) {
             onValidatePrinters(printerIds);
         }
     }
 
-    public void startPrinterStateTracking(PrinterId printerId) {
+    void startPrinterStateTracking(PrinterId printerId) {
         if (!this.mIsDestroyed && this.mObserver != null && !this.mTrackedPrinters.contains(printerId)) {
             this.mTrackedPrinters.add(printerId);
             onStartPrinterStateTracking(printerId);
         }
     }
 
-    public void requestCustomPrinterIcon(PrinterId printerId) {
-        IPrintServiceClient iPrintServiceClient;
-        if (!this.mIsDestroyed && (iPrintServiceClient = this.mObserver) != null) {
-            CustomPrinterIconCallback callback = new CustomPrinterIconCallback(printerId, iPrintServiceClient);
+    void requestCustomPrinterIcon(PrinterId printerId) {
+        if (!this.mIsDestroyed && this.mObserver != null) {
+            CustomPrinterIconCallback callback = new CustomPrinterIconCallback(printerId, this.mObserver);
             onRequestCustomPrinterIcon(printerId, new CancellationSignal(), callback);
         }
     }
 
-    public void stopPrinterStateTracking(PrinterId printerId) {
+    void stopPrinterStateTracking(PrinterId printerId) {
         if (!this.mIsDestroyed && this.mObserver != null && this.mTrackedPrinters.remove(printerId)) {
             onStopPrinterStateTracking(printerId);
         }
     }
 
-    public void destroy() {
+    void destroy() {
         if (!this.mIsDestroyed) {
             this.mIsDestroyed = true;
             this.mIsDiscoveryStarted = false;

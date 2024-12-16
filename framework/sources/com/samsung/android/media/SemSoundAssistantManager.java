@@ -29,7 +29,6 @@ import com.samsung.android.media.AudioParameter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -38,10 +37,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.IntPredicate;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemSoundAssistantManager {
     public static final String ACTION_SOUND_EVENT_CHANGED = "com.samsung.android.intent.action.SOUND_EVENT";
-    public static final String ADJUST_MEDIA_ONLY = "adjust_media_volume_only";
     public static final int BOOT_COMPLETED = 1003;
     public static final String BRAND_SOUND_VERSION = "brand_sound_version";
     public static final int CARLIFE_FOCUS_GRANT_INDEX = 1;
@@ -60,6 +58,7 @@ public class SemSoundAssistantManager {
     public static final int HEADSET_ONLY_NOTIFICATION = 32;
     public static final int HEADSET_ONLY_RINGTONE = 1;
     public static final String IGNORE_AUDIO_FOCUS = "ignore_audio_focus";
+    public static final String IGNORE_DUCKING = "ignore_ducking";
     public static final String MEDIA_BUTTON_PACKAGE = "media_button_package";
     public static final String MEDIA_VOLUME_MULTI_STEP = "sec_volume_steps";
     public static final int MEDIA_VOLUME_STEP_DEFAULT = 10;
@@ -80,7 +79,6 @@ public class SemSoundAssistantManager {
     public static final int MODE_MUTE_MEDIA_BY_VIBRATE_OR_SILENT_MODE = 2;
     public static final String MONO_SOUND = "mono_sound";
     public static final String MULTI_AUDIO_FOCUS = "multi_audio_focus";
-    public static final String MUTE_MEDIA_BY_VIBRATE_OR_SILENT_MODE = "mute_media_by_vibrate_or_silent_mode";
     public static final String NO_FADEOUT_FROM_AUDIOFOCUS = "NO_FADEOUT_FROM_AUDIOFOCUS";
     public static final String NO_MUTE_IN_CALL = "NO_MUTE_IN_CALL";
     public static final String PARAMETER_PREFIX = "sound_assistant";
@@ -106,8 +104,6 @@ public class SemSoundAssistantManager {
     public static final String UID_FOR_SOUNDASSISTANT = "uid_for_soundassistant";
     public static final String USING_AUDIO_UIDS = "using_audio_uids";
     public static final String VERSION = "version";
-    protected static final Set<Integer> VOLUME_MODE_ALL;
-    protected static final String[] VOLUME_MODE_KEY;
     public static final IntPredicate VOLUME_MODE_PREDICATE;
     public static final int VOLUME_STAR_DISABLE = 101;
     public static final int VOLUME_STAR_ENABLE = 100;
@@ -123,31 +119,30 @@ public class SemSoundAssistantManager {
     private AudioManager mAudioManager;
     private boolean mFloatingButton;
     private Context mOriginalContext;
+    protected static final Set<Integer> VOLUME_MODE_ALL = Sets.newHashSet(1, 2);
+    public static final String ADJUST_MEDIA_ONLY = "adjust_media_volume_only";
+    public static final String MUTE_MEDIA_BY_VIBRATE_OR_SILENT_MODE = "mute_media_by_vibrate_or_silent_mode";
+    protected static final String[] VOLUME_MODE_KEY = {"", ADJUST_MEDIA_ONLY, MUTE_MEDIA_BY_VIBRATE_OR_SILENT_MODE};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface EventType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface MicInputControlMode {
     }
 
-    /* loaded from: classes5.dex */
     public interface OnMediaKeyEventSessionChangedListener {
         void onMediaKeyEventSessionChanged(String str, MediaSession.Token token);
     }
 
     static {
-        final HashSet newHashSet = Sets.newHashSet(1, 2);
-        VOLUME_MODE_ALL = newHashSet;
-        VOLUME_MODE_KEY = new String[]{"", ADJUST_MEDIA_ONLY, MUTE_MEDIA_BY_VIBRATE_OR_SILENT_MODE};
-        Objects.requireNonNull(newHashSet);
+        final Set<Integer> set = VOLUME_MODE_ALL;
+        Objects.requireNonNull(set);
         VOLUME_MODE_PREDICATE = new IntPredicate() { // from class: com.samsung.android.media.SemSoundAssistantManager$$ExternalSyntheticLambda0
             @Override // java.util.function.IntPredicate
             public final boolean test(int i) {
-                return newHashSet.contains(Integer.valueOf(i));
+                return set.contains(Integer.valueOf(i));
             }
         };
         sIsRunning = false;
@@ -160,17 +155,16 @@ public class SemSoundAssistantManager {
                 SemSoundAssistantManager.lambda$static$0(str, token);
             }
         };
-        ArrayMap<Integer, String> arrayMap = new ArrayMap<>();
-        sMicModeParamTable = arrayMap;
-        arrayMap.put(0, "l_mic_input_control_mode=0");
-        arrayMap.put(1, "l_mic_input_control_mode=1");
-        arrayMap.put(2, "l_mic_input_control_mode=2");
-        arrayMap.put(3, "l_call_nc_booster_enable=1");
-        arrayMap.put(4, "l_call_nc_booster_enable=2");
-        arrayMap.put(5, "l_mic_input_control_mode_2mic=0");
-        arrayMap.put(6, "l_mic_input_control_mode_2mic=1");
-        arrayMap.put(7, "l_mic_input_control_mode_2mic=2");
-        arrayMap.put(100, "l_mic_input_control_mode=100");
+        sMicModeParamTable = new ArrayMap<>();
+        sMicModeParamTable.put(0, "l_mic_input_control_mode=0");
+        sMicModeParamTable.put(1, "l_mic_input_control_mode=1");
+        sMicModeParamTable.put(2, "l_mic_input_control_mode=2");
+        sMicModeParamTable.put(3, "l_call_nc_booster_enable=1");
+        sMicModeParamTable.put(4, "l_call_nc_booster_enable=2");
+        sMicModeParamTable.put(5, "l_mic_input_control_mode_2mic=0");
+        sMicModeParamTable.put(6, "l_mic_input_control_mode_2mic=1");
+        sMicModeParamTable.put(7, "l_mic_input_control_mode_2mic=2");
+        sMicModeParamTable.put(100, "l_mic_input_control_mode=100");
     }
 
     public SemSoundAssistantManager(Context context) {
@@ -179,9 +173,8 @@ public class SemSoundAssistantManager {
     }
 
     private void setContext(Context context) {
-        Context applicationContext = context.getApplicationContext();
-        this.mApplicationContext = applicationContext;
-        if (applicationContext != null) {
+        this.mApplicationContext = context.getApplicationContext();
+        if (this.mApplicationContext != null) {
             this.mOriginalContext = null;
         } else {
             this.mOriginalContext = context;
@@ -192,22 +185,19 @@ public class SemSoundAssistantManager {
         if (this.mApplicationContext == null) {
             setContext(this.mOriginalContext);
         }
-        Context context = this.mApplicationContext;
-        if (context != null) {
-            return context;
+        if (this.mApplicationContext != null) {
+            return this.mApplicationContext;
         }
         return this.mOriginalContext;
     }
 
     private static IAudioService getService() {
-        IAudioService iAudioService = sService;
-        if (iAudioService != null) {
-            return iAudioService;
+        if (sService != null) {
+            return sService;
         }
         IBinder b = ServiceManager.getService("audio");
-        IAudioService asInterface = IAudioService.Stub.asInterface(b);
-        sService = asInterface;
-        return asInterface;
+        sService = IAudioService.Stub.asInterface(b);
+        return sService;
     }
 
     public void initApplicationVolume(int uid) {
@@ -454,8 +444,7 @@ public class SemSoundAssistantManager {
             Log.e(TAG, "Multisound is disabled");
             return -1;
         }
-        AudioManager audioManager = this.mAudioManager;
-        return audioManager.getFineVolume(streamType, audioManager.semGetPinDevice());
+        return this.mAudioManager.getFineVolume(streamType, this.mAudioManager.semGetPinDevice());
     }
 
     public boolean setMultiSoundDeviceVolume(int streamType, int index, int flags) {
@@ -463,8 +452,7 @@ public class SemSoundAssistantManager {
             Log.e(TAG, "Multisound is disabled");
             return false;
         }
-        AudioManager audioManager = this.mAudioManager;
-        audioManager.setFineVolume(streamType, index, flags, audioManager.semGetPinDevice());
+        this.mAudioManager.setFineVolume(streamType, index, flags, this.mAudioManager.semGetPinDevice());
         return true;
     }
 
@@ -693,8 +681,7 @@ public class SemSoundAssistantManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class FastTrackPlayerRunnable implements Runnable {
+    private static class FastTrackPlayerRunnable implements Runnable {
         final int mPlayTimeMs;
 
         FastTrackPlayerRunnable(boolean longOpen) {
@@ -738,6 +725,7 @@ public class SemSoundAssistantManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);
@@ -745,7 +733,7 @@ public class SemSoundAssistantManager {
         }
     }
 
-    public static /* synthetic */ void lambda$static$0(String packageName, MediaSession.Token sessionToken) {
+    static /* synthetic */ void lambda$static$0(String packageName, MediaSession.Token sessionToken) {
         synchronized (mLock) {
             for (OnMediaKeyEventSessionChangedListener callback : sMediaKeySessionChangedCallbacks) {
                 callback.onMediaKeyEventSessionChanged(packageName, sessionToken);
@@ -757,12 +745,11 @@ public class SemSoundAssistantManager {
         Executor executor;
         Objects.requireNonNull(listener, "listener shouldn't be null");
         synchronized (mLock) {
-            List<OnMediaKeyEventSessionChangedListener> list = sMediaKeySessionChangedCallbacks;
-            if (list.contains(listener)) {
+            if (sMediaKeySessionChangedCallbacks.contains(listener)) {
                 Log.w(TAG, "Already added : " + listener);
                 return;
             }
-            if (list.size() == 0) {
+            if (sMediaKeySessionChangedCallbacks.size() == 0) {
                 Looper myLooper = Looper.myLooper();
                 Looper looper = myLooper;
                 if (myLooper == null) {
@@ -776,19 +763,18 @@ public class SemSoundAssistantManager {
                 MediaSessionManager manager = (MediaSessionManager) getContext().getSystemService(Context.MEDIA_SESSION_SERVICE);
                 manager.addOnMediaKeyEventSessionChangedListener(executor, sMediaKeySessionChangedListener);
             }
-            list.add(listener);
+            sMediaKeySessionChangedCallbacks.add(listener);
         }
     }
 
     public void removeOnMediaKeyEventSessionChangedListener(OnMediaKeyEventSessionChangedListener listener) {
         synchronized (mLock) {
-            List<OnMediaKeyEventSessionChangedListener> list = sMediaKeySessionChangedCallbacks;
-            if (!list.contains(listener)) {
+            if (!sMediaKeySessionChangedCallbacks.contains(listener)) {
                 Log.w(TAG, "Invalid listener : " + listener);
                 return;
             }
-            list.remove(listener);
-            if (list.size() == 0) {
+            sMediaKeySessionChangedCallbacks.remove(listener);
+            if (sMediaKeySessionChangedCallbacks.size() == 0) {
                 MediaSessionManager manager = (MediaSessionManager) getContext().getSystemService(Context.MEDIA_SESSION_SERVICE);
                 manager.removeOnMediaKeyEventSessionChangedListener(sMediaKeySessionChangedListener);
             }
@@ -796,8 +782,7 @@ public class SemSoundAssistantManager {
     }
 
     public void setMicInputControlMode(int mode) {
-        ArrayMap<Integer, String> arrayMap = sMicModeParamTable;
-        if (!arrayMap.containsKey(Integer.valueOf(mode))) {
+        if (!sMicModeParamTable.containsKey(Integer.valueOf(mode))) {
             Log.w(TAG, "attempt to call setMicInputControlMode() invalid mode.");
             return;
         }
@@ -808,9 +793,9 @@ public class SemSoundAssistantManager {
             if (mode == 3 || mode == 4) {
                 standardParam = "l_call_nc_booster_enable=0";
             }
-            arrayMap.put(0, standardParam);
+            sMicModeParamTable.put(0, standardParam);
         }
-        AudioManager.setAudioServiceConfig(arrayMap.get(Integer.valueOf(mode)));
+        AudioManager.setAudioServiceConfig(sMicModeParamTable.get(Integer.valueOf(mode)));
     }
 
     public void setVoipExtraVolumeMode(boolean onOff) {

@@ -85,6 +85,6 @@ public class CropRectFilter extends Filter {
     void updateSourceRect(int width, int height) {
         this.mWidth = width;
         this.mHeight = height;
-        ((ShaderProgram) this.mProgram).setSourceRect(this.mXorigin / width, this.mYorigin / height, this.mOutputWidth / width, this.mOutputHeight / height);
+        ((ShaderProgram) this.mProgram).setSourceRect(this.mXorigin / this.mWidth, this.mYorigin / this.mHeight, this.mOutputWidth / this.mWidth, this.mOutputHeight / this.mHeight);
     }
 }

@@ -5,7 +5,7 @@ import com.samsung.android.graphics.spr.document.SprInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprMatrix {
     public static Matrix fromSPR(SprInputStream in) throws IOException {
         Matrix matrix = new Matrix();

@@ -4,7 +4,7 @@ import android.util.DebugUtils;
 import com.android.internal.app.procstats.SparseMappingTable;
 import java.io.PrintWriter;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class SysMemUsageTable extends SparseMappingTable.Table {
     public SysMemUsageTable(SparseMappingTable tableData) {
         super(tableData);

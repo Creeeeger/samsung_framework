@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SEFHelper {
     public static final String SLOW_MOTION_DATA = "SlowMotion_Data";
     public static final String SUPER_SLOW_MOTION_DATA = "Super_SlowMotion_Data";
@@ -24,7 +24,6 @@ public class SEFHelper {
     private List<Region> mRegionList = new Vector();
     private long mDuration = 0;
 
-    /* loaded from: classes5.dex */
     public static class Region {
         public int mRegionAudioEndTime;
         public int mRegionEndTime;
@@ -45,7 +44,6 @@ public class SEFHelper {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum Speed {
         NORMAL(1),
         HALF(2),
@@ -64,72 +62,25 @@ public class SEFHelper {
         }
     }
 
-    /* renamed from: com.samsung.android.transcode.util.SEFHelper$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed;
-
-        static {
-            int[] iArr = new int[Speed.values().length];
-            $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed = iArr;
-            try {
-                iArr[Speed.ONE_FOURTH.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.HALF.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.NORMAL.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.ONE_EIGHTH.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.TWO_TIMES.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.FOUR_TIMES.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.EIGHT_TIMES.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.SIXTEEN_TIMES.ordinal()] = 8;
-            } catch (NoSuchFieldError e8) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[Speed.THIRTY_TWO_TIMES.ordinal()] = 9;
-            } catch (NoSuchFieldError e9) {
-            }
-        }
-    }
-
     public static float getTimeScale(Speed speedType) {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed[speedType.ordinal()]) {
-            case 1:
+        switch (speedType) {
+            case ONE_FOURTH:
                 return 4.0f;
-            case 2:
+            case HALF:
                 return 2.0f;
-            case 3:
+            case NORMAL:
                 return 1.0f;
-            case 4:
+            case ONE_EIGHTH:
                 return 8.0f;
-            case 5:
+            case TWO_TIMES:
                 return 0.5f;
-            case 6:
+            case FOUR_TIMES:
                 return 0.25f;
-            case 7:
+            case EIGHT_TIMES:
                 return 0.125f;
-            case 8:
+            case SIXTEEN_TIMES:
                 return 0.0625f;
-            case 9:
+            case THIRTY_TWO_TIMES:
                 return 0.03125f;
             default:
                 return 1.0f;
@@ -199,22 +150,18 @@ public class SEFHelper {
         this.mRecordingMode = recordingMode;
         this.mRecordingFps = recordingFps;
         this.mDuration = duration;
-        String extractSEFData = extractSEFData();
-        this.mSEFData = extractSEFData;
-        if (extractSEFData == null) {
+        this.mSEFData = extractSEFData();
+        if (this.mSEFData == null) {
             LogS.d("TranscodeLib", "extractSEFData : SEFData == null, createDefaultRegion");
             ret = createDefaultRegion();
-        } else {
-            int i = this.mRecordingMode;
-            if (i == 2 || i == 1) {
-                ret = slowfastSEFParser(extractSEFData);
-            } else if (i == 8 || i == 7 || i == 9 || i == 22 || i == 18) {
-                ret = superslowSEFParser(extractSEFData);
-            } else if (i == 12 || ((i == 21 && this.mRecordingFps > 120) || i == 19)) {
-                ret = newslowSEFParser(extractSEFData);
-            } else if (i == 13 || i == 15 || i == 21) {
-                ret = newslowSEFParserV2(extractSEFData);
-            }
+        } else if (this.mRecordingMode == 2 || this.mRecordingMode == 1) {
+            ret = slowfastSEFParser(this.mSEFData);
+        } else if (this.mRecordingMode == 8 || this.mRecordingMode == 7 || this.mRecordingMode == 9 || this.mRecordingMode == 22 || this.mRecordingMode == 18) {
+            ret = superslowSEFParser(this.mSEFData);
+        } else if (this.mRecordingMode == 12 || ((this.mRecordingMode == 21 && this.mRecordingFps > 120) || this.mRecordingMode == 19)) {
+            ret = newslowSEFParser(this.mSEFData);
+        } else if (this.mRecordingMode == 13 || this.mRecordingMode == 15 || this.mRecordingMode == 21) {
+            ret = newslowSEFParserV2(this.mSEFData);
         }
         if (!ret) {
             this.mRegionList.clear();
@@ -222,8 +169,8 @@ public class SEFHelper {
         return ret;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:42:0x007f A[RETURN] */
-    /* JADX WARN: Removed duplicated region for block: B:43:0x0080 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:42:0x0097 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:43:0x0098 A[RETURN] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -234,80 +181,92 @@ public class SEFHelper {
             android.net.Uri r0 = r5.mUri
             java.lang.String r1 = "TranscodeLib"
             r2 = 0
-            if (r0 == 0) goto L1c
-            android.content.Context r3 = r5.mContext
-            java.lang.String r0 = com.samsung.android.transcode.util.FileHelper.getVEEditFilePath(r3, r0)
-            if (r0 != 0) goto L15
+            if (r0 == 0) goto L1e
+            android.content.Context r0 = r5.mContext
+            android.net.Uri r3 = r5.mUri
+            java.lang.String r0 = com.samsung.android.transcode.util.FileHelper.getVEEditFilePath(r0, r3)
+            if (r0 != 0) goto L17
             java.lang.String r3 = "filepath is Wrong"
             com.samsung.android.transcode.util.LogS.d(r1, r3)
             return r2
-        L15:
+        L17:
             java.io.File r1 = new java.io.File
             r1.<init>(r0)
             r0 = r1
-            goto L2d
-        L1c:
+            goto L2f
+        L1e:
             java.lang.String r0 = r5.mFilepath
-            if (r0 != 0) goto L26
+            if (r0 != 0) goto L28
             java.lang.String r0 = "filepath is NULL"
             com.samsung.android.transcode.util.LogS.d(r1, r0)
             return r2
-        L26:
+        L28:
             java.io.File r0 = new java.io.File
             java.lang.String r1 = r5.mFilepath
             r0.<init>(r1)
-        L2d:
-            boolean r1 = com.samsung.android.media.SemExtendedFormat.isValidFile(r0)     // Catch: java.lang.Exception -> L83
-            if (r1 == 0) goto L81
-            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L83
+        L2f:
+            boolean r1 = com.samsung.android.media.SemExtendedFormat.isValidFile(r0)     // Catch: java.lang.Exception -> L9b
+            if (r1 == 0) goto L99
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 1
-            if (r1 == r3) goto L6c
+            if (r1 == r3) goto L84
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 2
-            if (r1 == r3) goto L6c
+            if (r1 == r3) goto L84
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 12
-            if (r1 == r3) goto L6c
+            if (r1 == r3) goto L84
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 21
-            if (r1 == r3) goto L6c
+            if (r1 == r3) goto L84
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 13
-            if (r1 == r3) goto L6c
+            if (r1 == r3) goto L84
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 15
-            if (r1 == r3) goto L6c
+            if (r1 == r3) goto L84
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 19
-            if (r1 != r3) goto L50
-            goto L6c
-        L50:
+            if (r1 != r3) goto L5e
+            goto L84
+        L5e:
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 8
-            if (r1 == r3) goto L65
+            if (r1 == r3) goto L7d
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 7
-            if (r1 == r3) goto L65
+            if (r1 == r3) goto L7d
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 9
-            if (r1 == r3) goto L65
+            if (r1 == r3) goto L7d
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 22
-            if (r1 == r3) goto L65
+            if (r1 == r3) goto L7d
+            int r1 = r5.mRecordingMode     // Catch: java.lang.Exception -> L9b
             r3 = 18
-            if (r1 != r3) goto L64
-            goto L65
-        L64:
+            if (r1 != r3) goto L7c
+            goto L7d
+        L7c:
             return r2
-        L65:
+        L7d:
             java.lang.String r1 = "Super_SlowMotion_Data"
-            byte[] r1 = com.samsung.android.media.SemExtendedFormat.getData(r0, r1)     // Catch: java.lang.Exception -> L83
-            goto L72
-        L6c:
+            byte[] r1 = com.samsung.android.media.SemExtendedFormat.getData(r0, r1)     // Catch: java.lang.Exception -> L9b
+            goto L8a
+        L84:
             java.lang.String r1 = "SlowMotion_Data"
-            byte[] r1 = com.samsung.android.media.SemExtendedFormat.getData(r0, r1)     // Catch: java.lang.Exception -> L83
-        L72:
-            java.lang.String r3 = new java.lang.String     // Catch: java.lang.Exception -> L83
-            java.nio.charset.Charset r4 = java.nio.charset.StandardCharsets.UTF_8     // Catch: java.lang.Exception -> L83
-            r3.<init>(r1, r4)     // Catch: java.lang.Exception -> L83
-            boolean r4 = r5.checkValidSEFData(r3)     // Catch: java.lang.Exception -> L83
-            if (r4 != 0) goto L80
+            byte[] r1 = com.samsung.android.media.SemExtendedFormat.getData(r0, r1)     // Catch: java.lang.Exception -> L9b
+        L8a:
+            java.lang.String r3 = new java.lang.String     // Catch: java.lang.Exception -> L9b
+            java.nio.charset.Charset r4 = java.nio.charset.StandardCharsets.UTF_8     // Catch: java.lang.Exception -> L9b
+            r3.<init>(r1, r4)     // Catch: java.lang.Exception -> L9b
+            boolean r4 = r5.checkValidSEFData(r3)     // Catch: java.lang.Exception -> L9b
+            if (r4 != 0) goto L98
             return r2
-        L80:
+        L98:
             return r3
-        L81:
+        L99:
             return r2
-        L83:
+        L9b:
             r1 = move-exception
             r1.printStackTrace()
             return r2
@@ -323,8 +282,7 @@ public class SEFHelper {
         MediaExtractor me = null;
         try {
             try {
-                Uri uri = this.mUri;
-                me = uri != null ? CodecsHelper.createExtractor(this.mContext, uri) : CodecsHelper.createExtractor(this.mFilepath);
+                me = this.mUri != null ? CodecsHelper.createExtractor(this.mContext, this.mUri) : CodecsHelper.createExtractor(this.mFilepath);
                 int videoTrack = CodecsHelper.getAndSelectVideoTrackIndex(me);
                 MediaFormat inputFormat = me.getTrackFormat(videoTrack);
                 long duration = inputFormat.getLong(MediaFormat.KEY_DURATION);
@@ -363,21 +321,20 @@ public class SEFHelper {
                     Region slowRegion4 = new Region();
                     slowRegion4.mRegionStartTime = (int) ((2 * duration) / JobInfo.MIN_BACKOFF_MILLIS);
                     slowRegion4.mRegionEndTime = (int) ((8 * duration) / JobInfo.MIN_BACKOFF_MILLIS);
-                    int i = this.mRecordingMode;
-                    if (i == 1) {
+                    if (this.mRecordingMode == 1) {
                         slowRegion4.mRegionSpeedType = Speed.ONE_EIGHTH;
-                    } else if (i == 2) {
+                    } else if (this.mRecordingMode == 2) {
                         slowRegion4.mRegionSpeedType = Speed.EIGHT_TIMES;
                     }
                     slowRegion4.mRegionSpeed = slowRegion4.mRegionSpeedType.value;
                     this.mRegionList.add(slowRegion4);
                 }
-                for (int i2 = 0; i2 < this.mRegionList.size(); i2++) {
-                    LogS.d("TranscodeLib", "Region List " + i2);
-                    LogS.d("TranscodeLib", "Region regionStartTime " + this.mRegionList.get(i2).mRegionStartTime);
-                    LogS.d("TranscodeLib", "Region regionEndTime " + this.mRegionList.get(i2).mRegionEndTime);
-                    LogS.d("TranscodeLib", "Region regionSpeed " + this.mRegionList.get(i2).mRegionSpeed);
-                    LogS.d("TranscodeLib", "Region regionSpeedType " + this.mRegionList.get(i2).mRegionSpeedType);
+                for (int i = 0; i < this.mRegionList.size(); i++) {
+                    LogS.d("TranscodeLib", "Region List " + i);
+                    LogS.d("TranscodeLib", "Region regionStartTime " + this.mRegionList.get(i).mRegionStartTime);
+                    LogS.d("TranscodeLib", "Region regionEndTime " + this.mRegionList.get(i).mRegionEndTime);
+                    LogS.d("TranscodeLib", "Region regionSpeed " + this.mRegionList.get(i).mRegionSpeed);
+                    LogS.d("TranscodeLib", "Region regionSpeedType " + this.mRegionList.get(i).mRegionSpeedType);
                 }
                 return true;
             } catch (IOException e) {
@@ -400,8 +357,7 @@ public class SEFHelper {
         if (TimeUs < 0) {
             return false;
         }
-        List<Region> list = this.mRegionList;
-        if (list != null && !list.isEmpty()) {
+        if (this.mRegionList != null && !this.mRegionList.isEmpty()) {
             for (int i = 0; i < this.mRegionList.size() && 0 == 0; i++) {
                 if (recordingmode == 1 || recordingmode == 2) {
                     regStartTime = this.mRegionList.get(i).mRegionStartTime * 1000;
@@ -687,13 +643,11 @@ public class SEFHelper {
     }
 
     private boolean is120fpsSlowMotionVideo() {
-        int i = this.mRecordingMode;
-        return i == 13 || i == 15 || (i == 21 && this.mRecordingFps == 120);
+        return this.mRecordingMode == 13 || this.mRecordingMode == 15 || (this.mRecordingMode == 21 && this.mRecordingFps == 120);
     }
 
     private boolean isSlowMotionV2() {
-        int i = this.mRecordingMode;
-        return i == 13 || i == 15 || i == 12 || i == 21 || i == 19;
+        return this.mRecordingMode == 13 || this.mRecordingMode == 15 || this.mRecordingMode == 12 || this.mRecordingMode == 21 || this.mRecordingMode == 19;
     }
 
     public static boolean supportMTK_SSM() {
@@ -741,8 +695,7 @@ public class SEFHelper {
             sampleTime2 = 2 * sampleTime;
         }
         long tempSampleTime = sampleTime2;
-        List<Region> list = this.mRegionList;
-        if (list != null && !list.isEmpty()) {
+        if (this.mRegionList != null && !this.mRegionList.isEmpty()) {
             int i = 0;
             while (true) {
                 if (i < this.mRegionList.size()) {
@@ -755,7 +708,7 @@ public class SEFHelper {
                         i++;
                     } else {
                         Speed playSpeed2 = this.mRegionList.get(i).mRegionSpeedType;
-                        tempSampleTime = (this.mRegionList.get(i).mRegionStartTime * 1000) + (((sampleTime2 - (this.mRegionList.get(i).mRegionStartTime * 1000)) * (1000000.0f * getTimeScale(playSpeed2))) / 1000000);
+                        tempSampleTime = (this.mRegionList.get(i).mRegionStartTime * 1000) + (((sampleTime2 - (this.mRegionList.get(i).mRegionStartTime * 1000)) * ((long) (1000000.0f * getTimeScale(playSpeed2)))) / 1000000);
                         break;
                     }
                 } else {

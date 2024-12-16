@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class IccIoResult implements Parcelable {
     public static final Parcelable.Creator<IccIoResult> CREATOR = new Parcelable.Creator<IccIoResult>() { // from class: android.hardware.radio.sim.IccIoResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IccIoResult createFromParcel(Parcel _aidl_source) {
             IccIoResult _aidl_out = new IccIoResult();
@@ -19,6 +17,7 @@ public class IccIoResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IccIoResult[] newArray(int _aidl_size) {
             return new IccIoResult[_aidl_size];
@@ -27,25 +26,6 @@ public class IccIoResult implements Parcelable {
     public String simResponse;
     public int sw1 = 0;
     public int sw2 = 0;
-
-    /* renamed from: android.hardware.radio.sim.IccIoResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IccIoResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IccIoResult createFromParcel(Parcel _aidl_source) {
-            IccIoResult _aidl_out = new IccIoResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IccIoResult[] newArray(int _aidl_size) {
-            return new IccIoResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +94,7 @@ public class IccIoResult implements Parcelable {
         _aidl_sj.add("sw1: " + this.sw1);
         _aidl_sj.add("sw2: " + this.sw2);
         _aidl_sj.add("simResponse: " + Objects.toString(this.simResponse));
-        return "android.hardware.radio.sim.IccIoResult" + _aidl_sj.toString();
+        return "IccIoResult" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

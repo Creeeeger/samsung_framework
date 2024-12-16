@@ -11,7 +11,6 @@ public abstract class GraphRunner {
     public static final int RESULT_UNKNOWN = 0;
     protected FilterContext mFilterContext;
 
-    /* loaded from: classes.dex */
     public interface OnRunnerDoneListener {
         void onRunnerDone(int i);
     }
@@ -39,7 +38,7 @@ public abstract class GraphRunner {
         return this.mFilterContext;
     }
 
-    public boolean activateGlContext() {
+    protected boolean activateGlContext() {
         GLEnvironment glEnv = this.mFilterContext.getGLEnvironment();
         if (glEnv != null && !glEnv.isActive()) {
             glEnv.activate();
@@ -48,7 +47,7 @@ public abstract class GraphRunner {
         return false;
     }
 
-    public void deactivateGlContext() {
+    protected void deactivateGlContext() {
         GLEnvironment glEnv = this.mFilterContext.getGLEnvironment();
         if (glEnv != null) {
             glEnv.deactivate();

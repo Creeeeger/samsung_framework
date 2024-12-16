@@ -3,15 +3,15 @@ package android.telephony.ims;
 import android.annotation.SystemApi;
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RcsClientConfiguration implements Parcelable {
     public static final Parcelable.Creator<RcsClientConfiguration> CREATOR = new Parcelable.Creator<RcsClientConfiguration>() { // from class: android.telephony.ims.RcsClientConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsClientConfiguration createFromParcel(Parcel in) {
             String rcsVersion = in.readString();
@@ -22,6 +22,7 @@ public final class RcsClientConfiguration implements Parcelable {
             return new RcsClientConfiguration(rcsVersion, rcsProfile, clientVendor, clientVersion, rcsEnabledByUser.booleanValue());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsClientConfiguration[] newArray(int size) {
             return new RcsClientConfiguration[size];
@@ -36,7 +37,7 @@ public final class RcsClientConfiguration implements Parcelable {
     private String mRcsProfile;
     private String mRcsVersion;
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface StringRcsProfile {
     }
 
@@ -80,28 +81,6 @@ public final class RcsClientConfiguration implements Parcelable {
         out.writeString(this.mClientVendor);
         out.writeString(this.mClientVersion);
         out.writeBoolean(this.mRcsEnabledByUser);
-    }
-
-    /* renamed from: android.telephony.ims.RcsClientConfiguration$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RcsClientConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsClientConfiguration createFromParcel(Parcel in) {
-            String rcsVersion = in.readString();
-            String rcsProfile = in.readString();
-            String clientVendor = in.readString();
-            String clientVersion = in.readString();
-            Boolean rcsEnabledByUser = Boolean.valueOf(in.readBoolean());
-            return new RcsClientConfiguration(rcsVersion, rcsProfile, clientVendor, clientVersion, rcsEnabledByUser.booleanValue());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsClientConfiguration[] newArray(int size) {
-            return new RcsClientConfiguration[size];
-        }
     }
 
     @Override // android.os.Parcelable

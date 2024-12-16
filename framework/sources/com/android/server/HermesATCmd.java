@@ -11,9 +11,11 @@ public class HermesATCmd implements IWorkOnAt {
     private static final int AT_MAIN_INDEX = 0;
     private static final int AT_MAIN_INDEX_OPERATION = 0;
     private static final int AT_MAIN_INDEX_READ_DATA = 1;
+    private static final int AT_MAIN_INDEX_TEST_DATA = 9;
     private static final int AT_MAIN_INDEX_WRITE_DATA = 2;
     private static final int AT_MAIN_OPERATION = 0;
     private static final int AT_MAIN_READ_DATA = 10;
+    private static final int AT_MAIN_TEST_DATA = 90;
     private static final int AT_MAIN_WRITE_DATA = 20;
     private static final int AT_MID_INDEX = 1;
     private static final int AT_MINOR_INDEX = 2;
@@ -23,9 +25,14 @@ public class HermesATCmd implements IWorkOnAt {
     private static final String AT_RESPONSE_OK = "OK";
     private static final int NOT_PROVISIONED = 10000;
     private static final int NO_ERROR = 0;
+    private static final int SAMSUNG_HERMES_CLOSE = 91;
+    private static final int SAMSUNG_HERMES_COS_PATCH = 93;
     private static final int SAMSUNG_HERMES_GET_SECUREHW_INFO = 10;
+    private static final int SAMSUNG_HERMES_GET_SEID = 94;
+    private static final int SAMSUNG_HERMES_OPEN = 90;
     private static final int SAMSUNG_HERMES_PROVISIONING = 1;
     private static final int SAMSUNG_HERMES_SELFTEST = 0;
+    private static final int SAMSUNG_HERMES_SEND_APDU = 92;
     private static final int SAMSUNG_HERMES_UPDATE_CRYPTO_FW = 2;
     private static final int SAMSUNG_HERMES_VERIFY_PROVISONING = 11;
     private static final String TAG = "HERMES#ATCmd";
@@ -61,12 +68,16 @@ public class HermesATCmd implements IWorkOnAt {
             Log.i(TAG, "ISOSECHW ProcessCmd [" + cmd + "] start");
             switch (Integer.parseInt(params[0] + params[1])) {
                 case 0:
-                    byte[] stinfo = bindHermesServiceManager().hermesSelftest();
-                    if (stinfo == null) {
-                        result = result + "OK";
+                    if (params[2].equals("0")) {
+                        byte[] stinfo = bindHermesServiceManager().hermesSelftest();
+                        if (stinfo == null) {
+                            result = result + "OK";
+                        } else {
+                            result = result + "NG_" + new String(stinfo);
+                        }
                         break;
                     } else {
-                        result = result + "NG_" + new String(stinfo);
+                        bindHermesServiceManager().hermesSelftest(params[2]);
                         break;
                     }
                 case 1:
@@ -79,13 +90,24 @@ public class HermesATCmd implements IWorkOnAt {
                         break;
                     }
                 case 2:
-                    byte[] resultinfo = bindHermesServiceManager().hermesUpdateCryptoFW();
-                    if (resultinfo != null) {
-                        result = result + new String(resultinfo);
-                        break;
-                    } else {
-                        result = result + "NG";
-                        break;
+                    if (params[2].equals("0")) {
+                        byte[] resultinfo = bindHermesServiceManager().hermesUpdateCryptoFW();
+                        if (resultinfo != null) {
+                            result = result + new String(resultinfo);
+                            break;
+                        } else {
+                            result = result + "NG";
+                            break;
+                        }
+                    } else if (params[2].equals("1")) {
+                        byte[] resultinfo2 = bindHermesServiceManager().hermesUpdateApplet();
+                        if (resultinfo2 != null) {
+                            result = result + new String(resultinfo2);
+                            break;
+                        } else {
+                            result = result + "NG";
+                            break;
+                        }
                     }
                 case 10:
                     byte[] chipinfo = bindHermesServiceManager().hermesGetSecureHWInfo();
@@ -106,6 +128,51 @@ public class HermesATCmd implements IWorkOnAt {
                         break;
                     } else {
                         result = result + "NG" + ret2;
+                        break;
+                    }
+                case 90:
+                    int ret3 = bindHermesServiceManager().open();
+                    if (ret3 == 0) {
+                        result = result + "OK";
+                        break;
+                    } else {
+                        result = result + "NG" + ret3;
+                        break;
+                    }
+                case 91:
+                    int ret4 = bindHermesServiceManager().close();
+                    if (ret4 == 0) {
+                        result = result + "OK";
+                        break;
+                    } else {
+                        result = result + "NG" + ret4;
+                        break;
+                    }
+                case 92:
+                    byte[] rapdu = bindHermesServiceManager().send(hexStringToByteArray(params[2]));
+                    if (rapdu != null) {
+                        result = result + byteArrayToHexString(rapdu);
+                        break;
+                    } else {
+                        result = result + "NG";
+                        break;
+                    }
+                case 93:
+                    byte[] res = bindHermesServiceManager().cosPatchTest(hexStringToByteArray(params[2]));
+                    if (res != null) {
+                        result = result + new String(res);
+                        break;
+                    } else {
+                        result = result + "NG";
+                        break;
+                    }
+                case 94:
+                    byte[] cplc = bindHermesServiceManager().getSeId();
+                    if (cplc != null) {
+                        result = result + byteArrayToHexString(cplc);
+                        break;
+                    } else {
+                        result = result + "NG";
                         break;
                     }
                 default:
@@ -129,5 +196,22 @@ public class HermesATCmd implements IWorkOnAt {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private byte[] hexStringToByteArray(String hexString) {
+        int length = hexString.length();
+        byte[] byteArray = new byte[length / 2];
+        for (int i = 0; i < length; i += 2) {
+            byteArray[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i + 1), 16));
+        }
+        return byteArray;
+    }
+
+    private String byteArrayToHexString(byte[] byteArray) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : byteArray) {
+            hexString.append(String.format("%02X", Byte.valueOf(b)));
+        }
+        return hexString.toString();
     }
 }

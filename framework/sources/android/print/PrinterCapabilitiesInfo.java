@@ -26,29 +26,23 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
     private List<PrintAttributes.Resolution> mResolutions;
     private static final PrintAttributes.Margins DEFAULT_MARGINS = new PrintAttributes.Margins(0, 0, 0, 0);
     public static final Parcelable.Creator<PrinterCapabilitiesInfo> CREATOR = new Parcelable.Creator<PrinterCapabilitiesInfo>() { // from class: android.print.PrinterCapabilitiesInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterCapabilitiesInfo createFromParcel(Parcel parcel) {
             return new PrinterCapabilitiesInfo(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterCapabilitiesInfo[] newArray(int size) {
             return new PrinterCapabilitiesInfo[size];
         }
     };
 
-    /* synthetic */ PrinterCapabilitiesInfo(Parcel parcel, PrinterCapabilitiesInfoIA printerCapabilitiesInfoIA) {
-        this(parcel);
-    }
-
     public PrinterCapabilitiesInfo() {
         this.mMinMargins = DEFAULT_MARGINS;
-        int[] iArr = new int[4];
-        this.mDefaults = iArr;
-        Arrays.fill(iArr, -1);
+        this.mDefaults = new int[4];
+        Arrays.fill(this.mDefaults, -1);
     }
 
     public PrinterCapabilitiesInfo(PrinterCapabilitiesInfo prototype) {
@@ -63,9 +57,8 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
         }
         this.mMinMargins = other.mMinMargins;
         if (other.mMediaSizes != null) {
-            List<PrintAttributes.MediaSize> list = this.mMediaSizes;
-            if (list != null) {
-                list.clear();
+            if (this.mMediaSizes != null) {
+                this.mMediaSizes.clear();
                 this.mMediaSizes.addAll(other.mMediaSizes);
             } else {
                 this.mMediaSizes = new ArrayList(other.mMediaSizes);
@@ -74,9 +67,8 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
             this.mMediaSizes = null;
         }
         if (other.mResolutions != null) {
-            List<PrintAttributes.Resolution> list2 = this.mResolutions;
-            if (list2 != null) {
-                list2.clear();
+            if (this.mResolutions != null) {
+                this.mResolutions.clear();
                 this.mResolutions.addAll(other.mResolutions);
             } else {
                 this.mResolutions = new ArrayList(other.mResolutions);
@@ -134,6 +126,7 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
         return builder.build();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void enforceValidMask(int mask, IntConsumer enforceSingle) {
         int current = mask;
         while (current > 0) {
@@ -145,30 +138,27 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
 
     private PrinterCapabilitiesInfo(Parcel parcel) {
         this.mMinMargins = DEFAULT_MARGINS;
-        int[] iArr = new int[4];
-        this.mDefaults = iArr;
+        this.mDefaults = new int[4];
         this.mMinMargins = (PrintAttributes.Margins) Preconditions.checkNotNull(readMargins(parcel));
         readMediaSizes(parcel);
         readResolutions(parcel);
-        int readInt = parcel.readInt();
-        this.mColorModes = readInt;
-        enforceValidMask(readInt, new IntConsumer() { // from class: android.print.PrinterCapabilitiesInfo$$ExternalSyntheticLambda0
+        this.mColorModes = parcel.readInt();
+        enforceValidMask(this.mColorModes, new IntConsumer() { // from class: android.print.PrinterCapabilitiesInfo$$ExternalSyntheticLambda0
             @Override // java.util.function.IntConsumer
             public final void accept(int i) {
                 PrintAttributes.enforceValidColorMode(i);
             }
         });
-        int readInt2 = parcel.readInt();
-        this.mDuplexModes = readInt2;
-        enforceValidMask(readInt2, new IntConsumer() { // from class: android.print.PrinterCapabilitiesInfo$$ExternalSyntheticLambda1
+        this.mDuplexModes = parcel.readInt();
+        enforceValidMask(this.mDuplexModes, new IntConsumer() { // from class: android.print.PrinterCapabilitiesInfo$$ExternalSyntheticLambda1
             @Override // java.util.function.IntConsumer
             public final void accept(int i) {
                 PrintAttributes.enforceValidDuplexMode(i);
             }
         });
         readDefaults(parcel);
-        Preconditions.checkArgument(this.mMediaSizes.size() > iArr[0]);
-        Preconditions.checkArgument(this.mResolutions.size() > iArr[1]);
+        Preconditions.checkArgument(this.mMediaSizes.size() > this.mDefaults[0]);
+        Preconditions.checkArgument(this.mResolutions.size() > this.mDefaults[1]);
     }
 
     @Override // android.os.Parcelable
@@ -187,14 +177,8 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
     }
 
     public int hashCode() {
-        int i = 1 * 31;
-        PrintAttributes.Margins margins = this.mMinMargins;
-        int result = i + (margins == null ? 0 : margins.hashCode());
-        int result2 = result * 31;
-        List<PrintAttributes.MediaSize> list = this.mMediaSizes;
-        int result3 = (result2 + (list == null ? 0 : list.hashCode())) * 31;
-        List<PrintAttributes.Resolution> list2 = this.mResolutions;
-        return ((((((result3 + (list2 != null ? list2.hashCode() : 0)) * 31) + this.mColorModes) * 31) + this.mDuplexModes) * 31) + Arrays.hashCode(this.mDefaults);
+        int result = (1 * 31) + (this.mMinMargins == null ? 0 : this.mMinMargins.hashCode());
+        return (((((((((result * 31) + (this.mMediaSizes == null ? 0 : this.mMediaSizes.hashCode())) * 31) + (this.mResolutions != null ? this.mResolutions.hashCode() : 0)) * 31) + this.mColorModes) * 31) + this.mDuplexModes) * 31) + Arrays.hashCode(this.mDefaults);
     }
 
     public boolean equals(Object obj) {
@@ -205,28 +189,25 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
             return false;
         }
         PrinterCapabilitiesInfo other = (PrinterCapabilitiesInfo) obj;
-        PrintAttributes.Margins margins = this.mMinMargins;
-        if (margins == null) {
+        if (this.mMinMargins == null) {
             if (other.mMinMargins != null) {
                 return false;
             }
-        } else if (!margins.equals(other.mMinMargins)) {
+        } else if (!this.mMinMargins.equals(other.mMinMargins)) {
             return false;
         }
-        List<PrintAttributes.MediaSize> list = this.mMediaSizes;
-        if (list == null) {
+        if (this.mMediaSizes == null) {
             if (other.mMediaSizes != null) {
                 return false;
             }
-        } else if (!list.equals(other.mMediaSizes)) {
+        } else if (!this.mMediaSizes.equals(other.mMediaSizes)) {
             return false;
         }
-        List<PrintAttributes.Resolution> list2 = this.mResolutions;
-        if (list2 == null) {
+        if (this.mResolutions == null) {
             if (other.mResolutions != null) {
                 return false;
             }
-        } else if (!list2.equals(other.mResolutions)) {
+        } else if (!this.mResolutions.equals(other.mResolutions)) {
             return false;
         }
         if (this.mColorModes == other.mColorModes && this.mDuplexModes == other.mDuplexModes && Arrays.equals(this.mDefaults, other.mDefaults)) {
@@ -280,12 +261,11 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
     }
 
     private void writeMediaSizes(Parcel parcel) {
-        List<PrintAttributes.MediaSize> list = this.mMediaSizes;
-        if (list == null) {
+        if (this.mMediaSizes == null) {
             parcel.writeInt(0);
             return;
         }
-        int mediaSizeCount = list.size();
+        int mediaSizeCount = this.mMediaSizes.size();
         parcel.writeInt(mediaSizeCount);
         for (int i = 0; i < mediaSizeCount; i++) {
             this.mMediaSizes.get(i).writeToParcel(parcel);
@@ -303,12 +283,11 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
     }
 
     private void writeResolutions(Parcel parcel) {
-        List<PrintAttributes.Resolution> list = this.mResolutions;
-        if (list == null) {
+        if (this.mResolutions == null) {
             parcel.writeInt(0);
             return;
         }
-        int resolutionCount = list.size();
+        int resolutionCount = this.mResolutions.size();
         parcel.writeInt(resolutionCount);
         for (int i = 0; i < resolutionCount; i++) {
             this.mResolutions.get(i).writeToParcel(parcel);
@@ -356,7 +335,6 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final PrinterCapabilitiesInfo mPrototype;
 
@@ -459,23 +437,6 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
             if (this.mPrototype.mDefaults[propertyIndex] != -1) {
                 throw new IllegalArgumentException("Default already specified.");
             }
-        }
-    }
-
-    /* renamed from: android.print.PrinterCapabilitiesInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrinterCapabilitiesInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrinterCapabilitiesInfo createFromParcel(Parcel parcel) {
-            return new PrinterCapabilitiesInfo(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrinterCapabilitiesInfo[] newArray(int size) {
-            return new PrinterCapabilitiesInfo[size];
         }
     }
 }

@@ -45,9 +45,8 @@ public abstract class ExploreByTouchHelper extends View.AccessibilityDelegate {
             throw new IllegalArgumentException("View may not be null");
         }
         this.mView = forView;
-        Context context = forView.getContext();
-        this.mContext = context;
-        this.mManager = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        this.mContext = forView.getContext();
+        this.mManager = (AccessibilityManager) this.mContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 
     @Override // android.view.View.AccessibilityDelegate
@@ -149,6 +148,7 @@ public abstract class ExploreByTouchHelper extends View.AccessibilityDelegate {
         return event;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public AccessibilityNodeInfo createNode(int virtualViewId) {
         switch (virtualViewId) {
             case -1:
@@ -163,11 +163,10 @@ public abstract class ExploreByTouchHelper extends View.AccessibilityDelegate {
         this.mView.onInitializeAccessibilityNodeInfo(node);
         int realNodeCount = node.getChildCount();
         onPopulateNodeForHost(node);
-        IntArray intArray = this.mTempArray;
-        if (intArray == null) {
+        if (this.mTempArray == null) {
             this.mTempArray = new IntArray();
         } else {
-            intArray.clear();
+            this.mTempArray.clear();
         }
         IntArray virtualViewIds = this.mTempArray;
         getVisibleVirtualViews(virtualViewIds);
@@ -189,14 +188,13 @@ public abstract class ExploreByTouchHelper extends View.AccessibilityDelegate {
         AccessibilityNodeInfo node = AccessibilityNodeInfo.obtain();
         node.setEnabled(true);
         node.setClassName(DEFAULT_CLASS_NAME);
-        Rect rect = INVALID_PARENT_BOUNDS;
-        node.setBoundsInParent(rect);
+        node.setBoundsInParent(INVALID_PARENT_BOUNDS);
         onPopulateNodeForVirtualView(virtualViewId, node);
         if (node.getText() == null && node.getContentDescription() == null) {
             throw new RuntimeException("Callbacks must add text or a content description in populateNodeForVirtualViewId()");
         }
         node.getBoundsInParent(tempParentRect);
-        if (tempParentRect.equals(rect)) {
+        if (tempParentRect.equals(INVALID_PARENT_BOUNDS)) {
             throw new RuntimeException("Callbacks must set parent bounds in populateNodeForVirtualViewId()");
         }
         int actions = node.getActions();
@@ -235,6 +233,7 @@ public abstract class ExploreByTouchHelper extends View.AccessibilityDelegate {
         this.mTempScreenRect = new Rect();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean performAction(int virtualViewId, int action, Bundle arguments) {
         switch (virtualViewId) {
             case -1:
@@ -303,9 +302,8 @@ public abstract class ExploreByTouchHelper extends View.AccessibilityDelegate {
         if (!this.mManager.isEnabled() || !accessibilityManager.isTouchExplorationEnabled() || isAccessibilityFocused(virtualViewId)) {
             return false;
         }
-        int i = this.mFocusedVirtualViewId;
-        if (i != Integer.MIN_VALUE) {
-            sendEventForVirtualView(i, 65536);
+        if (this.mFocusedVirtualViewId != Integer.MIN_VALUE) {
+            sendEventForVirtualView(this.mFocusedVirtualViewId, 65536);
         }
         this.mFocusedVirtualViewId = virtualViewId;
         this.mView.invalidate();
@@ -329,12 +327,7 @@ public abstract class ExploreByTouchHelper extends View.AccessibilityDelegate {
     protected void onPopulateNodeForHost(AccessibilityNodeInfo node) {
     }
 
-    /* loaded from: classes5.dex */
     private class ExploreByTouchNodeProvider extends AccessibilityNodeProvider {
-        /* synthetic */ ExploreByTouchNodeProvider(ExploreByTouchHelper exploreByTouchHelper, ExploreByTouchNodeProviderIA exploreByTouchNodeProviderIA) {
-            this();
-        }
-
         private ExploreByTouchNodeProvider() {
         }
 

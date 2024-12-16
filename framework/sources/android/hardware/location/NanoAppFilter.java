@@ -10,14 +10,13 @@ import android.os.Parcelable;
 public class NanoAppFilter implements Parcelable {
     public static final int APP_ANY = -1;
     public static final Parcelable.Creator<NanoAppFilter> CREATOR = new Parcelable.Creator<NanoAppFilter>() { // from class: android.hardware.location.NanoAppFilter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppFilter createFromParcel(Parcel in) {
             return new NanoAppFilter(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppFilter[] newArray(int size) {
             return new NanoAppFilter[size];
@@ -35,10 +34,6 @@ public class NanoAppFilter implements Parcelable {
     private int mAppVersion;
     private int mContextHubId;
     private int mVersionRestrictionMask;
-
-    /* synthetic */ NanoAppFilter(Parcel parcel, NanoAppFilterIA nanoAppFilterIA) {
-        this(parcel);
-    }
 
     private NanoAppFilter(Parcel in) {
         this.mContextHubId = -1;
@@ -79,22 +74,5 @@ public class NanoAppFilter implements Parcelable {
 
     public String toString() {
         return "nanoAppId: 0x" + Long.toHexString(this.mAppId) + ", nanoAppVersion: 0x" + Integer.toHexString(this.mAppVersion) + ", versionMask: " + this.mVersionRestrictionMask + ", vendorMask: " + this.mAppIdVendorMask;
-    }
-
-    /* renamed from: android.hardware.location.NanoAppFilter$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NanoAppFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoAppFilter createFromParcel(Parcel in) {
-            return new NanoAppFilter(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoAppFilter[] newArray(int size) {
-            return new NanoAppFilter[size];
-        }
     }
 }

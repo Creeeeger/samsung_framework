@@ -55,11 +55,11 @@ public class MediaHTTPService extends IMediaHTTPService.Stub {
         return new MediaHTTPConnection();
     }
 
-    public static IBinder createHttpServiceBinderIfNecessary(String path) {
+    static IBinder createHttpServiceBinderIfNecessary(String path) {
         return createHttpServiceBinderIfNecessary(path, null);
     }
 
-    public static IBinder createHttpServiceBinderIfNecessary(String path, List<HttpCookie> cookies) {
+    static IBinder createHttpServiceBinderIfNecessary(String path, List<HttpCookie> cookies) {
         if (path.startsWith("http://") || path.startsWith("https://")) {
             return new MediaHTTPService(cookies).asBinder();
         }

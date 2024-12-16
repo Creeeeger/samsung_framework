@@ -11,34 +11,31 @@ public final class TextClassificationManager {
     private static final TextClassificationConstants sDefaultSettings = new TextClassificationConstants();
     private final Context mContext;
     private TextClassifier mCustomTextClassifier;
-    private final TextClassificationSessionFactory mDefaultSessionFactory;
-    private final Object mLock = new Object();
-    private TextClassificationSessionFactory mSessionFactory;
     private TextClassificationConstants mSettings;
+    private final Object mLock = new Object();
+    private final TextClassificationSessionFactory mDefaultSessionFactory = new TextClassificationSessionFactory() { // from class: android.view.textclassifier.TextClassificationManager$$ExternalSyntheticLambda0
+        @Override // android.view.textclassifier.TextClassificationSessionFactory
+        public final TextClassifier createTextClassificationSession(TextClassificationContext textClassificationContext) {
+            TextClassifier lambda$new$0;
+            lambda$new$0 = TextClassificationManager.this.lambda$new$0(textClassificationContext);
+            return lambda$new$0;
+        }
+    };
+    private TextClassificationSessionFactory mSessionFactory = this.mDefaultSessionFactory;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextClassifier lambda$new$0(TextClassificationContext classificationContext) {
         return new TextClassificationSession(classificationContext, getTextClassifier());
     }
 
     public TextClassificationManager(Context context) {
-        TextClassificationSessionFactory textClassificationSessionFactory = new TextClassificationSessionFactory() { // from class: android.view.textclassifier.TextClassificationManager$$ExternalSyntheticLambda0
-            @Override // android.view.textclassifier.TextClassificationSessionFactory
-            public final TextClassifier createTextClassificationSession(TextClassificationContext textClassificationContext) {
-                TextClassifier lambda$new$0;
-                lambda$new$0 = TextClassificationManager.this.lambda$new$0(textClassificationContext);
-                return lambda$new$0;
-            }
-        };
-        this.mDefaultSessionFactory = textClassificationSessionFactory;
         this.mContext = (Context) Objects.requireNonNull(context);
-        this.mSessionFactory = textClassificationSessionFactory;
     }
 
     public TextClassifier getTextClassifier() {
         synchronized (this.mLock) {
-            TextClassifier textClassifier = this.mCustomTextClassifier;
-            if (textClassifier != null) {
-                return textClassifier;
+            if (this.mCustomTextClassifier != null) {
+                return this.mCustomTextClassifier;
             }
             if (getSettings().isSystemTextClassifierEnabled()) {
                 return getSystemTextClassifier(1);

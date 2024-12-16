@@ -211,11 +211,10 @@ public class SContextManager extends SemContextManager {
 
     @Deprecated
     public void unregisterListener(SContextListener listener) {
-        HashMap<Integer, Integer> hashMap;
-        if (listener == null || (hashMap = this.mAvailableServiceMap) == null) {
+        if (listener == null || this.mAvailableServiceMap == null) {
             return;
         }
-        Iterator<Integer> i = hashMap.keySet().iterator();
+        Iterator<Integer> i = this.mAvailableServiceMap.keySet().iterator();
         if (i.hasNext()) {
             int service = i.next().intValue();
             SContextListenerDelegate scontextListener = getListenerDelegate(listener);
@@ -333,7 +332,7 @@ public class SContextManager extends SemContextManager {
             return;
         }
         SContextAttribute attribute = addListenerAttribute(service);
-        if (attribute == null || !attribute.checkAttribute() || !checkListenerAndService(listener, service)) {
+        if (!attribute.checkAttribute() || !checkListenerAndService(listener, service)) {
             return;
         }
         SContextListenerDelegate scontextListener = getListenerDelegate(listener);
@@ -483,6 +482,7 @@ public class SContextManager extends SemContextManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkHistoryMode(SContextEvent scontextevent) {
         boolean res = false;
         StringBuffer sb = new StringBuffer();
@@ -519,8 +519,7 @@ public class SContextManager extends SemContextManager {
         return res;
     }
 
-    /* loaded from: classes2.dex */
-    public class SContextListenerDelegate implements SemContextListener {
+    private class SContextListenerDelegate implements SemContextListener {
         private boolean mDereisgeredListener = false;
         private final Handler mHandler;
         private final boolean mIsHistoryData;
@@ -531,14 +530,6 @@ public class SContextManager extends SemContextManager {
             Looper mLooper = looper != null ? looper : SContextManager.this.mMainLooper;
             this.mIsHistoryData = isHistoryData;
             this.mHandler = new Handler(mLooper) { // from class: android.hardware.scontext.SContextManager.SContextListenerDelegate.1
-                final /* synthetic */ SContextManager val$this$0;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(Looper mLooper2, SContextManager sContextManager) {
-                    super(mLooper2);
-                    r3 = sContextManager;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     SContextEvent scontextEvent;
@@ -560,38 +551,6 @@ public class SContextManager extends SemContextManager {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.hardware.scontext.SContextManager$SContextListenerDelegate$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 extends Handler {
-            final /* synthetic */ SContextManager val$this$0;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(Looper mLooper2, SContextManager sContextManager) {
-                super(mLooper2);
-                r3 = sContextManager;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                SContextEvent scontextEvent;
-                SContext scontext;
-                if (!SContextListenerDelegate.this.mDereisgeredListener && SContextListenerDelegate.this.mListener != null && (scontextEvent = (SContextEvent) msg.obj) != null && (scontext = scontextEvent.scontext) != null) {
-                    int type = scontext.getType();
-                    if (SContextListenerDelegate.this.mIsHistoryData) {
-                        Log.d(SContextManager.TAG, "Data is received so remove listener related HistoryData");
-                        SContextListenerDelegate.this.mListener.onSContextChanged(scontextEvent);
-                        SContextManager.this.unregisterListener(SContextListenerDelegate.this.mListener, type);
-                    } else if (!SContextManager.this.checkHistoryMode(scontextEvent)) {
-                        SContextListenerDelegate.this.mListener.onSContextChanged(scontextEvent);
-                    } else if (SContextManager.this.mIsHistoryDataListener != null && SContextManager.this.mIsHistoryDataListener.equals(SContextListenerDelegate.this.mListener)) {
-                        Log.d(SContextManager.TAG, "Listener is already registered and history data is sent to Application");
-                        SContextManager.this.mIsHistoryDataListener.onSContextChanged(scontextEvent);
-                    }
-                }
-            }
-        }
-
         public SContextListener getListener() {
             return this.mListener;
         }
@@ -601,9 +560,8 @@ public class SContextManager extends SemContextManager {
         }
 
         public String getListenerInfo() {
-            SContextListener sContextListener = this.mListener;
-            if (sContextListener != null) {
-                return sContextListener.toString();
+            if (this.mListener != null) {
+                return this.mListener.toString();
             }
             return "";
         }

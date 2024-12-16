@@ -30,7 +30,7 @@ class DayPickerViewPager extends ViewPager {
     }
 
     @Override // com.android.internal.widget.ViewPager, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int childWidthMeasureSpec;
         int childHeightMeasureSpec;
         populate();
@@ -88,7 +88,7 @@ class DayPickerViewPager extends ViewPager {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
+    protected <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         T t;
         T t2;
         if (predicate.test(this)) {

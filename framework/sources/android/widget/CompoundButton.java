@@ -24,10 +24,8 @@ import android.view.autofill.AutofillValue;
 import android.view.inspector.InspectionCompanion;
 import android.view.inspector.PropertyMapper;
 import android.view.inspector.PropertyReader;
-import android.widget.RemoteViews;
 import com.android.internal.R;
 
-@RemoteViews.RemoteView
 /* loaded from: classes4.dex */
 public abstract class CompoundButton extends Button implements Checkable {
     private boolean mBroadcasting;
@@ -41,18 +39,13 @@ public abstract class CompoundButton extends Button implements Checkable {
     private boolean mHasButtonTint;
     private OnCheckedChangeListener mOnCheckedChangeListener;
     private OnCheckedChangeListener mOnCheckedChangeWidgetListener;
-    private boolean mResizeCompoundButton;
-    private int mResizeCompoundButtonHeight;
-    private int mResizeCompoundButtonWidth;
     private static final String LOG_TAG = CompoundButton.class.getSimpleName();
     private static final int[] CHECKED_STATE_SET = {16842912};
 
-    /* loaded from: classes4.dex */
     public interface OnCheckedChangeListener {
         void onCheckedChanged(CompoundButton compoundButton, boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<CompoundButton> {
         private int mButtonBlendModeId;
         private int mButtonId;
@@ -102,7 +95,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         this.mButtonBlendMode = null;
         this.mHasButtonTint = false;
         this.mHasButtonBlendMode = false;
-        this.mResizeCompoundButton = false;
         this.mCheckedFromResource = false;
         this.mCustomStateDescription = null;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CompoundButton, defStyleAttr, defStyleRes);
@@ -142,7 +134,6 @@ public abstract class CompoundButton extends Button implements Checkable {
     }
 
     @Override // android.widget.Checkable
-    @RemotableViewMethod(asyncImpl = "isCheckedAsync")
     @ViewDebug.ExportedProperty
     public boolean isChecked() {
         return this.mChecked;
@@ -165,14 +156,13 @@ public abstract class CompoundButton extends Button implements Checkable {
         }
     }
 
-    public void setDefaultStateDescription() {
+    protected void setDefaultStateDescription() {
         if (this.mCustomStateDescription == null) {
             super.setStateDescription(getButtonStateDescription());
         }
     }
 
     @Override // android.widget.Checkable
-    @RemotableViewMethod(asyncImpl = "setCheckedAsync")
     public void setChecked(boolean checked) {
         if (this.mChecked != checked) {
             this.mCheckedFromResource = false;
@@ -183,13 +173,11 @@ public abstract class CompoundButton extends Button implements Checkable {
                 return;
             }
             this.mBroadcasting = true;
-            OnCheckedChangeListener onCheckedChangeListener = this.mOnCheckedChangeListener;
-            if (onCheckedChangeListener != null) {
-                onCheckedChangeListener.onCheckedChanged(this, this.mChecked);
+            if (this.mOnCheckedChangeListener != null) {
+                this.mOnCheckedChangeListener.onCheckedChanged(this, this.mChecked);
             }
-            OnCheckedChangeListener onCheckedChangeListener2 = this.mOnCheckedChangeWidgetListener;
-            if (onCheckedChangeListener2 != null) {
-                onCheckedChangeListener2.onCheckedChanged(this, this.mChecked);
+            if (this.mOnCheckedChangeWidgetListener != null) {
+                this.mOnCheckedChangeWidgetListener.onCheckedChanged(this, this.mChecked);
             }
             AutofillManager afm = (AutofillManager) this.mContext.getSystemService(AutofillManager.class);
             if (afm != null) {
@@ -204,7 +192,7 @@ public abstract class CompoundButton extends Button implements Checkable {
         this.mOnCheckedChangeListener = listener;
     }
 
-    public void setOnCheckedChangeWidgetListener(OnCheckedChangeListener listener) {
+    void setOnCheckedChangeWidgetListener(OnCheckedChangeListener listener) {
         this.mOnCheckedChangeWidgetListener = listener;
     }
 
@@ -231,10 +219,9 @@ public abstract class CompoundButton extends Button implements Checkable {
 
     /* renamed from: setButtonDrawable, reason: merged with bridge method [inline-methods] and merged with bridge method [inline-methods] */
     public void lambda$setButtonIconAsync$1(Drawable drawable) {
-        Drawable drawable2 = this.mButtonDrawable;
-        if (drawable2 != drawable) {
-            if (drawable2 != null) {
-                drawable2.setCallback(null);
+        if (this.mButtonDrawable != drawable) {
+            if (this.mButtonDrawable != null) {
+                this.mButtonDrawable.setCallback(null);
                 unscheduleDrawable(this.mButtonDrawable);
             }
             this.mButtonDrawable = drawable;
@@ -254,9 +241,8 @@ public abstract class CompoundButton extends Button implements Checkable {
     @Override // android.widget.TextView, android.view.View
     public void onResolveDrawables(int layoutDirection) {
         super.onResolveDrawables(layoutDirection);
-        Drawable drawable = this.mButtonDrawable;
-        if (drawable != null) {
-            drawable.setLayoutDirection(layoutDirection);
+        if (this.mButtonDrawable != null) {
+            this.mButtonDrawable.setLayoutDirection(layoutDirection);
         }
     }
 
@@ -302,9 +288,8 @@ public abstract class CompoundButton extends Button implements Checkable {
     }
 
     public PorterDuff.Mode getButtonTintMode() {
-        BlendMode blendMode = this.mButtonBlendMode;
-        if (blendMode != null) {
-            return BlendMode.blendModeToPorterDuffMode(blendMode);
+        if (this.mButtonBlendMode != null) {
+            return BlendMode.blendModeToPorterDuffMode(this.mButtonBlendMode);
         }
         return null;
     }
@@ -314,13 +299,11 @@ public abstract class CompoundButton extends Button implements Checkable {
     }
 
     private void applyButtonTint() {
-        Drawable drawable = this.mButtonDrawable;
-        if (drawable != null) {
+        if (this.mButtonDrawable != null) {
             if (this.mHasButtonTint || this.mHasButtonBlendMode) {
-                Drawable mutate = drawable.mutate();
-                this.mButtonDrawable = mutate;
+                this.mButtonDrawable = this.mButtonDrawable.mutate();
                 if (this.mHasButtonTint) {
-                    mutate.setTintList(this.mButtonTintList);
+                    this.mButtonDrawable.setTintList(this.mButtonTintList);
                 }
                 if (this.mHasButtonBlendMode) {
                     this.mButtonDrawable.setTintBlendMode(this.mButtonBlendMode);
@@ -355,9 +338,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         Drawable buttonDrawable;
         int padding = super.getCompoundPaddingLeft();
         if (!isLayoutRtl() && (buttonDrawable = this.mButtonDrawable) != null) {
-            if (this.mResizeCompoundButton) {
-                return padding + this.mResizeCompoundButtonWidth;
-            }
             return padding + buttonDrawable.getIntrinsicWidth();
         }
         return padding;
@@ -368,9 +348,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         Drawable buttonDrawable;
         int padding = super.getCompoundPaddingRight();
         if (isLayoutRtl() && (buttonDrawable = this.mButtonDrawable) != null) {
-            if (this.mResizeCompoundButton) {
-                return padding + this.mResizeCompoundButtonWidth;
-            }
             return padding + buttonDrawable.getIntrinsicWidth();
         }
         return padding;
@@ -380,29 +357,19 @@ public abstract class CompoundButton extends Button implements Checkable {
     public int getHorizontalOffsetForDrawables() {
         Drawable buttonDrawable = this.mButtonDrawable;
         if (buttonDrawable != null) {
-            if (this.mResizeCompoundButton) {
-                return this.mResizeCompoundButtonWidth;
-            }
             return buttonDrawable.getIntrinsicWidth();
         }
         return 0;
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onDraw(Canvas canvas) {
-        int drawableHeight;
-        int drawableWidth;
+    protected void onDraw(Canvas canvas) {
         int top;
         Drawable buttonDrawable = this.mButtonDrawable;
         if (buttonDrawable != null) {
             int verticalGravity = getGravity() & 112;
-            if (this.mResizeCompoundButton) {
-                drawableHeight = this.mResizeCompoundButtonHeight;
-                drawableWidth = this.mResizeCompoundButtonWidth;
-            } else {
-                drawableHeight = buttonDrawable.getIntrinsicHeight();
-                drawableWidth = buttonDrawable.getIntrinsicWidth();
-            }
+            int drawableHeight = buttonDrawable.getIntrinsicHeight();
+            int drawableWidth = buttonDrawable.getIntrinsicWidth();
             switch (verticalGravity) {
                 case 16:
                     int top2 = getHeight();
@@ -440,7 +407,7 @@ public abstract class CompoundButton extends Button implements Checkable {
     }
 
     @Override // android.widget.TextView, android.view.View
-    public int[] onCreateDrawableState(int extraSpace) {
+    protected int[] onCreateDrawableState(int extraSpace) {
         int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
         if (isChecked()) {
             mergeDrawableStates(drawableState, CHECKED_STATE_SET);
@@ -449,7 +416,7 @@ public abstract class CompoundButton extends Button implements Checkable {
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         super.drawableStateChanged();
         Drawable buttonDrawable = this.mButtonDrawable;
         if (buttonDrawable != null && buttonDrawable.isStateful() && buttonDrawable.setState(getDrawableState())) {
@@ -460,47 +427,39 @@ public abstract class CompoundButton extends Button implements Checkable {
     @Override // android.widget.TextView, android.view.View
     public void drawableHotspotChanged(float x, float y) {
         super.drawableHotspotChanged(x, y);
-        Drawable drawable = this.mButtonDrawable;
-        if (drawable != null) {
-            drawable.setHotspot(x, y);
+        if (this.mButtonDrawable != null) {
+            this.mButtonDrawable.setHotspot(x, y);
         }
     }
 
     @Override // android.widget.TextView, android.view.View
-    public boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == this.mButtonDrawable;
     }
 
     @Override // android.widget.TextView, android.view.View
     public void jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState();
-        Drawable drawable = this.mButtonDrawable;
-        if (drawable != null) {
-            drawable.jumpToCurrentState();
+        if (this.mButtonDrawable != null) {
+            this.mButtonDrawable.jumpToCurrentState();
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.CompoundButton.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
         boolean checked;
-
-        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
-            this(parcel);
-        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -519,23 +478,6 @@ public abstract class CompoundButton extends Button implements Checkable {
 
         public String toString() {
             return "CompoundButton.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " checked=" + this.checked + "}";
-        }
-
-        /* renamed from: android.widget.CompoundButton$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 
@@ -556,13 +498,13 @@ public abstract class CompoundButton extends Button implements Checkable {
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder stream) {
+    protected void encodeProperties(ViewHierarchyEncoder stream) {
         super.encodeProperties(stream);
         stream.addProperty("checked", isChecked());
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
+    protected void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         super.onProvideStructure(structure, viewFor, flags);
         if (viewFor == 1) {
             structure.setDataIsSensitive(true ^ this.mCheckedFromResource);

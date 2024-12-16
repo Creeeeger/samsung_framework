@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEdgeLightingResponse extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.edge.IEdgeLightingResponse";
 
     void onFinished() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEdgeLightingResponse {
         @Override // com.samsung.android.edge.IEdgeLightingResponse
         public void onFinished() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IEdgeLightingResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEdgeLightingResponse {
         static final int TRANSACTION_onFinished = 1;
 
@@ -67,22 +65,19 @@ public interface IEdgeLightingResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEdgeLightingResponse.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEdgeLightingResponse.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEdgeLightingResponse.DESCRIPTOR);
+                case 1:
+                    onFinished();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onFinished();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IEdgeLightingResponse {
             private IBinder mRemote;
 

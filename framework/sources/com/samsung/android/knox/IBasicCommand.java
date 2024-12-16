@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IBasicCommand extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.IBasicCommand";
 
@@ -15,7 +15,6 @@ public interface IBasicCommand extends IInterface {
 
     void setCaller(IBasicCommand iBasicCommand) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IBasicCommand {
         @Override // com.samsung.android.knox.IBasicCommand
         public Bundle sendCmd(Bundle cmd) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IBasicCommand extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IBasicCommand {
         static final int TRANSACTION_sendCmd = 1;
         static final int TRANSACTION_setCaller = 2;
@@ -78,33 +76,30 @@ public interface IBasicCommand extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBasicCommand.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBasicCommand.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBasicCommand.DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result = sendCmd(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    IBasicCommand _arg02 = asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCaller(_arg02);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result = sendCmd(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            IBasicCommand _arg02 = asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCaller(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IBasicCommand {
+        private static class Proxy implements IBasicCommand {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

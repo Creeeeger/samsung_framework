@@ -10,7 +10,7 @@ import vendor.samsung.hardware.thermal.ISehThermalChangedCallback;
 /* loaded from: classes6.dex */
 public interface ISehThermal extends IInterface {
     public static final String DESCRIPTOR = "vendor$samsung$hardware$thermal$ISehThermal".replace('$', '.');
-    public static final String HASH = "179442d052a6252d8efb5d74ab634019e2e640bb";
+    public static final String HASH = "261f5623a2c8ff2223f5f289e93242b275eadfcd";
     public static final int VERSION = 1;
 
     String getInterfaceHash() throws RemoteException;
@@ -29,7 +29,6 @@ public interface ISehThermal extends IInterface {
 
     void unregisterThermalChangedCallback(ISehThermalChangedCallback iSehThermalChangedCallback) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehThermal {
         @Override // vendor.samsung.hardware.thermal.ISehThermal
         public SehTemperature[] getTemperatures() throws RemoteException {
@@ -74,7 +73,6 @@ public interface ISehThermal extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehThermal {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -140,59 +138,60 @@ public interface ISehThermal extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    SehTemperature[] _result = getTemperatures();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeTypedArray(_result, 1);
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SehTemperature[] _result2 = getTemperaturesWithType(_arg0);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeTypedArray(_result2, 1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    ISehThermalChangedCallback _arg02 = ISehThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerThermalChangedCallback(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    ISehThermalChangedCallback _arg03 = ISehThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterThermalChangedCallback(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setScenarioHint(_arg04);
+                    return true;
+                case 6:
+                    int _result3 = getScenarioHint();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SehTemperature[] _result = getTemperatures();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SehTemperature[] _result2 = getTemperaturesWithType(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result2, 1);
-                            return true;
-                        case 3:
-                            ISehThermalChangedCallback _arg02 = ISehThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerThermalChangedCallback(_arg02);
-                            return true;
-                        case 4:
-                            ISehThermalChangedCallback _arg03 = ISehThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterThermalChangedCallback(_arg03);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setScenarioHint(_arg04);
-                            return true;
-                        case 6:
-                            int _result3 = getScenarioHint();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISehThermal {
             private IBinder mRemote;
             private int mCachedVersion = -1;
@@ -253,14 +252,17 @@ public interface ISehThermal extends IInterface {
             @Override // vendor.samsung.hardware.thermal.ISehThermal
             public void registerThermalChangedCallback(ISehThermalChangedCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    boolean _status = this.mRemote.transact(3, _data, null, 1);
+                    boolean _status = this.mRemote.transact(3, _data, _reply, 0);
                     if (!_status) {
                         throw new RemoteException("Method registerThermalChangedCallback is unimplemented.");
                     }
+                    _reply.readException();
                 } finally {
+                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -268,14 +270,17 @@ public interface ISehThermal extends IInterface {
             @Override // vendor.samsung.hardware.thermal.ISehThermal
             public void unregisterThermalChangedCallback(ISehThermalChangedCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    boolean _status = this.mRemote.transact(4, _data, null, 1);
+                    boolean _status = this.mRemote.transact(4, _data, _reply, 0);
                     if (!_status) {
                         throw new RemoteException("Method unregisterThermalChangedCallback is unimplemented.");
                     }
+                    _reply.readException();
                 } finally {
+                    _reply.recycle();
                     _data.recycle();
                 }
             }

@@ -74,9 +74,7 @@ public class ProviderConfigurationPermission extends BasicPermission {
             return false;
         }
         ProviderConfigurationPermission other = (ProviderConfigurationPermission) permission;
-        int i = this.permissionMask;
-        int i2 = other.permissionMask;
-        return (i & i2) == i2;
+        return (this.permissionMask & other.permissionMask) == other.permissionMask;
     }
 
     public boolean equals(Object obj) {

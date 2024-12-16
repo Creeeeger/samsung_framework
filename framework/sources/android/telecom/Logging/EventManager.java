@@ -36,19 +36,16 @@ public class EventManager {
     private List<EventListener> mEventListeners = new ArrayList();
     private final Map<String, List<TimedEventPair>> requestResponsePairs = new HashMap();
 
-    /* loaded from: classes3.dex */
     public interface EventListener {
         void eventRecordAdded(EventRecord eventRecord);
     }
 
-    /* loaded from: classes3.dex */
     public interface Loggable {
         String getDescription();
 
         String getId();
     }
 
-    /* loaded from: classes3.dex */
     public static class TimedEventPair {
         private static final long DEFAULT_TIMEOUT = 3000;
         String mName;
@@ -82,7 +79,6 @@ public class EventManager {
         this.requestResponsePairs.put(p.mRequest, responses);
     }
 
-    /* loaded from: classes3.dex */
     public static class Event {
         public Object data;
         public String eventId;
@@ -99,12 +95,10 @@ public class EventManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public class EventRecord {
         private final List<Event> mEvents = Collections.synchronizedList(new ArrayList());
         private final Loggable mRecordEntry;
 
-        /* loaded from: classes3.dex */
         public class EventTiming extends TimedEvent<String> {
             public String name;
             public long time;
@@ -125,8 +119,7 @@ public class EventManager {
             }
         }
 
-        /* loaded from: classes3.dex */
-        public class PendingResponse {
+        private class PendingResponse {
             String name;
             String requestEventId;
             long requestEventTimeMillis;
@@ -328,6 +321,7 @@ public class EventManager {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$changeEventCacheSize$1(EventRecord newRecord) {
         EventRecord record;
         Loggable recordEntry = newRecord.getRecordEntry();

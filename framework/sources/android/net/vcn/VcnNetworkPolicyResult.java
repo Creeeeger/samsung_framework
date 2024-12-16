@@ -7,17 +7,16 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class VcnNetworkPolicyResult implements Parcelable {
     public static final Parcelable.Creator<VcnNetworkPolicyResult> CREATOR = new Parcelable.Creator<VcnNetworkPolicyResult>() { // from class: android.net.vcn.VcnNetworkPolicyResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VcnNetworkPolicyResult createFromParcel(Parcel in) {
             return new VcnNetworkPolicyResult(in.readBoolean(), (NetworkCapabilities) in.readParcelable(null, NetworkCapabilities.class));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VcnNetworkPolicyResult[] newArray(int size) {
             return new VcnNetworkPolicyResult[size];
@@ -68,22 +67,5 @@ public final class VcnNetworkPolicyResult implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBoolean(this.mIsTearDownRequested);
         dest.writeParcelable(this.mNetworkCapabilities, flags);
-    }
-
-    /* renamed from: android.net.vcn.VcnNetworkPolicyResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VcnNetworkPolicyResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VcnNetworkPolicyResult createFromParcel(Parcel in) {
-            return new VcnNetworkPolicyResult(in.readBoolean(), (NetworkCapabilities) in.readParcelable(null, NetworkCapabilities.class));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VcnNetworkPolicyResult[] newArray(int size) {
-            return new VcnNetworkPolicyResult[size];
-        }
     }
 }

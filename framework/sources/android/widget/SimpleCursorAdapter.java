@@ -14,12 +14,10 @@ public class SimpleCursorAdapter extends ResourceCursorAdapter {
     protected int[] mTo;
     private ViewBinder mViewBinder;
 
-    /* loaded from: classes4.dex */
     public interface CursorToStringConverter {
         CharSequence convertToString(Cursor cursor);
     }
 
-    /* loaded from: classes4.dex */
     public interface ViewBinder {
         boolean setViewValue(View view, Cursor cursor, int i);
     }
@@ -90,7 +88,7 @@ public class SimpleCursorAdapter extends ResourceCursorAdapter {
     }
 
     public void setViewText(TextView v, String text) {
-        v.setText(text);
+        v.lambda$setTextAsync$0(text);
     }
 
     public int getStringConversionColumn() {
@@ -111,13 +109,11 @@ public class SimpleCursorAdapter extends ResourceCursorAdapter {
 
     @Override // android.widget.CursorAdapter, android.widget.CursorFilter.CursorFilterClient
     public CharSequence convertToString(Cursor cursor) {
-        CursorToStringConverter cursorToStringConverter = this.mCursorToStringConverter;
-        if (cursorToStringConverter != null) {
-            return cursorToStringConverter.convertToString(cursor);
+        if (this.mCursorToStringConverter != null) {
+            return this.mCursorToStringConverter.convertToString(cursor);
         }
-        int i = this.mStringConversionColumn;
-        if (i > -1) {
-            return cursor.getString(i);
+        if (this.mStringConversionColumn > -1) {
+            return cursor.getString(this.mStringConversionColumn);
         }
         return super.convertToString(cursor);
     }
@@ -125,8 +121,7 @@ public class SimpleCursorAdapter extends ResourceCursorAdapter {
     private void findColumns(Cursor c, String[] from) {
         if (c != null) {
             int count = from.length;
-            int[] iArr = this.mFrom;
-            if (iArr == null || iArr.length != count) {
+            if (this.mFrom == null || this.mFrom.length != count) {
                 this.mFrom = new int[count];
             }
             for (int i = 0; i < count; i++) {
@@ -146,7 +141,7 @@ public class SimpleCursorAdapter extends ResourceCursorAdapter {
     public void changeCursorAndColumns(Cursor c, String[] from, int[] to) {
         this.mOriginalFrom = from;
         this.mTo = to;
-        findColumns(c, from);
+        findColumns(c, this.mOriginalFrom);
         super.changeCursor(c);
     }
 }

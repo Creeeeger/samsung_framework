@@ -87,9 +87,8 @@ public class JCEDHPublicKey implements DHPublicKey {
 
     @Override // java.security.Key
     public byte[] getEncoded() {
-        SubjectPublicKeyInfo subjectPublicKeyInfo = this.info;
-        if (subjectPublicKeyInfo != null) {
-            return KeyUtil.getEncodedSubjectPublicKeyInfo(subjectPublicKeyInfo);
+        if (this.info != null) {
+            return KeyUtil.getEncodedSubjectPublicKeyInfo(this.info);
         }
         return KeyUtil.getEncodedSubjectPublicKeyInfo(new AlgorithmIdentifier(PKCSObjectIdentifiers.dhKeyAgreement, new DHParameter(this.dhSpec.getP(), this.dhSpec.getG(), this.dhSpec.getL())), new ASN1Integer(this.y));
     }

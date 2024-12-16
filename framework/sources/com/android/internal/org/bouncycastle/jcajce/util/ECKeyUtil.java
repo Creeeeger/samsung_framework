@@ -20,7 +20,6 @@ public class ECKeyUtil {
         return new ECPublicKeyWithCompression(ecPublicKey);
     }
 
-    /* loaded from: classes5.dex */
     private static class ECPublicKeyWithCompression implements ECPublicKey {
         private final ECPublicKey ecPublicKey;
 

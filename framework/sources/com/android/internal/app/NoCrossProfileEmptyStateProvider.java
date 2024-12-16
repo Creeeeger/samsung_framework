@@ -8,7 +8,7 @@ import com.android.internal.app.AbstractMultiProfilePagerAdapter;
 import com.android.internal.app.NoCrossProfileEmptyStateProvider;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class NoCrossProfileEmptyStateProvider implements AbstractMultiProfilePagerAdapter.EmptyStateProvider {
     private final AbstractMultiProfilePagerAdapter.CrossProfileIntentsChecker mCrossProfileIntentsChecker;
     private final AbstractMultiProfilePagerAdapter.EmptyState mNoPersonalToWorkEmptyState;
@@ -36,7 +36,6 @@ public class NoCrossProfileEmptyStateProvider implements AbstractMultiProfilePag
         return this.mNoPersonalToWorkEmptyState;
     }
 
-    /* loaded from: classes4.dex */
     public static class DevicePolicyBlockerEmptyState implements AbstractMultiProfilePagerAdapter.EmptyState {
         private final Context mContext;
         private final int mDefaultSubtitleResource;
@@ -58,7 +57,7 @@ public class NoCrossProfileEmptyStateProvider implements AbstractMultiProfilePag
 
         @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter.EmptyState
         public String getTitle() {
-            return ((DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class)).getResources().getString(this.mDevicePolicyStringTitleId, new Supplier() { // from class: com.android.internal.app.NoCrossProfileEmptyStateProvider$DevicePolicyBlockerEmptyState$$ExternalSyntheticLambda1
+            return ((DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class)).getResources().getString(this.mDevicePolicyStringTitleId, new Supplier() { // from class: com.android.internal.app.NoCrossProfileEmptyStateProvider$DevicePolicyBlockerEmptyState$$ExternalSyntheticLambda0
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     String lambda$getTitle$0;
@@ -68,13 +67,14 @@ public class NoCrossProfileEmptyStateProvider implements AbstractMultiProfilePag
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$getTitle$0() {
             return this.mContext.getString(this.mDefaultTitleResource);
         }
 
         @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter.EmptyState
         public String getSubtitle() {
-            return ((DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class)).getResources().getString(this.mDevicePolicyStringSubtitleId, new Supplier() { // from class: com.android.internal.app.NoCrossProfileEmptyStateProvider$DevicePolicyBlockerEmptyState$$ExternalSyntheticLambda0
+            return ((DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class)).getResources().getString(this.mDevicePolicyStringSubtitleId, new Supplier() { // from class: com.android.internal.app.NoCrossProfileEmptyStateProvider$DevicePolicyBlockerEmptyState$$ExternalSyntheticLambda1
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     String lambda$getSubtitle$1;
@@ -84,6 +84,7 @@ public class NoCrossProfileEmptyStateProvider implements AbstractMultiProfilePag
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$getSubtitle$1() {
             return this.mContext.getString(this.mDefaultSubtitleResource);
         }

@@ -10,24 +10,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sun.misc.Unsafe;
 
-/* loaded from: classes4.dex */
-public final class UnsafeUtil {
-    private static final long BOOLEAN_ARRAY_BASE_OFFSET;
-    private static final long BOOLEAN_ARRAY_INDEX_SCALE;
-    private static final long BUFFER_ADDRESS_OFFSET;
-    private static final int BYTE_ARRAY_ALIGNMENT;
-    static final long BYTE_ARRAY_BASE_OFFSET;
-    private static final long DOUBLE_ARRAY_BASE_OFFSET;
-    private static final long DOUBLE_ARRAY_INDEX_SCALE;
-    private static final long FLOAT_ARRAY_BASE_OFFSET;
-    private static final long FLOAT_ARRAY_INDEX_SCALE;
-    private static final long INT_ARRAY_BASE_OFFSET;
-    private static final long INT_ARRAY_INDEX_SCALE;
+/* loaded from: classes3.dex */
+final class UnsafeUtil {
     static final boolean IS_BIG_ENDIAN;
-    private static final long LONG_ARRAY_BASE_OFFSET;
-    private static final long LONG_ARRAY_INDEX_SCALE;
-    private static final long OBJECT_ARRAY_BASE_OFFSET;
-    private static final long OBJECT_ARRAY_INDEX_SCALE;
     private static final int STRIDE = 8;
     private static final int STRIDE_ALIGNMENT_MASK = 7;
     private static final Unsafe UNSAFE = getUnsafe();
@@ -37,39 +22,34 @@ public final class UnsafeUtil {
     private static final MemoryAccessor MEMORY_ACCESSOR = getMemoryAccessor();
     private static final boolean HAS_UNSAFE_BYTEBUFFER_OPERATIONS = supportsUnsafeByteBufferOperations();
     private static final boolean HAS_UNSAFE_ARRAY_OPERATIONS = supportsUnsafeArrayOperations();
-
-    static /* synthetic */ Field access$100() {
-        return bufferAddressField();
-    }
+    static final long BYTE_ARRAY_BASE_OFFSET = arrayBaseOffset(byte[].class);
+    private static final long BOOLEAN_ARRAY_BASE_OFFSET = arrayBaseOffset(boolean[].class);
+    private static final long BOOLEAN_ARRAY_INDEX_SCALE = arrayIndexScale(boolean[].class);
+    private static final long INT_ARRAY_BASE_OFFSET = arrayBaseOffset(int[].class);
+    private static final long INT_ARRAY_INDEX_SCALE = arrayIndexScale(int[].class);
+    private static final long LONG_ARRAY_BASE_OFFSET = arrayBaseOffset(long[].class);
+    private static final long LONG_ARRAY_INDEX_SCALE = arrayIndexScale(long[].class);
+    private static final long FLOAT_ARRAY_BASE_OFFSET = arrayBaseOffset(float[].class);
+    private static final long FLOAT_ARRAY_INDEX_SCALE = arrayIndexScale(float[].class);
+    private static final long DOUBLE_ARRAY_BASE_OFFSET = arrayBaseOffset(double[].class);
+    private static final long DOUBLE_ARRAY_INDEX_SCALE = arrayIndexScale(double[].class);
+    private static final long OBJECT_ARRAY_BASE_OFFSET = arrayBaseOffset(Object[].class);
+    private static final long OBJECT_ARRAY_INDEX_SCALE = arrayIndexScale(Object[].class);
+    private static final long BUFFER_ADDRESS_OFFSET = fieldOffset(bufferAddressField());
+    private static final int BYTE_ARRAY_ALIGNMENT = (int) (BYTE_ARRAY_BASE_OFFSET & 7);
 
     static {
-        long arrayBaseOffset = arrayBaseOffset(byte[].class);
-        BYTE_ARRAY_BASE_OFFSET = arrayBaseOffset;
-        BOOLEAN_ARRAY_BASE_OFFSET = arrayBaseOffset(boolean[].class);
-        BOOLEAN_ARRAY_INDEX_SCALE = arrayIndexScale(boolean[].class);
-        INT_ARRAY_BASE_OFFSET = arrayBaseOffset(int[].class);
-        INT_ARRAY_INDEX_SCALE = arrayIndexScale(int[].class);
-        LONG_ARRAY_BASE_OFFSET = arrayBaseOffset(long[].class);
-        LONG_ARRAY_INDEX_SCALE = arrayIndexScale(long[].class);
-        FLOAT_ARRAY_BASE_OFFSET = arrayBaseOffset(float[].class);
-        FLOAT_ARRAY_INDEX_SCALE = arrayIndexScale(float[].class);
-        DOUBLE_ARRAY_BASE_OFFSET = arrayBaseOffset(double[].class);
-        DOUBLE_ARRAY_INDEX_SCALE = arrayIndexScale(double[].class);
-        OBJECT_ARRAY_BASE_OFFSET = arrayBaseOffset(Object[].class);
-        OBJECT_ARRAY_INDEX_SCALE = arrayIndexScale(Object[].class);
-        BUFFER_ADDRESS_OFFSET = fieldOffset(bufferAddressField());
-        BYTE_ARRAY_ALIGNMENT = (int) (arrayBaseOffset & 7);
         IS_BIG_ENDIAN = ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN;
     }
 
     private UnsafeUtil() {
     }
 
-    public static boolean hasUnsafeArrayOperations() {
+    static boolean hasUnsafeArrayOperations() {
         return HAS_UNSAFE_ARRAY_OPERATIONS;
     }
 
-    public static boolean hasUnsafeByteBufferOperations() {
+    static boolean hasUnsafeByteBufferOperations() {
         return HAS_UNSAFE_BYTEBUFFER_OPERATIONS;
     }
 
@@ -77,7 +57,7 @@ public final class UnsafeUtil {
         return IS_ANDROID_64;
     }
 
-    public static <T> T allocateInstance(Class<T> cls) {
+    static <T> T allocateInstance(Class<T> cls) {
         try {
             return (T) UNSAFE.allocateInstance(cls);
         } catch (InstantiationException e) {
@@ -85,7 +65,7 @@ public final class UnsafeUtil {
         }
     }
 
-    public static long objectFieldOffset(Field field) {
+    static long objectFieldOffset(Field field) {
         return MEMORY_ACCESSOR.objectFieldOffset(field);
     }
 
@@ -111,59 +91,59 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putByte(target, offset, value);
     }
 
-    public static int getInt(Object target, long offset) {
+    static int getInt(Object target, long offset) {
         return MEMORY_ACCESSOR.getInt(target, offset);
     }
 
-    public static void putInt(Object target, long offset, int value) {
+    static void putInt(Object target, long offset, int value) {
         MEMORY_ACCESSOR.putInt(target, offset, value);
     }
 
-    public static long getLong(Object target, long offset) {
+    static long getLong(Object target, long offset) {
         return MEMORY_ACCESSOR.getLong(target, offset);
     }
 
-    public static void putLong(Object target, long offset, long value) {
+    static void putLong(Object target, long offset, long value) {
         MEMORY_ACCESSOR.putLong(target, offset, value);
     }
 
-    public static boolean getBoolean(Object target, long offset) {
+    static boolean getBoolean(Object target, long offset) {
         return MEMORY_ACCESSOR.getBoolean(target, offset);
     }
 
-    public static void putBoolean(Object target, long offset, boolean value) {
+    static void putBoolean(Object target, long offset, boolean value) {
         MEMORY_ACCESSOR.putBoolean(target, offset, value);
     }
 
-    public static float getFloat(Object target, long offset) {
+    static float getFloat(Object target, long offset) {
         return MEMORY_ACCESSOR.getFloat(target, offset);
     }
 
-    public static void putFloat(Object target, long offset, float value) {
+    static void putFloat(Object target, long offset, float value) {
         MEMORY_ACCESSOR.putFloat(target, offset, value);
     }
 
-    public static double getDouble(Object target, long offset) {
+    static double getDouble(Object target, long offset) {
         return MEMORY_ACCESSOR.getDouble(target, offset);
     }
 
-    public static void putDouble(Object target, long offset, double value) {
+    static void putDouble(Object target, long offset, double value) {
         MEMORY_ACCESSOR.putDouble(target, offset, value);
     }
 
-    public static Object getObject(Object target, long offset) {
+    static Object getObject(Object target, long offset) {
         return MEMORY_ACCESSOR.getObject(target, offset);
     }
 
-    public static void putObject(Object target, long offset, Object value) {
+    static void putObject(Object target, long offset, Object value) {
         MEMORY_ACCESSOR.putObject(target, offset, value);
     }
 
-    public static byte getByte(byte[] target, long index) {
+    static byte getByte(byte[] target, long index) {
         return MEMORY_ACCESSOR.getByte(target, BYTE_ARRAY_BASE_OFFSET + index);
     }
 
-    public static void putByte(byte[] target, long index, byte value) {
+    static void putByte(byte[] target, long index, byte value) {
         MEMORY_ACCESSOR.putByte(target, BYTE_ARRAY_BASE_OFFSET + index, value);
     }
 
@@ -215,11 +195,11 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putObject(target, OBJECT_ARRAY_BASE_OFFSET + (OBJECT_ARRAY_INDEX_SCALE * index), value);
     }
 
-    public static void copyMemory(byte[] src, long srcIndex, long targetOffset, long length) {
+    static void copyMemory(byte[] src, long srcIndex, long targetOffset, long length) {
         MEMORY_ACCESSOR.copyMemory(src, srcIndex, targetOffset, length);
     }
 
-    public static void copyMemory(long srcOffset, byte[] target, long targetIndex, long length) {
+    static void copyMemory(long srcOffset, byte[] target, long targetIndex, long length) {
         MEMORY_ACCESSOR.copyMemory(srcOffset, target, targetIndex, length);
     }
 
@@ -227,11 +207,11 @@ public final class UnsafeUtil {
         System.arraycopy(src, (int) srcIndex, target, (int) targetIndex, (int) length);
     }
 
-    public static byte getByte(long address) {
+    static byte getByte(long address) {
         return MEMORY_ACCESSOR.getByte(address);
     }
 
-    public static void putByte(long address, byte value) {
+    static void putByte(long address, byte value) {
         MEMORY_ACCESSOR.putByte(address, value);
     }
 
@@ -243,7 +223,7 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putInt(address, value);
     }
 
-    public static long getLong(long address) {
+    static long getLong(long address) {
         return MEMORY_ACCESSOR.getLong(address);
     }
 
@@ -251,20 +231,17 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putLong(address, value);
     }
 
-    public static long addressOffset(ByteBuffer buffer) {
+    static long addressOffset(ByteBuffer buffer) {
         return MEMORY_ACCESSOR.getLong(buffer, BUFFER_ADDRESS_OFFSET);
     }
 
-    public static Object getStaticObject(Field field) {
+    static Object getStaticObject(Field field) {
         return MEMORY_ACCESSOR.getStaticObject(field);
     }
 
-    public static Unsafe getUnsafe() {
+    static Unsafe getUnsafe() {
         try {
             Unsafe unsafe = (Unsafe) AccessController.doPrivileged(new PrivilegedExceptionAction<Unsafe>() { // from class: com.android.framework.protobuf.UnsafeUtil.1
-                AnonymousClass1() {
-                }
-
                 @Override // java.security.PrivilegedExceptionAction
                 public Unsafe run() throws Exception {
                     for (Field f : Unsafe.class.getDeclaredFields()) {
@@ -283,56 +260,34 @@ public final class UnsafeUtil {
         }
     }
 
-    /* renamed from: com.android.framework.protobuf.UnsafeUtil$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements PrivilegedExceptionAction<Unsafe> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.security.PrivilegedExceptionAction
-        public Unsafe run() throws Exception {
-            for (Field f : Unsafe.class.getDeclaredFields()) {
-                f.setAccessible(true);
-                Object x = f.get(null);
-                if (Unsafe.class.isInstance(x)) {
-                    return (Unsafe) Unsafe.class.cast(x);
-                }
-            }
-            return null;
-        }
-    }
-
     private static MemoryAccessor getMemoryAccessor() {
-        Unsafe unsafe = UNSAFE;
-        if (unsafe == null) {
+        if (UNSAFE == null) {
             return null;
         }
         if (Android.isOnAndroidDevice()) {
             if (IS_ANDROID_64) {
-                return new Android64MemoryAccessor(unsafe);
+                return new Android64MemoryAccessor(UNSAFE);
             }
             if (IS_ANDROID_32) {
-                return new Android32MemoryAccessor(unsafe);
+                return new Android32MemoryAccessor(UNSAFE);
             }
             return null;
         }
-        return new JvmMemoryAccessor(unsafe);
+        return new JvmMemoryAccessor(UNSAFE);
     }
 
     private static boolean supportsUnsafeArrayOperations() {
-        MemoryAccessor memoryAccessor = MEMORY_ACCESSOR;
-        if (memoryAccessor == null) {
+        if (MEMORY_ACCESSOR == null) {
             return false;
         }
-        return memoryAccessor.supportsUnsafeArrayOperations();
+        return MEMORY_ACCESSOR.supportsUnsafeArrayOperations();
     }
 
     private static boolean supportsUnsafeByteBufferOperations() {
-        MemoryAccessor memoryAccessor = MEMORY_ACCESSOR;
-        if (memoryAccessor == null) {
+        if (MEMORY_ACCESSOR == null) {
             return false;
         }
-        return memoryAccessor.supportsUnsafeByteBufferOperations();
+        return MEMORY_ACCESSOR.supportsUnsafeByteBufferOperations();
     }
 
     static boolean determineAndroidSupportByAddressSize(Class<?> addressClass) {
@@ -355,7 +310,8 @@ public final class UnsafeUtil {
         }
     }
 
-    private static Field bufferAddressField() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static Field bufferAddressField() {
         Field field;
         if (Android.isOnAndroidDevice() && (field = field(Buffer.class, "effectiveDirectAddress")) != null) {
             return field;
@@ -392,9 +348,8 @@ public final class UnsafeUtil {
             }
             int strideLength = ((length - index) & (-8)) + index;
             while (index < strideLength) {
-                long j = BYTE_ARRAY_BASE_OFFSET;
-                long leftLongWord = getLong((Object) left, leftOff + j + index);
-                long rightLongWord = getLong((Object) right, j + rightOff + index);
+                long leftLongWord = getLong((Object) left, BYTE_ARRAY_BASE_OFFSET + leftOff + index);
+                long rightLongWord = getLong((Object) right, BYTE_ARRAY_BASE_OFFSET + rightOff + index);
                 if (leftLongWord == rightLongWord) {
                     index += 8;
                 } else {
@@ -413,11 +368,10 @@ public final class UnsafeUtil {
     }
 
     private static long fieldOffset(Field field) {
-        MemoryAccessor memoryAccessor;
-        if (field == null || (memoryAccessor = MEMORY_ACCESSOR) == null) {
+        if (field == null || MEMORY_ACCESSOR == null) {
             return -1L;
         }
-        return memoryAccessor.objectFieldOffset(field);
+        return MEMORY_ACCESSOR.objectFieldOffset(field);
     }
 
     private static Field field(Class<?> clazz, String fieldName) {
@@ -429,8 +383,7 @@ public final class UnsafeUtil {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static abstract class MemoryAccessor {
+    private static abstract class MemoryAccessor {
         Unsafe unsafe;
 
         public abstract void copyMemory(long j, byte[] bArr, long j2, long j3);
@@ -484,12 +437,11 @@ public final class UnsafeUtil {
         }
 
         public boolean supportsUnsafeArrayOperations() {
-            Unsafe unsafe = this.unsafe;
-            if (unsafe == null) {
+            if (this.unsafe == null) {
                 return false;
             }
             try {
-                Class<?> clazz = unsafe.getClass();
+                Class<?> clazz = this.unsafe.getClass();
                 clazz.getMethod("objectFieldOffset", Field.class);
                 clazz.getMethod("arrayBaseOffset", Class.class);
                 clazz.getMethod("arrayIndexScale", Class.class);
@@ -531,15 +483,14 @@ public final class UnsafeUtil {
         }
 
         public boolean supportsUnsafeByteBufferOperations() {
-            Unsafe unsafe = this.unsafe;
-            if (unsafe == null) {
+            if (this.unsafe == null) {
                 return false;
             }
             try {
-                Class<?> clazz = unsafe.getClass();
+                Class<?> clazz = this.unsafe.getClass();
                 clazz.getMethod("objectFieldOffset", Field.class);
                 clazz.getMethod("getLong", Object.class, Long.TYPE);
-                return UnsafeUtil.access$100() != null;
+                return UnsafeUtil.bufferAddressField() != null;
             } catch (Throwable e) {
                 UnsafeUtil.logMissingMethod(e);
                 return false;
@@ -547,8 +498,7 @@ public final class UnsafeUtil {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class JvmMemoryAccessor extends MemoryAccessor {
+    private static final class JvmMemoryAccessor extends MemoryAccessor {
         JvmMemoryAccessor(Unsafe unsafe) {
             super(unsafe);
         }
@@ -683,8 +633,7 @@ public final class UnsafeUtil {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class Android64MemoryAccessor extends MemoryAccessor {
+    private static final class Android64MemoryAccessor extends MemoryAccessor {
         Android64MemoryAccessor(Unsafe unsafe) {
             super(unsafe);
         }
@@ -792,8 +741,7 @@ public final class UnsafeUtil {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class Android32MemoryAccessor extends MemoryAccessor {
+    private static final class Android32MemoryAccessor extends MemoryAccessor {
         private static final long SMALL_ADDRESS_MASK = -1;
 
         private static int smallAddress(long address) {
@@ -907,14 +855,17 @@ public final class UnsafeUtil {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static byte getByteBigEndian(Object target, long offset) {
         return (byte) ((getInt(target, (-4) & offset) >>> ((int) (((~offset) & 3) << 3))) & 255);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static byte getByteLittleEndian(Object target, long offset) {
         return (byte) ((getInt(target, (-4) & offset) >>> ((int) ((3 & offset) << 3))) & 255);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void putByteBigEndian(Object target, long offset, byte value) {
         int intValue = getInt(target, offset & (-4));
         int shift = ((~((int) offset)) & 3) << 3;
@@ -922,6 +873,7 @@ public final class UnsafeUtil {
         putInt(target, (-4) & offset, output);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void putByteLittleEndian(Object target, long offset, byte value) {
         int intValue = getInt(target, offset & (-4));
         int shift = (((int) offset) & 3) << 3;
@@ -929,22 +881,27 @@ public final class UnsafeUtil {
         putInt(target, (-4) & offset, output);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean getBooleanBigEndian(Object target, long offset) {
         return getByteBigEndian(target, offset) != 0;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean getBooleanLittleEndian(Object target, long offset) {
         return getByteLittleEndian(target, offset) != 0;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void putBooleanBigEndian(Object obj, long j, boolean z) {
         putByteBigEndian(obj, j, z ? (byte) 1 : (byte) 0);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void putBooleanLittleEndian(Object obj, long j, boolean z) {
         putByteLittleEndian(obj, j, z ? (byte) 1 : (byte) 0);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void logMissingMethod(Throwable e) {
         Logger.getLogger(UnsafeUtil.class.getName()).log(Level.WARNING, "platform method missing - proto runtime falling back to safer methods: " + e);
     }

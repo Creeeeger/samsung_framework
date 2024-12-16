@@ -47,7 +47,7 @@ public class KernelCpuThreadReaderDiff {
         return this.mReader.getCpuFrequenciesKhz();
     }
 
-    public void setMinimumTotalCpuUsageMillis(int minimumTotalCpuUsageMillis) {
+    void setMinimumTotalCpuUsageMillis(int minimumTotalCpuUsageMillis) {
         if (minimumTotalCpuUsageMillis < 0) {
             Slog.w(TAG, "Negative minimumTotalCpuUsageMillis: " + minimumTotalCpuUsageMillis);
         } else {
@@ -121,8 +121,7 @@ public class KernelCpuThreadReaderDiff {
         return difference;
     }
 
-    /* loaded from: classes5.dex */
-    public static class ThreadKey {
+    private static class ThreadKey {
         private final int mProcessId;
         private final int mProcessNameHash;
         private final int mThreadId;

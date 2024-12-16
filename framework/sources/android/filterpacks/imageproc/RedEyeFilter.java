@@ -62,7 +62,7 @@ public class RedEyeFilter extends Filter {
                 ShaderProgram shaderProgram = new ShaderProgram(context, "precision mediump float;\nuniform sampler2D tex_sampler_0;\nuniform sampler2D tex_sampler_1;\nuniform float intensity;\nvarying vec2 v_texcoord;\nvoid main() {\n  vec4 color = texture2D(tex_sampler_0, v_texcoord);\n  vec4 mask = texture2D(tex_sampler_1, v_texcoord);\n  if (mask.a > 0.0) {\n    float green_blue = color.g + color.b;\n    float red_intensity = color.r / green_blue;\n    if (red_intensity > intensity) {\n      color.r = 0.5 * green_blue;\n    }\n  }\n  gl_FragColor = color;\n}\n");
                 shaderProgram.setMaximumTileSize(this.mTileSize);
                 this.mProgram = shaderProgram;
-                shaderProgram.setHostValue("intensity", Float.valueOf(DEFAULT_RED_INTENSITY));
+                this.mProgram.setHostValue("intensity", Float.valueOf(DEFAULT_RED_INTENSITY));
                 this.mTarget = target;
                 return;
             default:
@@ -105,21 +105,13 @@ public class RedEyeFilter extends Filter {
         this.mCanvas.setBitmap(redEyeBitmap);
         this.mPaint.setColor(-1);
         this.mRadius = Math.max(MIN_RADIUS, Math.min(bitmapWidth, bitmapHeight) * RADIUS_RATIO);
-        int i = 0;
-        while (true) {
-            float[] fArr = this.mCenters;
-            if (i < fArr.length) {
-                this.mCanvas.drawCircle(fArr[i] * bitmapWidth, fArr[i + 1] * bitmapHeight, this.mRadius, this.mPaint);
-                i += 2;
-            } else {
-                FrameFormat format = ImageFormat.create(bitmapWidth, bitmapHeight, 3, 3);
-                Frame newFrame = context.getFrameManager().newFrame(format);
-                this.mRedEyeFrame = newFrame;
-                newFrame.setBitmap(redEyeBitmap);
-                redEyeBitmap.recycle();
-                return;
-            }
+        for (int i = 0; i < this.mCenters.length; i += 2) {
+            this.mCanvas.drawCircle(this.mCenters[i] * bitmapWidth, this.mCenters[i + 1] * bitmapHeight, this.mRadius, this.mPaint);
         }
+        FrameFormat format = ImageFormat.create(bitmapWidth, bitmapHeight, 3, 3);
+        this.mRedEyeFrame = context.getFrameManager().newFrame(format);
+        this.mRedEyeFrame.setBitmap(redEyeBitmap);
+        redEyeBitmap.recycle();
     }
 
     private void updateProgramParams() {

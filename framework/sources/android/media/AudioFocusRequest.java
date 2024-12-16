@@ -16,10 +16,6 @@ public final class AudioFocusRequest {
     private final AudioManager.OnAudioFocusChangeListener mFocusListener;
     private final Handler mListenerHandler;
 
-    /* synthetic */ AudioFocusRequest(AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener, Handler handler, AudioAttributes audioAttributes, int i, int i2, AudioFocusRequestIA audioFocusRequestIA) {
-        this(onAudioFocusChangeListener, handler, audioAttributes, i, i2);
-    }
-
     private AudioFocusRequest(AudioManager.OnAudioFocusChangeListener listener, Handler handler, AudioAttributes attr, int focusGain, int flags) {
         this.mFocusListener = listener;
         this.mListenerHandler = handler;
@@ -28,7 +24,7 @@ public final class AudioFocusRequest {
         this.mFlags = flags;
     }
 
-    public static final boolean isValidFocusGain(int focusGain) {
+    static final boolean isValidFocusGain(int focusGain) {
         switch (focusGain) {
             case 1:
             case 2:
@@ -69,11 +65,10 @@ public final class AudioFocusRequest {
         return (this.mFlags & 4) == 4;
     }
 
-    public int getFlags() {
+    int getFlags() {
         return this.mFlags;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private boolean mA11yForceDucking;
         private AudioAttributes mAttr;
@@ -127,7 +122,7 @@ public final class AudioFocusRequest {
             return this;
         }
 
-        public Builder setOnAudioFocusChangeListenerInt(AudioManager.OnAudioFocusChangeListener listener, Handler handler) {
+        Builder setOnAudioFocusChangeListenerInt(AudioManager.OnAudioFocusChangeListener listener, Handler handler) {
             this.mFocusListener = listener;
             this.mListenerHandler = handler;
             return this;

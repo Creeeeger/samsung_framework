@@ -11,7 +11,7 @@ import android.os.UserHandle;
 import com.android.internal.app.ResolverActivity;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface TargetInfo {
     TargetInfo cloneFilledIn(Intent intent, int i);
 

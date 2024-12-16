@@ -9,9 +9,6 @@ import java.util.TreeMap;
 /* loaded from: classes.dex */
 class InstanceLearner extends Learner {
     private static final Comparator<Prediction> sComparator = new Comparator<Prediction>() { // from class: android.gesture.InstanceLearner.1
-        AnonymousClass1() {
-        }
-
         @Override // java.util.Comparator
         public int compare(Prediction object1, Prediction object2) {
             double score1 = object1.score;
@@ -26,28 +23,11 @@ class InstanceLearner extends Learner {
         }
     };
 
-    /* renamed from: android.gesture.InstanceLearner$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Comparator<Prediction> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(Prediction object1, Prediction object2) {
-            double score1 = object1.score;
-            double score2 = object2.score;
-            if (score1 > score2) {
-                return -1;
-            }
-            if (score1 < score2) {
-                return 1;
-            }
-            return 0;
-        }
+    InstanceLearner() {
     }
 
     @Override // android.gesture.Learner
-    public ArrayList<Prediction> classify(int sequenceType, int orientationType, float[] vector) {
+    ArrayList<Prediction> classify(int sequenceType, int orientationType, float[] vector) {
         double weight;
         ArrayList<Prediction> predictions = new ArrayList<>();
         ArrayList<Instance> instances = getInstances();

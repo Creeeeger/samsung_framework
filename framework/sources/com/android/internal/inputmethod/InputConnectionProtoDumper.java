@@ -5,9 +5,8 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.SurroundingText;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InputConnectionProtoDumper {
-    public static final boolean DUMP_TEXT = false;
     static final String TAG = "InputConnectionProtoDumper";
 
     private InputConnectionProtoDumper() {
@@ -18,9 +17,6 @@ public final class InputConnectionProtoDumper {
         long token = proto.start(1146756268034L);
         proto.write(1120986464257L, length);
         proto.write(1120986464258L, flags);
-        if (result == null) {
-            proto.write(1138166333443L, "null result");
-        }
         proto.end(token);
         return proto.getBytes();
     }
@@ -30,9 +26,6 @@ public final class InputConnectionProtoDumper {
         long token = proto.start(1146756268033L);
         proto.write(1120986464257L, length);
         proto.write(1120986464258L, flags);
-        if (result == null) {
-            proto.write(1138166333443L, "null result");
-        }
         proto.end(token);
         return proto.getBytes();
     }
@@ -41,9 +34,6 @@ public final class InputConnectionProtoDumper {
         ProtoOutputStream proto = new ProtoOutputStream();
         long token = proto.start(1146756268035L);
         proto.write(1120986464257L, flags);
-        if (result == null) {
-            proto.write(1138166333442L, "null result");
-        }
         proto.end(token);
         return proto.getBytes();
     }
@@ -54,9 +44,11 @@ public final class InputConnectionProtoDumper {
         proto.write(1120986464257L, beforeLength);
         proto.write(1120986464258L, afterLength);
         proto.write(1120986464259L, flags);
-        if (result == null) {
+        if (result != null) {
             long token_result = proto.start(1146756268036L);
-            proto.write(1138166333441L, "null result");
+            proto.write(1120986464258L, result.getSelectionStart());
+            proto.write(1120986464259L, result.getSelectionEnd());
+            proto.write(1120986464260L, result.getOffset());
             proto.end(token_result);
         }
         proto.end(token);
@@ -67,6 +59,7 @@ public final class InputConnectionProtoDumper {
         ProtoOutputStream proto = new ProtoOutputStream();
         long token = proto.start(1146756268037L);
         proto.write(1120986464257L, reqModes);
+        proto.write(1120986464258L, result);
         proto.end(token);
         return proto.getBytes();
     }
@@ -81,9 +74,6 @@ public final class InputConnectionProtoDumper {
         proto.write(1120986464260L, request.hintMaxChars);
         proto.end(token_request);
         proto.write(1120986464258L, flags);
-        if (result == null) {
-            proto.write(1138166333443L, "null result");
-        }
         proto.end(token);
         return proto.getBytes();
     }

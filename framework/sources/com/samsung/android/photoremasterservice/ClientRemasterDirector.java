@@ -11,28 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ClientRemasterDirector implements IDirector {
     static final String TAG = "ClientRemasterDirector";
-    private boolean mInitialized;
-    private final ProgressUpdateClient mProgressUpdateClient;
-    private final PhotoRemasterServiceClient mServiceClient;
-    private final PhotoRemasterServiceClient mStopCmdClient;
-    private final StopLockManager mStopLockManager;
+    private final PhotoRemasterServiceClient mServiceClient = new PhotoRemasterServiceClient();
+    private final PhotoRemasterServiceClient mStopCmdClient = new PhotoRemasterServiceClient();
+    private final ProgressUpdateClient mProgressUpdateClient = new ProgressUpdateClient();
+    private boolean mInitialized = false;
+    private final StopLockManager mStopLockManager = new StopLockManager();
 
     public ClientRemasterDirector() {
-        PhotoRemasterServiceClient photoRemasterServiceClient = new PhotoRemasterServiceClient();
-        this.mServiceClient = photoRemasterServiceClient;
-        this.mStopCmdClient = new PhotoRemasterServiceClient();
-        ProgressUpdateClient progressUpdateClient = new ProgressUpdateClient();
-        this.mProgressUpdateClient = progressUpdateClient;
-        this.mInitialized = false;
-        this.mStopLockManager = new StopLockManager();
-        progressUpdateClient.registerObserver(photoRemasterServiceClient.getProgressObserver());
+        this.mProgressUpdateClient.registerObserver(this.mServiceClient.getProgressObserver());
     }
 
-    /* loaded from: classes5.dex */
-    public static class StopLockManager {
+    static class StopLockManager {
         private final ReentrantLock mStopLock = new ReentrantLock();
 
         StopLockManager() {

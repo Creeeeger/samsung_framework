@@ -4,7 +4,6 @@ package com.samsung.android.content.smartclip;
 public class SemSmartClipMetaTagType {
     public static final String APP_DEEP_LINK = "app_deep_link";
     public static final String APP_LAUNCH_INFO = "app_launch_info";
-    public static final String BITMAP = "bitmap";
     public static final String CONTEXT = "context";
     public static final String DATE = "date";
     public static final String EMAIL_ADDRESS = "email";

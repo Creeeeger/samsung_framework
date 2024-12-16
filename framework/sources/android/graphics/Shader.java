@@ -9,16 +9,11 @@ public class Shader {
     private Matrix mLocalMatrix;
     private long mNativeInstance;
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer */
-    static /* bridge */ /* synthetic */ long m1149$$Nest$smnativeGetFinalizer() {
-        return nativeGetFinalizer();
-    }
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nativeGetFinalizer();
 
-    private static native long nativeGetFinalizer();
-
-    /* loaded from: classes.dex */
-    public static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Shader.class.getClassLoader(), Shader.m1149$$Nest$smnativeGetFinalizer());
+    private static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Shader.class.getClassLoader(), Shader.nativeGetFinalizer());
 
         private NoImagePreloadHolder() {
         }
@@ -29,19 +24,18 @@ public class Shader {
         this.mColorSpace = null;
     }
 
-    public Shader(ColorSpace colorSpace) {
+    protected Shader(ColorSpace colorSpace) {
         this.mColorSpace = colorSpace;
         if (colorSpace == null) {
             throw new IllegalArgumentException("Use Shader() to create a Shader with no ColorSpace");
         }
-        colorSpace.getNativeInstance();
+        this.mColorSpace.getNativeInstance();
     }
 
-    public ColorSpace colorSpace() {
+    protected ColorSpace colorSpace() {
         return this.mColorSpace;
     }
 
-    /* loaded from: classes.dex */
     public enum TileMode {
         CLAMP(0),
         REPEAT(1),
@@ -56,9 +50,8 @@ public class Shader {
     }
 
     public boolean getLocalMatrix(Matrix localM) {
-        Matrix matrix = this.mLocalMatrix;
-        if (matrix != null) {
-            localM.set(matrix);
+        if (this.mLocalMatrix != null) {
+            localM.set(this.mLocalMatrix);
             return true;
         }
         return false;
@@ -73,11 +66,10 @@ public class Shader {
             }
             return;
         }
-        Matrix matrix = this.mLocalMatrix;
-        if (matrix == null) {
+        if (this.mLocalMatrix == null) {
             this.mLocalMatrix = new Matrix(localM);
             discardNativeInstance();
-        } else if (!matrix.equals(localM)) {
+        } else if (!this.mLocalMatrix.equals(localM)) {
             this.mLocalMatrix.set(localM);
             discardNativeInstance();
         }
@@ -87,7 +79,7 @@ public class Shader {
         return 0L;
     }
 
-    public final synchronized void discardNativeInstance() {
+    protected final synchronized void discardNativeInstance() {
         discardNativeInstanceLocked();
     }
 
@@ -108,10 +100,8 @@ public class Shader {
             discardNativeInstanceLocked();
         }
         if (this.mNativeInstance == 0) {
-            Matrix matrix = this.mLocalMatrix;
-            long createNativeInstance = createNativeInstance(matrix == null ? 0L : matrix.ni(), filterFromPaint);
-            this.mNativeInstance = createNativeInstance;
-            if (createNativeInstance != 0) {
+            this.mNativeInstance = createNativeInstance(this.mLocalMatrix == null ? 0L : this.mLocalMatrix.ni(), filterFromPaint);
+            if (this.mNativeInstance != 0) {
                 this.mCleaner = NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, this.mNativeInstance);
             }
         }
@@ -122,7 +112,7 @@ public class Shader {
         return getNativeInstance(false);
     }
 
-    public static long[] convertColors(int[] colors) {
+    protected static long[] convertColors(int[] colors) {
         if (colors.length < 2) {
             throw new IllegalArgumentException("needs >= 2 number of colors");
         }
@@ -133,7 +123,7 @@ public class Shader {
         return colorLongs;
     }
 
-    public static ColorSpace detectColorSpace(long[] colors) {
+    protected static ColorSpace detectColorSpace(long[] colors) {
         if (colors.length < 2) {
             throw new IllegalArgumentException("needs >= 2 number of colors");
         }

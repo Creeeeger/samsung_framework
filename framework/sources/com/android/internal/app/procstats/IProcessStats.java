@@ -12,7 +12,7 @@ import android.os.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IProcessStats extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.app.procstats.IProcessStats";
 
@@ -28,7 +28,6 @@ public interface IProcessStats extends IInterface {
 
     ParcelFileDescriptor getStatsOverTime(long j) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IProcessStats {
         @Override // com.android.internal.app.procstats.IProcessStats
         public byte[] getCurrentStats(List<ParcelFileDescriptor> historic) throws RemoteException {
@@ -66,7 +65,6 @@ public interface IProcessStats extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IProcessStats {
         static final int TRANSACTION_getCommittedStats = 4;
         static final int TRANSACTION_getCommittedStatsMerged = 5;
@@ -134,69 +132,66 @@ public interface IProcessStats extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProcessStats.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProcessStats.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProcessStats.DESCRIPTOR);
+                case 1:
+                    ArrayList arrayList = new ArrayList();
+                    data.enforceNoDataAvail();
+                    byte[] _result = getCurrentStats(arrayList);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result);
+                    reply.writeTypedList(arrayList, 1);
+                    return true;
+                case 2:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result2 = getStatsOverTime(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    int _result3 = getCurrentMemoryState();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    long _arg02 = data.readLong();
+                    int _arg1 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    ArrayList arrayList2 = new ArrayList();
+                    data.enforceNoDataAvail();
+                    long _result4 = getCommittedStats(_arg02, _arg1, _arg2, arrayList2);
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    reply.writeTypedList(arrayList2, 1);
+                    return true;
+                case 5:
+                    long _arg03 = data.readLong();
+                    int _arg12 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    ArrayList arrayList3 = new ArrayList();
+                    ProcessStats _arg4 = new ProcessStats();
+                    data.enforceNoDataAvail();
+                    long _result5 = getCommittedStatsMerged(_arg03, _arg12, _arg22, arrayList3, _arg4);
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    reply.writeTypedList(arrayList3, 1);
+                    reply.writeTypedObject(_arg4, 1);
+                    return true;
+                case 6:
+                    long _result6 = getMinAssociationDumpDuration();
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ArrayList arrayList = new ArrayList();
-                            data.enforceNoDataAvail();
-                            byte[] _result = getCurrentStats(arrayList);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            reply.writeTypedList(arrayList, 1);
-                            return true;
-                        case 2:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result2 = getStatsOverTime(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            int _result3 = getCurrentMemoryState();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            long _arg02 = data.readLong();
-                            int _arg1 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            ArrayList arrayList2 = new ArrayList();
-                            data.enforceNoDataAvail();
-                            long _result4 = getCommittedStats(_arg02, _arg1, _arg2, arrayList2);
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            reply.writeTypedList(arrayList2, 1);
-                            return true;
-                        case 5:
-                            long _arg03 = data.readLong();
-                            int _arg12 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            ArrayList arrayList3 = new ArrayList();
-                            ProcessStats _arg4 = new ProcessStats();
-                            data.enforceNoDataAvail();
-                            long _result5 = getCommittedStatsMerged(_arg03, _arg12, _arg22, arrayList3, _arg4);
-                            reply.writeNoException();
-                            reply.writeLong(_result5);
-                            reply.writeTypedList(arrayList3, 1);
-                            reply.writeTypedObject(_arg4, 1);
-                            return true;
-                        case 6:
-                            long _result6 = getMinAssociationDumpDuration();
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IProcessStats {
+        private static class Proxy implements IProcessStats {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

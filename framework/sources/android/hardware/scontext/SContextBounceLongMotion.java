@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextBounceLongMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextBounceLongMotion> CREATOR = new Parcelable.Creator<SContextBounceLongMotion>() { // from class: android.hardware.scontext.SContextBounceLongMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextBounceLongMotion createFromParcel(Parcel in) {
             return new SContextBounceLongMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextBounceLongMotion[] newArray(int size) {
             return new SContextBounceLongMotion[size];
@@ -23,7 +22,7 @@ public class SContextBounceLongMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextBounceLongMotion() {
+    SContextBounceLongMotion() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextBounceLongMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextBounceLongMotion$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextBounceLongMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextBounceLongMotion createFromParcel(Parcel in) {
-            return new SContextBounceLongMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextBounceLongMotion[] newArray(int size) {
-            return new SContextBounceLongMotion[size];
-        }
     }
 }

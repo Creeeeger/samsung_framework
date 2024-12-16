@@ -12,7 +12,6 @@ import android.telecom.CallScreeningService;
 public interface ICallScreeningAdapter extends IInterface {
     void onScreeningResponse(String str, ComponentName componentName, CallScreeningService.ParcelableCallResponse parcelableCallResponse) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallScreeningAdapter {
         @Override // com.android.internal.telecom.ICallScreeningAdapter
         public void onScreeningResponse(String callId, ComponentName componentName, CallScreeningService.ParcelableCallResponse response) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICallScreeningAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallScreeningAdapter {
         public static final String DESCRIPTOR = "com.android.internal.telecom.ICallScreeningAdapter";
         static final int TRANSACTION_onScreeningResponse = 1;
@@ -68,28 +66,24 @@ public interface ICallScreeningAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    CallScreeningService.ParcelableCallResponse _arg2 = (CallScreeningService.ParcelableCallResponse) data.readTypedObject(CallScreeningService.ParcelableCallResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onScreeningResponse(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            CallScreeningService.ParcelableCallResponse _arg2 = (CallScreeningService.ParcelableCallResponse) data.readTypedObject(CallScreeningService.ParcelableCallResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onScreeningResponse(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICallScreeningAdapter {
+        private static class Proxy implements ICallScreeningAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

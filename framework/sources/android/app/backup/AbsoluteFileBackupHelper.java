@@ -24,8 +24,7 @@ public class AbsoluteFileBackupHelper extends FileBackupHelperBase implements Ba
 
     @Override // android.app.backup.BackupHelper
     public void performBackup(ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState) {
-        String[] strArr = this.mFiles;
-        performBackup_checked(oldState, data, newState, strArr, strArr);
+        performBackup_checked(oldState, data, newState, this.mFiles, this.mFiles);
     }
 
     @Override // android.app.backup.BackupHelper

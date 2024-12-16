@@ -1,12 +1,14 @@
 package android.os;
 
+import android.Manifest;
+import android.app.ActivityThread;
+
 /* loaded from: classes3.dex */
 public interface ISystemUpdateManager extends IInterface {
     Bundle retrieveSystemUpdateInfo() throws RemoteException;
 
     void updateSystemUpdateInfo(PersistableBundle persistableBundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISystemUpdateManager {
         @Override // android.os.ISystemUpdateManager
         public Bundle retrieveSystemUpdateInfo() throws RemoteException {
@@ -23,14 +25,23 @@ public interface ISystemUpdateManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISystemUpdateManager {
         public static final String DESCRIPTOR = "android.os.ISystemUpdateManager";
         static final int TRANSACTION_retrieveSystemUpdateInfo = 1;
         static final int TRANSACTION_updateSystemUpdateInfo = 2;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static ISystemUpdateManager asInterface(IBinder obj) {
@@ -70,32 +81,28 @@ public interface ISystemUpdateManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Bundle _result = retrieveSystemUpdateInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    PersistableBundle _arg0 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateSystemUpdateInfo(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _result = retrieveSystemUpdateInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            PersistableBundle _arg0 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateSystemUpdateInfo(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISystemUpdateManager {
+        private static class Proxy implements ISystemUpdateManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -141,6 +148,10 @@ public interface ISystemUpdateManager extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void updateSystemUpdateInfo_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.RECOVERY, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

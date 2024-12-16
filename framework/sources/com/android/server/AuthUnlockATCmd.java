@@ -1,8 +1,9 @@
 package com.android.server;
 
 import android.content.Context;
-import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.provider.Settings;
 import android.service.persistentdata.PersistentDataBlockManager;
+import android.util.Slog;
 import java.nio.charset.StandardCharsets;
 
 /* loaded from: classes5.dex */
@@ -42,21 +43,19 @@ public class AuthUnlockATCmd implements IWorkOnAt {
     @Override // com.android.server.IWorkOnAt
     public String processCmd(String cmd) {
         int ret;
-        String result;
         byte[] response;
-        String result2 = "";
+        String result = "";
         String[] params = parsingParam(cmd);
-        String[] supportedParams = {"1,0,", "1,1,"};
+        String[] supportedParams = {"1,0,", "1,1,", "3,0,0"};
         if (params == null) {
             return AT_RESPONSE_INVALID_PARAM;
         }
-        PersistentDataBlockManager persistentDataBlockManager = (PersistentDataBlockManager) this.mContext.getSystemService(Context.PERSISTENT_DATA_BLOCK_SERVICE);
-        this.mPDB = persistentDataBlockManager;
-        if (persistentDataBlockManager == null) {
+        this.mPDB = (PersistentDataBlockManager) this.mContext.getSystemService(Context.PERSISTENT_DATA_BLOCK_SERVICE);
+        if (this.mPDB == null) {
             return AT_RESPONSE_CONN_FAILED;
         }
         try {
-            result2 = params[0] + ",";
+            result = params[0] + ",";
             if (supportedParams[0].equals(cmd.substring(0, supportedParams[0].length()))) {
                 byte[] data = params[2].trim().getBytes(StandardCharsets.UTF_8);
                 synchronized (mLock) {
@@ -67,9 +66,9 @@ public class AuthUnlockATCmd implements IWorkOnAt {
                     }
                 }
                 if (response != null) {
-                    return result2 + new String(response, StandardCharsets.UTF_8);
+                    return result + new String(response, StandardCharsets.UTF_8);
                 }
-                return result2 + "NG(1)";
+                return result + "NG(1)";
             }
             if (supportedParams[1].equals(cmd.substring(0, supportedParams[1].length()))) {
                 byte[] data2 = params[2].trim().getBytes(StandardCharsets.UTF_8);
@@ -81,26 +80,32 @@ public class AuthUnlockATCmd implements IWorkOnAt {
                     }
                 }
                 if (ret == 0) {
-                    try {
-                        this.mPDB.wipe();
-                        result = result2 + "UNLOCK SUCCESS";
-                    } catch (Exception e3) {
-                        result = result2 + "NG(1)";
-                        e3.printStackTrace();
+                    if (this.mPDB.deactivateFactoryResetProtection(new byte[32])) {
+                        Slog.i(TAG, "FRP is deactivated!");
+                    } else {
+                        Slog.e(TAG, "FRP partition is wiped, but can't update the FRP status");
                     }
-                    return result;
+                    Settings.Secure.putInt(this.mContext.getContentResolver(), "secure_frp_mode", 0);
+                    return result + "UNLOCK SUCCESS";
                 }
-                return result2 + "NG(" + ret + NavigationBarInflaterView.KEY_CODE_END;
+                Slog.i(TAG, "FRP deactivating FAILED!");
+                return result + "NG(1)";
             }
-            return result2 + AT_RESPONSE_INVALID_PARAM;
-        } catch (Exception e4) {
-            String result3 = result2 + AT_RESPONSE_INVALID_PARAM;
-            e4.printStackTrace();
-            return result3;
+            if (supportedParams[2].equals(cmd.substring(0, supportedParams[2].length()))) {
+                if (this.mPDB.isFactoryResetProtectionActive()) {
+                    return result + "LOCK";
+                }
+                return result + "UNLOCK";
+            }
+            return result + AT_RESPONSE_INVALID_PARAM;
+        } catch (Exception e3) {
+            String result2 = result + AT_RESPONSE_INVALID_PARAM;
+            e3.printStackTrace();
+            return result2;
         }
-        String result32 = result2 + AT_RESPONSE_INVALID_PARAM;
-        e4.printStackTrace();
-        return result32;
+        String result22 = result + AT_RESPONSE_INVALID_PARAM;
+        e3.printStackTrace();
+        return result22;
     }
 
     private String[] parsingParam(String cmd) {

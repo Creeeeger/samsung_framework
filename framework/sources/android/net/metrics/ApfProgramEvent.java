@@ -17,17 +17,16 @@ import java.util.List;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class ApfProgramEvent implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<ApfProgramEvent> CREATOR = new Parcelable.Creator<ApfProgramEvent>() { // from class: android.net.metrics.ApfProgramEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApfProgramEvent createFromParcel(Parcel in) {
             return new ApfProgramEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApfProgramEvent[] newArray(int size) {
             return new ApfProgramEvent[size];
@@ -43,16 +42,7 @@ public final class ApfProgramEvent implements IpConnectivityLog.Event {
     public final int programLength;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Flags {
-    }
-
-    /* synthetic */ ApfProgramEvent(long j, long j2, int i, int i2, int i3, int i4, ApfProgramEventIA apfProgramEventIA) {
-        this(j, j2, i, i2, i3, i4);
-    }
-
-    /* synthetic */ ApfProgramEvent(Parcel parcel, ApfProgramEventIA apfProgramEventIA) {
-        this(parcel);
     }
 
     private ApfProgramEvent(long lifetime, long actualLifetime, int filteredRas, int currentRas, int programLength, int flags) {
@@ -73,7 +63,6 @@ public final class ApfProgramEvent implements IpConnectivityLog.Event {
         this.flags = in.readInt();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private long mActualLifetime;
         private int mCurrentRas;
@@ -145,23 +134,6 @@ public final class ApfProgramEvent implements IpConnectivityLog.Event {
         return this.lifetime == other.lifetime && this.actualLifetime == other.actualLifetime && this.filteredRas == other.filteredRas && this.currentRas == other.currentRas && this.programLength == other.programLength && this.flags == other.flags;
     }
 
-    /* renamed from: android.net.metrics.ApfProgramEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ApfProgramEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApfProgramEvent createFromParcel(Parcel in) {
-            return new ApfProgramEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApfProgramEvent[] newArray(int size) {
-            return new ApfProgramEvent[size];
-        }
-    }
-
     public static int flagsFor(boolean hasIPv4, boolean multicastFilterOn) {
         int bitfield = 0;
         if (hasIPv4) {
@@ -182,8 +154,7 @@ public final class ApfProgramEvent implements IpConnectivityLog.Event {
         return TextUtils.join(NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER, names);
     }
 
-    /* loaded from: classes2.dex */
-    public static final class Decoder {
+    static final class Decoder {
         static final SparseArray<String> constants = MessageUtils.findMessageNames(new Class[]{ApfProgramEvent.class}, new String[]{"FLAG_"});
 
         Decoder() {

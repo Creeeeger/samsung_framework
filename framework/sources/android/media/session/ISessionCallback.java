@@ -61,7 +61,6 @@ public interface ISessionCallback extends IInterface {
 
     void onStop(String str, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISessionCallback {
         @Override // android.media.session.ISessionCallback
         public void onCommand(String packageName, int pid, int uid, String command, Bundle args, ResultReceiver cb) throws RemoteException {
@@ -165,7 +164,6 @@ public interface ISessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISessionCallback {
         public static final String DESCRIPTOR = "android.media.session.ISessionCallback";
         static final int TRANSACTION_onAdjustVolume = 23;
@@ -278,216 +276,212 @@ public interface ISessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    String _arg3 = data.readString();
+                    Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ResultReceiver _arg5 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCommand(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    Intent _arg32 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg42 = data.readInt();
+                    ResultReceiver _arg52 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMediaButton(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    int _arg13 = data.readInt();
+                    int _arg23 = data.readInt();
+                    Intent _arg33 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMediaButtonFromController(_arg03, _arg13, _arg23, _arg33);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPrepare(_arg04, _arg14, _arg24);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg15 = data.readInt();
+                    int _arg25 = data.readInt();
+                    String _arg34 = data.readString();
+                    Bundle _arg43 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrepareFromMediaId(_arg05, _arg15, _arg25, _arg34, _arg43);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    int _arg16 = data.readInt();
+                    int _arg26 = data.readInt();
+                    String _arg35 = data.readString();
+                    Bundle _arg44 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrepareFromSearch(_arg06, _arg16, _arg26, _arg35, _arg44);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    int _arg17 = data.readInt();
+                    int _arg27 = data.readInt();
+                    Uri _arg36 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Bundle _arg45 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrepareFromUri(_arg07, _arg17, _arg27, _arg36, _arg45);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    int _arg18 = data.readInt();
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPlay(_arg08, _arg18, _arg28);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    int _arg19 = data.readInt();
+                    int _arg29 = data.readInt();
+                    String _arg37 = data.readString();
+                    Bundle _arg46 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPlayFromMediaId(_arg09, _arg19, _arg29, _arg37, _arg46);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    int _arg110 = data.readInt();
+                    int _arg210 = data.readInt();
+                    String _arg38 = data.readString();
+                    Bundle _arg47 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPlayFromSearch(_arg010, _arg110, _arg210, _arg38, _arg47);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    int _arg111 = data.readInt();
+                    int _arg211 = data.readInt();
+                    Uri _arg39 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Bundle _arg48 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPlayFromUri(_arg011, _arg111, _arg211, _arg39, _arg48);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    int _arg112 = data.readInt();
+                    int _arg212 = data.readInt();
+                    long _arg310 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onSkipToTrack(_arg012, _arg112, _arg212, _arg310);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    int _arg113 = data.readInt();
+                    int _arg213 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPause(_arg013, _arg113, _arg213);
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    int _arg114 = data.readInt();
+                    int _arg214 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStop(_arg014, _arg114, _arg214);
+                    return true;
+                case 15:
+                    String _arg015 = data.readString();
+                    int _arg115 = data.readInt();
+                    int _arg215 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNext(_arg015, _arg115, _arg215);
+                    return true;
+                case 16:
+                    String _arg016 = data.readString();
+                    int _arg116 = data.readInt();
+                    int _arg216 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPrevious(_arg016, _arg116, _arg216);
+                    return true;
+                case 17:
+                    String _arg017 = data.readString();
+                    int _arg117 = data.readInt();
+                    int _arg217 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFastForward(_arg017, _arg117, _arg217);
+                    return true;
+                case 18:
+                    String _arg018 = data.readString();
+                    int _arg118 = data.readInt();
+                    int _arg218 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRewind(_arg018, _arg118, _arg218);
+                    return true;
+                case 19:
+                    String _arg019 = data.readString();
+                    int _arg119 = data.readInt();
+                    int _arg219 = data.readInt();
+                    long _arg311 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onSeekTo(_arg019, _arg119, _arg219, _arg311);
+                    return true;
+                case 20:
+                    String _arg020 = data.readString();
+                    int _arg120 = data.readInt();
+                    int _arg220 = data.readInt();
+                    Rating _arg312 = (Rating) data.readTypedObject(Rating.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRate(_arg020, _arg120, _arg220, _arg312);
+                    return true;
+                case 21:
+                    String _arg021 = data.readString();
+                    int _arg121 = data.readInt();
+                    int _arg221 = data.readInt();
+                    float _arg313 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onSetPlaybackSpeed(_arg021, _arg121, _arg221, _arg313);
+                    return true;
+                case 22:
+                    String _arg022 = data.readString();
+                    int _arg122 = data.readInt();
+                    int _arg222 = data.readInt();
+                    String _arg314 = data.readString();
+                    Bundle _arg49 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCustomAction(_arg022, _arg122, _arg222, _arg314, _arg49);
+                    return true;
+                case 23:
+                    String _arg023 = data.readString();
+                    int _arg123 = data.readInt();
+                    int _arg223 = data.readInt();
+                    int _arg315 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAdjustVolume(_arg023, _arg123, _arg223, _arg315);
+                    return true;
+                case 24:
+                    String _arg024 = data.readString();
+                    int _arg124 = data.readInt();
+                    int _arg224 = data.readInt();
+                    int _arg316 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSetVolumeTo(_arg024, _arg124, _arg224, _arg316);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            String _arg3 = data.readString();
-                            Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ResultReceiver _arg5 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCommand(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            Intent _arg32 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg42 = data.readInt();
-                            ResultReceiver _arg52 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMediaButton(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            int _arg13 = data.readInt();
-                            int _arg23 = data.readInt();
-                            Intent _arg33 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMediaButtonFromController(_arg03, _arg13, _arg23, _arg33);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPrepare(_arg04, _arg14, _arg24);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg15 = data.readInt();
-                            int _arg25 = data.readInt();
-                            String _arg34 = data.readString();
-                            Bundle _arg43 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrepareFromMediaId(_arg05, _arg15, _arg25, _arg34, _arg43);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            int _arg16 = data.readInt();
-                            int _arg26 = data.readInt();
-                            String _arg35 = data.readString();
-                            Bundle _arg44 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrepareFromSearch(_arg06, _arg16, _arg26, _arg35, _arg44);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            int _arg17 = data.readInt();
-                            int _arg27 = data.readInt();
-                            Uri _arg36 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Bundle _arg45 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrepareFromUri(_arg07, _arg17, _arg27, _arg36, _arg45);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            int _arg18 = data.readInt();
-                            int _arg28 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPlay(_arg08, _arg18, _arg28);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            int _arg19 = data.readInt();
-                            int _arg29 = data.readInt();
-                            String _arg37 = data.readString();
-                            Bundle _arg46 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPlayFromMediaId(_arg09, _arg19, _arg29, _arg37, _arg46);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            int _arg110 = data.readInt();
-                            int _arg210 = data.readInt();
-                            String _arg38 = data.readString();
-                            Bundle _arg47 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPlayFromSearch(_arg010, _arg110, _arg210, _arg38, _arg47);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            int _arg111 = data.readInt();
-                            int _arg211 = data.readInt();
-                            Uri _arg39 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Bundle _arg48 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPlayFromUri(_arg011, _arg111, _arg211, _arg39, _arg48);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            int _arg112 = data.readInt();
-                            int _arg212 = data.readInt();
-                            long _arg310 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onSkipToTrack(_arg012, _arg112, _arg212, _arg310);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            int _arg113 = data.readInt();
-                            int _arg213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPause(_arg013, _arg113, _arg213);
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            int _arg114 = data.readInt();
-                            int _arg214 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStop(_arg014, _arg114, _arg214);
-                            return true;
-                        case 15:
-                            String _arg015 = data.readString();
-                            int _arg115 = data.readInt();
-                            int _arg215 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNext(_arg015, _arg115, _arg215);
-                            return true;
-                        case 16:
-                            String _arg016 = data.readString();
-                            int _arg116 = data.readInt();
-                            int _arg216 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPrevious(_arg016, _arg116, _arg216);
-                            return true;
-                        case 17:
-                            String _arg017 = data.readString();
-                            int _arg117 = data.readInt();
-                            int _arg217 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFastForward(_arg017, _arg117, _arg217);
-                            return true;
-                        case 18:
-                            String _arg018 = data.readString();
-                            int _arg118 = data.readInt();
-                            int _arg218 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRewind(_arg018, _arg118, _arg218);
-                            return true;
-                        case 19:
-                            String _arg019 = data.readString();
-                            int _arg119 = data.readInt();
-                            int _arg219 = data.readInt();
-                            long _arg311 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onSeekTo(_arg019, _arg119, _arg219, _arg311);
-                            return true;
-                        case 20:
-                            String _arg020 = data.readString();
-                            int _arg120 = data.readInt();
-                            int _arg220 = data.readInt();
-                            Rating _arg312 = (Rating) data.readTypedObject(Rating.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRate(_arg020, _arg120, _arg220, _arg312);
-                            return true;
-                        case 21:
-                            String _arg021 = data.readString();
-                            int _arg121 = data.readInt();
-                            int _arg221 = data.readInt();
-                            float _arg313 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onSetPlaybackSpeed(_arg021, _arg121, _arg221, _arg313);
-                            return true;
-                        case 22:
-                            String _arg022 = data.readString();
-                            int _arg122 = data.readInt();
-                            int _arg222 = data.readInt();
-                            String _arg314 = data.readString();
-                            Bundle _arg49 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCustomAction(_arg022, _arg122, _arg222, _arg314, _arg49);
-                            return true;
-                        case 23:
-                            String _arg023 = data.readString();
-                            int _arg123 = data.readInt();
-                            int _arg223 = data.readInt();
-                            int _arg315 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAdjustVolume(_arg023, _arg123, _arg223, _arg315);
-                            return true;
-                        case 24:
-                            String _arg024 = data.readString();
-                            int _arg124 = data.readInt();
-                            int _arg224 = data.readInt();
-                            int _arg316 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSetVolumeTo(_arg024, _arg124, _arg224, _arg316);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISessionCallback {
+        private static class Proxy implements ISessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

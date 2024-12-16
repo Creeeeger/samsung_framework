@@ -25,7 +25,6 @@ public class FaceDetector {
 
     private static native void nativeClassInit();
 
-    /* loaded from: classes2.dex */
     public class Face {
         public static final float CONFIDENCE_THRESHOLD = 0.4f;
         public static final int EULER_X = 0;
@@ -38,10 +37,6 @@ public class FaceDetector {
         private float mPoseEulerX;
         private float mPoseEulerY;
         private float mPoseEulerZ;
-
-        /* synthetic */ Face(FaceDetector faceDetector, FaceIA faceIA) {
-            this();
-        }
 
         public float confidence() {
             return this.mConfidence;

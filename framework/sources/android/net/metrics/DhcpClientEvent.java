@@ -8,17 +8,16 @@ import android.text.TextUtils;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class DhcpClientEvent implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<DhcpClientEvent> CREATOR = new Parcelable.Creator<DhcpClientEvent>() { // from class: android.net.metrics.DhcpClientEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DhcpClientEvent createFromParcel(Parcel in) {
             return new DhcpClientEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DhcpClientEvent[] newArray(int size) {
             return new DhcpClientEvent[size];
@@ -26,14 +25,6 @@ public final class DhcpClientEvent implements IpConnectivityLog.Event {
     };
     public final int durationMs;
     public final String msg;
-
-    /* synthetic */ DhcpClientEvent(Parcel parcel, DhcpClientEventIA dhcpClientEventIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ DhcpClientEvent(String str, int i, DhcpClientEventIA dhcpClientEventIA) {
-        this(str, i);
-    }
 
     private DhcpClientEvent(String msg, int durationMs) {
         this.msg = msg;
@@ -45,7 +36,6 @@ public final class DhcpClientEvent implements IpConnectivityLog.Event {
         this.durationMs = in.readInt();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mDurationMs;
         private String mMsg;
@@ -86,22 +76,5 @@ public final class DhcpClientEvent implements IpConnectivityLog.Event {
         }
         DhcpClientEvent other = (DhcpClientEvent) obj;
         return TextUtils.equals(this.msg, other.msg) && this.durationMs == other.durationMs;
-    }
-
-    /* renamed from: android.net.metrics.DhcpClientEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DhcpClientEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DhcpClientEvent createFromParcel(Parcel in) {
-            return new DhcpClientEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DhcpClientEvent[] newArray(int size) {
-            return new DhcpClientEvent[size];
-        }
     }
 }

@@ -35,7 +35,6 @@ public abstract class LauncherActivity extends ListActivity {
     Intent mIntent;
     PackageManager mPackageManager;
 
-    /* loaded from: classes.dex */
     public static class ListItem {
         public String className;
         public Bundle extras;
@@ -63,8 +62,7 @@ public abstract class LauncherActivity extends ListActivity {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class ActivityAdapter extends BaseAdapter implements Filterable {
+    private class ActivityAdapter extends BaseAdapter implements Filterable {
         private final Object lock = new Object();
         protected List<ListItem> mActivitiesList;
         private Filter mFilter;
@@ -94,18 +92,16 @@ public abstract class LauncherActivity extends ListActivity {
         }
 
         public ListItem itemForPosition(int position) {
-            List<ListItem> list = this.mActivitiesList;
-            if (list == null) {
+            if (this.mActivitiesList == null) {
                 return null;
             }
-            return list.get(position);
+            return this.mActivitiesList.get(position);
         }
 
         @Override // android.widget.Adapter
         public int getCount() {
-            List<ListItem> list = this.mActivitiesList;
-            if (list != null) {
-                return list.size();
+            if (this.mActivitiesList != null) {
+                return this.mActivitiesList.size();
             }
             return 0;
         }
@@ -134,7 +130,7 @@ public abstract class LauncherActivity extends ListActivity {
 
         private void bindView(View view, ListItem item) {
             TextView text = (TextView) view;
-            text.setText(item.label);
+            text.lambda$setTextAsync$0(item.label);
             if (this.mShowIcons) {
                 if (item.icon == null) {
                     item.icon = this.mIconResizer.createIconThumbnail(item.resolveInfo.loadIcon(LauncherActivity.this.getPackageManager()));
@@ -151,12 +147,7 @@ public abstract class LauncherActivity extends ListActivity {
             return this.mFilter;
         }
 
-        /* loaded from: classes.dex */
         private class ArrayFilter extends Filter {
-            /* synthetic */ ArrayFilter(ActivityAdapter activityAdapter, ArrayFilterIA arrayFilterIA) {
-                this();
-            }
-
             private ArrayFilter() {
             }
 
@@ -214,19 +205,16 @@ public abstract class LauncherActivity extends ListActivity {
         }
     }
 
-    /* loaded from: classes.dex */
     public class IconResizer {
-        private Canvas mCanvas;
         private int mIconHeight;
         private int mIconWidth;
         private final Rect mOldBounds = new Rect();
+        private Canvas mCanvas = new Canvas();
 
         public IconResizer() {
             this.mIconWidth = -1;
             this.mIconHeight = -1;
-            Canvas canvas = new Canvas();
-            this.mCanvas = canvas;
-            canvas.setDrawFilter(new PaintFlagsDrawFilter(4, 2));
+            this.mCanvas.setDrawFilter(new PaintFlagsDrawFilter(4, 2));
             Resources resources = LauncherActivity.this.getResources();
             int dimension = (int) resources.getDimension(17104896);
             this.mIconHeight = dimension;
@@ -287,19 +275,17 @@ public abstract class LauncherActivity extends ListActivity {
     }
 
     @Override // android.app.Activity
-    public void onCreate(Bundle icicle) {
+    protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        PackageManager packageManager = getPackageManager();
-        this.mPackageManager = packageManager;
-        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+        this.mPackageManager = getPackageManager();
+        if (!this.mPackageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
             requestWindowFeature(5);
             setProgressBarIndeterminateVisibility(true);
         }
         onSetContentView();
         this.mIconResizer = new IconResizer();
-        Intent intent = new Intent(getTargetIntent());
-        this.mIntent = intent;
-        intent.setComponent(null);
+        this.mIntent = new Intent(getTargetIntent());
+        this.mIntent.setComponent(null);
         this.mAdapter = new ActivityAdapter(this.mIconResizer);
         setListAdapter(this.mAdapter);
         getListView().setTextFilterEnabled(true);
@@ -313,7 +299,7 @@ public abstract class LauncherActivity extends ListActivity {
     private void updateAlertTitle() {
         TextView alertTitle = (TextView) findViewById(R.id.alertTitle);
         if (alertTitle != null) {
-            alertTitle.setText(getTitle());
+            alertTitle.lambda$setTextAsync$0(getTitle());
         }
     }
 
@@ -321,26 +307,11 @@ public abstract class LauncherActivity extends ListActivity {
         Button cancelButton = (Button) findViewById(16908313);
         if (cancelButton != null) {
             cancelButton.setOnClickListener(new View.OnClickListener() { // from class: android.app.LauncherActivity.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.view.View.OnClickListener
                 public void onClick(View v) {
                     LauncherActivity.this.finish();
                 }
             });
-        }
-    }
-
-    /* renamed from: android.app.LauncherActivity$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements View.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            LauncherActivity.this.finish();
         }
     }
 
@@ -361,7 +332,7 @@ public abstract class LauncherActivity extends ListActivity {
     }
 
     @Override // android.app.ListActivity
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent intent = intentForPosition(position);
         startActivity(intent);
     }

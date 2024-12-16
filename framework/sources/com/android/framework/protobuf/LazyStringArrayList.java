@@ -8,10 +8,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.RandomAccess;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public class LazyStringArrayList extends AbstractProtobufList<String> implements LazyStringList, RandomAccess {
     public static final LazyStringList EMPTY;
-    private static final LazyStringArrayList EMPTY_LIST;
+    private static final LazyStringArrayList EMPTY_LIST = new LazyStringArrayList();
     private final List<Object> list;
 
     @Override // com.android.framework.protobuf.AbstractProtobufList, java.util.AbstractList, java.util.AbstractCollection, java.util.Collection, java.util.List
@@ -50,10 +50,8 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
     }
 
     static {
-        LazyStringArrayList lazyStringArrayList = new LazyStringArrayList();
-        EMPTY_LIST = lazyStringArrayList;
-        lazyStringArrayList.makeImmutable();
-        EMPTY = lazyStringArrayList;
+        EMPTY_LIST.makeImmutable();
+        EMPTY = EMPTY_LIST;
     }
 
     static LazyStringArrayList emptyList() {
@@ -133,12 +131,14 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
         this.modCount++;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void add(int index, ByteString element) {
         ensureIsMutable();
         this.list.add(index, element);
         this.modCount++;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void add(int index, byte[] element) {
         ensureIsMutable();
         this.list.add(index, element);
@@ -234,6 +234,7 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
         setAndReturn(index, s);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Object setAndReturn(int index, ByteString s) {
         ensureIsMutable();
         return this.list.set(index, s);
@@ -244,6 +245,7 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
         setAndReturn(index, s);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Object setAndReturn(int index, byte[] s) {
         ensureIsMutable();
         return this.list.set(index, s);
@@ -259,6 +261,7 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
         return Internal.toStringUtf8((byte[]) o);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ByteString asByteString(Object o) {
         if (o instanceof ByteString) {
             return (ByteString) o;
@@ -269,6 +272,7 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
         return ByteString.copyFrom((byte[]) o);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static byte[] asByteArray(Object o) {
         if (o instanceof byte[]) {
             return (byte[]) o;
@@ -297,7 +301,6 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
         }
     }
 
-    /* loaded from: classes4.dex */
     private static class ByteArrayListView extends AbstractList<byte[]> implements RandomAccess {
         private final LazyStringArrayList list;
 
@@ -341,7 +344,6 @@ public class LazyStringArrayList extends AbstractProtobufList<String> implements
         return new ByteArrayListView(this);
     }
 
-    /* loaded from: classes4.dex */
     private static class ByteStringListView extends AbstractList<ByteString> implements RandomAccess {
         private final LazyStringArrayList list;
 

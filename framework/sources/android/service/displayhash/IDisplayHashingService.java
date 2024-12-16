@@ -22,7 +22,6 @@ public interface IDisplayHashingService extends IInterface {
 
     void verifyDisplayHash(byte[] bArr, DisplayHash displayHash, RemoteCallback remoteCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDisplayHashingService {
         @Override // android.service.displayhash.IDisplayHashingService
         public void generateDisplayHash(byte[] salt, HardwareBuffer buffer, Rect bounds, String hashAlgorithm, RemoteCallback callback) throws RemoteException {
@@ -46,7 +45,6 @@ public interface IDisplayHashingService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDisplayHashingService {
         static final int TRANSACTION_generateDisplayHash = 1;
         static final int TRANSACTION_getDisplayHashAlgorithms = 3;
@@ -98,45 +96,42 @@ public interface IDisplayHashingService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayHashingService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayHashingService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayHashingService.DESCRIPTOR);
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    HardwareBuffer _arg1 = (HardwareBuffer) data.readTypedObject(HardwareBuffer.CREATOR);
+                    Rect _arg2 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    String _arg3 = data.readString();
+                    RemoteCallback _arg4 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    generateDisplayHash(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    byte[] _arg02 = data.createByteArray();
+                    DisplayHash _arg12 = (DisplayHash) data.readTypedObject(DisplayHash.CREATOR);
+                    RemoteCallback _arg22 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    verifyDisplayHash(_arg02, _arg12, _arg22);
+                    return true;
+                case 3:
+                    RemoteCallback _arg03 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    getDisplayHashAlgorithms(_arg03);
+                    return true;
+                case 4:
+                    RemoteCallback _arg04 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    getIntervalBetweenRequestsMillis(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            HardwareBuffer _arg1 = (HardwareBuffer) data.readTypedObject(HardwareBuffer.CREATOR);
-                            Rect _arg2 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            String _arg3 = data.readString();
-                            RemoteCallback _arg4 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            generateDisplayHash(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            byte[] _arg02 = data.createByteArray();
-                            DisplayHash _arg12 = (DisplayHash) data.readTypedObject(DisplayHash.CREATOR);
-                            RemoteCallback _arg22 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            verifyDisplayHash(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            RemoteCallback _arg03 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            getDisplayHashAlgorithms(_arg03);
-                            return true;
-                        case 4:
-                            RemoteCallback _arg04 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            getIntervalBetweenRequestsMillis(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IDisplayHashingService {
             private IBinder mRemote;
 

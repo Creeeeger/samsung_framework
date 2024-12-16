@@ -20,7 +20,6 @@ public interface IDumpstateListener extends IInterface {
 
     void onUiIntensiveBugreportDumpsFinished() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDumpstateListener {
         @Override // android.os.IDumpstateListener
         public void onProgress(int progress) throws RemoteException {
@@ -48,7 +47,6 @@ public interface IDumpstateListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDumpstateListener {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onFinished = 3;
@@ -103,44 +101,40 @@ public interface IDumpstateListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDumpstateListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDumpstateListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDumpstateListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgress(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    onFinished(_arg03);
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onScreenshotTaken(_arg04);
+                    return true;
+                case 5:
+                    onUiIntensiveBugreportDumpsFinished();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgress(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            onFinished(_arg03);
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onScreenshotTaken(_arg04);
-                            return true;
-                        case 5:
-                            onUiIntensiveBugreportDumpsFinished();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDumpstateListener {
+        private static class Proxy implements IDumpstateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

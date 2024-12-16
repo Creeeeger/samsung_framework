@@ -4,20 +4,19 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextActivityNotificationForLocation extends SemContextEventContext {
     public static final int ACCURACY_HIGH = 2;
     public static final int ACCURACY_LOW = 0;
     public static final int ACCURACY_MID = 1;
     public static final Parcelable.Creator<SemContextActivityNotificationForLocation> CREATOR = new Parcelable.Creator<SemContextActivityNotificationForLocation>() { // from class: com.samsung.android.hardware.context.SemContextActivityNotificationForLocation.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationForLocation createFromParcel(Parcel in) {
             return new SemContextActivityNotificationForLocation(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationForLocation[] newArray(int size) {
             return new SemContextActivityNotificationForLocation[size];
@@ -32,24 +31,7 @@ public class SemContextActivityNotificationForLocation extends SemContextEventCo
     public static final int STATUS_WALK = 2;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextActivityNotificationForLocation$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityNotificationForLocation> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityNotificationForLocation createFromParcel(Parcel in) {
-            return new SemContextActivityNotificationForLocation(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityNotificationForLocation[] newArray(int size) {
-            return new SemContextActivityNotificationForLocation[size];
-        }
-    }
-
-    public SemContextActivityNotificationForLocation() {
+    SemContextActivityNotificationForLocation() {
         this.mContext = new Bundle();
     }
 

@@ -10,16 +10,17 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class BrightnessInfo implements Parcelable {
     public static final int BRIGHTNESS_MAX_REASON_NONE = 0;
+    public static final int BRIGHTNESS_MAX_REASON_POWER_IC = 2;
     public static final int BRIGHTNESS_MAX_REASON_THERMAL = 1;
+    public static final int BRIGHTNESS_MAX_REASON_WEAR_BEDTIME_MODE = 3;
     public static final Parcelable.Creator<BrightnessInfo> CREATOR = new Parcelable.Creator<BrightnessInfo>() { // from class: android.hardware.display.BrightnessInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessInfo createFromParcel(Parcel source) {
             return new BrightnessInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessInfo[] newArray(int size) {
             return new BrightnessInfo[size];
@@ -38,17 +39,11 @@ public final class BrightnessInfo implements Parcelable {
     public boolean isAnimating;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface BrightnessMaxReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface HighBrightnessMode {
-    }
-
-    /* synthetic */ BrightnessInfo(Parcel parcel, BrightnessInfoIA brightnessInfoIA) {
-        this(parcel);
     }
 
     public BrightnessInfo(float brightness, float brightnessMinimum, float brightnessMaximum, int highBrightnessMode, float highBrightnessTransitionPoint, int brightnessMaxReason) {
@@ -95,6 +90,8 @@ public final class BrightnessInfo implements Parcelable {
                 return "none";
             case 1:
                 return PowerManager.SHUTDOWN_THERMAL_STATE;
+            case 2:
+                return "power IC";
             default:
                 return "invalid";
         }
@@ -115,23 +112,6 @@ public final class BrightnessInfo implements Parcelable {
         dest.writeFloat(this.highBrightnessTransitionPoint);
         dest.writeInt(this.brightnessMaxReason);
         dest.writeBoolean(this.isAnimating);
-    }
-
-    /* renamed from: android.hardware.display.BrightnessInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BrightnessInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrightnessInfo createFromParcel(Parcel source) {
-            return new BrightnessInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrightnessInfo[] newArray(int size) {
-            return new BrightnessInfo[size];
-        }
     }
 
     private BrightnessInfo(Parcel source) {

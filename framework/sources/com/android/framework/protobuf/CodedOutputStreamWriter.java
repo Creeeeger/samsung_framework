@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class CodedOutputStreamWriter implements Writer {
+/* loaded from: classes3.dex */
+final class CodedOutputStreamWriter implements Writer {
     private final CodedOutputStream output;
 
     public static CodedOutputStreamWriter forCodedOutput(CodedOutputStream output) {
@@ -22,9 +22,8 @@ public final class CodedOutputStreamWriter implements Writer {
     }
 
     private CodedOutputStreamWriter(CodedOutputStream output) {
-        CodedOutputStream codedOutputStream = (CodedOutputStream) Internal.checkNotNull(output, "output");
-        this.output = codedOutputStream;
-        codedOutputStream.wrapper = this;
+        this.output = (CodedOutputStream) Internal.checkNotNull(output, "output");
+        this.output.wrapper = this;
     }
 
     @Override // com.android.framework.protobuf.Writer
@@ -495,16 +494,13 @@ public final class CodedOutputStreamWriter implements Writer {
         }
     }
 
-    /* renamed from: com.android.framework.protobuf.CodedOutputStreamWriter$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
+    /* renamed from: com.android.framework.protobuf.CodedOutputStreamWriter$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType = new int[WireFormat.FieldType.values().length];
 
         static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
             try {
-                iArr[WireFormat.FieldType.BOOL.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.BOOL.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {

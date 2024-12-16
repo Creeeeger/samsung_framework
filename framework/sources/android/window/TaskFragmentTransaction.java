@@ -1,12 +1,12 @@
 package android.window;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.SurfaceControl;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -16,14 +16,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TaskFragmentTransaction implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentTransaction> CREATOR = new Parcelable.Creator<TaskFragmentTransaction>() { // from class: android.window.TaskFragmentTransaction.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentTransaction createFromParcel(Parcel in) {
             return new TaskFragmentTransaction(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentTransaction[] newArray(int size) {
             return new TaskFragmentTransaction[size];
@@ -39,12 +38,7 @@ public final class TaskFragmentTransaction implements Parcelable {
     private final IBinder mTransactionToken;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface ChangeType {
-    }
-
-    /* synthetic */ TaskFragmentTransaction(Parcel parcel, TaskFragmentTransactionIA taskFragmentTransactionIA) {
-        this(parcel);
     }
 
     public TaskFragmentTransaction() {
@@ -53,10 +47,9 @@ public final class TaskFragmentTransaction implements Parcelable {
     }
 
     private TaskFragmentTransaction(Parcel in) {
-        ArrayList<Change> arrayList = new ArrayList<>();
-        this.mChanges = arrayList;
+        this.mChanges = new ArrayList<>();
         this.mTransactionToken = in.readStrongBinder();
-        in.readTypedList(arrayList, Change.CREATOR);
+        in.readTypedList(this.mChanges, Change.CREATOR);
     }
 
     @Override // android.os.Parcelable
@@ -103,34 +96,15 @@ public final class TaskFragmentTransaction implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.window.TaskFragmentTransaction$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentTransaction> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentTransaction createFromParcel(Parcel in) {
-            return new TaskFragmentTransaction(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentTransaction[] newArray(int size) {
-            return new TaskFragmentTransaction[size];
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static final class Change implements Parcelable {
         public static final Parcelable.Creator<Change> CREATOR = new Parcelable.Creator<Change>() { // from class: android.window.TaskFragmentTransaction.Change.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Change createFromParcel(Parcel in) {
                 return new Change(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Change[] newArray(int size) {
                 return new Change[size];
@@ -140,15 +114,13 @@ public final class TaskFragmentTransaction implements Parcelable {
         private IBinder mActivityToken;
         private Bundle mErrorBundle;
         private IBinder mErrorCallbackToken;
+        private IBinder mOtherActivityToken;
+        private SurfaceControl mSurfaceControl;
         private TaskFragmentInfo mTaskFragmentInfo;
         private TaskFragmentParentInfo mTaskFragmentParentInfo;
         private IBinder mTaskFragmentToken;
         private int mTaskId;
         private final int mType;
-
-        /* synthetic */ Change(Parcel parcel, ChangeIA changeIA) {
-            this(parcel);
-        }
 
         public Change(int type) {
             this.mType = type;
@@ -164,6 +136,8 @@ public final class TaskFragmentTransaction implements Parcelable {
             this.mActivityIntent = (Intent) in.readTypedObject(Intent.CREATOR);
             this.mActivityToken = in.readStrongBinder();
             this.mTaskFragmentParentInfo = (TaskFragmentParentInfo) in.readTypedObject(TaskFragmentParentInfo.CREATOR);
+            this.mSurfaceControl = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
+            this.mOtherActivityToken = in.readStrongBinder();
         }
 
         @Override // android.os.Parcelable
@@ -177,6 +151,8 @@ public final class TaskFragmentTransaction implements Parcelable {
             dest.writeTypedObject(this.mActivityIntent, flags);
             dest.writeStrongBinder(this.mActivityToken);
             dest.writeTypedObject(this.mTaskFragmentParentInfo, flags);
+            dest.writeTypedObject(this.mSurfaceControl, flags);
+            dest.writeStrongBinder(this.mOtherActivityToken);
         }
 
         public Change setTaskFragmentToken(IBinder taskFragmentToken) {
@@ -191,10 +167,6 @@ public final class TaskFragmentTransaction implements Parcelable {
 
         public Change setTaskId(int taskId) {
             this.mTaskId = taskId;
-            return this;
-        }
-
-        public Change setTaskConfiguration(Configuration configuration) {
             return this;
         }
 
@@ -218,8 +190,18 @@ public final class TaskFragmentTransaction implements Parcelable {
             return this;
         }
 
+        public Change setOtherActivityToken(IBinder activityToken) {
+            this.mOtherActivityToken = (IBinder) Objects.requireNonNull(activityToken);
+            return this;
+        }
+
         public Change setTaskFragmentParentInfo(TaskFragmentParentInfo info) {
             this.mTaskFragmentParentInfo = (TaskFragmentParentInfo) Objects.requireNonNull(info);
+            return this;
+        }
+
+        public Change setTaskFragmentSurfaceControl(SurfaceControl sc) {
+            this.mSurfaceControl = sc;
             return this;
         }
 
@@ -239,17 +221,12 @@ public final class TaskFragmentTransaction implements Parcelable {
             return this.mTaskId;
         }
 
-        public Configuration getTaskConfiguration() {
-            return this.mTaskFragmentParentInfo.getConfiguration();
-        }
-
         public IBinder getErrorCallbackToken() {
             return this.mErrorCallbackToken;
         }
 
         public Bundle getErrorBundle() {
-            Bundle bundle = this.mErrorBundle;
-            return bundle != null ? bundle : Bundle.EMPTY;
+            return this.mErrorBundle != null ? this.mErrorBundle : Bundle.EMPTY;
         }
 
         public Intent getActivityIntent() {
@@ -260,8 +237,16 @@ public final class TaskFragmentTransaction implements Parcelable {
             return this.mActivityToken;
         }
 
+        public IBinder getOtherActivityToken() {
+            return this.mOtherActivityToken;
+        }
+
         public TaskFragmentParentInfo getTaskFragmentParentInfo() {
             return this.mTaskFragmentParentInfo;
+        }
+
+        public SurfaceControl getTaskFragmentSurfaceControl() {
+            return this.mSurfaceControl;
         }
 
         public String toString() {
@@ -271,23 +256,6 @@ public final class TaskFragmentTransaction implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
-        }
-
-        /* renamed from: android.window.TaskFragmentTransaction$Change$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Change> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Change createFromParcel(Parcel in) {
-                return new Change(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Change[] newArray(int size) {
-                return new Change[size];
-            }
         }
     }
 }

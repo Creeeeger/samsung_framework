@@ -58,9 +58,9 @@ public final class CardStatus {
         this.base.readEmbeddedFromParcel(parcel, _hidl_blob, _hidl_offset + 0);
         this.physicalSlotId = _hidl_blob.getInt32(_hidl_offset + 40);
         this.atr = _hidl_blob.getString(_hidl_offset + 48);
-        parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
+        parcel.readEmbeddedBuffer(this.atr.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
         this.iccid = _hidl_blob.getString(_hidl_offset + 64);
-        parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
+        parcel.readEmbeddedBuffer(this.iccid.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

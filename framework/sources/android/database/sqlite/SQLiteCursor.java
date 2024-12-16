@@ -173,7 +173,7 @@ public class SQLiteCursor extends AbstractWindowedCursor {
     }
 
     @Override // android.database.AbstractCursor
-    public void finalize() {
+    protected void finalize() {
         try {
             if (this.mWindow != null && StrictMode.vmSqliteObjectLeaksEnabled()) {
                 String sql = this.mQuery.getSql();

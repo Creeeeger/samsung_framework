@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class DynamicDrawableSpan extends ReplacementSpan {
     public static final int ALIGN_BASELINE = 1;
     public static final int ALIGN_BOTTOM = 0;
@@ -17,7 +17,6 @@ public abstract class DynamicDrawableSpan extends ReplacementSpan {
     protected final int mVerticalAlignment;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AlignmentType {
     }
 
@@ -27,7 +26,7 @@ public abstract class DynamicDrawableSpan extends ReplacementSpan {
         this.mVerticalAlignment = 0;
     }
 
-    public DynamicDrawableSpan(int verticalAlignment) {
+    protected DynamicDrawableSpan(int verticalAlignment) {
         this.mVerticalAlignment = verticalAlignment;
     }
 
@@ -53,10 +52,9 @@ public abstract class DynamicDrawableSpan extends ReplacementSpan {
         Drawable b = getCachedDrawable();
         canvas.save();
         int transY = bottom - b.getBounds().bottom;
-        int i = this.mVerticalAlignment;
-        if (i == 1) {
+        if (this.mVerticalAlignment == 1) {
             transY -= paint.getFontMetricsInt().descent;
-        } else if (i == 2) {
+        } else if (this.mVerticalAlignment == 2) {
             transY = (((bottom - top) / 2) + top) - (b.getBounds().height() / 2);
         }
         canvas.translate(x, transY);

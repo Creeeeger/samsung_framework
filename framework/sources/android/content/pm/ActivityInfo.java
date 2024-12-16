@@ -1,10 +1,8 @@
 package android.content.pm;
 
-import android.app.compat.CompatChanges;
 import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.UserHandle;
 import android.util.ArraySet;
 import android.util.NtpTrustedTime;
 import android.util.Printer;
@@ -53,6 +51,11 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     public static final int CONFIG_TOUCHSCREEN = 8;
     public static final int CONFIG_UI_MODE = 512;
     public static final int CONFIG_WINDOW_CONFIGURATION = 536870912;
+    public static final int CONTENT_URI_PERMISSION_NONE = 0;
+    public static final int CONTENT_URI_PERMISSION_READ = 1;
+    public static final int CONTENT_URI_PERMISSION_READ_AND_WRITE = 4;
+    public static final int CONTENT_URI_PERMISSION_READ_OR_WRITE = 3;
+    public static final int CONTENT_URI_PERMISSION_WRITE = 2;
     public static final int DOCUMENT_LAUNCH_ALWAYS = 2;
     public static final int DOCUMENT_LAUNCH_INTO_EXISTING = 1;
     public static final int DOCUMENT_LAUNCH_NEVER = 3;
@@ -90,6 +93,7 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     public static final int FLAG_VISIBLE_TO_INSTANT_APP = 1048576;
     public static final long FORCE_NON_RESIZE_APP = 181136395;
     public static final long FORCE_RESIZE_APP = 174042936;
+    public static final long INSETS_DECOUPLED_CONFIGURATION_ENFORCED = 151861875;
     public static final int LAUNCH_MULTIPLE = 0;
     public static final int LAUNCH_SINGLE_INSTANCE = 3;
     public static final int LAUNCH_SINGLE_INSTANCE_PER_TASK = 4;
@@ -101,12 +105,15 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     public static final int LOCK_TASK_LAUNCH_MODE_NEVER = 1;
     public static final long NEVER_SANDBOX_DISPLAY_APIS = 184838306;
     public static final long OVERRIDE_ANY_ORIENTATION = 265464455;
+    public static final long OVERRIDE_ANY_ORIENTATION_TO_USER = 310816437;
     public static final long OVERRIDE_CAMERA_COMPAT_DISABLE_FORCE_ROTATION = 263959004;
+    public static final long OVERRIDE_CAMERA_COMPAT_DISABLE_FREEFORM_WINDOWING_TREATMENT = 314961188;
     public static final long OVERRIDE_CAMERA_COMPAT_DISABLE_REFRESH = 264304459;
     public static final long OVERRIDE_CAMERA_COMPAT_ENABLE_REFRESH_VIA_PAUSE = 264301586;
     public static final long OVERRIDE_ENABLE_COMPAT_FAKE_FOCUS = 263259275;
     public static final long OVERRIDE_ENABLE_COMPAT_IGNORE_ORIENTATION_REQUEST_WHEN_LOOP_DETECTED = 273509367;
     public static final long OVERRIDE_ENABLE_COMPAT_IGNORE_REQUESTED_ORIENTATION = 254631730;
+    public static final long OVERRIDE_ENABLE_INSETS_DECOUPLED_CONFIGURATION = 327313645;
     public static final long OVERRIDE_LANDSCAPE_ORIENTATION_TO_REVERSE_LANDSCAPE = 266124927;
     public static final long OVERRIDE_MIN_ASPECT_RATIO = 174042980;
     public static final long OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN = 218959984;
@@ -114,7 +121,10 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     public static final float OVERRIDE_MIN_ASPECT_RATIO_LARGE_VALUE = 1.7777778f;
     public static final long OVERRIDE_MIN_ASPECT_RATIO_MEDIUM = 180326845;
     public static final float OVERRIDE_MIN_ASPECT_RATIO_MEDIUM_VALUE = 1.5f;
+    public static final long OVERRIDE_MIN_ASPECT_RATIO_ONLY_FOR_CAMERA = 325586858;
     public static final long OVERRIDE_MIN_ASPECT_RATIO_PORTRAIT_ONLY = 203647190;
+    public static final long OVERRIDE_MIN_ASPECT_RATIO_SMALL = 349045028;
+    public static final float OVERRIDE_MIN_ASPECT_RATIO_SMALL_VALUE = 1.3333334f;
     public static final long OVERRIDE_MIN_ASPECT_RATIO_TO_ALIGN_WITH_SPLIT_SCREEN = 208648326;
     public static final long OVERRIDE_ORIENTATION_ONLY_FOR_CAMERA = 265456536;
     public static final long OVERRIDE_RESPECT_REQUESTED_ORIENTATION = 236283604;
@@ -178,6 +188,7 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     public int persistableMode;
     public int privateFlags;
     public String requestedVrComponent;
+    public int requireContentUriPermissionFromCaller;
     public String requiredDisplayCategory;
     public int resizeMode;
     public int rotationAnimation;
@@ -193,14 +204,13 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     private static final Parcelling.BuiltIn.ForStringSet sForStringSet = (Parcelling.BuiltIn.ForStringSet) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForStringSet.class);
     public static int[] CONFIG_NATIVE_BITS = {2, 1, 4, 8, 16, 32, 64, 128, 2048, 4096, 512, 8192, 256, 16384, 65536, 131072, 131072, 32768, 262144, 524288, 2097152, 1048576};
     public static final Parcelable.Creator<ActivityInfo> CREATOR = new Parcelable.Creator<ActivityInfo>() { // from class: android.content.pm.ActivityInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityInfo createFromParcel(Parcel source) {
             return new ActivityInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityInfo[] newArray(int size) {
             return new ActivityInfo[size];
@@ -208,32 +218,27 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ColorMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Config {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface LaunchMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
+    public @interface RequiredContentUriPermission {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ScreenOrientation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SizeChangesSupportMode {
-    }
-
-    /* synthetic */ ActivityInfo(Parcel parcel, ActivityInfoIA activityInfoIA) {
-        this(parcel);
     }
 
     public static String launchModeToString(int launchMode) {
@@ -253,36 +258,81 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         }
     }
 
+    public static boolean isRequiredContentUriPermissionRead(int permission) {
+        switch (permission) {
+            case 1:
+            case 3:
+            case 4:
+                return true;
+            case 2:
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isRequiredContentUriPermissionWrite(int permission) {
+        switch (permission) {
+            case 2:
+            case 3:
+            case 4:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private String requiredContentUriPermissionToFullString(int permission) {
+        switch (permission) {
+            case 0:
+                return "CONTENT_URI_PERMISSION_NONE";
+            case 1:
+                return "CONTENT_URI_PERMISSION_READ";
+            case 2:
+                return "CONTENT_URI_PERMISSION_WRITE";
+            case 3:
+                return "CONTENT_URI_PERMISSION_READ_OR_WRITE";
+            case 4:
+                return "CONTENT_URI_PERMISSION_READ_AND_WRITE";
+            default:
+                return "unknown=" + permission;
+        }
+    }
+
+    public static String requiredContentUriPermissionToShortString(int permission) {
+        switch (permission) {
+            case 0:
+                return "none";
+            case 1:
+                return "read";
+            case 2:
+                return "write";
+            case 3:
+                return "read or write";
+            case 4:
+                return "read and write";
+            default:
+                return "unknown=" + permission;
+        }
+    }
+
     public static int activityInfoConfigJavaToNative(int input) {
         int output = 0;
-        int i = 0;
-        while (true) {
-            int[] iArr = CONFIG_NATIVE_BITS;
-            if (i < iArr.length) {
-                if (((1 << i) & input) != 0) {
-                    output |= iArr[i];
-                }
-                i++;
-            } else {
-                return output;
+        for (int i = 0; i < CONFIG_NATIVE_BITS.length; i++) {
+            if (((1 << i) & input) != 0) {
+                output |= CONFIG_NATIVE_BITS[i];
             }
         }
+        return output;
     }
 
     public static int activityInfoConfigNativeToJava(int input) {
         int output = 0;
-        int i = 0;
-        while (true) {
-            int[] iArr = CONFIG_NATIVE_BITS;
-            if (i < iArr.length) {
-                if ((iArr[i] & input) != 0) {
-                    output |= 1 << i;
-                }
-                i++;
-            } else {
-                return output;
+        for (int i = 0; i < CONFIG_NATIVE_BITS.length; i++) {
+            if ((CONFIG_NATIVE_BITS[i] & input) != 0) {
+                output |= 1 << i;
             }
         }
+        return output;
     }
 
     public int getRealConfigChanged() {
@@ -292,7 +342,12 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         } else {
             i = this.configChanges;
         }
-        return i | 0 | 1048576;
+        return i | getRealConfigChangedIfNeeded();
+    }
+
+    private int getRealConfigChangedIfNeeded() {
+        int change = 0 | 1048576;
+        return change | 4194304;
     }
 
     public static final String lockTaskLaunchModeToString(int lockTaskLaunchMode) {
@@ -354,12 +409,12 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         this.mMinAspectRatio = orig.mMinAspectRatio;
         this.supportsSizeChanges = orig.supportsSizeChanges;
         this.requiredDisplayCategory = orig.requiredDisplayCategory;
+        this.requireContentUriPermissionFromCaller = orig.requireContentUriPermissionFromCaller;
         this.transientBarShowingDelayMillis = orig.transientBarShowingDelayMillis;
     }
 
     public final int getThemeResource() {
-        int i = this.theme;
-        return i != 0 ? i : this.applicationInfo.theme;
+        return this.theme != 0 ? this.theme : this.applicationInfo.theme;
     }
 
     private String persistableModeToString() {
@@ -387,7 +442,7 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         return orientation == 14 || orientation == 5 || isFixedOrientationLandscape(orientation) || isFixedOrientationPortrait(orientation);
     }
 
-    public boolean isFixedOrientationLandscape() {
+    boolean isFixedOrientationLandscape() {
         return isFixedOrientationLandscape(this.screenOrientation);
     }
 
@@ -395,7 +450,7 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         return orientation == 0 || orientation == 6 || orientation == 8 || orientation == 11;
     }
 
-    public boolean isFixedOrientationPortrait() {
+    boolean isFixedOrientationPortrait() {
         return isFixedOrientationPortrait(this.screenOrientation);
     }
 
@@ -460,8 +515,7 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     }
 
     public Set<String> getKnownActivityEmbeddingCerts() {
-        Set<String> set = this.mKnownActivityEmbeddingCerts;
-        return set == null ? Collections.emptySet() : set;
+        return this.mKnownActivityEmbeddingCerts == null ? Collections.emptySet() : this.mKnownActivityEmbeddingCerts;
     }
 
     public void setKnownActivityEmbeddingCerts(Set<String> knownActivityEmbeddingCerts) {
@@ -472,7 +526,7 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     }
 
     public boolean isChangeEnabled(long changeId) {
-        return CompatChanges.isChangeEnabled(changeId, this.applicationInfo.packageName, UserHandle.getUserHandleForUid(this.applicationInfo.uid));
+        return this.applicationInfo.isChangeEnabled(changeId);
     }
 
     public float getManifestMinAspectRatio() {
@@ -592,6 +646,9 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         if (this.requiredDisplayCategory != null) {
             pw.println(prefix + "requiredDisplayCategory=" + this.requiredDisplayCategory);
         }
+        if ((dumpFlags & 1) != 0) {
+            pw.println(prefix + "requireContentUriPermissionFromCaller=" + requiredContentUriPermissionToFullString(this.requireContentUriPermissionFromCaller));
+        }
         if (this.transientBarShowingDelayMillis >= 0) {
             pw.println(prefix + "transientBarShowingDelayMillis=" + this.transientBarShowingDelayMillis);
         }
@@ -642,6 +699,7 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         dest.writeBoolean(this.supportsSizeChanges);
         sForStringSet.parcel(this.mKnownActivityEmbeddingCerts, dest, this.flags);
         dest.writeString8(this.requiredDisplayCategory);
+        dest.writeInt(this.requireContentUriPermissionFromCaller);
         dest.writeInt(this.transientBarShowingDelayMillis);
     }
 
@@ -708,23 +766,6 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         }
     }
 
-    /* renamed from: android.content.pm.ActivityInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ActivityInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityInfo createFromParcel(Parcel source) {
-            return new ActivityInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityInfo[] newArray(int size) {
-            return new ActivityInfo[size];
-        }
-    }
-
     private ActivityInfo(Parcel source) {
         super(source);
         this.resizeMode = 2;
@@ -761,16 +802,15 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         this.mMaxAspectRatio = source.readFloat();
         this.mMinAspectRatio = source.readFloat();
         this.supportsSizeChanges = source.readBoolean();
-        Set<String> unparcel = sForStringSet.unparcel(source);
-        this.mKnownActivityEmbeddingCerts = unparcel;
-        if (unparcel.isEmpty()) {
+        this.mKnownActivityEmbeddingCerts = sForStringSet.unparcel(source);
+        if (this.mKnownActivityEmbeddingCerts.isEmpty()) {
             this.mKnownActivityEmbeddingCerts = null;
         }
         this.requiredDisplayCategory = source.readString8();
+        this.requireContentUriPermissionFromCaller = source.readInt();
         this.transientBarShowingDelayMillis = source.readInt();
     }
 
-    /* loaded from: classes.dex */
     public static final class WindowLayout {
         public final int gravity;
         public final int height;

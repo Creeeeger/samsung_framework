@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActivityLocationLogging extends SContextEventContext {
     public static final Parcelable.Creator<SContextActivityLocationLogging> CREATOR = new Parcelable.Creator<SContextActivityLocationLogging>() { // from class: android.hardware.scontext.SContextActivityLocationLogging.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityLocationLogging createFromParcel(Parcel in) {
             return new SContextActivityLocationLogging(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityLocationLogging[] newArray(int size) {
             return new SContextActivityLocationLogging[size];
@@ -25,7 +24,7 @@ public class SContextActivityLocationLogging extends SContextEventContext {
     private Bundle mInfo;
     private int mType;
 
-    public SContextActivityLocationLogging() {
+    SContextActivityLocationLogging() {
         this.mContext = new Bundle();
         this.mInfo = new Bundle();
     }
@@ -39,16 +38,15 @@ public class SContextActivityLocationLogging extends SContextEventContext {
     }
 
     public int getLoggingSize() {
-        int i = this.mType;
-        if (i == 1) {
+        if (this.mType == 1) {
             int size = this.mInfo.getInt("StayingAreaCount");
             return size;
         }
-        if (i == 2) {
+        if (this.mType == 2) {
             int size2 = this.mInfo.getInt("MovingCount");
             return size2;
         }
-        if (i != 3) {
+        if (this.mType != 3) {
             return 0;
         }
         int size3 = this.mInfo.getInt("TrajectoryCount");
@@ -56,35 +54,33 @@ public class SContextActivityLocationLogging extends SContextEventContext {
     }
 
     public long[] getTimestamp() {
-        int i = this.mType;
-        if (i == 1) {
+        if (this.mType == 1) {
             return this.mInfo.getLongArray("StayingAreaTimeStamp");
         }
-        if (i == 2) {
+        if (this.mType == 2) {
             int[] duration = this.mInfo.getIntArray("MovingTimeDuration");
             long[] timestamp = new long[duration.length];
-            for (int i2 = 0; i2 < duration.length; i2++) {
-                if (i2 == 0) {
-                    timestamp[i2] = this.mInfo.getLong("MovingTimeStamp");
+            for (int i = 0; i < duration.length; i++) {
+                if (i == 0) {
+                    timestamp[i] = this.mInfo.getLong("MovingTimeStamp");
                 } else {
-                    timestamp[i2] = timestamp[i2 - 1] + duration[i2 - 1];
+                    timestamp[i] = timestamp[i - 1] + duration[i - 1];
                 }
             }
             return timestamp;
         }
-        if (i != 3) {
+        if (this.mType != 3) {
             return null;
         }
         return this.mInfo.getLongArray("TrajectoryTimeStamp");
     }
 
     public double[] getLatitude() {
-        int i = this.mType;
-        if (i == 1) {
+        if (this.mType == 1) {
             double[] latitude = this.mInfo.getDoubleArray("StayingAreaLatitude");
             return latitude;
         }
-        if (i != 3) {
+        if (this.mType != 3) {
             return null;
         }
         double[] latitude2 = this.mInfo.getDoubleArray("TrajectoryLatitude");
@@ -92,12 +88,11 @@ public class SContextActivityLocationLogging extends SContextEventContext {
     }
 
     public double[] getLongitude() {
-        int i = this.mType;
-        if (i == 1) {
+        if (this.mType == 1) {
             double[] longitude = this.mInfo.getDoubleArray("StayingAreaLongitude");
             return longitude;
         }
-        if (i != 3) {
+        if (this.mType != 3) {
             return null;
         }
         double[] longitude2 = this.mInfo.getDoubleArray("TrajectoryLongitude");
@@ -105,12 +100,11 @@ public class SContextActivityLocationLogging extends SContextEventContext {
     }
 
     public double[] getAltitude() {
-        int i = this.mType;
-        if (i == 1) {
+        if (this.mType == 1) {
             double[] altitude = this.mInfo.getDoubleArray("StayingAreaAltitude");
             return altitude;
         }
-        if (i != 3) {
+        if (this.mType != 3) {
             return null;
         }
         double[] altitude2 = this.mInfo.getDoubleArray("TrajectoryAltitude");
@@ -150,22 +144,5 @@ public class SContextActivityLocationLogging extends SContextEventContext {
         this.mContext = src.readBundle();
         this.mInfo = src.readBundle();
         this.mType = src.readInt();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextActivityLocationLogging$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextActivityLocationLogging> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityLocationLogging createFromParcel(Parcel in) {
-            return new SContextActivityLocationLogging(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityLocationLogging[] newArray(int size) {
-            return new SContextActivityLocationLogging[size];
-        }
     }
 }

@@ -27,11 +27,10 @@ public class SyncRtSurfaceTransactionApplier {
     }
 
     public void scheduleApply(SurfaceParams... params) {
-        ViewRootImpl viewRootImpl = this.mTargetViewRootImpl;
-        if (viewRootImpl == null) {
+        if (this.mTargetViewRootImpl == null) {
             return;
         }
-        this.mTargetSc = viewRootImpl.getSurfaceControl();
+        this.mTargetSc = this.mTargetViewRootImpl.getSurfaceControl();
         final SurfaceControl.Transaction t = new SurfaceControl.Transaction();
         applyParams(t, params);
         this.mTargetViewRootImpl.registerRtFrameCallback(new HardwareRenderer.FrameDrawingCallback() { // from class: android.view.SyncRtSurfaceTransactionApplier$$ExternalSyntheticLambda0
@@ -43,15 +42,15 @@ public class SyncRtSurfaceTransactionApplier {
         this.mTargetViewRootImpl.getView().invalidate();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$scheduleApply$0(SurfaceControl.Transaction t, long frame) {
-        SurfaceControl surfaceControl = this.mTargetSc;
-        if (surfaceControl != null && surfaceControl.isValid()) {
+        if (this.mTargetSc != null && this.mTargetSc.isValid()) {
             applyTransaction(t, frame);
         }
         t.close();
     }
 
-    public void applyParams(SurfaceControl.Transaction t, SurfaceParams... params) {
+    void applyParams(SurfaceControl.Transaction t, SurfaceParams... params) {
         for (int i = params.length - 1; i >= 0; i--) {
             SurfaceParams surfaceParams = params[i];
             SurfaceControl surfaceControl = surfaceParams.surface;
@@ -60,9 +59,8 @@ public class SyncRtSurfaceTransactionApplier {
     }
 
     void applyTransaction(SurfaceControl.Transaction t, long frame) {
-        ViewRootImpl viewRootImpl = this.mTargetViewRootImpl;
-        if (viewRootImpl != null) {
-            viewRootImpl.mergeWithNextTransaction(t, frame);
+        if (this.mTargetViewRootImpl != null) {
+            this.mTargetViewRootImpl.mergeWithNextTransaction(t, frame);
         } else {
             t.apply();
         }
@@ -99,19 +97,13 @@ public class SyncRtSurfaceTransactionApplier {
         }
     }
 
-    public static void create(View targetView, Consumer<SyncRtSurfaceTransactionApplier> callback) {
+    public static void create(final View targetView, final Consumer<SyncRtSurfaceTransactionApplier> callback) {
         if (targetView == null) {
             callback.accept(null);
         } else if (targetView.getViewRootImpl() != null) {
             callback.accept(new SyncRtSurfaceTransactionApplier(targetView));
         } else {
             targetView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() { // from class: android.view.SyncRtSurfaceTransactionApplier.1
-                final /* synthetic */ Consumer val$callback;
-
-                AnonymousClass1(Consumer callback2) {
-                    callback = callback2;
-                }
-
                 @Override // android.view.View.OnAttachStateChangeListener
                 public void onViewAttachedToWindow(View v) {
                     View.this.removeOnAttachStateChangeListener(this);
@@ -125,27 +117,6 @@ public class SyncRtSurfaceTransactionApplier {
         }
     }
 
-    /* renamed from: android.view.SyncRtSurfaceTransactionApplier$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements View.OnAttachStateChangeListener {
-        final /* synthetic */ Consumer val$callback;
-
-        AnonymousClass1(Consumer callback2) {
-            callback = callback2;
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewAttachedToWindow(View v) {
-            View.this.removeOnAttachStateChangeListener(this);
-            callback.accept(new SyncRtSurfaceTransactionApplier(View.this));
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewDetachedFromWindow(View v) {
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static class SurfaceParams {
         public final float alpha;
         public final int backgroundBlurRadius;
@@ -158,11 +129,6 @@ public class SyncRtSurfaceTransactionApplier {
         public final boolean visible;
         public final Rect windowCrop;
 
-        /* synthetic */ SurfaceParams(SurfaceControl surfaceControl, int i, float f, Matrix matrix, Rect rect, int i2, float f2, int i3, boolean z, SurfaceControl.Transaction transaction, SurfaceParamsIA surfaceParamsIA) {
-            this(surfaceControl, i, f, matrix, rect, i2, f2, i3, z, transaction);
-        }
-
-        /* loaded from: classes4.dex */
         public static class Builder {
             float alpha;
             int backgroundBlurRadius;

@@ -9,14 +9,19 @@ import android.os.Parcel;
 import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 import android.view.inputmethod.ImeTracker;
+import com.android.internal.infra.AndroidFuture;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImeTracker extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IImeTracker";
+
+    void finishTrackingPendingImeVisibilityRequests(AndroidFuture androidFuture) throws RemoteException;
 
     boolean hasPendingImeVisibilityRequests() throws RemoteException;
 
     void onCancelled(ImeTracker.Token token, int i) throws RemoteException;
+
+    void onDispatched(ImeTracker.Token token) throws RemoteException;
 
     void onFailed(ImeTracker.Token token, int i) throws RemoteException;
 
@@ -24,21 +29,13 @@ public interface IImeTracker extends IInterface {
 
     void onProgress(IBinder iBinder, int i) throws RemoteException;
 
-    ImeTracker.Token onRequestHide(String str, int i, int i2, int i3) throws RemoteException;
-
-    ImeTracker.Token onRequestShow(String str, int i, int i2, int i3) throws RemoteException;
-
     void onShown(ImeTracker.Token token) throws RemoteException;
 
-    /* loaded from: classes4.dex */
+    ImeTracker.Token onStart(String str, int i, int i2, int i3, int i4, boolean z) throws RemoteException;
+
     public static class Default implements IImeTracker {
         @Override // com.android.internal.inputmethod.IImeTracker
-        public ImeTracker.Token onRequestShow(String tag, int uid, int origin, int reason) throws RemoteException {
-            return null;
-        }
-
-        @Override // com.android.internal.inputmethod.IImeTracker
-        public ImeTracker.Token onRequestHide(String tag, int uid, int origin, int reason) throws RemoteException {
+        public ImeTracker.Token onStart(String tag, int uid, int type, int origin, int reason, boolean fromUser) throws RemoteException {
             return null;
         }
 
@@ -63,8 +60,16 @@ public interface IImeTracker extends IInterface {
         }
 
         @Override // com.android.internal.inputmethod.IImeTracker
+        public void onDispatched(ImeTracker.Token statsToken) throws RemoteException {
+        }
+
+        @Override // com.android.internal.inputmethod.IImeTracker
         public boolean hasPendingImeVisibilityRequests() throws RemoteException {
             return false;
+        }
+
+        @Override // com.android.internal.inputmethod.IImeTracker
+        public void finishTrackingPendingImeVisibilityRequests(AndroidFuture completionSignal) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -73,16 +78,16 @@ public interface IImeTracker extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImeTracker {
+        static final int TRANSACTION_finishTrackingPendingImeVisibilityRequests = 9;
         static final int TRANSACTION_hasPendingImeVisibilityRequests = 8;
-        static final int TRANSACTION_onCancelled = 5;
-        static final int TRANSACTION_onFailed = 4;
-        static final int TRANSACTION_onHidden = 7;
-        static final int TRANSACTION_onProgress = 3;
-        static final int TRANSACTION_onRequestHide = 2;
-        static final int TRANSACTION_onRequestShow = 1;
-        static final int TRANSACTION_onShown = 6;
+        static final int TRANSACTION_onCancelled = 4;
+        static final int TRANSACTION_onDispatched = 7;
+        static final int TRANSACTION_onFailed = 3;
+        static final int TRANSACTION_onHidden = 6;
+        static final int TRANSACTION_onProgress = 2;
+        static final int TRANSACTION_onShown = 5;
+        static final int TRANSACTION_onStart = 1;
         private final PermissionEnforcer mEnforcer;
 
         public Stub(PermissionEnforcer enforcer) {
@@ -117,21 +122,23 @@ public interface IImeTracker extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return "onRequestShow";
+                    return "onStart";
                 case 2:
-                    return "onRequestHide";
-                case 3:
                     return "onProgress";
-                case 4:
+                case 3:
                     return "onFailed";
-                case 5:
+                case 4:
                     return "onCancelled";
-                case 6:
+                case 5:
                     return "onShown";
-                case 7:
+                case 6:
                     return "onHidden";
+                case 7:
+                    return "onDispatched";
                 case 8:
                     return "hasPendingImeVisibilityRequests";
+                case 9:
+                    return "finishTrackingPendingImeVisibilityRequests";
                 default:
                     return null;
             }
@@ -147,74 +154,72 @@ public interface IImeTracker extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImeTracker.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImeTracker.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImeTracker.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    boolean _arg5 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    ImeTracker.Token _result = onStart(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgress(_arg02, _arg12);
+                    return true;
+                case 3:
+                    ImeTracker.Token _arg03 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFailed(_arg03, _arg13);
+                    return true;
+                case 4:
+                    ImeTracker.Token _arg04 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCancelled(_arg04, _arg14);
+                    return true;
+                case 5:
+                    ImeTracker.Token _arg05 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onShown(_arg05);
+                    return true;
+                case 6:
+                    ImeTracker.Token _arg06 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onHidden(_arg06);
+                    return true;
+                case 7:
+                    ImeTracker.Token _arg07 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDispatched(_arg07);
+                    return true;
+                case 8:
+                    boolean _result2 = hasPendingImeVisibilityRequests();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 9:
+                    AndroidFuture _arg08 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    finishTrackingPendingImeVisibilityRequests(_arg08);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ImeTracker.Token _result = onRequestShow(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ImeTracker.Token _result2 = onRequestHide(_arg02, _arg12, _arg22, _arg32);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgress(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            ImeTracker.Token _arg04 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFailed(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            ImeTracker.Token _arg05 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCancelled(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            ImeTracker.Token _arg06 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            onShown(_arg06);
-                            return true;
-                        case 7:
-                            ImeTracker.Token _arg07 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            onHidden(_arg07);
-                            return true;
-                        case 8:
-                            boolean _result3 = hasPendingImeVisibilityRequests();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImeTracker {
+        private static class Proxy implements IImeTracker {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -231,36 +236,18 @@ public interface IImeTracker extends IInterface {
             }
 
             @Override // com.android.internal.inputmethod.IImeTracker
-            public ImeTracker.Token onRequestShow(String tag, int uid, int origin, int reason) throws RemoteException {
+            public ImeTracker.Token onStart(String tag, int uid, int type, int origin, int reason, boolean fromUser) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
                     _data.writeString(tag);
                     _data.writeInt(uid);
+                    _data.writeInt(type);
                     _data.writeInt(origin);
                     _data.writeInt(reason);
+                    _data.writeBoolean(fromUser);
                     this.mRemote.transact(1, _data, _reply, 0);
-                    _reply.readException();
-                    ImeTracker.Token _result = (ImeTracker.Token) _reply.readTypedObject(ImeTracker.Token.CREATOR);
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.inputmethod.IImeTracker
-            public ImeTracker.Token onRequestHide(String tag, int uid, int origin, int reason) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
-                    _data.writeString(tag);
-                    _data.writeInt(uid);
-                    _data.writeInt(origin);
-                    _data.writeInt(reason);
-                    this.mRemote.transact(2, _data, _reply, 0);
                     _reply.readException();
                     ImeTracker.Token _result = (ImeTracker.Token) _reply.readTypedObject(ImeTracker.Token.CREATOR);
                     return _result;
@@ -277,7 +264,7 @@ public interface IImeTracker extends IInterface {
                     _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
                     _data.writeStrongBinder(binder);
                     _data.writeInt(phase);
-                    this.mRemote.transact(3, _data, null, 1);
+                    this.mRemote.transact(2, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -290,7 +277,7 @@ public interface IImeTracker extends IInterface {
                     _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
                     _data.writeTypedObject(statsToken, 0);
                     _data.writeInt(phase);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(3, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -303,7 +290,7 @@ public interface IImeTracker extends IInterface {
                     _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
                     _data.writeTypedObject(statsToken, 0);
                     _data.writeInt(phase);
-                    this.mRemote.transact(5, _data, null, 1);
+                    this.mRemote.transact(4, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -315,7 +302,7 @@ public interface IImeTracker extends IInterface {
                 try {
                     _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
                     _data.writeTypedObject(statsToken, 0);
-                    this.mRemote.transact(6, _data, null, 1);
+                    this.mRemote.transact(5, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -323,6 +310,18 @@ public interface IImeTracker extends IInterface {
 
             @Override // com.android.internal.inputmethod.IImeTracker
             public void onHidden(ImeTracker.Token statsToken) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
+                    _data.writeTypedObject(statsToken, 0);
+                    this.mRemote.transact(6, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.inputmethod.IImeTracker
+            public void onDispatched(ImeTracker.Token statsToken) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
@@ -348,15 +347,31 @@ public interface IImeTracker extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // com.android.internal.inputmethod.IImeTracker
+            public void finishTrackingPendingImeVisibilityRequests(AndroidFuture completionSignal) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IImeTracker.DESCRIPTOR);
+                    _data.writeTypedObject(completionSignal, 0);
+                    this.mRemote.transact(9, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         protected void hasPendingImeVisibilityRequests_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.TEST_INPUT_METHOD, getCallingPid(), getCallingUid());
         }
 
+        protected void finishTrackingPendingImeVisibilityRequests_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.TEST_INPUT_METHOD, getCallingPid(), getCallingUid());
+        }
+
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 7;
+            return 8;
         }
     }
 }

@@ -32,6 +32,7 @@ public class AppWidgetHost {
     static final int HANDLE_PROVIDER_CHANGED = 2;
     static final int HANDLE_UPDATE = 1;
     static final int HANDLE_VIEW_DATA_CHANGED = 4;
+    static final int HANDLE_VIEW_UPDATE_DEFERRED = 6;
     private static final String TAG = "AppWidgetHost";
     static IAppWidgetService sService;
     private final Callbacks mCallbacks;
@@ -44,18 +45,7 @@ public class AppWidgetHost {
     static final Object sServiceLock = new Object();
     static boolean sServiceInitialized = false;
 
-    /* loaded from: classes.dex */
-    public interface AppWidgetHostListener {
-        void onUpdateProviderInfo(AppWidgetProviderInfo appWidgetProviderInfo);
-
-        void onViewDataChanged(int i);
-
-        void updateAppWidget(RemoteViews remoteViews);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public static class Callbacks extends IAppWidgetHost.Stub {
+    static class Callbacks extends IAppWidgetHost.Stub {
         private final WeakReference<Handler> mWeakHandler;
 
         public Callbacks(Handler handler) {
@@ -65,7 +55,7 @@ public class AppWidgetHost {
         @Override // com.android.internal.appwidget.IAppWidgetHost
         public void updateAppWidget(int appWidgetId, RemoteViews views) {
             if (isLocalBinder() && views != null) {
-                views = views.mo407clone();
+                views = views.mo447clone();
             }
             Handler handler = this.mWeakHandler.get();
             if (handler == null) {
@@ -79,7 +69,7 @@ public class AppWidgetHost {
         @Override // com.android.internal.appwidget.IAppWidgetHost
         public void providerChanged(int appWidgetId, AppWidgetProviderInfo info) {
             if (isLocalBinder() && info != null) {
-                info = info.m737clone();
+                info = info.m783clone();
             }
             Handler handler = this.mWeakHandler.get();
             if (handler == null) {
@@ -117,14 +107,22 @@ public class AppWidgetHost {
             msg.sendToTarget();
         }
 
+        @Override // com.android.internal.appwidget.IAppWidgetHost
+        public void updateAppWidgetDeferred(int appWidgetId) {
+            Handler handler = this.mWeakHandler.get();
+            if (handler == null) {
+                return;
+            }
+            Message msg = handler.obtainMessage(6, appWidgetId, 0, null);
+            msg.sendToTarget();
+        }
+
         private static boolean isLocalBinder() {
             return Process.myPid() == Binder.getCallingPid();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public class UpdateHandler extends Handler {
+    class UpdateHandler extends Handler {
         public UpdateHandler(Looper looper) {
             super(looper);
         }
@@ -134,21 +132,22 @@ public class AppWidgetHost {
             switch (msg.what) {
                 case 1:
                     AppWidgetHost.this.updateAppWidgetView(msg.arg1, (RemoteViews) msg.obj);
-                    return;
+                    break;
                 case 2:
                     AppWidgetHost.this.onProviderChanged(msg.arg1, (AppWidgetProviderInfo) msg.obj);
-                    return;
+                    break;
                 case 3:
                     AppWidgetHost.this.onProvidersChanged();
-                    return;
+                    break;
                 case 4:
                     AppWidgetHost.this.viewDataChanged(msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 5:
                     AppWidgetHost.this.dispatchOnAppWidgetRemoved(msg.arg1);
-                    return;
-                default:
-                    return;
+                    break;
+                case 6:
+                    AppWidgetHost.this.updateAppWidgetDeferred(msg.arg1);
+                    break;
             }
         }
     }
@@ -170,9 +169,8 @@ public class AppWidgetHost {
         this.mContextOpPackageName = context.getOpPackageName();
         this.mHostId = hostId;
         this.mInteractionHandler = handler;
-        UpdateHandler updateHandler = new UpdateHandler(looper);
-        this.mHandler = updateHandler;
-        this.mCallbacks = new Callbacks(updateHandler);
+        this.mHandler = new UpdateHandler(looper);
+        this.mCallbacks = new Callbacks(this.mHandler);
         this.mDisplayMetrics = context.getResources().getDisplayMetrics();
         bindService(context);
     }
@@ -229,36 +227,33 @@ public class AppWidgetHost {
     }
 
     public void stopListening() {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return;
         }
         try {
-            iAppWidgetService.stopListening(this.mContextOpPackageName, this.mHostId);
+            sService.stopListening(this.mContextOpPackageName, this.mHostId);
         } catch (RemoteException e) {
             throw new RuntimeException("system server dead?", e);
         }
     }
 
     public int allocateAppWidgetId() {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return -1;
         }
         try {
-            return iAppWidgetService.allocateAppWidgetId(this.mContextOpPackageName, this.mHostId);
+            return sService.allocateAppWidgetId(this.mContextOpPackageName, this.mHostId);
         } catch (RemoteException e) {
             throw new RuntimeException("system server dead?", e);
         }
     }
 
     public final void startAppWidgetConfigureActivityForResult(Activity activity, int appWidgetId, int intentFlags, int requestCode, Bundle options) {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return;
         }
         try {
-            IntentSender intentSender = iAppWidgetService.createAppWidgetConfigIntentSender(this.mContextOpPackageName, appWidgetId, intentFlags);
+            IntentSender intentSender = sService.createAppWidgetConfigIntentSender(this.mContextOpPackageName, appWidgetId, intentFlags);
             if (intentSender != null) {
                 activity.startIntentSenderForResult(intentSender, requestCode, (Intent) null, 0, 0, 0, options);
                 return;
@@ -272,24 +267,22 @@ public class AppWidgetHost {
     }
 
     public void setAppWidgetHidden() {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return;
         }
         try {
-            iAppWidgetService.setAppWidgetHidden(this.mContextOpPackageName, this.mHostId);
+            sService.setAppWidgetHidden(this.mContextOpPackageName, this.mHostId);
         } catch (RemoteException e) {
             throw new RuntimeException("System server dead?", e);
         }
     }
 
     public final void semStartAppWidgetConfigureActivityForResult(Activity activity, int appWidgetId, int intentFlags, int requestCode, Bundle options) {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return;
         }
         try {
-            IntentSender intentSender = iAppWidgetService.semCreateAppWidgetConfigIntentSender(this.mContextOpPackageName, appWidgetId, intentFlags);
+            IntentSender intentSender = sService.semCreateAppWidgetConfigIntentSender(this.mContextOpPackageName, appWidgetId, intentFlags);
             if (intentSender != null) {
                 activity.startIntentSenderForResult(intentSender, requestCode, (Intent) null, 0, 0, 0, options);
                 return;
@@ -307,12 +300,11 @@ public class AppWidgetHost {
     }
 
     public int[] getAppWidgetIds() {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return new int[0];
         }
         try {
-            return iAppWidgetService.getAppWidgetIdsForHost(this.mContextOpPackageName, this.mHostId);
+            return sService.getAppWidgetIdsForHost(this.mContextOpPackageName, this.mHostId);
         } catch (RemoteException e) {
             throw new RuntimeException("system server dead?", e);
         }
@@ -333,24 +325,22 @@ public class AppWidgetHost {
     }
 
     public void deleteHost() {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return;
         }
         try {
-            iAppWidgetService.deleteHost(this.mContextOpPackageName, this.mHostId);
+            sService.deleteHost(this.mContextOpPackageName, this.mHostId);
         } catch (RemoteException e) {
             throw new RuntimeException("system server dead?", e);
         }
     }
 
     public static void deleteAllHosts() {
-        IAppWidgetService iAppWidgetService = sService;
-        if (iAppWidgetService == null) {
+        if (sService == null) {
             return;
         }
         try {
-            iAppWidgetService.deleteAllHosts();
+            sService.deleteAllHosts();
         } catch (RemoteException e) {
             throw new RuntimeException("system server dead?", e);
         }
@@ -376,6 +366,24 @@ public class AppWidgetHost {
         appWidget.updateDimensions(this.mDisplayMetrics);
         if (v != null) {
             v.onUpdateProviderInfo(appWidget);
+        }
+    }
+
+    public interface AppWidgetHostListener {
+        void onUpdateProviderInfo(AppWidgetProviderInfo appWidgetProviderInfo);
+
+        void onViewDataChanged(int i);
+
+        void updateAppWidget(RemoteViews remoteViews);
+
+        default void updateAppWidgetDeferred(String packageName, int appWidgetId) {
+            RemoteViews latestViews = null;
+            try {
+                latestViews = AppWidgetHost.sService.getAppWidgetViews(packageName, appWidgetId);
+            } catch (Exception e) {
+                Log.e(AppWidgetHost.TAG, "updateAppWidgetDeferred: ", e);
+            }
+            updateAppWidget(latestViews);
         }
     }
 
@@ -421,6 +429,16 @@ public class AppWidgetHost {
         Log.i(TAG, "viewDataChanged, appWidgetId = " + appWidgetId + ", v = " + v);
         if (v != null) {
             v.onViewDataChanged(viewId);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void updateAppWidgetDeferred(int appWidgetId) {
+        AppWidgetHostListener v = getListener(appWidgetId);
+        if (v == null) {
+            Log.e(TAG, "updateAppWidgetDeferred: null listener for id: " + appWidgetId);
+        } else {
+            v.updateAppWidgetDeferred(this.mContextOpPackageName, appWidgetId);
         }
     }
 

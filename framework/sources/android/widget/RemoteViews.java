@@ -14,12 +14,14 @@ import android.app.LoadedApk;
 import android.app.PendingIntent;
 import android.app.RemoteInput;
 import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetProviderInfo;
+import android.appwidget.flags.Flags;
 import android.content.ClipData;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ApkAssets;
@@ -37,21 +39,30 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.graphics.drawable.RippleDrawable;
-import android.graphics.drawable.VectorDrawable;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
+import android.os.RemoteException;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.system.Os;
 import android.telecom.Logging.Session;
+import android.text.ParcelableSpan;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StrikethroughSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
+import android.text.style.TypefaceSpan;
+import android.text.style.UnderlineSpan;
 import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.util.IntArray;
@@ -59,6 +70,7 @@ import android.util.Log;
 import android.util.LongArray;
 import android.util.Pair;
 import android.util.SizeF;
+import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
@@ -76,12 +88,14 @@ import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.RemoteViews;
-import android.widget.RemoteViewsAdapter;
 import com.android.internal.R;
-import com.android.internal.util.ContrastColorUtil;
 import com.android.internal.util.Preconditions;
+import com.android.internal.widget.IRemoteViewsFactory;
+import com.android.internal.widget.remotecompose.player.RemoteComposeDocument;
+import com.android.internal.widget.remotecompose.player.RemoteComposePlayer;
 import com.samsung.android.cocktailbar.CocktailHostView;
 import com.samsung.android.rune.ViewRune;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -104,10 +118,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Stack;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 /* loaded from: classes4.dex */
@@ -132,13 +148,14 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     public static final int MARGIN_RIGHT = 2;
     public static final int MARGIN_START = 4;
     public static final int MARGIN_TOP = 1;
+    private static final int MAX_ADAPTER_CONVERSION_WAITING_TIME_MS = 20000;
     private static final int MAX_INIT_VIEW_COUNT = 16;
     private static final int MAX_NESTED_VIEWS = 10;
+    private static final int MAX_SINGLE_PARCEL_SIZE = 800000;
     private static final int MODE_HAS_LANDSCAPE_AND_PORTRAIT = 1;
     private static final int MODE_HAS_SIZED_REMOTEVIEWS = 2;
     private static final int MODE_NORMAL = 0;
     private static final int NIGHT_MODE_REFLECTION_ACTION_TAG = 30;
-    private static final int OVERRIDE_TEXT_COLORS_TAG = 20;
     private static final int REFLECTION_ACTION_TAG = 2;
     private static final int REMOVE_FROM_PARENT_ACTION_TAG = 23;
     private static final int RESOURCE_REFLECTION_ACTION_TAG = 24;
@@ -153,24 +170,26 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     private static final int SEM_SET_ON_LONG_CLICK_PENDING_INTENT_TAG = 100;
     private static final int SEM_SET_ON_LONG_CLICK_PENDING_INTENT_TEMPLATE_TAG = 101;
     private static final int SEM_SET_ON_TOUCH_PENDING_INTENT_TAG = 103;
-    private static final int SEM_SET_TEXT_VIEW_SHADOW_ACTION_TAG = 109;
-    private static final int SEM_SET_VECTOR_DRAWABLE_PATH_COLOR_TAG = 108;
+    private static final int SEM_SET_STRING_TAG = 109;
+    private static final int SEM_SET_TEXT_VIEW_SHADOW_ACTION_TAG = 108;
+    private static final int SEM_TEXT_VIEW_TEXT_ACTION_TAG = 110;
     private static final int SEM_VIEW_OBJECT_ANIMATOR_ACTION_TAG = 106;
     private static final int SET_COMPOUND_BUTTON_CHECKED_TAG = 26;
     private static final int SET_DRAWABLE_TINT_TAG = 3;
+    private static final int SET_DRAW_INSTRUCTION_TAG = 35;
     private static final int SET_EMPTY_VIEW_ACTION_TAG = 6;
     private static final int SET_INT_TAG_TAG = 22;
     private static final int SET_ON_CHECKED_CHANGE_RESPONSE_TAG = 29;
     private static final int SET_ON_CLICK_RESPONSE_TAG = 1;
+    private static final int SET_ON_STYLUS_HANDWRITING_RESPONSE_TAG = 34;
     private static final int SET_PENDING_INTENT_TEMPLATE_TAG = 8;
     private static final int SET_RADIO_GROUP_CHECKED = 27;
+    private static final int SET_REMOTE_ADAPTER_TAG = 33;
     private static final int SET_REMOTE_COLLECTION_ITEMS_ADAPTER_TAG = 31;
     private static final int SET_REMOTE_INPUTS_ACTION_TAG = 18;
     private static final int SET_REMOTE_VIEW_ADAPTER_INTENT_TAG = 10;
-    private static final int SET_REMOTE_VIEW_ADAPTER_LIST_TAG = 15;
     private static final int SET_RIPPLE_DRAWABLE_COLOR_TAG = 21;
     private static final int SET_VIEW_OUTLINE_RADIUS_TAG = 28;
-    private static final int SFE_STARTING_TAG = 41;
     private static final int TEXT_VIEW_DRAWABLE_ACTION_TAG = 11;
     private static final int TEXT_VIEW_SIZE_ACTION_TAG = 13;
     static final int VALUE_TYPE_ATTRIBUTE = 4;
@@ -192,20 +211,24 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     private int mApplyFlags;
     private BitmapCache mBitmapCache;
     private Map<Class, Object> mClassCookies;
+    private RemoteCollectionCache mCollectionCache;
+    private SparseArray<Intent> mFillInIntent;
+    private boolean mHasDrawInstructions;
     private SizeF mIdealSize;
-    private boolean mIsAllowPendintIntentInCollection;
     private boolean mIsForcedOrientation;
     private boolean mIsPortrait;
     private boolean mIsRoot;
     private RemoteViews mLandscape;
     private int mLayoutId;
+    private LayoutInflater.Factory2 mLayoutInflaterFactory2;
     private int mLightBackgroundLayoutId;
+    private SparseArray<PendingIntent> mPendingIntentTemplate;
     private RemoteViews mPortrait;
     private long mProviderInstanceId;
     private List<RemoteViews> mSizedRemoteViews;
     private int mViewId;
     private static final Parcel.ReadWriteHelper ALTERNATIVE_DEFAULT = new Parcel.ReadWriteHelper();
-    private static final LayoutInflater.Filter INFLATER_FILTER = new LayoutInflater.Filter() { // from class: android.widget.RemoteViews$$ExternalSyntheticLambda0
+    private static final LayoutInflater.Filter INFLATER_FILTER = new LayoutInflater.Filter() { // from class: android.widget.RemoteViews$$ExternalSyntheticLambda1
         @Override // android.view.LayoutInflater.Filter
         public final boolean onLoadClass(Class cls) {
             boolean isAnnotationPresent;
@@ -213,7 +236,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             return isAnnotationPresent;
         }
     };
-    private static final InteractionHandler DEFAULT_INTERACTION_HANDLER = new InteractionHandler() { // from class: android.widget.RemoteViews$$ExternalSyntheticLambda1
+    private static final InteractionHandler DEFAULT_INTERACTION_HANDLER = new InteractionHandler() { // from class: android.widget.RemoteViews$$ExternalSyntheticLambda2
         @Override // android.widget.RemoteViews.InteractionHandler
         public final boolean onInteraction(View view, PendingIntent pendingIntent, RemoteViews.RemoteResponse remoteResponse) {
             boolean startPendingIntent;
@@ -224,22 +247,19 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     private static final ArrayMap<MethodKey, MethodArgs> sMethods = new ArrayMap<>();
     private static final MethodKey sLookupKey = new MethodKey();
     private static final Action ACTION_NOOP = new RuntimeAction() { // from class: android.widget.RemoteViews.1
-        AnonymousClass1() {
-        }
-
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
         }
     };
+    private static final String[] PARCELABLE_SPAN_KEYS = {"TypefaceSpan", "TextAppearanceSpan", "UnderlineSpan", "StrikethroughSpan", "StyleSpan"};
     public static final Parcelable.Creator<RemoteViews> CREATOR = new Parcelable.Creator<RemoteViews>() { // from class: android.widget.RemoteViews.2
-        AnonymousClass2() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteViews createFromParcel(Parcel parcel) {
             return new RemoteViews(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteViews[] newArray(int size) {
             return new RemoteViews[size];
@@ -247,43 +267,41 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ApplyFlags {
     }
 
-    /* loaded from: classes4.dex */
     public interface InteractionHandler {
         boolean onInteraction(View view, PendingIntent pendingIntent, RemoteResponse remoteResponse);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface MarginType {
     }
 
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes4.dex */
     public @interface RemoteView {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface ValueType {
-    }
-
-    /* synthetic */ RemoteViews(Parcel parcel, HierarchyRootData hierarchyRootData, ApplicationInfo applicationInfo, int i, RemoteViewsIA remoteViewsIA) {
-        this(parcel, hierarchyRootData, applicationInfo, i);
     }
 
     public void hidden_semSetAllowOtherRootParent(boolean enable, int appwidgetid) {
         this.mAllowOtherRootParent = enable;
         this.mAppWidgetId = appwidgetid;
-        this.mIsAllowPendintIntentInCollection = enable;
     }
 
     public void setRemoteInputs(int viewId, RemoteInput[] remoteInputs) {
         this.mActions.add(new SetRemoteInputsAction(viewId, remoteInputs));
+    }
+
+    public void setLayoutInflaterFactory(LayoutInflater.Factory2 factory) {
+        this.mLayoutInflaterFactory2 = factory;
+    }
+
+    public LayoutInflater.Factory2 getLayoutInflaterFactory() {
+        return this.mLayoutInflaterFactory2;
     }
 
     public void reduceImageSizes(int maxWidth, int maxHeight) {
@@ -292,10 +310,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             Bitmap bitmap = cache.get(i);
             cache.set(i, Icon.scaleDownIfNecessary(bitmap, maxWidth, maxHeight));
         }
-    }
-
-    public void overrideTextColors(int textColor) {
-        addAction(new OverrideTextColorsAction(textColor));
     }
 
     public void setIntTag(int viewId, int key, int tag) {
@@ -327,8 +341,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return (this.mApplyFlags & flag) == flag;
     }
 
-    /* loaded from: classes4.dex */
-    public static class MethodKey {
+    static class MethodKey {
         public String methodName;
         public Class paramClass;
         public Class targetClass;
@@ -355,8 +368,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class MethodArgs {
+    static class MethodArgs {
         public MethodHandle asyncMethod;
         public String asyncMethodName;
         public MethodHandle syncMethod;
@@ -365,7 +377,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ActionException extends RuntimeException {
         public ActionException(Exception ex) {
             super(ex);
@@ -380,27 +391,20 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static abstract class Action implements Parcelable {
+    /* JADX INFO: Access modifiers changed from: private */
+    static abstract class Action {
         public static final int MERGE_APPEND = 1;
         public static final int MERGE_IGNORE = 2;
         public static final int MERGE_REPLACE = 0;
-        int viewId;
-
-        /* synthetic */ Action(ActionIA actionIA) {
-            this();
-        }
+        int mViewId;
 
         public abstract void apply(View view, ViewGroup viewGroup, ActionApplyParams actionApplyParams) throws ActionException;
 
         public abstract int getActionTag();
 
-        private Action() {
-        }
+        public abstract void writeToParcel(Parcel parcel, int i);
 
-        @Override // android.os.Parcelable
-        public int describeContents() {
-            return 0;
+        private Action() {
         }
 
         public void setHierarchyRootData(HierarchyRootData root) {
@@ -411,7 +415,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
 
         public String getUniqueKey() {
-            return getActionTag() + Session.SESSION_SEPARATION_CHAR_CHILD + this.viewId;
+            return getActionTag() + Session.SESSION_SEPARATION_CHAR_CHILD + this.mViewId;
         }
 
         public Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
@@ -429,13 +433,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static abstract class RuntimeAction extends Action {
-        /* synthetic */ RuntimeAction(RuntimeActionIA runtimeActionIA) {
-            this();
-        }
-
+    private static abstract class RuntimeAction extends Action {
         private RuntimeAction() {
             super();
         }
@@ -445,20 +443,9 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             return 0;
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public final void writeToParcel(Parcel dest, int flags) {
             throw new UnsupportedOperationException();
-        }
-    }
-
-    /* renamed from: android.widget.RemoteViews$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends RuntimeAction {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
         }
     }
 
@@ -519,6 +506,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
+    public boolean isLegacyListRemoteViews() {
+        return this.mCollectionCache.mIdToUriMapping.size() > 0;
+    }
+
     public void visitUris(Consumer<Uri> visitor) {
         if (this.mActions != null) {
             for (int i = 0; i < this.mActions.size(); i++) {
@@ -530,16 +521,96 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 this.mSizedRemoteViews.get(i2).visitUris(visitor);
             }
         }
-        RemoteViews remoteViews = this.mLandscape;
-        if (remoteViews != null) {
-            remoteViews.visitUris(visitor);
+        if (this.mLandscape != null) {
+            this.mLandscape.visitUris(visitor);
         }
-        RemoteViews remoteViews2 = this.mPortrait;
-        if (remoteViews2 != null) {
-            remoteViews2.visitUris(visitor);
+        if (this.mPortrait != null) {
+            this.mPortrait.visitUris(visitor);
         }
     }
 
+    public boolean replaceRemoteCollections(int viewId) {
+        boolean isActionReplaced = false;
+        if (this.mActions != null) {
+            for (int i = 0; i < this.mActions.size(); i++) {
+                Action action = this.mActions.get(i);
+                if (action instanceof SetRemoteCollectionItemListAdapterAction) {
+                    SetRemoteCollectionItemListAdapterAction itemsAction = (SetRemoteCollectionItemListAdapterAction) action;
+                    if (itemsAction.mViewId == viewId && itemsAction.mServiceIntent != null) {
+                        SetRemoteCollectionItemListAdapterAction newCollectionAction = new SetRemoteCollectionItemListAdapterAction(itemsAction.mViewId, itemsAction.mServiceIntent);
+                        newCollectionAction.mIntentId = itemsAction.mIntentId;
+                        newCollectionAction.mIsReplacedIntoAction = true;
+                        this.mActions.set(i, newCollectionAction);
+                        isActionReplaced = true;
+                    }
+                }
+                if (action instanceof SetRemoteViewsAdapterIntent) {
+                    SetRemoteViewsAdapterIntent intentAction = (SetRemoteViewsAdapterIntent) action;
+                    if (intentAction.mViewId == viewId) {
+                        this.mActions.set(i, new SetRemoteCollectionItemListAdapterAction(intentAction.mViewId, intentAction.mIntent));
+                        isActionReplaced = true;
+                    }
+                }
+                if (action instanceof ViewGroupActionAdd) {
+                    ViewGroupActionAdd groupAction = (ViewGroupActionAdd) action;
+                    if (groupAction.mNestedViews != null) {
+                        isActionReplaced |= groupAction.mNestedViews.replaceRemoteCollections(viewId);
+                    }
+                }
+            }
+        }
+        if (this.mSizedRemoteViews != null) {
+            for (int i2 = 0; i2 < this.mSizedRemoteViews.size(); i2++) {
+                isActionReplaced |= this.mSizedRemoteViews.get(i2).replaceRemoteCollections(viewId);
+            }
+        }
+        if (this.mLandscape != null) {
+            isActionReplaced |= this.mLandscape.replaceRemoteCollections(viewId);
+        }
+        if (this.mPortrait != null) {
+            return isActionReplaced | this.mPortrait.replaceRemoteCollections(viewId);
+        }
+        return isActionReplaced;
+    }
+
+    public boolean hasLegacyLists() {
+        if (this.mActions != null) {
+            for (int i = 0; i < this.mActions.size(); i++) {
+                Action action = this.mActions.get(i);
+                if (action instanceof SetRemoteCollectionItemListAdapterAction) {
+                    SetRemoteCollectionItemListAdapterAction itemsAction = (SetRemoteCollectionItemListAdapterAction) action;
+                    if (itemsAction.mServiceIntent != null) {
+                        return true;
+                    }
+                }
+                if (action instanceof SetRemoteViewsAdapterIntent) {
+                    SetRemoteViewsAdapterIntent intentAction = (SetRemoteViewsAdapterIntent) action;
+                    if (intentAction.mIntent != null) {
+                        return true;
+                    }
+                }
+                if (action instanceof ViewGroupActionAdd) {
+                    ViewGroupActionAdd groupAction = (ViewGroupActionAdd) action;
+                    if (groupAction.mNestedViews != null && groupAction.mNestedViews.hasLegacyLists()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (this.mSizedRemoteViews != null) {
+            for (int i2 = 0; i2 < this.mSizedRemoteViews.size(); i2++) {
+                if (this.mSizedRemoteViews.get(i2).hasLegacyLists()) {
+                    return true;
+                }
+            }
+        }
+        if (this.mLandscape == null || !this.mLandscape.hasLegacyLists()) {
+            return this.mPortrait != null && this.mPortrait.hasLegacyLists();
+        }
+        return true;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public static void visitIconUri(Icon icon, Consumer<Uri> visitor) {
         if (icon != null) {
             if (icon.getType() == 4 || icon.getType() == 6) {
@@ -548,8 +619,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class RemoteViewsContextWrapper extends ContextWrapper {
+    private static class RemoteViewsContextWrapper extends ContextWrapper {
         private final Context mContextForResources;
 
         RemoteViewsContextWrapper(Context context, Context contextForResources) {
@@ -588,34 +658,33 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SetEmptyView extends Action {
-        int emptyViewId;
+    private static class SetEmptyView extends Action {
+        int mEmptyViewId;
 
         SetEmptyView(int viewId, int emptyViewId) {
             super();
-            this.viewId = viewId;
-            this.emptyViewId = emptyViewId;
+            this.mViewId = viewId;
+            this.mEmptyViewId = emptyViewId;
         }
 
         SetEmptyView(Parcel in) {
             super();
-            this.viewId = in.readInt();
-            this.emptyViewId = in.readInt();
+            this.mViewId = in.readInt();
+            this.mEmptyViewId = in.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel out, int flags) {
-            out.writeInt(this.viewId);
-            out.writeInt(this.emptyViewId);
+            out.writeInt(this.mViewId);
+            out.writeInt(this.mEmptyViewId);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View view = root.findViewById(this.viewId);
+            View view = root.findViewById(this.mViewId);
             if (view instanceof AdapterView) {
                 AdapterView<?> adapterView = (AdapterView) view;
-                View emptyView = root.findViewById(this.emptyViewId);
+                View emptyView = root.findViewById(this.mEmptyViewId);
                 if (emptyView == null) {
                     return;
                 }
@@ -629,31 +698,31 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SetPendingIntentTemplate extends Action {
-        PendingIntent pendingIntentTemplate;
+    /* JADX INFO: Access modifiers changed from: private */
+    static class SetPendingIntentTemplate extends Action {
+        PendingIntent mPendingIntentTemplate;
 
         public SetPendingIntentTemplate(int id, PendingIntent pendingIntentTemplate) {
             super();
-            this.viewId = id;
-            this.pendingIntentTemplate = pendingIntentTemplate;
+            this.mViewId = id;
+            this.mPendingIntentTemplate = pendingIntentTemplate;
         }
 
         public SetPendingIntentTemplate(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            this.pendingIntentTemplate = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+            this.mViewId = parcel.readInt();
+            this.mPendingIntentTemplate = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            PendingIntent.writePendingIntentOrNullToParcel(this.pendingIntentTemplate, dest);
+            dest.writeInt(this.mViewId);
+            PendingIntent.writePendingIntentOrNullToParcel(this.mPendingIntentTemplate, dest);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, final ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
@@ -666,12 +735,13 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     }
                 };
                 av.setOnItemClickListener(listener);
-                av.setTag(this.pendingIntentTemplate);
+                av.setTag(this.mPendingIntentTemplate);
                 return;
             }
-            Log.e(RemoteViews.LOG_TAG, "Cannot setPendingIntentTemplate on a view which is notan AdapterView (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+            Log.e(RemoteViews.LOG_TAG, "Cannot setPendingIntentTemplate on a view which is notan AdapterView (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$apply$0(ActionApplyParams params, AdapterView parent, View view, int position, long id) {
             RemoteResponse response = findRemoteResponseTag(view);
             if (response != null) {
@@ -707,76 +777,8 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SetRemoteViewsAdapterList extends Action {
-        ArrayList<RemoteViews> list;
-        int viewTypeCount;
-
-        public SetRemoteViewsAdapterList(int id, ArrayList<RemoteViews> list, int viewTypeCount) {
-            super();
-            this.viewId = id;
-            this.list = list;
-            this.viewTypeCount = viewTypeCount;
-        }
-
-        public SetRemoteViewsAdapterList(Parcel parcel) {
-            super();
-            this.viewId = parcel.readInt();
-            this.viewTypeCount = parcel.readInt();
-            this.list = parcel.createTypedArrayList(RemoteViews.CREATOR);
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeInt(this.viewTypeCount);
-            dest.writeTypedList(this.list, flags);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            if (!(rootParent instanceof AppWidgetHostView) && !RemoteViews.this.mAllowOtherRootParent) {
-                Log.e(RemoteViews.LOG_TAG, "SetRemoteViewsAdapterIntent action can only be used for AppWidgets (root id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
-                return;
-            }
-            if (!(target instanceof AbsListView) && !(target instanceof AdapterViewAnimator)) {
-                Log.e(RemoteViews.LOG_TAG, "Cannot setRemoteViewsAdapter on a view which is not an AbsListView or AdapterViewAnimator (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
-                return;
-            }
-            if (target instanceof AbsListView) {
-                AbsListView v = (AbsListView) target;
-                Adapter a = v.getAdapter();
-                if ((a instanceof RemoteViewsListAdapter) && this.viewTypeCount <= a.getViewTypeCount()) {
-                    ((RemoteViewsListAdapter) a).setViewsList(this.list);
-                    return;
-                } else {
-                    v.setAdapter((ListAdapter) new RemoteViewsListAdapter(v.getContext(), this.list, this.viewTypeCount, params.colorResources));
-                    return;
-                }
-            }
-            if (target instanceof AdapterViewAnimator) {
-                AdapterViewAnimator v2 = (AdapterViewAnimator) target;
-                Adapter a2 = v2.getAdapter();
-                if ((a2 instanceof RemoteViewsListAdapter) && this.viewTypeCount <= a2.getViewTypeCount()) {
-                    ((RemoteViewsListAdapter) a2).setViewsList(this.list);
-                } else {
-                    v2.setAdapter(new RemoteViewsListAdapter(v2.getContext(), this.list, this.viewTypeCount, params.colorResources));
-                }
-            }
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 15;
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public static class ApplicationInfoCache {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ApplicationInfoCache {
         private final Map<Pair<String, Integer>, ApplicationInfo> mPackageUserToApplicationInfo = new ArrayMap();
 
         ApplicationInfoCache() {
@@ -795,7 +797,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             });
         }
 
-        public static /* synthetic */ ApplicationInfo lambda$getOrPut$0(ApplicationInfo applicationInfo, Pair ignored) {
+        static /* synthetic */ ApplicationInfo lambda$getOrPut$0(ApplicationInfo applicationInfo, Pair ignored) {
             return applicationInfo;
         }
 
@@ -816,59 +818,97 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SetRemoteCollectionItemListAdapterAction extends Action {
-        private final RemoteCollectionItems mItems;
+    private class SetRemoteCollectionItemListAdapterAction extends Action {
+        int mIntentId;
+        boolean mIsReplacedIntoAction;
+        private RemoteCollectionItems mItems;
+        final Intent mServiceIntent;
 
         SetRemoteCollectionItemListAdapterAction(int id, RemoteCollectionItems items) {
             super();
-            this.viewId = id;
-            this.mItems = items;
+            this.mIntentId = -1;
+            this.mIsReplacedIntoAction = false;
+            this.mViewId = id;
             items.setHierarchyRootData(RemoteViews.this.getHierarchyRootData());
+            this.mItems = items;
+            this.mServiceIntent = null;
+        }
+
+        SetRemoteCollectionItemListAdapterAction(int id, Intent intent) {
+            super();
+            this.mIntentId = -1;
+            this.mIsReplacedIntoAction = false;
+            this.mViewId = id;
+            this.mItems = null;
+            this.mServiceIntent = intent;
         }
 
         SetRemoteCollectionItemListAdapterAction(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            this.mItems = new RemoteCollectionItems(parcel, RemoteViews.this.getHierarchyRootData());
+            this.mIntentId = -1;
+            this.mIsReplacedIntoAction = false;
+            this.mViewId = parcel.readInt();
+            this.mIntentId = parcel.readInt();
+            this.mIsReplacedIntoAction = parcel.readBoolean();
+            this.mServiceIntent = (Intent) parcel.readTypedObject(Intent.CREATOR);
+            this.mItems = this.mServiceIntent == null ? new RemoteCollectionItems(parcel, RemoteViews.this.getHierarchyRootData()) : null;
         }
 
         @Override // android.widget.RemoteViews.Action
         public void setHierarchyRootData(HierarchyRootData rootData) {
-            this.mItems.setHierarchyRootData(rootData);
+            if (this.mItems != null) {
+                this.mItems.setHierarchyRootData(rootData);
+            } else if (this.mIntentId != -1) {
+                RemoteViews.this.mCollectionCache.setHierarchyDataForId(this.mIntentId, rootData);
+            }
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            this.mItems.writeToParcel(dest, flags, true);
+            dest.writeInt(this.mViewId);
+            dest.writeInt(this.mIntentId);
+            dest.writeBoolean(this.mIsReplacedIntoAction);
+            dest.writeTypedObject(this.mServiceIntent, flags);
+            if (this.mItems != null) {
+                this.mItems.writeToParcel(dest, flags, true);
+            }
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
+            RemoteCollectionItems items;
             ActionException actionException;
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
+            if (this.mIntentId == -1) {
+                if (this.mItems == null) {
+                    items = new RemoteCollectionItems.Builder().build();
+                } else {
+                    items = this.mItems;
+                }
+            } else {
+                items = RemoteViews.this.mCollectionCache.getItemsForId(this.mIntentId);
+            }
             if (!(rootParent instanceof AppWidgetHostView) && !RemoteViews.this.mAllowOtherRootParent) {
-                Log.e(RemoteViews.LOG_TAG, "setRemoteAdapter can only be used for AppWidgets (root id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+                Log.e(RemoteViews.LOG_TAG, "setRemoteAdapter can only be used for AppWidgets (root id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
                 return;
             }
             if (!(target instanceof AdapterView)) {
-                Log.e(RemoteViews.LOG_TAG, "Cannot call setRemoteAdapter on a view which is not an AdapterView (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+                Log.e(RemoteViews.LOG_TAG, "Cannot call setRemoteAdapter on a view which is not an AdapterView (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
                 return;
             }
             AdapterView adapterView = (AdapterView) target;
             Adapter adapter = adapterView.getAdapter();
-            if ((adapter instanceof RemoteCollectionItemsAdapter) && adapter.getViewTypeCount() >= this.mItems.getViewTypeCount()) {
+            if ((adapter instanceof RemoteCollectionItemsAdapter) && adapter.getViewTypeCount() >= items.getViewTypeCount()) {
                 try {
-                    ((RemoteCollectionItemsAdapter) adapter).setData(this.mItems, params.handler, params.colorResources);
+                    ((RemoteCollectionItemsAdapter) adapter).setData(items, params.handler, params.colorResources);
                 } finally {
                 }
             } else {
                 try {
-                    adapterView.setAdapter(new RemoteCollectionItemsAdapter(this.mItems, params.handler, params.colorResources));
+                    adapterView.setAdapter(new RemoteCollectionItemsAdapter(items, params.handler, params.colorResources));
                 } finally {
                 }
             }
@@ -878,36 +918,251 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         public int getActionTag() {
             return 31;
         }
+
+        @Override // android.widget.RemoteViews.Action
+        public String getUniqueKey() {
+            return "33_" + this.mViewId;
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void visitUris(Consumer<Uri> visitor) {
+            if (this.mIntentId != -1 || this.mItems == null) {
+                return;
+            }
+            this.mItems.visitUris(visitor);
+        }
     }
 
-    /* loaded from: classes4.dex */
-    public class SetRemoteViewsAdapterIntent extends Action {
-        Intent intent;
-        boolean isAsync;
+    public CompletableFuture<Void> collectAllIntents() {
+        return this.mCollectionCache.collectAllIntentsNoComplete(this);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    class RemoteCollectionCache {
+        private final SparseArray<String> mIdToUriMapping = new SparseArray<>();
+        private final Map<String, RemoteCollectionItems> mUriToCollectionMapping = new HashMap();
+
+        RemoteCollectionCache() {
+        }
+
+        RemoteCollectionCache(RemoteCollectionCache src) {
+            for (int i = 0; i < src.mIdToUriMapping.size(); i++) {
+                String uri = src.mIdToUriMapping.valueAt(i);
+                this.mIdToUriMapping.put(src.mIdToUriMapping.keyAt(i), uri);
+                this.mUriToCollectionMapping.put(uri, src.mUriToCollectionMapping.get(uri));
+            }
+        }
+
+        RemoteCollectionCache(Parcel in) {
+            int cacheSize = in.readInt();
+            HierarchyRootData currentRootData = new HierarchyRootData(RemoteViews.this.mBitmapCache, this, RemoteViews.this.mApplicationInfoCache, RemoteViews.this.mClassCookies);
+            for (int i = 0; i < cacheSize; i++) {
+                int intentId = in.readInt();
+                String intentUri = in.readString8();
+                RemoteCollectionItems items = new RemoteCollectionItems(in, currentRootData);
+                this.mIdToUriMapping.put(intentId, intentUri);
+                this.mUriToCollectionMapping.put(intentUri, items);
+            }
+        }
+
+        void setHierarchyDataForId(int intentId, HierarchyRootData data) {
+            String uri = this.mIdToUriMapping.get(intentId);
+            if (this.mUriToCollectionMapping.get(uri) == null) {
+                Log.e(RemoteViews.LOG_TAG, "Error setting hierarchy data for id=" + intentId);
+            } else {
+                RemoteCollectionItems items = this.mUriToCollectionMapping.get(uri);
+                items.setHierarchyRootData(data);
+            }
+        }
+
+        RemoteCollectionItems getItemsForId(int intentId) {
+            String uri = this.mIdToUriMapping.get(intentId);
+            return this.mUriToCollectionMapping.get(uri);
+        }
+
+        public CompletableFuture<Void> collectAllIntentsNoComplete(RemoteViews inViews) {
+            SparseArray<Intent> idToIntentMapping = new SparseArray<>();
+            collectAllIntentsInternal(inViews, idToIntentMapping);
+            int numOfIntents = idToIntentMapping.size();
+            if (numOfIntents == 0) {
+                Log.e(RemoteViews.LOG_TAG, "Possibly notifying updates for nonexistent view Id");
+                return CompletableFuture.completedFuture(null);
+            }
+            Parcel sizeTestParcel = Parcel.obtain();
+            RemoteViews.this.writeToParcel(sizeTestParcel, 0, idToIntentMapping);
+            int remainingSize = RemoteViews.MAX_SINGLE_PARCEL_SIZE - sizeTestParcel.dataSize();
+            sizeTestParcel.recycle();
+            int individualSize = remainingSize >= 0 ? remainingSize / numOfIntents : 0;
+            return connectAllUniqueIntents(individualSize, idToIntentMapping);
+        }
+
+        private void collectAllIntentsInternal(RemoteViews inViews, SparseArray<Intent> idToIntentMapping) {
+            if (inViews.hasSizedRemoteViews()) {
+                for (RemoteViews remoteViews : inViews.mSizedRemoteViews) {
+                    collectAllIntentsInternal(remoteViews, idToIntentMapping);
+                }
+                return;
+            }
+            if (inViews.hasLandscapeAndPortraitLayouts()) {
+                collectAllIntentsInternal(inViews.mLandscape, idToIntentMapping);
+                collectAllIntentsInternal(inViews.mPortrait, idToIntentMapping);
+                return;
+            }
+            if (inViews.mActions != null) {
+                Iterator it = inViews.mActions.iterator();
+                while (it.hasNext()) {
+                    Action action = (Action) it.next();
+                    if (action instanceof SetRemoteCollectionItemListAdapterAction) {
+                        SetRemoteCollectionItemListAdapterAction rca = (SetRemoteCollectionItemListAdapterAction) action;
+                        if (rca.mIntentId == -1 || rca.mIsReplacedIntoAction) {
+                            if (rca.mIntentId != -1 && rca.mIsReplacedIntoAction) {
+                                rca.mIsReplacedIntoAction = false;
+                                if (!idToIntentMapping.contains(rca.mIntentId)) {
+                                    idToIntentMapping.put(rca.mIntentId, rca.mServiceIntent);
+                                    rca.mItems = null;
+                                }
+                            } else if (rca.mServiceIntent != null) {
+                                String uri = rca.mServiceIntent.toUri(0);
+                                int index = this.mIdToUriMapping.indexOfValueByValue(uri);
+                                if (index == -1) {
+                                    int newIntentId = this.mIdToUriMapping.size();
+                                    rca.mIntentId = newIntentId;
+                                    this.mIdToUriMapping.put(newIntentId, uri);
+                                    idToIntentMapping.put(rca.mIntentId, rca.mServiceIntent);
+                                    rca.mItems = null;
+                                } else {
+                                    rca.mIntentId = this.mIdToUriMapping.keyAt(index);
+                                    rca.mItems = null;
+                                }
+                            } else {
+                                for (RemoteViews views : rca.mItems.mViews) {
+                                    collectAllIntentsInternal(views, idToIntentMapping);
+                                }
+                            }
+                        }
+                    } else if (action instanceof ViewGroupActionAdd) {
+                        ViewGroupActionAdd vgaa = (ViewGroupActionAdd) action;
+                        if (vgaa.mNestedViews != null) {
+                            collectAllIntentsInternal(vgaa.mNestedViews, idToIntentMapping);
+                        }
+                    }
+                }
+            }
+        }
+
+        private CompletableFuture<Void> connectAllUniqueIntents(int individualSize, SparseArray<Intent> idToIntentMapping) {
+            List<CompletableFuture<Void>> intentFutureList = new ArrayList<>();
+            for (int i = 0; i < idToIntentMapping.size(); i++) {
+                final String currentIntentUri = this.mIdToUriMapping.get(idToIntentMapping.keyAt(i));
+                Intent currentIntent = idToIntentMapping.valueAt(i);
+                intentFutureList.add(getItemsFutureFromIntentWithTimeout(currentIntent, individualSize).thenAccept(new Consumer() { // from class: android.widget.RemoteViews$RemoteCollectionCache$$ExternalSyntheticLambda0
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        RemoteViews.RemoteCollectionCache.this.lambda$connectAllUniqueIntents$0(currentIntentUri, (RemoteViews.RemoteCollectionItems) obj);
+                    }
+                }));
+            }
+            return CompletableFuture.allOf((CompletableFuture[]) intentFutureList.toArray(new IntFunction() { // from class: android.widget.RemoteViews$RemoteCollectionCache$$ExternalSyntheticLambda1
+                @Override // java.util.function.IntFunction
+                public final Object apply(int i2) {
+                    return RemoteViews.RemoteCollectionCache.lambda$connectAllUniqueIntents$1(i2);
+                }
+            }));
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$connectAllUniqueIntents$0(String currentIntentUri, RemoteCollectionItems items) {
+            items.setHierarchyRootData(RemoteViews.this.getHierarchyRootData());
+            this.mUriToCollectionMapping.put(currentIntentUri, items);
+        }
+
+        static /* synthetic */ CompletableFuture[] lambda$connectAllUniqueIntents$1(int x$0) {
+            return new CompletableFuture[x$0];
+        }
+
+        private static CompletableFuture<RemoteCollectionItems> getItemsFutureFromIntentWithTimeout(Intent intent, final int individualSize) {
+            if (intent == null) {
+                Log.e(RemoteViews.LOG_TAG, "Null intent received when generating adapter future");
+                return CompletableFuture.completedFuture(new RemoteCollectionItems.Builder().build());
+            }
+            final Context context = ActivityThread.currentApplication();
+            final CompletableFuture<RemoteCollectionItems> result = new CompletableFuture<>();
+            context.bindService(intent, Context.BindServiceFlags.of(1L), result.defaultExecutor(), new ServiceConnection() { // from class: android.widget.RemoteViews.RemoteCollectionCache.1
+                @Override // android.content.ServiceConnection
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                    RemoteCollectionItems items;
+                    try {
+                        try {
+                            items = IRemoteViewsFactory.Stub.asInterface(iBinder).getRemoteCollectionItems(individualSize);
+                        } catch (RemoteException re) {
+                            RemoteCollectionItems items2 = new RemoteCollectionItems.Builder().build();
+                            Log.e(RemoteViews.LOG_TAG, "Error getting collection items from the factory", re);
+                            context.unbindService(this);
+                            items = items2;
+                        }
+                        if (items == null) {
+                            items = new RemoteCollectionItems.Builder().build();
+                        }
+                        result.complete(items);
+                    } finally {
+                        context.unbindService(this);
+                    }
+                }
+
+                @Override // android.content.ServiceConnection
+                public void onNullBinding(ComponentName name) {
+                    context.unbindService(this);
+                }
+
+                @Override // android.content.ServiceConnection
+                public void onServiceDisconnected(ComponentName componentName) {
+                }
+            });
+            result.completeOnTimeout(new RemoteCollectionItems.Builder().build(), 20000L, TimeUnit.MILLISECONDS);
+            return result;
+        }
+
+        public void writeToParcel(Parcel out, int flags, SparseArray<Intent> intentsToIgnore) {
+            out.writeInt(this.mIdToUriMapping.size());
+            for (int i = 0; i < this.mIdToUriMapping.size(); i++) {
+                int currentIntentId = this.mIdToUriMapping.keyAt(i);
+                if (intentsToIgnore == null || !intentsToIgnore.contains(currentIntentId)) {
+                    out.writeInt(currentIntentId);
+                    String intentUri = this.mIdToUriMapping.valueAt(i);
+                    out.writeString8(intentUri);
+                    this.mUriToCollectionMapping.get(intentUri).writeToParcel(out, flags, true);
+                }
+            }
+        }
+    }
+
+    private class SetRemoteViewsAdapterIntent extends Action {
+        Intent mIntent;
+        boolean mIsAsync;
 
         public SetRemoteViewsAdapterIntent(int id, Intent intent) {
             super();
-            this.isAsync = false;
-            this.viewId = id;
-            this.intent = intent;
+            this.mIsAsync = false;
+            this.mViewId = id;
+            this.mIntent = intent;
         }
 
         public SetRemoteViewsAdapterIntent(Parcel parcel) {
             super();
-            this.isAsync = false;
-            this.viewId = parcel.readInt();
-            this.intent = (Intent) parcel.readTypedObject(Intent.CREATOR);
+            this.mIsAsync = false;
+            this.mViewId = parcel.readInt();
+            this.mIntent = (Intent) parcel.readTypedObject(Intent.CREATOR);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeTypedObject(this.intent, flags);
+            dest.writeInt(this.mViewId);
+            dest.writeTypedObject(this.mIntent, flags);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
@@ -916,38 +1171,43 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 isCocktail = true;
             }
             if (!(rootParent instanceof AppWidgetHostView) && !RemoteViews.this.mAllowOtherRootParent && !isCocktail) {
-                Log.e(RemoteViews.LOG_TAG, "setRemoteAdapter can only be used for AppWidgets (root id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+                Log.e(RemoteViews.LOG_TAG, "setRemoteAdapter can only be used for AppWidgets (root id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
                 return;
             }
             if (!(target instanceof AbsListView) && !(target instanceof AdapterViewAnimator)) {
-                Log.e(RemoteViews.LOG_TAG, "Cannot setRemoteAdapter on a view which is not an AbsListView or AdapterViewAnimator (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+                Log.e(RemoteViews.LOG_TAG, "Cannot setRemoteAdapter on a view which is not an AbsListView or AdapterViewAnimator (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
                 return;
             }
             if (isCocktail) {
-                this.intent.putExtra(RemoteViews.EXTRA_REMOTEADAPTER_COCKTAIL, 1);
+                this.mIntent.putExtra(RemoteViews.EXTRA_REMOTEADAPTER_COCKTAIL, 1);
                 CocktailHostView host = (CocktailHostView) rootParent;
-                this.intent.putExtra(RemoteViews.EXTRA_REMOTEADAPTER_APPWIDGET_ID, host.getCocktailId());
+                this.mIntent.putExtra(RemoteViews.EXTRA_REMOTEADAPTER_APPWIDGET_ID, host.getCocktailId());
             } else {
-                if (!RemoteViews.this.mAllowOtherRootParent) {
-                    RemoteViews.this.mAppWidgetId = ((AppWidgetHostView) rootParent).getAppWidgetId();
+                if (!RemoteViews.this.mAllowOtherRootParent || (rootParent instanceof AppWidgetHostView)) {
+                    AppWidgetHostView host2 = (AppWidgetHostView) rootParent;
+                    RemoteViews.this.mAppWidgetId = host2.getAppWidgetId();
                 }
-                this.intent.putExtra(RemoteViews.EXTRA_REMOTEADAPTER_APPWIDGET_ID, RemoteViews.this.mAppWidgetId).putExtra(RemoteViews.EXTRA_REMOTEADAPTER_ON_LIGHT_BACKGROUND, RemoteViews.this.hasFlags(4));
+                this.mIntent.putExtra(RemoteViews.EXTRA_REMOTEADAPTER_APPWIDGET_ID, RemoteViews.this.mAppWidgetId).putExtra(RemoteViews.EXTRA_REMOTEADAPTER_ON_LIGHT_BACKGROUND, RemoteViews.this.hasFlags(4));
             }
             if (target instanceof AbsListView) {
                 AbsListView v = (AbsListView) target;
-                v.setRemoteViewsAdapter(this.intent, this.isAsync);
+                v.setRemoteViewsAdapter(this.mIntent, this.mIsAsync);
                 v.setRemoteViewsInteractionHandler(params.handler);
-            } else if (target instanceof AdapterViewAnimator) {
+                v.hidden_semSetAppWidgetId(RemoteViews.this.mAppWidgetId);
+                return;
+            }
+            if (target instanceof AdapterViewAnimator) {
                 AdapterViewAnimator v2 = (AdapterViewAnimator) target;
-                v2.setRemoteViewsAdapter(this.intent, this.isAsync);
+                v2.setRemoteViewsAdapter(this.mIntent, this.mIsAsync);
                 v2.setRemoteViewsOnClickHandler(params.handler);
+                v2.hidden_semSetAppWidgetId(RemoteViews.this.mAppWidgetId);
             }
         }
 
         @Override // android.widget.RemoteViews.Action
         public Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
-            SetRemoteViewsAdapterIntent copy = new SetRemoteViewsAdapterIntent(this.viewId, this.intent);
-            copy.isAsync = true;
+            SetRemoteViewsAdapterIntent copy = RemoteViews.this.new SetRemoteViewsAdapterIntent(this.mViewId, this.mIntent);
+            copy.mIsAsync = true;
             return copy;
         }
 
@@ -957,39 +1217,38 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SetOnClickResponse extends Action {
+    /* JADX INFO: Access modifiers changed from: private */
+    class SetOnClickResponse extends Action {
         final RemoteResponse mResponse;
 
         SetOnClickResponse(int id, RemoteResponse response) {
             super();
-            this.viewId = id;
+            this.mViewId = id;
             this.mResponse = response;
         }
 
         SetOnClickResponse(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            RemoteResponse remoteResponse = new RemoteResponse();
-            this.mResponse = remoteResponse;
-            remoteResponse.readFromParcel(parcel);
+            this.mViewId = parcel.readInt();
+            this.mResponse = new RemoteResponse();
+            this.mResponse.readFromParcel(parcel);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             this.mResponse.writeToParcel(dest, flags);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, final ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
-            if (target == null) {
+            View target;
+            if ((RemoteViews.this.hasDrawInstructions() && (root instanceof RemoteComposePlayer)) || (target = root.findViewById(this.mViewId)) == null) {
                 return;
             }
             if (this.mResponse.mPendingIntent != null) {
-                if (RemoteViews.this.hasFlags(2) && !RemoteViews.this.mIsAllowPendintIntentInCollection) {
-                    Log.w(RemoteViews.LOG_TAG, "Cannot SetOnClickResponse for collection item (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+                if (RemoteViews.this.hasFlags(2) && !RemoteViews.this.mAllowOtherRootParent) {
+                    Log.w(RemoteViews.LOG_TAG, "Cannot SetOnClickResponse for collection item (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
                     ApplicationInfo appInfo = root.getContext().getApplicationInfo();
                     if (appInfo != null && appInfo.targetSdkVersion >= 16) {
                         return;
@@ -1018,6 +1277,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$apply$0(ActionApplyParams params, View v) {
             this.mResponse.handleViewInteraction(v, params.handler);
         }
@@ -1034,44 +1294,96 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SetOnCheckedChangeResponse extends Action {
+    /* JADX INFO: Access modifiers changed from: private */
+    class SetOnStylusHandwritingResponse extends Action {
+        final PendingIntent mPendingIntent;
+
+        SetOnStylusHandwritingResponse(int id, PendingIntent pendingIntent) {
+            super();
+            this.mViewId = id;
+            this.mPendingIntent = pendingIntent;
+        }
+
+        SetOnStylusHandwritingResponse(Parcel parcel) {
+            super();
+            this.mViewId = parcel.readInt();
+            this.mPendingIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.mViewId);
+            PendingIntent.writePendingIntentOrNullToParcel(this.mPendingIntent, dest);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void apply(View root, ViewGroup rootParent, final ActionApplyParams params) {
+            final View target = root.findViewById(this.mViewId);
+            if (target == null) {
+                return;
+            }
+            if (RemoteViews.this.hasFlags(2)) {
+                Log.w(RemoteViews.LOG_TAG, "Cannot use setOnStylusHandwritingPendingIntent for collection item (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
+                return;
+            }
+            if (this.mPendingIntent != null) {
+                final RemoteResponse response = RemoteResponse.fromPendingIntent(this.mPendingIntent);
+                target.setHandwritingDelegatorCallback(new Runnable() { // from class: android.widget.RemoteViews$SetOnStylusHandwritingResponse$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        RemoteViews.RemoteResponse.this.handleViewInteraction(target, params.handler);
+                    }
+                });
+                target.setAllowedHandwritingDelegatePackage(this.mPendingIntent.getCreatorPackage());
+            } else {
+                target.setHandwritingDelegatorCallback(null);
+                target.setAllowedHandwritingDelegatePackage(null);
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public int getActionTag() {
+            return 34;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    class SetOnCheckedChangeResponse extends Action {
         private final RemoteResponse mResponse;
 
         SetOnCheckedChangeResponse(int id, RemoteResponse response) {
             super();
-            this.viewId = id;
+            this.mViewId = id;
             this.mResponse = response;
         }
 
         SetOnCheckedChangeResponse(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            RemoteResponse remoteResponse = new RemoteResponse();
-            this.mResponse = remoteResponse;
-            remoteResponse.readFromParcel(parcel);
+            this.mViewId = parcel.readInt();
+            this.mResponse = new RemoteResponse();
+            this.mResponse.readFromParcel(parcel);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             this.mResponse.writeToParcel(dest, flags);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, final ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
             if (!(target instanceof CompoundButton)) {
-                Log.w(RemoteViews.LOG_TAG, "setOnCheckedChange methods cannot be used on non-CompoundButton child (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+                Log.w(RemoteViews.LOG_TAG, "setOnCheckedChange methods cannot be used on non-CompoundButton child (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
                 return;
             }
             CompoundButton button = (CompoundButton) target;
             if (this.mResponse.mPendingIntent != null) {
                 if (RemoteViews.this.hasFlags(2)) {
-                    Log.w(RemoteViews.LOG_TAG, "Cannot setOnCheckedChangePendingIntent for collection item (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
+                    Log.w(RemoteViews.LOG_TAG, "Cannot setOnCheckedChangePendingIntent for collection item (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
                     return;
                 }
                 target.setTagInternal(R.id.pending_intent_tag, this.mResponse.mPendingIntent);
@@ -1095,6 +1407,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             button.setOnCheckedChangeListener(onCheckedChangeListener);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$apply$0(ActionApplyParams params, CompoundButton v, boolean isChecked) {
             this.mResponse.handleViewInteraction(v, params.handler);
         }
@@ -1123,6 +1436,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return rect;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Class<?> getParameterType(int type) {
         switch (type) {
             case 1:
@@ -1178,14 +1492,13 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static MethodHandle getMethod(View view, String methodName, Class<?> paramType, boolean async) {
         Method method;
         Class<?> cls = view.getClass();
-        ArrayMap<MethodKey, MethodArgs> arrayMap = sMethods;
-        synchronized (arrayMap) {
-            MethodKey methodKey = sLookupKey;
-            methodKey.set(cls, paramType, methodName);
-            MethodArgs result = arrayMap.get(methodKey);
+        synchronized (sMethods) {
+            sLookupKey.set(cls, paramType, methodName);
+            MethodArgs result = sMethods.get(sLookupKey);
             if (result == null) {
                 try {
                     if (paramType == null) {
@@ -1201,7 +1514,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     result.asyncMethodName = ((RemotableViewMethod) method.getAnnotation(RemotableViewMethod.class)).asyncImpl();
                     MethodKey key = new MethodKey();
                     key.set(cls, paramType, methodName);
-                    arrayMap.put(key, result);
+                    sMethods.put(key, result);
                 } catch (IllegalAccessException | NoSuchMethodException e) {
                     throw new ActionException("view: " + cls.getName() + " doesn't have method: " + methodName + getParameters(paramType));
                 }
@@ -1228,51 +1541,50 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return paramType == null ? "()" : NavigationBarInflaterView.KEY_CODE_START + paramType + NavigationBarInflaterView.KEY_CODE_END;
     }
 
-    /* loaded from: classes4.dex */
-    public static class SetDrawableTint extends Action {
-        int colorFilter;
-        PorterDuff.Mode filterMode;
-        boolean targetBackground;
+    private static class SetDrawableTint extends Action {
+        int mColorFilter;
+        PorterDuff.Mode mFilterMode;
+        boolean mTargetBackground;
 
         SetDrawableTint(int id, boolean targetBackground, int colorFilter, PorterDuff.Mode mode) {
             super();
-            this.viewId = id;
-            this.targetBackground = targetBackground;
-            this.colorFilter = colorFilter;
-            this.filterMode = mode;
+            this.mViewId = id;
+            this.mTargetBackground = targetBackground;
+            this.mColorFilter = colorFilter;
+            this.mFilterMode = mode;
         }
 
         SetDrawableTint(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            this.targetBackground = parcel.readInt() != 0;
-            this.colorFilter = parcel.readInt();
-            this.filterMode = PorterDuff.intToMode(parcel.readInt());
+            this.mViewId = parcel.readInt();
+            this.mTargetBackground = parcel.readInt() != 0;
+            this.mColorFilter = parcel.readInt();
+            this.mFilterMode = PorterDuff.intToMode(parcel.readInt());
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel parcel, int i) {
-            parcel.writeInt(this.viewId);
-            parcel.writeInt(this.targetBackground ? 1 : 0);
-            parcel.writeInt(this.colorFilter);
-            parcel.writeInt(PorterDuff.modeToInt(this.filterMode));
+            parcel.writeInt(this.mViewId);
+            parcel.writeInt(this.mTargetBackground ? 1 : 0);
+            parcel.writeInt(this.mColorFilter);
+            parcel.writeInt(PorterDuff.modeToInt(this.mFilterMode));
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
             Drawable targetDrawable = null;
-            if (this.targetBackground) {
+            if (this.mTargetBackground) {
                 targetDrawable = target.getBackground();
             } else if (target instanceof ImageView) {
                 ImageView imageView = (ImageView) target;
                 targetDrawable = imageView.getDrawable();
             }
             if (targetDrawable != null) {
-                targetDrawable.mutate().setColorFilter(this.colorFilter, this.filterMode);
+                targetDrawable.mutate().setColorFilter(this.mColorFilter, this.mFilterMode);
             }
         }
 
@@ -1282,56 +1594,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SetVectorDrawablePathColor extends Action {
-        int mColorFilter;
-        String mTargetPathName;
-
-        SetVectorDrawablePathColor(int id, String targetPathName, int colorFilter) {
-            super();
-            this.viewId = id;
-            this.mTargetPathName = targetPathName;
-            this.mColorFilter = colorFilter;
-        }
-
-        SetVectorDrawablePathColor(Parcel parcel) {
-            super();
-            this.viewId = parcel.readInt();
-            this.mTargetPathName = parcel.readString();
-            this.mColorFilter = parcel.readInt();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeString(this.mTargetPathName);
-            dest.writeInt(this.mColorFilter);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            String str = this.mTargetPathName;
-            if (str == null || str.isEmpty()) {
-                return;
-            }
-            View target = root.findViewById(this.viewId);
-            if (target instanceof ImageView) {
-                ImageView imageView = (ImageView) target;
-                Drawable targetDrawable = imageView.getDrawable();
-                if (targetDrawable instanceof VectorDrawable) {
-                    ((VectorDrawable) targetDrawable).setPathColor(this.mTargetPathName, this.mColorFilter);
-                }
-            }
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 108;
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public class SetTextViewShadowAction extends Action {
+    private class SetTextViewShadowAction extends Action {
         int color;
         float dx;
         float dy;
@@ -1356,7 +1619,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.color = parcel.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.viewId);
             dest.writeFloat(this.radius);
@@ -1375,35 +1638,75 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         @Override // android.widget.RemoteViews.Action
         public int getActionTag() {
+            return 108;
+        }
+    }
+
+    private static class SetStringTagAction extends Action {
+        private final int mKey;
+        private final String mTag;
+        private final int mViewId;
+
+        SetStringTagAction(int viewId, int key, String tag) {
+            super();
+            this.mViewId = viewId;
+            this.mKey = key;
+            this.mTag = tag;
+        }
+
+        SetStringTagAction(Parcel parcel) {
+            super();
+            this.mViewId = parcel.readInt();
+            this.mKey = parcel.readInt();
+            this.mTag = parcel.readString();
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.mViewId);
+            dest.writeInt(this.mKey);
+            dest.writeString(this.mTag);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
+            View target = root.findViewById(this.mViewId);
+            if (target == null) {
+                return;
+            }
+            target.setTag(this.mKey, this.mTag);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public int getActionTag() {
             return 109;
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SetRippleDrawableColor extends Action {
+    private class SetRippleDrawableColor extends Action {
         ColorStateList mColorStateList;
 
         SetRippleDrawableColor(int id, ColorStateList colorStateList) {
             super();
-            this.viewId = id;
+            this.mViewId = id;
             this.mColorStateList = colorStateList;
         }
 
         SetRippleDrawableColor(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
+            this.mViewId = parcel.readInt();
             this.mColorStateList = (ColorStateList) parcel.readParcelable(null, ColorStateList.class);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             dest.writeParcelable(this.mColorStateList, 0);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
@@ -1420,31 +1723,30 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     }
 
     @Deprecated
-    /* loaded from: classes4.dex */
-    public final class ViewContentNavigation extends Action {
+    private final class ViewContentNavigation extends Action {
         final boolean mNext;
 
         ViewContentNavigation(int viewId, boolean next) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mNext = next;
         }
 
         ViewContentNavigation(Parcel in) {
             super();
-            this.viewId = in.readInt();
+            this.mViewId = in.readInt();
             this.mNext = in.readBoolean();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel out, int flags) {
-            out.writeInt(this.viewId);
+            out.writeInt(this.mViewId);
             out.writeBoolean(this.mNext);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View view = root.findViewById(this.viewId);
+            View view = root.findViewById(this.mViewId);
             if (view == null) {
                 return;
             }
@@ -1466,8 +1768,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class BitmapCache {
+    private static class BitmapCache {
         SparseIntArray mBitmapHashes;
         int mBitmapMemory;
         ArrayList<Bitmap> mBitmaps;
@@ -1532,44 +1833,43 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class BitmapReflectionAction extends Action {
-        Bitmap bitmap;
-        int bitmapId;
-        String methodName;
+    private class BitmapReflectionAction extends Action {
+        Bitmap mBitmap;
+        int mBitmapId;
+        String mMethodName;
 
         BitmapReflectionAction(int viewId, String methodName, Bitmap bitmap) {
             super();
-            this.bitmap = bitmap;
-            this.viewId = viewId;
-            this.methodName = methodName;
-            this.bitmapId = RemoteViews.this.mBitmapCache.getBitmapId(bitmap);
+            this.mBitmap = bitmap;
+            this.mViewId = viewId;
+            this.mMethodName = methodName;
+            this.mBitmapId = RemoteViews.this.mBitmapCache.getBitmapId(bitmap);
         }
 
         BitmapReflectionAction(Parcel in) {
             super();
-            this.viewId = in.readInt();
-            this.methodName = in.readString8();
-            this.bitmapId = in.readInt();
-            this.bitmap = RemoteViews.this.mBitmapCache.getBitmapForId(this.bitmapId);
+            this.mViewId = in.readInt();
+            this.mMethodName = in.readString8();
+            this.mBitmapId = in.readInt();
+            this.mBitmap = RemoteViews.this.mBitmapCache.getBitmapForId(this.mBitmapId);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeString8(this.methodName);
-            dest.writeInt(this.bitmapId);
+            dest.writeInt(this.mViewId);
+            dest.writeString8(this.mMethodName);
+            dest.writeInt(this.mBitmapId);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
-            ReflectionAction ra = new ReflectionAction(this.viewId, this.methodName, 12, this.bitmap);
+            ReflectionAction ra = new ReflectionAction(this.mViewId, this.mMethodName, 12, this.mBitmap);
             ra.apply(root, rootParent, params);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void setHierarchyRootData(HierarchyRootData rootData) {
-            this.bitmapId = rootData.mBitmapCache.getBitmapId(this.bitmap);
+            this.mBitmapId = rootData.mBitmapCache.getBitmapId(this.mBitmap);
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -1578,9 +1878,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static abstract class BaseReflectionAction extends Action {
+    private static abstract class BaseReflectionAction extends Action {
         static final int BITMAP = 12;
         static final int BLEND_MODE = 17;
         static final int BOOLEAN = 1;
@@ -1599,45 +1897,45 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         static final int SHORT = 3;
         static final int STRING = 9;
         static final int URI = 11;
-        String methodName;
-        int type;
+        String mMethodName;
+        int mType;
 
         protected abstract Object getParameterValue(View view) throws ActionException;
 
         BaseReflectionAction(int viewId, String methodName, int type) {
             super();
-            this.viewId = viewId;
-            this.methodName = methodName;
-            this.type = type;
+            this.mViewId = viewId;
+            this.mMethodName = methodName;
+            this.mType = type;
         }
 
         BaseReflectionAction(Parcel in) {
             super();
-            this.viewId = in.readInt();
-            this.methodName = in.readString8();
-            this.type = in.readInt();
+            this.mViewId = in.readInt();
+            this.mMethodName = in.readString8();
+            this.mType = in.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel out, int flags) {
-            out.writeInt(this.viewId);
-            out.writeString8(this.methodName);
-            out.writeInt(this.type);
+            out.writeInt(this.mViewId);
+            out.writeString8(this.mMethodName);
+            out.writeInt(this.mType);
         }
 
         @Override // android.widget.RemoteViews.Action
         public final void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View view = root.findViewById(this.viewId);
+            View view = root.findViewById(this.mViewId);
             if (view == null) {
                 return;
             }
-            Class<?> param = RemoteViews.getParameterType(this.type);
+            Class<?> param = RemoteViews.getParameterType(this.mType);
             if (param == null) {
-                throw new ActionException("bad type: " + this.type);
+                throw new ActionException("bad type: " + this.mType);
             }
             Object value = getParameterValue(view);
             try {
-                (void) RemoteViews.getMethod(view, this.methodName, param, false).invoke(view, value);
+                (void) RemoteViews.getMethod(view, this.mMethodName, param, false).invoke(view, value);
             } catch (Throwable ex) {
                 throw new ActionException(ex);
             }
@@ -1646,17 +1944,17 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         @Override // android.widget.RemoteViews.Action
         public final Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
             Bitmap bitmap;
-            View view = root.findViewById(this.viewId);
+            View view = root.findViewById(this.mViewId);
             if (view == null) {
                 return RemoteViews.ACTION_NOOP;
             }
-            Class<?> param = RemoteViews.getParameterType(this.type);
+            Class<?> param = RemoteViews.getParameterType(this.mType);
             if (param == null) {
-                throw new ActionException("bad type: " + this.type);
+                throw new ActionException("bad type: " + this.mType);
             }
             Object value = getParameterValue(view);
             try {
-                MethodHandle method = RemoteViews.getMethod(view, this.methodName, param, true);
+                MethodHandle method = RemoteViews.getMethod(view, this.mMethodName, param, true);
                 if (value instanceof Bitmap) {
                     ((Bitmap) value).prepareToDraw();
                 }
@@ -1673,7 +1971,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     }
                     if (endAction instanceof ViewStub.ViewReplaceRunnable) {
                         root.createTree();
-                        root.findViewTreeById(this.viewId).replaceView(((ViewStub.ViewReplaceRunnable) endAction).view);
+                        root.findViewTreeById(this.mViewId).replaceView(((ViewStub.ViewReplaceRunnable) endAction).view);
                     }
                     return new RunnableAction(endAction);
                 }
@@ -1685,7 +1983,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         @Override // android.widget.RemoteViews.Action
         public final int mergeBehavior() {
-            if (this.methodName.equals("smoothScrollBy")) {
+            if (this.mMethodName.equals("smoothScrollBy")) {
                 return 1;
             }
             return 0;
@@ -1693,195 +1991,164 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         @Override // android.widget.RemoteViews.Action
         public final String getUniqueKey() {
-            return super.getUniqueKey() + this.methodName + this.type;
+            return super.getUniqueKey() + this.mMethodName + this.mType;
         }
 
         @Override // android.widget.RemoteViews.Action
         public final boolean prefersAsyncApply() {
-            int i = this.type;
-            return i == 11 || i == 16;
+            return this.mType == 11 || this.mType == 16;
         }
 
         @Override // android.widget.RemoteViews.Action
         public void visitUris(Consumer<Uri> visitor) {
-            switch (this.type) {
+            switch (this.mType) {
                 case 11:
                     Uri uri = (Uri) getParameterValue(null);
                     if (uri != null) {
                         visitor.accept(uri);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 16:
                     Icon icon = (Icon) getParameterValue(null);
                     if (icon != null) {
                         RemoteViews.visitIconUri(icon, visitor);
-                        return;
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ReflectionAction extends BaseReflectionAction {
-        Object value;
+    private static final class ReflectionAction extends BaseReflectionAction {
+        Object mValue;
 
         ReflectionAction(int viewId, String methodName, int type, Object value) {
             super(viewId, methodName, type);
-            this.value = value;
+            this.mValue = value;
         }
 
         ReflectionAction(Parcel in) {
             super(in);
-            switch (this.type) {
+            switch (this.mType) {
                 case 1:
-                    this.value = Boolean.valueOf(in.readBoolean());
-                    return;
+                    this.mValue = Boolean.valueOf(in.readBoolean());
+                    break;
                 case 2:
-                    this.value = Byte.valueOf(in.readByte());
-                    return;
+                    this.mValue = Byte.valueOf(in.readByte());
+                    break;
                 case 3:
-                    this.value = Short.valueOf((short) in.readInt());
-                    return;
+                    this.mValue = Short.valueOf((short) in.readInt());
+                    break;
                 case 4:
-                    this.value = Integer.valueOf(in.readInt());
-                    return;
+                    this.mValue = Integer.valueOf(in.readInt());
+                    break;
                 case 5:
-                    this.value = Long.valueOf(in.readLong());
-                    return;
+                    this.mValue = Long.valueOf(in.readLong());
+                    break;
                 case 6:
-                    this.value = Float.valueOf(in.readFloat());
-                    return;
+                    this.mValue = Float.valueOf(in.readFloat());
+                    break;
                 case 7:
-                    this.value = Double.valueOf(in.readDouble());
-                    return;
+                    this.mValue = Double.valueOf(in.readDouble());
+                    break;
                 case 8:
-                    this.value = Character.valueOf((char) in.readInt());
-                    return;
+                    this.mValue = Character.valueOf((char) in.readInt());
+                    break;
                 case 9:
-                    this.value = in.readString8();
-                    return;
+                    this.mValue = in.readString8();
+                    break;
                 case 10:
-                    this.value = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
-                    return;
+                    this.mValue = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
+                    break;
                 case 11:
-                    this.value = in.readTypedObject(Uri.CREATOR);
-                    return;
+                    this.mValue = in.readTypedObject(Uri.CREATOR);
+                    break;
                 case 12:
-                    this.value = in.readTypedObject(Bitmap.CREATOR);
-                    return;
+                    this.mValue = in.readTypedObject(Bitmap.CREATOR);
+                    break;
                 case 13:
                     if (in.hasReadWriteHelper()) {
-                        this.value = in.readBundle();
-                        return;
+                        this.mValue = in.readBundle();
+                        break;
+                    } else {
+                        in.setReadWriteHelper(RemoteViews.ALTERNATIVE_DEFAULT);
+                        this.mValue = in.readBundle();
+                        in.setReadWriteHelper(null);
+                        break;
                     }
-                    in.setReadWriteHelper(RemoteViews.ALTERNATIVE_DEFAULT);
-                    this.value = in.readBundle();
-                    in.setReadWriteHelper(null);
-                    return;
                 case 14:
-                    this.value = in.readTypedObject(Intent.CREATOR);
-                    return;
+                    this.mValue = in.readTypedObject(Intent.CREATOR);
+                    break;
                 case 15:
-                    this.value = in.readTypedObject(ColorStateList.CREATOR);
-                    return;
+                    this.mValue = in.readTypedObject(ColorStateList.CREATOR);
+                    break;
                 case 16:
-                    this.value = in.readTypedObject(Icon.CREATOR);
-                    return;
+                    this.mValue = in.readTypedObject(Icon.CREATOR);
+                    break;
                 case 17:
-                    this.value = BlendMode.fromValue(in.readInt());
-                    return;
-                case 18:
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                case 24:
-                case 25:
-                case 26:
-                case 27:
-                case 28:
-                case 29:
-                default:
-                    return;
+                    this.mValue = BlendMode.fromValue(in.readInt());
+                    break;
                 case 30:
-                    this.value = in.readTypedObject(SemBlurInfo.CREATOR);
-                    return;
+                    this.mValue = in.readTypedObject(SemBlurInfo.CREATOR);
+                    break;
             }
         }
 
-        @Override // android.widget.RemoteViews.BaseReflectionAction, android.os.Parcelable
+        @Override // android.widget.RemoteViews.BaseReflectionAction, android.widget.RemoteViews.Action
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            switch (this.type) {
+            switch (this.mType) {
                 case 1:
-                    out.writeBoolean(((Boolean) this.value).booleanValue());
-                    return;
+                    out.writeBoolean(((Boolean) this.mValue).booleanValue());
+                    break;
                 case 2:
-                    out.writeByte(((Byte) this.value).byteValue());
-                    return;
+                    out.writeByte(((Byte) this.mValue).byteValue());
+                    break;
                 case 3:
-                    out.writeInt(((Short) this.value).shortValue());
-                    return;
+                    out.writeInt(((Short) this.mValue).shortValue());
+                    break;
                 case 4:
-                    out.writeInt(((Integer) this.value).intValue());
-                    return;
+                    out.writeInt(((Integer) this.mValue).intValue());
+                    break;
                 case 5:
-                    out.writeLong(((Long) this.value).longValue());
-                    return;
+                    out.writeLong(((Long) this.mValue).longValue());
+                    break;
                 case 6:
-                    out.writeFloat(((Float) this.value).floatValue());
-                    return;
+                    out.writeFloat(((Float) this.mValue).floatValue());
+                    break;
                 case 7:
-                    out.writeDouble(((Double) this.value).doubleValue());
-                    return;
+                    out.writeDouble(((Double) this.mValue).doubleValue());
+                    break;
                 case 8:
-                    out.writeInt(((Character) this.value).charValue());
-                    return;
+                    out.writeInt(((Character) this.mValue).charValue());
+                    break;
                 case 9:
-                    out.writeString8((String) this.value);
-                    return;
+                    out.writeString8((String) this.mValue);
+                    break;
                 case 10:
-                    TextUtils.writeToParcel((CharSequence) this.value, out, flags);
-                    return;
+                    TextUtils.writeToParcel((CharSequence) this.mValue, out, flags);
+                    break;
                 case 11:
                 case 12:
                 case 14:
                 case 15:
                 case 16:
                 case 30:
-                    out.writeTypedObject((Parcelable) this.value, flags);
-                    return;
+                    out.writeTypedObject((Parcelable) this.mValue, flags);
+                    break;
                 case 13:
-                    out.writeBundle((Bundle) this.value);
-                    return;
+                    out.writeBundle((Bundle) this.mValue);
+                    break;
                 case 17:
-                    out.writeInt(BlendMode.toValue((BlendMode) this.value));
-                    return;
-                case 18:
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                case 24:
-                case 25:
-                case 26:
-                case 27:
-                case 28:
-                case 29:
-                default:
-                    return;
+                    out.writeInt(BlendMode.toValue((BlendMode) this.mValue));
+                    break;
             }
         }
 
         @Override // android.widget.RemoteViews.BaseReflectionAction
         protected Object getParameterValue(View view) throws ActionException {
-            return this.value;
+            return this.mValue;
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -1890,10 +2157,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ResourceReflectionAction extends BaseReflectionAction {
+    private static final class ResourceReflectionAction extends BaseReflectionAction {
         static final int COLOR_RESOURCE = 2;
         static final int DIMEN_RESOURCE = 1;
+        static final int INTEGER_RESOURCE = 4;
         static final int STRING_RESOURCE = 3;
         private final int mResId;
         private final int mResourceType;
@@ -1910,7 +2177,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mResId = in.readInt();
         }
 
-        @Override // android.widget.RemoteViews.BaseReflectionAction, android.os.Parcelable
+        @Override // android.widget.RemoteViews.BaseReflectionAction, android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeInt(this.mResourceType);
@@ -1926,36 +2193,39 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             try {
                 switch (this.mResourceType) {
                     case 1:
-                        switch (this.type) {
+                        switch (this.mType) {
                             case 4:
-                                int i = this.mResId;
-                                return Integer.valueOf(i != 0 ? resources.getDimensionPixelSize(i) : 0);
+                                return Integer.valueOf(this.mResId != 0 ? resources.getDimensionPixelSize(this.mResId) : 0);
                             case 5:
                             default:
-                                throw new ActionException("dimen resources must be used as INT or FLOAT, not " + this.type);
+                                throw new ActionException("dimen resources must be used as INT or FLOAT, not " + this.mType);
                             case 6:
-                                int i2 = this.mResId;
-                                return Float.valueOf(i2 == 0 ? 0.0f : resources.getDimension(i2));
+                                return Float.valueOf(this.mResId == 0 ? 0.0f : resources.getDimension(this.mResId));
                         }
                     case 2:
-                        switch (this.type) {
+                        switch (this.mType) {
                             case 4:
                                 return Integer.valueOf(this.mResId != 0 ? view.getContext().getColor(this.mResId) : 0);
                             case 15:
                                 return this.mResId != 0 ? view.getContext().getColorStateList(this.mResId) : null;
                             default:
-                                throw new ActionException("color resources must be used as INT or COLOR_STATE_LIST, not " + this.type);
+                                throw new ActionException("color resources must be used as INT or COLOR_STATE_LIST, not " + this.mType);
                         }
                     case 3:
-                        switch (this.type) {
+                        switch (this.mType) {
                             case 9:
-                                int i3 = this.mResId;
-                                return i3 != 0 ? resources.getString(i3) : null;
+                                return this.mResId != 0 ? resources.getString(this.mResId) : null;
                             case 10:
-                                int i4 = this.mResId;
-                                return i4 != 0 ? resources.getText(i4) : null;
+                                return this.mResId != 0 ? resources.getText(this.mResId) : null;
                             default:
-                                throw new ActionException("string resources must be used as STRING or CHAR_SEQUENCE, not " + this.type);
+                                throw new ActionException("string resources must be used as STRING or CHAR_SEQUENCE, not " + this.mType);
+                        }
+                    case 4:
+                        switch (this.mType) {
+                            case 4:
+                                return Integer.valueOf(this.mResId != 0 ? resources.getInteger(this.mResId) : 0);
+                            default:
+                                throw new ActionException("integer resources must be used as INT, not " + this.mType);
                         }
                     default:
                         throw new ActionException("unknown resource type: " + this.mResourceType);
@@ -1973,8 +2243,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class AttributeReflectionAction extends BaseReflectionAction {
+    private static final class AttributeReflectionAction extends BaseReflectionAction {
         static final int COLOR_RESOURCE = 2;
         static final int DIMEN_RESOURCE = 1;
         static final int STRING_RESOURCE = 3;
@@ -1993,7 +2262,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mAttrId = in.readInt();
         }
 
-        @Override // android.widget.RemoteViews.BaseReflectionAction, android.os.Parcelable
+        @Override // android.widget.RemoteViews.BaseReflectionAction, android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeInt(this.mResourceType);
@@ -2010,32 +2279,32 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     }
                     switch (this.mResourceType) {
                         case 1:
-                            switch (this.type) {
+                            switch (this.mType) {
                                 case 4:
                                     return Integer.valueOf(typedArray.getDimensionPixelSize(0, 0));
                                 case 5:
                                 default:
-                                    throw new ActionException("dimen attribute 0x" + Integer.toHexString(this.mAttrId) + " must be used as INT or FLOAT, not " + this.type);
+                                    throw new ActionException("dimen attribute 0x" + Integer.toHexString(this.mAttrId) + " must be used as INT or FLOAT, not " + this.mType);
                                 case 6:
                                     return Float.valueOf(typedArray.getDimension(0, 0.0f));
                             }
                         case 2:
-                            switch (this.type) {
+                            switch (this.mType) {
                                 case 4:
                                     return Integer.valueOf(typedArray.getColor(0, 0));
                                 case 15:
                                     return typedArray.getColorStateList(0);
                                 default:
-                                    throw new ActionException("color attribute 0x" + Integer.toHexString(this.mAttrId) + " must be used as INT or COLOR_STATE_LIST, not " + this.type);
+                                    throw new ActionException("color attribute 0x" + Integer.toHexString(this.mAttrId) + " must be used as INT or COLOR_STATE_LIST, not " + this.mType);
                             }
                         case 3:
-                            switch (this.type) {
+                            switch (this.mType) {
                                 case 9:
                                     return typedArray.getString(0);
                                 case 10:
                                     return typedArray.getText(0);
                                 default:
-                                    throw new ActionException("string attribute 0x" + Integer.toHexString(this.mAttrId) + " must be used as STRING or CHAR_SEQUENCE, not " + this.type);
+                                    throw new ActionException("string attribute 0x" + Integer.toHexString(this.mAttrId) + " must be used as STRING or CHAR_SEQUENCE, not " + this.mType);
                             }
                         default:
                             throw new ActionException("Unknown resource type: " + this.mResourceType);
@@ -2056,8 +2325,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ComplexUnitDimensionReflectionAction extends BaseReflectionAction {
+    private static final class ComplexUnitDimensionReflectionAction extends BaseReflectionAction {
         private final int mUnit;
         private final float mValue;
 
@@ -2073,7 +2341,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mUnit = in.readInt();
         }
 
-        @Override // android.widget.RemoteViews.BaseReflectionAction, android.os.Parcelable
+        @Override // android.widget.RemoteViews.BaseReflectionAction, android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeFloat(this.mValue);
@@ -2088,12 +2356,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             DisplayMetrics dm = view.getContext().getResources().getDisplayMetrics();
             try {
                 int data = TypedValue.createComplexDimension(this.mValue, this.mUnit);
-                switch (this.type) {
+                switch (this.mType) {
                     case 4:
                         return Integer.valueOf(TypedValue.complexToDimensionPixelSize(data, dm));
                     case 5:
                     default:
-                        throw new ActionException("parameter type must be INT or FLOAT, not " + this.type);
+                        throw new ActionException("parameter type must be INT or FLOAT, not " + this.mType);
                     case 6:
                         return Float.valueOf(TypedValue.complexToDimension(data, dm));
                 }
@@ -2110,8 +2378,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class NightModeReflectionAction extends BaseReflectionAction {
+    private static final class NightModeReflectionAction extends BaseReflectionAction {
         private final Object mDarkValue;
         private final Object mLightValue;
 
@@ -2123,7 +2390,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         NightModeReflectionAction(Parcel in) {
             super(in);
-            switch (this.type) {
+            switch (this.mType) {
                 case 4:
                     this.mLightValue = Integer.valueOf(in.readInt());
                     this.mDarkValue = Integer.valueOf(in.readInt());
@@ -2137,25 +2404,23 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     this.mDarkValue = in.readTypedObject(Icon.CREATOR);
                     return;
                 default:
-                    throw new ActionException("Unexpected night mode action type: " + this.type);
+                    throw new ActionException("Unexpected night mode action type: " + this.mType);
             }
         }
 
-        @Override // android.widget.RemoteViews.BaseReflectionAction, android.os.Parcelable
+        @Override // android.widget.RemoteViews.BaseReflectionAction, android.widget.RemoteViews.Action
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            switch (this.type) {
+            switch (this.mType) {
                 case 4:
                     out.writeInt(((Integer) this.mLightValue).intValue());
                     out.writeInt(((Integer) this.mDarkValue).intValue());
-                    return;
+                    break;
                 case 15:
                 case 16:
                     out.writeTypedObject((Parcelable) this.mLightValue, flags);
                     out.writeTypedObject((Parcelable) this.mDarkValue, flags);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -2175,14 +2440,13 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         @Override // android.widget.RemoteViews.BaseReflectionAction, android.widget.RemoteViews.Action
         public void visitUris(Consumer<Uri> visitor) {
-            if (this.type == 16) {
+            if (this.mType == 16) {
                 RemoteViews.visitIconUri((Icon) this.mDarkValue, visitor);
                 RemoteViews.visitIconUri((Icon) this.mLightValue, visitor);
             }
         }
     }
 
-    /* loaded from: classes4.dex */
     private static final class RunnableAction extends RuntimeAction {
         private final Runnable mRunnable;
 
@@ -2201,11 +2465,13 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mIsRoot = false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean hasStableId(View view) {
         Object tag = view.getTag(R.id.remote_views_stable_id);
         return tag != null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int getStableId(View view) {
         Integer id = (Integer) view.getTag(R.id.remote_views_stable_id);
         if (id == null) {
@@ -2214,10 +2480,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return id.intValue();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void setStableId(View view, int stableId) {
         view.setTagInternal(R.id.remote_views_stable_id, Integer.valueOf(stableId));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int getNextRecyclableChild(ViewGroup vg) {
         Integer tag = (Integer) vg.getTag(R.id.remote_views_next_child);
         if (tag == null) {
@@ -2230,6 +2498,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return ((Integer) v.getTag(16908312)).intValue();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void setNextRecyclableChild(ViewGroup vg, int nextChild, int numChildren) {
         if (nextChild < 0 || nextChild >= numChildren) {
             vg.setTagInternal(R.id.remote_views_next_child, -1);
@@ -2238,6 +2507,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void finalizeViewRecycling(ViewGroup root) {
         int nextChild = getNextRecyclableChild(root);
         if (nextChild >= 0 && nextChild < root.getChildCount()) {
@@ -2252,8 +2522,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class ViewObjectAnimatorAction extends Action {
+    private class ViewObjectAnimatorAction extends Action {
         private int mAnimatorId;
         private boolean mIsAnimationEnd;
         private final int mViewId;
@@ -2272,7 +2541,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mIsAnimationEnd = parcel.readBoolean();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mViewId);
             dest.writeInt(this.mAnimatorId);
@@ -2292,9 +2561,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             }
             animatorSet.setTarget(target);
             animatorSet.addListener(new AnimatorListenerAdapter() { // from class: android.widget.RemoteViews.ViewObjectAnimatorAction.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     ViewObjectAnimatorAction.this.mIsAnimationEnd = true;
@@ -2306,26 +2572,14 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             animatorSet.start();
         }
 
-        /* renamed from: android.widget.RemoteViews$ViewObjectAnimatorAction$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 extends AnimatorListenerAdapter {
-            AnonymousClass1() {
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animation) {
-                ViewObjectAnimatorAction.this.mIsAnimationEnd = true;
-            }
-        }
-
         @Override // android.widget.RemoteViews.Action
         public int getActionTag() {
             return 106;
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class ViewGroupActionAdd extends Action {
+    /* JADX INFO: Access modifiers changed from: private */
+    class ViewGroupActionAdd extends Action {
         static final int NO_ID = -1;
         private int mIndex;
         private RemoteViews mNestedViews;
@@ -2341,7 +2595,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         ViewGroupActionAdd(int viewId, RemoteViews nestedViews, int index, int stableId) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mNestedViews = nestedViews;
             this.mIndex = index;
             this.mStableId = stableId;
@@ -2350,17 +2604,16 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         ViewGroupActionAdd(Parcel parcel, ApplicationInfo info, int depth) {
             super();
-            this.viewId = parcel.readInt();
+            this.mViewId = parcel.readInt();
             this.mIndex = parcel.readInt();
             this.mStableId = parcel.readInt();
-            RemoteViews remoteViews = new RemoteViews(parcel, RemoteViews.this.getHierarchyRootData(), info, depth);
-            this.mNestedViews = remoteViews;
-            remoteViews.addFlags(RemoteViews.this.mApplyFlags);
+            this.mNestedViews = new RemoteViews(parcel, RemoteViews.this.getHierarchyRootData(), info, depth);
+            this.mNestedViews.addFlags(RemoteViews.this.mApplyFlags);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             dest.writeInt(this.mIndex);
             dest.writeInt(this.mStableId);
             this.mNestedViews.writeToParcel(dest, flags);
@@ -2384,15 +2637,14 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
             int recycledViewIndex;
-            RemoteViews remoteViews;
             Context context = root.getContext();
-            ViewGroup target = (ViewGroup) root.findViewById(this.viewId);
-            if (target == null) {
+            ViewGroup target = (ViewGroup) root.findViewById(this.mViewId);
+            if (target == null || this.mNestedViews == null) {
                 return;
             }
             int nextChild = RemoteViews.getNextRecyclableChild(target);
-            if (RemoteViews.this.mIsAllowPendintIntentInCollection && (remoteViews = this.mNestedViews) != null) {
-                remoteViews.hidden_semSetAllowOtherRootParent(true, RemoteViews.this.mAppWidgetId);
+            if (RemoteViews.this.mAllowOtherRootParent) {
+                this.mNestedViews.hidden_semSetAllowOtherRootParent(true, RemoteViews.this.mAppWidgetId);
             }
             RemoteViews rvToApply = this.mNestedViews.getRemoteViewsToApply(context);
             int flagsToPropagate = RemoteViews.this.mApplyFlags & 6;
@@ -2412,15 +2664,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 target.removeViews(nextChild, (recycledViewIndex - nextChild) + 1);
             }
             View nestedView = rvToApply.apply(context, target, rootParent, (SizeF) null, params);
-            int i = this.mStableId;
-            if (i != -1) {
-                RemoteViews.setStableId(nestedView, i);
+            if (this.mStableId != -1) {
+                RemoteViews.setStableId(nestedView, this.mStableId);
             }
-            int i2 = this.mIndex;
-            if (i2 < 0) {
-                i2 = nextChild;
-            }
-            target.addView(nestedView, i2);
+            target.addView(nestedView, this.mIndex >= 0 ? this.mIndex : nextChild);
             if (nextChild >= 0) {
                 RemoteViews.setNextRecyclableChild(target, nextChild + 1, target.getChildCount());
             }
@@ -2429,7 +2676,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         @Override // android.widget.RemoteViews.Action
         public Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
             root.createTree();
-            ViewTree target = root.findViewTreeById(this.viewId);
+            ViewTree target = root.findViewTreeById(this.mViewId);
             if (target == null || !(target.mRoot instanceof ViewGroup)) {
                 return RemoteViews.ACTION_NOOP;
             }
@@ -2454,44 +2701,31 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                             target.removeChildren(nextChild, recycledViewIndex - nextChild);
                         }
                         RemoteViews.setNextRecyclableChild(targetVg, nextChild + 1, target.mChildren.size());
-                        AsyncApplyTask reapplyTask = rvToApply.getInternalAsyncApplyTask(context, targetVg, null, params, null, recycled.mRoot);
-                        ViewTree tree = reapplyTask.doInBackground(new Void[0]);
+                        final AsyncApplyTask reapplyTask = rvToApply.getInternalAsyncApplyTask(context, targetVg, null, params, null, recycled.mRoot);
+                        final ViewTree tree = reapplyTask.doInBackground(new Void[0]);
                         if (tree == null) {
                             throw new ActionException(reapplyTask.mError);
                         }
                         return new RuntimeAction() { // from class: android.widget.RemoteViews.ViewGroupActionAdd.1
-                            final /* synthetic */ int val$nextChild;
-                            final /* synthetic */ AsyncApplyTask val$reapplyTask;
-                            final /* synthetic */ int val$recycledViewIndex;
-                            final /* synthetic */ ViewGroup val$targetVg;
-                            final /* synthetic */ ViewTree val$tree;
-
                             /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                            AnonymousClass1(AsyncApplyTask reapplyTask2, ViewTree tree2, final int recycledViewIndex2, final int nextChild2, final ViewGroup targetVg2) {
+                            {
                                 super();
-                                reapplyTask = reapplyTask2;
-                                tree = tree2;
-                                recycledViewIndex = recycledViewIndex2;
-                                nextChild = nextChild2;
-                                targetVg = targetVg2;
                             }
 
                             @Override // android.widget.RemoteViews.Action
                             public void apply(View root2, ViewGroup rootParent2, ActionApplyParams params2) throws ActionException {
                                 reapplyTask.onPostExecute(tree);
-                                int i = recycledViewIndex;
-                                int i2 = nextChild;
-                                if (i > i2) {
-                                    targetVg.removeViews(i2, i - i2);
+                                if (recycledViewIndex > nextChild) {
+                                    targetVg.removeViews(nextChild, recycledViewIndex - nextChild);
                                 }
                             }
                         };
                     }
-                    target.removeChildren(nextChild2, (recycledViewIndex2 - nextChild2) + 1);
+                    target.removeChildren(nextChild, (recycledViewIndex - nextChild) + 1);
                     return insertNewView(context, target, params, new Runnable() { // from class: android.widget.RemoteViews$ViewGroupActionAdd$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
-                            ViewGroup.this.removeViews(r1, (recycledViewIndex2 - nextChild2) + 1);
+                            ViewGroup.this.removeViews(r1, (recycledViewIndex - nextChild) + 1);
                         }
                     });
                 }
@@ -2504,78 +2738,34 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$initActionAsync$0(View view) {
             return RemoteViews.getStableId(view) == this.mStableId;
         }
 
-        /* renamed from: android.widget.RemoteViews$ViewGroupActionAdd$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 extends RuntimeAction {
-            final /* synthetic */ int val$nextChild;
-            final /* synthetic */ AsyncApplyTask val$reapplyTask;
-            final /* synthetic */ int val$recycledViewIndex;
-            final /* synthetic */ ViewGroup val$targetVg;
-            final /* synthetic */ ViewTree val$tree;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(AsyncApplyTask reapplyTask2, ViewTree tree2, final int recycledViewIndex2, final int nextChild2, final ViewGroup targetVg2) {
-                super();
-                reapplyTask = reapplyTask2;
-                tree = tree2;
-                recycledViewIndex = recycledViewIndex2;
-                nextChild = nextChild2;
-                targetVg = targetVg2;
-            }
-
-            @Override // android.widget.RemoteViews.Action
-            public void apply(View root2, ViewGroup rootParent2, ActionApplyParams params2) throws ActionException {
-                reapplyTask.onPostExecute(tree);
-                int i = recycledViewIndex;
-                int i2 = nextChild;
-                if (i > i2) {
-                    targetVg.removeViews(i2, i - i2);
-                }
-            }
+        static /* synthetic */ void lambda$initActionAsync$2() {
         }
 
-        public static /* synthetic */ void lambda$initActionAsync$2() {
-        }
-
-        private Action insertNewView(Context context, ViewTree target, ActionApplyParams params, Runnable finalizeAction) {
-            ViewGroup targetVg = (ViewGroup) target.mRoot;
+        private Action insertNewView(Context context, ViewTree target, ActionApplyParams params, final Runnable finalizeAction) {
+            final ViewGroup targetVg = (ViewGroup) target.mRoot;
             int nextChild = RemoteViews.getNextRecyclableChild(targetVg);
-            AsyncApplyTask task = this.mNestedViews.getInternalAsyncApplyTask(context, targetVg, null, params, null, null);
-            ViewTree tree = task.doInBackground(new Void[0]);
+            final AsyncApplyTask task = this.mNestedViews.getInternalAsyncApplyTask(context, targetVg, null, params, null, null);
+            final ViewTree tree = task.doInBackground(new Void[0]);
             if (tree == null) {
                 throw new ActionException(task.mError);
             }
             if (this.mStableId != -1) {
                 RemoteViews.setStableId(task.mResult, this.mStableId);
             }
-            int i = this.mIndex;
-            if (i < 0) {
-                i = nextChild;
-            }
-            int insertIndex = i;
+            final int insertIndex = this.mIndex >= 0 ? this.mIndex : nextChild;
             target.addChild(tree, insertIndex);
             if (nextChild >= 0) {
                 RemoteViews.setNextRecyclableChild(targetVg, nextChild + 1, target.mChildren.size());
             }
             return new RuntimeAction() { // from class: android.widget.RemoteViews.ViewGroupActionAdd.2
-                final /* synthetic */ Runnable val$finalizeAction;
-                final /* synthetic */ int val$insertIndex;
-                final /* synthetic */ ViewGroup val$targetVg;
-                final /* synthetic */ AsyncApplyTask val$task;
-                final /* synthetic */ ViewTree val$tree;
-
                 /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass2(AsyncApplyTask task2, ViewTree tree2, Runnable finalizeAction2, ViewGroup targetVg2, int insertIndex2) {
+                {
                     super();
-                    task = task2;
-                    tree = tree2;
-                    finalizeAction = finalizeAction2;
-                    targetVg = targetVg2;
-                    insertIndex = insertIndex2;
                 }
 
                 @Override // android.widget.RemoteViews.Action
@@ -2585,33 +2775,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     targetVg.addView(task.mResult, insertIndex);
                 }
             };
-        }
-
-        /* renamed from: android.widget.RemoteViews$ViewGroupActionAdd$2 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass2 extends RuntimeAction {
-            final /* synthetic */ Runnable val$finalizeAction;
-            final /* synthetic */ int val$insertIndex;
-            final /* synthetic */ ViewGroup val$targetVg;
-            final /* synthetic */ AsyncApplyTask val$task;
-            final /* synthetic */ ViewTree val$tree;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass2(AsyncApplyTask task2, ViewTree tree2, Runnable finalizeAction2, ViewGroup targetVg2, int insertIndex2) {
-                super();
-                task = task2;
-                tree = tree2;
-                finalizeAction = finalizeAction2;
-                targetVg = targetVg2;
-                insertIndex = insertIndex2;
-            }
-
-            @Override // android.widget.RemoteViews.Action
-            public void apply(View root, ViewGroup rootParent, ActionApplyParams params2) {
-                task.onPostExecute(tree);
-                finalizeAction.run();
-                targetVg.addView(task.mResult, insertIndex);
-            }
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -2630,13 +2793,13 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
 
         @Override // android.widget.RemoteViews.Action
-        public final void visitUris(Consumer<Uri> visitor) {
+        public void visitUris(Consumer<Uri> visitor) {
             this.mNestedViews.visitUris(visitor);
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ViewGroupActionRemove extends Action {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ViewGroupActionRemove extends Action {
         private static final int REMOVE_ALL_VIEWS_ID = -2;
         private int mViewIdToKeep;
 
@@ -2646,25 +2809,25 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         ViewGroupActionRemove(int viewId, int viewIdToKeep) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mViewIdToKeep = viewIdToKeep;
         }
 
         ViewGroupActionRemove(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
+            this.mViewId = parcel.readInt();
             this.mViewIdToKeep = parcel.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             dest.writeInt(this.mViewIdToKeep);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            ViewGroup target = (ViewGroup) root.findViewById(this.viewId);
+            ViewGroup target = (ViewGroup) root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
@@ -2683,11 +2846,11 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         @Override // android.widget.RemoteViews.Action
         public Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
             root.createTree();
-            ViewTree target = root.findViewTreeById(this.viewId);
+            ViewTree target = root.findViewTreeById(this.mViewId);
             if (target == null || !(target.mRoot instanceof ViewGroup)) {
                 return RemoteViews.ACTION_NOOP;
             }
-            ViewGroup targetVg = (ViewGroup) target.mRoot;
+            final ViewGroup targetVg = (ViewGroup) target.mRoot;
             if (this.mViewIdToKeep == -2) {
                 target.mChildren.removeIf(new Predicate() { // from class: android.widget.RemoteViews$ViewGroupActionRemove$$ExternalSyntheticLambda0
                     @Override // java.util.function.Predicate
@@ -2710,12 +2873,9 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 }
             }
             return new RuntimeAction() { // from class: android.widget.RemoteViews.ViewGroupActionRemove.1
-                final /* synthetic */ ViewGroup val$targetVg;
-
                 /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(ViewGroup targetVg2) {
+                {
                     super();
-                    targetVg = targetVg2;
                 }
 
                 @Override // android.widget.RemoteViews.Action
@@ -2733,39 +2893,16 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             };
         }
 
-        public static /* synthetic */ boolean lambda$initActionAsync$0(ViewTree childTree) {
+        static /* synthetic */ boolean lambda$initActionAsync$0(ViewTree childTree) {
             return !RemoteViews.hasStableId(childTree.mRoot);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$initActionAsync$1(ViewTree childTree) {
             return childTree.mRoot.getId() != this.mViewIdToKeep;
         }
 
-        /* renamed from: android.widget.RemoteViews$ViewGroupActionRemove$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 extends RuntimeAction {
-            final /* synthetic */ ViewGroup val$targetVg;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(ViewGroup targetVg2) {
-                super();
-                targetVg = targetVg2;
-            }
-
-            @Override // android.widget.RemoteViews.Action
-            public void apply(View root2, ViewGroup rootParent2, ActionApplyParams params2) {
-                if (ViewGroupActionRemove.this.mViewIdToKeep == -2) {
-                    for (int i = targetVg.getChildCount() - 1; i >= 0; i--) {
-                        if (!RemoteViews.hasStableId(targetVg.getChildAt(i))) {
-                            targetVg.removeViewAt(i);
-                        }
-                    }
-                    return;
-                }
-                ViewGroupActionRemove.this.removeAllViewsExceptIdToKeep(targetVg);
-            }
-        }
-
+        /* JADX INFO: Access modifiers changed from: private */
         public void removeAllViewsExceptIdToKeep(ViewGroup viewGroup) {
             for (int index = viewGroup.getChildCount() - 1; index >= 0; index--) {
                 if (viewGroup.getChildAt(index).getId() != this.mViewIdToKeep) {
@@ -2785,26 +2922,25 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class RemoveFromParentAction extends Action {
+    private static class RemoveFromParentAction extends Action {
         RemoveFromParentAction(int viewId) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
         }
 
         RemoveFromParentAction(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
+            this.mViewId = parcel.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null || target == root) {
                 return;
             }
@@ -2817,7 +2953,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         @Override // android.widget.RemoteViews.Action
         public Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
             root.createTree();
-            ViewTree target = root.findViewTreeById(this.viewId);
+            final ViewTree target = root.findViewTreeById(this.mViewId);
             if (target == null || target == root) {
                 return RemoteViews.ACTION_NOOP;
             }
@@ -2825,17 +2961,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             if (parent == null || !(parent.mRoot instanceof ViewManager)) {
                 return RemoteViews.ACTION_NOOP;
             }
-            ViewManager parentVg = (ViewManager) parent.mRoot;
+            final ViewManager parentVg = (ViewManager) parent.mRoot;
             parent.mChildren.remove(target);
             return new RuntimeAction() { // from class: android.widget.RemoteViews.RemoveFromParentAction.1
-                final /* synthetic */ ViewManager val$parentVg;
-                final /* synthetic */ ViewTree val$target;
-
                 /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(ViewManager parentVg2, ViewTree target2) {
+                {
                     super();
-                    parentVg = parentVg2;
-                    target = target2;
                 }
 
                 @Override // android.widget.RemoteViews.Action
@@ -2843,25 +2974,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     parentVg.removeView(target.mRoot);
                 }
             };
-        }
-
-        /* renamed from: android.widget.RemoteViews$RemoveFromParentAction$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 extends RuntimeAction {
-            final /* synthetic */ ViewManager val$parentVg;
-            final /* synthetic */ ViewTree val$target;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(ViewManager parentVg2, ViewTree target2) {
-                super();
-                parentVg = parentVg2;
-                target = target2;
-            }
-
-            @Override // android.widget.RemoteViews.Action
-            public void apply(View root2, ViewGroup rootParent2, ActionApplyParams params2) {
-                parentVg.removeView(target.mRoot);
-            }
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -2875,118 +2987,112 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class TextViewDrawableAction extends Action {
-        int d1;
-        int d2;
-        int d3;
-        int d4;
-        boolean drawablesLoaded;
-        Icon i1;
-        Icon i2;
-        Icon i3;
-        Icon i4;
-        Drawable id1;
-        Drawable id2;
-        Drawable id3;
-        Drawable id4;
-        boolean isRelative;
-        boolean useIcons;
+    private static class TextViewDrawableAction extends Action {
+        int mD1;
+        int mD2;
+        int mD3;
+        int mD4;
+        boolean mDrawablesLoaded;
+        Icon mI1;
+        Icon mI2;
+        Icon mI3;
+        Icon mI4;
+        Drawable mId1;
+        Drawable mId2;
+        Drawable mId3;
+        Drawable mId4;
+        boolean mIsRelative;
+        boolean mUseIcons;
 
         public TextViewDrawableAction(int viewId, boolean isRelative, int d1, int d2, int d3, int d4) {
             super();
-            this.isRelative = false;
-            this.useIcons = false;
-            this.drawablesLoaded = false;
-            this.viewId = viewId;
-            this.isRelative = isRelative;
-            this.useIcons = false;
-            this.d1 = d1;
-            this.d2 = d2;
-            this.d3 = d3;
-            this.d4 = d4;
+            this.mIsRelative = false;
+            this.mUseIcons = false;
+            this.mDrawablesLoaded = false;
+            this.mViewId = viewId;
+            this.mIsRelative = isRelative;
+            this.mUseIcons = false;
+            this.mD1 = d1;
+            this.mD2 = d2;
+            this.mD3 = d3;
+            this.mD4 = d4;
         }
 
         public TextViewDrawableAction(int viewId, boolean isRelative, Icon i1, Icon i2, Icon i3, Icon i4) {
             super();
-            this.isRelative = false;
-            this.useIcons = false;
-            this.drawablesLoaded = false;
-            this.viewId = viewId;
-            this.isRelative = isRelative;
-            this.useIcons = true;
-            this.i1 = i1;
-            this.i2 = i2;
-            this.i3 = i3;
-            this.i4 = i4;
+            this.mIsRelative = false;
+            this.mUseIcons = false;
+            this.mDrawablesLoaded = false;
+            this.mViewId = viewId;
+            this.mIsRelative = isRelative;
+            this.mUseIcons = true;
+            this.mI1 = i1;
+            this.mI2 = i2;
+            this.mI3 = i3;
+            this.mI4 = i4;
         }
 
         public TextViewDrawableAction(Parcel parcel) {
             super();
-            this.isRelative = false;
-            this.useIcons = false;
-            this.drawablesLoaded = false;
-            this.viewId = parcel.readInt();
-            this.isRelative = parcel.readInt() != 0;
-            boolean z = parcel.readInt() != 0;
-            this.useIcons = z;
-            if (z) {
-                this.i1 = (Icon) parcel.readTypedObject(Icon.CREATOR);
-                this.i2 = (Icon) parcel.readTypedObject(Icon.CREATOR);
-                this.i3 = (Icon) parcel.readTypedObject(Icon.CREATOR);
-                this.i4 = (Icon) parcel.readTypedObject(Icon.CREATOR);
+            this.mIsRelative = false;
+            this.mUseIcons = false;
+            this.mDrawablesLoaded = false;
+            this.mViewId = parcel.readInt();
+            this.mIsRelative = parcel.readInt() != 0;
+            this.mUseIcons = parcel.readInt() != 0;
+            if (this.mUseIcons) {
+                this.mI1 = (Icon) parcel.readTypedObject(Icon.CREATOR);
+                this.mI2 = (Icon) parcel.readTypedObject(Icon.CREATOR);
+                this.mI3 = (Icon) parcel.readTypedObject(Icon.CREATOR);
+                this.mI4 = (Icon) parcel.readTypedObject(Icon.CREATOR);
                 return;
             }
-            this.d1 = parcel.readInt();
-            this.d2 = parcel.readInt();
-            this.d3 = parcel.readInt();
-            this.d4 = parcel.readInt();
+            this.mD1 = parcel.readInt();
+            this.mD2 = parcel.readInt();
+            this.mD3 = parcel.readInt();
+            this.mD4 = parcel.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel parcel, int i) {
-            parcel.writeInt(this.viewId);
-            parcel.writeInt(this.isRelative ? 1 : 0);
-            parcel.writeInt(this.useIcons ? 1 : 0);
-            if (this.useIcons) {
-                parcel.writeTypedObject(this.i1, 0);
-                parcel.writeTypedObject(this.i2, 0);
-                parcel.writeTypedObject(this.i3, 0);
-                parcel.writeTypedObject(this.i4, 0);
+            parcel.writeInt(this.mViewId);
+            parcel.writeInt(this.mIsRelative ? 1 : 0);
+            parcel.writeInt(this.mUseIcons ? 1 : 0);
+            if (this.mUseIcons) {
+                parcel.writeTypedObject(this.mI1, 0);
+                parcel.writeTypedObject(this.mI2, 0);
+                parcel.writeTypedObject(this.mI3, 0);
+                parcel.writeTypedObject(this.mI4, 0);
                 return;
             }
-            parcel.writeInt(this.d1);
-            parcel.writeInt(this.d2);
-            parcel.writeInt(this.d3);
-            parcel.writeInt(this.d4);
+            parcel.writeInt(this.mD1);
+            parcel.writeInt(this.mD2);
+            parcel.writeInt(this.mD3);
+            parcel.writeInt(this.mD4);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
+            TextView target = (TextView) root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
-            if (this.drawablesLoaded) {
-                if (this.isRelative) {
-                    target.setCompoundDrawablesRelativeWithIntrinsicBounds(this.id1, this.id2, this.id3, this.id4);
+            if (this.mDrawablesLoaded) {
+                if (this.mIsRelative) {
+                    target.setCompoundDrawablesRelativeWithIntrinsicBounds(this.mId1, this.mId2, this.mId3, this.mId4);
                     return;
                 } else {
-                    target.setCompoundDrawablesWithIntrinsicBounds(this.id1, this.id2, this.id3, this.id4);
+                    target.setCompoundDrawablesWithIntrinsicBounds(this.mId1, this.mId2, this.mId3, this.mId4);
                     return;
                 }
             }
-            if (this.useIcons) {
+            if (this.mUseIcons) {
                 Context ctx = target.getContext();
-                Icon icon = this.i1;
-                Drawable id1 = icon == null ? null : icon.loadDrawable(ctx);
-                Icon icon2 = this.i2;
-                Drawable id2 = icon2 == null ? null : icon2.loadDrawable(ctx);
-                Icon icon3 = this.i3;
-                Drawable id3 = icon3 == null ? null : icon3.loadDrawable(ctx);
-                Icon icon4 = this.i4;
-                Drawable id4 = icon4 != null ? icon4.loadDrawable(ctx) : null;
-                if (this.isRelative) {
+                Drawable id1 = this.mI1 == null ? null : this.mI1.loadDrawable(ctx);
+                Drawable id2 = this.mI2 == null ? null : this.mI2.loadDrawable(ctx);
+                Drawable id3 = this.mI3 == null ? null : this.mI3.loadDrawable(ctx);
+                Drawable id4 = this.mI4 != null ? this.mI4.loadDrawable(ctx) : null;
+                if (this.mIsRelative) {
                     target.setCompoundDrawablesRelativeWithIntrinsicBounds(id1, id2, id3, id4);
                     return;
                 } else {
@@ -2994,52 +3100,44 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     return;
                 }
             }
-            if (this.isRelative) {
-                target.setCompoundDrawablesRelativeWithIntrinsicBounds(this.d1, this.d2, this.d3, this.d4);
+            if (this.mIsRelative) {
+                target.setCompoundDrawablesRelativeWithIntrinsicBounds(this.mD1, this.mD2, this.mD3, this.mD4);
             } else {
-                target.setCompoundDrawablesWithIntrinsicBounds(this.d1, this.d2, this.d3, this.d4);
+                target.setCompoundDrawablesWithIntrinsicBounds(this.mD1, this.mD2, this.mD3, this.mD4);
             }
         }
 
         @Override // android.widget.RemoteViews.Action
         public Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
             TextViewDrawableAction copy;
-            TextView target = (TextView) root.findViewById(this.viewId);
+            TextView target = (TextView) root.findViewById(this.mViewId);
             if (target == null) {
                 return RemoteViews.ACTION_NOOP;
             }
-            if (this.useIcons) {
-                copy = new TextViewDrawableAction(this.viewId, this.isRelative, this.i1, this.i2, this.i3, this.i4);
+            if (this.mUseIcons) {
+                copy = new TextViewDrawableAction(this.mViewId, this.mIsRelative, this.mI1, this.mI2, this.mI3, this.mI4);
             } else {
-                copy = new TextViewDrawableAction(this.viewId, this.isRelative, this.d1, this.d2, this.d3, this.d4);
+                copy = new TextViewDrawableAction(this.mViewId, this.mIsRelative, this.mD1, this.mD2, this.mD3, this.mD4);
             }
-            copy.drawablesLoaded = true;
+            copy.mDrawablesLoaded = true;
             Context ctx = target.getContext();
-            if (this.useIcons) {
-                Icon icon = this.i1;
-                copy.id1 = icon == null ? null : icon.loadDrawable(ctx);
-                Icon icon2 = this.i2;
-                copy.id2 = icon2 == null ? null : icon2.loadDrawable(ctx);
-                Icon icon3 = this.i3;
-                copy.id3 = icon3 == null ? null : icon3.loadDrawable(ctx);
-                Icon icon4 = this.i4;
-                copy.id4 = icon4 != null ? icon4.loadDrawable(ctx) : null;
+            if (this.mUseIcons) {
+                copy.mId1 = this.mI1 == null ? null : this.mI1.loadDrawable(ctx);
+                copy.mId2 = this.mI2 == null ? null : this.mI2.loadDrawable(ctx);
+                copy.mId3 = this.mI3 == null ? null : this.mI3.loadDrawable(ctx);
+                copy.mId4 = this.mI4 != null ? this.mI4.loadDrawable(ctx) : null;
             } else {
-                int i = this.d1;
-                copy.id1 = i == 0 ? null : ctx.getDrawable(i);
-                int i2 = this.d2;
-                copy.id2 = i2 == 0 ? null : ctx.getDrawable(i2);
-                int i3 = this.d3;
-                copy.id3 = i3 == 0 ? null : ctx.getDrawable(i3);
-                int i4 = this.d4;
-                copy.id4 = i4 != 0 ? ctx.getDrawable(i4) : null;
+                copy.mId1 = this.mD1 == 0 ? null : ctx.getDrawable(this.mD1);
+                copy.mId2 = this.mD2 == 0 ? null : ctx.getDrawable(this.mD2);
+                copy.mId3 = this.mD3 == 0 ? null : ctx.getDrawable(this.mD3);
+                copy.mId4 = this.mD4 != 0 ? ctx.getDrawable(this.mD4) : null;
             }
             return copy;
         }
 
         @Override // android.widget.RemoteViews.Action
         public boolean prefersAsyncApply() {
-            return this.useIcons;
+            return this.mUseIcons;
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -3049,48 +3147,89 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         @Override // android.widget.RemoteViews.Action
         public void visitUris(Consumer<Uri> visitor) {
-            if (this.useIcons) {
-                RemoteViews.visitIconUri(this.i1, visitor);
-                RemoteViews.visitIconUri(this.i2, visitor);
-                RemoteViews.visitIconUri(this.i3, visitor);
-                RemoteViews.visitIconUri(this.i4, visitor);
+            if (this.mUseIcons) {
+                RemoteViews.visitIconUri(this.mI1, visitor);
+                RemoteViews.visitIconUri(this.mI2, visitor);
+                RemoteViews.visitIconUri(this.mI3, visitor);
+                RemoteViews.visitIconUri(this.mI4, visitor);
             }
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class TextViewSizeAction extends Action {
-        float size;
-        int units;
+    private static class TextViewSizeAction extends Action {
+        float mMaxFontScale;
+        float mSize;
+        int mSizeResId;
+        int mUnits;
 
         TextViewSizeAction(int viewId, int units, float size) {
             super();
-            this.viewId = viewId;
-            this.units = units;
-            this.size = size;
+            this.mViewId = viewId;
+            this.mUnits = units;
+            this.mSize = size;
+            this.mSizeResId = 0;
+            this.mMaxFontScale = 0.0f;
+        }
+
+        TextViewSizeAction(int viewId, int units, float size, float maxFontScale) {
+            super();
+            this.mViewId = viewId;
+            this.mUnits = units;
+            this.mSize = size;
+            this.mSizeResId = 0;
+            this.mMaxFontScale = maxFontScale;
+        }
+
+        TextViewSizeAction(int viewId, int units, int sizeResId, float maxFontScale) {
+            super();
+            this.mViewId = viewId;
+            this.mUnits = units;
+            this.mSize = 0.0f;
+            this.mSizeResId = sizeResId;
+            this.mMaxFontScale = maxFontScale;
         }
 
         TextViewSizeAction(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            this.units = parcel.readInt();
-            this.size = parcel.readFloat();
+            this.mViewId = parcel.readInt();
+            this.mUnits = parcel.readInt();
+            this.mSize = parcel.readFloat();
+            this.mSizeResId = parcel.readInt();
+            this.mMaxFontScale = parcel.readFloat();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeInt(this.units);
-            dest.writeFloat(this.size);
+            dest.writeInt(this.mViewId);
+            dest.writeInt(this.mUnits);
+            dest.writeFloat(this.mSize);
+            dest.writeInt(this.mSizeResId);
+            dest.writeFloat(this.mMaxFontScale);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
+            TextView target = (TextView) root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
-            target.setTextSize(this.units, this.size);
+            try {
+                Resources res = target.getContext().getResources();
+                if (this.mMaxFontScale != 0.0f && this.mUnits == 2 && res.getConfiguration().fontScale > this.mMaxFontScale) {
+                    if (this.mSizeResId != 0) {
+                        float size = res.getFloat(this.mSizeResId);
+                        target.setTextSize(1, this.mMaxFontScale * size);
+                    } else {
+                        target.setTextSize(1, this.mSize * this.mMaxFontScale);
+                    }
+                } else if (this.mSizeResId != 0) {
+                    target.setTextSize(this.mUnits, res.getFloat(this.mSizeResId));
+                } else {
+                    target.setTextSize(this.mUnits, this.mSize);
+                }
+            } catch (Exception ex) {
+                Log.e(RemoteViews.LOG_TAG, "ex=" + ex);
+            }
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -3099,47 +3238,139 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ViewPaddingAction extends Action {
-        int bottom;
-        int left;
-        int right;
-        int top;
+    private static class SemSetTextViewTextResourceAction extends Action {
+        int mResid;
+        Bundle mSpans;
 
-        public ViewPaddingAction(int viewId, int left, int top, int right, int bottom) {
+        SemSetTextViewTextResourceAction(int viewId, int resid, Bundle spans) {
             super();
-            this.viewId = viewId;
-            this.left = left;
-            this.top = top;
-            this.right = right;
-            this.bottom = bottom;
+            this.mViewId = viewId;
+            this.mResid = resid;
+            this.mSpans = spans;
         }
 
-        public ViewPaddingAction(Parcel parcel) {
+        SemSetTextViewTextResourceAction(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            this.left = parcel.readInt();
-            this.top = parcel.readInt();
-            this.right = parcel.readInt();
-            this.bottom = parcel.readInt();
+            this.mViewId = parcel.readInt();
+            this.mResid = parcel.readInt();
+            this.mSpans = parcel.readBundle();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeInt(this.left);
-            dest.writeInt(this.top);
-            dest.writeInt(this.right);
-            dest.writeInt(this.bottom);
+            dest.writeInt(this.mViewId);
+            dest.writeInt(this.mResid);
+            dest.writeBundle(this.mSpans);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            TextView target = (TextView) root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
-            target.setPadding(this.left, this.top, this.right, this.bottom);
+            String text = target.getContext().getResources().getString(this.mResid);
+            RemoteViews.setTextWithSpannableString(target, text, this.mSpans);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public Action initActionAsync(ViewTree root, ViewGroup rootParent, ActionApplyParams params) {
+            TextView target = (TextView) root.findViewById(this.mViewId);
+            return target == null ? RemoteViews.ACTION_NOOP : this;
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public int getActionTag() {
+            return 110;
+        }
+    }
+
+    static void setTextWithSpannableString(TextView textView, String text, Bundle style) {
+        int typeface;
+        if (textView == null) {
+            return;
+        }
+        if (style != null && text != null) {
+            try {
+                SpannableString content = new SpannableString(text);
+                int length = content.length();
+                for (String key : PARCELABLE_SPAN_KEYS) {
+                    ParcelableSpan span = null;
+                    if ("TypefaceSpan".equals(key)) {
+                        String family = style.getString(key, null);
+                        if (family != null) {
+                            span = new TypefaceSpan(family);
+                        }
+                    } else if ("TextAppearanceSpan".equals(key)) {
+                        int textAppearance = style.getInt(key, 0);
+                        if (textAppearance != 0) {
+                            span = new TextAppearanceSpan(textView.getContext(), textAppearance);
+                        }
+                    } else if ("UnderlineSpan".equals(key)) {
+                        if (style.getBoolean(key, false)) {
+                            span = new UnderlineSpan();
+                        }
+                    } else if ("StrikethroughSpan".equals(key)) {
+                        if (style.getBoolean(key, false)) {
+                            span = new StrikethroughSpan();
+                        }
+                    } else if ("StyleSpan".equals(key) && (typeface = style.getInt(key, -1)) != -1) {
+                        span = new StyleSpan(typeface);
+                    }
+                    if (span != null) {
+                        content.setSpan(span, 0, length, 17);
+                    }
+                }
+                textView.lambda$setTextAsync$0(content);
+                return;
+            } catch (Exception ex) {
+                Log.e(LOG_TAG, "ex=" + ex);
+                return;
+            }
+        }
+        textView.lambda$setTextAsync$0(text);
+    }
+
+    private static class ViewPaddingAction extends Action {
+        int mBottom;
+        int mLeft;
+        int mRight;
+        int mTop;
+
+        public ViewPaddingAction(int viewId, int left, int top, int right, int bottom) {
+            super();
+            this.mViewId = viewId;
+            this.mLeft = left;
+            this.mTop = top;
+            this.mRight = right;
+            this.mBottom = bottom;
+        }
+
+        public ViewPaddingAction(Parcel parcel) {
+            super();
+            this.mViewId = parcel.readInt();
+            this.mLeft = parcel.readInt();
+            this.mTop = parcel.readInt();
+            this.mRight = parcel.readInt();
+            this.mBottom = parcel.readInt();
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.mViewId);
+            dest.writeInt(this.mLeft);
+            dest.writeInt(this.mTop);
+            dest.writeInt(this.mRight);
+            dest.writeInt(this.mBottom);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
+            View target = root.findViewById(this.mViewId);
+            if (target == null) {
+                return;
+            }
+            target.setPadding(this.mLeft, this.mTop, this.mRight, this.mBottom);
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -3148,8 +3379,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class LayoutParamAction extends Action {
+    private static class LayoutParamAction extends Action {
         static final int LAYOUT_HEIGHT = 9;
         static final int LAYOUT_MARGIN_BOTTOM = 3;
         static final int LAYOUT_MARGIN_END = 5;
@@ -3166,7 +3396,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         LayoutParamAction(int viewId, int property, float value, int units) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mProperty = property;
             this.mValueType = 2;
             this.mValue = TypedValue.createComplexDimension(value, units);
@@ -3176,7 +3406,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         LayoutParamAction(int viewId, int property, int value, int valueType) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mProperty = property;
             this.mValueType = valueType;
             this.mValue = value;
@@ -3186,7 +3416,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         LayoutParamAction(int viewId, int property, int animatorId) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mProperty = property;
             this.mValueType = 101;
             this.mValue = 0;
@@ -3196,7 +3426,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         public LayoutParamAction(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
+            this.mViewId = parcel.readInt();
             this.mProperty = parcel.readInt();
             this.mValueType = parcel.readInt();
             this.mValue = parcel.readInt();
@@ -3204,9 +3434,9 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mIsAnimationEnd = parcel.readBoolean();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             dest.writeInt(this.mProperty);
             dest.writeInt(this.mValueType);
             dest.writeInt(this.mValue);
@@ -3217,7 +3447,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
             ViewGroup.LayoutParams layoutParams;
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null || (layoutParams = target.getLayoutParams()) == null) {
                 return;
             }
@@ -3289,20 +3519,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             }
         }
 
-        private void startValueAnimator(View target, ViewGroup.LayoutParams layoutParams) {
+        private void startValueAnimator(final View target, final ViewGroup.LayoutParams layoutParams) {
             ValueAnimator animator = (ValueAnimator) AnimatorInflater.loadAnimator(target.getContext(), this.mAnimatorId);
             if (animator == null) {
                 return;
             }
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.RemoteViews.LayoutParamAction.1
-                final /* synthetic */ ViewGroup.LayoutParams val$layoutParams;
-                final /* synthetic */ View val$target;
-
-                AnonymousClass1(ViewGroup.LayoutParams layoutParams2, View target2) {
-                    layoutParams = layoutParams2;
-                    target = target2;
-                }
-
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int animatedValue = ((Integer) animation.getAnimatedValue()).intValue();
@@ -3311,14 +3533,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 }
             });
             animator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.RemoteViews.LayoutParamAction.2
-                final /* synthetic */ ViewGroup.LayoutParams val$layoutParams;
-                final /* synthetic */ View val$target;
-
-                AnonymousClass2(ViewGroup.LayoutParams layoutParams2, View target2) {
-                    layoutParams = layoutParams2;
-                    target = target2;
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     LayoutParamAction.this.mIsAnimationEnd = true;
@@ -3338,52 +3552,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 animator.setDuration(0L);
             }
             animator.start();
-        }
-
-        /* renamed from: android.widget.RemoteViews$LayoutParamAction$1 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
-            final /* synthetic */ ViewGroup.LayoutParams val$layoutParams;
-            final /* synthetic */ View val$target;
-
-            AnonymousClass1(ViewGroup.LayoutParams layoutParams2, View target2) {
-                layoutParams = layoutParams2;
-                target = target2;
-            }
-
-            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int animatedValue = ((Integer) animation.getAnimatedValue()).intValue();
-                layoutParams.width = animatedValue;
-                target.setLayoutParams(layoutParams);
-            }
-        }
-
-        /* renamed from: android.widget.RemoteViews$LayoutParamAction$2 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass2 extends AnimatorListenerAdapter {
-            final /* synthetic */ ViewGroup.LayoutParams val$layoutParams;
-            final /* synthetic */ View val$target;
-
-            AnonymousClass2(ViewGroup.LayoutParams layoutParams2, View target2) {
-                layoutParams = layoutParams2;
-                target = target2;
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animation) {
-                LayoutParamAction.this.mIsAnimationEnd = true;
-                PropertyValuesHolder[] values = ((ValueAnimator) animation).getValues();
-                if (values != null) {
-                    PropertyValuesHolder pvh = values[0];
-                    PropertyValuesHolder.PropertyValues value = new PropertyValuesHolder.PropertyValues();
-                    if (pvh != null) {
-                        pvh.getPropertyValues(value);
-                        layoutParams.width = ((Integer) value.endValue).intValue();
-                        target.setLayoutParams(layoutParams);
-                    }
-                }
-            }
         }
 
         private int getPixelOffset(View target) {
@@ -3449,35 +3617,34 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SetRemoteInputsAction extends Action {
-        final Parcelable[] remoteInputs;
+    private static class SetRemoteInputsAction extends Action {
+        final Parcelable[] mRemoteInputs;
 
         public SetRemoteInputsAction(int viewId, RemoteInput[] remoteInputs) {
             super();
-            this.viewId = viewId;
-            this.remoteInputs = remoteInputs;
+            this.mViewId = viewId;
+            this.mRemoteInputs = remoteInputs;
         }
 
         public SetRemoteInputsAction(Parcel parcel) {
             super();
-            this.viewId = parcel.readInt();
-            this.remoteInputs = (Parcelable[]) parcel.createTypedArray(RemoteInput.CREATOR);
+            this.mViewId = parcel.readInt();
+            this.mRemoteInputs = (Parcelable[]) parcel.createTypedArray(RemoteInput.CREATOR);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeTypedArray(this.remoteInputs, flags);
+            dest.writeInt(this.mViewId);
+            dest.writeTypedArray(this.mRemoteInputs, flags);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
-            target.setTagInternal(R.id.remote_input_tag, this.remoteInputs);
+            target.setTagInternal(R.id.remote_input_tag, this.mRemoteInputs);
         }
 
         @Override // android.widget.RemoteViews.Action
@@ -3486,53 +3653,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class OverrideTextColorsAction extends Action {
-        private final int textColor;
-
-        public OverrideTextColorsAction(int textColor) {
-            super();
-            this.textColor = textColor;
-        }
-
-        public OverrideTextColorsAction(Parcel parcel) {
-            super();
-            this.textColor = parcel.readInt();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.textColor);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            Stack<View> viewsToProcess = new Stack<>();
-            viewsToProcess.add(root);
-            while (!viewsToProcess.isEmpty()) {
-                View v = viewsToProcess.pop();
-                if (v instanceof TextView) {
-                    TextView textView = (TextView) v;
-                    textView.setText(ContrastColorUtil.clearColorSpans(textView.getText()));
-                    textView.setTextColor(this.textColor);
-                }
-                if (v instanceof ViewGroup) {
-                    ViewGroup viewGroup = (ViewGroup) v;
-                    for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                        viewsToProcess.push(viewGroup.getChildAt(i));
-                    }
-                }
-            }
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 20;
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public static class SetIntTagAction extends Action {
+    private static class SetIntTagAction extends Action {
         private final int mKey;
         private final int mTag;
         private final int mViewId;
@@ -3551,7 +3672,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mTag = parcel.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mViewId);
             dest.writeInt(this.mKey);
@@ -3573,36 +3694,35 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SetCompoundButtonCheckedAction extends Action {
+    private static class SetCompoundButtonCheckedAction extends Action {
         private final boolean mChecked;
 
         SetCompoundButtonCheckedAction(int viewId, boolean checked) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mChecked = checked;
         }
 
         SetCompoundButtonCheckedAction(Parcel in) {
             super();
-            this.viewId = in.readInt();
+            this.mViewId = in.readInt();
             this.mChecked = in.readBoolean();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             dest.writeBoolean(this.mChecked);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
             if (!(target instanceof CompoundButton)) {
-                Log.w(RemoteViews.LOG_TAG, "Cannot set checked to view " + this.viewId + " because it is not a CompoundButton");
+                Log.w(RemoteViews.LOG_TAG, "Cannot set checked to view " + this.mViewId + " because it is not a CompoundButton");
                 return;
             }
             CompoundButton button = (CompoundButton) target;
@@ -3622,36 +3742,35 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SetRadioGroupCheckedAction extends Action {
+    private static class SetRadioGroupCheckedAction extends Action {
         private final int mCheckedId;
 
         SetRadioGroupCheckedAction(int viewId, int checkedId) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mCheckedId = checkedId;
         }
 
         SetRadioGroupCheckedAction(Parcel in) {
             super();
-            this.viewId = in.readInt();
+            this.mViewId = in.readInt();
             this.mCheckedId = in.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             dest.writeInt(this.mCheckedId);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
             if (!(target instanceof RadioGroup)) {
-                Log.w(RemoteViews.LOG_TAG, "Cannot check " + this.viewId + " because it's not a RadioGroup");
+                Log.w(RemoteViews.LOG_TAG, "Cannot check " + this.mViewId + " because it's not a RadioGroup");
                 return;
             }
             RadioGroup group = (RadioGroup) target;
@@ -3680,44 +3799,42 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SetViewOutlinePreferredRadiusAction extends Action {
+    private static class SetViewOutlinePreferredRadiusAction extends Action {
         private final int mValue;
         private final int mValueType;
 
         SetViewOutlinePreferredRadiusAction(int viewId, int value, int valueType) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mValueType = valueType;
             this.mValue = value;
         }
 
         SetViewOutlinePreferredRadiusAction(int viewId, float radius, int units) {
             super();
-            this.viewId = viewId;
+            this.mViewId = viewId;
             this.mValueType = 2;
             this.mValue = TypedValue.createComplexDimension(radius, units);
         }
 
         SetViewOutlinePreferredRadiusAction(Parcel in) {
             super();
-            this.viewId = in.readInt();
+            this.mViewId = in.readInt();
             this.mValueType = in.readInt();
             this.mValue = in.readInt();
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
+            dest.writeInt(this.mViewId);
             dest.writeInt(this.mValueType);
             dest.writeInt(this.mValue);
         }
 
-        /* JADX WARN: Failed to find 'out' block for switch in B:7:0x000c. Please report as an issue. */
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
             float radius;
-            View target = root.findViewById(this.viewId);
+            View target = root.findViewById(this.mViewId);
             if (target == null) {
                 return;
             }
@@ -3758,7 +3875,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class RemoteViewOutlineProvider extends ViewOutlineProvider {
         private final float mRadius;
 
@@ -3776,6 +3892,81 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    class SetDrawInstructionAction extends Action {
+        private final DrawInstructions mInstructions;
+
+        SetDrawInstructionAction(DrawInstructions instructions) {
+            super();
+            this.mInstructions = instructions;
+        }
+
+        SetDrawInstructionAction(Parcel in) {
+            super();
+            if (Flags.drawDataParcel()) {
+                this.mInstructions = DrawInstructions.readFromParcel(in);
+            } else {
+                this.mInstructions = null;
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void writeToParcel(Parcel dest, int flags) {
+            if (Flags.drawDataParcel()) {
+                DrawInstructions.writeToParcel(this.mInstructions, dest, flags);
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void apply(View root, ViewGroup rootParent, final ActionApplyParams params) throws ActionException {
+            if (Flags.drawDataParcel() && this.mInstructions != null && (root instanceof RemoteComposePlayer)) {
+                final RemoteComposePlayer player = (RemoteComposePlayer) root;
+                List<byte[]> bytes = this.mInstructions.mInstructions;
+                if (bytes.isEmpty()) {
+                    return;
+                }
+                try {
+                    ByteArrayInputStream is = new ByteArrayInputStream(bytes.get(0));
+                    try {
+                        player.setDocument(new RemoteComposeDocument(is));
+                        player.addClickListener(new RemoteComposePlayer.ClickCallbacks() { // from class: android.widget.RemoteViews$SetDrawInstructionAction$$ExternalSyntheticLambda0
+                            @Override // com.android.internal.widget.remotecompose.player.RemoteComposePlayer.ClickCallbacks
+                            public final void click(int i, String str) {
+                                RemoteViews.SetDrawInstructionAction.this.lambda$apply$1(player, params, i, str);
+                            }
+                        });
+                        is.close();
+                    } finally {
+                    }
+                } catch (IOException e) {
+                    Log.e(RemoteViews.LOG_TAG, "Failed to render draw instructions", e);
+                }
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$apply$1(final RemoteComposePlayer player, final ActionApplyParams params, final int viewId, String metadata) {
+            RemoteViews.this.mActions.forEach(new Consumer() { // from class: android.widget.RemoteViews$SetDrawInstructionAction$$ExternalSyntheticLambda1
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    RemoteViews.SetDrawInstructionAction.lambda$apply$0(viewId, player, params, (RemoteViews.Action) obj);
+                }
+            });
+        }
+
+        static /* synthetic */ void lambda$apply$0(int viewId, RemoteComposePlayer player, ActionApplyParams params, Action action) {
+            if (viewId == action.mViewId && (action instanceof SetOnClickResponse)) {
+                SetOnClickResponse setOnClickResponse = (SetOnClickResponse) action;
+                setOnClickResponse.mResponse.handleViewInteraction(player, params.handler);
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public int getActionTag() {
+            return 35;
+        }
+    }
+
     public RemoteViews(String packageName, int layoutId) {
         this(getApplicationInfo(packageName, UserHandle.myUserId()), layoutId);
     }
@@ -3785,15 +3976,15 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mViewId = viewId;
     }
 
-    public RemoteViews(ApplicationInfo application, int layoutId) {
+    protected RemoteViews(ApplicationInfo application, int layoutId) {
         this.mActionsLock = new Object();
         this.isProductDEV = ViewRune.COMMON_IS_PRODUCT_DEV;
         this.mLightBackgroundLayoutId = 0;
         this.mAllowOtherRootParent = false;
         this.mAppWidgetId = -1;
         this.mBitmapCache = new BitmapCache();
-        ApplicationInfoCache applicationInfoCache = new ApplicationInfoCache();
-        this.mApplicationInfoCache = applicationInfoCache;
+        this.mCollectionCache = new RemoteCollectionCache();
+        this.mApplicationInfoCache = new ApplicationInfoCache();
         this.mIsRoot = true;
         this.mLandscape = null;
         this.mPortrait = null;
@@ -3804,18 +3995,21 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mProviderInstanceId = -1L;
         this.mApplication = application;
         this.mLayoutId = layoutId;
-        applicationInfoCache.put(application);
+        this.mApplicationInfoCache.put(application);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean hasMultipleLayouts() {
         return hasLandscapeAndPortraitLayouts() || hasSizedRemoteViews();
     }
 
-    private boolean hasLandscapeAndPortraitLayouts() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public boolean hasLandscapeAndPortraitLayouts() {
         return (this.mLandscape == null || this.mPortrait == null) ? false : true;
     }
 
-    private boolean hasSizedRemoteViews() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public boolean hasSizedRemoteViews() {
         return this.mSizedRemoteViews != null;
     }
 
@@ -3828,7 +4022,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     }
 
     private RemoteViews findSmallestRemoteView() {
-        return this.mSizedRemoteViews.get(r0.size() - 1);
+        return this.mSizedRemoteViews.get(this.mSizedRemoteViews.size() - 1);
     }
 
     public RemoteViews(RemoteViews landscape, RemoteViews portrait) {
@@ -3838,6 +4032,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mAllowOtherRootParent = false;
         this.mAppWidgetId = -1;
         this.mBitmapCache = new BitmapCache();
+        this.mCollectionCache = new RemoteCollectionCache();
         this.mApplicationInfoCache = new ApplicationInfoCache();
         this.mIsRoot = true;
         this.mLandscape = null;
@@ -3859,8 +4054,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mLightBackgroundLayoutId = portrait.mLightBackgroundLayoutId;
         this.mLandscape = landscape;
         this.mPortrait = portrait;
-        Map<Class, Object> map = portrait.mClassCookies;
-        this.mClassCookies = map == null ? landscape.mClassCookies : map;
+        this.mClassCookies = portrait.mClassCookies != null ? portrait.mClassCookies : landscape.mClassCookies;
         configureDescendantsAsChildren();
     }
 
@@ -3871,6 +4065,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mAllowOtherRootParent = false;
         this.mAppWidgetId = -1;
         this.mBitmapCache = new BitmapCache();
+        this.mCollectionCache = new RemoteCollectionCache();
         this.mApplicationInfoCache = new ApplicationInfoCache();
         this.mIsRoot = true;
         this.mLandscape = null;
@@ -3889,7 +4084,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 initializeFrom(single, single);
                 return;
             }
-            this.mClassCookies = initializeSizedRemoteViews(remoteViews.entrySet().stream().map(new Function() { // from class: android.widget.RemoteViews$$ExternalSyntheticLambda2
+            this.mClassCookies = initializeSizedRemoteViews(remoteViews.entrySet().stream().map(new Function() { // from class: android.widget.RemoteViews$$ExternalSyntheticLambda0
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return RemoteViews.lambda$new$2((Map.Entry) obj);
@@ -3906,7 +4101,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         throw new IllegalArgumentException("Too many RemoteViews in constructor");
     }
 
-    public static /* synthetic */ RemoteViews lambda$new$2(Map.Entry entry) {
+    static /* synthetic */ RemoteViews lambda$new$2(Map.Entry entry) {
         ((RemoteViews) entry.getValue()).setIdealSize((SizeF) entry.getKey());
         return (RemoteViews) entry.getValue();
     }
@@ -3952,6 +4147,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mAllowOtherRootParent = false;
         this.mAppWidgetId = -1;
         this.mBitmapCache = new BitmapCache();
+        this.mCollectionCache = new RemoteCollectionCache();
         this.mApplicationInfoCache = new ApplicationInfoCache();
         this.mIsRoot = true;
         this.mLandscape = null;
@@ -3971,6 +4167,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mAllowOtherRootParent = false;
         this.mAppWidgetId = -1;
         this.mBitmapCache = new BitmapCache();
+        this.mCollectionCache = new RemoteCollectionCache();
         this.mApplicationInfoCache = new ApplicationInfoCache();
         this.mIsRoot = true;
         this.mLandscape = null;
@@ -3991,9 +4188,11 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     private void initializeFrom(RemoteViews src, RemoteViews hierarchyRoot) {
         if (hierarchyRoot == null) {
             this.mBitmapCache = src.mBitmapCache;
+            this.mCollectionCache = new RemoteCollectionCache(src.mCollectionCache);
             this.mApplicationInfoCache = src.mApplicationInfoCache;
         } else {
             this.mBitmapCache = hierarchyRoot.mBitmapCache;
+            this.mCollectionCache = hierarchyRoot.mCollectionCache;
             this.mApplicationInfoCache = hierarchyRoot.mApplicationInfoCache;
         }
         if (hierarchyRoot == null || src.mIsRoot) {
@@ -4009,6 +4208,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mClassCookies = src.mClassCookies;
         this.mIdealSize = src.mIdealSize;
         this.mProviderInstanceId = src.mProviderInstanceId;
+        this.mHasDrawInstructions = src.mHasDrawInstructions;
         this.mAllowOtherRootParent = src.mAllowOtherRootParent;
         this.mAppWidgetId = src.mAppWidgetId;
         if (src.hasLandscapeAndPortraitLayouts()) {
@@ -4032,11 +4232,32 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         if (this.mIsRoot) {
             reconstructCaches();
         }
-        this.mIsAllowPendintIntentInCollection = src.mIsAllowPendintIntentInCollection;
     }
 
     public RemoteViews(Parcel parcel) {
         this(parcel, null, null, 0);
+    }
+
+    public RemoteViews(DrawInstructions drawInstructions) {
+        this.mActionsLock = new Object();
+        this.isProductDEV = ViewRune.COMMON_IS_PRODUCT_DEV;
+        this.mLightBackgroundLayoutId = 0;
+        this.mAllowOtherRootParent = false;
+        this.mAppWidgetId = -1;
+        this.mBitmapCache = new BitmapCache();
+        this.mCollectionCache = new RemoteCollectionCache();
+        this.mApplicationInfoCache = new ApplicationInfoCache();
+        this.mIsRoot = true;
+        this.mLandscape = null;
+        this.mPortrait = null;
+        this.mSizedRemoteViews = null;
+        this.mIdealSize = null;
+        this.mApplyFlags = 0;
+        this.mViewId = -1;
+        this.mProviderInstanceId = -1L;
+        Objects.requireNonNull(drawInstructions);
+        this.mHasDrawInstructions = true;
+        addAction(new SetDrawInstructionAction(drawInstructions));
     }
 
     private RemoteViews(Parcel parcel, HierarchyRootData rootData, ApplicationInfo info, int depth) {
@@ -4046,6 +4267,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         this.mAllowOtherRootParent = false;
         this.mAppWidgetId = -1;
         this.mBitmapCache = new BitmapCache();
+        this.mCollectionCache = new RemoteCollectionCache();
         this.mApplicationInfoCache = new ApplicationInfoCache();
         this.mIsRoot = true;
         this.mLandscape = null;
@@ -4063,11 +4285,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         if (rootData == null) {
             this.mBitmapCache = new BitmapCache(parcel);
             this.mClassCookies = parcel.copyClassCookies();
+            this.mCollectionCache = new RemoteCollectionCache(parcel);
         } else {
             configureAsChild(rootData);
         }
         if (mode == 0) {
-            this.mApplication = ApplicationInfo.CREATOR.createFromParcel(parcel);
+            this.mApplication = (ApplicationInfo) parcel.readTypedObject(ApplicationInfo.CREATOR);
             this.mIdealSize = parcel.readInt() != 0 ? SizeF.CREATOR.createFromParcel(parcel) : null;
             this.mLayoutId = parcel.readInt();
             this.mViewId = parcel.readInt();
@@ -4092,21 +4315,22 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mLightBackgroundLayoutId = smallestView.mLightBackgroundLayoutId;
         } else {
             this.mLandscape = new RemoteViews(parcel, getHierarchyRootData(), info, depth2);
-            RemoteViews remoteViews2 = new RemoteViews(parcel, getHierarchyRootData(), this.mLandscape.mApplication, depth2);
-            this.mPortrait = remoteViews2;
-            this.mApplication = remoteViews2.mApplication;
-            this.mLayoutId = remoteViews2.mLayoutId;
-            this.mViewId = remoteViews2.mViewId;
-            this.mLightBackgroundLayoutId = remoteViews2.mLightBackgroundLayoutId;
+            this.mPortrait = new RemoteViews(parcel, getHierarchyRootData(), this.mLandscape.mApplication, depth2);
+            this.mApplication = this.mPortrait.mApplication;
+            this.mLayoutId = this.mPortrait.mLayoutId;
+            this.mViewId = this.mPortrait.mViewId;
+            this.mLightBackgroundLayoutId = this.mPortrait.mLightBackgroundLayoutId;
         }
         this.mApplyFlags = parcel.readInt();
         this.mProviderInstanceId = parcel.readLong();
+        this.mHasDrawInstructions = parcel.readBoolean();
         this.mAllowOtherRootParent = parcel.readBoolean();
-        this.mAppWidgetId = parcel.readInt();
+        if (this.mAllowOtherRootParent) {
+            this.mAppWidgetId = parcel.readInt();
+        }
         if (this.mIsRoot) {
             configureDescendantsAsChildren();
         }
-        this.mIsAllowPendintIntentInCollection = parcel.readBoolean();
     }
 
     private void readActionsFromParcel(Parcel parcel, int depth) {
@@ -4150,14 +4374,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 return new TextViewSizeAction(parcel);
             case 14:
                 return new ViewPaddingAction(parcel);
-            case 15:
-                return new SetRemoteViewsAdapterList(parcel);
             case 18:
                 return new SetRemoteInputsAction(parcel);
             case 19:
                 return new LayoutParamAction(parcel);
-            case 20:
-                return new OverrideTextColorsAction(parcel);
             case 21:
                 return new SetRippleDrawableColor(parcel);
             case 22:
@@ -4182,18 +4402,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 return new SetRemoteCollectionItemListAdapterAction(parcel);
             case 32:
                 return new AttributeReflectionAction(parcel);
-            case 41:
-                return new ClearAllTextEffectAction(parcel);
-            case 42:
-                return new AddOuterShadowAction(parcel);
-            case 43:
-                return new AddInnerShadowAction(parcel);
-            case 44:
-                return new AddStrokeAction(parcel);
-            case 45:
-                return new AddLinearGradientAction(parcel);
-            case 46:
-                return new AddOuterGlowAction(parcel);
+            case 34:
+                return new SetOnStylusHandwritingResponse(parcel);
+            case 35:
+                return new SetDrawInstructionAction(parcel);
             case 100:
                 return new SemSetOnLongClickPendingIntent(parcel);
             case 101:
@@ -4211,9 +4423,11 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             case 107:
                 return new SemAnimationAction(parcel);
             case 108:
-                return new SetVectorDrawablePathColor(parcel);
-            case 109:
                 return new SetTextViewShadowAction(parcel);
+            case 109:
+                return new SetStringTagAction(parcel);
+            case 110:
+                return new SemSetTextViewTextResourceAction(parcel);
             default:
                 throw new ActionException("Tag " + tag + " not found");
         }
@@ -4222,27 +4436,27 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     @Override // 
     @Deprecated
     /* renamed from: clone */
-    public RemoteViews mo407clone() {
+    public RemoteViews mo447clone() {
         Preconditions.checkState(this.mIsRoot, "RemoteView has been attached to another RemoteView. May only clone the root of a RemoteView hierarchy.");
         return new RemoteViews(this);
     }
 
     public String getPackage() {
-        ApplicationInfo applicationInfo = this.mApplication;
-        if (applicationInfo != null) {
-            return applicationInfo.packageName;
+        if (this.mApplication != null) {
+            return this.mApplication.packageName;
         }
         return null;
     }
 
     public int getLayoutId() {
-        int i;
-        return (!hasFlags(4) || (i = this.mLightBackgroundLayoutId) == 0) ? this.mLayoutId : i;
+        return (!hasFlags(4) || this.mLightBackgroundLayoutId == 0) ? this.mLayoutId : this.mLightBackgroundLayoutId;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void configureAsChild(HierarchyRootData rootData) {
         this.mIsRoot = false;
         this.mBitmapCache = rootData.mBitmapCache;
+        this.mCollectionCache = rootData.mRemoteCollectionCache;
         this.mApplicationInfoCache = rootData.mApplicationInfoCache;
         this.mClassCookies = rootData.mClassCookies;
         configureDescendantsAsChildren();
@@ -4263,9 +4477,8 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             return;
         }
         synchronized (this.mActionsLock) {
-            ArrayList<Action> arrayList = this.mActions;
-            if (arrayList != null) {
-                Iterator<Action> it = arrayList.iterator();
+            if (this.mActions != null) {
+                Iterator<Action> it = this.mActions.iterator();
                 while (it.hasNext()) {
                     Action action = it.next();
                     action.setHierarchyRootData(rootData);
@@ -4277,9 +4490,8 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     private void reconstructCaches() {
         if (this.mIsRoot) {
             this.mBitmapCache = new BitmapCache();
-            ApplicationInfoCache applicationInfoCache = new ApplicationInfoCache();
-            this.mApplicationInfoCache = applicationInfoCache;
-            this.mApplication = applicationInfoCache.getOrPut(this.mApplication);
+            this.mApplicationInfoCache = new ApplicationInfoCache();
+            this.mApplication = this.mApplicationInfoCache.getOrPut(this.mApplication);
             configureDescendantsAsChildren();
         }
     }
@@ -4352,8 +4564,20 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         setCharSequence(viewId, "setText", text);
     }
 
+    private void hidden_semSetTextViewTextResource(int viewId, int resid, Bundle spans) {
+        addAction(new SemSetTextViewTextResourceAction(viewId, resid, spans));
+    }
+
     public void setTextViewTextSize(int viewId, int units, float size) {
         addAction(new TextViewSizeAction(viewId, units, size));
+    }
+
+    private void hidden_semSetTextViewTextSize(int viewId, float size, float maxFontScale) {
+        addAction(new TextViewSizeAction(viewId, 2, size, maxFontScale));
+    }
+
+    private void hidden_semSetTextViewTextSizeResource(int viewId, int units, int sizeResId, float maxFontScale) {
+        addAction(new TextViewSizeAction(viewId, units, sizeResId, maxFontScale));
     }
 
     public void setTextViewCompoundDrawables(int viewId, int left, int top, int right, int bottom) {
@@ -4419,27 +4643,41 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     }
 
     public void setPendingIntentTemplate(int viewId, PendingIntent pendingIntentTemplate) {
-        addAction(new SetPendingIntentTemplate(viewId, pendingIntentTemplate));
+        if (hasDrawInstructions()) {
+            getPendingIntentTemplate().set(viewId, pendingIntentTemplate);
+            tryAddRemoteResponse(viewId);
+        } else {
+            addAction(new SetPendingIntentTemplate(viewId, pendingIntentTemplate));
+        }
     }
 
     public void setOnClickFillInIntent(int viewId, Intent fillInIntent) {
-        setOnClickResponse(viewId, RemoteResponse.fromFillInIntent(fillInIntent));
+        if (hasDrawInstructions()) {
+            getFillInIntent().set(viewId, fillInIntent);
+            tryAddRemoteResponse(viewId);
+        } else {
+            setOnClickResponse(viewId, RemoteResponse.fromFillInIntent(fillInIntent));
+        }
     }
 
     public void setOnCheckedChangeResponse(int viewId, RemoteResponse response) {
         addAction(new SetOnCheckedChangeResponse(viewId, response.setInteractionType(1)));
     }
 
+    public void setOnStylusHandwritingPendingIntent(int viewId, PendingIntent pendingIntent) {
+        addAction(new SetOnStylusHandwritingResponse(viewId, pendingIntent));
+    }
+
     public void setDrawableTint(int viewId, boolean targetBackground, int colorFilter, PorterDuff.Mode mode) {
         addAction(new SetDrawableTint(viewId, targetBackground, colorFilter, mode));
     }
 
-    public void hidden_semSetVectorDrawablePathColor(int viewId, String targetPathName, int colorFilter) {
-        addAction(new SetVectorDrawablePathColor(viewId, targetPathName, colorFilter));
+    private void hidden_semSetTextViewShadow(int viewId, float radius, float dx, float dy, int color) {
+        addAction(new SetTextViewShadowAction(viewId, radius, dx, dy, color));
     }
 
-    public void hidden_semSetTextViewShadow(int viewId, float radius, float dx, float dy, int color) {
-        addAction(new SetTextViewShadowAction(viewId, radius, dx, dy, color));
+    private void hidden_semSetStringTag(int viewId, int key, String value) {
+        addAction(new SetStringTagAction(viewId, key, value));
     }
 
     public void setRippleDrawableColor(int viewId, ColorStateList colorStateList) {
@@ -4471,13 +4709,22 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         setRemoteAdapter(viewId, intent);
     }
 
+    @Deprecated
     public void setRemoteAdapter(int viewId, Intent intent) {
-        addAction(new SetRemoteViewsAdapterIntent(viewId, intent));
+        if (Flags.remoteAdapterConversion()) {
+            addAction(new SetRemoteCollectionItemListAdapterAction(viewId, intent));
+        } else {
+            addAction(new SetRemoteViewsAdapterIntent(viewId, intent));
+        }
     }
 
     @Deprecated
     public void setRemoteAdapter(int viewId, ArrayList<RemoteViews> list, int viewTypeCount) {
-        addAction(new SetRemoteViewsAdapterList(viewId, list, viewTypeCount));
+        RemoteCollectionItems.Builder b = new RemoteCollectionItems.Builder();
+        for (int i = 0; i < list.size(); i++) {
+            b.addItem(i, list.get(i));
+        }
+        setRemoteAdapter(viewId, b.setViewTypeCount(viewTypeCount).build());
     }
 
     public void setRemoteAdapter(int viewId, RemoteCollectionItems items) {
@@ -4578,6 +4825,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
     public void setIntDimenAttr(int viewId, String methodName, int dimenAttr) {
         addAction(new AttributeReflectionAction(viewId, methodName, 4, 1, dimenAttr));
+    }
+
+    private void hidden_semSetIntInteger(int viewId, String methodName, int integerResource) {
+        addAction(new ResourceReflectionAction(viewId, methodName, 4, 4, integerResource));
     }
 
     public void setColor(int viewId, String methodName, int colorResource) {
@@ -4726,6 +4977,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public boolean hasDrawInstructions() {
+        return this.mHasDrawInstructions;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public RemoteViews getRemoteViewsToApply(Context context) {
         if (this.isProductDEV) {
             Log.d(LOG_TAG, "getRemoteViewsToApply() - mIsForcedOrientation=" + this.mIsForcedOrientation + "mIsPortrait=" + this.mIsPortrait + ", mLandscape=" + this.mLandscape + ", mPortrait=" + this.mPortrait);
@@ -4833,6 +5090,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return apply(context, parent, parent, size, params);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public View apply(Context context, ViewGroup directParent, ViewGroup rootParent, SizeF size, ActionApplyParams params) {
         RemoteViews rvToApply = getRemoteViewsToApply(context, size);
         View result = inflateView(context, rvToApply, directParent, params.applyThemeResId, params.colorResources);
@@ -4840,8 +5098,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return result;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public View inflateView(Context context, RemoteViews rv, ViewGroup parent, int applyThemeResId, ColorResources colorResources) {
         Context inflationContext;
+        View v;
         Context contextForResources = getContextForResourcesEnsuringCorrectCachedApkPaths(context);
         if (colorResources != null) {
             colorResources.apply(contextForResources);
@@ -4852,26 +5112,34 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         } else {
             inflationContext = new ContextThemeWrapper(inflationContext2, applyThemeResId);
         }
-        LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(inflationContext);
-        inflater.setFilter(shouldUseStaticFilter() ? INFLATER_FILTER : this);
+        if (rv.hasDrawInstructions()) {
+            RemoteComposePlayer player = new RemoteComposePlayer(inflationContext);
+            player.setDebug((Build.IS_USERDEBUG || Build.IS_ENG) ? 1 : 0);
+            v = player;
+        } else {
+            LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(inflationContext);
+            inflater.setFilter(shouldUseStaticFilter() ? INFLATER_FILTER : this);
+            if (this.mLayoutInflaterFactory2 != null) {
+                inflater.setFactory2(this.mLayoutInflaterFactory2);
+            }
+            v = inflater.inflate(rv.getLayoutId(), parent, false);
+        }
         try {
             if (this.isProductDEV && (parent instanceof AppWidgetHostView)) {
                 Log.d(LOG_TAG, "inflateView, package = " + inflationContext.getPackageName() + ", layout = " + ((Object) inflationContext.getResources().getText(rv.getLayoutId())) + ", App Config = " + inflationContext.getResources().getConfiguration());
             }
-            View v = inflater.inflate(rv.getLayoutId(), parent, false);
-            int i = this.mViewId;
-            if (i != -1) {
-                v.setId(i);
+            if (this.mViewId != -1) {
+                v.setId(this.mViewId);
                 v.setTagInternal(R.id.remote_views_override_id, Integer.valueOf(this.mViewId));
             }
             v.setTagInternal(16908312, Integer.valueOf(rv.getLayoutId()));
             return v;
         } catch (RuntimeException e) {
             Log.w(LOG_TAG, "inflate error, layoutId = " + rv.getLayoutId());
-            int i2 = 0;
+            int i = 0;
             for (ApkAssets apkAssets : inflationContext.getAssets().getApkAssets()) {
-                Log.w(LOG_TAG, NavigationBarInflaterView.SIZE_MOD_START + i2 + "], " + inflationContext.getPackageName() + " : " + apkAssets);
-                i2++;
+                Log.w(LOG_TAG, NavigationBarInflaterView.SIZE_MOD_START + i + "], " + inflationContext.getPackageName() + " : " + apkAssets);
+                i++;
             }
             throw e;
         }
@@ -4881,7 +5149,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return getClass().equals(RemoteViews.class);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnViewAppliedListener {
         void onError(Exception exc);
 
@@ -4908,12 +5175,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return new AsyncApplyTask(getRemoteViewsToApply(context, size), parent, context, listener, params, null, true).startTaskOnExecutor(executor);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public AsyncApplyTask getInternalAsyncApplyTask(Context context, ViewGroup parent, OnViewAppliedListener listener, ActionApplyParams params, SizeF size, View result) {
         return new AsyncApplyTask(getRemoteViewsToApply(context, size), parent, context, listener, params, result, false);
     }
 
-    /* loaded from: classes4.dex */
-    public class AsyncApplyTask extends AsyncTask<Void, Void, ViewTree> implements CancellationSignal.OnCancelListener {
+    private class AsyncApplyTask extends AsyncTask<Void, Void, ViewTree> implements CancellationSignal.OnCancelListener {
         private Action[] mActions;
         final ActionApplyParams mApplyParams;
         final CancellationSignal mCancelSignal;
@@ -4926,10 +5193,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         final boolean mTopLevel;
         private ViewTree mTree;
 
-        /* synthetic */ AsyncApplyTask(RemoteViews remoteViews, RemoteViews remoteViews2, ViewGroup viewGroup, Context context, OnViewAppliedListener onViewAppliedListener, ActionApplyParams actionApplyParams, View view, boolean z, AsyncApplyTaskIA asyncApplyTaskIA) {
-            this(remoteViews2, viewGroup, context, onViewAppliedListener, actionApplyParams, view, z);
-        }
-
         private AsyncApplyTask(RemoteViews rv, ViewGroup parent, Context context, OnViewAppliedListener listener, ActionApplyParams applyParams, View result, boolean topLevel) {
             this.mCancelSignal = new CancellationSignal();
             this.mRV = rv;
@@ -4941,6 +5204,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mResult = result;
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public ViewTree doInBackground(Void... params) {
             try {
@@ -4964,17 +5228,17 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(ViewTree viewTree) {
             this.mCancelSignal.setOnCancelListener(null);
             if (this.mError == null) {
-                OnViewAppliedListener onViewAppliedListener = this.mListener;
-                if (onViewAppliedListener != null) {
-                    onViewAppliedListener.onViewInflated(viewTree.mRoot);
+                if (this.mListener != null) {
+                    this.mListener.onViewInflated(viewTree.mRoot);
                 }
                 try {
                     if (this.mActions != null) {
-                        ActionApplyParams applyParams = this.mApplyParams.m6465clone();
+                        ActionApplyParams applyParams = this.mApplyParams.m6859clone();
                         if (applyParams.handler == null) {
                             applyParams.handler = RemoteViews.DEFAULT_INTERACTION_HANDLER;
                         }
@@ -4982,31 +5246,25 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                             a.apply(viewTree.mRoot, this.mParent, applyParams);
                         }
                     }
-                    if (this.mTopLevel) {
-                        View view = this.mResult;
-                        if (view instanceof ViewGroup) {
-                            RemoteViews.this.finalizeViewRecycling((ViewGroup) view);
-                        }
+                    if (this.mTopLevel && (this.mResult instanceof ViewGroup)) {
+                        RemoteViews.this.finalizeViewRecycling((ViewGroup) this.mResult);
                     }
                 } catch (Exception e) {
                     this.mError = e;
                 }
             }
-            OnViewAppliedListener onViewAppliedListener2 = this.mListener;
-            if (onViewAppliedListener2 != null) {
-                Exception exc = this.mError;
-                if (exc != null) {
-                    onViewAppliedListener2.onError(exc);
+            if (this.mListener != null) {
+                if (this.mError != null) {
+                    this.mListener.onError(this.mError);
                     return;
                 } else {
-                    onViewAppliedListener2.onViewApplied(viewTree.mRoot);
+                    this.mListener.onViewApplied(viewTree.mRoot);
                     return;
                 }
             }
-            Exception exc2 = this.mError;
-            if (exc2 != null) {
-                if (exc2 instanceof ActionException) {
-                    throw ((ActionException) exc2);
+            if (this.mError != null) {
+                if (this.mError instanceof ActionException) {
+                    throw ((ActionException) this.mError);
                 }
                 throw new ActionException(this.mError);
             }
@@ -5017,6 +5275,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             cancel(true);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public CancellationSignal startTaskOnExecutor(Executor executor) {
             this.mCancelSignal.setOnCancelListener(this);
             executeOnExecutor(executor == null ? AsyncTask.THREAD_POOL_EXECUTOR : executor, new Void[0]);
@@ -5040,6 +5299,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         reapply(context, v, (ViewGroup) v.getParent(), size, params, true);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void reapplyNestedViews(Context context, View v, ViewGroup rootParent, ActionApplyParams params) {
         reapply(context, v, rootParent, null, params, false);
     }
@@ -5054,7 +5314,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
     public boolean canRecycleView(View v) {
         Integer previousLayoutId;
-        if (v == null || (previousLayoutId = (Integer) v.getTag(16908312)) == null) {
+        if (v == null || hasDrawInstructions() || (previousLayoutId = (Integer) v.getTag(16908312)) == null) {
             return false;
         }
         Integer overrideIdTag = (Integer) v.getTag(R.id.remote_views_override_id);
@@ -5085,13 +5345,16 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     }
 
     private void performApply(View v, ViewGroup parent, ActionApplyParams params) {
-        ActionApplyParams params2 = params.m6465clone();
+        ActionApplyParams params2 = params.m6859clone();
         if (params2.handler == null) {
             params2.handler = DEFAULT_INTERACTION_HANDLER;
         }
-        ArrayList<Action> arrayList = this.mActions;
-        if (arrayList != null) {
-            int count = arrayList.size();
+        if (v instanceof RemoteComposePlayer) {
+            RemoteComposePlayer player = (RemoteComposePlayer) v;
+            player.setTheme(v.getResources().getConfiguration().isNightModeActive() ? -2 : -3);
+        }
+        if (this.mActions != null) {
+            int count = this.mActions.size();
             for (int i = 0; i < count; i++) {
                 this.mActions.get(i).apply(v, parent, params2);
             }
@@ -5099,9 +5362,8 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     }
 
     public boolean prefersAsyncApply() {
-        ArrayList<Action> arrayList = this.mActions;
-        if (arrayList != null) {
-            int count = arrayList.size();
+        if (this.mActions != null) {
+            int count = this.mActions.size();
             for (int i = 0; i < count; i++) {
                 if (this.mActions.get(i).prefersAsyncApply()) {
                     return true;
@@ -5136,7 +5398,28 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return context;
     }
 
-    /* loaded from: classes4.dex */
+    private SparseArray<PendingIntent> getPendingIntentTemplate() {
+        if (this.mPendingIntentTemplate == null) {
+            this.mPendingIntentTemplate = new SparseArray<>();
+        }
+        return this.mPendingIntentTemplate;
+    }
+
+    private SparseArray<Intent> getFillInIntent() {
+        if (this.mFillInIntent == null) {
+            this.mFillInIntent = new SparseArray<>();
+        }
+        return this.mFillInIntent;
+    }
+
+    private void tryAddRemoteResponse(int viewId) {
+        PendingIntent pendingIntent = getPendingIntentTemplate().get(viewId);
+        Intent intent = getFillInIntent().get(viewId);
+        if (pendingIntent != null && intent != null) {
+            addAction(new SetOnClickResponse(viewId, RemoteResponse.fromPendingIntentTemplateAndFillInIntent(pendingIntent, intent)));
+        }
+    }
+
     public class ActionApplyParams {
         public int applyThemeResId;
         public ColorResources colorResources;
@@ -5146,9 +5429,9 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         public ActionApplyParams() {
         }
 
-        /* renamed from: clone */
-        public ActionApplyParams m6465clone() {
-            return new ActionApplyParams().withInteractionHandler(this.handler).withColorResources(this.colorResources).withExecutor(this.executor).withThemeResId(this.applyThemeResId);
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public ActionApplyParams m6859clone() {
+            return RemoteViews.this.new ActionApplyParams().withInteractionHandler(this.handler).withColorResources(this.colorResources).withExecutor(this.executor).withThemeResId(this.applyThemeResId);
         }
 
         public ActionApplyParams withInteractionHandler(InteractionHandler handler) {
@@ -5172,11 +5455,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class ColorResources {
         private static final int ARSC_ENTRY_SIZE = 16;
         private static final int FIRST_RESOURCE_COLOR_ID = 17170461;
-        private static final int LAST_RESOURCE_COLOR_ID = 17170525;
+        private static final int LAST_RESOURCE_COLOR_ID = 17170641;
         private final SparseIntArray mColorMapping;
         private final ResourcesLoader mLoader;
 
@@ -5211,12 +5493,12 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 if (input != null) {
                     input.close();
                 }
-                int valuesOffset = (content.length - 1488) - 4;
+                int valuesOffset = (content.length - 3344) - 4;
                 if (valuesOffset < 0) {
                     Log.e(RemoteViews.LOG_TAG, "ARSC file for theme colors is invalid.");
                     return null;
                 }
-                for (int colorRes = 17170461; colorRes <= 17170525; colorRes++) {
+                for (int colorRes = 17170461; colorRes <= 17170641; colorRes++) {
                     int index = 65535 & colorRes;
                     int offset = (index * 16) + valuesOffset;
                     int value = colorResources.get(colorRes, context.getColor(colorRes));
@@ -5254,7 +5536,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                         try {
                             ResourcesLoader colorsLoader = new ResourcesLoader();
                             colorsLoader.addProvider(ResourcesProvider.loadFromTable(pfd, null));
-                            ColorResources colorResources = new ColorResources(colorsLoader, colorMapping.m4953clone());
+                            ColorResources colorResources = new ColorResources(colorsLoader, colorMapping.m5237clone());
                             if (pfd != null) {
                                 pfd.close();
                             }
@@ -5277,11 +5559,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     }
 
     public int getSequenceNumber() {
-        ArrayList<Action> arrayList = this.mActions;
-        if (arrayList == null) {
+        if (this.mActions == null) {
             return 0;
         }
-        return arrayList.size();
+        return this.mActions.size();
     }
 
     @Override // android.view.LayoutInflater.Filter
@@ -5297,13 +5578,19 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+        writeToParcel(dest, flags, null);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void writeToParcel(Parcel dest, int flags, SparseArray<Intent> intentsToIgnore) {
         boolean prevSquashingAllowed = dest.allowSquashing();
         if (!hasMultipleLayouts()) {
             dest.writeInt(0);
             if (this.mIsRoot) {
                 this.mBitmapCache.writeBitmapsToParcel(dest, flags);
+                this.mCollectionCache.writeToParcel(dest, flags, intentsToIgnore);
             }
-            this.mApplication.writeToParcel(dest, flags);
+            dest.writeTypedObject(this.mApplication, flags);
             if (this.mIsRoot || this.mIdealSize == null) {
                 dest.writeInt(0);
             } else {
@@ -5318,6 +5605,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             dest.writeInt(2);
             if (this.mIsRoot) {
                 this.mBitmapCache.writeBitmapsToParcel(dest, flags);
+                this.mCollectionCache.writeToParcel(dest, flags, intentsToIgnore);
             }
             dest.writeInt(this.mSizedRemoteViews.size());
             for (RemoteViews view : this.mSizedRemoteViews) {
@@ -5327,24 +5615,26 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             dest.writeInt(1);
             if (this.mIsRoot) {
                 this.mBitmapCache.writeBitmapsToParcel(dest, flags);
+                this.mCollectionCache.writeToParcel(dest, flags, intentsToIgnore);
             }
             this.mLandscape.writeToParcel(dest, flags);
             this.mPortrait.writeToParcel(dest, flags);
         }
         dest.writeInt(this.mApplyFlags);
         dest.writeLong(this.mProviderInstanceId);
+        dest.writeBoolean(this.mHasDrawInstructions);
         dest.writeBoolean(this.mAllowOtherRootParent);
-        dest.writeInt(this.mAppWidgetId);
+        if (this.mAllowOtherRootParent) {
+            dest.writeInt(this.mAppWidgetId);
+        }
         dest.restoreAllowSquashing(prevSquashingAllowed);
-        dest.writeBoolean(this.mIsAllowPendintIntentInCollection);
     }
 
     private void writeActionsToParcel(Parcel parcel, int flags) {
         int count;
         synchronized (this.mActionsLock) {
-            ArrayList<Action> arrayList = this.mActions;
-            if (arrayList != null) {
-                count = arrayList.size();
+            if (this.mActions != null) {
+                count = this.mActions.size();
             } else {
                 count = 0;
             }
@@ -5378,35 +5668,14 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
     }
 
     public boolean hasSameAppInfo(ApplicationInfo info) {
-        return this.mApplication.packageName.equals(info.packageName) && this.mApplication.uid == info.uid;
+        return this.mApplication == null || (this.mApplication.packageName.equals(info.packageName) && this.mApplication.uid == info.uid);
     }
 
-    /* renamed from: android.widget.RemoteViews$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 implements Parcelable.Creator<RemoteViews> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteViews createFromParcel(Parcel parcel) {
-            return new RemoteViews(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteViews[] newArray(int size) {
-            return new RemoteViews[size];
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public static class ViewTree {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ViewTree {
         private static final int INSERT_AT_END_INDEX = -1;
         private ArrayList<ViewTree> mChildren;
         private View mRoot;
-
-        /* synthetic */ ViewTree(View view, ViewTreeIA viewTreeIA) {
-            this(view);
-        }
 
         private ViewTree(View root) {
             this.mRoot = root;
@@ -5417,9 +5686,8 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 return;
             }
             this.mChildren = new ArrayList<>();
-            View view = this.mRoot;
-            if (view instanceof ViewGroup) {
-                ViewGroup vg = (ViewGroup) view;
+            if (this.mRoot instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) this.mRoot;
                 int count = vg.getChildCount();
                 for (int i = 0; i < count; i++) {
                     addViewChild(vg.getChildAt(i));
@@ -5431,11 +5699,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             if (this.mRoot.getId() == id) {
                 return this;
             }
-            ArrayList<ViewTree> arrayList = this.mChildren;
-            if (arrayList == null) {
+            if (this.mChildren == null) {
                 return null;
             }
-            Iterator<ViewTree> it = arrayList.iterator();
+            Iterator<ViewTree> it = this.mChildren.iterator();
             while (it.hasNext()) {
                 ViewTree tree = it.next();
                 ViewTree result = tree.findViewTreeById(id);
@@ -5447,11 +5714,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
 
         public ViewTree findViewTreeParentOf(ViewTree child) {
-            ArrayList<ViewTree> arrayList = this.mChildren;
-            if (arrayList == null) {
+            if (this.mChildren == null) {
                 return null;
             }
-            Iterator<ViewTree> it = arrayList.iterator();
+            Iterator<ViewTree> it = this.mChildren.iterator();
             while (it.hasNext()) {
                 ViewTree tree = it.next();
                 if (tree == child) {
@@ -5544,7 +5810,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class RemoteResponse {
         public static final int INTERACTION_TYPE_CHECKED_CHANGE = 1;
         public static final int INTERACTION_TYPE_CLICK = 0;
@@ -5555,7 +5820,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         private IntArray mViewIds;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         @interface InteractionType {
         }
 
@@ -5568,6 +5832,14 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         public static RemoteResponse fromFillInIntent(Intent fillIntent) {
             RemoteResponse response = new RemoteResponse();
             response.mFillIntent = fillIntent;
+            return response;
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public static RemoteResponse fromPendingIntentTemplateAndFillInIntent(PendingIntent pendingIntent, Intent intent) {
+            RemoteResponse response = new RemoteResponse();
+            response.mPendingIntent = pendingIntent;
+            response.mFillIntent = intent;
             return response;
         }
 
@@ -5586,29 +5858,29 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             return this;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void writeToParcel(Parcel dest, int flags) {
             PendingIntent.writePendingIntentOrNullToParcel(this.mPendingIntent, dest);
-            if (this.mPendingIntent == null) {
+            dest.writeBoolean(this.mFillIntent != null);
+            if (this.mFillIntent != null) {
                 dest.writeTypedObject(this.mFillIntent, flags);
             }
             dest.writeInt(this.mInteractionType);
-            IntArray intArray = this.mViewIds;
-            dest.writeIntArray(intArray == null ? null : intArray.toArray());
+            dest.writeIntArray(this.mViewIds == null ? null : this.mViewIds.toArray());
             dest.writeStringList(this.mElementNames);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void readFromParcel(Parcel parcel) {
-            PendingIntent readPendingIntentOrNullFromParcel = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
-            this.mPendingIntent = readPendingIntentOrNullFromParcel;
-            if (readPendingIntentOrNullFromParcel == null) {
-                this.mFillIntent = (Intent) parcel.readTypedObject(Intent.CREATOR);
-            }
+            this.mPendingIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+            this.mFillIntent = parcel.readBoolean() ? (Intent) parcel.readTypedObject(Intent.CREATOR) : null;
             this.mInteractionType = parcel.readInt();
             int[] viewIds = parcel.createIntArray();
-            this.mViewIds = viewIds == null ? null : IntArray.wrap(viewIds);
+            this.mViewIds = viewIds != null ? IntArray.wrap(viewIds) : null;
             this.mElementNames = parcel.createStringArrayList();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void handleViewInteraction(View v, InteractionHandler handler) {
             PendingIntent pi;
             if (this.mPendingIntent != null) {
@@ -5637,7 +5909,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 return null;
             }
             View parent = (View) view.getParent();
-            while (parent != null && !(parent instanceof AdapterView) && (!(parent instanceof AppWidgetHostView) || (parent instanceof RemoteViewsAdapter.RemoteViewsFrameLayout))) {
+            while (parent != null && !(parent instanceof AdapterView) && (!(parent instanceof AppWidgetHostView) || (parent instanceof AppWidgetHostView.AdapterChildHostView))) {
                 parent = (View) parent.getParent();
             }
             if (parent instanceof AdapterView) {
@@ -5647,7 +5919,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
 
         public Pair<Intent, ActivityOptions> getLaunchOptions(View view) {
-            Intent intent = this.mPendingIntent != null ? new Intent() : new Intent(this.mFillIntent);
+            Intent intent = this.mFillIntent == null ? new Intent() : new Intent(this.mFillIntent);
             intent.setSourceBounds(RemoteViews.getSourceBounds(view));
             if ((view instanceof CompoundButton) && this.mInteractionType == 1) {
                 intent.putExtra(RemoteViews.EXTRA_CHECKED, ((CompoundButton) view).isChecked());
@@ -5672,9 +5944,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                     parent = (View) parent.getParent();
                 }
                 if (parent instanceof AppWidgetHostView) {
-                    int[] array = this.mViewIds.toArray();
-                    ArrayList<String> arrayList = this.mElementNames;
-                    opts = ((AppWidgetHostView) parent).createSharedElementActivityOptions(array, (String[]) arrayList.toArray(new String[arrayList.size()]), intent);
+                    opts = ((AppWidgetHostView) parent).createSharedElementActivityOptions(this.mViewIds.toArray(), (String[]) this.mElementNames.toArray(new String[this.mElementNames.size()]), intent);
                 }
             }
             if (opts == null) {
@@ -5687,40 +5957,38 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 Log.w(RemoteViews.LOG_TAG, "getLaunchOptions: view.getDisplay() is null!", new Exception());
             }
             opts.setPendingIntentBackgroundActivityStartMode(1);
+            opts.setPendingIntentBackgroundActivityLaunchAllowedByPermission(true);
             return Pair.create(intent, opts);
         }
     }
 
     public static boolean startPendingIntent(View view, PendingIntent pendingIntent, Pair<Intent, ActivityOptions> options) {
         KeyguardManager keyguardManager;
+        boolean z;
         try {
             Context context = view.getContext();
-            if (ViewRune.APPWIDGET_COMPLICATION && pendingIntent.isActivity()) {
-                boolean isComplication = false;
-                Object parent = view.getParent();
-                if (parent instanceof View) {
-                    View parent2 = (View) parent;
-                    int i = 0;
-                    while (true) {
-                        if (parent2 == null || i >= 5) {
-                            break;
+            Log.d(LOG_TAG, "startPendingIntent" + view.getClass().getName());
+            if (pendingIntent.isActivity()) {
+                boolean onLockscreen = false;
+                ViewParent parent = view.getParent();
+                while (true) {
+                    if (!(parent instanceof View)) {
+                        break;
+                    }
+                    if (parent instanceof AppWidgetHostView) {
+                        int hostType = ((AppWidgetHostView) parent).getHostType();
+                        if (hostType != 2 && hostType != 4) {
+                            z = false;
+                            onLockscreen = z;
                         }
-                        if (parent2 instanceof AppWidgetHostView) {
-                            AppWidgetProviderInfo info = ((AppWidgetHostView) parent2).getAppWidgetInfo();
-                            if (info != null && info.widgetCategory == 8192) {
-                                isComplication = true;
-                            }
-                        } else {
-                            i++;
-                            Object parent3 = parent2.getParent();
-                            if (!(parent3 instanceof View)) {
-                                break;
-                            }
-                            parent2 = (View) parent3;
-                        }
+                        z = true;
+                        onLockscreen = z;
+                    } else {
+                        parent = ((View) parent).getParent();
                     }
                 }
-                if (isComplication && (keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE)) != null && keyguardManager.isKeyguardLocked()) {
+                Log.d(LOG_TAG, "startPendingIntent: onLockscreen = " + onLockscreen);
+                if (onLockscreen && (keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE)) != null && keyguardManager.isKeyguardLocked()) {
                     Intent fillInIntent = new Intent();
                     fillInIntent.putExtra("runOnCover", true);
                     fillInIntent.putExtra("ignoreKeyguardState", true);
@@ -5739,17 +6007,15 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class RemoteCollectionItems implements Parcelable {
         public static final Parcelable.Creator<RemoteCollectionItems> CREATOR = new Parcelable.Creator<RemoteCollectionItems>() { // from class: android.widget.RemoteViews.RemoteCollectionItems.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RemoteCollectionItems createFromParcel(Parcel source) {
                 return new RemoteCollectionItems(source, null);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RemoteCollectionItems[] newArray(int size) {
                 return new RemoteCollectionItems[size];
@@ -5787,12 +6053,10 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.mHasStableIds = in.readBoolean();
             this.mViewTypeCount = in.readInt();
             int length = in.readInt();
-            long[] jArr = new long[length];
-            this.mIds = jArr;
-            in.readLongArray(jArr);
+            this.mIds = new long[length];
+            in.readLongArray(this.mIds);
             boolean attached = in.readBoolean();
-            RemoteViews[] remoteViewsArr = new RemoteViews[length];
-            this.mViews = remoteViewsArr;
+            this.mViews = new RemoteViews[length];
             if (attached) {
                 if (hierarchyRootData == null) {
                     throw new IllegalStateException("Cannot unparcel a RemoteCollectionItems that was parceled as attached without providing data for a root RemoteViews");
@@ -5800,9 +6064,8 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 this.mHierarchyRootData = hierarchyRootData;
                 firstChildIndex = 0;
             } else {
-                RemoteViews remoteViews = new RemoteViews(in);
-                remoteViewsArr[0] = remoteViews;
-                this.mHierarchyRootData = remoteViews.getHierarchyRootData();
+                this.mViews[0] = new RemoteViews(in);
+                this.mHierarchyRootData = this.mViews[0].getHierarchyRootData();
                 firstChildIndex = 1;
             }
             for (int i = firstChildIndex; i < length; i++) {
@@ -5827,6 +6090,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             writeToParcel(dest, flags, false);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void writeToParcel(Parcel dest, int flags, boolean attached) {
             boolean prevAllowSquashing = dest.allowSquashing();
             dest.writeBoolean(this.mHasStableIds);
@@ -5838,12 +6102,9 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             }
             dest.writeBoolean(attached);
             boolean restoreRoot = false;
-            if (!attached) {
-                RemoteViews[] remoteViewsArr = this.mViews;
-                if (remoteViewsArr.length > 0 && !remoteViewsArr[0].mIsRoot) {
-                    restoreRoot = true;
-                    this.mViews[0].mIsRoot = true;
-                }
+            if (!attached && this.mViews.length > 0 && !this.mViews[0].mIsRoot) {
+                restoreRoot = true;
+                this.mViews[0].mIsRoot = true;
             }
             for (RemoteViews view : this.mViews) {
                 view.writeToParcel(dest, flags);
@@ -5874,24 +6135,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             return this.mHasStableIds;
         }
 
-        /* renamed from: android.widget.RemoteViews$RemoteCollectionItems$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RemoteCollectionItems> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RemoteCollectionItems createFromParcel(Parcel source) {
-                return new RemoteCollectionItems(source, null);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RemoteCollectionItems[] newArray(int size) {
-                return new RemoteCollectionItems[size];
-            }
-        }
-
-        /* loaded from: classes4.dex */
         public static final class Builder {
             private boolean mHasStableIds;
             private int mViewTypeCount;
@@ -5926,6 +6169,341 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
                 }
                 return new RemoteCollectionItems(this.mIds.toArray(), (RemoteViews[]) this.mViews.toArray(new RemoteViews[0]), this.mHasStableIds, Math.max(this.mViewTypeCount, 1));
             }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public void visitUris(Consumer<Uri> visitor) {
+            for (RemoteViews view : this.mViews) {
+                view.visitUris(visitor);
+            }
+        }
+    }
+
+    public static final class DrawInstructions {
+        private static final long VERSION = 1;
+        final List<byte[]> mInstructions;
+
+        private DrawInstructions() {
+            throw new UnsupportedOperationException("DrawInstructions cannot be instantiate without instructions");
+        }
+
+        private DrawInstructions(List<byte[]> instructions) {
+            this.mInstructions = new ArrayList(instructions.size());
+            for (byte[] instruction : instructions) {
+                int len = instruction.length;
+                byte[] target = new byte[len];
+                System.arraycopy(instruction, 0, target, 0, len);
+                this.mInstructions.add(target);
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public static DrawInstructions readFromParcel(Parcel in) {
+            int size = in.readInt();
+            if (size == -1) {
+                return null;
+            }
+            List<byte[]> instructions = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                byte[] instruction = in.readBlob();
+                instructions.add(instruction);
+            }
+            return new DrawInstructions(instructions);
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public static void writeToParcel(DrawInstructions drawInstructions, Parcel dest, int flags) {
+            if (drawInstructions == null) {
+                dest.writeInt(-1);
+                return;
+            }
+            List<byte[]> instructions = drawInstructions.mInstructions;
+            dest.writeInt(instructions.size());
+            for (byte[] instruction : instructions) {
+                dest.writeBlob(instruction);
+            }
+        }
+
+        public static long getSupportedVersion() {
+            return 1L;
+        }
+
+        public static final class Builder {
+            private final List<byte[]> mInstructions;
+
+            public Builder(List<byte[]> instructions) {
+                this.mInstructions = new ArrayList(instructions);
+            }
+
+            public DrawInstructions build() {
+                return new DrawInstructions(this.mInstructions);
+            }
+        }
+    }
+
+    public void semSetOnLongClickPendingIntent(int viewId, PendingIntent longClickPendingIntent) {
+        addAction(new SemSetOnLongClickPendingIntent(viewId, longClickPendingIntent));
+    }
+
+    private class SemSetOnLongClickPendingIntent extends Action {
+        PendingIntent longClickPendingIntent;
+        int viewId;
+
+        public SemSetOnLongClickPendingIntent(int id, PendingIntent longClickPendingIntent) {
+            super();
+            this.viewId = id;
+            this.longClickPendingIntent = longClickPendingIntent;
+        }
+
+        public SemSetOnLongClickPendingIntent(Parcel parcel) {
+            super();
+            this.viewId = parcel.readInt();
+            this.longClickPendingIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.viewId);
+            this.longClickPendingIntent.writeToParcel(dest, 0);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void apply(View root, ViewGroup rootParent, final ActionApplyParams params) {
+            View target = root.findViewById(this.viewId);
+            if (target != null && this.longClickPendingIntent != null) {
+                View.OnLongClickListener longClickListener = new View.OnLongClickListener() { // from class: android.widget.RemoteViews.SemSetOnLongClickPendingIntent.1
+                    @Override // android.view.View.OnLongClickListener
+                    public boolean onLongClick(View v) {
+                        Rect rect = RemoteViews.getSourceBounds(v);
+                        Intent intent = new Intent();
+                        intent.setSourceBounds(rect);
+                        params.handler.onInteraction(v, SemSetOnLongClickPendingIntent.this.longClickPendingIntent, RemoteResponse.fromFillInIntent(intent));
+                        return true;
+                    }
+                };
+                target.setOnLongClickListener(longClickListener);
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public int getActionTag() {
+            return 100;
+        }
+    }
+
+    public void semSetOnLongClickPendingIntentTemplate(int viewId, PendingIntent pendingIntentTemplate) {
+        addAction(new SemSetLongClickPendingIntentTemplate(viewId, pendingIntentTemplate));
+    }
+
+    private class SemSetLongClickPendingIntentTemplate extends Action {
+        PendingIntent pendingIntentTemplate;
+
+        public SemSetLongClickPendingIntentTemplate(int id, PendingIntent pendingIntentTemplate) {
+            super();
+            this.mViewId = id;
+            this.pendingIntentTemplate = pendingIntentTemplate;
+        }
+
+        public SemSetLongClickPendingIntentTemplate(Parcel parcel) {
+            super();
+            this.mViewId = parcel.readInt();
+            this.pendingIntentTemplate = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.mViewId);
+            this.pendingIntentTemplate.writeToParcel(dest, 0);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void apply(View root, ViewGroup rootParent, final ActionApplyParams params) {
+            View target = root.findViewById(this.mViewId);
+            if (target == null) {
+                return;
+            }
+            if (target instanceof AdapterView) {
+                AdapterView<?> av = (AdapterView) target;
+                AdapterView.OnItemLongClickListener listener = new AdapterView.OnItemLongClickListener() { // from class: android.widget.RemoteViews.SemSetLongClickPendingIntentTemplate.1
+                    @Override // android.widget.AdapterView.OnItemLongClickListener
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (view instanceof ViewGroup) {
+                            ViewGroup vg = (ViewGroup) view;
+                            if (parent instanceof AdapterViewAnimator) {
+                                vg = (ViewGroup) vg.getChildAt(0);
+                            }
+                            if (vg == null) {
+                                return true;
+                            }
+                            RemoteResponse response = null;
+                            int childCount = vg.getChildCount();
+                            int i = 0;
+                            while (true) {
+                                if (i >= childCount) {
+                                    break;
+                                }
+                                Object tag = vg.getChildAt(i).getTag(R.id.fillInIntent);
+                                if (!(tag instanceof RemoteResponse)) {
+                                    i++;
+                                } else {
+                                    response = (RemoteResponse) tag;
+                                    break;
+                                }
+                            }
+                            if (response == null) {
+                                return true;
+                            }
+                            Rect rect = RemoteViews.getSourceBounds(view);
+                            Intent intent = new Intent();
+                            intent.setSourceBounds(rect);
+                            params.handler.onInteraction(view, SemSetLongClickPendingIntentTemplate.this.pendingIntentTemplate, response);
+                        }
+                        return true;
+                    }
+                };
+                av.setOnItemLongClickListener(listener);
+                return;
+            }
+            Log.e(RemoteViews.LOG_TAG, "Cannot setLongClickPendingIntentTemplate on a view which is notan AdapterView (id: " + this.mViewId + NavigationBarInflaterView.KEY_CODE_END);
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public int getActionTag() {
+            return 101;
+        }
+    }
+
+    public void semSetOnLongClickDragable(int viewId, ClipData clipData, PendingIntent dragStartNotiIntent, PendingIntent dragEnterNotiIntent, PendingIntent dragExitNotiIntent, boolean isNeedToRemove) {
+        addAction(new SemSetOnLongClickDragable(viewId, clipData, dragStartNotiIntent, dragEnterNotiIntent, dragExitNotiIntent, isNeedToRemove));
+    }
+
+    private class SemSetOnLongClickDragable extends Action {
+        ClipData clipData;
+        PendingIntent dragEnterNotiIntent;
+        PendingIntent dragExitNotiIntent;
+        PendingIntent dragStartIntent;
+        boolean isNeedToRemove;
+        int viewId;
+
+        public SemSetOnLongClickDragable(int id, ClipData clipData, PendingIntent dragStartNotiIntent, PendingIntent dragEnterNotiIntent, PendingIntent dragExitNotiIntent, boolean isNeedToRemove) {
+            super();
+            this.viewId = id;
+            this.isNeedToRemove = isNeedToRemove;
+            this.clipData = clipData;
+            this.dragStartIntent = dragStartNotiIntent;
+            this.dragEnterNotiIntent = dragEnterNotiIntent;
+            this.dragExitNotiIntent = dragExitNotiIntent;
+        }
+
+        public SemSetOnLongClickDragable(Parcel parcel) {
+            super();
+            Log.e(RemoteViews.LOG_TAG, "SetOnLongClickDragable - read:" + parcel.toString());
+            this.viewId = parcel.readInt();
+            this.isNeedToRemove = parcel.readByte() != 0;
+            this.clipData = (ClipData) parcel.readParcelable(ClipData.class.getClassLoader());
+            if (parcel.readInt() != 0) {
+                this.dragStartIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+            }
+            if (parcel.readInt() != 0) {
+                this.dragEnterNotiIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+            }
+            if (parcel.readInt() != 0) {
+                this.dragExitNotiIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void writeToParcel(Parcel parcel, int i) {
+            Log.e(RemoteViews.LOG_TAG, "SetOnLongClickDragable - writeToParcel:" + parcel.toString());
+            parcel.writeInt(102);
+            parcel.writeInt(this.viewId);
+            parcel.writeByte(this.isNeedToRemove ? (byte) 1 : (byte) 0);
+            parcel.writeParcelable(this.clipData, 0);
+            if (this.dragStartIntent != null) {
+                parcel.writeInt(1);
+                this.dragStartIntent.writeToParcel(parcel, 0);
+            } else {
+                parcel.writeInt(0);
+            }
+            if (this.dragEnterNotiIntent != null) {
+                parcel.writeInt(1);
+                this.dragEnterNotiIntent.writeToParcel(parcel, 0);
+            } else {
+                parcel.writeInt(0);
+            }
+            if (this.dragExitNotiIntent != null) {
+                parcel.writeInt(1);
+                this.dragExitNotiIntent.writeToParcel(parcel, 0);
+            } else {
+                parcel.writeInt(0);
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
+            View target = root.findViewById(this.viewId);
+            if (target != null) {
+                View.OnLongClickListener longClickListener = new View.OnLongClickListener() { // from class: android.widget.RemoteViews.SemSetOnLongClickDragable.1
+                    @Override // android.view.View.OnLongClickListener
+                    public boolean onLongClick(View v) {
+                        ViewGroup parent;
+                        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                        Log.e(RemoteViews.LOG_TAG, "Drag info: " + SemSetOnLongClickDragable.this.clipData + SemSetOnLongClickDragable.this.dragStartIntent + SemSetOnLongClickDragable.this.isNeedToRemove);
+                        v.startDrag(SemSetOnLongClickDragable.this.clipData, shadowBuilder, null, 0);
+                        if (SemSetOnLongClickDragable.this.dragStartIntent != null) {
+                            try {
+                                v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragStartIntent.getIntentSender(), null, 268435456, 268435456, 0);
+                            } catch (IntentSender.SendIntentException e) {
+                                Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
+                            }
+                        }
+                        if (SemSetOnLongClickDragable.this.isNeedToRemove && (parent = (ViewGroup) v.getParent()) != null) {
+                            parent.removeView(v);
+                            return true;
+                        }
+                        return true;
+                    }
+                };
+                target.setOnLongClickListener(longClickListener);
+                if (this.dragEnterNotiIntent != null || this.dragExitNotiIntent != null) {
+                    View.OnDragListener dragLinstener = new View.OnDragListener() { // from class: android.widget.RemoteViews.SemSetOnLongClickDragable.2
+                        @Override // android.view.View.OnDragListener
+                        public boolean onDrag(View v, DragEvent dragEvent) {
+                            switch (dragEvent.getAction()) {
+                                case 5:
+                                    if (SemSetOnLongClickDragable.this.dragEnterNotiIntent != null) {
+                                        try {
+                                            v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragEnterNotiIntent.getIntentSender(), null, 268435456, 268435456, 0);
+                                            break;
+                                        } catch (IntentSender.SendIntentException e) {
+                                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
+                                            return true;
+                                        }
+                                    }
+                                    break;
+                                case 6:
+                                    if (SemSetOnLongClickDragable.this.dragExitNotiIntent != null) {
+                                        try {
+                                            v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragExitNotiIntent.getIntentSender(), null, 268435456, 268435456, 0);
+                                            break;
+                                        } catch (IntentSender.SendIntentException e2) {
+                                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e2);
+                                            return true;
+                                        }
+                                    }
+                                    break;
+                            }
+                            return true;
+                        }
+                    };
+                    target.setOnDragListener(dragLinstener);
+                }
+            }
+        }
+
+        @Override // android.widget.RemoteViews.Action
+        public int getActionTag() {
+            return 102;
         }
     }
 
@@ -5982,6 +6560,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return (viewId2 << 8) | childId;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Pair<String, Integer> getPackageUserKey(ApplicationInfo info) {
         if (info == null || info.packageName == null) {
             return null;
@@ -5989,798 +6568,118 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         return Pair.create(info.packageName, Integer.valueOf(info.uid));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public HierarchyRootData getHierarchyRootData() {
-        return new HierarchyRootData(this.mBitmapCache, this.mApplicationInfoCache, this.mClassCookies);
+        return new HierarchyRootData(this.mBitmapCache, this.mCollectionCache, this.mApplicationInfoCache, this.mClassCookies);
     }
 
-    /* loaded from: classes4.dex */
-    public static final class HierarchyRootData {
+    private static final class HierarchyRootData {
         final ApplicationInfoCache mApplicationInfoCache;
         final BitmapCache mBitmapCache;
         final Map<Class, Object> mClassCookies;
+        final RemoteCollectionCache mRemoteCollectionCache;
 
-        HierarchyRootData(BitmapCache bitmapCache, ApplicationInfoCache applicationInfoCache, Map<Class, Object> classCookies) {
+        HierarchyRootData(BitmapCache bitmapCache, RemoteCollectionCache remoteCollectionCache, ApplicationInfoCache applicationInfoCache, Map<Class, Object> classCookies) {
             this.mBitmapCache = bitmapCache;
+            this.mRemoteCollectionCache = remoteCollectionCache;
             this.mApplicationInfoCache = applicationInfoCache;
             this.mClassCookies = classCookies;
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class ClearAllTextEffectAction extends Action {
-        public static final int TAG = 41;
-        final String methodName;
-
-        public ClearAllTextEffectAction(int viewId) {
-            super();
-            this.methodName = "clearAllTextEffect";
-            this.viewId = viewId;
-        }
-
-        public ClearAllTextEffectAction(Parcel parcel) {
-            super();
-            this.methodName = "clearAllTextEffect";
-            this.viewId = parcel.readInt();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            target.semClearAllTextEffect();
-        }
-
-        public String getActionName() {
-            return "ClearAllTextEffectAction";
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 41;
-        }
+    public void semSetBlurInfo(int viewId, SemBlurInfo blurInfo) {
+        addAction(new semSetBlurInfoAction(viewId, blurInfo));
     }
 
-    /* loaded from: classes4.dex */
-    public class AddOuterShadowAction extends Action {
-        public static final int TAG = 42;
-        float angle;
-        float blendingOpacity;
-        int color;
-        final String methodName;
-        float offset;
-        float softness;
-
-        public AddOuterShadowAction(int viewId, float angle, float offset, float softness, int color, float blendingOpacity) {
-            super();
-            this.methodName = "addOuterShadowTextEffect";
-            this.viewId = viewId;
-            this.angle = angle;
-            this.offset = offset;
-            this.softness = softness;
-            this.color = color;
-            this.blendingOpacity = blendingOpacity;
-        }
-
-        public AddOuterShadowAction(Parcel parcel) {
-            super();
-            this.methodName = "addOuterShadowTextEffect";
-            this.viewId = parcel.readInt();
-            this.angle = parcel.readFloat();
-            this.offset = parcel.readFloat();
-            this.softness = parcel.readFloat();
-            this.color = parcel.readInt();
-            this.blendingOpacity = parcel.readFloat();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeFloat(this.angle);
-            dest.writeFloat(this.offset);
-            dest.writeFloat(this.softness);
-            dest.writeInt(this.color);
-            dest.writeFloat(this.blendingOpacity);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            target.semAddOuterShadowTextEffect(this.angle, this.offset, this.softness, this.color, this.blendingOpacity);
-            target.getPaint().setFilterBitmap(true);
-        }
-
-        public String getActionName() {
-            return "AddOuterShadowAction";
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 42;
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public class AddInnerShadowAction extends Action {
-        public static final int TAG = 43;
-        float angle;
-        float blendingOpacity;
-        int color;
-        final String methodName;
-        float offset;
-        float softness;
-
-        public AddInnerShadowAction(int viewId, float angle, float offset, float softness, int color, float blendingOpacity) {
-            super();
-            this.methodName = "addInnerShadowTextEffect";
-            this.viewId = viewId;
-            this.angle = angle;
-            this.offset = offset;
-            this.softness = softness;
-            this.color = color;
-            this.blendingOpacity = blendingOpacity;
-        }
-
-        public AddInnerShadowAction(Parcel parcel) {
-            super();
-            this.methodName = "addInnerShadowTextEffect";
-            this.viewId = parcel.readInt();
-            this.angle = parcel.readFloat();
-            this.offset = parcel.readFloat();
-            this.softness = parcel.readFloat();
-            this.color = parcel.readInt();
-            this.blendingOpacity = parcel.readFloat();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeFloat(this.angle);
-            dest.writeFloat(this.offset);
-            dest.writeFloat(this.softness);
-            dest.writeInt(this.color);
-            dest.writeFloat(this.blendingOpacity);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            target.semAddInnerShadowTextEffect(this.angle, this.offset, this.softness, this.color, this.blendingOpacity);
-            target.getPaint().setFilterBitmap(true);
-        }
-
-        public String getActionName() {
-            return "AddInnerShadowAction";
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 43;
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public class AddStrokeAction extends Action {
-        public static final int TAG = 44;
-        float blendingOpacity;
-        int color;
-        final String methodName;
-        float size;
-
-        public AddStrokeAction(int viewId, float size, int color, float blendingOpacity) {
-            super();
-            this.methodName = "addStrokeTextEffect";
-            this.viewId = viewId;
-            this.size = size;
-            this.color = color;
-            this.blendingOpacity = blendingOpacity;
-        }
-
-        public AddStrokeAction(Parcel parcel) {
-            super();
-            this.methodName = "addStrokeTextEffect";
-            this.viewId = parcel.readInt();
-            this.size = parcel.readFloat();
-            this.color = parcel.readInt();
-            this.blendingOpacity = parcel.readFloat();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeFloat(this.size);
-            dest.writeInt(this.color);
-            dest.writeFloat(this.blendingOpacity);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            target.semAddStrokeTextEffect(this.size, this.color, this.blendingOpacity);
-            target.getPaint().setFilterBitmap(true);
-        }
-
-        public String getActionName() {
-            return "AddStrokeAction";
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 44;
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public class AddLinearGradientAction extends Action {
-        public static final int TAG = 45;
-        float[] alphas;
-        float angle;
-        float blendingOpacity;
-        int[] colors;
-        final String methodName;
-        float[] positions;
-        float scale;
-
-        public AddLinearGradientAction(int viewId, float angle, float scale, int[] colors, float[] alphas, float[] positions, float blendingOpacity) {
-            super();
-            this.methodName = "addLinearGradientTextEffect";
-            this.viewId = viewId;
-            this.angle = angle;
-            this.scale = scale;
-            this.colors = colors;
-            this.alphas = alphas;
-            this.positions = positions;
-            this.blendingOpacity = blendingOpacity;
-        }
-
-        public AddLinearGradientAction(Parcel parcel) {
-            super();
-            this.methodName = "addLinearGradientTextEffect";
-            this.viewId = parcel.readInt();
-            this.angle = parcel.readFloat();
-            this.scale = parcel.readFloat();
-            this.colors = parcel.createIntArray();
-            this.alphas = parcel.createFloatArray();
-            this.positions = parcel.createFloatArray();
-            this.blendingOpacity = parcel.readFloat();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeFloat(this.angle);
-            dest.writeFloat(this.scale);
-            dest.writeIntArray(this.colors);
-            dest.writeFloatArray(this.alphas);
-            dest.writeFloatArray(this.positions);
-            dest.writeFloat(this.blendingOpacity);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            target.semAddLinearGradientTextEffect(this.angle, this.scale, this.colors, this.alphas, this.positions, this.blendingOpacity);
-        }
-
-        public String getActionName() {
-            return "AddLinearGradientAction";
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 45;
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public class AddOuterGlowAction extends Action {
-        public static final int TAG = 46;
-        float blendingOpacity;
-        int color;
-        final String methodName;
-        float size;
-
-        public AddOuterGlowAction(int viewId, float size, int color, float blendingOpacity) {
-            super();
-            this.methodName = "addOuterGlowTextEffect";
-            this.viewId = viewId;
-            this.size = size;
-            this.color = color;
-            this.blendingOpacity = blendingOpacity;
-        }
-
-        public AddOuterGlowAction(Parcel parcel) {
-            super();
-            this.methodName = "addOuterGlowTextEffect";
-            this.viewId = parcel.readInt();
-            this.size = parcel.readFloat();
-            this.color = parcel.readInt();
-            this.blendingOpacity = parcel.readFloat();
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            dest.writeFloat(this.size);
-            dest.writeInt(this.color);
-            dest.writeFloat(this.blendingOpacity);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            TextView target = (TextView) root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            target.semAddOuterGlowTextEffect(this.size, this.color, this.blendingOpacity);
-        }
-
-        public String getActionName() {
-            return "AddOuterGlowAction";
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 46;
-        }
-    }
-
-    public void semClearAllTextEffect(int viewId) {
-        addAction(new ClearAllTextEffectAction(viewId));
-    }
-
-    public void semAddOuterShadowTextEffect(int viewId, float angle, float offset, float softness, int color, float blendingOpacity) {
-        addAction(new AddOuterShadowAction(viewId, angle, offset, softness, color, blendingOpacity));
-    }
-
-    public void semAddInnerShadowTextEffect(int viewId, float angle, float offset, float softness, int color, float blendingOpacity) {
-        addAction(new AddInnerShadowAction(viewId, angle, offset, softness, color, blendingOpacity));
-    }
-
-    public void semAddStrokeTextEffect(int viewId, float size, int color, float blendingOpacity) {
-        addAction(new AddStrokeAction(viewId, size, color, blendingOpacity));
-    }
-
-    public void semAddOuterGlowTextEffect(int viewId, float size, int color, float blendingOpacity) {
-        addAction(new AddOuterGlowAction(viewId, size, color, blendingOpacity));
-    }
-
-    public void semAddLinearGradientTextEffect(int viewId, float angle, float scale, int[] colors, float[] alphas, float[] positions, float blendingOpacity) {
-        addAction(new AddLinearGradientAction(viewId, angle, scale, colors, alphas, positions, blendingOpacity));
-    }
-
-    public void semSetOnLongClickPendingIntent(int viewId, PendingIntent longClickPendingIntent) {
-        addAction(new SemSetOnLongClickPendingIntent(viewId, longClickPendingIntent));
-    }
-
-    /* loaded from: classes4.dex */
-    public class SemSetOnLongClickPendingIntent extends Action {
-        PendingIntent longClickPendingIntent;
+    private class semSetBlurInfoAction extends Action {
+        SemBlurInfo blurInfo;
         int viewId;
 
-        public SemSetOnLongClickPendingIntent(int id, PendingIntent longClickPendingIntent) {
+        public semSetBlurInfoAction(int id, SemBlurInfo blurInfo) {
             super();
             this.viewId = id;
-            this.longClickPendingIntent = longClickPendingIntent;
+            this.blurInfo = blurInfo;
         }
 
-        public SemSetOnLongClickPendingIntent(Parcel parcel) {
+        public semSetBlurInfoAction(Parcel parcel) {
             super();
             this.viewId = parcel.readInt();
-            this.longClickPendingIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+            this.blurInfo = SemBlurInfo.CREATOR.createFromParcel(parcel);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.viewId);
-            this.longClickPendingIntent.writeToParcel(dest, 0);
+            this.blurInfo.writeToParcel(dest, flags);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
-            if (target != null && this.longClickPendingIntent != null) {
-                View.OnLongClickListener longClickListener = new View.OnLongClickListener() { // from class: android.widget.RemoteViews.SemSetOnLongClickPendingIntent.1
-                    final /* synthetic */ ActionApplyParams val$params;
-
-                    AnonymousClass1(ActionApplyParams params2) {
-                        params = params2;
-                    }
-
-                    @Override // android.view.View.OnLongClickListener
-                    public boolean onLongClick(View v) {
-                        Rect rect = RemoteViews.getSourceBounds(v);
-                        Intent intent = new Intent();
-                        intent.setSourceBounds(rect);
-                        params.handler.onInteraction(v, SemSetOnLongClickPendingIntent.this.longClickPendingIntent, RemoteResponse.fromFillInIntent(intent));
-                        return true;
-                    }
-                };
-                target.setOnLongClickListener(longClickListener);
-            }
-        }
-
-        /* renamed from: android.widget.RemoteViews$SemSetOnLongClickPendingIntent$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements View.OnLongClickListener {
-            final /* synthetic */ ActionApplyParams val$params;
-
-            AnonymousClass1(ActionApplyParams params2) {
-                params = params2;
-            }
-
-            @Override // android.view.View.OnLongClickListener
-            public boolean onLongClick(View v) {
-                Rect rect = RemoteViews.getSourceBounds(v);
-                Intent intent = new Intent();
-                intent.setSourceBounds(rect);
-                params.handler.onInteraction(v, SemSetOnLongClickPendingIntent.this.longClickPendingIntent, RemoteResponse.fromFillInIntent(intent));
-                return true;
-            }
+            ReflectionAction ra = new ReflectionAction(this.viewId, "semSetBlurInfo", 30, this.blurInfo);
+            ra.apply(root, rootParent, params);
         }
 
         @Override // android.widget.RemoteViews.Action
         public int getActionTag() {
-            return 100;
+            return 105;
         }
     }
 
-    public void semSetOnLongClickPendingIntentTemplate(int viewId, PendingIntent pendingIntentTemplate) {
-        addAction(new SemSetLongClickPendingIntentTemplate(viewId, pendingIntentTemplate));
+    public void semSetOnCheckedChangedPendingIntent(int viewId, PendingIntent pendingIntent) {
+        Log.d(LOG_TAG, "semSetOnCheckedChangedPendingIntent() viewId = " + viewId + ", pendingIntent = " + pendingIntent);
+        addAction(new semSetOnCheckedChangedPendingIntent(viewId, pendingIntent));
     }
 
-    /* loaded from: classes4.dex */
-    public class SemSetLongClickPendingIntentTemplate extends Action {
-        PendingIntent pendingIntentTemplate;
+    private class semSetOnCheckedChangedPendingIntent extends Action {
+        PendingIntent pendingIntent;
+        int viewId;
 
-        public SemSetLongClickPendingIntentTemplate(int id, PendingIntent pendingIntentTemplate) {
+        public semSetOnCheckedChangedPendingIntent(int id, PendingIntent pendingIntent) {
             super();
             this.viewId = id;
-            this.pendingIntentTemplate = pendingIntentTemplate;
+            this.pendingIntent = pendingIntent;
         }
 
-        public SemSetLongClickPendingIntentTemplate(Parcel parcel) {
+        public semSetOnCheckedChangedPendingIntent(Parcel parcel) {
             super();
             this.viewId = parcel.readInt();
-            this.pendingIntentTemplate = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
+            this.pendingIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.viewId);
-            this.pendingIntentTemplate.writeToParcel(dest, 0);
+            PendingIntent.writePendingIntentOrNullToParcel(this.pendingIntent, dest);
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            View target = root.findViewById(this.viewId);
-            if (target == null) {
-                return;
-            }
-            if (target instanceof AdapterView) {
-                AdapterView<?> av = (AdapterView) target;
-                AdapterView.OnItemLongClickListener listener = new AdapterView.OnItemLongClickListener() { // from class: android.widget.RemoteViews.SemSetLongClickPendingIntentTemplate.1
-                    final /* synthetic */ ActionApplyParams val$params;
-
-                    AnonymousClass1(ActionApplyParams params2) {
-                        params = params2;
-                    }
-
-                    @Override // android.widget.AdapterView.OnItemLongClickListener
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (view instanceof ViewGroup) {
-                            ViewGroup vg = (ViewGroup) view;
-                            if (parent instanceof AdapterViewAnimator) {
-                                vg = (ViewGroup) vg.getChildAt(0);
-                            }
-                            if (vg == null) {
-                                return true;
-                            }
-                            RemoteResponse response = null;
-                            int childCount = vg.getChildCount();
-                            int i = 0;
-                            while (true) {
-                                if (i >= childCount) {
-                                    break;
-                                }
-                                Object tag = vg.getChildAt(i).getTag(R.id.fillInIntent);
-                                if (!(tag instanceof RemoteResponse)) {
-                                    i++;
-                                } else {
-                                    response = (RemoteResponse) tag;
-                                    break;
-                                }
-                            }
-                            if (response == null) {
-                                return true;
-                            }
-                            Rect rect = RemoteViews.getSourceBounds(view);
+            CompoundButton target = (CompoundButton) root.findViewById(this.viewId);
+            if (target != null && this.pendingIntent != null) {
+                CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener() { // from class: android.widget.RemoteViews.semSetOnCheckedChangedPendingIntent.1
+                    @Override // android.widget.CompoundButton.OnCheckedChangeListener
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        try {
                             Intent intent = new Intent();
-                            intent.setSourceBounds(rect);
-                            params.handler.onInteraction(view, SemSetLongClickPendingIntentTemplate.this.pendingIntentTemplate, response);
+                            intent.putExtra(RemoteViews.SEM_EXTRA_IS_CHECKED, isChecked);
+                            buttonView.getContext().startIntentSender(semSetOnCheckedChangedPendingIntent.this.pendingIntent.getIntentSender(), intent, 268435456, 268435456, 0);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
                         }
-                        return true;
                     }
                 };
-                av.setOnItemLongClickListener(listener);
-                return;
-            }
-            Log.e(RemoteViews.LOG_TAG, "Cannot setLongClickPendingIntentTemplate on a view which is notan AdapterView (id: " + this.viewId + NavigationBarInflaterView.KEY_CODE_END);
-        }
-
-        /* renamed from: android.widget.RemoteViews$SemSetLongClickPendingIntentTemplate$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements AdapterView.OnItemLongClickListener {
-            final /* synthetic */ ActionApplyParams val$params;
-
-            AnonymousClass1(ActionApplyParams params2) {
-                params = params2;
-            }
-
-            @Override // android.widget.AdapterView.OnItemLongClickListener
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (view instanceof ViewGroup) {
-                    ViewGroup vg = (ViewGroup) view;
-                    if (parent instanceof AdapterViewAnimator) {
-                        vg = (ViewGroup) vg.getChildAt(0);
-                    }
-                    if (vg == null) {
-                        return true;
-                    }
-                    RemoteResponse response = null;
-                    int childCount = vg.getChildCount();
-                    int i = 0;
-                    while (true) {
-                        if (i >= childCount) {
-                            break;
-                        }
-                        Object tag = vg.getChildAt(i).getTag(R.id.fillInIntent);
-                        if (!(tag instanceof RemoteResponse)) {
-                            i++;
-                        } else {
-                            response = (RemoteResponse) tag;
-                            break;
-                        }
-                    }
-                    if (response == null) {
-                        return true;
-                    }
-                    Rect rect = RemoteViews.getSourceBounds(view);
-                    Intent intent = new Intent();
-                    intent.setSourceBounds(rect);
-                    params.handler.onInteraction(view, SemSetLongClickPendingIntentTemplate.this.pendingIntentTemplate, response);
-                }
-                return true;
+                target.setOnCheckedChangeListener(checkListener);
             }
         }
 
         @Override // android.widget.RemoteViews.Action
         public int getActionTag() {
-            return 101;
-        }
-    }
-
-    public void semSetOnLongClickDragable(int viewId, ClipData clipData, PendingIntent dragStartNotiIntent, PendingIntent dragEnterNotiIntent, PendingIntent dragExitNotiIntent, boolean isNeedToRemove) {
-        addAction(new SemSetOnLongClickDragable(viewId, clipData, dragStartNotiIntent, dragEnterNotiIntent, dragExitNotiIntent, isNeedToRemove));
-    }
-
-    /* loaded from: classes4.dex */
-    public class SemSetOnLongClickDragable extends Action {
-        ClipData clipData;
-        PendingIntent dragEnterNotiIntent;
-        PendingIntent dragExitNotiIntent;
-        PendingIntent dragStartIntent;
-        boolean isNeedToRemove;
-        int viewId;
-
-        public SemSetOnLongClickDragable(int id, ClipData clipData, PendingIntent dragStartNotiIntent, PendingIntent dragEnterNotiIntent, PendingIntent dragExitNotiIntent, boolean isNeedToRemove) {
-            super();
-            this.viewId = id;
-            this.isNeedToRemove = isNeedToRemove;
-            this.clipData = clipData;
-            this.dragStartIntent = dragStartNotiIntent;
-            this.dragEnterNotiIntent = dragEnterNotiIntent;
-            this.dragExitNotiIntent = dragExitNotiIntent;
-        }
-
-        public SemSetOnLongClickDragable(Parcel parcel) {
-            super();
-            Log.e(RemoteViews.LOG_TAG, "SetOnLongClickDragable - read:" + parcel.toString());
-            this.viewId = parcel.readInt();
-            this.isNeedToRemove = parcel.readByte() != 0;
-            this.clipData = (ClipData) parcel.readParcelable(ClipData.class.getClassLoader());
-            if (parcel.readInt() != 0) {
-                this.dragStartIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
-            }
-            if (parcel.readInt() != 0) {
-                this.dragEnterNotiIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
-            }
-            if (parcel.readInt() != 0) {
-                this.dragExitNotiIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
-            }
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel parcel, int i) {
-            Log.e(RemoteViews.LOG_TAG, "SetOnLongClickDragable - writeToParcel:" + parcel.toString());
-            parcel.writeInt(102);
-            parcel.writeInt(this.viewId);
-            parcel.writeByte(this.isNeedToRemove ? (byte) 1 : (byte) 0);
-            parcel.writeParcelable(this.clipData, 0);
-            if (this.dragStartIntent != null) {
-                parcel.writeInt(1);
-                this.dragStartIntent.writeToParcel(parcel, 0);
-            } else {
-                parcel.writeInt(0);
-            }
-            if (this.dragEnterNotiIntent != null) {
-                parcel.writeInt(1);
-                this.dragEnterNotiIntent.writeToParcel(parcel, 0);
-            } else {
-                parcel.writeInt(0);
-            }
-            if (this.dragExitNotiIntent != null) {
-                parcel.writeInt(1);
-                this.dragExitNotiIntent.writeToParcel(parcel, 0);
-            } else {
-                parcel.writeInt(0);
-            }
+            return 104;
         }
 
         @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
-            View target = root.findViewById(this.viewId);
-            if (target != null) {
-                View.OnLongClickListener longClickListener = new View.OnLongClickListener() { // from class: android.widget.RemoteViews.SemSetOnLongClickDragable.1
-                    AnonymousClass1() {
-                    }
-
-                    @Override // android.view.View.OnLongClickListener
-                    public boolean onLongClick(View v) {
-                        ViewGroup parent;
-                        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-                        Log.e(RemoteViews.LOG_TAG, "Drag info: " + SemSetOnLongClickDragable.this.clipData + SemSetOnLongClickDragable.this.dragStartIntent + SemSetOnLongClickDragable.this.isNeedToRemove);
-                        v.startDrag(SemSetOnLongClickDragable.this.clipData, shadowBuilder, null, 0);
-                        if (SemSetOnLongClickDragable.this.dragStartIntent != null) {
-                            try {
-                                v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragStartIntent.getIntentSender(), null, 268435456, 268435456, 0);
-                            } catch (IntentSender.SendIntentException e) {
-                                Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
-                            }
-                        }
-                        if (SemSetOnLongClickDragable.this.isNeedToRemove && (parent = (ViewGroup) v.getParent()) != null) {
-                            parent.removeView(v);
-                            return true;
-                        }
-                        return true;
-                    }
-                };
-                target.setOnLongClickListener(longClickListener);
-                if (this.dragEnterNotiIntent != null || this.dragExitNotiIntent != null) {
-                    View.OnDragListener dragLinstener = new View.OnDragListener() { // from class: android.widget.RemoteViews.SemSetOnLongClickDragable.2
-                        AnonymousClass2() {
-                        }
-
-                        @Override // android.view.View.OnDragListener
-                        public boolean onDrag(View v, DragEvent dragEvent) {
-                            switch (dragEvent.getAction()) {
-                                case 5:
-                                    if (SemSetOnLongClickDragable.this.dragEnterNotiIntent != null) {
-                                        try {
-                                            v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragEnterNotiIntent.getIntentSender(), null, 268435456, 268435456, 0);
-                                            return true;
-                                        } catch (IntentSender.SendIntentException e) {
-                                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
-                                            return true;
-                                        }
-                                    }
-                                    return true;
-                                case 6:
-                                    if (SemSetOnLongClickDragable.this.dragExitNotiIntent != null) {
-                                        try {
-                                            v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragExitNotiIntent.getIntentSender(), null, 268435456, 268435456, 0);
-                                            return true;
-                                        } catch (IntentSender.SendIntentException e2) {
-                                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e2);
-                                            return true;
-                                        }
-                                    }
-                                    return true;
-                                default:
-                                    return true;
-                            }
-                        }
-                    };
-                    target.setOnDragListener(dragLinstener);
-                }
-            }
-        }
-
-        /* renamed from: android.widget.RemoteViews$SemSetOnLongClickDragable$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements View.OnLongClickListener {
-            AnonymousClass1() {
-            }
-
-            @Override // android.view.View.OnLongClickListener
-            public boolean onLongClick(View v) {
-                ViewGroup parent;
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-                Log.e(RemoteViews.LOG_TAG, "Drag info: " + SemSetOnLongClickDragable.this.clipData + SemSetOnLongClickDragable.this.dragStartIntent + SemSetOnLongClickDragable.this.isNeedToRemove);
-                v.startDrag(SemSetOnLongClickDragable.this.clipData, shadowBuilder, null, 0);
-                if (SemSetOnLongClickDragable.this.dragStartIntent != null) {
-                    try {
-                        v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragStartIntent.getIntentSender(), null, 268435456, 268435456, 0);
-                    } catch (IntentSender.SendIntentException e) {
-                        Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
-                    }
-                }
-                if (SemSetOnLongClickDragable.this.isNeedToRemove && (parent = (ViewGroup) v.getParent()) != null) {
-                    parent.removeView(v);
-                    return true;
-                }
-                return true;
-            }
-        }
-
-        /* renamed from: android.widget.RemoteViews$SemSetOnLongClickDragable$2 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass2 implements View.OnDragListener {
-            AnonymousClass2() {
-            }
-
-            @Override // android.view.View.OnDragListener
-            public boolean onDrag(View v, DragEvent dragEvent) {
-                switch (dragEvent.getAction()) {
-                    case 5:
-                        if (SemSetOnLongClickDragable.this.dragEnterNotiIntent != null) {
-                            try {
-                                v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragEnterNotiIntent.getIntentSender(), null, 268435456, 268435456, 0);
-                                return true;
-                            } catch (IntentSender.SendIntentException e) {
-                                Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
-                                return true;
-                            }
-                        }
-                        return true;
-                    case 6:
-                        if (SemSetOnLongClickDragable.this.dragExitNotiIntent != null) {
-                            try {
-                                v.getContext().startIntentSender(SemSetOnLongClickDragable.this.dragExitNotiIntent.getIntentSender(), null, 268435456, 268435456, 0);
-                                return true;
-                            } catch (IntentSender.SendIntentException e2) {
-                                Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e2);
-                                return true;
-                            }
-                        }
-                        return true;
-                    default:
-                        return true;
-                }
-            }
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 102;
+        public void clear() {
+            this.pendingIntent = null;
         }
     }
 
@@ -6788,8 +6687,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         addAction(new SemSetOnTouchPendingIntent(viewId, pendingIntent));
     }
 
-    /* loaded from: classes4.dex */
-    public class SemSetOnTouchPendingIntent extends Action {
+    private class SemSetOnTouchPendingIntent extends Action {
         PendingIntent pendingIntent;
         int viewId;
 
@@ -6805,7 +6703,7 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             this.pendingIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.viewId);
             PendingIntent.writePendingIntentOrNullToParcel(this.pendingIntent, dest);
@@ -6816,9 +6714,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             View target = root.findViewById(this.viewId);
             if (target != null && this.pendingIntent != null) {
                 View.OnTouchListener touchListener = new View.OnTouchListener() { // from class: android.widget.RemoteViews.SemSetOnTouchPendingIntent.1
-                    AnonymousClass1() {
-                    }
-
                     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
                     @Override // android.view.View.OnTouchListener
                     public boolean onTouch(View v, MotionEvent event) {
@@ -6857,47 +6752,6 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
             }
         }
 
-        /* renamed from: android.widget.RemoteViews$SemSetOnTouchPendingIntent$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements View.OnTouchListener {
-            AnonymousClass1() {
-            }
-
-            /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-            @Override // android.view.View.OnTouchListener
-            public boolean onTouch(View v, MotionEvent event) {
-                float x = event.getX();
-                float y = event.getY();
-                switch (event.getAction()) {
-                    case 0:
-                        try {
-                            Intent intent = new Intent();
-                            intent.putExtra(RemoteViews.SEM_EXTRA_X_POSITION, x);
-                            intent.putExtra(RemoteViews.SEM_EXTRA_Y_POSITION, y);
-                            intent.putExtra(RemoteViews.SEM_EXTRA_IS_UP, false);
-                            v.getContext().startIntentSender(SemSetOnTouchPendingIntent.this.pendingIntent.getIntentSender(), intent, 268435456, 268435456, 0);
-                            break;
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
-                            break;
-                        }
-                    case 1:
-                        try {
-                            Intent intent2 = new Intent();
-                            intent2.putExtra(RemoteViews.SEM_EXTRA_X_POSITION, x);
-                            intent2.putExtra(RemoteViews.SEM_EXTRA_Y_POSITION, y);
-                            intent2.putExtra(RemoteViews.SEM_EXTRA_IS_UP, true);
-                            v.getContext().startIntentSender(SemSetOnTouchPendingIntent.this.pendingIntent.getIntentSender(), intent2, 268435456, 268435456, 0);
-                            break;
-                        } catch (IntentSender.SendIntentException e2) {
-                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e2);
-                            break;
-                        }
-                }
-                return false;
-            }
-        }
-
         @Override // android.widget.RemoteViews.Action
         public int getActionTag() {
             return 103;
@@ -6909,128 +6763,9 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    public void semSetOnCheckedChangedPendingIntent(int viewId, PendingIntent pendingIntent) {
-        Log.d(LOG_TAG, "semSetOnCheckedChangedPendingIntent() viewId = " + viewId + ", pendingIntent = " + pendingIntent);
-        addAction(new semSetOnCheckedChangedPendingIntent(viewId, pendingIntent));
-    }
-
-    /* loaded from: classes4.dex */
-    public class semSetOnCheckedChangedPendingIntent extends Action {
-        PendingIntent pendingIntent;
-        int viewId;
-
-        public semSetOnCheckedChangedPendingIntent(int id, PendingIntent pendingIntent) {
-            super();
-            this.viewId = id;
-            this.pendingIntent = pendingIntent;
-        }
-
-        public semSetOnCheckedChangedPendingIntent(Parcel parcel) {
-            super();
-            this.viewId = parcel.readInt();
-            this.pendingIntent = PendingIntent.readPendingIntentOrNullFromParcel(parcel);
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            PendingIntent.writePendingIntentOrNullToParcel(this.pendingIntent, dest);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            CompoundButton target = (CompoundButton) root.findViewById(this.viewId);
-            if (target != null && this.pendingIntent != null) {
-                CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener() { // from class: android.widget.RemoteViews.semSetOnCheckedChangedPendingIntent.1
-                    AnonymousClass1() {
-                    }
-
-                    @Override // android.widget.CompoundButton.OnCheckedChangeListener
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        try {
-                            Intent intent = new Intent();
-                            intent.putExtra(RemoteViews.SEM_EXTRA_IS_CHECKED, isChecked);
-                            buttonView.getContext().startIntentSender(semSetOnCheckedChangedPendingIntent.this.pendingIntent.getIntentSender(), intent, 268435456, 268435456, 0);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
-                        }
-                    }
-                };
-                target.setOnCheckedChangeListener(checkListener);
-            }
-        }
-
-        /* renamed from: android.widget.RemoteViews$semSetOnCheckedChangedPendingIntent$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements CompoundButton.OnCheckedChangeListener {
-            AnonymousClass1() {
-            }
-
-            @Override // android.widget.CompoundButton.OnCheckedChangeListener
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
-                    Intent intent = new Intent();
-                    intent.putExtra(RemoteViews.SEM_EXTRA_IS_CHECKED, isChecked);
-                    buttonView.getContext().startIntentSender(semSetOnCheckedChangedPendingIntent.this.pendingIntent.getIntentSender(), intent, 268435456, 268435456, 0);
-                } catch (IntentSender.SendIntentException e) {
-                    Log.e(RemoteViews.LOG_TAG, "Cannot send pending intent: ", e);
-                }
-            }
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 104;
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void clear() {
-            this.pendingIntent = null;
-        }
-    }
-
     public void setOrientation(boolean isPortrait) {
         this.mIsForcedOrientation = true;
         this.mIsPortrait = isPortrait;
-    }
-
-    public void semSetBlurInfo(int viewId, SemBlurInfo blurInfo) {
-        addAction(new semSetBlurInfoAction(viewId, blurInfo));
-    }
-
-    /* loaded from: classes4.dex */
-    public class semSetBlurInfoAction extends Action {
-        SemBlurInfo blurInfo;
-        int viewId;
-
-        public semSetBlurInfoAction(int id, SemBlurInfo blurInfo) {
-            super();
-            this.viewId = id;
-            this.blurInfo = blurInfo;
-        }
-
-        public semSetBlurInfoAction(Parcel parcel) {
-            super();
-            this.viewId = parcel.readInt();
-            this.blurInfo = SemBlurInfo.CREATOR.createFromParcel(parcel);
-        }
-
-        @Override // android.os.Parcelable
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.viewId);
-            this.blurInfo.writeToParcel(dest, flags);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public void apply(View root, ViewGroup rootParent, ActionApplyParams params) {
-            ReflectionAction ra = new ReflectionAction(this.viewId, "semSetBlurInfo", 30, this.blurInfo);
-            ra.apply(root, rootParent, params);
-        }
-
-        @Override // android.widget.RemoteViews.Action
-        public int getActionTag() {
-            return 105;
-        }
     }
 
     public void semSetAnimation(SemRemoteViewsAnimation animation) {
@@ -7051,8 +6786,17 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SemAnimationAction extends Action {
+    private void hidden_semSetValueAnimation(int viewId, String animationType, String valueType, float valueFrom, float valueTo, int duration, Bundle options) {
+        SemRemoteViewsValueAnimation animation = new SemRemoteViewsValueAnimation(viewId, animationType, valueType, valueFrom, valueTo, duration, options);
+        addAction(new SemAnimationAction(4, animation));
+    }
+
+    private void hidden_semSetValueAnimation(int viewId, String animationType, String valueType, int valueFrom, int valueTo, int duration, Bundle options) {
+        SemRemoteViewsValueAnimation animation = new SemRemoteViewsValueAnimation(viewId, animationType, valueType, valueFrom, valueTo, duration, options);
+        addAction(new SemAnimationAction(4, animation));
+    }
+
+    private class SemAnimationAction extends Action {
         public static final int TAG = 107;
         static final int TYPE_BASIC_ANIMATION = 5;
         static final int TYPE_DRAWABLE_ANIMATION = 1;
@@ -7070,58 +6814,52 @@ public class RemoteViews implements Parcelable, LayoutInflater.Filter {
 
         public SemAnimationAction(Parcel parcel) {
             super();
-            int readInt = parcel.readInt();
-            this.animationType = readInt;
-            switch (readInt) {
+            this.animationType = parcel.readInt();
+            switch (this.animationType) {
                 case 1:
                     this.animation = SemRemoteViewsDrawableAnimation.CREATOR.createFromParcel(parcel);
-                    return;
+                    break;
                 case 2:
                     this.animation = SemRemoteViewsViewAnimation.CREATOR.createFromParcel(parcel);
-                    return;
+                    break;
                 case 3:
                     this.animation = SemRemoteViewsPropertyAnimation.CREATOR.createFromParcel(parcel);
-                    return;
+                    break;
                 case 4:
                     this.animation = SemRemoteViewsValueAnimation.CREATOR.createFromParcel(parcel);
-                    return;
+                    break;
                 case 5:
                     this.animation = SemRemoteViewsBasicAnimation.CREATOR.createFromParcel(parcel);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
-        @Override // android.os.Parcelable
+        @Override // android.widget.RemoteViews.Action
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.animationType);
             switch (this.animationType) {
                 case 1:
                     SemRemoteViewsDrawableAnimation.writeToParcel((SemRemoteViewsDrawableAnimation) this.animation, dest);
-                    return;
+                    break;
                 case 2:
                     SemRemoteViewsViewAnimation.writeToParcel((SemRemoteViewsViewAnimation) this.animation, dest);
-                    return;
+                    break;
                 case 3:
                     SemRemoteViewsPropertyAnimation.writeToParcel((SemRemoteViewsPropertyAnimation) this.animation, dest);
-                    return;
+                    break;
                 case 4:
                     SemRemoteViewsValueAnimation.writeToParcel((SemRemoteViewsValueAnimation) this.animation, dest);
-                    return;
+                    break;
                 case 5:
                     SemRemoteViewsBasicAnimation.writeToParcel((SemRemoteViewsBasicAnimation) this.animation, dest);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
         @Override // android.widget.RemoteViews.Action
         public void apply(View root, ViewGroup rootParent, ActionApplyParams params) throws ActionException {
-            SemRemoteViewsAnimation semRemoteViewsAnimation = this.animation;
-            if (semRemoteViewsAnimation != null) {
-                semRemoteViewsAnimation.play(root);
+            if (this.animation != null) {
+                this.animation.play(root);
             }
         }
 

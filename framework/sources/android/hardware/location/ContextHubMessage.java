@@ -13,14 +13,13 @@ import libcore.util.HexEncoding;
 /* loaded from: classes2.dex */
 public class ContextHubMessage implements Parcelable {
     public static final Parcelable.Creator<ContextHubMessage> CREATOR = new Parcelable.Creator<ContextHubMessage>() { // from class: android.hardware.location.ContextHubMessage.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContextHubMessage createFromParcel(Parcel in) {
             return new ContextHubMessage(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContextHubMessage[] newArray(int size) {
             return new ContextHubMessage[size];
@@ -31,10 +30,6 @@ public class ContextHubMessage implements Parcelable {
     private int mType;
     private int mVersion;
 
-    /* synthetic */ ContextHubMessage(Parcel parcel, ContextHubMessageIA contextHubMessageIA) {
-        this(parcel);
-    }
-
     public int getMsgType() {
         return this.mType;
     }
@@ -44,8 +39,7 @@ public class ContextHubMessage implements Parcelable {
     }
 
     public byte[] getData() {
-        byte[] bArr = this.mData;
-        return Arrays.copyOf(bArr, bArr.length);
+        return Arrays.copyOf(this.mData, this.mData.length);
     }
 
     public void setMsgType(int msgType) {
@@ -75,9 +69,8 @@ public class ContextHubMessage implements Parcelable {
         this.mType = in.readInt();
         this.mVersion = in.readInt();
         int bufferLength = in.readInt();
-        byte[] bArr = new byte[bufferLength];
-        this.mData = bArr;
-        in.readByteArray(bArr);
+        this.mData = new byte[bufferLength];
+        in.readByteArray(this.mData);
     }
 
     @Override // android.os.Parcelable
@@ -86,23 +79,6 @@ public class ContextHubMessage implements Parcelable {
         out.writeInt(this.mVersion);
         out.writeInt(this.mData.length);
         out.writeByteArray(this.mData);
-    }
-
-    /* renamed from: android.hardware.location.ContextHubMessage$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContextHubMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContextHubMessage createFromParcel(Parcel in) {
-            return new ContextHubMessage(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContextHubMessage[] newArray(int size) {
-            return new ContextHubMessage[size];
-        }
     }
 
     public String toString() {

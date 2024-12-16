@@ -9,7 +9,6 @@ public final class JobPackageHistoryProto {
     public static final int STOP_PERIODIC_JOB = 4;
     public static final int UNKNOWN = 0;
 
-    /* loaded from: classes5.dex */
     public final class HistoryEvent {
         public static final long EVENT = 1159641169921L;
         public static final long JOB_ID = 1120986464260L;

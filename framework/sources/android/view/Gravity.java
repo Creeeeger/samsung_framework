@@ -35,7 +35,6 @@ public class Gravity {
     public static final int VERTICAL_GRAVITY_MASK = 112;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface GravityFlags {
     }
 
@@ -96,31 +95,30 @@ public class Gravity {
                     }
                     if (outRect.bottom > container.bottom) {
                         outRect.bottom = container.bottom;
-                        return;
+                        break;
                     }
-                    return;
                 }
-                return;
+                break;
             case 32:
                 outRect.top = container.top + yAdj;
                 outRect.bottom = outRect.top + h;
                 if ((gravity & 128) == 128 && outRect.bottom > container.bottom) {
                     outRect.bottom = container.bottom;
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 64:
                 outRect.bottom = container.bottom - yAdj;
                 outRect.top = outRect.bottom - h;
                 if ((gravity & 128) == 128 && outRect.top < container.top) {
                     outRect.top = container.top;
-                    return;
+                    break;
                 }
-                return;
+                break;
             default:
                 outRect.top = container.top + yAdj;
                 outRect.bottom = container.bottom + yAdj;
-                return;
+                break;
         }
     }
 

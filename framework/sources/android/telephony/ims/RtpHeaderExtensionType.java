@@ -7,17 +7,16 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RtpHeaderExtensionType implements Parcelable {
     public static final Parcelable.Creator<RtpHeaderExtensionType> CREATOR = new Parcelable.Creator<RtpHeaderExtensionType>() { // from class: android.telephony.ims.RtpHeaderExtensionType.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RtpHeaderExtensionType createFromParcel(Parcel in) {
             return new RtpHeaderExtensionType(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RtpHeaderExtensionType[] newArray(int size) {
             return new RtpHeaderExtensionType[size];
@@ -25,10 +24,6 @@ public final class RtpHeaderExtensionType implements Parcelable {
     };
     private int mLocalIdentifier;
     private Uri mUri;
-
-    /* synthetic */ RtpHeaderExtensionType(Parcel parcel, RtpHeaderExtensionTypeIA rtpHeaderExtensionTypeIA) {
-        this(parcel);
-    }
 
     public RtpHeaderExtensionType(int localIdentifier, Uri uri) {
         if (localIdentifier < 1 || localIdentifier > 13) {
@@ -44,23 +39,6 @@ public final class RtpHeaderExtensionType implements Parcelable {
     private RtpHeaderExtensionType(Parcel in) {
         this.mLocalIdentifier = in.readInt();
         this.mUri = (Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class);
-    }
-
-    /* renamed from: android.telephony.ims.RtpHeaderExtensionType$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RtpHeaderExtensionType> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RtpHeaderExtensionType createFromParcel(Parcel in) {
-            return new RtpHeaderExtensionType(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RtpHeaderExtensionType[] newArray(int size) {
-            return new RtpHeaderExtensionType[size];
-        }
     }
 
     @Override // android.os.Parcelable

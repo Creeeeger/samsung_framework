@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioVoice extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$voice$IRadioVoice".replace('$', '.');
-    public static final String HASH = "8c5e0d53dc67b5ed221b2da0570a17684d973a20";
-    public static final int VERSION = 2;
+    public static final String HASH = "78fb79bcb32590a868b3eb7affb39ab90e4ca782";
+    public static final int VERSION = 3;
 
     void acceptCall(int i) throws RemoteException;
 
@@ -96,7 +96,6 @@ public interface IRadioVoice extends IInterface {
 
     void switchWaitingOrHoldingAndActive(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioVoice {
         @Override // android.hardware.radio.voice.IRadioVoice
         public void acceptCall(int serial) throws RemoteException {
@@ -270,7 +269,6 @@ public interface IRadioVoice extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioVoice {
         static final int TRANSACTION_acceptCall = 1;
         static final int TRANSACTION_cancelPendingUssd = 2;
@@ -341,248 +339,247 @@ public interface IRadioVoice extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acceptCall(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancelPendingUssd(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    conference(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    Dial _arg1 = (Dial) data.readTypedObject(Dial.CREATOR);
+                    data.enforceNoDataAvail();
+                    dial(_arg04, _arg1);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    Dial _arg12 = (Dial) data.readTypedObject(Dial.CREATOR);
+                    int _arg2 = data.readInt();
+                    String[] _arg3 = data.createStringArray();
+                    int _arg4 = data.readInt();
+                    boolean _arg5 = data.readBoolean();
+                    boolean _arg6 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    emergencyDial(_arg05, _arg12, _arg2, _arg3, _arg4, _arg5, _arg6);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    exitEmergencyCallbackMode(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    explicitCallTransfer(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    CallForwardInfo _arg13 = (CallForwardInfo) data.readTypedObject(CallForwardInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getCallForwardStatus(_arg08, _arg13);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCallWaiting(_arg09, _arg14);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getClip(_arg010);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getClir(_arg011);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCurrentCalls(_arg012);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getLastCallFailCause(_arg013);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getMute(_arg014);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getPreferredVoicePrivacy(_arg015);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getTtyMode(_arg016);
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    boolean _arg15 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    handleStkCallSetupRequestFromSim(_arg017, _arg15);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    hangup(_arg018, _arg16);
+                    return true;
+                case 19:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    hangupForegroundResumeBackground(_arg019);
+                    return true;
+                case 20:
+                    int _arg020 = data.readInt();
+                    data.enforceNoDataAvail();
+                    hangupWaitingOrBackground(_arg020);
+                    return true;
+                case 21:
+                    int _arg021 = data.readInt();
+                    data.enforceNoDataAvail();
+                    isVoNrEnabled(_arg021);
+                    return true;
+                case 22:
+                    int _arg022 = data.readInt();
+                    data.enforceNoDataAvail();
+                    rejectCall(_arg022);
+                    return true;
+                case 23:
+                    responseAcknowledgement();
+                    return true;
+                case 24:
+                    int _arg023 = data.readInt();
+                    String _arg17 = data.readString();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendBurstDtmf(_arg023, _arg17, _arg22, _arg32);
+                    return true;
+                case 25:
+                    int _arg024 = data.readInt();
+                    String _arg18 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendCdmaFeatureCode(_arg024, _arg18);
+                    return true;
+                case 26:
+                    int _arg025 = data.readInt();
+                    String _arg19 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendDtmf(_arg025, _arg19);
+                    return true;
+                case 27:
+                    int _arg026 = data.readInt();
+                    String _arg110 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendUssd(_arg026, _arg110);
+                    return true;
+                case 28:
+                    int _arg027 = data.readInt();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    separateConnection(_arg027, _arg111);
+                    return true;
+                case 29:
+                    int _arg028 = data.readInt();
+                    CallForwardInfo _arg112 = (CallForwardInfo) data.readTypedObject(CallForwardInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCallForward(_arg028, _arg112);
+                    return true;
+                case 30:
+                    int _arg029 = data.readInt();
+                    boolean _arg113 = data.readBoolean();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCallWaiting(_arg029, _arg113, _arg23);
+                    return true;
+                case 31:
+                    int _arg030 = data.readInt();
+                    int _arg114 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setClir(_arg030, _arg114);
+                    return true;
+                case 32:
+                    int _arg031 = data.readInt();
+                    boolean _arg115 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMute(_arg031, _arg115);
+                    return true;
+                case 33:
+                    int _arg032 = data.readInt();
+                    boolean _arg116 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setPreferredVoicePrivacy(_arg032, _arg116);
+                    return true;
+                case 34:
+                    IRadioVoiceResponse _arg033 = IRadioVoiceResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioVoiceIndication _arg117 = IRadioVoiceIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg033, _arg117);
+                    return true;
+                case 35:
+                    int _arg034 = data.readInt();
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTtyMode(_arg034, _arg118);
+                    return true;
+                case 36:
+                    int _arg035 = data.readInt();
+                    boolean _arg119 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVoNrEnabled(_arg035, _arg119);
+                    return true;
+                case 37:
+                    int _arg036 = data.readInt();
+                    String _arg120 = data.readString();
+                    data.enforceNoDataAvail();
+                    startDtmf(_arg036, _arg120);
+                    return true;
+                case 38:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopDtmf(_arg037);
+                    return true;
+                case 39:
+                    int _arg038 = data.readInt();
+                    data.enforceNoDataAvail();
+                    switchWaitingOrHoldingAndActive(_arg038);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acceptCall(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancelPendingUssd(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            conference(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            Dial _arg1 = (Dial) data.readTypedObject(Dial.CREATOR);
-                            data.enforceNoDataAvail();
-                            dial(_arg04, _arg1);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            Dial _arg12 = (Dial) data.readTypedObject(Dial.CREATOR);
-                            int _arg2 = data.readInt();
-                            String[] _arg3 = data.createStringArray();
-                            int _arg4 = data.readInt();
-                            boolean _arg5 = data.readBoolean();
-                            boolean _arg6 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            emergencyDial(_arg05, _arg12, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            exitEmergencyCallbackMode(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            explicitCallTransfer(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            CallForwardInfo _arg13 = (CallForwardInfo) data.readTypedObject(CallForwardInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getCallForwardStatus(_arg08, _arg13);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCallWaiting(_arg09, _arg14);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getClip(_arg010);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getClir(_arg011);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCurrentCalls(_arg012);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getLastCallFailCause(_arg013);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getMute(_arg014);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getPreferredVoicePrivacy(_arg015);
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getTtyMode(_arg016);
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            handleStkCallSetupRequestFromSim(_arg017, _arg15);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            hangup(_arg018, _arg16);
-                            return true;
-                        case 19:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            hangupForegroundResumeBackground(_arg019);
-                            return true;
-                        case 20:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            hangupWaitingOrBackground(_arg020);
-                            return true;
-                        case 21:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            isVoNrEnabled(_arg021);
-                            return true;
-                        case 22:
-                            int _arg022 = data.readInt();
-                            data.enforceNoDataAvail();
-                            rejectCall(_arg022);
-                            return true;
-                        case 23:
-                            responseAcknowledgement();
-                            return true;
-                        case 24:
-                            int _arg023 = data.readInt();
-                            String _arg17 = data.readString();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendBurstDtmf(_arg023, _arg17, _arg22, _arg32);
-                            return true;
-                        case 25:
-                            int _arg024 = data.readInt();
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendCdmaFeatureCode(_arg024, _arg18);
-                            return true;
-                        case 26:
-                            int _arg025 = data.readInt();
-                            String _arg19 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendDtmf(_arg025, _arg19);
-                            return true;
-                        case 27:
-                            int _arg026 = data.readInt();
-                            String _arg110 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendUssd(_arg026, _arg110);
-                            return true;
-                        case 28:
-                            int _arg027 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            separateConnection(_arg027, _arg111);
-                            return true;
-                        case 29:
-                            int _arg028 = data.readInt();
-                            CallForwardInfo _arg112 = (CallForwardInfo) data.readTypedObject(CallForwardInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCallForward(_arg028, _arg112);
-                            return true;
-                        case 30:
-                            int _arg029 = data.readInt();
-                            boolean _arg113 = data.readBoolean();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCallWaiting(_arg029, _arg113, _arg23);
-                            return true;
-                        case 31:
-                            int _arg030 = data.readInt();
-                            int _arg114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setClir(_arg030, _arg114);
-                            return true;
-                        case 32:
-                            int _arg031 = data.readInt();
-                            boolean _arg115 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMute(_arg031, _arg115);
-                            return true;
-                        case 33:
-                            int _arg032 = data.readInt();
-                            boolean _arg116 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setPreferredVoicePrivacy(_arg032, _arg116);
-                            return true;
-                        case 34:
-                            IRadioVoiceResponse _arg033 = IRadioVoiceResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioVoiceIndication _arg117 = IRadioVoiceIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg033, _arg117);
-                            return true;
-                        case 35:
-                            int _arg034 = data.readInt();
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTtyMode(_arg034, _arg118);
-                            return true;
-                        case 36:
-                            int _arg035 = data.readInt();
-                            boolean _arg119 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVoNrEnabled(_arg035, _arg119);
-                            return true;
-                        case 37:
-                            int _arg036 = data.readInt();
-                            String _arg120 = data.readString();
-                            data.enforceNoDataAvail();
-                            startDtmf(_arg036, _arg120);
-                            return true;
-                        case 38:
-                            int _arg037 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopDtmf(_arg037);
-                            return true;
-                        case 39:
-                            int _arg038 = data.readInt();
-                            data.enforceNoDataAvail();
-                            switchWaitingOrHoldingAndActive(_arg038);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioVoice {
             private IBinder mRemote;
             private int mCachedVersion = -1;

@@ -2,7 +2,7 @@ package com.samsung.android.media.heif.jni;
 
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class HeifCaptureJNI {
     private static final String TAG = "HeifCaptureJNI";
     private long mNativeHandle;

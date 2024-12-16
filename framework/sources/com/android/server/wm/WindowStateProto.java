@@ -36,6 +36,7 @@ public final class WindowStateProto {
     public static final long REMOVED = 1133871366180L;
     public static final long REMOVE_ON_EXIT = 1133871366178L;
     public static final long REQUESTED_HEIGHT = 1120986464275L;
+    public static final long REQUESTED_VISIBLE_TYPES = 1120986464304L;
     public static final long REQUESTED_WIDTH = 1120986464274L;
     public static final long STABLE_INSETS = 1146756268063L;
     public static final long STACK_ID = 1120986464260L;

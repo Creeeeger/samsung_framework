@@ -24,7 +24,6 @@ public final class AttributeCache {
     private final LruCache<String, Package> mPackages = new LruCache<>(4);
     private final Configuration mConfiguration = new Configuration();
 
-    /* loaded from: classes5.dex */
     public static final class Package {
         public final Context context;
         private final SparseArray<ArrayMap<int[], Entry>> mMap = new SparseArray<>();
@@ -34,7 +33,6 @@ public final class AttributeCache {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class Entry {
         public final TypedArray array;
         public final Context context;
@@ -45,9 +43,8 @@ public final class AttributeCache {
         }
 
         void recycle() {
-            TypedArray typedArray = this.array;
-            if (typedArray != null) {
-                typedArray.recycle();
+            if (this.array != null) {
+                this.array.recycle();
             }
         }
     }
@@ -58,15 +55,13 @@ public final class AttributeCache {
         }
     }
 
-    public void monitorPackageRemove(Handler handler) {
+    void monitorPackageRemove(Handler handler) {
         if (this.mPackageMonitor == null) {
             this.mPackageMonitor = new PackageMonitor(this.mContext, handler);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes5.dex */
-    public static class PackageMonitor extends BroadcastReceiver {
+    static class PackageMonitor extends BroadcastReceiver {
         PackageMonitor(Context context, Handler handler) {
             IntentFilter filter = new IntentFilter("android.intent.action.PACKAGE_REMOVED");
             filter.addDataScheme("package");

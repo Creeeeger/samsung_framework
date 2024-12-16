@@ -8,24 +8,19 @@ import android.window.IWindowContainerToken;
 /* loaded from: classes4.dex */
 public final class WindowContainerToken implements Parcelable {
     public static final Parcelable.Creator<WindowContainerToken> CREATOR = new Parcelable.Creator<WindowContainerToken>() { // from class: android.window.WindowContainerToken.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowContainerToken createFromParcel(Parcel in) {
             return new WindowContainerToken(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowContainerToken[] newArray(int size) {
             return new WindowContainerToken[size];
         }
     };
     private final IWindowContainerToken mRealToken;
-
-    /* synthetic */ WindowContainerToken(Parcel parcel, WindowContainerTokenIA windowContainerTokenIA) {
-        this(parcel);
-    }
 
     public WindowContainerToken(IWindowContainerToken realToken) {
         this.mRealToken = realToken;
@@ -42,23 +37,6 @@ public final class WindowContainerToken implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStrongBinder(this.mRealToken.asBinder());
-    }
-
-    /* renamed from: android.window.WindowContainerToken$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WindowContainerToken> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowContainerToken createFromParcel(Parcel in) {
-            return new WindowContainerToken(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowContainerToken[] newArray(int size) {
-            return new WindowContainerToken[size];
-        }
     }
 
     @Override // android.os.Parcelable

@@ -1,9 +1,12 @@
 package com.android.internal.telephony;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
 
@@ -24,7 +27,6 @@ public interface ICarrierConfigLoader extends IInterface {
 
     void updateConfigForPhoneId(int i, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICarrierConfigLoader {
         @Override // com.android.internal.telephony.ICarrierConfigLoader
         public PersistableBundle getConfigForSubId(int subId, String callingPackage) throws RemoteException {
@@ -64,7 +66,6 @@ public interface ICarrierConfigLoader extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICarrierConfigLoader {
         public static final String DESCRIPTOR = "com.android.internal.telephony.ICarrierConfigLoader";
         static final int TRANSACTION_getConfigForSubId = 1;
@@ -74,9 +75,19 @@ public interface ICarrierConfigLoader extends IInterface {
         static final int TRANSACTION_notifyConfigChangedForSubId = 4;
         static final int TRANSACTION_overrideConfig = 3;
         static final int TRANSACTION_updateConfigForPhoneId = 5;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static ICarrierConfigLoader asInterface(IBinder obj) {
@@ -126,73 +137,70 @@ public interface ICarrierConfigLoader extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    PersistableBundle _result = getConfigForSubId(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    PersistableBundle _result2 = getConfigForSubIdWithFeature(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    PersistableBundle _arg13 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    overrideConfig(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyConfigChangedForSubId(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    updateConfigForPhoneId(_arg05, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _result3 = getDefaultCarrierServicePackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result3);
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    String _arg15 = data.readString();
+                    String _arg23 = data.readString();
+                    String[] _arg3 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    PersistableBundle _result4 = getConfigSubsetForSubIdWithFeature(_arg06, _arg15, _arg23, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            PersistableBundle _result = getConfigForSubId(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            PersistableBundle _result2 = getConfigForSubIdWithFeature(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            PersistableBundle _arg13 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            overrideConfig(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyConfigChangedForSubId(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            updateConfigForPhoneId(_arg05, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _result3 = getDefaultCarrierServicePackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result3);
-                            return true;
-                        case 7:
-                            int _arg06 = data.readInt();
-                            String _arg15 = data.readString();
-                            String _arg23 = data.readString();
-                            String[] _arg3 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            PersistableBundle _result4 = getConfigSubsetForSubIdWithFeature(_arg06, _arg15, _arg23, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICarrierConfigLoader {
+        private static class Proxy implements ICarrierConfigLoader {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -328,6 +336,18 @@ public interface ICarrierConfigLoader extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void overrideConfig_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_PHONE_STATE, getCallingPid(), getCallingUid());
+        }
+
+        protected void updateConfigForPhoneId_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_PHONE_STATE, getCallingPid(), getCallingUid());
+        }
+
+        protected void getDefaultCarrierServicePackageName_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.READ_PRIVILEGED_PHONE_STATE, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

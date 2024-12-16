@@ -15,7 +15,6 @@ public final class BLASTBufferQueue {
     private String mName;
     public long mNativeObject;
 
-    /* loaded from: classes.dex */
     public interface TransactionHangCallback {
         void onTransactionHang(String str);
     }
@@ -99,9 +98,8 @@ public final class BLASTBufferQueue {
 
     protected void finalize() throws Throwable {
         try {
-            long j = this.mNativeObject;
-            if (j != 0) {
-                nativeDestroy(j);
+            if (this.mNativeObject != 0) {
+                nativeDestroy(this.mNativeObject);
             }
         } finally {
             super.finalize();

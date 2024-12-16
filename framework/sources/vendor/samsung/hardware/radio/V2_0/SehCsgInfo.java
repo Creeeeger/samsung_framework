@@ -59,9 +59,9 @@ public final class SehCsgInfo {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.csgId = _hidl_blob.getInt32(_hidl_offset + 0);
         this.name = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         this.plmn = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.plmn.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         this.rat = _hidl_blob.getInt32(_hidl_offset + 40);
         this.category = _hidl_blob.getInt32(_hidl_offset + 44);
         this.signalStrength = _hidl_blob.getInt32(_hidl_offset + 48);

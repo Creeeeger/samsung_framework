@@ -12,7 +12,6 @@ public interface IScreenCaptureObserver extends IInterface {
 
     void onScreenCaptured() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IScreenCaptureObserver {
         @Override // android.app.IScreenCaptureObserver
         public void onScreenCaptured() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IScreenCaptureObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IScreenCaptureObserver {
         static final int TRANSACTION_onScreenCaptured = 1;
 
@@ -67,23 +65,20 @@ public interface IScreenCaptureObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IScreenCaptureObserver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IScreenCaptureObserver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IScreenCaptureObserver.DESCRIPTOR);
+                case 1:
+                    onScreenCaptured();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onScreenCaptured();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IScreenCaptureObserver {
+        private static class Proxy implements IScreenCaptureObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

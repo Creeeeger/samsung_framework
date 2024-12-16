@@ -18,7 +18,7 @@ import com.samsung.android.sepunion.UnionConstants;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CoverManager {
     public static final int COVER_MODE_HIDE_SVIEW_ONCE = 2;
     public static final int COVER_MODE_NONE = 0;
@@ -158,9 +158,8 @@ public class CoverManager {
 
     private synchronized ICoverManager getService() {
         if (this.mService == null) {
-            ICoverManager asInterface = ICoverManager.Stub.asInterface(ServiceManager.getService(UnionConstants.SERVICE_COVER));
-            this.mService = asInterface;
-            if (asInterface == null) {
+            this.mService = ICoverManager.Stub.asInterface(ServiceManager.getService(UnionConstants.SERVICE_COVER));
+            if (this.mService == null) {
                 Slog.w(TAG, "warning: no COVER_MANAGER_SERVICE");
             }
         }
@@ -431,13 +430,11 @@ public class CoverManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class StateListener {
         public void onCoverStateChanged(CoverState state) {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class CoverStateListener {
         public void onCoverSwitchStateChanged(boolean switchState) {
         }
@@ -599,7 +596,6 @@ public class CoverManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class NfcLedCoverTouchListener {
         public void onCoverTouchAccept() {
         }
@@ -694,7 +690,6 @@ public class CoverManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class LedSystemEventListener {
         private static final int EVENT_TYPE_SYSTEM = 4;
 
@@ -789,7 +784,6 @@ public class CoverManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class CoverPowerKeyListener {
         private static final int EVENT_TYPE_POWER_KEY = 10;
 

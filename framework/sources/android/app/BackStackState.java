@@ -9,16 +9,15 @@ import java.util.ArrayList;
 
 /* compiled from: BackStackRecord.java */
 /* loaded from: classes.dex */
-public final class BackStackState implements Parcelable {
+final class BackStackState implements Parcelable {
     public static final Parcelable.Creator<BackStackState> CREATOR = new Parcelable.Creator<BackStackState>() { // from class: android.app.BackStackState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackStackState createFromParcel(Parcel in) {
             return new BackStackState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackStackState[] newArray(int size) {
             return new BackStackState[size];
@@ -159,23 +158,5 @@ public final class BackStackState implements Parcelable {
         parcel.writeStringList(this.mSharedElementSourceNames);
         parcel.writeStringList(this.mSharedElementTargetNames);
         parcel.writeInt(this.mReorderingAllowed ? 1 : 0);
-    }
-
-    /* compiled from: BackStackRecord.java */
-    /* renamed from: android.app.BackStackState$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BackStackState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BackStackState createFromParcel(Parcel in) {
-            return new BackStackState(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BackStackState[] newArray(int size) {
-            return new BackStackState[size];
-        }
     }
 }

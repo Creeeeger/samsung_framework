@@ -12,7 +12,6 @@ public interface IMultiFingerGestureListener extends IInterface {
 
     void onMultiFingerGesture(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMultiFingerGestureListener {
         @Override // android.hardware.input.IMultiFingerGestureListener
         public void onMultiFingerGesture(int behavior, int reserved) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IMultiFingerGestureListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMultiFingerGestureListener {
         static final int TRANSACTION_onMultiFingerGesture = 1;
 
@@ -67,27 +65,23 @@ public interface IMultiFingerGestureListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMultiFingerGestureListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMultiFingerGestureListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMultiFingerGestureListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onMultiFingerGesture(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onMultiFingerGesture(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMultiFingerGestureListener {
+        private static class Proxy implements IMultiFingerGestureListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -2,6 +2,7 @@ package android.app.settings.mediaoutput;
 
 /* loaded from: classes.dex */
 public final class MediaOutputEnum {
+    public static final int AVR = 600;
     public static final int BLUETOOTH = 300;
     public static final int BLUETOOTH_A2DP = 302;
     public static final int BLUETOOTH_HEARING_AID = 301;

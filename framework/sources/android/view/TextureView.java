@@ -10,19 +10,23 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.TextureLayer;
 import android.graphics.drawable.Drawable;
+import android.os.Trace;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.flags.Flags;
 
 /* loaded from: classes4.dex */
 public class TextureView extends View {
     private static final String LOG_TAG = "TextureView";
     private Canvas mCanvas;
     private boolean mHadSurface;
+    private long mLastFrameTimeMillis;
     private TextureLayer mLayer;
     private SurfaceTextureListener mListener;
     private final Object[] mLock;
     private final Matrix mMatrix;
     private boolean mMatrixChanged;
+    private long mMinusTwoFrameIntervalMillis;
     private long mNativeWindow;
     private final Object[] mNativeWindowLock;
     private boolean mOpaque;
@@ -32,7 +36,6 @@ public class TextureView extends View {
     private final SurfaceTexture.OnFrameAvailableListener mUpdateListener;
     private boolean mUpdateSurface;
 
-    /* loaded from: classes4.dex */
     public interface SurfaceTextureListener {
         void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i2);
 
@@ -57,10 +60,12 @@ public class TextureView extends View {
         this.mMatrix = new Matrix();
         this.mLock = new Object[0];
         this.mNativeWindowLock = new Object[0];
+        this.mMinusTwoFrameIntervalMillis = 0L;
+        this.mLastFrameTimeMillis = 0L;
         this.mUpdateListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.view.TextureView$$ExternalSyntheticLambda0
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public final void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                TextureView.this.lambda$new$0(surfaceTexture);
+                TextureView.this.lambda$new$1(surfaceTexture);
             }
         };
         this.mRenderNode.setIsTextureView();
@@ -72,10 +77,12 @@ public class TextureView extends View {
         this.mMatrix = new Matrix();
         this.mLock = new Object[0];
         this.mNativeWindowLock = new Object[0];
+        this.mMinusTwoFrameIntervalMillis = 0L;
+        this.mLastFrameTimeMillis = 0L;
         this.mUpdateListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.view.TextureView$$ExternalSyntheticLambda0
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public final void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                TextureView.this.lambda$new$0(surfaceTexture);
+                TextureView.this.lambda$new$1(surfaceTexture);
             }
         };
         this.mRenderNode.setIsTextureView();
@@ -87,10 +94,12 @@ public class TextureView extends View {
         this.mMatrix = new Matrix();
         this.mLock = new Object[0];
         this.mNativeWindowLock = new Object[0];
+        this.mMinusTwoFrameIntervalMillis = 0L;
+        this.mLastFrameTimeMillis = 0L;
         this.mUpdateListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.view.TextureView$$ExternalSyntheticLambda0
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public final void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                TextureView.this.lambda$new$0(surfaceTexture);
+                TextureView.this.lambda$new$1(surfaceTexture);
             }
         };
         this.mRenderNode.setIsTextureView();
@@ -102,10 +111,12 @@ public class TextureView extends View {
         this.mMatrix = new Matrix();
         this.mLock = new Object[0];
         this.mNativeWindowLock = new Object[0];
+        this.mMinusTwoFrameIntervalMillis = 0L;
+        this.mLastFrameTimeMillis = 0L;
         this.mUpdateListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.view.TextureView$$ExternalSyntheticLambda0
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public final void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                TextureView.this.lambda$new$0(surfaceTexture);
+                TextureView.this.lambda$new$1(surfaceTexture);
             }
         };
         this.mRenderNode.setIsTextureView();
@@ -126,7 +137,7 @@ public class TextureView extends View {
     }
 
     @Override // android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isHardwareAccelerated()) {
             Log.w(LOG_TAG, "A TextureView or a subclass can only be used with hardware acceleration enabled.");
@@ -138,22 +149,21 @@ public class TextureView extends View {
     }
 
     @Override // android.view.View
-    public void onDetachedFromWindowInternal() {
+    protected void onDetachedFromWindowInternal() {
         destroyHardwareLayer();
         releaseSurfaceTexture();
         super.onDetachedFromWindowInternal();
     }
 
     @Override // android.view.View
-    public void destroyHardwareResources() {
+    protected void destroyHardwareResources() {
         super.destroyHardwareResources();
         destroyHardwareLayer();
     }
 
     private void destroyHardwareLayer() {
-        TextureLayer textureLayer = this.mLayer;
-        if (textureLayer != null) {
-            textureLayer.detachSurfaceTexture();
+        if (this.mLayer != null) {
+            this.mLayer.detachSurfaceTexture();
             this.mLayer.close();
             this.mLayer = null;
             this.mMatrixChanged = true;
@@ -161,12 +171,10 @@ public class TextureView extends View {
     }
 
     private void releaseSurfaceTexture() {
-        SurfaceTexture surfaceTexture = this.mSurface;
-        if (surfaceTexture != null) {
+        if (this.mSurface != null) {
             boolean shouldRelease = true;
-            SurfaceTextureListener surfaceTextureListener = this.mListener;
-            if (surfaceTextureListener != null) {
-                shouldRelease = surfaceTextureListener.onSurfaceTextureDestroyed(surfaceTexture);
+            if (this.mListener != null) {
+                shouldRelease = this.mListener.onSurfaceTextureDestroyed(this.mSurface);
             }
             synchronized (this.mNativeWindowLock) {
                 nDestroyNativeWindow();
@@ -222,28 +230,28 @@ public class TextureView extends View {
             RecordingCanvas recordingCanvas = (RecordingCanvas) canvas;
             TextureLayer layer = getTextureLayer();
             if (layer != null) {
+                Trace.traceBegin(8L, "TextureView#draw()");
                 applyUpdate();
                 applyTransformMatrix();
                 this.mLayer.setLayerPaint(this.mLayerPaint);
                 recordingCanvas.drawTextureLayer(layer);
+                Trace.traceEnd(8L);
             }
         }
     }
 
     @Override // android.view.View
-    public final void onDraw(Canvas canvas) {
+    protected final void onDraw(Canvas canvas) {
     }
 
     @Override // android.view.View
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        SurfaceTexture surfaceTexture = this.mSurface;
-        if (surfaceTexture != null) {
-            surfaceTexture.setDefaultBufferSize(getWidth(), getHeight());
+        if (this.mSurface != null) {
+            this.mSurface.setDefaultBufferSize(getWidth(), getHeight());
             updateLayer();
-            SurfaceTextureListener surfaceTextureListener = this.mListener;
-            if (surfaceTextureListener != null) {
-                surfaceTextureListener.onSurfaceTextureSizeChanged(this.mSurface, getWidth(), getHeight());
+            if (this.mListener != null) {
+                this.mListener.onSurfaceTextureSizeChanged(this.mSurface, getWidth(), getHeight());
             }
         }
     }
@@ -256,16 +264,22 @@ public class TextureView extends View {
             this.mLayer = this.mAttachInfo.mThreadedRenderer.createTextureLayer();
             boolean createNewSurface = this.mSurface == null;
             if (createNewSurface) {
-                SurfaceTexture surfaceTexture = new SurfaceTexture(false);
-                this.mSurface = surfaceTexture;
-                nCreateNativeWindow(surfaceTexture);
+                this.mSurface = new SurfaceTexture(false);
+                nCreateNativeWindow(this.mSurface);
             }
             this.mLayer.setSurfaceTexture(this.mSurface);
             this.mSurface.setDefaultBufferSize(getWidth(), getHeight());
             this.mSurface.setOnFrameAvailableListener(this.mUpdateListener, this.mAttachInfo.mHandler);
-            SurfaceTextureListener surfaceTextureListener = this.mListener;
-            if (surfaceTextureListener != null && createNewSurface) {
-                surfaceTextureListener.onSurfaceTextureAvailable(this.mSurface, getWidth(), getHeight());
+            if (Flags.toolkitSetFrameRateReadOnly()) {
+                this.mSurface.setOnSetFrameRateListener(new SurfaceTexture.OnSetFrameRateListener() { // from class: android.view.TextureView$$ExternalSyntheticLambda1
+                    @Override // android.graphics.SurfaceTexture.OnSetFrameRateListener
+                    public final void onSetFrameRate(SurfaceTexture surfaceTexture, float f, int i, int i2) {
+                        TextureView.this.lambda$getTextureLayer$0(surfaceTexture, f, i, i2);
+                    }
+                }, this.mAttachInfo.mHandler);
+            }
+            if (this.mListener != null && createNewSurface) {
+                this.mListener.onSurfaceTextureAvailable(this.mSurface, getWidth(), getHeight());
             }
             this.mLayer.setLayerPaint(this.mLayerPaint);
         }
@@ -279,19 +293,27 @@ public class TextureView extends View {
         return this.mLayer;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$getTextureLayer$0(SurfaceTexture surfaceTexture, float frameRate, int compatibility, int strategy) {
+        if (Trace.isTagEnabled(8L)) {
+            Trace.instant(8L, "setFrameRate: " + frameRate);
+        }
+        setRequestedFrameRate(frameRate);
+        this.mFrameRateCompatibility = compatibility;
+    }
+
     @Override // android.view.View
-    public void onVisibilityChanged(View changedView, int visibility) {
+    protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
-        SurfaceTexture surfaceTexture = this.mSurface;
-        if (surfaceTexture != null) {
+        if (this.mSurface != null) {
             if (visibility == 0) {
                 if (this.mLayer != null) {
-                    surfaceTexture.setOnFrameAvailableListener(this.mUpdateListener, this.mAttachInfo.mHandler);
+                    this.mSurface.setOnFrameAvailableListener(this.mUpdateListener, this.mAttachInfo.mHandler);
                 }
                 updateLayerAndInvalidate();
                 return;
             }
-            surfaceTexture.setOnFrameAvailableListener(null);
+            this.mSurface.setOnFrameAvailableListener(null);
         }
     }
 
@@ -317,9 +339,8 @@ public class TextureView extends View {
                 this.mUpdateLayer = false;
                 this.mLayer.prepare(getWidth(), getHeight(), this.mOpaque);
                 this.mLayer.updateSurfaceTexture();
-                SurfaceTextureListener surfaceTextureListener = this.mListener;
-                if (surfaceTextureListener != null) {
-                    surfaceTextureListener.onSurfaceTextureUpdated(this.mSurface);
+                if (this.mListener != null) {
+                    this.mListener.onSurfaceTextureUpdated(this.mSurface);
                 }
             }
         }
@@ -340,9 +361,8 @@ public class TextureView extends View {
     }
 
     private void applyTransformMatrix() {
-        TextureLayer textureLayer;
-        if (this.mMatrixChanged && (textureLayer = this.mLayer) != null) {
-            textureLayer.setTransform(this.mMatrix);
+        if (this.mMatrixChanged && this.mLayer != null) {
+            this.mLayer.setTransform(this.mMatrix);
             this.mMatrixChanged = false;
         }
     }
@@ -365,9 +385,8 @@ public class TextureView extends View {
             if (this.mLayer == null && this.mUpdateSurface) {
                 getTextureLayer();
             }
-            TextureLayer textureLayer = this.mLayer;
-            if (textureLayer != null) {
-                textureLayer.copyInto(bitmap);
+            if (this.mLayer != null) {
+                this.mLayer.copyInto(bitmap);
             }
         }
         return bitmap;
@@ -398,8 +417,7 @@ public class TextureView extends View {
     }
 
     public void unlockCanvasAndPost(Canvas canvas) {
-        Canvas canvas2 = this.mCanvas;
-        if (canvas2 != null && canvas == canvas2) {
+        if (this.mCanvas != null && canvas == this.mCanvas) {
             canvas.restoreToCount(this.mSaveCount);
             this.mSaveCount = 0;
             synchronized (this.mNativeWindowLock) {
@@ -427,7 +445,7 @@ public class TextureView extends View {
             this.mSurface.release();
         }
         this.mSurface = surfaceTexture;
-        nCreateNativeWindow(surfaceTexture);
+        nCreateNativeWindow(this.mSurface);
         if ((this.mViewFlags & 12) == 0 && this.mLayer != null) {
             this.mSurface.setOnFrameAvailableListener(this.mUpdateListener, this.mAttachInfo.mHandler);
         }
@@ -443,7 +461,25 @@ public class TextureView extends View {
         this.mListener = listener;
     }
 
-    public /* synthetic */ void lambda$new$0(SurfaceTexture surfaceTexture) {
+    @Override // android.view.View
+    protected int calculateFrameRateCategory() {
+        long now = getDrawingTime();
+        if (this.mMinusTwoFrameIntervalMillis > 15 && now - this.mLastFrameTimeMillis > 15) {
+            return 3;
+        }
+        return super.calculateFrameRateCategory();
+    }
+
+    @Override // android.view.View
+    protected void votePreferredFrameRate() {
+        super.votePreferredFrameRate();
+        long now = getDrawingTime();
+        this.mMinusTwoFrameIntervalMillis = now - this.mLastFrameTimeMillis;
+        this.mLastFrameTimeMillis = now;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$new$1(SurfaceTexture surfaceTexture) {
         updateLayer();
         invalidate();
     }

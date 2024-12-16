@@ -15,7 +15,7 @@ public class AnnotatedException extends Exception implements ExtException {
         this(string, null);
     }
 
-    public Throwable getUnderlyingException() {
+    Throwable getUnderlyingException() {
         return this._underlyingException;
     }
 

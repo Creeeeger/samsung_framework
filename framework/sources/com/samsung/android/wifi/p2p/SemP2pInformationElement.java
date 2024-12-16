@@ -14,10 +14,12 @@ public class SemP2pInformationElement {
     private static final int P2P_DEVICE_DISCOVERY_OUI = 61455;
     private static final int SCREEN_SHARING_ATTR_DEV_INFO = 0;
     private static final int SCREEN_SHARING_ATTR_DI_HASH = 3;
+    private static final int SCREEN_SHARING_ATTR_EXTENDED_INFO = 8;
     private static final int SCREEN_SHARING_OUI = 61452;
     private static final String TAG = "SemP2pInformationElement";
     private int mSamsungDeviceType = 0;
     private int mScreenSharingInfo = 0;
+    private int mScreenSharingExtendedInfo = 0;
     private boolean mFwInviteSupported = false;
     private String mServiceData = null;
     private String mScreenSharingDi = null;
@@ -50,6 +52,10 @@ public class SemP2pInformationElement {
 
     public int getScreenSharingInfo() {
         return this.mScreenSharingInfo;
+    }
+
+    public int getScreenSharingExtendedInfo() {
+        return this.mScreenSharingExtendedInfo;
     }
 
     public String getScreenSharingDi() {
@@ -95,6 +101,9 @@ public class SemP2pInformationElement {
                     break;
                 case 3:
                     this.mScreenSharingDi = byteArrayToHexString(attrBytes);
+                    break;
+                case 8:
+                    this.mScreenSharingExtendedInfo = parseHex(byteArrayToHexString(attrBytes));
                     break;
             }
         }

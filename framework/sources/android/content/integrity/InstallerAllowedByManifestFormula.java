@@ -7,14 +7,13 @@ import java.util.Map;
 /* loaded from: classes.dex */
 public class InstallerAllowedByManifestFormula extends IntegrityFormula implements Parcelable {
     public static final Parcelable.Creator<InstallerAllowedByManifestFormula> CREATOR = new Parcelable.Creator<InstallerAllowedByManifestFormula>() { // from class: android.content.integrity.InstallerAllowedByManifestFormula.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstallerAllowedByManifestFormula createFromParcel(Parcel in) {
             return new InstallerAllowedByManifestFormula(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstallerAllowedByManifestFormula[] newArray(int size) {
             return new InstallerAllowedByManifestFormula[size];
@@ -22,31 +21,10 @@ public class InstallerAllowedByManifestFormula extends IntegrityFormula implemen
     };
     public static final String INSTALLER_CERTIFICATE_NOT_EVALUATED = "";
 
-    /* synthetic */ InstallerAllowedByManifestFormula(Parcel parcel, InstallerAllowedByManifestFormulaIA installerAllowedByManifestFormulaIA) {
-        this(parcel);
-    }
-
     public InstallerAllowedByManifestFormula() {
     }
 
     private InstallerAllowedByManifestFormula(Parcel in) {
-    }
-
-    /* renamed from: android.content.integrity.InstallerAllowedByManifestFormula$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InstallerAllowedByManifestFormula> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstallerAllowedByManifestFormula createFromParcel(Parcel in) {
-            return new InstallerAllowedByManifestFormula(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstallerAllowedByManifestFormula[] newArray(int size) {
-            return new InstallerAllowedByManifestFormula[size];
-        }
     }
 
     @Override // android.content.integrity.IntegrityFormula

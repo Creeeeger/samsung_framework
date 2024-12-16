@@ -46,7 +46,7 @@ public class ExtendedPKIXBuilderParameters extends ExtendedPKIXParameters {
     }
 
     @Override // com.android.internal.org.bouncycastle.x509.ExtendedPKIXParameters
-    public void setParams(PKIXParameters params) {
+    protected void setParams(PKIXParameters params) {
         super.setParams(params);
         if (params instanceof ExtendedPKIXBuilderParameters) {
             ExtendedPKIXBuilderParameters _params = (ExtendedPKIXBuilderParameters) params;

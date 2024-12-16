@@ -21,17 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TvInteractiveAppServiceInfo implements Parcelable {
     public static final Parcelable.Creator<TvInteractiveAppServiceInfo> CREATOR = new Parcelable.Creator<TvInteractiveAppServiceInfo>() { // from class: android.media.tv.interactive.TvInteractiveAppServiceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInteractiveAppServiceInfo createFromParcel(Parcel in) {
             return new TvInteractiveAppServiceInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInteractiveAppServiceInfo[] newArray(int size) {
             return new TvInteractiveAppServiceInfo[size];
@@ -51,12 +50,7 @@ public final class TvInteractiveAppServiceInfo implements Parcelable {
     private int mTypes;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface InteractiveAppType {
-    }
-
-    /* synthetic */ TvInteractiveAppServiceInfo(Parcel parcel, TvInteractiveAppServiceInfoIA tvInteractiveAppServiceInfoIA) {
-        this(parcel);
     }
 
     public TvInteractiveAppServiceInfo(Context context, ComponentName component) {
@@ -79,38 +73,19 @@ public final class TvInteractiveAppServiceInfo implements Parcelable {
     }
 
     private TvInteractiveAppServiceInfo(ResolveInfo service, String id, int types, List<String> extraTypes) {
-        ArrayList arrayList = new ArrayList();
-        this.mExtraTypes = arrayList;
+        this.mExtraTypes = new ArrayList();
         this.mService = service;
         this.mId = id;
         this.mTypes = types;
-        arrayList.addAll(extraTypes);
+        this.mExtraTypes.addAll(extraTypes);
     }
 
     private TvInteractiveAppServiceInfo(Parcel in) {
-        ArrayList arrayList = new ArrayList();
-        this.mExtraTypes = arrayList;
+        this.mExtraTypes = new ArrayList();
         this.mService = ResolveInfo.CREATOR.createFromParcel(in);
         this.mId = in.readString();
         this.mTypes = in.readInt();
-        in.readStringList(arrayList);
-    }
-
-    /* renamed from: android.media.tv.interactive.TvInteractiveAppServiceInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TvInteractiveAppServiceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvInteractiveAppServiceInfo createFromParcel(Parcel in) {
-            return new TvInteractiveAppServiceInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvInteractiveAppServiceInfo[] newArray(int size) {
-            return new TvInteractiveAppServiceInfo[size];
-        }
+        in.readStringList(this.mExtraTypes);
     }
 
     @Override // android.os.Parcelable
@@ -200,7 +175,7 @@ public final class TvInteractiveAppServiceInfo implements Parcelable {
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:9:0x004b. Please report as an issue. */
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     private void toTypesFlag(List<String> types) {
         char c;
         this.mTypes = 0;
@@ -212,47 +187,49 @@ public final class TvInteractiveAppServiceInfo implements Parcelable {
                         c = 3;
                         break;
                     }
+                    c = 65535;
                     break;
                 case 3004867:
                     if (type.equals("atsc")) {
                         c = 1;
                         break;
                     }
+                    c = 65535;
                     break;
                 case 98359718:
                     if (type.equals("ginga")) {
                         c = 2;
                         break;
                     }
+                    c = 65535;
                     break;
                 case 99063594:
                     if (type.equals("hbbtv")) {
                         c = 0;
                         break;
                     }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
                     break;
             }
-            c = 65535;
             switch (c) {
                 case 0:
                     this.mTypes |= 1;
-                    break;
+                    continue;
                 case 1:
                     this.mTypes |= 2;
-                    break;
+                    continue;
                 case 2:
                     this.mTypes |= 4;
-                    break;
+                    continue;
                 case 3:
                     this.mTypes |= 8;
-                    this.mTypes |= Integer.MIN_VALUE;
-                    this.mExtraTypes.add(type);
-                    break;
-                default:
-                    this.mTypes |= Integer.MIN_VALUE;
-                    this.mExtraTypes.add(type);
                     break;
             }
+            this.mTypes |= Integer.MIN_VALUE;
+            this.mExtraTypes.add(type);
         }
     }
 }

@@ -1,5 +1,6 @@
 package android.content.res;
 
+import android.app.ResourcesManager;
 import android.content.om.SamsungThemeUtils;
 import android.content.res.loader.ResourcesLoader;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
@@ -12,11 +13,11 @@ import java.util.Objects;
 public final class ResourcesKey {
     public final CompatibilityInfo mCompatInfo;
     public int mDisplayId;
-    public int mDisplayId2;
     private final int mHash;
     public List<String> mInvalidOverlayPaths;
     public final String[] mLibDirs;
     public final ResourcesLoader[] mLoaders;
+    public int mOriginDisplayId;
     public final String[] mOverlayPaths;
     public final Configuration mOverrideConfiguration;
     public final String mResDir;
@@ -26,29 +27,28 @@ public final class ResourcesKey {
         this(resDir, splitResDirs, overlayPaths, libDirs, overrideDisplayId, overrideConfig, compatInfo, loader, 0);
     }
 
-    public ResourcesKey(String resDir, String[] splitResDirs, String[] overlayPaths, String[] libDirs, int overrideDisplayId, Configuration overrideConfig, CompatibilityInfo compatInfo, ResourcesLoader[] loader, int displayId2) {
-        this.mDisplayId2 = 0;
+    public ResourcesKey(String resDir, String[] splitResDirs, String[] overlayPaths, String[] libDirs, int overrideDisplayId, Configuration overrideConfig, CompatibilityInfo compatInfo, ResourcesLoader[] loader, int originDisplayId) {
+        this.mOriginDisplayId = 0;
         this.mInvalidOverlayPaths = null;
         this.mResDir = resDir;
         this.mSplitResDirs = splitResDirs;
-        if (displayId2 == 2) {
+        if (ResourcesManager.isOriginDisplayId(originDisplayId)) {
+            this.mOriginDisplayId = originDisplayId;
+        }
+        if (this.mOriginDisplayId == 2) {
             this.mOverlayPaths = SamsungThemeUtils.removeSamsungThemeOverlays(overlayPaths);
-        } else if (displayId2 == 1) {
+        } else if (this.mOriginDisplayId == 1) {
             this.mOverlayPaths = SamsungThemeUtils.removeSamsungThemeOverlaysForCover(overlayPaths);
         } else {
             this.mOverlayPaths = overlayPaths;
         }
         this.mLibDirs = libDirs;
-        ResourcesLoader[] resourcesLoaderArr = (loader == null || loader.length != 0) ? loader : null;
-        this.mLoaders = resourcesLoaderArr;
+        this.mLoaders = (loader == null || loader.length != 0) ? loader : null;
         this.mDisplayId = overrideDisplayId;
-        Configuration configuration = new Configuration(overrideConfig != null ? overrideConfig : Configuration.EMPTY);
-        this.mOverrideConfiguration = configuration;
-        CompatibilityInfo compatibilityInfo = compatInfo != null ? compatInfo : CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO;
-        this.mCompatInfo = compatibilityInfo;
-        this.mDisplayId2 = displayId2;
-        int hash = (17 * 31) + Objects.hashCode(resDir);
-        this.mHash = (((((((((((((((hash * 31) + Arrays.hashCode(splitResDirs)) * 31) + Arrays.hashCode(this.mOverlayPaths)) * 31) + Arrays.hashCode(libDirs)) * 31) + Objects.hashCode(Integer.valueOf(this.mDisplayId))) * 31) + Objects.hashCode(configuration)) * 31) + Objects.hashCode(compatibilityInfo)) * 31) + Arrays.hashCode(resourcesLoaderArr)) * 31) + Objects.hashCode(Integer.valueOf(this.mDisplayId2));
+        this.mOverrideConfiguration = new Configuration(overrideConfig != null ? overrideConfig : Configuration.EMPTY);
+        this.mCompatInfo = compatInfo != null ? compatInfo : CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO;
+        int hash = (17 * 31) + Objects.hashCode(this.mResDir);
+        this.mHash = (((((((((((((((hash * 31) + Arrays.hashCode(this.mSplitResDirs)) * 31) + Arrays.hashCode(this.mOverlayPaths)) * 31) + Arrays.hashCode(this.mLibDirs)) * 31) + Objects.hashCode(Integer.valueOf(this.mDisplayId))) * 31) + Objects.hashCode(this.mOverrideConfiguration)) * 31) + Objects.hashCode(this.mCompatInfo)) * 31) + Arrays.hashCode(this.mLoaders)) * 31) + Objects.hashCode(Integer.valueOf(this.mOriginDisplayId));
     }
 
     public ResourcesKey(String resDir, String[] splitResDirs, String[] overlayPaths, String[] libDirs, int displayId, Configuration overrideConfig, CompatibilityInfo compatInfo) {
@@ -60,8 +60,7 @@ public final class ResourcesKey {
     }
 
     public boolean isPathReferenced(String path) {
-        String str = this.mResDir;
-        return (str != null && str.startsWith(path)) || anyStartsWith(this.mSplitResDirs, path) || anyStartsWith(this.mOverlayPaths, path) || anyStartsWith(this.mLibDirs, path);
+        return (this.mResDir != null && this.mResDir.startsWith(path)) || anyStartsWith(this.mSplitResDirs, path) || anyStartsWith(this.mOverlayPaths, path) || anyStartsWith(this.mLibDirs, path);
     }
 
     private static boolean anyStartsWith(String[] list, String prefix) {
@@ -92,30 +91,26 @@ public final class ResourcesKey {
         builder.append(" mHash=").append(Integer.toHexString(this.mHash));
         builder.append(" mResDir=").append(this.mResDir);
         builder.append(" mSplitDirs=[");
-        String[] strArr = this.mSplitResDirs;
-        if (strArr != null) {
-            builder.append(TextUtils.join(",", strArr));
+        if (this.mSplitResDirs != null) {
+            builder.append(TextUtils.join(",", this.mSplitResDirs));
         }
         builder.append(NavigationBarInflaterView.SIZE_MOD_END);
         builder.append(" mOverlayDirs=[");
-        String[] strArr2 = this.mOverlayPaths;
-        if (strArr2 != null) {
-            builder.append(TextUtils.join(",", strArr2));
+        if (this.mOverlayPaths != null) {
+            builder.append(TextUtils.join(",", this.mOverlayPaths));
         }
         builder.append(NavigationBarInflaterView.SIZE_MOD_END);
         builder.append(" mLibDirs=[");
-        String[] strArr3 = this.mLibDirs;
-        if (strArr3 != null) {
-            builder.append(TextUtils.join(",", strArr3));
+        if (this.mLibDirs != null) {
+            builder.append(TextUtils.join(",", this.mLibDirs));
         }
         builder.append(NavigationBarInflaterView.SIZE_MOD_END);
         builder.append(" mDisplayId=").append(this.mDisplayId);
         builder.append(" mOverrideConfig=").append(Configuration.resourceQualifierString(this.mOverrideConfiguration));
         builder.append(" mCompatInfo=").append(this.mCompatInfo);
         builder.append(" mLoaders=[");
-        ResourcesLoader[] resourcesLoaderArr = this.mLoaders;
-        if (resourcesLoaderArr != null) {
-            builder.append(TextUtils.join(",", resourcesLoaderArr));
+        if (this.mLoaders != null) {
+            builder.append(TextUtils.join(",", this.mLoaders));
         }
         builder.append("]}");
         return builder.toString();

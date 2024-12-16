@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class KeystoreAtomPayload implements Parcelable {
     public static final Parcelable.Creator<KeystoreAtomPayload> CREATOR = new Parcelable.Creator<KeystoreAtomPayload>() { // from class: android.security.metrics.KeystoreAtomPayload.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeystoreAtomPayload createFromParcel(Parcel _aidl_source) {
             return new KeystoreAtomPayload(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeystoreAtomPayload[] newArray(int _aidl_size) {
             return new KeystoreAtomPayload[_aidl_size];
@@ -31,7 +30,6 @@ public final class KeystoreAtomPayload implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes3.dex */
     public @interface Tag {
         public static final int crashStats = 8;
         public static final int keyCreationWithAuthInfo = 2;
@@ -42,10 +40,6 @@ public final class KeystoreAtomPayload implements Parcelable {
         public static final int keystore2AtomWithOverflow = 4;
         public static final int rkpErrorStats = 7;
         public static final int storageStats = 0;
-    }
-
-    /* synthetic */ KeystoreAtomPayload(Parcel parcel, KeystoreAtomPayloadIA keystoreAtomPayloadIA) {
-        this(parcel);
     }
 
     public KeystoreAtomPayload() {
@@ -183,56 +177,37 @@ public final class KeystoreAtomPayload implements Parcelable {
         _set(8, _value);
     }
 
-    /* renamed from: android.security.metrics.KeystoreAtomPayload$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeystoreAtomPayload> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeystoreAtomPayload createFromParcel(Parcel _aidl_source) {
-            return new KeystoreAtomPayload(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeystoreAtomPayload[] newArray(int _aidl_size) {
-            return new KeystoreAtomPayload[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getStorageStats(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getKeyCreationWithGeneralInfo(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getKeyCreationWithAuthInfo(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeTypedObject(getKeyCreationWithPurposeAndModesInfo(), _aidl_flag);
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeTypedObject(getKeystore2AtomWithOverflow(), _aidl_flag);
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeTypedObject(getKeyOperationWithPurposeAndModesInfo(), _aidl_flag);
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeTypedObject(getKeyOperationWithGeneralInfo(), _aidl_flag);
-                return;
+                break;
             case 7:
                 _aidl_parcel.writeTypedObject(getRkpErrorStats(), _aidl_flag);
-                return;
+                break;
             case 8:
                 _aidl_parcel.writeTypedObject(getCrashStats(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

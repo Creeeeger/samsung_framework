@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.INetworkServiceCallback;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface INetworkService extends IInterface {
     void createNetworkServiceProvider(int i) throws RemoteException;
 
@@ -19,7 +19,6 @@ public interface INetworkService extends IInterface {
 
     void unregisterForNetworkRegistrationInfoChanged(int i, INetworkServiceCallback iNetworkServiceCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements INetworkService {
         @Override // android.telephony.INetworkService
         public void createNetworkServiceProvider(int slotId) throws RemoteException {
@@ -47,7 +46,6 @@ public interface INetworkService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements INetworkService {
         public static final String DESCRIPTOR = "android.telephony.INetworkService";
         static final int TRANSACTION_createNetworkServiceProvider = 1;
@@ -103,48 +101,45 @@ public interface INetworkService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    createNetworkServiceProvider(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeNetworkServiceProvider(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg1 = data.readInt();
+                    INetworkServiceCallback _arg2 = INetworkServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    requestNetworkRegistrationInfo(_arg03, _arg1, _arg2);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    INetworkServiceCallback _arg12 = INetworkServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerForNetworkRegistrationInfoChanged(_arg04, _arg12);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    INetworkServiceCallback _arg13 = INetworkServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForNetworkRegistrationInfoChanged(_arg05, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            createNetworkServiceProvider(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeNetworkServiceProvider(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg1 = data.readInt();
-                            INetworkServiceCallback _arg2 = INetworkServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            requestNetworkRegistrationInfo(_arg03, _arg1, _arg2);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            INetworkServiceCallback _arg12 = INetworkServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerForNetworkRegistrationInfoChanged(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            INetworkServiceCallback _arg13 = INetworkServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterForNetworkRegistrationInfoChanged(_arg05, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements INetworkService {
             private IBinder mRemote;
 

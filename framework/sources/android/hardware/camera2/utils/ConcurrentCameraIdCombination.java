@@ -2,50 +2,29 @@ package android.hardware.camera2.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import java.util.HashSet;
+import android.util.ArraySet;
+import android.util.Pair;
 import java.util.Set;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class ConcurrentCameraIdCombination implements Parcelable {
     public static final Parcelable.Creator<ConcurrentCameraIdCombination> CREATOR = new Parcelable.Creator<ConcurrentCameraIdCombination>() { // from class: android.hardware.camera2.utils.ConcurrentCameraIdCombination.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConcurrentCameraIdCombination createFromParcel(Parcel in) {
             return new ConcurrentCameraIdCombination(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConcurrentCameraIdCombination[] newArray(int size) {
             return new ConcurrentCameraIdCombination[size];
         }
     };
-    private Set<String> mConcurrentCameraIds;
-
-    /* synthetic */ ConcurrentCameraIdCombination(Parcel parcel, ConcurrentCameraIdCombinationIA concurrentCameraIdCombinationIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.hardware.camera2.utils.ConcurrentCameraIdCombination$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ConcurrentCameraIdCombination> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConcurrentCameraIdCombination createFromParcel(Parcel in) {
-            return new ConcurrentCameraIdCombination(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConcurrentCameraIdCombination[] newArray(int size) {
-            return new ConcurrentCameraIdCombination[size];
-        }
-    }
+    private final Set<Pair<String, Integer>> mConcurrentCameraIdDeviceIdPairs;
 
     private ConcurrentCameraIdCombination(Parcel in) {
-        this.mConcurrentCameraIds = new HashSet();
+        this.mConcurrentCameraIdDeviceIdPairs = new ArraySet();
         readFromParcel(in);
     }
 
@@ -56,14 +35,15 @@ public class ConcurrentCameraIdCombination implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.mConcurrentCameraIds.size());
-        for (String cameraId : this.mConcurrentCameraIds) {
-            dest.writeString(cameraId);
+        dest.writeInt(this.mConcurrentCameraIdDeviceIdPairs.size());
+        for (Pair<String, Integer> cameraIdDeviceIdPair : this.mConcurrentCameraIdDeviceIdPairs) {
+            dest.writeString(cameraIdDeviceIdPair.first);
+            dest.writeInt(cameraIdDeviceIdPair.second.intValue());
         }
     }
 
     public void readFromParcel(Parcel in) {
-        this.mConcurrentCameraIds.clear();
+        this.mConcurrentCameraIdDeviceIdPairs.clear();
         int cameraCombinationSize = in.readInt();
         if (cameraCombinationSize < 0) {
             throw new RuntimeException("cameraCombinationSize " + cameraCombinationSize + " should not be negative");
@@ -73,11 +53,12 @@ public class ConcurrentCameraIdCombination implements Parcelable {
             if (cameraId == null) {
                 throw new RuntimeException("Failed to read camera id from Parcel");
             }
-            this.mConcurrentCameraIds.add(cameraId);
+            int deviceId = in.readInt();
+            this.mConcurrentCameraIdDeviceIdPairs.add(new Pair<>(cameraId, Integer.valueOf(deviceId)));
         }
     }
 
-    public Set<String> getConcurrentCameraIdCombination() {
-        return this.mConcurrentCameraIds;
+    public Set<Pair<String, Integer>> getConcurrentCameraIdCombination() {
+        return this.mConcurrentCameraIdDeviceIdPairs;
     }
 }

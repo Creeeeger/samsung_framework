@@ -10,8 +10,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioImsResponse extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$ims$IRadioImsResponse".replace('$', '.');
-    public static final String HASH = "b09f8d98a60fbe74cefaca7aea9903ab5450110a";
-    public static final int VERSION = 1;
+    public static final String HASH = "ec0dfedf764f3916783848c540ad312a74fa755d";
+    public static final int VERSION = 2;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -31,7 +31,6 @@ public interface IRadioImsResponse extends IInterface {
 
     void updateImsRegistrationInfoResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioImsResponse {
         @Override // android.hardware.radio.ims.IRadioImsResponse
         public void setSrvccCallInfoResponse(RadioResponseInfo info) throws RemoteException {
@@ -77,7 +76,6 @@ public interface IRadioImsResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioImsResponse {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -116,65 +114,63 @@ public interface IRadioImsResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    RadioResponseInfo _arg0 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSrvccCallInfoResponse(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateImsRegistrationInfoResponse(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    ConnectionFailureInfo _arg1 = (ConnectionFailureInfo) data.readTypedObject(ConnectionFailureInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    startImsTrafficResponse(_arg03, _arg1);
+                    return true;
+                case 4:
+                    RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    stopImsTrafficResponse(_arg04);
+                    return true;
+                case 5:
+                    RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    triggerEpsFallbackResponse(_arg05);
+                    return true;
+                case 6:
+                    RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendAnbrQueryResponse(_arg06);
+                    return true;
+                case 7:
+                    RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateImsCallStatusResponse(_arg07);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RadioResponseInfo _arg0 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSrvccCallInfoResponse(_arg0);
-                            return true;
-                        case 2:
-                            RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateImsRegistrationInfoResponse(_arg02);
-                            return true;
-                        case 3:
-                            RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            ConnectionFailureInfo _arg1 = (ConnectionFailureInfo) data.readTypedObject(ConnectionFailureInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            startImsTrafficResponse(_arg03, _arg1);
-                            return true;
-                        case 4:
-                            RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            stopImsTrafficResponse(_arg04);
-                            return true;
-                        case 5:
-                            RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            triggerEpsFallbackResponse(_arg05);
-                            return true;
-                        case 6:
-                            RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendAnbrQueryResponse(_arg06);
-                            return true;
-                        case 7:
-                            RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateImsCallStatusResponse(_arg07);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioImsResponse {
+        private static class Proxy implements IRadioImsResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

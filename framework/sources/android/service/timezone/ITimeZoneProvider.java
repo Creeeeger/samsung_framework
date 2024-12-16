@@ -15,7 +15,6 @@ public interface ITimeZoneProvider extends IInterface {
 
     void stopUpdates() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITimeZoneProvider {
         @Override // android.service.timezone.ITimeZoneProvider
         public void startUpdates(ITimeZoneProviderManager manager, long initializationTimeoutMillis, long eventFilteringAgeThresholdMillis) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ITimeZoneProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITimeZoneProvider {
         static final int TRANSACTION_startUpdates = 1;
         static final int TRANSACTION_stopUpdates = 2;
@@ -77,29 +75,26 @@ public interface ITimeZoneProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITimeZoneProvider.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITimeZoneProvider.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITimeZoneProvider.DESCRIPTOR);
+                case 1:
+                    ITimeZoneProviderManager _arg0 = ITimeZoneProviderManager.Stub.asInterface(data.readStrongBinder());
+                    long _arg1 = data.readLong();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    startUpdates(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    stopUpdates();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ITimeZoneProviderManager _arg0 = ITimeZoneProviderManager.Stub.asInterface(data.readStrongBinder());
-                            long _arg1 = data.readLong();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            startUpdates(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            stopUpdates();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ITimeZoneProvider {
             private IBinder mRemote;
 

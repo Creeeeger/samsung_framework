@@ -28,7 +28,7 @@ class X509SignatureUtil {
     X509SignatureUtil() {
     }
 
-    public static void setSignatureParameters(Signature signature, ASN1Encodable params) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+    static void setSignatureParameters(Signature signature, ASN1Encodable params) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         if (params != null && !derNull.equals(params)) {
             AlgorithmParameters sigParams = AlgorithmParameters.getInstance(signature.getAlgorithm(), signature.getProvider());
             try {
@@ -46,7 +46,7 @@ class X509SignatureUtil {
         }
     }
 
-    public static String getSignatureName(AlgorithmIdentifier sigAlgId) {
+    static String getSignatureName(AlgorithmIdentifier sigAlgId) {
         ASN1Encodable params = sigAlgId.getParameters();
         if (params != null && !derNull.equals(params) && sigAlgId.getAlgorithm().equals((ASN1Primitive) X9ObjectIdentifiers.ecdsa_with_SHA2)) {
             ASN1Sequence ecDsaParams = ASN1Sequence.getInstance(params);

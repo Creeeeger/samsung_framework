@@ -10,7 +10,6 @@ public interface IExternalVibrationController extends IInterface {
 
     boolean unmute() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IExternalVibrationController {
         @Override // android.os.IExternalVibrationController
         public boolean mute() throws RemoteException {
@@ -28,7 +27,6 @@ public interface IExternalVibrationController extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IExternalVibrationController {
         static final int TRANSACTION_mute = 1;
         static final int TRANSACTION_unmute = 2;
@@ -74,31 +72,27 @@ public interface IExternalVibrationController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IExternalVibrationController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IExternalVibrationController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IExternalVibrationController.DESCRIPTOR);
+                case 1:
+                    boolean _result = mute();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    boolean _result2 = unmute();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = mute();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            boolean _result2 = unmute();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IExternalVibrationController {
+        private static class Proxy implements IExternalVibrationController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

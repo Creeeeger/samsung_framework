@@ -2,7 +2,6 @@ package android.util;
 
 import android.bluetooth.hci.BluetoothHciProtoEnums;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
@@ -15,12 +14,10 @@ public final class JsonWriter implements Closeable {
     private boolean lenient;
     private final Writer out;
     private String separator;
-    private final List<JsonScope> stack;
+    private final List<JsonScope> stack = new ArrayList();
 
     public JsonWriter(Writer out) {
-        ArrayList arrayList = new ArrayList();
-        this.stack = arrayList;
-        arrayList.add(JsonScope.EMPTY_DOCUMENT);
+        this.stack.add(JsonScope.EMPTY_DOCUMENT);
         this.separator = ":";
         if (out == null) {
             throw new NullPointerException("out == null");
@@ -74,7 +71,7 @@ public final class JsonWriter implements Closeable {
         if (context != nonempty && context != empty) {
             throw new IllegalStateException("Nesting problem: " + this.stack);
         }
-        this.stack.remove(r1.size() - 1);
+        this.stack.remove(this.stack.size() - 1);
         if (context == nonempty) {
             newline();
         }
@@ -83,11 +80,11 @@ public final class JsonWriter implements Closeable {
     }
 
     private JsonScope peek() {
-        return this.stack.get(r0.size() - 1);
+        return this.stack.get(this.stack.size() - 1);
     }
 
     private void replaceTop(JsonScope topOfStack) {
-        this.stack.set(r0.size() - 1, topOfStack);
+        this.stack.set(this.stack.size() - 1, topOfStack);
     }
 
     public JsonWriter name(String name) throws IOException {
@@ -110,7 +107,7 @@ public final class JsonWriter implements Closeable {
 
     public JsonWriter nullValue() throws IOException {
         beforeValue(false);
-        this.out.write(SemCapabilities.FEATURE_TAG_NULL);
+        this.out.write("null");
         return this;
     }
 
@@ -224,58 +221,27 @@ public final class JsonWriter implements Closeable {
         replaceTop(JsonScope.DANGLING_NAME);
     }
 
-    /* renamed from: android.util.JsonWriter$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$util$JsonScope;
-
-        static {
-            int[] iArr = new int[JsonScope.values().length];
-            $SwitchMap$android$util$JsonScope = iArr;
-            try {
-                iArr[JsonScope.EMPTY_DOCUMENT.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.EMPTY_ARRAY.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.NONEMPTY_ARRAY.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.DANGLING_NAME.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$android$util$JsonScope[JsonScope.NONEMPTY_DOCUMENT.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-        }
-    }
-
     private void beforeValue(boolean root) throws IOException {
-        switch (AnonymousClass1.$SwitchMap$android$util$JsonScope[peek().ordinal()]) {
-            case 1:
+        switch (peek()) {
+            case EMPTY_DOCUMENT:
                 if (!this.lenient && !root) {
                     throw new IllegalStateException("JSON must start with an array or an object.");
                 }
                 replaceTop(JsonScope.NONEMPTY_DOCUMENT);
                 return;
-            case 2:
+            case EMPTY_ARRAY:
                 replaceTop(JsonScope.NONEMPTY_ARRAY);
                 newline();
                 return;
-            case 3:
+            case NONEMPTY_ARRAY:
                 this.out.append(',');
                 newline();
                 return;
-            case 4:
+            case DANGLING_NAME:
                 this.out.append((CharSequence) this.separator);
                 replaceTop(JsonScope.NONEMPTY_OBJECT);
                 return;
-            case 5:
+            case NONEMPTY_DOCUMENT:
                 throw new IllegalStateException("JSON must have only one top-level value.");
             default:
                 throw new IllegalStateException("Nesting problem: " + this.stack);

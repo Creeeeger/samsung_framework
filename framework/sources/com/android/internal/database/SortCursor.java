@@ -6,7 +6,7 @@ import android.database.DataSetObserver;
 import android.util.Log;
 import java.lang.reflect.Array;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class SortCursor extends AbstractCursor {
     private static final String TAG = "SortCursor";
     private int[][] mCurRowNumCache;
@@ -18,9 +18,6 @@ public class SortCursor extends AbstractCursor {
     private int[] mCursorCache = new int[64];
     private int mLastCacheHit = -1;
     private DataSetObserver mObserver = new DataSetObserver() { // from class: com.android.internal.database.SortCursor.1
-        AnonymousClass1() {
-        }
-
         @Override // android.database.DataSetObserver
         public void onChanged() {
             SortCursor.this.mPos = -1;
@@ -32,32 +29,13 @@ public class SortCursor extends AbstractCursor {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.database.SortCursor$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends DataSetObserver {
-        AnonymousClass1() {
-        }
-
-        @Override // android.database.DataSetObserver
-        public void onChanged() {
-            SortCursor.this.mPos = -1;
-        }
-
-        @Override // android.database.DataSetObserver
-        public void onInvalidated() {
-            SortCursor.this.mPos = -1;
-        }
-    }
-
     public SortCursor(Cursor[] cursors, String sortcolumn) {
         this.mCursors = cursors;
-        int length = cursors.length;
+        int length = this.mCursors.length;
         this.mSortColumns = new int[length];
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.registerDataSetObserver(this.mObserver);
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].registerDataSetObserver(this.mObserver);
                 this.mCursors[i].moveToFirst();
                 this.mSortColumns[i] = this.mCursors[i].getColumnIndexOrThrow(sortcolumn);
             }
@@ -65,8 +43,7 @@ public class SortCursor extends AbstractCursor {
         this.mCursor = null;
         String smallest = "";
         for (int j = 0; j < length; j++) {
-            Cursor cursor2 = this.mCursors[j];
-            if (cursor2 != null && !cursor2.isAfterLast()) {
+            if (this.mCursors[j] != null && !this.mCursors[j].isAfterLast()) {
                 String current = this.mCursors[j].getString(this.mSortColumns[j]);
                 if (this.mCursor == null || (current != null && current.compareToIgnoreCase(smallest) < 0)) {
                     smallest = current;
@@ -85,9 +62,8 @@ public class SortCursor extends AbstractCursor {
         int count = 0;
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                count += cursor.getCount();
+            if (this.mCursors[i] != null) {
+                count += this.mCursors[i].getCount();
             }
         }
         return count;
@@ -101,13 +77,12 @@ public class SortCursor extends AbstractCursor {
         int cache_entry = newPosition % 64;
         if (this.mRowNumCache[cache_entry] == newPosition) {
             int which = this.mCursorCache[cache_entry];
-            Cursor cursor = this.mCursors[which];
-            this.mCursor = cursor;
-            if (cursor == null) {
+            this.mCursor = this.mCursors[which];
+            if (this.mCursor == null) {
                 Log.w(TAG, "onMove: cache results in a null cursor.");
                 return false;
             }
-            cursor.moveToPosition(this.mCurRowNumCache[cache_entry][which]);
+            this.mCursor.moveToPosition(this.mCurRowNumCache[cache_entry][which]);
             this.mLastCacheHit = cache_entry;
             return true;
         }
@@ -115,17 +90,15 @@ public class SortCursor extends AbstractCursor {
         int length = this.mCursors.length;
         if (this.mLastCacheHit >= 0) {
             for (int i = 0; i < length; i++) {
-                Cursor cursor2 = this.mCursors[i];
-                if (cursor2 != null) {
-                    cursor2.moveToPosition(this.mCurRowNumCache[this.mLastCacheHit][i]);
+                if (this.mCursors[i] != null) {
+                    this.mCursors[i].moveToPosition(this.mCurRowNumCache[this.mLastCacheHit][i]);
                 }
             }
         }
         if (newPosition < oldPosition || oldPosition == -1) {
             for (int i2 = 0; i2 < length; i2++) {
-                Cursor cursor3 = this.mCursors[i2];
-                if (cursor3 != null) {
-                    cursor3.moveToFirst();
+                if (this.mCursors[i2] != null) {
+                    this.mCursors[i2].moveToFirst();
                 }
             }
             oldPosition = 0;
@@ -138,8 +111,7 @@ public class SortCursor extends AbstractCursor {
             String smallest = "";
             smallestIdx = -1;
             for (int j = 0; j < length; j++) {
-                Cursor cursor4 = this.mCursors[j];
-                if (cursor4 != null && !cursor4.isAfterLast()) {
+                if (this.mCursors[j] != null && !this.mCursors[j].isAfterLast()) {
                     String current = this.mCursors[j].getString(this.mSortColumns[j]);
                     if (smallestIdx < 0 || (current != null && current.compareToIgnoreCase(smallest) < 0)) {
                         smallest = current;
@@ -150,18 +122,16 @@ public class SortCursor extends AbstractCursor {
             if (i3 == newPosition) {
                 break;
             }
-            Cursor cursor5 = this.mCursors[smallestIdx];
-            if (cursor5 != null) {
-                cursor5.moveToNext();
+            if (this.mCursors[smallestIdx] != null) {
+                this.mCursors[smallestIdx].moveToNext();
             }
         }
         this.mCursor = this.mCursors[smallestIdx];
         this.mRowNumCache[cache_entry] = newPosition;
         this.mCursorCache[cache_entry] = smallestIdx;
         for (int i4 = 0; i4 < length; i4++) {
-            Cursor cursor6 = this.mCursors[i4];
-            if (cursor6 != null) {
-                this.mCurRowNumCache[cache_entry][i4] = cursor6.getPosition();
+            if (this.mCursors[i4] != null) {
+                this.mCurRowNumCache[cache_entry][i4] = this.mCursors[i4].getPosition();
             }
         }
         this.mLastCacheHit = -1;
@@ -215,15 +185,13 @@ public class SortCursor extends AbstractCursor {
 
     @Override // android.database.AbstractCursor, android.database.Cursor
     public String[] getColumnNames() {
-        Cursor cursor = this.mCursor;
-        if (cursor != null) {
-            return cursor.getColumnNames();
+        if (this.mCursor != null) {
+            return this.mCursor.getColumnNames();
         }
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor2 = this.mCursors[i];
-            if (cursor2 != null) {
-                return cursor2.getColumnNames();
+            if (this.mCursors[i] != null) {
+                return this.mCursors[i].getColumnNames();
             }
         }
         throw new IllegalStateException("No cursor that can return names");
@@ -233,9 +201,8 @@ public class SortCursor extends AbstractCursor {
     public void deactivate() {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.deactivate();
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].deactivate();
             }
         }
     }
@@ -244,9 +211,8 @@ public class SortCursor extends AbstractCursor {
     public void close() {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.close();
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].close();
                 this.mCursors[i] = null;
             }
         }
@@ -257,9 +223,8 @@ public class SortCursor extends AbstractCursor {
     public void registerDataSetObserver(DataSetObserver observer) {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.registerDataSetObserver(observer);
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].registerDataSetObserver(observer);
             }
         }
     }
@@ -268,9 +233,8 @@ public class SortCursor extends AbstractCursor {
     public void unregisterDataSetObserver(DataSetObserver observer) {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.unregisterDataSetObserver(observer);
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].unregisterDataSetObserver(observer);
             }
         }
     }
@@ -279,8 +243,7 @@ public class SortCursor extends AbstractCursor {
     public boolean requery() {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null && !cursor.requery()) {
+            if (this.mCursors[i] != null && !this.mCursors[i].requery()) {
                 return false;
             }
         }

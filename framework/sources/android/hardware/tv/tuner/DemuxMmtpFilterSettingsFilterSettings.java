@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxMmtpFilterSettingsFilterSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxMmtpFilterSettingsFilterSettings> CREATOR = new Parcelable.Creator<DemuxMmtpFilterSettingsFilterSettings>() { // from class: android.hardware.tv.tuner.DemuxMmtpFilterSettingsFilterSettings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxMmtpFilterSettingsFilterSettings createFromParcel(Parcel _aidl_source) {
             return new DemuxMmtpFilterSettingsFilterSettings(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxMmtpFilterSettingsFilterSettings[] newArray(int _aidl_size) {
             return new DemuxMmtpFilterSettingsFilterSettings[_aidl_size];
@@ -29,7 +28,6 @@ public final class DemuxMmtpFilterSettingsFilterSettings implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int av = 2;
         public static final int download = 5;
@@ -37,10 +35,6 @@ public final class DemuxMmtpFilterSettingsFilterSettings implements Parcelable {
         public static final int pesData = 3;
         public static final int record = 4;
         public static final int section = 1;
-    }
-
-    /* synthetic */ DemuxMmtpFilterSettingsFilterSettings(Parcel parcel, DemuxMmtpFilterSettingsFilterSettingsIA demuxMmtpFilterSettingsFilterSettingsIA) {
-        this(parcel);
     }
 
     public DemuxMmtpFilterSettingsFilterSettings() {
@@ -144,47 +138,28 @@ public final class DemuxMmtpFilterSettingsFilterSettings implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.DemuxMmtpFilterSettingsFilterSettings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxMmtpFilterSettingsFilterSettings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxMmtpFilterSettingsFilterSettings createFromParcel(Parcel _aidl_source) {
-            return new DemuxMmtpFilterSettingsFilterSettings(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxMmtpFilterSettingsFilterSettings[] newArray(int _aidl_size) {
-            return new DemuxMmtpFilterSettingsFilterSettings[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getNoinit());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getSection(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getAv(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeTypedObject(getPesData(), _aidl_flag);
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeTypedObject(getRecord(), _aidl_flag);
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeTypedObject(getDownload(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

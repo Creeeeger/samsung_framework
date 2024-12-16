@@ -5,19 +5,18 @@ import android.os.Parcelable;
 import com.samsung.android.sume.core.Def;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class DeriveBufferGroup extends MediaBufferGroup {
     private MediaBuffer primaryBuffer;
     private static final String TAG = Def.tagOf((Class<?>) DeriveBufferGroup.class);
     public static final Parcelable.Creator<DeriveBufferGroup> CREATOR = new Parcelable.Creator<DeriveBufferGroup>() { // from class: com.samsung.android.sume.core.buffer.DeriveBufferGroup.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeriveBufferGroup createFromParcel(Parcel in) {
             return new DeriveBufferGroup(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeriveBufferGroup[] newArray(int size) {
             return new DeriveBufferGroup[size];
@@ -85,10 +84,7 @@ public class DeriveBufferGroup extends MediaBufferGroup {
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferGroup, com.samsung.android.sume.core.buffer.MediaBuffer
     public String contentToString(Object obj) {
-        StringBuilder append = new StringBuilder().append(Def.taglnOf(obj));
-        StringBuilder append2 = new StringBuilder().append("primary-buffer=");
-        MediaBuffer mediaBuffer = this.primaryBuffer;
-        return append.append(Def.contentToStringln("    ", append2.append(mediaBuffer.contentToString(mediaBuffer)).toString(), "derivative-buffers=" + super.contentToString(MediaBufferGroup.class))).toString();
+        return Def.taglnOf(obj) + Def.contentToStringln("    ", "primary-buffer=" + this.primaryBuffer.contentToString(this.primaryBuffer), "derivative-buffers=" + super.contentToString(MediaBufferGroup.class));
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
@@ -99,22 +95,5 @@ public class DeriveBufferGroup extends MediaBufferGroup {
     @Override // com.samsung.android.sume.core.buffer.MediaBufferGroup
     public MediaBuffer getPrimaryBuffer() {
         return this.primaryBuffer;
-    }
-
-    /* renamed from: com.samsung.android.sume.core.buffer.DeriveBufferGroup$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DeriveBufferGroup> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeriveBufferGroup createFromParcel(Parcel in) {
-            return new DeriveBufferGroup(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeriveBufferGroup[] newArray(int size) {
-            return new DeriveBufferGroup[size];
-        }
     }
 }

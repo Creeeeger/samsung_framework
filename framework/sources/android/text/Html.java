@@ -28,7 +28,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Html {
     public static final int FROM_HTML_MODE_COMPACT = 63;
     public static final int FROM_HTML_MODE_LEGACY = 0;
@@ -43,12 +43,10 @@ public class Html {
     public static final int TO_HTML_PARAGRAPH_LINES_CONSECUTIVE = 0;
     public static final int TO_HTML_PARAGRAPH_LINES_INDIVIDUAL = 1;
 
-    /* loaded from: classes3.dex */
     public interface ImageGetter {
         Drawable getDrawable(String str);
     }
 
-    /* loaded from: classes3.dex */
     public interface TagHandler {
         void handleTag(boolean z, String str, Editable editable, XMLReader xMLReader);
     }
@@ -65,8 +63,7 @@ public class Html {
         return fromHtml(source, flags, null, null);
     }
 
-    /* loaded from: classes3.dex */
-    public static class HtmlParser {
+    private static class HtmlParser {
         private static final HTMLSchema schema = new HTMLSchema();
 
         private HtmlParser() {

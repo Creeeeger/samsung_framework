@@ -33,6 +33,7 @@ public abstract class KeyValueSettingObserver {
         this.mResolver.unregisterContentObserver(this.mObserver);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setParserValue() {
         String setting = getSettingValue(this.mResolver);
         try {
@@ -42,12 +43,7 @@ public abstract class KeyValueSettingObserver {
         }
     }
 
-    /* loaded from: classes4.dex */
     private class SettingObserver extends ContentObserver {
-        /* synthetic */ SettingObserver(KeyValueSettingObserver keyValueSettingObserver, Handler handler, SettingObserverIA settingObserverIA) {
-            this(handler);
-        }
-
         private SettingObserver(Handler handler) {
             super(handler);
         }
@@ -55,8 +51,7 @@ public abstract class KeyValueSettingObserver {
         @Override // android.database.ContentObserver
         public void onChange(boolean selfChange) {
             KeyValueSettingObserver.this.setParserValue();
-            KeyValueSettingObserver keyValueSettingObserver = KeyValueSettingObserver.this;
-            keyValueSettingObserver.update(keyValueSettingObserver.mParser);
+            KeyValueSettingObserver.this.update(KeyValueSettingObserver.this.mParser);
         }
     }
 }

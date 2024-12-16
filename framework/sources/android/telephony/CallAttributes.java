@@ -7,12 +7,9 @@ import java.util.Objects;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CallAttributes implements Parcelable {
     public static final Parcelable.Creator<CallAttributes> CREATOR = new Parcelable.Creator() { // from class: android.telephony.CallAttributes.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public CallAttributes createFromParcel(Parcel in) {
             return new CallAttributes(in);
@@ -26,10 +23,6 @@ public final class CallAttributes implements Parcelable {
     private CallQuality mCallQuality;
     private int mNetworkType;
     private PreciseCallState mPreciseCallState;
-
-    /* synthetic */ CallAttributes(Parcel parcel, CallAttributesIA callAttributesIA) {
-        this(parcel);
-    }
 
     public CallAttributes(PreciseCallState state, int networkType, CallQuality callQuality) {
         this.mPreciseCallState = state;
@@ -87,22 +80,5 @@ public final class CallAttributes implements Parcelable {
         dest.writeParcelable(this.mPreciseCallState, flags);
         dest.writeInt(this.mNetworkType);
         dest.writeParcelable(this.mCallQuality, flags);
-    }
-
-    /* renamed from: android.telephony.CallAttributes$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallAttributes createFromParcel(Parcel in) {
-            return new CallAttributes(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallAttributes[] newArray(int size) {
-            return new CallAttributes[size];
-        }
     }
 }

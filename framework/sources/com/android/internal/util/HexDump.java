@@ -38,9 +38,8 @@ public class HexDump {
             }
             byte b = array[i];
             result.append(" ");
-            char[] cArr = HEX_DIGITS;
-            result.append(cArr[(b >>> 4) & 15]);
-            result.append(cArr[b & 15]);
+            result.append(HEX_DIGITS[(b >>> 4) & 15]);
+            result.append(HEX_DIGITS[b & 15]);
             line[lineIndex] = b;
             i++;
             lineIndex++;

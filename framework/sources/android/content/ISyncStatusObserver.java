@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface ISyncStatusObserver extends IInterface {
     void onStatusChanged(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISyncStatusObserver {
         @Override // android.content.ISyncStatusObserver
         public void onStatusChanged(int which) throws RemoteException {
@@ -22,7 +21,6 @@ public interface ISyncStatusObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISyncStatusObserver {
         public static final String DESCRIPTOR = "android.content.ISyncStatusObserver";
         static final int TRANSACTION_onStatusChanged = 1;
@@ -66,26 +64,22 @@ public interface ISyncStatusObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStatusChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStatusChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISyncStatusObserver {
+        private static class Proxy implements ISyncStatusObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

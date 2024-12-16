@@ -28,7 +28,7 @@ import com.android.internal.view.menu.MenuBuilder;
 import com.android.internal.view.menu.MenuView;
 
 /* loaded from: classes5.dex */
-public class ActionMenuItemView extends TextView implements MenuView.ItemView, View.OnClickListener, View.OnLongClickListener, ActionMenuView.ActionMenuChildView {
+public class ActionMenuItemView extends TextView implements MenuView.ItemView, View.OnClickListener, ActionMenuView.ActionMenuChildView, View.OnLongClickListener {
     private static final int MAX_ICON_SIZE = 32;
     private static final String TAG = "ActionMenuItemView";
     private boolean mAllowTextWithIcon;
@@ -49,7 +49,6 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
     private int mSavedPaddingLeft;
     private CharSequence mTitle;
 
-    /* loaded from: classes5.dex */
     public static abstract class PopupCallback {
         public abstract ShowableListMenu getPopup();
     }
@@ -159,8 +158,7 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
 
     @Override // android.widget.TextView, android.view.View
     public boolean onTouchEvent(MotionEvent e) {
-        ForwardingListener forwardingListener;
-        if (this.mItemData.hasSubMenu() && (forwardingListener = this.mForwardingListener) != null && forwardingListener.onTouch(this, e)) {
+        if (this.mItemData.hasSubMenu() && this.mForwardingListener != null && this.mForwardingListener.onTouch(this, e)) {
             return true;
         }
         return super.onTouchEvent(e);
@@ -169,12 +167,10 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
     @Override // android.view.View.OnClickListener
     public void onClick(View v) {
         ShowableListMenu popup;
-        MenuBuilder.ItemInvoker itemInvoker = this.mItemInvoker;
-        if (itemInvoker != null) {
-            itemInvoker.invokeItem(this.mItemData);
+        if (this.mItemInvoker != null) {
+            this.mItemInvoker.invokeItem(this.mItemData);
         }
-        PopupCallback popupCallback = this.mPopupCallback;
-        if (popupCallback != null && (popup = popupCallback.getPopup()) != null && popup.isShowing()) {
+        if (this.mPopupCallback != null && (popup = this.mPopupCallback.getPopup()) != null && popup.isShowing()) {
             v.setTooltipNull(true);
         }
     }
@@ -203,9 +199,8 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
     public void setExpandedFormat(boolean expandedFormat) {
         if (this.mExpandedFormat != expandedFormat) {
             this.mExpandedFormat = expandedFormat;
-            MenuItemImpl menuItemImpl = this.mItemData;
-            if (menuItemImpl != null) {
-                menuItemImpl.actionFormatChanged();
+            if (this.mItemData != null) {
+                this.mItemData.actionFormatChanged();
             }
         }
     }
@@ -219,7 +214,7 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
             }
             setTextSize(1, this.mDefaultTextSize * fontScale);
         }
-        setText(visible ? this.mTitle : null);
+        lambda$setTextAsync$0(visible ? this.mTitle : null);
         if (visible) {
             if (this.mIsDarkTheme) {
                 setBackgroundResource(R.drawable.sem_action_item_background_text_material_dark);
@@ -248,14 +243,13 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
         if (icon != null) {
             int width = icon.getIntrinsicWidth();
             int height = icon.getIntrinsicHeight();
-            int i = this.mMaxIconSize;
-            if (width > i) {
-                float scale = i / width;
+            if (width > this.mMaxIconSize) {
+                float scale = this.mMaxIconSize / width;
                 width = this.mMaxIconSize;
                 height = (int) (height * scale);
             }
-            if (height > i) {
-                float scale2 = i / height;
+            if (height > this.mMaxIconSize) {
+                float scale2 = this.mMaxIconSize / height;
                 height = this.mMaxIconSize;
                 width = (int) (width * scale2);
             }
@@ -280,7 +274,7 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
     @Override // com.android.internal.view.menu.MenuView.ItemView
     public void setTitle(CharSequence title) {
         this.mTitle = title;
-        setContentDescription(title);
+        setContentDescription(this.mTitle);
         updateTextButtonVisibility();
     }
 
@@ -411,11 +405,10 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int i;
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         boolean textVisible = hasText();
-        if (textVisible && (i = this.mSavedPaddingLeft) >= 0) {
-            super.setPadding(i, getPaddingTop(), getPaddingRight(), getPaddingBottom());
+        if (textVisible && this.mSavedPaddingLeft >= 0) {
+            super.setPadding(this.mSavedPaddingLeft, getPaddingTop(), getPaddingRight(), getPaddingBottom());
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
@@ -434,7 +427,6 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
         }
     }
 
-    /* loaded from: classes5.dex */
     private class ActionMenuItemForwardingListener extends ForwardingListener {
         public ActionMenuItemForwardingListener() {
             super(ActionMenuItemView.this);
@@ -460,6 +452,7 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
         super.onRestoreInstanceState(null);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public boolean setFrame(int l, int t, int r, int b) {
         boolean changed = super.setFrame(l, t, r, b);

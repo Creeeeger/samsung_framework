@@ -8,5 +8,6 @@ public enum ContentType {
     CAPTION,
     DOODLE,
     AUDIO,
-    FRAGMENT_AUDIO
+    FRAGMENT_AUDIO,
+    PORTRAIT_VIDEO
 }

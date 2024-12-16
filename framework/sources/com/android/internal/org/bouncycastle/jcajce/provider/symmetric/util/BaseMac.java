@@ -30,7 +30,7 @@ public class BaseMac extends MacSpi implements PBE {
     private int pbeHash;
     private int scheme;
 
-    public BaseMac(Mac macEngine) {
+    protected BaseMac(Mac macEngine) {
         this.scheme = 2;
         this.pbeHash = 1;
         this.keySize = 160;
@@ -64,8 +64,7 @@ public class BaseMac extends MacSpi implements PBE {
                     }
                     int digest = 1;
                     int keySize = 160;
-                    Mac mac = this.macEngine;
-                    if ((mac instanceof HMac) && !mac.getAlgorithmName().startsWith("SHA-1")) {
+                    if ((this.macEngine instanceof HMac) && !this.macEngine.getAlgorithmName().startsWith("SHA-1")) {
                         if (this.macEngine.getAlgorithmName().startsWith(KeyProperties.DIGEST_SHA224)) {
                             digest = 7;
                             keySize = 224;
@@ -116,13 +115,10 @@ public class BaseMac extends MacSpi implements PBE {
             param = new ParametersWithIV(keyParam, ((IvParameterSpec) params).getIV());
         } else if (params == null) {
             param = new KeyParameter(key.getEncoded());
-        } else {
-            Class cls = gcmSpecClass;
-            if (cls != null && cls.isAssignableFrom(params.getClass())) {
-                param = GcmSpecUtil.extractAeadParameters(keyParam, params);
-            } else if (!(params instanceof PBEParameterSpec)) {
-                throw new InvalidAlgorithmParameterException("unknown parameter type: " + params.getClass().getName());
-            }
+        } else if (gcmSpecClass != null && gcmSpecClass.isAssignableFrom(params.getClass())) {
+            param = GcmSpecUtil.extractAeadParameters(keyParam, params);
+        } else if (!(params instanceof PBEParameterSpec)) {
+            throw new InvalidAlgorithmParameterException("unknown parameter type: " + params.getClass().getName());
         }
         try {
             this.macEngine.init(param);

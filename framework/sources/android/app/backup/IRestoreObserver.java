@@ -16,7 +16,6 @@ public interface IRestoreObserver extends IInterface {
 
     void restoreStarting(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRestoreObserver {
         @Override // android.app.backup.IRestoreObserver
         public void restoreSetsAvailable(RestoreSet[] result) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IRestoreObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRestoreObserver {
         public static final String DESCRIPTOR = "android.app.backup.IRestoreObserver";
         static final int TRANSACTION_onUpdate = 3;
@@ -93,42 +91,38 @@ public interface IRestoreObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    RestoreSet[] _arg0 = (RestoreSet[]) data.createTypedArray(RestoreSet.CREATOR);
+                    data.enforceNoDataAvail();
+                    restoreSetsAvailable(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restoreStarting(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onUpdate(_arg03, _arg1);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restoreFinished(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RestoreSet[] _arg0 = (RestoreSet[]) data.createTypedArray(RestoreSet.CREATOR);
-                            data.enforceNoDataAvail();
-                            restoreSetsAvailable(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restoreStarting(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onUpdate(_arg03, _arg1);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restoreFinished(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRestoreObserver {
+        private static class Proxy implements IRestoreObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

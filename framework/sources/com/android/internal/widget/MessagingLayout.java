@@ -50,6 +50,7 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
     private MessagingLinearLayout mMessagingLinearLayout;
     private CharSequence mNameReplacement;
     private final PeopleHelper mPeopleHelper;
+    private boolean mPrecomputedTextEnabled;
     private ImageView mRightIconView;
     private int mSenderTextColor;
     private boolean mShowHistoricMessages;
@@ -68,6 +69,7 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         this.mGroups = new ArrayList<>();
         this.mAddedGroups = new ArrayList<>();
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     public MessagingLayout(Context context, AttributeSet attrs) {
@@ -78,6 +80,7 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         this.mGroups = new ArrayList<>();
         this.mAddedGroups = new ArrayList<>();
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     public MessagingLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -88,6 +91,7 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         this.mGroups = new ArrayList<>();
         this.mAddedGroups = new ArrayList<>();
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     public MessagingLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -98,10 +102,11 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         this.mGroups = new ArrayList<>();
         this.mAddedGroups = new ArrayList<>();
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         this.mPeopleHelper.init(getContext());
         this.mMessagingLinearLayout = (MessagingLinearLayout) findViewById(R.id.notification_messaging);
@@ -137,8 +142,13 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         this.mConversationTitle = conversationTitle;
     }
 
-    @RemotableViewMethod
-    public void setData(Bundle extras) {
+    @RemotableViewMethod(asyncImpl = "setDataAsync")
+    /* renamed from: setData, reason: merged with bridge method [inline-methods] */
+    public void lambda$setDataAsync$0(Bundle extras) {
+        bind(parseMessagingData(extras, false));
+    }
+
+    private MessagingData parseMessagingData(Bundle extras, boolean usePrecomputedText) {
         Parcelable[] messages = extras.getParcelableArray(Notification.EXTRA_MESSAGES);
         List<Notification.MessagingStyle.Message> newMessages = Notification.MessagingStyle.Message.getMessagesFromBundleArray(messages);
         Parcelable[] histMessages = extras.getParcelableArray(Notification.EXTRA_HISTORIC_MESSAGES);
@@ -146,8 +156,49 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         setUser((Person) extras.getParcelable(Notification.EXTRA_MESSAGING_PERSON, Person.class));
         RemoteInputHistoryItem[] history = (RemoteInputHistoryItem[]) extras.getParcelableArray(Notification.EXTRA_REMOTE_INPUT_HISTORY_ITEMS, RemoteInputHistoryItem.class);
         addRemoteInputHistoryToMessages(newMessages, history);
+        Person user = (Person) extras.getParcelable(Notification.EXTRA_MESSAGING_PERSON, Person.class);
         boolean showSpinner = extras.getBoolean(Notification.EXTRA_SHOW_REMOTE_INPUT_SPINNER, false);
-        bind(newMessages, newHistoricMessages, showSpinner);
+        List<MessagingMessage> historicMessagingMessages = createMessages(newHistoricMessages, true, usePrecomputedText);
+        List<MessagingMessage> newMessagingMessages = createMessages(newMessages, false, usePrecomputedText);
+        List<List<MessagingMessage>> groups = new ArrayList<>();
+        List<Person> senders = new ArrayList<>();
+        findGroups(historicMessagingMessages, newMessagingMessages, groups, senders);
+        return new MessagingData(user, showSpinner, historicMessagingMessages, newMessagingMessages, groups, senders);
+    }
+
+    public Runnable setDataAsync(final Bundle extras) {
+        if (!this.mPrecomputedTextEnabled) {
+            return new Runnable() { // from class: com.android.internal.widget.MessagingLayout$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    MessagingLayout.this.lambda$setDataAsync$0(extras);
+                }
+            };
+        }
+        final MessagingData messagingData = parseMessagingData(extras, true);
+        return new Runnable() { // from class: com.android.internal.widget.MessagingLayout$$ExternalSyntheticLambda1
+            @Override // java.lang.Runnable
+            public final void run() {
+                MessagingLayout.this.lambda$setDataAsync$1(messagingData);
+            }
+        };
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setDataAsync$1(MessagingData messagingData) {
+        finalizeInflate(messagingData.getHistoricMessagingMessages());
+        finalizeInflate(messagingData.getNewMessagingMessages());
+        bind(messagingData);
+    }
+
+    public void setPrecomputedTextEnabled(boolean precomputedTextEnabled) {
+        this.mPrecomputedTextEnabled = precomputedTextEnabled;
+    }
+
+    private void finalizeInflate(List<MessagingMessage> historicMessagingMessages) {
+        for (MessagingMessage messagingMessage : historicMessagingMessages) {
+            messagingMessage.finalizeInflate();
+        }
     }
 
     @Override // com.android.internal.widget.ImageMessageConsumer
@@ -169,11 +220,10 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         }
     }
 
-    private void bind(List<Notification.MessagingStyle.Message> newMessages, List<Notification.MessagingStyle.Message> newHistoricMessages, boolean showSpinner) {
-        List<MessagingMessage> historicMessages = createMessages(newHistoricMessages, true);
-        List<MessagingMessage> messages = createMessages(newMessages, false);
+    private void bind(MessagingData messagingData) {
+        setUser(messagingData.getUser());
         ArrayList<MessagingGroup> oldGroups = new ArrayList<>(this.mGroups);
-        addMessagesToGroups(historicMessages, messages, showSpinner);
+        createGroupViews(messagingData.getGroups(), messagingData.getSenders(), messagingData.getShowSpinner());
         removeGroups(oldGroups);
         for (MessagingMessage message : this.mMessages) {
             message.removeMessage(this.mToRecycle);
@@ -181,8 +231,8 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         for (MessagingMessage historicMessage : this.mHistoricMessages) {
             historicMessage.removeMessage(this.mToRecycle);
         }
-        this.mMessages = messages;
-        this.mHistoricMessages = historicMessages;
+        this.mMessages = messagingData.getNewMessagingMessages();
+        this.mHistoricMessages = messagingData.getHistoricMessagingMessages();
         updateHistoricMessageVisibility();
         updateTitleAndNamesDisplay();
         this.mPeopleHelper.maybeHideFirstSenderName(this.mGroups, this.mIsOneToOne, this.mConversationTitle);
@@ -196,13 +246,12 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
     }
 
     private void updateImageMessages() {
-        ImageView imageView;
         View newMessage = null;
         if (this.mImageMessageContainer == null) {
             return;
         }
         if (this.mIsCollapsed && !this.mGroups.isEmpty()) {
-            MessagingGroup messagingGroup = this.mGroups.get(r1.size() - 1);
+            MessagingGroup messagingGroup = this.mGroups.get(this.mGroups.size() - 1);
             MessagingImageMessage isolatedMessage = messagingGroup.getIsolatedMessage();
             if (isolatedMessage != null) {
                 newMessage = isolatedMessage.getView();
@@ -216,8 +265,8 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
             }
         }
         this.mImageMessageContainer.setVisibility(newMessage == null ? 8 : 0);
-        if (newMessage != null && (imageView = this.mRightIconView) != null && imageView.getDrawable() != null) {
-            this.mRightIconView.lambda$setImageURIAsync$2(null);
+        if (newMessage != null && this.mRightIconView != null && this.mRightIconView.getDrawable() != null) {
+            this.mRightIconView.lambda$setImageURIAsync$0(null);
             this.mRightIconView.setVisibility(8);
         }
     }
@@ -232,10 +281,10 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
                 this.mMessagingLinearLayout.removeView(group);
                 if (wasShown && !MessagingLinearLayout.isGone(group)) {
                     this.mMessagingLinearLayout.addTransientView(group, 0);
-                    group.removeGroupAnimated(new Runnable() { // from class: com.android.internal.widget.MessagingLayout$$ExternalSyntheticLambda0
+                    group.removeGroupAnimated(new Runnable() { // from class: com.android.internal.widget.MessagingLayout$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
-                            MessagingLayout.this.lambda$removeGroups$0(group);
+                            MessagingLayout.this.lambda$removeGroups$2(group);
                         }
                     });
                 } else {
@@ -247,7 +296,8 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         }
     }
 
-    public /* synthetic */ void lambda$removeGroups$0(MessagingGroup group) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$removeGroups$2(MessagingGroup group) {
         this.mMessagingLinearLayout.removeTransientView(group);
         group.recycle();
     }
@@ -329,18 +379,11 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
 
     public void setUser(Person user) {
         this.mUser = user;
-        if (user.getIcon() == null) {
+        if (this.mUser.getIcon() == null) {
             Icon userIcon = Icon.createWithResource(getContext(), R.drawable.messaging_user);
             userIcon.setTint(this.mLayoutColor);
             this.mUser = this.mUser.toBuilder().setIcon(userIcon).build();
         }
-    }
-
-    private void addMessagesToGroups(List<MessagingMessage> historicMessages, List<MessagingMessage> messages, boolean showSpinner) {
-        List<List<MessagingMessage>> groups = new ArrayList<>();
-        List<Person> senders = new ArrayList<>();
-        findGroups(historicMessages, messages, groups, senders);
-        createGroupViews(groups, senders, showSpinner);
     }
 
     private void createGroupViews(List<List<MessagingMessage>> groups, List<Person> senders, boolean showSpinner) {
@@ -421,15 +464,15 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         }
     }
 
-    private List<MessagingMessage> createMessages(List<Notification.MessagingStyle.Message> newMessages, boolean historic) {
+    private List<MessagingMessage> createMessages(List<Notification.MessagingStyle.Message> newMessages, boolean isHistoric, boolean usePrecomputedText) {
         List<MessagingMessage> result = new ArrayList<>();
         for (int i = 0; i < newMessages.size(); i++) {
             Notification.MessagingStyle.Message m = newMessages.get(i);
             MessagingMessage message = findAndRemoveMatchingMessage(m);
             if (message == null) {
-                message = MessagingMessage.createMessage(this, m, this.mImageResolver);
+                message = MessagingMessage.createMessage(this, m, this.mImageResolver, usePrecomputedText);
             }
-            message.setIsHistoric(historic);
+            message.setIsHistoric(isHistoric);
             result.add(message);
         }
         return result;
@@ -494,13 +537,10 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (!this.mAddedGroups.isEmpty()) {
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.widget.MessagingLayout.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     Iterator it = MessagingLayout.this.mAddedGroups.iterator();
@@ -517,29 +557,6 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
                     return true;
                 }
             });
-        }
-    }
-
-    /* renamed from: com.android.internal.widget.MessagingLayout$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ViewTreeObserver.OnPreDrawListener
-        public boolean onPreDraw() {
-            Iterator it = MessagingLayout.this.mAddedGroups.iterator();
-            while (it.hasNext()) {
-                MessagingGroup group = (MessagingGroup) it.next();
-                if (group.isShown()) {
-                    MessagingPropertyAnimator.fadeIn(group.getAvatar());
-                    MessagingPropertyAnimator.fadeIn(group.getSenderView());
-                    MessagingPropertyAnimator.startLocalTranslationFrom(group, group.getHeight(), MessagingLayout.LINEAR_OUT_SLOW_IN);
-                }
-            }
-            MessagingLayout.this.mAddedGroups.clear();
-            MessagingLayout.this.getViewTreeObserver().removeOnPreDrawListener(this);
-            return true;
         }
     }
 

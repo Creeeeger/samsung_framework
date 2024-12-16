@@ -53,7 +53,6 @@ public class ETC1Util {
         return false;
     }
 
-    /* loaded from: classes3.dex */
     public static class ETC1Texture {
         private ByteBuffer mData;
         private int mHeight;

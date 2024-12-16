@@ -32,6 +32,7 @@ public final class AccessibilityWindowInfo implements Parcelable {
     public static final int TYPE_MAGNIFICATION_OVERLAY = 6;
     public static final int TYPE_SPLIT_SCREEN_DIVIDER = 5;
     public static final int TYPE_SYSTEM = 3;
+    public static final int TYPE_WINDOW_CONTROL = 7;
     public static final int UNDEFINED_CONNECTION_ID = -1;
     public static final int UNDEFINED_WINDOW_ID = -1;
     private static AtomicInteger sNumInstancesInUse;
@@ -41,9 +42,7 @@ public final class AccessibilityWindowInfo implements Parcelable {
     private long mTransitionTime;
     private static final Pools.SynchronizedPool<AccessibilityWindowInfo> sPool = new Pools.SynchronizedPool<>(10);
     public static final Parcelable.Creator<AccessibilityWindowInfo> CREATOR = new Parcelable.Creator<AccessibilityWindowInfo>() { // from class: android.view.accessibility.AccessibilityWindowInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityWindowInfo createFromParcel(Parcel parcel) {
             AccessibilityWindowInfo info = AccessibilityWindowInfo.obtain();
@@ -51,6 +50,7 @@ public final class AccessibilityWindowInfo implements Parcelable {
             return info;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityWindowInfo[] newArray(int size) {
             return new AccessibilityWindowInfo[size];
@@ -208,22 +208,20 @@ public final class AccessibilityWindowInfo implements Parcelable {
     }
 
     public int getChildCount() {
-        LongArray longArray = this.mChildIds;
-        if (longArray != null) {
-            return longArray.size();
+        if (this.mChildIds != null) {
+            return this.mChildIds.size();
         }
         return 0;
     }
 
     public AccessibilityWindowInfo getChild(int index) {
-        LongArray longArray = this.mChildIds;
-        if (longArray == null) {
+        if (this.mChildIds == null) {
             throw new IndexOutOfBoundsException();
         }
         if (this.mConnectionId == -1) {
             return null;
         }
-        int childId = (int) longArray.get(index);
+        int childId = (int) this.mChildIds.get(index);
         AccessibilityInteractionClient client = AccessibilityInteractionClient.getInstance();
         return client.getWindow(this.mConnectionId, childId);
     }
@@ -264,9 +262,8 @@ public final class AccessibilityWindowInfo implements Parcelable {
         if (info == null) {
             info = new AccessibilityWindowInfo();
         }
-        AtomicInteger atomicInteger = sNumInstancesInUse;
-        if (atomicInteger != null) {
-            atomicInteger.incrementAndGet();
+        if (sNumInstancesInUse != null) {
+            sNumInstancesInUse.incrementAndGet();
         }
         return info;
     }
@@ -286,9 +283,8 @@ public final class AccessibilityWindowInfo implements Parcelable {
     public void recycle() {
         clear();
         sPool.release(this);
-        AtomicInteger atomicInteger = sNumInstancesInUse;
-        if (atomicInteger != null) {
-            atomicInteger.decrementAndGet();
+        if (sNumInstancesInUse != null) {
+            sNumInstancesInUse.decrementAndGet();
         }
     }
 
@@ -351,17 +347,14 @@ public final class AccessibilityWindowInfo implements Parcelable {
         this.mTitle = other.mTitle;
         this.mAnchorId = other.mAnchorId;
         this.mTransitionTime = other.mTransitionTime;
-        LongArray longArray = this.mChildIds;
-        if (longArray != null) {
-            longArray.clear();
+        if (this.mChildIds != null) {
+            this.mChildIds.clear();
         }
-        LongArray longArray2 = other.mChildIds;
-        if (longArray2 != null && longArray2.size() > 0) {
-            LongArray longArray3 = this.mChildIds;
-            if (longArray3 == null) {
-                this.mChildIds = other.mChildIds.m4928clone();
+        if (other.mChildIds != null && other.mChildIds.size() > 0) {
+            if (this.mChildIds == null) {
+                this.mChildIds = other.mChildIds.m5212clone();
             } else {
-                longArray3.addAll(other.mChildIds);
+                this.mChildIds.addAll(other.mChildIds);
             }
         }
         this.mConnectionId = other.mConnectionId;
@@ -369,6 +362,7 @@ public final class AccessibilityWindowInfo implements Parcelable {
         this.mRawType = other.mRawType;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void initFromParcel(Parcel parcel) {
         this.mDisplayId = parcel.readInt();
         this.mType = parcel.readInt();
@@ -432,9 +426,7 @@ public final class AccessibilityWindowInfo implements Parcelable {
         builder.append(", transitionTime=").append(this.mTransitionTime);
         builder.append(", hasParent=").append(this.mParentId != -1);
         builder.append(", isAnchored=").append(this.mAnchorId != AccessibilityNodeInfo.UNDEFINED_NODE_ID);
-        StringBuilder append = builder.append(", hasChildren=");
-        LongArray longArray = this.mChildIds;
-        append.append(longArray != null && longArray.size() > 0);
+        builder.append(", hasChildren=").append(this.mChildIds != null && this.mChildIds.size() > 0);
         builder.append(']');
         return builder.toString();
     }
@@ -470,6 +462,9 @@ public final class AccessibilityWindowInfo implements Parcelable {
     }
 
     public static String typeToString(int type) {
+        if (Flags.addTypeWindowControl() && type == 7) {
+            return "TYPE_WINDOW_CONTROL";
+        }
         switch (type) {
             case 1:
                 return "TYPE_APPLICATION";
@@ -526,31 +521,9 @@ public final class AccessibilityWindowInfo implements Parcelable {
         return changes;
     }
 
-    /* renamed from: android.view.accessibility.AccessibilityWindowInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccessibilityWindowInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityWindowInfo createFromParcel(Parcel parcel) {
-            AccessibilityWindowInfo info = AccessibilityWindowInfo.obtain();
-            info.initFromParcel(parcel);
-            return info;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityWindowInfo[] newArray(int size) {
-            return new AccessibilityWindowInfo[size];
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static final class WindowListSparseArray extends SparseArray<List<AccessibilityWindowInfo>> implements Parcelable {
         public static final Parcelable.Creator<WindowListSparseArray> CREATOR = new Parcelable.Creator<WindowListSparseArray>() { // from class: android.view.accessibility.AccessibilityWindowInfo.WindowListSparseArray.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WindowListSparseArray createFromParcel(Parcel source) {
                 WindowListSparseArray array = new WindowListSparseArray();
@@ -564,6 +537,7 @@ public final class AccessibilityWindowInfo implements Parcelable {
                 return array;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WindowListSparseArray[] newArray(int size) {
                 return new WindowListSparseArray[size];
@@ -582,31 +556,6 @@ public final class AccessibilityWindowInfo implements Parcelable {
             for (int i = 0; i < count; i++) {
                 dest.writeParcelableList(valueAt(i), 0);
                 dest.writeInt(keyAt(i));
-            }
-        }
-
-        /* renamed from: android.view.accessibility.AccessibilityWindowInfo$WindowListSparseArray$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<WindowListSparseArray> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public WindowListSparseArray createFromParcel(Parcel source) {
-                WindowListSparseArray array = new WindowListSparseArray();
-                ClassLoader loader = array.getClass().getClassLoader();
-                int count = source.readInt();
-                for (int i = 0; i < count; i++) {
-                    ArrayList arrayList = new ArrayList();
-                    source.readParcelableList(arrayList, loader, AccessibilityWindowInfo.class);
-                    array.put(source.readInt(), arrayList);
-                }
-                return array;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public WindowListSparseArray[] newArray(int size) {
-                return new WindowListSparseArray[size];
             }
         }
     }

@@ -31,7 +31,6 @@ public interface IAppHibernationService extends IInterface {
 
     void setHibernatingGlobally(String str, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAppHibernationService {
         @Override // android.apphibernation.IAppHibernationService
         public boolean isHibernatingForUser(String packageName, int userId) throws RemoteException {
@@ -72,7 +71,6 @@ public interface IAppHibernationService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAppHibernationService {
         static final int TRANSACTION_getHibernatingPackagesForUser = 5;
         static final int TRANSACTION_getHibernationStatsForUser = 6;
@@ -133,86 +131,83 @@ public interface IAppHibernationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAppHibernationService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAppHibernationService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAppHibernationService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = isHibernatingForUser(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setHibernatingForUser(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isHibernatingGlobally(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setHibernatingGlobally(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result3 = getHibernatingPackagesForUser(_arg05);
+                    reply.writeNoException();
+                    reply.writeStringList(_result3);
+                    return true;
+                case 6:
+                    List<String> _arg06 = data.createStringArrayList();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Map<String, HibernationStats> _result4 = getHibernationStatsForUser(_arg06, _arg14);
+                    reply.writeNoException();
+                    if (_result4 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result4.size());
+                        _result4.forEach(new BiConsumer() { // from class: android.apphibernation.IAppHibernationService$Stub$$ExternalSyntheticLambda0
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                IAppHibernationService.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (HibernationStats) obj2);
+                            }
+                        });
+                    }
+                    return true;
+                case 7:
+                    boolean _result5 = isOatArtifactDeletionEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = isHibernatingForUser(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setHibernatingForUser(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isHibernatingGlobally(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setHibernatingGlobally(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result3 = getHibernatingPackagesForUser(_arg05);
-                            reply.writeNoException();
-                            reply.writeStringList(_result3);
-                            return true;
-                        case 6:
-                            List<String> _arg06 = data.createStringArrayList();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Map<String, HibernationStats> _result4 = getHibernationStatsForUser(_arg06, _arg14);
-                            reply.writeNoException();
-                            if (_result4 == null) {
-                                reply.writeInt(-1);
-                            } else {
-                                reply.writeInt(_result4.size());
-                                _result4.forEach(new BiConsumer() { // from class: android.apphibernation.IAppHibernationService$Stub$$ExternalSyntheticLambda0
-                                    @Override // java.util.function.BiConsumer
-                                    public final void accept(Object obj, Object obj2) {
-                                        IAppHibernationService.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (HibernationStats) obj2);
-                                    }
-                                });
-                            }
-                            return true;
-                        case 7:
-                            boolean _result5 = isOatArtifactDeletionEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, HibernationStats v) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, HibernationStats v) {
             reply.writeString(k);
             reply.writeTypedObject(v, 1);
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAppHibernationService {
+        static class Proxy implements IAppHibernationService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -338,7 +333,7 @@ public interface IAppHibernationService extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$getHibernationStatsForUser$0(Parcel _reply, Map _result, int i) {
+            static /* synthetic */ void lambda$getHibernationStatsForUser$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 HibernationStats v = (HibernationStats) _reply.readTypedObject(HibernationStats.CREATOR);
                 _result.put(k, v);

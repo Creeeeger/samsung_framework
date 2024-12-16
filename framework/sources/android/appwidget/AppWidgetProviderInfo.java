@@ -1,5 +1,6 @@
 package android.appwidget;
 
+import android.appwidget.flags.Flags;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -18,14 +19,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public class AppWidgetProviderInfo implements Parcelable {
     public static final Parcelable.Creator<AppWidgetProviderInfo> CREATOR = new Parcelable.Creator<AppWidgetProviderInfo>() { // from class: android.appwidget.AppWidgetProviderInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppWidgetProviderInfo createFromParcel(Parcel parcel) {
             return new AppWidgetProviderInfo(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppWidgetProviderInfo[] newArray(int size) {
             return new AppWidgetProviderInfo[size];
@@ -51,6 +51,10 @@ public class AppWidgetProviderInfo implements Parcelable {
     public int autoAdvanceViewId;
     public ComponentName configure;
     public int descriptionRes;
+    public int generatedPreviewCategories;
+    public int hidden_semGeneratedColorfulPreviewStates;
+    public int hidden_semGeneratedMonotonePreviewStates;
+    public int hidden_semPreviewRecordResetStates;
     public int icon;
     public int initialKeyguardLayout;
     public int initialLayout;
@@ -77,17 +81,14 @@ public class AppWidgetProviderInfo implements Parcelable {
     public int widgetFeatures;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CategoryFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FeatureFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ResizeModeFlags {
     }
 
@@ -120,6 +121,12 @@ public class AppWidgetProviderInfo implements Parcelable {
         this.widgetFeatures = in.readInt();
         this.descriptionRes = in.readInt();
         this.isExtendedFromAppWidgetProvider = in.readBoolean();
+        if (Flags.generatedPreviews()) {
+            this.generatedPreviewCategories = in.readInt();
+        }
+        this.hidden_semGeneratedColorfulPreviewStates = in.readInt();
+        this.hidden_semGeneratedMonotonePreviewStates = in.readInt();
+        this.hidden_semPreviewRecordResetStates = in.readInt();
     }
 
     public final String loadLabel(PackageManager packageManager) {
@@ -181,13 +188,18 @@ public class AppWidgetProviderInfo implements Parcelable {
         out.writeInt(this.widgetFeatures);
         out.writeInt(this.descriptionRes);
         out.writeBoolean(this.isExtendedFromAppWidgetProvider);
+        if (Flags.generatedPreviews()) {
+            out.writeInt(this.generatedPreviewCategories);
+        }
+        out.writeInt(this.hidden_semGeneratedColorfulPreviewStates);
+        out.writeInt(this.hidden_semGeneratedMonotonePreviewStates);
+        out.writeInt(this.hidden_semPreviewRecordResetStates);
     }
 
-    /* renamed from: clone */
-    public AppWidgetProviderInfo m737clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public AppWidgetProviderInfo m783clone() {
         AppWidgetProviderInfo that = new AppWidgetProviderInfo();
-        ComponentName componentName = this.provider;
-        that.provider = componentName == null ? null : componentName.m780clone();
+        that.provider = this.provider == null ? null : this.provider.m840clone();
         that.minWidth = this.minWidth;
         that.minHeight = this.minHeight;
         that.minResizeWidth = this.minResizeWidth;
@@ -199,10 +211,8 @@ public class AppWidgetProviderInfo implements Parcelable {
         that.updatePeriodMillis = this.updatePeriodMillis;
         that.initialLayout = this.initialLayout;
         that.initialKeyguardLayout = this.initialKeyguardLayout;
-        ComponentName componentName2 = this.configure;
-        that.configure = componentName2 == null ? null : componentName2.m780clone();
-        ComponentName componentName3 = this.semConfigure;
-        that.semConfigure = componentName3 != null ? componentName3.m780clone() : null;
+        that.configure = this.configure == null ? null : this.configure.m840clone();
+        that.semConfigure = this.semConfigure != null ? this.semConfigure.m840clone() : null;
         that.label = this.label;
         that.icon = this.icon;
         that.previewImage = this.previewImage;
@@ -214,6 +224,12 @@ public class AppWidgetProviderInfo implements Parcelable {
         that.widgetFeatures = this.widgetFeatures;
         that.descriptionRes = this.descriptionRes;
         that.isExtendedFromAppWidgetProvider = this.isExtendedFromAppWidgetProvider;
+        if (Flags.generatedPreviews()) {
+            that.generatedPreviewCategories = this.generatedPreviewCategories;
+        }
+        that.hidden_semGeneratedColorfulPreviewStates = this.hidden_semGeneratedColorfulPreviewStates;
+        that.hidden_semGeneratedMonotonePreviewStates = this.hidden_semGeneratedMonotonePreviewStates;
+        that.hidden_semPreviewRecordResetStates = this.hidden_semPreviewRecordResetStates;
         return that;
     }
 
@@ -246,23 +262,6 @@ public class AppWidgetProviderInfo implements Parcelable {
         this.minResizeHeight = TypedValue.complexToDimensionPixelSize(this.minResizeHeight, displayMetrics);
         this.maxResizeWidth = TypedValue.complexToDimensionPixelSize(this.maxResizeWidth, displayMetrics);
         this.maxResizeHeight = TypedValue.complexToDimensionPixelSize(this.maxResizeHeight, displayMetrics);
-    }
-
-    /* renamed from: android.appwidget.AppWidgetProviderInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppWidgetProviderInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppWidgetProviderInfo createFromParcel(Parcel parcel) {
-            return new AppWidgetProviderInfo(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppWidgetProviderInfo[] newArray(int size) {
-            return new AppWidgetProviderInfo[size];
-        }
     }
 
     public String toString() {

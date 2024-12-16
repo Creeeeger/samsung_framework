@@ -10,13 +10,11 @@ public class Tables1kGCMExponentiator implements GCMExponentiator {
     @Override // com.android.internal.org.bouncycastle.crypto.modes.gcm.GCMExponentiator
     public void init(byte[] x) {
         long[] y = GCMUtil.asLongs(x);
-        Vector vector = this.lookupPowX2;
-        if (vector != null && Arrays.areEqual(y, (long[]) vector.elementAt(0))) {
+        if (this.lookupPowX2 != null && Arrays.areEqual(y, (long[]) this.lookupPowX2.elementAt(0))) {
             return;
         }
-        Vector vector2 = new Vector(8);
-        this.lookupPowX2 = vector2;
-        vector2.addElement(y);
+        this.lookupPowX2 = new Vector(8);
+        this.lookupPowX2.addElement(y);
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.modes.gcm.GCMExponentiator

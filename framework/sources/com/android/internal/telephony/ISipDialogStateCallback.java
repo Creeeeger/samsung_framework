@@ -14,7 +14,6 @@ public interface ISipDialogStateCallback extends IInterface {
 
     void onActiveSipDialogsChanged(List<SipDialogState> list) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISipDialogStateCallback {
         @Override // com.android.internal.telephony.ISipDialogStateCallback
         public void onActiveSipDialogsChanged(List<SipDialogState> dialogs) throws RemoteException {
@@ -26,7 +25,6 @@ public interface ISipDialogStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISipDialogStateCallback {
         static final int TRANSACTION_onActiveSipDialogsChanged = 1;
 
@@ -69,26 +67,22 @@ public interface ISipDialogStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISipDialogStateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISipDialogStateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISipDialogStateCallback.DESCRIPTOR);
+                case 1:
+                    List<SipDialogState> _arg0 = data.createTypedArrayList(SipDialogState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onActiveSipDialogsChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SipDialogState> _arg0 = data.createTypedArrayList(SipDialogState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onActiveSipDialogsChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISipDialogStateCallback {
+        private static class Proxy implements ISipDialogStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

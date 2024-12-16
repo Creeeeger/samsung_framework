@@ -35,14 +35,12 @@ public class BlockedNumberContract {
     private static final String LOG_TAG = BlockedNumberContract.class.getSimpleName();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface BlockStatus {
     }
 
     private BlockedNumberContract() {
     }
 
-    /* loaded from: classes3.dex */
     public static class BlockedNumbers {
         public static final String COLUMN_E164_NUMBER = "e164_number";
         public static final String COLUMN_ID = "_id";
@@ -86,7 +84,6 @@ public class BlockedNumberContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class SystemContract {
         public static final String ACTION_BLOCK_SUPPRESSION_STATE_CHANGED = "android.provider.action.BLOCK_SUPPRESSION_STATE_CHANGED";
         public static final String ENHANCED_SETTING_KEY_BLOCK_PAYPHONE = "block_payphone_calls_setting";
@@ -201,7 +198,6 @@ public class BlockedNumberContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static class BlockSuppressionStatus {
             public final boolean isSuppressed;
             public final long untilTimestampMillis;

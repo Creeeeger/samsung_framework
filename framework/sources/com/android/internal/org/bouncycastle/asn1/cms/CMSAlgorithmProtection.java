@@ -80,13 +80,11 @@ public class CMSAlgorithmProtection extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
         v.add(this.digestAlgorithm);
-        AlgorithmIdentifier algorithmIdentifier = this.signatureAlgorithm;
-        if (algorithmIdentifier != null) {
-            v.add(new DERTaggedObject(false, 1, algorithmIdentifier));
+        if (this.signatureAlgorithm != null) {
+            v.add(new DERTaggedObject(false, 1, this.signatureAlgorithm));
         }
-        AlgorithmIdentifier algorithmIdentifier2 = this.macAlgorithm;
-        if (algorithmIdentifier2 != null) {
-            v.add(new DERTaggedObject(false, 2, algorithmIdentifier2));
+        if (this.macAlgorithm != null) {
+            v.add(new DERTaggedObject(false, 2, this.macAlgorithm));
         }
         return new DERSequence(v);
     }

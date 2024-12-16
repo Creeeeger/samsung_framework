@@ -28,7 +28,7 @@ import java.util.Set;
 import libcore.io.IoUtils;
 
 @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class NetworkStatsDataMigrationUtils {
     private static final int BUFFER_SIZE = 8192;
     private static final int FILE_MAGIC = 1095648596;
@@ -38,11 +38,9 @@ public class NetworkStatsDataMigrationUtils {
     private static final Map<String, String> sPrefixLegacyFileNameMap = Map.of(PREFIX_XT, "netstats_xt.bin", "uid", "netstats_uid.bin", PREFIX_UID_TAG, "netstats_uid.bin");
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Prefix {
     }
 
-    /* loaded from: classes2.dex */
     private static class CollectionVersion {
         static final int VERSION_NETWORK_INIT = 1;
         static final int VERSION_UID_INIT = 1;
@@ -55,7 +53,6 @@ public class NetworkStatsDataMigrationUtils {
         }
     }
 
-    /* loaded from: classes2.dex */
     private static class HistoryVersion {
         static final int VERSION_ADD_ACTIVE = 3;
         static final int VERSION_ADD_PACKETS = 2;
@@ -65,7 +62,6 @@ public class NetworkStatsDataMigrationUtils {
         }
     }
 
-    /* loaded from: classes2.dex */
     private static class IdentitySetVersion {
         static final int VERSION_ADD_DEFAULT_NETWORK = 5;
         static final int VERSION_ADD_METERED = 4;

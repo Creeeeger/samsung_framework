@@ -2,6 +2,7 @@ package android.window;
 
 import android.app.ActivityManager;
 import android.app.IApplicationThread;
+import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -17,53 +18,57 @@ import android.util.NtpTrustedTime;
 import android.view.SurfaceControl;
 import android.view.WindowManager;
 import com.android.internal.accessibility.common.ShortcutConstants;
+import com.android.window.flags.Flags;
 import com.samsung.android.multiwindow.MultiWindowUtils;
 import com.samsung.android.rune.CoreRune;
-import com.samsung.android.share.SemShareConstants;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /* loaded from: classes4.dex */
 public final class TransitionInfo implements Parcelable {
     public static final Parcelable.Creator<TransitionInfo> CREATOR = new Parcelable.Creator<TransitionInfo>() { // from class: android.window.TransitionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransitionInfo createFromParcel(Parcel in) {
             return new TransitionInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransitionInfo[] newArray(int size) {
             return new TransitionInfo[size];
         }
     };
+    public static final int FLAG2_TRANSPARENT = 1;
     public static final int FLAGS_IS_NON_APP_WINDOW = 65794;
-    public static final int FLAG_ABOVE_TRANSIENT_LAUNCH = 1073741824;
+    public static final int FLAGS_IS_OCCLUDED_NO_ANIMATION = 294912;
     public static final int FLAG_BACK_GESTURE_ANIMATED = 131072;
+    public static final int FLAG_CONFIG_AT_END = 4194304;
     public static final int FLAG_CROSS_PROFILE_OWNER_THUMBNAIL = 4096;
     public static final int FLAG_CROSS_PROFILE_WORK_THUMBNAIL = 8192;
     public static final int FLAG_CUSTOM_DISPLAY_CHANGE_TRANSITION = 268435456;
     public static final int FLAG_DISPLAY_HAS_ALERT_WINDOWS = 128;
-    public static final int FLAG_EDGE_EXTENSION_RESTRICTION = 33554432;
+    public static final int FLAG_EDGE_EXTENSION_RESTRICTION = 67108864;
     public static final int FLAG_FAST_ANIMATION = 536870912;
     public static final int FLAG_FILLS_TASK = 1024;
-    public static final int FLAG_FIRST_CUSTOM = 4194304;
+    public static final int FLAG_FIRST_CUSTOM = 8388608;
     public static final int FLAG_IN_TASK_WITH_EMBEDDED_ACTIVITY = 512;
-    public static final int FLAG_IS_ACTIVITY = 8388608;
+    public static final int FLAG_IS_ACTIVITY = 16777216;
     public static final int FLAG_IS_BEHIND_STARTING_WINDOW = 16384;
     public static final int FLAG_IS_DISPLAY = 32;
+    public static final int FLAG_IS_FIXED_PORTRAIT = 1073741824;
     public static final int FLAG_IS_INPUT_METHOD = 256;
     public static final int FLAG_IS_OCCLUDED = 32768;
     public static final int FLAG_IS_SYSTEM_WINDOW = 65536;
-    public static final int FLAG_IS_TASK_DISPLAY_AREA = 16777216;
+    public static final int FLAG_IS_TASK_DISPLAY_AREA = 33554432;
     public static final int FLAG_IS_TRANSIENT_LAUNCH_OVERLAY = 134217728;
     public static final int FLAG_IS_VOICE_INTERACTION = 16;
     public static final int FLAG_IS_WALLPAPER = 2;
-    public static final int FLAG_LATE_TRANSIENT_LAUNCH = 67108864;
     public static final int FLAG_MOVED_TO_TOP = 1048576;
     public static final int FLAG_NONE = 0;
     public static final int FLAG_NO_ANIMATION = 262144;
@@ -78,26 +83,58 @@ public final class TransitionInfo implements Parcelable {
     private boolean mCanTransferAnimation;
     private final ArrayList<Change> mChanges;
     private int mDebugId;
-    private int mDisplayChangeBackColor;
     private int mFlags;
+
+    @Deprecated
     private AnimationOptions mOptions;
     private IApplicationThread mRemoteAppThread;
+    private RemoteTransition mRemoteTransition;
     private final ArrayList<Root> mRoots;
     private boolean mSeparatedFromCustomDisplayChange;
-    private boolean mSkipMergeAnimation;
     private int mTrack;
     private final int mType;
 
-    /* loaded from: classes4.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ChangeFlags {
     }
 
-    /* loaded from: classes4.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ChangeFlags2 {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface TransitionMode {
     }
 
-    /* synthetic */ TransitionInfo(Parcel parcel, TransitionInfoIA transitionInfoIA) {
-        this(parcel);
+    public Change getChangeForAppsEdgeActivity() {
+        Iterator<Change> it = this.mChanges.iterator();
+        while (it.hasNext()) {
+            Change change = it.next();
+            ActivityManager.RunningTaskInfo taskInfo = change.getTaskInfo();
+            if (taskInfo != null && taskInfo.realActivity != null && MultiWindowUtils.isAppsEdgeActivity(taskInfo.realActivity)) {
+                return change;
+            }
+        }
+        return null;
+    }
+
+    public Change findChange(Predicate<Change> callback) {
+        Iterator<Change> it = this.mChanges.iterator();
+        while (it.hasNext()) {
+            Change change = it.next();
+            if (callback.test(change)) {
+                return change;
+            }
+        }
+        return null;
+    }
+
+    public void setRemoteTransition(RemoteTransition remoteTransition) {
+        this.mRemoteTransition = remoteTransition;
+    }
+
+    public RemoteTransition getRemoteTransition() {
+        return this.mRemoteTransition;
     }
 
     public TransitionInfo(int type, int flags) {
@@ -105,32 +142,30 @@ public final class TransitionInfo implements Parcelable {
         this.mChanges = new ArrayList<>();
         this.mRoots = new ArrayList<>();
         this.mDebugId = -1;
-        this.mDisplayChangeBackColor = -1;
         this.mType = type;
         this.mFlags = flags;
     }
 
     private TransitionInfo(Parcel in) {
         this.mTrack = 0;
-        ArrayList<Change> arrayList = new ArrayList<>();
-        this.mChanges = arrayList;
-        ArrayList<Root> arrayList2 = new ArrayList<>();
-        this.mRoots = arrayList2;
+        this.mChanges = new ArrayList<>();
+        this.mRoots = new ArrayList<>();
         this.mDebugId = -1;
-        this.mDisplayChangeBackColor = -1;
         this.mType = in.readInt();
         this.mFlags = in.readInt();
-        in.readTypedList(arrayList, Change.CREATOR);
-        in.readTypedList(arrayList2, Root.CREATOR);
+        in.readTypedList(this.mChanges, Change.CREATOR);
+        in.readTypedList(this.mRoots, Root.CREATOR);
         this.mOptions = (AnimationOptions) in.readTypedObject(AnimationOptions.CREATOR);
         this.mDebugId = in.readInt();
         this.mTrack = in.readInt();
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE) {
+        if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
             this.mCanMergeAnimation = in.readBoolean();
-            this.mSkipMergeAnimation = in.readBoolean();
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE_TRANSFER) {
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE_TRANSFER) {
                 this.mCanTransferAnimation = in.readBoolean();
             }
+        }
+        if (CoreRune.MW_PIP_REMOTE_TRANSITION) {
+            this.mRemoteTransition = (RemoteTransition) in.readTypedObject(RemoteTransition.CREATOR);
         }
     }
 
@@ -143,29 +178,14 @@ public final class TransitionInfo implements Parcelable {
         dest.writeTypedObject(this.mOptions, flags);
         dest.writeInt(this.mDebugId);
         dest.writeInt(this.mTrack);
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE) {
+        if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
             dest.writeBoolean(this.mCanMergeAnimation);
-            dest.writeBoolean(this.mSkipMergeAnimation);
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE_TRANSFER) {
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE_TRANSFER) {
                 dest.writeBoolean(this.mCanTransferAnimation);
             }
         }
-    }
-
-    /* renamed from: android.window.TransitionInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TransitionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TransitionInfo createFromParcel(Parcel in) {
-            return new TransitionInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TransitionInfo[] newArray(int size) {
-            return new TransitionInfo[size];
+        if (CoreRune.MW_PIP_REMOTE_TRANSITION) {
+            dest.writeTypedObject(this.mRemoteTransition, flags);
         }
     }
 
@@ -186,7 +206,11 @@ public final class TransitionInfo implements Parcelable {
         this.mRoots.add(other);
     }
 
+    @Deprecated
     public void setAnimationOptions(AnimationOptions options) {
+        if (Flags.moveAnimationOptionsToChange()) {
+            return;
+        }
         this.mOptions = options;
     }
 
@@ -230,6 +254,7 @@ public final class TransitionInfo implements Parcelable {
         return this.mRoots.get(0).mLeash;
     }
 
+    @Deprecated
     public AnimationOptions getAnimationOptions() {
         return this.mOptions;
     }
@@ -275,76 +300,12 @@ public final class TransitionInfo implements Parcelable {
         return this.mDebugId;
     }
 
-    public boolean hasChangeTransition() {
-        Iterator<Change> it = this.mChanges.iterator();
-        while (it.hasNext()) {
-            Change change = it.next();
-            if (change.getChangeLeash() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Change getChangeForAppsEdgeActivity() {
-        Iterator<Change> it = this.mChanges.iterator();
-        while (it.hasNext()) {
-            Change change = it.next();
-            ActivityManager.RunningTaskInfo taskInfo = change.getTaskInfo();
-            if (taskInfo != null && taskInfo.realActivity != null && MultiWindowUtils.isAppsEdgeActivity(taskInfo.realActivity)) {
-                return change;
-            }
-        }
-        return null;
-    }
-
-    public boolean hasCustomDisplayChangeTransition() {
-        Iterator<Change> it = this.mChanges.iterator();
-        while (it.hasNext()) {
-            Change change = it.next();
-            if (change.hasFlags(268435456)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Change findChange(Predicate<Change> callback) {
-        Iterator<Change> it = this.mChanges.iterator();
-        while (it.hasNext()) {
-            Change change = it.next();
-            if (callback.test(change)) {
-                return change;
-            }
-        }
-        return null;
-    }
-
-    public boolean isSeparatedFromCustomDisplayChange() {
-        return this.mSeparatedFromCustomDisplayChange;
-    }
-
-    public void setSeparatedFromCustomDisplayChange(boolean separated) {
-        if (this.mSeparatedFromCustomDisplayChange != separated) {
-            this.mSeparatedFromCustomDisplayChange = separated;
-            Log.d(TAG, "setSeparatedFromCustomDisplayChange: " + separated + ", Callers=" + Debug.getCallers(3));
-        }
-    }
-
     public void setCanMergeAnimation() {
         this.mCanMergeAnimation = true;
     }
 
     public boolean canMergeAnimation() {
         return this.mCanMergeAnimation;
-    }
-
-    public void setSkipMergeAnimation() {
-        this.mSkipMergeAnimation = true;
-    }
-
-    public boolean canSkipMergeAnimation() {
-        return this.mSkipMergeAnimation;
     }
 
     public void setRemoteAppThread(IApplicationThread appThread) {
@@ -361,14 +322,6 @@ public final class TransitionInfo implements Parcelable {
 
     public boolean canTransferAnimation() {
         return this.mCanTransferAnimation;
-    }
-
-    public void overrideDisplayChangeBackColor(int displayChangeBackColor) {
-        this.mDisplayChangeBackColor = displayChangeBackColor;
-    }
-
-    public int getOverrideDisplayChangeBackColor() {
-        return this.mDisplayChangeBackColor;
     }
 
     public String toString() {
@@ -389,7 +342,11 @@ public final class TransitionInfo implements Parcelable {
             perChangeLineStart = "\n" + innerPrefix;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("{id=").append(this.mDebugId).append(" t=").append(WindowManager.transitTypeToString(this.mType)).append(" f=0x").append(Integer.toHexString(this.mFlags)).append(" trk=").append(this.mTrack).append(" r=[");
+        sb.append("{id=").append(this.mDebugId).append(" t=").append(WindowManager.transitTypeToString(this.mType)).append(" f=0x").append(Integer.toHexString(this.mFlags)).append(" trk=").append(this.mTrack);
+        if (this.mOptions != null) {
+            sb.append(" opt=").append(this.mOptions);
+        }
+        sb.append(" r=[");
         for (int i = 0; i < this.mRoots.size(); i++) {
             if (i > 0) {
                 sb.append(',');
@@ -405,16 +362,16 @@ public final class TransitionInfo implements Parcelable {
             }
             sb.append(this.mChanges.get(i2));
         }
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE) {
+        if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
             if (this.mCanMergeAnimation) {
                 sb.append("] [merge=true");
             }
-            if (this.mSkipMergeAnimation) {
-                sb.append("] [skipMerge=true");
-            }
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE_TRANSFER && this.mCanTransferAnimation) {
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE_TRANSFER && this.mCanTransferAnimation) {
                 sb.append("] [transfer=true");
             }
+        }
+        if (CoreRune.MW_PIP_REMOTE_TRANSITION && this.mRemoteTransition != null) {
+            sb.append("] [remote=" + this.mRemoteTransition);
         }
         sb.append(changesLineStart);
         sb.append("]}");
@@ -426,7 +383,7 @@ public final class TransitionInfo implements Parcelable {
             case 0:
                 return KeyProperties.DIGEST_NONE;
             case 1:
-                return SemShareConstants.DMA_SURVEY_FEATURE_OPEN;
+                return "OPEN";
             case 2:
                 return "CLOSE";
             case 3:
@@ -497,19 +454,25 @@ public final class TransitionInfo implements Parcelable {
         if ((2097152 & flags) != 0) {
             sb.append((sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER) + "SYNC");
         }
-        if ((4194304 & flags) != 0) {
+        if ((8388608 & flags) != 0) {
             sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("FIRST_CUSTOM");
+        }
+        if ((4194304 & flags) != 0) {
+            sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("CONFIG_AT_END");
         }
         if ((1048576 & flags) != 0) {
             sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("MOVE_TO_TOP");
         }
         if (CoreRune.MW_SHELL_TRANSITION) {
-            if ((8388608 & flags) != 0) {
+            if ((16777216 & flags) != 0) {
                 sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("IS_ACTIVITY");
             }
-            if ((16777216 & flags) != 0) {
+            if ((33554432 & flags) != 0) {
                 sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("IS_TASK_DISPLAY_AREA");
             }
+        }
+        if ((67108864 & flags) != 0) {
+            sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("EDGE_EXTENSION_RESTRICTION");
         }
         if (CoreRune.MW_SHELL_DISPLAY_CHANGE_TRANSITION) {
             if ((268435456 & flags) != 0) {
@@ -519,14 +482,11 @@ public final class TransitionInfo implements Parcelable {
                 sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("FAST_ANIMATION");
             }
         }
-        if ((33554432 & flags) != 0) {
-            sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("EDGE_EXTENSION_RESTRICTION");
+        if (CoreRune.FW_SHELL_TRANSITION_TRANSIENT_LAUNCH_OVERLAY && (134217728 & flags) != 0) {
+            sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("TRANSIENT_LAUNCH_OVERLAY");
         }
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LATE_TRANSIENT_LAUNCH && (67108864 & flags) != 0) {
-            sb.append(sb.length() == 0 ? "" : NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append("LATE_TRANSIENT_LAUNCH");
-        }
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_TRANSIENT_LAUNCH_OVERLAY && (134217728 & flags) != 0) {
-            sb.append(sb.length() != 0 ? NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER : "").append("TRANSIENT_LAUNCH_OVERLAY");
+        if ((1073741824 & flags) != 0) {
+            sb.append(sb.length() != 0 ? NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER : "").append("IS_FIXED_PORTRAIT");
         }
         return sb.toString();
     }
@@ -535,7 +495,10 @@ public final class TransitionInfo implements Parcelable {
         if (change.getParent() == null) {
             return true;
         }
-        if (change.getMode() == 6) {
+        if (change.getLastParent() != null && !change.getLastParent().equals(change.getParent())) {
+            return true;
+        }
+        if (change.getMode() == 6 || change.hasFlags(512)) {
             return false;
         }
         Change parentChg = info.getChange(change.getParent());
@@ -589,34 +552,36 @@ public final class TransitionInfo implements Parcelable {
             out.mRoots.add(this.mRoots.get(i2).localRemoteCopy());
         }
         out.mOptions = this.mOptions;
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE) {
+        if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
             out.mCanMergeAnimation = this.mCanMergeAnimation;
-            out.mSkipMergeAnimation = this.mSkipMergeAnimation;
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE_TRANSFER) {
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE_TRANSFER) {
                 out.mCanTransferAnimation = this.mCanTransferAnimation;
             }
+        }
+        if (CoreRune.MW_PIP_REMOTE_TRANSITION) {
+            out.mRemoteTransition = this.mRemoteTransition;
         }
         return out;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Change implements Parcelable {
         public static final Parcelable.Creator<Change> CREATOR = new Parcelable.Creator<Change>() { // from class: android.window.TransitionInfo.Change.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Change createFromParcel(Parcel in) {
                 return new Change(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Change[] newArray(int size) {
                 return new Change[size];
             }
         };
+        private ComponentName mActivityComponent;
         private boolean mAffordanceTargetFreeformTask;
         private boolean mAllowEnterPip;
+        private AnimationOptions mAnimationOptions;
         private int mBackgroundColor;
         private final Rect mChangeEndOutsets;
         private SurfaceControl mChangeLeash;
@@ -631,16 +596,16 @@ public final class TransitionInfo implements Parcelable {
         private int mEndRotation;
         private boolean mFadeInOutRotationNeeded;
         private int mFlags;
+        private int mFlags2;
         private int mForceHidingTransit;
         private float mFreeformStashScale;
         private final Rect mInsetsForRecentsTransition;
         private boolean mIsEnteringPinnedMode;
         private boolean mIsInSplitActivityMode;
         private boolean mIsPopOverAnimationNeeded;
-        private boolean mIsRotationAnimation;
         private boolean mIsTransitionWithDim;
         private WindowContainerToken mLastParent;
-        private final SurfaceControl mLeash;
+        private SurfaceControl mLeash;
         private int mMinimizeAnimState;
         private final PointF mMinimizePoint;
         private int mMode;
@@ -648,24 +613,21 @@ public final class TransitionInfo implements Parcelable {
         private boolean mResumedAffordance;
         private int mRotationAnimation;
         private boolean mSkipDefaultTransition;
+        private boolean mSkipSetupAnimHierarchy;
         private SurfaceControl mSnapshot;
         private float mSnapshotLuma;
         private final Rect mStartAbsBounds;
         private int mStartDisplayId;
         private int mStartRotation;
+        private int mTaskIdForActivity;
         private ActivityManager.RunningTaskInfo mTaskInfo;
-        private final Rect mTentModeClipRect;
 
-        /* synthetic */ Change(Parcel parcel, ChangeIA changeIA) {
-            this(parcel);
+        public void setAffordanceTargetFreeformTask(boolean isAffordanceTargetFreeformTask) {
+            this.mAffordanceTargetFreeformTask = isAffordanceTargetFreeformTask;
         }
 
-        public void setTentModeClipRect(Rect rect) {
-            this.mTentModeClipRect.set(rect);
-        }
-
-        public Rect getTentModeClipRect() {
-            return this.mTentModeClipRect;
+        public boolean getAffordanceTargetFreeformTask() {
+            return this.mAffordanceTargetFreeformTask;
         }
 
         public void setTransitionWithDim(boolean isTransitionWithDim) {
@@ -684,22 +646,6 @@ public final class TransitionInfo implements Parcelable {
             return this.mResumedAffordance;
         }
 
-        public void setAffordanceTargetFreeformTask(boolean isAffordanceTargetFreeformTask) {
-            this.mAffordanceTargetFreeformTask = isAffordanceTargetFreeformTask;
-        }
-
-        public boolean getAffordanceTargetFreeformTask() {
-            return this.mAffordanceTargetFreeformTask;
-        }
-
-        public void setRotationAnimation(boolean isRotationAnimation) {
-            this.mIsRotationAnimation = isRotationAnimation;
-        }
-
-        public boolean isRotationAnimation() {
-            return this.mIsRotationAnimation;
-        }
-
         public Change(WindowContainerToken container, SurfaceControl leash) {
             this.mMode = 0;
             this.mFlags = 0;
@@ -714,17 +660,19 @@ public final class TransitionInfo implements Parcelable {
             this.mEndFixedRotation = -1;
             this.mRotationAnimation = -1;
             this.mSnapshot = null;
+            this.mActivityComponent = null;
+            this.mAnimationOptions = null;
             this.mConfiguration = new Configuration();
             this.mChangeLeash = null;
             this.mChangeTransitMode = 0;
             this.mChangeStartOutsets = new Rect();
             this.mChangeEndOutsets = new Rect();
-            this.mTentModeClipRect = new Rect();
+            this.mInsetsForRecentsTransition = new Rect();
+            this.mForceHidingTransit = 0;
             this.mMinimizeAnimState = 0;
             this.mMinimizePoint = new PointF();
             this.mFreeformStashScale = 1.0f;
-            this.mForceHidingTransit = 0;
-            this.mInsetsForRecentsTransition = new Rect();
+            this.mTaskIdForActivity = -1;
             this.mContainer = container;
             this.mLeash = leash;
         }
@@ -732,12 +680,9 @@ public final class TransitionInfo implements Parcelable {
         private Change(Parcel in) {
             this.mMode = 0;
             this.mFlags = 0;
-            Rect rect = new Rect();
-            this.mStartAbsBounds = rect;
-            Rect rect2 = new Rect();
-            this.mEndAbsBounds = rect2;
-            Point point = new Point();
-            this.mEndRelOffset = point;
+            this.mStartAbsBounds = new Rect();
+            this.mEndAbsBounds = new Rect();
+            this.mEndRelOffset = new Point();
             this.mTaskInfo = null;
             this.mStartDisplayId = -1;
             this.mEndDisplayId = -1;
@@ -746,33 +691,29 @@ public final class TransitionInfo implements Parcelable {
             this.mEndFixedRotation = -1;
             this.mRotationAnimation = -1;
             this.mSnapshot = null;
-            Configuration configuration = new Configuration();
-            this.mConfiguration = configuration;
+            this.mActivityComponent = null;
+            this.mAnimationOptions = null;
+            this.mConfiguration = new Configuration();
             this.mChangeLeash = null;
             this.mChangeTransitMode = 0;
-            Rect rect3 = new Rect();
-            this.mChangeStartOutsets = rect3;
-            Rect rect4 = new Rect();
-            this.mChangeEndOutsets = rect4;
-            this.mTentModeClipRect = new Rect();
-            this.mMinimizeAnimState = 0;
-            PointF pointF = new PointF();
-            this.mMinimizePoint = pointF;
-            this.mFreeformStashScale = 1.0f;
+            this.mChangeStartOutsets = new Rect();
+            this.mChangeEndOutsets = new Rect();
+            this.mInsetsForRecentsTransition = new Rect();
             this.mForceHidingTransit = 0;
-            Rect rect5 = new Rect();
-            this.mInsetsForRecentsTransition = rect5;
+            this.mMinimizeAnimState = 0;
+            this.mMinimizePoint = new PointF();
+            this.mFreeformStashScale = 1.0f;
+            this.mTaskIdForActivity = -1;
             this.mContainer = (WindowContainerToken) in.readTypedObject(WindowContainerToken.CREATOR);
             this.mParent = (WindowContainerToken) in.readTypedObject(WindowContainerToken.CREATOR);
             this.mLastParent = (WindowContainerToken) in.readTypedObject(WindowContainerToken.CREATOR);
-            SurfaceControl surfaceControl = new SurfaceControl();
-            this.mLeash = surfaceControl;
-            surfaceControl.readFromParcel(in);
+            this.mLeash = new SurfaceControl();
+            this.mLeash.readFromParcel(in);
             this.mMode = in.readInt();
             this.mFlags = in.readInt();
-            rect.readFromParcel(in);
-            rect2.readFromParcel(in);
-            point.readFromParcel(in);
+            this.mStartAbsBounds.readFromParcel(in);
+            this.mEndAbsBounds.readFromParcel(in);
+            this.mEndRelOffset.readFromParcel(in);
             this.mTaskInfo = (ActivityManager.RunningTaskInfo) in.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
             this.mAllowEnterPip = in.readBoolean();
             this.mStartDisplayId = in.readInt();
@@ -784,34 +725,44 @@ public final class TransitionInfo implements Parcelable {
             this.mBackgroundColor = in.readInt();
             this.mSnapshot = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
             this.mSnapshotLuma = in.readFloat();
+            this.mActivityComponent = (ComponentName) in.readTypedObject(ComponentName.CREATOR);
+            this.mAnimationOptions = (AnimationOptions) in.readTypedObject(AnimationOptions.CREATOR);
             if (CoreRune.MW_SHELL_TRANSITION) {
-                configuration.readFromParcel(in);
+                this.mConfiguration.readFromParcel(in);
             }
             if (CoreRune.MW_SHELL_CHANGE_TRANSITION) {
                 this.mChangeLeash = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
                 this.mChangeTransitMode = in.readInt();
-                rect3.readFromParcel(in);
-                rect4.readFromParcel(in);
+                this.mChangeStartOutsets.readFromParcel(in);
+                this.mChangeEndOutsets.readFromParcel(in);
             }
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_WITH_DIM) {
+            this.mInsetsForRecentsTransition.readFromParcel(in);
+            if (CoreRune.FW_SHELL_TRANSITION_WITH_DIM) {
                 this.mIsTransitionWithDim = in.readBoolean();
             }
+            this.mForceHidingTransit = in.readInt();
             if (CoreRune.MW_FREEFORM_MINIMIZE_SHELL_TRANSITION) {
                 this.mMinimizeAnimState = in.readInt();
-                pointF.readFromParcel(in);
+                this.mMinimizePoint.readFromParcel(in);
+            }
+            if (CoreRune.MW_RESUMED_AFFORDANCE_SHELL_TRANSITION) {
+                this.mAffordanceTargetFreeformTask = in.readBoolean();
+            }
+            this.mFreeformStashScale = in.readFloat();
+            if (CoreRune.FW_SHELL_TRANSITION_RESUMED_AFFORDANCE) {
+                this.mResumedAffordance = in.readBoolean();
             }
             this.mFadeInOutRotationNeeded = in.readBoolean();
-            this.mResumedAffordance = in.readBoolean();
-            this.mAffordanceTargetFreeformTask = in.readBoolean();
             if (CoreRune.MW_PIP_SHELL_TRANSITION) {
                 this.mIsEnteringPinnedMode = in.readBoolean();
             }
             this.mIsPopOverAnimationNeeded = in.readBoolean();
-            this.mFreeformStashScale = in.readFloat();
-            this.mForceHidingTransit = in.readInt();
-            rect5.readFromParcel(in);
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
+                this.mTaskIdForActivity = in.readInt();
+            }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Change localRemoteCopy() {
             Change out = new Change(this.mContainer, new SurfaceControl(this.mLeash, "localRemote"));
             out.mParent = this.mParent;
@@ -832,6 +783,8 @@ public final class TransitionInfo implements Parcelable {
             out.mBackgroundColor = this.mBackgroundColor;
             out.mSnapshot = this.mSnapshot != null ? new SurfaceControl(this.mSnapshot, "localRemote") : null;
             out.mSnapshotLuma = this.mSnapshotLuma;
+            out.mActivityComponent = this.mActivityComponent;
+            out.mAnimationOptions = this.mAnimationOptions;
             if (CoreRune.MW_SHELL_TRANSITION) {
                 out.mConfiguration.setTo(this.mConfiguration);
             }
@@ -841,23 +794,30 @@ public final class TransitionInfo implements Parcelable {
                 out.mChangeStartOutsets.set(this.mChangeStartOutsets);
                 out.mChangeEndOutsets.set(this.mChangeEndOutsets);
             }
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_WITH_DIM) {
+            out.mInsetsForRecentsTransition.set(this.mInsetsForRecentsTransition);
+            if (CoreRune.FW_SHELL_TRANSITION_WITH_DIM) {
                 out.mIsTransitionWithDim = this.mIsTransitionWithDim;
             }
+            out.mForceHidingTransit = this.mForceHidingTransit;
             if (CoreRune.MW_FREEFORM_MINIMIZE_SHELL_TRANSITION) {
                 out.mMinimizeAnimState = this.mMinimizeAnimState;
                 out.mMinimizePoint.set(this.mMinimizePoint);
             }
+            if (CoreRune.MW_RESUMED_AFFORDANCE_SHELL_TRANSITION) {
+                out.mAffordanceTargetFreeformTask = this.mAffordanceTargetFreeformTask;
+            }
+            out.mFreeformStashScale = this.mFreeformStashScale;
+            if (CoreRune.FW_SHELL_TRANSITION_RESUMED_AFFORDANCE) {
+                out.mResumedAffordance = this.mResumedAffordance;
+            }
             out.mFadeInOutRotationNeeded = this.mFadeInOutRotationNeeded;
-            out.mResumedAffordance = this.mResumedAffordance;
-            out.mAffordanceTargetFreeformTask = this.mAffordanceTargetFreeformTask;
             if (CoreRune.MW_PIP_SHELL_TRANSITION) {
                 out.mIsEnteringPinnedMode = this.mIsEnteringPinnedMode;
             }
             out.mIsPopOverAnimationNeeded = this.mIsPopOverAnimationNeeded;
-            out.mFreeformStashScale = this.mFreeformStashScale;
-            out.mForceHidingTransit = this.mForceHidingTransit;
-            out.mInsetsForRecentsTransition.set(this.mInsetsForRecentsTransition);
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
+                out.mTaskIdForActivity = this.mTaskIdForActivity;
+            }
             return out;
         }
 
@@ -867,6 +827,10 @@ public final class TransitionInfo implements Parcelable {
 
         public void setLastParent(WindowContainerToken lastParent) {
             this.mLastParent = lastParent;
+        }
+
+        public void setLeash(SurfaceControl leash) {
+            this.mLeash = (SurfaceControl) Objects.requireNonNull(leash);
         }
 
         public void setMode(int mode) {
@@ -924,6 +888,17 @@ public final class TransitionInfo implements Parcelable {
             this.mSnapshotLuma = luma;
         }
 
+        public void setActivityComponent(ComponentName component) {
+            this.mActivityComponent = component;
+        }
+
+        public void setAnimationOptions(AnimationOptions options) {
+            if (!Flags.moveAnimationOptionsToChange()) {
+                return;
+            }
+            this.mAnimationOptions = options;
+        }
+
         public WindowContainerToken getContainer() {
             return this.mContainer;
         }
@@ -972,7 +947,7 @@ public final class TransitionInfo implements Parcelable {
             return this.mTaskInfo;
         }
 
-        public boolean getAllowEnterPip() {
+        public boolean isAllowEnterPip() {
             return this.mAllowEnterPip;
         }
 
@@ -1012,116 +987,20 @@ public final class TransitionInfo implements Parcelable {
             return this.mSnapshotLuma;
         }
 
+        public ComponentName getActivityComponent() {
+            return this.mActivityComponent;
+        }
+
+        public AnimationOptions getAnimationOptions() {
+            return this.mAnimationOptions;
+        }
+
         public void setConfiguration(Configuration configuration) {
             this.mConfiguration.updateFrom(configuration);
         }
 
         public Configuration getConfiguration() {
             return this.mConfiguration;
-        }
-
-        public SurfaceControl getChangeLeash() {
-            return this.mChangeLeash;
-        }
-
-        public void setChangeLeash(SurfaceControl changeLeash) {
-            this.mChangeLeash = changeLeash;
-        }
-
-        public int getChangeTransitMode() {
-            return this.mChangeTransitMode;
-        }
-
-        public void setChangeTransitMode(int changeTransitMode) {
-            this.mChangeTransitMode = changeTransitMode;
-        }
-
-        public void setChangeStartOutsets(Rect startOutsets) {
-            this.mChangeStartOutsets.set(startOutsets);
-        }
-
-        public void setChangeEndOutsets(Rect endOutsets) {
-            this.mChangeEndOutsets.set(endOutsets);
-        }
-
-        public Rect getChangeStartOutsets() {
-            return this.mChangeStartOutsets;
-        }
-
-        public Rect getChangeEndOutsets() {
-            return this.mChangeEndOutsets;
-        }
-
-        public boolean hasChangeStartOutsets() {
-            return this.mChangeStartOutsets.left > 0 || this.mChangeStartOutsets.top > 0 || this.mChangeStartOutsets.right > 0 || this.mChangeStartOutsets.bottom > 0;
-        }
-
-        public boolean hasChangeEndOutsets() {
-            return this.mChangeEndOutsets.left > 0 || this.mChangeEndOutsets.top > 0 || this.mChangeEndOutsets.right > 0 || this.mChangeEndOutsets.bottom > 0;
-        }
-
-        public void setMinimizeAnimState(int minimizeAnimState) {
-            this.mMinimizeAnimState = minimizeAnimState;
-        }
-
-        public int getMinimizeAnimState() {
-            return this.mMinimizeAnimState;
-        }
-
-        public void setMinimizePoint(PointF minimizePoint) {
-            this.mMinimizePoint.set(minimizePoint);
-        }
-
-        public PointF getMinimizePoint() {
-            return this.mMinimizePoint;
-        }
-
-        public void setFadeInOutRotationNeeded() {
-            this.mFadeInOutRotationNeeded = true;
-        }
-
-        public boolean isFadeInOutRotationNeeded() {
-            return this.mFadeInOutRotationNeeded;
-        }
-
-        public void setSplitActivityMode(boolean splitActivityMode) {
-            this.mIsInSplitActivityMode = splitActivityMode;
-        }
-
-        public boolean getSplitActivityMode() {
-            return this.mIsInSplitActivityMode;
-        }
-
-        public void setEnteringPinnedMode(boolean enteringPinnedMode) {
-            this.mIsEnteringPinnedMode = enteringPinnedMode;
-        }
-
-        public boolean isEnteringPinnedMode() {
-            return this.mIsEnteringPinnedMode;
-        }
-
-        public void setFreeformStashScale(float freeformStashScale) {
-            this.mFreeformStashScale = freeformStashScale;
-        }
-
-        public float getFreeformStashScale() {
-            return this.mFreeformStashScale;
-        }
-
-        public void setForceHidingTransit(int forceHidingTransit) {
-            this.mForceHidingTransit = forceHidingTransit;
-        }
-
-        public int getForceHidingTransit() {
-            return this.mForceHidingTransit;
-        }
-
-        public void setPopOverAnimationNeeded(boolean popOverAnimationNeeded) {
-            this.mIsPopOverAnimationNeeded = popOverAnimationNeeded;
-        }
-
-        public boolean getPopOverAnimationNeeded() {
-            return this.mIsPopOverAnimationNeeded;
         }
 
         public void setInsetsForRecentsTransition(Rect rect) {
@@ -1138,6 +1017,14 @@ public final class TransitionInfo implements Parcelable {
 
         public boolean shouldSkipDefaultTransition() {
             return this.mSkipDefaultTransition;
+        }
+
+        public void setSkipSetupAnimHierarchy(boolean skipSetupAnimHierarchy) {
+            this.mSkipSetupAnimHierarchy = skipSetupAnimHierarchy;
+        }
+
+        public boolean shouldSkipSetupAnimHierarchy() {
+            return this.mSkipSetupAnimHierarchy;
         }
 
         @Override // android.os.Parcelable
@@ -1162,6 +1049,8 @@ public final class TransitionInfo implements Parcelable {
             dest.writeInt(this.mBackgroundColor);
             dest.writeTypedObject(this.mSnapshot, flags);
             dest.writeFloat(this.mSnapshotLuma);
+            dest.writeTypedObject(this.mActivityComponent, flags);
+            dest.writeTypedObject(this.mAnimationOptions, flags);
             if (CoreRune.MW_SHELL_TRANSITION) {
                 this.mConfiguration.writeToParcel(dest, flags);
             }
@@ -1171,39 +1060,29 @@ public final class TransitionInfo implements Parcelable {
                 this.mChangeStartOutsets.writeToParcel(dest, flags);
                 this.mChangeEndOutsets.writeToParcel(dest, flags);
             }
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_WITH_DIM) {
+            this.mInsetsForRecentsTransition.writeToParcel(dest, flags);
+            if (CoreRune.FW_SHELL_TRANSITION_WITH_DIM) {
                 dest.writeBoolean(this.mIsTransitionWithDim);
             }
+            dest.writeInt(this.mForceHidingTransit);
             if (CoreRune.MW_FREEFORM_MINIMIZE_SHELL_TRANSITION) {
                 dest.writeInt(this.mMinimizeAnimState);
                 this.mMinimizePoint.writeToParcel(dest, flags);
             }
+            if (CoreRune.MW_RESUMED_AFFORDANCE_SHELL_TRANSITION) {
+                dest.writeBoolean(this.mAffordanceTargetFreeformTask);
+            }
+            dest.writeFloat(this.mFreeformStashScale);
+            if (CoreRune.FW_SHELL_TRANSITION_RESUMED_AFFORDANCE) {
+                dest.writeBoolean(this.mResumedAffordance);
+            }
             dest.writeBoolean(this.mFadeInOutRotationNeeded);
-            dest.writeBoolean(this.mResumedAffordance);
-            dest.writeBoolean(this.mAffordanceTargetFreeformTask);
             if (CoreRune.MW_PIP_SHELL_TRANSITION) {
                 dest.writeBoolean(this.mIsEnteringPinnedMode);
             }
             dest.writeBoolean(this.mIsPopOverAnimationNeeded);
-            dest.writeFloat(this.mFreeformStashScale);
-            dest.writeInt(this.mForceHidingTransit);
-            this.mInsetsForRecentsTransition.writeToParcel(dest, flags);
-        }
-
-        /* renamed from: android.window.TransitionInfo$Change$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Change> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Change createFromParcel(Parcel in) {
-                return new Change(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Change[] newArray(int size) {
-                return new Change[size];
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE) {
+                dest.writeInt(this.mTaskIdForActivity);
             }
         }
 
@@ -1237,9 +1116,8 @@ public final class TransitionInfo implements Parcelable {
                 sb.append(this.mEndRelOffset);
             }
             sb.append(" d=");
-            int i = this.mStartDisplayId;
-            if (i != this.mEndDisplayId) {
-                sb.append(i).append(Session.SUBSESSION_SEPARATION_CHAR);
+            if (this.mStartDisplayId != this.mEndDisplayId) {
+                sb.append(this.mStartDisplayId).append(Session.SUBSESSION_SEPARATION_CHAR);
             }
             sb.append(this.mEndDisplayId);
             if (this.mStartRotation != this.mEndRotation) {
@@ -1254,6 +1132,9 @@ public final class TransitionInfo implements Parcelable {
                 sb.append(" endFixedRotation=");
                 sb.append(this.mEndFixedRotation);
             }
+            if (this.mBackgroundColor != 0) {
+                sb.append(" bc=").append(Integer.toHexString(this.mBackgroundColor));
+            }
             if (this.mSnapshot != null) {
                 sb.append(" snapshot=");
                 sb.append(this.mSnapshot);
@@ -1261,6 +1142,17 @@ public final class TransitionInfo implements Parcelable {
             if (this.mLastParent != null) {
                 sb.append(" lastParent=");
                 sb.append(this.mLastParent);
+            }
+            if (this.mActivityComponent != null) {
+                sb.append(" component=");
+                sb.append(this.mActivityComponent.flattenToShortString());
+            }
+            if (this.mTaskInfo != null) {
+                sb.append(" taskParent=");
+                sb.append(this.mTaskInfo.parentTaskId);
+            }
+            if (this.mAnimationOptions != null) {
+                sb.append(" opt=").append(this.mAnimationOptions);
             }
             if (CoreRune.MW_SHELL_CHANGE_TRANSITION) {
                 if (this.mChangeLeash != null) {
@@ -1276,49 +1168,180 @@ public final class TransitionInfo implements Parcelable {
                     sb.append(" ceo=" + this.mChangeEndOutsets);
                 }
             }
+            sb.append(" inset=");
+            sb.append(this.mInsetsForRecentsTransition);
+            if (CoreRune.FW_SHELL_TRANSITION_WITH_DIM && this.mIsTransitionWithDim) {
+                sb.append(" dim=").append("true");
+            }
             if (this.mForceHidingTransit != 0) {
                 sb.append(" fht=").append(this.mForceHidingTransit);
             }
-            if (CoreRune.MW_PIP_SHELL_TRANSITION && this.mIsEnteringPinnedMode) {
-                sb.append(" enter_pip=true");
-            }
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_WITH_DIM && this.mIsTransitionWithDim) {
-                sb.append(" dim=").append("true");
+            if (CoreRune.MW_RESUMED_AFFORDANCE_SHELL_TRANSITION && this.mAffordanceTargetFreeformTask) {
+                sb.append(" affordanceTargetFreeformTask=").append("true");
             }
             if (this.mFadeInOutRotationNeeded) {
                 sb.append(" fade=").append(this.mFadeInOutRotationNeeded);
             }
-            if (this.mResumedAffordance) {
-                sb.append(" resumedAffordance=").append("true");
+            if (CoreRune.MW_PIP_SHELL_TRANSITION && this.mIsEnteringPinnedMode) {
+                sb.append(" enter_pip=true");
             }
-            if (this.mAffordanceTargetFreeformTask) {
-                sb.append(" affordanceTargetFreeformTask=").append("true");
+            if (this.mIsPopOverAnimationNeeded) {
+                sb.append(" isPopOverAnimationNeeded=true");
             }
-            sb.append(" inset=");
-            sb.append(this.mInsetsForRecentsTransition);
+            if (CoreRune.FW_SHELL_TRANSITION_MERGE && this.mTaskIdForActivity != -1) {
+                sb.append(" taskIdForActivity=" + this.mTaskIdForActivity);
+            }
             sb.append('}');
             return sb.toString();
         }
+
+        public SurfaceControl getChangeLeash() {
+            return this.mChangeLeash;
+        }
+
+        public void setChangeLeash(SurfaceControl changeLeash) {
+            this.mChangeLeash = changeLeash;
+        }
+
+        public int getChangeTransitMode() {
+            return this.mChangeTransitMode;
+        }
+
+        public void setChangeTransitMode(int changeTransitMode) {
+            this.mChangeTransitMode = changeTransitMode;
+        }
+
+        public Rect getChangeStartOutsets() {
+            return this.mChangeStartOutsets;
+        }
+
+        public void setChangeStartOutsets(Rect startOutsets) {
+            this.mChangeStartOutsets.set(startOutsets);
+        }
+
+        public boolean hasChangeStartOutsets() {
+            return this.mChangeStartOutsets.left > 0 || this.mChangeStartOutsets.top > 0 || this.mChangeStartOutsets.right > 0 || this.mChangeStartOutsets.bottom > 0;
+        }
+
+        public Rect getChangeEndOutsets() {
+            return this.mChangeEndOutsets;
+        }
+
+        public void setChangeEndOutsets(Rect endOutsets) {
+            this.mChangeEndOutsets.set(endOutsets);
+        }
+
+        public boolean hasChangeEndOutsets() {
+            return this.mChangeEndOutsets.left > 0 || this.mChangeEndOutsets.top > 0 || this.mChangeEndOutsets.right > 0 || this.mChangeEndOutsets.bottom > 0;
+        }
+
+        public void setForceHidingTransit(int forceHidingTransit) {
+            this.mForceHidingTransit = forceHidingTransit;
+        }
+
+        public int getForceHidingTransit() {
+            return this.mForceHidingTransit;
+        }
+
+        public boolean isForceHidingWithoutAnimation() {
+            return this.mForceHidingTransit == 4 || this.mForceHidingTransit == 3;
+        }
+
+        public boolean isForceHidingEnter() {
+            return this.mForceHidingTransit == 1 || this.mForceHidingTransit == 3;
+        }
+
+        public void setMinimizeAnimState(int minimizeAnimState) {
+            this.mMinimizeAnimState = minimizeAnimState;
+        }
+
+        public int getMinimizeAnimState() {
+            return this.mMinimizeAnimState;
+        }
+
+        public void setMinimizePoint(PointF minimizePoint) {
+            this.mMinimizePoint.set(minimizePoint);
+        }
+
+        public PointF getMinimizePoint() {
+            return this.mMinimizePoint;
+        }
+
+        public void setPopOverAnimationNeeded(boolean popOverAnimationNeeded) {
+            this.mIsPopOverAnimationNeeded = popOverAnimationNeeded;
+        }
+
+        public boolean getPopOverAnimationNeeded() {
+            return this.mIsPopOverAnimationNeeded;
+        }
+
+        public void setSplitActivityMode(boolean splitActivityMode) {
+            this.mIsInSplitActivityMode = splitActivityMode;
+        }
+
+        public boolean getSplitActivityMode() {
+            return this.mIsInSplitActivityMode;
+        }
+
+        public void setFreeformStashScale(float freeformStashScale) {
+            this.mFreeformStashScale = freeformStashScale;
+        }
+
+        public float getFreeformStashScale() {
+            return this.mFreeformStashScale;
+        }
+
+        public void setFadeInOutRotationNeeded() {
+            this.mFadeInOutRotationNeeded = true;
+        }
+
+        public boolean isFadeInOutRotationNeeded() {
+            return this.mFadeInOutRotationNeeded;
+        }
+
+        public void setEnteringPinnedMode(boolean enteringPinnedMode) {
+            this.mIsEnteringPinnedMode = enteringPinnedMode;
+        }
+
+        public boolean isEnteringPinnedMode() {
+            return this.mIsEnteringPinnedMode;
+        }
+
+        public void addFlags2(int flags) {
+            this.mFlags2 |= flags;
+        }
+
+        public int getFlags2() {
+            return this.mFlags2;
+        }
+
+        public void setTaskIdForActivity(int taskId) {
+            this.mTaskIdForActivity = taskId;
+        }
+
+        public int getTaskIdForActivity() {
+            return this.mTaskIdForActivity;
+        }
     }
 
-    /* loaded from: classes4.dex */
     public static final class AnimationOptions implements Parcelable {
         public static final Parcelable.Creator<AnimationOptions> CREATOR = new Parcelable.Creator<AnimationOptions>() { // from class: android.window.TransitionInfo.AnimationOptions.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AnimationOptions createFromParcel(Parcel in) {
                 return new AnimationOptions(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AnimationOptions[] newArray(int size) {
                 return new AnimationOptions[size];
             }
         };
+        public static final int DEFAULT_ANIMATION_RESOURCES_ID = -1;
         private int mAnimations;
         private int mBackgroundColor;
+        private int mChangeResId;
         private CustomActivityTransition mCustomActivityCloseTransition;
         private CustomActivityTransition mCustomActivityOpenTransition;
         private int mEnterResId;
@@ -1330,20 +1353,26 @@ public final class TransitionInfo implements Parcelable {
         private int mType;
 
         private AnimationOptions(int type) {
+            this.mEnterResId = -1;
+            this.mChangeResId = -1;
+            this.mExitResId = -1;
             this.mTransitionBounds = new Rect();
             this.mType = type;
         }
 
-        public AnimationOptions(Parcel in) {
-            Rect rect = new Rect();
-            this.mTransitionBounds = rect;
+        private AnimationOptions(Parcel in) {
+            this.mEnterResId = -1;
+            this.mChangeResId = -1;
+            this.mExitResId = -1;
+            this.mTransitionBounds = new Rect();
             this.mType = in.readInt();
             this.mEnterResId = in.readInt();
+            this.mChangeResId = in.readInt();
             this.mExitResId = in.readInt();
             this.mBackgroundColor = in.readInt();
             this.mOverrideTaskTransition = in.readBoolean();
             this.mPackageName = in.readString();
-            rect.readFromParcel(in);
+            this.mTransitionBounds.readFromParcel(in);
             this.mThumbnail = (HardwareBuffer) in.readTypedObject(HardwareBuffer.CREATOR);
             this.mAnimations = in.readInt();
             this.mCustomActivityOpenTransition = (CustomActivityTransition) in.readTypedObject(CustomActivityTransition.CREATOR);
@@ -1381,9 +1410,14 @@ public final class TransitionInfo implements Parcelable {
         }
 
         public static AnimationOptions makeCustomAnimOptions(String packageName, int enterResId, int exitResId, int backgroundColor, boolean overrideTaskTransition) {
+            return makeCustomAnimOptions(packageName, enterResId, -1, exitResId, backgroundColor, overrideTaskTransition);
+        }
+
+        public static AnimationOptions makeCustomAnimOptions(String packageName, int enterResId, int changeResId, int exitResId, int backgroundColor, boolean overrideTaskTransition) {
             AnimationOptions options = new AnimationOptions(1);
             options.mPackageName = packageName;
             options.mEnterResId = enterResId;
+            options.mChangeResId = changeResId;
             options.mExitResId = exitResId;
             options.mBackgroundColor = backgroundColor;
             options.mOverrideTaskTransition = overrideTaskTransition;
@@ -1434,6 +1468,10 @@ public final class TransitionInfo implements Parcelable {
             return this.mEnterResId;
         }
 
+        public int getChangeResId() {
+            return this.mChangeResId;
+        }
+
         public int getExitResId() {
             return this.mExitResId;
         }
@@ -1470,6 +1508,7 @@ public final class TransitionInfo implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mType);
             dest.writeInt(this.mEnterResId);
+            dest.writeInt(this.mChangeResId);
             dest.writeInt(this.mExitResId);
             dest.writeInt(this.mBackgroundColor);
             dest.writeBoolean(this.mOverrideTaskTransition);
@@ -1481,23 +1520,6 @@ public final class TransitionInfo implements Parcelable {
             dest.writeTypedObject(this.mCustomActivityCloseTransition, flags);
         }
 
-        /* renamed from: android.window.TransitionInfo$AnimationOptions$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<AnimationOptions> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AnimationOptions createFromParcel(Parcel in) {
-                return new AnimationOptions(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AnimationOptions[] newArray(int size) {
-                return new AnimationOptions[size];
-            }
-        }
-
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -1506,37 +1528,63 @@ public final class TransitionInfo implements Parcelable {
         private static String typeToString(int mode) {
             switch (mode) {
                 case 1:
-                    return "ANIM_CUSTOM";
+                    return "CUSTOM";
                 case 2:
-                    return "ANIM_SCALE_UP";
+                    return "SCALE_UP";
                 case 3:
-                    return "ANIM_THUMBNAIL_SCALE_UP";
+                    return "THUMBNAIL_SCALE_UP";
                 case 4:
-                    return "ANIM_THUMBNAIL_SCALE_DOWN";
-                case 11:
-                    return "ANIM_CLIP_REVEAL";
-                case 12:
-                    return "ANIM_OPEN_CROSS_PROFILE_APPS";
+                    return "THUMBNAIL_SCALE_DOWN";
+                case 5:
+                    return "SCENE_TRANSITION";
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 13:
                 default:
-                    return "<unknown:" + mode + ">";
+                    return "<" + mode + ">";
+                case 11:
+                    return "CLIP_REVEAL";
+                case 12:
+                    return "OPEN_CROSS_PROFILE_APPS";
+                case 14:
+                    return "FROM_STYLE";
             }
         }
 
         public String toString() {
-            return "{ AnimationOptions type= " + typeToString(this.mType) + " package=" + this.mPackageName + " override=" + this.mOverrideTaskTransition + " b=" + this.mTransitionBounds + "}";
+            StringBuilder sb = new StringBuilder(32);
+            sb.append("{t=").append(typeToString(this.mType));
+            if (this.mOverrideTaskTransition) {
+                sb.append(" overrideTask=true");
+            }
+            if (!this.mTransitionBounds.isEmpty()) {
+                sb.append(" bounds=").append(this.mTransitionBounds);
+            }
+            if (this.mEnterResId != -1) {
+                sb.append(" enterResId=").append(this.mEnterResId);
+            }
+            if (this.mChangeResId != -1) {
+                sb.append(" changeResId=").append(this.mChangeResId);
+            }
+            if (this.mExitResId != -1) {
+                sb.append(" exitResId=").append(this.mExitResId);
+            }
+            sb.append('}');
+            return sb.toString();
         }
 
-        /* loaded from: classes4.dex */
-        public static class CustomActivityTransition implements Parcelable {
+        public static final class CustomActivityTransition implements Parcelable {
             public static final Parcelable.Creator<CustomActivityTransition> CREATOR = new Parcelable.Creator<CustomActivityTransition>() { // from class: android.window.TransitionInfo.AnimationOptions.CustomActivityTransition.1
-                AnonymousClass1() {
-                }
-
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public CustomActivityTransition createFromParcel(Parcel in) {
                     return new CustomActivityTransition(in);
                 }
 
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public CustomActivityTransition[] newArray(int size) {
                     return new CustomActivityTransition[size];
@@ -1584,37 +1632,18 @@ public final class TransitionInfo implements Parcelable {
                 dest.writeInt(this.mCustomExitResId);
                 dest.writeInt(this.mCustomBackgroundColor);
             }
-
-            /* renamed from: android.window.TransitionInfo$AnimationOptions$CustomActivityTransition$1 */
-            /* loaded from: classes4.dex */
-            class AnonymousClass1 implements Parcelable.Creator<CustomActivityTransition> {
-                AnonymousClass1() {
-                }
-
-                @Override // android.os.Parcelable.Creator
-                public CustomActivityTransition createFromParcel(Parcel in) {
-                    return new CustomActivityTransition(in);
-                }
-
-                @Override // android.os.Parcelable.Creator
-                public CustomActivityTransition[] newArray(int size) {
-                    return new CustomActivityTransition[size];
-                }
-            }
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Root implements Parcelable {
         public static final Parcelable.Creator<Root> CREATOR = new Parcelable.Creator<Root>() { // from class: android.window.TransitionInfo.Root.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Root createFromParcel(Parcel in) {
                 return new Root(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Root[] newArray(int size) {
                 return new Root[size];
@@ -1626,47 +1655,39 @@ public final class TransitionInfo implements Parcelable {
         private final SurfaceControl mLeash;
         private final Point mOffset;
 
-        /* synthetic */ Root(Parcel parcel, RootIA rootIA) {
-            this(parcel);
-        }
-
         public Root(int displayId, SurfaceControl leash, int offsetLeft, int offsetTop) {
-            this(displayId, leash, offsetLeft, offsetTop, null, false);
+            this.mOffset = new Point();
+            this.mConfiguration = new Configuration();
+            this.mDisplayId = displayId;
+            this.mLeash = leash;
+            this.mOffset.set(offsetLeft, offsetTop);
         }
 
         public Root(int displayId, SurfaceControl leash, int offsetLeft, int offsetTop, Configuration rootConfig, boolean isActivityRootLeash) {
-            Point point = new Point();
-            this.mOffset = point;
-            Configuration configuration = new Configuration();
-            this.mConfiguration = configuration;
+            this(displayId, leash, offsetLeft, offsetTop);
             if (CoreRune.MW_SPLIT_SHELL_TRANSITION) {
                 if (rootConfig != null) {
-                    configuration.setTo(rootConfig);
+                    this.mConfiguration.setTo(rootConfig);
                 }
                 this.mIsActivityRootLeash = isActivityRootLeash;
             }
-            this.mDisplayId = displayId;
-            this.mLeash = leash;
-            point.set(offsetLeft, offsetTop);
         }
 
         private Root(Parcel in) {
-            Point point = new Point();
-            this.mOffset = point;
-            Configuration configuration = new Configuration();
-            this.mConfiguration = configuration;
+            this.mOffset = new Point();
+            this.mConfiguration = new Configuration();
             this.mDisplayId = in.readInt();
-            SurfaceControl surfaceControl = new SurfaceControl();
-            this.mLeash = surfaceControl;
-            surfaceControl.readFromParcel(in);
-            surfaceControl.setUnreleasedWarningCallSite("TransitionInfo.Root");
-            point.readFromParcel(in);
+            this.mLeash = new SurfaceControl();
+            this.mLeash.readFromParcel(in);
+            this.mLeash.setUnreleasedWarningCallSite("TransitionInfo.Root");
+            this.mOffset.readFromParcel(in);
             if (CoreRune.MW_SHELL_TRANSITION) {
-                configuration.readFromParcel(in);
+                this.mConfiguration.readFromParcel(in);
                 this.mIsActivityRootLeash = in.readBoolean();
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Root localRemoteCopy() {
             if (CoreRune.MW_SHELL_TRANSITION) {
                 return new Root(this.mDisplayId, new SurfaceControl(this.mLeash, "localRemote"), this.mOffset.x, this.mOffset.y, this.mConfiguration, this.mIsActivityRootLeash);
@@ -1705,23 +1726,6 @@ public final class TransitionInfo implements Parcelable {
             }
         }
 
-        /* renamed from: android.window.TransitionInfo$Root$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Root> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Root createFromParcel(Parcel in) {
-                return new Root(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Root[] newArray(int size) {
-                return new Root[size];
-            }
-        }
-
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -1729,6 +1733,39 @@ public final class TransitionInfo implements Parcelable {
 
         public String toString() {
             return this.mDisplayId + "@" + this.mOffset + ":" + this.mLeash;
+        }
+    }
+
+    public boolean hasChangeTransition() {
+        Iterator<Change> it = this.mChanges.iterator();
+        while (it.hasNext()) {
+            Change change = it.next();
+            if (change.getChangeLeash() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasCustomDisplayChangeTransition() {
+        Iterator<Change> it = this.mChanges.iterator();
+        while (it.hasNext()) {
+            Change change = it.next();
+            if (change.hasFlags(268435456)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isSeparatedFromCustomDisplayChange() {
+        return this.mSeparatedFromCustomDisplayChange;
+    }
+
+    public void setSeparatedFromCustomDisplayChange(boolean separated) {
+        if (this.mSeparatedFromCustomDisplayChange != separated) {
+            this.mSeparatedFromCustomDisplayChange = separated;
+            Log.d(TAG, "setSeparatedFromCustomDisplayChange: " + separated + ", Callers=" + Debug.getCallers(3));
         }
     }
 }

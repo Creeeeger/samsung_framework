@@ -2,7 +2,7 @@ package com.samsung.android.game;
 
 import android.util.Slog;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class GmsLog {
     private static final String LOG_TAG_PREFIX = "SGM:";
 

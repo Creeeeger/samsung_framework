@@ -8,7 +8,6 @@ public @interface AudioPolicyForcedConfig {
     public static final int BT_DESK_DOCK = 7;
     public static final int BT_SCO = 3;
     public static final int DIGITAL_DOCK = 9;
-    public static final int EARPIECE = 16;
     public static final int ENCODED_SURROUND_ALWAYS = 14;
     public static final int ENCODED_SURROUND_MANUAL = 15;
     public static final int ENCODED_SURROUND_NEVER = 13;

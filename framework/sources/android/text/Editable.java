@@ -1,6 +1,6 @@
 package android.text;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface Editable extends CharSequence, GetChars, Spannable, Appendable {
     @Override // java.lang.Appendable
     Editable append(char c);
@@ -29,7 +29,6 @@ public interface Editable extends CharSequence, GetChars, Spannable, Appendable 
 
     void setFilters(InputFilter[] inputFilterArr);
 
-    /* loaded from: classes3.dex */
     public static class Factory {
         private static Factory sInstance = new Factory();
 

@@ -20,7 +20,6 @@ public interface ISemWifiDiagnosticsClient extends IInterface {
 
     List<Bundle> setupDelegation(String str) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemWifiDiagnosticsClient {
         @Override // com.samsung.android.wifi.ISemWifiDiagnosticsClient
         public List<Bundle> setupDelegation(String serviceVersion) throws RemoteException {
@@ -46,7 +45,6 @@ public interface ISemWifiDiagnosticsClient extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemWifiDiagnosticsClient {
         static final int TRANSACTION_clearHistory = 3;
         static final int TRANSACTION_getDiagnosisResults = 4;
@@ -98,40 +96,37 @@ public interface ISemWifiDiagnosticsClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemWifiDiagnosticsClient.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemWifiDiagnosticsClient.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemWifiDiagnosticsClient.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<Bundle> _result = setupDelegation(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    runDiagnosis(_arg02, _arg1);
+                    return true;
+                case 3:
+                    clearHistory();
+                    return true;
+                case 4:
+                    List<String> _result2 = getDiagnosisResults();
+                    reply.writeNoException();
+                    reply.writeStringList(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<Bundle> _result = setupDelegation(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            runDiagnosis(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            clearHistory();
-                            return true;
-                        case 4:
-                            List<String> _result2 = getDiagnosisResults();
-                            reply.writeNoException();
-                            reply.writeStringList(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISemWifiDiagnosticsClient {
             private IBinder mRemote;
 

@@ -15,24 +15,19 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class UnregisterCredentialDescriptionRequest implements Parcelable {
     public static final Parcelable.Creator<UnregisterCredentialDescriptionRequest> CREATOR = new Parcelable.Creator<UnregisterCredentialDescriptionRequest>() { // from class: android.credentials.UnregisterCredentialDescriptionRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UnregisterCredentialDescriptionRequest createFromParcel(Parcel in) {
             return new UnregisterCredentialDescriptionRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UnregisterCredentialDescriptionRequest[] newArray(int size) {
             return new UnregisterCredentialDescriptionRequest[size];
         }
     };
     private final List<CredentialDescription> mCredentialDescriptions;
-
-    /* synthetic */ UnregisterCredentialDescriptionRequest(Parcel parcel, UnregisterCredentialDescriptionRequestIA unregisterCredentialDescriptionRequestIA) {
-        this(parcel);
-    }
 
     public UnregisterCredentialDescriptionRequest(CredentialDescription credentialDescription) {
         this.mCredentialDescriptions = Arrays.asList((CredentialDescription) Objects.requireNonNull(credentialDescription));
@@ -45,27 +40,9 @@ public final class UnregisterCredentialDescriptionRequest implements Parcelable 
     private UnregisterCredentialDescriptionRequest(Parcel in) {
         ArrayList arrayList = new ArrayList();
         in.readTypedList(arrayList, CredentialDescription.CREATOR);
-        ArrayList arrayList2 = new ArrayList();
-        this.mCredentialDescriptions = arrayList2;
+        this.mCredentialDescriptions = new ArrayList();
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
-        arrayList2.addAll(arrayList);
-    }
-
-    /* renamed from: android.credentials.UnregisterCredentialDescriptionRequest$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UnregisterCredentialDescriptionRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UnregisterCredentialDescriptionRequest createFromParcel(Parcel in) {
-            return new UnregisterCredentialDescriptionRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UnregisterCredentialDescriptionRequest[] newArray(int size) {
-            return new UnregisterCredentialDescriptionRequest[size];
-        }
+        this.mCredentialDescriptions.addAll(arrayList);
     }
 
     @Override // android.os.Parcelable

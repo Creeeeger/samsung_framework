@@ -37,7 +37,6 @@ public interface ISemExecuteManager extends IInterface {
 
     void unRegisterChangedCallback(String str, PendingIntent pendingIntent, UserHandle userHandle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemExecuteManager {
         @Override // com.samsung.android.app.ISemExecuteManager
         public List<SemExecutableInfo> getExecutableInfos() throws RemoteException {
@@ -88,7 +87,6 @@ public interface ISemExecuteManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemExecuteManager {
         static final int TRANSACTION_getApplicationInfo = 7;
         static final int TRANSACTION_getExecutableInfo = 2;
@@ -155,105 +153,101 @@ public interface ISemExecuteManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemExecuteManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemExecuteManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemExecuteManager.DESCRIPTOR);
+                case 1:
+                    List<SemExecutableInfo> _result = getExecutableInfos();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    SemExecutableInfo _result2 = getExecutableInfo(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result3 = getShortcutIconFd(_arg02, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = hasShortcutHostPermission(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    String _arg12 = data.readString();
+                    long _arg22 = data.readLong();
+                    String _arg32 = data.readString();
+                    ClassLoader cl = getClass().getClassLoader();
+                    List _arg42 = data.readArrayList(cl);
+                    ComponentName _arg5 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg6 = data.readInt();
+                    UserHandle _arg7 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result5 = getShortcuts(_arg04, _arg12, _arg22, _arg32, _arg42, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    String _arg13 = data.readString();
+                    String _arg23 = data.readString();
+                    String _arg33 = data.readString();
+                    Rect _arg43 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    Bundle _arg52 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg62 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = startShortcut(_arg05, _arg13, _arg23, _arg33, _arg43, _arg52, _arg62);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    String _arg06 = data.readString();
+                    String _arg14 = data.readString();
+                    int _arg24 = data.readInt();
+                    UserHandle _arg34 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ApplicationInfo _result7 = getApplicationInfo(_arg06, _arg14, _arg24, _arg34);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    PendingIntent _arg15 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    UserHandle _arg25 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerChangedCallback(_arg07, _arg15, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    PendingIntent _arg16 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    UserHandle _arg26 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    unRegisterChangedCallback(_arg08, _arg16, _arg26);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SemExecutableInfo> _result = getExecutableInfos();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            SemExecutableInfo _result2 = getExecutableInfo(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result3 = getShortcutIconFd(_arg02, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = hasShortcutHostPermission(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            String _arg12 = data.readString();
-                            long _arg22 = data.readLong();
-                            String _arg32 = data.readString();
-                            ClassLoader cl = getClass().getClassLoader();
-                            List _arg42 = data.readArrayList(cl);
-                            ComponentName _arg5 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg6 = data.readInt();
-                            UserHandle _arg7 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result5 = getShortcuts(_arg04, _arg12, _arg22, _arg32, _arg42, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            String _arg13 = data.readString();
-                            String _arg23 = data.readString();
-                            String _arg33 = data.readString();
-                            Rect _arg43 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            Bundle _arg52 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg62 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = startShortcut(_arg05, _arg13, _arg23, _arg33, _arg43, _arg52, _arg62);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            String _arg06 = data.readString();
-                            String _arg14 = data.readString();
-                            int _arg24 = data.readInt();
-                            UserHandle _arg34 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ApplicationInfo _result7 = getApplicationInfo(_arg06, _arg14, _arg24, _arg34);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 8:
-                            String _arg07 = data.readString();
-                            PendingIntent _arg15 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            UserHandle _arg25 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerChangedCallback(_arg07, _arg15, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg08 = data.readString();
-                            PendingIntent _arg16 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            UserHandle _arg26 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            unRegisterChangedCallback(_arg08, _arg16, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemExecuteManager {
+        private static class Proxy implements ISemExecuteManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

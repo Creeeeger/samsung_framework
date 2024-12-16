@@ -27,8 +27,6 @@ public class Sms7BitEncodingTranslator {
     private static SparseIntArray mTranslationTableCDMA = null;
 
     public static String translate(CharSequence message, boolean isCdmaFormat) {
-        SparseIntArray sparseIntArray;
-        SparseIntArray sparseIntArray2;
         if (message == null) {
             Rlog.w(TAG, "Null message can not be translated");
             return null;
@@ -38,8 +36,7 @@ public class Sms7BitEncodingTranslator {
             return "";
         }
         ensure7BitTranslationTableLoaded();
-        SparseIntArray sparseIntArray3 = mTranslationTableCommon;
-        if ((sparseIntArray3 == null || sparseIntArray3.size() <= 0) && (((sparseIntArray = mTranslationTableGSM) == null || sparseIntArray.size() <= 0) && ((sparseIntArray2 = mTranslationTableCDMA) == null || sparseIntArray2.size() <= 0))) {
+        if ((mTranslationTableCommon == null || mTranslationTableCommon.size() <= 0) && ((mTranslationTableGSM == null || mTranslationTableGSM.size() <= 0) && (mTranslationTableCDMA == null || mTranslationTableCDMA.size() <= 0))) {
             return null;
         }
         char[] output = new char[size];
@@ -58,21 +55,16 @@ public class Sms7BitEncodingTranslator {
         }
         int translation = -1;
         ensure7BitTranslationTableLoaded();
-        SparseIntArray sparseIntArray = mTranslationTableCommon;
-        if (sparseIntArray != null) {
-            translation = sparseIntArray.get(c, -1);
+        if (mTranslationTableCommon != null) {
+            translation = mTranslationTableCommon.get(c, -1);
         }
         if (translation == -1) {
             if (isCdmaFormat) {
-                SparseIntArray sparseIntArray2 = mTranslationTableCDMA;
-                if (sparseIntArray2 != null) {
-                    translation = sparseIntArray2.get(c, -1);
+                if (mTranslationTableCDMA != null) {
+                    translation = mTranslationTableCDMA.get(c, -1);
                 }
-            } else {
-                SparseIntArray sparseIntArray3 = mTranslationTableGSM;
-                if (sparseIntArray3 != null) {
-                    translation = sparseIntArray3.get(c, -1);
-                }
+            } else if (mTranslationTableGSM != null) {
+                translation = mTranslationTableGSM.get(c, -1);
             }
         }
         if (translation != -1) {
@@ -108,7 +100,6 @@ public class Sms7BitEncodingTranslator {
     }
 
     private static void load7BitTranslationTableFromXml() {
-        boolean z;
         XmlResourceParser parser = null;
         Resources r = Resources.getSystem();
         if (0 == 0) {
@@ -123,23 +114,22 @@ public class Sms7BitEncodingTranslator {
                 while (true) {
                     XmlUtils.nextElement(parser);
                     String tag = parser.getName();
-                    z = DBG;
-                    if (z) {
+                    if (DBG) {
                         Rlog.d(TAG, "tag: " + tag);
                     }
                     if (XML_TRANSLATION_TYPE_TAG.equals(tag)) {
                         String type = parser.getAttributeValue(null, "Type");
-                        if (z) {
+                        if (DBG) {
                             Rlog.d(TAG, "type: " + type);
                         }
                         if (type.equals(ContactsContract.CommonDataKinds.PACKAGE_COMMON)) {
                             mTranslationTable = mTranslationTableCommon;
                         } else if (type.equals("gsm")) {
                             mTranslationTable = mTranslationTableGSM;
-                        } else if (!type.equals("cdma")) {
-                            Rlog.e(TAG, "Error Parsing 7BitTranslationTable: found incorrect type" + type);
-                        } else {
+                        } else if (type.equals("cdma")) {
                             mTranslationTable = mTranslationTableCDMA;
+                        } else {
+                            Rlog.e(TAG, "Error Parsing 7BitTranslationTable: found incorrect type" + type);
                         }
                     } else {
                         if (!XML_CHARACTOR_TAG.equals(tag) || mTranslationTable == null) {
@@ -150,14 +140,14 @@ public class Sms7BitEncodingTranslator {
                         if (from == -1 || to == -1) {
                             Rlog.d(TAG, "Invalid translation table file format");
                         } else {
-                            if (z) {
+                            if (DBG) {
                                 Rlog.d(TAG, "Loading mapping " + Integer.toHexString(from).toUpperCase() + " -> " + Integer.toHexString(to).toUpperCase());
                             }
                             mTranslationTable.put(from, to);
                         }
                     }
                 }
-                if (z) {
+                if (DBG) {
                     Rlog.d(TAG, "load7BitTranslationTableFromXml: parsing successful, file loaded");
                 }
                 if (!(parser instanceof XmlResourceParser)) {

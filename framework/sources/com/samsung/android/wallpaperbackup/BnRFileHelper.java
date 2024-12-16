@@ -34,14 +34,13 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class BnRFileHelper {
     public static final int REQ_MINIMUM_SIZE = 10485760;
     public static final int SECURITY_LEVEL_HIGH = 1;
     public static final int SECURITY_LEVEL_NORMAL = 0;
     private static final String TAG = BnRFileHelper.class.getSimpleName();
 
-    /* loaded from: classes5.dex */
     public enum ErrorCode {
         ERROR_NONE(0),
         UNKNOWN_ERROR(1),
@@ -102,14 +101,13 @@ public class BnRFileHelper {
             return false;
         }
         try {
-            String str = TAG;
-            Log.d(str, "copyDir: sourceFilePath = " + sourceFilePath);
-            Log.d(str, "copyDir: targetFilePath = " + targetFilePath);
+            Log.d(TAG, "copyDir: sourceFilePath = " + sourceFilePath);
+            Log.d(TAG, "copyDir: targetFilePath = " + targetFilePath);
             File srcDir = new File(sourceFilePath);
             File destDir = new File(targetFilePath);
             if (!destDir.exists()) {
                 boolean success = destDir.mkdirs();
-                Log.d(str, "copydir: " + destDir.getPath() + " is not exist. create success = " + success);
+                Log.d(TAG, "copydir: " + destDir.getPath() + " is not exist. create success = " + success);
             }
             String[] files = srcDir.list();
             if (files == null) {
@@ -141,7 +139,7 @@ public class BnRFileHelper {
         for (String fileName : fileNames) {
             String targetFilePath = targetDir + fileName;
             Log.i(TAG, "copyAssets: to " + targetFilePath);
-            if (TextUtils.isEmpty(key)) {
+            if (TextUtils.isEmpty(key) || fileName.endsWith(".xml")) {
                 if (!copyFile(targetFilePath, (ParcelFileDescriptor) assets.getParcelable(fileName))) {
                     return false;
                 }
@@ -668,7 +666,9 @@ public class BnRFileHelper {
                 case 0:
                     return stream;
                 case 1:
-                    return decryptStream(stream, saveKey);
+                    InputStream decryptedStream = decryptStream(stream, saveKey);
+                    closeSilently(stream);
+                    return decryptedStream;
                 default:
                     return stream;
             }

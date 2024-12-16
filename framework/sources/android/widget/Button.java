@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.PointerIcon;
+import android.view.flags.Flags;
 import android.widget.RemoteViews;
 import com.android.internal.R;
 
@@ -30,9 +31,8 @@ public class Button extends TextView {
         this.mIsThemeDeviceDefault = false;
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, outValue, true);
-        boolean z = outValue.data != 0;
-        this.mIsThemeDeviceDefault = z;
-        if (z && getHoverUIFeatureLevel() >= 2) {
+        this.mIsThemeDeviceDefault = outValue.data != 0;
+        if (this.mIsThemeDeviceDefault && getHoverUIFeatureLevel() >= 2) {
             semSetHoverPopupType(1);
         }
     }
@@ -44,7 +44,7 @@ public class Button extends TextView {
 
     @Override // android.widget.TextView, android.view.View
     public PointerIcon onResolvePointerIcon(MotionEvent event, int pointerIndex) {
-        if (!this.mIsThemeDeviceDefault && getPointerIcon() == null && isClickable() && isEnabled()) {
+        if (!this.mIsThemeDeviceDefault && !Flags.enableArrowIconOnHoverWhenClickable() && getPointerIcon() == null && isClickable() && isEnabled() && event.isFromSource(8194)) {
             return PointerIcon.getSystemIcon(getContext(), 1002);
         }
         return super.onResolvePointerIcon(event, pointerIndex);

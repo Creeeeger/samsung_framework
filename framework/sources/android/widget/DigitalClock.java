@@ -38,68 +38,42 @@ public class DigitalClock extends TextView {
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         this.mTickerStopped = false;
         super.onAttachedToWindow();
         this.mFormatChangeObserver = new FormatChangeObserver();
         getContext().getContentResolver().registerContentObserver(Settings.System.CONTENT_URI, true, this.mFormatChangeObserver);
         setFormat();
         this.mHandler = new Handler();
-        AnonymousClass1 anonymousClass1 = new Runnable() { // from class: android.widget.DigitalClock.1
-            AnonymousClass1() {
-            }
-
+        this.mTicker = new Runnable() { // from class: android.widget.DigitalClock.1
             @Override // java.lang.Runnable
             public void run() {
                 if (DigitalClock.this.mTickerStopped) {
                     return;
                 }
                 DigitalClock.this.mCalendar.setTimeInMillis(System.currentTimeMillis());
-                DigitalClock digitalClock = DigitalClock.this;
-                digitalClock.setText(DateFormat.format(digitalClock.mFormat, DigitalClock.this.mCalendar));
+                DigitalClock.this.lambda$setTextAsync$0(DateFormat.format(DigitalClock.this.mFormat, DigitalClock.this.mCalendar));
                 DigitalClock.this.invalidate();
                 long now = SystemClock.uptimeMillis();
                 long next = (1000 - (now % 1000)) + now;
                 DigitalClock.this.mHandler.postAtTime(DigitalClock.this.mTicker, next);
             }
         };
-        this.mTicker = anonymousClass1;
-        anonymousClass1.run();
-    }
-
-    /* renamed from: android.widget.DigitalClock$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (DigitalClock.this.mTickerStopped) {
-                return;
-            }
-            DigitalClock.this.mCalendar.setTimeInMillis(System.currentTimeMillis());
-            DigitalClock digitalClock = DigitalClock.this;
-            digitalClock.setText(DateFormat.format(digitalClock.mFormat, DigitalClock.this.mCalendar));
-            DigitalClock.this.invalidate();
-            long now = SystemClock.uptimeMillis();
-            long next = (1000 - (now % 1000)) + now;
-            DigitalClock.this.mHandler.postAtTime(DigitalClock.this.mTicker, next);
-        }
+        this.mTicker.run();
     }
 
     @Override // android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         this.mTickerStopped = true;
         getContext().getContentResolver().unregisterContentObserver(this.mFormatChangeObserver);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setFormat() {
         this.mFormat = DateFormat.getTimeFormatString(getContext());
     }
 
-    /* loaded from: classes4.dex */
     private class FormatChangeObserver extends ContentObserver {
         public FormatChangeObserver() {
             super(new Handler());

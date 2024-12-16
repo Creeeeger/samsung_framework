@@ -11,9 +11,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SoundModel implements Parcelable {
     public static final Parcelable.Creator<SoundModel> CREATOR = new Parcelable.Creator<SoundModel>() { // from class: android.media.soundtrigger.SoundModel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SoundModel createFromParcel(Parcel _aidl_source) {
             SoundModel _aidl_out = new SoundModel();
@@ -21,6 +19,7 @@ public class SoundModel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SoundModel[] newArray(int _aidl_size) {
             return new SoundModel[_aidl_size];
@@ -31,25 +30,6 @@ public class SoundModel implements Parcelable {
     public String vendorUuid;
     public int type = -1;
     public int dataSize = 0;
-
-    /* renamed from: android.media.soundtrigger.SoundModel$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SoundModel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SoundModel createFromParcel(Parcel _aidl_source) {
-            SoundModel _aidl_out = new SoundModel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SoundModel[] newArray(int _aidl_size) {
-            return new SoundModel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -138,7 +118,7 @@ public class SoundModel implements Parcelable {
         _aidl_sj.add("vendorUuid: " + Objects.toString(this.vendorUuid));
         _aidl_sj.add("data: " + Objects.toString(this.data));
         _aidl_sj.add("dataSize: " + this.dataSize);
-        return "android.media.soundtrigger.SoundModel" + _aidl_sj.toString();
+        return "SoundModel" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

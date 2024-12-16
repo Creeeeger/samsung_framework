@@ -1,7 +1,6 @@
 package com.android.internal.telephony;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import android.telephony.Rlog;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.SubscriptionManager;
@@ -13,6 +12,7 @@ import android.util.Patterns;
 import com.android.internal.telephony.GsmAlphabet;
 import com.android.internal.telephony.SmsConstants;
 import com.android.internal.telephony.cdma.sms.SmsEnvelope;
+import com.android.telephony.Rlog;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -88,7 +88,6 @@ public abstract class SmsMessageBase {
 
     public abstract boolean isStatusReportMessage();
 
-    /* loaded from: classes5.dex */
     public static abstract class SubmitPduBase {
         public byte[] encodedMessage;
         public byte[] encodedScAddress;
@@ -103,11 +102,10 @@ public abstract class SmsMessageBase {
     }
 
     public String getOriginatingAddress() {
-        SmsAddress smsAddress = this.mOriginatingAddress;
-        if (smsAddress == null) {
+        if (this.mOriginatingAddress == null) {
             return null;
         }
-        return smsAddress.getAddressString();
+        return this.mOriginatingAddress.getAddressString();
     }
 
     public String getDisplayOriginatingAddress() {
@@ -136,8 +134,7 @@ public abstract class SmsMessageBase {
     }
 
     public String getPseudoSubject() {
-        String str = this.mPseudoSubject;
-        return str == null ? "" : str;
+        return this.mPseudoSubject == null ? "" : this.mPseudoSubject;
     }
 
     public long getTimestampMillis() {
@@ -176,15 +173,11 @@ public abstract class SmsMessageBase {
         return this.mIndexOnIcc;
     }
 
-    public void parseMessageBody() {
-        SmsAddress smsAddress = this.mOriginatingAddress;
-        if (smsAddress != null && smsAddress.couldBeEmailGateway()) {
+    protected void parseMessageBody() {
+        if (this.mOriginatingAddress != null && this.mOriginatingAddress.couldBeEmailGateway()) {
             if (SmsManager.getSmsManagerForContextAndSubscriptionId(null, mSubId).getMnoName().toUpperCase().contains("ETISALAT_AE")) {
                 Rlog.d(LOG_TAG, "Ignore e-mail gateway for Etisalat_AE");
-                return;
-            }
-            SmsHeader smsHeader = this.mUserDataHeader;
-            if (smsHeader != null && smsHeader.concatRef != null && this.mUserDataHeader.concatRef.seqNumber != 1) {
+            } else if (this.mUserDataHeader != null && this.mUserDataHeader.concatRef != null && this.mUserDataHeader.concatRef.seqNumber != 1) {
                 Rlog.d(LOG_TAG, "Concatnated message and not the first page. no e-mail gateway");
             } else {
                 extractEmailAddressFromMessageBody();
@@ -260,14 +253,14 @@ public abstract class SmsMessageBase {
             java.lang.StringBuilder r1 = r1.append(r2)
             java.lang.String r1 = r1.toString()
             java.lang.String r2 = "SmsMessageBase"
-            android.telephony.Rlog.d(r2, r1)
+            com.android.telephony.Rlog.d(r2, r1)
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
             java.lang.String r3 = "nextPos = "
             java.lang.StringBuilder r1 = r1.append(r3)
             java.lang.StringBuilder r1 = r1.append(r0)
             java.lang.String r1 = r1.toString()
-            android.telephony.Rlog.d(r2, r1)
+            com.android.telephony.Rlog.d(r2, r1)
             int r1 = r7.length()     // Catch: java.lang.IllegalArgumentException -> L9d
             if (r0 >= r1) goto L9c
             java.text.BreakIterator r1 = java.text.BreakIterator.getCharacterInstance()     // Catch: java.lang.IllegalArgumentException -> L9d
@@ -303,7 +296,7 @@ public abstract class SmsMessageBase {
         L9d:
             r1 = move-exception
             java.lang.String r3 = "IllegalArgumentException"
-            android.telephony.Rlog.e(r2, r3)
+            com.android.telephony.Rlog.e(r2, r3)
         La3:
             return r0
         */
@@ -349,22 +342,21 @@ public abstract class SmsMessageBase {
     }
 
     public String getRecipientAddress() {
-        SmsAddress smsAddress = this.mRecipientAddress;
-        if (smsAddress == null) {
+        if (this.mRecipientAddress == null) {
             return null;
         }
-        return smsAddress.getAddressString();
+        return this.mRecipientAddress.getAddressString();
     }
 
     public int getReceivedEncodingType() {
         return this.mReceivedEncodingType;
     }
 
-    public void setSubId(int subId) {
+    protected void setSubId(int subId) {
         mSubId = subId;
     }
 
-    public static int getSubId() {
+    protected static int getSubId() {
         return mSubId;
     }
 
@@ -385,35 +377,38 @@ public abstract class SmsMessageBase {
     }
 
     public int getDestPortAddr() {
-        SmsHeader smsHeader = this.mUserDataHeader;
-        if (smsHeader != null && smsHeader.portAddrs != null) {
+        if (this.mUserDataHeader != null && this.mUserDataHeader.portAddrs != null) {
             return this.mUserDataHeader.portAddrs.destPort;
         }
         return -1;
     }
 
     public int getReadConfirmId() {
-        SmsHeader smsHeader = this.mUserDataHeader;
-        if (smsHeader != null && smsHeader.ktReadConfirm != null) {
+        if (this.mUserDataHeader != null && this.mUserDataHeader.ktReadConfirm != null) {
             return this.mUserDataHeader.ktReadConfirm.readConfirmID;
         }
         return -1;
     }
 
     public boolean getSafeMessageIndication() {
-        SmsHeader smsHeader = this.mUserDataHeader;
-        if (smsHeader != null) {
-            return smsHeader.safeMessageIndication;
+        if (this.mUserDataHeader != null) {
+            return this.mUserDataHeader.safeMessageIndication;
+        }
+        return false;
+    }
+
+    public boolean getLinkWarningIndication() {
+        if (this.mUserDataHeader != null) {
+            return this.mUserDataHeader.linkWarningIndication;
         }
         return false;
     }
 
     public String getReplyAddress() {
-        SmsAddress smsAddress = this.replyAddress;
-        if (smsAddress == null) {
+        if (this.replyAddress == null) {
             return null;
         }
-        return smsAddress.getAddressString();
+        return this.replyAddress.getAddressString();
     }
 
     public String getOriginalOriginatingAddress() {
@@ -459,24 +454,23 @@ public abstract class SmsMessageBase {
         return 0;
     }
 
-    public void parseSpecificTid(int tid) {
+    protected void parseSpecificTid(int tid) {
         switch (tid) {
             case 4097:
-                String str = this.mMessageBody;
-                if (str == null || str.length() == 0) {
+                if (this.mMessageBody == null || this.mMessageBody.length() == 0) {
                     this.mMessageBody = String.valueOf(pagingText);
-                    return;
+                    break;
                 } else {
                     this.mMessageBody = String.valueOf(pagingText) + "\n" + this.mMessageBody;
-                    return;
+                    break;
                 }
             case 4099:
             case 262144:
                 this.mMessageBody = String.valueOf(voiceMailText);
-                return;
+                break;
             case 49162:
                 parseLGTSharingNoti();
-                return;
+                break;
             case SmsEnvelope.TELESERVICE_LGT_WAP_URL_NOTI_49166 /* 49166 */:
             case SmsEnvelope.TELESERVICE_LGT_WAP_URL_NOTI_49167 /* 49167 */:
             case SmsEnvelope.TELESERVICE_LGT_WAP_URL_NOTI_49168 /* 49168 */:
@@ -484,9 +478,7 @@ public abstract class SmsMessageBase {
             case SmsEnvelope.TELESERVICE_LGT_WEB_LGT_49765 /* 49765 */:
             case SmsEnvelope.TELESERVICE_LGT_WEB_CP_49767 /* 49767 */:
                 parseLGTWebNWapNoti(tid);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -512,19 +504,17 @@ public abstract class SmsMessageBase {
             case SmsEnvelope.TELESERVICE_LGT_WAP_URL_NOTI_49166 /* 49166 */:
             case SmsEnvelope.TELESERVICE_LGT_WEB_THIRD_49763 /* 49763 */:
                 this.mMessageBody = String.valueOf(thirdPartyText) + "\n" + destBody + "\n" + String.valueOf(connectText);
-                return;
+                break;
             case SmsEnvelope.TELESERVICE_LGT_WAP_URL_NOTI_49167 /* 49167 */:
                 this.mMessageBody = String.valueOf(dataText) + "\n" + destBody;
-                return;
+                break;
             case SmsEnvelope.TELESERVICE_LGT_WAP_URL_NOTI_49168 /* 49168 */:
                 this.mMessageBody = String.valueOf(lguText) + "\n" + destBody;
-                return;
+                break;
             case SmsEnvelope.TELESERVICE_LGT_WEB_LGT_49765 /* 49765 */:
             case SmsEnvelope.TELESERVICE_LGT_WEB_CP_49767 /* 49767 */:
                 this.mMessageBody = String.valueOf(webText) + "\n" + destBody + "\n" + String.valueOf(connectText);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -542,7 +532,7 @@ public abstract class SmsMessageBase {
                 this.mSharedCmd = token;
             } else if (i == 3) {
                 this.mSharedPayLoad = token;
-                int index = token.lastIndexOf(String.valueOf((char) 3));
+                int index = this.mSharedPayLoad.lastIndexOf(String.valueOf((char) 3));
                 if (index != -1) {
                     this.mSharedPayLoad = this.mSharedPayLoad.substring(0, index);
                 }
@@ -552,7 +542,7 @@ public abstract class SmsMessageBase {
         this.mMessageBody = destBody;
     }
 
-    public static int getSubId(int phoneId) {
+    protected static int getSubId(int phoneId) {
         int[] subIds = SubscriptionManager.getSubId(phoneId);
         if (subIds != null && subIds.length > 0) {
             return subIds[0];

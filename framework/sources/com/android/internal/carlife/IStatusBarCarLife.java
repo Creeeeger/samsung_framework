@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.internal.view.AppearanceRegion;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IStatusBarCarLife extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.carlife.IStatusBarCarLife";
 
@@ -17,7 +17,6 @@ public interface IStatusBarCarLife extends IInterface {
 
     void showTransient(int i, int i2, boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IStatusBarCarLife {
         @Override // com.android.internal.carlife.IStatusBarCarLife
         public void onSystemBarAttributesChanged(int displayId, int appearance, AppearanceRegion[] appearanceRegions, boolean navbarColorManagedByIme, int behavior, int requestedVisibleTypes, String packageName) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IStatusBarCarLife extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IStatusBarCarLife {
         static final int TRANSACTION_abortTransient = 3;
         static final int TRANSACTION_onSystemBarAttributesChanged = 1;
@@ -86,45 +84,41 @@ public interface IStatusBarCarLife extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStatusBarCarLife.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStatusBarCarLife.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStatusBarCarLife.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    AppearanceRegion[] _arg2 = (AppearanceRegion[]) data.createTypedArray(AppearanceRegion.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    String _arg6 = data.readString();
+                    data.enforceNoDataAvail();
+                    onSystemBarAttributesChanged(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    showTransient(_arg02, _arg12, _arg22);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    abortTransient(_arg03, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            AppearanceRegion[] _arg2 = (AppearanceRegion[]) data.createTypedArray(AppearanceRegion.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            String _arg6 = data.readString();
-                            data.enforceNoDataAvail();
-                            onSystemBarAttributesChanged(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            showTransient(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            abortTransient(_arg03, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IStatusBarCarLife {
+        private static class Proxy implements IStatusBarCarLife {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

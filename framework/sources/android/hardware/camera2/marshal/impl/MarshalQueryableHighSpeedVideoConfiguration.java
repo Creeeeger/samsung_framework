@@ -6,11 +6,10 @@ import android.hardware.camera2.params.HighSpeedVideoConfiguration;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableHighSpeedVideoConfiguration implements MarshalQueryable<HighSpeedVideoConfiguration> {
     private static final int SIZE = 20;
 
-    /* loaded from: classes.dex */
     private class MarshalerHighSpeedVideoConfiguration extends Marshaler<HighSpeedVideoConfiguration> {
         protected MarshalerHighSpeedVideoConfiguration(TypeReference<HighSpeedVideoConfiguration> typeReference, int nativeType) {
             super(MarshalQueryableHighSpeedVideoConfiguration.this, typeReference, nativeType);
@@ -25,6 +24,7 @@ public class MarshalQueryableHighSpeedVideoConfiguration implements MarshalQuery
             buffer.putInt(value.getBatchSizeMax());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public HighSpeedVideoConfiguration unmarshal(ByteBuffer buffer) {
             int width = buffer.getInt();

@@ -65,9 +65,7 @@ public class DrmInfo {
         return this.mInfoType;
     }
 
-    public boolean isValid() {
-        byte[] bArr;
-        String str = this.mMimeType;
-        return (str == null || str.equals("") || (bArr = this.mData) == null || bArr.length <= 0 || !DrmInfoRequest.isValidType(this.mInfoType)) ? false : true;
+    boolean isValid() {
+        return (this.mMimeType == null || this.mMimeType.equals("") || this.mData == null || this.mData.length <= 0 || !DrmInfoRequest.isValidType(this.mInfoType)) ? false : true;
     }
 }

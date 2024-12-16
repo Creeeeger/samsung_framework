@@ -9,7 +9,7 @@ import android.os.IRemoteCallback;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IFreeformCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multiwindow.IFreeformCallback";
 
@@ -23,7 +23,6 @@ public interface IFreeformCallback extends IInterface {
 
     void onUnminimized(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IFreeformCallback {
         @Override // com.samsung.android.multiwindow.IFreeformCallback
         public void onMinimized(ComponentName realActivity, int taskId, int userId, int x, int y, boolean center) throws RemoteException {
@@ -51,7 +50,6 @@ public interface IFreeformCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IFreeformCallback {
         static final int TRANSACTION_onMinimizeAnimationEnd = 3;
         static final int TRANSACTION_onMinimized = 1;
@@ -106,53 +104,49 @@ public interface IFreeformCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFreeformCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFreeformCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFreeformCallback.DESCRIPTOR);
+                case 1:
+                    ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    boolean _arg5 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onMinimized(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUnminimized(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onMinimizeAnimationEnd(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    Point _arg12 = (Point) data.readTypedObject(Point.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTaskMoveStarted(_arg04, _arg12);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    IRemoteCallback _arg13 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onTaskMoveEnded(_arg05, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            boolean _arg5 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onMinimized(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUnminimized(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onMinimizeAnimationEnd(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            Point _arg12 = (Point) data.readTypedObject(Point.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTaskMoveStarted(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            IRemoteCallback _arg13 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onTaskMoveEnded(_arg05, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IFreeformCallback {
+        private static class Proxy implements IFreeformCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

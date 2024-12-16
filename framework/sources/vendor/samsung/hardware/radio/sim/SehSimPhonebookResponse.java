@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehSimPhonebookResponse implements Parcelable {
     public static final Parcelable.Creator<SehSimPhonebookResponse> CREATOR = new Parcelable.Creator<SehSimPhonebookResponse>() { // from class: vendor.samsung.hardware.radio.sim.SehSimPhonebookResponse.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehSimPhonebookResponse createFromParcel(Parcel _aidl_source) {
             SehSimPhonebookResponse _aidl_out = new SehSimPhonebookResponse();
@@ -30,25 +27,6 @@ public class SehSimPhonebookResponse implements Parcelable {
     public String[] numbers;
     public int recordIndex = 0;
     public int nextIndex = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.sim.SehSimPhonebookResponse$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehSimPhonebookResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehSimPhonebookResponse createFromParcel(Parcel _aidl_source) {
-            SehSimPhonebookResponse _aidl_out = new SehSimPhonebookResponse();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehSimPhonebookResponse[] newArray(int _aidl_size) {
-            return new SehSimPhonebookResponse[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -2,6 +2,7 @@ package android.database.sqlite;
 
 import android.database.sqlite.SQLiteDebug;
 import android.util.Log;
+import com.samsung.android.lock.LsConstants;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -15,8 +16,7 @@ public final class SQLiteWalBackgroundCheckpoint {
 
     public void tryBackgroundCheckpoint(SQLiteDatabase db, File walFile) {
         long now = System.currentTimeMillis();
-        long j = this.mLastCheckpointTime;
-        if ((j > 0 && now - j < 600000) || walFile.length() <= HUGE_WAL_SIZE_THRESHOLD || !this.mIsCheckpointRunning.compareAndSet(false, true)) {
+        if ((this.mLastCheckpointTime > 0 && now - this.mLastCheckpointTime < LsConstants.SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT) || walFile.length() <= HUGE_WAL_SIZE_THRESHOLD || !this.mIsCheckpointRunning.compareAndSet(false, true)) {
             return;
         }
         try {
@@ -27,14 +27,9 @@ public final class SQLiteWalBackgroundCheckpoint {
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class WalCheckpointExecutor extends Thread {
+    private final class WalCheckpointExecutor extends Thread {
         private static final String TAG = "WalCheckpointExecutor";
         private final SQLiteDatabase mDatabase;
-
-        /* synthetic */ WalCheckpointExecutor(SQLiteWalBackgroundCheckpoint sQLiteWalBackgroundCheckpoint, SQLiteDatabase sQLiteDatabase, WalCheckpointExecutorIA walCheckpointExecutorIA) {
-            this(sQLiteDatabase);
-        }
 
         private WalCheckpointExecutor(SQLiteDatabase db) {
             this.mDatabase = db;

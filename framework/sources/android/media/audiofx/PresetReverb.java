@@ -1,6 +1,5 @@
 package android.media.audiofx;
 
-import android.content.om.WallpaperThemeConstants;
 import android.media.audiofx.AudioEffect;
 import java.util.StringTokenizer;
 
@@ -19,7 +18,6 @@ public class PresetReverb extends AudioEffect {
     private OnParameterChangeListener mParamListener;
     private final Object mParamListenerLock;
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(PresetReverb presetReverb, int i, int i2, short s);
     }
@@ -41,12 +39,7 @@ public class PresetReverb extends AudioEffect {
         return value[0];
     }
 
-    /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
-        /* synthetic */ BaseParameterListener(PresetReverb presetReverb, BaseParameterListenerIA baseParameterListenerIA) {
-            this();
-        }
-
         private BaseParameterListener() {
         }
 
@@ -78,14 +71,12 @@ public class PresetReverb extends AudioEffect {
         synchronized (this.mParamListenerLock) {
             if (this.mParamListener == null) {
                 this.mParamListener = listener;
-                BaseParameterListener baseParameterListener = new BaseParameterListener();
-                this.mBaseParamListener = baseParameterListener;
-                super.setParameterListener(baseParameterListener);
+                this.mBaseParamListener = new BaseParameterListener();
+                super.setParameterListener(this.mBaseParamListener);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Settings {
         public short preset;
 
@@ -104,7 +95,7 @@ public class PresetReverb extends AudioEffect {
             }
             try {
                 String key2 = st.nextToken();
-                if (!key2.equals(WallpaperThemeConstants.DYNAMIC_COLOR_PRESET)) {
+                if (!key2.equals("preset")) {
                     throw new IllegalArgumentException("invalid key name: " + key2);
                 }
                 this.preset = Short.parseShort(st.nextToken());

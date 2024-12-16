@@ -1,12 +1,11 @@
 package com.samsung.android.provider;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemKnoxPolicyContract {
     private static final String AUTHORITY = "com.sec.knox.provider";
     public static final String AUTHORITY2 = "com.sec.knox.provider2";
     private static final String CONTENT = "content://";
 
-    /* loaded from: classes5.dex */
     public static class ApplicationPolicy {
         public static final String APPLICATION_INSTALL_UNINSTALL_LIST_AS_USER = "getApplicationInstallUninstallListAsUser";
         public static final String APPLICATION_SET_TO_DEFAULT = "isApplicationSetToDefault";
@@ -22,7 +21,6 @@ public class SemKnoxPolicyContract {
         public static final String URI = "content://com.sec.knox.provider2/ApplicationPolicy";
     }
 
-    /* loaded from: classes5.dex */
     public static class AuditLog {
         public static final int ALERT = 1;
         public static final int AUDIT_LOG_GROUP_APPLICATION = 5;
@@ -40,7 +38,6 @@ public class SemKnoxPolicyContract {
         public static final int WARNING = 4;
     }
 
-    /* loaded from: classes5.dex */
     public static class BluetoothPolicy {
         public static final String BLE_ALLOWED = "isBLEAllowed";
         public static final String BLUETOOTH_ENABLED = "isBluetoothEnabled";
@@ -48,7 +45,6 @@ public class SemKnoxPolicyContract {
         public static final String URI = "content://com.sec.knox.provider/BluetoothPolicy";
     }
 
-    /* loaded from: classes5.dex */
     public static class DeviceAccountPolicy {
         public static final String ACCOUNT_REMOVAL_ALLOWED = "isAccountRemovalAllowed";
         public static final String ACCOUNT_REMOVAL_ALLOWED_AS_USER = "isAccountRemovalAllowedAsUser";
@@ -56,15 +52,14 @@ public class SemKnoxPolicyContract {
         public static final String URI = "content://com.sec.knox.provider2/DeviceAccountPolicy";
     }
 
-    /* loaded from: classes5.dex */
     public static class KioskMode {
         public static final String KIOSK_HOME_PACKAGE = "getKioskHomePackage";
+        public static final String KIOSK_MODE_AIRCOMMANDMODE_ALLOWED = "isAirCommandModeAllowed";
         public static final String KIOSK_MODE_ENABLED = "isKioskModeEnabled";
         public static final String NAME = "KioskMode";
         public static final String URI = "content://com.sec.knox.provider2/KioskMode";
     }
 
-    /* loaded from: classes5.dex */
     public static class KnoxCustomManagerService {
         public static final String NAME1 = "KnoxCustomManagerService1";
         public static final String NAME2 = "KnoxCustomManagerService2";
@@ -75,14 +70,12 @@ public class SemKnoxPolicyContract {
         public static final String USB_CONNECTION_TYPE_INTERNAL = "getUsbConnectionTypeInternal";
     }
 
-    /* loaded from: classes5.dex */
     public static class MiscPolicy {
         public static final String NAME = "MiscPolicy";
         public static final String NFC_STATE_CHANGE = "isNFCStateChangeAllowed";
         public static final String URI = "content://com.sec.knox.provider2/MiscPolicy";
     }
 
-    /* loaded from: classes5.dex */
     public static class PasswordPolicy {
         public static final String BIOMETRIC_AUTHENTICATION_ENABLED = "isBiometricAuthenticationEnabled";
         public static final String BIOMETRIC_AUTHENTICATION_ENABLED_AS_USER = "isBiometricAuthenticationEnabledAsUser";
@@ -90,7 +83,6 @@ public class SemKnoxPolicyContract {
         public static final String URI2 = "content://com.sec.knox.provider/PasswordPolicy2";
     }
 
-    /* loaded from: classes5.dex */
     public static class PhoneRestrictionPolicy {
         public static final String COPY_CONTACT_TO_SIM_ALLOWED = "isCopyContactToSimAllowed";
         public static final String EXTRA_MESSAGE_ID_INTERNAL = "com.samsung.android.knox.intent.extra.MESSAGE_ID_INTERNAL";
@@ -100,7 +92,6 @@ public class SemKnoxPolicyContract {
         public static final String URI = "content://com.sec.knox.provider2/PhoneRestrictionPolicy";
     }
 
-    /* loaded from: classes5.dex */
     public static class ProfilePolicy {
         public static final String KNOX_PROFILE_POLICY_UPDATE = "com.samsung.android.knox.profilepolicy.intent.action.update";
         public static final String NAME = "ProfilePolicy";
@@ -109,7 +100,6 @@ public class SemKnoxPolicyContract {
         public static final String URI = "content://com.sec.knox.provider/ProfilePolicy";
     }
 
-    /* loaded from: classes5.dex */
     public static class RestrictionPolicy {
         public static final String ANDROID_BEAM_ALLOWED = "isAndroidBeamAllowed";
         public static final String BLUETOOTH_TETHERING_ENABLED = "isBluetoothTetheringEnabled";
@@ -122,6 +112,7 @@ public class SemKnoxPolicyContract {
         public static final String HEADPHONE_ENABLED = "isHeadPhoneEnabled";
         public static final String INTELLIGENCE_ONLINE_PROCESSING_ALLOWED = "isIntelligenceOnlineProcessingAllowed";
         public static final String LOCAL_CONTACT_STORAGE_ALLOWED = "isLocalContactStorageAllowed";
+        public static final String MIC_ENABLED = "isMicEnabled";
         public static final String NAME = "RestrictionPolicy";
         public static final String POWER_OFF_ALLOWED = "isPowerOffAllowed";
         public static final String POWER_SAVING_MODE_ALLOWED = "isPowerSavingModeAllowed";
@@ -134,6 +125,7 @@ public class SemKnoxPolicyContract {
         public static final String SETTINGS_CHANGES_ALLOWED = "isSettingsChangesAllowed";
         public static final String SHARE_LIST_ALLOWED = "isShareListAllowed";
         public static final String SHOW_TOAST_IF_INTELLIGENCE_ONLINE_PROCESSING_DISALLOWED = "showToastIfIntelligenceOnlineProcessingDisallowed";
+        public static final String SMARTCLIPMODE_ALLOWED = "isSmartClipModeAllowed";
         public static final String URI = "content://com.sec.knox.provider/RestrictionPolicy";
         public static final String URI1 = "content://com.sec.knox.provider/RestrictionPolicy1";
         public static final String URI2 = "content://com.sec.knox.provider/RestrictionPolicy2";

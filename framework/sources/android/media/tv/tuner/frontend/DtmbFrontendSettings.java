@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class DtmbFrontendSettings extends FrontendSettings {
     public static final int BANDWIDTH_6MHZ = 4;
     public static final int BANDWIDTH_8MHZ = 2;
@@ -47,37 +47,27 @@ public final class DtmbFrontendSettings extends FrontendSettings {
     private final int mTransmissionMode;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Bandwidth {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface CodeRate {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface GuardInterval {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Modulation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TimeInterleaveMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TransmissionMode {
-    }
-
-    /* synthetic */ DtmbFrontendSettings(long j, int i, int i2, int i3, int i4, int i5, int i6, DtmbFrontendSettingsIA dtmbFrontendSettingsIA) {
-        this(j, i, i2, i3, i4, i5, i6);
     }
 
     private DtmbFrontendSettings(long frequency, int modulation, int codeRate, int transmissionMode, int guardInterval, int timeInterleaveMode, int bandwidth) {
@@ -118,7 +108,6 @@ public final class DtmbFrontendSettings extends FrontendSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mBandwidth;
         private int mCodeRate;
@@ -127,10 +116,6 @@ public final class DtmbFrontendSettings extends FrontendSettings {
         private int mModulation;
         private int mTimeInterleaveMode;
         private int mTransmissionMode;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;

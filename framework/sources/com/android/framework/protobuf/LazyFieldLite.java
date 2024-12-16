@@ -2,7 +2,7 @@ package com.android.framework.protobuf;
 
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public class LazyFieldLite {
     private static final ExtensionRegistryLite EMPTY_REGISTRY = ExtensionRegistryLite.getEmptyRegistry();
     private ByteString delayedBytes;
@@ -52,8 +52,7 @@ public class LazyFieldLite {
     }
 
     public boolean containsDefaultInstance() {
-        ByteString byteString;
-        return this.memoizedBytes == ByteString.EMPTY || (this.value == null && ((byteString = this.delayedBytes) == null || byteString == ByteString.EMPTY));
+        return this.memoizedBytes == ByteString.EMPTY || (this.value == null && (this.delayedBytes == null || this.delayedBytes == ByteString.EMPTY));
     }
 
     public void clear() {
@@ -66,9 +65,8 @@ public class LazyFieldLite {
         this.delayedBytes = other.delayedBytes;
         this.value = other.value;
         this.memoizedBytes = other.memoizedBytes;
-        ExtensionRegistryLite extensionRegistryLite = other.extensionRegistry;
-        if (extensionRegistryLite != null) {
-            this.extensionRegistry = extensionRegistryLite;
+        if (other.extensionRegistry != null) {
+            this.extensionRegistry = other.extensionRegistry;
         }
     }
 
@@ -86,7 +84,6 @@ public class LazyFieldLite {
     }
 
     public void merge(LazyFieldLite other) {
-        ByteString byteString;
         if (other.containsDefaultInstance()) {
             return;
         }
@@ -97,9 +94,8 @@ public class LazyFieldLite {
         if (this.extensionRegistry == null) {
             this.extensionRegistry = other.extensionRegistry;
         }
-        ByteString byteString2 = this.delayedBytes;
-        if (byteString2 != null && (byteString = other.delayedBytes) != null) {
-            this.delayedBytes = byteString2.concat(byteString);
+        if (this.delayedBytes != null && other.delayedBytes != null) {
+            this.delayedBytes = this.delayedBytes.concat(other.delayedBytes);
             return;
         }
         if (this.value == null && other.value != null) {
@@ -119,9 +115,8 @@ public class LazyFieldLite {
         if (this.extensionRegistry == null) {
             this.extensionRegistry = extensionRegistry;
         }
-        ByteString byteString = this.delayedBytes;
-        if (byteString != null) {
-            setByteString(byteString.concat(input.readBytes()), this.extensionRegistry);
+        if (this.delayedBytes != null) {
+            setByteString(this.delayedBytes.concat(input.readBytes()), this.extensionRegistry);
         } else {
             try {
                 setValue(this.value.toBuilder().mergeFrom(input, extensionRegistry).build());
@@ -150,9 +145,8 @@ public class LazyFieldLite {
         if (this.memoizedBytes != null) {
             return this.memoizedBytes.size();
         }
-        ByteString byteString = this.delayedBytes;
-        if (byteString != null) {
-            return byteString.size();
+        if (this.delayedBytes != null) {
+            return this.delayedBytes.size();
         }
         if (this.value != null) {
             return this.value.getSerializedSize();
@@ -164,9 +158,8 @@ public class LazyFieldLite {
         if (this.memoizedBytes != null) {
             return this.memoizedBytes;
         }
-        ByteString byteString = this.delayedBytes;
-        if (byteString != null) {
-            return byteString;
+        if (this.delayedBytes != null) {
+            return this.delayedBytes;
         }
         synchronized (this) {
             if (this.memoizedBytes != null) {
@@ -181,14 +174,13 @@ public class LazyFieldLite {
         }
     }
 
-    public void writeTo(Writer writer, int fieldNumber) throws IOException {
+    void writeTo(Writer writer, int fieldNumber) throws IOException {
         if (this.memoizedBytes != null) {
             writer.writeBytes(fieldNumber, this.memoizedBytes);
             return;
         }
-        ByteString byteString = this.delayedBytes;
-        if (byteString != null) {
-            writer.writeBytes(fieldNumber, byteString);
+        if (this.delayedBytes != null) {
+            writer.writeBytes(fieldNumber, this.delayedBytes);
         } else if (this.value != null) {
             writer.writeMessage(fieldNumber, this.value);
         } else {

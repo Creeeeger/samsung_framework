@@ -18,7 +18,7 @@ import android.view.inputmethod.ParcelableHandwritingGesture;
 import android.view.inputmethod.TextAttribute;
 import com.android.internal.infra.AndroidFuture;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IRemoteInputConnection extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IRemoteInputConnection";
 
@@ -94,7 +94,6 @@ public interface IRemoteInputConnection extends IInterface {
 
     void setSelection(InputConnectionCommandHeader inputConnectionCommandHeader, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IRemoteInputConnection {
         @Override // com.android.internal.inputmethod.IRemoteInputConnection
         public void getTextBeforeCursor(InputConnectionCommandHeader header, int length, int flags, AndroidFuture future) throws RemoteException {
@@ -246,7 +245,6 @@ public interface IRemoteInputConnection extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IRemoteInputConnection {
         static final int TRANSACTION_beginBatchEdit = 17;
         static final int TRANSACTION_cancelCancellationSignal = 35;
@@ -394,270 +392,266 @@ public interface IRemoteInputConnection extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteInputConnection.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteInputConnection.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteInputConnection.DESCRIPTOR);
+                case 1:
+                    InputConnectionCommandHeader _arg0 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    AndroidFuture _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getTextBeforeCursor(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    InputConnectionCommandHeader _arg02 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    AndroidFuture _arg32 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getTextAfterCursor(_arg02, _arg12, _arg22, _arg32);
+                    return true;
+                case 3:
+                    InputConnectionCommandHeader _arg03 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg13 = data.readInt();
+                    AndroidFuture _arg23 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getCursorCapsMode(_arg03, _arg13, _arg23);
+                    return true;
+                case 4:
+                    InputConnectionCommandHeader _arg04 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    ExtractedTextRequest _arg14 = (ExtractedTextRequest) data.readTypedObject(ExtractedTextRequest.CREATOR);
+                    int _arg24 = data.readInt();
+                    AndroidFuture _arg33 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getExtractedText(_arg04, _arg14, _arg24, _arg33);
+                    return true;
+                case 5:
+                    InputConnectionCommandHeader _arg05 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg15 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteSurroundingText(_arg05, _arg15, _arg25);
+                    return true;
+                case 6:
+                    InputConnectionCommandHeader _arg06 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg16 = data.readInt();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteSurroundingTextInCodePoints(_arg06, _arg16, _arg26);
+                    return true;
+                case 7:
+                    InputConnectionCommandHeader _arg07 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    CharSequence _arg17 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setComposingText(_arg07, _arg17, _arg27);
+                    return true;
+                case 8:
+                    InputConnectionCommandHeader _arg08 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    CharSequence _arg18 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg28 = data.readInt();
+                    TextAttribute _arg34 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
+                    data.enforceNoDataAvail();
+                    setComposingTextWithTextAttribute(_arg08, _arg18, _arg28, _arg34);
+                    return true;
+                case 9:
+                    InputConnectionCommandHeader _arg09 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    data.enforceNoDataAvail();
+                    finishComposingText(_arg09);
+                    return true;
+                case 10:
+                    InputConnectionCommandHeader _arg010 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    CharSequence _arg19 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg29 = data.readInt();
+                    data.enforceNoDataAvail();
+                    commitText(_arg010, _arg19, _arg29);
+                    return true;
+                case 11:
+                    InputConnectionCommandHeader _arg011 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    CharSequence _arg110 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg210 = data.readInt();
+                    TextAttribute _arg35 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
+                    data.enforceNoDataAvail();
+                    commitTextWithTextAttribute(_arg011, _arg110, _arg210, _arg35);
+                    return true;
+                case 12:
+                    InputConnectionCommandHeader _arg012 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    CompletionInfo _arg111 = (CompletionInfo) data.readTypedObject(CompletionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    commitCompletion(_arg012, _arg111);
+                    return true;
+                case 13:
+                    InputConnectionCommandHeader _arg013 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    CorrectionInfo _arg112 = (CorrectionInfo) data.readTypedObject(CorrectionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    commitCorrection(_arg013, _arg112);
+                    return true;
+                case 14:
+                    InputConnectionCommandHeader _arg014 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg113 = data.readInt();
+                    int _arg211 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSelection(_arg014, _arg113, _arg211);
+                    return true;
+                case 15:
+                    InputConnectionCommandHeader _arg015 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg114 = data.readInt();
+                    data.enforceNoDataAvail();
+                    performEditorAction(_arg015, _arg114);
+                    return true;
+                case 16:
+                    InputConnectionCommandHeader _arg016 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg115 = data.readInt();
+                    data.enforceNoDataAvail();
+                    performContextMenuAction(_arg016, _arg115);
+                    return true;
+                case 17:
+                    InputConnectionCommandHeader _arg017 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    data.enforceNoDataAvail();
+                    beginBatchEdit(_arg017);
+                    return true;
+                case 18:
+                    InputConnectionCommandHeader _arg018 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    data.enforceNoDataAvail();
+                    endBatchEdit(_arg018);
+                    return true;
+                case 19:
+                    InputConnectionCommandHeader _arg019 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    KeyEvent _arg116 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendKeyEvent(_arg019, _arg116);
+                    return true;
+                case 20:
+                    InputConnectionCommandHeader _arg020 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearMetaKeyStates(_arg020, _arg117);
+                    return true;
+                case 21:
+                    InputConnectionCommandHeader _arg021 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    data.enforceNoDataAvail();
+                    performSpellCheck(_arg021);
+                    return true;
+                case 22:
+                    InputConnectionCommandHeader _arg022 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    String _arg118 = data.readString();
+                    Bundle _arg212 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    performPrivateCommand(_arg022, _arg118, _arg212);
+                    return true;
+                case 23:
+                    InputConnectionCommandHeader _arg023 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    ParcelableHandwritingGesture _arg119 = (ParcelableHandwritingGesture) data.readTypedObject(ParcelableHandwritingGesture.CREATOR);
+                    ResultReceiver _arg213 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    performHandwritingGesture(_arg023, _arg119, _arg213);
+                    return true;
+                case 24:
+                    InputConnectionCommandHeader _arg024 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    ParcelableHandwritingGesture _arg120 = (ParcelableHandwritingGesture) data.readTypedObject(ParcelableHandwritingGesture.CREATOR);
+                    IBinder _arg214 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    previewHandwritingGesture(_arg024, _arg120, _arg214);
+                    return true;
+                case 25:
+                    InputConnectionCommandHeader _arg025 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg121 = data.readInt();
+                    int _arg215 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setComposingRegion(_arg025, _arg121, _arg215);
+                    return true;
+                case 26:
+                    InputConnectionCommandHeader _arg026 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg122 = data.readInt();
+                    int _arg216 = data.readInt();
+                    TextAttribute _arg36 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
+                    data.enforceNoDataAvail();
+                    setComposingRegionWithTextAttribute(_arg026, _arg122, _arg216, _arg36);
+                    return true;
+                case 27:
+                    InputConnectionCommandHeader _arg027 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg123 = data.readInt();
+                    AndroidFuture _arg217 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSelectedText(_arg027, _arg123, _arg217);
+                    return true;
+                case 28:
+                    InputConnectionCommandHeader _arg028 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg124 = data.readInt();
+                    int _arg218 = data.readInt();
+                    AndroidFuture _arg37 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestCursorUpdates(_arg028, _arg124, _arg218, _arg37);
+                    return true;
+                case 29:
+                    InputConnectionCommandHeader _arg029 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg125 = data.readInt();
+                    int _arg219 = data.readInt();
+                    int _arg38 = data.readInt();
+                    AndroidFuture _arg4 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestCursorUpdatesWithFilter(_arg029, _arg125, _arg219, _arg38, _arg4);
+                    return true;
+                case 30:
+                    InputConnectionCommandHeader _arg030 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    RectF _arg126 = (RectF) data.readTypedObject(RectF.CREATOR);
+                    ResultReceiver _arg220 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestTextBoundsInfo(_arg030, _arg126, _arg220);
+                    return true;
+                case 31:
+                    InputConnectionCommandHeader _arg031 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    InputContentInfo _arg127 = (InputContentInfo) data.readTypedObject(InputContentInfo.CREATOR);
+                    int _arg221 = data.readInt();
+                    Bundle _arg39 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    AndroidFuture _arg42 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    commitContent(_arg031, _arg127, _arg221, _arg39, _arg42);
+                    return true;
+                case 32:
+                    InputConnectionCommandHeader _arg032 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg128 = data.readInt();
+                    int _arg222 = data.readInt();
+                    int _arg310 = data.readInt();
+                    AndroidFuture _arg43 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSurroundingText(_arg032, _arg128, _arg222, _arg310, _arg43);
+                    return true;
+                case 33:
+                    InputConnectionCommandHeader _arg033 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    boolean _arg129 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setImeConsumesInput(_arg033, _arg129);
+                    return true;
+                case 34:
+                    InputConnectionCommandHeader _arg034 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
+                    int _arg130 = data.readInt();
+                    int _arg223 = data.readInt();
+                    CharSequence _arg311 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg44 = data.readInt();
+                    TextAttribute _arg5 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
+                    data.enforceNoDataAvail();
+                    replaceText(_arg034, _arg130, _arg223, _arg311, _arg44, _arg5);
+                    return true;
+                case 35:
+                    IBinder _arg035 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    cancelCancellationSignal(_arg035);
+                    return true;
+                case 36:
+                    IBinder _arg036 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    forgetCancellationSignal(_arg036);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            InputConnectionCommandHeader _arg0 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            AndroidFuture _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getTextBeforeCursor(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            InputConnectionCommandHeader _arg02 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            AndroidFuture _arg32 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getTextAfterCursor(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        case 3:
-                            InputConnectionCommandHeader _arg03 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg13 = data.readInt();
-                            AndroidFuture _arg23 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getCursorCapsMode(_arg03, _arg13, _arg23);
-                            return true;
-                        case 4:
-                            InputConnectionCommandHeader _arg04 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            ExtractedTextRequest _arg14 = (ExtractedTextRequest) data.readTypedObject(ExtractedTextRequest.CREATOR);
-                            int _arg24 = data.readInt();
-                            AndroidFuture _arg33 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getExtractedText(_arg04, _arg14, _arg24, _arg33);
-                            return true;
-                        case 5:
-                            InputConnectionCommandHeader _arg05 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg15 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteSurroundingText(_arg05, _arg15, _arg25);
-                            return true;
-                        case 6:
-                            InputConnectionCommandHeader _arg06 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg16 = data.readInt();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteSurroundingTextInCodePoints(_arg06, _arg16, _arg26);
-                            return true;
-                        case 7:
-                            InputConnectionCommandHeader _arg07 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            CharSequence _arg17 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setComposingText(_arg07, _arg17, _arg27);
-                            return true;
-                        case 8:
-                            InputConnectionCommandHeader _arg08 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            CharSequence _arg18 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg28 = data.readInt();
-                            TextAttribute _arg34 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
-                            data.enforceNoDataAvail();
-                            setComposingTextWithTextAttribute(_arg08, _arg18, _arg28, _arg34);
-                            return true;
-                        case 9:
-                            InputConnectionCommandHeader _arg09 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            data.enforceNoDataAvail();
-                            finishComposingText(_arg09);
-                            return true;
-                        case 10:
-                            InputConnectionCommandHeader _arg010 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            CharSequence _arg19 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg29 = data.readInt();
-                            data.enforceNoDataAvail();
-                            commitText(_arg010, _arg19, _arg29);
-                            return true;
-                        case 11:
-                            InputConnectionCommandHeader _arg011 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            CharSequence _arg110 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg210 = data.readInt();
-                            TextAttribute _arg35 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
-                            data.enforceNoDataAvail();
-                            commitTextWithTextAttribute(_arg011, _arg110, _arg210, _arg35);
-                            return true;
-                        case 12:
-                            InputConnectionCommandHeader _arg012 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            CompletionInfo _arg111 = (CompletionInfo) data.readTypedObject(CompletionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            commitCompletion(_arg012, _arg111);
-                            return true;
-                        case 13:
-                            InputConnectionCommandHeader _arg013 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            CorrectionInfo _arg112 = (CorrectionInfo) data.readTypedObject(CorrectionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            commitCorrection(_arg013, _arg112);
-                            return true;
-                        case 14:
-                            InputConnectionCommandHeader _arg014 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg113 = data.readInt();
-                            int _arg211 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSelection(_arg014, _arg113, _arg211);
-                            return true;
-                        case 15:
-                            InputConnectionCommandHeader _arg015 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            performEditorAction(_arg015, _arg114);
-                            return true;
-                        case 16:
-                            InputConnectionCommandHeader _arg016 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            performContextMenuAction(_arg016, _arg115);
-                            return true;
-                        case 17:
-                            InputConnectionCommandHeader _arg017 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            data.enforceNoDataAvail();
-                            beginBatchEdit(_arg017);
-                            return true;
-                        case 18:
-                            InputConnectionCommandHeader _arg018 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            data.enforceNoDataAvail();
-                            endBatchEdit(_arg018);
-                            return true;
-                        case 19:
-                            InputConnectionCommandHeader _arg019 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            KeyEvent _arg116 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendKeyEvent(_arg019, _arg116);
-                            return true;
-                        case 20:
-                            InputConnectionCommandHeader _arg020 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearMetaKeyStates(_arg020, _arg117);
-                            return true;
-                        case 21:
-                            InputConnectionCommandHeader _arg021 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            data.enforceNoDataAvail();
-                            performSpellCheck(_arg021);
-                            return true;
-                        case 22:
-                            InputConnectionCommandHeader _arg022 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            String _arg118 = data.readString();
-                            Bundle _arg212 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            performPrivateCommand(_arg022, _arg118, _arg212);
-                            return true;
-                        case 23:
-                            InputConnectionCommandHeader _arg023 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            ParcelableHandwritingGesture _arg119 = (ParcelableHandwritingGesture) data.readTypedObject(ParcelableHandwritingGesture.CREATOR);
-                            ResultReceiver _arg213 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            performHandwritingGesture(_arg023, _arg119, _arg213);
-                            return true;
-                        case 24:
-                            InputConnectionCommandHeader _arg024 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            ParcelableHandwritingGesture _arg120 = (ParcelableHandwritingGesture) data.readTypedObject(ParcelableHandwritingGesture.CREATOR);
-                            IBinder _arg214 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            previewHandwritingGesture(_arg024, _arg120, _arg214);
-                            return true;
-                        case 25:
-                            InputConnectionCommandHeader _arg025 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg121 = data.readInt();
-                            int _arg215 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setComposingRegion(_arg025, _arg121, _arg215);
-                            return true;
-                        case 26:
-                            InputConnectionCommandHeader _arg026 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg122 = data.readInt();
-                            int _arg216 = data.readInt();
-                            TextAttribute _arg36 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
-                            data.enforceNoDataAvail();
-                            setComposingRegionWithTextAttribute(_arg026, _arg122, _arg216, _arg36);
-                            return true;
-                        case 27:
-                            InputConnectionCommandHeader _arg027 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg123 = data.readInt();
-                            AndroidFuture _arg217 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSelectedText(_arg027, _arg123, _arg217);
-                            return true;
-                        case 28:
-                            InputConnectionCommandHeader _arg028 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg124 = data.readInt();
-                            int _arg218 = data.readInt();
-                            AndroidFuture _arg37 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestCursorUpdates(_arg028, _arg124, _arg218, _arg37);
-                            return true;
-                        case 29:
-                            InputConnectionCommandHeader _arg029 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg125 = data.readInt();
-                            int _arg219 = data.readInt();
-                            int _arg38 = data.readInt();
-                            AndroidFuture _arg4 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestCursorUpdatesWithFilter(_arg029, _arg125, _arg219, _arg38, _arg4);
-                            return true;
-                        case 30:
-                            InputConnectionCommandHeader _arg030 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            RectF _arg126 = (RectF) data.readTypedObject(RectF.CREATOR);
-                            ResultReceiver _arg220 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestTextBoundsInfo(_arg030, _arg126, _arg220);
-                            return true;
-                        case 31:
-                            InputConnectionCommandHeader _arg031 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            InputContentInfo _arg127 = (InputContentInfo) data.readTypedObject(InputContentInfo.CREATOR);
-                            int _arg221 = data.readInt();
-                            Bundle _arg39 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            AndroidFuture _arg42 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            commitContent(_arg031, _arg127, _arg221, _arg39, _arg42);
-                            return true;
-                        case 32:
-                            InputConnectionCommandHeader _arg032 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg128 = data.readInt();
-                            int _arg222 = data.readInt();
-                            int _arg310 = data.readInt();
-                            AndroidFuture _arg43 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSurroundingText(_arg032, _arg128, _arg222, _arg310, _arg43);
-                            return true;
-                        case 33:
-                            InputConnectionCommandHeader _arg033 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            boolean _arg129 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setImeConsumesInput(_arg033, _arg129);
-                            return true;
-                        case 34:
-                            InputConnectionCommandHeader _arg034 = (InputConnectionCommandHeader) data.readTypedObject(InputConnectionCommandHeader.CREATOR);
-                            int _arg130 = data.readInt();
-                            int _arg223 = data.readInt();
-                            CharSequence _arg311 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg44 = data.readInt();
-                            TextAttribute _arg5 = (TextAttribute) data.readTypedObject(TextAttribute.CREATOR);
-                            data.enforceNoDataAvail();
-                            replaceText(_arg034, _arg130, _arg223, _arg311, _arg44, _arg5);
-                            return true;
-                        case 35:
-                            IBinder _arg035 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            cancelCancellationSignal(_arg035);
-                            return true;
-                        case 36:
-                            IBinder _arg036 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            forgetCancellationSignal(_arg036);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IRemoteInputConnection {
+        private static class Proxy implements IRemoteInputConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

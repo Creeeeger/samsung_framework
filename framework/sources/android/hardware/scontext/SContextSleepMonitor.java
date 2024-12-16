@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextSleepMonitor extends SContextEventContext {
     public static final Parcelable.Creator<SContextSleepMonitor> CREATOR = new Parcelable.Creator<SContextSleepMonitor>() { // from class: android.hardware.scontext.SContextSleepMonitor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextSleepMonitor createFromParcel(Parcel in) {
             return new SContextSleepMonitor(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextSleepMonitor[] newArray(int size) {
             return new SContextSleepMonitor[size];
@@ -23,7 +22,7 @@ public class SContextSleepMonitor extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextSleepMonitor() {
+    SContextSleepMonitor() {
         this.mContext = new Bundle();
     }
 
@@ -67,22 +66,5 @@ public class SContextSleepMonitor extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextSleepMonitor$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextSleepMonitor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextSleepMonitor createFromParcel(Parcel in) {
-            return new SContextSleepMonitor(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextSleepMonitor[] newArray(int size) {
-            return new SContextSleepMonitor[size];
-        }
     }
 }

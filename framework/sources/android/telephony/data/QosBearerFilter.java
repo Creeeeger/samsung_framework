@@ -9,17 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class QosBearerFilter implements Parcelable {
     public static final Parcelable.Creator<QosBearerFilter> CREATOR = new Parcelable.Creator<QosBearerFilter>() { // from class: android.telephony.data.QosBearerFilter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosBearerFilter createFromParcel(Parcel source) {
             return new QosBearerFilter(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosBearerFilter[] newArray(int size) {
             return new QosBearerFilter[size];
@@ -47,26 +46,18 @@ public final class QosBearerFilter implements Parcelable {
     private int typeOfServiceMask;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface QosBearerFilterDirection {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface QosProtocol {
     }
 
-    /* synthetic */ QosBearerFilter(Parcel parcel, QosBearerFilterIA qosBearerFilterIA) {
-        this(parcel);
-    }
-
     public QosBearerFilter(List<LinkAddress> localAddresses, List<LinkAddress> remoteAddresses, PortRange localPort, PortRange remotePort, int protocol, int tos, long flowLabel, long spi, int direction, int precedence) {
-        ArrayList arrayList = new ArrayList();
-        this.localAddresses = arrayList;
-        arrayList.addAll(localAddresses);
-        ArrayList arrayList2 = new ArrayList();
-        this.remoteAddresses = arrayList2;
-        arrayList2.addAll(remoteAddresses);
+        this.localAddresses = new ArrayList();
+        this.localAddresses.addAll(localAddresses);
+        this.remoteAddresses = new ArrayList();
+        this.remoteAddresses.addAll(remoteAddresses);
         this.localPort = localPort;
         this.remotePort = remotePort;
         this.protocol = protocol;
@@ -101,17 +92,15 @@ public final class QosBearerFilter implements Parcelable {
         return this.protocol;
     }
 
-    /* loaded from: classes3.dex */
     public static class PortRange implements Parcelable {
         public static final Parcelable.Creator<PortRange> CREATOR = new Parcelable.Creator<PortRange>() { // from class: android.telephony.data.QosBearerFilter.PortRange.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PortRange createFromParcel(Parcel source) {
                 return new PortRange(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PortRange[] newArray(int size) {
                 return new PortRange[size];
@@ -119,10 +108,6 @@ public final class QosBearerFilter implements Parcelable {
         };
         int end;
         int start;
-
-        /* synthetic */ PortRange(Parcel parcel, PortRangeIA portRangeIA) {
-            this(parcel);
-        }
 
         private PortRange(Parcel source) {
             this.start = source.readInt();
@@ -143,9 +128,7 @@ public final class QosBearerFilter implements Parcelable {
         }
 
         public boolean isValid() {
-            int i;
-            int i2 = this.start;
-            return i2 >= 20 && i2 <= 65535 && (i = this.end) >= 20 && i <= 65535 && i2 <= i;
+            return this.start >= 20 && this.start <= 65535 && this.end >= 20 && this.end <= 65535 && this.start <= this.end;
         }
 
         @Override // android.os.Parcelable
@@ -157,23 +140,6 @@ public final class QosBearerFilter implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
-        }
-
-        /* renamed from: android.telephony.data.QosBearerFilter$PortRange$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<PortRange> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PortRange createFromParcel(Parcel source) {
-                return new PortRange(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PortRange[] newArray(int size) {
-                return new PortRange[size];
-            }
         }
 
         public String toString() {
@@ -222,12 +188,10 @@ public final class QosBearerFilter implements Parcelable {
     }
 
     private QosBearerFilter(Parcel source) {
-        ArrayList arrayList = new ArrayList();
-        this.localAddresses = arrayList;
-        source.readList(arrayList, LinkAddress.class.getClassLoader(), LinkAddress.class);
-        ArrayList arrayList2 = new ArrayList();
-        this.remoteAddresses = arrayList2;
-        source.readList(arrayList2, LinkAddress.class.getClassLoader(), LinkAddress.class);
+        this.localAddresses = new ArrayList();
+        source.readList(this.localAddresses, LinkAddress.class.getClassLoader(), LinkAddress.class);
+        this.remoteAddresses = new ArrayList();
+        source.readList(this.remoteAddresses, LinkAddress.class.getClassLoader(), LinkAddress.class);
         this.localPort = (PortRange) source.readParcelable(PortRange.class.getClassLoader(), PortRange.class);
         this.remotePort = (PortRange) source.readParcelable(PortRange.class.getClassLoader(), PortRange.class);
         this.protocol = source.readInt();
@@ -255,22 +219,5 @@ public final class QosBearerFilter implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.data.QosBearerFilter$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<QosBearerFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QosBearerFilter createFromParcel(Parcel source) {
-            return new QosBearerFilter(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public QosBearerFilter[] newArray(int size) {
-            return new QosBearerFilter[size];
-        }
     }
 }

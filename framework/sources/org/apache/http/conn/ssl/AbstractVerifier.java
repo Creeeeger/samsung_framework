@@ -21,13 +21,11 @@ import javax.net.ssl.SSLSocket;
 @Deprecated
 /* loaded from: classes6.dex */
 public abstract class AbstractVerifier implements X509HostnameVerifier {
-    private static final String[] BAD_COUNTRY_2LDS;
     private static final Pattern IPV4_PATTERN = Pattern.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+    private static final String[] BAD_COUNTRY_2LDS = {"ac", "co", "com", "ed", "edu", "go", "gouv", "gov", DocumentsContract.EXTRA_INFO, "lg", "ne", "net", "or", "org"};
 
     static {
-        String[] strArr = {"ac", "co", "com", "ed", "edu", "go", "gouv", "gov", DocumentsContract.EXTRA_INFO, "lg", "ne", "net", "or", "org"};
-        BAD_COUNTRY_2LDS = strArr;
-        Arrays.sort(strArr);
+        Arrays.sort(BAD_COUNTRY_2LDS);
     }
 
     @Override // org.apache.http.conn.ssl.X509HostnameVerifier

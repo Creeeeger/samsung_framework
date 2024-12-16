@@ -13,7 +13,6 @@ public interface IVirtualDeviceIntentInterceptor extends IInterface {
 
     void onIntentIntercepted(Intent intent) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IVirtualDeviceIntentInterceptor {
         @Override // android.companion.virtual.IVirtualDeviceIntentInterceptor
         public void onIntentIntercepted(Intent intent) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IVirtualDeviceIntentInterceptor extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IVirtualDeviceIntentInterceptor {
         static final int TRANSACTION_onIntentIntercepted = 1;
 
@@ -68,25 +66,22 @@ public interface IVirtualDeviceIntentInterceptor extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVirtualDeviceIntentInterceptor.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVirtualDeviceIntentInterceptor.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVirtualDeviceIntentInterceptor.DESCRIPTOR);
+                case 1:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onIntentIntercepted(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onIntentIntercepted(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IVirtualDeviceIntentInterceptor {
+        private static class Proxy implements IVirtualDeviceIntentInterceptor {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

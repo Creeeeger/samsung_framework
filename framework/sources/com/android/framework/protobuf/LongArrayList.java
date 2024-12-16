@@ -5,23 +5,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* loaded from: classes4.dex */
-public final class LongArrayList extends AbstractProtobufList<Long> implements Internal.LongList, RandomAccess, PrimitiveNonBoxingCollection {
-    private static final LongArrayList EMPTY_LIST;
+/* loaded from: classes3.dex */
+final class LongArrayList extends AbstractProtobufList<Long> implements Internal.LongList, RandomAccess, PrimitiveNonBoxingCollection {
+    private static final LongArrayList EMPTY_LIST = new LongArrayList(new long[0], 0);
     private long[] array;
     private int size;
 
     static {
-        LongArrayList longArrayList = new LongArrayList(new long[0], 0);
-        EMPTY_LIST = longArrayList;
-        longArrayList.makeImmutable();
+        EMPTY_LIST.makeImmutable();
     }
 
     public static LongArrayList emptyList() {
         return EMPTY_LIST;
     }
 
-    public LongArrayList() {
+    LongArrayList() {
         this(new long[10], 0);
     }
 
@@ -36,8 +34,7 @@ public final class LongArrayList extends AbstractProtobufList<Long> implements I
         if (toIndex < fromIndex) {
             throw new IndexOutOfBoundsException("toIndex < fromIndex");
         }
-        long[] jArr = this.array;
-        System.arraycopy(jArr, toIndex, jArr, fromIndex, this.size - toIndex);
+        System.arraycopy(this.array, toIndex, this.array, fromIndex, this.size - toIndex);
         this.size -= toIndex - fromIndex;
         this.modCount++;
     }
@@ -126,9 +123,8 @@ public final class LongArrayList extends AbstractProtobufList<Long> implements I
     public long setLong(int index, long element) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        long[] jArr = this.array;
-        long previousValue = jArr[index];
-        jArr[index] = element;
+        long previousValue = this.array[index];
+        this.array[index] = element;
         return previousValue;
     }
 
@@ -146,33 +142,29 @@ public final class LongArrayList extends AbstractProtobufList<Long> implements I
     @Override // com.android.framework.protobuf.Internal.LongList
     public void addLong(long element) {
         ensureIsMutable();
-        int i = this.size;
-        long[] jArr = this.array;
-        if (i == jArr.length) {
-            int length = ((i * 3) / 2) + 1;
+        if (this.size == this.array.length) {
+            int length = ((this.size * 3) / 2) + 1;
             long[] newArray = new long[length];
-            System.arraycopy(jArr, 0, newArray, 0, i);
+            System.arraycopy(this.array, 0, newArray, 0, this.size);
             this.array = newArray;
         }
-        long[] jArr2 = this.array;
-        int i2 = this.size;
-        this.size = i2 + 1;
-        jArr2[i2] = element;
+        long[] jArr = this.array;
+        int i = this.size;
+        this.size = i + 1;
+        jArr[i] = element;
     }
 
     private void addLong(int index, long element) {
-        int i;
         ensureIsMutable();
-        if (index < 0 || index > (i = this.size)) {
+        if (index < 0 || index > this.size) {
             throw new IndexOutOfBoundsException(makeOutOfBoundsExceptionMessage(index));
         }
-        long[] jArr = this.array;
-        if (i < jArr.length) {
-            System.arraycopy(jArr, index, jArr, index + 1, i - index);
+        if (this.size < this.array.length) {
+            System.arraycopy(this.array, index, this.array, index + 1, this.size - index);
         } else {
-            int length = ((i * 3) / 2) + 1;
+            int length = ((this.size * 3) / 2) + 1;
             long[] newArray = new long[length];
-            System.arraycopy(jArr, 0, newArray, 0, index);
+            System.arraycopy(this.array, 0, newArray, 0, index);
             System.arraycopy(this.array, index, newArray, index + 1, this.size - index);
             this.array = newArray;
         }
@@ -189,19 +181,16 @@ public final class LongArrayList extends AbstractProtobufList<Long> implements I
             return super.addAll(collection);
         }
         LongArrayList list = (LongArrayList) collection;
-        int i = list.size;
-        if (i == 0) {
+        if (list.size == 0) {
             return false;
         }
-        int i2 = this.size;
-        int overflow = Integer.MAX_VALUE - i2;
-        if (overflow < i) {
+        int overflow = Integer.MAX_VALUE - this.size;
+        if (overflow < list.size) {
             throw new OutOfMemoryError();
         }
-        int newSize = i2 + i;
-        long[] jArr = this.array;
-        if (newSize > jArr.length) {
-            this.array = Arrays.copyOf(jArr, newSize);
+        int newSize = this.size + list.size;
+        if (newSize > this.array.length) {
+            this.array = Arrays.copyOf(this.array, newSize);
         }
         System.arraycopy(list.array, 0, this.array, this.size, list.size);
         this.size = newSize;
@@ -213,10 +202,9 @@ public final class LongArrayList extends AbstractProtobufList<Long> implements I
     public Long remove(int index) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        long[] jArr = this.array;
-        long value = jArr[index];
+        long value = this.array[index];
         if (index < this.size - 1) {
-            System.arraycopy(jArr, index + 1, jArr, index, (r3 - index) - 1);
+            System.arraycopy(this.array, index + 1, this.array, index, (this.size - index) - 1);
         }
         this.size--;
         this.modCount++;

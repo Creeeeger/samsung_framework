@@ -23,7 +23,6 @@ public interface IQuickAccessWalletService extends IInterface {
 
     void unregisterWalletServiceEventListener(WalletServiceEventListenerRequest walletServiceEventListenerRequest) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IQuickAccessWalletService {
         @Override // android.service.quickaccesswallet.IQuickAccessWalletService
         public void onWalletCardsRequested(GetWalletCardsRequest request, IQuickAccessWalletServiceCallbacks callback) throws RemoteException {
@@ -55,7 +54,6 @@ public interface IQuickAccessWalletService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IQuickAccessWalletService {
         static final int TRANSACTION_onTargetActivityIntentRequested = 6;
         static final int TRANSACTION_onWalletCardSelected = 2;
@@ -113,51 +111,47 @@ public interface IQuickAccessWalletService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IQuickAccessWalletService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IQuickAccessWalletService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IQuickAccessWalletService.DESCRIPTOR);
+                case 1:
+                    GetWalletCardsRequest _arg0 = (GetWalletCardsRequest) data.readTypedObject(GetWalletCardsRequest.CREATOR);
+                    IQuickAccessWalletServiceCallbacks _arg1 = IQuickAccessWalletServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onWalletCardsRequested(_arg0, _arg1);
+                    return true;
+                case 2:
+                    SelectWalletCardRequest _arg02 = (SelectWalletCardRequest) data.readTypedObject(SelectWalletCardRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    onWalletCardSelected(_arg02);
+                    return true;
+                case 3:
+                    onWalletDismissed();
+                    return true;
+                case 4:
+                    WalletServiceEventListenerRequest _arg03 = (WalletServiceEventListenerRequest) data.readTypedObject(WalletServiceEventListenerRequest.CREATOR);
+                    IQuickAccessWalletServiceCallbacks _arg12 = IQuickAccessWalletServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerWalletServiceEventListener(_arg03, _arg12);
+                    return true;
+                case 5:
+                    WalletServiceEventListenerRequest _arg04 = (WalletServiceEventListenerRequest) data.readTypedObject(WalletServiceEventListenerRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    unregisterWalletServiceEventListener(_arg04);
+                    return true;
+                case 6:
+                    IQuickAccessWalletServiceCallbacks _arg05 = IQuickAccessWalletServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onTargetActivityIntentRequested(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            GetWalletCardsRequest _arg0 = (GetWalletCardsRequest) data.readTypedObject(GetWalletCardsRequest.CREATOR);
-                            IQuickAccessWalletServiceCallbacks _arg1 = IQuickAccessWalletServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onWalletCardsRequested(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            SelectWalletCardRequest _arg02 = (SelectWalletCardRequest) data.readTypedObject(SelectWalletCardRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            onWalletCardSelected(_arg02);
-                            return true;
-                        case 3:
-                            onWalletDismissed();
-                            return true;
-                        case 4:
-                            WalletServiceEventListenerRequest _arg03 = (WalletServiceEventListenerRequest) data.readTypedObject(WalletServiceEventListenerRequest.CREATOR);
-                            IQuickAccessWalletServiceCallbacks _arg12 = IQuickAccessWalletServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerWalletServiceEventListener(_arg03, _arg12);
-                            return true;
-                        case 5:
-                            WalletServiceEventListenerRequest _arg04 = (WalletServiceEventListenerRequest) data.readTypedObject(WalletServiceEventListenerRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            unregisterWalletServiceEventListener(_arg04);
-                            return true;
-                        case 6:
-                            IQuickAccessWalletServiceCallbacks _arg05 = IQuickAccessWalletServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onTargetActivityIntentRequested(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IQuickAccessWalletService {
+        private static class Proxy implements IQuickAccessWalletService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

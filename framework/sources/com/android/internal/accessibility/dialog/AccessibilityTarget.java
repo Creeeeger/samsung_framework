@@ -2,13 +2,19 @@ package com.android.internal.accessibility.dialog;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.os.UserHandle;
 import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.Flags;
 import com.android.internal.R;
 import com.android.internal.accessibility.dialog.TargetAdapter;
+import com.android.internal.accessibility.util.AccessibilityUtils;
 import com.android.internal.accessibility.util.ShortcutUtils;
+import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class AccessibilityTarget implements TargetOperations, OnTargetSelectedListener, OnTargetCheckedChangeListener {
     private ComponentName mComponentName;
     private Context mContext;
@@ -37,8 +43,16 @@ public abstract class AccessibilityTarget implements TargetOperations, OnTargetS
 
     @Override // com.android.internal.accessibility.dialog.TargetOperations
     public void updateActionItem(TargetAdapter.ViewHolder holder, int shortcutMenuMode) {
-        holder.mIconView.lambda$setImageURIAsync$2(getIcon());
-        holder.mLabelView.setText(getLabel());
+        if (getIcon() instanceof AdaptiveIconDrawable) {
+            LayerDrawable layerDrawable = getLayerDrawable();
+            holder.mIconView.setImageDrawable(layerDrawable);
+        } else {
+            holder.mIconView.setImageDrawable(getIcon());
+        }
+        if (!AccessibilityUtils.isDefaultTheme(this.mContext)) {
+            holder.mIconView.setBackground(null);
+        }
+        holder.mLabelView.lambda$setTextAsync$0(getLabel());
         if (shortcutMenuMode == 2) {
             holder.mStatusView.setVisibility(8);
             return;
@@ -56,17 +70,29 @@ public abstract class AccessibilityTarget implements TargetOperations, OnTargetS
         }
     }
 
+    private LayerDrawable getLayerDrawable() {
+        float density = this.mContext.getResources().getDisplayMetrics().density;
+        int backgroundSize = (int) (90.0f * density);
+        int iconSize = (int) (80.0f * density);
+        WrappedDrawable wrappedDrawable = new WrappedDrawable(getIcon());
+        LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{((AdaptiveIconDrawable) getIcon()).getBackground(), wrappedDrawable});
+        layerDrawable.setLayerSize(0, backgroundSize, backgroundSize);
+        layerDrawable.setLayerSize(1, iconSize, iconSize);
+        layerDrawable.setLayerGravity(1, 17);
+        return layerDrawable;
+    }
+
     @Override // com.android.internal.accessibility.dialog.OnTargetSelectedListener
     public void onSelected() {
         AccessibilityManager am = (AccessibilityManager) getContext().getSystemService(AccessibilityManager.class);
         switch (getShortcutType()) {
-            case 0:
+            case 1:
                 am.notifyAccessibilityButtonClicked(getContext().getDisplayId(), getId());
                 return;
-            case 1:
+            case 2:
                 am.performAccessibilityShortcut(getId());
                 return;
-            case 2:
+            case 512:
                 am.performAccessibilityDirectAccess(getId());
                 return;
             default:
@@ -77,10 +103,13 @@ public abstract class AccessibilityTarget implements TargetOperations, OnTargetS
     @Override // com.android.internal.accessibility.dialog.OnTargetCheckedChangeListener
     public void onCheckedChanged(boolean isChecked) {
         setShortcutEnabled(isChecked);
-        if (isChecked) {
-            ShortcutUtils.optInValueToSettings(getContext(), ShortcutUtils.convertToUserType(getShortcutType()), getId());
+        if (Flags.migrateEnableShortcuts()) {
+            AccessibilityManager am = (AccessibilityManager) getContext().getSystemService(AccessibilityManager.class);
+            am.enableShortcutsForTargets(isChecked, getShortcutType(), Set.of(this.mId), UserHandle.myUserId());
+        } else if (isChecked) {
+            ShortcutUtils.optInValueToSettings(getContext(), getShortcutType(), getId());
         } else {
-            ShortcutUtils.optOutValueFromSettings(getContext(), ShortcutUtils.convertToUserType(getShortcutType()), getId());
+            ShortcutUtils.optOutValueFromSettings(getContext(), getShortcutType(), getId());
         }
     }
 

@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IHdmiSystemAudioModeChangeListener extends IInterface {
     void onStatusChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiSystemAudioModeChangeListener {
         @Override // android.hardware.hdmi.IHdmiSystemAudioModeChangeListener
         public void onStatusChanged(boolean enabled) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IHdmiSystemAudioModeChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiSystemAudioModeChangeListener {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiSystemAudioModeChangeListener";
         static final int TRANSACTION_onStatusChanged = 1;
@@ -66,25 +64,22 @@ public interface IHdmiSystemAudioModeChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onStatusChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onStatusChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiSystemAudioModeChangeListener {
+        private static class Proxy implements IHdmiSystemAudioModeChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

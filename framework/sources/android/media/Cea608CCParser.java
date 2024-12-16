@@ -55,14 +55,13 @@ class Cea608CCParser {
     private CCMemory mTextMem = new CCMemory();
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public interface DisplayListener {
+    interface DisplayListener {
         CaptioningManager.CaptionStyle getCaptionStyle();
 
         void onDisplayChanged(SpannableStringBuilder[] spannableStringBuilderArr);
     }
 
-    public Cea608CCParser(DisplayListener listener) {
+    Cea608CCParser(DisplayListener listener) {
         this.mListener = listener;
     }
 
@@ -101,8 +100,7 @@ class Cea608CCParser {
             getMemory().bs();
         }
         getMemory().writeText(ccData.getDisplayText());
-        int i = this.mMode;
-        if (i == 1 || i == 2) {
+        if (this.mMode == 1 || this.mMode == 2) {
             updateDisplay();
         }
         return true;
@@ -140,8 +138,7 @@ class Cea608CCParser {
 
     private boolean handleCtrlCode(CCData ccData) {
         int ctrlCode = ccData.getCtrlCode();
-        int i = this.mPrevCtrlCode;
-        if (i != -1 && i == ctrlCode) {
+        if (this.mPrevCtrlCode != -1 && this.mPrevCtrlCode == ctrlCode) {
             this.mPrevCtrlCode = -1;
             return true;
         }
@@ -212,9 +209,8 @@ class Cea608CCParser {
     }
 
     private void updateDisplay() {
-        DisplayListener displayListener = this.mListener;
-        if (displayListener != null) {
-            CaptioningManager.CaptionStyle captionStyle = displayListener.getCaptionStyle();
+        if (this.mListener != null) {
+            CaptioningManager.CaptionStyle captionStyle = this.mListener.getCaptionStyle();
             this.mListener.onDisplayChanged(this.mDisplay.getStyledText(captionStyle));
         }
     }
@@ -226,8 +222,7 @@ class Cea608CCParser {
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class StyleCode {
+    private static class StyleCode {
         static final int COLOR_BLUE = 2;
         static final int COLOR_CYAN = 3;
         static final int COLOR_GREEN = 1;
@@ -288,8 +283,7 @@ class Cea608CCParser {
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class PAC extends StyleCode {
+    private static class PAC extends StyleCode {
         final int mCol;
         final int mRow;
 
@@ -338,7 +332,6 @@ class Cea608CCParser {
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class MutableBackgroundColorSpan extends CharacterStyle implements UpdateAppearance {
         private int mColor;
 
@@ -361,17 +354,15 @@ class Cea608CCParser {
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCLineBuilder {
+    private static class CCLineBuilder {
         private final StringBuilder mDisplayChars;
         private final StyleCode[] mMidRowStyles;
         private final StyleCode[] mPACStyles;
 
         CCLineBuilder(String str) {
-            StringBuilder sb = new StringBuilder(str);
-            this.mDisplayChars = sb;
-            this.mMidRowStyles = new StyleCode[sb.length()];
-            this.mPACStyles = new StyleCode[sb.length()];
+            this.mDisplayChars = new StringBuilder(str);
+            this.mMidRowStyles = new StyleCode[this.mDisplayChars.length()];
+            this.mPACStyles = new StyleCode[this.mDisplayChars.length()];
         }
 
         void setCharAt(int index, char ch) {
@@ -412,14 +403,10 @@ class Cea608CCParser {
             StyleCode curStyle = null;
             for (int next = 0; next < this.mDisplayChars.length(); next++) {
                 StyleCode newStyle = null;
-                StyleCode[] styleCodeArr = this.mMidRowStyles;
-                if (styleCodeArr[next] != null) {
-                    newStyle = styleCodeArr[next];
-                } else {
-                    StyleCode[] styleCodeArr2 = this.mPACStyles;
-                    if (styleCodeArr2[next] != null && (styleStart < 0 || start < 0)) {
-                        newStyle = styleCodeArr2[next];
-                    }
+                if (this.mMidRowStyles[next] != null) {
+                    newStyle = this.mMidRowStyles[next];
+                } else if (this.mPACStyles[next] != null && (styleStart < 0 || start < 0)) {
+                    newStyle = this.mPACStyles[next];
                 }
                 if (newStyle != null) {
                     curStyle = newStyle;
@@ -447,8 +434,7 @@ class Cea608CCParser {
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCMemory {
+    private static class CCMemory {
         private final String mBlankLine;
         private int mCol;
         private final CCLineBuilder[] mLines = new CCLineBuilder[17];
@@ -461,18 +447,11 @@ class Cea608CCParser {
         }
 
         void erase() {
-            int i = 0;
-            while (true) {
-                CCLineBuilder[] cCLineBuilderArr = this.mLines;
-                if (i < cCLineBuilderArr.length) {
-                    cCLineBuilderArr[i] = null;
-                    i++;
-                } else {
-                    this.mRow = 15;
-                    this.mCol = 1;
-                    return;
-                }
+            for (int i = 0; i < this.mLines.length; i++) {
+                this.mLines[i] = null;
             }
+            this.mRow = 15;
+            this.mCol = 1;
         }
 
         void der() {
@@ -495,9 +474,8 @@ class Cea608CCParser {
 
         void bs() {
             moveCursorByCol(-1);
-            CCLineBuilder cCLineBuilder = this.mLines[this.mRow];
-            if (cCLineBuilder != null) {
-                cCLineBuilder.setCharAt(this.mCol, Cea608CCParser.TS);
+            if (this.mLines[this.mRow] != null) {
+                this.mLines[this.mRow].setCharAt(this.mCol, Cea608CCParser.TS);
                 if (this.mCol == 31) {
                     this.mLines[this.mRow].setCharAt(32, Cea608CCParser.TS);
                 }
@@ -509,35 +487,20 @@ class Cea608CCParser {
         }
 
         void rollUp(int windowSize) {
-            int i;
-            int i2 = 0;
-            while (true) {
-                i = this.mRow;
-                if (i2 > i - windowSize) {
-                    break;
-                }
-                this.mLines[i2] = null;
-                i2++;
+            for (int i = 0; i <= this.mRow - windowSize; i++) {
+                this.mLines[i] = null;
             }
-            int startRow = (i - windowSize) + 1;
+            int startRow = (this.mRow - windowSize) + 1;
             if (startRow < 1) {
                 startRow = 1;
             }
-            for (int i3 = startRow; i3 < this.mRow; i3++) {
-                CCLineBuilder[] cCLineBuilderArr = this.mLines;
-                cCLineBuilderArr[i3] = cCLineBuilderArr[i3 + 1];
+            for (int i2 = startRow; i2 < this.mRow; i2++) {
+                this.mLines[i2] = this.mLines[i2 + 1];
             }
-            int i4 = this.mRow;
-            while (true) {
-                CCLineBuilder[] cCLineBuilderArr2 = this.mLines;
-                if (i4 < cCLineBuilderArr2.length) {
-                    cCLineBuilderArr2[i4] = null;
-                    i4++;
-                } else {
-                    this.mCol = 1;
-                    return;
-                }
+            for (int i3 = this.mRow; i3 < this.mLines.length; i3++) {
+                this.mLines[i3] = null;
             }
+            this.mCol = 1;
         }
 
         void writeText(String text) {
@@ -564,8 +527,7 @@ class Cea608CCParser {
         SpannableStringBuilder[] getStyledText(CaptioningManager.CaptionStyle captionStyle) {
             ArrayList<SpannableStringBuilder> rows = new ArrayList<>(15);
             for (int i = 1; i <= 15; i++) {
-                CCLineBuilder cCLineBuilder = this.mLines[i];
-                rows.add(cCLineBuilder != null ? cCLineBuilder.getStyledText(captionStyle) : null);
+                rows.add(this.mLines[i] != null ? this.mLines[i].getStyledText(captionStyle) : null);
             }
             return (SpannableStringBuilder[]) rows.toArray(new SpannableStringBuilder[15]);
         }
@@ -587,56 +549,45 @@ class Cea608CCParser {
             this.mCol = clamp(this.mCol + col, 1, 32);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void moveBaselineTo(int baseRow, int windowSize) {
-            int i = this.mRow;
-            if (i == baseRow) {
+            if (this.mRow == baseRow) {
                 return;
             }
             int actualWindowSize = windowSize;
             if (baseRow < actualWindowSize) {
                 actualWindowSize = baseRow;
             }
-            if (i < actualWindowSize) {
+            if (this.mRow < actualWindowSize) {
                 actualWindowSize = this.mRow;
             }
-            if (baseRow < i) {
-                for (int i2 = actualWindowSize - 1; i2 >= 0; i2--) {
-                    CCLineBuilder[] cCLineBuilderArr = this.mLines;
-                    cCLineBuilderArr[baseRow - i2] = cCLineBuilderArr[this.mRow - i2];
+            if (baseRow < this.mRow) {
+                for (int i = actualWindowSize - 1; i >= 0; i--) {
+                    this.mLines[baseRow - i] = this.mLines[this.mRow - i];
                 }
             } else {
-                for (int i3 = 0; i3 < actualWindowSize; i3++) {
-                    CCLineBuilder[] cCLineBuilderArr2 = this.mLines;
-                    cCLineBuilderArr2[baseRow - i3] = cCLineBuilderArr2[this.mRow - i3];
+                for (int i2 = 0; i2 < actualWindowSize; i2++) {
+                    this.mLines[baseRow - i2] = this.mLines[this.mRow - i2];
                 }
             }
-            for (int i4 = 0; i4 <= baseRow - windowSize; i4++) {
+            for (int i3 = 0; i3 <= baseRow - windowSize; i3++) {
+                this.mLines[i3] = null;
+            }
+            for (int i4 = baseRow + 1; i4 < this.mLines.length; i4++) {
                 this.mLines[i4] = null;
-            }
-            int i5 = baseRow + 1;
-            while (true) {
-                CCLineBuilder[] cCLineBuilderArr3 = this.mLines;
-                if (i5 < cCLineBuilderArr3.length) {
-                    cCLineBuilderArr3[i5] = null;
-                    i5++;
-                } else {
-                    return;
-                }
             }
         }
 
         private CCLineBuilder getLineBuffer(int row) {
-            CCLineBuilder[] cCLineBuilderArr = this.mLines;
-            if (cCLineBuilderArr[row] == null) {
-                cCLineBuilderArr[row] = new CCLineBuilder(this.mBlankLine);
+            if (this.mLines[row] == null) {
+                this.mLines[row] = new CCLineBuilder(this.mBlankLine);
             }
             return this.mLines[row];
         }
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCData {
+    private static class CCData {
         private final byte mData1;
         private final byte mData2;
         private final byte mType;
@@ -660,43 +611,32 @@ class Cea608CCParser {
         }
 
         int getCtrlCode() {
-            byte b;
-            byte b2 = this.mData1;
-            if ((b2 == 20 || b2 == 28) && (b = this.mData2) >= 32 && b <= 47) {
-                return b;
+            if ((this.mData1 == 20 || this.mData1 == 28) && this.mData2 >= 32 && this.mData2 <= 47) {
+                return this.mData2;
             }
             return -1;
         }
 
         StyleCode getMidRow() {
-            byte b;
-            byte b2 = this.mData1;
-            if ((b2 == 17 || b2 == 25) && (b = this.mData2) >= 32 && b <= 47) {
-                return StyleCode.fromByte(b);
+            if ((this.mData1 == 17 || this.mData1 == 25) && this.mData2 >= 32 && this.mData2 <= 47) {
+                return StyleCode.fromByte(this.mData2);
             }
             return null;
         }
 
         PAC getPAC() {
-            byte b = this.mData1;
-            if ((b & SprAttributeBase.TYPE_SHADOW) != 16) {
+            if ((this.mData1 & SprAttributeBase.TYPE_SHADOW) != 16 || (this.mData2 & 64) != 64) {
                 return null;
             }
-            byte b2 = this.mData2;
-            if ((b2 & 64) != 64) {
-                return null;
-            }
-            if ((b & 7) != 0 || (b2 & 32) == 0) {
-                return PAC.fromBytes(b, b2);
+            if ((this.mData1 & 7) != 0 || (this.mData2 & 32) == 0) {
+                return PAC.fromBytes(this.mData1, this.mData2);
             }
             return null;
         }
 
         int getTabOffset() {
-            byte b;
-            byte b2 = this.mData1;
-            if ((b2 == 23 || b2 == 31) && (b = this.mData2) >= 33 && b <= 35) {
-                return b & 3;
+            if ((this.mData1 == 23 || this.mData1 == 31) && this.mData2 >= 33 && this.mData2 <= 35) {
+                return this.mData2 & 3;
             }
             return 0;
         }
@@ -722,20 +662,16 @@ class Cea608CCParser {
         }
 
         private boolean isBasicChar() {
-            byte b = this.mData1;
-            return b >= 32 && b <= Byte.MAX_VALUE;
+            return this.mData1 >= 32 && this.mData1 <= Byte.MAX_VALUE;
         }
 
         private boolean isSpecialChar() {
-            byte b;
-            byte b2 = this.mData1;
-            return (b2 == 17 || b2 == 25) && (b = this.mData2) >= 48 && b <= 63;
+            return (this.mData1 == 17 || this.mData1 == 25) && this.mData2 >= 48 && this.mData2 <= 63;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isExtendedChar() {
-            byte b;
-            byte b2 = this.mData1;
-            return (b2 == 18 || b2 == 26 || b2 == 19 || b2 == 27) && (b = this.mData2) >= 32 && b <= 63;
+            return (this.mData1 == 18 || this.mData1 == 26 || this.mData1 == 19 || this.mData1 == 27) && this.mData2 >= 32 && this.mData2 <= 63;
         }
 
         private char getBasicChar(byte data) {
@@ -767,13 +703,11 @@ class Cea608CCParser {
         }
 
         private String getBasicChars() {
-            byte b = this.mData1;
-            if (b >= 32 && b <= Byte.MAX_VALUE) {
+            if (this.mData1 >= 32 && this.mData1 <= Byte.MAX_VALUE) {
                 StringBuilder builder = new StringBuilder(2);
                 builder.append(getBasicChar(this.mData1));
-                byte b2 = this.mData2;
-                if (b2 >= 32 && b2 <= Byte.MAX_VALUE) {
-                    builder.append(getBasicChar(b2));
+                if (this.mData2 >= 32 && this.mData2 <= Byte.MAX_VALUE) {
+                    builder.append(getBasicChar(this.mData2));
                 }
                 return builder.toString();
             }
@@ -781,23 +715,18 @@ class Cea608CCParser {
         }
 
         private String getSpecialChar() {
-            byte b;
-            byte b2 = this.mData1;
-            if ((b2 == 17 || b2 == 25) && (b = this.mData2) >= 48 && b <= 63) {
-                return mSpecialCharMap[b - SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90];
+            if ((this.mData1 == 17 || this.mData1 == 25) && this.mData2 >= 48 && this.mData2 <= 63) {
+                return mSpecialCharMap[this.mData2 - SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90];
             }
             return null;
         }
 
         private String getExtendedChar() {
-            byte b;
-            byte b2;
-            byte b3 = this.mData1;
-            if ((b3 == 18 || b3 == 26) && (b = this.mData2) >= 32 && b <= 63) {
-                return mSpanishCharMap[b - 32];
+            if ((this.mData1 == 18 || this.mData1 == 26) && this.mData2 >= 32 && this.mData2 <= 63) {
+                return mSpanishCharMap[this.mData2 - 32];
             }
-            if ((b3 == 19 || b3 == 27) && (b2 = this.mData2) >= 32 && b2 <= 63) {
-                return mProtugueseCharMap[b2 - 32];
+            if ((this.mData1 == 19 || this.mData1 == 27) && this.mData2 >= 32 && this.mData2 <= 63) {
+                return mProtugueseCharMap[this.mData2 - 32];
             }
             return null;
         }

@@ -60,14 +60,12 @@ public final class ContactsContract {
     public static final String REMOVE_DUPLICATE_ENTRIES = "remove_duplicate_entries";
     public static final String STREQUENT_PHONE_ONLY = "strequent_phone_only";
 
-    /* loaded from: classes3.dex */
     public static final class Authorization {
         public static final String AUTHORIZATION_METHOD = "authorize";
         public static final String KEY_AUTHORIZED_URI = "authorized_uri";
         public static final String KEY_URI_TO_AUTHORIZE = "uri_to_authorize";
     }
 
-    /* loaded from: classes3.dex */
     protected interface BaseSyncColumns {
         public static final String SYNC1 = "sync1";
         public static final String SYNC2 = "sync2";
@@ -75,14 +73,12 @@ public final class ContactsContract {
         public static final String SYNC4 = "sync4";
     }
 
-    /* loaded from: classes3.dex */
     interface ContactCounts {
         public static final String EXTRA_ADDRESS_BOOK_INDEX = "android.provider.extra.ADDRESS_BOOK_INDEX";
         public static final String EXTRA_ADDRESS_BOOK_INDEX_COUNTS = "android.provider.extra.ADDRESS_BOOK_INDEX_COUNTS";
         public static final String EXTRA_ADDRESS_BOOK_INDEX_TITLES = "android.provider.extra.ADDRESS_BOOK_INDEX_TITLES";
     }
 
-    /* loaded from: classes3.dex */
     protected interface ContactNameColumns {
         public static final String DISPLAY_NAME_ALTERNATIVE = "display_name_alt";
         public static final String DISPLAY_NAME_PRIMARY = "display_name";
@@ -93,7 +89,6 @@ public final class ContactsContract {
         public static final String SORT_KEY_PRIMARY = "sort_key";
     }
 
-    /* loaded from: classes3.dex */
     protected interface ContactOptionsColumns {
         public static final String CUSTOM_RINGTONE = "custom_ringtone";
 
@@ -111,7 +106,6 @@ public final class ContactsContract {
         public static final String TIMES_CONTACTED = "times_contacted";
     }
 
-    /* loaded from: classes3.dex */
     protected interface ContactStatusColumns {
         public static final String CONTACT_CHAT_CAPABILITY = "contact_chat_capability";
         public static final String CONTACT_PRESENCE = "contact_presence";
@@ -122,7 +116,6 @@ public final class ContactsContract {
         public static final String CONTACT_STATUS_TIMESTAMP = "contact_status_ts";
     }
 
-    /* loaded from: classes3.dex */
     protected interface ContactsColumns {
         public static final String CONTACT_LAST_UPDATED_TIMESTAMP = "contact_last_updated_timestamp";
         public static final String DISPLAY_NAME = "display_name";
@@ -138,7 +131,6 @@ public final class ContactsContract {
         public static final String PHOTO_URI = "photo_uri";
     }
 
-    /* loaded from: classes3.dex */
     protected interface DataColumns {
 
         @Deprecated
@@ -180,12 +172,10 @@ public final class ContactsContract {
         public static final String SYNC4 = "data_sync4";
     }
 
-    /* loaded from: classes3.dex */
     protected interface DataColumnsWithJoins extends BaseColumns, DataColumns, StatusColumns, RawContactsColumns, ContactsColumns, ContactNameColumns, ContactOptionsColumns, ContactStatusColumns, DataUsageStatColumns {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class DataUsageFeedback {
         public static final String USAGE_TYPE = "type";
         public static final String USAGE_TYPE_CALL = "call";
@@ -195,7 +185,6 @@ public final class ContactsContract {
         public static final Uri DELETE_USAGE_URI = Uri.withAppendedPath(Contacts.CONTENT_URI, "delete_usage");
     }
 
-    /* loaded from: classes3.dex */
     protected interface DataUsageStatColumns {
 
         @Deprecated
@@ -209,13 +198,11 @@ public final class ContactsContract {
         public static final String TIMES_USED = "times_used";
     }
 
-    /* loaded from: classes3.dex */
     protected interface DeletedContactsColumns {
         public static final String CONTACT_DELETED_TIMESTAMP = "contact_deleted_timestamp";
         public static final String CONTACT_ID = "contact_id";
     }
 
-    /* loaded from: classes3.dex */
     public interface DisplayNameSources {
         public static final int EMAIL = 10;
         public static final int NICKNAME = 35;
@@ -226,7 +213,6 @@ public final class ContactsContract {
         public static final int UNDEFINED = 0;
     }
 
-    /* loaded from: classes3.dex */
     public interface FullNameStyle {
         public static final int CHINESE = 3;
         public static final int CJK = 2;
@@ -236,7 +222,6 @@ public final class ContactsContract {
         public static final int WESTERN = 1;
     }
 
-    /* loaded from: classes3.dex */
     protected interface GroupsColumns {
         public static final String ACCOUNT_TYPE_AND_DATA_SET = "account_type_and_data_set";
         public static final String AUTO_ADD = "auto_add";
@@ -257,7 +242,6 @@ public final class ContactsContract {
         public static final String TITLE_RES = "title_res";
     }
 
-    /* loaded from: classes3.dex */
     public static final class Intents {
         public static final String ACTION_GET_MULTIPLE_PHONES = "com.android.contacts.action.GET_MULTIPLE_PHONES";
         public static final String ACTION_PROFILE_CHANGED = "android.provider.Contacts.PROFILE_CHANGED";
@@ -296,7 +280,6 @@ public final class ContactsContract {
         public static final String SEARCH_SUGGESTION_DIAL_NUMBER_CLICKED = "android.provider.Contacts.SEARCH_SUGGESTION_DIAL_NUMBER_CLICKED";
         public static final String SHOW_OR_CREATE_CONTACT = "com.android.contacts.action.SHOW_OR_CREATE_CONTACT";
 
-        /* loaded from: classes3.dex */
         public static final class Insert {
             public static final String ACTION = "android.intent.action.INSERT";
             public static final String COMPANY = "company";
@@ -333,7 +316,6 @@ public final class ContactsContract {
 
     @SystemApi
     @Deprecated
-    /* loaded from: classes3.dex */
     protected interface MetadataSyncColumns {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
@@ -345,7 +327,6 @@ public final class ContactsContract {
 
     @SystemApi
     @Deprecated
-    /* loaded from: classes3.dex */
     protected interface MetadataSyncStateColumns {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
@@ -353,7 +334,6 @@ public final class ContactsContract {
         public static final String STATE = "state";
     }
 
-    /* loaded from: classes3.dex */
     protected interface PhoneLookupColumns {
         public static final String CONTACT_ID = "contact_id";
         public static final String DATA_ID = "data_id";
@@ -363,7 +343,6 @@ public final class ContactsContract {
         public static final String TYPE = "type";
     }
 
-    /* loaded from: classes3.dex */
     public interface PhoneticNameStyle {
         public static final int JAPANESE = 4;
         public static final int KOREAN = 5;
@@ -371,14 +350,12 @@ public final class ContactsContract {
         public static final int UNDEFINED = 0;
     }
 
-    /* loaded from: classes3.dex */
     protected interface PhotoFilesColumns {
         public static final String FILESIZE = "filesize";
         public static final String HEIGHT = "height";
         public static final String WIDTH = "width";
     }
 
-    /* loaded from: classes3.dex */
     protected interface PresenceColumns {
         public static final String CUSTOM_PROTOCOL = "custom_protocol";
         public static final String DATA_ID = "presence_data_id";
@@ -387,7 +364,6 @@ public final class ContactsContract {
         public static final String PROTOCOL = "protocol";
     }
 
-    /* loaded from: classes3.dex */
     protected interface RawContactsColumns {
         public static final String ACCOUNT_TYPE_AND_DATA_SET = "account_type_and_data_set";
         public static final String AGGREGATION_MODE = "aggregation_mode";
@@ -402,14 +378,12 @@ public final class ContactsContract {
         public static final String RAW_CONTACT_IS_USER_PROFILE = "raw_contact_is_user_profile";
     }
 
-    /* loaded from: classes3.dex */
     public static class SearchSnippets {
         public static final String DEFERRED_SNIPPETING_KEY = "deferred_snippeting";
         public static final String SNIPPET = "snippet";
         public static final String SNIPPET_ARGS_PARAM_KEY = "snippet_args";
     }
 
-    /* loaded from: classes3.dex */
     protected interface SettingsColumns {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
@@ -422,7 +396,6 @@ public final class ContactsContract {
         public static final String UNGROUPED_WITH_PHONES = "summ_phones";
     }
 
-    /* loaded from: classes3.dex */
     protected interface StatusColumns {
         public static final int AVAILABLE = 5;
         public static final int AWAY = 2;
@@ -449,7 +422,6 @@ public final class ContactsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     protected interface StreamItemPhotosColumns {
 
         @Deprecated
@@ -478,7 +450,6 @@ public final class ContactsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     protected interface StreamItemsColumns {
 
         @Deprecated
@@ -533,7 +504,6 @@ public final class ContactsContract {
         public static final String TIMESTAMP = "timestamp";
     }
 
-    /* loaded from: classes3.dex */
     protected interface SyncColumns extends BaseSyncColumns {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
@@ -543,11 +513,9 @@ public final class ContactsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface SyncStateColumns extends SyncStateContract.Columns {
     }
 
-    /* loaded from: classes3.dex */
     public static final class Directory implements BaseColumns {
         public static final String ACCOUNT_NAME = "accountName";
         public static final String ACCOUNT_TYPE = "accountType";
@@ -601,7 +569,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SyncState implements SyncStateContract.Columns {
         public static final String CONTENT_DIRECTORY = "syncstate";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "syncstate");
@@ -626,7 +593,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ProfileSyncState implements SyncStateContract.Columns {
         public static final String CONTENT_DIRECTORY = "syncstate";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(Profile.CONTENT_URI, "syncstate");
@@ -651,49 +617,29 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Contacts implements BaseColumns, ContactsColumns, ContactOptionsColumns, ContactNameColumns, ContactStatusColumns, ContactCounts {
-        public static final Uri CONTENT_FILTER_URI;
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/contact";
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/contact";
+        public static final String CONTENT_VCARD_TYPE = "text/x-vcard";
+        public static final String QUERY_PARAMETER_VCARD_NO_PHOTO = "no_photo";
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, android.provider.Contacts.AUTHORITY);
+        public static final Uri ENTERPRISE_CONTENT_URI = Uri.withAppendedPath(CONTENT_URI, ApnSetting.TYPE_ENTERPRISE_STRING);
+        public static final Uri CORP_CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "contacts_corp");
+        public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, "lookup");
+        public static final Uri CONTENT_VCARD_URI = Uri.withAppendedPath(CONTENT_URI, "as_vcard");
+        public static final Uri CONTENT_MULTI_VCARD_URI = Uri.withAppendedPath(CONTENT_URI, "as_multi_vcard");
+        public static final Uri CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter");
+        public static final Uri ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter_enterprise");
+        public static final Uri CONTENT_STREQUENT_URI = Uri.withAppendedPath(CONTENT_URI, "strequent");
 
         @Deprecated
-        public static final Uri CONTENT_FREQUENT_URI;
-        public static final Uri CONTENT_GROUP_URI;
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/contact";
-        public static final Uri CONTENT_LOOKUP_URI;
-        public static final Uri CONTENT_MULTI_VCARD_URI;
-        public static final Uri CONTENT_STREQUENT_FILTER_URI;
-        public static final Uri CONTENT_STREQUENT_URI;
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/contact";
-        public static final Uri CONTENT_URI;
-        public static final String CONTENT_VCARD_TYPE = "text/x-vcard";
-        public static final Uri CONTENT_VCARD_URI;
-        public static final Uri CORP_CONTENT_URI;
-        public static long ENTERPRISE_CONTACT_ID_BASE = 0;
-        public static String ENTERPRISE_CONTACT_LOOKUP_PREFIX = null;
-        public static final Uri ENTERPRISE_CONTENT_FILTER_URI;
-        public static final Uri ENTERPRISE_CONTENT_URI;
-        public static final String QUERY_PARAMETER_VCARD_NO_PHOTO = "no_photo";
+        public static final Uri CONTENT_FREQUENT_URI = Uri.withAppendedPath(CONTENT_URI, CallLog.Calls.SEM_FREQUENT);
+        public static final Uri CONTENT_STREQUENT_FILTER_URI = Uri.withAppendedPath(CONTENT_STREQUENT_URI, "filter");
+        public static final Uri CONTENT_GROUP_URI = Uri.withAppendedPath(CONTENT_URI, "group");
+        public static long ENTERPRISE_CONTACT_ID_BASE = 1000000000;
+        public static String ENTERPRISE_CONTACT_LOOKUP_PREFIX = "c-";
 
         private Contacts() {
-        }
-
-        static {
-            Uri withAppendedPath = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, android.provider.Contacts.AUTHORITY);
-            CONTENT_URI = withAppendedPath;
-            ENTERPRISE_CONTENT_URI = Uri.withAppendedPath(withAppendedPath, ApnSetting.TYPE_ENTERPRISE_STRING);
-            CORP_CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "contacts_corp");
-            CONTENT_LOOKUP_URI = Uri.withAppendedPath(withAppendedPath, "lookup");
-            CONTENT_VCARD_URI = Uri.withAppendedPath(withAppendedPath, "as_vcard");
-            CONTENT_MULTI_VCARD_URI = Uri.withAppendedPath(withAppendedPath, "as_multi_vcard");
-            CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter");
-            ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter_enterprise");
-            Uri withAppendedPath2 = Uri.withAppendedPath(withAppendedPath, "strequent");
-            CONTENT_STREQUENT_URI = withAppendedPath2;
-            CONTENT_FREQUENT_URI = Uri.withAppendedPath(withAppendedPath, CallLog.Calls.SEM_FREQUENT);
-            CONTENT_STREQUENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath2, "filter");
-            CONTENT_GROUP_URI = Uri.withAppendedPath(withAppendedPath, "group");
-            ENTERPRISE_CONTACT_ID_BASE = 1000000000L;
-            ENTERPRISE_CONTACT_LOOKUP_PREFIX = "c-";
         }
 
         public static Uri getLookupUri(ContentResolver resolver, Uri contactUri) {
@@ -744,7 +690,6 @@ public final class ContactsContract {
             return contactId >= ENTERPRISE_CONTACT_ID_BASE && contactId < Profile.MIN_ID;
         }
 
-        /* loaded from: classes3.dex */
         public static final class Data implements BaseColumns, DataColumns {
             public static final String CONTENT_DIRECTORY = "data";
 
@@ -752,7 +697,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Entity implements BaseColumns, ContactsColumns, ContactNameColumns, RawContactsColumns, BaseSyncColumns, SyncColumns, DataColumns, StatusColumns, ContactOptionsColumns, ContactStatusColumns, DataUsageStatColumns {
             public static final String CONTENT_DIRECTORY = "entities";
             public static final String DATA_ID = "data_id";
@@ -763,7 +707,6 @@ public final class ContactsContract {
         }
 
         @Deprecated
-        /* loaded from: classes3.dex */
         public static final class StreamItems implements StreamItemsColumns {
 
             @Deprecated
@@ -774,7 +717,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class AggregationSuggestions implements BaseColumns, ContactsColumns, ContactOptionsColumns, ContactStatusColumns {
             public static final String CONTENT_DIRECTORY = "suggestions";
             public static final String PARAMETER_MATCH_NAME = "name";
@@ -782,7 +724,6 @@ public final class ContactsContract {
             private AggregationSuggestions() {
             }
 
-            /* loaded from: classes3.dex */
             public static final class Builder {
                 private long mContactId;
                 private int mLimit;
@@ -807,13 +748,12 @@ public final class ContactsContract {
                     Uri.Builder builder = Contacts.CONTENT_URI.buildUpon();
                     builder.appendEncodedPath(String.valueOf(this.mContactId));
                     builder.appendPath(AggregationSuggestions.CONTENT_DIRECTORY);
-                    int i = this.mLimit;
-                    if (i != 0) {
-                        builder.appendQueryParameter("limit", String.valueOf(i));
+                    if (this.mLimit != 0) {
+                        builder.appendQueryParameter("limit", String.valueOf(this.mLimit));
                     }
                     int count = this.mValues.size();
-                    for (int i2 = 0; i2 < count; i2++) {
-                        builder.appendQueryParameter("query", "name:" + this.mValues.get(i2));
+                    for (int i = 0; i < count; i++) {
+                        builder.appendQueryParameter("query", "name:" + this.mValues.get(i));
                     }
                     return builder.build();
                 }
@@ -824,7 +764,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Photo implements BaseColumns, DataColumnsWithJoins {
             public static final String CONTENT_DIRECTORY = "photo";
             public static final String DISPLAY_PHOTO = "display_photo";
@@ -894,21 +833,13 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Profile implements BaseColumns, ContactsColumns, ContactOptionsColumns, ContactNameColumns, ContactStatusColumns {
-        public static final Uri CONTENT_RAW_CONTACTS_URI;
-        public static final Uri CONTENT_URI;
-        public static final Uri CONTENT_VCARD_URI;
         public static final long MIN_ID = 9223372034707292160L;
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "profile");
+        public static final Uri CONTENT_VCARD_URI = Uri.withAppendedPath(CONTENT_URI, "as_vcard");
+        public static final Uri CONTENT_RAW_CONTACTS_URI = Uri.withAppendedPath(CONTENT_URI, "raw_contacts");
 
         private Profile() {
-        }
-
-        static {
-            Uri withAppendedPath = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "profile");
-            CONTENT_URI = withAppendedPath;
-            CONTENT_VCARD_URI = Uri.withAppendedPath(withAppendedPath, "as_vcard");
-            CONTENT_RAW_CONTACTS_URI = Uri.withAppendedPath(withAppendedPath, "raw_contacts");
         }
     }
 
@@ -916,7 +847,6 @@ public final class ContactsContract {
         return id >= Profile.MIN_ID;
     }
 
-    /* loaded from: classes3.dex */
     public static final class DeletedContacts implements DeletedContactsColumns {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "deleted_contacts");
         private static final int DAYS_KEPT = 30;
@@ -926,7 +856,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class RawContacts implements BaseColumns, RawContactsColumns, ContactOptionsColumns, ContactNameColumns, SyncColumns {
         public static final int AGGREGATION_MODE_DEFAULT = 0;
         public static final int AGGREGATION_MODE_DISABLED = 3;
@@ -971,7 +900,6 @@ public final class ContactsContract {
             return TextUtils.nullIfEmpty(context.getString(R.string.config_rawContactsLocalAccountType));
         }
 
-        /* loaded from: classes3.dex */
         public static final class Data implements BaseColumns, DataColumns {
             public static final String CONTENT_DIRECTORY = "data";
 
@@ -979,7 +907,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Entity implements BaseColumns, DataColumns {
             public static final String CONTENT_DIRECTORY = "entity";
             public static final String DATA_ID = "data_id";
@@ -989,7 +916,6 @@ public final class ContactsContract {
         }
 
         @Deprecated
-        /* loaded from: classes3.dex */
         public static final class StreamItems implements BaseColumns, StreamItemsColumns {
 
             @Deprecated
@@ -1000,7 +926,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class DisplayPhoto {
             public static final String CONTENT_DIRECTORY = "display_photo";
 
@@ -1012,8 +937,7 @@ public final class ContactsContract {
             return new EntityIteratorImpl(cursor);
         }
 
-        /* loaded from: classes3.dex */
-        public static class EntityIteratorImpl extends CursorEntityIterator {
+        private static class EntityIteratorImpl extends CursorEntityIterator {
             private static final String[] DATA_KEYS = {"data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", DataColumns.DATA12, DataColumns.DATA13, "data14", "data15", DataColumns.SYNC1, DataColumns.SYNC2, DataColumns.SYNC3, DataColumns.SYNC4};
 
             public EntityIteratorImpl(Cursor cursor) {
@@ -1078,40 +1002,31 @@ public final class ContactsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class StreamItems implements BaseColumns, StreamItemsColumns {
 
         @Deprecated
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/stream_item";
 
         @Deprecated
-        public static final Uri CONTENT_LIMIT_URI;
-
-        @Deprecated
-        public static final Uri CONTENT_PHOTO_URI;
-
-        @Deprecated
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/stream_item";
-
-        @Deprecated
-        public static final Uri CONTENT_URI;
 
         @Deprecated
         public static final String MAX_ITEMS = "max_items";
 
         @Deprecated
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "stream_items");
+
+        @Deprecated
+        public static final Uri CONTENT_PHOTO_URI = Uri.withAppendedPath(CONTENT_URI, "photo");
+
+        @Deprecated
+        public static final Uri CONTENT_LIMIT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "stream_items_limit");
+
+        @Deprecated
         private StreamItems() {
         }
 
-        static {
-            Uri withAppendedPath = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "stream_items");
-            CONTENT_URI = withAppendedPath;
-            CONTENT_PHOTO_URI = Uri.withAppendedPath(withAppendedPath, "photo");
-            CONTENT_LIMIT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "stream_items_limit");
-        }
-
         @Deprecated
-        /* loaded from: classes3.dex */
         public static final class StreamItemPhotos implements BaseColumns, StreamItemPhotosColumns {
 
             @Deprecated
@@ -1130,7 +1045,6 @@ public final class ContactsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class StreamItemPhotos implements BaseColumns, StreamItemPhotosColumns {
 
         @Deprecated
@@ -1141,13 +1055,11 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PhotoFiles implements BaseColumns, PhotoFilesColumns {
         private PhotoFiles() {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Data implements DataColumnsWithJoins, ContactCounts {
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/data";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "data");
@@ -1179,7 +1091,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class RawContactsEntity implements BaseColumns, DataColumns, RawContactsColumns {
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/raw_contact_entity";
         public static final String DATA_ID = "data_id";
@@ -1251,7 +1162,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PhoneLookup implements BaseColumns, PhoneLookupColumns, ContactsColumns, ContactOptionsColumns, ContactNameColumns {
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/phone_lookup";
         public static final String QUERY_PARAMETER_SIP_ADDRESS = "sip";
@@ -1262,16 +1172,11 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class StatusUpdates implements StatusColumns, PresenceColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/status-update";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/status-update";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "status_updates");
         public static final Uri PROFILE_CONTENT_URI = Uri.withAppendedPath(Profile.CONTENT_URI, "status_updates");
-
-        /* synthetic */ StatusUpdates(StatusUpdatesIA statusUpdatesIA) {
-            this();
-        }
 
         private StatusUpdates() {
         }
@@ -1298,33 +1203,40 @@ public final class ContactsContract {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class Presence extends StatusUpdates {
         public Presence() {
             super();
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class CommonDataKinds {
         public static final String PACKAGE_COMMON = "common";
 
-        /* loaded from: classes3.dex */
         public interface BaseTypes {
             public static final int TYPE_CUSTOM = 0;
         }
 
-        /* loaded from: classes3.dex */
+        public static final class Callable implements DataColumnsWithJoins, CommonColumns, ContactCounts {
+            public static final Uri CONTENT_URI = Uri.withAppendedPath(Data.CONTENT_URI, "callables");
+            public static final Uri CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter");
+            public static final Uri ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter_enterprise");
+        }
+
         protected interface CommonColumns extends BaseTypes {
             public static final String DATA = "data1";
             public static final String LABEL = "data3";
             public static final String TYPE = "data2";
         }
 
+        public static final class Contactables implements DataColumnsWithJoins, CommonColumns, ContactCounts {
+            public static final String VISIBLE_CONTACTS_ONLY = "visible_contacts_only";
+            public static final Uri CONTENT_URI = Uri.withAppendedPath(Data.CONTENT_URI, "contactables");
+            public static final Uri CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter");
+        }
+
         private CommonDataKinds() {
         }
 
-        /* loaded from: classes3.dex */
         public static final class StructuredName implements DataColumnsWithJoins, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/name";
             public static final String DISPLAY_NAME = "data1";
@@ -1343,7 +1255,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Nickname implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/nickname";
             public static final String NAME = "data1";
@@ -1360,14 +1271,9 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Phone implements DataColumnsWithJoins, CommonColumns, ContactCounts {
-            public static final Uri CONTENT_FILTER_URI;
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/phone_v2";
             public static final String CONTENT_TYPE = "vnd.android.cursor.dir/phone_v2";
-            public static final Uri CONTENT_URI;
-            public static final Uri ENTERPRISE_CONTENT_FILTER_URI;
-            public static final Uri ENTERPRISE_CONTENT_URI;
             public static final String NORMALIZED_NUMBER = "data4";
             public static final String NUMBER = "data1";
             public static final String SEARCH_DISPLAY_NAME_KEY = "search_display_name";
@@ -1393,16 +1299,12 @@ public final class ContactsContract {
             public static final int TYPE_WORK = 3;
             public static final int TYPE_WORK_MOBILE = 17;
             public static final int TYPE_WORK_PAGER = 18;
+            public static final Uri CONTENT_URI = Uri.withAppendedPath(Data.CONTENT_URI, Contacts.People.Phones.CONTENT_DIRECTORY);
+            public static final Uri ENTERPRISE_CONTENT_URI = Uri.withAppendedPath(Data.ENTERPRISE_CONTENT_URI, Contacts.People.Phones.CONTENT_DIRECTORY);
+            public static final Uri CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter");
+            public static final Uri ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter_enterprise");
 
             private Phone() {
-            }
-
-            static {
-                Uri withAppendedPath = Uri.withAppendedPath(Data.CONTENT_URI, Contacts.People.Phones.CONTENT_DIRECTORY);
-                CONTENT_URI = withAppendedPath;
-                ENTERPRISE_CONTENT_URI = Uri.withAppendedPath(Data.ENTERPRISE_CONTENT_URI, Contacts.People.Phones.CONTENT_DIRECTORY);
-                CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter");
-                ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter_enterprise");
             }
 
             @Deprecated
@@ -1473,32 +1375,22 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Email implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String ADDRESS = "data1";
-            public static final Uri CONTENT_FILTER_URI;
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/email_v2";
-            public static final Uri CONTENT_LOOKUP_URI;
             public static final String CONTENT_TYPE = "vnd.android.cursor.dir/email_v2";
-            public static final Uri CONTENT_URI;
             public static final String DISPLAY_NAME = "data4";
-            public static final Uri ENTERPRISE_CONTENT_FILTER_URI;
-            public static final Uri ENTERPRISE_CONTENT_LOOKUP_URI;
             public static final int TYPE_HOME = 1;
             public static final int TYPE_MOBILE = 4;
             public static final int TYPE_OTHER = 3;
             public static final int TYPE_WORK = 2;
+            public static final Uri CONTENT_URI = Uri.withAppendedPath(Data.CONTENT_URI, "emails");
+            public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, "lookup");
+            public static final Uri ENTERPRISE_CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, "lookup_enterprise");
+            public static final Uri CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter");
+            public static final Uri ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(CONTENT_URI, "filter_enterprise");
 
             private Email() {
-            }
-
-            static {
-                Uri withAppendedPath = Uri.withAppendedPath(Data.CONTENT_URI, "emails");
-                CONTENT_URI = withAppendedPath;
-                CONTENT_LOOKUP_URI = Uri.withAppendedPath(withAppendedPath, "lookup");
-                ENTERPRISE_CONTENT_LOOKUP_URI = Uri.withAppendedPath(withAppendedPath, "lookup_enterprise");
-                CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter");
-                ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter_enterprise");
             }
 
             public static final int getTypeLabelResource(int type) {
@@ -1525,7 +1417,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class StructuredPostal implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String CITY = "data7";
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/postal-address_v2";
@@ -1567,7 +1458,7 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
+        @Deprecated
         public static final class Im implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/im";
             public static final String CUSTOM_PROTOCOL = "data6";
@@ -1668,7 +1559,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Organization implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String COMPANY = "data1";
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/organization";
@@ -1705,7 +1595,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Relation implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/relation";
             public static final String NAME = "data1";
@@ -1771,7 +1660,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Event implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/contact_event";
             public static final String START_DATE = "data1";
@@ -1787,15 +1675,8 @@ public final class ContactsContract {
                     return R.string.eventTypeOther;
                 }
                 switch (type.intValue()) {
-                    case 1:
-                        return R.string.eventTypeAnniversary;
-                    case 2:
-                        return R.string.eventTypeOther;
-                    case 3:
-                        return R.string.eventTypeBirthday;
-                    default:
-                        return R.string.eventTypeCustom;
                 }
+                return R.string.eventTypeOther;
             }
 
             public static final CharSequence getTypeLabel(Resources res, int type, CharSequence label) {
@@ -1807,7 +1688,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Photo implements DataColumnsWithJoins, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/photo";
             public static final String PHOTO = "data15";
@@ -1817,7 +1697,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Note implements DataColumnsWithJoins, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/note";
             public static final String NOTE = "data1";
@@ -1826,7 +1705,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class GroupMembership implements DataColumnsWithJoins, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/group_membership";
             public static final String GROUP_ROW_ID = "data1";
@@ -1836,7 +1714,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Website implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/website";
             public static final int TYPE_BLOG = 2;
@@ -1852,7 +1729,7 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
+        @Deprecated
         public static final class SipAddress implements DataColumnsWithJoins, CommonColumns, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/sip_address";
             public static final String SIP_ADDRESS = "data1";
@@ -1885,7 +1762,6 @@ public final class ContactsContract {
             }
         }
 
-        /* loaded from: classes3.dex */
         public static final class Identity implements DataColumnsWithJoins, ContactCounts {
             public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/identity";
             public static final String IDENTITY = "data1";
@@ -1894,36 +1770,8 @@ public final class ContactsContract {
             private Identity() {
             }
         }
-
-        /* loaded from: classes3.dex */
-        public static final class Callable implements DataColumnsWithJoins, CommonColumns, ContactCounts {
-            public static final Uri CONTENT_FILTER_URI;
-            public static final Uri CONTENT_URI;
-            public static final Uri ENTERPRISE_CONTENT_FILTER_URI;
-
-            static {
-                Uri withAppendedPath = Uri.withAppendedPath(Data.CONTENT_URI, "callables");
-                CONTENT_URI = withAppendedPath;
-                CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter");
-                ENTERPRISE_CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter_enterprise");
-            }
-        }
-
-        /* loaded from: classes3.dex */
-        public static final class Contactables implements DataColumnsWithJoins, CommonColumns, ContactCounts {
-            public static final Uri CONTENT_FILTER_URI;
-            public static final Uri CONTENT_URI;
-            public static final String VISIBLE_CONTACTS_ONLY = "visible_contacts_only";
-
-            static {
-                Uri withAppendedPath = Uri.withAppendedPath(Data.CONTENT_URI, "contactables");
-                CONTENT_URI = withAppendedPath;
-                CONTENT_FILTER_URI = Uri.withAppendedPath(withAppendedPath, "filter");
-            }
-        }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Groups implements BaseColumns, GroupsColumns, SyncColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/group";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/group";
@@ -1937,7 +1785,6 @@ public final class ContactsContract {
             return new EntityIteratorImpl(cursor);
         }
 
-        /* loaded from: classes3.dex */
         private static class EntityIteratorImpl extends CursorEntityIterator {
             public EntityIteratorImpl(Cursor cursor) {
                 super(cursor);
@@ -1972,7 +1819,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class AggregationExceptions implements BaseColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/aggregation_exception";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/aggregation_exception";
@@ -1988,7 +1834,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SimContacts {
         public static final String ACTION_SIM_ACCOUNTS_CHANGED = "android.provider.action.SIM_ACCOUNTS_CHANGED";
         public static final String ADD_SIM_ACCOUNT_METHOD = "addSimAccount";
@@ -2042,13 +1887,10 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SimAccount implements Parcelable {
         public static final int ADN_EF_TYPE = 1;
         public static final Parcelable.Creator<SimAccount> CREATOR = new Parcelable.Creator<SimAccount>() { // from class: android.provider.ContactsContract.SimAccount.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SimAccount createFromParcel(Parcel source) {
                 String accountName = source.readString();
@@ -2059,6 +1901,7 @@ public final class ContactsContract {
                 return simAccount;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SimAccount[] newArray(int size) {
                 return new SimAccount[size];
@@ -2133,31 +1976,8 @@ public final class ContactsContract {
         public int describeContents() {
             return 0;
         }
-
-        /* renamed from: android.provider.ContactsContract$SimAccount$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SimAccount> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SimAccount createFromParcel(Parcel source) {
-                String accountName = source.readString();
-                String accountType = source.readString();
-                int simSlot = source.readInt();
-                int efType = source.readInt();
-                SimAccount simAccount = new SimAccount(accountName, accountType, simSlot, efType);
-                return simAccount;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SimAccount[] newArray(int size) {
-                return new SimAccount[size];
-            }
-        }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Settings implements SettingsColumns {
         public static final String ACTION_SET_DEFAULT_ACCOUNT = "android.provider.action.SET_DEFAULT_ACCOUNT";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/setting";
@@ -2186,7 +2006,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ProviderStatus {
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/provider_status";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "provider_status");
@@ -2200,7 +2019,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PinnedPositions {
         public static final int DEMOTED = -1;
         public static final String UNDEMOTE_METHOD = "undemote";
@@ -2218,7 +2036,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class QuickContact {
         public static final String ACTION_QUICK_CONTACT = "android.provider.action.QUICK_CONTACT";
         public static final String EXTRA_EXCLUDE_MIMES = "android.provider.extra.EXCLUDE_MIMES";
@@ -2304,7 +2121,6 @@ public final class ContactsContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class DisplayPhoto {
         public static final String DISPLAY_MAX_DIM = "display_max_dim";
         public static final String THUMBNAIL_MAX_DIM = "thumbnail_max_dim";
@@ -2317,19 +2133,12 @@ public final class ContactsContract {
 
     @SystemApi
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class MetadataSync implements BaseColumns, MetadataSyncColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/contact_metadata";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/contact_metadata";
-        public static final Uri CONTENT_URI;
         public static final String METADATA_AUTHORITY = "com.android.contacts.metadata";
-        public static final Uri METADATA_AUTHORITY_URI;
-
-        static {
-            Uri parse = Uri.parse("content://com.android.contacts.metadata");
-            METADATA_AUTHORITY_URI = parse;
-            CONTENT_URI = Uri.withAppendedPath(parse, "metadata_sync");
-        }
+        public static final Uri METADATA_AUTHORITY_URI = Uri.parse("content://com.android.contacts.metadata");
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(METADATA_AUTHORITY_URI, "metadata_sync");
 
         private MetadataSync() {
         }
@@ -2337,7 +2146,6 @@ public final class ContactsContract {
 
     @SystemApi
     @Deprecated
-    /* loaded from: classes3.dex */
     public static final class MetadataSyncState implements BaseColumns, MetadataSyncStateColumns {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/contact_metadata_sync_state";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/contact_metadata_sync_state";
@@ -2347,6 +2155,7 @@ public final class ContactsContract {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Bundle nullSafeCall(ContentResolver resolver, Uri uri, String method, String arg, Bundle extras) {
         try {
             ContentProviderClient client = resolver.acquireContentProviderClient(uri);

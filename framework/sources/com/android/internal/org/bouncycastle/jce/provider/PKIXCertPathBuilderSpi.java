@@ -27,14 +27,13 @@ public class PKIXCertPathBuilderSpi extends CertPathBuilderSpi {
         this(false);
     }
 
-    public PKIXCertPathBuilderSpi(boolean isForCRLCheck) {
+    PKIXCertPathBuilderSpi(boolean isForCRLCheck) {
         this.isForCRLCheck = isForCRLCheck;
     }
 
     @Override // java.security.cert.CertPathBuilderSpi
     public CertPathBuilderResult engineBuild(CertPathParameters params) throws CertPathBuilderException, InvalidAlgorithmParameterException {
         PKIXExtendedBuilderParameters paramsPKIX;
-        Exception exc;
         PKIXExtendedBuilderParameters.Builder paramsBldrPKIXBldr;
         if (params instanceof PKIXBuilderParameters) {
             PKIXExtendedParameters.Builder paramsPKIXBldr = new PKIXExtendedParameters.Builder((PKIXBuilderParameters) params);
@@ -64,8 +63,8 @@ public class PKIXCertPathBuilderSpi extends CertPathBuilderSpi {
             X509Certificate cert = (X509Certificate) targetIter.next();
             result = build(cert, paramsPKIX, certPathList);
         }
-        if (result == null && (exc = this.certPathException) != null) {
-            if (exc instanceof AnnotatedException) {
+        if (result == null && this.certPathException != null) {
+            if (this.certPathException instanceof AnnotatedException) {
                 throw new CertPathBuilderException(this.certPathException.getMessage(), this.certPathException.getCause());
             }
             throw new CertPathBuilderException("Possible certificate chain could not be validated.", this.certPathException);

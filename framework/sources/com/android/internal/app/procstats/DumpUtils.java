@@ -9,12 +9,11 @@ import android.util.proto.ProtoOutputStream;
 import com.android.internal.accessibility.common.ShortcutConstants;
 import com.android.internal.content.NativeLibraryHelper;
 import com.samsung.android.core.CoreSaConstant;
-import com.samsung.android.share.SemShareConstants;
 import com.samsung.android.wallpaperbackup.GenerateXML;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class DumpUtils {
     public static final String[] ADJ_MEM_NAMES_CSV;
     static final int[] ADJ_MEM_PROTO_ENUMS;
@@ -27,26 +26,115 @@ public final class DumpUtils {
     public static final String[] STATE_LABELS;
     public static final String STATE_LABEL_CACHED;
     public static final String STATE_LABEL_TOTAL;
-    public static final String[] STATE_NAMES;
+    public static final String[] STATE_NAMES = new String[16];
     public static final String[] STATE_NAMES_CSV;
     static final int[] STATE_PROTO_ENUMS;
     static final String[] STATE_TAGS;
 
     static {
-        STATE_NAMES = r1;
-        String[] strArr = {"Persist", "Top", "BTop", "Fgs", "BFgs", "ImpFg", "ImpBg", "Backup", "Service", "ServRst", "Receivr", "HeavyWt", CoreSaConstant.VALUE_HOME, "LastAct", "Cached", "Frozen"};
-        STATE_LABELS = r1;
-        String[] strArr2 = {"Persistent", "       Top", "   Bnd Top", "       Fgs", "   Bnd Fgs", "    Imp Fg", "    Imp Bg", "    Backup", "   Service", "Service Rs", "  Receiver", " Heavy Wgt", "    (Home)", "(Last Act)", "  (Cached)", "    Frozen"};
+        STATE_NAMES[0] = "Persist";
+        STATE_NAMES[1] = "Top";
+        STATE_NAMES[4] = "BFgs";
+        STATE_NAMES[2] = "BTop";
+        STATE_NAMES[3] = "Fgs";
+        STATE_NAMES[5] = "ImpFg";
+        STATE_NAMES[6] = "ImpBg";
+        STATE_NAMES[7] = "Backup";
+        STATE_NAMES[8] = "Service";
+        STATE_NAMES[9] = "ServRst";
+        STATE_NAMES[10] = "Receivr";
+        STATE_NAMES[11] = "HeavyWt";
+        STATE_NAMES[12] = CoreSaConstant.VALUE_HOME;
+        STATE_NAMES[13] = "LastAct";
+        STATE_NAMES[14] = "Cached";
+        STATE_NAMES[15] = "Frozen";
+        STATE_LABELS = new String[16];
+        STATE_LABELS[0] = "Persistent";
+        STATE_LABELS[1] = "       Top";
+        STATE_LABELS[4] = "   Bnd Fgs";
+        STATE_LABELS[2] = "   Bnd Top";
+        STATE_LABELS[3] = "       Fgs";
+        STATE_LABELS[5] = "    Imp Fg";
+        STATE_LABELS[6] = "    Imp Bg";
+        STATE_LABELS[7] = "    Backup";
+        STATE_LABELS[8] = "   Service";
+        STATE_LABELS[9] = "Service Rs";
+        STATE_LABELS[10] = "  Receiver";
+        STATE_LABELS[11] = " Heavy Wgt";
+        STATE_LABELS[12] = "    (Home)";
+        STATE_LABELS[13] = "(Last Act)";
+        STATE_LABELS[14] = "  (Cached)";
+        STATE_LABELS[15] = "    Frozen";
         STATE_LABEL_CACHED = "  (Cached)";
         STATE_LABEL_TOTAL = "     TOTAL";
-        STATE_NAMES_CSV = r1;
-        String[] strArr3 = {"pers", GenerateXML.TOP, "btop", "fgs", "bfgs", "impfg", "impbg", Context.BACKUP_SERVICE, "service", "service-rs", "receiver", "heavy", "home", "lastact", "cached", "frzn"};
-        STATE_TAGS = r1;
-        String[] strArr4 = {"p", "t", "z", "g", "y", FullBackup.FILES_TREE_TOKEN, "b", XmlTags.ATTR_UID, XmlTags.TAG_SESSION, "x", "r", "w", "h", XmlTags.TAG_LEASEE, "a", SemShareConstants.DMA_SURVEY_DETAIL_SHAREVIA_VALUE_ALL_APPS};
-        STATE_PROTO_ENUMS = r1;
-        int[] iArr = {1, 2, 19, 16, 20, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17};
-        PROCESS_STATS_STATE_TO_AGGREGATED_STATE = r0;
-        int[] iArr2 = {1, 2, 3, 4, 3, 5, 6, 6, 6, 0, 7, 6, 8, 8, 8, 8};
+        STATE_NAMES_CSV = new String[16];
+        STATE_NAMES_CSV[0] = "pers";
+        STATE_NAMES_CSV[1] = GenerateXML.TOP;
+        STATE_NAMES_CSV[4] = "bfgs";
+        STATE_NAMES_CSV[2] = "btop";
+        STATE_NAMES_CSV[3] = "fgs";
+        STATE_NAMES_CSV[5] = "impfg";
+        STATE_NAMES_CSV[6] = "impbg";
+        STATE_NAMES_CSV[7] = Context.BACKUP_SERVICE;
+        STATE_NAMES_CSV[8] = "service";
+        STATE_NAMES_CSV[9] = "service-rs";
+        STATE_NAMES_CSV[10] = "receiver";
+        STATE_NAMES_CSV[11] = "heavy";
+        STATE_NAMES_CSV[12] = "home";
+        STATE_NAMES_CSV[13] = "lastact";
+        STATE_NAMES_CSV[14] = "cached";
+        STATE_NAMES_CSV[15] = "frzn";
+        STATE_TAGS = new String[16];
+        STATE_TAGS[0] = "p";
+        STATE_TAGS[1] = "t";
+        STATE_TAGS[4] = "y";
+        STATE_TAGS[2] = "z";
+        STATE_TAGS[3] = "g";
+        STATE_TAGS[5] = FullBackup.FILES_TREE_TOKEN;
+        STATE_TAGS[6] = XmlTags.TAG_BLOB;
+        STATE_TAGS[7] = XmlTags.ATTR_UID;
+        STATE_TAGS[8] = XmlTags.TAG_SESSION;
+        STATE_TAGS[9] = "x";
+        STATE_TAGS[10] = "r";
+        STATE_TAGS[11] = "w";
+        STATE_TAGS[12] = "h";
+        STATE_TAGS[13] = XmlTags.TAG_LEASEE;
+        STATE_TAGS[14] = FullBackup.APK_TREE_TOKEN;
+        STATE_TAGS[15] = "e";
+        STATE_PROTO_ENUMS = new int[16];
+        STATE_PROTO_ENUMS[0] = 1;
+        STATE_PROTO_ENUMS[1] = 2;
+        STATE_PROTO_ENUMS[4] = 20;
+        STATE_PROTO_ENUMS[2] = 19;
+        STATE_PROTO_ENUMS[3] = 16;
+        STATE_PROTO_ENUMS[5] = 3;
+        STATE_PROTO_ENUMS[6] = 4;
+        STATE_PROTO_ENUMS[7] = 5;
+        STATE_PROTO_ENUMS[8] = 6;
+        STATE_PROTO_ENUMS[9] = 7;
+        STATE_PROTO_ENUMS[10] = 8;
+        STATE_PROTO_ENUMS[11] = 9;
+        STATE_PROTO_ENUMS[12] = 10;
+        STATE_PROTO_ENUMS[13] = 11;
+        STATE_PROTO_ENUMS[14] = 12;
+        STATE_PROTO_ENUMS[15] = 17;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE = new int[16];
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[0] = 1;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[1] = 2;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[4] = 3;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[2] = 3;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[3] = 4;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[5] = 5;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[6] = 6;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[7] = 6;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[8] = 6;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[9] = 0;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[10] = 7;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[11] = 6;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[12] = 8;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[13] = 8;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[14] = 8;
+        PROCESS_STATS_STATE_TO_AGGREGATED_STATE[15] = 8;
         ADJ_SCREEN_NAMES_CSV = new String[]{"off", "on"};
         ADJ_MEM_NAMES_CSV = new String[]{"norm", "mod", "low", "crit"};
         ADJ_SCREEN_TAGS = new String[]{"0", "1"};
@@ -62,32 +150,32 @@ public final class DumpUtils {
         switch (offset) {
             case -1:
                 pw.print("     ");
-                return;
+                break;
             case 0:
                 pw.print("SOff/");
-                return;
+                break;
             case 4:
                 pw.print(" SOn/");
-                return;
+                break;
             default:
                 pw.print("????/");
-                return;
+                break;
         }
     }
 
     public static void printScreenLabelCsv(PrintWriter pw, int offset) {
         switch (offset) {
             case -1:
-                return;
+                break;
             case 0:
                 pw.print(ADJ_SCREEN_NAMES_CSV[0]);
-                return;
+                break;
             case 4:
                 pw.print(ADJ_SCREEN_NAMES_CSV[1]);
-                return;
+                break;
             default:
                 pw.print("???");
-                return;
+                break;
         }
     }
 
@@ -97,44 +185,44 @@ public final class DumpUtils {
                 pw.print("    ");
                 if (sep != 0) {
                     pw.print(' ');
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 0:
                 pw.print("Norm");
                 if (sep != 0) {
                     pw.print(sep);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 1:
                 pw.print(" Mod");
                 if (sep != 0) {
                     pw.print(sep);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 2:
                 pw.print(" Low");
                 if (sep != 0) {
                     pw.print(sep);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 3:
                 pw.print("Crit");
                 if (sep != 0) {
                     pw.print(sep);
-                    return;
+                    break;
                 }
-                return;
+                break;
             default:
                 pw.print("????");
                 if (sep != 0) {
                     pw.print(sep);
-                    return;
+                    break;
                 }
-                return;
+                break;
         }
     }
 

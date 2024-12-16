@@ -19,7 +19,7 @@ import com.samsung.android.remoteappmode.ITaskChangeListener;
 import com.samsung.android.remoteappmode.IVirtualDisplayAliveChecker;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemRemoteAppModeManager {
     private static final String TAG = SemRemoteAppModeManager.class.getSimpleName();
     private static final Object sLock = new Object();
@@ -30,29 +30,24 @@ public final class SemRemoteAppModeManager {
     private Map<StartActivityInterceptedListener, StartActivityInterceptedListenerDelegate> mStartActivityInterceptedListeners = null;
     private Map<RemoteAppModeListener, RemoteAppModeListenerDelegate> mRemoteAppModeListeners = null;
 
-    /* loaded from: classes5.dex */
     public interface RemoteAppModeListener {
         void onRemoteAppModeStateChanged(boolean z);
     }
 
-    /* loaded from: classes5.dex */
     public interface RotationChangedListener {
         void onRotationChanged(int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface SecureAppChangedListener {
         void onSecuredAppLaunched(int i, String str);
 
         void onSecuredAppRemoved(int i, String str);
     }
 
-    /* loaded from: classes5.dex */
     public interface StartActivityInterceptedListener {
         void onStartActivityIntercepted(Intent intent, Bundle bundle, ActivityInfo activityInfo, int i, boolean z, int i2, int i3, int i4);
     }
 
-    /* loaded from: classes5.dex */
     public interface TaskChangeListener {
         void onRecentTaskListUpdated();
 
@@ -65,7 +60,6 @@ public final class SemRemoteAppModeManager {
         void onTaskTriedToGoToBackground(int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface VirtualDisplayAliveChecker {
         void onVirtualDisplayCreated(int i);
 
@@ -162,7 +156,6 @@ public final class SemRemoteAppModeManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     private static class VirtualDisplayAliveCheckerDelegate extends IVirtualDisplayAliveChecker.Stub {
         private VirtualDisplayAliveChecker mListener;
 
@@ -207,9 +200,7 @@ public final class SemRemoteAppModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class TaskChangeListenerDelegate extends ITaskChangeListener.Stub {
+    private static class TaskChangeListenerDelegate extends ITaskChangeListener.Stub {
         private TaskChangeListener mListener;
 
         TaskChangeListenerDelegate(TaskChangeListener listener) {
@@ -319,11 +310,10 @@ public final class SemRemoteAppModeManager {
                 Log.w(TAG, "unregisterTaskChangeListener: Listener is null");
                 return;
             }
-            Map<TaskChangeListener, TaskChangeListenerDelegate> map = this.mTaskChangeListeners;
-            if (map == null) {
+            if (this.mTaskChangeListeners == null) {
                 return;
             }
-            TaskChangeListenerDelegate delegate = map.remove(listener);
+            TaskChangeListenerDelegate delegate = this.mTaskChangeListeners.remove(listener);
             if (delegate == null) {
                 Log.w(TAG, "unregisterTaskChangeListener: " + listener + " already unregistered");
                 return;
@@ -404,9 +394,7 @@ public final class SemRemoteAppModeManager {
         this.mService = service;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class RotationChangedListenerDelegate extends IRotationChangeListener.Stub {
+    private static class RotationChangedListenerDelegate extends IRotationChangeListener.Stub {
         private RotationChangedListener mListener;
 
         RotationChangedListenerDelegate(RotationChangedListener listener) {
@@ -468,11 +456,10 @@ public final class SemRemoteAppModeManager {
                 Log.w(TAG, "unregisterRotationChangeListener: Listener is null");
                 return;
             }
-            Map<RotationChangedListener, RotationChangedListenerDelegate> map = this.mRotationChangedListeners;
-            if (map == null) {
+            if (this.mRotationChangedListeners == null) {
                 return;
             }
-            RotationChangedListenerDelegate delegate = map.remove(listener);
+            RotationChangedListenerDelegate delegate = this.mRotationChangedListeners.remove(listener);
             if (delegate == null) {
                 Log.w(TAG, "unregisterRotationChangeListener: " + listener + " already unregistered");
                 return;
@@ -490,9 +477,7 @@ public final class SemRemoteAppModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class SecureAppChangedListenerDelegate extends ISecureAppChangedListener.Stub {
+    private static class SecureAppChangedListenerDelegate extends ISecureAppChangedListener.Stub {
         private SecureAppChangedListener mListener;
 
         SecureAppChangedListenerDelegate(SecureAppChangedListener listener) {
@@ -566,11 +551,10 @@ public final class SemRemoteAppModeManager {
                 Log.w(TAG, "unregisterSecureAppChangedListener: Listener is null");
                 return;
             }
-            Map<SecureAppChangedListener, SecureAppChangedListenerDelegate> map = this.mSecureAppChangedListeners;
-            if (map == null) {
+            if (this.mSecureAppChangedListeners == null) {
                 return;
             }
-            SecureAppChangedListenerDelegate delegate = map.remove(listener);
+            SecureAppChangedListenerDelegate delegate = this.mSecureAppChangedListeners.remove(listener);
             if (delegate == null) {
                 Log.w(TAG, "unregisterSecureAppChangedListener: " + listener + " already unregistered");
                 return;
@@ -592,17 +576,14 @@ public final class SemRemoteAppModeManager {
         synchronized (sLock) {
             try {
                 this.mService.clearAll();
-                Map<TaskChangeListener, TaskChangeListenerDelegate> map = this.mTaskChangeListeners;
-                if (map != null) {
-                    map.clear();
+                if (this.mTaskChangeListeners != null) {
+                    this.mTaskChangeListeners.clear();
                 }
-                Map<SecureAppChangedListener, SecureAppChangedListenerDelegate> map2 = this.mSecureAppChangedListeners;
-                if (map2 != null) {
-                    map2.clear();
+                if (this.mSecureAppChangedListeners != null) {
+                    this.mSecureAppChangedListeners.clear();
                 }
-                Map<StartActivityInterceptedListener, StartActivityInterceptedListenerDelegate> map3 = this.mStartActivityInterceptedListeners;
-                if (map3 != null) {
-                    map3.clear();
+                if (this.mStartActivityInterceptedListeners != null) {
+                    this.mStartActivityInterceptedListeners.clear();
                 }
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
@@ -610,9 +591,7 @@ public final class SemRemoteAppModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class StartActivityInterceptedListenerDelegate extends IStartActivityInterceptListener.Stub {
+    private static class StartActivityInterceptedListenerDelegate extends IStartActivityInterceptListener.Stub {
         private StartActivityInterceptedListener mListener;
 
         StartActivityInterceptedListenerDelegate(StartActivityInterceptedListener listener) {
@@ -629,12 +608,11 @@ public final class SemRemoteAppModeManager {
                     th = th;
                     while (true) {
                         try {
-                            break;
+                            throw th;
                         } catch (Throwable th2) {
                             th = th2;
                         }
                     }
-                    throw th;
                 }
             }
             if (listener != null) {
@@ -686,11 +664,10 @@ public final class SemRemoteAppModeManager {
                 Log.w(TAG, "unregisterListener: Listener is null");
                 return;
             }
-            Map<StartActivityInterceptedListener, StartActivityInterceptedListenerDelegate> map = this.mStartActivityInterceptedListeners;
-            if (map == null) {
+            if (this.mStartActivityInterceptedListeners == null) {
                 return;
             }
-            StartActivityInterceptedListenerDelegate delegate = map.remove(listener);
+            StartActivityInterceptedListenerDelegate delegate = this.mStartActivityInterceptedListeners.remove(listener);
             if (delegate == null) {
                 Log.w(TAG, "unregisterListener: " + listener + " already unregistered");
                 return;
@@ -742,9 +719,7 @@ public final class SemRemoteAppModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class RemoteAppModeListenerDelegate extends IRemoteAppModeListener.Stub {
+    private static class RemoteAppModeListenerDelegate extends IRemoteAppModeListener.Stub {
         private RemoteAppModeListener mListener;
 
         RemoteAppModeListenerDelegate(RemoteAppModeListener listener) {
@@ -806,11 +781,10 @@ public final class SemRemoteAppModeManager {
                 Log.w(TAG, "unregisterRemoteAppModeListener: Listener is null");
                 return;
             }
-            Map<RemoteAppModeListener, RemoteAppModeListenerDelegate> map = this.mRemoteAppModeListeners;
-            if (map == null) {
+            if (this.mRemoteAppModeListeners == null) {
                 return;
             }
-            RemoteAppModeListenerDelegate delegate = map.remove(listener);
+            RemoteAppModeListenerDelegate delegate = this.mRemoteAppModeListeners.remove(listener);
             if (delegate == null) {
                 Log.w(TAG, "unregisterRemoteAppModeListener: " + listener + " already unregistered");
                 return;

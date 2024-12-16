@@ -1,11 +1,1 @@
-Error decode xml
-java.util.zip.ZipException: invalid END header (bad central directory offset)
-	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
-	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
-	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
-	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
-	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="Trying to read the wallpaper file or bitmap in T will return the default wallpaper bitmap/file instead of throwing a SecurityException." enableSinceTargetSdk="33" id="239784307" name="RETURN_DEFAULT_ON_SECURITY_EXCEPTION"><meta-data definedIn="android.app.WallpaperManager" sourcePosition="frameworks/base/core/java/android/app/WallpaperManager.java:184"/></compat-change><compat-change description="In U and later, attempting to read the wallpaper file or bitmap will throw an exception, (except with the READ_WALLPAPER_INTERNAL permission)." enableSinceTargetSdk="34" id="237508058" name="THROW_ON_SECURITY_EXCEPTION"><meta-data definedIn="android.app.WallpaperManager" sourcePosition="frameworks/base/core/java/android/app/WallpaperManager.java:192"/></compat-change></config>

@@ -14,14 +14,13 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class RecommendationInfo implements Parcelable {
     public static final Parcelable.Creator<RecommendationInfo> CREATOR = new Parcelable.Creator<RecommendationInfo>() { // from class: android.printservice.recommendation.RecommendationInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecommendationInfo createFromParcel(Parcel in) {
             return new RecommendationInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecommendationInfo[] newArray(int size) {
             return new RecommendationInfo[size];
@@ -31,10 +30,6 @@ public final class RecommendationInfo implements Parcelable {
     private final CharSequence mName;
     private final CharSequence mPackageName;
     private final boolean mRecommendsMultiVendorService;
-
-    /* synthetic */ RecommendationInfo(Parcel parcel, RecommendationInfoIA recommendationInfoIA) {
-        this(parcel);
-    }
 
     public RecommendationInfo(CharSequence packageName, CharSequence name, List<InetAddress> discoveredPrinters, boolean recommendsMultiVendorService) {
         this.mPackageName = Preconditions.checkStringNotEmpty(packageName);
@@ -100,22 +95,5 @@ public final class RecommendationInfo implements Parcelable {
             parcel.writeBlob(it.next().getAddress());
         }
         parcel.writeByte(this.mRecommendsMultiVendorService ? (byte) 1 : (byte) 0);
-    }
-
-    /* renamed from: android.printservice.recommendation.RecommendationInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecommendationInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecommendationInfo createFromParcel(Parcel in) {
-            return new RecommendationInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecommendationInfo[] newArray(int size) {
-            return new RecommendationInfo[size];
-        }
     }
 }

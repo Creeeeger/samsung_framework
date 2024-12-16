@@ -6,7 +6,6 @@ public interface ILazyService extends IInterface {
 
     IBinder getService(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ILazyService {
         @Override // android.os.ILazyService
         public IBinder getService(String name) throws RemoteException {
@@ -19,7 +18,6 @@ public interface ILazyService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ILazyService {
         static final int TRANSACTION_getService = 1;
 
@@ -62,26 +60,23 @@ public interface ILazyService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILazyService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILazyService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILazyService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    IBinder _result = getService(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            IBinder _result = getService(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ILazyService {
             private IBinder mRemote;
 

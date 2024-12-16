@@ -1,6 +1,5 @@
 package android.filterpacks.videoproc;
 
-import android.content.om.WallpaperThemeConstants;
 import android.filterfw.core.Filter;
 import android.filterfw.core.FilterContext;
 import android.filterfw.core.Frame;
@@ -182,12 +181,11 @@ public class BackDropperFilter extends Filter {
     private float mWhiteBalanceRedChange;
     private long startTime;
     private static final float[] DEFAULT_BG_FIT_TRANSFORM = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-    private static final String[] mInputNames = {"video", WallpaperThemeConstants.NAME_BACKGROUND};
+    private static final String[] mInputNames = {"video", "background"};
     private static final String[] mOutputNames = {"video"};
     private static final String[] mDebugOutputNames = {"debug1", "debug2"};
     private static String mSharedUtilShader = "precision mediump float;\nuniform float fg_adapt_rate;\nuniform float bg_adapt_rate;\nconst mat4 coeff_yuv = mat4(0.299, -0.168736,  0.5,      0.000, 0.587, -0.331264, -0.418688, 0.000, 0.114,  0.5,      -0.081312, 0.000, 0.000,  0.5,       0.5,      1.000 );\nconst float dist_scale = 0.6;\nconst float inv_dist_scale = 1. / dist_scale;\nconst float var_scale=5.0;\nconst float inv_var_scale = 1. / var_scale;\nconst float min_variance = inv_var_scale *3.0/ 256.;\nconst float auto_wb_scale = 0.25;\n\nfloat gauss_dist_y(float y, float mean, float variance) {\n  float dist = (y - mean) * (y - mean) / variance;\n  return dist;\n}\nfloat gauss_dist_uv(vec2 uv, vec2 mean, vec2 variance) {\n  vec2 dist = (uv - mean) * (uv - mean) / variance;\n  return dist.r + dist.g;\n}\nfloat local_adapt_rate(float alpha) {\n  return mix(bg_adapt_rate, fg_adapt_rate, alpha);\n}\n\n";
 
-    /* loaded from: classes.dex */
     public interface LearningDoneListener {
         void onLearningDone(BackDropperFilter backDropperFilter);
     }
@@ -227,13 +225,12 @@ public class BackDropperFilter extends Filter {
         this.mMirrorBg = false;
         this.mOrientation = 0;
         this.startTime = -1L;
-        boolean isLoggable = Log.isLoggable(TAG, 2);
-        this.mLogVerbose = isLoggable;
+        this.mLogVerbose = Log.isLoggable(TAG, 2);
         String adjStr = SystemProperties.get("ro.media.effect.bgdropper.adj");
         if (adjStr.length() > 0) {
             try {
                 this.mAcceptStddev += Float.parseFloat(adjStr);
-                if (isLoggable) {
+                if (this.mLogVerbose) {
                     Log.v(TAG, "Adjusting accept threshold by " + adjStr + ", now " + this.mAcceptStddev);
                 }
             } catch (NumberFormatException e) {
@@ -292,9 +289,8 @@ public class BackDropperFilter extends Filter {
             Log.v(TAG, "Pyramid levels " + widthExp + " x " + heightExp);
             Log.v(TAG, "Memory frames size " + memWidth + " x " + memHeight);
         }
-        MutableFrameFormat mutableCopy = inputFormat.mutableCopy();
-        this.mAverageFormat = mutableCopy;
-        mutableCopy.setDimensions(1, 1);
+        this.mAverageFormat = inputFormat.mutableCopy();
+        this.mAverageFormat.setDimensions(1, 1);
         return true;
     }
 
@@ -342,13 +338,10 @@ public class BackDropperFilter extends Filter {
         this.mVideoInput = (GLFrame) context.getFrameManager().newFrame(this.mMemoryFormat);
         this.mBgInput = (GLFrame) context.getFrameManager().newFrame(this.mMemoryFormat);
         this.mMaskAverage = (GLFrame) context.getFrameManager().newFrame(this.mAverageFormat);
-        ShaderProgram shaderProgram = new ShaderProgram(context, mSharedUtilShader + mBgDistanceShader);
-        this.mBgDistProgram = shaderProgram;
-        shaderProgram.setHostValue("subsample_level", Float.valueOf(this.mSubsampleLevel));
-        ShaderProgram shaderProgram2 = new ShaderProgram(context, mSharedUtilShader + mBgMaskShader);
-        this.mBgMaskProgram = shaderProgram2;
-        float f = this.mAcceptStddev;
-        shaderProgram2.setHostValue("accept_variance", Float.valueOf(f * f));
+        this.mBgDistProgram = new ShaderProgram(context, mSharedUtilShader + mBgDistanceShader);
+        this.mBgDistProgram.setHostValue("subsample_level", Float.valueOf(this.mSubsampleLevel));
+        this.mBgMaskProgram = new ShaderProgram(context, mSharedUtilShader + mBgMaskShader);
+        this.mBgMaskProgram.setHostValue("accept_variance", Float.valueOf(this.mAcceptStddev * this.mAcceptStddev));
         float[] yuvWeights = {this.mLumScale, this.mChromaScale};
         this.mBgMaskProgram.setHostValue("yuv_weights", yuvWeights);
         this.mBgMaskProgram.setHostValue("scale_lrg", Float.valueOf(this.mHierarchyLrgScale));
@@ -368,20 +361,16 @@ public class BackDropperFilter extends Filter {
         this.mBgSubtractProgram.setHostValue("exposure_change", Float.valueOf(this.mExposureChange));
         this.mBgSubtractProgram.setHostValue("whitebalanceblue_change", Float.valueOf(this.mWhiteBalanceBlueChange));
         this.mBgSubtractProgram.setHostValue("whitebalancered_change", Float.valueOf(this.mWhiteBalanceRedChange));
-        ShaderProgram shaderProgram3 = new ShaderProgram(context, mSharedUtilShader + mUpdateBgModelMeanShader);
-        this.mBgUpdateMeanProgram = shaderProgram3;
-        shaderProgram3.setHostValue("subsample_level", Float.valueOf(this.mSubsampleLevel));
-        ShaderProgram shaderProgram4 = new ShaderProgram(context, mSharedUtilShader + mUpdateBgModelVarianceShader);
-        this.mBgUpdateVarianceProgram = shaderProgram4;
-        shaderProgram4.setHostValue("subsample_level", Float.valueOf(this.mSubsampleLevel));
+        this.mBgUpdateMeanProgram = new ShaderProgram(context, mSharedUtilShader + mUpdateBgModelMeanShader);
+        this.mBgUpdateMeanProgram.setHostValue("subsample_level", Float.valueOf(this.mSubsampleLevel));
+        this.mBgUpdateVarianceProgram = new ShaderProgram(context, mSharedUtilShader + mUpdateBgModelVarianceShader);
+        this.mBgUpdateVarianceProgram.setHostValue("subsample_level", Float.valueOf(this.mSubsampleLevel));
         this.mCopyOutProgram = ShaderProgram.createIdentity(context);
-        ShaderProgram shaderProgram5 = new ShaderProgram(context, mSharedUtilShader + mAutomaticWhiteBalance);
-        this.mAutomaticWhiteBalanceProgram = shaderProgram5;
-        shaderProgram5.setHostValue("pyramid_depth", Float.valueOf(this.mPyramidDepth));
+        this.mAutomaticWhiteBalanceProgram = new ShaderProgram(context, mSharedUtilShader + mAutomaticWhiteBalance);
+        this.mAutomaticWhiteBalanceProgram.setHostValue("pyramid_depth", Float.valueOf(this.mPyramidDepth));
         this.mAutomaticWhiteBalanceProgram.setHostValue("autowb_toggle", Integer.valueOf(this.mAutoWBToggle));
-        ShaderProgram shaderProgram6 = new ShaderProgram(context, mSharedUtilShader + mMaskVerifyShader);
-        this.mMaskVerifyProgram = shaderProgram6;
-        shaderProgram6.setHostValue("verify_rate", Float.valueOf(this.mVerifyRate));
+        this.mMaskVerifyProgram = new ShaderProgram(context, mSharedUtilShader + mMaskVerifyShader);
+        this.mMaskVerifyProgram.setHostValue("verify_rate", Float.valueOf(this.mVerifyRate));
         if (this.mLogVerbose) {
             Log.v(TAG, "Shader width set to " + this.mMemoryFormat.getWidth());
         }
@@ -393,7 +382,7 @@ public class BackDropperFilter extends Filter {
     @Override // android.filterfw.core.Filter
     public void process(FilterContext filterContext) {
         Frame pullInput = pullInput("video");
-        Frame pullInput2 = pullInput(WallpaperThemeConstants.NAME_BACKGROUND);
+        Frame pullInput2 = pullInput("background");
         allocateFrames(pullInput.getFormat(), filterContext);
         if (this.mStartLearning) {
             if (this.mLogVerbose) {
@@ -405,9 +394,9 @@ public class BackDropperFilter extends Filter {
             this.mBgUpdateVarianceProgram.setHostValue("fg_adapt_rate", Float.valueOf(this.mAdaptRateLearning));
             this.mFrameCount = 0;
         }
+        int i = !this.mPingPong ? 1 : 0;
         boolean z = this.mPingPong;
-        int i = !z ? 1 : 0;
-        this.mPingPong = !z;
+        this.mPingPong = !this.mPingPong;
         updateBgScaling(pullInput, pullInput2, this.mBackgroundFitModeChanged);
         this.mBackgroundFitModeChanged = false;
         this.copyShaderProgram.process(pullInput, this.mVideoInput);
@@ -429,36 +418,31 @@ public class BackDropperFilter extends Filter {
         this.mAutomaticWhiteBalanceProgram.process(new Frame[]{this.mVideoInput, this.mBgInput}, this.mAutoWB);
         if (this.mFrameCount <= this.mLearningDuration) {
             pushOutput("video", pullInput);
-            int i2 = this.mFrameCount;
-            int i3 = this.mLearningDuration;
-            int i4 = this.mLearningVerifyDuration;
-            if (i2 == i3 - i4) {
+            if (this.mFrameCount == this.mLearningDuration - this.mLearningVerifyDuration) {
                 this.copyShaderProgram.process(this.mMask, this.mMaskVerify[z ? 1 : 0]);
                 this.mBgUpdateMeanProgram.setHostValue("bg_adapt_rate", Float.valueOf(this.mAdaptRateBg));
                 this.mBgUpdateMeanProgram.setHostValue("fg_adapt_rate", Float.valueOf(this.mAdaptRateFg));
                 this.mBgUpdateVarianceProgram.setHostValue("bg_adapt_rate", Float.valueOf(this.mAdaptRateBg));
                 this.mBgUpdateVarianceProgram.setHostValue("fg_adapt_rate", Float.valueOf(this.mAdaptRateFg));
-            } else if (i2 > i3 - i4) {
-                GLFrame[] gLFrameArr = this.mMaskVerify;
-                this.mMaskVerifyProgram.process(new Frame[]{gLFrameArr[i], this.mMask}, gLFrameArr[z ? 1 : 0]);
+            } else if (this.mFrameCount > this.mLearningDuration - this.mLearningVerifyDuration) {
+                this.mMaskVerifyProgram.process(new Frame[]{this.mMaskVerify[i], this.mMask}, this.mMaskVerify[z ? 1 : 0]);
                 this.mMaskVerify[z ? 1 : 0].generateMipMap();
                 this.mMaskVerify[z ? 1 : 0].setTextureParameter(10241, 9985);
             }
             if (this.mFrameCount == this.mLearningDuration) {
                 this.copyShaderProgram.process(this.mMaskVerify[z ? 1 : 0], this.mMaskAverage);
-                int i5 = this.mMaskAverage.getData().array()[3] & 255;
+                int i2 = this.mMaskAverage.getData().array()[3] & 255;
                 if (this.mLogVerbose) {
-                    Log.v(TAG, String.format("Mask_average is %d, threshold is %d", Integer.valueOf(i5), 20));
+                    Log.v(TAG, String.format("Mask_average is %d, threshold is %d", Integer.valueOf(i2), 20));
                 }
-                if (i5 >= 20) {
+                if (i2 >= 20) {
                     this.mStartLearning = true;
                 } else {
                     if (this.mLogVerbose) {
                         Log.v(TAG, "Learning done");
                     }
-                    LearningDoneListener learningDoneListener = this.mLearningDoneListener;
-                    if (learningDoneListener != null) {
-                        learningDoneListener.onLearningDone(this);
+                    if (this.mLearningDoneListener != null) {
+                        this.mLearningDoneListener.onLearningDone(this);
                     }
                 }
             }
@@ -469,12 +453,10 @@ public class BackDropperFilter extends Filter {
             newFrame.release();
         }
         if (this.mFrameCount < this.mLearningDuration - this.mLearningVerifyDuration || this.mAdaptRateBg > SContextConstants.ENVIRONMENT_VALUE_UNKNOWN || this.mAdaptRateFg > SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
-            GLFrame[] gLFrameArr2 = this.mBgMean;
-            this.mBgUpdateMeanProgram.process(new Frame[]{this.mVideoInput, gLFrameArr2[i], this.mMask}, gLFrameArr2[z ? 1 : 0]);
+            this.mBgUpdateMeanProgram.process(new Frame[]{this.mVideoInput, this.mBgMean[i], this.mMask}, this.mBgMean[z ? 1 : 0]);
             this.mBgMean[z ? 1 : 0].generateMipMap();
             this.mBgMean[z ? 1 : 0].setTextureParameter(10241, 9985);
-            GLFrame[] gLFrameArr3 = this.mBgVariance;
-            this.mBgUpdateVarianceProgram.process(new Frame[]{this.mVideoInput, this.mBgMean[i], gLFrameArr3[i], this.mMask}, gLFrameArr3[z ? 1 : 0]);
+            this.mBgUpdateVarianceProgram.process(new Frame[]{this.mVideoInput, this.mBgMean[i], this.mBgVariance[i], this.mMask}, this.mBgVariance[z ? 1 : 0]);
             this.mBgVariance[z ? 1 : 0].generateMipMap();
             this.mBgVariance[z ? 1 : 0].setTextureParameter(10241, 9985);
         }
@@ -488,9 +470,8 @@ public class BackDropperFilter extends Filter {
             pushOutput("debug2", newFrame3);
             newFrame3.release();
         }
-        int i6 = this.mFrameCount + 1;
-        this.mFrameCount = i6;
-        if (this.mLogVerbose && i6 % 30 == 0) {
+        this.mFrameCount++;
+        if (this.mLogVerbose && this.mFrameCount % 30 == 0) {
             if (this.startTime == -1) {
                 filterContext.getGLEnvironment().activate();
                 GLES20.glFinish();
@@ -538,9 +519,7 @@ public class BackDropperFilter extends Filter {
             return;
         }
         if (name.equals("acceptStddev")) {
-            ShaderProgram shaderProgram = this.mBgMaskProgram;
-            float f = this.mAcceptStddev;
-            shaderProgram.setHostValue("accept_variance", Float.valueOf(f * f));
+            this.mBgMaskProgram.setHostValue("accept_variance", Float.valueOf(this.mAcceptStddev * this.mAcceptStddev));
             return;
         }
         if (name.equals("hierLrgScale")) {
@@ -605,22 +584,22 @@ public class BackDropperFilter extends Filter {
             float yWidth = 1.0f;
             switch (this.mBackgroundFitMode) {
                 case 1:
-                    if (currentRelativeAspect > 1.0f) {
-                        xMin = 0.5f - (currentRelativeAspect * 0.5f);
-                        xWidth = currentRelativeAspect * 1.0f;
+                    if (this.mRelativeAspect > 1.0f) {
+                        xMin = 0.5f - (this.mRelativeAspect * 0.5f);
+                        xWidth = this.mRelativeAspect * 1.0f;
                         break;
                     } else {
-                        yMin = 0.5f - (0.5f / currentRelativeAspect);
-                        yWidth = 1.0f / currentRelativeAspect;
+                        yMin = 0.5f - (0.5f / this.mRelativeAspect);
+                        yWidth = 1.0f / this.mRelativeAspect;
                         break;
                     }
                 case 2:
-                    if (currentRelativeAspect > 1.0f) {
-                        yMin = 0.5f - (0.5f / currentRelativeAspect);
-                        yWidth = 1.0f / currentRelativeAspect;
+                    if (this.mRelativeAspect > 1.0f) {
+                        yMin = 0.5f - (0.5f / this.mRelativeAspect);
+                        yWidth = 1.0f / this.mRelativeAspect;
                         break;
                     } else {
-                        xMin = 0.5f - (currentRelativeAspect * 0.5f);
+                        xMin = 0.5f - (this.mRelativeAspect * 0.5f);
                         xWidth = this.mRelativeAspect;
                         break;
                     }
@@ -629,8 +608,7 @@ public class BackDropperFilter extends Filter {
                 if (this.mLogVerbose) {
                     Log.v(TAG, "Mirroring the background!");
                 }
-                int i = this.mOrientation;
-                if (i == 0 || i == 180) {
+                if (this.mOrientation == 0 || this.mOrientation == 180) {
                     xWidth = -xWidth;
                     xMin = 1.0f - xMin;
                 } else {

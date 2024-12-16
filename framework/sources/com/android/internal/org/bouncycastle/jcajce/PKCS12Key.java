@@ -14,10 +14,9 @@ public class PKCS12Key implements PBKDFKey {
 
     public PKCS12Key(char[] password, boolean useWrongZeroLengthConversion) {
         password = password == null ? new char[0] : password;
-        char[] cArr = new char[password.length];
-        this.password = cArr;
+        this.password = new char[password.length];
         this.useWrongZeroLengthConversion = useWrongZeroLengthConversion;
-        System.arraycopy(password, 0, cArr, 0, password.length);
+        System.arraycopy(password, 0, this.password, 0, password.length);
     }
 
     public char[] getPassword() {

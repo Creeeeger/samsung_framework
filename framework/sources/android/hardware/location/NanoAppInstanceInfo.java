@@ -10,14 +10,13 @@ import libcore.util.EmptyArray;
 /* loaded from: classes2.dex */
 public class NanoAppInstanceInfo implements Parcelable {
     public static final Parcelable.Creator<NanoAppInstanceInfo> CREATOR = new Parcelable.Creator<NanoAppInstanceInfo>() { // from class: android.hardware.location.NanoAppInstanceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppInstanceInfo createFromParcel(Parcel in) {
             return new NanoAppInstanceInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppInstanceInfo[] newArray(int size) {
             return new NanoAppInstanceInfo[size];
@@ -34,10 +33,6 @@ public class NanoAppInstanceInfo implements Parcelable {
     private int mNeededWriteMemBytes;
     private int[] mOutputEvents;
     private String mPublisher;
-
-    /* synthetic */ NanoAppInstanceInfo(Parcel parcel, NanoAppInstanceInfoIA nanoAppInstanceInfoIA) {
-        this(parcel);
-    }
 
     public NanoAppInstanceInfo() {
         this.mPublisher = "Unknown";
@@ -125,13 +120,11 @@ public class NanoAppInstanceInfo implements Parcelable {
         this.mNeededWriteMemBytes = in.readInt();
         this.mNeededExecMemBytes = in.readInt();
         int neededSensorsLength = in.readInt();
-        int[] iArr = new int[neededSensorsLength];
-        this.mNeededSensors = iArr;
-        in.readIntArray(iArr);
+        this.mNeededSensors = new int[neededSensorsLength];
+        in.readIntArray(this.mNeededSensors);
         int outputEventsLength = in.readInt();
-        int[] iArr2 = new int[outputEventsLength];
-        this.mOutputEvents = iArr2;
-        in.readIntArray(iArr2);
+        this.mOutputEvents = new int[outputEventsLength];
+        in.readIntArray(this.mOutputEvents);
     }
 
     @Override // android.os.Parcelable
@@ -154,23 +147,6 @@ public class NanoAppInstanceInfo implements Parcelable {
         out.writeIntArray(this.mNeededSensors);
         out.writeInt(this.mOutputEvents.length);
         out.writeIntArray(this.mOutputEvents);
-    }
-
-    /* renamed from: android.hardware.location.NanoAppInstanceInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NanoAppInstanceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoAppInstanceInfo createFromParcel(Parcel in) {
-            return new NanoAppInstanceInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoAppInstanceInfo[] newArray(int size) {
-            return new NanoAppInstanceInfo[size];
-        }
     }
 
     public String toString() {

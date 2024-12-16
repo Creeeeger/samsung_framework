@@ -12,7 +12,6 @@ public final class IncidentMetadata {
     public static final long SEQUENCE_NUMBER = 1120986464258L;
     public static final long USE_DROPBOX = 1133871366149L;
 
-    /* loaded from: classes3.dex */
     public final class SectionStats {
         public static final long DUMP_DURATION_MS = 1112396529670L;
         public static final long DUMP_SIZE_BYTES = 1120986464261L;

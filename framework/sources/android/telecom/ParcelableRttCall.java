@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class ParcelableRttCall implements Parcelable {
     public static final Parcelable.Creator<ParcelableRttCall> CREATOR = new Parcelable.Creator<ParcelableRttCall>() { // from class: android.telecom.ParcelableRttCall.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableRttCall createFromParcel(Parcel in) {
             return new ParcelableRttCall(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableRttCall[] newArray(int size) {
             return new ParcelableRttCall[size];
@@ -34,23 +33,6 @@ public class ParcelableRttCall implements Parcelable {
         this.mRttMode = in.readInt();
         this.mTransmitStream = (ParcelFileDescriptor) in.readParcelable(ParcelFileDescriptor.class.getClassLoader(), ParcelFileDescriptor.class);
         this.mReceiveStream = (ParcelFileDescriptor) in.readParcelable(ParcelFileDescriptor.class.getClassLoader(), ParcelFileDescriptor.class);
-    }
-
-    /* renamed from: android.telecom.ParcelableRttCall$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ParcelableRttCall> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableRttCall createFromParcel(Parcel in) {
-            return new ParcelableRttCall(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableRttCall[] newArray(int size) {
-            return new ParcelableRttCall[size];
-        }
     }
 
     @Override // android.os.Parcelable

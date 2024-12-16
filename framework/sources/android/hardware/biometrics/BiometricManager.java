@@ -13,18 +13,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class BiometricManager {
     public static final int BIOMETRIC_ERROR_HW_UNAVAILABLE = 1;
+    public static final int BIOMETRIC_ERROR_LOCKOUT = 7;
+    public static final int BIOMETRIC_ERROR_MANDATORY_NOT_ACTIVE = 20;
     public static final int BIOMETRIC_ERROR_NONE_ENROLLED = 11;
+    public static final int BIOMETRIC_ERROR_NOT_ENABLED_FOR_APPS = 21;
     public static final int BIOMETRIC_ERROR_NO_HARDWARE = 12;
     public static final int BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED = 15;
+    public static final long BIOMETRIC_NO_AUTHENTICATION = -1;
     public static final int BIOMETRIC_SUCCESS = 0;
+    public static final String EXTRA_ENROLL_REASON = "enroll_reason";
+    private static final int GET_LAST_AUTH_TIME_ALLOWED_AUTHENTICATORS = 32783;
     private static final String TAG = "BiometricManager";
     private final Context mContext;
     private final IAuthService mService;
 
-    /* loaded from: classes.dex */
     public interface Authenticators {
 
         @SystemApi
@@ -37,14 +42,14 @@ public class BiometricManager {
 
         @SystemApi
         public static final int EMPTY_SET = 0;
+        public static final int MANDATORY_BIOMETRICS = 65536;
 
-        /* loaded from: classes.dex */
+        @Retention(RetentionPolicy.SOURCE)
         public @interface Types {
         }
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BiometricError {
     }
 
@@ -63,15 +68,10 @@ public class BiometricManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Strings {
         int mAuthenticators;
         private final Context mContext;
         private final IAuthService mService;
-
-        /* synthetic */ Strings(Context context, IAuthService iAuthService, int i, StringsIA stringsIA) {
-            this(context, iAuthService, i);
-        }
 
         private Strings(Context context, IAuthService service, int authenticators) {
             this.mContext = context;
@@ -143,6 +143,7 @@ public class BiometricManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ ITestSession lambda$createTestSession$0(Context context, int sensorId1, ITestSessionCallback callback) throws RemoteException {
         return this.mService.createTestSession(sensorId1, callback, context.getOpPackageName());
     }
@@ -187,12 +188,11 @@ public class BiometricManager {
     }
 
     public boolean hasEnrolledBiometrics(int userId) {
-        IAuthService iAuthService = this.mService;
-        if (iAuthService == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iAuthService.hasEnrolledBiometrics(userId, this.mContext.getOpPackageName());
+            return this.mService.hasEnrolledBiometrics(userId, this.mContext.getOpPackageName());
         } catch (RemoteException e) {
             Slog.w(TAG, "Remote exception in hasEnrolledBiometrics(): " + e);
             return false;
@@ -200,10 +200,9 @@ public class BiometricManager {
     }
 
     public void registerEnabledOnKeyguardCallback(IBiometricEnabledOnKeyguardCallback callback) {
-        IAuthService iAuthService = this.mService;
-        if (iAuthService != null) {
+        if (this.mService != null) {
             try {
-                iAuthService.registerEnabledOnKeyguardCallback(callback);
+                this.mService.registerEnabledOnKeyguardCallback(callback);
                 return;
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
@@ -212,11 +211,34 @@ public class BiometricManager {
         Slog.w(TAG, "registerEnabledOnKeyguardCallback(): Service not connected");
     }
 
-    public void invalidateAuthenticatorIds(int userId, int fromSensorId, IInvalidationCallback callback) {
-        IAuthService iAuthService = this.mService;
-        if (iAuthService != null) {
+    public void registerAuthenticationStateListener(AuthenticationStateListener listener) {
+        if (this.mService != null) {
             try {
-                iAuthService.invalidateAuthenticatorIds(userId, fromSensorId, callback);
+                this.mService.registerAuthenticationStateListener(listener);
+                return;
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        Slog.w(TAG, "registerAuthenticationStateListener(): Service not connected");
+    }
+
+    public void unregisterAuthenticationStateListener(AuthenticationStateListener listener) {
+        if (this.mService != null) {
+            try {
+                this.mService.unregisterAuthenticationStateListener(listener);
+                return;
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        Slog.w(TAG, "unregisterAuthenticationStateListener(): Service not connected");
+    }
+
+    public void invalidateAuthenticatorIds(int userId, int fromSensorId, IInvalidationCallback callback) {
+        if (this.mService != null) {
+            try {
+                this.mService.invalidateAuthenticatorIds(userId, fromSensorId, callback);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -228,10 +250,9 @@ public class BiometricManager {
     }
 
     public long[] getAuthenticatorIds(int userId) {
-        IAuthService iAuthService = this.mService;
-        if (iAuthService != null) {
+        if (this.mService != null) {
             try {
-                return iAuthService.getAuthenticatorIds(userId);
+                return this.mService.getAuthenticatorIds(userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -241,10 +262,9 @@ public class BiometricManager {
     }
 
     public void resetLockoutTimeBound(IBinder token, String opPackageName, int fromSensorId, int userId, byte[] hardwareAuthToken) {
-        IAuthService iAuthService = this.mService;
-        if (iAuthService != null) {
+        if (this.mService != null) {
             try {
-                iAuthService.resetLockoutTimeBound(token, opPackageName, fromSensorId, userId, hardwareAuthToken);
+                this.mService.resetLockoutTimeBound(token, opPackageName, fromSensorId, userId, hardwareAuthToken);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -252,13 +272,26 @@ public class BiometricManager {
     }
 
     public void resetLockout(int userId, byte[] hardwareAuthToken) {
-        IAuthService iAuthService = this.mService;
-        if (iAuthService != null) {
+        if (this.mService != null) {
             try {
-                iAuthService.resetLockout(userId, hardwareAuthToken);
+                this.mService.resetLockout(userId, hardwareAuthToken);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
         }
+    }
+
+    public long getLastAuthenticationTime(int authenticators) {
+        if (authenticators == 0 || (GET_LAST_AUTH_TIME_ALLOWED_AUTHENTICATORS & authenticators) != authenticators) {
+            throw new IllegalArgumentException("Only BIOMETRIC_STRONG and DEVICE_CREDENTIAL authenticators may be used.");
+        }
+        if (this.mService != null) {
+            try {
+                return this.mService.getLastAuthenticationTime(UserHandle.myUserId(), authenticators);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        return -1L;
     }
 }

@@ -3,7 +3,6 @@ package android.graphics;
 /* loaded from: classes.dex */
 public class PorterDuff {
 
-    /* loaded from: classes.dex */
     public enum Mode {
         CLEAR(0),
         SRC(1),

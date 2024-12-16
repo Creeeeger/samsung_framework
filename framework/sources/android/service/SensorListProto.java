@@ -9,7 +9,6 @@ public final class SensorListProto {
     public static final int RM_UNKNOWN = 0;
     public static final long SENSORS = 2246267895809L;
 
-    /* loaded from: classes3.dex */
     public final class SensorProto {
         public static final long ASHMEM = 1133871366163L;
         public static final long DATA_INJECTION_SUPPORTED = 1133871366159L;

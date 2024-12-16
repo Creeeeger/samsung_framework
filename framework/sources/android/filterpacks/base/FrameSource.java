@@ -33,9 +33,8 @@ public class FrameSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void process(FilterContext context) {
-        Frame frame = this.mFrame;
-        if (frame != null) {
-            pushOutput("frame", frame);
+        if (this.mFrame != null) {
+            pushOutput("frame", this.mFrame);
         }
         if (!this.mRepeatFrame) {
             closeOutputPort("frame");

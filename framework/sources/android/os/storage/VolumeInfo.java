@@ -73,9 +73,6 @@ public class VolumeInfo implements Parcelable {
     private static ArrayMap<String, String> sEnvironmentToBroadcast = new ArrayMap<>();
     private static SparseIntArray sStateToDescrip = new SparseIntArray();
     private static final Comparator<VolumeInfo> sDescriptionComparator = new Comparator<VolumeInfo>() { // from class: android.os.storage.VolumeInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // java.util.Comparator
         public int compare(VolumeInfo lhs, VolumeInfo rhs) {
             if (VolumeInfo.ID_PRIVATE_INTERNAL.equals(lhs.getId())) {
@@ -123,40 +120,18 @@ public class VolumeInfo implements Parcelable {
         sStateToDescrip.put(7, R.string.ext_media_status_removed);
         sStateToDescrip.put(8, R.string.ext_media_status_bad_removal);
         CREATOR = new Parcelable.Creator<VolumeInfo>() { // from class: android.os.storage.VolumeInfo.2
-            AnonymousClass2() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VolumeInfo createFromParcel(Parcel in) {
                 return new VolumeInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VolumeInfo[] newArray(int size) {
                 return new VolumeInfo[size];
             }
         };
-    }
-
-    /* renamed from: android.os.storage.VolumeInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Comparator<VolumeInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(VolumeInfo lhs, VolumeInfo rhs) {
-            if (VolumeInfo.ID_PRIVATE_INTERNAL.equals(lhs.getId())) {
-                return -1;
-            }
-            if (lhs.getDescription() == null) {
-                return 1;
-            }
-            if (rhs.getDescription() == null) {
-                return -1;
-            }
-            return lhs.getDescription().compareTo(rhs.getDescription());
-        }
     }
 
     public VolumeInfo(String id, int type, DiskInfo disk, String partGuid) {
@@ -238,9 +213,8 @@ public class VolumeInfo implements Parcelable {
     }
 
     public String getDiskId() {
-        DiskInfo diskInfo = this.disk;
-        if (diskInfo != null) {
-            return diskInfo.id;
+        if (this.disk != null) {
+            return this.disk.id;
         }
         return null;
     }
@@ -262,9 +236,8 @@ public class VolumeInfo implements Parcelable {
     }
 
     public String getNormalizedFsUuid() {
-        String str = this.fsUuid;
-        if (str != null) {
-            return str.toLowerCase(Locale.US);
+        if (this.fsUuid != null) {
+            return this.fsUuid.toLowerCase(Locale.US);
         }
         return null;
     }
@@ -284,8 +257,7 @@ public class VolumeInfo implements Parcelable {
     }
 
     public boolean isMountedReadable() {
-        int i = this.state;
-        return i == 2 || i == 3;
+        return this.state == 2 || this.state == 3;
     }
 
     public boolean isMountedWritable() {
@@ -316,8 +288,7 @@ public class VolumeInfo implements Parcelable {
         if (this.mountUserId != userId) {
             return false;
         }
-        int i = this.type;
-        return i == 0 || i == 5 || i == 2;
+        return this.type == 0 || this.type == 5 || this.type == 2;
     }
 
     public boolean isVisibleForUser(int userId) {
@@ -354,11 +325,10 @@ public class VolumeInfo implements Parcelable {
         if (this.path == null) {
             return null;
         }
-        int i = this.type;
-        if (i == 0 || i == 5) {
+        if (this.type == 0 || this.type == 5) {
             return new File(this.path);
         }
-        if (i == 2) {
+        if (this.type == 2) {
             return new File(this.path, Integer.toString(userId));
         }
         return null;
@@ -368,8 +338,7 @@ public class VolumeInfo implements Parcelable {
         if (this.path == null) {
             return null;
         }
-        int i = this.type;
-        if (i == 0 || i == 5) {
+        if (this.type == 0 || this.type == 5) {
             return new File(this.path.replace(FullBackup.MANAGED_EXTERNAL_SPECIFIC_TREE_TOKEN, "/mnt/media_rw/"));
         }
         return getPathForUser(userId);
@@ -414,8 +383,32 @@ public class VolumeInfo implements Parcelable {
         String description2 = null;
         String derivedFsUuid2 = this.fsUuid;
         int mtpStorageId3 = 0;
-        int i = this.type;
-        if (i == 2) {
+        if (this.type != 2) {
+            if (this.type == 0 || this.type == 5) {
+                emulated = false;
+                description2 = storage.getBestVolumeDescription(this);
+                if (isPrimary()) {
+                    mtpStorageId = 65537;
+                } else {
+                    mtpStorageId = buildStableMtpStorageId(this.fsUuid);
+                }
+                if ("vfat".equals(this.fsType)) {
+                    uuid = null;
+                    derivedFsUuid = derivedFsUuid2;
+                    maxFileSize = 4294967295L;
+                    mtpStorageId2 = mtpStorageId;
+                    removable = true;
+                } else {
+                    uuid = null;
+                    derivedFsUuid = derivedFsUuid2;
+                    maxFileSize = 0;
+                    mtpStorageId2 = mtpStorageId;
+                    removable = true;
+                }
+            } else {
+                throw new IllegalStateException("Unexpected volume type " + this.type);
+            }
+        } else {
             emulated = true;
             VolumeInfo privateVol = storage.findPrivateForEmulated(this);
             if (privateVol != null) {
@@ -438,29 +431,6 @@ public class VolumeInfo implements Parcelable {
             maxFileSize = 0;
             mtpStorageId2 = mtpStorageId3;
             removable = removable2;
-        } else if (i == 0 || i == 5) {
-            emulated = false;
-            description2 = storage.getBestVolumeDescription(this);
-            if (isPrimary()) {
-                mtpStorageId = 65537;
-            } else {
-                mtpStorageId = buildStableMtpStorageId(this.fsUuid);
-            }
-            if ("vfat".equals(this.fsType)) {
-                uuid = null;
-                derivedFsUuid = derivedFsUuid2;
-                maxFileSize = 4294967295L;
-                mtpStorageId2 = mtpStorageId;
-                removable = true;
-            } else {
-                uuid = null;
-                derivedFsUuid = derivedFsUuid2;
-                maxFileSize = 0;
-                mtpStorageId2 = mtpStorageId;
-                removable = true;
-            }
-        } else {
-            throw new IllegalStateException("Unexpected volume type " + this.type);
         }
         if (description2 != null) {
             description = description2;
@@ -468,9 +438,8 @@ public class VolumeInfo implements Parcelable {
             String description3 = context.getString(17039374);
             description = description3;
         }
-        DiskInfo diskInfo = this.disk;
-        if (diskInfo != null) {
-            if (diskInfo.isSd()) {
+        if (this.disk != null) {
+            if (this.disk.isSd()) {
                 diskType = "sd";
                 bAsec = true;
             } else if (!this.disk.isUsb()) {
@@ -515,10 +484,9 @@ public class VolumeInfo implements Parcelable {
 
     public Intent buildBrowseIntentForUser(int userId) {
         Uri uri;
-        int i = this.type;
-        if ((i == 0 || i == 5) && this.mountUserId == userId) {
+        if ((this.type == 0 || this.type == 5) && this.mountUserId == userId) {
             uri = DocumentsContract.buildRootUri("com.android.externalstorage.documents", this.fsUuid);
-        } else if (i == 2 && isPrimary()) {
+        } else if (this.type == 2 && isPrimary()) {
             uri = DocumentsContract.buildRootUri("com.android.externalstorage.documents", "primary");
         } else {
             return null;
@@ -556,8 +524,8 @@ public class VolumeInfo implements Parcelable {
         pw.println();
     }
 
-    /* renamed from: clone */
-    public VolumeInfo m3281clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public VolumeInfo m3454clone() {
         Parcel temp = Parcel.obtain();
         try {
             writeToParcel(temp, 0);
@@ -577,23 +545,6 @@ public class VolumeInfo implements Parcelable {
 
     public int hashCode() {
         return this.id.hashCode();
-    }
-
-    /* renamed from: android.os.storage.VolumeInfo$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements Parcelable.Creator<VolumeInfo> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VolumeInfo createFromParcel(Parcel in) {
-            return new VolumeInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VolumeInfo[] newArray(int size) {
-            return new VolumeInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

@@ -47,7 +47,6 @@ public interface IPrintSpooler extends IInterface {
 
     void writePrintJobData(ParcelFileDescriptor parcelFileDescriptor, PrintJobId printJobId) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintSpooler {
         @Override // android.print.IPrintSpooler
         public void removeObsoletePrintJobs() throws RemoteException {
@@ -119,7 +118,6 @@ public interface IPrintSpooler extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintSpooler {
         public static final String DESCRIPTOR = "android.print.IPrintSpooler";
         static final int TRANSACTION_clearCustomPrinterIconCache = 11;
@@ -208,123 +206,120 @@ public interface IPrintSpooler extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    removeObsoletePrintJobs();
+                    return true;
+                case 2:
+                    IPrintSpoolerCallbacks _arg0 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
+                    ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getPrintJobInfos(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 3:
+                    PrintJobId _arg02 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    IPrintSpoolerCallbacks _arg12 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getPrintJobInfo(_arg02, _arg12, _arg22, _arg32);
+                    return true;
+                case 4:
+                    PrintJobInfo _arg03 = (PrintJobInfo) data.readTypedObject(PrintJobInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    createPrintJob(_arg03);
+                    return true;
+                case 5:
+                    PrintJobId _arg04 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    int _arg13 = data.readInt();
+                    String _arg23 = data.readString();
+                    IPrintSpoolerCallbacks _arg33 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPrintJobState(_arg04, _arg13, _arg23, _arg33, _arg42);
+                    return true;
+                case 6:
+                    PrintJobId _arg05 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    float _arg14 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setProgress(_arg05, _arg14);
+                    return true;
+                case 7:
+                    PrintJobId _arg06 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    CharSequence _arg15 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setStatus(_arg06, _arg15);
+                    return true;
+                case 8:
+                    PrintJobId _arg07 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    int _arg16 = data.readInt();
+                    CharSequence _arg24 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setStatusRes(_arg07, _arg16, _arg24);
+                    return true;
+                case 9:
+                    PrinterId _arg08 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    Icon _arg17 = (Icon) data.readTypedObject(Icon.CREATOR);
+                    IPrintSpoolerCallbacks _arg25 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCustomPrinterIconLoaded(_arg08, _arg17, _arg25, _arg34);
+                    return true;
+                case 10:
+                    PrinterId _arg09 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    IPrintSpoolerCallbacks _arg18 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCustomPrinterIcon(_arg09, _arg18, _arg26);
+                    return true;
+                case 11:
+                    IPrintSpoolerCallbacks _arg010 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearCustomPrinterIconCache(_arg010, _arg19);
+                    return true;
+                case 12:
+                    PrintJobId _arg011 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    String _arg110 = data.readString();
+                    IPrintSpoolerCallbacks _arg27 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPrintJobTag(_arg011, _arg110, _arg27, _arg35);
+                    return true;
+                case 13:
+                    ParcelFileDescriptor _arg012 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    PrintJobId _arg111 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    data.enforceNoDataAvail();
+                    writePrintJobData(_arg012, _arg111);
+                    return true;
+                case 14:
+                    IPrintSpoolerClient _arg013 = IPrintSpoolerClient.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setClient(_arg013);
+                    return true;
+                case 15:
+                    PrintJobId _arg014 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    boolean _arg112 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setPrintJobCancelling(_arg014, _arg112);
+                    return true;
+                case 16:
+                    List<ComponentName> _arg015 = data.createTypedArrayList(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    pruneApprovedPrintServices(_arg015);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            removeObsoletePrintJobs();
-                            return true;
-                        case 2:
-                            IPrintSpoolerCallbacks _arg0 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
-                            ComponentName _arg1 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getPrintJobInfos(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 3:
-                            PrintJobId _arg02 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            IPrintSpoolerCallbacks _arg12 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getPrintJobInfo(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        case 4:
-                            PrintJobInfo _arg03 = (PrintJobInfo) data.readTypedObject(PrintJobInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            createPrintJob(_arg03);
-                            return true;
-                        case 5:
-                            PrintJobId _arg04 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            int _arg13 = data.readInt();
-                            String _arg23 = data.readString();
-                            IPrintSpoolerCallbacks _arg33 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPrintJobState(_arg04, _arg13, _arg23, _arg33, _arg42);
-                            return true;
-                        case 6:
-                            PrintJobId _arg05 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            float _arg14 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setProgress(_arg05, _arg14);
-                            return true;
-                        case 7:
-                            PrintJobId _arg06 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            CharSequence _arg15 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setStatus(_arg06, _arg15);
-                            return true;
-                        case 8:
-                            PrintJobId _arg07 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            int _arg16 = data.readInt();
-                            CharSequence _arg24 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setStatusRes(_arg07, _arg16, _arg24);
-                            return true;
-                        case 9:
-                            PrinterId _arg08 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            Icon _arg17 = (Icon) data.readTypedObject(Icon.CREATOR);
-                            IPrintSpoolerCallbacks _arg25 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCustomPrinterIconLoaded(_arg08, _arg17, _arg25, _arg34);
-                            return true;
-                        case 10:
-                            PrinterId _arg09 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            IPrintSpoolerCallbacks _arg18 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCustomPrinterIcon(_arg09, _arg18, _arg26);
-                            return true;
-                        case 11:
-                            IPrintSpoolerCallbacks _arg010 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearCustomPrinterIconCache(_arg010, _arg19);
-                            return true;
-                        case 12:
-                            PrintJobId _arg011 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            String _arg110 = data.readString();
-                            IPrintSpoolerCallbacks _arg27 = IPrintSpoolerCallbacks.Stub.asInterface(data.readStrongBinder());
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPrintJobTag(_arg011, _arg110, _arg27, _arg35);
-                            return true;
-                        case 13:
-                            ParcelFileDescriptor _arg012 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            PrintJobId _arg111 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            data.enforceNoDataAvail();
-                            writePrintJobData(_arg012, _arg111);
-                            return true;
-                        case 14:
-                            IPrintSpoolerClient _arg013 = IPrintSpoolerClient.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setClient(_arg013);
-                            return true;
-                        case 15:
-                            PrintJobId _arg014 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            boolean _arg112 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setPrintJobCancelling(_arg014, _arg112);
-                            return true;
-                        case 16:
-                            List<ComponentName> _arg015 = data.createTypedArrayList(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            pruneApprovedPrintServices(_arg015);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IPrintSpooler {
             private IBinder mRemote;
 

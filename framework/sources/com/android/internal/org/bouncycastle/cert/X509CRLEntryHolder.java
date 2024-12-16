@@ -15,7 +15,7 @@ public class X509CRLEntryHolder {
     private GeneralNames ca;
     private TBSCertList.CRLEntry entry;
 
-    public X509CRLEntryHolder(TBSCertList.CRLEntry entry, boolean isIndirect, GeneralNames previousCA) {
+    X509CRLEntryHolder(TBSCertList.CRLEntry entry, boolean isIndirect, GeneralNames previousCA) {
         Extension currentCaName;
         this.entry = entry;
         this.ca = previousCA;

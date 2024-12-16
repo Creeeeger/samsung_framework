@@ -12,7 +12,6 @@ public interface IStorageLoadingProgressListener extends IInterface {
 
     void onStorageLoadingProgressChanged(int i, float f) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IStorageLoadingProgressListener {
         @Override // android.os.incremental.IStorageLoadingProgressListener
         public void onStorageLoadingProgressChanged(int storageId, float progress) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IStorageLoadingProgressListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IStorageLoadingProgressListener {
         static final int TRANSACTION_onStorageLoadingProgressChanged = 1;
 
@@ -67,26 +65,23 @@ public interface IStorageLoadingProgressListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStorageLoadingProgressListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStorageLoadingProgressListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStorageLoadingProgressListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    float _arg1 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onStorageLoadingProgressChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            float _arg1 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onStorageLoadingProgressChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IStorageLoadingProgressListener {
+        private static class Proxy implements IStorageLoadingProgressListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

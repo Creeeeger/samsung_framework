@@ -59,7 +59,6 @@ public interface ITuner extends IInterface {
 
     void tune(ProgramSelector programSelector) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITuner {
         @Override // android.hardware.radio.ITuner
         public void close() throws RemoteException {
@@ -156,7 +155,6 @@ public interface ITuner extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITuner {
         public static final String DESCRIPTOR = "android.hardware.radio.ITuner";
         static final int TRANSACTION_cancel = 10;
@@ -257,179 +255,177 @@ public interface ITuner extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    close();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    boolean _result = isClosed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 3:
+                    RadioManager.BandConfig _arg0 = (RadioManager.BandConfig) data.readTypedObject(RadioManager.BandConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    setConfiguration(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    RadioManager.BandConfig _result2 = getConfiguration();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMuted(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    boolean _result3 = isMuted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 7:
+                    boolean _arg03 = data.readBoolean();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    step(_arg03, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    boolean _arg04 = data.readBoolean();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    seek(_arg04, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    ProgramSelector _arg05 = (ProgramSelector) data.readTypedObject(ProgramSelector.CREATOR);
+                    data.enforceNoDataAvail();
+                    tune(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    cancel();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    cancelAnnouncement();
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bitmap _result4 = getImage(_arg06);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 13:
+                    boolean _result5 = startBackgroundScan();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 14:
+                    ProgramList.Filter _arg07 = (ProgramList.Filter) data.readTypedObject(ProgramList.Filter.CREATOR);
+                    data.enforceNoDataAvail();
+                    startProgramListUpdates(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    stopProgramListUpdates();
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = isConfigFlagSupported(_arg08);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 17:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = isConfigFlagSet(_arg09);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 18:
+                    int _arg010 = data.readInt();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setConfigFlag(_arg010, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int N = data.readInt();
+                    final Map<String, String> _arg011 = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITuner$Stub$$ExternalSyntheticLambda0
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            ITuner.Stub.lambda$onTransact$0(Parcel.this, _arg011, i);
+                        }
+                    });
+                    data.enforceNoDataAvail();
+                    Map<String, String> _result8 = setParameters(_arg011);
+                    reply.writeNoException();
+                    if (_result8 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result8.size());
+                        _result8.forEach(new BiConsumer() { // from class: android.hardware.radio.ITuner$Stub$$ExternalSyntheticLambda1
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                ITuner.Stub.lambda$onTransact$1(Parcel.this, (String) obj, (String) obj2);
+                            }
+                        });
+                    }
+                    return true;
+                case 20:
+                    List<String> _arg012 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    Map<String, String> _result9 = getParameters(_arg012);
+                    reply.writeNoException();
+                    if (_result9 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result9.size());
+                        _result9.forEach(new BiConsumer() { // from class: android.hardware.radio.ITuner$Stub$$ExternalSyntheticLambda2
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                ITuner.Stub.lambda$onTransact$2(Parcel.this, (String) obj, (String) obj2);
+                            }
+                        });
+                    }
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            boolean _result = isClosed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 3:
-                            RadioManager.BandConfig _arg0 = (RadioManager.BandConfig) data.readTypedObject(RadioManager.BandConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            setConfiguration(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            RadioManager.BandConfig _result2 = getConfiguration();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMuted(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            boolean _result3 = isMuted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 7:
-                            boolean _arg03 = data.readBoolean();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            step(_arg03, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            boolean _arg04 = data.readBoolean();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            seek(_arg04, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            ProgramSelector _arg05 = (ProgramSelector) data.readTypedObject(ProgramSelector.CREATOR);
-                            data.enforceNoDataAvail();
-                            tune(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            cancel();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            cancelAnnouncement();
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bitmap _result4 = getImage(_arg06);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 13:
-                            boolean _result5 = startBackgroundScan();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 14:
-                            ProgramList.Filter _arg07 = (ProgramList.Filter) data.readTypedObject(ProgramList.Filter.CREATOR);
-                            data.enforceNoDataAvail();
-                            startProgramListUpdates(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            stopProgramListUpdates();
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = isConfigFlagSupported(_arg08);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 17:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = isConfigFlagSet(_arg09);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 18:
-                            int _arg010 = data.readInt();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setConfigFlag(_arg010, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int N = data.readInt();
-                            final Map<String, String> _arg011 = N < 0 ? null : new HashMap<>();
-                            IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITuner$Stub$$ExternalSyntheticLambda0
-                                @Override // java.util.function.IntConsumer
-                                public final void accept(int i) {
-                                    ITuner.Stub.lambda$onTransact$0(Parcel.this, _arg011, i);
-                                }
-                            });
-                            data.enforceNoDataAvail();
-                            Map<String, String> _result8 = setParameters(_arg011);
-                            reply.writeNoException();
-                            if (_result8 == null) {
-                                reply.writeInt(-1);
-                            } else {
-                                reply.writeInt(_result8.size());
-                                _result8.forEach(new BiConsumer() { // from class: android.hardware.radio.ITuner$Stub$$ExternalSyntheticLambda1
-                                    @Override // java.util.function.BiConsumer
-                                    public final void accept(Object obj, Object obj2) {
-                                        ITuner.Stub.lambda$onTransact$1(Parcel.this, (String) obj, (String) obj2);
-                                    }
-                                });
-                            }
-                            return true;
-                        case 20:
-                            List<String> _arg012 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            Map<String, String> _result9 = getParameters(_arg012);
-                            reply.writeNoException();
-                            if (_result9 == null) {
-                                reply.writeInt(-1);
-                            } else {
-                                reply.writeInt(_result9.size());
-                                _result9.forEach(new BiConsumer() { // from class: android.hardware.radio.ITuner$Stub$$ExternalSyntheticLambda2
-                                    @Override // java.util.function.BiConsumer
-                                    public final void accept(Object obj, Object obj2) {
-                                        ITuner.Stub.lambda$onTransact$2(Parcel.this, (String) obj, (String) obj2);
-                                    }
-                                });
-                            }
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg0, int i) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg0, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg0.put(k, v);
         }
 
-        public static /* synthetic */ void lambda$onTransact$1(Parcel reply, String k, String v) {
+        static /* synthetic */ void lambda$onTransact$1(Parcel reply, String k, String v) {
             reply.writeString(k);
             reply.writeString(v);
         }
 
-        public static /* synthetic */ void lambda$onTransact$2(Parcel reply, String k, String v) {
+        static /* synthetic */ void lambda$onTransact$2(Parcel reply, String k, String v) {
             reply.writeString(k);
             reply.writeString(v);
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITuner {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class Proxy implements ITuner {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -734,7 +730,7 @@ public interface ITuner extends IInterface {
                         _data.writeInt(-1);
                     } else {
                         _data.writeInt(parameters.size());
-                        parameters.forEach(new BiConsumer() { // from class: android.hardware.radio.ITuner$Stub$Proxy$$ExternalSyntheticLambda0
+                        parameters.forEach(new BiConsumer() { // from class: android.hardware.radio.ITuner$Stub$Proxy$$ExternalSyntheticLambda1
                             @Override // java.util.function.BiConsumer
                             public final void accept(Object obj, Object obj2) {
                                 ITuner.Stub.Proxy.lambda$setParameters$0(Parcel.this, (String) obj, (String) obj2);
@@ -745,7 +741,7 @@ public interface ITuner extends IInterface {
                     _reply.readException();
                     int N = _reply.readInt();
                     final Map<String, String> _result = N < 0 ? null : new HashMap<>();
-                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITuner$Stub$Proxy$$ExternalSyntheticLambda1
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITuner$Stub$Proxy$$ExternalSyntheticLambda2
                         @Override // java.util.function.IntConsumer
                         public final void accept(int i) {
                             ITuner.Stub.Proxy.lambda$setParameters$1(Parcel.this, _result, i);
@@ -758,12 +754,12 @@ public interface ITuner extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$setParameters$0(Parcel _data, String k, String v) {
+            static /* synthetic */ void lambda$setParameters$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);
             }
 
-            public static /* synthetic */ void lambda$setParameters$1(Parcel _reply, Map _result, int i) {
+            static /* synthetic */ void lambda$setParameters$1(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 String v = _reply.readString();
                 _result.put(k, v);
@@ -780,7 +776,7 @@ public interface ITuner extends IInterface {
                     _reply.readException();
                     int N = _reply.readInt();
                     final Map<String, String> _result = N < 0 ? null : new HashMap<>();
-                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITuner$Stub$Proxy$$ExternalSyntheticLambda2
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.radio.ITuner$Stub$Proxy$$ExternalSyntheticLambda0
                         @Override // java.util.function.IntConsumer
                         public final void accept(int i) {
                             ITuner.Stub.Proxy.lambda$getParameters$2(Parcel.this, _result, i);
@@ -793,7 +789,7 @@ public interface ITuner extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$getParameters$2(Parcel _reply, Map _result, int i) {
+            static /* synthetic */ void lambda$getParameters$2(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 String v = _reply.readString();
                 _result.put(k, v);

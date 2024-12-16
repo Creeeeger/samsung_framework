@@ -6,7 +6,6 @@ public interface IUserRestrictionsListener extends IInterface {
 
     void onUserRestrictionsChanged(int i, Bundle bundle, Bundle bundle2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IUserRestrictionsListener {
         @Override // android.os.IUserRestrictionsListener
         public void onUserRestrictionsChanged(int userId, Bundle newRestrictions, Bundle prevRestrictions) throws RemoteException {
@@ -18,7 +17,6 @@ public interface IUserRestrictionsListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IUserRestrictionsListener {
         static final int TRANSACTION_onUserRestrictionsChanged = 1;
 
@@ -61,28 +59,24 @@ public interface IUserRestrictionsListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUserRestrictionsListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUserRestrictionsListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUserRestrictionsListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUserRestrictionsChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUserRestrictionsChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IUserRestrictionsListener {
+        private static class Proxy implements IUserRestrictionsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

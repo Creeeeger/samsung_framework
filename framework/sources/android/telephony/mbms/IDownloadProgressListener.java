@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IDownloadProgressListener extends IInterface {
     void onProgressUpdated(DownloadRequest downloadRequest, FileInfo fileInfo, int i, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDownloadProgressListener {
         @Override // android.telephony.mbms.IDownloadProgressListener
         public void onProgressUpdated(DownloadRequest request, FileInfo fileInfo, int currentDownloadSize, int fullDownloadSize, int currentDecodedSize, int fullDecodedSize) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IDownloadProgressListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDownloadProgressListener {
         public static final String DESCRIPTOR = "android.telephony.mbms.IDownloadProgressListener";
         static final int TRANSACTION_onProgressUpdated = 1;
@@ -66,32 +64,28 @@ public interface IDownloadProgressListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    DownloadRequest _arg0 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    FileInfo _arg1 = (FileInfo) data.readTypedObject(FileInfo.CREATOR);
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgressUpdated(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            DownloadRequest _arg0 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            FileInfo _arg1 = (FileInfo) data.readTypedObject(FileInfo.CREATOR);
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgressUpdated(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDownloadProgressListener {
+        private static class Proxy implements IDownloadProgressListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

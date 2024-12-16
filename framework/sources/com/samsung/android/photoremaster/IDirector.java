@@ -5,10 +5,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDirector {
 
-    /* loaded from: classes5.dex */
     public interface ProgressUpdateListener {
         void onUpdateMetadata(String str);
 

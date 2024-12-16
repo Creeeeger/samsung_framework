@@ -13,14 +13,13 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public final class PrintJobInfo implements Parcelable {
     public static final Parcelable.Creator<PrintJobInfo> CREATOR = new Parcelable.Creator<PrintJobInfo>() { // from class: android.print.PrintJobInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintJobInfo createFromParcel(Parcel parcel) {
             return new PrintJobInfo(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintJobInfo[] newArray(int size) {
             return new PrintJobInfo[size];
@@ -57,12 +56,7 @@ public final class PrintJobInfo implements Parcelable {
     private String mTag;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface State {
-    }
-
-    /* synthetic */ PrintJobInfo(Parcel parcel, PrintJobInfoIA printJobInfoIA) {
-        this(parcel);
     }
 
     public PrintJobInfo() {
@@ -114,10 +108,9 @@ public final class PrintJobInfo implements Parcelable {
         this.mStatusRes = parcel.readInt();
         this.mStatusResAppPackageName = parcel.readCharSequence();
         this.mCanceling = parcel.readInt() == 1;
-        Bundle readBundle = parcel.readBundle();
-        this.mAdvancedOptions = readBundle;
-        if (readBundle != null) {
-            Preconditions.checkArgument(!readBundle.containsKey(null));
+        this.mAdvancedOptions = parcel.readBundle();
+        if (this.mAdvancedOptions != null) {
+            Preconditions.checkArgument(!this.mAdvancedOptions.containsKey(null));
         }
     }
 
@@ -249,27 +242,23 @@ public final class PrintJobInfo implements Parcelable {
     }
 
     public boolean shouldStayAwake() {
-        int i;
-        return this.mCanceling || (i = this.mState) == 3 || i == 2;
+        return this.mCanceling || this.mState == 3 || this.mState == 2;
     }
 
     public boolean hasAdvancedOption(String key) {
-        Bundle bundle = this.mAdvancedOptions;
-        return bundle != null && bundle.containsKey(key);
+        return this.mAdvancedOptions != null && this.mAdvancedOptions.containsKey(key);
     }
 
     public String getAdvancedStringOption(String key) {
-        Bundle bundle = this.mAdvancedOptions;
-        if (bundle != null) {
-            return bundle.getString(key);
+        if (this.mAdvancedOptions != null) {
+            return this.mAdvancedOptions.getString(key);
         }
         return null;
     }
 
     public int getAdvancedIntOption(String key) {
-        Bundle bundle = this.mAdvancedOptions;
-        if (bundle != null) {
-            return bundle.getInt(key);
+        if (this.mAdvancedOptions != null) {
+            return this.mAdvancedOptions.getInt(key);
         }
         return 0;
     }
@@ -319,25 +308,15 @@ public final class PrintJobInfo implements Parcelable {
         builder.append(", tag: ").append(this.mTag);
         builder.append(", creationTime: " + this.mCreationTime);
         builder.append(", copies: ").append(this.mCopies);
-        StringBuilder append = new StringBuilder().append(", attributes: ");
-        PrintAttributes printAttributes = this.mAttributes;
-        builder.append(append.append(printAttributes != null ? printAttributes.toString() : null).toString());
-        StringBuilder append2 = new StringBuilder().append(", documentInfo: ");
-        PrintDocumentInfo printDocumentInfo = this.mDocumentInfo;
-        builder.append(append2.append(printDocumentInfo != null ? printDocumentInfo.toString() : null).toString());
+        builder.append(", attributes: " + (this.mAttributes != null ? this.mAttributes.toString() : null));
+        builder.append(", documentInfo: " + (this.mDocumentInfo != null ? this.mDocumentInfo.toString() : null));
         builder.append(", cancelling: " + this.mCanceling);
-        StringBuilder append3 = new StringBuilder().append(", pages: ");
-        PageRange[] pageRangeArr = this.mPageRanges;
-        builder.append(append3.append(pageRangeArr != null ? Arrays.toString(pageRangeArr) : null).toString());
+        builder.append(", pages: " + (this.mPageRanges != null ? Arrays.toString(this.mPageRanges) : null));
         builder.append(", hasAdvancedOptions: " + (this.mAdvancedOptions != null));
         builder.append(", progress: " + this.mProgress);
-        StringBuilder append4 = new StringBuilder().append(", status: ");
-        CharSequence charSequence = this.mStatus;
-        builder.append(append4.append(charSequence != null ? charSequence.toString() : null).toString());
+        builder.append(", status: " + (this.mStatus != null ? this.mStatus.toString() : null));
         builder.append(", statusRes: " + this.mStatusRes);
-        StringBuilder append5 = new StringBuilder().append(", statusResAppPackageName: ");
-        CharSequence charSequence2 = this.mStatusResAppPackageName;
-        builder.append(append5.append(charSequence2 != null ? charSequence2.toString() : null).toString());
+        builder.append(", statusResAppPackageName: " + (this.mStatusResAppPackageName != null ? this.mStatusResAppPackageName.toString() : null));
         builder.append("}");
         return builder.toString();
     }
@@ -378,7 +357,6 @@ public final class PrintJobInfo implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final PrintJobInfo mPrototype;
 
@@ -430,23 +408,6 @@ public final class PrintJobInfo implements Parcelable {
 
         public PrintJobInfo build() {
             return this.mPrototype;
-        }
-    }
-
-    /* renamed from: android.print.PrintJobInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrintJobInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintJobInfo createFromParcel(Parcel parcel) {
-            return new PrintJobInfo(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintJobInfo[] newArray(int size) {
-            return new PrintJobInfo[size];
         }
     }
 }

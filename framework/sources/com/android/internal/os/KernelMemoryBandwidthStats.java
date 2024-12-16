@@ -70,8 +70,7 @@ public class KernelMemoryBandwidthStats {
                 do {
                     int index = this.mBandwidthEntries.indexOfKey(bandwidth);
                     if (index >= 0) {
-                        LongSparseLongArray longSparseLongArray = this.mBandwidthEntries;
-                        longSparseLongArray.put(bandwidth, longSparseLongArray.valueAt(index) + (Long.parseLong(splitter.next()) / 1000000));
+                        this.mBandwidthEntries.put(bandwidth, this.mBandwidthEntries.valueAt(index) + (Long.parseLong(splitter.next()) / 1000000));
                     } else {
                         this.mBandwidthEntries.put(bandwidth, Long.parseLong(splitter.next()) / 1000000);
                     }

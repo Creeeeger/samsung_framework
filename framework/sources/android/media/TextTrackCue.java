@@ -3,12 +3,11 @@ package android.media;
 import android.app.slice.Slice;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.SubtitleTrack;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.Arrays;
 
 /* compiled from: WebVttRenderer.java */
 /* loaded from: classes2.dex */
-public class TextTrackCue extends SubtitleTrack.Cue {
+class TextTrackCue extends SubtitleTrack.Cue {
     static final int ALIGNMENT_END = 202;
     static final int ALIGNMENT_LEFT = 203;
     static final int ALIGNMENT_MIDDLE = 200;
@@ -32,9 +31,10 @@ public class TextTrackCue extends SubtitleTrack.Cue {
     TextTrackCueSpan[][] mLines = null;
     TextTrackRegion mRegion = null;
 
+    TextTrackCue() {
+    }
+
     public boolean equals(Object o) {
-        boolean z;
-        Integer num;
         if (!(o instanceof TextTrackCue)) {
             return false;
         }
@@ -43,18 +43,12 @@ public class TextTrackCue extends SubtitleTrack.Cue {
         }
         try {
             TextTrackCue cue = (TextTrackCue) o;
-            boolean res = this.mId.equals(cue.mId) && this.mPauseOnExit == cue.mPauseOnExit && this.mWritingDirection == cue.mWritingDirection && this.mRegionId.equals(cue.mRegionId) && this.mSnapToLines == cue.mSnapToLines && (z = this.mAutoLinePosition) == cue.mAutoLinePosition && (z || (((num = this.mLinePosition) != null && num.equals(cue.mLinePosition)) || (this.mLinePosition == null && cue.mLinePosition == null))) && this.mTextPosition == cue.mTextPosition && this.mSize == cue.mSize && this.mAlignment == cue.mAlignment && this.mLines.length == cue.mLines.length;
+            boolean res = this.mId.equals(cue.mId) && this.mPauseOnExit == cue.mPauseOnExit && this.mWritingDirection == cue.mWritingDirection && this.mRegionId.equals(cue.mRegionId) && this.mSnapToLines == cue.mSnapToLines && this.mAutoLinePosition == cue.mAutoLinePosition && (this.mAutoLinePosition || ((this.mLinePosition != null && this.mLinePosition.equals(cue.mLinePosition)) || (this.mLinePosition == null && cue.mLinePosition == null))) && this.mTextPosition == cue.mTextPosition && this.mSize == cue.mSize && this.mAlignment == cue.mAlignment && this.mLines.length == cue.mLines.length;
             if (res) {
-                int line = 0;
-                while (true) {
-                    TextTrackCueSpan[][] textTrackCueSpanArr = this.mLines;
-                    if (line >= textTrackCueSpanArr.length) {
-                        break;
-                    }
-                    if (!Arrays.equals(textTrackCueSpanArr[line], cue.mLines[line])) {
+                for (int line = 0; line < this.mLines.length; line++) {
+                    if (!Arrays.equals(this.mLines[line], cue.mLines[line])) {
                         return false;
                     }
-                    line++;
                 }
             }
             return res;
@@ -65,7 +59,7 @@ public class TextTrackCue extends SubtitleTrack.Cue {
 
     public StringBuilder appendStringsToBuilder(StringBuilder builder) {
         if (this.mStrings == null) {
-            builder.append(SemCapabilities.FEATURE_TAG_NULL);
+            builder.append("null");
         } else {
             builder.append(NavigationBarInflaterView.SIZE_MOD_START);
             boolean first = true;
@@ -74,7 +68,7 @@ public class TextTrackCue extends SubtitleTrack.Cue {
                     builder.append(", ");
                 }
                 if (s == null) {
-                    builder.append(SemCapabilities.FEATURE_TAG_NULL);
+                    builder.append("null");
                 } else {
                     builder.append("\"");
                     builder.append(s);
@@ -91,25 +85,24 @@ public class TextTrackCue extends SubtitleTrack.Cue {
         String str;
         TextTrackCueSpan[][] textTrackCueSpanArr;
         TextTrackCueSpan[][] textTrackCueSpanArr2;
-        TextTrackCueSpan[][] textTrackCueSpanArr3 = this.mLines;
-        String str2 = SemCapabilities.FEATURE_TAG_NULL;
-        if (textTrackCueSpanArr3 == null) {
-            builder.append(SemCapabilities.FEATURE_TAG_NULL);
+        String str2 = "null";
+        if (this.mLines == null) {
+            builder.append("null");
         } else {
             builder.append(NavigationBarInflaterView.SIZE_MOD_START);
             boolean first = true;
-            TextTrackCueSpan[][] textTrackCueSpanArr4 = this.mLines;
-            int length = textTrackCueSpanArr4.length;
+            TextTrackCueSpan[][] textTrackCueSpanArr3 = this.mLines;
+            int length = textTrackCueSpanArr3.length;
             int i = 0;
             while (i < length) {
-                TextTrackCueSpan[] spans = textTrackCueSpanArr4[i];
+                TextTrackCueSpan[] spans = textTrackCueSpanArr3[i];
                 if (!first) {
                     builder.append(", ");
                 }
                 if (spans == null) {
                     builder.append(str2);
                     str = str2;
-                    textTrackCueSpanArr = textTrackCueSpanArr4;
+                    textTrackCueSpanArr = textTrackCueSpanArr3;
                 } else {
                     builder.append("\"");
                     boolean innerFirst = true;
@@ -124,9 +117,9 @@ public class TextTrackCue extends SubtitleTrack.Cue {
                         boolean first2 = first;
                         String str3 = str2;
                         if (span.mTimestampMs == lastTimestamp) {
-                            textTrackCueSpanArr2 = textTrackCueSpanArr4;
+                            textTrackCueSpanArr2 = textTrackCueSpanArr3;
                         } else {
-                            textTrackCueSpanArr2 = textTrackCueSpanArr4;
+                            textTrackCueSpanArr2 = textTrackCueSpanArr3;
                             builder.append("<").append(WebVttParser.timeToString(span.mTimestampMs)).append(">");
                             lastTimestamp = span.mTimestampMs;
                         }
@@ -135,16 +128,16 @@ public class TextTrackCue extends SubtitleTrack.Cue {
                         i2++;
                         str2 = str3;
                         first = first2;
-                        textTrackCueSpanArr4 = textTrackCueSpanArr2;
+                        textTrackCueSpanArr3 = textTrackCueSpanArr2;
                     }
                     str = str2;
-                    textTrackCueSpanArr = textTrackCueSpanArr4;
+                    textTrackCueSpanArr = textTrackCueSpanArr3;
                     builder.append("\"");
                 }
                 first = false;
                 i++;
                 str2 = str;
-                textTrackCueSpanArr4 = textTrackCueSpanArr;
+                textTrackCueSpanArr3 = textTrackCueSpanArr;
             }
             builder.append(NavigationBarInflaterView.SIZE_MOD_END);
         }
@@ -155,26 +148,24 @@ public class TextTrackCue extends SubtitleTrack.Cue {
         String str;
         StringBuilder res = new StringBuilder();
         StringBuilder append = res.append(WebVttParser.timeToString(this.mStartTimeMs)).append(" --> ").append(WebVttParser.timeToString(this.mEndTimeMs)).append(" {id:\"").append(this.mId).append("\", pauseOnExit:").append(this.mPauseOnExit).append(", direction:");
-        int i = this.mWritingDirection;
         String str2 = "INVALID";
-        if (i == 100) {
+        if (this.mWritingDirection == 100) {
             str = Slice.HINT_HORIZONTAL;
-        } else if (i == 102) {
+        } else if (this.mWritingDirection == 102) {
             str = "vertical_lr";
         } else {
-            str = i == 101 ? "vertical_rl" : "INVALID";
+            str = this.mWritingDirection == 101 ? "vertical_rl" : "INVALID";
         }
         StringBuilder append2 = append.append(str).append(", regionId:\"").append(this.mRegionId).append("\", snapToLines:").append(this.mSnapToLines).append(", linePosition:").append(this.mAutoLinePosition ? "auto" : this.mLinePosition).append(", textPosition:").append(this.mTextPosition).append(", size:").append(this.mSize).append(", alignment:");
-        int i2 = this.mAlignment;
-        if (i2 == 202) {
+        if (this.mAlignment == 202) {
             str2 = "end";
-        } else if (i2 == 203) {
+        } else if (this.mAlignment == 203) {
             str2 = "left";
-        } else if (i2 == 200) {
+        } else if (this.mAlignment == 200) {
             str2 = "middle";
-        } else if (i2 == 204) {
+        } else if (this.mAlignment == 204) {
             str2 = "right";
-        } else if (i2 == 201) {
+        } else if (this.mAlignment == 201) {
             str2 = "start";
         }
         append2.append(str2).append(", text:");

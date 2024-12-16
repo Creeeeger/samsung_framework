@@ -27,7 +27,6 @@ public interface IDeviceInjectorCallback extends IInterface {
 
     void onSessionCreated(IDeviceInjectorSession iDeviceInjectorSession) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IDeviceInjectorCallback {
         @Override // android.hardware.IDeviceInjectorCallback
         public void onSessionCreated(IDeviceInjectorSession deviceInjectorSession) throws RemoteException {
@@ -59,7 +58,6 @@ public interface IDeviceInjectorCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IDeviceInjectorCallback {
         static final int TRANSACTION_onError = 6;
         static final int TRANSACTION_onInjectionPendingStarted = 4;
@@ -117,56 +115,53 @@ public interface IDeviceInjectorCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDeviceInjectorCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDeviceInjectorCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeviceInjectorCallback.DESCRIPTOR);
+                case 1:
+                    IDeviceInjectorSession _arg0 = IDeviceInjectorSession.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSessionCreated(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInjectionStarted(_arg02, _arg1, _arg2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInjectionStopped(_arg03, _arg12, _arg22);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInjectionPendingStarted(_arg04, _arg13);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInjectionPendingStopped(_arg05, _arg14);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg06);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IDeviceInjectorSession _arg0 = IDeviceInjectorSession.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSessionCreated(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInjectionStarted(_arg02, _arg1, _arg2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInjectionStopped(_arg03, _arg12, _arg22);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInjectionPendingStarted(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInjectionPendingStopped(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg06);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IDeviceInjectorCallback {
+        private static class Proxy implements IDeviceInjectorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

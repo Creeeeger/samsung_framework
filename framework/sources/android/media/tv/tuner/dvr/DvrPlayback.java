@@ -13,7 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DvrPlayback implements AutoCloseable {
     public static final int PLAYBACK_STATUS_ALMOST_EMPTY = 2;
     public static final int PLAYBACK_STATUS_ALMOST_FULL = 4;
@@ -30,7 +30,6 @@ public class DvrPlayback implements AutoCloseable {
     private int mUserId = Process.myUid();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     @interface PlaybackStatus {
     }
 
@@ -60,9 +59,8 @@ public class DvrPlayback implements AutoCloseable {
 
     private DvrPlayback() {
         this.mSegmentId = 0;
-        int i = sInstantId;
-        this.mSegmentId = (65535 & i) << 16;
-        sInstantId = i + 1;
+        this.mSegmentId = (sInstantId & 65535) << 16;
+        sInstantId++;
     }
 
     public void setListener(Executor executor, OnPlaybackStatusChangedListener listener) {
@@ -77,9 +75,8 @@ public class DvrPlayback implements AutoCloseable {
             this.mUnderflow++;
         }
         synchronized (this.mListenerLock) {
-            Executor executor = this.mExecutor;
-            if (executor != null && this.mListener != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.dvr.DvrPlayback$$ExternalSyntheticLambda0
+            if (this.mExecutor != null && this.mListener != null) {
+                this.mExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.dvr.DvrPlayback$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         DvrPlayback.this.lambda$onPlaybackStatusChanged$0(status);
@@ -89,11 +86,11 @@ public class DvrPlayback implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPlaybackStatusChanged$0(int status) {
         synchronized (this.mListenerLock) {
-            OnPlaybackStatusChangedListener onPlaybackStatusChangedListener = this.mListener;
-            if (onPlaybackStatusChangedListener != null) {
-                onPlaybackStatusChangedListener.onPlaybackStatusChanged(status);
+            if (this.mListener != null) {
+                this.mListener.onPlaybackStatusChanged(status);
             }
         }
     }
@@ -120,8 +117,7 @@ public class DvrPlayback implements AutoCloseable {
     }
 
     public int start() {
-        int i = this.mSegmentId;
-        this.mSegmentId = (((i & 65535) + 1) & 65535) | ((-65536) & i);
+        this.mSegmentId = (this.mSegmentId & (-65536)) | (((this.mSegmentId & 65535) + 1) & 65535);
         this.mUnderflow = 0;
         Log.d(TAG, "Write Stats Log for Playback.");
         FrameworkStatsLog.write(279, this.mUserId, 1, 1, this.mSegmentId, 0);

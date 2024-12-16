@@ -8,7 +8,7 @@ public class SendConf extends GenericPdu {
         setMessageType(129);
     }
 
-    public SendConf(PduHeaders headers) {
+    SendConf(PduHeaders headers) {
         super(headers);
     }
 

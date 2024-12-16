@@ -28,7 +28,6 @@ public class PathIterator implements Iterator<Segment> {
     private final float[] mPointsArray;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     @interface Verb {
     }
 
@@ -42,16 +41,14 @@ public class PathIterator implements Iterator<Segment> {
     @CriticalNative
     private static native int nPeek(long j);
 
-    public PathIterator(Path path) {
+    PathIterator(Path path) {
         this.mPath = path;
-        long nCreate = nCreate(path.mNativePath);
-        this.mNativeIterator = nCreate;
-        this.mPathGenerationId = path.getGenerationId();
+        this.mNativeIterator = nCreate(this.mPath.mNativePath);
+        this.mPathGenerationId = this.mPath.getGenerationId();
         VMRuntime runtime = VMRuntime.getRuntime();
-        float[] fArr = (float[]) runtime.newNonMovableArray(Float.TYPE, 8);
-        this.mPointsArray = fArr;
-        this.mPointsAddress = runtime.addressOf(fArr);
-        sRegistry.registerNativeAllocation(this, nCreate);
+        this.mPointsArray = (float[]) runtime.newNonMovableArray(Float.TYPE, 8);
+        this.mPointsAddress = runtime.addressOf(this.mPointsArray);
+        sRegistry.registerNativeAllocation(this, this.mNativeIterator);
     }
 
     public int next(float[] points, int offset) {
@@ -96,6 +93,7 @@ public class PathIterator implements Iterator<Segment> {
         return verb;
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.Iterator
     public Segment next() {
         int returnVerb = getReturnVerb(this.mCachedVerb);
@@ -130,7 +128,6 @@ public class PathIterator implements Iterator<Segment> {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Segment {
         private final float mConicWeight;
         private final float[] mPoints;

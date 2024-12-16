@@ -1,5 +1,7 @@
 package android.os;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.content.IntentSender;
 import android.os.IRecoverySystemProgressListener;
 
@@ -25,7 +27,6 @@ public interface IRecoverySystem extends IInterface {
 
     boolean uncrypt(String str, IRecoverySystemProgressListener iRecoverySystemProgressListener) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecoverySystem {
         @Override // android.os.IRecoverySystem
         public boolean allocateSpaceForUpdate(String packageFilePath) throws RemoteException {
@@ -82,7 +83,6 @@ public interface IRecoverySystem extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecoverySystem {
         public static final String DESCRIPTOR = "android.os.IRecoverySystem";
         static final int TRANSACTION_allocateSpaceForUpdate = 1;
@@ -95,9 +95,19 @@ public interface IRecoverySystem extends IInterface {
         static final int TRANSACTION_requestLskf = 6;
         static final int TRANSACTION_setupBcb = 3;
         static final int TRANSACTION_uncrypt = 2;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IRecoverySystem asInterface(IBinder obj) {
@@ -153,93 +163,89 @@ public interface IRecoverySystem extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = allocateSpaceForUpdate(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    IRecoverySystemProgressListener _arg1 = IRecoverySystemProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result2 = uncrypt(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = setupBcb(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    boolean _result4 = clearBcb();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    rebootRecoveryWithCommand(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    IntentSender _arg12 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = requestLskf(_arg05, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 7:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = clearLskf(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = isLskfCaptured(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result8 = rebootWithLskfAssumeSlotSwitch(_arg08, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 10:
+                    String _arg09 = data.readString();
+                    String _arg14 = data.readString();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result9 = rebootWithLskf(_arg09, _arg14, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = allocateSpaceForUpdate(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            IRecoverySystemProgressListener _arg1 = IRecoverySystemProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result2 = uncrypt(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = setupBcb(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            boolean _result4 = clearBcb();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            rebootRecoveryWithCommand(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            IntentSender _arg12 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = requestLskf(_arg05, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 7:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = clearLskf(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 8:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = isLskfCaptured(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 9:
-                            String _arg08 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result8 = rebootWithLskfAssumeSlotSwitch(_arg08, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 10:
-                            String _arg09 = data.readString();
-                            String _arg14 = data.readString();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result9 = rebootWithLskf(_arg09, _arg14, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecoverySystem {
+        private static class Proxy implements IRecoverySystem {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -426,6 +432,14 @@ public interface IRecoverySystem extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void allocateSpaceForUpdate_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.RECOVERY, getCallingPid(), getCallingUid());
+        }
+
+        protected void rebootWithLskfAssumeSlotSwitch_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.RECOVERY, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

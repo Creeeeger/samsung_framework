@@ -7,9 +7,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.data.IDataServiceCallback;
+import com.android.internal.telephony.IIntegerConsumer;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IDataService extends IInterface {
     void cancelHandover(int i, int i2, IDataServiceCallback iDataServiceCallback) throws RemoteException;
 
@@ -25,6 +26,8 @@ public interface IDataService extends IInterface {
 
     void requestDataCallList(int i, IDataServiceCallback iDataServiceCallback) throws RemoteException;
 
+    void requestNetworkValidation(int i, int i2, IIntegerConsumer iIntegerConsumer) throws RemoteException;
+
     void setDataProfile(int i, List<DataProfile> list, boolean z, IDataServiceCallback iDataServiceCallback) throws RemoteException;
 
     void setInitialAttachApn(int i, DataProfile dataProfile, boolean z, IDataServiceCallback iDataServiceCallback) throws RemoteException;
@@ -37,7 +40,6 @@ public interface IDataService extends IInterface {
 
     void unregisterForUnthrottleApn(int i, IDataServiceCallback iDataServiceCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDataService {
         @Override // android.telephony.data.IDataService
         public void createDataServiceProvider(int slotId) throws RemoteException {
@@ -91,13 +93,16 @@ public interface IDataService extends IInterface {
         public void unregisterForUnthrottleApn(int slotIndex, IDataServiceCallback callback) throws RemoteException {
         }
 
+        @Override // android.telephony.data.IDataService
+        public void requestNetworkValidation(int slotId, int cid, IIntegerConsumer callback) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDataService {
         public static final String DESCRIPTOR = "android.telephony.data.IDataService";
         static final int TRANSACTION_cancelHandover = 11;
@@ -107,6 +112,7 @@ public interface IDataService extends IInterface {
         static final int TRANSACTION_registerForUnthrottleApn = 12;
         static final int TRANSACTION_removeDataServiceProvider = 2;
         static final int TRANSACTION_requestDataCallList = 7;
+        static final int TRANSACTION_requestNetworkValidation = 14;
         static final int TRANSACTION_setDataProfile = 6;
         static final int TRANSACTION_setInitialAttachApn = 5;
         static final int TRANSACTION_setupDataCall = 3;
@@ -162,6 +168,8 @@ public interface IDataService extends IInterface {
                     return "registerForUnthrottleApn";
                 case 13:
                     return "unregisterForUnthrottleApn";
+                case 14:
+                    return "requestNetworkValidation";
                 default:
                     return null;
             }
@@ -177,113 +185,117 @@ public interface IDataService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    createDataServiceProvider(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeDataServiceProvider(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg1 = data.readInt();
+                    DataProfile _arg2 = (DataProfile) data.readTypedObject(DataProfile.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    boolean _arg4 = data.readBoolean();
+                    int _arg5 = data.readInt();
+                    LinkProperties _arg6 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
+                    int _arg7 = data.readInt();
+                    NetworkSliceInfo _arg8 = (NetworkSliceInfo) data.readTypedObject(NetworkSliceInfo.CREATOR);
+                    TrafficDescriptor _arg9 = (TrafficDescriptor) data.readTypedObject(TrafficDescriptor.CREATOR);
+                    boolean _arg10 = data.readBoolean();
+                    IDataServiceCallback _arg11 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setupDataCall(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10, _arg11);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    IDataServiceCallback _arg32 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    deactivateDataCall(_arg04, _arg12, _arg22, _arg32);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    DataProfile _arg13 = (DataProfile) data.readTypedObject(DataProfile.CREATOR);
+                    boolean _arg23 = data.readBoolean();
+                    IDataServiceCallback _arg33 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setInitialAttachApn(_arg05, _arg13, _arg23, _arg33);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    List<DataProfile> _arg14 = data.createTypedArrayList(DataProfile.CREATOR);
+                    boolean _arg24 = data.readBoolean();
+                    IDataServiceCallback _arg34 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setDataProfile(_arg06, _arg14, _arg24, _arg34);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    IDataServiceCallback _arg15 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    requestDataCallList(_arg07, _arg15);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    IDataServiceCallback _arg16 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerForDataCallListChanged(_arg08, _arg16);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    IDataServiceCallback _arg17 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForDataCallListChanged(_arg09, _arg17);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg18 = data.readInt();
+                    IDataServiceCallback _arg25 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startHandover(_arg010, _arg18, _arg25);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    int _arg19 = data.readInt();
+                    IDataServiceCallback _arg26 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelHandover(_arg011, _arg19, _arg26);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    IDataServiceCallback _arg110 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerForUnthrottleApn(_arg012, _arg110);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    IDataServiceCallback _arg111 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForUnthrottleApn(_arg013, _arg111);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    int _arg112 = data.readInt();
+                    IIntegerConsumer _arg27 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    requestNetworkValidation(_arg014, _arg112, _arg27);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            createDataServiceProvider(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeDataServiceProvider(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg1 = data.readInt();
-                            DataProfile _arg2 = (DataProfile) data.readTypedObject(DataProfile.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            boolean _arg4 = data.readBoolean();
-                            int _arg5 = data.readInt();
-                            LinkProperties _arg6 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
-                            int _arg7 = data.readInt();
-                            NetworkSliceInfo _arg8 = (NetworkSliceInfo) data.readTypedObject(NetworkSliceInfo.CREATOR);
-                            TrafficDescriptor _arg9 = (TrafficDescriptor) data.readTypedObject(TrafficDescriptor.CREATOR);
-                            boolean _arg10 = data.readBoolean();
-                            IDataServiceCallback _arg11 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setupDataCall(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10, _arg11);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            IDataServiceCallback _arg32 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            deactivateDataCall(_arg04, _arg12, _arg22, _arg32);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            DataProfile _arg13 = (DataProfile) data.readTypedObject(DataProfile.CREATOR);
-                            boolean _arg23 = data.readBoolean();
-                            IDataServiceCallback _arg33 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setInitialAttachApn(_arg05, _arg13, _arg23, _arg33);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            List<DataProfile> _arg14 = data.createTypedArrayList(DataProfile.CREATOR);
-                            boolean _arg24 = data.readBoolean();
-                            IDataServiceCallback _arg34 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setDataProfile(_arg06, _arg14, _arg24, _arg34);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            IDataServiceCallback _arg15 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            requestDataCallList(_arg07, _arg15);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            IDataServiceCallback _arg16 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerForDataCallListChanged(_arg08, _arg16);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            IDataServiceCallback _arg17 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterForDataCallListChanged(_arg09, _arg17);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg18 = data.readInt();
-                            IDataServiceCallback _arg25 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startHandover(_arg010, _arg18, _arg25);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            int _arg19 = data.readInt();
-                            IDataServiceCallback _arg26 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelHandover(_arg011, _arg19, _arg26);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            IDataServiceCallback _arg110 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerForUnthrottleApn(_arg012, _arg110);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            IDataServiceCallback _arg111 = IDataServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterForUnthrottleApn(_arg013, _arg111);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IDataService {
             private IBinder mRemote;
 
@@ -549,11 +561,25 @@ public interface IDataService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.telephony.data.IDataService
+            public void requestNetworkValidation(int slotId, int cid, IIntegerConsumer callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(slotId);
+                    _data.writeInt(cid);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(14, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 12;
+            return 13;
         }
     }
 }

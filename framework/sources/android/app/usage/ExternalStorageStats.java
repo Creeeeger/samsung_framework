@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ExternalStorageStats implements Parcelable {
     public static final Parcelable.Creator<ExternalStorageStats> CREATOR = new Parcelable.Creator<ExternalStorageStats>() { // from class: android.app.usage.ExternalStorageStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExternalStorageStats createFromParcel(Parcel in) {
             return new ExternalStorageStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExternalStorageStats[] newArray(int size) {
             return new ExternalStorageStats[size];
@@ -75,22 +74,5 @@ public final class ExternalStorageStats implements Parcelable {
         dest.writeLong(this.imageBytes);
         dest.writeLong(this.appBytes);
         dest.writeLong(this.obbBytes);
-    }
-
-    /* renamed from: android.app.usage.ExternalStorageStats$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ExternalStorageStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExternalStorageStats createFromParcel(Parcel in) {
-            return new ExternalStorageStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExternalStorageStats[] newArray(int size) {
-            return new ExternalStorageStats[size];
-        }
     }
 }

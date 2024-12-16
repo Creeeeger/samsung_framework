@@ -15,22 +15,14 @@ import java.math.BigInteger;
 
 /* loaded from: classes5.dex */
 public class RSASSAPSSparams extends ASN1Object {
-    public static final AlgorithmIdentifier DEFAULT_HASH_ALGORITHM;
-    public static final AlgorithmIdentifier DEFAULT_MASK_GEN_FUNCTION;
-    public static final ASN1Integer DEFAULT_SALT_LENGTH;
-    public static final ASN1Integer DEFAULT_TRAILER_FIELD;
+    public static final AlgorithmIdentifier DEFAULT_HASH_ALGORITHM = new AlgorithmIdentifier(OIWObjectIdentifiers.idSHA1, DERNull.INSTANCE);
+    public static final AlgorithmIdentifier DEFAULT_MASK_GEN_FUNCTION = new AlgorithmIdentifier(PKCSObjectIdentifiers.id_mgf1, DEFAULT_HASH_ALGORITHM);
+    public static final ASN1Integer DEFAULT_SALT_LENGTH = new ASN1Integer(20);
+    public static final ASN1Integer DEFAULT_TRAILER_FIELD = new ASN1Integer(1);
     private AlgorithmIdentifier hashAlgorithm;
     private AlgorithmIdentifier maskGenAlgorithm;
     private ASN1Integer saltLength;
     private ASN1Integer trailerField;
-
-    static {
-        AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(OIWObjectIdentifiers.idSHA1, DERNull.INSTANCE);
-        DEFAULT_HASH_ALGORITHM = algorithmIdentifier;
-        DEFAULT_MASK_GEN_FUNCTION = new AlgorithmIdentifier(PKCSObjectIdentifiers.id_mgf1, algorithmIdentifier);
-        DEFAULT_SALT_LENGTH = new ASN1Integer(20L);
-        DEFAULT_TRAILER_FIELD = new ASN1Integer(1L);
-    }
 
     public static RSASSAPSSparams getInstance(Object obj) {
         if (obj instanceof RSASSAPSSparams) {

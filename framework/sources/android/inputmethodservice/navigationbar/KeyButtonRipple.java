@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /* loaded from: classes2.dex */
-public final class KeyButtonRipple extends Drawable {
+final class KeyButtonRipple extends Drawable {
     private static final Interpolator ALPHA_OUT_INTERPOLATOR = new PathInterpolator(0.0f, 0.0f, 0.8f, 1.0f);
     private static final int ANIMATION_DURATION_FADE = 450;
     private static final int ANIMATION_DURATION_SCALE = 350;
@@ -56,9 +56,6 @@ public final class KeyButtonRipple extends Drawable {
     private final TraceAnimatorListener mEnterHwTraceAnimator = new TraceAnimatorListener("enterHardware");
     private Type mType = Type.ROUNDED_RECT;
     private final AnimatorListenerAdapter mAnimatorListener = new AnimatorListenerAdapter() { // from class: android.inputmethodservice.navigationbar.KeyButtonRipple.1
-        AnonymousClass1() {
-        }
-
         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
         public void onAnimationEnd(Animator animation) {
             KeyButtonRipple.this.mRunningAnimations.remove(animation);
@@ -70,13 +67,12 @@ public final class KeyButtonRipple extends Drawable {
         }
     };
 
-    /* loaded from: classes2.dex */
     public enum Type {
         OVAL,
         ROUNDED_RECT
     }
 
-    public KeyButtonRipple(Context ctx, View targetView, int maxWidthResource) {
+    KeyButtonRipple(Context ctx, View targetView, int maxWidthResource) {
         this.mMaxWidthResource = maxWidthResource;
         this.mMaxWidth = ctx.getResources().getDimensionPixelSize(maxWidthResource);
         this.mTargetView = targetView;
@@ -101,9 +97,8 @@ public final class KeyButtonRipple extends Drawable {
 
     private Paint getRipplePaint() {
         if (this.mRipplePaint == null) {
-            Paint paint = new Paint();
-            this.mRipplePaint = paint;
-            paint.setAntiAlias(true);
+            this.mRipplePaint = new Paint();
+            this.mRipplePaint.setAntiAlias(true);
             this.mRipplePaint.setColor(this.mLastDark ? -16777216 : -1);
         }
         return this.mRipplePaint;
@@ -137,9 +132,8 @@ public final class KeyButtonRipple extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public void draw(Canvas canvas) {
-        boolean isHardwareAccelerated = canvas.isHardwareAccelerated();
-        this.mSupportHardware = isHardwareAccelerated;
-        if (isHardwareAccelerated) {
+        this.mSupportHardware = canvas.isHardwareAccelerated();
+        if (this.mSupportHardware) {
             drawHardware((RecordingCanvas) canvas);
         } else {
             drawSoftware(canvas);
@@ -200,7 +194,7 @@ public final class KeyButtonRipple extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] state) {
+    protected boolean onStateChange(int[] state) {
         boolean pressed = false;
         int i = 0;
         while (true) {
@@ -247,10 +241,9 @@ public final class KeyButtonRipple extends Drawable {
     }
 
     public void setPressed(boolean pressed) {
-        boolean z = this.mDark;
-        if (z != this.mLastDark && pressed) {
+        if (this.mDark != this.mLastDark && pressed) {
             this.mRipplePaint = null;
-            this.mLastDark = z;
+            this.mLastDark = this.mDark;
         }
         if (this.mSupportHardware) {
             setPressedHardware(pressed);
@@ -308,6 +301,7 @@ public final class KeyButtonRipple extends Drawable {
         exitSoftware();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void enterSoftware() {
         endAnimations("enterSoftware", true);
         this.mVisible = true;
@@ -391,6 +385,7 @@ public final class KeyButtonRipple extends Drawable {
         return Math.min(size, this.mMaxWidth);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void enterHardware() {
         endAnimations("enterHardware", true);
         this.mVisible = true;
@@ -421,9 +416,8 @@ public final class KeyButtonRipple extends Drawable {
         }
         this.mGlowScale = GLOW_MAX_SCALE_FACTOR;
         this.mGlowAlpha = getMaxGlowAlpha();
-        Paint ripplePaint = getRipplePaint();
-        this.mRipplePaint = ripplePaint;
-        ripplePaint.setAlpha((int) (this.mGlowAlpha * 255.0f));
+        this.mRipplePaint = getRipplePaint();
+        this.mRipplePaint.setAlpha((int) (this.mGlowAlpha * 255.0f));
         this.mPaintProp = CanvasProperty.createPaint(this.mRipplePaint);
         startAnim.start();
         endAnim.start();
@@ -448,26 +442,7 @@ public final class KeyButtonRipple extends Drawable {
         invalidateSelf();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.inputmethodservice.navigationbar.KeyButtonRipple$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends AnimatorListenerAdapter {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            KeyButtonRipple.this.mRunningAnimations.remove(animation);
-            if (KeyButtonRipple.this.mRunningAnimations.isEmpty() && !KeyButtonRipple.this.mPressed) {
-                KeyButtonRipple.this.mVisible = false;
-                KeyButtonRipple.this.mDrawingHardwareGlow = false;
-                KeyButtonRipple.this.invalidateSelf();
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public static final class TraceAnimatorListener extends AnimatorListenerAdapter {
+    private static final class TraceAnimatorListener extends AnimatorListenerAdapter {
         private final String mName;
 
         TraceAnimatorListener(String name) {
@@ -493,13 +468,7 @@ public final class KeyButtonRipple extends Drawable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public static final class LogInterpolator implements Interpolator {
-        /* synthetic */ LogInterpolator(LogInterpolatorIA logInterpolatorIA) {
-            this();
-        }
-
+    private static final class LogInterpolator implements Interpolator {
         private LogInterpolator() {
         }
 

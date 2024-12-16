@@ -15,28 +15,9 @@ import java.util.HashMap;
 
 /* loaded from: classes4.dex */
 public class A11yLogger {
-    public static final ComponentName COMPONENT_NAME_ACCESSIBILITY_HOMEPAGE_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_AMPLIFY_AMBIENT_SOUND_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_ASSISTANT_MENU;
-    public static final ComponentName COMPONENT_NAME_COLOR_ADJUSTMENT_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_COLOR_LENS_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_GOOGLE_LIVE_TRANSCRIBE_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_GOOGLE_SOUND_NOTIFICATION_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_HIGH_CONTRAST_FONT_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_INTERACTION_CONTROL_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_LIVE_TRANSCRIBE;
-    public static final ComponentName COMPONENT_NAME_MAGNIFIER_CAMERA_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_MUTE_ALL_SOUNDS_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_RELUMINO_SHORTCUT;
-    public static final ComponentName COMPONENT_NAME_SAMSUNG_TALKBACK;
-    public static final ComponentName COMPONENT_NAME_SPEAK_KEYBOARD_INPUT_ALOUD;
-    public static final ComponentName COMPONENT_NAME_UNIVERSAL_SWITCH;
-    public static final ComponentName COMPONENT_NAME_VOICE_ACCESS;
     private static final boolean DEBUG = true;
     public static final String PACKAGE_NAME_ACCESSIBILITY = "com.samsung.accessibility";
     public static final String PACKAGE_NAME_HONEYBOARD = "com.samsung.android.honeyboard";
-    public static final String PACKAGE_NAME_LIVE_TRANSCRIBE = "com.google.audio.hearing.visualization.accessibility.scribe";
-    public static final String PACKAGE_NAME_SAMSUNG_TALKBACK = "com.samsung.android.accessibility.talkback";
     public static final String PACKAGE_NAME_SETTINGS = "com.android.settings";
     public static final String SA_ACCESSIBILITY_MAGIFICATION_TRIPLE_TAP = "A11Y9004";
     public static final String SA_ACCESSIBILITY_MAGNIFICATION_CHANGE_MODE = "AMFC";
@@ -57,8 +38,8 @@ public class A11yLogger {
     public static final String SA_ACCESSIBILITY_MAGNIFICATION_PANNEL_ZOOM_SLIDER_SETTING = "A11YS3197";
     public static final String SA_ACCESSIBILITY_MAGNIFICATION_RESIZE = "AMFR";
     public static final String SA_ACCESSIBILITY_MAGNIFICATION_WINDOW_SIZE_DONE = "A11Y3187";
-    public static final String SA_ACCESSIBILITY_SETUPWIZARD_DIRECT_ACCESS = "A11Y9005";
     public static final String SA_ACCESSIBILITY_SETUPWIZARD_TWO_FINGER = "A11Y9006";
+    public static final String SA_ACCESSIBILITY_SETUPWIZARD_VOLUME_UP_DOWN = "A11Y9005";
     public static final String SA_ACCESSIBILITY_SHORTCUT_ACCESSIBILITY_BUTTON = "A11Y9001";
     public static final String SA_ACCESSIBILITY_SHORTCUT_SIDE_KEY_VOLUME_UP = "A11Y9002";
     public static final String SA_ACCESSIBILITY_SHORTCUT_VOLUME_UP_DOWN = "A11Y9003";
@@ -72,13 +53,32 @@ public class A11yLogger {
     private static final int SA_SUPPORT_VERSION = 540000000;
     private static final String SA_TRACKING_ID = "4G4-399-1009910";
     private static final String TAG = "A11yLogger";
-    public static final HashMap<String, String> shortcutMap;
+    public static final ComponentName COMPONENT_NAME_ACCESSIBILITY_HOMEPAGE_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.AccessibilityHomepageActivityShortcut");
+    public static final String PACKAGE_NAME_SAMSUNG_TALKBACK = "com.samsung.android.accessibility.talkback";
+    public static final ComponentName COMPONENT_NAME_SAMSUNG_TALKBACK = new ComponentName(PACKAGE_NAME_SAMSUNG_TALKBACK, "com.samsung.android.marvin.talkback.TalkBackService");
+    public static final ComponentName COMPONENT_NAME_SPEAK_KEYBOARD_INPUT_ALOUD = ComponentName.createRelative("com.samsung.android.honeyboard", ".settings.swipetouchandfeedback.speakkeyboardinputaloud.SpeakKeyboardInputAloudShortcut");
+    public static final ComponentName COMPONENT_NAME_MAGNIFIER_CAMERA_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.MagnifierCameraShortcut");
+    public static final ComponentName COMPONENT_NAME_HIGH_CONTRAST_FONT_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.HighContrastFontsShortcut");
+    public static final ComponentName COMPONENT_NAME_COLOR_LENS_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ColorLensShortcut");
+    public static final ComponentName COMPONENT_NAME_COLOR_ADJUSTMENT_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ColorAdjustmentShortcut");
+    public static final ComponentName COMPONENT_NAME_RELUMINO_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ReluminoShortcut");
+    public static final ComponentName COMPONENT_NAME_AMPLIFY_AMBIENT_SOUND_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.AmplifyShortcut");
+    public static final ComponentName COMPONENT_NAME_MUTE_ALL_SOUNDS_SHORTCUT = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.MuteAllShortcut");
+    public static final String PACKAGE_NAME_LIVE_TRANSCRIBE = "com.google.audio.hearing.visualization.accessibility.scribe";
+    public static final ComponentName COMPONENT_NAME_GOOGLE_SOUND_NOTIFICATION_SHORTCUT = new ComponentName(PACKAGE_NAME_LIVE_TRANSCRIBE, "com.google.audio.hearing.visualization.accessibility.dolphin.ui.visualizer.TimelineActivity");
+    public static final ComponentName COMPONENT_NAME_LIVE_TRANSCRIBE = ComponentName.createRelative(PACKAGE_NAME_LIVE_TRANSCRIBE, ".SpeechToTextAccessibilityService");
+    public static final ComponentName COMPONENT_NAME_GOOGLE_LIVE_TRANSCRIBE_SHORTCUT = ComponentName.createRelative(PACKAGE_NAME_LIVE_TRANSCRIBE, ".MainActivity");
+    public static final ComponentName COMPONENT_NAME_UNIVERSAL_SWITCH = ComponentName.createRelative("com.samsung.accessibility", ".universalswitch.UniversalSwitchService");
+    public static final ComponentName COMPONENT_NAME_ASSISTANT_MENU = ComponentName.createRelative("com.samsung.accessibility", ".assistantmenu.serviceframework.AssistantMenuService");
+    public static final ComponentName COMPONENT_NAME_VOICE_ACCESS = new ComponentName("com.google.android.apps.accessibility.voiceaccess", "com.google.android.apps.accessibility.voiceaccess.JustSpeakService");
+    public static final ComponentName COMPONENT_NAME_INTERACTION_CONTROL_SHORTCUT = ComponentName.createRelative("com.samsung.accessibility", ".shortcut.InteractionControlShortcut");
+    public static final HashMap<String, String> shortcutMap = new HashMap<>();
 
     public static boolean checkVersionOfDMA(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo("com.sec.android.diagmonagent", 0);
             Slog.d("Validation", "dma pkg : " + packageInfo.versionCode);
-            return packageInfo.versionCode >= 540000000;
+            return packageInfo.versionCode >= SA_SUPPORT_VERSION;
         } catch (Exception e) {
             return false;
         }
@@ -108,7 +108,7 @@ public class A11yLogger {
         bundle.putString(SemShareConstants.DMA_SURVEY_FEATURE_TRACKING_ID, SA_TRACKING_ID);
         bundle.putString("feature", id);
         bundle.putString("type", SemShareConstants.SURVEY_CONTENT_TYPE_VALUE);
-        bundle.putString(SemShareConstants.SURVERY_EXTRA_OWN_PACKAGE, "com.samsung.accessibility");
+        bundle.putString(SemShareConstants.SURVEY_EXTRA_OWN_PACKAGE, "com.samsung.accessibility");
         if (extra != null) {
             bundle.putString(SemShareConstants.SURVEY_CONTENT_EXTRA, extra);
         }
@@ -124,9 +124,9 @@ public class A11yLogger {
 
     public static void insertShortcutSaLog(Context context, int shortcutType, String targetName) {
         String id = SA_ACCESSIBILITY_SHORTCUT_ACCESSIBILITY_BUTTON;
-        if (shortcutType == 1) {
+        if (shortcutType == 2) {
             id = SA_ACCESSIBILITY_SHORTCUT_VOLUME_UP_DOWN;
-        } else if (shortcutType == 2) {
+        } else if (shortcutType == 512) {
             id = SA_ACCESSIBILITY_SHORTCUT_SIDE_KEY_VOLUME_UP;
         }
         String function = shortcutMap.get(targetName);
@@ -137,63 +137,27 @@ public class A11yLogger {
     }
 
     static {
-        ComponentName createRelative = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.AccessibilityHomepageActivityShortcut");
-        COMPONENT_NAME_ACCESSIBILITY_HOMEPAGE_SHORTCUT = createRelative;
-        ComponentName componentName = new ComponentName(PACKAGE_NAME_SAMSUNG_TALKBACK, "com.samsung.android.marvin.talkback.TalkBackService");
-        COMPONENT_NAME_SAMSUNG_TALKBACK = componentName;
-        ComponentName createRelative2 = ComponentName.createRelative("com.samsung.android.honeyboard", ".settings.swipetouchandfeedback.speakkeyboardinputaloud.SpeakKeyboardInputAloudShortcut");
-        COMPONENT_NAME_SPEAK_KEYBOARD_INPUT_ALOUD = createRelative2;
-        ComponentName createRelative3 = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.MagnifierCameraShortcut");
-        COMPONENT_NAME_MAGNIFIER_CAMERA_SHORTCUT = createRelative3;
-        ComponentName createRelative4 = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.HighContrastFontsShortcut");
-        COMPONENT_NAME_HIGH_CONTRAST_FONT_SHORTCUT = createRelative4;
-        ComponentName createRelative5 = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ColorLensShortcut");
-        COMPONENT_NAME_COLOR_LENS_SHORTCUT = createRelative5;
-        ComponentName createRelative6 = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ColorAdjustmentShortcut");
-        COMPONENT_NAME_COLOR_ADJUSTMENT_SHORTCUT = createRelative6;
-        ComponentName createRelative7 = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ReluminoShortcut");
-        COMPONENT_NAME_RELUMINO_SHORTCUT = createRelative7;
-        ComponentName createRelative8 = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.AmplifyShortcut");
-        COMPONENT_NAME_AMPLIFY_AMBIENT_SOUND_SHORTCUT = createRelative8;
-        ComponentName createRelative9 = ComponentName.createRelative("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.MuteAllShortcut");
-        COMPONENT_NAME_MUTE_ALL_SOUNDS_SHORTCUT = createRelative9;
-        ComponentName componentName2 = new ComponentName(PACKAGE_NAME_LIVE_TRANSCRIBE, "com.google.audio.hearing.visualization.accessibility.dolphin.ui.visualizer.TimelineActivity");
-        COMPONENT_NAME_GOOGLE_SOUND_NOTIFICATION_SHORTCUT = componentName2;
-        ComponentName createRelative10 = ComponentName.createRelative(PACKAGE_NAME_LIVE_TRANSCRIBE, ".SpeechToTextAccessibilityService");
-        COMPONENT_NAME_LIVE_TRANSCRIBE = createRelative10;
-        ComponentName createRelative11 = ComponentName.createRelative(PACKAGE_NAME_LIVE_TRANSCRIBE, ".MainActivity");
-        COMPONENT_NAME_GOOGLE_LIVE_TRANSCRIBE_SHORTCUT = createRelative11;
-        ComponentName createRelative12 = ComponentName.createRelative("com.samsung.accessibility", ".universalswitch.UniversalSwitchService");
-        COMPONENT_NAME_UNIVERSAL_SWITCH = createRelative12;
-        ComponentName createRelative13 = ComponentName.createRelative("com.samsung.accessibility", ".assistantmenu.serviceframework.AssistantMenuService");
-        COMPONENT_NAME_ASSISTANT_MENU = createRelative13;
-        ComponentName componentName3 = new ComponentName("com.google.android.apps.accessibility.voiceaccess", "com.google.android.apps.accessibility.voiceaccess.JustSpeakService");
-        COMPONENT_NAME_VOICE_ACCESS = componentName3;
-        ComponentName createRelative14 = ComponentName.createRelative("com.samsung.accessibility", ".shortcut.InteractionControlShortcut");
-        COMPONENT_NAME_INTERACTION_CONTROL_SHORTCUT = createRelative14;
-        HashMap<String, String> hashMap = new HashMap<>();
-        shortcutMap = hashMap;
-        hashMap.put(createRelative.flattenToString(), "Accessibility");
-        hashMap.put(componentName.flattenToString(), "Talkback");
-        hashMap.put(createRelative3.flattenToString(), "Magnifier");
-        hashMap.put("com.android.server.accessibility.MagnificationController", "Magnification");
-        hashMap.put(AccessibilityShortcutController.COLOR_INVERSION_COMPONENT_NAME.flattenToString(), "ColorInversion");
-        hashMap.put(createRelative4.flattenToString(), "HighContrastFonts");
-        hashMap.put(AccessibilityShortcutController.DALTONIZER_COMPONENT_NAME.flattenToString(), "ColorCorrection");
-        hashMap.put(createRelative7.flattenToString(), "Relumino");
-        hashMap.put(createRelative6.flattenToString(), "ColorAdjustment");
-        hashMap.put(createRelative5.flattenToString(), "ColorLens");
-        hashMap.put(AccessibilityShortcutController.REDUCE_BRIGHT_COLORS_COMPONENT_NAME.flattenToString(), "ReduceBrightness");
-        hashMap.put(createRelative2.flattenToString(), "SpeakKeyboardInputAloud");
-        hashMap.put(createRelative8.flattenToString(), "AmplifyAmbientSound");
-        hashMap.put(createRelative9.flattenToString(), "MuteAllSounds");
-        hashMap.put(componentName2.flattenToString(), "SoundNotification");
-        hashMap.put(createRelative10.flattenToString(), "LiveTranscribe");
-        hashMap.put(createRelative11.flattenToString(), "GoogleLiveTranscribe");
-        hashMap.put(createRelative12.flattenToString(), "UniversalSwitch");
-        hashMap.put(createRelative13.flattenToString(), "AssistantMenu");
-        hashMap.put(componentName3.flattenToString(), "VoiceAccess");
-        hashMap.put(createRelative14.flattenToString(), "InteractionControl");
+        shortcutMap.put(COMPONENT_NAME_ACCESSIBILITY_HOMEPAGE_SHORTCUT.flattenToString(), "Accessibility");
+        shortcutMap.put(COMPONENT_NAME_SAMSUNG_TALKBACK.flattenToString(), "Talkback");
+        shortcutMap.put(COMPONENT_NAME_MAGNIFIER_CAMERA_SHORTCUT.flattenToString(), "Magnifier");
+        shortcutMap.put("com.android.server.accessibility.MagnificationController", "Magnification");
+        shortcutMap.put(AccessibilityShortcutController.COLOR_INVERSION_COMPONENT_NAME.flattenToString(), "ColorInversion");
+        shortcutMap.put(COMPONENT_NAME_HIGH_CONTRAST_FONT_SHORTCUT.flattenToString(), "HighContrastFonts");
+        shortcutMap.put(AccessibilityShortcutController.DALTONIZER_COMPONENT_NAME.flattenToString(), "ColorCorrection");
+        shortcutMap.put(COMPONENT_NAME_RELUMINO_SHORTCUT.flattenToString(), "Relumino");
+        shortcutMap.put(COMPONENT_NAME_COLOR_ADJUSTMENT_SHORTCUT.flattenToString(), "ColorAdjustment");
+        shortcutMap.put(COMPONENT_NAME_COLOR_LENS_SHORTCUT.flattenToString(), "ColorLens");
+        shortcutMap.put(AccessibilityShortcutController.REDUCE_BRIGHT_COLORS_COMPONENT_NAME.flattenToString(), "ReduceBrightness");
+        shortcutMap.put(COMPONENT_NAME_SPEAK_KEYBOARD_INPUT_ALOUD.flattenToString(), "SpeakKeyboardInputAloud");
+        shortcutMap.put(COMPONENT_NAME_AMPLIFY_AMBIENT_SOUND_SHORTCUT.flattenToString(), "AmplifyAmbientSound");
+        shortcutMap.put(COMPONENT_NAME_MUTE_ALL_SOUNDS_SHORTCUT.flattenToString(), "MuteAllSounds");
+        shortcutMap.put(COMPONENT_NAME_GOOGLE_SOUND_NOTIFICATION_SHORTCUT.flattenToString(), "SoundNotification");
+        shortcutMap.put(COMPONENT_NAME_LIVE_TRANSCRIBE.flattenToString(), "LiveTranscribe");
+        shortcutMap.put(COMPONENT_NAME_GOOGLE_LIVE_TRANSCRIBE_SHORTCUT.flattenToString(), "GoogleLiveTranscribe");
+        shortcutMap.put(COMPONENT_NAME_UNIVERSAL_SWITCH.flattenToString(), "UniversalSwitch");
+        shortcutMap.put(COMPONENT_NAME_ASSISTANT_MENU.flattenToString(), "AssistantMenu");
+        shortcutMap.put(COMPONENT_NAME_VOICE_ACCESS.flattenToString(), "VoiceAccess");
+        shortcutMap.put(COMPONENT_NAME_INTERACTION_CONTROL_SHORTCUT.flattenToString(), "InteractionControl");
     }
 
     public static HashMap<String, String> createDimension(String function) {

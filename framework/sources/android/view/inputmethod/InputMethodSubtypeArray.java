@@ -2,9 +2,11 @@ package android.view.inputmethod;
 
 import android.os.BadParcelableException;
 import android.os.Parcel;
+import android.util.Printer;
 import android.util.Slog;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -21,29 +23,26 @@ public class InputMethodSubtypeArray {
     public InputMethodSubtypeArray(List<InputMethodSubtype> subtypes) {
         if (subtypes == null) {
             this.mCount = 0;
-            return;
+        } else {
+            this.mCount = subtypes.size();
+            this.mInstance = (InputMethodSubtype[]) subtypes.toArray(new InputMethodSubtype[this.mCount]);
         }
-        int size = subtypes.size();
-        this.mCount = size;
-        this.mInstance = (InputMethodSubtype[]) subtypes.toArray(new InputMethodSubtype[size]);
     }
 
     public InputMethodSubtypeArray(Parcel source) {
-        int readInt = source.readInt();
-        this.mCount = readInt;
-        if (readInt < 0) {
+        this.mCount = source.readInt();
+        if (this.mCount < 0) {
             throw new BadParcelableException("mCount must be non-negative.");
         }
-        if (readInt > 0) {
+        if (this.mCount > 0) {
             this.mDecompressedSize = source.readInt();
             this.mCompressedData = source.createByteArray();
         }
     }
 
     public void writeToParcel(Parcel dest) {
-        int i = this.mCount;
-        if (i <= 0) {
-            dest.writeInt(i);
+        if (this.mCount == 0) {
+            dest.writeInt(this.mCount);
             return;
         }
         byte[] compressedData = this.mCompressedData;
@@ -101,8 +100,29 @@ public class InputMethodSubtypeArray {
         return instance[index];
     }
 
+    public ArrayList<InputMethodSubtype> toList() {
+        ArrayList<InputMethodSubtype> list = new ArrayList<>(this.mCount);
+        for (int i = 0; i < this.mCount; i++) {
+            list.add(get(i));
+        }
+        return list;
+    }
+
     public int getCount() {
         return this.mCount;
+    }
+
+    void dump(Printer pw, String prefix) {
+        String innerPrefix = prefix + "  ";
+        for (int i = 0; i < this.mCount; i++) {
+            pw.println(prefix + "InputMethodSubtype #" + i + ":");
+            InputMethodSubtype subtype = get(i);
+            if (subtype != null) {
+                subtype.dump(pw, innerPrefix);
+            } else {
+                pw.println(innerPrefix + "missing subtype");
+            }
+        }
     }
 
     private static byte[] marshall(InputMethodSubtype[] array) {

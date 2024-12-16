@@ -16,7 +16,6 @@ public interface ImsConfigListener extends IInterface {
 
     void onSetVideoQuality(int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ImsConfigListener {
         @Override // com.android.ims.ImsConfigListener
         public void onGetFeatureResponse(int feature, int network, int value, int status) throws RemoteException {
@@ -40,7 +39,6 @@ public interface ImsConfigListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ImsConfigListener {
         public static final String DESCRIPTOR = "com.android.ims.ImsConfigListener";
         static final int TRANSACTION_onGetFeatureResponse = 1;
@@ -93,48 +91,44 @@ public interface ImsConfigListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGetFeatureResponse(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSetFeatureResponse(_arg02, _arg12, _arg22, _arg32);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGetVideoQuality(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSetVideoQuality(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGetFeatureResponse(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSetFeatureResponse(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGetVideoQuality(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSetVideoQuality(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ImsConfigListener {
+        private static class Proxy implements ImsConfigListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

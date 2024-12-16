@@ -18,17 +18,16 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SignalStrengthUpdateRequest implements Parcelable {
     public static final Parcelable.Creator<SignalStrengthUpdateRequest> CREATOR = new Parcelable.Creator<SignalStrengthUpdateRequest>() { // from class: android.telephony.SignalStrengthUpdateRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalStrengthUpdateRequest createFromParcel(Parcel source) {
             return new SignalStrengthUpdateRequest(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalStrengthUpdateRequest[] newArray(int size) {
             return new SignalStrengthUpdateRequest[size];
@@ -39,14 +38,6 @@ public final class SignalStrengthUpdateRequest implements Parcelable {
     private final IBinder mLiveToken;
     private final List<SignalThresholdInfo> mSignalThresholdInfos;
 
-    /* synthetic */ SignalStrengthUpdateRequest(Parcel parcel, SignalStrengthUpdateRequestIA signalStrengthUpdateRequestIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ SignalStrengthUpdateRequest(List list, boolean z, boolean z2, SignalStrengthUpdateRequestIA signalStrengthUpdateRequestIA) {
-        this(list, z, z2);
-    }
-
     private SignalStrengthUpdateRequest(List<SignalThresholdInfo> signalThresholdInfos, boolean isReportingRequestedWhileIdle, boolean isSystemThresholdReportingRequestedWhileIdle) {
         validate(signalThresholdInfos, isSystemThresholdReportingRequestedWhileIdle);
         this.mSignalThresholdInfos = signalThresholdInfos;
@@ -55,7 +46,6 @@ public final class SignalStrengthUpdateRequest implements Parcelable {
         this.mLiveToken = new Binder();
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private List<SignalThresholdInfo> mSignalThresholdInfos = null;
         private boolean mIsReportingRequestedWhileIdle = false;
@@ -66,9 +56,8 @@ public final class SignalStrengthUpdateRequest implements Parcelable {
             for (SignalThresholdInfo info : signalThresholdInfos) {
                 Objects.requireNonNull(info, "SignalThresholdInfo in the collection must not be null");
             }
-            ArrayList arrayList = new ArrayList(signalThresholdInfos);
-            this.mSignalThresholdInfos = arrayList;
-            arrayList.sort(Comparator.comparingInt(new ToIntFunction() { // from class: android.telephony.SignalStrengthUpdateRequest$Builder$$ExternalSyntheticLambda0
+            this.mSignalThresholdInfos = new ArrayList(signalThresholdInfos);
+            this.mSignalThresholdInfos.sort(Comparator.comparingInt(new ToIntFunction() { // from class: android.telephony.SignalStrengthUpdateRequest$Builder$$ExternalSyntheticLambda0
                 @Override // java.util.function.ToIntFunction
                 public final int applyAsInt(Object obj) {
                     return ((SignalThresholdInfo) obj).getRadioAccessNetworkType();
@@ -148,23 +137,6 @@ public final class SignalStrengthUpdateRequest implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(this.mSignalThresholdInfos, Boolean.valueOf(this.mIsReportingRequestedWhileIdle), Boolean.valueOf(this.mIsSystemThresholdReportingRequestedWhileIdle));
-    }
-
-    /* renamed from: android.telephony.SignalStrengthUpdateRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SignalStrengthUpdateRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SignalStrengthUpdateRequest createFromParcel(Parcel source) {
-            return new SignalStrengthUpdateRequest(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SignalStrengthUpdateRequest[] newArray(int size) {
-            return new SignalStrengthUpdateRequest[size];
-        }
     }
 
     public String toString() {

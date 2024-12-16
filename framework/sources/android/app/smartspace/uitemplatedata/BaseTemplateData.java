@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class BaseTemplateData implements Parcelable {
     public static final Parcelable.Creator<BaseTemplateData> CREATOR = new Parcelable.Creator<BaseTemplateData>() { // from class: android.app.smartspace.uitemplatedata.BaseTemplateData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BaseTemplateData createFromParcel(Parcel in) {
             return new BaseTemplateData(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BaseTemplateData[] newArray(int size) {
             return new BaseTemplateData[size];
@@ -32,7 +31,7 @@ public class BaseTemplateData implements Parcelable {
     private final SubItemInfo mSupplementalLineItem;
     private final int mTemplateType;
 
-    public BaseTemplateData(Parcel in) {
+    BaseTemplateData(Parcel in) {
         this.mTemplateType = in.readInt();
         this.mPrimaryItem = (SubItemInfo) in.readTypedObject(SubItemInfo.CREATOR);
         this.mSubtitleItem = (SubItemInfo) in.readTypedObject(SubItemInfo.CREATOR);
@@ -42,7 +41,7 @@ public class BaseTemplateData implements Parcelable {
         this.mLayoutWeight = in.readInt();
     }
 
-    public BaseTemplateData(int templateType, SubItemInfo primaryItem, SubItemInfo subtitleItem, SubItemInfo subtitleSupplementalItem, SubItemInfo supplementalLineItem, SubItemInfo supplementalAlarmItem, int layoutWeight) {
+    BaseTemplateData(int templateType, SubItemInfo primaryItem, SubItemInfo subtitleItem, SubItemInfo subtitleSupplementalItem, SubItemInfo supplementalLineItem, SubItemInfo supplementalAlarmItem, int layoutWeight) {
         this.mTemplateType = templateType;
         this.mPrimaryItem = primaryItem;
         this.mSubtitleItem = subtitleItem;
@@ -78,23 +77,6 @@ public class BaseTemplateData implements Parcelable {
 
     public int getLayoutWeight() {
         return this.mLayoutWeight;
-    }
-
-    /* renamed from: android.app.smartspace.uitemplatedata.BaseTemplateData$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BaseTemplateData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BaseTemplateData createFromParcel(Parcel in) {
-            return new BaseTemplateData(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BaseTemplateData[] newArray(int size) {
-            return new BaseTemplateData[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -133,7 +115,6 @@ public class BaseTemplateData implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static class Builder {
         private int mLayoutWeight = 0;
         private SubItemInfo mPrimaryItem;
@@ -147,31 +128,31 @@ public class BaseTemplateData implements Parcelable {
             this.mTemplateType = templateType;
         }
 
-        public int getTemplateType() {
+        int getTemplateType() {
             return this.mTemplateType;
         }
 
-        public SubItemInfo getPrimaryItem() {
+        SubItemInfo getPrimaryItem() {
             return this.mPrimaryItem;
         }
 
-        public SubItemInfo getSubtitleItem() {
+        SubItemInfo getSubtitleItem() {
             return this.mSubtitleItem;
         }
 
-        public SubItemInfo getSubtitleSupplemtnalItem() {
+        SubItemInfo getSubtitleSupplemtnalItem() {
             return this.mSubtitleSupplementalItem;
         }
 
-        public SubItemInfo getSupplementalLineItem() {
+        SubItemInfo getSupplementalLineItem() {
             return this.mSupplementalLineItem;
         }
 
-        public SubItemInfo getSupplementalAlarmItem() {
+        SubItemInfo getSupplementalAlarmItem() {
             return this.mSupplementalAlarmItem;
         }
 
-        public int getLayoutWeight() {
+        int getLayoutWeight() {
             return this.mLayoutWeight;
         }
 
@@ -210,17 +191,15 @@ public class BaseTemplateData implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class SubItemInfo implements Parcelable {
         public static final Parcelable.Creator<SubItemInfo> CREATOR = new Parcelable.Creator<SubItemInfo>() { // from class: android.app.smartspace.uitemplatedata.BaseTemplateData.SubItemInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SubItemInfo createFromParcel(Parcel in) {
                 return new SubItemInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SubItemInfo[] newArray(int size) {
                 return new SubItemInfo[size];
@@ -230,10 +209,6 @@ public class BaseTemplateData implements Parcelable {
         private final SubItemLoggingInfo mLoggingInfo;
         private final TapAction mTapAction;
         private final Text mText;
-
-        /* synthetic */ SubItemInfo(Text text, Icon icon, TapAction tapAction, SubItemLoggingInfo subItemLoggingInfo, SubItemInfoIA subItemInfoIA) {
-            this(text, icon, tapAction, subItemLoggingInfo);
-        }
 
         SubItemInfo(Parcel in) {
             this.mText = (Text) in.readTypedObject(Text.CREATOR);
@@ -263,23 +238,6 @@ public class BaseTemplateData implements Parcelable {
 
         public SubItemLoggingInfo getLoggingInfo() {
             return this.mLoggingInfo;
-        }
-
-        /* renamed from: android.app.smartspace.uitemplatedata.BaseTemplateData$SubItemInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SubItemInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SubItemInfo createFromParcel(Parcel in) {
-                return new SubItemInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SubItemInfo[] newArray(int size) {
-                return new SubItemInfo[size];
-            }
         }
 
         @Override // android.os.Parcelable
@@ -315,7 +273,6 @@ public class BaseTemplateData implements Parcelable {
         }
 
         @SystemApi
-        /* loaded from: classes.dex */
         public static final class Builder {
             private Icon mIcon;
             private SubItemLoggingInfo mLoggingInfo;
@@ -351,17 +308,15 @@ public class BaseTemplateData implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class SubItemLoggingInfo implements Parcelable {
         public static final Parcelable.Creator<SubItemLoggingInfo> CREATOR = new Parcelable.Creator<SubItemLoggingInfo>() { // from class: android.app.smartspace.uitemplatedata.BaseTemplateData.SubItemLoggingInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SubItemLoggingInfo createFromParcel(Parcel in) {
                 return new SubItemLoggingInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SubItemLoggingInfo[] newArray(int size) {
                 return new SubItemLoggingInfo[size];
@@ -370,10 +325,6 @@ public class BaseTemplateData implements Parcelable {
         private final int mFeatureType;
         private final int mInstanceId;
         private final CharSequence mPackageName;
-
-        /* synthetic */ SubItemLoggingInfo(int i, int i2, CharSequence charSequence, SubItemLoggingInfoIA subItemLoggingInfoIA) {
-            this(i, i2, charSequence);
-        }
 
         SubItemLoggingInfo(Parcel in) {
             this.mInstanceId = in.readInt();
@@ -397,23 +348,6 @@ public class BaseTemplateData implements Parcelable {
 
         public CharSequence getPackageName() {
             return this.mPackageName;
-        }
-
-        /* renamed from: android.app.smartspace.uitemplatedata.BaseTemplateData$SubItemLoggingInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SubItemLoggingInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SubItemLoggingInfo createFromParcel(Parcel in) {
-                return new SubItemLoggingInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SubItemLoggingInfo[] newArray(int size) {
-                return new SubItemLoggingInfo[size];
-            }
         }
 
         @Override // android.os.Parcelable
@@ -448,7 +382,6 @@ public class BaseTemplateData implements Parcelable {
         }
 
         @SystemApi
-        /* loaded from: classes.dex */
         public static final class Builder {
             private final int mFeatureType;
             private final int mInstanceId;

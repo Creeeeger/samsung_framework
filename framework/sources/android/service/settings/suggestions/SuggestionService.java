@@ -19,34 +19,9 @@ public abstract class SuggestionService extends Service {
 
     public abstract void onSuggestionLaunched(Suggestion suggestion);
 
-    /* renamed from: android.service.settings.suggestions.SuggestionService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends ISuggestionService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.service.settings.suggestions.ISuggestionService
-        public List<Suggestion> getSuggestions() {
-            return SuggestionService.this.onGetSuggestions();
-        }
-
-        @Override // android.service.settings.suggestions.ISuggestionService
-        public void dismissSuggestion(Suggestion suggestion) {
-            SuggestionService.this.onSuggestionDismissed(suggestion);
-        }
-
-        @Override // android.service.settings.suggestions.ISuggestionService
-        public void launchSuggestion(Suggestion suggestion) {
-            SuggestionService.this.onSuggestionLaunched(suggestion);
-        }
-    }
-
     @Override // android.app.Service
     public IBinder onBind(Intent intent) {
         return new ISuggestionService.Stub() { // from class: android.service.settings.suggestions.SuggestionService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.service.settings.suggestions.ISuggestionService
             public List<Suggestion> getSuggestions() {
                 return SuggestionService.this.onGetSuggestions();

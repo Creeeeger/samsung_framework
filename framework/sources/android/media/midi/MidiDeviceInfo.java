@@ -10,9 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class MidiDeviceInfo implements Parcelable {
     public static final Parcelable.Creator<MidiDeviceInfo> CREATOR = new Parcelable.Creator<MidiDeviceInfo>() { // from class: android.media.midi.MidiDeviceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MidiDeviceInfo createFromParcel(Parcel in) {
             int type = in.readInt();
@@ -28,6 +26,7 @@ public final class MidiDeviceInfo implements Parcelable {
             return new MidiDeviceInfo(type, id, inputPortCount, outputPortCount, inputPortNames, outputPortNames, properties, isPrivate, defaultProtocol);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MidiDeviceInfo[] newArray(int size) {
             return new MidiDeviceInfo[size];
@@ -66,11 +65,9 @@ public final class MidiDeviceInfo implements Parcelable {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Protocol {
     }
 
-    /* loaded from: classes2.dex */
     public static final class PortInfo {
         public static final int TYPE_INPUT = 1;
         public static final int TYPE_OUTPUT = 2;
@@ -180,33 +177,6 @@ public final class MidiDeviceInfo implements Parcelable {
     public String toString() {
         this.mProperties.getString("name");
         return "MidiDeviceInfo[mType=" + this.mType + ",mInputPortCount=" + this.mInputPortCount + ",mOutputPortCount=" + this.mOutputPortCount + ",mProperties=" + this.mProperties + ",mIsPrivate=" + this.mIsPrivate + ",mDefaultProtocol=" + this.mDefaultProtocol;
-    }
-
-    /* renamed from: android.media.midi.MidiDeviceInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MidiDeviceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MidiDeviceInfo createFromParcel(Parcel in) {
-            int type = in.readInt();
-            int id = in.readInt();
-            int inputPortCount = in.readInt();
-            int outputPortCount = in.readInt();
-            String[] inputPortNames = in.createStringArray();
-            String[] outputPortNames = in.createStringArray();
-            boolean isPrivate = in.readInt() == 1;
-            int defaultProtocol = in.readInt();
-            in.readBundle();
-            Bundle properties = in.readBundle();
-            return new MidiDeviceInfo(type, id, inputPortCount, outputPortCount, inputPortNames, outputPortNames, properties, isPrivate, defaultProtocol);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MidiDeviceInfo[] newArray(int size) {
-            return new MidiDeviceInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

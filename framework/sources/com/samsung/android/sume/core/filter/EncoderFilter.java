@@ -27,7 +27,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class EncoderFilter extends MediaCodecFilter {
     private static final String TAG = Def.tagOf((Class<?>) EncoderFilter.class);
     private int orientation;
@@ -39,26 +39,18 @@ public class EncoderFilter extends MediaCodecFilter {
 
     @Override // com.samsung.android.sume.core.filter.MediaCodecFilter
     protected void configCodec(final Message configData) {
-        String str;
         MediaFormat mediaFormat;
-        String str2 = TAG;
-        Log.d(str2, "configCodec: " + configData);
+        Log.d(TAG, "configCodec: " + configData);
         CodecDescriptor descriptor = (CodecDescriptor) getDescriptor();
-        String mimeType = (String) configData.get(MediaFormat.KEY_MIME);
+        String mimeType = (String) configData.get("mime");
         if (descriptor.getMimeType() != null) {
             mimeType = descriptor.getMimeType();
         }
         int bitrate = descriptor.getBitrate();
-        if (bitrate != 0) {
-            str = MediaFormat.KEY_BIT_RATE;
-        } else {
+        if (bitrate == 0) {
             bitrate = ((Integer) configData.get(MediaFormat.KEY_BIT_RATE)).intValue();
-            if (descriptor.getScale() == 0.0f) {
-                str = MediaFormat.KEY_BIT_RATE;
-            } else {
-                double scale = descriptor.getScale();
-                str = MediaFormat.KEY_BIT_RATE;
-                bitrate = (int) (bitrate * Math.pow(10.0d, (int) Math.log10(Math.pow(scale, 2.0d))));
+            if (descriptor.getScale() != 0.0f) {
+                bitrate = (int) (bitrate * Math.pow(10.0d, (int) Math.log10(Math.pow(descriptor.getScale(), 2.0d))));
             }
         }
         MediaType mediaType = descriptor.getMediaType();
@@ -82,9 +74,8 @@ public class EncoderFilter extends MediaCodecFilter {
                 mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, ((Integer) configData.get(MediaFormat.KEY_I_FRAME_INTERVAL)).intValue());
                 mediaFormat.setInteger("vendor.qti-ext-enc-linear-color-format.value", 1);
                 if (configData.contains("rotation-degrees")) {
-                    int intValue = ((Integer) configData.get("rotation-degrees")).intValue();
-                    this.orientation = intValue;
-                    mediaFormat.setInteger("rotation-degrees", intValue);
+                    this.orientation = ((Integer) configData.get("rotation-degrees")).intValue();
+                    mediaFormat.setInteger("rotation-degrees", this.orientation);
                 }
             } else if (mediaType.isAudio()) {
                 int sampleRate = ((Integer) configData.get(MediaFormat.KEY_SAMPLE_RATE)).intValue();
@@ -93,8 +84,8 @@ public class EncoderFilter extends MediaCodecFilter {
             } else {
                 throw new UnsupportedOperationException("not supported type" + mediaType);
             }
-            mediaFormat.setInteger(str, bitrate);
-            Log.d(str2, "media-format=" + mediaFormat);
+            mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
+            Log.d(TAG, "media-format=" + mediaFormat);
             this.mediaCodec = MediaCodec.createEncoderByType(mimeType);
             this.mediaCodec.configure(mediaFormat, (Surface) null, (MediaCrypto) null, 1);
             BufferChannel inputChannel = this.receiveChannelQuery.apply(mediaType);
@@ -108,7 +99,7 @@ public class EncoderFilter extends MediaCodecFilter {
         }
     }
 
-    public static /* synthetic */ Pair lambda$configCodec$0(Message configData) {
+    static /* synthetic */ Pair lambda$configCodec$0(Message configData) {
         return new Pair((Integer) configData.get("width"), (Integer) configData.get("height"));
     }
 
@@ -116,17 +107,17 @@ public class EncoderFilter extends MediaCodecFilter {
     public MutableMediaBuffer run(MediaBuffer ibuf, MutableMediaBuffer obuf) {
         CodecDescriptor descriptor;
         MediaType mediaType;
-        CodecDescriptor descriptor2;
+        MediaType mediaType2;
         Log.d(TAG, "run");
         awaitCodecToReady();
         if (this.mediaCodec == null) {
             ibuf.release();
             throw new StreamFilterExitException("no media-codec given, might be released");
         }
-        CodecDescriptor descriptor3 = (CodecDescriptor) getDescriptor();
-        MediaType mediaType2 = descriptor3.getMediaType();
-        BufferChannel inputChannel = this.receiveChannelQuery.apply(mediaType2);
-        BufferChannel outputChannel = this.sendChannelQuery.apply(mediaType2);
+        CodecDescriptor descriptor2 = (CodecDescriptor) getDescriptor();
+        MediaType mediaType3 = descriptor2.getMediaType();
+        BufferChannel inputChannel = this.receiveChannelQuery.apply(mediaType3);
+        BufferChannel outputChannel = this.sendChannelQuery.apply(mediaType3);
         AtomicInteger trackIndex = new AtomicInteger();
         this.reachedInputEos = inputChannel instanceof SurfaceChannel;
         this.reachedOutputEos = false;
@@ -140,10 +131,9 @@ public class EncoderFilter extends MediaCodecFilter {
                 this.cvPause.block();
                 if (!this.reachedInputEos && ready) {
                     MediaBuffer mediaBuffer = inputChannel.receive();
-                    String str = TAG;
-                    Log.d(str, "[bhko] buffer=" + mediaBuffer);
+                    Log.d(TAG, "[bhko] buffer=" + mediaBuffer);
                     int bufferIdx = this.mediaCodec.dequeueInputBuffer(JobInfo.MIN_BACKOFF_MILLIS);
-                    Log.d(str, tag + "dequeue input buffer: " + bufferIdx);
+                    Log.d(TAG, tag + "dequeue input buffer: " + bufferIdx);
                     if (bufferIdx >= 0) {
                         if (mediaBuffer.containsExtra("reached-eos")) {
                             this.mediaCodec.queueInputBuffer(bufferIdx, 0, 0, 0L, 4);
@@ -167,52 +157,50 @@ public class EncoderFilter extends MediaCodecFilter {
                     }
                     mediaBuffer.release();
                 }
-                String str2 = TAG;
-                Log.d(str2, tag + "dequeue output buffer");
+                Log.d(TAG, tag + "dequeue output buffer");
                 int status = this.mediaCodec.dequeueOutputBuffer(bufferInfo, JobInfo.MIN_BACKOFF_MILLIS);
-                Log.d(str2, tag + "buffer st=" + status + ", info=" + bufferInfo);
+                Log.d(TAG, tag + "buffer st=" + status + ", info=" + bufferInfo);
                 if (status == -1) {
-                    Log.d(str2, tag + "retry dequeue output buffer");
-                    descriptor = descriptor3;
-                    mediaType = mediaType2;
-                    descriptor2 = null;
+                    Log.d(TAG, tag + "retry dequeue output buffer");
+                    descriptor = descriptor2;
+                    mediaType = mediaType3;
+                    mediaType2 = null;
                 } else if (status == -2) {
-                    Log.d(str2, tag + "track format = " + this.mediaCodec.getOutputFormat());
+                    Log.d(TAG, tag + "track format = " + this.mediaCodec.getOutputFormat());
                     Map<String, Object> data2 = new HashMap<>();
-                    data2.put(Message.KEY_MEDIA_TYPE, mediaType2);
+                    data2.put(Message.KEY_MEDIA_TYPE, mediaType3);
                     MediaFormat mediaFormat = this.mediaCodec.getOutputFormat();
-                    int i = this.orientation;
-                    if (i != 0) {
-                        mediaFormat.setInteger("rotation-degrees", i);
+                    if (this.orientation != 0) {
+                        mediaFormat.setInteger("rotation-degrees", this.orientation);
                     }
                     data2.put("media-format", mediaFormat);
                     this.messageProducer.newMessage(3, data2).post();
-                    Log.d(str2, tag + "now ready to start encode");
-                    descriptor = descriptor3;
-                    mediaType = mediaType2;
-                    descriptor2 = null;
+                    Log.d(TAG, tag + "now ready to start encode");
+                    descriptor = descriptor2;
+                    mediaType = mediaType3;
+                    mediaType2 = null;
                 } else if (status < 0) {
-                    descriptor = descriptor3;
-                    mediaType = mediaType2;
-                    descriptor2 = null;
+                    descriptor = descriptor2;
+                    mediaType = mediaType3;
+                    mediaType2 = null;
                 } else {
                     ByteBuffer outputBuffer = this.mediaCodec.getOutputBuffer(status);
-                    MediaBuffer mediaBuffer2 = MediaBuffer.of(mediaType2, outputBuffer);
+                    MediaBuffer mediaBuffer2 = MediaBuffer.of(mediaType3, outputBuffer);
                     mediaBuffer2.setExtra("track-idx", Integer.valueOf(trackIndex.get()));
                     mediaBuffer2.setExtra("buffer-info", bufferInfo);
-                    Log.d(str2, "flag=" + Integer.toHexString(bufferInfo.flags));
+                    Log.d(TAG, "flag=" + Integer.toHexString(bufferInfo.flags));
                     if ((bufferInfo.flags & 2) != 0) {
                         ready = true;
                         bufferInfo.size = 0;
                         mediaBuffer2.release();
                     }
-                    Log.d(str2, "size=" + bufferInfo.size);
+                    Log.d(TAG, "size=" + bufferInfo.size);
                     if (bufferInfo.size != 0) {
                         this.processedFrames++;
-                        descriptor = descriptor3;
-                        mediaType = mediaType2;
-                        Log.d(str2, tag + "# of encoded frames: " + this.processedFrames + NavigationBarInflaterView.SIZE_MOD_START + bufferInfo.presentationTimeUs + "](" + Integer.toHexString(bufferInfo.flags) + NavigationBarInflaterView.KEY_CODE_END);
-                        Log.d(str2, tag + "total # :" + this.numWholeFrames.get() + ", last ts: " + this.lastTimestampUs.get());
+                        descriptor = descriptor2;
+                        mediaType = mediaType3;
+                        Log.d(TAG, tag + "# of encoded frames: " + this.processedFrames + NavigationBarInflaterView.SIZE_MOD_START + bufferInfo.presentationTimeUs + "](" + Integer.toHexString(bufferInfo.flags) + NavigationBarInflaterView.KEY_CODE_END);
+                        Log.d(TAG, tag + "total # :" + this.numWholeFrames.get() + ", last ts: " + this.lastTimestampUs.get());
                         if ((inputChannel instanceof SurfaceChannel) && (isReachedLastFrame(this.processedFrames) || isReachedLastTimestamp(bufferInfo.presentationTimeUs))) {
                             bufferInfo.flags |= 4;
                             this.lastTimestampUs.set(Long.MAX_VALUE);
@@ -221,23 +209,23 @@ public class EncoderFilter extends MediaCodecFilter {
                         outputBuffer.limit(bufferInfo.offset + bufferInfo.size);
                         outputChannel.send(mediaBuffer2);
                     } else {
-                        descriptor = descriptor3;
-                        mediaType = mediaType2;
+                        descriptor = descriptor2;
+                        mediaType = mediaType3;
                     }
                     if ((bufferInfo.flags & 4) != 0) {
-                        Log.i(str2, tag + "encoder reached eos");
+                        Log.i(TAG, tag + "encoder reached eos");
                         this.reachedOutputEos = true;
                         if (!(inputChannel instanceof SurfaceChannel)) {
                             outputChannel.send(mediaBuffer2);
                         }
                     }
-                    descriptor2 = null;
+                    mediaType2 = null;
                     this.mediaCodec.releaseOutputBuffer(status, false);
                 }
-                descriptor3 = descriptor;
-                mediaType2 = mediaType;
+                descriptor2 = descriptor;
+                mediaType3 = mediaType;
             } else {
-                if (descriptor3.isRunInstant()) {
+                if (descriptor2.isRunInstant()) {
                     release();
                 }
                 return obuf;

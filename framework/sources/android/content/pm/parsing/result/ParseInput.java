@@ -3,7 +3,6 @@ package android.content.pm.parsing.result;
 /* loaded from: classes.dex */
 public interface ParseInput {
 
-    /* loaded from: classes.dex */
     public interface Callback {
         boolean isChangeEnabled(long j, String str, int i);
     }
@@ -22,11 +21,12 @@ public interface ParseInput {
 
     <ResultType> ParseResult<ResultType> error(String str);
 
+    void setPackageNameForAudit(String str);
+
     <ResultType> ParseResult<ResultType> skip(String str);
 
     <ResultType> ParseResult<ResultType> success(ResultType resulttype);
 
-    /* loaded from: classes.dex */
     public static final class DeferredError {
         public static final long EMPTY_INTENT_ACTION_CATEGORY = 151163173;
         public static final long MISSING_APP_TAG = 150776642;

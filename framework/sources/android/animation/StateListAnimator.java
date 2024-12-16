@@ -20,26 +20,8 @@ public class StateListAnimator implements Cloneable {
         initAnimatorListener();
     }
 
-    /* renamed from: android.animation.StateListAnimator$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends AnimatorListenerAdapter {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            animation.setTarget(null);
-            if (StateListAnimator.this.mRunningAnimator == animation) {
-                StateListAnimator.this.mRunningAnimator = null;
-            }
-        }
-    }
-
     private void initAnimatorListener() {
         this.mAnimatorListener = new AnimatorListenerAdapter() { // from class: android.animation.StateListAnimator.1
-            AnonymousClass1() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 animation.setTarget(null);
@@ -62,11 +44,10 @@ public class StateListAnimator implements Cloneable {
     }
 
     public View getTarget() {
-        WeakReference<View> weakReference = this.mViewRef;
-        if (weakReference == null) {
+        if (this.mViewRef == null) {
             return null;
         }
-        return weakReference.get();
+        return this.mViewRef.get();
     }
 
     public void setTarget(View view) {
@@ -92,8 +73,8 @@ public class StateListAnimator implements Cloneable {
         this.mRunningAnimator = null;
     }
 
-    /* renamed from: clone */
-    public StateListAnimator m106clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public StateListAnimator m126clone() {
         try {
             StateListAnimator clone = (StateListAnimator) super.clone();
             clone.mTuples = new ArrayList<>(this.mTuples.size());
@@ -105,7 +86,7 @@ public class StateListAnimator implements Cloneable {
             int tupleSize = this.mTuples.size();
             for (int i = 0; i < tupleSize; i++) {
                 Tuple tuple = this.mTuples.get(i);
-                Animator animatorClone = tuple.mAnimator.mo57clone();
+                Animator animatorClone = tuple.mAnimator.mo77clone();
                 animatorClone.removeListener(this.mAnimatorListener);
                 clone.addState(tuple.mSpecs, animatorClone);
             }
@@ -133,11 +114,10 @@ public class StateListAnimator implements Cloneable {
                 break;
             }
         }
-        Tuple tuple2 = this.mLastMatch;
-        if (match == tuple2) {
+        if (match == this.mLastMatch) {
             return;
         }
-        if (tuple2 != null) {
+        if (this.mLastMatch != null) {
             cancel();
         }
         this.mLastMatch = match;
@@ -148,15 +128,13 @@ public class StateListAnimator implements Cloneable {
 
     private void start(Tuple match) {
         match.mAnimator.setTarget(getTarget());
-        Animator animator = match.mAnimator;
-        this.mRunningAnimator = animator;
-        animator.start();
+        this.mRunningAnimator = match.mAnimator;
+        this.mRunningAnimator.start();
     }
 
     private void cancel() {
-        Animator animator = this.mRunningAnimator;
-        if (animator != null) {
-            animator.cancel();
+        if (this.mRunningAnimator != null) {
+            this.mRunningAnimator.cancel();
             this.mRunningAnimator = null;
         }
     }
@@ -166,9 +144,8 @@ public class StateListAnimator implements Cloneable {
     }
 
     public void jumpToCurrentState() {
-        Animator animator = this.mRunningAnimator;
-        if (animator != null) {
-            animator.end();
+        if (this.mRunningAnimator != null) {
+            this.mRunningAnimator.end();
         }
     }
 
@@ -188,14 +165,9 @@ public class StateListAnimator implements Cloneable {
         return new StateListAnimatorConstantState(this);
     }
 
-    /* loaded from: classes.dex */
     public static class Tuple {
         final Animator mAnimator;
         final int[] mSpecs;
-
-        /* synthetic */ Tuple(int[] iArr, Animator animator, TupleIA tupleIA) {
-            this(iArr, animator);
-        }
 
         private Tuple(int[] specs, Animator animator) {
             this.mSpecs = specs;
@@ -211,16 +183,14 @@ public class StateListAnimator implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class StateListAnimatorConstantState extends ConstantState<StateListAnimator> {
+    private static class StateListAnimatorConstantState extends ConstantState<StateListAnimator> {
         final StateListAnimator mAnimator;
         int mChangingConf;
 
         public StateListAnimatorConstantState(StateListAnimator animator) {
             this.mAnimator = animator;
-            animator.mConstantState = this;
-            this.mChangingConf = animator.getChangingConfigurations();
+            this.mAnimator.mConstantState = this;
+            this.mChangingConf = this.mAnimator.getChangingConfigurations();
         }
 
         @Override // android.content.res.ConstantState
@@ -228,10 +198,11 @@ public class StateListAnimator implements Cloneable {
             return this.mChangingConf;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.content.res.ConstantState
         /* renamed from: newInstance */
         public StateListAnimator newInstance2() {
-            StateListAnimator clone = this.mAnimator.m106clone();
+            StateListAnimator clone = this.mAnimator.m126clone();
             clone.mConstantState = this;
             return clone;
         }

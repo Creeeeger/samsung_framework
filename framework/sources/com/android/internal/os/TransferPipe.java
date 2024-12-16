@@ -29,8 +29,7 @@ public class TransferPipe implements Runnable, Closeable {
     FileDescriptor mOutFd;
     final Thread mThread;
 
-    /* loaded from: classes5.dex */
-    public interface Caller {
+    interface Caller {
         void go(IInterface iInterface, FileDescriptor fileDescriptor, String str, String[] strArr) throws RemoteException;
     }
 
@@ -42,7 +41,7 @@ public class TransferPipe implements Runnable, Closeable {
         this(bufferPrefix, TAG);
     }
 
-    public TransferPipe(String bufferPrefix, String threadName) throws IOException {
+    protected TransferPipe(String bufferPrefix, String threadName) throws IOException {
         this.mThread = new Thread(this, threadName);
         this.mFds = ParcelFileDescriptor.createPipe();
         this.mBufferPrefix = bufferPrefix;
@@ -157,18 +156,13 @@ public class TransferPipe implements Runnable, Closeable {
     }
 
     public void go(FileDescriptor out, long timeout) throws IOException {
-        String str;
         try {
             synchronized (this) {
                 this.mOutFd = out;
                 this.mEndTime = SystemClock.uptimeMillis() + timeout;
                 closeFd(1);
                 this.mThread.start();
-                while (true) {
-                    str = this.mFailure;
-                    if (str != null || this.mComplete) {
-                        break;
-                    }
+                while (this.mFailure == null && !this.mComplete) {
                     long waitTime = this.mEndTime - SystemClock.uptimeMillis();
                     if (waitTime <= 0) {
                         this.mThread.interrupt();
@@ -179,7 +173,7 @@ public class TransferPipe implements Runnable, Closeable {
                     } catch (InterruptedException e) {
                     }
                 }
-                if (str != null) {
+                if (this.mFailure != null) {
                     throw new IOException(this.mFailure);
                 }
             }
@@ -189,10 +183,9 @@ public class TransferPipe implements Runnable, Closeable {
     }
 
     void closeFd(int num) {
-        ParcelFileDescriptor parcelFileDescriptor = this.mFds[num];
-        if (parcelFileDescriptor != null) {
+        if (this.mFds[num] != null) {
             try {
-                parcelFileDescriptor.close();
+                this.mFds[num].close();
             } catch (IOException e) {
             }
             this.mFds[num] = null;
@@ -228,9 +221,8 @@ public class TransferPipe implements Runnable, Closeable {
             OutputStream fos = getNewOutputStream();
             byte[] bufferPrefix = null;
             boolean needPrefix = true;
-            String str = this.mBufferPrefix;
-            if (str != null) {
-                bufferPrefix = str.getBytes();
+            if (this.mBufferPrefix != null) {
+                bufferPrefix = this.mBufferPrefix.getBytes();
             }
             while (true) {
                 try {

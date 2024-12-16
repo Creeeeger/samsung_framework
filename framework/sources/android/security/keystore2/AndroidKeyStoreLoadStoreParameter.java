@@ -15,7 +15,7 @@ public class AndroidKeyStoreLoadStoreParameter implements KeyStore.LoadStorePara
         return null;
     }
 
-    public int getNamespace() {
+    int getNamespace() {
         return this.mNamespace;
     }
 }

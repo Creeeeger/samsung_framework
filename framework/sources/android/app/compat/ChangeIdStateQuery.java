@@ -4,9 +4,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
-public final class ChangeIdStateQuery {
+final class ChangeIdStateQuery {
     static final int QUERY_BY_PACKAGE_NAME = 0;
     static final int QUERY_BY_UID = 1;
     public long changeId;
@@ -16,7 +15,6 @@ public final class ChangeIdStateQuery {
     public int userId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     @interface QueryType {
     }
 
@@ -28,11 +26,11 @@ public final class ChangeIdStateQuery {
         this.userId = userId;
     }
 
-    public static ChangeIdStateQuery byPackageName(long changeId, String packageName, int userId) {
+    static ChangeIdStateQuery byPackageName(long changeId, String packageName, int userId) {
         return new ChangeIdStateQuery(0, changeId, packageName, 0, userId);
     }
 
-    public static ChangeIdStateQuery byUid(long changeId, int uid) {
+    static ChangeIdStateQuery byUid(long changeId, int uid) {
         return new ChangeIdStateQuery(1, changeId, null, uid, 0);
     }
 
@@ -51,13 +49,10 @@ public final class ChangeIdStateQuery {
     }
 
     public int hashCode() {
-        int result = (1 * 31) + this.type;
-        long j = this.changeId;
-        int result2 = (result * 31) + ((int) (j ^ (j >>> 32)));
-        String str = this.packageName;
-        if (str != null) {
-            result2 = (result2 * 31) + str.hashCode();
+        int result = (((1 * 31) + this.type) * 31) + ((int) (this.changeId ^ (this.changeId >>> 32)));
+        if (this.packageName != null) {
+            result = (result * 31) + this.packageName.hashCode();
         }
-        return (((result2 * 31) + this.uid) * 31) + this.userId;
+        return (((result * 31) + this.uid) * 31) + this.userId;
     }
 }

@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class Def {
     public static final int INVALID = -1;
     private static final String TAG = tagOf((Class<?>) Def.class);
@@ -43,7 +43,7 @@ public class Def {
         return "<<" + tag + "@" + object.hashCode() + ">>";
     }
 
-    public static /* synthetic */ String lambda$taglnOf$0(Object it) {
+    static /* synthetic */ String lambda$taglnOf$0(Object it) {
         return tagOf(it) + "\n";
     }
 
@@ -77,7 +77,7 @@ public class Def {
     }
 
     public static String contentToString(String... values) {
-        return (String) Arrays.stream(values).filter(new Predicate() { // from class: com.samsung.android.sume.core.Def$$ExternalSyntheticLambda3
+        return (String) Arrays.stream(values).filter(new Predicate() { // from class: com.samsung.android.sume.core.Def$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return Def.lambda$contentToString$1((String) obj);
@@ -85,17 +85,17 @@ public class Def {
         }).collect(Collectors.joining(", "));
     }
 
-    public static /* synthetic */ boolean lambda$contentToString$1(String it) {
+    static /* synthetic */ boolean lambda$contentToString$1(String it) {
         return !it.isEmpty();
     }
 
     public static String contentToStringln(final String indentMark, String... values) {
-        return (String) Arrays.stream(values).filter(new Predicate() { // from class: com.samsung.android.sume.core.Def$$ExternalSyntheticLambda1
+        return (String) Arrays.stream(values).filter(new Predicate() { // from class: com.samsung.android.sume.core.Def$$ExternalSyntheticLambda2
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return Def.lambda$contentToStringln$2((String) obj);
             }
-        }).map(new Function() { // from class: com.samsung.android.sume.core.Def$$ExternalSyntheticLambda2
+        }).map(new Function() { // from class: com.samsung.android.sume.core.Def$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String replaceAll;
@@ -105,7 +105,7 @@ public class Def {
         }).collect(Collectors.joining("\n"));
     }
 
-    public static /* synthetic */ boolean lambda$contentToStringln$2(String it) {
+    static /* synthetic */ boolean lambda$contentToStringln$2(String it) {
         return !it.isEmpty();
     }
 

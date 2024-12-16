@@ -5,12 +5,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MQDescriptor<T, Flavor> implements Parcelable {
     public static final Parcelable.Creator<MQDescriptor> CREATOR = new Parcelable.Creator<MQDescriptor>() { // from class: android.hardware.common.fmq.MQDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MQDescriptor createFromParcel(Parcel _aidl_source) {
             MQDescriptor _aidl_out = new MQDescriptor();
@@ -18,6 +16,7 @@ public class MQDescriptor<T, Flavor> implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MQDescriptor[] newArray(int _aidl_size) {
             return new MQDescriptor[_aidl_size];
@@ -27,25 +26,6 @@ public class MQDescriptor<T, Flavor> implements Parcelable {
     public NativeHandle handle;
     public int quantum = 0;
     public int flags = 0;
-
-    /* renamed from: android.hardware.common.fmq.MQDescriptor$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MQDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MQDescriptor createFromParcel(Parcel _aidl_source) {
-            MQDescriptor _aidl_out = new MQDescriptor();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MQDescriptor[] newArray(int _aidl_size) {
-            return new MQDescriptor[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

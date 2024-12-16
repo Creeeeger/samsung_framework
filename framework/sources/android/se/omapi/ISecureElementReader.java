@@ -24,7 +24,6 @@ public interface ISecureElementReader extends IInterface {
 
     boolean reset() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISecureElementReader {
         @Override // android.se.omapi.ISecureElementReader
         public boolean isSecureElementPresent() throws RemoteException {
@@ -61,7 +60,6 @@ public interface ISecureElementReader extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISecureElementReader {
         public static final String DESCRIPTOR = "android$se$omapi$ISecureElementReader".replace('$', '.');
         static final int TRANSACTION_closeSessions = 3;
@@ -98,48 +96,46 @@ public interface ISecureElementReader extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    boolean _result = isSecureElementPresent();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeBoolean(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    ISecureElementSession _result2 = openSession();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeStrongInterface(_result2);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    closeSessions();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _result3 = reset();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isSecureElementPresent();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            ISecureElementSession _result2 = openSession();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            closeSessions();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _result3 = reset();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISecureElementReader {
+        private static class Proxy implements ISecureElementReader {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

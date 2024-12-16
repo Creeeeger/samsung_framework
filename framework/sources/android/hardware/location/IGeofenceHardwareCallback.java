@@ -19,7 +19,6 @@ public interface IGeofenceHardwareCallback extends IInterface {
 
     void onGeofenceTransition(int i, int i2, Location location, long j, int i3) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGeofenceHardwareCallback {
         @Override // android.hardware.location.IGeofenceHardwareCallback
         public void onGeofenceTransition(int geofenceId, int transition, Location location, long timestamp, int monitoringType) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IGeofenceHardwareCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGeofenceHardwareCallback {
         public static final String DESCRIPTOR = "android.hardware.location.IGeofenceHardwareCallback";
         static final int TRANSACTION_onGeofenceAdd = 2;
@@ -103,54 +101,50 @@ public interface IGeofenceHardwareCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    Location _arg2 = (Location) data.readTypedObject(Location.CREATOR);
+                    long _arg3 = data.readLong();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGeofenceTransition(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGeofenceAdd(_arg02, _arg12);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGeofenceRemove(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGeofencePause(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGeofenceResume(_arg05, _arg15);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            Location _arg2 = (Location) data.readTypedObject(Location.CREATOR);
-                            long _arg3 = data.readLong();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGeofenceTransition(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGeofenceAdd(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGeofenceRemove(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGeofencePause(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGeofenceResume(_arg05, _arg15);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGeofenceHardwareCallback {
+        private static class Proxy implements IGeofenceHardwareCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

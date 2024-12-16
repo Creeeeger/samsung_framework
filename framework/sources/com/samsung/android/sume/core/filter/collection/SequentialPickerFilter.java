@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class SequentialPickerFilter extends SequentialFilter {
     private final List<Pair<Evaluator, MediaFilter>> evaluateFilters;
 
@@ -30,16 +30,16 @@ public class SequentialPickerFilter extends SequentialFilter {
     @Override // com.samsung.android.sume.core.filter.MediaFilterGroupBase, com.samsung.android.sume.core.filter.MediaFilter
     public void prepare() {
         Def.require(this.descriptor.getEvaluators().size() == this.filters.size(), "# of evaluator & filter are not matched", new Object[0]);
-        IntStream.range(0, this.filters.size()).forEach(new IntConsumer() { // from class: com.samsung.android.sume.core.filter.collection.SequentialPickerFilter$$ExternalSyntheticLambda0
+        IntStream.range(0, this.filters.size()).forEach(new IntConsumer() { // from class: com.samsung.android.sume.core.filter.collection.SequentialPickerFilter$$ExternalSyntheticLambda1
             @Override // java.util.function.IntConsumer
             public final void accept(int i) {
-                SequentialPickerFilter.this.m8770x33bd5385(i);
+                SequentialPickerFilter.this.m9158x33bd5385(i);
             }
         });
     }
 
-    /* renamed from: lambda$prepare$0$com-samsung-android-sume-core-filter-collection-SequentialPickerFilter */
-    public /* synthetic */ void m8770x33bd5385(int idx) {
+    /* renamed from: lambda$prepare$0$com-samsung-android-sume-core-filter-collection-SequentialPickerFilter, reason: not valid java name */
+    /* synthetic */ void m9158x33bd5385(int idx) {
         MediaFilter filter = this.filters.get(idx);
         filter.prepare();
         this.evaluateFilters.add(new Pair<>(this.descriptor.getEvaluators().get(idx), filter));
@@ -54,7 +54,7 @@ public class SequentialPickerFilter extends SequentialFilter {
                     Stream<MediaBuffer> stream = ibuf.stream();
                     final MediaFilter mediaFilter = evaluateFilter.second;
                     Objects.requireNonNull(mediaFilter);
-                    List<MediaBuffer> buffers = (List) stream.map(new Function() { // from class: com.samsung.android.sume.core.filter.collection.SequentialPickerFilter$$ExternalSyntheticLambda1
+                    List<MediaBuffer> buffers = (List) stream.map(new Function() { // from class: com.samsung.android.sume.core.filter.collection.SequentialPickerFilter$$ExternalSyntheticLambda0
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
                             return MediaFilter.this.run((MediaBuffer) obj);

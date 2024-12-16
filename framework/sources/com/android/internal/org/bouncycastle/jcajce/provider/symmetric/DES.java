@@ -35,49 +35,43 @@ public final class DES {
     private DES() {
     }
 
-    /* loaded from: classes5.dex */
     public static class ECB extends BaseBlockCipher {
         public ECB() {
             super(new DESEngine());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class CBC extends BaseBlockCipher {
         public CBC() {
             super(new CBCBlockCipher(new DESEngine()), 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class DES64 extends BaseMac {
         public DES64() {
             super(new CBCBlockCipherMac(new DESEngine(), 64));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class DES64with7816d4 extends BaseMac {
         public DES64with7816d4() {
             super(new CBCBlockCipherMac(new DESEngine(), 64, new ISO7816d4Padding()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class CBCMAC extends BaseMac {
         public CBCMAC() {
             super(new CBCBlockCipherMac(new DESEngine()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyGenerator extends BaseKeyGenerator {
         public KeyGenerator() {
             super("DES", 64, new DESKeyGenerator());
         }
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseKeyGenerator, javax.crypto.KeyGeneratorSpi
-        public void engineInit(int keySize, SecureRandom random) {
+        protected void engineInit(int keySize, SecureRandom random) {
             super.engineInit(keySize, random);
         }
 
@@ -91,7 +85,6 @@ public final class DES {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyFactory extends BaseSecretKeyFactory {
         public KeyFactory() {
             super("DES", null);
@@ -120,7 +113,7 @@ public final class DES {
         }
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
-        public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
+        protected SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
             if (keySpec instanceof DESKeySpec) {
                 DESKeySpec desKeySpec = (DESKeySpec) keySpec;
                 return new SecretKeySpec(desKeySpec.getKey(), "DES");
@@ -129,7 +122,6 @@ public final class DES {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class DESPBEKeyFactory extends BaseSecretKeyFactory {
         private int digest;
         private boolean forCipher;
@@ -147,7 +139,7 @@ public final class DES {
         }
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
-        public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
+        protected SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
             CipherParameters param;
             KeyParameter kParam;
             if (keySpec instanceof PBEKeySpec) {
@@ -172,56 +164,49 @@ public final class DES {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithMD5KeyFactory extends DESPBEKeyFactory {
         public PBEWithMD5KeyFactory() {
             super("PBEwithMD5andDES", PKCSObjectIdentifiers.pbeWithMD5AndDES_CBC, true, 0, 0, 64, 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithSHA1KeyFactory extends DESPBEKeyFactory {
         public PBEWithSHA1KeyFactory() {
             super("PBEwithSHA1andDES", PKCSObjectIdentifiers.pbeWithSHA1AndDES_CBC, true, 0, 1, 64, 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithMD5 extends BaseBlockCipher {
         public PBEWithMD5() {
             super(new CBCBlockCipher(new DESEngine()), 0, 0, 64, 8);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithSHA1 extends BaseBlockCipher {
         public PBEWithSHA1() {
             super(new CBCBlockCipher(new DESEngine()), 0, 1, 64, 8);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AlgorithmProvider {
         private static final String PACKAGE = "com.android.internal.org.bouncycastle.jcajce.provider.symmetric";
         private static final String PREFIX = DES.class.getName();
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvider
         public void configure(ConfigurableProvider provider) {
-            StringBuilder sb = new StringBuilder();
-            String str = PREFIX;
-            provider.addAlgorithm("Cipher.DES", sb.append(str).append("$ECB").toString());
-            provider.addAlgorithm("KeyGenerator.DES", str + "$KeyGenerator");
-            provider.addAlgorithm("SecretKeyFactory.DES", str + "$KeyFactory");
+            provider.addAlgorithm("Cipher.DES", PREFIX + "$ECB");
+            provider.addAlgorithm("KeyGenerator.DES", PREFIX + "$KeyGenerator");
+            provider.addAlgorithm("SecretKeyFactory.DES", PREFIX + "$KeyFactory");
             provider.addAlgorithm("AlgorithmParameters.DES", "com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.IvAlgorithmParameters");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters", OIWObjectIdentifiers.desCBC, "DES");
-            provider.addAlgorithm("Cipher.PBEWITHMD5ANDDES", str + "$PBEWithMD5");
-            provider.addAlgorithm("Cipher.PBEWITHSHA1ANDDES", str + "$PBEWithSHA1");
+            provider.addAlgorithm("Cipher.PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5");
+            provider.addAlgorithm("Cipher.PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1");
             provider.addAlgorithm("Alg.Alias.Cipher", PKCSObjectIdentifiers.pbeWithMD5AndDES_CBC, "PBEWITHMD5ANDDES");
             provider.addAlgorithm("Alg.Alias.Cipher", PKCSObjectIdentifiers.pbeWithSHA1AndDES_CBC, "PBEWITHSHA1ANDDES");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHMD5ANDDES-CBC", "PBEWITHMD5ANDDES");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1ANDDES-CBC", "PBEWITHSHA1ANDDES");
-            provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5ANDDES", str + "$PBEWithMD5KeyFactory");
-            provider.addAlgorithm("SecretKeyFactory.PBEWITHSHA1ANDDES", str + "$PBEWithSHA1KeyFactory");
+            provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5KeyFactory");
+            provider.addAlgorithm("SecretKeyFactory.PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1KeyFactory");
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory.PBEWITHMD5ANDDES-CBC", "PBEWITHMD5ANDDES");
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory.PBEWITHSHA1ANDDES-CBC", "PBEWITHSHA1ANDDES");
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + PKCSObjectIdentifiers.pbeWithMD5AndDES_CBC, "PBEWITHMD5ANDDES");

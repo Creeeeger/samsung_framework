@@ -2,12 +2,18 @@ package android.content.pm.verify.domain;
 
 import android.annotation.SystemApi;
 import android.content.Context;
+import android.content.UriRelativeFilterGroup;
+import android.content.UriRelativeFilterGroupParcel;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceSpecificException;
+import android.util.ArrayMap;
 import com.android.internal.util.CollectionUtils;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
@@ -36,13 +42,50 @@ public final class DomainVerificationManager {
     private final Context mContext;
     private final IDomainVerificationManager mDomainVerificationManager;
 
-    /* loaded from: classes.dex */
     public @interface Error {
     }
 
     public DomainVerificationManager(Context context, IDomainVerificationManager domainVerificationManager) {
         this.mContext = context;
         this.mDomainVerificationManager = domainVerificationManager;
+    }
+
+    @SystemApi
+    public void setUriRelativeFilterGroups(String packageName, Map<String, List<UriRelativeFilterGroup>> domainToGroupsMap) {
+        Objects.requireNonNull(packageName);
+        Objects.requireNonNull(domainToGroupsMap);
+        Bundle bundle = new Bundle();
+        for (String domain : domainToGroupsMap.keySet()) {
+            List<UriRelativeFilterGroup> groups = domainToGroupsMap.get(domain);
+            bundle.putParcelableList(domain, UriRelativeFilterGroup.groupsToParcels(groups));
+        }
+        try {
+            this.mDomainVerificationManager.setUriRelativeFilterGroups(packageName, bundle);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public Map<String, List<UriRelativeFilterGroup>> getUriRelativeFilterGroups(String packageName, List<String> domains) {
+        Objects.requireNonNull(packageName);
+        Objects.requireNonNull(domains);
+        if (domains.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        try {
+            Bundle bundle = this.mDomainVerificationManager.getUriRelativeFilterGroups(packageName, domains);
+            ArrayMap<String, List<UriRelativeFilterGroup>> map = new ArrayMap<>();
+            if (!bundle.isEmpty()) {
+                for (String domain : bundle.keySet()) {
+                    List<UriRelativeFilterGroupParcel> parcels = bundle.getParcelableArrayList(domain, UriRelativeFilterGroupParcel.class);
+                    map.put(domain, UriRelativeFilterGroup.parcelsToGroups(parcels));
+                }
+            }
+            return map;
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     @SystemApi

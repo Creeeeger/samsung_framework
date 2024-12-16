@@ -1,6 +1,5 @@
 package android.view;
 
-import android.content.ComponentName;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
@@ -11,13 +10,10 @@ import android.os.RemoteException;
 public interface IPinnedTaskListener extends IInterface {
     public static final String DESCRIPTOR = "android.view.IPinnedTaskListener";
 
-    void onActivityHidden(ComponentName componentName) throws RemoteException;
-
     void onImeVisibilityChanged(boolean z, int i) throws RemoteException;
 
     void onMovementBoundsChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IPinnedTaskListener {
         @Override // android.view.IPinnedTaskListener
         public void onMovementBoundsChanged(boolean fromImeAdjustment) throws RemoteException {
@@ -27,19 +23,13 @@ public interface IPinnedTaskListener extends IInterface {
         public void onImeVisibilityChanged(boolean imeVisible, int imeHeight) throws RemoteException {
         }
 
-        @Override // android.view.IPinnedTaskListener
-        public void onActivityHidden(ComponentName componentName) throws RemoteException {
-        }
-
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IPinnedTaskListener {
-        static final int TRANSACTION_onActivityHidden = 3;
         static final int TRANSACTION_onImeVisibilityChanged = 2;
         static final int TRANSACTION_onMovementBoundsChanged = 1;
 
@@ -69,8 +59,6 @@ public interface IPinnedTaskListener extends IInterface {
                     return "onMovementBoundsChanged";
                 case 2:
                     return "onImeVisibilityChanged";
-                case 3:
-                    return "onActivityHidden";
                 default:
                     return null;
             }
@@ -86,36 +74,28 @@ public interface IPinnedTaskListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPinnedTaskListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPinnedTaskListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPinnedTaskListener.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onMovementBoundsChanged(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onImeVisibilityChanged(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onMovementBoundsChanged(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onImeVisibilityChanged(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            ComponentName _arg03 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            onActivityHidden(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IPinnedTaskListener {
+        private static class Proxy implements IPinnedTaskListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -155,23 +135,11 @@ public interface IPinnedTaskListener extends IInterface {
                     _data.recycle();
                 }
             }
-
-            @Override // android.view.IPinnedTaskListener
-            public void onActivityHidden(ComponentName componentName) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(IPinnedTaskListener.DESCRIPTOR);
-                    _data.writeTypedObject(componentName, 0);
-                    this.mRemote.transact(3, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 2;
+            return 1;
         }
     }
 }

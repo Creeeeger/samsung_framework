@@ -31,17 +31,16 @@ public final class ServiceRecordProto {
     public static final long STARTING_BG_TIMEOUT = 1146756268047L;
     public static final long WHITELIST_MANAGER = 1133871366155L;
 
-    /* loaded from: classes5.dex */
     public final class AppInfo {
         public static final long BASE_DIR = 1138166333441L;
         public static final long DATA_DIR = 1138166333443L;
         public static final long RES_DIR = 1138166333442L;
+        public static final long TARGET_SDK_VERSION = 1120986464260L;
 
         public AppInfo() {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Foreground {
         public static final long FOREGROUND_SERVICE_TYPE = 1120986464259L;
         public static final long ID = 1120986464257L;
@@ -51,7 +50,6 @@ public final class ServiceRecordProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Start {
         public static final long CALL_START = 1133871366148L;
         public static final long DELAYED_STOP = 1133871366146L;
@@ -64,7 +62,6 @@ public final class ServiceRecordProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ExecuteNesting {
         public static final long EXECUTE_FG = 1133871366146L;
         public static final long EXECUTE_NESTING = 1120986464257L;
@@ -74,7 +71,6 @@ public final class ServiceRecordProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Crash {
         public static final long CRASH_COUNT = 1120986464260L;
         public static final long NEXT_RESTART_TIME = 1146756268035L;
@@ -85,7 +81,6 @@ public final class ServiceRecordProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class StartItem {
         public static final long DELIVERY_COUNT = 1120986464259L;
         public static final long DONE_EXECUTING_COUNT = 1120986464260L;
@@ -99,7 +94,6 @@ public final class ServiceRecordProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ShortFgsInfo {
         public static final long ANR_TIME = 1112396529670L;
         public static final long PROC_STATE_DEMOTE_TIME = 1112396529669L;

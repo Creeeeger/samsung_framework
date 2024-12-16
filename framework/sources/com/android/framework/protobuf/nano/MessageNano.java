@@ -3,7 +3,7 @@ package com.android.framework.protobuf.nano;
 import java.io.IOException;
 import java.util.Arrays;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public abstract class MessageNano {
     protected volatile int cachedSize = -1;
 
@@ -22,7 +22,7 @@ public abstract class MessageNano {
         return size;
     }
 
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         return 0;
     }
 
@@ -82,8 +82,8 @@ public abstract class MessageNano {
     }
 
     @Override // 
-    /* renamed from: clone */
-    public MessageNano mo7005clone() throws CloneNotSupportedException {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public MessageNano mo7418clone() throws CloneNotSupportedException {
         return (MessageNano) super.clone();
     }
 }

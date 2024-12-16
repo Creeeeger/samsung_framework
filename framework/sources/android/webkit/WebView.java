@@ -77,29 +77,24 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     private WebViewProvider mProvider;
     private final Looper mWebViewThread;
 
-    /* loaded from: classes4.dex */
     public interface FindListener {
         void onFindResultReceived(int i, int i2, boolean z);
     }
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public interface PictureListener {
         @Deprecated
         void onNewPicture(WebView webView, Picture picture);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface RendererPriority {
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class VisualStateCallback {
         public abstract void onComplete(long j);
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<WebView> {
         private int mContentHeightId;
         private int mFaviconId;
@@ -145,7 +140,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         }
     }
 
-    /* loaded from: classes4.dex */
     public class WebViewTransport {
         private WebView mWebview;
 
@@ -161,7 +155,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class HitTestResult {
 
         @Deprecated
@@ -230,8 +223,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
 
     protected WebView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, Map<String, Object> javaScriptInterfaces, boolean privateBrowsing) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        Looper myLooper = Looper.myLooper();
-        this.mWebViewThread = myLooper;
+        this.mWebViewThread = Looper.myLooper();
         if (getImportantForAutofill() == 0) {
             setImportantForAutofill(1);
         }
@@ -241,7 +233,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         if (context == null) {
             throw new IllegalArgumentException("Invalid context argument");
         }
-        if (myLooper == null) {
+        if (this.mWebViewThread == null) {
             throw new RuntimeException("WebView cannot be initialized on a thread that has no Looper.");
         }
         sEnforceThreadChecking = context.getApplicationInfo().targetSdkVersion >= 18;
@@ -893,7 +885,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @SystemApi
-    /* loaded from: classes4.dex */
     public class PrivateAccess {
         public PrivateAccess() {
         }
@@ -995,47 +986,39 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         }
     }
 
-    public void setFindDialogFindListener(FindListener listener) {
+    void setFindDialogFindListener(FindListener listener) {
         checkThread();
         setupFindListenerIfNeeded();
         this.mFindListener.mFindDialogFindListener = listener;
     }
 
-    public void notifyFindDialogDismissed() {
+    void notifyFindDialogDismissed() {
         checkThread();
         this.mProvider.notifyFindDialogDismissed();
     }
 
-    /* loaded from: classes4.dex */
-    public class FindListenerDistributor implements FindListener {
+    private class FindListenerDistributor implements FindListener {
         private FindListener mFindDialogFindListener;
         private FindListener mUserFindListener;
-
-        /* synthetic */ FindListenerDistributor(WebView webView, FindListenerDistributorIA findListenerDistributorIA) {
-            this();
-        }
 
         private FindListenerDistributor() {
         }
 
         @Override // android.webkit.WebView.FindListener
         public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
-            FindListener findListener = this.mFindDialogFindListener;
-            if (findListener != null) {
-                findListener.onFindResultReceived(activeMatchOrdinal, numberOfMatches, isDoneCounting);
+            if (this.mFindDialogFindListener != null) {
+                this.mFindDialogFindListener.onFindResultReceived(activeMatchOrdinal, numberOfMatches, isDoneCounting);
             }
-            FindListener findListener2 = this.mUserFindListener;
-            if (findListener2 != null) {
-                findListener2.onFindResultReceived(activeMatchOrdinal, numberOfMatches, isDoneCounting);
+            if (this.mUserFindListener != null) {
+                this.mUserFindListener.onFindResultReceived(activeMatchOrdinal, numberOfMatches, isDoneCounting);
             }
         }
     }
 
     private void setupFindListenerIfNeeded() {
         if (this.mFindListener == null) {
-            FindListenerDistributor findListenerDistributor = new FindListenerDistributor();
-            this.mFindListener = findListenerDistributor;
-            this.mProvider.setFindListener(findListenerDistributor);
+            this.mFindListener = new FindListenerDistributor();
+            this.mProvider.setFindListener(this.mFindListener);
         }
     }
 
@@ -1062,13 +1045,13 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.mProvider.getViewDelegate().onAttachedToWindow();
     }
 
     @Override // android.view.View
-    public void onDetachedFromWindowInternal() {
+    protected void onDetachedFromWindowInternal() {
         this.mProvider.getViewDelegate().onDetachedFromWindow();
         super.onDetachedFromWindowInternal();
     }
@@ -1097,27 +1080,27 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.View
-    public int computeHorizontalScrollRange() {
+    protected int computeHorizontalScrollRange() {
         return this.mProvider.getScrollDelegate().computeHorizontalScrollRange();
     }
 
     @Override // android.view.View
-    public int computeHorizontalScrollOffset() {
+    protected int computeHorizontalScrollOffset() {
         return this.mProvider.getScrollDelegate().computeHorizontalScrollOffset();
     }
 
     @Override // android.view.View
-    public int computeVerticalScrollRange() {
+    protected int computeVerticalScrollRange() {
         return this.mProvider.getScrollDelegate().computeVerticalScrollRange();
     }
 
     @Override // android.view.View
-    public int computeVerticalScrollOffset() {
+    protected int computeVerticalScrollOffset() {
         return this.mProvider.getScrollDelegate().computeVerticalScrollOffset();
     }
 
     @Override // android.view.View
-    public int computeVerticalScrollExtent() {
+    protected int computeVerticalScrollExtent() {
         return this.mProvider.getScrollDelegate().computeVerticalScrollExtent();
     }
 
@@ -1236,6 +1219,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         return this.mProvider.getViewDelegate().performAccessibilityAction(action, arguments);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDrawVerticalScrollBar(Canvas canvas, Drawable scrollBar, int l, int t, int r, int b) {
         this.mProvider.getViewDelegate().onDrawVerticalScrollBar(canvas, scrollBar, l, t, r, b);
@@ -1247,13 +1231,13 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.View
-    public void onWindowVisibilityChanged(int visibility) {
+    protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         this.mProvider.getViewDelegate().onWindowVisibilityChanged(visibility);
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         this.mProvider.getViewDelegate().onDraw(canvas);
     }
 
@@ -1263,7 +1247,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         this.mProvider.getViewDelegate().onConfigurationChanged(newConfig);
     }
 
@@ -1278,7 +1262,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.View
-    public void onVisibilityChanged(View changedView, int visibility) {
+    protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         ensureProviderCreated();
         this.mProvider.getViewDelegate().onVisibilityChanged(changedView, visibility);
@@ -1291,18 +1275,19 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.View
-    public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         this.mProvider.getViewDelegate().onFocusChanged(focused, direction, previouslyFocusedRect);
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int left, int top, int right, int bottom) {
         return this.mProvider.getViewDelegate().setFrame(left, top, right, bottom);
     }
 
     @Override // android.view.View
-    public void onSizeChanged(int w, int h, int ow, int oh) {
+    protected void onSizeChanged(int w, int h, int ow, int oh) {
         super.onSizeChanged(w, h, ow, oh);
         this.mProvider.getViewDelegate().onSizeChanged(w, h, ow, oh);
         ActivityThread activityThread = ActivityThread.currentActivityThread();
@@ -1314,7 +1299,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.View
-    public void onScrollChanged(int l, int t, int oldl, int oldt) {
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         this.mProvider.getViewDelegate().onScrollChanged(l, t, oldl, oldt);
     }
@@ -1329,9 +1314,8 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         return this.mProvider.getViewDelegate().requestFocus(direction, previouslyFocusedRect);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsoluteLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         this.mProvider.getViewDelegate().onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -1353,7 +1337,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         this.mProvider.getViewDelegate().preDispatchDraw(canvas);
         super.dispatchDraw(canvas);
     }
@@ -1385,6 +1369,13 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         if (webviewPackage != null) {
             return webviewPackage;
         }
+        if (Flags.updateServiceIpcWrapper()) {
+            WebViewUpdateManager manager = WebViewUpdateManager.getInstance();
+            if (manager == null) {
+                return null;
+            }
+            return manager.getCurrentWebViewPackage();
+        }
         IWebViewUpdateService service = WebViewFactory.getUpdateService();
         if (service == null) {
             return null;
@@ -1407,7 +1398,7 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         checkThread();
         encoder.addProperty("webview:contentHeight", this.mProvider.getContentHeight());
@@ -1431,10 +1422,5 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
             return icon;
         }
         return super.onResolvePointerIcon(event, pointerIndex);
-    }
-
-    @Override // android.widget.AbsoluteLayout, android.view.ViewGroup, android.view.View
-    public View semDispatchFindView(float x, float y, boolean findImage) {
-        return this;
     }
 }

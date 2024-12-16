@@ -27,7 +27,7 @@ public final class GameSessionTrampolineActivity extends Activity {
     }
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             this.mHasLaunchedIntent = savedInstanceState.getBoolean(HAS_LAUNCHED_INTENT_KEY);
@@ -48,13 +48,13 @@ public final class GameSessionTrampolineActivity extends Activity {
     }
 
     @Override // android.app.Activity
-    public void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(HAS_LAUNCHED_INTENT_KEY, this.mHasLaunchedIntent);
     }
 
     @Override // android.app.Activity
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode != 1) {
             throw new IllegalStateException("Unexpected request code: " + requestCode);
         }

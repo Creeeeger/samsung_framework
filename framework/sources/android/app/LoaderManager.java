@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 public abstract class LoaderManager {
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface LoaderCallbacks<D> {
         Loader<D> onCreateLoader(int i, Bundle bundle);
 

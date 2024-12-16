@@ -11,7 +11,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
     private static final int EGL_OPENGL_ES2_BIT = 4;
     public static final String EXCEPTION_FRAME_NOT_AVAILABLE = "Surface frame wait timed out";
@@ -35,21 +35,18 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
     }
 
     private void setup(int rotationAngle) {
-        RenderTexture_GL_OES renderTexture_GL_OES = new RenderTexture_GL_OES();
-        this.mTextureRenderer = renderTexture_GL_OES;
-        renderTexture_GL_OES.prepare(rotationAngle);
+        this.mTextureRenderer = new RenderTexture_GL_OES();
+        this.mTextureRenderer.prepare(rotationAngle);
         LogS.d("TranscodeLib", "textureID=" + this.mTextureRenderer.getTextureId());
-        SurfaceTexture surfaceTexture = new SurfaceTexture(this.mTextureRenderer.getTextureId());
-        this.mSurfaceTexture = surfaceTexture;
-        surfaceTexture.setOnFrameAvailableListener(this);
+        this.mSurfaceTexture = new SurfaceTexture(this.mTextureRenderer.getTextureId());
+        this.mSurfaceTexture.setOnFrameAvailableListener(this);
         this.mSurface = new Surface(this.mSurfaceTexture);
     }
 
     private void setup(int rotationAngle, int x, int y, int width, int height, int original_width, int original_height, boolean mmsMode) {
         int pbuffer_width;
         int pbuffer_height;
-        RenderTexture_GL_OES renderTexture_GL_OES = new RenderTexture_GL_OES();
-        this.mTextureRenderer = renderTexture_GL_OES;
+        this.mTextureRenderer = new RenderTexture_GL_OES();
         if (mmsMode && original_width * original_height >= HD_SIZE) {
             if (original_width > original_height) {
                 int pbuffer_height2 = (640 * original_height) / original_width;
@@ -74,11 +71,10 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
             pbuffer_width = 0;
             pbuffer_height = 0;
         }
-        renderTexture_GL_OES.prepare(rotationAngle, x, y, width, height, original_width, original_height, mmsMode, pbuffer_width, pbuffer_height);
+        this.mTextureRenderer.prepare(rotationAngle, x, y, width, height, original_width, original_height, mmsMode, pbuffer_width, pbuffer_height);
         LogS.d("TranscodeLib", "textureID=" + this.mTextureRenderer.getTextureId());
-        SurfaceTexture surfaceTexture = new SurfaceTexture(this.mTextureRenderer.getTextureId());
-        this.mSurfaceTexture = surfaceTexture;
-        surfaceTexture.setOnFrameAvailableListener(this);
+        this.mSurfaceTexture = new SurfaceTexture(this.mTextureRenderer.getTextureId());
+        this.mSurfaceTexture.setOnFrameAvailableListener(this);
         this.mSurface = new Surface(this.mSurfaceTexture);
         if (pbuffer_width != 0 && pbuffer_height != 0) {
             eglSetup(pbuffer_width, pbuffer_height);
@@ -86,11 +82,9 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
     }
 
     private void eglSetup(int width, int height) {
-        EGL10 egl10 = (EGL10) EGLContext.getEGL();
-        this.mEGL = egl10;
-        EGLDisplay eglGetDisplay = egl10.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-        this.mEGLDisplay = eglGetDisplay;
-        if (!this.mEGL.eglInitialize(eglGetDisplay, null)) {
+        this.mEGL = (EGL10) EGLContext.getEGL();
+        this.mEGLDisplay = this.mEGL.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+        if (!this.mEGL.eglInitialize(this.mEGLDisplay, null)) {
             throw new RuntimeException("unable to initialize EGL10");
         }
         int[] attribList = {12324, 8, 12323, 8, 12322, 8, 12339, 1, 12352, 4, 12344};
@@ -114,25 +108,22 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
     }
 
     public void release() {
-        EGL10 egl10 = this.mEGL;
-        if (egl10 != null) {
-            if (egl10.eglGetCurrentContext().equals(this.mEGLContext)) {
+        if (this.mEGL != null) {
+            if (this.mEGL.eglGetCurrentContext().equals(this.mEGLContext)) {
                 this.mEGL.eglMakeCurrent(this.mEGLDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT);
             }
             this.mEGL.eglDestroySurface(this.mEGLDisplay, this.mEGLSurface);
             this.mEGL.eglDestroyContext(this.mEGLDisplay, this.mEGLContext);
         }
-        Surface surface = this.mSurface;
-        if (surface != null) {
-            surface.release();
+        if (this.mSurface != null) {
+            this.mSurface.release();
         }
         this.mEGLDisplay = null;
         this.mEGLContext = null;
         this.mEGLSurface = null;
         this.mEGL = null;
-        RenderTexture_GL_OES renderTexture_GL_OES = this.mTextureRenderer;
-        if (renderTexture_GL_OES != null) {
-            renderTexture_GL_OES.release();
+        if (this.mTextureRenderer != null) {
+            this.mTextureRenderer.release();
         }
         this.mTextureRenderer = null;
         this.mSurface = null;

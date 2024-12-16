@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class Fingerprint extends BiometricAuthenticator.Identifier {
     public static final Parcelable.Creator<Fingerprint> CREATOR = new Parcelable.Creator<Fingerprint>() { // from class: android.hardware.fingerprint.Fingerprint.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Fingerprint createFromParcel(Parcel in) {
             return new Fingerprint(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Fingerprint[] newArray(int size) {
             return new Fingerprint[size];
@@ -22,10 +21,6 @@ public final class Fingerprint extends BiometricAuthenticator.Identifier {
     };
     private int mDuplicatedImgCount;
     private int mGroupId;
-
-    /* synthetic */ Fingerprint(Parcel parcel, FingerprintIA fingerprintIA) {
-        this(parcel);
-    }
 
     public Fingerprint(CharSequence name, int groupId, int fingerId, long deviceId, int duplicatedCnt) {
         super(name, fingerId, deviceId);
@@ -64,23 +59,6 @@ public final class Fingerprint extends BiometricAuthenticator.Identifier {
         out.writeLong(getDeviceId());
         out.writeInt(this.mGroupId);
         out.writeInt(this.mDuplicatedImgCount);
-    }
-
-    /* renamed from: android.hardware.fingerprint.Fingerprint$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Fingerprint> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Fingerprint createFromParcel(Parcel in) {
-            return new Fingerprint(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Fingerprint[] newArray(int size) {
-            return new Fingerprint[size];
-        }
     }
 
     public void semSetDuplicatedImgCount(int count) {

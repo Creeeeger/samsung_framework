@@ -10,7 +10,7 @@ public class SignatureInfo {
     public final long eocdOffset;
     public final ByteBuffer signatureBlock;
 
-    public SignatureInfo(ByteBuffer signatureBlock, long apkSigningBlockOffset, long centralDirOffset, long eocdOffset, ByteBuffer eocd) {
+    SignatureInfo(ByteBuffer signatureBlock, long apkSigningBlockOffset, long centralDirOffset, long eocdOffset, ByteBuffer eocd) {
         this.signatureBlock = signatureBlock;
         this.apkSigningBlockOffset = apkSigningBlockOffset;
         this.centralDirOffset = centralDirOffset;

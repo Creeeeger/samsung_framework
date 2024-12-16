@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaLineControlInfoRecord implements Parcelable {
     public static final Parcelable.Creator<CdmaLineControlInfoRecord> CREATOR = new Parcelable.Creator<CdmaLineControlInfoRecord>() { // from class: android.hardware.radio.voice.CdmaLineControlInfoRecord.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaLineControlInfoRecord createFromParcel(Parcel _aidl_source) {
             CdmaLineControlInfoRecord _aidl_out = new CdmaLineControlInfoRecord();
@@ -18,6 +16,7 @@ public class CdmaLineControlInfoRecord implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaLineControlInfoRecord[] newArray(int _aidl_size) {
             return new CdmaLineControlInfoRecord[_aidl_size];
@@ -27,25 +26,6 @@ public class CdmaLineControlInfoRecord implements Parcelable {
     public byte lineCtrlToggle = 0;
     public byte lineCtrlReverse = 0;
     public byte lineCtrlPowerDenial = 0;
-
-    /* renamed from: android.hardware.radio.voice.CdmaLineControlInfoRecord$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaLineControlInfoRecord> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaLineControlInfoRecord createFromParcel(Parcel _aidl_source) {
-            CdmaLineControlInfoRecord _aidl_out = new CdmaLineControlInfoRecord();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaLineControlInfoRecord[] newArray(int _aidl_size) {
-            return new CdmaLineControlInfoRecord[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -124,7 +104,7 @@ public class CdmaLineControlInfoRecord implements Parcelable {
         _aidl_sj.add("lineCtrlToggle: " + ((int) this.lineCtrlToggle));
         _aidl_sj.add("lineCtrlReverse: " + ((int) this.lineCtrlReverse));
         _aidl_sj.add("lineCtrlPowerDenial: " + ((int) this.lineCtrlPowerDenial));
-        return "android.hardware.radio.voice.CdmaLineControlInfoRecord" + _aidl_sj.toString();
+        return "CdmaLineControlInfoRecord" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

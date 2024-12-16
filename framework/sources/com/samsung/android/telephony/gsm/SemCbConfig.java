@@ -1,6 +1,6 @@
 package com.samsung.android.telephony.gsm;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemCbConfig {
     public boolean bCBEnabled;
     public int msgIdCount;

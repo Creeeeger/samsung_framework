@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.os.PersistableBundle;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellSignalStrengthGsm extends CellSignalStrength implements Parcelable {
     private static final boolean DBG = false;
     private static final int GSM_RSSI_GOOD = -97;
@@ -22,23 +22,18 @@ public final class CellSignalStrengthGsm extends CellSignalStrength implements P
     private static final int[] sRssiThresholds = {-107, -103, -97, -89};
     private static final CellSignalStrengthGsm sInvalid = new CellSignalStrengthGsm();
     public static final Parcelable.Creator<CellSignalStrengthGsm> CREATOR = new Parcelable.Creator<CellSignalStrengthGsm>() { // from class: android.telephony.CellSignalStrengthGsm.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthGsm createFromParcel(Parcel in) {
             return new CellSignalStrengthGsm(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthGsm[] newArray(int size) {
             return new CellSignalStrengthGsm[size];
         }
     };
-
-    /* synthetic */ CellSignalStrengthGsm(Parcel parcel, CellSignalStrengthGsmIA cellSignalStrengthGsmIA) {
-        this(parcel);
-    }
 
     public CellSignalStrengthGsm() {
         setDefaultValues();
@@ -92,8 +87,7 @@ public final class CellSignalStrengthGsm extends CellSignalStrength implements P
             }
         }
         int level = 4;
-        int i = this.mRssi;
-        if (i < -113 || i > -51) {
+        if (this.mRssi < -113 || this.mRssi > -51) {
             this.mLevel = 0;
             return;
         }
@@ -166,23 +160,6 @@ public final class CellSignalStrengthGsm extends CellSignalStrength implements P
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.CellSignalStrengthGsm$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthGsm> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthGsm createFromParcel(Parcel in) {
-            return new CellSignalStrengthGsm(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthGsm[] newArray(int size) {
-            return new CellSignalStrengthGsm[size];
-        }
     }
 
     private static void log(String s) {

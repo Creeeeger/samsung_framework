@@ -1,6 +1,7 @@
 package android.os;
 
 import android.content.ComponentName;
+import android.content.pm.SignedPackageParcel;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +19,14 @@ public interface ISystemConfig extends IInterface {
 
     List<ComponentName> getEnabledComponentOverrides(String str) throws RemoteException;
 
+    List<SignedPackageParcel> getEnhancedConfirmationTrustedInstallers() throws RemoteException;
+
+    List<SignedPackageParcel> getEnhancedConfirmationTrustedPackages() throws RemoteException;
+
+    List<String> getPreventUserDisablePackages() throws RemoteException;
+
     int[] getSystemPermissionUids(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISystemConfig {
         @Override // android.os.ISystemConfig
         public List<String> getDisabledUntilUsedPreinstalledCarrierApps() throws RemoteException {
@@ -52,19 +58,36 @@ public interface ISystemConfig extends IInterface {
             return null;
         }
 
+        @Override // android.os.ISystemConfig
+        public List<String> getPreventUserDisablePackages() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.os.ISystemConfig
+        public List<SignedPackageParcel> getEnhancedConfirmationTrustedPackages() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.os.ISystemConfig
+        public List<SignedPackageParcel> getEnhancedConfirmationTrustedInstallers() throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISystemConfig {
         static final int TRANSACTION_getDefaultVrComponents = 6;
         static final int TRANSACTION_getDisabledUntilUsedPreinstalledCarrierApps = 1;
         static final int TRANSACTION_getDisabledUntilUsedPreinstalledCarrierAssociatedAppEntries = 3;
         static final int TRANSACTION_getDisabledUntilUsedPreinstalledCarrierAssociatedApps = 2;
         static final int TRANSACTION_getEnabledComponentOverrides = 5;
+        static final int TRANSACTION_getEnhancedConfirmationTrustedInstallers = 9;
+        static final int TRANSACTION_getEnhancedConfirmationTrustedPackages = 8;
+        static final int TRANSACTION_getPreventUserDisablePackages = 7;
         static final int TRANSACTION_getSystemPermissionUids = 4;
 
         public Stub() {
@@ -101,6 +124,12 @@ public interface ISystemConfig extends IInterface {
                     return "getEnabledComponentOverrides";
                 case 6:
                     return "getDefaultVrComponents";
+                case 7:
+                    return "getPreventUserDisablePackages";
+                case 8:
+                    return "getEnhancedConfirmationTrustedPackages";
+                case 9:
+                    return "getEnhancedConfirmationTrustedInstallers";
                 default:
                     return null;
             }
@@ -116,55 +145,66 @@ public interface ISystemConfig extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISystemConfig.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISystemConfig.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISystemConfig.DESCRIPTOR);
+                case 1:
+                    List<String> _result = getDisabledUntilUsedPreinstalledCarrierApps();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
+                    return true;
+                case 2:
+                    Map _result2 = getDisabledUntilUsedPreinstalledCarrierAssociatedApps();
+                    reply.writeNoException();
+                    reply.writeMap(_result2);
+                    return true;
+                case 3:
+                    Map _result3 = getDisabledUntilUsedPreinstalledCarrierAssociatedAppEntries();
+                    reply.writeNoException();
+                    reply.writeMap(_result3);
+                    return true;
+                case 4:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    int[] _result4 = getSystemPermissionUids(_arg0);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result4);
+                    return true;
+                case 5:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<ComponentName> _result5 = getEnabledComponentOverrides(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result5, 1);
+                    return true;
+                case 6:
+                    List<ComponentName> _result6 = getDefaultVrComponents();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result6, 1);
+                    return true;
+                case 7:
+                    List<String> _result7 = getPreventUserDisablePackages();
+                    reply.writeNoException();
+                    reply.writeStringList(_result7);
+                    return true;
+                case 8:
+                    List<SignedPackageParcel> _result8 = getEnhancedConfirmationTrustedPackages();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result8, 1);
+                    return true;
+                case 9:
+                    List<SignedPackageParcel> _result9 = getEnhancedConfirmationTrustedInstallers();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result9, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<String> _result = getDisabledUntilUsedPreinstalledCarrierApps();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        case 2:
-                            Map _result2 = getDisabledUntilUsedPreinstalledCarrierAssociatedApps();
-                            reply.writeNoException();
-                            reply.writeMap(_result2);
-                            return true;
-                        case 3:
-                            Map _result3 = getDisabledUntilUsedPreinstalledCarrierAssociatedAppEntries();
-                            reply.writeNoException();
-                            reply.writeMap(_result3);
-                            return true;
-                        case 4:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            int[] _result4 = getSystemPermissionUids(_arg0);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result4);
-                            return true;
-                        case 5:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<ComponentName> _result5 = getEnabledComponentOverrides(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result5, 1);
-                            return true;
-                        case 6:
-                            List<ComponentName> _result6 = getDefaultVrComponents();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result6, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISystemConfig {
+        private static class Proxy implements ISystemConfig {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -279,11 +319,59 @@ public interface ISystemConfig extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.os.ISystemConfig
+            public List<String> getPreventUserDisablePackages() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISystemConfig.DESCRIPTOR);
+                    this.mRemote.transact(7, _data, _reply, 0);
+                    _reply.readException();
+                    List<String> _result = _reply.createStringArrayList();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.os.ISystemConfig
+            public List<SignedPackageParcel> getEnhancedConfirmationTrustedPackages() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISystemConfig.DESCRIPTOR);
+                    this.mRemote.transact(8, _data, _reply, 0);
+                    _reply.readException();
+                    List<SignedPackageParcel> _result = _reply.createTypedArrayList(SignedPackageParcel.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.os.ISystemConfig
+            public List<SignedPackageParcel> getEnhancedConfirmationTrustedInstallers() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISystemConfig.DESCRIPTOR);
+                    this.mRemote.transact(9, _data, _reply, 0);
+                    _reply.readException();
+                    List<SignedPackageParcel> _result = _reply.createTypedArrayList(SignedPackageParcel.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 5;
+            return 8;
         }
     }
 }

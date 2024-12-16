@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextAbnormalPressure extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextAbnormalPressure> CREATOR = new Parcelable.Creator<SemContextAbnormalPressure>() { // from class: com.samsung.android.hardware.context.SemContextAbnormalPressure.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAbnormalPressure createFromParcel(Parcel in) {
             return new SemContextAbnormalPressure(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAbnormalPressure[] newArray(int size) {
             return new SemContextAbnormalPressure[size];
@@ -22,24 +21,7 @@ public class SemContextAbnormalPressure extends SemContextEventContext {
     };
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextAbnormalPressure$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextAbnormalPressure> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAbnormalPressure createFromParcel(Parcel in) {
-            return new SemContextAbnormalPressure(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAbnormalPressure[] newArray(int size) {
-            return new SemContextAbnormalPressure[size];
-        }
-    }
-
-    public SemContextAbnormalPressure() {
+    SemContextAbnormalPressure() {
         this.mContext = new Bundle();
     }
 

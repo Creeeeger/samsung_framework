@@ -85,9 +85,8 @@ public class SemImageClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     public void toSave() {
-        Uri uri = this.mContentUri;
-        if (uri != null) {
-            this.mContentUriString = uri.toString();
+        if (this.mContentUri != null) {
+            this.mContentUriString = this.mContentUri.toString();
         }
     }
 
@@ -98,8 +97,7 @@ public class SemImageClipData extends SemClipData {
         } else {
             this.mContentUri = Uri.parse(this.mContentUriString);
         }
-        String str = this.mImagePath;
-        if (str != null && str.contains(CompatabilityHelper.OLD_CLIPBOARD_ROOT_PATH)) {
+        if (this.mImagePath != null && this.mImagePath.contains(CompatabilityHelper.OLD_CLIPBOARD_ROOT_PATH)) {
             setImagePath(CompatabilityHelper.replacePathForCompatability(this.mImagePath));
         }
         Log.secD(TAG, "imageclipdata toLoad called");
@@ -160,9 +158,8 @@ public class SemImageClipData extends SemClipData {
     }
 
     public ParcelFileDescriptor getExtraParcelFileDescriptor() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mExtraParcelFd;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor;
+        if (this.mExtraParcelFd != null) {
+            return this.mExtraParcelFd;
         }
         if (TextUtils.isEmpty(this.mExtraDataPath)) {
             return null;
@@ -181,8 +178,7 @@ public class SemImageClipData extends SemClipData {
     }
 
     public boolean hasExtraData() {
-        String str = this.mExtraDataPath;
-        return str != null && str.length() >= 1;
+        return this.mExtraDataPath != null && this.mExtraDataPath.length() >= 1;
     }
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
@@ -218,11 +214,10 @@ public class SemImageClipData extends SemClipData {
         parcel.writeInt(2);
         super.writeToParcel(parcel, i);
         parcel.writeString(this.mImagePath);
-        Uri uri = this.mContentUri;
-        if (uri == null) {
+        if (this.mContentUri == null) {
             parcel.writeString("");
         } else {
-            parcel.writeString(uri.toString());
+            parcel.writeString(this.mContentUri.toString());
         }
         parcel.writeString(this.mInitBaseValue);
         parcel.writeByte(this.mInitBaseValueCheck ? (byte) 1 : (byte) 0);
@@ -532,8 +527,7 @@ public class SemImageClipData extends SemClipData {
         ParcelFileDescriptor fd = super.getParcelFileDescriptor();
         if (fd != null && fd.getFileDescriptor().valid()) {
             result = true;
-            ParcelFileDescriptor parcelFileDescriptor = this.mExtraParcelFd;
-            if (parcelFileDescriptor != null && !parcelFileDescriptor.getFileDescriptor().valid()) {
+            if (this.mExtraParcelFd != null && !this.mExtraParcelFd.getFileDescriptor().valid()) {
                 this.mExtraParcelFd = null;
             }
         }
@@ -546,8 +540,7 @@ public class SemImageClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     public void convertForRemote() {
-        String str = this.mImagePath;
-        String imageName = str.substring(str.lastIndexOf("/"));
+        String imageName = this.mImagePath.substring(this.mImagePath.lastIndexOf("/"));
         if (setImagePath(ClipboardConstants.CLIPBOARD_REMOTE_PATH + imageName)) {
             Log.d(TAG, "success converting");
         }

@@ -13,7 +13,6 @@ public interface IDisplayChangeWindowCallback extends IInterface {
 
     void continueDisplayChange(WindowContainerTransaction windowContainerTransaction) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDisplayChangeWindowCallback {
         @Override // android.view.IDisplayChangeWindowCallback
         public void continueDisplayChange(WindowContainerTransaction t) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDisplayChangeWindowCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDisplayChangeWindowCallback {
         static final int TRANSACTION_continueDisplayChange = 1;
 
@@ -68,27 +66,23 @@ public interface IDisplayChangeWindowCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayChangeWindowCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayChangeWindowCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayChangeWindowCallback.DESCRIPTOR);
+                case 1:
+                    WindowContainerTransaction _arg0 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    continueDisplayChange(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            WindowContainerTransaction _arg0 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            continueDisplayChange(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDisplayChangeWindowCallback {
+        private static class Proxy implements IDisplayChangeWindowCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

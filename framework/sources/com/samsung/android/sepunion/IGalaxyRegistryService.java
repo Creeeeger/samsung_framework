@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IGalaxyRegistryService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IGalaxyRegistryService";
 
@@ -14,7 +14,6 @@ public interface IGalaxyRegistryService extends IInterface {
 
     void unRegisterListener(String str, IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGalaxyRegistryService {
         @Override // com.samsung.android.sepunion.IGalaxyRegistryService
         public void registerListener(String packageName, IBinder cb) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IGalaxyRegistryService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGalaxyRegistryService {
         static final int TRANSACTION_registerListener = 1;
         static final int TRANSACTION_unRegisterListener = 2;
@@ -76,33 +74,29 @@ public interface IGalaxyRegistryService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGalaxyRegistryService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGalaxyRegistryService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGalaxyRegistryService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    registerListener(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    IBinder _arg12 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unRegisterListener(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            registerListener(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            IBinder _arg12 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unRegisterListener(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IGalaxyRegistryService {
+        private static class Proxy implements IGalaxyRegistryService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

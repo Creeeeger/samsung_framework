@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemContextService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.hardware.context.ISemContextService";
 
@@ -29,7 +29,6 @@ public interface ISemContextService extends IInterface {
 
     boolean unregisterCallback(IBinder iBinder, int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemContextService {
         @Override // com.samsung.android.hardware.context.ISemContextService
         public void registerCallback(IBinder binder, int service, SemContextAttribute property, String packageName) throws RemoteException {
@@ -78,7 +77,6 @@ public interface ISemContextService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemContextService {
         static final int TRANSACTION_changeParameters = 4;
         static final int TRANSACTION_getAvailableServiceMap = 5;
@@ -145,88 +143,85 @@ public interface ISemContextService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemContextService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemContextService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemContextService.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    SemContextAttribute _arg2 = (SemContextAttribute) data.readTypedObject(SemContextAttribute.CREATOR);
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = unregisterCallback(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    initializeService(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    int _arg14 = data.readInt();
+                    SemContextAttribute _arg22 = (SemContextAttribute) data.readTypedObject(SemContextAttribute.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result2 = changeParameters(_arg04, _arg14, _arg22);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    Map _result3 = getAvailableServiceMap();
+                    reply.writeNoException();
+                    reply.writeMap(_result3);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    byte[] _arg23 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = setReferenceData(_arg05, _arg15, _arg23);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 7:
+                    IBinder _arg06 = data.readStrongBinder();
+                    int _arg16 = data.readInt();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestToUpdate(_arg06, _arg16, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IBinder _arg07 = data.readStrongBinder();
+                    int _arg17 = data.readInt();
+                    String _arg25 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestHistoryData(_arg07, _arg17, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _result5 = getCurrentServiceList();
+                    reply.writeNoException();
+                    reply.writeString(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            SemContextAttribute _arg2 = (SemContextAttribute) data.readTypedObject(SemContextAttribute.CREATOR);
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = unregisterCallback(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            initializeService(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            int _arg14 = data.readInt();
-                            SemContextAttribute _arg22 = (SemContextAttribute) data.readTypedObject(SemContextAttribute.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result2 = changeParameters(_arg04, _arg14, _arg22);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            Map _result3 = getAvailableServiceMap();
-                            reply.writeNoException();
-                            reply.writeMap(_result3);
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            byte[] _arg23 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = setReferenceData(_arg05, _arg15, _arg23);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 7:
-                            IBinder _arg06 = data.readStrongBinder();
-                            int _arg16 = data.readInt();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestToUpdate(_arg06, _arg16, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IBinder _arg07 = data.readStrongBinder();
-                            int _arg17 = data.readInt();
-                            String _arg25 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestHistoryData(_arg07, _arg17, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _result5 = getCurrentServiceList();
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemContextService {
+        private static class Proxy implements ISemContextService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

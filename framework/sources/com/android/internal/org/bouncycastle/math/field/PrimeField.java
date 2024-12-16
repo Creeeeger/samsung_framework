@@ -2,12 +2,11 @@ package com.android.internal.org.bouncycastle.math.field;
 
 import java.math.BigInteger;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class PrimeField implements FiniteField {
+class PrimeField implements FiniteField {
     protected final BigInteger characteristic;
 
-    public PrimeField(BigInteger characteristic) {
+    PrimeField(BigInteger characteristic) {
         this.characteristic = characteristic;
     }
 

@@ -183,7 +183,6 @@ public final class InputEventConsistencyVerifier {
     }
 
     public void onTouchEvent(MotionEvent event, int nestingLevel) {
-        int i;
         if (!startEvent(event, nestingLevel, EVENT_TYPE_TOUCH)) {
             return;
         }
@@ -201,7 +200,7 @@ public final class InputEventConsistencyVerifier {
             ensureMetaStateIsNormalized(event.getMetaState());
             int deviceId = event.getDeviceId();
             int source = event.getSource();
-            if (!newStream && (i = this.mTouchEventStreamDeviceId) != -1 && (i != deviceId || this.mTouchEventStreamSource != source)) {
+            if (!newStream && this.mTouchEventStreamDeviceId != -1 && (this.mTouchEventStreamDeviceId != deviceId || this.mTouchEventStreamSource != source)) {
                 problem("Touch event stream contains events from multiple sources: previous device id " + this.mTouchEventStreamDeviceId + ", previous source " + Integer.toHexString(this.mTouchEventStreamSource) + ", new device id " + deviceId + ", new source " + Integer.toHexString(source));
             }
             this.mTouchEventStreamDeviceId = deviceId;
@@ -254,12 +253,11 @@ public final class InputEventConsistencyVerifier {
                             if (actionIndex >= 0 && actionIndex < pointerCount) {
                                 int id = event.getPointerId(actionIndex);
                                 int idBit = 1 << id;
-                                int i2 = this.mTouchEventStreamPointers;
-                                if ((i2 & idBit) != 0) {
+                                if ((this.mTouchEventStreamPointers & idBit) != 0) {
                                     problem("ACTION_POINTER_DOWN specified pointer id " + id + " which is already down.");
                                     this.mTouchEventStreamIsTainted = true;
                                 } else {
-                                    this.mTouchEventStreamPointers = i2 | idBit;
+                                    this.mTouchEventStreamPointers |= idBit;
                                 }
                                 ensureHistorySizeIsZeroForThisAction(event);
                                 break;
@@ -271,12 +269,11 @@ public final class InputEventConsistencyVerifier {
                             if (actionIndex >= 0 && actionIndex < pointerCount) {
                                 int id2 = event.getPointerId(actionIndex);
                                 int idBit2 = 1 << id2;
-                                int i3 = this.mTouchEventStreamPointers;
-                                if ((i3 & idBit2) == 0) {
+                                if ((this.mTouchEventStreamPointers & idBit2) == 0) {
                                     problem("ACTION_POINTER_UP specified pointer id " + id2 + " which is not currently down.");
                                     this.mTouchEventStreamIsTainted = true;
                                 } else {
-                                    this.mTouchEventStreamPointers = (~idBit2) & i3;
+                                    this.mTouchEventStreamPointers &= ~idBit2;
                                 }
                                 ensureHistorySizeIsZeroForThisAction(event);
                                 break;
@@ -332,12 +329,11 @@ public final class InputEventConsistencyVerifier {
                         if ((this.mButtonsPressed & actionButton) != 0) {
                             problem("Action button for ACTION_BUTTON_PRESS event is " + actionButton + ", but it has already been pressed and has yet to be released.");
                         }
-                        int i = this.mButtonsPressed | actionButton;
-                        this.mButtonsPressed = i;
+                        this.mButtonsPressed |= actionButton;
                         if (actionButton == 32 && (buttonState & 2) != 0) {
-                            this.mButtonsPressed = i | 2;
+                            this.mButtonsPressed |= 2;
                         } else if (actionButton == 64 && (buttonState & 4) != 0) {
-                            this.mButtonsPressed = i | 4;
+                            this.mButtonsPressed |= 4;
                         }
                         if (this.mButtonsPressed != buttonState) {
                             problem(String.format("Reported button state differs from expected button state based on press and release events. Is 0x%08x but expected 0x%08x.", Integer.valueOf(buttonState), Integer.valueOf(this.mButtonsPressed)));
@@ -349,12 +345,11 @@ public final class InputEventConsistencyVerifier {
                         if ((this.mButtonsPressed & actionButton) != actionButton) {
                             problem("Action button for ACTION_BUTTON_RELEASE event is " + actionButton + ", but it was either never pressed or has already been released.");
                         }
-                        int i2 = this.mButtonsPressed & (~actionButton);
-                        this.mButtonsPressed = i2;
+                        this.mButtonsPressed &= ~actionButton;
                         if (actionButton == 32 && (buttonState & 2) == 0) {
-                            this.mButtonsPressed = i2 & (-3);
+                            this.mButtonsPressed &= -3;
                         } else if (actionButton == 64 && (buttonState & 4) == 0) {
-                            this.mButtonsPressed = i2 & (-5);
+                            this.mButtonsPressed &= -5;
                         }
                         if (this.mButtonsPressed != buttonState) {
                             problem(String.format("Reported button state differs from expected button state based on press and release events. Is 0x%08x but expected 0x%08x.", Integer.valueOf(buttonState), Integer.valueOf(this.mButtonsPressed)));
@@ -384,9 +379,8 @@ public final class InputEventConsistencyVerifier {
         if (nestingLevel != this.mLastNestingLevel) {
             return;
         }
-        boolean[] zArr = this.mRecentEventsUnhandled;
-        if (zArr != null) {
-            zArr[this.mMostRecentEventIndex] = true;
+        if (this.mRecentEventsUnhandled != null) {
+            this.mRecentEventsUnhandled[this.mMostRecentEventIndex] = true;
         }
         if (event instanceof KeyEvent) {
             KeyEvent keyEvent = (KeyEvent) event;
@@ -456,8 +450,7 @@ public final class InputEventConsistencyVerifier {
     }
 
     private void finishEvent() {
-        StringBuilder sb = this.mViolationMessage;
-        if (sb != null && sb.length() != 0) {
+        if (this.mViolationMessage != null && this.mViolationMessage.length() != 0) {
             if (!this.mCurrentEvent.isTainted()) {
                 this.mViolationMessage.append("\n  in ").append(this.mCaller);
                 this.mViolationMessage.append("\n  ");
@@ -485,9 +478,8 @@ public final class InputEventConsistencyVerifier {
         }
         int index2 = (this.mMostRecentEventIndex + 1) % 5;
         this.mMostRecentEventIndex = index2;
-        InputEvent inputEvent = this.mRecentEvents[index2];
-        if (inputEvent != null) {
-            inputEvent.recycle();
+        if (this.mRecentEvents[index2] != null) {
+            this.mRecentEvents[index2].recycle();
         }
         this.mRecentEvents[index2] = this.mCurrentEvent.copy();
         this.mRecentEventsUnhandled[index2] = false;
@@ -541,8 +533,7 @@ public final class InputEventConsistencyVerifier {
         this.mKeyStateList = state;
     }
 
-    /* loaded from: classes4.dex */
-    public static final class KeyState {
+    private static final class KeyState {
         private static KeyState mRecycledList;
         private static Object mRecycledListLock = new Object();
         public int deviceId;
@@ -573,9 +564,8 @@ public final class InputEventConsistencyVerifier {
 
         public void recycle() {
             synchronized (mRecycledListLock) {
-                KeyState keyState = mRecycledList;
-                this.next = keyState;
-                mRecycledList = keyState;
+                this.next = mRecycledList;
+                mRecycledList = this.next;
             }
         }
     }

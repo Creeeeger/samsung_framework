@@ -112,7 +112,6 @@ public final class AppBackgroundRestrictionsInfo {
     public static final int UNKNOWN = 0;
     public static final int UNKNOWN_TRACKER = 0;
 
-    /* loaded from: classes3.dex */
     public final class FgsTrackerInfo {
         public static final long FGS_DURATION = 1112396529666L;
         public static final long FGS_NOTIFICATION_VISIBLE = 1133871366145L;
@@ -121,7 +120,6 @@ public final class AppBackgroundRestrictionsInfo {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class BatteryTrackerInfo {
         public static final long BATTERY_24H = 1120986464257L;
         public static final long BATTERY_USAGE_BACKGROUND = 1120986464258L;
@@ -133,7 +131,6 @@ public final class AppBackgroundRestrictionsInfo {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class BroadcastEventsTrackerInfo {
         public static final long BROADCASTS_SENT = 1120986464257L;
 
@@ -141,7 +138,6 @@ public final class AppBackgroundRestrictionsInfo {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class BindServiceEventsTrackerInfo {
         public static final long BIND_SERVICE_REQUESTS = 1120986464257L;
 

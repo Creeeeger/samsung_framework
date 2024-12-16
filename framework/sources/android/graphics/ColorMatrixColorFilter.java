@@ -2,23 +2,21 @@ package android.graphics;
 
 /* loaded from: classes.dex */
 public class ColorMatrixColorFilter extends ColorFilter {
-    private final ColorMatrix mMatrix;
+    private final ColorMatrix mMatrix = new ColorMatrix();
 
     private static native long nativeColorMatrixFilter(float[] fArr);
 
+    private static native void nativeSetColorMatrix(long j, float[] fArr);
+
     public ColorMatrixColorFilter(ColorMatrix matrix) {
-        ColorMatrix colorMatrix = new ColorMatrix();
-        this.mMatrix = colorMatrix;
-        colorMatrix.set(matrix);
+        this.mMatrix.set(matrix);
     }
 
     public ColorMatrixColorFilter(float[] array) {
-        ColorMatrix colorMatrix = new ColorMatrix();
-        this.mMatrix = colorMatrix;
         if (array.length < 20) {
             throw new ArrayIndexOutOfBoundsException();
         }
-        colorMatrix.set(array);
+        this.mMatrix.set(array);
     }
 
     public void getColorMatrix(ColorMatrix colorMatrix) {
@@ -26,16 +24,15 @@ public class ColorMatrixColorFilter extends ColorFilter {
     }
 
     public void setColorMatrix(ColorMatrix matrix) {
-        discardNativeInstance();
         if (matrix == null) {
             this.mMatrix.reset();
         } else {
             this.mMatrix.set(matrix);
         }
+        nativeSetColorMatrix(getNativeInstance(), this.mMatrix.getArray());
     }
 
     public void setColorMatrixArray(float[] array) {
-        discardNativeInstance();
         if (array == null) {
             this.mMatrix.reset();
         } else {
@@ -44,6 +41,7 @@ public class ColorMatrixColorFilter extends ColorFilter {
             }
             this.mMatrix.set(array);
         }
+        nativeSetColorMatrix(getNativeInstance(), this.mMatrix.getArray());
     }
 
     @Override // android.graphics.ColorFilter

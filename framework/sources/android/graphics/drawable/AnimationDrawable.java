@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.DrawableContainer;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import com.android.ims.ImsConfig;
 import com.android.internal.R;
 import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
@@ -17,10 +18,6 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
     private int mCurFrame;
     private boolean mMutated;
     private boolean mRunning;
-
-    /* synthetic */ AnimationDrawable(AnimationState animationState, Resources resources, AnimationDrawableIA animationDrawableIA) {
-        this(animationState, resources);
-    }
 
     public AnimationDrawable() {
         this(null, null);
@@ -142,132 +139,48 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         setFrame(0, true, false);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0040, code lost:
-    
-        if (r7 == null) goto L71;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0042, code lost:
-    
-        r8 = r12.next();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0048, code lost:
-    
-        if (r8 != 4) goto L99;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x004b, code lost:
-    
-        if (r8 != 2) goto L90;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x004d, code lost:
-    
-        r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x006e, code lost:
-    
-        throw new org.xmlpull.v1.XmlPullParserException(r12.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x006f, code lost:
-    
-        r10.mAnimationState.addFrame(r7, r6);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x0074, code lost:
-    
-        if (r7 == null) goto L97;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0076, code lost:
-    
-        r7.setCallback(r10);
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void inflateChildElements(android.content.res.Resources r11, org.xmlpull.v1.XmlPullParser r12, android.util.AttributeSet r13, android.content.res.Resources.Theme r14) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
-        /*
-            r10 = this;
-            int r0 = r12.getDepth()
-            r1 = 1
-            int r0 = r0 + r1
-        L6:
-            int r2 = r12.next()
-            r3 = r2
-            if (r2 == r1) goto L97
-            int r2 = r12.getDepth()
-            r4 = r2
-            if (r2 >= r0) goto L17
-            r2 = 3
-            if (r3 == r2) goto L97
-        L17:
-            r2 = 2
-            if (r3 == r2) goto L1b
-            goto L6
-        L1b:
-            if (r4 > r0) goto L6
-            java.lang.String r5 = r12.getName()
-            java.lang.String r6 = "item"
-            boolean r5 = r5.equals(r6)
-            if (r5 != 0) goto L2b
-            goto L6
-        L2b:
-            int[] r5 = com.android.internal.R.styleable.AnimationDrawableItem
-            android.content.res.TypedArray r5 = obtainAttributes(r11, r14, r13, r5)
-            r6 = 0
-            r7 = -1
-            int r6 = r5.getInt(r6, r7)
-            if (r6 < 0) goto L7a
-            android.graphics.drawable.Drawable r7 = r5.getDrawable(r1)
-            r5.recycle()
-            if (r7 != 0) goto L6f
-        L42:
-            int r8 = r12.next()
-            r3 = r8
-            r9 = 4
-            if (r8 != r9) goto L4b
-            goto L42
-        L4b:
-            if (r3 != r2) goto L52
-            android.graphics.drawable.Drawable r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14)
-            goto L6f
-        L52:
-            org.xmlpull.v1.XmlPullParserException r1 = new org.xmlpull.v1.XmlPullParserException
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder
-            r2.<init>()
-            java.lang.String r8 = r12.getPositionDescription()
-            java.lang.StringBuilder r2 = r2.append(r8)
-            java.lang.String r8 = ": <item> tag requires a 'drawable' attribute or child tag defining a drawable"
-            java.lang.StringBuilder r2 = r2.append(r8)
-            java.lang.String r2 = r2.toString()
-            r1.<init>(r2)
-            throw r1
-        L6f:
-            android.graphics.drawable.AnimationDrawable$AnimationState r2 = r10.mAnimationState
-            r2.addFrame(r7, r6)
-            if (r7 == 0) goto L79
-            r7.setCallback(r10)
-        L79:
-            goto L6
-        L7a:
-            org.xmlpull.v1.XmlPullParserException r1 = new org.xmlpull.v1.XmlPullParserException
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder
-            r2.<init>()
-            java.lang.String r7 = r12.getPositionDescription()
-            java.lang.StringBuilder r2 = r2.append(r7)
-            java.lang.String r7 = ": <item> tag requires a 'duration' attribute"
-            java.lang.StringBuilder r2 = r2.append(r7)
-            java.lang.String r2 = r2.toString()
-            r1.<init>(r2)
-            throw r1
-        L97:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.graphics.drawable.AnimationDrawable.inflateChildElements(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):void");
+    private void inflateChildElements(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
+        int type;
+        int innerDepth = parser.getDepth() + 1;
+        while (true) {
+            int type2 = parser.next();
+            if (type2 != 1) {
+                int depth = parser.getDepth();
+                if (depth >= innerDepth || type2 != 3) {
+                    if (type2 == 2 && depth <= innerDepth && parser.getName().equals(ImsConfig.EXTRA_CHANGED_ITEM)) {
+                        TypedArray a = obtainAttributes(r, theme, attrs, R.styleable.AnimationDrawableItem);
+                        int duration = a.getInt(0, -1);
+                        if (duration < 0) {
+                            throw new XmlPullParserException(parser.getPositionDescription() + ": <item> tag requires a 'duration' attribute");
+                        }
+                        Drawable dr = a.getDrawable(1);
+                        a.recycle();
+                        if (dr == null) {
+                            do {
+                                type = parser.next();
+                            } while (type == 4);
+                            if (type != 2) {
+                                throw new XmlPullParserException(parser.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+                            }
+                            dr = Drawable.createFromXmlInner(r, parser, attrs, theme);
+                        }
+                        this.mAnimationState.addFrame(dr, duration);
+                        if (dr != null) {
+                            dr.setCallback(this);
+                        }
+                    }
+                } else {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
     }
 
     private void updateStateFromTypedArray(TypedArray a) {
-        AnimationState animationState = this.mAnimationState;
-        animationState.mVariablePadding = a.getBoolean(1, animationState.mVariablePadding);
-        AnimationState animationState2 = this.mAnimationState;
-        animationState2.mOneShot = a.getBoolean(2, animationState2.mOneShot);
+        this.mAnimationState.mVariablePadding = a.getBoolean(1, this.mAnimationState.mVariablePadding);
+        this.mAnimationState.mOneShot = a.getBoolean(2, this.mAnimationState.mOneShot);
     }
 
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
@@ -279,6 +192,7 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.DrawableContainer
     public AnimationState cloneConstantState() {
         return new AnimationState(this.mAnimationState, this, null);
@@ -290,8 +204,7 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         this.mMutated = false;
     }
 
-    /* loaded from: classes.dex */
-    public static final class AnimationState extends DrawableContainer.DrawableContainerState {
+    private static final class AnimationState extends DrawableContainer.DrawableContainerState {
         private int[] mDurations;
         private boolean mOneShot;
 
@@ -307,6 +220,7 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void mutate() {
             this.mDurations = (int[]) this.mDurations.clone();
         }
@@ -335,10 +249,9 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         }
 
         public long getTotalDuration() {
-            int[] iArr = this.mDurations;
-            if (iArr != null) {
+            if (this.mDurations != null) {
                 int total = 0;
-                for (int dur : iArr) {
+                for (int dur : this.mDurations) {
                     total += dur;
                 }
                 return total;
@@ -347,9 +260,8 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer
-    public void setConstantState(DrawableContainer.DrawableContainerState state) {
+    protected void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
         if (state instanceof AnimationState) {
             this.mAnimationState = (AnimationState) state;

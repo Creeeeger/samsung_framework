@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IPassChecker extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.pass.IPassChecker";
 
     String hasPermission(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IPassChecker {
         @Override // com.samsung.android.pass.IPassChecker
         public String hasPermission(String pkgName) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IPassChecker extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IPassChecker {
         static final int TRANSACTION_hasPermission = 1;
 
@@ -68,26 +66,23 @@ public interface IPassChecker extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPassChecker.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPassChecker.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPassChecker.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result = hasPermission(_arg0);
+                    reply.writeNoException();
+                    reply.writeString(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result = hasPermission(_arg0);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IPassChecker {
             private IBinder mRemote;
 

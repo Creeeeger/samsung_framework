@@ -6,7 +6,6 @@ import android.annotation.SystemApi;
 /* loaded from: classes3.dex */
 public class ArtModuleServiceManager {
 
-    /* loaded from: classes3.dex */
     public static final class ServiceRegisterer {
         private final String mServiceName;
 
@@ -21,5 +20,13 @@ public class ArtModuleServiceManager {
 
     public ServiceRegisterer getArtdServiceRegisterer() {
         return new ServiceRegisterer("artd");
+    }
+
+    public ServiceRegisterer getArtdPreRebootServiceRegisterer() {
+        return new ServiceRegisterer("artd_pre_reboot");
+    }
+
+    public ServiceRegisterer getDexoptChrootSetupServiceRegisterer() {
+        return new ServiceRegisterer("dexopt_chroot_setup");
     }
 }

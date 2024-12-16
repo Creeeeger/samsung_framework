@@ -12,7 +12,6 @@ public interface ISemFingerprintRequestCallback extends IInterface {
 
     void onResult(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemFingerprintRequestCallback {
         @Override // com.samsung.android.bio.fingerprint.ISemFingerprintRequestCallback
         public void onResult(int code) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISemFingerprintRequestCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemFingerprintRequestCallback {
         static final int TRANSACTION_onResult = 1;
 
@@ -67,26 +65,22 @@ public interface ISemFingerprintRequestCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemFingerprintRequestCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemFingerprintRequestCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemFingerprintRequestCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onResult(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onResult(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemFingerprintRequestCallback {
+        private static class Proxy implements ISemFingerprintRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

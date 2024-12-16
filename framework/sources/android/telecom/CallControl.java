@@ -10,7 +10,6 @@ import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.telecom.CallControl;
 import android.text.TextUtils;
-import com.android.internal.telecom.ClientTransactionalServiceRepository;
 import com.android.internal.telecom.ICallControl;
 import com.android.internal.telephony.SemRILConstants;
 import java.util.Objects;
@@ -18,18 +17,13 @@ import java.util.concurrent.Executor;
 
 /* loaded from: classes3.dex */
 public final class CallControl {
-    private static final String INTERFACE_ERROR_MSG = "Call Control is not available";
     private static final String TAG = CallControl.class.getSimpleName();
     private final String mCallId;
-    private final PhoneAccountHandle mPhoneAccountHandle;
-    private final ClientTransactionalServiceRepository mRepository;
     private final ICallControl mServerInterface;
 
-    public CallControl(String callId, ICallControl serverInterface, ClientTransactionalServiceRepository repository, PhoneAccountHandle pah) {
+    public CallControl(String callId, ICallControl serverInterface) {
         this.mCallId = callId;
         this.mServerInterface = serverInterface;
-        this.mRepository = repository;
-        this.mPhoneAccountHandle = pah;
     }
 
     public ParcelUuid getCallId() {
@@ -37,45 +31,34 @@ public final class CallControl {
     }
 
     public void setActive(Executor executor, OutcomeReceiver<Void, CallException> callback) {
-        ICallControl iCallControl = this.mServerInterface;
-        if (iCallControl != null) {
-            try {
-                iCallControl.setActive(this.mCallId, new CallControlResultReceiver("setActive", executor, callback));
-                return;
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            this.mServerInterface.setActive(this.mCallId, new CallControlResultReceiver("setActive", executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
-        throw new IllegalStateException(INTERFACE_ERROR_MSG);
     }
 
     public void answer(int videoState, Executor executor, OutcomeReceiver<Void, CallException> callback) {
         validateVideoState(videoState);
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
-        ICallControl iCallControl = this.mServerInterface;
-        if (iCallControl != null) {
-            try {
-                iCallControl.answer(videoState, this.mCallId, new CallControlResultReceiver(SemRILConstants.CmcCall.CMC_CALL_SD_ANSWER, executor, callback));
-                return;
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
+        try {
+            this.mServerInterface.answer(videoState, this.mCallId, new CallControlResultReceiver(SemRILConstants.CmcCall.CMC_CALL_SD_ANSWER, executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
-        throw new IllegalStateException(INTERFACE_ERROR_MSG);
     }
 
     public void setInactive(Executor executor, OutcomeReceiver<Void, CallException> callback) {
-        ICallControl iCallControl = this.mServerInterface;
-        if (iCallControl != null) {
-            try {
-                iCallControl.setInactive(this.mCallId, new CallControlResultReceiver("setInactive", executor, callback));
-                return;
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            this.mServerInterface.setInactive(this.mCallId, new CallControlResultReceiver("setInactive", executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
-        throw new IllegalStateException(INTERFACE_ERROR_MSG);
     }
 
     public void disconnect(DisconnectCause disconnectCause, Executor executor, OutcomeReceiver<Void, CallException> callback) {
@@ -83,64 +66,67 @@ public final class CallControl {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         validateDisconnectCause(disconnectCause);
-        ICallControl iCallControl = this.mServerInterface;
-        if (iCallControl != null) {
-            try {
-                iCallControl.disconnect(this.mCallId, disconnectCause, new CallControlResultReceiver(MediaMetrics.Value.DISCONNECT, executor, callback));
-                return;
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
+        try {
+            this.mServerInterface.disconnect(this.mCallId, disconnectCause, new CallControlResultReceiver(MediaMetrics.Value.DISCONNECT, executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
-        throw new IllegalStateException(INTERFACE_ERROR_MSG);
     }
 
     public void startCallStreaming(Executor executor, OutcomeReceiver<Void, CallException> callback) {
-        ICallControl iCallControl = this.mServerInterface;
-        if (iCallControl != null) {
-            try {
-                iCallControl.startCallStreaming(this.mCallId, new CallControlResultReceiver("startCallStreaming", executor, callback));
-                return;
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            this.mServerInterface.startCallStreaming(this.mCallId, new CallControlResultReceiver("startCallStreaming", executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
-        throw new IllegalStateException(INTERFACE_ERROR_MSG);
     }
 
     public void requestCallEndpointChange(CallEndpoint callEndpoint, Executor executor, OutcomeReceiver<Void, CallException> callback) {
         Objects.requireNonNull(callEndpoint);
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
-        ICallControl iCallControl = this.mServerInterface;
-        if (iCallControl != null) {
-            try {
-                iCallControl.requestCallEndpointChange(callEndpoint, new CallControlResultReceiver("endpointChange", executor, callback));
-                return;
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
+        try {
+            this.mServerInterface.requestCallEndpointChange(callEndpoint, new CallControlResultReceiver("requestCallEndpointChange", executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
-        throw new IllegalStateException(INTERFACE_ERROR_MSG);
+    }
+
+    public void requestMuteState(boolean isMuted, Executor executor, OutcomeReceiver<Void, CallException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            this.mServerInterface.setMuteState(isMuted, new CallControlResultReceiver("requestMuteState", executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        }
+    }
+
+    public void requestVideoState(int videoState, Executor executor, OutcomeReceiver<Void, CallException> callback) {
+        validateVideoState(videoState);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            this.mServerInterface.requestVideoState(videoState, this.mCallId, new CallControlResultReceiver("requestVideoState", executor, callback));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        }
     }
 
     public void sendEvent(String event, Bundle extras) {
         Objects.requireNonNull(event);
         Objects.requireNonNull(extras);
-        ICallControl iCallControl = this.mServerInterface;
-        if (iCallControl != null) {
-            try {
-                iCallControl.sendEvent(this.mCallId, event, extras);
-                return;
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
+        try {
+            this.mServerInterface.sendEvent(this.mCallId, event, extras);
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
         }
-        throw new IllegalStateException(INTERFACE_ERROR_MSG);
     }
 
-    /* loaded from: classes3.dex */
-    public class CallControlResultReceiver extends ResultReceiver {
+    /* JADX INFO: Access modifiers changed from: private */
+    class CallControlResultReceiver extends ResultReceiver {
         private final String mCallingMethod;
         private final OutcomeReceiver<Void, CallException> mClientCallback;
         private final Executor mExecutor;
@@ -153,7 +139,7 @@ public final class CallControl {
         }
 
         @Override // android.os.ResultReceiver
-        public void onReceiveResult(int resultCode, final Bundle resultData) {
+        protected void onReceiveResult(int resultCode, final Bundle resultData) {
             Log.d(CallControl.TAG, "%s: oRR: resultCode=[%s]", this.mCallingMethod, Integer.valueOf(resultCode));
             super.onReceiveResult(resultCode, resultData);
             long identity = Binder.clearCallingIdentity();
@@ -178,15 +164,18 @@ public final class CallControl {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReceiveResult$0() {
             this.mClientCallback.onResult(null);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReceiveResult$1(Bundle resultData) {
             this.mClientCallback.onError(CallControl.this.getTransactionException(resultData));
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public CallException getTransactionException(Bundle resultData) {
         if (resultData != null && resultData.containsKey(CallException.TRANSACTION_EXCEPTION_KEY)) {
             return (CallException) resultData.getParcelable(CallException.TRANSACTION_EXCEPTION_KEY, CallException.class);

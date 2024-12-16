@@ -57,9 +57,9 @@ public final class ImsiEncryptionInfo {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.mcc = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.mcc.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.mnc = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.mnc.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         int _hidl_vec_size = _hidl_blob.getInt32(_hidl_offset + 32 + 8);
         HwBlob childBlob = parcel.readEmbeddedBuffer(_hidl_vec_size * 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, true);
         this.carrierKey.clear();
@@ -68,7 +68,7 @@ public final class ImsiEncryptionInfo {
             this.carrierKey.add(Byte.valueOf(_hidl_vec_element));
         }
         this.keyIdentifier = _hidl_blob.getString(_hidl_offset + 48);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
+        parcel.readEmbeddedBuffer(this.keyIdentifier.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
         this.expirationTime = _hidl_blob.getInt64(_hidl_offset + 64);
     }
 

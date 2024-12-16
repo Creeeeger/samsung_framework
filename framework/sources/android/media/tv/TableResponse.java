@@ -5,18 +5,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SharedMemory;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TableResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<TableResponse> CREATOR = new Parcelable.Creator<TableResponse>() { // from class: android.media.tv.TableResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TableResponse createFromParcel(Parcel source) {
             source.readInt();
             return TableResponse.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TableResponse[] newArray(int size) {
             return new TableResponse[size];
@@ -29,29 +28,7 @@ public final class TableResponse extends BroadcastInfoResponse implements Parcel
     private final Uri mTableUri;
     private final int mVersion;
 
-    /* synthetic */ TableResponse(int i, int i2, int i3, int i4, int i5, Uri uri, byte[] bArr, SharedMemory sharedMemory, TableResponseIA tableResponseIA) {
-        this(i, i2, i3, i4, i5, uri, bArr, sharedMemory);
-    }
-
-    /* renamed from: android.media.tv.TableResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TableResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TableResponse createFromParcel(Parcel source) {
-            source.readInt();
-            return TableResponse.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TableResponse[] newArray(int size) {
-            return new TableResponse[size];
-        }
-    }
-
-    public static TableResponse createFromParcelBody(Parcel in) {
+    static TableResponse createFromParcelBody(Parcel in) {
         return new TableResponse(in);
     }
 
@@ -74,7 +51,6 @@ public final class TableResponse extends BroadcastInfoResponse implements Parcel
         this.mTableSharedMemory = tableSharedMemory;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private final int mRequestId;
         private final int mResponseResult;
@@ -127,9 +103,8 @@ public final class TableResponse extends BroadcastInfoResponse implements Parcel
         this.mSize = source.readInt();
         int arrayLength = source.readInt();
         if (arrayLength >= 0) {
-            byte[] bArr = new byte[arrayLength];
-            this.mTableByteArray = bArr;
-            source.readByteArray(bArr);
+            this.mTableByteArray = new byte[arrayLength];
+            source.readByteArray(this.mTableByteArray);
         } else {
             this.mTableByteArray = null;
         }
@@ -164,14 +139,12 @@ public final class TableResponse extends BroadcastInfoResponse implements Parcel
     @Override // android.media.tv.BroadcastInfoResponse, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        Uri uri = this.mTableUri;
-        String uriString = uri == null ? null : uri.toString();
+        String uriString = this.mTableUri == null ? null : this.mTableUri.toString();
         dest.writeString(uriString);
         dest.writeInt(this.mVersion);
         dest.writeInt(this.mSize);
-        byte[] bArr = this.mTableByteArray;
-        if (bArr != null) {
-            dest.writeInt(bArr.length);
+        if (this.mTableByteArray != null) {
+            dest.writeInt(this.mTableByteArray.length);
             dest.writeByteArray(this.mTableByteArray);
         } else {
             dest.writeInt(-1);

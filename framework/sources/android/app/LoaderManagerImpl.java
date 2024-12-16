@@ -12,7 +12,7 @@ import java.lang.reflect.Modifier;
 
 /* compiled from: LoaderManager.java */
 /* loaded from: classes.dex */
-public class LoaderManagerImpl extends LoaderManager {
+class LoaderManagerImpl extends LoaderManager {
     static boolean DEBUG = false;
     static final String TAG = "LoaderManager";
     boolean mCreatingLoader;
@@ -25,8 +25,7 @@ public class LoaderManagerImpl extends LoaderManager {
     final SparseArray<LoaderInfo> mInactiveLoaders = new SparseArray<>(0);
 
     /* compiled from: LoaderManager.java */
-    /* loaded from: classes.dex */
-    public final class LoaderInfo implements Loader.OnLoadCompleteListener<Object>, Loader.OnLoadCanceledListener<Object> {
+    final class LoaderInfo implements Loader.OnLoadCompleteListener<Object>, Loader.OnLoadCanceledListener<Object> {
         final Bundle mArgs;
         LoaderManager.LoaderCallbacks<Object> mCallbacks;
         Object mData;
@@ -49,7 +48,6 @@ public class LoaderManagerImpl extends LoaderManager {
         }
 
         void start() {
-            LoaderManager.LoaderCallbacks<Object> loaderCallbacks;
             if (this.mRetaining && this.mRetainingStarted) {
                 this.mStarted = true;
                 return;
@@ -61,12 +59,11 @@ public class LoaderManagerImpl extends LoaderManager {
             if (LoaderManagerImpl.DEBUG) {
                 Log.v(LoaderManagerImpl.TAG, "  Starting: " + this);
             }
-            if (this.mLoader == null && (loaderCallbacks = this.mCallbacks) != null) {
-                this.mLoader = loaderCallbacks.onCreateLoader(this.mId, this.mArgs);
+            if (this.mLoader == null && this.mCallbacks != null) {
+                this.mLoader = this.mCallbacks.onCreateLoader(this.mId, this.mArgs);
             }
-            Loader<Object> loader = this.mLoader;
-            if (loader != null) {
-                if (loader.getClass().isMemberClass() && !Modifier.isStatic(this.mLoader.getClass().getModifiers())) {
+            if (this.mLoader != null) {
+                if (this.mLoader.getClass().isMemberClass() && !Modifier.isStatic(this.mLoader.getClass().getModifiers())) {
                     throw new IllegalArgumentException("Object returned from onCreateLoader must not be a non-static inner member class: " + this.mLoader);
                 }
                 if (!this.mListenerRegistered) {
@@ -94,8 +91,7 @@ public class LoaderManagerImpl extends LoaderManager {
                     Log.v(LoaderManagerImpl.TAG, "  Finished Retaining: " + this);
                 }
                 this.mRetaining = false;
-                boolean z = this.mStarted;
-                if (z != this.mRetainingStarted && !z) {
+                if (this.mStarted != this.mRetainingStarted && !this.mStarted) {
                     stop();
                 }
             }
@@ -114,26 +110,24 @@ public class LoaderManagerImpl extends LoaderManager {
         }
 
         void stop() {
-            Loader<Object> loader;
             if (LoaderManagerImpl.DEBUG) {
                 Log.v(LoaderManagerImpl.TAG, "  Stopping: " + this);
             }
             this.mStarted = false;
-            if (!this.mRetaining && (loader = this.mLoader) != null && this.mListenerRegistered) {
+            if (!this.mRetaining && this.mLoader != null && this.mListenerRegistered) {
                 this.mListenerRegistered = false;
-                loader.unregisterListener(this);
+                this.mLoader.unregisterListener(this);
                 this.mLoader.unregisterOnLoadCanceledListener(this);
                 this.mLoader.stopLoading();
             }
         }
 
         boolean cancel() {
-            Loader<Object> loader;
             if (LoaderManagerImpl.DEBUG) {
                 Log.v(LoaderManagerImpl.TAG, "  Canceling: " + this);
             }
-            if (this.mStarted && (loader = this.mLoader) != null && this.mListenerRegistered) {
-                boolean cancelLoadResult = loader.cancelLoad();
+            if (this.mStarted && this.mLoader != null && this.mListenerRegistered) {
+                boolean cancelLoadResult = this.mLoader.cancelLoad();
                 if (!cancelLoadResult) {
                     onLoadCanceled(this.mLoader);
                 }
@@ -169,18 +163,16 @@ public class LoaderManagerImpl extends LoaderManager {
             this.mCallbacks = null;
             this.mData = null;
             this.mHaveData = false;
-            Loader<Object> loader = this.mLoader;
-            if (loader != null) {
+            if (this.mLoader != null) {
                 if (this.mListenerRegistered) {
                     this.mListenerRegistered = false;
-                    loader.unregisterListener(this);
+                    this.mLoader.unregisterListener(this);
                     this.mLoader.unregisterOnLoadCanceledListener(this);
                 }
                 this.mLoader.reset();
             }
-            LoaderInfo loaderInfo = this.mPendingLoader;
-            if (loaderInfo != null) {
-                loaderInfo.destroy();
+            if (this.mPendingLoader != null) {
+                this.mPendingLoader.destroy();
             }
         }
 
@@ -307,9 +299,8 @@ public class LoaderManagerImpl extends LoaderManager {
             writer.print(prefix);
             writer.print("mLoader=");
             writer.println(this.mLoader);
-            Loader<Object> loader = this.mLoader;
-            if (loader != null) {
-                loader.dump(prefix + "  ", fd, writer, args);
+            if (this.mLoader != null) {
+                this.mLoader.dump(prefix + "  ", fd, writer, args);
             }
             if (this.mHaveData || this.mDeliveredData) {
                 writer.print(prefix);
@@ -345,13 +336,13 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    public LoaderManagerImpl(String who, FragmentHostCallback host, boolean started) {
+    LoaderManagerImpl(String who, FragmentHostCallback host, boolean started) {
         this.mWho = who;
         this.mHost = host;
         this.mStarted = started;
     }
 
-    public void updateHostController(FragmentHostCallback host) {
+    void updateHostController(FragmentHostCallback host) {
         this.mHost = host;
     }
 
@@ -505,7 +496,7 @@ public class LoaderManagerImpl extends LoaderManager {
         return null;
     }
 
-    public void doStart() {
+    void doStart() {
         if (DEBUG) {
             Log.v(TAG, "Starting in " + this);
         }
@@ -521,7 +512,7 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    public void doStop() {
+    void doStop() {
         if (DEBUG) {
             Log.v(TAG, "Stopping in " + this);
         }
@@ -537,7 +528,7 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    public void doRetain() {
+    void doRetain() {
         if (DEBUG) {
             Log.v(TAG, "Retaining in " + this);
         }
@@ -554,7 +545,7 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    public void finishRetain() {
+    void finishRetain() {
         if (this.mRetaining) {
             if (DEBUG) {
                 Log.v(TAG, "Finished Retaining in " + this);
@@ -566,19 +557,19 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    public void doReportNextStart() {
+    void doReportNextStart() {
         for (int i = this.mLoaders.size() - 1; i >= 0; i--) {
             this.mLoaders.valueAt(i).mReportNextStart = true;
         }
     }
 
-    public void doReportStart() {
+    void doReportStart() {
         for (int i = this.mLoaders.size() - 1; i >= 0; i--) {
             this.mLoaders.valueAt(i).reportStart();
         }
     }
 
-    public void doDestroy() {
+    void doDestroy() {
         if (!this.mRetaining) {
             if (DEBUG) {
                 Log.v(TAG, "Destroying Active in " + this);

@@ -15,8 +15,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class EmergencyNumber implements Parcelable, Comparable<EmergencyNumber> {
     public static final Parcelable.Creator<EmergencyNumber> CREATOR;
     public static final int EMERGENCY_CALL_ROUTING_EMERGENCY = 1;
@@ -39,7 +40,7 @@ public final class EmergencyNumber implements Parcelable, Comparable<EmergencyNu
     public static final int EMERGENCY_SERVICE_CATEGORY_MIEC = 32;
     public static final int EMERGENCY_SERVICE_CATEGORY_MOUNTAIN_RESCUE = 16;
     public static final int EMERGENCY_SERVICE_CATEGORY_POLICE = 1;
-    private static final Set<Integer> EMERGENCY_SERVICE_CATEGORY_SET;
+    private static final Set<Integer> EMERGENCY_SERVICE_CATEGORY_SET = new HashSet();
     public static final int EMERGENCY_SERVICE_CATEGORY_UNSPECIFIED = 0;
     private static final String LOG_TAG = "EmergencyNumber";
     private final String mCountryIso;
@@ -51,48 +52,46 @@ public final class EmergencyNumber implements Parcelable, Comparable<EmergencyNu
     private final String mNumber;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EmergencyCallRouting {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EmergencyNumberSources {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EmergencyServiceCategories {
     }
 
     static {
-        HashSet hashSet = new HashSet();
-        EMERGENCY_SERVICE_CATEGORY_SET = hashSet;
-        hashSet.add(1);
-        hashSet.add(2);
-        hashSet.add(4);
-        hashSet.add(8);
-        hashSet.add(16);
-        hashSet.add(32);
-        hashSet.add(64);
-        HashSet hashSet2 = new HashSet();
-        EMERGENCY_NUMBER_SOURCE_SET = hashSet2;
-        hashSet2.add(1);
-        hashSet2.add(2);
-        hashSet2.add(16);
-        hashSet2.add(4);
-        hashSet2.add(8);
-        EMERGENCY_NUMBER_SOURCE_PRECEDENCE = r0;
-        int[] iArr = {256, 1, 2, 128, 16, 4};
+        EMERGENCY_SERVICE_CATEGORY_SET.add(1);
+        EMERGENCY_SERVICE_CATEGORY_SET.add(2);
+        EMERGENCY_SERVICE_CATEGORY_SET.add(4);
+        EMERGENCY_SERVICE_CATEGORY_SET.add(8);
+        EMERGENCY_SERVICE_CATEGORY_SET.add(16);
+        EMERGENCY_SERVICE_CATEGORY_SET.add(32);
+        EMERGENCY_SERVICE_CATEGORY_SET.add(64);
+        EMERGENCY_NUMBER_SOURCE_SET = new HashSet();
+        EMERGENCY_NUMBER_SOURCE_SET.add(1);
+        EMERGENCY_NUMBER_SOURCE_SET.add(2);
+        EMERGENCY_NUMBER_SOURCE_SET.add(16);
+        EMERGENCY_NUMBER_SOURCE_SET.add(4);
+        EMERGENCY_NUMBER_SOURCE_SET.add(8);
+        EMERGENCY_NUMBER_SOURCE_PRECEDENCE = new int[6];
+        EMERGENCY_NUMBER_SOURCE_PRECEDENCE[0] = 256;
+        EMERGENCY_NUMBER_SOURCE_PRECEDENCE[1] = 1;
+        EMERGENCY_NUMBER_SOURCE_PRECEDENCE[2] = 2;
+        EMERGENCY_NUMBER_SOURCE_PRECEDENCE[3] = 128;
+        EMERGENCY_NUMBER_SOURCE_PRECEDENCE[4] = 16;
+        EMERGENCY_NUMBER_SOURCE_PRECEDENCE[5] = 4;
         CREATOR = new Parcelable.Creator<EmergencyNumber>() { // from class: android.telephony.emergency.EmergencyNumber.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EmergencyNumber createFromParcel(Parcel in) {
                 return new EmergencyNumber(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EmergencyNumber[] newArray(int size) {
                 return new EmergencyNumber[size];
@@ -129,23 +128,6 @@ public final class EmergencyNumber implements Parcelable, Comparable<EmergencyNu
         dest.writeStringList(this.mEmergencyUrns);
         dest.writeInt(this.mEmergencyNumberSourceBitmask);
         dest.writeInt(this.mEmergencyCallRouting);
-    }
-
-    /* renamed from: android.telephony.emergency.EmergencyNumber$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EmergencyNumber> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EmergencyNumber createFromParcel(Parcel in) {
-            return new EmergencyNumber(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EmergencyNumber[] newArray(int size) {
-            return new EmergencyNumber[size];
-        }
     }
 
     public String getNumber() {
@@ -228,24 +210,85 @@ public final class EmergencyNumber implements Parcelable, Comparable<EmergencyNu
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(NavigationBarInflaterView.KEY_CODE_START).append(this.mNumber);
-        sb.append("|Category:").append(Integer.toBinaryString(this.mEmergencyServiceCategoryBitmask));
-        sb.append("|Source:").append(Integer.toBinaryString(this.mEmergencyNumberSourceBitmask));
+        StringBuilder sb = new StringBuilder(32);
+        sb.append(NavigationBarInflaterView.SIZE_MOD_START).append(this.mNumber);
         if (!TextUtils.isEmpty(this.mCountryIso)) {
-            sb.append("|Iso:").append(this.mCountryIso);
+            sb.append(", countryIso=").append(this.mCountryIso);
         }
         if (!TextUtils.isEmpty(this.mMnc)) {
-            sb.append("|Mnc:").append(this.mMnc);
+            sb.append(", mnc=").append(this.mMnc);
         }
-        List<String> list = this.mEmergencyUrns;
-        if (list != null && !list.isEmpty()) {
-            sb.append("|Urn:").append(this.mEmergencyUrns);
-        }
+        sb.append(", src=").append(sourceBitmaskToString(this.mEmergencyNumberSourceBitmask));
         if (this.mEmergencyCallRouting != 0) {
-            sb.append("|Routing:").append(this.mEmergencyCallRouting);
+            sb.append(", routing=").append(routingToString(this.mEmergencyCallRouting));
         }
-        sb.append(NavigationBarInflaterView.KEY_CODE_END);
+        sb.append(", categories=").append(categoriesToString(this.mEmergencyServiceCategoryBitmask));
+        if (this.mEmergencyUrns != null && !this.mEmergencyUrns.isEmpty()) {
+            sb.append(", urns=").append((String) this.mEmergencyUrns.stream().collect(Collectors.joining(",")));
+        }
+        sb.append(NavigationBarInflaterView.SIZE_MOD_END);
+        return sb.toString();
+    }
+
+    private String categoriesToString(int categories) {
+        StringBuilder sb = new StringBuilder();
+        if ((categories & 64) == 64) {
+            sb.append("auto ");
+        }
+        if ((categories & 2) == 2) {
+            sb.append("ambulance ");
+        }
+        if ((categories & 4) == 4) {
+            sb.append("fire ");
+        }
+        if ((categories & 8) == 8) {
+            sb.append("marine ");
+        }
+        if ((categories & 16) == 16) {
+            sb.append("mountain ");
+        }
+        if ((categories & 1) == 1) {
+            sb.append("police ");
+        }
+        if ((categories & 32) == 32) {
+            sb.append("manual ");
+        }
+        return sb.toString();
+    }
+
+    private String routingToString(int routing) {
+        switch (routing) {
+            case 0:
+                return "unknown";
+            case 1:
+                return "emergency";
+            case 2:
+                return "normal";
+            default:
+                return " ";
+        }
+    }
+
+    private String sourceBitmaskToString(int sourceBitmask) {
+        StringBuilder sb = new StringBuilder();
+        if ((sourceBitmask & 1) == 1) {
+            sb.append("net ");
+        }
+        if ((sourceBitmask & 2) == 2) {
+            sb.append("sim ");
+        }
+        if ((sourceBitmask & 16) == 16) {
+            sb.append("db ");
+        }
+        if ((sourceBitmask & 4) == 4) {
+            sb.append("mdm ");
+        }
+        if ((sourceBitmask & 8) == 8) {
+            sb.append("def ");
+        }
+        if ((sourceBitmask & 32) == 32) {
+            sb.append("tst ");
+        }
         return sb.toString();
     }
 

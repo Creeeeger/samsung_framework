@@ -7,7 +7,9 @@ import android.app.prediction.IPredictionManager;
 import android.content.Context;
 import android.content.pm.ParceledListSlice;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.IRemoteCallback;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.ArrayMap;
@@ -30,19 +32,16 @@ public final class AppPredictor {
     private final AtomicBoolean mIsClosed = new AtomicBoolean(false);
     private final ArrayMap<Callback, CallbackWrapper> mRegisteredCallbacks = new ArrayMap<>();
 
-    /* loaded from: classes.dex */
     public interface Callback {
         void onTargetsAvailable(List<AppTarget> list);
     }
 
-    public AppPredictor(Context context, AppPredictionContext predictionContext) {
+    AppPredictor(Context context, AppPredictionContext predictionContext) {
         IBinder b = ServiceManager.getService(Context.APP_PREDICTION_SERVICE);
-        IPredictionManager asInterface = IPredictionManager.Stub.asInterface(b);
-        this.mPredictionManager = asInterface;
-        AppPredictionSessionId appPredictionSessionId = new AppPredictionSessionId(context.getPackageName() + ":" + UUID.randomUUID(), context.getUserId());
-        this.mSessionId = appPredictionSessionId;
+        this.mPredictionManager = IPredictionManager.Stub.asInterface(b);
+        this.mSessionId = new AppPredictionSessionId(context.getPackageName() + ":" + UUID.randomUUID(), context.getUserId());
         try {
-            asInterface.createPredictionSession(predictionContext, appPredictionSessionId, getToken());
+            this.mPredictionManager.createPredictionSession(predictionContext, this.mSessionId, getToken());
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to create predictor", e);
             e.rethrowAsRuntimeException();
@@ -149,6 +148,18 @@ public final class AppPredictor {
         }
     }
 
+    public void requestServiceFeatures(Executor callbackExecutor, Consumer<Bundle> callback) {
+        if (this.mIsClosed.get()) {
+            throw new IllegalStateException("This client has already been destroyed.");
+        }
+        try {
+            this.mPredictionManager.requestServiceFeatures(this.mSessionId, new RemoteCallbackWrapper(callbackExecutor, callback));
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to request service feature info", e);
+            e.rethrowAsRuntimeException();
+        }
+    }
+
     public void destroy() {
         if (!this.mIsClosed.getAndSet(true)) {
             this.mCloseGuard.close();
@@ -172,9 +183,8 @@ public final class AppPredictor {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             if (!this.mIsClosed.get()) {
                 destroy();
@@ -188,8 +198,7 @@ public final class AppPredictor {
         return this.mSessionId;
     }
 
-    /* loaded from: classes.dex */
-    public static class CallbackWrapper extends IPredictionCallback.Stub {
+    static class CallbackWrapper extends IPredictionCallback.Stub {
         private final Consumer<List<AppTarget>> mCallback;
         private final Executor mExecutor;
 
@@ -213,13 +222,43 @@ public final class AppPredictor {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResult$0(ParceledListSlice result) {
             this.mCallback.accept(result.getList());
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class Token {
+    static class RemoteCallbackWrapper extends IRemoteCallback.Stub {
+        private final Consumer<Bundle> mCallback;
+        private final Executor mExecutor;
+
+        RemoteCallbackWrapper(Executor callbackExecutor, Consumer<Bundle> callback) {
+            this.mExecutor = callbackExecutor;
+            this.mCallback = callback;
+        }
+
+        @Override // android.os.IRemoteCallback
+        public void sendResult(final Bundle result) {
+            long identity = Binder.clearCallingIdentity();
+            try {
+                this.mExecutor.execute(new Runnable() { // from class: android.app.prediction.AppPredictor$RemoteCallbackWrapper$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        AppPredictor.RemoteCallbackWrapper.this.lambda$sendResult$0(result);
+                    }
+                });
+            } finally {
+                Binder.restoreCallingIdentity(identity);
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$sendResult$0(Bundle result) {
+            this.mCallback.accept(result);
+        }
+    }
+
+    private static class Token {
         static final IBinder sBinder = new Binder(AppPredictor.TAG);
 
         private Token() {

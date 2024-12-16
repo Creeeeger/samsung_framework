@@ -132,9 +132,8 @@ public class X9ECParameters extends ASN1Object implements X9ObjectIdentifiers {
         v.add(new X9Curve(this.curve, this.seed));
         v.add(this.g);
         v.add(new ASN1Integer(this.n));
-        BigInteger bigInteger = this.h;
-        if (bigInteger != null) {
-            v.add(new ASN1Integer(bigInteger));
+        if (this.h != null) {
+            v.add(new ASN1Integer(this.h));
         }
         return new DERSequence(v);
     }

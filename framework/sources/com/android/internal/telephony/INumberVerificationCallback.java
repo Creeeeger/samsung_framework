@@ -14,7 +14,6 @@ public interface INumberVerificationCallback extends IInterface {
 
     void onVerificationFailed(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements INumberVerificationCallback {
         @Override // com.android.internal.telephony.INumberVerificationCallback
         public void onCallReceived(String phoneNumber) throws RemoteException {
@@ -30,7 +29,6 @@ public interface INumberVerificationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements INumberVerificationCallback {
         static final int TRANSACTION_onCallReceived = 1;
         static final int TRANSACTION_onVerificationFailed = 2;
@@ -76,30 +74,27 @@ public interface INumberVerificationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(INumberVerificationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(INumberVerificationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(INumberVerificationCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onCallReceived(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVerificationFailed(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onCallReceived(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onVerificationFailed(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements INumberVerificationCallback {
+        private static class Proxy implements INumberVerificationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

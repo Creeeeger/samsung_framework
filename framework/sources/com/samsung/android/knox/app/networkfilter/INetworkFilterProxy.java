@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface INetworkFilterProxy extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.app.networkfilter.INetworkFilterProxy";
 
@@ -65,7 +65,6 @@ public interface INetworkFilterProxy extends IInterface {
 
     void vpnMessengerForDnsQuery(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements INetworkFilterProxy {
         @Override // com.samsung.android.knox.app.networkfilter.INetworkFilterProxy
         public int setConfig(String profileName, String jsonConfig) throws RemoteException {
@@ -206,7 +205,6 @@ public interface INetworkFilterProxy extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements INetworkFilterProxy {
         static final int TRANSACTION_getBrowserAppList = 25;
         static final int TRANSACTION_getHttpLocalProxyAddress = 23;
@@ -327,166 +325,163 @@ public interface INetworkFilterProxy extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(INetworkFilterProxy.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(INetworkFilterProxy.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(INetworkFilterProxy.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result = setConfig(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = registerRemoteProxyAddr(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result3 = getListener(_arg03);
+                    reply.writeNoException();
+                    reply.writeStringList(_result3);
+                    return true;
+                case 4:
+                    int _result4 = startProxyServer();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    int _result5 = stopProxyServer();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    boolean _result6 = isProxyThreadRunning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    String _result7 = getProxythreadStatus();
+                    reply.writeNoException();
+                    reply.writeString(_result7);
+                    return true;
+                case 8:
+                    boolean _result8 = isProxyThreadAlive();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 9:
+                    String _result9 = getLocalProxyAddress();
+                    reply.writeNoException();
+                    reply.writeString(_result9);
+                    return true;
+                case 10:
+                    int _result10 = getLocalProxyPort();
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 11:
+                    int _result11 = startV6ProxyServer();
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 12:
+                    int _result12 = stopV6ProxyServer();
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 13:
+                    boolean _result13 = isV6ProxyThreadRunning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 14:
+                    String _result14 = getV6ProxythreadStatus();
+                    reply.writeNoException();
+                    reply.writeString(_result14);
+                    return true;
+                case 15:
+                    boolean _result15 = isV6ProxyThreadAlive();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 16:
+                    String _result16 = getV6LocalProxyAddress();
+                    reply.writeNoException();
+                    reply.writeString(_result16);
+                    return true;
+                case 17:
+                    int _result17 = getV6LocalProxyPort();
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    return true;
+                case 18:
+                    int _result18 = startHttpProxyServer();
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 19:
+                    int _result19 = stopHttpProxyServer();
+                    reply.writeNoException();
+                    reply.writeInt(_result19);
+                    return true;
+                case 20:
+                    boolean _result20 = isHttpProxyThreadRunning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 21:
+                    String _result21 = getHttpProxythreadStatus();
+                    reply.writeNoException();
+                    reply.writeString(_result21);
+                    return true;
+                case 22:
+                    boolean _result22 = isHttpProxyThreadAlive();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result22);
+                    return true;
+                case 23:
+                    String _result23 = getHttpLocalProxyAddress();
+                    reply.writeNoException();
+                    reply.writeString(_result23);
+                    return true;
+                case 24:
+                    int _result24 = getHttpLocalProxyPort();
+                    reply.writeNoException();
+                    reply.writeInt(_result24);
+                    return true;
+                case 25:
+                    String[] _result25 = getBrowserAppList();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result25);
+                    return true;
+                case 26:
+                    IBinder _arg04 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    vpnMessengerForDnsQuery(_arg04);
+                    return true;
+                case 27:
+                    String _arg05 = data.readString();
+                    int _arg13 = data.readInt();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateApplicationInfo(_arg05, _arg13, _arg2, _arg3, _arg4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result = setConfig(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = registerRemoteProxyAddr(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result3 = getListener(_arg03);
-                            reply.writeNoException();
-                            reply.writeStringList(_result3);
-                            return true;
-                        case 4:
-                            int _result4 = startProxyServer();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            int _result5 = stopProxyServer();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            boolean _result6 = isProxyThreadRunning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            String _result7 = getProxythreadStatus();
-                            reply.writeNoException();
-                            reply.writeString(_result7);
-                            return true;
-                        case 8:
-                            boolean _result8 = isProxyThreadAlive();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 9:
-                            String _result9 = getLocalProxyAddress();
-                            reply.writeNoException();
-                            reply.writeString(_result9);
-                            return true;
-                        case 10:
-                            int _result10 = getLocalProxyPort();
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 11:
-                            int _result11 = startV6ProxyServer();
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 12:
-                            int _result12 = stopV6ProxyServer();
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 13:
-                            boolean _result13 = isV6ProxyThreadRunning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 14:
-                            String _result14 = getV6ProxythreadStatus();
-                            reply.writeNoException();
-                            reply.writeString(_result14);
-                            return true;
-                        case 15:
-                            boolean _result15 = isV6ProxyThreadAlive();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 16:
-                            String _result16 = getV6LocalProxyAddress();
-                            reply.writeNoException();
-                            reply.writeString(_result16);
-                            return true;
-                        case 17:
-                            int _result17 = getV6LocalProxyPort();
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 18:
-                            int _result18 = startHttpProxyServer();
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 19:
-                            int _result19 = stopHttpProxyServer();
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            return true;
-                        case 20:
-                            boolean _result20 = isHttpProxyThreadRunning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 21:
-                            String _result21 = getHttpProxythreadStatus();
-                            reply.writeNoException();
-                            reply.writeString(_result21);
-                            return true;
-                        case 22:
-                            boolean _result22 = isHttpProxyThreadAlive();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result22);
-                            return true;
-                        case 23:
-                            String _result23 = getHttpLocalProxyAddress();
-                            reply.writeNoException();
-                            reply.writeString(_result23);
-                            return true;
-                        case 24:
-                            int _result24 = getHttpLocalProxyPort();
-                            reply.writeNoException();
-                            reply.writeInt(_result24);
-                            return true;
-                        case 25:
-                            String[] _result25 = getBrowserAppList();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result25);
-                            return true;
-                        case 26:
-                            IBinder _arg04 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            vpnMessengerForDnsQuery(_arg04);
-                            return true;
-                        case 27:
-                            String _arg05 = data.readString();
-                            int _arg13 = data.readInt();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateApplicationInfo(_arg05, _arg13, _arg2, _arg3, _arg4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements INetworkFilterProxy {
             private IBinder mRemote;
 

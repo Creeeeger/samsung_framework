@@ -12,24 +12,11 @@ public class Base64Encoder implements Encoder {
     protected final byte[] decodingTable = new byte[128];
 
     protected void initialiseDecodingTable() {
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.decodingTable;
-            if (i >= bArr.length) {
-                break;
-            }
-            bArr[i] = -1;
-            i++;
+        for (int i = 0; i < this.decodingTable.length; i++) {
+            this.decodingTable[i] = -1;
         }
-        int i2 = 0;
-        while (true) {
-            byte[] bArr2 = this.encodingTable;
-            if (i2 < bArr2.length) {
-                this.decodingTable[bArr2[i2]] = (byte) i2;
-                i2++;
-            } else {
-                return;
-            }
+        for (int i2 = 0; i2 < this.encodingTable.length; i2++) {
+            this.decodingTable[this.encodingTable[i2]] = (byte) i2;
         }
     }
 
@@ -49,14 +36,13 @@ public class Base64Encoder implements Encoder {
             int inPos3 = inPos2 + 1;
             int a3 = inBuf[inPos2] & 255;
             int outPos2 = outPos + 1;
-            byte[] bArr = this.encodingTable;
-            outBuf[outPos] = bArr[(a12 >>> 2) & 63];
+            outBuf[outPos] = this.encodingTable[(a12 >>> 2) & 63];
             int outPos3 = outPos2 + 1;
-            outBuf[outPos2] = bArr[((a12 << 4) | (a2 >>> 4)) & 63];
+            outBuf[outPos2] = this.encodingTable[((a12 << 4) | (a2 >>> 4)) & 63];
             int outPos4 = outPos3 + 1;
-            outBuf[outPos3] = bArr[((a2 << 2) | (a3 >>> 6)) & 63];
+            outBuf[outPos3] = this.encodingTable[((a2 << 2) | (a3 >>> 6)) & 63];
             outPos = outPos4 + 1;
-            outBuf[outPos4] = bArr[a3 & 63];
+            outBuf[outPos4] = this.encodingTable[a3 & 63];
             a1 = inPos3;
         }
         switch (inLen - (a1 - inOff)) {
@@ -65,15 +51,13 @@ public class Base64Encoder implements Encoder {
                 int inPos4 = inBuf[a1];
                 int a13 = inPos4 & 255;
                 int outPos5 = outPos + 1;
-                byte[] bArr2 = this.encodingTable;
-                outBuf[outPos] = bArr2[(a13 >>> 2) & 63];
+                outBuf[outPos] = this.encodingTable[(a13 >>> 2) & 63];
                 int outPos6 = outPos5 + 1;
-                outBuf[outPos5] = bArr2[(a13 << 4) & 63];
+                outBuf[outPos5] = this.encodingTable[(a13 << 4) & 63];
                 int outPos7 = outPos6 + 1;
-                byte b = this.padding;
-                outBuf[outPos6] = b;
+                outBuf[outPos6] = this.padding;
                 outPos = outPos7 + 1;
-                outBuf[outPos7] = b;
+                outBuf[outPos7] = this.padding;
                 break;
             case 2:
                 int inPos5 = a1 + 1;
@@ -82,12 +66,11 @@ public class Base64Encoder implements Encoder {
                 int i = inPos5 + 1;
                 int a23 = inBuf[inPos5] & 255;
                 int outPos8 = outPos + 1;
-                byte[] bArr3 = this.encodingTable;
-                outBuf[outPos] = bArr3[(a14 >>> 2) & 63];
+                outBuf[outPos] = this.encodingTable[(a14 >>> 2) & 63];
                 int outPos9 = outPos8 + 1;
-                outBuf[outPos8] = bArr3[((a14 << 4) | (a23 >>> 4)) & 63];
+                outBuf[outPos8] = this.encodingTable[((a14 << 4) | (a23 >>> 4)) & 63];
                 int outPos10 = outPos9 + 1;
-                outBuf[outPos9] = bArr3[(a23 << 2) & 63];
+                outBuf[outPos9] = this.encodingTable[(a23 << 2) & 63];
                 outPos = outPos10 + 1;
                 outBuf[outPos10] = this.padding;
                 break;
@@ -242,25 +225,22 @@ public class Base64Encoder implements Encoder {
     }
 
     private int decodeLastBlock(OutputStream out, char c1, char c2, char c3, char c4) throws IOException {
-        byte b = this.padding;
-        if (c3 == b) {
-            if (c4 != b) {
+        if (c3 == this.padding) {
+            if (c4 != this.padding) {
                 throw new IOException("invalid characters encountered at end of base64 data");
             }
-            byte[] bArr = this.decodingTable;
-            byte b1 = bArr[c1];
-            byte b2 = bArr[c2];
+            byte b1 = this.decodingTable[c1];
+            byte b2 = this.decodingTable[c2];
             if ((b1 | b2) < 0) {
                 throw new IOException("invalid characters encountered at end of base64 data");
             }
             out.write((b1 << 2) | (b2 >> 4));
             return 1;
         }
-        if (c4 == b) {
-            byte[] bArr2 = this.decodingTable;
-            byte b12 = bArr2[c1];
-            byte b22 = bArr2[c2];
-            byte b3 = bArr2[c3];
+        if (c4 == this.padding) {
+            byte b12 = this.decodingTable[c1];
+            byte b22 = this.decodingTable[c2];
+            byte b3 = this.decodingTable[c3];
             if ((b12 | b22 | b3) < 0) {
                 throw new IOException("invalid characters encountered at end of base64 data");
             }
@@ -268,11 +248,10 @@ public class Base64Encoder implements Encoder {
             out.write((b22 << 4) | (b3 >> 2));
             return 2;
         }
-        byte[] bArr3 = this.decodingTable;
-        byte b13 = bArr3[c1];
-        byte b23 = bArr3[c2];
-        byte b32 = bArr3[c3];
-        byte b4 = bArr3[c4];
+        byte b13 = this.decodingTable[c1];
+        byte b23 = this.decodingTable[c2];
+        byte b32 = this.decodingTable[c3];
+        byte b4 = this.decodingTable[c4];
         if ((b13 | b23 | b32 | b4) < 0) {
             throw new IOException("invalid characters encountered at end of base64 data");
         }

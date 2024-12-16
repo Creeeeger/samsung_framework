@@ -8,7 +8,7 @@ import com.samsung.android.globalactions.util.BiometricPromptWrapper;
 import com.samsung.android.globalactions.util.ConditionChecker;
 import com.samsung.android.globalactions.util.SystemConditions;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class PowerOffLockStrategy implements SecureConfirmStrategy {
     private final BiometricPromptWrapper mBiometricPromptWrapper;
     private final ConditionChecker mConditionChecker;

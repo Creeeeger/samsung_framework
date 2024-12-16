@@ -50,7 +50,6 @@ public class RenderNodeAnimator extends Animator {
     private long mUnscaledStartDelay;
     private ViewListener mViewListener;
 
-    /* loaded from: classes.dex */
     public interface ViewListener {
         void invalidateParent(boolean z);
 
@@ -138,17 +137,16 @@ public class RenderNodeAnimator extends Animator {
         }
     }
 
-    public static boolean isNativeInterpolator(TimeInterpolator interpolator) {
+    static boolean isNativeInterpolator(TimeInterpolator interpolator) {
         return interpolator.getClass().isAnnotationPresent(HasNativeInterpolator.class);
     }
 
     private void applyInterpolator() {
         long duration;
-        TimeInterpolator timeInterpolator = this.mInterpolator;
-        if (timeInterpolator == null || this.mNativePtr == null) {
+        if (this.mInterpolator == null || this.mNativePtr == null) {
             return;
         }
-        if (isNativeInterpolator(timeInterpolator)) {
+        if (isNativeInterpolator(this.mInterpolator)) {
             duration = ((NativeInterpolator) this.mInterpolator).createNativeInterpolator();
         } else {
             long duration2 = nGetDuration(this.mNativePtr.get());
@@ -170,11 +168,10 @@ public class RenderNodeAnimator extends Animator {
             this.mHandler = new Handler(true);
         }
         applyInterpolator();
-        VirtualRefBasePtr virtualRefBasePtr = this.mNativePtr;
-        if (virtualRefBasePtr == null) {
+        if (this.mNativePtr == null) {
             cancel();
         } else if (this.mStartDelay <= 0 || !this.mUiThreadHandlesDelay) {
-            nSetStartDelay(virtualRefBasePtr.get(), this.mStartDelay);
+            nSetStartDelay(this.mNativePtr.get(), this.mStartDelay);
             doStart();
         } else {
             getHelper().addDelayedAnimation(this);
@@ -182,22 +179,19 @@ public class RenderNodeAnimator extends Animator {
     }
 
     private void doStart() {
-        ViewListener viewListener;
-        if (this.mRenderProperty == 11 && (viewListener = this.mViewListener) != null) {
-            viewListener.onAlphaAnimationStart(this.mFinalValue);
+        if (this.mRenderProperty == 11 && this.mViewListener != null) {
+            this.mViewListener.onAlphaAnimationStart(this.mFinalValue);
         }
         moveToRunningState();
-        ViewListener viewListener2 = this.mViewListener;
-        if (viewListener2 != null) {
-            viewListener2.invalidateParent(false);
+        if (this.mViewListener != null) {
+            this.mViewListener.invalidateParent(false);
         }
     }
 
     private void moveToRunningState() {
         this.mState = 2;
-        VirtualRefBasePtr virtualRefBasePtr = this.mNativePtr;
-        if (virtualRefBasePtr != null) {
-            nStart(virtualRefBasePtr.get());
+        if (this.mNativePtr != null) {
+            nStart(this.mNativePtr.get());
         }
         notifyStartListeners();
     }
@@ -212,16 +206,15 @@ public class RenderNodeAnimator extends Animator {
 
     @Override // android.animation.Animator
     public void cancel() {
-        int i = this.mState;
-        if (i != 0 && i != 3) {
-            if (i == 1) {
+        if (this.mState != 0 && this.mState != 3) {
+            if (this.mState == 1) {
                 getHelper().removeDelayedAnimation(this);
                 moveToRunningState();
             }
             ArrayList<Animator.AnimatorListener> listeners = cloneListeners();
             int numListeners = listeners == null ? 0 : listeners.size();
-            for (int i2 = 0; i2 < numListeners; i2++) {
-                listeners.get(i2).onAnimationCancel(this);
+            for (int i = 0; i < numListeners; i++) {
+                listeners.get(i).onAnimationCancel(this);
             }
             end();
         }
@@ -229,18 +222,15 @@ public class RenderNodeAnimator extends Animator {
 
     @Override // android.animation.Animator
     public void end() {
-        int i = this.mState;
-        if (i != 3) {
-            if (i < 2) {
+        if (this.mState != 3) {
+            if (this.mState < 2) {
                 getHelper().removeDelayedAnimation(this);
                 doStart();
             }
-            VirtualRefBasePtr virtualRefBasePtr = this.mNativePtr;
-            if (virtualRefBasePtr != null) {
-                nEnd(virtualRefBasePtr.get());
-                ViewListener viewListener = this.mViewListener;
-                if (viewListener != null) {
-                    viewListener.invalidateParent(false);
+            if (this.mNativePtr != null) {
+                nEnd(this.mNativePtr.get());
+                if (this.mViewListener != null) {
+                    this.mViewListener.invalidateParent(false);
                     return;
                 }
                 return;
@@ -267,14 +257,14 @@ public class RenderNodeAnimator extends Animator {
         setTarget(canvas.mNode);
     }
 
-    public void setTarget(RenderNode node) {
+    protected void setTarget(RenderNode node) {
         checkMutable();
         if (this.mTarget != null) {
             throw new IllegalStateException("Target already set!");
         }
         nSetListener(this.mNativePtr.get(), this);
         this.mTarget = node;
-        node.addAnimator(this);
+        this.mTarget.addAnimator(this);
     }
 
     public void setStartValue(float startValue) {
@@ -289,7 +279,7 @@ public class RenderNodeAnimator extends Animator {
             throw new IllegalArgumentException("startDelay must be positive; " + startDelay);
         }
         this.mUnscaledStartDelay = startDelay;
-        this.mStartDelay = ValueAnimator.getDurationScale() * ((float) startDelay);
+        this.mStartDelay = (long) (ValueAnimator.getDurationScale() * startDelay);
     }
 
     @Override // android.animation.Animator
@@ -304,7 +294,7 @@ public class RenderNodeAnimator extends Animator {
             throw new IllegalArgumentException("duration must be positive; " + duration);
         }
         this.mUnscaledDuration = duration;
-        nSetDuration(this.mNativePtr.get(), ((float) duration) * ValueAnimator.getDurationScale());
+        nSetDuration(this.mNativePtr.get(), (long) (duration * ValueAnimator.getDurationScale()));
         return this;
     }
 
@@ -320,8 +310,7 @@ public class RenderNodeAnimator extends Animator {
 
     @Override // android.animation.Animator
     public boolean isRunning() {
-        int i = this.mState;
-        return i == 1 || i == 2;
+        return this.mState == 1 || this.mState == 2;
     }
 
     @Override // android.animation.Animator
@@ -340,29 +329,27 @@ public class RenderNodeAnimator extends Animator {
         return this.mInterpolator;
     }
 
-    public void onFinished() {
-        int i = this.mState;
-        if (i == 0) {
+    protected void onFinished() {
+        if (this.mState == 0) {
             releaseNativePtr();
             return;
         }
-        if (i == 1) {
+        if (this.mState == 1) {
             getHelper().removeDelayedAnimation(this);
             notifyStartListeners();
         }
         this.mState = 3;
         ArrayList<Animator.AnimatorListener> listeners = cloneListeners();
         int numListeners = listeners == null ? 0 : listeners.size();
-        for (int i2 = 0; i2 < numListeners; i2++) {
-            listeners.get(i2).onAnimationEnd(this);
+        for (int i = 0; i < numListeners; i++) {
+            listeners.get(i).onAnimationEnd(this);
         }
         releaseNativePtr();
     }
 
     private void releaseNativePtr() {
-        VirtualRefBasePtr virtualRefBasePtr = this.mNativePtr;
-        if (virtualRefBasePtr != null) {
-            virtualRefBasePtr.release();
+        if (this.mNativePtr != null) {
+            this.mNativePtr.release();
             this.mNativePtr = null;
         }
     }
@@ -379,13 +366,13 @@ public class RenderNodeAnimator extends Animator {
         return this.mNativePtr.get();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean processDelayed(long frameTimeMs) {
-        long j = this.mStartTime;
-        if (j == 0) {
+        if (this.mStartTime == 0) {
             this.mStartTime = frameTimeMs;
             return false;
         }
-        if (frameTimeMs - j >= this.mStartDelay) {
+        if (frameTimeMs - this.mStartTime >= this.mStartDelay) {
             doStart();
             return true;
         }
@@ -402,8 +389,7 @@ public class RenderNodeAnimator extends Animator {
         return helper;
     }
 
-    /* loaded from: classes.dex */
-    public static class DelayedAnimationHelper implements Runnable {
+    private static class DelayedAnimationHelper implements Runnable {
         private boolean mCallbackScheduled;
         private ArrayList<RenderNodeAnimator> mDelayedAnims = new ArrayList<>();
         private final Choreographer mChoreographer = Choreographer.getInstance();
@@ -442,7 +428,7 @@ public class RenderNodeAnimator extends Animator {
                 }
             }
             while (this.mDelayedAnims.size() > end) {
-                this.mDelayedAnims.remove(r3.size() - 1);
+                this.mDelayedAnims.remove(this.mDelayedAnims.size() - 1);
             }
             if (this.mDelayedAnims.size() > 0) {
                 scheduleCallback();
@@ -450,9 +436,9 @@ public class RenderNodeAnimator extends Animator {
         }
     }
 
-    private static void callOnFinished(RenderNodeAnimator animator) {
-        Handler handler = animator.mHandler;
-        if (handler != null) {
+    private static void callOnFinished(final RenderNodeAnimator animator) {
+        if (animator.mHandler != null) {
+            Handler handler = animator.mHandler;
             Objects.requireNonNull(animator);
             handler.post(new Runnable() { // from class: android.graphics.animation.RenderNodeAnimator$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -474,7 +460,7 @@ public class RenderNodeAnimator extends Animator {
 
     @Override // android.animation.Animator
     /* renamed from: clone */
-    public Animator mo57clone() {
+    public Animator mo77clone() {
         throw new IllegalStateException("Cannot clone this animator");
     }
 

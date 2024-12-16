@@ -1,6 +1,5 @@
 package android.util;
 
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
@@ -33,14 +32,13 @@ public class IndentingPrintWriter extends PrintWriter {
 
     public IndentingPrintWriter(Writer writer, String singleIndent, String prefix, int wrapLength) {
         super(writer);
-        StringBuilder sb = new StringBuilder();
-        this.mIndentBuilder = sb;
+        this.mIndentBuilder = new StringBuilder();
         this.mEmptyLine = true;
         this.mSingleChar = new char[1];
         this.mSingleIndent = singleIndent;
         this.mWrapLength = wrapLength;
         if (prefix != null) {
-            sb.append(prefix);
+            this.mIndentBuilder.append(prefix);
         }
     }
 
@@ -76,7 +74,7 @@ public class IndentingPrintWriter extends PrintWriter {
     public IndentingPrintWriter print(String key, Object value) {
         String string;
         if (value == null) {
-            string = SemCapabilities.FEATURE_TAG_NULL;
+            string = "null";
         } else if (value.getClass().isArray()) {
             if (value.getClass() == boolean[].class) {
                 string = Arrays.toString((boolean[]) value);
@@ -116,9 +114,8 @@ public class IndentingPrintWriter extends PrintWriter {
 
     @Override // java.io.PrintWriter, java.io.Writer
     public void write(int c) {
-        char[] cArr = this.mSingleChar;
-        cArr[0] = (char) c;
-        write(cArr, 0, 1);
+        this.mSingleChar[0] = (char) c;
+        write(this.mSingleChar, 0, 1);
     }
 
     @Override // java.io.PrintWriter, java.io.Writer
@@ -145,8 +142,7 @@ public class IndentingPrintWriter extends PrintWriter {
                 this.mEmptyLine = true;
                 this.mCurrentLength = 0;
             }
-            int i = this.mWrapLength;
-            if (i > 0 && this.mCurrentLength >= i - indentLength) {
+            if (this.mWrapLength > 0 && this.mCurrentLength >= this.mWrapLength - indentLength) {
                 if (!this.mEmptyLine) {
                     super.write(10);
                     this.mEmptyLine = true;
@@ -175,8 +171,7 @@ public class IndentingPrintWriter extends PrintWriter {
                 if (this.mCurrentIndent == null) {
                     this.mCurrentIndent = this.mIndentBuilder.toString().toCharArray();
                 }
-                char[] cArr = this.mCurrentIndent;
-                super.write(cArr, 0, cArr.length);
+                super.write(this.mCurrentIndent, 0, this.mCurrentIndent.length);
             }
         }
     }

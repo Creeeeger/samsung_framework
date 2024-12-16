@@ -26,7 +26,6 @@ public interface ISemContinuityManager extends IInterface {
 
     void unregisterContinuityCopyListener(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemContinuityManager {
         @Override // com.samsung.android.continuity.ISemContinuityManager
         public int getNearbyDeviceCount(int filterType, int userId) throws RemoteException {
@@ -64,7 +63,6 @@ public interface ISemContinuityManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemContinuityManager {
         static final int TRANSACTION_cancelDownload = 7;
         static final int TRANSACTION_clearLocalClip = 3;
@@ -125,71 +123,67 @@ public interface ISemContinuityManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemContinuityManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemContinuityManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemContinuityManager.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getNearbyDeviceCount(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLocalClip(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearLocalClip(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    ISemContinuitySimpleListener _arg04 = ISemContinuitySimpleListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerContinuityCopyListener(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterContinuityCopyListener(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    ISemContinuitySimpleListener _arg14 = ISemContinuitySimpleListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = requestDownload(_arg06, _arg14, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancelDownload(_arg07, _arg15);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getNearbyDeviceCount(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLocalClip(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearLocalClip(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            ISemContinuitySimpleListener _arg04 = ISemContinuitySimpleListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerContinuityCopyListener(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterContinuityCopyListener(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            ISemContinuitySimpleListener _arg14 = ISemContinuitySimpleListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = requestDownload(_arg06, _arg14, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancelDownload(_arg07, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemContinuityManager {
+        private static class Proxy implements ISemContinuityManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

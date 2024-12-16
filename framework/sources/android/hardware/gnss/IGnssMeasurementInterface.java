@@ -25,7 +25,6 @@ public interface IGnssMeasurementInterface extends IInterface {
 
     void setCallbackWithOptions(IGnssMeasurementCallback iGnssMeasurementCallback, Options options) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssMeasurementInterface {
         @Override // android.hardware.gnss.IGnssMeasurementInterface
         public void setCallback(IGnssMeasurementCallback callback, boolean enableFullTracking, boolean enableCorrVecOutputs) throws RemoteException {
@@ -55,7 +54,6 @@ public interface IGnssMeasurementInterface extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssMeasurementInterface {
         static final int TRANSACTION_close = 2;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -112,48 +110,46 @@ public interface IGnssMeasurementInterface extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    IGnssMeasurementCallback _arg0 = IGnssMeasurementCallback.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg1 = data.readBoolean();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0, _arg1, _arg2);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    close();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    IGnssMeasurementCallback _arg02 = IGnssMeasurementCallback.Stub.asInterface(data.readStrongBinder());
+                    Options _arg12 = (Options) data.readTypedObject(Options.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCallbackWithOptions(_arg02, _arg12);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGnssMeasurementCallback _arg0 = IGnssMeasurementCallback.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg1 = data.readBoolean();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IGnssMeasurementCallback _arg02 = IGnssMeasurementCallback.Stub.asInterface(data.readStrongBinder());
-                            Options _arg12 = (Options) data.readTypedObject(Options.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCallbackWithOptions(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssMeasurementInterface {
+        private static class Proxy implements IGnssMeasurementInterface {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -273,12 +269,9 @@ public interface IGnssMeasurementInterface extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Options implements Parcelable {
         public static final Parcelable.Creator<Options> CREATOR = new Parcelable.Creator<Options>() { // from class: android.hardware.gnss.IGnssMeasurementInterface.Options.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Options createFromParcel(Parcel _aidl_source) {
                 Options _aidl_out = new Options();
@@ -286,6 +279,7 @@ public interface IGnssMeasurementInterface extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Options[] newArray(int _aidl_size) {
                 return new Options[_aidl_size];
@@ -294,25 +288,6 @@ public interface IGnssMeasurementInterface extends IInterface {
         public boolean enableFullTracking = false;
         public boolean enableCorrVecOutputs = false;
         public int intervalMs = 0;
-
-        /* renamed from: android.hardware.gnss.IGnssMeasurementInterface$Options$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Options> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Options createFromParcel(Parcel _aidl_source) {
-                Options _aidl_out = new Options();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Options[] newArray(int _aidl_size) {
-                return new Options[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

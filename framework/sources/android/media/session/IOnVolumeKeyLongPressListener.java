@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 public interface IOnVolumeKeyLongPressListener extends IInterface {
     void onVolumeKeyLongPress(KeyEvent keyEvent) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IOnVolumeKeyLongPressListener {
         @Override // android.media.session.IOnVolumeKeyLongPressListener
         public void onVolumeKeyLongPress(KeyEvent event) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IOnVolumeKeyLongPressListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IOnVolumeKeyLongPressListener {
         public static final String DESCRIPTOR = "android.media.session.IOnVolumeKeyLongPressListener";
         static final int TRANSACTION_onVolumeKeyLongPress = 1;
@@ -67,26 +65,22 @@ public interface IOnVolumeKeyLongPressListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    KeyEvent _arg0 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onVolumeKeyLongPress(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            KeyEvent _arg0 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onVolumeKeyLongPress(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IOnVolumeKeyLongPressListener {
+        private static class Proxy implements IOnVolumeKeyLongPressListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

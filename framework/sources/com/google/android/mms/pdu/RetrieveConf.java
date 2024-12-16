@@ -12,7 +12,7 @@ public class RetrieveConf extends MultimediaMessagePdu {
         super(headers);
     }
 
-    public RetrieveConf(PduHeaders headers, PduBody body) {
+    RetrieveConf(PduHeaders headers, PduBody body) {
         super(headers, body);
     }
 

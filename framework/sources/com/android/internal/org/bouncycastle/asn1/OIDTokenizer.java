@@ -14,11 +14,10 @@ public class OIDTokenizer {
     }
 
     public String nextToken() {
-        int i = this.index;
-        if (i == -1) {
+        if (this.index == -1) {
             return null;
         }
-        int end = this.oid.indexOf(46, i);
+        int end = this.oid.indexOf(46, this.index);
         if (end == -1) {
             String token = this.oid.substring(this.index);
             this.index = -1;

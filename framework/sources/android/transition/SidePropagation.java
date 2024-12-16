@@ -64,20 +64,22 @@ public class SidePropagation extends VisibilityPropagation {
         if (duration < 0) {
             duration = 300;
         }
-        return Math.round((((float) (directionMultiplier * duration)) / this.mPropagationSpeed) * distanceFraction);
+        return Math.round(((directionMultiplier * duration) / this.mPropagationSpeed) * distanceFraction);
     }
 
     private int distance(View sceneRoot, int viewX, int viewY, int epicenterX, int epicenterY, int left, int top, int right, int bottom) {
         int side;
-        int i = this.mSide;
-        if (i == 8388611) {
+        if (this.mSide == 8388611) {
             boolean isRtl = sceneRoot.getLayoutDirection() == 1;
             side = isRtl ? 5 : 3;
-        } else if (i == 8388613) {
-            boolean isRtl2 = sceneRoot.getLayoutDirection() == 1;
-            side = isRtl2 ? 3 : 5;
         } else {
-            side = this.mSide;
+            int side2 = this.mSide;
+            if (side2 == 8388613) {
+                boolean isRtl2 = sceneRoot.getLayoutDirection() == 1;
+                side = isRtl2 ? 3 : 5;
+            } else {
+                side = this.mSide;
+            }
         }
         switch (side) {
             case 3:

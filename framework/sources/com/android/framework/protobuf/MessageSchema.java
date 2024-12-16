@@ -16,8 +16,8 @@ import java.util.Map;
 import sun.misc.Unsafe;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class MessageSchema<T> implements Schema<T> {
+/* loaded from: classes3.dex */
+final class MessageSchema<T> implements Schema<T> {
     private static final int ENFORCE_UTF8_MASK = 536870912;
     private static final int FIELD_TYPE_MASK = 267386880;
     private static final int INTS_PER_FIELD = 3;
@@ -66,7 +66,7 @@ public final class MessageSchema<T> implements Schema<T> {
         this.mapFieldSchema = mapFieldSchema;
     }
 
-    public static <T> MessageSchema<T> newSchema(Class<T> messageClass, MessageInfo messageInfo, NewInstanceSchema newInstanceSchema, ListFieldSchema listFieldSchema, UnknownFieldSchema<?, ?> unknownFieldSchema, ExtensionSchema<?> extensionSchema, MapFieldSchema mapFieldSchema) {
+    static <T> MessageSchema<T> newSchema(Class<T> messageClass, MessageInfo messageInfo, NewInstanceSchema newInstanceSchema, ListFieldSchema listFieldSchema, UnknownFieldSchema<?, ?> unknownFieldSchema, ExtensionSchema<?> extensionSchema, MapFieldSchema mapFieldSchema) {
         if (messageInfo instanceof RawMessageInfo) {
             return newSchemaForRawMessageInfo((RawMessageInfo) messageInfo, newInstanceSchema, listFieldSchema, unknownFieldSchema, extensionSchema, mapFieldSchema);
         }
@@ -673,76 +673,95 @@ public final class MessageSchema<T> implements Schema<T> {
         long offset = offset(typeAndOffset);
         switch (type(typeAndOffset)) {
             case 0:
-                return arePresentForEquals(message, other, pos) && Double.doubleToLongBits(UnsafeUtil.getDouble(message, offset)) == Double.doubleToLongBits(UnsafeUtil.getDouble(other, offset));
+                if (arePresentForEquals(message, other, pos) && Double.doubleToLongBits(UnsafeUtil.getDouble(message, offset)) == Double.doubleToLongBits(UnsafeUtil.getDouble(other, offset))) {
+                    break;
+                }
+                break;
             case 1:
-                return arePresentForEquals(message, other, pos) && Float.floatToIntBits(UnsafeUtil.getFloat(message, offset)) == Float.floatToIntBits(UnsafeUtil.getFloat(other, offset));
+                if (arePresentForEquals(message, other, pos) && Float.floatToIntBits(UnsafeUtil.getFloat(message, offset)) == Float.floatToIntBits(UnsafeUtil.getFloat(other, offset))) {
+                    break;
+                }
+                break;
             case 2:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset)) {
+                    break;
+                }
+                break;
             case 3:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset)) {
+                    break;
+                }
+                break;
             case 4:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset)) {
+                    break;
+                }
+                break;
             case 5:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset)) {
+                    break;
+                }
+                break;
             case 6:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset)) {
+                    break;
+                }
+                break;
             case 7:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getBoolean(message, offset) == UnsafeUtil.getBoolean(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getBoolean(message, offset) == UnsafeUtil.getBoolean(other, offset)) {
+                    break;
+                }
+                break;
             case 8:
-                return arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset));
+                if (arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset))) {
+                    break;
+                }
+                break;
             case 9:
-                return arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset));
+                if (arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset))) {
+                    break;
+                }
+                break;
             case 10:
-                return arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset));
+                if (arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset))) {
+                    break;
+                }
+                break;
             case 11:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset)) {
+                    break;
+                }
+                break;
             case 12:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset)) {
+                    break;
+                }
+                break;
             case 13:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset)) {
+                    break;
+                }
+                break;
             case 14:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset)) {
+                    break;
+                }
+                break;
             case 15:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getInt(message, offset) == UnsafeUtil.getInt(other, offset)) {
+                    break;
+                }
+                break;
             case 16:
-                return arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset);
+                if (arePresentForEquals(message, other, pos) && UnsafeUtil.getLong(message, offset) == UnsafeUtil.getLong(other, offset)) {
+                    break;
+                }
+                break;
             case 17:
-                return arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset));
-            case 18:
-            case 19:
-            case 20:
-            case 21:
-            case 22:
-            case 23:
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-            case 28:
-            case 29:
-            case 30:
-            case 31:
-            case 32:
-            case 33:
-            case 34:
-            case 35:
-            case 36:
-            case 37:
-            case 38:
-            case 39:
-            case 40:
-            case 41:
-            case 42:
-            case 43:
-            case 44:
-            case 45:
-            case 46:
-            case 47:
-            case 48:
-            case 49:
-                return SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset));
-            case 50:
-                return SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset));
+                if (arePresentForEquals(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset))) {
+                    break;
+                }
+                break;
             case 51:
             case 52:
             case 53:
@@ -761,10 +780,12 @@ public final class MessageSchema<T> implements Schema<T> {
             case 66:
             case 67:
             case 68:
-                return isOneofCaseEqual(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset));
-            default:
-                return true;
+                if (isOneofCaseEqual(message, other, pos) && SchemaUtil.safeEquals(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(other, offset))) {
+                    break;
+                }
+                break;
         }
+        return true;
     }
 
     @Override // com.android.framework.protobuf.Schema
@@ -1041,120 +1062,120 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putDouble(message, offset, UnsafeUtil.getDouble(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 1:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putFloat(message, offset, UnsafeUtil.getFloat(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 2:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putLong(message, offset, UnsafeUtil.getLong(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 3:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putLong(message, offset, UnsafeUtil.getLong(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 4:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putInt(message, offset, UnsafeUtil.getInt(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 5:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putLong(message, offset, UnsafeUtil.getLong(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 6:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putInt(message, offset, UnsafeUtil.getInt(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 7:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putBoolean(message, offset, UnsafeUtil.getBoolean(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 8:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putObject(message, offset, UnsafeUtil.getObject(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 9:
                 mergeMessage(message, other, pos);
-                return;
+                break;
             case 10:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putObject(message, offset, UnsafeUtil.getObject(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 11:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putInt(message, offset, UnsafeUtil.getInt(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 12:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putInt(message, offset, UnsafeUtil.getInt(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 13:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putInt(message, offset, UnsafeUtil.getInt(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 14:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putLong(message, offset, UnsafeUtil.getLong(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 15:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putInt(message, offset, UnsafeUtil.getInt(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 16:
                 if (isFieldPresent(other, pos)) {
                     UnsafeUtil.putLong(message, offset, UnsafeUtil.getLong(other, offset));
                     setFieldPresent(message, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 17:
                 mergeMessage(message, other, pos);
-                return;
+                break;
             case 18:
             case 19:
             case 20:
@@ -1188,10 +1209,10 @@ public final class MessageSchema<T> implements Schema<T> {
             case 48:
             case 49:
                 this.listFieldSchema.mergeListsAt(message, other, offset);
-                return;
+                break;
             case 50:
                 SchemaUtil.mergeMap(this.mapFieldSchema, message, other, offset);
-                return;
+                break;
             case 51:
             case 52:
             case 53:
@@ -1204,12 +1225,12 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (isOneofPresent(other, number, pos)) {
                     UnsafeUtil.putObject(message, offset, UnsafeUtil.getObject(other, offset));
                     setOneofPresent(message, number, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 60:
                 mergeOneofMessage(message, other, pos);
-                return;
+                break;
             case 61:
             case 62:
             case 63:
@@ -1220,14 +1241,12 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (isOneofPresent(other, number, pos)) {
                     UnsafeUtil.putObject(message, offset, UnsafeUtil.getObject(other, offset));
                     setOneofPresent(message, number, pos);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 68:
                 mergeOneofMessage(message, other, pos);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -1238,28 +1257,27 @@ public final class MessageSchema<T> implements Schema<T> {
         }
         int typeAndOffset = typeAndOffsetAt(pos);
         long offset = offset(typeAndOffset);
-        Unsafe unsafe = UNSAFE;
-        Object source = unsafe.getObject(sourceParent, offset);
+        Object source = UNSAFE.getObject(sourceParent, offset);
         if (source == null) {
             throw new IllegalStateException("Source subfield " + numberAt(pos) + " is present but null: " + sourceParent);
         }
         Schema messageFieldSchema = getMessageFieldSchema(pos);
         if (!isFieldPresent(targetParent, pos)) {
             if (!isMutable(source)) {
-                unsafe.putObject(targetParent, offset, source);
+                UNSAFE.putObject(targetParent, offset, source);
             } else {
                 Object copyOfSource = messageFieldSchema.newInstance();
                 messageFieldSchema.mergeFrom(copyOfSource, source);
-                unsafe.putObject(targetParent, offset, copyOfSource);
+                UNSAFE.putObject(targetParent, offset, copyOfSource);
             }
             setFieldPresent(targetParent, pos);
             return;
         }
-        Object target = unsafe.getObject(targetParent, offset);
+        Object target = UNSAFE.getObject(targetParent, offset);
         if (!isMutable(target)) {
             Object newInstance = messageFieldSchema.newInstance();
             messageFieldSchema.mergeFrom(newInstance, target);
-            unsafe.putObject(targetParent, offset, newInstance);
+            UNSAFE.putObject(targetParent, offset, newInstance);
             target = newInstance;
         }
         messageFieldSchema.mergeFrom(target, source);
@@ -1272,28 +1290,27 @@ public final class MessageSchema<T> implements Schema<T> {
             return;
         }
         long offset = offset(typeAndOffsetAt(pos));
-        Unsafe unsafe = UNSAFE;
-        Object source = unsafe.getObject(sourceParent, offset);
+        Object source = UNSAFE.getObject(sourceParent, offset);
         if (source == null) {
             throw new IllegalStateException("Source subfield " + numberAt(pos) + " is present but null: " + sourceParent);
         }
         Schema messageFieldSchema = getMessageFieldSchema(pos);
         if (!isOneofPresent(targetParent, number, pos)) {
             if (!isMutable(source)) {
-                unsafe.putObject(targetParent, offset, source);
+                UNSAFE.putObject(targetParent, offset, source);
             } else {
                 Object copyOfSource = messageFieldSchema.newInstance();
                 messageFieldSchema.mergeFrom(copyOfSource, source);
-                unsafe.putObject(targetParent, offset, copyOfSource);
+                UNSAFE.putObject(targetParent, offset, copyOfSource);
             }
             setOneofPresent(targetParent, number, pos);
             return;
         }
-        Object target = unsafe.getObject(targetParent, offset);
+        Object target = UNSAFE.getObject(targetParent, offset);
         if (!isMutable(target)) {
             Object newInstance = messageFieldSchema.newInstance();
             messageFieldSchema.mergeFrom(newInstance, target);
-            unsafe.putObject(targetParent, offset, newInstance);
+            UNSAFE.putObject(targetParent, offset, newInstance);
             target = newInstance;
         }
         messageFieldSchema.mergeFrom(target, source);
@@ -3730,7 +3747,7 @@ public final class MessageSchema<T> implements Schema<T> {
      */
     /* JADX WARN: Code restructure failed: missing block: B:221:0x00d2, code lost:
     
-        if (r10 >= r20.repeatedFieldOffsetStart) goto L560;
+        if (r10 >= r20.repeatedFieldOffsetStart) goto L276;
      */
     /* JADX WARN: Code restructure failed: missing block: B:222:0x00d4, code lost:
     
@@ -3748,7 +3765,7 @@ public final class MessageSchema<T> implements Schema<T> {
      */
     /* JADX WARN: Code restructure failed: missing block: B:225:0x0100, code lost:
     
-        if (r11 == null) goto L563;
+        if (r11 == null) goto L279;
      */
     /* JADX WARN: Code restructure failed: missing block: B:226:0x0102, code lost:
     
@@ -3762,11 +3779,10 @@ public final class MessageSchema<T> implements Schema<T> {
     
         return;
      */
-    /* JADX WARN: Failed to find 'out' block for switch in B:13:0x0129. Please report as an issue. */
     /* JADX WARN: Removed duplicated region for block: B:42:0x077b A[LOOP:2: B:40:0x0777->B:42:0x077b, LOOP_END] */
     /* JADX WARN: Removed duplicated region for block: B:45:0x0791  */
     /* JADX WARN: Removed duplicated region for block: B:47:? A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:53:0x06fa A[Catch: all -> 0x0764, TRY_LEAVE, TryCatch #2 {all -> 0x0764, blocks: (B:18:0x06b6, B:51:0x06f4, B:53:0x06fa, B:69:0x0730, B:70:0x0735, B:188:0x0136, B:90:0x014a, B:92:0x0160, B:93:0x0176, B:94:0x018c, B:95:0x01a2, B:97:0x01ac, B:100:0x01b3, B:101:0x01bd, B:102:0x01ce, B:103:0x01e4, B:104:0x01f5, B:105:0x020a, B:106:0x0213, B:107:0x0229, B:108:0x023f, B:109:0x0255, B:110:0x026b, B:111:0x0281, B:112:0x0297, B:113:0x02ad), top: B:17:0x06b6 }] */
+    /* JADX WARN: Removed duplicated region for block: B:53:0x06fa A[Catch: all -> 0x0764, TRY_LEAVE, TryCatch #2 {all -> 0x0764, blocks: (B:18:0x06b6, B:51:0x06f4, B:53:0x06fa, B:69:0x0730, B:70:0x0735, B:188:0x014a, B:90:0x0160, B:92:0x0176, B:93:0x018c, B:94:0x01a2, B:96:0x01ac, B:99:0x01b3, B:100:0x01bd, B:101:0x01ce, B:102:0x01e4, B:103:0x01f5, B:104:0x020a, B:105:0x0213, B:106:0x0229, B:107:0x023f, B:108:0x0255, B:109:0x026b, B:110:0x0281, B:111:0x0297, B:112:0x02ad, B:179:0x0136), top: B:17:0x06b6 }] */
     /* JADX WARN: Removed duplicated region for block: B:67:0x072c  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -3780,7 +3796,7 @@ public final class MessageSchema<T> implements Schema<T> {
         throw new UnsupportedOperationException("Method not decompiled: com.android.framework.protobuf.MessageSchema.mergeFromHelper(com.android.framework.protobuf.UnknownFieldSchema, com.android.framework.protobuf.ExtensionSchema, java.lang.Object, com.android.framework.protobuf.Reader, com.android.framework.protobuf.ExtensionRegistryLite):void");
     }
 
-    public static UnknownFieldSetLite getMutableUnknownFields(Object message) {
+    static UnknownFieldSetLite getMutableUnknownFields(Object message) {
         UnknownFieldSetLite unknownFields = ((GeneratedMessageLite) message).unknownFields;
         if (unknownFields == UnknownFieldSetLite.getDefaultInstance()) {
             UnknownFieldSetLite unknownFields2 = UnknownFieldSetLite.newInstance();
@@ -3790,16 +3806,13 @@ public final class MessageSchema<T> implements Schema<T> {
         return unknownFields;
     }
 
-    /* renamed from: com.android.framework.protobuf.MessageSchema$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
+    /* renamed from: com.android.framework.protobuf.MessageSchema$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType = new int[WireFormat.FieldType.values().length];
 
         static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
             try {
-                iArr[WireFormat.FieldType.BOOL.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.BOOL.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {
@@ -3952,6 +3965,8 @@ public final class MessageSchema<T> implements Schema<T> {
                     position3 = position2;
                     length = wireType;
                     if (wireType2 != metadata.keyType.getWireType()) {
+                        position4 = ArrayDecoders.skipField(tag, data, position3, limit, registers);
+                        wireType = length;
                         break;
                     } else {
                         position4 = decodeMapEntryValue(data, position3, limit, metadata.keyType, null, registers);
@@ -3963,6 +3978,8 @@ public final class MessageSchema<T> implements Schema<T> {
                     if (wireType2 != metadata.valueType.getWireType()) {
                         position3 = position2;
                         length = wireType;
+                        position4 = ArrayDecoders.skipField(tag, data, position3, limit, registers);
+                        wireType = length;
                         break;
                     } else {
                         int length2 = wireType;
@@ -3974,10 +3991,10 @@ public final class MessageSchema<T> implements Schema<T> {
                 default:
                     position3 = position2;
                     length = wireType;
+                    position4 = ArrayDecoders.skipField(tag, data, position3, limit, registers);
+                    wireType = length;
                     break;
             }
-            position4 = ArrayDecoders.skipField(tag, data, position3, limit, registers);
-            wireType = length;
         }
         if (position4 != end) {
             throw InvalidProtocolBufferException.parseFailure();
@@ -3986,19 +4003,17 @@ public final class MessageSchema<T> implements Schema<T> {
         return end;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:8:0x0037. Please report as an issue. */
     private int parseRepeatedField(T message, byte[] data, int position, int limit, int tag, int number, int wireType, int bufferPosition, long typeAndOffset, int fieldType, long fieldOffset, ArrayDecoders.Registers registers) throws IOException {
         Internal.ProtobufList<?> list;
         int position2;
         int position3;
-        Unsafe unsafe = UNSAFE;
-        Internal.ProtobufList<?> list2 = (Internal.ProtobufList) unsafe.getObject(message, fieldOffset);
+        Internal.ProtobufList<?> list2 = (Internal.ProtobufList) UNSAFE.getObject(message, fieldOffset);
         if (list2.isModifiable()) {
             list = list2;
         } else {
             int size = list2.size();
             Internal.ProtobufList<?> list3 = list2.mutableCopyWithCapacity2(size == 0 ? 10 : size * 2);
-            unsafe.putObject(message, fieldOffset, list3);
+            UNSAFE.putObject(message, fieldOffset, list3);
             list = list3;
         }
         switch (fieldType) {
@@ -4012,7 +4027,7 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (wireType == 1) {
                     return ArrayDecoders.decodeDoubleList(tag, data, position, limit, list4, registers);
                 }
-                return position2;
+                break;
             case 19:
             case 36:
                 position2 = position;
@@ -4023,7 +4038,7 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (wireType == 5) {
                     return ArrayDecoders.decodeFloatList(tag, data, position, limit, list5, registers);
                 }
-                return position2;
+                break;
             case 20:
             case 21:
             case 37:
@@ -4036,7 +4051,7 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (wireType == 0) {
                     return ArrayDecoders.decodeVarint64List(tag, data, position, limit, list6, registers);
                 }
-                return position2;
+                break;
             case 22:
             case 29:
             case 39:
@@ -4049,7 +4064,7 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (wireType == 0) {
                     return ArrayDecoders.decodeVarint32List(tag, data, position, limit, list7, registers);
                 }
-                return position2;
+                break;
             case 23:
             case 32:
             case 40:
@@ -4062,7 +4077,7 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (wireType == 1) {
                     return ArrayDecoders.decodeFixed64List(tag, data, position, limit, list8, registers);
                 }
-                return position2;
+                break;
             case 24:
             case 31:
             case 41:
@@ -4075,7 +4090,7 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (wireType == 5) {
                     return ArrayDecoders.decodeFixed32List(tag, data, position, limit, list9, registers);
                 }
-                return position2;
+                break;
             case 25:
             case 42:
                 position2 = position;
@@ -4086,38 +4101,40 @@ public final class MessageSchema<T> implements Schema<T> {
                 if (wireType == 0) {
                     return ArrayDecoders.decodeBoolList(tag, data, position, limit, list10, registers);
                 }
-                return position2;
+                break;
             case 26:
                 Internal.ProtobufList<?> list11 = list;
-                if (wireType == 2) {
+                if (wireType != 2) {
+                    position2 = position;
+                    break;
+                } else {
                     return (typeAndOffset & 536870912) == 0 ? ArrayDecoders.decodeStringList(tag, data, position, limit, list11, registers) : ArrayDecoders.decodeStringListRequireUtf8(tag, data, position, limit, list11, registers);
                 }
-                position2 = position;
-                return position2;
             case 27:
                 Internal.ProtobufList<?> list12 = list;
                 if (wireType != 2) {
                     position2 = position;
-                    return position2;
+                    break;
+                } else {
+                    return ArrayDecoders.decodeMessageList(getMessageFieldSchema(bufferPosition), tag, data, position, limit, list12, registers);
                 }
-                return ArrayDecoders.decodeMessageList(getMessageFieldSchema(bufferPosition), tag, data, position, limit, list12, registers);
             case 28:
                 Internal.ProtobufList<?> list13 = list;
                 if (wireType != 2) {
                     position2 = position;
-                    return position2;
+                    break;
+                } else {
+                    return ArrayDecoders.decodeBytesList(tag, data, position, limit, list13, registers);
                 }
-                return ArrayDecoders.decodeBytesList(tag, data, position, limit, list13, registers);
             case 30:
             case 44:
                 Internal.ProtobufList<?> list14 = list;
                 if (wireType == 2) {
                     position3 = ArrayDecoders.decodePackedVarint32List(data, position, list14, registers);
+                } else if (wireType != 0) {
+                    position2 = position;
+                    break;
                 } else {
-                    if (wireType != 0) {
-                        position2 = position;
-                        return position2;
-                    }
                     position3 = ArrayDecoders.decodeVarint32List(tag, data, position, limit, list14, registers);
                 }
                 SchemaUtil.filterUnknownEnumList((Object) message, number, (List<Integer>) list14, getEnumFieldVerifier(bufferPosition), (Object) null, (UnknownFieldSchema<UT, Object>) this.unknownFieldSchema);
@@ -4130,30 +4147,34 @@ public final class MessageSchema<T> implements Schema<T> {
                 }
                 if (wireType != 0) {
                     position2 = position;
-                    return position2;
+                    break;
+                } else {
+                    return ArrayDecoders.decodeSInt32List(tag, data, position, limit, list15, registers);
                 }
-                return ArrayDecoders.decodeSInt32List(tag, data, position, limit, list15, registers);
             case 34:
             case 48:
                 Internal.ProtobufList<?> list16 = list;
                 if (wireType == 2) {
                     return ArrayDecoders.decodePackedSInt64List(data, position, list16, registers);
                 }
-                if (wireType == 0) {
+                if (wireType != 0) {
+                    position2 = position;
+                    break;
+                } else {
                     return ArrayDecoders.decodeSInt64List(tag, data, position, limit, list16, registers);
                 }
-                position2 = position;
-                return position2;
             case 49:
-                if (wireType == 3) {
+                if (wireType != 3) {
+                    position2 = position;
+                    break;
+                } else {
                     return ArrayDecoders.decodeGroupList(getMessageFieldSchema(bufferPosition), tag, data, position, limit, list, registers);
                 }
-                position2 = position;
-                return position2;
             default:
                 position2 = position;
-                return position2;
+                break;
         }
+        return position2;
     }
 
     private <K, V> int parseMapField(T message, byte[] data, int position, int limit, int bufferPosition, long fieldOffset, ArrayDecoders.Registers registers) throws IOException {
@@ -4172,7 +4193,6 @@ public final class MessageSchema<T> implements Schema<T> {
         return decodeMapEntry(data, position, limit, this.mapFieldSchema.forMapMetadata(mapDefaultEntry), this.mapFieldSchema.forMutableMapData(mapField), registers);
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:2:0x0023. Please report as an issue. */
     private int parseOneofField(T message, byte[] data, int position, int limit, int tag, int number, int wireType, int typeAndOffset, int fieldType, long fieldOffset, int bufferPosition, ArrayDecoders.Registers registers) throws IOException {
         long oneofCaseOffset;
         long oneofCaseOffset2;
@@ -4186,7 +4206,7 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position2;
                 }
-                return position;
+                break;
             case 52:
                 if (wireType == 5) {
                     unsafe.putObject(message, fieldOffset, Float.valueOf(ArrayDecoders.decodeFloat(data, position)));
@@ -4194,7 +4214,7 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position3;
                 }
-                return position;
+                break;
             case 53:
             case 54:
                 if (wireType == 0) {
@@ -4203,7 +4223,7 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position4;
                 }
-                return position;
+                break;
             case 55:
             case 62:
                 if (wireType == 0) {
@@ -4212,7 +4232,7 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position5;
                 }
-                return position;
+                break;
             case 56:
             case 65:
                 if (wireType == 1) {
@@ -4221,7 +4241,7 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position6;
                 }
-                return position;
+                break;
             case 57:
             case 64:
                 if (wireType == 5) {
@@ -4230,7 +4250,7 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position7;
                 }
-                return position;
+                break;
             case 58:
                 if (wireType == 0) {
                     int position8 = ArrayDecoders.decodeVarint64(data, position, registers);
@@ -4238,9 +4258,11 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position8;
                 }
-                return position;
+                break;
             case 59:
-                if (wireType == 2) {
+                if (wireType != 2) {
+                    break;
+                } else {
                     int position9 = ArrayDecoders.decodeVarint32(data, position, registers);
                     int length = registers.int1;
                     if (length == 0) {
@@ -4256,25 +4278,29 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position9;
                 }
-                return position;
+                break;
             case 60:
-                if (wireType == 2) {
+                if (wireType != 2) {
+                    break;
+                } else {
                     Object current = mutableOneofMessageFieldForMerge(message, number, bufferPosition);
                     int position10 = ArrayDecoders.mergeMessageField(current, getMessageFieldSchema(bufferPosition), data, position, limit, registers);
                     storeOneofMessageField(message, number, bufferPosition, current);
                     return position10;
                 }
-                return position;
             case 61:
-                if (wireType == 2) {
+                if (wireType != 2) {
+                    break;
+                } else {
                     int position11 = ArrayDecoders.decodeBytes(data, position, registers);
                     unsafe.putObject(message, fieldOffset, registers.object1);
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position11;
                 }
-                return position;
             case 63:
-                if (wireType == 0) {
+                if (wireType != 0) {
+                    break;
+                } else {
                     int position12 = ArrayDecoders.decodeVarint32(data, position, registers);
                     int enumValue = registers.int1;
                     Internal.EnumVerifier enumVerifier = getEnumFieldVerifier(bufferPosition);
@@ -4293,35 +4319,36 @@ public final class MessageSchema<T> implements Schema<T> {
                     unsafe.putInt(message, oneofCaseOffset2, number);
                     return position12;
                 }
-                return position;
             case 66:
-                if (wireType == 0) {
+                if (wireType != 0) {
+                    break;
+                } else {
                     int position13 = ArrayDecoders.decodeVarint32(data, position, registers);
                     unsafe.putObject(message, fieldOffset, Integer.valueOf(CodedInputStream.decodeZigZag32(registers.int1)));
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position13;
                 }
-                return position;
             case 67:
-                if (wireType == 0) {
+                if (wireType != 0) {
+                    break;
+                } else {
                     int position14 = ArrayDecoders.decodeVarint64(data, position, registers);
                     unsafe.putObject(message, fieldOffset, Long.valueOf(CodedInputStream.decodeZigZag64(registers.long1)));
                     unsafe.putInt(message, oneofCaseOffset3, number);
                     return position14;
                 }
-                return position;
             case 68:
-                if (wireType == 3) {
+                if (wireType != 3) {
+                    break;
+                } else {
                     Object current2 = mutableOneofMessageFieldForMerge(message, number, bufferPosition);
                     int endTag = (tag & (-8)) | 4;
                     int position15 = ArrayDecoders.mergeGroupField(current2, getMessageFieldSchema(bufferPosition), data, position, limit, endTag, registers);
                     storeOneofMessageField(message, number, bufferPosition, current2);
                     return position15;
                 }
-                return position;
-            default:
-                return position;
         }
+        return position;
     }
 
     private Schema getMessageFieldSchema(int pos) {
@@ -4344,7 +4371,7 @@ public final class MessageSchema<T> implements Schema<T> {
     }
 
     /* JADX WARN: Failed to find 'out' block for switch in B:111:0x0097. Please report as an issue. */
-    public int parseProto2Message(T message, byte[] data, int position, int limit, int endGroup, ArrayDecoders.Registers registers) throws IOException {
+    int parseProto2Message(T message, byte[] data, int position, int limit, int endGroup, ArrayDecoders.Registers registers) throws IOException {
         Unsafe unsafe;
         int i;
         MessageSchema<T> messageSchema;
@@ -5164,9 +5191,7 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             position3 = position8;
                             presenceFieldOffset = pos;
-                            if (currentPresenceFieldOffset2 != 1) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 1) {
                                 UnsafeUtil.putDouble(t, fieldOffset, ArrayDecoders.decodeDouble(bArr, position3));
                                 position5 = position3 + 8;
                                 currentPresenceField2 |= presenceMask;
@@ -5175,15 +5200,19 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 1:
                             position3 = position8;
                             typeAndOffset2 = currentPresenceFieldOffset4;
                             presenceFieldOffset = pos;
                             currentPresenceFieldOffset2 = wireType;
-                            if (currentPresenceFieldOffset2 != 5) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 5) {
                                 UnsafeUtil.putFloat(t, fieldOffset, ArrayDecoders.decodeFloat(bArr, position3));
                                 position5 = position3 + 4;
                                 currentPresenceField2 |= presenceMask;
@@ -5192,6 +5221,12 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 2:
                         case 3:
@@ -5199,9 +5234,7 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             position3 = position8;
                             presenceFieldOffset = pos;
-                            if (currentPresenceFieldOffset2 != 0) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 0) {
                                 int position9 = ArrayDecoders.decodeVarint64(bArr, position3, registers2);
                                 unsafe2.putLong(message, fieldOffset, registers2.long1);
                                 currentPresenceField2 |= presenceMask;
@@ -5211,6 +5244,12 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 4:
                         case 11:
@@ -5218,9 +5257,7 @@ public final class MessageSchema<T> implements Schema<T> {
                             typeAndOffset2 = currentPresenceFieldOffset4;
                             presenceFieldOffset = pos;
                             currentPresenceFieldOffset2 = wireType;
-                            if (currentPresenceFieldOffset2 != 0) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 0) {
                                 position5 = ArrayDecoders.decodeVarint32(bArr, position3, registers2);
                                 unsafe2.putInt(t, fieldOffset, registers2.int1);
                                 currentPresenceField2 |= presenceMask;
@@ -5229,6 +5266,12 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 5:
                         case 14:
@@ -5236,9 +5279,7 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             position3 = position8;
                             presenceFieldOffset = pos;
-                            if (currentPresenceFieldOffset2 != 1) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 1) {
                                 unsafe2.putLong(message, fieldOffset, ArrayDecoders.decodeFixed64(bArr, position3));
                                 position5 = position3 + 8;
                                 currentPresenceField2 |= presenceMask;
@@ -5247,6 +5288,12 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 6:
                         case 13:
@@ -5254,9 +5301,7 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             position3 = position8;
                             presenceFieldOffset = pos;
-                            if (currentPresenceFieldOffset2 != 5) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 5) {
                                 unsafe2.putInt(t, fieldOffset, ArrayDecoders.decodeFixed32(bArr, position3));
                                 position5 = position3 + 4;
                                 currentPresenceField2 |= presenceMask;
@@ -5265,15 +5310,19 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 7:
                             typeAndOffset2 = currentPresenceFieldOffset4;
                             currentPresenceFieldOffset2 = wireType;
                             position3 = position8;
                             presenceFieldOffset = pos;
-                            if (currentPresenceFieldOffset2 != 0) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 0) {
                                 position5 = ArrayDecoders.decodeVarint64(bArr, position3, registers2);
                                 UnsafeUtil.putBoolean(t, fieldOffset, registers2.long1 != 0);
                                 currentPresenceField2 |= presenceMask;
@@ -5282,6 +5331,12 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 8:
                             int typeAndOffset4 = typeAndOffset;
@@ -5289,9 +5344,7 @@ public final class MessageSchema<T> implements Schema<T> {
                             typeAndOffset2 = currentPresenceFieldOffset4;
                             presenceFieldOffset = pos;
                             currentPresenceFieldOffset2 = wireType;
-                            if (currentPresenceFieldOffset2 != 2) {
-                                break;
-                            } else {
+                            if (currentPresenceFieldOffset2 == 2) {
                                 if ((typeAndOffset4 & 536870912) == 0) {
                                     position5 = ArrayDecoders.decodeString(bArr, position3, registers2);
                                 } else {
@@ -5304,6 +5357,12 @@ public final class MessageSchema<T> implements Schema<T> {
                                 currentPresenceFieldOffset4 = typeAndOffset2;
                                 pos2 = limit;
                                 break;
+                            } else {
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
+                                break;
                             }
                         case 9:
                             presenceFieldOffset = pos;
@@ -5311,6 +5370,10 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             if (currentPresenceFieldOffset2 != 2) {
                                 position3 = position8;
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
                                 break;
                             } else {
                                 Object current = messageSchema.mutableMessageFieldForMerge(t, presenceFieldOffset);
@@ -5329,6 +5392,10 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             if (currentPresenceFieldOffset2 != 2) {
                                 position3 = position8;
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
                                 break;
                             } else {
                                 position5 = ArrayDecoders.decodeBytes(bArr, position8, registers2);
@@ -5346,6 +5413,10 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             if (currentPresenceFieldOffset2 != 0) {
                                 position3 = position8;
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
                                 break;
                             } else {
                                 position5 = ArrayDecoders.decodeVarint32(bArr, position8, registers2);
@@ -5363,6 +5434,10 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             if (currentPresenceFieldOffset2 != 0) {
                                 position3 = position8;
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
                                 break;
                             } else {
                                 position5 = ArrayDecoders.decodeVarint32(bArr, position8, registers2);
@@ -5380,6 +5455,10 @@ public final class MessageSchema<T> implements Schema<T> {
                                 typeAndOffset2 = currentPresenceFieldOffset4;
                                 currentPresenceFieldOffset2 = wireType;
                                 position3 = position8;
+                                position2 = position3;
+                                unsafe = unsafe2;
+                                currentPresenceFieldOffset4 = typeAndOffset2;
+                                currentPresenceFieldOffset = presenceFieldOffset;
                                 break;
                             } else {
                                 int position10 = ArrayDecoders.decodeVarint64(bArr, position8, registers2);
@@ -5397,12 +5476,12 @@ public final class MessageSchema<T> implements Schema<T> {
                             currentPresenceFieldOffset2 = wireType;
                             position3 = position8;
                             presenceFieldOffset = pos;
+                            position2 = position3;
+                            unsafe = unsafe2;
+                            currentPresenceFieldOffset4 = typeAndOffset2;
+                            currentPresenceFieldOffset = presenceFieldOffset;
                             break;
                     }
-                    position2 = position3;
-                    unsafe = unsafe2;
-                    currentPresenceFieldOffset4 = typeAndOffset2;
-                    currentPresenceFieldOffset = presenceFieldOffset;
                 } else {
                     int pos5 = pos;
                     int currentPresenceFieldOffset5 = currentPresenceFieldOffset4;
@@ -5592,10 +5671,9 @@ public final class MessageSchema<T> implements Schema<T> {
                     this.listFieldSchema.makeImmutableListAt(t, offset);
                     break;
                 case 50:
-                    Unsafe unsafe = UNSAFE;
-                    Object mapField = unsafe.getObject(t, offset);
+                    Object mapField = UNSAFE.getObject(t, offset);
                     if (mapField != null) {
-                        unsafe.putObject(t, offset, this.mapFieldSchema.toImmutable(mapField));
+                        UNSAFE.putObject(t, offset, this.mapFieldSchema.toImmutable(mapField));
                         break;
                     } else {
                         break;
@@ -6010,7 +6088,7 @@ public final class MessageSchema<T> implements Schema<T> {
         return -1;
     }
 
-    public int getSchemaSize() {
+    int getSchemaSize() {
         return this.buffer.length * 3;
     }
 }

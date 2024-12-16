@@ -71,9 +71,8 @@ public abstract class DocumentsProvider extends ContentProvider {
 
     private void registerAuthority(String authority) {
         this.mAuthority = authority;
-        UriMatcher uriMatcher = new UriMatcher(-1);
-        this.mMatcher = uriMatcher;
-        uriMatcher.addURI(this.mAuthority, "root", 1);
+        this.mMatcher = new UriMatcher(-1);
+        this.mMatcher.addURI(this.mAuthority, "root", 1);
         this.mMatcher.addURI(this.mAuthority, "root/*", 2);
         this.mMatcher.addURI(this.mAuthority, "root/*/recent", 3);
         this.mMatcher.addURI(this.mAuthority, "root/*/search", 4);

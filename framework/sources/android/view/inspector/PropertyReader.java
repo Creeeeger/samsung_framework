@@ -36,7 +36,6 @@ public interface PropertyReader {
 
     void readShort(int i, short s);
 
-    /* loaded from: classes4.dex */
     public static class PropertyTypeMismatchException extends RuntimeException {
         public PropertyTypeMismatchException(int id, String expectedPropertyType, String actualPropertyType, String propertyName) {
             super(formatMessage(id, expectedPropertyType, actualPropertyType, propertyName));

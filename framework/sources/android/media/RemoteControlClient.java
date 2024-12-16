@@ -81,35 +81,27 @@ public class RemoteControlClient {
     private boolean mNeedsPositionSync = false;
     private PlaybackState mSessionPlaybackState = null;
     private MediaSession.Callback mTransportListener = new MediaSession.Callback() { // from class: android.media.RemoteControlClient.1
-        AnonymousClass1() {
-        }
-
         @Override // android.media.session.MediaSession.Callback
         public void onSeekTo(long pos) {
-            RemoteControlClient remoteControlClient = RemoteControlClient.this;
-            remoteControlClient.onSeekTo(remoteControlClient.mCurrentClientGenId, pos);
+            RemoteControlClient.this.onSeekTo(RemoteControlClient.this.mCurrentClientGenId, pos);
         }
 
         @Override // android.media.session.MediaSession.Callback
         public void onSetRating(Rating rating) {
             if ((RemoteControlClient.this.mTransportControlFlags & 512) != 0) {
-                RemoteControlClient remoteControlClient = RemoteControlClient.this;
-                remoteControlClient.onUpdateMetadata(remoteControlClient.mCurrentClientGenId, 268435457, rating);
+                RemoteControlClient.this.onUpdateMetadata(RemoteControlClient.this.mCurrentClientGenId, 268435457, rating);
             }
         }
     };
 
-    /* loaded from: classes2.dex */
     public interface OnGetPlaybackPositionListener {
         long onGetPlaybackPosition();
     }
 
-    /* loaded from: classes2.dex */
     public interface OnMetadataUpdateListener {
         void onMetadataUpdate(int i, Object obj);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnPlaybackPositionUpdateListener {
         void onPlaybackPositionUpdate(long j);
     }
@@ -138,14 +130,9 @@ public class RemoteControlClient {
     }
 
     @Deprecated
-    /* loaded from: classes2.dex */
     public class MetadataEditor extends MediaMetadataEditor {
         public static final int BITMAP_KEY_ARTWORK = 100;
         public static final int METADATA_KEY_ARTWORK = 100;
-
-        /* synthetic */ MetadataEditor(RemoteControlClient remoteControlClient, MetadataEditorIA metadataEditorIA) {
-            this();
-        }
 
         private MetadataEditor() {
         }
@@ -201,9 +188,10 @@ public class RemoteControlClient {
 
         /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
             jadx.core.utils.exceptions.JadxRuntimeException: Can't find top splitter block for handler:B:33:0x008b
-            	at jadx.core.utils.BlockUtils.getTopSplitterForHandler(BlockUtils.java:1166)
-            	at jadx.core.dex.visitors.regions.RegionMaker.processTryCatchBlocks(RegionMaker.java:1022)
-            	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:55)
+            	at jadx.core.utils.BlockUtils.getTopSplitterForHandler(BlockUtils.java:1179)
+            	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.collectHandlerRegions(ExcHandlersRegionMaker.java:53)
+            	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.process(ExcHandlersRegionMaker.java:38)
+            	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:27)
             */
         @Override // android.media.MediaMetadataEditor
         public synchronized void apply() {
@@ -219,49 +207,49 @@ public class RemoteControlClient {
                 return
             Le:
                 android.media.RemoteControlClient r0 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L8d
-                java.lang.Object r0 = android.media.RemoteControlClient.m2444$$Nest$fgetmCacheLock(r0)     // Catch: java.lang.Throwable -> L8d
+                java.lang.Object r0 = android.media.RemoteControlClient.m2518$$Nest$fgetmCacheLock(r0)     // Catch: java.lang.Throwable -> L8d
                 monitor-enter(r0)     // Catch: java.lang.Throwable -> L8d
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L88
                 android.os.Bundle r2 = new android.os.Bundle     // Catch: java.lang.Throwable -> L88
                 android.os.Bundle r3 = r5.mEditorMetadata     // Catch: java.lang.Throwable -> L88
                 r2.<init>(r3)     // Catch: java.lang.Throwable -> L88
-                android.media.RemoteControlClient.m2452$$Nest$fputmMetadata(r1, r2)     // Catch: java.lang.Throwable -> L88
+                android.media.RemoteControlClient.m2526$$Nest$fputmMetadata(r1, r2)     // Catch: java.lang.Throwable -> L88
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L88
-                android.os.Bundle r1 = android.media.RemoteControlClient.m2447$$Nest$fgetmMetadata(r1)     // Catch: java.lang.Throwable -> L88
+                android.os.Bundle r1 = android.media.RemoteControlClient.m2521$$Nest$fgetmMetadata(r1)     // Catch: java.lang.Throwable -> L88
                 r2 = 536870911(0x1fffffff, float:1.0842021E-19)
                 java.lang.String r2 = java.lang.String.valueOf(r2)     // Catch: java.lang.Throwable -> L88
                 long r3 = r5.mEditableKeys     // Catch: java.lang.Throwable -> L88
                 r1.putLong(r2, r3)     // Catch: java.lang.Throwable -> L88
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L88
-                android.graphics.Bitmap r1 = android.media.RemoteControlClient.m2448$$Nest$fgetmOriginalArtwork(r1)     // Catch: java.lang.Throwable -> L88
+                android.graphics.Bitmap r1 = android.media.RemoteControlClient.m2522$$Nest$fgetmOriginalArtwork(r1)     // Catch: java.lang.Throwable -> L88
                 if (r1 == 0) goto L52
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L8b
-                android.graphics.Bitmap r1 = android.media.RemoteControlClient.m2448$$Nest$fgetmOriginalArtwork(r1)     // Catch: java.lang.Throwable -> L8b
+                android.graphics.Bitmap r1 = android.media.RemoteControlClient.m2522$$Nest$fgetmOriginalArtwork(r1)     // Catch: java.lang.Throwable -> L8b
                 android.graphics.Bitmap r2 = r5.mEditorArtwork     // Catch: java.lang.Throwable -> L8b
                 boolean r1 = r1.equals(r2)     // Catch: java.lang.Throwable -> L8b
                 if (r1 != 0) goto L52
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L8b
-                android.graphics.Bitmap r1 = android.media.RemoteControlClient.m2448$$Nest$fgetmOriginalArtwork(r1)     // Catch: java.lang.Throwable -> L8b
+                android.graphics.Bitmap r1 = android.media.RemoteControlClient.m2522$$Nest$fgetmOriginalArtwork(r1)     // Catch: java.lang.Throwable -> L8b
                 r1.recycle()     // Catch: java.lang.Throwable -> L8b
             L52:
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L88
                 android.graphics.Bitmap r2 = r5.mEditorArtwork     // Catch: java.lang.Throwable -> L88
-                android.media.RemoteControlClient.m2453$$Nest$fputmOriginalArtwork(r1, r2)     // Catch: java.lang.Throwable -> L88
+                android.media.RemoteControlClient.m2527$$Nest$fputmOriginalArtwork(r1, r2)     // Catch: java.lang.Throwable -> L88
                 r1 = 0
                 r5.mEditorArtwork = r1     // Catch: java.lang.Throwable -> L88
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L88
-                android.media.session.MediaSession r1 = android.media.RemoteControlClient.m2449$$Nest$fgetmSession(r1)     // Catch: java.lang.Throwable -> L88
+                android.media.session.MediaSession r1 = android.media.RemoteControlClient.m2523$$Nest$fgetmSession(r1)     // Catch: java.lang.Throwable -> L88
                 if (r1 == 0) goto L82
                 android.media.MediaMetadata$Builder r1 = r5.mMetadataBuilder     // Catch: java.lang.Throwable -> L8b
                 if (r1 == 0) goto L82
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L8b
                 android.media.MediaMetadata$Builder r2 = r5.mMetadataBuilder     // Catch: java.lang.Throwable -> L8b
                 android.media.MediaMetadata r2 = r2.build()     // Catch: java.lang.Throwable -> L8b
-                android.media.RemoteControlClient.m2451$$Nest$fputmMediaMetadata(r1, r2)     // Catch: java.lang.Throwable -> L8b
+                android.media.RemoteControlClient.m2525$$Nest$fputmMediaMetadata(r1, r2)     // Catch: java.lang.Throwable -> L8b
                 android.media.RemoteControlClient r1 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L8b
-                android.media.session.MediaSession r1 = android.media.RemoteControlClient.m2449$$Nest$fgetmSession(r1)     // Catch: java.lang.Throwable -> L8b
+                android.media.session.MediaSession r1 = android.media.RemoteControlClient.m2523$$Nest$fgetmSession(r1)     // Catch: java.lang.Throwable -> L8b
                 android.media.RemoteControlClient r2 = android.media.RemoteControlClient.this     // Catch: java.lang.Throwable -> L8b
-                android.media.MediaMetadata r2 = android.media.RemoteControlClient.m2446$$Nest$fgetmMediaMetadata(r2)     // Catch: java.lang.Throwable -> L8b
+                android.media.MediaMetadata r2 = android.media.RemoteControlClient.m2520$$Nest$fgetmMediaMetadata(r2)     // Catch: java.lang.Throwable -> L8b
                 r1.setMetadata(r2)     // Catch: java.lang.Throwable -> L8b
             L82:
                 r1 = 1
@@ -287,7 +275,6 @@ public class RemoteControlClient {
     }
 
     public MetadataEditor editMetadata(boolean startEmpty) {
-        MediaMetadata mediaMetadata;
         MetadataEditor editor = new MetadataEditor();
         if (startEmpty) {
             editor.mEditorMetadata = new Bundle();
@@ -301,10 +288,10 @@ public class RemoteControlClient {
             editor.mMetadataChanged = false;
             editor.mArtworkChanged = false;
         }
-        if (startEmpty || (mediaMetadata = this.mMediaMetadata) == null) {
+        if (startEmpty || this.mMediaMetadata == null) {
             editor.mMetadataBuilder = new MediaMetadata.Builder();
         } else {
-            editor.mMetadataBuilder = new MediaMetadata.Builder(mediaMetadata);
+            editor.mMetadataBuilder = new MediaMetadata.Builder(this.mMediaMetadata);
         }
         return editor;
     }
@@ -339,9 +326,8 @@ public class RemoteControlClient {
                     PlaybackState.Builder bob = new PlaybackState.Builder(this.mSessionPlaybackState);
                     bob.setState(pbState, position, playbackSpeed, SystemClock.elapsedRealtime());
                     bob.setErrorMessage(null);
-                    PlaybackState build = bob.build();
-                    this.mSessionPlaybackState = build;
-                    this.mSession.setPlaybackState(build);
+                    this.mSessionPlaybackState = bob.build();
+                    this.mSession.setPlaybackState(this.mSessionPlaybackState);
                 }
             }
         }
@@ -353,9 +339,8 @@ public class RemoteControlClient {
             if (this.mSession != null) {
                 PlaybackState.Builder bob = new PlaybackState.Builder(this.mSessionPlaybackState);
                 bob.setActions(getActionsFromRccControlFlags(transportControlFlags));
-                PlaybackState build = bob.build();
-                this.mSessionPlaybackState = build;
-                this.mSession.setPlaybackState(build);
+                this.mSessionPlaybackState = bob.build();
+                this.mSession.setPlaybackState(this.mSessionPlaybackState);
             }
         }
     }
@@ -382,41 +367,20 @@ public class RemoteControlClient {
         return this.mRcMediaIntent;
     }
 
-    /* renamed from: android.media.RemoteControlClient$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 extends MediaSession.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.session.MediaSession.Callback
-        public void onSeekTo(long pos) {
-            RemoteControlClient remoteControlClient = RemoteControlClient.this;
-            remoteControlClient.onSeekTo(remoteControlClient.mCurrentClientGenId, pos);
-        }
-
-        @Override // android.media.session.MediaSession.Callback
-        public void onSetRating(Rating rating) {
-            if ((RemoteControlClient.this.mTransportControlFlags & 512) != 0) {
-                RemoteControlClient remoteControlClient = RemoteControlClient.this;
-                remoteControlClient.onUpdateMetadata(remoteControlClient.mCurrentClientGenId, 268435457, rating);
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void onSeekTo(int generationId, long timeMs) {
-        OnPlaybackPositionUpdateListener onPlaybackPositionUpdateListener;
         synchronized (this.mCacheLock) {
-            if (this.mCurrentClientGenId == generationId && (onPlaybackPositionUpdateListener = this.mPositionUpdateListener) != null) {
-                onPlaybackPositionUpdateListener.onPlaybackPositionUpdate(timeMs);
+            if (this.mCurrentClientGenId == generationId && this.mPositionUpdateListener != null) {
+                this.mPositionUpdateListener.onPlaybackPositionUpdate(timeMs);
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onUpdateMetadata(int generationId, int key, Object value) {
-        OnMetadataUpdateListener onMetadataUpdateListener;
         synchronized (this.mCacheLock) {
-            if (this.mCurrentClientGenId == generationId && (onMetadataUpdateListener = this.mMetadataUpdateListener) != null) {
-                onMetadataUpdateListener.onMetadataUpdate(key, value);
+            if (this.mCurrentClientGenId == generationId && this.mMetadataUpdateListener != null) {
+                this.mMetadataUpdateListener.onMetadataUpdate(key, value);
             }
         }
     }
@@ -442,7 +406,7 @@ public class RemoteControlClient {
         if (Math.abs(speed) <= 1.0f) {
             return POSITION_REFRESH_PERIOD_PLAYING_MS;
         }
-        return Math.max(15000.0f / Math.abs(speed), POSITION_REFRESH_PERIOD_MIN_MS);
+        return Math.max((long) (15000.0f / Math.abs(speed)), POSITION_REFRESH_PERIOD_MIN_MS);
     }
 
     private static int getStateFromRccState(int rccState) {
@@ -472,7 +436,7 @@ public class RemoteControlClient {
         }
     }
 
-    public static int getRccStateFromState(int state) {
+    static int getRccStateFromState(int state) {
         switch (state) {
             case 0:
                 return 0;
@@ -510,7 +474,7 @@ public class RemoteControlClient {
         return actions;
     }
 
-    public static int getRccControlFlagsFromActions(long actions) {
+    static int getRccControlFlagsFromActions(long actions) {
         int rccFlags = 0;
         for (long action = 1; action <= actions && action < 2147483647L; action <<= 1) {
             if ((action & actions) != 0) {

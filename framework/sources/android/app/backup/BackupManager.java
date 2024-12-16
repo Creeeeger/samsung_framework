@@ -10,7 +10,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -62,7 +61,7 @@ public class BackupManager {
     @SystemApi
     public static final int SUCCESS = 0;
     private static final String TAG = "BackupManager";
-    private static IBackupManager sService;
+    public static IBackupManager sService;
     private Context mContext;
 
     private static void checkServiceBinder() {
@@ -77,10 +76,9 @@ public class BackupManager {
 
     public void dataChanged() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.dataChanged(this.mContext.getPackageName());
+                sService.dataChanged(this.mContext.getPackageName());
             } catch (RemoteException e) {
                 Log.d(TAG, "dataChanged() couldn't connect");
             }
@@ -89,10 +87,9 @@ public class BackupManager {
 
     public static void dataChanged(String packageName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.dataChanged(packageName);
+                sService.dataChanged(packageName);
             } catch (RemoteException e) {
                 Log.e(TAG, "dataChanged(pkg) couldn't connect");
             }
@@ -101,10 +98,9 @@ public class BackupManager {
 
     public static void dataChangedForUser(int userId, String packageName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.dataChangedForUser(userId, packageName);
+                sService.dataChangedForUser(userId, packageName);
             } catch (RemoteException e) {
                 Log.e(TAG, "dataChanged(userId,pkg) couldn't connect");
             }
@@ -126,12 +122,11 @@ public class BackupManager {
     @SystemApi
     public RestoreSession beginRestoreSession() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager == null) {
+        if (sService == null) {
             return null;
         }
         try {
-            IRestoreSession binder = iBackupManager.beginRestoreSessionForUser(this.mContext.getUserId(), null, null);
+            IRestoreSession binder = sService.beginRestoreSessionForUser(this.mContext.getUserId(), null, null);
             if (binder == null) {
                 return null;
             }
@@ -146,10 +141,9 @@ public class BackupManager {
     @SystemApi
     public void setBackupEnabled(boolean isEnabled) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.setBackupEnabled(isEnabled);
+                sService.setBackupEnabled(isEnabled);
             } catch (RemoteException e) {
                 Log.e(TAG, "setBackupEnabled() couldn't connect");
             }
@@ -159,13 +153,12 @@ public class BackupManager {
     @SystemApi
     public void setFrameworkSchedulingEnabled(boolean isEnabled) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager == null) {
+        if (sService == null) {
             Log.e(TAG, "setFrameworkSchedulingEnabled() couldn't connect");
             return;
         }
         try {
-            iBackupManager.setFrameworkSchedulingEnabledForUser(this.mContext.getUserId(), isEnabled);
+            sService.setFrameworkSchedulingEnabledForUser(this.mContext.getUserId(), isEnabled);
         } catch (RemoteException e) {
             Log.e(TAG, "setFrameworkSchedulingEnabled() couldn't connect");
         }
@@ -174,10 +167,9 @@ public class BackupManager {
     @SystemApi
     public boolean isBackupEnabled() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.isBackupEnabled();
+                return sService.isBackupEnabled();
             } catch (RemoteException e) {
                 Log.e(TAG, "isBackupEnabled() couldn't connect");
                 return false;
@@ -192,10 +184,9 @@ public class BackupManager {
             this.mContext.enforceCallingOrSelfPermission(Manifest.permission.BACKUP, "isBackupServiceActive");
         }
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.isBackupServiceActive(user.getIdentifier());
+                return sService.isBackupServiceActive(user.getIdentifier());
             } catch (RemoteException e) {
                 Log.e(TAG, "isBackupEnabled() couldn't connect");
                 return false;
@@ -207,10 +198,9 @@ public class BackupManager {
     @SystemApi
     public void setAutoRestore(boolean isEnabled) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.setAutoRestore(isEnabled);
+                sService.setAutoRestore(isEnabled);
             } catch (RemoteException e) {
                 Log.e(TAG, "setAutoRestore() couldn't connect");
             }
@@ -220,10 +210,9 @@ public class BackupManager {
     @SystemApi
     public String getCurrentTransport() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getCurrentTransport();
+                return sService.getCurrentTransport();
             } catch (RemoteException e) {
                 Log.e(TAG, "getCurrentTransport() couldn't connect");
                 return null;
@@ -235,10 +224,9 @@ public class BackupManager {
     @SystemApi
     public ComponentName getCurrentTransportComponent() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getCurrentTransportComponentForUser(this.mContext.getUserId());
+                return sService.getCurrentTransportComponentForUser(this.mContext.getUserId());
             } catch (RemoteException e) {
                 Log.e(TAG, "getCurrentTransportComponent() couldn't connect");
                 return null;
@@ -250,10 +238,9 @@ public class BackupManager {
     @SystemApi
     public String[] listAllTransports() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.listAllTransports();
+                return sService.listAllTransports();
             } catch (RemoteException e) {
                 Log.e(TAG, "listAllTransports() couldn't connect");
                 return null;
@@ -271,10 +258,9 @@ public class BackupManager {
     @SystemApi
     public void updateTransportAttributes(ComponentName transportComponent, String name, Intent configurationIntent, String currentDestinationString, Intent dataManagementIntent, CharSequence dataManagementLabel) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.updateTransportAttributesForUser(this.mContext.getUserId(), transportComponent, name, configurationIntent, currentDestinationString, dataManagementIntent, dataManagementLabel);
+                sService.updateTransportAttributesForUser(this.mContext.getUserId(), transportComponent, name, configurationIntent, currentDestinationString, dataManagementIntent, dataManagementLabel);
             } catch (RemoteException e) {
                 Log.e(TAG, "describeTransport() couldn't connect");
             }
@@ -285,10 +271,9 @@ public class BackupManager {
     @Deprecated
     public String selectBackupTransport(String transport) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.selectBackupTransport(transport);
+                return sService.selectBackupTransport(transport);
             } catch (RemoteException e) {
                 Log.e(TAG, "selectBackupTransport() couldn't connect");
                 return null;
@@ -319,10 +304,9 @@ public class BackupManager {
     @SystemApi
     public void backupNow() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.backupNow();
+                sService.backupNow();
             } catch (RemoteException e) {
                 Log.e(TAG, "backupNow() couldn't connect");
             }
@@ -332,10 +316,9 @@ public class BackupManager {
     @SystemApi
     public long getAvailableRestoreToken(String packageName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getAvailableRestoreTokenForUser(this.mContext.getUserId(), packageName);
+                return sService.getAvailableRestoreTokenForUser(this.mContext.getUserId(), packageName);
             } catch (RemoteException e) {
                 Log.e(TAG, "getAvailableRestoreToken() couldn't connect");
                 return 0L;
@@ -347,10 +330,9 @@ public class BackupManager {
     @SystemApi
     public boolean isAppEligibleForBackup(String packageName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.isAppEligibleForBackupForUser(this.mContext.getUserId(), packageName);
+                return sService.isAppEligibleForBackupForUser(this.mContext.getUserId(), packageName);
             } catch (RemoteException e) {
                 Log.e(TAG, "isAppEligibleForBackup(pkg) couldn't connect");
                 return false;
@@ -391,10 +373,9 @@ public class BackupManager {
     @SystemApi
     public void cancelBackups() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.cancelBackups();
+                sService.cancelBackups();
             } catch (RemoteException e) {
                 Log.e(TAG, "cancelBackups() couldn't connect.");
             }
@@ -403,10 +384,9 @@ public class BackupManager {
 
     public UserHandle getUserForAncestralSerialNumber(long ancestralSerialNumber) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getUserForAncestralSerialNumber(ancestralSerialNumber);
+                return sService.getUserForAncestralSerialNumber(ancestralSerialNumber);
             } catch (RemoteException e) {
                 Log.e(TAG, "getUserForAncestralSerialNumber() couldn't connect");
                 return null;
@@ -418,10 +398,9 @@ public class BackupManager {
     @SystemApi
     public void setAncestralSerialNumber(long ancestralSerialNumber) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.setAncestralSerialNumber(ancestralSerialNumber);
+                sService.setAncestralSerialNumber(ancestralSerialNumber);
             } catch (RemoteException e) {
                 Log.e(TAG, "setAncestralSerialNumber() couldn't connect");
             }
@@ -431,10 +410,9 @@ public class BackupManager {
     @SystemApi
     public Intent getConfigurationIntent(String transportName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getConfigurationIntentForUser(this.mContext.getUserId(), transportName);
+                return sService.getConfigurationIntentForUser(this.mContext.getUserId(), transportName);
             } catch (RemoteException e) {
                 Log.e(TAG, "getConfigurationIntent() couldn't connect");
                 return null;
@@ -446,10 +424,9 @@ public class BackupManager {
     @SystemApi
     public String getDestinationString(String transportName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getDestinationStringForUser(this.mContext.getUserId(), transportName);
+                return sService.getDestinationStringForUser(this.mContext.getUserId(), transportName);
             } catch (RemoteException e) {
                 Log.e(TAG, "getDestinationString() couldn't connect");
                 return null;
@@ -461,10 +438,9 @@ public class BackupManager {
     @SystemApi
     public Intent getDataManagementIntent(String transportName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getDataManagementIntentForUser(this.mContext.getUserId(), transportName);
+                return sService.getDataManagementIntentForUser(this.mContext.getUserId(), transportName);
             } catch (RemoteException e) {
                 Log.e(TAG, "getDataManagementIntent() couldn't connect");
                 return null;
@@ -486,10 +462,9 @@ public class BackupManager {
     @SystemApi
     public CharSequence getDataManagementIntentLabel(String transportName) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.getDataManagementLabelForUser(this.mContext.getUserId(), transportName);
+                return sService.getDataManagementLabelForUser(this.mContext.getUserId(), transportName);
             } catch (RemoteException e) {
                 Log.e(TAG, "getDataManagementIntentLabel() couldn't connect");
                 return null;
@@ -500,10 +475,9 @@ public class BackupManager {
 
     public Map<String, Object> semBackupPackage(ParcelFileDescriptor fd, String[] packageNames, String password, int flag) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.semBackupPackage(fd, packageNames, password, flag);
+                return sService.semBackupPackage(fd, packageNames, password, flag);
             } catch (RemoteException e) {
                 Log.e(TAG, "semBackupPackage() couldn't connect");
                 return null;
@@ -515,10 +489,9 @@ public class BackupManager {
 
     public Map<String, Object> semBackupPackagePath(ParcelFileDescriptor fd, String[] packageNames, String password, int flag, String[] paths) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.semBackupPackagePath(fd, packageNames, password, flag, paths);
+                return sService.semBackupPackagePath(fd, packageNames, password, flag, paths);
             } catch (RemoteException e) {
                 Log.e(TAG, "semBackupPackagePath() couldn't connect");
                 return null;
@@ -530,10 +503,9 @@ public class BackupManager {
 
     public void semRestorePackage(ParcelFileDescriptor fd, String password) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.semRestorePackage(fd, password);
+                sService.semRestorePackage(fd, password);
                 return;
             } catch (RemoteException e) {
                 Log.e(TAG, "semRestorePackage() couldn't connect");
@@ -545,10 +517,9 @@ public class BackupManager {
 
     public boolean isSubUserSupported() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.isSubUserSupported();
+                return sService.isSubUserSupported();
             } catch (RemoteException e) {
                 Log.e(TAG, "isSubUserSupported() couldn't connect");
                 return false;
@@ -560,10 +531,9 @@ public class BackupManager {
 
     public boolean semIsBackupEnabled() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                return iBackupManager.semIsBackupEnabled();
+                return sService.semIsBackupEnabled();
             } catch (RemoteException e) {
                 Log.e(TAG, "semIsBackupEnabled() couldn't connect");
                 return false;
@@ -574,10 +544,9 @@ public class BackupManager {
 
     public void semSetBackupEnabled(boolean enabled) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.semSetBackupEnabled(enabled);
+                sService.semSetBackupEnabled(enabled);
             } catch (RemoteException e) {
                 Log.e(TAG, "semSetBackupEnabled() couldn't connect");
             }
@@ -586,10 +555,9 @@ public class BackupManager {
 
     public void semSetAutoRestoreEnabled(boolean enabled) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.semSetAutoRestoreEnabled(enabled);
+                sService.semSetAutoRestoreEnabled(enabled);
             } catch (RemoteException e) {
                 Log.e(TAG, "semSetAutoRestoreEnabled() couldn't connect");
             }
@@ -598,12 +566,11 @@ public class BackupManager {
 
     public boolean semCancelBackupAndRestore() {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager == null) {
+        if (sService == null) {
             return false;
         }
         try {
-            boolean result = iBackupManager.semCancelBackupAndRestore();
+            boolean result = sService.semCancelBackupAndRestore();
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "semCancelBackupAndRestore() couldn't connect");
@@ -613,12 +580,11 @@ public class BackupManager {
 
     public boolean semSetTimeoutBackupAndRestore(int timeoutMin) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager == null) {
+        if (sService == null) {
             return false;
         }
         try {
-            boolean result = iBackupManager.semSetTimeoutBackupAndRestore(timeoutMin);
+            boolean result = sService.semSetTimeoutBackupAndRestore(timeoutMin);
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "semSetTimeoutBackupAndRestore() couldn't connect");
@@ -628,12 +594,11 @@ public class BackupManager {
 
     public boolean semSetTransportFlagsForAdbBackup(int transportFlags) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager == null) {
+        if (sService == null) {
             return false;
         }
         try {
-            boolean result = iBackupManager.semSetTransportFlagsForAdbBackup(transportFlags);
+            boolean result = sService.semSetTransportFlagsForAdbBackup(transportFlags);
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "semSetTransportFlagsForAdbBackup couldn't connect");
@@ -643,12 +608,11 @@ public class BackupManager {
 
     public boolean semDisableDataExtractionRule(boolean disabled) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager == null) {
+        if (sService == null) {
             return false;
         }
         try {
-            boolean result = iBackupManager.semDisableDataExtractionRule(disabled);
+            boolean result = sService.semDisableDataExtractionRule(disabled);
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "semDisableDataExtractionRule() couldn't connect");
@@ -659,10 +623,9 @@ public class BackupManager {
     @SystemApi
     public void excludeKeysFromRestore(String packageName, List<String> keys) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.excludeKeysFromRestore(packageName, keys);
+                sService.excludeKeysFromRestore(packageName, keys);
             } catch (RemoteException e) {
                 Log.e(TAG, "excludeKeysFromRestore() couldn't connect");
             }
@@ -686,82 +649,40 @@ public class BackupManager {
     @SystemApi
     public void reportDelayedRestoreResult(BackupRestoreEventLogger logger) {
         checkServiceBinder();
-        IBackupManager iBackupManager = sService;
-        if (iBackupManager != null) {
+        if (sService != null) {
             try {
-                iBackupManager.reportDelayedRestoreResult(this.mContext.getPackageName(), logger.getLoggingResults());
+                sService.reportDelayedRestoreResult(this.mContext.getPackageName(), logger.getLoggingResults());
             } catch (RemoteException e) {
                 Log.w(TAG, "reportDelayedRestoreResult() couldn't connect");
             }
         }
     }
 
-    /* loaded from: classes.dex */
-    public class BackupObserverWrapper extends IBackupObserver.Stub {
+    private class BackupObserverWrapper extends IBackupObserver.Stub {
         static final int MSG_FINISHED = 3;
         static final int MSG_RESULT = 2;
         static final int MSG_UPDATE = 1;
         final Handler mHandler;
         final BackupObserver mObserver;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.app.backup.BackupManager$BackupObserverWrapper$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 extends Handler {
-            final /* synthetic */ BackupManager val$this$0;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(Looper looper, BackupManager backupManager) {
-                super(looper);
-                r3 = backupManager;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        Pair<String, BackupProgress> obj = (Pair) msg.obj;
-                        BackupObserverWrapper.this.mObserver.onUpdate(obj.first, obj.second);
-                        return;
-                    case 2:
-                        BackupObserverWrapper.this.mObserver.onResult((String) msg.obj, msg.arg1);
-                        return;
-                    case 3:
-                        BackupObserverWrapper.this.mObserver.backupFinished(msg.arg1);
-                        return;
-                    default:
-                        Log.w(BackupManager.TAG, "Unknown message: " + msg);
-                        return;
-                }
-            }
-        }
-
         BackupObserverWrapper(Context context, BackupObserver observer) {
             this.mHandler = new Handler(context.getMainLooper()) { // from class: android.app.backup.BackupManager.BackupObserverWrapper.1
-                final /* synthetic */ BackupManager val$this$0;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(Looper looper, BackupManager backupManager) {
-                    super(looper);
-                    r3 = backupManager;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
                         case 1:
                             Pair<String, BackupProgress> obj = (Pair) msg.obj;
                             BackupObserverWrapper.this.mObserver.onUpdate(obj.first, obj.second);
-                            return;
+                            break;
                         case 2:
                             BackupObserverWrapper.this.mObserver.onResult((String) msg.obj, msg.arg1);
-                            return;
+                            break;
                         case 3:
                             BackupObserverWrapper.this.mObserver.backupFinished(msg.arg1);
-                            return;
+                            break;
                         default:
                             Log.w(BackupManager.TAG, "Unknown message: " + msg);
-                            return;
+                            break;
                     }
                 }
             };
@@ -770,26 +691,21 @@ public class BackupManager {
 
         @Override // android.app.backup.IBackupObserver
         public void onUpdate(String currentPackage, BackupProgress backupProgress) {
-            Handler handler = this.mHandler;
-            handler.sendMessage(handler.obtainMessage(1, Pair.create(currentPackage, backupProgress)));
+            this.mHandler.sendMessage(this.mHandler.obtainMessage(1, Pair.create(currentPackage, backupProgress)));
         }
 
         @Override // android.app.backup.IBackupObserver
         public void onResult(String currentPackage, int status) {
-            Handler handler = this.mHandler;
-            handler.sendMessage(handler.obtainMessage(2, status, 0, currentPackage));
+            this.mHandler.sendMessage(this.mHandler.obtainMessage(2, status, 0, currentPackage));
         }
 
         @Override // android.app.backup.IBackupObserver
         public void backupFinished(int status) {
-            Handler handler = this.mHandler;
-            handler.sendMessage(handler.obtainMessage(3, status, 0));
+            this.mHandler.sendMessage(this.mHandler.obtainMessage(3, status, 0));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class SelectTransportListenerWrapper extends ISelectBackupTransportCallback.Stub {
+    private class SelectTransportListenerWrapper extends ISelectBackupTransportCallback.Stub {
         private final Handler mHandler;
         private final SelectBackupTransportCallback mListener;
 
@@ -798,30 +714,9 @@ public class BackupManager {
             this.mListener = listener;
         }
 
-        /* renamed from: android.app.backup.BackupManager$SelectTransportListenerWrapper$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ String val$transportName;
-
-            AnonymousClass1(String str) {
-                transportName = str;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                SelectTransportListenerWrapper.this.mListener.onSuccess(transportName);
-            }
-        }
-
         @Override // android.app.backup.ISelectBackupTransportCallback
-        public void onSuccess(String transportName) {
+        public void onSuccess(final String transportName) {
             this.mHandler.post(new Runnable() { // from class: android.app.backup.BackupManager.SelectTransportListenerWrapper.1
-                final /* synthetic */ String val$transportName;
-
-                AnonymousClass1(String transportName2) {
-                    transportName = transportName2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     SelectTransportListenerWrapper.this.mListener.onSuccess(transportName);
@@ -829,30 +724,9 @@ public class BackupManager {
             });
         }
 
-        /* renamed from: android.app.backup.BackupManager$SelectTransportListenerWrapper$2 */
-        /* loaded from: classes.dex */
-        class AnonymousClass2 implements Runnable {
-            final /* synthetic */ int val$reason;
-
-            AnonymousClass2(int i) {
-                reason = i;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                SelectTransportListenerWrapper.this.mListener.onFailure(reason);
-            }
-        }
-
         @Override // android.app.backup.ISelectBackupTransportCallback
-        public void onFailure(int reason) {
+        public void onFailure(final int reason) {
             this.mHandler.post(new Runnable() { // from class: android.app.backup.BackupManager.SelectTransportListenerWrapper.2
-                final /* synthetic */ int val$reason;
-
-                AnonymousClass2(int reason2) {
-                    reason = reason2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     SelectTransportListenerWrapper.this.mListener.onFailure(reason);

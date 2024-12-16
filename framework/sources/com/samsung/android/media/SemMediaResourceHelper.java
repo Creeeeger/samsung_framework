@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemMediaResourceHelper {
     public static final int CODEC_STATE_RUNNING = 1;
     public static final int CODEC_STATE_WAITING = 0;
@@ -43,16 +43,13 @@ public final class SemMediaResourceHelper {
     private VideoCapacityErrorListener mVideoCapacityErrorListener = null;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface CodecState {
     }
 
-    /* loaded from: classes5.dex */
     public interface CodecStateChangedListener {
         void onStateChanged(ArrayList<MediaResourceInfo> arrayList);
     }
 
-    /* loaded from: classes5.dex */
     public interface ResourceInfoChangedListener {
         void onAdd(ArrayList<MediaResourceInfo> arrayList);
 
@@ -62,11 +59,9 @@ public final class SemMediaResourceHelper {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ResourceType {
     }
 
-    /* loaded from: classes5.dex */
     public interface VideoCapacityErrorListener {
         void onError(MediaResourceInfo mediaResourceInfo);
     }
@@ -134,7 +129,7 @@ public final class SemMediaResourceHelper {
 
     public void setResourceInfoChangedListener(ResourceInfoChangedListener listener) throws IllegalStateException {
         this.mResourceInfoChangedListener = listener;
-        if (listener != null) {
+        if (this.mResourceInfoChangedListener != null) {
             native_enableObserver(0, true);
         } else {
             native_enableObserver(0, false);
@@ -143,16 +138,16 @@ public final class SemMediaResourceHelper {
 
     public void setCodecStateChangedListener(CodecStateChangedListener listener) throws IllegalStateException {
         this.mCodecStateChangedListener = listener;
-        if (listener == null) {
-            native_enableObserver(1, false);
-        } else {
+        if (this.mCodecStateChangedListener != null) {
             native_enableObserver(1, true);
+        } else {
+            native_enableObserver(1, false);
         }
     }
 
     public void setVideoCapacityErrorListener(VideoCapacityErrorListener listener) throws IllegalStateException {
         this.mVideoCapacityErrorListener = listener;
-        if (listener != null) {
+        if (this.mVideoCapacityErrorListener != null) {
             native_enableObserver(2, true);
         } else {
             native_enableObserver(2, false);
@@ -182,57 +177,33 @@ public final class SemMediaResourceHelper {
     }
 
     private ArrayList<MediaResourceInfo> makeMediaResourceInfo(Parcel in) {
-        boolean z;
-        int i;
         int total_size;
-        ArrayList<MediaResourceInfo> mediaResourceInfo;
-        int i2;
-        SemMediaResourceHelper semMediaResourceHelper = this;
-        ArrayList<MediaResourceInfo> mediaResourceInfo2 = new ArrayList<>();
-        if (in == null) {
-            return mediaResourceInfo2;
-        }
-        int total_size2 = in.readInt();
-        if (total_size2 <= 0) {
-            return mediaResourceInfo2;
-        }
-        int i3 = 0;
-        while (i3 < total_size2) {
-            int resourceType = in.readInt();
-            boolean isSecured = in.readInt() == 1;
-            int pid = in.readInt();
-            long client = in.readLong();
-            int state = in.readInt();
-            int width = in.readInt();
-            int height = in.readInt();
-            int framerate = in.readInt();
-            boolean isEncoder = in.readInt() == 1;
-            boolean isSWCodec = in.readInt() == 1;
-            String ComponentName = in.readString8();
-            int bitrate = in.readInt();
-            int i4 = semMediaResourceHelper.mResourceType;
-            if ((i4 == 0 || i4 == resourceType) && (!(z = semMediaResourceHelper.mOwnResourceEventExcluded) || (z && (i2 = semMediaResourceHelper.mPid) > 0 && i2 != pid))) {
-                i = i3;
-                total_size = total_size2;
-                mediaResourceInfo = mediaResourceInfo2;
-                MediaResourceInfo resourceInfo = new MediaResourceInfo(resourceType, isSecured, pid, client, state, width, height, framerate, isEncoder, isSWCodec, ComponentName, bitrate);
-                mediaResourceInfo.add(resourceInfo);
-            } else {
-                i = i3;
-                total_size = total_size2;
-                mediaResourceInfo = mediaResourceInfo2;
+        ArrayList<MediaResourceInfo> mediaResourceInfo = new ArrayList<>();
+        if (in != null && (total_size = in.readInt()) > 0) {
+            for (int i = 0; i < total_size; i++) {
+                int resourceType = in.readInt();
+                boolean isSecured = in.readInt() == 1;
+                int pid = in.readInt();
+                long client = in.readLong();
+                int state = in.readInt();
+                int width = in.readInt();
+                int height = in.readInt();
+                int framerate = in.readInt();
+                boolean isEncoder = in.readInt() == 1;
+                boolean isSWCodec = in.readInt() == 1;
+                String ComponentName = in.readString8();
+                int bitrate = in.readInt();
+                if ((this.mResourceType == 0 || this.mResourceType == resourceType) && (!this.mOwnResourceEventExcluded || (this.mOwnResourceEventExcluded && this.mPid > 0 && this.mPid != pid))) {
+                    MediaResourceInfo resourceInfo = new MediaResourceInfo(resourceType, isSecured, pid, client, state, width, height, framerate, isEncoder, isSWCodec, ComponentName, bitrate);
+                    mediaResourceInfo.add(resourceInfo);
+                }
             }
-            i3 = i + 1;
-            mediaResourceInfo2 = mediaResourceInfo;
-            total_size2 = total_size;
-            semMediaResourceHelper = this;
         }
-        return mediaResourceInfo2;
+        return mediaResourceInfo;
     }
 
     private boolean dropOwnResourceEvent(int event_occured_pid) {
-        int i;
-        if (this.mOwnResourceEventExcluded && (i = this.mPid) > 0 && event_occured_pid == i) {
+        if (this.mOwnResourceEventExcluded && this.mPid > 0 && event_occured_pid == this.mPid) {
             return true;
         }
         return false;
@@ -240,20 +211,21 @@ public final class SemMediaResourceHelper {
 
     public void release() {
         native_release();
-        EventHandler eventHandler = this.mEventHandler;
-        if (eventHandler != null) {
-            eventHandler.removeCallbacksAndMessages(null);
+        if (this.mEventHandler != null) {
+            this.mEventHandler.removeCallbacksAndMessages(null);
         }
         this.mResourceInfoChangedListener = null;
         this.mCodecStateChangedListener = null;
         this.mVideoCapacityErrorListener = null;
         this.mEventHandler = null;
+        clearMediaResourceHelper();
+    }
+
+    private static void clearMediaResourceHelper() {
         mMediaResourceHelper = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         private SemMediaResourceHelper mMediaResourceHelper;
 
         public EventHandler(SemMediaResourceHelper semMediaResourceHelper, Looper looper) {
@@ -269,42 +241,42 @@ public final class SemMediaResourceHelper {
                     ArrayList<MediaResourceInfo> mediaResourceInfo = (ArrayList) msg.obj;
                     if (SemMediaResourceHelper.this.mResourceInfoChangedListener != null) {
                         SemMediaResourceHelper.this.mResourceInfoChangedListener.onAdd(mediaResourceInfo);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 2:
                     Log.i(SemMediaResourceHelper.TAG, "onRemove");
                     ArrayList<MediaResourceInfo> mediaResourceInfo2 = (ArrayList) msg.obj;
                     if (SemMediaResourceHelper.this.mResourceInfoChangedListener != null) {
                         SemMediaResourceHelper.this.mResourceInfoChangedListener.onRemove(mediaResourceInfo2);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 3:
                     Log.i(SemMediaResourceHelper.TAG, "onState");
                     ArrayList<MediaResourceInfo> mediaResourceInfo3 = (ArrayList) msg.obj;
                     if (SemMediaResourceHelper.this.mCodecStateChangedListener != null) {
                         SemMediaResourceHelper.this.mCodecStateChangedListener.onStateChanged(mediaResourceInfo3);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 4:
                     Log.i(SemMediaResourceHelper.TAG, "onCapacityError");
-                    ArrayList<MediaResourceInfo> mediaResourceInfo4 = (ArrayList) msg.obj;
-                    if (SemMediaResourceHelper.this.mVideoCapacityErrorListener != null) {
-                        SemMediaResourceHelper.this.mVideoCapacityErrorListener.onError(mediaResourceInfo4.get(0));
-                        return;
+                    if (msg.obj instanceof ArrayList) {
+                        ArrayList<MediaResourceInfo> mediaResourceInfo4 = (ArrayList) msg.obj;
+                        if (SemMediaResourceHelper.this.mVideoCapacityErrorListener != null) {
+                            SemMediaResourceHelper.this.mVideoCapacityErrorListener.onError(mediaResourceInfo4.get(0));
+                            break;
+                        }
                     }
-                    return;
+                    break;
                 case 100:
                     Log.i(SemMediaResourceHelper.TAG, "onError");
                     if (SemMediaResourceHelper.this.mResourceInfoChangedListener != null) {
                         SemMediaResourceHelper.this.mResourceInfoChangedListener.onError(this.mMediaResourceHelper);
-                        return;
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
@@ -333,8 +305,7 @@ public final class SemMediaResourceHelper {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public final class MediaResourceInfo {
+    public static final class MediaResourceInfo {
         private final int mBitrate;
         private final long mClientId;
         private final String mCodecName;

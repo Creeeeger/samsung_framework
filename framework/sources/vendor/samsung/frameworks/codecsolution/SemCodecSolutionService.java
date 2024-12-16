@@ -33,12 +33,11 @@ public class SemCodecSolutionService {
 
     public void setSmartFittingMode(int mode) {
         Log.d(TAG, "setSmartFittingMode(" + mode + NavigationBarInflaterView.KEY_CODE_END);
-        Class cls = this.mClass;
-        if (cls == null || this.mService == null) {
+        if (this.mClass == null || this.mService == null) {
             return;
         }
         try {
-            Method m = cls.getDeclaredMethod("setSmartFittingMode", Integer.TYPE);
+            Method m = this.mClass.getDeclaredMethod("setSmartFittingMode", Integer.TYPE);
             m.invoke(this.mService, Integer.valueOf(mode));
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,12 +46,11 @@ public class SemCodecSolutionService {
 
     public void setAutoFitMode(boolean use) {
         Log.d(TAG, "setAutoFitMode(" + use + NavigationBarInflaterView.KEY_CODE_END);
-        Class cls = this.mClass;
-        if (cls == null || this.mService == null) {
+        if (this.mClass == null || this.mService == null) {
             return;
         }
         try {
-            Method m = cls.getDeclaredMethod("setAutoFitMode", Boolean.TYPE);
+            Method m = this.mClass.getDeclaredMethod("setAutoFitMode", Boolean.TYPE);
             m.invoke(this.mService, Boolean.valueOf(use));
         } catch (Exception e) {
             e.printStackTrace();

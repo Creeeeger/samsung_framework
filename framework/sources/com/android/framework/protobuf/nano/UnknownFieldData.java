@@ -3,23 +3,22 @@ package com.android.framework.protobuf.nano;
 import java.io.IOException;
 import java.util.Arrays;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes4.dex */
-public final class UnknownFieldData {
+/* loaded from: classes3.dex */
+final class UnknownFieldData {
     final byte[] bytes;
     final int tag;
 
-    public UnknownFieldData(int tag, byte[] bytes) {
+    UnknownFieldData(int tag, byte[] bytes) {
         this.tag = tag;
         this.bytes = bytes;
     }
 
-    public int computeSerializedSize() {
+    int computeSerializedSize() {
         int size = 0 + CodedOutputByteBufferNano.computeRawVarint32Size(this.tag);
         return size + this.bytes.length;
     }
 
-    public void writeTo(CodedOutputByteBufferNano output) throws IOException {
+    void writeTo(CodedOutputByteBufferNano output) throws IOException {
         output.writeRawVarint32(this.tag);
         output.writeRawBytes(this.bytes);
     }

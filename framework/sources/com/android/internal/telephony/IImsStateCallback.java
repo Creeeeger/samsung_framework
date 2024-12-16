@@ -14,7 +14,6 @@ public interface IImsStateCallback extends IInterface {
 
     void onUnavailable(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IImsStateCallback {
         @Override // com.android.internal.telephony.IImsStateCallback
         public void onUnavailable(int reason) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IImsStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IImsStateCallback {
         static final int TRANSACTION_onAvailable = 2;
         static final int TRANSACTION_onUnavailable = 1;
@@ -76,29 +74,25 @@ public interface IImsStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsStateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsStateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsStateCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUnavailable(_arg0);
+                    return true;
+                case 2:
+                    onAvailable();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUnavailable(_arg0);
-                            return true;
-                        case 2:
-                            onAvailable();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IImsStateCallback {
+        private static class Proxy implements IImsStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

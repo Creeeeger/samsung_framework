@@ -9,14 +9,13 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class PrepareGetCredentialResponseInternal implements Parcelable {
     public static final Parcelable.Creator<PrepareGetCredentialResponseInternal> CREATOR = new Parcelable.Creator<PrepareGetCredentialResponseInternal>() { // from class: android.credentials.PrepareGetCredentialResponseInternal.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrepareGetCredentialResponseInternal[] newArray(int size) {
             return new PrepareGetCredentialResponseInternal[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrepareGetCredentialResponseInternal createFromParcel(Parcel in) {
             return new PrepareGetCredentialResponseInternal(in);
@@ -29,10 +28,6 @@ public final class PrepareGetCredentialResponseInternal implements Parcelable {
     private final boolean mHasRemoteResults;
     private final PendingIntent mPendingIntent;
 
-    /* synthetic */ PrepareGetCredentialResponseInternal(Parcel parcel, PrepareGetCredentialResponseInternalIA prepareGetCredentialResponseInternalIA) {
-        this(parcel);
-    }
-
     public PendingIntent getPendingIntent() {
         return this.mPendingIntent;
     }
@@ -41,11 +36,10 @@ public final class PrepareGetCredentialResponseInternal implements Parcelable {
         if (!this.mHasQueryApiPermission) {
             throw new SecurityException("caller doesn't have the permission to query credential results");
         }
-        ArraySet<String> arraySet = this.mCredentialResultTypes;
-        if (arraySet == null) {
+        if (this.mCredentialResultTypes == null) {
             return false;
         }
-        return arraySet.contains(credentialType);
+        return this.mCredentialResultTypes.contains(credentialType);
     }
 
     public boolean hasAuthenticationResults() {
@@ -90,22 +84,5 @@ public final class PrepareGetCredentialResponseInternal implements Parcelable {
         this.mHasAuthenticationResults = in.readBoolean();
         this.mHasRemoteResults = in.readBoolean();
         this.mPendingIntent = (PendingIntent) in.readTypedObject(PendingIntent.CREATOR);
-    }
-
-    /* renamed from: android.credentials.PrepareGetCredentialResponseInternal$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrepareGetCredentialResponseInternal> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrepareGetCredentialResponseInternal[] newArray(int size) {
-            return new PrepareGetCredentialResponseInternal[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrepareGetCredentialResponseInternal createFromParcel(Parcel in) {
-            return new PrepareGetCredentialResponseInternal(in);
-        }
     }
 }

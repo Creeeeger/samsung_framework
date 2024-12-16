@@ -10,9 +10,7 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PnoNetwork implements Parcelable {
     public static final Parcelable.Creator<PnoNetwork> CREATOR = new Parcelable.Creator<PnoNetwork>() { // from class: android.net.wifi.nl80211.PnoNetwork.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PnoNetwork createFromParcel(Parcel in) {
             PnoNetwork result = new PnoNetwork();
@@ -28,6 +26,7 @@ public final class PnoNetwork implements Parcelable {
             return result;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PnoNetwork[] newArray(int size) {
             return new PnoNetwork[size];
@@ -92,32 +91,5 @@ public final class PnoNetwork implements Parcelable {
         parcel.writeInt(this.mIsHidden ? 1 : 0);
         parcel.writeByteArray(this.mSsid);
         parcel.writeIntArray(this.mFrequencies);
-    }
-
-    /* renamed from: android.net.wifi.nl80211.PnoNetwork$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PnoNetwork> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PnoNetwork createFromParcel(Parcel in) {
-            PnoNetwork result = new PnoNetwork();
-            result.mIsHidden = in.readInt() != 0;
-            result.mSsid = in.createByteArray();
-            if (result.mSsid == null) {
-                result.mSsid = new byte[0];
-            }
-            result.mFrequencies = in.createIntArray();
-            if (result.mFrequencies == null) {
-                result.mFrequencies = new int[0];
-            }
-            return result;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PnoNetwork[] newArray(int size) {
-            return new PnoNetwork[size];
-        }
     }
 }

@@ -50,7 +50,6 @@ public interface ICocktailHost extends IInterface {
 
     void viewDataChanged(int i, int i2, int i3) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICocktailHost {
         @Override // com.samsung.android.cocktailbar.ICocktailHost
         public void updateCocktail(int cocktailId, Cocktail cocktail, int userId) throws RemoteException {
@@ -130,7 +129,6 @@ public interface ICocktailHost extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICocktailHost {
         static final int TRANSACTION_changeVisibleEdgeService = 15;
         static final int TRANSACTION_closeCocktail = 6;
@@ -224,149 +222,146 @@ public interface ICocktailHost extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICocktailHost.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICocktailHost.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICocktailHost.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Cocktail _arg1 = (Cocktail) data.readTypedObject(Cocktail.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateCocktail(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    RemoteViews _arg12 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    partiallyUpdateCocktail(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    RemoteViews _arg13 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    partiallyUpdateHelpView(_arg03, _arg13, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeCocktail(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    showCocktail(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg16 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    closeCocktail(_arg06, _arg16, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    viewDataChanged(_arg07, _arg17, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg18 = data.readInt();
+                    PendingIntent _arg26 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPullToRefresh(_arg08, _arg18, _arg26, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateToolLauncher(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    boolean _arg010 = data.readBoolean();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyKeyguardState(_arg010, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    boolean _arg011 = data.readBoolean();
+                    int _arg110 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyWakeUpState(_arg011, _arg110, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    switchDefaultCocktail(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    Bundle _arg111 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendExtraData(_arg013, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDisableTickerView(_arg014, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    boolean _arg015 = data.readBoolean();
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    changeVisibleEdgeService(_arg015, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    ComponentName _arg016 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    noteResumeComponent(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    ComponentName _arg017 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    notePauseComponent(_arg017);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    Cocktail _arg018 = (Cocktail) data.readTypedObject(Cocktail.CREATOR);
+                    data.enforceNoDataAvail();
+                    packageSuspendChanged(_arg018);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Cocktail _arg1 = (Cocktail) data.readTypedObject(Cocktail.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateCocktail(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            RemoteViews _arg12 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            partiallyUpdateCocktail(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            RemoteViews _arg13 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            partiallyUpdateHelpView(_arg03, _arg13, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeCocktail(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            showCocktail(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            closeCocktail(_arg06, _arg16, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            viewDataChanged(_arg07, _arg17, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg18 = data.readInt();
-                            PendingIntent _arg26 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPullToRefresh(_arg08, _arg18, _arg26, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateToolLauncher(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            boolean _arg010 = data.readBoolean();
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyKeyguardState(_arg010, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            boolean _arg011 = data.readBoolean();
-                            int _arg110 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyWakeUpState(_arg011, _arg110, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            switchDefaultCocktail(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            Bundle _arg111 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendExtraData(_arg013, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDisableTickerView(_arg014, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            boolean _arg015 = data.readBoolean();
-                            int _arg113 = data.readInt();
-                            data.enforceNoDataAvail();
-                            changeVisibleEdgeService(_arg015, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            ComponentName _arg016 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            noteResumeComponent(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            ComponentName _arg017 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            notePauseComponent(_arg017);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            Cocktail _arg018 = (Cocktail) data.readTypedObject(Cocktail.CREATOR);
-                            data.enforceNoDataAvail();
-                            packageSuspendChanged(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICocktailHost {
+        private static class Proxy implements ICocktailHost {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

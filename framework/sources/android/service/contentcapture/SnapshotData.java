@@ -11,14 +11,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class SnapshotData implements Parcelable {
     public static final Parcelable.Creator<SnapshotData> CREATOR = new Parcelable.Creator<SnapshotData>() { // from class: android.service.contentcapture.SnapshotData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SnapshotData createFromParcel(Parcel parcel) {
             return new SnapshotData(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SnapshotData[] newArray(int size) {
             return new SnapshotData[size];
@@ -62,22 +61,5 @@ public final class SnapshotData implements Parcelable {
         parcel.writeBundle(this.mAssistData);
         parcel.writeParcelable(this.mAssistStructure, flags);
         parcel.writeParcelable(this.mAssistContent, flags);
-    }
-
-    /* renamed from: android.service.contentcapture.SnapshotData$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SnapshotData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SnapshotData createFromParcel(Parcel parcel) {
-            return new SnapshotData(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SnapshotData[] newArray(int size) {
-            return new SnapshotData[size];
-        }
     }
 }

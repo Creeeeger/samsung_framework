@@ -29,7 +29,7 @@ public class YesNoPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference
-    public void onDialogClosed(boolean positiveResult) {
+    protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (callChangeListener(Boolean.valueOf(positiveResult))) {
             setValue(positiveResult);
@@ -62,7 +62,7 @@ public class YesNoPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         if (isPersistent()) {
             return superState;
@@ -73,7 +73,7 @@ public class YesNoPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (!state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
@@ -83,17 +83,15 @@ public class YesNoPreference extends DialogPreference {
         setValue(myState.wasPositiveResult);
     }
 
-    /* loaded from: classes5.dex */
-    public static class SavedState extends Preference.BaseSavedState {
+    private static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.preference.YesNoPreference.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -114,23 +112,6 @@ public class YesNoPreference extends DialogPreference {
 
         public SavedState(Parcelable superState) {
             super(superState);
-        }
-
-        /* renamed from: com.android.internal.preference.YesNoPreference$SavedState$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 }

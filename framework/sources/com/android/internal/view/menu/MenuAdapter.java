@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.android.internal.R;
 import com.android.internal.view.menu.MenuView;
 import java.util.ArrayList;
 
@@ -14,8 +13,6 @@ public class MenuAdapter extends BaseAdapter {
     private int mExpandedIndex = -1;
     private boolean mForceShowIcon;
     private final LayoutInflater mInflater;
-    private int mInitPaddingBottom;
-    private int mInitPaddingTop;
     private final int mItemLayoutRes;
     private final boolean mOverflowOnly;
 
@@ -51,8 +48,7 @@ public class MenuAdapter extends BaseAdapter {
     @Override // android.widget.Adapter
     public MenuItemImpl getItem(int position) {
         ArrayList<MenuItemImpl> items = this.mOverflowOnly ? this.mAdapterMenu.getNonActionItems() : this.mAdapterMenu.getVisibleItems();
-        int i = this.mExpandedIndex;
-        if (i >= 0 && position >= i) {
+        if (this.mExpandedIndex >= 0 && position >= this.mExpandedIndex) {
             position++;
         }
         return items.get(position);
@@ -67,8 +63,6 @@ public class MenuAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = this.mInflater.inflate(this.mItemLayoutRes, parent, false);
-            this.mInitPaddingTop = convertView.getPaddingTop();
-            this.mInitPaddingBottom = convertView.getPaddingBottom();
         }
         int currGroupId = getItem(position).getGroupId();
         int prevGroupId = position + (-1) >= 0 ? getItem(position - 1).getGroupId() : currGroupId;
@@ -78,10 +72,6 @@ public class MenuAdapter extends BaseAdapter {
             ((ListMenuItemView) convertView).setForceShowIcon(true);
         }
         itemView.initialize(getItem(position), 0);
-        int firstLastItemVerticalEdgePadding = convertView.getResources().getDimensionPixelSize(R.dimen.sem_popup_menu_first_last_item_vertical_edge_padding);
-        int firstItemTopPadding = this.mInitPaddingTop + firstLastItemVerticalEdgePadding;
-        int lastItemBottomPadding = this.mInitPaddingBottom + firstLastItemVerticalEdgePadding;
-        convertView.setPadding(convertView.getPaddingLeft(), position == 0 ? firstItemTopPadding : this.mInitPaddingTop, convertView.getPaddingRight(), position == getCount() - 1 ? lastItemBottomPadding : this.mInitPaddingBottom);
         return convertView;
     }
 

@@ -43,9 +43,6 @@ public class MenuPopupHelper implements MenuHelper {
     public MenuPopupHelper(Context context, MenuBuilder menu, View anchorView, boolean overflowOnly, int popupStyleAttr, int popupStyleRes) {
         this.mDropDownGravity = Gravity.START;
         this.mInternalOnDismissListener = new PopupWindow.OnDismissListener() { // from class: com.android.internal.view.menu.MenuPopupHelper.1
-            AnonymousClass1() {
-            }
-
             @Override // android.widget.PopupWindow.OnDismissListener
             public void onDismiss() {
                 MenuPopupHelper.this.onDismiss();
@@ -72,9 +69,8 @@ public class MenuPopupHelper implements MenuHelper {
 
     public void setForceShowIcon(boolean forceShowIcon) {
         this.mForceShowIcon = forceShowIcon;
-        MenuPopup menuPopup = this.mPopup;
-        if (menuPopup != null) {
-            menuPopup.setForceShowIcon(forceShowIcon);
+        if (this.mPopup != null) {
+            this.mPopup.setForceShowIcon(forceShowIcon);
         }
     }
 
@@ -179,42 +175,26 @@ public class MenuPopupHelper implements MenuHelper {
         }
     }
 
-    public void onDismiss() {
+    protected void onDismiss() {
         this.mPopup = null;
-        PopupWindow.OnDismissListener onDismissListener = this.mOnDismissListener;
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss();
+        if (this.mOnDismissListener != null) {
+            this.mOnDismissListener.onDismiss();
         }
     }
 
     public boolean isShowing() {
-        MenuPopup menuPopup = this.mPopup;
-        return menuPopup != null && menuPopup.isShowing();
+        return this.mPopup != null && this.mPopup.isShowing();
     }
 
     @Override // com.android.internal.view.menu.MenuHelper
     public void setPresenterCallback(MenuPresenter.Callback cb) {
         this.mPresenterCallback = cb;
-        MenuPopup menuPopup = this.mPopup;
-        if (menuPopup != null) {
-            menuPopup.setCallback(cb);
+        if (this.mPopup != null) {
+            this.mPopup.setCallback(cb);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.view.menu.MenuPopupHelper$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements PopupWindow.OnDismissListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.PopupWindow.OnDismissListener
-        public void onDismiss() {
-            MenuPopupHelper.this.onDismiss();
-        }
-    }
-
-    public void setIsContextMenuPopup(boolean isContextMenu) {
+    protected void setIsContextMenuPopup(boolean isContextMenu) {
         this.mIsContextMenu = isContextMenu;
     }
 }

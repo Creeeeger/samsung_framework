@@ -29,9 +29,8 @@ public final class BlowfishEngine implements BlockCipher {
     public void init(boolean encrypting, CipherParameters params) {
         if (params instanceof KeyParameter) {
             this.encrypting = encrypting;
-            byte[] key = ((KeyParameter) params).getKey();
-            this.workingKey = key;
-            setKey(key);
+            this.workingKey = ((KeyParameter) params).getKey();
+            setKey(this.workingKey);
             return;
         }
         throw new IllegalArgumentException("invalid parameter passed to Blowfish init - " + params.getClass().getName());
@@ -112,14 +111,10 @@ public final class BlowfishEngine implements BlockCipher {
             iArr[i] = iArr[i] ^ data;
         }
         processTable(0, 0, this.P);
-        int[] iArr2 = this.P;
-        processTable(iArr2[16], iArr2[17], this.S0);
-        int[] iArr3 = this.S0;
-        processTable(iArr3[254], iArr3[255], this.S1);
-        int[] iArr4 = this.S1;
-        processTable(iArr4[254], iArr4[255], this.S2);
-        int[] iArr5 = this.S2;
-        processTable(iArr5[254], iArr5[255], this.S3);
+        processTable(this.P[16], this.P[17], this.S0);
+        processTable(this.S0[254], this.S0[255], this.S1);
+        processTable(this.S1[254], this.S1[255], this.S2);
+        processTable(this.S2[254], this.S2[255], this.S3);
     }
 
     private void encryptBlock(byte[] src, int srcIndex, byte[] dst, int dstIndex) {

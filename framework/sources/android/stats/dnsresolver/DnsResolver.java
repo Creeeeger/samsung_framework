@@ -115,6 +115,7 @@ public final class DnsResolver {
     public static final int NT_ETHERNET = 4;
     public static final int NT_ETHERNET_VPN = 11;
     public static final int NT_LOWPAN = 7;
+    public static final int NT_SATELLITE = 13;
     public static final int NT_UNKNOWN = 0;
     public static final int NT_VPN = 5;
     public static final int NT_WIFI = 2;
@@ -282,7 +283,6 @@ public final class DnsResolver {
     public static final int SYS_EXFULL = 54;
     public static final int SYS_NO_ERROR = 0;
 
-    /* loaded from: classes3.dex */
     public final class DnsQueryEvent {
         public static final long CACHE_HIT = 1159641169923L;
         public static final long CONNECTED = 1133871366152L;
@@ -299,7 +299,6 @@ public final class DnsResolver {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class DnsQueryEvents {
         public static final long DNS_QUERY_EVENT = 2246267895809L;
 
@@ -307,7 +306,6 @@ public final class DnsResolver {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Servers {
         public static final long SERVER = 2246267895809L;
 
@@ -315,7 +313,6 @@ public final class DnsResolver {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Server {
         public static final long INDEX = 1120986464258L;
         public static final long PROTOCOL = 1159641169921L;

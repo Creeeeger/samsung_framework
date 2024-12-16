@@ -8,14 +8,13 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class GetWalletCardsResponse implements Parcelable {
     public static final Parcelable.Creator<GetWalletCardsResponse> CREATOR = new Parcelable.Creator<GetWalletCardsResponse>() { // from class: android.service.quickaccesswallet.GetWalletCardsResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetWalletCardsResponse createFromParcel(Parcel source) {
             return GetWalletCardsResponse.readFromParcel(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetWalletCardsResponse[] newArray(int size) {
             return new GetWalletCardsResponse[size];
@@ -41,28 +40,12 @@ public final class GetWalletCardsResponse implements Parcelable {
         dest.writeInt(this.mSelectedIndex);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static GetWalletCardsResponse readFromParcel(Parcel source) {
         int size = source.readInt();
         List<WalletCard> walletCards = source.readParcelableList(new ArrayList(size), WalletCard.class.getClassLoader(), WalletCard.class);
         int selectedIndex = source.readInt();
         return new GetWalletCardsResponse(walletCards, selectedIndex);
-    }
-
-    /* renamed from: android.service.quickaccesswallet.GetWalletCardsResponse$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GetWalletCardsResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetWalletCardsResponse createFromParcel(Parcel source) {
-            return GetWalletCardsResponse.readFromParcel(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetWalletCardsResponse[] newArray(int size) {
-            return new GetWalletCardsResponse[size];
-        }
     }
 
     public List<WalletCard> getWalletCards() {

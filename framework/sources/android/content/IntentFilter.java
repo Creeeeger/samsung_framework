@@ -14,6 +14,7 @@ import android.util.ArraySet;
 import android.util.Log;
 import android.util.Printer;
 import android.util.proto.ProtoOutputStream;
+import com.android.internal.hidden_from_bootclasspath.android.content.pm.Flags;
 import com.android.internal.util.XmlUtils;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -36,6 +37,7 @@ public class IntentFilter implements Parcelable {
     private static final String AGLOB_STR = "aglob";
     private static final String AUTH_STR = "auth";
     private static final String AUTO_VERIFY_STR = "autoVerify";
+    public static final long BLOCK_NULL_ACTION_INTENTS = 293560872;
     private static final String CAT_STR = "cat";
     private static final String EXTRAS_STR = "extras";
     private static final String GROUP_STR = "group";
@@ -76,6 +78,7 @@ public class IntentFilter implements Parcelable {
     public static final int SYSTEM_LOW_PRIORITY = -1000;
     private static final String TAG = "IntentFilter";
     private static final String TYPE_STR = "type";
+    private static final String URI_RELATIVE_FILTER_GROUP_STR = "uriRelativeFilterGroup";
     public static final int VISIBILITY_EXPLICIT = 1;
     public static final int VISIBILITY_IMPLICIT = 2;
     public static final int VISIBILITY_NONE = 0;
@@ -96,6 +99,7 @@ public class IntentFilter implements Parcelable {
     private int mOrder;
     private int mPriority;
     private ArrayList<String> mStaticDataTypes;
+    private ArrayList<UriRelativeFilterGroup> mUriRelativeFilterGroups;
     private int mVerifyState;
     private static final int[] EMPTY_INT_ARRAY = new int[0];
     private static final long[] EMPTY_LONG_ARRAY = new long[0];
@@ -103,14 +107,13 @@ public class IntentFilter implements Parcelable {
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     private static final boolean[] EMPTY_BOOLEAN_ARRAY = new boolean[0];
     public static final Parcelable.Creator<IntentFilter> CREATOR = new Parcelable.Creator<IntentFilter>() { // from class: android.content.IntentFilter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentFilter createFromParcel(Parcel source) {
             return new IntentFilter(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentFilter[] newArray(int size) {
             return new IntentFilter[size];
@@ -118,7 +121,6 @@ public class IntentFilter implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface InstantAppVisibility {
     }
 
@@ -183,7 +185,6 @@ public class IntentFilter implements Parcelable {
         return newSet;
     }
 
-    /* loaded from: classes.dex */
     public static class MalformedMimeTypeException extends AndroidException {
         public MalformedMimeTypeException() {
         }
@@ -207,6 +208,7 @@ public class IntentFilter implements Parcelable {
         this.mDataSchemeSpecificParts = null;
         this.mDataAuthorities = null;
         this.mDataPaths = null;
+        this.mUriRelativeFilterGroups = null;
         this.mStaticDataTypes = null;
         this.mDataTypes = null;
         this.mMimeGroups = null;
@@ -223,6 +225,7 @@ public class IntentFilter implements Parcelable {
         this.mDataSchemeSpecificParts = null;
         this.mDataAuthorities = null;
         this.mDataPaths = null;
+        this.mUriRelativeFilterGroups = null;
         this.mStaticDataTypes = null;
         this.mDataTypes = null;
         this.mMimeGroups = null;
@@ -240,6 +243,7 @@ public class IntentFilter implements Parcelable {
         this.mDataSchemeSpecificParts = null;
         this.mDataAuthorities = null;
         this.mDataPaths = null;
+        this.mUriRelativeFilterGroups = null;
         this.mStaticDataTypes = null;
         this.mDataTypes = null;
         this.mMimeGroups = null;
@@ -258,6 +262,7 @@ public class IntentFilter implements Parcelable {
         this.mDataSchemeSpecificParts = null;
         this.mDataAuthorities = null;
         this.mDataPaths = null;
+        this.mUriRelativeFilterGroups = null;
         this.mStaticDataTypes = null;
         this.mDataTypes = null;
         this.mMimeGroups = null;
@@ -288,6 +293,9 @@ public class IntentFilter implements Parcelable {
         if (o.mDataPaths != null) {
             this.mDataPaths = new ArrayList<>(o.mDataPaths);
         }
+        if (o.mUriRelativeFilterGroups != null) {
+            this.mUriRelativeFilterGroups = new ArrayList<>(o.mUriRelativeFilterGroups);
+        }
         if (o.mMimeGroups != null) {
             this.mMimeGroups = new ArrayList<>(o.mMimeGroups);
         }
@@ -317,6 +325,10 @@ public class IntentFilter implements Parcelable {
             sb.append(" sch=");
             sb.append(this.mDataSchemes.toString());
         }
+        if (Flags.relativeReferenceIntentFilters() && countUriRelativeFilterGroups() > 0) {
+            sb.append(" grp=");
+            sb.append(this.mUriRelativeFilterGroups.toString());
+        }
         sb.append(" }");
         return sb.toString();
     }
@@ -340,10 +352,9 @@ public class IntentFilter implements Parcelable {
     }
 
     public final void setAutoVerify(boolean autoVerify) {
-        int i = this.mVerifyState & (-2);
-        this.mVerifyState = i;
+        this.mVerifyState &= -2;
         if (autoVerify) {
-            this.mVerifyState = i | 1;
+            this.mVerifyState |= 1;
         }
     }
 
@@ -356,8 +367,7 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean handlesWebUris(boolean onlyWebSchemes) {
-        ArrayList<String> arrayList;
-        if (!hasAction("android.intent.action.VIEW") || !hasCategory(Intent.CATEGORY_BROWSABLE) || (arrayList = this.mDataSchemes) == null || arrayList.size() == 0) {
+        if (!hasAction("android.intent.action.VIEW") || !hasCategory(Intent.CATEGORY_BROWSABLE) || this.mDataSchemes == null || this.mDataSchemes.size() == 0) {
             return false;
         }
         int N = this.mDataSchemes.size();
@@ -380,17 +390,14 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean isVerified() {
-        int i = this.mVerifyState;
-        return (i & 256) == 256 && (i & 16) == 16;
+        return (this.mVerifyState & 256) == 256 && (this.mVerifyState & 16) == 16;
     }
 
     public void setVerified(boolean verified) {
-        int i = this.mVerifyState | 256;
-        this.mVerifyState = i;
-        int i2 = i & (-4097);
-        this.mVerifyState = i2;
+        this.mVerifyState |= 256;
+        this.mVerifyState &= -4097;
         if (verified) {
-            this.mVerifyState = i2 | 4096;
+            this.mVerifyState |= 4096;
         }
     }
 
@@ -428,6 +435,13 @@ public class IntentFilter implements Parcelable {
         return this.mActions.size();
     }
 
+    public final int safeCountActions() {
+        if (this.mActions == null) {
+            return 0;
+        }
+        return this.mActions.size();
+    }
+
     public final String getAction(int index) {
         return this.mActions.valueAt(index);
     }
@@ -462,15 +476,14 @@ public class IntentFilter implements Parcelable {
     }
 
     public final Iterator<String> actionsIterator() {
-        ArraySet<String> arraySet = this.mActions;
-        if (arraySet != null) {
-            return arraySet.iterator();
+        if (this.mActions != null) {
+            return this.mActions.iterator();
         }
         return null;
     }
 
     public final void addDataType(String type) throws MalformedMimeTypeException {
-        processMimeType(type, new BiConsumer() { // from class: android.content.IntentFilter$$ExternalSyntheticLambda0
+        processMimeType(type, new BiConsumer() { // from class: android.content.IntentFilter$$ExternalSyntheticLambda2
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 IntentFilter.this.lambda$addDataType$0((String) obj, (Boolean) obj2);
@@ -478,6 +491,7 @@ public class IntentFilter implements Parcelable {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addDataType$0(String internalType, Boolean isPartial) {
         if (this.mDataTypes == null) {
             this.mDataTypes = new ArrayList<>();
@@ -494,7 +508,7 @@ public class IntentFilter implements Parcelable {
     }
 
     public final void addDynamicDataType(String type) throws MalformedMimeTypeException {
-        processMimeType(type, new BiConsumer() { // from class: android.content.IntentFilter$$ExternalSyntheticLambda1
+        processMimeType(type, new BiConsumer() { // from class: android.content.IntentFilter$$ExternalSyntheticLambda0
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 IntentFilter.this.lambda$addDynamicDataType$1((String) obj, (Boolean) obj2);
@@ -502,6 +516,7 @@ public class IntentFilter implements Parcelable {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addDynamicDataType$1(String internalType, Boolean isPartial) {
         if (this.mDataTypes == null) {
             this.mDataTypes = new ArrayList<>();
@@ -528,12 +543,11 @@ public class IntentFilter implements Parcelable {
     }
 
     public final void clearDynamicDataTypes() {
-        ArrayList<String> arrayList = this.mDataTypes;
-        if (arrayList == null) {
+        if (this.mDataTypes == null) {
             return;
         }
         if (this.mStaticDataTypes != null) {
-            arrayList.clear();
+            this.mDataTypes.clear();
             this.mDataTypes.addAll(this.mStaticDataTypes);
         } else {
             this.mDataTypes = null;
@@ -542,9 +556,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public int countStaticDataTypes() {
-        ArrayList<String> arrayList = this.mStaticDataTypes;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mStaticDataTypes != null) {
+            return this.mStaticDataTypes.size();
         }
         return 0;
     }
@@ -554,8 +567,7 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasExactDataType(String type) {
-        ArrayList<String> arrayList = this.mDataTypes;
-        return arrayList != null && arrayList.contains(type);
+        return this.mDataTypes != null && this.mDataTypes.contains(type);
     }
 
     public final boolean hasExactDynamicDataType(String type) {
@@ -563,14 +575,12 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasExactStaticDataType(String type) {
-        ArrayList<String> arrayList = this.mStaticDataTypes;
-        return arrayList != null && arrayList.contains(type);
+        return this.mStaticDataTypes != null && this.mStaticDataTypes.contains(type);
     }
 
     public final int countDataTypes() {
-        ArrayList<String> arrayList = this.mDataTypes;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mDataTypes != null) {
+            return this.mDataTypes.size();
         }
         return 0;
     }
@@ -580,9 +590,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final Iterator<String> typesIterator() {
-        ArrayList<String> arrayList = this.mDataTypes;
-        if (arrayList != null) {
-            return arrayList.iterator();
+        if (this.mDataTypes != null) {
+            return this.mDataTypes.iterator();
         }
         return null;
     }
@@ -604,8 +613,7 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasMimeGroup(String name) {
-        ArrayList<String> arrayList = this.mMimeGroups;
-        return arrayList != null && arrayList.contains(name);
+        return this.mMimeGroups != null && this.mMimeGroups.contains(name);
     }
 
     public final String getMimeGroup(int index) {
@@ -613,17 +621,15 @@ public class IntentFilter implements Parcelable {
     }
 
     public final int countMimeGroups() {
-        ArrayList<String> arrayList = this.mMimeGroups;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mMimeGroups != null) {
+            return this.mMimeGroups.size();
         }
         return 0;
     }
 
     public final Iterator<String> mimeGroupsIterator() {
-        ArrayList<String> arrayList = this.mMimeGroups;
-        if (arrayList != null) {
-            return arrayList.iterator();
+        if (this.mMimeGroups != null) {
+            return this.mMimeGroups.iterator();
         }
         return null;
     }
@@ -638,9 +644,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final int countDataSchemes() {
-        ArrayList<String> arrayList = this.mDataSchemes;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mDataSchemes != null) {
+            return this.mDataSchemes.size();
         }
         return 0;
     }
@@ -650,19 +655,16 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasDataScheme(String scheme) {
-        ArrayList<String> arrayList = this.mDataSchemes;
-        return arrayList != null && arrayList.contains(scheme);
+        return this.mDataSchemes != null && this.mDataSchemes.contains(scheme);
     }
 
     public final Iterator<String> schemesIterator() {
-        ArrayList<String> arrayList = this.mDataSchemes;
-        if (arrayList != null) {
-            return arrayList.iterator();
+        if (this.mDataSchemes != null) {
+            return this.mDataSchemes.iterator();
         }
         return null;
     }
 
-    /* loaded from: classes.dex */
     public static final class AuthorityEntry {
         private final String mHost;
         private final String mOrigHost;
@@ -676,7 +678,7 @@ public class IntentFilter implements Parcelable {
                 z = true;
             }
             this.mWild = z;
-            this.mHost = z ? host.substring(1).intern() : host;
+            this.mHost = this.mWild ? host.substring(1).intern() : host;
             this.mPort = port != null ? Integer.parseInt(port) : -1;
         }
 
@@ -727,7 +729,6 @@ public class IntentFilter implements Parcelable {
         }
 
         public int match(Uri data, boolean wildcardSupported) {
-            int i;
             String host = data.getHost();
             if (host == null) {
                 if (wildcardSupported && this.mWild && this.mHost.isEmpty()) {
@@ -746,10 +747,10 @@ public class IntentFilter implements Parcelable {
                     return -2;
                 }
             }
-            if (wildcardSupported || (i = this.mPort) < 0) {
+            if (wildcardSupported || this.mPort < 0) {
                 return IntentFilter.MATCH_CATEGORY_HOST;
             }
-            return i != data.getPort() ? -2 : 4194304;
+            return this.mPort != data.getPort() ? -2 : 4194304;
         }
     }
 
@@ -765,9 +766,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final int countDataSchemeSpecificParts() {
-        ArrayList<PatternMatcher> arrayList = this.mDataSchemeSpecificParts;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mDataSchemeSpecificParts != null) {
+            return this.mDataSchemeSpecificParts.size();
         }
         return 0;
     }
@@ -798,11 +798,10 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasDataSchemeSpecificPart(PatternMatcher ssp) {
-        ArrayList<PatternMatcher> arrayList = this.mDataSchemeSpecificParts;
-        if (arrayList == null) {
+        if (this.mDataSchemeSpecificParts == null) {
             return false;
         }
-        int numDataSchemeSpecificParts = arrayList.size();
+        int numDataSchemeSpecificParts = this.mDataSchemeSpecificParts.size();
         for (int i = 0; i < numDataSchemeSpecificParts; i++) {
             PatternMatcher pe = this.mDataSchemeSpecificParts.get(i);
             if (pe.getType() == ssp.getType() && pe.getPath().equals(ssp.getPath())) {
@@ -813,9 +812,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final Iterator<PatternMatcher> schemeSpecificPartsIterator() {
-        ArrayList<PatternMatcher> arrayList = this.mDataSchemeSpecificParts;
-        if (arrayList != null) {
-            return arrayList.iterator();
+        if (this.mDataSchemeSpecificParts != null) {
+            return this.mDataSchemeSpecificParts.iterator();
         }
         return null;
     }
@@ -835,9 +833,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final int countDataAuthorities() {
-        ArrayList<AuthorityEntry> arrayList = this.mDataAuthorities;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mDataAuthorities != null) {
+            return this.mDataAuthorities.size();
         }
         return 0;
     }
@@ -851,11 +848,10 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasDataAuthority(AuthorityEntry auth) {
-        ArrayList<AuthorityEntry> arrayList = this.mDataAuthorities;
-        if (arrayList == null) {
+        if (this.mDataAuthorities == null) {
             return false;
         }
-        int numDataAuthorities = arrayList.size();
+        int numDataAuthorities = this.mDataAuthorities.size();
         for (int i = 0; i < numDataAuthorities; i++) {
             if (this.mDataAuthorities.get(i).match(auth)) {
                 return true;
@@ -865,9 +861,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final Iterator<AuthorityEntry> authoritiesIterator() {
-        ArrayList<AuthorityEntry> arrayList = this.mDataAuthorities;
-        if (arrayList != null) {
-            return arrayList.iterator();
+        if (this.mDataAuthorities != null) {
+            return this.mDataAuthorities.iterator();
         }
         return null;
     }
@@ -884,9 +879,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final int countDataPaths() {
-        ArrayList<PatternMatcher> arrayList = this.mDataPaths;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mDataPaths != null) {
+            return this.mDataPaths.size();
         }
         return 0;
     }
@@ -917,11 +911,10 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasDataPath(PatternMatcher path) {
-        ArrayList<PatternMatcher> arrayList = this.mDataPaths;
-        if (arrayList == null) {
+        if (this.mDataPaths == null) {
             return false;
         }
-        int numDataPaths = arrayList.size();
+        int numDataPaths = this.mDataPaths.size();
         for (int i = 0; i < numDataPaths; i++) {
             PatternMatcher pe = this.mDataPaths.get(i);
             if (pe.getType() == path.getType() && pe.getPath().equals(path.getPath())) {
@@ -932,11 +925,33 @@ public class IntentFilter implements Parcelable {
     }
 
     public final Iterator<PatternMatcher> pathsIterator() {
-        ArrayList<PatternMatcher> arrayList = this.mDataPaths;
-        if (arrayList != null) {
-            return arrayList.iterator();
+        if (this.mDataPaths != null) {
+            return this.mDataPaths.iterator();
         }
         return null;
+    }
+
+    public final void addUriRelativeFilterGroup(UriRelativeFilterGroup group) {
+        Objects.requireNonNull(group);
+        if (this.mUriRelativeFilterGroups == null) {
+            this.mUriRelativeFilterGroups = new ArrayList<>();
+        }
+        this.mUriRelativeFilterGroups.add(group);
+    }
+
+    public final int countUriRelativeFilterGroups() {
+        if (this.mUriRelativeFilterGroups == null) {
+            return 0;
+        }
+        return this.mUriRelativeFilterGroups.size();
+    }
+
+    public final UriRelativeFilterGroup getUriRelativeFilterGroup(int index) {
+        return this.mUriRelativeFilterGroups.get(index);
+    }
+
+    public final void clearUriRelativeFilterGroups() {
+        this.mUriRelativeFilterGroups = null;
     }
 
     public final int matchDataAuthority(Uri data) {
@@ -944,11 +959,10 @@ public class IntentFilter implements Parcelable {
     }
 
     public final int matchDataAuthority(Uri data, boolean wildcardSupported) {
-        ArrayList<AuthorityEntry> arrayList;
-        if (data == null || (arrayList = this.mDataAuthorities) == null) {
+        if (data == null || this.mDataAuthorities == null) {
             return -2;
         }
-        int numDataAuthorities = arrayList.size();
+        int numDataAuthorities = this.mDataAuthorities.size();
         for (int i = 0; i < numDataAuthorities; i++) {
             AuthorityEntry ae = this.mDataAuthorities.get(i);
             int match = ae.match(data, wildcardSupported);
@@ -997,7 +1011,17 @@ public class IntentFilter implements Parcelable {
                         return -2;
                     }
                     ArrayList<PatternMatcher> paths = this.mDataPaths;
-                    if (paths == null) {
+                    ArrayList<UriRelativeFilterGroup> groups = this.mUriRelativeFilterGroups;
+                    if (Flags.relativeReferenceIntentFilters()) {
+                        if (paths == null && groups == null) {
+                            match = authMatch;
+                        } else {
+                            if (!hasDataPath(data.getPath(), wildcardSupported) && !matchRelRefGroups(data)) {
+                                return -2;
+                            }
+                            match = 5242880;
+                        }
+                    } else if (paths == null) {
                         match = authMatch;
                     } else {
                         if (!hasDataPath(data.getPath(), wildcardSupported)) {
@@ -1027,6 +1051,13 @@ public class IntentFilter implements Parcelable {
         return 32768 + match;
     }
 
+    private boolean matchRelRefGroups(Uri data) {
+        if (this.mUriRelativeFilterGroups == null) {
+            return false;
+        }
+        return UriRelativeFilterGroup.matchGroupsToUri(this.mUriRelativeFilterGroups, data);
+    }
+
     public final void addCategory(String category) {
         if (this.mCategories == null) {
             this.mCategories = new ArrayList<>();
@@ -1037,9 +1068,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public final int countCategories() {
-        ArrayList<String> arrayList = this.mCategories;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mCategories != null) {
+            return this.mCategories.size();
         }
         return 0;
     }
@@ -1049,14 +1079,12 @@ public class IntentFilter implements Parcelable {
     }
 
     public final boolean hasCategory(String category) {
-        ArrayList<String> arrayList = this.mCategories;
-        return arrayList != null && arrayList.contains(category);
+        return this.mCategories != null && this.mCategories.contains(category);
     }
 
     public final Iterator<String> categoriesIterator() {
-        ArrayList<String> arrayList = this.mCategories;
-        if (arrayList != null) {
-            return arrayList.iterator();
+        if (this.mCategories != null) {
+            return this.mCategories.iterator();
         }
         return null;
     }
@@ -1082,11 +1110,10 @@ public class IntentFilter implements Parcelable {
     }
 
     private String matchExtras(Bundle extras) {
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        Set<String> keys = persistableBundle.keySet();
+        Set<String> keys = this.mExtras.keySet();
         for (String key : keys) {
             if (extras == null) {
                 return key;
@@ -1110,11 +1137,10 @@ public class IntentFilter implements Parcelable {
 
     public final int getIntExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle == null) {
+        if (this.mExtras == null) {
             return 0;
         }
-        return persistableBundle.getInt(name);
+        return this.mExtras.getInt(name);
     }
 
     public final void addExtra(String name, int[] value) {
@@ -1128,8 +1154,7 @@ public class IntentFilter implements Parcelable {
 
     public final int[] getIntArrayExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        return persistableBundle == null ? EMPTY_INT_ARRAY : persistableBundle.getIntArray(name);
+        return this.mExtras == null ? EMPTY_INT_ARRAY : this.mExtras.getIntArray(name);
     }
 
     public final void addExtra(String name, long value) {
@@ -1142,11 +1167,10 @@ public class IntentFilter implements Parcelable {
 
     public final long getLongExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle == null) {
+        if (this.mExtras == null) {
             return 0L;
         }
-        return persistableBundle.getLong(name);
+        return this.mExtras.getLong(name);
     }
 
     public final void addExtra(String name, long[] value) {
@@ -1160,8 +1184,7 @@ public class IntentFilter implements Parcelable {
 
     public final long[] getLongArrayExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        return persistableBundle == null ? EMPTY_LONG_ARRAY : persistableBundle.getLongArray(name);
+        return this.mExtras == null ? EMPTY_LONG_ARRAY : this.mExtras.getLongArray(name);
     }
 
     public final void addExtra(String name, double value) {
@@ -1174,8 +1197,7 @@ public class IntentFilter implements Parcelable {
 
     public final double getDoubleExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        return persistableBundle == null ? SContextConstants.ENVIRONMENT_VALUE_UNKNOWN : persistableBundle.getDouble(name);
+        return this.mExtras == null ? SContextConstants.ENVIRONMENT_VALUE_UNKNOWN : this.mExtras.getDouble(name);
     }
 
     public final void addExtra(String name, double[] value) {
@@ -1189,8 +1211,7 @@ public class IntentFilter implements Parcelable {
 
     public final double[] getDoubleArrayExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        return persistableBundle == null ? EMPTY_DOUBLE_ARRAY : persistableBundle.getDoubleArray(name);
+        return this.mExtras == null ? EMPTY_DOUBLE_ARRAY : this.mExtras.getDoubleArray(name);
     }
 
     public final void addExtra(String name, String value) {
@@ -1204,11 +1225,10 @@ public class IntentFilter implements Parcelable {
 
     public final String getStringExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle == null) {
+        if (this.mExtras == null) {
             return null;
         }
-        return persistableBundle.getString(name);
+        return this.mExtras.getString(name);
     }
 
     public final void addExtra(String name, String[] value) {
@@ -1222,8 +1242,7 @@ public class IntentFilter implements Parcelable {
 
     public final String[] getStringArrayExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        return persistableBundle == null ? EMPTY_STRING_ARRAY : persistableBundle.getStringArray(name);
+        return this.mExtras == null ? EMPTY_STRING_ARRAY : this.mExtras.getStringArray(name);
     }
 
     public final void addExtra(String name, boolean value) {
@@ -1236,11 +1255,10 @@ public class IntentFilter implements Parcelable {
 
     public final boolean getBooleanExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle == null) {
+        if (this.mExtras == null) {
             return false;
         }
-        return persistableBundle.getBoolean(name);
+        return this.mExtras.getBoolean(name);
     }
 
     public final void addExtra(String name, boolean[] value) {
@@ -1254,17 +1272,15 @@ public class IntentFilter implements Parcelable {
 
     public final boolean[] getBooleanArrayExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        return persistableBundle == null ? EMPTY_BOOLEAN_ARRAY : persistableBundle.getBooleanArray(name);
+        return this.mExtras == null ? EMPTY_BOOLEAN_ARRAY : this.mExtras.getBooleanArray(name);
     }
 
     public final boolean hasExtra(String name) {
         Objects.requireNonNull(name);
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle == null) {
+        if (this.mExtras == null) {
             return false;
         }
-        return persistableBundle.containsKey(name);
+        return this.mExtras.containsKey(name);
     }
 
     public final void setExtras(PersistableBundle extras) {
@@ -1272,16 +1288,16 @@ public class IntentFilter implements Parcelable {
     }
 
     public final PersistableBundle getExtras() {
-        PersistableBundle persistableBundle = this.mExtras;
-        return persistableBundle == null ? new PersistableBundle() : persistableBundle;
+        return this.mExtras == null ? new PersistableBundle() : this.mExtras;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$asPredicate$2(Intent i) {
         return match(null, i, false, TAG) >= 0;
     }
 
     public Predicate<Intent> asPredicate() {
-        return new Predicate() { // from class: android.content.IntentFilter$$ExternalSyntheticLambda2
+        return new Predicate() { // from class: android.content.IntentFilter$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean lambda$asPredicate$2;
@@ -1303,6 +1319,7 @@ public class IntentFilter implements Parcelable {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$asPredicateWithTypeResolution$3(ContentResolver resolver, Intent i) {
         return match(resolver, i, true, TAG) >= 0;
     }
@@ -1433,15 +1450,20 @@ public class IntentFilter implements Parcelable {
                 throw new IllegalStateException("Failed to write extras: " + this.mExtras.toString(), e);
             }
         }
+        if (Flags.relativeReferenceIntentFilters()) {
+            int N8 = countUriRelativeFilterGroups();
+            for (int i8 = 0; i8 < N8; i8++) {
+                this.mUriRelativeFilterGroups.get(i8).writeToXml(serializer);
+            }
+        }
     }
 
     private void writeDataTypesToXml(XmlSerializer serializer) throws IOException {
-        ArrayList<String> arrayList = this.mStaticDataTypes;
-        if (arrayList == null) {
+        if (this.mStaticDataTypes == null) {
             return;
         }
         int i = 0;
-        Iterator<String> it = arrayList.iterator();
+        Iterator<String> it = this.mStaticDataTypes.iterator();
         while (it.hasNext()) {
             String staticType = it.next();
             while (!this.mDataTypes.get(i).equals(staticType)) {
@@ -1570,6 +1592,8 @@ public class IntentFilter implements Parcelable {
                             }
                         } else if (tagName.equals("extras")) {
                             this.mExtras = PersistableBundle.restoreFromXml(parser);
+                        } else if (Flags.relativeReferenceIntentFilters() && URI_RELATIVE_FILTER_GROUP_STR.equals(tagName)) {
+                            addUriRelativeFilterGroup(new UriRelativeFilterGroup(parser));
                         } else {
                             Log.w(TAG, "Unknown tag parsing IntentFilter: " + tagName);
                         }
@@ -1592,51 +1616,44 @@ public class IntentFilter implements Parcelable {
                 proto.write(2237677961217L, it.next());
             }
         }
-        ArrayList<String> arrayList = this.mCategories;
-        if (arrayList != null) {
-            Iterator<String> it2 = arrayList.iterator();
+        if (this.mCategories != null) {
+            Iterator<String> it2 = this.mCategories.iterator();
             while (it2.hasNext()) {
                 proto.write(2237677961218L, it2.next());
             }
         }
-        ArrayList<String> arrayList2 = this.mDataSchemes;
-        if (arrayList2 != null) {
-            Iterator<String> it3 = arrayList2.iterator();
+        if (this.mDataSchemes != null) {
+            Iterator<String> it3 = this.mDataSchemes.iterator();
             while (it3.hasNext()) {
                 proto.write(2237677961219L, it3.next());
             }
         }
-        ArrayList<PatternMatcher> arrayList3 = this.mDataSchemeSpecificParts;
-        if (arrayList3 != null) {
-            Iterator<PatternMatcher> it4 = arrayList3.iterator();
+        if (this.mDataSchemeSpecificParts != null) {
+            Iterator<PatternMatcher> it4 = this.mDataSchemeSpecificParts.iterator();
             while (it4.hasNext()) {
                 it4.next().dumpDebug(proto, 2246267895812L);
             }
         }
-        ArrayList<AuthorityEntry> arrayList4 = this.mDataAuthorities;
-        if (arrayList4 != null) {
-            Iterator<AuthorityEntry> it5 = arrayList4.iterator();
+        if (this.mDataAuthorities != null) {
+            Iterator<AuthorityEntry> it5 = this.mDataAuthorities.iterator();
             while (it5.hasNext()) {
                 it5.next().dumpDebug(proto, 2246267895813L);
             }
         }
-        ArrayList<PatternMatcher> arrayList5 = this.mDataPaths;
-        if (arrayList5 != null) {
-            Iterator<PatternMatcher> it6 = arrayList5.iterator();
+        if (this.mDataPaths != null) {
+            Iterator<PatternMatcher> it6 = this.mDataPaths.iterator();
             while (it6.hasNext()) {
                 it6.next().dumpDebug(proto, 2246267895814L);
             }
         }
-        ArrayList<String> arrayList6 = this.mDataTypes;
-        if (arrayList6 != null) {
-            Iterator<String> it7 = arrayList6.iterator();
+        if (this.mDataTypes != null) {
+            Iterator<String> it7 = this.mDataTypes.iterator();
             while (it7.hasNext()) {
                 proto.write(2237677961223L, it7.next());
             }
         }
-        ArrayList<String> arrayList7 = this.mMimeGroups;
-        if (arrayList7 != null) {
-            Iterator<String> it8 = arrayList7.iterator();
+        if (this.mMimeGroups != null) {
+            Iterator<String> it8 = this.mMimeGroups.iterator();
             while (it8.hasNext()) {
                 proto.write(2237677961227L, it8.next());
             }
@@ -1646,9 +1663,14 @@ public class IntentFilter implements Parcelable {
             proto.write(1133871366153L, hasPartialTypes());
         }
         proto.write(1133871366154L, getAutoVerify());
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle != null) {
-            persistableBundle.dumpDebug(proto, 1146756268044L);
+        if (this.mExtras != null) {
+            this.mExtras.dumpDebug(proto, 1146756268044L);
+        }
+        if (Flags.relativeReferenceIntentFilters() && this.mUriRelativeFilterGroups != null) {
+            Iterator<UriRelativeFilterGroup> it9 = this.mUriRelativeFilterGroups.iterator();
+            while (it9.hasNext()) {
+                it9.next().dumpDebug(proto, 2246267895821L);
+            }
         }
         proto.end(token);
     }
@@ -1666,9 +1688,8 @@ public class IntentFilter implements Parcelable {
                 du.println(sb.toString());
             }
         }
-        ArrayList<String> arrayList = this.mCategories;
-        if (arrayList != null) {
-            Iterator<String> it2 = arrayList.iterator();
+        if (this.mCategories != null) {
+            Iterator<String> it2 = this.mCategories.iterator();
             while (it2.hasNext()) {
                 sb.setLength(0);
                 sb.append(prefix);
@@ -1678,9 +1699,8 @@ public class IntentFilter implements Parcelable {
                 du.println(sb.toString());
             }
         }
-        ArrayList<String> arrayList2 = this.mDataSchemes;
-        if (arrayList2 != null) {
-            Iterator<String> it3 = arrayList2.iterator();
+        if (this.mDataSchemes != null) {
+            Iterator<String> it3 = this.mDataSchemes.iterator();
             while (it3.hasNext()) {
                 sb.setLength(0);
                 sb.append(prefix);
@@ -1690,9 +1710,8 @@ public class IntentFilter implements Parcelable {
                 du.println(sb.toString());
             }
         }
-        ArrayList<PatternMatcher> arrayList3 = this.mDataSchemeSpecificParts;
-        if (arrayList3 != null) {
-            Iterator<PatternMatcher> it4 = arrayList3.iterator();
+        if (this.mDataSchemeSpecificParts != null) {
+            Iterator<PatternMatcher> it4 = this.mDataSchemeSpecificParts.iterator();
             while (it4.hasNext()) {
                 PatternMatcher pe = it4.next();
                 sb.setLength(0);
@@ -1703,9 +1722,8 @@ public class IntentFilter implements Parcelable {
                 du.println(sb.toString());
             }
         }
-        ArrayList<AuthorityEntry> arrayList4 = this.mDataAuthorities;
-        if (arrayList4 != null) {
-            Iterator<AuthorityEntry> it5 = arrayList4.iterator();
+        if (this.mDataAuthorities != null) {
+            Iterator<AuthorityEntry> it5 = this.mDataAuthorities.iterator();
             while (it5.hasNext()) {
                 AuthorityEntry ae = it5.next();
                 sb.setLength(0);
@@ -1720,9 +1738,8 @@ public class IntentFilter implements Parcelable {
                 du.println(sb.toString());
             }
         }
-        ArrayList<PatternMatcher> arrayList5 = this.mDataPaths;
-        if (arrayList5 != null) {
-            Iterator<PatternMatcher> it6 = arrayList5.iterator();
+        if (this.mDataPaths != null) {
+            Iterator<PatternMatcher> it6 = this.mDataPaths.iterator();
             while (it6.hasNext()) {
                 PatternMatcher pe2 = it6.next();
                 sb.setLength(0);
@@ -1733,23 +1750,32 @@ public class IntentFilter implements Parcelable {
                 du.println(sb.toString());
             }
         }
-        ArrayList<String> arrayList6 = this.mStaticDataTypes;
-        if (arrayList6 != null) {
-            Iterator<String> it7 = arrayList6.iterator();
+        if (this.mUriRelativeFilterGroups != null) {
+            Iterator<UriRelativeFilterGroup> it7 = this.mUriRelativeFilterGroups.iterator();
             while (it7.hasNext()) {
                 sb.setLength(0);
                 sb.append(prefix);
-                sb.append("StaticType: \"");
+                sb.append("UriRelativeFilterGroup: \"");
                 sb.append(it7.next());
                 sb.append("\"");
                 du.println(sb.toString());
             }
         }
-        ArrayList<String> arrayList7 = this.mDataTypes;
-        if (arrayList7 != null) {
-            Iterator<String> it8 = arrayList7.iterator();
+        if (this.mStaticDataTypes != null) {
+            Iterator<String> it8 = this.mStaticDataTypes.iterator();
             while (it8.hasNext()) {
-                String dataType = it8.next();
+                sb.setLength(0);
+                sb.append(prefix);
+                sb.append("StaticType: \"");
+                sb.append(it8.next());
+                sb.append("\"");
+                du.println(sb.toString());
+            }
+        }
+        if (this.mDataTypes != null) {
+            Iterator<String> it9 = this.mDataTypes.iterator();
+            while (it9.hasNext()) {
+                String dataType = it9.next();
                 if (!hasExactStaticDataType(dataType)) {
                     sb.setLength(0);
                     sb.append(prefix);
@@ -1760,14 +1786,13 @@ public class IntentFilter implements Parcelable {
                 }
             }
         }
-        ArrayList<String> arrayList8 = this.mMimeGroups;
-        if (arrayList8 != null) {
-            Iterator<String> it9 = arrayList8.iterator();
-            while (it9.hasNext()) {
+        if (this.mMimeGroups != null) {
+            Iterator<String> it10 = this.mMimeGroups.iterator();
+            while (it10.hasNext()) {
                 sb.setLength(0);
                 sb.append(prefix);
                 sb.append("MimeGroup: \"");
-                sb.append(it9.next());
+                sb.append(it10.next());
                 sb.append("\"");
                 du.println(sb.toString());
             }
@@ -1801,23 +1826,6 @@ public class IntentFilter implements Parcelable {
         }
     }
 
-    /* renamed from: android.content.IntentFilter$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IntentFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IntentFilter createFromParcel(Parcel source) {
-            return new IntentFilter(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IntentFilter[] newArray(int size) {
-            return new IntentFilter[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final int describeContents() {
         return 0;
@@ -1825,8 +1833,7 @@ public class IntentFilter implements Parcelable {
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel parcel, int i) {
-        ArraySet<String> arraySet = this.mActions;
-        parcel.writeStringArray((String[]) arraySet.toArray(new String[arraySet.size()]));
+        parcel.writeStringArray((String[]) this.mActions.toArray(new String[this.mActions.size()]));
         if (this.mCategories != null) {
             parcel.writeInt(1);
             parcel.writeStringList(this.mCategories);
@@ -1857,9 +1864,8 @@ public class IntentFilter implements Parcelable {
         } else {
             parcel.writeInt(0);
         }
-        ArrayList<PatternMatcher> arrayList = this.mDataSchemeSpecificParts;
-        if (arrayList != null) {
-            int size = arrayList.size();
+        if (this.mDataSchemeSpecificParts != null) {
+            int size = this.mDataSchemeSpecificParts.size();
             parcel.writeInt(size);
             for (int i2 = 0; i2 < size; i2++) {
                 this.mDataSchemeSpecificParts.get(i2).writeToParcel(parcel, i);
@@ -1867,9 +1873,8 @@ public class IntentFilter implements Parcelable {
         } else {
             parcel.writeInt(0);
         }
-        ArrayList<AuthorityEntry> arrayList2 = this.mDataAuthorities;
-        if (arrayList2 != null) {
-            int size2 = arrayList2.size();
+        if (this.mDataAuthorities != null) {
+            int size2 = this.mDataAuthorities.size();
             parcel.writeInt(size2);
             for (int i3 = 0; i3 < size2; i3++) {
                 this.mDataAuthorities.get(i3).writeToParcel(parcel);
@@ -1877,9 +1882,8 @@ public class IntentFilter implements Parcelable {
         } else {
             parcel.writeInt(0);
         }
-        ArrayList<PatternMatcher> arrayList3 = this.mDataPaths;
-        if (arrayList3 != null) {
-            int size3 = arrayList3.size();
+        if (this.mDataPaths != null) {
+            int size3 = this.mDataPaths.size();
             parcel.writeInt(size3);
             for (int i4 = 0; i4 < size3; i4++) {
                 this.mDataPaths.get(i4).writeToParcel(parcel, i);
@@ -1899,6 +1903,15 @@ public class IntentFilter implements Parcelable {
         } else {
             parcel.writeInt(0);
         }
+        if (Flags.relativeReferenceIntentFilters() && this.mUriRelativeFilterGroups != null) {
+            int size4 = this.mUriRelativeFilterGroups.size();
+            parcel.writeInt(size4);
+            for (int i5 = 0; i5 < size4; i5++) {
+                this.mUriRelativeFilterGroups.get(i5).writeToParcel(parcel, i);
+            }
+            return;
+        }
+        parcel.writeInt(0);
     }
 
     public boolean debugCheck() {
@@ -1906,10 +1919,8 @@ public class IntentFilter implements Parcelable {
     }
 
     public boolean checkDataPathAndSchemeSpecificParts() {
-        ArrayList<PatternMatcher> arrayList = this.mDataPaths;
-        int numDataPath = arrayList == null ? 0 : arrayList.size();
-        ArrayList<PatternMatcher> arrayList2 = this.mDataSchemeSpecificParts;
-        int numDataSchemeSpecificParts = arrayList2 == null ? 0 : arrayList2.size();
+        int numDataPath = this.mDataPaths == null ? 0 : this.mDataPaths.size();
+        int numDataSchemeSpecificParts = this.mDataSchemeSpecificParts == null ? 0 : this.mDataSchemeSpecificParts.size();
         for (int i = 0; i < numDataPath; i++) {
             if (!this.mDataPaths.get(i).check()) {
                 return false;
@@ -1929,6 +1940,7 @@ public class IntentFilter implements Parcelable {
         this.mDataSchemeSpecificParts = null;
         this.mDataAuthorities = null;
         this.mDataPaths = null;
+        this.mUriRelativeFilterGroups = null;
         this.mStaticDataTypes = null;
         this.mDataTypes = null;
         this.mMimeGroups = null;
@@ -1939,29 +1951,24 @@ public class IntentFilter implements Parcelable {
         source.readStringList(actions);
         this.mActions = new ArraySet<>(actions);
         if (source.readInt() != 0) {
-            ArrayList<String> arrayList = new ArrayList<>();
-            this.mCategories = arrayList;
-            source.readStringList(arrayList);
+            this.mCategories = new ArrayList<>();
+            source.readStringList(this.mCategories);
         }
         if (source.readInt() != 0) {
-            ArrayList<String> arrayList2 = new ArrayList<>();
-            this.mDataSchemes = arrayList2;
-            source.readStringList(arrayList2);
+            this.mDataSchemes = new ArrayList<>();
+            source.readStringList(this.mDataSchemes);
         }
         if (source.readInt() != 0) {
-            ArrayList<String> arrayList3 = new ArrayList<>();
-            this.mStaticDataTypes = arrayList3;
-            source.readStringList(arrayList3);
+            this.mStaticDataTypes = new ArrayList<>();
+            source.readStringList(this.mStaticDataTypes);
         }
         if (source.readInt() != 0) {
-            ArrayList<String> arrayList4 = new ArrayList<>();
-            this.mDataTypes = arrayList4;
-            source.readStringList(arrayList4);
+            this.mDataTypes = new ArrayList<>();
+            source.readStringList(this.mDataTypes);
         }
         if (source.readInt() != 0) {
-            ArrayList<String> arrayList5 = new ArrayList<>();
-            this.mMimeGroups = arrayList5;
-            source.readStringList(arrayList5);
+            this.mMimeGroups = new ArrayList<>();
+            source.readStringList(this.mMimeGroups);
         }
         int N = source.readInt();
         if (N > 0) {
@@ -1993,6 +2000,13 @@ public class IntentFilter implements Parcelable {
         this.mOrder = source.readInt();
         if (source.readInt() != 0) {
             this.mExtras = PersistableBundle.CREATOR.createFromParcel(source);
+        }
+        int N4 = source.readInt();
+        if (Flags.relativeReferenceIntentFilters() && N4 > 0) {
+            this.mUriRelativeFilterGroups = new ArrayList<>(N4);
+            for (int i5 = 0; i5 < N4; i5++) {
+                this.mUriRelativeFilterGroups.add(new UriRelativeFilterGroup(source));
+            }
         }
     }
 

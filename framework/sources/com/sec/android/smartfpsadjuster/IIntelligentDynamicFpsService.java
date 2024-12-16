@@ -16,7 +16,6 @@ public interface IIntelligentDynamicFpsService extends IInterface {
 
     void cameraPolicyStop() throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements IIntelligentDynamicFpsService {
         @Override // com.sec.android.smartfpsadjuster.IIntelligentDynamicFpsService
         public void cameraPolicyStart() throws RemoteException {
@@ -37,7 +36,6 @@ public interface IIntelligentDynamicFpsService extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements IIntelligentDynamicFpsService {
         static final int TRANSACTION_cameraPolicyChange = 3;
         static final int TRANSACTION_cameraPolicyStart = 1;
@@ -86,34 +84,31 @@ public interface IIntelligentDynamicFpsService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIntelligentDynamicFpsService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIntelligentDynamicFpsService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIntelligentDynamicFpsService.DESCRIPTOR);
+                case 1:
+                    cameraPolicyStart();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    cameraPolicyStop();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = cameraPolicyChange(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            cameraPolicyStart();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            cameraPolicyStop();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = cameraPolicyChange(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements IIntelligentDynamicFpsService {
             private IBinder mRemote;
 

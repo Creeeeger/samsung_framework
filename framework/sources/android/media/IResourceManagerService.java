@@ -54,7 +54,6 @@ public interface IResourceManagerService extends IInterface {
 
     void setCodecState(int i, int i2, long j, IResourceManagerClient iResourceManagerClient, int i3) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IResourceManagerService {
         @Override // android.media.IResourceManagerService
         public void config(MediaResourcePolicyParcel[] policies) throws RemoteException {
@@ -142,7 +141,6 @@ public interface IResourceManagerService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IResourceManagerService {
         static final int TRANSACTION_addMediaInfo = 15;
         static final int TRANSACTION_addResource = 2;
@@ -239,161 +237,158 @@ public interface IResourceManagerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IResourceManagerService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IResourceManagerService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IResourceManagerService.DESCRIPTOR);
+                case 1:
+                    MediaResourcePolicyParcel[] _arg0 = (MediaResourcePolicyParcel[]) data.createTypedArray(MediaResourcePolicyParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    config(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ClientInfoParcel _arg02 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
+                    IResourceManagerClient _arg1 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
+                    MediaResourceParcel[] _arg2 = (MediaResourceParcel[]) data.createTypedArray(MediaResourceParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    addResource(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ClientInfoParcel _arg03 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
+                    MediaResourceParcel[] _arg12 = (MediaResourceParcel[]) data.createTypedArray(MediaResourceParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeResource(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    ClientInfoParcel _arg04 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeClient(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    ClientInfoParcel _arg05 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
+                    MediaResourceParcel[] _arg13 = (MediaResourceParcel[]) data.createTypedArray(MediaResourceParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = reclaimResource(_arg05, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    overridePid(_arg06, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    IResourceManagerClient _arg07 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
+                    int _arg15 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    overrideProcessInfo(_arg07, _arg15, _arg22, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    ClientInfoParcel _arg08 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    markClientForPendingRemoval(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reclaimResourcesFromClientsPendingRemoval(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    ClientInfoParcel _arg010 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyClientCreated(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    ClientConfigParcel _arg011 = (ClientConfigParcel) data.readTypedObject(ClientConfigParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyClientStarted(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    ClientConfigParcel _arg012 = (ClientConfigParcel) data.readTypedObject(ClientConfigParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyClientStopped(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    ClientConfigParcel _arg013 = (ClientConfigParcel) data.readTypedObject(ClientConfigParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyClientConfigChanged(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IResourceManagerObserverClient _arg014 = IResourceManagerObserverClient.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    IResourceManagerObserver _result2 = createResourceObserver(_arg014);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    int _arg16 = data.readInt();
+                    long _arg23 = data.readLong();
+                    IResourceManagerClient _arg32 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
+                    MediaInfoParcel[] _arg4 = (MediaInfoParcel[]) data.createTypedArray(MediaInfoParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    addMediaInfo(_arg015, _arg16, _arg23, _arg32, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    int _arg17 = data.readInt();
+                    long _arg24 = data.readLong();
+                    IResourceManagerClient _arg33 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCodecState(_arg016, _arg17, _arg24, _arg33, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    int _arg18 = data.readInt();
+                    long _arg25 = data.readLong();
+                    IResourceManagerClient _arg34 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
+                    MediaInfoParcel[] _arg43 = (MediaInfoParcel[]) data.createTypedArray(MediaInfoParcel.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCapacityError(_arg017, _arg18, _arg25, _arg34, _arg43);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    String _arg018 = data.readString();
+                    int _arg19 = data.readInt();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result3 = getSupportedFrameRateFor(_arg018, _arg19, _arg26);
+                    reply.writeNoException();
+                    reply.writeFloat(_result3);
+                    return true;
+                case 19:
+                    String _arg019 = data.readString();
+                    int _arg110 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result4 = getRemainedFrameRateFor(_arg019, _arg110, _arg27);
+                    reply.writeNoException();
+                    reply.writeFloat(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MediaResourcePolicyParcel[] _arg0 = (MediaResourcePolicyParcel[]) data.createTypedArray(MediaResourcePolicyParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            config(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ClientInfoParcel _arg02 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
-                            IResourceManagerClient _arg1 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
-                            MediaResourceParcel[] _arg2 = (MediaResourceParcel[]) data.createTypedArray(MediaResourceParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            addResource(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ClientInfoParcel _arg03 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
-                            MediaResourceParcel[] _arg12 = (MediaResourceParcel[]) data.createTypedArray(MediaResourceParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeResource(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            ClientInfoParcel _arg04 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeClient(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            ClientInfoParcel _arg05 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
-                            MediaResourceParcel[] _arg13 = (MediaResourceParcel[]) data.createTypedArray(MediaResourceParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = reclaimResource(_arg05, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            overridePid(_arg06, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            IResourceManagerClient _arg07 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
-                            int _arg15 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            overrideProcessInfo(_arg07, _arg15, _arg22, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            ClientInfoParcel _arg08 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            markClientForPendingRemoval(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reclaimResourcesFromClientsPendingRemoval(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            ClientInfoParcel _arg010 = (ClientInfoParcel) data.readTypedObject(ClientInfoParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyClientCreated(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            ClientConfigParcel _arg011 = (ClientConfigParcel) data.readTypedObject(ClientConfigParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyClientStarted(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            ClientConfigParcel _arg012 = (ClientConfigParcel) data.readTypedObject(ClientConfigParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyClientStopped(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            ClientConfigParcel _arg013 = (ClientConfigParcel) data.readTypedObject(ClientConfigParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyClientConfigChanged(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IResourceManagerObserverClient _arg014 = IResourceManagerObserverClient.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            IResourceManagerObserver _result2 = createResourceObserver(_arg014);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            int _arg16 = data.readInt();
-                            long _arg23 = data.readLong();
-                            IResourceManagerClient _arg32 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
-                            MediaInfoParcel[] _arg4 = (MediaInfoParcel[]) data.createTypedArray(MediaInfoParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            addMediaInfo(_arg015, _arg16, _arg23, _arg32, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            int _arg17 = data.readInt();
-                            long _arg24 = data.readLong();
-                            IResourceManagerClient _arg33 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCodecState(_arg016, _arg17, _arg24, _arg33, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            int _arg18 = data.readInt();
-                            long _arg25 = data.readLong();
-                            IResourceManagerClient _arg34 = IResourceManagerClient.Stub.asInterface(data.readStrongBinder());
-                            MediaInfoParcel[] _arg43 = (MediaInfoParcel[]) data.createTypedArray(MediaInfoParcel.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCapacityError(_arg017, _arg18, _arg25, _arg34, _arg43);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            String _arg018 = data.readString();
-                            int _arg19 = data.readInt();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result3 = getSupportedFrameRateFor(_arg018, _arg19, _arg26);
-                            reply.writeNoException();
-                            reply.writeFloat(_result3);
-                            return true;
-                        case 19:
-                            String _arg019 = data.readString();
-                            int _arg110 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result4 = getRemainedFrameRateFor(_arg019, _arg110, _arg27);
-                            reply.writeNoException();
-                            reply.writeFloat(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IResourceManagerService {
             private IBinder mRemote;
 

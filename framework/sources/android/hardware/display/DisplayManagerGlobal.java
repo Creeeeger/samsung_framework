@@ -8,16 +8,17 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.ColorSpace;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.hardware.OverlayProperties;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.DisplayManagerGlobal;
 import android.hardware.display.IDisplayManager;
 import android.hardware.display.IDisplayManagerCallback;
+import android.hardware.display.IHbmBrightnessCallback;
 import android.hardware.display.IVirtualDisplayCallback;
 import android.hardware.display.IWifiDisplayConnectionCallback;
 import android.hardware.display.VirtualDisplay;
 import android.hardware.graphics.common.DisplayDecorationSupport;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.projection.IMediaProjection;
 import android.media.projection.MediaProjection;
 import android.os.Binder;
@@ -29,9 +30,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.Trace;
 import android.sec.clipboard.data.ClipboardConstants;
+import android.sysprop.DisplayProperties;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
+import android.util.Slog;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.DisplayAdjustments;
@@ -54,32 +59,38 @@ import java.util.concurrent.atomic.AtomicLong;
 /* loaded from: classes2.dex */
 public final class DisplayManagerGlobal {
     public static final String CACHE_KEY_DISPLAY_INFO_PROPERTY = "cache_key.display_info";
-    private static final boolean DEBUG = false;
-    public static final int EVENT_CONNECTIONSTATUS_CHANGED = 6;
+    private static final boolean DEBUG;
+    public static final int EVENT_CONNECTIONSTATUS_CHANGED = 8;
     public static final int EVENT_DISPLAY_ADDED = 1;
     public static final int EVENT_DISPLAY_BRIGHTNESS_CHANGED = 4;
     public static final int EVENT_DISPLAY_CHANGED = 2;
+    public static final int EVENT_DISPLAY_CONNECTED = 6;
+    public static final int EVENT_DISPLAY_DISCONNECTED = 7;
     public static final int EVENT_DISPLAY_HDR_SDR_RATIO_CHANGED = 5;
     public static final int EVENT_DISPLAY_REMOVED = 3;
-    public static final int EVENT_REMOTE_DISPLAY_ROTATION_CHANGED = 8;
-    public static final int EVENT_REMOTE_DISPLAY_STATE_CHANGED = 7;
-    public static final int EVENT_VOLUME_KEY_DOWN = 10;
-    public static final int EVENT_VOLUME_KEY_UP = 11;
-    public static final int EVENT_VOLUME_LEVEL_CHANGED = 9;
-    public static final int EVENT_VOLUME_MUTE = 12;
-    public static final int EVENT_VOLUME_UNMUTE = 13;
-    public static final int EVENT_WIFIDISPLAY_PARAMETERS_CHANGED = 17;
+    public static final int EVENT_REMOTE_DISPLAY_ROTATION_CHANGED = 10;
+    public static final int EVENT_REMOTE_DISPLAY_STATE_CHANGED = 9;
+    public static final int EVENT_VOLUME_KEY_DOWN = 12;
+    public static final int EVENT_VOLUME_KEY_UP = 13;
+    public static final int EVENT_VOLUME_LEVEL_CHANGED = 11;
+    public static final int EVENT_VOLUME_MUTE = 14;
+    public static final int EVENT_VOLUME_UNMUTE = 15;
+    public static final int EVENT_WIFIDISPLAY_PARAMETERS_CHANGED = 16;
     private static final String TAG = "DisplayManager";
     private static final boolean USE_CACHE = false;
     private static DisplayManagerGlobal sInstance;
     private DisplayManagerCallback mCallback;
     private int[] mDisplayIdCache;
     private final IDisplayManager mDm;
+    private HbmBrightnessCallback mHbmBrightnessCallback;
     private float mNativeCallbackReportedRefreshRate;
     private final OverlayProperties mOverlayProperties;
     private final ColorSpace mWideColorSpace;
     private WifiDisplayConnectionCallback mWifiDisplayConnectionCallback;
     private int mWifiDisplayScanNestCount;
+    private static final String EXTRA_LOGGING_PACKAGE_NAME = DisplayProperties.debug_vri_package().orElse(null);
+    private static String sCurrentPackageName = ActivityThread.currentPackageName();
+    private static boolean sExtraDisplayListenerLogging = initExtraLogging();
     private boolean mDispatchNativeCallbacks = false;
     private final Object mLock = new Object();
     private long mRegisteredEventsMask = 0;
@@ -89,11 +100,9 @@ public final class DisplayManagerGlobal {
     private final ArrayList<WifiDisplayParameterListenerDelegate> mWifiDisplayParameterListeners = new ArrayList<>();
     private final ArrayList<DeviceListenerDelegate> mDeviceListeners = new ArrayList<>();
     private final SparseArray<DisplayInfo> mDisplayInfoCache = new SparseArray<>();
+    private final Binder mToken = new Binder();
+    private boolean mHbmBrightnessCallbackRegistered = false;
     private PropertyInvalidatedCache<Integer, DisplayInfo> mDisplayCache = new PropertyInvalidatedCache<Integer, DisplayInfo>(8, CACHE_KEY_DISPLAY_INFO_PROPERTY) { // from class: android.hardware.display.DisplayManagerGlobal.1
-        AnonymousClass1(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
         @Override // android.app.PropertyInvalidatedCache
         public DisplayInfo recompute(Integer id) {
             try {
@@ -105,37 +114,23 @@ public final class DisplayManagerGlobal {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DisplayEvent {
     }
 
     private static native void nSignalNativeCallbacks(float f);
 
-    public DisplayManagerGlobal(IDisplayManager dm) {
-        this.mDm = dm;
-        try {
-            this.mWideColorSpace = ColorSpace.get(ColorSpace.Named.values()[dm.getPreferredWideGamutColorSpaceId()]);
-            this.mOverlayProperties = dm.getOverlaySupport();
-        } catch (RemoteException ex) {
-            throw ex.rethrowFromSystemServer();
-        }
+    static {
+        DEBUG = DisplayManager.DEBUG || sExtraDisplayListenerLogging;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.display.DisplayManagerGlobal$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends PropertyInvalidatedCache<Integer, DisplayInfo> {
-        AnonymousClass1(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public DisplayInfo recompute(Integer id) {
-            try {
-                return DisplayManagerGlobal.this.mDm.getDisplayInfo(id.intValue());
-            } catch (RemoteException ex) {
-                throw ex.rethrowFromSystemServer();
-            }
+    public DisplayManagerGlobal(IDisplayManager dm) {
+        this.mDm = dm;
+        initExtraLogging();
+        try {
+            this.mWideColorSpace = ColorSpace.get(ColorSpace.Named.values()[this.mDm.getPreferredWideGamutColorSpaceId()]);
+            this.mOverlayProperties = this.mDm.getOverlaySupport();
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
         }
     }
 
@@ -161,9 +156,8 @@ public final class DisplayManagerGlobal {
 
     private DisplayInfo getDisplayInfoLocked(int displayId) {
         DisplayInfo info = null;
-        PropertyInvalidatedCache<Integer, DisplayInfo> propertyInvalidatedCache = this.mDisplayCache;
-        if (propertyInvalidatedCache != null) {
-            DisplayInfo info2 = propertyInvalidatedCache.query(Integer.valueOf(displayId));
+        if (this.mDisplayCache != null) {
+            DisplayInfo info2 = this.mDisplayCache.query(Integer.valueOf(displayId));
             info = info2;
         } else {
             try {
@@ -175,23 +169,11 @@ public final class DisplayManagerGlobal {
         if (info == null) {
             return null;
         }
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-            ActivityThread thread = ActivityThread.currentActivityThread();
-            Configuration currentConfig = thread != null ? thread.getConfiguration() : null;
-            if (CompatSandbox.isDisplaySandboxingEnabled(currentConfig)) {
-                Rect appBounds = currentConfig.windowConfiguration.getAppBounds();
-                info.appWidth = appBounds.width();
-                info.appHeight = appBounds.height();
-                Rect maxBounds = currentConfig.windowConfiguration.getMaxBounds();
-                info.logicalWidth = maxBounds.width();
-                info.logicalHeight = maxBounds.height();
-            }
-        }
-        ActivityThread thread2 = ActivityThread.currentActivityThread();
-        if (thread2 != null && thread2.isDexCompatMode()) {
-            Configuration threadConfig = thread2.getConfiguration();
-            int windowingMode = threadConfig.windowConfiguration.getWindowingMode();
-            if (windowingMode == 5 && threadConfig.densityDpi != 0 && threadConfig.screenWidthDp != 0 && threadConfig.screenHeightDp != 0) {
+        CompatSandbox.applyDisplaySandboxingIfNeeded(info);
+        ActivityThread thread = ActivityThread.currentActivityThread();
+        if (thread != null && thread.isDexCompatMode()) {
+            Configuration threadConfig = thread.getConfiguration();
+            if (threadConfig.windowConfiguration.getWindowingMode() == 5 && threadConfig.densityDpi != 0 && threadConfig.screenWidthDp != 0 && threadConfig.screenHeightDp != 0) {
                 float density = threadConfig.densityDpi * 0.00625f;
                 int width = (int) ((threadConfig.screenWidthDp * density) + 0.5f);
                 int height = (int) ((threadConfig.screenHeightDp * density) + 0.5f);
@@ -199,9 +181,15 @@ public final class DisplayManagerGlobal {
                 info.appWidth = width;
                 info.logicalHeight = height;
                 info.appHeight = height;
+                if (DEBUG) {
+                    Log.i(TAG, "getDisplayInfo: displayId=" + displayId + ", info=" + info + ", threadConfig=" + threadConfig);
+                }
             }
         }
         registerCallbackIfNeededLocked();
+        if (DEBUG) {
+            Log.d(TAG, "getDisplayInfo: displayId=" + displayId + ", info=" + info);
+        }
         return info;
     }
 
@@ -250,34 +238,41 @@ public final class DisplayManagerGlobal {
         return getCompatibleDisplay(displayId, DisplayAdjustments.DEFAULT_DISPLAY_ADJUSTMENTS);
     }
 
-    public void registerDisplayListener(DisplayManager.DisplayListener listener, Handler handler, long eventsMask) {
+    public void registerDisplayListener(DisplayManager.DisplayListener listener, Handler handler, long eventsMask, String packageName) {
         Looper looper = getLooperForHandler(handler);
         Handler springBoard = new Handler(looper);
-        registerDisplayListener(listener, new HandlerExecutor(springBoard), eventsMask);
+        registerDisplayListener(listener, new HandlerExecutor(springBoard), eventsMask, packageName);
     }
 
-    public void registerDisplayListener(DisplayManager.DisplayListener listener, Executor executor, long eventsMask) {
+    public void registerDisplayListener(DisplayManager.DisplayListener listener, Executor executor, long eventsMask, String packageName) {
         if (listener == null) {
             throw new IllegalArgumentException("listener must not be null");
         }
         if (eventsMask == 0) {
             throw new IllegalArgumentException("The set of events to listen to must not be empty.");
         }
+        if (extraLogging()) {
+            Slog.i(TAG, "Registering Display Listener: " + Long.toBinaryString(eventsMask) + ", packageName: " + packageName);
+        }
         synchronized (this.mLock) {
             int index = findDisplayListenerLocked(listener);
             if (index < 0) {
-                this.mDisplayListeners.add(new DisplayListenerDelegate(listener, executor, eventsMask));
+                this.mDisplayListeners.add(new DisplayListenerDelegate(listener, executor, eventsMask, packageName));
                 registerCallbackIfNeededLocked();
             } else {
                 this.mDisplayListeners.get(index).setEventsMask(eventsMask);
             }
             updateCallbackIfNeededLocked();
+            maybeLogAllDisplayListeners();
         }
     }
 
     public void unregisterDisplayListener(DisplayManager.DisplayListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException("listener must not be null");
+        }
+        if (extraLogging()) {
+            Slog.i(TAG, "Unregistering Display Listener: " + listener);
         }
         synchronized (this.mLock) {
             int index = findDisplayListenerLocked(listener);
@@ -288,6 +283,21 @@ public final class DisplayManagerGlobal {
                 updateCallbackIfNeededLocked();
             }
         }
+        maybeLogAllDisplayListeners();
+    }
+
+    private void maybeLogAllDisplayListeners() {
+        if (!extraLogging()) {
+            return;
+        }
+        Slog.i(TAG, "Currently Registered Display Listeners:");
+        for (int i = 0; i < this.mDisplayListeners.size(); i++) {
+            Slog.i(TAG, i + ": " + this.mDisplayListeners.get(i));
+        }
+    }
+
+    public void handleDisplayChangeFromWindowManager(int displayId) {
+        handleDisplayEvent(displayId, 2, true);
     }
 
     private static Looper getLooperForHandler(Handler handler) {
@@ -332,6 +342,9 @@ public final class DisplayManagerGlobal {
 
     private void updateCallbackIfNeededLocked() {
         int mask = calculateEventsMaskLocked();
+        if (DEBUG) {
+            Log.d(TAG, "Mask for listener: " + mask);
+        }
         if (mask != this.mRegisteredEventsMask) {
             try {
                 this.mDm.registerCallbackWithEventMask(this.mCallback, mask);
@@ -342,21 +355,46 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    public void handleDisplayEvent(int displayId, int event) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void handleDisplayEvent(int displayId, int event, boolean forceUpdate) {
         DisplayInfo info;
         DisplayInfo display;
         synchronized (this.mLock) {
             info = getDisplayInfoLocked(displayId);
             if (event == 2 && this.mDispatchNativeCallbacks && displayId == 0 && (display = getDisplayInfoLocked(displayId)) != null && this.mNativeCallbackReportedRefreshRate != display.getRefreshRate()) {
-                float refreshRate = display.getRefreshRate();
-                this.mNativeCallbackReportedRefreshRate = refreshRate;
-                nSignalNativeCallbacks(refreshRate);
+                this.mNativeCallbackReportedRefreshRate = display.getRefreshRate();
+                nSignalNativeCallbacks(this.mNativeCallbackReportedRefreshRate);
             }
         }
         Iterator<DisplayListenerDelegate> it = this.mDisplayListeners.iterator();
         while (it.hasNext()) {
             DisplayListenerDelegate listener = it.next();
-            listener.sendDisplayEvent(displayId, event, info);
+            listener.sendDisplayEvent(displayId, event, info, forceUpdate);
+        }
+    }
+
+    public void enableConnectedDisplay(int displayId) {
+        try {
+            this.mDm.enableConnectedDisplay(displayId);
+        } catch (RemoteException ex) {
+            Log.e(TAG, "Error trying to enable external display", ex);
+        }
+    }
+
+    public void disableConnectedDisplay(int displayId) {
+        try {
+            this.mDm.disableConnectedDisplay(displayId);
+        } catch (RemoteException ex) {
+            Log.e(TAG, "Error trying to enable external display", ex);
+        }
+    }
+
+    public boolean requestDisplayPower(int displayId, boolean on) {
+        try {
+            return this.mDm.requestDisplayPower(displayId, on);
+        } catch (RemoteException ex) {
+            Log.e(TAG, "Error trying to request display power " + on, ex);
+            return false;
         }
     }
 
@@ -365,17 +403,6 @@ public final class DisplayManagerGlobal {
             registerCallbackIfNeededLocked();
             try {
                 this.mDm.startWifiDisplayScan();
-            } catch (RemoteException ex) {
-                throw ex.rethrowFromSystemServer();
-            }
-        }
-    }
-
-    public void startWifiDisplayScanAutoP2P() {
-        synchronized (this.mLock) {
-            registerCallbackIfNeededLocked();
-            try {
-                this.mDm.startWifiDisplayScanAutoP2P();
             } catch (RemoteException ex) {
                 throw ex.rethrowFromSystemServer();
             }
@@ -522,7 +549,7 @@ public final class DisplayManagerGlobal {
         }
         Display display = getRealDisplay(displayId);
         if (display == null) {
-            Log.wtf(DisplayManager.TAG_SPEG, "Could not obtain display info for created display: " + display);
+            Log.wtf(DisplayManager.TAG_SPEG, "Could not obtain display info for created displayId: " + displayId);
             try {
                 this.mDm.releaseVirtualDisplay(callbackWrapper);
                 return null;
@@ -589,7 +616,7 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    public void setVirtualDisplayState(IVirtualDisplayCallback token, boolean isOn) {
+    void setVirtualDisplayState(IVirtualDisplayCallback token, boolean isOn) {
         try {
             this.mDm.setVirtualDisplayState(token, isOn);
         } catch (RemoteException ex) {
@@ -830,6 +857,14 @@ public final class DisplayManagerGlobal {
         }
     }
 
+    public void requestDisplayModes(int displayId, int[] modeIds) {
+        try {
+            this.mDm.requestDisplayModes(this.mToken, displayId, modeIds);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
     public void rotateVirtualDisplay(IVirtualDisplayCallback token, int rotation) {
         try {
             this.mDm.rotateVirtualDisplay(token, rotation);
@@ -850,7 +885,7 @@ public final class DisplayManagerGlobal {
             }
         }
         this.mWifiDisplayConnectionCallback = wifiDisplayConnectionCallback;
-        this.mDm.connectWifiDisplayWithConfig(wifidisplayConfig, wifiDisplayConnectionCallback);
+        this.mDm.connectWifiDisplayWithConfig(wifidisplayConfig, this.mWifiDisplayConnectionCallback);
     }
 
     public void startWifiDisplayScan(int scanChannel) {
@@ -1009,9 +1044,8 @@ public final class DisplayManagerGlobal {
     }
 
     private int findDisplayVolumeListnerLocked(SemDisplayVolumeListener listener) {
-        ArrayList<DisplayVolumeListenerDelegate> arrayList = this.mDisplayVolumeListeners;
-        if (arrayList != null) {
-            int numListeners = arrayList.size();
+        if (this.mDisplayVolumeListeners != null) {
+            int numListeners = this.mDisplayVolumeListeners.size();
             Log.d(TAG, "findDisplayVolumeListnerLocked numListeners: " + numListeners);
             for (int i = 0; i < numListeners; i++) {
                 if (this.mDisplayVolumeListeners.get(i).mListener == listener) {
@@ -1059,9 +1093,8 @@ public final class DisplayManagerGlobal {
     }
 
     private int findDisplayVolumeKeyListnerLocked(SemDisplayVolumeKeyListener listener) {
-        ArrayList<DisplayVolumeKeyListenerDelegate> arrayList = this.mDisplayVolumeKeyListeners;
-        if (arrayList != null) {
-            int numListeners = arrayList.size();
+        if (this.mDisplayVolumeKeyListeners != null) {
+            int numListeners = this.mDisplayVolumeKeyListeners.size();
             Log.d(TAG, "findDisplayVolumeKeyListnerLocked numListeners: " + numListeners);
             for (int i = 0; i < numListeners; i++) {
                 if (this.mDisplayVolumeKeyListeners.get(i).mListener == listener) {
@@ -1109,9 +1142,8 @@ public final class DisplayManagerGlobal {
     }
 
     private int findWifiDisplayParameterListnerLocked(SemWifiDisplayParameterListener listener) {
-        ArrayList<WifiDisplayParameterListenerDelegate> arrayList = this.mWifiDisplayParameterListeners;
-        if (arrayList != null) {
-            int numListeners = arrayList.size();
+        if (this.mWifiDisplayParameterListeners != null) {
+            int numListeners = this.mWifiDisplayParameterListeners.size();
             Log.d(TAG, "findWifiDisplayParameterListnerLocked numListeners: " + numListeners);
             for (int i = 0; i < numListeners; i++) {
                 if (this.mWifiDisplayParameterListeners.get(i).mListener == listener) {
@@ -1123,11 +1155,11 @@ public final class DisplayManagerGlobal {
         return -1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayVolumeEvent(int event, Bundle data) {
         synchronized (this.mLock) {
-            ArrayList<DisplayVolumeListenerDelegate> arrayList = this.mDisplayVolumeListeners;
-            if (arrayList != null) {
-                int numListeners = arrayList.size();
+            if (this.mDisplayVolumeListeners != null) {
+                int numListeners = this.mDisplayVolumeListeners.size();
                 for (int i = 0; i < numListeners; i++) {
                     this.mDisplayVolumeListeners.get(i).sendDisplayVolumeEvent(event, data);
                 }
@@ -1135,11 +1167,11 @@ public final class DisplayManagerGlobal {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayVolumeKeyEvent(int event) {
         synchronized (this.mLock) {
-            ArrayList<DisplayVolumeKeyListenerDelegate> arrayList = this.mDisplayVolumeKeyListeners;
-            if (arrayList != null) {
-                int numListeners = arrayList.size();
+            if (this.mDisplayVolumeKeyListeners != null) {
+                int numListeners = this.mDisplayVolumeKeyListeners.size();
                 for (int i = 0; i < numListeners; i++) {
                     this.mDisplayVolumeKeyListeners.get(i).sendDisplayVolumeKeyEvent(event);
                 }
@@ -1147,11 +1179,11 @@ public final class DisplayManagerGlobal {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleWifiDisplayParameterEvent(int event, List<SemWifiDisplayParameter> parameters) {
         synchronized (this.mLock) {
-            ArrayList<WifiDisplayParameterListenerDelegate> arrayList = this.mWifiDisplayParameterListeners;
-            if (arrayList != null) {
-                int numListeners = arrayList.size();
+            if (this.mWifiDisplayParameterListeners != null) {
+                int numListeners = this.mWifiDisplayParameterListeners.size();
                 for (int i = 0; i < numListeners; i++) {
                     this.mWifiDisplayParameterListeners.get(i).sendWifiDisplayParameterEvent(event, parameters);
                 }
@@ -1236,9 +1268,8 @@ public final class DisplayManagerGlobal {
     }
 
     private int findDeviceListnerLocked(SemDeviceStatusListener listener) {
-        ArrayList<DeviceListenerDelegate> arrayList = this.mDeviceListeners;
-        if (arrayList != null) {
-            int numListeners = arrayList.size();
+        if (this.mDeviceListeners != null) {
+            int numListeners = this.mDeviceListeners.size();
             for (int i = 0; i < numListeners; i++) {
                 if (this.mDeviceListeners.get(i).mListener == listener) {
                     return i;
@@ -1249,11 +1280,11 @@ public final class DisplayManagerGlobal {
         return -1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDeviceEvent(Bundle msg, int event) {
         synchronized (this.mLock) {
-            ArrayList<DeviceListenerDelegate> arrayList = this.mDeviceListeners;
-            if (arrayList != null) {
-                int numListeners = arrayList.size();
+            if (this.mDeviceListeners != null) {
+                int numListeners = this.mDeviceListeners.size();
                 for (int i = 0; i < numListeners; i++) {
                     this.mDeviceListeners.get(i).sendDeviceEvent(msg, event);
                 }
@@ -1261,7 +1292,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class WifiDisplayConnectionCallback extends IWifiDisplayConnectionCallback.Stub {
         private Handler mHandler;
         private DisplayManager.SemWifiDisplayConnectionCallback mUserCallback;
@@ -1271,32 +1301,9 @@ public final class DisplayManagerGlobal {
             this.mHandler = new Handler(handler != null ? handler.getLooper() : Looper.myLooper());
         }
 
-        /* renamed from: android.hardware.display.DisplayManagerGlobal$WifiDisplayConnectionCallback$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ List val$parameters;
-
-            AnonymousClass1(List list) {
-                parameters = list;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
-                    WifiDisplayConnectionCallback.this.mUserCallback.onSuccess(parameters);
-                }
-            }
-        }
-
         @Override // android.hardware.display.IWifiDisplayConnectionCallback
-        public void onSuccess(List<SemWifiDisplayParameter> parameters) {
+        public void onSuccess(final List<SemWifiDisplayParameter> parameters) {
             this.mHandler.post(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal.WifiDisplayConnectionCallback.1
-                final /* synthetic */ List val$parameters;
-
-                AnonymousClass1(List parameters2) {
-                    parameters = parameters2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
@@ -1306,32 +1313,9 @@ public final class DisplayManagerGlobal {
             });
         }
 
-        /* renamed from: android.hardware.display.DisplayManagerGlobal$WifiDisplayConnectionCallback$2 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass2 implements Runnable {
-            final /* synthetic */ int val$reason;
-
-            AnonymousClass2(int i) {
-                reason = i;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
-                    WifiDisplayConnectionCallback.this.mUserCallback.onFailure(reason);
-                }
-            }
-        }
-
         @Override // android.hardware.display.IWifiDisplayConnectionCallback
-        public void onFailure(int reason) {
+        public void onFailure(final int reason) {
             this.mHandler.post(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal.WifiDisplayConnectionCallback.2
-                final /* synthetic */ int val$reason;
-
-                AnonymousClass2(int reason2) {
-                    reason = reason2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
@@ -1342,143 +1326,176 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class DisplayManagerCallback extends IDisplayManagerCallback.Stub {
-        /* synthetic */ DisplayManagerCallback(DisplayManagerGlobal displayManagerGlobal, DisplayManagerCallbackIA displayManagerCallbackIA) {
-            this();
-        }
-
+    private final class DisplayManagerCallback extends IDisplayManagerCallback.Stub {
         private DisplayManagerCallback() {
         }
 
         @Override // android.hardware.display.IDisplayManagerCallback
         public void onDisplayEvent(int displayId, int event) {
-            DisplayManagerGlobal.this.handleDisplayEvent(displayId, event);
+            if (DisplayManagerGlobal.DEBUG) {
+                Log.d(DisplayManagerGlobal.TAG, "onDisplayEvent: displayId=" + displayId + ", event=" + DisplayManagerGlobal.eventToString(event));
+            }
+            DisplayManagerGlobal.this.handleDisplayEvent(displayId, event, false);
         }
 
         @Override // android.hardware.display.IDisplayManagerCallback
         public void onDisplayVolumeEvent(int event, Bundle data) {
+            if (DisplayManagerGlobal.DEBUG) {
+                Log.d(DisplayManagerGlobal.TAG, "onDisplayVolumeEvent");
+            }
             DisplayManagerGlobal.this.handleDisplayVolumeEvent(event, data);
         }
 
         @Override // android.hardware.display.IDisplayManagerCallback
         public void onDisplayVolumeKeyEvent(int event) {
+            if (DisplayManagerGlobal.DEBUG) {
+                Log.d(DisplayManagerGlobal.TAG, "onDisplayVolumeKeyEvent");
+            }
             DisplayManagerGlobal.this.handleDisplayVolumeKeyEvent(event);
         }
 
         @Override // android.hardware.display.IDisplayManagerCallback
         public void onWifiDisplayParameterEvent(int event, List<SemWifiDisplayParameter> parameters) {
+            if (DisplayManagerGlobal.DEBUG) {
+                Log.d(DisplayManagerGlobal.TAG, "onWifiDisplayParameterEvent");
+            }
             DisplayManagerGlobal.this.handleWifiDisplayParameterEvent(event, parameters);
         }
 
         @Override // android.hardware.display.IDisplayManagerCallback
         public void onDeviceEvent(Bundle msg, int event) {
+            if (DisplayManagerGlobal.DEBUG) {
+                Log.d(DisplayManagerGlobal.TAG, "onDeviceEvent: msg = " + msg + ", event = " + event);
+            }
             DisplayManagerGlobal.this.handleDeviceEvent(msg, event);
-        }
-
-        @Override // android.hardware.display.IDisplayManagerCallback
-        public void onAsyncBinderBufferFillEvent(int event, Bundle data) {
-            Log.d(DisplayManagerGlobal.TAG, "onAsyncBinderBufferFillEvent");
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class DisplayListenerDelegate {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class DisplayListenerDelegate {
         public volatile long mEventsMask;
         private final Executor mExecutor;
         public final DisplayManager.DisplayListener mListener;
+        private final String mPackageName;
         private final DisplayInfo mDisplayInfo = new DisplayInfo();
         private AtomicLong mGenerationId = new AtomicLong(1);
 
-        DisplayListenerDelegate(DisplayManager.DisplayListener listener, Executor executor, long eventsMask) {
+        DisplayListenerDelegate(DisplayManager.DisplayListener listener, Executor executor, long eventsMask, String packageName) {
             this.mExecutor = executor;
             this.mListener = listener;
             this.mEventsMask = eventsMask;
+            this.mPackageName = packageName;
         }
 
-        public void sendDisplayEvent(int displayId, int event, DisplayInfo info) {
+        void sendDisplayEvent(final int displayId, final int event, final DisplayInfo info, final boolean forceUpdate) {
+            if (DisplayManagerGlobal.extraLogging()) {
+                Slog.i(DisplayManagerGlobal.TAG, "Sending Display Event: " + DisplayManagerGlobal.eventToString(event));
+            }
             final long generationId = this.mGenerationId.get();
-            final Message msg = Message.obtain(null, event, displayId, 0, info);
             this.mExecutor.execute(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal$DisplayListenerDelegate$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    DisplayManagerGlobal.DisplayListenerDelegate.this.lambda$sendDisplayEvent$0(generationId, msg);
+                    DisplayManagerGlobal.DisplayListenerDelegate.this.lambda$sendDisplayEvent$0(generationId, displayId, event, info, forceUpdate);
                 }
             });
         }
 
-        public /* synthetic */ void lambda$sendDisplayEvent$0(long generationId, Message msg) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$sendDisplayEvent$0(long generationId, int displayId, int event, DisplayInfo info, boolean forceUpdate) {
             if (generationId == this.mGenerationId.get()) {
-                handleMessage(msg);
+                handleDisplayEventInner(displayId, event, info, forceUpdate);
             }
-            msg.recycle();
         }
 
-        public void clearEvents() {
+        void clearEvents() {
             this.mGenerationId.incrementAndGet();
         }
 
-        public void setEventsMask(long newEventsMask) {
+        void setEventsMask(long newEventsMask) {
             this.mEventsMask = newEventsMask;
         }
 
-        private void handleMessage(Message msg) {
-            DisplayInfo newInfo;
-            switch (msg.what) {
+        private void handleDisplayEventInner(int displayId, int event, DisplayInfo info, boolean forceUpdate) {
+            if (DisplayManagerGlobal.extraLogging()) {
+                Slog.i(DisplayManagerGlobal.TAG, "DLD(" + DisplayManagerGlobal.eventToString(event) + ", display=" + displayId + ", mEventsMask=" + Long.toBinaryString(this.mEventsMask) + ", mPackageName=" + this.mPackageName + ", displayInfo=" + info + ", listener=" + this.mListener.getClass() + NavigationBarInflaterView.KEY_CODE_END);
+            }
+            if (DisplayManagerGlobal.DEBUG) {
+                Trace.beginSection((String) TextUtils.trimToSize("DLD(" + DisplayManagerGlobal.eventToString(event) + ", display=" + displayId + ", listener=" + this.mListener.getClass() + NavigationBarInflaterView.KEY_CODE_END, 127));
+            }
+            switch (event) {
                 case 1:
                     if ((this.mEventsMask & 1) != 0) {
-                        this.mListener.onDisplayAdded(msg.arg1);
-                        return;
+                        this.mListener.onDisplayAdded(displayId);
+                        break;
                     }
-                    return;
+                    break;
                 case 2:
-                    if ((this.mEventsMask & 4) != 0 && (newInfo = (DisplayInfo) msg.obj) != null && !newInfo.equals(this.mDisplayInfo)) {
-                        this.mDisplayInfo.copyFrom(newInfo);
-                        this.mListener.onDisplayChanged(msg.arg1);
-                        return;
+                    if ((this.mEventsMask & 4) != 0 && info != null && (forceUpdate || !info.equals(this.mDisplayInfo))) {
+                        if (DisplayManagerGlobal.extraLogging()) {
+                            Slog.i(DisplayManagerGlobal.TAG, "Sending onDisplayChanged: Display Changed. Info: " + info);
+                        }
+                        this.mDisplayInfo.copyFrom(info);
+                        this.mListener.onDisplayChanged(displayId);
+                        break;
                     }
-                    return;
+                    break;
                 case 3:
                     if ((this.mEventsMask & 2) != 0) {
-                        this.mListener.onDisplayRemoved(msg.arg1);
-                        return;
+                        this.mListener.onDisplayRemoved(displayId);
+                        break;
                     }
-                    return;
+                    break;
                 case 4:
                     if ((this.mEventsMask & 8) != 0) {
-                        this.mListener.onDisplayChanged(msg.arg1);
-                        return;
+                        this.mListener.onDisplayChanged(displayId);
+                        break;
                     }
-                    return;
+                    break;
                 case 5:
                     if ((this.mEventsMask & 16) != 0) {
-                        this.mListener.onDisplayChanged(msg.arg1);
-                        return;
+                        this.mListener.onDisplayChanged(displayId);
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
+                case 6:
+                    if ((32 & this.mEventsMask) != 0) {
+                        this.mListener.onDisplayConnected(displayId);
+                        break;
+                    }
+                    break;
+                case 7:
+                    if ((32 & this.mEventsMask) != 0) {
+                        this.mListener.onDisplayDisconnected(displayId);
+                        break;
+                    }
+                    break;
             }
+            if (DisplayManagerGlobal.DEBUG) {
+                Trace.endSection();
+            }
+        }
+
+        public String toString() {
+            return "mask: {" + this.mEventsMask + "}, for " + this.mListener.getClass();
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class VirtualDisplayCallback extends IVirtualDisplayCallback.Stub {
         private final VirtualDisplay.Callback mCallback;
         private final Executor mExecutor;
 
         public VirtualDisplayCallback(VirtualDisplay.Callback callback, Executor executor) {
             this.mCallback = callback;
-            this.mExecutor = callback != null ? (Executor) Objects.requireNonNull(executor) : null;
+            this.mExecutor = this.mCallback != null ? (Executor) Objects.requireNonNull(executor) : null;
         }
 
         @Override // android.hardware.display.IVirtualDisplayCallback
         public void onPaused() {
-            final VirtualDisplay.Callback callback = this.mCallback;
-            if (callback != null) {
+            if (this.mCallback != null) {
                 Executor executor = this.mExecutor;
+                final VirtualDisplay.Callback callback = this.mCallback;
                 Objects.requireNonNull(callback);
-                executor.execute(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal$VirtualDisplayCallback$$ExternalSyntheticLambda1
+                executor.execute(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal$VirtualDisplayCallback$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         VirtualDisplay.Callback.this.onPaused();
@@ -1489,11 +1506,11 @@ public final class DisplayManagerGlobal {
 
         @Override // android.hardware.display.IVirtualDisplayCallback
         public void onResumed() {
-            final VirtualDisplay.Callback callback = this.mCallback;
-            if (callback != null) {
+            if (this.mCallback != null) {
                 Executor executor = this.mExecutor;
+                final VirtualDisplay.Callback callback = this.mCallback;
                 Objects.requireNonNull(callback);
-                executor.execute(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal$VirtualDisplayCallback$$ExternalSyntheticLambda2
+                executor.execute(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal$VirtualDisplayCallback$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         VirtualDisplay.Callback.this.onResumed();
@@ -1504,9 +1521,9 @@ public final class DisplayManagerGlobal {
 
         @Override // android.hardware.display.IVirtualDisplayCallback
         public void onStopped() {
-            final VirtualDisplay.Callback callback = this.mCallback;
-            if (callback != null) {
+            if (this.mCallback != null) {
                 Executor executor = this.mExecutor;
+                final VirtualDisplay.Callback callback = this.mCallback;
                 Objects.requireNonNull(callback);
                 executor.execute(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal$VirtualDisplayCallback$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
@@ -1533,9 +1550,8 @@ public final class DisplayManagerGlobal {
             updateCallbackIfNeededLocked();
             DisplayInfo display = getDisplayInfoLocked(0);
             if (display != null) {
-                float refreshRate = display.getRefreshRate();
-                this.mNativeCallbackReportedRefreshRate = refreshRate;
-                nSignalNativeCallbacks(refreshRate);
+                this.mNativeCallbackReportedRefreshRate = display.getRefreshRate();
+                nSignalNativeCallbacks(this.mNativeCallbackReportedRefreshRate);
             }
         }
     }
@@ -1555,7 +1571,8 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    private static String eventToString(int event) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String eventToString(int event) {
         switch (event) {
             case 1:
                 return ClipboardConstants.USER_ADDED;
@@ -1567,13 +1584,29 @@ public final class DisplayManagerGlobal {
                 return "BRIGHTNESS_CHANGED";
             case 5:
                 return "HDR_SDR_RATIO_CHANGED";
+            case 6:
+                return "EVENT_DISPLAY_CONNECTED";
+            case 7:
+                return "EVENT_DISPLAY_DISCONNECTED";
             default:
                 return "UNKNOWN";
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class DisplayVolumeListenerDelegate extends Handler {
+    private static boolean initExtraLogging() {
+        if (sCurrentPackageName == null) {
+            sCurrentPackageName = ActivityThread.currentPackageName();
+            sExtraDisplayListenerLogging = !TextUtils.isEmpty(EXTRA_LOGGING_PACKAGE_NAME) && EXTRA_LOGGING_PACKAGE_NAME.equals(sCurrentPackageName);
+        }
+        return sExtraDisplayListenerLogging;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean extraLogging() {
+        return sExtraDisplayListenerLogging;
+    }
+
+    private static final class DisplayVolumeListenerDelegate extends Handler {
         public final SemDisplayVolumeListener mListener;
 
         public DisplayVolumeListenerDelegate(SemDisplayVolumeListener listener, Handler handler) {
@@ -1595,22 +1628,19 @@ public final class DisplayManagerGlobal {
         public void handleMessage(Message msg) {
             Bundle data = msg.getData();
             switch (msg.what) {
-                case 9:
+                case 11:
                     int minVol = data.getInt("minVol");
                     int maxVol = data.getInt("maxVol");
                     int curVol = data.getInt("curVol");
                     boolean isMute = data.getBoolean("isMute", false);
                     Log.d(DisplayManagerGlobal.TAG, "handleMessage EVENT_VOLUME_LEVEL_CHANGED= curVol: " + curVol);
                     this.mListener.onVolumeChanged(minVol, maxVol, curVol, isMute);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class DisplayVolumeKeyListenerDelegate extends Handler {
+    private static final class DisplayVolumeKeyListenerDelegate extends Handler {
         public final SemDisplayVolumeKeyListener mListener;
 
         public DisplayVolumeKeyListenerDelegate(SemDisplayVolumeKeyListener listener, Handler handler) {
@@ -1631,30 +1661,27 @@ public final class DisplayManagerGlobal {
         public void handleMessage(Message msg) {
             msg.getData();
             switch (msg.what) {
-                case 10:
+                case 12:
                     Log.d(DisplayManagerGlobal.TAG, "onVolumeKeyDown");
                     this.mListener.onVolumeKeyDown();
-                    return;
-                case 11:
+                    break;
+                case 13:
                     Log.d(DisplayManagerGlobal.TAG, "onVolumeKeyUp");
                     this.mListener.onVolumeKeyUp();
-                    return;
-                case 12:
+                    break;
+                case 14:
                     Log.d(DisplayManagerGlobal.TAG, "onMuteKeyStateChanged [MUTE]");
                     this.mListener.onMuteKeyStateChanged(true);
-                    return;
-                case 13:
+                    break;
+                case 15:
                     Log.d(DisplayManagerGlobal.TAG, "onMuteKeyStateChanged [UNMUTE]");
                     this.mListener.onMuteKeyStateChanged(false);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class WifiDisplayParameterListenerDelegate extends Handler {
+    private static final class WifiDisplayParameterListenerDelegate extends Handler {
         private final SemWifiDisplayParameterListener mListener;
 
         public WifiDisplayParameterListenerDelegate(SemWifiDisplayParameterListener listener, Handler handler) {
@@ -1675,18 +1702,15 @@ public final class DisplayManagerGlobal {
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 17:
+                case 16:
                     Log.d(DisplayManagerGlobal.TAG, "onParametersChanged");
                     this.mListener.onParametersChanged((List) msg.obj);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class DeviceListenerDelegate extends Handler {
+    private static final class DeviceListenerDelegate extends Handler {
         public final SemDeviceStatusListener mListener;
 
         public DeviceListenerDelegate(SemDeviceStatusListener listener, Handler handler) {
@@ -1708,23 +1732,21 @@ public final class DisplayManagerGlobal {
         public void handleMessage(Message msg) {
             Bundle data = msg.getData();
             switch (msg.what) {
-                case 6:
+                case 8:
                     int status = data.getInt("status", 0);
                     Log.d(DisplayManagerGlobal.TAG, "handleMessage EVENT_CONNECTIONSTATUS_CHANGED = " + status);
                     this.mListener.onConnectionStatusChanged(status);
-                    return;
-                case 7:
+                    break;
+                case 9:
                     int status2 = data.getInt("status", 6);
                     Log.d(DisplayManagerGlobal.TAG, "handleMessage EVENT_REMOTE_DISPLAY_STATE_CHANGED = " + status2);
                     this.mListener.onScreenSharingStatusChanged(status2);
-                    return;
-                case 8:
+                    break;
+                case 10:
                     int status3 = data.getInt("status", 0);
                     Log.d(DisplayManagerGlobal.TAG, "handleMessage EVENT_REMOTE_DISPLAY_ROTATION_CHANGED = " + status3);
                     this.mListener.onScreenSharingStatusChanged(status3);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
@@ -1782,6 +1804,61 @@ public final class DisplayManagerGlobal {
             return this.mDm.getAdaptiveBrightness(displayId, lux);
         } catch (RemoteException ex) {
             throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    public void registerHbmBrightnessListener(DisplayManager.DisplayHbmBrightnessListener listener) {
+        synchronized (this.mLock) {
+            if (this.mHbmBrightnessCallback == null) {
+                this.mHbmBrightnessCallback = new HbmBrightnessCallback();
+                registerHbmBrightnessCallback();
+            }
+            this.mHbmBrightnessCallback.addDisplayHbmBrightnessListener(listener);
+        }
+    }
+
+    public void unregisterHbmBrightnessListener(DisplayManager.DisplayHbmBrightnessListener listener) {
+        synchronized (this.mLock) {
+            if (this.mHbmBrightnessCallback == null) {
+                return;
+            }
+            this.mHbmBrightnessCallback.removeDisplayHbmBrightnessListener(listener);
+        }
+    }
+
+    private void registerHbmBrightnessCallback() {
+        if (!this.mHbmBrightnessCallbackRegistered) {
+            try {
+                this.mDm.registerHbmBrightnessCallback(this.mHbmBrightnessCallback);
+                this.mHbmBrightnessCallbackRegistered = true;
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    private final class HbmBrightnessCallback extends IHbmBrightnessCallback.Stub {
+        CopyOnWriteArrayList<DisplayManager.DisplayHbmBrightnessListener> mListeners;
+
+        private HbmBrightnessCallback() {
+            this.mListeners = new CopyOnWriteArrayList<>();
+        }
+
+        void addDisplayHbmBrightnessListener(DisplayManager.DisplayHbmBrightnessListener listener) {
+            this.mListeners.add(listener);
+        }
+
+        void removeDisplayHbmBrightnessListener(DisplayManager.DisplayHbmBrightnessListener listener) {
+            this.mListeners.remove(listener);
+        }
+
+        @Override // android.hardware.display.IHbmBrightnessCallback
+        public void onChanged(int displayId, boolean isHbm) {
+            Iterator<DisplayManager.DisplayHbmBrightnessListener> it = this.mListeners.iterator();
+            while (it.hasNext()) {
+                DisplayManager.DisplayHbmBrightnessListener listener = it.next();
+                listener.onChanged(displayId, isHbm);
+            }
         }
     }
 }

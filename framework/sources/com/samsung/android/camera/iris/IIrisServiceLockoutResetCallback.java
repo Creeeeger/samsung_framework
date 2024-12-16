@@ -12,7 +12,6 @@ public interface IIrisServiceLockoutResetCallback extends IInterface {
 
     void onLockoutReset(long j) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IIrisServiceLockoutResetCallback {
         @Override // com.samsung.android.camera.iris.IIrisServiceLockoutResetCallback
         public void onLockoutReset(long deviceId) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IIrisServiceLockoutResetCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IIrisServiceLockoutResetCallback {
         static final int TRANSACTION_onLockoutReset = 1;
 
@@ -67,27 +65,23 @@ public interface IIrisServiceLockoutResetCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIrisServiceLockoutResetCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIrisServiceLockoutResetCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIrisServiceLockoutResetCallback.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onLockoutReset(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onLockoutReset(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IIrisServiceLockoutResetCallback {
+        private static class Proxy implements IIrisServiceLockoutResetCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

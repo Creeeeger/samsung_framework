@@ -10,7 +10,7 @@ import com.android.internal.infra.AbstractSinglePendingRequestRemoteService;
 import java.io.PrintWriter;
 
 @Deprecated
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class AbstractSinglePendingRequestRemoteService<S extends AbstractSinglePendingRequestRemoteService<S, I>, I extends IInterface> extends AbstractRemoteService<S, I> {
     protected AbstractRemoteService.BasePendingRequest<S, I> mPendingRequest;
 
@@ -29,9 +29,8 @@ public abstract class AbstractSinglePendingRequestRemoteService<S extends Abstra
 
     @Override // com.android.internal.infra.AbstractRemoteService
     protected void handleOnDestroy() {
-        AbstractRemoteService.BasePendingRequest<S, I> basePendingRequest = this.mPendingRequest;
-        if (basePendingRequest != null) {
-            basePendingRequest.cancel();
+        if (this.mPendingRequest != null) {
+            this.mPendingRequest.cancel();
             this.mPendingRequest = null;
         }
     }

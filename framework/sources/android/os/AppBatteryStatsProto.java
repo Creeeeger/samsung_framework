@@ -4,7 +4,6 @@ package android.os;
 public final class AppBatteryStatsProto {
     public static final long UID_STATS = 2246267895809L;
 
-    /* loaded from: classes3.dex */
     public final class UidStats {
         public static final long PROCESS_STATE_STATS = 2246267895810L;
         public static final long UID = 1120986464257L;
@@ -12,7 +11,6 @@ public final class AppBatteryStatsProto {
         public UidStats() {
         }
 
-        /* loaded from: classes3.dex */
         public final class ProcessStateStats {
             public static final int BACKGROUND = 2;
             public static final int CACHED = 4;

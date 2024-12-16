@@ -14,7 +14,6 @@ public class Type extends BaseObj {
     Element mElement;
     int mElementCount;
 
-    /* loaded from: classes3.dex */
     public enum CubemapFace {
         POSITIVE_X(0),
         NEGATIVE_X(1),
@@ -69,17 +68,15 @@ public class Type extends BaseObj {
         if (arrayNum < 0 || arrayNum >= 4) {
             throw new RSIllegalArgumentException("Array dimension out of range.");
         }
-        int[] iArr = this.mArrays;
-        if (iArr == null || arrayNum >= iArr.length) {
+        if (this.mArrays == null || arrayNum >= this.mArrays.length) {
             return 0;
         }
-        return iArr[arrayNum];
+        return this.mArrays[arrayNum];
     }
 
     public int getArrayCount() {
-        int[] iArr = this.mArrays;
-        if (iArr != null) {
-            return iArr.length;
+        if (this.mArrays != null) {
+            return this.mArrays.length;
         }
         return 0;
     }
@@ -116,25 +113,19 @@ public class Type extends BaseObj {
             count += x * y * z * faces;
         }
         if (this.mArrays != null) {
-            int ct = 0;
-            while (true) {
-                int[] iArr = this.mArrays;
-                if (ct >= iArr.length) {
-                    break;
-                }
-                count *= iArr[ct];
-                ct++;
+            for (int ct = 0; ct < this.mArrays.length; ct++) {
+                count *= this.mArrays[ct];
             }
         }
         this.mElementCount = count;
     }
 
-    public Type(long id, RenderScript rs) {
+    Type(long id, RenderScript rs) {
         super(id, rs);
     }
 
     @Override // android.renderscript.BaseObj
-    public void updateFromNative() {
+    void updateFromNative() {
         boolean z;
         long[] dataBuffer = new long[6];
         this.mRS.nTypeGetNativeData(getID(this.mRS), dataBuffer);
@@ -154,9 +145,8 @@ public class Type extends BaseObj {
         this.mDimFaces = z2;
         long elementID = dataBuffer[5];
         if (elementID != 0) {
-            Element element = new Element(elementID, this.mRS);
-            this.mElement = element;
-            element.updateFromNative();
+            this.mElement = new Element(elementID, this.mRS);
+            this.mElement.updateFromNative();
         }
         calcElementCount();
     }
@@ -200,7 +190,6 @@ public class Type extends BaseObj {
         return t;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         boolean mDimFaces;
         boolean mDimMipmaps;
@@ -273,8 +262,7 @@ public class Type extends BaseObj {
         }
 
         public Type create() {
-            int i = this.mDimZ;
-            if (i > 0) {
+            if (this.mDimZ > 0) {
                 if (this.mDimX < 1 || this.mDimY < 1) {
                     throw new RSInvalidStateException("Both X and Y dimension required when Z is present.");
                 }
@@ -282,29 +270,25 @@ public class Type extends BaseObj {
                     throw new RSInvalidStateException("Cube maps not supported with 3D types.");
                 }
             }
-            int i2 = this.mDimY;
-            if (i2 > 0 && this.mDimX < 1) {
+            if (this.mDimY > 0 && this.mDimX < 1) {
                 throw new RSInvalidStateException("X dimension required when Y is present.");
             }
-            boolean z = this.mDimFaces;
-            if (z && i2 < 1) {
+            if (this.mDimFaces && this.mDimY < 1) {
                 throw new RSInvalidStateException("Cube maps require 2D Types.");
             }
-            if (this.mYuv != 0 && (i != 0 || z || this.mDimMipmaps)) {
+            if (this.mYuv != 0 && (this.mDimZ != 0 || this.mDimFaces || this.mDimMipmaps)) {
                 throw new RSInvalidStateException("YUV only supports basic 2D.");
             }
             int[] arrays = null;
             for (int ct = 3; ct >= 0; ct--) {
-                int i3 = this.mArray[ct];
-                if (i3 != 0 && arrays == null) {
+                if (this.mArray[ct] != 0 && arrays == null) {
                     arrays = new int[ct];
                 }
-                if (i3 == 0 && arrays != null) {
+                if (this.mArray[ct] == 0 && arrays != null) {
                     throw new RSInvalidStateException("Array dimensions must be contigous from 0.");
                 }
             }
-            RenderScript renderScript = this.mRS;
-            long id = renderScript.nTypeCreate(this.mElement.getID(renderScript), this.mDimX, this.mDimY, this.mDimZ, this.mDimMipmaps, this.mDimFaces, this.mYuv);
+            long id = this.mRS.nTypeCreate(this.mElement.getID(this.mRS), this.mDimX, this.mDimY, this.mDimZ, this.mDimMipmaps, this.mDimFaces, this.mYuv);
             Type t = new Type(id, this.mRS);
             t.mElement = this.mElement;
             t.mDimX = this.mDimX;

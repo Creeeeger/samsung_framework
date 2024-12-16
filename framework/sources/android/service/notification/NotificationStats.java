@@ -1,6 +1,7 @@
 package android.service.notification;
 
 import android.annotation.SystemApi;
+import android.app.Flags;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.lang.annotation.Retention;
@@ -10,14 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class NotificationStats implements Parcelable {
     public static final Parcelable.Creator<NotificationStats> CREATOR = new Parcelable.Creator<NotificationStats>() { // from class: android.service.notification.NotificationStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationStats createFromParcel(Parcel in) {
             return new NotificationStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationStats[] newArray(int size) {
             return new NotificationStats[size];
@@ -40,16 +40,15 @@ public final class NotificationStats implements Parcelable {
     private boolean mExpanded;
     private boolean mInteracted;
     private boolean mSeen;
+    private boolean mSmartReplied;
     private boolean mSnoozed;
     private boolean mViewedSettings;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DismissalSentiment {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DismissalSurface {
     }
 
@@ -65,6 +64,9 @@ public final class NotificationStats implements Parcelable {
         this.mSeen = in.readByte() != 0;
         this.mExpanded = in.readByte() != 0;
         this.mDirectReplied = in.readByte() != 0;
+        if (Flags.lifetimeExtensionRefactor()) {
+            this.mSmartReplied = in.readByte() != 0;
+        }
         this.mSnoozed = in.readByte() != 0;
         this.mViewedSettings = in.readByte() != 0;
         this.mInteracted = in.readByte() != 0;
@@ -77,6 +79,9 @@ public final class NotificationStats implements Parcelable {
         parcel.writeByte(this.mSeen ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.mExpanded ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.mDirectReplied ? (byte) 1 : (byte) 0);
+        if (Flags.lifetimeExtensionRefactor()) {
+            parcel.writeByte(this.mSmartReplied ? (byte) 1 : (byte) 0);
+        }
         parcel.writeByte(this.mSnoozed ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.mViewedSettings ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.mInteracted ? (byte) 1 : (byte) 0);
@@ -87,23 +92,6 @@ public final class NotificationStats implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.service.notification.NotificationStats$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NotificationStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationStats createFromParcel(Parcel in) {
-            return new NotificationStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NotificationStats[] newArray(int size) {
-            return new NotificationStats[size];
-        }
     }
 
     public boolean hasSeen() {
@@ -129,6 +117,15 @@ public final class NotificationStats implements Parcelable {
 
     public void setDirectReplied() {
         this.mDirectReplied = true;
+        this.mInteracted = true;
+    }
+
+    public boolean hasSmartReplied() {
+        return this.mSmartReplied;
+    }
+
+    public void setSmartReplied() {
+        this.mSmartReplied = true;
         this.mInteracted = true;
     }
 
@@ -178,14 +175,21 @@ public final class NotificationStats implements Parcelable {
             return false;
         }
         NotificationStats that = (NotificationStats) o;
-        if (this.mSeen == that.mSeen && this.mExpanded == that.mExpanded && this.mDirectReplied == that.mDirectReplied && this.mSnoozed == that.mSnoozed && this.mViewedSettings == that.mViewedSettings && this.mInteracted == that.mInteracted && this.mDismissalSurface == that.mDismissalSurface) {
+        if (this.mSeen != that.mSeen || this.mExpanded != that.mExpanded || this.mDirectReplied != that.mDirectReplied) {
+            return false;
+        }
+        if ((!Flags.lifetimeExtensionRefactor() || this.mSmartReplied == that.mSmartReplied) && this.mSnoozed == that.mSnoozed && this.mViewedSettings == that.mViewedSettings && this.mInteracted == that.mInteracted && this.mDismissalSurface == that.mDismissalSurface) {
             return true;
         }
         return false;
     }
 
     public int hashCode() {
-        return ((((((((((((this.mSeen ? 1 : 0) * 31) + (this.mExpanded ? 1 : 0)) * 31) + (this.mDirectReplied ? 1 : 0)) * 31) + (this.mSnoozed ? 1 : 0)) * 31) + (this.mViewedSettings ? 1 : 0)) * 31) + (this.mInteracted ? 1 : 0)) * 31) + this.mDismissalSurface;
+        int i = ((((this.mSeen ? 1 : 0) * 31) + (this.mExpanded ? 1 : 0)) * 31) + (this.mDirectReplied ? 1 : 0);
+        if (Flags.lifetimeExtensionRefactor()) {
+            i = (i * 31) + (this.mSmartReplied ? 1 : 0);
+        }
+        return (((((((i * 31) + (this.mSnoozed ? 1 : 0)) * 31) + (this.mViewedSettings ? 1 : 0)) * 31) + (this.mInteracted ? 1 : 0)) * 31) + this.mDismissalSurface;
     }
 
     public String toString() {
@@ -193,6 +197,9 @@ public final class NotificationStats implements Parcelable {
         sb.append("mSeen=").append(this.mSeen);
         sb.append(", mExpanded=").append(this.mExpanded);
         sb.append(", mDirectReplied=").append(this.mDirectReplied);
+        if (Flags.lifetimeExtensionRefactor()) {
+            sb.append(", mSmartReplied=").append(this.mSmartReplied);
+        }
         sb.append(", mSnoozed=").append(this.mSnoozed);
         sb.append(", mViewedSettings=").append(this.mViewedSettings);
         sb.append(", mInteracted=").append(this.mInteracted);

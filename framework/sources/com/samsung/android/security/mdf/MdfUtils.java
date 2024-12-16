@@ -20,7 +20,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.security.auth.x500.X500Principal;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MdfUtils {
     public static final int AUDIT_LOG_ALERT = 1;
     public static final int AUDIT_LOG_CRITICAL = 2;
@@ -77,9 +77,8 @@ public class MdfUtils {
         } catch (UnsatisfiedLinkError e) {
             System.err.println("Could not link the library. Error: " + e.getMessage());
         }
-        String[] strArr = {"ac", "co", "com", "ed", "edu", "go", "gouv", "gov", DocumentsContract.EXTRA_INFO, "lg", "ne", "net", "or", "org"};
-        BAD_COUNTRY_2LDS = strArr;
-        Arrays.sort(strArr);
+        BAD_COUNTRY_2LDS = new String[]{"ac", "co", "com", "ed", "edu", "go", "gouv", "gov", DocumentsContract.EXTRA_INFO, "lg", "ne", "net", "or", "org"};
+        Arrays.sort(BAD_COUNTRY_2LDS);
     }
 
     public static int getPid() {

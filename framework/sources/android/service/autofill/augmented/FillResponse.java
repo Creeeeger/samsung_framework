@@ -13,34 +13,21 @@ public final class FillResponse {
     private FillWindow mFillWindow;
     private List<Dataset> mInlineSuggestions;
 
-    /* renamed from: -$$Nest$smdefaultClientState */
-    static /* bridge */ /* synthetic */ Bundle m3636$$Nest$smdefaultClientState() {
-        return defaultClientState();
-    }
-
-    /* renamed from: -$$Nest$smdefaultFillWindow */
-    static /* bridge */ /* synthetic */ FillWindow m3637$$Nest$smdefaultFillWindow() {
-        return defaultFillWindow();
-    }
-
-    /* renamed from: -$$Nest$smdefaultInlineSuggestions */
-    static /* bridge */ /* synthetic */ List m3638$$Nest$smdefaultInlineSuggestions() {
-        return defaultInlineSuggestions();
-    }
-
-    private static FillWindow defaultFillWindow() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static FillWindow defaultFillWindow() {
         return null;
     }
 
-    private static List<Dataset> defaultInlineSuggestions() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static List<Dataset> defaultInlineSuggestions() {
         return null;
     }
 
-    private static Bundle defaultClientState() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static Bundle defaultClientState() {
         return null;
     }
 
-    /* loaded from: classes3.dex */
     static abstract class BaseBuilder {
         abstract Builder addInlineSuggestion(Dataset dataset);
 
@@ -66,7 +53,6 @@ public final class FillResponse {
         return this.mClientState;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
         private Bundle mClientState;
@@ -105,16 +91,15 @@ public final class FillResponse {
 
         public FillResponse build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 8;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mFillWindow = FillResponse.m3637$$Nest$smdefaultFillWindow();
+            this.mBuilderFieldsSet |= 8;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mFillWindow = FillResponse.defaultFillWindow();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {
-                this.mInlineSuggestions = FillResponse.m3638$$Nest$smdefaultInlineSuggestions();
+                this.mInlineSuggestions = FillResponse.defaultInlineSuggestions();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mClientState = FillResponse.m3636$$Nest$smdefaultClientState();
+                this.mClientState = FillResponse.defaultClientState();
             }
             FillResponse o = new FillResponse(this.mFillWindow, this.mInlineSuggestions, this.mClientState);
             return o;

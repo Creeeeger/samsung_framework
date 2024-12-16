@@ -55,17 +55,11 @@ public final class HdmiProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Integer tryParseInteger(String str) {
         try {
             return Integer.valueOf(str);
@@ -215,7 +209,6 @@ public final class HdmiProperties {
         }, value);
     }
 
-    /* loaded from: classes3.dex */
     public enum cec_device_types_values {
         TV("tv"),
         RECORDING_DEVICE("recording_device"),
@@ -257,7 +250,6 @@ public final class HdmiProperties {
         return Optional.ofNullable(tryParseBoolean(value));
     }
 
-    /* loaded from: classes3.dex */
     public enum playback_device_action_on_routing_control_values {
         NONE("none"),
         WAKE_UP_ONLY("wake_up_only"),

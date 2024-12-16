@@ -7,21 +7,20 @@ import com.samsung.android.sume.core.descriptor.MFDescriptor;
 import com.samsung.android.sume.core.functional.PlaceHolder;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class DecorateFilter implements MediaFilter {
     private static final String TAG = Def.tagOf((Class<?>) DecorateFilter.class);
     protected MediaFilter successor;
 
-    public DecorateFilter(MediaFilter successor) {
+    DecorateFilter(MediaFilter successor) {
         this.successor = successor;
     }
 
     @Override // com.samsung.android.sume.core.filter.MediaFilter
     public void prepare() {
         try {
-            MediaFilter mediaFilter = this.successor;
-            if (mediaFilter instanceof PlaceHolder) {
-                PlaceHolder<MediaFilter> placeHolder = (PlaceHolder) mediaFilter;
+            if (this.successor instanceof PlaceHolder) {
+                PlaceHolder<MediaFilter> placeHolder = (PlaceHolder) this.successor;
                 MediaFilter replacedFilter = placeHolder.reset();
                 if (this.successor instanceof PlaceHolder) {
                     this.successor = replacedFilter;
@@ -53,11 +52,10 @@ public abstract class DecorateFilter implements MediaFilter {
     }
 
     public MediaFilter getEnclosedFilter() {
-        MediaFilter mediaFilter = this.successor;
-        if (mediaFilter instanceof DecorateFilter) {
-            return ((DecorateFilter) mediaFilter).getEnclosedFilter();
+        if (this.successor instanceof DecorateFilter) {
+            return ((DecorateFilter) this.successor).getEnclosedFilter();
         }
-        return mediaFilter;
+        return this.successor;
     }
 
     public MediaFilter getSuccessorFilter() {

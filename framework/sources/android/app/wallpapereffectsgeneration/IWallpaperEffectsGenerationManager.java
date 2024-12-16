@@ -15,7 +15,6 @@ public interface IWallpaperEffectsGenerationManager extends IInterface {
 
     void returnCinematicEffectResponse(CinematicEffectResponse cinematicEffectResponse) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IWallpaperEffectsGenerationManager {
         @Override // android.app.wallpapereffectsgeneration.IWallpaperEffectsGenerationManager
         public void generateCinematicEffect(CinematicEffectRequest request, ICinematicEffectListener listener) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IWallpaperEffectsGenerationManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IWallpaperEffectsGenerationManager {
         static final int TRANSACTION_generateCinematicEffect = 1;
         static final int TRANSACTION_returnCinematicEffectResponse = 2;
@@ -77,32 +75,28 @@ public interface IWallpaperEffectsGenerationManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWallpaperEffectsGenerationManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWallpaperEffectsGenerationManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWallpaperEffectsGenerationManager.DESCRIPTOR);
+                case 1:
+                    CinematicEffectRequest _arg0 = (CinematicEffectRequest) data.readTypedObject(CinematicEffectRequest.CREATOR);
+                    ICinematicEffectListener _arg1 = ICinematicEffectListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    generateCinematicEffect(_arg0, _arg1);
+                    return true;
+                case 2:
+                    CinematicEffectResponse _arg02 = (CinematicEffectResponse) data.readTypedObject(CinematicEffectResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    returnCinematicEffectResponse(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CinematicEffectRequest _arg0 = (CinematicEffectRequest) data.readTypedObject(CinematicEffectRequest.CREATOR);
-                            ICinematicEffectListener _arg1 = ICinematicEffectListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            generateCinematicEffect(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            CinematicEffectResponse _arg02 = (CinematicEffectResponse) data.readTypedObject(CinematicEffectResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            returnCinematicEffectResponse(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IWallpaperEffectsGenerationManager {
+        private static class Proxy implements IWallpaperEffectsGenerationManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

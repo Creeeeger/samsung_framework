@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class StructuralMessageInfo implements MessageInfo {
+/* loaded from: classes3.dex */
+final class StructuralMessageInfo implements MessageInfo {
     private final int[] checkInitialized;
     private final MessageLite defaultInstance;
     private final FieldInfo[] fields;
@@ -53,7 +52,6 @@ public final class StructuralMessageInfo implements MessageInfo {
         return new Builder(numFields);
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private int[] checkInitialized;
         private Object defaultInstance;

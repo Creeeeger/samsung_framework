@@ -12,7 +12,6 @@ public interface IIAFTCallback extends IInterface {
 
     void traceResult(String str, int i, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements IIAFTCallback {
         @Override // com.sec.android.iaft.callback.IIAFTCallback
         public void traceResult(String packageName, int tid, int code, int freq, int policy) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IIAFTCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements IIAFTCallback {
         static final int TRANSACTION_traceResult = 1;
 
@@ -67,31 +65,27 @@ public interface IIAFTCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIAFTCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIAFTCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIAFTCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    traceResult(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            traceResult(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements IIAFTCallback {
+        private static class Proxy implements IIAFTCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

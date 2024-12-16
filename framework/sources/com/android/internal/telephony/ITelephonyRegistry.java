@@ -19,6 +19,9 @@ import android.telephony.TelephonyDisplayInfo;
 import android.telephony.emergency.EmergencyNumber;
 import android.telephony.ims.ImsReasonInfo;
 import android.telephony.ims.MediaQualityStatus;
+import android.telephony.satellite.NtnSignalStrength;
+import android.telephony.satellite.SemSatelliteServiceState;
+import android.telephony.satellite.SemSatelliteSignalStrength;
 import com.android.internal.telephony.ICarrierConfigChangeListener;
 import com.android.internal.telephony.ICarrierPrivilegesCallback;
 import com.android.internal.telephony.IOnSubscriptionsChangedListener;
@@ -67,7 +70,13 @@ public interface ITelephonyRegistry extends IInterface {
 
     void notifyCarrierPrivilegesChanged(int i, List<String> list, int[] iArr) throws RemoteException;
 
+    void notifyCarrierRoamingNtnAvailableServicesChanged(int i, int[] iArr) throws RemoteException;
+
+    void notifyCarrierRoamingNtnEligibleStateChanged(int i, boolean z) throws RemoteException;
+
     void notifyCarrierRoamingNtnModeChanged(int i, boolean z) throws RemoteException;
+
+    void notifyCarrierRoamingNtnSignalStrengthChanged(int i, NtnSignalStrength ntnSignalStrength) throws RemoteException;
 
     void notifyCarrierServiceChanged(int i, String str, int i2) throws RemoteException;
 
@@ -77,9 +86,9 @@ public interface ITelephonyRegistry extends IInterface {
 
     void notifyCellLocationForSubscriber(int i, CellIdentity cellIdentity) throws RemoteException;
 
-    void notifyDataActivity(int i) throws RemoteException;
-
     void notifyDataActivityForSubscriber(int i, int i2) throws RemoteException;
+
+    void notifyDataActivityForSubscriberWithSlot(int i, int i2, int i3) throws RemoteException;
 
     void notifyDataConnectionForSubscriber(int i, int i2, PreciseDataConnectionState preciseDataConnectionState) throws RemoteException;
 
@@ -117,11 +126,17 @@ public interface ITelephonyRegistry extends IInterface {
 
     void notifyRegistrationFailed(int i, int i2, CellIdentity cellIdentity, String str, int i3, int i4, int i5) throws RemoteException;
 
+    void notifySemSatelliteServiceStateChanged(int i, int i2, SemSatelliteServiceState semSatelliteServiceState) throws RemoteException;
+
+    void notifySemSatelliteSignalStrengthChanged(int i, int i2, SemSatelliteSignalStrength semSatelliteSignalStrength) throws RemoteException;
+
     void notifyServiceStateForPhoneId(int i, int i2, ServiceState serviceState) throws RemoteException;
 
     void notifySignalStrengthForPhoneId(int i, int i2, SignalStrength signalStrength) throws RemoteException;
 
     void notifySimActivationStateChangedForPhoneId(int i, int i2, int i3, int i4) throws RemoteException;
+
+    void notifySimultaneousCellularCallingSubscriptionsChanged(int[] iArr) throws RemoteException;
 
     void notifySrvccStateChanged(int i, int i2) throws RemoteException;
 
@@ -135,7 +150,6 @@ public interface ITelephonyRegistry extends IInterface {
 
     void removeOnSubscriptionsChangedListener(String str, IOnSubscriptionsChangedListener iOnSubscriptionsChangedListener) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ITelephonyRegistry {
         @Override // com.android.internal.telephony.ITelephonyRegistry
         public void addOnSubscriptionsChangedListener(String pkg, String featureId, IOnSubscriptionsChangedListener callback) throws RemoteException {
@@ -182,11 +196,11 @@ public interface ITelephonyRegistry extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephonyRegistry
-        public void notifyDataActivity(int state) throws RemoteException {
+        public void notifyDataActivityForSubscriber(int subId, int state) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephonyRegistry
-        public void notifyDataActivityForSubscriber(int subId, int state) throws RemoteException {
+        public void notifyDataActivityForSubscriberWithSlot(int phoneId, int subId, int state) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephonyRegistry
@@ -310,6 +324,10 @@ public interface ITelephonyRegistry extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephonyRegistry
+        public void notifySimultaneousCellularCallingSubscriptionsChanged(int[] subIds) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephonyRegistry
         public void addCarrierPrivilegesCallback(int phoneId, ICarrierPrivilegesCallback callback, String pkg, String featureId) throws RemoteException {
         }
 
@@ -350,7 +368,27 @@ public interface ITelephonyRegistry extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephonyRegistry
+        public void notifyCarrierRoamingNtnEligibleStateChanged(int subId, boolean eligible) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephonyRegistry
+        public void notifyCarrierRoamingNtnAvailableServicesChanged(int subId, int[] availableServices) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephonyRegistry
+        public void notifyCarrierRoamingNtnSignalStrengthChanged(int subId, NtnSignalStrength ntnSignalStrength) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephonyRegistry
         public void clearPreciseDataConnectionStates(int phoneId) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephonyRegistry
+        public void notifySemSatelliteServiceStateChanged(int phoneId, int subId, SemSatelliteServiceState serviceState) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephonyRegistry
+        public void notifySemSatelliteSignalStrengthChanged(int phoneId, int subId, SemSatelliteSignalStrength signalStrength) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -359,14 +397,13 @@ public interface ITelephonyRegistry extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ITelephonyRegistry {
         public static final String DESCRIPTOR = "com.android.internal.telephony.ITelephonyRegistry";
-        static final int TRANSACTION_addCarrierConfigChangeListener = 48;
-        static final int TRANSACTION_addCarrierPrivilegesCallback = 44;
+        static final int TRANSACTION_addCarrierConfigChangeListener = 49;
+        static final int TRANSACTION_addCarrierPrivilegesCallback = 45;
         static final int TRANSACTION_addOnOpportunisticSubscriptionsChangedListener = 2;
         static final int TRANSACTION_addOnSubscriptionsChangedListener = 1;
-        static final int TRANSACTION_clearPreciseDataConnectionStates = 54;
+        static final int TRANSACTION_clearPreciseDataConnectionStates = 58;
         static final int TRANSACTION_listenWithEventList = 4;
         static final int TRANSACTION_notifyActiveDataSubIdChanged = 30;
         static final int TRANSACTION_notifyAllowedNetworkTypesChanged = 42;
@@ -376,19 +413,22 @@ public interface ITelephonyRegistry extends IInterface {
         static final int TRANSACTION_notifyCallQualityChanged = 35;
         static final int TRANSACTION_notifyCallState = 6;
         static final int TRANSACTION_notifyCallStateForAllSubs = 5;
-        static final int TRANSACTION_notifyCallbackModeStarted = 51;
-        static final int TRANSACTION_notifyCallbackModeStopped = 52;
-        static final int TRANSACTION_notifyCarrierConfigChanged = 50;
+        static final int TRANSACTION_notifyCallbackModeStarted = 52;
+        static final int TRANSACTION_notifyCallbackModeStopped = 53;
+        static final int TRANSACTION_notifyCarrierConfigChanged = 51;
         static final int TRANSACTION_notifyCarrierNetworkChange = 25;
         static final int TRANSACTION_notifyCarrierNetworkChangeWithSubId = 26;
-        static final int TRANSACTION_notifyCarrierPrivilegesChanged = 46;
-        static final int TRANSACTION_notifyCarrierRoamingNtnModeChanged = 53;
-        static final int TRANSACTION_notifyCarrierServiceChanged = 47;
+        static final int TRANSACTION_notifyCarrierPrivilegesChanged = 47;
+        static final int TRANSACTION_notifyCarrierRoamingNtnAvailableServicesChanged = 56;
+        static final int TRANSACTION_notifyCarrierRoamingNtnEligibleStateChanged = 55;
+        static final int TRANSACTION_notifyCarrierRoamingNtnModeChanged = 54;
+        static final int TRANSACTION_notifyCarrierRoamingNtnSignalStrengthChanged = 57;
+        static final int TRANSACTION_notifyCarrierServiceChanged = 48;
         static final int TRANSACTION_notifyCellInfo = 16;
         static final int TRANSACTION_notifyCellInfoForSubscriber = 19;
         static final int TRANSACTION_notifyCellLocationForSubscriber = 15;
-        static final int TRANSACTION_notifyDataActivity = 12;
-        static final int TRANSACTION_notifyDataActivityForSubscriber = 13;
+        static final int TRANSACTION_notifyDataActivityForSubscriber = 12;
+        static final int TRANSACTION_notifyDataActivityForSubscriberWithSlot = 13;
         static final int TRANSACTION_notifyDataConnectionForSubscriber = 14;
         static final int TRANSACTION_notifyDataEnabled = 41;
         static final int TRANSACTION_notifyDisconnectCause = 18;
@@ -407,14 +447,17 @@ public interface ITelephonyRegistry extends IInterface {
         static final int TRANSACTION_notifyPreciseCallState = 17;
         static final int TRANSACTION_notifyRadioPowerStateChanged = 31;
         static final int TRANSACTION_notifyRegistrationFailed = 38;
+        static final int TRANSACTION_notifySemSatelliteServiceStateChanged = 59;
+        static final int TRANSACTION_notifySemSatelliteSignalStrengthChanged = 60;
         static final int TRANSACTION_notifyServiceStateForPhoneId = 7;
         static final int TRANSACTION_notifySignalStrengthForPhoneId = 8;
         static final int TRANSACTION_notifySimActivationStateChangedForPhoneId = 21;
+        static final int TRANSACTION_notifySimultaneousCellularCallingSubscriptionsChanged = 44;
         static final int TRANSACTION_notifySrvccStateChanged = 20;
         static final int TRANSACTION_notifySubscriptionInfoChanged = 23;
         static final int TRANSACTION_notifyUserMobileDataStateChangedForPhoneId = 27;
-        static final int TRANSACTION_removeCarrierConfigChangeListener = 49;
-        static final int TRANSACTION_removeCarrierPrivilegesCallback = 45;
+        static final int TRANSACTION_removeCarrierConfigChangeListener = 50;
+        static final int TRANSACTION_removeCarrierPrivilegesCallback = 46;
         static final int TRANSACTION_removeOnSubscriptionsChangedListener = 3;
 
         public Stub() {
@@ -462,9 +505,9 @@ public interface ITelephonyRegistry extends IInterface {
                 case 11:
                     return "notifyCallForwardingChangedForSubscriber";
                 case 12:
-                    return "notifyDataActivity";
-                case 13:
                     return "notifyDataActivityForSubscriber";
+                case 13:
+                    return "notifyDataActivityForSubscriberWithSlot";
                 case 14:
                     return "notifyDataConnectionForSubscriber";
                 case 15:
@@ -526,27 +569,39 @@ public interface ITelephonyRegistry extends IInterface {
                 case 43:
                     return "notifyLinkCapacityEstimateChanged";
                 case 44:
-                    return "addCarrierPrivilegesCallback";
+                    return "notifySimultaneousCellularCallingSubscriptionsChanged";
                 case 45:
-                    return "removeCarrierPrivilegesCallback";
+                    return "addCarrierPrivilegesCallback";
                 case 46:
-                    return "notifyCarrierPrivilegesChanged";
+                    return "removeCarrierPrivilegesCallback";
                 case 47:
-                    return "notifyCarrierServiceChanged";
+                    return "notifyCarrierPrivilegesChanged";
                 case 48:
-                    return "addCarrierConfigChangeListener";
+                    return "notifyCarrierServiceChanged";
                 case 49:
-                    return "removeCarrierConfigChangeListener";
+                    return "addCarrierConfigChangeListener";
                 case 50:
-                    return "notifyCarrierConfigChanged";
+                    return "removeCarrierConfigChangeListener";
                 case 51:
-                    return "notifyCallbackModeStarted";
+                    return "notifyCarrierConfigChanged";
                 case 52:
-                    return "notifyCallbackModeStopped";
+                    return "notifyCallbackModeStarted";
                 case 53:
-                    return "notifyCarrierRoamingNtnModeChanged";
+                    return "notifyCallbackModeStopped";
                 case 54:
+                    return "notifyCarrierRoamingNtnModeChanged";
+                case 55:
+                    return "notifyCarrierRoamingNtnEligibleStateChanged";
+                case 56:
+                    return "notifyCarrierRoamingNtnAvailableServicesChanged";
+                case 57:
+                    return "notifyCarrierRoamingNtnSignalStrengthChanged";
+                case 58:
                     return "clearPreciseDataConnectionStates";
+                case 59:
+                    return "notifySemSatelliteServiceStateChanged";
+                case 60:
+                    return "notifySemSatelliteSignalStrengthChanged";
                 default:
                     return null;
             }
@@ -562,438 +617,480 @@ public interface ITelephonyRegistry extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    IOnSubscriptionsChangedListener _arg2 = IOnSubscriptionsChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addOnSubscriptionsChangedListener(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    IOnSubscriptionsChangedListener _arg22 = IOnSubscriptionsChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addOnOpportunisticSubscriptionsChangedListener(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    IOnSubscriptionsChangedListener _arg13 = IOnSubscriptionsChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeOnSubscriptionsChangedListener(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    boolean _arg14 = data.readBoolean();
+                    int _arg23 = data.readInt();
+                    String _arg3 = data.readString();
+                    String _arg4 = data.readString();
+                    IPhoneStateListener _arg5 = IPhoneStateListener.Stub.asInterface(data.readStrongBinder());
+                    int[] _arg6 = data.createIntArray();
+                    boolean _arg7 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    listenWithEventList(_arg04, _arg14, _arg23, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyCallStateForAllSubs(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg16 = data.readInt();
+                    int _arg24 = data.readInt();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyCallState(_arg06, _arg16, _arg24, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg17 = data.readInt();
+                    ServiceState _arg25 = (ServiceState) data.readTypedObject(ServiceState.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyServiceStateForPhoneId(_arg07, _arg17, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg18 = data.readInt();
+                    SignalStrength _arg26 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySignalStrengthForPhoneId(_arg08, _arg18, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    int _arg19 = data.readInt();
+                    boolean _arg27 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyMessageWaitingChangedForPhoneId(_arg09, _arg19, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyCallForwardingChanged(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    boolean _arg110 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyCallForwardingChangedForSubscriber(_arg011, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyDataActivityForSubscriber(_arg012, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    int _arg112 = data.readInt();
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyDataActivityForSubscriberWithSlot(_arg013, _arg112, _arg28);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    int _arg113 = data.readInt();
+                    PreciseDataConnectionState _arg29 = (PreciseDataConnectionState) data.readTypedObject(PreciseDataConnectionState.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyDataConnectionForSubscriber(_arg014, _arg113, _arg29);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    CellIdentity _arg114 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyCellLocationForSubscriber(_arg015, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    List<CellInfo> _arg016 = data.createTypedArrayList(CellInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyCellInfo(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    int _arg115 = data.readInt();
+                    int[] _arg210 = data.createIntArray();
+                    String[] _arg33 = data.createStringArray();
+                    int[] _arg42 = data.createIntArray();
+                    int[] _arg52 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    notifyPreciseCallState(_arg017, _arg115, _arg210, _arg33, _arg42, _arg52);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    int _arg116 = data.readInt();
+                    int _arg211 = data.readInt();
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyDisconnectCause(_arg018, _arg116, _arg211, _arg34);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int _arg019 = data.readInt();
+                    List<CellInfo> _arg117 = data.createTypedArrayList(CellInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyCellInfoForSubscriber(_arg019, _arg117);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    int _arg020 = data.readInt();
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifySrvccStateChanged(_arg020, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    int _arg021 = data.readInt();
+                    int _arg119 = data.readInt();
+                    int _arg212 = data.readInt();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifySimActivationStateChangedForPhoneId(_arg021, _arg119, _arg212, _arg35);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    int _arg022 = data.readInt();
+                    int _arg120 = data.readInt();
+                    byte[] _arg213 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    notifyOemHookRawEventForSubscriber(_arg022, _arg120, _arg213);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    notifySubscriptionInfoChanged();
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    notifyOpportunisticSubscriptionInfoChanged();
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    boolean _arg023 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyCarrierNetworkChange(_arg023);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    int _arg024 = data.readInt();
+                    boolean _arg121 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyCarrierNetworkChangeWithSubId(_arg024, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    int _arg025 = data.readInt();
+                    int _arg122 = data.readInt();
+                    boolean _arg214 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyUserMobileDataStateChangedForPhoneId(_arg025, _arg122, _arg214);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    int _arg026 = data.readInt();
+                    int _arg123 = data.readInt();
+                    TelephonyDisplayInfo _arg215 = (TelephonyDisplayInfo) data.readTypedObject(TelephonyDisplayInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyDisplayInfoChanged(_arg026, _arg123, _arg215);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    PhoneCapability _arg027 = (PhoneCapability) data.readTypedObject(PhoneCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyPhoneCapabilityChanged(_arg027);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    int _arg028 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyActiveDataSubIdChanged(_arg028);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    int _arg029 = data.readInt();
+                    int _arg124 = data.readInt();
+                    int _arg216 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyRadioPowerStateChanged(_arg029, _arg124, _arg216);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    int _arg030 = data.readInt();
+                    int _arg125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyEmergencyNumberList(_arg030, _arg125);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    int _arg031 = data.readInt();
+                    int _arg126 = data.readInt();
+                    EmergencyNumber _arg217 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyOutgoingEmergencyCall(_arg031, _arg126, _arg217);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    int _arg032 = data.readInt();
+                    int _arg127 = data.readInt();
+                    EmergencyNumber _arg218 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyOutgoingEmergencySms(_arg032, _arg127, _arg218);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    CallQuality _arg033 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
+                    int _arg128 = data.readInt();
+                    int _arg219 = data.readInt();
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyCallQualityChanged(_arg033, _arg128, _arg219, _arg36);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    int _arg034 = data.readInt();
+                    int _arg129 = data.readInt();
+                    MediaQualityStatus _arg220 = (MediaQualityStatus) data.readTypedObject(MediaQualityStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyMediaQualityStatusChanged(_arg034, _arg129, _arg220);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    int _arg035 = data.readInt();
+                    ImsReasonInfo _arg130 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyImsDisconnectCause(_arg035, _arg130);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    int _arg036 = data.readInt();
+                    int _arg131 = data.readInt();
+                    CellIdentity _arg221 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
+                    String _arg37 = data.readString();
+                    int _arg43 = data.readInt();
+                    int _arg53 = data.readInt();
+                    int _arg62 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyRegistrationFailed(_arg036, _arg131, _arg221, _arg37, _arg43, _arg53, _arg62);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    int _arg037 = data.readInt();
+                    int _arg132 = data.readInt();
+                    BarringInfo _arg222 = (BarringInfo) data.readTypedObject(BarringInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyBarringInfoChanged(_arg037, _arg132, _arg222);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    int _arg038 = data.readInt();
+                    int _arg133 = data.readInt();
+                    List<PhysicalChannelConfig> _arg223 = data.createTypedArrayList(PhysicalChannelConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyPhysicalChannelConfigForSubscriber(_arg038, _arg133, _arg223);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    int _arg039 = data.readInt();
+                    int _arg134 = data.readInt();
+                    boolean _arg224 = data.readBoolean();
+                    int _arg38 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyDataEnabled(_arg039, _arg134, _arg224, _arg38);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int _arg040 = data.readInt();
+                    int _arg135 = data.readInt();
+                    int _arg225 = data.readInt();
+                    long _arg39 = data.readLong();
+                    data.enforceNoDataAvail();
+                    notifyAllowedNetworkTypesChanged(_arg040, _arg135, _arg225, _arg39);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    int _arg041 = data.readInt();
+                    int _arg136 = data.readInt();
+                    List<LinkCapacityEstimate> _arg226 = data.createTypedArrayList(LinkCapacityEstimate.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyLinkCapacityEstimateChanged(_arg041, _arg136, _arg226);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    int[] _arg042 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    notifySimultaneousCellularCallingSubscriptionsChanged(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    int _arg043 = data.readInt();
+                    ICarrierPrivilegesCallback _arg137 = ICarrierPrivilegesCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg227 = data.readString();
+                    String _arg310 = data.readString();
+                    data.enforceNoDataAvail();
+                    addCarrierPrivilegesCallback(_arg043, _arg137, _arg227, _arg310);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    ICarrierPrivilegesCallback _arg044 = ICarrierPrivilegesCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg138 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeCarrierPrivilegesCallback(_arg044, _arg138);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    int _arg045 = data.readInt();
+                    List<String> _arg139 = data.createStringArrayList();
+                    int[] _arg228 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    notifyCarrierPrivilegesChanged(_arg045, _arg139, _arg228);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    int _arg046 = data.readInt();
+                    String _arg140 = data.readString();
+                    int _arg229 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyCarrierServiceChanged(_arg046, _arg140, _arg229);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    ICarrierConfigChangeListener _arg047 = ICarrierConfigChangeListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg141 = data.readString();
+                    String _arg230 = data.readString();
+                    data.enforceNoDataAvail();
+                    addCarrierConfigChangeListener(_arg047, _arg141, _arg230);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    ICarrierConfigChangeListener _arg048 = ICarrierConfigChangeListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg142 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeCarrierConfigChangeListener(_arg048, _arg142);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    int _arg049 = data.readInt();
+                    int _arg143 = data.readInt();
+                    int _arg231 = data.readInt();
+                    int _arg311 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyCarrierConfigChanged(_arg049, _arg143, _arg231, _arg311);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    int _arg050 = data.readInt();
+                    int _arg144 = data.readInt();
+                    int _arg232 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyCallbackModeStarted(_arg050, _arg144, _arg232);
+                    reply.writeNoException();
+                    return true;
+                case 53:
+                    int _arg051 = data.readInt();
+                    int _arg145 = data.readInt();
+                    int _arg233 = data.readInt();
+                    int _arg312 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyCallbackModeStopped(_arg051, _arg145, _arg233, _arg312);
+                    reply.writeNoException();
+                    return true;
+                case 54:
+                    int _arg052 = data.readInt();
+                    boolean _arg146 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyCarrierRoamingNtnModeChanged(_arg052, _arg146);
+                    reply.writeNoException();
+                    return true;
+                case 55:
+                    int _arg053 = data.readInt();
+                    boolean _arg147 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyCarrierRoamingNtnEligibleStateChanged(_arg053, _arg147);
+                    reply.writeNoException();
+                    return true;
+                case 56:
+                    int _arg054 = data.readInt();
+                    int[] _arg148 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    notifyCarrierRoamingNtnAvailableServicesChanged(_arg054, _arg148);
+                    reply.writeNoException();
+                    return true;
+                case 57:
+                    int _arg055 = data.readInt();
+                    NtnSignalStrength _arg149 = (NtnSignalStrength) data.readTypedObject(NtnSignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyCarrierRoamingNtnSignalStrengthChanged(_arg055, _arg149);
+                    reply.writeNoException();
+                    return true;
+                case 58:
+                    int _arg056 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearPreciseDataConnectionStates(_arg056);
+                    reply.writeNoException();
+                    return true;
+                case 59:
+                    int _arg057 = data.readInt();
+                    int _arg150 = data.readInt();
+                    SemSatelliteServiceState _arg234 = (SemSatelliteServiceState) data.readTypedObject(SemSatelliteServiceState.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySemSatelliteServiceStateChanged(_arg057, _arg150, _arg234);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    int _arg058 = data.readInt();
+                    int _arg151 = data.readInt();
+                    SemSatelliteSignalStrength _arg235 = (SemSatelliteSignalStrength) data.readTypedObject(SemSatelliteSignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySemSatelliteSignalStrengthChanged(_arg058, _arg151, _arg235);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            IOnSubscriptionsChangedListener _arg2 = IOnSubscriptionsChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addOnSubscriptionsChangedListener(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            IOnSubscriptionsChangedListener _arg22 = IOnSubscriptionsChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addOnOpportunisticSubscriptionsChangedListener(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            IOnSubscriptionsChangedListener _arg13 = IOnSubscriptionsChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeOnSubscriptionsChangedListener(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            boolean _arg14 = data.readBoolean();
-                            int _arg23 = data.readInt();
-                            String _arg3 = data.readString();
-                            String _arg4 = data.readString();
-                            IPhoneStateListener _arg5 = IPhoneStateListener.Stub.asInterface(data.readStrongBinder());
-                            int[] _arg6 = data.createIntArray();
-                            boolean _arg7 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            listenWithEventList(_arg04, _arg14, _arg23, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyCallStateForAllSubs(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg24 = data.readInt();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyCallState(_arg06, _arg16, _arg24, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg17 = data.readInt();
-                            ServiceState _arg25 = (ServiceState) data.readTypedObject(ServiceState.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyServiceStateForPhoneId(_arg07, _arg17, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg18 = data.readInt();
-                            SignalStrength _arg26 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySignalStrengthForPhoneId(_arg08, _arg18, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            int _arg19 = data.readInt();
-                            boolean _arg27 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyMessageWaitingChangedForPhoneId(_arg09, _arg19, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyCallForwardingChanged(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            boolean _arg110 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyCallForwardingChangedForSubscriber(_arg011, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyDataActivity(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyDataActivityForSubscriber(_arg013, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            int _arg112 = data.readInt();
-                            PreciseDataConnectionState _arg28 = (PreciseDataConnectionState) data.readTypedObject(PreciseDataConnectionState.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyDataConnectionForSubscriber(_arg014, _arg112, _arg28);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            CellIdentity _arg113 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyCellLocationForSubscriber(_arg015, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            List<CellInfo> _arg016 = data.createTypedArrayList(CellInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyCellInfo(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            int _arg114 = data.readInt();
-                            int[] _arg29 = data.createIntArray();
-                            String[] _arg33 = data.createStringArray();
-                            int[] _arg42 = data.createIntArray();
-                            int[] _arg52 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            notifyPreciseCallState(_arg017, _arg114, _arg29, _arg33, _arg42, _arg52);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            int _arg115 = data.readInt();
-                            int _arg210 = data.readInt();
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyDisconnectCause(_arg018, _arg115, _arg210, _arg34);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int _arg019 = data.readInt();
-                            List<CellInfo> _arg116 = data.createTypedArrayList(CellInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyCellInfoForSubscriber(_arg019, _arg116);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            int _arg020 = data.readInt();
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifySrvccStateChanged(_arg020, _arg117);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            int _arg021 = data.readInt();
-                            int _arg118 = data.readInt();
-                            int _arg211 = data.readInt();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifySimActivationStateChangedForPhoneId(_arg021, _arg118, _arg211, _arg35);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            int _arg022 = data.readInt();
-                            int _arg119 = data.readInt();
-                            byte[] _arg212 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            notifyOemHookRawEventForSubscriber(_arg022, _arg119, _arg212);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            notifySubscriptionInfoChanged();
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            notifyOpportunisticSubscriptionInfoChanged();
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            boolean _arg023 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyCarrierNetworkChange(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            int _arg024 = data.readInt();
-                            boolean _arg120 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyCarrierNetworkChangeWithSubId(_arg024, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            int _arg025 = data.readInt();
-                            int _arg121 = data.readInt();
-                            boolean _arg213 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyUserMobileDataStateChangedForPhoneId(_arg025, _arg121, _arg213);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            int _arg026 = data.readInt();
-                            int _arg122 = data.readInt();
-                            TelephonyDisplayInfo _arg214 = (TelephonyDisplayInfo) data.readTypedObject(TelephonyDisplayInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyDisplayInfoChanged(_arg026, _arg122, _arg214);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            PhoneCapability _arg027 = (PhoneCapability) data.readTypedObject(PhoneCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyPhoneCapabilityChanged(_arg027);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            int _arg028 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyActiveDataSubIdChanged(_arg028);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            int _arg029 = data.readInt();
-                            int _arg123 = data.readInt();
-                            int _arg215 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyRadioPowerStateChanged(_arg029, _arg123, _arg215);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            int _arg030 = data.readInt();
-                            int _arg124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyEmergencyNumberList(_arg030, _arg124);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            int _arg031 = data.readInt();
-                            int _arg125 = data.readInt();
-                            EmergencyNumber _arg216 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyOutgoingEmergencyCall(_arg031, _arg125, _arg216);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            int _arg032 = data.readInt();
-                            int _arg126 = data.readInt();
-                            EmergencyNumber _arg217 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyOutgoingEmergencySms(_arg032, _arg126, _arg217);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            CallQuality _arg033 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
-                            int _arg127 = data.readInt();
-                            int _arg218 = data.readInt();
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyCallQualityChanged(_arg033, _arg127, _arg218, _arg36);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            int _arg034 = data.readInt();
-                            int _arg128 = data.readInt();
-                            MediaQualityStatus _arg219 = (MediaQualityStatus) data.readTypedObject(MediaQualityStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyMediaQualityStatusChanged(_arg034, _arg128, _arg219);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            int _arg035 = data.readInt();
-                            ImsReasonInfo _arg129 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyImsDisconnectCause(_arg035, _arg129);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            int _arg036 = data.readInt();
-                            int _arg130 = data.readInt();
-                            CellIdentity _arg220 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
-                            String _arg37 = data.readString();
-                            int _arg43 = data.readInt();
-                            int _arg53 = data.readInt();
-                            int _arg62 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyRegistrationFailed(_arg036, _arg130, _arg220, _arg37, _arg43, _arg53, _arg62);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            int _arg037 = data.readInt();
-                            int _arg131 = data.readInt();
-                            BarringInfo _arg221 = (BarringInfo) data.readTypedObject(BarringInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyBarringInfoChanged(_arg037, _arg131, _arg221);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            int _arg038 = data.readInt();
-                            int _arg132 = data.readInt();
-                            List<PhysicalChannelConfig> _arg222 = data.createTypedArrayList(PhysicalChannelConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyPhysicalChannelConfigForSubscriber(_arg038, _arg132, _arg222);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _arg039 = data.readInt();
-                            int _arg133 = data.readInt();
-                            boolean _arg223 = data.readBoolean();
-                            int _arg38 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyDataEnabled(_arg039, _arg133, _arg223, _arg38);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            int _arg040 = data.readInt();
-                            int _arg134 = data.readInt();
-                            int _arg224 = data.readInt();
-                            long _arg39 = data.readLong();
-                            data.enforceNoDataAvail();
-                            notifyAllowedNetworkTypesChanged(_arg040, _arg134, _arg224, _arg39);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            int _arg041 = data.readInt();
-                            int _arg135 = data.readInt();
-                            List<LinkCapacityEstimate> _arg225 = data.createTypedArrayList(LinkCapacityEstimate.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyLinkCapacityEstimateChanged(_arg041, _arg135, _arg225);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            int _arg042 = data.readInt();
-                            ICarrierPrivilegesCallback _arg136 = ICarrierPrivilegesCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg226 = data.readString();
-                            String _arg310 = data.readString();
-                            data.enforceNoDataAvail();
-                            addCarrierPrivilegesCallback(_arg042, _arg136, _arg226, _arg310);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            ICarrierPrivilegesCallback _arg043 = ICarrierPrivilegesCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg137 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeCarrierPrivilegesCallback(_arg043, _arg137);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg044 = data.readInt();
-                            List<String> _arg138 = data.createStringArrayList();
-                            int[] _arg227 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            notifyCarrierPrivilegesChanged(_arg044, _arg138, _arg227);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            int _arg045 = data.readInt();
-                            String _arg139 = data.readString();
-                            int _arg228 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyCarrierServiceChanged(_arg045, _arg139, _arg228);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            ICarrierConfigChangeListener _arg046 = ICarrierConfigChangeListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg140 = data.readString();
-                            String _arg229 = data.readString();
-                            data.enforceNoDataAvail();
-                            addCarrierConfigChangeListener(_arg046, _arg140, _arg229);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            ICarrierConfigChangeListener _arg047 = ICarrierConfigChangeListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg141 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeCarrierConfigChangeListener(_arg047, _arg141);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            int _arg048 = data.readInt();
-                            int _arg142 = data.readInt();
-                            int _arg230 = data.readInt();
-                            int _arg311 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyCarrierConfigChanged(_arg048, _arg142, _arg230, _arg311);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            int _arg049 = data.readInt();
-                            int _arg143 = data.readInt();
-                            int _arg231 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyCallbackModeStarted(_arg049, _arg143, _arg231);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            int _arg050 = data.readInt();
-                            int _arg144 = data.readInt();
-                            int _arg232 = data.readInt();
-                            int _arg312 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyCallbackModeStopped(_arg050, _arg144, _arg232, _arg312);
-                            reply.writeNoException();
-                            return true;
-                        case 53:
-                            int _arg051 = data.readInt();
-                            boolean _arg145 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyCarrierRoamingNtnModeChanged(_arg051, _arg145);
-                            reply.writeNoException();
-                            return true;
-                        case 54:
-                            int _arg052 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearPreciseDataConnectionStates(_arg052);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ITelephonyRegistry {
+        private static class Proxy implements ITelephonyRegistry {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1198,11 +1295,12 @@ public interface ITelephonyRegistry extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephonyRegistry
-            public void notifyDataActivity(int state) throws RemoteException {
+            public void notifyDataActivityForSubscriber(int subId, int state) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
                     _data.writeInt(state);
                     this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
@@ -1213,11 +1311,12 @@ public interface ITelephonyRegistry extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephonyRegistry
-            public void notifyDataActivityForSubscriber(int subId, int state) throws RemoteException {
+            public void notifyDataActivityForSubscriberWithSlot(int phoneId, int subId, int state) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(phoneId);
                     _data.writeInt(subId);
                     _data.writeInt(state);
                     this.mRemote.transact(13, _data, _reply, 0);
@@ -1731,6 +1830,21 @@ public interface ITelephonyRegistry extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephonyRegistry
+            public void notifySimultaneousCellularCallingSubscriptionsChanged(int[] subIds) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeIntArray(subIds);
+                    this.mRemote.transact(44, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephonyRegistry
             public void addCarrierPrivilegesCallback(int phoneId, ICarrierPrivilegesCallback callback, String pkg, String featureId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -1740,7 +1854,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeStrongInterface(callback);
                     _data.writeString(pkg);
                     _data.writeString(featureId);
-                    this.mRemote.transact(44, _data, _reply, 0);
+                    this.mRemote.transact(45, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1756,7 +1870,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
                     _data.writeString(pkg);
-                    this.mRemote.transact(45, _data, _reply, 0);
+                    this.mRemote.transact(46, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1773,7 +1887,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInt(phoneId);
                     _data.writeStringList(privilegedPackageNames);
                     _data.writeIntArray(privilegedUids);
-                    this.mRemote.transact(46, _data, _reply, 0);
+                    this.mRemote.transact(47, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1790,7 +1904,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInt(phoneId);
                     _data.writeString(packageName);
                     _data.writeInt(uid);
-                    this.mRemote.transact(47, _data, _reply, 0);
+                    this.mRemote.transact(48, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1807,7 +1921,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeStrongInterface(listener);
                     _data.writeString(pkg);
                     _data.writeString(featureId);
-                    this.mRemote.transact(48, _data, _reply, 0);
+                    this.mRemote.transact(49, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1823,7 +1937,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(listener);
                     _data.writeString(pkg);
-                    this.mRemote.transact(49, _data, _reply, 0);
+                    this.mRemote.transact(50, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1841,7 +1955,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(carrierId);
                     _data.writeInt(specificCarrierId);
-                    this.mRemote.transact(50, _data, _reply, 0);
+                    this.mRemote.transact(51, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1858,7 +1972,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInt(phoneId);
                     _data.writeInt(subId);
                     _data.writeInt(type);
-                    this.mRemote.transact(51, _data, _reply, 0);
+                    this.mRemote.transact(52, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1876,7 +1990,7 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(type);
                     _data.writeInt(reason);
-                    this.mRemote.transact(52, _data, _reply, 0);
+                    this.mRemote.transact(53, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1892,7 +2006,55 @@ public interface ITelephonyRegistry extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(active);
-                    this.mRemote.transact(53, _data, _reply, 0);
+                    this.mRemote.transact(54, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephonyRegistry
+            public void notifyCarrierRoamingNtnEligibleStateChanged(int subId, boolean eligible) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeBoolean(eligible);
+                    this.mRemote.transact(55, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephonyRegistry
+            public void notifyCarrierRoamingNtnAvailableServicesChanged(int subId, int[] availableServices) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeIntArray(availableServices);
+                    this.mRemote.transact(56, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephonyRegistry
+            public void notifyCarrierRoamingNtnSignalStrengthChanged(int subId, NtnSignalStrength ntnSignalStrength) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeTypedObject(ntnSignalStrength, 0);
+                    this.mRemote.transact(57, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1907,7 +2069,41 @@ public interface ITelephonyRegistry extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(phoneId);
-                    this.mRemote.transact(54, _data, _reply, 0);
+                    this.mRemote.transact(58, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephonyRegistry
+            public void notifySemSatelliteServiceStateChanged(int phoneId, int subId, SemSatelliteServiceState serviceState) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(phoneId);
+                    _data.writeInt(subId);
+                    _data.writeTypedObject(serviceState, 0);
+                    this.mRemote.transact(59, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephonyRegistry
+            public void notifySemSatelliteSignalStrengthChanged(int phoneId, int subId, SemSatelliteSignalStrength signalStrength) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(phoneId);
+                    _data.writeInt(subId);
+                    _data.writeTypedObject(signalStrength, 0);
+                    this.mRemote.transact(60, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1918,7 +2114,7 @@ public interface ITelephonyRegistry extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 53;
+            return 59;
         }
     }
 }

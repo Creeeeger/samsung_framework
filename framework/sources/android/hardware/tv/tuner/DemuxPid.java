@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxPid implements Parcelable {
     public static final Parcelable.Creator<DemuxPid> CREATOR = new Parcelable.Creator<DemuxPid>() { // from class: android.hardware.tv.tuner.DemuxPid.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxPid createFromParcel(Parcel _aidl_source) {
             return new DemuxPid(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxPid[] newArray(int _aidl_size) {
             return new DemuxPid[_aidl_size];
@@ -24,14 +23,9 @@ public final class DemuxPid implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int mmtpPid = 1;
         public static final int tPid = 0;
-    }
-
-    /* synthetic */ DemuxPid(Parcel parcel, DemuxPidIA demuxPidIA) {
-        this(parcel);
     }
 
     public DemuxPid() {
@@ -83,35 +77,16 @@ public final class DemuxPid implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.DemuxPid$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxPid> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxPid createFromParcel(Parcel _aidl_source) {
-            return new DemuxPid(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxPid[] newArray(int _aidl_size) {
-            return new DemuxPid[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getTPid());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getMmtpPid());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

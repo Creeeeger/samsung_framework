@@ -7,14 +7,13 @@ import android.text.TextUtils;
 /* loaded from: classes.dex */
 public class SyncAdapterType implements Parcelable {
     public static final Parcelable.Creator<SyncAdapterType> CREATOR = new Parcelable.Creator<SyncAdapterType>() { // from class: android.content.SyncAdapterType.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncAdapterType createFromParcel(Parcel source) {
             return new SyncAdapterType(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncAdapterType[] newArray(int size) {
             return new SyncAdapterType[size];
@@ -172,22 +171,5 @@ public class SyncAdapterType implements Parcelable {
 
     public SyncAdapterType(Parcel source) {
         this(source.readString(), source.readString(), source.readInt() != 0, source.readInt() != 0, source.readInt() != 0, source.readInt() != 0, source.readString(), source.readString());
-    }
-
-    /* renamed from: android.content.SyncAdapterType$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SyncAdapterType> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncAdapterType createFromParcel(Parcel source) {
-            return new SyncAdapterType(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncAdapterType[] newArray(int size) {
-            return new SyncAdapterType[size];
-        }
     }
 }

@@ -58,11 +58,11 @@ public final class EmergencyNumber {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.number = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.number.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.mcc = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.mcc.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         this.mnc = _hidl_blob.getString(_hidl_offset + 32);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
+        parcel.readEmbeddedBuffer(this.mnc.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
         this.categories = _hidl_blob.getInt32(_hidl_offset + 48);
         int _hidl_vec_size = _hidl_blob.getInt32(_hidl_offset + 56 + 8);
         HwBlob childBlob = parcel.readEmbeddedBuffer(_hidl_vec_size * 16, _hidl_blob.handle(), _hidl_offset + 56 + 0, true);

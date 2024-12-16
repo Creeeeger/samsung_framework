@@ -1,6 +1,8 @@
 package android.inputmethodservice;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.UserManager;
 import android.util.Log;
@@ -21,28 +23,28 @@ final class SemDesktopModeManagerWrapper {
     final InputMethodManager mImm;
     final SemDesktopModeManager mSemDesktopModeManager;
 
-    public SemDesktopModeManagerWrapper(Context context) {
+    SemDesktopModeManagerWrapper(Context context) {
         this.mSemDesktopModeManager = (SemDesktopModeManager) context.getSystemService(Context.SEM_DESKTOP_MODE_SERVICE);
         this.mImm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    public static Uri getDexKeyboardSettingsUri() {
+    static Uri getDexKeyboardSettingsUri() {
         return Uri.withAppendedPath(DEX_CONTENT_URI, SETTINGS_KEY_KEYBOARD_DEX);
     }
 
-    public static Uri getDexKeyboardSettingsChangedUri() {
+    static Uri getDexKeyboardSettingsChangedUri() {
         return Uri.withAppendedPath(DEX_CONTENT_URI_FOR_ON_CHANGE, SETTINGS_KEY_KEYBOARD_DEX);
     }
 
-    public boolean shouldRegisterContentObserver(Context context) {
+    boolean shouldRegisterContentObserver(Context context) {
         return isUiServiceExist(context) && isSystemUser(context);
     }
 
-    public boolean shouldUseDexKeyboardSettings() {
+    boolean shouldUseDexKeyboardSettings() {
         return (isNotDefaultDisplay() && isDeskTopMode()) || isDEXStandAloneMode();
     }
 
-    public void updateClientDisplayId(EditorInfo editorInfo) {
+    void updateClientDisplayId(EditorInfo editorInfo) {
         if (editorInfo != null && editorInfo.extras != null) {
             int displayId = editorInfo.extras.getInt("displayId");
             Log.d(TAG, "updateClientDisplayId: displayId=" + displayId + ", mClientDisplayId=" + this.mClientDisplayId);
@@ -50,7 +52,7 @@ final class SemDesktopModeManagerWrapper {
         }
     }
 
-    public boolean getOnscreenKeyboardForDEXValue() {
+    boolean getOnscreenKeyboardForDEXValue() {
         boolean showImeWithHardKeyboardForDEX = this.mImm.getDexSettingsValue(SETTINGS_KEY_KEYBOARD_DEX, "0");
         Log.d(TAG, "getOnscreenKeyboardForDEXValue: showImeWithHardKeyboardForDEX() : " + showImeWithHardKeyboardForDEX);
         return showImeWithHardKeyboardForDEX;
@@ -90,11 +92,10 @@ final class SemDesktopModeManagerWrapper {
     }
 
     private SemDesktopModeState getDesktopModeState() {
-        SemDesktopModeManager semDesktopModeManager = this.mSemDesktopModeManager;
-        if (semDesktopModeManager == null) {
+        if (this.mSemDesktopModeManager == null) {
             return null;
         }
-        return semDesktopModeManager.getDesktopModeState();
+        return this.mSemDesktopModeManager.getDesktopModeState();
     }
 
     private boolean isDualViewEnabled() {
@@ -104,6 +105,14 @@ final class SemDesktopModeManagerWrapper {
     }
 
     private boolean isUiServiceExist(Context context) {
+        try {
+            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(SemDesktopModeManager.UI_SERVICE_PACKAGE, 0);
+            if (appInfo != null) {
+                return appInfo.enabled;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "isPackageExists failed: unknown package com.sec.android.desktopmode.uiservice");
+        }
         return false;
     }
 
@@ -112,7 +121,7 @@ final class SemDesktopModeManagerWrapper {
         return usrMgr.isSystemUser();
     }
 
-    public void dumpDexMode(Printer p) {
+    void dumpDexMode(Printer p) {
         p.println("Input method service Dex state");
         p.println("  DexDesktopMode=" + isDeskTopMode());
         p.println("  DexStandAloneMode=" + isDEXStandAloneMode());

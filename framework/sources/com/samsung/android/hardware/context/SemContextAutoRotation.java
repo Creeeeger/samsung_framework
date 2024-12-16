@@ -5,21 +5,20 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 @Deprecated(forRemoval = true, since = "13.0")
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextAutoRotation extends SemContextEventContext {
     public static final int ANGLE_0 = 0;
     public static final int ANGLE_180 = 2;
     public static final int ANGLE_270 = 3;
     public static final int ANGLE_90 = 1;
     public static final Parcelable.Creator<SemContextAutoRotation> CREATOR = new Parcelable.Creator<SemContextAutoRotation>() { // from class: com.samsung.android.hardware.context.SemContextAutoRotation.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoRotation createFromParcel(Parcel in) {
             return new SemContextAutoRotation(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoRotation[] newArray(int size) {
             return new SemContextAutoRotation[size];
@@ -31,24 +30,7 @@ public class SemContextAutoRotation extends SemContextEventContext {
     public static final int NONE = -1;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextAutoRotation$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextAutoRotation> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoRotation createFromParcel(Parcel in) {
-            return new SemContextAutoRotation(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoRotation[] newArray(int size) {
-            return new SemContextAutoRotation[size];
-        }
-    }
-
-    public SemContextAutoRotation() {
+    SemContextAutoRotation() {
         this.mContext = new Bundle();
     }
 

@@ -8,7 +8,7 @@ public abstract class BaseInterpolator implements Interpolator {
         return this.mChangingConfiguration;
     }
 
-    public void setChangingConfiguration(int changingConfiguration) {
+    void setChangingConfiguration(int changingConfiguration) {
         this.mChangingConfiguration = changingConfiguration;
     }
 }

@@ -29,10 +29,8 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
     private long mNextScheduledTimeMs = -1;
     protected CueList mCues = new CueList();
 
-    /* loaded from: classes2.dex */
     public interface RenderingWidget {
 
-        /* loaded from: classes2.dex */
         public interface OnChangedListener {
             void onChanged(RenderingWidget renderingWidget);
         }
@@ -66,7 +64,7 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         return this.mFormat;
     }
 
-    public void onData(SubtitleData data) {
+    protected void onData(SubtitleData data) {
         long runID = data.getStartTimeUs() + 1;
         onData(data.getData(), true, runID);
         setRunDiscardTimeMs(runID, (data.getStartTimeUs() + data.getDurationUs()) / 1000);
@@ -74,7 +72,7 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
 
     /* JADX WARN: Code restructure failed: missing block: B:50:0x0007, code lost:
     
-        if (r7.mLastUpdateTimeMs > r9) goto L58;
+        if (r7.mLastUpdateTimeMs > r9) goto L6;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -226,9 +224,7 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             if (this.DEBUG) {
                 Log.d(TAG, "sched @" + this.mNextScheduledTimeMs + " after " + this.mLastTimeMs);
             }
-            MediaTimeProvider mediaTimeProvider = this.mTimeProvider;
-            long j = this.mNextScheduledTimeMs;
-            mediaTimeProvider.notifyAt(j >= 0 ? j * 1000 : -1L, this);
+            this.mTimeProvider.notifyAt(this.mNextScheduledTimeMs >= 0 ? this.mNextScheduledTimeMs * 1000 : -1L, this);
         }
     }
 
@@ -271,9 +267,8 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         }
         updateView(this.mActiveCues);
         this.mNextScheduledTimeMs = -1L;
-        MediaTimeProvider mediaTimeProvider = this.mTimeProvider;
-        if (mediaTimeProvider != null) {
-            mediaTimeProvider.notifyAt(-1L, this);
+        if (this.mTimeProvider != null) {
+            this.mTimeProvider.notifyAt(-1L, this);
         }
     }
 
@@ -286,9 +281,8 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         if (renderingWidget != null) {
             renderingWidget.setVisible(true);
         }
-        MediaTimeProvider mediaTimeProvider = this.mTimeProvider;
-        if (mediaTimeProvider != null) {
-            mediaTimeProvider.scheduleUpdate(this);
+        if (this.mTimeProvider != null) {
+            this.mTimeProvider.scheduleUpdate(this);
         }
     }
 
@@ -296,9 +290,8 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         if (!this.mVisible) {
             return;
         }
-        MediaTimeProvider mediaTimeProvider = this.mTimeProvider;
-        if (mediaTimeProvider != null) {
-            mediaTimeProvider.cancelNotifications(this);
+        if (this.mTimeProvider != null) {
+            this.mTimeProvider.cancelNotifications(this);
         }
         RenderingWidget renderingWidget = getRenderingWidget();
         if (renderingWidget != null) {
@@ -307,7 +300,7 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         this.mVisible = false;
     }
 
-    public synchronized boolean addCue(Cue cue) {
+    protected synchronized boolean addCue(Cue cue) {
         this.mCues.add(cue);
         if (cue.mRunID != 0) {
             Run run = this.mRunsByID.get(cue.mRunID);
@@ -322,10 +315,9 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             run.mFirstCue = cue;
         }
         long nowMs = -1;
-        MediaTimeProvider mediaTimeProvider = this.mTimeProvider;
-        if (mediaTimeProvider != null) {
+        if (this.mTimeProvider != null) {
             try {
-                nowMs = mediaTimeProvider.getCurrentTimeUs(false, true) / 1000;
+                nowMs = this.mTimeProvider.getCurrentTimeUs(false, true) / 1000;
             } catch (IllegalStateException e) {
             }
         }
@@ -333,32 +325,21 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             Log.v(TAG, "mVisible=" + this.mVisible + ", " + cue.mStartTimeMs + " <= " + nowMs + ", " + cue.mEndTimeMs + " >= " + this.mLastTimeMs);
         }
         if (this.mVisible && cue.mStartTimeMs <= nowMs && cue.mEndTimeMs >= this.mLastTimeMs) {
-            Runnable runnable = this.mRunnable;
-            if (runnable != null) {
-                this.mHandler.removeCallbacks(runnable);
+            if (this.mRunnable != null) {
+                this.mHandler.removeCallbacks(this.mRunnable);
             }
-            long thenMs = nowMs;
-            AnonymousClass1 anonymousClass1 = new Runnable() { // from class: android.media.SubtitleTrack.1
-                final /* synthetic */ long val$thenMs;
-                final /* synthetic */ SubtitleTrack val$track;
-
-                AnonymousClass1(SubtitleTrack this, long thenMs2) {
-                    track = track;
-                    thenMs = thenMs2;
-                }
-
+            final long thenMs = nowMs;
+            this.mRunnable = new Runnable() { // from class: android.media.SubtitleTrack.1
                 @Override // java.lang.Runnable
                 public void run() {
                     synchronized (track) {
                         SubtitleTrack.this.mRunnable = null;
                         SubtitleTrack.this.updateActiveCues(true, thenMs);
-                        SubtitleTrack subtitleTrack = SubtitleTrack.this;
-                        subtitleTrack.updateView(subtitleTrack.mActiveCues);
+                        SubtitleTrack.this.updateView(SubtitleTrack.this.mActiveCues);
                     }
                 }
             };
-            this.mRunnable = anonymousClass1;
-            if (this.mHandler.postDelayed(anonymousClass1, 10L)) {
+            if (this.mHandler.postDelayed(this.mRunnable, 10L)) {
                 if (this.DEBUG) {
                     Log.v(TAG, "scheduling update");
                 }
@@ -367,55 +348,26 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             }
             return true;
         }
-        if (this.mVisible && cue.mEndTimeMs >= this.mLastTimeMs) {
-            long j = cue.mStartTimeMs;
-            long j2 = this.mNextScheduledTimeMs;
-            if (j < j2 || j2 < 0) {
-                scheduleTimedEvents();
-            }
+        if (this.mVisible && cue.mEndTimeMs >= this.mLastTimeMs && (cue.mStartTimeMs < this.mNextScheduledTimeMs || this.mNextScheduledTimeMs < 0)) {
+            scheduleTimedEvents();
         }
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.SubtitleTrack$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ long val$thenMs;
-        final /* synthetic */ SubtitleTrack val$track;
-
-        AnonymousClass1(SubtitleTrack this, long thenMs2) {
-            track = track;
-            thenMs = thenMs2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (track) {
-                SubtitleTrack.this.mRunnable = null;
-                SubtitleTrack.this.updateActiveCues(true, thenMs);
-                SubtitleTrack subtitleTrack = SubtitleTrack.this;
-                subtitleTrack.updateView(subtitleTrack.mActiveCues);
-            }
-        }
-    }
-
     public synchronized void setTimeProvider(MediaTimeProvider timeProvider) {
-        MediaTimeProvider mediaTimeProvider = this.mTimeProvider;
-        if (mediaTimeProvider == timeProvider) {
+        if (this.mTimeProvider == timeProvider) {
             return;
         }
-        if (mediaTimeProvider != null) {
-            mediaTimeProvider.cancelNotifications(this);
+        if (this.mTimeProvider != null) {
+            this.mTimeProvider.cancelNotifications(this);
         }
         this.mTimeProvider = timeProvider;
-        if (timeProvider != null) {
-            timeProvider.scheduleUpdate(this);
+        if (this.mTimeProvider != null) {
+            this.mTimeProvider.scheduleUpdate(this);
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class CueList {
+    static class CueList {
         private static final String TAG = "CueList";
         public boolean DEBUG = false;
         private SortedMap<Long, Vector<Cue>> mCues = new TreeMap();
@@ -432,6 +384,7 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             return true;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void removeEvent(Cue cue, long timeMs) {
             Vector<Cue> cues = this.mCues.get(Long.valueOf(timeMs));
             if (cues != null) {
@@ -468,51 +421,17 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             removeEvent(cue, cue.mEndTimeMs);
         }
 
-        /* renamed from: android.media.SubtitleTrack$CueList$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 implements Iterable<Pair<Long, Cue>> {
-            final /* synthetic */ long val$lastTimeMs;
-            final /* synthetic */ long val$timeMs;
-
-            AnonymousClass1(long j, long j2) {
-                lastTimeMs = j;
-                timeMs = j2;
-            }
-
-            @Override // java.lang.Iterable
-            public Iterator<Pair<Long, Cue>> iterator() {
-                if (CueList.this.DEBUG) {
-                    Log.d(CueList.TAG, "slice (" + lastTimeMs + ", " + timeMs + "]=");
-                }
-                try {
-                    CueList cueList = CueList.this;
-                    return new EntryIterator(cueList.mCues.subMap(Long.valueOf(lastTimeMs + 1), Long.valueOf(timeMs + 1)));
-                } catch (IllegalArgumentException e) {
-                    return new EntryIterator(null);
-                }
-            }
-        }
-
-        public Iterable<Pair<Long, Cue>> entriesBetween(long lastTimeMs, long timeMs) {
+        public Iterable<Pair<Long, Cue>> entriesBetween(final long lastTimeMs, final long timeMs) {
             return new Iterable<Pair<Long, Cue>>() { // from class: android.media.SubtitleTrack.CueList.1
-                final /* synthetic */ long val$lastTimeMs;
-                final /* synthetic */ long val$timeMs;
-
-                AnonymousClass1(long lastTimeMs2, long timeMs2) {
-                    lastTimeMs = lastTimeMs2;
-                    timeMs = timeMs2;
-                }
-
                 @Override // java.lang.Iterable
                 public Iterator<Pair<Long, Cue>> iterator() {
                     if (CueList.this.DEBUG) {
                         Log.d(CueList.TAG, "slice (" + lastTimeMs + ", " + timeMs + "]=");
                     }
                     try {
-                        CueList cueList = CueList.this;
-                        return new EntryIterator(cueList.mCues.subMap(Long.valueOf(lastTimeMs + 1), Long.valueOf(timeMs + 1)));
+                        return CueList.this.new EntryIterator(CueList.this.mCues.subMap(Long.valueOf(lastTimeMs + 1), Long.valueOf(timeMs + 1)));
                     } catch (IllegalArgumentException e) {
-                        return new EntryIterator(null);
+                        return CueList.this.new EntryIterator(null);
                     }
                 }
             };
@@ -532,7 +451,6 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             }
         }
 
-        /* loaded from: classes2.dex */
         class EntryIterator implements Iterator<Pair<Long, Cue>> {
             private long mCurrentTimeMs;
             private boolean mDone;
@@ -546,15 +464,15 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
                 return !this.mDone;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.util.Iterator
             public Pair<Long, Cue> next() {
                 if (this.mDone) {
                     throw new NoSuchElementException("");
                 }
                 this.mLastEntry = new Pair<>(Long.valueOf(this.mCurrentTimeMs), this.mListIterator.next());
-                Iterator<Cue> it = this.mListIterator;
-                this.mLastListIterator = it;
-                if (!it.hasNext()) {
+                this.mLastListIterator = this.mListIterator;
+                if (!this.mListIterator.hasNext()) {
                     nextKey();
                 }
                 return this.mLastEntry;
@@ -589,32 +507,27 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             }
 
             private void nextKey() {
-                do {
+                while (this.mRemainingCues != null) {
                     try {
-                        SortedMap<Long, Vector<Cue>> sortedMap = this.mRemainingCues;
-                        if (sortedMap == null) {
-                            throw new NoSuchElementException("");
-                        }
-                        long longValue = sortedMap.firstKey().longValue();
-                        this.mCurrentTimeMs = longValue;
-                        this.mListIterator = this.mRemainingCues.get(Long.valueOf(longValue)).iterator();
+                        this.mCurrentTimeMs = this.mRemainingCues.firstKey().longValue();
+                        this.mListIterator = this.mRemainingCues.get(Long.valueOf(this.mCurrentTimeMs)).iterator();
                         try {
                             this.mRemainingCues = this.mRemainingCues.tailMap(Long.valueOf(this.mCurrentTimeMs + 1));
                         } catch (IllegalArgumentException e) {
                             this.mRemainingCues = null;
                         }
                         this.mDone = false;
+                        if (this.mListIterator.hasNext()) {
+                            return;
+                        }
                     } catch (NoSuchElementException e2) {
                         this.mDone = true;
                         this.mRemainingCues = null;
                         this.mListIterator = null;
                         return;
                     }
-                    this.mDone = true;
-                    this.mRemainingCues = null;
-                    this.mListIterator = null;
-                    return;
-                } while (!this.mListIterator.hasNext());
+                }
+                throw new NoSuchElementException("");
             }
         }
 
@@ -622,7 +535,6 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Cue {
         public long mEndTimeMs;
         public long[] mInnerTimesMs;
@@ -634,7 +546,7 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         }
     }
 
-    public void finishedRun(long runID) {
+    protected void finishedRun(long runID) {
         Run run;
         if (runID != 0 && runID != -1 && (run = this.mRunsByID.get(runID)) != null) {
             run.storeByEndTimeMs(this.mRunsByEndTime);
@@ -656,8 +568,7 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         return 4;
     }
 
-    /* loaded from: classes2.dex */
-    public static class Run {
+    private static class Run {
         static final /* synthetic */ boolean $assertionsDisabled = false;
         public long mEndTimeMs;
         public Cue mFirstCue;
@@ -665,10 +576,6 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
         public Run mPrevRunAtEndTimeMs;
         public long mRunID;
         private long mStoredEndTimeMs;
-
-        /* synthetic */ Run(RunIA runIA) {
-            this();
-        }
 
         private Run() {
             this.mEndTimeMs = -1L;
@@ -680,22 +587,19 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
             int ix = runsByEndTime.indexOfKey(this.mStoredEndTimeMs);
             if (ix >= 0) {
                 if (this.mPrevRunAtEndTimeMs == null) {
-                    Run run = this.mNextRunAtEndTimeMs;
-                    if (run == null) {
+                    if (this.mNextRunAtEndTimeMs == null) {
                         runsByEndTime.removeAt(ix);
                     } else {
-                        runsByEndTime.setValueAt(ix, run);
+                        runsByEndTime.setValueAt(ix, this.mNextRunAtEndTimeMs);
                     }
                 }
                 removeAtEndTimeMs();
             }
-            long j = this.mEndTimeMs;
-            if (j >= 0) {
+            if (this.mEndTimeMs >= 0) {
                 this.mPrevRunAtEndTimeMs = null;
-                Run run2 = runsByEndTime.get(j);
-                this.mNextRunAtEndTimeMs = run2;
-                if (run2 != null) {
-                    run2.mPrevRunAtEndTimeMs = this;
+                this.mNextRunAtEndTimeMs = runsByEndTime.get(this.mEndTimeMs);
+                if (this.mNextRunAtEndTimeMs != null) {
+                    this.mNextRunAtEndTimeMs.mPrevRunAtEndTimeMs = this;
                 }
                 runsByEndTime.put(this.mEndTimeMs, this);
                 this.mStoredEndTimeMs = this.mEndTimeMs;
@@ -704,14 +608,12 @@ public abstract class SubtitleTrack implements MediaTimeProvider.OnMediaTimeList
 
         public void removeAtEndTimeMs() {
             Run prev = this.mPrevRunAtEndTimeMs;
-            Run run = this.mPrevRunAtEndTimeMs;
-            if (run != null) {
-                run.mNextRunAtEndTimeMs = this.mNextRunAtEndTimeMs;
+            if (this.mPrevRunAtEndTimeMs != null) {
+                this.mPrevRunAtEndTimeMs.mNextRunAtEndTimeMs = this.mNextRunAtEndTimeMs;
                 this.mPrevRunAtEndTimeMs = null;
             }
-            Run run2 = this.mNextRunAtEndTimeMs;
-            if (run2 != null) {
-                run2.mPrevRunAtEndTimeMs = prev;
+            if (this.mNextRunAtEndTimeMs != null) {
+                this.mNextRunAtEndTimeMs.mPrevRunAtEndTimeMs = prev;
                 this.mNextRunAtEndTimeMs = null;
             }
         }

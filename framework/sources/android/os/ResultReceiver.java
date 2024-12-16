@@ -6,14 +6,13 @@ import com.android.internal.os.IResultReceiver;
 /* loaded from: classes3.dex */
 public class ResultReceiver implements Parcelable {
     public static final Parcelable.Creator<ResultReceiver> CREATOR = new Parcelable.Creator<ResultReceiver>() { // from class: android.os.ResultReceiver.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResultReceiver createFromParcel(Parcel in) {
             return new ResultReceiver(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResultReceiver[] newArray(int size) {
             return new ResultReceiver[size];
@@ -23,8 +22,7 @@ public class ResultReceiver implements Parcelable {
     final boolean mLocal;
     IResultReceiver mReceiver;
 
-    /* loaded from: classes3.dex */
-    public class MyRunnable implements Runnable {
+    class MyRunnable implements Runnable {
         final int mResultCode;
         final Bundle mResultData;
 
@@ -39,16 +37,14 @@ public class ResultReceiver implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public class MyResultReceiver extends IResultReceiver.Stub {
+    class MyResultReceiver extends IResultReceiver.Stub {
         MyResultReceiver() {
         }
 
         @Override // com.android.internal.os.IResultReceiver
         public void send(int resultCode, Bundle resultData) {
             if (ResultReceiver.this.mHandler != null) {
-                ResultReceiver.this.mHandler.post(new MyRunnable(resultCode, resultData));
+                ResultReceiver.this.mHandler.post(ResultReceiver.this.new MyRunnable(resultCode, resultData));
             } else {
                 ResultReceiver.this.onReceiveResult(resultCode, resultData);
             }
@@ -62,25 +58,23 @@ public class ResultReceiver implements Parcelable {
 
     public void send(int resultCode, Bundle resultData) {
         if (this.mLocal) {
-            Handler handler = this.mHandler;
-            if (handler != null) {
-                handler.post(new MyRunnable(resultCode, resultData));
+            if (this.mHandler != null) {
+                this.mHandler.post(new MyRunnable(resultCode, resultData));
                 return;
             } else {
                 onReceiveResult(resultCode, resultData);
                 return;
             }
         }
-        IResultReceiver iResultReceiver = this.mReceiver;
-        if (iResultReceiver != null) {
+        if (this.mReceiver != null) {
             try {
-                iResultReceiver.send(resultCode, resultData);
+                this.mReceiver.send(resultCode, resultData);
             } catch (RemoteException e) {
             }
         }
     }
 
-    public void onReceiveResult(int resultCode, Bundle resultData) {
+    protected void onReceiveResult(int resultCode, Bundle resultData) {
     }
 
     @Override // android.os.Parcelable
@@ -102,22 +96,5 @@ public class ResultReceiver implements Parcelable {
         this.mLocal = false;
         this.mHandler = null;
         this.mReceiver = IResultReceiver.Stub.asInterface(in.readStrongBinder());
-    }
-
-    /* renamed from: android.os.ResultReceiver$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ResultReceiver> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResultReceiver createFromParcel(Parcel in) {
-            return new ResultReceiver(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResultReceiver[] newArray(int size) {
-            return new ResultReceiver[size];
-        }
     }
 }

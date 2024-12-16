@@ -4,7 +4,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import java.time.Duration;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class Duration64 {
     public static final Duration64 ZERO = new Duration64(0);
     private final long mBits;

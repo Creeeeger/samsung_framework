@@ -25,7 +25,6 @@ public interface IInlineSuggestionUiCallback extends IInterface {
 
     void onTransferTouchFocusToImeWindow(IBinder iBinder, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IInlineSuggestionUiCallback {
         @Override // android.service.autofill.IInlineSuggestionUiCallback
         public void onClick() throws RemoteException {
@@ -57,7 +56,6 @@ public interface IInlineSuggestionUiCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IInlineSuggestionUiCallback {
         static final int TRANSACTION_onClick = 1;
         static final int TRANSACTION_onContent = 3;
@@ -115,49 +113,45 @@ public interface IInlineSuggestionUiCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInlineSuggestionUiCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInlineSuggestionUiCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInlineSuggestionUiCallback.DESCRIPTOR);
+                case 1:
+                    onClick();
+                    return true;
+                case 2:
+                    onLongClick();
+                    return true;
+                case 3:
+                    IInlineSuggestionUi _arg0 = IInlineSuggestionUi.Stub.asInterface(data.readStrongBinder());
+                    SurfaceControlViewHost.SurfacePackage _arg1 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onContent(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 4:
+                    onError();
+                    return true;
+                case 5:
+                    IBinder _arg02 = data.readStrongBinder();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTransferTouchFocusToImeWindow(_arg02, _arg12);
+                    return true;
+                case 6:
+                    IntentSender _arg03 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
+                    data.enforceNoDataAvail();
+                    onStartIntentSender(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onClick();
-                            return true;
-                        case 2:
-                            onLongClick();
-                            return true;
-                        case 3:
-                            IInlineSuggestionUi _arg0 = IInlineSuggestionUi.Stub.asInterface(data.readStrongBinder());
-                            SurfaceControlViewHost.SurfacePackage _arg1 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onContent(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 4:
-                            onError();
-                            return true;
-                        case 5:
-                            IBinder _arg02 = data.readStrongBinder();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTransferTouchFocusToImeWindow(_arg02, _arg12);
-                            return true;
-                        case 6:
-                            IntentSender _arg03 = (IntentSender) data.readTypedObject(IntentSender.CREATOR);
-                            data.enforceNoDataAvail();
-                            onStartIntentSender(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IInlineSuggestionUiCallback {
+        private static class Proxy implements IInlineSuggestionUiCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

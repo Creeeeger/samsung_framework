@@ -16,17 +16,16 @@ import com.android.internal.app.ResolverListAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class DisplayResolveInfo implements TargetInfo, Parcelable {
     public static final Parcelable.Creator<DisplayResolveInfo> CREATOR = new Parcelable.Creator<DisplayResolveInfo>() { // from class: com.android.internal.app.chooser.DisplayResolveInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayResolveInfo createFromParcel(Parcel in) {
             return new DisplayResolveInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayResolveInfo[] newArray(int size) {
             return new DisplayResolveInfo[size];
@@ -44,57 +43,49 @@ public class DisplayResolveInfo implements TargetInfo, Parcelable {
     private ArrayList<DisplayResolveInfo> mSimilarList;
     private final List<Intent> mSourceIntents;
 
-    /* synthetic */ DisplayResolveInfo(Parcel parcel, DisplayResolveInfoIA displayResolveInfoIA) {
-        this(parcel);
-    }
-
     public DisplayResolveInfo(Intent originalIntent, ResolveInfo pri, Intent pOrigIntent, ResolverListAdapter.ResolveInfoPresentationGetter resolveInfoPresentationGetter) {
         this(originalIntent, pri, null, null, pOrigIntent, resolveInfoPresentationGetter);
     }
 
     public DisplayResolveInfo(Intent originalIntent, ResolveInfo pri, CharSequence pLabel, CharSequence pInfo, Intent resolvedIntent, ResolverListAdapter.ResolveInfoPresentationGetter resolveInfoPresentationGetter) {
-        ArrayList arrayList = new ArrayList();
-        this.mSourceIntents = arrayList;
+        this.mSourceIntents = new ArrayList();
         this.mPinned = false;
         this.mSimilarList = new ArrayList<>();
         this.mIsSkipFixUris = false;
-        arrayList.add(originalIntent);
+        this.mSourceIntents.add(originalIntent);
         this.mResolveInfo = pri;
         this.mDisplayLabel = pLabel;
         this.mExtendedInfo = pInfo;
         this.mResolveInfoPresentationGetter = resolveInfoPresentationGetter;
         Intent intent = new Intent(resolvedIntent);
         intent.addFlags(50331648);
-        ActivityInfo ai = pri.activityInfo;
+        ActivityInfo ai = this.mResolveInfo.activityInfo;
         intent.setComponent(new ComponentName(ai.applicationInfo.packageName, ai.name));
         this.mIsSuspended = (ai.applicationInfo.flags & 1073741824) != 0;
         this.mResolvedIntent = intent;
     }
 
     private DisplayResolveInfo(DisplayResolveInfo other, Intent fillInIntent, int flags, ResolverListAdapter.ResolveInfoPresentationGetter resolveInfoPresentationGetter) {
-        ArrayList arrayList = new ArrayList();
-        this.mSourceIntents = arrayList;
+        this.mSourceIntents = new ArrayList();
         this.mPinned = false;
         this.mSimilarList = new ArrayList<>();
         this.mIsSkipFixUris = false;
-        arrayList.addAll(other.getAllSourceIntents());
+        this.mSourceIntents.addAll(other.getAllSourceIntents());
         this.mResolveInfo = other.mResolveInfo;
         this.mDisplayLabel = other.mDisplayLabel;
         this.mDisplayIcon = other.mDisplayIcon;
         this.mExtendedInfo = other.mExtendedInfo;
-        Intent intent = new Intent(other.mResolvedIntent);
-        this.mResolvedIntent = intent;
-        intent.fillIn(fillInIntent, flags);
+        this.mResolvedIntent = new Intent(other.mResolvedIntent);
+        this.mResolvedIntent.fillIn(fillInIntent, flags);
         this.mResolveInfoPresentationGetter = resolveInfoPresentationGetter;
     }
 
-    public DisplayResolveInfo(DisplayResolveInfo other) {
-        ArrayList arrayList = new ArrayList();
-        this.mSourceIntents = arrayList;
+    DisplayResolveInfo(DisplayResolveInfo other) {
+        this.mSourceIntents = new ArrayList();
         this.mPinned = false;
         this.mSimilarList = new ArrayList<>();
         this.mIsSkipFixUris = false;
-        arrayList.addAll(other.getAllSourceIntents());
+        this.mSourceIntents.addAll(other.getAllSourceIntents());
         this.mResolveInfo = other.mResolveInfo;
         this.mDisplayLabel = other.mDisplayLabel;
         this.mDisplayIcon = other.mDisplayIcon;
@@ -110,9 +101,8 @@ public class DisplayResolveInfo implements TargetInfo, Parcelable {
 
     @Override // com.android.internal.app.chooser.TargetInfo
     public CharSequence getDisplayLabel() {
-        ResolverListAdapter.ResolveInfoPresentationGetter resolveInfoPresentationGetter;
-        if (this.mDisplayLabel == null && (resolveInfoPresentationGetter = this.mResolveInfoPresentationGetter) != null) {
-            this.mDisplayLabel = resolveInfoPresentationGetter.getLabel();
+        if (this.mDisplayLabel == null && this.mResolveInfoPresentationGetter != null) {
+            this.mDisplayLabel = this.mResolveInfoPresentationGetter.getLabel();
             this.mExtendedInfo = this.mResolveInfoPresentationGetter.getSubLabel();
         }
         return this.mDisplayLabel;
@@ -230,33 +220,15 @@ public class DisplayResolveInfo implements TargetInfo, Parcelable {
         dest.writeParcelable(this.mResolveInfo, 0);
     }
 
-    /* renamed from: com.android.internal.app.chooser.DisplayResolveInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DisplayResolveInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayResolveInfo createFromParcel(Parcel in) {
-            return new DisplayResolveInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayResolveInfo[] newArray(int size) {
-            return new DisplayResolveInfo[size];
-        }
-    }
-
     private DisplayResolveInfo(Parcel in) {
-        ArrayList arrayList = new ArrayList();
-        this.mSourceIntents = arrayList;
+        this.mSourceIntents = new ArrayList();
         this.mPinned = false;
         this.mSimilarList = new ArrayList<>();
         this.mIsSkipFixUris = false;
         this.mDisplayLabel = in.readCharSequence();
         this.mExtendedInfo = in.readCharSequence();
         this.mResolvedIntent = (Intent) in.readParcelable(null, Intent.class);
-        in.readTypedList(arrayList, Intent.CREATOR);
+        in.readTypedList(this.mSourceIntents, Intent.CREATOR);
         this.mIsSuspended = in.readBoolean();
         this.mPinned = in.readBoolean();
         this.mResolveInfo = (ResolveInfo) in.readParcelable(null, ResolveInfo.class);

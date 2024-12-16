@@ -15,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public class VolumeRecord implements Parcelable {
     public static final Parcelable.Creator<VolumeRecord> CREATOR = new Parcelable.Creator<VolumeRecord>() { // from class: android.os.storage.VolumeRecord.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VolumeRecord createFromParcel(Parcel in) {
             return new VolumeRecord(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VolumeRecord[] newArray(int size) {
             return new VolumeRecord[size];
@@ -67,9 +66,8 @@ public class VolumeRecord implements Parcelable {
     }
 
     public String getNormalizedFsUuid() {
-        String str = this.fsUuid;
-        if (str != null) {
-            return str.toLowerCase(Locale.US);
+        if (this.fsUuid != null) {
+            return this.fsUuid.toLowerCase(Locale.US);
         }
         return null;
     }
@@ -113,8 +111,8 @@ public class VolumeRecord implements Parcelable {
         pw.println();
     }
 
-    /* renamed from: clone */
-    public VolumeRecord m3282clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public VolumeRecord m3455clone() {
         Parcel temp = Parcel.obtain();
         try {
             writeToParcel(temp, 0);
@@ -134,23 +132,6 @@ public class VolumeRecord implements Parcelable {
 
     public int hashCode() {
         return this.fsUuid.hashCode();
-    }
-
-    /* renamed from: android.os.storage.VolumeRecord$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VolumeRecord> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VolumeRecord createFromParcel(Parcel in) {
-            return new VolumeRecord(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VolumeRecord[] newArray(int size) {
-            return new VolumeRecord[size];
-        }
     }
 
     @Override // android.os.Parcelable

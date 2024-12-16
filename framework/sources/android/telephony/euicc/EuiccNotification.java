@@ -4,25 +4,23 @@ import android.annotation.SystemApi;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class EuiccNotification implements Parcelable {
     public static final int ALL_EVENTS = 15;
     public static final Parcelable.Creator<EuiccNotification> CREATOR = new Parcelable.Creator<EuiccNotification>() { // from class: android.telephony.euicc.EuiccNotification.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EuiccNotification createFromParcel(Parcel source) {
             return new EuiccNotification(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EuiccNotification[] newArray(int size) {
             return new EuiccNotification[size];
@@ -38,12 +36,7 @@ public final class EuiccNotification implements Parcelable {
     private final String mTargetAddr;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Event {
-    }
-
-    /* synthetic */ EuiccNotification(Parcel parcel, EuiccNotificationIA euiccNotificationIA) {
-        this(parcel);
     }
 
     public EuiccNotification(int seq, String targetAddr, int event, byte[] data) {
@@ -89,7 +82,7 @@ public final class EuiccNotification implements Parcelable {
     }
 
     public String toString() {
-        return "EuiccNotification (seq=" + this.mSeq + ", targetAddr=" + this.mTargetAddr + ", event=" + this.mEvent + ", data=" + (this.mData == null ? SemCapabilities.FEATURE_TAG_NULL : "byte[" + this.mData.length + NavigationBarInflaterView.SIZE_MOD_END) + NavigationBarInflaterView.KEY_CODE_END;
+        return "EuiccNotification (seq=" + this.mSeq + ", targetAddr=" + this.mTargetAddr + ", event=" + this.mEvent + ", data=" + (this.mData == null ? "null" : "byte[" + this.mData.length + NavigationBarInflaterView.SIZE_MOD_END) + NavigationBarInflaterView.KEY_CODE_END;
     }
 
     @Override // android.os.Parcelable
@@ -110,22 +103,5 @@ public final class EuiccNotification implements Parcelable {
         this.mTargetAddr = source.readString();
         this.mEvent = source.readInt();
         this.mData = source.createByteArray();
-    }
-
-    /* renamed from: android.telephony.euicc.EuiccNotification$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EuiccNotification> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EuiccNotification createFromParcel(Parcel source) {
-            return new EuiccNotification(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EuiccNotification[] newArray(int size) {
-            return new EuiccNotification[size];
-        }
     }
 }

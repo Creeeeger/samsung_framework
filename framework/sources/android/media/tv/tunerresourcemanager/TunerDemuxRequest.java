@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class TunerDemuxRequest implements Parcelable {
     public static final Parcelable.Creator<TunerDemuxRequest> CREATOR = new Parcelable.Creator<TunerDemuxRequest>() { // from class: android.media.tv.tunerresourcemanager.TunerDemuxRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunerDemuxRequest createFromParcel(Parcel _aidl_source) {
             TunerDemuxRequest _aidl_out = new TunerDemuxRequest();
@@ -17,6 +15,7 @@ public class TunerDemuxRequest implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunerDemuxRequest[] newArray(int _aidl_size) {
             return new TunerDemuxRequest[_aidl_size];
@@ -24,25 +23,6 @@ public class TunerDemuxRequest implements Parcelable {
     };
     public int clientId = 0;
     public int desiredFilterTypes = 0;
-
-    /* renamed from: android.media.tv.tunerresourcemanager.TunerDemuxRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TunerDemuxRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunerDemuxRequest createFromParcel(Parcel _aidl_source) {
-            TunerDemuxRequest _aidl_out = new TunerDemuxRequest();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunerDemuxRequest[] newArray(int _aidl_size) {
-            return new TunerDemuxRequest[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

@@ -128,7 +128,6 @@ public interface IGnss extends android.hardware.gnss.V1_1.IGnss {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnss {
         private IHwBinder mRemote;
 
@@ -846,7 +845,6 @@ public interface IGnss extends android.hardware.gnss.V1_1.IGnss {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnss {
         @Override // android.hardware.gnss.V2_0.IGnss, android.hardware.gnss.V1_1.IGnss, android.hardware.gnss.V1_0.IGnss, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -869,7 +867,7 @@ public interface IGnss extends android.hardware.gnss.V1_1.IGnss {
 
         @Override // android.hardware.gnss.V2_0.IGnss, android.hardware.gnss.V1_1.IGnss, android.hardware.gnss.V1_0.IGnss, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-11, SprAttributeBase.TYPE_DURATION, 95, 72, -62, -5, -97, 35, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT, -35, -109, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, -9, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -82, -107, 64, -12, -7, -117, 91, 122, -30, -78, 105, -105, 95, 69, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 109, 115}, new byte[]{-75, MidiConstants.STATUS_MIDI_TIME_CODE, -12, -63, -67, 109, -25, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEOUT, -114, 113, -41, 15, 87, -51, -85, MidiConstants.STATUS_NOTE_ON, 74, MidiConstants.STATUS_PROGRAM_CHANGE, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -95, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 61, -18, 62, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, 115, 119, 10, 69, -125, -68, -62}, new byte[]{-19, -26, -105, 16, -61, -87, 92, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -66, -127, -114, 108, -117, -73, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, 120, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, -126, 63, -84, -27, -4, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -63, 119, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, -78, 111, 65, -39, 77, 101}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-11, SprAttributeBase.TYPE_DURATION, 95, 72, -62, -5, -97, 35, 22, 21, -35, -109, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, -9, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -82, -107, 64, -12, -7, -117, 91, 122, -30, -78, 105, -105, 95, 69, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 109, 115}, new byte[]{-75, MidiConstants.STATUS_MIDI_TIME_CODE, -12, -63, -67, 109, -25, 26, -114, 113, -41, 15, 87, -51, -85, MidiConstants.STATUS_NOTE_ON, 74, MidiConstants.STATUS_PROGRAM_CHANGE, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -95, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 61, -18, 62, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, 115, 119, 10, 69, -125, -68, -62}, new byte[]{-19, -26, -105, 16, -61, -87, 92, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -66, -127, -114, 108, -117, -73, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, 120, 22, -126, 63, -84, -27, -4, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, -63, 119, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, -78, 111, 65, -39, 77, 101}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V2_0.IGnss, android.hardware.gnss.V1_1.IGnss, android.hardware.gnss.V1_0.IGnss, android.internal.hidl.base.V1_0.IBase

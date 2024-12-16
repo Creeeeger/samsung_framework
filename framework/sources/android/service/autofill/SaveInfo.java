@@ -19,9 +19,7 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class SaveInfo implements Parcelable {
     public static final Parcelable.Creator<SaveInfo> CREATOR = new Parcelable.Creator<SaveInfo>() { // from class: android.service.autofill.SaveInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SaveInfo createFromParcel(Parcel parcel) {
             Builder builder;
@@ -68,6 +66,7 @@ public final class SaveInfo implements Parcelable {
             return builder.build();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SaveInfo[] newArray(int size) {
             return new SaveInfo[size];
@@ -107,27 +106,19 @@ public final class SaveInfo implements Parcelable {
     private final InternalValidator mValidator;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     @interface NegativeButtonStyle {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     @interface PositiveButtonStyle {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     @interface SaveDataType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     @interface SaveInfoFlags {
-    }
-
-    /* synthetic */ SaveInfo(Builder builder, SaveInfoIA saveInfoIA) {
-        this(builder);
     }
 
     public static SaveInfo copy(SaveInfo s, AutofillId[] optionalIds) {
@@ -169,7 +160,7 @@ public final class SaveInfo implements Parcelable {
         } else {
             int size = builder.mSanitizers.size();
             this.mSanitizerKeys = new InternalSanitizer[size];
-            this.mSanitizerValues = new AutofillId[size];
+            this.mSanitizerValues = new AutofillId[size][];
             for (int i = 0; i < size; i++) {
                 this.mSanitizerKeys[i] = (InternalSanitizer) builder.mSanitizers.keyAt(i);
                 this.mSanitizerValues[i] = (AutofillId[]) builder.mSanitizers.valueAt(i);
@@ -234,7 +225,6 @@ public final class SaveInfo implements Parcelable {
         return this.mTriggerId;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private CustomDescription mCustomDescription;
         private CharSequence mDescription;
@@ -349,7 +339,6 @@ public final class SaveInfo implements Parcelable {
 
         public SaveInfo build() {
             throwIfDestroyed();
-            Preconditions.checkState((ArrayUtils.isEmpty(this.mRequiredIds) && ArrayUtils.isEmpty(this.mOptionalIds) && (this.mFlags & 4) == 0) ? false : true, "must have at least one required or optional id or FLAG_DELAYED_SAVE");
             this.mDestroyed = true;
             return new SaveInfo(this);
         }
@@ -412,75 +401,11 @@ public final class SaveInfo implements Parcelable {
         parcel.writeParcelable(this.mValidator, flags);
         parcel.writeParcelableArray(this.mSanitizerKeys, flags);
         if (this.mSanitizerKeys != null) {
-            int i = 0;
-            while (true) {
-                AutofillId[][] autofillIdArr = this.mSanitizerValues;
-                if (i >= autofillIdArr.length) {
-                    break;
-                }
-                parcel.writeParcelableArray(autofillIdArr[i], flags);
-                i++;
+            for (int i = 0; i < this.mSanitizerValues.length; i++) {
+                parcel.writeParcelableArray(this.mSanitizerValues[i], flags);
             }
         }
         parcel.writeParcelable(this.mTriggerId, flags);
         parcel.writeInt(this.mFlags);
-    }
-
-    /* renamed from: android.service.autofill.SaveInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SaveInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SaveInfo createFromParcel(Parcel parcel) {
-            Builder builder;
-            int type = parcel.readInt();
-            AutofillId[] requiredIds = (AutofillId[]) parcel.readParcelableArray(null, AutofillId.class);
-            if (requiredIds != null) {
-                builder = new Builder(type, requiredIds);
-            } else {
-                builder = new Builder(type);
-            }
-            AutofillId[] optionalIds = (AutofillId[]) parcel.readParcelableArray(null, AutofillId.class);
-            if (optionalIds != null) {
-                builder.setOptionalIds(optionalIds);
-            }
-            int negativeButtonStyle = parcel.readInt();
-            if (negativeButtonStyle == 999) {
-                builder.semSetNegativeSecondAction(negativeButtonStyle, (IntentSender) parcel.readParcelable(null, IntentSender.class), (IntentSender) parcel.readParcelable(null, IntentSender.class));
-            } else {
-                builder.setNegativeAction(negativeButtonStyle, (IntentSender) parcel.readParcelable(null, IntentSender.class));
-                parcel.readParcelable(null, IntentSender.class);
-            }
-            builder.setPositiveAction(parcel.readInt());
-            builder.setDescription(parcel.readCharSequence());
-            CustomDescription customDescripton = (CustomDescription) parcel.readParcelable(null, CustomDescription.class);
-            if (customDescripton != null) {
-                builder.setCustomDescription(customDescripton);
-            }
-            InternalValidator validator = (InternalValidator) parcel.readParcelable(null, InternalValidator.class);
-            if (validator != null) {
-                builder.setValidator(validator);
-            }
-            InternalSanitizer[] sanitizers = (InternalSanitizer[]) parcel.readParcelableArray(null, InternalSanitizer.class);
-            if (sanitizers != null) {
-                for (InternalSanitizer internalSanitizer : sanitizers) {
-                    AutofillId[] autofillIds = (AutofillId[]) parcel.readParcelableArray(null, AutofillId.class);
-                    builder.addSanitizer(internalSanitizer, autofillIds);
-                }
-            }
-            AutofillId triggerId = (AutofillId) parcel.readParcelable(null, AutofillId.class);
-            if (triggerId != null) {
-                builder.setTriggerId(triggerId);
-            }
-            builder.setFlags(parcel.readInt());
-            return builder.build();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SaveInfo[] newArray(int size) {
-            return new SaveInfo[size];
-        }
     }
 }

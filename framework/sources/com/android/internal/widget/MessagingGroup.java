@@ -1,5 +1,6 @@
 package com.android.internal.widget;
 
+import android.app.Flags;
 import android.app.Person;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -33,7 +34,7 @@ import java.util.List;
 
 @RemoteViews.RemoteView
 /* loaded from: classes5.dex */
-public class MessagingGroup extends LinearLayout implements MessagingLinearLayout.MessagingChild {
+public class MessagingGroup extends NotificationOptimizedLinearLayout implements MessagingLinearLayout.MessagingChild {
     public static final int IMAGE_DISPLAY_LOCATION_AT_END = 1;
     public static final int IMAGE_DISPLAY_LOCATION_EXTERNAL = 2;
     public static final int IMAGE_DISPLAY_LOCATION_INLINE = 0;
@@ -79,7 +80,6 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
     private int mTextColor;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     private @interface ImageDisplayLocation {
     }
 
@@ -136,7 +136,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         this.mMessageContainer = (MessagingLinearLayout) findViewById(R.id.group_message_container);
         this.mSenderView = (ImageFloatingTextView) findViewById(R.id.message_name);
@@ -189,14 +189,16 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         if (nameOverride == null) {
             nameOverride = sender.getName();
         }
+        if (Flags.cleanUpSpansAndNewLines() && nameOverride != null) {
+            nameOverride = nameOverride.toString();
+        }
         this.mSenderName = nameOverride;
         if (this.mSingleLine && !TextUtils.isEmpty(nameOverride)) {
             nameOverride = this.mContext.getResources().getString(R.string.conversation_single_line_name_display, nameOverride);
         }
-        this.mSenderView.setText(nameOverride);
-        boolean z = sender.getIcon() == null;
-        this.mNeedsGeneratedAvatar = z;
-        if (!z) {
+        this.mSenderView.lambda$setTextAsync$0(nameOverride);
+        this.mNeedsGeneratedAvatar = sender.getIcon() == null;
+        if (!this.mNeedsGeneratedAvatar) {
             setAvatar(sender.getIcon());
         }
         updateSenderVisibility();
@@ -233,7 +235,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         this.mAvatarName = "";
     }
 
-    public static MessagingGroup createGroup(MessagingLinearLayout layout) {
+    static MessagingGroup createGroup(MessagingLinearLayout layout) {
         MessagingGroup createdGroup = sInstancePool.acquire();
         if (createdGroup == null) {
             createdGroup = (MessagingGroup) LayoutInflater.from(layout.getContext()).inflate(R.layout.notification_template_messaging_group, (ViewGroup) layout, false);
@@ -253,7 +255,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         messageParent.removeView(view);
         if (wasShown && !MessagingLinearLayout.isGone(view)) {
             messageParent.addTransientView(view, 0);
-            performRemoveAnimation(view, new Runnable() { // from class: com.android.internal.widget.MessagingGroup$$ExternalSyntheticLambda1
+            performRemoveAnimation(view, new Runnable() { // from class: com.android.internal.widget.MessagingGroup$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     MessagingGroup.lambda$removeMessage$0(ViewGroup.this, view, messagingMessage);
@@ -264,16 +266,15 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         }
     }
 
-    public static /* synthetic */ void lambda$removeMessage$0(ViewGroup messageParent, View view, MessagingMessage messagingMessage) {
+    static /* synthetic */ void lambda$removeMessage$0(ViewGroup messageParent, View view, MessagingMessage messagingMessage) {
         messageParent.removeTransientView(view);
         messagingMessage.recycle();
     }
 
     @Override // com.android.internal.widget.MessagingLinearLayout.MessagingChild
     public void recycle() {
-        MessagingImageMessage messagingImageMessage = this.mIsolatedMessage;
-        if (messagingImageMessage != null) {
-            this.mImageContainer.removeView(messagingImageMessage);
+        if (this.mIsolatedMessage != null) {
+            this.mImageContainer.removeView(this.mIsolatedMessage);
         }
         for (int i = 0; i < this.mMessages.size(); i++) {
             MessagingMessage message = this.mMessages.get(i);
@@ -301,7 +302,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
     }
 
     public void removeGroupAnimated(final Runnable endAction) {
-        performRemoveAnimation(this, new Runnable() { // from class: com.android.internal.widget.MessagingGroup$$ExternalSyntheticLambda2
+        performRemoveAnimation(this, new Runnable() { // from class: com.android.internal.widget.MessagingGroup$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 MessagingGroup.this.lambda$removeGroupAnimated$1(endAction);
@@ -309,6 +310,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$removeGroupAnimated$1(Runnable endAction) {
         setAlpha(1.0f);
         MessagingPropertyAnimator.setToLaidOutPosition(this);
@@ -388,7 +390,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
     @Override // com.android.internal.widget.MessagingLinearLayout.MessagingChild
     public void hideAnimated() {
         setIsHidingAnimated(true);
-        removeGroupAnimated(new Runnable() { // from class: com.android.internal.widget.MessagingGroup$$ExternalSyntheticLambda0
+        removeGroupAnimated(new Runnable() { // from class: com.android.internal.widget.MessagingGroup$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
             public final void run() {
                 MessagingGroup.this.lambda$hideAnimated$2();
@@ -396,6 +398,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$hideAnimated$2() {
         setIsHidingAnimated(false);
     }
@@ -470,7 +473,7 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
     public void setLayoutColor(int layoutColor) {
         if (layoutColor != this.mLayoutColor) {
             this.mLayoutColor = layoutColor;
-            this.mSendingSpinner.setIndeterminateTintList(ColorStateList.valueOf(layoutColor));
+            this.mSendingSpinner.setIndeterminateTintList(ColorStateList.valueOf(this.mLayoutColor));
         }
     }
 
@@ -547,18 +550,12 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         return false;
     }
 
-    @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    @Override // com.android.internal.widget.NotificationOptimizedLinearLayout, android.widget.LinearLayout, android.view.ViewGroup, android.view.View
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (!this.mAddedMessages.isEmpty()) {
-            boolean firstLayout = this.mFirstLayout;
+            final boolean firstLayout = this.mFirstLayout;
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.widget.MessagingGroup.1
-                final /* synthetic */ boolean val$firstLayout;
-
-                AnonymousClass1(boolean firstLayout2) {
-                    firstLayout = firstLayout2;
-                }
-
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     Iterator it = MessagingGroup.this.mAddedMessages.iterator();
@@ -581,39 +578,12 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         updateClipRect();
     }
 
-    /* renamed from: com.android.internal.widget.MessagingGroup$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
-        final /* synthetic */ boolean val$firstLayout;
-
-        AnonymousClass1(boolean firstLayout2) {
-            firstLayout = firstLayout2;
-        }
-
-        @Override // android.view.ViewTreeObserver.OnPreDrawListener
-        public boolean onPreDraw() {
-            Iterator it = MessagingGroup.this.mAddedMessages.iterator();
-            while (it.hasNext()) {
-                MessagingMessage message = (MessagingMessage) it.next();
-                if (message.getView().isShown()) {
-                    MessagingPropertyAnimator.fadeIn(message.getView());
-                    if (!firstLayout) {
-                        MessagingPropertyAnimator.startLocalTranslationFrom(message.getView(), message.getView().getHeight(), MessagingLayout.LINEAR_OUT_SLOW_IN);
-                    }
-                }
-            }
-            MessagingGroup.this.mAddedMessages.clear();
-            MessagingGroup.this.getViewTreeObserver().removeOnPreDrawListener(this);
-            return true;
-        }
-    }
-
     public int calculateGroupCompatibility(MessagingGroup otherGroup) {
         if (TextUtils.equals(getSenderName(), otherGroup.getSenderName())) {
             int result = 1;
             for (int i = 0; i < this.mMessages.size() && i < otherGroup.mMessages.size(); i++) {
-                MessagingMessage ownMessage = this.mMessages.get((r2.size() - 1) - i);
-                MessagingMessage otherMessage = otherGroup.mMessages.get((r3.size() - 1) - i);
+                MessagingMessage ownMessage = this.mMessages.get((this.mMessages.size() - 1) - i);
+                MessagingMessage otherMessage = otherGroup.mMessages.get((otherGroup.mMessages.size() - 1) - i);
                 if (ownMessage.sameAs(otherMessage)) {
                     result++;
                 } else {

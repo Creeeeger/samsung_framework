@@ -58,6 +58,7 @@ public class HdcptestATCmd implements IWorkOnAt {
     private static final String TAG = "HdcptestATCmd";
     private static final int TYPE_DIR = 1;
     private static final int TYPE_FILE = 2;
+    private static final String VENDOR_EFS_PARTITION = "/mnt/vendor/efs";
     private static Context mContext = null;
     private static final String productType = "in_house";
     private int mErrorCode;
@@ -79,18 +80,18 @@ public class HdcptestATCmd implements IWorkOnAt {
         mContext = context;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:163:0x0a20 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:169:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:174:0x0a41 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:181:? A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:298:0x0b9c A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:304:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:313:0x0bbd A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:320:? A[SYNTHETIC] */
     @Override // com.android.server.IWorkOnAt
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public java.lang.String processCmd(java.lang.String r23) {
+    public java.lang.String processCmd(java.lang.String r26) {
         /*
-            Method dump skipped, instructions count: 2654
+            Method dump skipped, instructions count: 3034
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.HdcptestATCmd.processCmd(java.lang.String):java.lang.String");
@@ -118,23 +119,67 @@ public class HdcptestATCmd implements IWorkOnAt {
         return bArray;
     }
 
-    public static int execCmd(String cmd, String param) {
-        if (!checkPath(cmd, 2)) {
-            return 44;
-        }
-        if (param != null) {
-            cmd = (cmd + AT_COMMON_INTERVAL) + param;
-        }
-        try {
-            Runtime rt = Runtime.getRuntime();
-            Process pc = rt.exec(cmd);
-            pc.waitFor();
-            int ret = pc.exitValue();
-            return ret;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 44;
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0051, code lost:
+    
+        return r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x004e, code lost:
+    
+        if (r1 == null) goto L18;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static int execCmd(java.lang.String r3, java.lang.String r4) {
+        /*
+            r0 = 44
+            r1 = 2
+            boolean r1 = checkPath(r3, r1)
+            if (r1 != 0) goto La
+            return r0
+        La:
+            if (r4 == 0) goto L30
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            r1.<init>()
+            java.lang.StringBuilder r1 = r1.append(r3)
+            java.lang.String r2 = " "
+            java.lang.StringBuilder r1 = r1.append(r2)
+            java.lang.String r3 = r1.toString()
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            r1.<init>()
+            java.lang.StringBuilder r1 = r1.append(r3)
+            java.lang.StringBuilder r1 = r1.append(r4)
+            java.lang.String r3 = r1.toString()
+        L30:
+            r1 = 0
+            java.lang.Runtime r2 = java.lang.Runtime.getRuntime()     // Catch: java.lang.Throwable -> L48 java.lang.Exception -> L4a
+            java.lang.Process r2 = r2.exec(r3)     // Catch: java.lang.Throwable -> L48 java.lang.Exception -> L4a
+            r1 = r2
+            r1.waitFor()     // Catch: java.lang.Throwable -> L48 java.lang.Exception -> L4a
+            int r2 = r1.exitValue()     // Catch: java.lang.Throwable -> L48 java.lang.Exception -> L4a
+            r0 = r2
+            if (r1 == 0) goto L51
+        L44:
+            r1.destroy()
+            goto L51
+        L48:
+            r2 = move-exception
+            goto L52
+        L4a:
+            r2 = move-exception
+            r2.printStackTrace()     // Catch: java.lang.Throwable -> L48
+            if (r1 == 0) goto L51
+            goto L44
+        L51:
+            return r0
+        L52:
+            if (r1 == 0) goto L57
+            r1.destroy()
+        L57:
+            throw r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.HdcptestATCmd.execCmd(java.lang.String, java.lang.String):int");
     }
 
     public static boolean checkPath(String filePath, int type) {

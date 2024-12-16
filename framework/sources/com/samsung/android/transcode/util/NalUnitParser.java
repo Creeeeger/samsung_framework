@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class NalUnitParser {
     private static final int CHECK_MAX_SIZE = 512;
     private static final int CLLI_SEI_MESSAGE_PAYLOAD_SIZE = 4;
@@ -26,7 +26,6 @@ public class NalUnitParser {
     private int mMasteringDisplayColorMetaStartPos = -1;
     private int mContentsLevelInfoMetaStartPos = -1;
 
-    /* loaded from: classes5.dex */
     public enum AVCNalUnitType {
         CODE_SLICE_NON_IDR_PICTURE(1),
         CODE_SLICE_DATA_PARTITION_A(2),
@@ -59,12 +58,11 @@ public class NalUnitParser {
             }).findFirst().orElse(UNKNOWN);
         }
 
-        public static /* synthetic */ boolean lambda$getNalType$0(int val, AVCNalUnitType type) {
+        static /* synthetic */ boolean lambda$getNalType$0(int val, AVCNalUnitType type) {
             return type.typeValue == val;
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum HEVCNalUnitType {
         TRAIL_R(1),
         RASL_R(9),
@@ -96,7 +94,7 @@ public class NalUnitParser {
             }).findFirst().orElse(UNKNOWN);
         }
 
-        public static /* synthetic */ boolean lambda$getNalType$0(int val, HEVCNalUnitType type) {
+        static /* synthetic */ boolean lambda$getNalType$0(int val, HEVCNalUnitType type) {
             return type.typeValue == val;
         }
     }
@@ -104,11 +102,9 @@ public class NalUnitParser {
     public NalUnitParser(ByteBuffer byteBuffer) {
         int orgPosition = byteBuffer.position();
         LogS.i(TAG, "input buffer size : " + byteBuffer.remaining());
-        int min = Math.min(512, byteBuffer.remaining());
-        this.mBufferSize = min;
-        byte[] bArr = new byte[min];
-        this.mBuffer = bArr;
-        byteBuffer.get(bArr, 0, min);
+        this.mBufferSize = Math.min(512, byteBuffer.remaining());
+        this.mBuffer = new byte[this.mBufferSize];
+        byteBuffer.get(this.mBuffer, 0, this.mBufferSize);
         byteBuffer.position(orgPosition);
         this.mNalStartPos = findNalStartCode(this.mBuffer, 0);
     }
@@ -126,13 +122,12 @@ public class NalUnitParser {
             return false;
         }
         boolean allMetaInOneNal = false;
-        int i = this.mMasteringDisplayColorMetaStartPos;
-        if (i == this.mContentsLevelInfoMetaStartPos) {
-            masteringDisplayColorMetaEndPos = findNalStartCode(this.mBuffer, i + 4);
+        if (this.mMasteringDisplayColorMetaStartPos == this.mContentsLevelInfoMetaStartPos) {
+            masteringDisplayColorMetaEndPos = findNalStartCode(this.mBuffer, this.mMasteringDisplayColorMetaStartPos + 4);
             contentsLevelInfoMetaEndPos = masteringDisplayColorMetaEndPos;
             allMetaInOneNal = true;
         } else {
-            masteringDisplayColorMetaEndPos = findNalStartCode(this.mBuffer, i + 4);
+            masteringDisplayColorMetaEndPos = findNalStartCode(this.mBuffer, this.mMasteringDisplayColorMetaStartPos + 4);
             if (findContentLightLevel()) {
                 contentsLevelInfoMetaEndPos = findNalStartCode(this.mBuffer, this.mContentsLevelInfoMetaStartPos + 4);
             } else {
@@ -149,9 +144,8 @@ public class NalUnitParser {
             LogS.e(TAG, "invalid size : " + sizeOfMasteringDisplayColorMeta + " " + sizeOfContentsLevelInfoMeta);
             return false;
         }
-        ByteBuffer allocate = ByteBuffer.allocate(sizeOfMasteringDisplayColorMeta + sizeOfContentsLevelInfoMeta);
-        this.mHdrStaticMeta = allocate;
-        allocate.put(this.mBuffer, this.mMasteringDisplayColorMetaStartPos, sizeOfMasteringDisplayColorMeta);
+        this.mHdrStaticMeta = ByteBuffer.allocate(sizeOfMasteringDisplayColorMeta + sizeOfContentsLevelInfoMeta);
+        this.mHdrStaticMeta.put(this.mBuffer, this.mMasteringDisplayColorMetaStartPos, sizeOfMasteringDisplayColorMeta);
         if (!allMetaInOneNal) {
             LogS.e(TAG, "Content light level info meta data size : " + sizeOfContentsLevelInfoMeta);
             this.mHdrStaticMeta.put(this.mBuffer, this.mContentsLevelInfoMetaStartPos, sizeOfContentsLevelInfoMeta);
@@ -165,8 +159,7 @@ public class NalUnitParser {
     }
 
     public ByteBuffer insertHDRStaticMeta(ByteBuffer orgBuffer, int orgBufferSize, boolean isHEVC) {
-        ByteBuffer byteBuffer = this.mHdrStaticMeta;
-        if (byteBuffer == null || byteBuffer.capacity() == 0) {
+        if (this.mHdrStaticMeta == null || this.mHdrStaticMeta.capacity() == 0) {
             return orgBuffer;
         }
         byte[] orgByteBuffer = new byte[orgBufferSize];
@@ -279,18 +272,12 @@ public class NalUnitParser {
         if (buffer.length - index <= NAL_START_CODE.length) {
             return false;
         }
-        int i = 0;
-        while (true) {
-            byte[] bArr = NAL_START_CODE;
-            if (i < bArr.length) {
-                if (buffer[index + i] != bArr[i]) {
-                    return false;
-                }
-                i++;
-            } else {
-                return true;
+        for (int i = 0; i < NAL_START_CODE.length; i++) {
+            if (buffer[index + i] != NAL_START_CODE[i]) {
+                return false;
             }
         }
+        return true;
     }
 
     private boolean isMasteringDisplayColorInfo(int index) {

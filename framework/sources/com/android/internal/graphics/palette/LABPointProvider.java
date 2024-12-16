@@ -3,7 +3,7 @@ package com.android.internal.graphics.palette;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class LABPointProvider implements PointProvider {
     final ColorSpace.Connector mRgbToLab = ColorSpace.connect(ColorSpace.get(ColorSpace.Named.SRGB), ColorSpace.get(ColorSpace.Named.CIE_LAB));
     final ColorSpace.Connector mLabToRgb = ColorSpace.connect(ColorSpace.get(ColorSpace.Named.CIE_LAB), ColorSpace.get(ColorSpace.Named.SRGB));

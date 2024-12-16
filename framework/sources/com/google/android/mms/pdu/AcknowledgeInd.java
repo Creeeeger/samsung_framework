@@ -10,7 +10,7 @@ public class AcknowledgeInd extends GenericPdu {
         setTransactionId(transactionId);
     }
 
-    public AcknowledgeInd(PduHeaders headers) {
+    AcknowledgeInd(PduHeaders headers) {
         super(headers);
     }
 

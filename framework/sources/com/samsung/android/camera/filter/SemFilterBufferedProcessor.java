@@ -93,11 +93,10 @@ public final class SemFilterBufferedProcessor {
         }
         SemFilterManager.SemFilterImpl semFilterImpl = (SemFilterManager.SemFilterImpl) semFilter;
         boolean isEffectChanged = false;
-        SemFilterManager.SemFilterImpl semFilterImpl2 = this.mSemFilterImpl;
-        if (semFilterImpl2 == null) {
+        if (this.mSemFilterImpl == null) {
             this.mSemFilterImpl = semFilterImpl;
             isEffectChanged = true;
-        } else if (!semFilterImpl2.getFilterIdentifier().equals(semFilterImpl.getFilterIdentifier())) {
+        } else if (!this.mSemFilterImpl.getFilterIdentifier().equals(semFilterImpl.getFilterIdentifier())) {
             this.mSemFilterImpl = semFilterImpl;
             isEffectChanged = true;
         }
@@ -123,6 +122,9 @@ public final class SemFilterBufferedProcessor {
         if (data == null) {
             throw new IllegalArgumentException("data must not null");
         }
+        if (data.getWidth() < 1 || data.getHeight() < 1) {
+            throw new IllegalArgumentException(String.format("Image with size (w=%d, h=%d) is not valid.", Integer.valueOf(data.getWidth()), Integer.valueOf(data.getHeight())));
+        }
         if (data.getWidth() > 8192 || data.getHeight() > 8192) {
             throw new IllegalArgumentException(String.format("Image resolution(w=%d, h=%d) is is greater than the %dx%d", Integer.valueOf(data.getWidth()), Integer.valueOf(data.getHeight()), 8192, 8192));
         }
@@ -142,6 +144,9 @@ public final class SemFilterBufferedProcessor {
         checkInitialized();
         if (data == null) {
             throw new IllegalArgumentException("data must not null");
+        }
+        if (data.getWidth() < 1 || data.getHeight() < 1) {
+            throw new IllegalArgumentException(String.format("Image with size (w=%d, h=%d) is not valid.", Integer.valueOf(data.getWidth()), Integer.valueOf(data.getHeight())));
         }
         if (data.getWidth() > 8192 || data.getHeight() > 8192) {
             throw new IllegalArgumentException(String.format("Image resolution(w=%d, h=%d) is is greater than the %dx%d", Integer.valueOf(data.getWidth()), Integer.valueOf(data.getHeight()), 8192, 8192));
@@ -168,8 +173,15 @@ public final class SemFilterBufferedProcessor {
         if (data == null) {
             throw new IllegalArgumentException("data must not null");
         }
+        if (width < 1 || height < 1) {
+            throw new IllegalArgumentException(String.format("Image with size (w=%d, h=%d) is not valid.", Integer.valueOf(width), Integer.valueOf(height)));
+        }
         if (width > 8192 || height > 8192) {
             throw new IllegalArgumentException(String.format("Image resolution(w=%d, h=%d) is is greater than the %dx%d", Integer.valueOf(width), Integer.valueOf(height), 8192, 8192));
+        }
+        int expectedRGBABufferSize = width * height;
+        if (data.length < expectedRGBABufferSize) {
+            throw new IllegalArgumentException("Image Buffer Size is not valid.");
         }
         return native_process_buffer(data, width, height);
     }
@@ -206,6 +218,31 @@ public final class SemFilterBufferedProcessor {
         if (data == null) {
             throw new IllegalArgumentException("data must not null");
         }
+        if (width < 1 || height < 1) {
+            throw new IllegalArgumentException(String.format("Image with size (w=%d, h=%d) is not valid.", Integer.valueOf(width), Integer.valueOf(height)));
+        }
+        if (width > 8192 || height > 8192) {
+            throw new IllegalArgumentException(String.format("Image resolution(w=%d, h=%d) is is greater than the %dx%d", Integer.valueOf(width), Integer.valueOf(height), 8192, 8192));
+        }
+        switch (imageFormat) {
+            case 0:
+                int ySize = width * height;
+                int expectedRGBABufferSize = ySize * 4;
+                if (data.length < expectedRGBABufferSize) {
+                    throw new IllegalArgumentException("Image Buffer Size is not valid.");
+                }
+                break;
+            case 1:
+                int ySize2 = width * height;
+                int uvSize = (width / 2) * (height / 2) * 2;
+                int expectedYUVBufferSize = ySize2 + uvSize;
+                if (data.length < expectedYUVBufferSize) {
+                    throw new IllegalArgumentException("Image Buffer Size is not valid.");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Image Format is not valid.");
+        }
         return native_process_array(data, width, height, imageFormat);
     }
 
@@ -214,6 +251,39 @@ public final class SemFilterBufferedProcessor {
         if (data == null) {
             throw new IllegalArgumentException("data must not null");
         }
+        if (width < 1 || height < 1) {
+            throw new IllegalArgumentException(String.format("Image with size (w=%d, h=%d) is not valid.", Integer.valueOf(width), Integer.valueOf(height)));
+        }
+        if (width > 8192 || height > 8192) {
+            throw new IllegalArgumentException(String.format("Image resolution(w=%d, h=%d) is is greater than the %dx%d", Integer.valueOf(width), Integer.valueOf(height), 8192, 8192));
+        }
+        if (stride < width) {
+            throw new IllegalArgumentException(String.format("Image having stride (stride=%d) lesser than width (width=%d) is not valid.", Integer.valueOf(stride), Integer.valueOf(width)));
+        }
+        if (sliceHeight < height) {
+            throw new IllegalArgumentException(String.format("Image having sliceHeight (sliceHeight=%d) lesser than height (height=%d) is not valid.", Integer.valueOf(sliceHeight), Integer.valueOf(height)));
+        }
+        switch (imageFormat) {
+            case 0:
+                int ySize = width * height;
+                int expectedRGBABufferSize = ySize * 4;
+                if (data.length < expectedRGBABufferSize) {
+                    throw new IllegalArgumentException("Image Buffer Size is not valid.");
+                }
+                break;
+            case 1:
+                int ySize2 = stride * sliceHeight;
+                int uvStride = stride / 2;
+                int uvSliceHeight = height / 2;
+                int uvSize = uvStride * uvSliceHeight * 2;
+                int expectedYUVBufferSize = ySize2 + uvSize;
+                if (data.length < expectedYUVBufferSize) {
+                    throw new IllegalArgumentException("Image Buffer Size is not valid.");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Image Format is not valid.");
+        }
         return native_process_array_stride(data, width, height, imageFormat, stride, sliceHeight);
     }
 
@@ -221,6 +291,39 @@ public final class SemFilterBufferedProcessor {
         checkInitialized();
         if (data == null) {
             throw new IllegalArgumentException("data must not null");
+        }
+        if (width < 1 || height < 1) {
+            throw new IllegalArgumentException(String.format("Image with size (w=%d, h=%d) is not valid.", Integer.valueOf(width), Integer.valueOf(height)));
+        }
+        if (width > 8192 || height > 8192) {
+            throw new IllegalArgumentException(String.format("Image resolution(w=%d, h=%d) is is greater than the %dx%d", Integer.valueOf(width), Integer.valueOf(height), 8192, 8192));
+        }
+        if (stride < width) {
+            throw new IllegalArgumentException(String.format("Image having stride (stride=%d) lesser than width (width=%d) is not valid.", Integer.valueOf(stride), Integer.valueOf(width)));
+        }
+        if (sliceHeight < height) {
+            throw new IllegalArgumentException(String.format("Image having sliceHeight (sliceHeight=%d) lesser than height (height=%d) is not valid.", Integer.valueOf(sliceHeight), Integer.valueOf(height)));
+        }
+        switch (imageFormat) {
+            case 0:
+                int ySize = width * height;
+                int expectedRGBABufferSize = ySize * 4;
+                if (data.length < expectedRGBABufferSize) {
+                    throw new IllegalArgumentException("Image Buffer Size is not valid.");
+                }
+                break;
+            case 1:
+                int ySize2 = stride * sliceHeight;
+                int uvStride = stride / 2;
+                int uvSliceHeight = height / 2;
+                int uvSize = uvStride * uvSliceHeight * 2;
+                int expectedYUVBufferSize = ySize2 + uvSize;
+                if (data.length < expectedYUVBufferSize) {
+                    throw new IllegalArgumentException("Image Buffer Size is not valid.");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Image Format is not valid.");
         }
         return native_process_array_stride_overwrite(data, width, height, imageFormat, stride, sliceHeight, overwrite);
     }

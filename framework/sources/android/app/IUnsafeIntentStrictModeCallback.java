@@ -11,12 +11,11 @@ import android.os.RemoteException;
 public interface IUnsafeIntentStrictModeCallback extends IInterface {
     public static final String DESCRIPTOR = "android.app.IUnsafeIntentStrictModeCallback";
 
-    void onImplicitIntentMatchedInternalComponent(Intent intent) throws RemoteException;
+    void onUnsafeIntent(int i, Intent intent) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IUnsafeIntentStrictModeCallback {
         @Override // android.app.IUnsafeIntentStrictModeCallback
-        public void onImplicitIntentMatchedInternalComponent(Intent intent) throws RemoteException {
+        public void onUnsafeIntent(int type, Intent intent) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -25,9 +24,8 @@ public interface IUnsafeIntentStrictModeCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IUnsafeIntentStrictModeCallback {
-        static final int TRANSACTION_onImplicitIntentMatchedInternalComponent = 1;
+        static final int TRANSACTION_onUnsafeIntent = 1;
 
         public Stub() {
             attachInterface(this, IUnsafeIntentStrictModeCallback.DESCRIPTOR);
@@ -52,7 +50,7 @@ public interface IUnsafeIntentStrictModeCallback extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return "onImplicitIntentMatchedInternalComponent";
+                    return "onUnsafeIntent";
                 default:
                     return null;
             }
@@ -68,24 +66,22 @@ public interface IUnsafeIntentStrictModeCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUnsafeIntentStrictModeCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUnsafeIntentStrictModeCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUnsafeIntentStrictModeCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Intent _arg1 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUnsafeIntent(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onImplicitIntentMatchedInternalComponent(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IUnsafeIntentStrictModeCallback {
             private IBinder mRemote;
 
@@ -103,10 +99,11 @@ public interface IUnsafeIntentStrictModeCallback extends IInterface {
             }
 
             @Override // android.app.IUnsafeIntentStrictModeCallback
-            public void onImplicitIntentMatchedInternalComponent(Intent intent) throws RemoteException {
+            public void onUnsafeIntent(int type, Intent intent) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IUnsafeIntentStrictModeCallback.DESCRIPTOR);
+                    _data.writeInt(type);
                     _data.writeTypedObject(intent, 0);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {

@@ -8,13 +8,13 @@ import android.hardware.IRemoteDevice;
 import android.hardware.IRemoteDeviceCallback;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DeviceInjectorSession;
 import android.hardware.camera2.impl.DeviceInjectorSessionImpl;
 import android.hardware.camera2.params.OutputConfiguration;
 import android.hardware.camera2.params.StreamConfiguration;
+import android.hardware.camera2.utils.ExceptionUtils;
 import android.hardware.camera2.utils.SurfaceUtils;
 import android.hardware.camera2.utils.TaskDrainer;
 import android.hardware.camera2.utils.TaskSingleDrainer;
@@ -23,7 +23,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceSpecificException;
 import android.telephony.ims.ImsConferenceState;
-import android.util.ExceptionUtils;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -40,7 +39,7 @@ import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements IBinder.DeathRecipient {
     private static final boolean DEBUG = false;
     private static final String TAG = "ijt/DeviceIjtSessionImpl";
@@ -58,12 +57,8 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
     private String mLastTargetId = "";
     private String mLastSourceId = "";
 
-    /* loaded from: classes.dex */
-    public class StopDrainListener implements TaskDrainer.DrainListener {
-        /* synthetic */ StopDrainListener(DeviceInjectorSessionImpl deviceInjectorSessionImpl, StopDrainListenerIA stopDrainListenerIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class StopDrainListener implements TaskDrainer.DrainListener {
         private StopDrainListener() {
         }
 
@@ -80,18 +75,13 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDrained$0() {
             DeviceInjectorSessionImpl.this.mStatusCallback.onClose();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class PendingDrainListener implements TaskDrainer.DrainListener {
-        /* synthetic */ PendingDrainListener(DeviceInjectorSessionImpl deviceInjectorSessionImpl, PendingDrainListenerIA pendingDrainListenerIA) {
-            this();
-        }
-
+    private class PendingDrainListener implements TaskDrainer.DrainListener {
         private PendingDrainListener() {
         }
 
@@ -103,11 +93,11 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    public DeviceInjectorSessionImpl(DeviceInjectorSession.StatusCallback callback, Executor executor) {
-        this.mStatusCallback = callback;
+    public DeviceInjectorSessionImpl(DeviceInjectorSession.StatusCallback statusCallback, Executor executor) {
+        this.mStatusCallback = statusCallback;
         this.mExecutor = executor;
-        this.mStopDrainer = new TaskSingleDrainer(executor, new StopDrainListener(), "stop");
-        this.mPendingDrainer = new TaskSingleDrainer(executor, new PendingDrainListener(), ImsConferenceState.STATUS_PENDING);
+        this.mStopDrainer = new TaskSingleDrainer(this.mExecutor, new StopDrainListener(), "stop");
+        this.mPendingDrainer = new TaskSingleDrainer(this.mExecutor, new PendingDrainListener(), ImsConferenceState.STATUS_PENDING);
     }
 
     @Override // android.hardware.camera2.DeviceInjectorSession, java.lang.AutoCloseable
@@ -115,10 +105,9 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         TaskSingleDrainer taskSingleDrainer;
         synchronized (this.mInterfaceLock) {
             try {
-                IDeviceInjectorSession iDeviceInjectorSession = this.mInjectorSession;
-                if (iDeviceInjectorSession != null) {
+                if (this.mInjectorSession != null) {
                     this.mClosed = true;
-                    iDeviceInjectorSession.stopDeviceInjector();
+                    this.mInjectorSession.stopDeviceInjector();
                     this.mInjectorSession.asBinder().unlinkToDeath(this, 0);
                 }
                 taskSingleDrainer = this.mPendingDrainer;
@@ -139,15 +128,14 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
                 throw new IllegalStateException("DeviceInjectorSession is already closed");
             }
             try {
-                IDeviceInjectorSession iDeviceInjectorSession = this.mInjectorSession;
-                if (iDeviceInjectorSession != null) {
-                    iDeviceInjectorSession.setDeviceInjectorPending(pending);
+                if (this.mInjectorSession != null) {
+                    this.mInjectorSession.setDeviceInjectorPending(pending);
                 }
             } catch (RemoteException e) {
                 ServiceSpecificException sse = new ServiceSpecificException(4, "Camera service is currently unavailable");
-                CameraManager.throwAsPublicException(sse);
+                ExceptionUtils.throwAsPublicException(sse);
             } catch (ServiceSpecificException e2) {
-                CameraManager.throwAsPublicException(e2);
+                ExceptionUtils.throwAsPublicException(e2);
             }
         }
     }
@@ -167,7 +155,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             if (this.mInjectorSession == null) {
                 return;
             }
-            Runnable r = new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda5
+            Runnable r = new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     DeviceInjectorSessionImpl.this.lambda$binderDied$0();
@@ -182,6 +170,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$binderDied$0() {
         synchronized (this.mInterfaceLock) {
             this.mStatusCallback.onError(1);
@@ -206,6 +195,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         return new DeviceInjectorRemoteDevice(device);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setRemoteInjectorSession(IDeviceInjectorSession injectorSession) {
         synchronized (this.mInterfaceLock) {
             if (injectorSession == null) {
@@ -223,7 +213,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             long identity = Binder.clearCallingIdentity();
             try {
                 remoteSessionBinder.linkToDeath(this, 0);
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda5
                     @Override // java.lang.Runnable
                     public final void run() {
                         DeviceInjectorSessionImpl.this.lambda$setRemoteInjectorSession$1();
@@ -237,10 +227,12 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setRemoteInjectorSession$1() {
         this.mStatusCallback.onSessionCreated(this);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionStarted(final String packageName, final String targetId, final String sourceId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -253,7 +245,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             this.mLastSourceId = sourceId;
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda6
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda4
                     @Override // java.lang.Runnable
                     public final void run() {
                         DeviceInjectorSessionImpl.this.lambda$onInjectionStarted$2(packageName, targetId, sourceId);
@@ -265,10 +257,12 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionStarted$2(String packageName, String targetId, String sourceId) {
         this.mStatusCallback.onInjectionStarted(packageName, targetId, sourceId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionStopped(final String packageName, final String targetId, final String sourceId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -280,7 +274,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             this.mInjectionStarted = false;
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda4
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         DeviceInjectorSessionImpl.this.lambda$onInjectionStopped$3(packageName, targetId, sourceId);
@@ -292,10 +286,12 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionStopped$3(String packageName, String targetId, String sourceId) {
         this.mStatusCallback.onInjectionStopped(packageName, targetId, sourceId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionPendingStarted(final String packageName, final String targetId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -308,7 +304,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             this.mLastSourceId = "";
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda2
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda3
                     @Override // java.lang.Runnable
                     public final void run() {
                         DeviceInjectorSessionImpl.this.lambda$onInjectionPendingStarted$4(packageName, targetId);
@@ -320,10 +316,12 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionPendingStarted$4(String packageName, String targetId) {
         this.mStatusCallback.onInjectionPendingStarted(packageName, targetId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionPendingStopped(final String packageName, final String targetId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -335,7 +333,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             this.mInjectionPending = false;
             long identity = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda6
                     @Override // java.lang.Runnable
                     public final void run() {
                         DeviceInjectorSessionImpl.this.lambda$onInjectionPendingStopped$5(packageName, targetId);
@@ -347,10 +345,12 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionPendingStopped$5(String packageName, String targetId) {
         this.mStatusCallback.onInjectionPendingStopped(packageName, targetId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionError(int errorCode) {
         Log.i(TAG, String.format("injector session error received, code %d", Integer.valueOf(errorCode)));
         synchronized (this.mInterfaceLock) {
@@ -375,7 +375,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
     private void scheduleNotifyError(int errorCode) {
         long identity = Binder.clearCallingIdentity();
         try {
-            this.mExecutor.execute(PooledLambda.obtainRunnable(new BiConsumer() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda3
+            this.mExecutor.execute(PooledLambda.obtainRunnable(new BiConsumer() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$$ExternalSyntheticLambda2
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((DeviceInjectorSessionImpl) obj).notifyError(((Integer) obj2).intValue());
@@ -386,13 +386,17 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyError(int errorCode) {
-        if (this.mInjectorSession != null) {
+        boolean isInjectorSessionExists;
+        synchronized (this.mInterfaceLock) {
+            isInjectorSessionExists = this.mInjectorSession != null;
+        }
+        if (isInjectorSessionExists) {
             this.mStatusCallback.onError(errorCode);
         }
     }
 
-    /* loaded from: classes.dex */
     public class DeviceInjectorCallback extends IDeviceInjectorCallback.Stub {
         public DeviceInjectorCallback() {
         }
@@ -433,7 +437,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* loaded from: classes.dex */
     public class DeviceInjectorRemoteDevice extends IRemoteDevice.Stub {
         private static final Executor BINDER_EXECUTOR = Executors.newSingleThreadExecutor();
         private final DeviceInjectorSession.RemoteDevice mRemoteDevice;
@@ -446,7 +449,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             final CompletableFuture<T> task = new CompletableFuture<>();
             long identity = Binder.clearCallingIdentity();
             try {
-                BINDER_EXECUTOR.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda2
+                BINDER_EXECUTOR.execute(new Runnable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda6
                     @Override // java.lang.Runnable
                     public final void run() {
                         DeviceInjectorSessionImpl.DeviceInjectorRemoteDevice.lambda$executeWithCleanIdentity$0(task, callable);
@@ -456,18 +459,18 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
                     return task.get();
                 } catch (Throwable e) {
                     Log.e(DeviceInjectorSessionImpl.TAG, "error while transaction", e);
-                    throw ExceptionUtils.propagate(e);
+                    throw android.util.ExceptionUtils.propagate(e);
                 }
             } finally {
                 Binder.restoreCallingIdentity(identity);
             }
         }
 
-        public static /* synthetic */ void lambda$executeWithCleanIdentity$0(CompletableFuture task, Callable callable) {
+        static /* synthetic */ void lambda$executeWithCleanIdentity$0(CompletableFuture task, Callable callable) {
             try {
                 task.complete(callable.call());
             } catch (Exception e) {
-                throw ExceptionUtils.propagate(e);
+                throw android.util.ExceptionUtils.propagate(e);
             }
         }
 
@@ -476,13 +479,14 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             return this;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$open$1(String targetId, int targetLensFacing) throws Exception {
             return this.mRemoteDevice.open(targetId, targetLensFacing);
         }
 
         @Override // android.hardware.IRemoteDevice
         public String open(final String targetId, final int targetLensFacing) throws RemoteException {
-            return (String) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda3
+            return (String) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda5
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     String lambda$open$1;
@@ -506,7 +510,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             builder.addSupportedEffectMode(0);
             builder.addSupportedSceneMode(0);
             builder.addSupportedControlMode(1);
-            return (CameraMetadataNative) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda0
+            return (CameraMetadataNative) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda3
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     CameraMetadataNative lambda$getCameraCharacteristic$2;
@@ -516,6 +520,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ CameraMetadataNative lambda$getCameraCharacteristic$2(DeviceInjectorSession.CharacteristicBuilder builder) throws Exception {
             return this.mRemoteDevice.getCameraCharacteristic(builder).getNativeMetadata();
         }
@@ -523,7 +528,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         @Override // android.hardware.IRemoteDevice
         public int createStream(OutputConfiguration outputConfiguration) throws RemoteException {
             final Surface surface = outputConfiguration.getSurface();
-            return ((Integer) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda1
+            return ((Integer) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda0
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     Integer lambda$createStream$3;
@@ -533,13 +538,14 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             })).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$createStream$3(Surface surface) throws Exception {
             return Integer.valueOf(this.mRemoteDevice.createStream(surface, SurfaceUtils.getSurfaceSize(surface)));
         }
 
         @Override // android.hardware.IRemoteDevice
         public void deleteStream(final int streamId) throws RemoteException {
-            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda5
+            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda4
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     Object lambda$deleteStream$4;
@@ -549,6 +555,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$deleteStream$4(int streamId) throws Exception {
             this.mRemoteDevice.deleteStream(streamId);
             return null;
@@ -567,7 +574,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             builder.set(CaptureRequest.CONTROL_AE_LOCK, false);
             builder.set(CaptureRequest.CONTROL_AWB_LOCK, false);
             builder.set(CaptureRequest.FLASH_MODE, 0);
-            return (CameraMetadataNative) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda9
+            return (CameraMetadataNative) executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda7
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     CameraMetadataNative lambda$createDefaultRequest$5;
@@ -577,6 +584,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ CameraMetadataNative lambda$createDefaultRequest$5(CaptureRequest.Builder builder) throws Exception {
             return this.mRemoteDevice.createDefaultRequest(builder).getNativeMetadata();
         }
@@ -584,7 +592,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         @Override // android.hardware.IRemoteDevice
         public void submitRequest(CameraMetadataNative request, final int[] outputStreams, final boolean streaming) throws RemoteException {
             final CaptureRequest.Builder builder = new CaptureRequest.Builder(request, false, -1, "", null);
-            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda8
+            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda9
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     Object lambda$submitRequest$6;
@@ -594,6 +602,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$submitRequest$6(CaptureRequest.Builder builder, int[] outputStreams, boolean streaming) throws Exception {
             this.mRemoteDevice.submitRequest(builder.build(), outputStreams, streaming);
             return null;
@@ -601,7 +610,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
 
         @Override // android.hardware.IRemoteDevice
         public void clearRequest() throws RemoteException {
-            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda6
+            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda1
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     Object lambda$clearRequest$7;
@@ -611,53 +620,15 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$clearRequest$7() throws Exception {
             this.mRemoteDevice.clearRequest();
             return null;
         }
 
-        /* renamed from: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 extends DeviceInjectorSession.RemoteDeviceCallback {
-            final /* synthetic */ IRemoteDeviceCallback val$callback;
-
-            AnonymousClass1(IRemoteDeviceCallback iRemoteDeviceCallback) {
-                callback = iRemoteDeviceCallback;
-            }
-
-            @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
-            public void onCaptureResult(Map<CaptureResult.Key, Object> result) throws RemoteException {
-                Objects.requireNonNull(result);
-                CameraMetadataNative metadata = new CameraMetadataNative();
-                for (Map.Entry<CaptureResult.Key, Object> entry : result.entrySet()) {
-                    metadata.set((CaptureResult.Key<CaptureResult.Key>) entry.getKey(), (CaptureResult.Key) entry.getValue());
-                }
-                callback.onCaptureResult(metadata);
-            }
-
-            @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
-            public void onError(int errorCode) throws RemoteException {
-                callback.onError(errorCode);
-            }
-
-            @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
-            public void onOrientationChanged(int orientation) throws RemoteException {
-                switch (orientation) {
-                    case 0:
-                    case 90:
-                    case 180:
-                    case 270:
-                        callback.onOrientationChanged(orientation);
-                        return;
-                    default:
-                        throw new IllegalArgumentException("orientation must be 0, 90, 180 or 270.");
-                }
-            }
-        }
-
         @Override // android.hardware.IRemoteDevice
         public void setCallback(final IRemoteDeviceCallback callback) throws RemoteException {
-            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda4
+            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda8
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     Object lambda$setCallback$8;
@@ -667,14 +638,9 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        public /* synthetic */ Object lambda$setCallback$8(IRemoteDeviceCallback callback) throws Exception {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ Object lambda$setCallback$8(final IRemoteDeviceCallback callback) throws Exception {
             this.mRemoteDevice.setCallback(new DeviceInjectorSession.RemoteDeviceCallback() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl.DeviceInjectorRemoteDevice.1
-                final /* synthetic */ IRemoteDeviceCallback val$callback;
-
-                AnonymousClass1(IRemoteDeviceCallback callback2) {
-                    callback = callback2;
-                }
-
                 @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
                 public void onCaptureResult(Map<CaptureResult.Key, Object> result) throws RemoteException {
                     Objects.requireNonNull(result);
@@ -709,7 +675,7 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
 
         @Override // android.hardware.IRemoteDevice
         public void close() throws RemoteException {
-            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda7
+            executeWithCleanIdentity(new Callable() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$$ExternalSyntheticLambda2
                 @Override // java.util.concurrent.Callable
                 public final Object call() {
                     Object lambda$close$9;
@@ -719,14 +685,15 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$close$9() throws Exception {
             this.mRemoteDevice.close();
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
-    private class CharacteristicBuilderImpl extends DeviceInjectorSession.CharacteristicBuilder {
+    /* JADX INFO: Access modifiers changed from: private */
+    class CharacteristicBuilderImpl extends DeviceInjectorSession.CharacteristicBuilder {
         private boolean mAELockAvailable;
         private Set<Integer> mAEModes;
         private Set<Integer> mAFModes;
@@ -741,10 +708,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         private Set<Integer> mSceneModes;
         private int mSensorOrientation;
         private Set<Size> mStreamingSizes;
-
-        /* synthetic */ CharacteristicBuilderImpl(DeviceInjectorSessionImpl deviceInjectorSessionImpl, CharacteristicBuilderImplIA characteristicBuilderImplIA) {
-            this();
-        }
 
         private CharacteristicBuilderImpl() {
             this.mSensorOrientation = 0;
@@ -855,12 +818,10 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             if (this.mActiveArraySize == null) {
                 throw new IllegalArgumentException("active array size is null");
             }
-            int i = this.mSensorOrientation;
-            if (i < 0 || 360 <= i || i % 90 != 0) {
+            if (this.mSensorOrientation < 0 || 360 <= this.mSensorOrientation || this.mSensorOrientation % 90 != 0) {
                 throw new IllegalArgumentException("sensor orientation is invalid");
             }
-            int i2 = this.mLensFacing;
-            if (i2 < 0 || 2 < i2) {
+            if (this.mLensFacing < 0 || 2 < this.mLensFacing) {
                 throw new IllegalArgumentException("lens facing is invalid");
             }
             if (this.mStreamingSizes.isEmpty()) {

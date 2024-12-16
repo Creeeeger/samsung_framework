@@ -13,7 +13,6 @@ public interface IRetrieveNotificationCallback extends IInterface {
 
     void onComplete(int i, EuiccNotification euiccNotification) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRetrieveNotificationCallback {
         @Override // com.android.internal.telephony.euicc.IRetrieveNotificationCallback
         public void onComplete(int resultCode, EuiccNotification notification) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IRetrieveNotificationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRetrieveNotificationCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -68,27 +66,23 @@ public interface IRetrieveNotificationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRetrieveNotificationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRetrieveNotificationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRetrieveNotificationCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    EuiccNotification _arg1 = (EuiccNotification) data.readTypedObject(EuiccNotification.CREATOR);
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            EuiccNotification _arg1 = (EuiccNotification) data.readTypedObject(EuiccNotification.CREATOR);
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRetrieveNotificationCallback {
+        private static class Proxy implements IRetrieveNotificationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -24,7 +24,6 @@ public interface ISehRadioData extends IInterface {
 
     void setResponseFunctions(ISehRadioDataResponse iSehRadioDataResponse, ISehRadioDataIndication iSehRadioDataIndication) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioData {
         @Override // vendor.samsung.hardware.radio.data.ISehRadioData
         public void setDataAllowed(int serial, boolean allow, SehAllowDataParam param) throws RemoteException {
@@ -54,7 +53,6 @@ public interface ISehRadioData extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioData {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -89,48 +87,47 @@ public interface ISehRadioData extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    SehAllowDataParam _arg2 = (SehAllowDataParam) data.readTypedObject(SehAllowDataParam.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDataAllowed(_arg0, _arg1, _arg2);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMobileDataSetting(_arg02, _arg12, _arg22);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    ISehRadioDataResponse _arg03 = ISehRadioDataResponse.Stub.asInterface(data.readStrongBinder());
+                    ISehRadioDataIndication _arg13 = ISehRadioDataIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg03, _arg13);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            SehAllowDataParam _arg2 = (SehAllowDataParam) data.readTypedObject(SehAllowDataParam.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDataAllowed(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMobileDataSetting(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            ISehRadioDataResponse _arg03 = ISehRadioDataResponse.Stub.asInterface(data.readStrongBinder());
-                            ISehRadioDataIndication _arg13 = ISehRadioDataIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISehRadioData {
             private IBinder mRemote;
             private int mCachedVersion = -1;

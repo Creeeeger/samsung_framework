@@ -1,6 +1,7 @@
 package android.content;
 
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.app.IActivityManager;
 import android.app.IApplicationThread;
@@ -17,10 +18,12 @@ import android.util.AndroidException;
 
 /* loaded from: classes.dex */
 public class IntentSender implements Parcelable {
+    private ActivityManager.PendingIntentInfo mCachedInfo;
+    private final IIntentSender mTarget;
+    IBinder mWhitelistToken;
+    private static final Bundle SEND_INTENT_DEFAULT_OPTIONS = ActivityOptions.makeBasic().setPendingIntentBackgroundActivityStartMode(-1).toBundle();
     public static final Parcelable.Creator<IntentSender> CREATOR = new Parcelable.Creator<IntentSender>() { // from class: android.content.IntentSender.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentSender createFromParcel(Parcel in) {
             IBinder target = in.readStrongBinder();
@@ -30,21 +33,17 @@ public class IntentSender implements Parcelable {
             return null;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentSender[] newArray(int size) {
             return new IntentSender[size];
         }
     };
-    private ActivityManager.PendingIntentInfo mCachedInfo;
-    private final IIntentSender mTarget;
-    IBinder mWhitelistToken;
 
-    /* loaded from: classes.dex */
     public interface OnFinished {
         void onSendFinished(IntentSender intentSender, Intent intent, int i, String str, Bundle bundle);
     }
 
-    /* loaded from: classes.dex */
     public static class SendIntentException extends AndroidException {
         public SendIntentException() {
         }
@@ -58,8 +57,7 @@ public class IntentSender implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class FinishedDispatcher extends IIntentReceiver.Stub implements Runnable {
+    private static class FinishedDispatcher extends IIntentReceiver.Stub implements Runnable {
         private final Handler mHandler;
         private Intent mIntent;
         private final IntentSender mIntentSender;
@@ -80,11 +78,10 @@ public class IntentSender implements Parcelable {
             this.mResultCode = resultCode;
             this.mResultData = data;
             this.mResultExtras = extras;
-            Handler handler = this.mHandler;
-            if (handler == null) {
+            if (this.mHandler == null) {
                 run();
             } else {
-                handler.post(this);
+                this.mHandler.post(this);
             }
         }
 
@@ -95,11 +92,11 @@ public class IntentSender implements Parcelable {
     }
 
     public void sendIntent(Context context, int code, Intent intent, OnFinished onFinished, Handler handler) throws SendIntentException {
-        sendIntent(context, code, intent, onFinished, handler, null, null);
+        sendIntent(context, code, intent, onFinished, handler, null, SEND_INTENT_DEFAULT_OPTIONS);
     }
 
     public void sendIntent(Context context, int code, Intent intent, OnFinished onFinished, Handler handler, String requiredPermission) throws SendIntentException {
-        sendIntent(context, code, intent, onFinished, handler, requiredPermission, null);
+        sendIntent(context, code, intent, onFinished, handler, requiredPermission, SEND_INTENT_DEFAULT_OPTIONS);
     }
 
     public void sendIntent(Context context, int code, Intent intent, OnFinished onFinished, Handler handler, String requiredPermission, Bundle options) throws SendIntentException {
@@ -170,8 +167,7 @@ public class IntentSender implements Parcelable {
         sb.append("IntentSender{");
         sb.append(Integer.toHexString(System.identityHashCode(this)));
         sb.append(": ");
-        IIntentSender iIntentSender = this.mTarget;
-        sb.append(iIntentSender != null ? iIntentSender.asBinder() : null);
+        sb.append(this.mTarget != null ? this.mTarget.asBinder() : null);
         sb.append('}');
         return sb.toString();
     }
@@ -184,27 +180,6 @@ public class IntentSender implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeStrongBinder(this.mTarget.asBinder());
-    }
-
-    /* renamed from: android.content.IntentSender$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IntentSender> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IntentSender createFromParcel(Parcel in) {
-            IBinder target = in.readStrongBinder();
-            if (target != null) {
-                return new IntentSender(target);
-            }
-            return null;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IntentSender[] newArray(int size) {
-            return new IntentSender[size];
-        }
     }
 
     public static void writeIntentSenderOrNullToParcel(IntentSender sender, Parcel out) {
@@ -231,9 +206,9 @@ public class IntentSender implements Parcelable {
         this.mTarget = target;
     }
 
-    public IntentSender(IIntentSender target, IBinder whitelistToken) {
+    public IntentSender(IIntentSender target, IBinder allowlistToken) {
         this.mTarget = target;
-        this.mWhitelistToken = whitelistToken;
+        this.mWhitelistToken = allowlistToken;
     }
 
     public IntentSender(IBinder target) {
@@ -249,5 +224,9 @@ public class IntentSender implements Parcelable {
             }
         }
         return this.mCachedInfo;
+    }
+
+    public boolean isImmutable() {
+        return getCachedInfo().isImmutable();
     }
 }

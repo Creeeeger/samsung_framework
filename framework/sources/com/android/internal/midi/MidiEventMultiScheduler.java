@@ -1,18 +1,13 @@
 package com.android.internal.midi;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class MidiEventMultiScheduler {
     private MultiLockMidiEventScheduler[] mMidiEventSchedulers;
     private int mNumEventSchedulers;
     private int mNumClosedSchedulers = 0;
     private final Object mMultiLock = new Object();
 
-    /* loaded from: classes4.dex */
     private class MultiLockMidiEventScheduler extends MidiEventScheduler {
-        /* synthetic */ MultiLockMidiEventScheduler(MidiEventMultiScheduler midiEventMultiScheduler, MultiLockMidiEventSchedulerIA multiLockMidiEventSchedulerIA) {
-            this();
-        }
-
         private MultiLockMidiEventScheduler() {
         }
 

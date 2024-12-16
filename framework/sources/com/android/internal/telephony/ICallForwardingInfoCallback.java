@@ -15,7 +15,6 @@ public interface ICallForwardingInfoCallback extends IInterface {
 
     void onError(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallForwardingInfoCallback {
         @Override // com.android.internal.telephony.ICallForwardingInfoCallback
         public void onCallForwardingInfoAvailable(CallForwardingInfo info) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ICallForwardingInfoCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallForwardingInfoCallback {
         static final int TRANSACTION_onCallForwardingInfoAvailable = 1;
         static final int TRANSACTION_onError = 2;
@@ -77,30 +75,27 @@ public interface ICallForwardingInfoCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICallForwardingInfoCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICallForwardingInfoCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICallForwardingInfoCallback.DESCRIPTOR);
+                case 1:
+                    CallForwardingInfo _arg0 = (CallForwardingInfo) data.readTypedObject(CallForwardingInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallForwardingInfoAvailable(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CallForwardingInfo _arg0 = (CallForwardingInfo) data.readTypedObject(CallForwardingInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallForwardingInfoAvailable(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICallForwardingInfoCallback {
+        private static class Proxy implements ICallForwardingInfoCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.RemotableViewMethod;
 import android.view.View;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 /* loaded from: classes4.dex */
 public class FrameLayout extends ViewGroup {
     private static final int DEFAULT_CHILD_GRAVITY = 8388659;
+    private static final String TAG = "FrameLayout";
 
     @ViewDebug.ExportedProperty(category = "padding")
     private int mForegroundPaddingBottom;
@@ -39,12 +41,10 @@ public class FrameLayout extends ViewGroup {
     @ViewDebug.ExportedProperty(category = "measurement")
     boolean mMeasureAllChildren;
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends ViewGroup.MarginLayoutParams {
         public static final int UNSPECIFIED_GRAVITY = -1;
         public int gravity;
 
-        /* loaded from: classes4.dex */
         public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<LayoutParams> {
             private int mLayout_gravityId;
             private boolean mPropertiesMapped = false;
@@ -100,7 +100,6 @@ public class FrameLayout extends ViewGroup {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<FrameLayout> {
         private int mMeasureAllChildrenId;
         private boolean mPropertiesMapped = false;
@@ -178,16 +177,17 @@ public class FrameLayout extends ViewGroup {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-1, -1);
     }
 
-    public int getPaddingLeftWithForeground() {
+    int getPaddingLeftWithForeground() {
         return isForegroundInsidePadding() ? Math.max(this.mPaddingLeft, this.mForegroundPaddingLeft) : this.mPaddingLeft + this.mForegroundPaddingLeft;
     }
 
-    public int getPaddingRightWithForeground() {
+    int getPaddingRightWithForeground() {
         return isForegroundInsidePadding() ? Math.max(this.mPaddingRight, this.mForegroundPaddingRight) : this.mPaddingRight + this.mForegroundPaddingRight;
     }
 
@@ -200,7 +200,7 @@ public class FrameLayout extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width;
         int height;
         int i;
@@ -268,11 +268,11 @@ public class FrameLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         layoutChildren(left, top, right, bottom, false);
     }
 
-    public void layoutChildren(int left, int top, int right, int bottom, boolean forceLeftGravity) {
+    void layoutChildren(int left, int top, int right, int bottom, boolean forceLeftGravity) {
         int count;
         int parentLeft;
         int parentRight;
@@ -310,6 +310,7 @@ public class FrameLayout extends ViewGroup {
                     case 5:
                         if (forceLeftGravity) {
                             count = count2;
+                            childLeft = parentLeft2 + lp.leftMargin;
                             break;
                         } else {
                             count = count2;
@@ -319,9 +320,9 @@ public class FrameLayout extends ViewGroup {
                         }
                     default:
                         count = count2;
+                        childLeft = parentLeft2 + lp.leftMargin;
                         break;
                 }
-                childLeft = parentLeft2 + lp.leftMargin;
                 switch (verticalGravity) {
                     case 16:
                         parentLeft = parentLeft2;
@@ -378,7 +379,7 @@ public class FrameLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
@@ -401,7 +402,7 @@ public class FrameLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("measurement:measureAllChildren", this.mMeasureAllChildren);
         encoder.addProperty("padding:foregroundPaddingLeft", this.mForegroundPaddingLeft);
@@ -410,15 +411,18 @@ public class FrameLayout extends ViewGroup {
         encoder.addProperty("padding:foregroundPaddingBottom", this.mForegroundPaddingBottom);
     }
 
-    @Override // android.view.ViewGroup
     @RemotableViewMethod
-    public void semSetToolBarViewId(int viewId) {
-        super.semSetToolBarViewId(viewId);
+    public void semEnableAppWidgetImmersiveScroll(boolean enable) {
+        Log.w(TAG, "This appwidget feature is not supported on Framelayout");
     }
 
-    @Override // android.view.ViewGroup
+    @RemotableViewMethod
+    public void semSetToolBarViewId(int viewId) {
+        Log.w(TAG, "This appwidget feature is not supported");
+    }
+
     @RemotableViewMethod
     public void semSetListViewId(int viewId) {
-        super.semSetListViewId(viewId);
+        Log.w(TAG, "This appwidget feature is not supported");
     }
 }

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class KMeans {
     private static final boolean DEBUG = false;
     private static final String TAG = "KMeans";
@@ -142,7 +142,6 @@ public class KMeans {
         return dist;
     }
 
-    /* loaded from: classes4.dex */
     public static class Mean {
         float[] mCentroid;
         final ArrayList<float[]> mClosestItems = new ArrayList<>();

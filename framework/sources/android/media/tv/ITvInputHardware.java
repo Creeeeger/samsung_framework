@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.view.Surface;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInputHardware extends IInterface {
     void overrideAudioSink(int i, String str, int i2, int i3, int i4) throws RemoteException;
 
@@ -15,7 +15,6 @@ public interface ITvInputHardware extends IInterface {
 
     boolean setSurface(Surface surface, TvStreamConfig tvStreamConfig) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInputHardware {
         @Override // android.media.tv.ITvInputHardware
         public boolean setSurface(Surface surface, TvStreamConfig config) throws RemoteException {
@@ -36,7 +35,6 @@ public interface ITvInputHardware extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInputHardware {
         public static final String DESCRIPTOR = "android.media.tv.ITvInputHardware";
         static final int TRANSACTION_overrideAudioSink = 3;
@@ -86,45 +84,41 @@ public interface ITvInputHardware extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Surface _arg0 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    TvStreamConfig _arg1 = (TvStreamConfig) data.readTypedObject(TvStreamConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result = setSurface(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    float _arg02 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setStreamVolume(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg12 = data.readString();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    overrideAudioSink(_arg03, _arg12, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Surface _arg0 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            TvStreamConfig _arg1 = (TvStreamConfig) data.readTypedObject(TvStreamConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result = setSurface(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            float _arg02 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setStreamVolume(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg12 = data.readString();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            overrideAudioSink(_arg03, _arg12, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITvInputHardware {
+        private static class Proxy implements ITvInputHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

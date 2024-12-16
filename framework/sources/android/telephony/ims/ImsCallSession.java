@@ -1,6 +1,6 @@
 package android.telephony.ims;
 
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Bundle;
 import android.os.Message;
@@ -12,13 +12,14 @@ import android.util.ArraySet;
 import android.util.Log;
 import com.android.ims.internal.IImsCallSession;
 import com.android.ims.internal.IImsVideoCallProvider;
+import com.android.internal.telephony.flags.Flags;
 import com.android.internal.telephony.util.TelephonyUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsCallSession {
     private static final String TAG = "ImsCallSession";
     private String mCallId;
@@ -28,7 +29,6 @@ public class ImsCallSession {
     private Executor mListenerExecutor;
     private IImsCallSession miSession;
 
-    /* loaded from: classes3.dex */
     public static class State {
         public static final int ESTABLISHED = 4;
         public static final int ESTABLISHING = 3;
@@ -70,7 +70,6 @@ public class ImsCallSession {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Listener {
         public void callSessionInitiating(ImsCallSession session, ImsCallProfile profile) {
         }
@@ -214,19 +213,24 @@ public class ImsCallSession {
     public ImsCallSession(IImsCallSession iSession) {
         this.mClosed = false;
         this.mCallId = null;
-        this.mListenerExecutor = new PendingIntent$$ExternalSyntheticLambda1();
+        this.mListenerExecutor = new PendingIntent$$ExternalSyntheticLambda0();
         this.mIImsCallSessionListenerProxy = null;
         this.miSession = iSession;
-        IImsCallSessionListenerProxy iImsCallSessionListenerProxy = new IImsCallSessionListenerProxy();
-        this.mIImsCallSessionListenerProxy = iImsCallSessionListenerProxy;
+        this.mIImsCallSessionListenerProxy = new IImsCallSessionListenerProxy();
         if (iSession != null) {
             try {
-                iSession.setListener(iImsCallSessionListenerProxy);
+                iSession.setListener(this.mIImsCallSessionListenerProxy);
+                return;
             } catch (RemoteException e) {
+                if (Flags.ignoreAlreadyTerminatedIncomingCallBeforeRegisteringListener()) {
+                    Log.e(TAG, "ImsCallSession : " + e);
+                    this.mClosed = true;
+                    return;
+                }
+                return;
             }
-        } else {
-            this.mClosed = true;
         }
+        this.mClosed = true;
     }
 
     public ImsCallSession(IImsCallSession iSession, Listener listener, Executor executor) {
@@ -260,9 +264,8 @@ public class ImsCallSession {
         if (this.mClosed) {
             return null;
         }
-        String str = this.mCallId;
-        if (str != null) {
-            return str;
+        if (this.mCallId != null) {
+            return this.mCallId;
         }
         try {
             String callId = this.miSession.getCallId();
@@ -351,17 +354,8 @@ public class ImsCallSession {
         }
         int state = getState();
         switch (state) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-                return true;
-            default:
-                return false;
         }
+        return false;
     }
 
     public IImsCallSession getSession() {
@@ -677,18 +671,14 @@ public class ImsCallSession {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class IImsCallSessionListenerProxy extends IImsCallSessionListener.Stub {
-        /* synthetic */ IImsCallSessionListenerProxy(ImsCallSession imsCallSession, IImsCallSessionListenerProxyIA iImsCallSessionListenerProxyIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class IImsCallSessionListenerProxy extends IImsCallSessionListener.Stub {
         private IImsCallSessionListenerProxy() {
         }
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionInitiating(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda41
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda38
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionInitiating$0(profile);
@@ -696,6 +686,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiating$0(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionInitiating(ImsCallSession.this, profile);
@@ -704,7 +695,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionProgressing(final ImsStreamMediaProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda7
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda35
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionProgressing$1(profile);
@@ -712,6 +703,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionProgressing$1(ImsStreamMediaProfile profile) {
             if (ImsCallSession.this.mClosed) {
                 Log.d(ImsCallSession.TAG, "The session is closed so don't notify callSessionProgressing");
@@ -722,7 +714,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionInitiated(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda16
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda26
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionInitiated$2(profile);
@@ -730,6 +722,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiated$2(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionStarted(ImsCallSession.this, profile);
@@ -738,7 +731,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionInitiatingFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda26
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda12
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionInitiatingFailed$3(reasonInfo);
@@ -746,6 +739,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiatingFailed$3(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionStartFailed(ImsCallSession.this, reasonInfo);
@@ -762,6 +756,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiatedFailed$4(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionStartFailed(ImsCallSession.this, reasonInfo);
@@ -770,7 +765,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionTerminated(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda25
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda19
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionTerminated$5(reasonInfo);
@@ -778,6 +773,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTerminated$5(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTerminated(ImsCallSession.this, reasonInfo);
@@ -786,7 +782,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionHeld(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda31
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda40
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionHeld$6(profile);
@@ -794,6 +790,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHeld$6(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHeld(ImsCallSession.this, profile);
@@ -802,7 +799,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionHoldFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda4
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda18
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionHoldFailed$7(reasonInfo);
@@ -810,6 +807,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHoldFailed$7(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHoldFailed(ImsCallSession.this, reasonInfo);
@@ -818,7 +816,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionHoldReceived(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda34
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda31
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionHoldReceived$8(profile);
@@ -826,6 +824,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHoldReceived$8(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHoldReceived(ImsCallSession.this, profile);
@@ -834,7 +833,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionResumed(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda17
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda22
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionResumed$9(profile);
@@ -842,6 +841,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionResumed$9(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionResumed(ImsCallSession.this, profile);
@@ -850,7 +850,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionResumeFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda23
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda36
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionResumeFailed$10(reasonInfo);
@@ -858,6 +858,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionResumeFailed$10(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionResumeFailed(ImsCallSession.this, reasonInfo);
@@ -866,7 +867,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionResumeReceived(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda22
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionResumeReceived$11(profile);
@@ -874,6 +875,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionResumeReceived$11(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionResumeReceived(ImsCallSession.this, profile);
@@ -895,7 +897,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionMergeComplete(final IImsCallSession newSession) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda11
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionMergeComplete$12(newSession);
@@ -903,6 +905,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMergeComplete$12(IImsCallSession newSession) {
             if (ImsCallSession.this.mListener != null) {
                 if (newSession != null) {
@@ -915,7 +918,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionMergeFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda20
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda32
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionMergeFailed$13(reasonInfo);
@@ -923,6 +926,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMergeFailed$13(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionMergeFailed(ImsCallSession.this, reasonInfo);
@@ -931,7 +935,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionUpdated(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda36
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionUpdated$14(profile);
@@ -939,6 +943,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUpdated$14(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUpdated(ImsCallSession.this, profile);
@@ -947,7 +952,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionUpdateFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda21
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionUpdateFailed$15(reasonInfo);
@@ -955,6 +960,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUpdateFailed$15(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUpdateFailed(ImsCallSession.this, reasonInfo);
@@ -963,7 +969,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionUpdateReceived(final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda24
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda21
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionUpdateReceived$16(profile);
@@ -971,6 +977,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUpdateReceived$16(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUpdateReceived(ImsCallSession.this, profile);
@@ -979,7 +986,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionConferenceExtended(final IImsCallSession newSession, final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda0
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda41
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionConferenceExtended$17(newSession, profile);
@@ -987,6 +994,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceExtended$17(IImsCallSession newSession, ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceExtended(ImsCallSession.this, new ImsCallSession(newSession), profile);
@@ -995,7 +1003,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionConferenceExtendFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda37
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionConferenceExtendFailed$18(reasonInfo);
@@ -1003,6 +1011,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceExtendFailed$18(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceExtendFailed(ImsCallSession.this, reasonInfo);
@@ -1011,7 +1020,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionConferenceExtendReceived(final IImsCallSession newSession, final ImsCallProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda28
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionConferenceExtendReceived$19(newSession, profile);
@@ -1019,6 +1028,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceExtendReceived$19(IImsCallSession newSession, ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceExtendReceived(ImsCallSession.this, new ImsCallSession(newSession), profile);
@@ -1027,7 +1037,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionInviteParticipantsRequestDelivered() {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda29
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda39
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionInviteParticipantsRequestDelivered$20();
@@ -1035,6 +1045,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInviteParticipantsRequestDelivered$20() {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionInviteParticipantsRequestDelivered(ImsCallSession.this);
@@ -1043,7 +1054,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionInviteParticipantsRequestFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda3
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda29
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionInviteParticipantsRequestFailed$21(reasonInfo);
@@ -1051,6 +1062,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInviteParticipantsRequestFailed$21(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionInviteParticipantsRequestFailed(ImsCallSession.this, reasonInfo);
@@ -1059,7 +1071,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionRemoveParticipantsRequestDelivered() {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda27
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda8
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionRemoveParticipantsRequestDelivered$22();
@@ -1067,6 +1079,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRemoveParticipantsRequestDelivered$22() {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRemoveParticipantsRequestDelivered(ImsCallSession.this);
@@ -1075,7 +1088,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionRemoveParticipantsRequestFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda10
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda9
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionRemoveParticipantsRequestFailed$23(reasonInfo);
@@ -1083,6 +1096,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRemoveParticipantsRequestFailed$23(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRemoveParticipantsRequestFailed(ImsCallSession.this, reasonInfo);
@@ -1091,7 +1105,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionConferenceStateUpdated(final ImsConferenceState state) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda18
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda37
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionConferenceStateUpdated$24(state);
@@ -1099,6 +1113,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceStateUpdated$24(ImsConferenceState state) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceStateUpdated(ImsCallSession.this, state);
@@ -1107,7 +1122,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionUssdMessageReceived(final int mode, final String ussdMessage) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda32
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda28
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionUssdMessageReceived$25(mode, ussdMessage);
@@ -1115,6 +1130,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUssdMessageReceived$25(int mode, String ussdMessage) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUssdMessageReceived(ImsCallSession.this, mode, ussdMessage);
@@ -1123,7 +1139,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionMayHandover(final int srcNetworkType, final int targetNetworkType) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda33
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionMayHandover$26(srcNetworkType, targetNetworkType);
@@ -1131,6 +1147,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMayHandover$26(int srcNetworkType, int targetNetworkType) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionMayHandover(ImsCallSession.this, srcNetworkType, targetNetworkType);
@@ -1139,7 +1156,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionHandover(final int srcNetworkType, final int targetNetworkType, final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda5
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionHandover$27(srcNetworkType, targetNetworkType, reasonInfo);
@@ -1147,6 +1164,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHandover$27(int srcNetworkType, int targetNetworkType, ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHandover(ImsCallSession.this, srcNetworkType, targetNetworkType, reasonInfo);
@@ -1163,6 +1181,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHandoverFailed$28(int srcNetworkType, int targetNetworkType, ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHandoverFailed(ImsCallSession.this, srcNetworkType, targetNetworkType, reasonInfo);
@@ -1179,6 +1198,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTtyModeReceived$29(int mode) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTtyModeReceived(ImsCallSession.this, mode);
@@ -1187,7 +1207,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionMultipartyStateChanged(final boolean isMultiParty) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda40
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda16
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionMultipartyStateChanged$30(isMultiParty);
@@ -1195,6 +1215,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMultipartyStateChanged$30(boolean isMultiParty) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionMultipartyStateChanged(ImsCallSession.this, isMultiParty);
@@ -1203,7 +1224,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionSuppServiceReceived(final ImsSuppServiceNotification suppServiceInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda2
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda17
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionSuppServiceReceived$31(suppServiceInfo);
@@ -1211,6 +1232,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionSuppServiceReceived$31(ImsSuppServiceNotification suppServiceInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionSuppServiceReceived(ImsCallSession.this, suppServiceInfo);
@@ -1219,7 +1241,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionRttModifyRequestReceived(final ImsCallProfile callProfile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda35
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda34
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionRttModifyRequestReceived$32(callProfile);
@@ -1227,6 +1249,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttModifyRequestReceived$32(ImsCallProfile callProfile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttModifyRequestReceived(ImsCallSession.this, callProfile);
@@ -1235,7 +1258,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionRttModifyResponseReceived(final int status) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda38
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda27
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionRttModifyResponseReceived$33(status);
@@ -1243,6 +1266,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttModifyResponseReceived$33(int status) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttModifyResponseReceived(status);
@@ -1251,7 +1275,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionRttMessageReceived(final String rttMessage) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda9
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda11
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionRttMessageReceived$34(rttMessage);
@@ -1259,6 +1283,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttMessageReceived$34(String rttMessage) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttMessageReceived(rttMessage);
@@ -1267,7 +1292,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionRttAudioIndicatorChanged(final ImsStreamMediaProfile profile) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda39
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda20
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionRttAudioIndicatorChanged$35(profile);
@@ -1275,6 +1300,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttAudioIndicatorChanged$35(ImsStreamMediaProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttAudioIndicatorChanged(profile);
@@ -1283,7 +1309,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionTransferred() {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda1
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda33
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionTransferred$36();
@@ -1291,6 +1317,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTransferred$36() {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTransferred(ImsCallSession.this);
@@ -1299,7 +1326,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionTransferFailed(final ImsReasonInfo reasonInfo) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda6
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda23
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionTransferFailed$37(reasonInfo);
@@ -1307,6 +1334,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTransferFailed$37(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTransferFailed(ImsCallSession.this, reasonInfo);
@@ -1336,7 +1364,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionDtmfReceived(final char dtmf) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda12
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda24
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionDtmfReceived$38(dtmf);
@@ -1344,6 +1372,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionDtmfReceived$38(char dtmf) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionDtmfReceived(dtmf);
@@ -1352,7 +1381,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callQualityChanged(final CallQuality callQuality) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda8
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda13
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callQualityChanged$39(callQuality);
@@ -1360,6 +1389,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callQualityChanged$39(CallQuality callQuality) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callQualityChanged(callQuality);
@@ -1368,7 +1398,7 @@ public class ImsCallSession {
 
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionRtpHeaderExtensionsReceived(final List<RtpHeaderExtension> extensions) {
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda13
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda25
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionRtpHeaderExtensionsReceived$40(extensions);
@@ -1376,6 +1406,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRtpHeaderExtensionsReceived$40(List extensions) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRtpHeaderExtensionsReceived(new ArraySet(extensions));
@@ -1385,7 +1416,7 @@ public class ImsCallSession {
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionSendAnbrQuery(final int mediaType, final int direction, final int bitsPerSecond) {
             Log.d(ImsCallSession.TAG, "callSessionSendAnbrQuery in ImsCallSession");
-            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda19
+            TelephonyUtils.runWithCleanCallingIdentity(new Runnable() { // from class: android.telephony.ims.ImsCallSession$IImsCallSessionListenerProxy$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsCallSession.IImsCallSessionListenerProxy.this.lambda$callSessionSendAnbrQuery$41(mediaType, direction, bitsPerSecond);
@@ -1393,6 +1424,7 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionSendAnbrQuery$41(int mediaType, int direction, int bitsPerSecond) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionSendAnbrQuery(mediaType, direction, bitsPerSecond);
@@ -1405,11 +1437,7 @@ public class ImsCallSession {
         sb.append("[ImsCallSession objId:");
         sb.append(System.identityHashCode(this));
         sb.append(" callId:");
-        String str = this.mCallId;
-        if (str == null) {
-            str = "[UNINITIALIZED]";
-        }
-        sb.append(str);
+        sb.append(this.mCallId != null ? this.mCallId : "[UNINITIALIZED]");
         sb.append(NavigationBarInflaterView.SIZE_MOD_END);
         return sb.toString();
     }

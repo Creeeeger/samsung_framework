@@ -1,6 +1,6 @@
 package com.samsung.android.service.EngineeringMode.token;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class AttributeInfo {
     private byte[] mAttribute;
     private int mLen;

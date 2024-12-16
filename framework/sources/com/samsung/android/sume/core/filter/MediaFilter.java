@@ -16,7 +16,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface MediaFilter extends MessageConsumer, Operator {
     public static final int OPTION_ALLOW_PARTIAL_CONNECTION = 0;
     public static final int OPTION_AS_INPUT = 8;
@@ -31,11 +31,9 @@ public interface MediaFilter extends MessageConsumer, Operator {
     public static final int OPTION_WAIT_RECEIVE_ALL = 6;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface OptionType {
     }
 
-    /* loaded from: classes4.dex */
     public enum Type {
         NN,
         IMGP,
@@ -71,18 +69,16 @@ public interface MediaFilter extends MessageConsumer, Operator {
         retriever.retrieve(this, parent);
     }
 
-    /* loaded from: classes4.dex */
     public static class Option extends OptionBase {
         private static final String TAG = Def.tagOf((Class<?>) Option.class);
         public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() { // from class: com.samsung.android.sume.core.filter.MediaFilter.Option.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Option createFromParcel(Parcel in) {
                 return new Option(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Option[] newArray(int size) {
                 return new Option[size];
@@ -196,23 +192,6 @@ public interface MediaFilter extends MessageConsumer, Operator {
         public Option set(int option, Object data) {
             super.set(option, data);
             return this;
-        }
-
-        /* renamed from: com.samsung.android.sume.core.filter.MediaFilter$Option$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Option> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Option createFromParcel(Parcel in) {
-                return new Option(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Option[] newArray(int size) {
-                return new Option[size];
-            }
         }
     }
 }

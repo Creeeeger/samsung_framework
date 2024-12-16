@@ -21,7 +21,6 @@ public interface IIAFTManagerService extends IInterface {
 
     boolean traceLogSupported() throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements IIAFTManagerService {
         @Override // com.sec.android.iaft.IIAFTManagerService
         public void startAtraceAndAnalyze(int pid, String packageName, int policy) throws RemoteException {
@@ -50,7 +49,6 @@ public interface IIAFTManagerService extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements IIAFTManagerService {
         static final int TRANSACTION_registerCallback = 4;
         static final int TRANSACTION_startAtrace = 2;
@@ -105,46 +103,43 @@ public interface IIAFTManagerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIAFTManagerService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIAFTManagerService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIAFTManagerService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startAtraceAndAnalyze(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    startAtrace();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    stopTrace();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IIAFTCallback _arg02 = IIAFTCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _result = traceLogSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startAtraceAndAnalyze(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            startAtrace();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            stopTrace();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IIAFTCallback _arg02 = IIAFTCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _result = traceLogSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements IIAFTManagerService {
             private IBinder mRemote;
 

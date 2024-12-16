@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class Cta861_3 implements Parcelable {
     public static final Parcelable.Creator<Cta861_3> CREATOR = new Parcelable.Creator<Cta861_3>() { // from class: android.hardware.graphics.common.Cta861_3.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Cta861_3 createFromParcel(Parcel _aidl_source) {
             Cta861_3 _aidl_out = new Cta861_3();
@@ -17,6 +15,7 @@ public class Cta861_3 implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Cta861_3[] newArray(int _aidl_size) {
             return new Cta861_3[_aidl_size];
@@ -24,25 +23,6 @@ public class Cta861_3 implements Parcelable {
     };
     public float maxContentLightLevel = 0.0f;
     public float maxFrameAverageLightLevel = 0.0f;
-
-    /* renamed from: android.hardware.graphics.common.Cta861_3$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Cta861_3> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Cta861_3 createFromParcel(Parcel _aidl_source) {
-            Cta861_3 _aidl_out = new Cta861_3();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Cta861_3[] newArray(int _aidl_size) {
-            return new Cta861_3[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

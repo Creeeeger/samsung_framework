@@ -112,7 +112,7 @@ public class ComponentInfo extends PackageItemInfo {
     }
 
     @Override // android.content.pm.PackageItemInfo
-    public void dumpFront(Printer pw, String prefix) {
+    protected void dumpFront(Printer pw, String prefix) {
         super.dumpFront(pw, prefix);
         if (this.processName != null && !this.packageName.equals(this.processName)) {
             pw.println(prefix + "processName=" + this.processName);
@@ -120,8 +120,7 @@ public class ComponentInfo extends PackageItemInfo {
         if (this.splitName != null) {
             pw.println(prefix + "splitName=" + this.splitName);
         }
-        String[] strArr = this.attributionTags;
-        if (strArr != null && strArr.length > 0) {
+        if (this.attributionTags != null && this.attributionTags.length > 0) {
             StringBuilder tags = new StringBuilder();
             tags.append(this.attributionTags[0]);
             for (int i = 1; i < this.attributionTags.length; i++) {
@@ -137,11 +136,11 @@ public class ComponentInfo extends PackageItemInfo {
     }
 
     @Override // android.content.pm.PackageItemInfo
-    public void dumpBack(Printer pw, String prefix) {
+    protected void dumpBack(Printer pw, String prefix) {
         dumpBack(pw, prefix, 3);
     }
 
-    public void dumpBack(Printer pw, String prefix, int dumpFlags) {
+    void dumpBack(Printer pw, String prefix, int dumpFlags) {
         if ((dumpFlags & 2) != 0) {
             if (this.applicationInfo != null) {
                 pw.println(prefix + "ApplicationInfo:");
@@ -166,7 +165,7 @@ public class ComponentInfo extends PackageItemInfo {
         parcel.writeInt(this.directBootAware ? 1 : 0);
     }
 
-    public ComponentInfo(Parcel source) {
+    protected ComponentInfo(Parcel source) {
         super(source);
         boolean z;
         boolean z2;
@@ -209,7 +208,7 @@ public class ComponentInfo extends PackageItemInfo {
     }
 
     @Override // android.content.pm.PackageItemInfo
-    protected ApplicationInfo getApplicationInfo() {
+    public ApplicationInfo getApplicationInfo() {
         return this.applicationInfo;
     }
 }

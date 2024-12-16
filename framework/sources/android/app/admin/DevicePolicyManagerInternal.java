@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
 import java.util.List;
-import java.util.Set;
 
 /* loaded from: classes.dex */
 public abstract class DevicePolicyManagerInternal {
 
-    /* loaded from: classes.dex */
     public interface OnCrossProfileWidgetProvidersChangeListener {
         void onCrossProfileWidgetProvidersChanged(int i, List<String> list);
     }
@@ -26,7 +24,11 @@ public abstract class DevicePolicyManagerInternal {
 
     public abstract Intent createUserRestrictionSupportIntent(int i, String str);
 
+    public abstract void enforceAuditLoggingPolicy(boolean z);
+
     public abstract void enforcePermission(String str, String str2, int i);
+
+    public abstract void enforceSecurityLoggingPolicy(boolean z);
 
     public abstract List<String> getAllCrossProfilePackages(int i);
 
@@ -36,13 +38,14 @@ public abstract class DevicePolicyManagerInternal {
 
     public abstract List<String> getDefaultCrossProfilePackages();
 
+    @Deprecated
+    public abstract ComponentName getDeviceOwnerComponent(boolean z);
+
     public abstract int getDeviceOwnerUserId();
 
-    public abstract DevicePolicyCache getDevicePolicyCache();
+    protected abstract DevicePolicyCache getDevicePolicyCache();
 
-    public abstract DeviceStateCache getDeviceStateCache();
-
-    public abstract Set<String> getPackagesSuspendedByAdmin(int i);
+    protected abstract DeviceStateCache getDeviceStateCache();
 
     public abstract CharSequence getPrintingDisabledReasonForUser(int i);
 
@@ -60,11 +63,7 @@ public abstract class DevicePolicyManagerInternal {
 
     public abstract boolean isActiveSupervisionApp(int i);
 
-    public abstract boolean isApplicationExemptionsFlagEnabled();
-
     public abstract boolean isDeviceOrProfileOwnerInCallingUser(String str);
-
-    public abstract boolean isKeepProfilesRunningEnabled();
 
     public abstract boolean isUserAffiliatedWithDevice(int i);
 

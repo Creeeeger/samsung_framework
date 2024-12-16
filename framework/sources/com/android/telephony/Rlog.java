@@ -1,6 +1,9 @@
 package com.android.telephony;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.net.Uri;
+import android.telecom.PhoneAccount;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -86,6 +89,58 @@ public final class Rlog {
             return val;
         }
         return NavigationBarInflaterView.SIZE_MOD_START + secureHash(val.getBytes()) + NavigationBarInflaterView.SIZE_MOD_END;
+    }
+
+    public static String piiHandle(Object pii) {
+        StringBuilder sb = new StringBuilder();
+        if (pii instanceof Uri) {
+            Uri uri = (Uri) pii;
+            String scheme = uri.getScheme();
+            if (!TextUtils.isEmpty(scheme)) {
+                sb.append(scheme).append(":");
+            }
+            String textToObfuscate = uri.getSchemeSpecificPart();
+            if (PhoneAccount.SCHEME_TEL.equals(scheme)) {
+                obfuscatePhoneNumber(sb, textToObfuscate);
+            } else if ("sip".equals(scheme)) {
+                for (int i = 0; i < textToObfuscate.length(); i++) {
+                    char c = textToObfuscate.charAt(i);
+                    if (c != '@' && c != '.') {
+                        c = '*';
+                    }
+                    sb.append(c);
+                }
+            } else {
+                sb.append("***");
+            }
+        } else if (pii instanceof String) {
+            String number = (String) pii;
+            obfuscatePhoneNumber(sb, number);
+        }
+        return sb.toString();
+    }
+
+    private static void obfuscatePhoneNumber(StringBuilder sb, String phoneNumber) {
+        int numDigitsToLog = (USER_BUILD || SemTelephonyUtils.SHIP_BUILD) ? 0 : 2;
+        int numDigitsToObfuscate = getDialableCount(phoneNumber) - numDigitsToLog;
+        for (int i = 0; i < phoneNumber.length(); i++) {
+            char c = phoneNumber.charAt(i);
+            boolean isDialable = PhoneNumberUtils.isDialable(c);
+            if (isDialable) {
+                numDigitsToObfuscate--;
+            }
+            sb.append((!isDialable || numDigitsToObfuscate < 0) ? Character.valueOf(c) : "*");
+        }
+    }
+
+    private static int getDialableCount(String toCount) {
+        int numDialable = 0;
+        for (char c : toCount.toCharArray()) {
+            if (PhoneNumberUtils.isDialable(c)) {
+                numDialable++;
+            }
+        }
+        return numDialable;
     }
 
     private static String secureHash(byte[] input) {

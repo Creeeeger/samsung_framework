@@ -29,7 +29,6 @@ public interface ISessionControllerCallback extends IInterface {
 
     void onVolumeInfoChanged(MediaController.PlaybackInfo playbackInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISessionControllerCallback {
         @Override // android.media.session.ISessionControllerCallback
         public void onEvent(String event, Bundle extras) throws RemoteException {
@@ -69,7 +68,6 @@ public interface ISessionControllerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISessionControllerCallback {
         public static final String DESCRIPTOR = "android.media.session.ISessionControllerCallback";
         static final int TRANSACTION_onEvent = 1;
@@ -134,59 +132,56 @@ public interface ISessionControllerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEvent(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onSessionDestroyed();
+                    return true;
+                case 3:
+                    PlaybackState _arg02 = (PlaybackState) data.readTypedObject(PlaybackState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPlaybackStateChanged(_arg02);
+                    return true;
+                case 4:
+                    MediaMetadata _arg03 = (MediaMetadata) data.readTypedObject(MediaMetadata.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMetadataChanged(_arg03);
+                    return true;
+                case 5:
+                    ParceledListSlice _arg04 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onQueueChanged(_arg04);
+                    return true;
+                case 6:
+                    CharSequence _arg05 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    onQueueTitleChanged(_arg05);
+                    return true;
+                case 7:
+                    Bundle _arg06 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onExtrasChanged(_arg06);
+                    return true;
+                case 8:
+                    MediaController.PlaybackInfo _arg07 = (MediaController.PlaybackInfo) data.readTypedObject(MediaController.PlaybackInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onVolumeInfoChanged(_arg07);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEvent(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onSessionDestroyed();
-                            return true;
-                        case 3:
-                            PlaybackState _arg02 = (PlaybackState) data.readTypedObject(PlaybackState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPlaybackStateChanged(_arg02);
-                            return true;
-                        case 4:
-                            MediaMetadata _arg03 = (MediaMetadata) data.readTypedObject(MediaMetadata.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMetadataChanged(_arg03);
-                            return true;
-                        case 5:
-                            ParceledListSlice _arg04 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onQueueChanged(_arg04);
-                            return true;
-                        case 6:
-                            CharSequence _arg05 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            onQueueTitleChanged(_arg05);
-                            return true;
-                        case 7:
-                            Bundle _arg06 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onExtrasChanged(_arg06);
-                            return true;
-                        case 8:
-                            MediaController.PlaybackInfo _arg07 = (MediaController.PlaybackInfo) data.readTypedObject(MediaController.PlaybackInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onVolumeInfoChanged(_arg07);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISessionControllerCallback {
+        private static class Proxy implements ISessionControllerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

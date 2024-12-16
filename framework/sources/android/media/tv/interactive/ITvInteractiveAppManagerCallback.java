@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInteractiveAppManagerCallback extends IInterface {
     public static final String DESCRIPTOR = "android.media.tv.interactive.ITvInteractiveAppManagerCallback";
 
@@ -20,7 +20,6 @@ public interface ITvInteractiveAppManagerCallback extends IInterface {
 
     void onTvInteractiveAppServiceInfoUpdated(TvInteractiveAppServiceInfo tvInteractiveAppServiceInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInteractiveAppManagerCallback {
         @Override // android.media.tv.interactive.ITvInteractiveAppManagerCallback
         public void onInteractiveAppServiceAdded(String iAppServiceId) throws RemoteException {
@@ -48,7 +47,6 @@ public interface ITvInteractiveAppManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInteractiveAppManagerCallback {
         static final int TRANSACTION_onInteractiveAppServiceAdded = 1;
         static final int TRANSACTION_onInteractiveAppServiceRemoved = 2;
@@ -103,49 +101,45 @@ public interface ITvInteractiveAppManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITvInteractiveAppManagerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITvInteractiveAppManagerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITvInteractiveAppManagerCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInteractiveAppServiceAdded(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInteractiveAppServiceRemoved(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInteractiveAppServiceUpdated(_arg03);
+                    return true;
+                case 4:
+                    TvInteractiveAppServiceInfo _arg04 = (TvInteractiveAppServiceInfo) data.readTypedObject(TvInteractiveAppServiceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTvInteractiveAppServiceInfoUpdated(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStateChanged(_arg05, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInteractiveAppServiceAdded(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInteractiveAppServiceRemoved(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInteractiveAppServiceUpdated(_arg03);
-                            return true;
-                        case 4:
-                            TvInteractiveAppServiceInfo _arg04 = (TvInteractiveAppServiceInfo) data.readTypedObject(TvInteractiveAppServiceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTvInteractiveAppServiceInfoUpdated(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStateChanged(_arg05, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITvInteractiveAppManagerCallback {
+        private static class Proxy implements ITvInteractiveAppManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

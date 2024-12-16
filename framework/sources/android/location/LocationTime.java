@@ -9,9 +9,7 @@ import java.time.Instant;
 /* loaded from: classes2.dex */
 public final class LocationTime implements Parcelable {
     public static final Parcelable.Creator<LocationTime> CREATOR = new Parcelable.Creator<LocationTime>() { // from class: android.location.LocationTime.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocationTime createFromParcel(Parcel in) {
             long time = in.readLong();
@@ -19,6 +17,7 @@ public final class LocationTime implements Parcelable {
             return new LocationTime(time, elapsedRealtimeNanos);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocationTime[] newArray(int size) {
             return new LocationTime[size];
@@ -53,24 +52,5 @@ public final class LocationTime implements Parcelable {
 
     public String toString() {
         return "LocationTime{mUnixEpochTimeMillis=" + Instant.ofEpochMilli(this.mUnixEpochTimeMillis) + NavigationBarInflaterView.KEY_CODE_START + this.mUnixEpochTimeMillis + "), mElapsedRealtimeNanos=" + Duration.ofNanos(this.mElapsedRealtimeNanos) + NavigationBarInflaterView.KEY_CODE_START + this.mElapsedRealtimeNanos + NavigationBarInflaterView.KEY_CODE_END + '}';
-    }
-
-    /* renamed from: android.location.LocationTime$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LocationTime> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocationTime createFromParcel(Parcel in) {
-            long time = in.readLong();
-            long elapsedRealtimeNanos = in.readLong();
-            return new LocationTime(time, elapsedRealtimeNanos);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocationTime[] newArray(int size) {
-            return new LocationTime[size];
-        }
     }
 }

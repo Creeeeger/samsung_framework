@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendSettings implements Parcelable {
     public static final Parcelable.Creator<FrontendSettings> CREATOR = new Parcelable.Creator<FrontendSettings>() { // from class: android.hardware.tv.tuner.FrontendSettings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendSettings createFromParcel(Parcel _aidl_source) {
             return new FrontendSettings(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendSettings[] newArray(int _aidl_size) {
             return new FrontendSettings[_aidl_size];
@@ -34,7 +33,6 @@ public final class FrontendSettings implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int analog = 0;
         public static final int atsc = 1;
@@ -47,10 +45,6 @@ public final class FrontendSettings implements Parcelable {
         public static final int isdbs = 6;
         public static final int isdbs3 = 7;
         public static final int isdbt = 8;
-    }
-
-    /* synthetic */ FrontendSettings(Parcel parcel, FrontendSettingsIA frontendSettingsIA) {
-        this(parcel);
     }
 
     public FrontendSettings() {
@@ -219,62 +213,43 @@ public final class FrontendSettings implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.FrontendSettings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendSettings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendSettings createFromParcel(Parcel _aidl_source) {
-            return new FrontendSettings(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendSettings[] newArray(int _aidl_size) {
-            return new FrontendSettings[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getAnalog(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getAtsc(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getAtsc3(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeTypedObject(getDvbs(), _aidl_flag);
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeTypedObject(getDvbc(), _aidl_flag);
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeTypedObject(getDvbt(), _aidl_flag);
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeTypedObject(getIsdbs(), _aidl_flag);
-                return;
+                break;
             case 7:
                 _aidl_parcel.writeTypedObject(getIsdbs3(), _aidl_flag);
-                return;
+                break;
             case 8:
                 _aidl_parcel.writeTypedObject(getIsdbt(), _aidl_flag);
-                return;
+                break;
             case 9:
                 _aidl_parcel.writeTypedObject(getDtmb(), _aidl_flag);
-                return;
+                break;
             case 10:
                 _aidl_parcel.writeTypedObject(getIptv(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

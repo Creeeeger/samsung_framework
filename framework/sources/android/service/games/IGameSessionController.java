@@ -18,7 +18,6 @@ public interface IGameSessionController extends IInterface {
 
     void takeScreenshot(int i, AndroidFuture androidFuture) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGameSessionController {
         @Override // android.service.games.IGameSessionController
         public void takeScreenshot(int taskId, AndroidFuture gameScreenshotResultFuture) throws RemoteException {
@@ -34,7 +33,6 @@ public interface IGameSessionController extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGameSessionController {
         static final int TRANSACTION_restartGame = 2;
         static final int TRANSACTION_takeScreenshot = 1;
@@ -90,32 +88,28 @@ public interface IGameSessionController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGameSessionController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGameSessionController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGameSessionController.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    AndroidFuture _arg1 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    takeScreenshot(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restartGame(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            AndroidFuture _arg1 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            takeScreenshot(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restartGame(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGameSessionController {
+        private static class Proxy implements IGameSessionController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

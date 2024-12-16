@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class UusInfo implements Parcelable {
     public static final Parcelable.Creator<UusInfo> CREATOR = new Parcelable.Creator<UusInfo>() { // from class: android.hardware.radio.voice.UusInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UusInfo createFromParcel(Parcel _aidl_source) {
             UusInfo _aidl_out = new UusInfo();
@@ -19,6 +17,7 @@ public class UusInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UusInfo[] newArray(int _aidl_size) {
             return new UusInfo[_aidl_size];
@@ -39,25 +38,6 @@ public class UusInfo implements Parcelable {
     public String uusData;
     public int uusType = 0;
     public int uusDcs = 0;
-
-    /* renamed from: android.hardware.radio.voice.UusInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UusInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UusInfo createFromParcel(Parcel _aidl_source) {
-            UusInfo _aidl_out = new UusInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UusInfo[] newArray(int _aidl_size) {
-            return new UusInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -126,7 +106,7 @@ public class UusInfo implements Parcelable {
         _aidl_sj.add("uusType: " + this.uusType);
         _aidl_sj.add("uusDcs: " + this.uusDcs);
         _aidl_sj.add("uusData: " + Objects.toString(this.uusData));
-        return "android.hardware.radio.voice.UusInfo" + _aidl_sj.toString();
+        return "UusInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

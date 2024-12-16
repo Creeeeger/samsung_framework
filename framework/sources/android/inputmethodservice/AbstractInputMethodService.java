@@ -2,12 +2,10 @@ package android.inputmethodservice;
 
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.display.DisplayManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManagerGlobal;
@@ -32,7 +30,6 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
         return this.mInputMethod;
     }
 
-    /* loaded from: classes2.dex */
     public abstract class AbstractInputMethodImpl implements InputMethod {
         public AbstractInputMethodImpl() {
         }
@@ -53,7 +50,6 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
         }
     }
 
-    /* loaded from: classes2.dex */
     public abstract class AbstractInputMethodSessionImpl implements InputMethodSession {
         boolean mEnabled = true;
         boolean mRevoked;
@@ -82,8 +78,7 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
 
         @Override // android.view.inputmethod.InputMethodSession
         public void dispatchKeyEvent(int seq, KeyEvent event, InputMethodSession.EventCallback callback) {
-            AbstractInputMethodService abstractInputMethodService = AbstractInputMethodService.this;
-            boolean handled = event.dispatch(abstractInputMethodService, abstractInputMethodService.mDispatcherState, this);
+            boolean handled = event.dispatch(AbstractInputMethodService.this, AbstractInputMethodService.this.mDispatcherState, this);
             if (event.getKeyCode() == 1006 && event.getAction() == 0) {
                 AbstractInputMethodService.this.mIsPressBtnSIPOnOff = true;
             }
@@ -114,7 +109,7 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
     }
 
     @Override // android.app.Service
-    public void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
+    protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
     }
 
     @Override // android.app.Service
@@ -128,28 +123,8 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
         return new IInputMethodWrapper(this.mInputMethodServiceInternal, this.mInputMethod);
     }
 
-    /* renamed from: android.inputmethodservice.AbstractInputMethodService$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements InputMethodServiceInternal {
-        AnonymousClass1() {
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public Context getContext() {
-            return AbstractInputMethodService.this;
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
-            AbstractInputMethodService.this.dump(fd, fout, args);
-        }
-    }
-
     InputMethodServiceInternal createInputMethodServiceInternal() {
         return new InputMethodServiceInternal() { // from class: android.inputmethodservice.AbstractInputMethodService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.inputmethodservice.InputMethodServiceInternal
             public Context getContext() {
                 return AbstractInputMethodService.this;
@@ -185,19 +160,9 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
         try {
             int imeDisplayId = WindowManagerGlobal.getWindowManagerService().getImeDisplayId();
             Log.i("InputMethodService", "getInitialDisplayId: imeDisplayId=" + imeDisplayId);
-            return WindowManagerGlobal.getWindowManagerService().getImeDisplayId();
+            return imeDisplayId;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
-    }
-
-    @Override // android.window.WindowProviderService
-    public Display getInitialDisplay(Context context) {
-        DisplayManager dm = (DisplayManager) context.getSystemService(DisplayManager.class);
-        Display display = dm.getDisplay(getInitialDisplayId());
-        if (display == null) {
-            return dm.getDisplay(0);
-        }
-        return display;
     }
 }

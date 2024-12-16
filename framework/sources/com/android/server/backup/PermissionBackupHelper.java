@@ -64,10 +64,10 @@ public class PermissionBackupHelper extends BlobBackupHelper {
             switch (c) {
                 case 0:
                     this.mPermissionManager.restoreRuntimePermissions(payload, this.mUserId);
-                    return;
+                    break;
                 default:
                     Slog.w(TAG, "Unexpected restore key " + key);
-                    return;
+                    break;
             }
         } catch (Exception e) {
             Slog.e(TAG, "Unable to restore key " + key, e);

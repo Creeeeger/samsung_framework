@@ -36,7 +36,6 @@ public class FontManager {
     private final IFontManager mIFontManager;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ResultCode {
     }
 

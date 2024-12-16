@@ -3,7 +3,7 @@ package com.samsung.android.knox;
 import com.samsung.android.knox.SemIRCPCallback;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SemRcpCallback {
     private SemIRCPCallback s = new SubSemRcpCallback(this);
 
@@ -15,7 +15,6 @@ public abstract class SemRcpCallback {
 
     public abstract void onProgress(String str, int i, int i2);
 
-    /* loaded from: classes5.dex */
     public class SubSemRcpCallback extends SemIRCPCallback.Stub {
         SemRcpCallback parent;
 
@@ -26,33 +25,29 @@ public abstract class SemRcpCallback {
 
         @Override // com.samsung.android.knox.SemIRCPCallback
         public void onComplete(List<String> srcPathsOrig, int destinationUserId, int successCnt) {
-            SemRcpCallback semRcpCallback = this.parent;
-            if (semRcpCallback != null) {
-                semRcpCallback.onComplete(srcPathsOrig, destinationUserId, successCnt);
+            if (this.parent != null) {
+                this.parent.onComplete(srcPathsOrig, destinationUserId, successCnt);
             }
         }
 
         @Override // com.samsung.android.knox.SemIRCPCallback
         public void onDone(String srcPathsOrig, int destinationUserId) {
-            SemRcpCallback semRcpCallback = this.parent;
-            if (semRcpCallback != null) {
-                semRcpCallback.onDone(srcPathsOrig, destinationUserId);
+            if (this.parent != null) {
+                this.parent.onDone(srcPathsOrig, destinationUserId);
             }
         }
 
         @Override // com.samsung.android.knox.SemIRCPCallback
         public void onFail(String srcPathsOrig, int destinationUserId, int errorCode) {
-            SemRcpCallback semRcpCallback = this.parent;
-            if (semRcpCallback != null) {
-                semRcpCallback.onFail(srcPathsOrig, destinationUserId, errorCode);
+            if (this.parent != null) {
+                this.parent.onFail(srcPathsOrig, destinationUserId, errorCode);
             }
         }
 
         @Override // com.samsung.android.knox.SemIRCPCallback
         public void onProgress(String srcPathsOrig, int destinationUserId, int progress) {
-            SemRcpCallback semRcpCallback = this.parent;
-            if (semRcpCallback != null) {
-                semRcpCallback.onProgress(srcPathsOrig, destinationUserId, progress);
+            if (this.parent != null) {
+                this.parent.onProgress(srcPathsOrig, destinationUserId, progress);
             }
         }
     }

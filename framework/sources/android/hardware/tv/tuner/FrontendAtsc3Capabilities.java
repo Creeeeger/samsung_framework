@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendAtsc3Capabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendAtsc3Capabilities> CREATOR = new Parcelable.Creator<FrontendAtsc3Capabilities>() { // from class: android.hardware.tv.tuner.FrontendAtsc3Capabilities.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendAtsc3Capabilities createFromParcel(Parcel _aidl_source) {
             FrontendAtsc3Capabilities _aidl_out = new FrontendAtsc3Capabilities();
@@ -17,6 +15,7 @@ public class FrontendAtsc3Capabilities implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendAtsc3Capabilities[] newArray(int _aidl_size) {
             return new FrontendAtsc3Capabilities[_aidl_size];
@@ -28,25 +27,6 @@ public class FrontendAtsc3Capabilities implements Parcelable {
     public int codeRateCap = 0;
     public int fecCap = 0;
     public byte demodOutputFormatCap = 0;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendAtsc3Capabilities$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendAtsc3Capabilities> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendAtsc3Capabilities createFromParcel(Parcel _aidl_source) {
-            FrontendAtsc3Capabilities _aidl_out = new FrontendAtsc3Capabilities();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendAtsc3Capabilities[] newArray(int _aidl_size) {
-            return new FrontendAtsc3Capabilities[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

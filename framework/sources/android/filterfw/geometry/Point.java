@@ -21,14 +21,7 @@ public class Point {
     }
 
     public boolean IsInUnitRange() {
-        float f = this.x;
-        if (f >= 0.0f && f <= 1.0f) {
-            float f2 = this.y;
-            if (f2 >= 0.0f && f2 <= 1.0f) {
-                return true;
-            }
-        }
-        return false;
+        return this.x >= 0.0f && this.x <= 1.0f && this.y >= 0.0f && this.y <= 1.0f;
     }
 
     public Point plus(float x, float y) {

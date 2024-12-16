@@ -16,7 +16,7 @@ import android.telephony.ims.RtpHeaderExtension;
 import com.android.ims.internal.IImsCallSession;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsCallSessionListener extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsCallSessionListener";
 
@@ -112,7 +112,6 @@ public interface IImsCallSessionListener extends IInterface {
 
     void callSessionUssdMessageReceived(int i, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsCallSessionListener {
         @Override // android.telephony.ims.aidl.IImsCallSessionListener
         public void callSessionInitiating(ImsCallProfile profile) throws RemoteException {
@@ -304,7 +303,6 @@ public interface IImsCallSessionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsCallSessionListener {
         static final int TRANSACTION_callQualityChanged = 44;
         static final int TRANSACTION_callSessionCancelTransferFailed = 41;
@@ -482,300 +480,297 @@ public interface IImsCallSessionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsCallSessionListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsCallSessionListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsCallSessionListener.DESCRIPTOR);
+                case 1:
+                    ImsCallProfile _arg0 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionInitiating(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ImsReasonInfo _arg02 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionInitiatingFailed(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ImsStreamMediaProfile _arg03 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionProgressing(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    ImsCallProfile _arg04 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionInitiated(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    ImsReasonInfo _arg05 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionInitiatedFailed(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    ImsReasonInfo _arg06 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionTerminated(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    ImsCallProfile _arg07 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHeld(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    ImsReasonInfo _arg08 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHoldFailed(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    ImsCallProfile _arg09 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHoldReceived(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    ImsCallProfile _arg010 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionResumed(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    ImsReasonInfo _arg011 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionResumeFailed(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    ImsCallProfile _arg012 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionResumeReceived(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    IImsCallSession _arg013 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg1 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionMergeStarted(_arg013, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IImsCallSession _arg014 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    callSessionMergeComplete(_arg014);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    ImsReasonInfo _arg015 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionMergeFailed(_arg015);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    ImsCallProfile _arg016 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionUpdated(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    ImsReasonInfo _arg017 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionUpdateFailed(_arg017);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    ImsCallProfile _arg018 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionUpdateReceived(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    IImsCallSession _arg019 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg12 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceExtended(_arg019, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    ImsReasonInfo _arg020 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceExtendFailed(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    IImsCallSession _arg021 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
+                    ImsCallProfile _arg13 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceExtendReceived(_arg021, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    callSessionInviteParticipantsRequestDelivered();
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    ImsReasonInfo _arg022 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionInviteParticipantsRequestFailed(_arg022);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    callSessionRemoveParticipantsRequestDelivered();
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    ImsReasonInfo _arg023 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionRemoveParticipantsRequestFailed(_arg023);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    ImsConferenceState _arg024 = (ImsConferenceState) data.readTypedObject(ImsConferenceState.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionConferenceStateUpdated(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    int _arg025 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    callSessionUssdMessageReceived(_arg025, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    int _arg026 = data.readInt();
+                    int _arg15 = data.readInt();
+                    ImsReasonInfo _arg2 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHandover(_arg026, _arg15, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    int _arg027 = data.readInt();
+                    int _arg16 = data.readInt();
+                    ImsReasonInfo _arg22 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionHandoverFailed(_arg027, _arg16, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    int _arg028 = data.readInt();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionMayHandover(_arg028, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionTtyModeReceived(_arg029);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    boolean _arg030 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    callSessionMultipartyStateChanged(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    ImsSuppServiceNotification _arg031 = (ImsSuppServiceNotification) data.readTypedObject(ImsSuppServiceNotification.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionSuppServiceReceived(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    ImsCallProfile _arg032 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionRttModifyRequestReceived(_arg032);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    int _arg033 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionRttModifyResponseReceived(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    String _arg034 = data.readString();
+                    data.enforceNoDataAvail();
+                    callSessionRttMessageReceived(_arg034);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    ImsStreamMediaProfile _arg035 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionRttAudioIndicatorChanged(_arg035);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    callSessionTransferred();
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    ImsReasonInfo _arg036 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionTransferFailed(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    callSessionCancelTransferred();
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    ImsReasonInfo _arg037 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionCancelTransferFailed(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    String _arg038 = data.readString();
+                    Bundle _arg18 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionImsCallEvent(_arg038, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    char _arg039 = (char) data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionDtmfReceived(_arg039);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    CallQuality _arg040 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
+                    data.enforceNoDataAvail();
+                    callQualityChanged(_arg040);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    List<RtpHeaderExtension> _arg041 = data.createTypedArrayList(RtpHeaderExtension.CREATOR);
+                    data.enforceNoDataAvail();
+                    callSessionRtpHeaderExtensionsReceived(_arg041);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg042 = data.readInt();
+                    int _arg19 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    callSessionSendAnbrQuery(_arg042, _arg19, _arg23);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ImsCallProfile _arg0 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionInitiating(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ImsReasonInfo _arg02 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionInitiatingFailed(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ImsStreamMediaProfile _arg03 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionProgressing(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            ImsCallProfile _arg04 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionInitiated(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            ImsReasonInfo _arg05 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionInitiatedFailed(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            ImsReasonInfo _arg06 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionTerminated(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            ImsCallProfile _arg07 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHeld(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            ImsReasonInfo _arg08 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHoldFailed(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            ImsCallProfile _arg09 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHoldReceived(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            ImsCallProfile _arg010 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionResumed(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            ImsReasonInfo _arg011 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionResumeFailed(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            ImsCallProfile _arg012 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionResumeReceived(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            IImsCallSession _arg013 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg1 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionMergeStarted(_arg013, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IImsCallSession _arg014 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            callSessionMergeComplete(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            ImsReasonInfo _arg015 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionMergeFailed(_arg015);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            ImsCallProfile _arg016 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionUpdated(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            ImsReasonInfo _arg017 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionUpdateFailed(_arg017);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            ImsCallProfile _arg018 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionUpdateReceived(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            IImsCallSession _arg019 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg12 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceExtended(_arg019, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            ImsReasonInfo _arg020 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceExtendFailed(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            IImsCallSession _arg021 = IImsCallSession.Stub.asInterface(data.readStrongBinder());
-                            ImsCallProfile _arg13 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceExtendReceived(_arg021, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            callSessionInviteParticipantsRequestDelivered();
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            ImsReasonInfo _arg022 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionInviteParticipantsRequestFailed(_arg022);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            callSessionRemoveParticipantsRequestDelivered();
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            ImsReasonInfo _arg023 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionRemoveParticipantsRequestFailed(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            ImsConferenceState _arg024 = (ImsConferenceState) data.readTypedObject(ImsConferenceState.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionConferenceStateUpdated(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            int _arg025 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            callSessionUssdMessageReceived(_arg025, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            int _arg026 = data.readInt();
-                            int _arg15 = data.readInt();
-                            ImsReasonInfo _arg2 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHandover(_arg026, _arg15, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            int _arg027 = data.readInt();
-                            int _arg16 = data.readInt();
-                            ImsReasonInfo _arg22 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionHandoverFailed(_arg027, _arg16, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            int _arg028 = data.readInt();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionMayHandover(_arg028, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            int _arg029 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionTtyModeReceived(_arg029);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            boolean _arg030 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            callSessionMultipartyStateChanged(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            ImsSuppServiceNotification _arg031 = (ImsSuppServiceNotification) data.readTypedObject(ImsSuppServiceNotification.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionSuppServiceReceived(_arg031);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            ImsCallProfile _arg032 = (ImsCallProfile) data.readTypedObject(ImsCallProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionRttModifyRequestReceived(_arg032);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            int _arg033 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionRttModifyResponseReceived(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            String _arg034 = data.readString();
-                            data.enforceNoDataAvail();
-                            callSessionRttMessageReceived(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            ImsStreamMediaProfile _arg035 = (ImsStreamMediaProfile) data.readTypedObject(ImsStreamMediaProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionRttAudioIndicatorChanged(_arg035);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            callSessionTransferred();
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            ImsReasonInfo _arg036 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionTransferFailed(_arg036);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            callSessionCancelTransferred();
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            ImsReasonInfo _arg037 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionCancelTransferFailed(_arg037);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            String _arg038 = data.readString();
-                            Bundle _arg18 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionImsCallEvent(_arg038, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            char _arg039 = (char) data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionDtmfReceived(_arg039);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            CallQuality _arg040 = (CallQuality) data.readTypedObject(CallQuality.CREATOR);
-                            data.enforceNoDataAvail();
-                            callQualityChanged(_arg040);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            List<RtpHeaderExtension> _arg041 = data.createTypedArrayList(RtpHeaderExtension.CREATOR);
-                            data.enforceNoDataAvail();
-                            callSessionRtpHeaderExtensionsReceived(_arg041);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg042 = data.readInt();
-                            int _arg19 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            callSessionSendAnbrQuery(_arg042, _arg19, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsCallSessionListener {
+        private static class Proxy implements IImsCallSessionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

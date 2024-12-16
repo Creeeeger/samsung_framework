@@ -17,7 +17,6 @@ public interface IScrollCaptureCallbacks extends IInterface {
 
     void onImageRequestCompleted(int i, Rect rect) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IScrollCaptureCallbacks {
         @Override // android.view.IScrollCaptureCallbacks
         public void onCaptureStarted() throws RemoteException {
@@ -37,7 +36,6 @@ public interface IScrollCaptureCallbacks extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IScrollCaptureCallbacks {
         static final int TRANSACTION_onCaptureEnded = 3;
         static final int TRANSACTION_onCaptureStarted = 1;
@@ -86,33 +84,29 @@ public interface IScrollCaptureCallbacks extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IScrollCaptureCallbacks.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IScrollCaptureCallbacks.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IScrollCaptureCallbacks.DESCRIPTOR);
+                case 1:
+                    onCaptureStarted();
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    onImageRequestCompleted(_arg0, _arg1);
+                    return true;
+                case 3:
+                    onCaptureEnded();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onCaptureStarted();
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            onImageRequestCompleted(_arg0, _arg1);
-                            return true;
-                        case 3:
-                            onCaptureEnded();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IScrollCaptureCallbacks {
+        private static class Proxy implements IScrollCaptureCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

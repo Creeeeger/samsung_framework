@@ -2,9 +2,9 @@ package com.samsung.android.os;
 
 import android.content.Context;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemDvfsHyPerManager extends SemDvfsManager {
-    public SemDvfsHyPerManager(Context context, String packageName, int type) {
+    protected SemDvfsHyPerManager(Context context, String packageName, int type) {
         super(context, packageName, type);
         this.LOG_TAG = SemDvfsHyPerManager.class.getSimpleName();
         this.mName = "HyPer";
@@ -20,11 +20,6 @@ public class SemDvfsHyPerManager extends SemDvfsManager {
 
     @Override // com.samsung.android.os.SemDvfsManager
     public void setDvfsValue(String actionName) {
-    }
-
-    @Override // com.samsung.android.os.SemDvfsManager
-    public void clearDvfsValue() {
-        this.acquireHash.clear();
     }
 
     @Override // com.samsung.android.os.SemDvfsManager

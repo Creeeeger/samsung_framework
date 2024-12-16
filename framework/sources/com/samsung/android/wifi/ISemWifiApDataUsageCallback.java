@@ -12,7 +12,6 @@ public interface ISemWifiApDataUsageCallback extends IInterface {
 
     void onDataUsageChanged(String str) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemWifiApDataUsageCallback {
         @Override // com.samsung.android.wifi.ISemWifiApDataUsageCallback
         public void onDataUsageChanged(String value) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISemWifiApDataUsageCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemWifiApDataUsageCallback {
         static final int TRANSACTION_onDataUsageChanged = 1;
 
@@ -67,26 +65,22 @@ public interface ISemWifiApDataUsageCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemWifiApDataUsageCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemWifiApDataUsageCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemWifiApDataUsageCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onDataUsageChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onDataUsageChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemWifiApDataUsageCallback {
+        private static class Proxy implements ISemWifiApDataUsageCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

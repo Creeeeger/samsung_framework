@@ -6,7 +6,7 @@ import com.android.internal.graphics.ColorUtils;
 import java.lang.reflect.Array;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ColorPaletteCreator5 extends ColorPaletteCreator {
     private static final int GRAY_HUE_PRESET1 = 0;
     private static final int GRAY_HUE_PRESET2 = 120;
@@ -62,34 +62,29 @@ public class ColorPaletteCreator5 extends ColorPaletteCreator {
         if (hue < 0.0f) {
             return 0;
         }
-        int i = 0;
-        while (true) {
-            if (i >= range.length) {
-                return -1;
-            }
-            if (r2[18] <= hue) {
+        for (int i = 0; i < range.length; i++) {
+            if (range[18] <= hue) {
                 return 0;
             }
-            if (hue >= r2[i]) {
-                i++;
-            } else {
+            if (hue < range[i]) {
                 return i - 1;
             }
         }
+        return -1;
     }
 
     static float findRatio(float hue, int r) {
-        int[] iArr = range;
-        float ratio = (((hue - iArr[r]) + 360.0f) % 360.0f) / (iArr[r + 1] - r1);
+        float ratio = (((hue - range[r]) + 360.0f) % 360.0f) / (range[r + 1] - range[r]);
         if (ratio > 1.0f || ratio < 0.0f) {
             Log.e(TAG, "findRatio : ratio is more than 1");
-            Log.v(TAG, "findRatio : hue = " + hue + " range[r] = " + iArr[r] + " range[r+1] = " + iArr[r + 1] + " ratio = " + ratio);
+            Log.v(TAG, "findRatio : hue = " + hue + " range[r] = " + range[r] + " range[r+1] = " + range[r + 1] + " ratio = " + ratio);
         }
         return ratio;
     }
 
     static float getHue(int r, float ratio) {
-        float hue = range[((r0.length + r) - 1) % (r0.length - 1)] + ((r0[r1 + 1] - r4) * ratio);
+        int r2 = ((range.length + r) - 1) % (range.length - 1);
+        float hue = range[r2] + ((range[r2 + 1] - range[r2]) * ratio);
         if (hue < 0.0f) {
             return hue + 360.0f;
         }
@@ -153,125 +148,95 @@ public class ColorPaletteCreator5 extends ColorPaletteCreator {
     }
 
     private void addGrayStylePalette() {
-        float[] fArr = this.accent1;
-        fArr[0] = 0.0f;
-        fArr[1] = 0.0f;
-        float[] fArr2 = this.accent2;
-        fArr2[0] = 0.0f;
-        fArr2[1] = 0.0f;
-        float[] fArr3 = this.accent3;
-        fArr3[0] = 0.0f;
-        fArr3[1] = 0.0f;
-        float[] fArr4 = this.neutral1;
-        fArr4[0] = 0.0f;
-        fArr4[1] = 0.0f;
-        float[] fArr5 = this.neutral2;
-        fArr5[0] = 0.0f;
-        fArr5[1] = 0.0f;
+        this.accent1[0] = 0.0f;
+        this.accent1[1] = 0.0f;
+        this.accent2[0] = 0.0f;
+        this.accent2[1] = 0.0f;
+        this.accent3[0] = 0.0f;
+        this.accent3[1] = 0.0f;
+        this.neutral1[0] = 0.0f;
+        this.neutral1[1] = 0.0f;
+        this.neutral2[0] = 0.0f;
+        this.neutral2[1] = 0.0f;
         this.mColorPalettes.add(new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2).getTable());
-        float[] fArr6 = this.accent1;
-        fArr6[0] = 0.0f;
-        fArr6[1] = 0.05f;
-        float[] fArr7 = this.accent2;
-        fArr7[0] = 0.0f;
-        fArr7[1] = 0.05f;
-        float[] fArr8 = this.accent3;
-        fArr8[0] = 0.0f;
-        fArr8[1] = 0.05f;
-        float[] fArr9 = this.neutral1;
-        fArr9[0] = 0.0f;
-        fArr9[1] = 0.05f;
-        float[] fArr10 = this.neutral2;
-        fArr10[0] = 0.0f;
-        fArr10[1] = 0.05f;
+        this.accent1[0] = 0.0f;
+        this.accent1[1] = 0.05f;
+        this.accent2[0] = 0.0f;
+        this.accent2[1] = 0.05f;
+        this.accent3[0] = 0.0f;
+        this.accent3[1] = 0.05f;
+        this.neutral1[0] = 0.0f;
+        this.neutral1[1] = 0.05f;
+        this.neutral2[0] = 0.0f;
+        this.neutral2[1] = 0.05f;
         this.mColorPalettes.add(new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2).getTable());
-        float[] fArr11 = this.accent1;
-        fArr11[0] = 120.0f;
-        fArr11[1] = 0.05f;
-        float[] fArr12 = this.accent2;
-        fArr12[0] = 120.0f;
-        fArr12[1] = 0.05f;
-        float[] fArr13 = this.accent3;
-        fArr13[0] = 120.0f;
-        fArr13[1] = 0.05f;
-        float[] fArr14 = this.neutral1;
-        fArr14[0] = 120.0f;
-        fArr14[1] = 0.05f;
-        float[] fArr15 = this.neutral2;
-        fArr15[0] = 120.0f;
-        fArr15[1] = 0.05f;
+        this.accent1[0] = 120.0f;
+        this.accent1[1] = 0.05f;
+        this.accent2[0] = 120.0f;
+        this.accent2[1] = 0.05f;
+        this.accent3[0] = 120.0f;
+        this.accent3[1] = 0.05f;
+        this.neutral1[0] = 120.0f;
+        this.neutral1[1] = 0.05f;
+        this.neutral2[0] = 120.0f;
+        this.neutral2[1] = 0.05f;
         this.mColorPalettes.add(new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2).getTable());
-        float[] fArr16 = this.accent1;
-        fArr16[0] = 240.0f;
-        fArr16[1] = 0.05f;
-        float[] fArr17 = this.accent2;
-        fArr17[0] = 240.0f;
-        fArr17[1] = 0.05f;
-        float[] fArr18 = this.accent3;
-        fArr18[0] = 240.0f;
-        fArr18[1] = 0.05f;
-        float[] fArr19 = this.neutral1;
-        fArr19[0] = 240.0f;
-        fArr19[1] = 0.05f;
-        float[] fArr20 = this.neutral2;
-        fArr20[0] = 240.0f;
-        fArr20[1] = 0.05f;
+        this.accent1[0] = 240.0f;
+        this.accent1[1] = 0.05f;
+        this.accent2[0] = 240.0f;
+        this.accent2[1] = 0.05f;
+        this.accent3[0] = 240.0f;
+        this.accent3[1] = 0.05f;
+        this.neutral1[0] = 240.0f;
+        this.neutral1[1] = 0.05f;
+        this.neutral2[0] = 240.0f;
+        this.neutral2[1] = 0.05f;
         this.mColorPalettes.add(new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2).getTable());
     }
 
     private ColorPalette addTonalSpot(float[] colorHsl) {
-        float[] fArr = this.accent1;
-        fArr[0] = colorHsl[0];
-        fArr[1] = Math.min(colorHsl[1] + 0.3f, 0.7f);
+        this.accent1[0] = colorHsl[0];
+        this.accent1[1] = Math.min(colorHsl[1] + 0.3f, 0.7f);
         this.accent2[0] = hueMove(colorHsl[0], 2);
         this.accent2[1] = Math.min(colorHsl[1] + 0.0f, 0.4f);
         this.accent3[0] = hueMove(colorHsl[0], 5);
         this.accent3[1] = Math.min(colorHsl[1] + 0.1f, 0.5f);
-        float[] fArr2 = this.neutral1;
-        fArr2[0] = colorHsl[0];
-        fArr2[1] = Math.min(colorHsl[1] + 0.0f, 0.15f);
-        float[] fArr3 = this.neutral2;
-        fArr3[0] = colorHsl[0];
-        fArr3[1] = Math.min(colorHsl[1] + 0.0f, 0.0f);
+        this.neutral1[0] = colorHsl[0];
+        this.neutral1[1] = Math.min(colorHsl[1] + 0.0f, 0.15f);
+        this.neutral2[0] = colorHsl[0];
+        this.neutral2[1] = Math.min(colorHsl[1] + 0.0f, 0.0f);
         ColorPalette palette = new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2);
         this.mColorPalettes.add(palette.getTable());
         return palette;
     }
 
     private ColorPalette addNeutral(float[] colorHsl) {
-        float[] fArr = this.accent1;
-        fArr[0] = colorHsl[0];
-        fArr[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
+        this.accent1[0] = colorHsl[0];
+        this.accent1[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
         this.accent2[0] = hueMove(colorHsl[0], 2);
         this.accent2[1] = Math.min(colorHsl[1] + 0.0f, 0.1f);
         this.accent3[0] = hueMove(colorHsl[0], 5);
         this.accent3[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
-        float[] fArr2 = this.neutral1;
-        fArr2[0] = colorHsl[0];
-        fArr2[1] = Math.min(colorHsl[1] + 0.0f, GRAY_SAT_PRESET2);
-        float[] fArr3 = this.neutral2;
-        fArr3[0] = colorHsl[0];
-        fArr3[1] = Math.min(colorHsl[1] + 0.0f, 0.0f);
+        this.neutral1[0] = colorHsl[0];
+        this.neutral1[1] = Math.min(colorHsl[1] + 0.0f, GRAY_SAT_PRESET2);
+        this.neutral2[0] = colorHsl[0];
+        this.neutral2[1] = Math.min(colorHsl[1] + 0.0f, 0.0f);
         ColorPalette palette = new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2);
         this.mColorPalettes.add(palette.getTable());
         return palette;
     }
 
     private ColorPalette addVibrant(float[] colorHsl) {
-        float[] fArr = this.accent1;
-        fArr[0] = colorHsl[0];
-        fArr[1] = Math.min(colorHsl[1] + 0.3f, 0.8f);
-        float[] fArr2 = this.accent2;
-        fArr2[0] = colorHsl[0];
-        fArr2[1] = Math.min(colorHsl[1] + 0.0f, 0.6f);
+        this.accent1[0] = colorHsl[0];
+        this.accent1[1] = Math.min(colorHsl[1] + 0.3f, 0.8f);
+        this.accent2[0] = colorHsl[0];
+        this.accent2[1] = Math.min(colorHsl[1] + 0.0f, 0.6f);
         this.accent3[0] = hueMove(colorHsl[0], 1);
         this.accent3[1] = Math.min(colorHsl[1] + 0.1f, 0.6f);
-        float[] fArr3 = this.neutral1;
-        fArr3[0] = colorHsl[0];
-        fArr3[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
-        float[] fArr4 = this.neutral2;
-        fArr4[0] = colorHsl[0];
-        fArr4[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
+        this.neutral1[0] = colorHsl[0];
+        this.neutral1[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
+        this.neutral2[0] = colorHsl[0];
+        this.neutral2[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
         ColorPalette palette = new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2);
         this.mColorPalettes.add(palette.getTable());
         return palette;
@@ -280,67 +245,49 @@ public class ColorPaletteCreator5 extends ColorPaletteCreator {
     private ColorPalette addExpressive(float[] colorHsl, int order) {
         this.accent1[0] = getExpressiveHue(colorHsl[0], order);
         this.accent1[1] = Math.min(colorHsl[1] + 0.0f, 0.7f);
-        float[] fArr = this.accent2;
-        fArr[0] = colorHsl[0];
-        fArr[1] = Math.min(colorHsl[1] + 0.0f, 0.6f);
+        this.accent2[0] = colorHsl[0];
+        this.accent2[1] = Math.min(colorHsl[1] + 0.0f, 0.6f);
         this.accent3[0] = hueMove(colorHsl[0], 1);
         this.accent3[1] = Math.min(colorHsl[1] + 0.0f, 0.4f);
-        float[] fArr2 = this.neutral1;
-        fArr2[0] = colorHsl[0];
-        fArr2[1] = Math.min(colorHsl[1] + 0.0f, 0.3f);
-        float[] fArr3 = this.neutral2;
-        fArr3[0] = colorHsl[0];
-        fArr3[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
+        this.neutral1[0] = colorHsl[0];
+        this.neutral1[1] = Math.min(colorHsl[1] + 0.0f, 0.3f);
+        this.neutral2[0] = colorHsl[0];
+        this.neutral2[1] = Math.min(colorHsl[1] + 0.0f, 0.2f);
         ColorPalette palette = new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2);
         this.mColorPalettes.add(palette.getTable());
         return palette;
     }
 
     public float getExpressiveHue(float hue, int order) {
-        float targetHue;
         int r = findRange(hue);
         float ratio = findRatio(hue, r);
-        int[] iArr = range;
-        int leftRange = (((r - 5) + iArr.length) - 1) % (iArr.length - 1);
+        int leftRange = (((r - 5) + range.length) - 1) % (range.length - 1);
         float leftHue = getHue(leftRange, ratio);
-        int rightRange = (((r + 5) + iArr.length) - 1) % (iArr.length - 1);
+        int rightRange = (((r + 5) + range.length) - 1) % (range.length - 1);
         float rightHue = getHue(rightRange, ratio);
         Log.v(TAG, "getExpressiveHue : leftHue = " + leftHue + " rightHue = " + rightHue + " C" + (order + 1) + " case");
         if (leftHue > rightHue) {
             Log.v(TAG, "getExpressiveHue : leftHue(" + leftHue + ") > c1, c2, c3, c4 > rightHue(" + rightHue + NavigationBarInflaterView.KEY_CODE_END);
-            int i = 0;
-            while (true) {
-                float[][] fArr = this.mColorHsl;
-                if (i >= fArr.length) {
-                    break;
-                }
+            for (int i = 0; i < this.mColorHsl.length; i++) {
                 if (i != order) {
-                    float targetHue2 = fArr[i][0];
-                    if (rightHue < targetHue2 && targetHue2 < leftHue) {
-                        Log.v(TAG, "getExpressiveHue : return seeds C" + (i + 1) + " " + targetHue2);
-                        return targetHue2;
+                    float targetHue = this.mColorHsl[i][0];
+                    if (rightHue < targetHue && targetHue < leftHue) {
+                        Log.v(TAG, "getExpressiveHue : return seeds C" + (i + 1) + " " + targetHue);
+                        return targetHue;
                     }
                 }
-                i++;
             }
         } else {
             Log.v(TAG, "getExpressiveHue : 360 > c1,c2,c3,c4 > rightHue(" + rightHue + ") || 0 < c1,c2,c3,c4 < leftHue(" + leftHue + NavigationBarInflaterView.KEY_CODE_END);
-            int i2 = 0;
-            while (true) {
-                float[][] fArr2 = this.mColorHsl;
-                if (i2 >= fArr2.length) {
-                    break;
-                }
+            for (int i2 = 0; i2 < this.mColorHsl.length; i2++) {
                 if (i2 != order) {
-                    targetHue = fArr2[i2][0];
-                    if ((360.0f > targetHue && targetHue > rightHue) || (leftHue > targetHue && targetHue > 0.0f)) {
-                        break;
+                    float targetHue2 = this.mColorHsl[i2][0];
+                    if ((360.0f > targetHue2 && targetHue2 > rightHue) || (leftHue > targetHue2 && targetHue2 > 0.0f)) {
+                        Log.v(TAG, "getExpressiveHue : return seeds C" + (i2 + 1) + " " + targetHue2);
+                        return targetHue2;
                     }
                 }
-                i2++;
             }
-            Log.v(TAG, "getExpressiveHue : return seeds C" + (i2 + 1) + " " + targetHue);
-            return targetHue;
         }
         return hueMove(hue, -5);
     }

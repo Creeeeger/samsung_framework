@@ -5,12 +5,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CaptureStageImpl implements Parcelable {
     public static final Parcelable.Creator<CaptureStageImpl> CREATOR = new Parcelable.Creator<CaptureStageImpl>() { // from class: android.hardware.camera2.extension.CaptureStageImpl.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CaptureStageImpl createFromParcel(Parcel _aidl_source) {
             CaptureStageImpl _aidl_out = new CaptureStageImpl();
@@ -18,6 +16,7 @@ public class CaptureStageImpl implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CaptureStageImpl[] newArray(int _aidl_size) {
             return new CaptureStageImpl[_aidl_size];
@@ -25,25 +24,6 @@ public class CaptureStageImpl implements Parcelable {
     };
     public int id = 0;
     public CameraMetadataNative parameters;
-
-    /* renamed from: android.hardware.camera2.extension.CaptureStageImpl$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CaptureStageImpl> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CaptureStageImpl createFromParcel(Parcel _aidl_source) {
-            CaptureStageImpl _aidl_out = new CaptureStageImpl();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CaptureStageImpl[] newArray(int _aidl_size) {
-            return new CaptureStageImpl[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

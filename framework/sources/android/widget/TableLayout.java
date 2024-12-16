@@ -80,9 +80,8 @@ public class TableLayout extends LinearLayout {
             this.mShrinkableColumns = new SparseBooleanArray();
         }
         setOrientation(1);
-        PassThroughHierarchyChangeListener passThroughHierarchyChangeListener = new PassThroughHierarchyChangeListener();
-        this.mPassThroughListener = passThroughHierarchyChangeListener;
-        super.setOnHierarchyChangeListener(passThroughHierarchyChangeListener);
+        this.mPassThroughListener = new PassThroughHierarchyChangeListener();
+        super.setOnHierarchyChangeListener(this.mPassThroughListener);
         this.mInitialized = true;
     }
 
@@ -161,6 +160,7 @@ public class TableLayout extends LinearLayout {
         return this.mShrinkAllColumns || this.mShrinkableColumns.get(columnIndex);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void trackCollapsedColumns(View child) {
         if (child instanceof TableRow) {
             TableRow row = (TableRow) child;
@@ -201,17 +201,17 @@ public class TableLayout extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         measureVertical(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         layoutVertical(l, t, r, b);
     }
 
     @Override // android.widget.LinearLayout
-    public void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
+    void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
         if (child instanceof TableRow) {
             ((TableRow) child).setColumnsWidthConstraints(this.mMaxWidths);
         }
@@ -219,7 +219,7 @@ public class TableLayout extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout
-    public void measureVertical(int widthMeasureSpec, int heightMeasureSpec) {
+    void measureVertical(int widthMeasureSpec, int heightMeasureSpec) {
         findLargestCells(widthMeasureSpec, heightMeasureSpec);
         shrinkAndStretchColumns(widthMeasureSpec);
         super.measureVertical(widthMeasureSpec, heightMeasureSpec);
@@ -240,8 +240,7 @@ public class TableLayout extends LinearLayout {
                 int[] widths = row.getColumnsWidths(widthMeasureSpec, heightMeasureSpec);
                 int newLength = widths.length;
                 if (firstRow2) {
-                    int[] iArr = this.mMaxWidths;
-                    if (iArr == null || iArr.length != newLength) {
+                    if (this.mMaxWidths == null || this.mMaxWidths.length != newLength) {
                         this.mMaxWidths = new int[newLength];
                     }
                     System.arraycopy(widths, 0, this.mMaxWidths, 0, newLength);
@@ -253,10 +252,9 @@ public class TableLayout extends LinearLayout {
                         firstRow = firstRow2;
                     } else {
                         int[] oldMaxWidths = this.mMaxWidths;
-                        int[] iArr2 = new int[newLength];
-                        this.mMaxWidths = iArr2;
+                        this.mMaxWidths = new int[newLength];
                         firstRow = firstRow2;
-                        System.arraycopy(oldMaxWidths, 0, iArr2, 0, oldMaxWidths.length);
+                        System.arraycopy(oldMaxWidths, 0, this.mMaxWidths, 0, oldMaxWidths.length);
                         System.arraycopy(widths, oldMaxWidths.length, this.mMaxWidths, oldMaxWidths.length, difference);
                     }
                     int[] maxWidths = this.mMaxWidths;
@@ -273,12 +271,11 @@ public class TableLayout extends LinearLayout {
     }
 
     private void shrinkAndStretchColumns(int widthMeasureSpec) {
-        int[] iArr = this.mMaxWidths;
-        if (iArr == null) {
+        if (this.mMaxWidths == null) {
             return;
         }
         int totalWidth = 0;
-        for (int width : iArr) {
+        for (int width : this.mMaxWidths) {
             totalWidth += width;
         }
         int size = (View.MeasureSpec.getSize(widthMeasureSpec) - this.mPaddingLeft) - this.mPaddingRight;
@@ -342,16 +339,18 @@ public class TableLayout extends LinearLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams();
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
@@ -362,7 +361,6 @@ public class TableLayout extends LinearLayout {
         return TableLayout.class.getName();
     }
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends LinearLayout.LayoutParams {
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
@@ -404,13 +402,8 @@ public class TableLayout extends LinearLayout {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class PassThroughHierarchyChangeListener implements ViewGroup.OnHierarchyChangeListener {
+    private class PassThroughHierarchyChangeListener implements ViewGroup.OnHierarchyChangeListener {
         private ViewGroup.OnHierarchyChangeListener mOnHierarchyChangeListener;
-
-        /* synthetic */ PassThroughHierarchyChangeListener(TableLayout tableLayout, PassThroughHierarchyChangeListenerIA passThroughHierarchyChangeListenerIA) {
-            this();
-        }
 
         private PassThroughHierarchyChangeListener() {
         }
@@ -418,17 +411,15 @@ public class TableLayout extends LinearLayout {
         @Override // android.view.ViewGroup.OnHierarchyChangeListener
         public void onChildViewAdded(View parent, View child) {
             TableLayout.this.trackCollapsedColumns(child);
-            ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener = this.mOnHierarchyChangeListener;
-            if (onHierarchyChangeListener != null) {
-                onHierarchyChangeListener.onChildViewAdded(parent, child);
+            if (this.mOnHierarchyChangeListener != null) {
+                this.mOnHierarchyChangeListener.onChildViewAdded(parent, child);
             }
         }
 
         @Override // android.view.ViewGroup.OnHierarchyChangeListener
         public void onChildViewRemoved(View parent, View child) {
-            ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener = this.mOnHierarchyChangeListener;
-            if (onHierarchyChangeListener != null) {
-                onHierarchyChangeListener.onChildViewRemoved(parent, child);
+            if (this.mOnHierarchyChangeListener != null) {
+                this.mOnHierarchyChangeListener.onChildViewRemoved(parent, child);
             }
         }
     }

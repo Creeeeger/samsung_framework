@@ -3,11 +3,16 @@ package com.samsung.vekit.External;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.Surface;
+import com.samsung.vekit.Common.Object.AnalyzeInfo;
 import com.samsung.vekit.Common.Object.DoodlePoint;
 import com.samsung.vekit.Common.Object.DoodleStroke;
 import com.samsung.vekit.Common.Object.Element;
 import com.samsung.vekit.Common.Object.ExportInfo;
 import com.samsung.vekit.Common.Object.FrcSupportInfo;
+import com.samsung.vekit.Common.Object.PVDetectionInfo;
+import com.samsung.vekit.Common.Object.PVKeyFrame;
+import com.samsung.vekit.Common.Object.PreviewInfo;
+import com.samsung.vekit.Common.Type.AnalyzeType;
 import com.samsung.vekit.Common.Type.ElementType;
 import com.samsung.vekit.Common.Type.FrameworkType;
 import com.samsung.vekit.Common.Type.SeekType;
@@ -43,6 +48,16 @@ public class NativeInterface {
 
     public native Bitmap captureStaticDoodle(Element element, int i, int i2);
 
+    public native Bitmap captureSuperHDRFrame(Element element, int i, int i2, int i3, int i4);
+
+    public native void changePortraitVideoFocus(Element element, int i, int i2);
+
+    public native void changePortraitVideoFocus(Element element, PVDetectionInfo pVDetectionInfo);
+
+    public native void changePortraitVideoKeyFrame(Element element, PVKeyFrame pVKeyFrame);
+
+    public native void changePortraitVideoKeyFrameList(Element element, ArrayList<PVKeyFrame> arrayList);
+
     public native void clear(Element element);
 
     public native void clearAnimations(Element element);
@@ -50,6 +65,8 @@ public class NativeInterface {
     public native void create(Element element);
 
     public native void createFramework(VEController vEController);
+
+    public native void deletePortraitVideoKeyFrame(Element element, int i);
 
     public native void detach(Element element, int i);
 
@@ -63,6 +80,8 @@ public class NativeInterface {
 
     public native void finishDoodle(Element element);
 
+    public native long getCurrentAnalyzedPosition();
+
     public native long getCurrentMediaPosition();
 
     public native long getExportPosition();
@@ -71,9 +90,13 @@ public class NativeInterface {
 
     public native void initializeFramework(Surface surface, int i, int i2, int i3, int i4, ViewMode viewMode, FrameworkType frameworkType);
 
+    public native void loadAnalyzeSolution(AnalyzeType analyzeType);
+
     public native void loadDoodle(Element element);
 
     public native void pause();
+
+    public native long pauseAnalyze();
 
     public native long pauseExport();
 
@@ -83,21 +106,33 @@ public class NativeInterface {
 
     public native void remove(ElementType elementType, int i);
 
+    public native void resumeAnalyze(long j);
+
     public native void resumeExport(long j);
 
     public native void saveDoodle(Element element);
 
     public native void seekTo(long j, SeekType seekType);
 
+    public native void setAnalyzeInfo(AnalyzeInfo analyzeInfo);
+
     public native void setExportInfo(ExportInfo exportInfo);
 
+    public native void setPreviewInfo(PreviewInfo previewInfo);
+
     public native void show();
+
+    public native void startAnalyze();
 
     public native void startDoodle(Element element, DoodleStroke doodleStroke);
 
     public native void stop();
 
+    public native void stopAnalyze();
+
     public native void swap(Element element, int i, int i2);
+
+    public native void unloadAnalyzeSolution(AnalyzeType analyzeType);
 
     public native void update(Element element);
 
@@ -113,14 +148,13 @@ public class NativeInterface {
 
     public static synchronized NativeInterface getInstance() {
         synchronized (NativeInterface.class) {
-            HashMap<Integer, NativeInterface> hashMap = sInstances;
-            int size = hashMap.size();
+            int size = sInstances.size();
             if (size < 1) {
+                sInstances.put(sInstanceIdCnt, new NativeInterface(sInstanceIdCnt.intValue()));
+                HashMap<Integer, NativeInterface> hashMap = sInstances;
                 Integer num = sInstanceIdCnt;
-                hashMap.put(num, new NativeInterface(num.intValue()));
-                Integer num2 = sInstanceIdCnt;
-                sInstanceIdCnt = Integer.valueOf(num2.intValue() + 1);
-                return hashMap.get(num2);
+                sInstanceIdCnt = Integer.valueOf(sInstanceIdCnt.intValue() + 1);
+                return hashMap.get(num);
             }
             Log.e("NativeInterface", "ERROR already Max native interface instances(" + size + ") running");
             return null;

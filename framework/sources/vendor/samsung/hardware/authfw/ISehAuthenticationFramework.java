@@ -22,7 +22,6 @@ public interface ISehAuthenticationFramework extends IInterface {
 
     boolean terminate(int i) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehAuthenticationFramework {
         @Override // vendor.samsung.hardware.authfw.ISehAuthenticationFramework
         public boolean load(int trustedAppType, byte[] fileBuffer) throws RemoteException {
@@ -55,7 +54,6 @@ public interface ISehAuthenticationFramework extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehAuthenticationFramework {
         static final int TRANSACTION_execute = 3;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -90,51 +88,50 @@ public interface ISehAuthenticationFramework extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result = load(_arg0, _arg1);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeBoolean(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = terminate(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeBoolean(_result2);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    byte[] _arg12 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    SehResult _result3 = execute(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result = load(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = terminate(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            byte[] _arg12 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            SehResult _result3 = execute(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehAuthenticationFramework {
+        private static class Proxy implements ISehAuthenticationFramework {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

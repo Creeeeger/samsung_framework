@@ -53,9 +53,8 @@ public class JCEECPublicKey implements ECPublicKey, com.android.internal.org.bou
     public JCEECPublicKey(String algorithm, ECPublicKeySpec spec) {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.algorithm = algorithm;
-        ECParameterSpec params = spec.getParams();
-        this.ecSpec = params;
-        this.q = EC5Util.convertPoint(params, spec.getW());
+        this.ecSpec = spec.getParams();
+        this.q = EC5Util.convertPoint(this.ecSpec, spec.getW());
     }
 
     public JCEECPublicKey(String algorithm, com.android.internal.org.bouncycastle.jce.spec.ECPublicKeySpec spec) {
@@ -116,9 +115,8 @@ public class JCEECPublicKey implements ECPublicKey, com.android.internal.org.bou
     public JCEECPublicKey(ECPublicKey key) {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.algorithm = key.getAlgorithm();
-        ECParameterSpec params = key.getParams();
-        this.ecSpec = params;
-        this.q = EC5Util.convertPoint(params, key.getW());
+        this.ecSpec = key.getParams();
+        this.q = EC5Util.convertPoint(this.ecSpec, key.getW());
     }
 
     JCEECPublicKey(SubjectPublicKeyInfo info) {
@@ -175,17 +173,16 @@ public class JCEECPublicKey implements ECPublicKey, com.android.internal.org.bou
     @Override // java.security.Key
     public byte[] getEncoded() {
         ASN1Encodable params;
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec instanceof ECNamedCurveSpec) {
-            ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(((ECNamedCurveSpec) eCParameterSpec).getName());
+        if (this.ecSpec instanceof ECNamedCurveSpec) {
+            ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(((ECNamedCurveSpec) this.ecSpec).getName());
             if (curveOid == null) {
                 curveOid = new ASN1ObjectIdentifier(((ECNamedCurveSpec) this.ecSpec).getName());
             }
             params = new X962Parameters(curveOid);
-        } else if (eCParameterSpec == null) {
+        } else if (this.ecSpec == null) {
             params = new X962Parameters((ASN1Null) DERNull.INSTANCE);
         } else {
-            ECCurve curve = EC5Util.convertCurve(eCParameterSpec.getCurve());
+            ECCurve curve = EC5Util.convertCurve(this.ecSpec.getCurve());
             X9ECParameters ecP = new X9ECParameters(curve, new X9ECPoint(EC5Util.convertPoint(curve, this.ecSpec.getGenerator()), this.withCompression), this.ecSpec.getOrder(), BigInteger.valueOf(this.ecSpec.getCofactor()), this.ecSpec.getCurve().getSeed());
             params = new X962Parameters(ecP);
         }
@@ -213,11 +210,10 @@ public class JCEECPublicKey implements ECPublicKey, com.android.internal.org.bou
 
     @Override // com.android.internal.org.bouncycastle.jce.interfaces.ECKey
     public com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec getParameters() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec == null) {
+        if (this.ecSpec == null) {
             return null;
         }
-        return EC5Util.convertSpec(eCParameterSpec);
+        return EC5Util.convertSpec(this.ecSpec);
     }
 
     @Override // java.security.interfaces.ECPublicKey
@@ -238,9 +234,8 @@ public class JCEECPublicKey implements ECPublicKey, com.android.internal.org.bou
     }
 
     com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec engineGetSpec() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec != null) {
-            return EC5Util.convertSpec(eCParameterSpec);
+        if (this.ecSpec != null) {
+            return EC5Util.convertSpec(this.ecSpec);
         }
         return BouncyCastleProvider.CONFIGURATION.getEcImplicitlyCa();
     }

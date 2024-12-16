@@ -15,9 +15,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public final class FactoryResetProtectionPolicy implements Parcelable {
     private static final String ATTR_VALUE = "value";
     public static final Parcelable.Creator<FactoryResetProtectionPolicy> CREATOR = new Parcelable.Creator<FactoryResetProtectionPolicy>() { // from class: android.app.admin.FactoryResetProtectionPolicy.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FactoryResetProtectionPolicy createFromParcel(Parcel in) {
             List<String> factoryResetProtectionAccounts = new ArrayList<>();
@@ -29,6 +27,7 @@ public final class FactoryResetProtectionPolicy implements Parcelable {
             return new FactoryResetProtectionPolicy(factoryResetProtectionAccounts, factoryResetProtectionEnabled);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FactoryResetProtectionPolicy[] newArray(int size) {
             return new FactoryResetProtectionPolicy[size];
@@ -39,10 +38,6 @@ public final class FactoryResetProtectionPolicy implements Parcelable {
     private static final String LOG_TAG = "FactoryResetProtectionPolicy";
     private final List<String> mFactoryResetProtectionAccounts;
     private final boolean mFactoryResetProtectionEnabled;
-
-    /* synthetic */ FactoryResetProtectionPolicy(List list, boolean z, FactoryResetProtectionPolicyIA factoryResetProtectionPolicyIA) {
-        this(list, z);
-    }
 
     private FactoryResetProtectionPolicy(List<String> factoryResetProtectionAccounts, boolean factoryResetProtectionEnabled) {
         this.mFactoryResetProtectionAccounts = factoryResetProtectionAccounts;
@@ -57,7 +52,6 @@ public final class FactoryResetProtectionPolicy implements Parcelable {
         return this.mFactoryResetProtectionEnabled;
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private List<String> mFactoryResetProtectionAccounts;
         private boolean mFactoryResetProtectionEnabled = true;
@@ -94,29 +88,6 @@ public final class FactoryResetProtectionPolicy implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.app.admin.FactoryResetProtectionPolicy$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FactoryResetProtectionPolicy> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FactoryResetProtectionPolicy createFromParcel(Parcel in) {
-            List<String> factoryResetProtectionAccounts = new ArrayList<>();
-            int accountsCount = in.readInt();
-            for (int i = 0; i < accountsCount; i++) {
-                factoryResetProtectionAccounts.add(in.readString());
-            }
-            boolean factoryResetProtectionEnabled = in.readBoolean();
-            return new FactoryResetProtectionPolicy(factoryResetProtectionAccounts, factoryResetProtectionEnabled);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FactoryResetProtectionPolicy[] newArray(int size) {
-            return new FactoryResetProtectionPolicy[size];
-        }
     }
 
     public static FactoryResetProtectionPolicy readFromXml(TypedXmlPullParser parser) {

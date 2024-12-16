@@ -32,9 +32,7 @@ public final class BrightnessConfiguration implements Parcelable {
     private static final String ATTR_NITS = "nits";
     private static final String ATTR_PACKAGE_NAME = "package-name";
     public static final Parcelable.Creator<BrightnessConfiguration> CREATOR = new Parcelable.Creator<BrightnessConfiguration>() { // from class: android.hardware.display.BrightnessConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessConfiguration createFromParcel(Parcel in) {
             float[] lux = in.createFloatArray();
@@ -62,6 +60,7 @@ public final class BrightnessConfiguration implements Parcelable {
             return builder.build();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessConfiguration[] newArray(int size) {
             return new BrightnessConfiguration[size];
@@ -83,10 +82,6 @@ public final class BrightnessConfiguration implements Parcelable {
     private final float mShortTermModelUpperLuxMultiplier;
     private final boolean mShouldCollectColorSamples;
 
-    /* synthetic */ BrightnessConfiguration(float[] fArr, float[] fArr2, Map map, Map map2, String str, boolean z, long j, float f, float f2, BrightnessConfigurationIA brightnessConfigurationIA) {
-        this(fArr, fArr2, map, map2, str, z, j, f, f2);
-    }
-
     private BrightnessConfiguration(float[] lux, float[] nits, Map<String, BrightnessCorrection> correctionsByPackageName, Map<Integer, BrightnessCorrection> correctionsByCategory, String description, boolean shouldCollectColorSamples, long shortTermModelTimeout, float shortTermModelLowerLuxMultiplier, float shortTermModelUpperLuxMultiplier) {
         this.mLux = lux;
         this.mNits = nits;
@@ -100,10 +95,7 @@ public final class BrightnessConfiguration implements Parcelable {
     }
 
     public Pair<float[], float[]> getCurve() {
-        float[] fArr = this.mLux;
-        float[] copyOf = Arrays.copyOf(fArr, fArr.length);
-        float[] fArr2 = this.mNits;
-        return Pair.create(copyOf, Arrays.copyOf(fArr2, fArr2.length));
+        return Pair.create(Arrays.copyOf(this.mLux, this.mLux.length), Arrays.copyOf(this.mNits, this.mNits.length));
     }
 
     public BrightnessCorrection getCorrectionByPackageName(String packageName) {
@@ -181,9 +173,8 @@ public final class BrightnessConfiguration implements Parcelable {
             sb.append(entry2.getKey() + ": " + entry2.getValue() + ", ");
         }
         sb.append("}, '");
-        String str = this.mDescription;
-        if (str != null) {
-            sb.append(str);
+        if (this.mDescription != null) {
+            sb.append(this.mDescription);
         }
         sb.append(", shouldCollectColorSamples = " + this.mShouldCollectColorSamples);
         if (this.mShortTermModelTimeout >= 0) {
@@ -201,9 +192,8 @@ public final class BrightnessConfiguration implements Parcelable {
 
     public int hashCode() {
         int result = (((((((1 * 31) + Arrays.hashCode(this.mLux)) * 31) + Arrays.hashCode(this.mNits)) * 31) + this.mCorrectionsByPackageName.hashCode()) * 31) + this.mCorrectionsByCategory.hashCode();
-        String str = this.mDescription;
-        if (str != null) {
-            result = (result * 31) + str.hashCode();
+        if (this.mDescription != null) {
+            result = (result * 31) + this.mDescription.hashCode();
         }
         return (((((((result * 31) + Boolean.hashCode(this.mShouldCollectColorSamples)) * 31) + Long.hashCode(this.mShortTermModelTimeout)) * 31) + Float.hashCode(this.mShortTermModelLowerLuxMultiplier)) * 31) + Float.hashCode(this.mShortTermModelUpperLuxMultiplier);
     }
@@ -223,50 +213,10 @@ public final class BrightnessConfiguration implements Parcelable {
         return (Float.isNaN(one) && Float.isNaN(two)) || one == two;
     }
 
-    /* renamed from: android.hardware.display.BrightnessConfiguration$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BrightnessConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrightnessConfiguration createFromParcel(Parcel in) {
-            float[] lux = in.createFloatArray();
-            float[] nits = in.createFloatArray();
-            Builder builder = new Builder(lux, nits);
-            int n = in.readInt();
-            for (int i = 0; i < n; i++) {
-                String packageName = in.readString();
-                BrightnessCorrection correction = BrightnessCorrection.CREATOR.createFromParcel(in);
-                builder.addCorrectionByPackageName(packageName, correction);
-            }
-            int n2 = in.readInt();
-            for (int i2 = 0; i2 < n2; i2++) {
-                int category = in.readInt();
-                BrightnessCorrection correction2 = BrightnessCorrection.CREATOR.createFromParcel(in);
-                builder.addCorrectionByCategory(category, correction2);
-            }
-            String description = in.readString();
-            builder.setDescription(description);
-            boolean shouldCollectColorSamples = in.readBoolean();
-            builder.setShouldCollectColorSamples(shouldCollectColorSamples);
-            builder.setShortTermModelTimeoutMillis(in.readLong());
-            builder.setShortTermModelLowerLuxMultiplier(in.readFloat());
-            builder.setShortTermModelUpperLuxMultiplier(in.readFloat());
-            return builder.build();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BrightnessConfiguration[] newArray(int size) {
-            return new BrightnessConfiguration[size];
-        }
-    }
-
     public void saveToXml(TypedXmlSerializer serializer) throws IOException {
         serializer.startTag(null, TAG_BRIGHTNESS_CURVE);
-        String str = this.mDescription;
-        if (str != null) {
-            serializer.attribute(null, "description", str);
+        if (this.mDescription != null) {
+            serializer.attribute(null, "description", this.mDescription);
         }
         for (int i = 0; i < this.mLux.length; i++) {
             serializer.startTag(null, TAG_BRIGHTNESS_POINT);
@@ -288,7 +238,7 @@ public final class BrightnessConfiguration implements Parcelable {
             int category = entry2.getKey().intValue();
             BrightnessCorrection correction2 = entry2.getValue();
             serializer.startTag(null, TAG_BRIGHTNESS_CORRECTION);
-            serializer.attributeInt(null, "category", category);
+            serializer.attributeInt(null, ATTR_CATEGORY, category);
             correction2.saveToXml(serializer);
             serializer.endTag(null, TAG_BRIGHTNESS_CORRECTION);
         }
@@ -297,9 +247,8 @@ public final class BrightnessConfiguration implements Parcelable {
         if (this.mShouldCollectColorSamples) {
             serializer.attributeBoolean(null, ATTR_COLLECT_COLOR, true);
         }
-        long j = this.mShortTermModelTimeout;
-        if (j >= 0) {
-            serializer.attributeLong(null, ATTR_MODEL_TIMEOUT, j);
+        if (this.mShortTermModelTimeout >= 0) {
+            serializer.attributeLong(null, ATTR_MODEL_TIMEOUT, this.mShortTermModelTimeout);
         }
         if (!Float.isNaN(this.mShortTermModelLowerLuxMultiplier)) {
             serializer.attributeFloat(null, ATTR_MODEL_LOWER_BOUND, this.mShortTermModelLowerLuxMultiplier);
@@ -342,7 +291,7 @@ public final class BrightnessConfiguration implements Parcelable {
                         if (TAG_BRIGHTNESS_CORRECTION.equals(parser.getName())) {
                             String packageName = parser.getAttributeValue(str, ATTR_PACKAGE_NAME);
                             int configDepth3 = configDepth2;
-                            int category = parser.getAttributeInt(str, "category", -1);
+                            int category = parser.getAttributeInt(str, ATTR_CATEGORY, -1);
                             BrightnessCorrection correction = BrightnessCorrection.loadFromXml(parser);
                             if (packageName != null) {
                                 correctionsByPackageName.put(packageName, correction);
@@ -414,7 +363,6 @@ public final class BrightnessConfiguration implements Parcelable {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private static final int MAX_CORRECTIONS_BY_CATEGORY = 20;
         private static final int MAX_CORRECTIONS_BY_PACKAGE_NAME = 20;

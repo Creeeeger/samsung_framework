@@ -14,7 +14,6 @@ public class WindowContextController {
     private final WindowTokenClient mToken;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface AttachStatus {
         public static final int STATUS_ATTACHED = 1;
         public static final int STATUS_DETACHED = 2;
@@ -30,9 +29,8 @@ public class WindowContextController {
         if (this.mAttachedToDisplayArea == 1) {
             throw new IllegalStateException("A Window Context can be only attached to a DisplayArea once.");
         }
-        int i = this.mToken.attachToDisplayArea(type, displayId, options) ? 1 : 3;
-        this.mAttachedToDisplayArea = i;
-        if (i == 3) {
+        this.mAttachedToDisplayArea = getWindowTokenClientController().attachToDisplayArea(this.mToken, type, displayId, options) ? 1 : 3;
+        if (this.mAttachedToDisplayArea == 3) {
             Log.w(TAG, "attachToDisplayArea fail, type:" + type + ", displayId:" + displayId);
         }
     }
@@ -41,13 +39,19 @@ public class WindowContextController {
         if (this.mAttachedToDisplayArea != 1) {
             throw new IllegalStateException("The Window Context should have been attached to a DisplayArea. AttachToDisplayArea:" + this.mAttachedToDisplayArea);
         }
-        this.mToken.attachToWindowToken(windowToken);
+        if (!getWindowTokenClientController().attachToWindowToken(this.mToken, windowToken)) {
+            Log.e(TAG, "attachToWindowToken fail");
+        }
     }
 
     public void detachIfNeeded() {
         if (this.mAttachedToDisplayArea == 1) {
-            this.mToken.detachFromWindowContainerIfNeeded();
+            getWindowTokenClientController().detachIfNeeded(this.mToken);
             this.mAttachedToDisplayArea = 2;
         }
+    }
+
+    public WindowTokenClientController getWindowTokenClientController() {
+        return WindowTokenClientController.getInstance();
     }
 }

@@ -9,6 +9,7 @@ import com.android.internal.util.BitUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.IntFunction;
 
@@ -91,31 +92,25 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
     public StackTraceElement[] originStackTrace = null;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ContentChangeTypes {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface EventType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface SpeechStateChangeTypes {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface WindowsChangeTypes {
     }
 
     static {
         DEBUG = Log.isLoggable(LOG_TAG, 3) && Build.IS_DEBUGGABLE;
         CREATOR = new Parcelable.Creator<AccessibilityEvent>() { // from class: android.view.accessibility.AccessibilityEvent.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AccessibilityEvent createFromParcel(Parcel parcel) {
                 AccessibilityEvent event = new AccessibilityEvent();
@@ -123,6 +118,7 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
                 return event;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AccessibilityEvent[] newArray(int size) {
                 return new AccessibilityEvent[size];
@@ -151,12 +147,11 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         this.mWindowChangeTypes = event.mWindowChangeTypes;
         this.mEventTime = event.mEventTime;
         this.mPackageName = event.mPackageName;
-        ArrayList<AccessibilityRecord> arrayList = event.mRecords;
-        if (arrayList != null) {
-            int recordCount = arrayList.size();
-            this.mRecords = new ArrayList<>(recordCount);
-            for (int i = 0; i < recordCount; i++) {
-                AccessibilityRecord record = event.mRecords.get(i);
+        if (event.mRecords != null) {
+            this.mRecords = new ArrayList<>(event.mRecords.size());
+            Iterator<AccessibilityRecord> it = event.mRecords.iterator();
+            while (it.hasNext()) {
+                AccessibilityRecord record = it.next();
                 AccessibilityRecord recordClone = new AccessibilityRecord(record);
                 this.mRecords.add(recordClone);
             }
@@ -168,20 +163,17 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         super.setSealed(sealed);
         List<AccessibilityRecord> records = this.mRecords;
         if (records != null) {
-            int recordCount = records.size();
-            for (int i = 0; i < recordCount; i++) {
-                AccessibilityRecord record = records.get(i);
+            for (AccessibilityRecord record : records) {
                 record.setSealed(sealed);
             }
         }
     }
 
     public int getRecordCount() {
-        ArrayList<AccessibilityRecord> arrayList = this.mRecords;
-        if (arrayList == null) {
+        if (this.mRecords == null) {
             return 0;
         }
-        return arrayList.size();
+        return this.mRecords.size();
     }
 
     public void appendRecord(AccessibilityRecord record) {
@@ -193,11 +185,10 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
     }
 
     public AccessibilityRecord getRecord(int index) {
-        ArrayList<AccessibilityRecord> arrayList = this.mRecords;
-        if (arrayList == null) {
+        if (this.mRecords == null) {
             throw new IndexOutOfBoundsException("Invalid index " + index + ", size is 0");
         }
-        return arrayList.get(index);
+        return this.mRecords.get(index);
     }
 
     public int getEventType() {
@@ -219,6 +210,7 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String singleContentChangeTypeToString(int type) {
         switch (type) {
             case 0:
@@ -274,7 +266,7 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
     }
 
     private static String speechStateChangeTypesToString(int types) {
-        return BitUtils.flagsToString(types, new IntFunction() { // from class: android.view.accessibility.AccessibilityEvent$$ExternalSyntheticLambda1
+        return BitUtils.flagsToString(types, new IntFunction() { // from class: android.view.accessibility.AccessibilityEvent$$ExternalSyntheticLambda0
             @Override // java.util.function.IntFunction
             public final Object apply(int i) {
                 String singleSpeechStateChangeTypeToString;
@@ -284,6 +276,7 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String singleSpeechStateChangeTypeToString(int type) {
         switch (type) {
             case 1:
@@ -313,7 +306,7 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
     }
 
     private static String windowChangeTypesToString(int types) {
-        return BitUtils.flagsToString(types, new IntFunction() { // from class: android.view.accessibility.AccessibilityEvent$$ExternalSyntheticLambda0
+        return BitUtils.flagsToString(types, new IntFunction() { // from class: android.view.accessibility.AccessibilityEvent$$ExternalSyntheticLambda1
             @Override // java.util.function.IntFunction
             public final Object apply(int i) {
                 String singleWindowChangeTypeToString;
@@ -323,6 +316,7 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String singleWindowChangeTypeToString(int type) {
         switch (type) {
             case 1:
@@ -427,7 +421,7 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
     }
 
     @Override // android.view.accessibility.AccessibilityRecord
-    public void clear() {
+    protected void clear() {
         super.clear();
         this.mEventType = 0;
         this.mMovementGranularity = 0;
@@ -554,10 +548,9 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         builder.append("; ContentChangeTypes: ").append(contentChangeTypesToString(this.mContentChangeTypes));
         builder.append("; WindowChangeTypes: ").append(windowChangeTypesToString(this.mWindowChangeTypes));
         super.appendTo(builder);
-        boolean z = DEBUG;
-        if (z) {
+        if (DEBUG) {
             builder.append("\n");
-            if (z) {
+            if (DEBUG) {
                 builder.append("; SourceWindowId: 0x").append(Long.toHexString(this.mSourceWindowId));
                 builder.append("; SourceNodeId: 0x").append(Long.toHexString(this.mSourceNodeId));
                 builder.append("; SourceDisplayId: ").append(this.mSourceDisplayId);
@@ -652,25 +645,6 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
                 return "TYPE_VIEW_TARGETED_BY_SCROLL";
             default:
                 return Integer.toHexString(eventType);
-        }
-    }
-
-    /* renamed from: android.view.accessibility.AccessibilityEvent$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccessibilityEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityEvent createFromParcel(Parcel parcel) {
-            AccessibilityEvent event = new AccessibilityEvent();
-            event.initFromParcel(parcel);
-            return event;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityEvent[] newArray(int size) {
-            return new AccessibilityEvent[size];
         }
     }
 }

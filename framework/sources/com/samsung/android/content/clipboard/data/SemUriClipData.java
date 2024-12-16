@@ -130,13 +130,8 @@ public class SemUriClipData extends SemClipData {
         return false;
     }
 
-    /* loaded from: classes5.dex */
-    public static class ImageFileFilter implements FileFilter {
+    private static class ImageFileFilter implements FileFilter {
         private final String[] extensions;
-
-        /* synthetic */ ImageFileFilter(ImageFileFilterIA imageFileFilterIA) {
-            this();
-        }
 
         private ImageFileFilter() {
             this.extensions = new String[]{"jpg", "png", "gif", "jpeg"};
@@ -208,8 +203,7 @@ public class SemUriClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     public void convertForRemote() {
-        String str = this.mThumbnailFilePath;
-        String imageName = str.substring(str.lastIndexOf("/"));
+        String imageName = this.mThumbnailFilePath.substring(this.mThumbnailFilePath.lastIndexOf("/"));
         if (setThumbnailPath(ClipboardConstants.CLIPBOARD_REMOTE_PATH + imageName)) {
             Log.d(TAG, "success converting");
         }

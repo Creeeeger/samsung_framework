@@ -12,7 +12,6 @@ import java.util.List;
 public interface ICacheQuotaService extends IInterface {
     void computeCacheQuotaHints(RemoteCallback remoteCallback, List<CacheQuotaHint> list) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICacheQuotaService {
         @Override // android.app.usage.ICacheQuotaService
         public void computeCacheQuotaHints(RemoteCallback callback, List<CacheQuotaHint> requests) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICacheQuotaService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICacheQuotaService {
         public static final String DESCRIPTOR = "android.app.usage.ICacheQuotaService";
         static final int TRANSACTION_computeCacheQuotaHints = 1;
@@ -68,25 +66,22 @@ public interface ICacheQuotaService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    RemoteCallback _arg0 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    List<CacheQuotaHint> _arg1 = data.createTypedArrayList(CacheQuotaHint.CREATOR);
+                    data.enforceNoDataAvail();
+                    computeCacheQuotaHints(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RemoteCallback _arg0 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            List<CacheQuotaHint> _arg1 = data.createTypedArrayList(CacheQuotaHint.CREATOR);
-                            data.enforceNoDataAvail();
-                            computeCacheQuotaHints(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements ICacheQuotaService {
             private IBinder mRemote;
 

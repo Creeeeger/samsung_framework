@@ -33,7 +33,7 @@ public class BaseInputConnection implements InputConnection {
     static final Object COMPOSING = new ComposingText();
     private static int INVALID_INDEX = -1;
 
-    public BaseInputConnection(InputMethodManager mgr, boolean fullEditor) {
+    BaseInputConnection(InputMethodManager mgr, boolean fullEditor) {
         this.mIMM = mgr;
         this.mTargetView = null;
         this.mFallbackMode = !fullEditor;
@@ -90,9 +90,8 @@ public class BaseInputConnection implements InputConnection {
 
     public Editable getEditable() {
         if (this.mEditable == null) {
-            Editable newEditable = Editable.Factory.getInstance().newEditable("");
-            this.mEditable = newEditable;
-            Selection.setSelection(newEditable, 0);
+            this.mEditable = Editable.Factory.getInstance().newEditable("");
+            Selection.setSelection(this.mEditable, 0);
         }
         return this.mEditable;
     }
@@ -514,14 +513,8 @@ public class BaseInputConnection implements InputConnection {
             }
             ensureDefaultComposingSpans();
             if (this.mDefaultComposingSpans != null) {
-                int i = 0;
-                while (true) {
-                    Object[] objArr = this.mDefaultComposingSpans;
-                    if (i >= objArr.length) {
-                        break;
-                    }
-                    content.setSpan(objArr[i], a, b, 289);
-                    i++;
+                for (int i = 0; i < this.mDefaultComposingSpans.length; i++) {
+                    content.setSpan(this.mDefaultComposingSpans[i], a, b, 289);
                 }
             }
             content.setSpan(COMPOSING, a, b, 289);
@@ -591,9 +584,8 @@ public class BaseInputConnection implements InputConnection {
     private void ensureDefaultComposingSpans() {
         Context context;
         if (this.mDefaultComposingSpans == null) {
-            View view = this.mTargetView;
-            if (view != null) {
-                context = view.getContext();
+            if (this.mTargetView != null) {
+                context = this.mTargetView.getContext();
             } else {
                 context = this.mIMM.getFallbackContextFromServedView();
             }
@@ -676,14 +668,8 @@ public class BaseInputConnection implements InputConnection {
                 text = sp;
                 ensureDefaultComposingSpans();
                 if (this.mDefaultComposingSpans != null) {
-                    int i = 0;
-                    while (true) {
-                        Object[] objArr = this.mDefaultComposingSpans;
-                        if (i >= objArr.length) {
-                            break;
-                        }
-                        sp.setSpan(objArr[i], 0, sp.length(), 289);
-                        i++;
+                    for (int i = 0; i < this.mDefaultComposingSpans.length; i++) {
+                        sp.setSpan(this.mDefaultComposingSpans[i], 0, sp.length(), 289);
                     }
                 }
             } else {

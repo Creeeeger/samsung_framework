@@ -26,20 +26,18 @@ public abstract class FileObserver {
     public static final int MOVED_TO = 128;
     public static final int MOVE_SELF = 2048;
     public static final int OPEN = 32;
-    private static ObserverThread s_observerThread;
+    private static ObserverThread s_observerThread = new ObserverThread();
     private int[] mDescriptors;
     private final List<File> mFiles;
     private final int mMask;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface NotifyEventType {
     }
 
     public abstract void onEvent(int i, String str);
 
-    /* loaded from: classes3.dex */
-    public static class ObserverThread extends Thread {
+    private static class ObserverThread extends Thread {
         private SparseArray<WeakReference> mRealObservers;
         private int m_fd;
         private HashMap<Integer, WeakReference> m_observers;
@@ -107,9 +105,7 @@ public abstract class FileObserver {
     }
 
     static {
-        ObserverThread observerThread = new ObserverThread();
-        s_observerThread = observerThread;
-        observerThread.start();
+        s_observerThread.start();
     }
 
     @Deprecated
@@ -150,9 +146,8 @@ public abstract class FileObserver {
     }
 
     public void stopWatching() {
-        int[] iArr = this.mDescriptors;
-        if (iArr != null) {
-            s_observerThread.stopWatching(iArr);
+        if (this.mDescriptors != null) {
+            s_observerThread.stopWatching(this.mDescriptors);
             this.mDescriptors = null;
         }
     }

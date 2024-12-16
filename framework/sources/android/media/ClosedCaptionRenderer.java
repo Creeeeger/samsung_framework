@@ -14,8 +14,8 @@ public class ClosedCaptionRenderer extends SubtitleController.Renderer {
 
     @Override // android.media.SubtitleController.Renderer
     public boolean supports(MediaFormat format) {
-        if (format.containsKey(MediaFormat.KEY_MIME)) {
-            String mimeType = format.getString(MediaFormat.KEY_MIME);
+        if (format.containsKey("mime")) {
+            String mimeType = format.getString("mime");
             return "text/cea-608".equals(mimeType);
         }
         return false;
@@ -23,7 +23,7 @@ public class ClosedCaptionRenderer extends SubtitleController.Renderer {
 
     @Override // android.media.SubtitleController.Renderer
     public SubtitleTrack createTrack(MediaFormat format) {
-        String mimeType = format.getString(MediaFormat.KEY_MIME);
+        String mimeType = format.getString("mime");
         if ("text/cea-608".equals(mimeType)) {
             if (this.mCCWidget == null) {
                 this.mCCWidget = new Cea608CCWidget(this.mContext);

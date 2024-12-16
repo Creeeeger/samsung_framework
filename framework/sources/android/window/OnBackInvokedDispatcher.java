@@ -12,7 +12,6 @@ public interface OnBackInvokedDispatcher {
     public static final String TAG = "OnBackInvokedDispatcher";
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Priority {
     }
 

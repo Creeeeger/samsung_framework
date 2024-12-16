@@ -5,8 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemProperties;
 import android.os.UserHandle;
-import android.sec.enterprise.auditlog.AuditLog;
-import android.sec.enterprise.auditlog.SecurityLogParser;
 import android.util.EventLog;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -24,6 +22,7 @@ public class SecurityLog {
     public static final int TAG_ADB_SHELL_CMD = 210002;
     public static final int TAG_ADB_SHELL_INTERACTIVE = 210001;
     public static final int TAG_APP_PROCESS_START = 210005;
+    public static final int TAG_BACKUP_SERVICE_TOGGLED = 210044;
     public static final int TAG_BLUETOOTH_CONNECTION = 210039;
     public static final int TAG_BLUETOOTH_DISCONNECTION = 210040;
     public static final int TAG_CAMERA_POLICY_SET = 210034;
@@ -66,16 +65,14 @@ public class SecurityLog {
     public static final int TAG_WIPE_FAILURE = 210023;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SecurityLogLevel {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SecurityLogTag {
     }
 
-    private static native boolean isLoggingEnabledNative();
+    public static native boolean isLoggingEnabled();
 
     public static native void readEvents(Collection<SecurityEvent> collection) throws IOException;
 
@@ -85,11 +82,8 @@ public class SecurityLog {
 
     public static native void readPreviousEvents(Collection<SecurityEvent> collection) throws IOException;
 
-    private static native int writeEventNative(int i, Object... objArr);
-
-    public static boolean isLoggingEnabled() {
-        return AuditLog.isAuditLogEnabledAsUser(-1) || isLoggingEnabledNative();
-    }
+    @SystemApi
+    public static native int writeEvent(int i, Object... objArr);
 
     public static void setLoggingEnabledProperty(boolean enabled) {
         SystemProperties.set(PROPERTY_LOGGING_ENABLED, enabled ? "true" : "false");
@@ -99,17 +93,15 @@ public class SecurityLog {
         return SystemProperties.getBoolean(PROPERTY_LOGGING_ENABLED, false);
     }
 
-    /* loaded from: classes.dex */
     public static final class SecurityEvent implements Parcelable {
         public static final Parcelable.Creator<SecurityEvent> CREATOR = new Parcelable.Creator<SecurityEvent>() { // from class: android.app.admin.SecurityLog.SecurityEvent.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SecurityEvent createFromParcel(Parcel source) {
                 return new SecurityEvent(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SecurityEvent[] newArray(int size) {
                 return new SecurityEvent[size];
@@ -291,23 +283,6 @@ public class SecurityLog {
             dest.writeByteArray(this.mEvent.getBytes());
         }
 
-        /* renamed from: android.app.admin.SecurityLog$SecurityEvent$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SecurityEvent> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SecurityEvent createFromParcel(Parcel source) {
-                return new SecurityEvent(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SecurityEvent[] newArray(int size) {
-                return new SecurityEvent[size];
-            }
-        }
-
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -347,14 +322,5 @@ public class SecurityLog {
         for (int i3 = i2 - 1; i3 >= end; i3--) {
             logList.remove(i3);
         }
-    }
-
-    @SystemApi
-    public static int writeEvent(int tag, Object... payloads) {
-        SecurityLogParser.parse(tag, payloads);
-        if (isLoggingEnabledNative()) {
-            return writeEventNative(tag, payloads);
-        }
-        return 0;
     }
 }

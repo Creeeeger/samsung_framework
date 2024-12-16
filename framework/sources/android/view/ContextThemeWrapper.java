@@ -29,7 +29,7 @@ public class ContextThemeWrapper extends ContextWrapper {
     }
 
     @Override // android.content.ContextWrapper
-    public void attachBaseContext(Context newBase) {
+    protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
     }
 
@@ -59,11 +59,10 @@ public class ContextThemeWrapper extends ContextWrapper {
 
     private Resources getResourcesInternal() {
         if (this.mResources == null) {
-            Configuration configuration = this.mOverrideConfiguration;
-            if (configuration == null) {
+            if (this.mOverrideConfiguration == null) {
                 this.mResources = super.getResources();
             } else {
-                Context resContext = createConfigurationContext(configuration);
+                Context resContext = createConfigurationContext(this.mOverrideConfiguration);
                 this.mResources = resContext.getResources();
             }
         }
@@ -89,9 +88,8 @@ public class ContextThemeWrapper extends ContextWrapper {
 
     @Override // android.content.ContextWrapper, android.content.Context
     public Resources.Theme getTheme() {
-        Resources.Theme theme = this.mTheme;
-        if (theme != null) {
-            return theme;
+        if (this.mTheme != null) {
+            return this.mTheme;
         }
         this.mThemeResource = Resources.selectDefaultTheme(this.mThemeResource, getApplicationInfo().targetSdkVersion);
         initializeTheme();
@@ -109,7 +107,7 @@ public class ContextThemeWrapper extends ContextWrapper {
         return getBaseContext().getSystemService(name);
     }
 
-    public void onApplyThemeResource(Resources.Theme theme, int resId, boolean first) {
+    protected void onApplyThemeResource(Resources.Theme theme, int resId, boolean first) {
         theme.applyStyle(resId, true);
     }
 

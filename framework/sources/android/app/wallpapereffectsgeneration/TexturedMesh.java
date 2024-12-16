@@ -11,14 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class TexturedMesh implements Parcelable {
     public static final Parcelable.Creator<TexturedMesh> CREATOR = new Parcelable.Creator<TexturedMesh>() { // from class: android.app.wallpapereffectsgeneration.TexturedMesh.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TexturedMesh createFromParcel(Parcel in) {
             return new TexturedMesh(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TexturedMesh[] newArray(int size) {
             return new TexturedMesh[size];
@@ -35,21 +34,11 @@ public final class TexturedMesh implements Parcelable {
     private int mVerticesLayoutType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface IndicesLayoutType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface VerticesLayoutType {
-    }
-
-    /* synthetic */ TexturedMesh(Bitmap bitmap, int[] iArr, float[] fArr, int i, int i2, TexturedMeshIA texturedMeshIA) {
-        this(bitmap, iArr, fArr, i, i2);
-    }
-
-    /* synthetic */ TexturedMesh(Parcel parcel, TexturedMeshIA texturedMeshIA) {
-        this(parcel);
     }
 
     private TexturedMesh(Parcel in) {
@@ -96,23 +85,6 @@ public final class TexturedMesh implements Parcelable {
         return this.mVerticesLayoutType;
     }
 
-    /* renamed from: android.app.wallpapereffectsgeneration.TexturedMesh$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TexturedMesh> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TexturedMesh createFromParcel(Parcel in) {
-            return new TexturedMesh(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TexturedMesh[] newArray(int size) {
-            return new TexturedMesh[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.mIndicesLayoutType);
@@ -134,7 +106,6 @@ public final class TexturedMesh implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private Bitmap mBitmap;
         private int[] mIndices;

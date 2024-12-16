@@ -15,7 +15,6 @@ public interface ICarrierPrivilegesCallback extends IInterface {
 
     void onCarrierServiceChanged(String str, int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICarrierPrivilegesCallback {
         @Override // com.android.internal.telephony.ICarrierPrivilegesCallback
         public void onCarrierPrivilegesChanged(List<String> privilegedPackageNames, int[] privilegedUids) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ICarrierPrivilegesCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICarrierPrivilegesCallback {
         static final int TRANSACTION_onCarrierPrivilegesChanged = 1;
         static final int TRANSACTION_onCarrierServiceChanged = 2;
@@ -77,33 +75,29 @@ public interface ICarrierPrivilegesCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICarrierPrivilegesCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICarrierPrivilegesCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICarrierPrivilegesCallback.DESCRIPTOR);
+                case 1:
+                    List<String> _arg0 = data.createStringArrayList();
+                    int[] _arg1 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onCarrierPrivilegesChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCarrierServiceChanged(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<String> _arg0 = data.createStringArrayList();
-                            int[] _arg1 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onCarrierPrivilegesChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCarrierServiceChanged(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICarrierPrivilegesCallback {
+        private static class Proxy implements ICarrierPrivilegesCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

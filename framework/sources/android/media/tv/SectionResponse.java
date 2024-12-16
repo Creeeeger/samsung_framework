@@ -4,18 +4,17 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class SectionResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<SectionResponse> CREATOR = new Parcelable.Creator<SectionResponse>() { // from class: android.media.tv.SectionResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SectionResponse createFromParcel(Parcel source) {
             source.readInt();
             return SectionResponse.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SectionResponse[] newArray(int size) {
             return new SectionResponse[size];
@@ -26,25 +25,7 @@ public final class SectionResponse extends BroadcastInfoResponse implements Parc
     private final int mSessionId;
     private final int mVersion;
 
-    /* renamed from: android.media.tv.SectionResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SectionResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SectionResponse createFromParcel(Parcel source) {
-            source.readInt();
-            return SectionResponse.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SectionResponse[] newArray(int size) {
-            return new SectionResponse[size];
-        }
-    }
-
-    public static SectionResponse createFromParcelBody(Parcel in) {
+    static SectionResponse createFromParcelBody(Parcel in) {
         return new SectionResponse(in);
     }
 

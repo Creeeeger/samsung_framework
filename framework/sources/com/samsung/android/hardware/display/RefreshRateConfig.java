@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class RefreshRateConfig {
     private static final String PROPERTY_AMBIENT_BRIGHTNESS = "persist.dm.passive.ambient_brightness";
     private static final String PROPERTY_DISPLAY_BRIGHTNESS = "persist.dm.passive.display_brightness";
@@ -46,7 +46,7 @@ public final class RefreshRateConfig {
             return sSubInstance;
         }
         if (sInstance == null) {
-            sInstance = createRefreshRateConfig("2", "30,60,120", "", new BrightnessThreshold("102", "250", PROPERTY_DISPLAY_BRIGHTNESS, PROPERTY_AMBIENT_BRIGHTNESS));
+            sInstance = createRefreshRateConfig("3", "24,10,30,48,60,80,120", "", new BrightnessThreshold("", "", PROPERTY_DISPLAY_BRIGHTNESS, PROPERTY_AMBIENT_BRIGHTNESS));
         }
         return sInstance;
     }
@@ -110,16 +110,11 @@ public final class RefreshRateConfig {
         return new SupportedRefreshRate(feature, useDefaultRefreshRate);
     }
 
-    /* loaded from: classes5.dex */
-    public class SupportedRefreshRate {
+    public static class SupportedRefreshRate {
         static final int DEFAULT_REFRESH_RATE = 60;
         private int maxRefreshRate;
         private int minRefreshRate;
         private List<Integer> supportedRefreshRateListForPassive;
-
-        /* synthetic */ SupportedRefreshRate(RefreshRateConfig refreshRateConfig, String str, boolean z, SupportedRefreshRateIA supportedRefreshRateIA) {
-            this(str, z);
-        }
 
         private SupportedRefreshRate(String feature, boolean useDefaultRefreshRate) {
             this.minRefreshRate = Integer.MAX_VALUE;
@@ -146,6 +141,7 @@ public final class RefreshRateConfig {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$new$0(Integer r) {
             return this.maxRefreshRate % r.intValue() == 0;
         }
@@ -172,12 +168,11 @@ public final class RefreshRateConfig {
             }).orElse(Integer.valueOf(refreshRate)).intValue();
         }
 
-        public static /* synthetic */ boolean lambda$getSupportedRefreshRateForPassive$1(int refreshRate, Integer r) {
+        static /* synthetic */ boolean lambda$getSupportedRefreshRateForPassive$1(int refreshRate, Integer r) {
             return r.intValue() >= refreshRate;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class BrightnessThreshold {
         static final int INVALID = -1;
         String mAmbientBrightnessProperties;
@@ -242,32 +237,29 @@ public final class RefreshRateConfig {
             pw.println(prefix + "  SUB_HFR_SUPPORTED_REFRESH_RATE: ");
             pw.println(prefix + "  SUB_HFR_SUPPORTED_REFRESH_RATE_NS: ");
             pw.println(prefix + "  SUB_SEAMLESS_BRT: ");
-            RefreshRateConfig refreshRateConfig = sSubInstance;
-            if (refreshRateConfig != null && refreshRateConfig.getBrightnessThreshold().mDisplayBrightnessProperties != null) {
+            if (sSubInstance != null && sSubInstance.getBrightnessThreshold().mDisplayBrightnessProperties != null) {
                 pw.println(prefix + "  " + PROPERTY_SUB_DISPLAY_BRIGHTNESS + ": " + sSubInstance.getBrightnessThreshold().mDisplayBrightnessProperties);
             }
             pw.println(prefix + "  SUB_SEAMLESS_LUX: ");
-            RefreshRateConfig refreshRateConfig2 = sSubInstance;
-            if (refreshRateConfig2 != null && refreshRateConfig2.getBrightnessThreshold().mAmbientBrightnessProperties != null) {
+            if (sSubInstance != null && sSubInstance.getBrightnessThreshold().mAmbientBrightnessProperties != null) {
                 pw.println(prefix + "  " + PROPERTY_SUB_AMBIENT_BRIGHTNESS + ": " + sSubInstance.getBrightnessThreshold().mAmbientBrightnessProperties);
                 return;
             }
             return;
         }
         pw.println(prefix + "RefreshRateConfigs");
-        pw.println(prefix + "  HFR_DEFAULT_REFRESH_RATE: 120");
-        pw.println(prefix + "  HFR_MODE: 2");
-        pw.println(prefix + "  HFR_SUPPORTED_REFRESH_RATE: 30,60,120");
-        pw.println(prefix + "  HFR_SUPPORTED_REFRESH_RATE_NS: ");
-        pw.println(prefix + "  SEAMLESS_BRT: 102");
-        RefreshRateConfig refreshRateConfig3 = sInstance;
-        if (refreshRateConfig3 != null && refreshRateConfig3.getBrightnessThreshold().mDisplayBrightnessProperties != null) {
-            pw.println(prefix + "  " + PROPERTY_DISPLAY_BRIGHTNESS + ": " + sInstance.getBrightnessThreshold().mDisplayBrightnessProperties);
+        String prefix2 = prefix + "  ";
+        pw.println(prefix2 + "HFR_DEFAULT_REFRESH_RATE: 120");
+        pw.println(prefix2 + "HFR_MODE: 3");
+        pw.println(prefix2 + "HFR_SUPPORTED_REFRESH_RATE: 24,10,30,48,60,80,120");
+        pw.println(prefix2 + "HFR_SUPPORTED_REFRESH_RATE_NS: ");
+        pw.println(prefix2 + "SEAMLESS_BRT: ");
+        if (sInstance != null && sInstance.getBrightnessThreshold().mDisplayBrightnessProperties != null) {
+            pw.println(prefix2 + PROPERTY_DISPLAY_BRIGHTNESS + ": " + sInstance.getBrightnessThreshold().mDisplayBrightnessProperties);
         }
-        pw.println(prefix + "  SEAMLESS_LUX: 250");
-        RefreshRateConfig refreshRateConfig4 = sInstance;
-        if (refreshRateConfig4 != null && refreshRateConfig4.getBrightnessThreshold().mAmbientBrightnessProperties != null) {
-            pw.println(prefix + "  " + PROPERTY_AMBIENT_BRIGHTNESS + ": " + sInstance.getBrightnessThreshold().mAmbientBrightnessProperties);
+        pw.println(prefix2 + "SEAMLESS_LUX: ");
+        if (sInstance != null && sInstance.getBrightnessThreshold().mAmbientBrightnessProperties != null) {
+            pw.println(prefix2 + PROPERTY_AMBIENT_BRIGHTNESS + ": " + sInstance.getBrightnessThreshold().mAmbientBrightnessProperties);
         }
     }
 }

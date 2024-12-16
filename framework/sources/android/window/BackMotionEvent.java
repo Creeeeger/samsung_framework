@@ -7,14 +7,13 @@ import android.view.RemoteAnimationTarget;
 /* loaded from: classes4.dex */
 public final class BackMotionEvent implements Parcelable {
     public static final Parcelable.Creator<BackMotionEvent> CREATOR = new Parcelable.Creator<BackMotionEvent>() { // from class: android.window.BackMotionEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackMotionEvent createFromParcel(Parcel in) {
             return new BackMotionEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackMotionEvent[] newArray(int size) {
             return new BackMotionEvent[size];
@@ -25,19 +24,17 @@ public final class BackMotionEvent implements Parcelable {
     private final int mSwipeEdge;
     private final float mTouchX;
     private final float mTouchY;
+    private final boolean mTriggerBack;
     private final float mVelocityX;
     private final float mVelocityY;
 
-    /* synthetic */ BackMotionEvent(Parcel parcel, BackMotionEventIA backMotionEventIA) {
-        this(parcel);
-    }
-
-    public BackMotionEvent(float touchX, float touchY, float progress, float velocityX, float velocityY, int swipeEdge, RemoteAnimationTarget departingAnimationTarget) {
+    public BackMotionEvent(float touchX, float touchY, float progress, float velocityX, float velocityY, boolean triggerBack, int swipeEdge, RemoteAnimationTarget departingAnimationTarget) {
         this.mTouchX = touchX;
         this.mTouchY = touchY;
         this.mProgress = progress;
         this.mVelocityX = velocityX;
         this.mVelocityY = velocityY;
+        this.mTriggerBack = triggerBack;
         this.mSwipeEdge = swipeEdge;
         this.mDepartingAnimationTarget = departingAnimationTarget;
     }
@@ -48,25 +45,9 @@ public final class BackMotionEvent implements Parcelable {
         this.mProgress = in.readFloat();
         this.mVelocityX = in.readFloat();
         this.mVelocityY = in.readFloat();
+        this.mTriggerBack = in.readBoolean();
         this.mSwipeEdge = in.readInt();
         this.mDepartingAnimationTarget = (RemoteAnimationTarget) in.readTypedObject(RemoteAnimationTarget.CREATOR);
-    }
-
-    /* renamed from: android.window.BackMotionEvent$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BackMotionEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BackMotionEvent createFromParcel(Parcel in) {
-            return new BackMotionEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BackMotionEvent[] newArray(int size) {
-            return new BackMotionEvent[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -81,6 +62,7 @@ public final class BackMotionEvent implements Parcelable {
         dest.writeFloat(this.mProgress);
         dest.writeFloat(this.mVelocityX);
         dest.writeFloat(this.mVelocityY);
+        dest.writeBoolean(this.mTriggerBack);
         dest.writeInt(this.mSwipeEdge);
         dest.writeTypedObject(this.mDepartingAnimationTarget, flags);
     }
@@ -105,6 +87,10 @@ public final class BackMotionEvent implements Parcelable {
         return this.mVelocityY;
     }
 
+    public boolean getTriggerBack() {
+        return this.mTriggerBack;
+    }
+
     public int getSwipeEdge() {
         return this.mSwipeEdge;
     }
@@ -114,6 +100,6 @@ public final class BackMotionEvent implements Parcelable {
     }
 
     public String toString() {
-        return "BackMotionEvent{mTouchX=" + this.mTouchX + ", mTouchY=" + this.mTouchY + ", mProgress=" + this.mProgress + ", mVelocityX=" + this.mVelocityX + ", mVelocityY=" + this.mVelocityY + ", mSwipeEdge" + this.mSwipeEdge + ", mDepartingAnimationTarget" + this.mDepartingAnimationTarget + "}";
+        return "BackMotionEvent{mTouchX=" + this.mTouchX + ", mTouchY=" + this.mTouchY + ", mProgress=" + this.mProgress + ", mVelocityX=" + this.mVelocityX + ", mVelocityY=" + this.mVelocityY + ", mTriggerBack=" + this.mTriggerBack + ", mSwipeEdge" + this.mSwipeEdge + ", mDepartingAnimationTarget" + this.mDepartingAnimationTarget + "}";
     }
 }

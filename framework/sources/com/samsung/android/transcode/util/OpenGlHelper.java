@@ -3,7 +3,7 @@ package com.samsung.android.transcode.util;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class OpenGlHelper {
     private OpenGlHelper() throws InstantiationException {
         throw new InstantiationException("do not instatiate");

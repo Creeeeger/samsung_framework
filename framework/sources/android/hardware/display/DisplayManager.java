@@ -1,6 +1,7 @@
 package android.hardware.display;
 
 import android.annotation.SystemApi;
+import android.app.ActivityThread;
 import android.content.Context;
 import android.content.pm.IPackageManager;
 import android.content.res.Resources;
@@ -16,6 +17,7 @@ import android.os.Looper;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Pair;
@@ -40,9 +42,10 @@ import java.util.function.Predicate;
 public final class DisplayManager {
     public static final String ACTION_ROTATION_CHANGED = "com.samsung.intent.action.ROTATION_CHANGED";
     public static final String ACTION_WIFI_DISPLAY_STATUS_CHANGED = "android.hardware.display.action.WIFI_DISPLAY_STATUS_CHANGED";
-    private static final boolean DEBUG = false;
+    static final boolean DEBUG;
     public static final String DISPLAY_CATEGORY_ALL_INCLUDING_BUILT_IN = "android.hardware.display.category.ALL_INCLUDING_BUILT_IN";
     public static final String DISPLAY_CATEGORY_ALL_INCLUDING_DISABLED = "android.hardware.display.category.ALL_INCLUDING_DISABLED";
+    public static final String DISPLAY_CATEGORY_BACKGROUND_DISPLAY = "com.samsung.android.hardware.display.category.BACKGROUND_DISPLAY";
     public static final String DISPLAY_CATEGORY_BUILTIN = "com.samsung.android.hardware.display.category.BUILTIN";
     public static final String DISPLAY_CATEGORY_CARLIFE_DISPLAY = "com.samsung.android.hardware.display.category.CARLIFE_DISPLAY";
     public static final String DISPLAY_CATEGORY_DESKTOP = "com.samsung.android.hardware.display.category.DESKTOP";
@@ -55,6 +58,7 @@ public final class DisplayManager {
     public static final long EVENT_FLAG_DISPLAY_ADDED = 1;
     public static final long EVENT_FLAG_DISPLAY_BRIGHTNESS = 8;
     public static final long EVENT_FLAG_DISPLAY_CHANGED = 4;
+    public static final long EVENT_FLAG_DISPLAY_CONNECTION_CHANGED = 32;
     public static final long EVENT_FLAG_DISPLAY_REMOVED = 2;
     public static final long EVENT_FLAG_HDR_SDR_RATIO_CHANGED = 16;
     public static final String EXTRA_WIFI_DISPLAY_STATUS = "android.hardware.display.extra.WIFI_DISPLAY_STATUS";
@@ -83,7 +87,7 @@ public final class DisplayManager {
     public static final String SEM_WIFI_DISPLAY_VOLUME_SUPPORT_CHANGED = "com.samsung.intent.action.WIFI_DISPLAY_VOLUME_SUPPORT_CHANGED";
     public static final String SPEG_DISPLAY_NAME = "SpegVirtualDisplay";
     public static final int SPEG_VIRTUAL_DISPLAY_FLAGS = 16777672;
-    public static final boolean SUPPORT_SCREEN_SHARING_READY = true;
+    public static final boolean SUPPORT_SCREEN_SHARING_READY = false;
     public static final boolean SUPPORT_WFD_SERVICE = true;
     public static final int SWITCHING_TYPE_ACROSS_AND_WITHIN_GROUPS = 2;
     public static final int SWITCHING_TYPE_NONE = 0;
@@ -93,10 +97,10 @@ public final class DisplayManager {
     public static final String TAG_SPEG = "SPEG";
     public static final int VIRTUAL_DISPLAY_FLAG_ALWAYS_UNLOCKED = 4096;
     public static final int VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR = 16;
+    public static final int VIRTUAL_DISPLAY_FLAG_BACKGROUND_DISPLAY = Integer.MIN_VALUE;
     public static final int VIRTUAL_DISPLAY_FLAG_CAN_SHOW_WITH_INSECURE_KEYGUARD = 32;
     public static final int VIRTUAL_DISPLAY_FLAG_CARLIFE = 1048576;
     public static final int VIRTUAL_DISPLAY_FLAG_DESKTOP = 262144;
-    public static final int VIRTUAL_DISPLAY_FLAG_DESKTOP_EXT_DISPLAY = 33554432;
     public static final int VIRTUAL_DISPLAY_FLAG_DESTROY_CONTENT_ON_REMOVAL = 256;
     public static final int VIRTUAL_DISPLAY_FLAG_DEVICE_DISPLAY_GROUP = 32768;
     public static final int VIRTUAL_DISPLAY_FLAG_HIDDEN_SPACE = 131072;
@@ -106,6 +110,8 @@ public final class DisplayManager {
     public static final int VIRTUAL_DISPLAY_FLAG_PRESENTATION = 2;
     public static final int VIRTUAL_DISPLAY_FLAG_PUBLIC = 1;
     public static final int VIRTUAL_DISPLAY_FLAG_REMOTE_APP = 524288;
+
+    @SystemApi
     public static final int VIRTUAL_DISPLAY_FLAG_ROTATES_WITH_CONTENT = 128;
     public static final int VIRTUAL_DISPLAY_FLAG_SECURE = 4;
     public static final int VIRTUAL_DISPLAY_FLAG_SHOULD_SHOW_SYSTEM_DECORATIONS = 512;
@@ -125,7 +131,6 @@ public final class DisplayManager {
     private final WeakDisplayCache mDisplayCache = new WeakDisplayCache();
     private final DisplayManagerGlobal mGlobal = DisplayManagerGlobal.getInstance();
 
-    /* loaded from: classes2.dex */
     public interface DeviceConfig {
         public static final String KEY_BRIGHTNESS_THROTTLING_DATA = "brightness_throttling_data";
         public static final String KEY_DISABLE_SCREEN_WAKE_LOCKS_WHILE_CACHED = "disable_screen_wake_locks_while_cached";
@@ -135,32 +140,26 @@ public final class DisplayManager {
         public static final String KEY_FIXED_REFRESH_RATE_LOW_DISPLAY_BRIGHTNESS_THRESHOLDS = "peak_refresh_rate_brightness_thresholds";
         public static final String KEY_HIGH_REFRESH_RATE_BLACKLIST = "high_refresh_rate_blacklist";
         public static final String KEY_PEAK_REFRESH_RATE_DEFAULT = "peak_refresh_rate_default";
+        public static final String KEY_POWER_THROTTLING_DATA = "power_throttling_data";
         public static final String KEY_REFRESH_RATE_IN_HBM_HDR = "refresh_rate_in_hbm_hdr";
         public static final String KEY_REFRESH_RATE_IN_HBM_SUNLIGHT = "refresh_rate_in_hbm_sunlight";
         public static final String KEY_REFRESH_RATE_IN_HIGH_ZONE = "refresh_rate_in_high_zone";
         public static final String KEY_REFRESH_RATE_IN_LOW_ZONE = "refresh_rate_in_zone";
+        public static final String KEY_USE_NORMAL_BRIGHTNESS_MODE_CONTROLLER = "use_normal_brightness_mode_controller";
     }
 
-    /* loaded from: classes2.dex */
-    public interface DisplayListener {
-        void onDisplayAdded(int i);
-
-        void onDisplayChanged(int i);
-
-        void onDisplayRemoved(int i);
+    public interface DisplayHbmBrightnessListener {
+        void onChanged(int i, boolean z);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface EventsMask {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MatchContentFrameRateType {
     }
 
-    /* loaded from: classes2.dex */
     public enum SemWifiDisplayAppState {
         SETUP,
         PAUSE,
@@ -168,7 +167,6 @@ public final class DisplayManager {
         TEARDOWN
     }
 
-    /* loaded from: classes2.dex */
     public interface SemWifiDisplayConnectionCallback {
         public static final int REASON_NOT_DEFINED = 1;
         public static final int REASON_NO_HDCP_KEY = 3;
@@ -180,13 +178,15 @@ public final class DisplayManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SwitchingType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VirtualDisplayFlag {
+    }
+
+    static {
+        DEBUG = Log.isLoggable(TAG, 3) || Log.isLoggable("DisplayManager_All", 3);
     }
 
     public DisplayManager(Context context) {
@@ -206,7 +206,6 @@ public final class DisplayManager {
         if (category != null && (category.equals(DISPLAY_CATEGORY_ALL_INCLUDING_BUILT_IN) || category.equals("com.samsung.android.hardware.display.category.BUILTIN"))) {
             includeDisabled = true;
         }
-        int[] displayIds = this.mGlobal.getDisplayIds(includeDisabled);
         boolean isDexDualModeEnabled = false;
         SemDesktopModeManager dexManager = (SemDesktopModeManager) this.mContext.getSystemService(Context.SEM_DESKTOP_MODE_SERVICE);
         if (dexManager == null) {
@@ -215,6 +214,7 @@ public final class DisplayManager {
             SemDesktopModeState state = dexManager.getDesktopModeState();
             isDexDualModeEnabled = (state == null || state.getEnabled() == 2 || state.getDisplayType() != 102) ? false : true;
         }
+        int[] displayIds = this.mGlobal.getDisplayIds(includeDisabled);
         if (DISPLAY_CATEGORY_PRESENTATION.equals(category)) {
             return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda0
                 @Override // java.util.function.Predicate
@@ -235,18 +235,8 @@ public final class DisplayManager {
                 }
             });
         }
-        if (DISPLAY_CATEGORY_HIDDEN_SPACE_DISPLAY.equals(category)) {
-            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda2
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean isHiddenSpaceDisplay;
-                    isHiddenSpaceDisplay = DisplayManager.isHiddenSpaceDisplay((Display) obj);
-                    return isHiddenSpaceDisplay;
-                }
-            });
-        }
         if ("com.samsung.android.hardware.display.category.BUILTIN".equals(category)) {
-            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda3
+            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda2
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean isBuiltInDisplay;
@@ -256,12 +246,22 @@ public final class DisplayManager {
             });
         }
         if (DISPLAY_CATEGORY_ALL_INCLUDING_BUILT_IN.equals(category)) {
-            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda4
+            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda3
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean checkNonNullIncludingBuiltIn;
                     checkNonNullIncludingBuiltIn = DisplayManager.checkNonNullIncludingBuiltIn((Display) obj);
                     return checkNonNullIncludingBuiltIn;
+                }
+            });
+        }
+        if (DISPLAY_CATEGORY_VIEW_COVER_DISPLAY.equals(category)) {
+            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda4
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    boolean isViewCoverDisplay;
+                    isViewCoverDisplay = DisplayManager.isViewCoverDisplay((Display) obj);
+                    return isViewCoverDisplay;
                 }
             });
         }
@@ -285,18 +285,8 @@ public final class DisplayManager {
                 }
             });
         }
-        if (DISPLAY_CATEGORY_VIEW_COVER_DISPLAY.equals(category)) {
-            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda7
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean isViewCoverDisplay;
-                    isViewCoverDisplay = DisplayManager.isViewCoverDisplay((Display) obj);
-                    return isViewCoverDisplay;
-                }
-            });
-        }
         if (CoreRune.BAIDU_CARLIFE && DISPLAY_CATEGORY_CARLIFE_DISPLAY.equals(category)) {
-            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda8
+            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda7
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean isCarLifeDisplay;
@@ -306,7 +296,7 @@ public final class DisplayManager {
             });
         }
         if (category == null || DISPLAY_CATEGORY_ALL_INCLUDING_DISABLED.equals(category)) {
-            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda9
+            return getDisplays(displayIds, new Predicate() { // from class: android.hardware.display.DisplayManager$$ExternalSyntheticLambda8
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean checkNonNullAndOtherPolicy;
@@ -315,40 +305,51 @@ public final class DisplayManager {
                 }
             });
         }
+        if (category.equals(DISPLAY_CATEGORY_HIDDEN_SPACE_DISPLAY)) {
+            return addHiddenSpaceDisplaysLocked(displayIds, 5);
+        }
         return new Display[0];
+    }
+
+    private Display[] addHiddenSpaceDisplaysLocked(int[] displayIds, int matchType) {
+        ArrayList<Display> tmpDisplays = new ArrayList<>();
+        for (int i : displayIds) {
+            Display display = getOrCreateDisplay(i, true);
+            if (display != null && display.getType() == matchType && (display.getFlags() & 33554432) != 0) {
+                tmpDisplays.add(display);
+            }
+        }
+        int i2 = tmpDisplays.size();
+        return (Display[]) tmpDisplays.toArray(new Display[i2]);
     }
 
     private Display[] getDisplays(int[] displayIds, Predicate<Display> predicate) {
         ArrayList<Display> tmpDisplays = new ArrayList<>();
         for (int displayId : displayIds) {
             Display display = getOrCreateDisplay(displayId, true);
-            if (predicate.test(display)) {
+            if ((display == null || (display.getFlags() & 33554432) == 0) && predicate.test(display)) {
                 tmpDisplays.add(display);
             }
         }
         return (Display[]) tmpDisplays.toArray(new Display[tmpDisplays.size()]);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isPresentationDisplay(Display display) {
         if (display == null || display.getDisplayId() == 0 || (display.getFlags() & 8) == 0 || isExtraDisplay(display) || isViewCoverDisplay(display)) {
             return false;
         }
         switch (display.getType()) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                return true;
-            default:
-                return false;
         }
+        return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isRearDisplay(Display display) {
         return (display == null || display.getDisplayId() == 0 || display.getType() != 1 || (display.getFlags() & 8192) == 0) ? false : true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isBuiltInDisplay(Display display) {
         return display != null && display.getType() == 1;
     }
@@ -357,6 +358,7 @@ public final class DisplayManager {
         return display != null && display.getDisplayId() == 1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean checkNonNullIncludingBuiltIn(Display display) {
         if (display == null) {
             return false;
@@ -364,28 +366,33 @@ public final class DisplayManager {
         return isExtraDisplay(display) || checkNonNullAndOtherPolicy(display);
     }
 
-    public static boolean isHiddenSpaceDisplay(Display display) {
-        return (display == null || display.getType() != 5 || (display.getFlags() & 16384) == 0) ? false : true;
-    }
-
-    public static boolean isDexDisplay(Display display) {
-        return display != null && display.getType() == 5 && display.getDisplayId() == 2;
-    }
-
-    public static boolean isRemoteAppDisplay(Display display) {
-        return (display == null || display.getType() != 5 || (display.getFlags() & 33554432) == 0) ? false : true;
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isViewCoverDisplay(Display display) {
         return (display == null || display.getType() != 5 || (display.getFlags() & 524288) == 0) ? false : true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean isDexDisplay(Display display) {
+        return display != null && display.getType() == 5 && display.getDisplayId() == 2;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean isRemoteAppDisplay(Display display) {
+        return (display == null || display.getType() != 5 || (display.getFlags() & 2097152) == 0) ? false : true;
+    }
+
+    public static boolean isBackgroundDisplay(Display display) {
+        return (display == null || display.getType() != 5 || (display.getFlags() & Display.FLAG_BACKGROUND_DISPLAY) == 0) ? false : true;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isCarLifeDisplay(Display display) {
         return (display == null || display.getType() != 5 || (display.getFlags() & 1048576) == 0) ? false : true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean checkNonNullAndOtherPolicy(Display display) {
-        if (display == null || display.getDisplayId() == 2 || (display.getFlags() & 33554432) != 0 || isExtraDisplay(display) || isViewCoverDisplay(display)) {
+        if (display == null || isExtraDisplay(display) || isViewCoverDisplay(display) || display.getDisplayId() == 2 || (display.getFlags() & 2097152) != 0) {
             return false;
         }
         return true;
@@ -413,7 +420,7 @@ public final class DisplayManager {
     }
 
     public void registerDisplayListener(DisplayListener listener, Handler handler, long eventsMask) {
-        this.mGlobal.registerDisplayListener(listener, handler, eventsMask);
+        this.mGlobal.registerDisplayListener(listener, handler, eventsMask, ActivityThread.currentPackageName());
     }
 
     public void unregisterDisplayListener(DisplayListener listener) {
@@ -454,6 +461,14 @@ public final class DisplayManager {
 
     public WifiDisplayStatus getWifiDisplayStatus() {
         return this.mGlobal.getWifiDisplayStatus();
+    }
+
+    public void enableConnectedDisplay(int displayId) {
+        this.mGlobal.enableConnectedDisplay(displayId);
+    }
+
+    public void disableConnectedDisplay(int displayId) {
+        this.mGlobal.disableConnectedDisplay(displayId);
     }
 
     @SystemApi
@@ -694,13 +709,29 @@ public final class DisplayManager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class WeakDisplayCache {
-        private final SparseArray<WeakReference<Display>> mDisplayCache;
-
-        /* synthetic */ WeakDisplayCache(WeakDisplayCacheIA weakDisplayCacheIA) {
-            this();
+    public void requestDisplayModes(int displayId, int[] modeIds) {
+        if (modeIds != null && modeIds.length == 0) {
+            throw new IllegalArgumentException("requestDisplayModes: modesIds can't be empty");
         }
+        this.mGlobal.requestDisplayModes(displayId, modeIds);
+    }
+
+    public interface DisplayListener {
+        void onDisplayAdded(int i);
+
+        void onDisplayChanged(int i);
+
+        void onDisplayRemoved(int i);
+
+        default void onDisplayConnected(int displayId) {
+        }
+
+        default void onDisplayDisconnected(int displayId) {
+        }
+    }
+
+    private static final class WeakDisplayCache {
+        private final SparseArray<WeakReference<Display>> mDisplayCache;
 
         private WeakDisplayCache() {
             this.mDisplayCache = new SparseArray<>();
@@ -733,25 +764,43 @@ public final class DisplayManager {
     }
 
     public int getHiddenDisplayId(String callerPackageName) {
+        return getHiddenDisplayId(callerPackageName, -1);
+    }
+
+    public int getHiddenDisplayId(int uid) {
+        return getHiddenDisplayId(null, uid);
+    }
+
+    private int getHiddenDisplayId(String owner, int uid) {
         for (Display display : getDisplays()) {
-            if (display.getType() == 5 && (display.getFlags() & 32768) != 0 && callerPackageName.equals(display.getOwnerPackageName())) {
+            if (display.getType() == 5 && (display.getFlags() & 32768) != 0 && ((owner != null && owner.equals(display.getOwnerPackageName())) || (UserHandle.isApp(uid) && display.getOwnerUid() == uid))) {
                 int id = display.getDisplayId();
-                Slog.i(TAG_SPEG, "Display #" + id + " (" + SPEG_DISPLAY_NAME + "), owner: " + callerPackageName);
+                Slog.d(TAG_SPEG, "Display #" + id + " (" + SPEG_DISPLAY_NAME + "), owner: " + display.getOwnerPackageName() + ":" + display.getOwnerUid());
                 return id;
             }
         }
         return -1;
     }
 
-    public int getHiddenDisplayId(int uid) {
-        for (Display display : getDisplays()) {
-            if (display.getType() == 5 && (display.getFlags() & 32768) != 0 && display.getOwnerUid() == uid) {
-                int id = display.getDisplayId();
-                Slog.i(TAG_SPEG, "Display #" + id + " (" + SPEG_DISPLAY_NAME + "), owner: " + display.getOwnerPackageName() + ":" + uid);
-                return id;
-            }
-        }
-        return -1;
+    public void setTemporaryBrightness(int brightness, boolean slowChange) {
+        this.mGlobal.setTemporaryBrightnessForSlowChange(0, BrightnessSynchronizer.brightnessIntToFloat(brightness), slowChange);
+    }
+
+    public void setTemporaryBrightness(int displayId, int brightness, boolean slowChange) {
+        this.mGlobal.setTemporaryBrightnessForSlowChange(displayId, BrightnessSynchronizer.brightnessIntToFloat(brightness), slowChange);
+    }
+
+    public void semSetTemporaryBrightness(int brightness) {
+        Slog.i(TAG, "semSetTemporaryBrightness: brightness=" + brightness);
+        this.mGlobal.setTemporaryBrightness(0, BrightnessSynchronizer.brightnessIntToFloat(brightness));
+    }
+
+    public void semSetTemporaryBrightness(float brightness) {
+        this.mGlobal.setTemporaryBrightness(0, brightness);
+    }
+
+    public void semSetTemporaryBrightness(int displayId, float brightness) {
+        this.mGlobal.setTemporaryBrightness(displayId, brightness);
     }
 
     public int semCheckScreenSharingSupported() {
@@ -760,7 +809,7 @@ public final class DisplayManager {
 
     public void semStartScanWifiDisplays() {
         Log.d(TAG, "semStartScanWifiDisplays" + Log.getStackTraceString(new Throwable()));
-        this.mGlobal.startWifiDisplayScanAutoP2P();
+        this.mGlobal.startWifiDisplayScan();
     }
 
     public void semStartScanWifiDisplays(int scanChannel) {
@@ -982,7 +1031,7 @@ public final class DisplayManager {
         if (state == SemWifiDisplayAppState.PAUSE) {
             this.mGlobal.stopWifiDisplayScan();
         } else if (state == SemWifiDisplayAppState.RESUME) {
-            this.mGlobal.startWifiDisplayScanAutoP2P();
+            this.mGlobal.startWifiDisplayScan();
         } else if (state == SemWifiDisplayAppState.TEARDOWN) {
             Settings.Global.putInt(this.mContext.getContentResolver(), "wifi_display_on", 0);
         }
@@ -1004,23 +1053,6 @@ public final class DisplayManager {
         this.mGlobal.resetBrightnessConfigurationForUser(this.mContext.getUserId(), this.mContext.getPackageName());
     }
 
-    public void setTemporaryBrightness(int brightness, boolean slowChange) {
-        this.mGlobal.setTemporaryBrightnessForSlowChange(0, BrightnessSynchronizer.brightnessIntToFloat(brightness), slowChange);
-    }
-
-    public void setTemporaryBrightness(int displayId, int brightness, boolean slowChange) {
-        this.mGlobal.setTemporaryBrightnessForSlowChange(displayId, BrightnessSynchronizer.brightnessIntToFloat(brightness), slowChange);
-    }
-
-    public void semSetTemporaryBrightness(int brightness) {
-        Slog.i(TAG, "semSetTemporaryBrightness: brightness=" + brightness);
-        this.mGlobal.setTemporaryBrightness(0, BrightnessSynchronizer.brightnessIntToFloat(brightness));
-    }
-
-    public void semSetTemporaryBrightness(float brightness) {
-        this.mGlobal.setTemporaryBrightness(0, brightness);
-    }
-
     public void setBackupBrightnessConfiguration(BrightnessConfiguration config, int userId, String packageName) {
         this.mGlobal.setBackupBrightnessConfiguration(config, userId, packageName);
     }
@@ -1035,5 +1067,13 @@ public final class DisplayManager {
 
     public float getAdaptiveBrightness(int displayId, float lux) {
         return this.mGlobal.getAdaptiveBrightness(displayId, lux);
+    }
+
+    public void registerHbmBrightnessListener(DisplayHbmBrightnessListener listener) {
+        this.mGlobal.registerHbmBrightnessListener(listener);
+    }
+
+    public void unregisterHbmBrightnessListener(DisplayHbmBrightnessListener listener) {
+        this.mGlobal.unregisterHbmBrightnessListener(listener);
     }
 }

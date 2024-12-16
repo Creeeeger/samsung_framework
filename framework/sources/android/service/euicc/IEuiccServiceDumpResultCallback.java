@@ -12,7 +12,6 @@ public interface IEuiccServiceDumpResultCallback extends IInterface {
 
     void onComplete(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IEuiccServiceDumpResultCallback {
         @Override // android.service.euicc.IEuiccServiceDumpResultCallback
         public void onComplete(String logs) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IEuiccServiceDumpResultCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IEuiccServiceDumpResultCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,26 +65,22 @@ public interface IEuiccServiceDumpResultCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEuiccServiceDumpResultCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEuiccServiceDumpResultCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEuiccServiceDumpResultCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IEuiccServiceDumpResultCallback {
+        private static class Proxy implements IEuiccServiceDumpResultCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

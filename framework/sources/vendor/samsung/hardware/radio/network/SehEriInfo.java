@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehEriInfo implements Parcelable {
     public static final Parcelable.Creator<SehEriInfo> CREATOR = new Parcelable.Creator<SehEriInfo>() { // from class: vendor.samsung.hardware.radio.network.SehEriInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehEriInfo createFromParcel(Parcel _aidl_source) {
             SehEriInfo _aidl_out = new SehEriInfo();
@@ -28,25 +25,6 @@ public class SehEriInfo implements Parcelable {
     public byte roamingIndicator = 0;
     public byte iconIndex = 0;
     public byte iconMode = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehEriInfo$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehEriInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehEriInfo createFromParcel(Parcel _aidl_source) {
-            SehEriInfo _aidl_out = new SehEriInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehEriInfo[] newArray(int _aidl_size) {
-            return new SehEriInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -125,7 +103,7 @@ public class SehEriInfo implements Parcelable {
         _aidl_sj.add("iconIndex: " + ((int) this.iconIndex));
         _aidl_sj.add("iconMode: " + ((int) this.iconMode));
         _aidl_sj.add("eriText: " + Objects.toString(this.eriText));
-        return "vendor.samsung.hardware.radio.network.SehEriInfo" + _aidl_sj.toString();
+        return "SehEriInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

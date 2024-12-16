@@ -3,6 +3,7 @@ package android.content.pm;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.os.IRemoteCallback;
 import android.os.Parcel;
 import android.os.RemoteException;
 
@@ -12,11 +13,22 @@ public interface IBackgroundInstallControlService extends IInterface {
 
     ParceledListSlice getBackgroundInstalledPackages(long j, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
+    void registerBackgroundInstallCallback(IRemoteCallback iRemoteCallback) throws RemoteException;
+
+    void unregisterBackgroundInstallCallback(IRemoteCallback iRemoteCallback) throws RemoteException;
+
     public static class Default implements IBackgroundInstallControlService {
         @Override // android.content.pm.IBackgroundInstallControlService
         public ParceledListSlice getBackgroundInstalledPackages(long flags, int userId) throws RemoteException {
             return null;
+        }
+
+        @Override // android.content.pm.IBackgroundInstallControlService
+        public void registerBackgroundInstallCallback(IRemoteCallback callback) throws RemoteException {
+        }
+
+        @Override // android.content.pm.IBackgroundInstallControlService
+        public void unregisterBackgroundInstallCallback(IRemoteCallback callback) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -25,9 +37,10 @@ public interface IBackgroundInstallControlService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBackgroundInstallControlService {
         static final int TRANSACTION_getBackgroundInstalledPackages = 1;
+        static final int TRANSACTION_registerBackgroundInstallCallback = 2;
+        static final int TRANSACTION_unregisterBackgroundInstallCallback = 3;
 
         public Stub() {
             attachInterface(this, IBackgroundInstallControlService.DESCRIPTOR);
@@ -53,6 +66,10 @@ public interface IBackgroundInstallControlService extends IInterface {
             switch (transactionCode) {
                 case 1:
                     return "getBackgroundInstalledPackages";
+                case 2:
+                    return "registerBackgroundInstallCallback";
+                case 3:
+                    return "unregisterBackgroundInstallCallback";
                 default:
                     return null;
             }
@@ -68,27 +85,36 @@ public interface IBackgroundInstallControlService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBackgroundInstallControlService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBackgroundInstallControlService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBackgroundInstallControlService.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result = getBackgroundInstalledPackages(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    IRemoteCallback _arg02 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerBackgroundInstallCallback(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IRemoteCallback _arg03 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterBackgroundInstallCallback(_arg03);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result = getBackgroundInstalledPackages(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IBackgroundInstallControlService {
             private IBinder mRemote;
 
@@ -122,11 +148,41 @@ public interface IBackgroundInstallControlService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.content.pm.IBackgroundInstallControlService
+            public void registerBackgroundInstallCallback(IRemoteCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IBackgroundInstallControlService.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(2, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.IBackgroundInstallControlService
+            public void unregisterBackgroundInstallCallback(IRemoteCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IBackgroundInstallControlService.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(3, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 0;
+            return 2;
         }
     }
 }

@@ -8,7 +8,6 @@ public interface ILogd extends IInterface {
 
     void decline(int i, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ILogd {
         @Override // android.os.ILogd
         public void approve(int uid, int gid, int pid, int fd) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ILogd extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ILogd {
         static final int TRANSACTION_approve = 1;
         static final int TRANSACTION_decline = 2;
@@ -70,35 +68,32 @@ public interface ILogd extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILogd.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILogd.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILogd.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    approve(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    decline(_arg02, _arg12, _arg22, _arg32);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            approve(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            decline(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ILogd {
             private IBinder mRemote;
 

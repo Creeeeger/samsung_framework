@@ -73,8 +73,9 @@ public class CollectionUtils {
         if (isEmpty(cur)) {
             return Collections.emptyList();
         }
-        ArrayList<O> result = new ArrayList<>();
-        for (int i = 0; i < cur.size(); i++) {
+        int size = cur.size();
+        ArrayList<O> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
             result.add(f.apply(cur.get(i)));
         }
         return result;
@@ -84,7 +85,7 @@ public class CollectionUtils {
         if (isEmpty(set)) {
             return Collections.emptySet();
         }
-        ArraySet arraySet = new ArraySet();
+        ArraySet arraySet = new ArraySet(set.size());
         if (set instanceof ArraySet) {
             ArraySet arraySet2 = (ArraySet) set;
             int size = arraySet2.size();
@@ -105,7 +106,8 @@ public class CollectionUtils {
             return Collections.emptyList();
         }
         List<O> result = null;
-        for (int i = 0; i < cur.size(); i++) {
+        int size = cur.size();
+        for (int i = 0; i < size; i++) {
             O transformed = f.apply(cur.get(i));
             if (transformed != null) {
                 result = add(result, transformed);
@@ -153,7 +155,8 @@ public class CollectionUtils {
             return Collections.emptyList();
         }
         ArrayList<T> result = null;
-        for (int i = 0; i < list.size(); i++) {
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
             Object item = list.get(i);
             if (c.isInstance(item)) {
                 result = ArrayUtils.add(result, item);
@@ -174,7 +177,8 @@ public class CollectionUtils {
         if (isEmpty(items)) {
             return null;
         }
-        for (int i = 0; i < items.size(); i++) {
+        int size = items.size();
+        for (int i = 0; i < size; i++) {
             T item = items.get(i);
             if (predicate.test(item)) {
                 return item;

@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /* loaded from: classes.dex */
 public class SensorAdditionalInfo {
-    public static final int LIGHT_VERSION_HYSTERESIS_INFO = 2;
+    public static final int BITMASK_LIGHT_VERSION_HYSTERESIS_INFO = 2;
     private static final int SENSORHUB_INFO_CALL_PKG = 346049;
     public static final int SENSORHUB_INFO_CALL_SCREEN_BACKGROUND = 285231553;
     public static final int SENSORHUB_INFO_CALL_SCREEN_FOREGROUND = 302008769;
@@ -14,22 +14,36 @@ public class SensorAdditionalInfo {
     private static final int SENSORHUB_INFO_INJECT_CALL_PKG = 477121;
     private static final int SENSORHUB_INFO_INJECT_PHYSICAL_PKG = 411585;
     private static final int SENSORHUB_INFO_INJECT_VM_PKG = 739265;
-    private static final int SENSORHUB_INFO_MAIN_SCREEN_ON = 33572801;
-    private static final int SENSORHUB_INFO_PALM_DOWN = 149441;
-    private static final int SENSORHUB_INFO_PALM_UP = 214977;
+    public static final int SENSORHUB_INFO_MAIN_SCREEN_ON = 33572801;
+    public static final int SENSORHUB_INFO_PALM_DOWN = 149441;
+    public static final int SENSORHUB_INFO_PALM_UP = 214977;
     private static final int SENSORHUB_INFO_PHYSICAL_PKG = 280513;
+    public static final int SENSORHUB_INFO_POWERSHARE_DISABLED = 20673;
+    public static final int SENSORHUB_INFO_POWERSHARE_ENABLED = 16797889;
     private static final int SENSORHUB_INFO_PROXIMITY_TIMEOUT = 673729;
     private static final int SENSORHUB_INFO_RCV_CLOSE = 608193;
     private static final int SENSORHUB_INFO_RCV_OPEN = 542657;
     private static final int SENSORHUB_INFO_SCREEN_OFF = 18369;
     private static final int SENSORHUB_INFO_SCREEN_ON = 16795585;
-    private static final int SENSORHUB_INFO_SUB_SCREEN_ON = 50350017;
+    public static final int SENSORHUB_INFO_SUB_SCREEN_ON = 50350017;
     private static final int SENSORHUB_INFO_VM_PKG = 804801;
+
+    @Deprecated
     public static final int SENSORHUB_INFO_WIFI_DATA_ACTIVITY_IN = 117458881;
+
+    @Deprecated
     public static final int SENSORHUB_INFO_WIFI_DATA_ACTIVITY_INOUT = 151013313;
+
+    @Deprecated
     public static final int SENSORHUB_INFO_WIFI_DATA_ACTIVITY_NONE = 100681665;
+
+    @Deprecated
     public static final int SENSORHUB_INFO_WIFI_DATA_ACTIVITY_OUT = 134236097;
+
+    @Deprecated
     public static final int SENSORHUB_INFO_WIFI_SCAN_OFF = 83904449;
+
+    @Deprecated
     public static final int SENSORHUB_INFO_WIFI_SCAN_ON = 67127233;
     public static final int TYPE_BRIGHTNESS_HYSTERESIS_INFO = 268435458;
     public static final int TYPE_CALIBRATED_LUX_INFO = 268435457;
@@ -52,6 +66,7 @@ public class SensorAdditionalInfo {
     public static final int TYPE_UNFOLDING_INFO = 268435460;
     public static final int TYPE_UNTRACKED_DELAY = 65536;
     public static final int TYPE_VEC3_CALIBRATION = 65538;
+    public static final int TYPE_VIBRATOR_INFO = 268435461;
     public final float[] floatValues;
     public final int[] intValues;
     public final Sensor sensor;
@@ -59,11 +74,10 @@ public class SensorAdditionalInfo {
     public final int type;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface AdditionalInfoType {
     }
 
-    public SensorAdditionalInfo(Sensor aSensor, int aType, int aSerial, int[] aIntValues, float[] aFloatValues) {
+    SensorAdditionalInfo(Sensor aSensor, int aType, int aSerial, int[] aIntValues, float[] aFloatValues) {
         this.sensor = aSensor;
         this.type = aType;
         this.serial = aSerial;
@@ -72,7 +86,7 @@ public class SensorAdditionalInfo {
     }
 
     public static SensorAdditionalInfo createLocalGeomagneticField(float strength, float declination, float inclination) {
-        if (strength < 10.0f || strength > 100.0f || declination < 0.0f || declination > 3.141592653589793d || inclination < -1.5707963267948966d || inclination > 1.5707963267948966d) {
+        if (strength < 10.0f || strength > 100.0f || declination < -1.5707963267948966d || declination > 1.5707963267948966d || inclination < -1.5707963267948966d || inclination > 1.5707963267948966d) {
             throw new IllegalArgumentException("Geomagnetic field info out of range");
         }
         return new SensorAdditionalInfo(null, 196608, 0, null, new float[]{strength, declination, inclination});

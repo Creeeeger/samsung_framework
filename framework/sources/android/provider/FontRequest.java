@@ -16,25 +16,19 @@ public final class FontRequest {
     private final String mQuery;
 
     public FontRequest(String providerAuthority, String providerPackage, String query) {
-        String str = (String) Preconditions.checkNotNull(providerAuthority);
-        this.mProviderAuthority = str;
-        String str2 = (String) Preconditions.checkNotNull(query);
-        this.mQuery = str2;
-        String str3 = (String) Preconditions.checkNotNull(providerPackage);
-        this.mProviderPackage = str3;
+        this.mProviderAuthority = (String) Preconditions.checkNotNull(providerAuthority);
+        this.mQuery = (String) Preconditions.checkNotNull(query);
+        this.mProviderPackage = (String) Preconditions.checkNotNull(providerPackage);
         this.mCertificates = Collections.emptyList();
-        this.mIdentifier = str + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + str3 + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + str2;
+        this.mIdentifier = this.mProviderAuthority + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + this.mProviderPackage + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + this.mQuery;
     }
 
     public FontRequest(String providerAuthority, String providerPackage, String query, List<List<byte[]>> certificates) {
-        String str = (String) Preconditions.checkNotNull(providerAuthority);
-        this.mProviderAuthority = str;
-        String str2 = (String) Preconditions.checkNotNull(providerPackage);
-        this.mProviderPackage = str2;
-        String str3 = (String) Preconditions.checkNotNull(query);
-        this.mQuery = str3;
+        this.mProviderAuthority = (String) Preconditions.checkNotNull(providerAuthority);
+        this.mProviderPackage = (String) Preconditions.checkNotNull(providerPackage);
+        this.mQuery = (String) Preconditions.checkNotNull(query);
         this.mCertificates = (List) Preconditions.checkNotNull(certificates);
-        this.mIdentifier = str + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + str2 + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + str3;
+        this.mIdentifier = this.mProviderAuthority + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + this.mProviderPackage + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + this.mQuery;
     }
 
     public String getProviderAuthority() {

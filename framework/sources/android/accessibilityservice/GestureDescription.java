@@ -17,10 +17,6 @@ public final class GestureDescription {
     private final List<StrokeDescription> mStrokes;
     private final float[] mTempPos;
 
-    /* synthetic */ GestureDescription(List list, int i, GestureDescriptionIA gestureDescriptionIA) {
-        this(list, i);
-    }
-
     public static int getMaxStrokeCount() {
         return 20;
     }
@@ -38,10 +34,9 @@ public final class GestureDescription {
     }
 
     private GestureDescription(List<StrokeDescription> strokes, int displayId) {
-        ArrayList arrayList = new ArrayList();
-        this.mStrokes = arrayList;
+        this.mStrokes = new ArrayList();
         this.mTempPos = new float[2];
-        arrayList.addAll(strokes);
+        this.mStrokes.addAll(strokes);
         this.mDisplayId = displayId;
     }
 
@@ -57,6 +52,7 @@ public final class GestureDescription {
         return this.mDisplayId;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public long getNextKeyPointAtLeast(long offset) {
         long nextKeyPoint = Long.MAX_VALUE;
         for (int i = 0; i < this.mStrokes.size(); i++) {
@@ -75,6 +71,7 @@ public final class GestureDescription {
         return nextKeyPoint;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getPointsForTime(long time, TouchPoint[] touchPoints) {
         int numPointsFound = 0;
         for (int i = 0; i < this.mStrokes.size(); i++) {
@@ -93,6 +90,7 @@ public final class GestureDescription {
         return numPointsFound;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static long getTotalDuration(List<StrokeDescription> paths) {
         long latestEnd = Long.MIN_VALUE;
         for (int i = 0; i < paths.size(); i++) {
@@ -102,7 +100,6 @@ public final class GestureDescription {
         return Math.max(latestEnd, 0L);
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private final List<StrokeDescription> mStrokes = new ArrayList();
         private int mDisplayId = 0;
@@ -132,7 +129,6 @@ public final class GestureDescription {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class StrokeDescription {
         private static final int INVALID_STROKE_ID = -1;
         static int sIdCounter;
@@ -160,14 +156,13 @@ public final class GestureDescription {
             path.computeBounds(bounds, false);
             Preconditions.checkArgument(bounds.bottom >= 0.0f && bounds.top >= 0.0f && bounds.right >= 0.0f && bounds.left >= 0.0f, "Path bounds must not be negative");
             this.mPath = new Path(path);
-            PathMeasure pathMeasure = new PathMeasure(path, false);
-            this.mPathMeasure = pathMeasure;
-            if (pathMeasure.getLength() == 0.0f) {
+            this.mPathMeasure = new PathMeasure(path, false);
+            if (this.mPathMeasure.getLength() == 0.0f) {
                 Path tempPath = new Path(path);
                 tempPath.lineTo(-1.0f, -1.0f);
                 this.mTapLocation = new float[2];
-                PathMeasure pathMeasure2 = new PathMeasure(tempPath, false);
-                pathMeasure2.getPosTan(0.0f, this.mTapLocation, null);
+                PathMeasure pathMeasure = new PathMeasure(tempPath, false);
+                pathMeasure.getPosTan(0.0f, this.mTapLocation, null);
             }
             if (this.mPathMeasure.nextContour()) {
                 throw new IllegalArgumentException("Path has more than one contour");
@@ -175,7 +170,7 @@ public final class GestureDescription {
             this.mPathMeasure.setPath(this.mPath, false);
             this.mStartTime = startTime;
             this.mEndTime = startTime + duration;
-            this.mTimeToLengthConversion = getLength() / ((float) duration);
+            this.mTimeToLengthConversion = getLength() / duration;
             int i = sIdCounter;
             sIdCounter = i + 1;
             this.mId = i;
@@ -219,16 +214,15 @@ public final class GestureDescription {
         }
 
         boolean getPosForTime(long time, float[] pos) {
-            float[] fArr = this.mTapLocation;
-            if (fArr != null) {
-                pos[0] = fArr[0];
-                pos[1] = fArr[1];
+            if (this.mTapLocation != null) {
+                pos[0] = this.mTapLocation[0];
+                pos[1] = this.mTapLocation[1];
                 return true;
             }
             if (time == this.mEndTime) {
                 return this.mPathMeasure.getPosTan(getLength(), pos, null);
             }
-            float length = this.mTimeToLengthConversion * ((float) (time - this.mStartTime));
+            float length = this.mTimeToLengthConversion * (time - this.mStartTime);
             return this.mPathMeasure.getPosTan(length, pos, null);
         }
 
@@ -237,17 +231,15 @@ public final class GestureDescription {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class TouchPoint implements Parcelable {
         public static final Parcelable.Creator<TouchPoint> CREATOR = new Parcelable.Creator<TouchPoint>() { // from class: android.accessibilityservice.GestureDescription.TouchPoint.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TouchPoint createFromParcel(Parcel in) {
                 return new TouchPoint(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TouchPoint[] newArray(int size) {
                 return new TouchPoint[size];
@@ -305,36 +297,17 @@ public final class GestureDescription {
             parcel.writeFloat(this.mX);
             parcel.writeFloat(this.mY);
         }
-
-        /* renamed from: android.accessibilityservice.GestureDescription$TouchPoint$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<TouchPoint> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TouchPoint createFromParcel(Parcel in) {
-                return new TouchPoint(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TouchPoint[] newArray(int size) {
-                return new TouchPoint[size];
-            }
-        }
     }
 
-    /* loaded from: classes.dex */
     public static class GestureStep implements Parcelable {
         public static final Parcelable.Creator<GestureStep> CREATOR = new Parcelable.Creator<GestureStep>() { // from class: android.accessibilityservice.GestureDescription.GestureStep.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GestureStep createFromParcel(Parcel in) {
                 return new GestureStep(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GestureStep[] newArray(int size) {
                 return new GestureStep[size];
@@ -356,9 +329,8 @@ public final class GestureDescription {
         public GestureStep(Parcel parcel) {
             this.timeSinceGestureStart = parcel.readLong();
             Parcelable[] parcelables = (Parcelable[]) parcel.readParcelableArray(TouchPoint.class.getClassLoader(), TouchPoint.class);
-            int length = parcelables == null ? 0 : parcelables.length;
-            this.numTouchPoints = length;
-            this.touchPoints = new TouchPoint[length];
+            this.numTouchPoints = parcelables == null ? 0 : parcelables.length;
+            this.touchPoints = new TouchPoint[this.numTouchPoints];
             for (int i = 0; i < this.numTouchPoints; i++) {
                 this.touchPoints[i] = (TouchPoint) parcelables[i];
             }
@@ -374,26 +346,8 @@ public final class GestureDescription {
             dest.writeLong(this.timeSinceGestureStart);
             dest.writeParcelableArray(this.touchPoints, flags);
         }
-
-        /* renamed from: android.accessibilityservice.GestureDescription$GestureStep$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<GestureStep> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GestureStep createFromParcel(Parcel in) {
-                return new GestureStep(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GestureStep[] newArray(int size) {
-                return new GestureStep[size];
-            }
-        }
     }
 
-    /* loaded from: classes.dex */
     public static class MotionEventGenerator {
         private static TouchPoint[] sCurrentTouchPoints;
 
@@ -413,8 +367,7 @@ public final class GestureDescription {
         }
 
         private static TouchPoint[] getCurrentTouchPoints(int requiredCapacity) {
-            TouchPoint[] touchPointArr = sCurrentTouchPoints;
-            if (touchPointArr == null || touchPointArr.length < requiredCapacity) {
+            if (sCurrentTouchPoints == null || sCurrentTouchPoints.length < requiredCapacity) {
                 sCurrentTouchPoints = new TouchPoint[requiredCapacity];
                 for (int i = 0; i < requiredCapacity; i++) {
                     sCurrentTouchPoints[i] = new TouchPoint();

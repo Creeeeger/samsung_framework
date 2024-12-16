@@ -13,7 +13,6 @@ public interface IPackageDeleteObserver2 extends IInterface {
 
     void onUserActionRequired(Intent intent) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPackageDeleteObserver2 {
         @Override // android.content.pm.IPackageDeleteObserver2
         public void onUserActionRequired(Intent intent) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IPackageDeleteObserver2 extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPackageDeleteObserver2 {
         public static final String DESCRIPTOR = "android.content.pm.IPackageDeleteObserver2";
         static final int TRANSACTION_onPackageDeleted = 2;
@@ -76,32 +74,29 @@ public interface IPackageDeleteObserver2 extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUserActionRequired(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onPackageDeleted(_arg02, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUserActionRequired(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onPackageDeleted(_arg02, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPackageDeleteObserver2 {
+        private static class Proxy implements IPackageDeleteObserver2 {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

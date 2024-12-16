@@ -9,16 +9,15 @@ import com.android.internal.util.Preconditions;
 import java.util.Arrays;
 
 /* loaded from: classes3.dex */
-public final class RequiredValidators extends InternalValidator {
+final class RequiredValidators extends InternalValidator {
     public static final Parcelable.Creator<RequiredValidators> CREATOR = new Parcelable.Creator<RequiredValidators>() { // from class: android.service.autofill.RequiredValidators.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RequiredValidators createFromParcel(Parcel parcel) {
             return new RequiredValidators((InternalValidator[]) parcel.readParcelableArray(null, InternalValidator.class));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RequiredValidators[] newArray(int size) {
             return new RequiredValidators[size];
@@ -27,7 +26,7 @@ public final class RequiredValidators extends InternalValidator {
     private static final String TAG = "RequiredValidators";
     private final InternalValidator[] mValidators;
 
-    public RequiredValidators(InternalValidator[] validators) {
+    RequiredValidators(InternalValidator[] validators) {
         this.mValidators = (InternalValidator[]) Preconditions.checkArrayElementsNotNull(validators, "validators");
     }
 
@@ -57,22 +56,5 @@ public final class RequiredValidators extends InternalValidator {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelableArray(this.mValidators, flags);
-    }
-
-    /* renamed from: android.service.autofill.RequiredValidators$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RequiredValidators> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RequiredValidators createFromParcel(Parcel parcel) {
-            return new RequiredValidators((InternalValidator[]) parcel.readParcelableArray(null, InternalValidator.class));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RequiredValidators[] newArray(int size) {
-            return new RequiredValidators[size];
-        }
     }
 }

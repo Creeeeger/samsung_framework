@@ -8,13 +8,13 @@ import java.nio.ByteBuffer;
 import java.security.DigestException;
 
 /* loaded from: classes4.dex */
-public class ReadFileDataSource implements DataSource {
+class ReadFileDataSource implements DataSource {
     private static final int CHUNK_SIZE = 1048576;
     private final FileDescriptor mFd;
     private final long mFilePosition;
     private final long mSize;
 
-    public ReadFileDataSource(FileDescriptor fd, long position, long size) {
+    ReadFileDataSource(FileDescriptor fd, long position, long size) {
         this.mFd = fd;
         this.mFilePosition = position;
         this.mSize = size;

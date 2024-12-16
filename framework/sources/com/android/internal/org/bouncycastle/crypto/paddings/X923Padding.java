@@ -21,11 +21,10 @@ public class X923Padding implements BlockCipherPadding {
     public int addPadding(byte[] in, int inOff) {
         byte code = (byte) (in.length - inOff);
         while (inOff < in.length - 1) {
-            SecureRandom secureRandom = this.random;
-            if (secureRandom == null) {
+            if (this.random == null) {
                 in[inOff] = 0;
             } else {
-                in[inOff] = (byte) secureRandom.nextInt();
+                in[inOff] = (byte) this.random.nextInt();
             }
             inOff++;
         }

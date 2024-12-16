@@ -18,7 +18,6 @@ public interface IMusicRecognitionManagerCallback extends IInterface {
 
     void onRecognitionSucceeded(MediaMetadata mediaMetadata, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMusicRecognitionManagerCallback {
         @Override // android.media.musicrecognition.IMusicRecognitionManagerCallback
         public void onRecognitionSucceeded(MediaMetadata result, Bundle extras) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IMusicRecognitionManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMusicRecognitionManagerCallback {
         static final int TRANSACTION_onAudioStreamClosed = 3;
         static final int TRANSACTION_onRecognitionFailed = 2;
@@ -87,33 +85,30 @@ public interface IMusicRecognitionManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMusicRecognitionManagerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMusicRecognitionManagerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMusicRecognitionManagerCallback.DESCRIPTOR);
+                case 1:
+                    MediaMetadata _arg0 = (MediaMetadata) data.readTypedObject(MediaMetadata.CREATOR);
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRecognitionSucceeded(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRecognitionFailed(_arg02);
+                    return true;
+                case 3:
+                    onAudioStreamClosed();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MediaMetadata _arg0 = (MediaMetadata) data.readTypedObject(MediaMetadata.CREATOR);
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRecognitionSucceeded(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRecognitionFailed(_arg02);
-                            return true;
-                        case 3:
-                            onAudioStreamClosed();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IMusicRecognitionManagerCallback {
             private IBinder mRemote;
 

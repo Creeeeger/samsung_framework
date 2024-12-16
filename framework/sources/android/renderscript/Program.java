@@ -21,7 +21,6 @@ public class Program extends BaseObj {
     String[] mTextureNames;
     TextureType[] mTextures;
 
-    /* loaded from: classes3.dex */
     public enum TextureType {
         TEXTURE_2D(0),
         TEXTURE_CUBE(1);
@@ -33,7 +32,6 @@ public class Program extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     enum ProgramParam {
         INPUT(0),
         OUTPUT(1),
@@ -47,27 +45,23 @@ public class Program extends BaseObj {
         }
     }
 
-    public Program(long id, RenderScript rs) {
+    Program(long id, RenderScript rs) {
         super(id, rs);
         this.guard.open("destroy");
     }
 
     public int getConstantCount() {
-        Type[] typeArr = this.mConstants;
-        if (typeArr != null) {
-            return typeArr.length;
+        if (this.mConstants != null) {
+            return this.mConstants.length;
         }
         return 0;
     }
 
     public Type getConstant(int slot) {
-        if (slot >= 0) {
-            Type[] typeArr = this.mConstants;
-            if (slot < typeArr.length) {
-                return typeArr[slot];
-            }
+        if (slot < 0 || slot >= this.mConstants.length) {
+            throw new IllegalArgumentException("Slot ID out of range.");
         }
-        throw new IllegalArgumentException("Slot ID out of range.");
+        return this.mConstants[slot];
     }
 
     public int getTextureCount() {
@@ -120,7 +114,6 @@ public class Program extends BaseObj {
         this.mRS.nProgramBindSampler(getID(this.mRS), slot, id);
     }
 
-    /* loaded from: classes3.dex */
     public static class BaseProgramBuilder {
         RenderScript mRS;
         String mShader;
@@ -135,7 +128,7 @@ public class Program extends BaseObj {
         TextureType[] mTextureTypes = new TextureType[8];
         String[] mTextureNames = new String[8];
 
-        public BaseProgramBuilder(RenderScript rs) {
+        protected BaseProgramBuilder(RenderScript rs) {
             this.mRS = rs;
         }
 
@@ -193,10 +186,8 @@ public class Program extends BaseObj {
             if (t.getElement().isComplex()) {
                 throw new RSIllegalArgumentException("Complex elements not allowed.");
             }
-            Type[] typeArr = this.mConstants;
-            int i = this.mConstantCount;
-            typeArr[i] = t;
-            this.mConstantCount = i + 1;
+            this.mConstants[this.mConstantCount] = t;
+            this.mConstantCount++;
             return this;
         }
 
@@ -206,17 +197,16 @@ public class Program extends BaseObj {
         }
 
         public BaseProgramBuilder addTexture(TextureType texType, String texName) throws IllegalArgumentException {
-            int i = this.mTextureCount;
-            if (i >= 8) {
+            if (this.mTextureCount >= 8) {
                 throw new IllegalArgumentException("Max texture count exceeded.");
             }
-            this.mTextureTypes[i] = texType;
-            this.mTextureNames[i] = texName;
-            this.mTextureCount = i + 1;
+            this.mTextureTypes[this.mTextureCount] = texType;
+            this.mTextureNames[this.mTextureCount] = texName;
+            this.mTextureCount++;
             return this;
         }
 
-        public void initProgram(Program p) {
+        protected void initProgram(Program p) {
             p.mInputs = new Element[this.mInputCount];
             System.arraycopy(this.mInputs, 0, p.mInputs, 0, this.mInputCount);
             p.mOutputs = new Element[this.mOutputCount];

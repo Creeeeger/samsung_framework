@@ -1,5 +1,7 @@
 package com.android.internal.widget;
 
+import android.app.Notification;
+import android.app.Person;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -61,8 +63,7 @@ public class PeopleHelper {
             avatarIcon.setTint(findColor(name, layoutColor));
             return avatarIcon;
         }
-        int i = this.mAvatarSize;
-        Bitmap bitmap = Bitmap.createBitmap(i, i, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(this.mAvatarSize, this.mAvatarSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         float radius = this.mAvatarSize / 2.0f;
         int color = findColor(name, layoutColor);
@@ -141,6 +142,48 @@ public class PeopleHelper {
             }
         }
         return uniqueNames;
+    }
+
+    public class NameToPrefixMap {
+        Map<String, String> mMap;
+
+        NameToPrefixMap(Map<String, String> map) {
+            this.mMap = map;
+        }
+
+        public String getPrefix(CharSequence name) {
+            return this.mMap.get(name.toString());
+        }
+    }
+
+    public NameToPrefixMap mapUniqueNamesToPrefixWithGroupList(List<List<Notification.MessagingStyle.Message>> groups) {
+        Person sender;
+        String charPrefix;
+        ArrayMap<String, String> uniqueNames = new ArrayMap<>();
+        ArrayMap<String, CharSequence> uniqueCharacters = new ArrayMap<>();
+        for (int i = 0; i < groups.size(); i++) {
+            List<Notification.MessagingStyle.Message> group = groups.get(i);
+            if (!group.isEmpty() && (sender = group.get(0).getSenderPerson()) != null) {
+                CharSequence senderName = sender.getName();
+                if (sender.getIcon() == null && !TextUtils.isEmpty(senderName)) {
+                    String senderNameString = senderName.toString();
+                    if (!uniqueNames.containsKey(senderNameString) && (charPrefix = findNamePrefix(senderName, null)) != null) {
+                        if (uniqueCharacters.containsKey(charPrefix)) {
+                            CharSequence existingName = uniqueCharacters.get(charPrefix);
+                            if (existingName != null) {
+                                uniqueNames.put(existingName.toString(), findNameSplit(existingName));
+                                uniqueCharacters.put(charPrefix, null);
+                            }
+                            uniqueNames.put(senderNameString, findNameSplit(senderName));
+                        } else {
+                            uniqueNames.put(senderNameString, charPrefix);
+                            uniqueCharacters.put(charPrefix, senderName);
+                        }
+                    }
+                }
+            }
+        }
+        return new NameToPrefixMap(uniqueNames);
     }
 
     public void maybeHideFirstSenderName(List<MessagingGroup> groups, boolean isOneToOne, CharSequence conversationTitle) {

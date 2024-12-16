@@ -83,7 +83,7 @@ public class ListPopupWindow implements ShowableListMenu {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public ListPopupWindow(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ListPopupWindow(Context context, AttributeSet attributeSet, int i, int i2) {
         boolean z;
         this.mDropDownHeight = -2;
         this.mDropDownWidth = -2;
@@ -103,20 +103,18 @@ public class ListPopupWindow implements ShowableListMenu {
         this.mIsDeviceDefault = false;
         this.mContext = context;
         this.mHandler = new Handler(context.getMainLooper());
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListPopupWindow, defStyleAttr, defStyleRes);
-        this.mDropDownHorizontalOffset = a.getDimensionPixelOffset(0, 0);
-        int dimensionPixelOffset = a.getDimensionPixelOffset(1, 0);
-        this.mDropDownVerticalOffset = dimensionPixelOffset;
-        if (dimensionPixelOffset != 0) {
+        TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.ListPopupWindow, i, i2);
+        this.mDropDownHorizontalOffset = obtainStyledAttributes.getDimensionPixelOffset(0, 0);
+        this.mDropDownVerticalOffset = obtainStyledAttributes.getDimensionPixelOffset(1, 0);
+        if (this.mDropDownVerticalOffset != 0) {
             this.mDropDownVerticalOffsetSet = true;
         }
-        a.recycle();
-        PopupWindow popupWindow = new PopupWindow(context, attrs, defStyleAttr, defStyleRes);
-        this.mPopup = popupWindow;
-        popupWindow.setInputMethodMode(1);
-        TypedValue themeValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, themeValue, false);
-        if (themeValue.data != 0) {
+        obtainStyledAttributes.recycle();
+        this.mPopup = new PopupWindow(context, attributeSet, i, i2);
+        this.mPopup.setInputMethodMode(1);
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, typedValue, false);
+        if (typedValue.data != 0) {
             z = true;
         } else {
             z = false;
@@ -126,22 +124,17 @@ public class ListPopupWindow implements ShowableListMenu {
     }
 
     public void setAdapter(ListAdapter adapter) {
-        DataSetObserver dataSetObserver = this.mObserver;
-        if (dataSetObserver == null) {
+        if (this.mObserver == null) {
             this.mObserver = new PopupDataSetObserver();
-        } else {
-            ListAdapter listAdapter = this.mAdapter;
-            if (listAdapter != null) {
-                listAdapter.unregisterDataSetObserver(dataSetObserver);
-            }
+        } else if (this.mAdapter != null) {
+            this.mAdapter.unregisterDataSetObserver(this.mObserver);
         }
         this.mAdapter = adapter;
-        if (adapter != null) {
+        if (this.mAdapter != null) {
             adapter.registerDataSetObserver(this.mObserver);
         }
-        DropDownListView dropDownListView = this.mDropDownList;
-        if (dropDownListView != null) {
-            dropDownListView.setAdapter(this.mAdapter);
+        if (this.mDropDownList != null) {
+            this.mDropDownList.setAdapter(this.mAdapter);
         }
     }
 
@@ -332,16 +325,17 @@ public class ListPopupWindow implements ShowableListMenu {
             if (!getAnchorView().isAttachedToWindow()) {
                 return;
             }
-            int widthSpec3 = this.mDropDownWidth;
-            if (widthSpec3 == -1) {
+            if (this.mDropDownWidth == -1) {
                 widthSpec2 = -1;
-            } else if (widthSpec3 == -2) {
-                widthSpec2 = getAnchorView().getWidth();
             } else {
-                widthSpec2 = this.mDropDownWidth;
+                int widthSpec3 = this.mDropDownWidth;
+                if (widthSpec3 == -2) {
+                    widthSpec2 = getAnchorView().getWidth();
+                } else {
+                    widthSpec2 = this.mDropDownWidth;
+                }
             }
-            int i = this.mDropDownHeight;
-            if (i == -1) {
+            if (this.mDropDownHeight == -1) {
                 heightSpec2 = noInputMethod ? height : -1;
                 if (noInputMethod) {
                     this.mPopup.setWidth(this.mDropDownWidth == -1 ? -1 : 0);
@@ -351,7 +345,7 @@ public class ListPopupWindow implements ShowableListMenu {
                     this.mPopup.setHeight(-1);
                 }
             } else {
-                heightSpec2 = (i == -2 || height < i) ? height : this.mDropDownHeight;
+                heightSpec2 = (this.mDropDownHeight == -2 || height < this.mDropDownHeight) ? height : this.mDropDownHeight;
             }
             PopupWindow popupWindow = this.mPopup;
             if (!this.mForceIgnoreOutsideTouch && !this.mDropDownAlwaysVisible) {
@@ -362,21 +356,22 @@ public class ListPopupWindow implements ShowableListMenu {
             this.mPopup.getContentView().restoreDefaultFocus();
             return;
         }
-        int widthSpec4 = this.mDropDownWidth;
-        if (widthSpec4 == -1) {
+        if (this.mDropDownWidth == -1) {
             widthSpec = -1;
-        } else if (widthSpec4 == -2) {
-            widthSpec = getAnchorView().getWidth();
         } else {
-            widthSpec = this.mDropDownWidth;
+            int widthSpec4 = this.mDropDownWidth;
+            if (widthSpec4 == -2) {
+                widthSpec = getAnchorView().getWidth();
+            } else {
+                widthSpec = this.mDropDownWidth;
+            }
         }
-        int i2 = this.mDropDownHeight;
-        if (i2 == -1) {
+        if (this.mDropDownHeight == -1) {
             heightSpec = -1;
-        } else if (i2 == -2 || height < i2) {
+        } else if (this.mDropDownHeight == -2 || height < this.mDropDownHeight) {
             heightSpec = height;
         } else {
-            heightSpec = Math.max(1, i2);
+            heightSpec = Math.max(1, this.mDropDownHeight);
         }
         setBlurEffect();
         this.mPopup.setWidth(widthSpec);
@@ -422,9 +417,8 @@ public class ListPopupWindow implements ShowableListMenu {
     }
 
     private void removePromptView() {
-        View view = this.mPromptView;
-        if (view != null) {
-            ViewParent parent = view.getParent();
+        if (this.mPromptView != null) {
+            ViewParent parent = this.mPromptView.getParent();
             if (parent instanceof ViewGroup) {
                 ViewGroup group = (ViewGroup) parent;
                 group.removeView(this.mPromptView);
@@ -520,7 +514,7 @@ public class ListPopupWindow implements ShowableListMenu {
         return new DropDownListView(context, hijackFocus);
     }
 
-    public void setListItemExpandMax(int max) {
+    void setListItemExpandMax(int max) {
         this.mListItemExpandMaximum = max;
     }
 
@@ -554,8 +548,9 @@ public class ListPopupWindow implements ShowableListMenu {
                     case 23:
                     case 66:
                     case 160:
-                        return true;
+                        break;
                 }
+                return true;
             }
             if (below && keyCode == 20) {
                 if (curIndex == lastItem) {
@@ -605,25 +600,8 @@ public class ListPopupWindow implements ShowableListMenu {
         return false;
     }
 
-    /* renamed from: android.widget.ListPopupWindow$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends ForwardingListener {
-        AnonymousClass1(View src) {
-            super(src);
-        }
-
-        @Override // android.widget.ForwardingListener
-        public ShowableListMenu getPopup() {
-            return ListPopupWindow.this;
-        }
-    }
-
     public View.OnTouchListener createDragToOpenListener(View src) {
         return new ForwardingListener(src) { // from class: android.widget.ListPopupWindow.1
-            AnonymousClass1(View src2) {
-                super(src2);
-            }
-
             @Override // android.widget.ForwardingListener
             public ShowableListMenu getPopup() {
                 return ListPopupWindow.this;
@@ -640,9 +618,6 @@ public class ListPopupWindow implements ShowableListMenu {
         if (this.mDropDownList == null) {
             Context context = this.mContext;
             this.mShowDropDownRunnable = new Runnable() { // from class: android.widget.ListPopupWindow.2
-                AnonymousClass2() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     View view = ListPopupWindow.this.getAnchorView();
@@ -651,20 +626,15 @@ public class ListPopupWindow implements ShowableListMenu {
                     }
                 }
             };
-            DropDownListView createDropDownListView = createDropDownListView(context, !this.mModal);
-            this.mDropDownList = createDropDownListView;
-            Drawable drawable = this.mDropDownListHighlight;
-            if (drawable != null) {
-                createDropDownListView.setSelector(drawable);
+            this.mDropDownList = createDropDownListView(context, !this.mModal);
+            if (this.mDropDownListHighlight != null) {
+                this.mDropDownList.setSelector(this.mDropDownListHighlight);
             }
             this.mDropDownList.setAdapter(this.mAdapter);
             this.mDropDownList.setOnItemClickListener(this.mItemClickListener);
             this.mDropDownList.setFocusable(true);
             this.mDropDownList.setFocusableInTouchMode(true);
             this.mDropDownList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { // from class: android.widget.ListPopupWindow.3
-                AnonymousClass3() {
-                }
-
                 @Override // android.widget.AdapterView.OnItemSelectedListener
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     DropDownListView dropDownList;
@@ -678,9 +648,8 @@ public class ListPopupWindow implements ShowableListMenu {
                 }
             });
             this.mDropDownList.setOnScrollListener(this.mScrollListener);
-            AdapterView.OnItemSelectedListener onItemSelectedListener = this.mItemSelectedListener;
-            if (onItemSelectedListener != null) {
-                this.mDropDownList.setOnItemSelectedListener(onItemSelectedListener);
+            if (this.mItemSelectedListener != null) {
+                this.mDropDownList.setOnItemSelectedListener(this.mItemSelectedListener);
             }
             ViewGroup dropDownView = this.mDropDownList;
             View hintView = this.mPromptView;
@@ -742,8 +711,7 @@ public class ListPopupWindow implements ShowableListMenu {
             int childWidthSpec2 = maxHeight + padding;
             return childWidthSpec2;
         }
-        int i = this.mDropDownWidth;
-        switch (i) {
+        switch (this.mDropDownWidth) {
             case -2:
                 childWidthSpec = View.MeasureSpec.makeMeasureSpec(this.mContext.getResources().getDisplayMetrics().widthPixels - (this.mTempRect.left + this.mTempRect.right), Integer.MIN_VALUE);
                 break;
@@ -751,7 +719,7 @@ public class ListPopupWindow implements ShowableListMenu {
                 childWidthSpec = View.MeasureSpec.makeMeasureSpec(this.mContext.getResources().getDisplayMetrics().widthPixels - (this.mTempRect.left + this.mTempRect.right), 1073741824);
                 break;
             default:
-                childWidthSpec = View.MeasureSpec.makeMeasureSpec(i - (this.mTempRect.left + this.mTempRect.right), 1073741824);
+                childWidthSpec = View.MeasureSpec.makeMeasureSpec(this.mDropDownWidth - (this.mTempRect.left + this.mTempRect.right), 1073741824);
                 break;
         }
         int listContent = this.mDropDownList.measureHeightOfChildren(childWidthSpec, 0, -1, maxHeight - otherHeights, -1);
@@ -763,45 +731,10 @@ public class ListPopupWindow implements ShowableListMenu {
         return listPadding2;
     }
 
-    /* renamed from: android.widget.ListPopupWindow$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            View view = ListPopupWindow.this.getAnchorView();
-            if (view != null && view.getWindowToken() != null) {
-                ListPopupWindow.this.show();
-            }
-        }
-    }
-
-    /* renamed from: android.widget.ListPopupWindow$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements AdapterView.OnItemSelectedListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemSelectedListener
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            DropDownListView dropDownList;
-            if (position != -1 && (dropDownList = ListPopupWindow.this.mDropDownList) != null) {
-                dropDownList.setListSelectionHidden(false);
-            }
-        }
-
-        @Override // android.widget.AdapterView.OnItemSelectedListener
-        public void onNothingSelected(AdapterView<?> parent) {
-        }
-    }
-
     private void setBlurEffect() {
         int blurBackgroundColorId;
-        Context context = this.mContext;
-        if (context != null && this.mIsDeviceDefault) {
-            boolean isThemeApplied = Settings.System.getString(context.getContentResolver(), "current_sec_active_themepackage") != null;
+        if (this.mContext != null && this.mIsDeviceDefault) {
+            boolean isThemeApplied = Settings.System.getString(this.mContext.getContentResolver(), "current_sec_active_themepackage") != null;
             boolean isReduceTransparency = Settings.System.getInt(this.mContext.getContentResolver(), "accessibility_reduce_transparency", 0) == 1;
             SemBlurInfo.Builder builder = new SemBlurInfo.Builder(0);
             if (!isThemeApplied && !isReduceTransparency && this.mPopup.semIsAvailableBlurBackground()) {
@@ -816,9 +749,8 @@ public class ListPopupWindow implements ShowableListMenu {
                 builder.setBackgroundColor(this.mContext.getResources().getColor(blurBackgroundColorId, this.mContext.getTheme()));
                 builder.setBackgroundCornerRadius(this.mContext.getResources().getDimensionPixelSize(R.dimen.sem_popup_menu_corner_radius));
                 this.mPopup.getContentView().semSetBlurInfo(builder.build());
-                DropDownListView dropDownListView = this.mDropDownList;
-                if (dropDownListView != null) {
-                    dropDownListView.setOverScrollMode(2);
+                if (this.mDropDownList != null) {
+                    this.mDropDownList.setOverScrollMode(2);
                 }
             }
         }
@@ -829,12 +761,7 @@ public class ListPopupWindow implements ShowableListMenu {
         this.mOverlapAnchor = overlap;
     }
 
-    /* loaded from: classes4.dex */
-    public class PopupDataSetObserver extends DataSetObserver {
-        /* synthetic */ PopupDataSetObserver(ListPopupWindow listPopupWindow, PopupDataSetObserverIA popupDataSetObserverIA) {
-            this();
-        }
-
+    private class PopupDataSetObserver extends DataSetObserver {
         private PopupDataSetObserver() {
         }
 
@@ -851,12 +778,7 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class ListSelectorHider implements Runnable {
-        /* synthetic */ ListSelectorHider(ListPopupWindow listPopupWindow, ListSelectorHiderIA listSelectorHiderIA) {
-            this();
-        }
-
+    private class ListSelectorHider implements Runnable {
         private ListSelectorHider() {
         }
 
@@ -866,12 +788,7 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class ResizePopupRunnable implements Runnable {
-        /* synthetic */ ResizePopupRunnable(ListPopupWindow listPopupWindow, ResizePopupRunnableIA resizePopupRunnableIA) {
-            this();
-        }
-
+    private class ResizePopupRunnable implements Runnable {
         private ResizePopupRunnable() {
         }
 
@@ -892,12 +809,7 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class PopupTouchInterceptor implements View.OnTouchListener {
-        /* synthetic */ PopupTouchInterceptor(ListPopupWindow listPopupWindow, PopupTouchInterceptorIA popupTouchInterceptorIA) {
-            this();
-        }
-
+    private class PopupTouchInterceptor implements View.OnTouchListener {
         private PopupTouchInterceptor() {
         }
 
@@ -918,12 +830,7 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class PopupScrollListener implements AbsListView.OnScrollListener {
-        /* synthetic */ PopupScrollListener(ListPopupWindow listPopupWindow, PopupScrollListenerIA popupScrollListenerIA) {
-            this();
-        }
-
+    private class PopupScrollListener implements AbsListView.OnScrollListener {
         private PopupScrollListener() {
         }
 

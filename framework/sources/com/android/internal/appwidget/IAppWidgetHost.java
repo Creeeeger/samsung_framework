@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.widget.RemoteViews;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IAppWidgetHost extends IInterface {
     void appWidgetRemoved(int i) throws RemoteException;
 
@@ -18,10 +18,15 @@ public interface IAppWidgetHost extends IInterface {
 
     void updateAppWidget(int i, RemoteViews remoteViews) throws RemoteException;
 
+    void updateAppWidgetDeferred(int i) throws RemoteException;
+
     void viewDataChanged(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAppWidgetHost {
+        @Override // com.android.internal.appwidget.IAppWidgetHost
+        public void updateAppWidgetDeferred(int appWidgetId) throws RemoteException {
+        }
+
         @Override // com.android.internal.appwidget.IAppWidgetHost
         public void updateAppWidget(int appWidgetId, RemoteViews views) throws RemoteException {
         }
@@ -48,14 +53,14 @@ public interface IAppWidgetHost extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAppWidgetHost {
         public static final String DESCRIPTOR = "com.android.internal.appwidget.IAppWidgetHost";
-        static final int TRANSACTION_appWidgetRemoved = 5;
-        static final int TRANSACTION_providerChanged = 2;
-        static final int TRANSACTION_providersChanged = 3;
-        static final int TRANSACTION_updateAppWidget = 1;
-        static final int TRANSACTION_viewDataChanged = 4;
+        static final int TRANSACTION_appWidgetRemoved = 6;
+        static final int TRANSACTION_providerChanged = 3;
+        static final int TRANSACTION_providersChanged = 4;
+        static final int TRANSACTION_updateAppWidget = 2;
+        static final int TRANSACTION_updateAppWidgetDeferred = 1;
+        static final int TRANSACTION_viewDataChanged = 5;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
@@ -80,14 +85,16 @@ public interface IAppWidgetHost extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return "updateAppWidget";
+                    return "updateAppWidgetDeferred";
                 case 2:
-                    return "providerChanged";
+                    return "updateAppWidget";
                 case 3:
-                    return "providersChanged";
+                    return "providerChanged";
                 case 4:
-                    return "viewDataChanged";
+                    return "providersChanged";
                 case 5:
+                    return "viewDataChanged";
+                case 6:
                     return "appWidgetRemoved";
                 default:
                     return null;
@@ -104,46 +111,48 @@ public interface IAppWidgetHost extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateAppWidgetDeferred(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    RemoteViews _arg1 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateAppWidget(_arg02, _arg1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    AppWidgetProviderInfo _arg12 = (AppWidgetProviderInfo) data.readTypedObject(AppWidgetProviderInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    providerChanged(_arg03, _arg12);
+                    return true;
+                case 4:
+                    providersChanged();
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    viewDataChanged(_arg04, _arg13);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    appWidgetRemoved(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            RemoteViews _arg1 = (RemoteViews) data.readTypedObject(RemoteViews.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateAppWidget(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            AppWidgetProviderInfo _arg12 = (AppWidgetProviderInfo) data.readTypedObject(AppWidgetProviderInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            providerChanged(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            providersChanged();
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            viewDataChanged(_arg03, _arg13);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            appWidgetRemoved(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAppWidgetHost {
+        private static class Proxy implements IAppWidgetHost {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -160,13 +169,25 @@ public interface IAppWidgetHost extends IInterface {
             }
 
             @Override // com.android.internal.appwidget.IAppWidgetHost
+            public void updateAppWidgetDeferred(int appWidgetId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(appWidgetId);
+                    this.mRemote.transact(1, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.appwidget.IAppWidgetHost
             public void updateAppWidget(int appWidgetId, RemoteViews views) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(appWidgetId);
                     _data.writeTypedObject(views, 0);
-                    this.mRemote.transact(1, _data, null, 1);
+                    this.mRemote.transact(2, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -179,7 +200,7 @@ public interface IAppWidgetHost extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(appWidgetId);
                     _data.writeTypedObject(info, 0);
-                    this.mRemote.transact(2, _data, null, 1);
+                    this.mRemote.transact(3, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -190,7 +211,7 @@ public interface IAppWidgetHost extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(3, _data, null, 1);
+                    this.mRemote.transact(4, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -203,7 +224,7 @@ public interface IAppWidgetHost extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(appWidgetId);
                     _data.writeInt(viewId);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(5, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -215,7 +236,7 @@ public interface IAppWidgetHost extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(appWidgetId);
-                    this.mRemote.transact(5, _data, null, 1);
+                    this.mRemote.transact(6, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -224,7 +245,7 @@ public interface IAppWidgetHost extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 4;
+            return 5;
         }
     }
 }

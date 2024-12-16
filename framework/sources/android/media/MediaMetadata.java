@@ -19,7 +19,6 @@ import java.util.Set;
 public final class MediaMetadata implements Parcelable {
     public static final Parcelable.Creator<MediaMetadata> CREATOR;
     private static final SparseArray<String> EDITOR_KEY_MAPPING;
-    private static final ArrayMap<String, Integer> METADATA_KEYS_TYPE;
     public static final String METADATA_KEY_BT_FOLDER_TYPE = "android.media.metadata.BT_FOLDER_TYPE";
     public static final String METADATA_KEY_COMPILATION = "android.media.metadata.COMPILATION";
     public static final String METADATA_KEY_DATE = "android.media.metadata.DATE";
@@ -61,96 +60,81 @@ public final class MediaMetadata implements Parcelable {
     public static final String METADATA_KEY_ART_URI = "android.media.metadata.ART_URI";
     public static final String METADATA_KEY_ALBUM_ART_URI = "android.media.metadata.ALBUM_ART_URI";
     private static final String[] PREFERRED_URI_ORDER = {METADATA_KEY_DISPLAY_ICON_URI, METADATA_KEY_ART_URI, METADATA_KEY_ALBUM_ART_URI};
+    private static final ArrayMap<String, Integer> METADATA_KEYS_TYPE = new ArrayMap<>();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface BitmapKey {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface LongKey {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RatingKey {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TextKey {
     }
 
-    /* synthetic */ MediaMetadata(Bundle bundle, int i, MediaMetadataIA mediaMetadataIA) {
-        this(bundle, i);
-    }
-
-    /* synthetic */ MediaMetadata(Parcel parcel, MediaMetadataIA mediaMetadataIA) {
-        this(parcel);
-    }
-
     static {
-        ArrayMap<String, Integer> arrayMap = new ArrayMap<>();
-        METADATA_KEYS_TYPE = arrayMap;
-        arrayMap.put(METADATA_KEY_TITLE, 1);
-        arrayMap.put(METADATA_KEY_ARTIST, 1);
-        arrayMap.put(METADATA_KEY_DURATION, 0);
-        arrayMap.put(METADATA_KEY_ALBUM, 1);
-        arrayMap.put(METADATA_KEY_AUTHOR, 1);
-        arrayMap.put(METADATA_KEY_WRITER, 1);
-        arrayMap.put(METADATA_KEY_COMPOSER, 1);
-        arrayMap.put(METADATA_KEY_COMPILATION, 1);
-        arrayMap.put(METADATA_KEY_DATE, 1);
-        arrayMap.put(METADATA_KEY_YEAR, 0);
-        arrayMap.put(METADATA_KEY_GENRE, 1);
-        arrayMap.put(METADATA_KEY_TRACK_NUMBER, 0);
-        arrayMap.put(METADATA_KEY_NUM_TRACKS, 0);
-        arrayMap.put(METADATA_KEY_DISC_NUMBER, 0);
-        arrayMap.put(METADATA_KEY_ALBUM_ARTIST, 1);
-        arrayMap.put(METADATA_KEY_ART, 2);
-        arrayMap.put(METADATA_KEY_ART_URI, 1);
-        arrayMap.put(METADATA_KEY_ALBUM_ART, 2);
-        arrayMap.put(METADATA_KEY_ALBUM_ART_URI, 1);
-        arrayMap.put(METADATA_KEY_USER_RATING, 3);
-        arrayMap.put(METADATA_KEY_RATING, 3);
-        arrayMap.put(METADATA_KEY_DISPLAY_TITLE, 1);
-        arrayMap.put(METADATA_KEY_DISPLAY_SUBTITLE, 1);
-        arrayMap.put(METADATA_KEY_DISPLAY_DESCRIPTION, 1);
-        arrayMap.put(METADATA_KEY_DISPLAY_ICON, 2);
-        arrayMap.put(METADATA_KEY_DISPLAY_ICON_URI, 1);
-        arrayMap.put(METADATA_KEY_BT_FOLDER_TYPE, 0);
-        arrayMap.put(METADATA_KEY_MEDIA_ID, 1);
-        arrayMap.put(METADATA_KEY_MEDIA_URI, 1);
-        SparseArray<String> sparseArray = new SparseArray<>();
-        EDITOR_KEY_MAPPING = sparseArray;
-        sparseArray.put(100, METADATA_KEY_ART);
-        sparseArray.put(101, METADATA_KEY_RATING);
-        sparseArray.put(268435457, METADATA_KEY_USER_RATING);
-        sparseArray.put(1, METADATA_KEY_ALBUM);
-        sparseArray.put(13, METADATA_KEY_ALBUM_ARTIST);
-        sparseArray.put(2, METADATA_KEY_ARTIST);
-        sparseArray.put(3, METADATA_KEY_AUTHOR);
-        sparseArray.put(0, METADATA_KEY_TRACK_NUMBER);
-        sparseArray.put(4, METADATA_KEY_COMPOSER);
-        sparseArray.put(15, METADATA_KEY_COMPILATION);
-        sparseArray.put(5, METADATA_KEY_DATE);
-        sparseArray.put(14, METADATA_KEY_DISC_NUMBER);
-        sparseArray.put(9, METADATA_KEY_DURATION);
-        sparseArray.put(6, METADATA_KEY_GENRE);
-        sparseArray.put(10, METADATA_KEY_NUM_TRACKS);
-        sparseArray.put(7, METADATA_KEY_TITLE);
-        sparseArray.put(11, METADATA_KEY_WRITER);
-        sparseArray.put(8, METADATA_KEY_YEAR);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_TITLE, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_ARTIST, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DURATION, 0);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_ALBUM, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_AUTHOR, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_WRITER, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_COMPOSER, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_COMPILATION, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DATE, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_YEAR, 0);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_GENRE, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_TRACK_NUMBER, 0);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_NUM_TRACKS, 0);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DISC_NUMBER, 0);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_ALBUM_ARTIST, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_ART, 2);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_ART_URI, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_ALBUM_ART, 2);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_ALBUM_ART_URI, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_USER_RATING, 3);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_RATING, 3);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DISPLAY_TITLE, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DISPLAY_SUBTITLE, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DISPLAY_DESCRIPTION, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DISPLAY_ICON, 2);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DISPLAY_ICON_URI, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_BT_FOLDER_TYPE, 0);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_MEDIA_ID, 1);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_MEDIA_URI, 1);
+        EDITOR_KEY_MAPPING = new SparseArray<>();
+        EDITOR_KEY_MAPPING.put(100, METADATA_KEY_ART);
+        EDITOR_KEY_MAPPING.put(101, METADATA_KEY_RATING);
+        EDITOR_KEY_MAPPING.put(268435457, METADATA_KEY_USER_RATING);
+        EDITOR_KEY_MAPPING.put(1, METADATA_KEY_ALBUM);
+        EDITOR_KEY_MAPPING.put(13, METADATA_KEY_ALBUM_ARTIST);
+        EDITOR_KEY_MAPPING.put(2, METADATA_KEY_ARTIST);
+        EDITOR_KEY_MAPPING.put(3, METADATA_KEY_AUTHOR);
+        EDITOR_KEY_MAPPING.put(0, METADATA_KEY_TRACK_NUMBER);
+        EDITOR_KEY_MAPPING.put(4, METADATA_KEY_COMPOSER);
+        EDITOR_KEY_MAPPING.put(15, METADATA_KEY_COMPILATION);
+        EDITOR_KEY_MAPPING.put(5, METADATA_KEY_DATE);
+        EDITOR_KEY_MAPPING.put(14, METADATA_KEY_DISC_NUMBER);
+        EDITOR_KEY_MAPPING.put(9, METADATA_KEY_DURATION);
+        EDITOR_KEY_MAPPING.put(6, METADATA_KEY_GENRE);
+        EDITOR_KEY_MAPPING.put(10, METADATA_KEY_NUM_TRACKS);
+        EDITOR_KEY_MAPPING.put(7, METADATA_KEY_TITLE);
+        EDITOR_KEY_MAPPING.put(11, METADATA_KEY_WRITER);
+        EDITOR_KEY_MAPPING.put(8, METADATA_KEY_YEAR);
         CREATOR = new Parcelable.Creator<MediaMetadata>() { // from class: android.media.MediaMetadata.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MediaMetadata createFromParcel(Parcel in) {
                 return new MediaMetadata(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MediaMetadata[] newArray(int size) {
                 return new MediaMetadata[size];
@@ -235,9 +219,8 @@ public final class MediaMetadata implements Parcelable {
     }
 
     public MediaDescription getDescription() {
-        MediaDescription mediaDescription = this.mDescription;
-        if (mediaDescription != null) {
-            return mediaDescription;
+        if (this.mDescription != null) {
+            return this.mDescription;
         }
         String mediaId = getString(METADATA_KEY_MEDIA_ID);
         CharSequence[] text = new CharSequence[3];
@@ -251,13 +234,9 @@ public final class MediaMetadata implements Parcelable {
         } else {
             int textIndex = 0;
             int keyIndex = 0;
-            while (textIndex < text.length) {
-                String[] strArr = PREFERRED_DESCRIPTION_ORDER;
-                if (keyIndex >= strArr.length) {
-                    break;
-                }
+            while (textIndex < text.length && keyIndex < PREFERRED_DESCRIPTION_ORDER.length) {
                 int keyIndex2 = keyIndex + 1;
-                CharSequence next = getText(strArr[keyIndex]);
+                CharSequence next = getText(PREFERRED_DESCRIPTION_ORDER[keyIndex]);
                 if (!TextUtils.isEmpty(next)) {
                     text[textIndex] = next;
                     textIndex++;
@@ -267,11 +246,10 @@ public final class MediaMetadata implements Parcelable {
         }
         int i = 0;
         while (true) {
-            String[] strArr2 = PREFERRED_BITMAP_ORDER;
-            if (i >= strArr2.length) {
+            if (i >= PREFERRED_BITMAP_ORDER.length) {
                 break;
             }
-            Bitmap next2 = getBitmap(strArr2[i]);
+            Bitmap next2 = getBitmap(PREFERRED_BITMAP_ORDER[i]);
             if (next2 == null) {
                 i++;
             } else {
@@ -281,11 +259,10 @@ public final class MediaMetadata implements Parcelable {
         }
         int i2 = 0;
         while (true) {
-            String[] strArr3 = PREFERRED_URI_ORDER;
-            if (i2 >= strArr3.length) {
+            if (i2 >= PREFERRED_URI_ORDER.length) {
                 break;
             }
-            String next3 = getString(strArr3[i2]);
+            String next3 = getString(PREFERRED_URI_ORDER[i2]);
             if (TextUtils.isEmpty(next3)) {
                 i2++;
             } else {
@@ -311,30 +288,12 @@ public final class MediaMetadata implements Parcelable {
             bundle.putLong(MediaDescription.EXTRA_BT_FOLDER_TYPE, getLong(METADATA_KEY_BT_FOLDER_TYPE));
             bob.setExtras(bundle);
         }
-        MediaDescription build = bob.build();
-        this.mDescription = build;
-        return build;
+        this.mDescription = bob.build();
+        return this.mDescription;
     }
 
     public static String getKeyFromMetadataEditorKey(int editorKey) {
         return EDITOR_KEY_MAPPING.get(editorKey, null);
-    }
-
-    /* renamed from: android.media.MediaMetadata$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MediaMetadata> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaMetadata createFromParcel(Parcel in) {
-            return new MediaMetadata(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaMetadata[] newArray(int size) {
-            return new MediaMetadata[size];
-        }
     }
 
     public boolean equals(Object o) {
@@ -345,53 +304,40 @@ public final class MediaMetadata implements Parcelable {
             return false;
         }
         MediaMetadata m = (MediaMetadata) o;
-        int i = 0;
-        while (true) {
-            ArrayMap<String, Integer> arrayMap = METADATA_KEYS_TYPE;
-            if (i >= arrayMap.size()) {
-                return true;
-            }
-            String key = arrayMap.keyAt(i);
-            switch (arrayMap.valueAt(i).intValue()) {
+        for (int i = 0; i < METADATA_KEYS_TYPE.size(); i++) {
+            String key = METADATA_KEYS_TYPE.keyAt(i);
+            switch (METADATA_KEYS_TYPE.valueAt(i).intValue()) {
                 case 0:
-                    if (getLong(key) == m.getLong(key)) {
-                        break;
-                    } else {
+                    if (getLong(key) != m.getLong(key)) {
                         return false;
                     }
+                    break;
                 case 1:
                     if (!Objects.equals(getString(key), m.getString(key))) {
                         return false;
                     }
                     break;
             }
-            i++;
         }
+        return true;
     }
 
     public int hashCode() {
         int hashCode = 17;
-        int i = 0;
-        while (true) {
-            ArrayMap<String, Integer> arrayMap = METADATA_KEYS_TYPE;
-            if (i < arrayMap.size()) {
-                String key = arrayMap.keyAt(i);
-                switch (arrayMap.valueAt(i).intValue()) {
-                    case 0:
-                        hashCode = (hashCode * 31) + Long.hashCode(getLong(key));
-                        break;
-                    case 1:
-                        hashCode = (hashCode * 31) + Objects.hash(getString(key));
-                        break;
-                }
-                i++;
-            } else {
-                return hashCode;
+        for (int i = 0; i < METADATA_KEYS_TYPE.size(); i++) {
+            String key = METADATA_KEYS_TYPE.keyAt(i);
+            switch (METADATA_KEYS_TYPE.valueAt(i).intValue()) {
+                case 0:
+                    hashCode = (hashCode * 31) + Long.hashCode(getLong(key));
+                    break;
+                case 1:
+                    hashCode = (hashCode * 31) + Objects.hash(getString(key));
+                    break;
             }
         }
+        return hashCode;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mBitmapDimensionLimit;
         private final Bundle mBundle;

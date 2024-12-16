@@ -104,7 +104,6 @@ public interface IGnssMeasurement extends android.hardware.gnss.V2_0.IGnssMeasur
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssMeasurement {
         private IHwBinder mRemote;
 
@@ -360,7 +359,6 @@ public interface IGnssMeasurement extends android.hardware.gnss.V2_0.IGnssMeasur
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssMeasurement {
         @Override // android.hardware.gnss.V2_1.IGnssMeasurement, android.hardware.gnss.V2_0.IGnssMeasurement, android.hardware.gnss.V1_1.IGnssMeasurement, android.hardware.gnss.V1_0.IGnssMeasurement, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -383,7 +381,7 @@ public interface IGnssMeasurement extends android.hardware.gnss.V2_0.IGnssMeasur
 
         @Override // android.hardware.gnss.V2_1.IGnssMeasurement, android.hardware.gnss.V2_0.IGnssMeasurement, android.hardware.gnss.V1_1.IGnssMeasurement, android.hardware.gnss.V1_0.IGnssMeasurement, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{121, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -95, SprAnimatorBase.INTERPOLATOR_TYPE_CIRCEASEINOUT, 6, -91, 119, -79, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, -34, -122, -89, -49, 63, -107, -62, 99, -100, -75, 20, MidiConstants.STATUS_CHANNEL_PRESSURE, -122, 103, 63, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -101, -7, -110, 56, -55, -111, 126}, new byte[]{-58, 119, 89, -11, -42, 56, 125, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 59, 102, 114, -111, Byte.MIN_VALUE, MidiConstants.STATUS_CHANNEL_PRESSURE, 54, MidiConstants.STATUS_NOTE_ON, -24, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -16, -74, -72, -44, -31, 60, -30, -1, 66, -45, 27, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, 64, 101}, new byte[]{SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEOUT, 7, -47, 56, 62, -124, 124, 61, -21, 105, 110, -57, -94, -55, -29, 59, -106, -125, 119, 41, 69, 102, 4, 72, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, 16, -79, Byte.MIN_VALUE, 99, -38, 103, -92}, new byte[]{-98, -88, -104, 123, -79, 8, -100, -116, 93, 123, 103, -122, 101, 117, -72, 102, -17, 81, SprAttributeBase.TYPE_DURATION, 69, 2, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, -98, -4, -61, 124, 99, 82, -68, MidiConstants.STATUS_PITCH_BEND, 114, -93}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{121, 19, -95, 18, 6, -91, 119, -79, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, -34, -122, -89, -49, 63, -107, -62, 99, -100, -75, 20, MidiConstants.STATUS_CHANNEL_PRESSURE, -122, 103, 63, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -101, -7, -110, 56, -55, -111, 126}, new byte[]{-58, 119, 89, -11, -42, 56, 125, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 59, 102, 114, -111, Byte.MIN_VALUE, MidiConstants.STATUS_CHANNEL_PRESSURE, 54, MidiConstants.STATUS_NOTE_ON, -24, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, -16, -74, -72, -44, -31, 60, -30, -1, 66, -45, 27, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, 64, 101}, new byte[]{26, 7, -47, 56, 62, -124, 124, 61, -21, 105, 110, -57, -94, -55, -29, 59, -106, -125, 119, 41, 69, 102, 4, 72, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, 16, -79, Byte.MIN_VALUE, 99, -38, 103, -92}, new byte[]{-98, -88, -104, 123, -79, 8, -100, -116, 93, 123, 103, -122, 101, 117, -72, 102, -17, 81, SprAttributeBase.TYPE_DURATION, 69, 2, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, -98, -4, -61, 124, 99, 82, -68, MidiConstants.STATUS_PITCH_BEND, 114, -93}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V2_1.IGnssMeasurement, android.hardware.gnss.V2_0.IGnssMeasurement, android.hardware.gnss.V1_1.IGnssMeasurement, android.hardware.gnss.V1_0.IGnssMeasurement, android.internal.hidl.base.V1_0.IBase

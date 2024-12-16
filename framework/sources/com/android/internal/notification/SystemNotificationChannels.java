@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class SystemNotificationChannels {
 
     @Deprecated
@@ -36,7 +36,6 @@ public class SystemNotificationChannels {
     @Deprecated
     public static String DEVICE_ADMIN_DEPRECATED = "DEVICE_ADMIN";
     public static String DEVICE_ADMIN = "DEVICE_ADMIN_ALERTS";
-    public static String ASKS = "ASKS_ALERTS";
     public static String ALERTS = "ALERTS";
     public static String RETAIL_MODE = "RETAIL_MODE";
     public static String USB = "USB";
@@ -111,8 +110,6 @@ public class SystemNotificationChannels {
         NotificationChannel abusiveBackgroundAppsChannel = new NotificationChannel(ABUSIVE_BACKGROUND_APPS, context.getString(R.string.notification_channel_abusive_bg_apps), 2);
         channelsList.add(abusiveBackgroundAppsChannel);
         channelsList.add(new NotificationChannel(ETHERNET, context.getString(R.string.ethernet_cable_connected_notification_title), 2));
-        NotificationChannel asksChannel = new NotificationChannel(ASKS, "ASKS MANAGER", 4);
-        channelsList.add(asksChannel);
         nm.createNotificationChannels(channelsList);
     }
 

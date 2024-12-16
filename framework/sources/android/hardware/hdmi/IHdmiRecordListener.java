@@ -16,7 +16,6 @@ public interface IHdmiRecordListener extends IInterface {
 
     void onTimerRecordingResult(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiRecordListener {
         @Override // android.hardware.hdmi.IHdmiRecordListener
         public byte[] getOneTouchRecordSource(int recorderAddress) throws RemoteException {
@@ -41,7 +40,6 @@ public interface IHdmiRecordListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiRecordListener {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiRecordListener";
         static final int TRANSACTION_getOneTouchRecordSource = 1;
@@ -94,48 +92,45 @@ public interface IHdmiRecordListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result = getOneTouchRecordSource(_arg0);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOneTouchRecordResult(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTimerRecordingResult(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onClearTimerRecordingResult(_arg04, _arg13);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result = getOneTouchRecordSource(_arg0);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOneTouchRecordResult(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTimerRecordingResult(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onClearTimerRecordingResult(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiRecordListener {
+        private static class Proxy implements IHdmiRecordListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

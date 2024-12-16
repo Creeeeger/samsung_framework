@@ -6,25 +6,15 @@ import android.os.SystemClock;
 import android.telecom.Logging.Session;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import com.samsung.android.audio.SoundTheme;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /* loaded from: classes6.dex */
 public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApClientDetails> {
-    public static final Parcelable.Creator<SemWifiApClientDetails> CREATOR = new Parcelable.Creator<SemWifiApClientDetails>() { // from class: com.samsung.android.wifi.SemWifiApClientDetails.1
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiApClientDetails createFromParcel(Parcel source) {
-            return new SemWifiApClientDetails(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiApClientDetails[] newArray(int size) {
-            return new SemWifiApClientDetails[size];
-        }
-    };
     private static final int MAX_DEVICE_NAME_LOG = 32;
+    public static final String REGEX_MAC = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
     protected boolean isCellularStream;
     protected long mClientActiveSessionMobileData;
     protected long mClientCurrentDayActiveSessionMobileData;
@@ -34,11 +24,11 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
     protected int mClientDeviceType;
     protected String mClientEditedName;
     protected String mClientIpAddress;
-    private boolean mClientIsAutoHotspotDevice;
+    protected boolean mClientIsAutoHotspotDevice;
     protected boolean mClientIsConnected;
     protected boolean mClientIsDataPauseByTimeLimit;
     protected boolean mClientIsDataPausedFromUi;
-    private boolean mClientIsGuestDevice;
+    protected boolean mClientIsGuestDevice;
     protected long mClientLastElapsedTime;
     private String mClientMac;
     protected String mClientName;
@@ -48,12 +38,69 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
     protected long mClientRecentConnectionTimeStamp;
     protected long mClientTimeLimitInMilliSec;
     protected long mClientUsedMobileData;
+    public static String DEFAULT_CONNECTED_IP = "x.x.x.x";
+    public static final Parcelable.Creator<SemWifiApClientDetails> CREATOR = new Parcelable.Creator<SemWifiApClientDetails>() { // from class: com.samsung.android.wifi.SemWifiApClientDetails.1
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public SemWifiApClientDetails createFromParcel(Parcel source) {
+            return new SemWifiApClientDetails(source);
+        }
 
-    /* synthetic */ SemWifiApClientDetails(Parcel parcel, SemWifiApClientDetailsIA semWifiApClientDetailsIA) {
-        this(parcel);
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public SemWifiApClientDetails[] newArray(int size) {
+            return new SemWifiApClientDetails[size];
+        }
+    };
+
+    public enum DeviceNameType {
+        DEFAULT(SoundTheme.Default),
+        DHCP("DHCP"),
+        NSD("NSD"),
+        EDITED("Edited");
+
+        private final String text;
+
+        DeviceNameType(String text) {
+            this.text = text;
+        }
     }
 
-    public SemWifiApClientDetails(String mac, String name, String editedName, String nsdName, String ip, int deviceType, long dataLimit, long timeLimit, long currentDayUsedMobileDataUsage, long currentDayUsedTimeUsage, boolean isConnected) {
+    public enum DeviceIpType {
+        UNKNOWN("Unknown"),
+        STATIC("Static"),
+        DYNAMIC("Dynamic");
+
+        private final String text;
+
+        DeviceIpType(String text) {
+            this.text = text;
+        }
+
+        public static int getIpTypeInt(DeviceIpType ipType) {
+            switch (ipType.ordinal()) {
+                case 1:
+                    return 1;
+                case 2:
+                    return 0;
+                default:
+                    return -1;
+            }
+        }
+
+        public static DeviceIpType getIpTypeFromInt(int isStaticIp) {
+            switch (isStaticIp) {
+                case 0:
+                    return DYNAMIC;
+                case 1:
+                    return STATIC;
+                default:
+                    return UNKNOWN;
+            }
+        }
+    }
+
+    public SemWifiApClientDetails(String mac, String name, String editedName, String nsdName, String ip, int deviceType, long dataLimit, long timeLimit, long currentDayUsedMobileDataUsage, long currentDayUsedTimeUsage, boolean isConnected, boolean isAutoHotspotClient, boolean isGuestClient) {
         this.mClientMac = mac;
         this.mClientName = name;
         this.mClientEditedName = editedName;
@@ -74,8 +121,8 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
         this.mClientLastElapsedTime = SystemClock.elapsedRealtime();
         this.mClientRealTimePackets = 0L;
         this.mClientRealTimeBytes = 0L;
-        this.mClientIsGuestDevice = false;
-        this.mClientIsAutoHotspotDevice = false;
+        this.mClientIsGuestDevice = isGuestClient;
+        this.mClientIsAutoHotspotDevice = isAutoHotspotClient;
         this.isCellularStream = false;
     }
 
@@ -112,23 +159,6 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.samsung.android.wifi.SemWifiApClientDetails$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemWifiApClientDetails> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiApClientDetails createFromParcel(Parcel source) {
-            return new SemWifiApClientDetails(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiApClientDetails[] newArray(int size) {
-            return new SemWifiApClientDetails[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -252,6 +282,19 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
         return this.mClientIsAutoHotspotDevice;
     }
 
+    public DeviceNameType getClientDeviceNameType() {
+        if (!TextUtils.isEmpty(this.mClientEditedName)) {
+            return DeviceNameType.EDITED;
+        }
+        if (!TextUtils.isEmpty(this.mClientNsdName)) {
+            return DeviceNameType.NSD;
+        }
+        if (isMacString(this.mClientName)) {
+            return DeviceNameType.DEFAULT;
+        }
+        return DeviceNameType.DHCP;
+    }
+
     public String getClientDeviceName() {
         if (!TextUtils.isEmpty(this.mClientEditedName)) {
             return this.mClientEditedName;
@@ -339,7 +382,6 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
         return 0L;
     }
 
-    /* loaded from: classes6.dex */
     public static final class DeviceType {
         public static final int DEVICE_TYPE_FLIP = 6;
         public static final int DEVICE_TYPE_FOLD = 2;
@@ -393,5 +435,14 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
                     return false;
             }
         }
+    }
+
+    public boolean isMacString(String stringToCheck) {
+        Pattern pattern = Pattern.compile(REGEX_MAC);
+        Matcher matcher = pattern.matcher(stringToCheck);
+        if (matcher.find()) {
+            return true;
+        }
+        return false;
     }
 }

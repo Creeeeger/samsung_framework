@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class RadioChainInfo implements Parcelable {
     public static final Parcelable.Creator<RadioChainInfo> CREATOR = new Parcelable.Creator<RadioChainInfo>() { // from class: android.net.wifi.nl80211.RadioChainInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioChainInfo createFromParcel(Parcel in) {
             return new RadioChainInfo(in.readInt(), in.readInt());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioChainInfo[] newArray(int size) {
             return new RadioChainInfo[size];
@@ -63,22 +62,5 @@ public final class RadioChainInfo implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.chainId);
         out.writeInt(this.level);
-    }
-
-    /* renamed from: android.net.wifi.nl80211.RadioChainInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RadioChainInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioChainInfo createFromParcel(Parcel in) {
-            return new RadioChainInfo(in.readInt(), in.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioChainInfo[] newArray(int size) {
-            return new RadioChainInfo[size];
-        }
     }
 }

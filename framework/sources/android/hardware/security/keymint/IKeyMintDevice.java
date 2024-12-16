@@ -52,7 +52,6 @@ public interface IKeyMintDevice extends IInterface {
 
     byte[] upgradeKey(byte[] bArr, KeyParameter[] keyParameterArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IKeyMintDevice {
         @Override // android.hardware.security.keymint.IKeyMintDevice
         public KeyMintHardwareInfo getHardwareInfo() throws RemoteException {
@@ -148,7 +147,6 @@ public interface IKeyMintDevice extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IKeyMintDevice {
         static final int TRANSACTION_addRngEntropy = 2;
         static final int TRANSACTION_begin = 10;
@@ -247,145 +245,144 @@ public interface IKeyMintDevice extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    KeyMintHardwareInfo _result = getHardwareInfo();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeTypedObject(_result, 1);
                     return true;
-                case 16777215:
+                case 2:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    addRngEntropy(_arg0);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    KeyParameter[] _arg02 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
+                    AttestationKey _arg1 = (AttestationKey) data.readTypedObject(AttestationKey.CREATOR);
+                    data.enforceNoDataAvail();
+                    KeyCreationResult _result2 = generateKey(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    KeyParameter[] _arg03 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
+                    int _arg12 = data.readInt();
+                    byte[] _arg2 = data.createByteArray();
+                    AttestationKey _arg3 = (AttestationKey) data.readTypedObject(AttestationKey.CREATOR);
+                    data.enforceNoDataAvail();
+                    KeyCreationResult _result3 = importKey(_arg03, _arg12, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 5:
+                    byte[] _arg04 = data.createByteArray();
+                    byte[] _arg13 = data.createByteArray();
+                    byte[] _arg22 = data.createByteArray();
+                    KeyParameter[] _arg32 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
+                    long _arg4 = data.readLong();
+                    long _arg5 = data.readLong();
+                    data.enforceNoDataAvail();
+                    KeyCreationResult _result4 = importWrappedKey(_arg04, _arg13, _arg22, _arg32, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 6:
+                    byte[] _arg05 = data.createByteArray();
+                    KeyParameter[] _arg14 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
+                    data.enforceNoDataAvail();
+                    byte[] _result5 = upgradeKey(_arg05, _arg14);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result5);
+                    return true;
+                case 7:
+                    byte[] _arg06 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    deleteKey(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    deleteAllKeys();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    destroyAttestationIds();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg07 = data.readInt();
+                    byte[] _arg15 = data.createByteArray();
+                    KeyParameter[] _arg23 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
+                    HardwareAuthToken _arg33 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    BeginResult _result6 = begin(_arg07, _arg15, _arg23, _arg33);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 11:
+                    boolean _arg08 = data.readBoolean();
+                    TimeStampToken _arg16 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    deviceLocked(_arg08, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    earlyBootEnded();
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    byte[] _arg09 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result7 = convertStorageKeyToEphemeral(_arg09);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result7);
+                    return true;
+                case 14:
+                    byte[] _arg010 = data.createByteArray();
+                    byte[] _arg17 = data.createByteArray();
+                    byte[] _arg24 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    KeyCharacteristics[] _result8 = getKeyCharacteristics(_arg010, _arg17, _arg24);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result8, 1);
+                    return true;
+                case 15:
+                    byte[] _result9 = getRootOfTrustChallenge();
+                    reply.writeNoException();
+                    reply.writeFixedArray(_result9, 1, 16);
+                    return true;
+                case 16:
+                    byte[] _arg011 = (byte[]) data.createFixedArray(byte[].class, 16);
+                    data.enforceNoDataAvail();
+                    byte[] _result10 = getRootOfTrust(_arg011);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result10);
+                    return true;
+                case 17:
+                    byte[] _arg012 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendRootOfTrust(_arg012);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            KeyMintHardwareInfo _result = getHardwareInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            addRngEntropy(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            KeyParameter[] _arg02 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
-                            AttestationKey _arg1 = (AttestationKey) data.readTypedObject(AttestationKey.CREATOR);
-                            data.enforceNoDataAvail();
-                            KeyCreationResult _result2 = generateKey(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            KeyParameter[] _arg03 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
-                            int _arg12 = data.readInt();
-                            byte[] _arg2 = data.createByteArray();
-                            AttestationKey _arg3 = (AttestationKey) data.readTypedObject(AttestationKey.CREATOR);
-                            data.enforceNoDataAvail();
-                            KeyCreationResult _result3 = importKey(_arg03, _arg12, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 5:
-                            byte[] _arg04 = data.createByteArray();
-                            byte[] _arg13 = data.createByteArray();
-                            byte[] _arg22 = data.createByteArray();
-                            KeyParameter[] _arg32 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
-                            long _arg4 = data.readLong();
-                            long _arg5 = data.readLong();
-                            data.enforceNoDataAvail();
-                            KeyCreationResult _result4 = importWrappedKey(_arg04, _arg13, _arg22, _arg32, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 6:
-                            byte[] _arg05 = data.createByteArray();
-                            KeyParameter[] _arg14 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
-                            data.enforceNoDataAvail();
-                            byte[] _result5 = upgradeKey(_arg05, _arg14);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result5);
-                            return true;
-                        case 7:
-                            byte[] _arg06 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            deleteKey(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            deleteAllKeys();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            destroyAttestationIds();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg07 = data.readInt();
-                            byte[] _arg15 = data.createByteArray();
-                            KeyParameter[] _arg23 = (KeyParameter[]) data.createTypedArray(KeyParameter.CREATOR);
-                            HardwareAuthToken _arg33 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            BeginResult _result6 = begin(_arg07, _arg15, _arg23, _arg33);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 11:
-                            boolean _arg08 = data.readBoolean();
-                            TimeStampToken _arg16 = (TimeStampToken) data.readTypedObject(TimeStampToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            deviceLocked(_arg08, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            earlyBootEnded();
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            byte[] _arg09 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result7 = convertStorageKeyToEphemeral(_arg09);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result7);
-                            return true;
-                        case 14:
-                            byte[] _arg010 = data.createByteArray();
-                            byte[] _arg17 = data.createByteArray();
-                            byte[] _arg24 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            KeyCharacteristics[] _result8 = getKeyCharacteristics(_arg010, _arg17, _arg24);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result8, 1);
-                            return true;
-                        case 15:
-                            byte[] _result9 = getRootOfTrustChallenge();
-                            reply.writeNoException();
-                            reply.writeFixedArray(_result9, 1, 16);
-                            return true;
-                        case 16:
-                            byte[] _arg011 = (byte[]) data.createFixedArray(byte[].class, 16);
-                            data.enforceNoDataAvail();
-                            byte[] _result10 = getRootOfTrust(_arg011);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result10);
-                            return true;
-                        case 17:
-                            byte[] _arg012 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendRootOfTrust(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IKeyMintDevice {
             private IBinder mRemote;
             private int mCachedVersion = -1;

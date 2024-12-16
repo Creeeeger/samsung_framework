@@ -15,7 +15,6 @@ public class TaskResizingAlgorithm {
     public static final float MIN_ASPECT = 1.2f;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface CtrlType {
     }
 

@@ -6,9 +6,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class Messenger implements Parcelable {
     public static final Parcelable.Creator<Messenger> CREATOR = new Parcelable.Creator<Messenger>() { // from class: android.os.Messenger.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Messenger createFromParcel(Parcel in) {
             IBinder target = in.readStrongBinder();
@@ -18,6 +16,7 @@ public final class Messenger implements Parcelable {
             return null;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Messenger[] newArray(int size) {
             return new Messenger[size];
@@ -60,27 +59,6 @@ public final class Messenger implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeStrongBinder(this.mTarget.asBinder());
-    }
-
-    /* renamed from: android.os.Messenger$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Messenger> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Messenger createFromParcel(Parcel in) {
-            IBinder target = in.readStrongBinder();
-            if (target != null) {
-                return new Messenger(target);
-            }
-            return null;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Messenger[] newArray(int size) {
-            return new Messenger[size];
-        }
     }
 
     public static void writeMessengerOrNullToParcel(Messenger messenger, Parcel out) {

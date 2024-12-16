@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class CallInfo implements Parcelable {
     public static final Parcelable.Creator<CallInfo> CREATOR = new Parcelable.Creator<CallInfo>() { // from class: com.android.internal.telephony.CallInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallInfo createFromParcel(Parcel source) {
             return new CallInfo(source.readString());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallInfo[] newArray(int size) {
             return new CallInfo[size];
@@ -27,23 +26,6 @@ public class CallInfo implements Parcelable {
 
     public String getHandle() {
         return this.handle;
-    }
-
-    /* renamed from: com.android.internal.telephony.CallInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CallInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallInfo createFromParcel(Parcel source) {
-            return new CallInfo(source.readString());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallInfo[] newArray(int size) {
-            return new CallInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

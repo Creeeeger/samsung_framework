@@ -12,9 +12,8 @@ public class NetlinkTracker extends BaseNetworkObserver {
     private final Callback mCallback;
     private DnsServerRepository mDnsServerRepository;
     private final String mInterfaceName;
-    private final LinkProperties mLinkProperties;
+    private final LinkProperties mLinkProperties = new LinkProperties();
 
-    /* loaded from: classes5.dex */
     public interface Callback {
         void update();
     }
@@ -23,9 +22,7 @@ public class NetlinkTracker extends BaseNetworkObserver {
         this.TAG = "NetlinkTracker/" + iface;
         this.mInterfaceName = iface;
         this.mCallback = callback;
-        LinkProperties linkProperties = new LinkProperties();
-        this.mLinkProperties = linkProperties;
-        linkProperties.setInterfaceName(iface);
+        this.mLinkProperties.setInterfaceName(this.mInterfaceName);
         this.mDnsServerRepository = new DnsServerRepository();
     }
 

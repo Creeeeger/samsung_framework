@@ -21,7 +21,6 @@ public final class EncoderProfiles {
         return this.fileFormat;
     }
 
-    /* loaded from: classes2.dex */
     public static final class VideoProfile {
         public static final int HDR_DOLBY_VISION = 4;
         public static final int HDR_HDR10 = 2;
@@ -42,12 +41,10 @@ public final class EncoderProfiles {
         private int width;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface ChromaSubsampling {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface HdrFormat {
         }
 
@@ -56,29 +53,28 @@ public final class EncoderProfiles {
         }
 
         public String getMediaType() {
-            int i = this.codec;
-            if (i == 1) {
+            if (this.codec == 1) {
                 return "video/3gpp";
             }
-            if (i == 2) {
+            if (this.codec == 2) {
                 return "video/avc";
             }
-            if (i == 3) {
+            if (this.codec == 3) {
                 return "video/mp4v-es";
             }
-            if (i == 4) {
+            if (this.codec == 4) {
                 return MediaFormat.MIMETYPE_VIDEO_VP8;
             }
-            if (i == 5) {
+            if (this.codec == 5) {
                 return "video/hevc";
             }
-            if (i == 6) {
+            if (this.codec == 6) {
                 return MediaFormat.MIMETYPE_VIDEO_VP9;
             }
-            if (i == 7) {
+            if (this.codec == 7) {
                 return MediaFormat.MIMETYPE_VIDEO_DOLBY_VISION;
             }
-            if (i == 8) {
+            if (this.codec == 8) {
                 return MediaFormat.MIMETYPE_VIDEO_AV1;
             }
             throw new RuntimeException("Unknown codec");
@@ -141,7 +137,6 @@ public final class EncoderProfiles {
         return this.videoProfiles;
     }
 
-    /* loaded from: classes2.dex */
     public static final class AudioProfile {
         private int bitrate;
         private int channels;
@@ -154,20 +149,19 @@ public final class EncoderProfiles {
         }
 
         public String getMediaType() {
-            int i = this.codec;
-            if (i == 1) {
+            if (this.codec == 1) {
                 return "audio/3gpp";
             }
-            if (i == 2) {
+            if (this.codec == 2) {
                 return "audio/amr-wb";
             }
-            if (i == 3 || i == 4 || i == 5) {
+            if (this.codec == 3 || this.codec == 4 || this.codec == 5) {
                 return "audio/mp4a-latm";
             }
-            if (i == 6) {
+            if (this.codec == 6) {
                 return MediaFormat.MIMETYPE_AUDIO_VORBIS;
             }
-            if (i == 7) {
+            if (this.codec == 7) {
                 return MediaFormat.MIMETYPE_AUDIO_OPUS;
             }
             throw new RuntimeException("Unknown codec");
@@ -186,14 +180,13 @@ public final class EncoderProfiles {
         }
 
         public int getProfile() {
-            int i = this.codec;
-            if (i == 3) {
+            if (this.codec == 3) {
                 return 1;
             }
-            if (i == 4) {
+            if (this.codec == 4) {
                 return 5;
             }
-            if (i == 5) {
+            if (this.codec == 5) {
                 return 39;
             }
             return this.profile;

@@ -4,7 +4,7 @@ import com.samsung.android.sume.core.evaluate.Evaluator;
 import com.samsung.android.sume.core.filter.collection.SequentialFilter;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class SequentialDescriptor extends MFDescriptorBase {
     private final List<MFDescriptor> descriptors;
     private List<Evaluator> evaluators;

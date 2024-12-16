@@ -39,7 +39,7 @@ public final class LegacyPermissionManager {
     public void grantDefaultPermissionsToLuiApp(String packageName, UserHandle user, Executor executor, final Consumer<Boolean> callback) {
         try {
             this.mLegacyPermissionManager.grantDefaultPermissionsToActiveLuiApp(packageName, user.getIdentifier());
-            executor.execute(new Runnable() { // from class: android.permission.LegacyPermissionManager$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: android.permission.LegacyPermissionManager$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     callback.accept(true);
@@ -95,7 +95,7 @@ public final class LegacyPermissionManager {
     public void revokeDefaultPermissionsFromDisabledTelephonyDataServices(String[] packageNames, UserHandle user, Executor executor, final Consumer<Boolean> callback) {
         try {
             this.mLegacyPermissionManager.revokeDefaultPermissionsFromDisabledTelephonyDataServices(packageNames, user.getIdentifier());
-            executor.execute(new Runnable() { // from class: android.permission.LegacyPermissionManager$$ExternalSyntheticLambda3
+            executor.execute(new Runnable() { // from class: android.permission.LegacyPermissionManager$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     callback.accept(true);
@@ -109,7 +109,7 @@ public final class LegacyPermissionManager {
     public void grantDefaultPermissionsToEnabledCarrierApps(String[] packageNames, UserHandle user, Executor executor, final Consumer<Boolean> callback) {
         try {
             this.mLegacyPermissionManager.grantDefaultPermissionsToEnabledCarrierApps(packageNames, user.getIdentifier());
-            executor.execute(new Runnable() { // from class: android.permission.LegacyPermissionManager$$ExternalSyntheticLambda4
+            executor.execute(new Runnable() { // from class: android.permission.LegacyPermissionManager$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     callback.accept(true);

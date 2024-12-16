@@ -37,7 +37,6 @@ public final class CalendarContract {
     public static final String EXTRA_EVENT_ID = "id";
     private static final String TAG = "Calendar";
 
-    /* loaded from: classes3.dex */
     protected interface AttendeesColumns {
         public static final String ATTENDEE_EMAIL = "attendeeEmail";
         public static final String ATTENDEE_IDENTITY = "attendeeIdentity";
@@ -63,7 +62,6 @@ public final class CalendarContract {
         public static final int TYPE_RESOURCE = 3;
     }
 
-    /* loaded from: classes3.dex */
     protected interface CalendarAlertsColumns {
         public static final String ALARM_TIME = "alarmTime";
         public static final String BEGIN = "begin";
@@ -80,13 +78,11 @@ public final class CalendarContract {
         public static final int STATE_SCHEDULED = 0;
     }
 
-    /* loaded from: classes3.dex */
     protected interface CalendarCacheColumns {
         public static final String KEY = "key";
         public static final String VALUE = "value";
     }
 
-    /* loaded from: classes3.dex */
     protected interface CalendarColumns {
         public static final String ALLOWED_ATTENDEE_TYPES = "allowedAttendeeTypes";
         public static final String ALLOWED_AVAILABILITY = "allowedAvailability";
@@ -114,7 +110,6 @@ public final class CalendarContract {
         public static final String VISIBLE = "visible";
     }
 
-    /* loaded from: classes3.dex */
     protected interface CalendarMetaDataColumns {
         public static final String LOCAL_TIMEZONE = "localTimezone";
         public static final String MAX_EVENTDAYS = "maxEventDays";
@@ -123,7 +118,6 @@ public final class CalendarContract {
         public static final String MIN_INSTANCE = "minInstance";
     }
 
-    /* loaded from: classes3.dex */
     protected interface CalendarSyncColumns {
         public static final String CAL_SYNC1 = "cal_sync1";
         public static final String CAL_SYNC10 = "cal_sync10";
@@ -137,7 +131,6 @@ public final class CalendarContract {
         public static final String CAL_SYNC9 = "cal_sync9";
     }
 
-    /* loaded from: classes3.dex */
     protected interface ColorsColumns extends SyncStateContract.Columns {
         public static final String COLOR = "color";
         public static final String COLOR_KEY = "color_index";
@@ -146,13 +139,11 @@ public final class CalendarContract {
         public static final int TYPE_EVENT = 1;
     }
 
-    /* loaded from: classes3.dex */
     protected interface EventDaysColumns {
         public static final String ENDDAY = "endDay";
         public static final String STARTDAY = "startDay";
     }
 
-    /* loaded from: classes3.dex */
     protected interface EventsColumns {
         public static final int ACCESS_CONFIDENTIAL = 1;
         public static final int ACCESS_DEFAULT = 0;
@@ -215,7 +206,6 @@ public final class CalendarContract {
         public static final String UID_2445 = "uid2445";
     }
 
-    /* loaded from: classes3.dex */
     protected interface EventsRawTimesColumns {
         public static final String DTEND_2445 = "dtend2445";
         public static final String DTSTART_2445 = "dtstart2445";
@@ -224,14 +214,12 @@ public final class CalendarContract {
         public static final String ORIGINAL_INSTANCE_TIME_2445 = "originalInstanceTime2445";
     }
 
-    /* loaded from: classes3.dex */
     protected interface ExtendedPropertiesColumns {
         public static final String EVENT_ID = "event_id";
         public static final String NAME = "name";
         public static final String VALUE = "value";
     }
 
-    /* loaded from: classes3.dex */
     protected interface RemindersColumns {
         public static final String EVENT_ID = "event_id";
         public static final String METHOD = "method";
@@ -244,7 +232,6 @@ public final class CalendarContract {
         public static final int MINUTES_DEFAULT = -1;
     }
 
-    /* loaded from: classes3.dex */
     protected interface SyncColumns extends CalendarSyncColumns {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
@@ -264,7 +251,6 @@ public final class CalendarContract {
         return dpm.startViewCalendarEventInManagedProfile(eventId, startMs, endMs, allDay, flags);
     }
 
-    /* loaded from: classes3.dex */
     public static final class CalendarEntity implements BaseColumns, SyncColumns, CalendarColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/calendar_entities");
 
@@ -275,7 +261,6 @@ public final class CalendarContract {
             return new EntityIteratorImpl(cursor);
         }
 
-        /* loaded from: classes3.dex */
         private static class EntityIteratorImpl extends CursorEntityIterator {
             public EntityIteratorImpl(Cursor cursor) {
                 super(cursor);
@@ -324,7 +309,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Calendars implements BaseColumns, SyncColumns, CalendarColumns {
         public static final String DEFAULT_SORT_ORDER = "calendar_displayName";
         public static final String NAME = "name";
@@ -337,7 +321,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Attendees implements BaseColumns, AttendeesColumns, EventsColumns {
         private static final String ATTENDEES_WHERE = "event_id=?";
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/attendees");
@@ -351,7 +334,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class EventsEntity implements BaseColumns, SyncColumns, EventsColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/event_entities");
 
@@ -366,7 +348,6 @@ public final class CalendarContract {
             return new EntityIteratorImpl(cursor, provider);
         }
 
-        /* loaded from: classes3.dex */
         private static class EntityIteratorImpl extends CursorEntityIterator {
             private static final int COLUMN_ATTENDEE_EMAIL = 1;
             private static final int COLUMN_ATTENDEE_IDENTITY = 5;
@@ -469,9 +450,8 @@ public final class CalendarContract {
                 DatabaseUtils.cursorStringToContentValuesIfPresent(cursor, cv, CalendarSyncColumns.CAL_SYNC9);
                 DatabaseUtils.cursorStringToContentValuesIfPresent(cursor, cv, CalendarSyncColumns.CAL_SYNC10);
                 Entity entity = new Entity(cv);
-                ContentResolver contentResolver = this.mResolver;
-                if (contentResolver != null) {
-                    subCursor = contentResolver.query(Reminders.CONTENT_URI, REMINDERS_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
+                if (this.mResolver != null) {
+                    subCursor = this.mResolver.query(Reminders.CONTENT_URI, REMINDERS_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
                 } else {
                     subCursor = this.mProvider.query(Reminders.CONTENT_URI, REMINDERS_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
                 }
@@ -485,9 +465,8 @@ public final class CalendarContract {
                     }
                 }
                 subCursor.close();
-                ContentResolver contentResolver2 = this.mResolver;
-                if (contentResolver2 != null) {
-                    subCursor2 = contentResolver2.query(Attendees.CONTENT_URI, ATTENDEES_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
+                if (this.mResolver != null) {
+                    subCursor2 = this.mResolver.query(Attendees.CONTENT_URI, ATTENDEES_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
                 } else {
                     subCursor2 = this.mProvider.query(Attendees.CONTENT_URI, ATTENDEES_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
                 }
@@ -506,9 +485,8 @@ public final class CalendarContract {
                     }
                 }
                 subCursor.close();
-                ContentResolver contentResolver3 = this.mResolver;
-                if (contentResolver3 != null) {
-                    subCursor3 = contentResolver3.query(ExtendedProperties.CONTENT_URI, EXTENDED_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
+                if (this.mResolver != null) {
+                    subCursor3 = this.mResolver.query(ExtendedProperties.CONTENT_URI, EXTENDED_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
                 } else {
                     subCursor3 = this.mProvider.query(ExtendedProperties.CONTENT_URI, EXTENDED_PROJECTION, WHERE_EVENT_ID, new String[]{Long.toString(eventId)}, null);
                 }
@@ -529,7 +507,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Events implements BaseColumns, SyncColumns, EventsColumns, CalendarColumns {
         private static final String DEFAULT_SORT_ORDER = "";
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/events");
@@ -542,7 +519,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Instances implements BaseColumns, EventsColumns, CalendarColumns {
         public static final String BEGIN = "begin";
         private static final String DEFAULT_SORT_ORDER = "begin ASC";
@@ -581,7 +557,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class CalendarCache implements CalendarCacheColumns {
         public static final String KEY_TIMEZONE_INSTANCES = "timezoneInstances";
         public static final String KEY_TIMEZONE_INSTANCES_PREVIOUS = "timezoneInstancesPrevious";
@@ -594,13 +569,11 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class CalendarMetaData implements CalendarMetaDataColumns, BaseColumns {
         private CalendarMetaData() {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class EventDays implements EventDaysColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/instances/groupbyday");
         private static final String SELECTION = "selected=1";
@@ -620,7 +593,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Reminders implements BaseColumns, RemindersColumns, EventsColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/reminders");
         private static final String REMINDERS_WHERE = "event_id=?";
@@ -634,7 +606,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class CalendarAlerts implements BaseColumns, CalendarAlertsColumns, EventsColumns, CalendarColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/calendar_alerts");
         public static final Uri CONTENT_URI_BY_INSTANCE = Uri.parse("content://com.android.calendar/calendar_alerts/by_instance");
@@ -737,7 +708,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Colors implements ColorsColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/colors");
         public static final String TABLE_NAME = "Colors";
@@ -746,7 +716,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ExtendedProperties implements BaseColumns, ExtendedPropertiesColumns, EventsColumns {
         public static final Uri CONTENT_URI = Uri.parse("content://com.android.calendar/extendedproperties");
 
@@ -754,7 +723,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SyncState implements SyncStateContract.Columns {
         private static final String CONTENT_DIRECTORY = "syncstate";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(CalendarContract.CONTENT_URI, "syncstate");
@@ -763,7 +731,6 @@ public final class CalendarContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class EventsRawTimes implements BaseColumns, EventsRawTimesColumns {
         private EventsRawTimes() {
         }

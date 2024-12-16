@@ -13,11 +13,6 @@ import java.util.Collection;
 public class PKIXCertStoreSelector<T extends Certificate> implements Selector<T> {
     private final CertSelector baseSelector;
 
-    /* synthetic */ PKIXCertStoreSelector(CertSelector certSelector, PKIXCertStoreSelectorIA pKIXCertStoreSelectorIA) {
-        this(certSelector);
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         private final CertSelector baseSelector;
 
@@ -35,9 +30,8 @@ public class PKIXCertStoreSelector<T extends Certificate> implements Selector<T>
     }
 
     public Certificate getCertificate() {
-        CertSelector certSelector = this.baseSelector;
-        if (certSelector instanceof X509CertSelector) {
-            return ((X509CertSelector) certSelector).getCertificate();
+        if (this.baseSelector instanceof X509CertSelector) {
+            return ((X509CertSelector) this.baseSelector).getCertificate();
         }
         return null;
     }
@@ -56,9 +50,7 @@ public class PKIXCertStoreSelector<T extends Certificate> implements Selector<T>
         return certStore.getCertificates(new SelectorClone(selector));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class SelectorClone extends X509CertSelector {
+    private static class SelectorClone extends X509CertSelector {
         private final PKIXCertStoreSelector selector;
 
         SelectorClone(PKIXCertStoreSelector selector) {
@@ -92,8 +84,7 @@ public class PKIXCertStoreSelector<T extends Certificate> implements Selector<T>
 
         @Override // java.security.cert.X509CertSelector, java.security.cert.CertSelector
         public boolean match(Certificate certificate) {
-            PKIXCertStoreSelector pKIXCertStoreSelector = this.selector;
-            return pKIXCertStoreSelector == null ? certificate != null : pKIXCertStoreSelector.match(certificate);
+            return this.selector == null ? certificate != null : this.selector.match(certificate);
         }
     }
 }

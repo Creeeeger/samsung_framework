@@ -10,7 +10,6 @@ public class CompositeAlgorithmSpec implements AlgorithmParameterSpec {
     private final List<String> algorithmNames;
     private final List<AlgorithmParameterSpec> parameterSpecs;
 
-    /* loaded from: classes5.dex */
     public static class Builder {
         private List<String> algorithmNames = new ArrayList();
         private List<AlgorithmParameterSpec> parameterSpecs = new ArrayList();

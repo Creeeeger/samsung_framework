@@ -34,16 +34,14 @@ public class UserPackage {
     }
 
     public boolean isEnabledPackage() {
-        PackageInfo packageInfo = this.mPackageInfo;
-        if (packageInfo == null) {
+        if (this.mPackageInfo == null) {
             return false;
         }
-        return packageInfo.applicationInfo.enabled;
+        return this.mPackageInfo.applicationInfo.enabled;
     }
 
     public boolean isInstalledPackage() {
-        PackageInfo packageInfo = this.mPackageInfo;
-        return (packageInfo == null || (packageInfo.applicationInfo.flags & 8388608) == 0 || (this.mPackageInfo.applicationInfo.privateFlags & 1) != 0) ? false : true;
+        return (this.mPackageInfo == null || (this.mPackageInfo.applicationInfo.flags & 8388608) == 0 || (this.mPackageInfo.applicationInfo.privateFlags & 1) != 0) ? false : true;
     }
 
     public static boolean hasCorrectTargetSdkVersion(PackageInfo packageInfo) {

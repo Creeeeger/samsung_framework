@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+@Deprecated
 /* loaded from: classes.dex */
 public abstract class SliceProvider extends ContentProvider {
     private static final boolean DEBUG = false;
@@ -82,11 +83,6 @@ public abstract class SliceProvider extends ContentProvider {
     }
 
     public Slice onBindSlice(Uri sliceUri, Set<SliceSpec> supportedSpecs) {
-        return onBindSlice(sliceUri, new ArrayList(supportedSpecs));
-    }
-
-    @Deprecated
-    public Slice onBindSlice(Uri sliceUri, List<SliceSpec> supportedSpecs) {
         return null;
     }
 
@@ -267,12 +263,14 @@ public abstract class SliceProvider extends ContentProvider {
         try {
             PendingIntent action = onCreatePermissionRequest(sliceUri);
             Handler.getMain().removeCallbacks(this.mAnr);
-            Slice.Builder parent = new Slice.Builder(sliceUri);
+            Slice.Builder parent = new Slice.Builder(sliceUri, null);
             Slice.Builder childAction = new Slice.Builder(parent).addIcon(Icon.createWithResource(context, R.drawable.ic_permission), null, Collections.emptyList()).addHints(Arrays.asList("title", "shortcut")).addAction(action, new Slice.Builder(parent).build(), null);
             TypedValue tv = new TypedValue();
             new ContextThemeWrapper(context, 16974123).getTheme().resolveAttribute(16843829, tv, true);
             int deviceDefaultAccent = tv.data;
-            parent.addSubSlice(new Slice.Builder(sliceUri.buildUpon().appendPath("permission").build()).addIcon(Icon.createWithResource(context, R.drawable.ic_arrow_forward), null, Collections.emptyList()).addText(getPermissionString(context, callingPackage), null, Collections.emptyList()).addInt(deviceDefaultAccent, "color", Collections.emptyList()).addSubSlice(childAction.build(), null).build(), null);
+            Uri subSliceUri = sliceUri.buildUpon().appendPath("permission").build();
+            Slice.Builder subSlice = new Slice.Builder(subSliceUri, null).addIcon(Icon.createWithResource(context, R.drawable.ic_arrow_forward), null, Collections.emptyList()).addText(getPermissionString(context, callingPackage), null, Collections.emptyList()).addInt(deviceDefaultAccent, "color", Collections.emptyList()).addSubSlice(childAction.build(), null);
+            parent.addSubSlice(subSlice.build(), null);
             return parent.addHints(Arrays.asList(Slice.HINT_PERMISSION_REQUEST)).build();
         } catch (Throwable th) {
             Handler.getMain().removeCallbacks(this.mAnr);
@@ -312,6 +310,7 @@ public abstract class SliceProvider extends ContentProvider {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0() {
         Process.sendSignal(Process.myPid(), 3);
         Log.wtf(TAG, "Timed out while handling slice callback " + this.mCallback);

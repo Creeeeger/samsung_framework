@@ -18,40 +18,35 @@ public class SoundTriggerModuleWrapper {
     }
 
     public void detach() {
-        SoundTriggerModule soundTriggerModule = this.instance;
-        if (soundTriggerModule != null) {
-            soundTriggerModule.detach();
+        if (this.instance != null) {
+            this.instance.detach();
         }
     }
 
     public int loadSoundModel(SoundTrigger.KeyphraseSoundModel model, int[] soundModelHandle) {
-        SoundTriggerModule soundTriggerModule = this.instance;
-        if (soundTriggerModule != null) {
-            return soundTriggerModule.loadSoundModel(model, soundModelHandle);
+        if (this.instance != null) {
+            return this.instance.loadSoundModel(model, soundModelHandle);
         }
         return Integer.MIN_VALUE;
     }
 
     public int unloadSoundModel(int soundModelHandle) {
-        SoundTriggerModule soundTriggerModule = this.instance;
-        if (soundTriggerModule != null) {
-            return soundTriggerModule.unloadSoundModel(soundModelHandle);
+        if (this.instance != null) {
+            return this.instance.unloadSoundModel(soundModelHandle);
         }
         return Integer.MIN_VALUE;
     }
 
     public int startRecognition(int soundModelHandle, SoundTrigger.RecognitionConfig config) {
-        SoundTriggerModule soundTriggerModule = this.instance;
-        if (soundTriggerModule != null) {
-            return soundTriggerModule.startRecognition(soundModelHandle, config);
+        if (this.instance != null) {
+            return this.instance.startRecognition(soundModelHandle, config);
         }
         return Integer.MIN_VALUE;
     }
 
     public int stopRecognition(int soundModelHandle) {
-        SoundTriggerModule soundTriggerModule = this.instance;
-        if (soundTriggerModule != null) {
-            return soundTriggerModule.stopRecognition(soundModelHandle);
+        if (this.instance != null) {
+            return this.instance.stopRecognition(soundModelHandle);
         }
         return Integer.MIN_VALUE;
     }

@@ -35,18 +35,17 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class KnoxVpnProfile implements Parcelable {
     private static final String ANDROID_BC_PROVIDER = "AndroidKeyStoreBCWorkaroundProvider";
     public static final Parcelable.Creator<KnoxVpnProfile> CREATOR = new Parcelable.Creator<KnoxVpnProfile>() { // from class: com.android.internal.net.KnoxVpnProfile.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnoxVpnProfile createFromParcel(Parcel in) {
             return new KnoxVpnProfile(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnoxVpnProfile[] newArray(int size) {
             return new KnoxVpnProfile[size];
@@ -194,9 +193,8 @@ public final class KnoxVpnProfile implements Parcelable {
         }
         this.saveLogin = z2;
         this.proxy = (ProxyInfo) in.readParcelable(null);
-        ArrayList arrayList = new ArrayList();
-        this.mAllowedAlgorithms = arrayList;
-        in.readList(arrayList, null);
+        this.mAllowedAlgorithms = new ArrayList();
+        in.readList(this.mAllowedAlgorithms, null);
         this.isBypassable = in.readBoolean();
         this.isMetered = in.readBoolean();
         this.ocspServerUrl = in.readString();
@@ -270,9 +268,8 @@ public final class KnoxVpnProfile implements Parcelable {
                 }
                 KnoxVpnProfile profile = new KnoxVpnProfile(key, isRestrictedToTestNetworks);
                 profile.name = values[0];
-                int parseInt = Integer.parseInt(values[1]);
-                profile.type = parseInt;
-                if (parseInt >= 0 && parseInt <= 8) {
+                profile.type = Integer.parseInt(values[1]);
+                if (profile.type >= 0 && profile.type <= 8) {
                     profile.server = values[2];
                     profile.username = values[3];
                     profile.password = values[4];
@@ -442,23 +439,6 @@ public final class KnoxVpnProfile implements Parcelable {
         }
         KnoxVpnProfile other = (KnoxVpnProfile) obj;
         return Objects.equals(this.key, other.key) && Objects.equals(this.name, other.name) && this.type == other.type && Objects.equals(this.server, other.server) && Objects.equals(this.username, other.username) && Objects.equals(this.password, other.password) && Objects.equals(this.dnsServers, other.dnsServers) && Objects.equals(this.searchDomains, other.searchDomains) && Objects.equals(this.routes, other.routes) && this.mppe == other.mppe && Objects.equals(this.l2tpSecret, other.l2tpSecret) && Objects.equals(this.ipsecIdentifier, other.ipsecIdentifier) && Objects.equals(this.ipsecSecret, other.ipsecSecret) && Objects.equals(this.ipsecUserCert, other.ipsecUserCert) && Objects.equals(this.ipsecCaCert, other.ipsecCaCert) && Objects.equals(this.ipsecServerCert, other.ipsecServerCert) && Objects.equals(this.proxy, other.proxy) && Objects.equals(this.mAllowedAlgorithms, other.mAllowedAlgorithms) && Objects.equals(this.ipSecCACertValue, other.ipSecCACertValue) && this.isBypassable == other.isBypassable && this.isMetered == other.isMetered && this.maxMtu == other.maxMtu && this.areAuthParamsInline == other.areAuthParamsInline && this.isRestrictedToTestNetworks == other.isRestrictedToTestNetworks;
-    }
-
-    /* renamed from: com.android.internal.net.KnoxVpnProfile$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KnoxVpnProfile> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KnoxVpnProfile createFromParcel(Parcel in) {
-            return new KnoxVpnProfile(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KnoxVpnProfile[] newArray(int size) {
-            return new KnoxVpnProfile[size];
-        }
     }
 
     @Override // android.os.Parcelable

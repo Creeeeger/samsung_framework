@@ -24,7 +24,7 @@ public class PreferenceImageView extends ImageView {
     }
 
     @Override // android.widget.ImageView, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
         if (widthMode == Integer.MIN_VALUE || widthMode == 0) {
             int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);

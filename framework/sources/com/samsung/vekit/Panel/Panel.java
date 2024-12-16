@@ -45,8 +45,8 @@ public class Panel {
         this.height = panel.height;
     }
 
-    /* renamed from: clone */
-    public Panel m8985clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public Panel m9389clone() {
         Panel result = new Panel(this);
         return result;
     }
@@ -100,7 +100,8 @@ public class Panel {
             horizontalX = horizontal;
             horizontalY = 0.0f;
         }
-        float[] dst = {0.0f - verticalX, horizontalX + 1.0f, 0.0f - verticalY, 0.0f - horizontalX, verticalY + 1.0f, 0.0f - horizontalY, verticalX + 1.0f, horizontalY + 1.0f};
+        float horizontalX2 = 0.0f - verticalX;
+        float[] dst = {horizontalX2, horizontalX + 1.0f, 0.0f - verticalY, 0.0f - horizontalX, verticalY + 1.0f, 0.0f - horizontalY, verticalX + 1.0f, horizontalY + 1.0f};
         Matrix mat = new Matrix();
         mat.setPolyToPoly(dst, 0, src, 0, src.length >> 1);
         float[] values = new float[9];
@@ -144,9 +145,9 @@ public class Panel {
         this.scale = matrix.getScale();
         this.position = matrix.getPosition();
         Matrix4 rotationMatrix = matrix.getPureRotationMatrix();
-        Quaternion quaternion = rotationMatrix.getQuaternion();
-        this.quaternion = quaternion;
-        double abs = Math.abs(quaternion.x);
+        this.quaternion = rotationMatrix.getQuaternion();
+        Quaternion quaternion = this.quaternion;
+        double abs = Math.abs(this.quaternion.x);
         double d4 = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         if (abs < 9.999999747378752E-6d) {
             d = 0.0d;
@@ -155,21 +156,21 @@ public class Panel {
         }
         quaternion.x = d;
         Quaternion quaternion2 = this.quaternion;
-        if (Math.abs(quaternion2.y) < 9.999999747378752E-6d) {
+        if (Math.abs(this.quaternion.y) < 9.999999747378752E-6d) {
             d2 = 0.0d;
         } else {
             d2 = this.quaternion.y;
         }
         quaternion2.y = d2;
         Quaternion quaternion3 = this.quaternion;
-        if (Math.abs(quaternion3.z) < 9.999999747378752E-6d) {
+        if (Math.abs(this.quaternion.z) < 9.999999747378752E-6d) {
             d3 = 0.0d;
         } else {
             d3 = this.quaternion.z;
         }
         quaternion3.z = d3;
         Quaternion quaternion4 = this.quaternion;
-        if (Math.abs(quaternion4.w) >= 9.999999747378752E-6d) {
+        if (Math.abs(this.quaternion.w) >= 9.999999747378752E-6d) {
             d4 = this.quaternion.w;
         }
         quaternion4.w = d4;
@@ -228,9 +229,8 @@ public class Panel {
 
     public Panel setRotation(Vector3<Float> rotation) {
         this.rotation = rotation;
-        Quaternion quaternion = new Quaternion();
-        this.quaternion = quaternion;
-        quaternion.setRotation(rotation.getX().floatValue(), rotation.getY().floatValue(), rotation.getZ().floatValue());
+        this.quaternion = new Quaternion();
+        this.quaternion.setRotation(rotation.getX().floatValue(), rotation.getY().floatValue(), rotation.getZ().floatValue());
         updateMatrix();
         return this;
     }
@@ -247,9 +247,8 @@ public class Panel {
     }
 
     public Panel setRotation(AxisType axisType, float degree) {
-        Quaternion quaternion = new Quaternion();
-        this.quaternion = quaternion;
-        quaternion.setRotation(axisType, degree);
+        this.quaternion = new Quaternion();
+        this.quaternion.setRotation(axisType, degree);
         this.rotation = this.quaternion.getRotation();
         updateMatrix();
         return this;

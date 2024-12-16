@@ -6,17 +6,20 @@ import java.util.ArrayList;
 abstract class Learner {
     private final ArrayList<Instance> mInstances = new ArrayList<>();
 
-    public abstract ArrayList<Prediction> classify(int i, int i2, float[] fArr);
+    abstract ArrayList<Prediction> classify(int i, int i2, float[] fArr);
 
-    public void addInstance(Instance instance) {
+    Learner() {
+    }
+
+    void addInstance(Instance instance) {
         this.mInstances.add(instance);
     }
 
-    public ArrayList<Instance> getInstances() {
+    ArrayList<Instance> getInstances() {
         return this.mInstances;
     }
 
-    public void removeInstance(long id) {
+    void removeInstance(long id) {
         ArrayList<Instance> instances = this.mInstances;
         int count = instances.size();
         for (int i = 0; i < count; i++) {
@@ -28,7 +31,7 @@ abstract class Learner {
         }
     }
 
-    public void removeInstances(String name) {
+    void removeInstances(String name) {
         ArrayList<Instance> toDelete = new ArrayList<>();
         ArrayList<Instance> instances = this.mInstances;
         int count = instances.size();

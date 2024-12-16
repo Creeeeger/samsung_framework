@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class EpsBearerQosSessionAttributes implements Parcelable, QosSessionAttributes {
     private final long mGuaranteedDownlinkBitRate;
     private final long mGuaranteedUplinkBitRate;
@@ -24,23 +24,18 @@ public final class EpsBearerQosSessionAttributes implements Parcelable, QosSessi
     private final List<InetSocketAddress> mRemoteAddresses;
     private static final String TAG = EpsBearerQosSessionAttributes.class.getSimpleName();
     public static final Parcelable.Creator<EpsBearerQosSessionAttributes> CREATOR = new Parcelable.Creator<EpsBearerQosSessionAttributes>() { // from class: android.telephony.data.EpsBearerQosSessionAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EpsBearerQosSessionAttributes createFromParcel(Parcel in) {
             return new EpsBearerQosSessionAttributes(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EpsBearerQosSessionAttributes[] newArray(int size) {
             return new EpsBearerQosSessionAttributes[size];
         }
     };
-
-    /* synthetic */ EpsBearerQosSessionAttributes(Parcel parcel, EpsBearerQosSessionAttributesIA epsBearerQosSessionAttributesIA) {
-        this(parcel);
-    }
 
     public int getQosIdentifier() {
         return this.mQci;
@@ -144,22 +139,5 @@ public final class EpsBearerQosSessionAttributes implements Parcelable, QosSessi
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mQci), Long.valueOf(this.mMaxUplinkBitRate), Long.valueOf(this.mMaxDownlinkBitRate), Long.valueOf(this.mGuaranteedUplinkBitRate), Long.valueOf(this.mGuaranteedDownlinkBitRate), this.mRemoteAddresses);
-    }
-
-    /* renamed from: android.telephony.data.EpsBearerQosSessionAttributes$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EpsBearerQosSessionAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EpsBearerQosSessionAttributes createFromParcel(Parcel in) {
-            return new EpsBearerQosSessionAttributes(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EpsBearerQosSessionAttributes[] newArray(int size) {
-            return new EpsBearerQosSessionAttributes[size];
-        }
     }
 }

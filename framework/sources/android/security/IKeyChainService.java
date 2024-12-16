@@ -98,7 +98,6 @@ public interface IKeyChainService extends IInterface {
 
     List<String> userAliases() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IKeyChainService {
         @Override // android.security.IKeyChainService
         public String requestPrivateKey(String alias) throws RemoteException {
@@ -318,7 +317,6 @@ public interface IKeyChainService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IKeyChainService {
         public static final String DESCRIPTOR = "android.security.IKeyChainService";
         static final int TRANSACTION_allSystemAliases = 32;
@@ -488,328 +486,324 @@ public interface IKeyChainService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result = requestPrivateKey(_arg0);
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    byte[] _result2 = getCertificate(_arg02);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    byte[] _result3 = getCaCertificates(_arg03);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = isUserSelectable(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setUserSelectable(_arg05, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    ParcelableKeyGenParameterSpec _arg12 = (ParcelableKeyGenParameterSpec) data.readTypedObject(ParcelableKeyGenParameterSpec.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result5 = generateKeyPair(_arg06, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    byte[] _arg13 = data.createByteArray();
+                    byte[] _arg2 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = setKeyPairCertificate(_arg07, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 8:
+                    byte[] _arg08 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    String _result7 = installCaCertificate(_arg08);
+                    reply.writeNoException();
+                    reply.writeString(_result7);
+                    return true;
+                case 9:
+                    byte[] _arg09 = data.createByteArray();
+                    byte[] _arg14 = data.createByteArray();
+                    byte[] _arg22 = data.createByteArray();
+                    String _arg3 = data.readString();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = installKeyPair(_arg09, _arg14, _arg22, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = removeKeyPair(_arg010);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = containsKeyPair(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    data.enforceNoDataAvail();
+                    int[] _result11 = getGrants(_arg012);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result11);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = deleteCaCertificate(_arg013);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 14:
+                    boolean _result13 = reset();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 15:
+                    StringParceledListSlice _result14 = getUserCaAliases();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result14, 1);
+                    return true;
+                case 16:
+                    StringParceledListSlice _result15 = getSystemCaAliases();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result15, 1);
+                    return true;
+                case 17:
+                    String _arg014 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result16 = containsCaAlias(_arg014);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 18:
+                    String _arg015 = data.readString();
+                    boolean _arg15 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    byte[] _result17 = getEncodedCaCertificate(_arg015, _arg15);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result17);
+                    return true;
+                case 19:
+                    String _arg016 = data.readString();
+                    boolean _arg16 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    List<String> _result18 = getCaCertificateChainAliases(_arg016, _arg16);
+                    reply.writeNoException();
+                    reply.writeStringList(_result18);
+                    return true;
+                case 20:
+                    String _arg017 = data.readString();
+                    AppUriAuthenticationPolicy _arg17 = (AppUriAuthenticationPolicy) data.readTypedObject(AppUriAuthenticationPolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCredentialManagementApp(_arg017, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    boolean _result19 = hasCredentialManagementApp();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 22:
+                    String _result20 = getCredentialManagementAppPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result20);
+                    return true;
+                case 23:
+                    AppUriAuthenticationPolicy _result21 = getCredentialManagementAppPolicy();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result21, 1);
+                    return true;
+                case 24:
+                    String _arg018 = data.readString();
+                    Uri _arg18 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result22 = getPredefinedAliasForPackageAndUri(_arg018, _arg18);
+                    reply.writeNoException();
+                    reply.writeString(_result22);
+                    return true;
+                case 25:
+                    removeCredentialManagementApp();
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    String _arg019 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result23 = isCredentialManagementApp(_arg019);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result23);
+                    return true;
+                case 27:
+                    int _arg020 = data.readInt();
+                    String _arg19 = data.readString();
+                    boolean _arg23 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result24 = setGrant(_arg020, _arg19, _arg23);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result24);
+                    return true;
+                case 28:
+                    int _arg021 = data.readInt();
+                    String _arg110 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result25 = hasGrant(_arg021, _arg110);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result25);
+                    return true;
+                case 29:
+                    String _arg022 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result26 = getWifiKeyGrantAsUser(_arg022);
+                    reply.writeNoException();
+                    reply.writeString(_result26);
+                    return true;
+                case 30:
+                    String _arg023 = data.readString();
+                    boolean _arg111 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    byte[] _result27 = getCertificateFromTrustCredential(_arg023, _arg111);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result27);
+                    return true;
+                case 31:
+                    byte[] _arg024 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    String _result28 = getCertificateAlias(_arg024);
+                    reply.writeNoException();
+                    reply.writeString(_result28);
+                    return true;
+                case 32:
+                    List<String> _result29 = allSystemAliases();
+                    reply.writeNoException();
+                    reply.writeStringList(_result29);
+                    return true;
+                case 33:
+                    List<String> _result30 = userAliases();
+                    reply.writeNoException();
+                    reply.writeStringList(_result30);
+                    return true;
+                case 34:
+                    String _arg025 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result31 = containsAlias(_arg025);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result31);
+                    return true;
+                case 35:
+                    byte[] _arg026 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result32 = findIssuer(_arg026);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result32);
+                    return true;
+                case 36:
+                    String _arg027 = data.readString();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result33 = deleteEntry(_arg027, _arg112);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result33);
+                    return true;
+                case 37:
+                    String _arg028 = data.readString();
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result34 = listAliases(_arg028, _arg113);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result34);
+                    return true;
+                case 38:
+                    String _arg029 = data.readString();
+                    String _arg114 = data.readString();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result35 = getCertificateSystem(_arg029, _arg114, _arg24);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result35);
+                    return true;
+                case 39:
+                    String _arg030 = data.readString();
+                    int _arg115 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result36 = contains(_arg030, _arg115);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result36);
+                    return true;
+                case 40:
+                    String _arg031 = data.readString();
+                    byte[] _arg116 = data.createByteArray();
+                    byte[] _arg25 = data.createByteArray();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result37 = updateKeyPair(_arg031, _arg116, _arg25, _arg32);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result37);
+                    return true;
+                case 41:
+                    String _arg032 = data.readString();
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result38 = isCertificateEntry(_arg032, _arg117);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result38);
+                    return true;
+                case 42:
+                    String _arg033 = data.readString();
+                    byte[] _arg118 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result39 = attestKey(_arg033, _arg118);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result39);
+                    return true;
+                case 43:
+                    String _arg034 = data.readString();
+                    byte[] _arg119 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result40 = setCertificateChain(_arg034, _arg119);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result40);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result = requestPrivateKey(_arg0);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            byte[] _result2 = getCertificate(_arg02);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            byte[] _result3 = getCaCertificates(_arg03);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isUserSelectable(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setUserSelectable(_arg05, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            ParcelableKeyGenParameterSpec _arg12 = (ParcelableKeyGenParameterSpec) data.readTypedObject(ParcelableKeyGenParameterSpec.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result5 = generateKeyPair(_arg06, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            byte[] _arg13 = data.createByteArray();
-                            byte[] _arg2 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = setKeyPairCertificate(_arg07, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 8:
-                            byte[] _arg08 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            String _result7 = installCaCertificate(_arg08);
-                            reply.writeNoException();
-                            reply.writeString(_result7);
-                            return true;
-                        case 9:
-                            byte[] _arg09 = data.createByteArray();
-                            byte[] _arg14 = data.createByteArray();
-                            byte[] _arg22 = data.createByteArray();
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = installKeyPair(_arg09, _arg14, _arg22, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = removeKeyPair(_arg010);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = containsKeyPair(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            data.enforceNoDataAvail();
-                            int[] _result11 = getGrants(_arg012);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result11);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = deleteCaCertificate(_arg013);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 14:
-                            boolean _result13 = reset();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 15:
-                            StringParceledListSlice _result14 = getUserCaAliases();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result14, 1);
-                            return true;
-                        case 16:
-                            StringParceledListSlice _result15 = getSystemCaAliases();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 17:
-                            String _arg014 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result16 = containsCaAlias(_arg014);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 18:
-                            String _arg015 = data.readString();
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            byte[] _result17 = getEncodedCaCertificate(_arg015, _arg15);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result17);
-                            return true;
-                        case 19:
-                            String _arg016 = data.readString();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            List<String> _result18 = getCaCertificateChainAliases(_arg016, _arg16);
-                            reply.writeNoException();
-                            reply.writeStringList(_result18);
-                            return true;
-                        case 20:
-                            String _arg017 = data.readString();
-                            AppUriAuthenticationPolicy _arg17 = (AppUriAuthenticationPolicy) data.readTypedObject(AppUriAuthenticationPolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCredentialManagementApp(_arg017, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            boolean _result19 = hasCredentialManagementApp();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        case 22:
-                            String _result20 = getCredentialManagementAppPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result20);
-                            return true;
-                        case 23:
-                            AppUriAuthenticationPolicy _result21 = getCredentialManagementAppPolicy();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result21, 1);
-                            return true;
-                        case 24:
-                            String _arg018 = data.readString();
-                            Uri _arg18 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result22 = getPredefinedAliasForPackageAndUri(_arg018, _arg18);
-                            reply.writeNoException();
-                            reply.writeString(_result22);
-                            return true;
-                        case 25:
-                            removeCredentialManagementApp();
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            String _arg019 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result23 = isCredentialManagementApp(_arg019);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result23);
-                            return true;
-                        case 27:
-                            int _arg020 = data.readInt();
-                            String _arg19 = data.readString();
-                            boolean _arg23 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result24 = setGrant(_arg020, _arg19, _arg23);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result24);
-                            return true;
-                        case 28:
-                            int _arg021 = data.readInt();
-                            String _arg110 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result25 = hasGrant(_arg021, _arg110);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result25);
-                            return true;
-                        case 29:
-                            String _arg022 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result26 = getWifiKeyGrantAsUser(_arg022);
-                            reply.writeNoException();
-                            reply.writeString(_result26);
-                            return true;
-                        case 30:
-                            String _arg023 = data.readString();
-                            boolean _arg111 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            byte[] _result27 = getCertificateFromTrustCredential(_arg023, _arg111);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result27);
-                            return true;
-                        case 31:
-                            byte[] _arg024 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            String _result28 = getCertificateAlias(_arg024);
-                            reply.writeNoException();
-                            reply.writeString(_result28);
-                            return true;
-                        case 32:
-                            List<String> _result29 = allSystemAliases();
-                            reply.writeNoException();
-                            reply.writeStringList(_result29);
-                            return true;
-                        case 33:
-                            List<String> _result30 = userAliases();
-                            reply.writeNoException();
-                            reply.writeStringList(_result30);
-                            return true;
-                        case 34:
-                            String _arg025 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result31 = containsAlias(_arg025);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result31);
-                            return true;
-                        case 35:
-                            byte[] _arg026 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result32 = findIssuer(_arg026);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result32);
-                            return true;
-                        case 36:
-                            String _arg027 = data.readString();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result33 = deleteEntry(_arg027, _arg112);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result33);
-                            return true;
-                        case 37:
-                            String _arg028 = data.readString();
-                            int _arg113 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result34 = listAliases(_arg028, _arg113);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result34);
-                            return true;
-                        case 38:
-                            String _arg029 = data.readString();
-                            String _arg114 = data.readString();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result35 = getCertificateSystem(_arg029, _arg114, _arg24);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result35);
-                            return true;
-                        case 39:
-                            String _arg030 = data.readString();
-                            int _arg115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result36 = contains(_arg030, _arg115);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result36);
-                            return true;
-                        case 40:
-                            String _arg031 = data.readString();
-                            byte[] _arg116 = data.createByteArray();
-                            byte[] _arg25 = data.createByteArray();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result37 = updateKeyPair(_arg031, _arg116, _arg25, _arg32);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result37);
-                            return true;
-                        case 41:
-                            String _arg032 = data.readString();
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result38 = isCertificateEntry(_arg032, _arg117);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result38);
-                            return true;
-                        case 42:
-                            String _arg033 = data.readString();
-                            byte[] _arg118 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result39 = attestKey(_arg033, _arg118);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result39);
-                            return true;
-                        case 43:
-                            String _arg034 = data.readString();
-                            byte[] _arg119 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result40 = setCertificateChain(_arg034, _arg119);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result40);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IKeyChainService {
+        private static class Proxy implements IKeyChainService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

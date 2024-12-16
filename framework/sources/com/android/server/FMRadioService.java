@@ -11,7 +11,6 @@ import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
 import android.media.tv.interactive.TvInteractiveAppService;
 import android.net.Uri;
-import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +27,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.android.server.FMPlayerNativeBase;
 import com.samsung.android.audio.AudioConstants;
+import com.samsung.android.feature.SemCscFeature;
 import com.samsung.android.feature.SemFloatingFeature;
 import com.samsung.android.media.fmradio.internal.IFMEventListener;
 import com.samsung.android.media.fmradio.internal.IFMPlayer;
@@ -109,6 +109,7 @@ public class FMRadioService extends IFMPlayer.Stub {
     public static final int OFF_PAUSE_COMMAND = 5;
     public static final int OFF_STOP_COMMAND = 4;
     public static final int OFF_TV_OUT = 10;
+    private static final String OMC_CHANGED_ACTION = "com.samsung.intent.action.OMC_CHANGED";
     private static final String PARAMETER_AFRMSSI_SAMPLES = "AFRMSSISamples";
     private static final String PARAMETER_AFRMSSI_TH = "AFRMSSIThreshold";
     private static final String PARAMETER_ATJ_CONFIG = "ATJCofig";
@@ -172,56 +173,32 @@ public class FMRadioService extends IFMPlayer.Stub {
     private static long curFreq;
     private static final boolean isFactoryBinary;
     private static final Object mFMRadioServiceLock;
-    private static boolean mIsTransientPaused;
-    private static boolean mNeedToResumeFM;
-    private final boolean FEATURE_INDIRECT_MODE;
-    private final boolean SURVEY_MODE_ENABLE;
-    private ContentObserver bmObserver;
     private boolean mAFEnable;
     private boolean mAirPlaneEnabled;
-    private final BroadcastReceiver mAlarmReceiver;
-    private final BroadcastReceiver mAllSoundOffReceiver;
     private AudioFocusHandler mAudioFocusHandler;
-    private AudioManager.OnAudioFocusChangeListener mAudioFocusListener;
     private AudioManager mAudioManager;
-    private ContentObserver mAvrcpObserver;
-    private BroadcastReceiver mButtonReceiver;
     private Context mContext;
     private long mCurrentResumeVol;
-    private final BroadcastReceiver mDNDStatusReceiver;
     private HandlerThread mFMHandlerThread;
-    final Handler mHandler;
     private Handler mHandlerSA;
     private boolean mIsBatteryLow;
     private boolean mIsExternalChipset;
-    public boolean mIsMDMSpeakerEnabled;
     private boolean mIsMute;
     private boolean mIsOn;
     private boolean mIsSeeking;
     private boolean mIsSkipTunigVal;
     private boolean mIsTestMode;
     private Vector<ListenerRecord> mListeners;
-    private final BroadcastReceiver mLowBatteryReceiver;
-    private final BroadcastReceiver mMDMSpeakerEnabled;
-    private PhoneStateListener mPhoneListener;
     private PlayerExternalChipsetBase mPlayerExternalChipset;
     private FMPlayerNativeBase mPlayerNative;
     private PowerManager mPowerManager;
     private boolean mRDSEnable;
-    private BroadcastReceiver mReceiver;
-    private BroadcastReceiver mResetSettingReceiver;
     private long mResumeVol;
     private Runnable mSamsungAnalyticsRunnable;
     private ArrayList<Long> mScanChannelList;
     private long mScanFreq;
     private boolean mScanProgress;
-    private Thread mScanThread;
-    private final BroadcastReceiver mSetPropertyReceiver;
-    private final BroadcastReceiver mSystemReceiver;
-    private final BroadcastReceiver mSystemReceiver1;
     private TelephonyManager mTelephonyManager;
-    private BroadcastReceiver mVolumeEventReceiver;
-    private boolean mWaitPidDuringScanning;
     private PowerManager.WakeLock mWakeLock;
     private boolean mOnProgress = false;
     private boolean mOffProgress = false;
@@ -231,6 +208,8 @@ public class FMRadioService extends IFMPlayer.Stub {
     private boolean mIsTvOutPlugged = false;
     private long mNeedResumeToFreq = -2;
     private long mExtSeekFreq = -1;
+    private boolean mIsTransientPaused = false;
+    private boolean mNeedToResumeFM = false;
     private boolean mBikeMode = false;
     private boolean mIsTransientDuck = false;
     private boolean mIsPhoneStateListenerRegistered = false;
@@ -287,58 +266,16 @@ public class FMRadioService extends IFMPlayer.Stub {
     private int mMtk_blendrssi_th = -65;
     private int mMtk_blendpamd_th = -30;
     private int mMtk_ATJ_config = 1;
-
-    static {
-        DEBUGGABLE = SystemProperties.getInt("ro.debuggable", 0) == 1;
-        isFactoryBinary = "factory".equalsIgnoreCase(SystemProperties.get("ro.factory.factory_binary", "Unknown"));
-        curFreq = -1L;
-        mIsTransientPaused = false;
-        mNeedToResumeFM = false;
-        mFMRadioServiceLock = new Object();
-    }
-
-    /* renamed from: com.android.server.FMRadioService$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends ContentObserver {
-        AnonymousClass1(Handler handler) {
-            super(handler);
-        }
-
+    private final boolean SURVEY_MODE_ENABLE = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_CONTEXTSERVICE_ENABLE_SURVEY_MODE");
+    private final boolean FEATURE_INDIRECT_MODE = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_FMRADIO_SUPPORT_INDIRECT_MODE");
+    private ContentObserver mAvrcpObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.server.FMRadioService.1
         @Override // android.database.ContentObserver
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
             FMRadioService.this.handleAvrcpMode();
         }
-    }
-
-    public void handleAvrcpMode() {
-        int type = this.mAudioManager.semGetRadioOutputPath();
-        boolean z = Settings.Secure.getInt(this.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
-        this.mAvrcpMode = z;
-        if (type == 8) {
-            if (z && FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
-                log("Avrcp mode enabled!!!");
-                if (!this.volumeLock) {
-                    this.mPlayerNative.setVolume(15L);
-                    return;
-                }
-                return;
-            }
-            log("Avrcp mode disabled");
-            if (!this.volumeLock) {
-                int current_stream_volume = this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
-                log("current_stream_volume: " + current_stream_volume);
-                setVolume(current_stream_volume);
-            }
-        }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 extends BroadcastReceiver {
-        AnonymousClass2() {
-        }
-
+    };
+    private BroadcastReceiver mVolumeEventReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.2
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             FMRadioService.log("*** mVolumeEventReceiver: ACTION  - " + intent.getAction());
@@ -357,8 +294,7 @@ public class FMRadioService extends IFMPlayer.Stub {
                             FMRadioService.this.setVolume(volume);
                         } else {
                             int type = FMRadioService.this.mAudioManager.semGetRadioOutputPath();
-                            FMRadioService fMRadioService = FMRadioService.this;
-                            fMRadioService.mAvrcpMode = Settings.Secure.getInt(fMRadioService.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
+                            FMRadioService.this.mAvrcpMode = Settings.Secure.getInt(FMRadioService.this.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
                             if (FMRadioService.this.mAvrcpMode && type == 8 && FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
                                 FMRadioService.log("mAvrcpMode = true set chip volume 15");
                                 FMRadioService.this.mPlayerNative.setVolume(15L);
@@ -377,50 +313,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 FMRadioService.this.volumeLock = false;
             }
         }
-    }
-
-    public boolean checkUsbExternalChipset(UsbDevice usbDevice) {
-        if (usbDevice.getVendorId() == 1256) {
-            if (usbDevice.getProductId() == 41044 || usbDevice.getProductId() == 41049 || usbDevice.getProductId() == 41051) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    private void checkUSBDeviceConnected(Context context) {
-        log("checkUSBDeviceConnected");
-        try {
-            UsbManager mUsbManager = (UsbManager) context.getSystemService("usb");
-            if (mUsbManager == null) {
-                log("mUsbManager null");
-                return;
-            }
-            Map<String, UsbDevice> devices = mUsbManager.getDeviceList();
-            if (devices == null) {
-                log("USB Device null");
-                return;
-            }
-            for (UsbDevice usbDevice : devices.values()) {
-                log("Headset getProductId : " + usbDevice.getProductId());
-                log("Headset getVendorId : " + usbDevice.getVendorId());
-                if (this.mIsExternalChipset && checkUsbExternalChipset(usbDevice)) {
-                    this.mIsHeadsetPlugged = true;
-                    this.mPlayerExternalChipset.init(usbDevice);
-                }
-            }
-        } catch (NullPointerException e) {
-            Log.e("FMRadioService", "NullPointerException in checkUSBDeviceConnected() : " + e);
-        }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$3 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass3 extends BroadcastReceiver {
-        AnonymousClass3() {
-        }
-
+    };
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.3
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             FMRadioService.log("Headset action : " + intent.getAction());
@@ -434,33 +328,32 @@ public class FMRadioService extends IFMPlayer.Stub {
                 }
                 FMRadioService.log("mReceiver: ACTION_USB_HEADSET");
                 FMRadioService.this.mIsHeadsetPlugged = intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-                if (!FMRadioService.this.mIsTestMode) {
-                    FMRadioService.log("mIsExternalChipset " + FMRadioService.this.mIsExternalChipset + " mIsHeadsetPlug " + FMRadioService.this.mIsHeadsetPlugged);
-                    if (FMRadioService.this.mIsHeadsetPlugged) {
-                        FMRadioService.this.mPlayerExternalChipset.init(usbDevice);
-                        FMRadioService.this.notifyEvent(8, null);
-                        return;
-                    }
-                    if (FMRadioService.this.mIsOn) {
-                        FMRadioService fMRadioService = FMRadioService.this;
-                        fMRadioService.mBikeMode = Settings.Secure.getInt(fMRadioService.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
-                        FMRadioService.log("mReceiver: bike mode check : " + FMRadioService.this.mBikeMode);
-                        if (!FMRadioService.this.mBikeMode) {
-                            FMRadioService.this.notifyEvent(9, null);
-                        }
-                        FMRadioService.this.mPlayerExternalChipset.init(null);
-                        if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            FMRadioService.this.cancelScan();
-                        } else {
-                            FMRadioService.this.cancelSeek();
-                        }
-                        FMRadioService.this.offInternal(2, true);
-                        return;
-                    }
+                if (FMRadioService.this.mIsTestMode) {
+                    FMRadioService.this.setSpeakerOn(!FMRadioService.this.mIsHeadsetPlugged);
+                    FMRadioService.log("TestMode :- making setRadioSpeakerOn:" + (!FMRadioService.this.mIsHeadsetPlugged));
                     return;
                 }
-                FMRadioService.this.setSpeakerOn(!r3.mIsHeadsetPlugged);
-                FMRadioService.log("TestMode :- making setRadioSpeakerOn:" + (!FMRadioService.this.mIsHeadsetPlugged));
+                FMRadioService.log("mIsExternalChipset " + FMRadioService.this.mIsExternalChipset + " mIsHeadsetPlug " + FMRadioService.this.mIsHeadsetPlugged);
+                if (FMRadioService.this.mIsHeadsetPlugged) {
+                    FMRadioService.this.mPlayerExternalChipset.init(usbDevice);
+                    FMRadioService.this.notifyEvent(8, null);
+                    return;
+                }
+                if (FMRadioService.this.mIsOn) {
+                    FMRadioService.this.mBikeMode = Settings.Secure.getInt(FMRadioService.this.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
+                    FMRadioService.log("mReceiver: bike mode check : " + FMRadioService.this.mBikeMode);
+                    if (!FMRadioService.this.mBikeMode) {
+                        FMRadioService.this.notifyEvent(9, null);
+                    }
+                    FMRadioService.this.mPlayerExternalChipset.init(null);
+                    if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
+                        FMRadioService.this.cancelScan();
+                    } else {
+                        FMRadioService.this.cancelSeek();
+                    }
+                    FMRadioService.this.offInternal(2, true);
+                    return;
+                }
                 return;
             }
             if (intent.getAction().equals("android.intent.action.HEADSET_PLUG") && !FMRadioService.this.mIsExternalChipset) {
@@ -479,11 +372,10 @@ public class FMRadioService extends IFMPlayer.Stub {
                 } else {
                     FMRadioService.this.mIsEarphoneConnected = intent.getIntExtra("state", 0) == 1;
                 }
-                FMRadioService fMRadioService2 = FMRadioService.this;
-                fMRadioService2.mIsHeadsetPlugged = fMRadioService2.mIsMicrophoneConnected || FMRadioService.this.mIsEarphoneConnected;
+                FMRadioService.this.mIsHeadsetPlugged = FMRadioService.this.mIsMicrophoneConnected || FMRadioService.this.mIsEarphoneConnected;
                 FMRadioService.log("mIsHeadsetPlugged :" + FMRadioService.this.mIsHeadsetPlugged);
                 if (FMRadioService.this.mIsTestMode) {
-                    FMRadioService.this.setSpeakerOn(!r3.mIsHeadsetPlugged);
+                    FMRadioService.this.setSpeakerOn(!FMRadioService.this.mIsHeadsetPlugged);
                     FMRadioService.log("TestMode :- making setRadioSpeakerOn:" + (!FMRadioService.this.mIsHeadsetPlugged));
                     return;
                 }
@@ -496,15 +388,14 @@ public class FMRadioService extends IFMPlayer.Stub {
                     if (FMRadioService.this.volumeLock) {
                         FMRadioService.this.notifyRecFinish();
                     }
-                    FMRadioService fMRadioService3 = FMRadioService.this;
-                    fMRadioService3.mBikeMode = Settings.Secure.getInt(fMRadioService3.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
+                    FMRadioService.this.mBikeMode = Settings.Secure.getInt(FMRadioService.this.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
                     FMRadioService.log("mReceiver: bike mode check : " + FMRadioService.this.mBikeMode);
                     if (!FMRadioService.this.mBikeMode) {
                         FMRadioService.this.notifyEvent(9, null);
                     }
                     if (!FMRadioService.this.mIsOn) {
                         FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
-                        FMRadioService.mIsTransientPaused = false;
+                        FMRadioService.this.mIsTransientPaused = false;
                         return;
                     }
                     if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
@@ -520,8 +411,7 @@ public class FMRadioService extends IFMPlayer.Stub {
             }
             if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
                 FMRadioService.log("mReceiver: ACTION_AIRPLANE_MODE_CHANGED");
-                FMRadioService fMRadioService4 = FMRadioService.this;
-                fMRadioService4.mAirPlaneEnabled = Settings.Global.getInt(fMRadioService4.mContext.getContentResolver(), "airplane_mode_on", 0) != 0;
+                FMRadioService.this.mAirPlaneEnabled = Settings.Global.getInt(FMRadioService.this.mContext.getContentResolver(), "airplane_mode_on", 0) != 0;
                 FMRadioService.log("mAirPlaneEnabled flag :" + FMRadioService.this.mAirPlaneEnabled);
                 if (FMRadioService.this.mAirPlaneEnabled && FMRadioService.this.mIsOn) {
                     if (FMRadioServiceFeature.CHIP_VENDOR == 6) {
@@ -578,14 +468,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 }
             }
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$4 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass4 extends BroadcastReceiver {
-        AnonymousClass4() {
-        }
-
+    };
+    private BroadcastReceiver mButtonReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.4
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
@@ -610,14 +494,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 }
             }
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$5 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass5 extends BroadcastReceiver {
-        AnonymousClass5() {
-        }
-
+    };
+    private BroadcastReceiver mResetSettingReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.5
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(FMRadioService.RESET_SETTING)) {
@@ -640,46 +518,36 @@ public class FMRadioService extends IFMPlayer.Stub {
             FMRadioService.log("reset setting : remove audiofocus: FM");
             FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$6 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass6 extends PhoneStateListener {
+    };
+    private PhoneStateListener mPhoneListener = new PhoneStateListener(null, Looper.getMainLooper()) { // from class: com.android.server.FMRadioService.6
         private boolean mIsPhoneCallRinging = false;
-
-        AnonymousClass6(Integer subId, Looper looper) {
-            super(subId, looper);
-            this.mIsPhoneCallRinging = false;
-        }
 
         @Override // android.telephony.PhoneStateListener
         public void onCallStateChanged(int state, String incomingNumber) {
-            FMRadioService.log("phone state : " + state + " mNeedToResumeFM: " + FMRadioService.mNeedToResumeFM + " mIsPhoneCallRinging : " + this.mIsPhoneCallRinging + " mIsForcestop : " + FMRadioService.this.mIsForcestop);
+            FMRadioService.log("phone state : " + state + " mNeedToResumeFM: " + FMRadioService.this.mNeedToResumeFM + " mIsPhoneCallRinging : " + this.mIsPhoneCallRinging + " mIsForcestop : " + FMRadioService.this.mIsForcestop);
             switch (state) {
                 case 0:
-                    if (FMRadioService.mNeedToResumeFM && !FMRadioService.this.isOn() && FMRadioService.this.mNeedResumeToFreq != -2 && !FMRadioService.this.mIsForcestop && this.mIsPhoneCallRinging) {
+                    if (FMRadioService.this.mNeedToResumeFM && !FMRadioService.this.isOn() && FMRadioService.this.mNeedResumeToFreq != -2 && !FMRadioService.this.mIsForcestop && this.mIsPhoneCallRinging) {
                         if (FMRadioService.this.on(false)) {
                             int outputPath = FMRadioService.this.mAudioManager.semGetRadioOutputPath();
                             FMRadioService.log("onCallStateChanged() :: CALL_STATE_IDLE setPath() = " + outputPath);
                             FMRadioService.this.mAudioManager.semSetRadioOutputPath(outputPath);
-                            if (FMRadioService.mIsTransientPaused) {
-                                FMRadioService.this.mResumeVol = r3.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
+                            if (FMRadioService.this.mIsTransientPaused) {
+                                FMRadioService.this.mResumeVol = FMRadioService.this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
                                 FMRadioService.log("slowly increase the volume till :" + FMRadioService.this.mResumeVol);
                                 if (FMRadioService.this.mResumeVol == 0) {
                                     FMRadioService.this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), (int) FMRadioService.this.mResumeVol, 0);
                                 } else {
-                                    FMRadioService fMRadioService = FMRadioService.this;
-                                    fMRadioService.mCurrentResumeVol = fMRadioService.mResumeVol;
+                                    FMRadioService.this.mCurrentResumeVol = FMRadioService.this.mResumeVol;
                                     if (FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
                                         FMRadioService.this.setVolume(1L);
                                         FMRadioService.this.mHandler.removeMessages(200);
                                         FMRadioService.this.mHandler.sendEmptyMessageDelayed(200, 100L);
                                     } else {
-                                        FMRadioService fMRadioService2 = FMRadioService.this;
-                                        fMRadioService2.setVolume(fMRadioService2.mResumeVol);
+                                        FMRadioService.this.setVolume(FMRadioService.this.mResumeVol);
                                     }
                                 }
-                                FMRadioService.mIsTransientPaused = false;
+                                FMRadioService.this.mIsTransientPaused = false;
                             } else {
                                 FMRadioService.this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), FMRadioService.this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1)), 0);
                             }
@@ -693,32 +561,23 @@ public class FMRadioService extends IFMPlayer.Stub {
                                 FMRadioService.this.mPlayerNative.tune(FMRadioService.this.mNeedResumeToFreq);
                             }
                             FMRadioService.log("tune from CALL_STATE_IDLE");
-                            FMRadioService fMRadioService3 = FMRadioService.this;
-                            fMRadioService3.notifyEvent(7, Long.valueOf(fMRadioService3.mNeedResumeToFreq));
+                            FMRadioService.this.notifyEvent(7, Long.valueOf(FMRadioService.this.mNeedResumeToFreq));
                             FMRadioService.this.mNeedResumeToFreq = -2L;
                         } else {
                             FMRadioService.log("Not able to resume FM player");
                         }
                     }
-                    FMRadioService.mNeedToResumeFM = false;
+                    FMRadioService.this.mNeedToResumeFM = false;
                     this.mIsPhoneCallRinging = false;
-                    return;
+                    break;
                 case 1:
                     this.mIsPhoneCallRinging = true;
-                    return;
-                case 2:
-                default:
-                    return;
+                    break;
             }
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$7 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass7 extends BroadcastReceiver {
-        AnonymousClass7() {
-        }
-
+    };
+    public boolean mIsMDMSpeakerEnabled = false;
+    private final BroadcastReceiver mMDMSpeakerEnabled = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.7
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             Bundle bundle;
@@ -728,202 +587,18 @@ public class FMRadioService extends IFMPlayer.Stub {
                 FMRadioService.this.mIsMDMSpeakerEnabled = ((Boolean) bundle.get("state")).booleanValue();
             }
         }
-    }
-
-    /* loaded from: classes5.dex */
-    public class AudioFocusHandler extends Handler {
-        public static final int EVENT_AUDIOFOCUS_GAIN = 1;
-        public static final int EVENT_AUDIOFOCUS_LOSS = -1;
-        public static final int EVENT_AUDIOFOCUS_LOSS_TRANSIENT = -2;
-        public static final int EVENT_AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK = -3;
-        private static final String TAG = "mAudioFocusHandler:";
-
-        public AudioFocusHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            FMRadioService.log("mAudioFocusHandler:mHandler(g.what=" + msg.what + ") is called");
-            switch (msg.what) {
-                case -3:
-                case -2:
-                case -1:
-                case 1:
-                    FMRadioService.log("mAudioFocusHandler:Fired  TIME = " + (SystemClock.uptimeMillis() / 1000));
-                    FMRadioService.this.responedFocusEvent(msg.what);
-                    return;
-                case 0:
-                default:
-                    return;
+    };
+    private final BroadcastReceiver mOMC_Changed_Receiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.8
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            FMRadioService.log("mOMC_Changed_Receiver: ACTION  - " + intent.getAction());
+            if (action.equals(FMRadioService.OMC_CHANGED_ACTION)) {
+                FMRadioService.this.readTuningParameters();
             }
         }
-    }
-
-    public void clearMessageQueue() {
-        this.mAudioFocusHandler.removeMessages(-1);
-        this.mAudioFocusHandler.removeMessages(-2);
-        this.mAudioFocusHandler.removeMessages(-3);
-        this.mAudioFocusHandler.removeMessages(1);
-        this.mHandler.removeMessages(200);
-    }
-
-    public void responedFocusEvent(int focusEvent) {
-        switch (focusEvent) {
-            case -3:
-                if (isOn()) {
-                    if (this.volumeLock) {
-                        log("AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK - recoding O");
-                        return;
-                    }
-                    log("AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK - recoding X");
-                    if (this.mScanProgress) {
-                        this.mNeedResumeToFreq = this.mScanFreq;
-                    } else if (this.mIsSeeking) {
-                        this.mNeedResumeToFreq = curFreq;
-                    } else {
-                        this.mNeedResumeToFreq = getCurrentChannel();
-                    }
-                    this.mIsTransientDuck = true;
-                    mute(true);
-                    return;
-                }
-                return;
-            case -2:
-                log("AUDIOFOCUS_LOSS_TRANSIENT ");
-                if (isOn()) {
-                    if (this.mScanProgress) {
-                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            cancelScan();
-                        }
-                        this.mNeedResumeToFreq = this.mScanFreq;
-                    } else if (this.mIsSeeking) {
-                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            cancelSeek();
-                        }
-                        this.mNeedResumeToFreq = curFreq;
-                    } else {
-                        this.mNeedResumeToFreq = getCurrentChannel();
-                    }
-                    offInternal(11, false);
-                } else if (this.mOnProgress) {
-                    log("still FM on in progress");
-                    this.mAudioFocusHandler.removeMessages(focusEvent);
-                    this.mAudioFocusHandler.sendEmptyMessage(focusEvent);
-                }
-                mNeedToResumeFM = false;
-                return;
-            case -1:
-                log("AUDIOFOCUS_LOSS ");
-                if (isOn()) {
-                    if (this.mScanProgress) {
-                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            cancelScan();
-                        }
-                        this.mNeedResumeToFreq = this.mScanFreq;
-                    } else if (this.mIsSeeking) {
-                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            cancelSeek();
-                        }
-                        this.mNeedResumeToFreq = curFreq;
-                    } else {
-                        this.mNeedResumeToFreq = getCurrentChannel();
-                    }
-                    offInternal(0, true);
-                    return;
-                }
-                if (this.mOnProgress) {
-                    log("still FM on in progress");
-                    this.mAudioFocusHandler.removeMessages(focusEvent);
-                    this.mAudioFocusHandler.sendEmptyMessage(focusEvent);
-                    return;
-                }
-                return;
-            case 0:
-            default:
-                return;
-            case 1:
-                log("AUDIOFOCUS_GAIN ");
-                if (this.mIsExternalChipset) {
-                    setDelay(700L);
-                }
-                if (isOn() && this.mIsTransientDuck) {
-                    mute(false);
-                }
-                this.mIsTransientDuck = false;
-                if (!isOn() && this.mNeedResumeToFreq != -2 && !this.mIsForcestop) {
-                    if (on(false)) {
-                        if (mIsTransientPaused) {
-                            this.mResumeVol = this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
-                            log("slowly increase the volume till :" + this.mResumeVol);
-                            long j = this.mResumeVol;
-                            if (j != 0) {
-                                this.mCurrentResumeVol = j;
-                                if (FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
-                                    if (!this.mIsExternalChipset) {
-                                        setVolume(0L);
-                                        this.mHandler.removeMessages(200);
-                                        this.mHandler.sendEmptyMessageDelayed(200, 800L);
-                                    }
-                                } else {
-                                    setVolume(this.mResumeVol);
-                                }
-                            } else {
-                                this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), (int) this.mResumeVol, 0);
-                            }
-                            mIsTransientPaused = false;
-                        } else {
-                            this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1)), 0);
-                        }
-                        if (this.mNeedResumeToFreq <= 0) {
-                            this.mNeedResumeToFreq = 87500L;
-                        }
-                        if (this.mIsExternalChipset) {
-                            int freqExt = ((int) this.mNeedResumeToFreq) / 10;
-                            this.mPlayerExternalChipset.tune(freqExt);
-                            if (isUnMuteRadio()) {
-                                mute(false);
-                            } else {
-                                mute(true);
-                            }
-                        } else {
-                            this.mPlayerNative.tune(this.mNeedResumeToFreq);
-                        }
-                        notifyEvent(7, Long.valueOf(this.mNeedResumeToFreq));
-                        this.mNeedResumeToFreq = -2L;
-                        return;
-                    }
-                    if (!mNeedToResumeFM) {
-                        log("Not able to resume FM player");
-                        this.mAudioManager.abandonAudioFocus(this.mAudioFocusListener);
-                        return;
-                    }
-                    return;
-                }
-                if (this.mOffProgress) {
-                    log("still FM off in progress");
-                    this.mAudioFocusHandler.removeMessages(focusEvent);
-                    this.mAudioFocusHandler.sendEmptyMessage(focusEvent);
-                    return;
-                }
-                return;
-        }
-    }
-
-    public void inDirectModeBroadcast() {
-        log("Broadcast audio focus loss intent");
-        Intent intent = new Intent();
-        intent.setAction("inDirect.mode.audioFocusLoss");
-        intent.setClassName("com.sec.android.app.fm", "com.sec.android.app.fm.receiver.AudioFocusLossReceiver");
-        this.mContext.sendBroadcast(intent);
-    }
-
-    /* renamed from: com.android.server.FMRadioService$8 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass8 implements AudioManager.OnAudioFocusChangeListener {
-        AnonymousClass8() {
-        }
-
+    };
+    private AudioManager.OnAudioFocusChangeListener mAudioFocusListener = new AudioManager.OnAudioFocusChangeListener() { // from class: com.android.server.FMRadioService.9
         @Override // android.media.AudioManager.OnAudioFocusChangeListener
         public void onAudioFocusChange(int focusChange) {
             FMRadioService.log("onAudioFocusChange : " + focusChange);
@@ -968,17 +643,9 @@ public class FMRadioService extends IFMPlayer.Stub {
                 FMRadioService.log("OnAudioFocusChangeListener switch off mAudioFocusListener :" + focusChange + " stored freq:" + FMRadioService.this.mNeedResumeToFreq);
             }
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$9 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass9 extends Handler {
+    };
+    final Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.server.FMRadioService.10
         long currentVolume = 0;
-
-        AnonymousClass9(Looper looper) {
-            super(looper);
-            this.currentVolume = 0L;
-        }
 
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
@@ -989,30 +656,21 @@ public class FMRadioService extends IFMPlayer.Stub {
                     return;
                 }
                 if (this.currentVolume < FMRadioService.this.mCurrentResumeVol) {
-                    long j = this.currentVolume + 1;
-                    this.currentVolume = j;
-                    FMRadioService.this.setVolume(j);
+                    this.currentVolume++;
+                    FMRadioService.this.setVolume(this.currentVolume);
                     FMRadioService.this.queueUpdate(200, 100L);
-                    return;
+                } else {
+                    this.currentVolume = FMRadioService.this.mResumeVol;
+                    FMRadioService.this.setVolume(this.currentVolume);
+                    this.currentVolume = 0L;
                 }
-                long j2 = FMRadioService.this.mResumeVol;
-                this.currentVolume = j2;
-                FMRadioService.this.setVolume(j2);
-                this.currentVolume = 0L;
             }
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$10 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass10 extends BroadcastReceiver {
-        AnonymousClass10() {
-        }
-
+    };
+    private final BroadcastReceiver mSystemReceiver1 = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.11
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Boolean.valueOf(intent.getBooleanExtra(Intent.EXTRA_DONT_KILL_APP, false));
             try {
                 Uri uri = intent.getData();
                 String packageName = uri.getSchemeSpecificPart();
@@ -1043,14 +701,8 @@ public class FMRadioService extends IFMPlayer.Stub {
             FMRadioService.log("mSystemReceiver1 : remove audiofocus");
             FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$11 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass11 extends BroadcastReceiver {
-        AnonymousClass11() {
-        }
-
+    };
+    private final BroadcastReceiver mSystemReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.12
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -1073,26 +725,8 @@ public class FMRadioService extends IFMPlayer.Stub {
             FMRadioService.log("Powering off : remove audiofocus: FM");
             FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
         }
-    }
-
-    public void releaseAudioSystemMute() {
-        log("releaseAudioSystemMute ");
-        AudioManager audioManager = this.mAudioManager;
-        if (audioManager != null) {
-            int ringermode = audioManager.getRingerMode();
-            if (ringermode == 2 && this.mAudioManager.isStreamMute(1) && this.mAudioManager.isStreamMute(5)) {
-                this.mAudioManager.adjustStreamVolume(1, 100, 0);
-                this.mAudioManager.adjustStreamVolume(5, 100, 0);
-            }
-        }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$12 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass12 extends BroadcastReceiver {
-        AnonymousClass12() {
-        }
-
+    };
+    private final BroadcastReceiver mLowBatteryReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.13
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -1100,7 +734,7 @@ public class FMRadioService extends IFMPlayer.Stub {
             FMRadioService.log("Low batteryWarning Level :1");
             if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
                 int battStatus = intent.getIntExtra("status", 1);
-                int battScale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
+                int battScale = intent.getIntExtra("scale", 100);
                 int battLevel = intent.getIntExtra("level", battScale);
                 FMRadioService.log("Level = " + battLevel + "/" + battScale);
                 FMRadioService.log("Status = " + battStatus);
@@ -1122,14 +756,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 FMRadioService.this.mIsBatteryLow = false;
             }
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$13 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass13 extends BroadcastReceiver {
-        AnonymousClass13() {
-        }
-
+    };
+    private final BroadcastReceiver mSetPropertyReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.14
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -1157,14 +785,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 }
             }
         }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$14 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass14 extends BroadcastReceiver {
-        AnonymousClass14() {
-        }
-
+    };
+    private final BroadcastReceiver mAllSoundOffReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.15
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             int AllSoundOff = intent.getIntExtra("mute", 0);
@@ -1183,27 +805,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 FMRadioService.this.mute(false);
             }
         }
-    }
-
-    private void registerDNDStatusChangedListener() {
-        IntentFilter intentDNDFilter = new IntentFilter();
-        intentDNDFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED);
-        intentDNDFilter.addAction(NotificationManager.ACTION_NOTIFICATION_POLICY_CHANGED);
-        this.mContext.registerReceiver(this.mDNDStatusReceiver, intentDNDFilter);
-        log("registering DND Status change Listener");
-    }
-
-    private void unregisterDNDStatusChangedListener() {
-        log("Unregistering DND Status change listner");
-        this.mContext.unregisterReceiver(this.mDNDStatusReceiver);
-    }
-
-    /* renamed from: com.android.server.FMRadioService$15 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass15 extends BroadcastReceiver {
-        AnonymousClass15() {
-        }
-
+    };
+    private final BroadcastReceiver mDNDStatusReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.16
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             int volume;
@@ -1223,26 +826,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 FMRadioService.log("mDNDStatusReceiver onReceive : DND Disable ");
             }
         }
-    }
-
-    private void registerAllSoundOffListener() {
-        IntentFilter intentAllSoundOffFilter = new IntentFilter();
-        intentAllSoundOffFilter.addAction("android.settings.ALL_SOUND_MUTE");
-        this.mContext.registerReceiver(this.mAllSoundOffReceiver, intentAllSoundOffFilter);
-        log("registering AllSoundOff listener");
-    }
-
-    private void unregisterAllSoundOffListener() {
-        log("Unregistering AllSoundOff listener");
-        this.mContext.unregisterReceiver(this.mAllSoundOffReceiver);
-    }
-
-    /* renamed from: com.android.server.FMRadioService$16 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass16 extends BroadcastReceiver {
-        AnonymousClass16() {
-        }
-
+    };
+    private final BroadcastReceiver mAlarmReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.17
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             FMRadioService.log("Alarm onReceive");
@@ -1256,12 +841,305 @@ public class FMRadioService extends IFMPlayer.Stub {
                 FMRadioService.this.alarmTTSPlay = false;
             }
         }
+    };
+    private Thread mScanThread = null;
+    private boolean mWaitPidDuringScanning = false;
+    private ContentObserver bmObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.server.FMRadioService.18
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            FMRadioService.log("bike mode onChange");
+            FMRadioService.this.handleBikeMode();
+        }
+    };
+
+    static {
+        DEBUGGABLE = SystemProperties.getInt("ro.debuggable", 0) == 1;
+        isFactoryBinary = "factory".equalsIgnoreCase(SystemProperties.get("ro.factory.factory_binary", "Unknown"));
+        curFreq = -1L;
+        mFMRadioServiceLock = new Object();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void handleAvrcpMode() {
+        int type = this.mAudioManager.semGetRadioOutputPath();
+        this.mAvrcpMode = Settings.Secure.getInt(this.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
+        if (type == 8) {
+            if (this.mAvrcpMode && FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
+                log("Avrcp mode enabled!!!");
+                if (!this.volumeLock) {
+                    this.mPlayerNative.setVolume(15L);
+                    return;
+                }
+                return;
+            }
+            log("Avrcp mode disabled");
+            if (!this.volumeLock) {
+                int current_stream_volume = this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
+                log("current_stream_volume: " + current_stream_volume);
+                setVolume(current_stream_volume);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public boolean checkUsbExternalChipset(UsbDevice usbDevice) {
+        if (usbDevice.getVendorId() == 1256) {
+            if (usbDevice.getProductId() == 41044 || usbDevice.getProductId() == 41049 || usbDevice.getProductId() == 41051) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private void checkUSBDeviceConnected(Context context) {
+        log("checkUSBDeviceConnected");
+        try {
+            UsbManager mUsbManager = (UsbManager) context.getSystemService("usb");
+            if (mUsbManager == null) {
+                log("mUsbManager null");
+                return;
+            }
+            Map<String, UsbDevice> devices = mUsbManager.getDeviceList();
+            if (devices == null) {
+                log("USB Device null");
+                return;
+            }
+            for (UsbDevice usbDevice : devices.values()) {
+                log("Headset getProductId : " + usbDevice.getProductId());
+                log("Headset getVendorId : " + usbDevice.getVendorId());
+                if (this.mIsExternalChipset && checkUsbExternalChipset(usbDevice)) {
+                    this.mIsHeadsetPlugged = true;
+                    this.mPlayerExternalChipset.init(usbDevice);
+                }
+            }
+        } catch (NullPointerException e) {
+            Log.e("FMRadioService", "NullPointerException in checkUSBDeviceConnected() : " + e);
+        }
+    }
+
+    private class AudioFocusHandler extends Handler {
+        public static final int EVENT_AUDIOFOCUS_GAIN = 1;
+        public static final int EVENT_AUDIOFOCUS_LOSS = -1;
+        public static final int EVENT_AUDIOFOCUS_LOSS_TRANSIENT = -2;
+        public static final int EVENT_AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK = -3;
+        private static final String TAG = "mAudioFocusHandler:";
+
+        public AudioFocusHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            FMRadioService.log("mAudioFocusHandler:mHandler(g.what=" + msg.what + ") is called");
+            switch (msg.what) {
+                case -3:
+                case -2:
+                case -1:
+                case 1:
+                    FMRadioService.log("mAudioFocusHandler:Fired  TIME = " + (SystemClock.uptimeMillis() / 1000));
+                    FMRadioService.this.responedFocusEvent(msg.what);
+                    break;
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void clearMessageQueue() {
+        this.mAudioFocusHandler.removeMessages(-1);
+        this.mAudioFocusHandler.removeMessages(-2);
+        this.mAudioFocusHandler.removeMessages(-3);
+        this.mAudioFocusHandler.removeMessages(1);
+        this.mHandler.removeMessages(200);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void responedFocusEvent(int focusEvent) {
+        switch (focusEvent) {
+            case -3:
+                if (isOn()) {
+                    if (this.volumeLock) {
+                        log("AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK - recoding O");
+                        break;
+                    } else {
+                        log("AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK - recoding X");
+                        if (this.mScanProgress) {
+                            this.mNeedResumeToFreq = this.mScanFreq;
+                        } else if (this.mIsSeeking) {
+                            this.mNeedResumeToFreq = curFreq;
+                        } else {
+                            this.mNeedResumeToFreq = getCurrentChannel();
+                        }
+                        this.mIsTransientDuck = true;
+                        mute(true);
+                        break;
+                    }
+                }
+                break;
+            case -2:
+                log("AUDIOFOCUS_LOSS_TRANSIENT ");
+                if (isOn()) {
+                    if (this.mScanProgress) {
+                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
+                            cancelScan();
+                        }
+                        this.mNeedResumeToFreq = this.mScanFreq;
+                    } else if (this.mIsSeeking) {
+                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
+                            cancelSeek();
+                        }
+                        this.mNeedResumeToFreq = curFreq;
+                    } else {
+                        this.mNeedResumeToFreq = getCurrentChannel();
+                    }
+                    offInternal(11, false);
+                } else if (this.mOnProgress) {
+                    log("still FM on in progress");
+                    this.mAudioFocusHandler.removeMessages(focusEvent);
+                    this.mAudioFocusHandler.sendEmptyMessage(focusEvent);
+                }
+                this.mNeedToResumeFM = false;
+                break;
+            case -1:
+                log("AUDIOFOCUS_LOSS ");
+                if (isOn()) {
+                    if (this.mScanProgress) {
+                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
+                            cancelScan();
+                        }
+                        this.mNeedResumeToFreq = this.mScanFreq;
+                    } else if (this.mIsSeeking) {
+                        if (this.mIsExternalChipset || FMRadioServiceFeature.CHIP_VENDOR == 6) {
+                            cancelSeek();
+                        }
+                        this.mNeedResumeToFreq = curFreq;
+                    } else {
+                        this.mNeedResumeToFreq = getCurrentChannel();
+                    }
+                    offInternal(0, true);
+                    break;
+                } else if (this.mOnProgress) {
+                    log("still FM on in progress");
+                    this.mAudioFocusHandler.removeMessages(focusEvent);
+                    this.mAudioFocusHandler.sendEmptyMessage(focusEvent);
+                    break;
+                }
+                break;
+            case 1:
+                log("AUDIOFOCUS_GAIN ");
+                if (this.mIsExternalChipset) {
+                    setDelay(700L);
+                }
+                if (isOn() && this.mIsTransientDuck) {
+                    mute(false);
+                }
+                this.mIsTransientDuck = false;
+                if (!isOn() && this.mNeedResumeToFreq != -2 && !this.mIsForcestop) {
+                    if (on(false)) {
+                        if (this.mIsTransientPaused) {
+                            this.mResumeVol = this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
+                            log("slowly increase the volume till :" + this.mResumeVol);
+                            if (this.mResumeVol != 0) {
+                                this.mCurrentResumeVol = this.mResumeVol;
+                                if (FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
+                                    if (!this.mIsExternalChipset) {
+                                        setVolume(0L);
+                                        this.mHandler.removeMessages(200);
+                                        this.mHandler.sendEmptyMessageDelayed(200, 800L);
+                                    }
+                                } else {
+                                    setVolume(this.mResumeVol);
+                                }
+                            } else {
+                                this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), (int) this.mResumeVol, 0);
+                            }
+                            this.mIsTransientPaused = false;
+                        } else {
+                            this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1)), 0);
+                        }
+                        if (this.mNeedResumeToFreq <= 0) {
+                            this.mNeedResumeToFreq = 87500L;
+                        }
+                        if (this.mIsExternalChipset) {
+                            int freqExt = ((int) this.mNeedResumeToFreq) / 10;
+                            this.mPlayerExternalChipset.tune(freqExt);
+                            if (isUnMuteRadio()) {
+                                mute(false);
+                            } else {
+                                mute(true);
+                            }
+                        } else {
+                            this.mPlayerNative.tune(this.mNeedResumeToFreq);
+                        }
+                        notifyEvent(7, Long.valueOf(this.mNeedResumeToFreq));
+                        this.mNeedResumeToFreq = -2L;
+                        break;
+                    } else if (!this.mNeedToResumeFM) {
+                        log("Not able to resume FM player");
+                        this.mAudioManager.abandonAudioFocus(this.mAudioFocusListener);
+                        break;
+                    }
+                } else if (this.mOffProgress) {
+                    log("still FM off in progress");
+                    this.mAudioFocusHandler.removeMessages(focusEvent);
+                    this.mAudioFocusHandler.sendEmptyMessage(focusEvent);
+                    break;
+                }
+                break;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void inDirectModeBroadcast() {
+        log("Broadcast audio focus loss intent");
+        Intent intent = new Intent();
+        intent.setAction("inDirect.mode.audioFocusLoss");
+        intent.setClassName("com.sec.android.app.fm", "com.sec.android.app.fm.receiver.AudioFocusLossReceiver");
+        this.mContext.sendBroadcast(intent);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void releaseAudioSystemMute() {
+        log("releaseAudioSystemMute ");
+        if (this.mAudioManager != null) {
+            int ringermode = this.mAudioManager.getRingerMode();
+            if (ringermode == 2 && this.mAudioManager.isStreamMute(1) && this.mAudioManager.isStreamMute(5)) {
+                this.mAudioManager.adjustStreamVolume(1, 100, 0);
+                this.mAudioManager.adjustStreamVolume(5, 100, 0);
+            }
+        }
+    }
+
+    private void registerDNDStatusChangedListener() {
+        IntentFilter intentDNDFilter = new IntentFilter();
+        intentDNDFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED);
+        intentDNDFilter.addAction(NotificationManager.ACTION_NOTIFICATION_POLICY_CHANGED);
+        this.mContext.registerReceiver(this.mDNDStatusReceiver, intentDNDFilter, 4);
+        log("registering DND Status change Listener");
+    }
+
+    private void unregisterDNDStatusChangedListener() {
+        log("Unregistering DND Status change listner");
+        this.mContext.unregisterReceiver(this.mDNDStatusReceiver);
+    }
+
+    private void registerAllSoundOffListener() {
+        IntentFilter intentAllSoundOffFilter = new IntentFilter();
+        intentAllSoundOffFilter.addAction("android.settings.ALL_SOUND_MUTE");
+        this.mContext.registerReceiver(this.mAllSoundOffReceiver, intentAllSoundOffFilter, 4);
+        log("registering AllSoundOff listener");
+    }
+
+    private void unregisterAllSoundOffListener() {
+        log("Unregistering AllSoundOff listener");
+        this.mContext.unregisterReceiver(this.mAllSoundOffReceiver);
     }
 
     private void registerAlarmListener() {
         IntentFilter intentAlarmFilter = new IntentFilter();
         intentAlarmFilter.addAction(ACTINON_ALARM_PLAY);
-        this.mContext.registerReceiver(this.mAlarmReceiver, intentAlarmFilter);
+        this.mContext.registerReceiver(this.mAlarmReceiver, intentAlarmFilter, 4);
         log("registering Alarm play listener");
     }
 
@@ -1292,8 +1170,12 @@ public class FMRadioService extends IFMPlayer.Stub {
         this.mContext.getContentResolver().unregisterContentObserver(this.mAvrcpObserver);
     }
 
-    private void readTuningParameters() {
-        if ("".equals(FMRadioServiceFeature.FEATURE_SETLOCALTUNNING)) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void readTuningParameters() {
+        SemCscFeature mCscFeature = SemCscFeature.getInstance();
+        String mCscTuningValue = mCscFeature.getString("CscFeature_FMRadio_SetLocalTunning");
+        log("mCscTuningValue = " + mCscTuningValue);
+        if ("".equals(mCscTuningValue)) {
             if (FMRadioServiceFeature.CHIP_VENDOR == 4 || FMRadioServiceFeature.CHIP_VENDOR == 9) {
                 this.mSnr_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_COMMON_SNR"));
                 this.mIsSupportSoftmute = FMRadioServiceFeature.FEATURE_SUPPORT_SOFTMUTE;
@@ -1347,8 +1229,7 @@ public class FMRadioService extends IFMPlayer.Stub {
             }
             return;
         }
-        String[] Local_Tunning_vals = FMRadioServiceFeature.FEATURE_SETLOCALTUNNING.split(",");
-        log("Tuning value size: " + Local_Tunning_vals.length);
+        String[] Local_Tunning_vals = mCscTuningValue.split(",");
         switch (Local_Tunning_vals.length) {
             case 1:
                 if (FMRadioServiceFeature.CHIP_VENDOR == 4 || FMRadioServiceFeature.CHIP_VENDOR == 9) {
@@ -1365,29 +1246,25 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mAfRmssith_th = this.mQualcomm_af_rmssith;
                     this.mAfRmssisampleCnt_th = this.mQualcomm_af_rmssisamplecnt;
                     this.mgoodChrmssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_QUALCOMM_GOODCH_RMSSITH"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 5 || FMRadioServiceFeature.CHIP_VENDOR == 10) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 5 || FMRadioServiceFeature.CHIP_VENDOR == 10) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mRichwave_seekDC = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_RICHWAVE_SEEK_DC"));
                     this.mRichwave_seekQA = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_RICHWAVE_SEEK_QA"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 6) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 6) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mFreqOffset_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_SPRD_FREQ_OFFSET"));
                     this.mNoisePwr_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_SPRD_NOISE_PWR"));
                     this.mPilotPwr_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_SPRD_PILOT_PWR"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mSlsi_ifcount1 = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_SLSI_IFCOUNT1"));
                     this.mSlsi_ifcount2 = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_SLSI_IFCOUNT2"));
                     this.mSlsi_blendcoeff = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_SLSI_BLENDCOEF"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     String tempMtkChipVolume2 = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_CHIPVOLUME");
                     if (!"".equals(tempMtkChipVolume2)) {
@@ -1399,9 +1276,9 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mSoftmute_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_COMMON_SOFTMUTE_TH"));
                     this.mMtk_blendrssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDRSSI_TH"));
                     this.mMtk_blendpamd_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDPAMD_TH"));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 2:
                 if (FMRadioServiceFeature.CHIP_VENDOR == 4 || FMRadioServiceFeature.CHIP_VENDOR == 9) {
                     this.mSnr_th = Integer.parseInt(Local_Tunning_vals[0]);
@@ -1417,9 +1294,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mAfRmssith_th = this.mQualcomm_af_rmssith;
                     this.mAfRmssisampleCnt_th = this.mQualcomm_af_rmssisamplecnt;
                     this.mgoodChrmssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_QUALCOMM_GOODCH_RMSSITH"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mMtk_seeksmg = Integer.parseInt(Local_Tunning_vals[1]);
                     String tempMtkChipVolume3 = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_CHIPVOLUME");
@@ -1431,24 +1307,22 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mSoftmute_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_COMMON_SOFTMUTE_TH"));
                     this.mMtk_blendrssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDRSSI_TH"));
                     this.mMtk_blendpamd_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDPAMD_TH"));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 3:
                 if (FMRadioServiceFeature.CHIP_VENDOR == 5 || FMRadioServiceFeature.CHIP_VENDOR == 10) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mRichwave_seekDC = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mRichwave_seekQA = Integer.parseInt(Local_Tunning_vals[2]);
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mSlsi_ifcount1 = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mSlsi_ifcount2 = Integer.parseInt(Local_Tunning_vals[2]);
                     this.mSlsi_blendcoeff = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_SLSI_BLENDCOEF"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mMtk_seeksmg = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mMtk_seekdesenserssi = Integer.parseInt(Local_Tunning_vals[2]);
@@ -1460,9 +1334,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mSoftmute_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_COMMON_SOFTMUTE_TH"));
                     this.mMtk_blendrssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDRSSI_TH"));
                     this.mMtk_blendpamd_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDPAMD_TH"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 4 || FMRadioServiceFeature.CHIP_VENDOR == 9) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 4 || FMRadioServiceFeature.CHIP_VENDOR == 9) {
                     this.mSnr_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mIsSupportSoftmute = Boolean.parseBoolean(Local_Tunning_vals[1]);
                     this.mSoftmutePath = Local_Tunning_vals[2];
@@ -1476,9 +1349,9 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mAfRmssith_th = this.mQualcomm_af_rmssith;
                     this.mAfRmssisampleCnt_th = this.mQualcomm_af_rmssisamplecnt;
                     this.mgoodChrmssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_QUALCOMM_GOODCH_RMSSITH"));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 4:
                 if (FMRadioServiceFeature.CHIP_VENDOR == 4 || FMRadioServiceFeature.CHIP_VENDOR == 9) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
@@ -1494,23 +1367,20 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mAfRmssith_th = this.mQualcomm_af_rmssith;
                     this.mAfRmssisampleCnt_th = this.mQualcomm_af_rmssisamplecnt;
                     this.mgoodChrmssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_QUALCOMM_GOODCH_RMSSITH"));
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 6) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 6) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mFreqOffset_th = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mNoisePwr_th = Integer.parseInt(Local_Tunning_vals[2]);
                     this.mPilotPwr_th = Integer.parseInt(Local_Tunning_vals[3]);
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mSlsi_ifcount1 = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mSlsi_ifcount2 = Integer.parseInt(Local_Tunning_vals[2]);
                     this.mSlsi_blendcoeff = Integer.parseInt(Local_Tunning_vals[3]);
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mMtk_seeksmg = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mMtk_seekdesenserssi = Integer.parseInt(Local_Tunning_vals[2]);
@@ -1522,9 +1392,9 @@ public class FMRadioService extends IFMPlayer.Stub {
                     }
                     this.mMtk_blendrssi_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDRSSI_TH"));
                     this.mMtk_blendpamd_th = Integer.parseInt(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_MEDIATEK_BLENDPAMD_TH"));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 5:
                 if (FMRadioServiceFeature.CHIP_VENDOR == 4 || FMRadioServiceFeature.CHIP_VENDOR == 9) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
@@ -1540,17 +1410,16 @@ public class FMRadioService extends IFMPlayer.Stub {
                     this.mCf0_th12 = this.mQualcomm_cfoth12;
                     this.mAfRmssith_th = this.mQualcomm_af_rmssith;
                     this.mAfRmssisampleCnt_th = this.mQualcomm_af_rmssisamplecnt;
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
+                    break;
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mSlsi_ifcount1 = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mSlsi_ifcount2 = Integer.parseInt(Local_Tunning_vals[2]);
                     this.mSlsi_blendcoeff = Integer.parseInt(Local_Tunning_vals[3]);
                     this.mSlsi_softmutecoeff = Integer.parseInt(Local_Tunning_vals[4]);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 6:
                 if (FMRadioServiceFeature.CHIP_VENDOR == 8) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
@@ -1563,23 +1432,21 @@ public class FMRadioService extends IFMPlayer.Stub {
                     if (!"".equals(tempMtkChipVolume6)) {
                         this.mMtkSupportSetChipVolume = true;
                         this.mMtkChipVolume = Integer.parseInt(tempMtkChipVolume6);
-                        return;
+                        break;
                     }
-                    return;
-                }
-                if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
+                } else if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
                     this.mRssi_th = Integer.parseInt(Local_Tunning_vals[0]);
                     this.mSlsi_ifcount1 = Integer.parseInt(Local_Tunning_vals[1]);
                     this.mSlsi_ifcount2 = Integer.parseInt(Local_Tunning_vals[2]);
                     this.mSlsi_blendcoeff = Integer.parseInt(Local_Tunning_vals[3]);
                     this.mSlsi_softmutecoeff = Integer.parseInt(Local_Tunning_vals[4]);
                     this.mSlsi_softstereoblendref = Integer.parseInt(Local_Tunning_vals[5]);
-                    return;
+                    break;
                 }
-                return;
+                break;
             default:
                 log("Tuning value size: " + Local_Tunning_vals.length);
-                return;
+                break;
         }
     }
 
@@ -1612,26 +1479,26 @@ public class FMRadioService extends IFMPlayer.Stub {
                 case 50:
                     if (!this.mIsExternalChipset) {
                         this.mChannelSpacing = 5;
-                        return;
+                        break;
                     } else {
                         this.mChannelSpacing = 2;
-                        return;
+                        break;
                     }
                 case 100:
                     if (!this.mIsExternalChipset) {
                         this.mChannelSpacing = 10;
-                        return;
+                        break;
                     } else {
                         this.mChannelSpacing = 1;
-                        return;
+                        break;
                     }
                 default:
                     if (!this.mIsExternalChipset) {
                         this.mChannelSpacing = 10;
-                        return;
+                        break;
                     } else {
                         this.mChannelSpacing = 1;
-                        return;
+                        break;
                     }
             }
         } catch (Exception e) {
@@ -1647,6 +1514,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void queueUpdate(int what, long delay) {
         log("queueUpdate(" + what + "," + delay + ") is called");
         if (what == 200) {
@@ -1656,8 +1524,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         this.mHandler.sendEmptyMessageDelayed(what, delay);
     }
 
-    /* loaded from: classes5.dex */
-    public static class ListenerRecord {
+    private static class ListenerRecord {
         IBinder mBinder;
         IFMEventListener mListener;
 
@@ -1677,657 +1544,9 @@ public class FMRadioService extends IFMPlayer.Stub {
 
     public FMRadioService(Context context) {
         this.mIsExternalChipset = false;
-        boolean z = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_CONTEXTSERVICE_ENABLE_SURVEY_MODE");
-        this.SURVEY_MODE_ENABLE = z;
-        this.FEATURE_INDIRECT_MODE = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_FMRADIO_SUPPORT_INDIRECT_MODE");
         this.mHandlerSA = null;
         this.mAudioFocusHandler = null;
         this.mFMHandlerThread = null;
-        this.mAvrcpObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.server.FMRadioService.1
-            AnonymousClass1(Handler handler) {
-                super(handler);
-            }
-
-            @Override // android.database.ContentObserver
-            public void onChange(boolean selfChange) {
-                super.onChange(selfChange);
-                FMRadioService.this.handleAvrcpMode();
-            }
-        };
-        this.mVolumeEventReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.2
-            AnonymousClass2() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                FMRadioService.log("*** mVolumeEventReceiver: ACTION  - " + intent.getAction());
-                if ("android.media.VOLUME_CHANGED_ACTION".equals(intent.getAction())) {
-                    int stream = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_TYPE", 10);
-                    int volume = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_VALUE", 0);
-                    FMRadioService.log("Stream: " + stream + "  and volume: " + volume);
-                    if (stream == AudioManager.semGetStreamType(1) || (stream == 3 && FMRadioService.this.mIsOn)) {
-                        if (!FMRadioService.this.volumeLock) {
-                            int current_stream_volume = FMRadioService.this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
-                            FMRadioService.log("current_stream_volume: " + current_stream_volume);
-                            if (volume == current_stream_volume && !FMRadioService.this.isDNDEnable()) {
-                                if (FMRadioService.this.mHandler.hasMessages(200)) {
-                                    FMRadioService.this.mHandler.removeMessages(200);
-                                }
-                                FMRadioService.this.setVolume(volume);
-                            } else {
-                                int type = FMRadioService.this.mAudioManager.semGetRadioOutputPath();
-                                FMRadioService fMRadioService = FMRadioService.this;
-                                fMRadioService.mAvrcpMode = Settings.Secure.getInt(fMRadioService.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
-                                if (FMRadioService.this.mAvrcpMode && type == 8 && FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
-                                    FMRadioService.log("mAvrcpMode = true set chip volume 15");
-                                    FMRadioService.this.mPlayerNative.setVolume(15L);
-                                }
-                            }
-                        } else {
-                            FMRadioService.this.notifyEvent(15, null);
-                        }
-                    }
-                }
-                if (FMRadioService.ACTION_VOLUME_LOCK.equals(intent.getAction())) {
-                    FMRadioService.log("Volume Locked...");
-                    FMRadioService.this.volumeLock = true;
-                } else if (FMRadioService.ACTION_VOLUME_UNLOCK.equals(intent.getAction())) {
-                    FMRadioService.log("Volume Unlocked...");
-                    FMRadioService.this.volumeLock = false;
-                }
-            }
-        };
-        this.mReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.3
-            AnonymousClass3() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                FMRadioService.log("Headset action : " + intent.getAction());
-                if ((intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED) || intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) && FMRadioService.this.mIsExternalChipset) {
-                    UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra("device");
-                    FMRadioService.log("Headset getProductId : " + usbDevice.getProductId());
-                    FMRadioService.log("Headset getVendorId : " + usbDevice.getVendorId());
-                    if (!FMRadioService.this.checkUsbExternalChipset(usbDevice)) {
-                        FMRadioService.log("Earphone is not compatible");
-                        return;
-                    }
-                    FMRadioService.log("mReceiver: ACTION_USB_HEADSET");
-                    FMRadioService.this.mIsHeadsetPlugged = intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-                    if (!FMRadioService.this.mIsTestMode) {
-                        FMRadioService.log("mIsExternalChipset " + FMRadioService.this.mIsExternalChipset + " mIsHeadsetPlug " + FMRadioService.this.mIsHeadsetPlugged);
-                        if (FMRadioService.this.mIsHeadsetPlugged) {
-                            FMRadioService.this.mPlayerExternalChipset.init(usbDevice);
-                            FMRadioService.this.notifyEvent(8, null);
-                            return;
-                        }
-                        if (FMRadioService.this.mIsOn) {
-                            FMRadioService fMRadioService = FMRadioService.this;
-                            fMRadioService.mBikeMode = Settings.Secure.getInt(fMRadioService.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
-                            FMRadioService.log("mReceiver: bike mode check : " + FMRadioService.this.mBikeMode);
-                            if (!FMRadioService.this.mBikeMode) {
-                                FMRadioService.this.notifyEvent(9, null);
-                            }
-                            FMRadioService.this.mPlayerExternalChipset.init(null);
-                            if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                                FMRadioService.this.cancelScan();
-                            } else {
-                                FMRadioService.this.cancelSeek();
-                            }
-                            FMRadioService.this.offInternal(2, true);
-                            return;
-                        }
-                        return;
-                    }
-                    FMRadioService.this.setSpeakerOn(!r3.mIsHeadsetPlugged);
-                    FMRadioService.log("TestMode :- making setRadioSpeakerOn:" + (!FMRadioService.this.mIsHeadsetPlugged));
-                    return;
-                }
-                if (intent.getAction().equals("android.intent.action.HEADSET_PLUG") && !FMRadioService.this.mIsExternalChipset) {
-                    FMRadioService.log("mReceiver: ACTION_HEADSET_PLUG");
-                    FMRadioService.log("==> intent: " + intent);
-                    FMRadioService.log("   state: " + intent.getIntExtra("state", 0));
-                    FMRadioService.log("    name: " + intent.getStringExtra("name"));
-                    FMRadioService.log("    portName: " + intent.getStringExtra("portName"));
-                    if (intent.hasExtra("portName") && !intent.getStringExtra("portName").equals(AudioConstants.H2W)) {
-                        FMRadioService.log("Not 3.5pi type, and audio not support play FM Radio via usb type c");
-                        return;
-                    }
-                    boolean isMicrophoneEvent = intent.getIntExtra("microphone", 0) == 1;
-                    if (isMicrophoneEvent) {
-                        FMRadioService.this.mIsMicrophoneConnected = intent.getIntExtra("state", 0) == 1;
-                    } else {
-                        FMRadioService.this.mIsEarphoneConnected = intent.getIntExtra("state", 0) == 1;
-                    }
-                    FMRadioService fMRadioService2 = FMRadioService.this;
-                    fMRadioService2.mIsHeadsetPlugged = fMRadioService2.mIsMicrophoneConnected || FMRadioService.this.mIsEarphoneConnected;
-                    FMRadioService.log("mIsHeadsetPlugged :" + FMRadioService.this.mIsHeadsetPlugged);
-                    if (FMRadioService.this.mIsTestMode) {
-                        FMRadioService.this.setSpeakerOn(!r3.mIsHeadsetPlugged);
-                        FMRadioService.log("TestMode :- making setRadioSpeakerOn:" + (!FMRadioService.this.mIsHeadsetPlugged));
-                        return;
-                    }
-                    if (!FMRadioService.this.mIsHeadsetPlugged) {
-                        int tvstatus = Settings.System.getInt(FMRadioService.this.mContext.getContentResolver(), "tv_out", 0);
-                        FMRadioService.log("TV out setting value :" + tvstatus);
-                        if (tvstatus == 1) {
-                            return;
-                        }
-                        if (FMRadioService.this.volumeLock) {
-                            FMRadioService.this.notifyRecFinish();
-                        }
-                        FMRadioService fMRadioService3 = FMRadioService.this;
-                        fMRadioService3.mBikeMode = Settings.Secure.getInt(fMRadioService3.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
-                        FMRadioService.log("mReceiver: bike mode check : " + FMRadioService.this.mBikeMode);
-                        if (!FMRadioService.this.mBikeMode) {
-                            FMRadioService.this.notifyEvent(9, null);
-                        }
-                        if (!FMRadioService.this.mIsOn) {
-                            FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
-                            FMRadioService.mIsTransientPaused = false;
-                            return;
-                        }
-                        if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            FMRadioService.this.cancelScan();
-                        } else {
-                            FMRadioService.this.cancelSeek();
-                        }
-                        FMRadioService.this.offInternal(2, true);
-                        return;
-                    }
-                    FMRadioService.this.notifyEvent(8, null);
-                    return;
-                }
-                if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
-                    FMRadioService.log("mReceiver: ACTION_AIRPLANE_MODE_CHANGED");
-                    FMRadioService fMRadioService4 = FMRadioService.this;
-                    fMRadioService4.mAirPlaneEnabled = Settings.Global.getInt(fMRadioService4.mContext.getContentResolver(), "airplane_mode_on", 0) != 0;
-                    FMRadioService.log("mAirPlaneEnabled flag :" + FMRadioService.this.mAirPlaneEnabled);
-                    if (FMRadioService.this.mAirPlaneEnabled && FMRadioService.this.mIsOn) {
-                        if (FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            if (FMRadioService.this.mScanProgress) {
-                                FMRadioService.this.cancelScan();
-                            } else if (FMRadioService.this.mIsSeeking) {
-                                FMRadioService.this.cancelSeek();
-                            }
-                        }
-                        FMRadioService.this.offInternal(3, true);
-                        return;
-                    }
-                    return;
-                }
-                if (intent.getAction().equals("android.intent.action.HDMI_PLUGGED")) {
-                    FMRadioService.log("mReceiver: ACTION_HDMI_PLUGGED");
-                    if (FMRadioService.DEBUGGABLE) {
-                        FMRadioService.log("==> intent: " + intent);
-                    }
-                    FMRadioService.log("   state: " + intent.getBooleanExtra("state", false));
-                    if (FMRadioService.this.mIsTestMode) {
-                        return;
-                    }
-                    FMRadioService.this.mIsTvOutPlugged = intent.getBooleanExtra("state", false);
-                    if (FMRadioService.this.mIsTvOutPlugged && FMRadioService.this.mIsOn) {
-                        if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            FMRadioService.this.cancelScan();
-                        } else {
-                            FMRadioService.this.cancelSeek();
-                        }
-                        FMRadioService.this.offInternal(10, true);
-                        return;
-                    }
-                    return;
-                }
-                if (intent.getAction().equals(FMRadioService.ACTION_SAVE_FMRECORDING_ONLY) || intent.getAction().equals("com.sec.android.app.camera.ACTION_CAMERA_START")) {
-                    FMRadioService.log("mReceiver: ACTION_SAVE_FMRECORDING_ONLY ");
-                    if (FMRadioService.this.isRecording) {
-                        FMRadioService.log("mReceiver: Stop recording for Camera ");
-                        FMRadioService.this.notifyRecFinish();
-                        return;
-                    }
-                    return;
-                }
-                if (intent.getAction().equals("android.intent.action.USER_SWITCHED")) {
-                    FMRadioService.log("mReceiver: KNOX_MODE_USER_SWITCH - fmradio off");
-                    if (FMRadioService.this.mIsOn) {
-                        if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            FMRadioService.this.cancelScan();
-                        } else {
-                            FMRadioService.this.cancelSeek();
-                        }
-                        FMRadioService.this.offInternal(4, true);
-                    }
-                }
-            }
-        };
-        this.mButtonReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.4
-            AnonymousClass4() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                    boolean isFromBT = intent.getBooleanExtra("android.bluetooth.a2dp.extra.DISCONNECT_A2DP", false);
-                    FMRadioService.log("ACTION_AUDIO_BECOMING_NOISE , Its from BT :" + isFromBT);
-                    boolean isFromDock = intent.getBooleanExtra("DISCONNECT_DOCK", false);
-                    FMRadioService.log("ACTION_AUDIO_BECOMING_NOISE , Its from Dock :" + isFromDock);
-                    if (FMRadioService.this.mIsOn && !FMRadioService.this.mIsTestMode && !isFromBT && !isFromDock) {
-                        if (FMRadioService.this.volumeLock) {
-                            FMRadioService.this.notifyRecFinish();
-                        }
-                        FMRadioService.this.notifyEvent(9, null);
-                        if (FMRadioService.this.mIsExternalChipset) {
-                            FMRadioService.this.mPlayerExternalChipset.init(null);
-                        }
-                        if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                            FMRadioService.this.cancelScan();
-                        } else {
-                            FMRadioService.this.cancelSeek();
-                        }
-                        FMRadioService.this.offInternal(2, true);
-                    }
-                }
-            }
-        };
-        this.mResetSettingReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.5
-            AnonymousClass5() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                if (intent.getAction().equals(FMRadioService.RESET_SETTING)) {
-                    FMRadioService.log("ACTION_RESET_SETTING");
-                    off();
-                }
-            }
-
-            private void off() {
-                if (FMRadioService.this.mIsOn) {
-                    FMRadioService.log("reset setting : stop FM");
-                    if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                        FMRadioService.this.cancelScan();
-                    } else {
-                        FMRadioService.this.cancelSeek();
-                    }
-                    FMRadioService.this.offInternal(6, true);
-                    return;
-                }
-                FMRadioService.log("reset setting : remove audiofocus: FM");
-                FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
-            }
-        };
-        this.mPhoneListener = new PhoneStateListener(null, Looper.getMainLooper()) { // from class: com.android.server.FMRadioService.6
-            private boolean mIsPhoneCallRinging = false;
-
-            AnonymousClass6(Integer subId, Looper looper) {
-                super(subId, looper);
-                this.mIsPhoneCallRinging = false;
-            }
-
-            @Override // android.telephony.PhoneStateListener
-            public void onCallStateChanged(int state, String incomingNumber) {
-                FMRadioService.log("phone state : " + state + " mNeedToResumeFM: " + FMRadioService.mNeedToResumeFM + " mIsPhoneCallRinging : " + this.mIsPhoneCallRinging + " mIsForcestop : " + FMRadioService.this.mIsForcestop);
-                switch (state) {
-                    case 0:
-                        if (FMRadioService.mNeedToResumeFM && !FMRadioService.this.isOn() && FMRadioService.this.mNeedResumeToFreq != -2 && !FMRadioService.this.mIsForcestop && this.mIsPhoneCallRinging) {
-                            if (FMRadioService.this.on(false)) {
-                                int outputPath = FMRadioService.this.mAudioManager.semGetRadioOutputPath();
-                                FMRadioService.log("onCallStateChanged() :: CALL_STATE_IDLE setPath() = " + outputPath);
-                                FMRadioService.this.mAudioManager.semSetRadioOutputPath(outputPath);
-                                if (FMRadioService.mIsTransientPaused) {
-                                    FMRadioService.this.mResumeVol = r3.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1));
-                                    FMRadioService.log("slowly increase the volume till :" + FMRadioService.this.mResumeVol);
-                                    if (FMRadioService.this.mResumeVol == 0) {
-                                        FMRadioService.this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), (int) FMRadioService.this.mResumeVol, 0);
-                                    } else {
-                                        FMRadioService fMRadioService = FMRadioService.this;
-                                        fMRadioService.mCurrentResumeVol = fMRadioService.mResumeVol;
-                                        if (FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
-                                            FMRadioService.this.setVolume(1L);
-                                            FMRadioService.this.mHandler.removeMessages(200);
-                                            FMRadioService.this.mHandler.sendEmptyMessageDelayed(200, 100L);
-                                        } else {
-                                            FMRadioService fMRadioService2 = FMRadioService.this;
-                                            fMRadioService2.setVolume(fMRadioService2.mResumeVol);
-                                        }
-                                    }
-                                    FMRadioService.mIsTransientPaused = false;
-                                } else {
-                                    FMRadioService.this.mAudioManager.setStreamVolume(AudioManager.semGetStreamType(1), FMRadioService.this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1)), 0);
-                                }
-                                if (FMRadioService.this.mNeedResumeToFreq <= 0) {
-                                    FMRadioService.this.mNeedResumeToFreq = 87500L;
-                                }
-                                if (FMRadioService.this.mIsExternalChipset) {
-                                    int freqExt = ((int) FMRadioService.this.mNeedResumeToFreq) / 10;
-                                    FMRadioService.this.mPlayerExternalChipset.tune(freqExt);
-                                } else {
-                                    FMRadioService.this.mPlayerNative.tune(FMRadioService.this.mNeedResumeToFreq);
-                                }
-                                FMRadioService.log("tune from CALL_STATE_IDLE");
-                                FMRadioService fMRadioService3 = FMRadioService.this;
-                                fMRadioService3.notifyEvent(7, Long.valueOf(fMRadioService3.mNeedResumeToFreq));
-                                FMRadioService.this.mNeedResumeToFreq = -2L;
-                            } else {
-                                FMRadioService.log("Not able to resume FM player");
-                            }
-                        }
-                        FMRadioService.mNeedToResumeFM = false;
-                        this.mIsPhoneCallRinging = false;
-                        return;
-                    case 1:
-                        this.mIsPhoneCallRinging = true;
-                        return;
-                    case 2:
-                    default:
-                        return;
-                }
-            }
-        };
-        this.mIsMDMSpeakerEnabled = false;
-        this.mMDMSpeakerEnabled = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.7
-            AnonymousClass7() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                Bundle bundle;
-                String action = intent.getAction();
-                FMRadioService.log("*** mMDMSpeakerEnabled: ACTION  - " + intent.getAction());
-                if (action.equals(FMRadioService.MDM_SPEAKER_ENABLED) && (bundle = intent.getExtras()) != null) {
-                    FMRadioService.this.mIsMDMSpeakerEnabled = ((Boolean) bundle.get("state")).booleanValue();
-                }
-            }
-        };
-        this.mAudioFocusListener = new AudioManager.OnAudioFocusChangeListener() { // from class: com.android.server.FMRadioService.8
-            AnonymousClass8() {
-            }
-
-            @Override // android.media.AudioManager.OnAudioFocusChangeListener
-            public void onAudioFocusChange(int focusChange) {
-                FMRadioService.log("onAudioFocusChange : " + focusChange);
-                if (FMRadioService.this.volumeLock && (focusChange == -1 || focusChange == -2)) {
-                    FMRadioService.this.mRecFinishNotified = true;
-                    FMRadioService.this.notifyEvent(17, null);
-                    FMRadioService.this.setDelay(100L);
-                }
-                if ((focusChange == -1 || focusChange == -2) && FMRadioServiceFeature.CHIP_VENDOR != 9 && !FMRadioService.this.mIsExternalChipset) {
-                    if (FMRadioService.this.FEATURE_INDIRECT_MODE) {
-                        FMRadioService.this.mute(true);
-                        FMRadioService.this.inDirectModeBroadcast();
-                    }
-                    if (FMRadioServiceFeature.CHIP_VENDOR == 7) {
-                        FMRadioService.log("onAudioFocusChange : set mute");
-                        FMRadioService.this.mute(true);
-                        if (SystemProperties.get("ro.board.platform").equals("universal3830")) {
-                            FMRadioService.log("set 100ms delay for only universal3830 chipset");
-                            FMRadioService.this.setDelay(100L);
-                        }
-                    }
-                    if (FMRadioServiceFeature.CHIP_VENDOR != 7) {
-                        FMRadioService.this.setFMAudioPath(false);
-                    }
-                }
-                if (!FMRadioService.this.volumeLock && (focusChange == -1 || focusChange == -2)) {
-                    FMRadioService.log("OnAudioFocusChangeListener : mute FM before turn off");
-                    if (FMRadioService.this.mIsExternalChipset) {
-                        FMRadioService.this.mPlayerExternalChipset.muteOn();
-                        FMRadioService.this.setFMAudioPath(false);
-                        FMRadioService.this.mPlayerExternalChipset.off();
-                    }
-                    FMRadioService.this.mAudioManager.setParameters(FMRadioService.audioMute);
-                }
-                if (focusChange != 1 || !FMRadioService.this.mAudioFocusHandler.hasMessages(-2)) {
-                    FMRadioService.this.clearMessageQueue();
-                }
-                Message msg = Message.obtain();
-                msg.what = focusChange;
-                FMRadioService.this.mAudioFocusHandler.sendMessage(msg);
-                if (FMRadioService.DEBUGGABLE) {
-                    FMRadioService.log("OnAudioFocusChangeListener switch off mAudioFocusListener :" + focusChange + " stored freq:" + FMRadioService.this.mNeedResumeToFreq);
-                }
-            }
-        };
-        this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.server.FMRadioService.9
-            long currentVolume = 0;
-
-            AnonymousClass9(Looper looper) {
-                super(looper);
-                this.currentVolume = 0L;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                FMRadioService.log("mHandler(g.what=" + msg.what + ") is called");
-                if (msg.what == 200) {
-                    if (!FMRadioService.this.mIsOn) {
-                        this.currentVolume = 0L;
-                        return;
-                    }
-                    if (this.currentVolume < FMRadioService.this.mCurrentResumeVol) {
-                        long j = this.currentVolume + 1;
-                        this.currentVolume = j;
-                        FMRadioService.this.setVolume(j);
-                        FMRadioService.this.queueUpdate(200, 100L);
-                        return;
-                    }
-                    long j2 = FMRadioService.this.mResumeVol;
-                    this.currentVolume = j2;
-                    FMRadioService.this.setVolume(j2);
-                    this.currentVolume = 0L;
-                }
-            }
-        };
-        this.mSystemReceiver1 = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.10
-            AnonymousClass10() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                Boolean.valueOf(intent.getBooleanExtra(Intent.EXTRA_DONT_KILL_APP, false));
-                try {
-                    Uri uri = intent.getData();
-                    String packageName = uri.getSchemeSpecificPart();
-                    if ((action.equals("android.intent.action.PACKAGE_REMOVED") || action.equals(Intent.ACTION_PACKAGE_RESTARTED)) && "com.sec.android.app.fm".equals(packageName)) {
-                        FMRadioService.this.mIsForcestop = true;
-                        off();
-                        if (FMRadioService.this.volumeLock) {
-                            FMRadioService.this.volumeLock = false;
-                            FMRadioService.this.releaseAudioSystemMute();
-                        }
-                    }
-                } catch (NullPointerException e) {
-                    Log.e("FMRadioService", "NullPointerException in mSystemReceiver " + e);
-                }
-            }
-
-            private void off() {
-                if (FMRadioService.this.mIsOn) {
-                    FMRadioService.log("mSystemReceiver1 force stop : making off FM");
-                    if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                        FMRadioService.this.cancelScan();
-                    } else {
-                        FMRadioService.this.cancelSeek();
-                    }
-                    FMRadioService.this.offInternal(6, true);
-                    return;
-                }
-                FMRadioService.log("mSystemReceiver1 : remove audiofocus");
-                FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
-            }
-        };
-        this.mSystemReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.11
-            AnonymousClass11() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                if (action.equals("android.intent.action.ACTION_SHUTDOWN")) {
-                    off();
-                }
-            }
-
-            private void off() {
-                if (FMRadioService.this.mIsOn) {
-                    FMRadioService.log("Powering off : stop FM");
-                    if (FMRadioService.this.mScanProgress && FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                        FMRadioService.this.cancelScan();
-                    } else {
-                        FMRadioService.this.cancelSeek();
-                    }
-                    FMRadioService.this.offInternal(6, true);
-                    return;
-                }
-                FMRadioService.log("Powering off : remove audiofocus: FM");
-                FMRadioService.this.mAudioManager.abandonAudioFocus(FMRadioService.this.mAudioFocusListener);
-            }
-        };
-        this.mLowBatteryReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.12
-            AnonymousClass12() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                FMRadioService.log("FMRadioService:mLowBatteryReceiver " + action);
-                FMRadioService.log("Low batteryWarning Level :1");
-                if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
-                    int battStatus = intent.getIntExtra("status", 1);
-                    int battScale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
-                    int battLevel = intent.getIntExtra("level", battScale);
-                    FMRadioService.log("Level = " + battLevel + "/" + battScale);
-                    FMRadioService.log("Status = " + battStatus);
-                    if (battLevel <= 1 && battStatus != 2) {
-                        FMRadioService.this.mIsBatteryLow = true;
-                        if (FMRadioService.this.mIsOn) {
-                            if (FMRadioServiceFeature.CHIP_VENDOR == 6) {
-                                if (FMRadioService.this.mScanProgress) {
-                                    FMRadioService.this.cancelScan();
-                                } else if (FMRadioService.this.mIsSeeking) {
-                                    FMRadioService.this.cancelSeek();
-                                }
-                            }
-                            FMRadioService.this.offInternal(7, true);
-                            return;
-                        }
-                        return;
-                    }
-                    FMRadioService.this.mIsBatteryLow = false;
-                }
-            }
-        };
-        this.mSetPropertyReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.13
-            AnonymousClass13() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                FMRadioService.log("mSetPropertyReceiver : action is " + action);
-                if ("com.sec.android.app.fm.set_property".equals(action)) {
-                    String key = intent.getStringExtra("key");
-                    int value = intent.getIntExtra("value", 0);
-                    if (FMRadioService.DEBUGGABLE) {
-                        FMRadioService.log("mSetPropertyReceiver :: " + key + "=" + value);
-                    }
-                    if (key.startsWith("service.brcm.fm") || key.startsWith("service.mrvl.fm")) {
-                        SystemProperties.set(key, String.valueOf(value));
-                        return;
-                    }
-                    return;
-                }
-                if ("com.sec.android.app.fm.set_volume".equals(action)) {
-                    String key2 = intent.getStringExtra("key");
-                    String volumetable = intent.getStringExtra("volumetable");
-                    if (FMRadioService.DEBUGGABLE) {
-                        FMRadioService.log("mSetPropertyReceiver :: " + key2 + "=" + volumetable);
-                    }
-                    if (FMRadioService.this.VolumePropertyname.equals(key2)) {
-                        SystemProperties.set(key2, volumetable);
-                    }
-                }
-            }
-        };
-        this.mAllSoundOffReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.14
-            AnonymousClass14() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                int AllSoundOff = intent.getIntExtra("mute", 0);
-                FMRadioService.log("mAllSoundOffReceiver :: " + AllSoundOff);
-                if (AllSoundOff == 1) {
-                    FMRadioService.log("FM chip mute");
-                    FMRadioService.this.mute(true);
-                    if (FMRadioService.this.volumeLock) {
-                        FMRadioService.this.notifyRecFinish();
-                        return;
-                    }
-                    return;
-                }
-                if (!FMRadioService.this.isDNDEnable()) {
-                    FMRadioService.log("FM chip unmute");
-                    FMRadioService.this.mute(false);
-                }
-            }
-        };
-        this.mDNDStatusReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.15
-            AnonymousClass15() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                int volume;
-                if (FMRadioService.this.isDNDEnable()) {
-                    FMRadioService.log("mDNDStatusReceiver onReceive : DND Enable");
-                    if (FMRadioService.this.volumeLock) {
-                        FMRadioService.this.notifyRecFinish();
-                    }
-                    FMRadioService.this.mute(true);
-                    return;
-                }
-                if (FMRadioService.this.mIsMute && !FMRadioService.this.isAllSoundOff()) {
-                    FMRadioService.this.mute(false);
-                    if (FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME && (volume = FMRadioService.this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1))) != 0) {
-                        FMRadioService.this.setVolume(volume);
-                    }
-                    FMRadioService.log("mDNDStatusReceiver onReceive : DND Disable ");
-                }
-            }
-        };
-        this.mAlarmReceiver = new BroadcastReceiver() { // from class: com.android.server.FMRadioService.16
-            AnonymousClass16() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                FMRadioService.log("Alarm onReceive");
-                String cmdStr = intent.getStringExtra("command");
-                if ("TTSstart".equals(cmdStr)) {
-                    FMRadioService.log("TTSstart play");
-                    FMRadioService.this.alarmTTSPlay = true;
-                }
-                if ("TTSstop".equals(cmdStr)) {
-                    FMRadioService.log("TTSstop play");
-                    FMRadioService.this.alarmTTSPlay = false;
-                }
-            }
-        };
-        this.mScanThread = null;
-        this.mWaitPidDuringScanning = false;
-        this.bmObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.server.FMRadioService.17
-            AnonymousClass17(Handler handler) {
-                super(handler);
-            }
-
-            @Override // android.database.ContentObserver
-            public void onChange(boolean selfChange) {
-                super.onChange(selfChange);
-                FMRadioService.log("bike mode onChange");
-                FMRadioService.this.handleBikeMode();
-            }
-        };
         this.mContext = context;
         this.mIsExternalChipset = FMRadioServiceFeature.FEATURE_FMRADIO_SUPPORT_EXTERNAL_RADIO_CHIPSET;
         log("mIsExternalChipset" + this.mIsExternalChipset);
@@ -2343,11 +1562,10 @@ public class FMRadioService extends IFMPlayer.Stub {
         this.mTelephonyManager = (TelephonyManager) context.getSystemService("phone");
         this.mAudioManager = (AudioManager) context.getSystemService("audio");
         this.mWakeLock = this.mPowerManager.newWakeLock(1, "FMRadio Service");
-        HandlerThread handlerThread = new HandlerThread("FMRadioService", 10);
-        this.mFMHandlerThread = handlerThread;
-        handlerThread.start();
+        this.mFMHandlerThread = new HandlerThread("FMRadioService", 10);
+        this.mFMHandlerThread.start();
         this.mAudioFocusHandler = new AudioFocusHandler(this.mFMHandlerThread.getLooper());
-        if (z) {
+        if (this.SURVEY_MODE_ENABLE) {
             this.mHandlerSA = new Handler(Looper.getMainLooper());
         }
         IntentFilter intentFilter = new IntentFilter();
@@ -2356,24 +1574,25 @@ public class FMRadioService extends IFMPlayer.Stub {
         intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         intentFilter.addAction("android.intent.action.USER_SWITCHED");
         intentFilter.addAction("android.intent.action.HDMI_PLUGGED");
-        context.registerReceiver(this.mReceiver, intentFilter);
+        context.registerReceiver(this.mReceiver, intentFilter, 4);
         IntentFilter intentFilterVol = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
         intentFilterVol.setPriority(999);
-        context.registerReceiver(this.mVolumeEventReceiver, intentFilterVol);
-        context.registerReceiver(this.mVolumeEventReceiver, new IntentFilter(ACTION_VOLUME_LOCK));
-        context.registerReceiver(this.mVolumeEventReceiver, new IntentFilter(ACTION_VOLUME_UNLOCK));
+        context.registerReceiver(this.mVolumeEventReceiver, intentFilterVol, 4);
+        context.registerReceiver(this.mVolumeEventReceiver, new IntentFilter(ACTION_VOLUME_LOCK), 4);
+        context.registerReceiver(this.mVolumeEventReceiver, new IntentFilter(ACTION_VOLUME_UNLOCK), 4);
         this.mAirPlaneEnabled = Settings.Global.getInt(this.mContext.getContentResolver(), "airplane_mode_on", 0) != 0;
         log("mAirPlaneEnabled flag :" + this.mAirPlaneEnabled);
         context.registerReceiver(this.mReceiver, new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED));
         context.registerReceiver(this.mButtonReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
-        context.registerReceiver(this.mResetSettingReceiver, new IntentFilter(RESET_SETTING));
-        context.registerReceiver(this.mReceiver, new IntentFilter(ACTION_SAVE_FMRECORDING_ONLY));
+        context.registerReceiver(this.mResetSettingReceiver, new IntentFilter(RESET_SETTING), 4);
+        context.registerReceiver(this.mReceiver, new IntentFilter(ACTION_SAVE_FMRECORDING_ONLY), 4);
         IntentFilter intentFilter2 = new IntentFilter("com.sec.android.app.camera.ACTION_CAMERA_START");
         intentFilter2.addAction("com.sec.android.app.camera.ACTION_CAMERA_STOP");
-        context.registerReceiver(this.mReceiver, intentFilter2);
+        context.registerReceiver(this.mReceiver, intentFilter2, 4);
         registerSystemListener();
         registerSetPropertyListener();
         registerMDMCommandRec();
+        registerOMCChanged();
         readTuningParameters();
         readParametersForCurrentRegion();
         if (this.mIsExternalChipset) {
@@ -2413,7 +1632,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         IntentFilter intentFilterSetProperty = new IntentFilter();
         intentFilterSetProperty.addAction("com.sec.android.app.fm.set_property");
         intentFilterSetProperty.addAction("com.sec.android.app.fm.set_volume");
-        this.mContext.registerReceiver(this.mSetPropertyReceiver, intentFilterSetProperty, this.SetPropertyPermission, null);
+        this.mContext.registerReceiver(this.mSetPropertyReceiver, intentFilterSetProperty, this.SetPropertyPermission, null, 4);
         log("registering set property listener");
     }
 
@@ -2476,9 +1695,8 @@ public class FMRadioService extends IFMPlayer.Stub {
 
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     public long[] getLastScanResult() {
-        ArrayList<Long> arrayList = this.mScanChannelList;
-        if (arrayList != null) {
-            Long[] arryL = (Long[]) arrayList.toArray(new Long[0]);
+        if (this.mScanChannelList != null) {
+            Long[] arryL = (Long[]) this.mScanChannelList.toArray(new Long[0]);
             return convertToPrimitives(arryL);
         }
         log("getLastScanResult - mScanChannelList null");
@@ -2494,9 +1712,8 @@ public class FMRadioService extends IFMPlayer.Stub {
         this.mIsSeeking = true;
         mute(true);
         if (this.mIsExternalChipset) {
-            long seekUp = this.mPlayerExternalChipset.seekUp();
-            this.mExtSeekFreq = seekUp;
-            freq = seekUp * 10;
+            this.mExtSeekFreq = this.mPlayerExternalChipset.seekUp();
+            freq = this.mExtSeekFreq * 10;
         } else {
             freq = this.mPlayerNative.seekUp();
         }
@@ -2515,9 +1732,8 @@ public class FMRadioService extends IFMPlayer.Stub {
         this.mIsSeeking = true;
         mute(true);
         if (this.mIsExternalChipset) {
-            long seekDown = this.mPlayerExternalChipset.seekDown();
-            this.mExtSeekFreq = seekDown;
-            freq = seekDown * 10;
+            this.mExtSeekFreq = this.mPlayerExternalChipset.seekDown();
+            freq = this.mExtSeekFreq * 10;
         } else {
             freq = this.mPlayerNative.seekDown();
         }
@@ -2600,7 +1816,7 @@ public class FMRadioService extends IFMPlayer.Stub {
 
     /* JADX WARN: Code restructure failed: missing block: B:14:0x001e, code lost:
     
-        if (r8.mTelephonyManager.getCallStateForSubscription() == 2) goto L83;
+        if (r8.mTelephonyManager.getCallStateForSubscription() == 2) goto L15;
      */
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     /*
@@ -2645,21 +1861,22 @@ public class FMRadioService extends IFMPlayer.Stub {
         return FMTEST_APP_NAME.equals(mPackageName);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:168:0x00cc, code lost:
+    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX WARN: Code restructure failed: missing block: B:168:0x00ce, code lost:
     
-        if (com.android.server.FMRadioService.mIsTransientPaused == false) goto L252;
+        if (r13.mIsTransientPaused == false) goto L58;
      */
-    /* JADX WARN: Removed duplicated region for block: B:126:0x0429 A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:58:0x0124 A[Catch: Exception -> 0x0475, all -> 0x04b2, TryCatch #4 {Exception -> 0x0475, blocks: (B:167:0x00ca, B:165:0x0117, B:58:0x0124, B:60:0x012e, B:62:0x0139, B:64:0x0141, B:66:0x0162, B:67:0x0178, B:69:0x019a, B:72:0x01a1, B:74:0x01a5, B:75:0x01bf, B:79:0x01fd, B:80:0x0220, B:83:0x0206, B:84:0x0224, B:87:0x0170, B:88:0x0228, B:90:0x022e, B:92:0x0238, B:94:0x0245, B:95:0x027f, B:96:0x0269, B:97:0x028a, B:100:0x0293, B:102:0x029d, B:104:0x02ae, B:107:0x02b3, B:109:0x02bb, B:111:0x02e2, B:113:0x02e6, B:116:0x02ec, B:118:0x02f0, B:121:0x02f8, B:123:0x02fd, B:124:0x03f6, B:128:0x042b, B:129:0x044e, B:132:0x0434, B:133:0x0452, B:136:0x031b, B:138:0x0320, B:140:0x0349, B:141:0x034e, B:143:0x0354, B:144:0x035b, B:146:0x0361, B:148:0x0397, B:149:0x039f, B:150:0x03a9, B:151:0x03bf, B:152:0x02bf, B:154:0x02c3, B:156:0x02cf, B:157:0x02d9, B:158:0x0456, B:160:0x045a, B:161:0x045d, B:50:0x00ce, B:52:0x00d4, B:54:0x00da), top: B:166:0x00ca, outer: #1 }] */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x0141 A[Catch: Exception -> 0x0475, all -> 0x04b2, TryCatch #4 {Exception -> 0x0475, blocks: (B:167:0x00ca, B:165:0x0117, B:58:0x0124, B:60:0x012e, B:62:0x0139, B:64:0x0141, B:66:0x0162, B:67:0x0178, B:69:0x019a, B:72:0x01a1, B:74:0x01a5, B:75:0x01bf, B:79:0x01fd, B:80:0x0220, B:83:0x0206, B:84:0x0224, B:87:0x0170, B:88:0x0228, B:90:0x022e, B:92:0x0238, B:94:0x0245, B:95:0x027f, B:96:0x0269, B:97:0x028a, B:100:0x0293, B:102:0x029d, B:104:0x02ae, B:107:0x02b3, B:109:0x02bb, B:111:0x02e2, B:113:0x02e6, B:116:0x02ec, B:118:0x02f0, B:121:0x02f8, B:123:0x02fd, B:124:0x03f6, B:128:0x042b, B:129:0x044e, B:132:0x0434, B:133:0x0452, B:136:0x031b, B:138:0x0320, B:140:0x0349, B:141:0x034e, B:143:0x0354, B:144:0x035b, B:146:0x0361, B:148:0x0397, B:149:0x039f, B:150:0x03a9, B:151:0x03bf, B:152:0x02bf, B:154:0x02c3, B:156:0x02cf, B:157:0x02d9, B:158:0x0456, B:160:0x045a, B:161:0x045d, B:50:0x00ce, B:52:0x00d4, B:54:0x00da), top: B:166:0x00ca, outer: #1 }] */
-    /* JADX WARN: Removed duplicated region for block: B:88:0x0228 A[Catch: Exception -> 0x0475, all -> 0x04b2, TRY_ENTER, TryCatch #4 {Exception -> 0x0475, blocks: (B:167:0x00ca, B:165:0x0117, B:58:0x0124, B:60:0x012e, B:62:0x0139, B:64:0x0141, B:66:0x0162, B:67:0x0178, B:69:0x019a, B:72:0x01a1, B:74:0x01a5, B:75:0x01bf, B:79:0x01fd, B:80:0x0220, B:83:0x0206, B:84:0x0224, B:87:0x0170, B:88:0x0228, B:90:0x022e, B:92:0x0238, B:94:0x0245, B:95:0x027f, B:96:0x0269, B:97:0x028a, B:100:0x0293, B:102:0x029d, B:104:0x02ae, B:107:0x02b3, B:109:0x02bb, B:111:0x02e2, B:113:0x02e6, B:116:0x02ec, B:118:0x02f0, B:121:0x02f8, B:123:0x02fd, B:124:0x03f6, B:128:0x042b, B:129:0x044e, B:132:0x0434, B:133:0x0452, B:136:0x031b, B:138:0x0320, B:140:0x0349, B:141:0x034e, B:143:0x0354, B:144:0x035b, B:146:0x0361, B:148:0x0397, B:149:0x039f, B:150:0x03a9, B:151:0x03bf, B:152:0x02bf, B:154:0x02c3, B:156:0x02cf, B:157:0x02d9, B:158:0x0456, B:160:0x045a, B:161:0x045d, B:50:0x00ce, B:52:0x00d4, B:54:0x00da), top: B:166:0x00ca, outer: #1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:126:0x0431 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:58:0x0126 A[Catch: Exception -> 0x047f, all -> 0x04bc, TryCatch #0 {Exception -> 0x047f, blocks: (B:167:0x00cc, B:165:0x0119, B:58:0x0126, B:60:0x0130, B:62:0x013b, B:64:0x0143, B:66:0x0164, B:67:0x017a, B:69:0x019c, B:72:0x01a3, B:74:0x01a7, B:75:0x01c1, B:79:0x01ff, B:80:0x0224, B:83:0x020a, B:84:0x0228, B:87:0x0172, B:88:0x022c, B:90:0x0232, B:92:0x023c, B:94:0x0249, B:95:0x0283, B:96:0x026d, B:97:0x028e, B:100:0x0297, B:102:0x02a1, B:104:0x02b2, B:107:0x02b7, B:109:0x02bf, B:111:0x02e6, B:113:0x02ea, B:116:0x02f0, B:118:0x02f4, B:121:0x02fc, B:123:0x0301, B:124:0x03fe, B:128:0x0433, B:129:0x0458, B:132:0x043e, B:133:0x045c, B:136:0x031f, B:138:0x0324, B:140:0x034d, B:141:0x0354, B:143:0x035a, B:144:0x0363, B:146:0x0369, B:148:0x039f, B:149:0x03a7, B:150:0x03b1, B:151:0x03c7, B:152:0x02c3, B:154:0x02c7, B:156:0x02d3, B:157:0x02dd, B:158:0x0460, B:160:0x0464, B:161:0x0467, B:50:0x00d0, B:52:0x00d6, B:54:0x00dc), top: B:166:0x00cc, outer: #4 }] */
+    /* JADX WARN: Removed duplicated region for block: B:64:0x0143 A[Catch: Exception -> 0x047f, all -> 0x04bc, TryCatch #0 {Exception -> 0x047f, blocks: (B:167:0x00cc, B:165:0x0119, B:58:0x0126, B:60:0x0130, B:62:0x013b, B:64:0x0143, B:66:0x0164, B:67:0x017a, B:69:0x019c, B:72:0x01a3, B:74:0x01a7, B:75:0x01c1, B:79:0x01ff, B:80:0x0224, B:83:0x020a, B:84:0x0228, B:87:0x0172, B:88:0x022c, B:90:0x0232, B:92:0x023c, B:94:0x0249, B:95:0x0283, B:96:0x026d, B:97:0x028e, B:100:0x0297, B:102:0x02a1, B:104:0x02b2, B:107:0x02b7, B:109:0x02bf, B:111:0x02e6, B:113:0x02ea, B:116:0x02f0, B:118:0x02f4, B:121:0x02fc, B:123:0x0301, B:124:0x03fe, B:128:0x0433, B:129:0x0458, B:132:0x043e, B:133:0x045c, B:136:0x031f, B:138:0x0324, B:140:0x034d, B:141:0x0354, B:143:0x035a, B:144:0x0363, B:146:0x0369, B:148:0x039f, B:149:0x03a7, B:150:0x03b1, B:151:0x03c7, B:152:0x02c3, B:154:0x02c7, B:156:0x02d3, B:157:0x02dd, B:158:0x0460, B:160:0x0464, B:161:0x0467, B:50:0x00d0, B:52:0x00d6, B:54:0x00dc), top: B:166:0x00cc, outer: #4 }] */
+    /* JADX WARN: Removed duplicated region for block: B:88:0x022c A[Catch: Exception -> 0x047f, all -> 0x04bc, TRY_ENTER, TryCatch #0 {Exception -> 0x047f, blocks: (B:167:0x00cc, B:165:0x0119, B:58:0x0126, B:60:0x0130, B:62:0x013b, B:64:0x0143, B:66:0x0164, B:67:0x017a, B:69:0x019c, B:72:0x01a3, B:74:0x01a7, B:75:0x01c1, B:79:0x01ff, B:80:0x0224, B:83:0x020a, B:84:0x0228, B:87:0x0172, B:88:0x022c, B:90:0x0232, B:92:0x023c, B:94:0x0249, B:95:0x0283, B:96:0x026d, B:97:0x028e, B:100:0x0297, B:102:0x02a1, B:104:0x02b2, B:107:0x02b7, B:109:0x02bf, B:111:0x02e6, B:113:0x02ea, B:116:0x02f0, B:118:0x02f4, B:121:0x02fc, B:123:0x0301, B:124:0x03fe, B:128:0x0433, B:129:0x0458, B:132:0x043e, B:133:0x045c, B:136:0x031f, B:138:0x0324, B:140:0x034d, B:141:0x0354, B:143:0x035a, B:144:0x0363, B:146:0x0369, B:148:0x039f, B:149:0x03a7, B:150:0x03b1, B:151:0x03c7, B:152:0x02c3, B:154:0x02c7, B:156:0x02d3, B:157:0x02dd, B:158:0x0460, B:160:0x0464, B:161:0x0467, B:50:0x00d0, B:52:0x00d6, B:54:0x00dc), top: B:166:0x00cc, outer: #4 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public synchronized boolean on(boolean r14) {
         /*
-            Method dump skipped, instructions count: 1205
+            Method dump skipped, instructions count: 1215
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.FMRadioService.on(boolean):boolean");
@@ -2701,138 +1918,73 @@ public class FMRadioService extends IFMPlayer.Stub {
 
     private void registerMDMCommandRec() {
         IntentFilter intentFilter = new IntentFilter(MDM_SPEAKER_ENABLED);
-        this.mContext.registerReceiver(this.mMDMSpeakerEnabled, intentFilter);
+        this.mContext.registerReceiver(this.mMDMSpeakerEnabled, intentFilter, 4);
         log("MDM command reciever registered");
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:35:0x009e  */
-    /* JADX WARN: Removed duplicated region for block: B:47:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:50:0x00bc A[Catch: NullPointerException -> 0x00c1, TRY_LEAVE, TryCatch #0 {NullPointerException -> 0x00c1, blocks: (B:20:0x0056, B:22:0x005a, B:24:0x0063, B:26:0x0067, B:27:0x006d, B:28:0x008a, B:30:0x0092, B:33:0x0099, B:37:0x00a2, B:39:0x00a6, B:42:0x00aa, B:44:0x00ae, B:48:0x00b2, B:50:0x00bc, B:56:0x0075, B:58:0x0079, B:59:0x0081, B:61:0x0085), top: B:19:0x0056 }] */
-    /* JADX WARN: Removed duplicated region for block: B:52:? A[RETURN, SYNTHETIC] */
+    private void registerOMCChanged() {
+        IntentFilter intentFilter = new IntentFilter(OMC_CHANGED_ACTION);
+        this.mContext.registerReceiver(this.mOMC_Changed_Receiver, intentFilter, 4);
+        log("OMC changed reciever registered");
+    }
+
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void setVolume(long r10) {
-        /*
-            r9 = this;
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder
-            r0.<init>()
-            java.lang.String r1 = "set chipset Volume : "
-            java.lang.StringBuilder r0 = r0.append(r1)
-            java.lang.StringBuilder r0 = r0.append(r10)
-            java.lang.String r0 = r0.toString()
-            log(r0)
-            boolean r0 = r9.mIsOn
-            if (r0 != 0) goto L1c
-            return
-        L1c:
-            boolean r0 = r9.mScanProgress
-            if (r0 == 0) goto L27
-            java.lang.String r0 = "setVolume :: unset on ScanProgress"
-            log(r0)
-            return
-        L27:
-            r0 = 0
-            int r2 = (r10 > r0 ? 1 : (r10 == r0 ? 0 : -1))
-            if (r2 < 0) goto Ldb
-            r2 = 15
-            int r4 = (r10 > r2 ? 1 : (r10 == r2 ? 0 : -1))
-            if (r4 <= 0) goto L35
-            goto Ldb
-        L35:
-            android.media.AudioManager r4 = r9.mAudioManager
-            int r4 = r4.semGetRadioOutputPath()
-            android.content.Context r5 = r9.mContext
-            android.content.ContentResolver r5 = r5.getContentResolver()
-            java.lang.String r6 = "bluetooth_avc_mode"
-            r7 = 1
-            int r5 = android.provider.Settings.Secure.getInt(r5, r6, r7)
-            r6 = 0
-            if (r5 != r7) goto L4d
-            r5 = r7
-            goto L4e
-        L4d:
-            r5 = r6
-        L4e:
-            r9.mAvrcpMode = r5
-            r8 = 8
-            if (r5 == 0) goto L75
-            if (r4 != r8) goto L75
-            boolean r5 = com.android.server.FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME     // Catch: java.lang.NullPointerException -> Lc1
-            if (r5 == 0) goto L75
-            java.lang.String r5 = "Avrcp on"
-            log(r5)     // Catch: java.lang.NullPointerException -> Lc1
-            boolean r5 = r9.isRecording     // Catch: java.lang.NullPointerException -> Lc1
-            if (r5 != 0) goto L8a
-            boolean r5 = r9.mIsExternalChipset     // Catch: java.lang.NullPointerException -> Lc1
-            if (r5 != 0) goto L6d
-            com.android.server.FMPlayerNativeBase r5 = r9.mPlayerNative     // Catch: java.lang.NullPointerException -> Lc1
-            r5.setVolume(r2)     // Catch: java.lang.NullPointerException -> Lc1
-            goto L8a
-        L6d:
-            com.android.server.PlayerExternalChipsetBase r2 = r9.mPlayerExternalChipset     // Catch: java.lang.NullPointerException -> Lc1
-            r3 = 15
-            r2.setVolume(r3)     // Catch: java.lang.NullPointerException -> Lc1
-            goto L8a
-        L75:
-            boolean r2 = r9.mIsExternalChipset     // Catch: java.lang.NullPointerException -> Lc1
-            if (r2 == 0) goto L81
-            int r2 = (int) r10     // Catch: java.lang.NullPointerException -> Lc1
-            com.android.server.PlayerExternalChipsetBase r3 = r9.mPlayerExternalChipset     // Catch: java.lang.NullPointerException -> Lc1
-            r3.setVolume(r2)     // Catch: java.lang.NullPointerException -> Lc1
-            goto L8a
-        L81:
-            int r2 = com.android.server.FMRadioServiceFeature.CHIP_VENDOR     // Catch: java.lang.NullPointerException -> Lc1
-            if (r2 == r8) goto L8a
-            com.android.server.FMPlayerNativeBase r2 = r9.mPlayerNative     // Catch: java.lang.NullPointerException -> Lc1
-            r2.setVolume(r10)     // Catch: java.lang.NullPointerException -> Lc1
-        L8a:
-            r9.mResumeVol = r10     // Catch: java.lang.NullPointerException -> Lc1
-            boolean r2 = r9.isAllSoundOff()     // Catch: java.lang.NullPointerException -> Lc1
-            if (r2 != 0) goto Lb2
-            boolean r2 = r9.isDNDEnable()     // Catch: java.lang.NullPointerException -> Lc1
-            if (r2 == 0) goto L99
-            goto Lb2
-        L99:
-            int r2 = com.android.server.FMRadioServiceFeature.CHIP_VENDOR     // Catch: java.lang.NullPointerException -> Lc1
-            r3 = 3
-            if (r2 == r3) goto Lbf
-            int r0 = (r10 > r0 ? 1 : (r10 == r0 ? 0 : -1))
-            if (r0 > 0) goto Laa
-            boolean r0 = r9.mIsMute     // Catch: java.lang.NullPointerException -> Lc1
-            if (r0 != 0) goto Lbf
-            r9.mute(r7)     // Catch: java.lang.NullPointerException -> Lc1
-            goto Lbf
-        Laa:
-            boolean r0 = r9.mIsMute     // Catch: java.lang.NullPointerException -> Lc1
-            if (r0 == 0) goto Lbf
-            r9.mute(r6)     // Catch: java.lang.NullPointerException -> Lc1
-            goto Lbf
-        Lb2:
-            java.lang.String r0 = "setVolume :: AllSoundOff or DND is enabled. So FMRadio is muted."
-            log(r0)     // Catch: java.lang.NullPointerException -> Lc1
-            boolean r0 = r9.mIsMute     // Catch: java.lang.NullPointerException -> Lc1
-            if (r0 != 0) goto Lbf
-            r9.mute(r7)     // Catch: java.lang.NullPointerException -> Lc1
-        Lbf:
-            return
-        Lc1:
-            r0 = move-exception
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder
-            r1.<init>()
-            java.lang.String r2 = "NullPointerException in setVolume() : "
-            java.lang.StringBuilder r1 = r1.append(r2)
-            java.lang.StringBuilder r1 = r1.append(r0)
-            java.lang.String r1 = r1.toString()
-            java.lang.String r2 = "FMRadioService"
-            android.util.Log.e(r2, r1)
-            return
-        Ldb:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.FMRadioService.setVolume(long):void");
+    public void setVolume(long val) {
+        log("set chipset Volume : " + val);
+        if (!this.mIsOn) {
+            return;
+        }
+        if (this.mScanProgress) {
+            log("setVolume :: unset on ScanProgress");
+            return;
+        }
+        if (val < 0 || val > 15) {
+            return;
+        }
+        int type = this.mAudioManager.semGetRadioOutputPath();
+        this.mAvrcpMode = Settings.Secure.getInt(this.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
+        try {
+            if (this.mAvrcpMode && type == 8 && FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
+                log("Avrcp on");
+                if (!this.isRecording) {
+                    if (!this.mIsExternalChipset) {
+                        this.mPlayerNative.setVolume(15L);
+                    } else {
+                        this.mPlayerExternalChipset.setVolume(15);
+                    }
+                }
+            } else if (this.mIsExternalChipset) {
+                int value = (int) val;
+                this.mPlayerExternalChipset.setVolume(value);
+            } else if (FMRadioServiceFeature.CHIP_VENDOR != 8) {
+                this.mPlayerNative.setVolume(val);
+            }
+            this.mResumeVol = val;
+            if (!isAllSoundOff() && !isDNDEnable()) {
+                if (FMRadioServiceFeature.CHIP_VENDOR != 3) {
+                    if (val <= 0) {
+                        if (!this.mIsMute) {
+                            mute(true);
+                            return;
+                        }
+                        return;
+                    } else {
+                        if (this.mIsMute) {
+                            mute(false);
+                            return;
+                        }
+                        return;
+                    }
+                }
+                return;
+            }
+            log("setVolume :: AllSoundOff or DND is enabled. So FMRadio is muted.");
+            if (!this.mIsMute) {
+                mute(true);
+            }
+        } catch (NullPointerException e) {
+            Log.e("FMRadioService", "NullPointerException in setVolume() : " + e);
+        }
     }
 
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
@@ -2922,9 +2074,8 @@ public class FMRadioService extends IFMPlayer.Stub {
             this.mAudioManager.setParameters(keyValuePairs);
         }
         int type = this.mAudioManager.semGetRadioOutputPath();
-        boolean z = Settings.Secure.getInt(this.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
-        this.mAvrcpMode = z;
-        if (z && type == 8 && FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
+        this.mAvrcpMode = Settings.Secure.getInt(this.mContext.getContentResolver(), "bluetooth_avc_mode", 1) == 1;
+        if (this.mAvrcpMode && type == 8 && FMRadioServiceFeature.FEATURE_USE_CHIPSET_VOLUME) {
             log(" setRecordMode avrcp on");
             if (this.isRecording) {
                 this.mPlayerNative.setVolume(11L);
@@ -2970,9 +2121,10 @@ public class FMRadioService extends IFMPlayer.Stub {
         return this.mIsOn;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Code restructure failed: missing block: B:93:0x0065, code lost:
     
-        if (com.android.server.FMRadioServiceFeature.CHIP_VENDOR != 7) goto L136;
+        if (com.android.server.FMRadioServiceFeature.CHIP_VENDOR != 7) goto L29;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -2980,7 +2132,7 @@ public class FMRadioService extends IFMPlayer.Stub {
     */
     public synchronized boolean offInternal(int r10, boolean r11) {
         /*
-            Method dump skipped, instructions count: 413
+            Method dump skipped, instructions count: 415
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.FMRadioService.offInternal(int, boolean):boolean");
@@ -3000,7 +2152,7 @@ public class FMRadioService extends IFMPlayer.Stub {
             Intent intent = new Intent("com.app.fm.auto.on");
             intent.setFlags(268435456);
             intent.setClassName("com.sec.android.app.fm", "com.sec.android.app.fm.receiver.AutoResumeReceiver");
-            intent.putExtra("freq", (((float) ((Long) data).longValue()) / 1000.0f) + "");
+            intent.putExtra("freq", (((Long) data).longValue() / 1000.0f) + "");
             this.mContext.sendBroadcast(intent);
             return;
         }
@@ -3020,10 +2172,14 @@ public class FMRadioService extends IFMPlayer.Stub {
         log("MDM reciever un-registered");
     }
 
+    private void unRegisterOMCChanged() {
+        this.mContext.unregisterReceiver(this.mOMC_Changed_Receiver);
+        log("OMC Changed reciever un-registered");
+    }
+
     private void remove(IFMEventListener listener) {
         synchronized (mFMRadioServiceLock) {
-            Vector<ListenerRecord> vector = this.mListeners;
-            if (vector != null && vector.size() != 0) {
+            if (this.mListeners != null && this.mListeners.size() != 0) {
                 for (int i = 0; i < this.mListeners.size(); i++) {
                     ListenerRecord record = this.mListeners.get(i);
                     if (record.mBinder == listener.asBinder()) {
@@ -3045,9 +2201,8 @@ public class FMRadioService extends IFMPlayer.Stub {
             return;
         }
         this.mScanProgress = true;
-        ScanThread scanThread = new ScanThread();
-        this.mScanThread = scanThread;
-        scanThread.start();
+        this.mScanThread = new ScanThread();
+        this.mScanThread.start();
     }
 
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
@@ -3084,9 +2239,8 @@ public class FMRadioService extends IFMPlayer.Stub {
                 } else {
                     this.mPlayerNative.cancelSeek();
                 }
-                ArrayList<Long> arrayList = this.mScanChannelList;
-                if (arrayList != null) {
-                    notifyEvent(4, arrayList.toArray(new Long[0]));
+                if (this.mScanChannelList != null) {
+                    notifyEvent(4, this.mScanChannelList.toArray(new Long[0]));
                     return true;
                 }
                 return true;
@@ -3257,9 +2411,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:30:0x0090. Please report as an issue. */
     public void notifyEvent(int type, Object data) {
-        Thread thread;
         if (this.mIsOn && type == 7) {
             if (!this.mOffProgress) {
                 if (FMRadioServiceFeature.CHIP_VENDOR == 9) {
@@ -3278,8 +2430,7 @@ public class FMRadioService extends IFMPlayer.Stub {
             this.mPlayerExternalChipset.setVolume(this.mAudioManager.getStreamVolume(AudioManager.semGetStreamType(1)));
         }
         synchronized (mFMRadioServiceLock) {
-            Vector<ListenerRecord> vector = this.mListeners;
-            if (vector != null && vector.size() != 0) {
+            if (this.mListeners != null && this.mListeners.size() != 0) {
                 log("Total listener:" + this.mListeners.size());
                 int size = this.mListeners.size();
                 for (int i = size - 1; i >= 0; i--) {
@@ -3294,9 +2445,11 @@ public class FMRadioService extends IFMPlayer.Stub {
                                 log("notifying :EVENT_CHANNEL_FOUND to : listener -->" + i + " : with freq:" + freq + "-->" + this.mListeners.get(i).mListener.asBinder());
                             }
                             this.mListeners.get(i).mListener.onChannelFound(freq);
+                            continue;
                         case 2:
                             log("notifying :EVENT_SCAN_STARTED to : listener -->" + i + " :" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onScanStarted();
+                            continue;
                         case 3:
                             if (data != null) {
                                 Long[] Ifreq = (Long[]) data;
@@ -3307,6 +2460,7 @@ public class FMRadioService extends IFMPlayer.Stub {
                                 }
                                 log("notifying :EVENT_SCAN_FINISHED to : listener -->" + i + " : with data array:" + count + "-->" + this.mListeners.get(i).mListener.asBinder());
                                 this.mListeners.get(i).mListener.onScanFinished(freqArry);
+                                continue;
                             } else {
                                 log("notifying : EVENT_SCAN_FINISHED : data is null !!!");
                             }
@@ -3320,12 +2474,14 @@ public class FMRadioService extends IFMPlayer.Stub {
                                 }
                                 log("notifying :EVENT_SCAN_STOPPED to : listener -->" + i + " : with data array:" + count2 + "-->" + this.mListeners.get(i).mListener.asBinder());
                                 this.mListeners.get(i).mListener.onScanStopped(freqArry2);
+                                continue;
                             } else {
                                 log("notifying : EVENT_SCAN_STOPPED : data is null !!!");
                             }
                         case 5:
                             log("notifying :EVENT_POWER_ON to : listener -->" + i + "-->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onRadioEnabled();
+                            continue;
                         case 6:
                             log("notifying :EVENT_POWER_OFF to : listener -->" + i + "-->" + this.mListeners.get(i).mListener.asBinder());
                             int reasonCode = -1;
@@ -3333,6 +2489,7 @@ public class FMRadioService extends IFMPlayer.Stub {
                                 reasonCode = ((Integer) data).intValue();
                             }
                             this.mListeners.get(i).mListener.onRadioDisabled(reasonCode);
+                            continue;
                         case 7:
                             if (data != null) {
                                 long freq2 = ((Long) data).longValue();
@@ -3341,61 +2498,72 @@ public class FMRadioService extends IFMPlayer.Stub {
                                     log("notifying :EVENT_TUNE to : listener -->" + i + " : with data array:" + freq2 + "-->" + this.mListeners.get(i).mListener.asBinder());
                                 }
                                 this.mListeners.get(i).mListener.onTuned(freq2);
+                                continue;
                             } else {
                                 log("notifying : EVENT_TUNE : data is null !!!");
                             }
                         case 8:
                             log("notifying :EVENT_EAR_PHONE_CONNECT to : listener -->" + i + ": -->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onHeadsetConnected();
+                            continue;
                         case 9:
                             log("notifying :EVENT_EAR_PHONE_DISCONNECT to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onHeadsetDisconnected();
+                            continue;
                         case 10:
                             log("notifying : EVENT_RDS_EVENT : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             if (data != null) {
                                 FMPlayerNativeBase.RDSData rdsData = (FMPlayerNativeBase.RDSData) data;
                                 this.mListeners.get(i).mListener.onRadioDataSystemReceived(rdsData.mFreq, rdsData.mChannelName, rdsData.mRadioText);
+                                continue;
                             } else {
                                 log("notifying : EVENT_RDS_EVENT : data is null !!!");
                             }
                         case 11:
                             log("notifying :EVENT_RDS_ENABLED to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onRadioDataSystemEnabled();
+                            continue;
                         case 12:
                             log("notifying :EVENT_RDS_DISABLED to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onRadioDataSystemDisabled();
+                            continue;
                         case 13:
                             log("notifying :EVENT_AF_STARTED to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onAlternateFrequencyStarted();
+                            continue;
                         case 14:
                             log("notifying :EVENT_AF_RECEIVED to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             if (data != null) {
                                 long freq3 = ((Long) data).longValue();
                                 this.mListeners.get(i).mListener.onAlternateFrequencyReceived(freq3);
+                                continue;
                             } else {
                                 log("notifying : EVENT_AF_RECEIVED : data is null !!!");
                             }
                         case 15:
                             log("notifying :EVENT_VOLUME_LOCK to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onVolumeLocked();
+                            continue;
                         case 16:
                             log("notifying :EVENT_RTPLUS_EVENT to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             if (data != null) {
                                 FMPlayerNativeBase.RTPlusData rtplusData = (FMPlayerNativeBase.RTPlusData) data;
                                 this.mListeners.get(i).mListener.onRadioTextPlusReceived(rtplusData.mContentType1, rtplusData.mStartPos1, rtplusData.mAdditionalLen1, rtplusData.mContentType2, rtplusData.mStartPos2, rtplusData.mAdditionalLen2);
+                                continue;
                             } else {
                                 log("notifying : EVENT_RTPLUS_EVENT : data is null !!!");
                             }
                         case 17:
                             log("notifying :EVENT_REC_FINISH to : listener -->" + i + " : ->" + this.mListeners.get(i).mListener.asBinder());
                             this.mListeners.get(i).mListener.onRecordingFinished();
+                            continue;
                         case 18:
                             if (data != null) {
                                 try {
                                     FMPlayerNativeBase.PIECCData pieccData = (FMPlayerNativeBase.PIECCData) data;
                                     this.mListeners.get(i).mListener.onProgrammeIdentificationExtendedCountryCodesReceived(pieccData.mPI, pieccData.mECC);
-                                    if (this.mWaitPidDuringScanning && (thread = this.mScanThread) != null) {
-                                        synchronized (thread) {
+                                    if (this.mWaitPidDuringScanning && this.mScanThread != null) {
+                                        synchronized (this.mScanThread) {
                                             this.mScanThread.notify();
                                         }
                                     }
@@ -3849,16 +3017,17 @@ public class FMRadioService extends IFMPlayer.Stub {
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Code restructure failed: missing block: B:189:0x02a3, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_AFRMSSI_SAMPLES) != false) goto L408;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_AFRMSSI_SAMPLES) != false) goto L168;
      */
     /* JADX WARN: Code restructure failed: missing block: B:194:0x031e, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_SEEK_QA) != false) goto L439;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_SEEK_QA) != false) goto L199;
      */
     /* JADX WARN: Code restructure failed: missing block: B:51:0x010e, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_IF_COUNT_2) != false) goto L317;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_IF_COUNT_2) != false) goto L77;
      */
+    /* JADX WARN: Failed to restore switch over string. Please report as a decompilation issue */
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -3875,24 +3044,25 @@ public class FMRadioService extends IFMPlayer.Stub {
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Code restructure failed: missing block: B:150:0x022f, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_ON_CHANNEL_TH) != false) goto L387;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_ON_CHANNEL_TH) != false) goto L168;
      */
     /* JADX WARN: Code restructure failed: missing block: B:182:0x0313, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_SEEK_QA) != false) goto L431;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_SEEK_QA) != false) goto L212;
      */
     /* JADX WARN: Code restructure failed: missing block: B:37:0x009f, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_PILOT_POWER_TH) != false) goto L270;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_PILOT_POWER_TH) != false) goto L51;
      */
     /* JADX WARN: Code restructure failed: missing block: B:47:0x00f1, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_IF_COUNT_2) != false) goto L290;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_IF_COUNT_2) != false) goto L71;
      */
     /* JADX WARN: Code restructure failed: missing block: B:89:0x0166, code lost:
     
-        if (r17.equals(com.android.server.FMRadioService.PARAMETER_SOFTMUTE_TH) != false) goto L320;
+        if (r17.equals(com.android.server.FMRadioService.PARAMETER_SOFTMUTE_TH) != false) goto L101;
      */
+    /* JADX WARN: Failed to restore switch over string. Please report as a decompilation issue */
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -3909,7 +3079,7 @@ public class FMRadioService extends IFMPlayer.Stub {
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Code restructure failed: missing block: B:37:0x00b6, code lost:
     
-        if (r9.equals(com.android.server.FMRadioService.PARAMETER_SOFT_STEREO_BLEND_COEFF) != false) goto L96;
+        if (r9.equals(com.android.server.FMRadioService.PARAMETER_SOFT_STEREO_BLEND_COEFF) != false) goto L43;
      */
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     /*
@@ -4066,7 +3236,7 @@ public class FMRadioService extends IFMPlayer.Stub {
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Code restructure failed: missing block: B:31:0x0097, code lost:
     
-        if (r8.equals(com.android.server.FMRadioService.PARAMETER_SOFT_STEREO_BLEND_COEFF) != false) goto L81;
+        if (r8.equals(com.android.server.FMRadioService.PARAMETER_SOFT_STEREO_BLEND_COEFF) != false) goto L36;
      */
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     /*
@@ -4204,11 +3374,19 @@ public class FMRadioService extends IFMPlayer.Stub {
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Code restructure failed: missing block: B:18:0x0059, code lost:
     
-        if (r7.equals(com.android.server.FMRadioService.PARAMETER_FAKE_CHANNEL) != false) goto L75;
+        if (r7.equals(com.android.server.FMRadioService.PARAMETER_FAKE_CHANNEL) != false) goto L26;
      */
     /* JADX WARN: Code restructure failed: missing block: B:35:0x00c4, code lost:
     
-        if (r7.equals(com.android.server.FMRadioService.PARAMETER_HYBRID_SEARCH) != false) goto L88;
+        if (r7.equals(com.android.server.FMRadioService.PARAMETER_HYBRID_SEARCH) != false) goto L39;
+     */
+    /* JADX WARN: Failed to restore switch over string. Please report as a decompilation issue */
+    /* JADX WARN: Failed to restore switch over string. Please report as a decompilation issue
+    java.lang.NullPointerException: Cannot invoke "java.util.List.iterator()" because the return value of "jadx.core.dex.visitors.regions.SwitchOverStringVisitor$SwitchData.getNewCases()" is null
+    	at jadx.core.dex.visitors.regions.SwitchOverStringVisitor.restoreSwitchOverString(SwitchOverStringVisitor.java:109)
+    	at jadx.core.dex.visitors.regions.SwitchOverStringVisitor.visitRegion(SwitchOverStringVisitor.java:66)
+    	at jadx.core.dex.visitors.regions.DepthRegionTraversal.traverseIterativeStepInternal(DepthRegionTraversal.java:77)
+    	at jadx.core.dex.visitors.regions.DepthRegionTraversal.traverseIterativeStepInternal(DepthRegionTraversal.java:82)
      */
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     /*
@@ -4353,11 +3531,19 @@ public class FMRadioService extends IFMPlayer.Stub {
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Code restructure failed: missing block: B:15:0x0048, code lost:
     
-        if (r7.equals(com.android.server.FMRadioService.PARAMETER_FAKE_CHANNEL) != false) goto L65;
+        if (r7.equals(com.android.server.FMRadioService.PARAMETER_FAKE_CHANNEL) != false) goto L23;
      */
     /* JADX WARN: Code restructure failed: missing block: B:31:0x00b4, code lost:
     
-        if (r7.equals(com.android.server.FMRadioService.PARAMETER_HYBRID_SEARCH) != false) goto L79;
+        if (r7.equals(com.android.server.FMRadioService.PARAMETER_HYBRID_SEARCH) != false) goto L37;
+     */
+    /* JADX WARN: Failed to restore switch over string. Please report as a decompilation issue */
+    /* JADX WARN: Failed to restore switch over string. Please report as a decompilation issue
+    java.lang.NullPointerException: Cannot invoke "java.util.List.iterator()" because the return value of "jadx.core.dex.visitors.regions.SwitchOverStringVisitor$SwitchData.getNewCases()" is null
+    	at jadx.core.dex.visitors.regions.SwitchOverStringVisitor.restoreSwitchOverString(SwitchOverStringVisitor.java:109)
+    	at jadx.core.dex.visitors.regions.SwitchOverStringVisitor.visitRegion(SwitchOverStringVisitor.java:66)
+    	at jadx.core.dex.visitors.regions.DepthRegionTraversal.traverseIterativeStepInternal(DepthRegionTraversal.java:77)
+    	at jadx.core.dex.visitors.regions.DepthRegionTraversal.traverseIterativeStepInternal(DepthRegionTraversal.java:82)
      */
     @Override // com.samsung.android.media.fmradio.internal.IFMPlayer
     /*
@@ -4494,19 +3680,20 @@ public class FMRadioService extends IFMPlayer.Stub {
     protected void finalize() throws Throwable {
         super.finalize();
         try {
-            PowerManager.WakeLock wakeLock = this.mWakeLock;
-            if (wakeLock != null && wakeLock.isHeld()) {
+            if (this.mWakeLock != null && this.mWakeLock.isHeld()) {
                 this.mWakeLock.release();
             }
             unregisterSystemListener();
             unRegisterSetPropertyListener();
             unRegisterMDMCommandRec();
+            unRegisterOMCChanged();
             this.mScanProgress = false;
         } catch (Error e) {
             Log.e("FMRadioService", "Exception in finalize() : " + e);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setSignalSetting(int rssi, int snr, int cnt) {
         if (this.mIsOn && !this.mIsExternalChipset) {
             this.mPlayerNative.setRSSI_th(rssi);
@@ -4515,7 +3702,6 @@ public class FMRadioService extends IFMPlayer.Stub {
         }
     }
 
-    /* loaded from: classes5.dex */
     class ScanThread extends Thread {
         ScanThread() {
         }
@@ -4567,16 +3753,14 @@ public class FMRadioService extends IFMPlayer.Stub {
                     if (FMRadioService.DEBUGGABLE) {
                         FMRadioService.log("Duplicate channel :" + freq);
                     }
-                    FMRadioService fMRadioService = FMRadioService.this;
-                    fMRadioService.notifyEvent(3, fMRadioService.mScanChannelList.toArray(new Long[0]));
+                    FMRadioService.this.notifyEvent(3, FMRadioService.this.mScanChannelList.toArray(new Long[0]));
                     Thread.sleep(20L);
                 } else if (freq <= j4) {
                     FMRadioService.log("Testmode Skipp value : " + FMRadioService.this.mIsSkipTunigVal);
                     if (FMRadioService.this.mIsExternalChipset) {
                         FMRadioService.this.mPlayerExternalChipset.stopNotifyThread(true);
                     }
-                    FMRadioService fMRadioService2 = FMRadioService.this;
-                    fMRadioService2.notifyEvent(3, fMRadioService2.mScanChannelList.toArray(new Long[0]));
+                    FMRadioService.this.notifyEvent(3, FMRadioService.this.mScanChannelList.toArray(new Long[0]));
                     Thread.sleep(20L);
                 } else {
                     if (FMRadioService.this.mScanFreq <= j4) {
@@ -4634,15 +3818,13 @@ public class FMRadioService extends IFMPlayer.Stub {
                         if (FMRadioService.this.mIsExternalChipset) {
                             FMRadioService.this.mPlayerExternalChipset.stopNotifyThread(true);
                         }
-                        FMRadioService fMRadioService3 = FMRadioService.this;
-                        fMRadioService3.notifyEvent(3, fMRadioService3.mScanChannelList.toArray(new Long[0]));
+                        FMRadioService.this.notifyEvent(3, FMRadioService.this.mScanChannelList.toArray(new Long[0]));
                         Thread.sleep(20L);
                     } else {
                         j3 = 87500;
                         if (FMRadioService.this.mScanProgress) {
                             FMRadioService.log("scanning found channel");
-                            FMRadioService fMRadioService4 = FMRadioService.this;
-                            fMRadioService4.mPreviousFoundFreq = fMRadioService4.mCurrentFoundFreq;
+                            FMRadioService.this.mPreviousFoundFreq = FMRadioService.this.mCurrentFoundFreq;
                             FMRadioService.this.mScanChannelList.add(Long.valueOf(freq));
                             FMRadioService.this.notifyEvent(1, Long.valueOf(freq));
                             if (FMRadioService.this.mWaitPidDuringScanning && FMRadioService.this.mScanThread != null) {
@@ -4659,34 +3841,33 @@ public class FMRadioService extends IFMPlayer.Stub {
                     }
                 }
             }
-            FMRadioService fMRadioService5 = FMRadioService.this;
-            fMRadioService5.notifyEvent(3, fMRadioService5.mScanChannelList.toArray(new Long[0]));
+            FMRadioService.this.notifyEvent(3, FMRadioService.this.mScanChannelList.toArray(new Long[0]));
             Thread.sleep(20L);
             if (FMRadioService.this.mWaitPidDuringScanning && !FMRadioService.this.mIsExternalChipset) {
                 FMRadioService.this.mPlayerNative.setScanning(false);
             }
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:25:0x012d, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:26:0x0135, code lost:
         
-            if (r1.isHeld() != false) goto L90;
+            if (r1.isHeld() != false) goto L41;
          */
-        /* JADX WARN: Code restructure failed: missing block: B:26:0x0162, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:27:0x016a, code lost:
         
             com.android.server.FMRadioService.log("Scanning Thread work is done...");
          */
-        /* JADX WARN: Code restructure failed: missing block: B:27:0x0167, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:28:0x016f, code lost:
         
             return;
          */
-        /* JADX WARN: Code restructure failed: missing block: B:29:0x015c, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:30:0x0164, code lost:
         
             r1.release();
             com.android.server.FMRadioService.log("Scan thread released the dimmed screen lock");
          */
-        /* JADX WARN: Code restructure failed: missing block: B:46:0x015a, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:42:0x0162, code lost:
         
-            if (r1.isHeld() == false) goto L91;
+            if (r1.isHeld() == false) goto L42;
          */
         @Override // java.lang.Thread, java.lang.Runnable
         /*
@@ -4695,7 +3876,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         */
         public void run() {
             /*
-                Method dump skipped, instructions count: 383
+                Method dump skipped, instructions count: 391
                 To view this dump change 'Code comments level' option to 'DEBUG'
             */
             throw new UnsupportedOperationException("Method not decompiled: com.android.server.FMRadioService.ScanThread.run():void");
@@ -4712,29 +3893,14 @@ public class FMRadioService extends IFMPlayer.Stub {
         return SystemProperties.get("ro.product.name");
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleBikeMode() {
-        boolean z = Settings.Secure.getInt(this.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
-        this.mBikeMode = z;
-        if (z) {
+        this.mBikeMode = Settings.Secure.getInt(this.mContext.getContentResolver(), AudioConstants.SETTING_BIKE_MODE, 0) == 1;
+        if (this.mBikeMode) {
             log("bike mode enabled");
             offInternal(4, true);
         } else {
             log("bike mode disabled");
-        }
-    }
-
-    /* renamed from: com.android.server.FMRadioService$17 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass17 extends ContentObserver {
-        AnonymousClass17(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-            FMRadioService.log("bike mode onChange");
-            FMRadioService.this.handleBikeMode();
         }
     }
 
@@ -4750,6 +3916,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         return Settings.System.getInt(this.mContext.getContentResolver(), "all_sound_off", 0) == 1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setFMAudioPath(boolean isOn) {
         String keyValuePairs;
         log("setFMAudioPath : " + isOn + " mIsFMAudioPathOn : " + this.mIsFMAudioPathOn);
@@ -4784,6 +3951,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         return this.mIsMDMSpeakerEnabled;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setDelay(long ms) {
         try {
             Thread.sleep(ms);
@@ -4809,8 +3977,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         return true;
     }
 
-    /* loaded from: classes5.dex */
-    public class SamsungAnalyticsRunnable implements Runnable {
+    private class SamsungAnalyticsRunnable implements Runnable {
         private String packageName;
         private String version;
 
@@ -4829,6 +3996,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendInfoSamsungAnalytics(String packageName, String version) {
         log("sendInfoSamsungAnalytics ,packageName : " + packageName + ", version : " + version);
         Bundle bundle = new Bundle();
@@ -4844,7 +4012,7 @@ public class FMRadioService extends IFMPlayer.Stub {
         }
         log("SALog jsonstring: " + jobj.toString());
         bundle.putString(SemShareConstants.SURVEY_CONTENT_EXTRA, jobj.toString());
-        bundle.putString(SemShareConstants.SURVERY_EXTRA_OWN_PACKAGE, SA_SERVICE_PACKAGE);
+        bundle.putString(SemShareConstants.SURVEY_EXTRA_OWN_PACKAGE, SA_SERVICE_PACKAGE);
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("com.sec.android.diagmonagent.intent.USE_APP_FEATURE_SURVEY");
         broadcastIntent.putExtras(bundle);

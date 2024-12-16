@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IWindowSessionCallback extends IInterface {
     void onAnimatorScaleChanged(float f) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWindowSessionCallback {
         @Override // android.view.IWindowSessionCallback
         public void onAnimatorScaleChanged(float scale) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IWindowSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWindowSessionCallback {
         public static final String DESCRIPTOR = "android.view.IWindowSessionCallback";
         static final int TRANSACTION_onAnimatorScaleChanged = 1;
@@ -66,25 +64,22 @@ public interface IWindowSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    float _arg0 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onAnimatorScaleChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            float _arg0 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onAnimatorScaleChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWindowSessionCallback {
+        private static class Proxy implements IWindowSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

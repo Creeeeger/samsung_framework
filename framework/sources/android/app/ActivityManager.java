@@ -81,9 +81,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /* loaded from: classes.dex */
 public class ActivityManager {
@@ -147,6 +149,7 @@ public class ActivityManager {
     public static final int INSTR_FLAG_DISABLE_HIDDEN_API_CHECKS = 1;
     public static final int INSTR_FLAG_DISABLE_ISOLATED_STORAGE = 2;
     public static final int INSTR_FLAG_DISABLE_TEST_API_CHECKS = 4;
+    public static final int INSTR_FLAG_INSTRUMENT_SDK_IN_SANDBOX = 64;
     public static final int INSTR_FLAG_INSTRUMENT_SDK_SANDBOX = 32;
     public static final int INSTR_FLAG_NO_RESTART = 8;
     public static final int INTENT_SENDER_ACTIVITY = 2;
@@ -167,9 +170,10 @@ public class ActivityManager {
     public static final int MIN_PROCESS_STATE = 0;
     public static final int MOVE_TASK_NO_USER_ACTION = 2;
     public static final int MOVE_TASK_WITH_HOME = 1;
-    public static final int PROCESS_CAPABILITY_ALL = 63;
+    public static final int PROCESS_CAPABILITY_ALL = 127;
     public static final int PROCESS_CAPABILITY_ALL_IMPLICIT = 6;
     public static final int PROCESS_CAPABILITY_BFSL = 16;
+    public static final int PROCESS_CAPABILITY_FOREGROUND_AUDIO_CONTROL = 64;
 
     @SystemApi
     public static final int PROCESS_CAPABILITY_FOREGROUND_CAMERA = 2;
@@ -216,12 +220,27 @@ public class ActivityManager {
     public static final int REMOVE_TASK_EXCEPT_RECENTS = 16;
     public static final int RESTRICTION_LEVEL_ADAPTIVE_BUCKET = 30;
     public static final int RESTRICTION_LEVEL_BACKGROUND_RESTRICTED = 50;
+    public static final int RESTRICTION_LEVEL_CUSTOM = 90;
     public static final int RESTRICTION_LEVEL_EXEMPTED = 20;
-    public static final int RESTRICTION_LEVEL_HIBERNATION = 60;
+    public static final int RESTRICTION_LEVEL_FORCE_STOPPED = 60;
     public static final int RESTRICTION_LEVEL_MAX = 100;
     public static final int RESTRICTION_LEVEL_RESTRICTED_BUCKET = 40;
     public static final int RESTRICTION_LEVEL_UNKNOWN = 0;
     public static final int RESTRICTION_LEVEL_UNRESTRICTED = 10;
+    public static final int RESTRICTION_LEVEL_USER_LAUNCH_ONLY = 70;
+    public static final int RESTRICTION_REASON_DEFAULT = 1;
+    public static final int RESTRICTION_REASON_DORMANT = 2;
+    public static final int RESTRICTION_REASON_OTHER = 7;
+    public static final int RESTRICTION_REASON_POLICY = 6;
+    public static final int RESTRICTION_REASON_SYSTEM_HEALTH = 5;
+    public static final int RESTRICTION_REASON_USAGE = 3;
+    public static final int RESTRICTION_REASON_USER = 4;
+    public static final int RESTRICTION_SOURCE_COMMAND_LINE = 4;
+    public static final int RESTRICTION_SOURCE_REMOTE_TRIGGER = 5;
+    public static final int RESTRICTION_SOURCE_SYSTEM = 3;
+    public static final int RESTRICTION_SOURCE_USER = 1;
+    public static final int RESTRICTION_SOURCE_USER_NUDGED = 2;
+    public static final int RESTRICTION_SUBREASON_MAX_LENGTH = 16;
     public static final int SEM_REMOVE_TASK_IMMEDIATELY = 4;
     public static final int START_ABORTED = 102;
     public static final int START_ASSISTANT_HIDDEN_SESSION = -90;
@@ -229,6 +248,7 @@ public class ActivityManager {
     public static final int START_BLOCKED_BY_MARs = -200;
     public static final int START_BLOCKED_BY_MDM = -101;
     public static final int START_CANCELED = -96;
+    public static final int START_CANCELLED_BY_BLOCK_3RD_JUMP = -103;
     public static final int START_CANCELLED_BY_TEMPERATURE = -102;
     public static final int START_CLASS_NOT_FOUND = -92;
     public static final int START_DELIVERED_TO_TOP = 3;
@@ -271,11 +291,11 @@ public class ActivityManager {
     private final Context mContext;
     private static String TAG = "ActivityManager";
     private static volatile boolean sSystemReady = false;
+    private static volatile int sCurrentUser$ravenwood = -10000;
     private static final boolean DEVELOPMENT_FORCE_LOW_RAM = SystemProperties.getBoolean("debug.force_low_ram", false);
     private static final Singleton<IActivityManager> IActivityManagerSingleton = new Singleton<IActivityManager>() { // from class: android.app.ActivityManager.3
-        AnonymousClass3() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.util.Singleton
         public IActivityManager create() {
             IBinder b = ServiceManager.getService("activity");
@@ -288,55 +308,51 @@ public class ActivityManager {
     private final IUidFrozenStateChangedCallback mFrozenStateChangedCallback = new AnonymousClass1();
     private final Map<SemProcessListener, ProcessObserver> mProcessObserverMap = new HashMap();
     private final CopyOnWriteArrayList<SemProcessListener> mProcessListeners = new CopyOnWriteArrayList<>();
+    private final ArrayList<AppStartInfoCallbackWrapper> mAppStartInfoCallbacks = new ArrayList<>();
+    private IApplicationStartInfoCompleteListener mAppStartInfoCompleteListener = null;
     private final CopyOnWriteArrayList<SemActivityControllerListener> mActivityControllerListeners = new CopyOnWriteArrayList<>();
 
-    /* loaded from: classes.dex */
-    public interface ApplicationStartInfoCompleteListener {
-        void onApplicationStartInfoComplete(ApplicationStartInfo applicationStartInfo);
-    }
-
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ForegroundServiceApiEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ForegroundServiceApiType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MoveTaskFlags {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public interface OnUidImportanceListener {
         void onUidImportance(int i, int i2);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProcessCapability {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProcessResource {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProcessState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RestrictionLevel {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface RestrictionReason {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface RestrictionSource {
+    }
+
     public interface SemActivityControllerListener {
         boolean onActivityResuming(String str);
 
@@ -351,19 +367,17 @@ public class ActivityManager {
         int onSystemNotResponding(String str);
     }
 
-    /* loaded from: classes.dex */
     public interface SemProcessListener {
         void onForegroundActivitiesChanged(int i, int i2, boolean z);
 
         void onProcessDied(int i, int i2);
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface StopUserOnSwitch {
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    /* loaded from: classes.dex */
     public interface UidFrozenStateChangedCallback {
 
         @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
@@ -373,7 +387,6 @@ public class ActivityManager {
         public static final int UID_FROZEN_STATE_UNFROZEN = 2;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface UidFrozenState {
         }
 
@@ -381,14 +394,7 @@ public class ActivityManager {
         void onUidFrozenStateChanged(int[] iArr, int[] iArr2);
     }
 
-    /* renamed from: -$$Nest$smgetTaskService */
-    static /* bridge */ /* synthetic */ IActivityTaskManager m122$$Nest$smgetTaskService() {
-        return getTaskService();
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public static final class MyUidObserver extends UidObserver {
+    static final class MyUidObserver extends UidObserver {
         final Context mContext;
         final OnUidImportanceListener mListener;
 
@@ -408,10 +414,8 @@ public class ActivityManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.ActivityManager$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends IUidFrozenStateChangedCallback.Stub {
+    /* renamed from: android.app.ActivityManager$1, reason: invalid class name */
+    class AnonymousClass1 extends IUidFrozenStateChangedCallback.Stub {
         AnonymousClass1() {
         }
 
@@ -485,6 +489,7 @@ public class ActivityManager {
         pw.print((caps & 8) != 0 ? PhoneNumberUtils.WILD : '-');
         pw.print((caps & 16) != 0 ? 'F' : '-');
         pw.print((caps & 32) != 0 ? 'U' : '-');
+        pw.print((caps & 64) != 0 ? DateFormat.CAPITAL_AM_PM : '-');
     }
 
     public static void printCapabilitiesSummary(StringBuilder sb, int caps) {
@@ -494,11 +499,12 @@ public class ActivityManager {
         sb.append((caps & 8) != 0 ? PhoneNumberUtils.WILD : '-');
         sb.append((caps & 16) != 0 ? 'F' : '-');
         sb.append((caps & 32) != 0 ? 'U' : '-');
+        sb.append((caps & 64) != 0 ? DateFormat.CAPITAL_AM_PM : '-');
     }
 
     public static void printCapabilitiesFull(PrintWriter pw, int caps) {
         printCapabilitiesSummary(pw, caps);
-        int remain = caps & (-64);
+        int remain = caps & (-128);
         if (remain != 0) {
             pw.print("+0x");
             pw.print(Integer.toHexString(remain));
@@ -574,14 +580,12 @@ public class ActivityManager {
         return procState == 4;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public class ProcessObserver extends IProcessObserver.Stub {
-        /* synthetic */ ProcessObserver(ActivityManager activityManager, ProcessObserverIA processObserverIA) {
-            this();
+    private class ProcessObserver extends IProcessObserver.Stub {
+        private ProcessObserver() {
         }
 
-        private ProcessObserver() {
+        @Override // android.app.IProcessObserver
+        public void onProcessStarted(int pid, int processUid, int packageUid, String packageName, String processName) {
         }
 
         @Override // android.app.IProcessObserver
@@ -611,7 +615,7 @@ public class ActivityManager {
         }
     }
 
-    public ActivityManager(Context context, Handler handler) {
+    ActivityManager(Context context, Handler handler) {
         this.mContext = context;
     }
 
@@ -638,11 +642,15 @@ public class ActivityManager {
             case 50:
                 return "background_restricted";
             case 60:
-                return "hibernation";
+                return "stopped";
+            case 70:
+                return "user_only";
+            case 90:
+                return "custom";
             case 100:
                 return "max";
             default:
-                return "";
+                return String.valueOf(level);
         }
     }
 
@@ -742,7 +750,6 @@ public class ActivityManager {
         return ActivityTaskManager.getMaxRecentTasksStatic();
     }
 
-    /* loaded from: classes.dex */
     public static class TaskDescription implements Parcelable {
         private static final String ATTR_TASKDESCRIPTIONCOLOR_BACKGROUND = "task_description_color_background";
         private static final String ATTR_TASKDESCRIPTIONCOLOR_BACKGROUND_FLOATING = "task_description_color_background_floating";
@@ -753,14 +760,13 @@ public class ActivityManager {
         private static final String ATTR_TASKDESCRIPTIONLABEL = "task_description_label";
         public static final String ATTR_TASKDESCRIPTION_PREFIX = "task_description_";
         public static final Parcelable.Creator<TaskDescription> CREATOR = new Parcelable.Creator<TaskDescription>() { // from class: android.app.ActivityManager.TaskDescription.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TaskDescription createFromParcel(Parcel source) {
                 return new TaskDescription(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TaskDescription[] newArray(int size) {
                 return new TaskDescription[size];
@@ -780,12 +786,9 @@ public class ActivityManager {
         private int mNavigationBarColor;
         private int mResizeMode;
         private int mStatusBarColor;
+        private int mSystemBarsAppearance;
+        private int mTopOpaqueSystemBarsAppearance;
 
-        /* synthetic */ TaskDescription(Parcel parcel, TaskDescriptionIA taskDescriptionIA) {
-            this(parcel);
-        }
-
-        /* loaded from: classes.dex */
         public static final class Builder {
             private String mLabel = null;
             private int mIconRes = 0;
@@ -826,13 +829,13 @@ public class ActivityManager {
 
             public TaskDescription build() {
                 Icon icon = this.mIconRes == 0 ? null : Icon.createWithResource(ActivityThread.currentPackageName(), this.mIconRes);
-                return new TaskDescription(this.mLabel, icon, this.mPrimaryColor, this.mBackgroundColor, this.mStatusBarColor, this.mNavigationBarColor, false, false, 2, -1, -1, 0);
+                return new TaskDescription(this.mLabel, icon, this.mPrimaryColor, this.mBackgroundColor, this.mStatusBarColor, this.mNavigationBarColor, 0, 0, false, false, 2, -1, -1, 0);
             }
         }
 
         @Deprecated
         public TaskDescription(String label, int iconRes, int colorPrimary) {
-            this(label, Icon.createWithResource(ActivityThread.currentPackageName(), iconRes), colorPrimary, 0, 0, 0, false, false, 2, -1, -1, 0);
+            this(label, Icon.createWithResource(ActivityThread.currentPackageName(), iconRes), colorPrimary, 0, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
             if (colorPrimary != 0 && Color.alpha(colorPrimary) != 255) {
                 throw new RuntimeException("A TaskDescription's primary color should be opaque");
             }
@@ -840,22 +843,22 @@ public class ActivityManager {
 
         @Deprecated
         public TaskDescription(String label, int iconRes) {
-            this(label, Icon.createWithResource(ActivityThread.currentPackageName(), iconRes), 0, 0, 0, 0, false, false, 2, -1, -1, 0);
+            this(label, Icon.createWithResource(ActivityThread.currentPackageName(), iconRes), 0, 0, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
         }
 
         @Deprecated
         public TaskDescription(String label) {
-            this(label, null, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
+            this(label, null, 0, 0, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
         }
 
         @Deprecated
         public TaskDescription() {
-            this(null, null, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
+            this(null, null, 0, 0, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
         }
 
         @Deprecated
         public TaskDescription(String label, Bitmap icon, int colorPrimary) {
-            this(label, icon != null ? Icon.createWithBitmap(icon) : null, colorPrimary, 0, 0, 0, false, false, 2, -1, -1, 0);
+            this(label, icon != null ? Icon.createWithBitmap(icon) : null, colorPrimary, 0, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
             if (colorPrimary != 0 && Color.alpha(colorPrimary) != 255) {
                 throw new RuntimeException("A TaskDescription's primary color should be opaque");
             }
@@ -863,16 +866,18 @@ public class ActivityManager {
 
         @Deprecated
         public TaskDescription(String label, Bitmap icon) {
-            this(label, icon != null ? Icon.createWithBitmap(icon) : null, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
+            this(label, icon != null ? Icon.createWithBitmap(icon) : null, 0, 0, 0, 0, 0, 0, false, false, 2, -1, -1, 0);
         }
 
-        public TaskDescription(String label, Icon icon, int colorPrimary, int colorBackground, int statusBarColor, int navigationBarColor, boolean ensureStatusBarContrastWhenTransparent, boolean ensureNavigationBarContrastWhenTransparent, int resizeMode, int minWidth, int minHeight, int colorBackgroundFloating) {
+        public TaskDescription(String label, Icon icon, int colorPrimary, int colorBackground, int statusBarColor, int navigationBarColor, int systemBarsAppearance, int topOpaqueSystemBarsAppearance, boolean ensureStatusBarContrastWhenTransparent, boolean ensureNavigationBarContrastWhenTransparent, int resizeMode, int minWidth, int minHeight, int colorBackgroundFloating) {
             this.mLabel = label;
             this.mIcon = icon;
             this.mColorPrimary = colorPrimary;
             this.mColorBackground = colorBackground;
             this.mStatusBarColor = statusBarColor;
             this.mNavigationBarColor = navigationBarColor;
+            this.mSystemBarsAppearance = systemBarsAppearance;
+            this.mTopOpaqueSystemBarsAppearance = topOpaqueSystemBarsAppearance;
             this.mEnsureStatusBarContrastWhenTransparent = ensureStatusBarContrastWhenTransparent;
             this.mEnsureNavigationBarContrastWhenTransparent = ensureNavigationBarContrastWhenTransparent;
             this.mResizeMode = resizeMode;
@@ -893,6 +898,8 @@ public class ActivityManager {
             this.mColorBackground = other.mColorBackground;
             this.mStatusBarColor = other.mStatusBarColor;
             this.mNavigationBarColor = other.mNavigationBarColor;
+            this.mSystemBarsAppearance = other.mSystemBarsAppearance;
+            this.mTopOpaqueSystemBarsAppearance = other.mTopOpaqueSystemBarsAppearance;
             this.mEnsureStatusBarContrastWhenTransparent = other.mEnsureStatusBarContrastWhenTransparent;
             this.mEnsureNavigationBarContrastWhenTransparent = other.mEnsureNavigationBarContrastWhenTransparent;
             this.mResizeMode = other.mResizeMode;
@@ -906,35 +913,34 @@ public class ActivityManager {
             this.mIcon = other.mIcon;
             this.mIconFilename = other.mIconFilename;
             this.mColorPrimary = other.mColorPrimary;
-            int i = other.mColorBackground;
-            if (i != 0) {
-                this.mColorBackground = i;
+            if (other.mColorBackground != 0) {
+                this.mColorBackground = other.mColorBackground;
             }
-            int i2 = other.mStatusBarColor;
-            if (i2 != 0) {
-                this.mStatusBarColor = i2;
+            if (other.mStatusBarColor != 0) {
+                this.mStatusBarColor = other.mStatusBarColor;
             }
-            int i3 = other.mNavigationBarColor;
-            if (i3 != 0) {
-                this.mNavigationBarColor = i3;
+            if (other.mNavigationBarColor != 0) {
+                this.mNavigationBarColor = other.mNavigationBarColor;
+            }
+            if (other.mSystemBarsAppearance != 0) {
+                this.mSystemBarsAppearance = other.mSystemBarsAppearance;
+            }
+            if (other.mTopOpaqueSystemBarsAppearance != 0) {
+                this.mTopOpaqueSystemBarsAppearance = other.mTopOpaqueSystemBarsAppearance;
             }
             this.mEnsureStatusBarContrastWhenTransparent = other.mEnsureStatusBarContrastWhenTransparent;
             this.mEnsureNavigationBarContrastWhenTransparent = other.mEnsureNavigationBarContrastWhenTransparent;
-            int i4 = other.mResizeMode;
-            if (i4 != 2) {
-                this.mResizeMode = i4;
+            if (other.mResizeMode != 2) {
+                this.mResizeMode = other.mResizeMode;
             }
-            int i5 = other.mMinWidth;
-            if (i5 != -1) {
-                this.mMinWidth = i5;
+            if (other.mMinWidth != -1) {
+                this.mMinWidth = other.mMinWidth;
             }
-            int i6 = other.mMinHeight;
-            if (i6 != -1) {
-                this.mMinHeight = i6;
+            if (other.mMinHeight != -1) {
+                this.mMinHeight = other.mMinHeight;
             }
-            int i7 = other.mColorBackgroundFloating;
-            if (i7 != 0) {
-                this.mColorBackgroundFloating = i7;
+            if (other.mColorBackgroundFloating != 0) {
+                this.mColorBackgroundFloating = other.mColorBackgroundFloating;
             }
         }
 
@@ -1003,9 +1009,8 @@ public class ActivityManager {
         }
 
         public Icon loadIcon() {
-            Icon icon = this.mIcon;
-            if (icon != null) {
-                return icon;
+            if (this.mIcon != null) {
+                return this.mIcon;
             }
             Bitmap loadedIcon = loadTaskDescriptionIcon(this.mIconFilename, UserHandle.myUserId());
             if (loadedIcon != null) {
@@ -1028,16 +1033,14 @@ public class ActivityManager {
         }
 
         public String getIconResourcePackage() {
-            Icon icon = this.mIcon;
-            if (icon != null && icon.getType() == 2) {
+            if (this.mIcon != null && this.mIcon.getType() == 2) {
                 return this.mIcon.getResPackage();
             }
             return "";
         }
 
         public int getIconResource() {
-            Icon icon = this.mIcon;
-            if (icon != null && icon.getType() == 2) {
+            if (this.mIcon != null && this.mIcon.getType() == 2) {
                 return this.mIcon.getResId();
             }
             return 0;
@@ -1048,8 +1051,7 @@ public class ActivityManager {
         }
 
         public Bitmap getInMemoryIcon() {
-            Icon icon = this.mIcon;
-            if (icon != null && icon.getType() == 1) {
+            if (this.mIcon != null && this.mIcon.getType() == 1) {
                 return this.mIcon.getBitmap();
             }
             return null;
@@ -1058,7 +1060,7 @@ public class ActivityManager {
         public static Bitmap loadTaskDescriptionIcon(String iconFilename, int userId) {
             if (iconFilename != null) {
                 try {
-                    return ActivityManager.m122$$Nest$smgetTaskService().getTaskDescriptionIcon(iconFilename, userId);
+                    return ActivityManager.getTaskService().getTaskDescriptionIcon(iconFilename, userId);
                 } catch (RemoteException e) {
                     throw e.rethrowFromSystemServer();
                 }
@@ -1090,8 +1092,24 @@ public class ActivityManager {
             return this.mEnsureStatusBarContrastWhenTransparent;
         }
 
+        public int getSystemBarsAppearance() {
+            return this.mSystemBarsAppearance;
+        }
+
+        public int getTopOpaqueSystemBarsAppearance() {
+            return this.mTopOpaqueSystemBarsAppearance;
+        }
+
         public void setEnsureStatusBarContrastWhenTransparent(boolean ensureStatusBarContrastWhenTransparent) {
             this.mEnsureStatusBarContrastWhenTransparent = ensureStatusBarContrastWhenTransparent;
+        }
+
+        public void setSystemBarsAppearance(int systemBarsAppearance) {
+            this.mSystemBarsAppearance = systemBarsAppearance;
+        }
+
+        public void setTopOpaqueSystemBarsAppearance(int topOpaqueSystemBarsAppearance) {
+            this.mTopOpaqueSystemBarsAppearance = topOpaqueSystemBarsAppearance;
         }
 
         public boolean getEnsureNavigationBarContrastWhenTransparent() {
@@ -1115,28 +1133,22 @@ public class ActivityManager {
         }
 
         public void saveToXml(TypedXmlSerializer out) throws IOException {
-            String str = this.mLabel;
-            if (str != null) {
-                out.attribute(null, ATTR_TASKDESCRIPTIONLABEL, str);
+            if (this.mLabel != null) {
+                out.attribute(null, ATTR_TASKDESCRIPTIONLABEL, this.mLabel);
             }
-            int i = this.mColorPrimary;
-            if (i != 0) {
-                out.attributeIntHex(null, ATTR_TASKDESCRIPTIONCOLOR_PRIMARY, i);
+            if (this.mColorPrimary != 0) {
+                out.attributeIntHex(null, ATTR_TASKDESCRIPTIONCOLOR_PRIMARY, this.mColorPrimary);
             }
-            int i2 = this.mColorBackground;
-            if (i2 != 0) {
-                out.attributeIntHex(null, ATTR_TASKDESCRIPTIONCOLOR_BACKGROUND, i2);
+            if (this.mColorBackground != 0) {
+                out.attributeIntHex(null, ATTR_TASKDESCRIPTIONCOLOR_BACKGROUND, this.mColorBackground);
             }
-            int i3 = this.mColorBackgroundFloating;
-            if (i3 != 0) {
-                out.attributeIntHex(null, ATTR_TASKDESCRIPTIONCOLOR_BACKGROUND_FLOATING, i3);
+            if (this.mColorBackgroundFloating != 0) {
+                out.attributeIntHex(null, ATTR_TASKDESCRIPTIONCOLOR_BACKGROUND_FLOATING, this.mColorBackgroundFloating);
             }
-            String str2 = this.mIconFilename;
-            if (str2 != null) {
-                out.attribute(null, ATTR_TASKDESCRIPTIONICON_FILENAME, str2);
+            if (this.mIconFilename != null) {
+                out.attribute(null, ATTR_TASKDESCRIPTIONICON_FILENAME, this.mIconFilename);
             }
-            Icon icon = this.mIcon;
-            if (icon != null && icon.getType() == 2) {
+            if (this.mIcon != null && this.mIcon.getType() == 2) {
                 out.attributeInt(null, ATTR_TASKDESCRIPTIONICON_RESOURCE, this.mIcon.getResId());
                 out.attribute(null, ATTR_TASKDESCRIPTIONICON_RESOURCE_PACKAGE, this.mIcon.getResPackage());
             }
@@ -1194,6 +1206,8 @@ public class ActivityManager {
             dest.writeInt(this.mColorBackground);
             dest.writeInt(this.mStatusBarColor);
             dest.writeInt(this.mNavigationBarColor);
+            dest.writeInt(this.mSystemBarsAppearance);
+            dest.writeInt(this.mTopOpaqueSystemBarsAppearance);
             dest.writeBoolean(this.mEnsureStatusBarContrastWhenTransparent);
             dest.writeBoolean(this.mEnsureNavigationBarContrastWhenTransparent);
             dest.writeInt(this.mResizeMode);
@@ -1217,6 +1231,8 @@ public class ActivityManager {
             this.mColorBackground = source.readInt();
             this.mStatusBarColor = source.readInt();
             this.mNavigationBarColor = source.readInt();
+            this.mSystemBarsAppearance = source.readInt();
+            this.mTopOpaqueSystemBarsAppearance = source.readInt();
             this.mEnsureStatusBarContrastWhenTransparent = source.readBoolean();
             this.mEnsureNavigationBarContrastWhenTransparent = source.readBoolean();
             this.mResizeMode = source.readInt();
@@ -1226,25 +1242,22 @@ public class ActivityManager {
             this.mColorBackgroundFloating = source.readInt();
         }
 
-        /* renamed from: android.app.ActivityManager$TaskDescription$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<TaskDescription> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TaskDescription createFromParcel(Parcel source) {
-                return new TaskDescription(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TaskDescription[] newArray(int size) {
-                return new TaskDescription[size];
-            }
+        public String toString() {
+            return "TaskDescription Label: " + this.mLabel + " Icon: " + this.mIcon + " IconFilename: " + this.mIconFilename + " colorPrimary: " + this.mColorPrimary + " colorBackground: " + this.mColorBackground + " statusBarColor: " + this.mStatusBarColor + (this.mEnsureStatusBarContrastWhenTransparent ? " (contrast when transparent)" : "") + " navigationBarColor: " + this.mNavigationBarColor + (this.mEnsureNavigationBarContrastWhenTransparent ? " (contrast when transparent)" : "") + " resizeMode: " + ActivityInfo.resizeModeToString(this.mResizeMode) + " minWidth: " + this.mMinWidth + " minHeight: " + this.mMinHeight + " colorBackgrounFloating: " + this.mColorBackgroundFloating + " systemBarsAppearance: " + this.mSystemBarsAppearance + " topOpaqueSystemBarsAppearance: " + this.mTopOpaqueSystemBarsAppearance;
         }
 
-        public String toString() {
-            return "TaskDescription Label: " + this.mLabel + " Icon: " + this.mIcon + " IconFilename: " + this.mIconFilename + " colorPrimary: " + this.mColorPrimary + " colorBackground: " + this.mColorBackground + " statusBarColor: " + this.mStatusBarColor + (this.mEnsureStatusBarContrastWhenTransparent ? " (contrast when transparent)" : "") + " navigationBarColor: " + this.mNavigationBarColor + (this.mEnsureNavigationBarContrastWhenTransparent ? " (contrast when transparent)" : "") + " resizeMode: " + ActivityInfo.resizeModeToString(this.mResizeMode) + " minWidth: " + this.mMinWidth + " minHeight: " + this.mMinHeight + " colorBackgrounFloating: " + this.mColorBackgroundFloating;
+        public int hashCode() {
+            int i = 17;
+            if (this.mLabel != null) {
+                i = (17 * 31) + this.mLabel.hashCode();
+            }
+            if (this.mIcon != null) {
+                i = (i * 31) + this.mIcon.hashCode();
+            }
+            if (this.mIconFilename != null) {
+                i = (i * 31) + this.mIconFilename.hashCode();
+            }
+            return (((((((((((((((((((((((i * 31) + this.mColorPrimary) * 31) + this.mColorBackground) * 31) + this.mColorBackgroundFloating) * 31) + this.mStatusBarColor) * 31) + this.mNavigationBarColor) * 31) + this.mSystemBarsAppearance) * 31) + this.mTopOpaqueSystemBarsAppearance) * 31) + (this.mEnsureStatusBarContrastWhenTransparent ? 1 : 0)) * 31) + (this.mEnsureNavigationBarContrastWhenTransparent ? 1 : 0)) * 31) + this.mResizeMode) * 31) + this.mMinWidth) * 31) + this.mMinHeight;
         }
 
         public boolean equals(Object obj) {
@@ -1252,7 +1265,7 @@ public class ActivityManager {
                 return false;
             }
             TaskDescription other = (TaskDescription) obj;
-            return TextUtils.equals(this.mLabel, other.mLabel) && TextUtils.equals(this.mIconFilename, other.mIconFilename) && this.mIcon == other.mIcon && this.mColorPrimary == other.mColorPrimary && this.mColorBackground == other.mColorBackground && this.mStatusBarColor == other.mStatusBarColor && this.mNavigationBarColor == other.mNavigationBarColor && this.mEnsureStatusBarContrastWhenTransparent == other.mEnsureStatusBarContrastWhenTransparent && this.mEnsureNavigationBarContrastWhenTransparent == other.mEnsureNavigationBarContrastWhenTransparent && this.mResizeMode == other.mResizeMode && this.mMinWidth == other.mMinWidth && this.mMinHeight == other.mMinHeight && this.mColorBackgroundFloating == other.mColorBackgroundFloating;
+            return TextUtils.equals(this.mLabel, other.mLabel) && TextUtils.equals(this.mIconFilename, other.mIconFilename) && this.mIcon == other.mIcon && this.mColorPrimary == other.mColorPrimary && this.mColorBackground == other.mColorBackground && this.mStatusBarColor == other.mStatusBarColor && this.mNavigationBarColor == other.mNavigationBarColor && this.mSystemBarsAppearance == other.mSystemBarsAppearance && this.mTopOpaqueSystemBarsAppearance == other.mTopOpaqueSystemBarsAppearance && this.mEnsureStatusBarContrastWhenTransparent == other.mEnsureStatusBarContrastWhenTransparent && this.mEnsureNavigationBarContrastWhenTransparent == other.mEnsureNavigationBarContrastWhenTransparent && this.mResizeMode == other.mResizeMode && this.mMinWidth == other.mMinWidth && this.mMinHeight == other.mMinHeight && this.mColorBackgroundFloating == other.mColorBackgroundFloating;
         }
 
         public static boolean equals(TaskDescription td1, TaskDescription td2) {
@@ -1278,17 +1291,15 @@ public class ActivityManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class RecentTaskInfo extends TaskInfo implements Parcelable {
         public static final Parcelable.Creator<RecentTaskInfo> CREATOR = new Parcelable.Creator<RecentTaskInfo>() { // from class: android.app.ActivityManager.RecentTaskInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RecentTaskInfo createFromParcel(Parcel source) {
                 return new RecentTaskInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RecentTaskInfo[] newArray(int size) {
                 return new RecentTaskInfo[size];
@@ -1309,11 +1320,6 @@ public class ActivityManager {
         @Deprecated
         public int persistentId;
 
-        /* synthetic */ RecentTaskInfo(Parcel parcel, RecentTaskInfoIA recentTaskInfoIA) {
-            this(parcel);
-        }
-
-        /* loaded from: classes.dex */
         public static class PersistedTaskSnapshotData {
             public Point bufferSize;
             public Rect contentInsets;
@@ -1379,23 +1385,6 @@ public class ActivityManager {
             dest.writeTypedObject(this.lastSnapshotData.contentInsets, flags);
             dest.writeTypedObject(this.lastSnapshotData.bufferSize, flags);
             super.writeToParcel(dest, flags);
-        }
-
-        /* renamed from: android.app.ActivityManager$RecentTaskInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RecentTaskInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RecentTaskInfo createFromParcel(Parcel source) {
-                return new RecentTaskInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RecentTaskInfo[] newArray(int size) {
-                return new RecentTaskInfo[size];
-            }
         }
 
         public void dump(PrintWriter pw, String indent) {
@@ -1484,17 +1473,15 @@ public class ActivityManager {
         return ActivityTaskManager.getInstance().getRecentTasks(maxNum, flags, this.mContext.getUserId());
     }
 
-    /* loaded from: classes.dex */
     public static class RunningTaskInfo extends TaskInfo implements Parcelable {
         public static final Parcelable.Creator<RunningTaskInfo> CREATOR = new Parcelable.Creator<RunningTaskInfo>() { // from class: android.app.ActivityManager.RunningTaskInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningTaskInfo createFromParcel(Parcel source) {
                 return new RunningTaskInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningTaskInfo[] newArray(int size) {
                 return new RunningTaskInfo[size];
@@ -1512,10 +1499,6 @@ public class ActivityManager {
 
         @Deprecated
         public Bitmap thumbnail;
-
-        /* synthetic */ RunningTaskInfo(Parcel parcel, RunningTaskInfoIA runningTaskInfoIA) {
-            this(parcel);
-        }
 
         public RunningTaskInfo() {
         }
@@ -1543,23 +1526,6 @@ public class ActivityManager {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
             super.writeToParcel(dest, flags);
-        }
-
-        /* renamed from: android.app.ActivityManager$RunningTaskInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RunningTaskInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RunningTaskInfo createFromParcel(Parcel source) {
-                return new RunningTaskInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RunningTaskInfo[] newArray(int size) {
-                return new RunningTaskInfo[size];
-            }
         }
     }
 
@@ -1670,17 +1636,15 @@ public class ActivityManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class RunningServiceInfo implements Parcelable {
         public static final Parcelable.Creator<RunningServiceInfo> CREATOR = new Parcelable.Creator<RunningServiceInfo>() { // from class: android.app.ActivityManager.RunningServiceInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningServiceInfo createFromParcel(Parcel source) {
                 return new RunningServiceInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningServiceInfo[] newArray(int size) {
                 return new RunningServiceInfo[size];
@@ -1704,10 +1668,6 @@ public class ActivityManager {
         public ComponentName service;
         public boolean started;
         public int uid;
-
-        /* synthetic */ RunningServiceInfo(Parcel parcel, RunningServiceInfoIA runningServiceInfoIA) {
-            this(parcel);
-        }
 
         public RunningServiceInfo() {
         }
@@ -1752,23 +1712,6 @@ public class ActivityManager {
             this.clientLabel = source.readInt();
         }
 
-        /* renamed from: android.app.ActivityManager$RunningServiceInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RunningServiceInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RunningServiceInfo createFromParcel(Parcel source) {
-                return new RunningServiceInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RunningServiceInfo[] newArray(int size) {
-                return new RunningServiceInfo[size];
-            }
-        }
-
         private RunningServiceInfo(Parcel source) {
             readFromParcel(source);
         }
@@ -1791,17 +1734,15 @@ public class ActivityManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class MemoryInfo implements Parcelable {
         public static final Parcelable.Creator<MemoryInfo> CREATOR = new Parcelable.Creator<MemoryInfo>() { // from class: android.app.ActivityManager.MemoryInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MemoryInfo createFromParcel(Parcel source) {
                 return new MemoryInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MemoryInfo[] newArray(int size) {
                 return new MemoryInfo[size];
@@ -1816,10 +1757,6 @@ public class ActivityManager {
         public long threshold;
         public long totalMem;
         public long visibleAppThreshold;
-
-        /* synthetic */ MemoryInfo(Parcel parcel, MemoryInfoIA memoryInfoIA) {
-            this(parcel);
-        }
 
         public MemoryInfo() {
         }
@@ -1852,23 +1789,6 @@ public class ActivityManager {
             this.secondaryServerThreshold = source.readLong();
             this.visibleAppThreshold = source.readLong();
             this.foregroundAppThreshold = source.readLong();
-        }
-
-        /* renamed from: android.app.ActivityManager$MemoryInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<MemoryInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public MemoryInfo createFromParcel(Parcel source) {
-                return new MemoryInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public MemoryInfo[] newArray(int size) {
-                return new MemoryInfo[size];
-            }
         }
 
         private MemoryInfo(Parcel source) {
@@ -1906,18 +1826,16 @@ public class ActivityManager {
         ((UriGrantsManager) this.mContext.getSystemService(Context.URI_GRANTS_SERVICE)).clearGrantedUriPermissions(packageName);
     }
 
-    /* loaded from: classes.dex */
     public static class ProcessErrorStateInfo implements Parcelable {
         public static final int CRASHED = 1;
         public static final Parcelable.Creator<ProcessErrorStateInfo> CREATOR = new Parcelable.Creator<ProcessErrorStateInfo>() { // from class: android.app.ActivityManager.ProcessErrorStateInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ProcessErrorStateInfo createFromParcel(Parcel source) {
                 return new ProcessErrorStateInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ProcessErrorStateInfo[] newArray(int size) {
                 return new ProcessErrorStateInfo[size];
@@ -1934,10 +1852,6 @@ public class ActivityManager {
         public String stackTrace;
         public String tag;
         public int uid;
-
-        /* synthetic */ ProcessErrorStateInfo(Parcel parcel, ProcessErrorStateInfoIA processErrorStateInfoIA) {
-            this(parcel);
-        }
 
         public ProcessErrorStateInfo() {
             this.crashData = null;
@@ -1971,23 +1885,6 @@ public class ActivityManager {
             this.stackTrace = source.readString();
         }
 
-        /* renamed from: android.app.ActivityManager$ProcessErrorStateInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ProcessErrorStateInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ProcessErrorStateInfo createFromParcel(Parcel source) {
-                return new ProcessErrorStateInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ProcessErrorStateInfo[] newArray(int size) {
-                return new ProcessErrorStateInfo[size];
-            }
-        }
-
         private ProcessErrorStateInfo(Parcel source) {
             this.crashData = null;
             readFromParcel(source);
@@ -2002,17 +1899,15 @@ public class ActivityManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class RunningAppProcessInfo implements Parcelable {
         public static final Parcelable.Creator<RunningAppProcessInfo> CREATOR = new Parcelable.Creator<RunningAppProcessInfo>() { // from class: android.app.ActivityManager.RunningAppProcessInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningAppProcessInfo createFromParcel(Parcel source) {
                 return new RunningAppProcessInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningAppProcessInfo[] newArray(int size) {
                 return new RunningAppProcessInfo[size];
@@ -2050,7 +1945,6 @@ public class ActivityManager {
         public ComponentName importanceReasonComponent;
         public int importanceReasonImportance;
         public int importanceReasonPid;
-        public long initialIdlePss;
         public boolean isFocused;
         public boolean isProtectedInPicked;
         public long lastActivityTime;
@@ -2068,12 +1962,7 @@ public class ActivityManager {
         public int uid;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface Importance {
-        }
-
-        /* synthetic */ RunningAppProcessInfo(Parcel parcel, RunningAppProcessInfoIA runningAppProcessInfoIA) {
-            this(parcel);
         }
 
         public static int procStateToImportance(int procState) {
@@ -2161,8 +2050,6 @@ public class ActivityManager {
             this.processState = 6;
             this.isFocused = false;
             this.lastActivityTime = 0L;
-            this.lastPss = 0L;
-            this.lastSwapPss = 0L;
         }
 
         public RunningAppProcessInfo(String pProcessName, int pPid, String[] pArr) {
@@ -2171,8 +2058,6 @@ public class ActivityManager {
             this.pkgList = pArr;
             this.isFocused = false;
             this.lastActivityTime = 0L;
-            this.lastPss = 0L;
-            this.lastSwapPss = 0L;
         }
 
         @Override // android.os.Parcelable
@@ -2217,23 +2102,6 @@ public class ActivityManager {
             this.processState = source.readInt();
             this.isFocused = source.readInt() != 0;
             this.lastActivityTime = source.readLong();
-        }
-
-        /* renamed from: android.app.ActivityManager$RunningAppProcessInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RunningAppProcessInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RunningAppProcessInfo createFromParcel(Parcel source) {
-                return new RunningAppProcessInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RunningAppProcessInfo[] newArray(int size) {
-                return new RunningAppProcessInfo[size];
-            }
         }
 
         private RunningAppProcessInfo(Parcel source) {
@@ -2322,6 +2190,7 @@ public class ActivityManager {
         }
     }
 
+    @SystemApi
     public List<ApplicationStartInfo> getExternalHistoricalProcessStartReasons(String packageName, int maxNum) {
         try {
             ParceledListSlice<ApplicationStartInfo> startInfos = getService().getHistoricalProcessStartReasons(packageName, maxNum, this.mContext.getUserId());
@@ -2331,44 +2200,101 @@ public class ActivityManager {
         }
     }
 
-    public void setApplicationStartInfoCompleteListener(Executor executor, ApplicationStartInfoCompleteListener listener) {
-        Preconditions.checkNotNull(executor, "executor cannot be null");
-        Preconditions.checkNotNull(listener, "listener cannot be null");
-        IApplicationStartInfoCompleteListener callback = new AnonymousClass2(executor, listener);
-        try {
-            getService().setApplicationStartInfoCompleteListener(callback, this.mContext.getUserId());
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class AppStartInfoCallbackWrapper {
+        final Executor mExecutor;
+        final Consumer<ApplicationStartInfo> mListener;
+
+        AppStartInfoCallbackWrapper(Executor executor, Consumer<ApplicationStartInfo> listener) {
+            this.mExecutor = executor;
+            this.mListener = listener;
         }
     }
 
-    /* renamed from: android.app.ActivityManager$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 extends IApplicationStartInfoCompleteListener.Stub {
-        final /* synthetic */ Executor val$executor;
-        final /* synthetic */ ApplicationStartInfoCompleteListener val$listener;
+    public void addApplicationStartInfoCompletionListener(Executor executor, Consumer<ApplicationStartInfo> listener) {
+        Preconditions.checkNotNull(executor, "executor cannot be null");
+        Preconditions.checkNotNull(listener, "listener cannot be null");
+        synchronized (this.mAppStartInfoCallbacks) {
+            for (int i = 0; i < this.mAppStartInfoCallbacks.size(); i++) {
+                if (listener.equals(this.mAppStartInfoCallbacks.get(i).mListener)) {
+                    return;
+                }
+            }
+            if (this.mAppStartInfoCompleteListener == null) {
+                this.mAppStartInfoCompleteListener = new AnonymousClass2();
+                try {
+                    getService().addApplicationStartInfoCompleteListener(this.mAppStartInfoCompleteListener, this.mContext.getUserId());
+                    if (1 != 0) {
+                        this.mAppStartInfoCallbacks.add(new AppStartInfoCallbackWrapper(executor, listener));
+                    } else {
+                        this.mAppStartInfoCompleteListener = null;
+                        this.mAppStartInfoCallbacks.clear();
+                    }
+                } catch (RemoteException e) {
+                    throw e.rethrowFromSystemServer();
+                }
+            } else {
+                this.mAppStartInfoCallbacks.add(new AppStartInfoCallbackWrapper(executor, listener));
+            }
+        }
+    }
 
-        AnonymousClass2(Executor executor, ApplicationStartInfoCompleteListener applicationStartInfoCompleteListener) {
-            this.val$executor = executor;
-            this.val$listener = applicationStartInfoCompleteListener;
+    /* renamed from: android.app.ActivityManager$2, reason: invalid class name */
+    class AnonymousClass2 extends IApplicationStartInfoCompleteListener.Stub {
+        AnonymousClass2() {
         }
 
         @Override // android.app.IApplicationStartInfoCompleteListener
         public void onApplicationStartInfoComplete(final ApplicationStartInfo applicationStartInfo) {
-            Executor executor = this.val$executor;
-            final ApplicationStartInfoCompleteListener applicationStartInfoCompleteListener = this.val$listener;
-            executor.execute(new Runnable() { // from class: android.app.ActivityManager$2$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    ActivityManager.ApplicationStartInfoCompleteListener.this.onApplicationStartInfoComplete(applicationStartInfo);
+            synchronized (ActivityManager.this.mAppStartInfoCallbacks) {
+                for (int i = 0; i < ActivityManager.this.mAppStartInfoCallbacks.size(); i++) {
+                    final AppStartInfoCallbackWrapper callback = (AppStartInfoCallbackWrapper) ActivityManager.this.mAppStartInfoCallbacks.get(i);
+                    callback.mExecutor.execute(new Runnable() { // from class: android.app.ActivityManager$2$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            ActivityManager.AppStartInfoCallbackWrapper.this.mListener.accept(applicationStartInfo);
+                        }
+                    });
                 }
-            });
+                ActivityManager.this.mAppStartInfoCallbacks.clear();
+                ActivityManager.this.mAppStartInfoCompleteListener = null;
+            }
         }
     }
 
-    public void removeApplicationStartInfoCompleteListener() {
+    public void removeApplicationStartInfoCompletionListener(Consumer<ApplicationStartInfo> listener) {
+        Preconditions.checkNotNull(listener, "listener cannot be null");
+        synchronized (this.mAppStartInfoCallbacks) {
+            int i = 0;
+            while (true) {
+                if (i >= this.mAppStartInfoCallbacks.size()) {
+                    break;
+                }
+                AppStartInfoCallbackWrapper callback = this.mAppStartInfoCallbacks.get(i);
+                if (!listener.equals(callback.mListener)) {
+                    i++;
+                } else {
+                    this.mAppStartInfoCallbacks.remove(i);
+                    break;
+                }
+            }
+            if (this.mAppStartInfoCompleteListener != null && this.mAppStartInfoCallbacks.isEmpty()) {
+                try {
+                    getService().removeApplicationStartInfoCompleteListener(this.mAppStartInfoCompleteListener, this.mContext.getUserId());
+                    this.mAppStartInfoCompleteListener = null;
+                } catch (RemoteException e) {
+                    throw e.rethrowFromSystemServer();
+                }
+            }
+        }
+    }
+
+    public void addStartInfoTimestamp(int key, long timestampNs) {
+        if (key <= 20 || key > 30) {
+            throw new IllegalArgumentException("Key not in allowed range.");
+        }
         try {
-            getService().removeApplicationStartInfoCompleteListener(this.mContext.getUserId());
+            getService().addStartInfoTimestamp(key, timestampNs, this.mContext.getUserId());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2432,14 +2358,35 @@ public class ActivityManager {
     }
 
     @SystemApi
+    public int getBindingUidImportance(int uid) {
+        try {
+            int procState = getService().getBindingUidProcessState(uid, this.mContext.getOpPackageName());
+            return RunningAppProcessInfo.procStateToImportanceForClient(procState, this.mContext);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
     public void addOnUidImportanceListener(OnUidImportanceListener listener, int importanceCutpoint) {
-        synchronized (this) {
+        addOnUidImportanceListenerInternal(listener, importanceCutpoint, null);
+    }
+
+    @SystemApi
+    public void addOnUidImportanceListener(OnUidImportanceListener listener, int importanceCutpoint, int[] uids) {
+        Objects.requireNonNull(listener);
+        Objects.requireNonNull(uids);
+        addOnUidImportanceListenerInternal(listener, importanceCutpoint, uids);
+    }
+
+    private void addOnUidImportanceListenerInternal(OnUidImportanceListener listener, int importanceCutpoint, int[] uids) {
+        synchronized (this.mImportanceListeners) {
             if (this.mImportanceListeners.containsKey(listener)) {
                 throw new IllegalArgumentException("Listener already registered: " + listener);
             }
             MyUidObserver observer = new MyUidObserver(listener, this.mContext);
             try {
-                getService().registerUidObserver(observer, 3, RunningAppProcessInfo.importanceToProcState(importanceCutpoint), this.mContext.getOpPackageName());
+                getService().registerUidObserverForUids(observer, 3, RunningAppProcessInfo.importanceToProcState(importanceCutpoint), this.mContext.getOpPackageName(), uids);
                 this.mImportanceListeners.put(listener, observer);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
@@ -2449,7 +2396,7 @@ public class ActivityManager {
 
     @SystemApi
     public void removeOnUidImportanceListener(OnUidImportanceListener listener) {
-        synchronized (this) {
+        synchronized (this.mImportanceListeners) {
             MyUidObserver observer = this.mImportanceListeners.remove(listener);
             if (observer == null) {
                 throw new IllegalArgumentException("Listener not registered: " + listener);
@@ -2580,7 +2527,7 @@ public class ActivityManager {
         return getLauncherLargeIconSizeInner(this.mContext);
     }
 
-    public static int getLauncherLargeIconSizeInner(Context context) {
+    static int getLauncherLargeIconSizeInner(Context context) {
         Resources res = context.getResources();
         int size = res.getDimensionPixelSize(17104896);
         int sw = res.getConfiguration().smallestScreenWidthDp;
@@ -2614,6 +2561,10 @@ public class ActivityManager {
         }
     }
 
+    public static boolean isUserAMonkey$ravenwood() {
+        return false;
+    }
+
     @Deprecated
     public static boolean isRunningInTestHarness() {
         return SystemProperties.getBoolean("ro.test_harness", false);
@@ -2637,7 +2588,10 @@ public class ActivityManager {
     }
 
     public static int checkComponentPermission(String permission, int uid, int owningUid, boolean exported) {
-        UserHandle.getAppId(uid);
+        return checkComponentPermission(permission, uid, 0, owningUid, exported);
+    }
+
+    public static int checkComponentPermission(String permission, int uid, int deviceId, int owningUid, boolean exported) {
         if (canAccessUnexportedComponents(uid)) {
             return 0;
         }
@@ -2657,7 +2611,7 @@ public class ActivityManager {
             return 0;
         }
         try {
-            return AppGlobals.getPackageManager().checkUidPermission(permission, uid);
+            return AppGlobals.getPermissionManager().checkUidPermission(uid, permission, deviceId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2665,7 +2619,7 @@ public class ActivityManager {
 
     public static int checkUidPermission(String permission, int uid) {
         try {
-            return AppGlobals.getPackageManager().checkUidPermission(permission, uid);
+            return AppGlobals.getPermissionManager().checkUidPermission(uid, permission, 0);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2782,12 +2736,12 @@ public class ActivityManager {
         }
     }
 
-    public boolean stopUser(int userId, boolean force) {
+    public boolean stopUser(int userId) {
         if (userId == 0) {
             return false;
         }
         try {
-            return getService().stopUser(userId, force, null) == 0;
+            return getService().stopUserWithCallback(userId, null) == 0;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2841,6 +2795,10 @@ public class ActivityManager {
         return sSystemReady;
     }
 
+    public static boolean isSystemReady$ravenwood() {
+        return true;
+    }
+
     public static void broadcastStickyIntent(Intent intent, int userId) {
         broadcastStickyIntent(intent, -1, null, userId);
     }
@@ -2850,8 +2808,12 @@ public class ActivityManager {
     }
 
     public static void broadcastStickyIntent(Intent intent, int appOp, Bundle options, int userId) {
+        broadcastStickyIntent(intent, null, appOp, options, userId);
+    }
+
+    public static void broadcastStickyIntent(Intent intent, String[] excludedPackages, int appOp, Bundle options, int userId) {
         try {
-            getService().broadcastIntentWithFeature(null, null, intent, null, null, -1, null, null, null, null, null, appOp, options, false, true, userId);
+            getService().broadcastIntentWithFeature(null, null, intent, null, null, -1, null, null, null, null, excludedPackages, appOp, options, false, true, userId);
         } catch (RemoteException e) {
         }
     }
@@ -2885,22 +2847,9 @@ public class ActivityManager {
         return IActivityManagerSingleton.get();
     }
 
-    private static IActivityTaskManager getTaskService() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static IActivityTaskManager getTaskService() {
         return ActivityTaskManager.getService();
-    }
-
-    /* renamed from: android.app.ActivityManager$3 */
-    /* loaded from: classes.dex */
-    class AnonymousClass3 extends Singleton<IActivityManager> {
-        AnonymousClass3() {
-        }
-
-        @Override // android.util.Singleton
-        public IActivityManager create() {
-            IBinder b = ServiceManager.getService("activity");
-            IActivityManager am = IActivityManager.Stub.asInterface(b);
-            return am;
-        }
     }
 
     private static void dumpService(PrintWriter pw, FileDescriptor fd, String name, String[] args) {
@@ -3068,7 +3017,6 @@ public class ActivityManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class AppTask {
         private IAppTask mAppTaskImpl;
 
@@ -3117,58 +3065,6 @@ public class ActivityManager {
         }
     }
 
-    public void semSetProcessImportant(IBinder token, int pid, boolean isForeground) {
-        try {
-            getService().setProcessImportant(token, pid, isForeground, "setProcessImportant()");
-        } catch (RemoteException e) {
-        }
-    }
-
-    public boolean semSwitchUser(int userid) {
-        try {
-            return getService().switchUser(userid);
-        } catch (RemoteException e) {
-            Log.e(TAG, "semSwitchUser failed", e);
-            return false;
-        }
-    }
-
-    public void semCloseSystemDialogs(String reason) {
-        try {
-            getService().closeSystemDialogs(reason);
-        } catch (RemoteException e) {
-        }
-    }
-
-    public void semRegisterProcessListener(SemProcessListener listener) {
-        ProcessObserver existingProcessObserver = this.mProcessObserverMap.get(listener);
-        if (existingProcessObserver != null) {
-            Log.w(TAG, "ProcessListener already registered");
-            return;
-        }
-        ProcessObserver processObserver = new ProcessObserver();
-        try {
-            getService().registerProcessObserver(processObserver);
-            this.mProcessObserverMap.put(listener, processObserver);
-            this.mProcessListeners.add(listener);
-        } catch (RemoteException e) {
-        }
-    }
-
-    public void semUnregisterProcessListener(SemProcessListener listener) {
-        ProcessObserver existingProcessObserver = this.mProcessObserverMap.get(listener);
-        if (existingProcessObserver == null) {
-            Log.w(TAG, "ProcessListener no registered");
-            return;
-        }
-        try {
-            getService().unregisterProcessObserver(existingProcessObserver);
-            this.mProcessObserverMap.remove(listener);
-            this.mProcessListeners.remove(listener);
-        } catch (RemoteException e) {
-        }
-    }
-
     public void semUpdateConfiguration(Configuration values) {
         try {
             getTaskService().updateConfiguration(values);
@@ -3177,10 +3073,6 @@ public class ActivityManager {
     }
 
     public void semKeepKeyguardWaitingForActivityDrawn() {
-        try {
-            getTaskService().requestWaitingForOccluding(this.mContext.getDisplayId());
-        } catch (RemoteException e) {
-        }
     }
 
     public void semRegisterActivityControllerListener(SemActivityControllerListener listener) {
@@ -3193,6 +3085,7 @@ public class ActivityManager {
                 this.mActivityController = new ActivityController();
             }
             try {
+                Log.i(TAG, "semRegisterActivityControllerListener, listener=0x" + Integer.toHexString(listener.hashCode()));
                 this.mActivityControllerListeners.add(listener);
                 getTaskService().setActivityController(this.mActivityController, false);
             } catch (RemoteException e) {
@@ -3207,6 +3100,7 @@ public class ActivityManager {
                 return;
             }
             try {
+                Log.i(TAG, "semUnregisterActivityControllerListener, listener=0x" + Integer.toHexString(listener.hashCode()));
                 this.mActivityControllerListeners.remove(listener);
                 if (this.mActivityControllerListeners.isEmpty()) {
                     getTaskService().setActivityController(null, false);
@@ -3216,12 +3110,7 @@ public class ActivityManager {
         }
     }
 
-    /* loaded from: classes.dex */
     private class ActivityController extends IActivityController.Stub {
-        /* synthetic */ ActivityController(ActivityManager activityManager, ActivityControllerIA activityControllerIA) {
-            this();
-        }
-
         private ActivityController() {
         }
 
@@ -3231,6 +3120,7 @@ public class ActivityManager {
             while (it.hasNext()) {
                 SemActivityControllerListener listener = (SemActivityControllerListener) it.next();
                 if (!listener.onActivityStarting(intent, pkg)) {
+                    Log.i(ActivityManager.TAG, "Tried to abort onActivityStarting, pkg=" + pkg + ", listener=0x" + Integer.toHexString(listener.hashCode()));
                     return false;
                 }
             }
@@ -3243,6 +3133,7 @@ public class ActivityManager {
             while (it.hasNext()) {
                 SemActivityControllerListener listener = (SemActivityControllerListener) it.next();
                 if (!listener.onActivityResuming(pkg)) {
+                    Log.i(ActivityManager.TAG, "Tried to abort onActivityResuming, pkg=" + pkg + ", listener=0x" + Integer.toHexString(listener.hashCode()));
                     return false;
                 }
             }
@@ -3304,6 +3195,58 @@ public class ActivityManager {
         }
     }
 
+    public void semSetProcessImportant(IBinder token, int pid, boolean isForeground) {
+        try {
+            getService().setProcessImportant(token, pid, isForeground, "setProcessImportant()");
+        } catch (RemoteException e) {
+        }
+    }
+
+    public boolean semSwitchUser(int userid) {
+        try {
+            return getService().switchUser(userid);
+        } catch (RemoteException e) {
+            Log.e(TAG, "semSwitchUser failed", e);
+            return false;
+        }
+    }
+
+    public void semCloseSystemDialogs(String reason) {
+        try {
+            getService().closeSystemDialogs(reason);
+        } catch (RemoteException e) {
+        }
+    }
+
+    public void semRegisterProcessListener(SemProcessListener listener) {
+        ProcessObserver existingProcessObserver = this.mProcessObserverMap.get(listener);
+        if (existingProcessObserver != null) {
+            Log.w(TAG, "ProcessListener already registered");
+            return;
+        }
+        ProcessObserver processObserver = new ProcessObserver();
+        try {
+            getService().registerProcessObserver(processObserver);
+            this.mProcessObserverMap.put(listener, processObserver);
+            this.mProcessListeners.add(listener);
+        } catch (RemoteException e) {
+        }
+    }
+
+    public void semUnregisterProcessListener(SemProcessListener listener) {
+        ProcessObserver existingProcessObserver = this.mProcessObserverMap.get(listener);
+        if (existingProcessObserver == null) {
+            Log.w(TAG, "ProcessListener no registered");
+            return;
+        }
+        try {
+            getService().unregisterProcessObserver(existingProcessObserver);
+            this.mProcessObserverMap.remove(listener);
+            this.mProcessListeners.remove(listener);
+        } catch (RemoteException e) {
+        }
+    }
+
     public List<String> getBugreportWhitelistedPackages() {
         try {
             return getService().getBugreportWhitelistedPackages();
@@ -3348,6 +3291,14 @@ public class ActivityManager {
         }
     }
 
+    public void setThemeOverlayReady(int userId) {
+        try {
+            getService().setThemeOverlayReady(userId);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     public void resetAppErrors() {
         try {
             getService().resetAppErrors();
@@ -3375,14 +3326,6 @@ public class ActivityManager {
     public void forceDelayBroadcastDelivery(String targetPackage, long delayedDurationMs) {
         try {
             getService().forceDelayBroadcastDelivery(targetPackage, delayedDurationMs);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public boolean isModernBroadcastQueueEnabled() {
-        try {
-            return getService().isModernBroadcastQueueEnabled();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -3423,6 +3366,14 @@ public class ActivityManager {
         }
     }
 
+    public void noteAppRestrictionEnabled(String packageName, int uid, int restrictionLevel, boolean enabled, int reason, String subReason, int source, long threshold) {
+        try {
+            getService().noteAppRestrictionEnabled(packageName, uid, restrictionLevel, enabled, reason, subReason, source, threshold);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     public void notifySystemPropertiesChanged() {
         IBinder binder = getService().asBinder();
         if (binder != null) {
@@ -3436,17 +3387,15 @@ public class ActivityManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class PendingIntentInfo implements Parcelable {
         public static final Parcelable.Creator<PendingIntentInfo> CREATOR = new Parcelable.Creator<PendingIntentInfo>() { // from class: android.app.ActivityManager.PendingIntentInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PendingIntentInfo createFromParcel(Parcel in) {
                 return new PendingIntentInfo(in.readString(), in.readInt(), in.readBoolean(), in.readInt());
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PendingIntentInfo[] newArray(int size) {
                 return new PendingIntentInfo[size];
@@ -3491,23 +3440,6 @@ public class ActivityManager {
             parcel.writeInt(this.mCreatorUid);
             parcel.writeBoolean(this.mImmutable);
             parcel.writeInt(this.mIntentSenderType);
-        }
-
-        /* renamed from: android.app.ActivityManager$PendingIntentInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<PendingIntentInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PendingIntentInfo createFromParcel(Parcel in) {
-                return new PendingIntentInfo(in.readString(), in.readInt(), in.readBoolean(), in.readInt());
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PendingIntentInfo[] newArray(int size) {
-                return new PendingIntentInfo[size];
-            }
         }
     }
 
@@ -3605,6 +3537,14 @@ public class ActivityManager {
             return parceledList == null ? Collections.emptyList() : parceledList.getList();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void forceStopPackageByAdmin(String packageName, int userId) {
+        try {
+            getService().forceStopPackageByAdmin(packageName, userId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -3752,27 +3692,11 @@ public class ActivityManager {
         }
     }
 
-    public void forceStopPackageByAdmin(String packageName, int userId) {
-        try {
-            getService().forceStopPackageByAdmin(packageName, userId);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Bitmap getResumedTaskThumbnail(int taskId) throws SecurityException {
         try {
             return getTaskService().getResumedTaskThumbnail(taskId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public void updateDelayServiceEnable(boolean enable) {
-        try {
-            getService().updateDelayServiceEnable(enable);
-        } catch (RemoteException e) {
-            e.printStackTrace();
         }
     }
 }

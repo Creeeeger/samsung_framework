@@ -34,9 +34,8 @@ public class Explode extends Visibility {
     private void captureValues(TransitionValues transitionValues) {
         View view = transitionValues.view;
         view.getLocationOnScreen(this.mTempLoc);
-        int[] iArr = this.mTempLoc;
-        int left = iArr[0];
-        int top = iArr[1];
+        int left = this.mTempLoc[0];
+        int top = this.mTempLoc[1];
         int right = view.getWidth() + left;
         int bottom = view.getHeight() + top;
         transitionValues.values.put(PROPNAME_SCREEN_BOUNDS, new Rect(left, top, right, bottom));
@@ -63,9 +62,8 @@ public class Explode extends Visibility {
         float endX = view.getTranslationX();
         float endY = view.getTranslationY();
         calculateOut(sceneRoot, bounds, this.mTempLoc);
-        int[] iArr = this.mTempLoc;
-        float startX = endX + iArr[0];
-        float startY = endY + iArr[1];
+        float startX = endX + this.mTempLoc[0];
+        float startY = endY + this.mTempLoc[1];
         return TranslationAnimationCreator.createAnimation(view, endValues, bounds.left, bounds.top, startX, startY, endX, endY, sDecelerate, this);
     }
 
@@ -88,17 +86,15 @@ public class Explode extends Visibility {
             bounds.offsetTo(interruptedPosition[0], interruptedPosition[1]);
         }
         calculateOut(sceneRoot, bounds, this.mTempLoc);
-        int[] iArr = this.mTempLoc;
-        return TranslationAnimationCreator.createAnimation(view, startValues, viewPosX, viewPosY, startX, startY, endX + iArr[0], endY + iArr[1], sAccelerate, this);
+        return TranslationAnimationCreator.createAnimation(view, startValues, viewPosX, viewPosY, startX, startY, endX + this.mTempLoc[0], endY + this.mTempLoc[1], sAccelerate, this);
     }
 
     private void calculateOut(View sceneRoot, Rect bounds, int[] outVector) {
         int focalX;
         int focalY;
         sceneRoot.getLocationOnScreen(this.mTempLoc);
-        int[] iArr = this.mTempLoc;
-        int sceneRootX = iArr[0];
-        int sceneRootY = iArr[1];
+        int sceneRootX = this.mTempLoc[0];
+        int sceneRootY = this.mTempLoc[1];
         Rect epicenter = getEpicenter();
         if (epicenter == null) {
             focalX = (sceneRoot.getWidth() / 2) + sceneRootX + Math.round(sceneRoot.getTranslationX());

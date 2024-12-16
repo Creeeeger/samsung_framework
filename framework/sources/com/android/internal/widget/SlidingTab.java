@@ -52,7 +52,6 @@ public class SlidingTab extends ViewGroup {
     private boolean mTriggered;
     private Vibrator mVibrator;
 
-    /* loaded from: classes5.dex */
     public interface OnTriggerListener {
         public static final int LEFT_HANDLE = 1;
         public static final int NO_HANDLE = 0;
@@ -63,29 +62,7 @@ public class SlidingTab extends ViewGroup {
         void onTrigger(View view, int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.SlidingTab$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Animation.AnimationListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationStart(Animation animation) {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationRepeat(Animation animation) {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationEnd(Animation animation) {
-            SlidingTab.this.onAnimationDone();
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static class Slider {
+    private static class Slider {
         public static final int ALIGN_BOTTOM = 3;
         public static final int ALIGN_LEFT = 0;
         public static final int ALIGN_RIGHT = 1;
@@ -102,25 +79,22 @@ public class SlidingTab extends ViewGroup {
         private int alignment = 4;
 
         Slider(ViewGroup parent, int tabId, int barId, int targetId) {
-            ImageView imageView = new ImageView(parent.getContext());
-            this.tab = imageView;
-            imageView.setBackgroundResource(tabId);
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
-            TextView textView = new TextView(parent.getContext());
-            this.text = textView;
-            textView.setLayoutParams(new ViewGroup.LayoutParams(-2, -1));
-            textView.setBackgroundResource(barId);
-            textView.setTextAppearance(parent.getContext(), R.style.TextAppearance_SlidingTabNormal);
-            ImageView imageView2 = new ImageView(parent.getContext());
-            this.target = imageView2;
-            imageView2.setImageResource(targetId);
-            imageView2.setScaleType(ImageView.ScaleType.CENTER);
-            imageView2.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
-            imageView2.setVisibility(4);
-            parent.addView(imageView2);
-            parent.addView(imageView);
-            parent.addView(textView);
+            this.tab = new ImageView(parent.getContext());
+            this.tab.setBackgroundResource(tabId);
+            this.tab.setScaleType(ImageView.ScaleType.CENTER);
+            this.tab.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
+            this.text = new TextView(parent.getContext());
+            this.text.setLayoutParams(new ViewGroup.LayoutParams(-2, -1));
+            this.text.setBackgroundResource(barId);
+            this.text.setTextAppearance(parent.getContext(), R.style.TextAppearance_SlidingTabNormal);
+            this.target = new ImageView(parent.getContext());
+            this.target.setImageResource(targetId);
+            this.target.setScaleType(ImageView.ScaleType.CENTER);
+            this.target.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
+            this.target.setVisibility(4);
+            parent.addView(this.target);
+            parent.addView(this.tab);
+            parent.addView(this.text);
         }
 
         void setIcon(int iconId) {
@@ -141,11 +115,10 @@ public class SlidingTab extends ViewGroup {
 
         void hide() {
             int dx;
-            int i = this.alignment;
             int dy = 0;
-            boolean horiz = i == 0 || i == 1;
+            boolean horiz = this.alignment == 0 || this.alignment == 1;
             if (horiz) {
-                dx = i == 0 ? this.alignment_value - this.tab.getRight() : this.alignment_value - this.tab.getLeft();
+                dx = this.alignment == 0 ? this.alignment_value - this.tab.getRight() : this.alignment_value - this.tab.getLeft();
             } else {
                 dx = 0;
             }
@@ -164,12 +137,12 @@ public class SlidingTab extends ViewGroup {
             this.text.setVisibility(0);
             this.tab.setVisibility(0);
             if (animate) {
-                int i = this.alignment;
-                boolean horiz = true;
-                if (i != 0 && i != 1) {
-                    horiz = false;
+                boolean z = true;
+                if (this.alignment != 0 && this.alignment != 1) {
+                    z = false;
                 }
-                int dx = horiz ? i == 0 ? this.tab.getWidth() : -this.tab.getWidth() : 0;
+                boolean horiz = z;
+                int dx = horiz ? this.alignment == 0 ? this.tab.getWidth() : -this.tab.getWidth() : 0;
                 int dy = horiz ? 0 : this.alignment == 2 ? this.tab.getHeight() : -this.tab.getHeight();
                 Animation trans = new TranslateAnimation(-dx, 0.0f, -dy, 0.0f);
                 trans.setDuration(250L);
@@ -189,11 +162,9 @@ public class SlidingTab extends ViewGroup {
                 if (this.tab.getBackground().isStateful()) {
                     this.tab.getBackground().setState(activeState);
                 }
-                TextView textView = this.text;
-                textView.setTextAppearance(textView.getContext(), R.style.TextAppearance_SlidingTabActive);
+                this.text.setTextAppearance(this.text.getContext(), R.style.TextAppearance_SlidingTabActive);
             } else {
-                TextView textView2 = this.text;
-                textView2.setTextAppearance(textView2.getContext(), R.style.TextAppearance_SlidingTabNormal);
+                this.text.setTextAppearance(this.text.getContext(), R.style.TextAppearance_SlidingTabNormal);
             }
             this.currentState = state;
         }
@@ -210,19 +181,18 @@ public class SlidingTab extends ViewGroup {
             int dy;
             setState(0);
             this.text.setVisibility(0);
-            TextView textView = this.text;
-            textView.setTextAppearance(textView.getContext(), R.style.TextAppearance_SlidingTabNormal);
+            this.text.setTextAppearance(this.text.getContext(), R.style.TextAppearance_SlidingTabNormal);
             this.tab.setVisibility(0);
             this.target.setVisibility(4);
-            int i = this.alignment;
-            boolean horiz = true;
-            if (i != 0 && i != 1) {
-                horiz = false;
+            boolean z = true;
+            if (this.alignment != 0 && this.alignment != 1) {
+                z = false;
             }
+            boolean horiz = z;
             if (!horiz) {
                 dx = 0;
             } else {
-                dx = i == 0 ? this.alignment_value - this.tab.getLeft() : this.alignment_value - this.tab.getRight();
+                dx = this.alignment == 0 ? this.alignment_value - this.tab.getLeft() : this.alignment_value - this.tab.getRight();
             }
             if (horiz) {
                 dy = 0;
@@ -364,9 +334,6 @@ public class SlidingTab extends ViewGroup {
         this.mGrabbedState = 0;
         this.mTriggered = false;
         this.mAnimationDoneListener = new Animation.AnimationListener() { // from class: com.android.internal.widget.SlidingTab.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationStart(Animation animation) {
             }
@@ -391,7 +358,7 @@ public class SlidingTab extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width;
         int height;
         View.MeasureSpec.getMode(widthMeasureSpec);
@@ -450,9 +417,9 @@ public class SlidingTab extends ViewGroup {
                 this.mCurrentSlider.setState(1);
                 this.mCurrentSlider.showTarget();
                 this.mOtherSlider.hide();
-                break;
+            default:
+                return true;
         }
-        return true;
     }
 
     public void reset(boolean animate) {
@@ -614,10 +581,10 @@ public class SlidingTab extends ViewGroup {
         setGrabbedState(0);
     }
 
-    void startAnimating(boolean holdAfter) {
+    void startAnimating(final boolean holdAfter) {
         int holdOffset;
-        int dx;
-        int right;
+        final int dx;
+        final int right;
         this.mAnimating = true;
         Slider slider = this.mCurrentSlider;
         Slider slider2 = this.mOtherSlider;
@@ -647,23 +614,11 @@ public class SlidingTab extends ViewGroup {
         trans2.setInterpolator(new LinearInterpolator());
         trans2.setFillAfter(true);
         trans1.setAnimationListener(new Animation.AnimationListener() { // from class: com.android.internal.widget.SlidingTab.2
-            final /* synthetic */ int val$dx;
-            final /* synthetic */ int val$dy;
-            final /* synthetic */ boolean val$holdAfter;
-
-            AnonymousClass2(boolean holdAfter2, int dx2, int right3) {
-                holdAfter = holdAfter2;
-                dx = dx2;
-                right = right3;
-            }
-
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationEnd(Animation animation) {
                 Animation anim;
                 if (holdAfter) {
-                    int i = dx;
-                    int i2 = right;
-                    anim = new TranslateAnimation(i, i, i2, i2);
+                    anim = new TranslateAnimation(dx, dx, right, right);
                     anim.setDuration(1000L);
                     SlidingTab.this.mAnimating = false;
                 } else {
@@ -688,47 +643,7 @@ public class SlidingTab extends ViewGroup {
         slider.startAnimation(trans1, trans2);
     }
 
-    /* renamed from: com.android.internal.widget.SlidingTab$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements Animation.AnimationListener {
-        final /* synthetic */ int val$dx;
-        final /* synthetic */ int val$dy;
-        final /* synthetic */ boolean val$holdAfter;
-
-        AnonymousClass2(boolean holdAfter2, int dx2, int right3) {
-            holdAfter = holdAfter2;
-            dx = dx2;
-            right = right3;
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationEnd(Animation animation) {
-            Animation anim;
-            if (holdAfter) {
-                int i = dx;
-                int i2 = right;
-                anim = new TranslateAnimation(i, i, i2, i2);
-                anim.setDuration(1000L);
-                SlidingTab.this.mAnimating = false;
-            } else {
-                anim = new AlphaAnimation(0.5f, 1.0f);
-                anim.setDuration(250L);
-                SlidingTab.this.resetView();
-            }
-            anim.setAnimationListener(SlidingTab.this.mAnimationDoneListener);
-            SlidingTab.this.mLeftSlider.startAnimation(anim, anim);
-            SlidingTab.this.mRightSlider.startAnimation(anim, anim);
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationRepeat(Animation animation) {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationStart(Animation animation) {
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void onAnimationDone() {
         resetView();
         this.mAnimating = false;
@@ -742,13 +657,14 @@ public class SlidingTab extends ViewGroup {
         return this.mOrientation == 0;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void resetView() {
         this.mLeftSlider.reset(false);
         this.mRightSlider.reset(false);
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (changed) {
             this.mLeftSlider.layout(l, t, r, b, isHorizontal() ? 0 : 3);
             this.mRightSlider.layout(l, t, r, b, isHorizontal() ? 1 : 2);
@@ -816,14 +732,13 @@ public class SlidingTab extends ViewGroup {
 
     private void dispatchTriggerEvent(int whichHandle) {
         vibrate(VIBRATE_LONG);
-        OnTriggerListener onTriggerListener = this.mOnTriggerListener;
-        if (onTriggerListener != null) {
-            onTriggerListener.onTrigger(this, whichHandle);
+        if (this.mOnTriggerListener != null) {
+            this.mOnTriggerListener.onTrigger(this, whichHandle);
         }
     }
 
     @Override // android.view.View
-    public void onVisibilityChanged(View changedView, int visibility) {
+    protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         if (changedView == this && visibility != 0 && this.mGrabbedState != 0) {
             cancelGrab();
@@ -833,9 +748,8 @@ public class SlidingTab extends ViewGroup {
     private void setGrabbedState(int newState) {
         if (newState != this.mGrabbedState) {
             this.mGrabbedState = newState;
-            OnTriggerListener onTriggerListener = this.mOnTriggerListener;
-            if (onTriggerListener != null) {
-                onTriggerListener.onGrabbedStateChange(this, newState);
+            if (this.mOnTriggerListener != null) {
+                this.mOnTriggerListener.onGrabbedStateChange(this, this.mGrabbedState);
             }
         }
     }

@@ -27,7 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Deprecated
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I>, I extends IInterface> implements IBinder.DeathRecipient {
     protected static final int LAST_PRIVATE_MSG = 2;
     private static final int MSG_BIND = 1;
@@ -55,12 +55,10 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
     private int mServiceExitReason = -1;
     private int mServiceExitSubReason = -1;
 
-    /* loaded from: classes4.dex */
     public interface AsyncRequest<I extends IInterface> {
         void run(I i) throws RemoteException;
     }
 
-    /* loaded from: classes4.dex */
     public interface VultureCallback<T> {
         void onServiceDied(T t);
     }
@@ -77,19 +75,19 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
 
     abstract void handlePendingRequests();
 
-    public AbstractRemoteService(Context context, String serviceInterface, ComponentName componentName, int userId, VultureCallback<S> callback, Handler handler, int bindingFlags, boolean verbose) {
+    AbstractRemoteService(Context context, String serviceInterface, ComponentName componentName, int userId, VultureCallback<S> callback, Handler handler, int bindingFlags, boolean verbose) {
         this.mContext = context;
         this.mVultureCallback = callback;
         this.mVerbose = verbose;
         this.mComponentName = componentName;
-        this.mIntent = new Intent(serviceInterface).setComponent(componentName);
+        this.mIntent = new Intent(serviceInterface).setComponent(this.mComponentName);
         this.mUserId = userId;
         this.mHandler = new Handler(handler.getLooper());
         this.mBindingFlags = bindingFlags;
     }
 
     public final void destroy() {
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda0
+        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda2
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 ((AbstractRemoteService) obj).handleDestroy();
@@ -105,6 +103,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         return this.mComponentName;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnConnectedStateChangedInternal(boolean connected) {
         handleOnConnectedStateChanged(connected);
         if (connected) {
@@ -123,6 +122,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         return this.mService;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDestroy() {
         if (checkIfDestroyed()) {
             return;
@@ -134,7 +134,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
 
     @Override // android.os.IBinder.DeathRecipient
     public void binderDied() {
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda4
+        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda5
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 ((AbstractRemoteService) obj).handleBinderDied();
@@ -142,13 +142,13 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         }, this));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleBinderDied() {
         if (checkIfDestroyed()) {
             return;
         }
-        I i = this.mService;
-        if (i != null) {
-            i.asBinder().unlinkToDeath(this, 0);
+        if (this.mService != null) {
+            this.mService.asBinder().unlinkToDeath(this, 0);
         }
         updateServicelicationExitInfo(this.mComponentName, this.mUserId);
         this.mConnecting = true;
@@ -222,7 +222,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
     }
 
     protected void scheduleRequest(BasePendingRequest<S, I> pendingRequest) {
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda6
+        this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda1
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 ((AbstractRemoteService) obj).handlePendingRequest((AbstractRemoteService.BasePendingRequest) obj2);
@@ -231,7 +231,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
     }
 
     void finishRequest(BasePendingRequest<S, I> finshedRequest) {
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda5
+        this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda0
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 ((AbstractRemoteService) obj).handleFinishRequest((AbstractRemoteService.BasePendingRequest) obj2);
@@ -239,8 +239,11 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         }, this, finshedRequest));
     }
 
-    public void handleFinishRequest(BasePendingRequest<S, I> finshedRequest) {
-        this.mUnfinishedRequests.remove(finshedRequest);
+    /* JADX INFO: Access modifiers changed from: private */
+    public void handleFinishRequest(BasePendingRequest<S, I> finishedRequest) {
+        synchronized (this.mUnfinishedRequests) {
+            this.mUnfinishedRequests.remove(finishedRequest);
+        }
         if (this.mUnfinishedRequests.isEmpty()) {
             scheduleUnbind();
         }
@@ -248,7 +251,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
 
     protected void scheduleAsyncRequest(AsyncRequest<I> request) {
         MyAsyncPendingRequest<S, I> asyncRequest = new MyAsyncPendingRequest<>(this, request);
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda3
+        this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda4
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 ((AbstractRemoteService) obj).handlePendingRequest((AbstractRemoteService.MyAsyncPendingRequest) obj2);
@@ -273,7 +276,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
             }
             return;
         }
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda1
+        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda3
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 ((AbstractRemoteService) obj).handleEnsureBound();
@@ -285,6 +288,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         scheduleUnbind(true);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void scheduleUnbind(boolean delay) {
         long unbindDelay = getTimeoutIdleBindMillis();
         if (unbindDelay <= 0) {
@@ -302,7 +306,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         if (this.mVerbose) {
             Slog.v(this.mTag, "unbinding in " + unbindDelay + "ms: " + this.mNextUnbind);
         }
-        this.mHandler.sendMessageDelayed(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda2
+        this.mHandler.sendMessageDelayed(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.infra.AbstractRemoteService$$ExternalSyntheticLambda6
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 ((AbstractRemoteService) obj).handleUnbind();
@@ -310,6 +314,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         }, this).setWhat(2), unbindDelay);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleUnbind() {
         if (checkIfDestroyed()) {
             return;
@@ -317,7 +322,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         handleEnsureUnbound();
     }
 
-    public final void handlePendingRequest(BasePendingRequest<S, I> pendingRequest) {
+    protected final void handlePendingRequest(BasePendingRequest<S, I> pendingRequest) {
         if (checkIfDestroyed() || this.mCompleted) {
             return;
         }
@@ -332,7 +337,9 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         if (this.mVerbose) {
             Slog.v(this.mTag, "handlePendingRequest(): " + pendingRequest);
         }
-        this.mUnfinishedRequests.add(pendingRequest);
+        synchronized (this.mUnfinishedRequests) {
+            this.mUnfinishedRequests.add(pendingRequest);
+        }
         cancelScheduledUnbind();
         pendingRequest.run();
         if (pendingRequest.isFinal()) {
@@ -344,6 +351,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         return this.mService != null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleEnsureBound() {
         if (handleIsBound() || this.mConnecting) {
             return;
@@ -372,9 +380,8 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
             this.mConnecting = false;
             if (handleIsBound()) {
                 handleOnConnectedStateChangedInternal(false);
-                I i = this.mService;
-                if (i != null) {
-                    i.asBinder().unlinkToDeath(this, 0);
+                if (this.mService != null) {
+                    this.mService.asBinder().unlinkToDeath(this, 0);
                     this.mService = null;
                 }
             }
@@ -386,13 +393,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public class RemoteServiceConnection implements ServiceConnection {
-        /* synthetic */ RemoteServiceConnection(AbstractRemoteService abstractRemoteService, RemoteServiceConnectionIA remoteServiceConnectionIA) {
-            this();
-        }
-
+    private class RemoteServiceConnection implements ServiceConnection {
         private RemoteServiceConnection() {
         }
 
@@ -408,8 +409,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
             AbstractRemoteService.this.mConnecting = false;
             try {
                 iBinder.linkToDeath(AbstractRemoteService.this, 0);
-                AbstractRemoteService abstractRemoteService = AbstractRemoteService.this;
-                abstractRemoteService.mService = (I) abstractRemoteService.getServiceInterface(iBinder);
+                AbstractRemoteService.this.mService = (I) AbstractRemoteService.this.getServiceInterface(iBinder);
                 AbstractRemoteService.this.mServiceExitReason = -1;
                 AbstractRemoteService.this.mServiceExitSubReason = -1;
                 AbstractRemoteService.this.handleOnConnectedStateChangedInternal(true);
@@ -448,7 +448,6 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         return getClass().getSimpleName() + NavigationBarInflaterView.SIZE_MOD_START + this.mComponentName + " " + System.identityHashCode(this) + (this.mService != null ? " (bound)" : " (unbound)") + (this.mDestroyed ? " (destroyed)" : "") + NavigationBarInflaterView.SIZE_MOD_END;
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class BasePendingRequest<S extends AbstractRemoteService<S, I>, I extends IInterface> implements Runnable {
         boolean mCancelled;
         boolean mCompleted;
@@ -464,7 +463,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
             return this.mWeakService.get();
         }
 
-        public final boolean finish() {
+        protected final boolean finish() {
             synchronized (this.mLock) {
                 if (!this.mCompleted && !this.mCancelled) {
                     this.mCompleted = true;
@@ -482,7 +481,7 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         void onFinished() {
         }
 
-        public void onFailed() {
+        protected void onFailed() {
         }
 
         protected final boolean isCancelledLocked() {
@@ -520,7 +519,6 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class PendingRequest<S extends AbstractRemoteService<S, I>, I extends IInterface> extends BasePendingRequest<S, I> {
         private final Handler mServiceHandler;
         private final Runnable mTimeoutTrigger;
@@ -529,18 +527,17 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
 
         protected PendingRequest(final S service) {
             super(service);
-            Handler handler = service.mHandler;
-            this.mServiceHandler = handler;
-            Runnable runnable = new Runnable() { // from class: com.android.internal.infra.AbstractRemoteService$PendingRequest$$ExternalSyntheticLambda0
+            this.mServiceHandler = service.mHandler;
+            this.mTimeoutTrigger = new Runnable() { // from class: com.android.internal.infra.AbstractRemoteService$PendingRequest$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     AbstractRemoteService.PendingRequest.this.lambda$new$0(service);
                 }
             };
-            this.mTimeoutTrigger = runnable;
-            handler.postAtTime(runnable, SystemClock.uptimeMillis() + service.getRemoteRequestMillis());
+            this.mServiceHandler.postAtTime(this.mTimeoutTrigger, SystemClock.uptimeMillis() + service.getRemoteRequestMillis());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$0(AbstractRemoteService service) {
             synchronized (this.mLock) {
                 if (this.mCancelled) {
@@ -569,8 +566,8 @@ public abstract class AbstractRemoteService<S extends AbstractRemoteService<S, I
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class MyAsyncPendingRequest<S extends AbstractRemoteService<S, I>, I extends IInterface> extends BasePendingRequest<S, I> {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class MyAsyncPendingRequest<S extends AbstractRemoteService<S, I>, I extends IInterface> extends BasePendingRequest<S, I> {
         private static final String TAG = MyAsyncPendingRequest.class.getSimpleName();
         private final AsyncRequest<I> mRequest;
 

@@ -11,7 +11,7 @@ import com.android.internal.inputmethod.IInputMethodSession;
 import com.android.internal.inputmethod.IRemoteInputConnection;
 
 /* loaded from: classes4.dex */
-public final class IInputMethodSessionInvoker {
+final class IInputMethodSessionInvoker {
     private static final String TAG = "InputMethodSessionWrapper";
     private static Handler sAsyncBinderEmulationHandler;
     private static final Object sAsyncBinderEmulationHandlerLock = new Object();
@@ -43,12 +43,11 @@ public final class IInputMethodSessionInvoker {
         return null;
     }
 
-    public void finishInput() {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void finishInput() {
+        if (this.mCustomHandler == null) {
             finishInputInternal();
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda5
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.finishInputInternal();
@@ -57,6 +56,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void finishInputInternal() {
         try {
             this.mSession.finishInput();
@@ -65,12 +65,11 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void updateCursorAnchorInfo(final CursorAnchorInfo cursorAnchorInfo) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void updateCursorAnchorInfo(final CursorAnchorInfo cursorAnchorInfo) {
+        if (this.mCustomHandler == null) {
             lambda$updateCursorAnchorInfo$0(cursorAnchorInfo);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda6
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$updateCursorAnchorInfo$0(cursorAnchorInfo);
@@ -79,7 +78,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: updateCursorAnchorInfoInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: updateCursorAnchorInfoInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$updateCursorAnchorInfo$0(CursorAnchorInfo cursorAnchorInfo) {
         try {
             this.mSession.updateCursorAnchorInfo(cursorAnchorInfo);
@@ -88,12 +88,11 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void displayCompletions(final CompletionInfo[] completions) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void displayCompletions(final CompletionInfo[] completions) {
+        if (this.mCustomHandler == null) {
             lambda$displayCompletions$1(completions);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda4
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$displayCompletions$1(completions);
@@ -102,7 +101,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: displayCompletionsInternal */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: displayCompletionsInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$displayCompletions$1(CompletionInfo[] completions) {
         try {
             this.mSession.displayCompletions(completions);
@@ -111,16 +111,15 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void updateExtractedTextSync(int token, ExtractedText text) {
+    void updateExtractedTextSync(int token, ExtractedText text) {
         lambda$updateExtractedText$2(token, text);
     }
 
-    public void updateExtractedText(final int token, final ExtractedText text) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void updateExtractedText(final int token, final ExtractedText text) {
+        if (this.mCustomHandler == null) {
             lambda$updateExtractedText$2(token, text);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda1
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$updateExtractedText$2(token, text);
@@ -129,7 +128,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: updateExtractedTextInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: updateExtractedTextInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$updateExtractedText$2(int token, ExtractedText text) {
         try {
             this.mSession.updateExtractedText(token, text);
@@ -138,12 +138,11 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void appPrivateCommand(final String action, final Bundle data) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void appPrivateCommand(final String action, final Bundle data) {
+        if (this.mCustomHandler == null) {
             lambda$appPrivateCommand$3(action, data);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda7
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$appPrivateCommand$3(action, data);
@@ -152,7 +151,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: appPrivateCommandInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: appPrivateCommandInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$appPrivateCommand$3(String action, Bundle data) {
         try {
             this.mSession.appPrivateCommand(action, data);
@@ -161,12 +161,11 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void viewClicked(final boolean focusChanged) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void viewClicked(final boolean focusChanged) {
+        if (this.mCustomHandler == null) {
             lambda$viewClicked$4(focusChanged);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda0
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$viewClicked$4(focusChanged);
@@ -175,7 +174,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: viewClickedInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: viewClickedInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$viewClicked$4(boolean focusChanged) {
         try {
             this.mSession.viewClicked(focusChanged);
@@ -184,12 +184,11 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void updateCursor(final Rect newCursor) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void updateCursor(final Rect newCursor) {
+        if (this.mCustomHandler == null) {
             lambda$updateCursor$5(newCursor);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda2
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$updateCursor$5(newCursor);
@@ -198,7 +197,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: updateCursorInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: updateCursorInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$updateCursor$5(Rect newCursor) {
         try {
             this.mSession.updateCursor(newCursor);
@@ -207,12 +207,11 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void updateSelection(final int oldSelStart, final int oldSelEnd, final int selStart, final int selEnd, final int candidatesStart, final int candidatesEnd) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void updateSelection(final int oldSelStart, final int oldSelEnd, final int selStart, final int selEnd, final int candidatesStart, final int candidatesEnd) {
+        if (this.mCustomHandler == null) {
             lambda$updateSelection$6(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda8
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda8
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$updateSelection$6(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
@@ -221,7 +220,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: updateSelectionInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: updateSelectionInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$updateSelection$6(int oldSelStart, int oldSelEnd, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
         try {
             this.mSession.updateSelection(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
@@ -230,12 +230,11 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    public void invalidateInput(final EditorInfo editorInfo, final IRemoteInputConnection inputConnection, final int sessionId) {
-        Handler handler = this.mCustomHandler;
-        if (handler == null) {
+    void invalidateInput(final EditorInfo editorInfo, final IRemoteInputConnection inputConnection, final int sessionId) {
+        if (this.mCustomHandler == null) {
             lambda$invalidateInput$7(editorInfo, inputConnection, sessionId);
         } else {
-            handler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda3
+            this.mCustomHandler.post(new Runnable() { // from class: android.view.inputmethod.IInputMethodSessionInvoker$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     IInputMethodSessionInvoker.this.lambda$invalidateInput$7(editorInfo, inputConnection, sessionId);
@@ -244,7 +243,8 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* renamed from: invalidateInputInternal */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: invalidateInputInternal, reason: merged with bridge method [inline-methods] */
     public void lambda$invalidateInput$7(EditorInfo editorInfo, IRemoteInputConnection inputConnection, int sessionId) {
         try {
             this.mSession.invalidateInput(editorInfo, inputConnection, sessionId);

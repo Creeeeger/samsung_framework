@@ -48,14 +48,9 @@ public class X509NameTokenizer {
                 if (c == this.separator) {
                     break;
                 }
-                if (c == '#') {
-                    StringBuffer stringBuffer = this.buf;
-                    if (stringBuffer.charAt(stringBuffer.length() - 1) == '=') {
-                        this.buf.append('\\');
-                        this.buf.append(c);
-                    }
-                }
-                if (c == '+' && this.separator != '+') {
+                if (c == '#' && this.buf.charAt(this.buf.length() - 1) == '=') {
+                    this.buf.append('\\');
+                } else if (c == '+' && this.separator != '+') {
                     this.buf.append('\\');
                 }
                 this.buf.append(c);

@@ -10,7 +10,6 @@ public class SynchronousResultReceiver extends ResultReceiver {
     private final CompletableFuture<Result> mFuture;
     private final String mName;
 
-    /* loaded from: classes3.dex */
     public static class Result {
         public Bundle bundle;
         public int resultCode;
@@ -36,7 +35,7 @@ public class SynchronousResultReceiver extends ResultReceiver {
     }
 
     @Override // android.os.ResultReceiver
-    public final void onReceiveResult(int resultCode, Bundle resultData) {
+    protected final void onReceiveResult(int resultCode, Bundle resultData) {
         super.onReceiveResult(resultCode, resultData);
         this.mFuture.complete(new Result(resultCode, resultData));
     }

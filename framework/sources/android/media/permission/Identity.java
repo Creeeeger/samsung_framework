@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Identity implements Parcelable {
     public static final Parcelable.Creator<Identity> CREATOR = new Parcelable.Creator<Identity>() { // from class: android.media.permission.Identity.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Identity createFromParcel(Parcel _aidl_source) {
             Identity _aidl_out = new Identity();
@@ -20,6 +18,7 @@ public class Identity implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Identity[] newArray(int _aidl_size) {
             return new Identity[_aidl_size];
@@ -29,25 +28,6 @@ public class Identity implements Parcelable {
     public String packageName;
     public int uid = -1;
     public int pid = -1;
-
-    /* renamed from: android.media.permission.Identity$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Identity> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Identity createFromParcel(Parcel _aidl_source) {
-            Identity _aidl_out = new Identity();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Identity[] newArray(int _aidl_size) {
-            return new Identity[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -121,7 +101,7 @@ public class Identity implements Parcelable {
         _aidl_sj.add("pid: " + this.pid);
         _aidl_sj.add("packageName: " + Objects.toString(this.packageName));
         _aidl_sj.add("attributionTag: " + Objects.toString(this.attributionTag));
-        return "android.media.permission.Identity" + _aidl_sj.toString();
+        return "Identity" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

@@ -14,7 +14,7 @@ import android.system.keystore2.KeyDescriptor;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Pair;
-import com.samsung.android.security.mdf.MdfUtils;
+import com.samsung.android.wifi.SemWifiManager;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -38,8 +38,7 @@ public class KeyStoreAuditLog {
     public static final int INSERT = 3;
     private static final int INVALID_DOMAIN = -1;
     private static final int INVALID_NAMESPACE = 0;
-    public static final int NO_ERROR = 1;
-    public static final int NO_ERROR2 = 0;
+    public static final int NO_ERROR = -1;
     public static final int REMOTE_EXCEPTION = 200;
     private static final String TAG = "KeyStoreAuditLog";
     private static Pair<Long, KeyDescriptor> mKeyDescriptorBeforeImportKey = null;
@@ -51,13 +50,6 @@ public class KeyStoreAuditLog {
     private KeyStoreAuditLog() {
     }
 
-    public static void logMdfKeyGenFailed(String errorMsg, String className) {
-        if (MdfUtils.isMdfEnforced()) {
-            AuditLog.logPrivileged(3, 1, false, Process.myPid(), className, String.format(AuditEvents.AUDIT_KEY_GENERATION_FAILED_WITH_ERROR, errorMsg));
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static class AuditLogParams {
         private final String mAlias;
         private final String mClassName;
@@ -68,7 +60,7 @@ public class KeyStoreAuditLog {
         private long mNamespace = 0;
         private int mDomain = -1;
         private int mUserId = KeyStoreAuditLog.getUserId(Process.myUid());
-        private int mErrorCode = 1;
+        private int mErrorCode = -1;
 
         public AuditLogParams(String alias, String className) {
             this.mAlias = alias;
@@ -76,12 +68,7 @@ public class KeyStoreAuditLog {
         }
 
         public List<X509Certificate> getX509Certificates() {
-            List<X509Certificate> list = this.mX509Certificates;
-            if (list != null) {
-                return list;
-            }
-            byte[] bArr = this.mEncodedCerts;
-            return bArr != null ? KeyStoreAuditLog.toCertificates(bArr) : Collections.emptyList();
+            return this.mX509Certificates != null ? this.mX509Certificates : this.mEncodedCerts != null ? KeyStoreAuditLog.toCertificates(this.mEncodedCerts) : Collections.emptyList();
         }
 
         public void setX509Certificates(List<X509Certificate> x509Certificates) {
@@ -97,13 +84,11 @@ public class KeyStoreAuditLog {
         }
 
         public byte[] getChainBytes() {
-            byte[] bArr = this.mEncodedCerts;
-            if (bArr != null) {
-                return bArr;
+            if (this.mEncodedCerts != null) {
+                return this.mEncodedCerts;
             }
-            List<X509Certificate> list = this.mX509Certificates;
-            if (list != null) {
-                return KeyStoreAuditLog.convertCertificatesToPem((Certificate[]) list.toArray(new X509Certificate[list.size()]));
+            if (this.mX509Certificates != null) {
+                return KeyStoreAuditLog.convertCertificatesToPem((Certificate[]) this.mX509Certificates.toArray(new X509Certificate[this.mX509Certificates.size()]));
             }
             return null;
         }
@@ -149,8 +134,7 @@ public class KeyStoreAuditLog {
         }
 
         public boolean hasCertificates() {
-            List<X509Certificate> list = this.mX509Certificates;
-            return ((list == null || list.isEmpty()) && this.mEncodedCerts == null) ? false : true;
+            return ((this.mX509Certificates == null || this.mX509Certificates.isEmpty()) && this.mEncodedCerts == null) ? false : true;
         }
 
         public void setEncodedCerts(byte[] encodedCerts) {
@@ -177,7 +161,7 @@ public class KeyStoreAuditLog {
         }
 
         public static AuditLogParams init(KeyDescriptor keyDescriptor, int operation, String tag) {
-            return init(keyDescriptor, operation, tag, 1);
+            return init(keyDescriptor, operation, tag, -1);
         }
 
         public static AuditLogParams init(KeyDescriptor keyDescriptor, int operation, String tag, int errorCode) {
@@ -198,8 +182,8 @@ public class KeyStoreAuditLog {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class LogMessage {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class LogMessage {
         public static final String KEEP = null;
         public static final String REMOVE = "";
         String message;
@@ -217,11 +201,7 @@ public class KeyStoreAuditLog {
 
     public static void auditLogPrivilegedAsUser(final AuditLogParams params) {
         List<LogMessage> logMessages = new ArrayList<>();
-        boolean z = true;
-        if (params.getErrorCode() != 1 && params.getErrorCode() != 0) {
-            z = false;
-        }
-        final boolean success = z;
+        final boolean success = params.getErrorCode() == -1;
         String credentialUsage = getKeystoreString(params.getDomain(), params.getNamespace(), params.getOperationType());
         switch (params.getOperationType()) {
             case 1:
@@ -233,10 +213,8 @@ public class KeyStoreAuditLog {
                         logMessages.add(new LogMessage(String.format(success ? AuditEvents.AUDIT_DELETING_CERTIFICATE_SUCCEEDED : AuditEvents.AUDIT_DELETING_CERTIFICATE_FAILED, getKeyString(params.getAlias()), credentialUsage, params.getAlias(), certificate.getSubjectDN(), certificate.getIssuerDN()), ""));
                     }
                     break;
-                } else {
-                    logMessages.add(new LogMessage(String.format(success ? AuditEvents.AUDIT_KEY_DESTRUCTION_ACTIVITY_SUCCEEDED : AuditEvents.AUDIT_KEY_DESTRUCTION_ACTIVITY_FAILED, credentialUsage, params.getAlias(), getRequesterInfo(params.getContext()), getErrorMessage(params.getErrorCode())), ""));
-                    break;
                 }
+                break;
             case 3:
                 if (!credentialUsage.isEmpty()) {
                     for (X509Certificate certificate2 : params.getX509Certificates()) {
@@ -244,12 +222,6 @@ public class KeyStoreAuditLog {
                     }
                     break;
                 }
-                break;
-            case 4:
-                logMessages.add(new LogMessage(String.format(AuditEvents.AUDIT_KEY_GENERATION_FAILED, getErrorMessage(params.getErrorCode())), ""));
-                break;
-            case 5:
-                logMessages.add(new LogMessage(String.format(success ? AuditEvents.AUDIT_KEY_IMPORTING_ACTIVITY_SUCCEEDED : AuditEvents.AUDIT_KEY_IMPORTING_ACTIVITY_FAILED, credentialUsage, params.getAlias(), getRequesterInfo(params.getContext()), getErrorMessage(params.getErrorCode())), ""));
                 break;
             default:
                 return;
@@ -282,6 +254,7 @@ public class KeyStoreAuditLog {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static byte[] convertCertificatesToPem(Certificate[] certificates) {
         if (certificates == null) {
             return null;
@@ -300,6 +273,7 @@ public class KeyStoreAuditLog {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static List<X509Certificate> mergeUserCertAndChain(byte[] userCert, byte[] chain) {
         X509Certificate leaf = toCertificate(userCert);
         if (leaf == null) {
@@ -362,6 +336,7 @@ public class KeyStoreAuditLog {
         return (key == null || !key.startsWith(Credentials.USER_PRIVATE_KEY)) ? TvInteractiveAppView.BI_INTERACTIVE_APP_KEY_CERTIFICATE : "private key";
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int getUserId(int uid) {
         return UserHandle.getUserId(uid);
     }
@@ -374,8 +349,7 @@ public class KeyStoreAuditLog {
     }
 
     private static String getKeystoreString(int domain, long namespace, int operationType) {
-        Pair<Long, KeyDescriptor> pair;
-        if (operationType == 3 && (pair = mKeyDescriptorBeforeImportKey) != null && pair.first.longValue() == namespace) {
+        if (operationType == 3 && mKeyDescriptorBeforeImportKey != null && mKeyDescriptorBeforeImportKey.first.longValue() == namespace) {
             KeyDescriptor keyDescriptor = mKeyDescriptorBeforeImportKey.second;
             if (keyDescriptor != null) {
                 domain = keyDescriptor.domain;
@@ -384,7 +358,7 @@ public class KeyStoreAuditLog {
             mKeyDescriptorBeforeImportKey = null;
         }
         if (domain == 2 || namespace == 102) {
-            return "Wi-Fi";
+            return SemWifiManager.SemWifiApLogger.VALUE_WIFI;
         }
         if (domain != 0 && namespace != -1) {
             return "";
@@ -394,8 +368,7 @@ public class KeyStoreAuditLog {
 
     private static String getErrorMessage(int error) {
         switch (error) {
-            case 0:
-            case 1:
+            case -1:
                 return "";
             case 200:
                 return " Cannot connect to KeyStore";

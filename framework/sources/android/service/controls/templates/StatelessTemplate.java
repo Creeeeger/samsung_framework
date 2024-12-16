@@ -9,7 +9,7 @@ public final class StatelessTemplate extends ControlTemplate {
         return 8;
     }
 
-    public StatelessTemplate(Bundle b) {
+    StatelessTemplate(Bundle b) {
         super(b);
     }
 

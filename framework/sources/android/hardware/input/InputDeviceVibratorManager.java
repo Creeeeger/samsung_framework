@@ -9,6 +9,7 @@ import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.util.SparseArray;
 import android.view.InputDevice;
+import com.samsung.android.vibrator.VibrationDebugInfo;
 
 /* loaded from: classes2.dex */
 public class InputDeviceVibratorManager extends VibratorManager implements InputManager.InputDeviceListener {
@@ -113,7 +114,7 @@ public class InputDeviceVibratorManager extends VibratorManager implements Input
     }
 
     @Override // android.os.VibratorManager
-    public String executeVibrationDebugCommand(int param) {
+    public String executeVibrationDebugCommand(VibrationDebugInfo param) {
         return "";
     }
 }

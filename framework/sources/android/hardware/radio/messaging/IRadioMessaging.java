@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioMessaging extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$messaging$IRadioMessaging".replace('$', '.');
-    public static final String HASH = "50aefda34c9dd40090c8d5925e71d5b84530c3d0";
-    public static final int VERSION = 2;
+    public static final String HASH = "30b0bc0e84679bc3b5ccb3a52da34c47cda6b7eb";
+    public static final int VERSION = 3;
 
     void acknowledgeIncomingGsmSmsWithPdu(int i, boolean z, String str) throws RemoteException;
 
@@ -64,7 +64,6 @@ public interface IRadioMessaging extends IInterface {
 
     void writeSmsToSim(int i, SmsWriteArgs smsWriteArgs) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioMessaging {
         @Override // android.hardware.radio.messaging.IRadioMessaging
         public void acknowledgeIncomingGsmSmsWithPdu(int serial, boolean success, String ackPdu) throws RemoteException {
@@ -174,7 +173,6 @@ public interface IRadioMessaging extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioMessaging {
         static final int TRANSACTION_acknowledgeIncomingGsmSmsWithPdu = 1;
         static final int TRANSACTION_acknowledgeLastIncomingCdmaSms = 2;
@@ -229,161 +227,160 @@ public interface IRadioMessaging extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    acknowledgeIncomingGsmSmsWithPdu(_arg0, _arg1, _arg2);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    CdmaSmsAck _arg12 = (CdmaSmsAck) data.readTypedObject(CdmaSmsAck.CREATOR);
+                    data.enforceNoDataAvail();
+                    acknowledgeLastIncomingCdmaSms(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    boolean _arg13 = data.readBoolean();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeLastIncomingGsmSms(_arg03, _arg13, _arg22);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteSmsOnRuim(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteSmsOnSim(_arg05, _arg15);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCdmaBroadcastConfig(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getGsmBroadcastConfig(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSmscAddress(_arg08);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    boolean _arg16 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    reportSmsMemoryStatus(_arg09, _arg16);
+                    return true;
+                case 10:
+                    responseAcknowledgement();
+                    return true;
+                case 11:
+                    int _arg010 = data.readInt();
+                    CdmaSmsMessage _arg17 = (CdmaSmsMessage) data.readTypedObject(CdmaSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCdmaSms(_arg010, _arg17);
+                    return true;
+                case 12:
+                    int _arg011 = data.readInt();
+                    CdmaSmsMessage _arg18 = (CdmaSmsMessage) data.readTypedObject(CdmaSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCdmaSmsExpectMore(_arg011, _arg18);
+                    return true;
+                case 13:
+                    int _arg012 = data.readInt();
+                    ImsSmsMessage _arg19 = (ImsSmsMessage) data.readTypedObject(ImsSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendImsSms(_arg012, _arg19);
+                    return true;
+                case 14:
+                    int _arg013 = data.readInt();
+                    GsmSmsMessage _arg110 = (GsmSmsMessage) data.readTypedObject(GsmSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSms(_arg013, _arg110);
+                    return true;
+                case 15:
+                    int _arg014 = data.readInt();
+                    GsmSmsMessage _arg111 = (GsmSmsMessage) data.readTypedObject(GsmSmsMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSmsExpectMore(_arg014, _arg111);
+                    return true;
+                case 16:
+                    int _arg015 = data.readInt();
+                    boolean _arg112 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCdmaBroadcastActivation(_arg015, _arg112);
+                    return true;
+                case 17:
+                    int _arg016 = data.readInt();
+                    CdmaBroadcastSmsConfigInfo[] _arg113 = (CdmaBroadcastSmsConfigInfo[]) data.createTypedArray(CdmaBroadcastSmsConfigInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCdmaBroadcastConfig(_arg016, _arg113);
+                    return true;
+                case 18:
+                    int _arg017 = data.readInt();
+                    boolean _arg114 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setGsmBroadcastActivation(_arg017, _arg114);
+                    return true;
+                case 19:
+                    int _arg018 = data.readInt();
+                    GsmBroadcastSmsConfigInfo[] _arg115 = (GsmBroadcastSmsConfigInfo[]) data.createTypedArray(GsmBroadcastSmsConfigInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setGsmBroadcastConfig(_arg018, _arg115);
+                    return true;
+                case 20:
+                    IRadioMessagingResponse _arg019 = IRadioMessagingResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioMessagingIndication _arg116 = IRadioMessagingIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg019, _arg116);
+                    return true;
+                case 21:
+                    int _arg020 = data.readInt();
+                    String _arg117 = data.readString();
+                    data.enforceNoDataAvail();
+                    setSmscAddress(_arg020, _arg117);
+                    return true;
+                case 22:
+                    int _arg021 = data.readInt();
+                    CdmaSmsWriteArgs _arg118 = (CdmaSmsWriteArgs) data.readTypedObject(CdmaSmsWriteArgs.CREATOR);
+                    data.enforceNoDataAvail();
+                    writeSmsToRuim(_arg021, _arg118);
+                    return true;
+                case 23:
+                    int _arg022 = data.readInt();
+                    SmsWriteArgs _arg119 = (SmsWriteArgs) data.readTypedObject(SmsWriteArgs.CREATOR);
+                    data.enforceNoDataAvail();
+                    writeSmsToSim(_arg022, _arg119);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            acknowledgeIncomingGsmSmsWithPdu(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            CdmaSmsAck _arg12 = (CdmaSmsAck) data.readTypedObject(CdmaSmsAck.CREATOR);
-                            data.enforceNoDataAvail();
-                            acknowledgeLastIncomingCdmaSms(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            boolean _arg13 = data.readBoolean();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeLastIncomingGsmSms(_arg03, _arg13, _arg22);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteSmsOnRuim(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteSmsOnSim(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCdmaBroadcastConfig(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getGsmBroadcastConfig(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSmscAddress(_arg08);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            reportSmsMemoryStatus(_arg09, _arg16);
-                            return true;
-                        case 10:
-                            responseAcknowledgement();
-                            return true;
-                        case 11:
-                            int _arg010 = data.readInt();
-                            CdmaSmsMessage _arg17 = (CdmaSmsMessage) data.readTypedObject(CdmaSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCdmaSms(_arg010, _arg17);
-                            return true;
-                        case 12:
-                            int _arg011 = data.readInt();
-                            CdmaSmsMessage _arg18 = (CdmaSmsMessage) data.readTypedObject(CdmaSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCdmaSmsExpectMore(_arg011, _arg18);
-                            return true;
-                        case 13:
-                            int _arg012 = data.readInt();
-                            ImsSmsMessage _arg19 = (ImsSmsMessage) data.readTypedObject(ImsSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendImsSms(_arg012, _arg19);
-                            return true;
-                        case 14:
-                            int _arg013 = data.readInt();
-                            GsmSmsMessage _arg110 = (GsmSmsMessage) data.readTypedObject(GsmSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSms(_arg013, _arg110);
-                            return true;
-                        case 15:
-                            int _arg014 = data.readInt();
-                            GsmSmsMessage _arg111 = (GsmSmsMessage) data.readTypedObject(GsmSmsMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSmsExpectMore(_arg014, _arg111);
-                            return true;
-                        case 16:
-                            int _arg015 = data.readInt();
-                            boolean _arg112 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCdmaBroadcastActivation(_arg015, _arg112);
-                            return true;
-                        case 17:
-                            int _arg016 = data.readInt();
-                            CdmaBroadcastSmsConfigInfo[] _arg113 = (CdmaBroadcastSmsConfigInfo[]) data.createTypedArray(CdmaBroadcastSmsConfigInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCdmaBroadcastConfig(_arg016, _arg113);
-                            return true;
-                        case 18:
-                            int _arg017 = data.readInt();
-                            boolean _arg114 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setGsmBroadcastActivation(_arg017, _arg114);
-                            return true;
-                        case 19:
-                            int _arg018 = data.readInt();
-                            GsmBroadcastSmsConfigInfo[] _arg115 = (GsmBroadcastSmsConfigInfo[]) data.createTypedArray(GsmBroadcastSmsConfigInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setGsmBroadcastConfig(_arg018, _arg115);
-                            return true;
-                        case 20:
-                            IRadioMessagingResponse _arg019 = IRadioMessagingResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioMessagingIndication _arg116 = IRadioMessagingIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg019, _arg116);
-                            return true;
-                        case 21:
-                            int _arg020 = data.readInt();
-                            String _arg117 = data.readString();
-                            data.enforceNoDataAvail();
-                            setSmscAddress(_arg020, _arg117);
-                            return true;
-                        case 22:
-                            int _arg021 = data.readInt();
-                            CdmaSmsWriteArgs _arg118 = (CdmaSmsWriteArgs) data.readTypedObject(CdmaSmsWriteArgs.CREATOR);
-                            data.enforceNoDataAvail();
-                            writeSmsToRuim(_arg021, _arg118);
-                            return true;
-                        case 23:
-                            int _arg022 = data.readInt();
-                            SmsWriteArgs _arg119 = (SmsWriteArgs) data.readTypedObject(SmsWriteArgs.CREATOR);
-                            data.enforceNoDataAvail();
-                            writeSmsToSim(_arg022, _arg119);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioMessaging {
             private IBinder mRemote;
             private int mCachedVersion = -1;

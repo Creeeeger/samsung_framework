@@ -170,9 +170,8 @@ public final class SystemTextClassifier implements TextClassifier {
     @Override // android.view.textclassifier.TextClassifier
     public void destroy() {
         try {
-            TextClassificationSessionId textClassificationSessionId = this.mSessionId;
-            if (textClassificationSessionId != null) {
-                this.mManagerService.onDestroyTextClassificationSession(textClassificationSessionId);
+            if (this.mSessionId != null) {
+                this.mManagerService.onDestroyTextClassificationSession(this.mSessionId);
             }
         } catch (RemoteException e) {
             Log.e("androidtc", "Error destroying classification session.", e);
@@ -190,7 +189,7 @@ public final class SystemTextClassifier implements TextClassifier {
         printWriter.println();
     }
 
-    public void initializeRemoteSession(TextClassificationContext classificationContext, TextClassificationSessionId sessionId) {
+    void initializeRemoteSession(TextClassificationContext classificationContext, TextClassificationSessionId sessionId) {
         this.mSessionId = (TextClassificationSessionId) Objects.requireNonNull(sessionId);
         try {
             classificationContext.setSystemTextClassifierMetadata(this.mSystemTcMetadata);
@@ -200,7 +199,6 @@ public final class SystemTextClassifier implements TextClassifier {
         }
     }
 
-    /* loaded from: classes4.dex */
     private static final class BlockingCallback<T extends Parcelable> extends ITextClassifierCallback.Stub {
         private final ResponseReceiver<T> mReceiver;
 
@@ -223,16 +221,11 @@ public final class SystemTextClassifier implements TextClassifier {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ResponseReceiver<T> {
+    private static final class ResponseReceiver<T> {
         private final CountDownLatch mLatch;
         private final String mName;
         private T mResponse;
         private final TextClassificationConstants mSettings;
-
-        /* synthetic */ ResponseReceiver(String str, TextClassificationConstants textClassificationConstants, ResponseReceiverIA responseReceiverIA) {
-            this(str, textClassificationConstants);
-        }
 
         private ResponseReceiver(String name, TextClassificationConstants settings) {
             this.mLatch = new CountDownLatch(1);

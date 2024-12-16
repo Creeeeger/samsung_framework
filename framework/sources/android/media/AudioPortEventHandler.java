@@ -3,13 +3,12 @@ package android.media;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Message;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /* loaded from: classes2.dex */
-public class AudioPortEventHandler {
+class AudioPortEventHandler {
     private static final int AUDIOPORT_EVENT_NEW_LISTENER = 4;
     private static final int AUDIOPORT_EVENT_PATCH_LIST_UPDATED = 2;
     private static final int AUDIOPORT_EVENT_PORT_LIST_UPDATED = 1;
@@ -26,20 +25,18 @@ public class AudioPortEventHandler {
 
     private native void native_setup(Object obj);
 
-    public void init() {
+    AudioPortEventHandler() {
+    }
+
+    void init() {
         synchronized (this.mLock) {
             if (this.mHandler != null) {
                 return;
             }
-            HandlerThread handlerThread = new HandlerThread(TAG);
-            this.mHandlerThread = handlerThread;
-            handlerThread.start();
+            this.mHandlerThread = new HandlerThread(TAG);
+            this.mHandlerThread.start();
             if (this.mHandlerThread.getLooper() != null) {
                 this.mHandler = new Handler(this.mHandlerThread.getLooper()) { // from class: android.media.AudioPortEventHandler.1
-                    AnonymousClass1(Looper looper) {
-                        super(looper);
-                    }
-
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         ArrayList<AudioManager.OnAudioPortUpdateListener> listeners;
@@ -104,71 +101,6 @@ public class AudioPortEventHandler {
         }
     }
 
-    /* renamed from: android.media.AudioPortEventHandler$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            ArrayList<AudioManager.OnAudioPortUpdateListener> listeners;
-            synchronized (AudioPortEventHandler.this.mLock) {
-                if (msg.what == 4) {
-                    listeners = new ArrayList<>();
-                    if (AudioPortEventHandler.this.mListeners.contains(msg.obj)) {
-                        listeners.add((AudioManager.OnAudioPortUpdateListener) msg.obj);
-                    }
-                } else {
-                    listeners = (ArrayList) AudioPortEventHandler.this.mListeners.clone();
-                }
-            }
-            if (msg.what == 1 || msg.what == 2 || msg.what == 3) {
-                AudioManager.resetAudioPortGeneration();
-            }
-            if (listeners.isEmpty()) {
-                return;
-            }
-            ArrayList<AudioPort> ports = new ArrayList<>();
-            ArrayList<AudioPatch> patches = new ArrayList<>();
-            if (msg.what != 3) {
-                int status = AudioManager.updateAudioPortCache(ports, patches, null);
-                if (status != 0) {
-                    sendMessageDelayed(obtainMessage(msg.what, msg.obj), AudioPortEventHandler.RESCHEDULE_MESSAGE_DELAY_MS);
-                    return;
-                }
-            }
-            int status2 = msg.what;
-            switch (status2) {
-                case 1:
-                case 4:
-                    AudioPort[] portList = (AudioPort[]) ports.toArray(new AudioPort[0]);
-                    for (int i = 0; i < listeners.size(); i++) {
-                        listeners.get(i).onAudioPortListUpdate(portList);
-                    }
-                    int i2 = msg.what;
-                    if (i2 == 1) {
-                        return;
-                    }
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    for (int i3 = 0; i3 < listeners.size(); i3++) {
-                        listeners.get(i3).onServiceDied();
-                    }
-                    return;
-                default:
-                    return;
-            }
-            AudioPatch[] patchList = (AudioPatch[]) patches.toArray(new AudioPatch[0]);
-            for (int i4 = 0; i4 < listeners.size(); i4++) {
-                listeners.get(i4).onAudioPatchListUpdate(patchList);
-            }
-        }
-    }
-
     protected void finalize() {
         native_finalize();
         if (this.mHandlerThread.isAlive()) {
@@ -176,18 +108,17 @@ public class AudioPortEventHandler {
         }
     }
 
-    public void registerListener(AudioManager.OnAudioPortUpdateListener l) {
+    void registerListener(AudioManager.OnAudioPortUpdateListener l) {
         synchronized (this.mLock) {
             this.mListeners.add(l);
         }
-        Handler handler = this.mHandler;
-        if (handler != null) {
-            Message m = handler.obtainMessage(4, 0, 0, l);
+        if (this.mHandler != null) {
+            Message m = this.mHandler.obtainMessage(4, 0, 0, l);
             this.mHandler.sendMessage(m);
         }
     }
 
-    public void unregisterListener(AudioManager.OnAudioPortUpdateListener l) {
+    void unregisterListener(AudioManager.OnAudioPortUpdateListener l) {
         synchronized (this.mLock) {
             this.mListeners.remove(l);
         }

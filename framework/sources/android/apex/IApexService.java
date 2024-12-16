@@ -9,7 +9,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public interface IApexService extends IInterface {
-    public static final String DESCRIPTOR = "android$apex$IApexService".replace('$', '.');
+    public static final String DESCRIPTOR = "android.apex.IApexService";
 
     void abortStagedSession(int i) throws RemoteException;
 
@@ -33,7 +33,7 @@ public interface IApexService extends IInterface {
 
     ApexSessionInfo getStagedSessionInfo(int i) throws RemoteException;
 
-    ApexInfo installAndActivatePackage(String str) throws RemoteException;
+    ApexInfo installAndActivatePackage(String str, boolean z) throws RemoteException;
 
     void markBootCompleted() throws RemoteException;
 
@@ -63,7 +63,6 @@ public interface IApexService extends IInterface {
 
     void unstagePackages(List<String> list) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IApexService {
         @Override // android.apex.IApexService
         public void submitStagedSession(ApexSessionParams params, ApexInfoList packages) throws RemoteException {
@@ -173,7 +172,7 @@ public interface IApexService extends IInterface {
         }
 
         @Override // android.apex.IApexService
-        public ApexInfo installAndActivatePackage(String packagePath) throws RemoteException {
+        public ApexInfo installAndActivatePackage(String packagePath, boolean force) throws RemoteException {
             return null;
         }
 
@@ -183,7 +182,6 @@ public interface IApexService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IApexService {
         static final int TRANSACTION_abortStagedSession = 9;
         static final int TRANSACTION_calculateSizeForCompressedApex = 24;
@@ -213,14 +211,14 @@ public interface IApexService extends IInterface {
         static final int TRANSACTION_unstagePackages = 16;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, IApexService.DESCRIPTOR);
         }
 
         public static IApexService asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(IApexService.DESCRIPTOR);
             if (iin != null && (iin instanceof IApexService)) {
                 return (IApexService) iin;
             }
@@ -234,160 +232,156 @@ public interface IApexService extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            String descriptor = DESCRIPTOR;
             if (code >= 1 && code <= 16777215) {
-                data.enforceInterface(descriptor);
+                data.enforceInterface(IApexService.DESCRIPTOR);
+            }
+            if (code == 1598968902) {
+                reply.writeString(IApexService.DESCRIPTOR);
+                return true;
             }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 1:
+                    ApexSessionParams _arg0 = (ApexSessionParams) data.readTypedObject(ApexSessionParams.CREATOR);
+                    ApexInfoList _arg1 = new ApexInfoList();
+                    submitStagedSession(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_arg1, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    markStagedSessionReady(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    markStagedSessionSuccessful(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    ApexSessionInfo[] _result = getSessions();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    ApexSessionInfo _result2 = getStagedSessionInfo(_arg04);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 6:
+                    ApexSessionParams _arg05 = (ApexSessionParams) data.readTypedObject(ApexSessionParams.CREATOR);
+                    ApexInfo[] _result3 = getStagedApexInfos(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 7:
+                    ApexInfo[] _result4 = getActivePackages();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result4, 1);
+                    return true;
+                case 8:
+                    ApexInfo[] _result5 = getAllPackages();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result5, 1);
+                    return true;
+                case 9:
+                    int _arg06 = data.readInt();
+                    abortStagedSession(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    revertActiveSessions();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg07 = data.readInt();
+                    int _arg12 = data.readInt();
+                    String _arg2 = data.readString();
+                    snapshotCeData(_arg07, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg08 = data.readInt();
+                    int _arg13 = data.readInt();
+                    String _arg22 = data.readString();
+                    restoreCeData(_arg08, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg09 = data.readInt();
+                    destroyDeSnapshots(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg010 = data.readInt();
+                    destroyCeSnapshots(_arg010, data.readInt());
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg011 = data.readInt();
+                    destroyCeSnapshotsNotSpecified(_arg011, data.createIntArray());
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    List<String> _arg012 = data.createStringArrayList();
+                    unstagePackages(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    String _arg013 = data.readString();
+                    ApexInfo _result6 = getActivePackage(_arg013);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 18:
+                    List<String> _arg014 = data.createStringArrayList();
+                    stagePackages(_arg014);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    resumeRevertIfNeeded();
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    remountPackages();
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    List<String> _arg015 = data.createStringArrayList();
+                    recollectPreinstalledData(_arg015);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    String _arg016 = data.readString();
+                    recollectDataApex(_arg016, data.readString());
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    markBootCompleted();
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    CompressedApexInfoList _arg017 = (CompressedApexInfoList) data.readTypedObject(CompressedApexInfoList.CREATOR);
+                    long _result7 = calculateSizeForCompressedApex(_arg017);
+                    reply.writeNoException();
+                    reply.writeLong(_result7);
+                    return true;
+                case 25:
+                    CompressedApexInfoList _arg018 = (CompressedApexInfoList) data.readTypedObject(CompressedApexInfoList.CREATOR);
+                    reserveSpaceForCompressedApex(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    String _arg019 = data.readString();
+                    ApexInfo _result8 = installAndActivatePackage(_arg019, data.readInt() != 0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ApexSessionParams _arg0 = (ApexSessionParams) data.readTypedObject(ApexSessionParams.CREATOR);
-                            ApexInfoList _arg1 = new ApexInfoList();
-                            submitStagedSession(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg1, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            markStagedSessionReady(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            markStagedSessionSuccessful(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            ApexSessionInfo[] _result = getSessions();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            ApexSessionInfo _result2 = getStagedSessionInfo(_arg04);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 6:
-                            ApexSessionParams _arg05 = (ApexSessionParams) data.readTypedObject(ApexSessionParams.CREATOR);
-                            ApexInfo[] _result3 = getStagedApexInfos(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 7:
-                            ApexInfo[] _result4 = getActivePackages();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result4, 1);
-                            return true;
-                        case 8:
-                            ApexInfo[] _result5 = getAllPackages();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result5, 1);
-                            return true;
-                        case 9:
-                            int _arg06 = data.readInt();
-                            abortStagedSession(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            revertActiveSessions();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg07 = data.readInt();
-                            int _arg12 = data.readInt();
-                            String _arg2 = data.readString();
-                            snapshotCeData(_arg07, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg08 = data.readInt();
-                            int _arg13 = data.readInt();
-                            String _arg22 = data.readString();
-                            restoreCeData(_arg08, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg09 = data.readInt();
-                            destroyDeSnapshots(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg010 = data.readInt();
-                            destroyCeSnapshots(_arg010, data.readInt());
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg011 = data.readInt();
-                            destroyCeSnapshotsNotSpecified(_arg011, data.createIntArray());
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            List<String> _arg012 = data.createStringArrayList();
-                            unstagePackages(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            String _arg013 = data.readString();
-                            ApexInfo _result6 = getActivePackage(_arg013);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 18:
-                            List<String> _arg014 = data.createStringArrayList();
-                            stagePackages(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            resumeRevertIfNeeded();
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            remountPackages();
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            List<String> _arg015 = data.createStringArrayList();
-                            recollectPreinstalledData(_arg015);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            String _arg016 = data.readString();
-                            recollectDataApex(_arg016, data.readString());
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            markBootCompleted();
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            CompressedApexInfoList _arg017 = (CompressedApexInfoList) data.readTypedObject(CompressedApexInfoList.CREATOR);
-                            long _result7 = calculateSizeForCompressedApex(_arg017);
-                            reply.writeNoException();
-                            reply.writeLong(_result7);
-                            return true;
-                        case 25:
-                            CompressedApexInfoList _arg018 = (CompressedApexInfoList) data.readTypedObject(CompressedApexInfoList.CREATOR);
-                            reserveSpaceForCompressedApex(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            String _arg019 = data.readString();
-                            ApexInfo _result8 = installAndActivatePackage(_arg019);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IApexService {
             private IBinder mRemote;
 
@@ -401,7 +395,7 @@ public interface IApexService extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return IApexService.DESCRIPTOR;
             }
 
             @Override // android.apex.IApexService
@@ -409,7 +403,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeTypedObject(params, 0);
                     this.mRemote.transact(1, _data, _reply, 0);
                     _reply.readException();
@@ -427,7 +421,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(session_id);
                     this.mRemote.transact(2, _data, _reply, 0);
                     _reply.readException();
@@ -442,7 +436,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(session_id);
                     this.mRemote.transact(3, _data, _reply, 0);
                     _reply.readException();
@@ -457,7 +451,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     this.mRemote.transact(4, _data, _reply, 0);
                     _reply.readException();
                     ApexSessionInfo[] _result = (ApexSessionInfo[]) _reply.createTypedArray(ApexSessionInfo.CREATOR);
@@ -473,7 +467,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(session_id);
                     this.mRemote.transact(5, _data, _reply, 0);
                     _reply.readException();
@@ -490,7 +484,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeTypedObject(params, 0);
                     this.mRemote.transact(6, _data, _reply, 0);
                     _reply.readException();
@@ -507,7 +501,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     this.mRemote.transact(7, _data, _reply, 0);
                     _reply.readException();
                     ApexInfo[] _result = (ApexInfo[]) _reply.createTypedArray(ApexInfo.CREATOR);
@@ -523,7 +517,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     this.mRemote.transact(8, _data, _reply, 0);
                     _reply.readException();
                     ApexInfo[] _result = (ApexInfo[]) _reply.createTypedArray(ApexInfo.CREATOR);
@@ -539,7 +533,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(session_id);
                     this.mRemote.transact(9, _data, _reply, 0);
                     _reply.readException();
@@ -554,7 +548,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     this.mRemote.transact(10, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -568,7 +562,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(user_id);
                     _data.writeInt(rollback_id);
                     _data.writeString(apex_name);
@@ -585,7 +579,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(user_id);
                     _data.writeInt(rollback_id);
                     _data.writeString(apex_name);
@@ -602,7 +596,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(rollback_id);
                     this.mRemote.transact(13, _data, _reply, 0);
                     _reply.readException();
@@ -617,7 +611,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(user_id);
                     _data.writeInt(rollback_id);
                     this.mRemote.transact(14, _data, _reply, 0);
@@ -633,7 +627,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeInt(user_id);
                     _data.writeIntArray(retain_rollback_ids);
                     this.mRemote.transact(15, _data, _reply, 0);
@@ -649,7 +643,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeStringList(active_package_paths);
                     this.mRemote.transact(16, _data, _reply, 0);
                     _reply.readException();
@@ -664,7 +658,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeString(package_name);
                     this.mRemote.transact(17, _data, _reply, 0);
                     _reply.readException();
@@ -681,7 +675,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeStringList(package_tmp_paths);
                     this.mRemote.transact(18, _data, _reply, 0);
                     _reply.readException();
@@ -696,7 +690,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     this.mRemote.transact(19, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -710,7 +704,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     this.mRemote.transact(20, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -724,7 +718,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeStringList(paths);
                     this.mRemote.transact(21, _data, _reply, 0);
                     _reply.readException();
@@ -739,7 +733,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeString(path);
                     _data.writeString(decompression_dir);
                     this.mRemote.transact(22, _data, _reply, 0);
@@ -755,7 +749,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     this.mRemote.transact(23, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -769,7 +763,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeTypedObject(compressed_apex_info_list, 0);
                     this.mRemote.transact(24, _data, _reply, 0);
                     _reply.readException();
@@ -786,7 +780,7 @@ public interface IApexService extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeTypedObject(compressed_apex_info_list, 0);
                     this.mRemote.transact(25, _data, _reply, 0);
                     _reply.readException();
@@ -797,12 +791,13 @@ public interface IApexService extends IInterface {
             }
 
             @Override // android.apex.IApexService
-            public ApexInfo installAndActivatePackage(String packagePath) throws RemoteException {
+            public ApexInfo installAndActivatePackage(String packagePath, boolean force) throws RemoteException {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IApexService.DESCRIPTOR);
                     _data.writeString(packagePath);
+                    _data.writeInt(force ? 1 : 0);
                     this.mRemote.transact(26, _data, _reply, 0);
                     _reply.readException();
                     ApexInfo _result = (ApexInfo) _reply.readTypedObject(ApexInfo.CREATOR);

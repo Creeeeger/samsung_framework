@@ -13,7 +13,6 @@ public class SHA256 {
     private SHA256() {
     }
 
-    /* loaded from: classes5.dex */
     public static class Digest extends BCMessageDigest implements Cloneable {
         public Digest() {
             super(new SHA256Digest());
@@ -27,21 +26,18 @@ public class SHA256 {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class HashMac extends BaseMac {
         public HashMac() {
             super(new HMac(new SHA256Digest()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyGenerator extends BaseKeyGenerator {
         public KeyGenerator() {
             super("HMACSHA256", 256, new CipherKeyGenerator());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends DigestAlgorithmProvider {
         private static final String PREFIX = SHA256.class.getName();
 

@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IDescrambler extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$cas$IDescrambler".replace('$', '.');
     public static final String HASH = "bc51d8d70a55ec4723d3f73d0acf7003306bf69f";
@@ -24,7 +24,6 @@ public interface IDescrambler extends IInterface {
 
     void setMediaCasSession(byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IDescrambler {
         @Override // android.hardware.cas.IDescrambler
         public int descramble(int scramblingControl, SubSample[] subSamples, SharedBuffer srcBuffer, long srcOffset, DestinationBuffer dstBuffer, long dstOffset) throws RemoteException {
@@ -60,7 +59,6 @@ public interface IDescrambler extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IDescrambler {
         static final int TRANSACTION_descramble = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -96,58 +94,56 @@ public interface IDescrambler extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    SubSample[] _arg1 = (SubSample[]) data.createTypedArray(SubSample.CREATOR);
+                    SharedBuffer _arg2 = (SharedBuffer) data.readTypedObject(SharedBuffer.CREATOR);
+                    long _arg3 = data.readLong();
+                    DestinationBuffer _arg4 = (DestinationBuffer) data.readTypedObject(DestinationBuffer.CREATOR);
+                    long _arg5 = data.readLong();
+                    data.enforceNoDataAvail();
+                    int _result = descramble(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeInt(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    release();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = requiresSecureDecoderComponent(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setMediaCasSession(_arg03);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            SubSample[] _arg1 = (SubSample[]) data.createTypedArray(SubSample.CREATOR);
-                            SharedBuffer _arg2 = (SharedBuffer) data.readTypedObject(SharedBuffer.CREATOR);
-                            long _arg3 = data.readLong();
-                            DestinationBuffer _arg4 = (DestinationBuffer) data.readTypedObject(DestinationBuffer.CREATOR);
-                            long _arg5 = data.readLong();
-                            data.enforceNoDataAvail();
-                            int _result = descramble(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            release();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = requiresSecureDecoderComponent(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            byte[] _arg03 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setMediaCasSession(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IDescrambler {
+        private static class Proxy implements IDescrambler {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

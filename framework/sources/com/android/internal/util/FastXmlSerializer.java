@@ -41,10 +41,9 @@ public class FastXmlSerializer implements XmlSerializer {
         this.mIndent = false;
         this.mNesting = 0;
         this.mLineStart = true;
-        int i = bufferSize > 0 ? bufferSize : 32768;
-        this.mBufferLen = i;
-        this.mText = new char[i];
-        this.mBytes = ByteBuffer.allocate(i);
+        this.mBufferLen = bufferSize > 0 ? bufferSize : 32768;
+        this.mText = new char[this.mBufferLen];
+        this.mBytes = ByteBuffer.allocate(this.mBufferLen);
     }
 
     private void append(char c) throws IOException {
@@ -58,22 +57,17 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     private void append(String str, int i, int length) throws IOException {
-        int i2 = this.mBufferLen;
-        if (length > i2) {
+        if (length > this.mBufferLen) {
             int end = i + length;
             while (i < end) {
-                int i3 = this.mBufferLen;
-                int next = i + i3;
-                if (next >= end) {
-                    i3 = end - i;
-                }
-                append(str, i, i3);
+                int next = this.mBufferLen + i;
+                append(str, i, next < end ? this.mBufferLen : end - i);
                 i = next;
             }
             return;
         }
         int pos = this.mPos;
-        if (pos + length > i2) {
+        if (pos + length > this.mBufferLen) {
             flush();
             pos = this.mPos;
         }
@@ -82,22 +76,17 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     private void append(char[] buf, int i, int length) throws IOException {
-        int i2 = this.mBufferLen;
-        if (length > i2) {
+        if (length > this.mBufferLen) {
             int end = i + length;
             while (i < end) {
-                int i3 = this.mBufferLen;
-                int next = i + i3;
-                if (next >= end) {
-                    i3 = end - i;
-                }
-                append(buf, i, i3);
+                int next = this.mBufferLen + i;
+                append(buf, i, next < end ? this.mBufferLen : end - i);
                 i = next;
             }
             return;
         }
         int pos = this.mPos;
-        if (pos + length > i2) {
+        if (pos + length > this.mBufferLen) {
             flush();
             pos = this.mPos;
         }
@@ -200,13 +189,12 @@ public class FastXmlSerializer implements XmlSerializer {
 
     @Override // org.xmlpull.v1.XmlSerializer
     public XmlSerializer endTag(String namespace, String name) throws IOException, IllegalArgumentException, IllegalStateException {
-        int i = this.mNesting - 1;
-        this.mNesting = i;
+        this.mNesting--;
         if (this.mInTag) {
             append(" />\n");
         } else {
             if (this.mIndent && this.mLineStart) {
-                appendIndent(i);
+                appendIndent(this.mNesting);
             }
             append("</");
             if (namespace != null) {
@@ -237,10 +225,9 @@ public class FastXmlSerializer implements XmlSerializer {
 
     @Override // org.xmlpull.v1.XmlSerializer
     public void flush() throws IOException {
-        int i = this.mPos;
-        if (i > 0) {
+        if (this.mPos > 0) {
             if (this.mOutputStream != null) {
-                CharBuffer charBuffer = CharBuffer.wrap(this.mText, 0, i);
+                CharBuffer charBuffer = CharBuffer.wrap(this.mText, 0, this.mPos);
                 CoderResult result = this.mCharset.encode(charBuffer, this.mBytes, true);
                 while (!result.isError()) {
                     if (result.isOverflow()) {
@@ -253,7 +240,7 @@ public class FastXmlSerializer implements XmlSerializer {
                 }
                 throw new IOException(result.toString());
             }
-            this.mWriter.write(this.mText, 0, i);
+            this.mWriter.write(this.mText, 0, this.mPos);
             this.mWriter.flush();
             this.mPos = 0;
         }

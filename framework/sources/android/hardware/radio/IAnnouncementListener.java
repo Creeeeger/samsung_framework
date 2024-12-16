@@ -11,7 +11,6 @@ import java.util.List;
 public interface IAnnouncementListener extends IInterface {
     void onListUpdated(List<Announcement> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAnnouncementListener {
         @Override // android.hardware.radio.IAnnouncementListener
         public void onListUpdated(List<Announcement> activeAnnouncements) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IAnnouncementListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAnnouncementListener {
         public static final String DESCRIPTOR = "android.hardware.radio.IAnnouncementListener";
         static final int TRANSACTION_onListUpdated = 1;
@@ -67,26 +65,22 @@ public interface IAnnouncementListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<Announcement> _arg0 = data.createTypedArrayList(Announcement.CREATOR);
+                    data.enforceNoDataAvail();
+                    onListUpdated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<Announcement> _arg0 = data.createTypedArrayList(Announcement.CREATOR);
-                            data.enforceNoDataAvail();
-                            onListUpdated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAnnouncementListener {
+        private static class Proxy implements IAnnouncementListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

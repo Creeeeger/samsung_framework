@@ -11,9 +11,8 @@ public class Matrix4f {
     }
 
     public Matrix4f(float[] dataArray) {
-        float[] fArr = new float[16];
-        this.mMat = fArr;
-        System.arraycopy(dataArray, 0, fArr, 0, fArr.length);
+        this.mMat = new float[16];
+        System.arraycopy(dataArray, 0, this.mMat, 0, this.mMat.length);
     }
 
     public float[] getArray() {
@@ -29,65 +28,58 @@ public class Matrix4f {
     }
 
     public void loadIdentity() {
-        float[] fArr = this.mMat;
-        fArr[0] = 1.0f;
-        fArr[1] = 0.0f;
-        fArr[2] = 0.0f;
-        fArr[3] = 0.0f;
-        fArr[4] = 0.0f;
-        fArr[5] = 1.0f;
-        fArr[6] = 0.0f;
-        fArr[7] = 0.0f;
-        fArr[8] = 0.0f;
-        fArr[9] = 0.0f;
-        fArr[10] = 1.0f;
-        fArr[11] = 0.0f;
-        fArr[12] = 0.0f;
-        fArr[13] = 0.0f;
-        fArr[14] = 0.0f;
-        fArr[15] = 1.0f;
+        this.mMat[0] = 1.0f;
+        this.mMat[1] = 0.0f;
+        this.mMat[2] = 0.0f;
+        this.mMat[3] = 0.0f;
+        this.mMat[4] = 0.0f;
+        this.mMat[5] = 1.0f;
+        this.mMat[6] = 0.0f;
+        this.mMat[7] = 0.0f;
+        this.mMat[8] = 0.0f;
+        this.mMat[9] = 0.0f;
+        this.mMat[10] = 1.0f;
+        this.mMat[11] = 0.0f;
+        this.mMat[12] = 0.0f;
+        this.mMat[13] = 0.0f;
+        this.mMat[14] = 0.0f;
+        this.mMat[15] = 1.0f;
     }
 
     public void load(Matrix4f src) {
-        float[] array = src.getArray();
-        float[] fArr = this.mMat;
-        System.arraycopy(array, 0, fArr, 0, fArr.length);
+        System.arraycopy(src.getArray(), 0, this.mMat, 0, this.mMat.length);
     }
 
     public void load(Matrix3f src) {
         this.mMat[0] = src.mMat[0];
         this.mMat[1] = src.mMat[1];
         this.mMat[2] = src.mMat[2];
-        float[] fArr = this.mMat;
-        fArr[3] = 0.0f;
-        fArr[4] = src.mMat[3];
+        this.mMat[3] = 0.0f;
+        this.mMat[4] = src.mMat[3];
         this.mMat[5] = src.mMat[4];
         this.mMat[6] = src.mMat[5];
-        float[] fArr2 = this.mMat;
-        fArr2[7] = 0.0f;
-        fArr2[8] = src.mMat[6];
+        this.mMat[7] = 0.0f;
+        this.mMat[8] = src.mMat[6];
         this.mMat[9] = src.mMat[7];
         this.mMat[10] = src.mMat[8];
-        float[] fArr3 = this.mMat;
-        fArr3[11] = 0.0f;
-        fArr3[12] = 0.0f;
-        fArr3[13] = 0.0f;
-        fArr3[14] = 0.0f;
-        fArr3[15] = 1.0f;
+        this.mMat[11] = 0.0f;
+        this.mMat[12] = 0.0f;
+        this.mMat[13] = 0.0f;
+        this.mMat[14] = 0.0f;
+        this.mMat[15] = 1.0f;
     }
 
     public void loadRotate(float rot, float x, float y, float z) {
         float x2;
         float y2;
         float z2;
-        float[] fArr = this.mMat;
-        fArr[3] = 0.0f;
-        fArr[7] = 0.0f;
-        fArr[11] = 0.0f;
-        fArr[12] = 0.0f;
-        fArr[13] = 0.0f;
-        fArr[14] = 0.0f;
-        fArr[15] = 1.0f;
+        this.mMat[3] = 0.0f;
+        this.mMat[7] = 0.0f;
+        this.mMat[11] = 0.0f;
+        this.mMat[12] = 0.0f;
+        this.mMat[13] = 0.0f;
+        this.mMat[14] = 0.0f;
+        this.mMat[15] = 1.0f;
         float rot2 = 0.017453292f * rot;
         float c = (float) Math.cos(rot2);
         float s = (float) Math.sin(rot2);
@@ -109,32 +101,29 @@ public class Matrix4f {
         float xs = x2 * s;
         float ys = y2 * s;
         float zs = z2 * s;
-        float[] fArr2 = this.mMat;
-        fArr2[0] = (x2 * x2 * nc) + c;
-        fArr2[4] = (xy * nc) - zs;
-        fArr2[8] = (zx * nc) + ys;
-        fArr2[1] = (xy * nc) + zs;
-        fArr2[5] = (y2 * y2 * nc) + c;
-        fArr2[9] = (yz * nc) - xs;
-        fArr2[2] = (zx * nc) - ys;
-        fArr2[6] = (yz * nc) + xs;
-        fArr2[10] = (z2 * z2 * nc) + c;
+        this.mMat[0] = (x2 * x2 * nc) + c;
+        this.mMat[4] = (xy * nc) - zs;
+        this.mMat[8] = (zx * nc) + ys;
+        this.mMat[1] = (xy * nc) + zs;
+        this.mMat[5] = (y2 * y2 * nc) + c;
+        this.mMat[9] = (yz * nc) - xs;
+        this.mMat[2] = (zx * nc) - ys;
+        this.mMat[6] = (yz * nc) + xs;
+        this.mMat[10] = (z2 * z2 * nc) + c;
     }
 
     public void loadScale(float x, float y, float z) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[0] = x;
-        fArr[5] = y;
-        fArr[10] = z;
+        this.mMat[0] = x;
+        this.mMat[5] = y;
+        this.mMat[10] = z;
     }
 
     public void loadTranslate(float x, float y, float z) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[12] = x;
-        fArr[13] = y;
-        fArr[14] = z;
+        this.mMat[12] = x;
+        this.mMat[13] = y;
+        this.mMat[14] = z;
     }
 
     public void loadMultiply(Matrix4f lhs, Matrix4f rhs) {
@@ -159,13 +148,12 @@ public class Matrix4f {
 
     public void loadOrtho(float l, float r, float b, float t, float n, float f) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[0] = 2.0f / (r - l);
-        fArr[5] = 2.0f / (t - b);
-        fArr[10] = (-2.0f) / (f - n);
-        fArr[12] = (-(r + l)) / (r - l);
-        fArr[13] = (-(t + b)) / (t - b);
-        fArr[14] = (-(f + n)) / (f - n);
+        this.mMat[0] = 2.0f / (r - l);
+        this.mMat[5] = 2.0f / (t - b);
+        this.mMat[10] = (-2.0f) / (f - n);
+        this.mMat[12] = (-(r + l)) / (r - l);
+        this.mMat[13] = (-(t + b)) / (t - b);
+        this.mMat[14] = (-(f + n)) / (f - n);
     }
 
     public void loadOrthoWindow(int w, int h) {
@@ -174,15 +162,14 @@ public class Matrix4f {
 
     public void loadFrustum(float l, float r, float b, float t, float n, float f) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[0] = (n * 2.0f) / (r - l);
-        fArr[5] = (2.0f * n) / (t - b);
-        fArr[8] = (r + l) / (r - l);
-        fArr[9] = (t + b) / (t - b);
-        fArr[10] = (-(f + n)) / (f - n);
-        fArr[11] = -1.0f;
-        fArr[14] = (((-2.0f) * f) * n) / (f - n);
-        fArr[15] = 0.0f;
+        this.mMat[0] = (n * 2.0f) / (r - l);
+        this.mMat[5] = (2.0f * n) / (t - b);
+        this.mMat[8] = (r + l) / (r - l);
+        this.mMat[9] = (t + b) / (t - b);
+        this.mMat[10] = (-(f + n)) / (f - n);
+        this.mMat[11] = -1.0f;
+        this.mMat[14] = (((-2.0f) * f) * n) / (f - n);
+        this.mMat[15] = 0.0f;
     }
 
     public void loadPerspective(float fovy, float aspect, float near, float far) {
@@ -243,8 +230,7 @@ public class Matrix4f {
         int r0 = (j + 1) % 4;
         int r1 = (j + 2) % 4;
         int r2 = (j + 3) % 4;
-        float[] fArr = this.mMat;
-        float minor = ((fArr[(r0 * 4) + c0] * ((fArr[(r1 * 4) + c1] * fArr[(r2 * 4) + c2]) - (fArr[(r2 * 4) + c1] * fArr[(r1 * 4) + c2]))) - (fArr[(r1 * 4) + c0] * ((fArr[(r0 * 4) + c1] * fArr[(r2 * 4) + c2]) - (fArr[(r2 * 4) + c1] * fArr[(r0 * 4) + c2])))) + (fArr[(r2 * 4) + c0] * ((fArr[(r0 * 4) + c1] * fArr[(r1 * 4) + c2]) - (fArr[(r1 * 4) + c1] * fArr[(r0 * 4) + c2])));
+        float minor = ((this.mMat[(r0 * 4) + c0] * ((this.mMat[(r1 * 4) + c1] * this.mMat[(r2 * 4) + c2]) - (this.mMat[(r2 * 4) + c1] * this.mMat[(r1 * 4) + c2]))) - (this.mMat[(r1 * 4) + c0] * ((this.mMat[(r0 * 4) + c1] * this.mMat[(r2 * 4) + c2]) - (this.mMat[(r2 * 4) + c1] * this.mMat[(r0 * 4) + c2])))) + (this.mMat[(r2 * 4) + c0] * ((this.mMat[(r0 * 4) + c1] * this.mMat[(r1 * 4) + c2]) - (this.mMat[(r1 * 4) + c1] * this.mMat[(r0 * 4) + c2])));
         if (((i + j) & 1) == 0) {
             return minor;
         }
@@ -259,10 +245,7 @@ public class Matrix4f {
                 result.mMat[(i * 4) + j] = computeCofactor(i, j);
             }
         }
-        float[] fArr = this.mMat;
-        float f = fArr[0];
-        float[] fArr2 = result.mMat;
-        float det = (f * fArr2[0]) + (fArr[4] * fArr2[1]) + (fArr[8] * fArr2[2]) + (fArr[12] * fArr2[3]);
+        float det = (this.mMat[0] * result.mMat[0]) + (this.mMat[4] * result.mMat[1]) + (this.mMat[8] * result.mMat[2]) + (this.mMat[12] * result.mMat[3]);
         if (Math.abs(det) < 1.0E-6d) {
             return false;
         }
@@ -280,10 +263,7 @@ public class Matrix4f {
                 result.mMat[(j * 4) + i] = computeCofactor(i, j);
             }
         }
-        float[] fArr = this.mMat;
-        float f = fArr[0];
-        float[] fArr2 = result.mMat;
-        float det = (f * fArr2[0]) + (fArr[4] * fArr2[4]) + (fArr[8] * fArr2[8]) + (fArr[12] * fArr2[12]);
+        float det = (this.mMat[0] * result.mMat[0]) + (this.mMat[4] * result.mMat[4]) + (this.mMat[8] * result.mMat[8]) + (this.mMat[12] * result.mMat[12]);
         if (Math.abs(det) < 1.0E-6d) {
             return false;
         }
@@ -297,10 +277,9 @@ public class Matrix4f {
     public void transpose() {
         for (int i = 0; i < 3; i++) {
             for (int j = i + 1; j < 4; j++) {
-                float[] fArr = this.mMat;
-                float temp = fArr[(i * 4) + j];
-                fArr[(i * 4) + j] = fArr[(j * 4) + i];
-                fArr[(j * 4) + i] = temp;
+                float temp = this.mMat[(i * 4) + j];
+                this.mMat[(i * 4) + j] = this.mMat[(j * 4) + i];
+                this.mMat[(j * 4) + i] = temp;
             }
         }
     }

@@ -1,6 +1,5 @@
 package android.telephony.mbms.vendor;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Binder;
 import android.os.IBinder;
@@ -14,7 +13,7 @@ import android.telephony.mbms.IDownloadStatusListener;
 import android.telephony.mbms.IMbmsDownloadSessionCallback;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IMbmsDownloadService extends IInterface {
     int addProgressListener(DownloadRequest downloadRequest, IDownloadProgressListener iDownloadProgressListener) throws RemoteException;
 
@@ -44,7 +43,6 @@ public interface IMbmsDownloadService extends IInterface {
 
     int setTempFileRootDirectory(int i, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IMbmsDownloadService {
         @Override // android.telephony.mbms.vendor.IMbmsDownloadService
         public int initialize(int subId, IMbmsDownloadSessionCallback listener) throws RemoteException {
@@ -121,7 +119,6 @@ public interface IMbmsDownloadService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IMbmsDownloadService {
         public static final String DESCRIPTOR = "android.telephony.mbms.vendor.IMbmsDownloadService";
         static final int TRANSACTION_addProgressListener = 8;
@@ -162,7 +159,7 @@ public interface IMbmsDownloadService extends IInterface {
         public static String getDefaultTransactionName(int transactionCode) {
             switch (transactionCode) {
                 case 1:
-                    return ContentResolver.SYNC_EXTRAS_INITIALIZE;
+                    return "initialize";
                 case 2:
                     return "requestUpdateFileServices";
                 case 3:
@@ -204,127 +201,123 @@ public interface IMbmsDownloadService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    IMbmsDownloadSessionCallback _arg1 = IMbmsDownloadSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result = initialize(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    List<String> _arg12 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    int _result2 = requestUpdateFileServices(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result3 = setTempFileRootDirectory(_arg03, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    byte[] _arg14 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result4 = addServiceAnnouncement(_arg04, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    DownloadRequest _arg05 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result5 = download(_arg05);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    DownloadRequest _arg06 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    IDownloadStatusListener _arg15 = IDownloadStatusListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result6 = addStatusListener(_arg06, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 7:
+                    DownloadRequest _arg07 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    IDownloadStatusListener _arg16 = IDownloadStatusListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result7 = removeStatusListener(_arg07, _arg16);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 8:
+                    DownloadRequest _arg08 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    IDownloadProgressListener _arg17 = IDownloadProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result8 = addProgressListener(_arg08, _arg17);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 9:
+                    DownloadRequest _arg09 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    IDownloadProgressListener _arg18 = IDownloadProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result9 = removeProgressListener(_arg09, _arg18);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<DownloadRequest> _result10 = listPendingDownloads(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result10, 1);
+                    return true;
+                case 11:
+                    DownloadRequest _arg011 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result11 = cancelDownload(_arg011);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 12:
+                    DownloadRequest _arg012 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    FileInfo _arg19 = (FileInfo) data.readTypedObject(FileInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result12 = requestDownloadState(_arg012, _arg19);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 13:
+                    DownloadRequest _arg013 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result13 = resetDownloadKnowledge(_arg013);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispose(_arg014);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            IMbmsDownloadSessionCallback _arg1 = IMbmsDownloadSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result = initialize(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            List<String> _arg12 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            int _result2 = requestUpdateFileServices(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result3 = setTempFileRootDirectory(_arg03, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            byte[] _arg14 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result4 = addServiceAnnouncement(_arg04, _arg14);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            DownloadRequest _arg05 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result5 = download(_arg05);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            DownloadRequest _arg06 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            IDownloadStatusListener _arg15 = IDownloadStatusListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result6 = addStatusListener(_arg06, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 7:
-                            DownloadRequest _arg07 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            IDownloadStatusListener _arg16 = IDownloadStatusListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result7 = removeStatusListener(_arg07, _arg16);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 8:
-                            DownloadRequest _arg08 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            IDownloadProgressListener _arg17 = IDownloadProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result8 = addProgressListener(_arg08, _arg17);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 9:
-                            DownloadRequest _arg09 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            IDownloadProgressListener _arg18 = IDownloadProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result9 = removeProgressListener(_arg09, _arg18);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<DownloadRequest> _result10 = listPendingDownloads(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result10, 1);
-                            return true;
-                        case 11:
-                            DownloadRequest _arg011 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result11 = cancelDownload(_arg011);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 12:
-                            DownloadRequest _arg012 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            FileInfo _arg19 = (FileInfo) data.readTypedObject(FileInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result12 = requestDownloadState(_arg012, _arg19);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 13:
-                            DownloadRequest _arg013 = (DownloadRequest) data.readTypedObject(DownloadRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result13 = resetDownloadKnowledge(_arg013);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispose(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IMbmsDownloadService {
+        private static class Proxy implements IMbmsDownloadService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

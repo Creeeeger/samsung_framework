@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActivityNotification extends SContextEventContext {
     public static final Parcelable.Creator<SContextActivityNotification> CREATOR = new Parcelable.Creator<SContextActivityNotification>() { // from class: android.hardware.scontext.SContextActivityNotification.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityNotification createFromParcel(Parcel in) {
             return new SContextActivityNotification(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityNotification[] newArray(int size) {
             return new SContextActivityNotification[size];
@@ -23,7 +22,7 @@ public class SContextActivityNotification extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextActivityNotification() {
+    SContextActivityNotification() {
         this.mContext = new Bundle();
     }
 
@@ -55,22 +54,5 @@ public class SContextActivityNotification extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextActivityNotification$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextActivityNotification> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityNotification createFromParcel(Parcel in) {
-            return new SContextActivityNotification(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityNotification[] newArray(int size) {
-            return new SContextActivityNotification[size];
-        }
     }
 }

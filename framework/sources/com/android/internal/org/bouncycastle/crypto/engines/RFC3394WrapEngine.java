@@ -59,10 +59,9 @@ public class RFC3394WrapEngine implements Wrapper {
         if (n * 8 != inLen) {
             throw new DataLengthException("wrap data must be a multiple of 8 bytes");
         }
-        byte[] bArr = this.iv;
-        byte[] block = new byte[bArr.length + inLen];
-        byte[] buf = new byte[bArr.length + 8];
-        System.arraycopy(bArr, 0, block, 0, bArr.length);
+        byte[] block = new byte[this.iv.length + inLen];
+        byte[] buf = new byte[this.iv.length + 8];
+        System.arraycopy(this.iv, 0, block, 0, this.iv.length);
         System.arraycopy(in, inOff, block, this.iv.length, inLen);
         this.engine.init(this.wrapCipherMode, this.param);
         for (int j = 0; j != 6; j++) {
@@ -95,14 +94,12 @@ public class RFC3394WrapEngine implements Wrapper {
         if (n * 8 != inLen) {
             throw new InvalidCipherTextException("unwrap data must be a multiple of 8 bytes");
         }
-        byte[] bArr = this.iv;
-        byte[] block = new byte[inLen - bArr.length];
-        byte[] a = new byte[bArr.length];
+        byte[] block = new byte[inLen - this.iv.length];
+        byte[] a = new byte[this.iv.length];
         int i = 8;
-        byte[] buf = new byte[bArr.length + 8];
-        System.arraycopy(in, inOff, a, 0, bArr.length);
-        byte[] bArr2 = this.iv;
-        System.arraycopy(in, bArr2.length + inOff, block, 0, inLen - bArr2.length);
+        byte[] buf = new byte[this.iv.length + 8];
+        System.arraycopy(in, inOff, a, 0, this.iv.length);
+        System.arraycopy(in, this.iv.length + inOff, block, 0, inLen - this.iv.length);
         int i2 = 1;
         this.engine.init(!this.wrapCipherMode, this.param);
         int n2 = n - 1;

@@ -1,6 +1,7 @@
 package android.security.keystore2;
 
 import android.hardware.security.keymint.KeyParameter;
+import android.os.StrictMode;
 import android.security.KeyStore2;
 import android.security.KeyStoreException;
 import android.security.KeyStoreSecurityLevel;
@@ -38,7 +39,6 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
     private SecureRandom mRng;
     private KeyGenParameterSpec mSpec;
 
-    /* loaded from: classes3.dex */
     public static class AES extends AndroidKeyStoreKeyGeneratorSpi {
         public AES() {
             super(32, 128);
@@ -53,49 +53,42 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class DESede extends AndroidKeyStoreKeyGeneratorSpi {
         public DESede() {
             super(33, 168);
         }
     }
 
-    /* loaded from: classes3.dex */
     protected static abstract class HmacBase extends AndroidKeyStoreKeyGeneratorSpi {
         protected HmacBase(int keymasterDigest) {
             super(128, keymasterDigest, KeymasterUtils.getDigestOutputSizeBits(keymasterDigest));
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA1 extends HmacBase {
         public HmacSHA1() {
             super(2);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA224 extends HmacBase {
         public HmacSHA224() {
             super(3);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA256 extends HmacBase {
         public HmacSHA256() {
             super(4);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA384 extends HmacBase {
         public HmacSHA384() {
             super(5);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class HmacSHA512 extends HmacBase {
         public HmacSHA512() {
             super(6);
@@ -111,10 +104,10 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
         this.mKeymasterAlgorithm = keymasterAlgorithm;
         this.mKeymasterDigest = keymasterDigest;
         this.mDefaultKeySizeBits = defaultKeySizeBits;
-        if (defaultKeySizeBits <= 0) {
+        if (this.mDefaultKeySizeBits <= 0) {
             throw new IllegalArgumentException("Default key size must be positive");
         }
-        if (keymasterAlgorithm == 128 && keymasterDigest == -1) {
+        if (this.mKeymasterAlgorithm == 128 && this.mKeymasterDigest == -1) {
             throw new IllegalArgumentException("Digest algorithm must be specified for HMAC key");
         }
     }
@@ -142,12 +135,11 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
                     }
                     this.mRng = random;
                     this.mSpec = spec;
-                    int keySize = spec.getKeySize() != -1 ? spec.getKeySize() : this.mDefaultKeySizeBits;
-                    this.mKeySizeBits = keySize;
-                    if (keySize <= 0) {
+                    this.mKeySizeBits = spec.getKeySize() != -1 ? spec.getKeySize() : this.mDefaultKeySizeBits;
+                    if (this.mKeySizeBits <= 0) {
                         throw new InvalidAlgorithmParameterException("Key size must be positive: " + this.mKeySizeBits);
                     }
-                    if (keySize % 8 != 0) {
+                    if (this.mKeySizeBits % 8 != 0) {
                         throw new InvalidAlgorithmParameterException("Key size must be a multiple of 8: " + this.mKeySizeBits);
                     }
                     try {
@@ -164,13 +156,11 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
                                 }
                             }
                         }
-                        int i = this.mKeymasterAlgorithm;
-                        if (i == 33 && this.mKeySizeBits != 168) {
+                        if (this.mKeymasterAlgorithm == 33 && this.mKeySizeBits != 168) {
                             throw new InvalidAlgorithmParameterException("3DES key size must be 168 bits.");
                         }
-                        if (i == 128) {
-                            int i2 = this.mKeySizeBits;
-                            if (i2 < 64 || i2 > 512) {
+                        if (this.mKeymasterAlgorithm == 128) {
+                            if (this.mKeySizeBits < 64 || this.mKeySizeBits > 512) {
                                 throw new InvalidAlgorithmParameterException("HMAC key sizes must be within 64-512 bits, inclusive.");
                             }
                             this.mKeymasterDigests = new int[]{this.mKeymasterDigest};
@@ -219,6 +209,7 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
         int securityLevel;
         int flags;
         KeyStoreException e;
+        StrictMode.noteSlowCall("engineGenerateKey");
         KeyGenParameterSpec spec = this.mSpec;
         if (spec == null) {
             throw new IllegalStateException("Not initialized");
@@ -250,15 +241,12 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
                 params.add(KeyStore2ParameterUtils.makeEnum(536870917, ((Integer) obj).intValue()));
             }
         });
-        if (this.mKeymasterAlgorithm == 128) {
-            int[] iArr = this.mKeymasterDigests;
-            if (iArr.length != 0) {
-                int digestOutputSizeBits = KeymasterUtils.getDigestOutputSizeBits(iArr[0]);
-                if (digestOutputSizeBits == -1) {
-                    throw new ProviderException("HMAC key authorized for unsupported digest: " + KeyProperties.Digest.fromKeymaster(this.mKeymasterDigests[0]));
-                }
-                params.add(KeyStore2ParameterUtils.makeInt(805306376, digestOutputSizeBits));
+        if (this.mKeymasterAlgorithm == 128 && this.mKeymasterDigests.length != 0) {
+            int digestOutputSizeBits = KeymasterUtils.getDigestOutputSizeBits(this.mKeymasterDigests[0]);
+            if (digestOutputSizeBits == -1) {
+                throw new ProviderException("HMAC key authorized for unsupported digest: " + KeyProperties.Digest.fromKeymaster(this.mKeymasterDigests[0]));
             }
+            params.add(KeyStore2ParameterUtils.makeInt(805306376, digestOutputSizeBits));
         }
         KeyStore2ParameterUtils.addUserAuthArgs(params, spec);
         if (spec.getKeyValidityStart() != null) {
@@ -323,6 +311,7 @@ public abstract class AndroidKeyStoreKeyGeneratorSpi extends KeyGeneratorSpi {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$engineGenerateKey$1(List params, Integer blockMode) {
         if (blockMode.intValue() == 32 && this.mKeymasterAlgorithm == 32) {
             params.add(KeyStore2ParameterUtils.makeInt(805306376, 96));

@@ -13,7 +13,6 @@ public final class IpConnectivityLogClass {
     public static final int WIFI_NAN = 8;
     public static final int WIFI_P2P = 7;
 
-    /* loaded from: classes5.dex */
     public final class NetworkId {
         public static final long NETWORK_ID = 1120986464257L;
 
@@ -21,7 +20,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Pair {
         public static final long KEY = 1120986464257L;
         public static final long VALUE = 1120986464258L;
@@ -30,7 +28,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class DefaultNetworkEvent {
         public static final long DEFAULT_NETWORK_DURATION_MS = 1112396529669L;
         public static final int DISCONNECT = 3;
@@ -56,7 +53,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class IpReachabilityEvent {
         public static final long EVENT_TYPE = 1120986464258L;
         public static final long IF_NAME = 1138166333441L;
@@ -65,7 +61,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class NetworkEvent {
         public static final long EVENT_TYPE = 1120986464258L;
         public static final long LATENCY_MS = 1120986464259L;
@@ -75,7 +70,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ValidationProbeEvent {
         public static final long LATENCY_MS = 1120986464258L;
         public static final long NETWORK_ID = 1146756268033L;
@@ -86,7 +80,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class DNSLookupBatch {
         public static final long EVENT_TYPES = 2220498092034L;
         public static final long GETADDRINFO_ERRORS = 2246267895817L;
@@ -103,7 +96,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class DNSLatencies {
         public static final long AAAA_COUNT = 1120986464261L;
         public static final long A_COUNT = 1120986464260L;
@@ -116,7 +108,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ConnectStatistics {
         public static final long CONNECT_BLOCKING_COUNT = 1120986464261L;
         public static final long CONNECT_COUNT = 1120986464257L;
@@ -129,7 +120,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class DHCPEvent {
         public static final long DURATION_MS = 1120986464260L;
         public static final long ERROR_CODE = 1120986464259L;
@@ -140,7 +130,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ApfProgramEvent {
         public static final long CURRENT_RAS = 1120986464259L;
         public static final long DROP_MULTICAST = 1133871366149L;
@@ -154,7 +143,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ApfStatistics {
         public static final long DROPPED_RAS = 1120986464261L;
         public static final long DURATION_MS = 1112396529665L;
@@ -174,7 +162,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class RaEvent {
         public static final long DNSSL_LIFETIME = 1112396529670L;
         public static final long PREFIX_PREFERRED_LIFETIME = 1112396529667L;
@@ -187,7 +174,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class IpProvisioningEvent {
         public static final long EVENT_TYPE = 1120986464258L;
         public static final long IF_NAME = 1138166333441L;
@@ -197,7 +183,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class NetworkStats {
         public static final long DURATION_MS = 1112396529665L;
         public static final long EVER_VALIDATED = 1133871366147L;
@@ -212,7 +197,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class WakeupStats {
         public static final long APPLICATION_WAKEUPS = 1112396529669L;
         public static final long DURATION_SEC = 1112396529665L;
@@ -231,7 +215,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class IpConnectivityEvent {
         public static final long APF_PROGRAM_EVENT = 1146756268041L;
         public static final long APF_STATISTICS = 1146756268042L;
@@ -257,7 +240,6 @@ public final class IpConnectivityLogClass {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class IpConnectivityLog {
         public static final long DROPPED_EVENTS = 1120986464258L;
         public static final long EVENTS = 2246267895809L;

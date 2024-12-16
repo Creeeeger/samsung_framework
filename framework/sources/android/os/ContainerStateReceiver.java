@@ -159,78 +159,75 @@ public class ContainerStateReceiver extends BroadcastReceiver {
             UserInfo ui = um.getUserInfo(userHandle);
             if (ui == null) {
                 Log.e(TAG, "onReceive failed to get UserInfo from handle:" + userHandle);
-                return;
             }
             Log.i(TAG, " event: " + toEventString(event));
             switch (event) {
                 case 0:
                     onContainerCreated(context, userHandle, b);
-                    return;
+                    break;
                 case 1:
                     onContainerRunning(context, userHandle, b);
-                    return;
+                    break;
                 case 2:
                     onContainerShutdown(context, userHandle, b);
-                    return;
+                    break;
                 case 3:
                     if (userHandle == 0) {
                         onPersonalSwitch(context, b);
-                        return;
-                    } else {
-                        if (ui.isManagedProfile()) {
-                            onContainerSwitch(context, userHandle, b);
-                            return;
-                        }
-                        return;
+                        break;
+                    } else if (ui.isManagedProfile()) {
+                        onContainerSwitch(context, userHandle, b);
+                        break;
                     }
+                    break;
                 case 4:
                     onContainerLocked(context, userHandle, b);
-                    return;
+                    break;
                 case 5:
                     onContainerUnlocked(context, userHandle, b);
-                    return;
+                    break;
                 case 6:
                 case 7:
                 case 8:
                 default:
                     Log.e(TAG, "invalid event:" + event);
-                    return;
+                    break;
                 case 9:
                     onContainerReset(context, userHandle, b);
-                    return;
+                    break;
                 case 10:
                     onContainerRemoved(context, userHandle, b);
-                    return;
+                    break;
                 case 11:
                     onLicenseActivated(context, userHandle, b);
-                    return;
+                    break;
                 case 12:
                     onLicenseExpired(context, userHandle, b);
-                    return;
+                    break;
                 case 13:
                     onDeviceOwnerActivated(context, b);
-                    return;
+                    break;
                 case 14:
                     onDeviceOwnerLicenseActivated(context, b);
-                    return;
+                    break;
                 case 15:
                     onLockScreenStateChanged(context, userHandle, intent.getBooleanExtra(EXTRA_LOCKSCREEN_VISIBLE, false), b);
-                    return;
+                    break;
                 case 16:
                     onContainerAdminLocked(context, userHandle, b);
-                    return;
+                    break;
                 case 17:
                     onContainerAdminUnlocked(context, userHandle, b);
-                    return;
+                    break;
                 case 18:
                     onContainerEnabled(context, userHandle, b);
-                    return;
+                    break;
                 case 19:
                     onContainerOneLocked(context, userHandle, b);
-                    return;
+                    break;
                 case 20:
                     onDeviceOwnerLicenseExpired(context, b);
-                    return;
+                    break;
             }
         }
     }

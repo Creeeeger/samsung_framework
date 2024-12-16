@@ -20,20 +20,20 @@ public class ActivityGroup extends Activity {
     }
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle states = savedInstanceState != null ? savedInstanceState.getBundle(STATES_KEY) : null;
         this.mLocalActivityManager.dispatchCreate(states);
     }
 
     @Override // android.app.Activity
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         this.mLocalActivityManager.dispatchResume();
     }
 
     @Override // android.app.Activity
-    public void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Bundle state = this.mLocalActivityManager.saveInstanceState();
         if (state != null) {
@@ -42,19 +42,19 @@ public class ActivityGroup extends Activity {
     }
 
     @Override // android.app.Activity
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
         this.mLocalActivityManager.dispatchPause(isFinishing());
     }
 
     @Override // android.app.Activity
-    public void onStop() {
+    protected void onStop() {
         super.onStop();
         this.mLocalActivityManager.dispatchStop();
     }
 
     @Override // android.app.Activity
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         this.mLocalActivityManager.dispatchDestroy(isFinishing());
     }
@@ -73,12 +73,12 @@ public class ActivityGroup extends Activity {
     }
 
     @Override // android.app.Activity
-    public void dispatchActivityResult(String who, int requestCode, int resultCode, Intent data, String reason) {
+    void dispatchActivityResult(String who, int requestCode, int resultCode, Intent data, ComponentCaller caller, String reason) {
         Activity act;
         if (who != null && (act = this.mLocalActivityManager.getActivity(who)) != null) {
             act.onActivityResult(requestCode, resultCode, data);
         } else {
-            super.dispatchActivityResult(who, requestCode, resultCode, data, reason);
+            super.dispatchActivityResult(who, requestCode, resultCode, data, caller, reason);
         }
     }
 }

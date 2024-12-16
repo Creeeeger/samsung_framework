@@ -41,9 +41,8 @@ public class DERUniversalString extends ASN1Primitive implements ASN1String {
         try {
             byte[] string = getEncoded();
             for (int i = 0; i != string.length; i++) {
-                char[] cArr = table;
-                buf.append(cArr[(string[i] >>> 4) & 15]);
-                buf.append(cArr[string[i] & 15]);
+                buf.append(table[(string[i] >>> 4) & 15]);
+                buf.append(table[string[i] & 15]);
             }
             return buf.toString();
         } catch (IOException e) {
@@ -60,22 +59,22 @@ public class DERUniversalString extends ASN1Primitive implements ASN1String {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         return StreamUtil.calculateBodyLength(this.string.length) + 1 + this.string.length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 28, this.string);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof DERUniversalString)) {
             return false;
         }

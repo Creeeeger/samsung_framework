@@ -3,7 +3,7 @@ package android.graphics.drawable;
 import android.graphics.Rect;
 
 /* loaded from: classes.dex */
-public abstract class RippleComponent {
+abstract class RippleComponent {
     protected final Rect mBounds;
     protected float mDensityScale;
     private boolean mHasMaxRadius;
@@ -17,9 +17,8 @@ public abstract class RippleComponent {
 
     public void onBoundsChange() {
         if (!this.mHasMaxRadius) {
-            float targetRadius = getTargetRadius(this.mBounds);
-            this.mTargetRadius = targetRadius;
-            onTargetRadiusChanged(targetRadius);
+            this.mTargetRadius = getTargetRadius(this.mBounds);
+            onTargetRadiusChanged(this.mTargetRadius);
         }
     }
 
@@ -45,15 +44,14 @@ public abstract class RippleComponent {
         bounds.set(-r, -r, r, r);
     }
 
-    public final void invalidateSelf() {
+    protected final void invalidateSelf() {
         this.mOwner.invalidateSelf(false);
     }
 
-    public final void onHotspotBoundsChanged() {
+    protected final void onHotspotBoundsChanged() {
         if (!this.mHasMaxRadius) {
-            float targetRadius = getTargetRadius(this.mBounds);
-            this.mTargetRadius = targetRadius;
-            onTargetRadiusChanged(targetRadius);
+            this.mTargetRadius = getTargetRadius(this.mBounds);
+            onTargetRadiusChanged(this.mTargetRadius);
         }
     }
 

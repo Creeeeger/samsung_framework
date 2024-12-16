@@ -24,6 +24,7 @@ import android.view.SurfaceHolder;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.flags.Flags;
 import android.window.OnBackInvokedDispatcher;
 import com.android.internal.R;
 import java.util.Collections;
@@ -85,6 +86,7 @@ public abstract class Window {
     @Deprecated
     public static final int PROGRESS_VISIBILITY_ON = -1;
     public static final String STATUS_BAR_BACKGROUND_TRANSITION_NAME = "android:status:background";
+    protected static boolean sToolkitSetFrameRateReadOnlyFlagValue = Flags.toolkitSetFrameRateReadOnly();
     private Window mActiveChild;
     private String mAppName;
     private IBinder mAppToken;
@@ -95,6 +97,7 @@ public abstract class Window {
     private boolean mDestroyed;
     private int mFeatures;
     private boolean mHardwareAccelerated;
+    private boolean mIsPreserved;
     private int mLocalFeatures;
     private OnRestrictedCaptionAreaChangedListener mOnRestrictedCaptionAreaChangedListener;
     private OnWindowDismissedCallback mOnWindowDismissedCallback;
@@ -117,39 +120,32 @@ public abstract class Window {
     private boolean mCloseOnSwipeEnabled = false;
     private final WindowManager.LayoutParams mWindowAttributes = new WindowManager.LayoutParams();
 
-    /* loaded from: classes4.dex */
     public interface DecorCallback {
         boolean onDrawLegacyNavigationBarBackgroundChanged(boolean z);
 
         void onSystemBarAppearanceChanged(int i);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnContentApplyWindowInsetsListener {
         Pair<Insets, WindowInsets> onContentApplyWindowInsets(View view, WindowInsets windowInsets);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnFrameMetricsAvailableListener {
         void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int i);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnRestrictedCaptionAreaChangedListener {
         void onRestrictedCaptionAreaChanged(Rect rect);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnWindowDismissedCallback {
         void onWindowDismissed(boolean z, boolean z2);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnWindowSwipeDismissedCallback {
         void onWindowSwipeDismissed();
     }
 
-    /* loaded from: classes4.dex */
     public interface WindowControllerCallback {
         void enterPictureInPictureModeIfPossible();
 
@@ -160,6 +156,8 @@ public abstract class Window {
         void updateNavigationBarColor(int i);
 
         void updateStatusBarColor(int i);
+
+        void updateSystemBarsAppearance(int i);
     }
 
     public abstract void addContentView(View view, ViewGroup.LayoutParams layoutParams);
@@ -178,8 +176,10 @@ public abstract class Window {
 
     public abstract LayoutInflater getLayoutInflater();
 
+    @Deprecated
     public abstract int getNavigationBarColor();
 
+    @Deprecated
     public abstract int getStatusBarColor();
 
     public abstract int getVolumeControlStream();
@@ -236,10 +236,12 @@ public abstract class Window {
 
     public abstract void setFeatureInt(int i, int i2);
 
+    @Deprecated
     public abstract void setNavigationBarColor(int i);
 
     public abstract void setResizingCaptionDrawable(Drawable drawable);
 
+    @Deprecated
     public abstract void setStatusBarColor(int i);
 
     public abstract void setTitle(CharSequence charSequence);
@@ -267,7 +269,14 @@ public abstract class Window {
 
     public abstract void togglePanel(int i, KeyEvent keyEvent);
 
-    /* loaded from: classes4.dex */
+    public boolean isPreserved() {
+        return this.mIsPreserved;
+    }
+
+    public void setPreserved(boolean preserved) {
+        this.mIsPreserved = preserved;
+    }
+
     public interface Callback {
         boolean dispatchGenericMotionEvent(MotionEvent motionEvent);
 
@@ -387,8 +396,7 @@ public abstract class Window {
         this.mWindowManager = ((WindowManagerImpl) wm).createLocalWindowManager(this);
     }
 
-    public void adjustLayoutParamsForSubWindow(WindowManager.LayoutParams wp) {
-        CharSequence charSequence;
+    void adjustLayoutParamsForSubWindow(WindowManager.LayoutParams wp) {
         View decor;
         CharSequence curTitle = wp.getTitle();
         if (wp.type >= 1000 && wp.type <= 1999) {
@@ -428,11 +436,10 @@ public abstract class Window {
             }
         } else {
             if (wp.token == null) {
-                Window window = this.mContainer;
-                wp.token = window == null ? this.mAppToken : window.mAppToken;
+                wp.token = this.mContainer == null ? this.mAppToken : this.mContainer.mAppToken;
             }
-            if ((curTitle == null || curTitle.length() == 0) && (charSequence = this.mAppName) != null) {
-                wp.setTitle(charSequence);
+            if ((curTitle == null || curTitle.length() == 0) && this.mAppName != null) {
+                wp.setTitle(this.mAppName);
             }
         }
         if (wp.packageName == null) {
@@ -478,9 +485,8 @@ public abstract class Window {
     }
 
     public final void dispatchOnWindowDismissed(boolean finishTask, boolean suppressWindowTransition) {
-        OnWindowDismissedCallback onWindowDismissedCallback = this.mOnWindowDismissedCallback;
-        if (onWindowDismissedCallback != null) {
-            onWindowDismissedCallback.onWindowDismissed(finishTask, suppressWindowTransition);
+        if (this.mOnWindowDismissedCallback != null) {
+            this.mOnWindowDismissedCallback.onWindowDismissed(finishTask, suppressWindowTransition);
         }
     }
 
@@ -489,9 +495,8 @@ public abstract class Window {
     }
 
     public final void dispatchOnWindowSwipeDismissed() {
-        OnWindowSwipeDismissedCallback onWindowSwipeDismissedCallback = this.mOnWindowSwipeDismissedCallback;
-        if (onWindowSwipeDismissedCallback != null) {
-            onWindowSwipeDismissedCallback.onWindowSwipeDismissed();
+        if (this.mOnWindowSwipeDismissedCallback != null) {
+            this.mOnWindowSwipeDismissedCallback.onWindowSwipeDismissed();
         }
     }
 
@@ -507,24 +512,29 @@ public abstract class Window {
         this.mDecorCallback = decorCallback;
     }
 
+    public final void setSystemBarAppearance(int appearance) {
+        this.mSystemBarAppearance = appearance;
+    }
+
     public final int getSystemBarAppearance() {
         return this.mSystemBarAppearance;
     }
 
     public final void dispatchOnSystemBarAppearanceChanged(int appearance) {
-        this.mSystemBarAppearance = appearance;
-        DecorCallback decorCallback = this.mDecorCallback;
-        if (decorCallback != null) {
-            decorCallback.onSystemBarAppearanceChanged(appearance);
+        setSystemBarAppearance(appearance);
+        if (this.mDecorCallback != null) {
+            this.mDecorCallback.onSystemBarAppearanceChanged(appearance);
+        }
+        if (this.mWindowControllerCallback != null) {
+            this.mWindowControllerCallback.updateSystemBarsAppearance(appearance);
         }
     }
 
     public final boolean onDrawLegacyNavigationBarBackgroundChanged(boolean drawLegacyNavigationBarBackground) {
-        DecorCallback decorCallback = this.mDecorCallback;
-        if (decorCallback == null) {
+        if (this.mDecorCallback == null) {
             return false;
         }
-        return decorCallback.onDrawLegacyNavigationBarBackgroundChanged(drawLegacyNavigationBarBackground);
+        return this.mDecorCallback.onDrawLegacyNavigationBarBackgroundChanged(drawLegacyNavigationBarBackground);
     }
 
     public final void setRestrictedCaptionAreaListener(OnRestrictedCaptionAreaChangedListener listener) {
@@ -617,10 +627,9 @@ public abstract class Window {
         dispatchWindowAttributesChanged(attrs);
     }
 
-    public void dispatchWindowAttributesChanged(WindowManager.LayoutParams attrs) {
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onWindowAttributesChanged(attrs);
+    protected void dispatchWindowAttributesChanged(WindowManager.LayoutParams attrs) {
+        if (this.mCallback != null) {
+            this.mCallback.onWindowAttributesChanged(attrs);
         }
     }
 
@@ -628,6 +637,46 @@ public abstract class Window {
         WindowManager.LayoutParams attrs = getAttributes();
         attrs.setColorMode(colorMode);
         dispatchWindowAttributesChanged(attrs);
+    }
+
+    public void setDesiredHdrHeadroom(float desiredHeadroom) {
+        WindowManager.LayoutParams attrs = getAttributes();
+        attrs.setDesiredHdrHeadroom(desiredHeadroom);
+        dispatchWindowAttributesChanged(attrs);
+    }
+
+    public float getDesiredHdrHeadroom() {
+        return getAttributes().getDesiredHdrHeadroom();
+    }
+
+    public void setFrameRateBoostOnTouchEnabled(boolean enabled) {
+        if (sToolkitSetFrameRateReadOnlyFlagValue) {
+            WindowManager.LayoutParams attrs = getAttributes();
+            attrs.setFrameRateBoostOnTouchEnabled(enabled);
+            dispatchWindowAttributesChanged(attrs);
+        }
+    }
+
+    public boolean getFrameRateBoostOnTouchEnabled() {
+        if (sToolkitSetFrameRateReadOnlyFlagValue) {
+            return getAttributes().getFrameRateBoostOnTouchEnabled();
+        }
+        return true;
+    }
+
+    public void setFrameRatePowerSavingsBalanced(boolean enabled) {
+        if (sToolkitSetFrameRateReadOnlyFlagValue) {
+            WindowManager.LayoutParams attrs = getAttributes();
+            attrs.setFrameRatePowerSavingsBalanced(enabled);
+            dispatchWindowAttributesChanged(attrs);
+        }
+    }
+
+    public boolean isFrameRatePowerSavingsBalanced() {
+        if (sToolkitSetFrameRateReadOnlyFlagValue) {
+            return getAttributes().isFrameRatePowerSavingsBalanced();
+        }
+        return false;
     }
 
     public void setPreferMinimalPostProcessing(boolean isPreferred) {
@@ -666,11 +715,11 @@ public abstract class Window {
         return this.mWindowAttributes;
     }
 
-    public final int getForcedWindowFlags() {
+    protected final int getForcedWindowFlags() {
         return this.mForcedWindowFlags;
     }
 
-    public final boolean hasSoftInputMode() {
+    protected final boolean hasSoftInputMode() {
         return this.mHasSoftInputMode;
     }
 
@@ -684,6 +733,10 @@ public abstract class Window {
             this.mCloseOnTouchOutside = close;
             this.mSetCloseOnTouchOutside = true;
         }
+    }
+
+    public boolean shouldCloseOnTouchOutside() {
+        return this.mCloseOnTouchOutside;
     }
 
     public boolean shouldCloseOnTouch(Context context, MotionEvent event) {
@@ -705,30 +758,23 @@ public abstract class Window {
 
     public boolean requestFeature(int featureId) {
         int flag = 1 << featureId;
-        int i = this.mFeatures | flag;
-        this.mFeatures = i;
-        int i2 = this.mLocalFeatures;
-        Window window = this.mContainer;
-        this.mLocalFeatures = i2 | (window != null ? (~window.mFeatures) & flag : flag);
-        return (i & flag) != 0;
+        this.mFeatures |= flag;
+        this.mLocalFeatures |= this.mContainer != null ? (~this.mContainer.mFeatures) & flag : flag;
+        return (this.mFeatures & flag) != 0;
     }
 
-    public void removeFeature(int featureId) {
+    protected void removeFeature(int featureId) {
         int flag = 1 << featureId;
         this.mFeatures &= ~flag;
-        int i = this.mLocalFeatures;
-        Window window = this.mContainer;
-        this.mLocalFeatures = i & (~(window != null ? (~window.mFeatures) & flag : flag));
+        this.mLocalFeatures &= ~(this.mContainer != null ? (~this.mContainer.mFeatures) & flag : flag);
     }
 
     public final void makeActive() {
-        Window window = this.mContainer;
-        if (window != null) {
-            Window window2 = window.mActiveChild;
-            if (window2 != null) {
-                window2.mIsActive = false;
+        if (this.mContainer != null) {
+            if (this.mContainer.mActiveChild != null) {
+                this.mContainer.mActiveChild.mIsActive = false;
             }
-            window.mActiveChild = this;
+            this.mContainer.mActiveChild = this;
         }
         this.mIsActive = true;
         onActive();
@@ -775,7 +821,7 @@ public abstract class Window {
         return null;
     }
 
-    public final int getFeatures() {
+    protected final int getFeatures() {
         return this.mFeatures;
     }
 
@@ -795,11 +841,11 @@ public abstract class Window {
         return (getFeatures() & (1 << feature)) != 0;
     }
 
-    public final int getLocalFeatures() {
+    protected final int getLocalFeatures() {
         return this.mLocalFeatures;
     }
 
-    public void setDefaultWindowFormat(int format) {
+    protected void setDefaultWindowFormat(int format) {
         this.mDefaultWindowFormat = format;
         if (!this.mHaveWindowFormat) {
             WindowManager.LayoutParams attrs = getAttributes();
@@ -808,7 +854,7 @@ public abstract class Window {
         }
     }
 
-    public boolean haveDimAmount() {
+    protected boolean haveDimAmount() {
         return this.mHaveDimAmount;
     }
 
@@ -939,16 +985,20 @@ public abstract class Window {
     public void setSharedElementsUseOverlay(boolean sharedElementsUseOverlay) {
     }
 
+    @Deprecated
     public void setNavigationBarDividerColor(int dividerColor) {
     }
 
+    @Deprecated
     public int getNavigationBarDividerColor() {
         return 0;
     }
 
+    @Deprecated
     public void setStatusBarContrastEnforced(boolean ensureContrast) {
     }
 
+    @Deprecated
     public boolean isStatusBarContrastEnforced() {
         return false;
     }

@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class PointingInfo implements Parcelable {
     public static final Parcelable.Creator<PointingInfo> CREATOR = new Parcelable.Creator<PointingInfo>() { // from class: android.telephony.satellite.PointingInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PointingInfo createFromParcel(Parcel in) {
             return new PointingInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PointingInfo[] newArray(int size) {
             return new PointingInfo[size];
@@ -24,10 +23,6 @@ public final class PointingInfo implements Parcelable {
     };
     private float mSatelliteAzimuthDegrees;
     private float mSatelliteElevationDegrees;
-
-    /* synthetic */ PointingInfo(Parcel parcel, PointingInfoIA pointingInfoIA) {
-        this(parcel);
-    }
 
     public PointingInfo(float satelliteAzimuthDegrees, float satelliteElevationDegrees) {
         this.mSatelliteAzimuthDegrees = satelliteAzimuthDegrees;
@@ -47,23 +42,6 @@ public final class PointingInfo implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeFloat(this.mSatelliteAzimuthDegrees);
         out.writeFloat(this.mSatelliteElevationDegrees);
-    }
-
-    /* renamed from: android.telephony.satellite.PointingInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PointingInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PointingInfo createFromParcel(Parcel in) {
-            return new PointingInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PointingInfo[] newArray(int size) {
-            return new PointingInfo[size];
-        }
     }
 
     public boolean equals(Object o) {

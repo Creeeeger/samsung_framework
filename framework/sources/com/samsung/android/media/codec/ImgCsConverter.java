@@ -1,14 +1,10 @@
 package com.samsung.android.media.codec;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ColorSpace;
 import android.media.ExifInterface;
 import android.util.Log;
-import java.io.File;
-import java.io.FileOutputStream;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ImgCsConverter {
     private static final String TAG = "ImgCsConverter";
     private static final boolean DEBUG = Log.isLoggable(TAG, 3);
@@ -19,121 +15,18 @@ public class ImgCsConverter {
         return convert(inputFilePath, outputFilePath, ColorSpace.get(ColorSpace.Named.SRGB));
     }
 
-    private static boolean convert(String inputFilePath, String outputFilePath, ColorSpace colorspace) {
-        Bitmap bitmap;
-        Log.d(TAG, "convert");
-        if (inputFilePath == null || inputFilePath.length() <= 0) {
-            throw new NullPointerException("inputFilePath cannot be null");
-        }
-        if (outputFilePath == null || outputFilePath.length() <= 0) {
-            throw new NullPointerException("outputFilePath cannot be null");
-        }
-        boolean ret = true;
-        Bitmap bitmap2 = null;
-        FileOutputStream out = null;
-        try {
-            try {
-                try {
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inSampleSize = 1;
-                    options.inPreferredColorSpace = colorspace;
-                    bitmap = BitmapFactory.decodeFile(inputFilePath, options);
-                } catch (RuntimeException e) {
-                    Log.e(TAG, " RuntimeException ");
-                    e.printStackTrace();
-                    ret = false;
-                    if (0 != 0) {
-                        bitmap2.recycle();
-                    }
-                    if (0 != 0) {
-                        try {
-                            out.close();
-                        } catch (RuntimeException rethrown) {
-                            throw rethrown;
-                        }
-                    }
-                } catch (Exception e2) {
-                    Log.e(TAG, " Exception ");
-                    e2.printStackTrace();
-                    ret = false;
-                    if (0 != 0) {
-                        bitmap2.recycle();
-                    }
-                    if (0 != 0) {
-                        try {
-                            out.close();
-                        } catch (RuntimeException rethrown2) {
-                            throw rethrown2;
-                        }
-                    }
-                }
-            } catch (Exception e3) {
-            }
-            if (bitmap == null) {
-                Log.e(TAG, "decode fail");
-                if (bitmap != null) {
-                    bitmap.recycle();
-                }
-                if (0 == 0) {
-                    return false;
-                }
-                try {
-                    out.close();
-                    return false;
-                } catch (RuntimeException rethrown3) {
-                    throw rethrown3;
-                } catch (Exception e4) {
-                    return false;
-                }
-            }
-            Log.i(TAG, "dec x");
-            FileOutputStream out2 = new FileOutputStream(outputFilePath);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out2);
-            Log.i(TAG, "enc x");
-            ExifInterface inExif = new ExifInterface(inputFilePath);
-            ExifInterface outExif = new ExifInterface(outputFilePath);
-            int i = 0;
-            while (true) {
-                String[] strArr = AllExifTags;
-                if (i >= strArr.length) {
-                    break;
-                }
-                String value = inExif.getAttribute(strArr[i]);
-                if (value != null) {
-                    outExif.setAttribute(AllExifTags[i], value);
-                }
-                i++;
-            }
-            File dst_sefFile = new File(outputFilePath);
-            String outDir = dst_sefFile.getParent();
-            Log.i(TAG, " outDir : " + outDir);
-            String tmpdir = System.getProperty("java.io.tmpdir");
-            Log.i(TAG, " tmpdir : " + tmpdir);
-            System.setProperty("java.io.tmpdir", outDir);
-            outExif.saveAttributes();
-            System.setProperty("java.io.tmpdir", tmpdir);
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
-            try {
-                out2.close();
-                return ret;
-            } catch (RuntimeException rethrown4) {
-                throw rethrown4;
-            }
-        } catch (Throwable rethrown5) {
-            if (0 != 0) {
-                bitmap2.recycle();
-            }
-            if (0 != 0) {
-                try {
-                    out.close();
-                } catch (RuntimeException rethrown6) {
-                    throw rethrown6;
-                } catch (Exception e5) {
-                }
-            }
-            throw rethrown5;
-        }
+    /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
+        jadx.core.utils.exceptions.JadxRuntimeException: Can't find top splitter block for handler:B:47:0x00cc
+        	at jadx.core.utils.BlockUtils.getTopSplitterForHandler(BlockUtils.java:1179)
+        	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.collectHandlerRegions(ExcHandlersRegionMaker.java:53)
+        	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.process(ExcHandlersRegionMaker.java:38)
+        	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:27)
+        */
+    private static boolean convert(java.lang.String r13, java.lang.String r14, android.graphics.ColorSpace r15) {
+        /*
+            Method dump skipped, instructions count: 289
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.codec.ImgCsConverter.convert(java.lang.String, java.lang.String, android.graphics.ColorSpace):boolean");
     }
 }

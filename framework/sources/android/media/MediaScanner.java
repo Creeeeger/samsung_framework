@@ -39,7 +39,6 @@ public class MediaScanner implements AutoCloseable {
     @Deprecated
     private final String mPackageName;
 
-    /* loaded from: classes2.dex */
     private static class FileEntry {
 
         @Deprecated
@@ -64,7 +63,6 @@ public class MediaScanner implements AutoCloseable {
         throw new UnsupportedOperationException();
     }
 
-    /* loaded from: classes2.dex */
     private class MyMediaScannerClient implements MediaScannerClient {
 
         @Deprecated

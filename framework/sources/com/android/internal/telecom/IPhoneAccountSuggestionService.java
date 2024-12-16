@@ -13,7 +13,6 @@ public interface IPhoneAccountSuggestionService extends IInterface {
 
     void onAccountSuggestionRequest(IPhoneAccountSuggestionCallback iPhoneAccountSuggestionCallback, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IPhoneAccountSuggestionService {
         @Override // com.android.internal.telecom.IPhoneAccountSuggestionService
         public void onAccountSuggestionRequest(IPhoneAccountSuggestionCallback callback, String number) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IPhoneAccountSuggestionService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IPhoneAccountSuggestionService {
         static final int TRANSACTION_onAccountSuggestionRequest = 1;
 
@@ -68,25 +66,22 @@ public interface IPhoneAccountSuggestionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPhoneAccountSuggestionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPhoneAccountSuggestionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPhoneAccountSuggestionService.DESCRIPTOR);
+                case 1:
+                    IPhoneAccountSuggestionCallback _arg0 = IPhoneAccountSuggestionCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onAccountSuggestionRequest(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IPhoneAccountSuggestionCallback _arg0 = IPhoneAccountSuggestionCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onAccountSuggestionRequest(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IPhoneAccountSuggestionService {
             private IBinder mRemote;
 

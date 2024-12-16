@@ -87,7 +87,6 @@ public final class FingerprintGestureController {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class FingerprintGestureCallback {
         public void onGestureDetectionAvailabilityChanged(boolean available) {
         }

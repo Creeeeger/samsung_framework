@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-/* loaded from: classes4.dex */
-public class IterableByteBufferInputStream extends InputStream {
+/* loaded from: classes3.dex */
+class IterableByteBufferInputStream extends InputStream {
     private long currentAddress;
     private byte[] currentArray;
     private int currentArrayOffset;
@@ -17,7 +17,7 @@ public class IterableByteBufferInputStream extends InputStream {
     private boolean hasArray;
     private Iterator<ByteBuffer> iterator;
 
-    public IterableByteBufferInputStream(Iterable<ByteBuffer> data) {
+    IterableByteBufferInputStream(Iterable<ByteBuffer> data) {
         this.iterator = data.iterator();
         for (ByteBuffer byteBuffer : data) {
             this.dataSize++;
@@ -36,9 +36,8 @@ public class IterableByteBufferInputStream extends InputStream {
         if (!this.iterator.hasNext()) {
             return false;
         }
-        ByteBuffer next = this.iterator.next();
-        this.currentByteBuffer = next;
-        this.currentByteBufferPos = next.position();
+        this.currentByteBuffer = this.iterator.next();
+        this.currentByteBufferPos = this.currentByteBuffer.position();
         if (this.currentByteBuffer.hasArray()) {
             this.hasArray = true;
             this.currentArray = this.currentByteBuffer.array();
@@ -52,9 +51,8 @@ public class IterableByteBufferInputStream extends InputStream {
     }
 
     private void updateCurrentByteBufferPos(int numberOfBytesRead) {
-        int i = this.currentByteBufferPos + numberOfBytesRead;
-        this.currentByteBufferPos = i;
-        if (i == this.currentByteBuffer.limit()) {
+        this.currentByteBufferPos += numberOfBytesRead;
+        if (this.currentByteBufferPos == this.currentByteBuffer.limit()) {
             getNextByteBuffer();
         }
     }
@@ -80,14 +78,12 @@ public class IterableByteBufferInputStream extends InputStream {
         if (this.currentIndex == this.dataSize) {
             return -1;
         }
-        int limit = this.currentByteBuffer.limit();
-        int i = this.currentByteBufferPos;
-        int remaining = limit - i;
+        int remaining = this.currentByteBuffer.limit() - this.currentByteBufferPos;
         if (length > remaining) {
             length = remaining;
         }
         if (this.hasArray) {
-            System.arraycopy(this.currentArray, i + this.currentArrayOffset, output, offset, length);
+            System.arraycopy(this.currentArray, this.currentByteBufferPos + this.currentArrayOffset, output, offset, length);
             updateCurrentByteBufferPos(length);
         } else {
             int prevPos = this.currentByteBuffer.position();

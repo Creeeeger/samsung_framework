@@ -9,22 +9,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TvTrackInfo implements Parcelable {
     public static final Parcelable.Creator<TvTrackInfo> CREATOR = new Parcelable.Creator<TvTrackInfo>() { // from class: android.media.tv.TvTrackInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvTrackInfo createFromParcel(Parcel in) {
             return new TvTrackInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvTrackInfo[] newArray(int size) {
             return new TvTrackInfo[size];
         }
     };
+    public static final String EXTRA_BUNDLE_KEY_COMPONENT_TAG = "component_tag";
+    public static final String EXTRA_BUNDLE_KEY_PID = "pid";
     public static final int TYPE_AUDIO = 0;
     public static final int TYPE_SUBTITLE = 2;
     public static final int TYPE_VIDEO = 1;
@@ -47,16 +48,7 @@ public final class TvTrackInfo implements Parcelable {
     private final int mVideoWidth;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Type {
-    }
-
-    /* synthetic */ TvTrackInfo(int i, String str, String str2, CharSequence charSequence, String str3, boolean z, int i2, int i3, boolean z2, boolean z3, boolean z4, int i4, int i5, float f, float f2, byte b, Bundle bundle, TvTrackInfoIA tvTrackInfoIA) {
-        this(i, str, str2, charSequence, str3, z, i2, i3, z2, z3, z4, i4, i5, f, f2, b, bundle);
-    }
-
-    /* synthetic */ TvTrackInfo(Parcel parcel, TvTrackInfoIA tvTrackInfoIA) {
-        this(parcel);
     }
 
     private TvTrackInfo(int type, String id, String language, CharSequence description, String encoding, boolean encrypted, int audioChannelCount, int audioSampleRate, boolean audioDescription, boolean hardOfHearing, boolean spokenSubtitle, int videoWidth, int videoHeight, float videoFrameRate, float videoPixelAspectRatio, byte videoActiveFormatDescription, Bundle extra) {
@@ -145,8 +137,7 @@ public final class TvTrackInfo implements Parcelable {
     }
 
     public boolean isHardOfHearing() {
-        int i = this.mType;
-        if (i != 0 && i != 2) {
+        if (this.mType != 0 && this.mType != 2) {
             throw new IllegalStateException("Not an audio or a subtitle track");
         }
         return this.mHardOfHearing;
@@ -209,8 +200,7 @@ public final class TvTrackInfo implements Parcelable {
         parcel.writeInt(this.mType);
         parcel.writeString(this.mId);
         parcel.writeString(this.mLanguage);
-        CharSequence charSequence = this.mDescription;
-        parcel.writeString(charSequence != null ? charSequence.toString() : null);
+        parcel.writeString(this.mDescription != null ? this.mDescription.toString() : null);
         parcel.writeString(this.mEncoding);
         parcel.writeInt(this.mEncrypted ? 1 : 0);
         parcel.writeInt(this.mAudioChannelCount);
@@ -251,34 +241,15 @@ public final class TvTrackInfo implements Parcelable {
 
     public int hashCode() {
         int result = Objects.hash(this.mId, Integer.valueOf(this.mType), this.mLanguage, this.mDescription);
-        int i = this.mType;
-        if (i == 0) {
+        if (this.mType == 0) {
             return Objects.hash(Integer.valueOf(result), Integer.valueOf(this.mAudioChannelCount), Integer.valueOf(this.mAudioSampleRate));
         }
-        if (i == 1) {
+        if (this.mType == 1) {
             return Objects.hash(Integer.valueOf(result), Integer.valueOf(this.mVideoWidth), Integer.valueOf(this.mVideoHeight), Float.valueOf(this.mVideoFrameRate), Float.valueOf(this.mVideoPixelAspectRatio));
         }
         return result;
     }
 
-    /* renamed from: android.media.tv.TvTrackInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TvTrackInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvTrackInfo createFromParcel(Parcel in) {
-            return new TvTrackInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvTrackInfo[] newArray(int size) {
-            return new TvTrackInfo[size];
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mAudioChannelCount;
         private boolean mAudioDescription;
@@ -354,8 +325,7 @@ public final class TvTrackInfo implements Parcelable {
         }
 
         public Builder setHardOfHearing(boolean hardOfHearing) {
-            int i = this.mType;
-            if (i != 0 && i != 2) {
+            if (this.mType != 0 && this.mType != 2) {
                 throw new IllegalStateException("Not an audio track or a subtitle track");
             }
             this.mHardOfHearing = hardOfHearing;

@@ -5,14 +5,10 @@ import android.media.tv.tuner.TunerUtils;
 import android.media.tv.tuner.TunerVersionChecker;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DownloadSettings extends Settings {
     private final int mDownloadId;
     private final boolean mUseDownloadId;
-
-    /* synthetic */ DownloadSettings(int i, boolean z, int i2, DownloadSettingsIA downloadSettingsIA) {
-        this(i, z, i2);
-    }
 
     private DownloadSettings(int mainType, boolean useDownloadId, int downloadId) {
         super(TunerUtils.getFilterSubtype(mainType, 5));
@@ -32,15 +28,10 @@ public class DownloadSettings extends Settings {
         return new Builder(mainType);
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mDownloadId;
         private final int mMainType;
         private boolean mUseDownloadId;
-
-        /* synthetic */ Builder(int i, BuilderIA builderIA) {
-            this(i);
-        }
 
         private Builder(int mainType) {
             this.mUseDownloadId = false;

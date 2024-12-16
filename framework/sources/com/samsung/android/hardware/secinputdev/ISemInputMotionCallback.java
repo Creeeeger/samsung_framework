@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemInputMotionCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.hardware.secinputdev.ISemInputMotionCallback";
 
     void onEventChanged(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemInputMotionCallback {
         @Override // com.samsung.android.hardware.secinputdev.ISemInputMotionCallback
         public void onEventChanged(int value) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISemInputMotionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemInputMotionCallback {
         static final int TRANSACTION_onEventChanged = 1;
 
@@ -67,24 +65,21 @@ public interface ISemInputMotionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemInputMotionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemInputMotionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemInputMotionCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEventChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEventChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISemInputMotionCallback {
             private IBinder mRemote;
 

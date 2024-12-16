@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class MediaFilterGroupBase implements MediaFilterGroup {
     protected Supplier<BufferChannel> channelSupplier;
     protected List<MediaFilter> filters = new ArrayList();
@@ -41,7 +41,7 @@ public abstract class MediaFilterGroupBase implements MediaFilterGroup {
 
     @Override // com.samsung.android.sume.core.filter.MediaFilter
     public void prepare() {
-        this.filters.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterGroupBase$$ExternalSyntheticLambda0
+        this.filters.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterGroupBase$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 ((MediaFilter) obj).prepare();
@@ -51,7 +51,7 @@ public abstract class MediaFilterGroupBase implements MediaFilterGroup {
 
     @Override // com.samsung.android.sume.core.filter.MediaFilter
     public void release() {
-        this.filters.forEach(new MediaFilterGroupBase$$ExternalSyntheticLambda1());
+        this.filters.forEach(new MediaFilterGroupBase$$ExternalSyntheticLambda0());
         this.filters.clear();
     }
 }

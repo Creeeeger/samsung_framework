@@ -1,12 +1,17 @@
 package android.accessibilityservice;
 
+import android.Manifest;
+import android.accessibilityservice.IBrailleDisplayController;
+import android.app.ActivityThread;
 import android.content.pm.ParceledListSlice;
 import android.graphics.Region;
+import android.hardware.usb.UsbDevice;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.RemoteCallback;
 import android.os.RemoteException;
 import android.view.SurfaceControl;
@@ -18,9 +23,13 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public interface IAccessibilityServiceConnection extends IInterface {
-    void attachAccessibilityOverlayToDisplay(int i, SurfaceControl surfaceControl) throws RemoteException;
+    void attachAccessibilityOverlayToDisplay(int i, int i2, SurfaceControl surfaceControl, IAccessibilityInteractionConnectionCallback iAccessibilityInteractionConnectionCallback) throws RemoteException;
 
-    void attachAccessibilityOverlayToWindow(int i, SurfaceControl surfaceControl) throws RemoteException;
+    void attachAccessibilityOverlayToWindow(int i, int i2, SurfaceControl surfaceControl, IAccessibilityInteractionConnectionCallback iAccessibilityInteractionConnectionCallback) throws RemoteException;
+
+    void connectBluetoothBrailleDisplay(String str, IBrailleDisplayController iBrailleDisplayController) throws RemoteException;
+
+    void connectUsbBrailleDisplay(UsbDevice usbDevice, IBrailleDisplayController iBrailleDisplayController) throws RemoteException;
 
     void disableSelf() throws RemoteException;
 
@@ -120,6 +129,8 @@ public interface IAccessibilityServiceConnection extends IInterface {
 
     boolean setSoftKeyboardShowMode(int i) throws RemoteException;
 
+    void setTestBrailleDisplayData(List<Bundle> list) throws RemoteException;
+
     void setTouchExplorationPassthroughRegion(int i, Region region) throws RemoteException;
 
     boolean switchToInputMethod(String str) throws RemoteException;
@@ -128,7 +139,6 @@ public interface IAccessibilityServiceConnection extends IInterface {
 
     void takeScreenshotOfWindow(int i, int i2, ScreenCapture.ScreenCaptureListener screenCaptureListener, IAccessibilityInteractionConnectionCallback iAccessibilityInteractionConnectionCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAccessibilityServiceConnection {
         @Override // android.accessibilityservice.IAccessibilityServiceConnection
         public void setServiceInfo(AccessibilityServiceInfo info) throws RemoteException {
@@ -179,12 +189,12 @@ public interface IAccessibilityServiceConnection extends IInterface {
         }
 
         @Override // android.accessibilityservice.IAccessibilityServiceConnection
-        public List<AccessibilityWindowInfo> getWindowsMainDisplay(int displayId) throws RemoteException {
+        public AccessibilityServiceInfo getServiceInfo() throws RemoteException {
             return null;
         }
 
         @Override // android.accessibilityservice.IAccessibilityServiceConnection
-        public AccessibilityServiceInfo getServiceInfo() throws RemoteException {
+        public List<AccessibilityWindowInfo> getWindowsMainDisplay(int displayId) throws RemoteException {
             return null;
         }
 
@@ -373,11 +383,23 @@ public interface IAccessibilityServiceConnection extends IInterface {
         }
 
         @Override // android.accessibilityservice.IAccessibilityServiceConnection
-        public void attachAccessibilityOverlayToDisplay(int displayId, SurfaceControl sc) throws RemoteException {
+        public void attachAccessibilityOverlayToDisplay(int interactionId, int displayId, SurfaceControl sc, IAccessibilityInteractionConnectionCallback callback) throws RemoteException {
         }
 
         @Override // android.accessibilityservice.IAccessibilityServiceConnection
-        public void attachAccessibilityOverlayToWindow(int accessibilityWindowId, SurfaceControl sc) throws RemoteException {
+        public void attachAccessibilityOverlayToWindow(int interactionId, int accessibilityWindowId, SurfaceControl sc, IAccessibilityInteractionConnectionCallback callback) throws RemoteException {
+        }
+
+        @Override // android.accessibilityservice.IAccessibilityServiceConnection
+        public void connectBluetoothBrailleDisplay(String bluetoothAddress, IBrailleDisplayController controller) throws RemoteException {
+        }
+
+        @Override // android.accessibilityservice.IAccessibilityServiceConnection
+        public void connectUsbBrailleDisplay(UsbDevice usbDevice, IBrailleDisplayController controller) throws RemoteException {
+        }
+
+        @Override // android.accessibilityservice.IAccessibilityServiceConnection
+        public void setTestBrailleDisplayData(List<Bundle> brailleDisplays) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -386,11 +408,12 @@ public interface IAccessibilityServiceConnection extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAccessibilityServiceConnection {
         public static final String DESCRIPTOR = "android.accessibilityservice.IAccessibilityServiceConnection";
         static final int TRANSACTION_attachAccessibilityOverlayToDisplay = 54;
         static final int TRANSACTION_attachAccessibilityOverlayToWindow = 55;
+        static final int TRANSACTION_connectBluetoothBrailleDisplay = 56;
+        static final int TRANSACTION_connectUsbBrailleDisplay = 57;
         static final int TRANSACTION_disableSelf = 15;
         static final int TRANSACTION_dispatchGesture = 34;
         static final int TRANSACTION_findAccessibilityNodeInfoByAccessibilityId = 3;
@@ -406,13 +429,13 @@ public interface IAccessibilityServiceConnection extends IInterface {
         static final int TRANSACTION_getMagnificationRegion = 21;
         static final int TRANSACTION_getMagnificationScale = 18;
         static final int TRANSACTION_getOverlayWindowToken = 36;
-        static final int TRANSACTION_getServiceInfo = 12;
+        static final int TRANSACTION_getServiceInfo = 11;
         static final int TRANSACTION_getSoftKeyboardShowMode = 28;
         static final int TRANSACTION_getSystemActions = 14;
         static final int TRANSACTION_getWindow = 9;
         static final int TRANSACTION_getWindowIdForLeashToken = 37;
         static final int TRANSACTION_getWindows = 10;
-        static final int TRANSACTION_getWindowsMainDisplay = 11;
+        static final int TRANSACTION_getWindowsMainDisplay = 12;
         static final int TRANSACTION_isAccessibilityButtonAvailable = 32;
         static final int TRANSACTION_isFingerprintGestureDetectionAvailable = 35;
         static final int TRANSACTION_logTrace = 44;
@@ -440,13 +463,24 @@ public interface IAccessibilityServiceConnection extends IInterface {
         static final int TRANSACTION_setServiceInfo = 1;
         static final int TRANSACTION_setSoftKeyboardCallbackEnabled = 29;
         static final int TRANSACTION_setSoftKeyboardShowMode = 27;
+        static final int TRANSACTION_setTestBrailleDisplayData = 58;
         static final int TRANSACTION_setTouchExplorationPassthroughRegion = 41;
         static final int TRANSACTION_switchToInputMethod = 30;
         static final int TRANSACTION_takeScreenshot = 38;
         static final int TRANSACTION_takeScreenshotOfWindow = 39;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IAccessibilityServiceConnection asInterface(IBinder obj) {
@@ -488,9 +522,9 @@ public interface IAccessibilityServiceConnection extends IInterface {
                 case 10:
                     return "getWindows";
                 case 11:
-                    return "getWindowsMainDisplay";
-                case 12:
                     return "getServiceInfo";
+                case 12:
+                    return "getWindowsMainDisplay";
                 case 13:
                     return "performGlobalAction";
                 case 14:
@@ -577,6 +611,12 @@ public interface IAccessibilityServiceConnection extends IInterface {
                     return "attachAccessibilityOverlayToDisplay";
                 case 55:
                     return "attachAccessibilityOverlayToWindow";
+                case 56:
+                    return "connectBluetoothBrailleDisplay";
+                case 57:
+                    return "connectUsbBrailleDisplay";
+                case 58:
+                    return "setTestBrailleDisplayData";
                 default:
                     return null;
             }
@@ -592,423 +632,443 @@ public interface IAccessibilityServiceConnection extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    AccessibilityServiceInfo _arg0 = (AccessibilityServiceInfo) data.readTypedObject(AccessibilityServiceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setServiceInfo(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    setAttributionTag(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    long _arg1 = data.readLong();
+                    int _arg2 = data.readInt();
+                    IAccessibilityInteractionConnectionCallback _arg3 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg4 = data.readInt();
+                    long _arg5 = data.readLong();
+                    Bundle _arg6 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    String[] _result = findAccessibilityNodeInfoByAccessibilityId(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    long _arg12 = data.readLong();
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    IAccessibilityInteractionConnectionCallback _arg42 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg52 = data.readLong();
+                    data.enforceNoDataAvail();
+                    String[] _result2 = findAccessibilityNodeInfosByText(_arg04, _arg12, _arg22, _arg32, _arg42, _arg52);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result2);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    long _arg13 = data.readLong();
+                    String _arg23 = data.readString();
+                    int _arg33 = data.readInt();
+                    IAccessibilityInteractionConnectionCallback _arg43 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg53 = data.readLong();
+                    data.enforceNoDataAvail();
+                    String[] _result3 = findAccessibilityNodeInfosByViewId(_arg05, _arg13, _arg23, _arg33, _arg43, _arg53);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result3);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    long _arg14 = data.readLong();
+                    int _arg24 = data.readInt();
+                    int _arg34 = data.readInt();
+                    IAccessibilityInteractionConnectionCallback _arg44 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg54 = data.readLong();
+                    data.enforceNoDataAvail();
+                    String[] _result4 = findFocus(_arg06, _arg14, _arg24, _arg34, _arg44, _arg54);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result4);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    long _arg15 = data.readLong();
+                    int _arg25 = data.readInt();
+                    int _arg35 = data.readInt();
+                    IAccessibilityInteractionConnectionCallback _arg45 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg55 = data.readLong();
+                    data.enforceNoDataAvail();
+                    String[] _result5 = focusSearch(_arg07, _arg15, _arg25, _arg35, _arg45, _arg55);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result5);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    long _arg16 = data.readLong();
+                    int _arg26 = data.readInt();
+                    Bundle _arg36 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg46 = data.readInt();
+                    IAccessibilityInteractionConnectionCallback _arg56 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg62 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = performAccessibilityAction(_arg08, _arg16, _arg26, _arg36, _arg46, _arg56, _arg62);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    AccessibilityWindowInfo _result7 = getWindow(_arg09);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 10:
+                    AccessibilityWindowInfo.WindowListSparseArray _result8 = getWindows();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 11:
+                    AccessibilityServiceInfo _result9 = getServiceInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 12:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<AccessibilityWindowInfo> _result10 = getWindowsMainDisplay(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result10, 1);
+                    return true;
+                case 13:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = performGlobalAction(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 14:
+                    List<AccessibilityNodeInfo.AccessibilityAction> _result12 = getSystemActions();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result12, 1);
+                    return true;
+                case 15:
+                    disableSelf();
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    boolean _arg012 = data.readBoolean();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setOnKeyEventResult(_arg012, _arg17);
+                    return true;
+                case 17:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    MagnificationConfig _result13 = getMagnificationConfig(_arg013);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 18:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result14 = getMagnificationScale(_arg014);
+                    reply.writeNoException();
+                    reply.writeFloat(_result14);
+                    return true;
+                case 19:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result15 = getMagnificationCenterX(_arg015);
+                    reply.writeNoException();
+                    reply.writeFloat(_result15);
+                    return true;
+                case 20:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result16 = getMagnificationCenterY(_arg016);
+                    reply.writeNoException();
+                    reply.writeFloat(_result16);
+                    return true;
+                case 21:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Region _result17 = getMagnificationRegion(_arg017);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result17, 1);
+                    return true;
+                case 22:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Region _result18 = getCurrentMagnificationRegion(_arg018);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result18, 1);
+                    return true;
+                case 23:
+                    int _arg019 = data.readInt();
+                    boolean _arg18 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result19 = resetMagnification(_arg019, _arg18);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 24:
+                    int _arg020 = data.readInt();
+                    boolean _arg19 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result20 = resetCurrentMagnification(_arg020, _arg19);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 25:
+                    int _arg021 = data.readInt();
+                    MagnificationConfig _arg110 = (MagnificationConfig) data.readTypedObject(MagnificationConfig.CREATOR);
+                    boolean _arg27 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result21 = setMagnificationConfig(_arg021, _arg110, _arg27);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result21);
+                    return true;
+                case 26:
+                    int _arg022 = data.readInt();
+                    boolean _arg111 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMagnificationCallbackEnabled(_arg022, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result22 = setSoftKeyboardShowMode(_arg023);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result22);
+                    return true;
+                case 28:
+                    int _result23 = getSoftKeyboardShowMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    return true;
+                case 29:
+                    boolean _arg024 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSoftKeyboardCallbackEnabled(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    String _arg025 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result24 = switchToInputMethod(_arg025);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result24);
+                    return true;
+                case 31:
+                    String _arg026 = data.readString();
+                    boolean _arg112 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result25 = setInputMethodEnabled(_arg026, _arg112);
+                    reply.writeNoException();
+                    reply.writeInt(_result25);
+                    return true;
+                case 32:
+                    boolean _result26 = isAccessibilityButtonAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result26);
+                    return true;
+                case 33:
+                    int _arg027 = data.readInt();
+                    ParceledListSlice _arg113 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendGesture(_arg027, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    int _arg028 = data.readInt();
+                    ParceledListSlice _arg114 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchGesture(_arg028, _arg114, _arg28);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    boolean _result27 = isFingerprintGestureDetectionAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result27);
+                    return true;
+                case 36:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IBinder _result28 = getOverlayWindowToken(_arg029);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result28);
+                    return true;
+                case 37:
+                    IBinder _arg030 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    int _result29 = getWindowIdForLeashToken(_arg030);
+                    reply.writeNoException();
+                    reply.writeInt(_result29);
+                    return true;
+                case 38:
+                    int _arg031 = data.readInt();
+                    RemoteCallback _arg115 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    takeScreenshot(_arg031, _arg115);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    int _arg032 = data.readInt();
+                    int _arg116 = data.readInt();
+                    ScreenCapture.ScreenCaptureListener _arg29 = (ScreenCapture.ScreenCaptureListener) data.readTypedObject(ScreenCapture.ScreenCaptureListener.CREATOR);
+                    IAccessibilityInteractionConnectionCallback _arg37 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    takeScreenshotOfWindow(_arg032, _arg116, _arg29, _arg37);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    int _arg033 = data.readInt();
+                    Region _arg117 = (Region) data.readTypedObject(Region.CREATOR);
+                    data.enforceNoDataAvail();
+                    setGestureDetectionPassthroughRegion(_arg033, _arg117);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    int _arg034 = data.readInt();
+                    Region _arg118 = (Region) data.readTypedObject(Region.CREATOR);
+                    data.enforceNoDataAvail();
+                    setTouchExplorationPassthroughRegion(_arg034, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int _arg035 = data.readInt();
+                    int _arg119 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setFocusAppearance(_arg035, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    boolean _arg036 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCacheEnabled(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    long _arg037 = data.readLong();
+                    String _arg120 = data.readString();
+                    long _arg210 = data.readLong();
+                    String _arg38 = data.readString();
+                    int _arg47 = data.readInt();
+                    long _arg57 = data.readLong();
+                    int _arg63 = data.readInt();
+                    Bundle _arg7 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    logTrace(_arg037, _arg120, _arg210, _arg38, _arg47, _arg57, _arg63, _arg7);
+                    return true;
+                case 45:
+                    int _arg038 = data.readInt();
+                    boolean _arg121 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setServiceDetectsGesturesEnabled(_arg038, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg039 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestTouchExploration(_arg039);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    int _arg040 = data.readInt();
+                    int _arg122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestDragging(_arg040, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    int _arg041 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestDelegating(_arg041);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    int _arg042 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDoubleTap(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    int _arg043 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDoubleTapAndHold(_arg043);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    float _arg044 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setAnimationScale(_arg044);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    List<AccessibilityServiceInfo> _arg045 = data.createTypedArrayList(AccessibilityServiceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setInstalledAndEnabledServices(_arg045);
+                    reply.writeNoException();
+                    return true;
+                case 53:
+                    List<AccessibilityServiceInfo> _result30 = getInstalledAndEnabledServices();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result30, 1);
+                    return true;
+                case 54:
+                    int _arg046 = data.readInt();
+                    int _arg123 = data.readInt();
+                    SurfaceControl _arg211 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
+                    IAccessibilityInteractionConnectionCallback _arg39 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    attachAccessibilityOverlayToDisplay(_arg046, _arg123, _arg211, _arg39);
+                    reply.writeNoException();
+                    return true;
+                case 55:
+                    int _arg047 = data.readInt();
+                    int _arg124 = data.readInt();
+                    SurfaceControl _arg212 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
+                    IAccessibilityInteractionConnectionCallback _arg310 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    attachAccessibilityOverlayToWindow(_arg047, _arg124, _arg212, _arg310);
+                    reply.writeNoException();
+                    return true;
+                case 56:
+                    String _arg048 = data.readString();
+                    IBrailleDisplayController _arg125 = IBrailleDisplayController.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    connectBluetoothBrailleDisplay(_arg048, _arg125);
+                    reply.writeNoException();
+                    return true;
+                case 57:
+                    UsbDevice _arg049 = (UsbDevice) data.readTypedObject(UsbDevice.CREATOR);
+                    IBrailleDisplayController _arg126 = IBrailleDisplayController.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    connectUsbBrailleDisplay(_arg049, _arg126);
+                    reply.writeNoException();
+                    return true;
+                case 58:
+                    List<Bundle> _arg050 = data.createTypedArrayList(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setTestBrailleDisplayData(_arg050);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AccessibilityServiceInfo _arg0 = (AccessibilityServiceInfo) data.readTypedObject(AccessibilityServiceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setServiceInfo(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAttributionTag(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            long _arg1 = data.readLong();
-                            int _arg2 = data.readInt();
-                            IAccessibilityInteractionConnectionCallback _arg3 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg4 = data.readInt();
-                            long _arg5 = data.readLong();
-                            Bundle _arg6 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            String[] _result = findAccessibilityNodeInfoByAccessibilityId(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            long _arg12 = data.readLong();
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            IAccessibilityInteractionConnectionCallback _arg42 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg52 = data.readLong();
-                            data.enforceNoDataAvail();
-                            String[] _result2 = findAccessibilityNodeInfosByText(_arg04, _arg12, _arg22, _arg32, _arg42, _arg52);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result2);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            long _arg13 = data.readLong();
-                            String _arg23 = data.readString();
-                            int _arg33 = data.readInt();
-                            IAccessibilityInteractionConnectionCallback _arg43 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg53 = data.readLong();
-                            data.enforceNoDataAvail();
-                            String[] _result3 = findAccessibilityNodeInfosByViewId(_arg05, _arg13, _arg23, _arg33, _arg43, _arg53);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result3);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            long _arg14 = data.readLong();
-                            int _arg24 = data.readInt();
-                            int _arg34 = data.readInt();
-                            IAccessibilityInteractionConnectionCallback _arg44 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg54 = data.readLong();
-                            data.enforceNoDataAvail();
-                            String[] _result4 = findFocus(_arg06, _arg14, _arg24, _arg34, _arg44, _arg54);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result4);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            long _arg15 = data.readLong();
-                            int _arg25 = data.readInt();
-                            int _arg35 = data.readInt();
-                            IAccessibilityInteractionConnectionCallback _arg45 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg55 = data.readLong();
-                            data.enforceNoDataAvail();
-                            String[] _result5 = focusSearch(_arg07, _arg15, _arg25, _arg35, _arg45, _arg55);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result5);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            long _arg16 = data.readLong();
-                            int _arg26 = data.readInt();
-                            Bundle _arg36 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg46 = data.readInt();
-                            IAccessibilityInteractionConnectionCallback _arg56 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg62 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = performAccessibilityAction(_arg08, _arg16, _arg26, _arg36, _arg46, _arg56, _arg62);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            AccessibilityWindowInfo _result7 = getWindow(_arg09);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 10:
-                            AccessibilityWindowInfo.WindowListSparseArray _result8 = getWindows();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 11:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<AccessibilityWindowInfo> _result9 = getWindowsMainDisplay(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 12:
-                            AccessibilityServiceInfo _result10 = getServiceInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 13:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = performGlobalAction(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 14:
-                            List<AccessibilityNodeInfo.AccessibilityAction> _result12 = getSystemActions();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result12, 1);
-                            return true;
-                        case 15:
-                            disableSelf();
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            boolean _arg012 = data.readBoolean();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setOnKeyEventResult(_arg012, _arg17);
-                            return true;
-                        case 17:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            MagnificationConfig _result13 = getMagnificationConfig(_arg013);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        case 18:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result14 = getMagnificationScale(_arg014);
-                            reply.writeNoException();
-                            reply.writeFloat(_result14);
-                            return true;
-                        case 19:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result15 = getMagnificationCenterX(_arg015);
-                            reply.writeNoException();
-                            reply.writeFloat(_result15);
-                            return true;
-                        case 20:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result16 = getMagnificationCenterY(_arg016);
-                            reply.writeNoException();
-                            reply.writeFloat(_result16);
-                            return true;
-                        case 21:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Region _result17 = getMagnificationRegion(_arg017);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result17, 1);
-                            return true;
-                        case 22:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Region _result18 = getCurrentMagnificationRegion(_arg018);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result18, 1);
-                            return true;
-                        case 23:
-                            int _arg019 = data.readInt();
-                            boolean _arg18 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result19 = resetMagnification(_arg019, _arg18);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        case 24:
-                            int _arg020 = data.readInt();
-                            boolean _arg19 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result20 = resetCurrentMagnification(_arg020, _arg19);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 25:
-                            int _arg021 = data.readInt();
-                            MagnificationConfig _arg110 = (MagnificationConfig) data.readTypedObject(MagnificationConfig.CREATOR);
-                            boolean _arg27 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result21 = setMagnificationConfig(_arg021, _arg110, _arg27);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result21);
-                            return true;
-                        case 26:
-                            int _arg022 = data.readInt();
-                            boolean _arg111 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMagnificationCallbackEnabled(_arg022, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result22 = setSoftKeyboardShowMode(_arg023);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result22);
-                            return true;
-                        case 28:
-                            int _result23 = getSoftKeyboardShowMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            return true;
-                        case 29:
-                            boolean _arg024 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSoftKeyboardCallbackEnabled(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            String _arg025 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result24 = switchToInputMethod(_arg025);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result24);
-                            return true;
-                        case 31:
-                            String _arg026 = data.readString();
-                            boolean _arg112 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result25 = setInputMethodEnabled(_arg026, _arg112);
-                            reply.writeNoException();
-                            reply.writeInt(_result25);
-                            return true;
-                        case 32:
-                            boolean _result26 = isAccessibilityButtonAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result26);
-                            return true;
-                        case 33:
-                            int _arg027 = data.readInt();
-                            ParceledListSlice _arg113 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendGesture(_arg027, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            int _arg028 = data.readInt();
-                            ParceledListSlice _arg114 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            int _arg28 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchGesture(_arg028, _arg114, _arg28);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            boolean _result27 = isFingerprintGestureDetectionAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result27);
-                            return true;
-                        case 36:
-                            int _arg029 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IBinder _result28 = getOverlayWindowToken(_arg029);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result28);
-                            return true;
-                        case 37:
-                            IBinder _arg030 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            int _result29 = getWindowIdForLeashToken(_arg030);
-                            reply.writeNoException();
-                            reply.writeInt(_result29);
-                            return true;
-                        case 38:
-                            int _arg031 = data.readInt();
-                            RemoteCallback _arg115 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            takeScreenshot(_arg031, _arg115);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            int _arg032 = data.readInt();
-                            int _arg116 = data.readInt();
-                            ScreenCapture.ScreenCaptureListener _arg29 = (ScreenCapture.ScreenCaptureListener) data.readTypedObject(ScreenCapture.ScreenCaptureListener.CREATOR);
-                            IAccessibilityInteractionConnectionCallback _arg37 = IAccessibilityInteractionConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            takeScreenshotOfWindow(_arg032, _arg116, _arg29, _arg37);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            int _arg033 = data.readInt();
-                            Region _arg117 = (Region) data.readTypedObject(Region.CREATOR);
-                            data.enforceNoDataAvail();
-                            setGestureDetectionPassthroughRegion(_arg033, _arg117);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _arg034 = data.readInt();
-                            Region _arg118 = (Region) data.readTypedObject(Region.CREATOR);
-                            data.enforceNoDataAvail();
-                            setTouchExplorationPassthroughRegion(_arg034, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            int _arg035 = data.readInt();
-                            int _arg119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setFocusAppearance(_arg035, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            boolean _arg036 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCacheEnabled(_arg036);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            long _arg037 = data.readLong();
-                            String _arg120 = data.readString();
-                            long _arg210 = data.readLong();
-                            String _arg38 = data.readString();
-                            int _arg47 = data.readInt();
-                            long _arg57 = data.readLong();
-                            int _arg63 = data.readInt();
-                            Bundle _arg7 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            logTrace(_arg037, _arg120, _arg210, _arg38, _arg47, _arg57, _arg63, _arg7);
-                            return true;
-                        case 45:
-                            int _arg038 = data.readInt();
-                            boolean _arg121 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setServiceDetectsGesturesEnabled(_arg038, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg039 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestTouchExploration(_arg039);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            int _arg040 = data.readInt();
-                            int _arg122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestDragging(_arg040, _arg122);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            int _arg041 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestDelegating(_arg041);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            int _arg042 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDoubleTap(_arg042);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            int _arg043 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDoubleTapAndHold(_arg043);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            float _arg044 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setAnimationScale(_arg044);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            List<AccessibilityServiceInfo> _arg045 = data.createTypedArrayList(AccessibilityServiceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setInstalledAndEnabledServices(_arg045);
-                            reply.writeNoException();
-                            return true;
-                        case 53:
-                            List<AccessibilityServiceInfo> _result30 = getInstalledAndEnabledServices();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result30, 1);
-                            return true;
-                        case 54:
-                            int _arg046 = data.readInt();
-                            SurfaceControl _arg123 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
-                            data.enforceNoDataAvail();
-                            attachAccessibilityOverlayToDisplay(_arg046, _arg123);
-                            reply.writeNoException();
-                            return true;
-                        case 55:
-                            int _arg047 = data.readInt();
-                            SurfaceControl _arg124 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
-                            data.enforceNoDataAvail();
-                            attachAccessibilityOverlayToWindow(_arg047, _arg124);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAccessibilityServiceConnection {
+        private static class Proxy implements IAccessibilityServiceConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1222,15 +1282,14 @@ public interface IAccessibilityServiceConnection extends IInterface {
             }
 
             @Override // android.accessibilityservice.IAccessibilityServiceConnection
-            public List<AccessibilityWindowInfo> getWindowsMainDisplay(int displayId) throws RemoteException {
+            public AccessibilityServiceInfo getServiceInfo() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(displayId);
                     this.mRemote.transact(11, _data, _reply, 0);
                     _reply.readException();
-                    List<AccessibilityWindowInfo> _result = _reply.createTypedArrayList(AccessibilityWindowInfo.CREATOR);
+                    AccessibilityServiceInfo _result = (AccessibilityServiceInfo) _reply.readTypedObject(AccessibilityServiceInfo.CREATOR);
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -1239,14 +1298,15 @@ public interface IAccessibilityServiceConnection extends IInterface {
             }
 
             @Override // android.accessibilityservice.IAccessibilityServiceConnection
-            public AccessibilityServiceInfo getServiceInfo() throws RemoteException {
+            public List<AccessibilityWindowInfo> getWindowsMainDisplay(int displayId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(displayId);
                     this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
-                    AccessibilityServiceInfo _result = (AccessibilityServiceInfo) _reply.readTypedObject(AccessibilityServiceInfo.CREATOR);
+                    List<AccessibilityWindowInfo> _result = _reply.createTypedArrayList(AccessibilityWindowInfo.CREATOR);
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -1971,13 +2031,15 @@ public interface IAccessibilityServiceConnection extends IInterface {
             }
 
             @Override // android.accessibilityservice.IAccessibilityServiceConnection
-            public void attachAccessibilityOverlayToDisplay(int displayId, SurfaceControl sc) throws RemoteException {
+            public void attachAccessibilityOverlayToDisplay(int interactionId, int displayId, SurfaceControl sc, IAccessibilityInteractionConnectionCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(interactionId);
                     _data.writeInt(displayId);
                     _data.writeTypedObject(sc, 0);
+                    _data.writeStrongInterface(callback);
                     this.mRemote.transact(54, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -1987,14 +2049,63 @@ public interface IAccessibilityServiceConnection extends IInterface {
             }
 
             @Override // android.accessibilityservice.IAccessibilityServiceConnection
-            public void attachAccessibilityOverlayToWindow(int accessibilityWindowId, SurfaceControl sc) throws RemoteException {
+            public void attachAccessibilityOverlayToWindow(int interactionId, int accessibilityWindowId, SurfaceControl sc, IAccessibilityInteractionConnectionCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(interactionId);
                     _data.writeInt(accessibilityWindowId);
                     _data.writeTypedObject(sc, 0);
+                    _data.writeStrongInterface(callback);
                     this.mRemote.transact(55, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.accessibilityservice.IAccessibilityServiceConnection
+            public void connectBluetoothBrailleDisplay(String bluetoothAddress, IBrailleDisplayController controller) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(bluetoothAddress);
+                    _data.writeStrongInterface(controller);
+                    this.mRemote.transact(56, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.accessibilityservice.IAccessibilityServiceConnection
+            public void connectUsbBrailleDisplay(UsbDevice usbDevice, IBrailleDisplayController controller) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(usbDevice, 0);
+                    _data.writeStrongInterface(controller);
+                    this.mRemote.transact(57, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.accessibilityservice.IAccessibilityServiceConnection
+            public void setTestBrailleDisplayData(List<Bundle> brailleDisplays) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedList(brailleDisplays, 0);
+                    this.mRemote.transact(58, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2003,9 +2114,17 @@ public interface IAccessibilityServiceConnection extends IInterface {
             }
         }
 
+        protected void connectBluetoothBrailleDisplay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.BLUETOOTH_CONNECT, getCallingPid(), getCallingUid());
+        }
+
+        protected void setTestBrailleDisplayData_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_ACCESSIBILITY, getCallingPid(), getCallingUid());
+        }
+
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 54;
+            return 57;
         }
     }
 }

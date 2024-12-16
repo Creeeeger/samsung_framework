@@ -1,16 +1,52 @@
 package com.android.internal.util;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 /* loaded from: classes5.dex */
 public class RingBuffer<T> {
     private final T[] mBuffer;
-    private long mCursor = 0;
+    private long mCursor;
+    private final Supplier<T> mNewItem;
 
-    public RingBuffer(Class<T> cls, int i) {
-        Preconditions.checkArgumentPositive(i, "A RingBuffer cannot have 0 capacity");
-        this.mBuffer = (T[]) ((Object[]) Array.newInstance((Class<?>) cls, i));
+    @Deprecated
+    public RingBuffer(final Class<T> c, int capacity) {
+        this(new Supplier() { // from class: com.android.internal.util.RingBuffer$$ExternalSyntheticLambda0
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                Object createNewItem;
+                createNewItem = RingBuffer.createNewItem(c);
+                return createNewItem;
+            }
+        }, new IntFunction() { // from class: com.android.internal.util.RingBuffer$$ExternalSyntheticLambda1
+            @Override // java.util.function.IntFunction
+            public final Object apply(int i) {
+                return RingBuffer.lambda$new$1(c, i);
+            }
+        }, capacity);
+    }
+
+    static /* synthetic */ Object[] lambda$new$1(Class c, int cap) {
+        return (Object[]) Array.newInstance((Class<?>) c, cap);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static Object createNewItem(Class c) {
+        try {
+            return c.getDeclaredConstructor(new Class[0]).newInstance(new Object[0]);
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+            return null;
+        }
+    }
+
+    public RingBuffer(Supplier<T> newItem, IntFunction<T[]> newBacking, int capacity) {
+        this.mCursor = 0L;
+        Preconditions.checkArgumentPositive(capacity, "A RingBuffer cannot have 0 capacity");
+        this.mBuffer = newBacking.apply(capacity);
+        this.mNewItem = newItem;
     }
 
     public int size() {
@@ -38,20 +74,11 @@ public class RingBuffer<T> {
     public T getNextSlot() {
         long j = this.mCursor;
         this.mCursor = 1 + j;
-        int nextSlotIdx = indexOf(j);
-        T[] tArr = this.mBuffer;
-        if (tArr[nextSlotIdx] == null) {
-            tArr[nextSlotIdx] = createNewItem();
+        int indexOf = indexOf(j);
+        if (this.mBuffer[indexOf] == null) {
+            this.mBuffer[indexOf] = this.mNewItem.get();
         }
-        return this.mBuffer[nextSlotIdx];
-    }
-
-    protected T createNewItem() {
-        try {
-            return (T) this.mBuffer.getClass().getComponentType().newInstance();
-        } catch (IllegalAccessException | InstantiationException e) {
-            return null;
-        }
+        return this.mBuffer[indexOf];
     }
 
     public T[] toArray() {

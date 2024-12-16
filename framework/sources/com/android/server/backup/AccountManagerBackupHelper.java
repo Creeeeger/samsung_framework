@@ -64,10 +64,10 @@ public class AccountManagerBackupHelper extends BlobBackupHelper {
             switch (c) {
                 case 0:
                     am.restoreAccountAccessPermissions(payload, this.mUserId);
-                    return;
+                    break;
                 default:
                     Slog.w(TAG, "Unexpected restore key " + key);
-                    return;
+                    break;
             }
         } catch (Exception e) {
             Slog.e(TAG, "Unable to restore key " + key, e);

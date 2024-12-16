@@ -5,7 +5,7 @@ import android.os.storage.StorageVolume;
 import com.android.internal.R;
 import java.util.function.Supplier;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class MtpStorage {
     private final String mDescription;
     private final Supplier<Boolean> mIsHostWindows;

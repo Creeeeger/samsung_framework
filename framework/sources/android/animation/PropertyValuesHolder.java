@@ -34,36 +34,40 @@ public class PropertyValuesHolder implements Cloneable {
     private static final HashMap<Class, HashMap<String, Method>> sSetterPropertyMap = new HashMap<>();
     private static final HashMap<Class, HashMap<String, Method>> sGetterPropertyMap = new HashMap<>();
 
-    /* synthetic */ PropertyValuesHolder(Property property, PropertyValuesHolderIA propertyValuesHolderIA) {
-        this(property);
-    }
-
-    /* synthetic */ PropertyValuesHolder(String str, PropertyValuesHolderIA propertyValuesHolderIA) {
-        this(str);
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallFloatMethod(Object obj, long j, float f);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallFourFloatMethod(Object obj, long j, float f, float f2, float f3, float f4);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallFourIntMethod(Object obj, long j, int i, int i2, int i3, int i4);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallIntMethod(Object obj, long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallMultipleFloatMethod(Object obj, long j, float[] fArr);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallMultipleIntMethod(Object obj, long j, int[] iArr);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallTwoFloatMethod(Object obj, long j, float f, float f2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nCallTwoIntMethod(Object obj, long j, int i, int i2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nGetFloatMethod(Class cls, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nGetIntMethod(Class cls, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nGetMultipleFloatMethod(Class cls, String str, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nGetMultipleIntMethod(Class cls, String str, int i);
 
     private PropertyValuesHolder(String propertyName) {
@@ -223,7 +227,7 @@ public class PropertyValuesHolder implements Cloneable {
         return ofKeyframes(property, keyframeSet);
     }
 
-    public static PropertyValuesHolder ofKeyframes(String propertyName, Keyframes keyframes) {
+    static PropertyValuesHolder ofKeyframes(String propertyName, Keyframes keyframes) {
         if (keyframes instanceof Keyframes.IntKeyframes) {
             return new IntPropertyValuesHolder(propertyName, (Keyframes.IntKeyframes) keyframes);
         }
@@ -236,7 +240,7 @@ public class PropertyValuesHolder implements Cloneable {
         return pvh;
     }
 
-    public static PropertyValuesHolder ofKeyframes(Property property, Keyframes keyframes) {
+    static PropertyValuesHolder ofKeyframes(Property property, Keyframes keyframes) {
         if (keyframes instanceof Keyframes.IntKeyframes) {
             return new IntPropertyValuesHolder(property, (Keyframes.IntKeyframes) keyframes);
         }
@@ -271,11 +275,9 @@ public class PropertyValuesHolder implements Cloneable {
 
     public void setObjectValues(Object... values) {
         this.mValueType = values[0].getClass();
-        KeyframeSet ofObject = KeyframeSet.ofObject(values);
-        this.mKeyframes = ofObject;
-        TypeEvaluator typeEvaluator = this.mEvaluator;
-        if (typeEvaluator != null) {
-            ofObject.setEvaluator(typeEvaluator);
+        this.mKeyframes = KeyframeSet.ofObject(values);
+        if (this.mEvaluator != null) {
+            this.mKeyframes.setEvaluator(this.mEvaluator);
         }
     }
 
@@ -343,8 +345,7 @@ public class PropertyValuesHolder implements Cloneable {
     }
 
     void setupSetter(Class targetClass) {
-        TypeConverter typeConverter = this.mConverter;
-        Class<?> propertyType = typeConverter == null ? this.mValueType : typeConverter.getTargetType();
+        Class<?> propertyType = this.mConverter == null ? this.mValueType : this.mConverter.getTargetType();
         this.mSetter = setupSetterOrGetter(targetClass, sSetterPropertyMap, "set", propertyType);
     }
 
@@ -352,7 +353,7 @@ public class PropertyValuesHolder implements Cloneable {
         this.mGetter = setupSetterOrGetter(targetClass, sGetterPropertyMap, "get", null);
     }
 
-    public void setupSetterAndGetter(Object target) {
+    void setupSetterAndGetter(Object target) {
         if (this.mProperty != null) {
             Object testValue = null;
             try {
@@ -405,20 +406,18 @@ public class PropertyValuesHolder implements Cloneable {
     }
 
     private Object convertBack(Object value) {
-        TypeConverter typeConverter = this.mConverter;
-        if (typeConverter != null) {
-            if (!(typeConverter instanceof BidirectionalTypeConverter)) {
+        if (this.mConverter != null) {
+            if (!(this.mConverter instanceof BidirectionalTypeConverter)) {
                 throw new IllegalArgumentException("Converter " + this.mConverter.getClass().getName() + " must be a BidirectionalTypeConverter");
             }
-            return ((BidirectionalTypeConverter) typeConverter).convertBack(value);
+            return ((BidirectionalTypeConverter) this.mConverter).convertBack(value);
         }
         return value;
     }
 
     private void setupValue(Object target, Keyframe kf) {
-        Property property = this.mProperty;
-        if (property != null) {
-            Object value = convertBack(property.get(target));
+        if (this.mProperty != null) {
+            Object value = convertBack(this.mProperty.get(target));
             kf.setValue(value);
             return;
         }
@@ -439,14 +438,14 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    public void setupStartValue(Object target) {
+    void setupStartValue(Object target) {
         List<Keyframe> keyframes = this.mKeyframes.getKeyframes();
         if (!keyframes.isEmpty()) {
             setupValue(target, keyframes.get(0));
         }
     }
 
-    public void setupEndValue(Object target) {
+    void setupEndValue(Object target) {
         List<Keyframe> keyframes = this.mKeyframes.getKeyframes();
         if (!keyframes.isEmpty()) {
             setupValue(target, keyframes.get(keyframes.size() - 1));
@@ -455,12 +454,12 @@ public class PropertyValuesHolder implements Cloneable {
 
     @Override // 
     /* renamed from: clone */
-    public PropertyValuesHolder mo102clone() {
+    public PropertyValuesHolder mo122clone() {
         try {
             PropertyValuesHolder newPVH = (PropertyValuesHolder) super.clone();
             newPVH.mPropertyName = this.mPropertyName;
             newPVH.mProperty = this.mProperty;
-            newPVH.mKeyframes = this.mKeyframes.mo64clone();
+            newPVH.mKeyframes = this.mKeyframes.mo84clone();
             newPVH.mEvaluator = this.mEvaluator;
             return newPVH;
         } catch (CloneNotSupportedException e) {
@@ -468,10 +467,9 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    public void setAnimatedValue(Object target) {
-        Property property = this.mProperty;
-        if (property != null) {
-            property.set(target, getAnimatedValue());
+    void setAnimatedValue(Object target) {
+        if (this.mProperty != null) {
+            this.mProperty.set(target, getAnimatedValue());
         }
         if (this.mSetter != null) {
             try {
@@ -485,20 +483,18 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    public void init() {
+    void init() {
         TypeEvaluator typeEvaluator;
         if (this.mEvaluator == null) {
-            Class cls = this.mValueType;
-            if (cls == Integer.class) {
+            if (this.mValueType == Integer.class) {
                 typeEvaluator = sIntEvaluator;
             } else {
-                typeEvaluator = cls == Float.class ? sFloatEvaluator : null;
+                typeEvaluator = this.mValueType == Float.class ? sFloatEvaluator : null;
             }
             this.mEvaluator = typeEvaluator;
         }
-        TypeEvaluator typeEvaluator2 = this.mEvaluator;
-        if (typeEvaluator2 != null) {
-            this.mKeyframes.setEvaluator(typeEvaluator2);
+        if (this.mEvaluator != null) {
+            this.mKeyframes.setEvaluator(this.mEvaluator);
         }
     }
 
@@ -507,10 +503,9 @@ public class PropertyValuesHolder implements Cloneable {
         this.mKeyframes.setEvaluator(evaluator);
     }
 
-    public void calculateValue(float fraction) {
+    void calculateValue(float fraction) {
         Object value = this.mKeyframes.getValue(fraction);
-        TypeConverter typeConverter = this.mConverter;
-        this.mAnimatedValue = typeConverter == null ? value : typeConverter.convert(value);
+        this.mAnimatedValue = this.mConverter == null ? value : this.mConverter.convert(value);
     }
 
     public void setPropertyName(String propertyName) {
@@ -525,7 +520,7 @@ public class PropertyValuesHolder implements Cloneable {
         return this.mPropertyName;
     }
 
-    public Object getAnimatedValue() {
+    Object getAnimatedValue() {
         return this.mAnimatedValue;
     }
 
@@ -541,12 +536,8 @@ public class PropertyValuesHolder implements Cloneable {
         if (values.endValue instanceof PathParser.PathData) {
             values.endValue = new PathParser.PathData((PathParser.PathData) values.endValue);
         }
-        Keyframes keyframes = this.mKeyframes;
-        if ((keyframes instanceof PathKeyframes.FloatKeyframesBase) || (keyframes instanceof PathKeyframes.IntKeyframesBase) || (keyframes.getKeyframes() != null && this.mKeyframes.getKeyframes().size() > 2)) {
+        if ((this.mKeyframes instanceof PathKeyframes.FloatKeyframesBase) || (this.mKeyframes instanceof PathKeyframes.IntKeyframesBase) || (this.mKeyframes.getKeyframes() != null && this.mKeyframes.getKeyframes().size() > 2)) {
             values.dataSource = new PropertyValues.DataSource() { // from class: android.animation.PropertyValuesHolder.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.animation.PropertyValuesHolder.PropertyValues.DataSource
                 public Object getValueAtFraction(float fraction) {
                     return PropertyValuesHolder.this.mKeyframes.getValue(fraction);
@@ -554,18 +545,6 @@ public class PropertyValuesHolder implements Cloneable {
             };
         } else {
             values.dataSource = null;
-        }
-    }
-
-    /* renamed from: android.animation.PropertyValuesHolder$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements PropertyValues.DataSource {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.PropertyValuesHolder.PropertyValues.DataSource
-        public Object getValueAtFraction(float fraction) {
-            return PropertyValuesHolder.this.mKeyframes.getValue(fraction);
         }
     }
 
@@ -586,8 +565,7 @@ public class PropertyValuesHolder implements Cloneable {
         return prefix + firstLetter + theRest;
     }
 
-    /* loaded from: classes.dex */
-    public static class IntPropertyValuesHolder extends PropertyValuesHolder {
+    static class IntPropertyValuesHolder extends PropertyValuesHolder {
         private static final HashMap<Class, HashMap<String, Long>> sJNISetterPropertyMap = new HashMap<>();
         int mIntAnimatedValue;
         Keyframes.IntKeyframes mIntKeyframes;
@@ -639,41 +617,36 @@ public class PropertyValuesHolder implements Cloneable {
             this.mIntKeyframes = (Keyframes.IntKeyframes) this.mKeyframes;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void calculateValue(float fraction) {
+        void calculateValue(float fraction) {
             this.mIntAnimatedValue = this.mIntKeyframes.getIntValue(fraction);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public Object getAnimatedValue() {
+        Object getAnimatedValue() {
             return Integer.valueOf(this.mIntAnimatedValue);
         }
 
         @Override // android.animation.PropertyValuesHolder
         /* renamed from: clone */
-        public IntPropertyValuesHolder mo102clone() {
-            IntPropertyValuesHolder newPVH = (IntPropertyValuesHolder) super.mo102clone();
+        public IntPropertyValuesHolder mo122clone() {
+            IntPropertyValuesHolder newPVH = (IntPropertyValuesHolder) super.mo122clone();
             newPVH.mIntKeyframes = (Keyframes.IntKeyframes) newPVH.mKeyframes;
             return newPVH;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void setAnimatedValue(Object target) {
-            IntProperty intProperty = this.mIntProperty;
-            if (intProperty != null) {
-                intProperty.setValue(target, this.mIntAnimatedValue);
+        void setAnimatedValue(Object target) {
+            if (this.mIntProperty != null) {
+                this.mIntProperty.setValue(target, this.mIntAnimatedValue);
                 return;
             }
             if (this.mProperty != null) {
                 this.mProperty.set(target, Integer.valueOf(this.mIntAnimatedValue));
                 return;
             }
-            long j = this.mJniSetter;
-            if (j != 0) {
-                PropertyValuesHolder.nCallIntMethod(target, j, this.mIntAnimatedValue);
+            if (this.mJniSetter != 0) {
+                PropertyValuesHolder.nCallIntMethod(target, this.mJniSetter, this.mIntAnimatedValue);
                 return;
             }
             if (this.mSetter != null) {
@@ -694,9 +667,8 @@ public class PropertyValuesHolder implements Cloneable {
             if (this.mProperty != null) {
                 return;
             }
-            HashMap<Class, HashMap<String, Long>> hashMap = sJNISetterPropertyMap;
-            synchronized (hashMap) {
-                HashMap<String, Long> propertyMap = hashMap.get(targetClass);
+            synchronized (sJNISetterPropertyMap) {
+                HashMap<String, Long> propertyMap = sJNISetterPropertyMap.get(targetClass);
                 boolean wasInMap = false;
                 if (propertyMap != null && (wasInMap = propertyMap.containsKey(this.mPropertyName)) && (jniSetter = propertyMap.get(this.mPropertyName)) != null) {
                     this.mJniSetter = jniSetter.longValue();
@@ -720,8 +692,7 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class FloatPropertyValuesHolder extends PropertyValuesHolder {
+    static class FloatPropertyValuesHolder extends PropertyValuesHolder {
         private static final HashMap<Class, HashMap<String, Long>> sJNISetterPropertyMap = new HashMap<>();
         float mFloatAnimatedValue;
         Keyframes.FloatKeyframes mFloatKeyframes;
@@ -773,41 +744,36 @@ public class PropertyValuesHolder implements Cloneable {
             this.mFloatKeyframes = (Keyframes.FloatKeyframes) this.mKeyframes;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void calculateValue(float fraction) {
+        void calculateValue(float fraction) {
             this.mFloatAnimatedValue = this.mFloatKeyframes.getFloatValue(fraction);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public Object getAnimatedValue() {
+        Object getAnimatedValue() {
             return Float.valueOf(this.mFloatAnimatedValue);
         }
 
         @Override // android.animation.PropertyValuesHolder
-        /* renamed from: clone */
-        public FloatPropertyValuesHolder mo102clone() {
-            FloatPropertyValuesHolder newPVH = (FloatPropertyValuesHolder) super.mo102clone();
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public FloatPropertyValuesHolder mo122clone() {
+            FloatPropertyValuesHolder newPVH = (FloatPropertyValuesHolder) super.mo122clone();
             newPVH.mFloatKeyframes = (Keyframes.FloatKeyframes) newPVH.mKeyframes;
             return newPVH;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void setAnimatedValue(Object target) {
-            FloatProperty floatProperty = this.mFloatProperty;
-            if (floatProperty != null) {
-                floatProperty.setValue(target, this.mFloatAnimatedValue);
+        void setAnimatedValue(Object target) {
+            if (this.mFloatProperty != null) {
+                this.mFloatProperty.setValue(target, this.mFloatAnimatedValue);
                 return;
             }
             if (this.mProperty != null) {
                 this.mProperty.set(target, Float.valueOf(this.mFloatAnimatedValue));
                 return;
             }
-            long j = this.mJniSetter;
-            if (j != 0) {
-                PropertyValuesHolder.nCallFloatMethod(target, j, this.mFloatAnimatedValue);
+            if (this.mJniSetter != 0) {
+                PropertyValuesHolder.nCallFloatMethod(target, this.mJniSetter, this.mFloatAnimatedValue);
                 return;
             }
             if (this.mSetter != null) {
@@ -828,9 +794,8 @@ public class PropertyValuesHolder implements Cloneable {
             if (this.mProperty != null) {
                 return;
             }
-            HashMap<Class, HashMap<String, Long>> hashMap = sJNISetterPropertyMap;
-            synchronized (hashMap) {
-                HashMap<String, Long> propertyMap = hashMap.get(targetClass);
+            synchronized (sJNISetterPropertyMap) {
+                HashMap<String, Long> propertyMap = sJNISetterPropertyMap.get(targetClass);
                 boolean wasInMap = false;
                 if (propertyMap != null && (wasInMap = propertyMap.containsKey(this.mPropertyName)) && (jniSetter = propertyMap.get(this.mPropertyName)) != null) {
                     this.mJniSetter = jniSetter.longValue();
@@ -854,8 +819,7 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class MultiFloatValuesHolder extends PropertyValuesHolder {
+    static class MultiFloatValuesHolder extends PropertyValuesHolder {
         private static final HashMap<Class, HashMap<String, Long>> sJNISetterPropertyMap = new HashMap<>();
         private long mJniSetter;
 
@@ -873,34 +837,31 @@ public class PropertyValuesHolder implements Cloneable {
             setEvaluator(evaluator);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void setAnimatedValue(Object target) {
+        void setAnimatedValue(Object target) {
             float[] values = (float[]) getAnimatedValue();
             int numParameters = values.length;
-            long j = this.mJniSetter;
-            if (j != 0) {
+            if (this.mJniSetter != 0) {
                 switch (numParameters) {
                     case 1:
-                        PropertyValuesHolder.nCallFloatMethod(target, j, values[0]);
-                        return;
+                        PropertyValuesHolder.nCallFloatMethod(target, this.mJniSetter, values[0]);
+                        break;
                     case 2:
-                        PropertyValuesHolder.nCallTwoFloatMethod(target, j, values[0], values[1]);
-                        return;
+                        PropertyValuesHolder.nCallTwoFloatMethod(target, this.mJniSetter, values[0], values[1]);
+                        break;
                     case 3:
                     default:
-                        PropertyValuesHolder.nCallMultipleFloatMethod(target, j, values);
-                        return;
+                        PropertyValuesHolder.nCallMultipleFloatMethod(target, this.mJniSetter, values);
+                        break;
                     case 4:
-                        PropertyValuesHolder.nCallFourFloatMethod(target, j, values[0], values[1], values[2], values[3]);
-                        return;
+                        PropertyValuesHolder.nCallFourFloatMethod(target, this.mJniSetter, values[0], values[1], values[2], values[3]);
+                        break;
                 }
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void setupSetterAndGetter(Object target) {
+        void setupSetterAndGetter(Object target) {
             setupSetter(target.getClass());
         }
 
@@ -910,9 +871,8 @@ public class PropertyValuesHolder implements Cloneable {
             if (this.mJniSetter != 0) {
                 return;
             }
-            HashMap<Class, HashMap<String, Long>> hashMap = sJNISetterPropertyMap;
-            synchronized (hashMap) {
-                HashMap<String, Long> propertyMap = hashMap.get(targetClass);
+            synchronized (sJNISetterPropertyMap) {
+                HashMap<String, Long> propertyMap = sJNISetterPropertyMap.get(targetClass);
                 boolean wasInMap = false;
                 if (propertyMap != null && (wasInMap = propertyMap.containsKey(this.mPropertyName)) && (jniSetter = propertyMap.get(this.mPropertyName)) != null) {
                     this.mJniSetter = jniSetter.longValue();
@@ -940,8 +900,7 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class MultiIntValuesHolder extends PropertyValuesHolder {
+    static class MultiIntValuesHolder extends PropertyValuesHolder {
         private static final HashMap<Class, HashMap<String, Long>> sJNISetterPropertyMap = new HashMap<>();
         private long mJniSetter;
 
@@ -959,34 +918,31 @@ public class PropertyValuesHolder implements Cloneable {
             setEvaluator(evaluator);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void setAnimatedValue(Object target) {
+        void setAnimatedValue(Object target) {
             int[] values = (int[]) getAnimatedValue();
             int numParameters = values.length;
-            long j = this.mJniSetter;
-            if (j != 0) {
+            if (this.mJniSetter != 0) {
                 switch (numParameters) {
                     case 1:
-                        PropertyValuesHolder.nCallIntMethod(target, j, values[0]);
-                        return;
+                        PropertyValuesHolder.nCallIntMethod(target, this.mJniSetter, values[0]);
+                        break;
                     case 2:
-                        PropertyValuesHolder.nCallTwoIntMethod(target, j, values[0], values[1]);
-                        return;
+                        PropertyValuesHolder.nCallTwoIntMethod(target, this.mJniSetter, values[0], values[1]);
+                        break;
                     case 3:
                     default:
-                        PropertyValuesHolder.nCallMultipleIntMethod(target, j, values);
-                        return;
+                        PropertyValuesHolder.nCallMultipleIntMethod(target, this.mJniSetter, values);
+                        break;
                     case 4:
-                        PropertyValuesHolder.nCallFourIntMethod(target, j, values[0], values[1], values[2], values[3]);
-                        return;
+                        PropertyValuesHolder.nCallFourIntMethod(target, this.mJniSetter, values[0], values[1], values[2], values[3]);
+                        break;
                 }
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.animation.PropertyValuesHolder
-        public void setupSetterAndGetter(Object target) {
+        void setupSetterAndGetter(Object target) {
             setupSetter(target.getClass());
         }
 
@@ -996,9 +952,8 @@ public class PropertyValuesHolder implements Cloneable {
             if (this.mJniSetter != 0) {
                 return;
             }
-            HashMap<Class, HashMap<String, Long>> hashMap = sJNISetterPropertyMap;
-            synchronized (hashMap) {
-                HashMap<String, Long> propertyMap = hashMap.get(targetClass);
+            synchronized (sJNISetterPropertyMap) {
+                HashMap<String, Long> propertyMap = sJNISetterPropertyMap.get(targetClass);
                 boolean wasInMap = false;
                 if (propertyMap != null && (wasInMap = propertyMap.containsKey(this.mPropertyName)) && (jniSetter = propertyMap.get(this.mPropertyName)) != null) {
                     this.mJniSetter = jniSetter.longValue();
@@ -1026,8 +981,7 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class PointFToFloatArray extends TypeConverter<PointF, float[]> {
+    private static class PointFToFloatArray extends TypeConverter<PointF, float[]> {
         private float[] mCoordinates;
 
         public PointFToFloatArray() {
@@ -1043,8 +997,7 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class PointFToIntArray extends TypeConverter<PointF, int[]> {
+    private static class PointFToIntArray extends TypeConverter<PointF, int[]> {
         private int[] mCoordinates;
 
         public PointFToIntArray() {
@@ -1060,7 +1013,6 @@ public class PropertyValuesHolder implements Cloneable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class PropertyValues {
         public DataSource dataSource = null;
         public Object endValue;
@@ -1068,7 +1020,6 @@ public class PropertyValuesHolder implements Cloneable {
         public Object startValue;
         public Class type;
 
-        /* loaded from: classes.dex */
         public interface DataSource {
             Object getValueAtFraction(float f);
         }

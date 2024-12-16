@@ -22,7 +22,6 @@ public final class ApplicationInfoProto {
     public static final long UID = 1120986464260L;
     public static final long VERSION = 1146756268048L;
 
-    /* loaded from: classes.dex */
     public final class Version {
         public static final long ENABLED = 1133871366145L;
         public static final long MIN_SDK_VERSION = 1120986464258L;
@@ -34,8 +33,8 @@ public final class ApplicationInfoProto {
         }
     }
 
-    /* loaded from: classes.dex */
     public final class Detail {
+        public static final long ALLOW_CROSS_UID_ACTIVITY_SWITCH_FROM_BELOW = 1133871366166L;
         public static final long CATEGORY = 1120986464274L;
         public static final long CLASS_NAME = 1138166333441L;
         public static final long COMPATIBLE_WIDTH_LIMIT_DP = 1120986464260L;

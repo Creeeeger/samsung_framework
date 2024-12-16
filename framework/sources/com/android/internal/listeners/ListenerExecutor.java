@@ -3,15 +3,13 @@ package com.android.internal.listeners;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ListenerExecutor {
 
-    /* loaded from: classes4.dex */
     public interface FailureCallback<TListenerOperation extends ListenerOperation<?>> {
         void onFailure(TListenerOperation tlisteneroperation, Exception exc);
     }
 
-    /* loaded from: classes4.dex */
     public interface ListenerOperation<TListener> {
         void operate(TListener tlistener) throws Exception;
 

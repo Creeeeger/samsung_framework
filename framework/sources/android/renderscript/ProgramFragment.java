@@ -5,11 +5,10 @@ import android.renderscript.Program;
 @Deprecated
 /* loaded from: classes3.dex */
 public class ProgramFragment extends Program {
-    public ProgramFragment(long id, RenderScript rs) {
+    ProgramFragment(long id, RenderScript rs) {
         super(id, rs);
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder extends Program.BaseProgramBuilder {
         public Builder(RenderScript rs) {
             super(rs);

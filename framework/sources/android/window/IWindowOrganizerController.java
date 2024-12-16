@@ -21,7 +21,9 @@ public interface IWindowOrganizerController extends IInterface {
 
     void applyTransaction(WindowContainerTransaction windowContainerTransaction) throws RemoteException;
 
-    int finishTransition(IBinder iBinder, WindowContainerTransaction windowContainerTransaction, IWindowContainerTransactionCallback iWindowContainerTransactionCallback) throws RemoteException;
+    void finishAllTransitions(IBinder iBinder, WindowContainerTransaction windowContainerTransaction, WindowContainerTransaction windowContainerTransaction2) throws RemoteException;
+
+    void finishTransition(IBinder iBinder, WindowContainerTransaction windowContainerTransaction) throws RemoteException;
 
     IBinder getApplyToken() throws RemoteException;
 
@@ -41,7 +43,8 @@ public interface IWindowOrganizerController extends IInterface {
 
     void startTransition(IBinder iBinder, WindowContainerTransaction windowContainerTransaction) throws RemoteException;
 
-    /* loaded from: classes4.dex */
+    void unregisterTransitionPlayer(ITransitionPlayer iTransitionPlayer) throws RemoteException;
+
     public static class Default implements IWindowOrganizerController {
         @Override // android.window.IWindowOrganizerController
         public void applyTransaction(WindowContainerTransaction t) throws RemoteException {
@@ -67,8 +70,11 @@ public interface IWindowOrganizerController extends IInterface {
         }
 
         @Override // android.window.IWindowOrganizerController
-        public int finishTransition(IBinder transitionToken, WindowContainerTransaction t, IWindowContainerTransactionCallback callback) throws RemoteException {
-            return 0;
+        public void finishTransition(IBinder transitionToken, WindowContainerTransaction t) throws RemoteException {
+        }
+
+        @Override // android.window.IWindowOrganizerController
+        public void finishAllTransitions(IBinder transitionToken, WindowContainerTransaction t, WindowContainerTransaction info) throws RemoteException {
         }
 
         @Override // android.window.IWindowOrganizerController
@@ -91,6 +97,10 @@ public interface IWindowOrganizerController extends IInterface {
         }
 
         @Override // android.window.IWindowOrganizerController
+        public void unregisterTransitionPlayer(ITransitionPlayer player) throws RemoteException {
+        }
+
+        @Override // android.window.IWindowOrganizerController
         public ITransitionMetricsReporter getTransitionMetricsReporter() throws RemoteException {
             return null;
         }
@@ -106,20 +116,21 @@ public interface IWindowOrganizerController extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWindowOrganizerController {
         static final int TRANSACTION_applySyncTransaction = 2;
         static final int TRANSACTION_applyTransaction = 1;
+        static final int TRANSACTION_finishAllTransitions = 7;
         static final int TRANSACTION_finishTransition = 6;
-        static final int TRANSACTION_getApplyToken = 12;
-        static final int TRANSACTION_getDisplayAreaOrganizerController = 8;
-        static final int TRANSACTION_getTaskFragmentOrganizerController = 9;
-        static final int TRANSACTION_getTaskOrganizerController = 7;
-        static final int TRANSACTION_getTransitionMetricsReporter = 11;
-        static final int TRANSACTION_registerTransitionPlayer = 10;
+        static final int TRANSACTION_getApplyToken = 14;
+        static final int TRANSACTION_getDisplayAreaOrganizerController = 9;
+        static final int TRANSACTION_getTaskFragmentOrganizerController = 10;
+        static final int TRANSACTION_getTaskOrganizerController = 8;
+        static final int TRANSACTION_getTransitionMetricsReporter = 13;
+        static final int TRANSACTION_registerTransitionPlayer = 11;
         static final int TRANSACTION_startLegacyTransition = 5;
         static final int TRANSACTION_startNewTransition = 3;
         static final int TRANSACTION_startTransition = 4;
+        static final int TRANSACTION_unregisterTransitionPlayer = 12;
 
         public Stub() {
             attachInterface(this, IWindowOrganizerController.DESCRIPTOR);
@@ -156,16 +167,20 @@ public interface IWindowOrganizerController extends IInterface {
                 case 6:
                     return "finishTransition";
                 case 7:
-                    return "getTaskOrganizerController";
+                    return "finishAllTransitions";
                 case 8:
-                    return "getDisplayAreaOrganizerController";
+                    return "getTaskOrganizerController";
                 case 9:
-                    return "getTaskFragmentOrganizerController";
+                    return "getDisplayAreaOrganizerController";
                 case 10:
-                    return "registerTransitionPlayer";
+                    return "getTaskFragmentOrganizerController";
                 case 11:
-                    return "getTransitionMetricsReporter";
+                    return "registerTransitionPlayer";
                 case 12:
+                    return "unregisterTransitionPlayer";
+                case 13:
+                    return "getTransitionMetricsReporter";
+                case 14:
                     return "getApplyToken";
                 default:
                     return null;
@@ -182,99 +197,108 @@ public interface IWindowOrganizerController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWindowOrganizerController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWindowOrganizerController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWindowOrganizerController.DESCRIPTOR);
+                case 1:
+                    WindowContainerTransaction _arg0 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    applyTransaction(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    WindowContainerTransaction _arg02 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    IWindowContainerTransactionCallback _arg1 = IWindowContainerTransactionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result = applySyncTransaction(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    WindowContainerTransaction _arg12 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    IBinder _result2 = startNewTransition(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result2);
+                    return true;
+                case 4:
+                    IBinder _arg04 = data.readStrongBinder();
+                    WindowContainerTransaction _arg13 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    startTransition(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    RemoteAnimationAdapter _arg14 = (RemoteAnimationAdapter) data.readTypedObject(RemoteAnimationAdapter.CREATOR);
+                    IWindowContainerTransactionCallback _arg2 = IWindowContainerTransactionCallback.Stub.asInterface(data.readStrongBinder());
+                    WindowContainerTransaction _arg3 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result3 = startLegacyTransition(_arg05, _arg14, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 6:
+                    IBinder _arg06 = data.readStrongBinder();
+                    WindowContainerTransaction _arg15 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    finishTransition(_arg06, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    IBinder _arg07 = data.readStrongBinder();
+                    WindowContainerTransaction _arg16 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    WindowContainerTransaction _arg22 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
+                    data.enforceNoDataAvail();
+                    finishAllTransitions(_arg07, _arg16, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    ITaskOrganizerController _result4 = getTaskOrganizerController();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result4);
+                    return true;
+                case 9:
+                    IDisplayAreaOrganizerController _result5 = getDisplayAreaOrganizerController();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 10:
+                    ITaskFragmentOrganizerController _result6 = getTaskFragmentOrganizerController();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result6);
+                    return true;
+                case 11:
+                    ITransitionPlayer _arg08 = ITransitionPlayer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerTransitionPlayer(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    ITransitionPlayer _arg09 = ITransitionPlayer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterTransitionPlayer(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    ITransitionMetricsReporter _result7 = getTransitionMetricsReporter();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result7);
+                    return true;
+                case 14:
+                    IBinder _result8 = getApplyToken();
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result8);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            WindowContainerTransaction _arg0 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            applyTransaction(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            WindowContainerTransaction _arg02 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
-                            IWindowContainerTransactionCallback _arg1 = IWindowContainerTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result = applySyncTransaction(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            WindowContainerTransaction _arg12 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            IBinder _result2 = startNewTransition(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result2);
-                            return true;
-                        case 4:
-                            IBinder _arg04 = data.readStrongBinder();
-                            WindowContainerTransaction _arg13 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            startTransition(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            RemoteAnimationAdapter _arg14 = (RemoteAnimationAdapter) data.readTypedObject(RemoteAnimationAdapter.CREATOR);
-                            IWindowContainerTransactionCallback _arg2 = IWindowContainerTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            WindowContainerTransaction _arg3 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result3 = startLegacyTransition(_arg05, _arg14, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 6:
-                            IBinder _arg06 = data.readStrongBinder();
-                            WindowContainerTransaction _arg15 = (WindowContainerTransaction) data.readTypedObject(WindowContainerTransaction.CREATOR);
-                            IWindowContainerTransactionCallback _arg22 = IWindowContainerTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result4 = finishTransition(_arg06, _arg15, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 7:
-                            ITaskOrganizerController _result5 = getTaskOrganizerController();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 8:
-                            IDisplayAreaOrganizerController _result6 = getDisplayAreaOrganizerController();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result6);
-                            return true;
-                        case 9:
-                            ITaskFragmentOrganizerController _result7 = getTaskFragmentOrganizerController();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result7);
-                            return true;
-                        case 10:
-                            ITransitionPlayer _arg07 = ITransitionPlayer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerTransitionPlayer(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            ITransitionMetricsReporter _result8 = getTransitionMetricsReporter();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result8);
-                            return true;
-                        case 12:
-                            IBinder _result9 = getApplyToken();
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result9);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWindowOrganizerController {
+        private static class Proxy implements IWindowOrganizerController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -378,18 +402,32 @@ public interface IWindowOrganizerController extends IInterface {
             }
 
             @Override // android.window.IWindowOrganizerController
-            public int finishTransition(IBinder transitionToken, WindowContainerTransaction t, IWindowContainerTransactionCallback callback) throws RemoteException {
+            public void finishTransition(IBinder transitionToken, WindowContainerTransaction t) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
                     _data.writeStrongBinder(transitionToken);
                     _data.writeTypedObject(t, 0);
-                    _data.writeStrongInterface(callback);
                     this.mRemote.transact(6, _data, _reply, 0);
                     _reply.readException();
-                    int _result = _reply.readInt();
-                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.window.IWindowOrganizerController
+            public void finishAllTransitions(IBinder transitionToken, WindowContainerTransaction t, WindowContainerTransaction info) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
+                    _data.writeStrongBinder(transitionToken);
+                    _data.writeTypedObject(t, 0);
+                    _data.writeTypedObject(info, 0);
+                    this.mRemote.transact(7, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -402,7 +440,7 @@ public interface IWindowOrganizerController extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
-                    this.mRemote.transact(7, _data, _reply, 0);
+                    this.mRemote.transact(8, _data, _reply, 0);
                     _reply.readException();
                     ITaskOrganizerController _result = ITaskOrganizerController.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -418,7 +456,7 @@ public interface IWindowOrganizerController extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
-                    this.mRemote.transact(8, _data, _reply, 0);
+                    this.mRemote.transact(9, _data, _reply, 0);
                     _reply.readException();
                     IDisplayAreaOrganizerController _result = IDisplayAreaOrganizerController.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -434,7 +472,7 @@ public interface IWindowOrganizerController extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
-                    this.mRemote.transact(9, _data, _reply, 0);
+                    this.mRemote.transact(10, _data, _reply, 0);
                     _reply.readException();
                     ITaskFragmentOrganizerController _result = ITaskFragmentOrganizerController.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -451,7 +489,22 @@ public interface IWindowOrganizerController extends IInterface {
                 try {
                     _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
                     _data.writeStrongInterface(player);
-                    this.mRemote.transact(10, _data, _reply, 0);
+                    this.mRemote.transact(11, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.window.IWindowOrganizerController
+            public void unregisterTransitionPlayer(ITransitionPlayer player) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
+                    _data.writeStrongInterface(player);
+                    this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -465,7 +518,7 @@ public interface IWindowOrganizerController extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
-                    this.mRemote.transact(11, _data, _reply, 0);
+                    this.mRemote.transact(13, _data, _reply, 0);
                     _reply.readException();
                     ITransitionMetricsReporter _result = ITransitionMetricsReporter.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -481,7 +534,7 @@ public interface IWindowOrganizerController extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IWindowOrganizerController.DESCRIPTOR);
-                    this.mRemote.transact(12, _data, _reply, 0);
+                    this.mRemote.transact(14, _data, _reply, 0);
                     _reply.readException();
                     IBinder _result = _reply.readStrongBinder();
                     return _result;
@@ -494,7 +547,7 @@ public interface IWindowOrganizerController extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 11;
+            return 13;
         }
     }
 }

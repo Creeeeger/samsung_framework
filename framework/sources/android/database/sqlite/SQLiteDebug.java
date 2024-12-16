@@ -10,7 +10,6 @@ import java.util.ArrayList;
 /* loaded from: classes.dex */
 public final class SQLiteDebug {
 
-    /* loaded from: classes.dex */
     public static class PagerStats {
         public ArrayList<DbStats> dbStats;
         public int largestMemAlloc;
@@ -20,7 +19,6 @@ public final class SQLiteDebug {
 
     private static native void nativeGetPagerStats(PagerStats pagerStats);
 
-    /* loaded from: classes.dex */
     public static final class NoPreloadHolder {
         public static final boolean DEBUG_LOG_DETAILED;
         public static final boolean DEBUG_LOG_SLOW_QUERIES;
@@ -54,7 +52,6 @@ public final class SQLiteDebug {
         return SystemProperties.getBoolean("db.log.index_recommendation", false);
     }
 
-    /* loaded from: classes.dex */
     public static class DbStats {
         public final boolean arePoolStats;
         public final int cacheHits;

@@ -81,7 +81,6 @@ public abstract class SemAbsDragAndDropAnimator {
     int mDragViewBitmapTranslateY = 0;
     int mCanvasSaveCount = 0;
 
-    /* loaded from: classes5.dex */
     public interface DragAndDropController {
         boolean canDrag(int i);
 
@@ -90,14 +89,12 @@ public abstract class SemAbsDragAndDropAnimator {
         void dropDone(int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface DragAndDropListener {
         void onDragAndDropEnd();
 
         void onDragAndDropStart();
     }
 
-    /* loaded from: classes5.dex */
     public interface SemDragAutoScrollListener {
         void onAutoScroll(int i);
     }
@@ -110,9 +107,8 @@ public abstract class SemAbsDragAndDropAnimator {
         }
         this.mContext = context;
         this.mView = view;
-        SemDragAndDropAnimationCore semDragAndDropAnimationCore = new SemDragAndDropAnimationCore(view);
-        this.mDndAnimationCore = semDragAndDropAnimationCore;
-        this.mItemAnimator = semDragAndDropAnimationCore.itemAnimator;
+        this.mDndAnimationCore = new SemDragAndDropAnimationCore(view);
+        this.mItemAnimator = this.mDndAnimationCore.itemAnimator;
         this.mDndMode = false;
         this.mFirstDragPos = -1;
         this.mDragPos = -1;
@@ -121,8 +117,7 @@ public abstract class SemAbsDragAndDropAnimator {
         this.mDndTouchOffsetX = Integer.MIN_VALUE;
         this.mDndTouchOffsetY = Integer.MIN_VALUE;
         this.mDndTouchMode = 0;
-        float f = this.mContext.getResources().getDisplayMetrics().density;
-        this.mDensity = f;
+        this.mDensity = this.mContext.getResources().getDisplayMetrics().density;
         this.mDragView = null;
         this.mDragViewRect = new Rect();
         this.mDragViewBitmapPaint = new Paint();
@@ -131,8 +126,8 @@ public abstract class SemAbsDragAndDropAnimator {
         this.mDragGrabHandlePosGravity = 21;
         this.mDragGrabHandlePadding = new Rect();
         this.mAutoScrollRunnable = new AutoScrollRunnable();
-        this.mAutoScrollTopDelta = (int) (7.0f * f);
-        this.mAutoScrollBottomDelta = (int) (f * (-7.0f));
+        this.mAutoScrollTopDelta = (int) (this.mDensity * 7.0f);
+        this.mAutoScrollBottomDelta = (int) (this.mDensity * (-7.0f));
     }
 
     @Deprecated
@@ -149,7 +144,7 @@ public abstract class SemAbsDragAndDropAnimator {
             return;
         }
         if (this.mDndMode != dndMode) {
-            boolean fadeOut = this.mDndMode;
+            final boolean fadeOut = this.mDndMode;
             if (!fadeOut) {
                 setDndModeInternal(true);
                 this.mDragHandleAlpha = 0;
@@ -157,12 +152,6 @@ public abstract class SemAbsDragAndDropAnimator {
             ValueAnimator va = ValueAnimator.ofFloat(0.0f, 1.0f);
             va.setDuration(200L);
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemAbsDragAndDropAnimator.1
-                final /* synthetic */ boolean val$fadeOut;
-
-                AnonymousClass1(boolean fadeOut2) {
-                    fadeOut = fadeOut2;
-                }
-
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animator) {
                     float fraction = animator.getAnimatedFraction();
@@ -175,12 +164,6 @@ public abstract class SemAbsDragAndDropAnimator {
                 }
             });
             va.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemAbsDragAndDropAnimator.2
-                final /* synthetic */ boolean val$fadeOut;
-
-                AnonymousClass2(boolean fadeOut2) {
-                    fadeOut = fadeOut2;
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     SemAbsDragAndDropAnimator.this.mView.setEnabled(false);
@@ -195,56 +178,12 @@ public abstract class SemAbsDragAndDropAnimator {
                     SemAbsDragAndDropAnimator.this.mView.setEnabled(true);
                 }
             });
-            va.setInterpolator(fadeOut2 ? FADE_OUT_INTERPOLATOR : FADE_IN_INTERPOLATOR);
+            va.setInterpolator(fadeOut ? FADE_OUT_INTERPOLATOR : FADE_IN_INTERPOLATOR);
             va.start();
         }
     }
 
-    /* renamed from: com.samsung.android.animation.SemAbsDragAndDropAnimator$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
-        final /* synthetic */ boolean val$fadeOut;
-
-        AnonymousClass1(boolean fadeOut2) {
-            fadeOut = fadeOut2;
-        }
-
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-        public void onAnimationUpdate(ValueAnimator animator) {
-            float fraction = animator.getAnimatedFraction();
-            if (fadeOut) {
-                SemAbsDragAndDropAnimator.this.mDragHandleAlpha = (int) ((1.0f - fraction) * 255.0f);
-            } else {
-                SemAbsDragAndDropAnimator.this.mDragHandleAlpha = (int) (255.0f * fraction);
-            }
-            SemAbsDragAndDropAnimator.this.mView.invalidate();
-        }
-    }
-
-    /* renamed from: com.samsung.android.animation.SemAbsDragAndDropAnimator$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 extends AnimatorListenerAdapter {
-        final /* synthetic */ boolean val$fadeOut;
-
-        AnonymousClass2(boolean fadeOut2) {
-            fadeOut = fadeOut2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            SemAbsDragAndDropAnimator.this.mView.setEnabled(false);
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            if (fadeOut) {
-                SemAbsDragAndDropAnimator.this.setDndModeInternal(false);
-            }
-            SemAbsDragAndDropAnimator.this.mDragHandleAlpha = 255;
-            SemAbsDragAndDropAnimator.this.mView.setEnabled(true);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void setDndModeInternal(boolean dndMode) {
         this.mDndMode = dndMode;
         if (!dndMode) {
@@ -265,19 +204,17 @@ public abstract class SemAbsDragAndDropAnimator {
         if (!isDraggable()) {
             return;
         }
-        Bitmap bitmap = this.mDragViewBitmap;
-        if (bitmap != null) {
-            bitmap.recycle();
+        if (this.mDragViewBitmap != null) {
+            this.mDragViewBitmap.recycle();
         }
         this.mDragViewBitmap = item;
         this.mUserSetDragItemBitmap = true;
     }
 
     public void setDragViewAlpha(int alpha) {
-        Paint paint = this.mDragViewBitmapPaint;
-        if (paint != null) {
+        if (this.mDragViewBitmapPaint != null) {
             this.mDragViewBitmapAlpha = alpha;
-            paint.setAlpha(alpha);
+            this.mDragViewBitmapPaint.setAlpha(alpha);
         }
     }
 
@@ -338,12 +275,12 @@ public abstract class SemAbsDragAndDropAnimator {
         return Integer.MIN_VALUE;
     }
 
-    public void resetDndState() {
+    void resetDndState() {
         resetDndTouchValuesAndBitmap();
         resetDndPositionValues();
     }
 
-    public void resetDndTouchValuesAndBitmap() {
+    void resetDndTouchValuesAndBitmap() {
         this.mDndTouchMode = 0;
         this.mDndTouchX = Integer.MIN_VALUE;
         this.mDndTouchY = Integer.MIN_VALUE;
@@ -352,27 +289,22 @@ public abstract class SemAbsDragAndDropAnimator {
         this.mDragViewBitmapTranslateX = 0;
         this.mDragViewBitmapTranslateY = 0;
         this.mDragView = null;
-        Bitmap bitmap = this.mDragViewBitmap;
-        if (bitmap != null) {
-            bitmap.recycle();
+        if (this.mDragViewBitmap != null) {
+            this.mDragViewBitmap.recycle();
             this.mDragViewBitmap = null;
         }
         this.mDndAutoScrollMode = 0;
         this.mView.removeCallbacks(this.mAutoScrollRunnable);
     }
 
-    public void resetDndPositionValues() {
+    void resetDndPositionValues() {
         this.mFirstDragPos = -1;
-        this.mDragPos = -1;
+        this.mDragPos = this.mFirstDragPos;
         this.mRetainFirstDragViewPos = -1;
     }
 
-    /* loaded from: classes5.dex */
-    public class AutoScrollRunnable implements Runnable {
-        /* synthetic */ AutoScrollRunnable(SemAbsDragAndDropAnimator semAbsDragAndDropAnimator, AutoScrollRunnableIA autoScrollRunnableIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class AutoScrollRunnable implements Runnable {
         private AutoScrollRunnable() {
         }
 
@@ -397,14 +329,13 @@ public abstract class SemAbsDragAndDropAnimator {
     }
 
     public int getChildDrawingOrder(int childCount, int i) {
-        int i2 = this.mRetainFirstDragViewPos;
-        if (i2 != -1) {
-            if (i == i2) {
+        if (this.mRetainFirstDragViewPos != -1) {
+            if (i == this.mRetainFirstDragViewPos) {
                 return childCount - 1;
             }
             if (i == childCount - 1) {
-                if (i2 <= childCount - 1) {
-                    return i2;
+                if (this.mRetainFirstDragViewPos <= childCount - 1) {
+                    return this.mRetainFirstDragViewPos;
                 }
                 return childCount - 1;
             }
@@ -412,7 +343,7 @@ public abstract class SemAbsDragAndDropAnimator {
         return i;
     }
 
-    public boolean activatedByLongPress() {
+    boolean activatedByLongPress() {
         return this.mDragGrabHandleDrawable == null || SemAnimatorUtils.isTalkBackEnabled(this.mContext);
     }
 
@@ -423,13 +354,13 @@ public abstract class SemAbsDragAndDropAnimator {
         isDraggable();
     }
 
-    public void speakDragReleaseForAccessibility(int itemPosition) {
+    void speakDragReleaseForAccessibility(int itemPosition) {
     }
 
-    public void speakNotDraggableForAccessibility(int itemPosition) {
+    void speakNotDraggableForAccessibility(int itemPosition) {
     }
 
-    public void speakDragStartForAccessibility(int itemPosition) {
+    void speakDragStartForAccessibility(int itemPosition) {
         this.mView.clearAccessibilityFocus();
     }
 }

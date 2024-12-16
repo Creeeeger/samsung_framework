@@ -79,84 +79,73 @@ public final class MediaDrm implements AutoCloseable {
     public static final int SECURITY_LEVEL_UNKNOWN = 0;
     private static final int SESSION_LOST_STATE = 203;
     private static final String TAG = "MediaDrm";
-    private final String mAppPackageName;
-    private final CloseGuard mCloseGuard;
-    private final AtomicBoolean mClosed = new AtomicBoolean();
-    private final Map<Integer, ListenerWithExecutor> mListenerMap;
     private long mNativeContext;
-    private final Map<ByteBuffer, PlaybackComponent> mPlaybackComponentMap;
+    private final AtomicBoolean mClosed = new AtomicBoolean();
+    private final CloseGuard mCloseGuard = CloseGuard.get();
+    private final Map<Integer, ListenerWithExecutor> mListenerMap = new ConcurrentHashMap();
+    private final Map<ByteBuffer, PlaybackComponent> mPlaybackComponentMap = new ConcurrentHashMap();
+    private final String mAppPackageName = ActivityThread.currentOpPackageName();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ArrayProperty {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface CertificateType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DrmEvent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
     @Deprecated
-    /* loaded from: classes2.dex */
     public @interface HdcpLevel {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface KeyType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MediaDrmErrorCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface OfflineLicenseState {
     }
 
-    /* loaded from: classes2.dex */
     public interface OnEventListener {
         void onEvent(MediaDrm mediaDrm, byte[] bArr, int i, int i2, byte[] bArr2);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnExpirationUpdateListener {
         void onExpirationUpdate(MediaDrm mediaDrm, byte[] bArr, long j);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnKeyStatusChangeListener {
         void onKeyStatusChange(MediaDrm mediaDrm, byte[] bArr, List<KeyStatus> list, boolean z);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnSessionLostStateListener {
         void onSessionLostState(MediaDrm mediaDrm, byte[] bArr);
     }
 
     @Retention(RetentionPolicy.SOURCE)
     @Deprecated
-    /* loaded from: classes2.dex */
     public @interface SecurityLevel {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface StringProperty {
     }
 
     private native void closeSessionNative(byte[] bArr);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native byte[] decryptNative(MediaDrm mediaDrm, byte[] bArr, byte[] bArr2, byte[] bArr3, byte[] bArr4);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native byte[] encryptNative(MediaDrm mediaDrm, byte[] bArr, byte[] bArr2, byte[] bArr3, byte[] bArr4);
 
     private native KeyRequest getKeyRequestNative(byte[] bArr, byte[] bArr2, String str, int i, HashMap<String, String> hashMap) throws NotProvisionedException;
@@ -177,16 +166,21 @@ public final class MediaDrm implements AutoCloseable {
 
     private native Certificate provideProvisionResponseNative(byte[] bArr) throws DeniedByServerException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native void setCipherAlgorithmNative(MediaDrm mediaDrm, byte[] bArr, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native void setMacAlgorithmNative(MediaDrm mediaDrm, byte[] bArr, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native void setPlaybackId(byte[] bArr, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native byte[] signNative(MediaDrm mediaDrm, byte[] bArr, byte[] bArr2, byte[] bArr3);
 
     private static final native byte[] signRSANative(MediaDrm mediaDrm, byte[] bArr, String str, byte[] bArr2, byte[] bArr3);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native boolean verifyNative(MediaDrm mediaDrm, byte[] bArr, byte[] bArr2, byte[] bArr3, byte[] bArr4);
 
     public native int getConnectedHdcpLevel();
@@ -300,17 +294,10 @@ public final class MediaDrm implements AutoCloseable {
     }
 
     public MediaDrm(UUID uuid) throws UnsupportedSchemeException {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        this.mListenerMap = new ConcurrentHashMap();
-        this.mPlaybackComponentMap = new ConcurrentHashMap();
-        String currentOpPackageName = ActivityThread.currentOpPackageName();
-        this.mAppPackageName = currentOpPackageName;
-        native_setup(new WeakReference(this), getByteArrayFromUUID(uuid), currentOpPackageName);
-        closeGuard.open("release");
+        native_setup(new WeakReference(this), getByteArrayFromUUID(uuid), this.mAppPackageName);
+        this.mCloseGuard.open("release");
     }
 
-    /* loaded from: classes2.dex */
     public static final class ErrorCodes {
         public static final int ERROR_CERTIFICATE_MALFORMED = 10;
         public static final int ERROR_CERTIFICATE_MISSING = 11;
@@ -351,7 +338,6 @@ public final class MediaDrm implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class MediaDrmStateException extends IllegalStateException implements MediaDrmThrowable {
         private final String mDiagnosticInfo;
         private final int mErrorCode;
@@ -393,8 +379,7 @@ public final class MediaDrm implements AutoCloseable {
         }
 
         public boolean isTransient() {
-            int i = this.mErrorCode;
-            return i == 28 || i == 29;
+            return this.mErrorCode == 28 || this.mErrorCode == 29;
         }
 
         public String getDiagnosticInfo() {
@@ -402,7 +387,6 @@ public final class MediaDrm implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class SessionException extends RuntimeException implements MediaDrmThrowable {
         public static final int ERROR_RESOURCE_CONTENTION = 1;
         public static final int ERROR_UNKNOWN = 0;
@@ -412,7 +396,6 @@ public final class MediaDrm implements AutoCloseable {
         private final int mVendorError;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface SessionErrorCode {
         }
 
@@ -453,11 +436,11 @@ public final class MediaDrm implements AutoCloseable {
     }
 
     public void setOnExpirationUpdateListener(OnExpirationUpdateListener listener, Handler handler) {
-        setListenerWithHandler(201, handler, listener, new MediaDrm$$ExternalSyntheticLambda1(this));
+        setListenerWithHandler(201, handler, listener, new MediaDrm$$ExternalSyntheticLambda0(this));
     }
 
     public void setOnExpirationUpdateListener(Executor executor, OnExpirationUpdateListener listener) {
-        setListenerWithExecutor(201, executor, listener, new MediaDrm$$ExternalSyntheticLambda1(this));
+        setListenerWithExecutor(201, executor, listener, new MediaDrm$$ExternalSyntheticLambda0(this));
     }
 
     public void clearOnExpirationUpdateListener() {
@@ -465,11 +448,11 @@ public final class MediaDrm implements AutoCloseable {
     }
 
     public void setOnKeyStatusChangeListener(OnKeyStatusChangeListener listener, Handler handler) {
-        setListenerWithHandler(202, handler, listener, new MediaDrm$$ExternalSyntheticLambda3(this));
+        setListenerWithHandler(202, handler, listener, new MediaDrm$$ExternalSyntheticLambda1(this));
     }
 
     public void setOnKeyStatusChangeListener(Executor executor, OnKeyStatusChangeListener listener) {
-        setListenerWithExecutor(202, executor, listener, new MediaDrm$$ExternalSyntheticLambda3(this));
+        setListenerWithExecutor(202, executor, listener, new MediaDrm$$ExternalSyntheticLambda1(this));
     }
 
     public void clearOnKeyStatusChangeListener() {
@@ -477,18 +460,17 @@ public final class MediaDrm implements AutoCloseable {
     }
 
     public void setOnSessionLostStateListener(OnSessionLostStateListener listener, Handler handler) {
-        setListenerWithHandler(203, handler, listener, new MediaDrm$$ExternalSyntheticLambda4(this));
+        setListenerWithHandler(203, handler, listener, new MediaDrm$$ExternalSyntheticLambda5(this));
     }
 
     public void setOnSessionLostStateListener(Executor executor, OnSessionLostStateListener listener) {
-        setListenerWithExecutor(203, executor, listener, new MediaDrm$$ExternalSyntheticLambda4(this));
+        setListenerWithExecutor(203, executor, listener, new MediaDrm$$ExternalSyntheticLambda5(this));
     }
 
     public void clearOnSessionLostStateListener() {
         clearGenericListener(203);
     }
 
-    /* loaded from: classes2.dex */
     public static final class KeyStatus {
         public static final int STATUS_EXPIRED = 1;
         public static final int STATUS_INTERNAL_ERROR = 4;
@@ -500,7 +482,6 @@ public final class MediaDrm implements AutoCloseable {
         private final int mStatusCode;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface KeyStatusCode {
         }
 
@@ -523,11 +504,11 @@ public final class MediaDrm implements AutoCloseable {
     }
 
     public void setOnEventListener(OnEventListener listener, Handler handler) {
-        setListenerWithHandler(200, handler, listener, new MediaDrm$$ExternalSyntheticLambda0(this));
+        setListenerWithHandler(200, handler, listener, new MediaDrm$$ExternalSyntheticLambda3(this));
     }
 
     public void setOnEventListener(Executor executor, OnEventListener listener) {
-        setListenerWithExecutor(200, executor, listener, new MediaDrm$$ExternalSyntheticLambda0(this));
+        setListenerWithExecutor(200, executor, listener, new MediaDrm$$ExternalSyntheticLambda3(this));
     }
 
     public void clearOnEventListener() {
@@ -559,8 +540,9 @@ public final class MediaDrm implements AutoCloseable {
         this.mListenerMap.remove(Integer.valueOf(what));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Consumer<ListenerArgs> createOnEventListener(final OnEventListener listener) {
-        return new Consumer() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda7
+        return new Consumer() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda4
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 MediaDrm.this.lambda$createOnEventListener$0(listener, (MediaDrm.ListenerArgs) obj);
@@ -568,6 +550,7 @@ public final class MediaDrm implements AutoCloseable {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOnEventListener$0(OnEventListener listener, ListenerArgs args) {
         byte[] data;
         byte[] sessionId = args.sessionId;
@@ -584,6 +567,7 @@ public final class MediaDrm implements AutoCloseable {
         listener.onEvent(this, sessionId, args.arg1, args.arg2, data);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Consumer<ListenerArgs> createOnKeyStatusChangeListener(final OnKeyStatusChangeListener listener) {
         return new Consumer() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda2
             @Override // java.util.function.Consumer
@@ -593,6 +577,7 @@ public final class MediaDrm implements AutoCloseable {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOnKeyStatusChangeListener$1(OnKeyStatusChangeListener listener, ListenerArgs args) {
         byte[] sessionId = args.sessionId;
         if (sessionId.length > 0) {
@@ -603,8 +588,9 @@ public final class MediaDrm implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Consumer<ListenerArgs> createOnExpirationUpdateListener(final OnExpirationUpdateListener listener) {
-        return new Consumer() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda8
+        return new Consumer() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda6
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 MediaDrm.this.lambda$createOnExpirationUpdateListener$2(listener, (MediaDrm.ListenerArgs) obj);
@@ -612,6 +598,7 @@ public final class MediaDrm implements AutoCloseable {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOnExpirationUpdateListener$2(OnExpirationUpdateListener listener, ListenerArgs args) {
         byte[] sessionId = args.sessionId;
         if (sessionId.length > 0) {
@@ -621,8 +608,9 @@ public final class MediaDrm implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Consumer<ListenerArgs> createOnSessionLostStateListener(final OnSessionLostStateListener listener) {
-        return new Consumer() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda6
+        return new Consumer() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda7
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 MediaDrm.this.lambda$createOnSessionLostStateListener$3(listener, (MediaDrm.ListenerArgs) obj);
@@ -630,14 +618,15 @@ public final class MediaDrm implements AutoCloseable {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOnSessionLostStateListener$3(OnSessionLostStateListener listener, ListenerArgs args) {
         byte[] sessionId = args.sessionId;
         Log.i(TAG, "Drm session lost state event: ");
         listener.onSessionLostState(this, sessionId);
     }
 
-    /* loaded from: classes2.dex */
-    public static class ListenerArgs {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ListenerArgs {
         private final int arg1;
         private final int arg2;
         private final byte[] data;
@@ -657,8 +646,8 @@ public final class MediaDrm implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class ListenerWithExecutor {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ListenerWithExecutor {
         private final Consumer<ListenerArgs> mConsumer;
         private final Executor mExecutor;
 
@@ -685,9 +674,8 @@ public final class MediaDrm implements AutoCloseable {
     }
 
     private static void postEventFromNative(Object mediadrm_ref, int what, final int eventType, final int extra, final byte[] sessionId, final byte[] data, final long expirationTime, final List<KeyStatus> keyStatusList, final boolean hasNewUsableKey) {
-        MediaDrm md = (MediaDrm) ((WeakReference) mediadrm_ref).get();
+        final MediaDrm md = (MediaDrm) ((WeakReference) mediadrm_ref).get();
         if (md == null) {
-            return;
         }
         switch (what) {
             case 200:
@@ -696,23 +684,23 @@ public final class MediaDrm implements AutoCloseable {
             case 203:
                 final ListenerWithExecutor listener = md.mListenerMap.get(Integer.valueOf(what));
                 if (listener != null) {
-                    Runnable command = new Runnable() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda5
+                    Runnable command = new Runnable() { // from class: android.media.MediaDrm$$ExternalSyntheticLambda8
                         @Override // java.lang.Runnable
                         public final void run() {
                             MediaDrm.lambda$postEventFromNative$4(MediaDrm.this, eventType, extra, sessionId, data, expirationTime, keyStatusList, hasNewUsableKey, listener);
                         }
                     };
                     listener.mExecutor.execute(command);
-                    return;
+                    break;
                 }
-                return;
+                break;
             default:
                 Log.e(TAG, "Unknown message type " + what);
-                return;
+                break;
         }
     }
 
-    public static /* synthetic */ void lambda$postEventFromNative$4(MediaDrm md, int eventType, int extra, byte[] sessionId, byte[] data, long expirationTime, List keyStatusList, boolean hasNewUsableKey, ListenerWithExecutor listener) {
+    static /* synthetic */ void lambda$postEventFromNative$4(MediaDrm md, int eventType, int extra, byte[] sessionId, byte[] data, long expirationTime, List keyStatusList, boolean hasNewUsableKey, ListenerWithExecutor listener) {
         if (md.mNativeContext == 0) {
             Log.w(TAG, "MediaDrm went away with unhandled events");
         } else {
@@ -736,7 +724,6 @@ public final class MediaDrm implements AutoCloseable {
         this.mPlaybackComponentMap.remove(ByteBuffer.wrap(sessionId));
     }
 
-    /* loaded from: classes2.dex */
     public static final class KeyRequest {
         public static final int REQUEST_TYPE_INITIAL = 0;
         public static final int REQUEST_TYPE_NONE = 3;
@@ -748,7 +735,6 @@ public final class MediaDrm implements AutoCloseable {
         private int mRequestType;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface RequestType {
         }
 
@@ -756,19 +742,17 @@ public final class MediaDrm implements AutoCloseable {
         }
 
         public byte[] getData() {
-            byte[] bArr = this.mData;
-            if (bArr == null) {
+            if (this.mData == null) {
                 throw new RuntimeException("KeyRequest is not initialized");
             }
-            return bArr;
+            return this.mData;
         }
 
         public String getDefaultUrl() {
-            String str = this.mDefaultUrl;
-            if (str == null) {
+            if (this.mDefaultUrl == null) {
                 throw new RuntimeException("KeyRequest is not initialized");
             }
-            return str;
+            return this.mDefaultUrl;
         }
 
         public int getRequestType() {
@@ -838,7 +822,6 @@ public final class MediaDrm implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class ProvisionRequest {
         private byte[] mData;
         private String mDefaultUrl;
@@ -847,19 +830,17 @@ public final class MediaDrm implements AutoCloseable {
         }
 
         public byte[] getData() {
-            byte[] bArr = this.mData;
-            if (bArr == null) {
+            if (this.mData == null) {
                 throw new RuntimeException("ProvisionRequest is not initialized");
             }
-            return bArr;
+            return this.mData;
         }
 
         public String getDefaultUrl() {
-            String str = this.mDefaultUrl;
-            if (str == null) {
+            if (this.mDefaultUrl == null) {
                 throw new RuntimeException("ProvisionRequest is not initialized");
             }
-            return str;
+            return this.mDefaultUrl;
         }
     }
 
@@ -884,7 +865,6 @@ public final class MediaDrm implements AutoCloseable {
         return bundle;
     }
 
-    /* loaded from: classes2.dex */
     public final class CryptoSession {
         private byte[] mSessionId;
 
@@ -915,7 +895,6 @@ public final class MediaDrm implements AutoCloseable {
         return new CryptoSession(sessionId, cipherAlgorithm, macAlgorithm);
     }
 
-    /* loaded from: classes2.dex */
     public static final class CertificateRequest {
         private byte[] mData;
         private String mDefaultUrl;
@@ -939,7 +918,6 @@ public final class MediaDrm implements AutoCloseable {
         return new CertificateRequest(provisionRequest.getData(), provisionRequest.getDefaultUrl());
     }
 
-    /* loaded from: classes2.dex */
     public static final class Certificate {
         private byte[] mCertificateData;
         private byte[] mWrappedKey;
@@ -948,19 +926,17 @@ public final class MediaDrm implements AutoCloseable {
         }
 
         public byte[] getWrappedPrivateKey() {
-            byte[] bArr = this.mWrappedKey;
-            if (bArr == null) {
+            if (this.mWrappedKey == null) {
                 throw new RuntimeException("Certificate is not initialized");
             }
-            return bArr;
+            return this.mWrappedKey;
         }
 
         public byte[] getContent() {
-            byte[] bArr = this.mCertificateData;
-            if (bArr == null) {
+            if (this.mCertificateData == null) {
                 throw new RuntimeException("Certificate is not initialized");
             }
-            return bArr;
+            return this.mCertificateData;
         }
     }
 
@@ -978,9 +954,8 @@ public final class MediaDrm implements AutoCloseable {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             release();
         } finally {
@@ -1007,7 +982,6 @@ public final class MediaDrm implements AutoCloseable {
         native_init();
     }
 
-    /* loaded from: classes2.dex */
     public static final class MetricsConstants {
         public static final String CLOSE_SESSION_ERROR_COUNT = "drm.mediadrm.close_session.error.count";
         public static final String CLOSE_SESSION_ERROR_LIST = "drm.mediadrm.close_session.error.list";
@@ -1056,7 +1030,6 @@ public final class MediaDrm implements AutoCloseable {
         return this.mPlaybackComponentMap.get(ByteBuffer.wrap(sessionId));
     }
 
-    /* loaded from: classes2.dex */
     public final class PlaybackComponent {
         private LogSessionId mLogSessionId = LogSessionId.LOG_SESSION_ID_NONE;
         private final byte[] mSessionId;
@@ -1079,7 +1052,6 @@ public final class MediaDrm implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class LogMessage {
         private final String message;
         private final int priority;

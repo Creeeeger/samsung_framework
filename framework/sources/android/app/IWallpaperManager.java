@@ -3,6 +3,7 @@ package android.app;
 import android.app.ILocalWallpaperColorConsumer;
 import android.app.IWallpaperManagerCallback;
 import android.content.ComponentName;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Binder;
@@ -28,17 +29,25 @@ public interface IWallpaperManager extends IInterface {
 
     String getAnimatedPkgName(int i) throws RemoteException;
 
+    Rect getBitmapCrop(Point point, int[] iArr, List<Rect> list) throws RemoteException;
+
+    List getBitmapCrops(List<Point> list, int i, boolean z, int i2) throws RemoteException;
+
     int getDesktopMode() throws RemoteException;
 
     String getDeviceColor() throws RemoteException;
 
     int getDisplayId(int i) throws RemoteException;
 
+    List getFutureBitmapCrops(Point point, List<Point> list, int[] iArr, List<Rect> list2) throws RemoteException;
+
     int getHeightHint(int i) throws RemoteException;
 
     int getHighlightFilterState(int i) throws RemoteException;
 
     String getLastCallingPackage(int i) throws RemoteException;
+
+    String getLastCallingPackageWithPrefix(int i, boolean z) throws RemoteException;
 
     String getLegacyDeviceColor() throws RemoteException;
 
@@ -51,6 +60,8 @@ public interface IWallpaperManager extends IInterface {
     String getMotionWallpaperPkgName(int i) throws RemoteException;
 
     String getName() throws RemoteException;
+
+    ParcelFileDescriptor getScreenshotFileDescriptor(int i, int i2, Bundle bundle) throws RemoteException;
 
     int getSnapshotCount(int i) throws RemoteException;
 
@@ -105,15 +116,13 @@ public interface IWallpaperManager extends IInterface {
 
     boolean isDesktopStandAloneMode() throws RemoteException;
 
-    boolean isLockscreenLiveWallpaperEnabled() throws RemoteException;
-
-    boolean isMultiCropEnabled() throws RemoteException;
-
     boolean isSetWallpaperAllowed(String str) throws RemoteException;
 
     boolean isSnapshotTestMode() throws RemoteException;
 
     boolean isStaticWallpaper(int i) throws RemoteException;
+
+    boolean isStockLiveWallpaper(int i, int i2) throws RemoteException;
 
     boolean isSystemAndLockPaired(int i) throws RemoteException;
 
@@ -163,6 +172,8 @@ public interface IWallpaperManager extends IInterface {
 
     Rect semGetSmartCropRect(int i) throws RemoteException;
 
+    ParcelFileDescriptor semGetThumbnailFileDescriptor(int i, int i2, int i3) throws RemoteException;
+
     String semGetUri(int i, String str) throws RemoteException;
 
     SemWallpaperColors semGetWallpaperColors(int i) throws RemoteException;
@@ -172,6 +183,8 @@ public interface IWallpaperManager extends IInterface {
     Rect semGetWallpaperCropHint(int i) throws RemoteException;
 
     int semGetWallpaperType(int i) throws RemoteException;
+
+    boolean semIsPreloadedWallpaper(int i, int i2) throws RemoteException;
 
     void semRequestWallpaperColorsAnalysis(int i, String str) throws RemoteException;
 
@@ -183,7 +196,7 @@ public interface IWallpaperManager extends IInterface {
 
     void semSetUri(String str, boolean z, int i, int i2, String str2, int i3, Bundle bundle) throws RemoteException;
 
-    void semSetWallpaperColorOverrideAreas(int i, int i2, String str) throws RemoteException;
+    ParcelFileDescriptor semSetWallpaper(String str, String str2, int[] iArr, List<Rect> list, boolean z, Bundle bundle, int i, IWallpaperManagerCallback iWallpaperManagerCallback, int i2, int i3, boolean z2, Bundle bundle2) throws RemoteException;
 
     void setAnimatedWallpaper(String str, String str2, int i, boolean z) throws RemoteException;
 
@@ -195,10 +208,6 @@ public interface IWallpaperManager extends IInterface {
 
     void setInAmbientMode(boolean z, long j) throws RemoteException;
 
-    void setKWPTypeLiveWallpaper(int i) throws RemoteException;
-
-    void setKWPTypeLiveWallpaperWithMode(int i, int i2) throws RemoteException;
-
     boolean setLockWallpaperCallback(IWallpaperManagerCallback iWallpaperManagerCallback) throws RemoteException;
 
     void setMotionWallpaper(String str, String str2, int i, boolean z) throws RemoteException;
@@ -209,7 +218,7 @@ public interface IWallpaperManager extends IInterface {
 
     void setVideoWallpaper(String str, String str2, String str3, String str4, int i, int i2, boolean z, Bundle bundle) throws RemoteException;
 
-    ParcelFileDescriptor setWallpaper(String str, String str2, Rect rect, boolean z, Bundle bundle, int i, IWallpaperManagerCallback iWallpaperManagerCallback, int i2, int i3, boolean z2, Bundle bundle2) throws RemoteException;
+    ParcelFileDescriptor setWallpaper(String str, String str2, int[] iArr, List<Rect> list, boolean z, Bundle bundle, int i, IWallpaperManagerCallback iWallpaperManagerCallback, int i2, int i3, boolean z2, Bundle bundle2) throws RemoteException;
 
     void setWallpaperComponent(ComponentName componentName) throws RemoteException;
 
@@ -221,10 +230,9 @@ public interface IWallpaperManager extends IInterface {
 
     void unregisterWallpaperColorsCallback(IWallpaperManagerCallback iWallpaperManagerCallback, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IWallpaperManager {
         @Override // android.app.IWallpaperManager
-        public ParcelFileDescriptor setWallpaper(String name, String callingPackage, Rect cropHint, boolean allowBackup, Bundle extras, int which, IWallpaperManagerCallback completion, int userId, int type, boolean isPreloaded, Bundle inputExtras) throws RemoteException {
+        public ParcelFileDescriptor setWallpaper(String name, String callingPackage, int[] screenOrientations, List<Rect> crops, boolean allowBackup, Bundle extras, int which, IWallpaperManagerCallback completion, int userId, int type, boolean isPreloaded, Bundle inputExtras) throws RemoteException {
             return null;
         }
 
@@ -248,6 +256,21 @@ public interface IWallpaperManager extends IInterface {
 
         @Override // android.app.IWallpaperManager
         public ParcelFileDescriptor getLockWallpaper(IWallpaperManagerCallback cb, Bundle outParams, int userId, int which) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.IWallpaperManager
+        public List getBitmapCrops(List<Point> displaySizes, int which, boolean originalBitmap, int userId) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.IWallpaperManager
+        public List getFutureBitmapCrops(Point bitmapSize, List<Point> displaySizes, int[] screenOrientations, List<Rect> crops) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.IWallpaperManager
+        public Rect getBitmapCrop(Point bitmapSize, int[] screenOrientations, List<Rect> crops) throws RemoteException {
             return null;
         }
 
@@ -323,6 +346,11 @@ public interface IWallpaperManager extends IInterface {
         }
 
         @Override // android.app.IWallpaperManager
+        public ParcelFileDescriptor semSetWallpaper(String name, String callingPackage, int[] screenOrientations, List<Rect> crops, boolean allowBackup, Bundle extras, int which, IWallpaperManagerCallback completion, int userId, int wallpaperType, boolean isPreloaded, Bundle inputExtras) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.IWallpaperManager
         public boolean isWallpaperBackupAllowed(int which, int userId) throws RemoteException {
             return false;
         }
@@ -390,16 +418,6 @@ public interface IWallpaperManager extends IInterface {
         }
 
         @Override // android.app.IWallpaperManager
-        public boolean isLockscreenLiveWallpaperEnabled() throws RemoteException {
-            return false;
-        }
-
-        @Override // android.app.IWallpaperManager
-        public boolean isMultiCropEnabled() throws RemoteException {
-            return false;
-        }
-
-        @Override // android.app.IWallpaperManager
         public boolean isDesktopMode() throws RemoteException {
             return false;
         }
@@ -435,6 +453,11 @@ public interface IWallpaperManager extends IInterface {
         }
 
         @Override // android.app.IWallpaperManager
+        public boolean semIsPreloadedWallpaper(int which, int userId) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.app.IWallpaperManager
         public Rect semGetWallpaperCropHint(int which) throws RemoteException {
             return null;
         }
@@ -456,6 +479,11 @@ public interface IWallpaperManager extends IInterface {
         @Override // android.app.IWallpaperManager
         public boolean hasVideoWallpaper() throws RemoteException {
             return false;
+        }
+
+        @Override // android.app.IWallpaperManager
+        public ParcelFileDescriptor semGetThumbnailFileDescriptor(int which, int userId, int rotation) throws RemoteException {
+            return null;
         }
 
         @Override // android.app.IWallpaperManager
@@ -563,11 +591,8 @@ public interface IWallpaperManager extends IInterface {
         }
 
         @Override // android.app.IWallpaperManager
-        public void setKWPTypeLiveWallpaper(int value) throws RemoteException {
-        }
-
-        @Override // android.app.IWallpaperManager
-        public void setKWPTypeLiveWallpaperWithMode(int mode, int value) throws RemoteException {
+        public String getLastCallingPackageWithPrefix(int which, boolean includePrefix) throws RemoteException {
+            return null;
         }
 
         @Override // android.app.IWallpaperManager
@@ -609,6 +634,11 @@ public interface IWallpaperManager extends IInterface {
         }
 
         @Override // android.app.IWallpaperManager
+        public ParcelFileDescriptor getScreenshotFileDescriptor(int which, int userId, Bundle extras) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.IWallpaperManager
         public int getWallpaperOrientation(int which, int userId) throws RemoteException {
             return 0;
         }
@@ -633,10 +663,6 @@ public interface IWallpaperManager extends IInterface {
 
         @Override // android.app.IWallpaperManager
         public void semRequestWallpaperColorsAnalysis(int which, String callingPackage) throws RemoteException {
-        }
-
-        @Override // android.app.IWallpaperManager
-        public void semSetWallpaperColorOverrideAreas(int which, int userId, String colorAreas) throws RemoteException {
         }
 
         @Override // android.app.IWallpaperManager
@@ -698,117 +724,125 @@ public interface IWallpaperManager extends IInterface {
         public void notifyAodVisibilityState(int state) throws RemoteException {
         }
 
+        @Override // android.app.IWallpaperManager
+        public boolean isStockLiveWallpaper(int which, int userId) throws RemoteException {
+            return false;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IWallpaperManager {
         public static final String DESCRIPTOR = "android.app.IWallpaperManager";
-        static final int TRANSACTION_addOnLocalColorsChangedListener = 27;
-        static final int TRANSACTION_clearWallpaper = 11;
-        static final int TRANSACTION_copyFileToWallpaperFile = 75;
-        static final int TRANSACTION_copyPreloadedFileToWallpaperFile = 76;
-        static final int TRANSACTION_forceRebindWallpaper = 99;
-        static final int TRANSACTION_getAnimatedPkgName = 69;
-        static final int TRANSACTION_getDesktopMode = 40;
-        static final int TRANSACTION_getDeviceColor = 70;
-        static final int TRANSACTION_getDisplayId = 94;
-        static final int TRANSACTION_getHeightHint = 15;
-        static final int TRANSACTION_getHighlightFilterState = 78;
-        static final int TRANSACTION_getLastCallingPackage = 72;
-        static final int TRANSACTION_getLegacyDeviceColor = 71;
-        static final int TRANSACTION_getLidState = 93;
+        static final int TRANSACTION_addOnLocalColorsChangedListener = 31;
+        static final int TRANSACTION_clearWallpaper = 14;
+        static final int TRANSACTION_copyFileToWallpaperFile = 78;
+        static final int TRANSACTION_copyPreloadedFileToWallpaperFile = 79;
+        static final int TRANSACTION_forceRebindWallpaper = 102;
+        static final int TRANSACTION_getAnimatedPkgName = 73;
+        static final int TRANSACTION_getBitmapCrop = 9;
+        static final int TRANSACTION_getBitmapCrops = 7;
+        static final int TRANSACTION_getDesktopMode = 42;
+        static final int TRANSACTION_getDeviceColor = 74;
+        static final int TRANSACTION_getDisplayId = 97;
+        static final int TRANSACTION_getFutureBitmapCrops = 8;
+        static final int TRANSACTION_getHeightHint = 18;
+        static final int TRANSACTION_getHighlightFilterState = 81;
+        static final int TRANSACTION_getLastCallingPackage = 76;
+        static final int TRANSACTION_getLastCallingPackageWithPrefix = 77;
+        static final int TRANSACTION_getLegacyDeviceColor = 75;
+        static final int TRANSACTION_getLidState = 96;
         static final int TRANSACTION_getLockWallpaper = 6;
-        static final int TRANSACTION_getLockWallpaperType = 43;
-        static final int TRANSACTION_getMotionWallpaperPkgName = 56;
-        static final int TRANSACTION_getName = 17;
-        static final int TRANSACTION_getSnapshotCount = 65;
-        static final int TRANSACTION_getSnapshotKeys = 68;
-        static final int TRANSACTION_getVideoFileName = 54;
-        static final int TRANSACTION_getVideoFilePath = 52;
-        static final int TRANSACTION_getVideoPackage = 53;
+        static final int TRANSACTION_getLockWallpaperType = 45;
+        static final int TRANSACTION_getMotionWallpaperPkgName = 60;
+        static final int TRANSACTION_getName = 20;
+        static final int TRANSACTION_getScreenshotFileDescriptor = 86;
+        static final int TRANSACTION_getSnapshotCount = 69;
+        static final int TRANSACTION_getSnapshotKeys = 72;
+        static final int TRANSACTION_getVideoFileName = 58;
+        static final int TRANSACTION_getVideoFilePath = 56;
+        static final int TRANSACTION_getVideoPackage = 57;
         static final int TRANSACTION_getWallpaper = 4;
-        static final int TRANSACTION_getWallpaperAssetFile = 82;
-        static final int TRANSACTION_getWallpaperAssets = 81;
-        static final int TRANSACTION_getWallpaperColors = 25;
-        static final int TRANSACTION_getWallpaperComponentExtras = 79;
-        static final int TRANSACTION_getWallpaperDimAmount = 34;
-        static final int TRANSACTION_getWallpaperExtras = 80;
-        static final int TRANSACTION_getWallpaperIdForUser = 7;
-        static final int TRANSACTION_getWallpaperInfo = 8;
-        static final int TRANSACTION_getWallpaperInfoFile = 10;
-        static final int TRANSACTION_getWallpaperInfoWithFlags = 9;
-        static final int TRANSACTION_getWallpaperOrientation = 83;
-        static final int TRANSACTION_getWallpaperThumbnailFileDescriptor = 51;
+        static final int TRANSACTION_getWallpaperAssetFile = 85;
+        static final int TRANSACTION_getWallpaperAssets = 84;
+        static final int TRANSACTION_getWallpaperColors = 29;
+        static final int TRANSACTION_getWallpaperComponentExtras = 82;
+        static final int TRANSACTION_getWallpaperDimAmount = 38;
+        static final int TRANSACTION_getWallpaperExtras = 83;
+        static final int TRANSACTION_getWallpaperIdForUser = 10;
+        static final int TRANSACTION_getWallpaperInfo = 11;
+        static final int TRANSACTION_getWallpaperInfoFile = 13;
+        static final int TRANSACTION_getWallpaperInfoWithFlags = 12;
+        static final int TRANSACTION_getWallpaperOrientation = 87;
+        static final int TRANSACTION_getWallpaperThumbnailFileDescriptor = 55;
         static final int TRANSACTION_getWallpaperWithFeature = 5;
-        static final int TRANSACTION_getWidthHint = 14;
-        static final int TRANSACTION_hasNamedWallpaper = 12;
-        static final int TRANSACTION_hasVideoWallpaper = 50;
-        static final int TRANSACTION_isDefaultWallpaperState = 47;
-        static final int TRANSACTION_isDesktopMode = 39;
-        static final int TRANSACTION_isDesktopModeEnabled = 41;
-        static final int TRANSACTION_isDesktopStandAloneMode = 42;
-        static final int TRANSACTION_isLockscreenLiveWallpaperEnabled = 37;
-        static final int TRANSACTION_isMultiCropEnabled = 38;
-        static final int TRANSACTION_isSetWallpaperAllowed = 20;
-        static final int TRANSACTION_isSnapshotTestMode = 63;
-        static final int TRANSACTION_isStaticWallpaper = 36;
-        static final int TRANSACTION_isSystemAndLockPaired = 77;
-        static final int TRANSACTION_isValidSnapshot = 67;
-        static final int TRANSACTION_isVideoWallpaper = 49;
-        static final int TRANSACTION_isVirtualWallpaperDisplay = 95;
-        static final int TRANSACTION_isWaitingForUnlockUser = 96;
-        static final int TRANSACTION_isWallpaperBackupAllowed = 22;
-        static final int TRANSACTION_isWallpaperBackupEligible = 21;
-        static final int TRANSACTION_isWallpaperDataExists = 101;
-        static final int TRANSACTION_isWallpaperSupported = 19;
-        static final int TRANSACTION_lockScreenWallpaperExists = 35;
-        static final int TRANSACTION_makeSnapshot = 61;
-        static final int TRANSACTION_notifyAodVisibilityState = 102;
-        static final int TRANSACTION_notifyGoingToSleep = 32;
-        static final int TRANSACTION_notifyPid = 100;
-        static final int TRANSACTION_notifyWakingUp = 31;
-        static final int TRANSACTION_registerWallpaperColorsCallback = 28;
-        static final int TRANSACTION_removeOnLocalColorsChangedListener = 26;
-        static final int TRANSACTION_removeSnapshotByKey = 59;
-        static final int TRANSACTION_removeSnapshotBySource = 60;
-        static final int TRANSACTION_removeSnapshotByWhich = 58;
-        static final int TRANSACTION_restoreSnapshot = 62;
-        static final int TRANSACTION_semClearWallpaperThumbnailCache = 87;
-        static final int TRANSACTION_semGetPrimaryWallpaperColors = 86;
-        static final int TRANSACTION_semGetSmartCropRect = 92;
-        static final int TRANSACTION_semGetUri = 98;
-        static final int TRANSACTION_semGetWallpaperColors = 85;
-        static final int TRANSACTION_semGetWallpaperComponent = 45;
-        static final int TRANSACTION_semGetWallpaperCropHint = 46;
-        static final int TRANSACTION_semGetWallpaperType = 44;
-        static final int TRANSACTION_semRequestWallpaperColorsAnalysis = 88;
-        static final int TRANSACTION_semSendWallpaperCommand = 84;
-        static final int TRANSACTION_semSetDLSWallpaperColors = 90;
-        static final int TRANSACTION_semSetSmartCropRect = 91;
-        static final int TRANSACTION_semSetUri = 97;
-        static final int TRANSACTION_semSetWallpaperColorOverrideAreas = 89;
-        static final int TRANSACTION_setAnimatedWallpaper = 57;
-        static final int TRANSACTION_setCoverWallpaperCallback = 24;
-        static final int TRANSACTION_setDimensionHints = 13;
-        static final int TRANSACTION_setDisplayPadding = 16;
-        static final int TRANSACTION_setInAmbientMode = 30;
-        static final int TRANSACTION_setKWPTypeLiveWallpaper = 73;
-        static final int TRANSACTION_setKWPTypeLiveWallpaperWithMode = 74;
-        static final int TRANSACTION_setLockWallpaperCallback = 23;
-        static final int TRANSACTION_setMotionWallpaper = 55;
-        static final int TRANSACTION_setSnapshotSource = 66;
-        static final int TRANSACTION_setSnapshotTestMode = 64;
-        static final int TRANSACTION_setVideoWallpaper = 48;
+        static final int TRANSACTION_getWidthHint = 17;
+        static final int TRANSACTION_hasNamedWallpaper = 15;
+        static final int TRANSACTION_hasVideoWallpaper = 53;
+        static final int TRANSACTION_isDefaultWallpaperState = 50;
+        static final int TRANSACTION_isDesktopMode = 41;
+        static final int TRANSACTION_isDesktopModeEnabled = 43;
+        static final int TRANSACTION_isDesktopStandAloneMode = 44;
+        static final int TRANSACTION_isSetWallpaperAllowed = 23;
+        static final int TRANSACTION_isSnapshotTestMode = 67;
+        static final int TRANSACTION_isStaticWallpaper = 40;
+        static final int TRANSACTION_isStockLiveWallpaper = 106;
+        static final int TRANSACTION_isSystemAndLockPaired = 80;
+        static final int TRANSACTION_isValidSnapshot = 71;
+        static final int TRANSACTION_isVideoWallpaper = 52;
+        static final int TRANSACTION_isVirtualWallpaperDisplay = 98;
+        static final int TRANSACTION_isWaitingForUnlockUser = 99;
+        static final int TRANSACTION_isWallpaperBackupAllowed = 26;
+        static final int TRANSACTION_isWallpaperBackupEligible = 24;
+        static final int TRANSACTION_isWallpaperDataExists = 104;
+        static final int TRANSACTION_isWallpaperSupported = 22;
+        static final int TRANSACTION_lockScreenWallpaperExists = 39;
+        static final int TRANSACTION_makeSnapshot = 65;
+        static final int TRANSACTION_notifyAodVisibilityState = 105;
+        static final int TRANSACTION_notifyGoingToSleep = 36;
+        static final int TRANSACTION_notifyPid = 103;
+        static final int TRANSACTION_notifyWakingUp = 35;
+        static final int TRANSACTION_registerWallpaperColorsCallback = 32;
+        static final int TRANSACTION_removeOnLocalColorsChangedListener = 30;
+        static final int TRANSACTION_removeSnapshotByKey = 63;
+        static final int TRANSACTION_removeSnapshotBySource = 64;
+        static final int TRANSACTION_removeSnapshotByWhich = 62;
+        static final int TRANSACTION_restoreSnapshot = 66;
+        static final int TRANSACTION_semClearWallpaperThumbnailCache = 91;
+        static final int TRANSACTION_semGetPrimaryWallpaperColors = 90;
+        static final int TRANSACTION_semGetSmartCropRect = 95;
+        static final int TRANSACTION_semGetThumbnailFileDescriptor = 54;
+        static final int TRANSACTION_semGetUri = 101;
+        static final int TRANSACTION_semGetWallpaperColors = 89;
+        static final int TRANSACTION_semGetWallpaperComponent = 47;
+        static final int TRANSACTION_semGetWallpaperCropHint = 49;
+        static final int TRANSACTION_semGetWallpaperType = 46;
+        static final int TRANSACTION_semIsPreloadedWallpaper = 48;
+        static final int TRANSACTION_semRequestWallpaperColorsAnalysis = 92;
+        static final int TRANSACTION_semSendWallpaperCommand = 88;
+        static final int TRANSACTION_semSetDLSWallpaperColors = 93;
+        static final int TRANSACTION_semSetSmartCropRect = 94;
+        static final int TRANSACTION_semSetUri = 100;
+        static final int TRANSACTION_semSetWallpaper = 25;
+        static final int TRANSACTION_setAnimatedWallpaper = 61;
+        static final int TRANSACTION_setCoverWallpaperCallback = 28;
+        static final int TRANSACTION_setDimensionHints = 16;
+        static final int TRANSACTION_setDisplayPadding = 19;
+        static final int TRANSACTION_setInAmbientMode = 34;
+        static final int TRANSACTION_setLockWallpaperCallback = 27;
+        static final int TRANSACTION_setMotionWallpaper = 59;
+        static final int TRANSACTION_setSnapshotSource = 70;
+        static final int TRANSACTION_setSnapshotTestMode = 68;
+        static final int TRANSACTION_setVideoWallpaper = 51;
         static final int TRANSACTION_setWallpaper = 1;
         static final int TRANSACTION_setWallpaperComponent = 3;
         static final int TRANSACTION_setWallpaperComponentChecked = 2;
-        static final int TRANSACTION_setWallpaperDimAmount = 33;
-        static final int TRANSACTION_settingsRestored = 18;
-        static final int TRANSACTION_unregisterWallpaperColorsCallback = 29;
+        static final int TRANSACTION_setWallpaperDimAmount = 37;
+        static final int TRANSACTION_settingsRestored = 21;
+        static final int TRANSACTION_unregisterWallpaperColorsCallback = 33;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
@@ -845,197 +879,205 @@ public interface IWallpaperManager extends IInterface {
                 case 6:
                     return "getLockWallpaper";
                 case 7:
-                    return "getWallpaperIdForUser";
+                    return "getBitmapCrops";
                 case 8:
-                    return "getWallpaperInfo";
+                    return "getFutureBitmapCrops";
                 case 9:
-                    return "getWallpaperInfoWithFlags";
+                    return "getBitmapCrop";
                 case 10:
-                    return "getWallpaperInfoFile";
+                    return "getWallpaperIdForUser";
                 case 11:
-                    return "clearWallpaper";
+                    return "getWallpaperInfo";
                 case 12:
-                    return "hasNamedWallpaper";
+                    return "getWallpaperInfoWithFlags";
                 case 13:
-                    return "setDimensionHints";
+                    return "getWallpaperInfoFile";
                 case 14:
-                    return "getWidthHint";
+                    return "clearWallpaper";
                 case 15:
-                    return "getHeightHint";
+                    return "hasNamedWallpaper";
                 case 16:
-                    return "setDisplayPadding";
+                    return "setDimensionHints";
                 case 17:
-                    return "getName";
+                    return "getWidthHint";
                 case 18:
-                    return "settingsRestored";
+                    return "getHeightHint";
                 case 19:
-                    return "isWallpaperSupported";
+                    return "setDisplayPadding";
                 case 20:
-                    return "isSetWallpaperAllowed";
+                    return "getName";
                 case 21:
-                    return "isWallpaperBackupEligible";
+                    return "settingsRestored";
                 case 22:
-                    return "isWallpaperBackupAllowed";
+                    return "isWallpaperSupported";
                 case 23:
-                    return "setLockWallpaperCallback";
+                    return "isSetWallpaperAllowed";
                 case 24:
-                    return "setCoverWallpaperCallback";
+                    return "isWallpaperBackupEligible";
                 case 25:
-                    return "getWallpaperColors";
+                    return "semSetWallpaper";
                 case 26:
-                    return "removeOnLocalColorsChangedListener";
+                    return "isWallpaperBackupAllowed";
                 case 27:
-                    return "addOnLocalColorsChangedListener";
+                    return "setLockWallpaperCallback";
                 case 28:
-                    return "registerWallpaperColorsCallback";
+                    return "setCoverWallpaperCallback";
                 case 29:
-                    return "unregisterWallpaperColorsCallback";
+                    return "getWallpaperColors";
                 case 30:
-                    return "setInAmbientMode";
+                    return "removeOnLocalColorsChangedListener";
                 case 31:
-                    return "notifyWakingUp";
+                    return "addOnLocalColorsChangedListener";
                 case 32:
-                    return "notifyGoingToSleep";
+                    return "registerWallpaperColorsCallback";
                 case 33:
-                    return "setWallpaperDimAmount";
+                    return "unregisterWallpaperColorsCallback";
                 case 34:
-                    return "getWallpaperDimAmount";
+                    return "setInAmbientMode";
                 case 35:
-                    return "lockScreenWallpaperExists";
+                    return "notifyWakingUp";
                 case 36:
-                    return "isStaticWallpaper";
+                    return "notifyGoingToSleep";
                 case 37:
-                    return "isLockscreenLiveWallpaperEnabled";
+                    return "setWallpaperDimAmount";
                 case 38:
-                    return "isMultiCropEnabled";
+                    return "getWallpaperDimAmount";
                 case 39:
-                    return "isDesktopMode";
+                    return "lockScreenWallpaperExists";
                 case 40:
-                    return "getDesktopMode";
+                    return "isStaticWallpaper";
                 case 41:
-                    return "isDesktopModeEnabled";
+                    return "isDesktopMode";
                 case 42:
-                    return "isDesktopStandAloneMode";
+                    return "getDesktopMode";
                 case 43:
-                    return "getLockWallpaperType";
+                    return "isDesktopModeEnabled";
                 case 44:
-                    return "semGetWallpaperType";
+                    return "isDesktopStandAloneMode";
                 case 45:
-                    return "semGetWallpaperComponent";
+                    return "getLockWallpaperType";
                 case 46:
-                    return "semGetWallpaperCropHint";
+                    return "semGetWallpaperType";
                 case 47:
-                    return "isDefaultWallpaperState";
+                    return "semGetWallpaperComponent";
                 case 48:
-                    return "setVideoWallpaper";
+                    return "semIsPreloadedWallpaper";
                 case 49:
-                    return "isVideoWallpaper";
+                    return "semGetWallpaperCropHint";
                 case 50:
-                    return "hasVideoWallpaper";
+                    return "isDefaultWallpaperState";
                 case 51:
-                    return "getWallpaperThumbnailFileDescriptor";
+                    return "setVideoWallpaper";
                 case 52:
-                    return "getVideoFilePath";
+                    return "isVideoWallpaper";
                 case 53:
-                    return "getVideoPackage";
+                    return "hasVideoWallpaper";
                 case 54:
-                    return "getVideoFileName";
+                    return "semGetThumbnailFileDescriptor";
                 case 55:
-                    return "setMotionWallpaper";
+                    return "getWallpaperThumbnailFileDescriptor";
                 case 56:
-                    return "getMotionWallpaperPkgName";
+                    return "getVideoFilePath";
                 case 57:
-                    return "setAnimatedWallpaper";
+                    return "getVideoPackage";
                 case 58:
-                    return "removeSnapshotByWhich";
+                    return "getVideoFileName";
                 case 59:
-                    return "removeSnapshotByKey";
+                    return "setMotionWallpaper";
                 case 60:
-                    return "removeSnapshotBySource";
+                    return "getMotionWallpaperPkgName";
                 case 61:
-                    return "makeSnapshot";
+                    return "setAnimatedWallpaper";
                 case 62:
-                    return "restoreSnapshot";
+                    return "removeSnapshotByWhich";
                 case 63:
-                    return "isSnapshotTestMode";
+                    return "removeSnapshotByKey";
                 case 64:
-                    return "setSnapshotTestMode";
+                    return "removeSnapshotBySource";
                 case 65:
-                    return "getSnapshotCount";
+                    return "makeSnapshot";
                 case 66:
-                    return "setSnapshotSource";
+                    return "restoreSnapshot";
                 case 67:
-                    return "isValidSnapshot";
+                    return "isSnapshotTestMode";
                 case 68:
-                    return "getSnapshotKeys";
+                    return "setSnapshotTestMode";
                 case 69:
-                    return "getAnimatedPkgName";
+                    return "getSnapshotCount";
                 case 70:
-                    return "getDeviceColor";
+                    return "setSnapshotSource";
                 case 71:
-                    return "getLegacyDeviceColor";
+                    return "isValidSnapshot";
                 case 72:
-                    return "getLastCallingPackage";
+                    return "getSnapshotKeys";
                 case 73:
-                    return "setKWPTypeLiveWallpaper";
+                    return "getAnimatedPkgName";
                 case 74:
-                    return "setKWPTypeLiveWallpaperWithMode";
+                    return "getDeviceColor";
                 case 75:
-                    return "copyFileToWallpaperFile";
+                    return "getLegacyDeviceColor";
                 case 76:
-                    return "copyPreloadedFileToWallpaperFile";
+                    return "getLastCallingPackage";
                 case 77:
-                    return "isSystemAndLockPaired";
+                    return "getLastCallingPackageWithPrefix";
                 case 78:
-                    return "getHighlightFilterState";
+                    return "copyFileToWallpaperFile";
                 case 79:
-                    return "getWallpaperComponentExtras";
+                    return "copyPreloadedFileToWallpaperFile";
                 case 80:
-                    return "getWallpaperExtras";
+                    return "isSystemAndLockPaired";
                 case 81:
-                    return "getWallpaperAssets";
+                    return "getHighlightFilterState";
                 case 82:
-                    return "getWallpaperAssetFile";
+                    return "getWallpaperComponentExtras";
                 case 83:
-                    return "getWallpaperOrientation";
+                    return "getWallpaperExtras";
                 case 84:
-                    return "semSendWallpaperCommand";
+                    return "getWallpaperAssets";
                 case 85:
-                    return "semGetWallpaperColors";
+                    return "getWallpaperAssetFile";
                 case 86:
-                    return "semGetPrimaryWallpaperColors";
+                    return "getScreenshotFileDescriptor";
                 case 87:
-                    return "semClearWallpaperThumbnailCache";
+                    return "getWallpaperOrientation";
                 case 88:
-                    return "semRequestWallpaperColorsAnalysis";
+                    return "semSendWallpaperCommand";
                 case 89:
-                    return "semSetWallpaperColorOverrideAreas";
+                    return "semGetWallpaperColors";
                 case 90:
-                    return "semSetDLSWallpaperColors";
+                    return "semGetPrimaryWallpaperColors";
                 case 91:
-                    return "semSetSmartCropRect";
+                    return "semClearWallpaperThumbnailCache";
                 case 92:
-                    return "semGetSmartCropRect";
+                    return "semRequestWallpaperColorsAnalysis";
                 case 93:
-                    return "getLidState";
+                    return "semSetDLSWallpaperColors";
                 case 94:
-                    return "getDisplayId";
+                    return "semSetSmartCropRect";
                 case 95:
-                    return "isVirtualWallpaperDisplay";
+                    return "semGetSmartCropRect";
                 case 96:
-                    return "isWaitingForUnlockUser";
+                    return "getLidState";
                 case 97:
-                    return "semSetUri";
+                    return "getDisplayId";
                 case 98:
-                    return "semGetUri";
+                    return "isVirtualWallpaperDisplay";
                 case 99:
-                    return "forceRebindWallpaper";
+                    return "isWaitingForUnlockUser";
                 case 100:
-                    return "notifyPid";
+                    return "semSetUri";
                 case 101:
-                    return "isWallpaperDataExists";
+                    return "semGetUri";
                 case 102:
+                    return "forceRebindWallpaper";
+                case 103:
+                    return "notifyPid";
+                case 104:
+                    return "isWallpaperDataExists";
+                case 105:
                     return "notifyAodVisibilityState";
+                case 106:
+                    return "isStockLiveWallpaper";
                 default:
                     return null;
             }
@@ -1051,783 +1093,840 @@ public interface IWallpaperManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    int[] _arg2 = data.createIntArray();
+                    List<Rect> _arg3 = data.createTypedArrayList(Rect.CREATOR);
+                    boolean _arg4 = data.readBoolean();
+                    Bundle _arg5 = new Bundle();
+                    int _arg6 = data.readInt();
+                    IWallpaperManagerCallback _arg7 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg8 = data.readInt();
+                    int _arg9 = data.readInt();
+                    boolean _arg10 = data.readBoolean();
+                    Bundle _arg11 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result = setWallpaper(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10, _arg11);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    reply.writeTypedObject(_arg5, 1);
+                    return true;
+                case 2:
+                    ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg12 = data.readString();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    Bundle _arg42 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setWallpaperComponentChecked(_arg02, _arg12, _arg22, _arg32, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ComponentName _arg03 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    setWallpaperComponent(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    IWallpaperManagerCallback _arg13 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg23 = data.readInt();
+                    Bundle _arg33 = new Bundle();
+                    int _arg43 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result2 = getWallpaper(_arg04, _arg13, _arg23, _arg33, _arg43);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    reply.writeTypedObject(_arg33, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg14 = data.readString();
+                    IWallpaperManagerCallback _arg24 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg34 = data.readInt();
+                    Bundle _arg44 = new Bundle();
+                    int _arg52 = data.readInt();
+                    boolean _arg62 = data.readBoolean();
+                    boolean _arg72 = data.readBoolean();
+                    int _arg82 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result3 = getWallpaperWithFeature(_arg05, _arg14, _arg24, _arg34, _arg44, _arg52, _arg62, _arg72, _arg82);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    reply.writeTypedObject(_arg44, 1);
+                    return true;
+                case 6:
+                    IWallpaperManagerCallback _arg06 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    Bundle _arg15 = new Bundle();
+                    int _arg25 = data.readInt();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result4 = getLockWallpaper(_arg06, _arg15, _arg25, _arg35);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    reply.writeTypedObject(_arg15, 1);
+                    return true;
+                case 7:
+                    List<Point> _arg07 = data.createTypedArrayList(Point.CREATOR);
+                    int _arg16 = data.readInt();
+                    boolean _arg26 = data.readBoolean();
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List _result5 = getBitmapCrops(_arg07, _arg16, _arg26, _arg36);
+                    reply.writeNoException();
+                    reply.writeList(_result5);
+                    return true;
+                case 8:
+                    Point _arg08 = (Point) data.readTypedObject(Point.CREATOR);
+                    List<Point> _arg17 = data.createTypedArrayList(Point.CREATOR);
+                    int[] _arg27 = data.createIntArray();
+                    List<Rect> _arg37 = data.createTypedArrayList(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    List _result6 = getFutureBitmapCrops(_arg08, _arg17, _arg27, _arg37);
+                    reply.writeNoException();
+                    reply.writeList(_result6);
+                    return true;
+                case 9:
+                    Point _arg09 = (Point) data.readTypedObject(Point.CREATOR);
+                    int[] _arg18 = data.createIntArray();
+                    List<Rect> _arg28 = data.createTypedArrayList(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    Rect _result7 = getBitmapCrop(_arg09, _arg18, _arg28);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result8 = getWallpaperIdForUser(_arg010, _arg19);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    WallpaperInfo _result9 = getWallpaperInfo(_arg011);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    WallpaperInfo _result10 = getWallpaperInfoWithFlags(_arg012, _arg110);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result11 = getWallpaperInfoFile(_arg013);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    int _arg111 = data.readInt();
+                    int _arg29 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearWallpaper(_arg014, _arg111, _arg29);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    String _arg015 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = hasNamedWallpaper(_arg015);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    int _arg112 = data.readInt();
+                    String _arg210 = data.readString();
+                    int _arg38 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDimensionHints(_arg016, _arg112, _arg210, _arg38);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result13 = getWidthHint(_arg017);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result14 = getHeightHint(_arg018);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 19:
+                    Rect _arg019 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    String _arg113 = data.readString();
+                    int _arg211 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDisplayPadding(_arg019, _arg113, _arg211);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    String _result15 = getName();
+                    reply.writeNoException();
+                    reply.writeString(_result15);
+                    return true;
+                case 21:
+                    settingsRestored();
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    String _arg020 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result16 = isWallpaperSupported(_arg020);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 23:
+                    String _arg021 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result17 = isSetWallpaperAllowed(_arg021);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 24:
+                    int _arg022 = data.readInt();
+                    int _arg114 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result18 = isWallpaperBackupEligible(_arg022, _arg114);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 25:
+                    String _arg023 = data.readString();
+                    String _arg115 = data.readString();
+                    int[] _arg212 = data.createIntArray();
+                    List<Rect> _arg39 = data.createTypedArrayList(Rect.CREATOR);
+                    boolean _arg45 = data.readBoolean();
+                    Bundle _arg53 = new Bundle();
+                    int _arg63 = data.readInt();
+                    IWallpaperManagerCallback _arg73 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg83 = data.readInt();
+                    int _arg92 = data.readInt();
+                    boolean _arg102 = data.readBoolean();
+                    Bundle _arg116 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result19 = semSetWallpaper(_arg023, _arg115, _arg212, _arg39, _arg45, _arg53, _arg63, _arg73, _arg83, _arg92, _arg102, _arg116);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result19, 1);
+                    reply.writeTypedObject(_arg53, 1);
+                    return true;
+                case 26:
+                    int _arg024 = data.readInt();
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result20 = isWallpaperBackupAllowed(_arg024, _arg117);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 27:
+                    IWallpaperManagerCallback _arg025 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result21 = setLockWallpaperCallback(_arg025);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result21);
+                    return true;
+                case 28:
+                    IWallpaperManagerCallback _arg026 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result22 = setCoverWallpaperCallback(_arg026);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result22);
+                    return true;
+                case 29:
+                    int _arg027 = data.readInt();
+                    int _arg118 = data.readInt();
+                    int _arg213 = data.readInt();
+                    data.enforceNoDataAvail();
+                    WallpaperColors _result23 = getWallpaperColors(_arg027, _arg118, _arg213);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result23, 1);
+                    return true;
+                case 30:
+                    ILocalWallpaperColorConsumer _arg028 = ILocalWallpaperColorConsumer.Stub.asInterface(data.readStrongBinder());
+                    List<RectF> _arg119 = data.createTypedArrayList(RectF.CREATOR);
+                    int _arg214 = data.readInt();
+                    int _arg310 = data.readInt();
+                    int _arg46 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeOnLocalColorsChangedListener(_arg028, _arg119, _arg214, _arg310, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    ILocalWallpaperColorConsumer _arg029 = ILocalWallpaperColorConsumer.Stub.asInterface(data.readStrongBinder());
+                    List<RectF> _arg120 = data.createTypedArrayList(RectF.CREATOR);
+                    int _arg215 = data.readInt();
+                    int _arg311 = data.readInt();
+                    int _arg47 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addOnLocalColorsChangedListener(_arg029, _arg120, _arg215, _arg311, _arg47);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    IWallpaperManagerCallback _arg030 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg121 = data.readInt();
+                    int _arg216 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerWallpaperColorsCallback(_arg030, _arg121, _arg216);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    IWallpaperManagerCallback _arg031 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg122 = data.readInt();
+                    int _arg217 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterWallpaperColorsCallback(_arg031, _arg122, _arg217);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    boolean _arg032 = data.readBoolean();
+                    long _arg123 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setInAmbientMode(_arg032, _arg123);
+                    return true;
+                case 35:
+                    int _arg033 = data.readInt();
+                    int _arg124 = data.readInt();
+                    Bundle _arg218 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyWakingUp(_arg033, _arg124, _arg218);
+                    return true;
+                case 36:
+                    int _arg034 = data.readInt();
+                    int _arg125 = data.readInt();
+                    Bundle _arg219 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyGoingToSleep(_arg034, _arg125, _arg219);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    float _arg035 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setWallpaperDimAmount(_arg035);
+                    return true;
+                case 38:
+                    float _result24 = getWallpaperDimAmount();
+                    reply.writeNoException();
+                    reply.writeFloat(_result24);
+                    return true;
+                case 39:
+                    boolean _result25 = lockScreenWallpaperExists();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result25);
+                    return true;
+                case 40:
+                    int _arg036 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result26 = isStaticWallpaper(_arg036);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result26);
+                    return true;
+                case 41:
+                    boolean _result27 = isDesktopMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result27);
+                    return true;
+                case 42:
+                    int _result28 = getDesktopMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result28);
+                    return true;
+                case 43:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result29 = isDesktopModeEnabled(_arg037);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result29);
+                    return true;
+                case 44:
+                    boolean _result30 = isDesktopStandAloneMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result30);
+                    return true;
+                case 45:
+                    int _result31 = getLockWallpaperType();
+                    reply.writeNoException();
+                    reply.writeInt(_result31);
+                    return true;
+                case 46:
+                    int _arg038 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result32 = semGetWallpaperType(_arg038);
+                    reply.writeNoException();
+                    reply.writeInt(_result32);
+                    return true;
+                case 47:
+                    int _arg039 = data.readInt();
+                    int _arg126 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ComponentName _result33 = semGetWallpaperComponent(_arg039, _arg126);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result33, 1);
+                    return true;
+                case 48:
+                    int _arg040 = data.readInt();
+                    int _arg127 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result34 = semIsPreloadedWallpaper(_arg040, _arg127);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result34);
+                    return true;
+                case 49:
+                    int _arg041 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Rect _result35 = semGetWallpaperCropHint(_arg041);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result35, 1);
+                    return true;
+                case 50:
+                    int _arg042 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result36 = isDefaultWallpaperState(_arg042);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result36);
+                    return true;
+                case 51:
+                    String _arg043 = data.readString();
+                    String _arg128 = data.readString();
+                    String _arg220 = data.readString();
+                    String _arg312 = data.readString();
+                    int _arg48 = data.readInt();
+                    int _arg54 = data.readInt();
+                    boolean _arg64 = data.readBoolean();
+                    Bundle _arg74 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setVideoWallpaper(_arg043, _arg128, _arg220, _arg312, _arg48, _arg54, _arg64, _arg74);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    boolean _result37 = isVideoWallpaper();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result37);
+                    return true;
+                case 53:
+                    boolean _result38 = hasVideoWallpaper();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result38);
+                    return true;
+                case 54:
+                    int _arg044 = data.readInt();
+                    int _arg129 = data.readInt();
+                    int _arg221 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result39 = semGetThumbnailFileDescriptor(_arg044, _arg129, _arg221);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result39, 1);
+                    return true;
+                case 55:
+                    int _arg045 = data.readInt();
+                    int _arg130 = data.readInt();
+                    int _arg222 = data.readInt();
+                    int _arg313 = data.readInt();
+                    int _arg49 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result40 = getWallpaperThumbnailFileDescriptor(_arg045, _arg130, _arg222, _arg313, _arg49);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result40, 1);
+                    return true;
+                case 56:
+                    int _arg046 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result41 = getVideoFilePath(_arg046);
+                    reply.writeNoException();
+                    reply.writeString(_result41);
+                    return true;
+                case 57:
+                    int _arg047 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result42 = getVideoPackage(_arg047);
+                    reply.writeNoException();
+                    reply.writeString(_result42);
+                    return true;
+                case 58:
+                    int _arg048 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result43 = getVideoFileName(_arg048);
+                    reply.writeNoException();
+                    reply.writeString(_result43);
+                    return true;
+                case 59:
+                    String _arg049 = data.readString();
+                    String _arg131 = data.readString();
+                    int _arg223 = data.readInt();
+                    boolean _arg314 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMotionWallpaper(_arg049, _arg131, _arg223, _arg314);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    int _arg050 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result44 = getMotionWallpaperPkgName(_arg050);
+                    reply.writeNoException();
+                    reply.writeString(_result44);
+                    return true;
+                case 61:
+                    String _arg051 = data.readString();
+                    String _arg132 = data.readString();
+                    int _arg224 = data.readInt();
+                    boolean _arg315 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAnimatedWallpaper(_arg051, _arg132, _arg224, _arg315);
+                    reply.writeNoException();
+                    return true;
+                case 62:
+                    int _arg052 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeSnapshotByWhich(_arg052);
+                    reply.writeNoException();
+                    return true;
+                case 63:
+                    int _arg053 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeSnapshotByKey(_arg053);
+                    reply.writeNoException();
+                    return true;
+                case 64:
+                    String _arg054 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeSnapshotBySource(_arg054);
+                    reply.writeNoException();
+                    return true;
+                case 65:
+                    int _arg055 = data.readInt();
+                    int _arg133 = data.readInt();
+                    Bundle _arg225 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result45 = makeSnapshot(_arg055, _arg133, _arg225);
+                    reply.writeNoException();
+                    reply.writeInt(_result45);
+                    return true;
+                case 66:
+                    int _arg056 = data.readInt();
+                    String _arg134 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result46 = restoreSnapshot(_arg056, _arg134);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result46);
+                    return true;
+                case 67:
+                    boolean _result47 = isSnapshotTestMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result47);
+                    return true;
+                case 68:
+                    boolean _arg057 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSnapshotTestMode(_arg057);
+                    reply.writeNoException();
+                    return true;
+                case 69:
+                    int _arg058 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result48 = getSnapshotCount(_arg058);
+                    reply.writeNoException();
+                    reply.writeInt(_result48);
+                    return true;
+                case 70:
+                    int _arg059 = data.readInt();
+                    String _arg135 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result49 = setSnapshotSource(_arg059, _arg135);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result49);
+                    return true;
+                case 71:
+                    int _arg060 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result50 = isValidSnapshot(_arg060);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result50);
+                    return true;
+                case 72:
+                    String _arg061 = data.readString();
+                    int _arg136 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int[] _result51 = getSnapshotKeys(_arg061, _arg136);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result51);
+                    return true;
+                case 73:
+                    int _arg062 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result52 = getAnimatedPkgName(_arg062);
+                    reply.writeNoException();
+                    reply.writeString(_result52);
+                    return true;
+                case 74:
+                    String _result53 = getDeviceColor();
+                    reply.writeNoException();
+                    reply.writeString(_result53);
+                    return true;
+                case 75:
+                    String _result54 = getLegacyDeviceColor();
+                    reply.writeNoException();
+                    reply.writeString(_result54);
+                    return true;
+                case 76:
+                    int _arg063 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result55 = getLastCallingPackage(_arg063);
+                    reply.writeNoException();
+                    reply.writeString(_result55);
+                    return true;
+                case 77:
+                    int _arg064 = data.readInt();
+                    boolean _arg137 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    String _result56 = getLastCallingPackageWithPrefix(_arg064, _arg137);
+                    reply.writeNoException();
+                    reply.writeString(_result56);
+                    return true;
+                case 78:
+                    int _arg065 = data.readInt();
+                    String _arg138 = data.readString();
+                    data.enforceNoDataAvail();
+                    copyFileToWallpaperFile(_arg065, _arg138);
+                    reply.writeNoException();
+                    return true;
+                case 79:
+                    int _arg066 = data.readInt();
+                    String _arg139 = data.readString();
+                    data.enforceNoDataAvail();
+                    copyPreloadedFileToWallpaperFile(_arg066, _arg139);
+                    reply.writeNoException();
+                    return true;
+                case 80:
+                    int _arg067 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result57 = isSystemAndLockPaired(_arg067);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result57);
+                    return true;
+                case 81:
+                    int _arg068 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result58 = getHighlightFilterState(_arg068);
+                    reply.writeNoException();
+                    reply.writeInt(_result58);
+                    return true;
+                case 82:
+                    int _arg069 = data.readInt();
+                    int _arg140 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result59 = getWallpaperComponentExtras(_arg069, _arg140);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result59, 1);
+                    return true;
+                case 83:
+                    int _arg070 = data.readInt();
+                    int _arg141 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result60 = getWallpaperExtras(_arg070, _arg141);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result60, 1);
+                    return true;
+                case 84:
+                    int _arg071 = data.readInt();
+                    int _arg142 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result61 = getWallpaperAssets(_arg071, _arg142);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result61, 1);
+                    return true;
+                case 85:
+                    String _arg072 = data.readString();
+                    int _arg143 = data.readInt();
+                    int _arg226 = data.readInt();
+                    String _arg316 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result62 = getWallpaperAssetFile(_arg072, _arg143, _arg226, _arg316);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result62, 1);
+                    return true;
+                case 86:
+                    int _arg073 = data.readInt();
+                    int _arg144 = data.readInt();
+                    Bundle _arg227 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result63 = getScreenshotFileDescriptor(_arg073, _arg144, _arg227);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result63, 1);
+                    return true;
+                case 87:
+                    int _arg074 = data.readInt();
+                    int _arg145 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result64 = getWallpaperOrientation(_arg074, _arg145);
+                    reply.writeNoException();
+                    reply.writeInt(_result64);
+                    return true;
+                case 88:
+                    int _arg075 = data.readInt();
+                    String _arg146 = data.readString();
+                    Bundle _arg228 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    semSendWallpaperCommand(_arg075, _arg146, _arg228);
+                    reply.writeNoException();
+                    return true;
+                case 89:
+                    int _arg076 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SemWallpaperColors _result65 = semGetWallpaperColors(_arg076);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result65, 1);
+                    return true;
+                case 90:
+                    int _arg077 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SemWallpaperColors _result66 = semGetPrimaryWallpaperColors(_arg077);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result66, 1);
+                    return true;
+                case 91:
+                    int _arg078 = data.readInt();
+                    int _arg147 = data.readInt();
+                    String _arg229 = data.readString();
+                    data.enforceNoDataAvail();
+                    semClearWallpaperThumbnailCache(_arg078, _arg147, _arg229);
+                    reply.writeNoException();
+                    return true;
+                case 92:
+                    int _arg079 = data.readInt();
+                    String _arg148 = data.readString();
+                    data.enforceNoDataAvail();
+                    semRequestWallpaperColorsAnalysis(_arg079, _arg148);
+                    reply.writeNoException();
+                    return true;
+                case 93:
+                    SemWallpaperColors _arg080 = (SemWallpaperColors) data.readTypedObject(SemWallpaperColors.CREATOR);
+                    int _arg149 = data.readInt();
+                    data.enforceNoDataAvail();
+                    semSetDLSWallpaperColors(_arg080, _arg149);
+                    reply.writeNoException();
+                    return true;
+                case 94:
+                    int _arg081 = data.readInt();
+                    Rect _arg150 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    Rect _arg230 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    semSetSmartCropRect(_arg081, _arg150, _arg230);
+                    reply.writeNoException();
+                    return true;
+                case 95:
+                    int _arg082 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Rect _result67 = semGetSmartCropRect(_arg082);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result67, 1);
+                    return true;
+                case 96:
+                    int _result68 = getLidState();
+                    reply.writeNoException();
+                    reply.writeInt(_result68);
+                    return true;
+                case 97:
+                    int _arg083 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result69 = getDisplayId(_arg083);
+                    reply.writeNoException();
+                    reply.writeInt(_result69);
+                    return true;
+                case 98:
+                    int _arg084 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result70 = isVirtualWallpaperDisplay(_arg084);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result70);
+                    return true;
+                case 99:
+                    int _arg085 = data.readInt();
+                    int _arg151 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result71 = isWaitingForUnlockUser(_arg085, _arg151);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result71);
+                    return true;
+                case 100:
+                    String _arg086 = data.readString();
+                    boolean _arg152 = data.readBoolean();
+                    int _arg231 = data.readInt();
+                    int _arg317 = data.readInt();
+                    String _arg410 = data.readString();
+                    int _arg55 = data.readInt();
+                    Bundle _arg65 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    semSetUri(_arg086, _arg152, _arg231, _arg317, _arg410, _arg55, _arg65);
+                    reply.writeNoException();
+                    return true;
+                case 101:
+                    int _arg087 = data.readInt();
+                    String _arg153 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result72 = semGetUri(_arg087, _arg153);
+                    reply.writeNoException();
+                    reply.writeString(_result72);
+                    return true;
+                case 102:
+                    int _arg088 = data.readInt();
+                    int _arg154 = data.readInt();
+                    data.enforceNoDataAvail();
+                    forceRebindWallpaper(_arg088, _arg154);
+                    reply.writeNoException();
+                    return true;
+                case 103:
+                    int _arg089 = data.readInt();
+                    int _arg155 = data.readInt();
+                    String _arg232 = data.readString();
+                    boolean _arg318 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyPid(_arg089, _arg155, _arg232, _arg318);
+                    reply.writeNoException();
+                    return true;
+                case 104:
+                    int _arg090 = data.readInt();
+                    int _arg156 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result73 = isWallpaperDataExists(_arg090, _arg156);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result73);
+                    return true;
+                case 105:
+                    int _arg091 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyAodVisibilityState(_arg091);
+                    reply.writeNoException();
+                    return true;
+                case 106:
+                    int _arg092 = data.readInt();
+                    int _arg157 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result74 = isStockLiveWallpaper(_arg092, _arg157);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result74);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            Rect _arg2 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            Bundle _arg4 = new Bundle();
-                            int _arg5 = data.readInt();
-                            IWallpaperManagerCallback _arg6 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg7 = data.readInt();
-                            int _arg8 = data.readInt();
-                            boolean _arg9 = data.readBoolean();
-                            Bundle _arg10 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result = setWallpaper(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9, _arg10);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            reply.writeTypedObject(_arg4, 1);
-                            return true;
-                        case 2:
-                            ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg12 = data.readString();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            Bundle _arg42 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            setWallpaperComponentChecked(_arg02, _arg12, _arg22, _arg32, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ComponentName _arg03 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            setWallpaperComponent(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            IWallpaperManagerCallback _arg13 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg23 = data.readInt();
-                            Bundle _arg33 = new Bundle();
-                            int _arg43 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result2 = getWallpaper(_arg04, _arg13, _arg23, _arg33, _arg43);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            reply.writeTypedObject(_arg33, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg14 = data.readString();
-                            IWallpaperManagerCallback _arg24 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg34 = data.readInt();
-                            Bundle _arg44 = new Bundle();
-                            int _arg52 = data.readInt();
-                            boolean _arg62 = data.readBoolean();
-                            boolean _arg72 = data.readBoolean();
-                            int _arg82 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result3 = getWallpaperWithFeature(_arg05, _arg14, _arg24, _arg34, _arg44, _arg52, _arg62, _arg72, _arg82);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            reply.writeTypedObject(_arg44, 1);
-                            return true;
-                        case 6:
-                            IWallpaperManagerCallback _arg06 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            Bundle _arg15 = new Bundle();
-                            int _arg25 = data.readInt();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result4 = getLockWallpaper(_arg06, _arg15, _arg25, _arg35);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            reply.writeTypedObject(_arg15, 1);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = getWallpaperIdForUser(_arg07, _arg16);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            WallpaperInfo _result6 = getWallpaperInfo(_arg08);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            WallpaperInfo _result7 = getWallpaperInfoWithFlags(_arg09, _arg17);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result8 = getWallpaperInfoFile(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            int _arg18 = data.readInt();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearWallpaper(_arg011, _arg18, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = hasNamedWallpaper(_arg012);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            int _arg19 = data.readInt();
-                            String _arg27 = data.readString();
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDimensionHints(_arg013, _arg19, _arg27, _arg36);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result10 = getWidthHint(_arg014);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result11 = getHeightHint(_arg015);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 16:
-                            Rect _arg016 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            String _arg110 = data.readString();
-                            int _arg28 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDisplayPadding(_arg016, _arg110, _arg28);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            String _result12 = getName();
-                            reply.writeNoException();
-                            reply.writeString(_result12);
-                            return true;
-                        case 18:
-                            settingsRestored();
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            String _arg017 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = isWallpaperSupported(_arg017);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 20:
-                            String _arg018 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = isSetWallpaperAllowed(_arg018);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 21:
-                            int _arg019 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = isWallpaperBackupEligible(_arg019, _arg111);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 22:
-                            int _arg020 = data.readInt();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result16 = isWallpaperBackupAllowed(_arg020, _arg112);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 23:
-                            IWallpaperManagerCallback _arg021 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result17 = setLockWallpaperCallback(_arg021);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 24:
-                            IWallpaperManagerCallback _arg022 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result18 = setCoverWallpaperCallback(_arg022);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 25:
-                            int _arg023 = data.readInt();
-                            int _arg113 = data.readInt();
-                            int _arg29 = data.readInt();
-                            data.enforceNoDataAvail();
-                            WallpaperColors _result19 = getWallpaperColors(_arg023, _arg113, _arg29);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result19, 1);
-                            return true;
-                        case 26:
-                            ILocalWallpaperColorConsumer _arg024 = ILocalWallpaperColorConsumer.Stub.asInterface(data.readStrongBinder());
-                            List<RectF> _arg114 = data.createTypedArrayList(RectF.CREATOR);
-                            int _arg210 = data.readInt();
-                            int _arg37 = data.readInt();
-                            int _arg45 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeOnLocalColorsChangedListener(_arg024, _arg114, _arg210, _arg37, _arg45);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            ILocalWallpaperColorConsumer _arg025 = ILocalWallpaperColorConsumer.Stub.asInterface(data.readStrongBinder());
-                            List<RectF> _arg115 = data.createTypedArrayList(RectF.CREATOR);
-                            int _arg211 = data.readInt();
-                            int _arg38 = data.readInt();
-                            int _arg46 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addOnLocalColorsChangedListener(_arg025, _arg115, _arg211, _arg38, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            IWallpaperManagerCallback _arg026 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg116 = data.readInt();
-                            int _arg212 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerWallpaperColorsCallback(_arg026, _arg116, _arg212);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            IWallpaperManagerCallback _arg027 = IWallpaperManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg117 = data.readInt();
-                            int _arg213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterWallpaperColorsCallback(_arg027, _arg117, _arg213);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            boolean _arg028 = data.readBoolean();
-                            long _arg118 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setInAmbientMode(_arg028, _arg118);
-                            return true;
-                        case 31:
-                            int _arg029 = data.readInt();
-                            int _arg119 = data.readInt();
-                            Bundle _arg214 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyWakingUp(_arg029, _arg119, _arg214);
-                            return true;
-                        case 32:
-                            int _arg030 = data.readInt();
-                            int _arg120 = data.readInt();
-                            Bundle _arg215 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyGoingToSleep(_arg030, _arg120, _arg215);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            float _arg031 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setWallpaperDimAmount(_arg031);
-                            return true;
-                        case 34:
-                            float _result20 = getWallpaperDimAmount();
-                            reply.writeNoException();
-                            reply.writeFloat(_result20);
-                            return true;
-                        case 35:
-                            boolean _result21 = lockScreenWallpaperExists();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result21);
-                            return true;
-                        case 36:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result22 = isStaticWallpaper(_arg032);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result22);
-                            return true;
-                        case 37:
-                            boolean _result23 = isLockscreenLiveWallpaperEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result23);
-                            return true;
-                        case 38:
-                            boolean _result24 = isMultiCropEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result24);
-                            return true;
-                        case 39:
-                            boolean _result25 = isDesktopMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result25);
-                            return true;
-                        case 40:
-                            int _result26 = getDesktopMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 41:
-                            int _arg033 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result27 = isDesktopModeEnabled(_arg033);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result27);
-                            return true;
-                        case 42:
-                            boolean _result28 = isDesktopStandAloneMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result28);
-                            return true;
-                        case 43:
-                            int _result29 = getLockWallpaperType();
-                            reply.writeNoException();
-                            reply.writeInt(_result29);
-                            return true;
-                        case 44:
-                            int _arg034 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result30 = semGetWallpaperType(_arg034);
-                            reply.writeNoException();
-                            reply.writeInt(_result30);
-                            return true;
-                        case 45:
-                            int _arg035 = data.readInt();
-                            int _arg121 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ComponentName _result31 = semGetWallpaperComponent(_arg035, _arg121);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result31, 1);
-                            return true;
-                        case 46:
-                            int _arg036 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Rect _result32 = semGetWallpaperCropHint(_arg036);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result32, 1);
-                            return true;
-                        case 47:
-                            int _arg037 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result33 = isDefaultWallpaperState(_arg037);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result33);
-                            return true;
-                        case 48:
-                            String _arg038 = data.readString();
-                            String _arg122 = data.readString();
-                            String _arg216 = data.readString();
-                            String _arg39 = data.readString();
-                            int _arg47 = data.readInt();
-                            int _arg53 = data.readInt();
-                            boolean _arg63 = data.readBoolean();
-                            Bundle _arg73 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            setVideoWallpaper(_arg038, _arg122, _arg216, _arg39, _arg47, _arg53, _arg63, _arg73);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            boolean _result34 = isVideoWallpaper();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result34);
-                            return true;
-                        case 50:
-                            boolean _result35 = hasVideoWallpaper();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result35);
-                            return true;
-                        case 51:
-                            int _arg039 = data.readInt();
-                            int _arg123 = data.readInt();
-                            int _arg217 = data.readInt();
-                            int _arg310 = data.readInt();
-                            int _arg48 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result36 = getWallpaperThumbnailFileDescriptor(_arg039, _arg123, _arg217, _arg310, _arg48);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result36, 1);
-                            return true;
-                        case 52:
-                            int _arg040 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result37 = getVideoFilePath(_arg040);
-                            reply.writeNoException();
-                            reply.writeString(_result37);
-                            return true;
-                        case 53:
-                            int _arg041 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result38 = getVideoPackage(_arg041);
-                            reply.writeNoException();
-                            reply.writeString(_result38);
-                            return true;
-                        case 54:
-                            int _arg042 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result39 = getVideoFileName(_arg042);
-                            reply.writeNoException();
-                            reply.writeString(_result39);
-                            return true;
-                        case 55:
-                            String _arg043 = data.readString();
-                            String _arg124 = data.readString();
-                            int _arg218 = data.readInt();
-                            boolean _arg311 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMotionWallpaper(_arg043, _arg124, _arg218, _arg311);
-                            reply.writeNoException();
-                            return true;
-                        case 56:
-                            int _arg044 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result40 = getMotionWallpaperPkgName(_arg044);
-                            reply.writeNoException();
-                            reply.writeString(_result40);
-                            return true;
-                        case 57:
-                            String _arg045 = data.readString();
-                            String _arg125 = data.readString();
-                            int _arg219 = data.readInt();
-                            boolean _arg312 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAnimatedWallpaper(_arg045, _arg125, _arg219, _arg312);
-                            reply.writeNoException();
-                            return true;
-                        case 58:
-                            int _arg046 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeSnapshotByWhich(_arg046);
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            int _arg047 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeSnapshotByKey(_arg047);
-                            reply.writeNoException();
-                            return true;
-                        case 60:
-                            String _arg048 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeSnapshotBySource(_arg048);
-                            reply.writeNoException();
-                            return true;
-                        case 61:
-                            int _arg049 = data.readInt();
-                            int _arg126 = data.readInt();
-                            Bundle _arg220 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result41 = makeSnapshot(_arg049, _arg126, _arg220);
-                            reply.writeNoException();
-                            reply.writeInt(_result41);
-                            return true;
-                        case 62:
-                            int _arg050 = data.readInt();
-                            String _arg127 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result42 = restoreSnapshot(_arg050, _arg127);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result42);
-                            return true;
-                        case 63:
-                            boolean _result43 = isSnapshotTestMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result43);
-                            return true;
-                        case 64:
-                            boolean _arg051 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSnapshotTestMode(_arg051);
-                            reply.writeNoException();
-                            return true;
-                        case 65:
-                            int _arg052 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result44 = getSnapshotCount(_arg052);
-                            reply.writeNoException();
-                            reply.writeInt(_result44);
-                            return true;
-                        case 66:
-                            int _arg053 = data.readInt();
-                            String _arg128 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result45 = setSnapshotSource(_arg053, _arg128);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result45);
-                            return true;
-                        case 67:
-                            int _arg054 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result46 = isValidSnapshot(_arg054);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result46);
-                            return true;
-                        case 68:
-                            String _arg055 = data.readString();
-                            int _arg129 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int[] _result47 = getSnapshotKeys(_arg055, _arg129);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result47);
-                            return true;
-                        case 69:
-                            int _arg056 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result48 = getAnimatedPkgName(_arg056);
-                            reply.writeNoException();
-                            reply.writeString(_result48);
-                            return true;
-                        case 70:
-                            String _result49 = getDeviceColor();
-                            reply.writeNoException();
-                            reply.writeString(_result49);
-                            return true;
-                        case 71:
-                            String _result50 = getLegacyDeviceColor();
-                            reply.writeNoException();
-                            reply.writeString(_result50);
-                            return true;
-                        case 72:
-                            int _arg057 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result51 = getLastCallingPackage(_arg057);
-                            reply.writeNoException();
-                            reply.writeString(_result51);
-                            return true;
-                        case 73:
-                            int _arg058 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setKWPTypeLiveWallpaper(_arg058);
-                            reply.writeNoException();
-                            return true;
-                        case 74:
-                            int _arg059 = data.readInt();
-                            int _arg130 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setKWPTypeLiveWallpaperWithMode(_arg059, _arg130);
-                            reply.writeNoException();
-                            return true;
-                        case 75:
-                            int _arg060 = data.readInt();
-                            String _arg131 = data.readString();
-                            data.enforceNoDataAvail();
-                            copyFileToWallpaperFile(_arg060, _arg131);
-                            reply.writeNoException();
-                            return true;
-                        case 76:
-                            int _arg061 = data.readInt();
-                            String _arg132 = data.readString();
-                            data.enforceNoDataAvail();
-                            copyPreloadedFileToWallpaperFile(_arg061, _arg132);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            int _arg062 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result52 = isSystemAndLockPaired(_arg062);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result52);
-                            return true;
-                        case 78:
-                            int _arg063 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result53 = getHighlightFilterState(_arg063);
-                            reply.writeNoException();
-                            reply.writeInt(_result53);
-                            return true;
-                        case 79:
-                            int _arg064 = data.readInt();
-                            int _arg133 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result54 = getWallpaperComponentExtras(_arg064, _arg133);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result54, 1);
-                            return true;
-                        case 80:
-                            int _arg065 = data.readInt();
-                            int _arg134 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result55 = getWallpaperExtras(_arg065, _arg134);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result55, 1);
-                            return true;
-                        case 81:
-                            int _arg066 = data.readInt();
-                            int _arg135 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result56 = getWallpaperAssets(_arg066, _arg135);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result56, 1);
-                            return true;
-                        case 82:
-                            String _arg067 = data.readString();
-                            int _arg136 = data.readInt();
-                            int _arg221 = data.readInt();
-                            String _arg313 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result57 = getWallpaperAssetFile(_arg067, _arg136, _arg221, _arg313);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result57, 1);
-                            return true;
-                        case 83:
-                            int _arg068 = data.readInt();
-                            int _arg137 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result58 = getWallpaperOrientation(_arg068, _arg137);
-                            reply.writeNoException();
-                            reply.writeInt(_result58);
-                            return true;
-                        case 84:
-                            int _arg069 = data.readInt();
-                            String _arg138 = data.readString();
-                            Bundle _arg222 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            semSendWallpaperCommand(_arg069, _arg138, _arg222);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            int _arg070 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SemWallpaperColors _result59 = semGetWallpaperColors(_arg070);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result59, 1);
-                            return true;
-                        case 86:
-                            int _arg071 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SemWallpaperColors _result60 = semGetPrimaryWallpaperColors(_arg071);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result60, 1);
-                            return true;
-                        case 87:
-                            int _arg072 = data.readInt();
-                            int _arg139 = data.readInt();
-                            String _arg223 = data.readString();
-                            data.enforceNoDataAvail();
-                            semClearWallpaperThumbnailCache(_arg072, _arg139, _arg223);
-                            reply.writeNoException();
-                            return true;
-                        case 88:
-                            int _arg073 = data.readInt();
-                            String _arg140 = data.readString();
-                            data.enforceNoDataAvail();
-                            semRequestWallpaperColorsAnalysis(_arg073, _arg140);
-                            reply.writeNoException();
-                            return true;
-                        case 89:
-                            int _arg074 = data.readInt();
-                            int _arg141 = data.readInt();
-                            String _arg224 = data.readString();
-                            data.enforceNoDataAvail();
-                            semSetWallpaperColorOverrideAreas(_arg074, _arg141, _arg224);
-                            reply.writeNoException();
-                            return true;
-                        case 90:
-                            SemWallpaperColors _arg075 = (SemWallpaperColors) data.readTypedObject(SemWallpaperColors.CREATOR);
-                            int _arg142 = data.readInt();
-                            data.enforceNoDataAvail();
-                            semSetDLSWallpaperColors(_arg075, _arg142);
-                            reply.writeNoException();
-                            return true;
-                        case 91:
-                            int _arg076 = data.readInt();
-                            Rect _arg143 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            Rect _arg225 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            semSetSmartCropRect(_arg076, _arg143, _arg225);
-                            reply.writeNoException();
-                            return true;
-                        case 92:
-                            int _arg077 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Rect _result61 = semGetSmartCropRect(_arg077);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result61, 1);
-                            return true;
-                        case 93:
-                            int _result62 = getLidState();
-                            reply.writeNoException();
-                            reply.writeInt(_result62);
-                            return true;
-                        case 94:
-                            int _arg078 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result63 = getDisplayId(_arg078);
-                            reply.writeNoException();
-                            reply.writeInt(_result63);
-                            return true;
-                        case 95:
-                            int _arg079 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result64 = isVirtualWallpaperDisplay(_arg079);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result64);
-                            return true;
-                        case 96:
-                            int _arg080 = data.readInt();
-                            int _arg144 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result65 = isWaitingForUnlockUser(_arg080, _arg144);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result65);
-                            return true;
-                        case 97:
-                            String _arg081 = data.readString();
-                            boolean _arg145 = data.readBoolean();
-                            int _arg226 = data.readInt();
-                            int _arg314 = data.readInt();
-                            String _arg49 = data.readString();
-                            int _arg54 = data.readInt();
-                            Bundle _arg64 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            semSetUri(_arg081, _arg145, _arg226, _arg314, _arg49, _arg54, _arg64);
-                            reply.writeNoException();
-                            return true;
-                        case 98:
-                            int _arg082 = data.readInt();
-                            String _arg146 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result66 = semGetUri(_arg082, _arg146);
-                            reply.writeNoException();
-                            reply.writeString(_result66);
-                            return true;
-                        case 99:
-                            int _arg083 = data.readInt();
-                            int _arg147 = data.readInt();
-                            data.enforceNoDataAvail();
-                            forceRebindWallpaper(_arg083, _arg147);
-                            reply.writeNoException();
-                            return true;
-                        case 100:
-                            int _arg084 = data.readInt();
-                            int _arg148 = data.readInt();
-                            String _arg227 = data.readString();
-                            boolean _arg315 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyPid(_arg084, _arg148, _arg227, _arg315);
-                            reply.writeNoException();
-                            return true;
-                        case 101:
-                            int _arg085 = data.readInt();
-                            int _arg149 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result67 = isWallpaperDataExists(_arg085, _arg149);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result67);
-                            return true;
-                        case 102:
-                            int _arg086 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyAodVisibilityState(_arg086);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IWallpaperManager {
+        private static class Proxy implements IWallpaperManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1844,32 +1943,33 @@ public interface IWallpaperManager extends IInterface {
             }
 
             @Override // android.app.IWallpaperManager
-            public ParcelFileDescriptor setWallpaper(String name, String callingPackage, Rect cropHint, boolean allowBackup, Bundle extras, int which, IWallpaperManagerCallback completion, int userId, int type, boolean isPreloaded, Bundle inputExtras) throws RemoteException {
+            public ParcelFileDescriptor setWallpaper(String name, String callingPackage, int[] screenOrientations, List<Rect> crops, boolean allowBackup, Bundle extras, int which, IWallpaperManagerCallback completion, int userId, int type, boolean isPreloaded, Bundle inputExtras) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(name);
                 } catch (Throwable th) {
                     th = th;
                 }
                 try {
-                    _data.writeString(name);
-                    try {
-                        _data.writeString(callingPackage);
-                    } catch (Throwable th2) {
-                        th = th2;
-                        _reply.recycle();
-                        _data.recycle();
-                        throw th;
-                    }
-                    try {
-                        _data.writeTypedObject(cropHint, 0);
-                    } catch (Throwable th3) {
-                        th = th3;
-                        _reply.recycle();
-                        _data.recycle();
-                        throw th;
-                    }
+                    _data.writeString(callingPackage);
+                } catch (Throwable th2) {
+                    th = th2;
+                    _reply.recycle();
+                    _data.recycle();
+                    throw th;
+                }
+                try {
+                    _data.writeIntArray(screenOrientations);
+                } catch (Throwable th3) {
+                    th = th3;
+                    _reply.recycle();
+                    _data.recycle();
+                    throw th;
+                }
+                try {
+                    _data.writeTypedList(crops, 0);
                     try {
                         _data.writeBoolean(allowBackup);
                     } catch (Throwable th4) {
@@ -1878,32 +1978,32 @@ public interface IWallpaperManager extends IInterface {
                         _data.recycle();
                         throw th;
                     }
-                } catch (Throwable th5) {
-                    th = th5;
+                    try {
+                        _data.writeInt(which);
+                    } catch (Throwable th5) {
+                        th = th5;
+                        _reply.recycle();
+                        _data.recycle();
+                        throw th;
+                    }
+                } catch (Throwable th6) {
+                    th = th6;
                     _reply.recycle();
                     _data.recycle();
                     throw th;
                 }
                 try {
-                    _data.writeInt(which);
+                    _data.writeStrongInterface(completion);
                     try {
-                        _data.writeStrongInterface(completion);
-                    } catch (Throwable th6) {
-                        th = th6;
+                        _data.writeInt(userId);
+                    } catch (Throwable th7) {
+                        th = th7;
                         _reply.recycle();
                         _data.recycle();
                         throw th;
                     }
                     try {
-                        _data.writeInt(userId);
-                        try {
-                            _data.writeInt(type);
-                        } catch (Throwable th7) {
-                            th = th7;
-                            _reply.recycle();
-                            _data.recycle();
-                            throw th;
-                        }
+                        _data.writeInt(type);
                         try {
                             _data.writeBoolean(isPreloaded);
                             try {
@@ -1917,35 +2017,35 @@ public interface IWallpaperManager extends IInterface {
                             _data.recycle();
                             throw th;
                         }
-                    } catch (Throwable th10) {
-                        th = th10;
-                        _reply.recycle();
-                        _data.recycle();
-                        throw th;
-                    }
-                } catch (Throwable th11) {
-                    th = th11;
-                    _reply.recycle();
-                    _data.recycle();
-                    throw th;
-                }
-                try {
-                    this.mRemote.transact(1, _data, _reply, 0);
-                    _reply.readException();
-                    ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
-                    if (_reply.readInt() != 0) {
                         try {
-                            extras.readFromParcel(_reply);
-                        } catch (Throwable th12) {
-                            th = th12;
+                            this.mRemote.transact(1, _data, _reply, 0);
+                            _reply.readException();
+                            ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
+                            if (_reply.readInt() != 0) {
+                                try {
+                                    extras.readFromParcel(_reply);
+                                } catch (Throwable th10) {
+                                    th = th10;
+                                    _reply.recycle();
+                                    _data.recycle();
+                                    throw th;
+                                }
+                            }
+                            _reply.recycle();
+                            _data.recycle();
+                            return _result;
+                        } catch (Throwable th11) {
+                            th = th11;
                             _reply.recycle();
                             _data.recycle();
                             throw th;
                         }
+                    } catch (Throwable th12) {
+                        th = th12;
+                        _reply.recycle();
+                        _data.recycle();
+                        throw th;
                     }
-                    _reply.recycle();
-                    _data.recycle();
-                    return _result;
                 } catch (Throwable th13) {
                     th = th13;
                     _reply.recycle();
@@ -2061,6 +2161,67 @@ public interface IWallpaperManager extends IInterface {
             }
 
             @Override // android.app.IWallpaperManager
+            public List getBitmapCrops(List<Point> displaySizes, int which, boolean originalBitmap, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedList(displaySizes, 0);
+                    _data.writeInt(which);
+                    _data.writeBoolean(originalBitmap);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(7, _data, _reply, 0);
+                    _reply.readException();
+                    ClassLoader cl = getClass().getClassLoader();
+                    List _result = _reply.readArrayList(cl);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
+            public List getFutureBitmapCrops(Point bitmapSize, List<Point> displaySizes, int[] screenOrientations, List<Rect> crops) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(bitmapSize, 0);
+                    _data.writeTypedList(displaySizes, 0);
+                    _data.writeIntArray(screenOrientations);
+                    _data.writeTypedList(crops, 0);
+                    this.mRemote.transact(8, _data, _reply, 0);
+                    _reply.readException();
+                    ClassLoader cl = getClass().getClassLoader();
+                    List _result = _reply.readArrayList(cl);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
+            public Rect getBitmapCrop(Point bitmapSize, int[] screenOrientations, List<Rect> crops) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(bitmapSize, 0);
+                    _data.writeIntArray(screenOrientations);
+                    _data.writeTypedList(crops, 0);
+                    this.mRemote.transact(9, _data, _reply, 0);
+                    _reply.readException();
+                    Rect _result = (Rect) _reply.readTypedObject(Rect.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
             public int getWallpaperIdForUser(int which, int userId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -2068,7 +2229,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(7, _data, _reply, 0);
+                    this.mRemote.transact(10, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2085,7 +2246,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(8, _data, _reply, 0);
+                    this.mRemote.transact(11, _data, _reply, 0);
                     _reply.readException();
                     WallpaperInfo _result = (WallpaperInfo) _reply.readTypedObject(WallpaperInfo.CREATOR);
                     return _result;
@@ -2103,7 +2264,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(9, _data, _reply, 0);
+                    this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
                     WallpaperInfo _result = (WallpaperInfo) _reply.readTypedObject(WallpaperInfo.CREATOR);
                     return _result;
@@ -2120,7 +2281,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(10, _data, _reply, 0);
+                    this.mRemote.transact(13, _data, _reply, 0);
                     _reply.readException();
                     ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
                     return _result;
@@ -2139,7 +2300,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(11, _data, _reply, 0);
+                    this.mRemote.transact(14, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2154,7 +2315,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(name);
-                    this.mRemote.transact(12, _data, _reply, 0);
+                    this.mRemote.transact(15, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2174,7 +2335,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(height);
                     _data.writeString(callingPackage);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(13, _data, _reply, 0);
+                    this.mRemote.transact(16, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2189,7 +2350,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(14, _data, _reply, 0);
+                    this.mRemote.transact(17, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2206,7 +2367,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(15, _data, _reply, 0);
+                    this.mRemote.transact(18, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2225,7 +2386,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeTypedObject(padding, 0);
                     _data.writeString(callingPackage);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(16, _data, _reply, 0);
+                    this.mRemote.transact(19, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2239,7 +2400,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(17, _data, _reply, 0);
+                    this.mRemote.transact(20, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -2255,7 +2416,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(18, _data, _reply, 0);
+                    this.mRemote.transact(21, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2270,7 +2431,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(19, _data, _reply, 0);
+                    this.mRemote.transact(22, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2287,7 +2448,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(20, _data, _reply, 0);
+                    this.mRemote.transact(23, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2305,13 +2466,125 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(21, _data, _reply, 0);
+                    this.mRemote.transact(24, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
+            public ParcelFileDescriptor semSetWallpaper(String name, String callingPackage, int[] screenOrientations, List<Rect> crops, boolean allowBackup, Bundle extras, int which, IWallpaperManagerCallback completion, int userId, int wallpaperType, boolean isPreloaded, Bundle inputExtras) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(name);
+                } catch (Throwable th) {
+                    th = th;
+                }
+                try {
+                    _data.writeString(callingPackage);
+                } catch (Throwable th2) {
+                    th = th2;
+                    _reply.recycle();
+                    _data.recycle();
+                    throw th;
+                }
+                try {
+                    _data.writeIntArray(screenOrientations);
+                } catch (Throwable th3) {
+                    th = th3;
+                    _reply.recycle();
+                    _data.recycle();
+                    throw th;
+                }
+                try {
+                    _data.writeTypedList(crops, 0);
+                    try {
+                        _data.writeBoolean(allowBackup);
+                    } catch (Throwable th4) {
+                        th = th4;
+                        _reply.recycle();
+                        _data.recycle();
+                        throw th;
+                    }
+                    try {
+                        _data.writeInt(which);
+                    } catch (Throwable th5) {
+                        th = th5;
+                        _reply.recycle();
+                        _data.recycle();
+                        throw th;
+                    }
+                } catch (Throwable th6) {
+                    th = th6;
+                    _reply.recycle();
+                    _data.recycle();
+                    throw th;
+                }
+                try {
+                    _data.writeStrongInterface(completion);
+                    try {
+                        _data.writeInt(userId);
+                    } catch (Throwable th7) {
+                        th = th7;
+                        _reply.recycle();
+                        _data.recycle();
+                        throw th;
+                    }
+                    try {
+                        _data.writeInt(wallpaperType);
+                        try {
+                            _data.writeBoolean(isPreloaded);
+                            try {
+                                _data.writeTypedObject(inputExtras, 0);
+                            } catch (Throwable th8) {
+                                th = th8;
+                            }
+                        } catch (Throwable th9) {
+                            th = th9;
+                            _reply.recycle();
+                            _data.recycle();
+                            throw th;
+                        }
+                        try {
+                            this.mRemote.transact(25, _data, _reply, 0);
+                            _reply.readException();
+                            ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
+                            if (_reply.readInt() != 0) {
+                                try {
+                                    extras.readFromParcel(_reply);
+                                } catch (Throwable th10) {
+                                    th = th10;
+                                    _reply.recycle();
+                                    _data.recycle();
+                                    throw th;
+                                }
+                            }
+                            _reply.recycle();
+                            _data.recycle();
+                            return _result;
+                        } catch (Throwable th11) {
+                            th = th11;
+                            _reply.recycle();
+                            _data.recycle();
+                            throw th;
+                        }
+                    } catch (Throwable th12) {
+                        th = th12;
+                        _reply.recycle();
+                        _data.recycle();
+                        throw th;
+                    }
+                } catch (Throwable th13) {
+                    th = th13;
+                    _reply.recycle();
+                    _data.recycle();
+                    throw th;
                 }
             }
 
@@ -2323,7 +2596,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(22, _data, _reply, 0);
+                    this.mRemote.transact(26, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2340,7 +2613,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(23, _data, _reply, 0);
+                    this.mRemote.transact(27, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2357,7 +2630,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(24, _data, _reply, 0);
+                    this.mRemote.transact(28, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2376,7 +2649,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeInt(userId);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(25, _data, _reply, 0);
+                    this.mRemote.transact(29, _data, _reply, 0);
                     _reply.readException();
                     WallpaperColors _result = (WallpaperColors) _reply.readTypedObject(WallpaperColors.CREATOR);
                     return _result;
@@ -2397,7 +2670,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeInt(userId);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(26, _data, _reply, 0);
+                    this.mRemote.transact(30, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2416,7 +2689,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeInt(userId);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(27, _data, _reply, 0);
+                    this.mRemote.transact(31, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2433,7 +2706,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeStrongInterface(cb);
                     _data.writeInt(userId);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(28, _data, _reply, 0);
+                    this.mRemote.transact(32, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2450,7 +2723,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeStrongInterface(cb);
                     _data.writeInt(userId);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(29, _data, _reply, 0);
+                    this.mRemote.transact(33, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2465,7 +2738,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(inAmbientMode);
                     _data.writeLong(animationDuration);
-                    this.mRemote.transact(30, _data, null, 1);
+                    this.mRemote.transact(34, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2479,7 +2752,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(x);
                     _data.writeInt(y);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(31, _data, null, 1);
+                    this.mRemote.transact(35, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2494,7 +2767,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(x);
                     _data.writeInt(y);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(32, _data, _reply, 0);
+                    this.mRemote.transact(36, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2508,7 +2781,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeFloat(dimAmount);
-                    this.mRemote.transact(33, _data, null, 1);
+                    this.mRemote.transact(37, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -2520,7 +2793,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(34, _data, _reply, 0);
+                    this.mRemote.transact(38, _data, _reply, 0);
                     _reply.readException();
                     float _result = _reply.readFloat();
                     return _result;
@@ -2536,7 +2809,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(35, _data, _reply, 0);
+                    this.mRemote.transact(39, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2553,39 +2826,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(36, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IWallpaperManager
-            public boolean isLockscreenLiveWallpaperEnabled() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(37, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IWallpaperManager
-            public boolean isMultiCropEnabled() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(38, _data, _reply, 0);
+                    this.mRemote.transact(40, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2601,7 +2842,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(39, _data, _reply, 0);
+                    this.mRemote.transact(41, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2617,7 +2858,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(40, _data, _reply, 0);
+                    this.mRemote.transact(42, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2634,7 +2875,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(41, _data, _reply, 0);
+                    this.mRemote.transact(43, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2650,7 +2891,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(42, _data, _reply, 0);
+                    this.mRemote.transact(44, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2666,7 +2907,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(43, _data, _reply, 0);
+                    this.mRemote.transact(45, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2683,7 +2924,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(44, _data, _reply, 0);
+                    this.mRemote.transact(46, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2701,9 +2942,27 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(45, _data, _reply, 0);
+                    this.mRemote.transact(47, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
+            public boolean semIsPreloadedWallpaper(int which, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(which);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(48, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -2718,7 +2977,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(46, _data, _reply, 0);
+                    this.mRemote.transact(49, _data, _reply, 0);
                     _reply.readException();
                     Rect _result = (Rect) _reply.readTypedObject(Rect.CREATOR);
                     return _result;
@@ -2735,7 +2994,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(47, _data, _reply, 0);
+                    this.mRemote.transact(50, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2759,7 +3018,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeBoolean(allowBackup);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(48, _data, _reply, 0);
+                    this.mRemote.transact(51, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2773,7 +3032,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(49, _data, _reply, 0);
+                    this.mRemote.transact(52, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2789,9 +3048,28 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(50, _data, _reply, 0);
+                    this.mRemote.transact(53, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
+            public ParcelFileDescriptor semGetThumbnailFileDescriptor(int which, int userId, int rotation) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(which);
+                    _data.writeInt(userId);
+                    _data.writeInt(rotation);
+                    this.mRemote.transact(54, _data, _reply, 0);
+                    _reply.readException();
+                    ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -2810,7 +3088,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeInt(orientation);
                     _data.writeInt(mode);
-                    this.mRemote.transact(51, _data, _reply, 0);
+                    this.mRemote.transact(55, _data, _reply, 0);
                     _reply.readException();
                     ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
                     return _result;
@@ -2827,7 +3105,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(52, _data, _reply, 0);
+                    this.mRemote.transact(56, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -2844,7 +3122,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(53, _data, _reply, 0);
+                    this.mRemote.transact(57, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -2861,7 +3139,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(54, _data, _reply, 0);
+                    this.mRemote.transact(58, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -2881,7 +3159,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeInt(which);
                     _data.writeBoolean(allowBackup);
-                    this.mRemote.transact(55, _data, _reply, 0);
+                    this.mRemote.transact(59, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2896,7 +3174,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(56, _data, _reply, 0);
+                    this.mRemote.transact(60, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -2916,7 +3194,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeInt(which);
                     _data.writeBoolean(allowBackup);
-                    this.mRemote.transact(57, _data, _reply, 0);
+                    this.mRemote.transact(61, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2931,7 +3209,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(58, _data, _reply, 0);
+                    this.mRemote.transact(62, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2946,7 +3224,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(key);
-                    this.mRemote.transact(59, _data, _reply, 0);
+                    this.mRemote.transact(63, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2961,7 +3239,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(source);
-                    this.mRemote.transact(60, _data, _reply, 0);
+                    this.mRemote.transact(64, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2978,7 +3256,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeInt(key);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(61, _data, _reply, 0);
+                    this.mRemote.transact(65, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2996,7 +3274,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(key);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(62, _data, _reply, 0);
+                    this.mRemote.transact(66, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3012,7 +3290,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(63, _data, _reply, 0);
+                    this.mRemote.transact(67, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3029,7 +3307,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(64, _data, _reply, 0);
+                    this.mRemote.transact(68, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3044,7 +3322,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(65, _data, _reply, 0);
+                    this.mRemote.transact(69, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -3062,7 +3340,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(key);
                     _data.writeString(source);
-                    this.mRemote.transact(66, _data, _reply, 0);
+                    this.mRemote.transact(70, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3079,7 +3357,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(key);
-                    this.mRemote.transact(67, _data, _reply, 0);
+                    this.mRemote.transact(71, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3097,7 +3375,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(source);
                     _data.writeInt(which);
-                    this.mRemote.transact(68, _data, _reply, 0);
+                    this.mRemote.transact(72, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -3114,7 +3392,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(69, _data, _reply, 0);
+                    this.mRemote.transact(73, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -3130,7 +3408,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(70, _data, _reply, 0);
+                    this.mRemote.transact(74, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -3146,7 +3424,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(71, _data, _reply, 0);
+                    this.mRemote.transact(75, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -3163,7 +3441,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(72, _data, _reply, 0);
+                    this.mRemote.transact(76, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -3174,30 +3452,17 @@ public interface IWallpaperManager extends IInterface {
             }
 
             @Override // android.app.IWallpaperManager
-            public void setKWPTypeLiveWallpaper(int value) throws RemoteException {
+            public String getLastCallingPackageWithPrefix(int which, boolean includePrefix) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(value);
-                    this.mRemote.transact(73, _data, _reply, 0);
+                    _data.writeInt(which);
+                    _data.writeBoolean(includePrefix);
+                    this.mRemote.transact(77, _data, _reply, 0);
                     _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IWallpaperManager
-            public void setKWPTypeLiveWallpaperWithMode(int mode, int value) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(mode);
-                    _data.writeInt(value);
-                    this.mRemote.transact(74, _data, _reply, 0);
-                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -3212,7 +3477,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(75, _data, _reply, 0);
+                    this.mRemote.transact(78, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3228,7 +3493,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(76, _data, _reply, 0);
+                    this.mRemote.transact(79, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3243,7 +3508,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(77, _data, _reply, 0);
+                    this.mRemote.transact(80, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3260,7 +3525,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(78, _data, _reply, 0);
+                    this.mRemote.transact(81, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -3278,7 +3543,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(79, _data, _reply, 0);
+                    this.mRemote.transact(82, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -3296,7 +3561,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(80, _data, _reply, 0);
+                    this.mRemote.transact(83, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -3314,7 +3579,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(81, _data, _reply, 0);
+                    this.mRemote.transact(84, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -3334,7 +3599,26 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeInt(userId);
                     _data.writeString(assetFilePath);
-                    this.mRemote.transact(82, _data, _reply, 0);
+                    this.mRemote.transact(85, _data, _reply, 0);
+                    _reply.readException();
+                    ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
+            public ParcelFileDescriptor getScreenshotFileDescriptor(int which, int userId, Bundle extras) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(which);
+                    _data.writeInt(userId);
+                    _data.writeTypedObject(extras, 0);
+                    this.mRemote.transact(86, _data, _reply, 0);
                     _reply.readException();
                     ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
                     return _result;
@@ -3352,7 +3636,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(83, _data, _reply, 0);
+                    this.mRemote.transact(87, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -3371,7 +3655,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeString(action);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(84, _data, _reply, 0);
+                    this.mRemote.transact(88, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3386,7 +3670,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(85, _data, _reply, 0);
+                    this.mRemote.transact(89, _data, _reply, 0);
                     _reply.readException();
                     SemWallpaperColors _result = (SemWallpaperColors) _reply.readTypedObject(SemWallpaperColors.CREATOR);
                     return _result;
@@ -3403,7 +3687,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(86, _data, _reply, 0);
+                    this.mRemote.transact(90, _data, _reply, 0);
                     _reply.readException();
                     SemWallpaperColors _result = (SemWallpaperColors) _reply.readTypedObject(SemWallpaperColors.CREATOR);
                     return _result;
@@ -3422,7 +3706,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeInt(userId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(87, _data, _reply, 0);
+                    this.mRemote.transact(91, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3438,24 +3722,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(88, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.IWallpaperManager
-            public void semSetWallpaperColorOverrideAreas(int which, int userId, String colorAreas) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(which);
-                    _data.writeInt(userId);
-                    _data.writeString(colorAreas);
-                    this.mRemote.transact(89, _data, _reply, 0);
+                    this.mRemote.transact(92, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3471,7 +3738,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(colors, 0);
                     _data.writeInt(which);
-                    this.mRemote.transact(90, _data, _reply, 0);
+                    this.mRemote.transact(93, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3488,7 +3755,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(which);
                     _data.writeTypedObject(original, 0);
                     _data.writeTypedObject(smartCrop, 0);
-                    this.mRemote.transact(91, _data, _reply, 0);
+                    this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3503,7 +3770,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(92, _data, _reply, 0);
+                    this.mRemote.transact(95, _data, _reply, 0);
                     _reply.readException();
                     Rect _result = (Rect) _reply.readTypedObject(Rect.CREATOR);
                     return _result;
@@ -3519,7 +3786,7 @@ public interface IWallpaperManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(93, _data, _reply, 0);
+                    this.mRemote.transact(96, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -3536,7 +3803,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
-                    this.mRemote.transact(94, _data, _reply, 0);
+                    this.mRemote.transact(97, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -3553,7 +3820,7 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(95, _data, _reply, 0);
+                    this.mRemote.transact(98, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3571,7 +3838,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(96, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3594,7 +3861,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeInt(userId);
                     _data.writeTypedObject(extras, 0);
-                    this.mRemote.transact(97, _data, _reply, 0);
+                    this.mRemote.transact(100, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3610,7 +3877,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(101, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -3628,7 +3895,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(which);
                     _data.writeInt(userId);
-                    this.mRemote.transact(99, _data, _reply, 0);
+                    this.mRemote.transact(102, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3646,7 +3913,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInt(pid);
                     _data.writeString(packageName);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(100, _data, _reply, 0);
+                    this.mRemote.transact(103, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -3662,7 +3929,7 @@ public interface IWallpaperManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeInt(which);
-                    this.mRemote.transact(101, _data, _reply, 0);
+                    this.mRemote.transact(104, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -3679,8 +3946,26 @@ public interface IWallpaperManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(state);
-                    this.mRemote.transact(102, _data, _reply, 0);
+                    this.mRemote.transact(105, _data, _reply, 0);
                     _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IWallpaperManager
+            public boolean isStockLiveWallpaper(int which, int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(which);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(106, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -3690,7 +3975,7 @@ public interface IWallpaperManager extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 101;
+            return 105;
         }
     }
 }

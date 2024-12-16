@@ -3,26 +3,12 @@ package android.opengl;
 /* loaded from: classes3.dex */
 public class Matrix {
     private static final ThreadLocal<float[]> ThreadTmp = new ThreadLocal() { // from class: android.opengl.Matrix.1
-        AnonymousClass1() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // java.lang.ThreadLocal
         public float[] initialValue() {
             return new float[32];
         }
     };
-
-    /* renamed from: android.opengl.Matrix$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends ThreadLocal {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public float[] initialValue() {
-            return new float[32];
-        }
-    }
 
     @Deprecated
     public Matrix() {

@@ -31,7 +31,6 @@ public final class SimPhonebookContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SimRecords {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/sim-contact_v2";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/sim-contact_v2";
@@ -77,7 +76,6 @@ public final class SimPhonebookContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class ElementaryFiles {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/sim-elementary-file";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/sim-elementary-file";
@@ -99,7 +97,6 @@ public final class SimPhonebookContract {
         public static final Uri CONTENT_URI = SimPhonebookContract.AUTHORITY_URI.buildUpon().appendPath(ELEMENTARY_FILES_PATH_SEGMENT).build();
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface EfType {
         }
 

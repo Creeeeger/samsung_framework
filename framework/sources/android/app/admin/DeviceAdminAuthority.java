@@ -9,14 +9,13 @@ import android.os.Parcelable;
 public final class DeviceAdminAuthority extends Authority {
     public static final DeviceAdminAuthority DEVICE_ADMIN_AUTHORITY = new DeviceAdminAuthority();
     public static final Parcelable.Creator<DeviceAdminAuthority> CREATOR = new Parcelable.Creator<DeviceAdminAuthority>() { // from class: android.app.admin.DeviceAdminAuthority.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceAdminAuthority createFromParcel(Parcel source) {
             return DeviceAdminAuthority.DEVICE_ADMIN_AUTHORITY;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceAdminAuthority[] newArray(int size) {
             return new DeviceAdminAuthority[size];
@@ -47,22 +46,5 @@ public final class DeviceAdminAuthority extends Authority {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    /* renamed from: android.app.admin.DeviceAdminAuthority$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DeviceAdminAuthority> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceAdminAuthority createFromParcel(Parcel source) {
-            return DeviceAdminAuthority.DEVICE_ADMIN_AUTHORITY;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceAdminAuthority[] newArray(int size) {
-            return new DeviceAdminAuthority[size];
-        }
     }
 }

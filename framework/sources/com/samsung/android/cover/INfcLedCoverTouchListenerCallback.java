@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface INfcLedCoverTouchListenerCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.cover.INfcLedCoverTouchListenerCallback";
 
@@ -23,7 +23,6 @@ public interface INfcLedCoverTouchListenerCallback extends IInterface {
 
     void onSystemCoverEvent(int i, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements INfcLedCoverTouchListenerCallback {
         @Override // com.samsung.android.cover.INfcLedCoverTouchListenerCallback
         public void onCoverTouchAccept() throws RemoteException {
@@ -55,7 +54,6 @@ public interface INfcLedCoverTouchListenerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements INfcLedCoverTouchListenerCallback {
         static final int TRANSACTION_onCoverTapLeft = 3;
         static final int TRANSACTION_onCoverTapMid = 4;
@@ -113,46 +111,43 @@ public interface INfcLedCoverTouchListenerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(INfcLedCoverTouchListenerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(INfcLedCoverTouchListenerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(INfcLedCoverTouchListenerCallback.DESCRIPTOR);
+                case 1:
+                    onCoverTouchAccept();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    onCoverTouchReject();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    onCoverTapLeft();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    onCoverTapMid();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    onCoverTapRight();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg0 = data.readInt();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSystemCoverEvent(_arg0, _arg1);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onCoverTouchAccept();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            onCoverTouchReject();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            onCoverTapLeft();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            onCoverTapMid();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            onCoverTapRight();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg0 = data.readInt();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSystemCoverEvent(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements INfcLedCoverTouchListenerCallback {
             private IBinder mRemote;
 

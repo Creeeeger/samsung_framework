@@ -8,7 +8,6 @@ public final class ActivityManagerServiceDumpBroadcastsProto {
     public static final long RECEIVER_RESOLVER = 1146756268034L;
     public static final long STICKY_BROADCASTS = 2246267895812L;
 
-    /* loaded from: classes5.dex */
     public final class MainHandler {
         public static final long HANDLER = 1138166333441L;
         public static final long LOOPER = 1146756268034L;

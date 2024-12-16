@@ -4,18 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SplitActivityInfo implements Parcelable {
     public static final String ANY_ACTIVITY = "*";
     public static final Parcelable.Creator<SplitActivityInfo> CREATOR = new Parcelable.Creator<SplitActivityInfo>() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitActivityInfo createFromParcel(Parcel in) {
             return new SplitActivityInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitActivityInfo[] newArray(int size) {
             return new SplitActivityInfo[size];
@@ -37,28 +36,11 @@ public class SplitActivityInfo implements Parcelable {
         this.mMode = in.readInt();
     }
 
-    /* renamed from: com.samsung.android.multiwindow.splitactivity.SplitActivityInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SplitActivityInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SplitActivityInfo createFromParcel(Parcel in) {
-            return new SplitActivityInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SplitActivityInfo[] newArray(int size) {
-            return new SplitActivityInfo[size];
-        }
-    }
-
-    public boolean match(String sourceName, String targetName) {
+    boolean match(String sourceName, String targetName) {
         return this.mSourceName.equals(sourceName) && this.mTargetName.equals(targetName);
     }
 
-    public boolean matchWithWildcard(String sourceName, String targetName) {
+    boolean matchWithWildcard(String sourceName, String targetName) {
         return this.mSourceName.equals(sourceName) && (this.mTargetName.equals("*") || this.mTargetName.equals(targetName));
     }
 
@@ -104,7 +86,7 @@ public class SplitActivityInfo implements Parcelable {
         dest.writeInt(this.mMode);
     }
 
-    public String toShortString() {
+    String toShortString() {
         return String.format("{ %s -> %s }", this.mSourceName, this.mTargetName);
     }
 }

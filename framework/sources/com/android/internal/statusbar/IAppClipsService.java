@@ -12,11 +12,17 @@ public interface IAppClipsService extends IInterface {
 
     boolean canLaunchCaptureContentActivityForNote(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
+    int canLaunchCaptureContentActivityForNoteInternal(int i) throws RemoteException;
+
     public static class Default implements IAppClipsService {
         @Override // com.android.internal.statusbar.IAppClipsService
         public boolean canLaunchCaptureContentActivityForNote(int taskId) throws RemoteException {
             return false;
+        }
+
+        @Override // com.android.internal.statusbar.IAppClipsService
+        public int canLaunchCaptureContentActivityForNoteInternal(int taskId) throws RemoteException {
+            return 0;
         }
 
         @Override // android.os.IInterface
@@ -25,9 +31,9 @@ public interface IAppClipsService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IAppClipsService {
         static final int TRANSACTION_canLaunchCaptureContentActivityForNote = 1;
+        static final int TRANSACTION_canLaunchCaptureContentActivityForNoteInternal = 2;
 
         public Stub() {
             attachInterface(this, IAppClipsService.DESCRIPTOR);
@@ -53,6 +59,8 @@ public interface IAppClipsService extends IInterface {
             switch (transactionCode) {
                 case 1:
                     return "canLaunchCaptureContentActivityForNote";
+                case 2:
+                    return "canLaunchCaptureContentActivityForNoteInternal";
                 default:
                     return null;
             }
@@ -68,28 +76,31 @@ public interface IAppClipsService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAppClipsService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAppClipsService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAppClipsService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = canLaunchCaptureContentActivityForNote(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = canLaunchCaptureContentActivityForNoteInternal(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = canLaunchCaptureContentActivityForNote(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IAppClipsService {
+        private static class Proxy implements IAppClipsService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -121,11 +132,28 @@ public interface IAppClipsService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // com.android.internal.statusbar.IAppClipsService
+            public int canLaunchCaptureContentActivityForNoteInternal(int taskId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IAppClipsService.DESCRIPTOR);
+                    _data.writeInt(taskId);
+                    this.mRemote.transact(2, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 0;
+            return 1;
         }
     }
 }

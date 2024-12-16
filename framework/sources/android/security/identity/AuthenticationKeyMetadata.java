@@ -7,7 +7,7 @@ public final class AuthenticationKeyMetadata {
     private Instant mExpirationDate;
     private int mUsageCount;
 
-    public AuthenticationKeyMetadata(int usageCount, Instant expirationDate) {
+    AuthenticationKeyMetadata(int usageCount, Instant expirationDate) {
         this.mUsageCount = usageCount;
         this.mExpirationDate = expirationDate;
     }

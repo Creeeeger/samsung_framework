@@ -25,7 +25,7 @@ public class ClipRectTBAnimation extends ClipRectAnimation {
         long startOffset = getStartOffset();
         long duration = getDuration();
         if (duration != 0) {
-            normalizedTime = ((float) (currentTime - (getStartTime() + startOffset))) / ((float) duration);
+            normalizedTime = (currentTime - (getStartTime() + startOffset)) / duration;
         } else {
             normalizedTime = currentTime < getStartTime() ? 0.0f : 1.0f;
         }
@@ -34,9 +34,9 @@ public class ClipRectTBAnimation extends ClipRectAnimation {
     }
 
     @Override // android.view.animation.ClipRectAnimation, android.view.animation.Animation
-    public void applyTransformation(float it, Transformation tr) {
+    protected void applyTransformation(float it, Transformation tr) {
         float translationT = this.mTranslateInterpolator.getInterpolation(this.mNormalizedTime);
-        int translation = (int) (this.mFromTranslateY + ((this.mToTranslateY - r1) * translationT));
+        int translation = (int) (this.mFromTranslateY + ((this.mToTranslateY - this.mFromTranslateY) * translationT));
         Rect oldClipRect = tr.getClipRect();
         tr.setClipRect(oldClipRect.left, (this.mFromRect.top - translation) + ((int) ((this.mToRect.top - this.mFromRect.top) * it)), oldClipRect.right, (this.mFromRect.bottom - translation) + ((int) ((this.mToRect.bottom - this.mFromRect.bottom) * it)));
     }

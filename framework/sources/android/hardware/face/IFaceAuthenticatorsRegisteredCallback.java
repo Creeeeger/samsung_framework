@@ -13,7 +13,6 @@ public interface IFaceAuthenticatorsRegisteredCallback extends IInterface {
 
     void onAllAuthenticatorsRegistered(List<FaceSensorPropertiesInternal> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IFaceAuthenticatorsRegisteredCallback {
         @Override // android.hardware.face.IFaceAuthenticatorsRegisteredCallback
         public void onAllAuthenticatorsRegistered(List<FaceSensorPropertiesInternal> sensors) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IFaceAuthenticatorsRegisteredCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFaceAuthenticatorsRegisteredCallback {
         static final int TRANSACTION_onAllAuthenticatorsRegistered = 1;
 
@@ -68,26 +66,22 @@ public interface IFaceAuthenticatorsRegisteredCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFaceAuthenticatorsRegisteredCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFaceAuthenticatorsRegisteredCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFaceAuthenticatorsRegisteredCallback.DESCRIPTOR);
+                case 1:
+                    List<FaceSensorPropertiesInternal> _arg0 = data.createTypedArrayList(FaceSensorPropertiesInternal.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAllAuthenticatorsRegistered(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<FaceSensorPropertiesInternal> _arg0 = data.createTypedArrayList(FaceSensorPropertiesInternal.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAllAuthenticatorsRegistered(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFaceAuthenticatorsRegisteredCallback {
+        private static class Proxy implements IFaceAuthenticatorsRegisteredCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

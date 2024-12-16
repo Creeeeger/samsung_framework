@@ -16,7 +16,6 @@ public interface ITranslationDirectManager extends IInterface {
 
     void onTranslationRequest(TranslationRequest translationRequest, int i, ICancellationSignal iCancellationSignal, ITranslationCallback iTranslationCallback) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITranslationDirectManager {
         @Override // android.view.translation.ITranslationDirectManager
         public void onTranslationRequest(TranslationRequest request, int sessionId, ICancellationSignal transport, ITranslationCallback callback) throws RemoteException {
@@ -32,7 +31,6 @@ public interface ITranslationDirectManager extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITranslationDirectManager {
         static final int TRANSACTION_onFinishTranslationSession = 2;
         static final int TRANSACTION_onTranslationRequest = 1;
@@ -78,34 +76,30 @@ public interface ITranslationDirectManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITranslationDirectManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITranslationDirectManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITranslationDirectManager.DESCRIPTOR);
+                case 1:
+                    TranslationRequest _arg0 = (TranslationRequest) data.readTypedObject(TranslationRequest.CREATOR);
+                    int _arg1 = data.readInt();
+                    ICancellationSignal _arg2 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    ITranslationCallback _arg3 = ITranslationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onTranslationRequest(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFinishTranslationSession(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            TranslationRequest _arg0 = (TranslationRequest) data.readTypedObject(TranslationRequest.CREATOR);
-                            int _arg1 = data.readInt();
-                            ICancellationSignal _arg2 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            ITranslationCallback _arg3 = ITranslationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onTranslationRequest(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFinishTranslationSession(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITranslationDirectManager {
+        private static class Proxy implements ITranslationDirectManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

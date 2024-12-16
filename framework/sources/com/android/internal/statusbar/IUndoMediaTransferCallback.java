@@ -12,7 +12,6 @@ public interface IUndoMediaTransferCallback extends IInterface {
 
     void onUndoTriggered() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IUndoMediaTransferCallback {
         @Override // com.android.internal.statusbar.IUndoMediaTransferCallback
         public void onUndoTriggered() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IUndoMediaTransferCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IUndoMediaTransferCallback {
         static final int TRANSACTION_onUndoTriggered = 1;
 
@@ -67,24 +65,20 @@ public interface IUndoMediaTransferCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUndoMediaTransferCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUndoMediaTransferCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUndoMediaTransferCallback.DESCRIPTOR);
+                case 1:
+                    onUndoTriggered();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onUndoTriggered();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IUndoMediaTransferCallback {
+        private static class Proxy implements IUndoMediaTransferCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

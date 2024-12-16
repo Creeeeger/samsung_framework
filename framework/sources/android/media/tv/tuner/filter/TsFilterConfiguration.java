@@ -3,13 +3,9 @@ package android.media.tv.tuner.filter;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TsFilterConfiguration extends FilterConfiguration {
     private final int mTpid;
-
-    /* synthetic */ TsFilterConfiguration(Settings settings, int i, TsFilterConfigurationIA tsFilterConfigurationIA) {
-        this(settings, i);
-    }
 
     private TsFilterConfiguration(Settings settings, int tpid) {
         super(settings);
@@ -29,14 +25,9 @@ public final class TsFilterConfiguration extends FilterConfiguration {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private Settings mSettings;
         private int mTpid;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mTpid = 0;

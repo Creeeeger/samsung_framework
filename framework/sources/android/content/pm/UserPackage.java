@@ -46,13 +46,12 @@ public final class UserPackage {
             if (!ArrayUtils.contains(sUserIds, userId)) {
                 return new UserPackage(userId, packageName);
             }
-            SparseArrayMap<String, UserPackage> sparseArrayMap = sCache;
-            UserPackage up = sparseArrayMap.get(userId, packageName);
+            UserPackage up = sCache.get(userId, packageName);
             if (up == null) {
                 maybePurgeRandomEntriesLocked(userId);
                 String packageName2 = packageName.intern();
                 up = new UserPackage(userId, packageName2);
-                sparseArrayMap.add(userId, packageName2, up);
+                sCache.add(userId, packageName2, up);
             }
             return up;
         }
@@ -69,10 +68,9 @@ public final class UserPackage {
         synchronized (sCacheLock) {
             sUserIds = userIds2;
             for (int u = sCache.numMaps() - 1; u >= 0; u--) {
-                SparseArrayMap<String, UserPackage> sparseArrayMap = sCache;
-                int userId = sparseArrayMap.keyAt(u);
+                int userId = sCache.keyAt(u);
                 if (!ArrayUtils.contains(userIds2, userId)) {
-                    sparseArrayMap.deleteAt(u);
+                    sCache.deleteAt(u);
                 }
             }
         }
@@ -88,9 +86,8 @@ public final class UserPackage {
 
     private static void maybePurgeRandomEntriesLocked(int userId) {
         int numCached;
-        SparseArrayMap<String, UserPackage> sparseArrayMap = sCache;
-        int uIdx = sparseArrayMap.indexOfKey(userId);
-        if (uIdx < 0 || (numCached = sparseArrayMap.numElementsForKeyAt(uIdx)) < 1000) {
+        int uIdx = sCache.indexOfKey(userId);
+        if (uIdx < 0 || (numCached = sCache.numElementsForKeyAt(uIdx)) < 1000) {
             return;
         }
         Random rand = new Random();

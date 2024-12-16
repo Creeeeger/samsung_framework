@@ -19,11 +19,10 @@ public class RectEvaluator implements TypeEvaluator<Rect> {
         int top = startValue.top + ((int) ((endValue.top - startValue.top) * fraction));
         int right = startValue.right + ((int) ((endValue.right - startValue.right) * fraction));
         int bottom = startValue.bottom + ((int) ((endValue.bottom - startValue.bottom) * fraction));
-        Rect rect = this.mRect;
-        if (rect == null) {
+        if (this.mRect == null) {
             return new Rect(left, top, right, bottom);
         }
-        rect.set(left, top, right, bottom);
+        this.mRect.set(left, top, right, bottom);
         return this.mRect;
     }
 }

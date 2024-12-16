@@ -23,7 +23,7 @@ public class PEMUtil {
 
     /* JADX WARN: Code restructure failed: missing block: B:10:0x0022, code lost:
     
-        if (r0.length() == 0) goto L57;
+        if (r0.length() == 0) goto L27;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.

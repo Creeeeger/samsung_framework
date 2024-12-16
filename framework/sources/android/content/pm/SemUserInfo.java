@@ -7,27 +7,24 @@ import android.os.UserHandle;
 /* loaded from: classes.dex */
 public class SemUserInfo implements Parcelable {
     public static final Parcelable.Creator<SemUserInfo> CREATOR = new Parcelable.Creator<SemUserInfo>() { // from class: android.content.pm.SemUserInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemUserInfo createFromParcel(Parcel source) {
             return new SemUserInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemUserInfo[] newArray(int size) {
             return new SemUserInfo[size];
         }
     };
-    public static final int FLAG_BMODE = 65536;
+    public static final int FLAG_BMODE = 134217728;
+    public static final int FLAG_BMODE_LEGACY = 65536;
+    public static final int FLAG_DIGITAL_LEGACY_MODE = 16777216;
     public int flags;
     public int id;
     public String name;
-
-    /* synthetic */ SemUserInfo(Parcel parcel, SemUserInfoIA semUserInfoIA) {
-        this(parcel);
-    }
 
     public SemUserInfo(UserInfo ui) {
         if (ui != null) {
@@ -44,7 +41,15 @@ public class SemUserInfo implements Parcelable {
     }
 
     public boolean isSecondNumberMode() {
-        return (this.flags & 65536) != 0;
+        return ((this.flags & 134217728) == 0 && (this.flags & 65536) == 0) ? false : true;
+    }
+
+    public boolean hasFlags(int flags) {
+        return (this.flags & flags) == flags;
+    }
+
+    public int getFlags() {
+        return this.flags;
     }
 
     @Override // android.os.Parcelable
@@ -61,23 +66,6 @@ public class SemUserInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.content.pm.SemUserInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemUserInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemUserInfo createFromParcel(Parcel source) {
-            return new SemUserInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemUserInfo[] newArray(int size) {
-            return new SemUserInfo[size];
-        }
     }
 
     private SemUserInfo(Parcel source) {

@@ -1,6 +1,7 @@
 package android.app.admin;
 
 import android.annotation.SystemApi;
+import android.content.ComponentName;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.UserHandle;
@@ -10,37 +11,42 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class EnforcingAdmin implements Parcelable {
     public static final Parcelable.Creator<EnforcingAdmin> CREATOR = new Parcelable.Creator<EnforcingAdmin>() { // from class: android.app.admin.EnforcingAdmin.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnforcingAdmin createFromParcel(Parcel source) {
             return new EnforcingAdmin(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnforcingAdmin[] newArray(int size) {
             return new EnforcingAdmin[size];
         }
     };
     private final Authority mAuthority;
+    private final ComponentName mComponentName;
     private final String mPackageName;
     private final UserHandle mUserHandle;
-
-    /* synthetic */ EnforcingAdmin(Parcel parcel, EnforcingAdminIA enforcingAdminIA) {
-        this(parcel);
-    }
 
     public EnforcingAdmin(String packageName, Authority authority, UserHandle userHandle) {
         this.mPackageName = (String) Objects.requireNonNull(packageName);
         this.mAuthority = (Authority) Objects.requireNonNull(authority);
         this.mUserHandle = (UserHandle) Objects.requireNonNull(userHandle);
+        this.mComponentName = null;
+    }
+
+    public EnforcingAdmin(String packageName, Authority authority, UserHandle userHandle, ComponentName componentName) {
+        this.mPackageName = (String) Objects.requireNonNull(packageName);
+        this.mAuthority = (Authority) Objects.requireNonNull(authority);
+        this.mUserHandle = (UserHandle) Objects.requireNonNull(userHandle);
+        this.mComponentName = componentName;
     }
 
     private EnforcingAdmin(Parcel source) {
         this.mPackageName = (String) Objects.requireNonNull(source.readString());
         this.mUserHandle = new UserHandle(source.readInt());
         this.mAuthority = (Authority) Objects.requireNonNull((Authority) source.readParcelable(Authority.class.getClassLoader()));
+        this.mComponentName = (ComponentName) source.readParcelable(ComponentName.class.getClassLoader());
     }
 
     public Authority getAuthority() {
@@ -55,6 +61,10 @@ public final class EnforcingAdmin implements Parcelable {
         return this.mUserHandle;
     }
 
+    public ComponentName getComponentName() {
+        return this.mComponentName;
+    }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -63,7 +73,7 @@ public final class EnforcingAdmin implements Parcelable {
             return false;
         }
         EnforcingAdmin other = (EnforcingAdmin) o;
-        if (Objects.equals(this.mPackageName, other.mPackageName) && Objects.equals(this.mAuthority, other.mAuthority) && Objects.equals(this.mUserHandle, other.mUserHandle)) {
+        if (Objects.equals(this.mPackageName, other.mPackageName) && Objects.equals(this.mAuthority, other.mAuthority) && Objects.equals(this.mUserHandle, other.mUserHandle) && Objects.equals(this.mComponentName, other.mComponentName)) {
             return true;
         }
         return false;
@@ -74,7 +84,7 @@ public final class EnforcingAdmin implements Parcelable {
     }
 
     public String toString() {
-        return "EnforcingAdmin { mPackageName= " + this.mPackageName + ", mAuthority= " + this.mAuthority + ", mUserHandle= " + this.mUserHandle + " }";
+        return "EnforcingAdmin { mPackageName= " + this.mPackageName + ", mAuthority= " + this.mAuthority + ", mUserHandle= " + this.mUserHandle + ", mComponentName= " + this.mComponentName + " }";
     }
 
     @Override // android.os.Parcelable
@@ -87,22 +97,6 @@ public final class EnforcingAdmin implements Parcelable {
         dest.writeString(this.mPackageName);
         dest.writeInt(this.mUserHandle.getIdentifier());
         dest.writeParcelable(this.mAuthority, flags);
-    }
-
-    /* renamed from: android.app.admin.EnforcingAdmin$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EnforcingAdmin> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EnforcingAdmin createFromParcel(Parcel source) {
-            return new EnforcingAdmin(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EnforcingAdmin[] newArray(int size) {
-            return new EnforcingAdmin[size];
-        }
+        dest.writeParcelable(this.mComponentName, flags);
     }
 }

@@ -9,14 +9,13 @@ import java.util.Map;
 /* loaded from: classes3.dex */
 public class PaymentTZServiceCommnInfo implements Parcelable {
     public static final Parcelable.Creator<PaymentTZServiceCommnInfo> CREATOR = new Parcelable.Creator<PaymentTZServiceCommnInfo>() { // from class: android.spay.PaymentTZServiceCommnInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PaymentTZServiceCommnInfo createFromParcel(Parcel in) {
             return new PaymentTZServiceCommnInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PaymentTZServiceCommnInfo[] newArray(int size) {
             return new PaymentTZServiceCommnInfo[size];
@@ -25,29 +24,8 @@ public class PaymentTZServiceCommnInfo implements Parcelable {
     public int mServiceVersion;
     public Map<Integer, IBinder> mTAs;
 
-    /* synthetic */ PaymentTZServiceCommnInfo(Parcel parcel, PaymentTZServiceCommnInfoIA paymentTZServiceCommnInfoIA) {
-        this(parcel);
-    }
-
     public PaymentTZServiceCommnInfo() {
         this.mTAs = new HashMap();
-    }
-
-    /* renamed from: android.spay.PaymentTZServiceCommnInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PaymentTZServiceCommnInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PaymentTZServiceCommnInfo createFromParcel(Parcel in) {
-            return new PaymentTZServiceCommnInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PaymentTZServiceCommnInfo[] newArray(int size) {
-            return new PaymentTZServiceCommnInfo[size];
-        }
     }
 
     private PaymentTZServiceCommnInfo(Parcel in) {

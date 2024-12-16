@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendDtmbCapabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendDtmbCapabilities> CREATOR = new Parcelable.Creator<FrontendDtmbCapabilities>() { // from class: android.hardware.tv.tuner.FrontendDtmbCapabilities.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendDtmbCapabilities createFromParcel(Parcel _aidl_source) {
             FrontendDtmbCapabilities _aidl_out = new FrontendDtmbCapabilities();
@@ -17,6 +15,7 @@ public class FrontendDtmbCapabilities implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendDtmbCapabilities[] newArray(int _aidl_size) {
             return new FrontendDtmbCapabilities[_aidl_size];
@@ -28,25 +27,6 @@ public class FrontendDtmbCapabilities implements Parcelable {
     public int codeRateCap = 0;
     public int guardIntervalCap = 0;
     public int interleaveModeCap = 0;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendDtmbCapabilities$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendDtmbCapabilities> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendDtmbCapabilities createFromParcel(Parcel _aidl_source) {
-            FrontendDtmbCapabilities _aidl_out = new FrontendDtmbCapabilities();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendDtmbCapabilities[] newArray(int _aidl_size) {
-            return new FrontendDtmbCapabilities[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

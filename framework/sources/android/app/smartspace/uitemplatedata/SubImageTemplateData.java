@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SubImageTemplateData extends BaseTemplateData {
     public static final Parcelable.Creator<SubImageTemplateData> CREATOR = new Parcelable.Creator<SubImageTemplateData>() { // from class: android.app.smartspace.uitemplatedata.SubImageTemplateData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubImageTemplateData createFromParcel(Parcel in) {
             return new SubImageTemplateData(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubImageTemplateData[] newArray(int size) {
             return new SubImageTemplateData[size];
@@ -27,10 +26,6 @@ public final class SubImageTemplateData extends BaseTemplateData {
     private final TapAction mSubImageAction;
     private final List<Text> mSubImageTexts;
     private final List<Icon> mSubImages;
-
-    /* synthetic */ SubImageTemplateData(int i, BaseTemplateData.SubItemInfo subItemInfo, BaseTemplateData.SubItemInfo subItemInfo2, BaseTemplateData.SubItemInfo subItemInfo3, BaseTemplateData.SubItemInfo subItemInfo4, BaseTemplateData.SubItemInfo subItemInfo5, int i2, List list, List list2, TapAction tapAction, SubImageTemplateDataIA subImageTemplateDataIA) {
-        this(i, subItemInfo, subItemInfo2, subItemInfo3, subItemInfo4, subItemInfo5, i2, list, list2, tapAction);
-    }
 
     SubImageTemplateData(Parcel in) {
         super(in);
@@ -56,23 +51,6 @@ public final class SubImageTemplateData extends BaseTemplateData {
 
     public TapAction getSubImageAction() {
         return this.mSubImageAction;
-    }
-
-    /* renamed from: android.app.smartspace.uitemplatedata.SubImageTemplateData$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SubImageTemplateData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubImageTemplateData createFromParcel(Parcel in) {
-            return new SubImageTemplateData(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubImageTemplateData[] newArray(int size) {
-            return new SubImageTemplateData[size];
-        }
     }
 
     @Override // android.app.smartspace.uitemplatedata.BaseTemplateData, android.os.Parcelable
@@ -111,7 +89,6 @@ public final class SubImageTemplateData extends BaseTemplateData {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder extends BaseTemplateData.Builder {
         private TapAction mSubImageAction;
         private final List<Text> mSubImageTexts;

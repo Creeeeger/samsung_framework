@@ -16,11 +16,9 @@ import org.xmlpull.v1.XmlPullParserException;
 public class FontResourcesParser {
     private static final String TAG = "FontResourcesParser";
 
-    /* loaded from: classes.dex */
     public interface FamilyResourceEntry {
     }
 
-    /* loaded from: classes.dex */
     public static final class ProviderResourceEntry implements FamilyResourceEntry {
         private final List<List<String>> mCerts;
         private final String mProviderAuthority;
@@ -57,7 +55,6 @@ public class FontResourcesParser {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class FontFileResourceEntry {
         public static final int ITALIC = 1;
         public static final int RESOLVE_BY_FONT_TABLE = -1;
@@ -98,7 +95,6 @@ public class FontResourcesParser {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class FontFamilyFilesResourceEntry implements FamilyResourceEntry {
         private final FontFileResourceEntry[] mEntries;
 

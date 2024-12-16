@@ -9,14 +9,13 @@ import java.util.Map;
 /* loaded from: classes.dex */
 public class BlockchainTZServiceCommnInfo implements Parcelable {
     public static final Parcelable.Creator<BlockchainTZServiceCommnInfo> CREATOR = new Parcelable.Creator<BlockchainTZServiceCommnInfo>() { // from class: android.blockchain.BlockchainTZServiceCommnInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BlockchainTZServiceCommnInfo createFromParcel(Parcel in) {
             return new BlockchainTZServiceCommnInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BlockchainTZServiceCommnInfo[] newArray(int size) {
             return new BlockchainTZServiceCommnInfo[size];
@@ -25,29 +24,8 @@ public class BlockchainTZServiceCommnInfo implements Parcelable {
     public int mServiceVersion;
     public Map<Integer, IBinder> mTAs;
 
-    /* synthetic */ BlockchainTZServiceCommnInfo(Parcel parcel, BlockchainTZServiceCommnInfoIA blockchainTZServiceCommnInfoIA) {
-        this(parcel);
-    }
-
     public BlockchainTZServiceCommnInfo() {
         this.mTAs = new HashMap();
-    }
-
-    /* renamed from: android.blockchain.BlockchainTZServiceCommnInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BlockchainTZServiceCommnInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BlockchainTZServiceCommnInfo createFromParcel(Parcel in) {
-            return new BlockchainTZServiceCommnInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BlockchainTZServiceCommnInfo[] newArray(int size) {
-            return new BlockchainTZServiceCommnInfo[size];
-        }
     }
 
     private BlockchainTZServiceCommnInfo(Parcel in) {

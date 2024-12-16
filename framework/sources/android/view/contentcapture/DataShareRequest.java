@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DataShareRequest implements Parcelable {
     public static final Parcelable.Creator<DataShareRequest> CREATOR = new Parcelable.Creator<DataShareRequest>() { // from class: android.view.contentcapture.DataShareRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataShareRequest[] newArray(int size) {
             return new DataShareRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataShareRequest createFromParcel(Parcel in) {
             return new DataShareRequest(in);
@@ -75,9 +74,8 @@ public final class DataShareRequest implements Parcelable {
         byte flg = this.mLocusId != null ? (byte) (0 | 2) : (byte) 0;
         dest.writeByte(flg);
         dest.writeString(this.mPackageName);
-        LocusId locusId = this.mLocusId;
-        if (locusId != null) {
-            dest.writeTypedObject(locusId, flags);
+        if (this.mLocusId != null) {
+            dest.writeTypedObject(this.mLocusId, flags);
         }
         dest.writeString(this.mMimeType);
     }
@@ -93,27 +91,10 @@ public final class DataShareRequest implements Parcelable {
         LocusId locusId = (flg & 2) == 0 ? null : (LocusId) in.readTypedObject(LocusId.CREATOR);
         String mimeType = in.readString();
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mLocusId = locusId;
         this.mMimeType = mimeType;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) mimeType);
-    }
-
-    /* renamed from: android.view.contentcapture.DataShareRequest$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DataShareRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataShareRequest[] newArray(int size) {
-            return new DataShareRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataShareRequest createFromParcel(Parcel in) {
-            return new DataShareRequest(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mMimeType);
     }
 
     @Deprecated

@@ -26,7 +26,6 @@ public interface IGnssPowerIndicationCallback extends IInterface {
 
     void setCapabilitiesCb(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssPowerIndicationCallback {
         @Override // android.hardware.gnss.IGnssPowerIndicationCallback
         public void setCapabilitiesCb(int capabilities) throws RemoteException {
@@ -52,7 +51,6 @@ public interface IGnssPowerIndicationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssPowerIndicationCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -106,40 +104,38 @@ public interface IGnssPowerIndicationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCapabilitiesCb(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 2:
+                    GnssPowerStats _arg02 = (GnssPowerStats) data.readTypedObject(GnssPowerStats.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssPowerStatsCb(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCapabilitiesCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            GnssPowerStats _arg02 = (GnssPowerStats) data.readTypedObject(GnssPowerStats.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssPowerStatsCb(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssPowerIndicationCallback {
+        private static class Proxy implements IGnssPowerIndicationCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

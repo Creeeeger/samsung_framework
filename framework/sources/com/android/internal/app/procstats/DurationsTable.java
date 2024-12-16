@@ -2,7 +2,7 @@ package com.android.internal.app.procstats;
 
 import com.android.internal.app.procstats.SparseMappingTable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class DurationsTable extends SparseMappingTable.Table {
     public DurationsTable(SparseMappingTable tableData) {
         super(tableData);

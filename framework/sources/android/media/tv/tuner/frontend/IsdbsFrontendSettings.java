@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class IsdbsFrontendSettings extends FrontendSettings {
     public static final int CODERATE_1_2 = 2;
     public static final int CODERATE_2_3 = 4;
@@ -31,27 +31,19 @@ public class IsdbsFrontendSettings extends FrontendSettings {
     private final int mSymbolRate;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface CodeRate {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Modulation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Rolloff {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface StreamIdType {
-    }
-
-    /* synthetic */ IsdbsFrontendSettings(long j, int i, int i2, int i3, int i4, int i5, int i6, IsdbsFrontendSettingsIA isdbsFrontendSettingsIA) {
-        this(j, i, i2, i3, i4, i5, i6);
     }
 
     private IsdbsFrontendSettings(long frequency, int streamId, int streamIdType, int modulation, int codeRate, int symbolRate, int rolloff) {
@@ -92,7 +84,6 @@ public class IsdbsFrontendSettings extends FrontendSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mCodeRate;
         private long mFrequency;
@@ -101,10 +92,6 @@ public class IsdbsFrontendSettings extends FrontendSettings {
         private int mStreamId;
         private int mStreamIdType;
         private int mSymbolRate;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;

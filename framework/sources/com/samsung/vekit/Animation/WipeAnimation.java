@@ -28,19 +28,18 @@ public class WipeAnimation extends TransitionAnimation {
     }
 
     @Override // com.samsung.vekit.Animation.Animation
-    public WipeAnimation setKeyFrame(KeyFrame<Float> keyFrame) {
-        return (WipeAnimation) super.setKeyFrame((KeyFrame) keyFrame);
+    public WipeAnimation setKeyFrame(KeyFrame<Float> firstKeyFrame, KeyFrame<Float> secondKeyFrame) {
+        return (WipeAnimation) super.setKeyFrame((KeyFrame) firstKeyFrame, (KeyFrame) secondKeyFrame);
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    public WipeAnimation addKeyFrame(KeyFrame<Float> keyFrame) {
+        return (WipeAnimation) super.addKeyFrame((KeyFrame) keyFrame);
     }
 
     public WipeAnimation setWipeType(WipeType wipeType) {
         this.mWipeType = wipeType;
         return this;
-    }
-
-    @Override // com.samsung.vekit.Animation.TransitionAnimation, com.samsung.vekit.Animation.Animation
-    @Deprecated
-    public WipeAnimation setDuration(long duration) {
-        return (WipeAnimation) super.setDuration(duration);
     }
 
     @Override // com.samsung.vekit.Animation.TransitionAnimation
@@ -90,5 +89,29 @@ public class WipeAnimation extends TransitionAnimation {
     public void onAnimationCanceled(Object interpolatedValue) {
         Log.i(this.TAG, "onAnimationCanceled : " + this.id + ", " + this.name);
         super.onAnimationCanceled(interpolatedValue);
+    }
+
+    @Override // com.samsung.vekit.Animation.TransitionAnimation, com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public WipeAnimation setDuration(long duration) {
+        return (WipeAnimation) super.setDuration(duration);
+    }
+
+    @Override // com.samsung.vekit.Animation.TransitionAnimation
+    @Deprecated
+    public WipeAnimation setFrom(Float from) {
+        return this;
+    }
+
+    @Override // com.samsung.vekit.Animation.TransitionAnimation
+    @Deprecated
+    public WipeAnimation setTo(Float to) {
+        return this;
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public WipeAnimation setKeyFrame(KeyFrame<Float> keyFrame) {
+        return (WipeAnimation) super.setKeyFrame((KeyFrame) keyFrame);
     }
 }

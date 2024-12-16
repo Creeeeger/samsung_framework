@@ -14,18 +14,25 @@ import java.util.function.Function;
 
 /* loaded from: classes.dex */
 public class PackagePartitions {
+    public static final String FINGERPRINT = getFingerprint();
     public static final int PARTITION_ODM = 2;
     public static final int PARTITION_OEM = 3;
     public static final int PARTITION_PRODUCT = 4;
     public static final int PARTITION_SYSTEM = 0;
     public static final int PARTITION_SYSTEM_EXT = 5;
     public static final int PARTITION_VENDOR = 1;
-    private static final ArrayList<SystemPartition> SYSTEM_PARTITIONS = new ArrayList<>(Arrays.asList(new SystemPartition(Environment.getRootDirectory(), 0, "system", true, false), new SystemPartition(Environment.getVendorDirectory(), 1, "vendor", true, true), new SystemPartition(Environment.getOdmDirectory(), 2, Build.Partition.PARTITION_NAME_ODM, true, true), new SystemPartition(Environment.getOemDirectory(), 3, Build.Partition.PARTITION_NAME_OEM, false, true), new SystemPartition(Environment.getProductDirectory(), 4, "product", true, true), new SystemPartition(Environment.getSystemExtDirectory(), 5, Build.Partition.PARTITION_NAME_SYSTEM_EXT, true, true), new SystemPartition(new File("/prism"), 0, "prism", true, false), new SystemPartition(new File(Environment.getRootDirectory(), "carrier"), 0, "carrier", true, false)));
-    public static final String FINGERPRINT = getFingerprint();
+    private static final ArrayList<SystemPartition> SYSTEM_PARTITIONS;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PartitionType {
+    }
+
+    static {
+        boolean z = true;
+        boolean z2 = true;
+        boolean z3 = false;
+        int i = 0;
+        SYSTEM_PARTITIONS = new ArrayList<>(Arrays.asList(new SystemPartition(Environment.getRootDirectory(), 0, "system", true, false), new SystemPartition(Environment.getVendorDirectory(), 1, "vendor", true, true), new SystemPartition(Environment.getOdmDirectory(), 2, Build.Partition.PARTITION_NAME_ODM, true, z), new SystemPartition(Environment.getOemDirectory(), 3, Build.Partition.PARTITION_NAME_OEM, false, z), new SystemPartition(Environment.getProductDirectory(), 4, "product", z2, z), new SystemPartition(Environment.getSystemExtDirectory(), 5, Build.Partition.PARTITION_NAME_SYSTEM_EXT, z2, z), new SystemPartition(new File("/prism"), i, "prism", z2, z3), new SystemPartition(new File(Environment.getRootDirectory(), "carrier"), i, "carrier", z2, z3)));
     }
 
     public static <T> ArrayList<T> getOrderedPartitions(Function<SystemPartition, T> producer) {
@@ -40,6 +47,7 @@ public class PackagePartitions {
         return out;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static File canonicalize(File path) {
         try {
             return path.getCanonicalFile();
@@ -50,22 +58,14 @@ public class PackagePartitions {
 
     private static String getFingerprint() {
         String[] digestProperties = new String[SYSTEM_PARTITIONS.size() + 1];
-        int i = 0;
-        while (true) {
-            ArrayList<SystemPartition> arrayList = SYSTEM_PARTITIONS;
-            if (i < arrayList.size()) {
-                String partitionName = arrayList.get(i).getName();
-                digestProperties[i] = "ro." + partitionName + ".build.fingerprint";
-                i++;
-            } else {
-                int i2 = arrayList.size();
-                digestProperties[i2] = "ro.build.fingerprint";
-                return SystemProperties.digestOf(digestProperties);
-            }
+        for (int i = 0; i < SYSTEM_PARTITIONS.size(); i++) {
+            String partitionName = SYSTEM_PARTITIONS.get(i).getName();
+            digestProperties[i] = "ro." + partitionName + ".build.fingerprint";
         }
+        digestProperties[SYSTEM_PARTITIONS.size()] = "ro.build.fingerprint";
+        return SystemProperties.digestOf(digestProperties);
     }
 
-    /* loaded from: classes.dex */
     public static class SystemPartition {
         private final DeferredCanonicalFile mAppFolder;
         private final DeferredCanonicalFile mFolder;
@@ -75,18 +75,22 @@ public class PackagePartitions {
         private final DeferredCanonicalFile mPrivAppFolder;
         public final int type;
 
-        /* synthetic */ SystemPartition(File file, int i, String str, boolean z, boolean z2, SystemPartitionIA systemPartitionIA) {
-            this(file, i, str, z, z2);
-        }
-
-        private SystemPartition(File folder, int type, String name, boolean containsPrivApp, boolean containsOverlay) {
-            this.type = type;
-            this.mName = name;
-            this.mFolder = new DeferredCanonicalFile(folder);
-            this.mAppFolder = new DeferredCanonicalFile(folder, "app");
-            this.mPrivAppFolder = containsPrivApp ? new DeferredCanonicalFile(folder, "priv-app") : null;
-            this.mOverlayFolder = containsOverlay ? new DeferredCanonicalFile(folder, "overlay") : null;
-            this.mNonConicalFolder = folder;
+        private SystemPartition(File file, int i, String str, boolean z, boolean z2) {
+            DeferredCanonicalFile deferredCanonicalFile;
+            this.type = i;
+            this.mName = str;
+            byte b = 0;
+            byte b2 = 0;
+            this.mFolder = new DeferredCanonicalFile(file);
+            this.mAppFolder = new DeferredCanonicalFile(file, "app");
+            if (z) {
+                deferredCanonicalFile = new DeferredCanonicalFile(file, "priv-app");
+            } else {
+                deferredCanonicalFile = null;
+            }
+            this.mPrivAppFolder = deferredCanonicalFile;
+            this.mOverlayFolder = z2 ? new DeferredCanonicalFile(file, "overlay") : null;
+            this.mNonConicalFolder = file;
         }
 
         public SystemPartition(SystemPartition original) {
@@ -116,27 +120,24 @@ public class PackagePartitions {
         }
 
         public File getAppFolder() {
-            DeferredCanonicalFile deferredCanonicalFile = this.mAppFolder;
-            if (deferredCanonicalFile == null) {
+            if (this.mAppFolder == null) {
                 return null;
             }
-            return deferredCanonicalFile.getFile();
+            return this.mAppFolder.getFile();
         }
 
         public File getPrivAppFolder() {
-            DeferredCanonicalFile deferredCanonicalFile = this.mPrivAppFolder;
-            if (deferredCanonicalFile == null) {
+            if (this.mPrivAppFolder == null) {
                 return null;
             }
-            return deferredCanonicalFile.getFile();
+            return this.mPrivAppFolder.getFile();
         }
 
         public File getOverlayFolder() {
-            DeferredCanonicalFile deferredCanonicalFile = this.mOverlayFolder;
-            if (deferredCanonicalFile == null) {
+            if (this.mOverlayFolder == null) {
                 return null;
             }
-            return deferredCanonicalFile.getFile();
+            return this.mOverlayFolder.getFile();
         }
 
         public boolean containsPath(String path) {
@@ -148,33 +149,21 @@ public class PackagePartitions {
         }
 
         public boolean containsPrivApp(File scanFile) {
-            DeferredCanonicalFile deferredCanonicalFile = this.mPrivAppFolder;
-            return deferredCanonicalFile != null && FileUtils.contains(deferredCanonicalFile.getFile(), PackagePartitions.canonicalize(scanFile));
+            return this.mPrivAppFolder != null && FileUtils.contains(this.mPrivAppFolder.getFile(), PackagePartitions.canonicalize(scanFile));
         }
 
         public boolean containsApp(File scanFile) {
-            DeferredCanonicalFile deferredCanonicalFile = this.mAppFolder;
-            return deferredCanonicalFile != null && FileUtils.contains(deferredCanonicalFile.getFile(), PackagePartitions.canonicalize(scanFile));
+            return this.mAppFolder != null && FileUtils.contains(this.mAppFolder.getFile(), PackagePartitions.canonicalize(scanFile));
         }
 
         public boolean containsOverlay(File scanFile) {
-            DeferredCanonicalFile deferredCanonicalFile = this.mOverlayFolder;
-            return deferredCanonicalFile != null && FileUtils.contains(deferredCanonicalFile.getFile(), PackagePartitions.canonicalize(scanFile));
+            return this.mOverlayFolder != null && FileUtils.contains(this.mOverlayFolder.getFile(), PackagePartitions.canonicalize(scanFile));
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class DeferredCanonicalFile {
+    private static class DeferredCanonicalFile {
         private File mFile;
         private boolean mIsCanonical;
-
-        /* synthetic */ DeferredCanonicalFile(File file, DeferredCanonicalFileIA deferredCanonicalFileIA) {
-            this(file);
-        }
-
-        /* synthetic */ DeferredCanonicalFile(File file, String str, DeferredCanonicalFileIA deferredCanonicalFileIA) {
-            this(file, str);
-        }
 
         private DeferredCanonicalFile(File dir) {
             this.mIsCanonical = false;
@@ -186,6 +175,7 @@ public class PackagePartitions {
             this.mFile = new File(dir, fileName);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public File getFile() {
             if (!this.mIsCanonical) {
                 this.mFile = PackagePartitions.canonicalize(this.mFile);

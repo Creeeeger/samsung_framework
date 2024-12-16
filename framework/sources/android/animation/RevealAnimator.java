@@ -10,11 +10,11 @@ public class RevealAnimator extends RenderNodeAnimator {
     public RevealAnimator(View clipView, int x, int y, float startRadius, float endRadius) {
         super(x, y, startRadius, endRadius);
         this.mClipView = clipView;
-        setTarget(clipView);
+        setTarget(this.mClipView);
     }
 
     @Override // android.graphics.animation.RenderNodeAnimator
-    public void onFinished() {
+    protected void onFinished() {
         this.mClipView.setRevealClip(false, 0.0f, 0.0f, 0.0f);
         super.onFinished();
     }

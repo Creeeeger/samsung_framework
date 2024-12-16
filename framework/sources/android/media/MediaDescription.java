@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import com.android.media.performance.flags.Flags;
 
 /* loaded from: classes2.dex */
 public class MediaDescription implements Parcelable {
@@ -17,14 +18,13 @@ public class MediaDescription implements Parcelable {
     public static final long BT_FOLDER_TYPE_TITLES = 1;
     public static final long BT_FOLDER_TYPE_YEARS = 6;
     public static final Parcelable.Creator<MediaDescription> CREATOR = new Parcelable.Creator<MediaDescription>() { // from class: android.media.MediaDescription.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaDescription createFromParcel(Parcel in) {
             return new MediaDescription(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaDescription[] newArray(int size) {
             return new MediaDescription[size];
@@ -39,14 +39,6 @@ public class MediaDescription implements Parcelable {
     private final Uri mMediaUri;
     private final CharSequence mSubtitle;
     private final CharSequence mTitle;
-
-    /* synthetic */ MediaDescription(Parcel parcel, MediaDescriptionIA mediaDescriptionIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ MediaDescription(String str, CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3, Bitmap bitmap, Uri uri, Bundle bundle, Uri uri2, MediaDescriptionIA mediaDescriptionIA) {
-        this(str, charSequence, charSequence2, charSequence3, bitmap, uri, bundle, uri2);
-    }
 
     private MediaDescription(String mediaId, CharSequence title, CharSequence subtitle, CharSequence description, Bitmap icon, Uri iconUri, Bundle extras, Uri mediaUri) {
         this.mMediaId = mediaId;
@@ -134,24 +126,6 @@ public class MediaDescription implements Parcelable {
         return ((Object) this.mTitle) + ", " + ((Object) this.mSubtitle) + ", " + ((Object) this.mDescription);
     }
 
-    /* renamed from: android.media.MediaDescription$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MediaDescription> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaDescription createFromParcel(Parcel in) {
-            return new MediaDescription(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaDescription[] newArray(int size) {
-            return new MediaDescription[size];
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static class Builder {
         private CharSequence mDescription;
         private Bundle mExtras;
@@ -203,6 +177,10 @@ public class MediaDescription implements Parcelable {
         }
 
         public MediaDescription build() {
+            if (Flags.mediaDescriptionAshmemBitmap()) {
+                Bitmap icon = this.mIcon != null ? this.mIcon.asShared() : null;
+                return new MediaDescription(this.mMediaId, this.mTitle, this.mSubtitle, this.mDescription, icon, this.mIconUri, this.mExtras, this.mMediaUri);
+            }
             return new MediaDescription(this.mMediaId, this.mTitle, this.mSubtitle, this.mDescription, this.mIcon, this.mIconUri, this.mExtras, this.mMediaUri);
         }
     }

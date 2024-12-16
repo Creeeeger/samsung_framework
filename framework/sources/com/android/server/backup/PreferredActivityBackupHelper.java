@@ -19,7 +19,6 @@ public class PreferredActivityBackupHelper extends BlobBackupHelper {
     private static final String KEY_DOMAIN_VERIFICATION = "domain-verification";
     private static final String[] KEYS = {KEY_PREFERRED, KEY_DEFAULT_APPS, KEY_INTENT_VERIFICATION, KEY_DOMAIN_VERIFICATION};
 
-    /* loaded from: classes5.dex */
     private @interface Key {
     }
 
@@ -127,18 +126,18 @@ public class PreferredActivityBackupHelper extends BlobBackupHelper {
             switch (c) {
                 case 0:
                     pm.restorePreferredActivities(payload, this.mUserId);
-                    return;
+                    break;
                 case 1:
                     pm.restoreDefaultApps(payload, this.mUserId);
-                    return;
+                    break;
                 case 2:
-                    return;
+                    break;
                 case 3:
                     pm.restoreDomainVerification(payload, this.mUserId);
-                    return;
+                    break;
                 default:
                     Slog.w(TAG, "Unexpected restore key " + key);
-                    return;
+                    break;
             }
         } catch (Exception e) {
             Slog.e(TAG, "Unable to restore key " + key, e);

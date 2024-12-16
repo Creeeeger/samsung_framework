@@ -6,12 +6,12 @@ import com.samsung.android.sume.core.Def;
 import java.lang.Comparable;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
-public abstract class GenericEvaluator<T extends Comparable<T>> implements Evaluator, Parcelable {
+/* loaded from: classes6.dex */
+abstract class GenericEvaluator<T extends Comparable<T>> implements Evaluator, Parcelable {
     private static final String TAG = Def.tagOf((Class<?>) GenericEvaluator.class);
     T value;
 
-    public GenericEvaluator(T value) {
+    GenericEvaluator(T value) {
         this.value = value;
     }
 
@@ -20,7 +20,7 @@ public abstract class GenericEvaluator<T extends Comparable<T>> implements Evalu
         return this.value;
     }
 
-    public <V> V getValue(Class<V> cls) {
+    <V> V getValue(Class<V> cls) {
         if (this.value instanceof Number) {
             if (Float.class.isAssignableFrom(cls)) {
                 return cls.cast(Float.valueOf(((Number) this.value).floatValue()));
@@ -50,6 +50,7 @@ public abstract class GenericEvaluator<T extends Comparable<T>> implements Evalu
         return this.value.getClass();
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.lang.Comparable
     public int compareTo(Evaluator other) {
         if (other instanceof GenericEvaluator) {
@@ -84,7 +85,7 @@ public abstract class GenericEvaluator<T extends Comparable<T>> implements Evalu
         return 0;
     }
 
-    public GenericEvaluator(Parcel in) {
+    protected GenericEvaluator(Parcel in) {
         try {
             String className = in.readString();
             this.value = (T) in.readValue(Class.forName(className).getClassLoader());

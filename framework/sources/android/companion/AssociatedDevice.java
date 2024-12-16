@@ -11,14 +11,13 @@ public final class AssociatedDevice implements Parcelable {
     private static final int BLUETOOTH_LE = 1;
     private static final int CLASSIC_BLUETOOTH = 0;
     public static final Parcelable.Creator<AssociatedDevice> CREATOR = new Parcelable.Creator<AssociatedDevice>() { // from class: android.companion.AssociatedDevice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssociatedDevice[] newArray(int size) {
             return new AssociatedDevice[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssociatedDevice createFromParcel(Parcel in) {
             return new AssociatedDevice(in);
@@ -26,10 +25,6 @@ public final class AssociatedDevice implements Parcelable {
     };
     private static final int WIFI = 2;
     private final Parcelable mDevice;
-
-    /* synthetic */ AssociatedDevice(Parcel parcel, AssociatedDeviceIA associatedDeviceIA) {
-        this(parcel);
-    }
 
     public AssociatedDevice(Parcelable device) {
         this.mDevice = device;
@@ -41,25 +36,22 @@ public final class AssociatedDevice implements Parcelable {
     }
 
     public BluetoothDevice getBluetoothDevice() {
-        Parcelable parcelable = this.mDevice;
-        if (parcelable instanceof BluetoothDevice) {
-            return (BluetoothDevice) parcelable;
+        if (this.mDevice instanceof BluetoothDevice) {
+            return (BluetoothDevice) this.mDevice;
         }
         return null;
     }
 
     public ScanResult getBleDevice() {
-        Parcelable parcelable = this.mDevice;
-        if (parcelable instanceof ScanResult) {
-            return (ScanResult) parcelable;
+        if (this.mDevice instanceof ScanResult) {
+            return (ScanResult) this.mDevice;
         }
         return null;
     }
 
     public android.net.wifi.ScanResult getWifiDevice() {
-        Parcelable parcelable = this.mDevice;
-        if (parcelable instanceof android.net.wifi.ScanResult) {
-            return (android.net.wifi.ScanResult) parcelable;
+        if (this.mDevice instanceof android.net.wifi.ScanResult) {
+            return (android.net.wifi.ScanResult) this.mDevice;
         }
         return null;
     }
@@ -76,14 +68,13 @@ public final class AssociatedDevice implements Parcelable {
     }
 
     private int getDeviceType() {
-        Parcelable parcelable = this.mDevice;
-        if (parcelable instanceof BluetoothDevice) {
+        if (this.mDevice instanceof BluetoothDevice) {
             return 0;
         }
-        if (parcelable instanceof ScanResult) {
+        if (this.mDevice instanceof ScanResult) {
             return 1;
         }
-        if (parcelable instanceof android.net.wifi.ScanResult) {
+        if (this.mDevice instanceof android.net.wifi.ScanResult) {
             return 2;
         }
         throw new UnsupportedOperationException("Unsupported device type.");
@@ -102,23 +93,6 @@ public final class AssociatedDevice implements Parcelable {
         }
     }
 
-    /* renamed from: android.companion.AssociatedDevice$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AssociatedDevice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AssociatedDevice[] newArray(int size) {
-            return new AssociatedDevice[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AssociatedDevice createFromParcel(Parcel in) {
-            return new AssociatedDevice(in);
-        }
-    }
-
     public String toString() {
         return "AssociatedDevice { device = " + this.mDevice + " }";
     }
@@ -134,11 +108,10 @@ public final class AssociatedDevice implements Parcelable {
         if (getDeviceType() != that.getDeviceType()) {
             return false;
         }
-        Parcelable parcelable = this.mDevice;
-        if ((parcelable instanceof ScanResult) || (parcelable instanceof android.net.wifi.ScanResult)) {
-            return parcelable.toString().equals(that.mDevice.toString());
+        if ((this.mDevice instanceof ScanResult) || (this.mDevice instanceof android.net.wifi.ScanResult)) {
+            return this.mDevice.toString().equals(that.mDevice.toString());
         }
-        return Objects.equals(parcelable, that.mDevice);
+        return Objects.equals(this.mDevice, that.mDevice);
     }
 
     public int hashCode() {

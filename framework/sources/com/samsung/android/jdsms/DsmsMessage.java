@@ -1,7 +1,7 @@
 package com.samsung.android.jdsms;
 
-/* loaded from: classes5.dex */
-public final class DsmsMessage {
+/* loaded from: classes6.dex */
+final class DsmsMessage {
     private static final String SUBTAG = "[DsmsMessage] ";
     private final String mDetail;
     private final String mFeatureCode;

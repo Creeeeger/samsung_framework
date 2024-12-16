@@ -20,15 +20,13 @@ public final class BackgroundThread extends HandlerThread {
 
     private static void ensureThreadLocked() {
         if (sInstance == null) {
-            BackgroundThread backgroundThread = new BackgroundThread();
-            sInstance = backgroundThread;
-            backgroundThread.start();
+            sInstance = new BackgroundThread();
+            sInstance.start();
             Looper looper = sInstance.getLooper();
             looper.setTraceTag(524288L);
             looper.setSlowLogThresholdMs(10000L, 30000L);
-            Handler handler = new Handler(sInstance.getLooper(), null, false, true);
-            sHandler = handler;
-            sHandlerExecutor = new HandlerExecutor(handler);
+            sHandler = new Handler(sInstance.getLooper(), null, false, true);
+            sHandlerExecutor = new HandlerExecutor(sHandler);
         }
     }
 

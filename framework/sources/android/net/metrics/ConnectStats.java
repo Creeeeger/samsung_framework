@@ -7,7 +7,7 @@ import android.util.SparseIntArray;
 import com.android.internal.util.TokenBucket;
 import java.util.BitSet;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class ConnectStats {
     private static final int EALREADY = OsConstants.EALREADY;
     private static final int EINPROGRESS = OsConstants.EINPROGRESS;
@@ -29,7 +29,7 @@ public class ConnectStats {
         this.mMaxLatencyRecords = maxLatencyRecords;
     }
 
-    public boolean addEvent(int errno, int latencyMs, String ipAddr) {
+    boolean addEvent(int errno, int latencyMs, String ipAddr) {
         this.eventCount++;
         if (isSuccess(errno)) {
             countConnect(errno, ipAddr);
@@ -66,7 +66,7 @@ public class ConnectStats {
         return errno == 0 || isNonBlocking(errno);
     }
 
-    public static boolean isNonBlocking(int errno) {
+    static boolean isNonBlocking(int errno) {
         return errno == EINPROGRESS || errno == EALREADY;
     }
 

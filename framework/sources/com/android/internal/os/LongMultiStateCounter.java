@@ -10,27 +10,22 @@ import libcore.util.NativeAllocationRegistry;
 
 /* loaded from: classes5.dex */
 public final class LongMultiStateCounter implements Parcelable {
-    final long mNativeObject;
-    private final int mStateCount;
-    private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(LongMultiStateCounter.class.getClassLoader(), native_getReleaseFunc());
     public static final Parcelable.Creator<LongMultiStateCounter> CREATOR = new Parcelable.Creator<LongMultiStateCounter>() { // from class: com.android.internal.os.LongMultiStateCounter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LongMultiStateCounter createFromParcel(Parcel in) {
             return new LongMultiStateCounter(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LongMultiStateCounter[] newArray(int size) {
             return new LongMultiStateCounter[size];
         }
     };
-
-    /* synthetic */ LongMultiStateCounter(Parcel parcel, LongMultiStateCounterIA longMultiStateCounterIA) {
-        this(parcel);
-    }
+    private static NativeAllocationRegistry sRegistry;
+    final long mNativeObject;
+    private final int mStateCount;
 
     @CriticalNative
     private static native void native_addCount(long j, long j2);
@@ -63,27 +58,39 @@ public final class LongMultiStateCounter implements Parcelable {
     private static native void native_setState(long j, int i, long j2);
 
     @FastNative
-    private native String native_toString(long j);
+    private static native String native_toString(long j);
 
     @CriticalNative
     private static native long native_updateValue(long j, long j2, long j3);
 
     @FastNative
-    private native void native_writeToParcel(long j, Parcel parcel, int i);
+    private static native void native_writeToParcel(long j, Parcel parcel, int i);
 
     public LongMultiStateCounter(int stateCount) {
         Preconditions.checkArgumentPositive(stateCount, "stateCount must be greater than 0");
         this.mStateCount = stateCount;
-        long native_init = native_init(stateCount);
-        this.mNativeObject = native_init;
-        sRegistry.registerNativeAllocation(this, native_init);
+        this.mNativeObject = native_init(stateCount);
+        registerNativeAllocation();
     }
 
     private LongMultiStateCounter(Parcel in) {
-        long native_initFromParcel = native_initFromParcel(in);
-        this.mNativeObject = native_initFromParcel;
-        sRegistry.registerNativeAllocation(this, native_initFromParcel);
-        this.mStateCount = native_getStateCount(native_initFromParcel);
+        this.mNativeObject = native_initFromParcel(in);
+        registerNativeAllocation();
+        this.mStateCount = native_getStateCount(this.mNativeObject);
+    }
+
+    private void registerNativeAllocation() {
+        if (sRegistry == null) {
+            synchronized (LongMultiStateCounter.class) {
+                if (sRegistry == null) {
+                    sRegistry = NativeAllocationRegistry.createMalloced(LongMultiStateCounter.class.getClassLoader(), native_getReleaseFunc());
+                }
+            }
+        }
+        sRegistry.registerNativeAllocation(this, this.mNativeObject);
+    }
+
+    private void registerNativeAllocation$ravenwood() {
     }
 
     public int getStateCount() {
@@ -144,22 +151,5 @@ public final class LongMultiStateCounter implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.android.internal.os.LongMultiStateCounter$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LongMultiStateCounter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LongMultiStateCounter createFromParcel(Parcel in) {
-            return new LongMultiStateCounter(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LongMultiStateCounter[] newArray(int size) {
-            return new LongMultiStateCounter[size];
-        }
     }
 }

@@ -30,7 +30,7 @@ public final class RangeTemplate extends ControlTemplate {
         validate();
     }
 
-    public RangeTemplate(Bundle b) {
+    RangeTemplate(Bundle b) {
         super(b);
         this.mMinValue = b.getFloat(KEY_MIN_VALUE);
         this.mMaxValue = b.getFloat(KEY_MAX_VALUE);
@@ -66,7 +66,7 @@ public final class RangeTemplate extends ControlTemplate {
     }
 
     @Override // android.service.controls.templates.ControlTemplate
-    public Bundle getDataBundle() {
+    Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putFloat(KEY_MIN_VALUE, this.mMinValue);
         b.putFloat(KEY_MAX_VALUE, this.mMaxValue);

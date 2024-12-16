@@ -9,11 +9,12 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import com.android.internal.telephony.SemTelephonyUtils;
+import android.util.ArraySet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /* loaded from: classes3.dex */
 public final class PhoneAccount implements Parcelable {
@@ -46,14 +47,13 @@ public final class PhoneAccount implements Parcelable {
     public static final int CAPABILITY_VIDEO_CALLING_RELIES_ON_PRESENCE = 256;
     public static final int CAPABILITY_VOICE_CALLING_AVAILABLE = 131072;
     public static final Parcelable.Creator<PhoneAccount> CREATOR = new Parcelable.Creator<PhoneAccount>() { // from class: android.telecom.PhoneAccount.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneAccount createFromParcel(Parcel in) {
             return new PhoneAccount(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneAccount[] newArray(int size) {
             return new PhoneAccount[size];
@@ -67,6 +67,8 @@ public final class PhoneAccount implements Parcelable {
 
     @SystemApi
     public static final String EXTRA_PLAY_CALL_RECORDING_TONE = "android.telecom.extra.PLAY_CALL_RECORDING_TONE";
+
+    @SystemApi
     public static final String EXTRA_SKIP_CALL_FILTERING = "android.telecom.extra.SKIP_CALL_FILTERING";
 
     @SystemApi
@@ -90,17 +92,10 @@ public final class PhoneAccount implements Parcelable {
     private boolean mIsEnabled;
     private final CharSequence mLabel;
     private final CharSequence mShortDescription;
+    private final Set<PhoneAccountHandle> mSimultaneousCallingRestriction;
     private final Uri mSubscriptionAddress;
     private final int mSupportedAudioRoutes;
     private final List<String> mSupportedUriSchemes;
-
-    /* synthetic */ PhoneAccount(Parcel parcel, PhoneAccountIA phoneAccountIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ PhoneAccount(PhoneAccountHandle phoneAccountHandle, Uri uri, Uri uri2, int i, Icon icon, int i2, CharSequence charSequence, CharSequence charSequence2, List list, Bundle bundle, int i3, boolean z, String str, PhoneAccountIA phoneAccountIA) {
-        this(phoneAccountHandle, uri, uri2, i, icon, i2, charSequence, charSequence2, list, bundle, i3, z, str);
-    }
 
     public boolean equals(Object o) {
         if (this == o) {
@@ -110,17 +105,16 @@ public final class PhoneAccount implements Parcelable {
             return false;
         }
         PhoneAccount that = (PhoneAccount) o;
-        if (this.mCapabilities == that.mCapabilities && this.mHighlightColor == that.mHighlightColor && this.mSupportedAudioRoutes == that.mSupportedAudioRoutes && this.mIsEnabled == that.mIsEnabled && Objects.equals(this.mAccountHandle, that.mAccountHandle) && Objects.equals(this.mAddress, that.mAddress) && Objects.equals(this.mSubscriptionAddress, that.mSubscriptionAddress) && Objects.equals(this.mLabel, that.mLabel) && Objects.equals(this.mShortDescription, that.mShortDescription) && Objects.equals(this.mSupportedUriSchemes, that.mSupportedUriSchemes) && areBundlesEqual(this.mExtras, that.mExtras) && Objects.equals(this.mGroupId, that.mGroupId)) {
+        if (this.mCapabilities == that.mCapabilities && this.mHighlightColor == that.mHighlightColor && this.mSupportedAudioRoutes == that.mSupportedAudioRoutes && this.mIsEnabled == that.mIsEnabled && Objects.equals(this.mAccountHandle, that.mAccountHandle) && Objects.equals(this.mAddress, that.mAddress) && Objects.equals(this.mSubscriptionAddress, that.mSubscriptionAddress) && Objects.equals(this.mLabel, that.mLabel) && Objects.equals(this.mShortDescription, that.mShortDescription) && Objects.equals(this.mSupportedUriSchemes, that.mSupportedUriSchemes) && areBundlesEqual(this.mExtras, that.mExtras) && Objects.equals(this.mGroupId, that.mGroupId) && Objects.equals(this.mSimultaneousCallingRestriction, that.mSimultaneousCallingRestriction)) {
             return true;
         }
         return false;
     }
 
     public int hashCode() {
-        return Objects.hash(this.mAccountHandle, this.mAddress, this.mSubscriptionAddress, Integer.valueOf(this.mCapabilities), Integer.valueOf(this.mHighlightColor), this.mLabel, this.mShortDescription, this.mSupportedUriSchemes, Integer.valueOf(this.mSupportedAudioRoutes), this.mExtras, Boolean.valueOf(this.mIsEnabled), this.mGroupId);
+        return Objects.hash(this.mAccountHandle, this.mAddress, this.mSubscriptionAddress, Integer.valueOf(this.mCapabilities), Integer.valueOf(this.mHighlightColor), this.mLabel, this.mShortDescription, this.mSupportedUriSchemes, Integer.valueOf(this.mSupportedAudioRoutes), this.mExtras, Boolean.valueOf(this.mIsEnabled), this.mGroupId, this.mSimultaneousCallingRestriction);
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         private PhoneAccountHandle mAccountHandle;
         private Uri mAddress;
@@ -132,6 +126,7 @@ public final class PhoneAccount implements Parcelable {
         private boolean mIsEnabled;
         private CharSequence mLabel;
         private CharSequence mShortDescription;
+        private Set<PhoneAccountHandle> mSimultaneousCallingRestriction;
         private Uri mSubscriptionAddress;
         private int mSupportedAudioRoutes;
         private List<String> mSupportedUriSchemes;
@@ -142,6 +137,7 @@ public final class PhoneAccount implements Parcelable {
             this.mSupportedUriSchemes = new ArrayList();
             this.mIsEnabled = false;
             this.mGroupId = "";
+            this.mSimultaneousCallingRestriction = null;
             this.mAccountHandle = accountHandle;
             this.mLabel = label;
         }
@@ -152,6 +148,7 @@ public final class PhoneAccount implements Parcelable {
             this.mSupportedUriSchemes = new ArrayList();
             this.mIsEnabled = false;
             this.mGroupId = "";
+            this.mSimultaneousCallingRestriction = null;
             this.mAccountHandle = phoneAccount.getAccountHandle();
             this.mAddress = phoneAccount.getAddress();
             this.mSubscriptionAddress = phoneAccount.getSubscriptionAddress();
@@ -165,6 +162,9 @@ public final class PhoneAccount implements Parcelable {
             this.mExtras = phoneAccount.getExtras();
             this.mGroupId = phoneAccount.getGroupId();
             this.mSupportedAudioRoutes = phoneAccount.getSupportedAudioRoutes();
+            if (phoneAccount.hasSimultaneousCallingRestriction()) {
+                this.mSimultaneousCallingRestriction = phoneAccount.getSimultaneousCallingRestriction();
+            }
         }
 
         public Builder setLabel(CharSequence label) {
@@ -244,15 +244,28 @@ public final class PhoneAccount implements Parcelable {
             return this;
         }
 
+        public Builder setSimultaneousCallingRestriction(Set<PhoneAccountHandle> handles) {
+            if (handles == null) {
+                throw new IllegalArgumentException("the Set of PhoneAccountHandles must not be null");
+            }
+            this.mSimultaneousCallingRestriction = handles;
+            return this;
+        }
+
+        public Builder clearSimultaneousCallingRestriction() {
+            this.mSimultaneousCallingRestriction = null;
+            return this;
+        }
+
         public PhoneAccount build() {
             if (this.mSupportedUriSchemes.isEmpty()) {
                 addSupportedUriScheme(PhoneAccount.SCHEME_TEL);
             }
-            return new PhoneAccount(this.mAccountHandle, this.mAddress, this.mSubscriptionAddress, this.mCapabilities, this.mIcon, this.mHighlightColor, this.mLabel, this.mShortDescription, this.mSupportedUriSchemes, this.mExtras, this.mSupportedAudioRoutes, this.mIsEnabled, this.mGroupId);
+            return new PhoneAccount(this.mAccountHandle, this.mAddress, this.mSubscriptionAddress, this.mCapabilities, this.mIcon, this.mHighlightColor, this.mLabel, this.mShortDescription, this.mSupportedUriSchemes, this.mExtras, this.mSupportedAudioRoutes, this.mIsEnabled, this.mGroupId, this.mSimultaneousCallingRestriction);
         }
     }
 
-    private PhoneAccount(PhoneAccountHandle account, Uri address, Uri subscriptionAddress, int capabilities, Icon icon, int highlightColor, CharSequence label, CharSequence shortDescription, List<String> supportedUriSchemes, Bundle extras, int supportedAudioRoutes, boolean isEnabled, String groupId) {
+    private PhoneAccount(PhoneAccountHandle account, Uri address, Uri subscriptionAddress, int capabilities, Icon icon, int highlightColor, CharSequence label, CharSequence shortDescription, List<String> supportedUriSchemes, Bundle extras, int supportedAudioRoutes, boolean isEnabled, String groupId, Set<PhoneAccountHandle> simultaneousCallingRestriction) {
         this.mAccountHandle = account;
         this.mAddress = address;
         this.mSubscriptionAddress = subscriptionAddress;
@@ -266,6 +279,7 @@ public final class PhoneAccount implements Parcelable {
         this.mSupportedAudioRoutes = supportedAudioRoutes;
         this.mIsEnabled = isEnabled;
         this.mGroupId = groupId;
+        this.mSimultaneousCallingRestriction = simultaneousCallingRestriction;
     }
 
     public static Builder builder(PhoneAccountHandle accountHandle, CharSequence label) {
@@ -333,11 +347,10 @@ public final class PhoneAccount implements Parcelable {
     }
 
     public boolean supportsUriScheme(String uriScheme) {
-        List<String> list = this.mSupportedUriSchemes;
-        if (list == null || uriScheme == null) {
+        if (this.mSupportedUriSchemes == null || uriScheme == null) {
             return false;
         }
-        for (String scheme : list) {
+        for (String scheme : this.mSupportedUriSchemes) {
             if (scheme != null && scheme.equals(uriScheme)) {
                 return true;
             }
@@ -355,6 +368,17 @@ public final class PhoneAccount implements Parcelable {
 
     public boolean isSelfManaged() {
         return (this.mCapabilities & 2048) == 2048;
+    }
+
+    public Set<PhoneAccountHandle> getSimultaneousCallingRestriction() {
+        if (this.mSimultaneousCallingRestriction == null) {
+            throw new IllegalStateException("This method can not be called if there is no simultaneous calling restriction. See #hasSimultaneousCallingRestriction");
+        }
+        return this.mSimultaneousCallingRestriction;
+    }
+
+    public boolean hasSimultaneousCallingRestriction() {
+        return this.mSimultaneousCallingRestriction != null;
     }
 
     @Override // android.os.Parcelable
@@ -397,22 +421,11 @@ public final class PhoneAccount implements Parcelable {
         parcel.writeBundle(this.mExtras);
         parcel.writeString(this.mGroupId);
         parcel.writeInt(this.mSupportedAudioRoutes);
-    }
-
-    /* renamed from: android.telecom.PhoneAccount$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhoneAccount> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneAccount createFromParcel(Parcel in) {
-            return new PhoneAccount(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneAccount[] newArray(int size) {
-            return new PhoneAccount[size];
+        if (this.mSimultaneousCallingRestriction == null) {
+            parcel.writeBoolean(false);
+        } else {
+            parcel.writeBoolean(true);
+            parcel.writeTypedList(this.mSimultaneousCallingRestriction.stream().toList());
         }
     }
 
@@ -446,6 +459,13 @@ public final class PhoneAccount implements Parcelable {
         this.mExtras = in.readBundle();
         this.mGroupId = in.readString();
         this.mSupportedAudioRoutes = in.readInt();
+        if (in.readBoolean()) {
+            ArrayList arrayList = new ArrayList();
+            in.readTypedList(arrayList, PhoneAccountHandle.CREATOR);
+            this.mSimultaneousCallingRestriction = new ArraySet(arrayList);
+            return;
+        }
+        this.mSimultaneousCallingRestriction = null;
     }
 
     public String toString() {
@@ -454,9 +474,20 @@ public final class PhoneAccount implements Parcelable {
             sb.append(scheme).append(" ");
         }
         sb.append(" Extras: ");
-        sb.append(SemTelephonyUtils.maskPii(this.mExtras));
+        sb.append(Log.maskPii(this.mExtras));
         sb.append(" GroupId: ");
         sb.append(Log.pii(this.mGroupId));
+        sb.append(" SC Restrictions: ");
+        if (hasSimultaneousCallingRestriction()) {
+            sb.append("[ ");
+            for (PhoneAccountHandle handle : this.mSimultaneousCallingRestriction) {
+                sb.append(handle);
+                sb.append(" ");
+            }
+            sb.append(NavigationBarInflaterView.SIZE_MOD_END);
+        } else {
+            sb.append("[NONE]");
+        }
         sb.append(NavigationBarInflaterView.SIZE_MOD_END);
         return sb.toString();
     }

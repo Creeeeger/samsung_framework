@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class DisplayAreaInfo implements Parcelable {
     public static final Parcelable.Creator<DisplayAreaInfo> CREATOR = new Parcelable.Creator<DisplayAreaInfo>() { // from class: android.window.DisplayAreaInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayAreaInfo createFromParcel(Parcel in) {
             return new DisplayAreaInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayAreaInfo[] newArray(int size) {
             return new DisplayAreaInfo[size];
@@ -26,10 +25,6 @@ public final class DisplayAreaInfo implements Parcelable {
     public int rootDisplayAreaId;
     public final WindowContainerToken token;
 
-    /* synthetic */ DisplayAreaInfo(Parcel parcel, DisplayAreaInfoIA displayAreaInfoIA) {
-        this(parcel);
-    }
-
     public DisplayAreaInfo(WindowContainerToken token, int displayId, int featureId) {
         this.configuration = new Configuration();
         this.rootDisplayAreaId = -1;
@@ -39,11 +34,10 @@ public final class DisplayAreaInfo implements Parcelable {
     }
 
     private DisplayAreaInfo(Parcel in) {
-        Configuration configuration = new Configuration();
-        this.configuration = configuration;
+        this.configuration = new Configuration();
         this.rootDisplayAreaId = -1;
         this.token = WindowContainerToken.CREATOR.createFromParcel(in);
-        configuration.readFromParcel(in);
+        this.configuration.readFromParcel(in);
         this.displayId = in.readInt();
         this.featureId = in.readInt();
         this.rootDisplayAreaId = in.readInt();
@@ -56,23 +50,6 @@ public final class DisplayAreaInfo implements Parcelable {
         dest.writeInt(this.displayId);
         dest.writeInt(this.featureId);
         dest.writeInt(this.rootDisplayAreaId);
-    }
-
-    /* renamed from: android.window.DisplayAreaInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DisplayAreaInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayAreaInfo createFromParcel(Parcel in) {
-            return new DisplayAreaInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayAreaInfo[] newArray(int size) {
-            return new DisplayAreaInfo[size];
-        }
     }
 
     public String toString() {

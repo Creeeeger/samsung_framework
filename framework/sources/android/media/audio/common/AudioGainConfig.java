@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioGainConfig implements Parcelable {
     public static final Parcelable.Creator<AudioGainConfig> CREATOR = new Parcelable.Creator<AudioGainConfig>() { // from class: android.media.audio.common.AudioGainConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioGainConfig createFromParcel(Parcel _aidl_source) {
             AudioGainConfig _aidl_out = new AudioGainConfig();
@@ -20,6 +18,7 @@ public class AudioGainConfig implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioGainConfig[] newArray(int _aidl_size) {
             return new AudioGainConfig[_aidl_size];
@@ -30,25 +29,6 @@ public class AudioGainConfig implements Parcelable {
     public int mode = 0;
     public int rampDurationMs = 0;
     public int[] values;
-
-    /* renamed from: android.media.audio.common.AudioGainConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioGainConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioGainConfig createFromParcel(Parcel _aidl_source) {
-            AudioGainConfig _aidl_out = new AudioGainConfig();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioGainConfig[] newArray(int _aidl_size) {
-            return new AudioGainConfig[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -137,7 +117,7 @@ public class AudioGainConfig implements Parcelable {
         _aidl_sj.add("channelMask: " + Objects.toString(this.channelMask));
         _aidl_sj.add("values: " + Arrays.toString(this.values));
         _aidl_sj.add("rampDurationMs: " + this.rampDurationMs);
-        return "android.media.audio.common.AudioGainConfig" + _aidl_sj.toString();
+        return "AudioGainConfig" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

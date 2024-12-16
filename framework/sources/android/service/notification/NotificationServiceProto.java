@@ -3,6 +3,9 @@ package android.service.notification;
 /* loaded from: classes3.dex */
 public final class NotificationServiceProto {
     public static final int ALARMS = 3;
+    public static final int CHANNEL_POLICY_NONE = 2;
+    public static final int CHANNEL_POLICY_PRIORITY = 1;
+    public static final int CHANNEL_POLICY_UNSET = 0;
     public static final int CONV_ANYONE = 1;
     public static final int CONV_IMPORTANT = 2;
     public static final int CONV_NONE = 3;

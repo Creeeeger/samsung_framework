@@ -62,17 +62,17 @@ public class CertificateFactory extends CertificateFactorySpi {
     }
 
     private Certificate getCertificate() throws CertificateParsingException {
-        if (this.sData == null) {
-            return null;
-        }
-        while (this.sDataObjectCount < this.sData.size()) {
-            ASN1Set aSN1Set = this.sData;
-            int i = this.sDataObjectCount;
-            this.sDataObjectCount = i + 1;
-            Object obj = aSN1Set.getObjectAt(i);
-            if (obj instanceof ASN1Sequence) {
-                return new X509CertificateObject(this.bcHelper, com.android.internal.org.bouncycastle.asn1.x509.Certificate.getInstance(obj));
+        if (this.sData != null) {
+            while (this.sDataObjectCount < this.sData.size()) {
+                ASN1Set aSN1Set = this.sData;
+                int i = this.sDataObjectCount;
+                this.sDataObjectCount = i + 1;
+                Object obj = aSN1Set.getObjectAt(i);
+                if (obj instanceof ASN1Sequence) {
+                    return new X509CertificateObject(this.bcHelper, com.android.internal.org.bouncycastle.asn1.x509.Certificate.getInstance(obj));
+                }
             }
+            return null;
         }
         return null;
     }
@@ -101,33 +101,30 @@ public class CertificateFactory extends CertificateFactorySpi {
     }
 
     private CRL getCRL() throws CRLException {
-        ASN1Set aSN1Set = this.sCrlData;
-        if (aSN1Set == null || this.sCrlDataObjectCount >= aSN1Set.size()) {
+        if (this.sCrlData == null || this.sCrlDataObjectCount >= this.sCrlData.size()) {
             return null;
         }
-        ASN1Set aSN1Set2 = this.sCrlData;
+        ASN1Set aSN1Set = this.sCrlData;
         int i = this.sCrlDataObjectCount;
         this.sCrlDataObjectCount = i + 1;
-        return createCRL(CertificateList.getInstance(aSN1Set2.getObjectAt(i)));
+        return createCRL(CertificateList.getInstance(aSN1Set.getObjectAt(i)));
     }
 
     @Override // java.security.cert.CertificateFactorySpi
     public Certificate engineGenerateCertificate(InputStream in) throws CertificateException {
         InputStream pis;
-        InputStream inputStream = this.currentStream;
-        if (inputStream == null) {
+        if (this.currentStream == null) {
             this.currentStream = in;
             this.sData = null;
             this.sDataObjectCount = 0;
-        } else if (inputStream != in) {
+        } else if (this.currentStream != in) {
             this.currentStream = in;
             this.sData = null;
             this.sDataObjectCount = 0;
         }
         try {
-            ASN1Set aSN1Set = this.sData;
-            if (aSN1Set != null) {
-                if (this.sDataObjectCount != aSN1Set.size()) {
+            if (this.sData != null) {
+                if (this.sDataObjectCount != this.sData.size()) {
                     return getCertificate();
                 }
                 this.sData = null;
@@ -176,20 +173,18 @@ public class CertificateFactory extends CertificateFactorySpi {
     @Override // java.security.cert.CertificateFactorySpi
     public CRL engineGenerateCRL(InputStream in) throws CRLException {
         InputStream pis;
-        InputStream inputStream = this.currentCrlStream;
-        if (inputStream == null) {
+        if (this.currentCrlStream == null) {
             this.currentCrlStream = in;
             this.sCrlData = null;
             this.sCrlDataObjectCount = 0;
-        } else if (inputStream != in) {
+        } else if (this.currentCrlStream != in) {
             this.currentCrlStream = in;
             this.sCrlData = null;
             this.sCrlDataObjectCount = 0;
         }
         try {
-            ASN1Set aSN1Set = this.sCrlData;
-            if (aSN1Set != null) {
-                if (this.sCrlDataObjectCount != aSN1Set.size()) {
+            if (this.sCrlData != null) {
+                if (this.sCrlDataObjectCount != this.sCrlData.size()) {
                     return getCRL();
                 }
                 this.sCrlData = null;
@@ -257,8 +252,7 @@ public class CertificateFactory extends CertificateFactorySpi {
         return new PKIXCertPath(certificates);
     }
 
-    /* loaded from: classes5.dex */
-    public class ExCertificateException extends CertificateException {
+    private class ExCertificateException extends CertificateException {
         private Throwable cause;
 
         public ExCertificateException(Throwable cause) {

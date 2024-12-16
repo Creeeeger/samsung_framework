@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /* loaded from: classes2.dex */
-public class InlineSuggestionSession {
+class InlineSuggestionSession {
     static final InlineSuggestionsResponse EMPTY_RESPONSE = new InlineSuggestionsResponse((List<InlineSuggestion>) Collections.emptyList());
     private static final String TAG = "ImsInlineSuggestionSession";
     private final IInlineSuggestionsRequestCallback mCallback;
@@ -36,7 +36,7 @@ public class InlineSuggestionSession {
     private InlineSuggestionsResponseCallbackImpl mResponseCallback;
     private final Consumer<InlineSuggestionsResponse> mResponseConsumer;
 
-    public InlineSuggestionSession(InlineSuggestionsRequestInfo requestInfo, IInlineSuggestionsRequestCallback callback, Function<Bundle, InlineSuggestionsRequest> requestSupplier, Supplier<IBinder> hostInputTokenSupplier, Consumer<InlineSuggestionsResponse> responseConsumer, InlineSuggestionSessionController inlineSuggestionSessionController, Handler mainThreadHandler) {
+    InlineSuggestionSession(InlineSuggestionsRequestInfo requestInfo, IInlineSuggestionsRequestCallback callback, Function<Bundle, InlineSuggestionsRequest> requestSupplier, Supplier<IBinder> hostInputTokenSupplier, Consumer<InlineSuggestionsResponse> responseConsumer, InlineSuggestionSessionController inlineSuggestionSessionController, Handler mainThreadHandler) {
         this.mRequestInfo = requestInfo;
         this.mCallback = callback;
         this.mRequestSupplier = requestSupplier;
@@ -46,23 +46,23 @@ public class InlineSuggestionSession {
         this.mMainThreadHandler = mainThreadHandler;
     }
 
-    public InlineSuggestionsRequestInfo getRequestInfo() {
+    InlineSuggestionsRequestInfo getRequestInfo() {
         return this.mRequestInfo;
     }
 
-    public IInlineSuggestionsRequestCallback getRequestCallback() {
+    IInlineSuggestionsRequestCallback getRequestCallback() {
         return this.mCallback;
     }
 
-    public boolean shouldSendImeStatus() {
+    boolean shouldSendImeStatus() {
         return this.mResponseCallback != null;
     }
 
-    public boolean isCallbackInvoked() {
+    boolean isCallbackInvoked() {
         return this.mCallbackInvoked;
     }
 
-    public void invalidate() {
+    void invalidate() {
         try {
             this.mCallback.onInlineSuggestionsSessionInvalidated();
         } catch (RemoteException e) {
@@ -75,7 +75,7 @@ public class InlineSuggestionSession {
         }
     }
 
-    public void makeInlineSuggestionRequestUncheck() {
+    void makeInlineSuggestionRequestUncheck() {
         if (this.mCallbackInvoked) {
             return;
         }
@@ -86,9 +86,8 @@ public class InlineSuggestionSession {
             } else {
                 request.setHostInputToken(this.mHostInputTokenSupplier.get());
                 request.filterContentTypes();
-                InlineSuggestionsResponseCallbackImpl inlineSuggestionsResponseCallbackImpl = new InlineSuggestionsResponseCallbackImpl();
-                this.mResponseCallback = inlineSuggestionsResponseCallbackImpl;
-                this.mCallback.onInlineSuggestionsRequest(request, inlineSuggestionsResponseCallbackImpl);
+                this.mResponseCallback = new InlineSuggestionsResponseCallbackImpl();
+                this.mCallback.onInlineSuggestionsRequest(request, this.mResponseCallback);
             }
         } catch (RemoteException e) {
             Log.w(TAG, "makeInlinedSuggestionsRequest() remote exception:" + e);
@@ -96,14 +95,14 @@ public class InlineSuggestionSession {
         this.mCallbackInvoked = true;
     }
 
-    public void handleOnInlineSuggestionsResponse(AutofillId fieldId, InlineSuggestionsResponse response) {
+    void handleOnInlineSuggestionsResponse(AutofillId fieldId, InlineSuggestionsResponse response) {
         if (!this.mInlineSuggestionSessionController.match(fieldId)) {
             return;
         }
         consumeInlineSuggestionsResponse(response);
     }
 
-    public void consumeInlineSuggestionsResponse(InlineSuggestionsResponse response) {
+    void consumeInlineSuggestionsResponse(InlineSuggestionsResponse response) {
         boolean isResponseEmpty = response.getInlineSuggestions().isEmpty();
         if (isResponseEmpty && Boolean.TRUE.equals(this.mPreviousResponseIsEmpty)) {
             return;
@@ -112,14 +111,9 @@ public class InlineSuggestionSession {
         this.mResponseConsumer.accept(response);
     }
 
-    /* loaded from: classes2.dex */
-    public static final class InlineSuggestionsResponseCallbackImpl extends IInlineSuggestionsResponseCallback.Stub {
+    private static final class InlineSuggestionsResponseCallbackImpl extends IInlineSuggestionsResponseCallback.Stub {
         private volatile boolean mInvalid;
         private final WeakReference<InlineSuggestionSession> mSession;
-
-        /* synthetic */ InlineSuggestionsResponseCallbackImpl(InlineSuggestionSession inlineSuggestionSession, InlineSuggestionsResponseCallbackImplIA inlineSuggestionsResponseCallbackImplIA) {
-            this(inlineSuggestionSession);
-        }
 
         private InlineSuggestionsResponseCallbackImpl(InlineSuggestionSession session) {
             this.mInvalid = false;

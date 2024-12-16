@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IGoodCatchDispatcher extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IGoodCatchDispatcher";
 
@@ -14,7 +14,6 @@ public interface IGoodCatchDispatcher extends IInterface {
 
     void onStop(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGoodCatchDispatcher {
         @Override // com.samsung.android.sepunion.IGoodCatchDispatcher
         public void onStart(String function) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IGoodCatchDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGoodCatchDispatcher {
         static final int TRANSACTION_onStart = 1;
         static final int TRANSACTION_onStop = 2;
@@ -76,31 +74,27 @@ public interface IGoodCatchDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGoodCatchDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGoodCatchDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGoodCatchDispatcher.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStart(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStop(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStart(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStop(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IGoodCatchDispatcher {
+        private static class Proxy implements IGoodCatchDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

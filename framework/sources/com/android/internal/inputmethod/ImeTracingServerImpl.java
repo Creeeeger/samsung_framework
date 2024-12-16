@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes4.dex */
-public class ImeTracingServerImpl extends ImeTracing {
+/* loaded from: classes5.dex */
+class ImeTracingServerImpl extends ImeTracing {
     private static final int BUFFER_CAPACITY = 4194304;
     private static final long MAGIC_NUMBER_CLIENTS_VALUE = 4990904633913462089L;
     private static final long MAGIC_NUMBER_IMMS_VALUE = 4990904633914117449L;
@@ -30,22 +30,25 @@ public class ImeTracingServerImpl extends ImeTracing {
     private final TraceBuffer mBufferImms = new TraceBuffer(4194304);
     private final File mTraceFileImms = new File("/data/misc/wmtrace/ime_trace_managerservice.winscope");
 
+    ImeTracingServerImpl() {
+    }
+
     @Override // com.android.internal.inputmethod.ImeTracing
     public void addToBuffer(ProtoOutputStream proto, int source) {
         if (isAvailable() && isEnabled()) {
             switch (source) {
                 case 0:
                     this.mBufferClients.add(proto);
-                    return;
+                    break;
                 case 1:
                     this.mBufferIms.add(proto);
-                    return;
+                    break;
                 case 2:
                     this.mBufferImms.add(proto);
-                    return;
+                    break;
                 default:
                     Log.w("imeTracing", "Request to add to buffer, but source not recognised.");
-                    return;
+                    break;
             }
         }
     }
@@ -59,7 +62,7 @@ public class ImeTracingServerImpl extends ImeTracing {
     }
 
     @Override // com.android.internal.inputmethod.ImeTracing
-    public void triggerManagerServiceDump(String where) {
+    public void triggerManagerServiceDump(String where, ImeTracing.ServiceDumper dumper) {
         if (!isEnabled() || !isAvailable()) {
             return;
         }

@@ -15,7 +15,6 @@ public interface ISuggestionService extends IInterface {
 
     void launchSuggestion(Suggestion suggestion) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISuggestionService {
         @Override // android.service.settings.suggestions.ISuggestionService
         public List<Suggestion> getSuggestions() throws RemoteException {
@@ -36,7 +35,6 @@ public interface ISuggestionService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISuggestionService {
         public static final String DESCRIPTOR = "android.service.settings.suggestions.ISuggestionService";
         static final int TRANSACTION_dismissSuggestion = 3;
@@ -86,36 +84,33 @@ public interface ISuggestionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 2:
+                    List<Suggestion> _result = getSuggestions();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 3:
+                    Suggestion _arg0 = (Suggestion) data.readTypedObject(Suggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    dismissSuggestion(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    Suggestion _arg02 = (Suggestion) data.readTypedObject(Suggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    launchSuggestion(_arg02);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 2:
-                            List<Suggestion> _result = getSuggestions();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 3:
-                            Suggestion _arg0 = (Suggestion) data.readTypedObject(Suggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            dismissSuggestion(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            Suggestion _arg02 = (Suggestion) data.readTypedObject(Suggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            launchSuggestion(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ISuggestionService {
             private IBinder mRemote;
 

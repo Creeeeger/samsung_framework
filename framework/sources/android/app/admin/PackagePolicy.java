@@ -12,14 +12,13 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class PackagePolicy implements Parcelable {
     public static final Parcelable.Creator<PackagePolicy> CREATOR = new Parcelable.Creator<PackagePolicy>() { // from class: android.app.admin.PackagePolicy.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackagePolicy createFromParcel(Parcel in) {
             return new PackagePolicy(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackagePolicy[] newArray(int size) {
             return new PackagePolicy[size];
@@ -32,12 +31,7 @@ public final class PackagePolicy implements Parcelable {
     private int mPolicyType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PackagePolicyType {
-    }
-
-    /* synthetic */ PackagePolicy(Parcel parcel, PackagePolicyIA packagePolicyIA) {
-        this(parcel);
     }
 
     public PackagePolicy(int policyType) {
@@ -73,23 +67,6 @@ public final class PackagePolicy implements Parcelable {
             return true;
         }
         return this.mPolicyType == 2 && systemPackages.contains(packageName);
-    }
-
-    /* renamed from: android.app.admin.PackagePolicy$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PackagePolicy> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackagePolicy createFromParcel(Parcel in) {
-            return new PackagePolicy(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackagePolicy[] newArray(int size) {
-            return new PackagePolicy[size];
-        }
     }
 
     @Override // android.os.Parcelable

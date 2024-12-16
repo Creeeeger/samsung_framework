@@ -11,9 +11,8 @@ public class Matrix2f {
     }
 
     public Matrix2f(float[] dataArray) {
-        float[] fArr = new float[4];
-        this.mMat = fArr;
-        System.arraycopy(dataArray, 0, fArr, 0, fArr.length);
+        this.mMat = new float[4];
+        System.arraycopy(dataArray, 0, this.mMat, 0, this.mMat.length);
     }
 
     public float[] getArray() {
@@ -29,35 +28,30 @@ public class Matrix2f {
     }
 
     public void loadIdentity() {
-        float[] fArr = this.mMat;
-        fArr[0] = 1.0f;
-        fArr[1] = 0.0f;
-        fArr[2] = 0.0f;
-        fArr[3] = 1.0f;
+        this.mMat[0] = 1.0f;
+        this.mMat[1] = 0.0f;
+        this.mMat[2] = 0.0f;
+        this.mMat[3] = 1.0f;
     }
 
     public void load(Matrix2f src) {
-        float[] array = src.getArray();
-        float[] fArr = this.mMat;
-        System.arraycopy(array, 0, fArr, 0, fArr.length);
+        System.arraycopy(src.getArray(), 0, this.mMat, 0, this.mMat.length);
     }
 
     public void loadRotate(float rot) {
         float rot2 = rot * 0.017453292f;
         float c = (float) Math.cos(rot2);
         float s = (float) Math.sin(rot2);
-        float[] fArr = this.mMat;
-        fArr[0] = c;
-        fArr[1] = -s;
-        fArr[2] = s;
-        fArr[3] = c;
+        this.mMat[0] = c;
+        this.mMat[1] = -s;
+        this.mMat[2] = s;
+        this.mMat[3] = c;
     }
 
     public void loadScale(float x, float y) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[0] = x;
-        fArr[3] = y;
+        this.mMat[0] = x;
+        this.mMat[3] = y;
     }
 
     public void loadMultiply(Matrix2f lhs, Matrix2f rhs) {
@@ -93,9 +87,8 @@ public class Matrix2f {
     }
 
     public void transpose() {
-        float[] fArr = this.mMat;
-        float temp = fArr[1];
-        fArr[1] = fArr[2];
-        fArr[2] = temp;
+        float temp = this.mMat[1];
+        this.mMat[1] = this.mMat[2];
+        this.mMat[2] = temp;
     }
 }

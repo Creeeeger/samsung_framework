@@ -1,6 +1,5 @@
 package com.android.internal.inputmethod;
 
-import android.graphics.Matrix;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,25 +10,23 @@ import com.android.internal.inputmethod.IInputMethodSession;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class InputBindResult implements Parcelable {
     public final SparseArray<IAccessibilityInputMethodSession> accessibilitySessions;
     public final InputChannel channel;
     public final String id;
     public final boolean isInputMethodSuppressingSpellChecker;
-    private final float[] mVirtualDisplayToScreenMatrixValues;
     public final IInputMethodSession method;
     public final int result;
     public final int sequence;
     public static final Parcelable.Creator<InputBindResult> CREATOR = new Parcelable.Creator<InputBindResult>() { // from class: com.android.internal.inputmethod.InputBindResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputBindResult createFromParcel(Parcel source) {
             return new InputBindResult(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputBindResult[] newArray(int size) {
             return new InputBindResult[size];
@@ -48,7 +45,6 @@ public final class InputBindResult implements Parcelable {
     public static final InputBindResult USER_SWITCHING = error(3);
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ResultCode {
         public static final int ERROR_DISPLAY_ID_MISMATCH = 14;
         public static final int ERROR_IME_NOT_CONNECTED = 9;
@@ -69,33 +65,13 @@ public final class InputBindResult implements Parcelable {
         public static final int SUCCESS_WITH_IME_SESSION = 0;
     }
 
-    /* synthetic */ InputBindResult(Parcel parcel, InputBindResultIA inputBindResultIA) {
-        this(parcel);
-    }
-
-    public Matrix getVirtualDisplayToScreenMatrix() {
-        if (this.mVirtualDisplayToScreenMatrixValues == null) {
-            return null;
-        }
-        Matrix matrix = new Matrix();
-        matrix.setValues(this.mVirtualDisplayToScreenMatrixValues);
-        return matrix;
-    }
-
-    public InputBindResult(int result, IInputMethodSession method, SparseArray<IAccessibilityInputMethodSession> accessibilitySessions, InputChannel channel, String id, int sequence, Matrix virtualDisplayToScreenMatrix, boolean isInputMethodSuppressingSpellChecker) {
+    public InputBindResult(int result, IInputMethodSession method, SparseArray<IAccessibilityInputMethodSession> accessibilitySessions, InputChannel channel, String id, int sequence, boolean isInputMethodSuppressingSpellChecker) {
         this.result = result;
         this.method = method;
         this.accessibilitySessions = accessibilitySessions;
         this.channel = channel;
         this.id = id;
         this.sequence = sequence;
-        if (virtualDisplayToScreenMatrix == null) {
-            this.mVirtualDisplayToScreenMatrixValues = null;
-        } else {
-            float[] fArr = new float[9];
-            this.mVirtualDisplayToScreenMatrixValues = fArr;
-            virtualDisplayToScreenMatrix.getValues(fArr);
-        }
         this.isInputMethodSuppressingSpellChecker = isInputMethodSuppressingSpellChecker;
     }
 
@@ -121,23 +97,21 @@ public final class InputBindResult implements Parcelable {
         }
         this.id = source.readString();
         this.sequence = source.readInt();
-        this.mVirtualDisplayToScreenMatrixValues = source.createFloatArray();
         this.isInputMethodSuppressingSpellChecker = source.readBoolean();
     }
 
     public String toString() {
-        return "InputBindResult{result=" + getResultString() + " method=" + this.method + " id=" + this.id + " sequence=" + this.sequence + " virtualDisplayToScreenMatrix=" + getVirtualDisplayToScreenMatrix() + " isInputMethodSuppressingSpellChecker=" + this.isInputMethodSuppressingSpellChecker + "}";
+        return "InputBindResult{result=" + getResultString() + " method=" + this.method + " id=" + this.id + " sequence=" + this.sequence + " result=" + this.result + " isInputMethodSuppressingSpellChecker=" + this.isInputMethodSuppressingSpellChecker + "}";
     }
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.result);
         dest.writeStrongInterface(this.method);
-        SparseArray<IAccessibilityInputMethodSession> sparseArray = this.accessibilitySessions;
-        if (sparseArray == null) {
+        if (this.accessibilitySessions == null) {
             dest.writeInt(-1);
         } else {
-            int n = sparseArray.size();
+            int n = this.accessibilitySessions.size();
             dest.writeInt(n);
             for (int i = 0; i < n; i++) {
                 dest.writeInt(this.accessibilitySessions.keyAt(i));
@@ -152,32 +126,13 @@ public final class InputBindResult implements Parcelable {
         }
         dest.writeString(this.id);
         dest.writeInt(this.sequence);
-        dest.writeFloatArray(this.mVirtualDisplayToScreenMatrixValues);
         dest.writeBoolean(this.isInputMethodSuppressingSpellChecker);
-    }
-
-    /* renamed from: com.android.internal.inputmethod.InputBindResult$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InputBindResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputBindResult createFromParcel(Parcel source) {
-            return new InputBindResult(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputBindResult[] newArray(int size) {
-            return new InputBindResult[size];
-        }
     }
 
     @Override // android.os.Parcelable
     public int describeContents() {
-        InputChannel inputChannel = this.channel;
-        if (inputChannel != null) {
-            return inputChannel.describeContents();
+        if (this.channel != null) {
+            return this.channel.describeContents();
         }
         return 0;
     }
@@ -224,6 +179,6 @@ public final class InputBindResult implements Parcelable {
     }
 
     private static InputBindResult error(int result) {
-        return new InputBindResult(result, null, null, null, null, -1, null, false);
+        return new InputBindResult(result, null, null, null, null, -1, false);
     }
 }

@@ -16,17 +16,14 @@ public interface Parcelable {
     public static final int PARCELABLE_STABILITY_VINTF = 1;
     public static final int PARCELABLE_WRITE_RETURN_VALUE = 1;
 
-    /* loaded from: classes3.dex */
     public interface ClassLoaderCreator<T> extends Creator<T> {
         T createFromParcel(Parcel parcel, ClassLoader classLoader);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ContentsFlags {
     }
 
-    /* loaded from: classes3.dex */
     public interface Creator<T> {
         T createFromParcel(Parcel parcel);
 
@@ -34,12 +31,10 @@ public interface Parcelable {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Stability {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface WriteFlags {
     }
 

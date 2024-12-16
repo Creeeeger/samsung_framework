@@ -13,23 +13,6 @@ public class ZoomButton extends ImageButton implements View.OnLongClickListener 
     private final Runnable mRunnable;
     private long mZoomSpeed;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.ZoomButton$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (ZoomButton.this.hasOnClickListeners() && ZoomButton.this.mIsInLongpress && ZoomButton.this.isEnabled()) {
-                ZoomButton.this.callOnClick();
-                ZoomButton zoomButton = ZoomButton.this;
-                zoomButton.postDelayed(this, zoomButton.mZoomSpeed);
-            }
-        }
-    }
-
     public ZoomButton(Context context) {
         this(context, null);
     }
@@ -45,15 +28,11 @@ public class ZoomButton extends ImageButton implements View.OnLongClickListener 
     public ZoomButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mRunnable = new Runnable() { // from class: android.widget.ZoomButton.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 if (ZoomButton.this.hasOnClickListeners() && ZoomButton.this.mIsInLongpress && ZoomButton.this.isEnabled()) {
                     ZoomButton.this.callOnClick();
-                    ZoomButton zoomButton = ZoomButton.this;
-                    zoomButton.postDelayed(this, zoomButton.mZoomSpeed);
+                    ZoomButton.this.postDelayed(this, ZoomButton.this.mZoomSpeed);
                 }
             }
         };

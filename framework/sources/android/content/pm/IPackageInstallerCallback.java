@@ -18,7 +18,6 @@ public interface IPackageInstallerCallback extends IInterface {
 
     void onSessionProgressChanged(int i, float f) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPackageInstallerCallback {
         @Override // android.content.pm.IPackageInstallerCallback
         public void onSessionCreated(int sessionId) throws RemoteException {
@@ -46,7 +45,6 @@ public interface IPackageInstallerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPackageInstallerCallback {
         public static final String DESCRIPTOR = "android.content.pm.IPackageInstallerCallback";
         static final int TRANSACTION_onSessionActiveChanged = 3;
@@ -102,48 +100,45 @@ public interface IPackageInstallerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSessionCreated(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSessionBadgingChanged(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onSessionActiveChanged(_arg03, _arg1);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    float _arg12 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onSessionProgressChanged(_arg04, _arg12);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onSessionFinished(_arg05, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSessionCreated(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSessionBadgingChanged(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onSessionActiveChanged(_arg03, _arg1);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            float _arg12 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onSessionProgressChanged(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onSessionFinished(_arg05, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPackageInstallerCallback {
+        private static class Proxy implements IPackageInstallerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

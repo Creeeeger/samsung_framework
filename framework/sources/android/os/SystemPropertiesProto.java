@@ -34,7 +34,6 @@ public final class SystemPropertiesProto {
     public static final long WIFI_DIRECT_INTERFACE = 1138166333470L;
     public static final long WIFI_INTERFACE = 1138166333471L;
 
-    /* loaded from: classes3.dex */
     public final class Property {
         public static final long NAME = 1138166333441L;
         public static final long VALUE = 1138166333442L;
@@ -43,7 +42,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class AacDrc {
         public static final long BOOST = 1120986464257L;
         public static final long CUT = 1120986464258L;
@@ -55,7 +53,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Aaudio {
         public static final long HW_BURST_MIN_USEC = 1120986464257L;
         public static final long MINIMUM_SLEEP_USEC = 1120986464258L;
@@ -68,7 +65,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Camera {
         public static final long DISABLE_ZSL_MODE = 1133871366145L;
         public static final long FIFO_DISABLE = 1120986464258L;
@@ -77,7 +73,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class DalvikVm {
         public static final long APPIMAGEFORMAT = 1138166333441L;
         public static final long BACKGROUNDGCTYPE = 1138166333442L;
@@ -138,7 +133,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class InitSvc {
         public static final long ADBD = 1159641169921L;
         public static final long AUDIOSERVER = 1159641169922L;
@@ -174,7 +168,7 @@ public final class SystemPropertiesProto {
         public static final long TOMBSTONED = 1159641169949L;
         public static final long UEVENTD = 1159641169950L;
         public static final long UPDATE_ENGINE = 1159641169951L;
-        public static final long UPDATE_VERIFIER_NONENCRYPTED = 1159641169952L;
+        public static final long UPDATE_VERIFIER = 1159641169952L;
         public static final long VIRTUAL_TOUCHPAD = 1159641169953L;
         public static final long VNDSERVICEMANAGER = 1159641169954L;
         public static final long VOLD = 1159641169955L;
@@ -189,7 +183,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Log {
         public static final long TAG_STATS_LOG = 1138166333442L;
         public static final long TAG_WIFI_HAL = 1138166333441L;
@@ -198,7 +191,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Persist {
         public static final long CONFIG_CALIBRATION_FAC = 1138166333441L;
         public static final long DBG_VOLTE_AVAIL_OVR = 1120986464258L;
@@ -216,7 +208,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class PmDexopt {
         public static final long AB_OTA = 1138166333441L;
         public static final long BG_DEXOPT = 1138166333442L;
@@ -228,7 +219,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Ro {
         public static final long ADB_SECURE = 1133871366145L;
         public static final long ARCH = 1138166333442L;
@@ -278,7 +268,6 @@ public final class SystemPropertiesProto {
         public Ro() {
         }
 
-        /* loaded from: classes3.dex */
         public final class Boot {
             public static final long AVB_VERSION = 1138166333441L;
             public static final long BASEBAND = 1138166333442L;
@@ -305,7 +294,6 @@ public final class SystemPropertiesProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class BootImage {
             public static final long BUILD_DATE = 1138166333441L;
             public static final long BUILD_DATE_UTC = 1112396529666L;
@@ -315,7 +303,6 @@ public final class SystemPropertiesProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class Build {
             public static final long DATE = 1138166333441L;
             public static final long DATE_UTC = 1112396529666L;
@@ -333,7 +320,6 @@ public final class SystemPropertiesProto {
             public Build() {
             }
 
-            /* loaded from: classes3.dex */
             public final class Version {
                 public static final long BASE_OS = 1138166333441L;
                 public static final long CODENAME = 1138166333442L;
@@ -348,7 +334,6 @@ public final class SystemPropertiesProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class Config {
             public static final long ALARM_ALERT = 1138166333441L;
             public static final long MEDIA_VOL_STEPS = 1120986464258L;
@@ -360,7 +345,6 @@ public final class SystemPropertiesProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class Hardware {
             public static final long ACTIVITY_RECOGNITION = 1138166333442L;
             public static final long AUDIO = 1138166333443L;
@@ -406,7 +390,6 @@ public final class SystemPropertiesProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class Product {
             public static final long BOARD = 1138166333441L;
             public static final long BRAND = 1138166333442L;
@@ -424,7 +407,6 @@ public final class SystemPropertiesProto {
             public Product() {
             }
 
-            /* loaded from: classes3.dex */
             public final class Vendor {
                 public static final long BRAND = 1138166333441L;
                 public static final long DEVICE = 1138166333442L;
@@ -437,7 +419,6 @@ public final class SystemPropertiesProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class Telephony {
             public static final long CALL_RING_MULTIPLE = 1133871366145L;
             public static final long DEFAULT_CDMA_SUB = 1120986464258L;
@@ -447,7 +428,6 @@ public final class SystemPropertiesProto {
             }
         }
 
-        /* loaded from: classes3.dex */
         public final class Vendor {
             public static final long BUILD_DATE = 1138166333441L;
             public static final long BUILD_DATE_UTC = 1112396529666L;
@@ -458,7 +438,6 @@ public final class SystemPropertiesProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Sys {
         public static final long BOOT_COMPLETED = 1120986464257L;
         public static final long BOOT_FROM_CHARGER_MODE = 1120986464258L;
@@ -469,7 +448,6 @@ public final class SystemPropertiesProto {
         public Sys() {
         }
 
-        /* loaded from: classes3.dex */
         public final class Usb {
             public static final long CONFIG = 1138166333441L;
             public static final long CONFIGFS = 1120986464258L;

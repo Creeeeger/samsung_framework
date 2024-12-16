@@ -8,6 +8,8 @@ import android.os.RemoteException;
 
 /* loaded from: classes3.dex */
 public interface IPersistentDataBlockService extends IInterface {
+    boolean deactivateFactoryResetProtection(byte[] bArr) throws RemoteException;
+
     int getDataBlockSize() throws RemoteException;
 
     int getFlashLockState() throws RemoteException;
@@ -20,9 +22,11 @@ public interface IPersistentDataBlockService extends IInterface {
 
     boolean hasFrpCredentialHandle() throws RemoteException;
 
-    boolean isEnabled() throws RemoteException;
+    boolean isFactoryResetProtectionActive() throws RemoteException;
 
     byte[] read() throws RemoteException;
+
+    boolean setFactoryResetProtectionSecret(byte[] bArr) throws RemoteException;
 
     void setOemUnlockEnabled(boolean z) throws RemoteException;
 
@@ -30,7 +34,6 @@ public interface IPersistentDataBlockService extends IInterface {
 
     int write(byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPersistentDataBlockService {
         @Override // android.service.persistentdata.IPersistentDataBlockService
         public int write(byte[] data) throws RemoteException {
@@ -81,7 +84,17 @@ public interface IPersistentDataBlockService extends IInterface {
         }
 
         @Override // android.service.persistentdata.IPersistentDataBlockService
-        public boolean isEnabled() throws RemoteException {
+        public boolean isFactoryResetProtectionActive() throws RemoteException {
+            return false;
+        }
+
+        @Override // android.service.persistentdata.IPersistentDataBlockService
+        public boolean deactivateFactoryResetProtection(byte[] secret) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.service.persistentdata.IPersistentDataBlockService
+        public boolean setFactoryResetProtectionSecret(byte[] secret) throws RemoteException {
             return false;
         }
 
@@ -91,17 +104,18 @@ public interface IPersistentDataBlockService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPersistentDataBlockService {
         public static final String DESCRIPTOR = "android.service.persistentdata.IPersistentDataBlockService";
+        static final int TRANSACTION_deactivateFactoryResetProtection = 12;
         static final int TRANSACTION_getDataBlockSize = 4;
         static final int TRANSACTION_getFlashLockState = 8;
         static final int TRANSACTION_getMaximumDataBlockSize = 5;
         static final int TRANSACTION_getOemUnlockEnabled = 7;
         static final int TRANSACTION_getPersistentDataPackageName = 10;
         static final int TRANSACTION_hasFrpCredentialHandle = 9;
-        static final int TRANSACTION_isEnabled = 11;
+        static final int TRANSACTION_isFactoryResetProtectionActive = 11;
         static final int TRANSACTION_read = 2;
+        static final int TRANSACTION_setFactoryResetProtectionSecret = 13;
         static final int TRANSACTION_setOemUnlockEnabled = 6;
         static final int TRANSACTION_wipe = 3;
         static final int TRANSACTION_write = 1;
@@ -149,7 +163,11 @@ public interface IPersistentDataBlockService extends IInterface {
                 case 10:
                     return "getPersistentDataPackageName";
                 case 11:
-                    return "isEnabled";
+                    return "isFactoryResetProtectionActive";
+                case 12:
+                    return "deactivateFactoryResetProtection";
+                case 13:
+                    return "setFactoryResetProtectionSecret";
                 default:
                     return null;
             }
@@ -165,78 +183,88 @@ public interface IPersistentDataBlockService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result = write(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    byte[] _result2 = read();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 3:
+                    wipe();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _result3 = getDataBlockSize();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 5:
+                    long _result4 = getMaximumDataBlockSize();
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    return true;
+                case 6:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setOemUnlockEnabled(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    boolean _result5 = getOemUnlockEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    int _result6 = getFlashLockState();
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 9:
+                    boolean _result7 = hasFrpCredentialHandle();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 10:
+                    String _result8 = getPersistentDataPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result8);
+                    return true;
+                case 11:
+                    boolean _result9 = isFactoryResetProtectionActive();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 12:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = deactivateFactoryResetProtection(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 13:
+                    byte[] _arg04 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = setFactoryResetProtectionSecret(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result = write(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            byte[] _result2 = read();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 3:
-                            wipe();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _result3 = getDataBlockSize();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 5:
-                            long _result4 = getMaximumDataBlockSize();
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        case 6:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setOemUnlockEnabled(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            boolean _result5 = getOemUnlockEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            int _result6 = getFlashLockState();
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 9:
-                            boolean _result7 = hasFrpCredentialHandle();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 10:
-                            String _result8 = getPersistentDataPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result8);
-                            return true;
-                        case 11:
-                            boolean _result9 = isEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPersistentDataBlockService {
+        private static class Proxy implements IPersistentDataBlockService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -411,7 +439,7 @@ public interface IPersistentDataBlockService extends IInterface {
             }
 
             @Override // android.service.persistentdata.IPersistentDataBlockService
-            public boolean isEnabled() throws RemoteException {
+            public boolean isFactoryResetProtectionActive() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -425,11 +453,45 @@ public interface IPersistentDataBlockService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.service.persistentdata.IPersistentDataBlockService
+            public boolean deactivateFactoryResetProtection(byte[] secret) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeByteArray(secret);
+                    this.mRemote.transact(12, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.service.persistentdata.IPersistentDataBlockService
+            public boolean setFactoryResetProtectionSecret(byte[] secret) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeByteArray(secret);
+                    this.mRemote.transact(13, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 10;
+            return 12;
         }
     }
 }

@@ -4,27 +4,24 @@ import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class LocalServerSocket implements Closeable {
     private static final int LISTEN_BACKLOG = 50;
     private final LocalSocketImpl impl;
     private final LocalSocketAddress localAddress;
 
     public LocalServerSocket(String name) throws IOException {
-        LocalSocketImpl localSocketImpl = new LocalSocketImpl();
-        this.impl = localSocketImpl;
-        localSocketImpl.create(2);
-        LocalSocketAddress localSocketAddress = new LocalSocketAddress(name);
-        this.localAddress = localSocketAddress;
-        localSocketImpl.bind(localSocketAddress);
-        localSocketImpl.listen(50);
+        this.impl = new LocalSocketImpl();
+        this.impl.create(2);
+        this.localAddress = new LocalSocketAddress(name);
+        this.impl.bind(this.localAddress);
+        this.impl.listen(50);
     }
 
     public LocalServerSocket(FileDescriptor fd) throws IOException {
-        LocalSocketImpl localSocketImpl = new LocalSocketImpl(fd);
-        this.impl = localSocketImpl;
-        localSocketImpl.listen(50);
-        this.localAddress = localSocketImpl.getSockAddress();
+        this.impl = new LocalSocketImpl(fd);
+        this.impl.listen(50);
+        this.localAddress = this.impl.getSockAddress();
     }
 
     public LocalSocketAddress getLocalSocketAddress() {

@@ -12,7 +12,6 @@ public interface IGameManager extends IInterface {
 
     int getGameMode() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IGameManager {
         @Override // android.app.IGameManager
         public int getGameMode() throws RemoteException {
@@ -25,7 +24,6 @@ public interface IGameManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IGameManager {
         static final int TRANSACTION_getGameMode = 1;
 
@@ -68,24 +66,21 @@ public interface IGameManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGameManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGameManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGameManager.DESCRIPTOR);
+                case 1:
+                    int _result = getGameMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = getGameMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IGameManager {
             private IBinder mRemote;
 

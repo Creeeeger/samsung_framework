@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInteractiveAppServiceCallback extends IInterface {
     public static final String DESCRIPTOR = "android.media.tv.interactive.ITvInteractiveAppServiceCallback";
 
     void onStateChanged(int i, int i2, int i3) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInteractiveAppServiceCallback {
         @Override // android.media.tv.interactive.ITvInteractiveAppServiceCallback
         public void onStateChanged(int type, int state, int error) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ITvInteractiveAppServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInteractiveAppServiceCallback {
         static final int TRANSACTION_onStateChanged = 1;
 
@@ -67,28 +65,24 @@ public interface ITvInteractiveAppServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITvInteractiveAppServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITvInteractiveAppServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITvInteractiveAppServiceCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStateChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStateChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITvInteractiveAppServiceCallback {
+        private static class Proxy implements ITvInteractiveAppServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

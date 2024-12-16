@@ -17,7 +17,7 @@ public class ASN1StreamParser {
     public ASN1StreamParser(InputStream in, int limit) {
         this._in = in;
         this._limit = limit;
-        this.tmpBuffers = new byte[11];
+        this.tmpBuffers = new byte[11][];
     }
 
     public ASN1StreamParser(byte[] encoding) {
@@ -39,9 +39,8 @@ public class ASN1StreamParser {
         }
     }
 
-    public ASN1Encodable readImplicit(boolean constructed, int tag) throws IOException {
-        InputStream inputStream = this._in;
-        if (inputStream instanceof IndefiniteLengthInputStream) {
+    ASN1Encodable readImplicit(boolean constructed, int tag) throws IOException {
+        if (this._in instanceof IndefiniteLengthInputStream) {
             if (!constructed) {
                 throw new IOException("indefinite-length primitive encoding encountered");
             }
@@ -59,7 +58,7 @@ public class ASN1StreamParser {
         }
         switch (tag) {
             case 4:
-                return new DEROctetStringParser((DefiniteLengthInputStream) inputStream);
+                return new DEROctetStringParser((DefiniteLengthInputStream) this._in);
             case 16:
                 throw new ASN1Exception("sets must use constructed encoding (see X.690 8.11.1/8.12.1)");
             case 17:
@@ -68,7 +67,7 @@ public class ASN1StreamParser {
         throw new ASN1Exception("implicit tagging not implemented");
     }
 
-    public ASN1Primitive readTaggedObject(boolean constructed, int tag) throws IOException {
+    ASN1Primitive readTaggedObject(boolean constructed, int tag) throws IOException {
         if (!constructed) {
             DefiniteLengthInputStream defIn = (DefiniteLengthInputStream) this._in;
             return new DLTaggedObject(false, tag, new DEROctetString(defIn.toByteArray()));
@@ -143,13 +142,12 @@ public class ASN1StreamParser {
     }
 
     private void set00Check(boolean enabled) {
-        InputStream inputStream = this._in;
-        if (inputStream instanceof IndefiniteLengthInputStream) {
-            ((IndefiniteLengthInputStream) inputStream).setEofOn00(enabled);
+        if (this._in instanceof IndefiniteLengthInputStream) {
+            ((IndefiniteLengthInputStream) this._in).setEofOn00(enabled);
         }
     }
 
-    public ASN1EncodableVector readVector() throws IOException {
+    ASN1EncodableVector readVector() throws IOException {
         ASN1Encodable readObject;
         ASN1Encodable obj = readObject();
         if (obj == null) {

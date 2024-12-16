@@ -45,7 +45,7 @@ public class DERBMPString extends ASN1Primitive implements ASN1String {
         this.string = cs;
     }
 
-    public DERBMPString(char[] string) {
+    DERBMPString(char[] string) {
         if (string == null) {
             throw new NullPointerException("'string' cannot be null");
         }
@@ -74,7 +74,7 @@ public class DERBMPString extends ASN1Primitive implements ASN1String {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    protected boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof DERBMPString)) {
             return false;
         }
@@ -83,17 +83,17 @@ public class DERBMPString extends ASN1Primitive implements ASN1String {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         return StreamUtil.calculateBodyLength(this.string.length * 2) + 1 + (this.string.length * 2);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         int count = this.string.length;
         if (withTag) {
             out.write(30);
@@ -103,11 +103,10 @@ public class DERBMPString extends ASN1Primitive implements ASN1String {
         int i = 0;
         int limit = count & (-4);
         while (i < limit) {
-            char[] cArr = this.string;
-            char c0 = cArr[i];
-            char c1 = cArr[i + 1];
-            char c2 = cArr[i + 2];
-            char c3 = cArr[i + 3];
+            char c0 = this.string[i];
+            char c1 = this.string[i + 1];
+            char c2 = this.string[i + 2];
+            char c3 = this.string[i + 3];
             i += 4;
             buf[0] = (byte) (c0 >> '\b');
             buf[1] = (byte) c0;

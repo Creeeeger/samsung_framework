@@ -8,9 +8,7 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes2.dex */
 public class UsbInterface implements Parcelable {
     public static final Parcelable.Creator<UsbInterface> CREATOR = new Parcelable.Creator<UsbInterface>() { // from class: android.hardware.usb.UsbInterface.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsbInterface createFromParcel(Parcel in) {
             int id = in.readInt();
@@ -25,6 +23,7 @@ public class UsbInterface implements Parcelable {
             return intf;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsbInterface[] newArray(int size) {
             return new UsbInterface[size];
@@ -91,32 +90,6 @@ public class UsbInterface implements Parcelable {
         }
         builder.append(NavigationBarInflaterView.SIZE_MOD_END);
         return builder.toString();
-    }
-
-    /* renamed from: android.hardware.usb.UsbInterface$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UsbInterface> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsbInterface createFromParcel(Parcel in) {
-            int id = in.readInt();
-            int alternateSetting = in.readInt();
-            String name = in.readString();
-            int Class = in.readInt();
-            int subClass = in.readInt();
-            int protocol = in.readInt();
-            Parcelable[] endpoints = in.readParcelableArray(UsbEndpoint.class.getClassLoader());
-            UsbInterface intf = new UsbInterface(id, alternateSetting, name, Class, subClass, protocol);
-            intf.setEndpoints(endpoints);
-            return intf;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsbInterface[] newArray(int size) {
-            return new UsbInterface[size];
-        }
     }
 
     @Override // android.os.Parcelable

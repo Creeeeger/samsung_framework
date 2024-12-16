@@ -1,9 +1,8 @@
 package com.android.internal.logging;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface UiEventLogger {
 
-    /* loaded from: classes4.dex */
     public interface UiEventEnum {
         public static final int RESERVE_NEW_UI_EVENT_ID = Integer.MIN_VALUE;
 

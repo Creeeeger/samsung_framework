@@ -10,7 +10,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import java.io.InputStream;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImageSpan extends DynamicDrawableSpan {
     private Uri mContentUri;
     private Context mContext;
@@ -42,7 +42,7 @@ public class ImageSpan extends DynamicDrawableSpan {
             bitmapDrawable = new BitmapDrawable(bitmap);
         }
         this.mDrawable = bitmapDrawable;
-        int width = bitmapDrawable.getIntrinsicWidth();
+        int width = this.mDrawable.getIntrinsicWidth();
         int height = this.mDrawable.getIntrinsicHeight();
         this.mDrawable.setBounds(0, 0, width > 0 ? width : 0, height > 0 ? height : 0);
     }

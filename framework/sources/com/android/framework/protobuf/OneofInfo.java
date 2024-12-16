@@ -3,7 +3,7 @@ package com.android.framework.protobuf;
 import java.lang.reflect.Field;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class OneofInfo {
     private final Field caseField;
     private final int id;

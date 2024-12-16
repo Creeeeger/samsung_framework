@@ -2,7 +2,6 @@ package com.samsung.vekit.Animation;
 
 import android.util.Log;
 import com.samsung.vekit.Common.Object.Element;
-import com.samsung.vekit.Common.Object.KeyFrame;
 import com.samsung.vekit.Common.Type.AnimationType;
 import com.samsung.vekit.Common.Type.ItemType;
 import com.samsung.vekit.Common.Type.LayerType;
@@ -70,13 +69,6 @@ public class TransitionAnimation extends Animation<Float> {
     }
 
     @Override // com.samsung.vekit.Animation.Animation
-    @Deprecated
-    public TransitionAnimation setDuration(long duration) {
-        setKeyFrame(new KeyFrame(Float.valueOf(0.0f), Float.valueOf(1.0f), duration));
-        return this;
-    }
-
-    @Override // com.samsung.vekit.Animation.Animation
     public TransitionAnimation setTarget(Element target) {
         return (TransitionAnimation) super.setTarget(target);
     }
@@ -112,7 +104,7 @@ public class TransitionAnimation extends Animation<Float> {
     }
 
     public void checkValidItem(final Item item) throws Exception {
-        ItemType[] availableTypes = {ItemType.IMAGE, ItemType.VIDEO, ItemType.COLOR};
+        ItemType[] availableTypes = {ItemType.IMAGE, ItemType.VIDEO, ItemType.COLOR, ItemType.PORTRAIT_VIDEO};
         boolean valid = Arrays.stream(availableTypes).anyMatch(new Predicate() { // from class: com.samsung.vekit.Animation.TransitionAnimation$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
@@ -125,7 +117,27 @@ public class TransitionAnimation extends Animation<Float> {
         }
     }
 
-    public static /* synthetic */ boolean lambda$checkValidItem$0(Item item, ItemType type) {
+    static /* synthetic */ boolean lambda$checkValidItem$0(Item item, ItemType type) {
         return type == item.getItemType();
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public TransitionAnimation setDuration(long duration) {
+        return this;
+    }
+
+    /* JADX WARN: Can't rename method to resolve collision */
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public TransitionAnimation setFrom(Float from) {
+        return this;
+    }
+
+    /* JADX WARN: Can't rename method to resolve collision */
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public TransitionAnimation setTo(Float to) {
+        return this;
     }
 }

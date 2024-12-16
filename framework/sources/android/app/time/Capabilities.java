@@ -13,7 +13,6 @@ public final class Capabilities {
     public static final int CAPABILITY_POSSESSED = 40;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CapabilityState {
     }
 

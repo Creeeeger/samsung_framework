@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DisplayDecorationSupport implements Parcelable {
     public static final Parcelable.Creator<DisplayDecorationSupport> CREATOR = new Parcelable.Creator<DisplayDecorationSupport>() { // from class: android.hardware.graphics.common.DisplayDecorationSupport.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayDecorationSupport createFromParcel(Parcel _aidl_source) {
             DisplayDecorationSupport _aidl_out = new DisplayDecorationSupport();
@@ -17,6 +15,7 @@ public class DisplayDecorationSupport implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayDecorationSupport[] newArray(int _aidl_size) {
             return new DisplayDecorationSupport[_aidl_size];
@@ -24,25 +23,6 @@ public class DisplayDecorationSupport implements Parcelable {
     };
     public int alphaInterpretation;
     public int format;
-
-    /* renamed from: android.hardware.graphics.common.DisplayDecorationSupport$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DisplayDecorationSupport> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayDecorationSupport createFromParcel(Parcel _aidl_source) {
-            DisplayDecorationSupport _aidl_out = new DisplayDecorationSupport();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayDecorationSupport[] newArray(int _aidl_size) {
-            return new DisplayDecorationSupport[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

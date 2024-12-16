@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.util.Slog;
 import com.android.internal.R;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class BlockedAppStreamingActivity extends AlertActivity {
     private static final String BLOCKED_COMPONENT_PLAYSTORE = "com.android.vending";
     private static final String BLOCKED_COMPONENT_SETTINGS = "com.android.settings";
@@ -17,7 +17,7 @@ public class BlockedAppStreamingActivity extends AlertActivity {
     private static final String TAG = "BlockedAppStreamingActivity";
 
     @Override // com.android.internal.app.AlertActivity, android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         CharSequence appLabel = null;
@@ -34,7 +34,7 @@ public class BlockedAppStreamingActivity extends AlertActivity {
         if (!TextUtils.isEmpty(streamedDeviceName)) {
             if (TextUtils.equals(activityInfo.packageName, getPackageManager().getPermissionControllerPackageName())) {
                 this.mAlertParams.mTitle = getString(R.string.app_streaming_blocked_title_for_permission_dialog);
-                this.mAlertParams.mMessage = getString(R.string.app_streaming_blocked_message, streamedDeviceName);
+                this.mAlertParams.mMessage = getString(R.string.app_streaming_blocked_message_for_permission_request);
             } else if (TextUtils.equals(activityInfo.packageName, BLOCKED_COMPONENT_PLAYSTORE)) {
                 this.mAlertParams.mTitle = getString(R.string.app_streaming_blocked_title_for_playstore_dialog);
                 this.mAlertParams.mMessage = getString(R.string.app_streaming_blocked_message, streamedDeviceName);

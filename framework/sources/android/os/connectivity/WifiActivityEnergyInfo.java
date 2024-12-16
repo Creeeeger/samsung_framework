@@ -13,9 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class WifiActivityEnergyInfo implements Parcelable {
     public static final Parcelable.Creator<WifiActivityEnergyInfo> CREATOR = new Parcelable.Creator<WifiActivityEnergyInfo>() { // from class: android.os.connectivity.WifiActivityEnergyInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiActivityEnergyInfo createFromParcel(Parcel in) {
             long timestamp = in.readLong();
@@ -27,16 +25,18 @@ public final class WifiActivityEnergyInfo implements Parcelable {
             return new WifiActivityEnergyInfo(timestamp, stackState, txTime, rxTime, scanTime, idleTime);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiActivityEnergyInfo[] newArray(int size) {
             return new WifiActivityEnergyInfo[size];
         }
     };
+    private static final long DEFERRED_ENERGY_ESTIMATE = -1;
     public static final int STACK_STATE_INVALID = 0;
     public static final int STACK_STATE_STATE_ACTIVE = 1;
     public static final int STACK_STATE_STATE_IDLE = 3;
     public static final int STACK_STATE_STATE_SCANNING = 2;
-    private final long mControllerEnergyUsedMicroJoules;
+    private long mControllerEnergyUsedMicroJoules;
     private final long mControllerIdleDurationMillis;
     private final long mControllerRxDurationMillis;
     private final long mControllerScanDurationMillis;
@@ -45,12 +45,11 @@ public final class WifiActivityEnergyInfo implements Parcelable {
     private final long mTimeSinceBootMillis;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StackState {
     }
 
     public WifiActivityEnergyInfo(long timeSinceBootMillis, int stackState, long txDurationMillis, long rxDurationMillis, long scanDurationMillis, long idleDurationMillis) {
-        this(timeSinceBootMillis, stackState, txDurationMillis, rxDurationMillis, scanDurationMillis, idleDurationMillis, calculateEnergyMicroJoules(txDurationMillis, rxDurationMillis, idleDurationMillis));
+        this(timeSinceBootMillis, stackState, txDurationMillis, rxDurationMillis, scanDurationMillis, idleDurationMillis, -1L);
     }
 
     private static long calculateEnergyMicroJoules(long txDurationMillis, long rxDurationMillis, long idleDurationMillis) {
@@ -68,6 +67,10 @@ public final class WifiActivityEnergyInfo implements Parcelable {
         return (long) ((d + (rxCurrent2 * idleCurrent)) * voltage);
     }
 
+    private static long calculateEnergyMicroJoules$ravenwood(long txDurationMillis, long rxDurationMillis, long idleDurationMillis) {
+        return 0L;
+    }
+
     public WifiActivityEnergyInfo(long timeSinceBootMillis, int stackState, long txDurationMillis, long rxDurationMillis, long scanDurationMillis, long idleDurationMillis, long energyUsedMicroJoules) {
         this.mTimeSinceBootMillis = timeSinceBootMillis;
         this.mStackState = stackState;
@@ -79,30 +82,7 @@ public final class WifiActivityEnergyInfo implements Parcelable {
     }
 
     public String toString() {
-        return "WifiActivityEnergyInfo{ mTimeSinceBootMillis=" + this.mTimeSinceBootMillis + " mStackState=" + this.mStackState + " mControllerTxDurationMillis=" + this.mControllerTxDurationMillis + " mControllerRxDurationMillis=" + this.mControllerRxDurationMillis + " mControllerScanDurationMillis=" + this.mControllerScanDurationMillis + " mControllerIdleDurationMillis=" + this.mControllerIdleDurationMillis + " mControllerEnergyUsedMicroJoules=" + this.mControllerEnergyUsedMicroJoules + " }";
-    }
-
-    /* renamed from: android.os.connectivity.WifiActivityEnergyInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WifiActivityEnergyInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiActivityEnergyInfo createFromParcel(Parcel in) {
-            long timestamp = in.readLong();
-            int stackState = in.readInt();
-            long txTime = in.readLong();
-            long rxTime = in.readLong();
-            long scanTime = in.readLong();
-            long idleTime = in.readLong();
-            return new WifiActivityEnergyInfo(timestamp, stackState, txTime, rxTime, scanTime, idleTime);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiActivityEnergyInfo[] newArray(int size) {
-            return new WifiActivityEnergyInfo[size];
-        }
+        return "WifiActivityEnergyInfo{ mTimeSinceBootMillis=" + this.mTimeSinceBootMillis + " mStackState=" + this.mStackState + " mControllerTxDurationMillis=" + this.mControllerTxDurationMillis + " mControllerRxDurationMillis=" + this.mControllerRxDurationMillis + " mControllerScanDurationMillis=" + this.mControllerScanDurationMillis + " mControllerIdleDurationMillis=" + this.mControllerIdleDurationMillis + " mControllerEnergyUsedMicroJoules=" + getControllerEnergyUsedMicroJoules() + " }";
     }
 
     @Override // android.os.Parcelable
@@ -145,6 +125,9 @@ public final class WifiActivityEnergyInfo implements Parcelable {
     }
 
     public long getControllerEnergyUsedMicroJoules() {
+        if (this.mControllerEnergyUsedMicroJoules == -1) {
+            this.mControllerEnergyUsedMicroJoules = calculateEnergyMicroJoules(this.mControllerTxDurationMillis, this.mControllerRxDurationMillis, this.mControllerIdleDurationMillis);
+        }
         return this.mControllerEnergyUsedMicroJoules;
     }
 

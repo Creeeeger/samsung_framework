@@ -20,8 +20,7 @@ public class DHPublicKeyParameters extends DHKeyParameters {
             throw new NullPointerException("y value cannot be null");
         }
         BigInteger p = dhParams.getP();
-        BigInteger bigInteger = TWO;
-        if (y.compareTo(bigInteger) < 0 || y.compareTo(p.subtract(bigInteger)) > 0) {
+        if (y.compareTo(TWO) < 0 || y.compareTo(p.subtract(TWO)) > 0) {
             throw new IllegalArgumentException("invalid DH public key");
         }
         BigInteger q = dhParams.getQ();

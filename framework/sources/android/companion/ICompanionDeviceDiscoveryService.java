@@ -14,7 +14,6 @@ public interface ICompanionDeviceDiscoveryService extends IInterface {
 
     void startDiscovery(AssociationRequest associationRequest, String str, IAssociationRequestCallback iAssociationRequestCallback, AndroidFuture<String> androidFuture) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICompanionDeviceDiscoveryService {
         @Override // android.companion.ICompanionDeviceDiscoveryService
         public void startDiscovery(AssociationRequest request, String callingPackage, IAssociationRequestCallback applicationCallback, AndroidFuture<String> serviceCallback) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ICompanionDeviceDiscoveryService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICompanionDeviceDiscoveryService {
         public static final String DESCRIPTOR = "android.companion.ICompanionDeviceDiscoveryService";
         static final int TRANSACTION_onAssociationCreated = 2;
@@ -77,30 +75,27 @@ public interface ICompanionDeviceDiscoveryService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    AssociationRequest _arg0 = (AssociationRequest) data.readTypedObject(AssociationRequest.CREATOR);
+                    String _arg1 = data.readString();
+                    IAssociationRequestCallback _arg2 = IAssociationRequestCallback.Stub.asInterface(data.readStrongBinder());
+                    AndroidFuture<String> _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    startDiscovery(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    onAssociationCreated();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AssociationRequest _arg0 = (AssociationRequest) data.readTypedObject(AssociationRequest.CREATOR);
-                            String _arg1 = data.readString();
-                            IAssociationRequestCallback _arg2 = IAssociationRequestCallback.Stub.asInterface(data.readStrongBinder());
-                            AndroidFuture<String> _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            startDiscovery(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            onAssociationCreated();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements ICompanionDeviceDiscoveryService {
             private IBinder mRemote;
 

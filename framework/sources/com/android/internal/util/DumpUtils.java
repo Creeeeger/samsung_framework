@@ -23,17 +23,14 @@ public final class DumpUtils {
     private static final boolean DEBUG = false;
     private static final String TAG = "DumpUtils";
 
-    /* loaded from: classes5.dex */
     public interface Dump {
         void dump(PrintWriter printWriter, String str);
     }
 
-    /* loaded from: classes5.dex */
     public interface KeyDumper {
         void dump(int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface ValueDumper<T> {
         void dump(T t);
     }
@@ -41,41 +38,9 @@ public final class DumpUtils {
     private DumpUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.util.DumpUtils$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ Dump val$dump;
-        final /* synthetic */ String val$prefix;
-        final /* synthetic */ StringWriter val$sw;
-
-        AnonymousClass1(StringWriter stringWriter, Dump dump, String str) {
-            sw = stringWriter;
-            dump = dump;
-            prefix = str;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            PrintWriter lpw = new FastPrintWriter(sw);
-            dump.dump(lpw, prefix);
-            lpw.close();
-        }
-    }
-
-    public static void dumpAsync(Handler handler, Dump dump, PrintWriter pw, String prefix, long timeout) {
-        StringWriter sw = new StringWriter();
+    public static void dumpAsync(Handler handler, final Dump dump, PrintWriter pw, final String prefix, long timeout) {
+        final StringWriter sw = new StringWriter();
         if (handler.runWithScissors(new Runnable() { // from class: com.android.internal.util.DumpUtils.1
-            final /* synthetic */ Dump val$dump;
-            final /* synthetic */ String val$prefix;
-            final /* synthetic */ StringWriter val$sw;
-
-            AnonymousClass1(StringWriter sw2, Dump dump2, String prefix2) {
-                sw = sw2;
-                dump = dump2;
-                prefix = prefix2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 PrintWriter lpw = new FastPrintWriter(sw);
@@ -83,7 +48,7 @@ public final class DumpUtils {
                 lpw.close();
             }
         }, timeout)) {
-            pw.print(sw2.toString());
+            pw.print(sw.toString());
         } else {
             pw.println("... timed out");
         }
@@ -156,50 +121,33 @@ public final class DumpUtils {
         return cname != null && isSecMediaPackage(cname.getPackageName());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isSecMediaPackage(ComponentName.WithComponentName wcn) {
         return wcn != null && isSecMediaPackage(wcn.getComponentName());
     }
 
-    private static boolean isRoutinePackage(String packageName) {
-        return packageName != null && AsPackageName.ROUTINE.equals(packageName);
-    }
-
-    private static boolean isRoutinePackage(ComponentName cname) {
-        return cname != null && isRoutinePackage(cname.getPackageName());
-    }
-
-    public static boolean isRoutinePackage(ComponentName.WithComponentName wcn) {
-        return wcn != null && isRoutinePackage(wcn.getComponentName());
-    }
-
     public static boolean isNonPlatformPackage(String packageName) {
-        return (packageName == null || isPlatformPackage(packageName) || isSecMediaPackage(packageName) || isRoutinePackage(packageName)) ? false : true;
+        return (packageName == null || isPlatformPackage(packageName) || isSecMediaPackage(packageName)) ? false : true;
     }
 
     public static boolean isNonPlatformPackage(ComponentName cname) {
-        return (cname == null || !isNonPlatformPackage(cname.getPackageName()) || isSecMediaPackage(cname.getPackageName()) || isRoutinePackage(cname.getPackageName())) ? false : true;
+        return (cname == null || !isNonPlatformPackage(cname.getPackageName()) || isSecMediaPackage(cname.getPackageName())) ? false : true;
     }
 
     public static boolean isNonPlatformPackage(ComponentName.WithComponentName wcn) {
-        return (wcn == null || isPlatformPackage(wcn.getComponentName()) || isSecMediaPackage(wcn.getComponentName()) || isRoutinePackage(wcn.getComponentName())) ? false : true;
+        return (wcn == null || isPlatformPackage(wcn.getComponentName()) || isSecMediaPackage(wcn.getComponentName())) ? false : true;
     }
 
     private static boolean isCriticalPackage(ComponentName cname) {
         if (cname == null) {
             return false;
         }
-        int i = 0;
-        while (true) {
-            ComponentName[] componentNameArr = CRITICAL_SECTION_COMPONENTS;
-            if (i >= componentNameArr.length) {
-                return false;
-            }
-            if (!cname.equals(componentNameArr[i])) {
-                i++;
-            } else {
+        for (int i = 0; i < CRITICAL_SECTION_COMPONENTS.length; i++) {
+            if (cname.equals(CRITICAL_SECTION_COMPONENTS[i])) {
                 return true;
             }
         }
+        return false;
     }
 
     public static boolean isPlatformCriticalPackage(ComponentName.WithComponentName wcn) {
@@ -269,19 +217,9 @@ public final class DumpUtils {
                 }
             };
         }
-        if ("routine-dump".equals(filterString)) {
-            return new Predicate() { // from class: com.android.internal.util.DumpUtils$$ExternalSyntheticLambda7
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean isRoutinePackage;
-                    isRoutinePackage = DumpUtils.isRoutinePackage((ComponentName.WithComponentName) obj);
-                    return isRoutinePackage;
-                }
-            };
-        }
         final ComponentName filterCname = ComponentName.unflattenFromString(filterString);
         if (filterCname != null) {
-            return new Predicate() { // from class: com.android.internal.util.DumpUtils$$ExternalSyntheticLambda8
+            return new Predicate() { // from class: com.android.internal.util.DumpUtils$$ExternalSyntheticLambda7
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     return DumpUtils.lambda$filterRecord$1(ComponentName.this, (ComponentName.WithComponentName) obj);
@@ -289,7 +227,7 @@ public final class DumpUtils {
             };
         }
         final int id = ParseUtils.parseIntWithBase(filterString, 16, -1);
-        return new Predicate() { // from class: com.android.internal.util.DumpUtils$$ExternalSyntheticLambda9
+        return new Predicate() { // from class: com.android.internal.util.DumpUtils$$ExternalSyntheticLambda8
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return DumpUtils.lambda$filterRecord$2(id, filterString, (ComponentName.WithComponentName) obj);
@@ -297,15 +235,15 @@ public final class DumpUtils {
         };
     }
 
-    public static /* synthetic */ boolean lambda$filterRecord$0(ComponentName.WithComponentName rec) {
+    static /* synthetic */ boolean lambda$filterRecord$0(ComponentName.WithComponentName rec) {
         return false;
     }
 
-    public static /* synthetic */ boolean lambda$filterRecord$1(ComponentName filterCname, ComponentName.WithComponentName rec) {
+    static /* synthetic */ boolean lambda$filterRecord$1(ComponentName filterCname, ComponentName.WithComponentName rec) {
         return rec != null && filterCname.equals(rec.getComponentName());
     }
 
-    public static /* synthetic */ boolean lambda$filterRecord$2(int id, String filterString, ComponentName.WithComponentName rec) {
+    static /* synthetic */ boolean lambda$filterRecord$2(int id, String filterString, ComponentName.WithComponentName rec) {
         ComponentName cn = rec.getComponentName();
         return (id != -1 && System.identityHashCode(rec) == id) || cn.flattenToString().toLowerCase().contains(filterString.toLowerCase());
     }
@@ -315,7 +253,7 @@ public final class DumpUtils {
     }
 
     public static <T> void dumpSparseArrayValues(final PrintWriter pw, final String prefix, SparseArray<T> array, String name) {
-        dumpSparseArray(pw, prefix, array, name, new KeyDumper() { // from class: com.android.internal.util.DumpUtils$$ExternalSyntheticLambda10
+        dumpSparseArray(pw, prefix, array, name, new KeyDumper() { // from class: com.android.internal.util.DumpUtils$$ExternalSyntheticLambda9
             @Override // com.android.internal.util.DumpUtils.KeyDumper
             public final void dump(int i, int i2) {
                 pw.printf("%s%s", prefix, r1);

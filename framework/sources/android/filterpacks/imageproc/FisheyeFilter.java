@@ -8,7 +8,6 @@ import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
-import android.os.BatteryManager;
 
 /* loaded from: classes.dex */
 public class FisheyeFilter extends Filter {
@@ -17,7 +16,7 @@ public class FisheyeFilter extends Filter {
     private int mHeight;
     private Program mProgram;
 
-    @GenerateFieldPort(hasDefault = true, name = BatteryManager.EXTRA_SCALE)
+    @GenerateFieldPort(hasDefault = true, name = "scale")
     private float mScale;
     private int mTarget;
 
@@ -89,13 +88,11 @@ public class FisheyeFilter extends Filter {
 
     private void updateProgramParams() {
         float[] scale = new float[2];
-        int i = this.mWidth;
-        int i2 = this.mHeight;
-        if (i > i2) {
+        if (this.mWidth > this.mHeight) {
             scale[0] = 1.0f;
-            scale[1] = i2 / i;
+            scale[1] = this.mHeight / this.mWidth;
         } else {
-            scale[0] = i / i2;
+            scale[0] = this.mWidth / this.mHeight;
             scale[1] = 1.0f;
         }
         float alpha = (this.mScale * 2.0f) + 0.75f;
@@ -105,7 +102,7 @@ public class FisheyeFilter extends Filter {
         float radius2 = radius * radius;
         float max_radian = 1.5707964f - ((float) Math.atan((alpha / bound) * ((float) Math.sqrt(radius2 - bound2))));
         float factor = bound / max_radian;
-        this.mProgram.setHostValue(BatteryManager.EXTRA_SCALE, scale);
+        this.mProgram.setHostValue("scale", scale);
         this.mProgram.setHostValue("radius2", Float.valueOf(radius2));
         this.mProgram.setHostValue("factor", Float.valueOf(factor));
         this.mProgram.setHostValue("alpha", Float.valueOf(alpha));

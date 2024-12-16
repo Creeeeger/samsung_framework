@@ -11,7 +11,7 @@ public class SContextTemperatureAlertAttribute extends SContextAttribute {
     private boolean mIsIncluding;
     private int mLowTemperature;
 
-    public SContextTemperatureAlertAttribute() {
+    SContextTemperatureAlertAttribute() {
         this.mLowTemperature = 70;
         this.mHighTemperature = 127;
         this.mIsIncluding = true;
@@ -30,17 +30,15 @@ public class SContextTemperatureAlertAttribute extends SContextAttribute {
 
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mLowTemperature;
-        if (i < -128 || i > 127) {
+        if (this.mLowTemperature < -128 || this.mLowTemperature > 127) {
             Log.e(TAG, "The low temperature is wrong.");
             return false;
         }
-        int i2 = this.mHighTemperature;
-        if (i2 < -128 || i2 > 127) {
+        if (this.mHighTemperature < -128 || this.mHighTemperature > 127) {
             Log.e(TAG, "The high temperature is wrong.");
             return false;
         }
-        if (i > i2) {
+        if (this.mLowTemperature > this.mHighTemperature) {
             Log.e(TAG, "The low temperature must be less than the high temperature.");
             return false;
         }

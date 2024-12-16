@@ -16,6 +16,7 @@ import android.os.UserManager;
 import android.sec.clipboard.data.ClipboardConstants;
 import android.text.TextUtils;
 import com.samsung.android.knox.SemPersonaManager;
+import com.samsung.android.provider.SemKnoxPolicyContract;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +56,6 @@ public class ClipboardPolicyObserver extends ContentObserver {
     private static final Uri CLIPBOARD_ALLOWED_DENYLIST_APP_URI = ClipboardConstants.CLIPBOARD_ALLOWED_DENYLIST_APP_URI;
     private static final Uri CLIPBOARD_ALLOWED_ALLOWLIST_APP_URI = ClipboardConstants.CLIPBOARD_ALLOWED_ALLOWLIST_APP_URI;
 
-    /* loaded from: classes3.dex */
     public interface ClipboardPolicyChangeListener {
         void onChanged();
     }
@@ -135,9 +135,8 @@ public class ClipboardPolicyObserver extends ContentObserver {
         } else if (uri.compareTo(CLIPBOARD_ALLOWED_ALLOWLIST_APP_URI) == 0) {
             updateClipboardAllowListMap(userId);
         }
-        ClipboardPolicyChangeListener clipboardPolicyChangeListener = this.mClipboardPolicyChangeListener;
-        if (clipboardPolicyChangeListener != null) {
-            clipboardPolicyChangeListener.onChanged();
+        if (this.mClipboardPolicyChangeListener != null) {
+            this.mClipboardPolicyChangeListener.onChanged();
         } else {
             Log.secD(this.TAG, "onChage - ClipboardPolicyChangeListener is null");
         }
@@ -163,18 +162,18 @@ public class ClipboardPolicyObserver extends ContentObserver {
 
     private void updateClipboardAllowedMap(int userId) {
         String[] selectionArgs = {"false", Integer.toString(userId)};
-        Cursor cursor = this.mContext.getContentResolver().query(CLIPBOARD_RESCTRICTION_URI, null, "isClipboardAllowedAsUser", selectionArgs, null);
+        Cursor cursor = this.mContext.getContentResolver().query(CLIPBOARD_RESCTRICTION_URI, null, SemKnoxPolicyContract.RestrictionPolicy.CLIPBOARD_ALLOWED_AS_USER, selectionArgs, null);
         try {
             if (cursor != null) {
                 try {
                     cursor.moveToFirst();
-                    String result = cursor.getString(cursor.getColumnIndex("isClipboardAllowedAsUser"));
+                    String result = cursor.getString(cursor.getColumnIndex(SemKnoxPolicyContract.RestrictionPolicy.CLIPBOARD_ALLOWED_AS_USER));
                     this.mClipboardAllowedPolicy.put(Integer.valueOf(userId), Boolean.valueOf(result));
                     Log.secD(this.TAG, "updateClipboardAllowedMap - userId : " + userId + ", result : " + result);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.secD(this.TAG, "updateClipboardAllowedMap, exception is occured hence set true");
-                    this.mClipboardSharedAllowedPolicy.put(Integer.valueOf(userId), true);
+                    this.mClipboardAllowedPolicy.put(Integer.valueOf(userId), true);
                 }
                 return;
             }
@@ -187,12 +186,12 @@ public class ClipboardPolicyObserver extends ContentObserver {
 
     private void updateClipboardSharedAllowedMap(int userId) {
         String[] selectionArgs = {Integer.toString(userId)};
-        Cursor cursor = this.mContext.getContentResolver().query(CLIPBOARD_RESCTRICTION_URI, null, "isClipboardShareAllowedAsUser", selectionArgs, null);
+        Cursor cursor = this.mContext.getContentResolver().query(CLIPBOARD_RESCTRICTION_URI, null, SemKnoxPolicyContract.RestrictionPolicy.CLIPBOARD_SHARE_ALLOWED_AS_USER, selectionArgs, null);
         try {
             if (cursor != null) {
                 try {
                     cursor.moveToFirst();
-                    String result = cursor.getString(cursor.getColumnIndex("isClipboardShareAllowedAsUser"));
+                    String result = cursor.getString(cursor.getColumnIndex(SemKnoxPolicyContract.RestrictionPolicy.CLIPBOARD_SHARE_ALLOWED_AS_USER));
                     this.mClipboardSharedAllowedPolicy.put(Integer.valueOf(userId), Boolean.valueOf(result));
                     Log.secD(this.TAG, "updateClipboardSharedAllowedMap - userId : " + userId + ", result : " + result);
                 } catch (Exception e) {
@@ -209,17 +208,17 @@ public class ClipboardPolicyObserver extends ContentObserver {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x004e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x004d, code lost:
     
-        if (r0.isClosed() == false) goto L52;
+        if (r0.isClosed() == false) goto L21;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0065, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0064, code lost:
     
         r0.close();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0063, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0062, code lost:
     
-        if (r0.isClosed() == false) goto L52;
+        if (r0.isClosed() == false) goto L21;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -234,59 +233,59 @@ public class ClipboardPolicyObserver extends ContentObserver {
             java.util.concurrent.locks.ReentrantReadWriteLock r1 = r7.mClipboardDenyListPolicyLock
             java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock r1 = r1.writeLock()
             r1.lock()
-            android.content.Context r1 = r7.mContext     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            android.content.ContentResolver r1 = r1.getContentResolver()     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            android.net.Uri r2 = android.sec.clipboard.util.ClipboardPolicyObserver.CLIPBOARD_APPLICATION_URI     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            r3 = 0
+            android.content.Context r1 = r7.mContext     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            android.content.ContentResolver r1 = r1.getContentResolver()     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            android.net.Uri r2 = android.sec.clipboard.util.ClipboardPolicyObserver.CLIPBOARD_APPLICATION_URI     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
             java.lang.String r4 = "getPackagesFromDisableClipboardBlackListPerUidInternal"
             r6 = 0
-            android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
+            r3 = 0
+            android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
             r0 = r1
-            if (r0 == 0) goto L3f
-            android.os.Bundle r1 = r0.getExtras()     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            if (r1 == 0) goto L3e
+            if (r0 == 0) goto L3e
+            android.os.Bundle r1 = r0.getExtras()     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            if (r1 == 0) goto L3d
             java.lang.String r2 = "clipboard_blacklist_perUid"
-            java.io.Serializable r2 = r1.getSerializable(r2)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
+            java.io.Serializable r2 = r1.getSerializable(r2)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
             r3 = r2
-            java.util.HashMap r3 = (java.util.HashMap) r3     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r4 = r7.mClipboardDenyListPolicy     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            java.lang.Integer r6 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            r4.put(r6, r3)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
+            java.util.HashMap r3 = (java.util.HashMap) r3     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r4 = r7.mClipboardDenyListPolicy     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            java.lang.Integer r6 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            r4.put(r6, r3)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+        L3d:
+            goto L47
         L3e:
-            goto L48
-        L3f:
-            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r1 = r7.mClipboardDenyListPolicy     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            java.lang.Integer r2 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            r1.remove(r2)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-        L48:
-            if (r0 == 0) goto L68
+            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r1 = r7.mClipboardDenyListPolicy     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            java.lang.Integer r2 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            r1.remove(r2)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+        L47:
+            if (r0 == 0) goto L67
             boolean r1 = r0.isClosed()
-            if (r1 != 0) goto L68
-            goto L65
-        L51:
+            if (r1 != 0) goto L67
+            goto L64
+        L50:
             r1 = move-exception
-            goto L73
-        L53:
+            goto L72
+        L52:
             r1 = move-exception
-            java.lang.String r2 = r7.TAG     // Catch: java.lang.Throwable -> L51
+            java.lang.String r2 = r7.TAG     // Catch: java.lang.Throwable -> L50
             java.lang.String r3 = "updateClipboardDenyListMap - exception occured!."
-            android.sec.clipboard.util.Log.secD(r2, r3)     // Catch: java.lang.Throwable -> L51
-            if (r0 == 0) goto L68
+            android.sec.clipboard.util.Log.secD(r2, r3)     // Catch: java.lang.Throwable -> L50
+            if (r0 == 0) goto L67
             boolean r1 = r0.isClosed()
-            if (r1 != 0) goto L68
-        L65:
+            if (r1 != 0) goto L67
+        L64:
             r0.close()
-        L68:
+        L67:
             java.util.concurrent.locks.ReentrantReadWriteLock r1 = r7.mClipboardDenyListPolicyLock
             java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock r1 = r1.writeLock()
             r1.unlock()
             return
-        L73:
-            if (r0 == 0) goto L7e
+        L72:
+            if (r0 == 0) goto L7d
             boolean r2 = r0.isClosed()
-            if (r2 != 0) goto L7e
+            if (r2 != 0) goto L7d
             r0.close()
-        L7e:
+        L7d:
             java.util.concurrent.locks.ReentrantReadWriteLock r2 = r7.mClipboardDenyListPolicyLock
             java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock r2 = r2.writeLock()
             r2.unlock()
@@ -295,17 +294,17 @@ public class ClipboardPolicyObserver extends ContentObserver {
         throw new UnsupportedOperationException("Method not decompiled: android.sec.clipboard.util.ClipboardPolicyObserver.updateClipboardDenyListMap(int):void");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x004e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x004d, code lost:
     
-        if (r0.isClosed() == false) goto L52;
+        if (r0.isClosed() == false) goto L21;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0065, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0064, code lost:
     
         r0.close();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0063, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0062, code lost:
     
-        if (r0.isClosed() == false) goto L52;
+        if (r0.isClosed() == false) goto L21;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -320,59 +319,59 @@ public class ClipboardPolicyObserver extends ContentObserver {
             java.util.concurrent.locks.ReentrantReadWriteLock r1 = r7.mClipboardAllowListPolicyLock
             java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock r1 = r1.writeLock()
             r1.lock()
-            android.content.Context r1 = r7.mContext     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            android.content.ContentResolver r1 = r1.getContentResolver()     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            android.net.Uri r2 = android.sec.clipboard.util.ClipboardPolicyObserver.CLIPBOARD_APPLICATION_URI     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            r3 = 0
+            android.content.Context r1 = r7.mContext     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            android.content.ContentResolver r1 = r1.getContentResolver()     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            android.net.Uri r2 = android.sec.clipboard.util.ClipboardPolicyObserver.CLIPBOARD_APPLICATION_URI     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
             java.lang.String r4 = "getPackagesFromDisableClipboardWhiteListPerUidInternal"
             r6 = 0
-            android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
+            r3 = 0
+            android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
             r0 = r1
-            if (r0 == 0) goto L3f
-            android.os.Bundle r1 = r0.getExtras()     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            if (r1 == 0) goto L3e
+            if (r0 == 0) goto L3e
+            android.os.Bundle r1 = r0.getExtras()     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            if (r1 == 0) goto L3d
             java.lang.String r2 = "clipboard_whitelist_perUid"
-            java.io.Serializable r2 = r1.getSerializable(r2)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
+            java.io.Serializable r2 = r1.getSerializable(r2)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
             r3 = r2
-            java.util.HashMap r3 = (java.util.HashMap) r3     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r4 = r7.mClipboardAllowListPolicy     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            java.lang.Integer r6 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            r4.put(r6, r3)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
+            java.util.HashMap r3 = (java.util.HashMap) r3     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r4 = r7.mClipboardAllowListPolicy     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            java.lang.Integer r6 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            r4.put(r6, r3)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+        L3d:
+            goto L47
         L3e:
-            goto L48
-        L3f:
-            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r1 = r7.mClipboardAllowListPolicy     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            java.lang.Integer r2 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-            r1.remove(r2)     // Catch: java.lang.Throwable -> L51 java.lang.Exception -> L53
-        L48:
-            if (r0 == 0) goto L68
+            java.util.Map<java.lang.Integer, java.util.Map<java.lang.Long, java.util.List<java.lang.String>>> r1 = r7.mClipboardAllowListPolicy     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            java.lang.Integer r2 = java.lang.Integer.valueOf(r8)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+            r1.remove(r2)     // Catch: java.lang.Throwable -> L50 java.lang.Exception -> L52
+        L47:
+            if (r0 == 0) goto L67
             boolean r1 = r0.isClosed()
-            if (r1 != 0) goto L68
-            goto L65
-        L51:
+            if (r1 != 0) goto L67
+            goto L64
+        L50:
             r1 = move-exception
-            goto L73
-        L53:
+            goto L72
+        L52:
             r1 = move-exception
-            java.lang.String r2 = r7.TAG     // Catch: java.lang.Throwable -> L51
+            java.lang.String r2 = r7.TAG     // Catch: java.lang.Throwable -> L50
             java.lang.String r3 = "updateClipboardAllowListMap - exception occured!."
-            android.sec.clipboard.util.Log.secD(r2, r3)     // Catch: java.lang.Throwable -> L51
-            if (r0 == 0) goto L68
+            android.sec.clipboard.util.Log.secD(r2, r3)     // Catch: java.lang.Throwable -> L50
+            if (r0 == 0) goto L67
             boolean r1 = r0.isClosed()
-            if (r1 != 0) goto L68
-        L65:
+            if (r1 != 0) goto L67
+        L64:
             r0.close()
-        L68:
+        L67:
             java.util.concurrent.locks.ReentrantReadWriteLock r1 = r7.mClipboardAllowListPolicyLock
             java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock r1 = r1.writeLock()
             r1.unlock()
             return
-        L73:
-            if (r0 == 0) goto L7e
+        L72:
+            if (r0 == 0) goto L7d
             boolean r2 = r0.isClosed()
-            if (r2 != 0) goto L7e
+            if (r2 != 0) goto L7d
             r0.close()
-        L7e:
+        L7d:
             java.util.concurrent.locks.ReentrantReadWriteLock r2 = r7.mClipboardAllowListPolicyLock
             java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock r2 = r2.writeLock()
             r2.unlock()
@@ -398,9 +397,6 @@ public class ClipboardPolicyObserver extends ContentObserver {
     }
 
     private SemPersonaManager getPersonaManager() {
-        if (!ClipboardConstants.KNOX_V2_ENABLED) {
-            return null;
-        }
         if (this.mPersonaManager == null) {
             this.mPersonaManager = (SemPersonaManager) this.mContext.getSystemService("persona");
         }

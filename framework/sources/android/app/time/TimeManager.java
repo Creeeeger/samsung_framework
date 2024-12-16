@@ -26,7 +26,6 @@ public final class TimeManager {
     private final ITimeDetectorService mITimeDetectorService = ITimeDetectorService.Stub.asInterface(ServiceManager.getServiceOrThrow("time_detector"));
 
     @FunctionalInterface
-    /* loaded from: classes.dex */
     public interface TimeZoneDetectorListener {
         void onChange();
     }
@@ -65,17 +64,13 @@ public final class TimeManager {
 
     public void addTimeZoneDetectorListener(final Executor executor, final TimeZoneDetectorListener listener) {
         synchronized (this.mLock) {
-            ArrayMap<TimeZoneDetectorListener, TimeZoneDetectorListener> arrayMap = this.mTimeZoneDetectorListeners;
-            if (arrayMap == null) {
+            if (this.mTimeZoneDetectorListeners == null) {
                 this.mTimeZoneDetectorListeners = new ArrayMap<>();
-            } else if (arrayMap.containsKey(listener)) {
+            } else if (this.mTimeZoneDetectorListeners.containsKey(listener)) {
                 return;
             }
             if (this.mTimeZoneDetectorReceiver == null) {
                 ITimeZoneDetectorListener iListener = new ITimeZoneDetectorListener.Stub() { // from class: android.app.time.TimeManager.1
-                    AnonymousClass1() {
-                    }
-
                     @Override // android.app.time.ITimeZoneDetectorListener
                     public void onChange() {
                         TimeManager.this.notifyTimeZoneDetectorListeners();
@@ -83,12 +78,12 @@ public final class TimeManager {
                 };
                 this.mTimeZoneDetectorReceiver = iListener;
                 try {
-                    this.mITimeZoneDetectorService.addListener(iListener);
+                    this.mITimeZoneDetectorService.addListener(this.mTimeZoneDetectorReceiver);
                 } catch (RemoteException e) {
                     throw e.rethrowFromSystemServer();
                 }
             }
-            this.mTimeZoneDetectorListeners.put(listener, new TimeZoneDetectorListener() { // from class: android.app.time.TimeManager$$ExternalSyntheticLambda0
+            this.mTimeZoneDetectorListeners.put(listener, new TimeZoneDetectorListener() { // from class: android.app.time.TimeManager$$ExternalSyntheticLambda1
                 @Override // android.app.time.TimeManager.TimeZoneDetectorListener
                 public final void onChange() {
                     TimeManager.lambda$addTimeZoneDetectorListener$0(executor, listener);
@@ -97,21 +92,9 @@ public final class TimeManager {
         }
     }
 
-    /* renamed from: android.app.time.TimeManager$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends ITimeZoneDetectorListener.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.app.time.ITimeZoneDetectorListener
-        public void onChange() {
-            TimeManager.this.notifyTimeZoneDetectorListeners();
-        }
-    }
-
-    public static /* synthetic */ void lambda$addTimeZoneDetectorListener$0(Executor executor, final TimeZoneDetectorListener listener) {
+    static /* synthetic */ void lambda$addTimeZoneDetectorListener$0(Executor executor, final TimeZoneDetectorListener listener) {
         Objects.requireNonNull(listener);
-        executor.execute(new Runnable() { // from class: android.app.time.TimeManager$$ExternalSyntheticLambda1
+        executor.execute(new Runnable() { // from class: android.app.time.TimeManager$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 TimeManager.TimeZoneDetectorListener.this.onChange();
@@ -119,10 +102,10 @@ public final class TimeManager {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyTimeZoneDetectorListeners() {
         synchronized (this.mLock) {
-            ArrayMap<TimeZoneDetectorListener, TimeZoneDetectorListener> arrayMap = this.mTimeZoneDetectorListeners;
-            if (arrayMap != null && !arrayMap.isEmpty()) {
+            if (this.mTimeZoneDetectorListeners != null && !this.mTimeZoneDetectorListeners.isEmpty()) {
                 ArrayMap<TimeZoneDetectorListener, TimeZoneDetectorListener> timeZoneDetectorListeners = new ArrayMap<>(this.mTimeZoneDetectorListeners);
                 int size = timeZoneDetectorListeners.size();
                 for (int i = 0; i < size; i++) {
@@ -134,8 +117,7 @@ public final class TimeManager {
 
     public void removeTimeZoneDetectorListener(TimeZoneDetectorListener listener) {
         synchronized (this.mLock) {
-            ArrayMap<TimeZoneDetectorListener, TimeZoneDetectorListener> arrayMap = this.mTimeZoneDetectorListeners;
-            if (arrayMap != null && !arrayMap.isEmpty()) {
+            if (this.mTimeZoneDetectorListeners != null && !this.mTimeZoneDetectorListeners.isEmpty()) {
                 this.mTimeZoneDetectorListeners.remove(listener);
                 if (this.mTimeZoneDetectorListeners.isEmpty()) {
                     try {

@@ -10,11 +10,13 @@ import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.view.InputChannel;
 import android.view.MotionEvent;
+import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ImeTracker;
 import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputMethodSubtype;
 import android.window.ImeOnBackInvokedDispatcher;
+import com.android.internal.inputmethod.IConnectionlessHandwritingCallback;
 import com.android.internal.inputmethod.IInlineSuggestionsRequestCallback;
 import com.android.internal.inputmethod.IInputMethodPrivilegedOperations;
 import com.android.internal.inputmethod.IInputMethodSession;
@@ -22,17 +24,21 @@ import com.android.internal.inputmethod.IInputMethodSessionCallback;
 import com.android.internal.inputmethod.IRemoteInputConnection;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IInputMethod extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IInputMethod";
 
     void bindInput(InputBinding inputBinding) throws RemoteException;
 
-    void canStartStylusHandwriting(int i) throws RemoteException;
+    void canStartStylusHandwriting(int i, IConnectionlessHandwritingCallback iConnectionlessHandwritingCallback, CursorAnchorInfo cursorAnchorInfo, boolean z) throws RemoteException;
 
     void changeInputMethodSubtype(InputMethodSubtype inputMethodSubtype) throws RemoteException;
 
+    void commitHandwritingDelegationTextIfAvailable() throws RemoteException;
+
     void createSession(InputChannel inputChannel, IInputMethodSessionCallback iInputMethodSessionCallback) throws RemoteException;
+
+    void discardHandwritingDelegationText() throws RemoteException;
 
     void finishStylusHandwriting() throws RemoteException;
 
@@ -66,7 +72,6 @@ public interface IInputMethod extends IInterface {
 
     void updateEditorToolType(int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputMethod {
         @Override // com.android.internal.inputmethod.IInputMethod
         public void initializeInternal(InitParams params) throws RemoteException {
@@ -117,11 +122,19 @@ public interface IInputMethod extends IInterface {
         }
 
         @Override // com.android.internal.inputmethod.IInputMethod
-        public void canStartStylusHandwriting(int requestId) throws RemoteException {
+        public void canStartStylusHandwriting(int requestId, IConnectionlessHandwritingCallback connectionlessCallback, CursorAnchorInfo cursorAnchorInfo, boolean isConnectionlessForDelegation) throws RemoteException {
         }
 
         @Override // com.android.internal.inputmethod.IInputMethod
         public void startStylusHandwriting(int requestId, InputChannel channel, List<MotionEvent> events) throws RemoteException {
+        }
+
+        @Override // com.android.internal.inputmethod.IInputMethod
+        public void commitHandwritingDelegationTextIfAvailable() throws RemoteException {
+        }
+
+        @Override // com.android.internal.inputmethod.IInputMethod
+        public void discardHandwritingDelegationText() throws RemoteException {
         }
 
         @Override // com.android.internal.inputmethod.IInputMethod
@@ -154,27 +167,28 @@ public interface IInputMethod extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputMethod {
         static final int TRANSACTION_bindInput = 3;
         static final int TRANSACTION_canStartStylusHandwriting = 13;
         static final int TRANSACTION_changeInputMethodSubtype = 12;
+        static final int TRANSACTION_commitHandwritingDelegationTextIfAvailable = 15;
         static final int TRANSACTION_createSession = 7;
-        static final int TRANSACTION_finishStylusHandwriting = 16;
+        static final int TRANSACTION_discardHandwritingDelegationText = 16;
+        static final int TRANSACTION_finishStylusHandwriting = 18;
         static final int TRANSACTION_hideSoftInput = 10;
-        static final int TRANSACTION_initInkWindow = 15;
+        static final int TRANSACTION_initInkWindow = 17;
         static final int TRANSACTION_initializeInternal = 1;
-        static final int TRANSACTION_minimizeSoftInput = 19;
+        static final int TRANSACTION_minimizeSoftInput = 21;
         static final int TRANSACTION_onCreateInlineSuggestionsRequest = 2;
         static final int TRANSACTION_onNavButtonFlagsChanged = 6;
-        static final int TRANSACTION_removeStylusHandwritingWindow = 17;
+        static final int TRANSACTION_removeStylusHandwritingWindow = 19;
         static final int TRANSACTION_setSessionEnabled = 8;
-        static final int TRANSACTION_setStylusWindowIdleTimeoutForTest = 18;
+        static final int TRANSACTION_setStylusWindowIdleTimeoutForTest = 20;
         static final int TRANSACTION_showSoftInput = 9;
         static final int TRANSACTION_startInput = 5;
         static final int TRANSACTION_startStylusHandwriting = 14;
         static final int TRANSACTION_unbindInput = 4;
-        static final int TRANSACTION_undoMinimizeSoftInput = 20;
+        static final int TRANSACTION_undoMinimizeSoftInput = 22;
         static final int TRANSACTION_updateEditorToolType = 11;
 
         public Stub() {
@@ -228,16 +242,20 @@ public interface IInputMethod extends IInterface {
                 case 14:
                     return "startStylusHandwriting";
                 case 15:
-                    return "initInkWindow";
+                    return "commitHandwritingDelegationTextIfAvailable";
                 case 16:
-                    return "finishStylusHandwriting";
+                    return "discardHandwritingDelegationText";
                 case 17:
-                    return "removeStylusHandwritingWindow";
+                    return "initInkWindow";
                 case 18:
-                    return "setStylusWindowIdleTimeoutForTest";
+                    return "finishStylusHandwriting";
                 case 19:
-                    return "minimizeSoftInput";
+                    return "removeStylusHandwritingWindow";
                 case 20:
+                    return "setStylusWindowIdleTimeoutForTest";
+                case 21:
+                    return "minimizeSoftInput";
+                case 22:
                     return "undoMinimizeSoftInput";
                 default:
                     return null;
@@ -254,121 +272,127 @@ public interface IInputMethod extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputMethod.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputMethod.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputMethod.DESCRIPTOR);
+                case 1:
+                    InitParams _arg0 = (InitParams) data.readTypedObject(InitParams.CREATOR);
+                    data.enforceNoDataAvail();
+                    initializeInternal(_arg0);
+                    return true;
+                case 2:
+                    InlineSuggestionsRequestInfo _arg02 = (InlineSuggestionsRequestInfo) data.readTypedObject(InlineSuggestionsRequestInfo.CREATOR);
+                    IInlineSuggestionsRequestCallback _arg1 = IInlineSuggestionsRequestCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCreateInlineSuggestionsRequest(_arg02, _arg1);
+                    return true;
+                case 3:
+                    InputBinding _arg03 = (InputBinding) data.readTypedObject(InputBinding.CREATOR);
+                    data.enforceNoDataAvail();
+                    bindInput(_arg03);
+                    return true;
+                case 4:
+                    unbindInput();
+                    return true;
+                case 5:
+                    StartInputParams _arg04 = (StartInputParams) data.readTypedObject(StartInputParams.CREATOR);
+                    data.enforceNoDataAvail();
+                    startInput(_arg04);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNavButtonFlagsChanged(_arg05);
+                    return true;
+                case 7:
+                    InputChannel _arg06 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
+                    IInputMethodSessionCallback _arg12 = IInputMethodSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    createSession(_arg06, _arg12);
+                    return true;
+                case 8:
+                    IBinder _arg07 = data.readStrongBinder();
+                    IInputMethodSession _arg08 = IInputMethodSession.Stub.asInterface(_arg07);
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSessionEnabled(_arg08, _arg13);
+                    return true;
+                case 9:
+                    IBinder _arg09 = data.readStrongBinder();
+                    ImeTracker.Token _arg14 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    int _arg2 = data.readInt();
+                    ResultReceiver _arg3 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    showSoftInput(_arg09, _arg14, _arg2, _arg3);
+                    return true;
+                case 10:
+                    IBinder _arg010 = data.readStrongBinder();
+                    ImeTracker.Token _arg15 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    int _arg22 = data.readInt();
+                    ResultReceiver _arg32 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    hideSoftInput(_arg010, _arg15, _arg22, _arg32);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateEditorToolType(_arg011);
+                    return true;
+                case 12:
+                    InputMethodSubtype _arg012 = (InputMethodSubtype) data.readTypedObject(InputMethodSubtype.CREATOR);
+                    data.enforceNoDataAvail();
+                    changeInputMethodSubtype(_arg012);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    IConnectionlessHandwritingCallback _arg16 = IConnectionlessHandwritingCallback.Stub.asInterface(data.readStrongBinder());
+                    CursorAnchorInfo _arg23 = (CursorAnchorInfo) data.readTypedObject(CursorAnchorInfo.CREATOR);
+                    boolean _arg33 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    canStartStylusHandwriting(_arg013, _arg16, _arg23, _arg33);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    InputChannel _arg17 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
+                    List<MotionEvent> _arg24 = data.createTypedArrayList(MotionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    startStylusHandwriting(_arg014, _arg17, _arg24);
+                    return true;
+                case 15:
+                    commitHandwritingDelegationTextIfAvailable();
+                    return true;
+                case 16:
+                    discardHandwritingDelegationText();
+                    return true;
+                case 17:
+                    initInkWindow();
+                    return true;
+                case 18:
+                    finishStylusHandwriting();
+                    return true;
+                case 19:
+                    removeStylusHandwritingWindow();
+                    return true;
+                case 20:
+                    long _arg015 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setStylusWindowIdleTimeoutForTest(_arg015);
+                    return true;
+                case 21:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    minimizeSoftInput(_arg016);
+                    return true;
+                case 22:
+                    undoMinimizeSoftInput();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            InitParams _arg0 = (InitParams) data.readTypedObject(InitParams.CREATOR);
-                            data.enforceNoDataAvail();
-                            initializeInternal(_arg0);
-                            return true;
-                        case 2:
-                            InlineSuggestionsRequestInfo _arg02 = (InlineSuggestionsRequestInfo) data.readTypedObject(InlineSuggestionsRequestInfo.CREATOR);
-                            IInlineSuggestionsRequestCallback _arg1 = IInlineSuggestionsRequestCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCreateInlineSuggestionsRequest(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            InputBinding _arg03 = (InputBinding) data.readTypedObject(InputBinding.CREATOR);
-                            data.enforceNoDataAvail();
-                            bindInput(_arg03);
-                            return true;
-                        case 4:
-                            unbindInput();
-                            return true;
-                        case 5:
-                            StartInputParams _arg04 = (StartInputParams) data.readTypedObject(StartInputParams.CREATOR);
-                            data.enforceNoDataAvail();
-                            startInput(_arg04);
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNavButtonFlagsChanged(_arg05);
-                            return true;
-                        case 7:
-                            InputChannel _arg06 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
-                            IInputMethodSessionCallback _arg12 = IInputMethodSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            createSession(_arg06, _arg12);
-                            return true;
-                        case 8:
-                            IBinder _arg07 = data.readStrongBinder();
-                            IInputMethodSession _arg08 = IInputMethodSession.Stub.asInterface(_arg07);
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSessionEnabled(_arg08, _arg13);
-                            return true;
-                        case 9:
-                            IBinder _arg09 = data.readStrongBinder();
-                            ImeTracker.Token _arg14 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
-                            int _arg2 = data.readInt();
-                            ResultReceiver _arg3 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            showSoftInput(_arg09, _arg14, _arg2, _arg3);
-                            return true;
-                        case 10:
-                            IBinder _arg010 = data.readStrongBinder();
-                            ImeTracker.Token _arg15 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
-                            int _arg22 = data.readInt();
-                            ResultReceiver _arg32 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            hideSoftInput(_arg010, _arg15, _arg22, _arg32);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateEditorToolType(_arg011);
-                            return true;
-                        case 12:
-                            InputMethodSubtype _arg012 = (InputMethodSubtype) data.readTypedObject(InputMethodSubtype.CREATOR);
-                            data.enforceNoDataAvail();
-                            changeInputMethodSubtype(_arg012);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            canStartStylusHandwriting(_arg013);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            InputChannel _arg16 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
-                            List<MotionEvent> _arg23 = data.createTypedArrayList(MotionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            startStylusHandwriting(_arg014, _arg16, _arg23);
-                            return true;
-                        case 15:
-                            initInkWindow();
-                            return true;
-                        case 16:
-                            finishStylusHandwriting();
-                            return true;
-                        case 17:
-                            removeStylusHandwritingWindow();
-                            return true;
-                        case 18:
-                            long _arg015 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setStylusWindowIdleTimeoutForTest(_arg015);
-                            return true;
-                        case 19:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            minimizeSoftInput(_arg016);
-                            return true;
-                        case 20:
-                            undoMinimizeSoftInput();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements IInputMethod {
             private IBinder mRemote;
 
@@ -538,11 +562,14 @@ public interface IInputMethod extends IInterface {
             }
 
             @Override // com.android.internal.inputmethod.IInputMethod
-            public void canStartStylusHandwriting(int requestId) throws RemoteException {
+            public void canStartStylusHandwriting(int requestId, IConnectionlessHandwritingCallback connectionlessCallback, CursorAnchorInfo cursorAnchorInfo, boolean isConnectionlessForDelegation) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
                     _data.writeInt(requestId);
+                    _data.writeStrongInterface(connectionlessCallback);
+                    _data.writeTypedObject(cursorAnchorInfo, 0);
+                    _data.writeBoolean(isConnectionlessForDelegation);
                     this.mRemote.transact(13, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -564,7 +591,7 @@ public interface IInputMethod extends IInterface {
             }
 
             @Override // com.android.internal.inputmethod.IInputMethod
-            public void initInkWindow() throws RemoteException {
+            public void commitHandwritingDelegationTextIfAvailable() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
@@ -575,7 +602,7 @@ public interface IInputMethod extends IInterface {
             }
 
             @Override // com.android.internal.inputmethod.IInputMethod
-            public void finishStylusHandwriting() throws RemoteException {
+            public void discardHandwritingDelegationText() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
@@ -586,11 +613,33 @@ public interface IInputMethod extends IInterface {
             }
 
             @Override // com.android.internal.inputmethod.IInputMethod
-            public void removeStylusHandwritingWindow() throws RemoteException {
+            public void initInkWindow() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
                     this.mRemote.transact(17, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.inputmethod.IInputMethod
+            public void finishStylusHandwriting() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
+                    this.mRemote.transact(18, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.inputmethod.IInputMethod
+            public void removeStylusHandwritingWindow() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
+                    this.mRemote.transact(19, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -602,7 +651,7 @@ public interface IInputMethod extends IInterface {
                 try {
                     _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
                     _data.writeLong(timeout);
-                    this.mRemote.transact(18, _data, null, 1);
+                    this.mRemote.transact(20, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -614,7 +663,7 @@ public interface IInputMethod extends IInterface {
                 try {
                     _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
                     _data.writeInt(height);
-                    this.mRemote.transact(19, _data, null, 1);
+                    this.mRemote.transact(21, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -625,7 +674,7 @@ public interface IInputMethod extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IInputMethod.DESCRIPTOR);
-                    this.mRemote.transact(20, _data, null, 1);
+                    this.mRemote.transact(22, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -634,16 +683,13 @@ public interface IInputMethod extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 19;
+            return 21;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class InitParams implements Parcelable {
         public static final Parcelable.Creator<InitParams> CREATOR = new Parcelable.Creator<InitParams>() { // from class: com.android.internal.inputmethod.IInputMethod.InitParams.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InitParams createFromParcel(Parcel _aidl_source) {
                 InitParams _aidl_out = new InitParams();
@@ -651,6 +697,7 @@ public interface IInputMethod extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InitParams[] newArray(int _aidl_size) {
                 return new InitParams[_aidl_size];
@@ -659,25 +706,6 @@ public interface IInputMethod extends IInterface {
         public int navigationBarFlags = 0;
         public IInputMethodPrivilegedOperations privilegedOperations;
         public IBinder token;
-
-        /* renamed from: com.android.internal.inputmethod.IInputMethod$InitParams$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<InitParams> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InitParams createFromParcel(Parcel _aidl_source) {
-                InitParams _aidl_out = new InitParams();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InitParams[] newArray(int _aidl_size) {
-                return new InitParams[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -742,12 +770,9 @@ public interface IInputMethod extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class StartInputParams implements Parcelable {
         public static final Parcelable.Creator<StartInputParams> CREATOR = new Parcelable.Creator<StartInputParams>() { // from class: com.android.internal.inputmethod.IInputMethod.StartInputParams.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public StartInputParams createFromParcel(Parcel _aidl_source) {
                 StartInputParams _aidl_out = new StartInputParams();
@@ -755,6 +780,7 @@ public interface IInputMethod extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public StartInputParams[] newArray(int _aidl_size) {
                 return new StartInputParams[_aidl_size];
@@ -766,25 +792,6 @@ public interface IInputMethod extends IInterface {
         public IBinder startInputToken;
         public boolean restarting = false;
         public int navigationBarFlags = 0;
-
-        /* renamed from: com.android.internal.inputmethod.IInputMethod$StartInputParams$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<StartInputParams> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public StartInputParams createFromParcel(Parcel _aidl_source) {
-                StartInputParams _aidl_out = new StartInputParams();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public StartInputParams[] newArray(int _aidl_size) {
-                return new StartInputParams[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

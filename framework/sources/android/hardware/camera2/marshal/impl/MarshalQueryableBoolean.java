@@ -5,10 +5,9 @@ import android.hardware.camera2.marshal.Marshaler;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableBoolean implements MarshalQueryable<Boolean> {
 
-    /* loaded from: classes.dex */
     private class MarshalerBoolean extends Marshaler<Boolean> {
         protected MarshalerBoolean(TypeReference<Boolean> typeReference, int nativeType) {
             super(MarshalQueryableBoolean.this, typeReference, nativeType);
@@ -19,6 +18,7 @@ public class MarshalQueryableBoolean implements MarshalQueryable<Boolean> {
             byteBuffer.put(bool.booleanValue() ? (byte) 1 : (byte) 0);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public Boolean unmarshal(ByteBuffer buffer) {
             return Boolean.valueOf(buffer.get() != 0);

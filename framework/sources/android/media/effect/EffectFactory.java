@@ -35,7 +35,7 @@ public class EffectFactory {
     public static final String EFFECT_VIGNETTE = "android.media.effect.effects.VignetteEffect";
     private EffectContext mEffectContext;
 
-    public EffectFactory(EffectContext effectContext) {
+    EffectFactory(EffectContext effectContext) {
         this.mEffectContext = effectContext;
     }
 

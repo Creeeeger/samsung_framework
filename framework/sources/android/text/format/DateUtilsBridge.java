@@ -1,12 +1,13 @@
 package android.text.format;
 
+import android.app.blob.XmlTags;
 import android.hardware.gnss.GnssSignalType;
 import android.icu.util.Calendar;
 import android.icu.util.GregorianCalendar;
 import android.icu.util.TimeZone;
 import android.icu.util.ULocale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class DateUtilsBridge {
     public static TimeZone icuTimeZone(java.util.TimeZone tz) {
         TimeZone icuTimeZone = TimeZone.getTimeZone(tz.getID());
@@ -68,7 +69,7 @@ public final class DateUtilsBridge {
             }
             builder.append(monthPart);
             if ((flags & 32) == 0) {
-                builder.append("d");
+                builder.append(XmlTags.ATTR_DESCRIPTION);
             }
         }
         if ((flags & 2) != 0) {

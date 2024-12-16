@@ -6,7 +6,7 @@ import android.net.LocalSocketAddress;
 public class ChildZygoteProcess extends ZygoteProcess {
     private final int mPid;
 
-    public ChildZygoteProcess(LocalSocketAddress socketAddress, int pid) {
+    ChildZygoteProcess(LocalSocketAddress socketAddress, int pid) {
         super(socketAddress, null);
         this.mPid = pid;
     }

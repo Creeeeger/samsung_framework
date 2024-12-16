@@ -91,10 +91,9 @@ public class IccUtils {
         StringBuilder ret = new StringBuilder(length * 2);
         for (int i = offset; i < offset + length; i++) {
             int v = data[i] & 15;
-            char[] cArr = HEX_CHARS;
-            ret.append(cArr[v]);
+            ret.append(HEX_CHARS[v]);
             int v2 = (data[i] >> 4) & 15;
-            ret.append(cArr[v2]);
+            ret.append(HEX_CHARS[v2]);
         }
         return ret.toString();
     }
@@ -258,10 +257,9 @@ public class IccUtils {
         StringBuilder ret = new StringBuilder(bytes.length * 2);
         for (int i = 0; i < bytes.length; i++) {
             int b = (bytes[i] >> 4) & 15;
-            char[] cArr = HEX_CHARS;
-            ret.append(cArr[b]);
+            ret.append(HEX_CHARS[b]);
             int b2 = bytes[i] & 15;
-            ret.append(cArr[b2]);
+            ret.append(HEX_CHARS[b2]);
         }
         return ret.toString();
     }
@@ -562,8 +560,7 @@ public class IccUtils {
     }
 
     public static String byteToHex(byte b) {
-        char[] cArr = HEX_CHARS;
-        return new String(new char[]{cArr[(b & 255) >>> 4], cArr[b & 15]});
+        return new String(new char[]{HEX_CHARS[(b & 255) >>> 4], HEX_CHARS[b & 15]});
     }
 
     public static String stripTrailingFs(String s) {

@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import com.samsung.android.sm.iafdlib.IafdConstant;
 
 /* loaded from: classes6.dex */
-public class IAFDRepair {
+class IAFDRepair {
     public static final int EXP_REPAIRMODE_ONEACTIVITY = 2;
     public static final int EXP_REPAIRMODE_ONEKEY = 1;
     public static final int EXP_REPAIRMODE_ONLYTIPS = 3;
@@ -16,10 +15,13 @@ public class IAFDRepair {
     public static final int EXP_REPAIR_ISOLABLE = 2;
     public static final int EXP_REPAIR_PILE = 1;
 
+    IAFDRepair() {
+    }
+
     public boolean repairHandle(Context ct, Bundle bundle) {
         boolean result = false;
         int exptype = bundle.getInt("type");
-        String pkgName = bundle.getString(IafdConstant.KEY_PACKAGE_NAME);
+        String pkgName = bundle.getString(SmLib_IafdConstant.KEY_PACKAGE_NAME);
         try {
             result = IAFDHotfix.hotfix(ct, exptype, pkgName);
             if (!result) {

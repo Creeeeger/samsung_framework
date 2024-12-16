@@ -8,7 +8,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemHiddenSoundManager {
     public static final int ERROR = -1;
     public static final int PACKAGE_ALL = 0;
@@ -21,14 +21,12 @@ public class SemHiddenSoundManager {
     }
 
     private static IAudioService getService() {
-        IAudioService iAudioService = sService;
-        if (iAudioService != null) {
-            return iAudioService;
+        if (sService != null) {
+            return sService;
         }
         IBinder b = ServiceManager.getService("audio");
-        IAudioService asInterface = IAudioService.Stub.asInterface(b);
-        sService = asInterface;
-        return asInterface;
+        sService = IAudioService.Stub.asInterface(b);
+        return sService;
     }
 
     private static void setAudioServiceConfig(String param) {
@@ -74,12 +72,12 @@ public class SemHiddenSoundManager {
     }
 
     public static void setPlaybackRecorderPackage(int pid) {
-        StringBuilder paramBuilder = new StringBuilder(AudioParameter.SEC_LOCAL_HIDDEN_SOUND_KEY).append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append(AudioParameter.SUBKEY_HIDDEN_SOUND_PID).append("=").append(pid).append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append("address").append("=").append(getClientAddress());
+        StringBuilder paramBuilder = new StringBuilder(AudioParameter.SEC_LOCAL_HIDDEN_SOUND_KEY).append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append("pid").append("=").append(pid).append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append("address").append("=").append(getClientAddress());
         setAudioServiceConfig(paramBuilder.toString());
     }
 
     public static int getPlaybackRecorderPackage() {
-        StringBuilder paramBuilder = new StringBuilder(AudioParameter.SEC_LOCAL_HIDDEN_SOUND_KEY).append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append(AudioParameter.SUBKEY_HIDDEN_SOUND_PID).append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append("address").append("=").append(getClientAddress());
+        StringBuilder paramBuilder = new StringBuilder(AudioParameter.SEC_LOCAL_HIDDEN_SOUND_KEY).append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append("pid").append(NavigationBarInflaterView.GRAVITY_SEPARATOR).append("address").append("=").append(getClientAddress());
         try {
             int pid = Integer.parseInt(getAudioServiceConfig(paramBuilder.toString()));
             return pid;

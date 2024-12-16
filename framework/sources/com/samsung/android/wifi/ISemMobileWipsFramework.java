@@ -22,7 +22,6 @@ public interface ISemMobileWipsFramework extends IInterface {
 
     void sendHWParamToHQMwithAppId(int i, String str, String str2, String str3, String str4, String str5, String str6, String str7, String str8, String str9) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemMobileWipsFramework {
         @Override // com.samsung.android.wifi.ISemMobileWipsFramework
         public boolean invokeMethodBool(int value) throws RemoteException {
@@ -53,7 +52,6 @@ public interface ISemMobileWipsFramework extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemMobileWipsFramework {
         static final int TRANSACTION_getScanResults = 4;
         static final int TRANSACTION_invokeMethodBool = 1;
@@ -108,61 +106,57 @@ public interface ISemMobileWipsFramework extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemMobileWipsFramework.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemMobileWipsFramework.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemMobileWipsFramework.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = invokeMethodBool(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result2 = invokeMethodStr(_arg02);
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 3:
+                    Message _arg03 = (Message) data.readTypedObject(Message.CREATOR);
+                    data.enforceNoDataAvail();
+                    partialScanStart(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    List<SemMobileWipsScanResult> _result3 = getScanResults();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    String _arg4 = data.readString();
+                    String _arg5 = data.readString();
+                    String _arg6 = data.readString();
+                    String _arg7 = data.readString();
+                    String _arg8 = data.readString();
+                    String _arg9 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendHWParamToHQMwithAppId(_arg04, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = invokeMethodBool(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result2 = invokeMethodStr(_arg02);
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 3:
-                            Message _arg03 = (Message) data.readTypedObject(Message.CREATOR);
-                            data.enforceNoDataAvail();
-                            partialScanStart(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            List<SemMobileWipsScanResult> _result3 = getScanResults();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            String _arg4 = data.readString();
-                            String _arg5 = data.readString();
-                            String _arg6 = data.readString();
-                            String _arg7 = data.readString();
-                            String _arg8 = data.readString();
-                            String _arg9 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendHWParamToHQMwithAppId(_arg04, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemMobileWipsFramework {
+        private static class Proxy implements ISemMobileWipsFramework {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

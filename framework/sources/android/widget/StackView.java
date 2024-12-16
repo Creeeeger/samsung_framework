@@ -120,16 +120,12 @@ public class StackView extends AdapterViewAnimator {
         this.mTouchSlop = configuration.getScaledTouchSlop();
         this.mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         this.mActivePointerId = -1;
-        ImageView imageView = new ImageView(getContext());
-        this.mHighlight = imageView;
-        imageView.setLayoutParams(new LayoutParams(imageView));
-        ImageView imageView2 = this.mHighlight;
-        addViewInLayout(imageView2, -1, new LayoutParams(imageView2));
-        ImageView imageView3 = new ImageView(getContext());
-        this.mClickFeedback = imageView3;
-        imageView3.setLayoutParams(new LayoutParams(imageView3));
-        ImageView imageView4 = this.mClickFeedback;
-        addViewInLayout(imageView4, -1, new LayoutParams(imageView4));
+        this.mHighlight = new ImageView(getContext());
+        this.mHighlight.setLayoutParams(new LayoutParams(this.mHighlight));
+        addViewInLayout(this.mHighlight, -1, new LayoutParams(this.mHighlight));
+        this.mClickFeedback = new ImageView(getContext());
+        this.mClickFeedback.setLayoutParams(new LayoutParams(this.mClickFeedback));
+        addViewInLayout(this.mClickFeedback, -1, new LayoutParams(this.mClickFeedback));
         this.mClickFeedback.setVisibility(4);
         this.mStackSlider = new StackSlider();
         if (sHolographicHelper == null) {
@@ -144,7 +140,7 @@ public class StackView extends AdapterViewAnimator {
     }
 
     @Override // android.widget.AdapterViewAnimator
-    void transformViewForTransition(int fromIndex, int toIndex, View view, boolean animate) {
+    void transformViewForTransition(int fromIndex, int toIndex, final View view, boolean animate) {
         if (!animate) {
             ((StackFrame) view).cancelSliderAnimator();
             view.setRotationX(0.0f);
@@ -201,46 +197,25 @@ public class StackView extends AdapterViewAnimator {
             } else if (toIndex == -1) {
                 if (animate) {
                     postDelayed(new Runnable() { // from class: android.widget.StackView.1
-                        final /* synthetic */ View val$view;
-
-                        AnonymousClass1(View view2) {
-                            view = view2;
-                        }
-
                         @Override // java.lang.Runnable
                         public void run() {
                             view.setAlpha(0.0f);
                         }
                     }, MIN_TIME_BETWEEN_SCROLLS);
                 } else {
-                    view2.setAlpha(0.0f);
+                    view.setAlpha(0.0f);
                 }
             }
         } else {
-            view2.setVisibility(0);
-            view2.setAlpha(1.0f);
-            view2.setRotationX(0.0f);
-            LayoutParams lp2 = (LayoutParams) view2.getLayoutParams();
+            view.setVisibility(0);
+            view.setAlpha(1.0f);
+            view.setRotationX(0.0f);
+            LayoutParams lp2 = (LayoutParams) view.getLayoutParams();
             lp2.setVerticalOffset(0);
             lp2.setHorizontalOffset(0);
         }
         if (toIndex != -1) {
-            transformViewAtIndex(toIndex, view2, animate);
-        }
-    }
-
-    /* renamed from: android.widget.StackView$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Runnable {
-        final /* synthetic */ View val$view;
-
-        AnonymousClass1(View view2) {
-            view = view2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            view.setAlpha(0.0f);
+            transformViewAtIndex(toIndex, view, animate);
         }
     }
 
@@ -334,7 +309,7 @@ public class StackView extends AdapterViewAnimator {
     }
 
     @Override // android.widget.AdapterViewAnimator
-    public void showOnly(int childIndex, boolean animate) {
+    void showOnly(int childIndex, boolean animate) {
         View v;
         super.showOnly(childIndex, animate);
         for (int i = this.mCurrentWindowEnd; i >= this.mCurrentWindowStart; i--) {
@@ -344,9 +319,8 @@ public class StackView extends AdapterViewAnimator {
                 v.bringToFront();
             }
         }
-        ImageView imageView = this.mHighlight;
-        if (imageView != null) {
-            imageView.bringToFront();
+        if (this.mHighlight != null) {
+            this.mHighlight.bringToFront();
         }
         this.mTransitionIsSetup = false;
         this.mClickFeedbackIsValid = false;
@@ -387,8 +361,7 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class StackFrame extends FrameLayout {
+    private static class StackFrame extends FrameLayout {
         WeakReference<ObjectAnimator> sliderAnimator;
         WeakReference<ObjectAnimator> transformAnimator;
 
@@ -406,8 +379,7 @@ public class StackView extends AdapterViewAnimator {
 
         boolean cancelTransformAnimator() {
             ObjectAnimator oa;
-            WeakReference<ObjectAnimator> weakReference = this.transformAnimator;
-            if (weakReference != null && (oa = weakReference.get()) != null) {
+            if (this.transformAnimator != null && (oa = this.transformAnimator.get()) != null) {
                 oa.cancel();
                 return true;
             }
@@ -416,8 +388,7 @@ public class StackView extends AdapterViewAnimator {
 
         boolean cancelSliderAnimator() {
             ObjectAnimator oa;
-            WeakReference<ObjectAnimator> weakReference = this.sliderAnimator;
-            if (weakReference != null && (oa = weakReference.get()) != null) {
+            if (this.sliderAnimator != null && (oa = this.sliderAnimator.get()) != null) {
                 oa.cancel();
                 return true;
             }
@@ -428,8 +399,7 @@ public class StackView extends AdapterViewAnimator {
     @Override // android.widget.AdapterViewAnimator
     FrameLayout getFrameForChild() {
         StackFrame fl = new StackFrame(this.mContext);
-        int i = this.mFramePadding;
-        fl.setPadding(i, i, i, i);
+        fl.setPadding(this.mFramePadding, this.mFramePadding, this.mFramePadding, this.mFramePadding);
         return fl;
     }
 
@@ -438,7 +408,7 @@ public class StackView extends AdapterViewAnimator {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         boolean expandClipRegion = false;
         canvas.getClipBounds(this.stackInvalidateRect);
         int childCount = getChildCount();
@@ -550,8 +520,6 @@ public class StackView extends AdapterViewAnimator {
     private void beginGestureIfNeeded(float deltaY) {
         int activeIndex;
         int stackMode;
-        int i;
-        int i2;
         if (((int) Math.abs(deltaY)) > this.mTouchSlop && this.mSwipeGestureType == 0) {
             int swipeGestureType = deltaY < 0.0f ? 1 : 2;
             cancelLongPress();
@@ -565,8 +533,8 @@ public class StackView extends AdapterViewAnimator {
             } else {
                 activeIndex = swipeGestureType == 2 ? 1 : 0;
             }
-            boolean endOfStack = this.mLoopViews && adapterCount == 1 && (((i2 = this.mStackMode) == 0 && swipeGestureType == 1) || (i2 == 1 && swipeGestureType == 2));
-            boolean beginningOfStack = this.mLoopViews && adapterCount == 1 && (((i = this.mStackMode) == 1 && swipeGestureType == 1) || (i == 0 && swipeGestureType == 2));
+            boolean endOfStack = this.mLoopViews && adapterCount == 1 && ((this.mStackMode == 0 && swipeGestureType == 1) || (this.mStackMode == 1 && swipeGestureType == 2));
+            boolean beginningOfStack = this.mLoopViews && adapterCount == 1 && ((this.mStackMode == 1 && swipeGestureType == 1) || (this.mStackMode == 0 && swipeGestureType == 2));
             if (this.mLoopViews && !beginningOfStack && !endOfStack) {
                 stackMode = 0;
             } else {
@@ -615,11 +583,9 @@ public class StackView extends AdapterViewAnimator {
                 return true;
             case 2:
                 beginGestureIfNeeded(deltaY);
-                int i = this.mSlideAmount;
-                float rx = deltaX / (i * 1.0f);
-                int i2 = this.mSwipeGestureType;
-                if (i2 == 2) {
-                    float r = ((deltaY - (this.mTouchSlop * 1.0f)) / i) * 1.0f;
+                float rx = deltaX / (this.mSlideAmount * 1.0f);
+                if (this.mSwipeGestureType == 2) {
+                    float r = ((deltaY - (this.mTouchSlop * 1.0f)) / this.mSlideAmount) * 1.0f;
                     if (this.mStackMode == 1) {
                         r = 1.0f - r;
                     }
@@ -627,8 +593,8 @@ public class StackView extends AdapterViewAnimator {
                     this.mStackSlider.setXProgress(rx);
                     return true;
                 }
-                if (i2 == 1) {
-                    float r2 = ((-((this.mTouchSlop * 1.0f) + deltaY)) / i) * 1.0f;
+                if (this.mSwipeGestureType == 1) {
+                    float r2 = ((-((this.mTouchSlop * 1.0f) + deltaY)) / this.mSlideAmount) * 1.0f;
                     if (this.mStackMode == 1) {
                         r2 = 1.0f - r2;
                     }
@@ -671,9 +637,8 @@ public class StackView extends AdapterViewAnimator {
                         this.mInitialY += y - oldY;
                         this.mInitialX += x - oldX;
                         this.mActivePointerId = ev.getPointerId(index);
-                        VelocityTracker velocityTracker = this.mVelocityTracker;
-                        if (velocityTracker != null) {
-                            velocityTracker.clear();
+                        if (this.mVelocityTracker != null) {
+                            this.mVelocityTracker.clear();
                             return;
                         }
                         return;
@@ -691,14 +656,12 @@ public class StackView extends AdapterViewAnimator {
         float newY = ev.getY(pointerIndex);
         int deltaY = (int) (newY - this.mInitialY);
         this.mLastInteractionTime = System.currentTimeMillis();
-        VelocityTracker velocityTracker = this.mVelocityTracker;
-        if (velocityTracker != null) {
-            velocityTracker.computeCurrentVelocity(1000, this.mMaximumVelocity);
+        if (this.mVelocityTracker != null) {
+            this.mVelocityTracker.computeCurrentVelocity(1000, this.mMaximumVelocity);
             this.mYVelocity = (int) this.mVelocityTracker.getYVelocity(this.mActivePointerId);
         }
-        VelocityTracker velocityTracker2 = this.mVelocityTracker;
-        if (velocityTracker2 != null) {
-            velocityTracker2.recycle();
+        if (this.mVelocityTracker != null) {
+            this.mVelocityTracker.recycle();
             this.mVelocityTracker = null;
         }
         if (deltaY > this.mSwipeThreshold && this.mSwipeGestureType == 2 && this.mStackSlider.mMode == 0) {
@@ -718,11 +681,9 @@ public class StackView extends AdapterViewAnimator {
             }
             this.mHighlight.bringToFront();
         } else {
-            int i = this.mSwipeGestureType;
-            if (i == 1) {
-                int i2 = this.mStackMode;
-                float finalYProgress = i2 != 1 ? 0.0f : 1.0f;
-                if (i2 == 0 || this.mStackSlider.mMode != 0) {
+            if (this.mSwipeGestureType == 1) {
+                float finalYProgress = this.mStackMode != 1 ? 0.0f : 1.0f;
+                if (this.mStackMode == 0 || this.mStackSlider.mMode != 0) {
                     duration2 = Math.round(this.mStackSlider.getDurationForNeutralPosition());
                 } else {
                     duration2 = Math.round(this.mStackSlider.getDurationForOffscreenPosition());
@@ -734,10 +695,9 @@ public class StackView extends AdapterViewAnimator {
                 pa.setDuration(duration2);
                 pa.setInterpolator(new LinearInterpolator());
                 pa.start();
-            } else if (i == 2) {
-                int i3 = this.mStackMode;
-                float finalYProgress2 = i3 == 1 ? 0.0f : 1.0f;
-                if (i3 == 1 || this.mStackSlider.mMode != 0) {
+            } else if (this.mSwipeGestureType == 2) {
+                float finalYProgress2 = this.mStackMode == 1 ? 0.0f : 1.0f;
+                if (this.mStackMode == 1 || this.mStackSlider.mMode != 0) {
                     duration = Math.round(this.mStackSlider.getDurationForNeutralPosition());
                 } else {
                     duration = Math.round(this.mStackSlider.getDurationForOffscreenPosition());
@@ -754,8 +714,7 @@ public class StackView extends AdapterViewAnimator {
         this.mSwipeGestureType = 0;
     }
 
-    /* loaded from: classes4.dex */
-    public class StackSlider {
+    private class StackSlider {
         static final int BEGINNING_OF_STACK_MODE = 1;
         static final int END_OF_STACK_MODE = 2;
         static final int NORMAL_MODE = 0;
@@ -808,11 +767,9 @@ public class StackView extends AdapterViewAnimator {
         public void setYProgress(float r) {
             float r2 = Math.max(0.0f, Math.min(1.0f, r));
             this.mYProgress = r2;
-            View view = this.mView;
-            if (view == null) {
-                return;
+            if (this.mView == null) {
             }
-            LayoutParams viewLp = (LayoutParams) view.getLayoutParams();
+            LayoutParams viewLp = (LayoutParams) this.mView.getLayoutParams();
             LayoutParams highlightLp = (LayoutParams) StackView.this.mHighlight.getLayoutParams();
             int stackDirection = StackView.this.mStackMode == 0 ? 1 : -1;
             if (Float.compare(0.0f, this.mYProgress) != 0 && Float.compare(1.0f, this.mYProgress) != 0) {
@@ -836,32 +793,29 @@ public class StackView extends AdapterViewAnimator {
                     this.mView.setAlpha(alpha);
                     this.mView.setRotationX(stackDirection * 90.0f * rotationInterpolator(r2));
                     StackView.this.mHighlight.setRotationX(stackDirection * 90.0f * rotationInterpolator(r2));
-                    return;
+                    break;
                 case 1:
                     float r3 = (1.0f - r2) * 0.2f;
                     viewLp.setVerticalOffset(Math.round(stackDirection * r3 * StackView.this.mSlideAmount));
                     highlightLp.setVerticalOffset(Math.round(stackDirection * r3 * StackView.this.mSlideAmount));
                     StackView.this.mHighlight.setAlpha(highlightAlphaInterpolator(r3));
-                    return;
+                    break;
                 case 2:
                     float r4 = r2 * 0.2f;
                     viewLp.setVerticalOffset(Math.round((-stackDirection) * r4 * StackView.this.mSlideAmount));
                     highlightLp.setVerticalOffset(Math.round((-stackDirection) * r4 * StackView.this.mSlideAmount));
                     StackView.this.mHighlight.setAlpha(highlightAlphaInterpolator(r4));
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
         public void setXProgress(float r) {
             float r2 = Math.max(-2.0f, Math.min(2.0f, r));
             this.mXProgress = r2;
-            View view = this.mView;
-            if (view == null) {
+            if (this.mView == null) {
                 return;
             }
-            LayoutParams viewLp = (LayoutParams) view.getLayoutParams();
+            LayoutParams viewLp = (LayoutParams) this.mView.getLayoutParams();
             LayoutParams highlightLp = (LayoutParams) StackView.this.mHighlight.getLayoutParams();
             float r3 = r2 * 0.2f;
             viewLp.setHorizontalOffset(Math.round(StackView.this.mSlideAmount * r3));
@@ -889,11 +843,10 @@ public class StackView extends AdapterViewAnimator {
         }
 
         private float getDuration(boolean invert, float velocity) {
-            View view = this.mView;
-            if (view == null) {
+            if (this.mView == null) {
                 return 0.0f;
             }
-            LayoutParams viewLp = (LayoutParams) view.getLayoutParams();
+            LayoutParams viewLp = (LayoutParams) this.mView.getLayoutParams();
             float d = (float) Math.hypot(viewLp.horizontalOffset, viewLp.verticalOffset);
             float maxd = (float) Math.hypot(StackView.this.mSlideAmount, StackView.this.mSlideAmount * 0.4f);
             if (d > maxd) {
@@ -918,6 +871,7 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterViewAnimator
     public LayoutParams createOrReuseLayoutParams(View v) {
         ViewGroup.LayoutParams currentLp = v.getLayoutParams();
@@ -933,7 +887,7 @@ public class StackView extends AdapterViewAnimator {
     }
 
     @Override // android.widget.AdapterViewAnimator, android.widget.AdapterView, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         checkForAndHandleDataChanged();
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -991,7 +945,7 @@ public class StackView extends AdapterViewAnimator {
     }
 
     @Override // android.widget.AdapterViewAnimator, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int i;
         int widthSpecSize = View.MeasureSpec.getSize(widthMeasureSpec);
         int heightSpecSize = View.MeasureSpec.getSize(heightMeasureSpec);
@@ -1090,26 +1044,26 @@ public class StackView extends AdapterViewAnimator {
         }
         switch (action) {
             case 4096:
-                return goForward();
+                break;
             case 8192:
-                return goBackward();
+                break;
             case 16908358:
-                if (this.mStackMode == 0) {
-                    return goBackward();
+                if (this.mStackMode != 0) {
+                    break;
+                } else {
+                    break;
                 }
-                return goForward();
             case 16908359:
-                if (this.mStackMode == 0) {
-                    return goForward();
+                if (this.mStackMode != 0) {
+                    break;
+                } else {
+                    break;
                 }
-                return goBackward();
-            default:
-                return false;
         }
+        return false;
     }
 
-    /* loaded from: classes4.dex */
-    public class LayoutParams extends ViewGroup.LayoutParams {
+    class LayoutParams extends ViewGroup.LayoutParams {
         private final Rect globalInvalidateRect;
         int horizontalOffset;
         private final Rect invalidateRect;
@@ -1185,9 +1139,8 @@ public class StackView extends AdapterViewAnimator {
             this.horizontalOffset = newHorizontalOffset;
             int verticalOffsetDelta = newVerticalOffset - this.verticalOffset;
             this.verticalOffset = newVerticalOffset;
-            View view = this.mView;
-            if (view != null) {
-                view.requestLayout();
+            if (this.mView != null) {
+                this.mView.requestLayout();
                 int left = Math.min(this.mView.getLeft() + horizontalOffsetDelta, this.mView.getLeft());
                 int right = Math.max(this.mView.getRight() + horizontalOffsetDelta, this.mView.getRight());
                 int top = Math.min(this.mView.getTop() + verticalOffsetDelta, this.mView.getTop());
@@ -1204,36 +1157,26 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class HolographicHelper {
+    private static class HolographicHelper {
         private static final int CLICK_FEEDBACK = 1;
         private static final int RES_OUT = 0;
-        private final Paint mBlurPaint;
-        private final Canvas mCanvas;
         private float mDensity;
-        private final Paint mErasePaint;
-        private final Paint mHolographicPaint;
-        private final Matrix mIdentityMatrix;
         private BlurMaskFilter mLargeBlurMaskFilter;
-        private final Canvas mMaskCanvas;
         private BlurMaskFilter mSmallBlurMaskFilter;
-        private final int[] mTmpXY;
+        private final Paint mHolographicPaint = new Paint();
+        private final Paint mErasePaint = new Paint();
+        private final Paint mBlurPaint = new Paint();
+        private final Canvas mCanvas = new Canvas();
+        private final Canvas mMaskCanvas = new Canvas();
+        private final int[] mTmpXY = new int[2];
+        private final Matrix mIdentityMatrix = new Matrix();
 
         HolographicHelper(Context context) {
-            Paint paint = new Paint();
-            this.mHolographicPaint = paint;
-            Paint paint2 = new Paint();
-            this.mErasePaint = paint2;
-            this.mBlurPaint = new Paint();
-            this.mCanvas = new Canvas();
-            this.mMaskCanvas = new Canvas();
-            this.mTmpXY = new int[2];
-            this.mIdentityMatrix = new Matrix();
             this.mDensity = context.getResources().getDisplayMetrics().density;
-            paint.setFilterBitmap(true);
-            paint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
-            paint2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-            paint2.setFilterBitmap(true);
+            this.mHolographicPaint.setFilterBitmap(true);
+            this.mHolographicPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
+            this.mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+            this.mErasePaint.setFilterBitmap(true);
             this.mSmallBlurMaskFilter = new BlurMaskFilter(this.mDensity * 2.0f, BlurMaskFilter.Blur.NORMAL);
             this.mLargeBlurMaskFilter = new BlurMaskFilter(this.mDensity * 4.0f, BlurMaskFilter.Blur.NORMAL);
         }

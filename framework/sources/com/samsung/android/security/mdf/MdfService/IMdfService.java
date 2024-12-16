@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMdfService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.security.mdf.MdfService.IMdfService";
 
     int initCCMode() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMdfService {
         @Override // com.samsung.android.security.mdf.MdfService.IMdfService
         public int initCCMode() throws RemoteException {
@@ -25,7 +24,6 @@ public interface IMdfService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMdfService {
         static final int TRANSACTION_initCCMode = 1;
 
@@ -68,24 +66,21 @@ public interface IMdfService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMdfService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMdfService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMdfService.DESCRIPTOR);
+                case 1:
+                    int _result = initCCMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = initCCMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IMdfService {
             private IBinder mRemote;
 

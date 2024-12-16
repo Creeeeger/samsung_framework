@@ -19,7 +19,7 @@ public abstract class PolicyKey implements Parcelable {
 
     public abstract void writeToBundle(Bundle bundle);
 
-    public PolicyKey(String identifier) {
+    protected PolicyKey(String identifier) {
         this.mIdentifier = (String) Objects.requireNonNull(identifier);
     }
 

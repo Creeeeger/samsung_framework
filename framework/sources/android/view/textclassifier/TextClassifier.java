@@ -37,9 +37,6 @@ public interface TextClassifier {
     public static final int LOCAL = 0;
     public static final String LOG_TAG = "androidtc";
     public static final TextClassifier NO_OP = new TextClassifier() { // from class: android.view.textclassifier.TextClassifier.1
-        AnonymousClass1() {
-        }
-
         public String toString() {
             return "TextClassifier.NO_OP";
         }
@@ -68,22 +65,18 @@ public interface TextClassifier {
     public static final String WIDGET_TYPE_WEBVIEW = "webview";
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface EntityType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Hints {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface TextClassifierType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface WidgetType {
     }
 
@@ -97,17 +90,6 @@ public interface TextClassifier {
                 return "Default system";
             default:
                 return "Unknown";
-        }
-    }
-
-    /* renamed from: android.view.textclassifier.TextClassifier$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements TextClassifier {
-        AnonymousClass1() {
-        }
-
-        public String toString() {
-            return "TextClassifier.NO_OP";
         }
     }
 
@@ -171,17 +153,15 @@ public interface TextClassifier {
     default void dump(IndentingPrintWriter printWriter) {
     }
 
-    /* loaded from: classes4.dex */
     public static final class EntityConfig implements Parcelable {
         public static final Parcelable.Creator<EntityConfig> CREATOR = new Parcelable.Creator<EntityConfig>() { // from class: android.view.textclassifier.TextClassifier.EntityConfig.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EntityConfig createFromParcel(Parcel in) {
                 return new EntityConfig(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EntityConfig[] newArray(int size) {
                 return new EntityConfig[size];
@@ -192,14 +172,6 @@ public interface TextClassifier {
         private final boolean mIncludeTypesFromTextClassifier;
         private final List<String> mIncludedTypes;
 
-        /* synthetic */ EntityConfig(Parcel parcel, EntityConfigIA entityConfigIA) {
-            this(parcel);
-        }
-
-        /* synthetic */ EntityConfig(List list, List list2, List list3, boolean z, EntityConfigIA entityConfigIA) {
-            this(list, list2, list3, z);
-        }
-
         private EntityConfig(List<String> includedEntityTypes, List<String> excludedEntityTypes, List<String> hints, boolean includeTypesFromTextClassifier) {
             this.mIncludedTypes = (List) Objects.requireNonNull(includedEntityTypes);
             this.mExcludedTypes = (List) Objects.requireNonNull(excludedEntityTypes);
@@ -208,12 +180,10 @@ public interface TextClassifier {
         }
 
         private EntityConfig(Parcel in) {
-            ArrayList arrayList = new ArrayList();
-            this.mIncludedTypes = arrayList;
-            in.readStringList(arrayList);
-            ArrayList arrayList2 = new ArrayList();
-            this.mExcludedTypes = arrayList2;
-            in.readStringList(arrayList2);
+            this.mIncludedTypes = new ArrayList();
+            in.readStringList(this.mIncludedTypes);
+            this.mExcludedTypes = new ArrayList();
+            in.readStringList(this.mExcludedTypes);
             List<String> tmpHints = new ArrayList<>();
             in.readStringList(tmpHints);
             this.mHints = Collections.unmodifiableList(tmpHints);
@@ -266,24 +236,6 @@ public interface TextClassifier {
             return 0;
         }
 
-        /* renamed from: android.view.textclassifier.TextClassifier$EntityConfig$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<EntityConfig> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public EntityConfig createFromParcel(Parcel in) {
-                return new EntityConfig(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public EntityConfig[] newArray(int size) {
-                return new EntityConfig[size];
-            }
-        }
-
-        /* loaded from: classes4.dex */
         public static final class Builder {
             private Collection<String> mExcludedTypes;
             private Collection<String> mHints;
@@ -337,18 +289,17 @@ public interface TextClassifier {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Utils {
         private static final BreakIterator WORD_ITERATOR = BreakIterator.getWordInstance();
 
-        public static void checkArgument(CharSequence text, int startIndex, int endIndex) {
+        static void checkArgument(CharSequence text, int startIndex, int endIndex) {
             Preconditions.checkArgument(text != null);
             Preconditions.checkArgument(startIndex >= 0);
             Preconditions.checkArgument(endIndex <= text.length());
             Preconditions.checkArgument(endIndex > startIndex);
         }
 
-        public static boolean checkTextLength(CharSequence text, int maxLength) {
+        static boolean checkTextLength(CharSequence text, int maxLength) {
             int textLength = text.length();
             return textLength >= 0 && textLength <= maxLength;
         }
@@ -368,12 +319,11 @@ public interface TextClassifier {
             int offset = (minimumLength - length) / 2;
             int iterStart = Math.max(0, Math.min(start - offset, text.length() - minimumLength));
             int iterEnd = Math.min(text.length(), iterStart + minimumLength);
-            BreakIterator breakIterator = WORD_ITERATOR;
-            synchronized (breakIterator) {
-                breakIterator.setText(text);
-                int iterStart2 = breakIterator.isBoundary(iterStart) ? iterStart : Math.max(0, breakIterator.preceding(iterStart));
-                int iterEnd2 = breakIterator.isBoundary(iterEnd) ? iterEnd : Math.max(iterEnd, breakIterator.following(iterEnd));
-                breakIterator.setText("");
+            synchronized (WORD_ITERATOR) {
+                WORD_ITERATOR.setText(text);
+                int iterStart2 = WORD_ITERATOR.isBoundary(iterStart) ? iterStart : Math.max(0, WORD_ITERATOR.preceding(iterStart));
+                int iterEnd2 = WORD_ITERATOR.isBoundary(iterEnd) ? iterEnd : Math.max(iterEnd, WORD_ITERATOR.following(iterEnd));
+                WORD_ITERATOR.setText("");
                 substring = text.substring(iterStart2, iterEnd2);
             }
             return substring;
@@ -452,7 +402,7 @@ public interface TextClassifier {
             return scores;
         }
 
-        public static void checkMainThread() {
+        static void checkMainThread() {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Log.w(TextClassifier.LOG_TAG, "TextClassifier called on main thread");
             }

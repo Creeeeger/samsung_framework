@@ -15,7 +15,7 @@ import com.samsung.android.media.AudioParameter;
 import java.util.Collections;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DirEncryptionWrapper {
     private static final String TAG = "DirEncryptWrapper";
     private Context mContext;
@@ -149,12 +149,11 @@ public class DirEncryptionWrapper {
         if (this.mStorageManager != null) {
             return false;
         }
-        StorageManager storageManager = (StorageManager) this.mContext.getSystemService(Context.STORAGE_SERVICE);
-        this.mStorageManager = storageManager;
-        if (storageManager == null) {
+        this.mStorageManager = (StorageManager) this.mContext.getSystemService(Context.STORAGE_SERVICE);
+        if (this.mStorageManager == null) {
             return false;
         }
-        storageManager.registerListener(listner);
+        this.mStorageManager.registerListener(listner);
         return true;
     }
 

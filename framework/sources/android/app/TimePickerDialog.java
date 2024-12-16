@@ -21,7 +21,6 @@ public class TimePickerDialog extends AlertDialog implements DialogInterface.OnC
     private final TimePicker mTimePicker;
     private final OnTimeSetListener mTimeSetListener;
 
-    /* loaded from: classes.dex */
     public interface OnTimeSetListener {
         void onTimeSet(TimePicker timePicker, int i, int i2);
     }
@@ -52,12 +51,11 @@ public class TimePickerDialog extends AlertDialog implements DialogInterface.OnC
         setButton(-1, themeContext.getString(17039370), this);
         setButton(-2, themeContext.getString(17039360), this);
         setButtonPanelLayoutHint(1);
-        TimePicker timePicker = (TimePicker) view.findViewById(R.id.timePicker);
-        this.mTimePicker = timePicker;
-        timePicker.setIs24HourView(Boolean.valueOf(is24HourView));
-        timePicker.setCurrentHour(Integer.valueOf(hourOfDay));
-        timePicker.setCurrentMinute(Integer.valueOf(minute));
-        timePicker.setOnTimeChangedListener(this);
+        this.mTimePicker = (TimePicker) view.findViewById(R.id.timePicker);
+        this.mTimePicker.setIs24HourView(Boolean.valueOf(this.mIs24HourView));
+        this.mTimePicker.setCurrentHour(Integer.valueOf(this.mInitialHourOfDay));
+        this.mTimePicker.setCurrentMinute(Integer.valueOf(this.mInitialMinute));
+        this.mTimePicker.setOnTimeChangedListener(this);
     }
 
     public TimePicker getTimePicker() {
@@ -68,35 +66,14 @@ public class TimePickerDialog extends AlertDialog implements DialogInterface.OnC
     public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
     }
 
-    /* renamed from: android.app.TimePickerDialog$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements View.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View view) {
-            if (TimePickerDialog.this.mTimePicker.validateInput()) {
-                TimePickerDialog timePickerDialog = TimePickerDialog.this;
-                timePickerDialog.onClick(timePickerDialog, -1);
-                TimePickerDialog.this.mTimePicker.clearFocus();
-                TimePickerDialog.this.dismiss();
-            }
-        }
-    }
-
     @Override // android.app.Dialog
     public void show() {
         super.show();
         getButton(-1).setOnClickListener(new View.OnClickListener() { // from class: android.app.TimePickerDialog.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 if (TimePickerDialog.this.mTimePicker.validateInput()) {
-                    TimePickerDialog timePickerDialog = TimePickerDialog.this;
-                    timePickerDialog.onClick(timePickerDialog, -1);
+                    TimePickerDialog.this.onClick(TimePickerDialog.this, -1);
                     TimePickerDialog.this.mTimePicker.clearFocus();
                     TimePickerDialog.this.dismiss();
                 }
@@ -109,17 +86,13 @@ public class TimePickerDialog extends AlertDialog implements DialogInterface.OnC
         switch (which) {
             case -2:
                 cancel();
-                return;
+                break;
             case -1:
-                OnTimeSetListener onTimeSetListener = this.mTimeSetListener;
-                if (onTimeSetListener != null) {
-                    TimePicker timePicker = this.mTimePicker;
-                    onTimeSetListener.onTimeSet(timePicker, timePicker.getCurrentHour().intValue(), this.mTimePicker.getCurrentMinute().intValue());
-                    return;
+                if (this.mTimeSetListener != null) {
+                    this.mTimeSetListener.onTimeSet(this.mTimePicker, this.mTimePicker.getCurrentHour().intValue(), this.mTimePicker.getCurrentMinute().intValue());
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 

@@ -1,6 +1,8 @@
 package android.graphics;
 
 import android.graphics.ColorSpace;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.nio.Buffer;
 import java.nio.ShortBuffer;
 import libcore.util.NativeAllocationRegistry;
@@ -12,16 +14,12 @@ public class Mesh {
     private boolean mIsIndexed;
     private long mNativeMeshWrapper;
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     private @interface Mode {
     }
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer */
-    static /* bridge */ /* synthetic */ long m1142$$Nest$smnativeGetFinalizer() {
-        return nativeGetFinalizer();
-    }
-
-    private static native long nativeGetFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nativeGetFinalizer();
 
     private static native long nativeMake(long j, int i, Buffer buffer, boolean z, int i2, int i3, float f, float f2, float f3, float f4);
 
@@ -35,9 +33,8 @@ public class Mesh {
 
     private static native void nativeUpdateUniforms(long j, String str, int[] iArr);
 
-    /* loaded from: classes.dex */
-    public static class MeshHolder {
-        public static final NativeAllocationRegistry MESH_SPECIFICATION_REGISTRY = NativeAllocationRegistry.createMalloced(MeshSpecification.class.getClassLoader(), Mesh.m1142$$Nest$smnativeGetFinalizer());
+    private static class MeshHolder {
+        public static final NativeAllocationRegistry MESH_SPECIFICATION_REGISTRY = NativeAllocationRegistry.createMalloced(MeshSpecification.class.getClassLoader(), Mesh.nativeGetFinalizer());
 
         private MeshHolder() {
         }
@@ -145,7 +142,7 @@ public class Mesh {
         nativeUpdateUniforms(this.mNativeMeshWrapper, uniformName, values);
     }
 
-    public long getNativeWrapperInstance() {
+    long getNativeWrapperInstance() {
         return this.mNativeMeshWrapper;
     }
 

@@ -39,6 +39,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
     public static final String KEY_ACTIVITY = "activity";
     public static final String KEY_FLAGS = "flags";
     public static final String KEY_ICON_RES_ID = "iconResId";
+    public static final String KEY_ICON_RES_NAME = "iconResName";
     public static final String KEY_PERSON = "person";
     public static final String NOT_DISABLED = "nDis";
     public static final String NOT_DYNAMIC = "nDyn";
@@ -55,12 +56,11 @@ public class AppSearchShortcutInfo extends GenericDocument {
     public static final String KEY_INTENT_PERSISTABLE_EXTRAS = "intentPersistableExtras";
     public static final String KEY_LOCUS_ID = "locusId";
     public static final String KEY_EXTRAS = "extras";
-    public static final String KEY_ICON_RES_NAME = "iconResName";
     public static final String KEY_ICON_URI = "iconUri";
     public static final String KEY_DISABLED_REASON = "disabledReason";
     public static final String KEY_CAPABILITY = "capability";
     public static final String KEY_CAPABILITY_BINDINGS = "capabilityBindings";
-    public static final AppSearchSchema SCHEMA = new AppSearchSchema.Builder(SCHEMA_TYPE).addProperty(new AppSearchSchema.StringPropertyConfig.Builder("activity").setCardinality(2).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_SHORT_LABEL).setCardinality(2).setTokenizerType(1).setIndexingType(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_LONG_LABEL).setCardinality(2).setTokenizerType(1).setIndexingType(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_DISABLED_MESSAGE).setCardinality(2).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_CATEGORIES).setCardinality(1).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_INTENTS).setCardinality(1).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.BytesPropertyConfig.Builder(KEY_INTENT_PERSISTABLE_EXTRAS).setCardinality(1).build()).addProperty(new AppSearchSchema.DocumentPropertyConfig.Builder("person", AppSearchShortcutPerson.SCHEMA_TYPE).setCardinality(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_LOCUS_ID).setCardinality(2).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.BytesPropertyConfig.Builder(KEY_EXTRAS).setCardinality(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder("flags").setCardinality(1).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.LongPropertyConfig.Builder("iconResId").setCardinality(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_ICON_RES_NAME).setCardinality(2).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_ICON_URI).setCardinality(2).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_DISABLED_REASON).setCardinality(3).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_CAPABILITY).setCardinality(1).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_CAPABILITY_BINDINGS).setCardinality(1).setTokenizerType(1).setIndexingType(2).build()).build();
+    public static final AppSearchSchema SCHEMA = new AppSearchSchema.Builder(SCHEMA_TYPE).addProperty(new AppSearchSchema.StringPropertyConfig.Builder("activity").setCardinality(2).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_SHORT_LABEL).setCardinality(2).setTokenizerType(1).setIndexingType(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_LONG_LABEL).setCardinality(2).setTokenizerType(1).setIndexingType(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_DISABLED_MESSAGE).setCardinality(2).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_CATEGORIES).setCardinality(1).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_INTENTS).setCardinality(1).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.BytesPropertyConfig.Builder(KEY_INTENT_PERSISTABLE_EXTRAS).setCardinality(1).build()).addProperty(new AppSearchSchema.DocumentPropertyConfig.Builder("person", AppSearchShortcutPerson.SCHEMA_TYPE).setCardinality(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_LOCUS_ID).setCardinality(2).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.BytesPropertyConfig.Builder(KEY_EXTRAS).setCardinality(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder("flags").setCardinality(1).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.LongPropertyConfig.Builder("iconResId").setCardinality(2).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder("iconResName").setCardinality(2).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_ICON_URI).setCardinality(2).setTokenizerType(0).setIndexingType(0).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_DISABLED_REASON).setCardinality(3).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_CAPABILITY).setCardinality(1).setTokenizerType(1).setIndexingType(1).build()).addProperty(new AppSearchSchema.StringPropertyConfig.Builder(KEY_CAPABILITY_BINDINGS).setCardinality(1).setTokenizerType(1).setIndexingType(2).build()).build();
 
     public AppSearchShortcutInfo(GenericDocument document) {
         super(document);
@@ -134,7 +134,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
         PersistableBundle extras = transformToPersistableBundle(extrasByte);
         int flags = parseFlags(getPropertyStringArray("flags"));
         int iconResId = (int) getPropertyLong("iconResId");
-        String iconResName = getPropertyString(KEY_ICON_RES_NAME);
+        String iconResName = getPropertyString("iconResName");
         String iconUri = getPropertyString(KEY_ICON_URI);
         String disabledReasonString = getPropertyString(KEY_DISABLED_REASON);
         if (!TextUtils.isEmpty(disabledReasonString)) {
@@ -146,7 +146,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
         return new ShortcutInfo(userId, getId(), packageName, activity, null, shortLabel, 0, null, longLabel, 0, null, disabledMessage, 0, null, categoriesSet, intents, Integer.MAX_VALUE, extras, getCreationTimestampMillis(), flags, iconResId, iconResName, null, iconUri, disabledReason, persons, locusId, null, capabilityBindings);
     }
 
-    public static /* synthetic */ Intent lambda$toShortcutInfo$0(String uri) {
+    static /* synthetic */ Intent lambda$toShortcutInfo$0(String uri) {
         if (TextUtils.isEmpty(uri)) {
             return new Intent("android.intent.action.VIEW");
         }
@@ -157,11 +157,11 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
-    public static /* synthetic */ Intent[] lambda$toShortcutInfo$1(int x$0) {
+    static /* synthetic */ Intent[] lambda$toShortcutInfo$1(int x$0) {
         return new Intent[x$0];
     }
 
-    public static /* synthetic */ Bundle[] lambda$toShortcutInfo$2(int x$0) {
+    static /* synthetic */ Bundle[] lambda$toShortcutInfo$2(int x$0) {
         return new Bundle[x$0];
     }
 
@@ -173,9 +173,8 @@ public class AppSearchShortcutInfo extends GenericDocument {
         return docs;
     }
 
-    /* loaded from: classes.dex */
     public static class Builder extends GenericDocument.Builder<Builder> {
-        private List<String> mFlags;
+        private final List<String> mFlags;
 
         public Builder(String packageName, String id) {
             super(packageName, id, AppSearchShortcutInfo.SCHEMA_TYPE);
@@ -219,7 +218,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
 
         public Builder setCategories(Set<String> categories) {
             if (categories != null && !categories.isEmpty()) {
-                setPropertyString(AppSearchShortcutInfo.KEY_CATEGORIES, (String[]) categories.stream().toArray(new IntFunction() { // from class: android.content.pm.AppSearchShortcutInfo$Builder$$ExternalSyntheticLambda0
+                setPropertyString(AppSearchShortcutInfo.KEY_CATEGORIES, (String[]) categories.stream().toArray(new IntFunction() { // from class: android.content.pm.AppSearchShortcutInfo$Builder$$ExternalSyntheticLambda2
                     @Override // java.util.function.IntFunction
                     public final Object apply(int i) {
                         return AppSearchShortcutInfo.Builder.lambda$setCategories$0(i);
@@ -229,15 +228,12 @@ public class AppSearchShortcutInfo extends GenericDocument {
             return this;
         }
 
-        public static /* synthetic */ String[] lambda$setCategories$0(int x$0) {
+        static /* synthetic */ String[] lambda$setCategories$0(int x$0) {
             return new String[x$0];
         }
 
         public Builder setIntent(Intent intent) {
-            if (intent == null) {
-                return this;
-            }
-            return setIntents(new Intent[]{intent});
+            return intent == null ? this : setIntents(new Intent[]{intent});
         }
 
         public Builder setIntents(Intent[] intents) {
@@ -248,19 +244,19 @@ public class AppSearchShortcutInfo extends GenericDocument {
                 Objects.requireNonNull(intent, "intents cannot contain null");
                 Objects.requireNonNull(intent.getAction(), "intent's action must be set");
             }
-            byte[][] intentExtrases = new byte[intents.length];
+            byte[][] intentExtrases = new byte[intents.length][];
             for (int i = 0; i < intents.length; i++) {
                 Bundle extras = intents[i].getExtras();
                 intentExtrases[i] = extras == null ? new byte[0] : AppSearchShortcutInfo.transformToByteArray(new PersistableBundle(extras));
             }
-            setPropertyString(AppSearchShortcutInfo.KEY_INTENTS, (String[]) Arrays.stream(intents).map(new Function() { // from class: android.content.pm.AppSearchShortcutInfo$Builder$$ExternalSyntheticLambda1
+            setPropertyString(AppSearchShortcutInfo.KEY_INTENTS, (String[]) Arrays.stream(intents).map(new Function() { // from class: android.content.pm.AppSearchShortcutInfo$Builder$$ExternalSyntheticLambda0
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     String uri;
                     uri = ((Intent) obj).toUri(0);
                     return uri;
                 }
-            }).toArray(new IntFunction() { // from class: android.content.pm.AppSearchShortcutInfo$Builder$$ExternalSyntheticLambda2
+            }).toArray(new IntFunction() { // from class: android.content.pm.AppSearchShortcutInfo$Builder$$ExternalSyntheticLambda1
                 @Override // java.util.function.IntFunction
                 public final Object apply(int i2) {
                     return AppSearchShortcutInfo.Builder.lambda$setIntents$2(i2);
@@ -270,15 +266,12 @@ public class AppSearchShortcutInfo extends GenericDocument {
             return this;
         }
 
-        public static /* synthetic */ String[] lambda$setIntents$2(int x$0) {
+        static /* synthetic */ String[] lambda$setIntents$2(int x$0) {
             return new String[x$0];
         }
 
         public Builder setPerson(Person person) {
-            if (person == null) {
-                return this;
-            }
-            return setPersons(new Person[]{person});
+            return person == null ? this : setPersons(new Person[]{person});
         }
 
         public Builder setPersons(Person[] persons) {
@@ -319,7 +312,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
 
         public Builder setIconResName(String iconResName) {
             if (!TextUtils.isEmpty(iconResName)) {
-                setPropertyString(AppSearchShortcutInfo.KEY_ICON_RES_NAME, iconResName);
+                setPropertyString("iconResName", iconResName);
             }
             return this;
         }
@@ -364,7 +357,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
             return this;
         }
 
-        public static /* synthetic */ String lambda$setCapabilityBindings$3(String capabilityName, String paramName, String v) {
+        static /* synthetic */ String lambda$setCapabilityBindings$3(String capabilityName, String paramName, String v) {
             return capabilityName + "/" + paramName + "/" + v;
         }
 
@@ -375,6 +368,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static byte[] transformToByteArray(PersistableBundle extras) {
         Objects.requireNonNull(extras);
         try {
@@ -391,6 +385,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Bundle transformToBundle(byte[] extras) {
         if (extras == null) {
             return null;
@@ -427,6 +422,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String[] flattenFlags(int flags) {
         List<String> flattenedFlags = new ArrayList<>();
         for (int i = 0; i < 31; i++) {
@@ -544,7 +540,7 @@ public class AppSearchShortcutInfo extends GenericDocument {
         return ret;
     }
 
-    public static /* synthetic */ void lambda$parseCapabilityBindings$3(Map ret, String binding) {
+    static /* synthetic */ void lambda$parseCapabilityBindings$3(Map ret, String binding) {
         int capabilityStopIndex;
         if (TextUtils.isEmpty(binding) || (capabilityStopIndex = binding.indexOf("/")) == -1 || capabilityStopIndex == binding.length() - 1) {
             return;

@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsStreamMediaSession extends IInterface {
     void close() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsStreamMediaSession {
         @Override // com.android.ims.internal.IImsStreamMediaSession
         public void close() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IImsStreamMediaSession extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsStreamMediaSession {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsStreamMediaSession";
         static final int TRANSACTION_close = 1;
@@ -66,23 +64,20 @@ public interface IImsStreamMediaSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    close();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements IImsStreamMediaSession {
             private IBinder mRemote;
 

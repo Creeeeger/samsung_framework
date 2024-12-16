@@ -13,14 +13,9 @@ public class BinderDeathDispatcher<T extends IInterface> {
     private final Object mLock = new Object();
     private final ArrayMap<IBinder, BinderDeathDispatcher<T>.RecipientsInfo> mTargets = new ArrayMap<>();
 
-    /* loaded from: classes5.dex */
     class RecipientsInfo implements IBinder.DeathRecipient {
         ArraySet<IBinder.DeathRecipient> mRecipients;
         final IBinder mTarget;
-
-        /* synthetic */ RecipientsInfo(BinderDeathDispatcher binderDeathDispatcher, IBinder iBinder, RecipientsInfoIA recipientsInfoIA) {
-            this(iBinder);
-        }
 
         private RecipientsInfo(IBinder target) {
             this.mRecipients = new ArraySet<>();

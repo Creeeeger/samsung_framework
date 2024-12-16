@@ -13,9 +13,7 @@ public class Dial implements Parcelable {
     public static final int CLIR_INVOCATION = 1;
     public static final int CLIR_SUPPRESSION = 2;
     public static final Parcelable.Creator<Dial> CREATOR = new Parcelable.Creator<Dial>() { // from class: android.hardware.radio.voice.Dial.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Dial createFromParcel(Parcel _aidl_source) {
             Dial _aidl_out = new Dial();
@@ -23,6 +21,7 @@ public class Dial implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Dial[] newArray(int _aidl_size) {
             return new Dial[_aidl_size];
@@ -31,25 +30,6 @@ public class Dial implements Parcelable {
     public String address;
     public int clir = 0;
     public UusInfo[] uusInfo;
-
-    /* renamed from: android.hardware.radio.voice.Dial$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Dial> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Dial createFromParcel(Parcel _aidl_source) {
-            Dial _aidl_out = new Dial();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Dial[] newArray(int _aidl_size) {
-            return new Dial[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -118,7 +98,7 @@ public class Dial implements Parcelable {
         _aidl_sj.add("address: " + Objects.toString(this.address));
         _aidl_sj.add("clir: " + this.clir);
         _aidl_sj.add("uusInfo: " + Arrays.toString(this.uusInfo));
-        return "android.hardware.radio.voice.Dial" + _aidl_sj.toString();
+        return "Dial" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

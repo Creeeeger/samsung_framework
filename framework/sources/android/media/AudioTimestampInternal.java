@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioTimestampInternal implements Parcelable {
     public static final Parcelable.Creator<AudioTimestampInternal> CREATOR = new Parcelable.Creator<AudioTimestampInternal>() { // from class: android.media.AudioTimestampInternal.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioTimestampInternal createFromParcel(Parcel _aidl_source) {
             AudioTimestampInternal _aidl_out = new AudioTimestampInternal();
@@ -17,39 +15,21 @@ public class AudioTimestampInternal implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioTimestampInternal[] newArray(int _aidl_size) {
             return new AudioTimestampInternal[_aidl_size];
         }
     };
-    public int position = 0;
+    public long position = 0;
     public long sec = 0;
     public int nsec = 0;
-
-    /* renamed from: android.media.AudioTimestampInternal$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioTimestampInternal> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioTimestampInternal createFromParcel(Parcel _aidl_source) {
-            AudioTimestampInternal _aidl_out = new AudioTimestampInternal();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioTimestampInternal[] newArray(int _aidl_size) {
-            return new AudioTimestampInternal[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         int _aidl_start_pos = _aidl_parcel.dataPosition();
         _aidl_parcel.writeInt(0);
-        _aidl_parcel.writeInt(this.position);
+        _aidl_parcel.writeLong(this.position);
         _aidl_parcel.writeLong(this.sec);
         _aidl_parcel.writeInt(this.nsec);
         int _aidl_end_pos = _aidl_parcel.dataPosition();
@@ -72,7 +52,7 @@ public class AudioTimestampInternal implements Parcelable {
                 _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
                 return;
             }
-            this.position = _aidl_parcel.readInt();
+            this.position = _aidl_parcel.readLong();
             if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");

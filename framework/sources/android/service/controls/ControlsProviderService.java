@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -21,6 +22,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.R;
 import com.android.internal.util.Preconditions;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Flow;
@@ -32,8 +35,11 @@ public abstract class ControlsProviderService extends Service {
     public static final String ACTION_ADD_CONTROL = "android.service.controls.action.ADD_CONTROL";
     public static final String CALLBACK_BUNDLE = "CALLBACK_BUNDLE";
     public static final String CALLBACK_TOKEN = "CALLBACK_TOKEN";
+    public static final int CONTROLS_SURFACE_ACTIVITY_PANEL = 0;
+    public static final int CONTROLS_SURFACE_DREAM = 1;
     public static final String EXTRA_CONTROL = "android.service.controls.extra.CONTROL";
     public static final String EXTRA_CONTROLS = "android.service.controls.extra.CONTROLS";
+    public static final String EXTRA_CONTROLS_SURFACE = "android.service.controls.extra.CONTROLS_SURFACE";
     public static final String EXTRA_CONTROL_AUTO_ADD = "android.service.controls.extra.CONTROL_AUTO_ADD";
     public static final String EXTRA_LOCKSCREEN_ALLOW_TRIVIAL_CONTROLS = "android.service.controls.extra.LOCKSCREEN_ALLOW_TRIVIAL_CONTROLS";
     public static final String META_DATA_PANEL_ACTIVITY = "android.service.controls.META_DATA_PANEL_ACTIVITY";
@@ -42,6 +48,10 @@ public abstract class ControlsProviderService extends Service {
     private Supplier<ControlsProviderInfo> mControlsProviderInfoSupplier;
     private RequestHandler mHandler;
     private IBinder mToken;
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ControlsSurface {
+    }
 
     public abstract Flow.Publisher<Control> createPublisherFor(List<String> list);
 
@@ -59,9 +69,6 @@ public abstract class ControlsProviderService extends Service {
         Bundle bundle = intent.getBundleExtra(CALLBACK_BUNDLE);
         this.mToken = bundle.getBinder(CALLBACK_TOKEN);
         return new IControlsProvider.Stub() { // from class: android.service.controls.ControlsProviderService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.service.controls.IControlsProvider
             public void load(IControlsSubscriber subscriber) {
                 ControlsProviderService.this.mHandler.obtainMessage(1, subscriber).sendToTarget();
@@ -91,40 +98,6 @@ public abstract class ControlsProviderService extends Service {
         };
     }
 
-    /* renamed from: android.service.controls.ControlsProviderService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IControlsProvider.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.service.controls.IControlsProvider
-        public void load(IControlsSubscriber subscriber) {
-            ControlsProviderService.this.mHandler.obtainMessage(1, subscriber).sendToTarget();
-        }
-
-        @Override // android.service.controls.IControlsProvider
-        public void loadSuggested(IControlsSubscriber subscriber) {
-            ControlsProviderService.this.mHandler.obtainMessage(4, subscriber).sendToTarget();
-        }
-
-        @Override // android.service.controls.IControlsProvider
-        public void subscribe(List<String> controlIds, IControlsSubscriber subscriber) {
-            SubscribeMessage msg = new SubscribeMessage(controlIds, subscriber);
-            ControlsProviderService.this.mHandler.obtainMessage(2, msg).sendToTarget();
-        }
-
-        @Override // android.service.controls.IControlsProvider
-        public void action(String controlId, ControlActionWrapper action, IControlsActionCallback cb) {
-            ActionMessage msg = new ActionMessage(controlId, action.getWrappedAction(), cb);
-            ControlsProviderService.this.mHandler.obtainMessage(3, msg).sendToTarget();
-        }
-
-        @Override // android.service.controls.IControlsProvider
-        public void loadControlsProviderInfo(IControlsProviderInfoSubscriber cb) {
-            ControlsProviderService.this.mHandler.obtainMessage(101, cb).sendToTarget();
-        }
-    }
-
     @Override // android.app.Service
     public final boolean onUnbind(Intent intent) {
         this.mHandler = null;
@@ -135,8 +108,8 @@ public abstract class ControlsProviderService extends Service {
         this.mControlsProviderInfoSupplier = supplier;
     }
 
-    /* loaded from: classes3.dex */
-    public class RequestHandler extends Handler {
+    /* JADX INFO: Access modifiers changed from: private */
+    class RequestHandler extends Handler {
         private static final int MSG_ACTION = 3;
         private static final int MSG_LOAD = 1;
         private static final int MSG_LOAD_CONTROLS_PROVIDER_INFO = 101;
@@ -158,8 +131,7 @@ public abstract class ControlsProviderService extends Service {
                     break;
                 case 2:
                     SubscribeMessage sMsg = (SubscribeMessage) msg.obj;
-                    ControlsProviderService controlsProviderService = ControlsProviderService.this;
-                    SubscriberProxy proxy2 = new SubscriberProxy(controlsProviderService, false, controlsProviderService.mToken, sMsg.mSubscriber);
+                    SubscriberProxy proxy2 = new SubscriberProxy(ControlsProviderService.this, false, ControlsProviderService.this.mToken, sMsg.mSubscriber);
                     Log.d(ControlsProviderService.TAG, "createPublisherFor mToken:" + ControlsProviderService.this.mToken + ", ControlIds:" + sMsg.mControlIds);
                     ControlsProviderService.this.createPublisherFor(sMsg.mControlIds).subscribe(proxy2);
                     break;
@@ -203,6 +175,7 @@ public abstract class ControlsProviderService extends Service {
             };
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$consumerFor$0(IControlsActionCallback cb, String controlId, Integer response) {
             Preconditions.checkNotNull(response);
             if (!ControlAction.isValidResponse(response.intValue())) {
@@ -217,15 +190,16 @@ public abstract class ControlsProviderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isStatelessControl(Control control) {
         return control.getStatus() == 0 && control.getControlTemplate().getTemplateType() == 0 && TextUtils.isEmpty(control.getStatusText());
     }
 
-    /* loaded from: classes3.dex */
     private static class SubscriberProxy implements Flow.Subscriber<Control> {
         private Context mContext;
         private IControlsSubscriber mCs;
         private boolean mEnforceStateless;
+        private SubscriptionAdapter mSubscription;
         private IBinder mToken;
 
         SubscriberProxy(boolean enforceStateless, IBinder token, IControlsSubscriber cs) {
@@ -242,9 +216,11 @@ public abstract class ControlsProviderService extends Service {
         @Override // java.util.concurrent.Flow.Subscriber
         public void onSubscribe(Flow.Subscription subscription) {
             try {
-                this.mCs.onSubscribe(this.mToken, new SubscriptionAdapter(subscription));
+                SubscriptionAdapter subscriptionAdapter = new SubscriptionAdapter(subscription);
+                this.mCs.onSubscribe(this.mToken, subscriptionAdapter);
+                this.mSubscription = subscriptionAdapter;
             } catch (RemoteException ex) {
-                ex.rethrowAsRuntimeException();
+                handleRemoteException(ex);
             }
         }
 
@@ -261,7 +237,7 @@ public abstract class ControlsProviderService extends Service {
                 }
                 this.mCs.onNext(this.mToken, control);
             } catch (RemoteException ex) {
-                ex.rethrowAsRuntimeException();
+                handleRemoteException(ex);
             }
         }
 
@@ -269,8 +245,9 @@ public abstract class ControlsProviderService extends Service {
         public void onError(Throwable t) {
             try {
                 this.mCs.onError(this.mToken, t.toString());
+                this.mSubscription = null;
             } catch (RemoteException ex) {
-                ex.rethrowAsRuntimeException();
+                handleRemoteException(ex);
             }
         }
 
@@ -278,9 +255,22 @@ public abstract class ControlsProviderService extends Service {
         public void onComplete() {
             try {
                 this.mCs.onComplete(this.mToken);
+                this.mSubscription = null;
             } catch (RemoteException ex) {
-                ex.rethrowAsRuntimeException();
+                handleRemoteException(ex);
             }
+        }
+
+        private void handleRemoteException(RemoteException ex) {
+            if (ex instanceof DeadObjectException) {
+                SubscriptionAdapter subscriptionAdapter = this.mSubscription;
+                if (subscriptionAdapter != null) {
+                    subscriptionAdapter.cancel();
+                    return;
+                }
+                return;
+            }
+            ex.rethrowAsRuntimeException();
         }
     }
 
@@ -338,7 +328,6 @@ public abstract class ControlsProviderService extends Service {
         context.sendBroadcast(intent, Manifest.permission.BIND_CONTROLS);
     }
 
-    /* loaded from: classes3.dex */
     private static class SubscriptionAdapter extends IControlsSubscription.Stub {
         final Flow.Subscription mSubscription;
 
@@ -357,7 +346,6 @@ public abstract class ControlsProviderService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class ActionMessage {
         final ControlAction mAction;
         final IControlsActionCallback mCb;
@@ -370,7 +358,6 @@ public abstract class ControlsProviderService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class SubscribeMessage {
         final List<String> mControlIds;
         final IControlsSubscriber mSubscriber;

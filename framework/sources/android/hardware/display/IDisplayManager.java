@@ -1,9 +1,12 @@
 package android.hardware.display;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.content.pm.ParceledListSlice;
 import android.graphics.Point;
 import android.hardware.OverlayProperties;
 import android.hardware.display.IDisplayManagerCallback;
+import android.hardware.display.IHbmBrightnessCallback;
 import android.hardware.display.IVirtualDisplayCallback;
 import android.hardware.display.IWifiDisplayConnectionCallback;
 import android.hardware.graphics.common.DisplayDecorationSupport;
@@ -12,6 +15,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 import android.view.Display;
 import android.view.DisplayInfo;
@@ -39,7 +43,11 @@ public interface IDisplayManager extends IInterface {
 
     int createVirtualDisplay(VirtualDisplayConfig virtualDisplayConfig, IVirtualDisplayCallback iVirtualDisplayCallback, IMediaProjection iMediaProjection, String str) throws RemoteException;
 
+    void disableConnectedDisplay(int i) throws RemoteException;
+
     void disconnectWifiDisplay() throws RemoteException;
+
+    void enableConnectedDisplay(int i) throws RemoteException;
 
     void fitToActiveDisplay(boolean z) throws RemoteException;
 
@@ -123,11 +131,17 @@ public interface IDisplayManager extends IInterface {
 
     void registerCallbackWithEventMask(IDisplayManagerCallback iDisplayManagerCallback, long j) throws RemoteException;
 
+    void registerHbmBrightnessCallback(IHbmBrightnessCallback iHbmBrightnessCallback) throws RemoteException;
+
     void releaseVirtualDisplay(IVirtualDisplayCallback iVirtualDisplayCallback) throws RemoteException;
 
     void renameWifiDisplay(String str, String str2) throws RemoteException;
 
     void requestColorMode(int i, int i2) throws RemoteException;
+
+    void requestDisplayModes(IBinder iBinder, int i, int[] iArr) throws RemoteException;
+
+    boolean requestDisplayPower(int i, boolean z) throws RemoteException;
 
     boolean requestSetWifiDisplayParameters(List<SemWifiDisplayParameter> list) throws RemoteException;
 
@@ -159,7 +173,9 @@ public interface IDisplayManager extends IInterface {
 
     void setDisplayIdToMirror(IBinder iBinder, int i) throws RemoteException;
 
-    void setDisplayStateLimit(IBinder iBinder, int i) throws RemoteException;
+    void setDisplayStateOverride(IBinder iBinder, int i) throws RemoteException;
+
+    void setDisplayStateOverrideWithDisplayId(IBinder iBinder, int i, int i2) throws RemoteException;
 
     void setDlnaDevice(SemDlnaDevice semDlnaDevice, IBinder iBinder) throws RemoteException;
 
@@ -197,11 +213,8 @@ public interface IDisplayManager extends IInterface {
 
     void startWifiDisplayScan() throws RemoteException;
 
-    void startWifiDisplayScanAutoP2P() throws RemoteException;
-
     void stopWifiDisplayScan() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDisplayManager {
         @Override // android.hardware.display.IDisplayManager
         public DisplayInfo getDisplayInfo(int displayId) throws RemoteException {
@@ -405,10 +418,6 @@ public interface IDisplayManager extends IInterface {
         }
 
         @Override // android.hardware.display.IDisplayManager
-        public void startWifiDisplayScanAutoP2P() throws RemoteException {
-        }
-
-        @Override // android.hardware.display.IDisplayManager
         public Point getStableDisplaySize() throws RemoteException {
             return null;
         }
@@ -575,12 +584,33 @@ public interface IDisplayManager extends IInterface {
         }
 
         @Override // android.hardware.display.IDisplayManager
-        public void setDisplayStateLimit(IBinder lock, int stateLimit) throws RemoteException {
+        public void setDisplayStateOverride(IBinder lock, int stateOverride) throws RemoteException {
+        }
+
+        @Override // android.hardware.display.IDisplayManager
+        public void setDisplayStateOverrideWithDisplayId(IBinder lock, int stateOverride, int displayId) throws RemoteException {
         }
 
         @Override // android.hardware.display.IDisplayManager
         public float getAdaptiveBrightness(int displayId, float lux) throws RemoteException {
             return 0.0f;
+        }
+
+        @Override // android.hardware.display.IDisplayManager
+        public void enableConnectedDisplay(int displayId) throws RemoteException {
+        }
+
+        @Override // android.hardware.display.IDisplayManager
+        public void disableConnectedDisplay(int displayId) throws RemoteException {
+        }
+
+        @Override // android.hardware.display.IDisplayManager
+        public boolean requestDisplayPower(int displayId, boolean on) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.hardware.display.IDisplayManager
+        public void requestDisplayModes(IBinder token, int displayId, int[] modeIds) throws RemoteException {
         }
 
         @Override // android.hardware.display.IDisplayManager
@@ -608,108 +638,126 @@ public interface IDisplayManager extends IInterface {
             return 0L;
         }
 
+        @Override // android.hardware.display.IDisplayManager
+        public void registerHbmBrightnessCallback(IHbmBrightnessCallback listener) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDisplayManager {
         public static final String DESCRIPTOR = "android.hardware.display.IDisplayManager";
-        static final int TRANSACTION_acquireLowRefreshRateToken = 87;
-        static final int TRANSACTION_acquirePassiveModeToken = 86;
-        static final int TRANSACTION_acquireRefreshRateMaxLimitToken = 88;
-        static final int TRANSACTION_acquireRefreshRateMinLimitToken = 89;
+        static final int TRANSACTION_acquireLowRefreshRateToken = 91;
+        static final int TRANSACTION_acquirePassiveModeToken = 90;
+        static final int TRANSACTION_acquireRefreshRateMaxLimitToken = 92;
+        static final int TRANSACTION_acquireRefreshRateMinLimitToken = 93;
         static final int TRANSACTION_areUserDisabledHdrTypesAllowed = 17;
         static final int TRANSACTION_connectWifiDisplay = 8;
         static final int TRANSACTION_connectWifiDisplayWithConfig = 27;
-        static final int TRANSACTION_convertToBrightness = 83;
+        static final int TRANSACTION_convertToBrightness = 82;
         static final int TRANSACTION_createVirtualDisplay = 21;
+        static final int TRANSACTION_disableConnectedDisplay = 87;
         static final int TRANSACTION_disconnectWifiDisplay = 9;
+        static final int TRANSACTION_enableConnectedDisplay = 86;
         static final int TRANSACTION_fitToActiveDisplay = 41;
         static final int TRANSACTION_forgetWifiDisplay = 11;
         static final int TRANSACTION_getAdaptiveBrightness = 85;
-        static final int TRANSACTION_getAmbientBrightnessStats = 50;
-        static final int TRANSACTION_getBackupBrightnessConfiguration = 82;
-        static final int TRANSACTION_getBrightness = 59;
-        static final int TRANSACTION_getBrightnessConfigurationForDisplay = 53;
-        static final int TRANSACTION_getBrightnessConfigurationForUser = 54;
-        static final int TRANSACTION_getBrightnessEvents = 49;
-        static final int TRANSACTION_getBrightnessInfo = 62;
-        static final int TRANSACTION_getDefaultBrightnessConfiguration = 55;
+        static final int TRANSACTION_getAmbientBrightnessStats = 49;
+        static final int TRANSACTION_getBackupBrightnessConfiguration = 81;
+        static final int TRANSACTION_getBrightness = 58;
+        static final int TRANSACTION_getBrightnessConfigurationForDisplay = 52;
+        static final int TRANSACTION_getBrightnessConfigurationForUser = 53;
+        static final int TRANSACTION_getBrightnessEvents = 48;
+        static final int TRANSACTION_getBrightnessInfo = 61;
+        static final int TRANSACTION_getDefaultBrightnessConfiguration = 54;
         static final int TRANSACTION_getDeviceMaxVolume = 39;
         static final int TRANSACTION_getDeviceMinVolume = 37;
-        static final int TRANSACTION_getDisplayDecorationSupport = 75;
+        static final int TRANSACTION_getDisplayDecorationSupport = 74;
         static final int TRANSACTION_getDisplayIds = 2;
         static final int TRANSACTION_getDisplayInfo = 1;
         static final int TRANSACTION_getDlnaDevice = 33;
-        static final int TRANSACTION_getHdrConversionMode = 69;
-        static final int TRANSACTION_getHdrConversionModeSetting = 68;
-        static final int TRANSACTION_getMinimumBrightnessCurve = 61;
-        static final int TRANSACTION_getOverlaySupport = 77;
-        static final int TRANSACTION_getPreferredWideGamutColorSpaceId = 63;
+        static final int TRANSACTION_getHdrConversionMode = 68;
+        static final int TRANSACTION_getHdrConversionModeSetting = 67;
+        static final int TRANSACTION_getMinimumBrightnessCurve = 60;
+        static final int TRANSACTION_getOverlaySupport = 76;
+        static final int TRANSACTION_getPreferredWideGamutColorSpaceId = 62;
         static final int TRANSACTION_getPresentationOwner = 43;
-        static final int TRANSACTION_getPrimaryPhysicalDisplayId = 90;
-        static final int TRANSACTION_getRefreshRateSwitchingType = 74;
+        static final int TRANSACTION_getPrimaryPhysicalDisplayId = 94;
+        static final int TRANSACTION_getRefreshRateSwitchingType = 73;
         static final int TRANSACTION_getScreenSharingStatus = 30;
-        static final int TRANSACTION_getStableDisplaySize = 48;
-        static final int TRANSACTION_getSupportedHdrOutputTypes = 70;
-        static final int TRANSACTION_getSystemPreferredDisplayMode = 66;
+        static final int TRANSACTION_getStableDisplaySize = 47;
+        static final int TRANSACTION_getSupportedHdrOutputTypes = 69;
+        static final int TRANSACTION_getSystemPreferredDisplayMode = 65;
         static final int TRANSACTION_getUserDisabledHdrTypes = 18;
-        static final int TRANSACTION_getUserPreferredDisplayMode = 65;
+        static final int TRANSACTION_getUserPreferredDisplayMode = 64;
         static final int TRANSACTION_getWifiDisplayStatus = 14;
         static final int TRANSACTION_isDeviceVolumeMuted = 38;
         static final int TRANSACTION_isFitToActiveDisplay = 42;
-        static final int TRANSACTION_isMinimalPostProcessingRequested = 56;
+        static final int TRANSACTION_isMinimalPostProcessingRequested = 55;
         static final int TRANSACTION_isUidPresentOnDisplay = 3;
         static final int TRANSACTION_isWifiDisplayWithPinSupported = 40;
         static final int TRANSACTION_overrideHdrTypes = 19;
         static final int TRANSACTION_pauseWifiDisplay = 12;
         static final int TRANSACTION_registerCallback = 4;
         static final int TRANSACTION_registerCallbackWithEventMask = 5;
+        static final int TRANSACTION_registerHbmBrightnessCallback = 95;
         static final int TRANSACTION_releaseVirtualDisplay = 24;
         static final int TRANSACTION_renameWifiDisplay = 10;
         static final int TRANSACTION_requestColorMode = 20;
+        static final int TRANSACTION_requestDisplayModes = 89;
+        static final int TRANSACTION_requestDisplayPower = 88;
         static final int TRANSACTION_requestSetWifiDisplayParameters = 45;
         static final int TRANSACTION_requestWifiDisplayParameter = 46;
-        static final int TRANSACTION_resetBrightnessConfigurationForUser = 79;
+        static final int TRANSACTION_resetBrightnessConfigurationForUser = 78;
         static final int TRANSACTION_resizeVirtualDisplay = 22;
         static final int TRANSACTION_resumeWifiDisplay = 13;
         static final int TRANSACTION_rotateVirtualDisplay = 26;
         static final int TRANSACTION_setAreUserDisabledHdrTypesAllowed = 16;
-        static final int TRANSACTION_setBackupBrightnessConfiguration = 81;
-        static final int TRANSACTION_setBrightness = 58;
-        static final int TRANSACTION_setBrightnessConfigurationForDisplay = 52;
-        static final int TRANSACTION_setBrightnessConfigurationForUser = 51;
-        static final int TRANSACTION_setBrightnessConfigurationForUserWithStats = 78;
+        static final int TRANSACTION_setBackupBrightnessConfiguration = 80;
+        static final int TRANSACTION_setBrightness = 57;
+        static final int TRANSACTION_setBrightnessConfigurationForDisplay = 51;
+        static final int TRANSACTION_setBrightnessConfigurationForUser = 50;
+        static final int TRANSACTION_setBrightnessConfigurationForUserWithStats = 77;
         static final int TRANSACTION_setDeviceVolume = 34;
         static final int TRANSACTION_setDeviceVolumeMuted = 35;
-        static final int TRANSACTION_setDisplayIdToMirror = 76;
-        static final int TRANSACTION_setDisplayStateLimit = 84;
+        static final int TRANSACTION_setDisplayIdToMirror = 75;
+        static final int TRANSACTION_setDisplayStateOverride = 83;
+        static final int TRANSACTION_setDisplayStateOverrideWithDisplayId = 84;
         static final int TRANSACTION_setDlnaDevice = 32;
-        static final int TRANSACTION_setHdrConversionMode = 67;
-        static final int TRANSACTION_setRefreshRateSwitchingType = 73;
+        static final int TRANSACTION_setHdrConversionMode = 66;
+        static final int TRANSACTION_setRefreshRateSwitchingType = 72;
         static final int TRANSACTION_setScreenSharingStatus = 31;
-        static final int TRANSACTION_setShouldAlwaysRespectAppRequestedMode = 71;
-        static final int TRANSACTION_setTemporaryAutoBrightnessAdjustment = 60;
-        static final int TRANSACTION_setTemporaryBrightness = 57;
-        static final int TRANSACTION_setTemporaryBrightnessForSlowChange = 80;
+        static final int TRANSACTION_setShouldAlwaysRespectAppRequestedMode = 70;
+        static final int TRANSACTION_setTemporaryAutoBrightnessAdjustment = 59;
+        static final int TRANSACTION_setTemporaryBrightness = 56;
+        static final int TRANSACTION_setTemporaryBrightnessForSlowChange = 79;
         static final int TRANSACTION_setUserDisabledHdrTypes = 15;
-        static final int TRANSACTION_setUserPreferredDisplayMode = 64;
+        static final int TRANSACTION_setUserPreferredDisplayMode = 63;
         static final int TRANSACTION_setVirtualDisplayState = 25;
         static final int TRANSACTION_setVirtualDisplaySurface = 23;
         static final int TRANSACTION_setVolumeKeyEvent = 36;
         static final int TRANSACTION_setWifiDisplayParam = 44;
-        static final int TRANSACTION_shouldAlwaysRespectAppRequestedMode = 72;
+        static final int TRANSACTION_shouldAlwaysRespectAppRequestedMode = 71;
         static final int TRANSACTION_startWifiDisplayChannelScan = 28;
         static final int TRANSACTION_startWifiDisplayChannelScanAndInterval = 29;
         static final int TRANSACTION_startWifiDisplayScan = 6;
-        static final int TRANSACTION_startWifiDisplayScanAutoP2P = 47;
         static final int TRANSACTION_stopWifiDisplayScan = 7;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IDisplayManager asInterface(IBinder obj) {
@@ -823,93 +871,103 @@ public interface IDisplayManager extends IInterface {
                 case 46:
                     return "requestWifiDisplayParameter";
                 case 47:
-                    return "startWifiDisplayScanAutoP2P";
-                case 48:
                     return "getStableDisplaySize";
-                case 49:
+                case 48:
                     return "getBrightnessEvents";
-                case 50:
+                case 49:
                     return "getAmbientBrightnessStats";
-                case 51:
+                case 50:
                     return "setBrightnessConfigurationForUser";
-                case 52:
+                case 51:
                     return "setBrightnessConfigurationForDisplay";
-                case 53:
+                case 52:
                     return "getBrightnessConfigurationForDisplay";
-                case 54:
+                case 53:
                     return "getBrightnessConfigurationForUser";
-                case 55:
+                case 54:
                     return "getDefaultBrightnessConfiguration";
-                case 56:
+                case 55:
                     return "isMinimalPostProcessingRequested";
-                case 57:
+                case 56:
                     return "setTemporaryBrightness";
-                case 58:
+                case 57:
                     return "setBrightness";
-                case 59:
+                case 58:
                     return "getBrightness";
-                case 60:
+                case 59:
                     return "setTemporaryAutoBrightnessAdjustment";
-                case 61:
+                case 60:
                     return "getMinimumBrightnessCurve";
-                case 62:
+                case 61:
                     return "getBrightnessInfo";
-                case 63:
+                case 62:
                     return "getPreferredWideGamutColorSpaceId";
-                case 64:
+                case 63:
                     return "setUserPreferredDisplayMode";
-                case 65:
+                case 64:
                     return "getUserPreferredDisplayMode";
-                case 66:
+                case 65:
                     return "getSystemPreferredDisplayMode";
-                case 67:
+                case 66:
                     return "setHdrConversionMode";
-                case 68:
+                case 67:
                     return "getHdrConversionModeSetting";
-                case 69:
+                case 68:
                     return "getHdrConversionMode";
-                case 70:
+                case 69:
                     return "getSupportedHdrOutputTypes";
-                case 71:
+                case 70:
                     return "setShouldAlwaysRespectAppRequestedMode";
-                case 72:
+                case 71:
                     return "shouldAlwaysRespectAppRequestedMode";
-                case 73:
+                case 72:
                     return "setRefreshRateSwitchingType";
-                case 74:
+                case 73:
                     return "getRefreshRateSwitchingType";
-                case 75:
+                case 74:
                     return "getDisplayDecorationSupport";
-                case 76:
+                case 75:
                     return "setDisplayIdToMirror";
-                case 77:
+                case 76:
                     return "getOverlaySupport";
-                case 78:
+                case 77:
                     return "setBrightnessConfigurationForUserWithStats";
-                case 79:
+                case 78:
                     return "resetBrightnessConfigurationForUser";
-                case 80:
+                case 79:
                     return "setTemporaryBrightnessForSlowChange";
-                case 81:
+                case 80:
                     return "setBackupBrightnessConfiguration";
-                case 82:
+                case 81:
                     return "getBackupBrightnessConfiguration";
-                case 83:
+                case 82:
                     return "convertToBrightness";
+                case 83:
+                    return "setDisplayStateOverride";
                 case 84:
-                    return "setDisplayStateLimit";
+                    return "setDisplayStateOverrideWithDisplayId";
                 case 85:
                     return "getAdaptiveBrightness";
                 case 86:
-                    return "acquirePassiveModeToken";
+                    return "enableConnectedDisplay";
                 case 87:
-                    return "acquireLowRefreshRateToken";
+                    return "disableConnectedDisplay";
                 case 88:
-                    return "acquireRefreshRateMaxLimitToken";
+                    return "requestDisplayPower";
                 case 89:
-                    return "acquireRefreshRateMinLimitToken";
+                    return "requestDisplayModes";
                 case 90:
+                    return "acquirePassiveModeToken";
+                case 91:
+                    return "acquireLowRefreshRateToken";
+                case 92:
+                    return "acquireRefreshRateMaxLimitToken";
+                case 93:
+                    return "acquireRefreshRateMinLimitToken";
+                case 94:
                     return "getPrimaryPhysicalDisplayId";
+                case 95:
+                    return "registerHbmBrightnessCallback";
                 default:
                     return null;
             }
@@ -925,598 +983,633 @@ public interface IDisplayManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    DisplayInfo _result = getDisplayInfo(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int[] _result2 = getDisplayIds(_arg02);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isUidPresentOnDisplay(_arg03, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    IDisplayManagerCallback _arg04 = IDisplayManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IDisplayManagerCallback _arg05 = IDisplayManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg12 = data.readLong();
+                    data.enforceNoDataAvail();
+                    registerCallbackWithEventMask(_arg05, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    startWifiDisplayScan();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    stopWifiDisplayScan();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    connectWifiDisplay(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    disconnectWifiDisplay();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    String _arg07 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    renameWifiDisplay(_arg07, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    forgetWifiDisplay(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    pauseWifiDisplay();
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    resumeWifiDisplay();
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    WifiDisplayStatus _result4 = getWifiDisplayStatus();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 15:
+                    int[] _arg09 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    setUserDisabledHdrTypes(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAreUserDisabledHdrTypesAllowed(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    boolean _result5 = areUserDisabledHdrTypesAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 18:
+                    int[] _result6 = getUserDisabledHdrTypes();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result6);
+                    return true;
+                case 19:
+                    int _arg011 = data.readInt();
+                    int[] _arg14 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    overrideHdrTypes(_arg011, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    int _arg012 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestColorMode(_arg012, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    VirtualDisplayConfig _arg013 = (VirtualDisplayConfig) data.readTypedObject(VirtualDisplayConfig.CREATOR);
+                    IVirtualDisplayCallback _arg16 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
+                    IMediaProjection _arg2 = IMediaProjection.Stub.asInterface(data.readStrongBinder());
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result7 = createVirtualDisplay(_arg013, _arg16, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 22:
+                    IVirtualDisplayCallback _arg014 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg17 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resizeVirtualDisplay(_arg014, _arg17, _arg22, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    IVirtualDisplayCallback _arg015 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
+                    Surface _arg18 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    data.enforceNoDataAvail();
+                    setVirtualDisplaySurface(_arg015, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    IVirtualDisplayCallback _arg016 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    releaseVirtualDisplay(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    IVirtualDisplayCallback _arg017 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg19 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVirtualDisplayState(_arg017, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    IVirtualDisplayCallback _arg018 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    rotateVirtualDisplay(_arg018, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    SemWifiDisplayConfig _arg019 = (SemWifiDisplayConfig) data.readTypedObject(SemWifiDisplayConfig.CREATOR);
+                    IWifiDisplayConnectionCallback _arg111 = IWifiDisplayConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    connectWifiDisplayWithConfig(_arg019, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    int _arg020 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startWifiDisplayChannelScan(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    int _arg021 = data.readInt();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startWifiDisplayChannelScanAndInterval(_arg021, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    int _result8 = getScreenSharingStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 31:
+                    int _arg022 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setScreenSharingStatus(_arg022);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    SemDlnaDevice _arg023 = (SemDlnaDevice) data.readTypedObject(SemDlnaDevice.CREATOR);
+                    IBinder _arg113 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    setDlnaDevice(_arg023, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    SemDlnaDevice _result9 = getDlnaDevice();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 34:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDeviceVolume(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    boolean _arg025 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDeviceVolumeMuted(_arg025);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVolumeKeyEvent(_arg026);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    int _result10 = getDeviceMinVolume();
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 38:
+                    boolean _result11 = isDeviceVolumeMuted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 39:
+                    int _result12 = getDeviceMaxVolume();
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 40:
+                    String _arg027 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = isWifiDisplayWithPinSupported(_arg027);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 41:
+                    boolean _arg028 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    fitToActiveDisplay(_arg028);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    boolean _result14 = isFitToActiveDisplay();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 43:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result15 = getPresentationOwner(_arg029);
+                    reply.writeNoException();
+                    reply.writeString(_result15);
+                    return true;
+                case 44:
+                    String _arg030 = data.readString();
+                    String _arg114 = data.readString();
+                    data.enforceNoDataAvail();
+                    setWifiDisplayParam(_arg030, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    List<SemWifiDisplayParameter> _arg031 = data.createTypedArrayList(SemWifiDisplayParameter.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result16 = requestSetWifiDisplayParameters(_arg031);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 46:
+                    String _arg032 = data.readString();
+                    SemWifiDisplayParameter _arg115 = (SemWifiDisplayParameter) data.readTypedObject(SemWifiDisplayParameter.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result17 = requestWifiDisplayParameter(_arg032, _arg115);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 47:
+                    Point _result18 = getStableDisplaySize();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result18, 1);
+                    return true;
+                case 48:
+                    String _arg033 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result19 = getBrightnessEvents(_arg033);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result19, 1);
+                    return true;
+                case 49:
+                    ParceledListSlice _result20 = getAmbientBrightnessStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result20, 1);
+                    return true;
+                case 50:
+                    BrightnessConfiguration _arg034 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
+                    int _arg116 = data.readInt();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBrightnessConfigurationForUser(_arg034, _arg116, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    BrightnessConfiguration _arg035 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
+                    String _arg117 = data.readString();
+                    int _arg24 = data.readInt();
+                    String _arg33 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBrightnessConfigurationForDisplay(_arg035, _arg117, _arg24, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    String _arg036 = data.readString();
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    BrightnessConfiguration _result21 = getBrightnessConfigurationForDisplay(_arg036, _arg118);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result21, 1);
+                    return true;
+                case 53:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    BrightnessConfiguration _result22 = getBrightnessConfigurationForUser(_arg037);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result22, 1);
+                    return true;
+                case 54:
+                    BrightnessConfiguration _result23 = getDefaultBrightnessConfiguration();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result23, 1);
+                    return true;
+                case 55:
+                    int _arg038 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result24 = isMinimalPostProcessingRequested(_arg038);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result24);
+                    return true;
+                case 56:
+                    int _arg039 = data.readInt();
+                    float _arg119 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setTemporaryBrightness(_arg039, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 57:
+                    int _arg040 = data.readInt();
+                    float _arg120 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setBrightness(_arg040, _arg120);
+                    reply.writeNoException();
+                    return true;
+                case 58:
+                    int _arg041 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result25 = getBrightness(_arg041);
+                    reply.writeNoException();
+                    reply.writeFloat(_result25);
+                    return true;
+                case 59:
+                    float _arg042 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setTemporaryAutoBrightnessAdjustment(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 60:
+                    Curve _result26 = getMinimumBrightnessCurve();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result26, 1);
+                    return true;
+                case 61:
+                    int _arg043 = data.readInt();
+                    data.enforceNoDataAvail();
+                    BrightnessInfo _result27 = getBrightnessInfo(_arg043);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result27, 1);
+                    return true;
+                case 62:
+                    int _result28 = getPreferredWideGamutColorSpaceId();
+                    reply.writeNoException();
+                    reply.writeInt(_result28);
+                    return true;
+                case 63:
+                    int _arg044 = data.readInt();
+                    Display.Mode _arg121 = (Display.Mode) data.readTypedObject(Display.Mode.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUserPreferredDisplayMode(_arg044, _arg121);
+                    reply.writeNoException();
+                    return true;
+                case 64:
+                    int _arg045 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Display.Mode _result29 = getUserPreferredDisplayMode(_arg045);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result29, 1);
+                    return true;
+                case 65:
+                    int _arg046 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Display.Mode _result30 = getSystemPreferredDisplayMode(_arg046);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result30, 1);
+                    return true;
+                case 66:
+                    HdrConversionMode _arg047 = (HdrConversionMode) data.readTypedObject(HdrConversionMode.CREATOR);
+                    data.enforceNoDataAvail();
+                    setHdrConversionMode(_arg047);
+                    reply.writeNoException();
+                    return true;
+                case 67:
+                    HdrConversionMode _result31 = getHdrConversionModeSetting();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result31, 1);
+                    return true;
+                case 68:
+                    HdrConversionMode _result32 = getHdrConversionMode();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result32, 1);
+                    return true;
+                case 69:
+                    int[] _result33 = getSupportedHdrOutputTypes();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result33);
+                    return true;
+                case 70:
+                    boolean _arg048 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setShouldAlwaysRespectAppRequestedMode(_arg048);
+                    reply.writeNoException();
+                    return true;
+                case 71:
+                    boolean _result34 = shouldAlwaysRespectAppRequestedMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result34);
+                    return true;
+                case 72:
+                    int _arg049 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRefreshRateSwitchingType(_arg049);
+                    reply.writeNoException();
+                    return true;
+                case 73:
+                    int _result35 = getRefreshRateSwitchingType();
+                    reply.writeNoException();
+                    reply.writeInt(_result35);
+                    return true;
+                case 74:
+                    int _arg050 = data.readInt();
+                    data.enforceNoDataAvail();
+                    DisplayDecorationSupport _result36 = getDisplayDecorationSupport(_arg050);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result36, 1);
+                    return true;
+                case 75:
+                    IBinder _arg051 = data.readStrongBinder();
+                    int _arg122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDisplayIdToMirror(_arg051, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 76:
+                    OverlayProperties _result37 = getOverlaySupport();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result37, 1);
+                    return true;
+                case 77:
+                    BrightnessConfiguration _arg052 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
+                    int _arg123 = data.readInt();
+                    String _arg25 = data.readString();
+                    List<String> _arg34 = data.createStringArrayList();
+                    List<String> _arg4 = data.createStringArrayList();
+                    List<String> _arg5 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    setBrightnessConfigurationForUserWithStats(_arg052, _arg123, _arg25, _arg34, _arg4, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 78:
+                    int _arg053 = data.readInt();
+                    String _arg124 = data.readString();
+                    data.enforceNoDataAvail();
+                    resetBrightnessConfigurationForUser(_arg053, _arg124);
+                    reply.writeNoException();
+                    return true;
+                case 79:
+                    int _arg054 = data.readInt();
+                    float _arg125 = data.readFloat();
+                    boolean _arg26 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setTemporaryBrightnessForSlowChange(_arg054, _arg125, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 80:
+                    BrightnessConfiguration _arg055 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
+                    int _arg126 = data.readInt();
+                    String _arg27 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBackupBrightnessConfiguration(_arg055, _arg126, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 81:
+                    int _arg056 = data.readInt();
+                    data.enforceNoDataAvail();
+                    BrightnessConfiguration _result38 = getBackupBrightnessConfiguration(_arg056);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result38, 1);
+                    return true;
+                case 82:
+                    float _arg057 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    int _result39 = convertToBrightness(_arg057);
+                    reply.writeNoException();
+                    reply.writeInt(_result39);
+                    return true;
+                case 83:
+                    IBinder _arg058 = data.readStrongBinder();
+                    int _arg127 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDisplayStateOverride(_arg058, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 84:
+                    IBinder _arg059 = data.readStrongBinder();
+                    int _arg128 = data.readInt();
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDisplayStateOverrideWithDisplayId(_arg059, _arg128, _arg28);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    int _arg060 = data.readInt();
+                    float _arg129 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    float _result40 = getAdaptiveBrightness(_arg060, _arg129);
+                    reply.writeNoException();
+                    reply.writeFloat(_result40);
+                    return true;
+                case 86:
+                    int _arg061 = data.readInt();
+                    data.enforceNoDataAvail();
+                    enableConnectedDisplay(_arg061);
+                    reply.writeNoException();
+                    return true;
+                case 87:
+                    int _arg062 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disableConnectedDisplay(_arg062);
+                    reply.writeNoException();
+                    return true;
+                case 88:
+                    int _arg063 = data.readInt();
+                    boolean _arg130 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result41 = requestDisplayPower(_arg063, _arg130);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result41);
+                    return true;
+                case 89:
+                    IBinder _arg064 = data.readStrongBinder();
+                    int _arg131 = data.readInt();
+                    int[] _arg29 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    requestDisplayModes(_arg064, _arg131, _arg29);
+                    reply.writeNoException();
+                    return true;
+                case 90:
+                    IBinder _arg065 = data.readStrongBinder();
+                    String _arg132 = data.readString();
+                    data.enforceNoDataAvail();
+                    IRefreshRateToken _result42 = acquirePassiveModeToken(_arg065, _arg132);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result42);
+                    return true;
+                case 91:
+                    IBinder _arg066 = data.readStrongBinder();
+                    String _arg133 = data.readString();
+                    data.enforceNoDataAvail();
+                    IRefreshRateToken _result43 = acquireLowRefreshRateToken(_arg066, _arg133);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result43);
+                    return true;
+                case 92:
+                    IBinder _arg067 = data.readStrongBinder();
+                    int _arg134 = data.readInt();
+                    String _arg210 = data.readString();
+                    data.enforceNoDataAvail();
+                    IRefreshRateToken _result44 = acquireRefreshRateMaxLimitToken(_arg067, _arg134, _arg210);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result44);
+                    return true;
+                case 93:
+                    IBinder _arg068 = data.readStrongBinder();
+                    int _arg135 = data.readInt();
+                    String _arg211 = data.readString();
+                    data.enforceNoDataAvail();
+                    IRefreshRateToken _result45 = acquireRefreshRateMinLimitToken(_arg068, _arg135, _arg211);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result45);
+                    return true;
+                case 94:
+                    long _result46 = getPrimaryPhysicalDisplayId();
+                    reply.writeNoException();
+                    reply.writeLong(_result46);
+                    return true;
+                case 95:
+                    IHbmBrightnessCallback _arg069 = IHbmBrightnessCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerHbmBrightnessCallback(_arg069);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            DisplayInfo _result = getDisplayInfo(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int[] _result2 = getDisplayIds(_arg02);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isUidPresentOnDisplay(_arg03, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            IDisplayManagerCallback _arg04 = IDisplayManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IDisplayManagerCallback _arg05 = IDisplayManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg12 = data.readLong();
-                            data.enforceNoDataAvail();
-                            registerCallbackWithEventMask(_arg05, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            startWifiDisplayScan();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            stopWifiDisplayScan();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            connectWifiDisplay(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            disconnectWifiDisplay();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            String _arg07 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            renameWifiDisplay(_arg07, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            forgetWifiDisplay(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            pauseWifiDisplay();
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            resumeWifiDisplay();
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            WifiDisplayStatus _result4 = getWifiDisplayStatus();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 15:
-                            int[] _arg09 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            setUserDisabledHdrTypes(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAreUserDisabledHdrTypesAllowed(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            boolean _result5 = areUserDisabledHdrTypesAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 18:
-                            int[] _result6 = getUserDisabledHdrTypes();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result6);
-                            return true;
-                        case 19:
-                            int _arg011 = data.readInt();
-                            int[] _arg14 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            overrideHdrTypes(_arg011, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            int _arg012 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestColorMode(_arg012, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            VirtualDisplayConfig _arg013 = (VirtualDisplayConfig) data.readTypedObject(VirtualDisplayConfig.CREATOR);
-                            IVirtualDisplayCallback _arg16 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
-                            IMediaProjection _arg2 = IMediaProjection.Stub.asInterface(data.readStrongBinder());
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result7 = createVirtualDisplay(_arg013, _arg16, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 22:
-                            IVirtualDisplayCallback _arg014 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg17 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resizeVirtualDisplay(_arg014, _arg17, _arg22, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            IVirtualDisplayCallback _arg015 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
-                            Surface _arg18 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            data.enforceNoDataAvail();
-                            setVirtualDisplaySurface(_arg015, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            IVirtualDisplayCallback _arg016 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            releaseVirtualDisplay(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            IVirtualDisplayCallback _arg017 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg19 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVirtualDisplayState(_arg017, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            IVirtualDisplayCallback _arg018 = IVirtualDisplayCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            rotateVirtualDisplay(_arg018, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            SemWifiDisplayConfig _arg019 = (SemWifiDisplayConfig) data.readTypedObject(SemWifiDisplayConfig.CREATOR);
-                            IWifiDisplayConnectionCallback _arg111 = IWifiDisplayConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            connectWifiDisplayWithConfig(_arg019, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startWifiDisplayChannelScan(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            int _arg021 = data.readInt();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startWifiDisplayChannelScanAndInterval(_arg021, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            int _result8 = getScreenSharingStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 31:
-                            int _arg022 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setScreenSharingStatus(_arg022);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            SemDlnaDevice _arg023 = (SemDlnaDevice) data.readTypedObject(SemDlnaDevice.CREATOR);
-                            IBinder _arg113 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            setDlnaDevice(_arg023, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            SemDlnaDevice _result9 = getDlnaDevice();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result9, 1);
-                            return true;
-                        case 34:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDeviceVolume(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            boolean _arg025 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDeviceVolumeMuted(_arg025);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVolumeKeyEvent(_arg026);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            int _result10 = getDeviceMinVolume();
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 38:
-                            boolean _result11 = isDeviceVolumeMuted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 39:
-                            int _result12 = getDeviceMaxVolume();
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 40:
-                            String _arg027 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = isWifiDisplayWithPinSupported(_arg027);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 41:
-                            boolean _arg028 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            fitToActiveDisplay(_arg028);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            boolean _result14 = isFitToActiveDisplay();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 43:
-                            int _arg029 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result15 = getPresentationOwner(_arg029);
-                            reply.writeNoException();
-                            reply.writeString(_result15);
-                            return true;
-                        case 44:
-                            String _arg030 = data.readString();
-                            String _arg114 = data.readString();
-                            data.enforceNoDataAvail();
-                            setWifiDisplayParam(_arg030, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            List<SemWifiDisplayParameter> _arg031 = data.createTypedArrayList(SemWifiDisplayParameter.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result16 = requestSetWifiDisplayParameters(_arg031);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 46:
-                            String _arg032 = data.readString();
-                            SemWifiDisplayParameter _arg115 = (SemWifiDisplayParameter) data.readTypedObject(SemWifiDisplayParameter.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result17 = requestWifiDisplayParameter(_arg032, _arg115);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 47:
-                            startWifiDisplayScanAutoP2P();
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            Point _result18 = getStableDisplaySize();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result18, 1);
-                            return true;
-                        case 49:
-                            String _arg033 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result19 = getBrightnessEvents(_arg033);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result19, 1);
-                            return true;
-                        case 50:
-                            ParceledListSlice _result20 = getAmbientBrightnessStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result20, 1);
-                            return true;
-                        case 51:
-                            BrightnessConfiguration _arg034 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
-                            int _arg116 = data.readInt();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            setBrightnessConfigurationForUser(_arg034, _arg116, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            BrightnessConfiguration _arg035 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
-                            String _arg117 = data.readString();
-                            int _arg24 = data.readInt();
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            setBrightnessConfigurationForDisplay(_arg035, _arg117, _arg24, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 53:
-                            String _arg036 = data.readString();
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            BrightnessConfiguration _result21 = getBrightnessConfigurationForDisplay(_arg036, _arg118);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result21, 1);
-                            return true;
-                        case 54:
-                            int _arg037 = data.readInt();
-                            data.enforceNoDataAvail();
-                            BrightnessConfiguration _result22 = getBrightnessConfigurationForUser(_arg037);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result22, 1);
-                            return true;
-                        case 55:
-                            BrightnessConfiguration _result23 = getDefaultBrightnessConfiguration();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result23, 1);
-                            return true;
-                        case 56:
-                            int _arg038 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result24 = isMinimalPostProcessingRequested(_arg038);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result24);
-                            return true;
-                        case 57:
-                            int _arg039 = data.readInt();
-                            float _arg119 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setTemporaryBrightness(_arg039, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 58:
-                            int _arg040 = data.readInt();
-                            float _arg120 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setBrightness(_arg040, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            int _arg041 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result25 = getBrightness(_arg041);
-                            reply.writeNoException();
-                            reply.writeFloat(_result25);
-                            return true;
-                        case 60:
-                            float _arg042 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setTemporaryAutoBrightnessAdjustment(_arg042);
-                            reply.writeNoException();
-                            return true;
-                        case 61:
-                            Curve _result26 = getMinimumBrightnessCurve();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result26, 1);
-                            return true;
-                        case 62:
-                            int _arg043 = data.readInt();
-                            data.enforceNoDataAvail();
-                            BrightnessInfo _result27 = getBrightnessInfo(_arg043);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result27, 1);
-                            return true;
-                        case 63:
-                            int _result28 = getPreferredWideGamutColorSpaceId();
-                            reply.writeNoException();
-                            reply.writeInt(_result28);
-                            return true;
-                        case 64:
-                            int _arg044 = data.readInt();
-                            Display.Mode _arg121 = (Display.Mode) data.readTypedObject(Display.Mode.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUserPreferredDisplayMode(_arg044, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 65:
-                            int _arg045 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Display.Mode _result29 = getUserPreferredDisplayMode(_arg045);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result29, 1);
-                            return true;
-                        case 66:
-                            int _arg046 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Display.Mode _result30 = getSystemPreferredDisplayMode(_arg046);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result30, 1);
-                            return true;
-                        case 67:
-                            HdrConversionMode _arg047 = (HdrConversionMode) data.readTypedObject(HdrConversionMode.CREATOR);
-                            data.enforceNoDataAvail();
-                            setHdrConversionMode(_arg047);
-                            reply.writeNoException();
-                            return true;
-                        case 68:
-                            HdrConversionMode _result31 = getHdrConversionModeSetting();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result31, 1);
-                            return true;
-                        case 69:
-                            HdrConversionMode _result32 = getHdrConversionMode();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result32, 1);
-                            return true;
-                        case 70:
-                            int[] _result33 = getSupportedHdrOutputTypes();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result33);
-                            return true;
-                        case 71:
-                            boolean _arg048 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setShouldAlwaysRespectAppRequestedMode(_arg048);
-                            reply.writeNoException();
-                            return true;
-                        case 72:
-                            boolean _result34 = shouldAlwaysRespectAppRequestedMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result34);
-                            return true;
-                        case 73:
-                            int _arg049 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRefreshRateSwitchingType(_arg049);
-                            reply.writeNoException();
-                            return true;
-                        case 74:
-                            int _result35 = getRefreshRateSwitchingType();
-                            reply.writeNoException();
-                            reply.writeInt(_result35);
-                            return true;
-                        case 75:
-                            int _arg050 = data.readInt();
-                            data.enforceNoDataAvail();
-                            DisplayDecorationSupport _result36 = getDisplayDecorationSupport(_arg050);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result36, 1);
-                            return true;
-                        case 76:
-                            IBinder _arg051 = data.readStrongBinder();
-                            int _arg122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDisplayIdToMirror(_arg051, _arg122);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            OverlayProperties _result37 = getOverlaySupport();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result37, 1);
-                            return true;
-                        case 78:
-                            BrightnessConfiguration _arg052 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
-                            int _arg123 = data.readInt();
-                            String _arg25 = data.readString();
-                            List<String> _arg34 = data.createStringArrayList();
-                            List<String> _arg4 = data.createStringArrayList();
-                            List<String> _arg5 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            setBrightnessConfigurationForUserWithStats(_arg052, _arg123, _arg25, _arg34, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 79:
-                            int _arg053 = data.readInt();
-                            String _arg124 = data.readString();
-                            data.enforceNoDataAvail();
-                            resetBrightnessConfigurationForUser(_arg053, _arg124);
-                            reply.writeNoException();
-                            return true;
-                        case 80:
-                            int _arg054 = data.readInt();
-                            float _arg125 = data.readFloat();
-                            boolean _arg26 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setTemporaryBrightnessForSlowChange(_arg054, _arg125, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 81:
-                            BrightnessConfiguration _arg055 = (BrightnessConfiguration) data.readTypedObject(BrightnessConfiguration.CREATOR);
-                            int _arg126 = data.readInt();
-                            String _arg27 = data.readString();
-                            data.enforceNoDataAvail();
-                            setBackupBrightnessConfiguration(_arg055, _arg126, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 82:
-                            int _arg056 = data.readInt();
-                            data.enforceNoDataAvail();
-                            BrightnessConfiguration _result38 = getBackupBrightnessConfiguration(_arg056);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result38, 1);
-                            return true;
-                        case 83:
-                            float _arg057 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            int _result39 = convertToBrightness(_arg057);
-                            reply.writeNoException();
-                            reply.writeInt(_result39);
-                            return true;
-                        case 84:
-                            IBinder _arg058 = data.readStrongBinder();
-                            int _arg127 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDisplayStateLimit(_arg058, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            int _arg059 = data.readInt();
-                            float _arg128 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            float _result40 = getAdaptiveBrightness(_arg059, _arg128);
-                            reply.writeNoException();
-                            reply.writeFloat(_result40);
-                            return true;
-                        case 86:
-                            IBinder _arg060 = data.readStrongBinder();
-                            String _arg129 = data.readString();
-                            data.enforceNoDataAvail();
-                            IRefreshRateToken _result41 = acquirePassiveModeToken(_arg060, _arg129);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result41);
-                            return true;
-                        case 87:
-                            IBinder _arg061 = data.readStrongBinder();
-                            String _arg130 = data.readString();
-                            data.enforceNoDataAvail();
-                            IRefreshRateToken _result42 = acquireLowRefreshRateToken(_arg061, _arg130);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result42);
-                            return true;
-                        case 88:
-                            IBinder _arg062 = data.readStrongBinder();
-                            int _arg131 = data.readInt();
-                            String _arg28 = data.readString();
-                            data.enforceNoDataAvail();
-                            IRefreshRateToken _result43 = acquireRefreshRateMaxLimitToken(_arg062, _arg131, _arg28);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result43);
-                            return true;
-                        case 89:
-                            IBinder _arg063 = data.readStrongBinder();
-                            int _arg132 = data.readInt();
-                            String _arg29 = data.readString();
-                            data.enforceNoDataAvail();
-                            IRefreshRateToken _result44 = acquireRefreshRateMinLimitToken(_arg063, _arg132, _arg29);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result44);
-                            return true;
-                        case 90:
-                            long _result45 = getPrimaryPhysicalDisplayId();
-                            reply.writeNoException();
-                            reply.writeLong(_result45);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IDisplayManager {
+        private static class Proxy implements IDisplayManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -2262,26 +2355,12 @@ public interface IDisplayManager extends IInterface {
             }
 
             @Override // android.hardware.display.IDisplayManager
-            public void startWifiDisplayScanAutoP2P() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(47, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.hardware.display.IDisplayManager
             public Point getStableDisplaySize() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(48, _data, _reply, 0);
+                    this.mRemote.transact(47, _data, _reply, 0);
                     _reply.readException();
                     Point _result = (Point) _reply.readTypedObject(Point.CREATOR);
                     return _result;
@@ -2298,7 +2377,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(49, _data, _reply, 0);
+                    this.mRemote.transact(48, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -2314,7 +2393,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(50, _data, _reply, 0);
+                    this.mRemote.transact(49, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -2333,7 +2412,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeTypedObject(c, 0);
                     _data.writeInt(userId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(51, _data, _reply, 0);
+                    this.mRemote.transact(50, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2351,7 +2430,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeString(uniqueDisplayId);
                     _data.writeInt(userId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(52, _data, _reply, 0);
+                    this.mRemote.transact(51, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2367,7 +2446,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(uniqueDisplayId);
                     _data.writeInt(userId);
-                    this.mRemote.transact(53, _data, _reply, 0);
+                    this.mRemote.transact(52, _data, _reply, 0);
                     _reply.readException();
                     BrightnessConfiguration _result = (BrightnessConfiguration) _reply.readTypedObject(BrightnessConfiguration.CREATOR);
                     return _result;
@@ -2384,7 +2463,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(54, _data, _reply, 0);
+                    this.mRemote.transact(53, _data, _reply, 0);
                     _reply.readException();
                     BrightnessConfiguration _result = (BrightnessConfiguration) _reply.readTypedObject(BrightnessConfiguration.CREATOR);
                     return _result;
@@ -2400,7 +2479,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(55, _data, _reply, 0);
+                    this.mRemote.transact(54, _data, _reply, 0);
                     _reply.readException();
                     BrightnessConfiguration _result = (BrightnessConfiguration) _reply.readTypedObject(BrightnessConfiguration.CREATOR);
                     return _result;
@@ -2417,7 +2496,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(56, _data, _reply, 0);
+                    this.mRemote.transact(55, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2435,7 +2514,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
                     _data.writeFloat(brightness);
-                    this.mRemote.transact(57, _data, _reply, 0);
+                    this.mRemote.transact(56, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2451,7 +2530,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
                     _data.writeFloat(brightness);
-                    this.mRemote.transact(58, _data, _reply, 0);
+                    this.mRemote.transact(57, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2466,7 +2545,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(59, _data, _reply, 0);
+                    this.mRemote.transact(58, _data, _reply, 0);
                     _reply.readException();
                     float _result = _reply.readFloat();
                     return _result;
@@ -2483,7 +2562,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeFloat(adjustment);
-                    this.mRemote.transact(60, _data, _reply, 0);
+                    this.mRemote.transact(59, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2497,7 +2576,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(61, _data, _reply, 0);
+                    this.mRemote.transact(60, _data, _reply, 0);
                     _reply.readException();
                     Curve _result = (Curve) _reply.readTypedObject(Curve.CREATOR);
                     return _result;
@@ -2514,7 +2593,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(62, _data, _reply, 0);
+                    this.mRemote.transact(61, _data, _reply, 0);
                     _reply.readException();
                     BrightnessInfo _result = (BrightnessInfo) _reply.readTypedObject(BrightnessInfo.CREATOR);
                     return _result;
@@ -2530,7 +2609,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(63, _data, _reply, 0);
+                    this.mRemote.transact(62, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2548,7 +2627,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
                     _data.writeTypedObject(mode, 0);
-                    this.mRemote.transact(64, _data, _reply, 0);
+                    this.mRemote.transact(63, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2563,7 +2642,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(65, _data, _reply, 0);
+                    this.mRemote.transact(64, _data, _reply, 0);
                     _reply.readException();
                     Display.Mode _result = (Display.Mode) _reply.readTypedObject(Display.Mode.CREATOR);
                     return _result;
@@ -2580,7 +2659,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(66, _data, _reply, 0);
+                    this.mRemote.transact(65, _data, _reply, 0);
                     _reply.readException();
                     Display.Mode _result = (Display.Mode) _reply.readTypedObject(Display.Mode.CREATOR);
                     return _result;
@@ -2597,7 +2676,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(hdrConversionMode, 0);
-                    this.mRemote.transact(67, _data, _reply, 0);
+                    this.mRemote.transact(66, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2611,7 +2690,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(68, _data, _reply, 0);
+                    this.mRemote.transact(67, _data, _reply, 0);
                     _reply.readException();
                     HdrConversionMode _result = (HdrConversionMode) _reply.readTypedObject(HdrConversionMode.CREATOR);
                     return _result;
@@ -2627,7 +2706,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(69, _data, _reply, 0);
+                    this.mRemote.transact(68, _data, _reply, 0);
                     _reply.readException();
                     HdrConversionMode _result = (HdrConversionMode) _reply.readTypedObject(HdrConversionMode.CREATOR);
                     return _result;
@@ -2643,7 +2722,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(70, _data, _reply, 0);
+                    this.mRemote.transact(69, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -2660,7 +2739,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(71, _data, _reply, 0);
+                    this.mRemote.transact(70, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2674,7 +2753,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(72, _data, _reply, 0);
+                    this.mRemote.transact(71, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -2691,7 +2770,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(newValue);
-                    this.mRemote.transact(73, _data, _reply, 0);
+                    this.mRemote.transact(72, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2705,7 +2784,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(74, _data, _reply, 0);
+                    this.mRemote.transact(73, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2722,7 +2801,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(75, _data, _reply, 0);
+                    this.mRemote.transact(74, _data, _reply, 0);
                     _reply.readException();
                     DisplayDecorationSupport _result = (DisplayDecorationSupport) _reply.readTypedObject(DisplayDecorationSupport.CREATOR);
                     return _result;
@@ -2740,7 +2819,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeInt(displayId);
-                    this.mRemote.transact(76, _data, _reply, 0);
+                    this.mRemote.transact(75, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2754,7 +2833,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(77, _data, _reply, 0);
+                    this.mRemote.transact(76, _data, _reply, 0);
                     _reply.readException();
                     OverlayProperties _result = (OverlayProperties) _reply.readTypedObject(OverlayProperties.CREATOR);
                     return _result;
@@ -2776,7 +2855,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeStringList(weights);
                     _data.writeStringList(timeWeights);
                     _data.writeStringList(continuityWeights);
-                    this.mRemote.transact(78, _data, _reply, 0);
+                    this.mRemote.transact(77, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2792,7 +2871,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(79, _data, _reply, 0);
+                    this.mRemote.transact(78, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2809,7 +2888,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInt(displayId);
                     _data.writeFloat(brightness);
                     _data.writeBoolean(slowChange);
-                    this.mRemote.transact(80, _data, _reply, 0);
+                    this.mRemote.transact(79, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2826,7 +2905,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeTypedObject(config, 0);
                     _data.writeInt(userId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(81, _data, _reply, 0);
+                    this.mRemote.transact(80, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -2841,7 +2920,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(82, _data, _reply, 0);
+                    this.mRemote.transact(81, _data, _reply, 0);
                     _reply.readException();
                     BrightnessConfiguration _result = (BrightnessConfiguration) _reply.readTypedObject(BrightnessConfiguration.CREATOR);
                     return _result;
@@ -2858,7 +2937,7 @@ public interface IDisplayManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeFloat(nits);
-                    this.mRemote.transact(83, _data, _reply, 0);
+                    this.mRemote.transact(82, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -2869,13 +2948,30 @@ public interface IDisplayManager extends IInterface {
             }
 
             @Override // android.hardware.display.IDisplayManager
-            public void setDisplayStateLimit(IBinder lock, int stateLimit) throws RemoteException {
+            public void setDisplayStateOverride(IBinder lock, int stateOverride) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(lock);
-                    _data.writeInt(stateLimit);
+                    _data.writeInt(stateOverride);
+                    this.mRemote.transact(83, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.display.IDisplayManager
+            public void setDisplayStateOverrideWithDisplayId(IBinder lock, int stateOverride, int displayId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongBinder(lock);
+                    _data.writeInt(stateOverride);
+                    _data.writeInt(displayId);
                     this.mRemote.transact(84, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -2903,6 +2999,71 @@ public interface IDisplayManager extends IInterface {
             }
 
             @Override // android.hardware.display.IDisplayManager
+            public void enableConnectedDisplay(int displayId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(displayId);
+                    this.mRemote.transact(86, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.display.IDisplayManager
+            public void disableConnectedDisplay(int displayId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(displayId);
+                    this.mRemote.transact(87, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.display.IDisplayManager
+            public boolean requestDisplayPower(int displayId, boolean on) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(displayId);
+                    _data.writeBoolean(on);
+                    this.mRemote.transact(88, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.display.IDisplayManager
+            public void requestDisplayModes(IBinder token, int displayId, int[] modeIds) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongBinder(token);
+                    _data.writeInt(displayId);
+                    _data.writeIntArray(modeIds);
+                    this.mRemote.transact(89, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.display.IDisplayManager
             public IRefreshRateToken acquirePassiveModeToken(IBinder token, String tag) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -2910,7 +3071,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeString(tag);
-                    this.mRemote.transact(86, _data, _reply, 0);
+                    this.mRemote.transact(90, _data, _reply, 0);
                     _reply.readException();
                     IRefreshRateToken _result = IRefreshRateToken.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -2928,7 +3089,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     _data.writeString(tag);
-                    this.mRemote.transact(87, _data, _reply, 0);
+                    this.mRemote.transact(91, _data, _reply, 0);
                     _reply.readException();
                     IRefreshRateToken _result = IRefreshRateToken.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -2947,7 +3108,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeStrongBinder(token);
                     _data.writeInt(refreshRate);
                     _data.writeString(tag);
-                    this.mRemote.transact(88, _data, _reply, 0);
+                    this.mRemote.transact(92, _data, _reply, 0);
                     _reply.readException();
                     IRefreshRateToken _result = IRefreshRateToken.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -2966,7 +3127,7 @@ public interface IDisplayManager extends IInterface {
                     _data.writeStrongBinder(token);
                     _data.writeInt(refreshRate);
                     _data.writeString(tag);
-                    this.mRemote.transact(89, _data, _reply, 0);
+                    this.mRemote.transact(93, _data, _reply, 0);
                     _reply.readException();
                     IRefreshRateToken _result = IRefreshRateToken.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
@@ -2982,7 +3143,7 @@ public interface IDisplayManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(90, _data, _reply, 0);
+                    this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -2991,11 +3152,126 @@ public interface IDisplayManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.hardware.display.IDisplayManager
+            public void registerHbmBrightnessCallback(IHbmBrightnessCallback listener) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
+                    this.mRemote.transact(95, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+        }
+
+        protected void startWifiDisplayScan_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_WIFI_DISPLAY, getCallingPid(), getCallingUid());
+        }
+
+        protected void stopWifiDisplayScan_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_WIFI_DISPLAY, getCallingPid(), getCallingUid());
+        }
+
+        protected void pauseWifiDisplay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_WIFI_DISPLAY, getCallingPid(), getCallingUid());
+        }
+
+        protected void resumeWifiDisplay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_WIFI_DISPLAY, getCallingPid(), getCallingUid());
+        }
+
+        protected void setUserDisabledHdrTypes_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.WRITE_SECURE_SETTINGS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setAreUserDisabledHdrTypesAllowed_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.WRITE_SECURE_SETTINGS, getCallingPid(), getCallingUid());
+        }
+
+        protected void requestColorMode_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_DISPLAY_COLOR_MODE, getCallingPid(), getCallingUid());
+        }
+
+        protected void getBrightnessEvents_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.BRIGHTNESS_SLIDER_USAGE, getCallingPid(), getCallingUid());
+        }
+
+        protected void getAmbientBrightnessStats_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.ACCESS_AMBIENT_LIGHT_STATS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setBrightnessConfigurationForUser_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setBrightnessConfigurationForDisplay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void getBrightnessConfigurationForDisplay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void getDefaultBrightnessConfiguration_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONFIGURE_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setTemporaryBrightness_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setBrightness_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setTemporaryAutoBrightnessAdjustment_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void getBrightnessInfo_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DISPLAY_BRIGHTNESS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setUserPreferredDisplayMode_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_USER_PREFERRED_DISPLAY_MODE, getCallingPid(), getCallingUid());
+        }
+
+        protected void setShouldAlwaysRespectAppRequestedMode_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.OVERRIDE_DISPLAY_MODE_REQUESTS, getCallingPid(), getCallingUid());
+        }
+
+        protected void shouldAlwaysRespectAppRequestedMode_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.OVERRIDE_DISPLAY_MODE_REQUESTS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setRefreshRateSwitchingType_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_REFRESH_RATE_SWITCHING_TYPE, getCallingPid(), getCallingUid());
+        }
+
+        protected void enableConnectedDisplay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_DISPLAYS, getCallingPid(), getCallingUid());
+        }
+
+        protected void disableConnectedDisplay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_DISPLAYS, getCallingPid(), getCallingUid());
+        }
+
+        protected void requestDisplayPower_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_DISPLAYS, getCallingPid(), getCallingUid());
+        }
+
+        protected void requestDisplayModes_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.RESTRICT_DISPLAY_MODES, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 89;
+            return 94;
         }
     }
 }

@@ -22,15 +22,14 @@ import java.util.Random;
 /* loaded from: classes5.dex */
 public abstract class SemClipData implements Parcelable, Serializable {
     public static final Parcelable.Creator<SemClipData> CREATOR = new Parcelable.Creator<SemClipData>() { // from class: com.samsung.android.content.clipboard.data.SemClipData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemClipData createFromParcel(Parcel source) {
             SemClipData concreteData = ClipboardDataFactory.createClipBoardData(source);
             return concreteData;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemClipData[] newArray(int size) {
             return new SemClipData[size];
@@ -151,10 +150,9 @@ public abstract class SemClipData implements Parcelable, Serializable {
     }
 
     public void closeParcelFileDescriptor() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mParcelFd;
-        if (parcelFileDescriptor != null) {
+        if (this.mParcelFd != null) {
             try {
-                parcelFileDescriptor.close();
+                this.mParcelFd.close();
             } catch (IOException e) {
                 if (ClipboardConstants.DEBUG) {
                     e.printStackTrace();
@@ -221,8 +219,7 @@ public abstract class SemClipData implements Parcelable, Serializable {
             if (this.mMimeTypes == null) {
                 data = new ClipData(label, mimeType, item);
             } else {
-                ArrayList<String> arrayList = this.mMimeTypes;
-                data = new ClipData(label, (String[]) arrayList.toArray(new String[arrayList.size()]), item);
+                data = new ClipData(label, (String[]) this.mMimeTypes.toArray(new String[this.mMimeTypes.size()]), item);
             }
         } else {
             data = new ClipData(ClipboardConstants.CLIPBOARD_DRAGNDROP, mimeType, item);
@@ -341,24 +338,6 @@ public abstract class SemClipData implements Parcelable, Serializable {
         }
     }
 
-    /* renamed from: com.samsung.android.content.clipboard.data.SemClipData$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemClipData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemClipData createFromParcel(Parcel source) {
-            SemClipData concreteData = ClipboardDataFactory.createClipBoardData(source);
-            return concreteData;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemClipData[] newArray(int size) {
-            return new SemClipData[size];
-        }
-    }
-
     public boolean setLabel(CharSequence label) {
         if (TextUtils.isEmpty(label)) {
             return false;
@@ -397,16 +376,14 @@ public abstract class SemClipData implements Parcelable, Serializable {
     }
 
     public PersistableBundle getPersistableBundle() {
-        PersistableBundle persistableBundle = this.mBundle;
-        if (persistableBundle != null) {
-            return persistableBundle;
+        if (this.mBundle != null) {
+            return this.mBundle;
         }
-        ArrayList<Object> arrayList = this.mKeyList;
-        if ((arrayList == null || this.mObjList == null) && !this.mIsPCClip) {
+        if ((this.mKeyList == null || this.mObjList == null) && !this.mIsPCClip) {
             return null;
         }
-        if (arrayList != null && this.mObjList != null) {
-            int itemCount = arrayList.size();
+        if (this.mKeyList != null && this.mObjList != null) {
+            int itemCount = this.mKeyList.size();
             this.mBundle = new PersistableBundle(itemCount);
             while (true) {
                 itemCount--;
@@ -418,14 +395,12 @@ public abstract class SemClipData implements Parcelable, Serializable {
         }
         if (this.mIsPCClip) {
             if (this.mKeyList == null) {
-                ArrayList<Object> arrayList2 = new ArrayList<>();
-                this.mKeyList = arrayList2;
-                arrayList2.clear();
+                this.mKeyList = new ArrayList<>();
+                this.mKeyList.clear();
             }
             if (this.mObjList == null) {
-                ArrayList<Object> arrayList3 = new ArrayList<>();
-                this.mObjList = arrayList3;
-                arrayList3.clear();
+                this.mObjList = new ArrayList<>();
+                this.mObjList.clear();
             }
             if (this.mBundle == null) {
                 this.mBundle = new PersistableBundle();
@@ -520,9 +495,8 @@ public abstract class SemClipData implements Parcelable, Serializable {
     }
 
     public void setPCClipExtra(boolean value) {
-        ArrayList<Object> arrayList;
-        if (this.mBundle != null && (arrayList = this.mKeyList) != null && this.mObjList != null) {
-            int index = arrayList.indexOf(ClipboardConstants.PC_CLIP_EXTRA_VALUE);
+        if (this.mBundle != null && this.mKeyList != null && this.mObjList != null) {
+            int index = this.mKeyList.indexOf(ClipboardConstants.PC_CLIP_EXTRA_VALUE);
             this.mObjList.set(index, Boolean.valueOf(value));
             this.mBundle.putBoolean(ClipboardConstants.PC_CLIP_EXTRA_VALUE, value);
         }
@@ -559,137 +533,134 @@ public abstract class SemClipData implements Parcelable, Serializable {
         this.mRemoteState = state;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0072, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0070, code lost:
     
-        if (r2 == null) goto L66;
+        if (r2 == null) goto L28;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0074, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0072, code lost:
     
         r4 = android.os.Binder.clearCallingIdentity();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0078, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0076, code lost:
     
         r11.getContentResolver().delete(r2, null, null);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0085, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0083, code lost:
     
         r0 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x00a4, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x00a2, code lost:
     
         android.os.Binder.restoreCallingIdentity(r4);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x00a7, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x00a5, code lost:
     
         throw r0;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0087, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0085, code lost:
     
         r0 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0088, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0086, code lost:
     
         android.sec.clipboard.util.Log.e(com.samsung.android.content.clipboard.data.SemClipData.TAG, "Exception occurs in deleteContentUri because " + r0.getMessage());
      */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x00a8, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x00a6, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x006f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x006d, code lost:
     
-        if (r3 == null) goto L55;
+        if (r3 == null) goto L17;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void deleteContentUriInternal(android.content.Context r11, java.lang.String r12) {
+    protected void deleteContentUriInternal(android.content.Context r11, java.lang.String r12) {
         /*
             r10 = this;
             java.lang.String r0 = "id"
             java.lang.String r1 = "SemClipData"
             r2 = 0
             r3 = 0
-            android.content.ContentResolver r4 = r11.getContentResolver()     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            android.net.Uri r5 = com.samsung.android.content.clipboard.provider.SemImageClipDataProvider.CONTENT_URI     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            r6 = 1
-            java.lang.String[] r6 = new java.lang.String[r6]     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            r7 = 0
-            r6[r7] = r0     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
+            android.content.ContentResolver r4 = r11.getContentResolver()     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            android.net.Uri r5 = com.samsung.android.content.clipboard.provider.SemImageClipDataProvider.CONTENT_URI     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            java.lang.String[] r6 = new java.lang.String[]{r0}     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
             java.lang.String r7 = "_data=? "
-            java.lang.String[] r8 = new java.lang.String[]{r12}     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
+            java.lang.String[] r8 = new java.lang.String[]{r12}     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
             r9 = 0
-            android.database.Cursor r4 = r4.query(r5, r6, r7, r8, r9)     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
+            android.database.Cursor r4 = r4.query(r5, r6, r7, r8, r9)     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
             r3 = r4
-            if (r3 == 0) goto L4a
-            boolean r4 = r3.moveToFirst()     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            if (r4 == 0) goto L4a
-        L28:
-            int r0 = r3.getColumnIndex(r0)     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            int r0 = r3.getInt(r0)     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            android.net.Uri r4 = com.samsung.android.content.clipboard.provider.SemImageClipDataProvider.CONTENT_URI     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            r5.<init>()     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
+            if (r3 == 0) goto L48
+            boolean r4 = r3.moveToFirst()     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            if (r4 == 0) goto L48
+        L26:
+            int r0 = r3.getColumnIndex(r0)     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            int r0 = r3.getInt(r0)     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            android.net.Uri r4 = com.samsung.android.content.clipboard.provider.SemImageClipDataProvider.CONTENT_URI     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            r5.<init>()     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
             java.lang.String r6 = ""
-            java.lang.StringBuilder r5 = r5.append(r6)     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            java.lang.StringBuilder r5 = r5.append(r0)     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            java.lang.String r5 = r5.toString()     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
-            android.net.Uri r4 = android.net.Uri.withAppendedPath(r4, r5)     // Catch: java.lang.Throwable -> L51 android.database.sqlite.SQLiteException -> L53
+            java.lang.StringBuilder r5 = r5.append(r6)     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            java.lang.StringBuilder r5 = r5.append(r0)     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            java.lang.String r5 = r5.toString()     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
+            android.net.Uri r4 = android.net.Uri.withAppendedPath(r4, r5)     // Catch: java.lang.Throwable -> L4f android.database.sqlite.SQLiteException -> L51
             r2 = r4
+        L48:
+            if (r3 == 0) goto L70
         L4a:
-            if (r3 == 0) goto L72
-        L4c:
             r3.close()
             r3 = 0
-            goto L72
+            goto L70
+        L4f:
+            r0 = move-exception
+            goto La7
         L51:
             r0 = move-exception
-            goto La9
-        L53:
-            r0 = move-exception
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L51
-            r4.<init>()     // Catch: java.lang.Throwable -> L51
+            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L4f
+            r4.<init>()     // Catch: java.lang.Throwable -> L4f
             java.lang.String r5 = "SQLiteException occurs in deleteContentUri because "
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L51
-            java.lang.String r5 = r0.getMessage()     // Catch: java.lang.Throwable -> L51
-            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L51
-            java.lang.String r4 = r4.toString()     // Catch: java.lang.Throwable -> L51
-            android.sec.clipboard.util.Log.e(r1, r4)     // Catch: java.lang.Throwable -> L51
-            if (r3 == 0) goto L72
-            goto L4c
-        L72:
-            if (r2 == 0) goto La8
+            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r5 = r0.getMessage()     // Catch: java.lang.Throwable -> L4f
+            java.lang.StringBuilder r4 = r4.append(r5)     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r4 = r4.toString()     // Catch: java.lang.Throwable -> L4f
+            android.sec.clipboard.util.Log.e(r1, r4)     // Catch: java.lang.Throwable -> L4f
+            if (r3 == 0) goto L70
+            goto L4a
+        L70:
+            if (r2 == 0) goto La6
             long r4 = android.os.Binder.clearCallingIdentity()
-            android.content.ContentResolver r0 = r11.getContentResolver()     // Catch: java.lang.Throwable -> L85 java.lang.Exception -> L87
+            android.content.ContentResolver r0 = r11.getContentResolver()     // Catch: java.lang.Throwable -> L83 java.lang.Exception -> L85
             r6 = 0
-            r0.delete(r2, r6, r6)     // Catch: java.lang.Throwable -> L85 java.lang.Exception -> L87
-        L81:
+            r0.delete(r2, r6, r6)     // Catch: java.lang.Throwable -> L83 java.lang.Exception -> L85
+        L7f:
             android.os.Binder.restoreCallingIdentity(r4)
-            goto La8
+            goto La6
+        L83:
+            r0 = move-exception
+            goto La2
         L85:
             r0 = move-exception
-            goto La4
-        L87:
-            r0 = move-exception
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L85
-            r6.<init>()     // Catch: java.lang.Throwable -> L85
+            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L83
+            r6.<init>()     // Catch: java.lang.Throwable -> L83
             java.lang.String r7 = "Exception occurs in deleteContentUri because "
-            java.lang.StringBuilder r6 = r6.append(r7)     // Catch: java.lang.Throwable -> L85
-            java.lang.String r7 = r0.getMessage()     // Catch: java.lang.Throwable -> L85
-            java.lang.StringBuilder r6 = r6.append(r7)     // Catch: java.lang.Throwable -> L85
-            java.lang.String r6 = r6.toString()     // Catch: java.lang.Throwable -> L85
-            android.sec.clipboard.util.Log.e(r1, r6)     // Catch: java.lang.Throwable -> L85
-            goto L81
-        La4:
+            java.lang.StringBuilder r6 = r6.append(r7)     // Catch: java.lang.Throwable -> L83
+            java.lang.String r7 = r0.getMessage()     // Catch: java.lang.Throwable -> L83
+            java.lang.StringBuilder r6 = r6.append(r7)     // Catch: java.lang.Throwable -> L83
+            java.lang.String r6 = r6.toString()     // Catch: java.lang.Throwable -> L83
+            android.sec.clipboard.util.Log.e(r1, r6)     // Catch: java.lang.Throwable -> L83
+            goto L7f
+        La2:
             android.os.Binder.restoreCallingIdentity(r4)
             throw r0
-        La8:
+        La6:
             return
-        La9:
-            if (r3 == 0) goto Laf
+        La7:
+            if (r3 == 0) goto Lad
             r3.close()
             r3 = 0
-        Laf:
+        Lad:
             throw r0
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.content.clipboard.data.SemClipData.deleteContentUriInternal(android.content.Context, java.lang.String):void");

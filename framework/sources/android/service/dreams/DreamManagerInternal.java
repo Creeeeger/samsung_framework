@@ -16,7 +16,6 @@ public abstract class DreamManagerInternal {
 
     public abstract void unregisterDreamManagerStateListener(DreamManagerStateListener dreamManagerStateListener);
 
-    /* loaded from: classes3.dex */
     public interface DreamManagerStateListener {
         default void onKeepDreamingWhenUnpluggingChanged(boolean keepDreaming) {
         }

@@ -16,7 +16,6 @@ public class Handler {
     IMessenger mMessenger;
     final MessageQueue mQueue;
 
-    /* loaded from: classes3.dex */
     public interface Callback {
         boolean handleMessage(Message message);
     }
@@ -27,13 +26,12 @@ public class Handler {
     public void dispatchMessage(Message msg) {
         if (msg.callback != null) {
             handleCallback(msg);
-            return;
+        } else {
+            if (this.mCallback != null && this.mCallback.handleMessage(msg)) {
+                return;
+            }
+            handleMessage(msg);
         }
-        Callback callback = this.mCallback;
-        if (callback != null && callback.handleMessage(msg)) {
-            return;
-        }
-        handleMessage(msg);
     }
 
     @Deprecated
@@ -59,12 +57,11 @@ public class Handler {
     }
 
     public Handler(Callback callback, boolean async) {
-        Looper myLooper = Looper.myLooper();
-        this.mLooper = myLooper;
-        if (myLooper == null) {
+        this.mLooper = Looper.myLooper();
+        if (this.mLooper == null) {
             throw new RuntimeException("Can't create handler inside thread " + Thread.currentThread() + " that has not called Looper.prepare()");
         }
-        this.mQueue = myLooper.mQueue;
+        this.mQueue = this.mLooper.mQueue;
         this.mCallback = callback;
         this.mAsynchronous = async;
         this.mIsShared = false;
@@ -242,7 +239,7 @@ public class Handler {
     public final boolean sendMessageAtFrontOfQueue(Message msg) {
         MessageQueue queue = this.mQueue;
         if (queue == null) {
-            RuntimeException e = new RuntimeException(this + " sendMessageAtTime() called with no mQueue");
+            RuntimeException e = new RuntimeException(this + " sendMessageAtFrontOfQueue() called with no mQueue");
             Log.w("Looper", e.getMessage(), e);
             return false;
         }
@@ -319,21 +316,19 @@ public class Handler {
 
     public final void dump(Printer pw, String prefix) {
         pw.println(prefix + this + " @ " + SystemClock.uptimeMillis());
-        Looper looper = this.mLooper;
-        if (looper == null) {
+        if (this.mLooper == null) {
             pw.println(prefix + "looper uninitialized");
         } else {
-            looper.dump(pw, prefix + "  ");
+            this.mLooper.dump(pw, prefix + "  ");
         }
     }
 
     public final void dumpMine(Printer pw, String prefix) {
         pw.println(prefix + this + " @ " + SystemClock.uptimeMillis());
-        Looper looper = this.mLooper;
-        if (looper == null) {
+        if (this.mLooper == null) {
             pw.println(prefix + "looper uninitialized");
         } else {
-            looper.dump(pw, prefix + "  ", this);
+            this.mLooper.dump(pw, prefix + "  ", this);
         }
     }
 
@@ -341,25 +336,17 @@ public class Handler {
         return "Handler (" + getClass().getName() + ") {" + Integer.toHexString(System.identityHashCode(this)) + "}";
     }
 
-    public final IMessenger getIMessenger() {
+    final IMessenger getIMessenger() {
         synchronized (this.mQueue) {
-            IMessenger iMessenger = this.mMessenger;
-            if (iMessenger != null) {
-                return iMessenger;
+            if (this.mMessenger != null) {
+                return this.mMessenger;
             }
-            MessengerImpl messengerImpl = new MessengerImpl();
-            this.mMessenger = messengerImpl;
-            return messengerImpl;
+            this.mMessenger = new MessengerImpl();
+            return this.mMessenger;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public final class MessengerImpl extends IMessenger.Stub {
-        /* synthetic */ MessengerImpl(Handler handler, MessengerImplIA messengerImplIA) {
-            this();
-        }
-
+    private final class MessengerImpl extends IMessenger.Stub {
         private MessengerImpl() {
         }
 
@@ -387,9 +374,7 @@ public class Handler {
         message.callback.run();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static final class BlockingRunnable implements Runnable {
+    private static final class BlockingRunnable implements Runnable {
         private boolean mDone;
         private final Runnable mTask;
 

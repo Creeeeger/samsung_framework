@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IKeyguardDrawnCallback extends IInterface {
     void onDrawn() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKeyguardDrawnCallback {
         @Override // com.android.internal.policy.IKeyguardDrawnCallback
         public void onDrawn() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IKeyguardDrawnCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKeyguardDrawnCallback {
         public static final String DESCRIPTOR = "com.android.internal.policy.IKeyguardDrawnCallback";
         static final int TRANSACTION_onDrawn = 1;
@@ -66,24 +64,20 @@ public interface IKeyguardDrawnCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onDrawn();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onDrawn();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IKeyguardDrawnCallback {
+        private static class Proxy implements IKeyguardDrawnCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

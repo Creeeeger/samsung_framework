@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IHdmiHotplugEventListener extends IInterface {
     void onReceived(HdmiHotplugEvent hdmiHotplugEvent) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiHotplugEventListener {
         @Override // android.hardware.hdmi.IHdmiHotplugEventListener
         public void onReceived(HdmiHotplugEvent event) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IHdmiHotplugEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiHotplugEventListener {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiHotplugEventListener";
         static final int TRANSACTION_onReceived = 1;
@@ -66,25 +64,22 @@ public interface IHdmiHotplugEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    HdmiHotplugEvent _arg0 = (HdmiHotplugEvent) data.readTypedObject(HdmiHotplugEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onReceived(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            HdmiHotplugEvent _arg0 = (HdmiHotplugEvent) data.readTypedObject(HdmiHotplugEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onReceived(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiHotplugEventListener {
+        private static class Proxy implements IHdmiHotplugEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

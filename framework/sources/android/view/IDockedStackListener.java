@@ -18,7 +18,6 @@ public interface IDockedStackListener extends IInterface {
 
     void onDockedStackMinimizedChanged(boolean z, long j, boolean z2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDockedStackListener {
         @Override // android.view.IDockedStackListener
         public void onDividerVisibilityChanged(boolean visible) throws RemoteException {
@@ -46,7 +45,6 @@ public interface IDockedStackListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDockedStackListener {
         public static final String DESCRIPTOR = "android.view.IDockedStackListener";
         static final int TRANSACTION_onAdjustedForImeChanged = 4;
@@ -102,47 +100,44 @@ public interface IDockedStackListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onDividerVisibilityChanged(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onDockedStackExistsChanged(_arg02);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    long _arg1 = data.readLong();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onDockedStackMinimizedChanged(_arg03, _arg1, _arg2);
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    long _arg12 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onAdjustedForImeChanged(_arg04, _arg12);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDockSideChanged(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onDividerVisibilityChanged(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onDockedStackExistsChanged(_arg02);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            long _arg1 = data.readLong();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onDockedStackMinimizedChanged(_arg03, _arg1, _arg2);
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            long _arg12 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onAdjustedForImeChanged(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDockSideChanged(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements IDockedStackListener {
             private IBinder mRemote;
 

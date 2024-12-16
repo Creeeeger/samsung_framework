@@ -12,9 +12,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RecognitionEventSys implements Parcelable {
     public static final Parcelable.Creator<RecognitionEventSys> CREATOR = new Parcelable.Creator<RecognitionEventSys>() { // from class: android.media.soundtrigger_middleware.RecognitionEventSys.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionEventSys createFromParcel(Parcel _aidl_source) {
             RecognitionEventSys _aidl_out = new RecognitionEventSys();
@@ -22,6 +20,7 @@ public class RecognitionEventSys implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionEventSys[] newArray(int _aidl_size) {
             return new RecognitionEventSys[_aidl_size];
@@ -30,25 +29,6 @@ public class RecognitionEventSys implements Parcelable {
     public long halEventReceivedMillis = -1;
     public RecognitionEvent recognitionEvent;
     public IBinder token;
-
-    /* renamed from: android.media.soundtrigger_middleware.RecognitionEventSys$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecognitionEventSys> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionEventSys createFromParcel(Parcel _aidl_source) {
-            RecognitionEventSys _aidl_out = new RecognitionEventSys();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionEventSys[] newArray(int _aidl_size) {
-            return new RecognitionEventSys[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -112,7 +92,7 @@ public class RecognitionEventSys implements Parcelable {
         _aidl_sj.add("recognitionEvent: " + Objects.toString(this.recognitionEvent));
         _aidl_sj.add("halEventReceivedMillis: " + this.halEventReceivedMillis);
         _aidl_sj.add("token: " + Objects.toString(this.token));
-        return "android.media.soundtrigger_middleware.RecognitionEventSys" + _aidl_sj.toString();
+        return "RecognitionEventSys" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

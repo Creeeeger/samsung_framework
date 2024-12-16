@@ -58,13 +58,11 @@ public class PolicyConstraints extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
-        BigInteger bigInteger = this.requireExplicitPolicyMapping;
-        if (bigInteger != null) {
-            v.add(new DERTaggedObject(false, 0, new ASN1Integer(bigInteger)));
+        if (this.requireExplicitPolicyMapping != null) {
+            v.add(new DERTaggedObject(false, 0, new ASN1Integer(this.requireExplicitPolicyMapping)));
         }
-        BigInteger bigInteger2 = this.inhibitPolicyMapping;
-        if (bigInteger2 != null) {
-            v.add(new DERTaggedObject(false, 1, new ASN1Integer(bigInteger2)));
+        if (this.inhibitPolicyMapping != null) {
+            v.add(new DERTaggedObject(false, 1, new ASN1Integer(this.inhibitPolicyMapping)));
         }
         return new DERSequence(v);
     }

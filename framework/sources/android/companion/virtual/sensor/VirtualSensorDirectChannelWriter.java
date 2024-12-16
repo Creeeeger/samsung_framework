@@ -91,23 +91,19 @@ public final class VirtualSensorDirectChannelWriter implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class SharedMemoryWrapper {
+    private static final class SharedMemoryWrapper {
         private static final int MAXIMUM_NUMBER_OF_SENSOR_VALUES = 16;
         private static final int SENSOR_EVENT_SIZE = 104;
-        private final ByteBuffer mEventBuffer;
         private final ByteBuffer mMemoryMapping;
         private final SharedMemory mSharedMemory;
-        private final Object mWriteLock;
         private int mWriteOffset = 0;
+        private final ByteBuffer mEventBuffer = ByteBuffer.allocate(104);
+        private final Object mWriteLock = new Object();
 
         SharedMemoryWrapper(SharedMemory sharedMemory) throws ErrnoException {
-            ByteBuffer allocate = ByteBuffer.allocate(104);
-            this.mEventBuffer = allocate;
-            this.mWriteLock = new Object();
             this.mSharedMemory = sharedMemory;
-            this.mMemoryMapping = sharedMemory.mapReadWrite();
-            allocate.order(ByteOrder.nativeOrder());
+            this.mMemoryMapping = this.mSharedMemory.mapReadWrite();
+            this.mEventBuffer.order(ByteOrder.nativeOrder());
         }
 
         void close() {
@@ -134,16 +130,14 @@ public final class VirtualSensorDirectChannelWriter implements AutoCloseable {
                 this.mEventBuffer.putInt(0);
                 this.mMemoryMapping.position(this.mWriteOffset);
                 this.mMemoryMapping.put(this.mEventBuffer.array(), 0, 104);
-                int i2 = this.mWriteOffset + 104;
-                this.mWriteOffset = i2;
-                if (i2 + 104 >= this.mSharedMemory.getSize()) {
+                this.mWriteOffset += 104;
+                if (this.mWriteOffset + 104 >= this.mSharedMemory.getSize()) {
                     this.mWriteOffset = 0;
                 }
             }
         }
     }
 
-    /* loaded from: classes.dex */
     private static final class DirectChannelConfiguration {
         private final AtomicLong mEventCounter = new AtomicLong(1);
         private final int mReportToken;

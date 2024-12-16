@@ -3,7 +3,7 @@ package com.android.framework.protobuf;
 import java.util.Iterator;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public class LazyField extends LazyFieldLite {
     private final MessageLite defaultInstance;
 
@@ -35,13 +35,8 @@ public class LazyField extends LazyFieldLite {
         return getValue().toString();
     }
 
-    /* loaded from: classes4.dex */
-    public static class LazyEntry<K> implements Map.Entry<K, Object> {
+    static class LazyEntry<K> implements Map.Entry<K, Object> {
         private Map.Entry<K, LazyField> entry;
-
-        /* synthetic */ LazyEntry(Map.Entry x0, AnonymousClass1 x1) {
-            this(x0);
-        }
 
         private LazyEntry(Map.Entry<K, LazyField> entry) {
             this.entry = entry;
@@ -74,8 +69,7 @@ public class LazyField extends LazyFieldLite {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class LazyIterator<K> implements Iterator<Map.Entry<K, Object>> {
+    static class LazyIterator<K> implements Iterator<Map.Entry<K, Object>> {
         private Iterator<Map.Entry<K, Object>> iterator;
 
         public LazyIterator(Iterator<Map.Entry<K, Object>> iterator) {

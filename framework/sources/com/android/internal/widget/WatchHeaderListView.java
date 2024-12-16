@@ -52,30 +52,27 @@ public class WatchHeaderListView extends ListView {
     }
 
     @Override // android.widget.ListView, android.view.ViewGroup, android.view.View
-    public View findViewTraversal(int id) {
-        View view;
+    protected View findViewTraversal(int id) {
         View v = super.findViewTraversal(id);
-        if (v == null && (view = this.mTopPanel) != null && !view.isRootNamespace()) {
+        if (v == null && this.mTopPanel != null && !this.mTopPanel.isRootNamespace()) {
             return this.mTopPanel.findViewById(id);
         }
         return v;
     }
 
     @Override // android.widget.ListView, android.view.ViewGroup, android.view.View
-    public View findViewWithTagTraversal(Object tag) {
-        View view;
+    protected View findViewWithTagTraversal(Object tag) {
         View v = super.findViewWithTagTraversal(tag);
-        if (v == null && (view = this.mTopPanel) != null && !view.isRootNamespace()) {
+        if (v == null && this.mTopPanel != null && !this.mTopPanel.isRootNamespace()) {
             return this.mTopPanel.findViewWithTag(tag);
         }
         return v;
     }
 
     @Override // android.widget.ListView, android.view.ViewGroup, android.view.View
-    public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
-        View view2;
+    protected <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         T t = (T) super.findViewByPredicateTraversal(predicate, view);
-        if (t == null && (view2 = this.mTopPanel) != null && view2 != view && !view2.isRootNamespace()) {
+        if (t == null && this.mTopPanel != null && this.mTopPanel != view && !this.mTopPanel.isRootNamespace()) {
             return (T) this.mTopPanel.findViewByPredicate(predicate);
         }
         return t;
@@ -100,8 +97,7 @@ public class WatchHeaderListView extends ListView {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class WatchHeaderListAdapter extends HeaderViewListAdapter {
+    private static class WatchHeaderListAdapter extends HeaderViewListAdapter {
         private View mTopPanel;
 
         public WatchHeaderListAdapter(ArrayList<ListView.FixedViewInfo> headerViewInfos, ArrayList<ListView.FixedViewInfo> footerViewInfos, ListAdapter adapter) {
@@ -113,8 +109,7 @@ public class WatchHeaderListView extends ListView {
         }
 
         private int getTopPanelCount() {
-            View view = this.mTopPanel;
-            return (view == null || view.getVisibility() == 8) ? 0 : 1;
+            return (this.mTopPanel == null || this.mTopPanel.getVisibility() == 8) ? 0 : 1;
         }
 
         @Override // android.widget.HeaderViewListAdapter, android.widget.Adapter

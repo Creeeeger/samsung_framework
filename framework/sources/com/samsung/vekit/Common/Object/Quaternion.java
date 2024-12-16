@@ -60,62 +60,39 @@ public class Quaternion {
     }
 
     public void setRotation(float eulerX, float eulerY, float eulerZ) {
-        double radianX = Math.toRadians(eulerX);
-        double radianY = Math.toRadians(eulerY);
-        double radianZ = Math.toRadians(eulerZ);
-        double c1 = Math.cos(radianY / 2.0d);
-        double s1 = Math.sin(radianY / 2.0d);
-        double c2 = Math.cos(radianZ / 2.0d);
-        double s2 = Math.sin(radianZ / 2.0d);
-        double c3 = Math.cos(radianX / 2.0d);
-        double s3 = Math.sin(radianX / 2.0d);
-        double c1c2 = c1 * c2;
-        double s1s2 = s1 * s2;
-        this.w = (c1c2 * c3) - (s1s2 * s3);
-        this.x = (c1c2 * s3) + (s1s2 * c3);
-        this.y = (s1 * c2 * c3) + (c1 * s2 * s3);
-        this.z = ((c1 * s2) * c3) - ((s1 * c2) * s3);
+        float radianX = (float) Math.toRadians(eulerX);
+        float radianY = (float) Math.toRadians(eulerY);
+        float radianZ = (float) Math.toRadians(eulerZ);
+        float c1 = (float) Math.cos(radianX / 2.0f);
+        float c2 = (float) Math.cos(radianY / 2.0f);
+        float c3 = (float) Math.cos(radianZ / 2.0f);
+        float s1 = (float) Math.sin(radianX / 2.0f);
+        float s2 = (float) Math.sin(radianY / 2.0f);
+        float s3 = (float) Math.sin(radianZ / 2.0f);
+        this.x = (s1 * c2 * c3) + (c1 * s2 * s3);
+        this.y = ((c1 * s2) * c3) - ((s1 * c2) * s3);
+        this.z = (c1 * c2 * s3) + (s1 * s2 * c3);
+        this.w = ((c1 * c2) * c3) - ((s1 * s2) * s3);
+    }
+
+    private float clamp(float data, float min, float max) {
+        return Math.min(Math.max(data, min), max);
     }
 
     public Vector3<Float> getRotation() {
-        Float valueOf = Float.valueOf(0.0f);
-        Vector3<Float> angles = new Vector3<>(valueOf, valueOf, valueOf);
-        double d = this.w;
-        double sqw = d * d;
-        double d2 = this.x;
-        double sqx = d2 * d2;
-        double d3 = this.y;
-        double sqy = d3 * d3;
-        double d4 = this.z;
-        double sqz = d4 * d4;
-        double unit = sqx + sqy + sqz + sqw;
-        double checker = (d2 * d3) + (d4 * d);
-        if (checker > 0.49999d * unit) {
-            double yaw = Math.atan2(d2, d) * 2.0d;
-            Float valueOf2 = Float.valueOf((float) Math.toDegrees(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN));
-            double pitch = Math.toDegrees(yaw);
-            Float valueOf3 = Float.valueOf((float) pitch);
-            double yaw2 = Math.toDegrees(1.5707963267948966d);
-            angles.set(valueOf2, valueOf3, Float.valueOf((float) yaw2));
-            return angles;
+        float x;
+        float z;
+        Matrix4 matrix1 = getMatrix();
+        float y = (float) Math.asin(clamp(matrix1.get(2, 0), -1.0f, 1.0f));
+        if (Math.abs(matrix1.get(2, 0)) < 0.999999d) {
+            x = (float) Math.atan2(-matrix1.get(2, 1), matrix1.get(2, 2));
+            z = (float) Math.atan2(-matrix1.get(1, 0), matrix1.get(0, 0));
+        } else {
+            float x2 = matrix1.get(1, 2);
+            x = (float) Math.atan2(x2, matrix1.get(1, 1));
+            z = 0.0f;
         }
-        if (checker < (-0.49999d) * unit) {
-            double yaw3 = Math.atan2(d2, d) * (-2.0d);
-            Float valueOf4 = Float.valueOf((float) Math.toDegrees(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN));
-            double pitch2 = Math.toDegrees(yaw3);
-            Float valueOf5 = Float.valueOf((float) pitch2);
-            double yaw4 = Math.toDegrees(-1.5707963267948966d);
-            angles.set(valueOf4, valueOf5, Float.valueOf((float) yaw4));
-            return angles;
-        }
-        double yaw5 = Math.atan2(((d3 * 2.0d) * d) - ((d2 * 2.0d) * d4), ((sqx - sqy) - sqz) + sqw);
-        double roll = Math.asin((checker * 2.0d) / unit);
-        double d5 = this.x * 2.0d * this.w;
-        double d6 = this.y * 2.0d;
-        double roll2 = this.z;
-        double pitch3 = Math.atan2(d5 - (d6 * roll2), (((-sqx) + sqy) - sqz) + sqw);
-        angles.set(Float.valueOf((float) Math.toDegrees(pitch3)), Float.valueOf((float) Math.toDegrees(yaw5)), Float.valueOf((float) Math.toDegrees(roll)));
-        return angles;
+        return new Vector3<>(Float.valueOf((float) Math.toDegrees(x)), Float.valueOf((float) Math.toDegrees(y)), Float.valueOf((float) Math.toDegrees(z)));
     }
 
     public void setRotation(Vector3<Float> axis, float degree) {
@@ -129,17 +106,13 @@ public class Quaternion {
         this.w = cosVal;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.vekit.Common.Object.Quaternion$1 */
-    /* loaded from: classes6.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$AxisType;
+    /* renamed from: com.samsung.vekit.Common.Object.Quaternion$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$AxisType = new int[AxisType.values().length];
 
         static {
-            int[] iArr = new int[AxisType.values().length];
-            $SwitchMap$com$samsung$vekit$Common$Type$AxisType = iArr;
             try {
-                iArr[AxisType.X.ordinal()] = 1;
+                $SwitchMap$com$samsung$vekit$Common$Type$AxisType[AxisType.X.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {
@@ -160,42 +133,35 @@ public class Quaternion {
         switch (i) {
             case 1:
                 setRotation(new Vector3<>(valueOf, valueOf2, valueOf2), degree);
-                return;
+                break;
             case 2:
                 setRotation(new Vector3<>(valueOf2, valueOf, valueOf2), degree);
-                return;
+                break;
             case 3:
                 setRotation(new Vector3<>(valueOf2, valueOf2, valueOf), degree);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
     public void setMatrix(Matrix4 matrix) {
-        float wLocal = ((float) Math.sqrt(matrix.get(0, 0) + matrix.get(1, 1) + matrix.get(2, 2))) * 0.5f;
-        float s = 0.25f / wLocal;
-        this.x = (matrix.get(1, 2) - matrix.get(2, 1)) * s;
-        this.y = (matrix.get(2, 0) - matrix.get(0, 2)) * s;
-        this.z = (matrix.get(0, 1) - matrix.get(1, 0)) * s;
-        this.w = wLocal;
+        Quaternion quaternion = matrix.getPureRotationMatrix().getQuaternion();
+        this.x = quaternion.x;
+        this.y = quaternion.y;
+        this.z = quaternion.z;
+        this.w = quaternion.w;
     }
 
     public Matrix4 getMatrix() {
-        double d = this.x;
-        double xx = d * d;
-        double d2 = this.y;
-        double xy = d * d2;
-        double yy = d2 * d2;
-        double d3 = this.z;
-        double xz = d * d3;
-        double yz = d2 * d3;
-        double zz = d3 * d3;
-        double xz2 = this.w;
-        double xw = d * xz2;
-        double yw = d2 * xz2;
-        double zw = d3 * xz2;
-        double ww = xz2 * xz2;
+        double xx = this.x * this.x;
+        double xy = this.x * this.y;
+        double yy = this.y * this.y;
+        double xz = this.x * this.z;
+        double yz = this.y * this.z;
+        double zz = this.z * this.z;
+        double xw = this.x * this.w;
+        double yw = this.y * this.w;
+        double zw = this.z * this.w;
+        double ww = this.w * this.w;
         Matrix4 matrix = new Matrix4();
         matrix.set(0, 0, (float) (((xx - yy) - zz) + ww));
         matrix.set(0, 1, (float) (xy + zw + xy + zw));
@@ -217,11 +183,7 @@ public class Quaternion {
     }
 
     public double getRoll() {
-        double d = this.x;
-        double d2 = this.y;
-        double d3 = this.w;
-        double d4 = this.z;
-        return Math.atan2(((d * d2) + (d3 * d4)) * 2.0d, (((d3 * d3) + (d * d)) - (d2 * d2)) - (d4 * d4));
+        return Math.atan2(((this.x * this.y) + (this.w * this.z)) * 2.0d, (((this.w * this.w) + (this.x * this.x)) - (this.y * this.y)) - (this.z * this.z));
     }
 
     public double getPitch() {
@@ -229,21 +191,11 @@ public class Quaternion {
     }
 
     public double getYaw() {
-        double d = this.y;
-        double d2 = this.z;
-        double d3 = this.w;
-        double d4 = this.x;
-        return Math.atan2(((d * d2) + (d3 * d4)) * 2.0d, (((d3 * d3) - (d4 * d4)) - (d * d)) + (d2 * d2));
+        return Math.atan2(((this.y * this.z) + (this.w * this.x)) * 2.0d, (((this.w * this.w) - (this.x * this.x)) - (this.y * this.y)) + (this.z * this.z));
     }
 
     public float length() {
-        double d = this.x;
-        double d2 = this.y;
-        double d3 = (d * d) + (d2 * d2);
-        double d4 = this.z;
-        double d5 = d3 + (d4 * d4);
-        double d6 = this.w;
-        return (float) Math.sqrt(d5 + (d6 * d6));
+        return (float) Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z) + (this.w * this.w));
     }
 
     public Quaternion divide(float scalar) {
@@ -261,16 +213,7 @@ public class Quaternion {
     }
 
     public Quaternion multiply(Quaternion quaternion) {
-        double d = this.w;
-        double d2 = quaternion.x;
-        double d3 = this.x;
-        double d4 = quaternion.w;
-        double d5 = (d * d2) + (d3 * d4);
-        double d6 = this.y;
-        double d7 = quaternion.z;
-        double d8 = this.z;
-        double d9 = quaternion.y;
-        return new Quaternion((d5 + (d6 * d7)) - (d8 * d9), ((d * d9) - (d3 * d7)) + (d6 * d4) + (d8 * d2), (((d * d7) + (d3 * d9)) - (d6 * d2)) + (d8 * d4), (((d * d4) - (d3 * d2)) - (d6 * d9)) - (d8 * d7));
+        return new Quaternion((((this.w * quaternion.x) + (this.x * quaternion.w)) + (this.y * quaternion.z)) - (this.z * quaternion.y), ((this.w * quaternion.y) - (this.x * quaternion.z)) + (this.y * quaternion.w) + (this.z * quaternion.x), (((this.w * quaternion.z) + (this.x * quaternion.y)) - (this.y * quaternion.x)) + (this.z * quaternion.w), (((this.w * quaternion.w) - (this.x * quaternion.x)) - (this.y * quaternion.y)) - (this.z * quaternion.z));
     }
 
     public Quaternion multiply(float scalar) {
@@ -278,13 +221,7 @@ public class Quaternion {
     }
 
     public float lengthSquared() {
-        double d = this.x;
-        double d2 = this.y;
-        double d3 = (d * d) + (d2 * d2);
-        double d4 = this.z;
-        double d5 = d3 + (d4 * d4);
-        double d6 = this.w;
-        return (float) (d5 + (d6 * d6));
+        return (float) ((this.x * this.x) + (this.y * this.y) + (this.z * this.z) + (this.w * this.w));
     }
 
     public Quaternion add(Quaternion quaternion) {
@@ -359,5 +296,17 @@ public class Quaternion {
 
     public void setW(double w) {
         this.w = w;
+    }
+
+    public boolean equals(Quaternion quaternion, double delta) {
+        if (Math.abs(this.x - quaternion.x) < delta && Math.abs(this.y - quaternion.y) < delta && Math.abs(this.z - quaternion.z) < delta && Math.abs(this.w - quaternion.w) < delta) {
+            return true;
+        }
+        Quaternion opposite = new Quaternion();
+        opposite.x = -quaternion.x;
+        opposite.y = -quaternion.y;
+        opposite.z = -quaternion.z;
+        opposite.w = -quaternion.w;
+        return Math.abs(this.x - opposite.x) < delta && Math.abs(this.y - opposite.y) < delta && Math.abs(this.z - opposite.z) < delta && Math.abs(this.w - opposite.w) < delta;
     }
 }

@@ -3,7 +3,7 @@ package android.hardware.camera2.params;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class Face {
     public static final int ID_UNSUPPORTED = -1;
     public static final int SCORE_MAX = 100;
@@ -81,18 +81,21 @@ public final class Face {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkScore(int score) {
         if (score < 1 || score > 100) {
             throw new IllegalArgumentException("Confidence out of range");
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkId(int id) {
         if (id < 0 && id != -1) {
             throw new IllegalArgumentException("Id out of range");
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkFace(Point leftEyePosition, Point rightEyePosition, Point mouthPosition) {
         if (leftEyePosition != null || rightEyePosition != null || mouthPosition != null) {
             if (leftEyePosition == null || rightEyePosition == null || mouthPosition == null) {
@@ -101,7 +104,6 @@ public final class Face {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private static final long FIELD_BOUNDS = 2;
         private static final long FIELD_BUILT = 1;

@@ -14,34 +14,17 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableArray<T> implements MarshalQueryable<T> {
     private static final boolean DEBUG = false;
     private static final String TAG = MarshalQueryableArray.class.getSimpleName();
 
-    /* loaded from: classes.dex */
     private interface PrimitiveArrayFiller {
         void fillArray(Object obj, int i, ByteBuffer byteBuffer);
-
-        /* renamed from: android.hardware.camera2.marshal.impl.MarshalQueryableArray$PrimitiveArrayFiller$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 implements PrimitiveArrayFiller {
-            AnonymousClass1() {
-            }
-
-            @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
-            public void fillArray(Object arr, int size, ByteBuffer buffer) {
-                IntBuffer ib = buffer.asIntBuffer().get((int[]) int[].class.cast(arr), 0, size);
-                buffer.position(buffer.position() + (ib.position() * 4));
-            }
-        }
 
         static PrimitiveArrayFiller getPrimitiveArrayFiller(Class<?> componentType) {
             if (componentType == Integer.TYPE) {
                 return new PrimitiveArrayFiller() { // from class: android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller.1
-                    AnonymousClass1() {
-                    }
-
                     @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
                     public void fillArray(Object arr, int size, ByteBuffer buffer) {
                         IntBuffer ib = buffer.asIntBuffer().get((int[]) int[].class.cast(arr), 0, size);
@@ -51,9 +34,6 @@ public class MarshalQueryableArray<T> implements MarshalQueryable<T> {
             }
             if (componentType == Float.TYPE) {
                 return new PrimitiveArrayFiller() { // from class: android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller.2
-                    AnonymousClass2() {
-                    }
-
                     @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
                     public void fillArray(Object arr, int size, ByteBuffer buffer) {
                         FloatBuffer fb = buffer.asFloatBuffer().get((float[]) float[].class.cast(arr), 0, size);
@@ -63,9 +43,6 @@ public class MarshalQueryableArray<T> implements MarshalQueryable<T> {
             }
             if (componentType == Long.TYPE) {
                 return new PrimitiveArrayFiller() { // from class: android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller.3
-                    AnonymousClass3() {
-                    }
-
                     @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
                     public void fillArray(Object arr, int size, ByteBuffer buffer) {
                         LongBuffer lb = buffer.asLongBuffer().get((long[]) long[].class.cast(arr), 0, size);
@@ -75,9 +52,6 @@ public class MarshalQueryableArray<T> implements MarshalQueryable<T> {
             }
             if (componentType == Double.TYPE) {
                 return new PrimitiveArrayFiller() { // from class: android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller.4
-                    AnonymousClass4() {
-                    }
-
                     @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
                     public void fillArray(Object arr, int size, ByteBuffer buffer) {
                         DoubleBuffer db = buffer.asDoubleBuffer().get((double[]) double[].class.cast(arr), 0, size);
@@ -87,9 +61,6 @@ public class MarshalQueryableArray<T> implements MarshalQueryable<T> {
             }
             if (componentType == Byte.TYPE) {
                 return new PrimitiveArrayFiller() { // from class: android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller.5
-                    AnonymousClass5() {
-                    }
-
                     @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
                     public void fillArray(Object arr, int size, ByteBuffer buffer) {
                         buffer.get((byte[]) byte[].class.cast(arr), 0, size);
@@ -98,60 +69,8 @@ public class MarshalQueryableArray<T> implements MarshalQueryable<T> {
             }
             throw new UnsupportedOperationException("PrimitiveArrayFiller of type " + componentType.getName() + " not supported");
         }
-
-        /* renamed from: android.hardware.camera2.marshal.impl.MarshalQueryableArray$PrimitiveArrayFiller$2 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass2 implements PrimitiveArrayFiller {
-            AnonymousClass2() {
-            }
-
-            @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
-            public void fillArray(Object arr, int size, ByteBuffer buffer) {
-                FloatBuffer fb = buffer.asFloatBuffer().get((float[]) float[].class.cast(arr), 0, size);
-                buffer.position(buffer.position() + (fb.position() * 4));
-            }
-        }
-
-        /* renamed from: android.hardware.camera2.marshal.impl.MarshalQueryableArray$PrimitiveArrayFiller$3 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass3 implements PrimitiveArrayFiller {
-            AnonymousClass3() {
-            }
-
-            @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
-            public void fillArray(Object arr, int size, ByteBuffer buffer) {
-                LongBuffer lb = buffer.asLongBuffer().get((long[]) long[].class.cast(arr), 0, size);
-                buffer.position(buffer.position() + (lb.position() * 8));
-            }
-        }
-
-        /* renamed from: android.hardware.camera2.marshal.impl.MarshalQueryableArray$PrimitiveArrayFiller$4 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass4 implements PrimitiveArrayFiller {
-            AnonymousClass4() {
-            }
-
-            @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
-            public void fillArray(Object arr, int size, ByteBuffer buffer) {
-                DoubleBuffer db = buffer.asDoubleBuffer().get((double[]) double[].class.cast(arr), 0, size);
-                buffer.position(buffer.position() + (db.position() * 8));
-            }
-        }
-
-        /* renamed from: android.hardware.camera2.marshal.impl.MarshalQueryableArray$PrimitiveArrayFiller$5 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass5 implements PrimitiveArrayFiller {
-            AnonymousClass5() {
-            }
-
-            @Override // android.hardware.camera2.marshal.impl.MarshalQueryableArray.PrimitiveArrayFiller
-            public void fillArray(Object arr, int size, ByteBuffer buffer) {
-                buffer.get((byte[]) byte[].class.cast(arr), 0, size);
-            }
-        }
     }
 
-    /* loaded from: classes.dex */
     private class MarshalerArray extends Marshaler<T> {
         private final Class<T> mClass;
         private final Class<?> mComponentClass;

@@ -2,9 +2,9 @@ package com.samsung.android.sume.core.filter.collection;
 
 import com.samsung.android.sume.core.buffer.MediaBuffer;
 import com.samsung.android.sume.core.buffer.MutableMediaBuffer;
-import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda12;
+import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda3;
 import com.samsung.android.sume.core.channel.BufferChannel;
-import com.samsung.android.sume.core.channel.ReceiveChannelRouter$$ExternalSyntheticLambda2;
+import com.samsung.android.sume.core.channel.ReceiveChannelRouter$$ExternalSyntheticLambda3;
 import com.samsung.android.sume.core.descriptor.ParallelDescriptor;
 import com.samsung.android.sume.core.filter.AsyncFilter;
 import com.samsung.android.sume.core.filter.MediaFilter;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class ParallelSharedFilter extends ParallelFilter {
     List<BufferChannel> inChannels;
     List<BufferChannel> outChannels;
@@ -35,14 +35,14 @@ public class ParallelSharedFilter extends ParallelFilter {
         filters.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.collection.ParallelSharedFilter$$ExternalSyntheticLambda3
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                ParallelSharedFilter.this.m8769x3bc28532((MediaFilter) obj);
+                ParallelSharedFilter.this.m9157x3bc28532((MediaFilter) obj);
             }
         });
         return super.addFilter(filters);
     }
 
-    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-ParallelSharedFilter */
-    public /* synthetic */ void m8769x3bc28532(MediaFilter it) {
+    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-ParallelSharedFilter, reason: not valid java name */
+    /* synthetic */ void m9157x3bc28532(MediaFilter it) {
         BufferChannel inChannel = this.channelSupplier.get();
         BufferChannel outChannel = this.channelSupplier.get();
         this.inChannels.add(inChannel);
@@ -58,7 +58,7 @@ public class ParallelSharedFilter extends ParallelFilter {
                 ((BufferChannel) obj).send(MediaBuffer.this);
             }
         });
-        List<MediaBuffer> bufferList = (List) ((Stream) this.outChannels.stream().parallel()).map(new ReceiveChannelRouter$$ExternalSyntheticLambda2()).collect(Collectors.toList());
+        List<MediaBuffer> bufferList = (List) ((Stream) this.outChannels.stream().parallel()).map(new ReceiveChannelRouter$$ExternalSyntheticLambda3()).collect(Collectors.toList());
         if (getDescriptor().getOption().getUseExternalBufferComposer()) {
             BufferComposer composer = (BufferComposer) bufferList.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.collection.ParallelSharedFilter$$ExternalSyntheticLambda1
                 @Override // java.util.function.Predicate
@@ -74,7 +74,7 @@ public class ParallelSharedFilter extends ParallelFilter {
                     extra = ((MediaBuffer) obj).getExtra("composer");
                     return extra;
                 }
-            }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+            }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
             obuf.put(composer.compose(bufferList, null));
         } else {
             obuf.put(MediaBuffer.groupOf(bufferList));

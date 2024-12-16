@@ -11,6 +11,8 @@ import java.util.List;
 public interface IMediaRouter2Manager extends IInterface {
     public static final String DESCRIPTOR = "android.media.IMediaRouter2Manager";
 
+    void invalidateInstance() throws RemoteException;
+
     void notifyDiscoveryPreferenceChanged(String str, RouteDiscoveryPreference routeDiscoveryPreference) throws RemoteException;
 
     void notifyRequestFailed(int i, int i2) throws RemoteException;
@@ -25,7 +27,6 @@ public interface IMediaRouter2Manager extends IInterface {
 
     void notifySessionUpdated(RoutingSessionInfo routingSessionInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaRouter2Manager {
         @Override // android.media.IMediaRouter2Manager
         public void notifySessionCreated(int requestId, RoutingSessionInfo session) throws RemoteException {
@@ -55,14 +56,18 @@ public interface IMediaRouter2Manager extends IInterface {
         public void notifyRequestFailed(int requestId, int reason) throws RemoteException {
         }
 
+        @Override // android.media.IMediaRouter2Manager
+        public void invalidateInstance() throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaRouter2Manager {
+        static final int TRANSACTION_invalidateInstance = 8;
         static final int TRANSACTION_notifyDiscoveryPreferenceChanged = 4;
         static final int TRANSACTION_notifyRequestFailed = 7;
         static final int TRANSACTION_notifyRouteListingPreferenceChange = 5;
@@ -107,6 +112,8 @@ public interface IMediaRouter2Manager extends IInterface {
                     return "notifyRoutesUpdated";
                 case 7:
                     return "notifyRequestFailed";
+                case 8:
+                    return "invalidateInstance";
                 default:
                     return null;
             }
@@ -122,60 +129,59 @@ public interface IMediaRouter2Manager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMediaRouter2Manager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMediaRouter2Manager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMediaRouter2Manager.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    RoutingSessionInfo _arg1 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionCreated(_arg0, _arg1);
+                    return true;
+                case 2:
+                    RoutingSessionInfo _arg02 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionUpdated(_arg02);
+                    return true;
+                case 3:
+                    RoutingSessionInfo _arg03 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifySessionReleased(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    RouteDiscoveryPreference _arg12 = (RouteDiscoveryPreference) data.readTypedObject(RouteDiscoveryPreference.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyDiscoveryPreferenceChanged(_arg04, _arg12);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    RouteListingPreference _arg13 = (RouteListingPreference) data.readTypedObject(RouteListingPreference.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyRouteListingPreferenceChange(_arg05, _arg13);
+                    return true;
+                case 6:
+                    List<MediaRoute2Info> _arg06 = data.createTypedArrayList(MediaRoute2Info.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyRoutesUpdated(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyRequestFailed(_arg07, _arg14);
+                    return true;
+                case 8:
+                    invalidateInstance();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            RoutingSessionInfo _arg1 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionCreated(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            RoutingSessionInfo _arg02 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionUpdated(_arg02);
-                            return true;
-                        case 3:
-                            RoutingSessionInfo _arg03 = (RoutingSessionInfo) data.readTypedObject(RoutingSessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifySessionReleased(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            RouteDiscoveryPreference _arg12 = (RouteDiscoveryPreference) data.readTypedObject(RouteDiscoveryPreference.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyDiscoveryPreferenceChanged(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            RouteListingPreference _arg13 = (RouteListingPreference) data.readTypedObject(RouteListingPreference.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyRouteListingPreferenceChange(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            List<MediaRoute2Info> _arg06 = data.createTypedArrayList(MediaRoute2Info.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyRoutesUpdated(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyRequestFailed(_arg07, _arg14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMediaRouter2Manager {
+        private static class Proxy implements IMediaRouter2Manager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -278,11 +284,22 @@ public interface IMediaRouter2Manager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.media.IMediaRouter2Manager
+            public void invalidateInstance() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IMediaRouter2Manager.DESCRIPTOR);
+                    this.mRemote.transact(8, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 6;
+            return 7;
         }
     }
 }

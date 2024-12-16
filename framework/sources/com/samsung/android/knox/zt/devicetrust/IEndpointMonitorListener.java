@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEndpointMonitorListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.zt.devicetrust.IEndpointMonitorListener";
 
@@ -17,7 +17,6 @@ public interface IEndpointMonitorListener extends IInterface {
 
     void onEventSimplified(int i, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEndpointMonitorListener {
         @Override // com.samsung.android.knox.zt.devicetrust.IEndpointMonitorListener
         public void onEventSimplified(int event, String data) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IEndpointMonitorListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEndpointMonitorListener {
         static final int TRANSACTION_onEvent = 3;
         static final int TRANSACTION_onEventGeneralized = 2;
@@ -86,39 +84,35 @@ public interface IEndpointMonitorListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEndpointMonitorListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEndpointMonitorListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEndpointMonitorListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onEventSimplified(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    onEventGeneralized(_arg02, _arg12);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEvent(_arg03, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onEventSimplified(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            onEventGeneralized(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEvent(_arg03, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IEndpointMonitorListener {
+        private static class Proxy implements IEndpointMonitorListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

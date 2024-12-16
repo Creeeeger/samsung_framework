@@ -11,17 +11,15 @@ import java.lang.ref.WeakReference;
 public final class InputQueue {
     private final LongSparseArray<ActiveInputEvent> mActiveEventArray = new LongSparseArray<>(20);
     private final Pools.Pool<ActiveInputEvent> mActiveInputEventPool = new Pools.SimplePool(20);
-    private final CloseGuard mCloseGuard;
-    private long mPtr;
+    private final CloseGuard mCloseGuard = CloseGuard.get();
+    private long mPtr = nativeInit(new WeakReference(this), Looper.myQueue());
 
-    /* loaded from: classes4.dex */
     public interface Callback {
         void onInputQueueCreated(InputQueue inputQueue);
 
         void onInputQueueDestroyed(InputQueue inputQueue);
     }
 
-    /* loaded from: classes4.dex */
     public interface FinishedInputEventCallback {
         void onFinishedInputEvent(Object obj, boolean z);
     }
@@ -35,10 +33,7 @@ public final class InputQueue {
     private static native long nativeSendMotionEvent(long j, MotionEvent motionEvent);
 
     public InputQueue() {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        this.mPtr = nativeInit(new WeakReference(this), Looper.myQueue());
-        closeGuard.open("InputQueue.dispose");
+        this.mCloseGuard.open("InputQueue.dispose");
     }
 
     protected void finalize() throws Throwable {
@@ -54,16 +49,14 @@ public final class InputQueue {
     }
 
     public void dispose(boolean finalized) {
-        CloseGuard closeGuard = this.mCloseGuard;
-        if (closeGuard != null) {
+        if (this.mCloseGuard != null) {
             if (finalized) {
-                closeGuard.warnIfOpen();
+                this.mCloseGuard.warnIfOpen();
             }
             this.mCloseGuard.close();
         }
-        long j = this.mPtr;
-        if (j != 0) {
-            nativeDispose(j);
+        if (this.mPtr != 0) {
+            nativeDispose(this.mPtr);
             this.mPtr = 0L;
         }
     }
@@ -77,18 +70,16 @@ public final class InputQueue {
         ActiveInputEvent event = obtainActiveInputEvent(token, callback);
         if (e instanceof KeyEvent) {
             id = nativeSendKeyEvent(this.mPtr, (KeyEvent) e, predispatch);
-        } else {
+        } else if (((MotionEvent) e).mNeedWindowOffset) {
             MotionEvent original = (MotionEvent) e;
-            if (original.mNeedWindowOffset) {
-                float offsetX = original.getRawX() - original.getX();
-                float offsetY = original.getRawY() - original.getY();
-                MotionEvent adjustedEvent = MotionEvent.obtain(original, -offsetX, -offsetY);
-                long id2 = nativeSendMotionEvent(this.mPtr, adjustedEvent);
-                adjustedEvent.recycle();
-                id = id2;
-            } else {
-                id = nativeSendMotionEvent(this.mPtr, original);
-            }
+            float offsetX = original.getRawX() - original.getX();
+            float offsetY = original.getRawY() - original.getY();
+            MotionEvent adjustedEvent = MotionEvent.obtain(original, -offsetX, -offsetY);
+            long id2 = nativeSendMotionEvent(this.mPtr, adjustedEvent);
+            adjustedEvent.recycle();
+            id = id2;
+        } else {
+            id = nativeSendMotionEvent(this.mPtr, (MotionEvent) e);
         }
         this.mActiveEventArray.put(id, event);
     }
@@ -118,14 +109,9 @@ public final class InputQueue {
         this.mActiveInputEventPool.release(e);
     }
 
-    /* loaded from: classes4.dex */
-    public final class ActiveInputEvent {
+    private final class ActiveInputEvent {
         public FinishedInputEventCallback mCallback;
         public Object mToken;
-
-        /* synthetic */ ActiveInputEvent(InputQueue inputQueue, ActiveInputEventIA activeInputEventIA) {
-            this();
-        }
 
         private ActiveInputEvent() {
         }

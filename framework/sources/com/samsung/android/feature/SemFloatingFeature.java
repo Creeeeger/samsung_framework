@@ -4,7 +4,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 import java.util.Hashtable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemFloatingFeature implements IFloatingFeature {
     private static final boolean DEFAULT_BOOLEAN_VALUE = false;
     private static final int DEFAULT_INT_VALUE = -1;

@@ -7,21 +7,18 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemExtendedFormat {
     private static final boolean DEBUG = false;
     private static final String SEF_VERSION = "1.19";
     private static final String TAG = "SemExtendedFormat";
 
-    /* loaded from: classes5.dex */
     public static class DataPosition {
         public long length;
         public long offset;
     }
 
-    /* loaded from: classes5.dex */
     public static final class DataType {
         public static final int ANIMATED_GIF_INFO = 2400;
         public static final int AUTO_ENHANCE_FOOD_INFO = 2480;
@@ -193,7 +190,6 @@ public class SemExtendedFormat {
         public static final int WIDE_SELFIE_MOTION_INFO = 2417;
     }
 
-    /* loaded from: classes5.dex */
     public static final class KeyName {
         public static final String ANIMATED_GIF_INFO = "Animated_Gif_Info";
         public static final String AUTO_ENHANCE_FOOD_INFO = "Auto_Enhance_Food_Info";
@@ -326,7 +322,6 @@ public class SemExtendedFormat {
         public static final String WIDE_SELFIE_MOTION_MP4_TEMPLATE = "Wide_Selfie_Motion_MP4_%03d";
     }
 
-    /* loaded from: classes5.dex */
     public static final class Options {
 
         @Deprecated(forRemoval = true, since = "15.5")
@@ -347,19 +342,11 @@ public class SemExtendedFormat {
         public static final int TYPE_WITH_BOX_TAG = 2;
     }
 
-    /* loaded from: classes5.dex */
     public static class SEFDataPosition {
         public long length;
         public long offset;
     }
 
-    /* loaded from: classes5.dex */
-    public static class SEFSubDataPosition {
-        public long length;
-        public long offset;
-    }
-
-    /* loaded from: classes5.dex */
     private static final class SEFViewerPackageName {
         private static final String INTERACTIVESHOT_PACKAGE_NAME = "com.samsung.android.app.interactivepanoramaviewer";
         private static final String MOTIONPANORAMA_PACKAGE_NAME = "com.samsung.android.app.motionpanoramaviewer";
@@ -375,14 +362,14 @@ public class SemExtendedFormat {
             Log.e(TAG, "Invalid file name: " + fileName);
             return false;
         }
-        if (SEFJNI.isSEFFile(fileName) == 0 && QdioJNI.isJPEG(fileName) == -1) {
+        if (SEFJNI.isSEFFile(fileName) == 0) {
             return false;
         }
         return true;
     }
 
     public static boolean isValidFile(ParcelFileDescriptor pfd) throws IOException {
-        if (SEFJNI.isSEFfileDescriptor(pfd) == 0 && QdioJNI.isJPEGfd(pfd) == -1) {
+        if (SEFJNI.isSEFfileDescriptor(pfd) == 0) {
             return false;
         }
         return true;
@@ -424,7 +411,7 @@ public class SemExtendedFormat {
             Log.e(TAG, "Invalid file : " + fileName);
             return false;
         }
-        if (currentTypes.length <= 0 && currentTypes != null) {
+        if (currentTypes.length <= 0) {
             Log.e(TAG, "Invalid file : " + fileName);
             return false;
         }
@@ -448,7 +435,7 @@ public class SemExtendedFormat {
             Log.e(TAG, "Invalid file name: " + fileName);
             return false;
         }
-        if (SEFJNI.isSEFFile(fileName) == 0 && QdioJNI.isJPEG(fileName) == -1) {
+        if (SEFJNI.isSEFFile(fileName) == 0) {
             return false;
         }
         return true;
@@ -501,7 +488,7 @@ public class SemExtendedFormat {
             Log.e(TAG, "Invalid file : " + fileName);
             return false;
         }
-        if (currentTypes.length <= 0 && currentTypes != null) {
+        if (currentTypes.length <= 0) {
             Log.e(TAG, "Invalid file : " + fileName);
             return false;
         }
@@ -885,14 +872,14 @@ public class SemExtendedFormat {
     public static boolean deleteAllData(File sefFile) throws IOException {
         String fileName = sefFile.getCanonicalPath();
         if (fileName != null && fileName.length() > 0) {
-            return (SEFJNI.isSEFFile(fileName) == 0 && QdioJNI.isJPEG(fileName) == 1) ? QdioJNI.DeleteQdioFromFile(fileName) == 1 : SEFJNI.clearSEFData(fileName) == 1;
+            return SEFJNI.clearSEFData(fileName) == 1;
         }
         Log.e(TAG, "Invalid file name: " + fileName);
         return false;
     }
 
     public static boolean deleteAllData(ParcelFileDescriptor pfd) throws IOException {
-        return (SEFJNI.isSEFfileDescriptor(pfd) == 0 && QdioJNI.isJPEGfd(pfd) == 1) ? QdioJNI.deleteQdioFromFileDescriptor(pfd) == 1 : SEFJNI.clearSEFDataFileDescriptor(pfd) == 1;
+        return SEFJNI.clearSEFDataFileDescriptor(pfd) == 1;
     }
 
     public static boolean deleteSEFData(File sefFile, String keyName) throws IOException {
@@ -943,7 +930,7 @@ public class SemExtendedFormat {
     public static boolean deleteAllSEFData(File sefFile, int option) throws IOException {
         String fileName = sefFile.getCanonicalPath();
         if (fileName != null && fileName.length() > 0) {
-            return (SEFJNI.isSEFFile(fileName) == 0 && QdioJNI.isJPEG(fileName) == 1) ? QdioJNI.DeleteQdioFromFile(fileName) == 1 : option == 16 ? SEFJNI.fastClearSEFData(fileName) == 1 : SEFJNI.clearSEFData(fileName) == 1;
+            return option == 16 ? SEFJNI.fastClearSEFData(fileName) == 1 : SEFJNI.clearSEFData(fileName) == 1;
         }
         Log.e(TAG, "Invalid file name: " + fileName);
         return false;
@@ -966,7 +953,6 @@ public class SemExtendedFormat {
     }
 
     public static boolean compact(File sefFile) throws IOException {
-        sefFile.getCanonicalPath();
         if (deleteSEFData(sefFile, KeyName.INVALID_DATA)) {
             return true;
         }
@@ -996,105 +982,93 @@ public class SemExtendedFormat {
         return SEFJNI.listKeyNamesByDataType(fileName, dataType);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0085, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x006a, code lost:
     
-        if (0 == 0) goto L97;
+        if (0 == 0) goto L39;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static byte[] getData(java.io.File r13, java.lang.String r14) throws java.io.IOException {
+    public static byte[] getData(java.io.File r11, java.lang.String r12) throws java.io.IOException {
         /*
-            java.lang.String r0 = r13.getCanonicalPath()
+            java.lang.String r0 = r11.getCanonicalPath()
             java.lang.String r1 = "SemExtendedFormat"
             r2 = 0
-            if (r0 == 0) goto La6
+            if (r0 == 0) goto L8b
             int r3 = r0.length()
             if (r3 > 0) goto L11
-            goto La6
+            goto L8b
         L11:
-            if (r14 == 0) goto L8f
-            int r3 = r14.length()
-            if (r3 > 0) goto L1b
-            goto L8f
-        L1b:
+            if (r12 == 0) goto L74
+            int r3 = r12.length()
+            if (r3 > 0) goto L1a
+            goto L74
+        L1a:
             r1 = 0
             r3 = 0
-            int r4 = com.samsung.android.media.SEFJNI.isSEFFile(r0)
-            if (r4 != 0) goto L34
-            int r4 = com.samsung.android.media.QdioJNI.isJPEG(r0)
-            r5 = 1
-            if (r4 != r5) goto L34
-            com.samsung.android.media.SemExtendedFormat$QdioJPEGData r2 = com.samsung.android.media.QdioJNI.checkAudioInJPEG(r0)
-            r4 = 0
-            byte[] r1 = com.samsung.android.media.QdioJNI.getAudioStreamBuffer(r2, r4)
-            return r1
-        L34:
-            java.io.FileInputStream r4 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            r4.<init>(r0)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            java.io.FileInputStream r4 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            r4.<init>(r0)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
             r3 = r4
-            com.samsung.android.media.SemExtendedFormat$DataPosition r4 = getDataPosition(r13, r14)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            if (r4 != 0) goto L49
-            r3.close()     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            com.samsung.android.media.SemExtendedFormat$DataPosition r4 = getDataPosition(r11, r12)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            if (r4 != 0) goto L31
+            r3.close()     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
             r3.close()
             return r2
-        L49:
-            long r5 = r4.offset     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            long r7 = r4.length     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            long r7 = r7 + r5
-            long r9 = r4.length     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            int r9 = (int) r9     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            byte[] r9 = new byte[r9]     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            r1 = r9
-            r9 = 0
-            int r11 = (r5 > r9 ? 1 : (r5 == r9 ? 0 : -1))
-            if (r11 >= 0) goto L60
-        L5c:
+        L31:
+            long r5 = r4.offset     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            long r7 = r4.length     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            int r7 = (int) r7     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            byte[] r7 = new byte[r7]     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            r1 = r7
+            r7 = 0
+            int r9 = (r5 > r7 ? 1 : (r5 == r7 ? 0 : -1))
+            if (r9 >= 0) goto L45
+        L41:
             r3.close()
             return r2
+        L45:
+            long r9 = r3.skip(r5)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            int r7 = (r9 > r7 ? 1 : (r9 == r7 ? 0 : -1))
+            if (r7 != 0) goto L53
+        L4f:
+            r3.close()
+            return r2
+        L53:
+            int r7 = r3.read(r1)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            if (r7 != 0) goto L5f
+        L5b:
+            r3.close()
+            return r2
+        L5f:
         L60:
-            long r11 = r3.skip(r5)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            int r9 = (r11 > r9 ? 1 : (r11 == r9 ? 0 : -1))
-            if (r9 != 0) goto L6e
-        L6a:
             r3.close()
-            return r2
-        L6e:
-            int r9 = r3.read(r1)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            if (r9 != 0) goto L7a
-        L76:
-            r3.close()
-            return r2
-        L7a:
-        L7b:
-            r3.close()
-            goto L88
-        L7f:
+            goto L6d
+        L64:
             r2 = move-exception
-            goto L89
-        L81:
+            goto L6e
+        L66:
             r2 = move-exception
-            r2.printStackTrace()     // Catch: java.lang.Throwable -> L7f
-            if (r3 == 0) goto L88
-            goto L7b
-        L88:
+            r2.printStackTrace()     // Catch: java.lang.Throwable -> L64
+            if (r3 == 0) goto L6d
+            goto L60
+        L6d:
             return r1
-        L89:
-            if (r3 == 0) goto L8e
+        L6e:
+            if (r3 == 0) goto L73
             r3.close()
-        L8e:
+        L73:
             throw r2
-        L8f:
+        L74:
             java.lang.StringBuilder r3 = new java.lang.StringBuilder
             r3.<init>()
             java.lang.String r4 = "Invalid key name: "
             java.lang.StringBuilder r3 = r3.append(r4)
-            java.lang.StringBuilder r3 = r3.append(r14)
+            java.lang.StringBuilder r3 = r3.append(r12)
             java.lang.String r3 = r3.toString()
             android.util.Log.e(r1, r3)
             return r2
-        La6:
+        L8b:
             java.lang.StringBuilder r3 = new java.lang.StringBuilder
             r3.<init>()
             java.lang.String r4 = "Invalid file name: "
@@ -1107,95 +1081,83 @@ public class SemExtendedFormat {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.SemExtendedFormat.getData(java.io.File, java.lang.String):byte[]");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x0079, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x005e, code lost:
     
-        if (0 == 0) goto L87;
+        if (0 == 0) goto L35;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static byte[] getData(android.os.ParcelFileDescriptor r12, java.lang.String r13) throws java.io.IOException {
+    public static byte[] getData(android.os.ParcelFileDescriptor r10, java.lang.String r11) throws java.io.IOException {
         /*
             r0 = 0
-            if (r13 == 0) goto L83
-            int r1 = r13.length()
-            if (r1 > 0) goto Lb
-            goto L83
-        Lb:
+            if (r11 == 0) goto L68
+            int r1 = r11.length()
+            if (r1 > 0) goto La
+            goto L68
+        La:
             r1 = 0
             r2 = 0
-            int r3 = com.samsung.android.media.SEFJNI.isSEFfileDescriptor(r12)
-            if (r3 != 0) goto L24
-            int r3 = com.samsung.android.media.QdioJNI.isJPEGfd(r12)
-            r4 = 1
-            if (r3 != r4) goto L24
-            com.samsung.android.media.SemExtendedFormat$QdioJPEGData r0 = com.samsung.android.media.QdioJNI.checkAudioInJPEGfd(r12)
-            r3 = 0
-            byte[] r1 = com.samsung.android.media.QdioJNI.getAudioStreamBuffer(r0, r3)
-            return r1
-        L24:
-            java.io.FileInputStream r3 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            java.io.FileDescriptor r4 = r12.getFileDescriptor()     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            r3.<init>(r4)     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
+            java.io.FileInputStream r3 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            java.io.FileDescriptor r4 = r10.getFileDescriptor()     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            r3.<init>(r4)     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
             r2 = r3
-            com.samsung.android.media.SemExtendedFormat$DataPosition r3 = getDataPosition(r12, r13)     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            if (r3 != 0) goto L3d
-            r2.close()     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
+            com.samsung.android.media.SemExtendedFormat$DataPosition r3 = getDataPosition(r10, r11)     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            if (r3 != 0) goto L25
+            r2.close()     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
             r2.close()
             return r0
-        L3d:
-            long r4 = r3.offset     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            long r6 = r3.length     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            long r6 = r6 + r4
-            long r8 = r3.length     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            int r8 = (int) r8     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            byte[] r8 = new byte[r8]     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            r1 = r8
-            r8 = 0
-            int r10 = (r4 > r8 ? 1 : (r4 == r8 ? 0 : -1))
-            if (r10 >= 0) goto L54
-        L50:
+        L25:
+            long r4 = r3.offset     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            long r6 = r3.length     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            int r6 = (int) r6     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            byte[] r6 = new byte[r6]     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            r1 = r6
+            r6 = 0
+            int r8 = (r4 > r6 ? 1 : (r4 == r6 ? 0 : -1))
+            if (r8 >= 0) goto L39
+        L35:
             r2.close()
             return r0
+        L39:
+            long r8 = r2.skip(r4)     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            int r6 = (r8 > r6 ? 1 : (r8 == r6 ? 0 : -1))
+            if (r6 != 0) goto L47
+        L43:
+            r2.close()
+            return r0
+        L47:
+            int r6 = r2.read(r1)     // Catch: java.lang.Throwable -> L58 java.io.IOException -> L5a
+            if (r6 != 0) goto L53
+        L4f:
+            r2.close()
+            return r0
+        L53:
         L54:
-            long r10 = r2.skip(r4)     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            int r8 = (r10 > r8 ? 1 : (r10 == r8 ? 0 : -1))
-            if (r8 != 0) goto L62
-        L5e:
             r2.close()
-            return r0
-        L62:
-            int r8 = r2.read(r1)     // Catch: java.lang.Throwable -> L73 java.lang.Exception -> L75
-            if (r8 != 0) goto L6e
-        L6a:
-            r2.close()
-            return r0
-        L6e:
-        L6f:
-            r2.close()
-            goto L7c
-        L73:
+            goto L61
+        L58:
             r0 = move-exception
-            goto L7d
-        L75:
+            goto L62
+        L5a:
             r0 = move-exception
-            r0.printStackTrace()     // Catch: java.lang.Throwable -> L73
-            if (r2 == 0) goto L7c
-            goto L6f
-        L7c:
+            r0.printStackTrace()     // Catch: java.lang.Throwable -> L58
+            if (r2 == 0) goto L61
+            goto L54
+        L61:
             return r1
-        L7d:
-            if (r2 == 0) goto L82
+        L62:
+            if (r2 == 0) goto L67
             r2.close()
-        L82:
+        L67:
             throw r0
-        L83:
+        L68:
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
             java.lang.String r2 = "Invalid key name: "
             java.lang.StringBuilder r1 = r1.append(r2)
-            java.lang.StringBuilder r1 = r1.append(r13)
+            java.lang.StringBuilder r1 = r1.append(r11)
             java.lang.String r1 = r1.toString()
             java.lang.String r2 = "SemExtendedFormat"
             android.util.Log.e(r2, r1)
@@ -1251,23 +1213,13 @@ public class SemExtendedFormat {
             return null;
         }
         DataPosition position = new DataPosition();
-        if (SEFJNI.isSEFFile(fileName) == 0 && QdioJNI.isJPEG(fileName) == 1) {
-            long[] posArray = QdioJNI.getAudioDataPositionArray(fileName);
-            if (posArray == null) {
-                Log.w(TAG, "No Sound data is found in file.");
-                return null;
-            }
-            position.offset = posArray[0];
-            position.length = posArray[1];
-            return position;
-        }
-        long[] posArray2 = SEFJNI.getSEFDataPosition(fileName, keyName);
-        if (posArray2 == null) {
+        long[] posArray = SEFJNI.getSEFDataPosition(fileName, keyName);
+        if (posArray == null) {
             Log.w(TAG, "No SEF data is found in file.");
             return null;
         }
-        position.offset = posArray2[0];
-        position.length = posArray2[1];
+        position.offset = posArray[0];
+        position.length = posArray[1];
         return position;
     }
 
@@ -1277,23 +1229,13 @@ public class SemExtendedFormat {
             return null;
         }
         DataPosition position = new DataPosition();
-        if (SEFJNI.isSEFfileDescriptor(pfd) == 0 && QdioJNI.isJPEGfd(pfd) == 1) {
-            long[] posArray = QdioJNI.getAudioDataPositionArrayFd(pfd);
-            if (posArray == null) {
-                Log.w(TAG, "No Sound data is found in file.");
-                return null;
-            }
-            position.offset = posArray[0];
-            position.length = posArray[1];
-            return position;
-        }
-        long[] posArray2 = SEFJNI.getSEFDataPositionFileDescriptor(pfd, keyName);
-        if (posArray2 == null) {
+        long[] posArray = SEFJNI.getSEFDataPositionFileDescriptor(pfd, keyName);
+        if (posArray == null) {
             Log.w(TAG, "No SEF data is found in file.");
             return null;
         }
-        position.offset = posArray2[0];
-        position.length = posArray2[1];
+        position.offset = posArray[0];
+        position.length = posArray[1];
         return position;
     }
 
@@ -1306,9 +1248,6 @@ public class SemExtendedFormat {
         if (keyName == null || keyName.length() <= 0) {
             Log.e(TAG, "Invalid key name: " + keyName);
             return null;
-        }
-        if (SEFJNI.isSEFFile(fileName) == 0 && QdioJNI.isJPEG(fileName) == 1) {
-            return QdioJNI.getAudioDataPositionArray(fileName);
         }
         long[] PositionData = SEFJNI.getSEFDataPosition(fileName, keyName);
         if (PositionData == null) {
@@ -1389,125 +1328,93 @@ public class SemExtendedFormat {
         return posArray;
     }
 
-    public static SEFSubDataPosition getSEFSubDataPosition(String fileName, String keyName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            return null;
-        }
-        if (keyName == null || keyName.length() <= 0) {
-            Log.e(TAG, "Invalid key name: " + keyName);
-            return null;
-        }
-        long[] posArray = SEFJNI.getSEFSubDataPosition(fileName, keyName);
-        if (posArray == null) {
-            Log.w(TAG, "No SEF sub data is found in file.");
-            return null;
-        }
-        SEFSubDataPosition position = new SEFSubDataPosition();
-        position.offset = posArray[0];
-        position.length = posArray[1];
-        return position;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0085, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x006a, code lost:
     
-        if (0 == 0) goto L97;
+        if (0 == 0) goto L39;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static byte[] getSEFData(java.io.File r13, java.lang.String r14) throws java.io.IOException {
+    public static byte[] getSEFData(java.io.File r11, java.lang.String r12) throws java.io.IOException {
         /*
-            java.lang.String r0 = r13.getCanonicalPath()
+            java.lang.String r0 = r11.getCanonicalPath()
             java.lang.String r1 = "SemExtendedFormat"
             r2 = 0
-            if (r0 == 0) goto La6
+            if (r0 == 0) goto L8b
             int r3 = r0.length()
             if (r3 > 0) goto L11
-            goto La6
+            goto L8b
         L11:
-            if (r14 == 0) goto L8f
-            int r3 = r14.length()
-            if (r3 > 0) goto L1b
-            goto L8f
-        L1b:
+            if (r12 == 0) goto L74
+            int r3 = r12.length()
+            if (r3 > 0) goto L1a
+            goto L74
+        L1a:
             r1 = 0
             r3 = 0
-            int r4 = com.samsung.android.media.SEFJNI.isSEFFile(r0)
-            if (r4 != 0) goto L34
-            int r4 = com.samsung.android.media.QdioJNI.isJPEG(r0)
-            r5 = 1
-            if (r4 != r5) goto L34
-            com.samsung.android.media.SemExtendedFormat$QdioJPEGData r2 = com.samsung.android.media.QdioJNI.checkAudioInJPEG(r0)
-            r4 = 0
-            byte[] r1 = com.samsung.android.media.QdioJNI.getAudioStreamBuffer(r2, r4)
-            return r1
-        L34:
-            java.io.FileInputStream r4 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            r4.<init>(r0)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            java.io.FileInputStream r4 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            r4.<init>(r0)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
             r3 = r4
-            com.samsung.android.media.SemExtendedFormat$SEFDataPosition r4 = getSEFDataPosition(r0, r14)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            if (r4 != 0) goto L49
-            r3.close()     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
+            com.samsung.android.media.SemExtendedFormat$SEFDataPosition r4 = getSEFDataPosition(r0, r12)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            if (r4 != 0) goto L31
+            r3.close()     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
             r3.close()
             return r2
-        L49:
-            long r5 = r4.offset     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            long r7 = r4.length     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            long r7 = r7 + r5
-            long r9 = r4.length     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            int r9 = (int) r9     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            byte[] r9 = new byte[r9]     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            r1 = r9
-            r9 = 0
-            int r11 = (r5 > r9 ? 1 : (r5 == r9 ? 0 : -1))
-            if (r11 >= 0) goto L60
-        L5c:
+        L31:
+            long r5 = r4.offset     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            long r7 = r4.length     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            int r7 = (int) r7     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            byte[] r7 = new byte[r7]     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            r1 = r7
+            r7 = 0
+            int r9 = (r5 > r7 ? 1 : (r5 == r7 ? 0 : -1))
+            if (r9 >= 0) goto L45
+        L41:
             r3.close()
             return r2
+        L45:
+            long r9 = r3.skip(r5)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            int r7 = (r9 > r7 ? 1 : (r9 == r7 ? 0 : -1))
+            if (r7 != 0) goto L53
+        L4f:
+            r3.close()
+            return r2
+        L53:
+            int r7 = r3.read(r1)     // Catch: java.lang.Throwable -> L64 java.io.IOException -> L66
+            if (r7 != 0) goto L5f
+        L5b:
+            r3.close()
+            return r2
+        L5f:
         L60:
-            long r11 = r3.skip(r5)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            int r9 = (r11 > r9 ? 1 : (r11 == r9 ? 0 : -1))
-            if (r9 != 0) goto L6e
-        L6a:
             r3.close()
-            return r2
-        L6e:
-            int r9 = r3.read(r1)     // Catch: java.lang.Throwable -> L7f java.lang.Exception -> L81
-            if (r9 != 0) goto L7a
-        L76:
-            r3.close()
-            return r2
-        L7a:
-        L7b:
-            r3.close()
-            goto L88
-        L7f:
+            goto L6d
+        L64:
             r2 = move-exception
-            goto L89
-        L81:
+            goto L6e
+        L66:
             r2 = move-exception
-            r2.printStackTrace()     // Catch: java.lang.Throwable -> L7f
-            if (r3 == 0) goto L88
-            goto L7b
-        L88:
+            r2.printStackTrace()     // Catch: java.lang.Throwable -> L64
+            if (r3 == 0) goto L6d
+            goto L60
+        L6d:
             return r1
-        L89:
-            if (r3 == 0) goto L8e
+        L6e:
+            if (r3 == 0) goto L73
             r3.close()
-        L8e:
+        L73:
             throw r2
-        L8f:
+        L74:
             java.lang.StringBuilder r3 = new java.lang.StringBuilder
             r3.<init>()
             java.lang.String r4 = "Invalid key name: "
             java.lang.StringBuilder r3 = r3.append(r4)
-            java.lang.StringBuilder r3 = r3.append(r14)
+            java.lang.StringBuilder r3 = r3.append(r12)
             java.lang.String r3 = r3.toString()
             android.util.Log.e(r1, r3)
             return r2
-        La6:
+        L8b:
             java.lang.StringBuilder r3 = new java.lang.StringBuilder
             r3.<init>()
             java.lang.String r4 = "Invalid file name: "
@@ -1520,99 +1427,97 @@ public class SemExtendedFormat {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.SemExtendedFormat.getSEFData(java.io.File, java.lang.String):byte[]");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x0069, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0066, code lost:
     
-        if (0 == 0) goto L87;
+        if (0 == 0) goto L39;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static byte[] getSEFData(java.lang.String r12, java.lang.String r13) throws java.io.IOException {
+    public static byte[] getSEFData(java.lang.String r10, java.lang.String r11) throws java.io.IOException {
         /*
             java.lang.String r0 = "SemExtendedFormat"
             r1 = 0
-            if (r12 == 0) goto L8a
-            int r2 = r12.length()
+            if (r10 == 0) goto L87
+            int r2 = r10.length()
             if (r2 > 0) goto Ld
-            goto L8a
+            goto L87
         Ld:
-            if (r13 == 0) goto L73
-            int r2 = r13.length()
+            if (r11 == 0) goto L70
+            int r2 = r11.length()
             if (r2 > 0) goto L16
-            goto L73
+            goto L70
         L16:
             r0 = 0
             r2 = 0
-            java.io.FileInputStream r3 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            r3.<init>(r12)     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
+            java.io.FileInputStream r3 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
+            r3.<init>(r10)     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
             r2 = r3
-            com.samsung.android.media.SemExtendedFormat$SEFDataPosition r3 = getSEFDataPosition(r12, r13)     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
+            com.samsung.android.media.SemExtendedFormat$SEFDataPosition r3 = getSEFDataPosition(r10, r11)     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
             if (r3 != 0) goto L2d
-            r2.close()     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
+            r2.close()     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
             r2.close()
             return r1
         L2d:
-            long r4 = r3.offset     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            long r6 = r3.length     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            long r6 = r6 + r4
-            long r8 = r3.length     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            int r8 = (int) r8     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            byte[] r8 = new byte[r8]     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            r0 = r8
-            r8 = 0
-            int r10 = (r4 > r8 ? 1 : (r4 == r8 ? 0 : -1))
-            if (r10 >= 0) goto L44
-        L40:
+            long r4 = r3.offset     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
+            long r6 = r3.length     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
+            int r6 = (int) r6     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
+            byte[] r6 = new byte[r6]     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
+            r0 = r6
+            r6 = 0
+            int r8 = (r4 > r6 ? 1 : (r4 == r6 ? 0 : -1))
+            if (r8 >= 0) goto L41
+        L3d:
             r2.close()
             return r1
-        L44:
-            long r10 = r2.skip(r4)     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            int r8 = (r10 > r8 ? 1 : (r10 == r8 ? 0 : -1))
-            if (r8 != 0) goto L52
-        L4e:
+        L41:
+            long r8 = r2.skip(r4)     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
+            int r6 = (r8 > r6 ? 1 : (r8 == r6 ? 0 : -1))
+            if (r6 != 0) goto L4f
+        L4b:
             r2.close()
             return r1
-        L52:
-            int r8 = r2.read(r0)     // Catch: java.lang.Throwable -> L63 java.lang.Exception -> L65
-            if (r8 != 0) goto L5e
-        L5a:
+        L4f:
+            int r6 = r2.read(r0)     // Catch: java.lang.Throwable -> L60 java.io.IOException -> L62
+            if (r6 != 0) goto L5b
+        L57:
             r2.close()
             return r1
-        L5e:
-        L5f:
+        L5b:
+        L5c:
             r2.close()
-            goto L6c
-        L63:
+            goto L69
+        L60:
             r1 = move-exception
-            goto L6d
-        L65:
+            goto L6a
+        L62:
             r1 = move-exception
-            r1.printStackTrace()     // Catch: java.lang.Throwable -> L63
-            if (r2 == 0) goto L6c
-            goto L5f
-        L6c:
+            r1.printStackTrace()     // Catch: java.lang.Throwable -> L60
+            if (r2 == 0) goto L69
+            goto L5c
+        L69:
             return r0
-        L6d:
-            if (r2 == 0) goto L72
+        L6a:
+            if (r2 == 0) goto L6f
             r2.close()
-        L72:
+        L6f:
             throw r1
-        L73:
+        L70:
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
             java.lang.String r3 = "Invalid key name: "
             java.lang.StringBuilder r2 = r2.append(r3)
-            java.lang.StringBuilder r2 = r2.append(r13)
+            java.lang.StringBuilder r2 = r2.append(r11)
             java.lang.String r2 = r2.toString()
             android.util.Log.e(r0, r2)
             return r1
-        L8a:
+        L87:
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
             java.lang.String r3 = "Invalid file name: "
             java.lang.StringBuilder r2 = r2.append(r3)
-            java.lang.StringBuilder r2 = r2.append(r12)
+            java.lang.StringBuilder r2 = r2.append(r10)
             java.lang.String r2 = r2.toString()
             android.util.Log.e(r0, r2)
             return r1
@@ -1753,236 +1658,43 @@ public class SemExtendedFormat {
         return SEFJNI.copyAllSEFData(srcFileName, dstFileName);
     }
 
-    /* loaded from: classes5.dex */
-    public static class AudioJPEGData {
-        public String filename;
-        public ArrayList startOffset = new ArrayList();
-        public ArrayList endOffset = new ArrayList();
-        public int audio_count = 0;
-
-        private void resetAudioJpegData() {
-            this.startOffset.clear();
-            this.endOffset.clear();
-            this.audio_count = 0;
-            this.filename = null;
-        }
-
-        public String getFileName() {
-            return this.filename;
-        }
-
-        public int getAudioListSize() {
-            return this.audio_count;
-        }
-
-        public int getStartOffset(int idx) {
-            if (idx < 0 || idx > this.startOffset.size()) {
-                return 0;
-            }
-            return ((Integer) this.startOffset.get(idx)).intValue();
-        }
-
-        public int getLength(int idx) {
-            if (idx < 0 || idx > this.endOffset.size()) {
-                return 0;
-            }
-            return ((Integer) this.endOffset.get(idx)).intValue() - ((Integer) this.startOffset.get(idx)).intValue();
-        }
-
-        public AudioJPEGData() {
-            resetAudioJpegData();
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static class QdioJPEGData {
-        public String filename;
-        public ArrayList startOffset = new ArrayList();
-        public ArrayList endOffset = new ArrayList();
-        public int audio_count = 0;
-
-        private void resetQdioJpegData() {
-            this.startOffset.clear();
-            this.endOffset.clear();
-            this.audio_count = 0;
-            this.filename = null;
-        }
-
-        public String getFileName() {
-            return this.filename;
-        }
-
-        public int getAudioListSize() {
-            return this.audio_count;
-        }
-
-        public int getStartOffset(int idx) {
-            if (idx < 0 || idx > this.startOffset.size()) {
-                return 0;
-            }
-            return ((Integer) this.startOffset.get(idx)).intValue();
-        }
-
-        public int getLength(int idx) {
-            if (idx < 0 || idx > this.endOffset.size()) {
-                return 0;
-            }
-            return ((Integer) this.endOffset.get(idx)).intValue() - ((Integer) this.startOffset.get(idx)).intValue();
-        }
-
-        public QdioJPEGData() {
-            resetQdioJpegData();
-        }
-    }
-
-    public static int saveAudioJPEG(String fileName, byte[] audiostream) {
-        return saveAudioJPEG(fileName, KeyName.SOUND_SHOT_WAVE, audiostream);
-    }
-
-    public static int saveAudioJPEG(String fileName, String keyName, byte[] audioStream) {
-        if (fileName == null || audioStream == null || audioStream.length <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            if (audioStream != null) {
-                Log.e(TAG, "saveAudioJPEG input parameter is null :  audioStream.length = " + audioStream.length);
-                return 0;
-            }
-            Log.e(TAG, "saveAudioJPEG input parameter is null ");
-            return 0;
-        }
-        return SEFJNI.saveAudioJPEG(fileName, audioStream, audioStream.length, keyName, keyName.length());
-    }
-
-    public static int deleteAudioData(String fileName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            return 0;
-        }
-        return SEFJNI.deleteQdioData(fileName, KeyName.SOUND_SHOT_WAVE, KeyName.SOUND_SHOT_WAVE.length());
-    }
-
-    public static int deleteQdioData(String fileName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            return 0;
-        }
-        return SEFJNI.deleteQdioData(fileName, KeyName.SOUND_SHOT_WAVE, KeyName.SOUND_SHOT_WAVE.length());
-    }
-
-    public static int clearAudioData(String fileName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            return 0;
-        }
-        return SEFJNI.clearQdioData(fileName);
-    }
-
-    public static int clearQdioData(String fileName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            return 0;
-        }
-        return SEFJNI.clearQdioData(fileName);
-    }
-
-    public static AudioJPEGData getAudioDataInJPEG(String fileName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            return null;
-        }
-        return QdioJNI.getAudioDataInJPEG(fileName);
-    }
-
-    public static QdioJPEGData checkAudioInJPEG(String fileName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-            return null;
-        }
-        return QdioJNI.checkAudioInJPEG(fileName);
-    }
-
-    public static byte[] getAudioStreamBuffer(AudioJPEGData qdioJpegData, int index) throws IOException {
-        return QdioJNI.getAudioStreamBuffer(qdioJpegData, index);
-    }
-
-    public static byte[] getAudioStreamBuffer(QdioJPEGData qdioJpegData, int index) throws IOException {
-        return QdioJNI.getAudioStreamBuffer(qdioJpegData, index);
-    }
-
-    public static int isAudioJPEG(String fileName) {
-        return QdioJNI.isJPEG(fileName);
-    }
-
-    public static int isJPEG(String fileName) {
-        return QdioJNI.isJPEG(fileName);
-    }
-
-    public static int copyAudioData(String srcFileName, String dstFileName) {
-        if (srcFileName == null || srcFileName.length() <= 0) {
-            Log.e(TAG, "Invalid src file name: " + srcFileName);
-            return 0;
-        }
-        if (dstFileName == null || dstFileName.length() <= 0) {
-            Log.e(TAG, "Invalid dst file name: " + dstFileName);
-            return 0;
-        }
-        return QdioJNI.copyAdioInJPEGtoPNG(srcFileName, dstFileName);
-    }
-
-    public static int copyAdioInJPEGtoPNG(String srcFileName, String dstFileName) {
-        if (srcFileName == null || srcFileName.length() <= 0) {
-            Log.e(TAG, "Invalid src file name: " + srcFileName);
-            return 0;
-        }
-        if (dstFileName == null || dstFileName.length() <= 0) {
-            Log.e(TAG, "Invalid dst file name: " + dstFileName);
-            return 0;
-        }
-        return QdioJNI.copyAdioInJPEGtoPNG(srcFileName, dstFileName);
-    }
-
-    public static void showSEFDataList(String fileName) {
-        if (fileName == null || fileName.length() <= 0) {
-            Log.e(TAG, "Invalid file name: " + fileName);
-        }
-        SEFJNI.isSEFFile(fileName);
-    }
-
     public static void convertImageToMP4(String srcPath, String targetPath) {
-        new File(srcPath);
-        int type = getMajorDataType(srcPath);
-        switch (type) {
-            case 2608:
-                MotionPhotoConverter.getInstance().convertToMp4(srcPath, targetPath);
-                return;
-            default:
-                Log.e(TAG, "This type of file is not yet supported. type=" + type);
-                return;
+        File sefFile = new File(srcPath);
+        if (sefFile.exists()) {
+            int type = getMajorDataType(srcPath);
+            switch (type) {
+                case 2608:
+                    MotionPhotoConverter.getInstance().convertToMp4(srcPath, targetPath);
+                    break;
+                default:
+                    Log.e(TAG, "This type of file is not yet supported. type=" + type);
+                    break;
+            }
         }
     }
 
     public static boolean isMp4ConversionSupported(Context context, String srcPath) {
-        new StringBuffer("");
-        new File(srcPath);
         int type = getMajorDataType(srcPath);
         switch (type) {
             case 2048:
                 Log.i(TAG, "SoundNShot is not supported from P OS. So, MP4 Conversion for SoundNShot is removed from Q OS");
-                return false;
+                break;
             case 2256:
                 Log.i(TAG, "VirtualShot is not supported from R OS. So, MP4 Conversion for VirtualShot is removed from R OS");
-                return false;
+                break;
             case DataType.PANORAMA_SHOT_INFO /* 2272 */:
                 Log.i(TAG, "MotionPanoramaShot is not supported from R OS. So, MP4 Conversion for MotionPanoramaShot is removed from R OS");
-                return false;
+                break;
             case DataType.WIDE_SELFIE_INFO /* 2416 */:
                 Log.i(TAG, "MotionWideSelfie is not supported from R OS. So, MP4 Conversion for MotionWideSelfie is removed from R OS");
-                return false;
+                break;
             case 2608:
-                return true;
+                break;
             default:
                 Log.e(TAG, "This type of file is not yet supported. type=" + type);
-                return false;
+                break;
         }
+        return false;
     }
 
     private static boolean isViewerInstalled(Context mContext, String name) {

@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellSignalStrengthWcdma extends CellSignalStrength implements Parcelable {
     private static final boolean DBG = false;
     private static final String DEFAULT_LEVEL_CALCULATION_METHOD = "rssi";
@@ -36,14 +36,13 @@ public final class CellSignalStrengthWcdma extends CellSignalStrength implements
     private static final int[] sRscpThresholds = {-115, -105, -95, -85};
     private static final CellSignalStrengthWcdma sInvalid = new CellSignalStrengthWcdma();
     public static final Parcelable.Creator<CellSignalStrengthWcdma> CREATOR = new Parcelable.Creator<CellSignalStrengthWcdma>() { // from class: android.telephony.CellSignalStrengthWcdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthWcdma createFromParcel(Parcel in) {
             return new CellSignalStrengthWcdma(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthWcdma[] newArray(int size) {
             return new CellSignalStrengthWcdma[size];
@@ -51,12 +50,7 @@ public final class CellSignalStrengthWcdma extends CellSignalStrength implements
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface LevelCalculationMethod {
-    }
-
-    /* synthetic */ CellSignalStrengthWcdma(Parcel parcel, CellSignalStrengthWcdmaIA cellSignalStrengthWcdmaIA) {
-        this(parcel);
     }
 
     public CellSignalStrengthWcdma() {
@@ -143,8 +137,7 @@ public final class CellSignalStrengthWcdma extends CellSignalStrength implements
         }
         switch (c) {
             case 0:
-                int i = this.mRscp;
-                if (i < -120 || i > -24) {
+                if (this.mRscp < -120 || this.mRscp > -24) {
                     this.mLevel = 0;
                     return;
                 }
@@ -160,8 +153,7 @@ public final class CellSignalStrengthWcdma extends CellSignalStrength implements
             case 2:
                 break;
         }
-        int i2 = this.mRssi;
-        if (i2 < -113 || i2 > -51) {
+        if (this.mRssi < -113 || this.mRssi > -51) {
             this.mLevel = 0;
             return;
         }
@@ -173,18 +165,12 @@ public final class CellSignalStrengthWcdma extends CellSignalStrength implements
 
     @Override // android.telephony.CellSignalStrength
     public int getDbm() {
-        int i = this.mRscp;
-        return i != Integer.MAX_VALUE ? i : this.mRssi;
+        return this.mRscp != Integer.MAX_VALUE ? this.mRscp : this.mRssi;
     }
 
     @Override // android.telephony.CellSignalStrength
     public int getAsuLevel() {
-        int i = this.mRscp;
-        if (i != Integer.MAX_VALUE) {
-            return getAsuFromRscpDbm(i);
-        }
-        int i2 = this.mRssi;
-        return i2 != Integer.MAX_VALUE ? getAsuFromRssiDbm(i2) : getAsuFromRscpDbm(Integer.MAX_VALUE);
+        return this.mRscp != Integer.MAX_VALUE ? getAsuFromRscpDbm(this.mRscp) : this.mRssi != Integer.MAX_VALUE ? getAsuFromRssiDbm(this.mRssi) : getAsuFromRscpDbm(Integer.MAX_VALUE);
     }
 
     public int getRssi() {
@@ -246,23 +232,6 @@ public final class CellSignalStrengthWcdma extends CellSignalStrength implements
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.CellSignalStrengthWcdma$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthWcdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthWcdma createFromParcel(Parcel in) {
-            return new CellSignalStrengthWcdma(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthWcdma[] newArray(int size) {
-            return new CellSignalStrengthWcdma[size];
-        }
     }
 
     private static void log(String s) {

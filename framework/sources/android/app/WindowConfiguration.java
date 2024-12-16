@@ -1,6 +1,7 @@
 package android.app;
 
 import android.app.admin.DevicePolicyResources;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.hardware.display.SemWifiDisplayParameter;
 import android.hardware.input.KeyboardLayout;
@@ -15,6 +16,8 @@ import android.view.Surface;
 import com.samsung.android.rune.CoreRune;
 import com.samsung.android.wallpaperbackup.GenerateXML;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 /* loaded from: classes.dex */
@@ -29,14 +32,13 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     private static final int ALWAYS_ON_TOP_ON = 1;
     private static final int ALWAYS_ON_TOP_UNDEFINED = 0;
     public static final Parcelable.Creator<WindowConfiguration> CREATOR = new Parcelable.Creator<WindowConfiguration>() { // from class: android.app.WindowConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowConfiguration createFromParcel(Parcel in) {
             return new WindowConfiguration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowConfiguration[] newArray(int size) {
             return new WindowConfiguration[size];
@@ -88,8 +90,7 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     public static final int WINDOW_CONFIG_BOUNDS = 1;
     public static final int WINDOW_CONFIG_COMPAT_SANDBOX = 33554432;
     public static final int WINDOW_CONFIG_DEX_TASK_DOCKING = 16777216;
-    public static final int WINDOW_CONFIG_DISPLAY_ROTATION = 256;
-    public static final int WINDOW_CONFIG_DISPLAY_WINDOWING_MODE = 128;
+    public static final int WINDOW_CONFIG_DISPLAY_ROTATION = 128;
     public static final int WINDOW_CONFIG_EMBED_ACTIVITY_MODE = 8388608;
     public static final int WINDOW_CONFIG_FLEX_PANEL_MODE = 524288;
     public static final int WINDOW_CONFIG_FREEFORM_TASK_PINNING = 4194304;
@@ -106,9 +107,9 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     private Rect mCompatSandboxBounds;
     private int mCompatSandboxFlags;
     private float mCompatSandboxScale;
+    private Rect mCompatSandboxScaledBounds;
     private int mDexTaskDockingState;
     private int mDisplayRotation;
-    private int mDisplayWindowingMode;
     private int mEmbedActivityMode;
     private int mFlexPanelMode;
     private int mFreeformTaskPinningState;
@@ -120,52 +121,39 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     private int mStage;
     private int mWindowingMode;
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ActivityType {
     }
 
-    /* loaded from: classes.dex */
     private @interface AlwaysOnTop {
     }
 
-    /* loaded from: classes.dex */
     public @interface DexTaskDocking {
     }
 
-    /* loaded from: classes.dex */
     public @interface EmbedActivityMode {
     }
 
-    /* loaded from: classes.dex */
     private @interface FlexPanelMode {
     }
 
-    /* loaded from: classes.dex */
     public @interface FreeformTaskPinning {
     }
 
-    /* loaded from: classes.dex */
     public @interface FreeformTranslucent {
     }
 
-    /* loaded from: classes.dex */
     public @interface StagePosition {
     }
 
-    /* loaded from: classes.dex */
     public @interface StageType {
     }
 
-    /* loaded from: classes.dex */
     public @interface WindowConfig {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface WindowingMode {
-    }
-
-    /* synthetic */ WindowConfiguration(Parcel parcel, WindowConfigurationIA windowConfigurationIA) {
-        this(parcel);
     }
 
     public void setPopOverState(int state) {
@@ -173,8 +161,7 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public boolean isPopOver() {
-        int i = this.mPopOverState;
-        return i == 1 || i == 3;
+        return this.mPopOverState == 1 || this.mPopOverState == 3;
     }
 
     public boolean isPopOverWithoutOutlineEffect() {
@@ -197,7 +184,7 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public void setOverlappingWithCutout(boolean overlappingWithCutout) {
-        this.mOverlappingWithCutout |= overlappingWithCutout;
+        this.mOverlappingWithCutout = overlappingWithCutout;
     }
 
     public boolean isOverlappingWithCutout() {
@@ -236,6 +223,14 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         }
     }
 
+    public void setFreeformTranslucent(int translucent) {
+        this.mFreeformTranslucent = translucent;
+    }
+
+    public int getFreeformTranslucent() {
+        return this.mFreeformTranslucent;
+    }
+
     public void setDexTaskDockingState(int state) {
         this.mDexTaskDockingState = state;
     }
@@ -248,14 +243,6 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         return dexTaskDockingState == 1 || dexTaskDockingState == 2;
     }
 
-    public void setFreeformTranslucent(int translucent) {
-        this.mFreeformTranslucent = translucent;
-    }
-
-    public int getFreeformTranslucent() {
-        return this.mFreeformTranslucent;
-    }
-
     public WindowConfiguration() {
         this.mBounds = new Rect();
         this.mMaxBounds = new Rect();
@@ -264,10 +251,10 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         this.mPopOverState = 0;
         this.mOverlappingWithCutout = false;
         this.mFlexPanelMode = 0;
-        this.mDexTaskDockingState = -1;
         this.mCompatSandboxFlags = 0;
         this.mCompatSandboxScale = -1.0f;
         this.mFreeformTranslucent = 0;
+        this.mDexTaskDockingState = -1;
         unset();
     }
 
@@ -279,10 +266,10 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         this.mPopOverState = 0;
         this.mOverlappingWithCutout = false;
         this.mFlexPanelMode = 0;
-        this.mDexTaskDockingState = -1;
         this.mCompatSandboxFlags = 0;
         this.mCompatSandboxScale = -1.0f;
         this.mFreeformTranslucent = 0;
+        this.mDexTaskDockingState = -1;
         setTo(configuration);
     }
 
@@ -294,10 +281,10 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         this.mPopOverState = 0;
         this.mOverlappingWithCutout = false;
         this.mFlexPanelMode = 0;
-        this.mDexTaskDockingState = -1;
         this.mCompatSandboxFlags = 0;
         this.mCompatSandboxScale = -1.0f;
         this.mFreeformTranslucent = 0;
+        this.mDexTaskDockingState = -1;
         readFromParcel(in);
     }
 
@@ -310,23 +297,21 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         dest.writeInt(this.mActivityType);
         dest.writeInt(this.mAlwaysOnTop);
         dest.writeInt(this.mRotation);
-        dest.writeInt(this.mDisplayWindowingMode);
         dest.writeInt(this.mDisplayRotation);
         dest.writeInt(this.mStage);
         if (CoreRune.MW_EMBED_ACTIVITY_MODE) {
             dest.writeInt(this.mEmbedActivityMode);
         }
         dest.writeInt(this.mPopOverState);
-        dest.writeBoolean(this.mOverlappingWithCutout);
-        dest.writeInt(this.mFreeformTaskPinningState);
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-            dest.writeInt(this.mCompatSandboxFlags);
-            dest.writeFloat(this.mCompatSandboxScale);
-            dest.writeTypedObject(this.mCompatSandboxBounds, flags);
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE) {
+            dest.writeInt(this.mFlexPanelMode);
         }
+        dest.writeInt(this.mCompatSandboxFlags);
+        dest.writeFloat(this.mCompatSandboxScale);
+        dest.writeTypedObject(this.mCompatSandboxBounds, flags);
         dest.writeInt(this.mDexTaskDockingState);
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY) {
-            dest.writeInt(this.mFreeformTranslucent);
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
+            dest.writeInt(this.mFreeformTaskPinningState);
         }
     }
 
@@ -338,46 +323,27 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         this.mActivityType = source.readInt();
         this.mAlwaysOnTop = source.readInt();
         this.mRotation = source.readInt();
-        this.mDisplayWindowingMode = source.readInt();
         this.mDisplayRotation = source.readInt();
         this.mStage = source.readInt();
         if (CoreRune.MW_EMBED_ACTIVITY_MODE) {
             this.mEmbedActivityMode = source.readInt();
         }
         this.mPopOverState = source.readInt();
-        this.mOverlappingWithCutout = source.readBoolean();
-        this.mFreeformTaskPinningState = source.readInt();
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-            this.mCompatSandboxFlags = source.readInt();
-            this.mCompatSandboxScale = source.readFloat();
-            this.mCompatSandboxBounds = (Rect) source.readTypedObject(Rect.CREATOR);
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE) {
+            this.mFlexPanelMode = source.readInt();
         }
+        this.mCompatSandboxFlags = source.readInt();
+        this.mCompatSandboxScale = source.readFloat();
+        this.mCompatSandboxBounds = (Rect) source.readTypedObject(Rect.CREATOR);
         this.mDexTaskDockingState = source.readInt();
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY) {
-            this.mFreeformTranslucent = source.readInt();
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
+            this.mFreeformTaskPinningState = source.readInt();
         }
     }
 
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.app.WindowConfiguration$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WindowConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowConfiguration createFromParcel(Parcel in) {
-            return new WindowConfiguration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WindowConfiguration[] newArray(int size) {
-            return new WindowConfiguration[size];
-        }
     }
 
     public void setBounds(Rect rect) {
@@ -463,14 +429,6 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         return this.mWindowingMode;
     }
 
-    public void setDisplayWindowingMode(int windowingMode) {
-        this.mDisplayWindowingMode = windowingMode;
-    }
-
-    public int getDisplayWindowingMode() {
-        return this.mDisplayWindowingMode;
-    }
-
     public void setActivityType(int activityType) {
         if (this.mActivityType == activityType) {
             return;
@@ -494,10 +452,8 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public void setStageType(int stageType) {
-        int i = this.mStage;
-        int i2 = i & i & 120;
-        this.mStage = i2;
-        this.mStage = i2 | (stageType & 7);
+        this.mStage &= this.mStage & 120;
+        this.mStage |= stageType & 7;
     }
 
     public int getStageType() {
@@ -505,10 +461,8 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public void setStagePosition(int stagePosition) {
-        int i = this.mStage;
-        int i2 = i & i & 7;
-        this.mStage = i2;
-        this.mStage = i2 | (stagePosition & 120);
+        this.mStage &= this.mStage & 7;
+        this.mStage |= stagePosition & 120;
     }
 
     public int getStagePosition() {
@@ -536,20 +490,18 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         setActivityType(other.mActivityType);
         setAlwaysOnTop(other.mAlwaysOnTop);
         setRotation(other.mRotation);
-        setDisplayWindowingMode(other.mDisplayWindowingMode);
         setStage(other.mStage);
         if (CoreRune.MW_EMBED_ACTIVITY_MODE) {
             setEmbedActivityMode(other.mEmbedActivityMode);
         }
-        setPopOverState(other.mPopOverState);
-        setOverlappingWithCutout(other.mOverlappingWithCutout);
-        setFreeformTaskPinningState(other.mFreeformTaskPinningState);
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-            setCompatSandboxValues(other.mCompatSandboxFlags, other.mCompatSandboxScale, other.mCompatSandboxBounds);
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE) {
+            setFlexPanelMode(other.mFlexPanelMode);
         }
+        setPopOverState(other.mPopOverState);
+        setCompatSandboxValues(other.mCompatSandboxFlags, other.mCompatSandboxScale, other.mCompatSandboxBounds);
         setDexTaskDockingState(other.mDexTaskDockingState);
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY) {
-            setFreeformTranslucent(other.mFreeformTranslucent);
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
+            setFreeformTaskPinningState(other.mFreeformTaskPinningState);
         }
     }
 
@@ -566,26 +518,21 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         setActivityType(0);
         setAlwaysOnTop(0);
         setRotation(-1);
-        setDisplayWindowingMode(0);
-        setEmbedActivityMode(0);
-        setPopOverState(0);
-        setOverlappingWithCutout(false);
-        setFreeformTaskPinningState(0);
-        setCompatSandboxValues(0, -1.0f, null);
         setDexTaskDockingState(-1);
         setFreeformTranslucent(0);
+        setFreeformTaskPinningState(0);
+        setEmbedActivityMode(0);
     }
 
     public void scale(float scale) {
         scaleBounds(scale, this.mBounds);
         scaleBounds(scale, this.mMaxBounds);
-        Rect rect = this.mAppBounds;
-        if (rect != null) {
-            scaleBounds(scale, rect);
+        if (this.mAppBounds != null) {
+            scaleBounds(scale, this.mAppBounds);
         }
     }
 
-    public static void scaleBounds(float scale, Rect bounds) {
+    private static void scaleBounds(float scale, Rect bounds) {
         int w = bounds.width();
         int h = bounds.height();
         bounds.left = (int) ((bounds.left * scale) + 0.5f);
@@ -595,15 +542,12 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public int updateFrom(WindowConfiguration delta) {
-        int i;
-        int i2;
         int changed = 0;
         if (!delta.mBounds.isEmpty() && !delta.mBounds.equals(this.mBounds)) {
             changed = 0 | 1;
             setBounds(delta.mBounds);
         }
-        Rect rect = delta.mAppBounds;
-        if (rect != null && !rect.equals(this.mAppBounds)) {
+        if (delta.mAppBounds != null && !delta.mAppBounds.equals(this.mAppBounds)) {
             changed |= 2;
             setAppBounds(delta.mAppBounds);
         }
@@ -611,35 +555,25 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
             changed |= 4;
             setMaxBounds(delta.mMaxBounds);
         }
-        int i3 = delta.mWindowingMode;
-        if (i3 != 0 && this.mWindowingMode != i3) {
+        if (delta.mWindowingMode != 0 && this.mWindowingMode != delta.mWindowingMode) {
             changed |= 8;
-            setWindowingMode(i3);
+            setWindowingMode(delta.mWindowingMode);
         }
-        int i4 = delta.mActivityType;
-        if (i4 != 0 && this.mActivityType != i4) {
+        if (delta.mActivityType != 0 && this.mActivityType != delta.mActivityType) {
             changed |= 16;
-            setActivityType(i4);
+            setActivityType(delta.mActivityType);
         }
-        int i5 = delta.mAlwaysOnTop;
-        if (i5 != 0 && this.mAlwaysOnTop != i5) {
+        if (delta.mAlwaysOnTop != 0 && this.mAlwaysOnTop != delta.mAlwaysOnTop) {
             changed |= 32;
-            setAlwaysOnTop(i5);
+            setAlwaysOnTop(delta.mAlwaysOnTop);
         }
-        int i6 = delta.mRotation;
-        if (i6 != -1 && i6 != this.mRotation) {
+        if (delta.mRotation != -1 && delta.mRotation != this.mRotation) {
             changed |= 64;
-            setRotation(i6);
+            setRotation(delta.mRotation);
         }
-        int i7 = delta.mDisplayWindowingMode;
-        if (i7 != 0 && this.mDisplayWindowingMode != i7) {
+        if (delta.mDisplayRotation != -1 && delta.mDisplayRotation != this.mDisplayRotation) {
             changed |= 128;
-            setDisplayWindowingMode(i7);
-        }
-        int i8 = delta.mDisplayRotation;
-        if (i8 != -1 && i8 != this.mDisplayRotation) {
-            changed |= 256;
-            setDisplayRotation(i8);
+            setDisplayRotation(delta.mDisplayRotation);
         }
         if (delta.mStage != 0 || (changed & 8) != 0) {
             int deltaStageType = delta.getStageType();
@@ -653,55 +587,42 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
                 setStagePosition(deltaStagePosition);
             }
         }
-        if (CoreRune.MW_EMBED_ACTIVITY_MODE && (i2 = delta.mEmbedActivityMode) != 0 && this.mEmbedActivityMode != i2) {
-            setEmbedActivityMode(i2);
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE && delta.mFlexPanelMode != 0 && this.mFlexPanelMode != delta.mFlexPanelMode) {
+            changed |= 524288;
+            setFlexPanelMode(delta.mFlexPanelMode);
         }
-        int i9 = delta.mPopOverState;
-        if (i9 != 0 && this.mPopOverState != i9) {
-            setPopOverState(i9);
+        if (CoreRune.MW_EMBED_ACTIVITY_MODE && delta.mEmbedActivityMode != 0 && this.mEmbedActivityMode != delta.mEmbedActivityMode) {
+            setEmbedActivityMode(delta.mEmbedActivityMode);
         }
-        boolean z = delta.mOverlappingWithCutout;
-        if (z && this.mOverlappingWithCutout != z) {
-            setOverlappingWithCutout(z);
+        if (delta.mPopOverState != 0 && this.mPopOverState != delta.mPopOverState) {
+            setPopOverState(delta.mPopOverState);
         }
-        int i10 = delta.mFreeformTaskPinningState;
-        if (i10 != 0 && this.mFreeformTaskPinningState != i10) {
-            setFreeformTaskPinningState(i10);
+        boolean compatSandboxChanged = false;
+        int flags = this.mCompatSandboxFlags;
+        if (delta.mCompatSandboxFlags != 0 && this.mCompatSandboxFlags != delta.mCompatSandboxFlags) {
+            compatSandboxChanged = true;
+            flags = delta.mCompatSandboxFlags;
         }
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-            boolean compatSandboxChanged = false;
-            int flags = this.mCompatSandboxFlags;
-            int i11 = delta.mCompatSandboxFlags;
-            if (i11 != 0 && this.mCompatSandboxFlags != i11) {
-                compatSandboxChanged = true;
-                flags = delta.mCompatSandboxFlags;
-            }
-            float scale = this.mCompatSandboxScale;
-            float f = delta.mCompatSandboxScale;
-            if (f != -1.0f && this.mCompatSandboxScale != f) {
-                compatSandboxChanged = true;
-                scale = delta.mCompatSandboxScale;
-            }
-            Rect bounds = this.mCompatSandboxBounds;
-            Rect rect2 = delta.mCompatSandboxBounds;
-            if (rect2 != null && !rect2.equals(this.mCompatSandboxBounds)) {
-                compatSandboxChanged = true;
-                bounds = delta.mCompatSandboxBounds;
-            }
-            if (compatSandboxChanged) {
-                changed |= 33554432;
-                setCompatSandboxValues(flags, scale, bounds);
-            }
+        float scale = this.mCompatSandboxScale;
+        if (delta.mCompatSandboxScale != -1.0f && this.mCompatSandboxScale != delta.mCompatSandboxScale) {
+            compatSandboxChanged = true;
+            scale = delta.mCompatSandboxScale;
         }
-        int i12 = delta.mDexTaskDockingState;
-        if (i12 != -1 && this.mDexTaskDockingState != i12) {
+        Rect bounds = this.mCompatSandboxBounds;
+        if (delta.mCompatSandboxBounds != null && !delta.mCompatSandboxBounds.equals(this.mCompatSandboxBounds)) {
+            compatSandboxChanged = true;
+            bounds = delta.mCompatSandboxBounds;
+        }
+        if (compatSandboxChanged) {
+            changed |= 33554432;
+            setCompatSandboxValues(flags, scale, bounds);
+        }
+        if (delta.mDexTaskDockingState != -1 && this.mDexTaskDockingState != delta.mDexTaskDockingState) {
             changed |= 16777216;
-            setDexTaskDockingState(i12);
+            setDexTaskDockingState(delta.mDexTaskDockingState);
         }
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY && (i = delta.mFreeformTranslucent) != 0 && this.mFreeformTranslucent != i) {
-            int changed2 = changed | 67108864;
-            setFreeformTranslucent(i);
-            return changed2;
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING && delta.mFreeformTaskPinningState != 0 && this.mFreeformTaskPinningState != delta.mFreeformTaskPinningState) {
+            setFreeformTaskPinningState(delta.mFreeformTaskPinningState);
         }
         return changed;
     }
@@ -729,9 +650,6 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
             setRotation(delta.mRotation);
         }
         if ((mask & 128) != 0) {
-            setDisplayWindowingMode(delta.mDisplayWindowingMode);
-        }
-        if ((mask & 256) != 0) {
             setDisplayRotation(delta.mDisplayRotation);
         }
         if ((1048576 & mask) != 0) {
@@ -743,24 +661,20 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         if (CoreRune.MW_EMBED_ACTIVITY_MODE && (8388608 & mask) != 0) {
             setEmbedActivityMode(delta.mEmbedActivityMode);
         }
-        if ((4194304 & mask) != 0) {
-            setFreeformTaskPinningState(delta.mFreeformTaskPinningState);
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE && (524288 & mask) != 0) {
+            setFlexPanelMode(delta.mFlexPanelMode);
         }
         if ((16777216 & mask) != 0) {
             setDexTaskDockingState(delta.mDexTaskDockingState);
         }
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY && (67108864 & mask) != 0) {
-            setFreeformTranslucent(delta.mFreeformTranslucent);
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING && (4194304 & mask) != 0) {
+            setFreeformTaskPinningState(delta.mFreeformTaskPinningState);
         }
     }
 
     public long diff(WindowConfiguration other, boolean compareUndefined) {
-        Rect rect;
-        Rect rect2;
-        Rect rect3;
-        Rect rect4;
         long changes = this.mBounds.equals(other.mBounds) ? 0L : 0 | 1;
-        if ((compareUndefined || other.mAppBounds != null) && (rect = this.mAppBounds) != (rect2 = other.mAppBounds) && (rect == null || !rect.equals(rect2))) {
+        if ((compareUndefined || other.mAppBounds != null) && this.mAppBounds != other.mAppBounds && (this.mAppBounds == null || !this.mAppBounds.equals(other.mAppBounds))) {
             changes |= 2;
         }
         if (!this.mMaxBounds.equals(other.mMaxBounds)) {
@@ -778,11 +692,8 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         if ((compareUndefined || other.mRotation != -1) && this.mRotation != other.mRotation) {
             changes |= 64;
         }
-        if ((compareUndefined || other.mDisplayWindowingMode != 0) && this.mDisplayWindowingMode != other.mDisplayWindowingMode) {
-            changes |= 128;
-        }
         if ((compareUndefined || other.mDisplayRotation != -1) && this.mDisplayRotation != other.mDisplayRotation) {
-            changes |= 256;
+            changes |= 128;
         }
         if (compareUndefined || other.mStage != 0) {
             int deltaStageType = other.getStageType();
@@ -797,26 +708,24 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         if (CoreRune.MW_EMBED_ACTIVITY_MODE && ((compareUndefined || other.mEmbedActivityMode != 0) && this.mEmbedActivityMode != other.mEmbedActivityMode)) {
             changes |= 8388608;
         }
-        if ((compareUndefined || other.mFreeformTaskPinningState != 0) && this.mFreeformTaskPinningState != other.mFreeformTaskPinningState) {
-            changes |= 128;
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE && ((compareUndefined || other.mFlexPanelMode != 0) && this.mFlexPanelMode != other.mFlexPanelMode)) {
+            changes |= 524288;
         }
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-            if ((compareUndefined || other.mCompatSandboxFlags != 0) && this.mCompatSandboxFlags != other.mCompatSandboxFlags) {
-                changes |= 33554432;
-            } else if ((compareUndefined || other.mCompatSandboxScale != -1.0f) && this.mCompatSandboxScale != other.mCompatSandboxScale) {
-                changes |= 33554432;
-            } else if ((compareUndefined || other.mCompatSandboxBounds != null) && (rect3 = this.mCompatSandboxBounds) != (rect4 = other.mCompatSandboxBounds) && (rect3 == null || !rect3.equals(rect4))) {
-                changes |= 33554432;
-            }
+        if ((compareUndefined || other.mCompatSandboxFlags != 0) && this.mCompatSandboxFlags != other.mCompatSandboxFlags) {
+            changes |= 33554432;
+        } else if ((compareUndefined || other.mCompatSandboxScale != -1.0f) && this.mCompatSandboxScale != other.mCompatSandboxScale) {
+            changes |= 33554432;
+        } else if ((compareUndefined || other.mCompatSandboxBounds != null) && this.mCompatSandboxBounds != other.mCompatSandboxBounds && (this.mCompatSandboxBounds == null || !this.mCompatSandboxBounds.equals(other.mCompatSandboxBounds))) {
+            changes |= 33554432;
         }
         if ((compareUndefined || other.mDexTaskDockingState != -1) && this.mDexTaskDockingState != other.mDexTaskDockingState) {
             changes |= 16777216;
         }
-        if (!CoreRune.MW_CAPTION_SHELL_OPACITY) {
+        if (!CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
             return changes;
         }
-        if ((compareUndefined || other.mFreeformTranslucent != 0) && this.mFreeformTranslucent != other.mFreeformTranslucent) {
-            return changes | 67108864;
+        if ((compareUndefined || other.mFreeformTaskPinningState != 0) && this.mFreeformTaskPinningState != other.mFreeformTaskPinningState) {
+            return changes | 8;
         }
         return changes;
     }
@@ -824,80 +733,76 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     @Override // java.lang.Comparable
     public int compareTo(WindowConfiguration that) {
         int n;
-        Rect rect = this.mAppBounds;
-        if (rect == null && that.mAppBounds != null) {
+        int n2;
+        if (this.mAppBounds == null && that.mAppBounds != null) {
             return 1;
         }
-        if (rect != null && that.mAppBounds == null) {
+        if (this.mAppBounds != null && that.mAppBounds == null) {
             return -1;
         }
-        if (rect != null && that.mAppBounds != null) {
-            int n2 = rect.left - that.mAppBounds.left;
-            if (n2 != 0) {
-                return n2;
-            }
-            int n3 = this.mAppBounds.top - that.mAppBounds.top;
+        if (this.mAppBounds != null && that.mAppBounds != null) {
+            int n3 = this.mAppBounds.left - that.mAppBounds.left;
             if (n3 != 0) {
                 return n3;
             }
-            int n4 = this.mAppBounds.right - that.mAppBounds.right;
+            int n4 = this.mAppBounds.top - that.mAppBounds.top;
             if (n4 != 0) {
                 return n4;
             }
-            int n5 = this.mAppBounds.bottom - that.mAppBounds.bottom;
+            int n5 = this.mAppBounds.right - that.mAppBounds.right;
             if (n5 != 0) {
                 return n5;
             }
+            int n6 = this.mAppBounds.bottom - that.mAppBounds.bottom;
+            if (n6 != 0) {
+                return n6;
+            }
         }
-        int n6 = this.mMaxBounds.left - that.mMaxBounds.left;
-        if (n6 != 0) {
-            return n6;
-        }
-        int n7 = this.mMaxBounds.top - that.mMaxBounds.top;
+        int n7 = this.mMaxBounds.left - that.mMaxBounds.left;
         if (n7 != 0) {
             return n7;
         }
-        int n8 = this.mMaxBounds.right - that.mMaxBounds.right;
+        int n8 = this.mMaxBounds.top - that.mMaxBounds.top;
         if (n8 != 0) {
             return n8;
         }
-        int n9 = this.mMaxBounds.bottom - that.mMaxBounds.bottom;
+        int n9 = this.mMaxBounds.right - that.mMaxBounds.right;
         if (n9 != 0) {
             return n9;
         }
-        int n10 = this.mBounds.left - that.mBounds.left;
+        int n10 = this.mMaxBounds.bottom - that.mMaxBounds.bottom;
         if (n10 != 0) {
             return n10;
         }
-        int n11 = this.mBounds.top - that.mBounds.top;
+        int n11 = this.mBounds.left - that.mBounds.left;
         if (n11 != 0) {
             return n11;
         }
-        int n12 = this.mBounds.right - that.mBounds.right;
+        int n12 = this.mBounds.top - that.mBounds.top;
         if (n12 != 0) {
             return n12;
         }
-        int n13 = this.mBounds.bottom - that.mBounds.bottom;
+        int n13 = this.mBounds.right - that.mBounds.right;
         if (n13 != 0) {
             return n13;
         }
-        int n14 = this.mWindowingMode - that.mWindowingMode;
+        int n14 = this.mBounds.bottom - that.mBounds.bottom;
         if (n14 != 0) {
             return n14;
         }
-        int n15 = this.mActivityType - that.mActivityType;
+        int n15 = this.mWindowingMode - that.mWindowingMode;
         if (n15 != 0) {
             return n15;
         }
-        int n16 = this.mAlwaysOnTop - that.mAlwaysOnTop;
+        int n16 = this.mActivityType - that.mActivityType;
         if (n16 != 0) {
             return n16;
         }
-        int n17 = this.mRotation - that.mRotation;
+        int n17 = this.mAlwaysOnTop - that.mAlwaysOnTop;
         if (n17 != 0) {
             return n17;
         }
-        int n18 = this.mDisplayWindowingMode - that.mDisplayWindowingMode;
+        int n18 = this.mRotation - that.mRotation;
         if (n18 != 0) {
             return n18;
         }
@@ -909,6 +814,9 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         if (n20 != 0) {
             return n20;
         }
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE && (n2 = this.mFlexPanelMode - that.mFlexPanelMode) != 0) {
+            return n2;
+        }
         if (CoreRune.MW_EMBED_ACTIVITY_MODE && (n = this.mEmbedActivityMode - that.mEmbedActivityMode) != 0) {
             return n;
         }
@@ -916,12 +824,8 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         if (n21 != 0) {
             return n21;
         }
-        int n22 = this.mFreeformTaskPinningState - that.mFreeformTaskPinningState;
-        if (n22 != 0) {
-            return n22;
-        }
-        int n23 = this.mDexTaskDockingState - that.mDexTaskDockingState;
-        return n23 != 0 ? n23 : (!CoreRune.MW_CAPTION_SHELL_OPACITY || (n23 = this.mFreeformTranslucent - that.mFreeformTranslucent) == 0) ? n23 : n23;
+        int n22 = this.mDexTaskDockingState - that.mDexTaskDockingState;
+        return n22 != 0 ? n22 : (!CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING || (n22 = this.mFreeformTaskPinningState - that.mFreeformTaskPinningState) == 0) ? n22 : n22;
     }
 
     public boolean equals(Object that) {
@@ -938,9 +842,9 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public int hashCode() {
-        int result = (((((((((((((((((((0 * 31) + Objects.hashCode(this.mAppBounds)) * 31) + Objects.hashCode(this.mBounds)) * 31) + Objects.hashCode(this.mMaxBounds)) * 31) + this.mWindowingMode) * 31) + this.mActivityType) * 31) + this.mAlwaysOnTop) * 31) + this.mRotation) * 31) + this.mDisplayWindowingMode) * 31) + this.mDisplayRotation) * 31) + this.mStage;
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY) {
-            return (result * 31) + this.mFreeformTranslucent;
+        int result = (((((((((((((((((0 * 31) + Objects.hashCode(this.mAppBounds)) * 31) + Objects.hashCode(this.mBounds)) * 31) + Objects.hashCode(this.mMaxBounds)) * 31) + this.mWindowingMode) * 31) + this.mActivityType) * 31) + this.mAlwaysOnTop) * 31) + this.mRotation) * 31) + this.mDisplayRotation) * 31) + this.mStage;
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_MODE) {
+            return (result * 31) + this.mFlexPanelMode;
         }
         return result;
     }
@@ -949,12 +853,11 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         StringBuilder append = new StringBuilder().append("{ mBounds=").append(this.mBounds).append(" mAppBounds=").append(this.mAppBounds).append(" mMaxBounds=").append(this.mMaxBounds).append(" mDisplayRotation=");
         int i = this.mRotation;
         String str = KeyboardLayout.LAYOUT_TYPE_UNDEFINED;
-        StringBuilder append2 = append.append(i == -1 ? KeyboardLayout.LAYOUT_TYPE_UNDEFINED : Surface.rotationToString(this.mDisplayRotation)).append(" mWindowingMode=").append(windowingModeToString(this.mWindowingMode)).append(" mDisplayWindowingMode=").append(windowingModeToString(this.mDisplayWindowingMode)).append(" mActivityType=").append(activityTypeToString(this.mActivityType)).append(" mAlwaysOnTop=").append(alwaysOnTopToString(this.mAlwaysOnTop)).append(" mRotation=");
-        int i2 = this.mRotation;
-        if (i2 != -1) {
-            str = Surface.rotationToString(i2);
+        StringBuilder append2 = append.append(i == -1 ? KeyboardLayout.LAYOUT_TYPE_UNDEFINED : Surface.rotationToString(this.mDisplayRotation)).append(" mWindowingMode=").append(windowingModeToString(this.mWindowingMode)).append(" mActivityType=").append(activityTypeToString(this.mActivityType)).append(" mAlwaysOnTop=").append(alwaysOnTopToString(this.mAlwaysOnTop)).append(" mRotation=");
+        if (this.mRotation != -1) {
+            str = Surface.rotationToString(this.mRotation);
         }
-        return append2.append(str).append(" mPopOver=").append(popOverStateToString(this.mPopOverState)).append(" mOverlappingWithCutout=").append(this.mOverlappingWithCutout).append(" mStageConfig=").append(stageConfigToString(this.mStage)).append(CoreRune.MW_EMBED_ACTIVITY_MODE ? " mEmbedActivityMode=" + embedActivityModeToString(this.mEmbedActivityMode) : "").append(" mFreeformTaskPinningState=").append(freeformTaskPinningToString(this.mFreeformTaskPinningState)).append("").append(CoreRune.MT_SUPPORT_COMPAT_SANDBOX ? compatSandboxInfoToString() : "").append(" mDexTaskDockingState=").append(dexTaskDockingStateToString(this.mDexTaskDockingState)).append(CoreRune.MW_CAPTION_SHELL_OPACITY ? " mFreeformTranslucent=" + translucentToString(this.mFreeformTranslucent) : "").append("}").toString();
+        return append2.append(str).append(" mStageConfig=").append(stageConfigToString(this.mStage)).append(CoreRune.MW_EMBED_ACTIVITY_MODE ? " mEmbedActivityMode=" + embedActivityModeToString(this.mEmbedActivityMode) : "").append(" mPopOver=").append(popOverStateToString(this.mPopOverState)).append(CoreRune.MW_SPLIT_FLEX_PANEL_MODE ? " mFlexPanelMode=" + flexPanelModeToString(this.mFlexPanelMode) : "").append(compatSandboxInfoToString()).append(" mDexTaskDockingState=").append(dexTaskDockingStateToString(this.mDexTaskDockingState)).append("").append(CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING ? " mFreeformTaskPinningState=" + freeformTaskPinningToString(this.mFreeformTaskPinningState) : "").append("}").toString();
     }
 
     private static String translucentToString(int translucent) {
@@ -970,11 +873,25 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         }
     }
 
+    public static String dexTaskDockingStateToString(int dexTaskDockingState) {
+        switch (dexTaskDockingState) {
+            case -1:
+                return KeyboardLayout.LAYOUT_TYPE_UNDEFINED;
+            case 0:
+                return "none";
+            case 1:
+                return "left";
+            case 2:
+                return "right";
+            default:
+                return String.valueOf(dexTaskDockingState);
+        }
+    }
+
     public void dumpDebug(ProtoOutputStream protoOutputStream, long fieldId) {
         long token = protoOutputStream.start(fieldId);
-        Rect rect = this.mAppBounds;
-        if (rect != null) {
-            rect.dumpDebug(protoOutputStream, 1146756268033L);
+        if (this.mAppBounds != null) {
+            this.mAppBounds.dumpDebug(protoOutputStream, 1146756268033L);
         }
         protoOutputStream.write(1120986464258L, this.mWindowingMode);
         protoOutputStream.write(1120986464259L, this.mActivityType);
@@ -989,9 +906,8 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
             try {
                 switch (proto.getFieldNumber()) {
                     case 1:
-                        Rect rect = new Rect();
-                        this.mAppBounds = rect;
-                        rect.readFromProto(proto, 1146756268033L);
+                        this.mAppBounds = new Rect();
+                        this.mAppBounds.readFromProto(proto, 1146756268033L);
                         break;
                     case 2:
                         this.mWindowingMode = proto.readInt(1120986464258L);
@@ -1016,13 +932,8 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         return this.mWindowingMode != 6 && tasksAreFloating();
     }
 
-    public boolean hasWindowDecorCaption() {
-        return this.mActivityType == 1 && (this.mWindowingMode == 5 || this.mDisplayWindowingMode == 5);
-    }
-
     public boolean canResizeTask() {
-        int i = this.mWindowingMode;
-        return i == 5 || i == 6;
+        return this.mWindowingMode == 5 || this.mWindowingMode == 6;
     }
 
     public boolean persistTaskBounds() {
@@ -1046,19 +957,17 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public boolean isAlwaysOnTop() {
-        int i = this.mWindowingMode;
-        if (i == 2 || this.mActivityType == 5) {
+        if (this.mWindowingMode == 2 || this.mActivityType == 5) {
             return true;
         }
         if (this.mAlwaysOnTop != 1) {
             return false;
         }
-        return i == 5 || i == 6;
+        return this.mWindowingMode == 5 || this.mWindowingMode == 6;
     }
 
     public boolean useWindowFrameForBackdrop() {
-        int i = this.mWindowingMode;
-        return i == 5 || i == 2;
+        return this.mWindowingMode == 5 || this.mWindowingMode == 2;
     }
 
     public boolean hasMovementAnimations() {
@@ -1071,6 +980,10 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
 
     public static boolean supportSplitScreenWindowingMode(int activityType) {
         return (activityType == 4 || activityType == 5) ? false : true;
+    }
+
+    public static boolean areConfigurationsEqualForDisplay(Configuration newConfig, Configuration oldConfig) {
+        return newConfig.windowConfiguration.getMaxBounds().equals(oldConfig.windowConfiguration.getMaxBounds()) && newConfig.windowConfiguration.getDisplayRotation() == oldConfig.windowConfiguration.getDisplayRotation();
     }
 
     public static String windowingModeToString(int windowingMode) {
@@ -1168,8 +1081,6 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         return sb.toString();
     }
 
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:2:0x000b. Please report as an issue. */
     public String getStageTypeToString() {
         StringBuilder sb = new StringBuilder(32);
         switch (this.mStage & 7) {
@@ -1177,25 +1088,21 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
                 return KeyboardLayout.LAYOUT_TYPE_UNDEFINED;
             case 1:
                 sb.append("main");
-                return sb.toString();
+                break;
             case 2:
                 sb.append("side");
-                return sb.toString();
-            case 3:
-            default:
-                return sb.toString();
+                break;
             case 4:
                 sb.append("cell");
-                return sb.toString();
+                break;
         }
+        return sb.toString();
     }
 
     public String getStagePositionToString() {
         return stagePositionToString(this.mStage);
     }
 
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:2:0x0009. Please report as an issue. */
     public static String stagePositionToString(int position) {
         StringBuilder sb = new StringBuilder(32);
         switch (position & 120) {
@@ -1203,31 +1110,30 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
                 return KeyboardLayout.LAYOUT_TYPE_UNDEFINED;
             case 8:
                 sb.append("left");
-                return sb.toString();
+                break;
             case 16:
                 sb.append(GenerateXML.TOP);
-                return sb.toString();
+                break;
             case 24:
                 sb.append("left-top");
-                return sb.toString();
+                break;
             case 32:
                 sb.append("right");
-                return sb.toString();
+                break;
             case 48:
                 sb.append("right-top");
-                return sb.toString();
+                break;
             case 64:
                 sb.append(GenerateXML.BOTTOM);
-                return sb.toString();
+                break;
             case 72:
                 sb.append("left-bottom");
-                return sb.toString();
+                break;
             case 96:
                 sb.append("right-bottom");
-                return sb.toString();
-            default:
-                return sb.toString();
+                break;
         }
+        return sb.toString();
     }
 
     public static String embedActivityModeToString(int state) {
@@ -1270,19 +1176,8 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
         return this.mFlexPanelMode == 1;
     }
 
-    public static String freeformTaskPinningToString(int state) {
-        switch (state) {
-            case 0:
-                return KeyboardLayout.LAYOUT_TYPE_UNDEFINED;
-            case 1:
-                return "unpinned";
-            case 2:
-                return ContactsContract.ContactOptionsColumns.PINNED;
-            case 3:
-                return SemWifiDisplayParameter.VALUE_DISABLE;
-            default:
-                return String.valueOf(state);
-        }
+    public void setCompatSandboxValues(WindowConfiguration other) {
+        setCompatSandboxValues(other.mCompatSandboxFlags, other.mCompatSandboxScale, other.mCompatSandboxBounds);
     }
 
     public void setCompatSandboxValues(int flags, float scale, Rect bounds) {
@@ -1299,61 +1194,66 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     }
 
     public int getCompatSandboxFlags() {
-        int i = this.mCompatSandboxFlags;
-        if ((i & 1) != 0) {
+        if ((this.mCompatSandboxFlags & 1) != 0) {
             return 0;
         }
-        return i;
+        return this.mCompatSandboxFlags;
     }
 
     public float getCompatSandboxInvScale() {
-        if (getCompatSandboxFlags() != 0) {
-            float f = this.mCompatSandboxScale;
-            if (f != -1.0f) {
-                float scale = 1.0f / f;
-                if (scale > 0.0f) {
-                    return scale;
-                }
+        if (getCompatSandboxFlags() != 0 && this.mCompatSandboxScale != -1.0f) {
+            float scale = 1.0f / this.mCompatSandboxScale;
+            if (scale > 0.0f) {
+                return scale;
             }
         }
         return 1.0f;
     }
 
     public Rect getCompatSandboxBounds() {
-        Rect rect = this.mCompatSandboxBounds;
-        if (rect == null || rect.isEmpty()) {
+        if (this.mCompatSandboxBounds == null || this.mCompatSandboxBounds.isEmpty()) {
             return this.mBounds;
         }
         return this.mCompatSandboxBounds;
+    }
+
+    public Rect getCompatSandboxScaledBounds() {
+        if (this.mCompatSandboxScaledBounds == null) {
+            this.mCompatSandboxScaledBounds = new Rect();
+        }
+        this.mCompatSandboxScaledBounds.set(getCompatSandboxBounds());
+        float scale = getCompatSandboxInvScale();
+        if (scale != 1.0f) {
+            scaleBounds(scale, this.mCompatSandboxScaledBounds);
+        }
+        return this.mCompatSandboxScaledBounds;
     }
 
     private String compatSandboxInfoToString() {
         return (this.mCompatSandboxFlags != 0 ? " mCompatSandboxFlags=0x" + this.mCompatSandboxFlags : "") + (this.mCompatSandboxScale != 1.0f ? " mCompatSandboxScale=" + this.mCompatSandboxScale : "") + (this.mCompatSandboxBounds != null ? " mCompatSandboxScale=" + this.mCompatSandboxBounds : "");
     }
 
-    public static String dexTaskDockingStateToString(int dexTaskDockingState) {
-        switch (dexTaskDockingState) {
-            case -1:
-                return KeyboardLayout.LAYOUT_TYPE_UNDEFINED;
-            case 0:
-                return "none";
-            case 1:
-                return "left";
-            case 2:
-                return "right";
-            default:
-                return String.valueOf(dexTaskDockingState);
+    public void overrideUndefinedFrom(WindowConfiguration delta) {
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING && this.mFreeformTaskPinningState == 0 && delta.mFreeformTaskPinningState == 1) {
+            this.mFreeformTaskPinningState = delta.mFreeformTaskPinningState;
+        }
+        if (this.mPopOverState == 0 && delta.mPopOverState == 2) {
+            this.mPopOverState = delta.mPopOverState;
         }
     }
 
-    public void overrideUndefinedFrom(WindowConfiguration delta) {
-        int i;
-        int i2;
-        if (this.mFreeformTaskPinningState == 0 && (i2 = delta.mFreeformTaskPinningState) == 1) {
-            this.mFreeformTaskPinningState = i2;
-        }
-        if (this.mPopOverState == 0 && (i = delta.mPopOverState) == 2) {
-            this.mPopOverState = i;
+    public static String freeformTaskPinningToString(int state) {
+        switch (state) {
+            case 0:
+                return KeyboardLayout.LAYOUT_TYPE_UNDEFINED;
+            case 1:
+                return "unpinned";
+            case 2:
+                return ContactsContract.ContactOptionsColumns.PINNED;
+            case 3:
+                return SemWifiDisplayParameter.VALUE_DISABLE;
+            default:
+                return String.valueOf(state);
         }
     }
 }

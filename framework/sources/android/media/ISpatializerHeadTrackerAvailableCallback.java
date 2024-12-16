@@ -12,7 +12,6 @@ public interface ISpatializerHeadTrackerAvailableCallback extends IInterface {
 
     void dispatchSpatializerHeadTrackerAvailable(boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISpatializerHeadTrackerAvailableCallback {
         @Override // android.media.ISpatializerHeadTrackerAvailableCallback
         public void dispatchSpatializerHeadTrackerAvailable(boolean available) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISpatializerHeadTrackerAvailableCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISpatializerHeadTrackerAvailableCallback {
         static final int TRANSACTION_dispatchSpatializerHeadTrackerAvailable = 1;
 
@@ -67,25 +65,22 @@ public interface ISpatializerHeadTrackerAvailableCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpatializerHeadTrackerAvailableCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpatializerHeadTrackerAvailableCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpatializerHeadTrackerAvailableCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dispatchSpatializerHeadTrackerAvailable(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dispatchSpatializerHeadTrackerAvailable(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISpatializerHeadTrackerAvailableCallback {
+        private static class Proxy implements ISpatializerHeadTrackerAvailableCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

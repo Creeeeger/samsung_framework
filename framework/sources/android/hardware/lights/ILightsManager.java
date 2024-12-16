@@ -1,9 +1,12 @@
 package android.hardware.lights;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 import java.util.List;
 
@@ -21,7 +24,6 @@ public interface ILightsManager extends IInterface {
 
     void setLightStates(IBinder iBinder, int[] iArr, LightState[] lightStateArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ILightsManager {
         @Override // android.hardware.lights.ILightsManager
         public List<Light> getLights() throws RemoteException {
@@ -51,16 +53,25 @@ public interface ILightsManager extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ILightsManager {
         static final int TRANSACTION_closeSession = 4;
         static final int TRANSACTION_getLightState = 2;
         static final int TRANSACTION_getLights = 1;
         static final int TRANSACTION_openSession = 3;
         static final int TRANSACTION_setLightStates = 5;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, ILightsManager.DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static ILightsManager asInterface(IBinder obj) {
@@ -106,54 +117,50 @@ public interface ILightsManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILightsManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILightsManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILightsManager.DESCRIPTOR);
+                case 1:
+                    List<Light> _result = getLights();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    LightState _result2 = getLightState(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    IBinder _arg02 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    openSession(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IBinder _arg03 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    closeSession(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IBinder _arg04 = data.readStrongBinder();
+                    int[] _arg12 = data.createIntArray();
+                    LightState[] _arg2 = (LightState[]) data.createTypedArray(LightState.CREATOR);
+                    data.enforceNoDataAvail();
+                    setLightStates(_arg04, _arg12, _arg2);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<Light> _result = getLights();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            LightState _result2 = getLightState(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            IBinder _arg02 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            openSession(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IBinder _arg03 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            closeSession(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IBinder _arg04 = data.readStrongBinder();
-                            int[] _arg12 = data.createIntArray();
-                            LightState[] _arg2 = (LightState[]) data.createTypedArray(LightState.CREATOR);
-                            data.enforceNoDataAvail();
-                            setLightStates(_arg04, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ILightsManager {
+        private static class Proxy implements ILightsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -249,6 +256,26 @@ public interface ILightsManager extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void getLights_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DEVICE_LIGHTS, getCallingPid(), getCallingUid());
+        }
+
+        protected void getLightState_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DEVICE_LIGHTS, getCallingPid(), getCallingUid());
+        }
+
+        protected void openSession_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DEVICE_LIGHTS, getCallingPid(), getCallingUid());
+        }
+
+        protected void closeSession_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DEVICE_LIGHTS, getCallingPid(), getCallingUid());
+        }
+
+        protected void setLightStates_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.CONTROL_DEVICE_LIGHTS, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

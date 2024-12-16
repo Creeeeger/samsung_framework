@@ -31,7 +31,6 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
     BackStackRecord mTopEntry;
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface OnBreadCrumbClickListener {
         boolean onBreadCrumbClick(FragmentManager.BackStackEntry backStackEntry, int i);
     }
@@ -52,9 +51,6 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mMaxVisible = -1;
         this.mOnClickListener = new View.OnClickListener() { // from class: android.app.FragmentBreadCrumbs.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 if (v.getTag() instanceof FragmentManager.BackStackEntry) {
@@ -88,11 +84,9 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
 
     public void setActivity(Activity a) {
         this.mActivity = a;
-        LayoutInflater layoutInflater = (LayoutInflater) a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.mInflater = layoutInflater;
-        LinearLayout linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.fragment_bread_crumbs, (ViewGroup) this, false);
-        this.mContainer = linearLayout;
-        addView(linearLayout);
+        this.mInflater = (LayoutInflater) a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mContainer = (LinearLayout) this.mInflater.inflate(R.layout.fragment_bread_crumbs, (ViewGroup) this, false);
+        addView(this.mContainer);
         a.getFragmentManager().addOnBackStackChangedListener(this);
         updateCrumbs();
         setLayoutTransition(new LayoutTransition());
@@ -131,7 +125,7 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int childLeft;
         int childRight;
         int childCount = getChildCount();
@@ -169,7 +163,7 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int count = getChildCount();
         int maxHeight = 0;
         int maxWidth = 0;
@@ -197,9 +191,8 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
     }
 
     private FragmentManager.BackStackEntry getPreEntry(int index) {
-        BackStackRecord backStackRecord = this.mParentEntry;
-        if (backStackRecord != null) {
-            return index == 0 ? backStackRecord : this.mTopEntry;
+        if (this.mParentEntry != null) {
+            return index == 0 ? this.mParentEntry : this.mTopEntry;
         }
         return this.mTopEntry;
     }
@@ -229,7 +222,7 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
             if (i >= numViews) {
                 View item = this.mInflater.inflate(this.mLayoutResId, (ViewGroup) this, false);
                 TextView text = (TextView) item.findViewById(16908310);
-                text.setText(bse.getBreadCrumbTitle());
+                text.lambda$setTextAsync$0(bse.getBreadCrumbTitle());
                 text.setTag(bse);
                 text.setTextColor(this.mTextColor);
                 if (i == 0) {
@@ -249,45 +242,12 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
         while (i3 < numViews2) {
             View child = this.mContainer.getChildAt(i3);
             child.findViewById(16908310).setEnabled(i3 < numViews2 + (-1));
-            int i4 = this.mMaxVisible;
-            if (i4 > 0) {
-                child.setVisibility(i3 < numViews2 - i4 ? 8 : 0);
+            if (this.mMaxVisible > 0) {
+                child.setVisibility(i3 < numViews2 - this.mMaxVisible ? 8 : 0);
                 View leftIcon = child.findViewById(R.id.left_icon);
                 leftIcon.setVisibility((i3 <= numViews2 - this.mMaxVisible || i3 == 0) ? 8 : 0);
             }
             i3++;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.FragmentBreadCrumbs$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements View.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            if (v.getTag() instanceof FragmentManager.BackStackEntry) {
-                FragmentManager.BackStackEntry bse = (FragmentManager.BackStackEntry) v.getTag();
-                if (bse == FragmentBreadCrumbs.this.mParentEntry) {
-                    if (FragmentBreadCrumbs.this.mParentClickListener != null) {
-                        FragmentBreadCrumbs.this.mParentClickListener.onClick(v);
-                        return;
-                    }
-                    return;
-                }
-                if (FragmentBreadCrumbs.this.mOnBreadCrumbClickListener != null) {
-                    if (FragmentBreadCrumbs.this.mOnBreadCrumbClickListener.onBreadCrumbClick(bse == FragmentBreadCrumbs.this.mTopEntry ? null : bse, 0)) {
-                        return;
-                    }
-                }
-                if (bse == FragmentBreadCrumbs.this.mTopEntry) {
-                    FragmentBreadCrumbs.this.mActivity.getFragmentManager().popBackStack();
-                } else {
-                    FragmentBreadCrumbs.this.mActivity.getFragmentManager().popBackStack(bse.getId(), 0);
-                }
-            }
         }
     }
 }

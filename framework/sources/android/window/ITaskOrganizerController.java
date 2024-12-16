@@ -28,8 +28,6 @@ public interface ITaskOrganizerController extends IInterface {
 
     List<ActivityManager.RunningTaskInfo> getRootTasks(int i, int[] iArr) throws RemoteException;
 
-    boolean isKeepScreenOn(int i) throws RemoteException;
-
     boolean isPinStateChangeable(int i) throws RemoteException;
 
     ParceledListSlice<TaskAppearedInfo> registerTaskOrganizer(ITaskOrganizer iTaskOrganizer) throws RemoteException;
@@ -42,15 +40,10 @@ public interface ITaskOrganizerController extends IInterface {
 
     void setInterceptBackPressedOnTaskRoot(WindowContainerToken windowContainerToken, boolean z) throws RemoteException;
 
-    void setOrientationRequestPolicy(boolean z, int[] iArr, int[] iArr2) throws RemoteException;
-
     boolean togglePinTaskState(int i) throws RemoteException;
 
     void unregisterTaskOrganizer(ITaskOrganizer iTaskOrganizer) throws RemoteException;
 
-    void updateCameraCompatControlState(WindowContainerToken windowContainerToken, int i) throws RemoteException;
-
-    /* loaded from: classes4.dex */
     public static class Default implements ITaskOrganizerController {
         @Override // android.window.ITaskOrganizerController
         public ParceledListSlice<TaskAppearedInfo> registerTaskOrganizer(ITaskOrganizer organizer) throws RemoteException {
@@ -98,18 +91,6 @@ public interface ITaskOrganizerController extends IInterface {
         }
 
         @Override // android.window.ITaskOrganizerController
-        public void updateCameraCompatControlState(WindowContainerToken task, int state) throws RemoteException {
-        }
-
-        @Override // android.window.ITaskOrganizerController
-        public void setOrientationRequestPolicy(boolean isIgnoreOrientationRequestDisabled, int[] fromOrientations, int[] toOrientations) throws RemoteException {
-        }
-
-        @Override // android.window.ITaskOrganizerController
-        public void setFreeformTaskSurfaceOverlappedWithNavi(WindowContainerToken task, boolean overlap) throws RemoteException {
-        }
-
-        @Override // android.window.ITaskOrganizerController
         public float getFreeformTaskOpacity(int taskId) throws RemoteException {
             return 0.0f;
         }
@@ -129,8 +110,7 @@ public interface ITaskOrganizerController extends IInterface {
         }
 
         @Override // android.window.ITaskOrganizerController
-        public boolean isKeepScreenOn(int taskId) throws RemoteException {
-            return false;
+        public void setFreeformTaskSurfaceOverlappedWithNavi(WindowContainerToken task, boolean overlap) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -139,26 +119,22 @@ public interface ITaskOrganizerController extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITaskOrganizerController {
         static final int TRANSACTION_createRootTask = 3;
         static final int TRANSACTION_createStageRootTask = 4;
         static final int TRANSACTION_deleteRootTask = 5;
         static final int TRANSACTION_getChildTasks = 6;
-        static final int TRANSACTION_getFreeformTaskOpacity = 14;
+        static final int TRANSACTION_getFreeformTaskOpacity = 11;
         static final int TRANSACTION_getImeTarget = 8;
         static final int TRANSACTION_getRootTasks = 7;
-        static final int TRANSACTION_isKeepScreenOn = 18;
-        static final int TRANSACTION_isPinStateChangeable = 17;
+        static final int TRANSACTION_isPinStateChangeable = 14;
         static final int TRANSACTION_registerTaskOrganizer = 1;
         static final int TRANSACTION_restartTaskTopActivityProcessIfVisible = 10;
-        static final int TRANSACTION_setFreeformTaskOpacity = 15;
-        static final int TRANSACTION_setFreeformTaskSurfaceOverlappedWithNavi = 13;
+        static final int TRANSACTION_setFreeformTaskOpacity = 12;
+        static final int TRANSACTION_setFreeformTaskSurfaceOverlappedWithNavi = 15;
         static final int TRANSACTION_setInterceptBackPressedOnTaskRoot = 9;
-        static final int TRANSACTION_setOrientationRequestPolicy = 12;
-        static final int TRANSACTION_togglePinTaskState = 16;
+        static final int TRANSACTION_togglePinTaskState = 13;
         static final int TRANSACTION_unregisterTaskOrganizer = 2;
-        static final int TRANSACTION_updateCameraCompatControlState = 11;
 
         public Stub() {
             attachInterface(this, ITaskOrganizerController.DESCRIPTOR);
@@ -203,21 +179,15 @@ public interface ITaskOrganizerController extends IInterface {
                 case 10:
                     return "restartTaskTopActivityProcessIfVisible";
                 case 11:
-                    return "updateCameraCompatControlState";
-                case 12:
-                    return "setOrientationRequestPolicy";
-                case 13:
-                    return "setFreeformTaskSurfaceOverlappedWithNavi";
-                case 14:
                     return "getFreeformTaskOpacity";
-                case 15:
+                case 12:
                     return "setFreeformTaskOpacity";
-                case 16:
+                case 13:
                     return "togglePinTaskState";
-                case 17:
+                case 14:
                     return "isPinStateChangeable";
-                case 18:
-                    return "isKeepScreenOn";
+                case 15:
+                    return "setFreeformTaskSurfaceOverlappedWithNavi";
                 default:
                     return null;
             }
@@ -233,151 +203,126 @@ public interface ITaskOrganizerController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITaskOrganizerController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITaskOrganizerController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITaskOrganizerController.DESCRIPTOR);
+                case 1:
+                    ITaskOrganizer _arg0 = ITaskOrganizer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ParceledListSlice<TaskAppearedInfo> _result = registerTaskOrganizer(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    ITaskOrganizer _arg02 = ITaskOrganizer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterTaskOrganizer(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg1 = data.readInt();
+                    IBinder _arg2 = data.readStrongBinder();
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    createRootTask(_arg03, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    IBinder _arg32 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    createStageRootTask(_arg04, _arg12, _arg22, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    WindowContainerToken _arg05 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result2 = deleteRootTask(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 6:
+                    WindowContainerToken _arg06 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
+                    int[] _arg13 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    List<ActivityManager.RunningTaskInfo> _result3 = getChildTasks(_arg06, _arg13);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int[] _arg14 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    List<ActivityManager.RunningTaskInfo> _result4 = getRootTasks(_arg07, _arg14);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result4, 1);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    WindowContainerToken _result5 = getImeTarget(_arg08);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 9:
+                    WindowContainerToken _arg09 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
+                    boolean _arg15 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setInterceptBackPressedOnTaskRoot(_arg09, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    WindowContainerToken _arg010 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    restartTaskTopActivityProcessIfVisible(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result6 = getFreeformTaskOpacity(_arg011);
+                    reply.writeNoException();
+                    reply.writeFloat(_result6);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    float _arg16 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setFreeformTaskOpacity(_arg012, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = togglePinTaskState(_arg013);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = isPinStateChangeable(_arg014);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 15:
+                    WindowContainerToken _arg015 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
+                    boolean _arg17 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setFreeformTaskSurfaceOverlappedWithNavi(_arg015, _arg17);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ITaskOrganizer _arg0 = ITaskOrganizer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ParceledListSlice<TaskAppearedInfo> _result = registerTaskOrganizer(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            ITaskOrganizer _arg02 = ITaskOrganizer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterTaskOrganizer(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg1 = data.readInt();
-                            IBinder _arg2 = data.readStrongBinder();
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            createRootTask(_arg03, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            IBinder _arg32 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            createStageRootTask(_arg04, _arg12, _arg22, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            WindowContainerToken _arg05 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result2 = deleteRootTask(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 6:
-                            WindowContainerToken _arg06 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
-                            int[] _arg13 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            List<ActivityManager.RunningTaskInfo> _result3 = getChildTasks(_arg06, _arg13);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int[] _arg14 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            List<ActivityManager.RunningTaskInfo> _result4 = getRootTasks(_arg07, _arg14);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result4, 1);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            WindowContainerToken _result5 = getImeTarget(_arg08);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 9:
-                            WindowContainerToken _arg09 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setInterceptBackPressedOnTaskRoot(_arg09, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            WindowContainerToken _arg010 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            restartTaskTopActivityProcessIfVisible(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            WindowContainerToken _arg011 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateCameraCompatControlState(_arg011, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            boolean _arg012 = data.readBoolean();
-                            int[] _arg17 = data.createIntArray();
-                            int[] _arg23 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            setOrientationRequestPolicy(_arg012, _arg17, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            WindowContainerToken _arg013 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
-                            boolean _arg18 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setFreeformTaskSurfaceOverlappedWithNavi(_arg013, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result6 = getFreeformTaskOpacity(_arg014);
-                            reply.writeNoException();
-                            reply.writeFloat(_result6);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            float _arg19 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setFreeformTaskOpacity(_arg015, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = togglePinTaskState(_arg016);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = isPinStateChangeable(_arg017);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = isKeepScreenOn(_arg018);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITaskOrganizerController {
+        private static class Proxy implements ITaskOrganizerController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -563,62 +508,13 @@ public interface ITaskOrganizerController extends IInterface {
             }
 
             @Override // android.window.ITaskOrganizerController
-            public void updateCameraCompatControlState(WindowContainerToken task, int state) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
-                    _data.writeTypedObject(task, 0);
-                    _data.writeInt(state);
-                    this.mRemote.transact(11, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.window.ITaskOrganizerController
-            public void setOrientationRequestPolicy(boolean isIgnoreOrientationRequestDisabled, int[] fromOrientations, int[] toOrientations) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
-                    _data.writeBoolean(isIgnoreOrientationRequestDisabled);
-                    _data.writeIntArray(fromOrientations);
-                    _data.writeIntArray(toOrientations);
-                    this.mRemote.transact(12, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.window.ITaskOrganizerController
-            public void setFreeformTaskSurfaceOverlappedWithNavi(WindowContainerToken task, boolean overlap) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
-                    _data.writeTypedObject(task, 0);
-                    _data.writeBoolean(overlap);
-                    this.mRemote.transact(13, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.window.ITaskOrganizerController
             public float getFreeformTaskOpacity(int taskId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(14, _data, _reply, 0);
+                    this.mRemote.transact(11, _data, _reply, 0);
                     _reply.readException();
                     float _result = _reply.readFloat();
                     return _result;
@@ -636,7 +532,7 @@ public interface ITaskOrganizerController extends IInterface {
                     _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
                     _data.writeInt(taskId);
                     _data.writeFloat(alpha);
-                    this.mRemote.transact(15, _data, _reply, 0);
+                    this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -651,7 +547,7 @@ public interface ITaskOrganizerController extends IInterface {
                 try {
                     _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(16, _data, _reply, 0);
+                    this.mRemote.transact(13, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -668,7 +564,7 @@ public interface ITaskOrganizerController extends IInterface {
                 try {
                     _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
                     _data.writeInt(taskId);
-                    this.mRemote.transact(17, _data, _reply, 0);
+                    this.mRemote.transact(14, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -679,16 +575,15 @@ public interface ITaskOrganizerController extends IInterface {
             }
 
             @Override // android.window.ITaskOrganizerController
-            public boolean isKeepScreenOn(int taskId) throws RemoteException {
+            public void setFreeformTaskSurfaceOverlappedWithNavi(WindowContainerToken task, boolean overlap) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ITaskOrganizerController.DESCRIPTOR);
-                    _data.writeInt(taskId);
-                    this.mRemote.transact(18, _data, _reply, 0);
+                    _data.writeTypedObject(task, 0);
+                    _data.writeBoolean(overlap);
+                    this.mRemote.transact(15, _data, _reply, 0);
                     _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -698,7 +593,7 @@ public interface ITaskOrganizerController extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 17;
+            return 14;
         }
     }
 }

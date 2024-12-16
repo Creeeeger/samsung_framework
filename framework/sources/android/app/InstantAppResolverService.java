@@ -89,41 +89,9 @@ public abstract class InstantAppResolverService extends Service {
         this.mHandler = new ServiceHandler(getLooper());
     }
 
-    /* renamed from: android.app.InstantAppResolverService$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends IInstantAppResolver.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.app.IInstantAppResolver
-        public void getInstantAppResolveInfoList(InstantAppRequestInfo request, int sequence, IRemoteCallback callback) {
-            if (InstantAppResolverService.DEBUG_INSTANT) {
-                Slog.v(InstantAppResolverService.TAG, NavigationBarInflaterView.SIZE_MOD_START + request.getToken() + "] Phase1 called; posting");
-            }
-            SomeArgs args = SomeArgs.obtain();
-            args.arg1 = request;
-            args.arg2 = callback;
-            InstantAppResolverService.this.mHandler.obtainMessage(1, sequence, 0, args).sendToTarget();
-        }
-
-        @Override // android.app.IInstantAppResolver
-        public void getInstantAppIntentFilterList(InstantAppRequestInfo request, IRemoteCallback callback) {
-            if (InstantAppResolverService.DEBUG_INSTANT) {
-                Slog.v(InstantAppResolverService.TAG, NavigationBarInflaterView.SIZE_MOD_START + request.getToken() + "] Phase2 called; posting");
-            }
-            SomeArgs args = SomeArgs.obtain();
-            args.arg1 = request;
-            args.arg2 = callback;
-            InstantAppResolverService.this.mHandler.obtainMessage(2, args).sendToTarget();
-        }
-    }
-
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         return new IInstantAppResolver.Stub() { // from class: android.app.InstantAppResolverService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.app.IInstantAppResolver
             public void getInstantAppResolveInfoList(InstantAppRequestInfo request, int sequence, IRemoteCallback callback) {
                 if (InstantAppResolverService.DEBUG_INSTANT) {
@@ -148,7 +116,6 @@ public abstract class InstantAppResolverService extends Service {
         };
     }
 
-    /* loaded from: classes.dex */
     public static final class InstantAppResolutionCallback {
         private final IRemoteCallback mCallback;
         private final int mSequence;
@@ -169,7 +136,6 @@ public abstract class InstantAppResolverService extends Service {
         }
     }
 
-    /* loaded from: classes.dex */
     private final class ServiceHandler extends Handler {
         public static final int MSG_GET_INSTANT_APP_INTENT_FILTER = 2;
         public static final int MSG_GET_INSTANT_APP_RESOLVE_INFO = 1;

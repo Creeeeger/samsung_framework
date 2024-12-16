@@ -1,9 +1,13 @@
 package android.view;
 
+import android.credentials.GetCredentialException;
+import android.credentials.GetCredentialRequest;
+import android.credentials.GetCredentialResponse;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.LocaleList;
+import android.os.OutcomeReceiver;
 import android.util.Pair;
 import android.view.autofill.AutofillId;
 import android.view.autofill.AutofillValue;
@@ -14,11 +18,11 @@ import java.util.List;
 public abstract class ViewStructure {
     public static final String EXTRA_ACTIVE_CHILDREN_IDS = "android.view.ViewStructure.extra.ACTIVE_CHILDREN_IDS";
     public static final String EXTRA_FIRST_ACTIVE_POSITION = "android.view.ViewStructure.extra.FIRST_ACTIVE_POSITION";
+    public static final String EXTRA_VIRTUAL_STRUCTURE_TYPE = "android.view.ViewStructure.extra.VIRTUAL_STRUCTURE_TYPE";
+    public static final String EXTRA_VIRTUAL_STRUCTURE_VERSION_NUMBER = "android.view.ViewStructure.extra.VIRTUAL_STRUCTURE_VERSION_NUMBER";
 
-    /* loaded from: classes4.dex */
     public static abstract class HtmlInfo {
 
-        /* loaded from: classes4.dex */
         public static abstract class Builder {
             public abstract Builder addAttribute(String str, String str2);
 
@@ -142,7 +146,18 @@ public abstract class ViewStructure {
         Preconditions.checkNotNull(entryName);
     }
 
+    public GetCredentialRequest getPendingCredentialRequest() {
+        return null;
+    }
+
+    public OutcomeReceiver<GetCredentialResponse, GetCredentialException> getPendingCredentialCallback() {
+        return null;
+    }
+
     public void setImportantForAutofill(int mode) {
+    }
+
+    public void setIsCredential(boolean isCredential) {
     }
 
     public void setReceiveContentMimeTypes(String[] mimeTypes) {
@@ -155,5 +170,11 @@ public abstract class ViewStructure {
     }
 
     public void setMaxTextLength(int maxLength) {
+    }
+
+    public void setPendingCredentialRequest(GetCredentialRequest request, OutcomeReceiver<GetCredentialResponse, GetCredentialException> callback) {
+    }
+
+    public void clearCredentialManagerRequest() {
     }
 }

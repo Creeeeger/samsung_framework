@@ -1,9 +1,11 @@
 package com.android.internal.telephony;
 
-import android.telephony.Rlog;
+import android.content.Context;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
+import com.android.internal.telephony.uicc.IccUtils;
 import com.android.internal.util.HexDump;
+import com.android.telephony.Rlog;
 import com.samsung.android.feature.SemCscFeature;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -66,6 +68,8 @@ public class SmsHeader {
     public static final int PORT_SKT_COMMON_PUSH_SMS = 16988;
     public static final int PORT_SKT_FINDING_FRIENDS = 7275;
     public static final int PORT_SKT_FOTA_SMS = 16964;
+    public static final int PORT_TMOUS_DIAGNOSTICS_DEST = 3246;
+    public static final int PORT_TMOUS_DIAGNOSTICS_SOURCE = 9201;
     public static final int PORT_WAP_PUSH = 2948;
     public static final int PORT_WAP_WSP = 9200;
     public ConcatRef concatRef;
@@ -77,8 +81,8 @@ public class SmsHeader {
     public ArrayList<MiscElt> miscEltList = new ArrayList<>();
     public boolean safeMessageIndication = false;
     public boolean twoPhoneIndication = false;
+    public boolean linkWarningIndication = false;
 
-    /* loaded from: classes5.dex */
     public static class KTReadConfirm {
         public int id;
         public int readConfirmID;
@@ -102,7 +106,6 @@ public class SmsHeader {
         return Objects.hash(this.portAddrs, this.concatRef, this.specialSmsMsgList, this.miscEltList, Integer.valueOf(this.languageTable), Integer.valueOf(this.languageShiftTable));
     }
 
-    /* loaded from: classes5.dex */
     public static class PortAddrs {
         public boolean areEightBits;
         public int destPort;
@@ -127,7 +130,6 @@ public class SmsHeader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ConcatRef {
         public boolean isEightBits;
         public int msgCount;
@@ -153,7 +155,6 @@ public class SmsHeader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SpecialSmsMsg {
         public int msgCount;
         public int msgIndType;
@@ -177,7 +178,6 @@ public class SmsHeader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class MiscElt {
         public byte[] data;
         public int id;
@@ -326,8 +326,13 @@ public class SmsHeader {
     }
 
     public static SmsHeader semFromByteArray(int subId, byte[] data) {
+        Context context = null;
         String mnoName = SmsManager.getSmsManagerForContextAndSubscriptionId(null, subId).getMnoName().toUpperCase();
-        Rlog.d("SmsHeader", "semFromByteArray: Mno = " + mnoName);
+        if (data != null) {
+            Rlog.i("SmsHeader", "semFromByteArray: Mno = " + mnoName + " UDH = " + IccUtils.bytesToHexString(data));
+        } else {
+            Rlog.i("SmsHeader", "semFromByteArray: Mno = " + mnoName + " No UDH Info");
+        }
         ByteArrayInputStream inStream = new ByteArrayInputStream(data);
         SmsHeader smsHeader = new SmsHeader();
         while (inStream.available() > 0) {
@@ -354,13 +359,13 @@ public class SmsHeader {
                         miscElt.data = new byte[length];
                         inStream.read(miscElt.data, 0, length);
                         smsHeader.miscEltList.add(miscElt);
-                        break;
+                        continue;
                     } else {
                         SpecialSmsMsg specialSmsMsg = new SpecialSmsMsg();
                         specialSmsMsg.msgIndType = inStream.read();
                         specialSmsMsg.msgCount = inStream.read();
                         smsHeader.specialSmsMsgList.add(specialSmsMsg);
-                        continue;
+                        break;
                     }
                 case 4:
                     PortAddrs portAddrs = new PortAddrs();
@@ -403,19 +408,23 @@ public class SmsHeader {
                     Rlog.i("SmsHeader", "id:" + ktReadConfirm.id + "readConfirmID" + ktReadConfirm.readConfirmID);
                     continue;
                 case 192:
-                    if (!mnoName.contains("SKT_KR") && !mnoName.contains("KT_KR") && !mnoName.contains("LGU+_KR")) {
-                        break;
-                    } else {
+                    if (mnoName.contains("SKT_KR") || mnoName.contains("KT_KR") || mnoName.contains("LGU+_KR")) {
                         int operatorControlElementValue = inStream.read();
-                        if (SmsManager.getSmsManagerForContextAndSubscriptionId(null, subId).getSmsSetting(SmsConstants.SMS_SAFE_MESSAGE_INDICATION)) {
-                            int phoneId = SubscriptionManager.getPhoneId(subId);
-                            String simType = SemTelephonyUtils.getTelephonyProperty(phoneId, "ril.simtype", "0");
+                        int phoneId = SubscriptionManager.getPhoneId(subId);
+                        String simType = SemTelephonyUtils.getTelephonyProperty(phoneId, "ril.simtype", "0");
+                        if (SmsManager.getSmsManagerForContextAndSubscriptionId(context, subId).getSmsSetting(SmsConstants.SMS_SAFE_MESSAGE_INDICATION)) {
                             if ((simType.equals("4") || simType.equals("3")) && operatorControlElementValue == 1) {
                                 smsHeader.safeMessageIndication = true;
                             } else if (simType.equals("2") && (operatorControlElementValue & 2) == 2) {
                                 smsHeader.safeMessageIndication = true;
                             }
                             Rlog.i("SafeMessageIndication", "Received smsHeader.safeMessageIndication: " + smsHeader.safeMessageIndication + " simType: " + simType);
+                        }
+                        if (SmsManager.getSmsManagerForContextAndSubscriptionId(null, subId).getSmsSetting(SmsConstants.SMS_LINK_WARNING_INDICATION)) {
+                            if (simType.equals("2") && (operatorControlElementValue & 4) == 4) {
+                                smsHeader.linkWarningIndication = true;
+                            }
+                            Rlog.i("LinkWarningIndication", "Received smsHeader.linkWarningIndication: " + smsHeader.linkWarningIndication + " simType: " + simType);
                         }
                         if (!SemCscFeature.getInstance().getBoolean("CscFeature_Common_SupportTwoPhoneService")) {
                             break;
@@ -434,6 +443,7 @@ public class SmsHeader {
             miscElt2.data = new byte[length];
             inStream.read(miscElt2.data, 0, length);
             smsHeader.miscEltList.add(miscElt2);
+            context = null;
         }
         return smsHeader;
     }

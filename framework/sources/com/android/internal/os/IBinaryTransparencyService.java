@@ -24,7 +24,6 @@ public interface IBinaryTransparencyService extends IInterface {
 
     void recordMeasurementsForAllPackages() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IBinaryTransparencyService {
         @Override // com.android.internal.os.IBinaryTransparencyService
         public String getSignedImageInfo() throws RemoteException {
@@ -56,7 +55,6 @@ public interface IBinaryTransparencyService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IBinaryTransparencyService {
         static final int TRANSACTION_collectAllApexInfo = 3;
         static final int TRANSACTION_collectAllSilentInstalledMbaInfo = 5;
@@ -111,51 +109,47 @@ public interface IBinaryTransparencyService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBinaryTransparencyService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBinaryTransparencyService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBinaryTransparencyService.DESCRIPTOR);
+                case 1:
+                    String _result = getSignedImageInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    recordMeasurementsForAllPackages();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    List<ApexInfo> _result2 = collectAllApexInfo(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result2, 1);
+                    return true;
+                case 4:
+                    Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<AppInfo> _result3 = collectAllUpdatedPreloadInfo(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 5:
+                    Bundle _arg03 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<AppInfo> _result4 = collectAllSilentInstalledMbaInfo(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result4, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _result = getSignedImageInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            recordMeasurementsForAllPackages();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            List<ApexInfo> _result2 = collectAllApexInfo(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result2, 1);
-                            return true;
-                        case 4:
-                            Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<AppInfo> _result3 = collectAllUpdatedPreloadInfo(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 5:
-                            Bundle _arg03 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<AppInfo> _result4 = collectAllSilentInstalledMbaInfo(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result4, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IBinaryTransparencyService {
+        private static class Proxy implements IBinaryTransparencyService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -259,12 +253,9 @@ public interface IBinaryTransparencyService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ApexInfo implements Parcelable {
         public static final Parcelable.Creator<ApexInfo> CREATOR = new Parcelable.Creator<ApexInfo>() { // from class: com.android.internal.os.IBinaryTransparencyService.ApexInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ApexInfo createFromParcel(Parcel _aidl_source) {
                 ApexInfo _aidl_out = new ApexInfo();
@@ -272,6 +263,7 @@ public interface IBinaryTransparencyService extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ApexInfo[] newArray(int _aidl_size) {
                 return new ApexInfo[_aidl_size];
@@ -283,25 +275,6 @@ public interface IBinaryTransparencyService extends IInterface {
         public String[] signerDigests;
         public long longVersion = 0;
         public int digestAlgorithm = 0;
-
-        /* renamed from: com.android.internal.os.IBinaryTransparencyService$ApexInfo$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ApexInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ApexInfo createFromParcel(Parcel _aidl_source) {
-                ApexInfo _aidl_out = new ApexInfo();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ApexInfo[] newArray(int _aidl_size) {
-                return new ApexInfo[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -393,12 +366,9 @@ public interface IBinaryTransparencyService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class AppInfo implements Parcelable {
         public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>() { // from class: com.android.internal.os.IBinaryTransparencyService.AppInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AppInfo createFromParcel(Parcel _aidl_source) {
                 AppInfo _aidl_out = new AppInfo();
@@ -406,6 +376,7 @@ public interface IBinaryTransparencyService extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AppInfo[] newArray(int _aidl_size) {
                 return new AppInfo[_aidl_size];
@@ -422,25 +393,6 @@ public interface IBinaryTransparencyService extends IInterface {
         public long longVersion = 0;
         public int digestAlgorithm = 0;
         public int mbaStatus = 0;
-
-        /* renamed from: com.android.internal.os.IBinaryTransparencyService$AppInfo$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<AppInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AppInfo createFromParcel(Parcel _aidl_source) {
-                AppInfo _aidl_out = new AppInfo();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AppInfo[] newArray(int _aidl_size) {
-                return new AppInfo[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

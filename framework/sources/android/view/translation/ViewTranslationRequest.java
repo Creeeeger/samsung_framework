@@ -17,14 +17,13 @@ import java.util.Set;
 /* loaded from: classes4.dex */
 public final class ViewTranslationRequest implements Parcelable {
     public static final Parcelable.Creator<ViewTranslationRequest> CREATOR = new Parcelable.Creator<ViewTranslationRequest>() { // from class: android.view.translation.ViewTranslationRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ViewTranslationRequest[] newArray(int size) {
             return new ViewTranslationRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ViewTranslationRequest createFromParcel(Parcel in) {
             return new ViewTranslationRequest(in);
@@ -36,13 +35,7 @@ public final class ViewTranslationRequest implements Parcelable {
     private final Map<String, TranslationRequestValue> mTranslationRequestValues;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Id {
-    }
-
-    /* renamed from: -$$Nest$smdefaultTranslationRequestValues */
-    static /* bridge */ /* synthetic */ Map m5861$$Nest$smdefaultTranslationRequestValues() {
-        return defaultTranslationRequestValues();
     }
 
     public TranslationRequestValue getValue(String key) {
@@ -61,11 +54,11 @@ public final class ViewTranslationRequest implements Parcelable {
         return this.mAutofillId;
     }
 
-    private static Map<String, TranslationRequestValue> defaultTranslationRequestValues() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static Map<String, TranslationRequestValue> defaultTranslationRequestValues() {
         return Collections.emptyMap();
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private AutofillId mAutofillId;
         private long mBuilderFieldsSet = 0;
@@ -73,13 +66,12 @@ public final class ViewTranslationRequest implements Parcelable {
 
         public Builder(AutofillId autofillId) {
             this.mAutofillId = autofillId;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         }
 
         public Builder(AutofillId autofillId, long virtualChildId) {
-            AutofillId autofillId2 = new AutofillId(autofillId, virtualChildId, 0);
-            this.mAutofillId = autofillId2;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId2);
+            this.mAutofillId = new AutofillId(autofillId, virtualChildId, 0);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         }
 
         public Builder setValue(String key, TranslationRequestValue value) {
@@ -92,10 +84,9 @@ public final class ViewTranslationRequest implements Parcelable {
 
         public ViewTranslationRequest build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 4;
-            this.mBuilderFieldsSet = j;
-            if ((j & 2) == 0) {
-                this.mTranslationRequestValues = ViewTranslationRequest.m5861$$Nest$smdefaultTranslationRequestValues();
+            this.mBuilderFieldsSet |= 4;
+            if ((this.mBuilderFieldsSet & 2) == 0) {
+                this.mTranslationRequestValues = ViewTranslationRequest.defaultTranslationRequestValues();
             }
             ViewTranslationRequest o = new ViewTranslationRequest(this.mAutofillId, this.mTranslationRequestValues);
             return o;
@@ -117,9 +108,9 @@ public final class ViewTranslationRequest implements Parcelable {
 
     public ViewTranslationRequest(AutofillId autofillId, Map<String, TranslationRequestValue> translationRequestValues) {
         this.mAutofillId = autofillId;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         this.mTranslationRequestValues = translationRequestValues;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) translationRequestValues);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTranslationRequestValues);
     }
 
     public String toString() {
@@ -161,26 +152,9 @@ public final class ViewTranslationRequest implements Parcelable {
         Map<String, TranslationRequestValue> translationRequestValues = new LinkedHashMap<>();
         in.readMap(translationRequestValues, TranslationRequestValue.class.getClassLoader());
         this.mAutofillId = autofillId;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         this.mTranslationRequestValues = translationRequestValues;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) translationRequestValues);
-    }
-
-    /* renamed from: android.view.translation.ViewTranslationRequest$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ViewTranslationRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ViewTranslationRequest[] newArray(int size) {
-            return new ViewTranslationRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ViewTranslationRequest createFromParcel(Parcel in) {
-            return new ViewTranslationRequest(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTranslationRequestValues);
     }
 
     @Deprecated

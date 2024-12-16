@@ -22,14 +22,9 @@ public class TraceReportService extends Service {
     private Messenger mMessenger = null;
 
     @SystemApi(client = SystemApi.Client.PRIVILEGED_APPS)
-    /* loaded from: classes3.dex */
     public static final class TraceParams {
         private final ParcelFileDescriptor mFd;
         private final UUID mUuid;
-
-        /* synthetic */ TraceParams(TraceReportParams traceReportParams, TraceParamsIA traceParamsIA) {
-            this(traceReportParams);
-        }
 
         private TraceParams(TraceReportParams params) {
             this.mFd = params.fd;
@@ -48,6 +43,7 @@ public class TraceReportService extends Service {
     public void onReportTrace(TraceParams args) {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean onMessage(Message msg) {
         if (msg.what != 1) {
             return false;

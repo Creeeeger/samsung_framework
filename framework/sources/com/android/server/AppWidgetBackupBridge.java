@@ -11,39 +11,34 @@ public class AppWidgetBackupBridge {
     }
 
     public static List<String> getWidgetParticipants(int userId) {
-        WidgetBackupProvider widgetBackupProvider = sAppWidgetService;
-        if (widgetBackupProvider != null) {
-            return widgetBackupProvider.getWidgetParticipants(userId);
+        if (sAppWidgetService != null) {
+            return sAppWidgetService.getWidgetParticipants(userId);
         }
         return null;
     }
 
     public static byte[] getWidgetState(String packageName, int userId) {
-        WidgetBackupProvider widgetBackupProvider = sAppWidgetService;
-        if (widgetBackupProvider != null) {
-            return widgetBackupProvider.getWidgetState(packageName, userId);
+        if (sAppWidgetService != null) {
+            return sAppWidgetService.getWidgetState(packageName, userId);
         }
         return null;
     }
 
     public static void systemRestoreStarting(int userId) {
-        WidgetBackupProvider widgetBackupProvider = sAppWidgetService;
-        if (widgetBackupProvider != null) {
-            widgetBackupProvider.systemRestoreStarting(userId);
+        if (sAppWidgetService != null) {
+            sAppWidgetService.systemRestoreStarting(userId);
         }
     }
 
     public static void restoreWidgetState(String packageName, byte[] restoredState, int userId) {
-        WidgetBackupProvider widgetBackupProvider = sAppWidgetService;
-        if (widgetBackupProvider != null) {
-            widgetBackupProvider.restoreWidgetState(packageName, restoredState, userId);
+        if (sAppWidgetService != null) {
+            sAppWidgetService.restoreWidgetState(packageName, restoredState, userId);
         }
     }
 
     public static void systemRestoreFinished(int userId) {
-        WidgetBackupProvider widgetBackupProvider = sAppWidgetService;
-        if (widgetBackupProvider != null) {
-            widgetBackupProvider.systemRestoreFinished(userId);
+        if (sAppWidgetService != null) {
+            sAppWidgetService.systemRestoreFinished(userId);
         }
     }
 }

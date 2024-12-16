@@ -27,10 +27,6 @@ public interface ITaskOrganizer extends IInterface {
 
     void onImmersiveModeChanged(int i, boolean z) throws RemoteException;
 
-    void onKeepScreenOnChanged(int i, boolean z) throws RemoteException;
-
-    void onNewDexImmersiveModeChanged(int i, boolean z) throws RemoteException;
-
     void onSplitLayoutChangeRequested(ActivityManager.RunningTaskInfo runningTaskInfo, Bundle bundle) throws RemoteException;
 
     void onTaskAppeared(ActivityManager.RunningTaskInfo runningTaskInfo, SurfaceControl surfaceControl) throws RemoteException;
@@ -47,7 +43,6 @@ public interface ITaskOrganizer extends IInterface {
 
     void resetStashedFreeform(int i, boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITaskOrganizer {
         @Override // android.window.ITaskOrganizer
         public void addStartingWindow(StartingWindowInfo info) throws RemoteException {
@@ -90,7 +85,7 @@ public interface ITaskOrganizer extends IInterface {
         }
 
         @Override // android.window.ITaskOrganizer
-        public void preloadSplashScreenAppIcon(ActivityInfo info, int userId, Configuration config) throws RemoteException {
+        public void onImmersiveModeChanged(int taskId, boolean immersive) throws RemoteException {
         }
 
         @Override // android.window.ITaskOrganizer
@@ -98,19 +93,11 @@ public interface ITaskOrganizer extends IInterface {
         }
 
         @Override // android.window.ITaskOrganizer
-        public void onKeepScreenOnChanged(int taskId, boolean keepScreenOn) throws RemoteException {
-        }
-
-        @Override // android.window.ITaskOrganizer
-        public void onImmersiveModeChanged(int taskId, boolean immersive) throws RemoteException {
-        }
-
-        @Override // android.window.ITaskOrganizer
-        public void onNewDexImmersiveModeChanged(int taskId, boolean immersive) throws RemoteException {
-        }
-
-        @Override // android.window.ITaskOrganizer
         public void requestAffordanceAnim(ActivityManager.RunningTaskInfo taskInfo, int gestureFrom) throws RemoteException {
+        }
+
+        @Override // android.window.ITaskOrganizer
+        public void preloadSplashScreenAppIcon(ActivityInfo info, int userId, Configuration config) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -119,23 +106,20 @@ public interface ITaskOrganizer extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITaskOrganizer {
         static final int TRANSACTION_addStartingWindow = 1;
         static final int TRANSACTION_copySplashScreenView = 3;
         static final int TRANSACTION_onAppSplashScreenViewRemoved = 4;
         static final int TRANSACTION_onBackPressedOnTaskRoot = 8;
         static final int TRANSACTION_onImeDrawnOnTask = 9;
-        static final int TRANSACTION_onImmersiveModeChanged = 14;
-        static final int TRANSACTION_onKeepScreenOnChanged = 13;
-        static final int TRANSACTION_onNewDexImmersiveModeChanged = 15;
+        static final int TRANSACTION_onImmersiveModeChanged = 11;
         static final int TRANSACTION_onSplitLayoutChangeRequested = 10;
         static final int TRANSACTION_onTaskAppeared = 5;
         static final int TRANSACTION_onTaskInfoChanged = 7;
         static final int TRANSACTION_onTaskVanished = 6;
-        static final int TRANSACTION_preloadSplashScreenAppIcon = 11;
+        static final int TRANSACTION_preloadSplashScreenAppIcon = 14;
         static final int TRANSACTION_removeStartingWindow = 2;
-        static final int TRANSACTION_requestAffordanceAnim = 16;
+        static final int TRANSACTION_requestAffordanceAnim = 13;
         static final int TRANSACTION_resetStashedFreeform = 12;
 
         public Stub() {
@@ -181,17 +165,13 @@ public interface ITaskOrganizer extends IInterface {
                 case 10:
                     return "onSplitLayoutChangeRequested";
                 case 11:
-                    return "preloadSplashScreenAppIcon";
+                    return "onImmersiveModeChanged";
                 case 12:
                     return "resetStashedFreeform";
                 case 13:
-                    return "onKeepScreenOnChanged";
-                case 14:
-                    return "onImmersiveModeChanged";
-                case 15:
-                    return "onNewDexImmersiveModeChanged";
-                case 16:
                     return "requestAffordanceAnim";
+                case 14:
+                    return "preloadSplashScreenAppIcon";
                 default:
                     return null;
             }
@@ -207,109 +187,94 @@ public interface ITaskOrganizer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITaskOrganizer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITaskOrganizer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITaskOrganizer.DESCRIPTOR);
+                case 1:
+                    StartingWindowInfo _arg0 = (StartingWindowInfo) data.readTypedObject(StartingWindowInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    addStartingWindow(_arg0);
+                    return true;
+                case 2:
+                    StartingWindowRemovalInfo _arg02 = (StartingWindowRemovalInfo) data.readTypedObject(StartingWindowRemovalInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeStartingWindow(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    copySplashScreenView(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAppSplashScreenViewRemoved(_arg04);
+                    return true;
+                case 5:
+                    ActivityManager.RunningTaskInfo _arg05 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
+                    SurfaceControl _arg1 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTaskAppeared(_arg05, _arg1);
+                    return true;
+                case 6:
+                    ActivityManager.RunningTaskInfo _arg06 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTaskVanished(_arg06);
+                    return true;
+                case 7:
+                    ActivityManager.RunningTaskInfo _arg07 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTaskInfoChanged(_arg07);
+                    return true;
+                case 8:
+                    ActivityManager.RunningTaskInfo _arg08 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onBackPressedOnTaskRoot(_arg08);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onImeDrawnOnTask(_arg09);
+                    return true;
+                case 10:
+                    ActivityManager.RunningTaskInfo _arg010 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
+                    Bundle _arg12 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSplitLayoutChangeRequested(_arg010, _arg12);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onImmersiveModeChanged(_arg011, _arg13);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    boolean _arg14 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    resetStashedFreeform(_arg012, _arg14);
+                    return true;
+                case 13:
+                    ActivityManager.RunningTaskInfo _arg013 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestAffordanceAnim(_arg013, _arg15);
+                    return true;
+                case 14:
+                    ActivityInfo _arg014 = (ActivityInfo) data.readTypedObject(ActivityInfo.CREATOR);
+                    int _arg16 = data.readInt();
+                    Configuration _arg2 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    data.enforceNoDataAvail();
+                    preloadSplashScreenAppIcon(_arg014, _arg16, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            StartingWindowInfo _arg0 = (StartingWindowInfo) data.readTypedObject(StartingWindowInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            addStartingWindow(_arg0);
-                            return true;
-                        case 2:
-                            StartingWindowRemovalInfo _arg02 = (StartingWindowRemovalInfo) data.readTypedObject(StartingWindowRemovalInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeStartingWindow(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            copySplashScreenView(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAppSplashScreenViewRemoved(_arg04);
-                            return true;
-                        case 5:
-                            ActivityManager.RunningTaskInfo _arg05 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
-                            SurfaceControl _arg1 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTaskAppeared(_arg05, _arg1);
-                            return true;
-                        case 6:
-                            ActivityManager.RunningTaskInfo _arg06 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTaskVanished(_arg06);
-                            return true;
-                        case 7:
-                            ActivityManager.RunningTaskInfo _arg07 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTaskInfoChanged(_arg07);
-                            return true;
-                        case 8:
-                            ActivityManager.RunningTaskInfo _arg08 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onBackPressedOnTaskRoot(_arg08);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onImeDrawnOnTask(_arg09);
-                            return true;
-                        case 10:
-                            ActivityManager.RunningTaskInfo _arg010 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
-                            Bundle _arg12 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSplitLayoutChangeRequested(_arg010, _arg12);
-                            return true;
-                        case 11:
-                            ActivityInfo _arg011 = (ActivityInfo) data.readTypedObject(ActivityInfo.CREATOR);
-                            int _arg13 = data.readInt();
-                            Configuration _arg2 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            data.enforceNoDataAvail();
-                            preloadSplashScreenAppIcon(_arg011, _arg13, _arg2);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            resetStashedFreeform(_arg012, _arg14);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onKeepScreenOnChanged(_arg013, _arg15);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onImmersiveModeChanged(_arg014, _arg16);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            boolean _arg17 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onNewDexImmersiveModeChanged(_arg015, _arg17);
-                            return true;
-                        case 16:
-                            ActivityManager.RunningTaskInfo _arg016 = (ActivityManager.RunningTaskInfo) data.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
-                            int _arg18 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestAffordanceAnim(_arg016, _arg18);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITaskOrganizer {
+        private static class Proxy implements ITaskOrganizer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -448,13 +413,12 @@ public interface ITaskOrganizer extends IInterface {
             }
 
             @Override // android.window.ITaskOrganizer
-            public void preloadSplashScreenAppIcon(ActivityInfo info, int userId, Configuration config) throws RemoteException {
+            public void onImmersiveModeChanged(int taskId, boolean immersive) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ITaskOrganizer.DESCRIPTOR);
-                    _data.writeTypedObject(info, 0);
-                    _data.writeInt(userId);
-                    _data.writeTypedObject(config, 0);
+                    _data.writeInt(taskId);
+                    _data.writeBoolean(immersive);
                     this.mRemote.transact(11, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -475,12 +439,12 @@ public interface ITaskOrganizer extends IInterface {
             }
 
             @Override // android.window.ITaskOrganizer
-            public void onKeepScreenOnChanged(int taskId, boolean keepScreenOn) throws RemoteException {
+            public void requestAffordanceAnim(ActivityManager.RunningTaskInfo taskInfo, int gestureFrom) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ITaskOrganizer.DESCRIPTOR);
-                    _data.writeInt(taskId);
-                    _data.writeBoolean(keepScreenOn);
+                    _data.writeTypedObject(taskInfo, 0);
+                    _data.writeInt(gestureFrom);
                     this.mRemote.transact(13, _data, null, 1);
                 } finally {
                     _data.recycle();
@@ -488,39 +452,14 @@ public interface ITaskOrganizer extends IInterface {
             }
 
             @Override // android.window.ITaskOrganizer
-            public void onImmersiveModeChanged(int taskId, boolean immersive) throws RemoteException {
+            public void preloadSplashScreenAppIcon(ActivityInfo info, int userId, Configuration config) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ITaskOrganizer.DESCRIPTOR);
-                    _data.writeInt(taskId);
-                    _data.writeBoolean(immersive);
+                    _data.writeTypedObject(info, 0);
+                    _data.writeInt(userId);
+                    _data.writeTypedObject(config, 0);
                     this.mRemote.transact(14, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.window.ITaskOrganizer
-            public void onNewDexImmersiveModeChanged(int taskId, boolean immersive) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(ITaskOrganizer.DESCRIPTOR);
-                    _data.writeInt(taskId);
-                    _data.writeBoolean(immersive);
-                    this.mRemote.transact(15, _data, null, 1);
-                } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.window.ITaskOrganizer
-            public void requestAffordanceAnim(ActivityManager.RunningTaskInfo taskInfo, int gestureFrom) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                try {
-                    _data.writeInterfaceToken(ITaskOrganizer.DESCRIPTOR);
-                    _data.writeTypedObject(taskInfo, 0);
-                    _data.writeInt(gestureFrom);
-                    this.mRemote.transact(16, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -529,7 +468,7 @@ public interface ITaskOrganizer extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 15;
+            return 13;
         }
     }
 }

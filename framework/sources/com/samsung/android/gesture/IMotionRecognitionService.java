@@ -6,9 +6,11 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMotionRecognitionService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.gesture.IMotionRecognitionService";
+
+    void enableSARDevice(boolean z, long j, int i, int i2) throws RemoteException;
 
     String getEvLuxTableInfo(String str) throws RemoteException;
 
@@ -38,7 +40,6 @@ public interface IMotionRecognitionService extends IInterface {
 
     void useMotionAlways(IBinder iBinder, boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMotionRecognitionService {
         @Override // com.samsung.android.gesture.IMotionRecognitionService
         public void registerCallback(IBinder binder, int motion_sensors, int motion_events) throws RemoteException {
@@ -103,14 +104,18 @@ public interface IMotionRecognitionService extends IInterface {
         public void stopAdaptiveBrightness() throws RemoteException {
         }
 
+        @Override // com.samsung.android.gesture.IMotionRecognitionService
+        public void enableSARDevice(boolean enable, long deviceId, int slot, int extId) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMotionRecognitionService {
+        static final int TRANSACTION_enableSARDevice = 15;
         static final int TRANSACTION_getEvLuxTableInfo = 11;
         static final int TRANSACTION_getEvToLux = 10;
         static final int TRANSACTION_getPickUpMotionStatus = 3;
@@ -176,6 +181,8 @@ public interface IMotionRecognitionService extends IInterface {
                     return "startAdaptiveBrightness";
                 case 14:
                     return "stopAdaptiveBrightness";
+                case 15:
+                    return "enableSARDevice";
                 default:
                     return null;
             }
@@ -191,109 +198,114 @@ public interface IMotionRecognitionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMotionRecognitionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMotionRecognitionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMotionRecognitionService.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    boolean _result = getSSPstatus();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 3:
+                    boolean _result2 = getPickUpMotionStatus();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unregisterCallback(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IBinder _arg03 = data.readStrongBinder();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    useMotionAlways(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IBinder _arg04 = data.readStrongBinder();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMotionAngle(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg05 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMotionTiltLevel(_arg05, _arg14, _arg22, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _result3 = resetMotionEngine();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 9:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = isAvailable(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 10:
+                    float[] _arg07 = data.createFloatArray();
+                    data.enforceNoDataAvail();
+                    float[] _result5 = getEvToLux(_arg07);
+                    reply.writeNoException();
+                    reply.writeFloatArray(_result5);
+                    return true;
+                case 11:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result6 = getEvLuxTableInfo(_arg08);
+                    reply.writeNoException();
+                    reply.writeString(_result6);
+                    return true;
+                case 12:
+                    boolean _result7 = setTestSensor();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 13:
+                    startAdaptiveBrightness();
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    stopAdaptiveBrightness();
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    boolean _arg09 = data.readBoolean();
+                    long _arg15 = data.readLong();
+                    int _arg23 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    enableSARDevice(_arg09, _arg15, _arg23, _arg32);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            boolean _result = getSSPstatus();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 3:
-                            boolean _result2 = getPickUpMotionStatus();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unregisterCallback(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IBinder _arg03 = data.readStrongBinder();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            useMotionAlways(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IBinder _arg04 = data.readStrongBinder();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMotionAngle(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg05 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMotionTiltLevel(_arg05, _arg14, _arg22, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _result3 = resetMotionEngine();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 9:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isAvailable(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 10:
-                            float[] _arg07 = data.createFloatArray();
-                            data.enforceNoDataAvail();
-                            float[] _result5 = getEvToLux(_arg07);
-                            reply.writeNoException();
-                            reply.writeFloatArray(_result5);
-                            return true;
-                        case 11:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result6 = getEvLuxTableInfo(_arg08);
-                            reply.writeNoException();
-                            reply.writeString(_result6);
-                            return true;
-                        case 12:
-                            boolean _result7 = setTestSensor();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 13:
-                            startAdaptiveBrightness();
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            stopAdaptiveBrightness();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IMotionRecognitionService {
+        private static class Proxy implements IMotionRecognitionService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -535,11 +547,29 @@ public interface IMotionRecognitionService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // com.samsung.android.gesture.IMotionRecognitionService
+            public void enableSARDevice(boolean enable, long deviceId, int slot, int extId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IMotionRecognitionService.DESCRIPTOR);
+                    _data.writeBoolean(enable);
+                    _data.writeLong(deviceId);
+                    _data.writeInt(slot);
+                    _data.writeInt(extId);
+                    this.mRemote.transact(15, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 13;
+            return 14;
         }
     }
 }

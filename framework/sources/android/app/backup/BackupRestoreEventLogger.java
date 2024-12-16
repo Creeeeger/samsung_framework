@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.ArrayMap;
 import android.util.Slog;
+import com.android.server.backup.Flags;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.nio.charset.StandardCharsets;
@@ -19,19 +20,17 @@ import java.util.Map;
 @SystemApi
 /* loaded from: classes.dex */
 public final class BackupRestoreEventLogger {
-    public static final int DATA_TYPES_ALLOWED = 15;
+    public static final int DATA_TYPES_ALLOWED = 150;
     private static final String TAG = "BackupRestoreEventLogger";
     private final MessageDigest mHashDigest;
     private final int mOperationType;
     private final Map<String, DataTypeResult> mResults = new HashMap();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BackupRestoreDataType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BackupRestoreError {
     }
 
@@ -116,7 +115,7 @@ public final class BackupRestoreEventLogger {
             return null;
         }
         if (!this.mResults.containsKey(dataType)) {
-            if (this.mResults.keySet().size() == 15) {
+            if (this.mResults.keySet().size() == getDataTypesAllowed()) {
                 Slog.d(TAG, "Logger is full, ignoring new data type");
                 return null;
             }
@@ -129,12 +128,16 @@ public final class BackupRestoreEventLogger {
         return this.mHashDigest.digest(metaData.getBytes(StandardCharsets.UTF_8));
     }
 
-    /* loaded from: classes.dex */
+    private int getDataTypesAllowed() {
+        if (Flags.enableIncreaseDatatypesForAgentLogging()) {
+            return 150;
+        }
+        return 15;
+    }
+
     public static final class DataTypeResult implements Parcelable {
         public static final Parcelable.Creator<DataTypeResult> CREATOR = new Parcelable.Creator<DataTypeResult>() { // from class: android.app.backup.BackupRestoreEventLogger.DataTypeResult.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DataTypeResult createFromParcel(Parcel in) {
                 String dataType = in.readString();
@@ -154,6 +157,7 @@ public final class BackupRestoreEventLogger {
                 return result;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DataTypeResult[] newArray(int size) {
                 return new DataTypeResult[size];
@@ -205,37 +209,6 @@ public final class BackupRestoreEventLogger {
             }
             dest.writeBundle(errorsBundle);
             dest.writeByteArray(this.mMetadataHash);
-        }
-
-        /* renamed from: android.app.backup.BackupRestoreEventLogger$DataTypeResult$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<DataTypeResult> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public DataTypeResult createFromParcel(Parcel in) {
-                String dataType = in.readString();
-                int successCount = in.readInt();
-                int failCount = in.readInt();
-                ArrayMap arrayMap = new ArrayMap();
-                Bundle errorsBundle = in.readBundle(getClass().getClassLoader());
-                for (String key : errorsBundle.keySet()) {
-                    arrayMap.put(key, Integer.valueOf(errorsBundle.getInt(key)));
-                }
-                byte[] metadataHash = in.createByteArray();
-                DataTypeResult result = new DataTypeResult(dataType);
-                result.mSuccessCount = successCount;
-                result.mFailCount = failCount;
-                result.mErrors.putAll(arrayMap);
-                result.mMetadataHash = metadataHash;
-                return result;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public DataTypeResult[] newArray(int size) {
-                return new DataTypeResult[size];
-            }
         }
     }
 }

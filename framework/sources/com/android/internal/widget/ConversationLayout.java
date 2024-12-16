@@ -10,6 +10,7 @@ import android.app.RemoteInputHistoryItem;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
@@ -33,8 +34,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+import android.widget.flags.Flags;
 import com.android.internal.R;
+import com.android.internal.widget.ConversationAvatarData;
 import com.android.internal.widget.MessagingLinearLayout;
+import com.android.internal.widget.PeopleHelper;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -62,8 +66,13 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     private int mContentMarginEnd;
     private int mConversationAvatarSize;
     private int mConversationAvatarSizeExpanded;
+    private int mConversationBadgeMargin;
+    private int mConversationBadgeMarginExpanded;
+    private int mConversationBadgeSize;
+    private int mConversationBadgeSizeExpanded;
     private View mConversationFacePile;
     private View mConversationHeader;
+    private ConversationHeaderData mConversationHeaderData;
     private Icon mConversationIcon;
     private View mConversationIconBadge;
     private CachingIconView mConversationIconBadgeBg;
@@ -113,6 +122,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     private int mNotificationBackgroundColor;
     private int mNotificationHeaderExpandedPadding;
     private final PeopleHelper mPeopleHelper;
+    private boolean mPrecomputedTextEnabled;
     private int mSenderTextColor;
     private Icon mShortcutIcon;
     private boolean mShowHistoricMessages;
@@ -136,6 +146,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mExpandable = true;
         this.mTouchDelegate = new TouchDelegateComposite(this);
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     public ConversationLayout(Context context, AttributeSet attrs) {
@@ -149,6 +160,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mExpandable = true;
         this.mTouchDelegate = new TouchDelegateComposite(this);
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     public ConversationLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -162,6 +174,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mExpandable = true;
         this.mTouchDelegate = new TouchDelegateComposite(this);
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     public ConversationLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -175,10 +188,11 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mExpandable = true;
         this.mTouchDelegate = new TouchDelegateComposite(this);
         this.mToRecycle = new ArrayList<>();
+        this.mPrecomputedTextEnabled = false;
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         this.mPeopleHelper.init(getContext());
         this.mMessagingLinearLayout = (MessagingLinearLayout) findViewById(R.id.notification_messaging);
@@ -229,7 +243,11 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mConversationAvatarSize = getResources().getDimensionPixelSize(R.dimen.conversation_avatar_size);
         this.mConversationAvatarSizeExpanded = getResources().getDimensionPixelSize(R.dimen.conversation_avatar_size_group_expanded);
         this.mConversationIconTopPaddingExpandedGroup = getResources().getDimensionPixelSize(R.dimen.conversation_icon_container_top_padding_small_avatar);
-        this.mConversationIconTopPadding = getFontScaledMarginHeight(this.mContext, R.dimen.conversation_icon_container_top_padding);
+        this.mConversationBadgeSize = getResources().getDimensionPixelSize(R.dimen.conversation_icon_size_badged);
+        this.mConversationBadgeSizeExpanded = getResources().getDimensionPixelSize(R.dimen.conversation_icon_size_badged_group_expanded);
+        this.mConversationBadgeMargin = getResources().getDimensionPixelSize(R.dimen.conversation_badge_side_margin);
+        this.mConversationBadgeMarginExpanded = getResources().getDimensionPixelSize(R.dimen.conversation_badge_side_margin_group_expanded);
+        this.mConversationIconTopPadding = getResources().getDimensionPixelSize(R.dimen.conversation_icon_container_top_padding);
         this.mExpandedGroupMessagePadding = getResources().getDimensionPixelSize(R.dimen.expanded_group_conversation_message_padding);
         this.mExpandedGroupBadgeProtrusion = getResources().getDimensionPixelSize(R.dimen.conversation_badge_protrusion_group_expanded);
         this.mExpandedGroupBadgeProtrusionFacePile = getResources().getDimensionPixelSize(R.dimen.conversation_badge_protrusion_group_expanded_face_pile);
@@ -254,6 +272,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mConversationMinHeight = getResources().getDimensionPixelSize(R.dimen.conversation_expand_button_height);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$0(Integer visibility) {
         boolean isGone = visibility.intValue() == 8;
         int oldVisibility = this.mConversationIconBadgeBg.getVisibility();
@@ -277,17 +296,20 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$1(Boolean forceHidden) {
         this.mPeopleHelper.animateViewForceHidden(this.mConversationIconBadgeBg, forceHidden.booleanValue());
         this.mPeopleHelper.animateViewForceHidden(this.mImportanceRingView, forceHidden.booleanValue());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$2(Boolean forceHidden) {
         this.mPeopleHelper.animateViewForceHidden(this.mConversationIconBadgeBg, forceHidden.booleanValue());
         this.mPeopleHelper.animateViewForceHidden(this.mImportanceRingView, forceHidden.booleanValue());
         this.mPeopleHelper.animateViewForceHidden(this.mIcon, forceHidden.booleanValue());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$3(Integer visibility) {
         onAppNameVisibilityChanged();
     }
@@ -318,14 +340,14 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         if (animate && isImportantConversation) {
             final GradientDrawable ring = (GradientDrawable) this.mImportanceRingView.getDrawable();
             ring.mutate();
-            GradientDrawable bg = (GradientDrawable) this.mConversationIconBadgeBg.getDrawable();
+            final GradientDrawable bg = (GradientDrawable) this.mConversationIconBadgeBg.getDrawable();
             bg.mutate();
             final int ringColor = getResources().getColor(R.color.conversation_important_highlight);
             int standardThickness = getResources().getDimensionPixelSize(R.dimen.importance_ring_stroke_width);
             int largeThickness = getResources().getDimensionPixelSize(R.dimen.importance_ring_anim_max_stroke_width);
             int standardSize = getResources().getDimensionPixelSize(R.dimen.importance_ring_size);
             final int baseSize = standardSize - (standardThickness * 2);
-            int bgSize = getResources().getDimensionPixelSize(R.dimen.conversation_icon_size_badged);
+            final int bgSize = getResources().getDimensionPixelSize(R.dimen.conversation_icon_size_badged);
             ValueAnimator.AnimatorUpdateListener animatorUpdateListener = new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda5
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public final void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -342,29 +364,15 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
             shrinkAnimation.setInterpolator(OVERSHOOT);
             shrinkAnimation.addUpdateListener(animatorUpdateListener);
             shrinkAnimation.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ConversationLayout.1
-                final /* synthetic */ int val$baseSize;
-                final /* synthetic */ GradientDrawable val$bg;
-                final /* synthetic */ int val$bgSize;
-
-                AnonymousClass1(GradientDrawable bg2, final int baseSize2, int bgSize2) {
-                    bg = bg2;
-                    baseSize = baseSize2;
-                    bgSize = bgSize2;
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
-                    GradientDrawable gradientDrawable = bg;
-                    int i2 = baseSize;
-                    gradientDrawable.setSize(i2, i2);
+                    bg.setSize(baseSize, baseSize);
                     ConversationLayout.this.mConversationIconBadgeBg.invalidate();
                 }
 
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
-                    GradientDrawable gradientDrawable = bg;
-                    int i2 = bgSize;
-                    gradientDrawable.setSize(i2, i2);
+                    bg.setSize(bgSize, bgSize);
                     ConversationLayout.this.mConversationIconBadgeBg.invalidate();
                 }
             });
@@ -374,42 +382,13 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setIsImportantConversation$4(GradientDrawable ring, int ringColor, int baseSize, ValueAnimator animation) {
         int strokeWidth = Math.round(((Float) animation.getAnimatedValue()).floatValue());
         ring.setStroke(strokeWidth, ringColor);
         int newSize = (strokeWidth * 2) + baseSize;
         ring.setSize(newSize, newSize);
         this.mImportanceRingView.invalidate();
-    }
-
-    /* renamed from: com.android.internal.widget.ConversationLayout$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends AnimatorListenerAdapter {
-        final /* synthetic */ int val$baseSize;
-        final /* synthetic */ GradientDrawable val$bg;
-        final /* synthetic */ int val$bgSize;
-
-        AnonymousClass1(GradientDrawable bg2, final int baseSize2, int bgSize2) {
-            bg = bg2;
-            baseSize = baseSize2;
-            bgSize = bgSize2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            GradientDrawable gradientDrawable = bg;
-            int i2 = baseSize;
-            gradientDrawable.setSize(i2, i2);
-            ConversationLayout.this.mConversationIconBadgeBg.invalidate();
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            GradientDrawable gradientDrawable = bg;
-            int i2 = bgSize;
-            gradientDrawable.setSize(i2, i2);
-            ConversationLayout.this.mConversationIconBadgeBg.invalidate();
-        }
     }
 
     public boolean isImportantConversation() {
@@ -424,19 +403,69 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         updateContentEndPaddings();
     }
 
-    @RemotableViewMethod
-    public void setData(Bundle extras) {
+    @RemotableViewMethod(asyncImpl = "setDataAsync")
+    /* renamed from: setData, reason: merged with bridge method [inline-methods] */
+    public void lambda$setDataAsync$5(Bundle extras) {
+        bind(parseMessagingData(extras, false, false));
+    }
+
+    private MessagingData parseMessagingData(Bundle extras, boolean usePrecomputedText, boolean includeConversationIcon) {
+        ConversationHeaderData conversationHeaderData;
         Parcelable[] messages = extras.getParcelableArray(Notification.EXTRA_MESSAGES);
         List<Notification.MessagingStyle.Message> newMessages = Notification.MessagingStyle.Message.getMessagesFromBundleArray(messages);
         Parcelable[] histMessages = extras.getParcelableArray(Notification.EXTRA_HISTORIC_MESSAGES);
         List<Notification.MessagingStyle.Message> newHistoricMessages = Notification.MessagingStyle.Message.getMessagesFromBundleArray(histMessages);
-        setUser((Person) extras.getParcelable(Notification.EXTRA_MESSAGING_PERSON, Person.class));
+        Person user = (Person) extras.getParcelable(Notification.EXTRA_MESSAGING_PERSON, Person.class);
         RemoteInputHistoryItem[] history = (RemoteInputHistoryItem[]) extras.getParcelableArray(Notification.EXTRA_REMOTE_INPUT_HISTORY_ITEMS, RemoteInputHistoryItem.class);
         addRemoteInputHistoryToMessages(newMessages, history);
         boolean showSpinner = extras.getBoolean(Notification.EXTRA_SHOW_REMOTE_INPUT_SPINNER, false);
-        bind(newMessages, newHistoricMessages, showSpinner);
         int unreadCount = extras.getInt(Notification.EXTRA_CONVERSATION_UNREAD_MESSAGE_COUNT);
-        setUnreadCount(unreadCount);
+        List<MessagingMessage> newMessagingMessages = createMessages(newMessages, false, usePrecomputedText);
+        List<MessagingMessage> newHistoricMessagingMessages = createMessages(newHistoricMessages, true, usePrecomputedText);
+        List<List<MessagingMessage>> groups = new ArrayList<>();
+        List<Person> senders = new ArrayList<>();
+        findGroups(newHistoricMessagingMessages, newMessagingMessages, user, groups, senders);
+        if (includeConversationIcon && Flags.conversationStyleSetAvatarAsync()) {
+            conversationHeaderData = loadConversationHeaderData(this.mIsOneToOne, this.mConversationTitle, this.mShortcutIcon, this.mLargeIcon, newMessagingMessages, user, groups, this.mLayoutColor);
+        } else {
+            conversationHeaderData = null;
+        }
+        return new MessagingData(user, showSpinner, unreadCount, newHistoricMessagingMessages, newMessagingMessages, groups, senders, conversationHeaderData);
+    }
+
+    public Runnable setDataAsync(final Bundle extras) {
+        if (!this.mPrecomputedTextEnabled) {
+            return new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda9
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ConversationLayout.this.lambda$setDataAsync$5(extras);
+                }
+            };
+        }
+        final MessagingData messagingData = parseMessagingData(extras, true, true);
+        return new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda10
+            @Override // java.lang.Runnable
+            public final void run() {
+                ConversationLayout.this.lambda$setDataAsync$6(messagingData);
+            }
+        };
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setDataAsync$6(MessagingData messagingData) {
+        finalizeInflate(messagingData.getHistoricMessagingMessages());
+        finalizeInflate(messagingData.getNewMessagingMessages());
+        bind(messagingData);
+    }
+
+    public void setPrecomputedTextEnabled(boolean precomputedTextEnabled) {
+        this.mPrecomputedTextEnabled = precomputedTextEnabled;
+    }
+
+    private void finalizeInflate(List<MessagingMessage> historicMessagingMessages) {
+        for (MessagingMessage messagingMessage : historicMessagingMessages) {
+            messagingMessage.finalizeInflate();
+        }
     }
 
     @Override // com.android.internal.widget.ImageMessageConsumer
@@ -462,14 +491,11 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
-    private void bind(List<Notification.MessagingStyle.Message> newMessages, List<Notification.MessagingStyle.Message> newHistoricMessages, boolean showSpinner) {
-        List<MessagingMessage> historicMessages = createMessages(newHistoricMessages, true);
-        List<MessagingMessage> messages = createMessages(newMessages, false);
+    private void bind(MessagingData messagingData) {
+        setUser(messagingData.getUser());
+        setUnreadCount(messagingData.getUnreadCount());
         ArrayList<MessagingGroup> oldGroups = new ArrayList<>(this.mGroups);
-        List<List<MessagingMessage>> groups = new ArrayList<>();
-        List<Person> senders = new ArrayList<>();
-        findGroups(historicMessages, messages, groups, senders);
-        createGroupViews(groups, senders, showSpinner);
+        createGroupViews(messagingData.getGroups(), messagingData.getSenders(), messagingData.getShowSpinner());
         removeGroups(oldGroups);
         for (MessagingMessage message : this.mMessages) {
             message.removeMessage(this.mToRecycle);
@@ -477,11 +503,11 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         for (MessagingMessage historicMessage : this.mHistoricMessages) {
             historicMessage.removeMessage(this.mToRecycle);
         }
-        this.mMessages = messages;
-        this.mHistoricMessages = historicMessages;
+        this.mMessages = messagingData.getNewMessagingMessages();
+        this.mHistoricMessages = messagingData.getHistoricMessagingMessages();
         updateHistoricMessageVisibility();
         updateTitleAndNamesDisplay();
-        updateConversationLayout();
+        updateConversationLayout(messagingData);
         Iterator<MessagingLinearLayout.MessagingChild> it = this.mToRecycle.iterator();
         while (it.hasNext()) {
             MessagingLinearLayout.MessagingChild child = it.next();
@@ -490,7 +516,26 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mToRecycle.clear();
     }
 
-    private void updateConversationLayout() {
+    private void updateConversationLayout(MessagingData messagingData) {
+        if (!Flags.conversationStyleSetAvatarAsync()) {
+            computeAndSetConversationAvatarAndName();
+        } else {
+            ConversationHeaderData conversationHeaderData = messagingData.getConversationHeaderData();
+            if (conversationHeaderData == null) {
+                conversationHeaderData = loadConversationHeaderData(this.mIsOneToOne, this.mConversationTitle, this.mShortcutIcon, this.mLargeIcon, this.mMessages, this.mUser, messagingData.getGroups(), this.mLayoutColor);
+            }
+            setConversationAvatarAndNameFromData(conversationHeaderData);
+        }
+        updateAppName();
+        updateIconPositionAndSize();
+        updateImageMessages();
+        updatePaddingsBasedOnContentAvailability();
+        updateActionListPadding();
+        updateAppNameDividerVisibility();
+    }
+
+    @Deprecated
+    private void computeAndSetConversationAvatarAndName() {
         CharSequence conversationText = this.mConversationTitle;
         this.mConversationIcon = this.mShortcutIcon;
         if (this.mIsOneToOne) {
@@ -528,27 +573,50 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         if (TextUtils.isEmpty(conversationText)) {
             conversationText = this.mIsOneToOne ? this.mFallbackChatName : this.mFallbackGroupChatName;
         }
-        this.mConversationText.setText(conversationText);
+        this.mConversationText.lambda$setTextAsync$0(conversationText);
         this.mPeopleHelper.maybeHideFirstSenderName(this.mGroups, this.mIsOneToOne, conversationText);
-        updateAppName();
-        updateIconPositionAndSize();
-        updateImageMessages();
-        updatePaddingsBasedOnContentAvailability();
-        updateActionListPadding();
-        updateAppNameDividerVisibility();
+    }
+
+    private void setConversationAvatarAndNameFromData(ConversationHeaderData conversationHeaderData) {
+        ConversationAvatarData.OneToOneConversationAvatarData oneToOneConversationDrawable;
+        ConversationAvatarData.GroupConversationAvatarData groupConversationAvatarData;
+        this.mConversationHeaderData = conversationHeaderData;
+        ConversationAvatarData conversationAvatar = conversationHeaderData.getConversationAvatar();
+        if (conversationAvatar instanceof ConversationAvatarData.OneToOneConversationAvatarData) {
+            oneToOneConversationDrawable = (ConversationAvatarData.OneToOneConversationAvatarData) conversationAvatar;
+            groupConversationAvatarData = null;
+        } else {
+            oneToOneConversationDrawable = null;
+            groupConversationAvatarData = (ConversationAvatarData.GroupConversationAvatarData) conversationAvatar;
+        }
+        if (oneToOneConversationDrawable != null) {
+            this.mConversationIconView.setVisibility(0);
+            this.mConversationFacePile.setVisibility(8);
+            this.mConversationIconView.lambda$setImageURIAsync$0(oneToOneConversationDrawable.mDrawable);
+        } else {
+            this.mConversationIconView.setVisibility(8);
+            this.mConversationFacePile.setVisibility(0);
+            this.mConversationFacePile = findViewById(R.id.conversation_face_pile);
+            bindFacePile(groupConversationAvatarData);
+        }
+        CharSequence conversationText = conversationHeaderData.getConversationText();
+        if (TextUtils.isEmpty(conversationText)) {
+            conversationText = this.mIsOneToOne ? this.mFallbackChatName : this.mFallbackGroupChatName;
+        }
+        this.mConversationText.lambda$setTextAsync$0(conversationText);
+        this.mPeopleHelper.maybeHideFirstSenderName(this.mGroups, this.mIsOneToOne, conversationText);
     }
 
     private void updateActionListPadding() {
-        NotificationActionListLayout notificationActionListLayout = this.mActions;
-        if (notificationActionListLayout != null) {
-            notificationActionListLayout.setCollapsibleIndentDimen(R.dimen.call_notification_collapsible_indent);
+        if (this.mActions != null) {
+            this.mActions.setCollapsibleIndentDimen(R.dimen.call_notification_collapsible_indent);
         }
     }
 
     private void updateImageMessages() {
         View newMessage = null;
         if (this.mIsCollapsed && this.mGroups.size() > 0) {
-            MessagingGroup messagingGroup = this.mGroups.get(r1.size() - 1);
+            MessagingGroup messagingGroup = this.mGroups.get(this.mGroups.size() - 1);
             MessagingImageMessage isolatedMessage = messagingGroup.getIsolatedMessage();
             if (isolatedMessage != null) {
                 newMessage = isolatedMessage.getView();
@@ -600,14 +668,23 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         topView.setImageIcon(secondLastIcon);
     }
 
+    @Deprecated
     private void bindFacePile() {
+        bindFacePile(null);
+    }
+
+    private void bindFacePile(ConversationAvatarData.GroupConversationAvatarData groupConversationAvatarData) {
         int conversationAvatarSize;
         int facepileAvatarSize;
         int facePileBackgroundSize;
         ImageView bottomBackground = (ImageView) this.mConversationFacePile.findViewById(R.id.conversation_face_pile_bottom_background);
         ImageView bottomView = (ImageView) this.mConversationFacePile.findViewById(R.id.conversation_face_pile_bottom);
         ImageView topView = (ImageView) this.mConversationFacePile.findViewById(R.id.conversation_face_pile_top);
-        bindFacePile(bottomBackground, bottomView, topView);
+        if (groupConversationAvatarData == null) {
+            bindFacePile(bottomBackground, bottomView, topView);
+        } else {
+            bindFacePileWithDrawable(bottomBackground, bottomView, topView, groupConversationAvatarData);
+        }
         if (this.mIsCollapsed) {
             conversationAvatarSize = this.mConversationAvatarSize;
             facepileAvatarSize = this.mFacePileAvatarSize;
@@ -635,6 +712,12 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         bottomBackground.setLayoutParams(layoutParams4);
     }
 
+    public void bindFacePileWithDrawable(ImageView bottomBackground, ImageView bottomView, ImageView topView, ConversationAvatarData.GroupConversationAvatarData groupConversationAvatarData) {
+        applyNotificationBackgroundColor(bottomBackground);
+        bottomView.lambda$setImageURIAsync$0(groupConversationAvatarData.mLastIcon);
+        topView.lambda$setImageURIAsync$0(groupConversationAvatarData.mSecondLastIcon);
+    }
+
     private void updateAppName() {
         this.mAppName.setVisibility(8);
     }
@@ -646,9 +729,13 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     private void updateIconPositionAndSize() {
         int badgeProtrusion;
         int conversationAvatarSize;
+        int conversationBadgeSize;
+        int conversationBadgeMargin;
         if (this.mIsOneToOne || this.mIsCollapsed) {
             badgeProtrusion = this.mBadgeProtrusion;
             conversationAvatarSize = this.mConversationAvatarSize;
+            conversationBadgeSize = this.mConversationBadgeSize;
+            conversationBadgeMargin = this.mConversationBadgeMargin;
         } else {
             if (this.mConversationFacePile.getVisibility() == 0) {
                 badgeProtrusion = this.mExpandedGroupBadgeProtrusionFacePile;
@@ -656,6 +743,8 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
                 badgeProtrusion = this.mExpandedGroupBadgeProtrusion;
             }
             conversationAvatarSize = this.mConversationAvatarSizeExpanded;
+            conversationBadgeSize = this.mConversationBadgeSizeExpanded;
+            conversationBadgeMargin = this.mConversationBadgeMarginExpanded;
         }
         if (this.mConversationIconView.getVisibility() == 0) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.mConversationIconView.getLayoutParams();
@@ -666,12 +755,20 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
             layoutParams.bottomMargin = badgeProtrusion;
             this.mConversationIconView.setLayoutParams(layoutParams);
         }
+        if (this.mConversationIconBadge.getVisibility() == 0) {
+            FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) this.mConversationIconBadge.getLayoutParams();
+            layoutParams2.width = conversationBadgeSize;
+            layoutParams2.height = conversationBadgeSize;
+            layoutParams2.leftMargin = conversationBadgeMargin;
+            layoutParams2.topMargin = conversationBadgeMargin;
+            this.mConversationIconBadge.setLayoutParams(layoutParams2);
+        }
         if (this.mConversationFacePile.getVisibility() == 0) {
-            FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) this.mConversationFacePile.getLayoutParams();
-            layoutParams2.leftMargin = badgeProtrusion;
-            layoutParams2.rightMargin = badgeProtrusion;
-            layoutParams2.bottomMargin = badgeProtrusion;
-            this.mConversationFacePile.setLayoutParams(layoutParams2);
+            FrameLayout.LayoutParams layoutParams3 = (FrameLayout.LayoutParams) this.mConversationFacePile.getLayoutParams();
+            layoutParams3.leftMargin = badgeProtrusion;
+            layoutParams3.rightMargin = badgeProtrusion;
+            layoutParams3.bottomMargin = badgeProtrusion;
+            this.mConversationFacePile.setLayoutParams(layoutParams3);
         }
     }
 
@@ -679,21 +776,18 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         int messagingPadding;
         int iconPadding;
         this.mMessagingLinearLayout.setSpacing(this.mIsOneToOne ? this.mMessageSpacingStandard : this.mMessageSpacingGroup);
-        boolean z = this.mIsOneToOne;
-        if (z || this.mIsCollapsed) {
+        if (this.mIsOneToOne || this.mIsCollapsed) {
             messagingPadding = 0;
         } else {
             messagingPadding = this.mExpandedGroupMessagePadding;
         }
-        if (z || this.mIsCollapsed) {
+        if (this.mIsOneToOne || this.mIsCollapsed) {
             iconPadding = this.mConversationIconTopPadding;
         } else {
             iconPadding = this.mConversationIconTopPaddingExpandedGroup;
         }
-        View view = this.mConversationIconContainer;
-        view.setPaddingRelative(view.getPaddingStart(), iconPadding, this.mConversationIconContainer.getPaddingEnd(), this.mConversationIconContainer.getPaddingBottom());
-        MessagingLinearLayout messagingLinearLayout = this.mMessagingLinearLayout;
-        messagingLinearLayout.setPaddingRelative(messagingLinearLayout.getPaddingStart(), messagingPadding, this.mMessagingLinearLayout.getPaddingEnd(), this.mMessagingLinearLayout.getPaddingBottom());
+        this.mConversationIconContainer.setPaddingRelative(this.mConversationIconContainer.getPaddingStart(), iconPadding, this.mConversationIconContainer.getPaddingEnd(), this.mConversationIconContainer.getPaddingBottom());
+        this.mMessagingLinearLayout.setPaddingRelative(this.mMessagingLinearLayout.getPaddingStart(), messagingPadding, this.mMessagingLinearLayout.getPaddingEnd(), this.mMessagingLinearLayout.getPaddingBottom());
         boolean isGroupExpanded = (this.mIsCollapsed || this.mIsOneToOne) ? false : true;
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) this.mMessagingLinearLayout.getLayoutParams();
         params.leftMargin = isGroupExpanded ? 0 : this.mConversationStartMargin;
@@ -701,17 +795,62 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     }
 
     @RemotableViewMethod
-    public void setLargeIcon(Icon largeIcon) {
+    public Runnable setLargeIconAsync(final Icon largeIcon) {
+        if (!Flags.conversationStyleSetAvatarAsync()) {
+            return new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda8
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ConversationLayout.this.lambda$setLargeIconAsync$7(largeIcon);
+                }
+            };
+        }
+        this.mLargeIcon = largeIcon;
+        return NotificationRunnables.NOOP;
+    }
+
+    @RemotableViewMethod(asyncImpl = "setLargeIconAsync")
+    /* renamed from: setLargeIcon, reason: merged with bridge method [inline-methods] */
+    public void lambda$setLargeIconAsync$7(Icon largeIcon) {
         this.mLargeIcon = largeIcon;
     }
 
     @RemotableViewMethod
-    public void setShortcutIcon(Icon shortcutIcon) {
+    public Runnable setShortcutIconAsync(final Icon shortcutIcon) {
+        if (!Flags.conversationStyleSetAvatarAsync()) {
+            return new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda7
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ConversationLayout.this.lambda$setShortcutIconAsync$8(shortcutIcon);
+                }
+            };
+        }
+        this.mShortcutIcon = shortcutIcon;
+        return NotificationRunnables.NOOP;
+    }
+
+    @RemotableViewMethod(asyncImpl = "setShortcutIconAsync")
+    /* renamed from: setShortcutIcon, reason: merged with bridge method [inline-methods] */
+    public void lambda$setShortcutIconAsync$8(Icon shortcutIcon) {
         this.mShortcutIcon = shortcutIcon;
     }
 
     @RemotableViewMethod
-    public void setConversationTitle(CharSequence conversationTitle) {
+    public Runnable setConversationTitleAsync(final CharSequence conversationTitle) {
+        if (!Flags.conversationStyleSetAvatarAsync()) {
+            return new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda12
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ConversationLayout.this.lambda$setConversationTitleAsync$9(conversationTitle);
+                }
+            };
+        }
+        this.mConversationTitle = conversationTitle != null ? conversationTitle.toString() : null;
+        return NotificationRunnables.NOOP;
+    }
+
+    @RemotableViewMethod(asyncImpl = "setConversationTitleAsync")
+    /* renamed from: setConversationTitle, reason: merged with bridge method [inline-methods] */
+    public void lambda$setConversationTitleAsync$9(CharSequence conversationTitle) {
         this.mConversationTitle = conversationTitle != null ? conversationTitle.toString() : null;
     }
 
@@ -729,10 +868,10 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
                 this.mMessagingLinearLayout.removeView(group);
                 if (wasShown && !MessagingLinearLayout.isGone(group)) {
                     this.mMessagingLinearLayout.addTransientView(group, 0);
-                    group.removeGroupAnimated(new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda4
+                    group.removeGroupAnimated(new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda11
                         @Override // java.lang.Runnable
                         public final void run() {
-                            ConversationLayout.this.lambda$removeGroups$5(group);
+                            ConversationLayout.this.lambda$removeGroups$10(group);
                         }
                     });
                 } else {
@@ -744,7 +883,8 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
-    public /* synthetic */ void lambda$removeGroups$5(MessagingGroup group) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$removeGroups$10(MessagingGroup group) {
         this.mMessagingLinearLayout.removeTransientView(group);
         group.recycle();
     }
@@ -783,12 +923,42 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     }
 
     @RemotableViewMethod
-    public void setLayoutColor(int color) {
+    public Runnable setLayoutColorAsync(final int color) {
+        if (!Flags.conversationStyleSetAvatarAsync()) {
+            return new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda4
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ConversationLayout.this.lambda$setLayoutColorAsync$11(color);
+                }
+            };
+        }
+        this.mLayoutColor = color;
+        return NotificationRunnables.NOOP;
+    }
+
+    @RemotableViewMethod(asyncImpl = "setLayoutColorAsync")
+    /* renamed from: setLayoutColor, reason: merged with bridge method [inline-methods] */
+    public void lambda$setLayoutColorAsync$11(int color) {
         this.mLayoutColor = color;
     }
 
     @RemotableViewMethod
-    public void setIsOneToOne(boolean oneToOne) {
+    public Runnable setIsOneToOneAsync(final boolean oneToOne) {
+        if (!Flags.conversationStyleSetAvatarAsync()) {
+            return new Runnable() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda6
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ConversationLayout.this.lambda$setIsOneToOneAsync$12(oneToOne);
+                }
+            };
+        }
+        this.mIsOneToOne = oneToOne;
+        return NotificationRunnables.NOOP;
+    }
+
+    @RemotableViewMethod(asyncImpl = "setIsOneToOneAsync")
+    /* renamed from: setIsOneToOne, reason: merged with bridge method [inline-methods] */
+    public void lambda$setIsOneToOneAsync$12(boolean oneToOne) {
         this.mIsOneToOne = oneToOne;
     }
 
@@ -815,7 +985,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
 
     private void setUser(Person user) {
         this.mUser = user;
-        if (user.getIcon() == null) {
+        if (this.mUser.getIcon() == null) {
             Icon userIcon = Icon.createWithResource(getContext(), R.drawable.messaging_user);
             userIcon.setTint(this.mLayoutColor);
             this.mUser = this.mUser.toBuilder().setIcon(userIcon).build();
@@ -875,7 +1045,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
-    private void findGroups(List<MessagingMessage> historicMessages, List<MessagingMessage> messages, List<List<MessagingMessage>> groups, List<Person> senders) {
+    private void findGroups(List<MessagingMessage> historicMessages, List<MessagingMessage> messages, Person user, List<List<MessagingMessage>> outGroups, List<Person> outSenders) {
         MessagingMessage message;
         Person sender;
         CharSequence currentSenderKey = null;
@@ -892,13 +1062,13 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
             CharSequence key = getKey(sender2);
             if ((true ^ TextUtils.equals(key, currentSenderKey)) | isNewGroup) {
                 currentGroup = new ArrayList<>();
-                groups.add(currentGroup);
+                outGroups.add(currentGroup);
                 if (sender2 == null) {
-                    sender = this.mUser;
+                    sender = user;
                 } else {
                     sender = sender2.toBuilder().setName(Objects.toString(sender2.getName())).build();
                 }
-                senders.add(sender);
+                outSenders.add(sender);
                 currentSenderKey = key;
             }
             currentGroup.add(message);
@@ -912,15 +1082,137 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         return person.getKey() == null ? person.getName() : person.getKey();
     }
 
-    private List<MessagingMessage> createMessages(List<Notification.MessagingStyle.Message> newMessages, boolean historic) {
+    private ConversationHeaderData loadConversationHeaderData(boolean isOneToOne, CharSequence conversationTitle, Icon shortcutIcon, Icon largeIcon, List<MessagingMessage> messages, Person user, List<List<MessagingMessage>> groups, int layoutColor) {
+        CharSequence userKey;
+        List<List<Notification.MessagingStyle.Message>> groupMessages;
+        List<List<MessagingMessage>> list = groups;
+        Icon conversationIcon = shortcutIcon;
+        CharSequence conversationText = conversationTitle;
+        Person person = user;
+        CharSequence userKey2 = getKey(person);
+        if (isOneToOne) {
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                Person sender = messages.get(i).getMessage().getSenderPerson();
+                CharSequence senderKey = getKey(sender);
+                if ((sender != null && senderKey != userKey2) || i == 0) {
+                    if (conversationText == null || conversationText.length() == 0) {
+                        conversationText = sender != null ? sender.getName() : "";
+                    }
+                    if (conversationIcon == null && sender != null) {
+                        conversationIcon = sender.getIcon();
+                        if (sender.getIcon() == null) {
+                            conversationIcon = this.mPeopleHelper.createAvatarSymbol(conversationText, "", layoutColor);
+                        }
+                    }
+                }
+            }
+        }
+        if (android.app.Flags.cleanUpSpansAndNewLines() && conversationText != null) {
+            conversationText = conversationText.toString();
+        }
+        if (conversationIcon == null) {
+            conversationIcon = largeIcon;
+        }
+        if (!isOneToOne && conversationIcon == null) {
+            List<List<Notification.MessagingStyle.Message>> groupMessages2 = new ArrayList<>();
+            for (int i2 = 0; i2 < groups.size(); i2++) {
+                List<Notification.MessagingStyle.Message> groupMessage = new ArrayList<>();
+                for (int j = 0; j < list.get(i2).size(); j++) {
+                    groupMessage.add(list.get(i2).get(j).getMessage());
+                }
+                groupMessages2.add(groupMessage);
+            }
+            PeopleHelper.NameToPrefixMap nameToPrefixMap = this.mPeopleHelper.mapUniqueNamesToPrefixWithGroupList(groupMessages2);
+            Icon lastIcon = null;
+            Icon secondLastIcon = null;
+            CharSequence lastKey = null;
+            int i3 = groups.size() - 1;
+            while (true) {
+                if (i3 < 0) {
+                    break;
+                }
+                Notification.MessagingStyle.Message message = list.get(i3).get(0).getMessage();
+                Person sender2 = message.getSenderPerson() != null ? message.getSenderPerson() : person;
+                CharSequence senderKey2 = getKey(sender2);
+                boolean notUser = senderKey2 != userKey2;
+                boolean notIncluded = senderKey2 != lastKey;
+                if ((!notUser || !notIncluded) && (i3 != 0 || lastKey != null)) {
+                    userKey = userKey2;
+                    groupMessages = groupMessages2;
+                } else if (lastIcon != null) {
+                    if (sender2.getIcon() != null) {
+                        secondLastIcon = sender2.getIcon();
+                    } else {
+                        String senderName = sender2.getName() != null ? sender2.getName() : "";
+                        secondLastIcon = this.mPeopleHelper.createAvatarSymbol(senderName, nameToPrefixMap.getPrefix(senderName), layoutColor);
+                    }
+                } else {
+                    if (sender2.getIcon() != null) {
+                        lastIcon = sender2.getIcon();
+                        userKey = userKey2;
+                        groupMessages = groupMessages2;
+                    } else {
+                        CharSequence senderName2 = sender2.getName() != null ? sender2.getName() : "";
+                        userKey = userKey2;
+                        groupMessages = groupMessages2;
+                        lastIcon = this.mPeopleHelper.createAvatarSymbol(senderName2, nameToPrefixMap.getPrefix(senderName2), layoutColor);
+                    }
+                    lastKey = senderKey2;
+                }
+                i3--;
+                person = user;
+                list = groups;
+                userKey2 = userKey;
+                groupMessages2 = groupMessages;
+            }
+            if (lastIcon == null) {
+                lastIcon = this.mPeopleHelper.createAvatarSymbol("", "", layoutColor);
+            }
+            if (secondLastIcon == null) {
+                secondLastIcon = this.mPeopleHelper.createAvatarSymbol("", "", layoutColor);
+            }
+            return new ConversationHeaderData(conversationText, new ConversationAvatarData.GroupConversationAvatarData(resolveAvatarImageForFacePile(lastIcon), resolveAvatarImageForFacePile(secondLastIcon)));
+        }
+        return new ConversationHeaderData(conversationText, new ConversationAvatarData.OneToOneConversationAvatarData(resolveAvatarImageForOneToOne(conversationIcon)));
+    }
+
+    private Drawable resolveAvatarImageForOneToOne(Icon conversationIcon) {
+        Drawable conversationIconDrawable = tryLoadingSizeRestrictedIconForOneToOne(conversationIcon);
+        if (conversationIconDrawable != null) {
+            return conversationIconDrawable;
+        }
+        return loadDrawableFromIcon(conversationIcon);
+    }
+
+    private Drawable tryLoadingSizeRestrictedIconForOneToOne(Icon conversationIcon) {
+        try {
+            return this.mConversationIconView.loadSizeRestrictedIcon(conversationIcon);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Drawable resolveAvatarImageForFacePile(Icon conversationIcon) {
+        return loadDrawableFromIcon(conversationIcon);
+    }
+
+    private Drawable loadDrawableFromIcon(Icon conversationIcon) {
+        try {
+            return conversationIcon.loadDrawable(getContext());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private List<MessagingMessage> createMessages(List<Notification.MessagingStyle.Message> newMessages, boolean isHistoric, boolean usePrecomputedText) {
         List<MessagingMessage> result = new ArrayList<>();
         for (int i = 0; i < newMessages.size(); i++) {
             Notification.MessagingStyle.Message m = newMessages.get(i);
             MessagingMessage message = findAndRemoveMatchingMessage(m);
             if (message == null) {
-                message = MessagingMessage.createMessage(this, m, this.mImageResolver);
+                message = MessagingMessage.createMessage(this, m, this.mImageResolver, usePrecomputedText);
             }
-            message.setIsHistoric(historic);
+            message.setIsHistoric(isHistoric);
             result.add(message);
         }
         return result;
@@ -985,13 +1277,10 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (!this.mAddedQueue.isEmpty()) {
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.widget.ConversationLayout.2
-                AnonymousClass2() {
-                }
-
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     for (MessagingGroup group : ConversationLayout.this.mAddedQueue) {
@@ -1022,27 +1311,6 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         setTouchDelegate(this.mTouchDelegate);
     }
 
-    /* renamed from: com.android.internal.widget.ConversationLayout$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 implements ViewTreeObserver.OnPreDrawListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.ViewTreeObserver.OnPreDrawListener
-        public boolean onPreDraw() {
-            for (MessagingGroup group : ConversationLayout.this.mAddedQueue) {
-                if (group.isShown()) {
-                    MessagingPropertyAnimator.fadeIn(group.getAvatar());
-                    MessagingPropertyAnimator.fadeIn(group.getSenderView());
-                    MessagingPropertyAnimator.startLocalTranslationFrom(group, group.getHeight(), ConversationLayout.LINEAR_OUT_SLOW_IN);
-                }
-            }
-            ConversationLayout.this.mAddedQueue.clear();
-            ConversationLayout.this.getViewTreeObserver().removeOnPreDrawListener(this);
-            return true;
-        }
-    }
-
     private void getRelativeTouchRect(Rect touchRect, View view) {
         for (ViewGroup viewGroup = (ViewGroup) view.getParent(); viewGroup != this; viewGroup = (ViewGroup) viewGroup.getParent()) {
             touchRect.offset(viewGroup.getLeft(), viewGroup.getTop());
@@ -1064,6 +1332,12 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     }
 
     private void updateExpandButton() {
+        int buttonGravity;
+        if (this.mIsCollapsed) {
+            buttonGravity = 17;
+        } else {
+            buttonGravity = 49;
+        }
         ViewGroup newContainer = this.mExpandButtonAndContentContainer;
         this.mExpandButton.setExpanded(!this.mIsCollapsed);
         if (newContainer != this.mExpandButtonContainer.getParent()) {
@@ -1072,8 +1346,13 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
             setMinimumHeight(this.mConversationMinHeight);
         }
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) this.mExpandButton.getLayoutParams();
-        layoutParams.gravity = 49;
-        layoutParams.topMargin = this.mConversationTopMargin;
+        if (this.mIsCollapsed && this.mActions != null && this.mActions.getVisibility() == 0) {
+            layoutParams.gravity = 48;
+            layoutParams.topMargin = this.mConversationTopMargin;
+        } else {
+            layoutParams.gravity = buttonGravity;
+            layoutParams.topMargin = this.mIsCollapsed ? 0 : this.mConversationTopMargin;
+        }
         this.mExpandButton.setLayoutParams(layoutParams);
     }
 
@@ -1088,12 +1367,10 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
             contentPaddingEnd = 0;
         } else {
             headerPaddingEnd = this.mNotificationHeaderExpandedPadding;
-            contentPaddingEnd = 0;
+            contentPaddingEnd = this.mContentMarginEnd;
         }
-        View view = this.mConversationHeader;
-        view.setPaddingRelative(view.getPaddingStart(), this.mConversationHeader.getPaddingTop(), headerPaddingEnd, this.mConversationHeader.getPaddingBottom());
-        View view2 = this.mContentContainer;
-        view2.setPaddingRelative(view2.getPaddingStart(), this.mContentContainer.getPaddingTop(), contentPaddingEnd, this.mContentContainer.getPaddingBottom());
+        this.mConversationHeader.setPaddingRelative(this.mConversationHeader.getPaddingStart(), this.mConversationHeader.getPaddingTop(), headerPaddingEnd, this.mConversationHeader.getPaddingBottom());
+        this.mContentContainer.setPaddingRelative(this.mContentContainer.getPaddingStart(), this.mContentContainer.getPaddingTop(), contentPaddingEnd, this.mContentContainer.getPaddingBottom());
     }
 
     private void onAppNameVisibilityChanged() {
@@ -1132,7 +1409,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         if (this.mGroups.isEmpty()) {
             return null;
         }
-        CharSequence name = this.mGroups.get(r0.size() - 1).getSenderName();
+        CharSequence name = this.mGroups.get(this.mGroups.size() - 1).getSenderName();
         return getResources().getString(R.string.conversation_single_line_name_display, name);
     }
 
@@ -1144,7 +1421,7 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         if (this.mMessages.isEmpty()) {
             return null;
         }
-        MessagingMessage messagingMessage = this.mMessages.get(r0.size() - 1);
+        MessagingMessage messagingMessage = this.mMessages.get(this.mMessages.size() - 1);
         CharSequence text = messagingMessage.getMessage() != null ? messagingMessage.getMessage().getText() : null;
         if (text == null && (messagingMessage instanceof MessagingImageMessage)) {
             String unformatted = getResources().getString(R.string.conversation_single_line_image_placeholder);
@@ -1159,13 +1436,12 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         return this.mConversationIcon;
     }
 
-    /* loaded from: classes5.dex */
+    public ConversationHeaderData getConversationHeaderData() {
+        return this.mConversationHeaderData;
+    }
+
     private static class TouchDelegateComposite extends TouchDelegate {
         private final ArrayList<TouchDelegate> mDelegates;
-
-        /* synthetic */ TouchDelegateComposite(View view, TouchDelegateCompositeIA touchDelegateCompositeIA) {
-            this(view);
-        }
 
         private TouchDelegateComposite(View view) {
             super(new Rect(), view);

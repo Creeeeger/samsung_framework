@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface IIpConnectivityMetrics extends IInterface {
     boolean addNetdEventCallback(int i, INetdEventCallback iNetdEventCallback) throws RemoteException;
 
@@ -19,7 +19,6 @@ public interface IIpConnectivityMetrics extends IInterface {
 
     boolean removeNetdEventCallback(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IIpConnectivityMetrics {
         @Override // android.net.IIpConnectivityMetrics
         public int logEvent(ConnectivityMetricsEvent event) throws RemoteException {
@@ -50,7 +49,6 @@ public interface IIpConnectivityMetrics extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IIpConnectivityMetrics {
         public static final String DESCRIPTOR = "android.net.IIpConnectivityMetrics";
         static final int TRANSACTION_addNetdEventCallback = 4;
@@ -106,62 +104,59 @@ public interface IIpConnectivityMetrics extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ConnectivityMetricsEvent _arg0 = (ConnectivityMetricsEvent) data.readTypedObject(ConnectivityMetricsEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result = logEvent(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    logDefaultNetworkValidity(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    Network _arg03 = (Network) data.readTypedObject(Network.CREATOR);
+                    int _arg1 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    LinkProperties _arg3 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
+                    NetworkCapabilities _arg4 = (NetworkCapabilities) data.readTypedObject(NetworkCapabilities.CREATOR);
+                    Network _arg5 = (Network) data.readTypedObject(Network.CREATOR);
+                    int _arg6 = data.readInt();
+                    LinkProperties _arg7 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
+                    NetworkCapabilities _arg8 = (NetworkCapabilities) data.readTypedObject(NetworkCapabilities.CREATOR);
+                    data.enforceNoDataAvail();
+                    logDefaultNetworkEvent(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    INetdEventCallback _arg12 = INetdEventCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result2 = addNetdEventCallback(_arg04, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = removeNetdEventCallback(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ConnectivityMetricsEvent _arg0 = (ConnectivityMetricsEvent) data.readTypedObject(ConnectivityMetricsEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result = logEvent(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            logDefaultNetworkValidity(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            Network _arg03 = (Network) data.readTypedObject(Network.CREATOR);
-                            int _arg1 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            LinkProperties _arg3 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
-                            NetworkCapabilities _arg4 = (NetworkCapabilities) data.readTypedObject(NetworkCapabilities.CREATOR);
-                            Network _arg5 = (Network) data.readTypedObject(Network.CREATOR);
-                            int _arg6 = data.readInt();
-                            LinkProperties _arg7 = (LinkProperties) data.readTypedObject(LinkProperties.CREATOR);
-                            NetworkCapabilities _arg8 = (NetworkCapabilities) data.readTypedObject(NetworkCapabilities.CREATOR);
-                            data.enforceNoDataAvail();
-                            logDefaultNetworkEvent(_arg03, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            INetdEventCallback _arg12 = INetdEventCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result2 = addNetdEventCallback(_arg04, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = removeNetdEventCallback(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IIpConnectivityMetrics {
+        private static class Proxy implements IIpConnectivityMetrics {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

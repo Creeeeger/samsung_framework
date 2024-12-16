@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.cover.CoverState;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IPluginManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IPluginManager";
 
     CoverState getCoverState() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IPluginManager {
         @Override // com.samsung.android.sepunion.IPluginManager
         public CoverState getCoverState() throws RemoteException {
@@ -26,7 +25,6 @@ public interface IPluginManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IPluginManager {
         static final int TRANSACTION_getCoverState = 1;
 
@@ -69,26 +67,22 @@ public interface IPluginManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPluginManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPluginManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPluginManager.DESCRIPTOR);
+                case 1:
+                    CoverState _result = getCoverState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CoverState _result = getCoverState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IPluginManager {
+        private static class Proxy implements IPluginManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

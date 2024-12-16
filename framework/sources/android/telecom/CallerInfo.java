@@ -1,7 +1,6 @@
 package android.telecom;
 
 import android.content.ComponentName;
-import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,9 +19,6 @@ import com.android.i18n.phonenumbers.PhoneNumberUtil;
 import com.android.i18n.phonenumbers.Phonenumber;
 import com.android.i18n.phonenumbers.geocoding.PhoneNumberOfflineGeocoder;
 import com.android.internal.R;
-import com.android.internal.telephony.SemTelephonyUtils;
-import com.android.internal.telephony.TelephonyFeatures;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -65,7 +61,7 @@ public class CallerInfo {
     public long userType = 0;
 
     static {
-        VDBG = !SemTelephonyUtils.SHIP_BUILD && Log.VERBOSE;
+        VDBG = !Log.SHIP_BUILD && Log.VERBOSE;
     }
 
     public static CallerInfo getCallerInfo(Context context, Uri contactRef, Cursor cursor) {
@@ -80,8 +76,7 @@ public class CallerInfo {
         info.isCachedPhotoCurrent = false;
         info.contactExists = false;
         info.userType = 0L;
-        boolean z2 = VDBG;
-        if (z2) {
+        if (VDBG) {
             Log.v(TAG, "getCallerInfo() based on cursor...", new Object[0]);
         }
         if (cursor != null) {
@@ -102,9 +97,8 @@ public class CallerInfo {
                     int columnIndex4 = cursor.getColumnIndex("label");
                     if (columnIndex4 != -1 && (typeColumnIndex = cursor.getColumnIndex("type")) != -1) {
                         info.numberType = cursor.getInt(typeColumnIndex);
-                        String string = cursor.getString(columnIndex4);
-                        info.numberLabel = string;
-                        info.phoneLabel = ContactsContract.CommonDataKinds.Phone.getDisplayLabel(context, info.numberType, string).toString();
+                        info.numberLabel = cursor.getString(columnIndex4);
+                        info.phoneLabel = ContactsContract.CommonDataKinds.Phone.getDisplayLabel(context, info.numberType, info.numberLabel).toString();
                     }
                     int columnIndex5 = getColumnIndexForPersonId(contactRef, cursor);
                     if (columnIndex5 == -1) {
@@ -113,7 +107,7 @@ public class CallerInfo {
                         long contactId = cursor.getLong(columnIndex5);
                         if (contactId != 0 && !ContactsContract.Contacts.isEnterpriseContactId(contactId)) {
                             info.contactIdOrZero = contactId;
-                            if (z2) {
+                            if (VDBG) {
                                 Log.v(TAG, "==> got info.contactIdOrZero: " + info.contactIdOrZero, new Object[0]);
                             }
                         }
@@ -273,7 +267,7 @@ public class CallerInfo {
         this.contactDisplayPhotoUri = photoUri;
     }
 
-    public static CallerInfo doSecondaryLookupIfNecessary(Context context, String number, CallerInfo previousResult) {
+    static CallerInfo doSecondaryLookupIfNecessary(Context context, String number, CallerInfo previousResult) {
         if (previousResult == null) {
             return null;
         }
@@ -295,14 +289,14 @@ public class CallerInfo {
         return this.mIsVoiceMail;
     }
 
-    public CallerInfo markAsEmergency(Context context) {
+    CallerInfo markAsEmergency(Context context) {
         this.phoneNumber = context.getString(R.string.emergency_call_dialog_number_for_display);
         this.photoResource = R.drawable.picture_emergency;
         this.mIsEmergency = true;
         return this;
     }
 
-    public CallerInfo markAsVoiceMail(Context context, int subId) {
+    CallerInfo markAsVoiceMail(Context context, int subId) {
         this.mIsVoiceMail = true;
         try {
             this.phoneNumber = ((TelephonyManager) context.getSystemService(TelephonyManager.class)).createForSubscriptionId(subId).getVoiceMailAlphaTag();
@@ -320,27 +314,23 @@ public class CallerInfo {
     }
 
     private static int getColumnIndexForPersonId(Uri contactRef, Cursor cursor) {
-        boolean z = VDBG;
-        if (z) {
+        if (VDBG) {
             Log.v(TAG, "- getColumnIndexForPersonId: contactRef URI = '" + contactRef + "'...", new Object[0]);
         }
         String url = contactRef.toString();
-        if (TelephonyFeatures.isMainOperatorSpecific(0, "KTT", "LGT")) {
-            url = ContentProvider.getUriWithoutUserId(contactRef).toString();
-        }
         String columnName = null;
         if (url.startsWith("content://com.android.contacts/data/phones")) {
-            if (z) {
+            if (VDBG) {
                 Log.v(TAG, "'data/phones' URI; using RawContacts.CONTACT_ID", new Object[0]);
             }
             columnName = "contact_id";
         } else if (url.startsWith("content://com.android.contacts/data")) {
-            if (z) {
+            if (VDBG) {
                 Log.v(TAG, "'data' URI; using Data.CONTACT_ID", new Object[0]);
             }
             columnName = "contact_id";
         } else if (url.startsWith("content://com.android.contacts/phone_lookup")) {
-            if (z) {
+            if (VDBG) {
                 Log.v(TAG, "'phone_lookup' URI; using PhoneLookup._ID", new Object[0]);
             }
             columnName = "_id";
@@ -348,7 +338,7 @@ public class CallerInfo {
             Log.w(TAG, "Unexpected prefix for contactRef '" + url + "'", new Object[0]);
         }
         int columnIndex = columnName != null ? cursor.getColumnIndex(columnName) : -1;
-        if (z) {
+        if (VDBG) {
             Log.v(TAG, "==> Using column '" + columnName + "' (columnIndex = " + columnIndex + ") for person_id lookup...", new Object[0]);
         }
         return columnIndex;
@@ -360,8 +350,7 @@ public class CallerInfo {
     }
 
     public static String getGeoDescription(Context context, String number) {
-        boolean z = VDBG;
-        if (z) {
+        if (VDBG) {
             Log.v(TAG, "getGeoDescription('" + number + "')...", new Object[0]);
         }
         if (TextUtils.isEmpty(number)) {
@@ -372,16 +361,16 @@ public class CallerInfo {
         Locale locale = context.getResources().getConfiguration().locale;
         String countryIso = getCurrentCountryIso(context, locale);
         Phonenumber.PhoneNumber pn = null;
-        if (z) {
-            try {
+        try {
+            if (VDBG) {
                 Log.v(TAG, "parsing '" + number + "' for countryIso '" + countryIso + "'...", new Object[0]);
-            } catch (NumberParseException e) {
-                Log.w(TAG, "getGeoDescription: NumberParseException for incoming number '" + Log.pii(number) + "'", new Object[0]);
             }
-        }
-        pn = util.parse(number, countryIso);
-        if (z) {
-            Log.v(TAG, "- parsed number: " + pn, new Object[0]);
+            pn = util.parse(number, countryIso);
+            if (VDBG) {
+                Log.v(TAG, "- parsed number: " + pn, new Object[0]);
+            }
+        } catch (NumberParseException e) {
+            Log.w(TAG, "getGeoDescription: NumberParseException for incoming number '" + Log.pii(number) + "'", new Object[0]);
         }
         if (pn == null) {
             return null;
@@ -412,20 +401,11 @@ public class CallerInfo {
         return countryIso;
     }
 
-    public static String getCurrentCountryIso(Context context) {
+    protected static String getCurrentCountryIso(Context context) {
         return getCurrentCountryIso(context, Locale.getDefault());
     }
 
     public String toString() {
-        StringBuilder append = new StringBuilder(128).append(super.toString() + " { ");
-        StringBuilder append2 = new StringBuilder().append("name ");
-        String str = this.name;
-        String str2 = SemCapabilities.FEATURE_TAG_NULL;
-        StringBuilder append3 = append.append(append2.append(str == null ? SemCapabilities.FEATURE_TAG_NULL : "non-null").toString());
-        StringBuilder append4 = new StringBuilder().append(", phoneNumber ");
-        if (this.phoneNumber != null) {
-            str2 = "non-null";
-        }
-        return append3.append(append4.append(str2).toString()).append(" }").toString();
+        return new StringBuilder(128).append(super.toString() + " { ").append("name " + (this.name == null ? "null" : "non-null")).append(", phoneNumber " + (this.phoneNumber != null ? "non-null" : "null")).append(" }").toString();
     }
 }

@@ -5,14 +5,15 @@ import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import com.android.internal.R;
 import com.android.internal.accessibility.dialog.TargetAdapter;
+import com.android.internal.accessibility.util.AccessibilityUtils;
 import com.android.internal.accessibility.util.ShortcutUtils;
 
-/* loaded from: classes4.dex */
-public class ToggleAllowListingFeatureTarget extends AccessibilityTarget {
+/* loaded from: classes5.dex */
+class ToggleAllowListingFeatureTarget extends AccessibilityTarget {
     private Context mContext;
 
-    public ToggleAllowListingFeatureTarget(Context context, int shortcutType, boolean isShortcutSwitched, String id, int uid, CharSequence label, Drawable icon, String key) {
-        super(context, shortcutType, 2, isShortcutSwitched, id, uid, label, context.getPackageManager().semGetDrawableForIconTray(icon, 1), key);
+    ToggleAllowListingFeatureTarget(Context context, int shortcutType, boolean isShortcutSwitched, String id, int uid, CharSequence label, Drawable icon, String key) {
+        super(context, shortcutType, 2, isShortcutSwitched, id, uid, label, AccessibilityUtils.isDefaultTheme(context) ? icon : context.getPackageManager().semGetDrawableForIconTray(icon, 1), key);
         int statusResId;
         if (isFeatureEnabled()) {
             statusResId = R.string.accessibility_shortcut_menu_item_status_on;
@@ -28,7 +29,7 @@ public class ToggleAllowListingFeatureTarget extends AccessibilityTarget {
         super.updateActionItem(holder, shortcutMenuMode);
         boolean isEditMenuMode = shortcutMenuMode == 1;
         holder.mStatusView.setVisibility(isEditMenuMode ? 8 : 0);
-        holder.mStatusView.setText(getStateDescription());
+        holder.mStatusView.lambda$setTextAsync$0(getStateDescription());
         if (isFeatureEnabled()) {
             holder.mStatusView.setTextColor(ShortcutUtils.getPrimaryDarkColorId(this.mContext));
         } else {

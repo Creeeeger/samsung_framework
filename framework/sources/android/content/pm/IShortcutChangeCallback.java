@@ -16,7 +16,6 @@ public interface IShortcutChangeCallback extends IInterface {
 
     void onShortcutsRemoved(String str, List<ShortcutInfo> list, UserHandle userHandle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IShortcutChangeCallback {
         @Override // android.content.pm.IShortcutChangeCallback
         public void onShortcutsAddedOrUpdated(String packageName, List<ShortcutInfo> shortcuts, UserHandle user) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IShortcutChangeCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IShortcutChangeCallback {
         static final int TRANSACTION_onShortcutsAddedOrUpdated = 1;
         static final int TRANSACTION_onShortcutsRemoved = 2;
@@ -78,35 +76,31 @@ public interface IShortcutChangeCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IShortcutChangeCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IShortcutChangeCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IShortcutChangeCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    List<ShortcutInfo> _arg1 = data.createTypedArrayList(ShortcutInfo.CREATOR);
+                    UserHandle _arg2 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onShortcutsAddedOrUpdated(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    List<ShortcutInfo> _arg12 = data.createTypedArrayList(ShortcutInfo.CREATOR);
+                    UserHandle _arg22 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onShortcutsRemoved(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            List<ShortcutInfo> _arg1 = data.createTypedArrayList(ShortcutInfo.CREATOR);
-                            UserHandle _arg2 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onShortcutsAddedOrUpdated(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            List<ShortcutInfo> _arg12 = data.createTypedArrayList(ShortcutInfo.CREATOR);
-                            UserHandle _arg22 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onShortcutsRemoved(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IShortcutChangeCallback {
+        private static class Proxy implements IShortcutChangeCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

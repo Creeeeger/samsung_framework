@@ -1,8 +1,7 @@
 package android.widget;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-public class RtlSpacingHelper {
+class RtlSpacingHelper {
     public static final int UNDEFINED = Integer.MIN_VALUE;
     private int mLeft = 0;
     private int mRight = 0;
@@ -12,6 +11,9 @@ public class RtlSpacingHelper {
     private int mExplicitRight = 0;
     private boolean mIsRtl = false;
     private boolean mIsRelative = false;
+
+    RtlSpacingHelper() {
+    }
 
     public int getLeft() {
         return this.mLeft;
@@ -71,30 +73,12 @@ public class RtlSpacingHelper {
         if (!this.mIsRelative) {
             this.mLeft = this.mExplicitLeft;
             this.mRight = this.mExplicitRight;
-            return;
+        } else if (isRtl) {
+            this.mLeft = this.mEnd != Integer.MIN_VALUE ? this.mEnd : this.mExplicitLeft;
+            this.mRight = this.mStart != Integer.MIN_VALUE ? this.mStart : this.mExplicitRight;
+        } else {
+            this.mLeft = this.mStart != Integer.MIN_VALUE ? this.mStart : this.mExplicitLeft;
+            this.mRight = this.mEnd != Integer.MIN_VALUE ? this.mEnd : this.mExplicitRight;
         }
-        if (isRtl) {
-            int i = this.mEnd;
-            if (i == Integer.MIN_VALUE) {
-                i = this.mExplicitLeft;
-            }
-            this.mLeft = i;
-            int i2 = this.mStart;
-            if (i2 == Integer.MIN_VALUE) {
-                i2 = this.mExplicitRight;
-            }
-            this.mRight = i2;
-            return;
-        }
-        int i3 = this.mStart;
-        if (i3 == Integer.MIN_VALUE) {
-            i3 = this.mExplicitLeft;
-        }
-        this.mLeft = i3;
-        int i4 = this.mEnd;
-        if (i4 == Integer.MIN_VALUE) {
-            i4 = this.mExplicitRight;
-        }
-        this.mRight = i4;
     }
 }

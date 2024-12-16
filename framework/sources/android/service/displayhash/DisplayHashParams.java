@@ -9,14 +9,13 @@ import android.util.Size;
 /* loaded from: classes3.dex */
 public final class DisplayHashParams implements Parcelable {
     public static final Parcelable.Creator<DisplayHashParams> CREATOR = new Parcelable.Creator<DisplayHashParams>() { // from class: android.service.displayhash.DisplayHashParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayHashParams[] newArray(int size) {
             return new DisplayHashParams[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayHashParams createFromParcel(Parcel in) {
             return new DisplayHashParams(in);
@@ -25,7 +24,6 @@ public final class DisplayHashParams implements Parcelable {
     private final Size mBufferSize;
     private final boolean mGrayscaleBuffer;
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private Size mBufferSize;
         private boolean mGrayscaleBuffer;
@@ -69,9 +67,8 @@ public final class DisplayHashParams implements Parcelable {
             flg = (byte) (flg | 1);
         }
         dest.writeByte(flg);
-        Size size = this.mBufferSize;
-        if (size != null) {
-            dest.writeSize(size);
+        if (this.mBufferSize != null) {
+            dest.writeSize(this.mBufferSize);
         }
     }
 
@@ -86,23 +83,6 @@ public final class DisplayHashParams implements Parcelable {
         Size bufferSize = (flg & 1) == 0 ? null : in.readSize();
         this.mBufferSize = bufferSize;
         this.mGrayscaleBuffer = grayscaleBuffer;
-    }
-
-    /* renamed from: android.service.displayhash.DisplayHashParams$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DisplayHashParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayHashParams[] newArray(int size) {
-            return new DisplayHashParams[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayHashParams createFromParcel(Parcel in) {
-            return new DisplayHashParams(in);
-        }
     }
 
     @Deprecated

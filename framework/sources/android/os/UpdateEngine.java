@@ -4,21 +4,22 @@ import android.annotation.SystemApi;
 import android.content.res.AssetFileDescriptor;
 import android.os.IUpdateEngine;
 import android.os.IUpdateEngineCallback;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
 /* loaded from: classes3.dex */
 public class UpdateEngine {
     private static final String TAG = "UpdateEngine";
     private static final String UPDATE_ENGINE_SERVICE = "android.os.UpdateEngineService";
-    private final IUpdateEngine mUpdateEngine;
     private IUpdateEngineCallback mUpdateEngineCallback = null;
     private final Object mUpdateEngineCallbackLock = new Object();
+    private final IUpdateEngine mUpdateEngine = IUpdateEngine.Stub.asInterface(ServiceManager.getService(UPDATE_ENGINE_SERVICE));
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ErrorCode {
     }
 
-    /* loaded from: classes3.dex */
     public static final class ErrorCodeConstants {
         public static final int DEVICE_CORRUPTED = 61;
         public static final int DOWNLOAD_PAYLOAD_VERIFICATION_ERROR = 12;
@@ -37,7 +38,6 @@ public class UpdateEngine {
         public static final int UPDATED_BUT_NOT_ACTIVE = 52;
     }
 
-    /* loaded from: classes3.dex */
     public static final class UpdateStatusConstants {
         public static final int ATTEMPTING_ROLLBACK = 8;
         public static final int CHECKING_FOR_UPDATE = 1;
@@ -52,192 +52,45 @@ public class UpdateEngine {
     }
 
     public UpdateEngine() {
-        IUpdateEngine asInterface = IUpdateEngine.Stub.asInterface(ServiceManager.getService(UPDATE_ENGINE_SERVICE));
-        this.mUpdateEngine = asInterface;
-        if (asInterface == null) {
+        if (this.mUpdateEngine == null) {
             throw new IllegalStateException("Failed to find update_engine");
         }
     }
 
-    /* renamed from: android.os.UpdateEngine$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IUpdateEngineCallback.Stub {
-        final /* synthetic */ UpdateEngineCallback val$callback;
-        final /* synthetic */ Handler val$handler;
-
-        AnonymousClass1(Handler handler, UpdateEngineCallback updateEngineCallback) {
-            handler = handler;
-            callback = updateEngineCallback;
-        }
-
-        /* renamed from: android.os.UpdateEngine$1$1 */
-        /* loaded from: classes3.dex */
-        class RunnableC00051 implements Runnable {
-            final /* synthetic */ float val$percent;
-            final /* synthetic */ int val$status;
-
-            RunnableC00051(int i, float f) {
-                status = i;
-                percent = f;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                callback.onStatusUpdate(status, percent);
-            }
-        }
-
-        @Override // android.os.IUpdateEngineCallback
-        public void onStatusUpdate(int status, float percent) {
-            Handler handler = handler;
-            if (handler != null) {
-                handler.post(new Runnable() { // from class: android.os.UpdateEngine.1.1
-                    final /* synthetic */ float val$percent;
-                    final /* synthetic */ int val$status;
-
-                    RunnableC00051(int status2, float percent2) {
-                        status = status2;
-                        percent = percent2;
-                    }
-
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        callback.onStatusUpdate(status, percent);
-                    }
-                });
-            } else {
-                callback.onStatusUpdate(status2, percent2);
-            }
-        }
-
-        /* renamed from: android.os.UpdateEngine$1$2 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass2 implements Runnable {
-            final /* synthetic */ int val$errorCode;
-
-            AnonymousClass2(int i) {
-                errorCode = i;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                callback.onPayloadApplicationComplete(errorCode);
-            }
-        }
-
-        @Override // android.os.IUpdateEngineCallback
-        public void onPayloadApplicationComplete(int errorCode) {
-            Handler handler = handler;
-            if (handler != null) {
-                handler.post(new Runnable() { // from class: android.os.UpdateEngine.1.2
-                    final /* synthetic */ int val$errorCode;
-
-                    AnonymousClass2(int errorCode2) {
-                        errorCode = errorCode2;
-                    }
-
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        callback.onPayloadApplicationComplete(errorCode);
-                    }
-                });
-            } else {
-                callback.onPayloadApplicationComplete(errorCode2);
-            }
-        }
-    }
-
-    public boolean bind(UpdateEngineCallback callback, Handler handler) {
+    public boolean bind(final UpdateEngineCallback callback, final Handler handler) {
         boolean bind;
         synchronized (this.mUpdateEngineCallbackLock) {
-            AnonymousClass1 anonymousClass1 = new IUpdateEngineCallback.Stub() { // from class: android.os.UpdateEngine.1
-                final /* synthetic */ UpdateEngineCallback val$callback;
-                final /* synthetic */ Handler val$handler;
-
-                AnonymousClass1(Handler handler2, UpdateEngineCallback callback2) {
-                    handler = handler2;
-                    callback = callback2;
-                }
-
-                /* renamed from: android.os.UpdateEngine$1$1 */
-                /* loaded from: classes3.dex */
-                class RunnableC00051 implements Runnable {
-                    final /* synthetic */ float val$percent;
-                    final /* synthetic */ int val$status;
-
-                    RunnableC00051(int status2, float percent2) {
-                        status = status2;
-                        percent = percent2;
-                    }
-
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        callback.onStatusUpdate(status, percent);
-                    }
-                }
-
+            this.mUpdateEngineCallback = new IUpdateEngineCallback.Stub() { // from class: android.os.UpdateEngine.1
                 @Override // android.os.IUpdateEngineCallback
-                public void onStatusUpdate(int status2, float percent2) {
-                    Handler handler2 = handler;
-                    if (handler2 != null) {
-                        handler2.post(new Runnable() { // from class: android.os.UpdateEngine.1.1
-                            final /* synthetic */ float val$percent;
-                            final /* synthetic */ int val$status;
-
-                            RunnableC00051(int status22, float percent22) {
-                                status = status22;
-                                percent = percent22;
-                            }
-
+                public void onStatusUpdate(final int status, final float percent) {
+                    if (handler != null) {
+                        handler.post(new Runnable() { // from class: android.os.UpdateEngine.1.1
                             @Override // java.lang.Runnable
                             public void run() {
                                 callback.onStatusUpdate(status, percent);
                             }
                         });
                     } else {
-                        callback.onStatusUpdate(status22, percent22);
-                    }
-                }
-
-                /* renamed from: android.os.UpdateEngine$1$2 */
-                /* loaded from: classes3.dex */
-                class AnonymousClass2 implements Runnable {
-                    final /* synthetic */ int val$errorCode;
-
-                    AnonymousClass2(int errorCode2) {
-                        errorCode = errorCode2;
-                    }
-
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        callback.onPayloadApplicationComplete(errorCode);
+                        callback.onStatusUpdate(status, percent);
                     }
                 }
 
                 @Override // android.os.IUpdateEngineCallback
-                public void onPayloadApplicationComplete(int errorCode2) {
-                    Handler handler2 = handler;
-                    if (handler2 != null) {
-                        handler2.post(new Runnable() { // from class: android.os.UpdateEngine.1.2
-                            final /* synthetic */ int val$errorCode;
-
-                            AnonymousClass2(int errorCode22) {
-                                errorCode = errorCode22;
-                            }
-
+                public void onPayloadApplicationComplete(final int errorCode) {
+                    if (handler != null) {
+                        handler.post(new Runnable() { // from class: android.os.UpdateEngine.1.2
                             @Override // java.lang.Runnable
                             public void run() {
                                 callback.onPayloadApplicationComplete(errorCode);
                             }
                         });
                     } else {
-                        callback.onPayloadApplicationComplete(errorCode22);
+                        callback.onPayloadApplicationComplete(errorCode);
                     }
                 }
             };
-            this.mUpdateEngineCallback = anonymousClass1;
             try {
-                bind = this.mUpdateEngine.bind(anonymousClass1);
+                bind = this.mUpdateEngine.bind(this.mUpdateEngineCallback);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -315,12 +168,11 @@ public class UpdateEngine {
 
     public boolean unbind() {
         synchronized (this.mUpdateEngineCallbackLock) {
-            IUpdateEngineCallback iUpdateEngineCallback = this.mUpdateEngineCallback;
-            if (iUpdateEngineCallback == null) {
+            if (this.mUpdateEngineCallback == null) {
                 return true;
             }
             try {
-                boolean result = this.mUpdateEngine.unbind(iUpdateEngineCallback);
+                boolean result = this.mUpdateEngine.unbind(this.mUpdateEngineCallback);
                 this.mUpdateEngineCallback = null;
                 return result;
             } catch (RemoteException e) {
@@ -337,14 +189,9 @@ public class UpdateEngine {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class AllocateSpaceResult {
         private int mErrorCode;
         private long mFreeSpaceRequired;
-
-        /* synthetic */ AllocateSpaceResult(AllocateSpaceResultIA allocateSpaceResultIA) {
-            this();
-        }
 
         private AllocateSpaceResult() {
             this.mErrorCode = 0;
@@ -356,11 +203,10 @@ public class UpdateEngine {
         }
 
         public long getFreeSpaceRequired() {
-            int i = this.mErrorCode;
-            if (i == 0) {
+            if (this.mErrorCode == 0) {
                 return 0L;
             }
-            if (i == 60) {
+            if (this.mErrorCode == 60) {
                 return this.mFreeSpaceRequired;
             }
             throw new IllegalStateException(String.format("getFreeSpaceRequired() is not available when error code is %d", Integer.valueOf(this.mErrorCode)));
@@ -388,15 +234,10 @@ public class UpdateEngine {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class CleanupAppliedPayloadCallback extends IUpdateEngineCallback.Stub {
         private boolean mCompleted;
         private int mErrorCode;
         private Object mLock;
-
-        /* synthetic */ CleanupAppliedPayloadCallback(CleanupAppliedPayloadCallbackIA cleanupAppliedPayloadCallbackIA) {
-            this();
-        }
 
         private CleanupAppliedPayloadCallback() {
             this.mErrorCode = 1;
@@ -404,6 +245,7 @@ public class UpdateEngine {
             this.mLock = new Object();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int getResult() {
             int i;
             synchronized (this.mLock) {

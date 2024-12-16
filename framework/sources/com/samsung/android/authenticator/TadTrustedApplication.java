@@ -3,13 +3,12 @@ package com.samsung.android.authenticator;
 import android.os.ParcelFileDescriptor;
 import com.samsung.android.authenticator.SemTrustedApplicationExecutor;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public final class TadTrustedApplication implements TrustedApplication {
+final class TadTrustedApplication implements TrustedApplication {
     private static final String TAG = "TTA";
     private final int mHandle;
 
-    public TadTrustedApplication(int handle) {
+    TadTrustedApplication(int handle) {
         this.mHandle = handle;
     }
 

@@ -1,11 +1,12 @@
 package com.samsung.android.multiwindow;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import com.samsung.android.core.SizeCompatInfo;
 import java.util.function.Consumer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SizeCompatResizeGuide extends FreeformResizeGuide {
     public static final int CTRL_TYPE_LEFT = 1;
     public static final int CTRL_TYPE_TOP = 4;
@@ -15,8 +16,8 @@ public abstract class SizeCompatResizeGuide extends FreeformResizeGuide {
 
     public abstract void cancelAnimation(Rect rect, Rect rect2, Consumer<Rect> consumer);
 
-    public SizeCompatResizeGuide(Context context, String packageName) {
-        super(context, 0, packageName);
+    public SizeCompatResizeGuide(Context context, ComponentName componentName) {
+        super(context, 0, componentName);
     }
 
     @Override // com.samsung.android.multiwindow.FreeformResizeGuide

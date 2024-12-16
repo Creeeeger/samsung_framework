@@ -8,26 +8,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class StreamCipher {
     private static final int DEFAULT_KEY_LEN = 64;
     public static final long DEFAULT_KS_HANDLE = 0;
-    private static final char[] HDR_CHARS;
-    private static final int HDR_LEN;
     private static final int MAX_RETRY_CNT = 100;
     private static final String TAG = "StreamCipher.SDP";
     private static StreamCipher sInstance;
+    private static final SecureRandom sSecureRandom = new SecureRandom();
     private static final boolean DEBUG = "eng".equals(SystemProperties.get("ro.build.type"));
     private static final byte[] EMPTY_BYTES = new byte[0];
+    private static final char[] HDR_CHARS = {221, 222};
+    private static final int HDR_LEN = HDR_CHARS.length;
     private long mPublicHandle = 0;
-    private final SecureRandom mSecureRandom = new SecureRandom();
     private final Map<Long, KeyStream> mKeyMap = new HashMap();
-
-    static {
-        char[] cArr = {221, 222};
-        HDR_CHARS = cArr;
-        HDR_LEN = cArr.length;
-    }
 
     private StreamCipher() {
         initKeyMap();
@@ -62,8 +56,7 @@ public class StreamCipher {
 
     public long issueKeyStream() {
         synchronized (this.mKeyMap) {
-            long j = this.mPublicHandle;
-            if (j == 0 || !this.mKeyMap.containsKey(Long.valueOf(j))) {
+            if (this.mPublicHandle == 0 || !this.mKeyMap.containsKey(Long.valueOf(this.mPublicHandle))) {
                 this.mPublicHandle = issueKeyStream(64);
             }
         }
@@ -80,7 +73,7 @@ public class StreamCipher {
             if (i >= 100) {
                 break;
             }
-            long handle = this.mSecureRandom.nextLong();
+            long handle = sSecureRandom.nextLong();
             if (handle == 0 || !registerKeyStream(handle, new KeyStream(generateKey(length)))) {
                 i++;
             } else {
@@ -96,12 +89,13 @@ public class StreamCipher {
 
     public void clearKeyStream() {
         synchronized (this.mKeyMap) {
-            for (Long handle : this.mKeyMap.keySet()) {
+            for (Map.Entry<Long, KeyStream> entry : this.mKeyMap.entrySet()) {
+                Long handle = entry.getKey();
+                KeyStream keyStream = entry.getValue();
                 if (DEBUG) {
                     Log.d(TAG, "clear :: handle = " + handle.longValue());
                 }
                 if (handle.longValue() != 0) {
-                    KeyStream keyStream = this.mKeyMap.get(handle);
                     if (keyStream != null) {
                         keyStream.destroy();
                     }
@@ -158,7 +152,7 @@ public class StreamCipher {
     private byte[] generateKey(int length) {
         if (length > 0) {
             byte[] key = new byte[length];
-            this.mSecureRandom.nextBytes(key);
+            sSecureRandom.nextBytes(key);
             return key;
         }
         byte[] key2 = new byte[64];
@@ -200,8 +194,7 @@ public class StreamCipher {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class KeyStream {
+    private static class KeyStream {
         private byte[] mKey;
 
         KeyStream(byte[] key) {
@@ -259,42 +252,35 @@ public class StreamCipher {
             return null;
         }
         int strLen = stream.length;
-        int i = HDR_LEN;
-        int resLen = (strLen + i) * 2;
-        int offset = i + strLen;
+        int resLen = (HDR_LEN + strLen) * 2;
+        int offset = HDR_LEN + strLen;
         byte[] res = new byte[resLen];
-        new SecureRandom().nextBytes(res);
+        sSecureRandom.nextBytes(res);
         fillHeader(res, offset);
-        for (int i2 = 0; i2 < strLen; i2++) {
-            int i3 = HDR_LEN;
-            res[offset + i2 + i3] = (byte) (res[i3 + i2] ^ stream[i2]);
+        for (int i = 0; i < strLen; i++) {
+            res[offset + i + HDR_LEN] = (byte) (res[HDR_LEN + i] ^ stream[i]);
         }
         return res;
     }
 
     public static byte[] decryptStream(byte[] stream) {
-        if (stream != null) {
-            int length = stream.length;
-            int i = HDR_LEN;
-            if (length >= i * 2) {
-                int len = stream.length;
-                int offset = len / 2;
-                int resLen = offset - i;
-                byte[] res = null;
-                if (!checkHeader(stream, offset)) {
-                    Log.e(TAG, "Failed to decrypt stream due to invalid header");
-                } else {
-                    res = new byte[resLen];
-                    for (int i2 = 0; i2 < resLen; i2++) {
-                        int i3 = HDR_LEN;
-                        res[i2] = (byte) (stream[(offset + i2) + i3] ^ stream[i2 + i3]);
-                    }
-                }
-                return res;
+        if (stream == null || stream.length < HDR_LEN * 2) {
+            Log.d(TAG, "decryptStream - Invalid parameters");
+            return null;
+        }
+        int len = stream.length;
+        int offset = len / 2;
+        int resLen = offset - HDR_LEN;
+        byte[] res = null;
+        if (!checkHeader(stream, offset)) {
+            Log.e(TAG, "Failed to decrypt stream due to invalid header");
+        } else {
+            res = new byte[resLen];
+            for (int i = 0; i < resLen; i++) {
+                res[i] = (byte) (stream[HDR_LEN + i] ^ stream[(offset + i) + HDR_LEN]);
             }
         }
-        Log.d(TAG, "decryptStream - Invalid parameters");
-        return null;
+        return res;
     }
 
     public static LockscreenCredential encryptStream(LockscreenCredential credential) {
@@ -303,16 +289,14 @@ public class StreamCipher {
             return credential.duplicate();
         }
         int strLen = credential.size();
-        int i = HDR_LEN;
-        int resLen = (strLen + i) * 2;
-        int offset = i + strLen;
+        int resLen = (HDR_LEN + strLen) * 2;
+        int offset = HDR_LEN + strLen;
         byte[] res = new byte[resLen];
-        new SecureRandom().nextBytes(res);
+        sSecureRandom.nextBytes(res);
         fillHeader(res, offset);
         byte[] stream = credential.getCredential();
-        for (int i2 = 0; i2 < strLen; i2++) {
-            int i3 = HDR_LEN;
-            res[offset + i2 + i3] = (byte) (res[i3 + i2] ^ stream[i2]);
+        for (int i = 0; i < strLen; i++) {
+            res[offset + i + HDR_LEN] = (byte) (res[HDR_LEN + i] ^ stream[i]);
         }
         Log.d(TAG, "encryptStream type:" + credential.getType());
         return getStreamCredential(credential, res);
@@ -323,32 +307,27 @@ public class StreamCipher {
     }
 
     public static LockscreenCredential decryptStream(LockscreenCredential credential) {
-        if (!credential.isNone()) {
-            int size = credential.size();
-            int i = HDR_LEN;
-            if (size >= i * 2) {
-                int len = credential.size();
-                int offset = len / 2;
-                int resLen = offset - i;
-                byte[] stream = credential.getCredential();
-                if (!checkHeader(stream, offset)) {
-                    Log.e(TAG, "Failed to decrypt stream due to invalid header. return duplicate.");
-                    return credential.duplicate();
-                }
-                byte[] res = new byte[resLen];
-                for (int i2 = 0; i2 < resLen; i2++) {
-                    int i3 = HDR_LEN;
-                    res[i2] = (byte) (stream[(offset + i2) + i3] ^ stream[i2 + i3]);
-                }
-                Log.d(TAG, "decryptStream type:" + credential.getType());
-                try {
-                    return getStreamCredential(credential, res);
-                } finally {
-                    clear(res);
-                }
-            }
+        if (credential.isNone() || credential.size() < HDR_LEN * 2) {
+            Log.d(TAG, "decryptStream is none or size zero. return duplicate.");
+            return credential.duplicate();
         }
-        Log.d(TAG, "decryptStream is none or size zero. return duplicate.");
-        return credential.duplicate();
+        int len = credential.size();
+        int offset = len / 2;
+        int resLen = offset - HDR_LEN;
+        byte[] stream = credential.getCredential();
+        if (!checkHeader(stream, offset)) {
+            Log.e(TAG, "Failed to decrypt stream due to invalid header. return duplicate.");
+            return credential.duplicate();
+        }
+        byte[] res = new byte[resLen];
+        for (int i = 0; i < resLen; i++) {
+            res[i] = (byte) (stream[HDR_LEN + i] ^ stream[(offset + i) + HDR_LEN]);
+        }
+        Log.d(TAG, "decryptStream type:" + credential.getType());
+        try {
+            return getStreamCredential(credential, res);
+        } finally {
+            clear(res);
+        }
     }
 }

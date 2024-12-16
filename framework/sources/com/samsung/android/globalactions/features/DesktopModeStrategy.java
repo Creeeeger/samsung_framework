@@ -9,7 +9,7 @@ import com.samsung.android.globalactions.util.ConditionChecker;
 import com.samsung.android.globalactions.util.DesktopModeManagerWrapper;
 import com.samsung.android.globalactions.util.SystemConditions;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DesktopModeStrategy implements InitializationStrategy, DisposingStrategy, DefaultActionsCreationStrategy {
     private final ConditionChecker mConditionChecker;
     Context mContext;
@@ -23,6 +23,7 @@ public class DesktopModeStrategy implements InitializationStrategy, DisposingStr
         this.mConditionChecker = conditionChecker;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInitialize$0() {
         this.mView.dismiss();
     }

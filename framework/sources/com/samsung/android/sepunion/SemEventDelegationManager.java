@@ -10,7 +10,7 @@ import android.os.RemoteException;
 import com.samsung.android.sepunion.IDeviceInfoManager;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEventDelegationManager {
     public static final String BUNDLE_KEY_COMPONENT = "component";
     public static final String BUNDLE_KEY_COMPONENT_LIST = "component_list";
@@ -48,15 +48,13 @@ public class SemEventDelegationManager {
 
     private IDeviceInfoManager getService() {
         synchronized (sStaticLock) {
-            IDeviceInfoManager iDeviceInfoManager = sService;
-            if (iDeviceInfoManager != null) {
-                return iDeviceInfoManager;
+            if (sService != null) {
+                return sService;
             }
             SemUnionManager um = (SemUnionManager) this.mContext.getSystemService(Context.SEP_UNION_SERVICE);
             IBinder b = um.getSemSystemService("semeventdelegator");
-            IDeviceInfoManager asInterface = IDeviceInfoManager.Stub.asInterface(b);
-            sService = asInterface;
-            return asInterface;
+            sService = IDeviceInfoManager.Stub.asInterface(b);
+            return sService;
         }
     }
 

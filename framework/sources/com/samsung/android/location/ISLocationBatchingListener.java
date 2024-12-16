@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISLocationBatchingListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.location.ISLocationBatchingListener";
 
     void onLocationAvailable(Location[] locationArr, boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISLocationBatchingListener {
         @Override // com.samsung.android.location.ISLocationBatchingListener
         public void onLocationAvailable(Location[] locations, boolean flushCompleted) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISLocationBatchingListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISLocationBatchingListener {
         static final int TRANSACTION_onLocationAvailable = 1;
 
@@ -68,27 +66,23 @@ public interface ISLocationBatchingListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISLocationBatchingListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISLocationBatchingListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISLocationBatchingListener.DESCRIPTOR);
+                case 1:
+                    Location[] _arg0 = (Location[]) data.createTypedArray(Location.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onLocationAvailable(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Location[] _arg0 = (Location[]) data.createTypedArray(Location.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onLocationAvailable(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISLocationBatchingListener {
+        private static class Proxy implements ISLocationBatchingListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

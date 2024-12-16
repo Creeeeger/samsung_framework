@@ -30,9 +30,10 @@ import android.util.StateSet;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.FocusFinder;
-import android.view.InputDevice;
+import android.view.HapticScrollFeedbackProvider;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.PointerIcon;
 import android.view.SoundEffectConstants;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -49,9 +50,11 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.PathInterpolator;
+import android.view.flags.Flags;
 import android.view.inspector.InspectionCompanion;
 import android.view.inspector.PropertyMapper;
 import android.view.inspector.PropertyReader;
+import android.widget.DifferentialMotionFlingHelper;
 import android.widget.FrameLayout;
 import com.android.internal.R;
 import java.lang.ref.WeakReference;
@@ -87,6 +90,7 @@ public class ScrollView extends FrameLayout {
     private float mAutoscrollDuration;
     private float mAutoscrollDurationGap;
     private View mChildToScrollTo;
+    private DifferentialMotionFlingHelper mDifferentialMotionFlingHelper;
     public EdgeEffect mEdgeGlowBottom;
     public EdgeEffect mEdgeGlowTop;
 
@@ -98,6 +102,7 @@ public class ScrollView extends FrameLayout {
     private int mGoToTopGap;
     private RenderNode mGoToTopRenderNode;
     private int mGoToTopWH;
+    private HapticScrollFeedbackProvider mHapticScrollFeedbackProvider;
     private boolean mHoverAreaEnter;
     private int mHoverBottomAreaHeight;
     private HoverScrollHandler mHoverHandler;
@@ -152,7 +157,6 @@ public class ScrollView extends FrameLayout {
     private VelocityTracker mVelocityTracker;
     private float mVerticalScrollFactor;
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<ScrollView> {
         private int mFillViewportId;
         private boolean mPropertiesMapped = false;
@@ -247,9 +251,6 @@ public class ScrollView extends FrameLayout {
         this.SWITCH_CONTROL_SCROLL_MAX_DURATION = 17.1f;
         this.mAutoscrollDurationGap = 1.178f;
         this.mGoToTopEdgeEffectRunnable = new Runnable() { // from class: android.widget.ScrollView.2
-            AnonymousClass2() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.mEdgeGlowTop.onAbsorb(10000);
@@ -259,27 +260,18 @@ public class ScrollView extends FrameLayout {
         this.mHoverScrollSpeed = 0;
         this.GO_TO_TOP_HIDE = 2500;
         this.mSemGoToTopFadeOutRunnable = new Runnable() { // from class: android.widget.ScrollView.3
-            AnonymousClass3() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.semPlayGoToTopFadeOut();
             }
         };
         this.mSemGoToTopFadeInRunnable = new Runnable() { // from class: android.widget.ScrollView.4
-            AnonymousClass4() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.semPlayGoToTopFadeIn();
             }
         };
         this.mSemAutoHide = new Runnable() { // from class: android.widget.ScrollView.5
-            AnonymousClass5() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.semSetupGoToTop(0);
@@ -308,7 +300,7 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public float getTopFadingEdgeStrength() {
+    protected float getTopFadingEdgeStrength() {
         if (getChildCount() == 0) {
             return 0.0f;
         }
@@ -320,7 +312,7 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public float getBottomFadingEdgeStrength() {
+    protected float getBottomFadingEdgeStrength() {
         if (getChildCount() == 0) {
             return 0.0f;
         }
@@ -470,7 +462,7 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthPadding;
         int heightPadding;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -542,9 +534,6 @@ public class ScrollView extends FrameLayout {
                 if (semIsSupportGotoTop() && this.mSemGoToTopState == 2) {
                     if (canScrollUp()) {
                         post(new Runnable() { // from class: android.widget.ScrollView.1
-                            AnonymousClass1() {
-                            }
-
                             @Override // java.lang.Runnable
                             public void run() {
                                 ScrollView.this.smoothScrollTo(0, 0);
@@ -674,32 +663,6 @@ public class ScrollView extends FrameLayout {
         return super.dispatchTouchEvent(event);
     }
 
-    /* renamed from: android.widget.ScrollView$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ScrollView.this.smoothScrollTo(0, 0);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.ScrollView$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ScrollView.this.mEdgeGlowTop.onAbsorb(10000);
-            ScrollView.this.invalidate();
-        }
-    }
-
     private boolean semIsTalkBackIsRunning() {
         AccessibilityManager accessibilityManager = AccessibilityManager.getInstance(this.mContext);
         if (accessibilityManager == null || !accessibilityManager.isEnabled()) {
@@ -755,20 +718,20 @@ public class ScrollView extends FrameLayout {
                 }
                 return handled2;
             case 62:
-                pageScroll(event.isShiftPressed() ? 33 : 130);
-                return false;
-            case 92:
-                boolean handled3 = pageScroll(33);
+                boolean handled3 = pageScroll(event.isShiftPressed() ? 33 : 130);
                 return handled3;
-            case 93:
-                boolean handled4 = pageScroll(130);
+            case 92:
+                boolean handled4 = pageScroll(33);
                 return handled4;
-            case 122:
-                boolean handled5 = fullScroll(33);
+            case 93:
+                boolean handled5 = pageScroll(130);
                 return handled5;
-            case 123:
-                boolean handled6 = fullScroll(130);
+            case 122:
+                boolean handled6 = fullScroll(33);
                 return handled6;
+            case 123:
+                boolean handled7 = fullScroll(130);
+                return handled7;
             default:
                 return false;
         }
@@ -784,11 +747,10 @@ public class ScrollView extends FrameLayout {
     }
 
     private void initOrResetVelocityTracker() {
-        VelocityTracker velocityTracker = this.mVelocityTracker;
-        if (velocityTracker == null) {
+        if (this.mVelocityTracker == null) {
             this.mVelocityTracker = VelocityTracker.obtain();
         } else {
-            velocityTracker.clear();
+            this.mVelocityTracker.clear();
         }
     }
 
@@ -798,10 +760,21 @@ public class ScrollView extends FrameLayout {
         }
     }
 
+    private void initDifferentialFlingHelperIfNotExists() {
+        if (this.mDifferentialMotionFlingHelper == null) {
+            this.mDifferentialMotionFlingHelper = new DifferentialMotionFlingHelper(this.mContext, new DifferentialFlingTarget());
+        }
+    }
+
+    private void initHapticScrollFeedbackProviderIfNotExists() {
+        if (this.mHapticScrollFeedbackProvider == null) {
+            this.mHapticScrollFeedbackProvider = new HapticScrollFeedbackProvider(this);
+        }
+    }
+
     private void recycleVelocityTracker() {
-        VelocityTracker velocityTracker = this.mVelocityTracker;
-        if (velocityTracker != null) {
-            velocityTracker.recycle();
+        if (this.mVelocityTracker != null) {
+            this.mVelocityTracker.recycle();
             this.mVelocityTracker = null;
         }
     }
@@ -837,6 +810,9 @@ public class ScrollView extends FrameLayout {
                     initOrResetVelocityTracker();
                     this.mVelocityTracker.addMovement(ev);
                     this.mScroller.computeScrollOffset();
+                    if (Flags.viewVelocityApi()) {
+                        setFrameContentVelocity(Math.abs(this.mScroller.getCurrVelocity()));
+                    }
                     if (this.mScroller.isFinished() && this.mEdgeGlowBottom.isFinished() && this.mEdgeGlowTop.isFinished()) {
                         z = false;
                     }
@@ -853,6 +829,7 @@ public class ScrollView extends FrameLayout {
                     startNestedScroll(2);
                     break;
                 }
+                break;
             case 1:
             case 3:
                 this.mIsBeingDragged = false;
@@ -925,7 +902,7 @@ public class ScrollView extends FrameLayout {
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     @Override // android.view.ViewGroup, android.view.View
-    public boolean dispatchHoverEvent(MotionEvent ev) {
+    protected boolean dispatchHoverEvent(MotionEvent ev) {
         if (!isHoveringUIEnabled()) {
             return super.dispatchHoverEvent(ev);
         }
@@ -1065,15 +1042,15 @@ public class ScrollView extends FrameLayout {
                 }
                 if (!this.mScroller.isFinished()) {
                     this.mScroller.abortAnimation();
-                    StrictMode.Span span = this.mFlingStrictSpan;
-                    if (span != null) {
-                        span.finish();
+                    if (this.mFlingStrictSpan != null) {
+                        this.mFlingStrictSpan.finish();
                         this.mFlingStrictSpan = null;
                     }
                 }
                 this.mLastMotionY = (int) ev.getY();
                 this.mActivePointerId = ev.getPointerId(0);
                 startNestedScroll(2);
+                break;
                 break;
             case 1:
                 if (this.mIsBeingDragged) {
@@ -1144,10 +1121,8 @@ public class ScrollView extends FrameLayout {
                         int scrolledDeltaY = this.mScrollY - oldY;
                         int unconsumedY = deltaY - scrolledDeltaY;
                         if (dispatchNestedScroll(0, scrolledDeltaY, 0, unconsumedY, this.mScrollOffset)) {
-                            int i = this.mLastMotionY;
-                            int i2 = this.mScrollOffset[1];
-                            this.mLastMotionY = i - i2;
-                            vtev.offsetLocation(0.0f, i2);
+                            this.mLastMotionY -= this.mScrollOffset[1];
+                            vtev.offsetLocation(0.0f, this.mScrollOffset[1]);
                             this.mNestedYOffset += this.mScrollOffset[1];
                             break;
                         } else if (!this.mSemGoToTopPressed && canOverscroll && deltaY != 0.0f) {
@@ -1191,8 +1166,7 @@ public class ScrollView extends FrameLayout {
                 break;
             case 6:
                 onSecondaryPointerUp(ev);
-                int i3 = this.mActivePointerId;
-                if (i3 != -1 && ev.findPointerIndex(i3) >= 0) {
+                if (this.mActivePointerId != -1 && ev.findPointerIndex(this.mActivePointerId) >= 0) {
                     this.mLastMotionY = (int) ev.getY(ev.findPointerIndex(this.mActivePointerId));
                     break;
                 } else {
@@ -1200,9 +1174,8 @@ public class ScrollView extends FrameLayout {
                     break;
                 }
         }
-        VelocityTracker velocityTracker2 = this.mVelocityTracker;
-        if (velocityTracker2 != null) {
-            velocityTracker2.addMovement(vtev);
+        if (this.mVelocityTracker != null) {
+            this.mVelocityTracker.addMovement(vtev);
         }
         vtev.recycle();
         return true;
@@ -1215,25 +1188,25 @@ public class ScrollView extends FrameLayout {
             int newPointerIndex = pointerIndex == 0 ? 1 : 0;
             this.mLastMotionY = (int) ev.getY(newPointerIndex);
             this.mActivePointerId = ev.getPointerId(newPointerIndex);
-            VelocityTracker velocityTracker = this.mVelocityTracker;
-            if (velocityTracker != null) {
-                velocityTracker.clear();
+            if (this.mVelocityTracker != null) {
+                this.mVelocityTracker.clear();
             }
         }
     }
 
     @Override // android.view.View
     public boolean onGenericMotionEvent(MotionEvent event) {
-        float axisValue;
+        int axis;
         switch (event.getAction()) {
             case 8:
                 if (event.isFromSource(2)) {
-                    axisValue = event.getAxisValue(9);
+                    axis = 9;
                 } else if (event.isFromSource(4194304)) {
-                    axisValue = event.getAxisValue(26);
+                    axis = 26;
                 } else {
-                    axisValue = 0.0f;
+                    axis = -1;
                 }
+                float axisValue = axis == -1 ? 0.0f : event.getAxisValue(axis);
                 int delta = Math.round(this.mVerticalScrollFactor * axisValue);
                 if (delta != 0) {
                     startNestedScroll(2);
@@ -1288,14 +1261,17 @@ public class ScrollView extends FrameLayout {
                                 invalidate();
                             }
                         }
-                        if (absorbed) {
+                        if (!absorbed) {
+                            break;
+                        } else {
                             return true;
                         }
                     }
                 }
                 break;
         }
-        return super.onGenericMotionEvent(event);
+        boolean hitLimit = super.onGenericMotionEvent(event);
+        return hitLimit;
     }
 
     @Override // android.view.View
@@ -1356,22 +1332,19 @@ public class ScrollView extends FrameLayout {
                 if (!canScroll()) {
                     return false;
                 }
-                float f = 17.1f - (this.mAutoscrollDurationGap * autoScrollSpeedLevel);
-                this.mAutoscrollDuration = f;
-                autoScrollWithDuration(f);
+                this.mAutoscrollDuration = 17.1f - (this.mAutoscrollDurationGap * autoScrollSpeedLevel);
+                autoScrollWithDuration(this.mAutoscrollDuration);
                 return true;
             case 8388608:
                 if (!canScroll()) {
                     return false;
                 }
-                OverScroller overScroller = this.mScroller;
-                if (overScroller != null && !overScroller.isFinished()) {
+                if (this.mScroller != null && !this.mScroller.isFinished()) {
                     this.mScroller.abortAnimation();
                 }
                 this.mLinear = false;
-                OverScroller overScroller2 = this.mScroller;
-                if (overScroller2 != null) {
-                    overScroller2.setInterpolator(null);
+                if (this.mScroller != null) {
+                    this.mScroller.setInterpolator(null);
                 }
                 return true;
             case 67108864:
@@ -1385,9 +1358,8 @@ public class ScrollView extends FrameLayout {
                 if (!canScroll()) {
                     return false;
                 }
-                float f2 = this.mAutoscrollDuration;
-                if (f2 > 0.6f) {
-                    this.mAutoscrollDuration = f2 - this.mAutoscrollDurationGap;
+                if (this.mAutoscrollDuration > 0.6f) {
+                    this.mAutoscrollDuration -= this.mAutoscrollDurationGap;
                 }
                 autoScrollWithDuration(this.mAutoscrollDuration);
                 return true;
@@ -1395,9 +1367,8 @@ public class ScrollView extends FrameLayout {
                 if (!canScroll()) {
                     return false;
                 }
-                float f3 = this.mAutoscrollDuration;
-                if (f3 < 17.1f) {
-                    this.mAutoscrollDuration = f3 + this.mAutoscrollDurationGap;
+                if (this.mAutoscrollDuration < 17.1f) {
+                    this.mAutoscrollDuration += this.mAutoscrollDurationGap;
                 }
                 autoScrollWithDuration(this.mAutoscrollDuration);
                 return true;
@@ -1508,8 +1479,7 @@ public class ScrollView extends FrameLayout {
                 this.mTempRect.top = 0;
             }
         }
-        Rect rect = this.mTempRect;
-        rect.bottom = rect.top + height;
+        this.mTempRect.bottom = this.mTempRect.top + height;
         return scrollAndFocus(direction, this.mTempRect.top, this.mTempRect.bottom);
     }
 
@@ -1522,8 +1492,7 @@ public class ScrollView extends FrameLayout {
         if (down && (count = getChildCount()) > 0) {
             View view = getChildAt(count - 1);
             this.mTempRect.bottom = view.getBottom() + this.mPaddingBottom;
-            Rect rect = this.mTempRect;
-            rect.top = rect.bottom - height;
+            this.mTempRect.top = this.mTempRect.bottom - height;
         }
         return scrollAndFocus(direction, this.mTempRect.top, this.mTempRect.bottom);
     }
@@ -1628,9 +1597,8 @@ public class ScrollView extends FrameLayout {
         } else {
             if (!this.mScroller.isFinished()) {
                 this.mScroller.abortAnimation();
-                StrictMode.Span span = this.mFlingStrictSpan;
-                if (span != null) {
-                    span.finish();
+                if (this.mFlingStrictSpan != null) {
+                    this.mFlingStrictSpan.finish();
                     this.mFlingStrictSpan = null;
                 }
             }
@@ -1654,9 +1622,8 @@ public class ScrollView extends FrameLayout {
             } else {
                 if (!this.mScroller.isFinished()) {
                     this.mScroller.abortAnimation();
-                    StrictMode.Span span = this.mFlingStrictSpan;
-                    if (span != null) {
-                        span.finish();
+                    if (this.mFlingStrictSpan != null) {
+                        this.mFlingStrictSpan.finish();
                         this.mFlingStrictSpan = null;
                     }
                 }
@@ -1675,7 +1642,7 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public int computeVerticalScrollRange() {
+    protected int computeVerticalScrollRange() {
         int count = getChildCount();
         int contentHeight = (getHeight() - this.mPaddingBottom) - this.mPaddingTop;
         if (count == 0) {
@@ -1694,12 +1661,12 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public int computeVerticalScrollOffset() {
+    protected int computeVerticalScrollOffset() {
         return Math.max(0, super.computeVerticalScrollOffset());
     }
 
     @Override // android.view.ViewGroup
-    public void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
+    protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         ViewGroup.LayoutParams lp = child.getLayoutParams();
         int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec, this.mPaddingLeft + this.mPaddingRight, lp.width);
         int verticalPadding = this.mPaddingTop + this.mPaddingBottom;
@@ -1708,7 +1675,7 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup
-    public void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
+    protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
         int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec, this.mPaddingLeft + this.mPaddingRight + lp.leftMargin + lp.rightMargin + widthUsed, lp.width);
         int usedTotal = this.mPaddingTop + this.mPaddingBottom + lp.topMargin + lp.bottomMargin + heightUsed;
@@ -1744,21 +1711,25 @@ public class ScrollView extends FrameLayout {
             }
             if (!awakenScrollBars()) {
                 postInvalidateOnAnimation();
+            }
+            if (Flags.viewVelocityApi()) {
+                setFrameContentVelocity(Math.abs(this.mScroller.getCurrVelocity()));
                 return;
             }
             return;
         }
-        StrictMode.Span span = this.mFlingStrictSpan;
-        if (span != null) {
-            span.finish();
+        if (this.mFlingStrictSpan != null) {
+            this.mFlingStrictSpan.finish();
             this.mFlingStrictSpan = null;
         }
     }
 
     private int consumeFlingInStretch(int unconsumed) {
-        EdgeEffect edgeEffect;
-        EdgeEffect edgeEffect2;
-        if (unconsumed > 0 && (edgeEffect2 = this.mEdgeGlowTop) != null && edgeEffect2.getDistance() != 0.0f) {
+        int scrollY = getScrollY();
+        if (scrollY < 0 || scrollY > getScrollRange()) {
+            return unconsumed;
+        }
+        if (unconsumed > 0 && this.mEdgeGlowTop != null && this.mEdgeGlowTop.getDistance() != 0.0f) {
             int size = getHeight();
             float deltaDistance = ((-unconsumed) * FLING_DESTRETCH_FACTOR) / size;
             int consumed = Math.round(((-size) / FLING_DESTRETCH_FACTOR) * this.mEdgeGlowTop.onPullDistance(deltaDistance, 0.5f));
@@ -1768,7 +1739,7 @@ public class ScrollView extends FrameLayout {
             }
             return unconsumed - consumed;
         }
-        if (unconsumed < 0 && (edgeEffect = this.mEdgeGlowBottom) != null && edgeEffect.getDistance() != 0.0f) {
+        if (unconsumed < 0 && this.mEdgeGlowBottom != null && this.mEdgeGlowBottom.getDistance() != 0.0f) {
             int size2 = getHeight();
             float deltaDistance2 = (unconsumed * FLING_DESTRETCH_FACTOR) / size2;
             int consumed2 = Math.round((size2 / FLING_DESTRETCH_FACTOR) * this.mEdgeGlowBottom.onPullDistance(deltaDistance2, 0.5f));
@@ -1848,7 +1819,7 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup
-    public boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         View nextFocus;
         if (direction == 2) {
             direction = 130;
@@ -1879,16 +1850,14 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        StrictMode.Span span = this.mScrollStrictSpan;
-        if (span != null) {
-            span.finish();
+        if (this.mScrollStrictSpan != null) {
+            this.mScrollStrictSpan.finish();
             this.mScrollStrictSpan = null;
         }
-        StrictMode.Span span2 = this.mFlingStrictSpan;
-        if (span2 != null) {
-            span2.finish();
+        if (this.mFlingStrictSpan != null) {
+            this.mFlingStrictSpan.finish();
             this.mFlingStrictSpan = null;
         }
     }
@@ -1899,18 +1868,16 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         this.mIsLayoutDirty = false;
-        View view = this.mChildToScrollTo;
-        if (view != null && isViewDescendantOf(view, this)) {
+        if (this.mChildToScrollTo != null && isViewDescendantOf(this.mChildToScrollTo, this)) {
             scrollToDescendant(this.mChildToScrollTo);
         }
         this.mChildToScrollTo = null;
         if (!isLaidOut()) {
-            SavedState savedState = this.mSavedState;
-            if (savedState != null) {
-                this.mScrollY = savedState.scrollPosition;
+            if (this.mSavedState != null) {
+                this.mScrollY = this.mSavedState.scrollPosition;
                 this.mSavedState = null;
             }
             int childHeight = getChildCount() > 0 ? getChildAt(0).getMeasuredHeight() : 0;
@@ -1931,7 +1898,7 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         View currentFocused = findFocus();
         if (currentFocused != null && this != currentFocused && isWithinDeltaOfScreen(currentFocused, 0, oldh)) {
@@ -1955,6 +1922,9 @@ public class ScrollView extends FrameLayout {
             int height = (getHeight() - this.mPaddingBottom) - this.mPaddingTop;
             int bottom = getChildAt(0).getHeight();
             this.mScroller.fling(this.mScrollX, this.mScrollY, 0, velocityY, 0, 0, 0, Math.max(0, bottom - height), 0, height / 2);
+            if (Flags.viewVelocityApi()) {
+                setFrameContentVelocity(Math.abs(this.mScroller.getCurrVelocity()));
+            }
             if (this.mFlingStrictSpan == null) {
                 this.mFlingStrictSpan = StrictMode.enterCriticalSpan("ScrollView-fling");
             }
@@ -2019,9 +1989,8 @@ public class ScrollView extends FrameLayout {
             this.mEdgeGlowTop.onRelease();
             this.mEdgeGlowBottom.onRelease();
         }
-        StrictMode.Span span = this.mScrollStrictSpan;
-        if (span != null) {
-            span.finish();
+        if (this.mScrollStrictSpan != null) {
+            this.mScrollStrictSpan.finish();
             this.mScrollStrictSpan = null;
         }
     }
@@ -2040,12 +2009,12 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public boolean verifyDrawable(Drawable dr) {
+    protected boolean verifyDrawable(Drawable dr) {
         return this.mSemGoToTopImage == dr || super.verifyDrawable(dr);
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
     }
 
@@ -2188,6 +2157,7 @@ public class ScrollView extends FrameLayout {
         return n;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18 || !(state instanceof SavedState)) {
@@ -2200,6 +2170,7 @@ public class ScrollView extends FrameLayout {
         requestLayout();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18) {
@@ -2212,22 +2183,20 @@ public class ScrollView extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("fillViewport", this.mFillViewport);
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.ScrollView.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -2253,27 +2222,9 @@ public class ScrollView extends FrameLayout {
         public String toString() {
             return "ScrollView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " scrollPosition=" + this.scrollPosition + "}";
         }
-
-        /* renamed from: android.widget.ScrollView$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
-    /* loaded from: classes4.dex */
-    public static class HoverScrollHandler extends Handler {
+    private static class HoverScrollHandler extends Handler {
         private final WeakReference<ScrollView> mScrollView;
 
         HoverScrollHandler(ScrollView sv) {
@@ -2289,24 +2240,22 @@ public class ScrollView extends FrameLayout {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleMessage(Message msg) {
         int offset;
         switch (msg.what) {
             case 1:
                 int range = getScrollRange();
-                long currentTimeMillis = System.currentTimeMillis();
-                this.mHoverRecognitionCurrentTime = currentTimeMillis;
-                this.mHoverRecognitionDurationTime = (currentTimeMillis - this.mHoverRecognitionStartTime) / 1000;
-                if (currentTimeMillis - this.mHoverScrollStartTime >= this.mHoverScrollTimeInterval) {
-                    int applyDimension = (int) (TypedValue.applyDimension(1, this.HOVERSCROLL_SPEED, this.mContext.getResources().getDisplayMetrics()) + 0.5f);
-                    this.mHoverScrollSpeed = applyDimension;
-                    long j = this.mHoverRecognitionDurationTime;
-                    if (j > 2 && j < 4) {
-                        this.mHoverScrollSpeed = applyDimension + ((int) (applyDimension * 0.1d));
-                    } else if (j >= 4 && j < 5) {
-                        this.mHoverScrollSpeed = applyDimension + ((int) (applyDimension * 0.2d));
-                    } else if (j >= 5) {
-                        this.mHoverScrollSpeed = applyDimension + ((int) (applyDimension * 0.3d));
+                this.mHoverRecognitionCurrentTime = System.currentTimeMillis();
+                this.mHoverRecognitionDurationTime = (this.mHoverRecognitionCurrentTime - this.mHoverRecognitionStartTime) / 1000;
+                if (this.mHoverRecognitionCurrentTime - this.mHoverScrollStartTime >= this.mHoverScrollTimeInterval) {
+                    this.mHoverScrollSpeed = (int) (TypedValue.applyDimension(1, this.HOVERSCROLL_SPEED, this.mContext.getResources().getDisplayMetrics()) + 0.5f);
+                    if (this.mHoverRecognitionDurationTime > 2 && this.mHoverRecognitionDurationTime < 4) {
+                        this.mHoverScrollSpeed += (int) (this.mHoverScrollSpeed * 0.1d);
+                    } else if (this.mHoverRecognitionDurationTime >= 4 && this.mHoverRecognitionDurationTime < 5) {
+                        this.mHoverScrollSpeed += (int) (this.mHoverScrollSpeed * 0.2d);
+                    } else if (this.mHoverRecognitionDurationTime >= 5) {
+                        this.mHoverScrollSpeed += (int) (this.mHoverScrollSpeed * 0.3d);
                     }
                     if (this.mHoverScrollDirection == 2) {
                         offset = this.mHoverScrollSpeed * (-1);
@@ -2317,47 +2266,46 @@ public class ScrollView extends FrameLayout {
                     if (offset < 0 && this.mScrollY > 0) {
                         flingWithoutAcc(offset);
                         this.mHoverHandler.sendEmptyMessageDelayed(1, this.HOVERSCROLL_DELAY);
-                        return;
-                    }
-                    if (offset > 0 && this.mScrollY < range) {
+                        break;
+                    } else if (offset > 0 && this.mScrollY < range) {
                         flingWithoutAcc(offset);
                         this.mHoverHandler.sendEmptyMessageDelayed(1, this.HOVERSCROLL_DELAY);
-                        return;
-                    }
-                    int overscrollMode = getOverScrollMode();
-                    boolean canOverscroll = overscrollMode == 0 || (overscrollMode == 1 && range > 0);
-                    if (canOverscroll && !this.mIsHoverOverscrolled) {
-                        int i = this.mHoverScrollDirection;
-                        if (i == 2) {
-                            int width = (getWidth() - this.mPaddingLeft) - this.mPaddingRight;
-                            this.mEdgeGlowTop.setSize(width, getHeight());
-                            this.mEdgeGlowTop.onAbsorb(10000);
-                            if (!this.mEdgeGlowBottom.isFinished()) {
-                                this.mEdgeGlowBottom.onRelease();
+                        break;
+                    } else {
+                        int overscrollMode = getOverScrollMode();
+                        boolean canOverscroll = overscrollMode == 0 || (overscrollMode == 1 && range > 0);
+                        if (canOverscroll && !this.mIsHoverOverscrolled) {
+                            if (this.mHoverScrollDirection == 2) {
+                                int width = (getWidth() - this.mPaddingLeft) - this.mPaddingRight;
+                                this.mEdgeGlowTop.setSize(width, getHeight());
+                                this.mEdgeGlowTop.onAbsorb(10000);
+                                if (!this.mEdgeGlowBottom.isFinished()) {
+                                    this.mEdgeGlowBottom.onRelease();
+                                }
+                            } else {
+                                int width2 = this.mHoverScrollDirection;
+                                if (width2 == 1) {
+                                    int width3 = (getWidth() - this.mPaddingLeft) - this.mPaddingRight;
+                                    this.mEdgeGlowBottom.setSize(width3, getHeight());
+                                    this.mEdgeGlowBottom.onAbsorb(10000);
+                                    semShowGoToTop();
+                                    if (!this.mEdgeGlowTop.isFinished()) {
+                                        this.mEdgeGlowTop.onRelease();
+                                    }
+                                }
                             }
-                        } else if (i == 1) {
-                            int width2 = (getWidth() - this.mPaddingLeft) - this.mPaddingRight;
-                            this.mEdgeGlowBottom.setSize(width2, getHeight());
-                            this.mEdgeGlowBottom.onAbsorb(10000);
-                            semShowGoToTop();
-                            if (!this.mEdgeGlowTop.isFinished()) {
-                                this.mEdgeGlowTop.onRelease();
+                            if (!this.mEdgeGlowTop.isFinished() || !this.mEdgeGlowBottom.isFinished()) {
+                                invalidate();
                             }
+                            this.mIsHoverOverscrolled = true;
                         }
-                        if (!this.mEdgeGlowTop.isFinished() || !this.mEdgeGlowBottom.isFinished()) {
-                            invalidate();
+                        if (!canOverscroll && !this.mIsHoverOverscrolled) {
+                            this.mIsHoverOverscrolled = true;
+                            break;
                         }
-                        this.mIsHoverOverscrolled = true;
                     }
-                    if (!canOverscroll && !this.mIsHoverOverscrolled) {
-                        this.mIsHoverOverscrolled = true;
-                        return;
-                    }
-                    return;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -2365,53 +2313,11 @@ public class ScrollView extends FrameLayout {
         if (iconId == 20011 || iconId == 20015) {
             iconId = semGetRotatePointerIcon(iconId);
         }
-        InputDevice inputDevice = ev.getDevice();
-        if (inputDevice != null) {
-            inputDevice.setPointerType(iconId);
-        } else {
-            Log.e(TAG, "Failed to change PointerIcon to " + iconId);
-        }
+        PointerIcon pointerIcon = iconId == 20001 ? null : PointerIcon.getSystemIcon(this.mContext, iconId);
+        semSetPointerIcon(ev.getToolType(0), pointerIcon);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.ScrollView$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ScrollView.this.semPlayGoToTopFadeOut();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.ScrollView$4 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass4 implements Runnable {
-        AnonymousClass4() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ScrollView.this.semPlayGoToTopFadeIn();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.ScrollView$5 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass5 implements Runnable {
-        AnonymousClass5() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ScrollView.this.semSetupGoToTop(0);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void semSetupGoToTop(int where) {
         int overlappedW;
         int overlappedW2;
@@ -2458,10 +2364,11 @@ public class ScrollView extends FrameLayout {
                 case 1:
                 case 2:
                     Rect rect = this.mSemGoToTopRect;
-                    int i = this.mGoToTopWH;
-                    int w2 = this.mGoToTopGap;
-                    int contentW2 = (h - i) - w2;
-                    rect.set(centerX - (i / 2), contentW2, (i / 2) + centerX, h - w2);
+                    int i = centerX - (this.mGoToTopWH / 2);
+                    int i2 = (h - this.mGoToTopWH) - this.mGoToTopGap;
+                    int i3 = (this.mGoToTopWH / 2) + centerX;
+                    int contentW2 = this.mGoToTopGap;
+                    rect.set(i, i2, i3, h - contentW2);
                     break;
             }
             this.mSemGoToTopImage.setBounds(this.mSemGoToTopRect);
@@ -2479,6 +2386,7 @@ public class ScrollView extends FrameLayout {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void semPlayGoToTopFadeOut() {
         if (this.mSemGoToTopFadeOutAnimator.isRunning()) {
             return;
@@ -2487,6 +2395,7 @@ public class ScrollView extends FrameLayout {
         this.mSemGoToTopFadeOutAnimator.start();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void semPlayGoToTopFadeIn() {
         if (this.mSemGoToTopFadeInAnimator.isRunning()) {
             return;
@@ -2500,11 +2409,10 @@ public class ScrollView extends FrameLayout {
     }
 
     public void semSetGoToTopEnabled(boolean enabled, int buttonStyle) {
-        Drawable drawable = buttonStyle == 0 ? this.mSemGoToTopLightImage : this.mContext.getResources().getDrawable(R.drawable.sem_list_go_to_top_dark);
-        this.mSemGoToTopImage = drawable;
-        if (drawable != null) {
+        this.mSemGoToTopImage = buttonStyle == 0 ? this.mSemGoToTopLightImage : this.mContext.getResources().getDrawable(R.drawable.sem_list_go_to_top_dark);
+        if (this.mSemGoToTopImage != null) {
             this.mSemEnableGoToTop = enabled;
-            if (drawable.getAlpha() != 255) {
+            if (this.mSemGoToTopImage.getAlpha() != 255) {
                 this.mSemGoToTopImage.setAlpha(255);
             }
             this.mSemGoToTopBitmap = drawableToBitmap(this.mSemGoToTopImage);
@@ -2514,14 +2422,10 @@ public class ScrollView extends FrameLayout {
             } else {
                 this.mSemGoToTopImage.setCallback(null);
             }
-            ValueAnimator ofInt = ValueAnimator.ofInt(0, 255);
-            this.mSemGoToTopFadeInAnimator = ofInt;
-            ofInt.setDuration(333L);
+            this.mSemGoToTopFadeInAnimator = ValueAnimator.ofInt(0, 255);
+            this.mSemGoToTopFadeInAnimator.setDuration(333L);
             this.mSemGoToTopFadeInAnimator.setInterpolator(new PathInterpolator(0.33f, 0.0f, 0.3f, 1.0f));
             this.mSemGoToTopFadeInAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.ScrollView.6
-                AnonymousClass6() {
-                }
-
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = ((Integer) animation.getAnimatedValue()).intValue();
@@ -2529,14 +2433,10 @@ public class ScrollView extends FrameLayout {
                     ScrollView.this.invalidate();
                 }
             });
-            ValueAnimator ofInt2 = ValueAnimator.ofInt(255, 0);
-            this.mSemGoToTopFadeOutAnimator = ofInt2;
-            ofInt2.setDuration(333L);
+            this.mSemGoToTopFadeOutAnimator = ValueAnimator.ofInt(255, 0);
+            this.mSemGoToTopFadeOutAnimator.setDuration(333L);
             this.mSemGoToTopFadeOutAnimator.setInterpolator(new PathInterpolator(0.33f, 0.0f, 0.3f, 1.0f));
             this.mSemGoToTopFadeOutAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.ScrollView.7
-                AnonymousClass7() {
-                }
-
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = ((Integer) animation.getAnimatedValue()).intValue();
@@ -2545,9 +2445,6 @@ public class ScrollView extends FrameLayout {
                 }
             });
             this.mSemGoToTopFadeOutAnimator.addListener(new Animator.AnimatorListener() { // from class: android.widget.ScrollView.8
-                AnonymousClass8() {
-                }
-
                 @Override // android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                 }
@@ -2566,62 +2463,8 @@ public class ScrollView extends FrameLayout {
                 public void onAnimationCancel(Animator animation) {
                 }
             });
-            RenderNode renderNode = new RenderNode("goToTop");
-            this.mGoToTopRenderNode = renderNode;
-            renderNode.setElevation(this.mGoToTopElevation);
-        }
-    }
-
-    /* renamed from: android.widget.ScrollView$6 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass6 implements ValueAnimator.AnimatorUpdateListener {
-        AnonymousClass6() {
-        }
-
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-        public void onAnimationUpdate(ValueAnimator animation) {
-            int value = ((Integer) animation.getAnimatedValue()).intValue();
-            ScrollView.this.mSemGoToTopImage.setAlpha(value);
-            ScrollView.this.invalidate();
-        }
-    }
-
-    /* renamed from: android.widget.ScrollView$7 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass7 implements ValueAnimator.AnimatorUpdateListener {
-        AnonymousClass7() {
-        }
-
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-        public void onAnimationUpdate(ValueAnimator animation) {
-            int value = ((Integer) animation.getAnimatedValue()).intValue();
-            ScrollView.this.mSemGoToTopImage.setAlpha(value);
-            ScrollView.this.invalidate();
-        }
-    }
-
-    /* renamed from: android.widget.ScrollView$8 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass8 implements Animator.AnimatorListener {
-        AnonymousClass8() {
-        }
-
-        @Override // android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-        }
-
-        @Override // android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            ScrollView.this.mIsGoToTopShown = true;
-            ScrollView.this.semSetupGoToTop(0);
-        }
-
-        @Override // android.animation.Animator.AnimatorListener
-        public void onAnimationRepeat(Animator animation) {
-        }
-
-        @Override // android.animation.Animator.AnimatorListener
-        public void onAnimationCancel(Animator animation) {
+            this.mGoToTopRenderNode = new RenderNode("goToTop");
+            this.mGoToTopRenderNode.setElevation(this.mGoToTopElevation);
         }
     }
 
@@ -2677,5 +2520,27 @@ public class ScrollView extends FrameLayout {
     @Deprecated
     public void semSetSmoothScrollEnabled(boolean enabled) {
         this.mScroller.semSetSmoothScrollEnabled(enabled);
+    }
+
+    private class DifferentialFlingTarget implements DifferentialMotionFlingHelper.DifferentialMotionFlingTarget {
+        private DifferentialFlingTarget() {
+        }
+
+        @Override // android.widget.DifferentialMotionFlingHelper.DifferentialMotionFlingTarget
+        public boolean startDifferentialMotionFling(float velocity) {
+            stopDifferentialMotionFling();
+            ScrollView.this.fling((int) velocity);
+            return true;
+        }
+
+        @Override // android.widget.DifferentialMotionFlingHelper.DifferentialMotionFlingTarget
+        public void stopDifferentialMotionFling() {
+            ScrollView.this.mScroller.abortAnimation();
+        }
+
+        @Override // android.widget.DifferentialMotionFlingHelper.DifferentialMotionFlingTarget
+        public float getScaledScrollFactor() {
+            return -ScrollView.this.mVerticalScrollFactor;
+        }
     }
 }

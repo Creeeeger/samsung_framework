@@ -26,15 +26,14 @@ public abstract class DnsPacket {
     public static final int QDSECTION = 0;
     private static final String TAG = DnsPacket.class.getSimpleName();
     private static final int TYPE_CNAME = 5;
+    public static final int TYPE_SVCB = 64;
     protected final DnsHeader mHeader;
     protected final List<DnsRecord>[] mRecords;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface RecordType {
     }
 
-    /* loaded from: classes5.dex */
     public static class ParseException extends RuntimeException {
         public String reason;
 
@@ -49,7 +48,6 @@ public abstract class DnsPacket {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class DnsHeader {
         private static final int FLAGS_SECTION_QR_BIT = 15;
         private static final int SIZE_IN_BYTES = 12;
@@ -75,8 +73,9 @@ public abstract class DnsPacket {
         public DnsHeader(int id, int flags, int qdcount, int ancount) {
             this.mId = id;
             this.mFlags = flags;
-            this.mRecordCount = r0;
-            int[] iArr = {qdcount, ancount};
+            this.mRecordCount = new int[4];
+            this.mRecordCount[0] = qdcount;
+            this.mRecordCount[1] = ancount;
         }
 
         public int getRecordCount(int type) {
@@ -121,9 +120,8 @@ public abstract class DnsPacket {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class DnsRecord {
-        private static final int MAXNAMESIZE = 255;
+        public static final int MAXNAMESIZE = 255;
         public static final int NAME_COMPRESSION = 192;
         public static final int NAME_NORMAL = 0;
         private static final String TAG = "DnsRecord";
@@ -134,26 +132,38 @@ public abstract class DnsPacket {
         public final int rType;
         public final long ttl;
 
-        public DnsRecord(int rType, ByteBuffer buf) throws BufferUnderflowException, ParseException {
+        protected DnsRecord(int rType, ByteBuffer buf) throws BufferUnderflowException, ParseException {
             Objects.requireNonNull(buf);
             this.rType = rType;
-            String parseName = DnsPacketUtils.DnsRecordParser.parseName(buf, 0, true);
-            this.dName = parseName;
-            if (parseName.length() > 255) {
-                throw new ParseException("Parse name fail, name size is too long: " + parseName.length());
+            this.dName = DnsPacketUtils.DnsRecordParser.parseName(buf, 0, true);
+            if (this.dName.length() > 255) {
+                throw new ParseException("Parse name fail, name size is too long: " + this.dName.length());
             }
             this.nsType = Short.toUnsignedInt(buf.getShort());
             this.nsClass = Short.toUnsignedInt(buf.getShort());
             if (rType != 0) {
                 this.ttl = Integer.toUnsignedLong(buf.getInt());
                 int length = Short.toUnsignedInt(buf.getShort());
-                byte[] bArr = new byte[length];
-                this.mRdata = bArr;
-                buf.get(bArr);
+                this.mRdata = new byte[length];
+                buf.get(this.mRdata);
                 return;
             }
             this.ttl = 0L;
             this.mRdata = null;
+        }
+
+        public static DnsRecord parse(int rType, ByteBuffer buf) throws BufferUnderflowException, ParseException {
+            Objects.requireNonNull(buf);
+            int oldPos = buf.position();
+            DnsPacketUtils.DnsRecordParser.parseName(buf, 0, true);
+            int nsType = Short.toUnsignedInt(buf.getShort());
+            buf.position(oldPos);
+            switch (nsType) {
+                case 64:
+                    return new DnsSvcbRecord(rType, buf);
+                default:
+                    return new DnsRecord(rType, buf);
+            }
         }
 
         public static DnsRecord makeAOrAAAARecord(int rType, String dName, int nsClass, long ttl, InetAddress address) throws IOException {
@@ -198,11 +208,10 @@ public abstract class DnsPacket {
         }
 
         public byte[] getRR() {
-            byte[] bArr = this.mRdata;
-            if (bArr == null) {
+            if (this.mRdata == null) {
                 return null;
             }
-            return (byte[]) bArr.clone();
+            return (byte[]) this.mRdata.clone();
         }
 
         public byte[] getBytes() throws IOException {
@@ -213,11 +222,10 @@ public abstract class DnsPacket {
             dos.writeShort(this.nsClass);
             if (this.rType != 0) {
                 dos.writeInt((int) this.ttl);
-                byte[] bArr = this.mRdata;
-                if (bArr == null) {
+                if (this.mRdata == null) {
                     dos.writeShort(0);
                 } else {
-                    dos.writeShort(bArr.length);
+                    dos.writeShort(this.mRdata.length);
                     dos.write(this.mRdata);
                 }
             }
@@ -236,9 +244,7 @@ public abstract class DnsPacket {
         }
 
         public int hashCode() {
-            int hash = Objects.hash(this.dName) * 31;
-            long j = this.ttl;
-            return hash + (((int) ((-1) & j)) * 37) + (((int) (j >> 32)) * 41) + (this.nsType * 43) + (this.nsClass * 47) + (this.rType * 53) + Arrays.hashCode(this.mRdata);
+            return (Objects.hash(this.dName) * 31) + (((int) (this.ttl & (-1))) * 37) + (((int) (this.ttl >> 32)) * 41) + (this.nsType * 43) + (this.nsClass * 47) + (this.rType * 53) + Arrays.hashCode(this.mRdata);
         }
 
         public String toString() {
@@ -259,7 +265,7 @@ public abstract class DnsPacket {
                 this.mRecords[i] = new ArrayList(count);
                 for (int j = 0; j < count; j++) {
                     try {
-                        this.mRecords[i].add(new DnsRecord(i, buffer));
+                        this.mRecords[i].add(DnsRecord.parse(i, buffer));
                     } catch (BufferUnderflowException e) {
                         throw new ParseException("Parse record fail", e);
                     }
@@ -272,8 +278,11 @@ public abstract class DnsPacket {
 
     protected DnsPacket(DnsHeader header, List<DnsRecord> qd, List<DnsRecord> an) {
         this.mHeader = (DnsHeader) Objects.requireNonNull(header);
-        this.mRecords = r1;
-        List<DnsRecord>[] listArr = {Collections.unmodifiableList(new ArrayList(qd)), Collections.unmodifiableList(new ArrayList(an)), new ArrayList(), new ArrayList()};
+        this.mRecords = new List[4];
+        this.mRecords[0] = Collections.unmodifiableList(new ArrayList(qd));
+        this.mRecords[1] = Collections.unmodifiableList(new ArrayList(an));
+        this.mRecords[2] = new ArrayList();
+        this.mRecords[3] = new ArrayList();
         for (int i = 0; i < 4; i++) {
             if (this.mHeader.mRecordCount[i] != this.mRecords[i].size()) {
                 throw new IllegalArgumentException("Record count mismatch: expected " + this.mHeader.mRecordCount[i] + " but was " + this.mRecords[i]);

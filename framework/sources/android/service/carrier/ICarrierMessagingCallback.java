@@ -18,7 +18,6 @@ public interface ICarrierMessagingCallback extends IInterface {
 
     void onSendSmsComplete(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICarrierMessagingCallback {
         @Override // android.service.carrier.ICarrierMessagingCallback
         public void onFilterComplete(int result) throws RemoteException {
@@ -46,7 +45,6 @@ public interface ICarrierMessagingCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICarrierMessagingCallback {
         public static final String DESCRIPTOR = "android.service.carrier.ICarrierMessagingCallback";
         static final int TRANSACTION_onDownloadMmsComplete = 5;
@@ -102,49 +100,45 @@ public interface ICarrierMessagingCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFilterComplete(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSendSmsComplete(_arg02, _arg1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int[] _arg12 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onSendMultipartSmsComplete(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    byte[] _arg13 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onSendMmsComplete(_arg04, _arg13);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDownloadMmsComplete(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFilterComplete(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSendSmsComplete(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int[] _arg12 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onSendMultipartSmsComplete(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            byte[] _arg13 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onSendMmsComplete(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDownloadMmsComplete(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICarrierMessagingCallback {
+        private static class Proxy implements ICarrierMessagingCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

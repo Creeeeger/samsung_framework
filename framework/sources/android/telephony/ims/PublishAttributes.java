@@ -9,17 +9,16 @@ import java.util.List;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class PublishAttributes implements Parcelable {
     public static final Parcelable.Creator<PublishAttributes> CREATOR = new Parcelable.Creator<PublishAttributes>() { // from class: android.telephony.ims.PublishAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PublishAttributes createFromParcel(Parcel source) {
             return new PublishAttributes(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PublishAttributes[] newArray(int size) {
             return new PublishAttributes[size];
@@ -29,15 +28,6 @@ public final class PublishAttributes implements Parcelable {
     private final int mPublishState;
     private SipDetails mSipDetails;
 
-    /* synthetic */ PublishAttributes(int i, PublishAttributesIA publishAttributesIA) {
-        this(i);
-    }
-
-    /* synthetic */ PublishAttributes(Parcel parcel, PublishAttributesIA publishAttributesIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private PublishAttributes mAttributes;
 
@@ -69,11 +59,10 @@ public final class PublishAttributes implements Parcelable {
     }
 
     public List<RcsContactPresenceTuple> getPresenceTuples() {
-        List<RcsContactPresenceTuple> list = this.mPresenceTuples;
-        if (list == null) {
+        if (this.mPresenceTuples == null) {
             return Collections.emptyList();
         }
-        return list;
+        return this.mPresenceTuples;
     }
 
     public SipDetails getSipDetails() {
@@ -92,28 +81,10 @@ public final class PublishAttributes implements Parcelable {
         dest.writeParcelable(this.mSipDetails, 0);
     }
 
-    /* renamed from: android.telephony.ims.PublishAttributes$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PublishAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PublishAttributes createFromParcel(Parcel source) {
-            return new PublishAttributes(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PublishAttributes[] newArray(int size) {
-            return new PublishAttributes[size];
-        }
-    }
-
     private PublishAttributes(Parcel in) {
         this.mPublishState = in.readInt();
-        ArrayList arrayList = new ArrayList();
-        this.mPresenceTuples = arrayList;
-        in.readList(arrayList, null, RcsContactPresenceTuple.class);
+        this.mPresenceTuples = new ArrayList();
+        in.readList(this.mPresenceTuples, null, RcsContactPresenceTuple.class);
         this.mSipDetails = (SipDetails) in.readParcelable(SipDetails.class.getClassLoader(), SipDetails.class);
     }
 

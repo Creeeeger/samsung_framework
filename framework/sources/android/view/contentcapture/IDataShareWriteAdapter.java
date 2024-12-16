@@ -19,7 +19,6 @@ public interface IDataShareWriteAdapter extends IInterface {
 
     void write(ParcelFileDescriptor parcelFileDescriptor) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDataShareWriteAdapter {
         @Override // android.view.contentcapture.IDataShareWriteAdapter
         public void write(ParcelFileDescriptor destination) throws RemoteException {
@@ -43,7 +42,6 @@ public interface IDataShareWriteAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDataShareWriteAdapter {
         static final int TRANSACTION_error = 2;
         static final int TRANSACTION_finish = 4;
@@ -95,37 +93,33 @@ public interface IDataShareWriteAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDataShareWriteAdapter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDataShareWriteAdapter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDataShareWriteAdapter.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    write(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    error(_arg02);
+                    return true;
+                case 3:
+                    rejected();
+                    return true;
+                case 4:
+                    finish();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            write(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            error(_arg02);
-                            return true;
-                        case 3:
-                            rejected();
-                            return true;
-                        case 4:
-                            finish();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDataShareWriteAdapter {
+        private static class Proxy implements IDataShareWriteAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

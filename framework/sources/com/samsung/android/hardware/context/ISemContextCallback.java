@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemContextCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.hardware.context.ISemContextCallback";
 
@@ -14,7 +14,6 @@ public interface ISemContextCallback extends IInterface {
 
     void semContextCallback(SemContextEvent semContextEvent) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemContextCallback {
         @Override // com.samsung.android.hardware.context.ISemContextCallback
         public void semContextCallback(SemContextEvent scontextEvent) throws RemoteException {
@@ -31,7 +30,6 @@ public interface ISemContextCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemContextCallback {
         static final int TRANSACTION_getListenerInfo = 2;
         static final int TRANSACTION_semContextCallback = 1;
@@ -77,29 +75,26 @@ public interface ISemContextCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemContextCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemContextCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemContextCallback.DESCRIPTOR);
+                case 1:
+                    SemContextEvent _arg0 = (SemContextEvent) data.readTypedObject(SemContextEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    semContextCallback(_arg0);
+                    return true;
+                case 2:
+                    String _result = getListenerInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SemContextEvent _arg0 = (SemContextEvent) data.readTypedObject(SemContextEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            semContextCallback(_arg0);
-                            return true;
-                        case 2:
-                            String _result = getListenerInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISemContextCallback {
             private IBinder mRemote;
 

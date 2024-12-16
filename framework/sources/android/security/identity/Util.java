@@ -27,7 +27,7 @@ public class Util {
         return ret;
     }
 
-    public static byte[] publicKeyEncodeUncompressedForm(PublicKey publicKey) {
+    static byte[] publicKeyEncodeUncompressedForm(PublicKey publicKey) {
         ECPoint w = ((ECPublicKey) publicKey).getW();
         BigInteger x = w.getAffineX();
         BigInteger y = w.getAffineY();

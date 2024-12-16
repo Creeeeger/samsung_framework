@@ -17,7 +17,6 @@ public interface IFieldClassificationService extends IInterface {
 
     void onFieldClassificationRequest(FieldClassificationRequest fieldClassificationRequest, IFieldClassificationCallback iFieldClassificationCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IFieldClassificationService {
         @Override // android.service.assist.classification.IFieldClassificationService
         public void onConnected(boolean debug, boolean verbose) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IFieldClassificationService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IFieldClassificationService {
         static final int TRANSACTION_onConnected = 1;
         static final int TRANSACTION_onDisconnected = 2;
@@ -86,34 +84,31 @@ public interface IFieldClassificationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFieldClassificationService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFieldClassificationService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFieldClassificationService.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onConnected(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onDisconnected();
+                    return true;
+                case 3:
+                    FieldClassificationRequest _arg02 = (FieldClassificationRequest) data.readTypedObject(FieldClassificationRequest.CREATOR);
+                    IFieldClassificationCallback _arg12 = IFieldClassificationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onFieldClassificationRequest(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onConnected(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onDisconnected();
-                            return true;
-                        case 3:
-                            FieldClassificationRequest _arg02 = (FieldClassificationRequest) data.readTypedObject(FieldClassificationRequest.CREATOR);
-                            IFieldClassificationCallback _arg12 = IFieldClassificationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onFieldClassificationRequest(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IFieldClassificationService {
             private IBinder mRemote;
 

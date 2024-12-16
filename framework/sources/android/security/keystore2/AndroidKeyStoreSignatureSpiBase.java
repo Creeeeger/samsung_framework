@@ -38,7 +38,7 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
 
     protected abstract String getAlgorithm();
 
-    public AndroidKeyStoreSignatureSpiBase() {
+    AndroidKeyStoreSignatureSpiBase() {
         this.appRandom = null;
         this.mMessageStreamer = null;
         this.mCachedException = null;
@@ -83,15 +83,14 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
     protected final void engineInitVerify(PublicKey publicKey) throws InvalidKeyException {
         resetAll();
         try {
-            Signature signature = Signature.getInstance(getAlgorithm());
-            this.mSignature = signature;
-            signature.initVerify(publicKey);
+            this.mSignature = Signature.getInstance(getAlgorithm());
+            this.mSignature.initVerify(publicKey);
         } catch (NoSuchAlgorithmException e) {
             throw new InvalidKeyException(e);
         }
     }
 
-    public void initKey(AndroidKeyStoreKey key) throws InvalidKeyException {
+    protected void initKey(AndroidKeyStoreKey key) throws InvalidKeyException {
         this.mKey = key;
     }
 
@@ -100,7 +99,7 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
         this.mOperation = null;
     }
 
-    public void resetAll() {
+    protected void resetAll() {
         abortOperation();
         this.mOperationChallenge = 0L;
         this.mSigning = false;
@@ -110,7 +109,7 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
         this.mCachedException = null;
     }
 
-    public void resetWhilePreservingInitState() {
+    protected void resetWhilePreservingInitState() {
         abortOperation();
         this.mOperationChallenge = 0L;
         this.mMessageStreamer = null;
@@ -129,16 +128,15 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
         int purpose = this.mSigning ? 2 : 3;
         parameters.add(KeyStore2ParameterUtils.makeEnum(536870913, purpose));
         try {
-            KeyStoreOperation createOperation = this.mKey.getSecurityLevel().createOperation(this.mKey.getKeyIdDescriptor(), parameters);
-            this.mOperation = createOperation;
-            this.mOperationChallenge = KeyStoreCryptoOperationUtils.getOrMakeOperationChallenge(createOperation, this.mKey);
+            this.mOperation = this.mKey.getSecurityLevel().createOperation(this.mKey.getKeyIdDescriptor(), parameters);
+            this.mOperationChallenge = KeyStoreCryptoOperationUtils.getOrMakeOperationChallenge(this.mOperation, this.mKey);
             this.mMessageStreamer = createMainDataStreamer(this.mOperation);
         } catch (KeyStoreException keyStoreException) {
             throw KeyStoreCryptoOperationUtils.getInvalidKeyException(this.mKey, keyStoreException);
         }
     }
 
-    public KeyStoreCryptoOperationStreamer createMainDataStreamer(KeyStoreOperation operation) {
+    protected KeyStoreCryptoOperationStreamer createMainDataStreamer(KeyStoreOperation operation) {
         return new KeyStoreCryptoOperationChunkedStreamer(new KeyStoreCryptoOperationChunkedStreamer.MainDataStream(operation));
     }
 
@@ -149,9 +147,8 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
 
     @Override // java.security.SignatureSpi
     protected final void engineUpdate(byte[] b, int off, int len) throws SignatureException {
-        Signature signature = this.mSignature;
-        if (signature != null) {
-            signature.update(b, off, len);
+        if (this.mSignature != null) {
+            this.mSignature.update(b, off, len);
             return;
         }
         if (this.mCachedException != null) {
@@ -224,9 +221,8 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
 
     @Override // java.security.SignatureSpi
     protected final boolean engineVerify(byte[] signature) throws SignatureException {
-        Signature signature2 = this.mSignature;
-        if (signature2 != null) {
-            return signature2.verify(signature);
+        if (this.mSignature != null) {
+            return this.mSignature.verify(signature);
         }
         throw new IllegalStateException("Not initialised.");
     }

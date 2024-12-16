@@ -13,36 +13,18 @@ public final class SpeakerOutEnergyInfo implements Parcelable {
     private long mTimestamp;
     private static final String TAG = SpeakerOutEnergyInfo.class.getSimpleName();
     public static final Parcelable.Creator<SpeakerOutEnergyInfo> CREATOR = new Parcelable.Creator<SpeakerOutEnergyInfo>() { // from class: android.os.SpeakerOutEnergyInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SpeakerOutEnergyInfo createFromParcel(Parcel in) {
             return new SpeakerOutEnergyInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SpeakerOutEnergyInfo[] newArray(int size) {
             return new SpeakerOutEnergyInfo[size];
         }
     };
-
-    /* renamed from: android.os.SpeakerOutEnergyInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SpeakerOutEnergyInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SpeakerOutEnergyInfo createFromParcel(Parcel in) {
-            return new SpeakerOutEnergyInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SpeakerOutEnergyInfo[] newArray(int size) {
-            return new SpeakerOutEnergyInfo[size];
-        }
-    }
 
     public SpeakerOutEnergyInfo(Parcel in) {
         this.mSpeakerMediaTimeMs = new long[16];
@@ -51,12 +33,11 @@ public final class SpeakerOutEnergyInfo implements Parcelable {
     }
 
     public SpeakerOutEnergyInfo(long timestamp, long[] speakerTimeMs, long[] callTimeMs, int energyUsed) {
-        long[] jArr = new long[16];
-        this.mSpeakerMediaTimeMs = jArr;
+        this.mSpeakerMediaTimeMs = new long[16];
         this.mSpeakerCallTimeMs = new long[16];
         this.mTimestamp = timestamp;
         if (speakerTimeMs != null) {
-            System.arraycopy(speakerTimeMs, 0, jArr, 0, Math.min(speakerTimeMs.length, 16));
+            System.arraycopy(speakerTimeMs, 0, this.mSpeakerMediaTimeMs, 0, Math.min(speakerTimeMs.length, 16));
         }
         if (callTimeMs != null) {
             System.arraycopy(callTimeMs, 0, this.mSpeakerCallTimeMs, 0, Math.min(callTimeMs.length, 16));

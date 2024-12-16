@@ -4,10 +4,10 @@ import android.net.NetworkCapabilities;
 
 /* loaded from: classes5.dex */
 public final class NetworkCapabilitiesUtils {
-    private static final int[] DISPLAY_TRANSPORT_PRIORITIES = {4, 0, 5, 2, 1, 3, 8};
-    public static final long RESTRICTED_CAPABILITIES = BitUtils.packBitList(31, 5, 2, 10, 29, 3, 7, 4, 23, 8, 27, 30, 9, 33);
-    private static final long FORCE_RESTRICTED_CAPABILITIES = BitUtils.packBitList(29, 22, 26);
-    public static final long UNRESTRICTED_CAPABILITIES = BitUtils.packBitList(12, 0, 1, 6);
+    private static final int[] DISPLAY_TRANSPORT_PRIORITIES = {4, 0, 5, 2, 1, 3, 8, 10};
+    private static final long FORCE_RESTRICTED_CAPABILITIES = 608174080;
+    public static final long RESTRICTED_CAPABILITIES = 12490639292L;
+    public static final long UNRESTRICTED_CAPABILITIES = 4163;
 
     public static int getDisplayTransport(int[] transports) {
         for (int transport : DISPLAY_TRANSPORT_PRIORITIES) {
@@ -22,21 +22,13 @@ public final class NetworkCapabilitiesUtils {
     }
 
     public static boolean inferRestrictedCapability(NetworkCapabilities nc) {
-        for (int capability : BitUtils.unpackBits(FORCE_RESTRICTED_CAPABILITIES)) {
-            if (nc.hasCapability(capability)) {
-                return true;
-            }
+        return inferRestrictedCapability(BitUtils.packBits(nc.getCapabilities()));
+    }
+
+    public static boolean inferRestrictedCapability(long capabilities) {
+        if ((FORCE_RESTRICTED_CAPABILITIES & capabilities) != 0) {
+            return true;
         }
-        for (int capability2 : BitUtils.unpackBits(UNRESTRICTED_CAPABILITIES)) {
-            if (nc.hasCapability(capability2)) {
-                return false;
-            }
-        }
-        for (int capability3 : BitUtils.unpackBits(RESTRICTED_CAPABILITIES)) {
-            if (nc.hasCapability(capability3)) {
-                return true;
-            }
-        }
-        return false;
+        return (UNRESTRICTED_CAPABILITIES & capabilities) == 0 && (RESTRICTED_CAPABILITIES & capabilities) != 0;
     }
 }

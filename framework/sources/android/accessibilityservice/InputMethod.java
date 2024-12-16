@@ -24,9 +24,8 @@ public class InputMethod {
     }
 
     public final AccessibilityInputConnection getCurrentInputConnection() {
-        RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mStartedInputConnection;
-        if (remoteAccessibilityInputConnection != null) {
-            return new AccessibilityInputConnection(remoteAccessibilityInputConnection);
+        if (this.mStartedInputConnection != null) {
+            return new AccessibilityInputConnection(this.mStartedInputConnection);
         }
         return null;
     }
@@ -48,7 +47,7 @@ public class InputMethod {
     public void onUpdateSelection(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
     }
 
-    public final void createImeSession(IAccessibilityInputMethodSessionCallback callback) {
+    final void createImeSession(IAccessibilityInputMethodSessionCallback callback) {
         AccessibilityInputMethodSessionWrapper wrapper = new AccessibilityInputMethodSessionWrapper(this.mService.getMainLooper(), new SessionImpl());
         try {
             callback.sessionCreated(wrapper, this.mService.getConnectionId());
@@ -56,14 +55,14 @@ public class InputMethod {
         }
     }
 
-    public final void startInput(RemoteAccessibilityInputConnection ic, EditorInfo attribute) {
+    final void startInput(RemoteAccessibilityInputConnection ic, EditorInfo attribute) {
         Log.v(LOG_TAG, "startInput(): editor=" + attribute);
         Trace.traceBegin(32L, "AccessibilityService.startInput");
         doStartInput(ic, attribute, false);
         Trace.traceEnd(32L);
     }
 
-    public final void restartInput(RemoteAccessibilityInputConnection ic, EditorInfo attribute) {
+    final void restartInput(RemoteAccessibilityInputConnection ic, EditorInfo attribute) {
         Log.v(LOG_TAG, "restartInput(): editor=" + attribute);
         Trace.traceBegin(32L, "AccessibilityService.restartInput");
         doStartInput(ic, attribute, true);
@@ -95,7 +94,6 @@ public class InputMethod {
         this.mInputEditorInfo = null;
     }
 
-    /* loaded from: classes.dex */
     public final class AccessibilityInputConnection {
         private final RemoteAccessibilityInputConnection mIc;
 
@@ -104,78 +102,64 @@ public class InputMethod {
         }
 
         public void commitText(CharSequence text, int newCursorPosition, TextAttribute textAttribute) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                remoteAccessibilityInputConnection.commitText(text, newCursorPosition, textAttribute);
+            if (this.mIc != null) {
+                this.mIc.commitText(text, newCursorPosition, textAttribute);
             }
         }
 
         public void setSelection(int start, int end) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                remoteAccessibilityInputConnection.setSelection(start, end);
+            if (this.mIc != null) {
+                this.mIc.setSelection(start, end);
             }
         }
 
         public SurroundingText getSurroundingText(int beforeLength, int afterLength, int flags) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                return remoteAccessibilityInputConnection.getSurroundingText(beforeLength, afterLength, flags);
+            if (this.mIc != null) {
+                return this.mIc.getSurroundingText(beforeLength, afterLength, flags);
             }
             return null;
         }
 
         public void deleteSurroundingText(int beforeLength, int afterLength) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                remoteAccessibilityInputConnection.deleteSurroundingText(beforeLength, afterLength);
+            if (this.mIc != null) {
+                this.mIc.deleteSurroundingText(beforeLength, afterLength);
             }
         }
 
         public void sendKeyEvent(KeyEvent event) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                remoteAccessibilityInputConnection.sendKeyEvent(event);
+            if (this.mIc != null) {
+                this.mIc.sendKeyEvent(event);
             }
         }
 
         public void performEditorAction(int editorAction) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                remoteAccessibilityInputConnection.performEditorAction(editorAction);
+            if (this.mIc != null) {
+                this.mIc.performEditorAction(editorAction);
             }
         }
 
         public void performContextMenuAction(int id) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                remoteAccessibilityInputConnection.performContextMenuAction(id);
+            if (this.mIc != null) {
+                this.mIc.performContextMenuAction(id);
             }
         }
 
         public int getCursorCapsMode(int reqModes) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                return remoteAccessibilityInputConnection.getCursorCapsMode(reqModes);
+            if (this.mIc != null) {
+                return this.mIc.getCursorCapsMode(reqModes);
             }
             return 0;
         }
 
         public void clearMetaKeyStates(int states) {
-            RemoteAccessibilityInputConnection remoteAccessibilityInputConnection = this.mIc;
-            if (remoteAccessibilityInputConnection != null) {
-                remoteAccessibilityInputConnection.clearMetaKeyStates(states);
+            if (this.mIc != null) {
+                this.mIc.clearMetaKeyStates(states);
             }
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class SessionImpl implements AccessibilityInputMethodSession {
+    private final class SessionImpl implements AccessibilityInputMethodSession {
         boolean mEnabled;
-
-        /* synthetic */ SessionImpl(InputMethod inputMethod, SessionImplIA sessionImplIA) {
-            this();
-        }
 
         private SessionImpl() {
             this.mEnabled = true;
@@ -206,8 +190,7 @@ public class InputMethod {
                 return;
             }
             editorInfo.makeCompatible(InputMethod.this.mService.getApplicationInfo().targetSdkVersion);
-            InputMethod inputMethod = InputMethod.this;
-            inputMethod.restartInput(new RemoteAccessibilityInputConnection(inputMethod.mStartedInputConnection, sessionId), editorInfo);
+            InputMethod.this.restartInput(new RemoteAccessibilityInputConnection(InputMethod.this.mStartedInputConnection, sessionId), editorInfo);
         }
     }
 }

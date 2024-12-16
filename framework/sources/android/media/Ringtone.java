@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.R;
 import com.samsung.android.audio.Rune;
+import com.samsung.android.common.AsPackageName;
 import com.samsung.android.media.AudioTag;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,16 +50,14 @@ public class Ringtone {
     private float mVolume = 1.0f;
     private boolean mHapticGeneratorEnabled = false;
     private final Object mPlaybackSettingsLock = new Object();
-    private boolean mExternalRingtone = false;
     private boolean mNeedFadeIn = true;
     private int mStartPosition = 0;
 
     public Ringtone(Context context, boolean allowRemote) {
         this.mContext = context;
-        AudioManager audioManager = (AudioManager) context.getSystemService("audio");
-        this.mAudioManager = audioManager;
+        this.mAudioManager = (AudioManager) this.mContext.getSystemService("audio");
         this.mAllowRemote = allowRemote;
-        this.mRemotePlayer = allowRemote ? audioManager.getRingtonePlayer() : null;
+        this.mRemotePlayer = allowRemote ? this.mAudioManager.getRingtonePlayer() : null;
         this.mRemoteToken = allowRemote ? new Binder() : null;
         setupCustomRoutine();
     }
@@ -99,11 +98,10 @@ public class Ringtone {
 
     public boolean preferBuiltinDevice(boolean enable) {
         this.mPreferBuiltinDevice = enable;
-        MediaPlayer mediaPlayer = this.mLocalPlayer;
-        if (mediaPlayer == null) {
+        if (this.mLocalPlayer == null) {
             return true;
         }
-        return mediaPlayer.setPreferredDevice(getBuiltinDevice(this.mAudioManager));
+        return this.mLocalPlayer.setPreferredDevice(getBuiltinDevice(this.mAudioManager));
     }
 
     public boolean createLocalMediaPlayer() {
@@ -113,45 +111,34 @@ public class Ringtone {
             return this.mAllowRemote && this.mRemotePlayer != null;
         }
         destroyLocalPlayer();
-        if (this.mIsTelecomPackage && this.mExternalRingtone) {
-            if (this.mAllowRemote && this.mRemotePlayer != null && isValidUri(this.mUri)) {
+        this.mLocalPlayer = new MediaPlayer();
+        try {
+            this.mLocalPlayer.setDataSource(this.mContext, this.mUri);
+            this.mLocalPlayer.setAudioAttributes(this.mAudioAttributes);
+            this.mLocalPlayer.setPreferredDevice(this.mPreferBuiltinDevice ? getBuiltinDevice(this.mAudioManager) : null);
+            synchronized (this.mPlaybackSettingsLock) {
+                applyPlaybackProperties_sync();
+            }
+            if (this.mVolumeShaperConfig != null) {
+                this.mVolumeShaper = this.mLocalPlayer.createVolumeShaper(this.mVolumeShaperConfig);
+            }
+            this.mLocalPlayer.prepare();
+            this.mUriStatus = true;
+        } catch (IOException | SecurityException e) {
+            destroyLocalPlayer();
+            if (!this.mAllowRemote) {
+                Log.w("Ringtone", "Remote playback not allowed: " + e);
+            }
+            if (this.mIsTelecomPackage && this.mAllowRemote && this.mRemotePlayer != null && isValidUri(this.mUri)) {
                 this.mUriStatus = true;
             } else {
                 this.mUriStatus = false;
             }
-            Log.w("Ringtone", "[Telecom] Remote playback allowed: " + this.mUriStatus);
+        }
+        if (this.mLocalPlayer != null) {
+            Log.d("Ringtone", "Successfully created local player");
         } else {
-            MediaPlayer mediaPlayer = new MediaPlayer();
-            this.mLocalPlayer = mediaPlayer;
-            try {
-                mediaPlayer.setDataSource(this.mContext, this.mUri);
-                this.mLocalPlayer.setAudioAttributes(this.mAudioAttributes);
-                this.mLocalPlayer.setPreferredDevice(this.mPreferBuiltinDevice ? getBuiltinDevice(this.mAudioManager) : null);
-                synchronized (this.mPlaybackSettingsLock) {
-                    applyPlaybackProperties_sync();
-                }
-                VolumeShaper.Configuration configuration = this.mVolumeShaperConfig;
-                if (configuration != null) {
-                    this.mVolumeShaper = this.mLocalPlayer.createVolumeShaper(configuration);
-                }
-                this.mLocalPlayer.prepare();
-                this.mUriStatus = true;
-            } catch (IOException | SecurityException e) {
-                destroyLocalPlayer();
-                if (!this.mAllowRemote) {
-                    Log.w("Ringtone", "Remote playback not allowed: " + e);
-                }
-                if (this.mIsTelecomPackage && this.mAllowRemote && this.mRemotePlayer != null && isValidUri(this.mUri)) {
-                    this.mUriStatus = true;
-                } else {
-                    this.mUriStatus = false;
-                }
-            }
-            if (this.mLocalPlayer != null) {
-                Log.d("Ringtone", "Successfully created local player");
-            } else {
-                Log.d("Ringtone", "Problem opening; delegating to remote player");
-            }
+            Log.d("Ringtone", "Problem opening; delegating to remote player");
         }
         Trace.endSection();
         return this.mLocalPlayer != null || (this.mAllowRemote && this.mRemotePlayer != null);
@@ -160,9 +147,8 @@ public class Ringtone {
     public boolean hasHapticChannels() {
         try {
             Trace.beginSection("Ringtone.hasHapticChannels");
-            MediaPlayer mediaPlayer = this.mLocalPlayer;
-            if (mediaPlayer != null) {
-                for (MediaPlayer.TrackInfo trackInfo : mediaPlayer.getTrackInfo()) {
+            if (this.mLocalPlayer != null) {
+                for (MediaPlayer.TrackInfo trackInfo : this.mLocalPlayer.getTrackInfo()) {
                     if (trackInfo.hasHapticChannels()) {
                         Trace.endSection();
                         return true;
@@ -177,10 +163,6 @@ public class Ringtone {
 
     public boolean hasLocalPlayer() {
         return this.mLocalPlayer != null;
-    }
-
-    public boolean hasRemotePlayer() {
-        return this.mAllowRemote && this.mRemotePlayer != null;
     }
 
     public AudioAttributes getAudioAttributes() {
@@ -243,24 +225,21 @@ public class Ringtone {
     }
 
     private void applyPlaybackProperties_sync() {
-        IRingtonePlayer iRingtonePlayer;
-        MediaPlayer mediaPlayer = this.mLocalPlayer;
-        if (mediaPlayer != null) {
-            mediaPlayer.setVolume(this.mVolume);
+        if (this.mLocalPlayer != null) {
+            this.mLocalPlayer.setVolume(this.mVolume);
             this.mLocalPlayer.setLooping(this.mIsLooping);
             if (this.mHapticGenerator == null && this.mHapticGeneratorEnabled) {
                 this.mHapticGenerator = HapticGenerator.create(this.mLocalPlayer.getAudioSessionId());
             }
-            HapticGenerator hapticGenerator = this.mHapticGenerator;
-            if (hapticGenerator != null) {
-                hapticGenerator.setEnabled(this.mHapticGeneratorEnabled);
+            if (this.mHapticGenerator != null) {
+                this.mHapticGenerator.setEnabled(this.mHapticGeneratorEnabled);
                 return;
             }
             return;
         }
-        if (this.mAllowRemote && (iRingtonePlayer = this.mRemotePlayer) != null) {
+        if (this.mAllowRemote && this.mRemotePlayer != null) {
             try {
-                iRingtonePlayer.setPlaybackProperties(this.mRemoteToken, this.mVolume, this.mIsLooping, this.mHapticGeneratorEnabled);
+                this.mRemotePlayer.setPlaybackProperties(this.mRemoteToken, this.mVolume, this.mIsLooping, this.mHapticGeneratorEnabled);
                 return;
             } catch (RemoteException e) {
                 Log.w("Ringtone", "Problem setting playback properties: ", e);
@@ -271,9 +250,8 @@ public class Ringtone {
     }
 
     public String getTitle(Context context) {
-        String str = this.mTitle;
-        if (str != null) {
-            return str;
+        if (this.mTitle != null) {
+            return this.mTitle;
         }
         String title = getTitle(context, this.mUri, true, this.mAllowRemote);
         this.mTitle = title;
@@ -282,11 +260,11 @@ public class Ringtone {
 
     /* JADX WARN: Code restructure failed: missing block: B:41:0x0089, code lost:
     
-        if (r10 != null) goto L107;
+        if (r10 != null) goto L35;
      */
     /* JADX WARN: Code restructure failed: missing block: B:61:0x00bf, code lost:
     
-        if (0 == 0) goto L108;
+        if (0 == 0) goto L36;
      */
     /* JADX WARN: Removed duplicated region for block: B:13:? A[RETURN, SYNTHETIC] */
     /* JADX WARN: Removed duplicated region for block: B:8:0x00d2  */
@@ -313,11 +291,8 @@ public class Ringtone {
     public void setUri(Uri uri, VolumeShaper.Configuration volumeShaperConfig) {
         this.mVolumeShaperConfig = volumeShaperConfig;
         this.mUri = uri;
-        if (uri == null) {
+        if (this.mUri == null) {
             destroyLocalPlayer();
-        } else if (uri.toString().startsWith(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString())) {
-            this.mExternalRingtone = true;
-            Log.d("Ringtone", "setUri( mExternalRingtone =" + this.mExternalRingtone + " )");
         }
         int highlightOffset = getHighlightOffset(this.mUri);
         if (highlightOffset != -1) {
@@ -326,6 +301,9 @@ public class Ringtone {
         if (this.mIsTelecomPackage) {
             addTag(AudioTag.AUDIO_STREAM_RING);
         }
+        if (!this.mNeedFadeIn) {
+            addTag(AudioTag.AUDIO_NO_FADE);
+        }
     }
 
     public Uri getUri() {
@@ -333,7 +311,6 @@ public class Ringtone {
     }
 
     public void play() {
-        Uri uri;
         boolean looping;
         float volume;
         if (this.mLocalPlayer != null) {
@@ -363,8 +340,8 @@ public class Ringtone {
                 return;
             }
         }
-        if (this.mAllowRemote && this.mRemotePlayer != null && (uri = this.mUri) != null) {
-            Uri canonicalUri = uri.getCanonicalUri();
+        if (this.mAllowRemote && this.mRemotePlayer != null && this.mUri != null) {
+            Uri canonicalUri = this.mUri.getCanonicalUri();
             synchronized (this.mPlaybackSettingsLock) {
                 looping = this.mIsLooping;
                 volume = this.mVolume;
@@ -386,14 +363,13 @@ public class Ringtone {
     }
 
     public void stop() {
-        IRingtonePlayer iRingtonePlayer;
         if (this.mLocalPlayer != null) {
             destroyLocalPlayer();
             return;
         }
-        if (this.mAllowRemote && (iRingtonePlayer = this.mRemotePlayer) != null) {
+        if (this.mAllowRemote && this.mRemotePlayer != null) {
             try {
-                iRingtonePlayer.stop(this.mRemoteToken);
+                this.mRemotePlayer.stop(this.mRemoteToken);
             } catch (RemoteException e) {
                 Log.w("Ringtone", "Problem stopping ringtone: " + e);
             }
@@ -402,9 +378,8 @@ public class Ringtone {
 
     private void destroyLocalPlayer() {
         if (this.mLocalPlayer != null) {
-            HapticGenerator hapticGenerator = this.mHapticGenerator;
-            if (hapticGenerator != null) {
-                hapticGenerator.release();
+            if (this.mHapticGenerator != null) {
+                this.mHapticGenerator.release();
                 this.mHapticGenerator = null;
             }
             this.mLocalPlayer.setVolume(0.0f, 0.0f);
@@ -413,9 +388,8 @@ public class Ringtone {
             this.mLocalPlayer.release();
             this.mLocalPlayer = null;
             this.mVolumeShaper = null;
-            ArrayList<Ringtone> arrayList = sActiveRingtones;
-            synchronized (arrayList) {
-                arrayList.remove(this);
+            synchronized (sActiveRingtones) {
+                sActiveRingtones.remove(this);
             }
         }
     }
@@ -424,16 +398,14 @@ public class Ringtone {
         if (this.mLocalPlayer == null) {
             return;
         }
-        ArrayList<Ringtone> arrayList = sActiveRingtones;
-        synchronized (arrayList) {
-            arrayList.add(this);
+        synchronized (sActiveRingtones) {
+            sActiveRingtones.add(this);
         }
         this.mLocalPlayer.setOnCompletionListener(this.mCompletionListener);
         this.mLocalPlayer.start();
         try {
-            VolumeShaper volumeShaper = this.mVolumeShaper;
-            if (volumeShaper != null) {
-                volumeShaper.apply(VolumeShaper.Operation.PLAY);
+            if (this.mVolumeShaper != null) {
+                this.mVolumeShaper.apply(VolumeShaper.Operation.PLAY);
             }
         } catch (IllegalArgumentException | IllegalStateException e) {
             Log.w("Ringtone", "mLocalPlayer :: startLocalPlayer error", e);
@@ -441,14 +413,12 @@ public class Ringtone {
     }
 
     public boolean isPlaying() {
-        IRingtonePlayer iRingtonePlayer;
-        MediaPlayer mediaPlayer = this.mLocalPlayer;
-        if (mediaPlayer != null) {
-            return mediaPlayer.isPlaying();
+        if (this.mLocalPlayer != null) {
+            return this.mLocalPlayer.isPlaying();
         }
-        if (this.mAllowRemote && (iRingtonePlayer = this.mRemotePlayer) != null) {
+        if (this.mAllowRemote && this.mRemotePlayer != null) {
             try {
-                return iRingtonePlayer.isPlaying(this.mRemoteToken);
+                return this.mRemotePlayer.isPlaying(this.mRemoteToken);
             } catch (RemoteException e) {
                 Log.w("Ringtone", "Problem checking ringtone: " + e);
                 return false;
@@ -488,9 +458,8 @@ public class Ringtone {
             synchronized (this.mPlaybackSettingsLock) {
                 applyPlaybackProperties_sync();
             }
-            VolumeShaper.Configuration configuration = this.mVolumeShaperConfig;
-            if (configuration != null) {
-                this.mVolumeShaper = this.mLocalPlayer.createVolumeShaper(configuration);
+            if (this.mVolumeShaperConfig != null) {
+                this.mVolumeShaper = this.mLocalPlayer.createVolumeShaper(this.mVolumeShaperConfig);
             }
             this.mLocalPlayer.prepare();
             startLocalPlayer();
@@ -511,14 +480,12 @@ public class Ringtone {
     }
 
     protected void finalize() {
-        MediaPlayer mediaPlayer = this.mLocalPlayer;
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
+        if (this.mLocalPlayer != null) {
+            this.mLocalPlayer.release();
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class MyOnCompletionListener implements MediaPlayer.OnCompletionListener {
+    class MyOnCompletionListener implements MediaPlayer.OnCompletionListener {
         MyOnCompletionListener() {
         }
 
@@ -535,6 +502,9 @@ public class Ringtone {
         String packageName = this.mContext.getPackageName();
         this.mIsTelecomPackage = "com.android.server.telecom".equals(packageName);
         this.mUriStatus = false;
+        if (AsPackageName.RINGTONE_PICKER.equals(packageName) || "com.android.settings".equals(packageName)) {
+            this.mNeedFadeIn = false;
+        }
     }
 
     public void setSecForSeek(int seek) {
@@ -542,9 +512,8 @@ public class Ringtone {
     }
 
     public void setVolume(float leftVol, float rightVol) {
-        MediaPlayer mediaPlayer = this.mLocalPlayer;
-        if (mediaPlayer != null) {
-            mediaPlayer.setVolume(leftVol, rightVol);
+        if (this.mLocalPlayer != null) {
+            this.mLocalPlayer.setVolume(leftVol, rightVol);
         }
     }
 
@@ -606,8 +575,7 @@ public class Ringtone {
     }
 
     private void addTag(String tag) {
-        AudioAttributes audioAttributes = this.mAudioAttributes;
-        if (audioAttributes == null || audioAttributes.getTags().contains(tag)) {
+        if (this.mAudioAttributes == null || this.mAudioAttributes.getTags().contains(tag)) {
             return;
         }
         this.mAudioAttributes = new AudioAttributes.Builder(this.mAudioAttributes).addTag(tag).build();
@@ -639,27 +607,24 @@ public class Ringtone {
     }
 
     public void fadeoutRingtone(int delay, float minVolume) {
-        IRingtonePlayer iRingtonePlayer;
         VolumeShaper.Configuration FADEOUT_VSHAPE = new VolumeShaper.Configuration.Builder().setCurve(new float[]{0.0f, 1.0f}, new float[]{1.0f, minVolume}).setInterpolatorType(1).setOptionFlags(2).setDuration(delay).build();
         VolumeShaper.Operation PLAY_CREATE_IF_NEEDED = new VolumeShaper.Operation.Builder(VolumeShaper.Operation.PLAY).createIfNeeded().build();
         if (this.mLocalPlayer != null) {
-            VolumeShaper volumeShaper = this.mCustomShaper;
-            if (volumeShaper != null) {
-                volumeShaper.close();
+            if (this.mCustomShaper != null) {
+                this.mCustomShaper.close();
             }
             try {
-                VolumeShaper createVolumeShaper = this.mLocalPlayer.createVolumeShaper(FADEOUT_VSHAPE);
-                this.mCustomShaper = createVolumeShaper;
-                createVolumeShaper.apply(PLAY_CREATE_IF_NEEDED);
+                this.mCustomShaper = this.mLocalPlayer.createVolumeShaper(FADEOUT_VSHAPE);
+                this.mCustomShaper.apply(PLAY_CREATE_IF_NEEDED);
                 return;
             } catch (IllegalArgumentException | IllegalStateException e) {
                 Log.w("Ringtone", "mLocalPlayer :: fadeout error", e);
                 return;
             }
         }
-        if (this.mAllowRemote && (iRingtonePlayer = this.mRemotePlayer) != null) {
+        if (this.mAllowRemote && this.mRemotePlayer != null) {
             try {
-                iRingtonePlayer.fadeoutRingtone(this.mRemoteToken, delay, minVolume);
+                this.mRemotePlayer.fadeoutRingtone(this.mRemoteToken, delay, minVolume);
             } catch (RemoteException e2) {
                 Log.w("Ringtone", "mRemotePlayer :: fadeout error", e2);
             }
@@ -671,12 +636,10 @@ public class Ringtone {
     }
 
     public void fadeinRingtone() {
-        IRingtonePlayer iRingtonePlayer;
         if (this.mLocalPlayer != null) {
             try {
-                VolumeShaper volumeShaper = this.mCustomShaper;
-                if (volumeShaper != null) {
-                    volumeShaper.apply(VolumeShaper.Operation.REVERSE);
+                if (this.mCustomShaper != null) {
+                    this.mCustomShaper.apply(VolumeShaper.Operation.REVERSE);
                     return;
                 }
                 return;
@@ -685,9 +648,9 @@ public class Ringtone {
                 return;
             }
         }
-        if (this.mAllowRemote && (iRingtonePlayer = this.mRemotePlayer) != null) {
+        if (this.mAllowRemote && this.mRemotePlayer != null) {
             try {
-                iRingtonePlayer.fadeinRingtone(this.mRemoteToken);
+                this.mRemotePlayer.fadeinRingtone(this.mRemoteToken);
             } catch (RemoteException e2) {
                 Log.w("Ringtone", "mRemotePlayer :: fadein error", e2);
             }

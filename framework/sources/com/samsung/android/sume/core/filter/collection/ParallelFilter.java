@@ -6,11 +6,10 @@ import com.samsung.android.sume.core.descriptor.ParallelDescriptor;
 import com.samsung.android.sume.core.filter.MediaFilterGroupBase;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class ParallelFilter extends MediaFilterGroupBase {
     private final ParallelDescriptor descriptor;
 
-    /* loaded from: classes4.dex */
     public enum Type {
         SHARED,
         DNC

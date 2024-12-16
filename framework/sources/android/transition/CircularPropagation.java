@@ -50,7 +50,7 @@ public class CircularPropagation extends VisibilityPropagation {
         if (duration < 0) {
             duration = 300;
         }
-        return Math.round((((float) (directionMultiplier * duration)) / this.mPropagationSpeed) * distanceFraction);
+        return Math.round(((directionMultiplier * duration) / this.mPropagationSpeed) * distanceFraction);
     }
 
     private static double distance(float x1, float y1, float x2, float y2) {

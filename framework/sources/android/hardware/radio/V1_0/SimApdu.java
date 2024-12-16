@@ -65,7 +65,7 @@ public final class SimApdu {
         this.p2 = _hidl_blob.getInt32(_hidl_offset + 16);
         this.p3 = _hidl_blob.getInt32(_hidl_offset + 20);
         this.data = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.data.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

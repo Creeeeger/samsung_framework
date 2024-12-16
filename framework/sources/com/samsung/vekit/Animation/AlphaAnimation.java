@@ -14,6 +14,16 @@ public class AlphaAnimation extends Animation<Integer> {
         super(context, AnimationType.ALPHA, id, name);
     }
 
+    /* JADX WARN: Multi-variable type inference failed */
+    @Override // com.samsung.vekit.Animation.Animation
+    public void rollback() {
+        if (isEnableRollback()) {
+            this.firstTarget.setOpacity(((Integer) this.rollbackValue).intValue() / 100.0f);
+            this.firstTarget.update();
+        }
+        this.enableRollback = false;
+    }
+
     @Override // com.samsung.vekit.Animation.Animation
     public AlphaAnimation setTarget(Element target) {
         return (AlphaAnimation) super.setTarget(target);
@@ -27,6 +37,24 @@ public class AlphaAnimation extends Animation<Integer> {
     @Override // com.samsung.vekit.Animation.Animation
     public AlphaAnimation setStartTime(long startTime) {
         return (AlphaAnimation) super.setStartTime(startTime);
+    }
+
+    /* JADX WARN: Can't rename method to resolve collision */
+    @Override // com.samsung.vekit.Animation.Animation
+    public AlphaAnimation setKeyFrameList(ArrayList<KeyFrame<Integer>> keyFrameList) {
+        return (AlphaAnimation) super.setKeyFrameList((ArrayList) keyFrameList);
+    }
+
+    /* JADX WARN: Can't rename method to resolve collision */
+    @Override // com.samsung.vekit.Animation.Animation
+    public AlphaAnimation setKeyFrame(KeyFrame<Integer> firstKeyFrame, KeyFrame<Integer> secondKeyFrame) {
+        return (AlphaAnimation) super.setKeyFrame((KeyFrame) firstKeyFrame, (KeyFrame) secondKeyFrame);
+    }
+
+    /* JADX WARN: Can't rename method to resolve collision */
+    @Override // com.samsung.vekit.Animation.Animation
+    public AlphaAnimation addKeyFrame(KeyFrame<Integer> keyFrame) {
+        return (AlphaAnimation) super.addKeyFrame((KeyFrame) keyFrame);
     }
 
     @Override // com.samsung.vekit.Animation.Animation, com.samsung.vekit.Listener.AnimationStatusListener
@@ -57,21 +85,18 @@ public class AlphaAnimation extends Animation<Integer> {
     }
 
     @Override // com.samsung.vekit.Animation.Animation
-    public AlphaAnimation setKeyFrameList(ArrayList<KeyFrame<Integer>> keyFrameList) {
-        return (AlphaAnimation) super.setKeyFrameList((ArrayList) keyFrameList);
-    }
-
-    @Override // com.samsung.vekit.Animation.Animation
-    public AlphaAnimation setKeyFrame(KeyFrame<Integer> keyFrame) {
-        return (AlphaAnimation) super.setKeyFrame((KeyFrame) keyFrame);
-    }
-
-    @Override // com.samsung.vekit.Animation.Animation
     public void updateTargetValue(Object interpolatedValue) {
         if (this.firstTarget == null || interpolatedValue == null) {
             return;
         }
         float opacity = ((Float) interpolatedValue).floatValue();
         ((Item) this.firstTarget).setOpacity(opacity);
+    }
+
+    /* JADX WARN: Can't rename method to resolve collision */
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public AlphaAnimation setKeyFrame(KeyFrame<Integer> keyFrame) {
+        return (AlphaAnimation) super.setKeyFrame((KeyFrame) keyFrame);
     }
 }

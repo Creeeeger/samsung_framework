@@ -1,6 +1,6 @@
 package android.hardware.biometrics;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class BiometricsProtoEnums {
     public static final int ACTION_AUTHENTICATE = 2;
     public static final int ACTION_ENROLL = 1;
@@ -22,10 +22,18 @@ public final class BiometricsProtoEnums {
     public static final int DETAILS_FACE_SWIPE_UP_ON_BOUNCER = 9;
     public static final int DETAILS_FACE_UDFPS_POINTER_DOWN = 10;
     public static final int DETAILS_UNKNOWN = 0;
+    public static final int ENROLLMENT_SOURCE_FRR_NOTIFICATION = 3;
+    public static final int ENROLLMENT_SOURCE_SETTINGS = 2;
+    public static final int ENROLLMENT_SOURCE_SUW = 1;
+    public static final int ENROLLMENT_SOURCE_UNKNOWN = 0;
     public static final int FOLD_CLOSED = 2;
     public static final int FOLD_HALF_OPEN = 3;
     public static final int FOLD_OPEN = 1;
     public static final int FOLD_UNKNOWN = 0;
+    public static final int FRR_NOTIFICATION_ACTION_CLICKED = 2;
+    public static final int FRR_NOTIFICATION_ACTION_DISMISSED = 3;
+    public static final int FRR_NOTIFICATION_ACTION_SHOWN = 1;
+    public static final int FRR_NOTIFICATION_ACTION_UNKNOWN = 0;
     public static final int ISSUE_CANCEL_TIMED_OUT = 4;
     public static final int ISSUE_HAL_DEATH = 1;
     public static final int ISSUE_UNKNOWN = 0;

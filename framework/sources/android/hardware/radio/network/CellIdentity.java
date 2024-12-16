@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class CellIdentity implements Parcelable {
     public static final Parcelable.Creator<CellIdentity> CREATOR = new Parcelable.Creator<CellIdentity>() { // from class: android.hardware.radio.network.CellIdentity.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentity createFromParcel(Parcel _aidl_source) {
             return new CellIdentity(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentity[] newArray(int _aidl_size) {
             return new CellIdentity[_aidl_size];
@@ -31,7 +30,6 @@ public final class CellIdentity implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int cdma = 4;
         public static final int gsm = 1;
@@ -40,10 +38,6 @@ public final class CellIdentity implements Parcelable {
         public static final int nr = 6;
         public static final int tdscdma = 3;
         public static final int wcdma = 2;
-    }
-
-    /* synthetic */ CellIdentity(Parcel parcel, CellIdentityIA cellIdentityIA) {
-        this(parcel);
     }
 
     public CellIdentity() {
@@ -160,50 +154,31 @@ public final class CellIdentity implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.radio.network.CellIdentity$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentity> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentity createFromParcel(Parcel _aidl_source) {
-            return new CellIdentity(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentity[] newArray(int _aidl_size) {
-            return new CellIdentity[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getNoinit());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getGsm(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getWcdma(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeTypedObject(getTdscdma(), _aidl_flag);
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeTypedObject(getCdma(), _aidl_flag);
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeTypedObject(getLte(), _aidl_flag);
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeTypedObject(getNr(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -279,19 +254,19 @@ public final class CellIdentity implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.hardware.radio.network.CellIdentity.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
+                return "CellIdentity.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.hardware.radio.network.CellIdentity.gsm(" + Objects.toString(getGsm()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "CellIdentity.gsm(" + Objects.toString(getGsm()) + NavigationBarInflaterView.KEY_CODE_END;
             case 2:
-                return "android.hardware.radio.network.CellIdentity.wcdma(" + Objects.toString(getWcdma()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "CellIdentity.wcdma(" + Objects.toString(getWcdma()) + NavigationBarInflaterView.KEY_CODE_END;
             case 3:
-                return "android.hardware.radio.network.CellIdentity.tdscdma(" + Objects.toString(getTdscdma()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "CellIdentity.tdscdma(" + Objects.toString(getTdscdma()) + NavigationBarInflaterView.KEY_CODE_END;
             case 4:
-                return "android.hardware.radio.network.CellIdentity.cdma(" + Objects.toString(getCdma()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "CellIdentity.cdma(" + Objects.toString(getCdma()) + NavigationBarInflaterView.KEY_CODE_END;
             case 5:
-                return "android.hardware.radio.network.CellIdentity.lte(" + Objects.toString(getLte()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "CellIdentity.lte(" + Objects.toString(getLte()) + NavigationBarInflaterView.KEY_CODE_END;
             case 6:
-                return "android.hardware.radio.network.CellIdentity.nr(" + Objects.toString(getNr()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "CellIdentity.nr(" + Objects.toString(getNr()) + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

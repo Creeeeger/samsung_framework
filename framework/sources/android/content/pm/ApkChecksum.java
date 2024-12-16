@@ -16,14 +16,13 @@ import java.util.Arrays;
 /* loaded from: classes.dex */
 public final class ApkChecksum implements Parcelable {
     public static final Parcelable.Creator<ApkChecksum> CREATOR = new Parcelable.Creator<ApkChecksum>() { // from class: android.content.pm.ApkChecksum.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApkChecksum[] newArray(int size) {
             return new ApkChecksum[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApkChecksum createFromParcel(Parcel in) {
             return new ApkChecksum(in);
@@ -68,7 +67,7 @@ public final class ApkChecksum implements Parcelable {
     public ApkChecksum(String splitName, Checksum checksum, String installerPackageName, byte[] installerCertificate) {
         this.mSplitName = splitName;
         this.mChecksum = checksum;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) checksum);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mChecksum);
         this.mInstallerPackageName = installerPackageName;
         this.mInstallerCertificate = installerCertificate;
     }
@@ -95,18 +94,15 @@ public final class ApkChecksum implements Parcelable {
             flg = (byte) (flg | 8);
         }
         dest.writeByte(flg);
-        String str = this.mSplitName;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mSplitName != null) {
+            dest.writeString(this.mSplitName);
         }
         dest.writeTypedObject(this.mChecksum, flags);
-        String str2 = this.mInstallerPackageName;
-        if (str2 != null) {
-            dest.writeString(str2);
+        if (this.mInstallerPackageName != null) {
+            dest.writeString(this.mInstallerPackageName);
         }
-        byte[] bArr = this.mInstallerCertificate;
-        if (bArr != null) {
-            dest.writeByteArray(bArr);
+        if (this.mInstallerCertificate != null) {
+            dest.writeByteArray(this.mInstallerCertificate);
         }
     }
 
@@ -123,26 +119,9 @@ public final class ApkChecksum implements Parcelable {
         byte[] installerCertificate = (flg & 8) == 0 ? null : in.createByteArray();
         this.mSplitName = splitName;
         this.mChecksum = checksum;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) checksum);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mChecksum);
         this.mInstallerPackageName = installerPackageName;
         this.mInstallerCertificate = installerCertificate;
-    }
-
-    /* renamed from: android.content.pm.ApkChecksum$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ApkChecksum> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApkChecksum[] newArray(int size) {
-            return new ApkChecksum[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApkChecksum createFromParcel(Parcel in) {
-            return new ApkChecksum(in);
-        }
     }
 
     @Deprecated

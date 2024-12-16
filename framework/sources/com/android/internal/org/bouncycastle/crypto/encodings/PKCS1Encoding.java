@@ -163,17 +163,11 @@ public class PKCS1Encoding implements AsymmetricBlockCipher {
         byte[] data = this.useStrictLength & (block.length != this.engine.getOutputBlockSize()) ? this.blockBuffer : block;
         int correct = checkPkcs1Encoding(data, this.pLen);
         byte[] result = new byte[this.pLen];
-        int i = 0;
-        while (true) {
-            int i2 = this.pLen;
-            if (i < i2) {
-                result[i] = (byte) ((data[(data.length - i2) + i] & (~correct)) | (random[i] & correct));
-                i++;
-            } else {
-                Arrays.fill(data, (byte) 0);
-                return result;
-            }
+        for (int i = 0; i < this.pLen; i++) {
+            result[i] = (byte) ((data[(data.length - this.pLen) + i] & (~correct)) | (random[i] & correct));
         }
+        Arrays.fill(data, (byte) 0);
+        return result;
     }
 
     private byte[] decodeBlock(byte[] in, int inOff, int inLen) throws InvalidCipherTextException {

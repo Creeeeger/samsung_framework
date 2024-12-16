@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RadioCapability implements Parcelable {
     public static final Parcelable.Creator<RadioCapability> CREATOR = new Parcelable.Creator<RadioCapability>() { // from class: android.hardware.radio.modem.RadioCapability.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioCapability createFromParcel(Parcel _aidl_source) {
             RadioCapability _aidl_out = new RadioCapability();
@@ -19,6 +17,7 @@ public class RadioCapability implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioCapability[] newArray(int _aidl_size) {
             return new RadioCapability[_aidl_size];
@@ -37,25 +36,6 @@ public class RadioCapability implements Parcelable {
     public int phase = 0;
     public int raf = 0;
     public int status = 0;
-
-    /* renamed from: android.hardware.radio.modem.RadioCapability$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RadioCapability> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioCapability createFromParcel(Parcel _aidl_source) {
-            RadioCapability _aidl_out = new RadioCapability();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioCapability[] newArray(int _aidl_size) {
-            return new RadioCapability[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -144,7 +124,7 @@ public class RadioCapability implements Parcelable {
         _aidl_sj.add("raf: " + this.raf);
         _aidl_sj.add("logicalModemUuid: " + Objects.toString(this.logicalModemUuid));
         _aidl_sj.add("status: " + this.status);
-        return "android.hardware.radio.modem.RadioCapability" + _aidl_sj.toString();
+        return "RadioCapability" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

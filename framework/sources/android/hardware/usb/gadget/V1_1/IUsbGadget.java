@@ -104,7 +104,6 @@ public interface IUsbGadget extends android.hardware.usb.gadget.V1_0.IUsbGadget 
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IUsbGadget {
         private IHwBinder mRemote;
 
@@ -321,7 +320,6 @@ public interface IUsbGadget extends android.hardware.usb.gadget.V1_0.IUsbGadget 
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IUsbGadget {
         @Override // android.hardware.usb.gadget.V1_1.IUsbGadget, android.hardware.usb.gadget.V1_0.IUsbGadget, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -344,7 +342,7 @@ public interface IUsbGadget extends android.hardware.usb.gadget.V1_0.IUsbGadget 
 
         @Override // android.hardware.usb.gadget.V1_1.IUsbGadget, android.hardware.usb.gadget.V1_0.IUsbGadget, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{119, 70, -3, -95, -5, -7, -57, -63, 50, -70, -25, 1, -52, 90, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 9, -28, -11, -25, MidiConstants.STATUS_SONG_SELECT, -24, 6, 88, 17, 4, 89, 117, -18, -122, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEIN, 109}, new byte[]{-115, -33, -89, 84, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 114, -52, 123, -54, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEIN, -105, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -123, 98, 100, -17, -93, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEIN, 20, -65, MidiConstants.STATUS_CHANNEL_PRESSURE, -104, -82, -73, -62, 7, -99, -107, 1, -108, -53}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{119, 70, -3, -95, -5, -7, -57, -63, 50, -70, -25, 1, -52, 90, 22, 19, 9, -28, -11, -25, MidiConstants.STATUS_SONG_SELECT, -24, 6, 88, 17, 4, 89, 117, -18, -122, 25, 109}, new byte[]{-115, -33, -89, 84, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 114, -52, 123, -54, 25, -105, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -123, 98, 100, -17, -93, 25, 20, -65, MidiConstants.STATUS_CHANNEL_PRESSURE, -104, -82, -73, -62, 7, -99, -107, 1, -108, -53}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.usb.gadget.V1_1.IUsbGadget, android.hardware.usb.gadget.V1_0.IUsbGadget, android.internal.hidl.base.V1_0.IBase

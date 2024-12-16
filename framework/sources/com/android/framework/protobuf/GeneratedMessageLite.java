@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> extends AbstractMessageLite<MessageType, BuilderType> {
     private static final int MEMOIZED_SERIALIZED_SIZE_MASK = Integer.MAX_VALUE;
     private static final int MUTABLE_FLAG_MASK = Integer.MIN_VALUE;
@@ -33,7 +33,6 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
     private int memoizedSerializedSize = -1;
     protected UnknownFieldSetLite unknownFields = UnknownFieldSetLite.getDefaultInstance();
 
-    /* loaded from: classes4.dex */
     public interface ExtendableMessageOrBuilder<MessageType extends ExtendableMessage<MessageType, BuilderType>, BuilderType extends ExtendableBuilder<MessageType, BuilderType>> extends MessageLiteOrBuilder {
         <Type> Type getExtension(ExtensionLite<MessageType, Type> extensionLite);
 
@@ -44,7 +43,6 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         <Type> boolean hasExtension(ExtensionLite<MessageType, Type> extensionLite);
     }
 
-    /* loaded from: classes4.dex */
     public enum MethodToInvoke {
         GET_MEMOIZED_IS_INITIALIZED,
         SET_MEMOIZED_IS_INITIALIZED,
@@ -57,11 +55,11 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
 
     protected abstract Object dynamicMethod(MethodToInvoke methodToInvoke, Object obj, Object obj2);
 
-    public boolean isMutable() {
+    boolean isMutable() {
         return (this.memoizedSerializedSize & Integer.MIN_VALUE) != 0;
     }
 
-    public void markImmutable() {
+    void markImmutable() {
         this.memoizedSerializedSize &= Integer.MAX_VALUE;
     }
 
@@ -73,7 +71,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         this.memoizedHashCode = value;
     }
 
-    public void clearMemoizedHashCode() {
+    void clearMemoizedHashCode() {
         this.memoizedHashCode = 0;
     }
 
@@ -96,7 +94,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         return (BuilderType) dynamicMethod(MethodToInvoke.NEW_BUILDER);
     }
 
-    public MessageType newMutableInstance() {
+    MessageType newMutableInstance() {
         return (MessageType) dynamicMethod(MethodToInvoke.NEW_MUTABLE_INSTANCE);
     }
 
@@ -152,16 +150,16 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         this.unknownFields.mergeLengthDelimitedField(fieldNumber, value);
     }
 
-    public void makeImmutable() {
+    protected void makeImmutable() {
         Protobuf.getInstance().schemaFor((Protobuf) this).makeImmutable(this);
         markImmutable();
     }
 
-    public final <MessageType extends GeneratedMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> BuilderType createBuilder() {
+    protected final <MessageType extends GeneratedMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> BuilderType createBuilder() {
         return (BuilderType) dynamicMethod(MethodToInvoke.NEW_BUILDER);
     }
 
-    public final <MessageType extends GeneratedMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> BuilderType createBuilder(MessageType messagetype) {
+    protected final <MessageType extends GeneratedMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> BuilderType createBuilder(MessageType messagetype) {
         return (BuilderType) createBuilder().mergeFrom(messagetype);
     }
 
@@ -183,7 +181,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         return dynamicMethod(method, null, null);
     }
 
-    public void clearMemoizedSerializedSize() {
+    void clearMemoizedSerializedSize() {
         setMemoizedSerializedSize(Integer.MAX_VALUE);
     }
 
@@ -205,9 +203,8 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         Protobuf.getInstance().schemaFor((Protobuf) this).writeTo(this, CodedOutputStreamWriter.forCodedOutput(output));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.AbstractMessageLite
-    public int getSerializedSize(Schema schema) {
+    int getSerializedSize(Schema schema) {
         if (isMutable()) {
             int size = computeSerializedSize(schema);
             if (size < 0) {
@@ -235,11 +232,11 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         return nullableSchema.getSerializedSize(this);
     }
 
-    public Object buildMessageInfo() throws Exception {
+    Object buildMessageInfo() throws Exception {
         return dynamicMethod(MethodToInvoke.BUILD_MESSAGE_INFO);
     }
 
-    public static <T extends GeneratedMessageLite<?, ?>> T getDefaultInstance(Class<T> cls) {
+    static <T extends GeneratedMessageLite<?, ?>> T getDefaultInstance(Class<T> cls) {
         GeneratedMessageLite<?, ?> generatedMessageLite = defaultInstanceMap.get(cls);
         if (generatedMessageLite == null) {
             try {
@@ -259,12 +256,12 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         return (T) generatedMessageLite;
     }
 
-    public static <T extends GeneratedMessageLite<?, ?>> void registerDefaultInstance(Class<T> clazz, T defaultInstance) {
+    protected static <T extends GeneratedMessageLite<?, ?>> void registerDefaultInstance(Class<T> clazz, T defaultInstance) {
+        defaultInstance.markImmutable();
         defaultInstanceMap.put(clazz, defaultInstance);
-        defaultInstance.makeImmutable();
     }
 
-    public static Object newMessageInfo(MessageLite defaultInstance, String info, Object[] objects) {
+    protected static Object newMessageInfo(MessageLite defaultInstance, String info, Object[] objects) {
         return new RawMessageInfo(defaultInstance, info, objects);
     }
 
@@ -272,12 +269,11 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         this.unknownFields = UnknownFieldSetLite.mutableCopyOf(this.unknownFields, unknownFields);
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Builder<MessageType extends GeneratedMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> extends AbstractMessageLite.Builder<MessageType, BuilderType> {
         private final MessageType defaultInstance;
         protected MessageType instance;
 
-        public Builder(MessageType defaultInstance) {
+        protected Builder(MessageType defaultInstance) {
             this.defaultInstance = defaultInstance;
             if (defaultInstance.isMutable()) {
                 throw new IllegalArgumentException("Default instance must be immutable.");
@@ -289,7 +285,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
             return (MessageType) this.defaultInstance.newMutableInstance();
         }
 
-        public final void copyOnWrite() {
+        protected final void copyOnWrite() {
             if (!this.instance.isMutable()) {
                 copyOnWriteInternal();
             }
@@ -316,8 +312,8 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
 
         @Override // com.android.framework.protobuf.AbstractMessageLite.Builder
-        /* renamed from: clone */
-        public BuilderType mo7003clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public BuilderType mo7416clone() {
             BuilderType buildertype = (BuilderType) getDefaultInstanceForType().newBuilderForType();
             buildertype.instance = buildPartial();
             return buildertype;
@@ -341,6 +337,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.framework.protobuf.AbstractMessageLite.Builder
         public BuilderType internalMergeFrom(MessageType message) {
             return mergeFrom((Builder<MessageType, BuilderType>) message);
@@ -399,13 +396,12 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class ExtendableMessage<MessageType extends ExtendableMessage<MessageType, BuilderType>, BuilderType extends ExtendableBuilder<MessageType, BuilderType>> extends GeneratedMessageLite<MessageType, BuilderType> implements ExtendableMessageOrBuilder<MessageType, BuilderType> {
         protected FieldSet<ExtensionDescriptor> extensions = FieldSet.emptySet();
 
         protected final void mergeExtensionFields(MessageType other) {
             if (this.extensions.isImmutable()) {
-                this.extensions = this.extensions.m7004clone();
+                this.extensions = this.extensions.m7417clone();
             }
             this.extensions.mergeFrom(other.extensions);
         }
@@ -456,8 +452,8 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
                 input.popLimit(limit);
                 return true;
             }
-            switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$JavaType[extension.descriptor.getLiteJavaType().ordinal()]) {
-                case 1:
+            switch (extension.descriptor.getLiteJavaType()) {
+                case MESSAGE:
                     MessageLite.Builder subBuilder = null;
                     if (!extension.descriptor.isRepeated() && (existingValue = (MessageLite) this.extensions.getField(extension.descriptor)) != null) {
                         subBuilder = existingValue.toBuilder();
@@ -472,7 +468,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
                     }
                     value = subBuilder.build();
                     break;
-                case 2:
+                case ENUM:
                     int rawValue = input.readEnum();
                     value = extension.descriptor.getEnumType().findValueByNumber(rawValue);
                     if (value != null) {
@@ -559,9 +555,9 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
             ensureExtensionsAreMutable().setField(extension.descriptor, extension.singularToFieldSetType(value));
         }
 
-        public FieldSet<ExtensionDescriptor> ensureExtensionsAreMutable() {
+        FieldSet<ExtensionDescriptor> ensureExtensionsAreMutable() {
             if (this.extensions.isImmutable()) {
-                this.extensions = this.extensions.m7004clone();
+                this.extensions = this.extensions.m7417clone();
             }
             return this.extensions;
         }
@@ -608,53 +604,42 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
             return this.extensions.isInitialized();
         }
 
-        /* loaded from: classes4.dex */
         protected class ExtensionWriter {
             private final Iterator<Map.Entry<ExtensionDescriptor, Object>> iter;
             private final boolean messageSetWireFormat;
             private Map.Entry<ExtensionDescriptor, Object> next;
 
-            /* synthetic */ ExtensionWriter(ExtendableMessage x0, boolean x1, AnonymousClass1 x2) {
-                this(x1);
-            }
-
             private ExtensionWriter(boolean messageSetWireFormat) {
-                Iterator<Map.Entry<ExtensionDescriptor, Object>> it = ExtendableMessage.this.extensions.iterator();
-                this.iter = it;
-                if (it.hasNext()) {
-                    this.next = it.next();
+                this.iter = ExtendableMessage.this.extensions.iterator();
+                if (this.iter.hasNext()) {
+                    this.next = this.iter.next();
                 }
                 this.messageSetWireFormat = messageSetWireFormat;
             }
 
             public void writeUntil(int end, CodedOutputStream output) throws IOException {
-                while (true) {
-                    Map.Entry<ExtensionDescriptor, Object> entry = this.next;
-                    if (entry != null && entry.getKey().getNumber() < end) {
-                        ExtensionDescriptor extension = this.next.getKey();
-                        if (this.messageSetWireFormat && extension.getLiteJavaType() == WireFormat.JavaType.MESSAGE && !extension.isRepeated()) {
-                            output.writeMessageSetExtension(extension.getNumber(), (MessageLite) this.next.getValue());
-                        } else {
-                            FieldSet.writeField(extension, this.next.getValue(), output);
-                        }
-                        if (this.iter.hasNext()) {
-                            this.next = this.iter.next();
-                        } else {
-                            this.next = null;
-                        }
+                while (this.next != null && this.next.getKey().getNumber() < end) {
+                    ExtensionDescriptor extension = this.next.getKey();
+                    if (this.messageSetWireFormat && extension.getLiteJavaType() == WireFormat.JavaType.MESSAGE && !extension.isRepeated()) {
+                        output.writeMessageSetExtension(extension.getNumber(), (MessageLite) this.next.getValue());
                     } else {
-                        return;
+                        FieldSet.writeField(extension, this.next.getValue(), output);
+                    }
+                    if (this.iter.hasNext()) {
+                        this.next = this.iter.next();
+                    } else {
+                        this.next = null;
                     }
                 }
             }
         }
 
         protected ExtendableMessage<MessageType, BuilderType>.ExtensionWriter newExtensionWriter() {
-            return new ExtensionWriter(this, false, null);
+            return new ExtensionWriter(false);
         }
 
         protected ExtendableMessage<MessageType, BuilderType>.ExtensionWriter newMessageSetExtensionWriter() {
-            return new ExtensionWriter(this, true, null);
+            return new ExtensionWriter(true);
         }
 
         protected int extensionsSerializedSize() {
@@ -666,26 +651,6 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
     }
 
-    /* renamed from: com.android.framework.protobuf.GeneratedMessageLite$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$JavaType;
-
-        static {
-            int[] iArr = new int[WireFormat.JavaType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$JavaType = iArr;
-            try {
-                iArr[WireFormat.JavaType.MESSAGE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$WireFormat$JavaType[WireFormat.JavaType.ENUM.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static abstract class ExtendableBuilder<MessageType extends ExtendableMessage<MessageType, BuilderType>, BuilderType extends ExtendableBuilder<MessageType, BuilderType>> extends Builder<MessageType, BuilderType> implements ExtendableMessageOrBuilder<MessageType, BuilderType> {
         protected ExtendableBuilder(MessageType defaultInstance) {
             super(defaultInstance);
@@ -700,14 +665,14 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         protected void copyOnWriteInternal() {
             super.copyOnWriteInternal();
             if (((ExtendableMessage) this.instance).extensions != FieldSet.emptySet()) {
-                ((ExtendableMessage) this.instance).extensions = ((ExtendableMessage) this.instance).extensions.m7004clone();
+                ((ExtendableMessage) this.instance).extensions = ((ExtendableMessage) this.instance).extensions.m7417clone();
             }
         }
 
         private FieldSet<ExtensionDescriptor> ensureExtensionsAreMutable() {
             FieldSet<ExtensionDescriptor> extensions = ((ExtendableMessage) this.instance).extensions;
             if (extensions.isImmutable()) {
-                FieldSet<ExtensionDescriptor> extensions2 = extensions.m7004clone();
+                FieldSet<ExtensionDescriptor> extensions2 = extensions.m7417clone();
                 ((ExtendableMessage) this.instance).extensions = extensions2;
                 return extensions2;
             }
@@ -790,8 +755,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         return new GeneratedExtension<>(containingTypeDefaultInstance, Collections.emptyList(), messageDefaultInstance, new ExtensionDescriptor(enumTypeMap, number, type, true, isPacked), singularType);
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ExtensionDescriptor implements FieldSet.FieldDescriptorLite<ExtensionDescriptor> {
+    static final class ExtensionDescriptor implements FieldSet.FieldDescriptorLite<ExtensionDescriptor> {
         final Internal.EnumLiteMap<?> enumTypeMap;
         final boolean isPacked;
         final boolean isRepeated;
@@ -856,7 +820,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
     }
 
-    public static Object invokeOrDie(Method method, Object object, Object... params) {
+    static Object invokeOrDie(Method method, Object object, Object... params) {
         try {
             return method.invoke(object, params);
         } catch (IllegalAccessException e) {
@@ -873,7 +837,6 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class GeneratedExtension<ContainingType extends MessageLite, Type> extends ExtensionLite<ContainingType, Type> {
         final ContainingType containingTypeDefaultInstance;
         final Type defaultValue;
@@ -965,7 +928,6 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
     }
 
-    /* loaded from: classes4.dex */
     protected static final class SerializedForm implements Serializable {
         private static final long serialVersionUID = 0;
         private final byte[] asBytes;
@@ -977,9 +939,8 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
 
         SerializedForm(MessageLite regularForm) {
-            Class<?> cls = regularForm.getClass();
-            this.messageClass = cls;
-            this.messageClassName = cls.getName();
+            this.messageClass = regularForm.getClass();
+            this.messageClassName = this.messageClass.getName();
             this.asBytes = regularForm.toByteArray();
         }
 
@@ -1025,11 +986,11 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
 
         private Class<?> resolveMessageClass() throws ClassNotFoundException {
-            Class<?> cls = this.messageClass;
-            return cls != null ? cls : Class.forName(this.messageClassName);
+            return this.messageClass != null ? this.messageClass : Class.forName(this.messageClassName);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <MessageType extends ExtendableMessage<MessageType, BuilderType>, BuilderType extends ExtendableBuilder<MessageType, BuilderType>, T> GeneratedExtension<MessageType, T> checkIsLite(ExtensionLite<MessageType, T> extension) {
         if (!extension.isLite()) {
             throw new IllegalArgumentException("Expected a lite extension.");
@@ -1102,17 +1063,17 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         return list.mutableCopyWithCapacity2(size == 0 ? 10 : size * 2);
     }
 
-    public static <E> Internal.ProtobufList<E> emptyProtobufList() {
+    protected static <E> Internal.ProtobufList<E> emptyProtobufList() {
         return ProtobufArrayList.emptyList();
     }
 
-    public static <E> Internal.ProtobufList<E> mutableCopy(Internal.ProtobufList<E> list) {
+    protected static <E> Internal.ProtobufList<E> mutableCopy(Internal.ProtobufList<E> list) {
         int size = list.size();
         return list.mutableCopyWithCapacity2(size == 0 ? 10 : size * 2);
     }
 
-    /* loaded from: classes4.dex */
-    protected static class DefaultInstanceBasedParser<T extends GeneratedMessageLite<T, ?>> extends AbstractParser<T> {
+    /* JADX INFO: Access modifiers changed from: protected */
+    public static class DefaultInstanceBasedParser<T extends GeneratedMessageLite<T, ?>> extends AbstractParser<T> {
         private final T defaultInstance;
 
         public DefaultInstanceBasedParser(T defaultInstance) {
@@ -1158,6 +1119,7 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends GeneratedMessageLite<T, ?>> T parsePartialFrom(T t, byte[] bArr, int i, int i2, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
         T t2 = (T) t.newMutableInstance();
         try {
@@ -1194,19 +1156,19 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         return message;
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteBuffer byteBuffer, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteBuffer byteBuffer, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parseFrom(t, CodedInputStream.newInstance(byteBuffer), extensionRegistryLite));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteBuffer byteBuffer) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteBuffer byteBuffer) throws InvalidProtocolBufferException {
         return (T) parseFrom(t, byteBuffer, ExtensionRegistryLite.getEmptyRegistry());
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteString byteString) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteString byteString) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parseFrom(t, byteString, ExtensionRegistryLite.getEmptyRegistry()));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteString byteString, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, ByteString byteString, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialFrom(t, byteString, extensionRegistryLite));
     }
 
@@ -1221,35 +1183,35 @@ public abstract class GeneratedMessageLite<MessageType extends GeneratedMessageL
         }
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, byte[] bArr) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, byte[] bArr) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialFrom(t, bArr, 0, bArr.length, ExtensionRegistryLite.getEmptyRegistry()));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, byte[] bArr, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, byte[] bArr, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialFrom(t, bArr, 0, bArr.length, extensionRegistryLite));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, InputStream inputStream) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, InputStream inputStream) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialFrom(t, CodedInputStream.newInstance(inputStream), ExtensionRegistryLite.getEmptyRegistry()));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, InputStream inputStream, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, InputStream inputStream, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialFrom(t, CodedInputStream.newInstance(inputStream), extensionRegistryLite));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, CodedInputStream codedInputStream) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, CodedInputStream codedInputStream) throws InvalidProtocolBufferException {
         return (T) parseFrom(t, codedInputStream, ExtensionRegistryLite.getEmptyRegistry());
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, CodedInputStream codedInputStream, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseFrom(T t, CodedInputStream codedInputStream, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialFrom(t, codedInputStream, extensionRegistryLite));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseDelimitedFrom(T t, InputStream inputStream) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseDelimitedFrom(T t, InputStream inputStream) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialDelimitedFrom(t, inputStream, ExtensionRegistryLite.getEmptyRegistry()));
     }
 
-    public static <T extends GeneratedMessageLite<T, ?>> T parseDelimitedFrom(T t, InputStream inputStream, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
+    protected static <T extends GeneratedMessageLite<T, ?>> T parseDelimitedFrom(T t, InputStream inputStream, ExtensionRegistryLite extensionRegistryLite) throws InvalidProtocolBufferException {
         return (T) checkMessageInitialized(parsePartialDelimitedFrom(t, inputStream, extensionRegistryLite));
     }
 

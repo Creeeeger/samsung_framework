@@ -79,10 +79,9 @@ public class TileService extends Service {
 
     @SystemApi
     public final void setStatusIcon(Icon icon, String contentDescription) {
-        IQSService iQSService = this.mService;
-        if (iQSService != null) {
+        if (this.mService != null) {
             try {
-                iQSService.updateStatusIcon(this.mTileToken, icon, contentDescription);
+                this.mService.updateStatusIcon(this.mTileToken, icon, contentDescription);
             } catch (RemoteException e) {
             }
         }
@@ -95,9 +94,6 @@ public class TileService extends Service {
             dialog.getWindow().setType(2035);
         }
         dialog.getWindow().getDecorView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() { // from class: android.service.quicksettings.TileService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.View.OnAttachStateChangeListener
             public void onViewAttachedToWindow(View v) {
             }
@@ -114,25 +110,6 @@ public class TileService extends Service {
         try {
             this.mService.onShowDialog(this.mTileToken);
         } catch (RemoteException e) {
-        }
-    }
-
-    /* renamed from: android.service.quicksettings.TileService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements View.OnAttachStateChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewAttachedToWindow(View v) {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewDetachedFromWindow(View v) {
-            try {
-                TileService.this.mService.onDialogHidden(TileService.this.mTileToken);
-            } catch (RemoteException e) {
-            }
         }
     }
 
@@ -195,11 +172,9 @@ public class TileService extends Service {
     }
 
     public final Tile getQsTile() {
-        IQSService iQSService;
-        IBinder iBinder;
-        if (this.mTile == null && (iQSService = this.mService) != null && (iBinder = this.mTileToken) != null) {
+        if (this.mTile == null && this.mService != null && this.mTileToken != null) {
             try {
-                this.mTile = iQSService.getTile(iBinder);
+                this.mTile = this.mService.getTile(this.mTileToken);
             } catch (RemoteException e) {
                 if (e instanceof DeadObjectException) {
                     Log.d(TAG, "getQsTile : Unable to reach IQSService : " + e);
@@ -208,9 +183,8 @@ public class TileService extends Service {
                 }
             }
             Log.d(TAG, "getQsTile : mTile = " + this.mTile);
-            Tile tile = this.mTile;
-            if (tile != null) {
-                tile.setService(this.mService, this.mTileToken);
+            if (this.mTile != null) {
+                this.mTile.setService(this.mService, this.mTileToken);
                 this.mHandler.sendEmptyMessage(7);
             }
         }
@@ -247,20 +221,16 @@ public class TileService extends Service {
     @Override // android.app.Service
     public IBinder onBind(Intent intent) {
         this.mService = IQSService.Stub.asInterface(intent.getIBinderExtra("service"));
-        this.mTileToken = intent.getIBinderExtra(EXTRA_TOKEN);
+        this.mTileToken = intent.getIBinderExtra("token");
         Log.d(TAG, "onBind : mService = " + this.mService + ", mTileToken = " + this.mTileToken + getClass().getSimpleName());
         try {
             this.mTile = this.mService.getTile(this.mTileToken);
             Log.d(TAG, "onBind : mTile = " + this.mTile);
-            Tile tile = this.mTile;
-            if (tile != null) {
-                tile.setService(this.mService, this.mTileToken);
+            if (this.mTile != null) {
+                this.mTile.setService(this.mService, this.mTileToken);
                 this.mHandler.sendEmptyMessage(7);
             }
             return new IQSTileService.Stub() { // from class: android.service.quicksettings.TileService.2
-                AnonymousClass2() {
-                }
-
                 @Override // android.service.quicksettings.IQSTileService
                 public void onTileRemoved() throws RemoteException {
                     TileService.this.mHandler.sendEmptyMessage(4);
@@ -333,79 +303,6 @@ public class TileService extends Service {
         }
     }
 
-    /* renamed from: android.service.quicksettings.TileService$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 extends IQSTileService.Stub {
-        AnonymousClass2() {
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public void onTileRemoved() throws RemoteException {
-            TileService.this.mHandler.sendEmptyMessage(4);
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public void onTileAdded() throws RemoteException {
-            TileService.this.mHandler.sendEmptyMessage(3);
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public void onStopListening() throws RemoteException {
-            TileService.this.mHandler.sendEmptyMessage(2);
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public void onStartListening() throws RemoteException {
-            TileService.this.mHandler.sendEmptyMessage(1);
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public void onClick(IBinder wtoken) throws RemoteException {
-            TileService.this.mHandler.obtainMessage(5, wtoken).sendToTarget();
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public void onUnlockComplete() throws RemoteException {
-            TileService.this.mHandler.sendEmptyMessage(6);
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public CharSequence semGetDetailViewTitle() throws RemoteException {
-            return TileService.this.semGetDetailViewTitle();
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public CharSequence semGetDetailViewSettingButtonName() throws RemoteException {
-            return TileService.this.semGetDetailViewSettingButtonName();
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public boolean semIsToggleButtonExists() throws RemoteException {
-            return TileService.this.semIsToggleButtonExists();
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public boolean semIsToggleButtonChecked() throws RemoteException {
-            return TileService.this.semIsToggleButtonChecked();
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public RemoteViews semGetDetailView() throws RemoteException {
-            return TileService.this.semGetDetailView();
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public Intent semGetSettingsIntent() throws RemoteException {
-            return TileService.this.semGetSettingsIntent();
-        }
-
-        @Override // android.service.quicksettings.IQSTileService
-        public void semSetToggleButtonChecked(boolean checked) throws RemoteException {
-            TileService.this.mHandler.obtainMessage(8, Boolean.valueOf(checked)).sendToTarget();
-        }
-    }
-
-    /* loaded from: classes3.dex */
     private class H extends Handler {
         private static final int MSG_SET_TOGGLE = 8;
         private static final int MSG_START_LISTENING = 1;
@@ -433,40 +330,40 @@ public class TileService extends Service {
                     if (!TileService.this.mListening) {
                         TileService.this.mListening = true;
                         TileService.this.onStartListening();
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 2:
                     if (TileService.this.mListening) {
                         TileService.this.mListening = false;
                         TileService.this.onStopListening();
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 3:
                     TileService.this.onTileAdded();
-                    return;
+                    break;
                 case 4:
                     if (TileService.this.mListening) {
                         TileService.this.mListening = false;
                         TileService.this.onStopListening();
                     }
                     TileService.this.onTileRemoved();
-                    return;
+                    break;
                 case 5:
                     TileService.this.mToken = (IBinder) msg.obj;
                     TileService.this.onClick();
-                    return;
+                    break;
                 case 6:
                     if (TileService.this.mUnlockRunnable != null) {
                         TileService.this.mUnlockRunnable.run();
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 7:
                     try {
                         TileService.this.mService.onStartSuccessful(TileService.this.mTileToken);
-                        return;
+                        break;
                     } catch (RemoteException e) {
                         logMessage("MSG_START_SUCCESS : " + e);
                         return;
@@ -474,9 +371,7 @@ public class TileService extends Service {
                 case 8:
                     boolean checked = ((Boolean) msg.obj).booleanValue();
                     TileService.this.semSetToggleButtonChecked(checked);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }

@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.SipMessage;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISipDelegate extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.ISipDelegate";
 
@@ -19,7 +19,6 @@ public interface ISipDelegate extends IInterface {
 
     void sendMessage(SipMessage sipMessage, long j) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISipDelegate {
         @Override // android.telephony.ims.aidl.ISipDelegate
         public void sendMessage(SipMessage sipMessage, long configVersion) throws RemoteException {
@@ -43,7 +42,6 @@ public interface ISipDelegate extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISipDelegate {
         static final int TRANSACTION_cleanupSession = 4;
         static final int TRANSACTION_notifyMessageReceiveError = 3;
@@ -95,43 +93,39 @@ public interface ISipDelegate extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISipDelegate.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISipDelegate.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISipDelegate.DESCRIPTOR);
+                case 1:
+                    SipMessage _arg0 = (SipMessage) data.readTypedObject(SipMessage.CREATOR);
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    sendMessage(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyMessageReceived(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyMessageReceiveError(_arg03, _arg12);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    cleanupSession(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SipMessage _arg0 = (SipMessage) data.readTypedObject(SipMessage.CREATOR);
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            sendMessage(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyMessageReceived(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyMessageReceiveError(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            cleanupSession(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISipDelegate {
+        private static class Proxy implements ISipDelegate {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

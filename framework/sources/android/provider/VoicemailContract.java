@@ -25,7 +25,6 @@ public class VoicemailContract {
     private VoicemailContract() {
     }
 
-    /* loaded from: classes3.dex */
     public static final class Voicemails implements BaseColumns, OpenableColumns {
         public static final String ARCHIVED = "archived";
         public static final String BACKED_UP = "backed_up";
@@ -108,7 +107,6 @@ public class VoicemailContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Status implements BaseColumns {
         public static final String CONFIGURATION_STATE = "configuration_state";
         public static final int CONFIGURATION_STATE_CAN_BE_CONFIGURED = 2;

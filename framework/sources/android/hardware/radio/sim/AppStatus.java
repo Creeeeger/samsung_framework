@@ -21,9 +21,7 @@ public class AppStatus implements Parcelable {
     public static final int APP_TYPE_UNKNOWN = 0;
     public static final int APP_TYPE_USIM = 2;
     public static final Parcelable.Creator<AppStatus> CREATOR = new Parcelable.Creator<AppStatus>() { // from class: android.hardware.radio.sim.AppStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppStatus createFromParcel(Parcel _aidl_source) {
             AppStatus _aidl_out = new AppStatus();
@@ -31,6 +29,7 @@ public class AppStatus implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppStatus[] newArray(int _aidl_size) {
             return new AppStatus[_aidl_size];
@@ -44,25 +43,6 @@ public class AppStatus implements Parcelable {
     public int appType = 0;
     public int appState = 0;
     public boolean pin1Replaced = false;
-
-    /* renamed from: android.hardware.radio.sim.AppStatus$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppStatus createFromParcel(Parcel _aidl_source) {
-            AppStatus _aidl_out = new AppStatus();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppStatus[] newArray(int _aidl_size) {
-            return new AppStatus[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -181,7 +161,7 @@ public class AppStatus implements Parcelable {
         _aidl_sj.add("pin1Replaced: " + this.pin1Replaced);
         _aidl_sj.add("pin1: " + PinState$$.toString(this.pin1));
         _aidl_sj.add("pin2: " + PinState$$.toString(this.pin2));
-        return "android.hardware.radio.sim.AppStatus" + _aidl_sj.toString();
+        return "AppStatus" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

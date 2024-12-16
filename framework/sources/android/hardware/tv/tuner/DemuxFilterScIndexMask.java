@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxFilterScIndexMask implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterScIndexMask> CREATOR = new Parcelable.Creator<DemuxFilterScIndexMask>() { // from class: android.hardware.tv.tuner.DemuxFilterScIndexMask.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterScIndexMask createFromParcel(Parcel _aidl_source) {
             return new DemuxFilterScIndexMask(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterScIndexMask[] newArray(int _aidl_size) {
             return new DemuxFilterScIndexMask[_aidl_size];
@@ -26,16 +25,11 @@ public final class DemuxFilterScIndexMask implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int scAvc = 1;
         public static final int scHevc = 2;
         public static final int scIndex = 0;
         public static final int scVvc = 3;
-    }
-
-    /* synthetic */ DemuxFilterScIndexMask(Parcel parcel, DemuxFilterScIndexMaskIA demuxFilterScIndexMaskIA) {
-        this(parcel);
     }
 
     public DemuxFilterScIndexMask() {
@@ -113,41 +107,22 @@ public final class DemuxFilterScIndexMask implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.DemuxFilterScIndexMask$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterScIndexMask> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterScIndexMask createFromParcel(Parcel _aidl_source) {
-            return new DemuxFilterScIndexMask(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterScIndexMask[] newArray(int _aidl_size) {
-            return new DemuxFilterScIndexMask[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getScIndex());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getScAvc());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getScHevc());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getScVvc());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

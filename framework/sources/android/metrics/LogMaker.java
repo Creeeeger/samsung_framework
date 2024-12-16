@@ -5,11 +5,10 @@ import android.content.ComponentName;
 import android.util.Log;
 import android.util.SparseArray;
 import com.android.internal.logging.nano.MetricsProto;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.Arrays;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class LogMaker {
     public static final int MAX_SERIALIZED_SIZE = 4000;
     private static final String TAG = "LogBuilder";
@@ -73,18 +72,18 @@ public class LogMaker {
     }
 
     public LogMaker setPackageName(String packageName) {
-        this.entries.put(MetricsProto.MetricsEvent.RESERVED_FOR_LOGBUILDER_PACKAGENAME, packageName);
+        this.entries.put(806, packageName);
         return this;
     }
 
     public LogMaker setComponentName(ComponentName component) {
-        this.entries.put(MetricsProto.MetricsEvent.RESERVED_FOR_LOGBUILDER_PACKAGENAME, component.getPackageName());
+        this.entries.put(806, component.getPackageName());
         this.entries.put(MetricsProto.MetricsEvent.FIELD_CLASS_NAME, component.getClassName());
         return this;
     }
 
     public LogMaker clearPackageName() {
-        this.entries.remove(MetricsProto.MetricsEvent.RESERVED_FOR_LOGBUILDER_PACKAGENAME);
+        this.entries.remove(806);
         return this;
     }
 
@@ -109,7 +108,7 @@ public class LogMaker {
     }
 
     public LogMaker setCounterName(String name) {
-        this.entries.put(MetricsProto.MetricsEvent.RESERVED_FOR_LOGBUILDER_NAME, name);
+        this.entries.put(799, name);
         return this;
     }
 
@@ -189,7 +188,7 @@ public class LogMaker {
     }
 
     public String getPackageName() {
-        Object obj = this.entries.get(MetricsProto.MetricsEvent.RESERVED_FOR_LOGBUILDER_PACKAGENAME);
+        Object obj = this.entries.get(806);
         if (obj instanceof String) {
             return (String) obj;
         }
@@ -213,7 +212,7 @@ public class LogMaker {
     }
 
     public String getCounterName() {
-        Object obj = this.entries.get(MetricsProto.MetricsEvent.RESERVED_FOR_LOGBUILDER_NAME);
+        Object obj = this.entries.get(799);
         if (obj instanceof String) {
             return (String) obj;
         }
@@ -270,7 +269,7 @@ public class LogMaker {
             if (key instanceof Integer) {
                 this.entries.put(((Integer) key).intValue(), value);
             } else {
-                Log.i(TAG, "Invalid key " + (key == null ? SemCapabilities.FEATURE_TAG_NULL : key.toString()));
+                Log.i(TAG, "Invalid key " + (key == null ? "null" : key.toString()));
             }
         }
     }

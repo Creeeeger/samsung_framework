@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import com.samsung.android.knox.IContainerService;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class ContainerCoreService extends Service {
     public abstract Bundle onCommandReceived(String str, Bundle bundle);
 
@@ -21,12 +21,7 @@ public abstract class ContainerCoreService extends Service {
         return new ServiceImpl();
     }
 
-    /* loaded from: classes5.dex */
     private final class ServiceImpl extends IContainerService.Stub {
-        /* synthetic */ ServiceImpl(ContainerCoreService containerCoreService, ServiceImplIA serviceImplIA) {
-            this();
-        }
-
         private ServiceImpl() {
         }
 

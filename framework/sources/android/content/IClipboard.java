@@ -1,10 +1,13 @@
 package android.content;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.content.IOnPrimaryClipChangedListener;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 
 /* loaded from: classes.dex */
@@ -33,7 +36,6 @@ public interface IClipboard extends IInterface {
 
     void setPrimaryClipAsPackage(ClipData clipData, String str, String str2, int i, int i2, String str3) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IClipboard {
         @Override // android.content.IClipboard
         public void setPrimaryClip(ClipData clip, String callingPackage, String attributionTag, int userId, int deviceId) throws RemoteException {
@@ -95,7 +97,6 @@ public interface IClipboard extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IClipboard {
         public static final String DESCRIPTOR = "android.content.IClipboard";
         static final int TRANSACTION_addPrimaryClipChangedListener = 7;
@@ -110,9 +111,19 @@ public interface IClipboard extends IInterface {
         static final int TRANSACTION_setClipboardAccessNotificationsEnabledForUser = 12;
         static final int TRANSACTION_setPrimaryClip = 1;
         static final int TRANSACTION_setPrimaryClipAsPackage = 2;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IClipboard asInterface(IBinder obj) {
@@ -172,135 +183,131 @@ public interface IClipboard extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ClipData _arg0 = (ClipData) data.readTypedObject(ClipData.CREATOR);
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPrimaryClip(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ClipData _arg02 = (ClipData) data.readTypedObject(ClipData.CREATOR);
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    int _arg42 = data.readInt();
+                    String _arg5 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPrimaryClipAsPackage(_arg02, _arg12, _arg22, _arg32, _arg42, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    int _arg23 = data.readInt();
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearPrimaryClip(_arg03, _arg13, _arg23, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg14 = data.readString();
+                    int _arg24 = data.readInt();
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ClipData _result = getPrimaryClip(_arg04, _arg14, _arg24, _arg34);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg15 = data.readString();
+                    int _arg25 = data.readInt();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ClipDescription _result2 = getPrimaryClipDescription(_arg05, _arg15, _arg25, _arg35);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String _arg16 = data.readString();
+                    int _arg26 = data.readInt();
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = hasPrimaryClip(_arg06, _arg16, _arg26, _arg36);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 7:
+                    IOnPrimaryClipChangedListener _arg07 = IOnPrimaryClipChangedListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg17 = data.readString();
+                    String _arg27 = data.readString();
+                    int _arg37 = data.readInt();
+                    int _arg43 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addPrimaryClipChangedListener(_arg07, _arg17, _arg27, _arg37, _arg43);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IOnPrimaryClipChangedListener _arg08 = IOnPrimaryClipChangedListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg18 = data.readString();
+                    String _arg28 = data.readString();
+                    int _arg38 = data.readInt();
+                    int _arg44 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removePrimaryClipChangedListener(_arg08, _arg18, _arg28, _arg38, _arg44);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    String _arg19 = data.readString();
+                    int _arg29 = data.readInt();
+                    int _arg39 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = hasClipboardText(_arg09, _arg19, _arg29, _arg39);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    String _arg110 = data.readString();
+                    int _arg210 = data.readInt();
+                    int _arg310 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result5 = getPrimaryClipSource(_arg010, _arg110, _arg210, _arg310);
+                    reply.writeNoException();
+                    reply.writeString(_result5);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = areClipboardAccessNotificationsEnabledForUser(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 12:
+                    boolean _arg012 = data.readBoolean();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setClipboardAccessNotificationsEnabledForUser(_arg012, _arg111);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ClipData _arg0 = (ClipData) data.readTypedObject(ClipData.CREATOR);
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPrimaryClip(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ClipData _arg02 = (ClipData) data.readTypedObject(ClipData.CREATOR);
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            int _arg42 = data.readInt();
-                            String _arg5 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPrimaryClipAsPackage(_arg02, _arg12, _arg22, _arg32, _arg42, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            int _arg23 = data.readInt();
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearPrimaryClip(_arg03, _arg13, _arg23, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg14 = data.readString();
-                            int _arg24 = data.readInt();
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ClipData _result = getPrimaryClip(_arg04, _arg14, _arg24, _arg34);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg15 = data.readString();
-                            int _arg25 = data.readInt();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ClipDescription _result2 = getPrimaryClipDescription(_arg05, _arg15, _arg25, _arg35);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String _arg16 = data.readString();
-                            int _arg26 = data.readInt();
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = hasPrimaryClip(_arg06, _arg16, _arg26, _arg36);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 7:
-                            IOnPrimaryClipChangedListener _arg07 = IOnPrimaryClipChangedListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg17 = data.readString();
-                            String _arg27 = data.readString();
-                            int _arg37 = data.readInt();
-                            int _arg43 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addPrimaryClipChangedListener(_arg07, _arg17, _arg27, _arg37, _arg43);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IOnPrimaryClipChangedListener _arg08 = IOnPrimaryClipChangedListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg18 = data.readString();
-                            String _arg28 = data.readString();
-                            int _arg38 = data.readInt();
-                            int _arg44 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removePrimaryClipChangedListener(_arg08, _arg18, _arg28, _arg38, _arg44);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            String _arg19 = data.readString();
-                            int _arg29 = data.readInt();
-                            int _arg39 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = hasClipboardText(_arg09, _arg19, _arg29, _arg39);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            String _arg110 = data.readString();
-                            int _arg210 = data.readInt();
-                            int _arg310 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result5 = getPrimaryClipSource(_arg010, _arg110, _arg210, _arg310);
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = areClipboardAccessNotificationsEnabledForUser(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 12:
-                            boolean _arg012 = data.readBoolean();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setClipboardAccessNotificationsEnabledForUser(_arg012, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IClipboard {
+        private static class Proxy implements IClipboard {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -543,6 +550,14 @@ public interface IClipboard extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void setPrimaryClipAsPackage_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.SET_CLIP_SOURCE, getCallingPid(), getCallingUid());
+        }
+
+        protected void getPrimaryClipSource_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.SET_CLIP_SOURCE, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

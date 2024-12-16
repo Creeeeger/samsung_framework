@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IRequestProcessorImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IRequestProcessorImpl";
 
@@ -25,7 +25,6 @@ public interface IRequestProcessorImpl extends IInterface {
 
     int submitBurst(List<Request> list, IRequestCallback iRequestCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRequestProcessorImpl {
         @Override // android.hardware.camera2.extension.IRequestProcessorImpl
         public void setImageProcessor(OutputConfigId outputConfigId, IImageProcessorImpl imageProcessor) throws RemoteException {
@@ -60,7 +59,6 @@ public interface IRequestProcessorImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRequestProcessorImpl {
         static final int TRANSACTION_abortCaptures = 5;
         static final int TRANSACTION_setImageProcessor = 1;
@@ -118,60 +116,56 @@ public interface IRequestProcessorImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRequestProcessorImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRequestProcessorImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRequestProcessorImpl.DESCRIPTOR);
+                case 1:
+                    OutputConfigId _arg0 = (OutputConfigId) data.readTypedObject(OutputConfigId.CREATOR);
+                    IImageProcessorImpl _arg1 = IImageProcessorImpl.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setImageProcessor(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    Request _arg02 = (Request) data.readTypedObject(Request.CREATOR);
+                    IRequestCallback _arg12 = IRequestCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result = submit(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 3:
+                    List<Request> _arg03 = data.createTypedArrayList(Request.CREATOR);
+                    IRequestCallback _arg13 = IRequestCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result2 = submitBurst(_arg03, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 4:
+                    Request _arg04 = (Request) data.readTypedObject(Request.CREATOR);
+                    IRequestCallback _arg14 = IRequestCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result3 = setRepeating(_arg04, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 5:
+                    abortCaptures();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    stopRepeating();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            OutputConfigId _arg0 = (OutputConfigId) data.readTypedObject(OutputConfigId.CREATOR);
-                            IImageProcessorImpl _arg1 = IImageProcessorImpl.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setImageProcessor(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            Request _arg02 = (Request) data.readTypedObject(Request.CREATOR);
-                            IRequestCallback _arg12 = IRequestCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result = submit(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 3:
-                            List<Request> _arg03 = data.createTypedArrayList(Request.CREATOR);
-                            IRequestCallback _arg13 = IRequestCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result2 = submitBurst(_arg03, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 4:
-                            Request _arg04 = (Request) data.readTypedObject(Request.CREATOR);
-                            IRequestCallback _arg14 = IRequestCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result3 = setRepeating(_arg04, _arg14);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 5:
-                            abortCaptures();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            stopRepeating();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRequestProcessorImpl {
+        private static class Proxy implements IRequestProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

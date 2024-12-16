@@ -2,7 +2,7 @@ package com.samsung.android.remoteappmode;
 
 import android.content.res.Configuration;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class RemoteAppModeManagerInternal {
     public abstract void onConfigurationChanged(Configuration configuration, int i);
 

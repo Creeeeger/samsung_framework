@@ -105,22 +105,18 @@ public class Typeface {
     private static String FlipFontPath = "";
     private static boolean isMtFontsDirectoryExists = false;
     public static boolean isFlipFontUsed = false;
-    private static final ArrayList<String> FontsLikeBold = new ArrayList<>(Arrays.asList("sec-semibold", "sec-bold"));
+    private static final ArrayList<String> FontsLikeBold = new ArrayList<>(Arrays.asList("sans-serif-medium", "sans-serif-black", "sec-semibold", "sec-bold"));
     public static final String DEFAULT_FAMILY = "sans-serif";
     private static final ArrayList<String> FontsLikeDefault = new ArrayList<>(Arrays.asList("sec-400", "sans-serif-thin", "sans-serif-light", DEFAULT_FAMILY, "sans-serif-condensed", "sans-serif-medium", "sans-serif-black", "monospace", "sec", "sec-num", "sec-num-fixed"));
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Style {
-    }
-
-    /* synthetic */ Typeface(long j, String str, TypefaceIA typefaceIA) {
-        this(j, str);
     }
 
     @CriticalNative
     private static native void nativeAddFontCollections(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeCreateFromArray(long[] jArr, long j, int i, int i2);
 
     private static native long nativeCreateFromTypeface(long j, int i);
@@ -163,7 +159,7 @@ public class Typeface {
         preloadFontFile("/system/fonts/RobotoStatic-Regular.ttf");
         String locale = SystemProperties.get("persist.sys.locale", "en-US");
         String script = ULocale.addLikelySubtags(ULocale.forLanguageTag(locale)).getScript();
-        FontConfig config = SystemFonts.getSystemPreinstalledFontConfig();
+        FontConfig config = SystemFonts.getSystemPreinstalledFontConfigFromLegacyXml();
         for (int i = 0; i < config.getFontFamilies().size(); i++) {
             FontConfig.FontFamily family = config.getFontFamilies().get(i);
             if (!family.getLocaleList().isEmpty()) {
@@ -323,7 +319,6 @@ public class Typeface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         public static final int BOLD_WEIGHT = 700;
         public static final int NORMAL_WEIGHT = 400;
@@ -384,7 +379,7 @@ public class Typeface {
 
         public Builder setItalic(boolean z) {
             this.mItalic = z ? 1 : 0;
-            this.mFontBuilder.setSlant(z ? 1 : 0);
+            this.mFontBuilder.setSlant(this.mItalic);
             return this;
         }
 
@@ -408,6 +403,7 @@ public class Typeface {
             return this;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static String createAssetUid(AssetManager mgr, String path, int ttcIndex, FontVariationAxis[] axes, int weight, int italic, String fallback) {
             SparseArray<String> pkgs = mgr.getAssignedPackageIdentifiers();
             StringBuilder builder = new StringBuilder();
@@ -437,21 +433,16 @@ public class Typeface {
         }
 
         private Typeface resolveFallbackTypeface() {
-            String str = this.mFallbackFamilyName;
-            if (str == null) {
+            if (this.mFallbackFamilyName == null) {
                 return null;
             }
-            Typeface base = Typeface.getSystemDefaultTypeface(str);
-            int weight = this.mWeight;
-            if (weight == -1 && this.mItalic == -1) {
+            Typeface base = Typeface.getSystemDefaultTypeface(this.mFallbackFamilyName);
+            if (this.mWeight == -1 && this.mItalic == -1) {
                 return base;
             }
-            if (weight == -1) {
-                weight = base.mWeight;
-            }
-            int i = this.mItalic;
+            int weight = this.mWeight == -1 ? base.mWeight : this.mWeight;
             boolean z = false;
-            if (i != -1 ? i == 1 : (base.mStyle & 2) != 0) {
+            if (this.mItalic != -1 ? this.mItalic == 1 : (base.mStyle & 2) != 0) {
                 z = true;
             }
             boolean italic = z;
@@ -460,26 +451,15 @@ public class Typeface {
 
         public Typeface build() {
             String key;
-            Font.Builder builder = this.mFontBuilder;
-            if (builder == null) {
+            if (this.mFontBuilder == null) {
                 return resolveFallbackTypeface();
             }
             try {
-                Font font = builder.build();
-                AssetManager assetManager = this.mAssetManager;
-                if (assetManager == null) {
+                Font font = this.mFontBuilder.build();
+                if (this.mAssetManager == null) {
                     key = null;
                 } else {
-                    String str = this.mPath;
-                    int ttcIndex = font.getTtcIndex();
-                    FontVariationAxis[] axes = font.getAxes();
-                    int i = this.mWeight;
-                    int i2 = this.mItalic;
-                    String str2 = this.mFallbackFamilyName;
-                    if (str2 == null) {
-                        str2 = Typeface.DEFAULT_FAMILY;
-                    }
-                    key = createAssetUid(assetManager, str, ttcIndex, axes, i, i2, str2);
+                    key = createAssetUid(this.mAssetManager, this.mPath, font.getTtcIndex(), font.getAxes(), this.mWeight, this.mItalic, this.mFallbackFamilyName == null ? Typeface.DEFAULT_FAMILY : this.mFallbackFamilyName);
                 }
                 if (key != null) {
                     synchronized (Typeface.sDynamicCacheLock) {
@@ -490,21 +470,13 @@ public class Typeface {
                     }
                 }
                 android.graphics.fonts.FontFamily family = new FontFamily.Builder(font).build();
-                int weight = this.mWeight;
-                if (weight == -1) {
-                    weight = font.getStyle().getWeight();
+                int weight = this.mWeight == -1 ? font.getStyle().getWeight() : this.mWeight;
+                int slant = this.mItalic == -1 ? font.getStyle().getSlant() : this.mItalic;
+                CustomFallbackBuilder builder = new CustomFallbackBuilder(family).setStyle(new FontStyle(weight, slant));
+                if (this.mFallbackFamilyName != null) {
+                    builder.setSystemFallback(this.mFallbackFamilyName);
                 }
-                int i3 = this.mItalic;
-                if (i3 == -1) {
-                    i3 = font.getStyle().getSlant();
-                }
-                int slant = i3;
-                CustomFallbackBuilder builder2 = new CustomFallbackBuilder(family).setStyle(new FontStyle(weight, slant));
-                String str3 = this.mFallbackFamilyName;
-                if (str3 != null) {
-                    builder2.setSystemFallback(str3);
-                }
-                Typeface typeface2 = builder2.build();
+                Typeface typeface2 = builder.build();
                 if (key != null) {
                     synchronized (Typeface.sDynamicCacheLock) {
                         Typeface.sDynamicTypefaceCache.put(key, typeface2);
@@ -517,23 +489,19 @@ public class Typeface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class CustomFallbackBuilder {
         private static final int MAX_CUSTOM_FALLBACK = 64;
-        private String mFallbackName;
-        private final ArrayList<android.graphics.fonts.FontFamily> mFamilies;
         private FontStyle mStyle;
+        private final ArrayList<android.graphics.fonts.FontFamily> mFamilies = new ArrayList<>();
+        private String mFallbackName = null;
 
         public static int getMaxCustomFallbackCount() {
             return 64;
         }
 
         public CustomFallbackBuilder(android.graphics.fonts.FontFamily family) {
-            ArrayList<android.graphics.fonts.FontFamily> arrayList = new ArrayList<>();
-            this.mFamilies = arrayList;
-            this.mFallbackName = null;
             Preconditions.checkNotNull(family);
-            arrayList.add(family);
+            this.mFamilies.add(family);
         }
 
         public CustomFallbackBuilder setSystemFallback(String familyName) {
@@ -555,17 +523,13 @@ public class Typeface {
         }
 
         public Typeface build() {
-            int userFallbackSize = this.mFamilies.size();
-            Typeface fallbackTypeface = Typeface.getSystemDefaultTypeface(this.mFallbackName);
-            long[] ptrArray = new long[userFallbackSize];
-            for (int i = 0; i < userFallbackSize; i++) {
-                ptrArray[i] = this.mFamilies.get(i).getNativePtr();
+            int size = this.mFamilies.size();
+            Typeface systemDefaultTypeface = Typeface.getSystemDefaultTypeface(this.mFallbackName);
+            long[] jArr = new long[size];
+            for (int i = 0; i < size; i++) {
+                jArr[i] = this.mFamilies.get(i).getNativePtr();
             }
-            FontStyle fontStyle = this.mStyle;
-            int weight = fontStyle == null ? 400 : fontStyle.getWeight();
-            FontStyle fontStyle2 = this.mStyle;
-            int italic = (fontStyle2 == null || fontStyle2.getSlant() == 0) ? 0 : 1;
-            return new Typeface(Typeface.nativeCreateFromArray(ptrArray, fallbackTypeface.native_instance, weight, italic), null);
+            return new Typeface(Typeface.nativeCreateFromArray(jArr, systemDefaultTypeface.native_instance, this.mStyle == null ? 400 : this.mStyle.getWeight(), (this.mStyle == null || this.mStyle.getSlant() == 0) ? 0 : 1), null);
         }
     }
 
@@ -594,11 +558,10 @@ public class Typeface {
         }
         long ni = family.native_instance;
         synchronized (sStyledCacheLock) {
-            LongSparseArray<SparseArray<Typeface>> longSparseArray = sStyledTypefaceCache;
-            SparseArray<Typeface> styles = longSparseArray.get(ni);
+            SparseArray<Typeface> styles = sStyledTypefaceCache.get(ni);
             if (styles == null) {
                 styles = new SparseArray<>(4);
-                longSparseArray.put(ni, styles);
+                sStyledTypefaceCache.put(ni, styles);
             } else {
                 Typeface typeface = styles.get(style);
                 if (typeface != null) {
@@ -623,17 +586,17 @@ public class Typeface {
         return createWeightStyle(family, weight, italic);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Typeface createWeightStyle(Typeface typeface, int i, boolean z) {
         int i2 = (i << 1) | (z ? 1 : 0);
         if (isFlipFontUsed && typeface.isLikeDefault) {
             return defaultFromStyle(i <= 500 ? 0 : 1);
         }
         synchronized (sWeightCacheLock) {
-            LongSparseArray<SparseArray<Typeface>> longSparseArray = sWeightTypefaceCache;
-            SparseArray<Typeface> sparseArray = longSparseArray.get(typeface.native_instance);
+            SparseArray<Typeface> sparseArray = sWeightTypefaceCache.get(typeface.native_instance);
             if (sparseArray == null) {
                 sparseArray = new SparseArray<>(4);
-                longSparseArray.put(typeface.native_instance, sparseArray);
+                sWeightTypefaceCache.put(typeface.native_instance, sparseArray);
             } else {
                 Typeface typeface2 = sparseArray.get(i2);
                 if (typeface2 != null) {
@@ -748,7 +711,7 @@ public class Typeface {
             throw new RuntimeException("native typeface cannot be made");
         }
         this.native_instance = ni;
-        this.mCleaner = sRegistry.registerNativeAllocation(this, ni);
+        this.mCleaner = sRegistry.registerNativeAllocation(this, this.native_instance);
         this.mStyle = nativeGetStyle(ni);
         this.mWeight = nativeGetWeight(ni);
         this.mSystemFontFamilyName = systemFontFamilyName;
@@ -758,6 +721,7 @@ public class Typeface {
         this.mCleaner.run();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Typeface getSystemDefaultTypeface(String familyName) {
         Typeface tf = sSystemFontMap.get(familyName);
         return tf == null ? DEFAULT : tf;
@@ -907,11 +871,10 @@ public class Typeface {
 
     public static void setSystemFontMap(Map<String, Typeface> systemFontMap) {
         synchronized (SYSTEM_FONT_MAP_LOCK) {
-            Map<String, Typeface> map = sSystemFontMap;
-            map.clear();
-            map.putAll(systemFontMap);
-            if (map.containsKey(DEFAULT_FAMILY)) {
-                setDefault(map.get(DEFAULT_FAMILY));
+            sSystemFontMap.clear();
+            sSystemFontMap.putAll(systemFontMap);
+            if (sSystemFontMap.containsKey(DEFAULT_FAMILY)) {
+                setDefault(sSystemFontMap.get(DEFAULT_FAMILY));
             }
             nativeForceSetStaticFinalField("DEFAULT", create(sDefaultTypeface, 0));
             nativeForceSetStaticFinalField("DEFAULT_BOLD", create(sDefaultTypeface, 1));
@@ -937,13 +900,12 @@ public class Typeface {
             sDefaults = (Typeface[]) defaults.toArray(new Typeface[4]);
             setDefault(defaults.get(0));
             ArrayList<Typeface> oldGenerics = new ArrayList<>();
-            Map<String, Typeface> map = sSystemFontMap;
-            oldGenerics.add(map.get(DEFAULT_FAMILY));
-            map.put(DEFAULT_FAMILY, genericFamilies.get(0));
-            oldGenerics.add(map.get("serif"));
-            map.put("serif", genericFamilies.get(1));
-            oldGenerics.add(map.get("monospace"));
-            map.put("monospace", genericFamilies.get(2));
+            oldGenerics.add(sSystemFontMap.get(DEFAULT_FAMILY));
+            sSystemFontMap.put(DEFAULT_FAMILY, genericFamilies.get(0));
+            oldGenerics.add(sSystemFontMap.get("serif"));
+            sSystemFontMap.put("serif", genericFamilies.get(1));
+            oldGenerics.add(sSystemFontMap.get("monospace"));
+            sSystemFontMap.put("monospace", genericFamilies.get(2));
             pair = new Pair<>(oldDefaults, oldGenerics);
         }
         return pair;
@@ -963,9 +925,8 @@ public class Typeface {
                 typeface.releaseNativeObjectForTest();
             }
             sSystemFontMap.clear();
-            ByteBuffer byteBuffer = sSystemFontMapBuffer;
-            if (byteBuffer != null) {
-                SharedMemory.unmap(byteBuffer);
+            if (sSystemFontMapBuffer != null) {
+                SharedMemory.unmap(sSystemFontMapBuffer);
             }
             sSystemFontMapBuffer = null;
             sSystemFontMapSharedMemory = null;
@@ -1010,17 +971,15 @@ public class Typeface {
     }
 
     public int hashCode() {
-        long j = this.native_instance;
-        int result = (17 * 31) + ((int) (j ^ (j >>> 32)));
+        int result = (17 * 31) + ((int) (this.native_instance ^ (this.native_instance >>> 32)));
         return (result * 31) + this.mStyle;
     }
 
     public boolean isSupportedAxes(int axis) {
         synchronized (this) {
             if (this.mSupportedAxes == null) {
-                int[] nativeGetSupportedAxes = nativeGetSupportedAxes(this.native_instance);
-                this.mSupportedAxes = nativeGetSupportedAxes;
-                if (nativeGetSupportedAxes == null) {
+                this.mSupportedAxes = nativeGetSupportedAxes(this.native_instance);
+                if (this.mSupportedAxes == null) {
                     this.mSupportedAxes = EMPTY_AXES;
                 }
             }
@@ -1113,10 +1072,9 @@ public class Typeface {
                     } catch (RuntimeException e) {
                         DEFAULT.native_instance = create((String) null, 0).native_instance;
                     }
-                    Typeface typeface = DEFAULT;
-                    if (typeface.native_instance == 0) {
+                    if (DEFAULT.native_instance == 0) {
                         flipfontTypeface = create((String) null, 0);
-                        typeface.native_instance = flipfontTypeface.native_instance;
+                        DEFAULT.native_instance = flipfontTypeface.native_instance;
                     }
                     if (flipfontTypeface != null) {
                         fontCache.put(strFontPath, flipfontTypeface);
@@ -1125,8 +1083,7 @@ public class Typeface {
                 if (flipfontTypeface != null) {
                     DEFAULT.native_instance = flipfontTypeface.native_instance;
                 }
-                Typeface typeface2 = DEFAULT;
-                typeface2.mStyle = nativeGetStyle(typeface2.native_instance);
+                DEFAULT.mStyle = nativeGetStyle(DEFAULT.native_instance);
                 Typeface flipfontBoldTypeface = fontCache.get(strFontPathBold);
                 if (flipfontBoldTypeface == null) {
                     try {
@@ -1144,22 +1101,15 @@ public class Typeface {
                 if (flipfontBoldTypeface != null) {
                     DEFAULT_BOLD.native_instance = flipfontBoldTypeface.native_instance;
                 }
-                Typeface typeface3 = DEFAULT_BOLD;
-                typeface3.mStyle = nativeGetStyle(typeface3.native_instance);
-                Typeface typeface4 = sDefaults[0];
-                Typeface typeface5 = DEFAULT;
-                typeface4.native_instance = nativeCreateFromTypefaceWithExactStyle(typeface5.native_instance, 400, false);
-                Typeface typeface6 = sDefaults[0];
-                typeface6.mStyle = nativeGetStyle(typeface6.native_instance);
-                sDefaults[1].native_instance = nativeCreateFromTypefaceWithExactStyle(typeface3.native_instance, 700, false);
-                Typeface typeface7 = sDefaults[1];
-                typeface7.mStyle = nativeGetStyle(typeface7.native_instance);
-                sDefaults[2].native_instance = nativeCreateFromTypefaceWithExactStyle(typeface5.native_instance, 400, true);
-                Typeface typeface8 = sDefaults[2];
-                typeface8.mStyle = nativeGetStyle(typeface8.native_instance);
-                sDefaults[3].native_instance = nativeCreateFromTypefaceWithExactStyle(typeface3.native_instance, 700, true);
-                Typeface typeface9 = sDefaults[3];
-                typeface9.mStyle = nativeGetStyle(typeface9.native_instance);
+                DEFAULT_BOLD.mStyle = nativeGetStyle(DEFAULT_BOLD.native_instance);
+                sDefaults[0].native_instance = nativeCreateFromTypefaceWithExactStyle(DEFAULT.native_instance, 400, false);
+                sDefaults[0].mStyle = nativeGetStyle(sDefaults[0].native_instance);
+                sDefaults[1].native_instance = nativeCreateFromTypefaceWithExactStyle(DEFAULT_BOLD.native_instance, 700, false);
+                sDefaults[1].mStyle = nativeGetStyle(sDefaults[1].native_instance);
+                sDefaults[2].native_instance = nativeCreateFromTypefaceWithExactStyle(DEFAULT.native_instance, 400, true);
+                sDefaults[2].mStyle = nativeGetStyle(sDefaults[2].native_instance);
+                sDefaults[3].native_instance = nativeCreateFromTypefaceWithExactStyle(DEFAULT_BOLD.native_instance, 700, true);
+                sDefaults[3].mStyle = nativeGetStyle(sDefaults[3].native_instance);
                 nativeSetDefault(sDefaultTypeface.native_instance);
             }
         }

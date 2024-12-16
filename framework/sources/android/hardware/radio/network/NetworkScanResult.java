@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class NetworkScanResult implements Parcelable {
     public static final Parcelable.Creator<NetworkScanResult> CREATOR = new Parcelable.Creator<NetworkScanResult>() { // from class: android.hardware.radio.network.NetworkScanResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanResult createFromParcel(Parcel _aidl_source) {
             NetworkScanResult _aidl_out = new NetworkScanResult();
@@ -20,6 +18,7 @@ public class NetworkScanResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanResult[] newArray(int _aidl_size) {
             return new NetworkScanResult[_aidl_size];
@@ -30,25 +29,6 @@ public class NetworkScanResult implements Parcelable {
     public int error;
     public CellInfo[] networkInfos;
     public int status = 0;
-
-    /* renamed from: android.hardware.radio.network.NetworkScanResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkScanResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanResult createFromParcel(Parcel _aidl_source) {
-            NetworkScanResult _aidl_out = new NetworkScanResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkScanResult[] newArray(int _aidl_size) {
-            return new NetworkScanResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -117,7 +97,7 @@ public class NetworkScanResult implements Parcelable {
         _aidl_sj.add("status: " + this.status);
         _aidl_sj.add("error: " + RadioError$$.toString(this.error));
         _aidl_sj.add("networkInfos: " + Arrays.toString(this.networkInfos));
-        return "android.hardware.radio.network.NetworkScanResult" + _aidl_sj.toString();
+        return "NetworkScanResult" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

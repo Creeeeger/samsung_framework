@@ -16,10 +16,9 @@ import java.util.Collection;
 import java.util.List;
 
 /* loaded from: classes.dex */
-public class FragmentTransition {
+class FragmentTransition {
     private static final int[] INVERSE_OPS = {0, 3, 0, 1, 5, 4, 7, 6, 9, 8};
 
-    /* loaded from: classes.dex */
     public static class FragmentContainerTransition {
         public Fragment firstOut;
         public boolean firstOutIsPop;
@@ -32,7 +31,7 @@ public class FragmentTransition {
     FragmentTransition() {
     }
 
-    public static void startTransitions(FragmentManagerImpl fragmentManager, ArrayList<BackStackRecord> records, ArrayList<Boolean> isRecordPop, int startIndex, int endIndex, boolean isReordered) {
+    static void startTransitions(FragmentManagerImpl fragmentManager, ArrayList<BackStackRecord> records, ArrayList<Boolean> isRecordPop, int startIndex, int endIndex, boolean isReordered) {
         if (fragmentManager.mCurState < 1) {
             return;
         }
@@ -192,20 +191,14 @@ public class FragmentTransition {
     private static void replaceHide(Transition exitTransition, Fragment exitingFragment, final ArrayList<View> exitingViews) {
         if (exitingFragment != null && exitTransition != null && exitingFragment.mAdded && exitingFragment.mHidden && exitingFragment.mHiddenChanged) {
             exitingFragment.setHideReplaced(true);
-            View fragmentView = exitingFragment.getView();
-            OneShotPreDrawListener.add(exitingFragment.mContainer, new Runnable() { // from class: android.app.FragmentTransition$$ExternalSyntheticLambda3
+            final View fragmentView = exitingFragment.getView();
+            OneShotPreDrawListener.add(exitingFragment.mContainer, new Runnable() { // from class: android.app.FragmentTransition$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     FragmentTransition.setViewVisibility(exitingViews, 4);
                 }
             });
             exitTransition.addListener(new TransitionListenerAdapter() { // from class: android.app.FragmentTransition.1
-                final /* synthetic */ ArrayList val$exitingViews;
-
-                AnonymousClass1(final ArrayList exitingViews2) {
-                    exitingViews = exitingViews2;
-                }
-
                 @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
                 public void onTransitionEnd(Transition transition) {
                     transition.removeListener(this);
@@ -216,25 +209,8 @@ public class FragmentTransition {
         }
     }
 
-    /* renamed from: android.app.FragmentTransition$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends TransitionListenerAdapter {
-        final /* synthetic */ ArrayList val$exitingViews;
-
-        AnonymousClass1(final ArrayList exitingViews2) {
-            exitingViews = exitingViews2;
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionEnd(Transition transition) {
-            transition.removeListener(this);
-            View.this.setVisibility(8);
-            FragmentTransition.setViewVisibility(exitingViews, 0);
-        }
-    }
-
     private static void scheduleTargetChange(ViewGroup sceneRoot, final Fragment inFragment, final View nonExistentView, final ArrayList<View> sharedElementsIn, final Transition enterTransition, final ArrayList<View> enteringViews, final Transition exitTransition, final ArrayList<View> exitingViews) {
-        OneShotPreDrawListener.add(sceneRoot, new Runnable() { // from class: android.app.FragmentTransition$$ExternalSyntheticLambda1
+        OneShotPreDrawListener.add(sceneRoot, new Runnable() { // from class: android.app.FragmentTransition$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 FragmentTransition.lambda$scheduleTargetChange$1(Transition.this, nonExistentView, inFragment, sharedElementsIn, enteringViews, exitingViews, exitTransition);
@@ -242,7 +218,7 @@ public class FragmentTransition {
         });
     }
 
-    public static /* synthetic */ void lambda$scheduleTargetChange$1(Transition enterTransition, View nonExistentView, Fragment inFragment, ArrayList sharedElementsIn, ArrayList enteringViews, ArrayList exitingViews, Transition exitTransition) {
+    static /* synthetic */ void lambda$scheduleTargetChange$1(Transition enterTransition, View nonExistentView, Fragment inFragment, ArrayList sharedElementsIn, ArrayList enteringViews, ArrayList exitingViews, Transition exitTransition) {
         if (enterTransition != null) {
             enterTransition.removeTarget(nonExistentView);
             ArrayList<View> views = configureEnteringExitingViews(enterTransition, inFragment, sharedElementsIn, nonExistentView);
@@ -294,7 +270,7 @@ public class FragmentTransition {
 
     private static Transition cloneTransition(Transition transition) {
         if (transition != null) {
-            return transition.mo4916clone();
+            return transition.mo5201clone();
         }
         return transition;
     }
@@ -341,13 +317,10 @@ public class FragmentTransition {
                 boolean outIsPop = fragments.firstOutIsPop;
                 BackStackRecord outTransaction = fragments.firstOutTransaction;
                 setOutEpicenter(sharedElementTransition2, exitTransition, outSharedElements, outIsPop, outTransaction);
-                Rect epicenter2 = new Rect();
+                final Rect epicenter2 = new Rect();
                 epicenterView = getInEpicenterView(inSharedElements, fragments, enterTransition, inIsPop);
                 if (epicenterView != null) {
                     enterTransition.setEpicenterCallback(new Transition.EpicenterCallback() { // from class: android.app.FragmentTransition.2
-                        AnonymousClass2() {
-                        }
-
                         @Override // android.transition.Transition.EpicenterCallback
                         public Rect onGetEpicenter(Transition transition) {
                             return Rect.this;
@@ -362,7 +335,7 @@ public class FragmentTransition {
             TransitionSet sharedElementTransition3 = sharedElementTransition2;
             final View view = epicenterView;
             final Rect rect = epicenter;
-            OneShotPreDrawListener.add(sceneRoot, new Runnable() { // from class: android.app.FragmentTransition$$ExternalSyntheticLambda0
+            OneShotPreDrawListener.add(sceneRoot, new Runnable() { // from class: android.app.FragmentTransition$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     FragmentTransition.lambda$configureSharedElementsReordered$2(Fragment.this, outFragment, inIsPop, inSharedElements, view, rect);
@@ -373,19 +346,7 @@ public class FragmentTransition {
         return null;
     }
 
-    /* renamed from: android.app.FragmentTransition$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends Transition.EpicenterCallback {
-        AnonymousClass2() {
-        }
-
-        @Override // android.transition.Transition.EpicenterCallback
-        public Rect onGetEpicenter(Transition transition) {
-            return Rect.this;
-        }
-    }
-
-    public static /* synthetic */ void lambda$configureSharedElementsReordered$2(Fragment inFragment, Fragment outFragment, boolean inIsPop, ArrayMap inSharedElements, View epicenterView, Rect epicenter) {
+    static /* synthetic */ void lambda$configureSharedElementsReordered$2(Fragment inFragment, Fragment outFragment, boolean inIsPop, ArrayMap inSharedElements, View epicenterView, Rect epicenter) {
         callSharedElementStartEnd(inFragment, outFragment, inIsPop, inSharedElements, false);
         if (epicenterView != null) {
             epicenterView.getBoundsOnScreen(epicenter);
@@ -426,16 +387,13 @@ public class FragmentTransition {
             }
             callSharedElementStartEnd(inFragment, outFragment, inIsPop, outSharedElements, true);
             if (sharedElementTransition2 != null) {
-                Rect inEpicenter2 = new Rect();
+                final Rect inEpicenter2 = new Rect();
                 setSharedElementTargets(sharedElementTransition2, nonExistentView, sharedElementsOut);
                 boolean outIsPop = fragments.firstOutIsPop;
                 BackStackRecord outTransaction = fragments.firstOutTransaction;
                 setOutEpicenter(sharedElementTransition2, exitTransition, outSharedElements, outIsPop, outTransaction);
                 if (enterTransition != null) {
                     enterTransition.setEpicenterCallback(new Transition.EpicenterCallback() { // from class: android.app.FragmentTransition.3
-                        AnonymousClass3() {
-                        }
-
                         @Override // android.transition.Transition.EpicenterCallback
                         public Rect onGetEpicenter(Transition transition) {
                             if (Rect.this.isEmpty()) {
@@ -463,22 +421,7 @@ public class FragmentTransition {
         return null;
     }
 
-    /* renamed from: android.app.FragmentTransition$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 extends Transition.EpicenterCallback {
-        AnonymousClass3() {
-        }
-
-        @Override // android.transition.Transition.EpicenterCallback
-        public Rect onGetEpicenter(Transition transition) {
-            if (Rect.this.isEmpty()) {
-                return null;
-            }
-            return Rect.this;
-        }
-    }
-
-    public static /* synthetic */ void lambda$configureSharedElementsOrdered$3(ArrayMap nameOverrides, TransitionSet finalSharedElementTransition, FragmentContainerTransition fragments, ArrayList sharedElementsIn, View nonExistentView, Fragment inFragment, Fragment outFragment, boolean inIsPop, ArrayList sharedElementsOut, Transition enterTransition, Rect inEpicenter) {
+    static /* synthetic */ void lambda$configureSharedElementsOrdered$3(ArrayMap nameOverrides, TransitionSet finalSharedElementTransition, FragmentContainerTransition fragments, ArrayList sharedElementsIn, View nonExistentView, Fragment inFragment, Fragment outFragment, boolean inIsPop, ArrayList sharedElementsOut, Transition enterTransition, Rect inEpicenter) {
         ArrayMap<String, View> inSharedElements = captureInSharedElements(nameOverrides, finalSharedElementTransition, fragments);
         if (inSharedElements != null) {
             sharedElementsIn.addAll(inSharedElements.values());
@@ -608,29 +551,14 @@ public class FragmentTransition {
 
     private static void setEpicenter(Transition transition, View view) {
         if (view != null) {
-            Rect epicenter = new Rect();
+            final Rect epicenter = new Rect();
             view.getBoundsOnScreen(epicenter);
             transition.setEpicenterCallback(new Transition.EpicenterCallback() { // from class: android.app.FragmentTransition.4
-                AnonymousClass4() {
-                }
-
                 @Override // android.transition.Transition.EpicenterCallback
                 public Rect onGetEpicenter(Transition transition2) {
                     return Rect.this;
                 }
             });
-        }
-    }
-
-    /* renamed from: android.app.FragmentTransition$4 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass4 extends Transition.EpicenterCallback {
-        AnonymousClass4() {
-        }
-
-        @Override // android.transition.Transition.EpicenterCallback
-        public Rect onGetEpicenter(Transition transition2) {
-            return Rect.this;
         }
     }
 
@@ -709,74 +637,18 @@ public class FragmentTransition {
         return false;
     }
 
-    /* renamed from: android.app.FragmentTransition$5 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass5 extends TransitionListenerAdapter {
-        final /* synthetic */ ArrayList val$enteringViews;
-        final /* synthetic */ Transition val$exitTransition;
-        final /* synthetic */ ArrayList val$exitingViews;
-        final /* synthetic */ TransitionSet val$sharedElementTransition;
-        final /* synthetic */ ArrayList val$sharedElementsIn;
-
-        AnonymousClass5(ArrayList arrayList, Transition transition, ArrayList arrayList2, TransitionSet transitionSet, ArrayList arrayList3) {
-            enteringViews = arrayList;
-            exitTransition = transition;
-            exitingViews = arrayList2;
-            sharedElementTransition = transitionSet;
-            sharedElementsIn = arrayList3;
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionStart(Transition transition) {
-            Transition transition2 = Transition.this;
-            if (transition2 != null) {
-                FragmentTransition.replaceTargets(transition2, enteringViews, null);
-            }
-            Transition transition3 = exitTransition;
-            if (transition3 != null) {
-                FragmentTransition.replaceTargets(transition3, exitingViews, null);
-            }
-            TransitionSet transitionSet = sharedElementTransition;
-            if (transitionSet != null) {
-                FragmentTransition.replaceTargets(transitionSet, sharedElementsIn, null);
-            }
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionEnd(Transition transition) {
-            transition.removeListener(this);
-        }
-    }
-
-    private static void scheduleRemoveTargets(Transition overalTransition, Transition enterTransition, ArrayList<View> enteringViews, Transition exitTransition, ArrayList<View> exitingViews, TransitionSet sharedElementTransition, ArrayList<View> sharedElementsIn) {
+    private static void scheduleRemoveTargets(Transition overalTransition, final Transition enterTransition, final ArrayList<View> enteringViews, final Transition exitTransition, final ArrayList<View> exitingViews, final TransitionSet sharedElementTransition, final ArrayList<View> sharedElementsIn) {
         overalTransition.addListener(new TransitionListenerAdapter() { // from class: android.app.FragmentTransition.5
-            final /* synthetic */ ArrayList val$enteringViews;
-            final /* synthetic */ Transition val$exitTransition;
-            final /* synthetic */ ArrayList val$exitingViews;
-            final /* synthetic */ TransitionSet val$sharedElementTransition;
-            final /* synthetic */ ArrayList val$sharedElementsIn;
-
-            AnonymousClass5(ArrayList enteringViews2, Transition exitTransition2, ArrayList exitingViews2, TransitionSet sharedElementTransition2, ArrayList sharedElementsIn2) {
-                enteringViews = enteringViews2;
-                exitTransition = exitTransition2;
-                exitingViews = exitingViews2;
-                sharedElementTransition = sharedElementTransition2;
-                sharedElementsIn = sharedElementsIn2;
-            }
-
             @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
             public void onTransitionStart(Transition transition) {
-                Transition transition2 = Transition.this;
-                if (transition2 != null) {
-                    FragmentTransition.replaceTargets(transition2, enteringViews, null);
+                if (Transition.this != null) {
+                    FragmentTransition.replaceTargets(Transition.this, enteringViews, null);
                 }
-                Transition transition3 = exitTransition;
-                if (transition3 != null) {
-                    FragmentTransition.replaceTargets(transition3, exitingViews, null);
+                if (exitTransition != null) {
+                    FragmentTransition.replaceTargets(exitTransition, exitingViews, null);
                 }
-                TransitionSet transitionSet = sharedElementTransition;
-                if (transitionSet != null) {
-                    FragmentTransition.replaceTargets(transitionSet, sharedElementsIn, null);
+                if (sharedElementTransition != null) {
+                    FragmentTransition.replaceTargets(sharedElementTransition, sharedElementsIn, null);
                 }
             }
 
@@ -861,6 +733,7 @@ public class FragmentTransition {
         return viewList;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void setViewVisibility(ArrayList<View> views, int visibility) {
         if (views == null) {
             return;
@@ -939,12 +812,11 @@ public class FragmentTransition {
         boolean setFirstOut3;
         boolean setLastIn3;
         FragmentContainerTransition containerTransition;
-        Fragment fragment;
         FragmentContainerTransition containerTransition2;
         FragmentContainerTransition containerTransition3;
         FragmentContainerTransition containerTransition4;
-        Fragment fragment2 = op.fragment;
-        if (fragment2 == null || (containerId = fragment2.mContainerId) == 0) {
+        Fragment fragment = op.fragment;
+        if (fragment == null || (containerId = fragment.mContainerId) == 0) {
             return;
         }
         int command = isPop ? INVERSE_OPS[op.cmd] : op.cmd;
@@ -953,9 +825,9 @@ public class FragmentTransition {
             case 1:
             case 7:
                 if (isReorderedTransaction) {
-                    setLastIn = fragment2.mIsNewlyAdded;
+                    setLastIn = fragment.mIsNewlyAdded;
                 } else {
-                    if (!fragment2.mAdded && !fragment2.mHidden) {
+                    if (!fragment.mAdded && !fragment.mHidden) {
                         z = true;
                     }
                     setLastIn = z;
@@ -975,12 +847,12 @@ public class FragmentTransition {
             case 3:
             case 6:
                 if (isReorderedTransaction) {
-                    if (!fragment2.mAdded && fragment2.mView != null && fragment2.mView.getVisibility() == 0 && fragment2.mView.getTransitionAlpha() > 0.0f) {
+                    if (!fragment.mAdded && fragment.mView != null && fragment.mView.getVisibility() == 0 && fragment.mView.getTransitionAlpha() > 0.0f) {
                         z = true;
                     }
                     setFirstOut2 = z;
                 } else {
-                    if (fragment2.mAdded && !fragment2.mHidden) {
+                    if (fragment.mAdded && !fragment.mHidden) {
                         z = true;
                     }
                     setFirstOut2 = z;
@@ -992,12 +864,12 @@ public class FragmentTransition {
                 break;
             case 4:
                 if (isReorderedTransaction) {
-                    if (fragment2.mHiddenChanged && fragment2.mAdded && fragment2.mHidden) {
+                    if (fragment.mHiddenChanged && fragment.mAdded && fragment.mHidden) {
                         z = true;
                     }
                     setFirstOut3 = z;
                 } else {
-                    if (fragment2.mAdded && !fragment2.mHidden) {
+                    if (fragment.mAdded && !fragment.mHidden) {
                         z = true;
                     }
                     setFirstOut3 = z;
@@ -1009,12 +881,12 @@ public class FragmentTransition {
                 break;
             case 5:
                 if (isReorderedTransaction) {
-                    if (fragment2.mHiddenChanged && !fragment2.mHidden && fragment2.mAdded) {
+                    if (fragment.mHiddenChanged && !fragment.mHidden && fragment.mAdded) {
                         z = true;
                     }
                     setLastIn3 = z;
                 } else {
-                    setLastIn3 = fragment2.mHidden;
+                    setLastIn3 = fragment.mHidden;
                 }
                 setLastIn2 = setLastIn3;
                 wasRemoved = false;
@@ -1027,41 +899,37 @@ public class FragmentTransition {
             containerTransition = containerTransition5;
         } else {
             FragmentContainerTransition containerTransition6 = ensureContainer(containerTransition5, transitioningFragments, containerId);
-            containerTransition6.lastIn = fragment2;
+            containerTransition6.lastIn = fragment;
             containerTransition6.lastInIsPop = isPop;
             containerTransition6.lastInTransaction = transaction;
             containerTransition = containerTransition6;
         }
         if (isReorderedTransaction || !wasAdded) {
-            fragment = null;
             containerTransition2 = containerTransition;
         } else {
-            if (containerTransition != null && containerTransition.firstOut == fragment2) {
+            if (containerTransition != null && containerTransition.firstOut == fragment) {
                 containerTransition.firstOut = null;
             }
             FragmentManagerImpl manager = transaction.mManager;
-            if (fragment2.mState >= 1 || manager.mCurState < 1) {
-                fragment = null;
+            if (fragment.mState >= 1 || manager.mCurState < 1) {
                 containerTransition2 = containerTransition;
             } else if (manager.mHost.getContext().getApplicationInfo().targetSdkVersion < 24 || transaction.mReorderingAllowed) {
-                fragment = null;
                 containerTransition2 = containerTransition;
             } else {
-                manager.makeActive(fragment2);
+                manager.makeActive(fragment);
                 containerTransition2 = containerTransition;
-                fragment = null;
-                manager.moveToState(fragment2, 1, 0, 0, false);
+                manager.moveToState(fragment, 1, 0, 0, false);
             }
         }
         if (setFirstOut) {
             containerTransition3 = containerTransition2;
             if (containerTransition3 == null || containerTransition3.firstOut == null) {
                 containerTransition4 = ensureContainer(containerTransition3, transitioningFragments, containerId);
-                containerTransition4.firstOut = fragment2;
+                containerTransition4.firstOut = fragment;
                 containerTransition4.firstOutIsPop = isPop;
                 containerTransition4.firstOutTransaction = transaction;
-                if (isReorderedTransaction && wasRemoved && containerTransition4 != null && containerTransition4.lastIn == fragment2) {
-                    containerTransition4.lastIn = fragment;
+                if (isReorderedTransaction && wasRemoved && containerTransition4 != null && containerTransition4.lastIn == fragment) {
+                    containerTransition4.lastIn = null;
                     return;
                 }
                 return;

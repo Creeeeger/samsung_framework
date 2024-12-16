@@ -45,7 +45,7 @@ public class BERApplicationSpecific extends ASN1ApplicationSpecific {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1ApplicationSpecific, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         int flags = 64;
         if (this.isConstructed) {
             flags = 64 | 32;

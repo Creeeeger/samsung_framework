@@ -30,9 +30,8 @@ public final class NavigationBarFrame extends FrameLayout {
 
     @Override // android.view.ViewGroup, android.view.View
     public boolean dispatchTouchEvent(MotionEvent event) {
-        DeadZone deadZone;
-        if (event.getAction() == 4 && (deadZone = this.mDeadZone) != null) {
-            return deadZone.onTouchEvent(event);
+        if (event.getAction() == 4 && this.mDeadZone != null) {
+            return this.mDeadZone.onTouchEvent(event);
         }
         return super.dispatchTouchEvent(event);
     }

@@ -11,14 +11,13 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class PauseActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<PauseActivityItem> CREATOR = new Parcelable.Creator<PauseActivityItem>() { // from class: android.app.servertransaction.PauseActivityItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PauseActivityItem createFromParcel(Parcel in) {
             return new PauseActivityItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PauseActivityItem[] newArray(int size) {
             return new PauseActivityItem[size];
@@ -26,19 +25,14 @@ public class PauseActivityItem extends ActivityLifecycleItem {
     };
     private static final String TAG = "PauseActivityItem";
     private boolean mAutoEnteringPip;
-    private int mConfigChanges;
     private boolean mDontReport;
     private boolean mFinished;
     private boolean mUserLeaving;
 
-    /* synthetic */ PauseActivityItem(Parcel parcel, PauseActivityItemIA pauseActivityItemIA) {
-        this(parcel);
-    }
-
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
         Trace.traceBegin(64L, "activityPause");
-        client.handlePauseActivity(r, this.mFinished, this.mUserLeaving, this.mConfigChanges, this.mAutoEnteringPip, pendingActions, "PAUSE_ACTIVITY_ITEM");
+        client.handlePauseActivity(r, this.mFinished, this.mUserLeaving, this.mAutoEnteringPip, pendingActions, "PAUSE_ACTIVITY_ITEM");
         Trace.traceEnd(64L);
     }
 
@@ -48,106 +42,79 @@ public class PauseActivityItem extends ActivityLifecycleItem {
     }
 
     @Override // android.app.servertransaction.BaseClientRequest
-    public void postExecute(ClientTransactionHandler client, IBinder token, PendingTransactionActions pendingActions) {
+    public void postExecute(ClientTransactionHandler client, PendingTransactionActions pendingActions) {
         if (this.mDontReport) {
             return;
         }
-        ActivityClient.getInstance().activityPaused(token);
+        ActivityClient.getInstance().activityPaused(getActivityToken());
     }
 
     private PauseActivityItem() {
     }
 
-    public static PauseActivityItem obtain(boolean finished, boolean userLeaving, int configChanges, boolean dontReport, boolean autoEnteringPip) {
+    public static PauseActivityItem obtain(IBinder activityToken, boolean finished, boolean userLeaving, boolean dontReport, boolean autoEnteringPip) {
         PauseActivityItem instance = (PauseActivityItem) ObjectPool.obtain(PauseActivityItem.class);
         if (instance == null) {
             instance = new PauseActivityItem();
         }
+        instance.setActivityToken(activityToken);
         instance.mFinished = finished;
         instance.mUserLeaving = userLeaving;
-        instance.mConfigChanges = configChanges;
         instance.mDontReport = dontReport;
         instance.mAutoEnteringPip = autoEnteringPip;
         return instance;
     }
 
-    public static PauseActivityItem obtain() {
-        PauseActivityItem instance = (PauseActivityItem) ObjectPool.obtain(PauseActivityItem.class);
-        if (instance == null) {
-            instance = new PauseActivityItem();
-        }
-        instance.mFinished = false;
-        instance.mUserLeaving = false;
-        instance.mConfigChanges = 0;
-        instance.mDontReport = true;
-        instance.mAutoEnteringPip = false;
-        return instance;
+    public static PauseActivityItem obtain(IBinder activityToken) {
+        return obtain(activityToken, false, false, true, false);
     }
 
-    @Override // android.app.servertransaction.ActivityLifecycleItem, android.app.servertransaction.ObjectPoolItem
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.app.servertransaction.ObjectPoolItem
     public void recycle() {
         super.recycle();
         this.mFinished = false;
         this.mUserLeaving = false;
-        this.mConfigChanges = 0;
         this.mDontReport = false;
         this.mAutoEnteringPip = false;
         ObjectPool.recycle(this);
     }
 
-    @Override // android.os.Parcelable
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeBoolean(this.mFinished);
         dest.writeBoolean(this.mUserLeaving);
-        dest.writeInt(this.mConfigChanges);
         dest.writeBoolean(this.mDontReport);
         dest.writeBoolean(this.mAutoEnteringPip);
     }
 
     private PauseActivityItem(Parcel in) {
+        super(in);
         this.mFinished = in.readBoolean();
         this.mUserLeaving = in.readBoolean();
-        this.mConfigChanges = in.readInt();
         this.mDontReport = in.readBoolean();
         this.mAutoEnteringPip = in.readBoolean();
     }
 
-    /* renamed from: android.app.servertransaction.PauseActivityItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PauseActivityItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PauseActivityItem createFromParcel(Parcel in) {
-            return new PauseActivityItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PauseActivityItem[] newArray(int size) {
-            return new PauseActivityItem[size];
-        }
-    }
-
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!super.equals(o)) {
             return false;
         }
         PauseActivityItem other = (PauseActivityItem) o;
-        if (this.mFinished == other.mFinished && this.mUserLeaving == other.mUserLeaving && this.mConfigChanges == other.mConfigChanges && this.mDontReport == other.mDontReport && this.mAutoEnteringPip == other.mAutoEnteringPip) {
-            return true;
-        }
-        return false;
+        return this.mFinished == other.mFinished && this.mUserLeaving == other.mUserLeaving && this.mDontReport == other.mDontReport && this.mAutoEnteringPip == other.mAutoEnteringPip;
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public int hashCode() {
-        return (((((((((17 * 31) + (this.mFinished ? 1 : 0)) * 31) + (this.mUserLeaving ? 1 : 0)) * 31) + this.mConfigChanges) * 31) + (this.mDontReport ? 1 : 0)) * 31) + (this.mAutoEnteringPip ? 1 : 0);
+        return (((((((((17 * 31) + super.hashCode()) * 31) + (this.mFinished ? 1 : 0)) * 31) + (this.mUserLeaving ? 1 : 0)) * 31) + (this.mDontReport ? 1 : 0)) * 31) + (this.mAutoEnteringPip ? 1 : 0);
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public String toString() {
-        return "PauseActivityItem{finished=" + this.mFinished + ",userLeaving=" + this.mUserLeaving + ",configChanges=" + this.mConfigChanges + ",dontReport=" + this.mDontReport + ",autoEnteringPip=" + this.mAutoEnteringPip + "}";
+        return "PauseActivityItem{" + super.toString() + ",finished=" + this.mFinished + ",userLeaving=" + this.mUserLeaving + ",dontReport=" + this.mDontReport + ",autoEnteringPip=" + this.mAutoEnteringPip + "}";
     }
 }

@@ -9,24 +9,19 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SetEnabledProvidersRequest implements Parcelable {
     public static final Parcelable.Creator<SetEnabledProvidersRequest> CREATOR = new Parcelable.Creator<SetEnabledProvidersRequest>() { // from class: android.credentials.SetEnabledProvidersRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SetEnabledProvidersRequest createFromParcel(Parcel in) {
             return new SetEnabledProvidersRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SetEnabledProvidersRequest[] newArray(int size) {
             return new SetEnabledProvidersRequest[size];
         }
     };
     private final List<String> mProviders;
-
-    /* synthetic */ SetEnabledProvidersRequest(Parcel parcel, SetEnabledProvidersRequestIA setEnabledProvidersRequestIA) {
-        this(parcel);
-    }
 
     public SetEnabledProvidersRequest(List<String> providers) {
         Objects.requireNonNull(providers, "providers must not be null");
@@ -36,23 +31,6 @@ public final class SetEnabledProvidersRequest implements Parcelable {
 
     private SetEnabledProvidersRequest(Parcel in) {
         this.mProviders = in.createStringArrayList();
-    }
-
-    /* renamed from: android.credentials.SetEnabledProvidersRequest$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SetEnabledProvidersRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SetEnabledProvidersRequest createFromParcel(Parcel in) {
-            return new SetEnabledProvidersRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SetEnabledProvidersRequest[] newArray(int size) {
-            return new SetEnabledProvidersRequest[size];
-        }
     }
 
     @Override // android.os.Parcelable

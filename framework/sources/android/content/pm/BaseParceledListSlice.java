@@ -1,22 +1,21 @@
 package android.content.pm;
 
 import android.os.BadParcelableException;
-import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import android.util.Log;
 import com.samsung.android.rune.PMRune;
 import java.util.ArrayList;
 import java.util.List;
 
 /* loaded from: classes.dex */
-public abstract class BaseParceledListSlice<T> implements Parcelable {
+abstract class BaseParceledListSlice<T> implements Parcelable {
+    private static final boolean DEBUG = false;
+    private static final String TAG = "ParceledListSlice";
     private List<T> mList;
-    private static String TAG = "ParceledListSlice";
-    private static boolean DEBUG = false;
     private static final int MAX_IPC_SIZE = IBinder.getSuggestedMaxIpcSizeBytes();
+    private static final int WARN_ELM_SIZE = MAX_IPC_SIZE / 4;
     private int mInlineCountLimit = Integer.MAX_VALUE;
     private boolean mHasBeenParceled = false;
     private int mStartIndexForWrite = -1;
@@ -31,66 +30,43 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
         this.mList = list;
     }
 
-    public BaseParceledListSlice(Parcel p, ClassLoader loader) {
-        BaseParceledListSlice<T> baseParceledListSlice = this;
-        int i = 0;
+    BaseParceledListSlice(Parcel p, ClassLoader loader) {
         int N = p.readInt();
-        baseParceledListSlice.mList = new ArrayList(N);
-        if (DEBUG) {
-            Log.d(TAG, "Retrieving " + N + " items");
-        }
+        this.mList = new ArrayList(N);
         if (N <= 0) {
             return;
         }
         Parcelable.Creator<?> creator = readParcelableCreator(p, loader);
         Class<?> listElementClass = null;
-        int i2 = 0;
-        while (i2 < N && p.readInt() != 0) {
-            listElementClass = baseParceledListSlice.readVerifyAndAddElement(creator, p, loader, listElementClass);
-            if (DEBUG) {
-                String str = TAG;
-                StringBuilder append = new StringBuilder().append("Read inline #").append(i2).append(": ");
-                List<T> list = baseParceledListSlice.mList;
-                Log.d(str, append.append(list.get(list.size() - 1)).toString());
-            }
-            i2++;
+        int i = 0;
+        while (i < N && p.readInt() != 0) {
+            listElementClass = readVerifyAndAddElement(creator, p, loader, listElementClass);
+            i++;
         }
-        if (i2 >= N) {
+        if (i >= N) {
             return;
         }
         IBinder retriever = p.readStrongBinder();
-        while (i2 < N) {
-            if (DEBUG) {
-                Log.d(TAG, "Reading more @" + i2 + " of " + N + ": retriever=" + retriever);
-            }
+        while (i < N) {
             Parcel data = Parcel.obtain();
             Parcel reply = Parcel.obtain();
-            data.writeInt(i2);
+            data.writeInt(i);
             try {
                 try {
-                    retriever.transact(1, data, reply, i);
+                    retriever.transact(1, data, reply, 0);
                     if (!PMRune.PM_WA_PARCELED_LIST) {
                         reply.readException();
                     }
-                    while (i2 < N && reply.readInt() != 0) {
-                        listElementClass = baseParceledListSlice.readVerifyAndAddElement(creator, reply, loader, listElementClass);
-                        if (DEBUG) {
-                            Log.d(TAG, new StringBuilder().append("Read extra #").append(i2).append(": ").append(baseParceledListSlice.mList.get(r15.size() - 1)).toString());
-                        }
-                        i2++;
-                        baseParceledListSlice = this;
+                    while (i < N && reply.readInt() != 0) {
+                        listElementClass = readVerifyAndAddElement(creator, reply, loader, listElementClass);
+                        i++;
                     }
-                    reply.recycle();
-                    data.recycle();
-                    i = 0;
-                    baseParceledListSlice = this;
                 } catch (RemoteException e) {
-                    throw new BadParcelableException("Failure retrieving array; only received " + i2 + " of " + N, e);
+                    throw new BadParcelableException("Failure retrieving array; only received " + i + " of " + N, e);
                 }
-            } catch (Throwable th) {
+            } finally {
                 reply.recycle();
                 data.recycle();
-                throw th;
             }
         }
     }
@@ -113,6 +89,7 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
         return (T) creator.createFromParcel(parcel);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void verifySameType(Class<?> expected, Class<?> actual) {
         if (!actual.equals(expected)) {
             throw new IllegalArgumentException("Can't unparcel type " + (actual == null ? null : actual.getName()) + " in list of type " + (expected != null ? expected.getName() : null));
@@ -127,24 +104,13 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
         this.mInlineCountLimit = maxCount;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x009d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x004f, code lost:
     
-        r11.writeInt(0);
-        r0 = new android.content.pm.BaseParceledListSlice.AnonymousClass1(r10);
+        r9.writeInt(0);
+        r0 = new android.content.pm.BaseParceledListSlice.AnonymousClass1(r8);
+        r9.writeStrongBinder(r0);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x00a7, code lost:
-    
-        if (android.content.pm.BaseParceledListSlice.DEBUG == false) goto L55;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x00a9, code lost:
-    
-        android.util.Log.d(android.content.pm.BaseParceledListSlice.TAG, "Breaking @" + r5 + " of " + r1 + ": retriever=" + r0);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x00d5, code lost:
-    
-        r11.writeStrongBinder(r0);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x00d8, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x005a, code lost:
     
         return;
      */
@@ -153,169 +119,55 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void writeToParcel(android.os.Parcel r11, int r12) {
+    public void writeToParcel(android.os.Parcel r9, final int r10) {
         /*
-            r10 = this;
-            boolean r0 = r10.mHasBeenParceled
-            if (r0 != 0) goto Ld9
+            r8 = this;
+            boolean r0 = r8.mHasBeenParceled
+            if (r0 != 0) goto L5b
             r0 = 1
-            r10.mHasBeenParceled = r0
-            java.util.List<T> r1 = r10.mList
+            r8.mHasBeenParceled = r0
+            java.util.List<T> r1 = r8.mList
             int r1 = r1.size()
-            r2 = r12
-            r11.writeInt(r1)
-            boolean r3 = android.content.pm.BaseParceledListSlice.DEBUG
-            if (r3 == 0) goto L33
-            java.lang.String r3 = android.content.pm.BaseParceledListSlice.TAG
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder
-            r4.<init>()
-            java.lang.String r5 = "Writing "
-            java.lang.StringBuilder r4 = r4.append(r5)
-            java.lang.StringBuilder r4 = r4.append(r1)
-            java.lang.String r5 = " items"
-            java.lang.StringBuilder r4 = r4.append(r5)
-            java.lang.String r4 = r4.toString()
-            android.util.Log.d(r3, r4)
-        L33:
-            if (r1 <= 0) goto Ld8
-            java.util.List<T> r3 = r10.mList
+            r2 = r10
+            r9.writeInt(r1)
+            if (r1 <= 0) goto L5a
+            java.util.List<T> r3 = r8.mList
             r4 = 0
             java.lang.Object r3 = r3.get(r4)
             java.lang.Class r3 = r3.getClass()
-            java.util.List<T> r5 = r10.mList
+            java.util.List<T> r5 = r8.mList
             java.lang.Object r5 = r5.get(r4)
-            r10.writeParcelableCreator(r5, r11)
+            r8.writeParcelableCreator(r5, r9)
             r5 = 0
-        L4a:
-            if (r5 >= r1) goto L9b
-            int r6 = r10.mInlineCountLimit
-            if (r5 >= r6) goto L9b
-            int r6 = r11.dataSize()
+        L28:
+            if (r5 >= r1) goto L4d
+            int r6 = r8.mInlineCountLimit
+            if (r5 >= r6) goto L4d
+            int r6 = r9.dataSize()
             int r7 = android.content.pm.BaseParceledListSlice.MAX_IPC_SIZE
-            if (r6 >= r7) goto L9b
-            r11.writeInt(r0)
-            java.util.List<T> r6 = r10.mList
+            if (r6 >= r7) goto L4d
+            r9.writeInt(r0)
+            java.util.List<T> r6 = r8.mList
             java.lang.Object r6 = r6.get(r5)
             java.lang.Class r7 = r6.getClass()
             verifySameType(r3, r7)
-            r10.writeElement(r6, r11, r2)
-            boolean r7 = android.content.pm.BaseParceledListSlice.DEBUG
-            if (r7 == 0) goto L97
-            java.lang.String r7 = android.content.pm.BaseParceledListSlice.TAG
-            java.lang.StringBuilder r8 = new java.lang.StringBuilder
-            r8.<init>()
-            java.lang.String r9 = "Wrote inline #"
-            java.lang.StringBuilder r8 = r8.append(r9)
-            java.lang.StringBuilder r8 = r8.append(r5)
-            java.lang.String r9 = ": "
-            java.lang.StringBuilder r8 = r8.append(r9)
-            java.util.List<T> r9 = r10.mList
-            java.lang.Object r9 = r9.get(r5)
-            java.lang.StringBuilder r8 = r8.append(r9)
-            java.lang.String r8 = r8.toString()
-            android.util.Log.d(r7, r8)
-        L97:
+            r8.writeElement(r6, r9, r2)
             int r5 = r5 + 1
-            goto L4a
-        L9b:
-            if (r5 >= r1) goto Ld8
-            r11.writeInt(r4)
+            goto L28
+        L4d:
+            if (r5 >= r1) goto L5a
+            r9.writeInt(r4)
             android.content.pm.BaseParceledListSlice$1 r0 = new android.content.pm.BaseParceledListSlice$1
             r0.<init>()
-            boolean r4 = android.content.pm.BaseParceledListSlice.DEBUG
-            if (r4 == 0) goto Ld5
-            java.lang.String r4 = android.content.pm.BaseParceledListSlice.TAG
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder
-            r6.<init>()
-            java.lang.String r7 = "Breaking @"
-            java.lang.StringBuilder r6 = r6.append(r7)
-            java.lang.StringBuilder r6 = r6.append(r5)
-            java.lang.String r7 = " of "
-            java.lang.StringBuilder r6 = r6.append(r7)
-            java.lang.StringBuilder r6 = r6.append(r1)
-            java.lang.String r7 = ": retriever="
-            java.lang.StringBuilder r6 = r6.append(r7)
-            java.lang.StringBuilder r6 = r6.append(r0)
-            java.lang.String r6 = r6.toString()
-            android.util.Log.d(r4, r6)
-        Ld5:
-            r11.writeStrongBinder(r0)
-        Ld8:
+            r9.writeStrongBinder(r0)
+        L5a:
             return
-        Ld9:
+        L5b:
             java.lang.IllegalStateException r0 = new java.lang.IllegalStateException
             java.lang.String r1 = "Can't Parcel a ParceledListSlice more than once"
             r0.<init>(r1)
             throw r0
         */
         throw new UnsupportedOperationException("Method not decompiled: android.content.pm.BaseParceledListSlice.writeToParcel(android.os.Parcel, int):void");
-    }
-
-    /* renamed from: android.content.pm.BaseParceledListSlice$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends Binder {
-        final /* synthetic */ int val$N;
-        final /* synthetic */ int val$callFlags;
-        final /* synthetic */ Class val$listElementClass;
-
-        AnonymousClass1(int i, Class cls, int i2) {
-            r2 = i;
-            r3 = cls;
-            r4 = i2;
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.os.Binder
-        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            if (code != 1) {
-                return super.onTransact(code, data, reply, flags);
-            }
-            if (BaseParceledListSlice.this.mList == null) {
-                throw new IllegalArgumentException("Attempt to transfer null list, did transfer finish?");
-            }
-            int i = data.readInt();
-            if (BaseParceledListSlice.DEBUG) {
-                Log.d(BaseParceledListSlice.TAG, "Writing more @" + i + " of " + r2 + " to " + Binder.getCallingPid() + ", sender=" + this);
-            }
-            try {
-                if (PMRune.PM_WA_PARCELED_LIST) {
-                    if (BaseParceledListSlice.this.mStartIndexForWrite == i) {
-                        throw new RuntimeException("Requested twice for the same index");
-                    }
-                    BaseParceledListSlice.this.mStartIndexForWrite = i;
-                }
-                if (!PMRune.PM_WA_PARCELED_LIST) {
-                    reply.writeNoException();
-                }
-                while (i < r2 && reply.dataSize() < 65536) {
-                    reply.writeInt(1);
-                    Object obj = BaseParceledListSlice.this.mList.get(i);
-                    BaseParceledListSlice.verifySameType(r3, obj.getClass());
-                    BaseParceledListSlice.this.writeElement(obj, reply, r4);
-                    if (BaseParceledListSlice.DEBUG) {
-                        Log.d(BaseParceledListSlice.TAG, "Wrote extra #" + i + ": " + BaseParceledListSlice.this.mList.get(i));
-                    }
-                    i++;
-                }
-                if (i < r2) {
-                    if (BaseParceledListSlice.DEBUG) {
-                        Log.d(BaseParceledListSlice.TAG, "Breaking @" + i + " of " + r2);
-                    }
-                    reply.writeInt(0);
-                } else {
-                    if (BaseParceledListSlice.DEBUG) {
-                        Log.d(BaseParceledListSlice.TAG, "Transfer done, clearing mList reference");
-                    }
-                    BaseParceledListSlice.this.mList = null;
-                }
-                return true;
-            } catch (RuntimeException e) {
-                if (BaseParceledListSlice.DEBUG) {
-                    Log.d(BaseParceledListSlice.TAG, "Transfer failed, clearing mList reference");
-                }
-                BaseParceledListSlice.this.mList = null;
-                throw e;
-            }
-        }
     }
 }

@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioData extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$data$IRadioData".replace('$', '.');
-    public static final String HASH = "cb458326b02e0e87143f24118543e8cc7d6a9e8e";
-    public static final int VERSION = 2;
+    public static final String HASH = "cd8913a3f9d39f1cc0a5fcf9e90257be94ec38df";
+    public static final int VERSION = 3;
 
     void allocatePduSessionId(int i) throws RemoteException;
 
@@ -50,7 +50,6 @@ public interface IRadioData extends IInterface {
 
     void stopKeepalive(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioData {
         @Override // android.hardware.radio.data.IRadioData
         public void allocatePduSessionId(int serial) throws RemoteException {
@@ -132,7 +131,6 @@ public interface IRadioData extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioData {
         static final int TRANSACTION_allocatePduSessionId = 1;
         static final int TRANSACTION_cancelHandover = 2;
@@ -180,127 +178,125 @@ public interface IRadioData extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            allocatePduSessionId(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancelHandover(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deactivateDataCall(_arg03, _arg12, _arg2);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getDataCallList(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSlicingConfig(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            releasePduSessionId(_arg06, _arg13);
-                            return true;
-                        case 7:
-                            responseAcknowledgement();
-                            return true;
-                        case 8:
-                            int _arg07 = data.readInt();
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDataAllowed(_arg07, _arg14);
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            DataProfileInfo[] _arg15 = (DataProfileInfo[]) data.createTypedArray(DataProfileInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDataProfile(_arg08, _arg15);
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            byte _arg16 = data.readByte();
-                            long _arg22 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setDataThrottling(_arg09, _arg16, _arg22);
-                            return true;
-                        case 11:
-                            int _arg010 = data.readInt();
-                            DataProfileInfo _arg17 = (DataProfileInfo) data.readTypedObject(DataProfileInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setInitialAttachApn(_arg010, _arg17);
-                            return true;
-                        case 12:
-                            IRadioDataResponse _arg011 = IRadioDataResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioDataIndication _arg18 = IRadioDataIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg011, _arg18);
-                            return true;
-                        case 13:
-                            int _arg012 = data.readInt();
-                            int _arg19 = data.readInt();
-                            DataProfileInfo _arg23 = (DataProfileInfo) data.readTypedObject(DataProfileInfo.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            int _arg4 = data.readInt();
-                            LinkAddress[] _arg5 = (LinkAddress[]) data.createTypedArray(LinkAddress.CREATOR);
-                            String[] _arg6 = data.createStringArray();
-                            int _arg7 = data.readInt();
-                            SliceInfo _arg8 = (SliceInfo) data.readTypedObject(SliceInfo.CREATOR);
-                            boolean _arg9 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setupDataCall(_arg012, _arg19, _arg23, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9);
-                            return true;
-                        case 14:
-                            int _arg013 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startHandover(_arg013, _arg110);
-                            return true;
-                        case 15:
-                            int _arg014 = data.readInt();
-                            KeepaliveRequest _arg111 = (KeepaliveRequest) data.readTypedObject(KeepaliveRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            startKeepalive(_arg014, _arg111);
-                            return true;
-                        case 16:
-                            int _arg015 = data.readInt();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopKeepalive(_arg015, _arg112);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    allocatePduSessionId(_arg0);
+                    break;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancelHandover(_arg02, _arg1);
+                    break;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deactivateDataCall(_arg03, _arg12, _arg2);
+                    break;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getDataCallList(_arg04);
+                    break;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSlicingConfig(_arg05);
+                    break;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    releasePduSessionId(_arg06, _arg13);
+                    break;
+                case 7:
+                    responseAcknowledgement();
+                    break;
+                case 8:
+                    int _arg07 = data.readInt();
+                    boolean _arg14 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDataAllowed(_arg07, _arg14);
+                    break;
+                case 9:
+                    int _arg08 = data.readInt();
+                    DataProfileInfo[] _arg15 = (DataProfileInfo[]) data.createTypedArray(DataProfileInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDataProfile(_arg08, _arg15);
+                    break;
+                case 10:
+                    int _arg09 = data.readInt();
+                    byte _arg16 = data.readByte();
+                    long _arg22 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setDataThrottling(_arg09, _arg16, _arg22);
+                    break;
+                case 11:
+                    int _arg010 = data.readInt();
+                    DataProfileInfo _arg17 = (DataProfileInfo) data.readTypedObject(DataProfileInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setInitialAttachApn(_arg010, _arg17);
+                    break;
+                case 12:
+                    IRadioDataResponse _arg011 = IRadioDataResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioDataIndication _arg18 = IRadioDataIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg011, _arg18);
+                    break;
+                case 13:
+                    int _arg012 = data.readInt();
+                    int _arg19 = data.readInt();
+                    DataProfileInfo _arg23 = (DataProfileInfo) data.readTypedObject(DataProfileInfo.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    int _arg4 = data.readInt();
+                    LinkAddress[] _arg5 = (LinkAddress[]) data.createTypedArray(LinkAddress.CREATOR);
+                    String[] _arg6 = data.createStringArray();
+                    int _arg7 = data.readInt();
+                    SliceInfo _arg8 = (SliceInfo) data.readTypedObject(SliceInfo.CREATOR);
+                    boolean _arg9 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setupDataCall(_arg012, _arg19, _arg23, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9);
+                    break;
+                case 14:
+                    int _arg013 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startHandover(_arg013, _arg110);
+                    break;
+                case 15:
+                    int _arg014 = data.readInt();
+                    KeepaliveRequest _arg111 = (KeepaliveRequest) data.readTypedObject(KeepaliveRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    startKeepalive(_arg014, _arg111);
+                    break;
+                case 16:
+                    int _arg015 = data.readInt();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopKeepalive(_arg015, _arg112);
+                    break;
+            }
+            return true;
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioData {
             private IBinder mRemote;
             private int mCachedVersion = -1;

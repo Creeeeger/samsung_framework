@@ -17,6 +17,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -110,20 +111,19 @@ public abstract class NotificationListenerService extends Service {
     private boolean isConnected = false;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ChannelOrGroupModificationTypes {
     }
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface NotificationCancelReason {
     }
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface NotificationFilterTypes {
     }
 
     @Override // android.app.Service, android.content.ContextWrapper
-    public void attachBaseContext(Context base) {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         this.mHandler = new MyHandler(getMainLooper());
     }
@@ -181,7 +181,7 @@ public abstract class NotificationListenerService extends Service {
     public void onInterruptionFilterChanged(int interruptionFilter) {
     }
 
-    public final INotificationManager getNotificationInterface() {
+    protected final INotificationManager getNotificationInterface() {
         if (this.mNoMan == null) {
             this.mNoMan = INotificationManager.Stub.asInterface(ServiceManager.getService("notification"));
         }
@@ -344,7 +344,7 @@ public abstract class NotificationListenerService extends Service {
         try {
             ParceledListSlice<StatusBarNotification> parceledList = getNotificationInterface().getActiveNotificationsFromListener(this.mWrapper, keys, trim);
             return cleanUpNotificationList(parceledList);
-        } catch (RemoteException ex) {
+        } catch (BadParcelableException | RemoteException ex) {
             Log.v(this.TAG, "Unable to contact notification manager", ex);
             return null;
         }
@@ -448,7 +448,7 @@ public abstract class NotificationListenerService extends Service {
         return this.mWrapper;
     }
 
-    public boolean isBound() {
+    protected boolean isBound() {
         if (this.mWrapper == null) {
             Log.w(this.TAG, "Notification listener service not yet bound.");
             return false;
@@ -529,6 +529,7 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void maybePopulateRemoteViews(Notification notification) {
         if (getContext().getApplicationInfo().targetSdkVersion < 24) {
             Notification.Builder builder = Notification.Builder.recoverBuilder(getContext(), notification);
@@ -541,6 +542,7 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void maybePopulatePeople(Notification notification) {
         ArrayList<Person> people;
         if (getContext().getApplicationInfo().targetSdkVersion < 28 && (people = notification.extras.getParcelableArrayList(Notification.EXTRA_PEOPLE_LIST, Person.class)) != null && !people.isEmpty()) {
@@ -554,9 +556,8 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class NotificationListenerWrapper extends INotificationListener.Stub {
-        public NotificationListenerWrapper() {
+    protected class NotificationListenerWrapper extends INotificationListener.Stub {
+        protected NotificationListenerWrapper() {
         }
 
         @Override // android.service.notification.INotificationListener
@@ -727,15 +728,13 @@ public abstract class NotificationListenerService extends Service {
         this.mRankingMap = update.getRankingMap();
     }
 
-    public Context getContext() {
-        Context context = this.mSystemContext;
-        if (context != null) {
-            return context;
+    protected Context getContext() {
+        if (this.mSystemContext != null) {
+            return this.mSystemContext;
         }
         return this;
     }
 
-    /* loaded from: classes3.dex */
     public static class Ranking {
         private static final int PARCEL_VERSION = 2;
         public static final int RANKING_DEMOTED = -1;
@@ -753,6 +752,7 @@ public abstract class NotificationListenerService extends Service {
         private boolean mIsAmbient;
         private boolean mIsBubble;
         private boolean mIsConversation;
+        private boolean mIsOngoingActivityTurnedOn;
         private boolean mIsTextChanged;
         private String mKey;
         private long mLastAudiblyAlertedMs;
@@ -775,12 +775,10 @@ public abstract class NotificationListenerService extends Service {
         private int mVisibilityOverride;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface RankingAdjustment {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface UserSentiment {
         }
 
@@ -820,6 +818,7 @@ public abstract class NotificationListenerService extends Service {
             out.writeBoolean(this.mIsBubble);
             out.writeInt(this.mProposedImportance);
             out.writeBoolean(this.mSensitiveContent);
+            out.writeBoolean(this.mIsOngoingActivityTurnedOn);
         }
 
         public Ranking(Parcel in) {
@@ -858,6 +857,7 @@ public abstract class NotificationListenerService extends Service {
             this.mIsBubble = in.readBoolean();
             this.mProposedImportance = in.readInt();
             this.mSensitiveContent = in.readBoolean();
+            this.mIsOngoingActivityTurnedOn = in.readBoolean();
         }
 
         public String getKey() {
@@ -906,6 +906,10 @@ public abstract class NotificationListenerService extends Service {
             return this.mSensitiveContent;
         }
 
+        public boolean isOngoingActivityTurnedOn() {
+            return this.mIsOngoingActivityTurnedOn;
+        }
+
         public String getOverrideGroupKey() {
             return this.mOverrideGroupKey;
         }
@@ -929,13 +933,15 @@ public abstract class NotificationListenerService extends Service {
         }
 
         public List<Notification.Action> getSmartActions() {
-            ArrayList<Notification.Action> arrayList = this.mSmartActions;
-            return arrayList == null ? Collections.emptyList() : arrayList;
+            return this.mSmartActions == null ? Collections.emptyList() : this.mSmartActions;
+        }
+
+        public void setSmartActions(ArrayList<Notification.Action> smartActions) {
+            this.mSmartActions = smartActions;
         }
 
         public List<CharSequence> getSmartReplies() {
-            ArrayList<CharSequence> arrayList = this.mSmartReplies;
-            return arrayList == null ? Collections.emptyList() : arrayList;
+            return this.mSmartReplies == null ? Collections.emptyList() : this.mSmartReplies;
         }
 
         public boolean canShowBadge() {
@@ -1008,18 +1014,46 @@ public abstract class NotificationListenerService extends Service {
             this.mSensitiveContent = sensitiveContent;
         }
 
+        public void populate(String key, int rank, boolean matchesInterruptionFilter, int visibilityOverride, int suppressedVisualEffects, int importance, CharSequence explanation, String overrideGroupKey, NotificationChannel channel, ArrayList<String> overridePeople, ArrayList<SnoozeCriterion> snoozeCriteria, boolean showBadge, int userSentiment, boolean hidden, long lastAudiblyAlertedMs, boolean noisy, ArrayList<Notification.Action> smartActions, ArrayList<CharSequence> smartReplies, boolean canBubble, boolean isTextChanged, boolean isConversation, ShortcutInfo shortcutInfo, int rankingAdjustment, boolean isBubble, int proposedImportance, boolean sensitiveContent, boolean ongoingActivityTurnedOn) {
+            this.mKey = key;
+            this.mRank = rank;
+            this.mIsAmbient = importance < 2;
+            this.mMatchesInterruptionFilter = matchesInterruptionFilter;
+            this.mVisibilityOverride = visibilityOverride;
+            this.mSuppressedVisualEffects = suppressedVisualEffects;
+            this.mImportance = importance;
+            this.mImportanceExplanation = explanation;
+            this.mOverrideGroupKey = overrideGroupKey;
+            this.mChannel = channel;
+            this.mOverridePeople = overridePeople;
+            this.mSnoozeCriteria = snoozeCriteria;
+            this.mShowBadge = showBadge;
+            this.mUserSentiment = userSentiment;
+            this.mHidden = hidden;
+            this.mLastAudiblyAlertedMs = lastAudiblyAlertedMs;
+            this.mNoisy = noisy;
+            this.mSmartActions = smartActions;
+            this.mSmartReplies = smartReplies;
+            this.mCanBubble = canBubble;
+            this.mIsTextChanged = isTextChanged;
+            this.mIsConversation = isConversation;
+            this.mShortcutInfo = shortcutInfo;
+            this.mRankingAdjustment = rankingAdjustment;
+            this.mIsBubble = isBubble;
+            this.mProposedImportance = proposedImportance;
+            this.mSensitiveContent = sensitiveContent;
+            this.mIsOngoingActivityTurnedOn = ongoingActivityTurnedOn;
+        }
+
         public Ranking withAudiblyAlertedInfo(Ranking previous) {
-            if (previous != null) {
-                long j = previous.mLastAudiblyAlertedMs;
-                if (j > 0 && this.mLastAudiblyAlertedMs <= 0) {
-                    this.mLastAudiblyAlertedMs = j;
-                }
+            if (previous != null && previous.mLastAudiblyAlertedMs > 0 && this.mLastAudiblyAlertedMs <= 0) {
+                this.mLastAudiblyAlertedMs = previous.mLastAudiblyAlertedMs;
             }
             return this;
         }
 
         public void populate(Ranking other) {
-            populate(other.mKey, other.mRank, other.mMatchesInterruptionFilter, other.mVisibilityOverride, other.mSuppressedVisualEffects, other.mImportance, other.mImportanceExplanation, other.mOverrideGroupKey, other.mChannel, other.mOverridePeople, other.mSnoozeCriteria, other.mShowBadge, other.mUserSentiment, other.mHidden, other.mLastAudiblyAlertedMs, other.mNoisy, other.mSmartActions, other.mSmartReplies, other.mCanBubble, other.mIsTextChanged, other.mIsConversation, other.mShortcutInfo, other.mRankingAdjustment, other.mIsBubble, other.mProposedImportance, other.mSensitiveContent);
+            populate(other.mKey, other.mRank, other.mMatchesInterruptionFilter, other.mVisibilityOverride, other.mSuppressedVisualEffects, other.mImportance, other.mImportanceExplanation, other.mOverrideGroupKey, other.mChannel, other.mOverridePeople, other.mSnoozeCriteria, other.mShowBadge, other.mUserSentiment, other.mHidden, other.mLastAudiblyAlertedMs, other.mNoisy, other.mSmartActions, other.mSmartReplies, other.mCanBubble, other.mIsTextChanged, other.mIsConversation, other.mShortcutInfo, other.mRankingAdjustment, other.mIsBubble, other.mProposedImportance, other.mSensitiveContent, other.mIsOngoingActivityTurnedOn);
         }
 
         public static String importanceToString(int importance) {
@@ -1051,14 +1085,8 @@ public abstract class NotificationListenerService extends Service {
             }
             Ranking other = (Ranking) o;
             if (Objects.equals(this.mKey, other.mKey) && Objects.equals(Integer.valueOf(this.mRank), Integer.valueOf(other.mRank)) && Objects.equals(Boolean.valueOf(this.mMatchesInterruptionFilter), Boolean.valueOf(other.mMatchesInterruptionFilter)) && Objects.equals(Integer.valueOf(this.mVisibilityOverride), Integer.valueOf(other.mVisibilityOverride)) && Objects.equals(Integer.valueOf(this.mSuppressedVisualEffects), Integer.valueOf(other.mSuppressedVisualEffects)) && Objects.equals(Integer.valueOf(this.mImportance), Integer.valueOf(other.mImportance)) && Objects.equals(this.mImportanceExplanation, other.mImportanceExplanation) && Objects.equals(this.mOverrideGroupKey, other.mOverrideGroupKey) && Objects.equals(this.mChannel, other.mChannel) && Objects.equals(this.mOverridePeople, other.mOverridePeople) && Objects.equals(this.mSnoozeCriteria, other.mSnoozeCriteria) && Objects.equals(Boolean.valueOf(this.mShowBadge), Boolean.valueOf(other.mShowBadge)) && Objects.equals(Integer.valueOf(this.mUserSentiment), Integer.valueOf(other.mUserSentiment)) && Objects.equals(Boolean.valueOf(this.mHidden), Boolean.valueOf(other.mHidden)) && Objects.equals(Long.valueOf(this.mLastAudiblyAlertedMs), Long.valueOf(other.mLastAudiblyAlertedMs)) && Objects.equals(Boolean.valueOf(this.mNoisy), Boolean.valueOf(other.mNoisy))) {
-                ArrayList<Notification.Action> arrayList = this.mSmartActions;
-                int size = arrayList == null ? 0 : arrayList.size();
-                ArrayList<Notification.Action> arrayList2 = other.mSmartActions;
-                if (size == (arrayList2 == null ? 0 : arrayList2.size()) && Objects.equals(this.mSmartReplies, other.mSmartReplies) && Objects.equals(Boolean.valueOf(this.mCanBubble), Boolean.valueOf(other.mCanBubble)) && Objects.equals(Boolean.valueOf(this.mIsTextChanged), Boolean.valueOf(other.mIsTextChanged)) && Objects.equals(Boolean.valueOf(this.mIsConversation), Boolean.valueOf(other.mIsConversation))) {
-                    ShortcutInfo shortcutInfo = this.mShortcutInfo;
-                    Object id = shortcutInfo == null ? 0 : shortcutInfo.getId();
-                    ShortcutInfo shortcutInfo2 = other.mShortcutInfo;
-                    if (Objects.equals(id, shortcutInfo2 == null ? 0 : shortcutInfo2.getId()) && Objects.equals(Integer.valueOf(this.mRankingAdjustment), Integer.valueOf(other.mRankingAdjustment)) && Objects.equals(Boolean.valueOf(this.mIsBubble), Boolean.valueOf(other.mIsBubble)) && Objects.equals(Integer.valueOf(this.mProposedImportance), Integer.valueOf(other.mProposedImportance)) && Objects.equals(Boolean.valueOf(this.mSensitiveContent), Boolean.valueOf(other.mSensitiveContent))) {
+                if ((this.mSmartActions == null ? 0 : this.mSmartActions.size()) == (other.mSmartActions == null ? 0 : other.mSmartActions.size()) && Objects.equals(this.mSmartReplies, other.mSmartReplies) && Objects.equals(Boolean.valueOf(this.mCanBubble), Boolean.valueOf(other.mCanBubble)) && Objects.equals(Boolean.valueOf(this.mIsTextChanged), Boolean.valueOf(other.mIsTextChanged)) && Objects.equals(Boolean.valueOf(this.mIsConversation), Boolean.valueOf(other.mIsConversation))) {
+                    if (Objects.equals(this.mShortcutInfo == null ? 0 : this.mShortcutInfo.getId(), other.mShortcutInfo == null ? 0 : other.mShortcutInfo.getId()) && Objects.equals(Integer.valueOf(this.mRankingAdjustment), Integer.valueOf(other.mRankingAdjustment)) && Objects.equals(Boolean.valueOf(this.mIsBubble), Boolean.valueOf(other.mIsBubble)) && Objects.equals(Integer.valueOf(this.mProposedImportance), Integer.valueOf(other.mProposedImportance)) && Objects.equals(Boolean.valueOf(this.mSensitiveContent), Boolean.valueOf(other.mSensitiveContent)) && Objects.equals(Boolean.valueOf(this.mIsOngoingActivityTurnedOn), Boolean.valueOf(other.mIsOngoingActivityTurnedOn))) {
                         return true;
                     }
                 }
@@ -1067,17 +1095,15 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class RankingMap implements Parcelable {
         public static final Parcelable.Creator<RankingMap> CREATOR = new Parcelable.Creator<RankingMap>() { // from class: android.service.notification.NotificationListenerService.RankingMap.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RankingMap createFromParcel(Parcel source) {
                 return new RankingMap(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RankingMap[] newArray(int size) {
                 return new RankingMap[size];
@@ -1085,10 +1111,6 @@ public abstract class NotificationListenerService extends Service {
         };
         private ArrayList<String> mOrderedKeys;
         private ArrayMap<String, Ranking> mRankings;
-
-        /* synthetic */ RankingMap(Parcel parcel, RankingMapIA rankingMapIA) {
-            this(parcel);
-        }
 
         public RankingMap(Ranking[] rankings) {
             this.mOrderedKeys = new ArrayList<>();
@@ -1143,23 +1165,6 @@ public abstract class NotificationListenerService extends Service {
             }
         }
 
-        /* renamed from: android.service.notification.NotificationListenerService$RankingMap$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RankingMap> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RankingMap createFromParcel(Parcel source) {
-                return new RankingMap(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RankingMap[] newArray(int size) {
-                return new RankingMap[size];
-            }
-        }
-
         public String[] getOrderedKeys() {
             return (String[]) this.mOrderedKeys.toArray(new String[0]);
         }
@@ -1177,9 +1182,7 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public final class MyHandler extends Handler {
+    private final class MyHandler extends Handler {
         public static final int MSG_ON_INTERRUPTION_FILTER_CHANGED = 6;
         public static final int MSG_ON_LISTENER_CONNECTED = 3;
         public static final int MSG_ON_LISTENER_HINTS_CHANGED = 5;
@@ -1197,7 +1200,6 @@ public abstract class NotificationListenerService extends Service {
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             if (!NotificationListenerService.this.isConnected) {
-                return;
             }
             switch (msg.what) {
                 case 1:
@@ -1206,7 +1208,7 @@ public abstract class NotificationListenerService extends Service {
                     RankingMap rankingMap = (RankingMap) args.arg2;
                     args.recycle();
                     NotificationListenerService.this.onNotificationPosted(sbn, rankingMap);
-                    return;
+                    break;
                 case 2:
                     SomeArgs args2 = (SomeArgs) msg.obj;
                     StatusBarNotification sbn2 = (StatusBarNotification) args2.arg1;
@@ -1215,22 +1217,22 @@ public abstract class NotificationListenerService extends Service {
                     NotificationStats stats = (NotificationStats) args2.arg4;
                     args2.recycle();
                     NotificationListenerService.this.onNotificationRemoved(sbn2, rankingMap2, stats, reason);
-                    return;
+                    break;
                 case 3:
                     NotificationListenerService.this.onListenerConnected();
-                    return;
+                    break;
                 case 4:
                     RankingMap rankingMap3 = (RankingMap) msg.obj;
                     NotificationListenerService.this.onNotificationRankingUpdate(rankingMap3);
-                    return;
+                    break;
                 case 5:
                     int hints = msg.arg1;
                     NotificationListenerService.this.onListenerHintsChanged(hints);
-                    return;
+                    break;
                 case 6:
                     int interruptionFilter = msg.arg1;
                     NotificationListenerService.this.onInterruptionFilterChanged(interruptionFilter);
-                    return;
+                    break;
                 case 7:
                     SomeArgs args3 = (SomeArgs) msg.obj;
                     String pkgName = (String) args3.arg1;
@@ -1239,7 +1241,7 @@ public abstract class NotificationListenerService extends Service {
                     int modificationType = ((Integer) args3.arg4).intValue();
                     args3.recycle();
                     NotificationListenerService.this.onNotificationChannelModified(pkgName, user, channel, modificationType);
-                    return;
+                    break;
                 case 8:
                     SomeArgs args4 = (SomeArgs) msg.obj;
                     String pkgName2 = (String) args4.arg1;
@@ -1248,12 +1250,10 @@ public abstract class NotificationListenerService extends Service {
                     int modificationType2 = ((Integer) args4.arg4).intValue();
                     args4.recycle();
                     NotificationListenerService.this.onNotificationChannelGroupModified(pkgName2, user2, group, modificationType2);
-                    return;
+                    break;
                 case 9:
                     NotificationListenerService.this.onSilentStatusBarIconsVisibilityChanged(((Boolean) msg.obj).booleanValue());
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }

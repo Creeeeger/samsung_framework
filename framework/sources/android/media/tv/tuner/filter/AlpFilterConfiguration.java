@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class AlpFilterConfiguration extends FilterConfiguration {
     public static final int LENGTH_TYPE_UNDEFINED = 0;
     public static final int LENGTH_TYPE_WITHOUT_ADDITIONAL_HEADER = 1;
@@ -19,12 +19,7 @@ public final class AlpFilterConfiguration extends FilterConfiguration {
     private final int mPacketType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface LengthType {
-    }
-
-    /* synthetic */ AlpFilterConfiguration(Settings settings, int i, int i2, AlpFilterConfigurationIA alpFilterConfigurationIA) {
-        this(settings, i, i2);
     }
 
     private AlpFilterConfiguration(Settings settings, int packetType, int lengthType) {
@@ -50,15 +45,10 @@ public final class AlpFilterConfiguration extends FilterConfiguration {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mLengthType;
         private int mPacketType;
         private Settings mSettings;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mPacketType = 0;

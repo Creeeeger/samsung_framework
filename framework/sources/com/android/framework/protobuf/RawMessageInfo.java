@@ -1,14 +1,14 @@
 package com.android.framework.protobuf;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class RawMessageInfo implements MessageInfo {
+/* loaded from: classes3.dex */
+final class RawMessageInfo implements MessageInfo {
     private final MessageLite defaultInstance;
     private final int flags;
     private final String info;
     private final Object[] objects;
 
-    public RawMessageInfo(MessageLite defaultInstance, String info, Object[] objects) {
+    RawMessageInfo(MessageLite defaultInstance, String info, Object[] objects) {
         this.defaultInstance = defaultInstance;
         this.info = info;
         this.objects = objects;
@@ -34,11 +34,11 @@ public final class RawMessageInfo implements MessageInfo {
         }
     }
 
-    public String getStringInfo() {
+    String getStringInfo() {
         return this.info;
     }
 
-    public Object[] getObjects() {
+    Object[] getObjects() {
         return this.objects;
     }
 

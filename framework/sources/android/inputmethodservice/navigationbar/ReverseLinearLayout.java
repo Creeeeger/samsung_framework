@@ -13,8 +13,7 @@ class ReverseLinearLayout extends LinearLayout {
     private boolean mIsAlternativeOrder;
     private boolean mIsLayoutReverse;
 
-    /* loaded from: classes2.dex */
-    public interface Reversible {
+    interface Reversible {
         void reverse(boolean z);
     }
 
@@ -23,7 +22,7 @@ class ReverseLinearLayout extends LinearLayout {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         updateOrder();
     }
@@ -93,11 +92,10 @@ class ReverseLinearLayout extends LinearLayout {
         params.height = width;
     }
 
-    /* loaded from: classes2.dex */
     public static class ReverseRelativeLayout extends RelativeLayout implements Reversible {
         private int mDefaultGravity;
 
-        public ReverseRelativeLayout(Context context) {
+        ReverseRelativeLayout(Context context) {
             super(context);
             this.mDefaultGravity = 0;
         }
@@ -113,11 +111,10 @@ class ReverseLinearLayout extends LinearLayout {
         }
 
         public void updateGravity(boolean isLayoutReverse) {
-            int i = this.mDefaultGravity;
-            if (i == 48 || i == 80) {
+            if (this.mDefaultGravity == 48 || this.mDefaultGravity == 80) {
                 int gravityToApply = this.mDefaultGravity;
                 if (isLayoutReverse) {
-                    gravityToApply = i != 48 ? 48 : 80;
+                    gravityToApply = this.mDefaultGravity != 48 ? 48 : 80;
                 }
                 if (getGravity() != gravityToApply) {
                     setGravity(gravityToApply);
@@ -126,6 +123,7 @@ class ReverseLinearLayout extends LinearLayout {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void reverseGroup(ViewGroup group, boolean isLayoutReverse) {
         for (int i = 0; i < group.getChildCount(); i++) {
             View child = group.getChildAt(i);

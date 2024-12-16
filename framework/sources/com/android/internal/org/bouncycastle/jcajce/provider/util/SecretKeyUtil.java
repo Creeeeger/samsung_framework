@@ -10,12 +10,10 @@ import java.util.Map;
 
 /* loaded from: classes5.dex */
 public class SecretKeyUtil {
-    private static Map keySizes;
+    private static Map keySizes = new HashMap();
 
     static {
-        HashMap hashMap = new HashMap();
-        keySizes = hashMap;
-        hashMap.put(PKCSObjectIdentifiers.des_EDE3_CBC.getId(), Integers.valueOf(192));
+        keySizes.put(PKCSObjectIdentifiers.des_EDE3_CBC.getId(), Integers.valueOf(192));
         keySizes.put(NISTObjectIdentifiers.id_aes128_CBC, Integers.valueOf(128));
         keySizes.put(NISTObjectIdentifiers.id_aes192_CBC, Integers.valueOf(192));
         keySizes.put(NISTObjectIdentifiers.id_aes256_CBC, Integers.valueOf(256));

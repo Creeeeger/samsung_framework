@@ -7,7 +7,7 @@ import android.telephony.CellLocation;
 import com.android.internal.telephony.SemTelephonyUtils;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class GsmCellLocation extends CellLocation {
     private int mCid;
     private int mLac;

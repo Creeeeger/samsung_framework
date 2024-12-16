@@ -45,16 +45,15 @@ public final class PendingIntent implements Parcelable {
     public static final int FLAG_ONE_SHOT = 1073741824;
     public static final int FLAG_UPDATE_CURRENT = 134217728;
     static final long PENDING_INTENT_EXPLICIT_MUTABILITY_REQUIRED = 160794467;
+    public static final long PENDING_INTENT_OPTIONS_CHECK = 320664730;
     private static final String TAG = "PendingIntent";
     private ActivityManager.PendingIntentInfo mCachedInfo;
     private CancelListerInfo mCancelListerInfo;
     private final IIntentSender mTarget;
     private IBinder mWhitelistToken;
-    private static final ThreadLocal<OnMarshaledListener> sOnMarshaledListener = new ThreadLocal<>();
+    private static final ThreadLocal<List<OnMarshaledListener>> sOnMarshaledListener = ThreadLocal.withInitial(new PendingIntent$$ExternalSyntheticLambda2());
     public static final Parcelable.Creator<PendingIntent> CREATOR = new Parcelable.Creator<PendingIntent>() { // from class: android.app.PendingIntent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PendingIntent createFromParcel(Parcel in) {
             IBinder target = in.readStrongBinder();
@@ -64,6 +63,7 @@ public final class PendingIntent implements Parcelable {
             return null;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PendingIntent[] newArray(int size) {
             return new PendingIntent[size];
@@ -71,34 +71,25 @@ public final class PendingIntent implements Parcelable {
     };
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    /* loaded from: classes.dex */
     public interface CancelListener {
         void onCanceled(PendingIntent pendingIntent);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Flags {
     }
 
-    /* loaded from: classes.dex */
     public interface OnFinished {
         void onSendFinished(PendingIntent pendingIntent, Intent intent, int i, String str, Bundle bundle);
     }
 
-    /* loaded from: classes.dex */
     public interface OnMarshaledListener {
         void onMarshaled(PendingIntent pendingIntent, Parcel parcel, int i);
     }
 
-    /* loaded from: classes.dex */
-    public final class CancelListerInfo extends IResultReceiver.Stub {
+    private final class CancelListerInfo extends IResultReceiver.Stub {
         private final ArraySet<Pair<Executor, CancelListener>> mCancelListeners;
         private boolean mCanceled;
-
-        /* synthetic */ CancelListerInfo(PendingIntent pendingIntent, CancelListerInfoIA cancelListerInfoIA) {
-            this();
-        }
 
         private CancelListerInfo() {
             this.mCancelListeners = new ArraySet<>();
@@ -110,7 +101,6 @@ public final class PendingIntent implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class CanceledException extends AndroidException {
         public CanceledException() {
         }
@@ -124,8 +114,7 @@ public final class PendingIntent implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class FinishedDispatcher extends IIntentReceiver.Stub implements Runnable {
+    private static class FinishedDispatcher extends IIntentReceiver.Stub implements Runnable {
         private static Handler sDefaultSystemHandler;
         private final Handler mHandler;
         private Intent mIntent;
@@ -154,11 +143,10 @@ public final class PendingIntent implements Parcelable {
             this.mResultCode = resultCode;
             this.mResultData = data;
             this.mResultExtras = extras;
-            Handler handler = this.mHandler;
-            if (handler == null) {
+            if (this.mHandler == null) {
                 run();
             } else {
-                handler.post(this);
+                this.mHandler.post(this);
             }
         }
 
@@ -169,7 +157,19 @@ public final class PendingIntent implements Parcelable {
     }
 
     public static void setOnMarshaledListener(OnMarshaledListener listener) {
-        sOnMarshaledListener.set(listener);
+        List<OnMarshaledListener> listeners = sOnMarshaledListener.get();
+        listeners.clear();
+        if (listener != null) {
+            listeners.add(listener);
+        }
+    }
+
+    static void addOnMarshaledListener(OnMarshaledListener listener) {
+        sOnMarshaledListener.get().add(listener);
+    }
+
+    static void removeOnMarshaledListener(OnMarshaledListener listener) {
+        sOnMarshaledListener.get().remove(listener);
     }
 
     private static void checkPendingIntent(int flags, Intent intent, Context context, boolean isActivityResultType) {
@@ -448,7 +448,7 @@ public final class PendingIntent implements Parcelable {
 
     @Deprecated
     public void registerCancelListener(CancelListener cancelListener) {
-        if (!addCancelListener(new PendingIntent$$ExternalSyntheticLambda1(), cancelListener)) {
+        if (!addCancelListener(new PendingIntent$$ExternalSyntheticLambda0(), cancelListener)) {
             cancelListener.onCanceled(this);
         }
     }
@@ -456,8 +456,7 @@ public final class PendingIntent implements Parcelable {
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public boolean addCancelListener(Executor executor, CancelListener cancelListener) {
         synchronized (this.mTarget) {
-            CancelListerInfo cancelListerInfo = this.mCancelListerInfo;
-            if (cancelListerInfo != null && cancelListerInfo.mCanceled) {
+            if (this.mCancelListerInfo != null && this.mCancelListerInfo.mCanceled) {
                 return false;
             }
             if (this.mCancelListerInfo == null) {
@@ -481,6 +480,7 @@ public final class PendingIntent implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyCancelListeners() {
         ArraySet<Pair<Executor, CancelListener>> cancelListeners;
         synchronized (this.mTarget) {
@@ -492,7 +492,7 @@ public final class PendingIntent implements Parcelable {
         int size = cancelListeners.size();
         for (int i = 0; i < size; i++) {
             final Pair<Executor, CancelListener> pair = cancelListeners.valueAt(i);
-            pair.first.execute(new Runnable() { // from class: android.app.PendingIntent$$ExternalSyntheticLambda0
+            pair.first.execute(new Runnable() { // from class: android.app.PendingIntent$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     PendingIntent.this.lambda$notifyCancelListeners$0(pair);
@@ -501,6 +501,7 @@ public final class PendingIntent implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyCancelListeners$0(Pair pair) {
         ((CancelListener) pair.second).onCanceled(this);
     }
@@ -640,38 +641,21 @@ public final class PendingIntent implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeStrongBinder(this.mTarget.asBinder());
-        OnMarshaledListener listener = sOnMarshaledListener.get();
-        if (listener != null) {
-            listener.onMarshaled(this, out, flags);
-        }
-    }
-
-    /* renamed from: android.app.PendingIntent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PendingIntent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PendingIntent createFromParcel(Parcel in) {
-            IBinder target = in.readStrongBinder();
-            if (target != null) {
-                return new PendingIntent(target, in.getClassCookie(PendingIntent.class));
-            }
-            return null;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PendingIntent[] newArray(int size) {
-            return new PendingIntent[size];
+        List<OnMarshaledListener> listeners = sOnMarshaledListener.get();
+        int numListeners = listeners.size();
+        for (int i = 0; i < numListeners; i++) {
+            listeners.get(i).onMarshaled(this, out, flags);
         }
     }
 
     public static void writePendingIntentOrNullToParcel(PendingIntent sender, Parcel out) {
-        OnMarshaledListener listener;
         out.writeStrongBinder(sender != null ? sender.mTarget.asBinder() : null);
-        if (sender != null && (listener = sOnMarshaledListener.get()) != null) {
-            listener.onMarshaled(sender, out, 0);
+        if (sender != null) {
+            List<OnMarshaledListener> listeners = sOnMarshaledListener.get();
+            int numListeners = listeners.size();
+            for (int i = 0; i < numListeners; i++) {
+                listeners.get(i).onMarshaled(sender, out, 0);
+            }
         }
     }
 

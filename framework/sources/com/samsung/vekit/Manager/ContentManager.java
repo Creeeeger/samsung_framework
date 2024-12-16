@@ -11,6 +11,7 @@ import com.samsung.vekit.Content.Content;
 import com.samsung.vekit.Content.Doodle;
 import com.samsung.vekit.Content.FragmentAudio;
 import com.samsung.vekit.Content.Image;
+import com.samsung.vekit.Content.PortraitVideo;
 import com.samsung.vekit.Content.Video;
 
 /* loaded from: classes6.dex */
@@ -24,27 +25,30 @@ public class ContentManager extends Manager<Content> {
         Content content;
         try {
             int uniqueId = generateUniqueId();
-            switch (AnonymousClass1.$SwitchMap$com$samsung$vekit$Common$Type$ContentType[type.ordinal()]) {
-                case 1:
+            switch (type) {
+                case AUDIO:
                     content = new Audio(this.context, uniqueId, name);
                     break;
-                case 2:
+                case DOODLE:
                     content = new Doodle(this.context, uniqueId, name);
                     break;
-                case 3:
+                case IMAGE:
                     content = new Image(this.context, uniqueId, name);
                     break;
-                case 4:
+                case ANIMATED_IMAGE:
                     content = new AnimatedImage(this.context, uniqueId, name);
                     break;
-                case 5:
+                case VIDEO:
                     content = new Video(this.context, uniqueId, name);
                     break;
-                case 6:
+                case CAPTION:
                     content = new Caption(this.context, uniqueId, name);
                     break;
-                case 7:
+                case FRAGMENT_AUDIO:
                     content = new FragmentAudio(this.context, uniqueId, name);
+                    break;
+                case PORTRAIT_VIDEO:
+                    content = new PortraitVideo(this.context, uniqueId, name);
                     break;
                 default:
                     return null;
@@ -54,45 +58,6 @@ public class ContentManager extends Manager<Content> {
         } catch (Exception e) {
             Log.e(this.TAG, "create: ", e);
             return null;
-        }
-    }
-
-    /* renamed from: com.samsung.vekit.Manager.ContentManager$1 */
-    /* loaded from: classes6.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$ContentType;
-
-        static {
-            int[] iArr = new int[ContentType.values().length];
-            $SwitchMap$com$samsung$vekit$Common$Type$ContentType = iArr;
-            try {
-                iArr[ContentType.AUDIO.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ContentType[ContentType.DOODLE.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ContentType[ContentType.IMAGE.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ContentType[ContentType.ANIMATED_IMAGE.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ContentType[ContentType.VIDEO.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ContentType[ContentType.CAPTION.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ContentType[ContentType.FRAGMENT_AUDIO.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
         }
     }
 }

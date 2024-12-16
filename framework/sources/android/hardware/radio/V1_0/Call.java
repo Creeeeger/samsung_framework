@@ -73,10 +73,10 @@ public final class Call {
         this.isVoice = _hidl_blob.getBool(_hidl_offset + 15);
         this.isVoicePrivacy = _hidl_blob.getBool(_hidl_offset + 16);
         this.number = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.number.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         this.numberPresentation = _hidl_blob.getInt32(_hidl_offset + 40);
         this.name = _hidl_blob.getString(_hidl_offset + 48);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
         this.namePresentation = _hidl_blob.getInt32(_hidl_offset + 64);
         int _hidl_vec_size = _hidl_blob.getInt32(_hidl_offset + 72 + 8);
         HwBlob childBlob = parcel.readEmbeddedBuffer(_hidl_vec_size * 24, _hidl_blob.handle(), _hidl_offset + 72 + 0, true);

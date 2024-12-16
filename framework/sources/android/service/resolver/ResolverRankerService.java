@@ -36,9 +36,8 @@ public abstract class ResolverRankerService extends Service {
             return null;
         }
         if (this.mHandlerThread == null) {
-            HandlerThread handlerThread = new HandlerThread(HANDLER_THREAD_NAME);
-            this.mHandlerThread = handlerThread;
-            handlerThread.start();
+            this.mHandlerThread = new HandlerThread(HANDLER_THREAD_NAME);
+            this.mHandlerThread.start();
             this.mHandler = new Handler(this.mHandlerThread.getLooper());
         }
         if (this.mWrapper == null) {
@@ -50,13 +49,13 @@ public abstract class ResolverRankerService extends Service {
     @Override // android.app.Service
     public void onDestroy() {
         this.mHandler = null;
-        HandlerThread handlerThread = this.mHandlerThread;
-        if (handlerThread != null) {
-            handlerThread.quitSafely();
+        if (this.mHandlerThread != null) {
+            this.mHandlerThread.quitSafely();
         }
         super.onDestroy();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void sendResult(List<ResolverTarget> targets, IResolverRankerResult result) {
         try {
             result.sendResult(targets);
@@ -65,50 +64,13 @@ public abstract class ResolverRankerService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public class ResolverRankerServiceWrapper extends IResolverRankerService.Stub {
-        /* synthetic */ ResolverRankerServiceWrapper(ResolverRankerService resolverRankerService, ResolverRankerServiceWrapperIA resolverRankerServiceWrapperIA) {
-            this();
-        }
-
+    private class ResolverRankerServiceWrapper extends IResolverRankerService.Stub {
         private ResolverRankerServiceWrapper() {
         }
 
-        /* renamed from: android.service.resolver.ResolverRankerService$ResolverRankerServiceWrapper$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ IResolverRankerResult val$result;
-            final /* synthetic */ List val$targets;
-
-            AnonymousClass1(List list, IResolverRankerResult iResolverRankerResult) {
-                targets = list;
-                result = iResolverRankerResult;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    ResolverRankerService.this.onPredictSharingProbabilities(targets);
-                    ResolverRankerService.sendResult(targets, result);
-                } catch (Exception e) {
-                    Log.e(ResolverRankerService.TAG, "onPredictSharingProbabilities failed; send null results: " + e);
-                    ResolverRankerService.sendResult(null, result);
-                }
-            }
-        }
-
         @Override // android.service.resolver.IResolverRankerService
-        public void predict(List<ResolverTarget> targets, IResolverRankerResult result) throws RemoteException {
+        public void predict(final List<ResolverTarget> targets, final IResolverRankerResult result) throws RemoteException {
             Runnable predictRunnable = new Runnable() { // from class: android.service.resolver.ResolverRankerService.ResolverRankerServiceWrapper.1
-                final /* synthetic */ IResolverRankerResult val$result;
-                final /* synthetic */ List val$targets;
-
-                AnonymousClass1(List targets2, IResolverRankerResult result2) {
-                    targets = targets2;
-                    result = result2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -126,38 +88,9 @@ public abstract class ResolverRankerService extends Service {
             }
         }
 
-        /* renamed from: android.service.resolver.ResolverRankerService$ResolverRankerServiceWrapper$2 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass2 implements Runnable {
-            final /* synthetic */ int val$selectedPosition;
-            final /* synthetic */ List val$targets;
-
-            AnonymousClass2(List list, int i) {
-                targets = list;
-                selectedPosition = i;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    ResolverRankerService.this.onTrainRankingModel(targets, selectedPosition);
-                } catch (Exception e) {
-                    Log.e(ResolverRankerService.TAG, "onTrainRankingModel failed; skip train: " + e);
-                }
-            }
-        }
-
         @Override // android.service.resolver.IResolverRankerService
-        public void train(List<ResolverTarget> targets, int selectedPosition) throws RemoteException {
+        public void train(final List<ResolverTarget> targets, final int selectedPosition) throws RemoteException {
             Runnable trainRunnable = new Runnable() { // from class: android.service.resolver.ResolverRankerService.ResolverRankerServiceWrapper.2
-                final /* synthetic */ int val$selectedPosition;
-                final /* synthetic */ List val$targets;
-
-                AnonymousClass2(List targets2, int selectedPosition2) {
-                    targets = targets2;
-                    selectedPosition = selectedPosition2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     try {

@@ -49,32 +49,26 @@ public final class ResampleInputStream extends InputStream {
             throw new IllegalStateException("not open");
         }
         int nIn = ((((length / 2) * this.mRateIn) / this.mRateOut) + 29) * 2;
-        byte[] bArr = this.mBuf;
-        if (bArr == null) {
+        if (this.mBuf == null) {
             this.mBuf = new byte[nIn];
-        } else if (nIn > bArr.length) {
+        } else if (nIn > this.mBuf.length) {
             byte[] bf = new byte[nIn];
-            System.arraycopy(bArr, 0, bf, 0, this.mBufCount);
+            System.arraycopy(this.mBuf, 0, bf, 0, this.mBufCount);
             this.mBuf = bf;
         }
         while (true) {
-            int i = this.mBufCount;
-            int len = ((((i / 2) - 29) * this.mRateOut) / this.mRateIn) * 2;
+            int len = ((((this.mBufCount / 2) - 29) * this.mRateOut) / this.mRateIn) * 2;
             if (len > 0) {
                 int length2 = len < length ? len : (length / 2) * 2;
                 fir21(this.mBuf, 0, b, offset, length2 / 2);
                 int nFwd = (this.mRateIn * length2) / this.mRateOut;
-                int i2 = this.mBufCount - nFwd;
-                this.mBufCount = i2;
-                if (i2 > 0) {
-                    byte[] bArr2 = this.mBuf;
-                    System.arraycopy(bArr2, nFwd, bArr2, 0, i2);
+                this.mBufCount -= nFwd;
+                if (this.mBufCount > 0) {
+                    System.arraycopy(this.mBuf, nFwd, this.mBuf, 0, this.mBufCount);
                 }
                 return length2;
             }
-            InputStream inputStream = this.mInputStream;
-            byte[] bArr3 = this.mBuf;
-            int n = inputStream.read(bArr3, i, bArr3.length - i);
+            int n = this.mInputStream.read(this.mBuf, this.mBufCount, this.mBuf.length - this.mBufCount);
             if (n == -1) {
                 return -1;
             }
@@ -85,9 +79,8 @@ public final class ResampleInputStream extends InputStream {
     @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
     public void close() throws IOException {
         try {
-            InputStream inputStream = this.mInputStream;
-            if (inputStream != null) {
-                inputStream.close();
+            if (this.mInputStream != null) {
+                this.mInputStream.close();
             }
         } finally {
             this.mInputStream = null;

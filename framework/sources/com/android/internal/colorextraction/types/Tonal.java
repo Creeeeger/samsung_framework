@@ -17,7 +17,7 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class Tonal implements ExtractionType {
     private static final boolean DEBUG = true;
     private static final float FIT_WEIGHT_H = 1.0f;
@@ -34,11 +34,10 @@ public class Tonal implements ExtractionType {
 
     public Tonal(Context context) {
         ConfigParser parser = new ConfigParser(context);
-        ArrayList<TonalPalette> tonalPalettes = parser.getTonalPalettes();
-        this.mTonalPalettes = tonalPalettes;
+        this.mTonalPalettes = parser.getTonalPalettes();
         this.mContext = context;
-        this.mGreyPalette = tonalPalettes.get(0);
-        tonalPalettes.remove(0);
+        this.mGreyPalette = this.mTonalPalettes.get(0);
+        this.mTonalPalettes.remove(0);
     }
 
     @Override // com.android.internal.colorextraction.types.ExtractionType
@@ -64,8 +63,9 @@ public class Tonal implements ExtractionType {
         }
         Color bestColor = mainColors.get(0);
         int colorValue = bestColor.toArgb();
+        float[] hsl = new float[3];
         ColorUtils.RGBToHSL(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue), hsl);
-        float[] hsl = {hsl[0] / 360.0f};
+        hsl[0] = hsl[0] / 360.0f;
         TonalPalette palette = findTonalPalette(hsl[0], hsl[1]);
         if (palette == null) {
             Log.w(TAG, "Could not find a tonal palette!");
@@ -90,15 +90,13 @@ public class Tonal implements ExtractionType {
         Log.d(TAG, builder.toString());
         int mainColor = getColorInt(fitIndex, h, s, l);
         ColorUtils.colorToHSL(mainColor, this.mTmpHSL);
-        float[] fArr = this.mTmpHSL;
-        float mainLuminosity = fArr[2];
-        ColorUtils.colorToHSL(MAIN_COLOR_LIGHT, fArr);
-        float[] fArr2 = this.mTmpHSL;
-        float lightLuminosity = fArr2[2];
+        float mainLuminosity = this.mTmpHSL[2];
+        ColorUtils.colorToHSL(MAIN_COLOR_LIGHT, this.mTmpHSL);
+        float lightLuminosity = this.mTmpHSL[2];
         if (mainLuminosity > lightLuminosity) {
             return false;
         }
-        ColorUtils.colorToHSL(MAIN_COLOR_DARK, fArr2);
+        ColorUtils.colorToHSL(MAIN_COLOR_DARK, this.mTmpHSL);
         float darkLuminosity = this.mTmpHSL[2];
         if (mainLuminosity < darkLuminosity) {
             return false;
@@ -163,10 +161,9 @@ public class Tonal implements ExtractionType {
 
     private int getColorInt(int fitIndex, float[] h, float[] s, float[] l) {
         this.mTmpHSL[0] = fract(h[fitIndex]) * 360.0f;
-        float[] fArr = this.mTmpHSL;
-        fArr[1] = s[fitIndex];
-        fArr[2] = l[fitIndex];
-        return ColorUtils.HSLToColor(fArr);
+        this.mTmpHSL[1] = s[fitIndex];
+        this.mTmpHSL[2] = l[fitIndex];
+        return ColorUtils.HSLToColor(this.mTmpHSL);
     }
 
     private int[] getColorPalette(float[] h, float[] s, float[] l) {
@@ -246,7 +243,6 @@ public class Tonal implements ExtractionType {
         return v - ((float) Math.floor(v));
     }
 
-    /* loaded from: classes4.dex */
     public static class TonalPalette {
         public final float[] h;
         public final float[] l;
@@ -272,7 +268,6 @@ public class Tonal implements ExtractionType {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ColorRange {
         private Range<Float> mHue;
         private Range<Float> mLightness;
@@ -297,7 +292,6 @@ public class Tonal implements ExtractionType {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ConfigParser {
         private final ArrayList<TonalPalette> mTonalPalettes = new ArrayList<>();
 

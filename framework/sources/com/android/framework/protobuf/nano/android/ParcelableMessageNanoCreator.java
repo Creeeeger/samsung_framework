@@ -8,7 +8,7 @@ import com.android.framework.protobuf.nano.MessageNano;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class ParcelableMessageNanoCreator<T extends MessageNano> implements Parcelable.Creator<T> {
     private static final String TAG = "PMNCreator";
     private final Class<T> mClazz;
@@ -56,7 +56,7 @@ public final class ParcelableMessageNanoCreator<T extends MessageNano> implement
         return (T[]) ((MessageNano[]) Array.newInstance((Class<?>) this.mClazz, i));
     }
 
-    public static <T extends MessageNano> void writeToParcel(Class<T> clazz, MessageNano message, Parcel out) {
+    static <T extends MessageNano> void writeToParcel(Class<T> clazz, MessageNano message, Parcel out) {
         out.writeString(clazz.getName());
         out.writeByteArray(MessageNano.toByteArray(message));
     }

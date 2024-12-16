@@ -96,11 +96,10 @@ public class DomainParameters extends ASN1Object {
     }
 
     public BigInteger getJ() {
-        ASN1Integer aSN1Integer = this.j;
-        if (aSN1Integer == null) {
+        if (this.j == null) {
             return null;
         }
-        return aSN1Integer.getPositiveValue();
+        return this.j.getPositiveValue();
     }
 
     public ValidationParams getValidationParams() {
@@ -113,13 +112,11 @@ public class DomainParameters extends ASN1Object {
         v.add(this.p);
         v.add(this.g);
         v.add(this.q);
-        ASN1Integer aSN1Integer = this.j;
-        if (aSN1Integer != null) {
-            v.add(aSN1Integer);
+        if (this.j != null) {
+            v.add(this.j);
         }
-        ValidationParams validationParams = this.validationParams;
-        if (validationParams != null) {
-            v.add(validationParams);
+        if (this.validationParams != null) {
+            v.add(this.validationParams);
         }
         return new DERSequence(v);
     }

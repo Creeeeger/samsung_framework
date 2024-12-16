@@ -4,25 +4,23 @@ import android.graphics.TemporaryBuffer;
 import android.graphics.text.GraphemeBreak;
 import android.text.AutoGrowArray;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class GraphemeClusterSegmentFinder extends SegmentFinder {
     private static AutoGrowArray.FloatArray sTempAdvances = null;
     private final boolean[] mIsGraphemeBreak;
 
     public GraphemeClusterSegmentFinder(CharSequence text, TextPaint textPaint) {
-        AutoGrowArray.FloatArray floatArray = sTempAdvances;
-        if (floatArray == null) {
+        if (sTempAdvances == null) {
             sTempAdvances = new AutoGrowArray.FloatArray(text.length());
-        } else if (floatArray.size() < text.length()) {
+        } else if (sTempAdvances.size() < text.length()) {
             sTempAdvances.resize(text.length());
         }
-        boolean[] zArr = new boolean[text.length()];
-        this.mIsGraphemeBreak = zArr;
+        this.mIsGraphemeBreak = new boolean[text.length()];
         float[] advances = sTempAdvances.getRawArray();
         char[] chars = TemporaryBuffer.obtain(text.length());
         TextUtils.getChars(text, 0, text.length(), chars, 0);
         textPaint.getTextWidths(chars, 0, text.length(), advances);
-        GraphemeBreak.isGraphemeBreak(advances, chars, 0, text.length(), zArr);
+        GraphemeBreak.isGraphemeBreak(advances, chars, 0, text.length(), this.mIsGraphemeBreak);
         TemporaryBuffer.recycle(chars);
     }
 
@@ -40,17 +38,15 @@ public class GraphemeClusterSegmentFinder extends SegmentFinder {
     }
 
     private int nextBoundary(int offset) {
-        boolean[] zArr;
         if (offset >= this.mIsGraphemeBreak.length) {
             return -1;
         }
         do {
             offset++;
-            zArr = this.mIsGraphemeBreak;
-            if (offset >= zArr.length) {
+            if (offset >= this.mIsGraphemeBreak.length) {
                 break;
             }
-        } while (!zArr[offset]);
+        } while (!this.mIsGraphemeBreak[offset]);
         return offset;
     }
 

@@ -23,21 +23,20 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class GenericMediaBuffer<T> extends MediaBufferBase {
     private T data;
     private final Class<T> dataClass;
     private volatile List<MediaFormat> planes;
     private static final String TAG = Def.tagOf((Class<?>) GenericMediaBuffer.class);
     public static final Parcelable.Creator<GenericMediaBuffer<?>> CREATOR = new Parcelable.Creator<GenericMediaBuffer<?>>() { // from class: com.samsung.android.sume.core.buffer.GenericMediaBuffer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GenericMediaBuffer<?> createFromParcel(Parcel in) {
             return new GenericMediaBuffer<>(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GenericMediaBuffer<?>[] newArray(int size) {
             return new GenericMediaBuffer[size];
@@ -171,14 +170,14 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
         return super.setStride(i);
     }
 
-    public GenericMediaBuffer(MediaFormat mediaFormat, T t) {
+    GenericMediaBuffer(MediaFormat mediaFormat, T t) {
         super(mediaFormat);
         this.data = t;
         this.dataClass = (Class<T>) t.getClass();
         adjustShape();
     }
 
-    public GenericMediaBuffer(MediaFormat mediaFormat, Align align, T t) {
+    GenericMediaBuffer(MediaFormat mediaFormat, Align align, T t) {
         super(mediaFormat, align);
         this.data = t;
         this.dataClass = (Class<T>) t.getClass();
@@ -194,19 +193,18 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
                 break;
             case 2:
                 this.dataClass = HardwareBuffer.class;
-                this.data = (T) parcel.readParcelable(HardwareBuffer.class.getClassLoader());
+                this.data = (T) parcel.readParcelable(this.dataClass.getClassLoader());
                 break;
             case 3:
                 this.dataClass = ParcelFileDescriptor.class;
-                this.data = (T) parcel.readParcelable(ParcelFileDescriptor.class.getClassLoader());
+                this.data = (T) parcel.readParcelable(this.dataClass.getClassLoader());
                 break;
             case 4:
             default:
                 throw new IllegalArgumentException("unknown type");
             case 5:
-                T t = (T) parcel.readSerializable();
-                this.data = t;
-                this.dataClass = (Class<T>) t.getClass();
+                this.data = (T) parcel.readSerializable();
+                this.dataClass = (Class<T>) this.data.getClass();
                 break;
         }
         this.planes = (List) parcel.readSerializable();
@@ -216,13 +214,12 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
     public void writeToParcel(Parcel parcel, int i) {
         HardwareBuffer hardwareBuffer;
         super.writeToParcel(parcel, i);
-        T t = this.data;
-        if (t instanceof MediaBufferAllocator.Nothing) {
+        if (this.data instanceof MediaBufferAllocator.Nothing) {
             parcel.writeInt(1);
-        } else if (t instanceof ParcelFileDescriptor) {
+        } else if (this.data instanceof ParcelFileDescriptor) {
             parcel.writeInt(3);
             parcel.writeParcelable((Parcelable) this.data, i);
-        } else if (t instanceof Number) {
+        } else if (this.data instanceof Number) {
             parcel.writeInt(5);
             parcel.writeSerializable((Number) this.data);
         } else {
@@ -247,13 +244,12 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public void release() {
         int useCount = this.sharedCount.decrementAndGet();
-        String str = TAG;
-        Log.d(str, "dec ref count now: " + useCount + NavigationBarInflaterView.KEY_CODE_START + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
+        Log.d(TAG, "dec ref count now: " + useCount + NavigationBarInflaterView.KEY_CODE_START + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
         if (useCount > 0) {
-            Log.d(str, "release skipped(" + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
+            Log.d(TAG, "release skipped(" + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
             return;
         }
-        Log.d(str, "release(" + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
+        Log.d(TAG, "release(" + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
         super.release();
         if (this.data != null && isDataShared()) {
             try {
@@ -323,17 +319,16 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public long size() {
-        return getFormat().bytePerPixel() * getAlign().getDimension();
+        return (long) (getFormat().bytePerPixel() * getAlign().getDimension());
     }
 
     public void adjustShape() {
         int i = 0;
-        T t = this.data;
-        if (t != null) {
-            if (t instanceof ByteBuffer) {
-                i = ((ByteBuffer) t).limit();
-            } else if (t instanceof Bitmap) {
-                i = ((Bitmap) t).getByteCount();
+        if (this.data != null) {
+            if (this.data instanceof ByteBuffer) {
+                i = ((ByteBuffer) this.data).limit();
+            } else if (this.data instanceof Bitmap) {
+                i = ((Bitmap) this.data).getByteCount();
             }
         }
         ColorFormat colorFormat = this.format.getColorFormat();
@@ -366,7 +361,7 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
     }
 
     private String dataToString(Object data) {
-        return (String) Optional.ofNullable(data).map(new Function() { // from class: com.samsung.android.sume.core.buffer.GenericMediaBuffer$$ExternalSyntheticLambda2
+        return (String) Optional.ofNullable(data).map(new Function() { // from class: com.samsung.android.sume.core.buffer.GenericMediaBuffer$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return GenericMediaBuffer.lambda$dataToString$0(obj);
@@ -374,7 +369,7 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
         }).orElse("n/a");
     }
 
-    public static /* synthetic */ String lambda$dataToString$0(Object it) {
+    static /* synthetic */ String lambda$dataToString$0(Object it) {
         try {
             return BufferExtension.stringfy(it);
         } catch (UnsupportedOperationException e) {
@@ -387,7 +382,7 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public String contentToString(Object obj) {
-        return Def.taglnOf(obj) + Def.contentToStringln("    ", "format=" + ((String) Optional.ofNullable(this.format).map(new GenericMediaBuffer$$ExternalSyntheticLambda0()).orElse("n/a")), "alignShape=" + ((String) Optional.ofNullable(this.align).map(new Function() { // from class: com.samsung.android.sume.core.buffer.GenericMediaBuffer$$ExternalSyntheticLambda1
+        return Def.taglnOf(obj) + Def.contentToStringln("    ", "format=" + ((String) Optional.ofNullable(this.format).map(new GenericMediaBuffer$$ExternalSyntheticLambda1()).orElse("n/a")), "alignShape=" + ((String) Optional.ofNullable(this.align).map(new Function() { // from class: com.samsung.android.sume.core.buffer.GenericMediaBuffer$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj2) {
                 return ((Align) obj2).contentToString();
@@ -398,22 +393,5 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public String contentToString() {
         return contentToString(this);
-    }
-
-    /* renamed from: com.samsung.android.sume.core.buffer.GenericMediaBuffer$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GenericMediaBuffer<?>> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GenericMediaBuffer<?> createFromParcel(Parcel in) {
-            return new GenericMediaBuffer<>(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GenericMediaBuffer<?>[] newArray(int size) {
-            return new GenericMediaBuffer[size];
-        }
     }
 }

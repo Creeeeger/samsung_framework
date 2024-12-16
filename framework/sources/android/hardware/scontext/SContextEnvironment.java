@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextEnvironment extends SContextEventContext {
     public static final Parcelable.Creator<SContextEnvironment> CREATOR = new Parcelable.Creator<SContextEnvironment>() { // from class: android.hardware.scontext.SContextEnvironment.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextEnvironment createFromParcel(Parcel in) {
             return new SContextEnvironment(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextEnvironment[] newArray(int size) {
             return new SContextEnvironment[size];
@@ -23,7 +22,7 @@ public class SContextEnvironment extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextEnvironment() {
+    SContextEnvironment() {
         this.mContext = new Bundle();
     }
 
@@ -64,22 +63,5 @@ public class SContextEnvironment extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextEnvironment$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextEnvironment> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextEnvironment createFromParcel(Parcel in) {
-            return new SContextEnvironment(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextEnvironment[] newArray(int size) {
-            return new SContextEnvironment[size];
-        }
     }
 }

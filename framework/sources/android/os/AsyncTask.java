@@ -37,83 +37,21 @@ public abstract class AsyncTask<Params, Progress, Result> {
     private static LinkedBlockingQueue<Runnable> sBackupExecutorQueue;
     private static volatile Executor sDefaultExecutor;
     private static InternalHandler sHandler;
-    private static final RejectedExecutionHandler sRunOnSerialPolicy;
-    private static final ThreadFactory sThreadFactory;
     private final AtomicBoolean mCancelled;
     private final FutureTask<Result> mFuture;
     private final Handler mHandler;
     private volatile Status mStatus;
     private final AtomicBoolean mTaskInvoked;
     private final WorkerRunnable<Params, Result> mWorker;
-
-    /* loaded from: classes3.dex */
-    public enum Status {
-        PENDING,
-        RUNNING,
-        FINISHED
-    }
-
-    protected abstract Result doInBackground(Params... paramsArr);
-
-    /* renamed from: android.os.AsyncTask$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements ThreadFactory {
+    private static final ThreadFactory sThreadFactory = new ThreadFactory() { // from class: android.os.AsyncTask.1
         private final AtomicInteger mCount = new AtomicInteger(1);
-
-        AnonymousClass1() {
-        }
 
         @Override // java.util.concurrent.ThreadFactory
         public Thread newThread(Runnable r) {
             return new Thread(r, "AsyncTask #" + this.mCount.getAndIncrement());
         }
-    }
-
-    static {
-        AnonymousClass1 anonymousClass1 = new ThreadFactory() { // from class: android.os.AsyncTask.1
-            private final AtomicInteger mCount = new AtomicInteger(1);
-
-            AnonymousClass1() {
-            }
-
-            @Override // java.util.concurrent.ThreadFactory
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "AsyncTask #" + this.mCount.getAndIncrement());
-            }
-        };
-        sThreadFactory = anonymousClass1;
-        AnonymousClass2 anonymousClass2 = new RejectedExecutionHandler() { // from class: android.os.AsyncTask.2
-            AnonymousClass2() {
-            }
-
-            @Override // java.util.concurrent.RejectedExecutionHandler
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
-                Log.w(AsyncTask.LOG_TAG, "Exceeded ThreadPoolExecutor pool size");
-                synchronized (this) {
-                    if (AsyncTask.sBackupExecutor == null) {
-                        AsyncTask.sBackupExecutorQueue = new LinkedBlockingQueue();
-                        AsyncTask.sBackupExecutor = new ThreadPoolExecutor(5, 5, 3L, TimeUnit.SECONDS, AsyncTask.sBackupExecutorQueue, AsyncTask.sThreadFactory);
-                        AsyncTask.sBackupExecutor.allowCoreThreadTimeOut(true);
-                    }
-                }
-                AsyncTask.sBackupExecutor.execute(r);
-            }
-        };
-        sRunOnSerialPolicy = anonymousClass2;
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 20, 3L, TimeUnit.SECONDS, new SynchronousQueue(), anonymousClass1);
-        threadPoolExecutor.setRejectedExecutionHandler(anonymousClass2);
-        THREAD_POOL_EXECUTOR = threadPoolExecutor;
-        SerialExecutor serialExecutor = new SerialExecutor();
-        SERIAL_EXECUTOR = serialExecutor;
-        sDefaultExecutor = serialExecutor;
-    }
-
-    /* renamed from: android.os.AsyncTask$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements RejectedExecutionHandler {
-        AnonymousClass2() {
-        }
-
+    };
+    private static final RejectedExecutionHandler sRunOnSerialPolicy = new RejectedExecutionHandler() { // from class: android.os.AsyncTask.2
         @Override // java.util.concurrent.RejectedExecutionHandler
         public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
             Log.w(AsyncTask.LOG_TAG, "Exceeded ThreadPoolExecutor pool size");
@@ -126,50 +64,35 @@ public abstract class AsyncTask<Params, Progress, Result> {
             }
             AsyncTask.sBackupExecutor.execute(r);
         }
+    };
+
+    public enum Status {
+        PENDING,
+        RUNNING,
+        FINISHED
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class SerialExecutor implements Executor {
+    protected abstract Result doInBackground(Params... paramsArr);
+
+    static {
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 20, 3L, TimeUnit.SECONDS, new SynchronousQueue(), sThreadFactory);
+        threadPoolExecutor.setRejectedExecutionHandler(sRunOnSerialPolicy);
+        THREAD_POOL_EXECUTOR = threadPoolExecutor;
+        SERIAL_EXECUTOR = new SerialExecutor();
+        sDefaultExecutor = SERIAL_EXECUTOR;
+    }
+
+    private static class SerialExecutor implements Executor {
         Runnable mActive;
         final ArrayDeque<Runnable> mTasks;
-
-        /* synthetic */ SerialExecutor(SerialExecutorIA serialExecutorIA) {
-            this();
-        }
 
         private SerialExecutor() {
             this.mTasks = new ArrayDeque<>();
         }
 
-        /* renamed from: android.os.AsyncTask$SerialExecutor$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ Runnable val$r;
-
-            AnonymousClass1(Runnable runnable) {
-                r = runnable;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    r.run();
-                } finally {
-                    SerialExecutor.this.scheduleNext();
-                }
-            }
-        }
-
         @Override // java.util.concurrent.Executor
-        public synchronized void execute(Runnable r) {
+        public synchronized void execute(final Runnable r) {
             this.mTasks.offer(new Runnable() { // from class: android.os.AsyncTask.SerialExecutor.1
-                final /* synthetic */ Runnable val$r;
-
-                AnonymousClass1(Runnable r2) {
-                    r = r2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -232,10 +155,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
             mainHandler = new Handler(callbackLooper);
         }
         this.mHandler = mainHandler;
-        AnonymousClass3 anonymousClass3 = new WorkerRunnable<Params, Result>() { // from class: android.os.AsyncTask.3
-            AnonymousClass3() {
-            }
-
+        this.mWorker = new WorkerRunnable<Params, Result>() { // from class: android.os.AsyncTask.3
             /* JADX WARN: Multi-variable type inference failed */
             @Override // java.util.concurrent.Callable
             public Result call() throws Exception {
@@ -250,12 +170,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
                 }
             }
         };
-        this.mWorker = anonymousClass3;
-        this.mFuture = new FutureTask<Result>(anonymousClass3) { // from class: android.os.AsyncTask.4
-            AnonymousClass4(Callable anonymousClass32) {
-                super(anonymousClass32);
-            }
-
+        this.mFuture = new FutureTask<Result>(this.mWorker) { // from class: android.os.AsyncTask.4
             @Override // java.util.concurrent.FutureTask
             protected void done() {
                 try {
@@ -271,50 +186,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.AsyncTask$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 extends WorkerRunnable<Params, Result> {
-        AnonymousClass3() {
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // java.util.concurrent.Callable
-        public Result call() throws Exception {
-            AsyncTask.this.mTaskInvoked.set(true);
-            Result result = null;
-            try {
-                Process.setThreadPriority(10);
-                result = AsyncTask.this.doInBackground(this.mParams);
-                Binder.flushPendingCommands();
-                return result;
-            } finally {
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.AsyncTask$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 extends FutureTask<Result> {
-        AnonymousClass4(Callable anonymousClass32) {
-            super(anonymousClass32);
-        }
-
-        @Override // java.util.concurrent.FutureTask
-        protected void done() {
-            try {
-                AsyncTask.this.postResultIfNotInvoked(get());
-            } catch (InterruptedException e) {
-                Log.w(AsyncTask.LOG_TAG, e);
-            } catch (CancellationException e2) {
-                AsyncTask.this.postResultIfNotInvoked(null);
-            } catch (ExecutionException e3) {
-                throw new RuntimeException("An error occurred while executing doInBackground()", e3.getCause());
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void postResultIfNotInvoked(Result result) {
         boolean wasTaskInvoked = this.mTaskInvoked.get();
         if (!wasTaskInvoked) {
@@ -322,6 +194,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Result postResult(Result result) {
         Message message = getHandler().obtainMessage(1, new AsyncTaskResult(this, result));
         message.sendToTarget();
@@ -369,28 +242,9 @@ public abstract class AsyncTask<Params, Progress, Result> {
         return executeOnExecutor(sDefaultExecutor, params);
     }
 
-    /* renamed from: android.os.AsyncTask$5 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass5 {
-        static final /* synthetic */ int[] $SwitchMap$android$os$AsyncTask$Status;
-
-        static {
-            int[] iArr = new int[Status.values().length];
-            $SwitchMap$android$os$AsyncTask$Status = iArr;
-            try {
-                iArr[Status.RUNNING.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$os$AsyncTask$Status[Status.FINISHED.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-        }
-    }
-
     public final AsyncTask<Params, Progress, Result> executeOnExecutor(Executor exec, Params... params) {
         if (this.mStatus != Status.PENDING) {
-            switch (AnonymousClass5.$SwitchMap$android$os$AsyncTask$Status[this.mStatus.ordinal()]) {
+            switch (this.mStatus.ordinal()) {
                 case 1:
                     throw new IllegalStateException("Cannot execute task: the task is already running.");
                 case 2:
@@ -408,12 +262,13 @@ public abstract class AsyncTask<Params, Progress, Result> {
         sDefaultExecutor.execute(runnable);
     }
 
-    public final void publishProgress(Progress... values) {
+    protected final void publishProgress(Progress... values) {
         if (!isCancelled()) {
             getHandler().obtainMessage(2, new AsyncTaskResult(this, values)).sendToTarget();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void finish(Result result) {
         if (isCancelled()) {
             onCancelled(result);
@@ -423,8 +278,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
         this.mStatus = Status.FINISHED;
     }
 
-    /* loaded from: classes3.dex */
-    public static class InternalHandler extends Handler {
+    private static class InternalHandler extends Handler {
         public InternalHandler(Looper looper) {
             super(looper);
         }
@@ -435,30 +289,22 @@ public abstract class AsyncTask<Params, Progress, Result> {
             switch (msg.what) {
                 case 1:
                     result.mTask.finish(result.mData[0]);
-                    return;
+                    break;
                 case 2:
                     result.mTask.onProgressUpdate(result.mData);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static abstract class WorkerRunnable<Params, Result> implements Callable<Result> {
+    private static abstract class WorkerRunnable<Params, Result> implements Callable<Result> {
         Params[] mParams;
-
-        /* synthetic */ WorkerRunnable(WorkerRunnableIA workerRunnableIA) {
-            this();
-        }
 
         private WorkerRunnable() {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class AsyncTaskResult<Data> {
+    private static class AsyncTaskResult<Data> {
         final Data[] mData;
         final AsyncTask mTask;
 

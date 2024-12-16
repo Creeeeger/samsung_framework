@@ -39,9 +39,8 @@ public class GLTextureSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void fieldPortValueUpdated(String name, FilterContext context) {
-        Frame frame = this.mFrame;
-        if (frame != null) {
-            frame.release();
+        if (this.mFrame != null) {
+            this.mFrame.release();
             this.mFrame = null;
         }
     }
@@ -50,9 +49,8 @@ public class GLTextureSource extends Filter {
     public void process(FilterContext context) {
         if (this.mFrame == null) {
             FrameFormat outputFormat = ImageFormat.create(this.mWidth, this.mHeight, 3, 3);
-            Frame newBoundFrame = context.getFrameManager().newBoundFrame(outputFormat, 100, this.mTexId);
-            this.mFrame = newBoundFrame;
-            newBoundFrame.setTimestamp(this.mTimestamp);
+            this.mFrame = context.getFrameManager().newBoundFrame(outputFormat, 100, this.mTexId);
+            this.mFrame.setTimestamp(this.mTimestamp);
         }
         pushOutput("frame", this.mFrame);
         if (!this.mRepeatFrame) {
@@ -62,9 +60,8 @@ public class GLTextureSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        Frame frame = this.mFrame;
-        if (frame != null) {
-            frame.release();
+        if (this.mFrame != null) {
+            this.mFrame.release();
         }
     }
 }

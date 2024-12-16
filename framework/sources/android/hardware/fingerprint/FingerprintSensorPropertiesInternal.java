@@ -11,14 +11,13 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public class FingerprintSensorPropertiesInternal extends SensorPropertiesInternal {
     public static final Parcelable.Creator<FingerprintSensorPropertiesInternal> CREATOR = new Parcelable.Creator<FingerprintSensorPropertiesInternal>() { // from class: android.hardware.fingerprint.FingerprintSensorPropertiesInternal.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FingerprintSensorPropertiesInternal createFromParcel(Parcel in) {
             return new FingerprintSensorPropertiesInternal(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FingerprintSensorPropertiesInternal[] newArray(int size) {
             return new FingerprintSensorPropertiesInternal[size];
@@ -46,23 +45,6 @@ public class FingerprintSensorPropertiesInternal extends SensorPropertiesInterna
         this.mSensorLocations = in.createTypedArrayList(SensorLocationInternal.CREATOR);
     }
 
-    /* renamed from: android.hardware.fingerprint.FingerprintSensorPropertiesInternal$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FingerprintSensorPropertiesInternal> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FingerprintSensorPropertiesInternal createFromParcel(Parcel in) {
-            return new FingerprintSensorPropertiesInternal(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FingerprintSensorPropertiesInternal[] newArray(int size) {
-            return new FingerprintSensorPropertiesInternal[size];
-        }
-    }
-
     @Override // android.hardware.biometrics.SensorPropertiesInternal, android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -86,6 +68,10 @@ public class FingerprintSensorPropertiesInternal extends SensorPropertiesInterna
         }
     }
 
+    public boolean isUltrasonicUdfps() {
+        return this.sensorType == 2;
+    }
+
     public boolean isAnySidefpsType() {
         switch (this.sensorType) {
             case 4:
@@ -93,6 +79,14 @@ public class FingerprintSensorPropertiesInternal extends SensorPropertiesInterna
             default:
                 return false;
         }
+    }
+
+    public boolean isOpticalType() {
+        return this.sensorType == 3;
+    }
+
+    public boolean isUltrasonicType() {
+        return this.sensorType == 2;
     }
 
     public SensorLocationInternal getLocation() {

@@ -8,16 +8,13 @@ import java.util.Map;
 /* loaded from: classes5.dex */
 public class EC {
     private static final String PREFIX = "com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.ec.";
-    private static final Map<String, String> generalEcAttributes;
+    private static final Map<String, String> generalEcAttributes = new HashMap();
 
     static {
-        HashMap hashMap = new HashMap();
-        generalEcAttributes = hashMap;
-        hashMap.put("SupportedKeyClasses", "java.security.interfaces.ECPublicKey|java.security.interfaces.ECPrivateKey");
-        hashMap.put("SupportedKeyFormats", "PKCS#8|X.509");
+        generalEcAttributes.put("SupportedKeyClasses", "java.security.interfaces.ECPublicKey|java.security.interfaces.ECPrivateKey");
+        generalEcAttributes.put("SupportedKeyFormats", "PKCS#8|X.509");
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends AsymmetricAlgorithmProvider {
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvider
         public void configure(ConfigurableProvider provider) {

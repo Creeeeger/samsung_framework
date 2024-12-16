@@ -14,7 +14,6 @@ public interface ISpellCheckerSessionListener extends IInterface {
 
     void onGetSuggestions(SuggestionsInfo[] suggestionsInfoArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISpellCheckerSessionListener {
         @Override // com.android.internal.textservice.ISpellCheckerSessionListener
         public void onGetSuggestions(SuggestionsInfo[] results) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISpellCheckerSessionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISpellCheckerSessionListener {
         public static final String DESCRIPTOR = "com.android.internal.textservice.ISpellCheckerSessionListener";
         static final int TRANSACTION_onGetSentenceSuggestions = 2;
@@ -77,31 +75,27 @@ public interface ISpellCheckerSessionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    SuggestionsInfo[] _arg0 = (SuggestionsInfo[]) data.createTypedArray(SuggestionsInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGetSuggestions(_arg0);
+                    return true;
+                case 2:
+                    SentenceSuggestionsInfo[] _arg02 = (SentenceSuggestionsInfo[]) data.createTypedArray(SentenceSuggestionsInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGetSentenceSuggestions(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SuggestionsInfo[] _arg0 = (SuggestionsInfo[]) data.createTypedArray(SuggestionsInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGetSuggestions(_arg0);
-                            return true;
-                        case 2:
-                            SentenceSuggestionsInfo[] _arg02 = (SentenceSuggestionsInfo[]) data.createTypedArray(SentenceSuggestionsInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGetSentenceSuggestions(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISpellCheckerSessionListener {
+        private static class Proxy implements ISpellCheckerSessionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

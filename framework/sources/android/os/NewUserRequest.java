@@ -17,10 +17,6 @@ public final class NewUserRequest {
     private final Bitmap mUserIcon;
     private final String mUserType;
 
-    /* synthetic */ NewUserRequest(Builder builder, NewUserRequestIA newUserRequestIA) {
-        this(builder);
-    }
-
     private NewUserRequest(Builder builder) {
         this.mName = builder.mName;
         this.mAdmin = builder.mAdmin;
@@ -44,7 +40,7 @@ public final class NewUserRequest {
         return this.mAdmin;
     }
 
-    public int getFlags() {
+    int getFlags() {
         int flags = isAdmin() ? 0 | 2 : 0;
         return isEphemeral() ? flags | 256 : flags;
     }
@@ -73,7 +69,6 @@ public final class NewUserRequest {
         return "NewUserRequest{mName='" + this.mName + DateFormat.QUOTE + ", mAdmin=" + this.mAdmin + ", mEphemeral=" + this.mEphemeral + ", mUserType='" + this.mUserType + DateFormat.QUOTE + ", mAccountName='" + this.mAccountName + DateFormat.QUOTE + ", mAccountType='" + this.mAccountType + DateFormat.QUOTE + ", mAccountOptions=" + this.mAccountOptions + '}';
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private String mAccountName;
         private PersistableBundle mAccountOptions;
@@ -130,11 +125,10 @@ public final class NewUserRequest {
         }
 
         private void checkIfPropertiesAreCompatible() {
-            String str = this.mUserType;
-            if (str == null) {
+            if (this.mUserType == null) {
                 throw new IllegalStateException("Usertype cannot be null");
             }
-            if (this.mAdmin && !str.equals(UserManager.USER_TYPE_FULL_SECONDARY)) {
+            if (this.mAdmin && !this.mUserType.equals(UserManager.USER_TYPE_FULL_SECONDARY)) {
                 throw new IllegalStateException("Admin user can't be of type: " + this.mUserType);
             }
             if (TextUtils.isEmpty(this.mAccountName) != TextUtils.isEmpty(this.mAccountType)) {

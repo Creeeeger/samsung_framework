@@ -6,7 +6,7 @@ import android.util.LongSparseArray;
 import java.lang.ref.WeakReference;
 
 /* loaded from: classes.dex */
-public abstract class ThemedResourceCache<T> {
+abstract class ThemedResourceCache<T> {
     public static final int UNDEFINED_GENERATION = -1;
     private int mGeneration;
     private LongSparseArray<WeakReference<T>> mNullThemedEntries;
@@ -14,6 +14,9 @@ public abstract class ThemedResourceCache<T> {
     private LongSparseArray<WeakReference<T>> mUnthemedEntries;
 
     protected abstract boolean shouldInvalidateEntry(T t, int i);
+
+    ThemedResourceCache() {
+    }
 
     public void put(long key, Resources.Theme theme, T entry, int generation) {
         put(key, theme, entry, generation, true);
@@ -81,7 +84,7 @@ public abstract class ThemedResourceCache<T> {
         LongSparseArray<WeakReference<T>> cache = this.mThemedEntries.get(key);
         if (cache == null && create) {
             LongSparseArray<WeakReference<T>> cache2 = new LongSparseArray<>(1);
-            Resources.ThemeKey keyClone = key.m937clone();
+            Resources.ThemeKey keyClone = key.m1009clone();
             this.mThemedEntries.put(keyClone, cache2);
             return cache2;
         }
@@ -96,9 +99,8 @@ public abstract class ThemedResourceCache<T> {
     }
 
     private boolean pruneLocked(int configChanges) {
-        ArrayMap<Resources.ThemeKey, LongSparseArray<WeakReference<T>>> arrayMap = this.mThemedEntries;
-        if (arrayMap != null) {
-            for (int i = arrayMap.size() - 1; i >= 0; i--) {
+        if (this.mThemedEntries != null) {
+            for (int i = this.mThemedEntries.size() - 1; i >= 0; i--) {
                 if (pruneEntriesLocked(this.mThemedEntries.valueAt(i), configChanges)) {
                     this.mThemedEntries.removeAt(i);
                 }
@@ -128,17 +130,14 @@ public abstract class ThemedResourceCache<T> {
     }
 
     public synchronized void clear() {
-        ArrayMap<Resources.ThemeKey, LongSparseArray<WeakReference<T>>> arrayMap = this.mThemedEntries;
-        if (arrayMap != null) {
-            arrayMap.clear();
+        if (this.mThemedEntries != null) {
+            this.mThemedEntries.clear();
         }
-        LongSparseArray<WeakReference<T>> longSparseArray = this.mUnthemedEntries;
-        if (longSparseArray != null) {
-            longSparseArray.clear();
+        if (this.mUnthemedEntries != null) {
+            this.mUnthemedEntries.clear();
         }
-        LongSparseArray<WeakReference<T>> longSparseArray2 = this.mNullThemedEntries;
-        if (longSparseArray2 != null) {
-            longSparseArray2.clear();
+        if (this.mNullThemedEntries != null) {
+            this.mNullThemedEntries.clear();
         }
     }
 }

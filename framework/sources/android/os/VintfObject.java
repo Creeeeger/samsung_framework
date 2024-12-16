@@ -1,6 +1,10 @@
 package android.os;
 
-import android.util.Slog;
+import android.app.ActivityThread;
+import android.app.Instrumentation;
+import android.app.UiAutomation;
+import android.os.ParcelFileDescriptor;
+import java.io.IOException;
 import java.util.Map;
 
 /* loaded from: classes3.dex */
@@ -19,16 +23,30 @@ public class VintfObject {
 
     public static native String[] report();
 
-    public static native int verifyWithoutAvb();
+    public static native int verifyBuildAtBoot();
 
-    @Deprecated
-    public static int verify(String[] packageInfo) {
-        if (packageInfo == null || packageInfo.length <= 0) {
-            Slog.w(LOG_TAG, "VintfObject.verify() is deprecated. Call verifyWithoutAvb() instead.");
-            return verifyWithoutAvb();
+    static {
+        System.loadLibrary("vintf_jni");
+    }
+
+    private static String runShellCommand(String command) throws IOException {
+        ActivityThread activityThread = ActivityThread.currentActivityThread();
+        Instrumentation instrumentation = activityThread.getInstrumentation();
+        UiAutomation automation = instrumentation.getUiAutomation();
+        ParcelFileDescriptor pfd = automation.executeShellCommand(command);
+        ParcelFileDescriptor.AutoCloseInputStream is = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
+        try {
+            String str = new String(is.readAllBytes());
+            is.close();
+            return str;
+        } catch (Throwable th) {
+            try {
+                is.close();
+            } catch (Throwable th2) {
+                th.addSuppressed(th2);
+            }
+            throw th;
         }
-        Slog.w(LOG_TAG, "VintfObject.verify() with non-empty packageInfo is deprecated. Skipping compatibility checks for update package.");
-        return 0;
     }
 
     private VintfObject() {

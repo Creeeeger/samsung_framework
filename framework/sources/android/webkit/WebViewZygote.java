@@ -19,9 +19,8 @@ public class WebViewZygote {
 
     public static ZygoteProcess getProcess() {
         synchronized (sLock) {
-            ChildZygoteProcess childZygoteProcess = sZygote;
-            if (childZygoteProcess != null) {
-                return childZygoteProcess;
+            if (sZygote != null) {
+                return sZygote;
             }
             connectToZygoteIfNeededLocked();
             return sZygote;
@@ -37,14 +36,25 @@ public class WebViewZygote {
     }
 
     public static boolean isMultiprocessEnabled() {
-        boolean z;
         synchronized (sLock) {
-            z = sMultiprocessEnabled && sPackage != null;
+            boolean z = true;
+            if (Flags.updateServiceV2()) {
+                if (sPackage == null) {
+                    z = false;
+                }
+                return z;
+            }
+            if (!sMultiprocessEnabled || sPackage == null) {
+                z = false;
+            }
+            return z;
         }
-        return z;
     }
 
     public static void setMultiprocessEnabled(boolean enabled) {
+        if (Flags.updateServiceV2()) {
+            throw new IllegalStateException("setMultiprocessEnabled shouldn't be called if update_service_v2 flag is set.");
+        }
         synchronized (sLock) {
             sMultiprocessEnabled = enabled;
             if (!enabled) {
@@ -53,19 +63,18 @@ public class WebViewZygote {
         }
     }
 
-    public static void onWebViewProviderChanged(PackageInfo packageInfo) {
+    static void onWebViewProviderChanged(PackageInfo packageInfo) {
         synchronized (sLock) {
             sPackage = packageInfo;
-            if (sMultiprocessEnabled) {
+            if (Flags.updateServiceV2() || sMultiprocessEnabled) {
                 stopZygoteLocked();
             }
         }
     }
 
     private static void stopZygoteLocked() {
-        ChildZygoteProcess childZygoteProcess = sZygote;
-        if (childZygoteProcess != null) {
-            childZygoteProcess.close();
+        if (sZygote != null) {
+            sZygote.close();
             Process.killProcess(sZygote.getPid());
             sZygote = null;
         }
@@ -75,17 +84,15 @@ public class WebViewZygote {
         if (sZygote != null) {
             return;
         }
-        PackageInfo packageInfo = sPackage;
-        if (packageInfo == null) {
+        if (sPackage == null) {
             Log.e(LOGTAG, "Cannot connect to zygote, no package specified");
             return;
         }
         try {
-            String abi = packageInfo.applicationInfo.primaryCpuAbi;
+            String abi = sPackage.applicationInfo.primaryCpuAbi;
             int runtimeFlags = Zygote.getMemorySafetyRuntimeFlagsForSecondaryZygote(sPackage.applicationInfo, null);
-            ChildZygoteProcess startChildZygote = Process.ZYGOTE_PROCESS.startChildZygote("com.android.internal.os.WebViewZygoteInit", "webview_zygote", 1053, 1053, null, runtimeFlags, "webview_zygote", abi, TextUtils.join(",", Build.SUPPORTED_ABIS), null, Process.FIRST_ISOLATED_UID, Integer.MAX_VALUE);
-            sZygote = startChildZygote;
-            ZygoteProcess.waitForConnectionToZygote(startChildZygote.getPrimarySocketAddress());
+            sZygote = Process.ZYGOTE_PROCESS.startChildZygote("com.android.internal.os.WebViewZygoteInit", "webview_zygote", 1053, 1053, null, runtimeFlags, "webview_zygote", abi, TextUtils.join(",", Build.SUPPORTED_ABIS), null, Process.FIRST_ISOLATED_UID, Integer.MAX_VALUE);
+            ZygoteProcess.waitForConnectionToZygote(sZygote.getPrimarySocketAddress());
             sZygote.preloadApp(sPackage.applicationInfo, abi);
         } catch (Exception e) {
             Log.e(LOGTAG, "Error connecting to webview zygote", e);

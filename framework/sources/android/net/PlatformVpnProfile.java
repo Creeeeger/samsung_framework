@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.security.GeneralSecurityException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public abstract class PlatformVpnProfile {
     public static final int MAX_MTU_DEFAULT = 1360;
     public static final int TYPE_IKEV2_IPSEC_PSK = 7;
@@ -17,13 +17,12 @@ public abstract class PlatformVpnProfile {
     protected final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PlatformVpnType {
     }
 
     public abstract VpnProfile toVpnProfile() throws IOException, GeneralSecurityException;
 
-    public PlatformVpnProfile(int type, boolean excludeLocalRoutes, boolean requiresValidation) {
+    PlatformVpnProfile(int type, boolean excludeLocalRoutes, boolean requiresValidation) {
         this.mType = type;
         this.mExcludeLocalRoutes = excludeLocalRoutes;
         this.mRequiresInternetValidation = requiresValidation;

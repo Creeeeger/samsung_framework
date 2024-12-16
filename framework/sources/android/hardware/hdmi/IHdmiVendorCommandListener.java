@@ -12,7 +12,6 @@ public interface IHdmiVendorCommandListener extends IInterface {
 
     void onReceived(int i, int i2, byte[] bArr, boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiVendorCommandListener {
         @Override // android.hardware.hdmi.IHdmiVendorCommandListener
         public void onReceived(int logicalAddress, int destAddress, byte[] operands, boolean hasVendorId) throws RemoteException {
@@ -28,7 +27,6 @@ public interface IHdmiVendorCommandListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiVendorCommandListener {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiVendorCommandListener";
         static final int TRANSACTION_onControlStateChanged = 2;
@@ -75,34 +73,31 @@ public interface IHdmiVendorCommandListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    byte[] _arg2 = data.createByteArray();
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onReceived(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onControlStateChanged(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            byte[] _arg2 = data.createByteArray();
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onReceived(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onControlStateChanged(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiVendorCommandListener {
+        private static class Proxy implements IHdmiVendorCommandListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

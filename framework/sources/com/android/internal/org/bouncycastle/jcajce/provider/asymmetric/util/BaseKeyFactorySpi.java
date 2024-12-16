@@ -15,7 +15,7 @@ import java.security.spec.X509EncodedKeySpec;
 /* loaded from: classes5.dex */
 public abstract class BaseKeyFactorySpi extends KeyFactorySpi implements AsymmetricKeyInfoConverter {
     @Override // java.security.KeyFactorySpi
-    public PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof PKCS8EncodedKeySpec) {
             try {
                 return generatePrivate(PrivateKeyInfo.getInstance(((PKCS8EncodedKeySpec) keySpec).getEncoded()));
@@ -27,7 +27,7 @@ public abstract class BaseKeyFactorySpi extends KeyFactorySpi implements Asymmet
     }
 
     @Override // java.security.KeyFactorySpi
-    public PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof X509EncodedKeySpec) {
             try {
                 return generatePublic(SubjectPublicKeyInfo.getInstance(((X509EncodedKeySpec) keySpec).getEncoded()));
@@ -39,7 +39,7 @@ public abstract class BaseKeyFactorySpi extends KeyFactorySpi implements Asymmet
     }
 
     @Override // java.security.KeyFactorySpi
-    public KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
+    protected KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
         if (spec.isAssignableFrom(PKCS8EncodedKeySpec.class) && key.getFormat().equals("PKCS#8")) {
             return new PKCS8EncodedKeySpec(key.getEncoded());
         }

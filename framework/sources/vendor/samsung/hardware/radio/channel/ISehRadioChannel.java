@@ -21,7 +21,6 @@ public interface ISehRadioChannel extends IInterface {
 
     void setCallback(ISehRadioChannelCallback iSehRadioChannelCallback) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioChannel {
         @Override // vendor.samsung.hardware.radio.channel.ISehRadioChannel
         public void setCallback(ISehRadioChannelCallback sehChannelCallback) throws RemoteException {
@@ -47,7 +46,6 @@ public interface ISehRadioChannel extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioChannel {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -81,37 +79,36 @@ public interface ISehRadioChannel extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    ISehRadioChannelCallback _arg0 = ISehRadioChannelCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 2:
+                    byte[] _arg02 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    send(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISehRadioChannelCallback _arg0 = ISehRadioChannelCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            return true;
-                        case 2:
-                            byte[] _arg02 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            send(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISehRadioChannel {
             private IBinder mRemote;
             private int mCachedVersion = -1;

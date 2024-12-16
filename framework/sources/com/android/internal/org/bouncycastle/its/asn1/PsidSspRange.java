@@ -53,9 +53,8 @@ public class PsidSspRange extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector avec = new ASN1EncodableVector();
         avec.add(this.psid);
-        SspRange sspRange = this.sspRange;
-        if (sspRange != null) {
-            avec.add(sspRange);
+        if (this.sspRange != null) {
+            avec.add(this.sspRange);
         }
         return new DERSequence(avec);
     }

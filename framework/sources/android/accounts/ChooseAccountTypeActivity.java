@@ -72,30 +72,14 @@ public class ChooseAccountTypeActivity extends Activity {
         list.setChoiceMode(0);
         list.setTextFilterEnabled(false);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.accounts.ChooseAccountTypeActivity.1
-            AnonymousClass1() {
-            }
-
             @Override // android.widget.AdapterView.OnItemClickListener
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                ChooseAccountTypeActivity chooseAccountTypeActivity = ChooseAccountTypeActivity.this;
-                chooseAccountTypeActivity.setResultAndFinish(((AuthInfo) chooseAccountTypeActivity.mAuthenticatorInfosToDisplay.get(position)).desc.type);
+                ChooseAccountTypeActivity.this.setResultAndFinish(((AuthInfo) ChooseAccountTypeActivity.this.mAuthenticatorInfosToDisplay.get(position)).desc.type);
             }
         });
     }
 
-    /* renamed from: android.accounts.ChooseAccountTypeActivity$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements AdapterView.OnItemClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemClickListener
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            ChooseAccountTypeActivity chooseAccountTypeActivity = ChooseAccountTypeActivity.this;
-            chooseAccountTypeActivity.setResultAndFinish(((AuthInfo) chooseAccountTypeActivity.mAuthenticatorInfosToDisplay.get(position)).desc.type);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void setResultAndFinish(String type) {
         Bundle bundle = new Bundle();
         bundle.putString("accountType", type);
@@ -131,8 +115,7 @@ public class ChooseAccountTypeActivity extends Activity {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class AuthInfo {
+    private static class AuthInfo {
         final AuthenticatorDescription desc;
         final Drawable drawable;
         final String name;
@@ -144,20 +127,14 @@ public class ChooseAccountTypeActivity extends Activity {
         }
     }
 
-    /* loaded from: classes.dex */
     private static class ViewHolder {
         ImageView icon;
         TextView text;
-
-        /* synthetic */ ViewHolder(ViewHolderIA viewHolderIA) {
-            this();
-        }
 
         private ViewHolder() {
         }
     }
 
-    /* loaded from: classes.dex */
     private static class AccountArrayAdapter extends ArrayAdapter<AuthInfo> {
         private ArrayList<AuthInfo> mInfos;
         private LayoutInflater mLayoutInflater;
@@ -180,8 +157,8 @@ public class ChooseAccountTypeActivity extends Activity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.text.setText(this.mInfos.get(position).name);
-            holder.icon.lambda$setImageURIAsync$2(this.mInfos.get(position).drawable);
+            holder.text.lambda$setTextAsync$0(this.mInfos.get(position).name);
+            holder.icon.lambda$setImageURIAsync$0(this.mInfos.get(position).drawable);
             return convertView;
         }
     }

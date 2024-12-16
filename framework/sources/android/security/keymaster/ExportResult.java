@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class ExportResult implements Parcelable {
     public static final Parcelable.Creator<ExportResult> CREATOR = new Parcelable.Creator<ExportResult>() { // from class: android.security.keymaster.ExportResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExportResult createFromParcel(Parcel in) {
             return new ExportResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExportResult[] newArray(int length) {
             return new ExportResult[length];
@@ -25,23 +24,6 @@ public class ExportResult implements Parcelable {
     public ExportResult(int resultCode) {
         this.resultCode = resultCode;
         this.exportData = new byte[0];
-    }
-
-    /* renamed from: android.security.keymaster.ExportResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ExportResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExportResult createFromParcel(Parcel in) {
-            return new ExportResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExportResult[] newArray(int length) {
-            return new ExportResult[length];
-        }
     }
 
     protected ExportResult(Parcel in) {

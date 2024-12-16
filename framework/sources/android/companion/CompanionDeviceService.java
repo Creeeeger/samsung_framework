@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import com.android.internal.hidden_from_bootclasspath.android.companion.Flags;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
@@ -55,6 +56,9 @@ public abstract class CompanionDeviceService extends Service {
         }
     }
 
+    public void onDevicePresenceEvent(DevicePresenceEvent event) {
+    }
+
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         if (Objects.equals(intent.getAction(), SERVICE_INTERFACE)) {
@@ -68,27 +72,24 @@ public abstract class CompanionDeviceService extends Service {
     public void onBindCompanionDeviceService(Intent intent) {
     }
 
-    /* loaded from: classes.dex */
-    public class Stub extends ICompanionDeviceService.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class Stub extends ICompanionDeviceService.Stub {
         final Handler mMainHandler;
         final CompanionDeviceService mService;
-
-        /* synthetic */ Stub(CompanionDeviceService companionDeviceService, StubIA stubIA) {
-            this();
-        }
 
         private Stub() {
             this.mMainHandler = Handler.getMain();
             this.mService = CompanionDeviceService.this;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDeviceAppeared$0(AssociationInfo associationInfo) {
             this.mService.onDeviceAppeared(associationInfo);
         }
 
         @Override // android.companion.ICompanionDeviceService
         public void onDeviceAppeared(final AssociationInfo associationInfo) {
-            this.mMainHandler.postAtFrontOfQueue(new Runnable() { // from class: android.companion.CompanionDeviceService$Stub$$ExternalSyntheticLambda1
+            this.mMainHandler.postAtFrontOfQueue(new Runnable() { // from class: android.companion.CompanionDeviceService$Stub$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     CompanionDeviceService.Stub.this.lambda$onDeviceAppeared$0(associationInfo);
@@ -96,6 +97,7 @@ public abstract class CompanionDeviceService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDeviceDisappeared$1(AssociationInfo associationInfo) {
             this.mService.onDeviceDisappeared(associationInfo);
         }
@@ -108,6 +110,23 @@ public abstract class CompanionDeviceService extends Service {
                     CompanionDeviceService.Stub.this.lambda$onDeviceDisappeared$1(associationInfo);
                 }
             });
+        }
+
+        @Override // android.companion.ICompanionDeviceService
+        public void onDevicePresenceEvent(final DevicePresenceEvent event) {
+            if (Flags.devicePresence()) {
+                this.mMainHandler.postAtFrontOfQueue(new Runnable() { // from class: android.companion.CompanionDeviceService$Stub$$ExternalSyntheticLambda1
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        CompanionDeviceService.Stub.this.lambda$onDevicePresenceEvent$2(event);
+                    }
+                });
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onDevicePresenceEvent$2(DevicePresenceEvent event) {
+            this.mService.onDevicePresenceEvent(event);
         }
     }
 }

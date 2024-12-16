@@ -42,16 +42,14 @@ public final class MicrophoneInfo {
     public static final Coordinate3F ORIENTATION_UNKNOWN = new Coordinate3F(0.0f, 0.0f, 0.0f);
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MicrophoneDirectionality {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MicrophoneLocation {
     }
 
-    public MicrophoneInfo(String deviceId, int type, String address, int location, int group, int indexInTheGroup, Coordinate3F position, Coordinate3F orientation, List<Pair<Float, Float>> frequencyResponse, List<Pair<Integer, Integer>> channelMapping, float sensitivity, float maxSpl, float minSpl, int directionality) {
+    MicrophoneInfo(String deviceId, int type, String address, int location, int group, int indexInTheGroup, Coordinate3F position, Coordinate3F orientation, List<Pair<Float, Float>> frequencyResponse, List<Pair<Integer, Integer>> channelMapping, float sensitivity, float maxSpl, float minSpl, int directionality) {
         this.mDeviceId = deviceId;
         this.mType = type;
         this.mAddress = address;
@@ -140,7 +138,6 @@ public final class MicrophoneInfo {
         this.mChannelMapping = channelMapping;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Coordinate3F {
         public final float x;
         public final float y;

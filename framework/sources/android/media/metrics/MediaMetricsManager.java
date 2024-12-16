@@ -120,4 +120,12 @@ public final class MediaMetricsManager {
             throw e.rethrowFromSystemServer();
         }
     }
+
+    public void reportEditingEndedEvent(String sessionId, EditingEndedEvent editingEndedEvent) {
+        try {
+            this.mService.reportEditingEndedEvent(sessionId, editingEndedEvent, this.mUserId);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
 }

@@ -24,7 +24,6 @@ public class TableRow extends LinearLayout {
     private int[] mConstrainedColumnWidths;
     private int mNumColumns;
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends LinearLayout.LayoutParams {
         private static final int LOCATION = 0;
         private static final int LOCATION_NEXT = 1;
@@ -36,7 +35,6 @@ public class TableRow extends LinearLayout {
         @ViewDebug.ExportedProperty(category = TtmlUtils.TAG_LAYOUT)
         public int span;
 
-        /* loaded from: classes4.dex */
         public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<LayoutParams> {
             private int mLayout_columnId;
             private int mLayout_spanId;
@@ -64,9 +62,8 @@ public class TableRow extends LinearLayout {
             this.mOffset = new int[2];
             TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.TableRow_Cell);
             this.column = a.getInt(0, -1);
-            int i = a.getInt(1, 1);
-            this.span = i;
-            if (i <= 1) {
+            this.span = a.getInt(1, 1);
+            if (this.span <= 1) {
                 this.span = 1;
             }
             a.recycle();
@@ -123,7 +120,7 @@ public class TableRow extends LinearLayout {
         }
 
         @Override // android.widget.LinearLayout.LayoutParams, android.view.ViewGroup.MarginLayoutParams, android.view.ViewGroup.LayoutParams
-        public void encodeProperties(ViewHierarchyEncoder encoder) {
+        protected void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
             encoder.addProperty("layout:column", this.column);
             encoder.addProperty("layout:span", this.span);
@@ -144,10 +141,9 @@ public class TableRow extends LinearLayout {
 
     private void initTableRow() {
         ViewGroup.OnHierarchyChangeListener oldListener = this.mOnHierarchyChangeListener;
-        ChildrenTracker childrenTracker = new ChildrenTracker();
-        this.mChildrenTracker = childrenTracker;
+        this.mChildrenTracker = new ChildrenTracker();
         if (oldListener != null) {
-            childrenTracker.setOnHierarchyChangeListener(oldListener);
+            this.mChildrenTracker.setOnHierarchyChangeListener(oldListener);
         }
         super.setOnHierarchyChangeListener(this.mChildrenTracker);
     }
@@ -157,7 +153,7 @@ public class TableRow extends LinearLayout {
         this.mChildrenTracker.setOnHierarchyChangeListener(listener);
     }
 
-    public void setColumnCollapsed(int columnIndex, boolean collapsed) {
+    void setColumnCollapsed(int columnIndex, boolean collapsed) {
         View child = getVirtualChildAt(columnIndex);
         if (child != null) {
             child.setVisibility(collapsed ? 8 : 0);
@@ -165,12 +161,12 @@ public class TableRow extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         measureHorizontal(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         layoutHorizontal(l, t, r, b);
     }
 
@@ -223,7 +219,7 @@ public class TableRow extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout
-    public void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
+    void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
         if (this.mConstrainedColumnWidths != null) {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             int measureMode = 1073741824;
@@ -249,15 +245,10 @@ public class TableRow extends LinearLayout {
                 switch (absoluteGravity & 7) {
                     case 1:
                         lp.mOffset[0] = lp.mOffset[1] / 2;
-                        return;
-                    case 2:
-                    case 3:
-                    case 4:
-                    default:
-                        return;
+                        break;
                     case 5:
                         lp.mOffset[0] = lp.mOffset[1];
-                        return;
+                        break;
                 }
             }
             int[] iArr = lp.mOffset;
@@ -284,11 +275,10 @@ public class TableRow extends LinearLayout {
         return ((LayoutParams) child.getLayoutParams()).mOffset[1];
     }
 
-    public int[] getColumnsWidths(int widthMeasureSpec, int heightMeasureSpec) {
+    int[] getColumnsWidths(int widthMeasureSpec, int heightMeasureSpec) {
         int spec;
         int numColumns = getVirtualChildCount();
-        int[] iArr = this.mColumnWidths;
-        if (iArr == null || numColumns != iArr.length) {
+        if (this.mColumnWidths == null || numColumns != this.mColumnWidths.length) {
             this.mColumnWidths = new int[numColumns];
         }
         int[] columnWidths = this.mColumnWidths;
@@ -321,7 +311,7 @@ public class TableRow extends LinearLayout {
         return columnWidths;
     }
 
-    public void setColumnsWidthConstraints(int[] columnWidths) {
+    void setColumnsWidthConstraints(int[] columnWidths) {
         if (columnWidths == null || columnWidths.length < getVirtualChildCount()) {
             throw new IllegalArgumentException("columnWidths should be >= getVirtualChildCount()");
         }
@@ -333,16 +323,18 @@ public class TableRow extends LinearLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams();
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
@@ -353,17 +345,13 @@ public class TableRow extends LinearLayout {
         return TableRow.class.getName();
     }
 
-    /* loaded from: classes4.dex */
-    public class ChildrenTracker implements ViewGroup.OnHierarchyChangeListener {
+    private class ChildrenTracker implements ViewGroup.OnHierarchyChangeListener {
         private ViewGroup.OnHierarchyChangeListener listener;
-
-        /* synthetic */ ChildrenTracker(TableRow tableRow, ChildrenTrackerIA childrenTrackerIA) {
-            this();
-        }
 
         private ChildrenTracker() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setOnHierarchyChangeListener(ViewGroup.OnHierarchyChangeListener listener) {
             this.listener = listener;
         }
@@ -371,18 +359,16 @@ public class TableRow extends LinearLayout {
         @Override // android.view.ViewGroup.OnHierarchyChangeListener
         public void onChildViewAdded(View parent, View child) {
             TableRow.this.mColumnToChildIndex = null;
-            ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener = this.listener;
-            if (onHierarchyChangeListener != null) {
-                onHierarchyChangeListener.onChildViewAdded(parent, child);
+            if (this.listener != null) {
+                this.listener.onChildViewAdded(parent, child);
             }
         }
 
         @Override // android.view.ViewGroup.OnHierarchyChangeListener
         public void onChildViewRemoved(View parent, View child) {
             TableRow.this.mColumnToChildIndex = null;
-            ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener = this.listener;
-            if (onHierarchyChangeListener != null) {
-                onHierarchyChangeListener.onChildViewRemoved(parent, child);
+            if (this.listener != null) {
+                this.listener.onChildViewRemoved(parent, child);
             }
         }
     }

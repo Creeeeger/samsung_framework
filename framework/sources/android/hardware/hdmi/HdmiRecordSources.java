@@ -41,8 +41,7 @@ public final class HdmiRecordSources {
     private static final int RECORD_SOURCE_TYPE_OWN_SOURCE = 1;
     private static final String TAG = "HdmiRecordSources";
 
-    /* loaded from: classes2.dex */
-    public interface DigitalServiceIdentification {
+    private interface DigitalServiceIdentification {
         int toByteArray(byte[] bArr, int i);
     }
 
@@ -50,24 +49,23 @@ public final class HdmiRecordSources {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static abstract class RecordSource {
         final int mExtraDataSize;
         final int mSourceType;
 
         abstract int extraParamToByteArray(byte[] bArr, int i);
 
-        public RecordSource(int sourceType, int extraDataSize) {
+        RecordSource(int sourceType, int extraDataSize) {
             this.mSourceType = sourceType;
             this.mExtraDataSize = extraDataSize;
         }
 
-        public final int getDataSize(boolean includeType) {
+        final int getDataSize(boolean includeType) {
             int i = this.mExtraDataSize;
             return includeType ? i + 1 : i;
         }
 
-        public final int toByteArray(boolean includeType, byte[] data, int index) {
+        final int toByteArray(boolean includeType, byte[] data, int index) {
             if (includeType) {
                 data[index] = (byte) this.mSourceType;
                 index++;
@@ -82,13 +80,8 @@ public final class HdmiRecordSources {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class OwnSource extends RecordSource {
         private static final int EXTRA_DATA_SIZE = 0;
-
-        /* synthetic */ OwnSource(OwnSourceIA ownSourceIA) {
-            this();
-        }
 
         private OwnSource() {
             super(1, 0);
@@ -100,7 +93,6 @@ public final class HdmiRecordSources {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class AribData implements DigitalServiceIdentification {
         private final int mOriginalNetworkId;
         private final int mServiceId;
@@ -118,7 +110,6 @@ public final class HdmiRecordSources {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class AtscData implements DigitalServiceIdentification {
         private final int mProgramNumber;
         private final int mTransportStreamId;
@@ -134,7 +125,6 @@ public final class HdmiRecordSources {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class DvbData implements DigitalServiceIdentification {
         private final int mOriginalNetworkId;
         private final int mServiceId;
@@ -152,16 +142,10 @@ public final class HdmiRecordSources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public static final class ChannelIdentifier {
+    private static final class ChannelIdentifier {
         private final int mChannelNumberFormat;
         private final int mMajorChannelNumber;
         private final int mMinorChannelNumber;
-
-        /* synthetic */ ChannelIdentifier(int i, int i2, int i3, ChannelIdentifierIA channelIdentifierIA) {
-            this(i, i2, i3);
-        }
 
         private ChannelIdentifier(int format, int majorNumber, int minorNumer) {
             this.mChannelNumberFormat = format;
@@ -169,17 +153,15 @@ public final class HdmiRecordSources {
             this.mMinorChannelNumber = minorNumer;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int toByteArray(byte[] data, int index) {
-            int i = this.mChannelNumberFormat << 2;
-            int i2 = this.mMajorChannelNumber;
-            data[index] = (byte) (i | ((i2 >>> 8) & 3));
-            data[index + 1] = (byte) (i2 & 255);
+            data[index] = (byte) ((this.mChannelNumberFormat << 2) | ((this.mMajorChannelNumber >>> 8) & 3));
+            data[index + 1] = (byte) (this.mMajorChannelNumber & 255);
             HdmiRecordSources.shortToByteArray((short) this.mMinorChannelNumber, data, index + 2);
             return 4;
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class DigitalChannelData implements DigitalServiceIdentification {
         private final ChannelIdentifier mChannelIdentifier;
 
@@ -279,7 +261,6 @@ public final class HdmiRecordSources {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class DigitalServiceSource extends RecordSource {
         private static final int DIGITAL_SERVICE_IDENTIFIED_BY_CHANNEL = 1;
         private static final int DIGITAL_SERVICE_IDENTIFIED_BY_DIGITAL_ID = 0;
@@ -287,10 +268,6 @@ public final class HdmiRecordSources {
         private final int mBroadcastSystem;
         private final DigitalServiceIdentification mIdentification;
         private final int mIdentificationMethod;
-
-        /* synthetic */ DigitalServiceSource(int i, int i2, DigitalServiceIdentification digitalServiceIdentification, DigitalServiceSourceIA digitalServiceSourceIA) {
-            this(i, i2, digitalServiceIdentification);
-        }
 
         private DigitalServiceSource(int identificatinoMethod, int broadcastSystem, DigitalServiceIdentification identification) {
             super(2, 7);
@@ -324,16 +301,11 @@ public final class HdmiRecordSources {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class AnalogueServiceSource extends RecordSource {
         static final int EXTRA_DATA_SIZE = 4;
         private final int mBroadcastSystem;
         private final int mBroadcastType;
         private final int mFrequency;
-
-        /* synthetic */ AnalogueServiceSource(int i, int i2, int i3, AnalogueServiceSourceIA analogueServiceSourceIA) {
-            this(i, i2, i3);
-        }
 
         private AnalogueServiceSource(int broadcastType, int frequency, int broadcastSystem) {
             super(3, 4);
@@ -360,14 +332,9 @@ public final class HdmiRecordSources {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class ExternalPlugData extends RecordSource {
         static final int EXTRA_DATA_SIZE = 1;
         private final int mPlugNumber;
-
-        /* synthetic */ ExternalPlugData(int i, ExternalPlugDataIA externalPlugDataIA) {
-            this(i);
-        }
 
         private ExternalPlugData(int plugNumber) {
             super(4, 1);
@@ -390,14 +357,9 @@ public final class HdmiRecordSources {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class ExternalPhysicalAddress extends RecordSource {
         static final int EXTRA_DATA_SIZE = 2;
         private final int mPhysicalAddress;
-
-        /* synthetic */ ExternalPhysicalAddress(int i, ExternalPhysicalAddressIA externalPhysicalAddressIA) {
-            this(i);
-        }
 
         private ExternalPhysicalAddress(int physicalAddress) {
             super(5, 2);
@@ -411,6 +373,7 @@ public final class HdmiRecordSources {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int threeFieldsToSixBytes(int first, int second, int third, byte[] data, int index) {
         shortToByteArray((short) first, data, index);
         shortToByteArray((short) second, data, index + 2);
@@ -418,6 +381,7 @@ public final class HdmiRecordSources {
         return 6;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int shortToByteArray(short value, byte[] byteArray, int index) {
         byteArray[index] = (byte) ((value >>> 8) & 255);
         byteArray[index + 1] = (byte) (value & 255);

@@ -6,7 +6,7 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MPRecordingProxy {
     private static final String TAG;
     private MPRecorderListener mListener;
@@ -14,7 +14,6 @@ public class MPRecordingProxy {
     private long mNativeContext;
     private final int mToken;
 
-    /* loaded from: classes5.dex */
     public enum BufferMode {
         PREVIEW,
         SURFACE,

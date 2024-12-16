@@ -22,20 +22,20 @@ public class LayerManager extends Manager<Layer> {
         Layer layer;
         try {
             int uniqueId = generateUniqueId();
-            switch (AnonymousClass1.$SwitchMap$com$samsung$vekit$Common$Type$LayerType[type.ordinal()]) {
-                case 1:
+            switch (type) {
+                case MEDIA:
                     layer = new MediaLayer(this.context, uniqueId, name);
                     break;
-                case 2:
+                case AUDIO:
                     layer = new AudioLayer(this.context, uniqueId, name);
                     break;
-                case 3:
+                case IMAGE:
                     layer = new ImageLayer(this.context, uniqueId, name);
                     break;
-                case 4:
+                case DOODLE:
                     layer = new DoodleLayer(this.context, uniqueId, name);
                     break;
-                case 5:
+                case CAPTION:
                     layer = new CaptionLayer(this.context, uniqueId, name);
                     break;
                 default:
@@ -46,37 +46,6 @@ public class LayerManager extends Manager<Layer> {
         } catch (Exception e) {
             Log.e(this.TAG, "create: ", e);
             return null;
-        }
-    }
-
-    /* renamed from: com.samsung.vekit.Manager.LayerManager$1 */
-    /* loaded from: classes6.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$LayerType;
-
-        static {
-            int[] iArr = new int[LayerType.values().length];
-            $SwitchMap$com$samsung$vekit$Common$Type$LayerType = iArr;
-            try {
-                iArr[LayerType.MEDIA.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$LayerType[LayerType.AUDIO.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$LayerType[LayerType.IMAGE.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$LayerType[LayerType.DOODLE.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$LayerType[LayerType.CAPTION.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
         }
     }
 }

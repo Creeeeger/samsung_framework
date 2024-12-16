@@ -14,7 +14,6 @@ public interface ISystemDataTransferCallback extends IInterface {
 
     void onResult() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISystemDataTransferCallback {
         @Override // android.companion.ISystemDataTransferCallback
         public void onResult() throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISystemDataTransferCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISystemDataTransferCallback {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onResult = 1;
@@ -76,29 +74,25 @@ public interface ISystemDataTransferCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISystemDataTransferCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISystemDataTransferCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISystemDataTransferCallback.DESCRIPTOR);
+                case 1:
+                    onResult();
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onResult();
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISystemDataTransferCallback {
+        private static class Proxy implements ISystemDataTransferCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

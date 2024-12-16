@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.view.DisplayCutout;
 import android.view.DisplayInfo;
 import android.view.InsetsState;
 import android.view.WindowInsets;
@@ -60,6 +61,7 @@ public final class WindowMetricsController {
         return new WindowMetrics(new Rect(bounds), insetsSupplier, density);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ WindowInsets lambda$getWindowMetricsInternal$0(IBinder token, Rect bounds, boolean isScreenRound, int activityType) {
         return getWindowInsetsFromServerForDisplay(this.mContext.getDisplayId(), token, bounds, isScreenRound, activityType);
     }
@@ -89,11 +91,15 @@ public final class WindowMetricsController {
             Set<WindowMetrics> maxMetrics = new HashSet<>();
             for (int i = 0; i < possibleDisplayInfos.size(); i++) {
                 DisplayInfo currentDisplayInfo = possibleDisplayInfos.get(i);
-                Rect maxBounds = new Rect(0, 0, currentDisplayInfo.logicalWidth, currentDisplayInfo.logicalHeight);
+                Rect maxBounds = new Rect(0, 0, currentDisplayInfo.getNaturalWidth(), currentDisplayInfo.getNaturalHeight());
                 boolean isScreenRound = (currentDisplayInfo.flags & 16) != 0;
                 WindowInsets windowInsets = getWindowInsetsFromServerForDisplay(currentDisplayInfo.displayId, null, new Rect(0, 0, currentDisplayInfo.getNaturalWidth(), currentDisplayInfo.getNaturalHeight()), isScreenRound, 0);
+                DisplayCutout cutout = currentDisplayInfo.displayCutout;
+                if (cutout != null && currentDisplayInfo.rotation != 0) {
+                    cutout = cutout.getRotated(currentDisplayInfo.logicalWidth, currentDisplayInfo.logicalHeight, currentDisplayInfo.rotation, 0);
+                }
                 float density = currentDisplayInfo.logicalDensityDpi * 0.00625f;
-                maxMetrics.add(new WindowMetrics(maxBounds, new WindowInsets.Builder(windowInsets).setRoundedCorners(currentDisplayInfo.roundedCorners).setDisplayCutout(currentDisplayInfo.displayCutout).build(), density));
+                maxMetrics.add(new WindowMetrics(maxBounds, new WindowInsets.Builder(windowInsets).setRoundedCorners(currentDisplayInfo.roundedCorners).setDisplayCutout(cutout).build(), density));
             }
             return maxMetrics;
         } catch (RemoteException e) {

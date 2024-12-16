@@ -5,7 +5,6 @@ import android.content.Context;
 import android.hardware.graphics.common.Dataspace;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -62,9 +61,6 @@ public class SemClipboardManager {
     private boolean mIsMaximumSize = false;
     private OnPasteListener mPasteListener = null;
     private final IClipboardDataPasteEvent.Stub mOnPasteServiceListener = new IClipboardDataPasteEvent.Stub() { // from class: com.samsung.android.content.clipboard.SemClipboardManager.1
-        AnonymousClass1() {
-        }
-
         @Override // android.sec.clipboard.IClipboardDataPasteEvent
         public void onPaste(SemClipData data) {
             SemClipboardManager.this.requestPaste(data);
@@ -72,27 +68,11 @@ public class SemClipboardManager {
     };
     private ArrayList<SemClipboardEventListener> mOnClipboardEventServiceListeners = new ArrayList<>();
 
-    /* loaded from: classes5.dex */
     public interface OnPasteListener {
         void onPaste(SemClipData semClipData);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.content.clipboard.SemClipboardManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends IClipboardDataPasteEvent.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.sec.clipboard.IClipboardDataPasteEvent
-        public void onPaste(SemClipData data) {
-            SemClipboardManager.this.requestPaste(data);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class InnerOnClipboardEventListener extends IOnClipboardEventListener.Stub {
+    private static class InnerOnClipboardEventListener extends IOnClipboardEventListener.Stub {
         private final WeakReference<Handler> mWeakHandler;
 
         public InnerOnClipboardEventListener(Handler handler) {
@@ -101,8 +81,7 @@ public class SemClipboardManager {
 
         @Override // com.samsung.android.content.clipboard.IOnClipboardEventListener
         public void onClipboardEvent(int event, SemClipData data) {
-            WeakReference<Handler> weakReference = this.mWeakHandler;
-            if (weakReference == null || weakReference.get() == null) {
+            if (this.mWeakHandler == null || this.mWeakHandler.get() == null) {
                 Log.secD(SemClipboardManager.TAG, "onClipboardEvent mWeakHandler is null. mWeakHandler=" + this.mWeakHandler);
                 return;
             }
@@ -117,8 +96,7 @@ public class SemClipboardManager {
 
         @Override // com.samsung.android.content.clipboard.IOnClipboardEventListener
         public void onUpdateFilter(int filter) {
-            WeakReference<Handler> weakReference = this.mWeakHandler;
-            if (weakReference == null || weakReference.get() == null) {
+            if (this.mWeakHandler == null || this.mWeakHandler.get() == null) {
                 Log.secD(SemClipboardManager.TAG, "onUpdateFilter mWeakHandler is null. mWeakHandler=" + this.mWeakHandler);
                 return;
             }
@@ -132,7 +110,6 @@ public class SemClipboardManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public class ClipboardEvent {
         public static final int CLIPS_REFRESH = 7;
         public static final int CLIP_ADDED = 1;
@@ -145,7 +122,6 @@ public class SemClipboardManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Type {
         public static final int ALL = -1;
         public static final int HTML = 4;
@@ -160,13 +136,11 @@ public class SemClipboardManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public interface OnAddClipResultListener {
         void onFailure(int i);
 
         void onSuccess();
 
-        /* loaded from: classes5.dex */
         public static class Error {
             public static final int REASON_DUPLICATED = 2;
             public static final int REASON_EMPTY_DATA = 3;
@@ -181,10 +155,6 @@ public class SemClipboardManager {
     public SemClipboardManager(Context context) {
         this.mContext = context;
         this.mHandler = new Handler(this.mContext.getMainLooper()) { // from class: com.samsung.android.content.clipboard.SemClipboardManager.2
-            AnonymousClass2(Looper looper) {
-                super(looper);
-            }
-
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 SemClipboardManager.this.notifyEvent(msg);
@@ -193,28 +163,12 @@ public class SemClipboardManager {
         this.mInnerOnClipboardEventServiceListener = new InnerOnClipboardEventListener(this.mHandler);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.content.clipboard.SemClipboardManager$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 extends Handler {
-        AnonymousClass2(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            SemClipboardManager.this.notifyEvent(msg);
-        }
-    }
-
     private static IClipboardService getSemService() {
-        IClipboardService iClipboardService = mSemService;
-        if (iClipboardService != null) {
-            return iClipboardService;
+        if (mSemService != null) {
+            return mSemService;
         }
-        IClipboardService asInterface = IClipboardService.Stub.asInterface(ServiceManager.getService(Context.SEM_CLIPBOARD_SERVICE));
-        mSemService = asInterface;
-        if (asInterface == null) {
+        mSemService = IClipboardService.Stub.asInterface(ServiceManager.getService(Context.SEM_CLIPBOARD_SERVICE));
+        if (mSemService == null) {
             Log.e(TAG, "Failed to get semclipboard service.");
         }
         return mSemService;
@@ -340,11 +294,11 @@ public class SemClipboardManager {
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void requestPaste(SemClipData data) {
-        OnPasteListener onPasteListener = this.mPasteListener;
-        if (onPasteListener != null) {
+        if (this.mPasteListener != null) {
             if (data != null) {
-                onPasteListener.onPaste(data);
+                this.mPasteListener.onPaste(data);
                 return;
             } else {
                 Log.secE(TAG, "clipdata is null");
@@ -542,6 +496,7 @@ public class SemClipboardManager {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyEvent(Message msg) {
         switch (msg.what) {
             case 1:

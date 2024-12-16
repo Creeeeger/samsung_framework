@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class SelectRangeGesture extends PreviewableHandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<SelectRangeGesture> CREATOR = new Parcelable.Creator<SelectRangeGesture>() { // from class: android.view.inputmethod.SelectRangeGesture.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectRangeGesture createFromParcel(Parcel source) {
             return new SelectRangeGesture(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectRangeGesture[] newArray(int size) {
             return new SelectRangeGesture[size];
@@ -24,14 +23,6 @@ public final class SelectRangeGesture extends PreviewableHandwritingGesture impl
     private RectF mEndArea;
     private int mGranularity;
     private RectF mStartArea;
-
-    /* synthetic */ SelectRangeGesture(int i, RectF rectF, RectF rectF2, String str, SelectRangeGestureIA selectRangeGestureIA) {
-        this(i, rectF, rectF2, str);
-    }
-
-    /* synthetic */ SelectRangeGesture(Parcel parcel, SelectRangeGestureIA selectRangeGestureIA) {
-        this(parcel);
-    }
 
     private SelectRangeGesture(int granularity, RectF startArea, RectF endArea, String fallbackText) {
         this.mType = 32;
@@ -61,7 +52,6 @@ public final class SelectRangeGesture extends PreviewableHandwritingGesture impl
         return this.mEndArea;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private RectF mEndArea;
         private String mFallbackText;
@@ -89,32 +79,13 @@ public final class SelectRangeGesture extends PreviewableHandwritingGesture impl
         }
 
         public SelectRangeGesture build() {
-            RectF rectF;
-            RectF rectF2 = this.mStartArea;
-            if (rectF2 == null || rectF2.isEmpty() || (rectF = this.mEndArea) == null || rectF.isEmpty()) {
+            if (this.mStartArea == null || this.mStartArea.isEmpty() || this.mEndArea == null || this.mEndArea.isEmpty()) {
                 throw new IllegalArgumentException("Selection area must be set.");
             }
             if (this.mGranularity <= 0) {
                 throw new IllegalArgumentException("Selection granularity must be set.");
             }
             return new SelectRangeGesture(this.mGranularity, this.mStartArea, this.mEndArea, this.mFallbackText);
-        }
-    }
-
-    /* renamed from: android.view.inputmethod.SelectRangeGesture$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SelectRangeGesture> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectRangeGesture createFromParcel(Parcel source) {
-            return new SelectRangeGesture(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectRangeGesture[] newArray(int size) {
-            return new SelectRangeGesture[size];
         }
     }
 

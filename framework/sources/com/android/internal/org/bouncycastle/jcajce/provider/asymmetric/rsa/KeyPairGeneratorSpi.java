@@ -31,9 +31,8 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
         super(algorithmName);
         this.algId = algId;
         this.engine = new RSAKeyPairGenerator();
-        RSAKeyGenerationParameters rSAKeyGenerationParameters = new RSAKeyGenerationParameters(defaultPublicExponent, CryptoServicesRegistrar.getSecureRandom(), 2048, PrimeCertaintyCalculator.getDefaultCertainty(2048));
-        this.param = rSAKeyGenerationParameters;
-        this.engine.init(rSAKeyGenerationParameters);
+        this.param = new RSAKeyGenerationParameters(defaultPublicExponent, CryptoServicesRegistrar.getSecureRandom(), 2048, PrimeCertaintyCalculator.getDefaultCertainty(2048));
+        this.engine.init(this.param);
     }
 
     public KeyPairGeneratorSpi() {
@@ -42,9 +41,8 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
 
     @Override // java.security.KeyPairGenerator, java.security.KeyPairGeneratorSpi
     public void initialize(int strength, SecureRandom random) {
-        RSAKeyGenerationParameters rSAKeyGenerationParameters = new RSAKeyGenerationParameters(defaultPublicExponent, random != null ? random : new SecureRandom(), strength, PrimeCertaintyCalculator.getDefaultCertainty(strength));
-        this.param = rSAKeyGenerationParameters;
-        this.engine.init(rSAKeyGenerationParameters);
+        this.param = new RSAKeyGenerationParameters(defaultPublicExponent, random != null ? random : new SecureRandom(), strength, PrimeCertaintyCalculator.getDefaultCertainty(strength));
+        this.engine.init(this.param);
     }
 
     @Override // java.security.KeyPairGenerator, java.security.KeyPairGeneratorSpi
@@ -53,9 +51,8 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
             throw new InvalidAlgorithmParameterException("parameter object not a RSAKeyGenParameterSpec");
         }
         RSAKeyGenParameterSpec rsaParams = (RSAKeyGenParameterSpec) params;
-        RSAKeyGenerationParameters rSAKeyGenerationParameters = new RSAKeyGenerationParameters(rsaParams.getPublicExponent(), random != null ? random : new SecureRandom(), rsaParams.getKeysize(), PrimeCertaintyCalculator.getDefaultCertainty(2048));
-        this.param = rSAKeyGenerationParameters;
-        this.engine.init(rSAKeyGenerationParameters);
+        this.param = new RSAKeyGenerationParameters(rsaParams.getPublicExponent(), random != null ? random : new SecureRandom(), rsaParams.getKeysize(), PrimeCertaintyCalculator.getDefaultCertainty(2048));
+        this.engine.init(this.param);
     }
 
     @Override // java.security.KeyPairGenerator, java.security.KeyPairGeneratorSpi
@@ -66,7 +63,6 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
         return new KeyPair(new BCRSAPublicKey(this.algId, pub), new BCRSAPrivateCrtKey(this.algId, priv));
     }
 
-    /* loaded from: classes5.dex */
     public static class PSS extends KeyPairGeneratorSpi {
         public PSS() {
             super("RSASSA-PSS", KeyPairGeneratorSpi.PSS_ALGID);

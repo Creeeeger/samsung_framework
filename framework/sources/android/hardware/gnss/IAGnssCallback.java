@@ -12,7 +12,6 @@ public interface IAGnssCallback extends IInterface {
     public static final String HASH = "fc957f1d3d261d065ff5e5415f2d21caa79c310f";
     public static final int VERSION = 2;
 
-    /* loaded from: classes2.dex */
     public @interface AGnssStatusValue {
         public static final int AGNSS_DATA_CONNECTED = 3;
         public static final int AGNSS_DATA_CONN_DONE = 4;
@@ -21,7 +20,6 @@ public interface IAGnssCallback extends IInterface {
         public static final int REQUEST_AGNSS_DATA_CONN = 1;
     }
 
-    /* loaded from: classes2.dex */
     public @interface AGnssType {
         public static final int C2K = 2;
         public static final int SUPL = 1;
@@ -35,7 +33,6 @@ public interface IAGnssCallback extends IInterface {
 
     int getInterfaceVersion() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAGnssCallback {
         @Override // android.hardware.gnss.IAGnssCallback
         public void agnssStatusCb(int type, int status) throws RemoteException {
@@ -57,7 +54,6 @@ public interface IAGnssCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAGnssCallback {
         static final int TRANSACTION_agnssStatusCb = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -108,36 +104,33 @@ public interface IAGnssCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            agnssStatusCb(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    agnssStatusCb(_arg0, _arg1);
+                    reply.writeNoException();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAGnssCallback {
+        private static class Proxy implements IAGnssCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -114,12 +114,12 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     private static final DefaultSecretKeyProvider keySizeProvider = new DefaultSecretKeyProvider();
     private ASN1ObjectIdentifier certAlgorithm;
     private CertificateFactory certFact;
+    private IgnoresCaseHashtable certs;
     private ASN1ObjectIdentifier keyAlgorithm;
+    private IgnoresCaseHashtable keys;
     private final JcaJceHelper helper = new DefaultJcaJceHelper();
     private final JcaJceHelper selfHelper = new BCJcaJceHelper();
-    private IgnoresCaseHashtable keys = new IgnoresCaseHashtable();
     private Hashtable localIds = new Hashtable();
-    private IgnoresCaseHashtable certs = new IgnoresCaseHashtable();
     private Hashtable chainCerts = new Hashtable();
     private Hashtable keyCerts = new Hashtable();
     protected SecureRandom random = CryptoServicesRegistrar.getSecureRandom();
@@ -127,8 +127,7 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     private int itCount = 102400;
     private int saltLength = 20;
 
-    /* loaded from: classes5.dex */
-    public class CertId {
+    private class CertId {
         byte[] id;
 
         CertId(PublicKey key) {
@@ -156,6 +155,8 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     }
 
     public PKCS12KeyStoreSpi(JcaJceHelper helper, ASN1ObjectIdentifier keyAlgorithm, ASN1ObjectIdentifier certAlgorithm) {
+        this.keys = new IgnoresCaseHashtable();
+        this.certs = new IgnoresCaseHashtable();
         this.keyAlgorithm = keyAlgorithm;
         this.certAlgorithm = certAlgorithm;
         try {
@@ -165,6 +166,7 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public SubjectKeyIdentifier createSubjectKeyId(PublicKey pubKey) {
         try {
             SubjectPublicKeyInfo info = SubjectPublicKeyInfo.getInstance(pubKey.getEncoded());
@@ -920,9 +922,8 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
                         } else {
                             String name4 = new String(Hex.encode(createSubjectKeyId(generateCertificate.getPublicKey()).getKeyIdentifier()));
                             this.keyCerts.put(name4, generateCertificate);
-                            IgnoresCaseHashtable ignoresCaseHashtable = this.keys;
                             str3 = str2;
-                            ignoresCaseHashtable.put(name4, ignoresCaseHashtable.remove(str3));
+                            this.keys.put(name4, this.keys.remove(str3));
                         }
                     } else {
                         str3 = str2;
@@ -988,13 +989,13 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Removed duplicated region for block: B:52:0x01e8 A[Catch: CertificateEncodingException -> 0x01cb, TRY_ENTER, TRY_LEAVE, TryCatch #13 {CertificateEncodingException -> 0x01cb, blocks: (B:47:0x01bd, B:52:0x01e8), top: B:46:0x01bd }] */
-    /* JADX WARN: Removed duplicated region for block: B:57:0x01ff A[Catch: CertificateEncodingException -> 0x0240, TRY_LEAVE, TryCatch #4 {CertificateEncodingException -> 0x0240, blocks: (B:50:0x01e0, B:54:0x01f5, B:55:0x01f9, B:57:0x01ff, B:82:0x01d4), top: B:53:0x01f5 }] */
-    /* JADX WARN: Type inference failed for: r1v22, types: [java.security.cert.Certificate, java.lang.Object] */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x01e8 A[Catch: CertificateEncodingException -> 0x01cb, TRY_ENTER, TRY_LEAVE, TryCatch #12 {CertificateEncodingException -> 0x01cb, blocks: (B:47:0x01bd, B:52:0x01e8), top: B:46:0x01bd }] */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x01ff A[Catch: CertificateEncodingException -> 0x0240, TRY_LEAVE, TryCatch #3 {CertificateEncodingException -> 0x0240, blocks: (B:50:0x01e0, B:54:0x01f5, B:55:0x01f9, B:57:0x01ff, B:82:0x01d4), top: B:53:0x01f5 }] */
+    /* JADX WARN: Type inference failed for: r1v22, types: [java.lang.Object, java.security.cert.Certificate] */
     /* JADX WARN: Type inference failed for: r1v24 */
     /* JADX WARN: Type inference failed for: r1v25 */
     /* JADX WARN: Type inference failed for: r1v28 */
-    /* JADX WARN: Type inference failed for: r3v22, types: [java.security.cert.Certificate, java.lang.Object] */
+    /* JADX WARN: Type inference failed for: r3v22, types: [java.lang.Object, java.security.cert.Certificate] */
     /* JADX WARN: Type inference failed for: r5v0, types: [java.util.Hashtable] */
     /* JADX WARN: Type inference failed for: r5v1, types: [java.util.Hashtable] */
     /* JADX WARN: Type inference failed for: r5v11 */
@@ -1009,7 +1010,7 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     */
     private void doStore(java.io.OutputStream r32, char[] r33, boolean r34) throws java.io.IOException {
         /*
-            Method dump skipped, instructions count: 1313
+            Method dump skipped, instructions count: 1318
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jcajce.provider.keystore.pkcs12.PKCS12KeyStoreSpi.doStore(java.io.OutputStream, char[], boolean):void");
@@ -1074,21 +1075,15 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
         return mac.doFinal();
     }
 
-    /* loaded from: classes5.dex */
     public static class BCPKCS12KeyStore extends PKCS12KeyStoreSpi {
         public BCPKCS12KeyStore() {
             super(new DefaultJcaJceHelper(), pbeWithSHAAnd3_KeyTripleDES_CBC, pbeWithSHAAnd40BitRC2_CBC);
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class IgnoresCaseHashtable {
+    private static class IgnoresCaseHashtable {
         private Hashtable keys;
         private Hashtable orig;
-
-        /* synthetic */ IgnoresCaseHashtable(IgnoresCaseHashtableIA ignoresCaseHashtableIA) {
-            this();
-        }
 
         private IgnoresCaseHashtable() {
             this.orig = new Hashtable();
@@ -1134,8 +1129,7 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class DefaultSecretKeyProvider {
+    private static class DefaultSecretKeyProvider {
         private final Map KEY_SIZES;
 
         DefaultSecretKeyProvider() {

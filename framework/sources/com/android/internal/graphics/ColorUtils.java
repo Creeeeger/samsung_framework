@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.hardware.scontext.SContextConstants;
 import com.android.internal.graphics.cam.Cam;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class ColorUtils {
     private static final int MIN_ALPHA_SEARCH_MAX_ITERATIONS = 10;
     private static final int MIN_ALPHA_SEARCH_PRECISION = 1;
@@ -15,8 +15,8 @@ public final class ColorUtils {
     private static final double XYZ_WHITE_REFERENCE_Y = 100.0d;
     private static final double XYZ_WHITE_REFERENCE_Z = 108.883d;
 
-    /* loaded from: classes4.dex */
-    public interface ContrastCalculator {
+    /* JADX INFO: Access modifiers changed from: private */
+    interface ContrastCalculator {
         double calculateContrast(int i, int i2, int i3);
     }
 
@@ -65,7 +65,7 @@ public final class ColorUtils {
     public static int calculateMinimumBackgroundAlpha(int foreground, int background, float minContrastRatio) {
         int background2 = setAlphaComponent(background, 255);
         final int leastContrastyColor = setAlphaComponent(foreground, 255);
-        return binaryAlphaSearch(foreground, background2, minContrastRatio, new ContrastCalculator() { // from class: com.android.internal.graphics.ColorUtils$$ExternalSyntheticLambda0
+        return binaryAlphaSearch(foreground, background2, minContrastRatio, new ContrastCalculator() { // from class: com.android.internal.graphics.ColorUtils$$ExternalSyntheticLambda1
             @Override // com.android.internal.graphics.ColorUtils.ContrastCalculator
             public final double calculateContrast(int i, int i2, int i3) {
                 return ColorUtils.lambda$calculateMinimumBackgroundAlpha$0(leastContrastyColor, i, i2, i3);
@@ -73,7 +73,7 @@ public final class ColorUtils {
         });
     }
 
-    public static /* synthetic */ double lambda$calculateMinimumBackgroundAlpha$0(int leastContrastyColor, int fg, int bg, int alpha) {
+    static /* synthetic */ double lambda$calculateMinimumBackgroundAlpha$0(int leastContrastyColor, int fg, int bg, int alpha) {
         int testBackground = blendARGB(leastContrastyColor, bg, alpha / 255.0f);
         return calculateContrast(fg, setAlphaComponent(testBackground, 255));
     }
@@ -82,7 +82,7 @@ public final class ColorUtils {
         if (Color.alpha(background) != 255) {
             throw new IllegalArgumentException("background can not be translucent: #" + Integer.toHexString(background));
         }
-        ContrastCalculator contrastCalculator = new ContrastCalculator() { // from class: com.android.internal.graphics.ColorUtils$$ExternalSyntheticLambda1
+        ContrastCalculator contrastCalculator = new ContrastCalculator() { // from class: com.android.internal.graphics.ColorUtils$$ExternalSyntheticLambda0
             @Override // com.android.internal.graphics.ColorUtils.ContrastCalculator
             public final double calculateContrast(int i, int i2, int i3) {
                 return ColorUtils.lambda$calculateMinimumAlpha$1(i, i2, i3);
@@ -95,7 +95,7 @@ public final class ColorUtils {
         return binaryAlphaSearch(setAlphaComponent(foreground, 255), background, minContrastRatio, contrastCalculator);
     }
 
-    public static /* synthetic */ double lambda$calculateMinimumAlpha$1(int fg, int bg, int alpha) {
+    static /* synthetic */ double lambda$calculateMinimumAlpha$1(int fg, int bg, int alpha) {
         int testForeground = setAlphaComponent(fg, alpha);
         return calculateContrast(testForeground, bg);
     }
@@ -341,11 +341,10 @@ public final class ColorUtils {
     }
 
     private static double[] getTempDouble3Array() {
-        ThreadLocal<double[]> threadLocal = TEMP_ARRAY;
-        double[] result = threadLocal.get();
+        double[] result = TEMP_ARRAY.get();
         if (result == null) {
             double[] result2 = new double[3];
-            threadLocal.set(result2);
+            TEMP_ARRAY.set(result2);
             return result2;
         }
         return result;

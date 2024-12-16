@@ -6,7 +6,7 @@ import android.util.SparseArray;
 import java.io.PrintWriter;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class GlobalWhitelistState {
     protected final Object mGlobalWhitelistStateLock = new Object();
     protected SparseArray<WhitelistHelper> mWhitelisterHelpers;
@@ -27,12 +27,11 @@ public class GlobalWhitelistState {
 
     public boolean isWhitelisted(int userId, String packageName) {
         synchronized (this.mGlobalWhitelistStateLock) {
-            SparseArray<WhitelistHelper> sparseArray = this.mWhitelisterHelpers;
             boolean z = false;
-            if (sparseArray == null) {
+            if (this.mWhitelisterHelpers == null) {
                 return false;
             }
-            WhitelistHelper helper = sparseArray.get(userId);
+            WhitelistHelper helper = this.mWhitelisterHelpers.get(userId);
             if (helper != null) {
                 z = helper.isWhitelisted(packageName);
             }
@@ -42,12 +41,11 @@ public class GlobalWhitelistState {
 
     public boolean isWhitelisted(int userId, ComponentName componentName) {
         synchronized (this.mGlobalWhitelistStateLock) {
-            SparseArray<WhitelistHelper> sparseArray = this.mWhitelisterHelpers;
             boolean z = false;
-            if (sparseArray == null) {
+            if (this.mWhitelisterHelpers == null) {
                 return false;
             }
-            WhitelistHelper helper = sparseArray.get(userId);
+            WhitelistHelper helper = this.mWhitelisterHelpers.get(userId);
             if (helper != null) {
                 z = helper.isWhitelisted(componentName);
             }
@@ -57,12 +55,11 @@ public class GlobalWhitelistState {
 
     public ArraySet<ComponentName> getWhitelistedComponents(int userId, String packageName) {
         synchronized (this.mGlobalWhitelistStateLock) {
-            SparseArray<WhitelistHelper> sparseArray = this.mWhitelisterHelpers;
             ArraySet<ComponentName> arraySet = null;
-            if (sparseArray == null) {
+            if (this.mWhitelisterHelpers == null) {
                 return null;
             }
-            WhitelistHelper helper = sparseArray.get(userId);
+            WhitelistHelper helper = this.mWhitelisterHelpers.get(userId);
             if (helper != null) {
                 arraySet = helper.getWhitelistedComponents(packageName);
             }
@@ -72,12 +69,11 @@ public class GlobalWhitelistState {
 
     public ArraySet<String> getWhitelistedPackages(int userId) {
         synchronized (this.mGlobalWhitelistStateLock) {
-            SparseArray<WhitelistHelper> sparseArray = this.mWhitelisterHelpers;
             ArraySet<String> arraySet = null;
-            if (sparseArray == null) {
+            if (this.mWhitelisterHelpers == null) {
                 return null;
             }
-            WhitelistHelper helper = sparseArray.get(userId);
+            WhitelistHelper helper = this.mWhitelisterHelpers.get(userId);
             if (helper != null) {
                 arraySet = helper.getWhitelistedPackages();
             }
@@ -87,11 +83,10 @@ public class GlobalWhitelistState {
 
     public void resetWhitelist(int userId) {
         synchronized (this.mGlobalWhitelistStateLock) {
-            SparseArray<WhitelistHelper> sparseArray = this.mWhitelisterHelpers;
-            if (sparseArray == null) {
+            if (this.mWhitelisterHelpers == null) {
                 return;
             }
-            sparseArray.remove(userId);
+            this.mWhitelisterHelpers.remove(userId);
             if (this.mWhitelisterHelpers.size() == 0) {
                 this.mWhitelisterHelpers = null;
             }
@@ -102,12 +97,11 @@ public class GlobalWhitelistState {
         pw.print(prefix);
         pw.print("State: ");
         synchronized (this.mGlobalWhitelistStateLock) {
-            SparseArray<WhitelistHelper> sparseArray = this.mWhitelisterHelpers;
-            if (sparseArray == null) {
+            if (this.mWhitelisterHelpers == null) {
                 pw.println("empty");
                 return;
             }
-            pw.print(sparseArray.size());
+            pw.print(this.mWhitelisterHelpers.size());
             pw.println(" services");
             String prefix2 = prefix + "  ";
             for (int i = 0; i < this.mWhitelisterHelpers.size(); i++) {

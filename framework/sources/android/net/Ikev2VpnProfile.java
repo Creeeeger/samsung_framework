@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class Ikev2VpnProfile extends PlatformVpnProfile {
     private static final String ANDROID_KEYSTORE_PROVIDER = "AndroidKeyStore";
     public static final List<String> DEFAULT_ALGORITHMS;
@@ -59,10 +59,6 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
     private final X509Certificate mUserCert;
     private final String mUserIdentity;
     private final String mUsername;
-
-    /* synthetic */ Ikev2VpnProfile(int i, String str, String str2, byte[] bArr, X509Certificate x509Certificate, String str3, String str4, PrivateKey privateKey, X509Certificate x509Certificate2, ProxyInfo proxyInfo, List list, boolean z, boolean z2, int i2, boolean z3, boolean z4, boolean z5, IkeTunnelConnectionParams ikeTunnelConnectionParams, boolean z6, boolean z7, Ikev2VpnProfileIA ikev2VpnProfileIA) {
-        this(i, str, str2, bArr, x509Certificate, str3, str4, privateKey, x509Certificate2, proxyInfo, list, z, z2, i2, z3, z4, z5, ikeTunnelConnectionParams, z6, z7);
-    }
 
     static {
         List<String> algorithms = new ArrayList<>();
@@ -123,9 +119,8 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
             case 6:
                 checkNotNull(this.mUsername, MISSING_PARAM_MSG_TMPL, "Username");
                 checkNotNull(this.mPassword, MISSING_PARAM_MSG_TMPL, "Password");
-                X509Certificate x509Certificate = this.mServerRootCaCert;
-                if (x509Certificate != null) {
-                    checkCert(x509Certificate);
+                if (this.mServerRootCaCert != null) {
+                    checkCert(this.mServerRootCaCert);
                     break;
                 }
                 break;
@@ -136,9 +131,8 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
                 checkNotNull(this.mUserCert, MISSING_PARAM_MSG_TMPL, "User cert");
                 checkNotNull(this.mRsaPrivateKey, MISSING_PARAM_MSG_TMPL, "RSA Private key");
                 checkCert(this.mUserCert);
-                X509Certificate x509Certificate2 = this.mServerRootCaCert;
-                if (x509Certificate2 != null) {
-                    checkCert(x509Certificate2);
+                if (this.mServerRootCaCert != null) {
+                    checkCert(this.mServerRootCaCert);
                     break;
                 }
                 break;
@@ -148,6 +142,7 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         validateAllowedAlgorithms(this.mAllowedAlgorithms);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void validateAllowedAlgorithms(List<String> algorithmNames) {
         if (algorithmNames.contains("hmac(md5)") || algorithmNames.contains("hmac(sha1)")) {
             throw new IllegalArgumentException("Algorithm not supported for IKEv2 VPN profiles");
@@ -169,27 +164,24 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
     }
 
     public String getServerAddr() {
-        IkeTunnelConnectionParams ikeTunnelConnectionParams = this.mIkeTunConnParams;
-        if (ikeTunnelConnectionParams == null) {
+        if (this.mIkeTunConnParams == null) {
             return this.mServerAddr;
         }
-        IkeSessionParams ikeSessionParams = ikeTunnelConnectionParams.getIkeSessionParams();
+        IkeSessionParams ikeSessionParams = this.mIkeTunConnParams.getIkeSessionParams();
         return ikeSessionParams.getServerHostname();
     }
 
     public String getUserIdentity() {
-        IkeTunnelConnectionParams ikeTunnelConnectionParams = this.mIkeTunConnParams;
-        if (ikeTunnelConnectionParams == null) {
+        if (this.mIkeTunConnParams == null) {
             return this.mUserIdentity;
         }
-        IkeSessionParams ikeSessionParams = ikeTunnelConnectionParams.getIkeSessionParams();
+        IkeSessionParams ikeSessionParams = this.mIkeTunConnParams.getIkeSessionParams();
         return getUserIdentityFromIkeSession(ikeSessionParams);
     }
 
     public byte[] getPresharedKey() {
-        byte[] bArr;
-        if (this.mIkeTunConnParams == null && (bArr = this.mPresharedKey) != null) {
-            return Arrays.copyOf(bArr, bArr.length);
+        if (this.mIkeTunConnParams == null && this.mPresharedKey != null) {
+            return Arrays.copyOf(this.mPresharedKey, this.mPresharedKey.length);
         }
         return null;
     }
@@ -298,8 +290,7 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
             case 6:
                 profile.username = this.mUsername;
                 profile.password = this.mPassword;
-                X509Certificate x509Certificate = this.mServerRootCaCert;
-                profile.ipsecCaCert = x509Certificate != null ? certificateToPemString(x509Certificate) : "";
+                profile.ipsecCaCert = this.mServerRootCaCert != null ? certificateToPemString(this.mServerRootCaCert) : "";
                 return profile;
             case 7:
                 profile.ipsecSecret = encodeForIpsecSecret(this.mPresharedKey);
@@ -307,8 +298,7 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
             case 8:
                 profile.ipsecUserCert = certificateToPemString(this.mUserCert);
                 profile.ipsecSecret = PREFIX_INLINE + encodeForIpsecSecret(this.mRsaPrivateKey.getEncoded());
-                X509Certificate x509Certificate2 = this.mServerRootCaCert;
-                profile.ipsecCaCert = x509Certificate2 != null ? certificateToPemString(x509Certificate2) : "";
+                profile.ipsecCaCert = this.mServerRootCaCert != null ? certificateToPemString(this.mServerRootCaCert) : "";
                 return profile;
             default:
                 throw new IllegalArgumentException("Invalid auth method set");
@@ -384,15 +374,20 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         }
         switch (profile.type) {
             case 6:
-                return (profile.username.isEmpty() || profile.password.isEmpty()) ? false : true;
+                if (profile.username.isEmpty() || profile.password.isEmpty()) {
+                }
+                break;
             case 7:
-                return !profile.ipsecSecret.isEmpty();
+                if (profile.ipsecSecret.isEmpty()) {
+                }
+                break;
             case 8:
             case 9:
-                return !profile.ipsecUserCert.isEmpty();
-            default:
-                return false;
+                if (profile.ipsecSecret.isEmpty() || profile.ipsecUserCert.isEmpty()) {
+                }
+                break;
         }
+        return false;
     }
 
     public static String certificateToPemString(X509Certificate cert) throws IOException, CertificateEncodingException {
@@ -430,6 +425,7 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         return keyFactory.generatePrivate(privateKeySpec);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkCert(X509Certificate cert) {
         try {
             certificateToPemString(cert);
@@ -438,10 +434,12 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T> T checkNotNull(T t, String str, Object... objArr) {
         return (T) Objects.requireNonNull(t, String.format(str, objArr));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkBuilderSetter(boolean constructedFromIkeTunConParams, String field) {
         if (constructedFromIkeTunConParams) {
             throw new IllegalArgumentException(field + " can't be set with IkeTunnelConnectionParams builder");
@@ -493,7 +491,6 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         return sb.toString();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private final IkeTunnelConnectionParams mIkeTunConnParams;
         private String mPassword;

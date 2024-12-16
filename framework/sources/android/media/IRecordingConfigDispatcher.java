@@ -11,7 +11,6 @@ import java.util.List;
 public interface IRecordingConfigDispatcher extends IInterface {
     void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRecordingConfigDispatcher {
         @Override // android.media.IRecordingConfigDispatcher
         public void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> configs) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IRecordingConfigDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRecordingConfigDispatcher {
         public static final String DESCRIPTOR = "android.media.IRecordingConfigDispatcher";
         static final int TRANSACTION_dispatchRecordingConfigChange = 1;
@@ -67,25 +65,22 @@ public interface IRecordingConfigDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<AudioRecordingConfiguration> _arg0 = data.createTypedArrayList(AudioRecordingConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchRecordingConfigChange(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<AudioRecordingConfiguration> _arg0 = data.createTypedArrayList(AudioRecordingConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchRecordingConfigChange(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRecordingConfigDispatcher {
+        private static class Proxy implements IRecordingConfigDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

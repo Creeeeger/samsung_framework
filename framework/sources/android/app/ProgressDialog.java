@@ -69,9 +69,8 @@ public class ProgressDialog extends AlertDialog {
         } else {
             this.mProgressNumberFormat = "%1d/%2d";
         }
-        NumberFormat percentInstance = NumberFormat.getPercentInstance();
-        this.mProgressPercentFormat = percentInstance;
-        percentInstance.setMaximumFractionDigits(0);
+        this.mProgressPercentFormat = NumberFormat.getPercentInstance();
+        this.mProgressPercentFormat.setMaximumFractionDigits(0);
     }
 
     public static ProgressDialog show(Context context, CharSequence title, CharSequence message) {
@@ -98,17 +97,13 @@ public class ProgressDialog extends AlertDialog {
     }
 
     @Override // android.app.AlertDialog, android.app.Dialog
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         View view;
         int i;
         LayoutInflater inflater = LayoutInflater.from(this.mContext);
         TypedArray a = this.mContext.obtainStyledAttributes(null, R.styleable.AlertDialog, 16842845, 0);
-        int i2 = this.mProgressStyle;
-        if (i2 == 1) {
+        if (this.mProgressStyle == 1) {
             this.mViewUpdateHandler = new Handler() { // from class: android.app.ProgressDialog.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message message) {
                     super.handleMessage(message);
@@ -117,20 +112,20 @@ public class ProgressDialog extends AlertDialog {
                     if (ProgressDialog.this.mProgressNumberFormat != null) {
                         String str = ProgressDialog.this.mProgressNumberFormat;
                         if (ProgressDialog.this.mProgressNumber.isLayoutRtl()) {
-                            ProgressDialog.this.mProgressNumber.setText(String.format(str, Integer.valueOf(max), Integer.valueOf(progress)));
+                            ProgressDialog.this.mProgressNumber.lambda$setTextAsync$0(String.format(str, Integer.valueOf(max), Integer.valueOf(progress)));
                         } else {
-                            ProgressDialog.this.mProgressNumber.setText(String.format(str, Integer.valueOf(progress), Integer.valueOf(max)));
+                            ProgressDialog.this.mProgressNumber.lambda$setTextAsync$0(String.format(str, Integer.valueOf(progress), Integer.valueOf(max)));
                         }
                     } else {
-                        ProgressDialog.this.mProgressNumber.setText("");
+                        ProgressDialog.this.mProgressNumber.lambda$setTextAsync$0("");
                     }
                     if (ProgressDialog.this.mProgressPercentFormat != null) {
                         SpannableString spannableString = new SpannableString(ProgressDialog.this.mProgressPercentFormat.format(progress / max));
                         spannableString.setSpan(new StyleSpan(!ProgressDialog.this.mThemeIsDeviceDefault ? 1 : 0), 0, spannableString.length(), 33);
-                        ProgressDialog.this.mProgressPercent.setText(spannableString);
+                        ProgressDialog.this.mProgressPercent.lambda$setTextAsync$0(spannableString);
                         return;
                     }
-                    ProgressDialog.this.mProgressPercent.setText("");
+                    ProgressDialog.this.mProgressPercent.lambda$setTextAsync$0("");
                 }
             };
             View view2 = inflater.inflate(a.getResourceId(13, R.layout.alert_dialog_progress), (ViewGroup) null);
@@ -141,7 +136,7 @@ public class ProgressDialog extends AlertDialog {
                 this.mMessageView = (TextView) view2.findViewById(16908299);
             }
             setView(view2);
-        } else if (i2 == 1000 && this.mThemeIsDeviceDefault) {
+        } else if (this.mProgressStyle == 1000 && this.mThemeIsDeviceDefault) {
             TypedValue colorValue = new TypedValue();
             this.mContext.getTheme().resolveAttribute(R.attr.parentIsDeviceDefaultDark, colorValue, true);
             setTitle((CharSequence) null);
@@ -167,75 +162,35 @@ public class ProgressDialog extends AlertDialog {
             setView(view);
         }
         a.recycle();
-        int i3 = this.mMax;
-        if (i3 > 0) {
-            setMax(i3);
+        if (this.mMax > 0) {
+            setMax(this.mMax);
         }
-        int i4 = this.mProgressVal;
-        if (i4 > 0) {
-            setProgress(i4);
+        if (this.mProgressVal > 0) {
+            setProgress(this.mProgressVal);
         }
-        int i5 = this.mSecondaryProgressVal;
-        if (i5 > 0) {
-            setSecondaryProgress(i5);
+        if (this.mSecondaryProgressVal > 0) {
+            setSecondaryProgress(this.mSecondaryProgressVal);
         }
-        int i6 = this.mIncrementBy;
-        if (i6 > 0) {
-            incrementProgressBy(i6);
+        if (this.mIncrementBy > 0) {
+            incrementProgressBy(this.mIncrementBy);
         }
-        int i7 = this.mIncrementSecondaryBy;
-        if (i7 > 0) {
-            incrementSecondaryProgressBy(i7);
+        if (this.mIncrementSecondaryBy > 0) {
+            incrementSecondaryProgressBy(this.mIncrementSecondaryBy);
         }
-        Drawable drawable = this.mProgressDrawable;
-        if (drawable != null) {
-            setProgressDrawable(drawable);
+        if (this.mProgressDrawable != null) {
+            setProgressDrawable(this.mProgressDrawable);
         }
-        Drawable drawable2 = this.mIndeterminateDrawable;
-        if (drawable2 != null) {
-            setIndeterminateDrawable(drawable2);
+        if (this.mIndeterminateDrawable != null) {
+            setIndeterminateDrawable(this.mIndeterminateDrawable);
         }
-        CharSequence charSequence = this.mMessage;
-        if (charSequence != null) {
-            setMessage(charSequence);
+        if (this.mMessage != null) {
+            setMessage(this.mMessage);
         }
         setIndeterminate(this.mIndeterminate);
         onProgressChanged();
         super.onCreate(savedInstanceState);
         if (this.mProgressStyle == 1000) {
             getWindow().setLayout(getContext().getResources().getDimensionPixelSize(R.dimen.tw_progress_circle_dialog_size), getContext().getResources().getDimensionPixelSize(R.dimen.tw_progress_circle_dialog_size));
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.ProgressDialog$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            super.handleMessage(message);
-            int progress = ProgressDialog.this.mProgress.getProgress();
-            int max = ProgressDialog.this.mProgress.getMax();
-            if (ProgressDialog.this.mProgressNumberFormat != null) {
-                String str = ProgressDialog.this.mProgressNumberFormat;
-                if (ProgressDialog.this.mProgressNumber.isLayoutRtl()) {
-                    ProgressDialog.this.mProgressNumber.setText(String.format(str, Integer.valueOf(max), Integer.valueOf(progress)));
-                } else {
-                    ProgressDialog.this.mProgressNumber.setText(String.format(str, Integer.valueOf(progress), Integer.valueOf(max)));
-                }
-            } else {
-                ProgressDialog.this.mProgressNumber.setText("");
-            }
-            if (ProgressDialog.this.mProgressPercentFormat != null) {
-                SpannableString spannableString = new SpannableString(ProgressDialog.this.mProgressPercentFormat.format(progress / max));
-                spannableString.setSpan(new StyleSpan(!ProgressDialog.this.mThemeIsDeviceDefault ? 1 : 0), 0, spannableString.length(), 33);
-                ProgressDialog.this.mProgressPercent.setText(spannableString);
-                return;
-            }
-            ProgressDialog.this.mProgressPercent.setText("");
         }
     }
 
@@ -246,7 +201,7 @@ public class ProgressDialog extends AlertDialog {
     }
 
     @Override // android.app.Dialog
-    public void onStop() {
+    protected void onStop() {
         super.onStop();
         this.mHasStarted = false;
     }
@@ -261,9 +216,8 @@ public class ProgressDialog extends AlertDialog {
     }
 
     public void setSecondaryProgress(int secondaryProgress) {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            progressBar.setSecondaryProgress(secondaryProgress);
+        if (this.mProgress != null) {
+            this.mProgress.setSecondaryProgress(secondaryProgress);
             onProgressChanged();
         } else {
             this.mSecondaryProgressVal = secondaryProgress;
@@ -271,33 +225,29 @@ public class ProgressDialog extends AlertDialog {
     }
 
     public int getProgress() {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            return progressBar.getProgress();
+        if (this.mProgress != null) {
+            return this.mProgress.getProgress();
         }
         return this.mProgressVal;
     }
 
     public int getSecondaryProgress() {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            return progressBar.getSecondaryProgress();
+        if (this.mProgress != null) {
+            return this.mProgress.getSecondaryProgress();
         }
         return this.mSecondaryProgressVal;
     }
 
     public int getMax() {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            return progressBar.getMax();
+        if (this.mProgress != null) {
+            return this.mProgress.getMax();
         }
         return this.mMax;
     }
 
     public void setMax(int max) {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            progressBar.setMax(max);
+        if (this.mProgress != null) {
+            this.mProgress.setMax(max);
             onProgressChanged();
         } else {
             this.mMax = max;
@@ -305,9 +255,8 @@ public class ProgressDialog extends AlertDialog {
     }
 
     public void incrementProgressBy(int diff) {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            progressBar.incrementProgressBy(diff);
+        if (this.mProgress != null) {
+            this.mProgress.incrementProgressBy(diff);
             onProgressChanged();
         } else {
             this.mIncrementBy += diff;
@@ -315,9 +264,8 @@ public class ProgressDialog extends AlertDialog {
     }
 
     public void incrementSecondaryProgressBy(int diff) {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            progressBar.incrementSecondaryProgressBy(diff);
+        if (this.mProgress != null) {
+            this.mProgress.incrementSecondaryProgressBy(diff);
             onProgressChanged();
         } else {
             this.mIncrementSecondaryBy += diff;
@@ -325,49 +273,42 @@ public class ProgressDialog extends AlertDialog {
     }
 
     public void setProgressDrawable(Drawable d) {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            progressBar.setProgressDrawable(d);
+        if (this.mProgress != null) {
+            this.mProgress.setProgressDrawable(d);
         } else {
             this.mProgressDrawable = d;
         }
     }
 
     public void setIndeterminateDrawable(Drawable d) {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            progressBar.setIndeterminateDrawable(d);
+        if (this.mProgress != null) {
+            this.mProgress.setIndeterminateDrawable(d);
         } else {
             this.mIndeterminateDrawable = d;
         }
     }
 
     public void setIndeterminate(boolean indeterminate) {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            progressBar.setIndeterminate(indeterminate);
+        if (this.mProgress != null) {
+            this.mProgress.setIndeterminate(indeterminate);
         } else {
             this.mIndeterminate = indeterminate;
         }
     }
 
     public boolean isIndeterminate() {
-        ProgressBar progressBar = this.mProgress;
-        if (progressBar != null) {
-            return progressBar.isIndeterminate();
+        if (this.mProgress != null) {
+            return this.mProgress.isIndeterminate();
         }
         return this.mIndeterminate;
     }
 
     @Override // android.app.AlertDialog
     public void setMessage(CharSequence message) {
-        TextView textView;
-        TextView textView2;
         if (this.mProgress != null) {
-            int i = this.mProgressStyle;
-            if (i == 1) {
-                if (this.mThemeIsDeviceDefault && (textView2 = this.mMessageView) != null) {
-                    textView2.setText(message);
+            if (this.mProgressStyle == 1) {
+                if (this.mThemeIsDeviceDefault && this.mMessageView != null) {
+                    this.mMessageView.lambda$setTextAsync$0(message);
                     this.mMessageView.setVisibility(message.equals("") ? 8 : 0);
                     return;
                 } else {
@@ -375,14 +316,13 @@ public class ProgressDialog extends AlertDialog {
                     return;
                 }
             }
-            if (this.mThemeIsDeviceDefault && (textView = this.mMessageView) != null && i == 1000) {
-                textView.setText(message);
+            if (this.mThemeIsDeviceDefault && this.mMessageView != null && this.mProgressStyle == 1000) {
+                this.mMessageView.lambda$setTextAsync$0(message);
                 this.mMessageView.setVisibility(message.equals("") ? 8 : 0);
                 return;
             } else {
-                TextView textView3 = this.mMessageView;
-                if (textView3 != null) {
-                    textView3.setText(message);
+                if (this.mMessageView != null) {
+                    this.mMessageView.lambda$setTextAsync$0(message);
                     return;
                 }
                 return;
@@ -406,8 +346,7 @@ public class ProgressDialog extends AlertDialog {
     }
 
     private void onProgressChanged() {
-        Handler handler;
-        if (this.mProgressStyle == 1 && (handler = this.mViewUpdateHandler) != null && !handler.hasMessages(0)) {
+        if (this.mProgressStyle == 1 && this.mViewUpdateHandler != null && !this.mViewUpdateHandler.hasMessages(0)) {
             this.mViewUpdateHandler.sendEmptyMessage(0);
         }
     }

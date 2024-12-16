@@ -54,7 +54,6 @@ public abstract class Spline {
         return true;
     }
 
-    /* loaded from: classes4.dex */
     public static class MonotoneCubicSpline extends Spline {
         private float[] mM;
         private float[] mX;
@@ -106,35 +105,26 @@ public abstract class Spline {
 
         @Override // android.util.Spline
         public float interpolate(float x) {
-            float[] fArr;
             int n = this.mX.length;
             if (Float.isNaN(x)) {
                 return x;
             }
-            float[] fArr2 = this.mX;
-            if (x <= fArr2[0]) {
+            if (x <= this.mX[0]) {
                 return this.mY[0];
             }
-            if (x >= fArr2[n - 1]) {
+            if (x >= this.mX[n - 1]) {
                 return this.mY[n - 1];
             }
             int i = 0;
-            do {
-                fArr = this.mX;
-                if (x >= fArr[i + 1]) {
-                    i++;
-                } else {
-                    float f = fArr[i + 1];
-                    float f2 = fArr[i];
-                    float h = f - f2;
-                    float t = (x - f2) / h;
-                    float[] fArr3 = this.mY;
-                    float f3 = fArr3[i] * ((t * 2.0f) + 1.0f);
-                    float[] fArr4 = this.mM;
-                    return ((f3 + (fArr4[i] * h * t)) * (1.0f - t) * (1.0f - t)) + (((fArr3[i + 1] * (3.0f - (2.0f * t))) + (fArr4[i + 1] * h * (t - 1.0f))) * t * t);
+            while (x >= this.mX[i + 1]) {
+                i++;
+                if (x == this.mX[i]) {
+                    return this.mY[i];
                 }
-            } while (x != fArr[i]);
-            return this.mY[i];
+            }
+            float h = this.mX[i + 1] - this.mX[i];
+            float t = (x - this.mX[i]) / h;
+            return (((this.mY[i] * ((t * 2.0f) + 1.0f)) + (this.mM[i] * h * t)) * (1.0f - t) * (1.0f - t)) + (((this.mY[i + 1] * (3.0f - (2.0f * t))) + (this.mM[i + 1] * h * (t - 1.0f))) * t * t);
         }
 
         public String toString() {
@@ -154,7 +144,6 @@ public abstract class Spline {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class LinearSpline extends Spline {
         private final float[] mM;
         private final float[] mX;
@@ -175,28 +164,24 @@ public abstract class Spline {
 
         @Override // android.util.Spline
         public float interpolate(float x) {
-            float[] fArr;
             int n = this.mX.length;
             if (Float.isNaN(x)) {
                 return x;
             }
-            float[] fArr2 = this.mX;
-            if (x <= fArr2[0]) {
+            if (x <= this.mX[0]) {
                 return this.mY[0];
             }
-            if (x >= fArr2[n - 1]) {
+            if (x >= this.mX[n - 1]) {
                 return this.mY[n - 1];
             }
             int i = 0;
-            do {
-                fArr = this.mX;
-                if (x >= fArr[i + 1]) {
-                    i++;
-                } else {
-                    return this.mY[i] + (this.mM[i] * (x - fArr[i]));
+            while (x >= this.mX[i + 1]) {
+                i++;
+                if (x == this.mX[i]) {
+                    return this.mY[i];
                 }
-            } while (x != fArr[i]);
-            return this.mY[i];
+            }
+            return this.mY[i] + (this.mM[i] * (x - this.mX[i]));
         }
 
         public String toString() {

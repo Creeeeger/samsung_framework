@@ -48,7 +48,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /* loaded from: classes5.dex */
-public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, R> {
+final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, R> {
     private static final boolean DEBUG = false;
     private static final int FLAG_ACQUIRED_FROM_MESSAGE_CALLBACKS_POOL = 8192;
     private static final int FLAG_RECYCLED = 2048;
@@ -65,8 +65,7 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
     Object[] mArgs = null;
     int mFlags = 0;
 
-    /* loaded from: classes5.dex */
-    public static class Pool extends Pools.SynchronizedPool<PooledLambdaImpl> {
+    static class Pool extends Pools.SynchronizedPool<PooledLambdaImpl> {
         public Pool(Object lock) {
             super(50, lock);
         }
@@ -90,9 +89,8 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
             pool = sPool;
         }
         this.mFunc = null;
-        Object[] objArr = this.mArgs;
-        if (objArr != null) {
-            Arrays.fill(objArr, (Object) null);
+        if (this.mArgs != null) {
+            Arrays.fill(this.mArgs, (Object) null);
         }
         this.mFlags = 2048;
         this.mConstValue = 0L;
@@ -338,7 +336,7 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
         return name.endsWith("Consumer") ? "consumer" : name.endsWith("Function") ? "function" : name.endsWith("Predicate") ? "predicate" : name.endsWith("Supplier") ? "supplier" : name.endsWith("Runnable") ? "runnable" : name;
     }
 
-    public static <E extends PooledLambda> E acquire(Pool pool, Object func, int fNumArgs, int numPlaceholders, int fReturnType, Object a, Object b, Object c, Object d, Object e, Object f, Object g, Object h, Object i, Object j, Object k, Object l) {
+    static <E extends PooledLambda> E acquire(Pool pool, Object func, int fNumArgs, int numPlaceholders, int fReturnType, Object a, Object b, Object c, Object d, Object e, Object f, Object g, Object h, Object i, Object j, Object k, Object l) {
         PooledLambdaImpl r = acquire(pool);
         r.mFunc = Objects.requireNonNull(func);
         r.setFlags(MASK_FUNC_TYPE, LambdaType.encode(fNumArgs, fReturnType));
@@ -361,7 +359,7 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
         return r;
     }
 
-    public static PooledLambdaImpl acquireConstSupplier(int type) {
+    static PooledLambdaImpl acquireConstSupplier(int type) {
         PooledLambdaImpl r = acquire(sPool);
         int lambdaType = LambdaType.encode(15, type);
         r.setFlags(MASK_FUNC_TYPE, lambdaType);
@@ -438,21 +436,21 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
     }
 
     void setFlags(int mask, int value) {
-        int i = this.mFlags & (~mask);
-        this.mFlags = i;
-        this.mFlags = i | mask(mask, value);
+        this.mFlags &= ~mask;
+        this.mFlags |= mask(mask, value);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int mask(int mask, int value) {
         return (value << Integer.numberOfTrailingZeros(mask)) & mask;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int unmask(int mask, int bits) {
         return (bits & mask) / (1 << Integer.numberOfTrailingZeros(mask));
     }
 
-    /* loaded from: classes5.dex */
-    public static class LambdaType {
+    static class LambdaType {
         public static final int MASK = 127;
         public static final int MASK_ARG_COUNT = 15;
         public static final int MASK_BIT_COUNT = 7;
@@ -523,8 +521,7 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class ReturnType {
+        static class ReturnType {
             public static final int BOOLEAN = 2;
             public static final int DOUBLE = 6;
             public static final int INT = 4;

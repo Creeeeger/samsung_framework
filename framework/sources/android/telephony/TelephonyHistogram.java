@@ -6,18 +6,17 @@ import android.os.Parcelable;
 import java.util.Arrays;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class TelephonyHistogram implements Parcelable {
     private static final int ABSENT = 0;
     public static final Parcelable.Creator<TelephonyHistogram> CREATOR = new Parcelable.Creator<TelephonyHistogram>() { // from class: android.telephony.TelephonyHistogram.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyHistogram createFromParcel(Parcel in) {
             return new TelephonyHistogram(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyHistogram[] newArray(int size) {
             return new TelephonyHistogram[size];
@@ -99,8 +98,7 @@ public final class TelephonyHistogram implements Parcelable {
     }
 
     public int[] getBucketEndPoints() {
-        int i = this.mSampleCount;
-        if (i > 1 && i < 10) {
+        if (this.mSampleCount > 1 && this.mSampleCount < 10) {
             int[] tempEndPoints = new int[this.mBucketCount - 1];
             calculateBucketEndPoints(tempEndPoints);
             return tempEndPoints;
@@ -109,11 +107,9 @@ public final class TelephonyHistogram implements Parcelable {
     }
 
     public int[] getBucketCounters() {
-        int i = this.mSampleCount;
-        if (i > 1 && i < 10) {
-            int i2 = this.mBucketCount;
-            int[] tempEndPoints = new int[i2 - 1];
-            int[] tempBucketCounters = new int[i2];
+        if (this.mSampleCount > 1 && this.mSampleCount < 10) {
+            int[] tempEndPoints = new int[this.mBucketCount - 1];
+            int[] tempBucketCounters = new int[this.mBucketCount];
             calculateBucketEndPoints(tempEndPoints);
             for (int j = 0; j < this.mSampleCount; j++) {
                 addToBucketCounter(tempEndPoints, tempBucketCounters, this.mInitialTimings[j]);
@@ -143,24 +139,15 @@ public final class TelephonyHistogram implements Parcelable {
     }
 
     private void calculateBucketEndPoints(int[] bucketEndPoints) {
-        int i = 1;
-        while (true) {
-            int i2 = this.mBucketCount;
-            if (i < i2) {
-                int i3 = this.mMinTimeMs;
-                int endPt = i3 + (((this.mMaxTimeMs - i3) * i) / i2);
-                bucketEndPoints[i - 1] = endPt;
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 1; i < this.mBucketCount; i++) {
+            int endPt = this.mMinTimeMs + (((this.mMaxTimeMs - this.mMinTimeMs) * i) / this.mBucketCount);
+            bucketEndPoints[i - 1] = endPt;
         }
     }
 
     public void addTimeTaken(int time) {
-        int i = this.mSampleCount;
-        if (i == 0 || i == Integer.MAX_VALUE) {
-            if (i == 0) {
+        if (this.mSampleCount == 0 || this.mSampleCount == Integer.MAX_VALUE) {
+            if (this.mSampleCount == 0) {
                 this.mMinTimeMs = time;
                 this.mMaxTimeMs = time;
                 this.mAverageTimeMs = time;
@@ -180,16 +167,16 @@ public final class TelephonyHistogram implements Parcelable {
         if (time > this.mMaxTimeMs) {
             this.mMaxTimeMs = time;
         }
-        long totalTime = (this.mAverageTimeMs * i) + time;
-        int i2 = i + 1;
-        this.mSampleCount = i2;
-        this.mAverageTimeMs = (int) (totalTime / i2);
-        if (i2 < 10) {
-            this.mInitialTimings[i2 - 1] = time;
+        long totalTime = (this.mAverageTimeMs * this.mSampleCount) + time;
+        int i = this.mSampleCount + 1;
+        this.mSampleCount = i;
+        this.mAverageTimeMs = (int) (totalTime / i);
+        if (this.mSampleCount < 10) {
+            this.mInitialTimings[this.mSampleCount - 1] = time;
             return;
         }
-        if (i2 == 10) {
-            this.mInitialTimings[i2 - 1] = time;
+        if (this.mSampleCount == 10) {
+            this.mInitialTimings[this.mSampleCount - 1] = time;
             calculateBucketEndPoints(this.mBucketEndPoints);
             for (int j = 0; j < 10; j++) {
                 addToBucketCounter(this.mBucketEndPoints, this.mBucketCounters, this.mInitialTimings[j]);
@@ -216,23 +203,6 @@ public final class TelephonyHistogram implements Parcelable {
         return basic + ((Object) intervals);
     }
 
-    /* renamed from: android.telephony.TelephonyHistogram$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TelephonyHistogram> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyHistogram createFromParcel(Parcel in) {
-            return new TelephonyHistogram(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyHistogram[] newArray(int size) {
-            return new TelephonyHistogram[size];
-        }
-    }
-
     public TelephonyHistogram(Parcel in) {
         this.mCategory = in.readInt();
         this.mId = in.readInt();
@@ -241,18 +211,14 @@ public final class TelephonyHistogram implements Parcelable {
         this.mAverageTimeMs = in.readInt();
         this.mSampleCount = in.readInt();
         if (in.readInt() == 1) {
-            int[] iArr = new int[10];
-            this.mInitialTimings = iArr;
-            in.readIntArray(iArr);
+            this.mInitialTimings = new int[10];
+            in.readIntArray(this.mInitialTimings);
         }
-        int readInt = in.readInt();
-        this.mBucketCount = readInt;
-        int[] iArr2 = new int[readInt - 1];
-        this.mBucketEndPoints = iArr2;
-        in.readIntArray(iArr2);
-        int[] iArr3 = new int[readInt];
-        this.mBucketCounters = iArr3;
-        in.readIntArray(iArr3);
+        this.mBucketCount = in.readInt();
+        this.mBucketEndPoints = new int[this.mBucketCount - 1];
+        in.readIntArray(this.mBucketEndPoints);
+        this.mBucketCounters = new int[this.mBucketCount];
+        in.readIntArray(this.mBucketCounters);
     }
 
     @Override // android.os.Parcelable

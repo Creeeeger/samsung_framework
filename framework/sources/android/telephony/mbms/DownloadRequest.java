@@ -21,17 +21,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class DownloadRequest implements Parcelable {
     public static final Parcelable.Creator<DownloadRequest> CREATOR = new Parcelable.Creator<DownloadRequest>() { // from class: android.telephony.mbms.DownloadRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DownloadRequest createFromParcel(Parcel in) {
             return new DownloadRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DownloadRequest[] newArray(int size) {
             return new DownloadRequest[size];
@@ -48,15 +47,6 @@ public final class DownloadRequest implements Parcelable {
     private final int subscriptionId;
     private final int version;
 
-    /* synthetic */ DownloadRequest(Parcel parcel, DownloadRequestIA downloadRequestIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ DownloadRequest(String str, Uri uri, Uri uri2, int i, String str2, int i2, DownloadRequestIA downloadRequestIA) {
-        this(str, uri, uri2, i, str2, i2);
-    }
-
-    /* loaded from: classes3.dex */
     private static class SerializationDataContainer implements Externalizable {
         private String appIntent;
         private Uri destination;
@@ -98,7 +88,6 @@ public final class DownloadRequest implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         private String appIntent;
         private Uri destination;
@@ -157,9 +146,8 @@ public final class DownloadRequest implements Parcelable {
         }
 
         public Builder setAppIntent(Intent intent) {
-            String uri = intent.toUri(0);
-            this.appIntent = uri;
-            if (uri.length() > 50000) {
+            this.appIntent = intent.toUri(0);
+            if (this.appIntent.length() > 50000) {
                 throw new IllegalArgumentException("App intent must not exceed length 50000");
             }
             return this;
@@ -245,23 +233,6 @@ public final class DownloadRequest implements Parcelable {
         return this.version;
     }
 
-    /* renamed from: android.telephony.mbms.DownloadRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DownloadRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DownloadRequest createFromParcel(Parcel in) {
-            return new DownloadRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DownloadRequest[] newArray(int size) {
-            return new DownloadRequest[size];
-        }
-    }
-
     public static int getMaxAppIntentSize() {
         return 50000;
     }
@@ -276,9 +247,8 @@ public final class DownloadRequest implements Parcelable {
             if (this.version >= 1) {
                 digest.update(this.sourceUri.toString().getBytes(StandardCharsets.UTF_8));
                 digest.update(this.destinationUri.toString().getBytes(StandardCharsets.UTF_8));
-                String str = this.serializedResultIntentForApp;
-                if (str != null) {
-                    digest.update(str.getBytes(StandardCharsets.UTF_8));
+                if (this.serializedResultIntentForApp != null) {
+                    digest.update(this.serializedResultIntentForApp.getBytes(StandardCharsets.UTF_8));
                 }
             }
             return Base64.encodeToString(digest.digest(), 10);

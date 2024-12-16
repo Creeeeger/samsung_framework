@@ -13,30 +13,22 @@ public abstract class Primes {
     private static final BigInteger TWO = BigInteger.valueOf(2);
     private static final BigInteger THREE = BigInteger.valueOf(3);
 
-    /* loaded from: classes5.dex */
     public static class MROutput {
         private BigInteger factor;
         private boolean provablyComposite;
 
-        /* renamed from: -$$Nest$smprobablyPrime */
-        static /* bridge */ /* synthetic */ MROutput m7402$$Nest$smprobablyPrime() {
-            return probablyPrime();
-        }
-
-        /* renamed from: -$$Nest$smprovablyCompositeNotPrimePower */
-        static /* bridge */ /* synthetic */ MROutput m7403$$Nest$smprovablyCompositeNotPrimePower() {
-            return provablyCompositeNotPrimePower();
-        }
-
-        private static MROutput probablyPrime() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static MROutput probablyPrime() {
             return new MROutput(false, null);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static MROutput provablyCompositeWithFactor(BigInteger factor) {
             return new MROutput(true, factor);
         }
 
-        private static MROutput provablyCompositeNotPrimePower() {
+        /* JADX INFO: Access modifiers changed from: private */
+        public static MROutput provablyCompositeNotPrimePower() {
             return new MROutput(true, null);
         }
 
@@ -58,15 +50,10 @@ public abstract class Primes {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class STOutput {
         private BigInteger prime;
         private int primeGenCounter;
         private byte[] primeSeed;
-
-        /* synthetic */ STOutput(BigInteger bigInteger, byte[] bArr, int i, STOutputIA sTOutputIA) {
-            this(bigInteger, bArr, i);
-        }
 
         private STOutput(BigInteger prime, byte[] primeSeed, int primeGenCounter) {
             this.prime = prime;
@@ -109,7 +96,7 @@ public abstract class Primes {
             throw new IllegalArgumentException("'iterations' must be > 0");
         }
         if (candidate.bitLength() == 2) {
-            return MROutput.m7402$$Nest$smprobablyPrime();
+            return MROutput.probablyPrime();
         }
         if (!candidate.testBit(0)) {
             return MROutput.provablyCompositeWithFactor(TWO);
@@ -121,12 +108,11 @@ public abstract class Primes {
         for (int i = 0; i < iterations; i++) {
             BigInteger b = BigIntegers.createRandomInRange(TWO, wSubTwo, random);
             BigInteger g = b.gcd(candidate);
-            BigInteger bigInteger = ONE;
-            if (g.compareTo(bigInteger) > 0) {
+            if (g.compareTo(ONE) > 0) {
                 return MROutput.provablyCompositeWithFactor(g);
             }
             BigInteger z = b.modPow(m, candidate);
-            if (!z.equals(bigInteger) && !z.equals(wSubOne)) {
+            if (!z.equals(ONE) && !z.equals(wSubOne)) {
                 boolean primeToBase = false;
                 BigInteger x = z;
                 int j = 1;
@@ -146,23 +132,22 @@ public abstract class Primes {
                     j++;
                 }
                 if (!primeToBase) {
-                    BigInteger bigInteger2 = ONE;
-                    if (!z.equals(bigInteger2)) {
+                    if (!z.equals(ONE)) {
                         x = z;
                         BigInteger z2 = z.modPow(TWO, candidate);
-                        if (!z2.equals(bigInteger2)) {
+                        if (!z2.equals(ONE)) {
                             x = z2;
                         }
                     }
-                    BigInteger g2 = x.subtract(bigInteger2).gcd(candidate);
-                    if (g2.compareTo(bigInteger2) > 0) {
+                    BigInteger g2 = x.subtract(ONE).gcd(candidate);
+                    if (g2.compareTo(ONE) > 0) {
                         return MROutput.provablyCompositeWithFactor(g2);
                     }
-                    return MROutput.m7403$$Nest$smprovablyCompositeNotPrimePower();
+                    return MROutput.provablyCompositeNotPrimePower();
                 }
             }
         }
-        return MROutput.m7402$$Nest$smprobablyPrime();
+        return MROutput.probablyPrime();
     }
 
     public static boolean hasAnySmallFactors(BigInteger candidate) {
@@ -200,14 +185,13 @@ public abstract class Primes {
     public static boolean isMRProbablePrimeToBase(BigInteger candidate, BigInteger base) {
         checkCandidate(candidate, "candidate");
         checkCandidate(base, "base");
-        BigInteger bigInteger = ONE;
-        if (base.compareTo(candidate.subtract(bigInteger)) >= 0) {
+        if (base.compareTo(candidate.subtract(ONE)) >= 0) {
             throw new IllegalArgumentException("'base' must be < ('candidate' - 1)");
         }
         if (candidate.bitLength() == 2) {
             return true;
         }
-        BigInteger wSubOne = candidate.subtract(bigInteger);
+        BigInteger wSubOne = candidate.subtract(ONE);
         int a = wSubOne.getLowestSetBit();
         BigInteger m = wSubOne.shiftRight(a);
         return implMRProbablePrimeToBase(candidate, wSubOne, m, a, base);
@@ -279,8 +263,6 @@ public abstract class Primes {
 
     private static STOutput implSTRandomPrime(Digest d, int length, byte[] primeSeed) {
         STOutput rec;
-        BigInteger x;
-        int i;
         String str;
         Digest digest = d;
         int dLen = d.getDigestSize();
@@ -309,41 +291,34 @@ public abstract class Primes {
         int primeGenCounter2 = rec2.getPrimeGenCounter();
         int outlen = dLen * 8;
         int iterations = (length - 1) / outlen;
-        BigInteger x2 = hashGen(digest, primeSeed2, iterations + 1);
-        BigInteger bigInteger = ONE;
-        BigInteger x3 = x2.mod(bigInteger.shiftLeft(length - 1)).setBit(length - 1);
+        BigInteger x = hashGen(digest, primeSeed2, iterations + 1);
+        BigInteger x2 = x.mod(ONE.shiftLeft(length - 1)).setBit(length - 1);
         BigInteger c0x2 = c02.shiftLeft(1);
-        BigInteger tx2 = x3.subtract(bigInteger).divide(c0x2).add(bigInteger).shiftLeft(1);
-        BigInteger c2 = tx2.multiply(c02).add(bigInteger);
+        BigInteger tx2 = x2.subtract(ONE).divide(c0x2).add(ONE).shiftLeft(1);
         int dt = 0;
+        BigInteger c2 = tx2.multiply(c02).add(ONE);
         while (true) {
-            int dt2 = dLen;
-            if (c2.bitLength() <= length) {
-                rec = rec2;
-                x = x3;
-                i = 1;
-            } else {
-                BigInteger bigInteger2 = ONE;
-                rec = rec2;
-                x = x3;
-                i = 1;
-                tx2 = bigInteger2.shiftLeft(length - 1).subtract(bigInteger2).divide(c0x2).add(bigInteger2).shiftLeft(1);
-                c2 = tx2.multiply(c02).add(bigInteger2);
+            if (c2.bitLength() > length) {
+                tx2 = ONE.shiftLeft(length - 1).subtract(ONE).divide(c0x2).add(ONE).shiftLeft(1);
+                c2 = tx2.multiply(c02).add(ONE);
             }
-            primeGenCounter2 += i;
+            primeGenCounter2++;
             if (!implHasAnySmallFactors(c2)) {
                 BigInteger a = hashGen(digest, primeSeed2, iterations + 1);
+                rec = rec2;
                 BigInteger a2 = a.mod(c2.subtract(THREE)).add(TWO);
                 str = str2;
                 BigInteger tx22 = tx2.add(BigInteger.valueOf(dt));
                 dt = 0;
                 BigInteger z = a2.modPow(tx22, c2);
-                BigInteger bigInteger3 = ONE;
-                if (c2.gcd(z.subtract(bigInteger3)).equals(bigInteger3) && z.modPow(c02, c2).equals(bigInteger3)) {
+                BigInteger gcd = c2.gcd(z.subtract(ONE));
+                BigInteger a3 = ONE;
+                if (gcd.equals(a3) && z.modPow(c02, c2).equals(ONE)) {
                     return new STOutput(c2, primeSeed2, primeGenCounter2);
                 }
                 tx2 = tx22;
             } else {
+                rec = rec2;
                 str = str2;
                 inc(primeSeed2, iterations + 1);
             }
@@ -354,9 +329,7 @@ public abstract class Primes {
             c2 = c2.add(c0x2);
             digest = d;
             str2 = str;
-            dLen = dt2;
             rec2 = rec;
-            x3 = x;
         }
     }
 

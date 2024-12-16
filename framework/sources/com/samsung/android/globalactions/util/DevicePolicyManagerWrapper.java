@@ -3,7 +3,7 @@ package com.samsung.android.globalactions.util;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DevicePolicyManagerWrapper {
     private final DevicePolicyManager mDevicePolicyManager;
 
@@ -11,11 +11,11 @@ public class DevicePolicyManagerWrapper {
         this.mDevicePolicyManager = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
     }
 
-    public boolean isEncryptionStatusActive() {
+    boolean isEncryptionStatusActive() {
         return this.mDevicePolicyManager.getStorageEncryptionStatus() == 3 || this.mDevicePolicyManager.getStorageEncryptionStatus() == 5;
     }
 
-    public boolean isLogoutEnabled() {
+    boolean isLogoutEnabled() {
         return this.mDevicePolicyManager.isLogoutEnabled();
     }
 }

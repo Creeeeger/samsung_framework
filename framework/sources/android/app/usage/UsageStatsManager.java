@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ParceledListSlice;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.PersistableBundle;
 import android.os.PowerWhitelistManager;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -26,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 /* loaded from: classes.dex */
 public final class UsageStatsManager {
+    public static final String EXTRA_EVENT_ACTION = "android.app.usage.extra.EVENT_ACTION";
+    public static final String EXTRA_EVENT_CATEGORY = "android.app.usage.extra.EVENT_CATEGORY";
 
     @SystemApi
     public static final String EXTRA_OBSERVER_ID = "android.app.usage.extra.OBSERVER_ID";
@@ -96,17 +99,14 @@ public final class UsageStatsManager {
     private final IUsageStatsManager mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ForcedReasons {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface StandbyBuckets {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface UsageSource {
     }
 
@@ -151,6 +151,17 @@ public final class UsageStatsManager {
     public UsageEvents queryEvents(long beginTime, long endTime) {
         try {
             UsageEvents iter = this.mService.queryEvents(beginTime, endTime, this.mContext.getOpPackageName());
+            if (iter != null) {
+                return iter;
+            }
+        } catch (RemoteException e) {
+        }
+        return sEmptyResults;
+    }
+
+    public UsageEvents queryEvents(UsageEventsQuery query) {
+        try {
+            UsageEvents iter = this.mService.queryEventsWithFilter(query, this.mContext.getOpPackageName());
             if (iter != null) {
                 return iter;
             }
@@ -382,6 +393,14 @@ public final class UsageStatsManager {
         }
     }
 
+    public void reportUserInteraction(String packageName, int userId, PersistableBundle extras) {
+        try {
+            this.mService.reportUserInteractionWithBundle(packageName, userId, extras);
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
     @SystemApi
     public void reportUsageStart(Activity activity, String token) {
         try {
@@ -431,7 +450,7 @@ public final class UsageStatsManager {
         StringBuilder sb = new StringBuilder();
         switch (65280 & standbyReason) {
             case 256:
-                sb.append("d");
+                sb.append(XmlTags.ATTR_DESCRIPTION);
                 switch (subReason) {
                     case 1:
                         sb.append("-au");
@@ -601,6 +620,14 @@ public final class UsageStatsManager {
     public void clearBroadcastEvents() {
         try {
             this.mService.clearBroadcastEvents(this.mContext.getOpPackageName(), this.mContext.getUserId());
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
+    public boolean isPackageExemptedFromBroadcastResponseStats(String packageName) {
+        try {
+            return this.mService.isPackageExemptedFromBroadcastResponseStats(packageName, this.mContext.getUserId());
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }

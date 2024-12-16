@@ -3,16 +3,14 @@ package com.android.internal.org.bouncycastle.cert.selector;
 import com.android.internal.org.bouncycastle.asn1.ASN1Encoding;
 import com.android.internal.org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import com.android.internal.org.bouncycastle.util.Pack;
-import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.io.IOException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class MSOutlookKeyIdCalculator {
+class MSOutlookKeyIdCalculator {
     MSOutlookKeyIdCalculator() {
     }
 
-    public static byte[] calculateKeyId(SubjectPublicKeyInfo info) {
+    static byte[] calculateKeyId(SubjectPublicKeyInfo info) {
         SHA1Digest dig = new SHA1Digest();
         byte[] hash = new byte[dig.getDigestSize()];
         byte[] bArr = new byte[0];
@@ -26,8 +24,7 @@ public class MSOutlookKeyIdCalculator {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static abstract class GeneralDigest {
+    private static abstract class GeneralDigest {
         private static final int BYTE_LENGTH = 64;
         private long byteCount;
         private byte[] xBuf;
@@ -50,8 +47,7 @@ public class MSOutlookKeyIdCalculator {
         }
 
         protected void copyIn(GeneralDigest t) {
-            byte[] bArr = t.xBuf;
-            System.arraycopy(bArr, 0, this.xBuf, 0, bArr.length);
+            System.arraycopy(t.xBuf, 0, this.xBuf, 0, t.xBuf.length);
             this.xBufOff = t.xBufOff;
             this.byteCount = t.byteCount;
         }
@@ -59,11 +55,10 @@ public class MSOutlookKeyIdCalculator {
         public void update(byte in) {
             byte[] bArr = this.xBuf;
             int i = this.xBufOff;
-            int i2 = i + 1;
-            this.xBufOff = i2;
+            this.xBufOff = i + 1;
             bArr[i] = in;
-            if (i2 == bArr.length) {
-                processWord(bArr, 0);
+            if (this.xBufOff == this.xBuf.length) {
+                processWord(this.xBuf, 0);
                 this.xBufOff = 0;
             }
             this.byteCount++;
@@ -77,10 +72,9 @@ public class MSOutlookKeyIdCalculator {
             }
             while (len > this.xBuf.length) {
                 processWord(in, inOff);
-                byte[] bArr = this.xBuf;
-                inOff += bArr.length;
-                len -= bArr.length;
-                this.byteCount += bArr.length;
+                inOff += this.xBuf.length;
+                len -= this.xBuf.length;
+                this.byteCount += this.xBuf.length;
             }
             while (len > 0) {
                 update(in[inOff]);
@@ -102,22 +96,13 @@ public class MSOutlookKeyIdCalculator {
         public void reset() {
             this.byteCount = 0L;
             this.xBufOff = 0;
-            int i = 0;
-            while (true) {
-                byte[] bArr = this.xBuf;
-                if (i < bArr.length) {
-                    bArr[i] = 0;
-                    i++;
-                } else {
-                    return;
-                }
+            for (int i = 0; i < this.xBuf.length; i++) {
+                this.xBuf[i] = 0;
             }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class SHA1Digest extends GeneralDigest {
+    private static class SHA1Digest extends GeneralDigest {
         private static final int DIGEST_LENGTH = 20;
         private static final int Y1 = 1518500249;
         private static final int Y2 = 1859775393;
@@ -145,17 +130,14 @@ public class MSOutlookKeyIdCalculator {
 
         @Override // com.android.internal.org.bouncycastle.cert.selector.MSOutlookKeyIdCalculator.GeneralDigest
         protected void processWord(byte[] in, int inOff) {
-            int n = in[inOff] << SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT;
+            int n = in[inOff] << 24;
             int inOff2 = inOff + 1;
             int n2 = n | ((in[inOff2] & 255) << 16);
             int inOff3 = inOff2 + 1;
-            int n3 = n2 | ((in[inOff3] & 255) << 8) | (in[inOff3 + 1] & 255);
-            int[] iArr = this.X;
-            int i = this.xOff;
-            iArr[i] = n3;
-            int i2 = i + 1;
-            this.xOff = i2;
-            if (i2 == 16) {
+            this.X[this.xOff] = n2 | ((in[inOff3] & 255) << 8) | (in[inOff3 + 1] & 255);
+            int i = this.xOff + 1;
+            this.xOff = i;
+            if (i == 16) {
                 processBlock();
             }
         }
@@ -165,9 +147,8 @@ public class MSOutlookKeyIdCalculator {
             if (this.xOff > 14) {
                 processBlock();
             }
-            int[] iArr = this.X;
-            iArr[14] = (int) (bitLength >>> 32);
-            iArr[15] = (int) ((-1) & bitLength);
+            this.X[14] = (int) (bitLength >>> 32);
+            this.X[15] = (int) ((-1) & bitLength);
         }
 
         public int doFinal(byte[] out, int outOff) {
@@ -190,15 +171,8 @@ public class MSOutlookKeyIdCalculator {
             this.H4 = 271733878;
             this.H5 = -1009589776;
             this.xOff = 0;
-            int i = 0;
-            while (true) {
-                int[] iArr = this.X;
-                if (i != iArr.length) {
-                    iArr[i] = 0;
-                    i++;
-                } else {
-                    return;
-                }
+            for (int i = 0; i != this.X.length; i++) {
+                this.X[i] = 0;
             }
         }
 
@@ -217,9 +191,8 @@ public class MSOutlookKeyIdCalculator {
         @Override // com.android.internal.org.bouncycastle.cert.selector.MSOutlookKeyIdCalculator.GeneralDigest
         protected void processBlock() {
             for (int i = 16; i < 80; i++) {
-                int[] iArr = this.X;
-                int t = ((iArr[i - 3] ^ iArr[i - 8]) ^ iArr[i - 14]) ^ iArr[i - 16];
-                iArr[i] = (t << 1) | (t >>> 31);
+                int t = ((this.X[i - 3] ^ this.X[i - 8]) ^ this.X[i - 14]) ^ this.X[i - 16];
+                this.X[i] = (t << 1) | (t >>> 31);
             }
             int A = this.H1;
             int B = this.H2;

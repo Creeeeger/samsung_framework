@@ -14,7 +14,6 @@ public interface IIAFDService extends IInterface {
 
     void IAFDShow(int i, int i2, String str) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements IIAFDService {
         @Override // com.sec.android.iaft.IIAFDService
         public boolean IAFDParse(String packageName, String nativeLibraryDir, int puserId, int appuid, int flags, String exceptionClassName, String exceptionMessage, String stackTrace) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IIAFDService extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements IIAFDService {
         static final int TRANSACTION_IAFDParse = 1;
         static final int TRANSACTION_IAFDShow = 2;
@@ -77,41 +75,38 @@ public interface IIAFDService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIAFDService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIAFDService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIAFDService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    String _arg5 = data.readString();
+                    String _arg6 = data.readString();
+                    String _arg7 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = IAFDParse(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    IAFDShow(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            String _arg5 = data.readString();
-                            String _arg6 = data.readString();
-                            String _arg7 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = IAFDParse(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            IAFDShow(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements IIAFDService {
             private IBinder mRemote;
 

@@ -286,10 +286,9 @@ public class X509CRLObject extends X509CRL {
 
     @Override // java.security.cert.X509CRL
     public byte[] getSigAlgParams() {
-        byte[] bArr = this.sigAlgParams;
-        if (bArr != null) {
-            byte[] tmp = new byte[bArr.length];
-            System.arraycopy(bArr, 0, tmp, 0, tmp.length);
+        if (this.sigAlgParams != null) {
+            byte[] tmp = new byte[this.sigAlgParams.length];
+            System.arraycopy(this.sigAlgParams, 0, tmp, 0, tmp.length);
             return tmp;
         }
         return null;

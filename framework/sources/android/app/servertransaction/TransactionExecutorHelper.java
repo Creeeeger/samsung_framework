@@ -56,7 +56,7 @@ public class TransactionExecutorHelper {
             }
         }
         if (excludeLastState && this.mLifecycleSequence.size() != 0) {
-            this.mLifecycleSequence.remove(r0.size() - 1);
+            this.mLifecycleSequence.remove(this.mLifecycleSequence.size() - 1);
         }
         return this.mLifecycleSequence;
     }
@@ -101,18 +101,16 @@ public class TransactionExecutorHelper {
         int prevState = r.getLifecycleState();
         switch (prevState) {
             case 2:
-                ActivityLifecycleItem lifecycleItem = StartActivityItem.obtain(null);
+            case 4:
+                ActivityLifecycleItem lifecycleItem = PauseActivityItem.obtain(r.token);
                 return lifecycleItem;
             case 3:
             default:
-                ActivityLifecycleItem lifecycleItem2 = ResumeActivityItem.obtain(false, false);
+                ActivityLifecycleItem lifecycleItem2 = ResumeActivityItem.obtain(r.token, false, false);
                 return lifecycleItem2;
-            case 4:
-                ActivityLifecycleItem lifecycleItem3 = PauseActivityItem.obtain();
-                return lifecycleItem3;
             case 5:
-                ActivityLifecycleItem lifecycleItem4 = StopActivityItem.obtain(0);
-                return lifecycleItem4;
+                ActivityLifecycleItem lifecycleItem3 = StopActivityItem.obtain(r.token);
+                return lifecycleItem3;
         }
     }
 
@@ -126,17 +124,22 @@ public class TransactionExecutorHelper {
         return false;
     }
 
-    public static int lastCallbackRequestingState(ClientTransaction transaction) {
+    @Deprecated
+    static int lastCallbackRequestingState(ClientTransaction transaction) {
         List<ClientTransactionItem> callbacks = transaction.getCallbacks();
-        if (callbacks == null || callbacks.size() == 0) {
+        if (callbacks == null || callbacks.isEmpty() || transaction.getLifecycleStateRequest() == null) {
             return -1;
         }
+        return lastCallbackRequestingStateIndex(callbacks, 0, callbacks.size() - 1, transaction.getLifecycleStateRequest().getActivityToken());
+    }
+
+    private static int lastCallbackRequestingStateIndex(List<ClientTransactionItem> items, int startIndex, int lastIndex, IBinder activityToken) {
         int lastRequestedState = -1;
         int lastRequestingCallback = -1;
-        for (int i = callbacks.size() - 1; i >= 0; i--) {
-            ClientTransactionItem callback = callbacks.get(i);
-            int postExecutionState = callback.getPostExecutionState();
-            if (postExecutionState != -1) {
+        for (int i = lastIndex; i >= startIndex; i--) {
+            ClientTransactionItem item = items.get(i);
+            int postExecutionState = item.getPostExecutionState();
+            if (postExecutionState != -1 && activityToken.equals(item.getActivityToken())) {
                 if (lastRequestedState != -1 && lastRequestedState != postExecutionState) {
                     break;
                 }
@@ -147,16 +150,38 @@ public class TransactionExecutorHelper {
         return lastRequestingCallback;
     }
 
-    public static String transactionToString(ClientTransaction transaction, ClientTransactionHandler transactionHandler) {
+    static boolean shouldExcludeLastLifecycleState(List<ClientTransactionItem> items, int currentIndex) {
+        int nextLifecycleItemIndex;
+        ClientTransactionItem item = items.get(currentIndex);
+        IBinder activityToken = item.getActivityToken();
+        int postExecutionState = item.getPostExecutionState();
+        if (activityToken == null || postExecutionState == -1 || (nextLifecycleItemIndex = findNextLifecycleItemIndex(items, currentIndex + 1, activityToken)) == -1) {
+            return false;
+        }
+        ActivityLifecycleItem lifecycleItem = (ActivityLifecycleItem) items.get(nextLifecycleItemIndex);
+        return postExecutionState == lifecycleItem.getTargetState() && currentIndex == lastCallbackRequestingStateIndex(items, currentIndex, nextLifecycleItemIndex + (-1), activityToken);
+    }
+
+    private static int findNextLifecycleItemIndex(List<ClientTransactionItem> items, int startIndex, IBinder activityToken) {
+        int size = items.size();
+        for (int i = startIndex; i < size; i++) {
+            ClientTransactionItem item = items.get(i);
+            if (item.isActivityLifecycleItem() && item.getActivityToken().equals(activityToken)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    static String transactionToString(ClientTransaction transaction, ClientTransactionHandler transactionHandler) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter pw = new PrintWriter(stringWriter);
         String prefix = tId(transaction);
-        transaction.dump(prefix, pw);
-        pw.append((CharSequence) (prefix + "Target activity: ")).println(getActivityName(transaction.getActivityToken(), transactionHandler));
+        transaction.dump(prefix, pw, transactionHandler);
         return stringWriter.toString();
     }
 
-    public static String tId(ClientTransaction transaction) {
+    static String tId(ClientTransaction transaction) {
         return "tId:" + transaction.hashCode() + " ";
     }
 

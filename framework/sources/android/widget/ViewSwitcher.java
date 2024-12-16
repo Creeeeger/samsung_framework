@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 public class ViewSwitcher extends ViewAnimator {
     ViewFactory mFactory;
 
-    /* loaded from: classes4.dex */
     public interface ViewFactory {
         View makeView();
     }

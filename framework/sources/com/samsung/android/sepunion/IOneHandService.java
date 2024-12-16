@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IOneHandService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IOneHandService";
 
@@ -21,7 +21,6 @@ public interface IOneHandService extends IInterface {
 
     void writeSetting(String str, String str2, int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IOneHandService {
         @Override // com.samsung.android.sepunion.IOneHandService
         public void registerListener(String packageName, IBinder cb) throws RemoteException {
@@ -45,7 +44,6 @@ public interface IOneHandService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IOneHandService {
         static final int TRANSACTION_clickTile = 3;
         static final int TRANSACTION_registerListener = 1;
@@ -107,45 +105,41 @@ public interface IOneHandService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOneHandService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOneHandService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOneHandService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    registerListener(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    IBinder _arg12 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unRegisterListener(_arg02, _arg12);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    clickTile(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    writeSetting(_arg04, _arg13, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            registerListener(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            IBinder _arg12 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unRegisterListener(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            clickTile(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            writeSetting(_arg04, _arg13, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IOneHandService {
+        private static class Proxy implements IOneHandService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

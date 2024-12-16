@@ -3,45 +3,48 @@ package com.android.framework.protobuf;
 import java.io.IOException;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public abstract class UnknownFieldSchema<T, B> {
+/* loaded from: classes3.dex */
+abstract class UnknownFieldSchema<T, B> {
     abstract void addFixed32(B b, int i, int i2);
 
     abstract void addFixed64(B b, int i, long j);
 
     abstract void addGroup(B b, int i, T t);
 
-    public abstract void addLengthDelimited(B b, int i, ByteString byteString);
+    abstract void addLengthDelimited(B b, int i, ByteString byteString);
 
-    public abstract void addVarint(B b, int i, long j);
+    abstract void addVarint(B b, int i, long j);
 
-    public abstract B getBuilderFromMessage(Object obj);
+    abstract B getBuilderFromMessage(Object obj);
 
-    public abstract T getFromMessage(Object obj);
+    abstract T getFromMessage(Object obj);
 
-    public abstract int getSerializedSize(T t);
+    abstract int getSerializedSize(T t);
 
-    public abstract int getSerializedSizeAsMessageSet(T t);
+    abstract int getSerializedSizeAsMessageSet(T t);
 
-    public abstract void makeImmutable(Object obj);
+    abstract void makeImmutable(Object obj);
 
-    public abstract T merge(T t, T t2);
+    abstract T merge(T t, T t2);
 
     abstract B newBuilder();
 
-    public abstract void setBuilderToMessage(Object obj, B b);
+    abstract void setBuilderToMessage(Object obj, B b);
 
-    public abstract void setToMessage(Object obj, T t);
+    abstract void setToMessage(Object obj, T t);
 
-    public abstract boolean shouldDiscardUnknownFields(Reader reader);
+    abstract boolean shouldDiscardUnknownFields(Reader reader);
 
     abstract T toImmutable(B b);
 
-    public abstract void writeAsMessageSetTo(T t, Writer writer) throws IOException;
+    abstract void writeAsMessageSetTo(T t, Writer writer) throws IOException;
 
-    public abstract void writeTo(T t, Writer writer) throws IOException;
+    abstract void writeTo(T t, Writer writer) throws IOException;
 
-    public final boolean mergeOneFieldFrom(B unknownFields, Reader reader) throws IOException {
+    UnknownFieldSchema() {
+    }
+
+    final boolean mergeOneFieldFrom(B unknownFields, Reader reader) throws IOException {
         int tag = reader.getTag();
         int fieldNumber = WireFormat.getTagFieldNumber(tag);
         switch (WireFormat.getTagWireType(tag)) {

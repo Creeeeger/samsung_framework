@@ -18,14 +18,12 @@ public class PatternScanner {
     public PatternScanner(String input, Pattern ignorePattern) {
         this.mInput = input;
         this.mIgnorePattern = ignorePattern;
-        skip(ignorePattern);
+        skip(this.mIgnorePattern);
     }
 
     public String tryEat(Pattern pattern) {
-        Pattern pattern2;
-        Pattern pattern3 = this.mIgnorePattern;
-        if (pattern3 != null) {
-            skip(pattern3);
+        if (this.mIgnorePattern != null) {
+            skip(this.mIgnorePattern);
         }
         Matcher matcher = pattern.matcher(this.mInput);
         matcher.region(this.mOffset, this.mInput.length());
@@ -35,8 +33,8 @@ public class PatternScanner {
             this.mOffset = matcher.end();
             result = this.mInput.substring(matcher.start(), matcher.end());
         }
-        if (result != null && (pattern2 = this.mIgnorePattern) != null) {
-            skip(pattern2);
+        if (result != null && this.mIgnorePattern != null) {
+            skip(this.mIgnorePattern);
         }
         return result;
     }
@@ -50,9 +48,8 @@ public class PatternScanner {
     }
 
     public boolean peek(Pattern pattern) {
-        Pattern pattern2 = this.mIgnorePattern;
-        if (pattern2 != null) {
-            skip(pattern2);
+        if (this.mIgnorePattern != null) {
+            skip(this.mIgnorePattern);
         }
         Matcher matcher = pattern.matcher(this.mInput);
         matcher.region(this.mOffset, this.mInput.length());

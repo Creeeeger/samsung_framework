@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 /* loaded from: classes.dex */
 public @interface SystemApi {
 
-    /* loaded from: classes.dex */
     public enum Client {
         PRIVILEGED_APPS,
         MODULE_LIBRARIES,
@@ -19,7 +18,6 @@ public @interface SystemApi {
 
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes.dex */
     public @interface Container {
         SystemApi[] value();
     }

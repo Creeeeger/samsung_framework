@@ -33,7 +33,6 @@ public interface IContentSuggestionsManager extends IInterface {
 
     void suggestContentSelections(int i, SelectionsRequest selectionsRequest, ISelectionsCallback iSelectionsCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IContentSuggestionsManager {
         @Override // android.app.contentsuggestions.IContentSuggestionsManager
         public void provideContextImage(int userId, int taskId, Bundle imageContextRequestExtras) throws RemoteException {
@@ -77,7 +76,6 @@ public interface IContentSuggestionsManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IContentSuggestionsManager {
         static final int TRANSACTION_classifyContentSelections = 4;
         static final int TRANSACTION_isEnabled = 6;
@@ -144,79 +142,76 @@ public interface IContentSuggestionsManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContentSuggestionsManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContentSuggestionsManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContentSuggestionsManager.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    provideContextImage(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    Bitmap _arg12 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
+                    Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    provideContextBitmap(_arg02, _arg12, _arg22);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    SelectionsRequest _arg13 = (SelectionsRequest) data.readTypedObject(SelectionsRequest.CREATOR);
+                    ISelectionsCallback _arg23 = ISelectionsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    suggestContentSelections(_arg03, _arg13, _arg23);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    ClassificationsRequest _arg14 = (ClassificationsRequest) data.readTypedObject(ClassificationsRequest.CREATOR);
+                    IClassificationsCallback _arg24 = IClassificationsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    classifyContentSelections(_arg04, _arg14, _arg24);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    String _arg15 = data.readString();
+                    Bundle _arg25 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyInteraction(_arg05, _arg15, _arg25);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    IResultReceiver _arg16 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    isEnabled(_arg06, _arg16);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetTemporaryService(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg17 = data.readString();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTemporaryService(_arg08, _arg17, _arg26);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    boolean _arg18 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDefaultServiceEnabled(_arg09, _arg18);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            provideContextImage(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            Bitmap _arg12 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
-                            Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            provideContextBitmap(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            SelectionsRequest _arg13 = (SelectionsRequest) data.readTypedObject(SelectionsRequest.CREATOR);
-                            ISelectionsCallback _arg23 = ISelectionsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            suggestContentSelections(_arg03, _arg13, _arg23);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            ClassificationsRequest _arg14 = (ClassificationsRequest) data.readTypedObject(ClassificationsRequest.CREATOR);
-                            IClassificationsCallback _arg24 = IClassificationsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            classifyContentSelections(_arg04, _arg14, _arg24);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            String _arg15 = data.readString();
-                            Bundle _arg25 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyInteraction(_arg05, _arg15, _arg25);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            IResultReceiver _arg16 = IResultReceiver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            isEnabled(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetTemporaryService(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg17 = data.readString();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTemporaryService(_arg08, _arg17, _arg26);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            boolean _arg18 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDefaultServiceEnabled(_arg09, _arg18);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IContentSuggestionsManager {
+        private static class Proxy implements IContentSuggestionsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

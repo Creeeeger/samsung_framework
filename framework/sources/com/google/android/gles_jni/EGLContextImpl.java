@@ -32,8 +32,7 @@ public class EGLContextImpl extends EGLContext {
     }
 
     public int hashCode() {
-        long j = this.mEGLContext;
-        int result = (17 * 31) + ((int) (j ^ (j >>> 32)));
+        int result = (17 * 31) + ((int) (this.mEGLContext ^ (this.mEGLContext >>> 32)));
         return result;
     }
 }

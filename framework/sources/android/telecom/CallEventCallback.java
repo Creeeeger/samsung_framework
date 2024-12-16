@@ -14,4 +14,7 @@ public interface CallEventCallback {
     void onEvent(String str, Bundle bundle);
 
     void onMuteStateChanged(boolean z);
+
+    default void onVideoStateChanged(int videoState) {
+    }
 }

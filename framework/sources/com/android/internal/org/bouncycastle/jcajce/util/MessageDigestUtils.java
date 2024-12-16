@@ -10,12 +10,10 @@ import java.util.Map;
 
 /* loaded from: classes5.dex */
 public class MessageDigestUtils {
-    private static Map<ASN1ObjectIdentifier, String> digestOidMap;
+    private static Map<ASN1ObjectIdentifier, String> digestOidMap = new HashMap();
 
     static {
-        HashMap hashMap = new HashMap();
-        digestOidMap = hashMap;
-        hashMap.put(PKCSObjectIdentifiers.md5, KeyProperties.DIGEST_MD5);
+        digestOidMap.put(PKCSObjectIdentifiers.md5, KeyProperties.DIGEST_MD5);
         digestOidMap.put(OIWObjectIdentifiers.idSHA1, "SHA-1");
         digestOidMap.put(NISTObjectIdentifiers.id_sha224, KeyProperties.DIGEST_SHA224);
         digestOidMap.put(NISTObjectIdentifiers.id_sha256, "SHA-256");

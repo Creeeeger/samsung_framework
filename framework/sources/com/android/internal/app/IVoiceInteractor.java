@@ -11,7 +11,7 @@ import android.os.RemoteException;
 import com.android.internal.app.IVoiceInteractorCallback;
 import com.android.internal.app.IVoiceInteractorRequest;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IVoiceInteractor extends IInterface {
     void notifyDirectActionsChanged(int i, IBinder iBinder) throws RemoteException;
 
@@ -29,7 +29,6 @@ public interface IVoiceInteractor extends IInterface {
 
     boolean[] supportsCommands(String str, String[] strArr) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IVoiceInteractor {
         @Override // com.android.internal.app.IVoiceInteractor
         public IVoiceInteractorRequest startConfirmation(String callingPackage, IVoiceInteractorCallback callback, VoiceInteractor.Prompt prompt, Bundle extras) throws RemoteException {
@@ -75,7 +74,6 @@ public interface IVoiceInteractor extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractor {
         public static final String DESCRIPTOR = "com.android.internal.app.IVoiceInteractor";
         static final int TRANSACTION_notifyDirectActionsChanged = 7;
@@ -140,92 +138,89 @@ public interface IVoiceInteractor extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    IVoiceInteractorCallback _arg1 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
+                    VoiceInteractor.Prompt _arg2 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IVoiceInteractorRequest _result = startConfirmation(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    IVoiceInteractorCallback _arg12 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
+                    VoiceInteractor.Prompt _arg22 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
+                    VoiceInteractor.PickOptionRequest.Option[] _arg32 = (VoiceInteractor.PickOptionRequest.Option[]) data.createTypedArray(VoiceInteractor.PickOptionRequest.Option.CREATOR);
+                    Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IVoiceInteractorRequest _result2 = startPickOption(_arg02, _arg12, _arg22, _arg32, _arg4);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    IVoiceInteractorCallback _arg13 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
+                    VoiceInteractor.Prompt _arg23 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
+                    Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IVoiceInteractorRequest _result3 = startCompleteVoice(_arg03, _arg13, _arg23, _arg33);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    IVoiceInteractorCallback _arg14 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
+                    VoiceInteractor.Prompt _arg24 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
+                    Bundle _arg34 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IVoiceInteractorRequest _result4 = startAbortVoice(_arg04, _arg14, _arg24, _arg34);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    IVoiceInteractorCallback _arg15 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg25 = data.readString();
+                    Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IVoiceInteractorRequest _result5 = startCommand(_arg05, _arg15, _arg25, _arg35);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    String[] _arg16 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    boolean[] _result6 = supportsCommands(_arg06, _arg16);
+                    reply.writeNoException();
+                    reply.writeBooleanArray(_result6);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    IBinder _arg17 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    notifyDirectActionsChanged(_arg07, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    ICancellationSignal _arg08 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setKillCallback(_arg08);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            IVoiceInteractorCallback _arg1 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
-                            VoiceInteractor.Prompt _arg2 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IVoiceInteractorRequest _result = startConfirmation(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            IVoiceInteractorCallback _arg12 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
-                            VoiceInteractor.Prompt _arg22 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
-                            VoiceInteractor.PickOptionRequest.Option[] _arg32 = (VoiceInteractor.PickOptionRequest.Option[]) data.createTypedArray(VoiceInteractor.PickOptionRequest.Option.CREATOR);
-                            Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IVoiceInteractorRequest _result2 = startPickOption(_arg02, _arg12, _arg22, _arg32, _arg4);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            IVoiceInteractorCallback _arg13 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
-                            VoiceInteractor.Prompt _arg23 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
-                            Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IVoiceInteractorRequest _result3 = startCompleteVoice(_arg03, _arg13, _arg23, _arg33);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            IVoiceInteractorCallback _arg14 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
-                            VoiceInteractor.Prompt _arg24 = (VoiceInteractor.Prompt) data.readTypedObject(VoiceInteractor.Prompt.CREATOR);
-                            Bundle _arg34 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IVoiceInteractorRequest _result4 = startAbortVoice(_arg04, _arg14, _arg24, _arg34);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            IVoiceInteractorCallback _arg15 = IVoiceInteractorCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg25 = data.readString();
-                            Bundle _arg35 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IVoiceInteractorRequest _result5 = startCommand(_arg05, _arg15, _arg25, _arg35);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            String[] _arg16 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            boolean[] _result6 = supportsCommands(_arg06, _arg16);
-                            reply.writeNoException();
-                            reply.writeBooleanArray(_result6);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            IBinder _arg17 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            notifyDirectActionsChanged(_arg07, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            ICancellationSignal _arg08 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setKillCallback(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IVoiceInteractor {
+        private static class Proxy implements IVoiceInteractor {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

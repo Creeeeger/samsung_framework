@@ -38,23 +38,22 @@ public class PaintDrawable extends ShapeDrawable {
         invalidateSelf();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.ShapeDrawable
-    public boolean inflateTag(String name, Resources r, XmlPullParser parser, AttributeSet attrs) {
-        if (!name.equals("corners")) {
-            return super.inflateTag(name, r, parser, attrs);
+    protected boolean inflateTag(String name, Resources r, XmlPullParser parser, AttributeSet attrs) {
+        if (name.equals("corners")) {
+            TypedArray a = r.obtainAttributes(attrs, R.styleable.DrawableCorners);
+            int radius = a.getDimensionPixelSize(0, 0);
+            setCornerRadius(radius);
+            int topLeftRadius = a.getDimensionPixelSize(1, radius);
+            int topRightRadius = a.getDimensionPixelSize(2, radius);
+            int bottomLeftRadius = a.getDimensionPixelSize(3, radius);
+            int bottomRightRadius = a.getDimensionPixelSize(4, radius);
+            if (topLeftRadius != radius || topRightRadius != radius || bottomLeftRadius != radius || bottomRightRadius != radius) {
+                setCornerRadii(new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius});
+            }
+            a.recycle();
+            return true;
         }
-        TypedArray a = r.obtainAttributes(attrs, R.styleable.DrawableCorners);
-        int radius = a.getDimensionPixelSize(0, 0);
-        setCornerRadius(radius);
-        int topLeftRadius = a.getDimensionPixelSize(1, radius);
-        int topRightRadius = a.getDimensionPixelSize(2, radius);
-        int bottomLeftRadius = a.getDimensionPixelSize(3, radius);
-        int bottomRightRadius = a.getDimensionPixelSize(4, radius);
-        if (topLeftRadius != radius || topRightRadius != radius || bottomLeftRadius != radius || bottomRightRadius != radius) {
-            setCornerRadii(new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius});
-        }
-        a.recycle();
-        return true;
+        return super.inflateTag(name, r, parser, attrs);
     }
 }

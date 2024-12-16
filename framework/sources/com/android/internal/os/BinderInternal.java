@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.util.EventLog;
 import android.util.SparseIntArray;
 import com.android.internal.os.BinderCallsStats;
+import com.android.internal.os.BinderInternal;
 import com.android.internal.util.Preconditions;
 import dalvik.system.VMRuntime;
 import java.lang.ref.WeakReference;
@@ -20,14 +21,8 @@ public class BinderInternal {
     static WeakReference<GcWatcher> sGcWatcher = new WeakReference<>(new GcWatcher());
     static ArrayList<Runnable> sGcWatchers = new ArrayList<>();
     static Runnable[] sTmpWatchers = new Runnable[1];
-    static final BinderProxyLimitListenerDelegate sBinderProxyLimitListenerDelegate = new BinderProxyLimitListenerDelegate();
+    static final BinderProxyCountEventListenerDelegate sBinderProxyCountEventListenerDelegate = new BinderProxyCountEventListenerDelegate();
 
-    /* loaded from: classes5.dex */
-    public interface BinderProxyLimitListener {
-        void onLimitReached(int i);
-    }
-
-    /* loaded from: classes5.dex */
     public static class CallSession {
         public Class<? extends Binder> binderClass;
         long cpuTimeStarted;
@@ -37,14 +32,12 @@ public class BinderInternal {
         public int transactionCode;
     }
 
-    /* loaded from: classes5.dex */
     public interface CallStatsObserver {
         void noteBinderThreadNativeIds(int[] iArr);
 
         void noteCallStats(int i, long j, Collection<BinderCallsStats.CallStat> collection);
     }
 
-    /* loaded from: classes5.dex */
     public interface Observer {
         void callEnded(CallSession callSession, int i, int i2, int i3);
 
@@ -54,7 +47,6 @@ public class BinderInternal {
     }
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface WorkSourceProvider {
         int resolveWorkSourceUid(int i);
     }
@@ -73,11 +65,10 @@ public class BinderInternal {
 
     public static final native void nSetBinderProxyCountEnabled(boolean z);
 
-    public static final native void nSetBinderProxyCountWatermarks(int i, int i2);
+    public static final native void nSetBinderProxyCountWatermarks(int i, int i2, int i3);
 
     public static final native void setMaxThreads(int i);
 
-    /* loaded from: classes5.dex */
     static final class GcWatcher {
         GcWatcher() {
         }
@@ -116,71 +107,79 @@ public class BinderInternal {
         forceGc("Binder");
     }
 
-    public static void binderProxyLimitCallbackFromNative(int uid) {
-        sBinderProxyLimitListenerDelegate.notifyClient(uid);
+    public interface BinderProxyCountEventListener {
+        void onLimitReached(int i);
+
+        default void onWarningThresholdReached(int uid) {
+        }
     }
 
-    public static void setBinderProxyCountCallback(BinderProxyLimitListener listener, Handler handler) {
-        Preconditions.checkNotNull(handler, "Must provide NonNull Handler to setBinderProxyCountCallback when setting BinderProxyLimitListener");
-        sBinderProxyLimitListenerDelegate.setListener(listener, handler);
+    public static void binderProxyLimitCallbackFromNative(int uid) {
+        sBinderProxyCountEventListenerDelegate.notifyLimitReached(uid);
+    }
+
+    public static void binderProxyWarningCallbackFromNative(int uid) {
+        sBinderProxyCountEventListenerDelegate.notifyWarningReached(uid);
+    }
+
+    public static void setBinderProxyCountCallback(BinderProxyCountEventListener listener, Handler handler) {
+        Preconditions.checkNotNull(handler, "Must provide NonNull Handler to setBinderProxyCountCallback when setting BinderProxyCountEventListener");
+        sBinderProxyCountEventListenerDelegate.setListener(listener, handler);
     }
 
     public static void clearBinderProxyCountCallback() {
-        sBinderProxyLimitListenerDelegate.setListener(null, null);
+        sBinderProxyCountEventListenerDelegate.setListener(null, null);
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class BinderProxyLimitListenerDelegate {
-        private BinderProxyLimitListener mBinderProxyLimitListener;
+    static class BinderProxyCountEventListenerDelegate {
+        private BinderProxyCountEventListener mBinderProxyCountEventListener;
         private Handler mHandler;
 
-        /* synthetic */ BinderProxyLimitListenerDelegate(BinderProxyLimitListenerDelegateIA binderProxyLimitListenerDelegateIA) {
-            this();
+        private BinderProxyCountEventListenerDelegate() {
         }
 
-        private BinderProxyLimitListenerDelegate() {
-        }
-
-        void setListener(BinderProxyLimitListener listener, Handler handler) {
+        void setListener(BinderProxyCountEventListener listener, Handler handler) {
             synchronized (this) {
-                this.mBinderProxyLimitListener = listener;
+                this.mBinderProxyCountEventListener = listener;
                 this.mHandler = handler;
             }
         }
 
-        void notifyClient(int uid) {
+        void notifyLimitReached(final int uid) {
             synchronized (this) {
-                if (this.mBinderProxyLimitListener != null) {
-                    this.mHandler.post(new Runnable() { // from class: com.android.internal.os.BinderInternal.BinderProxyLimitListenerDelegate.1
-                        final /* synthetic */ int val$uid;
-
-                        AnonymousClass1(int uid2) {
-                            uid = uid2;
-                        }
-
+                if (this.mBinderProxyCountEventListener != null) {
+                    this.mHandler.post(new Runnable() { // from class: com.android.internal.os.BinderInternal$BinderProxyCountEventListenerDelegate$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
-                        public void run() {
-                            BinderProxyLimitListenerDelegate.this.mBinderProxyLimitListener.onLimitReached(uid);
+                        public final void run() {
+                            BinderInternal.BinderProxyCountEventListenerDelegate.this.lambda$notifyLimitReached$0(uid);
                         }
                     });
                 }
             }
         }
 
-        /* renamed from: com.android.internal.os.BinderInternal$BinderProxyLimitListenerDelegate$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 implements Runnable {
-            final /* synthetic */ int val$uid;
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$notifyLimitReached$0(int uid) {
+            this.mBinderProxyCountEventListener.onLimitReached(uid);
+        }
 
-            AnonymousClass1(int uid2) {
-                uid = uid2;
+        void notifyWarningReached(final int uid) {
+            synchronized (this) {
+                if (this.mBinderProxyCountEventListener != null) {
+                    this.mHandler.post(new Runnable() { // from class: com.android.internal.os.BinderInternal$BinderProxyCountEventListenerDelegate$$ExternalSyntheticLambda1
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            BinderInternal.BinderProxyCountEventListenerDelegate.this.lambda$notifyWarningReached$1(uid);
+                        }
+                    });
+                }
             }
+        }
 
-            @Override // java.lang.Runnable
-            public void run() {
-                BinderProxyLimitListenerDelegate.this.mBinderProxyLimitListener.onLimitReached(uid);
-            }
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$notifyWarningReached$1(int uid) {
+            this.mBinderProxyCountEventListener.onWarningThresholdReached(uid);
         }
     }
 }

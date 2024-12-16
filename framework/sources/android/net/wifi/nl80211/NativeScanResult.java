@@ -33,9 +33,7 @@ public final class NativeScanResult implements Parcelable {
     public static final int BSS_CAPABILITY_SHORT_SLOT_TIME = 1024;
     public static final int BSS_CAPABILITY_SPECTRUM_MANAGEMENT = 256;
     public static final Parcelable.Creator<NativeScanResult> CREATOR = new Parcelable.Creator<NativeScanResult>() { // from class: android.net.wifi.nl80211.NativeScanResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NativeScanResult createFromParcel(Parcel in) {
             NativeScanResult result = new NativeScanResult();
@@ -61,6 +59,7 @@ public final class NativeScanResult implements Parcelable {
             return result;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NativeScanResult[] newArray(int size) {
             return new NativeScanResult[size];
@@ -78,7 +77,6 @@ public final class NativeScanResult implements Parcelable {
     public long tsf;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface BssCapabilityBits {
     }
 
@@ -139,42 +137,5 @@ public final class NativeScanResult implements Parcelable {
         parcel.writeInt(this.capability);
         parcel.writeInt(this.associated ? 1 : 0);
         parcel.writeTypedList(this.radioChainInfos);
-    }
-
-    /* renamed from: android.net.wifi.nl80211.NativeScanResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NativeScanResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NativeScanResult createFromParcel(Parcel in) {
-            NativeScanResult result = new NativeScanResult();
-            result.ssid = in.createByteArray();
-            if (result.ssid == null) {
-                result.ssid = new byte[0];
-            }
-            result.bssid = in.createByteArray();
-            if (result.bssid == null) {
-                result.bssid = new byte[0];
-            }
-            result.infoElement = in.createByteArray();
-            if (result.infoElement == null) {
-                result.infoElement = new byte[0];
-            }
-            result.frequency = in.readInt();
-            result.signalMbm = in.readInt();
-            result.tsf = in.readLong();
-            result.capability = in.readInt();
-            result.associated = in.readInt() != 0;
-            result.radioChainInfos = new ArrayList();
-            in.readTypedList(result.radioChainInfos, RadioChainInfo.CREATOR);
-            return result;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NativeScanResult[] newArray(int size) {
-            return new NativeScanResult[size];
-        }
     }
 }

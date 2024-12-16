@@ -15,9 +15,10 @@ public interface IMediaBrowserServiceCallbacks extends IInterface {
 
     void onConnectFailed() throws RemoteException;
 
+    void onDisconnect() throws RemoteException;
+
     void onLoadChildren(String str, ParceledListSlice parceledListSlice, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IMediaBrowserServiceCallbacks {
         @Override // android.service.media.IMediaBrowserServiceCallbacks
         public void onConnect(String root, MediaSession.Token session, Bundle extras) throws RemoteException {
@@ -31,17 +32,21 @@ public interface IMediaBrowserServiceCallbacks extends IInterface {
         public void onLoadChildren(String mediaId, ParceledListSlice list, Bundle options) throws RemoteException {
         }
 
+        @Override // android.service.media.IMediaBrowserServiceCallbacks
+        public void onDisconnect() throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IMediaBrowserServiceCallbacks {
         public static final String DESCRIPTOR = "android.service.media.IMediaBrowserServiceCallbacks";
         static final int TRANSACTION_onConnect = 1;
         static final int TRANSACTION_onConnectFailed = 2;
+        static final int TRANSACTION_onDisconnect = 4;
         static final int TRANSACTION_onLoadChildren = 3;
 
         public Stub() {
@@ -72,6 +77,8 @@ public interface IMediaBrowserServiceCallbacks extends IInterface {
                     return "onConnectFailed";
                 case 3:
                     return "onLoadChildren";
+                case 4:
+                    return "onDisconnect";
                 default:
                     return null;
             }
@@ -87,38 +94,37 @@ public interface IMediaBrowserServiceCallbacks extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    MediaSession.Token _arg1 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConnect(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    onConnectFailed();
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    ParceledListSlice _arg12 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onLoadChildren(_arg02, _arg12, _arg22);
+                    return true;
+                case 4:
+                    onDisconnect();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            MediaSession.Token _arg1 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConnect(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            onConnectFailed();
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            ParceledListSlice _arg12 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onLoadChildren(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IMediaBrowserServiceCallbacks {
+        private static class Proxy implements IMediaBrowserServiceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -172,11 +178,22 @@ public interface IMediaBrowserServiceCallbacks extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.service.media.IMediaBrowserServiceCallbacks
+            public void onDisconnect() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(4, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 2;
+            return 3;
         }
     }
 }

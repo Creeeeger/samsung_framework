@@ -6,7 +6,7 @@ import java.io.IOException;
 public class DLSequenceParser implements ASN1SequenceParser {
     private ASN1StreamParser _parser;
 
-    public DLSequenceParser(ASN1StreamParser parser) {
+    DLSequenceParser(ASN1StreamParser parser) {
         this._parser = parser;
     }
 

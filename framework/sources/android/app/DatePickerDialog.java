@@ -21,7 +21,6 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
     private OnDateSetListener mDateSetListener;
     private final DatePicker.ValidationCallback mValidationCallback;
 
-    /* loaded from: classes.dex */
     public interface OnDateSetListener {
         void onDateSet(DatePicker datePicker, int i, int i2, int i3);
     }
@@ -44,10 +43,7 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
 
     private DatePickerDialog(Context context, int themeResId, OnDateSetListener listener, Calendar calendar, int year, int monthOfYear, int dayOfMonth) {
         super(context, resolveDialogTheme(context, themeResId));
-        AnonymousClass1 anonymousClass1 = new DatePicker.ValidationCallback() { // from class: android.app.DatePickerDialog.1
-            AnonymousClass1() {
-            }
-
+        this.mValidationCallback = new DatePicker.ValidationCallback() { // from class: android.app.DatePickerDialog.1
             @Override // android.widget.DatePicker.ValidationCallback
             public void onValidationChanged(boolean valid) {
                 Button positive = DatePickerDialog.this.getButton(-1);
@@ -56,7 +52,6 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
                 }
             }
         };
-        this.mValidationCallback = anonymousClass1;
         Context themeContext = getContext();
         LayoutInflater inflater = LayoutInflater.from(themeContext);
         View view = inflater.inflate(R.layout.date_picker_dialog, (ViewGroup) null);
@@ -69,10 +64,9 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
             monthOfYear = calendar.get(2);
             dayOfMonth = calendar.get(5);
         }
-        DatePicker datePicker = (DatePicker) view.findViewById(R.id.datePicker);
-        this.mDatePicker = datePicker;
-        datePicker.init(year, monthOfYear, dayOfMonth, this);
-        datePicker.setValidationCallback(anonymousClass1);
+        this.mDatePicker = (DatePicker) view.findViewById(R.id.datePicker);
+        this.mDatePicker.init(year, monthOfYear, dayOfMonth, this);
+        this.mDatePicker.setValidationCallback(this.mValidationCallback);
         this.mDateSetListener = listener;
     }
 
@@ -99,18 +93,14 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
         switch (which) {
             case -2:
                 cancel();
-                return;
+                break;
             case -1:
                 if (this.mDateSetListener != null) {
                     this.mDatePicker.clearFocus();
-                    OnDateSetListener onDateSetListener = this.mDateSetListener;
-                    DatePicker datePicker = this.mDatePicker;
-                    onDateSetListener.onDateSet(datePicker, datePicker.getYear(), this.mDatePicker.getMonth(), this.mDatePicker.getDayOfMonth());
-                    return;
+                    this.mDateSetListener.onDateSet(this.mDatePicker, this.mDatePicker.getYear(), this.mDatePicker.getMonth(), this.mDatePicker.getDayOfMonth());
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -138,21 +128,5 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
         int month = savedInstanceState.getInt("month");
         int day = savedInstanceState.getInt("day");
         this.mDatePicker.init(year, month, day, this);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.DatePickerDialog$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements DatePicker.ValidationCallback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.DatePicker.ValidationCallback
-        public void onValidationChanged(boolean valid) {
-            Button positive = DatePickerDialog.this.getButton(-1);
-            if (positive != null) {
-                positive.setEnabled(valid);
-            }
-        }
     }
 }

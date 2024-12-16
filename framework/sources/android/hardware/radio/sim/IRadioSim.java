@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioSim extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$sim$IRadioSim".replace('$', '.');
-    public static final String HASH = "4f348cc7aca716cc41c09ea95895c4b261231035";
-    public static final int VERSION = 2;
+    public static final String HASH = "ea7be3035be8d4869237a6478d2e0bb0efcc1e87";
+    public static final int VERSION = 3;
 
     void areUiccApplicationsEnabled(int i) throws RemoteException;
 
@@ -93,7 +93,6 @@ public interface IRadioSim extends IInterface {
 
     void updateSimPhonebookRecords(int i, PhonebookRecordInfo phonebookRecordInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioSim {
         @Override // android.hardware.radio.sim.IRadioSim
         public void areUiccApplicationsEnabled(int serial) throws RemoteException {
@@ -259,7 +258,6 @@ public interface IRadioSim extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioSim {
         static final int TRANSACTION_areUiccApplicationsEnabled = 1;
         static final int TRANSACTION_changeIccPin2ForApp = 2;
@@ -328,260 +326,259 @@ public interface IRadioSim extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    areUiccApplicationsEnabled(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    changeIccPin2ForApp(_arg02, _arg1, _arg2, _arg3);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    changeIccPinForApp(_arg03, _arg12, _arg22, _arg32);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enableUiccApplications(_arg04, _arg13);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAllowedCarriers(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCdmaSubscription(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCdmaSubscriptionSource(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg14 = data.readString();
+                    String _arg23 = data.readString();
+                    int _arg33 = data.readInt();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    getFacilityLockForApp(_arg08, _arg14, _arg23, _arg33, _arg4);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getIccCardStatus(_arg09);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    getImsiForApp(_arg010, _arg15);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSimPhonebookCapacity(_arg011);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSimPhonebookRecords(_arg012);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    iccCloseLogicalChannel(_arg013, _arg16);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    IccIo _arg17 = (IccIo) data.readTypedObject(IccIo.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccIoForApp(_arg014, _arg17);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    String _arg18 = data.readString();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    iccOpenLogicalChannel(_arg015, _arg18, _arg24);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    SimApdu _arg19 = (SimApdu) data.readTypedObject(SimApdu.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccTransmitApduBasicChannel(_arg016, _arg19);
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    SimApdu _arg110 = (SimApdu) data.readTypedObject(SimApdu.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccTransmitApduLogicalChannel(_arg017, _arg110);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportStkServiceIsRunning(_arg018);
+                    return true;
+                case 19:
+                    int _arg019 = data.readInt();
+                    int _arg111 = data.readInt();
+                    String _arg25 = data.readString();
+                    String _arg34 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestIccSimAuthentication(_arg019, _arg111, _arg25, _arg34);
+                    return true;
+                case 20:
+                    responseAcknowledgement();
+                    return true;
+                case 21:
+                    int _arg020 = data.readInt();
+                    String _arg112 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendEnvelope(_arg020, _arg112);
+                    return true;
+                case 22:
+                    int _arg021 = data.readInt();
+                    String _arg113 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendEnvelopeWithStatus(_arg021, _arg113);
+                    return true;
+                case 23:
+                    int _arg022 = data.readInt();
+                    String _arg114 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendTerminalResponseToSim(_arg022, _arg114);
+                    return true;
+                case 24:
+                    int _arg023 = data.readInt();
+                    CarrierRestrictions _arg115 = (CarrierRestrictions) data.readTypedObject(CarrierRestrictions.CREATOR);
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAllowedCarriers(_arg023, _arg115, _arg26);
+                    return true;
+                case 25:
+                    int _arg024 = data.readInt();
+                    ImsiEncryptionInfo _arg116 = (ImsiEncryptionInfo) data.readTypedObject(ImsiEncryptionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCarrierInfoForImsiEncryption(_arg024, _arg116);
+                    return true;
+                case 26:
+                    int _arg025 = data.readInt();
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCdmaSubscriptionSource(_arg025, _arg117);
+                    return true;
+                case 27:
+                    int _arg026 = data.readInt();
+                    String _arg118 = data.readString();
+                    boolean _arg27 = data.readBoolean();
+                    String _arg35 = data.readString();
+                    int _arg42 = data.readInt();
+                    String _arg5 = data.readString();
+                    data.enforceNoDataAvail();
+                    setFacilityLockForApp(_arg026, _arg118, _arg27, _arg35, _arg42, _arg5);
+                    return true;
+                case 28:
+                    IRadioSimResponse _arg027 = IRadioSimResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioSimIndication _arg119 = IRadioSimIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg027, _arg119);
+                    return true;
+                case 29:
+                    int _arg028 = data.readInt();
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSimCardPower(_arg028, _arg120);
+                    return true;
+                case 30:
+                    int _arg029 = data.readInt();
+                    SelectUiccSub _arg121 = (SelectUiccSub) data.readTypedObject(SelectUiccSub.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUiccSubscription(_arg029, _arg121);
+                    return true;
+                case 31:
+                    int _arg030 = data.readInt();
+                    String _arg122 = data.readString();
+                    String _arg28 = data.readString();
+                    data.enforceNoDataAvail();
+                    supplyIccPin2ForApp(_arg030, _arg122, _arg28);
+                    return true;
+                case 32:
+                    int _arg031 = data.readInt();
+                    String _arg123 = data.readString();
+                    String _arg29 = data.readString();
+                    data.enforceNoDataAvail();
+                    supplyIccPinForApp(_arg031, _arg123, _arg29);
+                    return true;
+                case 33:
+                    int _arg032 = data.readInt();
+                    String _arg124 = data.readString();
+                    String _arg210 = data.readString();
+                    String _arg36 = data.readString();
+                    data.enforceNoDataAvail();
+                    supplyIccPuk2ForApp(_arg032, _arg124, _arg210, _arg36);
+                    return true;
+                case 34:
+                    int _arg033 = data.readInt();
+                    String _arg125 = data.readString();
+                    String _arg211 = data.readString();
+                    String _arg37 = data.readString();
+                    data.enforceNoDataAvail();
+                    supplyIccPukForApp(_arg033, _arg125, _arg211, _arg37);
+                    return true;
+                case 35:
+                    int _arg034 = data.readInt();
+                    int _arg126 = data.readInt();
+                    String _arg212 = data.readString();
+                    data.enforceNoDataAvail();
+                    supplySimDepersonalization(_arg034, _arg126, _arg212);
+                    return true;
+                case 36:
+                    int _arg035 = data.readInt();
+                    PhonebookRecordInfo _arg127 = (PhonebookRecordInfo) data.readTypedObject(PhonebookRecordInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateSimPhonebookRecords(_arg035, _arg127);
+                    return true;
+                case 37:
+                    int _arg036 = data.readInt();
+                    SessionInfo _arg128 = (SessionInfo) data.readTypedObject(SessionInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    iccCloseLogicalChannelWithSessionInfo(_arg036, _arg128);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            areUiccApplicationsEnabled(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            changeIccPin2ForApp(_arg02, _arg1, _arg2, _arg3);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            changeIccPinForApp(_arg03, _arg12, _arg22, _arg32);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enableUiccApplications(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAllowedCarriers(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCdmaSubscription(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCdmaSubscriptionSource(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg14 = data.readString();
-                            String _arg23 = data.readString();
-                            int _arg33 = data.readInt();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            getFacilityLockForApp(_arg08, _arg14, _arg23, _arg33, _arg4);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getIccCardStatus(_arg09);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            getImsiForApp(_arg010, _arg15);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSimPhonebookCapacity(_arg011);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSimPhonebookRecords(_arg012);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            iccCloseLogicalChannel(_arg013, _arg16);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            IccIo _arg17 = (IccIo) data.readTypedObject(IccIo.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccIoForApp(_arg014, _arg17);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            String _arg18 = data.readString();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            iccOpenLogicalChannel(_arg015, _arg18, _arg24);
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            SimApdu _arg19 = (SimApdu) data.readTypedObject(SimApdu.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccTransmitApduBasicChannel(_arg016, _arg19);
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            SimApdu _arg110 = (SimApdu) data.readTypedObject(SimApdu.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccTransmitApduLogicalChannel(_arg017, _arg110);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportStkServiceIsRunning(_arg018);
-                            return true;
-                        case 19:
-                            int _arg019 = data.readInt();
-                            int _arg111 = data.readInt();
-                            String _arg25 = data.readString();
-                            String _arg34 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestIccSimAuthentication(_arg019, _arg111, _arg25, _arg34);
-                            return true;
-                        case 20:
-                            responseAcknowledgement();
-                            return true;
-                        case 21:
-                            int _arg020 = data.readInt();
-                            String _arg112 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendEnvelope(_arg020, _arg112);
-                            return true;
-                        case 22:
-                            int _arg021 = data.readInt();
-                            String _arg113 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendEnvelopeWithStatus(_arg021, _arg113);
-                            return true;
-                        case 23:
-                            int _arg022 = data.readInt();
-                            String _arg114 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendTerminalResponseToSim(_arg022, _arg114);
-                            return true;
-                        case 24:
-                            int _arg023 = data.readInt();
-                            CarrierRestrictions _arg115 = (CarrierRestrictions) data.readTypedObject(CarrierRestrictions.CREATOR);
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAllowedCarriers(_arg023, _arg115, _arg26);
-                            return true;
-                        case 25:
-                            int _arg024 = data.readInt();
-                            ImsiEncryptionInfo _arg116 = (ImsiEncryptionInfo) data.readTypedObject(ImsiEncryptionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCarrierInfoForImsiEncryption(_arg024, _arg116);
-                            return true;
-                        case 26:
-                            int _arg025 = data.readInt();
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCdmaSubscriptionSource(_arg025, _arg117);
-                            return true;
-                        case 27:
-                            int _arg026 = data.readInt();
-                            String _arg118 = data.readString();
-                            boolean _arg27 = data.readBoolean();
-                            String _arg35 = data.readString();
-                            int _arg42 = data.readInt();
-                            String _arg5 = data.readString();
-                            data.enforceNoDataAvail();
-                            setFacilityLockForApp(_arg026, _arg118, _arg27, _arg35, _arg42, _arg5);
-                            return true;
-                        case 28:
-                            IRadioSimResponse _arg027 = IRadioSimResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioSimIndication _arg119 = IRadioSimIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg027, _arg119);
-                            return true;
-                        case 29:
-                            int _arg028 = data.readInt();
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSimCardPower(_arg028, _arg120);
-                            return true;
-                        case 30:
-                            int _arg029 = data.readInt();
-                            SelectUiccSub _arg121 = (SelectUiccSub) data.readTypedObject(SelectUiccSub.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUiccSubscription(_arg029, _arg121);
-                            return true;
-                        case 31:
-                            int _arg030 = data.readInt();
-                            String _arg122 = data.readString();
-                            String _arg28 = data.readString();
-                            data.enforceNoDataAvail();
-                            supplyIccPin2ForApp(_arg030, _arg122, _arg28);
-                            return true;
-                        case 32:
-                            int _arg031 = data.readInt();
-                            String _arg123 = data.readString();
-                            String _arg29 = data.readString();
-                            data.enforceNoDataAvail();
-                            supplyIccPinForApp(_arg031, _arg123, _arg29);
-                            return true;
-                        case 33:
-                            int _arg032 = data.readInt();
-                            String _arg124 = data.readString();
-                            String _arg210 = data.readString();
-                            String _arg36 = data.readString();
-                            data.enforceNoDataAvail();
-                            supplyIccPuk2ForApp(_arg032, _arg124, _arg210, _arg36);
-                            return true;
-                        case 34:
-                            int _arg033 = data.readInt();
-                            String _arg125 = data.readString();
-                            String _arg211 = data.readString();
-                            String _arg37 = data.readString();
-                            data.enforceNoDataAvail();
-                            supplyIccPukForApp(_arg033, _arg125, _arg211, _arg37);
-                            return true;
-                        case 35:
-                            int _arg034 = data.readInt();
-                            int _arg126 = data.readInt();
-                            String _arg212 = data.readString();
-                            data.enforceNoDataAvail();
-                            supplySimDepersonalization(_arg034, _arg126, _arg212);
-                            return true;
-                        case 36:
-                            int _arg035 = data.readInt();
-                            PhonebookRecordInfo _arg127 = (PhonebookRecordInfo) data.readTypedObject(PhonebookRecordInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateSimPhonebookRecords(_arg035, _arg127);
-                            return true;
-                        case 37:
-                            int _arg036 = data.readInt();
-                            SessionInfo _arg128 = (SessionInfo) data.readTypedObject(SessionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            iccCloseLogicalChannelWithSessionInfo(_arg036, _arg128);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioSim {
             private IBinder mRemote;
             private int mCachedVersion = -1;

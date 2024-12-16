@@ -12,6 +12,7 @@ public final class ContextHubInfoProto {
     public static final long SLEEP_POWER_DRAW_MW = 1108101562379L;
     public static final long STATIC_SW_VERSION = 1120986464262L;
     public static final long STOPPED_POWER_DRAW_MW = 1108101562378L;
+    public static final long SUPPORTS_RELIABLE_MESSAGES = 1120986464270L;
     public static final long TOOLCHAIN = 1138166333444L;
     public static final long TOOLCHAIN_VERSION = 1120986464263L;
     public static final long VENDOR = 1138166333443L;

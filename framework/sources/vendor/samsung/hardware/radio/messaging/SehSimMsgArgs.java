@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehSimMsgArgs implements Parcelable {
     public static final Parcelable.Creator<SehSimMsgArgs> CREATOR = new Parcelable.Creator<SehSimMsgArgs>() { // from class: vendor.samsung.hardware.radio.messaging.SehSimMsgArgs.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehSimMsgArgs createFromParcel(Parcel _aidl_source) {
             SehSimMsgArgs _aidl_out = new SehSimMsgArgs();
@@ -30,25 +27,6 @@ public class SehSimMsgArgs implements Parcelable {
     public String smsc;
     public int index = 0;
     public int status = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.messaging.SehSimMsgArgs$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehSimMsgArgs> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehSimMsgArgs createFromParcel(Parcel _aidl_source) {
-            SehSimMsgArgs _aidl_out = new SehSimMsgArgs();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehSimMsgArgs[] newArray(int _aidl_size) {
-            return new SehSimMsgArgs[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

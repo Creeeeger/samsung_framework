@@ -15,14 +15,13 @@ import java.util.Set;
 /* loaded from: classes4.dex */
 public final class ViewTranslationResponse implements Parcelable {
     public static final Parcelable.Creator<ViewTranslationResponse> CREATOR = new Parcelable.Creator<ViewTranslationResponse>() { // from class: android.view.translation.ViewTranslationResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ViewTranslationResponse[] newArray(int size) {
             return new ViewTranslationResponse[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ViewTranslationResponse createFromParcel(Parcel in) {
             return new ViewTranslationResponse(in);
@@ -30,11 +29,6 @@ public final class ViewTranslationResponse implements Parcelable {
     };
     private final AutofillId mAutofillId;
     private final Map<String, TranslationResponseValue> mTranslationResponseValues;
-
-    /* renamed from: -$$Nest$smdefaultTranslationResponseValues */
-    static /* bridge */ /* synthetic */ Map m5862$$Nest$smdefaultTranslationResponseValues() {
-        return defaultTranslationResponseValues();
-    }
 
     public TranslationResponseValue getValue(String key) {
         Objects.requireNonNull(key);
@@ -52,11 +46,11 @@ public final class ViewTranslationResponse implements Parcelable {
         return this.mAutofillId;
     }
 
-    private static Map<String, TranslationResponseValue> defaultTranslationResponseValues() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static Map<String, TranslationResponseValue> defaultTranslationResponseValues() {
         return Collections.emptyMap();
     }
 
-    /* loaded from: classes4.dex */
     static abstract class BaseBuilder {
         abstract Builder setTranslationResponseValues(Map<String, TranslationResponseValue> map);
 
@@ -75,9 +69,9 @@ public final class ViewTranslationResponse implements Parcelable {
 
     ViewTranslationResponse(AutofillId autofillId, Map<String, TranslationResponseValue> translationResponseValues) {
         this.mAutofillId = autofillId;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         this.mTranslationResponseValues = translationResponseValues;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) translationResponseValues);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTranslationResponseValues);
     }
 
     public String toString() {
@@ -119,29 +113,11 @@ public final class ViewTranslationResponse implements Parcelable {
         Map<String, TranslationResponseValue> translationResponseValues = new LinkedHashMap<>();
         in.readMap(translationResponseValues, TranslationResponseValue.class.getClassLoader());
         this.mAutofillId = autofillId;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         this.mTranslationResponseValues = translationResponseValues;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) translationResponseValues);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTranslationResponseValues);
     }
 
-    /* renamed from: android.view.translation.ViewTranslationResponse$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ViewTranslationResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ViewTranslationResponse[] newArray(int size) {
-            return new ViewTranslationResponse[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ViewTranslationResponse createFromParcel(Parcel in) {
-            return new ViewTranslationResponse(in);
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private AutofillId mAutofillId;
         private long mBuilderFieldsSet = 0;
@@ -154,7 +130,7 @@ public final class ViewTranslationResponse implements Parcelable {
 
         public Builder(AutofillId autofillId) {
             this.mAutofillId = autofillId;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAutofillId);
         }
 
         @Override // android.view.translation.ViewTranslationResponse.BaseBuilder
@@ -167,10 +143,9 @@ public final class ViewTranslationResponse implements Parcelable {
 
         public ViewTranslationResponse build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 4;
-            this.mBuilderFieldsSet = j;
-            if ((j & 2) == 0) {
-                this.mTranslationResponseValues = ViewTranslationResponse.m5862$$Nest$smdefaultTranslationResponseValues();
+            this.mBuilderFieldsSet |= 4;
+            if ((this.mBuilderFieldsSet & 2) == 0) {
+                this.mTranslationResponseValues = ViewTranslationResponse.defaultTranslationResponseValues();
             }
             ViewTranslationResponse o = new ViewTranslationResponse(this.mAutofillId, this.mTranslationResponseValues);
             return o;

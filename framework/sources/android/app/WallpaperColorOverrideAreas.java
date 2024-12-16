@@ -5,7 +5,6 @@ import android.graphics.RectF;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import com.samsung.android.wallpaper.utils.WhichChecker;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
@@ -35,12 +34,10 @@ public class WallpaperColorOverrideAreas {
     private int mWhich;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DISPLAY_TYPE {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ROTATION {
     }
 
@@ -60,10 +57,9 @@ public class WallpaperColorOverrideAreas {
     }
 
     private void bindSettingsKey() {
-        int i = this.mWhich;
-        if ((i & 2) == 2) {
+        if ((this.mWhich & 2) == 2) {
             this.mSettingsKey = KEY_CUSTOM_WALLPAPER_COLOR_AREAS_LOCK;
-        } else if ((i & 1) == 1) {
+        } else if ((this.mWhich & 1) == 1) {
             this.mSettingsKey = KEY_CUSTOM_WALLPAPER_COLOR_AREAS_HOME;
         } else {
             this.mSettingsKey = KEY_CUSTOM_WALLPAPER_COLOR_AREAS_LOCK;
@@ -147,10 +143,7 @@ public class WallpaperColorOverrideAreas {
     }
 
     public void store() {
-        String dataToStore = toString();
-        Settings.System.putString(this.mContext.getContentResolver(), this.mSettingsKey, dataToStore);
-        WallpaperManager wpMgr = WallpaperManager.getInstance(this.mContext);
-        wpMgr.semSetWallpaperColorOverrideAreas(WhichChecker.getType(this.mWhich), this.mContext.getUserId(), dataToStore);
+        Settings.System.putString(this.mContext.getContentResolver(), this.mSettingsKey, toString());
     }
 
     private void fill(HashMap<String, RectF> areaMap) {

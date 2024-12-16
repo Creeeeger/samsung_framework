@@ -4,18 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellInfoLte extends CellInfo implements Parcelable {
     public static final Parcelable.Creator<CellInfoLte> CREATOR = new Parcelable.Creator<CellInfoLte>() { // from class: android.telephony.CellInfoLte.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoLte createFromParcel(Parcel in) {
             in.readInt();
             return CellInfoLte.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoLte[] newArray(int size) {
             return new CellInfoLte[size];
@@ -126,25 +125,7 @@ public final class CellInfoLte extends CellInfo implements Parcelable {
         this.mCellConfig = CellConfigLte.CREATOR.createFromParcel(in);
     }
 
-    /* renamed from: android.telephony.CellInfoLte$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellInfoLte> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoLte createFromParcel(Parcel in) {
-            in.readInt();
-            return CellInfoLte.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoLte[] newArray(int size) {
-            return new CellInfoLte[size];
-        }
-    }
-
-    public static CellInfoLte createFromParcelBody(Parcel in) {
+    protected static CellInfoLte createFromParcelBody(Parcel in) {
         return new CellInfoLte(in);
     }
 

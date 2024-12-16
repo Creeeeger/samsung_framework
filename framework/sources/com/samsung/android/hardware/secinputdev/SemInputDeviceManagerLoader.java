@@ -7,7 +7,7 @@ import dalvik.system.PathClassLoader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemInputDeviceManagerLoader {
     private static final String SECINPUTDEV_SERVICE_CLASS = "com.samsung.android.hardware.secinputdev.SemInputDeviceManagerService";
     private static final String SECINPUTDEV_SERVICE_JAR_PATH = "/system/framework/secinputdev-service.jar";
@@ -32,9 +32,8 @@ public class SemInputDeviceManagerLoader {
     }
 
     public static void systemReady() throws Throwable {
-        Class cls = secinputdevClass;
-        if (cls != null) {
-            Method method = cls.getMethod("systemReady", new Class[0]);
+        if (secinputdevClass != null) {
+            Method method = secinputdevClass.getMethod("systemReady", new Class[0]);
             method.invoke(secinputdevClass, new Object[0]);
         } else {
             Slog.e(TAG, "systemReady: secinpudevclass is null");

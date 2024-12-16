@@ -44,4 +44,8 @@ public class FingerprintServiceReceiver extends IFingerprintServiceReceiver.Stub
     @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
     public void onUdfpsPointerUp(int sensorId) throws RemoteException {
     }
+
+    @Override // android.hardware.fingerprint.IFingerprintServiceReceiver
+    public void onUdfpsOverlayShown() throws RemoteException {
+    }
 }

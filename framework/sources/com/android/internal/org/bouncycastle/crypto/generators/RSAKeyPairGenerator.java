@@ -42,9 +42,8 @@ public class RSAKeyPairGenerator implements AsymmetricCipherKeyPairGenerator {
         }
         int minWeight = strength >> 2;
         BigInteger dLowerBound = BigInteger.valueOf(2L).pow(strength / 2);
-        BigInteger bigInteger = ONE;
-        BigInteger squaredBound = bigInteger.shiftLeft(strength - 1);
-        BigInteger minDiff = bigInteger.shiftLeft(mindiffbits);
+        BigInteger squaredBound = ONE.shiftLeft(strength - 1);
+        BigInteger minDiff = ONE.shiftLeft(mindiffbits);
         while (!done2) {
             BigInteger e = rSAKeyPairGenerator.param.getPublicExponent();
             BigInteger p = rSAKeyPairGenerator.chooseRandomPrime(pbitlength, e, squaredBound);
@@ -82,7 +81,7 @@ public class RSAKeyPairGenerator implements AsymmetricCipherKeyPairGenerator {
             }
             BigInteger p2 = ONE;
             BigInteger pSub1 = gcd.subtract(p2);
-            BigInteger qSub1 = q2.subtract(p2);
+            BigInteger qSub1 = q2.subtract(ONE);
             BigInteger gcd3 = pSub1.gcd(qSub1);
             int strength2 = strength;
             BigInteger lcm = pSub1.divide(gcd3).multiply(qSub1);
@@ -109,9 +108,7 @@ public class RSAKeyPairGenerator implements AsymmetricCipherKeyPairGenerator {
     protected BigInteger chooseRandomPrime(int bitlength, BigInteger e, BigInteger sqrdBound) {
         for (int i = 0; i != bitlength * 5; i++) {
             BigInteger p = BigIntegers.createRandomPrime(bitlength, 1, this.param.getRandom());
-            BigInteger mod = p.mod(e);
-            BigInteger bigInteger = ONE;
-            if (!mod.equals(bigInteger) && p.multiply(p).compareTo(sqrdBound) >= 0 && isProbablePrime(p) && e.gcd(p.subtract(bigInteger)).equals(bigInteger)) {
+            if (!p.mod(e).equals(ONE) && p.multiply(p).compareTo(sqrdBound) >= 0 && isProbablePrime(p) && e.gcd(p.subtract(ONE)).equals(ONE)) {
                 return p;
             }
         }

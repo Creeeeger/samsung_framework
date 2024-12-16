@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class SplitPermissionInfoParcelable implements Parcelable {
     public static final Parcelable.Creator<SplitPermissionInfoParcelable> CREATOR = new Parcelable.Creator<SplitPermissionInfoParcelable>() { // from class: android.content.pm.permission.SplitPermissionInfoParcelable.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitPermissionInfoParcelable[] newArray(int size) {
             return new SplitPermissionInfoParcelable[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitPermissionInfoParcelable createFromParcel(Parcel in) {
             return new SplitPermissionInfoParcelable(in);
@@ -36,11 +35,11 @@ public class SplitPermissionInfoParcelable implements Parcelable {
 
     public SplitPermissionInfoParcelable(String splitPermission, List<String> newPermissions, int targetSdk) {
         this.mSplitPermission = splitPermission;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) splitPermission);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSplitPermission);
         this.mNewPermissions = newPermissions;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) newPermissions);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mNewPermissions);
         this.mTargetSdk = targetSdk;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, targetSdk, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mTargetSdk, "from", 0L);
         onConstructed();
     }
 
@@ -93,29 +92,12 @@ public class SplitPermissionInfoParcelable implements Parcelable {
         in.readStringList(newPermissions);
         int targetSdk = in.readInt();
         this.mSplitPermission = splitPermission;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) splitPermission);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSplitPermission);
         this.mNewPermissions = newPermissions;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) newPermissions);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mNewPermissions);
         this.mTargetSdk = targetSdk;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, targetSdk, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mTargetSdk, "from", 0L);
         onConstructed();
-    }
-
-    /* renamed from: android.content.pm.permission.SplitPermissionInfoParcelable$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SplitPermissionInfoParcelable> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SplitPermissionInfoParcelable[] newArray(int size) {
-            return new SplitPermissionInfoParcelable[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SplitPermissionInfoParcelable createFromParcel(Parcel in) {
-            return new SplitPermissionInfoParcelable(in);
-        }
     }
 
     @Deprecated

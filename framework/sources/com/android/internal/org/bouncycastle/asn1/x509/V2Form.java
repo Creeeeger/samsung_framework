@@ -82,17 +82,14 @@ public class V2Form extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
-        GeneralNames generalNames = this.issuerName;
-        if (generalNames != null) {
-            v.add(generalNames);
+        if (this.issuerName != null) {
+            v.add(this.issuerName);
         }
-        IssuerSerial issuerSerial = this.baseCertificateID;
-        if (issuerSerial != null) {
-            v.add(new DERTaggedObject(false, 0, issuerSerial));
+        if (this.baseCertificateID != null) {
+            v.add(new DERTaggedObject(false, 0, this.baseCertificateID));
         }
-        ObjectDigestInfo objectDigestInfo = this.objectDigestInfo;
-        if (objectDigestInfo != null) {
-            v.add(new DERTaggedObject(false, 1, objectDigestInfo));
+        if (this.objectDigestInfo != null) {
+            v.add(new DERTaggedObject(false, 1, this.objectDigestInfo));
         }
         return new DERSequence(v);
     }

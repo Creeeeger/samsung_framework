@@ -6,7 +6,6 @@ public final class SyncStatusProto {
     public static final long IS_JOB_NAMESPACE_MIGRATED = 1133871366146L;
     public static final long STATUS = 2246267895809L;
 
-    /* loaded from: classes5.dex */
     public final class StatusInfo {
         public static final long AUTHORITY_ID = 1120986464258L;
         public static final long INITIALIZE = 1133871366154L;
@@ -29,7 +28,6 @@ public final class SyncStatusProto {
         public StatusInfo() {
         }
 
-        /* loaded from: classes5.dex */
         public final class Stats {
             public static final long NUM_CANCELS = 1120986464260L;
             public static final long NUM_FAILURES = 1120986464259L;
@@ -46,7 +44,6 @@ public final class SyncStatusProto {
             }
         }
 
-        /* loaded from: classes5.dex */
         public final class LastEventInfo {
             public static final long LAST_EVENT = 1138166333442L;
             public static final long LAST_EVENT_TIME = 1112396529665L;

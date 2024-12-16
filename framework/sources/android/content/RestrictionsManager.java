@@ -62,9 +62,8 @@ public class RestrictionsManager {
 
     public Bundle getApplicationRestrictions() {
         try {
-            IRestrictionsManager iRestrictionsManager = this.mService;
-            if (iRestrictionsManager != null) {
-                return iRestrictionsManager.getApplicationRestrictions(this.mContext.getPackageName());
+            if (this.mService != null) {
+                return this.mService.getApplicationRestrictions(this.mContext.getPackageName());
             }
             return null;
         } catch (RemoteException re) {
@@ -74,9 +73,8 @@ public class RestrictionsManager {
 
     public List<Bundle> getApplicationRestrictionsPerAdmin() {
         try {
-            IRestrictionsManager iRestrictionsManager = this.mService;
-            if (iRestrictionsManager != null) {
-                return iRestrictionsManager.getApplicationRestrictionsPerAdminForUser(this.mContext.getUserId(), this.mContext.getPackageName());
+            if (this.mService != null) {
+                return this.mService.getApplicationRestrictionsPerAdminForUser(this.mContext.getUserId(), this.mContext.getPackageName());
             }
             return null;
         } catch (RemoteException re) {
@@ -86,9 +84,8 @@ public class RestrictionsManager {
 
     public boolean hasRestrictionsProvider() {
         try {
-            IRestrictionsManager iRestrictionsManager = this.mService;
-            if (iRestrictionsManager != null) {
-                return iRestrictionsManager.hasRestrictionsProvider();
+            if (this.mService != null) {
+                return this.mService.hasRestrictionsProvider();
             }
             return false;
         } catch (RemoteException re) {
@@ -107,9 +104,8 @@ public class RestrictionsManager {
             throw new NullPointerException("request cannot be null");
         }
         try {
-            IRestrictionsManager iRestrictionsManager = this.mService;
-            if (iRestrictionsManager != null) {
-                iRestrictionsManager.requestPermission(this.mContext.getPackageName(), requestType, requestId, request);
+            if (this.mService != null) {
+                this.mService.requestPermission(this.mContext.getPackageName(), requestType, requestId, request);
             }
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
@@ -119,8 +115,7 @@ public class RestrictionsManager {
     public Intent createLocalApprovalIntent() {
         Intent result = null;
         try {
-            IRestrictionsManager iRestrictionsManager = this.mService;
-            if (iRestrictionsManager != null && (result = iRestrictionsManager.createLocalApprovalIntent()) != null) {
+            if (this.mService != null && (result = this.mService.createLocalApprovalIntent()) != null) {
                 result.prepareToEnterProcess(32, this.mContext.getAttributionSource());
             }
             return result;
@@ -143,9 +138,8 @@ public class RestrictionsManager {
             throw new IllegalArgumentException("RESPONSE_KEY_RESULT must be specified");
         }
         try {
-            IRestrictionsManager iRestrictionsManager = this.mService;
-            if (iRestrictionsManager != null) {
-                iRestrictionsManager.notifyPermissionResponse(packageName, response);
+            if (this.mService != null) {
+                this.mService.notifyPermissionResponse(packageName, response);
             }
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();

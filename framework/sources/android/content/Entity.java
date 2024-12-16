@@ -25,7 +25,6 @@ public final class Entity {
         this.mSubValues.add(new NamedContentValues(uri, values));
     }
 
-    /* loaded from: classes.dex */
     public static class NamedContentValues {
         public final Uri uri;
         public final ContentValues values;

@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class SyncRequest implements Parcelable {
     public static final Parcelable.Creator<SyncRequest> CREATOR = new Parcelable.Creator<SyncRequest>() { // from class: android.content.SyncRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncRequest createFromParcel(Parcel in) {
             return new SyncRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncRequest[] newArray(int size) {
             return new SyncRequest[size];
@@ -32,10 +31,6 @@ public class SyncRequest implements Parcelable {
     private final boolean mIsScheduledAsExpeditedJob;
     private final long mSyncFlexTimeSecs;
     private final long mSyncRunTimeSecs;
-
-    /* synthetic */ SyncRequest(Parcel parcel, SyncRequestIA syncRequestIA) {
-        this(parcel);
-    }
 
     public boolean isPeriodic() {
         return this.mIsPeriodic;
@@ -67,23 +62,6 @@ public class SyncRequest implements Parcelable {
 
     public long getSyncRunTime() {
         return this.mSyncRunTimeSecs;
-    }
-
-    /* renamed from: android.content.SyncRequest$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SyncRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncRequest createFromParcel(Parcel in) {
-            return new SyncRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncRequest[] newArray(int size) {
-            return new SyncRequest[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -127,13 +105,11 @@ public class SyncRequest implements Parcelable {
         this.mIsAuthority = b.mSyncTarget == 2;
         this.mIsExpedited = b.mExpedited;
         this.mIsScheduledAsExpeditedJob = b.mScheduleAsExpeditedJob;
-        Bundle bundle = new Bundle(b.mCustomExtras);
-        this.mExtras = bundle;
-        bundle.putAll(b.mSyncConfigExtras);
+        this.mExtras = new Bundle(b.mCustomExtras);
+        this.mExtras.putAll(b.mSyncConfigExtras);
         this.mDisallowMetered = b.mDisallowMetered;
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private static final int SYNC_TARGET_ADAPTER = 2;
         private static final int SYNC_TARGET_UNKNOWN = 0;
@@ -248,10 +224,9 @@ public class SyncRequest implements Parcelable {
         }
 
         public SyncRequest build() {
-            Bundle bundle = new Bundle();
-            this.mSyncConfigExtras = bundle;
+            this.mSyncConfigExtras = new Bundle();
             if (this.mIgnoreBackoff) {
-                bundle.putBoolean(ContentResolver.SYNC_EXTRAS_IGNORE_BACKOFF, true);
+                this.mSyncConfigExtras.putBoolean(ContentResolver.SYNC_EXTRAS_IGNORE_BACKOFF, true);
             }
             if (this.mDisallowMetered) {
                 this.mSyncConfigExtras.putBoolean("allow_metered", true);

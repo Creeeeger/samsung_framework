@@ -14,11 +14,11 @@ import com.samsung.android.wallpaperbackup.GenerateXML;
 /* loaded from: classes5.dex */
 public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
     private static final long APPEAR_ANIMATION_LENGTH = 210;
-    private static final int TAG_ALPHA_ANIMATOR = 16909836;
-    private static final int TAG_FIRST_LAYOUT = 16909837;
-    private static final int TAG_LAYOUT_TOP = 16909839;
-    private static final int TAG_TOP = 16909843;
-    private static final int TAG_TOP_ANIMATOR = 16909842;
+    private static final int TAG_ALPHA_ANIMATOR = 16909848;
+    private static final int TAG_FIRST_LAYOUT = 16909849;
+    private static final int TAG_LAYOUT_TOP = 16909851;
+    private static final int TAG_TOP = 16909855;
+    private static final int TAG_TOP_ANIMATOR = 16909854;
     public static final Interpolator ALPHA_IN = new PathInterpolator(0.4f, 0.0f, 1.0f, 1.0f);
     public static final Interpolator ALPHA_OUT = new PathInterpolator(0.0f, 0.0f, 0.8f, 1.0f);
     private static final ViewClippingUtil.ClippingParameters CLIPPING_PARAMETERS = new ViewClippingUtil.ClippingParameters() { // from class: com.android.internal.widget.MessagingPropertyAnimator$$ExternalSyntheticLambda0
@@ -28,10 +28,6 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         }
     };
     private static final IntProperty<View> TOP = new IntProperty<View>(GenerateXML.TOP) { // from class: com.android.internal.widget.MessagingPropertyAnimator.1
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             MessagingPropertyAnimator.setTop(object, value);
@@ -43,26 +39,8 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         }
     };
 
-    public static /* synthetic */ boolean lambda$static$0(View view) {
-        return view.getId() == 16909410;
-    }
-
-    /* renamed from: com.android.internal.widget.MessagingPropertyAnimator$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends IntProperty<View> {
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
-        @Override // android.util.IntProperty
-        public void setValue(View object, int value) {
-            MessagingPropertyAnimator.setTop(object, value);
-        }
-
-        @Override // android.util.Property
-        public Integer get(View object) {
-            return Integer.valueOf(MessagingPropertyAnimator.getTop(object));
-        }
+    static /* synthetic */ boolean lambda$static$0(View view) {
+        return view.getId() == 16909415;
     }
 
     @Override // android.view.View.OnLayoutChangeListener
@@ -77,7 +55,7 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
     }
 
     private static boolean isFirstLayout(View view) {
-        Boolean tag = (Boolean) view.getTag(16909837);
+        Boolean tag = (Boolean) view.getTag(16909849);
         if (tag == null) {
             return true;
         }
@@ -89,15 +67,15 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
     }
 
     private static void setFirstLayout(View view, boolean first) {
-        view.setTagInternal(16909837, Boolean.valueOf(first));
+        view.setTagInternal(16909849, Boolean.valueOf(first));
     }
 
     private static void setLayoutTop(View view, int top) {
-        view.setTagInternal(16909839, Integer.valueOf(top));
+        view.setTagInternal(16909851, Integer.valueOf(top));
     }
 
     public static int getLayoutTop(View view) {
-        Integer tag = (Integer) view.getTag(16909839);
+        Integer tag = (Integer) view.getTag(16909851);
         if (tag == null) {
             return getTop(view);
         }
@@ -114,15 +92,16 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
     }
 
     public static int getTop(View v) {
-        Integer tag = (Integer) v.getTag(16909843);
+        Integer tag = (Integer) v.getTag(16909855);
         if (tag == null) {
             return v.getTop();
         }
         return tag.intValue();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void setTop(View v, int value) {
-        v.setTagInternal(16909843, Integer.valueOf(value));
+        v.setTagInternal(16909855, Integer.valueOf(value));
         updateTopAndBottom(v);
     }
 
@@ -133,8 +112,8 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         v.setBottom(height + top);
     }
 
-    private static void startTopAnimation(View v, int start, int end, Interpolator interpolator) {
-        ObjectAnimator existing = (ObjectAnimator) v.getTag(16909842);
+    private static void startTopAnimation(final View v, int start, int end, Interpolator interpolator) {
+        ObjectAnimator existing = (ObjectAnimator) v.getTag(16909854);
         if (existing != null) {
             existing.cancel();
         }
@@ -149,12 +128,9 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         animator.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.MessagingPropertyAnimator.2
             public boolean mCancelled;
 
-            AnonymousClass2() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
-                View.this.setTagInternal(16909842, null);
+                View.this.setTagInternal(16909854, null);
                 MessagingPropertyAnimator.setClippingDeactivated(View.this, false);
             }
 
@@ -164,28 +140,8 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
             }
         });
         setClippingDeactivated(v, true);
-        v.setTagInternal(16909842, animator);
+        v.setTagInternal(16909854, animator);
         animator.start();
-    }
-
-    /* renamed from: com.android.internal.widget.MessagingPropertyAnimator$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 extends AnimatorListenerAdapter {
-        public boolean mCancelled;
-
-        AnonymousClass2() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            View.this.setTagInternal(16909842, null);
-            MessagingPropertyAnimator.setClippingDeactivated(View.this, false);
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationCancel(Animator animation) {
-            this.mCancelled = true;
-        }
     }
 
     /* JADX WARN: Multi-variable type inference failed */
@@ -196,8 +152,8 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         return false;
     }
 
-    public static void fadeIn(View v) {
-        ObjectAnimator existing = (ObjectAnimator) v.getTag(16909836);
+    public static void fadeIn(final View v) {
+        ObjectAnimator existing = (ObjectAnimator) v.getTag(16909848);
         if (existing != null) {
             existing.cancel();
         }
@@ -209,33 +165,18 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         animator.setInterpolator(ALPHA_IN);
         animator.setDuration(APPEAR_ANIMATION_LENGTH);
         animator.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.MessagingPropertyAnimator.3
-            AnonymousClass3() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
-                View.this.setTagInternal(16909836, null);
+                View.this.setTagInternal(16909848, null);
                 MessagingPropertyAnimator.updateLayerType(View.this, false);
             }
         });
         updateLayerType(v, true);
-        v.setTagInternal(16909836, animator);
+        v.setTagInternal(16909848, animator);
         animator.start();
     }
 
-    /* renamed from: com.android.internal.widget.MessagingPropertyAnimator$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 extends AnimatorListenerAdapter {
-        AnonymousClass3() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            View.this.setTagInternal(16909836, null);
-            MessagingPropertyAnimator.updateLayerType(View.this, false);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static void updateLayerType(View view, boolean animating) {
         if (view.hasOverlappingRendering() && animating) {
             view.setLayerType(2, null);
@@ -244,8 +185,8 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         }
     }
 
-    public static void fadeOut(View view, Runnable endAction) {
-        ObjectAnimator existing = (ObjectAnimator) view.getTag(16909836);
+    public static void fadeOut(final View view, final Runnable endAction) {
+        ObjectAnimator existing = (ObjectAnimator) view.getTag(16909848);
         if (existing != null) {
             existing.cancel();
         }
@@ -261,46 +202,18 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
         animator.setInterpolator(ALPHA_OUT);
         animator.setDuration(APPEAR_ANIMATION_LENGTH);
         animator.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.MessagingPropertyAnimator.4
-            final /* synthetic */ Runnable val$endAction;
-
-            AnonymousClass4(Runnable endAction2) {
-                endAction = endAction2;
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
-                View.this.setTagInternal(16909836, null);
+                View.this.setTagInternal(16909848, null);
                 MessagingPropertyAnimator.updateLayerType(View.this, false);
-                Runnable runnable = endAction;
-                if (runnable != null) {
-                    runnable.run();
+                if (endAction != null) {
+                    endAction.run();
                 }
             }
         });
         updateLayerType(view, true);
-        view.setTagInternal(16909836, animator);
+        view.setTagInternal(16909848, animator);
         animator.start();
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.MessagingPropertyAnimator$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 extends AnimatorListenerAdapter {
-        final /* synthetic */ Runnable val$endAction;
-
-        AnonymousClass4(Runnable endAction2) {
-            endAction = endAction2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            View.this.setTagInternal(16909836, null);
-            MessagingPropertyAnimator.updateLayerType(View.this, false);
-            Runnable runnable = endAction;
-            if (runnable != null) {
-                runnable.run();
-            }
-        }
     }
 
     public static void setClippingDeactivated(View transformedView, boolean deactivated) {
@@ -308,11 +221,11 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
     }
 
     public static boolean isAnimatingTranslation(View v) {
-        return v.getTag(16909842) != null;
+        return v.getTag(16909854) != null;
     }
 
     public static boolean isAnimatingAlpha(View v) {
-        return v.getTag(16909836) != null;
+        return v.getTag(16909848) != null;
     }
 
     public static void setToLaidOutPosition(View view) {

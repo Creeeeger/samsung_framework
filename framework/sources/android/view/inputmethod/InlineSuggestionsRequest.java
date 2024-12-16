@@ -19,14 +19,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InlineSuggestionsRequest implements Parcelable {
     public static final Parcelable.Creator<InlineSuggestionsRequest> CREATOR = new Parcelable.Creator<InlineSuggestionsRequest>() { // from class: android.view.inputmethod.InlineSuggestionsRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequest[] newArray(int size) {
             return new InlineSuggestionsRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequest createFromParcel(Parcel in) {
             return new InlineSuggestionsRequest(in);
@@ -42,41 +41,6 @@ public final class InlineSuggestionsRequest implements Parcelable {
     private InlinePresentationSpec mInlineTooltipPresentationSpec;
     private final int mMaxSuggestionCount;
     private LocaleList mSupportedLocales;
-
-    /* renamed from: -$$Nest$smdefaultExtras */
-    static /* bridge */ /* synthetic */ Bundle m5666$$Nest$smdefaultExtras() {
-        return defaultExtras();
-    }
-
-    /* renamed from: -$$Nest$smdefaultHostDisplayId */
-    static /* bridge */ /* synthetic */ int m5667$$Nest$smdefaultHostDisplayId() {
-        return defaultHostDisplayId();
-    }
-
-    /* renamed from: -$$Nest$smdefaultHostInputToken */
-    static /* bridge */ /* synthetic */ IBinder m5668$$Nest$smdefaultHostInputToken() {
-        return defaultHostInputToken();
-    }
-
-    /* renamed from: -$$Nest$smdefaultHostPackageName */
-    static /* bridge */ /* synthetic */ String m5669$$Nest$smdefaultHostPackageName() {
-        return defaultHostPackageName();
-    }
-
-    /* renamed from: -$$Nest$smdefaultInlineTooltipPresentationSpec */
-    static /* bridge */ /* synthetic */ InlinePresentationSpec m5670$$Nest$smdefaultInlineTooltipPresentationSpec() {
-        return defaultInlineTooltipPresentationSpec();
-    }
-
-    /* renamed from: -$$Nest$smdefaultMaxSuggestionCount */
-    static /* bridge */ /* synthetic */ int m5671$$Nest$smdefaultMaxSuggestionCount() {
-        return defaultMaxSuggestionCount();
-    }
-
-    /* renamed from: -$$Nest$smdefaultSupportedLocales */
-    static /* bridge */ /* synthetic */ LocaleList m5672$$Nest$smdefaultSupportedLocales() {
-        return defaultSupportedLocales();
-    }
 
     public void setHostInputToken(IBinder hostInputToken) {
         this.mHostInputToken = hostInputToken;
@@ -108,44 +72,49 @@ public final class InlineSuggestionsRequest implements Parcelable {
         for (int i = 0; i < this.mInlinePresentationSpecs.size(); i++) {
             this.mInlinePresentationSpecs.get(i).filterContentTypes();
         }
-        InlinePresentationSpec inlinePresentationSpec = this.mInlineTooltipPresentationSpec;
-        if (inlinePresentationSpec != null) {
-            inlinePresentationSpec.filterContentTypes();
+        if (this.mInlineTooltipPresentationSpec != null) {
+            this.mInlineTooltipPresentationSpec.filterContentTypes();
         }
     }
 
-    private static int defaultMaxSuggestionCount() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultMaxSuggestionCount() {
         return Integer.MAX_VALUE;
     }
 
-    private static String defaultHostPackageName() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String defaultHostPackageName() {
         return ActivityThread.currentPackageName();
     }
 
-    private static InlinePresentationSpec defaultInlineTooltipPresentationSpec() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static InlinePresentationSpec defaultInlineTooltipPresentationSpec() {
         return null;
     }
 
-    private static LocaleList defaultSupportedLocales() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static LocaleList defaultSupportedLocales() {
         if (CompatChanges.isChangeEnabled(IME_AUTOFILL_DEFAULT_SUPPORTED_LOCALES_IS_EMPTY)) {
             return LocaleList.getEmptyLocaleList();
         }
         return LocaleList.getDefault();
     }
 
-    private static IBinder defaultHostInputToken() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static IBinder defaultHostInputToken() {
         return null;
     }
 
-    private static int defaultHostDisplayId() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultHostDisplayId() {
         return -1;
     }
 
-    private static Bundle defaultExtras() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static Bundle defaultExtras() {
         return Bundle.EMPTY;
     }
 
-    /* loaded from: classes4.dex */
     static abstract class BaseBuilder {
         abstract Builder setHostDisplayId(int i);
 
@@ -162,13 +131,13 @@ public final class InlineSuggestionsRequest implements Parcelable {
     InlineSuggestionsRequest(int maxSuggestionCount, List<InlinePresentationSpec> inlinePresentationSpecs, String hostPackageName, LocaleList supportedLocales, Bundle extras, IBinder hostInputToken, int hostDisplayId, InlinePresentationSpec inlineTooltipPresentationSpec) {
         this.mMaxSuggestionCount = maxSuggestionCount;
         this.mInlinePresentationSpecs = inlinePresentationSpecs;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlinePresentationSpecs);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlinePresentationSpecs);
         this.mHostPackageName = hostPackageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hostPackageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHostPackageName);
         this.mSupportedLocales = supportedLocales;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) supportedLocales);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSupportedLocales);
         this.mExtras = extras;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) extras);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mExtras);
         this.mHostInputToken = hostInputToken;
         this.mHostDisplayId = hostDisplayId;
         this.mInlineTooltipPresentationSpec = inlineTooltipPresentationSpec;
@@ -244,9 +213,8 @@ public final class InlineSuggestionsRequest implements Parcelable {
         dest.writeBundle(this.mExtras);
         parcelHostInputToken(dest, flags);
         dest.writeInt(this.mHostDisplayId);
-        InlinePresentationSpec inlinePresentationSpec = this.mInlineTooltipPresentationSpec;
-        if (inlinePresentationSpec != null) {
-            dest.writeTypedObject(inlinePresentationSpec, flags);
+        if (this.mInlineTooltipPresentationSpec != null) {
+            dest.writeTypedObject(this.mInlineTooltipPresentationSpec, flags);
         }
     }
 
@@ -268,37 +236,19 @@ public final class InlineSuggestionsRequest implements Parcelable {
         InlinePresentationSpec inlineTooltipPresentationSpec = (flg & 128) == 0 ? null : (InlinePresentationSpec) in.readTypedObject(InlinePresentationSpec.CREATOR);
         this.mMaxSuggestionCount = maxSuggestionCount;
         this.mInlinePresentationSpecs = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlinePresentationSpecs);
         this.mHostPackageName = hostPackageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hostPackageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHostPackageName);
         this.mSupportedLocales = supportedLocales;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) supportedLocales);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSupportedLocales);
         this.mExtras = extras;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) extras);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mExtras);
         this.mHostInputToken = hostInputToken;
         this.mHostDisplayId = hostDisplayId;
         this.mInlineTooltipPresentationSpec = inlineTooltipPresentationSpec;
         onConstructed();
     }
 
-    /* renamed from: android.view.inputmethod.InlineSuggestionsRequest$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestionsRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionsRequest[] newArray(int size) {
-            return new InlineSuggestionsRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionsRequest createFromParcel(Parcel in) {
-            return new InlineSuggestionsRequest(in);
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
         private Bundle mExtras;
@@ -312,7 +262,7 @@ public final class InlineSuggestionsRequest implements Parcelable {
 
         public Builder(List<InlinePresentationSpec> inlinePresentationSpecs) {
             this.mInlinePresentationSpecs = inlinePresentationSpecs;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlinePresentationSpecs);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlinePresentationSpecs);
         }
 
         public Builder setMaxSuggestionCount(int value) {
@@ -385,28 +335,27 @@ public final class InlineSuggestionsRequest implements Parcelable {
 
         public InlineSuggestionsRequest build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 256;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mMaxSuggestionCount = InlineSuggestionsRequest.m5671$$Nest$smdefaultMaxSuggestionCount();
+            this.mBuilderFieldsSet |= 256;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mMaxSuggestionCount = InlineSuggestionsRequest.defaultMaxSuggestionCount();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mHostPackageName = InlineSuggestionsRequest.m5669$$Nest$smdefaultHostPackageName();
+                this.mHostPackageName = InlineSuggestionsRequest.defaultHostPackageName();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mSupportedLocales = InlineSuggestionsRequest.m5672$$Nest$smdefaultSupportedLocales();
+                this.mSupportedLocales = InlineSuggestionsRequest.defaultSupportedLocales();
             }
             if ((this.mBuilderFieldsSet & 16) == 0) {
-                this.mExtras = InlineSuggestionsRequest.m5666$$Nest$smdefaultExtras();
+                this.mExtras = InlineSuggestionsRequest.defaultExtras();
             }
             if ((this.mBuilderFieldsSet & 32) == 0) {
-                this.mHostInputToken = InlineSuggestionsRequest.m5668$$Nest$smdefaultHostInputToken();
+                this.mHostInputToken = InlineSuggestionsRequest.defaultHostInputToken();
             }
             if ((this.mBuilderFieldsSet & 64) == 0) {
-                this.mHostDisplayId = InlineSuggestionsRequest.m5667$$Nest$smdefaultHostDisplayId();
+                this.mHostDisplayId = InlineSuggestionsRequest.defaultHostDisplayId();
             }
             if ((this.mBuilderFieldsSet & 128) == 0) {
-                this.mInlineTooltipPresentationSpec = InlineSuggestionsRequest.m5670$$Nest$smdefaultInlineTooltipPresentationSpec();
+                this.mInlineTooltipPresentationSpec = InlineSuggestionsRequest.defaultInlineTooltipPresentationSpec();
             }
             InlineSuggestionsRequest o = new InlineSuggestionsRequest(this.mMaxSuggestionCount, this.mInlinePresentationSpecs, this.mHostPackageName, this.mSupportedLocales, this.mExtras, this.mHostInputToken, this.mHostDisplayId, this.mInlineTooltipPresentationSpec);
             return o;

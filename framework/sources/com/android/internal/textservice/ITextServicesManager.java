@@ -25,7 +25,6 @@ public interface ITextServicesManager extends IInterface {
 
     boolean isSpellCheckerEnabled(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ITextServicesManager {
         @Override // com.android.internal.textservice.ITextServicesManager
         public SpellCheckerInfo getCurrentSpellChecker(int userId, String locale) throws RemoteException {
@@ -61,7 +60,6 @@ public interface ITextServicesManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ITextServicesManager {
         public static final String DESCRIPTOR = "com.android.internal.textservice.ITextServicesManager";
         static final int TRANSACTION_finishSpellCheckerService = 4;
@@ -120,68 +118,64 @@ public interface ITextServicesManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    SpellCheckerInfo _result = getCurrentSpellChecker(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    SpellCheckerSubtype _result2 = getCurrentSpellCheckerSubtype(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    String _arg2 = data.readString();
+                    ITextServicesSessionListener _arg3 = ITextServicesSessionListener.Stub.asInterface(data.readStrongBinder());
+                    ISpellCheckerSessionListener _arg4 = ISpellCheckerSessionListener.Stub.asInterface(data.readStrongBinder());
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSpellCheckerService(_arg03, _arg13, _arg2, _arg3, _arg4, _arg5, _arg6);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    ISpellCheckerSessionListener _arg14 = ISpellCheckerSessionListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    finishSpellCheckerService(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isSpellCheckerEnabled(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SpellCheckerInfo[] _result4 = getEnabledSpellCheckers(_arg06);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result4, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            SpellCheckerInfo _result = getCurrentSpellChecker(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            SpellCheckerSubtype _result2 = getCurrentSpellCheckerSubtype(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            String _arg2 = data.readString();
-                            ITextServicesSessionListener _arg3 = ITextServicesSessionListener.Stub.asInterface(data.readStrongBinder());
-                            ISpellCheckerSessionListener _arg4 = ISpellCheckerSessionListener.Stub.asInterface(data.readStrongBinder());
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSpellCheckerService(_arg03, _arg13, _arg2, _arg3, _arg4, _arg5, _arg6);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            ISpellCheckerSessionListener _arg14 = ISpellCheckerSessionListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            finishSpellCheckerService(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isSpellCheckerEnabled(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SpellCheckerInfo[] _result4 = getEnabledSpellCheckers(_arg06);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result4, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ITextServicesManager {
+        private static class Proxy implements ITextServicesManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

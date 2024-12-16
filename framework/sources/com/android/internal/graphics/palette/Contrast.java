@@ -2,7 +2,7 @@ package com.android.internal.graphics.palette;
 
 import android.hardware.scontext.SContextConstants;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class Contrast {
     static final /* synthetic */ boolean $assertionsDisabled = false;
 

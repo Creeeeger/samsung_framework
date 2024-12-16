@@ -11,7 +11,7 @@ public final class CustomPrinterIconCallback {
     private final IPrintServiceClient mObserver;
     private final PrinterId mPrinterId;
 
-    public CustomPrinterIconCallback(PrinterId printerId, IPrintServiceClient observer) {
+    CustomPrinterIconCallback(PrinterId printerId, IPrintServiceClient observer) {
         this.mPrinterId = printerId;
         this.mObserver = observer;
     }

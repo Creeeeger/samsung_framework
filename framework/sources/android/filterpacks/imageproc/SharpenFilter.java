@@ -8,14 +8,13 @@ import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.core.Program;
 import android.filterfw.core.ShaderProgram;
 import android.filterfw.format.ImageFormat;
-import android.os.BatteryManager;
 
 /* loaded from: classes.dex */
 public class SharpenFilter extends Filter {
     private int mHeight;
     private Program mProgram;
 
-    @GenerateFieldPort(hasDefault = true, name = BatteryManager.EXTRA_SCALE)
+    @GenerateFieldPort(hasDefault = true, name = "scale")
     private float mScale;
     private final String mSharpenShader;
     private int mTarget;
@@ -77,16 +76,15 @@ public class SharpenFilter extends Filter {
     private void updateFrameSize(int width, int height) {
         this.mWidth = width;
         this.mHeight = height;
-        Program program = this.mProgram;
-        if (program != null) {
-            program.setHostValue("stepsizeX", Float.valueOf(1.0f / width));
+        if (this.mProgram != null) {
+            this.mProgram.setHostValue("stepsizeX", Float.valueOf(1.0f / this.mWidth));
             this.mProgram.setHostValue("stepsizeY", Float.valueOf(1.0f / this.mHeight));
             updateParameters();
         }
     }
 
     private void updateParameters() {
-        this.mProgram.setHostValue(BatteryManager.EXTRA_SCALE, Float.valueOf(this.mScale));
+        this.mProgram.setHostValue("scale", Float.valueOf(this.mScale));
     }
 
     @Override // android.filterfw.core.Filter

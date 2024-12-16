@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AccessTechnologySpecificInfo implements Parcelable {
     public static final Parcelable.Creator<AccessTechnologySpecificInfo> CREATOR = new Parcelable.Creator<AccessTechnologySpecificInfo>() { // from class: android.hardware.radio.network.AccessTechnologySpecificInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessTechnologySpecificInfo createFromParcel(Parcel _aidl_source) {
             return new AccessTechnologySpecificInfo(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessTechnologySpecificInfo[] newArray(int _aidl_size) {
             return new AccessTechnologySpecificInfo[_aidl_size];
@@ -29,17 +28,12 @@ public final class AccessTechnologySpecificInfo implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int cdmaInfo = 1;
         public static final int eutranInfo = 2;
         public static final int geranDtmSupported = 4;
         public static final int ngranNrVopsInfo = 3;
         public static final int noinit = 0;
-    }
-
-    /* synthetic */ AccessTechnologySpecificInfo(Parcel parcel, AccessTechnologySpecificInfoIA accessTechnologySpecificInfoIA) {
-        this(parcel);
     }
 
     public AccessTechnologySpecificInfo() {
@@ -130,44 +124,25 @@ public final class AccessTechnologySpecificInfo implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.radio.network.AccessTechnologySpecificInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccessTechnologySpecificInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessTechnologySpecificInfo createFromParcel(Parcel _aidl_source) {
-            return new AccessTechnologySpecificInfo(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessTechnologySpecificInfo[] newArray(int _aidl_size) {
-            return new AccessTechnologySpecificInfo[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getNoinit());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getCdmaInfo(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getEutranInfo(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeTypedObject(getNgranNrVopsInfo(), _aidl_flag);
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeBoolean(getGeranDtmSupported());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -226,15 +201,15 @@ public final class AccessTechnologySpecificInfo implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.hardware.radio.network.AccessTechnologySpecificInfo.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AccessTechnologySpecificInfo.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.hardware.radio.network.AccessTechnologySpecificInfo.cdmaInfo(" + Objects.toString(getCdmaInfo()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AccessTechnologySpecificInfo.cdmaInfo(" + Objects.toString(getCdmaInfo()) + NavigationBarInflaterView.KEY_CODE_END;
             case 2:
-                return "android.hardware.radio.network.AccessTechnologySpecificInfo.eutranInfo(" + Objects.toString(getEutranInfo()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AccessTechnologySpecificInfo.eutranInfo(" + Objects.toString(getEutranInfo()) + NavigationBarInflaterView.KEY_CODE_END;
             case 3:
-                return "android.hardware.radio.network.AccessTechnologySpecificInfo.ngranNrVopsInfo(" + Objects.toString(getNgranNrVopsInfo()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "AccessTechnologySpecificInfo.ngranNrVopsInfo(" + Objects.toString(getNgranNrVopsInfo()) + NavigationBarInflaterView.KEY_CODE_END;
             case 4:
-                return "android.hardware.radio.network.AccessTechnologySpecificInfo.geranDtmSupported(" + getGeranDtmSupported() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AccessTechnologySpecificInfo.geranDtmSupported(" + getGeranDtmSupported() + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

@@ -9,6 +9,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.proto.ProtoOutputStream;
+import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,14 +17,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes4.dex */
 public class RemoteAnimationTarget implements Parcelable {
     public static final Parcelable.Creator<RemoteAnimationTarget> CREATOR = new Parcelable.Creator<RemoteAnimationTarget>() { // from class: android.view.RemoteAnimationTarget.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationTarget createFromParcel(Parcel in) {
             return new RemoteAnimationTarget(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationTarget[] newArray(int size) {
             return new RemoteAnimationTarget[size];
@@ -36,6 +36,7 @@ public class RemoteAnimationTarget implements Parcelable {
     public int backgroundColor;
     public final Rect clipRect;
     public final Rect contentInsets;
+    private int displayId;
     public boolean hasAnimatingParent;
     public boolean isNotInRecents;
     public final boolean isTranslucent;
@@ -63,7 +64,6 @@ public class RemoteAnimationTarget implements Parcelable {
     public final int windowType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Mode {
     }
 
@@ -101,10 +101,9 @@ public class RemoteAnimationTarget implements Parcelable {
     public RemoteAnimationTarget(Parcel in) {
         this.taskId = in.readInt();
         this.mode = in.readInt();
-        SurfaceControl surfaceControl = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
-        this.leash = surfaceControl;
-        if (surfaceControl != null) {
-            surfaceControl.setUnreleasedWarningCallSite("RemoteAnimationTarget[leash]");
+        this.leash = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
+        if (this.leash != null) {
+            this.leash.setUnreleasedWarningCallSite("RemoteAnimationTarget[leash]");
         }
         this.isTranslucent = in.readBoolean();
         this.clipRect = (Rect) in.readTypedObject(Rect.CREATOR);
@@ -116,10 +115,9 @@ public class RemoteAnimationTarget implements Parcelable {
         this.screenSpaceBounds = (Rect) in.readTypedObject(Rect.CREATOR);
         this.windowConfiguration = (WindowConfiguration) in.readTypedObject(WindowConfiguration.CREATOR);
         this.isNotInRecents = in.readBoolean();
-        SurfaceControl surfaceControl2 = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
-        this.startLeash = surfaceControl2;
-        if (surfaceControl2 != null) {
-            surfaceControl2.setUnreleasedWarningCallSite("RemoteAnimationTarget[startLeash]");
+        this.startLeash = (SurfaceControl) in.readTypedObject(SurfaceControl.CREATOR);
+        if (this.startLeash != null) {
+            this.startLeash.setUnreleasedWarningCallSite("RemoteAnimationTarget[startLeash]");
         }
         this.startBounds = (Rect) in.readTypedObject(Rect.CREATOR);
         this.taskInfo = (ActivityManager.RunningTaskInfo) in.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
@@ -130,6 +128,9 @@ public class RemoteAnimationTarget implements Parcelable {
         this.showBackdrop = in.readBoolean();
         this.willShowImeOnTarget = in.readBoolean();
         this.rotationChange = in.readInt();
+        if (CoreRune.FW_PREDICTIVE_BACK_ANIM) {
+            this.displayId = in.readInt();
+        }
     }
 
     public void setShowBackdrop(boolean shouldShowBackdrop) {
@@ -150,6 +151,14 @@ public class RemoteAnimationTarget implements Parcelable {
 
     public int getRotationChange() {
         return this.rotationChange;
+    }
+
+    public void setDisplayId(int displayId) {
+        this.displayId = displayId;
+    }
+
+    public int getDisplayId() {
+        return this.displayId;
     }
 
     @Override // android.os.Parcelable
@@ -182,6 +191,9 @@ public class RemoteAnimationTarget implements Parcelable {
         dest.writeBoolean(this.showBackdrop);
         dest.writeBoolean(this.willShowImeOnTarget);
         dest.writeInt(this.rotationChange);
+        if (CoreRune.FW_PREDICTIVE_BACK_ANIM) {
+            dest.writeInt(this.displayId);
+        }
     }
 
     public void dump(PrintWriter pw, String prefix) {
@@ -234,6 +246,11 @@ public class RemoteAnimationTarget implements Parcelable {
         pw.print(prefix);
         pw.print("willShowImeOnTarget=");
         pw.println(this.willShowImeOnTarget);
+        if (CoreRune.FW_PREDICTIVE_BACK_ANIM) {
+            pw.print(prefix);
+            pw.print("displayId=");
+            pw.println(this.displayId);
+        }
     }
 
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
@@ -250,9 +267,8 @@ public class RemoteAnimationTarget implements Parcelable {
         this.screenSpaceBounds.dumpDebug(proto, 1146756268046L);
         this.localBounds.dumpDebug(proto, 1146756268045L);
         this.windowConfiguration.dumpDebug(proto, 1146756268042L);
-        SurfaceControl surfaceControl = this.startLeash;
-        if (surfaceControl != null) {
-            surfaceControl.dumpDebug(proto, 1146756268043L);
+        if (this.startLeash != null) {
+            this.startLeash.dumpDebug(proto, 1146756268043L);
         }
         this.startBounds.dumpDebug(proto, 1146756268044L);
         proto.end(token);
@@ -264,22 +280,5 @@ public class RemoteAnimationTarget implements Parcelable {
         pw.print(",");
         pw.print(p.y);
         pw.print(NavigationBarInflaterView.SIZE_MOD_END);
-    }
-
-    /* renamed from: android.view.RemoteAnimationTarget$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RemoteAnimationTarget> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteAnimationTarget createFromParcel(Parcel in) {
-            return new RemoteAnimationTarget(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteAnimationTarget[] newArray(int size) {
-            return new RemoteAnimationTarget[size];
-        }
     }
 }

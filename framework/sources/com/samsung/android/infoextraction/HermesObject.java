@@ -3,12 +3,10 @@ package com.samsung.android.infoextraction;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class HermesObject implements Parcelable {
     public static final Parcelable.Creator<HermesObject> CREATOR = new Parcelable.Creator<HermesObject>() { // from class: com.samsung.android.infoextraction.HermesObject.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HermesObject createFromParcel(Parcel in) {
             HermesObject data = new HermesObject();
@@ -16,6 +14,7 @@ public class HermesObject implements Parcelable {
             return data;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HermesObject[] newArray(int size) {
             return new HermesObject[size];
@@ -43,24 +42,5 @@ public class HermesObject implements Parcelable {
 
     public void readFromParcel(Parcel in) {
         this.obj = in.readParcelable(HermesObject.class.getClassLoader());
-    }
-
-    /* renamed from: com.samsung.android.infoextraction.HermesObject$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HermesObject> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HermesObject createFromParcel(Parcel in) {
-            HermesObject data = new HermesObject();
-            data.readFromParcel(in);
-            return data;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HermesObject[] newArray(int size) {
-            return new HermesObject[size];
-        }
     }
 }

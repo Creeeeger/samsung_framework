@@ -27,10 +27,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
     private int mTransitionFromIndex;
     private int mTransitionToIndex;
 
-    /* synthetic */ AnimatedStateListDrawable(AnimatedStateListState animatedStateListState, Resources resources, AnimatedStateListDrawableIA animatedStateListDrawableIA) {
-        this(animatedStateListState, resources);
-    }
-
     public AnimatedStateListDrawable() {
         this(null, null);
     }
@@ -38,10 +34,9 @@ public class AnimatedStateListDrawable extends StateListDrawable {
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
     public boolean setVisible(boolean visible, boolean restart) {
         boolean changed = super.setVisible(visible, restart);
-        Transition transition = this.mTransition;
-        if (transition != null && (changed || restart)) {
+        if (this.mTransition != null && (changed || restart)) {
             if (visible) {
-                transition.start();
+                this.mTransition.start();
             } else {
                 jumpToCurrentState();
             }
@@ -70,7 +65,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
     }
 
     @Override // android.graphics.drawable.StateListDrawable, android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         int targetIndex = this.mState.indexOfKeyframe(stateSet);
         boolean changed = targetIndex != getCurrentIndex() && (selectTransition(targetIndex) || selectDrawable(targetIndex));
         Drawable current = getCurrent();
@@ -131,12 +126,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         return true;
     }
 
-    /* loaded from: classes.dex */
-    public static abstract class Transition {
-        /* synthetic */ Transition(TransitionIA transitionIA) {
-            this();
-        }
-
+    private static abstract class Transition {
         public abstract void start();
 
         public abstract void stop();
@@ -152,8 +142,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class AnimatableTransition extends Transition {
+    private static class AnimatableTransition extends Transition {
         private final Animatable mA;
 
         public AnimatableTransition(Animatable a) {
@@ -172,8 +161,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class AnimationDrawableTransition extends Transition {
+    private static class AnimationDrawableTransition extends Transition {
         private final ObjectAnimator mAnim;
         private final boolean mHasReversibleFlag;
 
@@ -212,8 +200,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class AnimatedVectorDrawableTransition extends Transition {
+    private static class AnimatedVectorDrawableTransition extends Transition {
         private final AnimatedVectorDrawable mAvd;
         private final boolean mHasReversibleFlag;
         private final boolean mReversed;
@@ -257,9 +244,8 @@ public class AnimatedStateListDrawable extends StateListDrawable {
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
     public void jumpToCurrentState() {
         super.jumpToCurrentState();
-        Transition transition = this.mTransition;
-        if (transition != null) {
-            transition.stop();
+        if (this.mTransition != null) {
+            this.mTransition.stop();
             this.mTransition = null;
             selectDrawable(this.mTransitionToIndex);
             this.mTransitionToIndex = -1;
@@ -330,154 +316,43 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0052, code lost:
-    
-        return r9.mState.addTransition(r3, r4, r2, r5);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:2:0x001d, code lost:
-    
-        if (r2 == null) goto L19;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:3:0x001f, code lost:
-    
-        r6 = r11.next();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x0025, code lost:
-    
-        if (r6 != 4) goto L28;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0028, code lost:
-    
-        if (r6 != 2) goto L24;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x002a, code lost:
-    
-        r2 = android.graphics.drawable.Drawable.createFromXmlInner(r10, r11, r12, r13);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x004b, code lost:
-    
-        throw new org.xmlpull.v1.XmlPullParserException(r11.getPositionDescription() + ": <transition> tag requires a 'drawable' attribute or child tag defining a drawable");
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private int parseTransition(android.content.res.Resources r10, org.xmlpull.v1.XmlPullParser r11, android.util.AttributeSet r12, android.content.res.Resources.Theme r13) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
-        /*
-            r9 = this;
-            int[] r0 = com.android.internal.R.styleable.AnimatedStateListDrawableTransition
-            android.content.res.TypedArray r0 = obtainAttributes(r10, r13, r12, r0)
-            r1 = 2
-            r2 = 0
-            int r3 = r0.getResourceId(r1, r2)
-            r4 = 1
-            int r4 = r0.getResourceId(r4, r2)
-            r5 = 3
-            boolean r5 = r0.getBoolean(r5, r2)
-            android.graphics.drawable.Drawable r2 = r0.getDrawable(r2)
-            r0.recycle()
-            if (r2 != 0) goto L4c
-        L1f:
-            int r6 = r11.next()
-            r7 = r6
-            r8 = 4
-            if (r6 != r8) goto L28
-            goto L1f
-        L28:
-            if (r7 != r1) goto L2f
-            android.graphics.drawable.Drawable r2 = android.graphics.drawable.Drawable.createFromXmlInner(r10, r11, r12, r13)
-            goto L4c
-        L2f:
-            org.xmlpull.v1.XmlPullParserException r1 = new org.xmlpull.v1.XmlPullParserException
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder
-            r6.<init>()
-            java.lang.String r8 = r11.getPositionDescription()
-            java.lang.StringBuilder r6 = r6.append(r8)
-            java.lang.String r8 = ": <transition> tag requires a 'drawable' attribute or child tag defining a drawable"
-            java.lang.StringBuilder r6 = r6.append(r8)
-            java.lang.String r6 = r6.toString()
-            r1.<init>(r6)
-            throw r1
-        L4c:
-            android.graphics.drawable.AnimatedStateListDrawable$AnimatedStateListState r1 = r9.mState
-            int r1 = r1.addTransition(r3, r4, r2, r5)
-            return r1
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.graphics.drawable.AnimatedStateListDrawable.parseTransition(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):int");
+    private int parseTransition(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
+        int type;
+        TypedArray a = obtainAttributes(r, theme, attrs, R.styleable.AnimatedStateListDrawableTransition);
+        int fromId = a.getResourceId(2, 0);
+        int toId = a.getResourceId(1, 0);
+        boolean reversible = a.getBoolean(3, false);
+        Drawable dr = a.getDrawable(0);
+        a.recycle();
+        if (dr == null) {
+            do {
+                type = parser.next();
+            } while (type == 4);
+            if (type != 2) {
+                throw new XmlPullParserException(parser.getPositionDescription() + ": <transition> tag requires a 'drawable' attribute or child tag defining a drawable");
+            }
+            dr = Drawable.createFromXmlInner(r, parser, attrs, theme);
+        }
+        return this.mState.addTransition(fromId, toId, dr, reversible);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0046, code lost:
-    
-        throw new org.xmlpull.v1.XmlPullParserException(r10.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x004d, code lost:
-    
-        return r8.mState.addStateSet(r3, r2, r1);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:2:0x0017, code lost:
-    
-        if (r2 == null) goto L20;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:3:0x0019, code lost:
-    
-        r4 = r10.next();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x001f, code lost:
-    
-        if (r4 != 4) goto L30;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0023, code lost:
-    
-        if (r4 != 2) goto L26;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x0025, code lost:
-    
-        r2 = android.graphics.drawable.Drawable.createFromXmlInner(r9, r10, r11, r12);
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private int parseItem(android.content.res.Resources r9, org.xmlpull.v1.XmlPullParser r10, android.util.AttributeSet r11, android.content.res.Resources.Theme r12) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
-        /*
-            r8 = this;
-            int[] r0 = com.android.internal.R.styleable.AnimatedStateListDrawableItem
-            android.content.res.TypedArray r0 = obtainAttributes(r9, r12, r11, r0)
-            r1 = 0
-            int r1 = r0.getResourceId(r1, r1)
-            r2 = 1
-            android.graphics.drawable.Drawable r2 = r0.getDrawable(r2)
-            r0.recycle()
-            int[] r3 = r8.extractStateSet(r11)
-            if (r2 != 0) goto L47
-        L19:
-            int r4 = r10.next()
-            r5 = r4
-            r6 = 4
-            if (r4 != r6) goto L22
-            goto L19
-        L22:
-            r4 = 2
-            if (r5 != r4) goto L2a
-            android.graphics.drawable.Drawable r2 = android.graphics.drawable.Drawable.createFromXmlInner(r9, r10, r11, r12)
-            goto L47
-        L2a:
-            org.xmlpull.v1.XmlPullParserException r4 = new org.xmlpull.v1.XmlPullParserException
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder
-            r6.<init>()
-            java.lang.String r7 = r10.getPositionDescription()
-            java.lang.StringBuilder r6 = r6.append(r7)
-            java.lang.String r7 = ": <item> tag requires a 'drawable' attribute or child tag defining a drawable"
-            java.lang.StringBuilder r6 = r6.append(r7)
-            java.lang.String r6 = r6.toString()
-            r4.<init>(r6)
-            throw r4
-        L47:
-            android.graphics.drawable.AnimatedStateListDrawable$AnimatedStateListState r4 = r8.mState
-            int r4 = r4.addStateSet(r3, r2, r1)
-            return r4
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.graphics.drawable.AnimatedStateListDrawable.parseItem(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):int");
+    private int parseItem(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
+        int type;
+        TypedArray a = obtainAttributes(r, theme, attrs, R.styleable.AnimatedStateListDrawableItem);
+        int keyframeId = a.getResourceId(0, 0);
+        Drawable dr = a.getDrawable(1);
+        a.recycle();
+        int[] states = extractStateSet(attrs);
+        if (dr == null) {
+            do {
+                type = parser.next();
+            } while (type == 4);
+            if (type != 2) {
+                throw new XmlPullParserException(parser.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+            }
+            dr = Drawable.createFromXmlInner(r, parser, attrs, theme);
+        }
+        return this.mState.addStateSet(states, dr, keyframeId);
     }
 
     @Override // android.graphics.drawable.StateListDrawable, android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
@@ -489,6 +364,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.StateListDrawable, android.graphics.drawable.DrawableContainer
     public AnimatedStateListState cloneConstantState() {
         return new AnimatedStateListState(this.mState, this, null);
@@ -500,8 +376,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         this.mMutated = false;
     }
 
-    /* loaded from: classes.dex */
-    public static class AnimatedStateListState extends StateListDrawable.StateListState {
+    static class AnimatedStateListState extends StateListDrawable.StateListState {
         private static final long REVERSED_BIT = 4294967296L;
         private static final long REVERSIBLE_FLAG_BIT = 8589934592L;
         int[] mAnimThemeAttrs;
@@ -522,8 +397,8 @@ public class AnimatedStateListDrawable extends StateListDrawable {
 
         @Override // android.graphics.drawable.StateListDrawable.StateListState
         void mutate() {
-            this.mTransitions = this.mTransitions.m4942clone();
-            this.mStateIds = this.mStateIds.m4953clone();
+            this.mTransitions = this.mTransitions.m5226clone();
+            this.mStateIds = this.mStateIds.m5237clone();
         }
 
         int addTransition(int fromId, int toId, Drawable anim, boolean reversible) {
@@ -598,7 +473,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
     }
 
     @Override // android.graphics.drawable.StateListDrawable, android.graphics.drawable.DrawableContainer
-    public void setConstantState(DrawableContainer.DrawableContainerState state) {
+    protected void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
         if (state instanceof AnimatedStateListState) {
             this.mState = (AnimatedStateListState) state;
@@ -615,9 +490,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         jumpToCurrentState();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class FrameInterpolator implements TimeInterpolator {
+    private static class FrameInterpolator implements TimeInterpolator {
         private int[] mFrameTimes;
         private int mFrames;
         private int mTotalDuration;
@@ -629,8 +502,7 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         public int updateFrames(AnimationDrawable d, boolean reversed) {
             int N = d.getNumberOfFrames();
             this.mFrames = N;
-            int[] iArr = this.mFrameTimes;
-            if (iArr == null || iArr.length < N) {
+            if (this.mFrameTimes == null || this.mFrameTimes.length < N) {
                 this.mFrameTimes = new int[N];
             }
             int[] frameTimes = this.mFrameTimes;

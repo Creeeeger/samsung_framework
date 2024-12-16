@@ -24,9 +24,8 @@ public class EditTextPreference extends DialogPreference {
 
     public EditTextPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        EditText editText = new EditText(context, attrs);
-        this.mEditText = editText;
-        editText.setId(16908291);
+        this.mEditText = new EditText(context, attrs);
+        this.mEditText.setId(16908291);
         this.mEditText.setEnabled(true);
     }
 
@@ -60,10 +59,10 @@ public class EditTextPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference
-    public void onBindDialogView(View view) {
+    protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         EditText editText = this.mEditText;
-        editText.setText(getText());
+        editText.lambda$setTextAsync$0(getText());
         if (editText.length() != 0) {
             editText.setSelection(editText.length());
         }
@@ -77,7 +76,7 @@ public class EditTextPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference
-    public void showDialog(Bundle state) {
+    protected void showDialog(Bundle state) {
         super.showDialog(state);
         this.mEditText.requestFocus();
         this.mEditText.getWindowInsetsController().show(WindowInsets.Type.ime());
@@ -91,7 +90,7 @@ public class EditTextPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference
-    public void onDialogClosed(boolean positiveResult) {
+    protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (positiveResult) {
             String value = this.mEditText.getText().toString();
@@ -121,7 +120,7 @@ public class EditTextPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         if (isPersistent()) {
             return superState;
@@ -132,7 +131,7 @@ public class EditTextPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
@@ -142,17 +141,15 @@ public class EditTextPreference extends DialogPreference {
         setText(myState.text);
     }
 
-    /* loaded from: classes3.dex */
-    public static class SavedState extends Preference.BaseSavedState {
+    private static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.EditTextPreference.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -173,23 +170,6 @@ public class EditTextPreference extends DialogPreference {
 
         public SavedState(Parcelable superState) {
             super(superState);
-        }
-
-        /* renamed from: android.preference.EditTextPreference$SavedState$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 }

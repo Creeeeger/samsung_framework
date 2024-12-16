@@ -1,5 +1,6 @@
 package android.graphics;
 
+import android.graphics.Bitmap;
 import android.os.SystemProperties;
 import android.util.Pools;
 import dalvik.annotation.optimization.CriticalNative;
@@ -40,10 +41,8 @@ public final class RecordingCanvas extends BaseRecordingCanvas {
     @CriticalNative
     private static native void nFinishRecording(long j, long j2);
 
-    @CriticalNative
     private static native int nGetMaximumTextureHeight();
 
-    @CriticalNative
     private static native int nGetMaximumTextureWidth();
 
     @CriticalNative
@@ -53,7 +52,7 @@ public final class RecordingCanvas extends BaseRecordingCanvas {
         return Math.max(SystemProperties.getInt("ro.hwui.max_texture_allocation_size", 157286400), 157286400);
     }
 
-    public static RecordingCanvas obtain(RenderNode node, int width, int height) {
+    static RecordingCanvas obtain(RenderNode node, int width, int height) {
         if (node == null) {
             throw new IllegalArgumentException("node cannot be null");
         }
@@ -69,12 +68,12 @@ public final class RecordingCanvas extends BaseRecordingCanvas {
         return canvas;
     }
 
-    public void recycle() {
+    void recycle() {
         this.mNode = null;
         sPool.release(this);
     }
 
-    public void finishRecording(RenderNode node) {
+    void finishRecording(RenderNode node) {
         nFinishRecording(this.mNativeCanvasWrapper, node.mNativeRenderNode);
     }
 
@@ -158,10 +157,10 @@ public final class RecordingCanvas extends BaseRecordingCanvas {
     }
 
     @Override // android.graphics.BaseCanvas
-    public void throwIfCannotDraw(Bitmap bitmap) {
+    protected void throwIfCannotDraw(Bitmap bitmap) {
         super.throwIfCannotDraw(bitmap);
         int bitmapSize = bitmap.getByteCount();
-        if (bitmapSize > MAX_BITMAP_SIZE) {
+        if (bitmap.getConfig() != Bitmap.Config.HARDWARE && bitmapSize > MAX_BITMAP_SIZE) {
             throw new RuntimeException("Canvas: trying to draw too large(" + bitmapSize + "bytes) bitmap.");
         }
     }

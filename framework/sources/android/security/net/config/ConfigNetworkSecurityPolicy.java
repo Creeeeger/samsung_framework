@@ -19,6 +19,6 @@ public class ConfigNetworkSecurityPolicy extends NetworkSecurityPolicy {
     }
 
     public boolean isCertificateTransparencyVerificationRequired(String hostname) {
-        return false;
+        return this.mConfig.isCertificateTransparencyVerificationRequired(hostname);
     }
 }

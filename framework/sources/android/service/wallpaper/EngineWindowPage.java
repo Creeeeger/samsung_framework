@@ -25,8 +25,7 @@ public class EngineWindowPage {
     }
 
     public Bitmap getBitmap() {
-        Bitmap bitmap = this.mScreenShot;
-        if (bitmap == null || bitmap.isRecycled()) {
+        if (this.mScreenShot == null || this.mScreenShot.isRecycled()) {
             return null;
         }
         return this.mScreenShot;

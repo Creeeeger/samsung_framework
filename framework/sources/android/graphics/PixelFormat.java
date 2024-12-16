@@ -51,12 +51,10 @@ public class PixelFormat {
     public int bytesPerPixel;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Format {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Opacity {
     }
 

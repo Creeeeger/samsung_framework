@@ -13,8 +13,11 @@ public final class BackEvent {
     private final float mTouchY;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface SwipeEdge {
+    }
+
+    public static BackEvent fromBackMotionEvent(BackMotionEvent backMotionEvent) {
+        return new BackEvent(backMotionEvent.getTouchX(), backMotionEvent.getTouchY(), backMotionEvent.getProgress(), backMotionEvent.getSwipeEdge());
     }
 
     public BackEvent(float touchX, float touchY, float progress, int swipeEdge) {

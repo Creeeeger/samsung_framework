@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PermissionGroupUsage implements Parcelable {
     public static final Parcelable.Creator<PermissionGroupUsage> CREATOR = new Parcelable.Creator<PermissionGroupUsage>() { // from class: android.permission.PermissionGroupUsage.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionGroupUsage[] newArray(int size) {
             return new PermissionGroupUsage[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionGroupUsage createFromParcel(Parcel in) {
             return new PermissionGroupUsage(in);
@@ -30,22 +29,25 @@ public final class PermissionGroupUsage implements Parcelable {
     private final long mLastAccessTimeMillis;
     private final String mPackageName;
     private final String mPermissionGroupName;
+    private final String mPersistentDeviceId;
     private final boolean mPhoneCall;
     private final CharSequence mProxyLabel;
     private final int mUid;
 
-    public PermissionGroupUsage(String packageName, int uid, long lastAccessTimeMillis, String permissionGroupName, boolean active, boolean phoneCall, CharSequence attributionTag, CharSequence attributionLabel, CharSequence proxyLabel) {
+    public PermissionGroupUsage(String packageName, int uid, long lastAccessTimeMillis, String permissionGroupName, boolean active, boolean phoneCall, CharSequence attributionTag, CharSequence attributionLabel, CharSequence proxyLabel, String persistentDeviceId) {
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mUid = uid;
         this.mLastAccessTimeMillis = lastAccessTimeMillis;
         this.mPermissionGroupName = permissionGroupName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) permissionGroupName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPermissionGroupName);
         this.mActive = active;
         this.mPhoneCall = phoneCall;
         this.mAttributionTag = attributionTag;
         this.mAttributionLabel = attributionLabel;
         this.mProxyLabel = proxyLabel;
+        this.mPersistentDeviceId = persistentDeviceId;
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPersistentDeviceId);
     }
 
     public String getPackageName() {
@@ -84,8 +86,12 @@ public final class PermissionGroupUsage implements Parcelable {
         return this.mProxyLabel;
     }
 
+    public String getPersistentDeviceId() {
+        return this.mPersistentDeviceId;
+    }
+
     public String toString() {
-        return "PermissionGroupUsage { packageName = " + this.mPackageName + ", uid = " + this.mUid + ", lastAccessTimeMillis = " + this.mLastAccessTimeMillis + ", permissionGroupName = " + this.mPermissionGroupName + ", active = " + this.mActive + ", phoneCall = " + this.mPhoneCall + ", attributionTag = " + ((Object) this.mAttributionTag) + ", attributionLabel = " + ((Object) this.mAttributionLabel) + ", proxyLabel = " + ((Object) this.mProxyLabel) + " }";
+        return "PermissionGroupUsage { packageName = " + this.mPackageName + ", uid = " + this.mUid + ", lastAccessTimeMillis = " + this.mLastAccessTimeMillis + ", permissionGroupName = " + this.mPermissionGroupName + ", active = " + this.mActive + ", phoneCall = " + this.mPhoneCall + ", attributionTag = " + ((Object) this.mAttributionTag) + ", attributionLabel = " + ((Object) this.mAttributionLabel) + ", proxyLabel = " + ((Object) this.mProxyLabel) + ", persistentDeviceId = " + this.mPersistentDeviceId + " }";
     }
 
     public boolean equals(Object o) {
@@ -96,7 +102,7 @@ public final class PermissionGroupUsage implements Parcelable {
             return false;
         }
         PermissionGroupUsage that = (PermissionGroupUsage) o;
-        if (Objects.equals(this.mPackageName, that.mPackageName) && this.mUid == that.mUid && this.mLastAccessTimeMillis == that.mLastAccessTimeMillis && Objects.equals(this.mPermissionGroupName, that.mPermissionGroupName) && this.mActive == that.mActive && this.mPhoneCall == that.mPhoneCall && Objects.equals(this.mAttributionTag, that.mAttributionTag) && Objects.equals(this.mAttributionLabel, that.mAttributionLabel) && Objects.equals(this.mProxyLabel, that.mProxyLabel)) {
+        if (Objects.equals(this.mPackageName, that.mPackageName) && this.mUid == that.mUid && this.mLastAccessTimeMillis == that.mLastAccessTimeMillis && Objects.equals(this.mPermissionGroupName, that.mPermissionGroupName) && this.mActive == that.mActive && this.mPhoneCall == that.mPhoneCall && Objects.equals(this.mAttributionTag, that.mAttributionTag) && Objects.equals(this.mAttributionLabel, that.mAttributionLabel) && Objects.equals(this.mProxyLabel, that.mProxyLabel) && Objects.equals(this.mPersistentDeviceId, that.mPersistentDeviceId)) {
             return true;
         }
         return false;
@@ -104,7 +110,7 @@ public final class PermissionGroupUsage implements Parcelable {
 
     public int hashCode() {
         int _hash = (1 * 31) + Objects.hashCode(this.mPackageName);
-        return (((((((((((((((_hash * 31) + this.mUid) * 31) + Long.hashCode(this.mLastAccessTimeMillis)) * 31) + Objects.hashCode(this.mPermissionGroupName)) * 31) + Boolean.hashCode(this.mActive)) * 31) + Boolean.hashCode(this.mPhoneCall)) * 31) + Objects.hashCode(this.mAttributionTag)) * 31) + Objects.hashCode(this.mAttributionLabel)) * 31) + Objects.hashCode(this.mProxyLabel);
+        return (((((((((((((((((_hash * 31) + this.mUid) * 31) + Long.hashCode(this.mLastAccessTimeMillis)) * 31) + Objects.hashCode(this.mPermissionGroupName)) * 31) + Boolean.hashCode(this.mActive)) * 31) + Boolean.hashCode(this.mPhoneCall)) * 31) + Objects.hashCode(this.mAttributionTag)) * 31) + Objects.hashCode(this.mAttributionLabel)) * 31) + Objects.hashCode(this.mProxyLabel)) * 31) + Objects.hashCode(this.mPersistentDeviceId);
     }
 
     @Override // android.os.Parcelable
@@ -127,18 +133,16 @@ public final class PermissionGroupUsage implements Parcelable {
         dest.writeInt(this.mUid);
         dest.writeLong(this.mLastAccessTimeMillis);
         dest.writeString(this.mPermissionGroupName);
-        CharSequence charSequence = this.mAttributionTag;
-        if (charSequence != null) {
-            dest.writeCharSequence(charSequence);
+        if (this.mAttributionTag != null) {
+            dest.writeCharSequence(this.mAttributionTag);
         }
-        CharSequence charSequence2 = this.mAttributionLabel;
-        if (charSequence2 != null) {
-            dest.writeCharSequence(charSequence2);
+        if (this.mAttributionLabel != null) {
+            dest.writeCharSequence(this.mAttributionLabel);
         }
-        CharSequence charSequence3 = this.mProxyLabel;
-        if (charSequence3 != null) {
-            dest.writeCharSequence(charSequence3);
+        if (this.mProxyLabel != null) {
+            dest.writeCharSequence(this.mProxyLabel);
         }
+        dest.writeString(this.mPersistentDeviceId);
     }
 
     @Override // android.os.Parcelable
@@ -157,34 +161,20 @@ public final class PermissionGroupUsage implements Parcelable {
         CharSequence attributionTag = (flg & 64) == 0 ? null : in.readCharSequence();
         CharSequence attributionLabel = (flg & 128) == 0 ? null : in.readCharSequence();
         CharSequence proxyLabel = (flg & 256) == 0 ? null : in.readCharSequence();
+        String persistentDeviceId = in.readString();
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
         this.mUid = uid;
         this.mLastAccessTimeMillis = lastAccessTimeMillis;
         this.mPermissionGroupName = permissionGroupName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) permissionGroupName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPermissionGroupName);
         this.mActive = active;
         this.mPhoneCall = phoneCall;
         this.mAttributionTag = attributionTag;
         this.mAttributionLabel = attributionLabel;
         this.mProxyLabel = proxyLabel;
-    }
-
-    /* renamed from: android.permission.PermissionGroupUsage$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PermissionGroupUsage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PermissionGroupUsage[] newArray(int size) {
-            return new PermissionGroupUsage[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PermissionGroupUsage createFromParcel(Parcel in) {
-            return new PermissionGroupUsage(in);
-        }
+        this.mPersistentDeviceId = persistentDeviceId;
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPersistentDeviceId);
     }
 
     @Deprecated

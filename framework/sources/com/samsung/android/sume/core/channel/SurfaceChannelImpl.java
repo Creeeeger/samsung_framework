@@ -32,22 +32,20 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
     private static final int HAL_PIXEL_FORMAT_EXYNOS_YCbCr_420_SPN = 291;
     private static final int HAL_PIXEL_FORMAT_EXYNOS_YCbCr_420_SP_M = 261;
     private static final int HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS = 2141391876;
     private static final String TAG = Def.tagOf((Class<?>) SurfaceChannelImpl.class);
     private static final Map<ColorFormat, int[]> vendorSpecificColorFormat = new HashMap<ColorFormat, int[]>() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl.1
-        AnonymousClass1() {
+        {
             put(ColorFormat.NV12, new int[]{SurfaceChannelImpl.HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS});
             put(ColorFormat.NV21, new int[]{261, 291});
         }
     };
     private BufferChannel bufferChannel;
     private final int channelType;
-    private final Condition condition;
-    private final ReentrantLock lock;
     private final ImageReader.OnImageAvailableListener onImageAvailableListener;
     private ImageReader reader;
     private final Supplier<MediaBuffer> receiveHandler;
@@ -58,35 +56,25 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
     private int processedFrames = 0;
     private final AtomicInteger numberOfFrames = new AtomicInteger(0);
     private int capacity = 0;
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition condition = this.lock.newCondition();
 
-    /* renamed from: com.samsung.android.sume.core.channel.SurfaceChannelImpl$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends HashMap<ColorFormat, int[]> {
-        AnonymousClass1() {
-            put(ColorFormat.NV12, new int[]{SurfaceChannelImpl.HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS});
-            put(ColorFormat.NV21, new int[]{261, 291});
-        }
-    }
-
-    public SurfaceChannelImpl(int channelType, final BufferChannel bufferChannel) {
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.lock = reentrantLock;
-        this.condition = reentrantLock.newCondition();
+    SurfaceChannelImpl(int channelType, final BufferChannel bufferChannel) {
         this.channelType = channelType;
         switch (channelType) {
             case 2:
                 Def.require(bufferChannel != null);
                 this.bufferChannel = bufferChannel;
                 Objects.requireNonNull(bufferChannel);
-                this.sendHandler = new SurfaceChannelImpl$$ExternalSyntheticLambda9(bufferChannel);
+                this.sendHandler = new SurfaceChannelImpl$$ExternalSyntheticLambda5(bufferChannel);
                 Objects.requireNonNull(bufferChannel);
-                this.receiveHandler = new Supplier() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda10
+                this.receiveHandler = new Supplier() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda6
                     @Override // java.util.function.Supplier
                     public final Object get() {
                         return BufferChannel.this.receive();
                     }
                 };
-                this.onImageAvailableListener = new ImageReader.OnImageAvailableListener() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda11
+                this.onImageAvailableListener = new ImageReader.OnImageAvailableListener() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda7
                     @Override // android.media.ImageReader.OnImageAvailableListener
                     public final void onImageAvailable(ImageReader imageReader) {
                         SurfaceChannelImpl.this.onImageReceive(imageReader);
@@ -94,19 +82,19 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
                 };
                 return;
             case 3:
-                this.sendHandler = new Consumer() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda12
+                this.sendHandler = new Consumer() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda8
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         SurfaceChannelImpl.this.writeToSurface((MediaBuffer) obj);
                     }
                 };
-                this.receiveHandler = new Supplier() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda13
+                this.receiveHandler = new Supplier() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda9
                     @Override // java.util.function.Supplier
                     public final Object get() {
                         return SurfaceChannelImpl.lambda$new$2();
                     }
                 };
-                this.onImageAvailableListener = new ImageReader.OnImageAvailableListener() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda14
+                this.onImageAvailableListener = new ImageReader.OnImageAvailableListener() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda10
                     @Override // android.media.ImageReader.OnImageAvailableListener
                     public final void onImageAvailable(ImageReader imageReader) {
                         SurfaceChannelImpl.lambda$new$3(imageReader);
@@ -114,19 +102,19 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
                 };
                 return;
             case 4:
-                this.sendHandler = new Consumer() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda6
+                this.sendHandler = new Consumer() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda2
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
-                        SurfaceChannelImpl.this.m8734xaa413ced((MediaBuffer) obj);
+                        SurfaceChannelImpl.this.m9123xaa413ced((MediaBuffer) obj);
                     }
                 };
-                this.receiveHandler = new Supplier() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda7
+                this.receiveHandler = new Supplier() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda3
                     @Override // java.util.function.Supplier
                     public final Object get() {
-                        return SurfaceChannelImpl.this.m8735x372e540c();
+                        return SurfaceChannelImpl.this.m9124x372e540c();
                     }
                 };
-                this.onImageAvailableListener = new ImageReader.OnImageAvailableListener() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda8
+                this.onImageAvailableListener = new ImageReader.OnImageAvailableListener() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda4
                     @Override // android.media.ImageReader.OnImageAvailableListener
                     public final void onImageAvailable(ImageReader imageReader) {
                         SurfaceChannelImpl.this.onImageTransit(imageReader);
@@ -138,35 +126,33 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         }
     }
 
-    /* renamed from: lambda$new$0$com-samsung-android-sume-core-channel-SurfaceChannelImpl */
-    public /* synthetic */ void m8734xaa413ced(MediaBuffer mediaBuffer) {
+    /* renamed from: lambda$new$0$com-samsung-android-sume-core-channel-SurfaceChannelImpl, reason: not valid java name */
+    /* synthetic */ void m9123xaa413ced(MediaBuffer mediaBuffer) {
         signal();
     }
 
-    /* renamed from: lambda$new$1$com-samsung-android-sume-core-channel-SurfaceChannelImpl */
-    public /* synthetic */ MediaBuffer m8735x372e540c() {
+    /* renamed from: lambda$new$1$com-samsung-android-sume-core-channel-SurfaceChannelImpl, reason: not valid java name */
+    /* synthetic */ MediaBuffer m9124x372e540c() {
         waitUntilSignaled("receive buffer");
         return MediaBuffer.mutableOf(MediaFormat.mutableImageOf(new Object[0]));
     }
 
-    public static /* synthetic */ MediaBuffer lambda$new$2() {
+    static /* synthetic */ MediaBuffer lambda$new$2() {
         throw new UnsupportedOperationException("");
     }
 
-    public static /* synthetic */ void lambda$new$3(ImageReader imageReader) {
+    static /* synthetic */ void lambda$new$3(ImageReader imageReader) {
         throw new UnsupportedOperationException("");
     }
 
     @Override // com.samsung.android.sume.core.channel.SurfaceChannel
     public void configure(int width, int height, int format) {
         Def.require(this.channelType != 3);
-        HandlerThread handlerThread = new HandlerThread("surface-receive-thread");
-        this.receiveThread = handlerThread;
-        handlerThread.start();
+        this.receiveThread = new HandlerThread("surface-receive-thread");
+        this.receiveThread.start();
         int maxImages = this.channelType == 4 ? 1 + this.capacity : 1;
-        ImageReader newInstance = ImageReader.newInstance(width, height, format, maxImages);
-        this.reader = newInstance;
-        newInstance.setOnImageAvailableListener(this.onImageAvailableListener, new Handler(this.receiveThread.getLooper()));
+        this.reader = ImageReader.newInstance(width, height, format, maxImages);
+        this.reader.setOnImageAvailableListener(this.onImageAvailableListener, new Handler(this.receiveThread.getLooper()));
     }
 
     @Override // com.samsung.android.sume.core.channel.SurfaceChannel
@@ -181,10 +167,9 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         this.lock.lock();
         try {
             try {
-                String str = TAG;
-                Log.w(str, "wait until " + waitMessage);
+                Log.w(TAG, "wait until " + waitMessage);
                 this.condition.await();
-                Log.d(str, "now " + waitMessage);
+                Log.d(TAG, "now " + waitMessage);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -208,6 +193,7 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         return this.reader.getSurface();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onImageTransit(ImageReader reader) {
         if (this.writer == null) {
             waitUntilSignaled("writer is given");
@@ -222,16 +208,17 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         signal();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onImageReceive(ImageReader reader) {
         Image image = reader.acquireLatestImage();
         final HardwareBuffer hwBuffer = image.getHardwareBuffer();
         if (hwBuffer != null) {
             if (this.pixelFormat == ColorFormat.NONE) {
-                this.pixelFormat = (ColorFormat) vendorSpecificColorFormat.entrySet().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda3
+                this.pixelFormat = (ColorFormat) vendorSpecificColorFormat.entrySet().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda11
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         boolean anyMatch;
-                        anyMatch = Arrays.stream((int[]) ((Map.Entry) obj).getValue()).anyMatch(new IntPredicate() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda1
+                        anyMatch = Arrays.stream((int[]) ((Map.Entry) obj).getValue()).anyMatch(new IntPredicate() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda0
                             @Override // java.util.function.IntPredicate
                             public final boolean test(int i) {
                                 return SurfaceChannelImpl.lambda$onImageReceive$4(HardwareBuffer.this, i);
@@ -239,12 +226,12 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
                         });
                         return anyMatch;
                     }
-                }).map(new Function() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda4
+                }).map(new Function() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda12
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return (ColorFormat) ((Map.Entry) obj).getKey();
                     }
-                }).findFirst().orElseThrow(new SurfaceChannelImpl$$ExternalSyntheticLambda5());
+                }).findFirst().orElseThrow(new SurfaceChannelImpl$$ExternalSyntheticLambda13());
             }
             Log.d(TAG, "fmt=" + Integer.toHexString(hwBuffer.getFormat()) + NavigationBarInflaterView.SIZE_MOD_START + this.pixelFormat + "], usage=" + Long.toHexString(hwBuffer.getUsage()));
             MediaBuffer mediaBuffer = MediaBuffer.of(MediaFormat.mutableImageOf(DataType.U8, Shape.rectOf(image.getWidth(), image.getHeight()), this.pixelFormat), hwBuffer).convertTo(ByteBuffer.class);
@@ -260,13 +247,13 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         image.close();
     }
 
-    public static /* synthetic */ boolean lambda$onImageReceive$4(HardwareBuffer hwBuffer, int e) {
+    static /* synthetic */ boolean lambda$onImageReceive$4(HardwareBuffer hwBuffer, int e) {
         return e == hwBuffer.getFormat();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void writeToSurface(MediaBuffer mediaBuffer) {
-        String str = TAG;
-        Log.d(str, "writeToSurface: " + mediaBuffer);
+        Log.d(TAG, "writeToSurface: " + mediaBuffer);
         if (this.writer == null) {
             waitUntilSignaled("writer given");
         }
@@ -276,6 +263,7 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         SharedBufferManager.copyFromBuffer(mediaBuffer, image.getHardwareBuffer());
         mediaBuffer.release();
         this.writer.queueInputImage(image);
+        String str = TAG;
         StringBuilder append = new StringBuilder().append("send image=").append(image).append(", # of processed frames: ");
         int i = this.processedFrames + 1;
         this.processedFrames = i;
@@ -287,6 +275,7 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         this.sendHandler.accept(data);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.channel.Channel
     public MediaBuffer receive() {
         return this.receiveHandler.get();
@@ -294,31 +283,27 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
 
     @Override // com.samsung.android.sume.core.channel.Channel
     public void close() {
-        BufferChannel bufferChannel = this.bufferChannel;
-        if (bufferChannel != null) {
-            bufferChannel.close();
+        if (this.bufferChannel != null) {
+            this.bufferChannel.close();
         }
-        HandlerThread handlerThread = this.receiveThread;
-        if (handlerThread != null) {
-            handlerThread.quitSafely();
+        if (this.receiveThread != null) {
+            this.receiveThread.quitSafely();
         }
     }
 
     @Override // com.samsung.android.sume.core.channel.Channel
     public void cancel() {
-        BufferChannel bufferChannel = this.bufferChannel;
-        if (bufferChannel != null) {
-            bufferChannel.cancel();
+        if (this.bufferChannel != null) {
+            this.bufferChannel.cancel();
         }
-        HandlerThread handlerThread = this.receiveThread;
-        if (handlerThread != null) {
-            handlerThread.quitSafely();
+        if (this.receiveThread != null) {
+            this.receiveThread.quitSafely();
         }
     }
 
     @Override // com.samsung.android.sume.core.channel.Channel
     public boolean isClosedForSend() {
-        return ((Boolean) Optional.ofNullable(this.bufferChannel).map(new Function() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda2
+        return ((Boolean) Optional.ofNullable(this.bufferChannel).map(new Function() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda14
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return Boolean.valueOf(((BufferChannel) obj).isClosedForSend());
@@ -328,7 +313,7 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
 
     @Override // com.samsung.android.sume.core.channel.Channel
     public boolean isClosedForReceive() {
-        return ((Boolean) Optional.ofNullable(this.bufferChannel).map(new Function() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda0
+        return ((Boolean) Optional.ofNullable(this.bufferChannel).map(new Function() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return Boolean.valueOf(((BufferChannel) obj).isClosedForReceive());

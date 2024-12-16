@@ -11,7 +11,6 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
         super(id, rs);
     }
 
-    /* loaded from: classes3.dex */
     static class InternalBuilder extends Program.BaseProgramBuilder {
         public InternalBuilder(RenderScript rs) {
             super(rs);
@@ -54,7 +53,6 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         public static final int MAX_TEXTURE = 2;
         int mNumTextures;
@@ -64,7 +62,6 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
         Slot[] mSlots = new Slot[2];
         boolean mPointSpriteEnable = false;
 
-        /* loaded from: classes3.dex */
         public enum EnvMode {
             REPLACE(1),
             MODULATE(2),
@@ -77,7 +74,6 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
             }
         }
 
-        /* loaded from: classes3.dex */
         public enum Format {
             ALPHA(1),
             LUMINANCE_ALPHA(2),
@@ -91,8 +87,7 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
             }
         }
 
-        /* loaded from: classes3.dex */
-        public class Slot {
+        private class Slot {
             EnvMode env;
             Format format;
 
@@ -120,38 +115,38 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
                 }
             }
             for (int i = 0; i < this.mNumTextures; i++) {
-                switch (AnonymousClass1.$SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$EnvMode[this.mSlots[i].env.ordinal()]) {
-                    case 1:
-                        switch (AnonymousClass1.$SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$Format[this.mSlots[i].format.ordinal()]) {
-                            case 1:
+                switch (this.mSlots[i].env) {
+                    case REPLACE:
+                        switch (this.mSlots[i].format) {
+                            case ALPHA:
                                 this.mShader += "  col.a = texture2D(UNI_Tex0, t0).a;\n";
                                 break;
-                            case 2:
+                            case LUMINANCE_ALPHA:
                                 this.mShader += "  col.rgba = texture2D(UNI_Tex0, t0).rgba;\n";
                                 break;
-                            case 3:
+                            case RGB:
                                 this.mShader += "  col.rgb = texture2D(UNI_Tex0, t0).rgb;\n";
                                 break;
-                            case 4:
+                            case RGBA:
                                 this.mShader += "  col.rgba = texture2D(UNI_Tex0, t0).rgba;\n";
                                 break;
                         }
-                    case 2:
-                        switch (AnonymousClass1.$SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$Format[this.mSlots[i].format.ordinal()]) {
-                            case 1:
+                    case MODULATE:
+                        switch (this.mSlots[i].format) {
+                            case ALPHA:
                                 this.mShader += "  col.a *= texture2D(UNI_Tex0, t0).a;\n";
                                 break;
-                            case 2:
+                            case LUMINANCE_ALPHA:
                                 this.mShader += "  col.rgba *= texture2D(UNI_Tex0, t0).rgba;\n";
                                 break;
-                            case 3:
+                            case RGB:
                                 this.mShader += "  col.rgb *= texture2D(UNI_Tex0, t0).rgb;\n";
                                 break;
-                            case 4:
+                            case RGBA:
                                 this.mShader += "  col.rgba *= texture2D(UNI_Tex0, t0).rgba;\n";
                                 break;
                         }
-                    case 3:
+                    case DECAL:
                         this.mShader += "  col = texture2D(UNI_Tex0, t0);\n";
                         break;
                 }
@@ -215,48 +210,6 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
                 pf.bindConstants(constantData, 0);
             }
             return pf;
-        }
-    }
-
-    /* renamed from: android.renderscript.ProgramFragmentFixedFunction$1 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$EnvMode;
-        static final /* synthetic */ int[] $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$Format;
-
-        static {
-            int[] iArr = new int[Builder.EnvMode.values().length];
-            $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$EnvMode = iArr;
-            try {
-                iArr[Builder.EnvMode.REPLACE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$EnvMode[Builder.EnvMode.MODULATE.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$EnvMode[Builder.EnvMode.DECAL.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            int[] iArr2 = new int[Builder.Format.values().length];
-            $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$Format = iArr2;
-            try {
-                iArr2[Builder.Format.ALPHA.ordinal()] = 1;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$Format[Builder.Format.LUMINANCE_ALPHA.ordinal()] = 2;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$Format[Builder.Format.RGB.ordinal()] = 3;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$Format[Builder.Format.RGBA.ordinal()] = 4;
-            } catch (NoSuchFieldError e7) {
-            }
         }
     }
 }

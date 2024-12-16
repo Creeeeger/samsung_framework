@@ -7,17 +7,16 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class UiccSlotMapping implements Parcelable {
     public static final Parcelable.Creator<UiccSlotMapping> CREATOR = new Parcelable.Creator<UiccSlotMapping>() { // from class: android.telephony.UiccSlotMapping.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccSlotMapping createFromParcel(Parcel in) {
             return new UiccSlotMapping(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccSlotMapping[] newArray(int size) {
             return new UiccSlotMapping[size];
@@ -26,27 +25,6 @@ public final class UiccSlotMapping implements Parcelable {
     private final int mLogicalSlotIndex;
     private final int mPhysicalSlotIndex;
     private final int mPortIndex;
-
-    /* synthetic */ UiccSlotMapping(Parcel parcel, UiccSlotMappingIA uiccSlotMappingIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.telephony.UiccSlotMapping$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UiccSlotMapping> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccSlotMapping createFromParcel(Parcel in) {
-            return new UiccSlotMapping(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccSlotMapping[] newArray(int size) {
-            return new UiccSlotMapping[size];
-        }
-    }
 
     private UiccSlotMapping(Parcel in) {
         this.mPortIndex = in.readInt();

@@ -16,22 +16,16 @@ import java.util.function.Function;
 /* loaded from: classes5.dex */
 public final class LinkPropertiesUtils {
 
-    /* loaded from: classes5.dex */
     public static class CompareResult<T> {
-        public final List<T> added;
-        public final List<T> removed;
+        public final List<T> removed = new ArrayList();
+        public final List<T> added = new ArrayList();
 
         public CompareResult() {
-            this.removed = new ArrayList();
-            this.added = new ArrayList();
         }
 
         public CompareResult(Collection<T> oldItems, Collection<T> newItems) {
-            ArrayList arrayList = new ArrayList();
-            this.removed = arrayList;
-            this.added = new ArrayList();
             if (oldItems != null) {
-                arrayList.addAll(oldItems);
+                this.removed.addAll(oldItems);
             }
             if (newItems != null) {
                 for (T newItem : newItems) {
@@ -47,7 +41,6 @@ public final class LinkPropertiesUtils {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class CompareOrUpdateResult<K, T> {
         public final List<T> added = new ArrayList();
         public final List<T> removed = new ArrayList();

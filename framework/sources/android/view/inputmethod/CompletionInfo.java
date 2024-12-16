@@ -7,14 +7,13 @@ import android.text.TextUtils;
 /* loaded from: classes4.dex */
 public final class CompletionInfo implements Parcelable {
     public static final Parcelable.Creator<CompletionInfo> CREATOR = new Parcelable.Creator<CompletionInfo>() { // from class: android.view.inputmethod.CompletionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompletionInfo createFromParcel(Parcel source) {
             return new CompletionInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompletionInfo[] newArray(int size) {
             return new CompletionInfo[size];
@@ -24,10 +23,6 @@ public final class CompletionInfo implements Parcelable {
     private final CharSequence mLabel;
     private final int mPosition;
     private final CharSequence mText;
-
-    /* synthetic */ CompletionInfo(Parcel parcel, CompletionInfoIA completionInfoIA) {
-        this(parcel);
-    }
 
     public CompletionInfo(long id, int index, CharSequence text) {
         this.mId = id;
@@ -76,23 +71,6 @@ public final class CompletionInfo implements Parcelable {
         dest.writeInt(this.mPosition);
         TextUtils.writeToParcel(this.mText, dest, flags);
         TextUtils.writeToParcel(this.mLabel, dest, flags);
-    }
-
-    /* renamed from: android.view.inputmethod.CompletionInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompletionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompletionInfo createFromParcel(Parcel source) {
-            return new CompletionInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompletionInfo[] newArray(int size) {
-            return new CompletionInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

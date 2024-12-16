@@ -1,9 +1,12 @@
 package android.content.pm;
 
 import android.annotation.SystemApi;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.NtpTrustedTime;
 import com.android.internal.util.Parcelling;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -104,16 +107,15 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
 
     @SystemApi
     public int requestRes;
-    private static Parcelling.BuiltIn.ForStringSet sForStringSet = (Parcelling.BuiltIn.ForStringSet) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForStringSet.class);
+    private static final Parcelling.BuiltIn.ForStringSet sForStringSet = (Parcelling.BuiltIn.ForStringSet) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForStringSet.class);
     public static final Parcelable.Creator<PermissionInfo> CREATOR = new Parcelable.Creator<PermissionInfo>() { // from class: android.content.pm.PermissionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionInfo createFromParcel(Parcel source) {
             return new PermissionInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionInfo[] newArray(int size) {
             return new PermissionInfo[size];
@@ -121,22 +123,15 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Flags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Protection {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProtectionFlags {
-    }
-
-    /* synthetic */ PermissionInfo(Parcel parcel, PermissionInfoIA permissionInfoIA) {
-        this(parcel);
     }
 
     public static int fixProtectionLevel(int level) {
@@ -240,6 +235,41 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
         return protLevel.toString();
     }
 
+    public static String flagsToString(int flags) {
+        StringBuilder sb = new StringBuilder(NavigationBarInflaterView.SIZE_MOD_START);
+        while (flags != 0) {
+            int flag = 1 << Integer.numberOfTrailingZeros(flags);
+            flags &= ~flag;
+            switch (flag) {
+                case 1:
+                    sb.append("costsMoney");
+                    break;
+                case 2:
+                    sb.append(Environment.MEDIA_REMOVED);
+                    break;
+                case 4:
+                    sb.append("hardRestricted");
+                    break;
+                case 8:
+                    sb.append("softRestricted");
+                    break;
+                case 16:
+                    sb.append("immutablyRestricted");
+                    break;
+                case 1073741824:
+                    sb.append("installed");
+                    break;
+                default:
+                    sb.append(flag);
+                    break;
+            }
+            if (flags != 0) {
+                sb.append(NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER);
+            }
+        }
+        return sb.append(NavigationBarInflaterView.SIZE_MOD_END).toString();
+    }
+
     public PermissionInfo(String backgroundPermission) {
         this.knownCerts = Collections.emptySet();
         this.backgroundPermission = backgroundPermission;
@@ -267,9 +297,8 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
 
     public CharSequence loadDescription(PackageManager pm) {
         CharSequence label;
-        CharSequence charSequence = this.nonLocalizedDescription;
-        if (charSequence != null) {
-            return charSequence;
+        if (this.nonLocalizedDescription != null) {
+            return this.nonLocalizedDescription;
         }
         if (this.descriptionRes == 0 || (label = pm.getText(this.packageName, this.descriptionRes, null)) == null) {
             return null;
@@ -312,9 +341,8 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
         if (this.nonLocalizedLabel != null) {
             size += this.nonLocalizedLabel.length();
         }
-        CharSequence charSequence = this.nonLocalizedDescription;
-        if (charSequence != null) {
-            return size + charSequence.length();
+        if (this.nonLocalizedDescription != null) {
+            return size + this.nonLocalizedDescription.length();
         }
         return size;
     }
@@ -337,23 +365,6 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
 
     public boolean isRuntime() {
         return getProtection() == 1;
-    }
-
-    /* renamed from: android.content.pm.PermissionInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PermissionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PermissionInfo createFromParcel(Parcel source) {
-            return new PermissionInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PermissionInfo[] newArray(int size) {
-            return new PermissionInfo[size];
-        }
     }
 
     private PermissionInfo(Parcel source) {

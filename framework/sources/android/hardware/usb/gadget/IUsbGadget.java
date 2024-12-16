@@ -25,7 +25,6 @@ public interface IUsbGadget extends IInterface {
 
     void setCurrentUsbFunctions(long j, IUsbGadgetCallback iUsbGadgetCallback, long j2, long j3) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IUsbGadget {
         @Override // android.hardware.usb.gadget.IUsbGadget
         public void setCurrentUsbFunctions(long functions, IUsbGadgetCallback callback, long timeoutMs, long transactionId) throws RemoteException {
@@ -59,7 +58,6 @@ public interface IUsbGadget extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IUsbGadget {
         static final int TRANSACTION_getCurrentUsbFunctions = 2;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -95,53 +93,52 @@ public interface IUsbGadget extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    long _arg0 = data.readLong();
+                    IUsbGadgetCallback _arg1 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg2 = data.readLong();
+                    long _arg3 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setCurrentUsbFunctions(_arg0, _arg1, _arg2, _arg3);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    IUsbGadgetCallback _arg02 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg12 = data.readLong();
+                    data.enforceNoDataAvail();
+                    getCurrentUsbFunctions(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    IUsbGadgetCallback _arg03 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg13 = data.readLong();
+                    data.enforceNoDataAvail();
+                    getUsbSpeed(_arg03, _arg13);
+                    return true;
+                case 4:
+                    IUsbGadgetCallback _arg04 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg14 = data.readLong();
+                    data.enforceNoDataAvail();
+                    reset(_arg04, _arg14);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            IUsbGadgetCallback _arg1 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg2 = data.readLong();
-                            long _arg3 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setCurrentUsbFunctions(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            IUsbGadgetCallback _arg02 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg12 = data.readLong();
-                            data.enforceNoDataAvail();
-                            getCurrentUsbFunctions(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            IUsbGadgetCallback _arg03 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg13 = data.readLong();
-                            data.enforceNoDataAvail();
-                            getUsbSpeed(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            IUsbGadgetCallback _arg04 = IUsbGadgetCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg14 = data.readLong();
-                            data.enforceNoDataAvail();
-                            reset(_arg04, _arg14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IUsbGadget {
             private IBinder mRemote;
             private int mCachedVersion = -1;

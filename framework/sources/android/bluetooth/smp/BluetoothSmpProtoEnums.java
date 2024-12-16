@@ -36,6 +36,7 @@ public final class BluetoothSmpProtoEnums {
     public static final int CMD_UNKNOWN = 0;
     public static final int PAIRING_FAIL_REASON_AUTH_REQ = 3;
     public static final int PAIRING_FAIL_REASON_BUSY = 275;
+    public static final int PAIRING_FAIL_REASON_CANCELLED = 27;
     public static final int PAIRING_FAIL_REASON_CLASSIC_PAIRING_IN_PROGR = 13;
     public static final int PAIRING_FAIL_REASON_CONFIRM_VALUE = 4;
     public static final int PAIRING_FAIL_REASON_CONNECTION_TIMEOUT = 281;

@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ParcelableColorSpace implements Parcelable {
     public static final Parcelable.Creator<ParcelableColorSpace> CREATOR = new Parcelable.Creator<ParcelableColorSpace>() { // from class: android.graphics.ParcelableColorSpace.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableColorSpace createFromParcel(Parcel in) {
             int id = in.readInt();
@@ -30,6 +28,7 @@ public final class ParcelableColorSpace implements Parcelable {
             return new ParcelableColorSpace(ColorSpace.get(id));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableColorSpace[] newArray(int size) {
             return new ParcelableColorSpace[size];
@@ -50,11 +49,11 @@ public final class ParcelableColorSpace implements Parcelable {
 
     public ParcelableColorSpace(ColorSpace colorSpace) {
         this.mColorSpace = colorSpace;
-        if (colorSpace.getId() == -1) {
-            if (!(colorSpace instanceof ColorSpace.Rgb)) {
+        if (this.mColorSpace.getId() == -1) {
+            if (!(this.mColorSpace instanceof ColorSpace.Rgb)) {
                 throw new IllegalArgumentException("Unable to parcel unknown ColorSpaces that are not ColorSpace.Rgb");
             }
-            ColorSpace.Rgb rgb = (ColorSpace.Rgb) colorSpace;
+            ColorSpace.Rgb rgb = (ColorSpace.Rgb) this.mColorSpace;
             if (rgb.getTransferParameters() == null) {
                 throw new IllegalArgumentException("ColorSpace must use an ICC parametric transfer function to be parcelable");
             }
@@ -87,38 +86,6 @@ public final class ParcelableColorSpace implements Parcelable {
             dest.writeDouble(transferParameters.e);
             dest.writeDouble(transferParameters.f);
             dest.writeDouble(transferParameters.g);
-        }
-    }
-
-    /* renamed from: android.graphics.ParcelableColorSpace$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ParcelableColorSpace> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableColorSpace createFromParcel(Parcel in) {
-            int id = in.readInt();
-            if (id == -1) {
-                String name = in.readString();
-                float[] primaries = in.createFloatArray();
-                float[] whitePoint = in.createFloatArray();
-                double a = in.readDouble();
-                double b = in.readDouble();
-                double c = in.readDouble();
-                double d = in.readDouble();
-                double e = in.readDouble();
-                double f = in.readDouble();
-                double g = in.readDouble();
-                ColorSpace.Rgb.TransferParameters function = new ColorSpace.Rgb.TransferParameters(a, b, c, d, e, f, g);
-                return new ParcelableColorSpace(new ColorSpace.Rgb(name, primaries, whitePoint, function));
-            }
-            return new ParcelableColorSpace(ColorSpace.get(id));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableColorSpace[] newArray(int size) {
-            return new ParcelableColorSpace[size];
         }
     }
 

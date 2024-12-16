@@ -16,7 +16,7 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 /* loaded from: classes.dex */
-public abstract class BlobBackupHelper implements BackupHelper {
+public abstract class BlobBackupHelper extends BackupHelperWithLogger {
     private static final boolean DEBUG = false;
     private static final String TAG = "BlobBackupHelper";
     private final int mCurrentBlobVersion;
@@ -147,7 +147,7 @@ public abstract class BlobBackupHelper implements BackupHelper {
         }
     }
 
-    @Override // android.app.backup.BackupHelper
+    @Override // android.app.backup.BackupHelperWithLogger, android.app.backup.BackupHelper
     public void performBackup(ParcelFileDescriptor oldStateFd, BackupDataOutput data, ParcelFileDescriptor newStateFd) {
         ArrayMap<String, Long> oldState = readOldState(oldStateFd);
         ArrayMap<String, Long> newState = new ArrayMap<>();
@@ -176,18 +176,13 @@ public abstract class BlobBackupHelper implements BackupHelper {
         }
     }
 
-    @Override // android.app.backup.BackupHelper
+    @Override // android.app.backup.BackupHelperWithLogger, android.app.backup.BackupHelper
     public void restoreEntity(BackupDataInputStream data) {
         String key = data.getKey();
         int which = 0;
-        while (true) {
+        while (which < this.mKeys.length && !key.equals(this.mKeys[which])) {
             try {
-                String[] strArr = this.mKeys;
-                if (which >= strArr.length || key.equals(strArr[which])) {
-                    break;
-                } else {
-                    which++;
-                }
+                which++;
             } catch (Exception e) {
                 Log.e(TAG, "Exception restoring entity " + key + " : " + e.getMessage());
                 return;
@@ -203,7 +198,7 @@ public abstract class BlobBackupHelper implements BackupHelper {
         applyRestoredPayload(key, payload);
     }
 
-    @Override // android.app.backup.BackupHelper
+    @Override // android.app.backup.BackupHelperWithLogger, android.app.backup.BackupHelper
     public void writeNewStateDescription(ParcelFileDescriptor newState) {
         writeBackupState(null, newState);
     }

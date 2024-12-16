@@ -11,7 +11,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class Modules {
     private List<Module> module;
 
-    /* loaded from: classes.dex */
     public static class Module {
         private AttachedDevices attachedDevices;
         private String defaultOutputDevice;
@@ -179,7 +178,7 @@ public class Modules {
         return this.module;
     }
 
-    public static Modules read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static Modules read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Modules _instance = new Modules();
         _parser.getDepth();

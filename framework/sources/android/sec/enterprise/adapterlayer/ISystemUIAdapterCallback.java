@@ -69,7 +69,6 @@ public interface ISystemUIAdapterCallback extends IInterface {
 
     void setWifiTetheringAllowed(boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISystemUIAdapterCallback {
         @Override // android.sec.enterprise.adapterlayer.ISystemUIAdapterCallback
         public void setStatusBarHidden(boolean hidden) throws RemoteException {
@@ -193,7 +192,6 @@ public interface ISystemUIAdapterCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISystemUIAdapterCallback {
         static final int TRANSACTION_excludeExternalStorageForFailedPasswordsWipe = 7;
         static final int TRANSACTION_setAdminLock = 29;
@@ -320,169 +318,165 @@ public interface ISystemUIAdapterCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISystemUIAdapterCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISystemUIAdapterCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISystemUIAdapterCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setStatusBarHidden(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNavigationBarHidden(_arg02);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setKioskModeEnabled(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    setMaximumFailedPasswordsForDisable(_arg04, _arg1);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMaximumFailedPasswordsForProfileDisable(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPwdChangeRequested(_arg06);
+                    return true;
+                case 7:
+                    boolean _arg07 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    excludeExternalStorageForFailedPasswordsWipe(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPasswordLockDelay(_arg08);
+                    return true;
+                case 9:
+                    boolean _arg09 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMultifactorAuthEnabled(_arg09);
+                    return true;
+                case 10:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setPasswordVisibilityEnabled(_arg010);
+                    return true;
+                case 11:
+                    boolean _arg011 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSettingsChangeAllowed(_arg011);
+                    return true;
+                case 12:
+                    boolean _arg012 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setStatusBarExpansionAllowed(_arg012);
+                    return true;
+                case 13:
+                    boolean _arg013 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAirplaneModeAllowed(_arg013);
+                    return true;
+                case 14:
+                    boolean _arg014 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCellularDataAllowed(_arg014);
+                    return true;
+                case 15:
+                    boolean _arg015 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiTetheringAllowed(_arg015);
+                    return true;
+                case 16:
+                    boolean _arg016 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCameraAllowed(_arg016);
+                    return true;
+                case 17:
+                    boolean _arg017 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setFaceRecognitionEvenCameraBlockedAllowed(_arg017);
+                    return true;
+                case 18:
+                    boolean _arg018 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBluetoothAllowed(_arg018);
+                    return true;
+                case 19:
+                    boolean _arg019 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNFCStateChangeAllowed(_arg019);
+                    return true;
+                case 20:
+                    boolean _arg020 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setRoamingAllowed(_arg020);
+                    return true;
+                case 21:
+                    boolean _arg021 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiStateChangeAllowed(_arg021);
+                    return true;
+                case 22:
+                    boolean _arg022 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiAllowed(_arg022);
+                    return true;
+                case 23:
+                    String _arg023 = data.readString();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLocationProviderAllowed(_arg023, _arg12);
+                    return true;
+                case 24:
+                    boolean _arg024 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setGPSStateChangeAllowed(_arg024);
+                    return true;
+                case 25:
+                    String[] _arg025 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    setLockedIccIds(_arg025);
+                    return true;
+                case 26:
+                    boolean _arg026 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLockscreenInvisibleOverlay(_arg026);
+                    return true;
+                case 27:
+                    boolean _arg027 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLockscreenWallpaper(_arg027);
+                    return true;
+                case 28:
+                    boolean _arg028 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setApplicationNameControlEnabled(_arg028);
+                    return true;
+                case 29:
+                    boolean _arg029 = data.readBoolean();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAdminLock(_arg029, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setStatusBarHidden(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setNavigationBarHidden(_arg02);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setKioskModeEnabled(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            setMaximumFailedPasswordsForDisable(_arg04, _arg1);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMaximumFailedPasswordsForProfileDisable(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPwdChangeRequested(_arg06);
-                            return true;
-                        case 7:
-                            boolean _arg07 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            excludeExternalStorageForFailedPasswordsWipe(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPasswordLockDelay(_arg08);
-                            return true;
-                        case 9:
-                            boolean _arg09 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMultifactorAuthEnabled(_arg09);
-                            return true;
-                        case 10:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setPasswordVisibilityEnabled(_arg010);
-                            return true;
-                        case 11:
-                            boolean _arg011 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSettingsChangeAllowed(_arg011);
-                            return true;
-                        case 12:
-                            boolean _arg012 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setStatusBarExpansionAllowed(_arg012);
-                            return true;
-                        case 13:
-                            boolean _arg013 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAirplaneModeAllowed(_arg013);
-                            return true;
-                        case 14:
-                            boolean _arg014 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCellularDataAllowed(_arg014);
-                            return true;
-                        case 15:
-                            boolean _arg015 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiTetheringAllowed(_arg015);
-                            return true;
-                        case 16:
-                            boolean _arg016 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCameraAllowed(_arg016);
-                            return true;
-                        case 17:
-                            boolean _arg017 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setFaceRecognitionEvenCameraBlockedAllowed(_arg017);
-                            return true;
-                        case 18:
-                            boolean _arg018 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBluetoothAllowed(_arg018);
-                            return true;
-                        case 19:
-                            boolean _arg019 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setNFCStateChangeAllowed(_arg019);
-                            return true;
-                        case 20:
-                            boolean _arg020 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRoamingAllowed(_arg020);
-                            return true;
-                        case 21:
-                            boolean _arg021 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiStateChangeAllowed(_arg021);
-                            return true;
-                        case 22:
-                            boolean _arg022 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiAllowed(_arg022);
-                            return true;
-                        case 23:
-                            String _arg023 = data.readString();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLocationProviderAllowed(_arg023, _arg12);
-                            return true;
-                        case 24:
-                            boolean _arg024 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setGPSStateChangeAllowed(_arg024);
-                            return true;
-                        case 25:
-                            String[] _arg025 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            setLockedIccIds(_arg025);
-                            return true;
-                        case 26:
-                            boolean _arg026 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLockscreenInvisibleOverlay(_arg026);
-                            return true;
-                        case 27:
-                            boolean _arg027 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLockscreenWallpaper(_arg027);
-                            return true;
-                        case 28:
-                            boolean _arg028 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setApplicationNameControlEnabled(_arg028);
-                            return true;
-                        case 29:
-                            boolean _arg029 = data.readBoolean();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAdminLock(_arg029, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISystemUIAdapterCallback {
+        private static class Proxy implements ISystemUIAdapterCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextWirelessChargingDetection extends SContextEventContext {
     public static final Parcelable.Creator<SContextWirelessChargingDetection> CREATOR = new Parcelable.Creator<SContextWirelessChargingDetection>() { // from class: android.hardware.scontext.SContextWirelessChargingDetection.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextWirelessChargingDetection createFromParcel(Parcel in) {
             return new SContextWirelessChargingDetection(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextWirelessChargingDetection[] newArray(int size) {
             return new SContextWirelessChargingDetection[size];
@@ -23,7 +22,7 @@ public class SContextWirelessChargingDetection extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextWirelessChargingDetection() {
+    SContextWirelessChargingDetection() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextWirelessChargingDetection extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextWirelessChargingDetection$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextWirelessChargingDetection> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextWirelessChargingDetection createFromParcel(Parcel in) {
-            return new SContextWirelessChargingDetection(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextWirelessChargingDetection[] newArray(int size) {
-            return new SContextWirelessChargingDetection[size];
-        }
     }
 }

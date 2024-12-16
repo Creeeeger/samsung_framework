@@ -47,7 +47,6 @@ public interface IBinder {
         throw new IllegalStateException("Method is not implemented");
     }
 
-    /* loaded from: classes3.dex */
     public interface DeathRecipient {
         void binderDied();
 

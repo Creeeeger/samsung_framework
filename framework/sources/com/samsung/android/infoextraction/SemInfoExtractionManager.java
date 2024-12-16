@@ -17,7 +17,7 @@ import com.samsung.android.feature.SemFloatingFeature;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemInfoExtractionManager {
     private static final String EXTRACTED_INFO_DATA = "SemExtractedInfo";
     private static final String EXTRACTION_DATA_TYPE = "data_type";
@@ -37,7 +37,6 @@ public class SemInfoExtractionManager {
     public InfoExtractionListener mInfoExtractionListener = null;
     public OnExtractionCompletedListener mOnExtractionCompletedListener = null;
 
-    /* loaded from: classes5.dex */
     public enum ExtractedInfoType {
         UNKNOWN,
         DATE_TIME,
@@ -50,17 +49,14 @@ public class SemInfoExtractionManager {
         URL
     }
 
-    /* loaded from: classes5.dex */
     public interface InfoExtractionListener {
         void onCompleted(int i, List<SemExtractedInfo> list);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnExtractionCompletedListener {
         void onExtractionCompleted(long j, List<SemExtractedInfo> list);
     }
 
-    /* loaded from: classes5.dex */
     private static class UIBundleKey {
         private static final String CONTENTS = "contents";
         private static final String DISMISS = "dismiss";
@@ -78,7 +74,7 @@ public class SemInfoExtractionManager {
             throw new IllegalStateException("Could not get the SemInfoExtraction service. -> context is NULL");
         }
         this.mContext = context;
-        if (isPenFeatureModel(context)) {
+        if (isPenFeatureModel(this.mContext)) {
             Log.d(TAG, "SemInfoExtractionManager call by : " + this.mContext.getPackageName());
         } else {
             Log.d(TAG, "SemInfoExtraction only use for Pen Feature models.");
@@ -205,18 +201,10 @@ public class SemInfoExtractionManager {
         return ret;
     }
 
-    private void startExtraction(int dataType, Object reqObject) {
+    private void startExtraction(final int dataType, final Object reqObject) {
         if (this.mConnection == null) {
             Log.d(TAG, "mConnection is NULL");
             this.mConnection = new ServiceConnection() { // from class: com.samsung.android.infoextraction.SemInfoExtractionManager.1
-                final /* synthetic */ int val$dataType;
-                final /* synthetic */ Object val$reqObject;
-
-                AnonymousClass1(int dataType2, Object reqObject2) {
-                    dataType = dataType2;
-                    reqObject = reqObject2;
-                }
-
                 @Override // android.content.ServiceConnection
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     SemInfoExtractionManager.this.mInfoExtractionService = service;
@@ -238,33 +226,11 @@ public class SemInfoExtractionManager {
             bindInfoExtractionService();
         } else {
             Log.d(TAG, "mInfoExtractionService != null");
-            requestInfoExtraction(this.mInfoExtractionService, dataType2, reqObject2);
+            requestInfoExtraction(this.mInfoExtractionService, dataType, reqObject);
         }
     }
 
-    /* renamed from: com.samsung.android.infoextraction.SemInfoExtractionManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ServiceConnection {
-        final /* synthetic */ int val$dataType;
-        final /* synthetic */ Object val$reqObject;
-
-        AnonymousClass1(int dataType2, Object reqObject2) {
-            dataType = dataType2;
-            reqObject = reqObject2;
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            SemInfoExtractionManager.this.mInfoExtractionService = service;
-            SemInfoExtractionManager.this.requestInfoExtraction(service, dataType, reqObject);
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName name) {
-            SemInfoExtractionManager.this.mInfoExtractionService = null;
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void requestInfoExtraction(IBinder InfoExtractionService, int dataType, Object reqObject) {
         Log.d(TAG, "requestInfoExtraction data type = " + dataType);
         Bundle bundle = new Bundle();
@@ -300,8 +266,7 @@ public class SemInfoExtractionManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class IncomingHandler extends Handler {
+    class IncomingHandler extends Handler {
         IncomingHandler() {
         }
 

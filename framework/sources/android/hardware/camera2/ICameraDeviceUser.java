@@ -14,7 +14,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.view.Surface;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICameraDeviceUser extends IInterface {
     public static final int AUDIO_RESTRICTION_NONE = 0;
     public static final int AUDIO_RESTRICTION_VIBRATION = 1;
@@ -78,7 +78,6 @@ public interface ICameraDeviceUser extends IInterface {
 
     void waitUntilIdle() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraDeviceUser {
         @Override // android.hardware.camera2.ICameraDeviceUser
         public void disconnect() throws RemoteException {
@@ -195,7 +194,6 @@ public interface ICameraDeviceUser extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraDeviceUser {
         public static final String DESCRIPTOR = "android.hardware.camera2.ICameraDeviceUser";
         static final int TRANSACTION_beginConfigure = 5;
@@ -308,175 +306,171 @@ public interface ICameraDeviceUser extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    disconnect();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    CaptureRequest _arg0 = (CaptureRequest) data.readTypedObject(CaptureRequest.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    SubmitInfo _result = submitRequest(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 3:
+                    CaptureRequest[] _arg02 = (CaptureRequest[]) data.createTypedArray(CaptureRequest.CREATOR);
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    SubmitInfo _result2 = submitRequestList(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long _result3 = cancelRequest(_arg03);
+                    reply.writeNoException();
+                    reply.writeLong(_result3);
+                    return true;
+                case 5:
+                    beginConfigure();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg04 = data.readInt();
+                    CameraMetadataNative _arg13 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    int[] _result4 = endConfigure(_arg04, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result4);
+                    return true;
+                case 7:
+                    SessionConfiguration _arg05 = (SessionConfiguration) data.readTypedObject(SessionConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isSessionConfigurationSupported(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteStream(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    OutputConfiguration _arg07 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result6 = createStream(_arg07);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 10:
+                    int _arg08 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg22 = data.readInt();
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result7 = createInputStream(_arg08, _arg14, _arg22, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 11:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    setParameters(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    Surface _result8 = getInputSurface();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 13:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CameraMetadataNative _result9 = createDefaultRequest(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 14:
+                    CameraMetadataNative _result10 = getCameraInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 15:
+                    waitUntilIdle();
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    long _result11 = flush();
+                    reply.writeNoException();
+                    reply.writeLong(_result11);
+                    return true;
+                case 17:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    prepare(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    tearDown(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int _arg013 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    prepare2(_arg013, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    int _arg014 = data.readInt();
+                    OutputConfiguration _arg16 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateOutputConfiguration(_arg014, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    int _arg015 = data.readInt();
+                    OutputConfiguration _arg17 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    finalizeOutputConfigurations(_arg015, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCameraAudioRestriction(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    int _result12 = getGlobalAudioRestriction();
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 24:
+                    ICameraDeviceCallbacks _arg017 = ICameraDeviceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    int[] _arg18 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    ICameraOfflineSession _result13 = switchToOffline(_arg017, _arg18);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            disconnect();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            CaptureRequest _arg0 = (CaptureRequest) data.readTypedObject(CaptureRequest.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            SubmitInfo _result = submitRequest(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 3:
-                            CaptureRequest[] _arg02 = (CaptureRequest[]) data.createTypedArray(CaptureRequest.CREATOR);
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            SubmitInfo _result2 = submitRequestList(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            long _result3 = cancelRequest(_arg03);
-                            reply.writeNoException();
-                            reply.writeLong(_result3);
-                            return true;
-                        case 5:
-                            beginConfigure();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg04 = data.readInt();
-                            CameraMetadataNative _arg13 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            int[] _result4 = endConfigure(_arg04, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result4);
-                            return true;
-                        case 7:
-                            SessionConfiguration _arg05 = (SessionConfiguration) data.readTypedObject(SessionConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isSessionConfigurationSupported(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteStream(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            OutputConfiguration _arg07 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result6 = createStream(_arg07);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 10:
-                            int _arg08 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg22 = data.readInt();
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result7 = createInputStream(_arg08, _arg14, _arg22, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 11:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            setParameters(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            Surface _result8 = getInputSurface();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 13:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CameraMetadataNative _result9 = createDefaultRequest(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result9, 1);
-                            return true;
-                        case 14:
-                            CameraMetadataNative _result10 = getCameraInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 15:
-                            waitUntilIdle();
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            long _result11 = flush();
-                            reply.writeNoException();
-                            reply.writeLong(_result11);
-                            return true;
-                        case 17:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            prepare(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            tearDown(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int _arg013 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            prepare2(_arg013, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            int _arg014 = data.readInt();
-                            OutputConfiguration _arg16 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateOutputConfiguration(_arg014, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            int _arg015 = data.readInt();
-                            OutputConfiguration _arg17 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            finalizeOutputConfigurations(_arg015, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCameraAudioRestriction(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            int _result12 = getGlobalAudioRestriction();
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 24:
-                            ICameraDeviceCallbacks _arg017 = ICameraDeviceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            int[] _arg18 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            ICameraOfflineSession _result13 = switchToOffline(_arg017, _arg18);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraDeviceUser {
+        private static class Proxy implements ICameraDeviceUser {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

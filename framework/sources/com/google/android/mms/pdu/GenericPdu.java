@@ -11,12 +11,12 @@ public class GenericPdu {
         this.mPduHeaders = new PduHeaders();
     }
 
-    public GenericPdu(PduHeaders headers) {
+    GenericPdu(PduHeaders headers) {
         this.mPduHeaders = null;
         this.mPduHeaders = headers;
     }
 
-    public PduHeaders getPduHeaders() {
+    PduHeaders getPduHeaders() {
         return this.mPduHeaders;
     }
 

@@ -6,7 +6,7 @@ import android.os.Parcel;
 import android.text.Layout;
 import android.text.ParcelableSpan;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class QuoteSpan implements LeadingMarginSpan, ParcelableSpan {
     public static final int STANDARD_COLOR = -16776961;
     public static final int STANDARD_GAP_WIDTH_PX = 2;

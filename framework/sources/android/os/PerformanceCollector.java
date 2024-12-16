@@ -41,7 +41,6 @@ public class PerformanceCollector {
     private long mSnapshotCpuTime;
     private long mSnapshotExecTime;
 
-    /* loaded from: classes3.dex */
     public interface PerformanceResultsWriter {
         void writeBeginSnapshot(String str);
 
@@ -70,30 +69,26 @@ public class PerformanceCollector {
     }
 
     public void beginSnapshot(String label) {
-        PerformanceResultsWriter performanceResultsWriter = this.mPerfWriter;
-        if (performanceResultsWriter != null) {
-            performanceResultsWriter.writeBeginSnapshot(label);
+        if (this.mPerfWriter != null) {
+            this.mPerfWriter.writeBeginSnapshot(label);
         }
         startPerformanceSnapshot();
     }
 
     public Bundle endSnapshot() {
         endPerformanceSnapshot();
-        PerformanceResultsWriter performanceResultsWriter = this.mPerfWriter;
-        if (performanceResultsWriter != null) {
-            performanceResultsWriter.writeEndSnapshot(this.mPerfSnapshot);
+        if (this.mPerfWriter != null) {
+            this.mPerfWriter.writeEndSnapshot(this.mPerfSnapshot);
         }
         return this.mPerfSnapshot;
     }
 
     public void startTiming(String label) {
-        PerformanceResultsWriter performanceResultsWriter = this.mPerfWriter;
-        if (performanceResultsWriter != null) {
-            performanceResultsWriter.writeStartTiming(label);
+        if (this.mPerfWriter != null) {
+            this.mPerfWriter.writeStartTiming(label);
         }
-        Bundle bundle = new Bundle();
-        this.mPerfMeasurement = bundle;
-        bundle.putParcelableArrayList(METRIC_KEY_ITERATIONS, new ArrayList<>());
+        this.mPerfMeasurement = new Bundle();
+        this.mPerfMeasurement.putParcelableArrayList(METRIC_KEY_ITERATIONS, new ArrayList<>());
         this.mExecTime = SystemClock.uptimeMillis();
         this.mCpuTime = Process.getElapsedCpuTime();
     }
@@ -113,31 +108,27 @@ public class PerformanceCollector {
 
     public Bundle stopTiming(String label) {
         addIteration(label);
-        PerformanceResultsWriter performanceResultsWriter = this.mPerfWriter;
-        if (performanceResultsWriter != null) {
-            performanceResultsWriter.writeStopTiming(this.mPerfMeasurement);
+        if (this.mPerfWriter != null) {
+            this.mPerfWriter.writeStopTiming(this.mPerfMeasurement);
         }
         return this.mPerfMeasurement;
     }
 
     public void addMeasurement(String label, long value) {
-        PerformanceResultsWriter performanceResultsWriter = this.mPerfWriter;
-        if (performanceResultsWriter != null) {
-            performanceResultsWriter.writeMeasurement(label, value);
+        if (this.mPerfWriter != null) {
+            this.mPerfWriter.writeMeasurement(label, value);
         }
     }
 
     public void addMeasurement(String label, float value) {
-        PerformanceResultsWriter performanceResultsWriter = this.mPerfWriter;
-        if (performanceResultsWriter != null) {
-            performanceResultsWriter.writeMeasurement(label, value);
+        if (this.mPerfWriter != null) {
+            this.mPerfWriter.writeMeasurement(label, value);
         }
     }
 
     public void addMeasurement(String label, String value) {
-        PerformanceResultsWriter performanceResultsWriter = this.mPerfWriter;
-        if (performanceResultsWriter != null) {
-            performanceResultsWriter.writeMeasurement(label, value);
+        if (this.mPerfWriter != null) {
+            this.mPerfWriter.writeMeasurement(label, value);
         }
     }
 

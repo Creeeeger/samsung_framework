@@ -1,11 +1,7 @@
 package android.widget;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.TypedArray;
-import android.os.Process;
 import android.util.AttributeSet;
 import android.view.RemotableViewMethod;
 import android.view.inspector.InspectionCompanion;
@@ -23,13 +19,10 @@ public class ViewFlipper extends ViewAnimator {
     private boolean mAutoStart;
     private int mFlipInterval;
     private final Runnable mFlipRunnable;
-    private final BroadcastReceiver mReceiver;
     private boolean mRunning;
     private boolean mStarted;
-    private boolean mUserPresent;
     private boolean mVisible;
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<ViewFlipper> {
         private int mAutoStartId;
         private int mFlipIntervalId;
@@ -62,33 +55,12 @@ public class ViewFlipper extends ViewAnimator {
         this.mRunning = false;
         this.mStarted = false;
         this.mVisible = false;
-        this.mUserPresent = true;
-        this.mReceiver = new BroadcastReceiver() { // from class: android.widget.ViewFlipper.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                    ViewFlipper.this.mUserPresent = false;
-                    ViewFlipper.this.updateRunning();
-                } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
-                    ViewFlipper.this.mUserPresent = true;
-                    ViewFlipper.this.updateRunning(false);
-                }
-            }
-        };
-        this.mFlipRunnable = new Runnable() { // from class: android.widget.ViewFlipper.2
-            AnonymousClass2() {
-            }
-
+        this.mFlipRunnable = new Runnable() { // from class: android.widget.ViewFlipper.1
             @Override // java.lang.Runnable
             public void run() {
                 if (ViewFlipper.this.mRunning) {
                     ViewFlipper.this.showNext();
-                    ViewFlipper viewFlipper = ViewFlipper.this;
-                    viewFlipper.postDelayed(viewFlipper.mFlipRunnable, ViewFlipper.this.mFlipInterval);
+                    ViewFlipper.this.postDelayed(ViewFlipper.this.mFlipRunnable, ViewFlipper.this.mFlipInterval);
                 }
             }
         };
@@ -101,33 +73,12 @@ public class ViewFlipper extends ViewAnimator {
         this.mRunning = false;
         this.mStarted = false;
         this.mVisible = false;
-        this.mUserPresent = true;
-        this.mReceiver = new BroadcastReceiver() { // from class: android.widget.ViewFlipper.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                    ViewFlipper.this.mUserPresent = false;
-                    ViewFlipper.this.updateRunning();
-                } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
-                    ViewFlipper.this.mUserPresent = true;
-                    ViewFlipper.this.updateRunning(false);
-                }
-            }
-        };
-        this.mFlipRunnable = new Runnable() { // from class: android.widget.ViewFlipper.2
-            AnonymousClass2() {
-            }
-
+        this.mFlipRunnable = new Runnable() { // from class: android.widget.ViewFlipper.1
             @Override // java.lang.Runnable
             public void run() {
                 if (ViewFlipper.this.mRunning) {
                     ViewFlipper.this.showNext();
-                    ViewFlipper viewFlipper = ViewFlipper.this;
-                    viewFlipper.postDelayed(viewFlipper.mFlipRunnable, ViewFlipper.this.mFlipInterval);
+                    ViewFlipper.this.postDelayed(ViewFlipper.this.mFlipRunnable, ViewFlipper.this.mFlipInterval);
                 }
             }
         };
@@ -137,47 +88,23 @@ public class ViewFlipper extends ViewAnimator {
         a.recycle();
     }
 
-    /* renamed from: android.widget.ViewFlipper$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends BroadcastReceiver {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context2, Intent intent) {
-            String action = intent.getAction();
-            if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                ViewFlipper.this.mUserPresent = false;
-                ViewFlipper.this.updateRunning();
-            } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
-                ViewFlipper.this.mUserPresent = true;
-                ViewFlipper.this.updateRunning(false);
-            }
-        }
-    }
-
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
-        getContext().registerReceiverAsUser(this.mReceiver, Process.myUserHandle(), filter, null, getHandler());
         if (this.mAutoStart) {
             startFlipping();
         }
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         this.mVisible = false;
-        getContext().unregisterReceiver(this.mReceiver);
         updateRunning();
     }
 
     @Override // android.view.View
-    public void onWindowVisibilityChanged(int visibility) {
+    protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         this.mVisible = visibility == 0;
         updateRunning(false);
@@ -207,12 +134,12 @@ public class ViewFlipper extends ViewAnimator {
         return ViewFlipper.class.getName();
     }
 
-    public void updateRunning() {
+    private void updateRunning() {
         updateRunning(true);
     }
 
-    public void updateRunning(boolean flipNow) {
-        boolean running = this.mVisible && this.mStarted && this.mUserPresent;
+    private void updateRunning(boolean flipNow) {
+        boolean running = this.mVisible && this.mStarted;
         if (running != this.mRunning) {
             if (running) {
                 showOnly(this.mWhichChild, flipNow);
@@ -234,21 +161,5 @@ public class ViewFlipper extends ViewAnimator {
 
     public boolean isAutoStart() {
         return this.mAutoStart;
-    }
-
-    /* renamed from: android.widget.ViewFlipper$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (ViewFlipper.this.mRunning) {
-                ViewFlipper.this.showNext();
-                ViewFlipper viewFlipper = ViewFlipper.this;
-                viewFlipper.postDelayed(viewFlipper.mFlipRunnable, ViewFlipper.this.mFlipInterval);
-            }
-        }
     }
 }

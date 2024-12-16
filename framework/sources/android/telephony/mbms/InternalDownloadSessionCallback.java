@@ -5,7 +5,7 @@ import android.telephony.mbms.IMbmsDownloadSessionCallback;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class InternalDownloadSessionCallback extends IMbmsDownloadSessionCallback.Stub {
     private final MbmsDownloadSessionCallback mAppCallback;
     private final Executor mExecutor;
@@ -17,21 +17,13 @@ public class InternalDownloadSessionCallback extends IMbmsDownloadSessionCallbac
     }
 
     @Override // android.telephony.mbms.IMbmsDownloadSessionCallback
-    public void onError(int errorCode, String message) {
+    public void onError(final int errorCode, final String message) {
         if (this.mIsStopped) {
             return;
         }
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalDownloadSessionCallback.1
-                final /* synthetic */ int val$errorCode;
-                final /* synthetic */ String val$message;
-
-                AnonymousClass1(int errorCode2, String message2) {
-                    errorCode = errorCode2;
-                    message = message2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalDownloadSessionCallback.this.mAppCallback.onError(errorCode, message);
@@ -42,38 +34,14 @@ public class InternalDownloadSessionCallback extends IMbmsDownloadSessionCallbac
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.mbms.InternalDownloadSessionCallback$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ int val$errorCode;
-        final /* synthetic */ String val$message;
-
-        AnonymousClass1(int errorCode2, String message2) {
-            errorCode = errorCode2;
-            message = message2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalDownloadSessionCallback.this.mAppCallback.onError(errorCode, message);
-        }
-    }
-
     @Override // android.telephony.mbms.IMbmsDownloadSessionCallback
-    public void onFileServicesUpdated(List<FileServiceInfo> services) {
+    public void onFileServicesUpdated(final List<FileServiceInfo> services) {
         if (this.mIsStopped) {
             return;
         }
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalDownloadSessionCallback.2
-                final /* synthetic */ List val$services;
-
-                AnonymousClass2(List services2) {
-                    services = services2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalDownloadSessionCallback.this.mAppCallback.onFileServicesUpdated(services);
@@ -81,21 +49,6 @@ public class InternalDownloadSessionCallback extends IMbmsDownloadSessionCallbac
             });
         } finally {
             Binder.restoreCallingIdentity(token);
-        }
-    }
-
-    /* renamed from: android.telephony.mbms.InternalDownloadSessionCallback$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements Runnable {
-        final /* synthetic */ List val$services;
-
-        AnonymousClass2(List services2) {
-            services = services2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalDownloadSessionCallback.this.mAppCallback.onFileServicesUpdated(services);
         }
     }
 
@@ -107,9 +60,6 @@ public class InternalDownloadSessionCallback extends IMbmsDownloadSessionCallbac
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalDownloadSessionCallback.3
-                AnonymousClass3() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalDownloadSessionCallback.this.mAppCallback.onMiddlewareReady();
@@ -117,18 +67,6 @@ public class InternalDownloadSessionCallback extends IMbmsDownloadSessionCallbac
             });
         } finally {
             Binder.restoreCallingIdentity(token);
-        }
-    }
-
-    /* renamed from: android.telephony.mbms.InternalDownloadSessionCallback$3 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalDownloadSessionCallback.this.mAppCallback.onMiddlewareReady();
         }
     }
 

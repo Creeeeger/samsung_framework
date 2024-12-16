@@ -46,7 +46,6 @@ public class CocktailHost {
     private static final String TAG = CocktailHost.class.getSimpleName();
     static final Object sServiceLock = new Object();
 
-    /* loaded from: classes5.dex */
     public interface ICallbackListener {
         void onChangeVisibleEdgeService(boolean z, int i);
 
@@ -85,8 +84,7 @@ public class CocktailHost {
         void onViewDataChanged(int i, int i2, int i3);
     }
 
-    /* loaded from: classes5.dex */
-    public static class Callbacks extends ICocktailHost.Stub {
+    static class Callbacks extends ICocktailHost.Stub {
         private final WeakReference<Handler> mWeakHandler;
 
         public Callbacks(Handler handler) {
@@ -272,9 +270,7 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes5.dex */
-    public class UpdateHandler extends Handler {
+    class UpdateHandler extends Handler {
         public UpdateHandler(Looper looper) {
             super(looper);
         }
@@ -284,60 +280,58 @@ public class CocktailHost {
             switch (msg.what) {
                 case 1:
                     CocktailHost.this.updateCocktail(msg.arg1, (Cocktail) msg.obj, msg.arg2);
-                    return;
+                    break;
                 case 2:
                     CocktailHost.this.partiallyUpdateCocktail(msg.arg1, (RemoteViews) msg.obj, msg.arg2);
-                    return;
+                    break;
                 case 3:
                     CocktailHost.this.removeCocktail(msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 4:
                     CocktailHost.this.showCocktail(msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 5:
                     CocktailHost.this.closeCocktail(msg.arg1, msg.arg2, ((Integer) msg.obj).intValue());
-                    return;
+                    break;
                 case 6:
                     CocktailHost.this.viewDataChanged(msg.arg1, msg.arg2, ((Integer) msg.obj).intValue());
-                    return;
+                    break;
                 case 7:
                     CocktailHost.this.updateToolLauncher(msg.arg1);
-                    return;
+                    break;
                 case 9:
                     CocktailHost.this.setDisableTickerView(msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 10:
                     CocktailHost.this.switchDefaultCocktail(msg.arg1);
-                    return;
+                    break;
                 case 12:
                     CocktailHost.this.sendExtraDataToCocktailBar(msg.arg1, (Bundle) msg.obj);
-                    return;
+                    break;
                 case 13:
                     CocktailHost.this.setPullToRefresh(msg.arg1, msg.arg2, (PendingIntent) msg.obj);
-                    return;
+                    break;
                 case 14:
                     CocktailHost.this.partiallyUpdateHelpView(msg.arg1, (RemoteViews) msg.obj, msg.arg2);
-                    return;
+                    break;
                 case 100:
                     CocktailHost.this.notifyKeyguardState(msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 101:
                     CocktailHost.this.notifyWakeUpState(msg.arg1, msg.arg2, ((Integer) msg.obj).intValue());
-                    return;
+                    break;
                 case 102:
                     CocktailHost.this.changeVisibleEdgeService(msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 103:
                     CocktailHost.this.noteResumeComponent((ComponentName) msg.obj);
-                    return;
+                    break;
                 case 104:
                     CocktailHost.this.notePauseComponent((ComponentName) msg.obj);
-                    return;
+                    break;
                 case 105:
                     CocktailHost.this.packageSuspendChanged((Cocktail) msg.obj);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
@@ -354,9 +348,8 @@ public class CocktailHost {
         this.mListeningCategory = 0;
         this.mContextOpPackageName = context.getOpPackageName();
         this.mCallbackListener = callbackListener;
-        UpdateHandler updateHandler = new UpdateHandler(looper);
-        this.mHandler = updateHandler;
-        this.mCallbacks = new Callbacks(updateHandler);
+        this.mHandler = new UpdateHandler(looper);
+        this.mCallbacks = new Callbacks(this.mHandler);
         bindService(0);
     }
 
@@ -364,9 +357,8 @@ public class CocktailHost {
         this.mListeningCategory = 0;
         this.mContextOpPackageName = context.getOpPackageName();
         this.mCallbackListener = callbackListener;
-        UpdateHandler updateHandler = new UpdateHandler(looper);
-        this.mHandler = updateHandler;
-        this.mCallbacks = new Callbacks(updateHandler);
+        this.mHandler = new UpdateHandler(looper);
+        this.mCallbacks = new Callbacks(this.mHandler);
         this.mListeningCategory = category;
         bindService(category);
     }
@@ -378,9 +370,8 @@ public class CocktailHost {
                 sService = ICocktailBarService.Stub.asInterface(b);
             }
             try {
-                ICocktailBarService iCocktailBarService = sService;
-                if (iCocktailBarService != null) {
-                    iCocktailBarService.setCocktailHostCallbacks(this.mCallbacks, this.mContextOpPackageName, category);
+                if (sService != null) {
+                    sService.setCocktailHostCallbacks(this.mCallbacks, this.mContextOpPackageName, category);
                 } else {
                     Slog.d(TAG, "bindService: can not get ICocktailBarService");
                 }
@@ -416,138 +407,138 @@ public class CocktailHost {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateCocktail(int cocktailId, Cocktail cocktail, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onUpdateCocktail(cocktailId, cocktail, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onUpdateCocktail(cocktailId, cocktail, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void partiallyUpdateCocktail(int cocktailId, RemoteViews contentView, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onPartiallyUpdateCocktail(cocktailId, contentView, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onPartiallyUpdateCocktail(cocktailId, contentView, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void partiallyUpdateHelpView(int cocktailId, RemoteViews helpView, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onPartiallyUpdateHelpView(cocktailId, helpView, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onPartiallyUpdateHelpView(cocktailId, helpView, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void removeCocktail(int cocktailId, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onRemoveCocktail(cocktailId, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onRemoveCocktail(cocktailId, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void showCocktail(int cocktailId, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onShowCocktail(cocktailId, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onShowCocktail(cocktailId, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void closeCocktail(int cocktailId, int category, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onCloseCocktail(cocktailId, category, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onCloseCocktail(cocktailId, category, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void viewDataChanged(int cocktailId, int viewId, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onViewDataChanged(cocktailId, viewId, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onViewDataChanged(cocktailId, viewId, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateToolLauncher(int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onUpdateToolLauncher(userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onUpdateToolLauncher(userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyKeyguardState(int enable, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onNotifyKeyguardState(enable == 1, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onNotifyKeyguardState(enable == 1, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyWakeUpState(int bEnable, int keyCode, int reason) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onNotifyWakeUpModeState(bEnable == 1, keyCode, reason);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onNotifyWakeUpModeState(bEnable == 1, keyCode, reason);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void switchDefaultCocktail(int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onSwitchDefaultCocktail(userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onSwitchDefaultCocktail(userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendExtraDataToCocktailBar(int userId, Bundle extraData) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onSendExtraDataToCocktailBar(extraData, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onSendExtraDataToCocktailBar(extraData, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setDisableTickerView(int state, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onSetDisableTickerView(state, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onSetDisableTickerView(state, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void changeVisibleEdgeService(int visible, int userId) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onChangeVisibleEdgeService(visible == 1, userId);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onChangeVisibleEdgeService(visible == 1, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setPullToRefresh(int cocktailId, int viewId, PendingIntent pendingIntent) {
-        ICallbackListener iCallbackListener = this.mCallbackListener;
-        if (iCallbackListener != null) {
-            iCallbackListener.onSetPullToRefresh(cocktailId, viewId, pendingIntent);
+        if (this.mCallbackListener != null) {
+            this.mCallbackListener.onSetPullToRefresh(cocktailId, viewId, pendingIntent);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void noteResumeComponent(ComponentName componentName) {
         try {
-            ICallbackListener iCallbackListener = this.mCallbackListener;
-            if (iCallbackListener != null) {
-                iCallbackListener.onNoteResumeComponent(componentName);
+            if (this.mCallbackListener != null) {
+                this.mCallbackListener.onNoteResumeComponent(componentName);
             }
         } catch (AbstractMethodError e) {
             Slog.d(TAG, "noteResumeComponent: AbstractMethodError happens");
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notePauseComponent(ComponentName componentName) {
         try {
-            ICallbackListener iCallbackListener = this.mCallbackListener;
-            if (iCallbackListener != null) {
-                iCallbackListener.onNotePauseComponent(componentName);
+            if (this.mCallbackListener != null) {
+                this.mCallbackListener.onNotePauseComponent(componentName);
             }
         } catch (AbstractMethodError e) {
             Slog.d(TAG, "notePauseComponent: AbstractMethodError happens");
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void packageSuspendChanged(Cocktail cocktail) {
         try {
-            ICallbackListener iCallbackListener = this.mCallbackListener;
-            if (iCallbackListener != null) {
-                iCallbackListener.onPackageSuspendChanged(cocktail);
+            if (this.mCallbackListener != null) {
+                this.mCallbackListener.onPackageSuspendChanged(cocktail);
             }
         } catch (AbstractMethodError e) {
             Slog.d(TAG, "packageSuspended: AbstractMethodError happens");

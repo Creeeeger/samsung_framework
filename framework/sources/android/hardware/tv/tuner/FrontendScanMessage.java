@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendScanMessage implements Parcelable {
     public static final Parcelable.Creator<FrontendScanMessage> CREATOR = new Parcelable.Creator<FrontendScanMessage>() { // from class: android.hardware.tv.tuner.FrontendScanMessage.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendScanMessage createFromParcel(Parcel _aidl_source) {
             return new FrontendScanMessage(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendScanMessage[] newArray(int _aidl_size) {
             return new FrontendScanMessage[_aidl_size];
@@ -38,7 +37,6 @@ public final class FrontendScanMessage implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int analogType = 6;
         public static final int annex = 13;
@@ -56,10 +54,6 @@ public final class FrontendScanMessage implements Parcelable {
         public static final int progressPercent = 2;
         public static final int std = 10;
         public static final int symbolRates = 4;
-    }
-
-    /* synthetic */ FrontendScanMessage(Parcel parcel, FrontendScanMessageIA frontendScanMessageIA) {
-        this(parcel);
     }
 
     public FrontendScanMessage() {
@@ -293,77 +287,58 @@ public final class FrontendScanMessage implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.FrontendScanMessage$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendScanMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendScanMessage createFromParcel(Parcel _aidl_source) {
-            return new FrontendScanMessage(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendScanMessage[] newArray(int _aidl_size) {
-            return new FrontendScanMessage[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getIsLocked());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeBoolean(getIsEnd());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getProgressPercent());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeLongArray(getFrequencies());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeIntArray(getSymbolRates());
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeInt(getHierarchy());
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeInt(getAnalogType());
-                return;
+                break;
             case 7:
                 _aidl_parcel.writeIntArray(getPlpIds());
-                return;
+                break;
             case 8:
                 _aidl_parcel.writeIntArray(getGroupIds());
-                return;
+                break;
             case 9:
                 _aidl_parcel.writeIntArray(getInputStreamIds());
-                return;
+                break;
             case 10:
                 _aidl_parcel.writeTypedObject(getStd(), _aidl_flag);
-                return;
+                break;
             case 11:
                 _aidl_parcel.writeTypedArray(getAtsc3PlpInfos(), _aidl_flag);
-                return;
+                break;
             case 12:
                 _aidl_parcel.writeTypedObject(getModulation(), _aidl_flag);
-                return;
+                break;
             case 13:
                 _aidl_parcel.writeByte(getAnnex());
-                return;
+                break;
             case 14:
                 _aidl_parcel.writeBoolean(getIsHighPriority());
-                return;
+                break;
             case 15:
                 _aidl_parcel.writeIntArray(getDvbtCellIds());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

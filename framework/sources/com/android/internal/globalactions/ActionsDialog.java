@@ -10,7 +10,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ListView;
 import com.android.internal.app.AlertController;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class ActionsDialog extends Dialog implements DialogInterface {
     private final ActionsAdapter mAdapter;
     private final AlertController mAlert;
@@ -18,12 +18,10 @@ public final class ActionsDialog extends Dialog implements DialogInterface {
 
     public ActionsDialog(Context context, AlertController.AlertParams params) {
         super(context, getDialogTheme(context));
-        Context context2 = getContext();
-        this.mContext = context2;
-        AlertController create = AlertController.create(context2, this, getWindow());
-        this.mAlert = create;
+        this.mContext = getContext();
+        this.mAlert = AlertController.create(this.mContext, this, getWindow());
         this.mAdapter = (ActionsAdapter) params.mAdapter;
-        params.apply(create);
+        params.apply(this.mAlert);
     }
 
     private static int getDialogTheme(Context context) {
@@ -33,7 +31,7 @@ public final class ActionsDialog extends Dialog implements DialogInterface {
     }
 
     @Override // android.app.Dialog
-    public void onStart() {
+    protected void onStart() {
         super.setCanceledOnTouchOutside(true);
         super.onStart();
     }
@@ -43,7 +41,7 @@ public final class ActionsDialog extends Dialog implements DialogInterface {
     }
 
     @Override // android.app.Dialog
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mAlert.installContent();
     }

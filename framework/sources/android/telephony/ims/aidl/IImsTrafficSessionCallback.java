@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.feature.ConnectionFailureInfo;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsTrafficSessionCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsTrafficSessionCallback";
 
@@ -15,7 +15,6 @@ public interface IImsTrafficSessionCallback extends IInterface {
 
     void onReady() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsTrafficSessionCallback {
         @Override // android.telephony.ims.aidl.IImsTrafficSessionCallback
         public void onReady() throws RemoteException {
@@ -31,7 +30,6 @@ public interface IImsTrafficSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsTrafficSessionCallback {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onReady = 1;
@@ -77,29 +75,25 @@ public interface IImsTrafficSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsTrafficSessionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsTrafficSessionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsTrafficSessionCallback.DESCRIPTOR);
+                case 1:
+                    onReady();
+                    return true;
+                case 2:
+                    ConnectionFailureInfo _arg0 = (ConnectionFailureInfo) data.readTypedObject(ConnectionFailureInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onError(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onReady();
-                            return true;
-                        case 2:
-                            ConnectionFailureInfo _arg0 = (ConnectionFailureInfo) data.readTypedObject(ConnectionFailureInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onError(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsTrafficSessionCallback {
+        private static class Proxy implements IImsTrafficSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

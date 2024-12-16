@@ -13,14 +13,14 @@ import android.view.View;
 import java.util.Collection;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class NumberKeyListener extends BaseKeyListener implements InputFilter {
     private static final String DATE_TIME_FORMAT_SYMBOLS = "GyYuUrQqMLlwWdDFgEecabBhHKkjJCmsSAzZOvVXx";
     private static final char SINGLE_QUOTE = '\'';
 
     protected abstract char[] getAcceptedChars();
 
-    public int lookup(KeyEvent event, Spannable content) {
+    protected int lookup(KeyEvent event, Spannable content) {
         return event.getMatch(getAcceptedChars(), getMetaState(content, event));
     }
 
@@ -48,7 +48,7 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return filtered;
     }
 
-    public static boolean ok(char[] accept, char c) {
+    protected static boolean ok(char[] accept, char c) {
         for (int i = accept.length - 1; i >= 0; i--) {
             if (accept[i] == c) {
                 return true;
@@ -88,7 +88,7 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return super.onKeyDown(view, content, keyCode, event);
     }
 
-    public static boolean addDigits(Collection<Character> collection, Locale locale) {
+    static boolean addDigits(Collection<Character> collection, Locale locale) {
         if (locale == null) {
             return false;
         }
@@ -102,7 +102,7 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return true;
     }
 
-    public static boolean addFormatCharsFromSkeleton(Collection<Character> collection, Locale locale, String skeleton, String symbolsToIgnore) {
+    static boolean addFormatCharsFromSkeleton(Collection<Character> collection, Locale locale, String skeleton, String symbolsToIgnore) {
         if (locale == null) {
             return false;
         }
@@ -139,7 +139,7 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         }
     }
 
-    public static boolean addFormatCharsFromSkeletons(Collection<Character> collection, Locale locale, String[] skeletons, String symbolsToIgnore) {
+    static boolean addFormatCharsFromSkeletons(Collection<Character> collection, Locale locale, String[] skeletons, String symbolsToIgnore) {
         for (String str : skeletons) {
             boolean success = addFormatCharsFromSkeleton(collection, locale, str, symbolsToIgnore);
             if (!success) {
@@ -149,7 +149,7 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return true;
     }
 
-    public static boolean addAmPmChars(Collection<Character> collection, Locale locale) {
+    static boolean addAmPmChars(Collection<Character> collection, Locale locale) {
         if (locale == null) {
             return false;
         }
@@ -166,7 +166,7 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return true;
     }
 
-    public static char[] collectionToArray(Collection<Character> chars) {
+    static char[] collectionToArray(Collection<Character> chars) {
         char[] result = new char[chars.size()];
         int i = 0;
         for (Character ch : chars) {

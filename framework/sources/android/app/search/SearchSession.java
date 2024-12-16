@@ -28,29 +28,23 @@ public final class SearchSession implements AutoCloseable {
     private static final boolean DEBUG = false;
     private static final String TAG = SearchSession.class.getSimpleName();
     private final ISearchUiManager mInterface;
-    private final ArrayMap<Callback, CallbackWrapper> mRegisteredCallbacks;
     private final SearchSessionId mSessionId;
-    private final IBinder mToken;
     private final CloseGuard mCloseGuard = CloseGuard.get();
     private final AtomicBoolean mIsClosed = new AtomicBoolean(false);
+    private final IBinder mToken = new Binder();
+    private final ArrayMap<Callback, CallbackWrapper> mRegisteredCallbacks = new ArrayMap<>();
 
-    /* loaded from: classes.dex */
     public interface Callback {
         void onTargetsAvailable(List<SearchTarget> list);
     }
 
-    public SearchSession(Context context, SearchContext searchContext) {
-        Binder binder = new Binder();
-        this.mToken = binder;
-        this.mRegisteredCallbacks = new ArrayMap<>();
+    SearchSession(Context context, SearchContext searchContext) {
         IBinder b = ServiceManager.getService(Context.SEARCH_UI_SERVICE);
-        ISearchUiManager asInterface = ISearchUiManager.Stub.asInterface(b);
-        this.mInterface = asInterface;
-        SearchSessionId searchSessionId = new SearchSessionId(context.getPackageName() + ":" + UUID.randomUUID().toString(), context.getUserId());
-        this.mSessionId = searchSessionId;
+        this.mInterface = ISearchUiManager.Stub.asInterface(b);
+        this.mSessionId = new SearchSessionId(context.getPackageName() + ":" + UUID.randomUUID().toString(), context.getUserId());
         searchContext.setPackageName(context.getPackageName());
         try {
-            asInterface.createSearchSession(searchContext, searchSessionId, binder);
+            this.mInterface.createSearchSession(searchContext, this.mSessionId, this.mToken);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to search session", e);
             e.rethrowFromSystemServer();
@@ -142,9 +136,8 @@ public final class SearchSession implements AutoCloseable {
 
     protected void finalize() {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             if (!this.mIsClosed.get()) {
                 destroy();
@@ -173,8 +166,7 @@ public final class SearchSession implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class CallbackWrapper extends ISearchCallback.Stub {
+    static class CallbackWrapper extends ISearchCallback.Stub {
         private final Consumer<List<SearchTarget>> mCallback;
         private final Executor mExecutor;
 
@@ -203,6 +195,7 @@ public final class SearchSession implements AutoCloseable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResult$0(List list) {
             this.mCallback.accept(list);
         }

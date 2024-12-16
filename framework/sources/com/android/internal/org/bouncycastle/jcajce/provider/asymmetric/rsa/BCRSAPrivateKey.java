@@ -29,7 +29,7 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
     protected BigInteger privateExponent;
     protected transient RSAKeyParameters rsaPrivateKey;
 
-    public BCRSAPrivateKey(RSAKeyParameters key) {
+    BCRSAPrivateKey(RSAKeyParameters key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
@@ -38,7 +38,7 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = key;
     }
 
-    public BCRSAPrivateKey(AlgorithmIdentifier algID, RSAKeyParameters key) {
+    BCRSAPrivateKey(AlgorithmIdentifier algID, RSAKeyParameters key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
@@ -49,7 +49,7 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = key;
     }
 
-    public BCRSAPrivateKey(RSAPrivateKeySpec spec) {
+    BCRSAPrivateKey(RSAPrivateKeySpec spec) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
@@ -58,7 +58,7 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = new RSAKeyParameters(true, this.modulus, this.privateExponent);
     }
 
-    public BCRSAPrivateKey(RSAPrivateKey key) {
+    BCRSAPrivateKey(RSAPrivateKey key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
@@ -67,7 +67,7 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = new RSAKeyParameters(true, this.modulus, this.privateExponent);
     }
 
-    public BCRSAPrivateKey(AlgorithmIdentifier algID, com.android.internal.org.bouncycastle.asn1.pkcs.RSAPrivateKey key) {
+    BCRSAPrivateKey(AlgorithmIdentifier algID, com.android.internal.org.bouncycastle.asn1.pkcs.RSAPrivateKey key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
@@ -101,18 +101,13 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         return "PKCS#8";
     }
 
-    public RSAKeyParameters engineGetKeyParameters() {
+    RSAKeyParameters engineGetKeyParameters() {
         return this.rsaPrivateKey;
     }
 
     @Override // java.security.Key
     public byte[] getEncoded() {
-        AlgorithmIdentifier algorithmIdentifier = this.algorithmIdentifier;
-        BigInteger modulus = getModulus();
-        BigInteger bigInteger = ZERO;
-        BigInteger privateExponent = getPrivateExponent();
-        BigInteger bigInteger2 = ZERO;
-        return KeyUtil.getEncodedPrivateKeyInfo(algorithmIdentifier, new com.android.internal.org.bouncycastle.asn1.pkcs.RSAPrivateKey(modulus, bigInteger, privateExponent, bigInteger2, bigInteger2, bigInteger2, bigInteger2, bigInteger2));
+        return KeyUtil.getEncodedPrivateKeyInfo(this.algorithmIdentifier, new com.android.internal.org.bouncycastle.asn1.pkcs.RSAPrivateKey(getModulus(), ZERO, getPrivateExponent(), ZERO, ZERO, ZERO, ZERO, ZERO));
     }
 
     public boolean equals(Object o) {

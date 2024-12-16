@@ -22,7 +22,7 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprObjectShapePath extends SprObjectBase {
     public static final byte TYPE_BEZIER_CURVETO = 4;
     public static final byte TYPE_CLOSE = 6;
@@ -35,7 +35,6 @@ public class SprObjectShapePath extends SprObjectBase {
     public ArrayList<PathInfo> mPathInfoList;
     public Path path;
 
-    /* loaded from: classes5.dex */
     public static class PathInfo implements Cloneable {
         public byte type = 0;
         public float x = 0.0f;
@@ -45,8 +44,9 @@ public class SprObjectShapePath extends SprObjectBase {
         public float y1 = 0.0f;
         public float y2 = 0.0f;
 
-        /* renamed from: clone */
-        public PathInfo m8416clone() throws CloneNotSupportedException {
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public PathInfo m8817clone() throws CloneNotSupportedException {
             return (PathInfo) super.clone();
         }
     }
@@ -80,11 +80,10 @@ public class SprObjectShapePath extends SprObjectBase {
     }
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         super.finalize();
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList != null) {
-            arrayList.clear();
+        if (this.mPathInfoList != null) {
+            this.mPathInfoList.clear();
         }
     }
 
@@ -93,9 +92,8 @@ public class SprObjectShapePath extends SprObjectBase {
         newPath.type = (byte) 1;
         newPath.x = x;
         newPath.y = y;
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList != null) {
-            arrayList.add(newPath);
+        if (this.mPathInfoList != null) {
+            this.mPathInfoList.add(newPath);
         }
         drawPath(newPath);
     }
@@ -105,9 +103,8 @@ public class SprObjectShapePath extends SprObjectBase {
         newPath.type = (byte) 2;
         newPath.x = x;
         newPath.y = y;
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList != null) {
-            arrayList.add(newPath);
+        if (this.mPathInfoList != null) {
+            this.mPathInfoList.add(newPath);
         }
         drawPath(newPath);
     }
@@ -119,9 +116,8 @@ public class SprObjectShapePath extends SprObjectBase {
         newPath.y = y;
         newPath.x1 = x1;
         newPath.y1 = y1;
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList != null) {
-            arrayList.add(newPath);
+        if (this.mPathInfoList != null) {
+            this.mPathInfoList.add(newPath);
         }
         drawPath(newPath);
     }
@@ -135,9 +131,8 @@ public class SprObjectShapePath extends SprObjectBase {
         newPath.y1 = y1;
         newPath.x2 = x2;
         newPath.y2 = y2;
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList != null) {
-            arrayList.add(newPath);
+        if (this.mPathInfoList != null) {
+            this.mPathInfoList.add(newPath);
         }
         drawPath(newPath);
     }
@@ -151,9 +146,8 @@ public class SprObjectShapePath extends SprObjectBase {
         newPath.y1 = y2;
         newPath.x2 = startAngle;
         newPath.y2 = sweepAngle;
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList != null) {
-            arrayList.add(newPath);
+        if (this.mPathInfoList != null) {
+            this.mPathInfoList.add(newPath);
         }
         drawPath(newPath);
     }
@@ -161,9 +155,8 @@ public class SprObjectShapePath extends SprObjectBase {
     public void close() {
         PathInfo newPath = new PathInfo();
         newPath.type = (byte) 6;
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList != null) {
-            arrayList.add(newPath);
+        if (this.mPathInfoList != null) {
+            this.mPathInfoList.add(newPath);
         }
         drawPath(newPath);
     }
@@ -184,24 +177,22 @@ public class SprObjectShapePath extends SprObjectBase {
         switch (p.type) {
             case 1:
                 this.path.moveTo(p.x, p.y);
-                return;
+                break;
             case 2:
                 this.path.lineTo(p.x, p.y);
-                return;
+                break;
             case 3:
                 this.path.quadTo(p.x1, p.y1, p.x, p.y);
-                return;
+                break;
             case 4:
                 this.path.cubicTo(p.x1, p.y1, p.x2, p.y2, p.x, p.y);
-                return;
+                break;
             case 5:
                 this.path.arcTo(new RectF(p.x, p.y, p.x1, p.y1), p.x2, p.y2);
-                return;
+                break;
             case 6:
                 this.path.close();
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -258,12 +249,11 @@ public class SprObjectShapePath extends SprObjectBase {
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     public void toSPR(DataOutputStream out) throws IOException {
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList == null) {
+        if (this.mPathInfoList == null) {
             out.writeInt(0);
             return;
         }
-        out.writeInt(arrayList.size());
+        out.writeInt(this.mPathInfoList.size());
         Iterator<PathInfo> it = this.mPathInfoList.iterator();
         while (it.hasNext()) {
             PathInfo pathInfo = it.next();
@@ -303,11 +293,10 @@ public class SprObjectShapePath extends SprObjectBase {
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     public int getSPRSize() {
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList == null) {
+        if (this.mPathInfoList == null) {
             return 4;
         }
-        int size = 4 + arrayList.size();
+        int size = 4 + this.mPathInfoList.size();
         Iterator<PathInfo> it = this.mPathInfoList.iterator();
         while (it.hasNext()) {
             PathInfo pathInfo = it.next();
@@ -461,14 +450,14 @@ public class SprObjectShapePath extends SprObjectBase {
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     /* renamed from: clone */
-    public SprObjectBase mo8415clone() throws CloneNotSupportedException {
-        SprObjectShapePath object = (SprObjectShapePath) super.mo8415clone();
+    public SprObjectBase mo8816clone() throws CloneNotSupportedException {
+        SprObjectShapePath object = (SprObjectShapePath) super.mo8816clone();
         if (this.mPathInfoList != null) {
             object.mPathInfoList = new ArrayList<>();
             Iterator<PathInfo> it = this.mPathInfoList.iterator();
             while (it.hasNext()) {
                 PathInfo path = it.next();
-                object.mPathInfoList.add(path.m8416clone());
+                object.mPathInfoList.add(path.m8817clone());
             }
         }
         object.path = new Path(this.path);
@@ -477,11 +466,10 @@ public class SprObjectShapePath extends SprObjectBase {
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     public int getTotalSegmentCount() {
-        ArrayList<PathInfo> arrayList = this.mPathInfoList;
-        if (arrayList == null) {
+        if (this.mPathInfoList == null) {
             return 0;
         }
-        return arrayList.size();
+        return this.mPathInfoList.size();
     }
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
@@ -524,14 +512,9 @@ public class SprObjectShapePath extends SprObjectBase {
         return end;
     }
 
-    /* loaded from: classes5.dex */
-    public static class ExtractFloatResult {
+    private static class ExtractFloatResult {
         int mEndPosition;
         boolean mEndWithNegSign;
-
-        /* synthetic */ ExtractFloatResult(ExtractFloatResultIA extractFloatResultIA) {
-            this();
-        }
 
         private ExtractFloatResult() {
         }
@@ -566,7 +549,6 @@ public class SprObjectShapePath extends SprObjectBase {
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:5:0x000f. Please report as an issue. */
     private void extract(String s, int start, ExtractFloatResult result) {
         boolean foundSeparator = false;
         result.mEndWithNegSign = false;

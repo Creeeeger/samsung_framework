@@ -13,7 +13,7 @@ import android.widget.SimpleMonthView;
 import com.android.internal.widget.PagerAdapter;
 
 /* loaded from: classes4.dex */
-public class DayPickerPagerAdapter extends PagerAdapter {
+class DayPickerPagerAdapter extends PagerAdapter {
     private static final int MONTHS_IN_YEAR = 12;
     private ColorStateList mCalendarTextColor;
     private final int mCalendarViewId;
@@ -32,9 +32,6 @@ public class DayPickerPagerAdapter extends PagerAdapter {
     private final SparseArray<ViewHolder> mItems = new SparseArray<>();
     private Calendar mSelectedDay = null;
     private final SimpleMonthView.OnDayClickListener mOnDayClickListener = new SimpleMonthView.OnDayClickListener() { // from class: android.widget.DayPickerPagerAdapter.1
-        AnonymousClass1() {
-        }
-
         @Override // android.widget.SimpleMonthView.OnDayClickListener
         public void onDayClick(SimpleMonthView view, Calendar day) {
             if (day != null) {
@@ -46,7 +43,6 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         }
     };
 
-    /* loaded from: classes4.dex */
     public interface OnDaySelectedListener {
         void onDaySelected(DayPickerPagerAdapter dayPickerPagerAdapter, Calendar calendar);
     }
@@ -116,31 +112,31 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void setDaySelectorColor(ColorStateList selectorColor) {
+    void setDaySelectorColor(ColorStateList selectorColor) {
         this.mDaySelectorColor = selectorColor;
         notifyDataSetChanged();
     }
 
-    public void setMonthTextAppearance(int resId) {
+    void setMonthTextAppearance(int resId) {
         this.mMonthTextAppearance = resId;
         notifyDataSetChanged();
     }
 
-    public void setDayOfWeekTextAppearance(int resId) {
+    void setDayOfWeekTextAppearance(int resId) {
         this.mDayOfWeekTextAppearance = resId;
         notifyDataSetChanged();
     }
 
-    public int getDayOfWeekTextAppearance() {
+    int getDayOfWeekTextAppearance() {
         return this.mDayOfWeekTextAppearance;
     }
 
-    public void setDayTextAppearance(int resId) {
+    void setDayTextAppearance(int resId) {
         this.mDayTextAppearance = resId;
         notifyDataSetChanged();
     }
 
-    public int getDayTextAppearance() {
+    int getDayTextAppearance() {
         return this.mDayTextAppearance;
     }
 
@@ -185,24 +181,20 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         v.setMonthTextAppearance(this.mMonthTextAppearance);
         v.setDayOfWeekTextAppearance(this.mDayOfWeekTextAppearance);
         v.setDayTextAppearance(this.mDayTextAppearance);
-        ColorStateList colorStateList = this.mDaySelectorColor;
-        if (colorStateList != null) {
-            v.setDaySelectorColor(colorStateList);
+        if (this.mDaySelectorColor != null) {
+            v.setDaySelectorColor(this.mDaySelectorColor);
         }
-        ColorStateList colorStateList2 = this.mDayHighlightColor;
-        if (colorStateList2 != null) {
-            v.setDayHighlightColor(colorStateList2);
+        if (this.mDayHighlightColor != null) {
+            v.setDayHighlightColor(this.mDayHighlightColor);
         }
-        ColorStateList colorStateList3 = this.mCalendarTextColor;
-        if (colorStateList3 != null) {
-            v.setMonthTextColor(colorStateList3);
+        if (this.mCalendarTextColor != null) {
+            v.setMonthTextColor(this.mCalendarTextColor);
             v.setDayOfWeekTextColor(this.mCalendarTextColor);
             v.setDayTextColor(this.mCalendarTextColor);
         }
         int month = getMonthForPosition(position);
         int year = getYearForPosition(position);
-        Calendar calendar = this.mSelectedDay;
-        if (calendar != null && calendar.get(2) == month && this.mSelectedDay.get(1) == year) {
+        if (this.mSelectedDay != null && this.mSelectedDay.get(2) == month && this.mSelectedDay.get(1) == year) {
             selectedDay = this.mSelectedDay.get(5);
         } else {
             selectedDay = -1;
@@ -246,7 +238,7 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         return null;
     }
 
-    public SimpleMonthView getView(Object object) {
+    SimpleMonthView getView(Object object) {
         if (object == null) {
             return null;
         }
@@ -254,26 +246,7 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         return holder.calendar;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.DayPickerPagerAdapter$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements SimpleMonthView.OnDayClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.SimpleMonthView.OnDayClickListener
-        public void onDayClick(SimpleMonthView view, Calendar day) {
-            if (day != null) {
-                DayPickerPagerAdapter.this.setSelectedDay(day);
-                if (DayPickerPagerAdapter.this.mOnDaySelectedListener != null) {
-                    DayPickerPagerAdapter.this.mOnDaySelectedListener.onDaySelected(DayPickerPagerAdapter.this, day);
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public static class ViewHolder {
+    private static class ViewHolder {
         public final SimpleMonthView calendar;
         public final View container;
         public final int position;

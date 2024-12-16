@@ -28,30 +28,27 @@ public class Visualizer {
     public static final int STATE_UNINITIALIZED = 0;
     public static final int SUCCESS = 0;
     private static final String TAG = "Visualizer-JAVA";
-    private OnDataCaptureListener mCaptureListener;
     private int mId;
     private long mJniData;
-    private final Object mListenerLock;
-    private Handler mNativeEventHandler;
     private long mNativeVisualizer;
-    private OnServerDiedListener mServerDiedListener;
     private int mState;
-    private final Object mStateLock;
+    private final Object mStateLock = new Object();
+    private final Object mListenerLock = new Object();
+    private Handler mNativeEventHandler = null;
+    private OnDataCaptureListener mCaptureListener = null;
+    private OnServerDiedListener mServerDiedListener = null;
 
-    /* loaded from: classes2.dex */
     public static final class MeasurementPeakRms {
         public int mPeak;
         public int mRms;
     }
 
-    /* loaded from: classes2.dex */
     public interface OnDataCaptureListener {
         void onFftDataCapture(Visualizer visualizer, byte[] bArr, int i);
 
         void onWaveFormDataCapture(Visualizer visualizer, byte[] bArr, int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnServerDiedListener {
         void onServerDied();
     }
@@ -101,14 +98,8 @@ public class Visualizer {
 
     public Visualizer(int audioSession) throws UnsupportedOperationException, RuntimeException {
         this.mState = 0;
-        Object obj = new Object();
-        this.mStateLock = obj;
-        this.mListenerLock = new Object();
-        this.mNativeEventHandler = null;
-        this.mCaptureListener = null;
-        this.mServerDiedListener = null;
         int[] id = new int[1];
-        synchronized (obj) {
+        synchronized (this.mStateLock) {
             this.mState = 0;
             AttributionSource.ScopedParcelState attributionSourceState = AttributionSource.myAttributionSource().asScopedParcelState();
             try {
@@ -153,17 +144,16 @@ public class Visualizer {
     public int setEnabled(boolean enabled) throws IllegalStateException {
         int status;
         synchronized (this.mStateLock) {
-            int i = this.mState;
-            if (i == 0) {
+            if (this.mState == 0) {
                 throw new IllegalStateException("setEnabled() called in wrong state: " + this.mState);
             }
             status = 0;
-            int i2 = 2;
-            if (((enabled && i == 1) || (!enabled && i == 2)) && (status = native_setEnabled(enabled)) == 0) {
+            int i = 2;
+            if (((enabled && this.mState == 1) || (!enabled && this.mState == 2)) && (status = native_setEnabled(enabled)) == 0) {
                 if (!enabled) {
-                    i2 = 1;
+                    i = 1;
                 }
-                this.mState = i2;
+                this.mState = i;
             }
         }
         return status;
@@ -181,14 +171,17 @@ public class Visualizer {
     }
 
     public int setCaptureSize(int size) throws IllegalStateException {
-        int native_setCaptureSize;
+        int ret;
         synchronized (this.mStateLock) {
             if (this.mState != 1) {
                 throw new IllegalStateException("setCaptureSize() called in wrong state: " + this.mState);
             }
-            native_setCaptureSize = native_setCaptureSize(size);
+            ret = native_setCaptureSize(size);
+            if (ret == -4) {
+                throw new IllegalArgumentException("setCaptureSize to " + size + " failed");
+            }
         }
-        return native_setCaptureSize;
+        return ret;
     }
 
     public int getCaptureSize() throws IllegalStateException {
@@ -263,6 +256,10 @@ public class Visualizer {
             if (this.mState != 2) {
                 throw new IllegalStateException("getWaveForm() called in wrong state: " + this.mState);
             }
+            int captureSize = getCaptureSize();
+            if (captureSize > waveform.length) {
+                throw new IllegalArgumentException("getWaveForm() called with illegal size: " + waveform.length + " expecting at least " + captureSize + " bytes");
+            }
             native_getWaveForm = native_getWaveForm(waveform);
         }
         return native_getWaveForm;
@@ -334,7 +331,7 @@ public class Visualizer {
 
     private static void postEventFromNative(Object effect_ref, final int what, final int samplingRate, final byte[] data) {
         Handler handler;
-        Visualizer visualizer = (Visualizer) ((WeakReference) effect_ref).get();
+        final Visualizer visualizer = (Visualizer) ((WeakReference) effect_ref).get();
         if (visualizer == null) {
             return;
         }
@@ -368,7 +365,7 @@ public class Visualizer {
         }
     }
 
-    public static /* synthetic */ void lambda$postEventFromNative$0(Visualizer visualizer, int what, byte[] data, int samplingRate) {
+    static /* synthetic */ void lambda$postEventFromNative$0(Visualizer visualizer, int what, byte[] data, int samplingRate) {
         OnDataCaptureListener l;
         synchronized (visualizer.mListenerLock) {
             l = visualizer.mCaptureListener;
@@ -382,7 +379,7 @@ public class Visualizer {
         }
     }
 
-    public static /* synthetic */ void lambda$postEventFromNative$1(Visualizer visualizer) {
+    static /* synthetic */ void lambda$postEventFromNative$1(Visualizer visualizer) {
         OnServerDiedListener l;
         synchronized (visualizer.mListenerLock) {
             l = visualizer.mServerDiedListener;

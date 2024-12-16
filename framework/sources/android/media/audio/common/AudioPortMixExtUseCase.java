@@ -10,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioPortMixExtUseCase implements Parcelable {
     public static final Parcelable.Creator<AudioPortMixExtUseCase> CREATOR = new Parcelable.Creator<AudioPortMixExtUseCase>() { // from class: android.media.audio.common.AudioPortMixExtUseCase.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortMixExtUseCase createFromParcel(Parcel _aidl_source) {
             return new AudioPortMixExtUseCase(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortMixExtUseCase[] newArray(int _aidl_size) {
             return new AudioPortMixExtUseCase[_aidl_size];
@@ -29,15 +28,10 @@ public final class AudioPortMixExtUseCase implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int source = 2;
         public static final int stream = 1;
         public static final int unspecified = 0;
-    }
-
-    /* synthetic */ AudioPortMixExtUseCase(Parcel parcel, AudioPortMixExtUseCaseIA audioPortMixExtUseCaseIA) {
-        this(parcel);
     }
 
     public AudioPortMixExtUseCase() {
@@ -102,38 +96,19 @@ public final class AudioPortMixExtUseCase implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.media.audio.common.AudioPortMixExtUseCase$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioPortMixExtUseCase> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPortMixExtUseCase createFromParcel(Parcel _aidl_source) {
-            return new AudioPortMixExtUseCase(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPortMixExtUseCase[] newArray(int _aidl_size) {
-            return new AudioPortMixExtUseCase[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getUnspecified());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getStream());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getSource());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -166,11 +141,11 @@ public final class AudioPortMixExtUseCase implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.media.audio.common.AudioPortMixExtUseCase.unspecified(" + getUnspecified() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioPortMixExtUseCase.unspecified(" + getUnspecified() + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.media.audio.common.AudioPortMixExtUseCase.stream(" + getStream() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioPortMixExtUseCase.stream(" + getStream() + NavigationBarInflaterView.KEY_CODE_END;
             case 2:
-                return "android.media.audio.common.AudioPortMixExtUseCase.source(" + getSource() + NavigationBarInflaterView.KEY_CODE_END;
+                return "AudioPortMixExtUseCase.source(" + getSource() + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

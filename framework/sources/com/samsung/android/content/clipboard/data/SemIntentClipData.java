@@ -53,14 +53,13 @@ public class SemIntentClipData extends SemClipData {
             case 8:
                 try {
                     boolean result2 = ((SemIntentClipData) altData).setIntent(Intent.parseUri(this.mValue, 1));
-                    return result2;
+                    break;
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                     return false;
                 }
-            default:
-                return false;
         }
+        return false;
     }
 
     private void setClipData() {

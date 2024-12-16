@@ -13,14 +13,13 @@ public final class KeyDerivationParams implements Parcelable {
     public static final int ALGORITHM_SCRYPT = 2;
     public static final int ALGORITHM_SHA256 = 1;
     public static final Parcelable.Creator<KeyDerivationParams> CREATOR = new Parcelable.Creator<KeyDerivationParams>() { // from class: android.security.keystore.recovery.KeyDerivationParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyDerivationParams createFromParcel(Parcel in) {
             return new KeyDerivationParams(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyDerivationParams[] newArray(int length) {
             return new KeyDerivationParams[length];
@@ -31,7 +30,6 @@ public final class KeyDerivationParams implements Parcelable {
     private final byte[] mSalt;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface KeyDerivationAlgorithm {
     }
 
@@ -63,23 +61,6 @@ public final class KeyDerivationParams implements Parcelable {
 
     public int getMemoryDifficulty() {
         return this.mMemoryDifficulty;
-    }
-
-    /* renamed from: android.security.keystore.recovery.KeyDerivationParams$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyDerivationParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyDerivationParams createFromParcel(Parcel in) {
-            return new KeyDerivationParams(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyDerivationParams[] newArray(int length) {
-            return new KeyDerivationParams[length];
-        }
     }
 
     @Override // android.os.Parcelable

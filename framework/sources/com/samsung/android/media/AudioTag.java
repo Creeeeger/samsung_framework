@@ -1,9 +1,10 @@
 package com.samsung.android.media;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class AudioTag {
     public static final String AUDIO_NO_FADE = "NOFADE";
     public static final String AUDIO_STREAM_RING = "AUDIO_STREAM_RING";
+    public static final String HAPTIC_INTENSITY = "HAPTIC_INTENSITY";
     public static final String RINGTONE_HAPTIC = "RINGTONE_HAPTIC";
     public static final String TAG_CAMERA = "CAMERA";
     public static final String TAG_CMAS = "CMAS";

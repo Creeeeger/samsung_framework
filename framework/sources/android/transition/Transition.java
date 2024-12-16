@@ -47,9 +47,6 @@ public abstract class Transition implements Cloneable {
     ArrayList<TransitionValues> mStartValuesList;
     private static final int[] DEFAULT_MATCH_ORDER = {2, 1, 3, 4};
     private static final PathMotion STRAIGHT_PATH_MOTION = new PathMotion() { // from class: android.transition.Transition.1
-        AnonymousClass1() {
-        }
-
         @Override // android.transition.PathMotion
         public Path getPath(float startX, float startY, float endX, float endY) {
             Path path = new Path();
@@ -88,12 +85,10 @@ public abstract class Transition implements Cloneable {
     ArrayList<Animator> mAnimators = new ArrayList<>();
     PathMotion mPathMotion = STRAIGHT_PATH_MOTION;
 
-    /* loaded from: classes4.dex */
     public static abstract class EpicenterCallback {
         public abstract Rect onGetEpicenter(Transition transition);
     }
 
-    /* loaded from: classes4.dex */
     public interface TransitionListener {
         void onTransitionCancel(Transition transition);
 
@@ -109,21 +104,6 @@ public abstract class Transition implements Cloneable {
     public abstract void captureEndValues(TransitionValues transitionValues);
 
     public abstract void captureStartValues(TransitionValues transitionValues);
-
-    /* renamed from: android.transition.Transition$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends PathMotion {
-        AnonymousClass1() {
-        }
-
-        @Override // android.transition.PathMotion
-        public Path getPath(float startX, float startY, float endX, float endY) {
-            Path path = new Path();
-            path.moveTo(startX, startY);
-            path.lineTo(endX, endY);
-            return path;
-        }
-    }
 
     public Transition() {
     }
@@ -330,33 +310,26 @@ public abstract class Transition implements Cloneable {
     private void matchStartAndEnd(TransitionValuesMaps startValues, TransitionValuesMaps endValues) {
         ArrayMap<View, TransitionValues> unmatchedStart = new ArrayMap<>(startValues.viewValues);
         ArrayMap<View, TransitionValues> unmatchedEnd = new ArrayMap<>(endValues.viewValues);
-        int i = 0;
-        while (true) {
-            int[] iArr = this.mMatchOrder;
-            if (i < iArr.length) {
-                switch (iArr[i]) {
-                    case 1:
-                        matchInstances(unmatchedStart, unmatchedEnd);
-                        break;
-                    case 2:
-                        matchNames(unmatchedStart, unmatchedEnd, startValues.nameValues, endValues.nameValues);
-                        break;
-                    case 3:
-                        matchIds(unmatchedStart, unmatchedEnd, startValues.idValues, endValues.idValues);
-                        break;
-                    case 4:
-                        matchItemIds(unmatchedStart, unmatchedEnd, startValues.itemIdValues, endValues.itemIdValues);
-                        break;
-                }
-                i++;
-            } else {
-                addUnmatched(unmatchedStart, unmatchedEnd);
-                return;
+        for (int i = 0; i < this.mMatchOrder.length; i++) {
+            switch (this.mMatchOrder[i]) {
+                case 1:
+                    matchInstances(unmatchedStart, unmatchedEnd);
+                    break;
+                case 2:
+                    matchNames(unmatchedStart, unmatchedEnd, startValues.nameValues, endValues.nameValues);
+                    break;
+                case 3:
+                    matchIds(unmatchedStart, unmatchedEnd, startValues.idValues, endValues.idValues);
+                    break;
+                case 4:
+                    matchItemIds(unmatchedStart, unmatchedEnd, startValues.itemIdValues, endValues.itemIdValues);
+                    break;
             }
         }
+        addUnmatched(unmatchedStart, unmatchedEnd);
     }
 
-    public void createAnimators(ViewGroup sceneRoot, TransitionValuesMaps startValues, TransitionValuesMaps endValues, ArrayList<TransitionValues> startValuesList, ArrayList<TransitionValues> endValuesList) {
+    protected void createAnimators(ViewGroup sceneRoot, TransitionValuesMaps startValues, TransitionValuesMaps endValues, ArrayList<TransitionValues> startValuesList, ArrayList<TransitionValues> endValuesList) {
         TransitionValues start;
         TransitionValues end;
         int minAnimator;
@@ -477,11 +450,10 @@ public abstract class Transition implements Cloneable {
                             infoValues = infoValues3;
                         }
                         if (animator != null) {
-                            TransitionPropagation transitionPropagation = this.mPropagation;
-                            if (transitionPropagation == null) {
+                            if (this.mPropagation == null) {
                                 minStartDelay = minStartDelay2;
                             } else {
-                                long delay = transitionPropagation.getStartDelay(sceneRoot, this, start, end);
+                                long delay = this.mPropagation.getStartDelay(sceneRoot, this, start, end);
                                 startDelays.put(this.mAnimators.size(), delay);
                                 minStartDelay = Math.min(delay, minStartDelay2);
                             }
@@ -514,23 +486,18 @@ public abstract class Transition implements Cloneable {
     }
 
     public boolean isValidTarget(View target) {
-        ArrayList<Class> arrayList;
-        ArrayList<String> arrayList2;
         if (target == null) {
             return false;
         }
         int targetId = target.getId();
-        ArrayList<Integer> arrayList3 = this.mTargetIdExcludes;
-        if (arrayList3 != null && arrayList3.contains(Integer.valueOf(targetId))) {
+        if (this.mTargetIdExcludes != null && this.mTargetIdExcludes.contains(Integer.valueOf(targetId))) {
             return false;
         }
-        ArrayList<View> arrayList4 = this.mTargetExcludes;
-        if (arrayList4 != null && arrayList4.contains(target)) {
+        if (this.mTargetExcludes != null && this.mTargetExcludes.contains(target)) {
             return false;
         }
-        ArrayList<Class> arrayList5 = this.mTargetTypeExcludes;
-        if (arrayList5 != null && target != null) {
-            int numTypes = arrayList5.size();
+        if (this.mTargetTypeExcludes != null && target != null) {
+            int numTypes = this.mTargetTypeExcludes.size();
             for (int i = 0; i < numTypes; i++) {
                 Class type = this.mTargetTypeExcludes.get(i);
                 if (type.isInstance(target)) {
@@ -541,11 +508,10 @@ public abstract class Transition implements Cloneable {
         if (this.mTargetNameExcludes != null && target != null && target.getTransitionName() != null && this.mTargetNameExcludes.contains(target.getTransitionName())) {
             return false;
         }
-        if ((this.mTargetIds.size() == 0 && this.mTargets.size() == 0 && (((arrayList = this.mTargetTypes) == null || arrayList.isEmpty()) && ((arrayList2 = this.mTargetNames) == null || arrayList2.isEmpty()))) || this.mTargetIds.contains(Integer.valueOf(targetId)) || this.mTargets.contains(target)) {
+        if ((this.mTargetIds.size() == 0 && this.mTargets.size() == 0 && ((this.mTargetTypes == null || this.mTargetTypes.isEmpty()) && (this.mTargetNames == null || this.mTargetNames.isEmpty()))) || this.mTargetIds.contains(Integer.valueOf(targetId)) || this.mTargets.contains(target)) {
             return true;
         }
-        ArrayList<String> arrayList6 = this.mTargetNames;
-        if (arrayList6 != null && arrayList6.contains(target.getTransitionName())) {
+        if (this.mTargetNames != null && this.mTargetNames.contains(target.getTransitionName())) {
             return true;
         }
         if (this.mTargetTypes != null) {
@@ -568,7 +534,7 @@ public abstract class Transition implements Cloneable {
         return runningAnimators;
     }
 
-    public void runAnimators() {
+    protected void runAnimators() {
         start();
         ArrayMap<Animator, AnimationInfo> runningAnimators = getRunningAnimators();
         Iterator<Animator> it = this.mAnimators.iterator();
@@ -583,15 +549,9 @@ public abstract class Transition implements Cloneable {
         end();
     }
 
-    private void runAnimator(Animator animator, ArrayMap<Animator, AnimationInfo> runningAnimators) {
+    private void runAnimator(Animator animator, final ArrayMap<Animator, AnimationInfo> runningAnimators) {
         if (animator != null) {
             animator.addListener(new AnimatorListenerAdapter() { // from class: android.transition.Transition.2
-                final /* synthetic */ ArrayMap val$runningAnimators;
-
-                AnonymousClass2(ArrayMap runningAnimators2) {
-                    runningAnimators = runningAnimators2;
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     Transition.this.mCurrentAnimators.add(animation);
@@ -604,27 +564,6 @@ public abstract class Transition implements Cloneable {
                 }
             });
             animate(animator);
-        }
-    }
-
-    /* renamed from: android.transition.Transition$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 extends AnimatorListenerAdapter {
-        final /* synthetic */ ArrayMap val$runningAnimators;
-
-        AnonymousClass2(ArrayMap runningAnimators2) {
-            runningAnimators = runningAnimators2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            Transition.this.mCurrentAnimators.add(animation);
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            runningAnimators.remove(animation);
-            Transition.this.mCurrentAnimators.remove(animation);
         }
     }
 
@@ -663,9 +602,8 @@ public abstract class Transition implements Cloneable {
     }
 
     public Transition removeTarget(String targetName) {
-        ArrayList<String> arrayList;
-        if (targetName != null && (arrayList = this.mTargetNames) != null) {
-            arrayList.remove(targetName);
+        if (targetName != null && this.mTargetNames != null) {
+            this.mTargetNames.remove(targetName);
         }
         return this;
     }
@@ -758,12 +696,9 @@ public abstract class Transition implements Cloneable {
         return this.mTargetTypes;
     }
 
-    public void captureValues(ViewGroup sceneRoot, boolean start) {
-        ArrayList<String> arrayList;
-        ArrayList<Class> arrayList2;
-        ArrayMap<String, String> arrayMap;
+    void captureValues(ViewGroup sceneRoot, boolean start) {
         clearValues(start);
-        if ((this.mTargetIds.size() > 0 || this.mTargets.size() > 0) && (((arrayList = this.mTargetNames) == null || arrayList.isEmpty()) && ((arrayList2 = this.mTargetTypes) == null || arrayList2.isEmpty()))) {
+        if ((this.mTargetIds.size() > 0 || this.mTargets.size() > 0) && ((this.mTargetNames == null || this.mTargetNames.isEmpty()) && (this.mTargetTypes == null || this.mTargetTypes.isEmpty()))) {
             for (int i = 0; i < this.mTargetIds.size(); i++) {
                 int id = this.mTargetIds.get(i).intValue();
                 View view = sceneRoot.findViewById(id);
@@ -802,8 +737,8 @@ public abstract class Transition implements Cloneable {
         } else {
             captureHierarchy(sceneRoot, start);
         }
-        if (!start && (arrayMap = this.mNameOverrides) != null) {
-            int numOverrides = arrayMap.size();
+        if (!start && this.mNameOverrides != null) {
+            int numOverrides = this.mNameOverrides.size();
             ArrayList<View> overriddenViews = new ArrayList<>(numOverrides);
             for (int i3 = 0; i3 < numOverrides; i3++) {
                 String fromName = this.mNameOverrides.keyAt(i3);
@@ -857,7 +792,7 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    public void clearValues(boolean start) {
+    void clearValues(boolean start) {
         if (start) {
             this.mStartValues.viewValues.clear();
             this.mStartValues.idValues.clear();
@@ -878,17 +813,14 @@ public abstract class Transition implements Cloneable {
             return;
         }
         int id = view.getId();
-        ArrayList<Integer> arrayList = this.mTargetIdExcludes;
-        if (arrayList != null && arrayList.contains(Integer.valueOf(id))) {
+        if (this.mTargetIdExcludes != null && this.mTargetIdExcludes.contains(Integer.valueOf(id))) {
             return;
         }
-        ArrayList<View> arrayList2 = this.mTargetExcludes;
-        if (arrayList2 != null && arrayList2.contains(view)) {
+        if (this.mTargetExcludes != null && this.mTargetExcludes.contains(view)) {
             return;
         }
-        ArrayList<Class> arrayList3 = this.mTargetTypeExcludes;
-        if (arrayList3 != null && view != null) {
-            int numTypes = arrayList3.size();
+        if (this.mTargetTypeExcludes != null && view != null) {
+            int numTypes = this.mTargetTypeExcludes.size();
             for (int i = 0; i < numTypes; i++) {
                 if (this.mTargetTypeExcludes.get(i).isInstance(view)) {
                     return;
@@ -911,17 +843,14 @@ public abstract class Transition implements Cloneable {
             }
         }
         if (view instanceof ViewGroup) {
-            ArrayList<Integer> arrayList4 = this.mTargetIdChildExcludes;
-            if (arrayList4 != null && arrayList4.contains(Integer.valueOf(id))) {
+            if (this.mTargetIdChildExcludes != null && this.mTargetIdChildExcludes.contains(Integer.valueOf(id))) {
                 return;
             }
-            ArrayList<View> arrayList5 = this.mTargetChildExcludes;
-            if (arrayList5 != null && arrayList5.contains(view)) {
+            if (this.mTargetChildExcludes != null && this.mTargetChildExcludes.contains(view)) {
                 return;
             }
-            ArrayList<Class> arrayList6 = this.mTargetTypeChildExcludes;
-            if (arrayList6 != null) {
-                int numTypes2 = arrayList6.size();
+            if (this.mTargetTypeChildExcludes != null) {
+                int numTypes2 = this.mTargetTypeChildExcludes.size();
                 for (int i2 = 0; i2 < numTypes2; i2++) {
                     if (this.mTargetTypeChildExcludes.get(i2).isInstance(view)) {
                         return;
@@ -936,18 +865,16 @@ public abstract class Transition implements Cloneable {
     }
 
     public TransitionValues getTransitionValues(View view, boolean start) {
-        TransitionSet transitionSet = this.mParent;
-        if (transitionSet != null) {
-            return transitionSet.getTransitionValues(view, start);
+        if (this.mParent != null) {
+            return this.mParent.getTransitionValues(view, start);
         }
         TransitionValuesMaps valuesMaps = start ? this.mStartValues : this.mEndValues;
         return valuesMaps.viewValues.get(view);
     }
 
-    public TransitionValues getMatchedTransitionValues(View view, boolean viewInStart) {
-        TransitionSet transitionSet = this.mParent;
-        if (transitionSet != null) {
-            return transitionSet.getMatchedTransitionValues(view, viewInStart);
+    TransitionValues getMatchedTransitionValues(View view, boolean viewInStart) {
+        if (this.mParent != null) {
+            return this.mParent.getMatchedTransitionValues(view, viewInStart);
         }
         ArrayList<TransitionValues> lookIn = viewInStart ? this.mStartValuesList : this.mEndValuesList;
         if (lookIn == null) {
@@ -992,8 +919,7 @@ public abstract class Transition implements Cloneable {
                     }
                 }
             }
-            ArrayList<TransitionListener> arrayList = this.mListeners;
-            if (arrayList != null && arrayList.size() > 0) {
+            if (this.mListeners != null && this.mListeners.size() > 0) {
                 ArrayList<TransitionListener> tmpListeners = (ArrayList) this.mListeners.clone();
                 int numListeners = tmpListeners.size();
                 for (int i2 = 0; i2 < numListeners; i2++) {
@@ -1017,8 +943,7 @@ public abstract class Transition implements Cloneable {
                         anim.resume();
                     }
                 }
-                ArrayList<TransitionListener> arrayList = this.mListeners;
-                if (arrayList != null && arrayList.size() > 0) {
+                if (this.mListeners != null && this.mListeners.size() > 0) {
                     ArrayList<TransitionListener> tmpListeners = (ArrayList) this.mListeners.clone();
                     int numListeners = tmpListeners.size();
                     for (int i2 = 0; i2 < numListeners; i2++) {
@@ -1030,7 +955,7 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    public void playTransition(ViewGroup sceneRoot) {
+    void playTransition(ViewGroup sceneRoot) {
         AnimationInfo oldInfo;
         this.mStartValuesList = new ArrayList<>();
         this.mEndValuesList = new ArrayList<>();
@@ -1114,9 +1039,6 @@ public abstract class Transition implements Cloneable {
             animator.setInterpolator(getInterpolator());
         }
         animator.addListener(new AnimatorListenerAdapter() { // from class: android.transition.Transition.3
-            AnonymousClass3() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 Transition.this.end();
@@ -1126,23 +1048,9 @@ public abstract class Transition implements Cloneable {
         animator.start();
     }
 
-    /* renamed from: android.transition.Transition$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 extends AnimatorListenerAdapter {
-        AnonymousClass3() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            Transition.this.end();
-            animation.removeListener(this);
-        }
-    }
-
-    public void start() {
+    protected void start() {
         if (this.mNumInstances == 0) {
-            ArrayList<TransitionListener> arrayList = this.mListeners;
-            if (arrayList != null && arrayList.size() > 0) {
+            if (this.mListeners != null && this.mListeners.size() > 0) {
                 ArrayList<TransitionListener> tmpListeners = (ArrayList) this.mListeners.clone();
                 int numListeners = tmpListeners.size();
                 for (int i = 0; i < numListeners; i++) {
@@ -1154,26 +1062,24 @@ public abstract class Transition implements Cloneable {
         this.mNumInstances++;
     }
 
-    public void end() {
-        int i = this.mNumInstances - 1;
-        this.mNumInstances = i;
-        if (i == 0) {
-            ArrayList<TransitionListener> arrayList = this.mListeners;
-            if (arrayList != null && arrayList.size() > 0) {
+    protected void end() {
+        this.mNumInstances--;
+        if (this.mNumInstances == 0) {
+            if (this.mListeners != null && this.mListeners.size() > 0) {
                 ArrayList<TransitionListener> tmpListeners = (ArrayList) this.mListeners.clone();
                 int numListeners = tmpListeners.size();
-                for (int i2 = 0; i2 < numListeners; i2++) {
-                    tmpListeners.get(i2).onTransitionEnd(this);
+                for (int i = 0; i < numListeners; i++) {
+                    tmpListeners.get(i).onTransitionEnd(this);
                 }
             }
-            for (int i3 = 0; i3 < this.mStartValues.itemIdValues.size(); i3++) {
-                View view = this.mStartValues.itemIdValues.valueAt(i3);
+            for (int i2 = 0; i2 < this.mStartValues.itemIdValues.size(); i2++) {
+                View view = this.mStartValues.itemIdValues.valueAt(i2);
                 if (view != null) {
                     view.setHasTransientState(false);
                 }
             }
-            for (int i4 = 0; i4 < this.mEndValues.itemIdValues.size(); i4++) {
-                View view2 = this.mEndValues.itemIdValues.valueAt(i4);
+            for (int i3 = 0; i3 < this.mEndValues.itemIdValues.size(); i3++) {
+                View view2 = this.mEndValues.itemIdValues.valueAt(i3);
                 if (view2 != null) {
                     view2.setHasTransientState(false);
                 }
@@ -1182,7 +1088,7 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    public void forceToEnd(ViewGroup sceneRoot) {
+    void forceToEnd(ViewGroup sceneRoot) {
         ArrayMap<Animator, AnimationInfo> runningAnimators = getRunningAnimators();
         int numOldAnims = runningAnimators.size();
         if (sceneRoot == null || numOldAnims == 0) {
@@ -1200,14 +1106,13 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    public void cancel() {
+    protected void cancel() {
         int numAnimators = this.mCurrentAnimators.size();
         for (int i = numAnimators - 1; i >= 0; i--) {
             Animator animator = this.mCurrentAnimators.get(i);
             animator.cancel();
         }
-        ArrayList<TransitionListener> arrayList = this.mListeners;
-        if (arrayList != null && arrayList.size() > 0) {
+        if (this.mListeners != null && this.mListeners.size() > 0) {
             ArrayList<TransitionListener> tmpListeners = (ArrayList) this.mListeners.clone();
             int numListeners = tmpListeners.size();
             for (int i2 = 0; i2 < numListeners; i2++) {
@@ -1225,11 +1130,10 @@ public abstract class Transition implements Cloneable {
     }
 
     public Transition removeListener(TransitionListener listener) {
-        ArrayList<TransitionListener> arrayList = this.mListeners;
-        if (arrayList == null) {
+        if (this.mListeners == null) {
             return this;
         }
-        arrayList.remove(listener);
+        this.mListeners.remove(listener);
         if (this.mListeners.size() == 0) {
             this.mListeners = null;
         }
@@ -1245,11 +1149,10 @@ public abstract class Transition implements Cloneable {
     }
 
     public Rect getEpicenter() {
-        EpicenterCallback epicenterCallback = this.mEpicenterCallback;
-        if (epicenterCallback == null) {
+        if (this.mEpicenterCallback == null) {
             return null;
         }
-        return epicenterCallback.onGetEpicenter(this);
+        return this.mEpicenterCallback.onGetEpicenter(this);
     }
 
     public void setPathMotion(PathMotion pathMotion) {
@@ -1272,7 +1175,7 @@ public abstract class Transition implements Cloneable {
         return this.mPropagation;
     }
 
-    public void capturePropagationValues(TransitionValues transitionValues) {
+    void capturePropagationValues(TransitionValues transitionValues) {
         String[] propertyNames;
         if (this.mPropagation == null || transitionValues.values.isEmpty() || (propertyNames = this.mPropagation.getPropagationProperties()) == null) {
             return;
@@ -1295,12 +1198,12 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    public Transition setSceneRoot(ViewGroup sceneRoot) {
+    Transition setSceneRoot(ViewGroup sceneRoot) {
         this.mSceneRoot = sceneRoot;
         return this;
     }
 
-    public void setCanRemoveViews(boolean canRemoveViews) {
+    void setCanRemoveViews(boolean canRemoveViews) {
         this.mCanRemoveViews = canRemoveViews;
     }
 
@@ -1322,7 +1225,7 @@ public abstract class Transition implements Cloneable {
 
     @Override // 
     /* renamed from: clone */
-    public Transition mo4916clone() {
+    public Transition mo5201clone() {
         Transition clone = null;
         try {
             clone = (Transition) super.clone();
@@ -1341,7 +1244,7 @@ public abstract class Transition implements Cloneable {
         return this.mName;
     }
 
-    public String toString(String indent) {
+    String toString(String indent) {
         String result = indent + getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + ": ";
         if (this.mDuration != -1) {
             result = result + "dur(" + this.mDuration + ") ";
@@ -1375,7 +1278,6 @@ public abstract class Transition implements Cloneable {
         return result;
     }
 
-    /* loaded from: classes4.dex */
     public static class AnimationInfo {
         String name;
         Transition transition;
@@ -1392,8 +1294,7 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ArrayListManager {
+    private static class ArrayListManager {
         private ArrayListManager() {
         }
 

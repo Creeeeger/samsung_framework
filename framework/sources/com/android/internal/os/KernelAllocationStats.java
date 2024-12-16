@@ -9,7 +9,6 @@ public final class KernelAllocationStats {
     private KernelAllocationStats() {
     }
 
-    /* loaded from: classes5.dex */
     public static final class ProcessDmabuf {
         public final int oomScore;
         public final String processName;
@@ -30,7 +29,6 @@ public final class KernelAllocationStats {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class ProcessGpuMem {
         public final int gpuMemoryKb;
         public final int pid;

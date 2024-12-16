@@ -11,7 +11,7 @@ import com.samsung.android.dsms.aidl.IDsmsInfoService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class DsmsInfoCache {
     private static final String SUBTAG = "DsmsInfoCache";
     private static final long TIMEOUT = TimeUnit.MILLISECONDS.convert(2, TimeUnit.SECONDS);
@@ -88,8 +88,7 @@ public final class DsmsInfoCache {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public final class DsmsInfoServiceClient {
+    private final class DsmsInfoServiceClient {
         private static final String ACTION_INFO = "com.samsung.android.dsms.action.INFO";
         private static final String DSMS_PACKAGE = "com.samsung.android.dsms";
         private static final String SUBTAG = "DsmsInfoServiceClient";
@@ -98,18 +97,11 @@ public final class DsmsInfoCache {
         private boolean mIsBound;
         private Object mLock;
 
-        /* synthetic */ DsmsInfoServiceClient(DsmsInfoCache dsmsInfoCache, DsmsInfoServiceClientIA dsmsInfoServiceClientIA) {
-            this();
-        }
-
         private DsmsInfoServiceClient() {
             this.mLock = new Object();
             this.mIsBound = false;
             this.mIDsmsInfoService = null;
             this.mConnection = new ServiceConnection() { // from class: com.samsung.android.jdsms.DsmsInfoCache.DsmsInfoServiceClient.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.content.ServiceConnection
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     synchronized (DsmsInfoServiceClient.this.mLock) {
@@ -125,29 +117,6 @@ public final class DsmsInfoCache {
                     }
                 }
             };
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.jdsms.DsmsInfoCache$DsmsInfoServiceClient$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 implements ServiceConnection {
-            AnonymousClass1() {
-            }
-
-            @Override // android.content.ServiceConnection
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                synchronized (DsmsInfoServiceClient.this.mLock) {
-                    DsmsInfoServiceClient.this.mIDsmsInfoService = IDsmsInfoService.Stub.asInterface(service);
-                    DsmsInfoServiceClient.this.mLock.notifyAll();
-                }
-            }
-
-            @Override // android.content.ServiceConnection
-            public void onServiceDisconnected(ComponentName name) {
-                synchronized (DsmsInfoServiceClient.this.mLock) {
-                    DsmsInfoServiceClient.this.mIDsmsInfoService = null;
-                }
-            }
         }
 
         public boolean isBound() {
@@ -168,9 +137,8 @@ public final class DsmsInfoCache {
                 Intent intent = new Intent();
                 intent.setPackage(DSMS_PACKAGE);
                 intent.setAction(ACTION_INFO);
-                boolean bindServiceAsUser = DsmsInfoCache.this.mContext.bindServiceAsUser(intent, this.mConnection, 1, UserHandle.SYSTEM);
-                this.mIsBound = bindServiceAsUser;
-                if (bindServiceAsUser) {
+                this.mIsBound = DsmsInfoCache.this.mContext.bindServiceAsUser(intent, this.mConnection, 1, UserHandle.SYSTEM);
+                if (this.mIsBound) {
                     DsmsLog.d(SUBTAG, "Service is bound");
                 } else {
                     DsmsLog.e(SUBTAG, "Could not bind to service");
@@ -217,11 +185,10 @@ public final class DsmsInfoCache {
         public boolean isCommercializedDevice() throws RemoteException {
             boolean isCommercializedDevice;
             synchronized (this.mLock) {
-                IDsmsInfoService iDsmsInfoService = this.mIDsmsInfoService;
-                if (iDsmsInfoService == null) {
+                if (this.mIDsmsInfoService == null) {
                     throw new IllegalStateException("Service is not connected");
                 }
-                isCommercializedDevice = iDsmsInfoService.isCommercializedDevice();
+                isCommercializedDevice = this.mIDsmsInfoService.isCommercializedDevice();
             }
             return isCommercializedDevice;
         }

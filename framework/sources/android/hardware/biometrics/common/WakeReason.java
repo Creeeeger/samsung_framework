@@ -1,6 +1,6 @@
 package android.hardware.biometrics.common;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public @interface WakeReason {
     public static final int BIOMETRIC = 9;
     public static final int DISPLAY_GROUP_ADDED = 6;

@@ -19,26 +19,23 @@ public final class MidiDevice implements Closeable {
     private final IMidiDeviceServer mDeviceServer;
     private final IBinder mDeviceServerBinder;
     private final IBinder mDeviceToken;
-    private final CloseGuard mGuard;
+    private final CloseGuard mGuard = CloseGuard.get();
     private boolean mIsDeviceClosed;
     private final IMidiManager mMidiManager;
     private long mNativeHandle;
 
-    /* loaded from: classes2.dex */
     public class MidiConnection implements Closeable {
-        private final CloseGuard mGuard;
+        private final CloseGuard mGuard = CloseGuard.get();
         private final IMidiDeviceServer mInputPortDeviceServer;
         private final IBinder mInputPortToken;
         private boolean mIsClosed;
         private final IBinder mOutputPortToken;
 
         MidiConnection(IBinder outputPortToken, MidiInputPort inputPort) {
-            CloseGuard closeGuard = CloseGuard.get();
-            this.mGuard = closeGuard;
             this.mInputPortDeviceServer = inputPort.getDeviceServer();
             this.mInputPortToken = inputPort.getToken();
             this.mOutputPortToken = outputPortToken;
-            closeGuard.open("close");
+            this.mGuard.open("close");
         }
 
         @Override // java.io.Closeable, java.lang.AutoCloseable
@@ -60,9 +57,8 @@ public final class MidiDevice implements Closeable {
 
         protected void finalize() throws Throwable {
             try {
-                CloseGuard closeGuard = this.mGuard;
-                if (closeGuard != null) {
-                    closeGuard.warnIfOpen();
+                if (this.mGuard != null) {
+                    this.mGuard.warnIfOpen();
                 }
                 close();
             } finally {
@@ -71,16 +67,14 @@ public final class MidiDevice implements Closeable {
         }
     }
 
-    public MidiDevice(MidiDeviceInfo deviceInfo, IMidiDeviceServer server, IMidiManager midiManager, IBinder clientToken, IBinder deviceToken) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mGuard = closeGuard;
+    MidiDevice(MidiDeviceInfo deviceInfo, IMidiDeviceServer server, IMidiManager midiManager, IBinder clientToken, IBinder deviceToken) {
         this.mDeviceInfo = deviceInfo;
         this.mDeviceServer = server;
-        this.mDeviceServerBinder = server.asBinder();
+        this.mDeviceServerBinder = this.mDeviceServer.asBinder();
         this.mMidiManager = midiManager;
         this.mClientToken = clientToken;
         this.mDeviceToken = deviceToken;
-        closeGuard.open("close");
+        this.mGuard.open("close");
     }
 
     public MidiDeviceInfo getInfo() {
@@ -162,9 +156,8 @@ public final class MidiDevice implements Closeable {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mGuard != null) {
+                this.mGuard.warnIfOpen();
             }
             close();
         } finally {

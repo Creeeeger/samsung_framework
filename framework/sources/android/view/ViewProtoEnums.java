@@ -7,6 +7,14 @@ public final class ViewProtoEnums {
     public static final int DISPLAY_STATE_OFF = 1;
     public static final int DISPLAY_STATE_ON = 2;
     public static final int DISPLAY_STATE_ON_SUSPEND = 6;
+    public static final int DISPLAY_STATE_REASON_DEFAULT_POLICY = 1;
+    public static final int DISPLAY_STATE_REASON_DRAW_WAKE_LOCK = 2;
+    public static final int DISPLAY_STATE_REASON_DREAM_MANAGER = 5;
+    public static final int DISPLAY_STATE_REASON_KEY = 6;
+    public static final int DISPLAY_STATE_REASON_MOTION = 7;
+    public static final int DISPLAY_STATE_REASON_OFFLOAD = 3;
+    public static final int DISPLAY_STATE_REASON_TILT = 4;
+    public static final int DISPLAY_STATE_REASON_UNKNOWN = 0;
     public static final int DISPLAY_STATE_UNKNOWN = 0;
     public static final int DISPLAY_STATE_VR = 5;
     public static final int TRANSIT_ACTIVITY_CLOSE = 7;

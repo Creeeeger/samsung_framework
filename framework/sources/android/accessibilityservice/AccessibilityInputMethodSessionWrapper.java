@@ -8,16 +8,16 @@ import com.android.internal.inputmethod.IRemoteAccessibilityInputConnection;
 import java.util.concurrent.atomic.AtomicReference;
 
 /* loaded from: classes.dex */
-public final class AccessibilityInputMethodSessionWrapper extends IAccessibilityInputMethodSession.Stub {
+final class AccessibilityInputMethodSessionWrapper extends IAccessibilityInputMethodSession.Stub {
     private final Handler mHandler;
     private final AtomicReference<AccessibilityInputMethodSession> mSessionRef;
 
-    public AccessibilityInputMethodSessionWrapper(Looper looper, AccessibilityInputMethodSession session) {
+    AccessibilityInputMethodSessionWrapper(Looper looper, AccessibilityInputMethodSession session) {
         this.mSessionRef = new AtomicReference<>(session);
         this.mHandler = Handler.createAsync(looper);
     }
 
-    public AccessibilityInputMethodSession getSession() {
+    AccessibilityInputMethodSession getSession() {
         return this.mSessionRef.get();
     }
 
@@ -35,7 +35,8 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
-    /* renamed from: doUpdateSelection */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: doUpdateSelection, reason: merged with bridge method [inline-methods] */
     public void lambda$updateSelection$0(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
         AccessibilityInputMethodSession session = this.mSessionRef.get();
         if (session != null) {
@@ -57,6 +58,7 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doFinishInput() {
         AccessibilityInputMethodSession session = this.mSessionRef.get();
         if (session != null) {
@@ -69,7 +71,7 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         if (this.mHandler.getLooper().isCurrentThread()) {
             doFinishSession();
         } else {
-            this.mHandler.post(new Runnable() { // from class: android.accessibilityservice.AccessibilityInputMethodSessionWrapper$$ExternalSyntheticLambda0
+            this.mHandler.post(new Runnable() { // from class: android.accessibilityservice.AccessibilityInputMethodSessionWrapper$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     AccessibilityInputMethodSessionWrapper.this.doFinishSession();
@@ -78,6 +80,7 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doFinishSession() {
         this.mSessionRef.set(null);
     }
@@ -87,7 +90,7 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         if (this.mHandler.getLooper().isCurrentThread()) {
             lambda$invalidateInput$1(editorInfo, connection, sessionId);
         } else {
-            this.mHandler.post(new Runnable() { // from class: android.accessibilityservice.AccessibilityInputMethodSessionWrapper$$ExternalSyntheticLambda3
+            this.mHandler.post(new Runnable() { // from class: android.accessibilityservice.AccessibilityInputMethodSessionWrapper$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     AccessibilityInputMethodSessionWrapper.this.lambda$invalidateInput$1(editorInfo, connection, sessionId);
@@ -96,7 +99,8 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
-    /* renamed from: doInvalidateInput */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: doInvalidateInput, reason: merged with bridge method [inline-methods] */
     public void lambda$invalidateInput$1(EditorInfo editorInfo, IRemoteAccessibilityInputConnection connection, int sessionId) {
         AccessibilityInputMethodSession session = this.mSessionRef.get();
         if (session != null) {

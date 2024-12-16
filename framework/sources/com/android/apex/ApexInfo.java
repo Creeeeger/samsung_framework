@@ -1,6 +1,6 @@
 package com.android.apex;
 
-import com.samsung.android.sm.iafdlib.IafdConstant;
+import com.sec.android.iaft.SmLib_IafdConstant;
 import java.io.IOException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.xmlpull.v1.XmlPullParser;
@@ -64,11 +64,10 @@ public class ApexInfo {
     }
 
     public long getVersionCode() {
-        Long l = this.versionCode;
-        if (l == null) {
+        if (this.versionCode == null) {
             return 0L;
         }
-        return l.longValue();
+        return this.versionCode.longValue();
     }
 
     boolean hasVersionCode() {
@@ -98,11 +97,10 @@ public class ApexInfo {
     }
 
     public boolean getIsFactory() {
-        Boolean bool = this.isFactory;
-        if (bool == null) {
+        if (this.isFactory == null) {
             return false;
         }
-        return bool.booleanValue();
+        return this.isFactory.booleanValue();
     }
 
     boolean hasIsFactory() {
@@ -117,11 +115,10 @@ public class ApexInfo {
     }
 
     public boolean getIsActive() {
-        Boolean bool = this.isActive;
-        if (bool == null) {
+        if (this.isActive == null) {
             return false;
         }
-        return bool.booleanValue();
+        return this.isActive.booleanValue();
     }
 
     boolean hasIsActive() {
@@ -136,11 +133,10 @@ public class ApexInfo {
     }
 
     public long getLastUpdateMillis() {
-        Long l = this.lastUpdateMillis;
-        if (l == null) {
+        if (this.lastUpdateMillis == null) {
             return 0L;
         }
-        return l.longValue();
+        return this.lastUpdateMillis.longValue();
     }
 
     boolean hasLastUpdateMillis() {
@@ -155,11 +151,10 @@ public class ApexInfo {
     }
 
     public boolean getProvideSharedApexLibs() {
-        Boolean bool = this.provideSharedApexLibs;
-        if (bool == null) {
+        if (this.provideSharedApexLibs == null) {
             return false;
         }
-        return bool.booleanValue();
+        return this.provideSharedApexLibs.booleanValue();
     }
 
     boolean hasProvideSharedApexLibs() {
@@ -173,7 +168,7 @@ public class ApexInfo {
         this.provideSharedApexLibs = Boolean.valueOf(provideSharedApexLibs);
     }
 
-    public static ApexInfo read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static ApexInfo read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         ApexInfo _instance = new ApexInfo();
         String _raw = _parser.getAttributeValue(null, "moduleName");
         if (_raw != null) {
@@ -187,7 +182,7 @@ public class ApexInfo {
         if (_raw3 != null) {
             _instance.setPreinstalledModulePath(_raw3);
         }
-        String _raw4 = _parser.getAttributeValue(null, IafdConstant.KEY_VERSION_CODE);
+        String _raw4 = _parser.getAttributeValue(null, SmLib_IafdConstant.KEY_VERSION_CODE);
         if (_raw4 != null) {
             long _value = Long.parseLong(_raw4);
             _instance.setVersionCode(_value);
@@ -220,7 +215,7 @@ public class ApexInfo {
         return _instance;
     }
 
-    public void write(XmlWriter _out, String _name) throws IOException {
+    void write(XmlWriter _out, String _name) throws IOException {
         _out.print("<" + _name);
         if (hasModuleName()) {
             _out.print(" moduleName=\"");

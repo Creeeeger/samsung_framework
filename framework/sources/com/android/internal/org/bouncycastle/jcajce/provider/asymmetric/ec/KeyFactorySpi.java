@@ -46,7 +46,7 @@ public class KeyFactorySpi extends BaseKeyFactorySpi implements AsymmetricKeyInf
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
+    protected KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
         if ((spec.isAssignableFrom(KeySpec.class) || spec.isAssignableFrom(ECPublicKeySpec.class)) && (key instanceof ECPublicKey)) {
             ECPublicKey k = (ECPublicKey) key;
             if (k.getParams() != null) {
@@ -81,7 +81,7 @@ public class KeyFactorySpi extends BaseKeyFactorySpi implements AsymmetricKeyInf
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof com.android.internal.org.bouncycastle.jce.spec.ECPrivateKeySpec) {
             return new BCECPrivateKey(this.algorithm, (com.android.internal.org.bouncycastle.jce.spec.ECPrivateKeySpec) keySpec, this.configuration);
         }
@@ -92,7 +92,7 @@ public class KeyFactorySpi extends BaseKeyFactorySpi implements AsymmetricKeyInf
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
         try {
             if (keySpec instanceof com.android.internal.org.bouncycastle.jce.spec.ECPublicKeySpec) {
                 return new BCECPublicKey(this.algorithm, (com.android.internal.org.bouncycastle.jce.spec.ECPublicKeySpec) keySpec, this.configuration);
@@ -124,35 +124,30 @@ public class KeyFactorySpi extends BaseKeyFactorySpi implements AsymmetricKeyInf
         throw new IOException("algorithm identifier " + algOid + " in key not recognised");
     }
 
-    /* loaded from: classes5.dex */
     public static class EC extends KeyFactorySpi {
         public EC() {
             super(KeyProperties.KEY_ALGORITHM_EC, BouncyCastleProvider.CONFIGURATION);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECDSA extends KeyFactorySpi {
         public ECDSA() {
             super("ECDSA", BouncyCastleProvider.CONFIGURATION);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECDH extends KeyFactorySpi {
         public ECDH() {
             super("ECDH", BouncyCastleProvider.CONFIGURATION);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECDHC extends KeyFactorySpi {
         public ECDHC() {
             super("ECDHC", BouncyCastleProvider.CONFIGURATION);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECMQV extends KeyFactorySpi {
         public ECMQV() {
             super("ECMQV", BouncyCastleProvider.CONFIGURATION);

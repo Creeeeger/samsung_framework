@@ -11,7 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /* loaded from: classes3.dex */
-public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implements AudioTrack.OnPlaybackPositionUpdateListener {
+final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implements AudioTrack.OnPlaybackPositionUpdateListener {
     private static final boolean DBG = false;
     private static final long MAX_UNCONSUMED_AUDIO_MS = 500;
     private static final int NOT_RUN = 0;
@@ -31,12 +31,11 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
     private int mUnconsumedBytes;
     private ConcurrentLinkedQueue<ProgressMarker> markerList;
 
-    public SynthesisPlaybackQueueItem(TextToSpeechService.AudioOutputParams audioParams, int sampleRate, int audioFormat, int channelCount, TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, AbstractEventLogger logger) {
+    SynthesisPlaybackQueueItem(TextToSpeechService.AudioOutputParams audioParams, int sampleRate, int audioFormat, int channelCount, TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, AbstractEventLogger logger) {
         super(dispatcher, callerIdentity);
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.mListLock = reentrantLock;
-        this.mReadReady = reentrantLock.newCondition();
-        this.mNotFull = reentrantLock.newCondition();
+        this.mListLock = new ReentrantLock();
+        this.mReadReady = this.mListLock.newCondition();
+        this.mNotFull = this.mListLock.newCondition();
         this.mDataBufferList = new LinkedList<>();
         this.markerList = new ConcurrentLinkedQueue<>();
         this.mRunState = new AtomicInteger(0);
@@ -89,7 +88,7 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
     }
 
     @Override // android.speech.tts.PlaybackQueueItem
-    public void stop(int statusCode) {
+    void stop(int statusCode) {
         try {
             this.mListLock.lock();
             this.mStopped = true;
@@ -107,7 +106,7 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    public void done() {
+    void done() {
         try {
             this.mListLock.lock();
             this.mDone = true;
@@ -118,8 +117,7 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class ProgressMarker {
+    private class ProgressMarker {
         public final int end;
         public final int frames;
         public final int start;
@@ -139,7 +137,7 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    public void rangeStart(int markerInFrames, int start, int end) {
+    void rangeStart(int markerInFrames, int start, int end) {
         this.markerList.add(new ProgressMarker(markerInFrames, start, end));
         updateMarker();
     }
@@ -159,7 +157,7 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
     public void onPeriodicNotification(AudioTrack track) {
     }
 
-    public void put(byte[] buffer) throws InterruptedException {
+    void put(byte[] buffer) throws InterruptedException {
         try {
             this.mListLock.lock();
             while (this.mAudioTrack.getAudioLengthMs(this.mUnconsumedBytes) > MAX_UNCONSUMED_AUDIO_MS && !this.mStopped) {
@@ -197,8 +195,7 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class ListEntry {
+    static final class ListEntry {
         final byte[] mBytes;
 
         ListEntry(byte[] bytes) {

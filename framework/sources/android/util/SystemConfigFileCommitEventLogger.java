@@ -24,6 +24,10 @@ public class SystemConfigFileCommitEventLogger {
     }
 
     public void onFinishWrite() {
-        com.android.internal.logging.EventLogTags.writeCommitSysConfigFile(this.mName, SystemClock.uptimeMillis() - this.mStartTime);
+        writeLogRecord(SystemClock.uptimeMillis() - this.mStartTime);
+    }
+
+    public void writeLogRecord(long durationMs) {
+        com.android.internal.logging.EventLogTags.writeCommitSysConfigFile(this.mName, durationMs);
     }
 }

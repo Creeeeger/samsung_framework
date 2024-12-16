@@ -15,13 +15,13 @@ public class BaseSecretKeyFactory extends SecretKeyFactorySpi implements PBE {
     protected String algName;
     protected ASN1ObjectIdentifier algOid;
 
-    public BaseSecretKeyFactory(String algName, ASN1ObjectIdentifier algOid) {
+    protected BaseSecretKeyFactory(String algName, ASN1ObjectIdentifier algOid) {
         this.algName = algName;
         this.algOid = algOid;
     }
 
     @Override // javax.crypto.SecretKeyFactorySpi
-    public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
+    protected SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof SecretKeySpec) {
             return new SecretKeySpec(((SecretKeySpec) keySpec).getEncoded(), this.algName);
         }

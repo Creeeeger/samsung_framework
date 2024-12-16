@@ -11,9 +11,7 @@ public class LinkAddress implements Parcelable {
     public static final int ADDRESS_PROPERTY_DEPRECATED = 32;
     public static final int ADDRESS_PROPERTY_NONE = 0;
     public static final Parcelable.Creator<LinkAddress> CREATOR = new Parcelable.Creator<LinkAddress>() { // from class: android.hardware.radio.data.LinkAddress.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LinkAddress createFromParcel(Parcel _aidl_source) {
             LinkAddress _aidl_out = new LinkAddress();
@@ -21,6 +19,7 @@ public class LinkAddress implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LinkAddress[] newArray(int _aidl_size) {
             return new LinkAddress[_aidl_size];
@@ -30,25 +29,6 @@ public class LinkAddress implements Parcelable {
     public int addressProperties = 0;
     public long deprecationTime = 0;
     public long expirationTime = 0;
-
-    /* renamed from: android.hardware.radio.data.LinkAddress$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LinkAddress> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LinkAddress createFromParcel(Parcel _aidl_source) {
-            LinkAddress _aidl_out = new LinkAddress();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LinkAddress[] newArray(int _aidl_size) {
-            return new LinkAddress[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -127,7 +107,7 @@ public class LinkAddress implements Parcelable {
         _aidl_sj.add("addressProperties: " + this.addressProperties);
         _aidl_sj.add("deprecationTime: " + this.deprecationTime);
         _aidl_sj.add("expirationTime: " + this.expirationTime);
-        return "android.hardware.radio.data.LinkAddress" + _aidl_sj.toString();
+        return "LinkAddress" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

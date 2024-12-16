@@ -17,12 +17,10 @@ public class TranslatingCursor extends CrossProcessCursorWrapper {
     private final ArraySet<Integer> mTranslateColumnIndices;
     private final Translator mTranslator;
 
-    /* loaded from: classes.dex */
     public interface Translator {
         String translate(String str, int i, String str2, Cursor cursor);
     }
 
-    /* loaded from: classes.dex */
     public static class Config {
         public final String auxiliaryColumn;
         public final Uri baseUri;

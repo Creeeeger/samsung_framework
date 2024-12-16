@@ -12,17 +12,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class DataProfile implements Parcelable {
     public static final Parcelable.Creator<DataProfile> CREATOR = new Parcelable.Creator<DataProfile>() { // from class: android.telephony.data.DataProfile.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataProfile createFromParcel(Parcel source) {
             return new DataProfile(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataProfile[] newArray(int size) {
             return new DataProfile[size];
@@ -40,27 +39,17 @@ public final class DataProfile implements Parcelable {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Type {
     }
 
-    /* synthetic */ DataProfile(Parcel parcel, DataProfileIA dataProfileIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ DataProfile(Builder builder, DataProfileIA dataProfileIA) {
-        this(builder);
-    }
-
     private DataProfile(Builder builder) {
-        ApnSetting apnSetting = builder.mApnSetting;
-        this.mApnSetting = apnSetting;
+        this.mApnSetting = builder.mApnSetting;
         this.mTrafficDescriptor = builder.mTrafficDescriptor;
         this.mPreferred = builder.mPreferred;
         if (builder.mType != -1) {
             this.mType = builder.mType;
-        } else if (apnSetting != null) {
-            int networkTypes = apnSetting.getNetworkTypeBitmask();
+        } else if (this.mApnSetting != null) {
+            int networkTypes = this.mApnSetting.getNetworkTypeBitmask();
             if (networkTypes == 0) {
                 this.mType = 0;
             } else if ((networkTypes & TelephonyManager.NETWORK_STANDARDS_FAMILY_BITMASK_3GPP2) == networkTypes) {
@@ -89,13 +78,11 @@ public final class DataProfile implements Parcelable {
 
     @Deprecated
     public int getProfileId() {
-        int i = this.mProfileId;
-        if (i >= 0) {
-            return i;
+        if (this.mProfileId >= 0) {
+            return this.mProfileId;
         }
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getProfileId();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getProfileId();
         }
         return 0;
     }
@@ -106,45 +93,40 @@ public final class DataProfile implements Parcelable {
 
     @Deprecated
     public String getApn() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return TextUtils.emptyIfNull(apnSetting.getApnName());
+        if (this.mApnSetting != null) {
+            return TextUtils.emptyIfNull(this.mApnSetting.getApnName());
         }
         return "";
     }
 
     @Deprecated
     public int getProtocolType() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getProtocol();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getProtocol();
         }
         return 2;
     }
 
     @Deprecated
     public int getAuthType() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getAuthType();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getAuthType();
         }
         return 0;
     }
 
     @Deprecated
     public String getUserName() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getUser();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getUser();
         }
         return null;
     }
 
     @Deprecated
     public String getPassword() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getPassword();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getPassword();
         }
         return null;
     }
@@ -154,60 +136,53 @@ public final class DataProfile implements Parcelable {
     }
 
     public int getMaxConnectionsTime() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getMaxConnsTime();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getMaxConnsTime();
         }
         return 0;
     }
 
     public int getMaxConnections() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getMaxConns();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getMaxConns();
         }
         return 0;
     }
 
     public int getWaitTime() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getWaitTime();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getWaitTime();
         }
         return 0;
     }
 
     public boolean isEnabled() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.isEnabled();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.isEnabled();
         }
         return true;
     }
 
     @Deprecated
     public int getSupportedApnTypesBitmask() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getApnTypeBitmask();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getApnTypeBitmask();
         }
         return 0;
     }
 
     @Deprecated
     public int getRoamingProtocolType() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getRoamingProtocol();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getRoamingProtocol();
         }
         return 0;
     }
 
     @Deprecated
     public int getBearerBitmask() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getNetworkTypeBitmask();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getNetworkTypeBitmask();
         }
         return 0;
     }
@@ -219,27 +194,24 @@ public final class DataProfile implements Parcelable {
 
     @Deprecated
     public int getMtuV4() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getMtuV4();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getMtuV4();
         }
         return 0;
     }
 
     @Deprecated
     public int getMtuV6() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.getMtuV6();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.getMtuV6();
         }
         return 0;
     }
 
     @Deprecated
     public boolean isPersistent() {
-        ApnSetting apnSetting = this.mApnSetting;
-        if (apnSetting != null) {
-            return apnSetting.isPersistent();
+        if (this.mApnSetting != null) {
+            return this.mApnSetting.isPersistent();
         }
         return false;
     }
@@ -281,8 +253,7 @@ public final class DataProfile implements Parcelable {
     }
 
     public boolean canSatisfy(int networkCapability) {
-        ApnSetting apnSetting = this.mApnSetting;
-        return apnSetting != null && apnSetting.canHandleType(networkCapabilityToApnType(networkCapability));
+        return this.mApnSetting != null && this.mApnSetting.canHandleType(networkCapabilityToApnType(networkCapability));
     }
 
     private static int networkCapabilityToApnType(int networkCapability) {
@@ -302,7 +273,7 @@ public final class DataProfile implements Parcelable {
             case 7:
                 return 256;
             case 8:
-                return 65536;
+                return 32768;
             case 9:
                 return 2048;
             case 10:
@@ -350,23 +321,6 @@ public final class DataProfile implements Parcelable {
         dest.writeInt(this.mProfileId);
     }
 
-    /* renamed from: android.telephony.data.DataProfile$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DataProfile> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataProfile createFromParcel(Parcel source) {
-            return new DataProfile(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataProfile[] newArray(int size) {
-            return new DataProfile[size];
-        }
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -385,7 +339,6 @@ public final class DataProfile implements Parcelable {
         return Objects.hash(Integer.valueOf(this.mType), this.mApnSetting, this.mTrafficDescriptor);
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private String mApn;
         private ApnSetting mApnSetting;

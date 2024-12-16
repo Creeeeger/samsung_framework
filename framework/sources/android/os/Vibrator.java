@@ -12,6 +12,7 @@ import android.os.VibratorInfo;
 import android.os.vibrator.VibrationConfig;
 import android.os.vibrator.VibratorFrequencyProfile;
 import android.util.Log;
+import com.samsung.android.vibrator.VibrationDebugInfo;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Executor;
@@ -36,12 +37,10 @@ public abstract class Vibrator {
     private volatile VibrationConfig mVibrationConfig;
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public interface OnVibratorStateChangedListener {
         void onVibratorStateChanged(boolean z);
     }
 
-    /* loaded from: classes3.dex */
     public enum SemMagnitudeTypes {
         TYPE_TOUCH,
         TYPE_NOTIFICATION,
@@ -53,12 +52,10 @@ public abstract class Vibrator {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface VibrationEffectSupport {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface VibrationIntensity {
     }
 
@@ -77,7 +74,7 @@ public abstract class Vibrator {
         this.mResources = null;
     }
 
-    public Vibrator(Context context) {
+    protected Vibrator(Context context) {
         this.mPackageName = context.getOpPackageName();
         this.mResources = context.getResources();
     }
@@ -102,16 +99,20 @@ public abstract class Vibrator {
         return getConfig().getDefaultVibrationIntensity(usage);
     }
 
+    public boolean isDefaultKeyboardVibrationEnabled() {
+        return getConfig().isDefaultKeyboardVibrationEnabled();
+    }
+
     public int getId() {
         return getInfo().getId();
     }
 
     public boolean hasFrequencyControl() {
-        return getInfo().hasCapability(1536L);
+        return getInfo().hasFrequencyControl();
     }
 
     public boolean areVibrationFeaturesSupported(VibrationEffect effect) {
-        return effect.areVibrationFeaturesSupported(this);
+        return getInfo().areVibrationFeaturesSupported(effect);
     }
 
     public boolean hasExternalControl() {
@@ -185,17 +186,21 @@ public abstract class Vibrator {
     }
 
     public void vibrate(VibrationEffect vibe, AudioAttributes attributes) {
-        VibrationAttributes build;
+        VibrationAttributes attr;
         if (attributes == null) {
-            build = new VibrationAttributes.Builder().build();
+            attr = new VibrationAttributes.Builder().build();
         } else {
-            build = new VibrationAttributes.Builder(attributes).build();
+            attr = new VibrationAttributes.Builder(attributes).build();
         }
-        vibrate(vibe, build);
+        vibrate(vibe, attr);
     }
 
     public void vibrate(VibrationEffect vibe, VibrationAttributes attributes) {
         vibrate(Process.myUid(), this.mPackageName, vibe, null, attributes);
+    }
+
+    public void performHapticFeedback(int constant, boolean always, String reason, boolean fromIme) {
+        Log.w(TAG, "performHapticFeedback is not supported");
     }
 
     public int[] areEffectsSupported(int... effectIds) {
@@ -306,7 +311,7 @@ public abstract class Vibrator {
         return false;
     }
 
-    public String executeVibrationDebugCommand(int param) {
+    public String executeVibrationDebugCommand(VibrationDebugInfo param) {
         return "";
     }
 }

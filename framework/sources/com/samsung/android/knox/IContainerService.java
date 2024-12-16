@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IContainerService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.IContainerService";
 
     Bundle onMessage(String str, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IContainerService {
         @Override // com.samsung.android.knox.IContainerService
         public Bundle onMessage(String name, Bundle args) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IContainerService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IContainerService {
         static final int TRANSACTION_onMessage = 1;
 
@@ -69,27 +67,24 @@ public interface IContainerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContainerService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContainerService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContainerService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result = onMessage(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result = onMessage(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IContainerService {
             private IBinder mRemote;
 

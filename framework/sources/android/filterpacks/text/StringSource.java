@@ -5,7 +5,6 @@ import android.filterfw.core.FilterContext;
 import android.filterfw.core.Frame;
 import android.filterfw.core.FrameFormat;
 import android.filterfw.core.GenerateFieldPort;
-import android.filterfw.core.MutableFrameFormat;
 import android.filterfw.format.ObjectFormat;
 
 /* loaded from: classes.dex */
@@ -21,9 +20,8 @@ public class StringSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void setupPorts() {
-        MutableFrameFormat fromClass = ObjectFormat.fromClass(String.class, 1);
-        this.mOutputFormat = fromClass;
-        addOutputPort("string", fromClass);
+        this.mOutputFormat = ObjectFormat.fromClass(String.class, 1);
+        addOutputPort("string", this.mOutputFormat);
     }
 
     @Override // android.filterfw.core.Filter

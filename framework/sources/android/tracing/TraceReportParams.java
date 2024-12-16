@@ -5,12 +5,10 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TraceReportParams implements Parcelable {
     public static final Parcelable.Creator<TraceReportParams> CREATOR = new Parcelable.Creator<TraceReportParams>() { // from class: android.tracing.TraceReportParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TraceReportParams createFromParcel(Parcel _aidl_source) {
             TraceReportParams _aidl_out = new TraceReportParams();
@@ -18,6 +16,7 @@ public class TraceReportParams implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TraceReportParams[] newArray(int _aidl_size) {
             return new TraceReportParams[_aidl_size];
@@ -29,25 +28,6 @@ public class TraceReportParams implements Parcelable {
     public long uuidLsb = 0;
     public long uuidMsb = 0;
     public boolean usePipeForTesting = false;
-
-    /* renamed from: android.tracing.TraceReportParams$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TraceReportParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TraceReportParams createFromParcel(Parcel _aidl_source) {
-            TraceReportParams _aidl_out = new TraceReportParams();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TraceReportParams[] newArray(int _aidl_size) {
-            return new TraceReportParams[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

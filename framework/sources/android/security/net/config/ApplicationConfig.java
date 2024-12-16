@@ -1,5 +1,6 @@
 package android.security.net.config;
 
+import android.security.Flags;
 import android.util.Pair;
 import java.util.HashSet;
 import java.util.Locale;
@@ -23,8 +24,7 @@ public final class ApplicationConfig {
 
     public boolean hasPerDomainConfigs() {
         ensureInitialized();
-        Set<Pair<Domain, NetworkSecurityConfig>> set = this.mConfigs;
-        return (set == null || set.isEmpty()) ? false : true;
+        return (this.mConfigs == null || this.mConfigs.isEmpty()) ? false : true;
     }
 
     public NetworkSecurityConfig getConfigForHostname(String hostname) {
@@ -67,9 +67,8 @@ public final class ApplicationConfig {
 
     public boolean isCleartextTrafficPermitted() {
         ensureInitialized();
-        Set<Pair<Domain, NetworkSecurityConfig>> set = this.mConfigs;
-        if (set != null) {
-            for (Pair<Domain, NetworkSecurityConfig> entry : set) {
+        if (this.mConfigs != null) {
+            for (Pair<Domain, NetworkSecurityConfig> entry : this.mConfigs) {
                 if (!entry.second.isCleartextTrafficPermitted()) {
                     return false;
                 }
@@ -80,6 +79,13 @@ public final class ApplicationConfig {
 
     public boolean isCleartextTrafficPermitted(String hostname) {
         return getConfigForHostname(hostname).isCleartextTrafficPermitted();
+    }
+
+    public boolean isCertificateTransparencyVerificationRequired(String hostname) {
+        if (Flags.certificateTransparencyConfiguration()) {
+            return getConfigForHostname(hostname).isCertificateTransparencyVerificationRequired();
+        }
+        return false;
     }
 
     public void handleTrustStorageUpdate() {

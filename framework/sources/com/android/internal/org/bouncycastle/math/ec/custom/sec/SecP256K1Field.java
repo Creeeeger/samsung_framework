@@ -1,5 +1,6 @@
 package com.android.internal.org.bouncycastle.math.ec.custom.sec;
 
+import android.app.settings.SettingsEnums;
 import com.android.internal.org.bouncycastle.math.raw.Mod;
 import com.android.internal.org.bouncycastle.math.raw.Nat;
 import com.android.internal.org.bouncycastle.math.raw.Nat256;
@@ -13,8 +14,8 @@ public class SecP256K1Field {
     private static final int PExt15 = -1;
     private static final int PInv33 = 977;
     static final int[] P = {-977, -2, -1, -1, -1, -1, -1, -1};
-    private static final int[] PExt = {954529, 1954, 1, 0, 0, 0, 0, 0, -1954, -3, -1, -1, -1, -1, -1, -1};
-    private static final int[] PExtInv = {-954529, -1955, -2, -1, -1, -1, -1, -1, 1953, 2};
+    private static final int[] PExt = {954529, SettingsEnums.ACTION_AUDIO_STREAM_JOIN_FAILED_TIMEOUT, 1, 0, 0, 0, 0, 0, -1954, -3, -1, -1, -1, -1, -1, -1};
+    private static final int[] PExtInv = {-954529, -1955, -2, -1, -1, -1, -1, -1, SettingsEnums.ACTION_AUDIO_STREAM_JOIN_FAILED_BAD_CODE, 2};
 
     public static void add(int[] x, int[] y, int[] z) {
         int c = Nat256.add(x, y, z);
@@ -25,11 +26,8 @@ public class SecP256K1Field {
 
     public static void addExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.add(16, xx, yy, zz);
-        if (c != 0 || (zz[15] == -1 && Nat.gte(16, zz, PExt))) {
-            int[] iArr = PExtInv;
-            if (Nat.addTo(iArr.length, iArr, zz) != 0) {
-                Nat.incAt(16, zz, iArr.length);
-            }
+        if ((c != 0 || (zz[15] == -1 && Nat.gte(16, zz, PExt))) && Nat.addTo(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.incAt(16, zz, PExtInv.length);
         }
     }
 
@@ -42,11 +40,8 @@ public class SecP256K1Field {
 
     public static int[] fromBigInteger(BigInteger x) {
         int[] z = Nat256.fromBigInteger(x);
-        if (z[7] == -1) {
-            int[] iArr = P;
-            if (Nat256.gte(z, iArr)) {
-                Nat256.subFrom(iArr, z);
-            }
+        if (z[7] == -1 && Nat256.gte(z, P)) {
+            Nat256.subFrom(P, z);
         }
         return z;
     }
@@ -81,18 +76,14 @@ public class SecP256K1Field {
 
     public static void multiplyAddToExt(int[] x, int[] y, int[] zz) {
         int c = Nat256.mulAddTo(x, y, zz);
-        if (c != 0 || (zz[15] == -1 && Nat.gte(16, zz, PExt))) {
-            int[] iArr = PExtInv;
-            if (Nat.addTo(iArr.length, iArr, zz) != 0) {
-                Nat.incAt(16, zz, iArr.length);
-            }
+        if ((c != 0 || (zz[15] == -1 && Nat.gte(16, zz, PExt))) && Nat.addTo(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.incAt(16, zz, PExtInv.length);
         }
     }
 
     public static void negate(int[] x, int[] z) {
         if (isZero(x) != 0) {
-            int[] iArr = P;
-            Nat256.sub(iArr, iArr, z);
+            Nat256.sub(P, P, z);
         } else {
             Nat256.sub(P, x, z);
         }
@@ -156,11 +147,8 @@ public class SecP256K1Field {
 
     public static void subtractExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.sub(16, xx, yy, zz);
-        if (c != 0) {
-            int[] iArr = PExtInv;
-            if (Nat.subFrom(iArr.length, iArr, zz) != 0) {
-                Nat.decAt(16, zz, iArr.length);
-            }
+        if (c != 0 && Nat.subFrom(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.decAt(16, zz, PExtInv.length);
         }
     }
 

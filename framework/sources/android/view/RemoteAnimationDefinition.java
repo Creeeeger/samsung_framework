@@ -11,14 +11,13 @@ import android.util.SparseArray;
 /* loaded from: classes4.dex */
 public class RemoteAnimationDefinition implements Parcelable {
     public static final Parcelable.Creator<RemoteAnimationDefinition> CREATOR = new Parcelable.Creator<RemoteAnimationDefinition>() { // from class: android.view.RemoteAnimationDefinition.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationDefinition createFromParcel(Parcel in) {
             return new RemoteAnimationDefinition(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationDefinition[] newArray(int size) {
             return new RemoteAnimationDefinition[size];
@@ -95,34 +94,15 @@ public class RemoteAnimationDefinition implements Parcelable {
         }
     }
 
-    /* renamed from: android.view.RemoteAnimationDefinition$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RemoteAnimationDefinition> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteAnimationDefinition createFromParcel(Parcel in) {
-            return new RemoteAnimationDefinition(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteAnimationDefinition[] newArray(int size) {
-            return new RemoteAnimationDefinition[size];
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public static class RemoteAnimationAdapterEntry implements Parcelable {
+    private static class RemoteAnimationAdapterEntry implements Parcelable {
         public static final Parcelable.Creator<RemoteAnimationAdapterEntry> CREATOR = new Parcelable.Creator<RemoteAnimationAdapterEntry>() { // from class: android.view.RemoteAnimationDefinition.RemoteAnimationAdapterEntry.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RemoteAnimationAdapterEntry createFromParcel(Parcel in) {
                 return new RemoteAnimationAdapterEntry(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RemoteAnimationAdapterEntry[] newArray(int size) {
                 return new RemoteAnimationAdapterEntry[size];
@@ -130,10 +110,6 @@ public class RemoteAnimationDefinition implements Parcelable {
         };
         final int activityTypeFilter;
         final RemoteAnimationAdapter adapter;
-
-        /* synthetic */ RemoteAnimationAdapterEntry(Parcel parcel, RemoteAnimationAdapterEntryIA remoteAnimationAdapterEntryIA) {
-            this(parcel);
-        }
 
         RemoteAnimationAdapterEntry(RemoteAnimationAdapter adapter, int activityTypeFilter) {
             this.adapter = adapter;
@@ -154,23 +130,6 @@ public class RemoteAnimationDefinition implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
-        }
-
-        /* renamed from: android.view.RemoteAnimationDefinition$RemoteAnimationAdapterEntry$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<RemoteAnimationAdapterEntry> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RemoteAnimationAdapterEntry createFromParcel(Parcel in) {
-                return new RemoteAnimationAdapterEntry(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public RemoteAnimationAdapterEntry[] newArray(int size) {
-                return new RemoteAnimationAdapterEntry[size];
-            }
         }
     }
 }

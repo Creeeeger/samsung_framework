@@ -3,6 +3,8 @@ package com.android.internal.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.os.Build;
+import android.os.Trace;
 import android.util.AttributeSet;
 import android.view.RemotableViewMethod;
 import android.view.View;
@@ -13,6 +15,7 @@ import com.android.internal.R;
 @RemoteViews.RemoteView
 /* loaded from: classes5.dex */
 public class MessagingLinearLayout extends ViewGroup {
+    private static final boolean TRACE_ONMEASURE = Build.isDebuggable();
     private int mMaxDisplayedLines;
     private int mSpacing;
 
@@ -33,125 +36,24 @@ public class MessagingLinearLayout extends ViewGroup {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:65:0x01ce  */
+    /* JADX WARN: Removed duplicated region for block: B:68:? A[RETURN, SYNTHETIC] */
     @Override // android.view.View
-    public void onMeasure(int i, int i2) {
-        int i3;
-        boolean z;
-        LayoutParams layoutParams;
-        View view;
-        int i4;
-        int i5;
-        boolean z2;
-        int i6;
-        int size = View.MeasureSpec.getSize(i2);
-        switch (View.MeasureSpec.getMode(i2)) {
-            case 0:
-                i3 = Integer.MAX_VALUE;
-                break;
-            default:
-                i3 = size;
-                break;
-        }
-        int i7 = this.mPaddingLeft + this.mPaddingRight;
-        int childCount = getChildCount();
-        for (int i8 = 0; i8 < childCount; i8++) {
-            View childAt = getChildAt(i8);
-            ((LayoutParams) childAt.getLayoutParams()).hide = true;
-            if (childAt instanceof MessagingChild) {
-                ((MessagingChild) childAt).setIsFirstInLayout(true);
-            }
-        }
-        MessagingChild messagingChild = null;
-        View view2 = null;
-        int i9 = 0;
-        int i10 = 0;
-        int i11 = 0;
-        int i12 = childCount - 1;
-        int i13 = i7;
-        int i14 = this.mPaddingTop + this.mPaddingBottom;
-        char c = 1;
-        int i15 = this.mMaxDisplayedLines;
-        while (i12 >= 0 && i14 < i3) {
-            if (getChildAt(i12).getVisibility() == 8) {
-                i4 = i12;
-            } else {
-                View childAt2 = getChildAt(i12);
-                LayoutParams layoutParams2 = (LayoutParams) getChildAt(i12).getLayoutParams();
-                MessagingChild messagingChild2 = null;
-                int i16 = this.mSpacing;
-                int i17 = 0;
-                if (!(childAt2 instanceof MessagingChild)) {
-                    z = 0;
-                    layoutParams = layoutParams2;
-                    view = childAt2;
-                    i4 = i12;
-                } else {
-                    if (messagingChild == null || !messagingChild.hasDifferentHeightWhenFirst()) {
-                        z2 = false;
-                        i6 = i16;
-                        layoutParams = layoutParams2;
-                        view = childAt2;
-                        i4 = i12;
-                    } else {
-                        messagingChild.setIsFirstInLayout(false);
-                        z2 = false;
-                        i6 = i16;
-                        layoutParams = layoutParams2;
-                        view = childAt2;
-                        i4 = i12;
-                        measureChildWithMargins(view2, i, 0, i2, i10 - i9);
-                        int measuredHeight = view2.getMeasuredHeight() - i9;
-                        i15 -= messagingChild.getConsumedLines() - i11;
-                        i17 = measuredHeight;
-                    }
-                    MessagingChild messagingChild3 = (MessagingChild) view;
-                    messagingChild3.setMaxDisplayedLines(Math.max(z2 ? 1 : 0, i15));
-                    i16 = i6 + messagingChild3.getExtraSpacing();
-                    messagingChild2 = messagingChild3;
-                    z = z2;
-                }
-                int i18 = c != 0 ? z : i16;
-                measureChildWithMargins(view, i, 0, i2, ((i14 - this.mPaddingTop) - this.mPaddingBottom) + i18);
-                int measuredHeight2 = view.getMeasuredHeight();
-                LayoutParams layoutParams3 = layoutParams;
-                int max = Math.max(i14, i14 + measuredHeight2 + layoutParams3.topMargin + layoutParams3.bottomMargin + i18 + i17);
-                if (messagingChild2 == null) {
-                    i5 = 0;
-                } else {
-                    i5 = messagingChild2.getMeasuredType();
-                }
-                boolean z3 = (i5 == 2 && c == 0) ? true : z;
-                boolean z4 = (i5 == 1 || (i5 == 2 && c != 0)) ? true : z;
-                if ((max > i3 || z3) ? z : true) {
-                    if (messagingChild2 != null) {
-                        i11 = messagingChild2.getConsumedLines();
-                        i15 -= i11;
-                        messagingChild = messagingChild2;
-                        view2 = view;
-                        i9 = measuredHeight2;
-                        i10 = i14;
-                    }
-                    i14 = max;
-                    i13 = Math.max(i13, view.getMeasuredWidth() + layoutParams3.leftMargin + layoutParams3.rightMargin + this.mPaddingLeft + this.mPaddingRight);
-                    layoutParams3.hide = z;
-                    if (!z4 && i15 > 0) {
-                        c = 0;
-                    }
-                } else if (messagingChild != null && messagingChild.hasDifferentHeightWhenFirst()) {
-                    messagingChild.setIsFirstInLayout(true);
-                    measureChildWithMargins(view2, i, 0, i2, i10 - i9);
-                }
-                setMeasuredDimension(resolveSize(Math.max(getSuggestedMinimumWidth(), i13), i), Math.max(getSuggestedMinimumHeight(), i14));
-            }
-            i12 = i4 - 1;
-            c = c;
-        }
-        setMeasuredDimension(resolveSize(Math.max(getSuggestedMinimumWidth(), i13), i), Math.max(getSuggestedMinimumHeight(), i14));
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    protected void onMeasure(int r32, int r33) {
+        /*
+            Method dump skipped, instructions count: 472
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.internal.widget.MessagingLinearLayout.onMeasure(int, int):void");
     }
 
     /* JADX WARN: Multi-variable type inference failed */
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int childLeft;
         int paddingLeft;
         int width;
@@ -208,9 +110,23 @@ public class MessagingLinearLayout extends ViewGroup {
         }
     }
 
+    private void trackMeasureSpecs(int widthMeasureSpec, int heightMeasureSpec) {
+        if (!TRACE_ONMEASURE) {
+            return;
+        }
+        int availableWidth = View.MeasureSpec.getSize(widthMeasureSpec);
+        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
+        int availableHeight = View.MeasureSpec.getSize(heightMeasureSpec);
+        int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
+        Trace.setCounter("MessagingLinearLayout#onMeasure_widthMeasureSpecSize", availableWidth);
+        Trace.setCounter("MessagingLinearLayout#onMeasure_widthMeasureSpecMode", widthMode);
+        Trace.setCounter("MessagingLinearLayout#onMeasure_heightMeasureSpecSize", availableHeight);
+        Trace.setCounter("MessagingLinearLayout#onMeasure_heightMeasureSpecMode", heightMode);
+    }
+
     /* JADX WARN: Multi-variable type inference failed */
     @Override // android.view.ViewGroup
-    public boolean drawChild(Canvas canvas, View view, long drawingTime) {
+    protected boolean drawChild(Canvas canvas, View view, long drawingTime) {
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         if (lp.hide) {
             MessagingChild messagingChild = (MessagingChild) view;
@@ -233,11 +149,13 @@ public class MessagingLinearLayout extends ViewGroup {
         return new LayoutParams(this.mContext, attrs);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-1, -2);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
         LayoutParams copy = new LayoutParams(lp.width, lp.height);
@@ -292,7 +210,6 @@ public class MessagingLinearLayout extends ViewGroup {
         return i2;
     }
 
-    /* loaded from: classes5.dex */
     public interface MessagingChild {
         public static final int MEASURED_NORMAL = 0;
         public static final int MEASURED_SHORTENED = 1;
@@ -322,7 +239,6 @@ public class MessagingLinearLayout extends ViewGroup {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class LayoutParams extends ViewGroup.MarginLayoutParams {
         public boolean hide;
         public int lastVisibleHeight;

@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class RestrictionEntry implements Parcelable {
     public static final Parcelable.Creator<RestrictionEntry> CREATOR = new Parcelable.Creator<RestrictionEntry>() { // from class: android.content.RestrictionEntry.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RestrictionEntry createFromParcel(Parcel source) {
             return new RestrictionEntry(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RestrictionEntry[] newArray(int size) {
             return new RestrictionEntry[size];
@@ -188,7 +187,6 @@ public class RestrictionEntry implements Parcelable {
     }
 
     public boolean equals(Object o) {
-        String str;
         if (o == this) {
             return true;
         }
@@ -205,28 +203,24 @@ public class RestrictionEntry implements Parcelable {
         if (this.mCurrentValue == null && other.mCurrentValue == null && this.mRestrictions == null && other.mRestrictions == null && Arrays.equals(this.mCurrentValues, other.mCurrentValues)) {
             return true;
         }
-        String str2 = this.mCurrentValue;
-        return str2 == null && (str = other.mCurrentValue) == null && str2 == null && str == null && Arrays.equals(this.mRestrictions, other.mRestrictions);
+        return this.mCurrentValue == null && other.mCurrentValue == null && this.mCurrentValue == null && other.mCurrentValue == null && Arrays.equals(this.mRestrictions, other.mRestrictions);
     }
 
     public int hashCode() {
         int result = (17 * 31) + this.mKey.hashCode();
-        String str = this.mCurrentValue;
-        if (str != null) {
-            return (result * 31) + str.hashCode();
+        if (this.mCurrentValue != null) {
+            return (result * 31) + this.mCurrentValue.hashCode();
         }
-        String[] strArr = this.mCurrentValues;
-        if (strArr != null) {
-            for (String value : strArr) {
+        if (this.mCurrentValues != null) {
+            for (String value : this.mCurrentValues) {
                 if (value != null) {
                     result = (result * 31) + value.hashCode();
                 }
             }
             return result;
         }
-        RestrictionEntry[] restrictionEntryArr = this.mRestrictions;
-        if (restrictionEntryArr != null) {
-            return (result * 31) + Arrays.hashCode(restrictionEntryArr);
+        if (this.mRestrictions != null) {
+            return (result * 31) + Arrays.hashCode(this.mRestrictions);
         }
         return result;
     }
@@ -265,23 +259,6 @@ public class RestrictionEntry implements Parcelable {
         dest.writeString(this.mCurrentValue);
         dest.writeStringArray(this.mCurrentValues);
         dest.writeParcelableArray(this.mRestrictions, 0);
-    }
-
-    /* renamed from: android.content.RestrictionEntry$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RestrictionEntry> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RestrictionEntry createFromParcel(Parcel source) {
-            return new RestrictionEntry(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RestrictionEntry[] newArray(int size) {
-            return new RestrictionEntry[size];
-        }
     }
 
     public String toString() {

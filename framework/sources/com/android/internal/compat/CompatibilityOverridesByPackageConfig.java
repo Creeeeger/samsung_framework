@@ -5,27 +5,22 @@ import android.os.Parcelable;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class CompatibilityOverridesByPackageConfig implements Parcelable {
     public static final Parcelable.Creator<CompatibilityOverridesByPackageConfig> CREATOR = new Parcelable.Creator<CompatibilityOverridesByPackageConfig>() { // from class: com.android.internal.compat.CompatibilityOverridesByPackageConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverridesByPackageConfig createFromParcel(Parcel in) {
             return new CompatibilityOverridesByPackageConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverridesByPackageConfig[] newArray(int size) {
             return new CompatibilityOverridesByPackageConfig[size];
         }
     };
     public final Map<String, CompatibilityOverrideConfig> packageNameToOverrides;
-
-    /* synthetic */ CompatibilityOverridesByPackageConfig(Parcel parcel, CompatibilityOverridesByPackageConfigIA compatibilityOverridesByPackageConfigIA) {
-        this(parcel);
-    }
 
     public CompatibilityOverridesByPackageConfig(Map<String, CompatibilityOverrideConfig> packageNameToOverrides) {
         this.packageNameToOverrides = packageNameToOverrides;
@@ -51,23 +46,6 @@ public final class CompatibilityOverridesByPackageConfig implements Parcelable {
         for (String key : this.packageNameToOverrides.keySet()) {
             dest.writeString(key);
             this.packageNameToOverrides.get(key).writeToParcel(dest, 0);
-        }
-    }
-
-    /* renamed from: com.android.internal.compat.CompatibilityOverridesByPackageConfig$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompatibilityOverridesByPackageConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityOverridesByPackageConfig createFromParcel(Parcel in) {
-            return new CompatibilityOverridesByPackageConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityOverridesByPackageConfig[] newArray(int size) {
-            return new CompatibilityOverridesByPackageConfig[size];
         }
     }
 }

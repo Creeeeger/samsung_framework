@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
-import android.media.AudioTrack;
 import android.media.Cea708CaptionRenderer;
 import android.media.ClosedCaptionRenderer;
 import android.media.MediaFormat;
@@ -56,14 +55,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Vector;
-import java.util.concurrent.Executor;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemMediaPlayer implements SubtitleController.Listener {
     public static final int AUDIO_VOLUME_FADE_IN = 1;
     public static final int AUDIO_VOLUME_FADE_INOUT = 3;
     public static final int AUDIO_VOLUME_FADE_NONE = 0;
     public static final int AUDIO_VOLUME_FADE_OUT = 2;
+    public static final int FRAME_OPTION_SUPER_HDR = 1;
     private static final int INVOKE_ID_ADD_EXTERNAL_SOURCE = 2;
     private static final int INVOKE_ID_ADD_EXTERNAL_SOURCE_FD = 3;
     private static final int INVOKE_ID_DESELECT_TRACK = 5;
@@ -157,9 +156,6 @@ public class SemMediaPlayer implements SubtitleController.Listener {
     private SuperSlowRegion[] mSuperSlowInfo = null;
     private int mSelectedSubtitleTrackIndex = -1;
     private final OnSubtitleDataListener mIntSubtitleDataListener = new OnSubtitleDataListener() { // from class: com.samsung.android.media.SemMediaPlayer.2
-        AnonymousClass2() {
-        }
-
         @Override // com.samsung.android.media.SemMediaPlayer.OnSubtitleDataListener
         public void onSubtitleData(SemMediaPlayer ep, SubtitleData data) {
             int index = data.getTrackIndex();
@@ -178,74 +174,67 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
     };
 
-    /* loaded from: classes5.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FrameOption {
+    }
+
     public interface OnBufferingUpdateListener {
         void onBufferingUpdate(SemMediaPlayer semMediaPlayer, int i);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnErrorListener {
         boolean onError(SemMediaPlayer semMediaPlayer, int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnInfoListener {
         boolean onInfo(SemMediaPlayer semMediaPlayer, int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnInitCompleteListener {
         void onInitComplete(SemMediaPlayer semMediaPlayer, TrackInfo[] trackInfoArr);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnPlaybackCompleteListener {
         void onPlaybackComplete(SemMediaPlayer semMediaPlayer);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnSeekCompleteListener {
         void onSeekComplete(SemMediaPlayer semMediaPlayer);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnSubtitleDataListener {
         void onSubtitleData(SemMediaPlayer semMediaPlayer, SubtitleData subtitleData);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnTimedTextListener {
         void onTimedText(SemMediaPlayer semMediaPlayer, TimedText timedText);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnVideoSizeChangedListener {
         void onVideoSizeChanged(SemMediaPlayer semMediaPlayer, int i, int i2);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface PlaybackDirection {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface PlaybackEffect {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface PlaybackRateAudioMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface SeekType {
     }
 
     private native void _crop(int i, int i2, int i3, int i4) throws IllegalStateException;
 
     private native Bitmap _getCurrentFrame(int i, int i2) throws IllegalStateException;
+
+    private native Bitmap _getCurrentFrame(int i, int i2, int i3) throws IllegalStateException;
 
     private native void _init(IBinder iBinder, String str, String[] strArr, String[] strArr2, String str2) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException;
 
@@ -267,7 +256,9 @@ public class SemMediaPlayer implements SubtitleController.Listener {
 
     private native void _setTemporalZoom(int i);
 
-    private native void _setVideoFilterLevel(int i) throws IllegalStateException, UnsupportedOperationException;
+    private native void _setVideoFilter(String str, int i) throws IllegalStateException, UnsupportedOperationException;
+
+    private native void _setVideoFrc(int i, float f, boolean z);
 
     private native void _setVideoScalingMode(int i) throws IllegalStateException;
 
@@ -286,12 +277,6 @@ public class SemMediaPlayer implements SubtitleController.Listener {
     private final native int native_invoke(Parcel parcel, Parcel parcel2);
 
     private final native void native_setup(Object obj, AudioAttributes audioAttributes);
-
-    public static native void native_stream_event_onStreamDataRequest(long j, long j2, long j3, int i);
-
-    public static native void native_stream_event_onStreamPresentationEnd(long j, long j2);
-
-    public static native void native_stream_event_onTearDown(long j, long j2);
 
     public native int getCurrentPosition();
 
@@ -328,8 +313,6 @@ public class SemMediaPlayer implements SubtitleController.Listener {
     public native void setPlaybackRange(int i, int i2) throws IllegalArgumentException, IllegalStateException;
 
     public native void setVideoDeflickerEnabled(boolean z) throws IllegalStateException, UnsupportedOperationException;
-
-    public native void setVideoFilterName(String str) throws IllegalStateException, UnsupportedOperationException;
 
     public native void setVideoSuperResolutionEnabled(boolean z) throws IllegalStateException, UnsupportedOperationException;
 
@@ -376,6 +359,10 @@ public class SemMediaPlayer implements SubtitleController.Listener {
     }
 
     private boolean attemptInit(ContentResolver resolver, Uri uri) {
+        if (uri == null) {
+            Log.e(TAG, "Uri is null, cannot attempt init");
+            return false;
+        }
         try {
             AssetFileDescriptor afd = resolver.openAssetFileDescriptor(uri, "r");
             try {
@@ -396,7 +383,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                 throw th;
             }
         } catch (IOException | NullPointerException | SecurityException ex) {
-            Log.w(TAG, "Couldn't open " + (uri == null ? "null uri" : uri.toSafeString()), ex);
+            Log.w(TAG, "Couldn't open " + uri.toSafeString(), ex);
             return false;
         }
     }
@@ -584,22 +571,19 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             }
             this.mOpenSubtitleSources.clear();
         }
-        SubtitleController subtitleController = this.mSubtitleController;
-        if (subtitleController != null) {
-            subtitleController.reset();
+        if (this.mSubtitleController != null) {
+            this.mSubtitleController.reset();
         }
         synchronized (this.mTimeProviderLock) {
-            TimeProvider timeProvider = this.mTimeProvider;
-            if (timeProvider != null) {
-                timeProvider.close();
+            if (this.mTimeProvider != null) {
+                this.mTimeProvider.close();
                 this.mTimeProvider = null;
             }
         }
         stayAwake(false);
         _reset();
-        EventHandler eventHandler = this.mEventHandler;
-        if (eventHandler != null) {
-            eventHandler.removeCallbacksAndMessages(null);
+        if (this.mEventHandler != null) {
+            this.mEventHandler.removeCallbacksAndMessages(null);
         }
         synchronized (this.mIndexTrackPairs) {
             this.mIndexTrackPairs.clear();
@@ -617,9 +601,8 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         this.mOnVideoSizeChangedListener = null;
         this.mOnTimedTextListener = null;
         synchronized (this.mTimeProviderLock) {
-            TimeProvider timeProvider = this.mTimeProvider;
-            if (timeProvider != null) {
-                timeProvider.close();
+            if (this.mTimeProvider != null) {
+                this.mTimeProvider.close();
                 this.mTimeProvider = null;
             }
         }
@@ -666,6 +649,14 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         return _getCurrentFrame(width, height);
     }
 
+    public Bitmap getCurrentFrame(int option) throws IllegalStateException {
+        return _getCurrentFrame(-1, -1, option);
+    }
+
+    public Bitmap getCurrentFrame(int width, int height, int option) throws IllegalStateException {
+        return _getCurrentFrame(width, height, option);
+    }
+
     public void invoke(Parcel request, Parcel reply) throws IllegalStateException {
         int retcode = native_invoke(request, reply);
         reply.setDataPosition(0);
@@ -680,18 +671,16 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             Log.w(TAG, "IGNORING setWakeMode " + mode);
             return;
         }
-        PowerManager.WakeLock wakeLock = this.mWakeLock;
-        if (wakeLock != null) {
-            if (wakeLock.isHeld()) {
+        if (this.mWakeLock != null) {
+            if (this.mWakeLock.isHeld()) {
                 washeld = true;
                 this.mWakeLock.release();
             }
             this.mWakeLock = null;
         }
         PowerManager pm = (PowerManager) context.getSystemService("power");
-        PowerManager.WakeLock newWakeLock = pm.newWakeLock(536870912 | mode, SemMediaPlayer.class.getName());
-        this.mWakeLock = newWakeLock;
-        newWakeLock.setReferenceCounted(false);
+        this.mWakeLock = pm.newWakeLock(536870912 | mode, SemMediaPlayer.class.getName());
+        this.mWakeLock.setReferenceCounted(false);
         if (washeld) {
             this.mWakeLock.acquire();
         }
@@ -707,10 +696,10 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void stayAwake(boolean awake) {
-        PowerManager.WakeLock wakeLock = this.mWakeLock;
-        if (wakeLock != null) {
-            if (awake && !wakeLock.isHeld()) {
+        if (this.mWakeLock != null) {
+            if (awake && !this.mWakeLock.isHeld()) {
                 this.mWakeLock.acquire();
             } else if (!awake && this.mWakeLock.isHeld()) {
                 this.mWakeLock.release();
@@ -721,9 +710,8 @@ public class SemMediaPlayer implements SubtitleController.Listener {
     }
 
     private void updateSurfaceScreenOn() {
-        SurfaceHolder surfaceHolder = this.mSurfaceHolder;
-        if (surfaceHolder != null) {
-            surfaceHolder.setKeepScreenOn(this.mScreenOnWhilePlaying && this.mStayAwake);
+        if (this.mSurfaceHolder != null) {
+            this.mSurfaceHolder.setKeepScreenOn(this.mScreenOnWhilePlaying && this.mStayAwake);
         }
     }
 
@@ -770,17 +758,15 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class TrackInfo implements Parcelable {
         static final Parcelable.Creator<TrackInfo> CREATOR = new Parcelable.Creator<TrackInfo>() { // from class: com.samsung.android.media.SemMediaPlayer.TrackInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TrackInfo createFromParcel(Parcel in) {
                 return new TrackInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TrackInfo[] newArray(int size) {
                 return new TrackInfo[size];
@@ -807,40 +793,33 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         private int mVideoWidth;
 
         TrackInfo(Parcel in) {
-            byte[] text;
             this.mTrackName = "";
-            int readInt = in.readInt();
-            this.mTrackType = readInt;
+            this.mTrackType = in.readInt();
             this.mMime = in.readString();
-            String readString = in.readString();
-            this.mLanguage = readString;
+            this.mLanguage = in.readString();
             this.mRotationDegrees = -1;
             this.mVideoWidth = -1;
             this.mVideoHeight = -1;
             this.mFrameRate = -1;
             this.mSampleRate = -1;
             this.mChannel = -1;
-            MediaFormat createSubtitleFormat = MediaFormat.createSubtitleFormat(this.mMime, readString);
-            this.mFormat = createSubtitleFormat;
-            if (readInt == 1) {
+            this.mFormat = MediaFormat.createSubtitleFormat(this.mMime, this.mLanguage);
+            if (this.mTrackType == 1) {
                 this.mRotationDegrees = in.readInt();
                 this.mVideoWidth = in.readInt();
                 this.mVideoHeight = in.readInt();
                 this.mFrameRate = in.readInt();
                 Log.i(TAG, "videotype mime : " + this.mMime + ", language : " + this.mLanguage + ", rotation : " + this.mRotationDegrees + ", width : " + this.mVideoWidth + ", height : " + this.mVideoHeight + ", fps : " + this.mFrameRate);
-            } else if (readInt == 2) {
+            } else if (this.mTrackType == 2) {
                 this.mSampleRate = in.readInt();
                 this.mChannel = in.readInt();
                 Log.i(TAG, "audiotype mime : " + this.mMime + ", language : " + this.mLanguage + ", samplingrate : " + this.mSampleRate + ", channel : " + this.mChannel);
-            } else if (readInt == 4 || readInt == 6) {
-                createSubtitleFormat.setInteger(MediaFormat.KEY_IS_AUTOSELECT, in.readInt());
-                createSubtitleFormat.setInteger(MediaFormat.KEY_IS_DEFAULT, in.readInt());
-                createSubtitleFormat.setInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE, in.readInt());
+            } else if (this.mTrackType == 4 || this.mTrackType == 6) {
+                this.mFormat.setInteger(MediaFormat.KEY_IS_AUTOSELECT, in.readInt());
+                this.mFormat.setInteger(MediaFormat.KEY_IS_DEFAULT, in.readInt());
+                this.mFormat.setInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE, in.readInt());
             }
-            int textLen = in.readInt();
-            if (textLen > 0 && (text = in.createByteArray()) != null && text.length > 0) {
-                this.mTrackName = new String(text);
-            }
+            this.mTrackName = in.readString();
         }
 
         TrackInfo(int type, MediaFormat format) {
@@ -850,8 +829,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
 
         public MediaFormat getFormat() {
-            int i = this.mTrackType;
-            if (i == 4 || i == 6) {
+            if (this.mTrackType == 4 || this.mTrackType == 6) {
                 return this.mFormat;
             }
             return null;
@@ -867,16 +845,15 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             dest.writeInt(this.mTrackType);
             dest.writeString(this.mMime);
             dest.writeString(this.mLanguage);
-            int i = this.mTrackType;
-            if (i == 1) {
+            if (this.mTrackType == 1) {
                 dest.writeInt(this.mRotationDegrees);
                 dest.writeInt(this.mVideoWidth);
                 dest.writeInt(this.mVideoHeight);
                 dest.writeInt(this.mFrameRate);
-            } else if (i == 2) {
+            } else if (this.mTrackType == 2) {
                 dest.writeInt(this.mSampleRate);
                 dest.writeInt(this.mChannel);
-            } else if (i == 4 || i == 6) {
+            } else if (this.mTrackType == 4 || this.mTrackType == 6) {
                 dest.writeInt(this.mFormat.getInteger(MediaFormat.KEY_IS_AUTOSELECT));
                 dest.writeInt(this.mFormat.getInteger(MediaFormat.KEY_IS_DEFAULT));
                 dest.writeInt(this.mFormat.getInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE));
@@ -893,8 +870,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
 
         public String getLanguage() {
-            String str = this.mLanguage;
-            return str == null ? "und" : str;
+            return this.mLanguage == null ? "und" : this.mLanguage;
         }
 
         public int getVideoRotation() {
@@ -923,23 +899,6 @@ public class SemMediaPlayer implements SubtitleController.Listener {
 
         public String getName() {
             return this.mTrackName;
-        }
-
-        /* renamed from: com.samsung.android.media.SemMediaPlayer$TrackInfo$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<TrackInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TrackInfo createFromParcel(Parcel in) {
-                return new TrackInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TrackInfo[] newArray(int size) {
-                return new TrackInfo[size];
-            }
         }
     }
 
@@ -977,8 +936,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
 
     public int getSelectedTrack(int trackType) throws IllegalStateException {
         SubtitleTrack subtitleTrack;
-        SubtitleController subtitleController = this.mSubtitleController;
-        if (subtitleController != null && trackType == 6 && (subtitleTrack = subtitleController.getSelectedTrack()) != null) {
+        if (this.mSubtitleController != null && trackType == 6 && (subtitleTrack = this.mSubtitleController.getSelectedTrack()) != null) {
             synchronized (this.mIndexTrackPairs) {
                 for (int i = 0; i < this.mIndexTrackPairs.size(); i++) {
                     if (this.mIndexTrackPairs.get(i).second == subtitleTrack) {
@@ -1020,30 +978,33 @@ public class SemMediaPlayer implements SubtitleController.Listener {
     }
 
     private void selectOrDeselectTrack(int index, boolean select) throws IllegalStateException {
+        Pair<Integer, SubtitleTrack> p;
         populateInbandTracks();
-        try {
-            Pair<Integer, SubtitleTrack> p = this.mIndexTrackPairs.get(index);
-            SubtitleTrack track = p.second;
-            if (track == null) {
-                selectOrDeselectInbandTrack(p.first.intValue(), select);
+        synchronized (this.mIndexTrackPairs) {
+            try {
+                p = this.mIndexTrackPairs.get(index);
+            } catch (ArrayIndexOutOfBoundsException e) {
                 return;
             }
-            SubtitleController subtitleController = this.mSubtitleController;
-            if (subtitleController == null) {
-                return;
-            }
-            if (!select) {
-                if (subtitleController.getSelectedTrack() == track) {
-                    this.mSubtitleController.selectTrack(null);
-                    return;
-                } else {
-                    Log.w(TAG, "trying to deselect track that was not selected");
-                    return;
-                }
-            }
-            subtitleController.selectTrack(track);
-        } catch (ArrayIndexOutOfBoundsException e) {
         }
+        SubtitleTrack track = p.second;
+        if (track == null) {
+            selectOrDeselectInbandTrack(p.first.intValue(), select);
+            return;
+        }
+        if (this.mSubtitleController == null) {
+            return;
+        }
+        if (!select) {
+            if (this.mSubtitleController.getSelectedTrack() == track) {
+                this.mSubtitleController.selectTrack(null);
+                return;
+            } else {
+                Log.w(TAG, "trying to deselect track that was not selected");
+                return;
+            }
+        }
+        this.mSubtitleController.selectTrack(track);
     }
 
     private void selectOrDeselectInbandTrack(int index, boolean select) throws IllegalStateException {
@@ -1130,8 +1091,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         return timeProvider;
     }
 
-    /* loaded from: classes5.dex */
-    public static class TimeProvider implements OnSeekCompleteListener, MediaTimeProvider {
+    static class TimeProvider implements OnSeekCompleteListener, MediaTimeProvider {
         private static final long MAX_EARLY_CALLBACK_US = 1000;
         private static final long MAX_NS_WITHOUT_POSITION_CHECK = 5000000000L;
         private static final int NOTIFY = 1;
@@ -1171,9 +1131,8 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                 Looper mainLooper = Looper.getMainLooper();
                 looper = mainLooper;
                 if (mainLooper == null) {
-                    HandlerThread handlerThread = new HandlerThread("SemMediaPlayerMTPEventThread", -2);
-                    this.mHandlerThread = handlerThread;
-                    handlerThread.start();
+                    this.mHandlerThread = new HandlerThread("SemMediaPlayerMTPEventThread", -2);
+                    this.mHandlerThread.start();
                     looper = this.mHandlerThread.getLooper();
                 }
             }
@@ -1198,17 +1157,15 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         public void close() {
             this.mEventHandler.removeMessages(1);
             this.mEventHandler.removeMessages(2);
-            HandlerThread handlerThread = this.mHandlerThread;
-            if (handlerThread != null) {
-                handlerThread.quitSafely();
+            if (this.mHandlerThread != null) {
+                this.mHandlerThread.quitSafely();
                 this.mHandlerThread = null;
             }
         }
 
         protected void finalize() {
-            HandlerThread handlerThread = this.mHandlerThread;
-            if (handlerThread != null) {
-                handlerThread.quitSafely();
+            if (this.mHandlerThread != null) {
+                this.mHandlerThread.quitSafely();
             }
         }
 
@@ -1260,6 +1217,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifySeek() {
             this.mSeeking = false;
             try {
@@ -1282,12 +1240,14 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifyTrackData(Pair<SubtitleTrack, byte[]> trackData) {
             SubtitleTrack track = trackData.first;
             byte[] data = trackData.second;
             track.onData(data, true, -1L);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifyStop() {
             for (MediaTimeProvider.OnMediaTimeListener listener : this.mListeners) {
                 if (listener == null) {
@@ -1298,28 +1258,20 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
 
         private int registerListener(MediaTimeProvider.OnMediaTimeListener listener) {
-            MediaTimeProvider.OnMediaTimeListener[] onMediaTimeListenerArr;
-            MediaTimeProvider.OnMediaTimeListener onMediaTimeListener;
             int i = 0;
-            while (true) {
-                onMediaTimeListenerArr = this.mListeners;
-                if (i >= onMediaTimeListenerArr.length || (onMediaTimeListener = onMediaTimeListenerArr[i]) == listener || onMediaTimeListener == null) {
-                    break;
-                }
+            while (i < this.mListeners.length && this.mListeners[i] != listener && this.mListeners[i] != null) {
                 i++;
             }
-            if (i >= onMediaTimeListenerArr.length) {
+            if (i >= this.mListeners.length) {
                 MediaTimeProvider.OnMediaTimeListener[] newListeners = new MediaTimeProvider.OnMediaTimeListener[i + 1];
                 long[] newTimes = new long[i + 1];
-                System.arraycopy(onMediaTimeListenerArr, 0, newListeners, 0, onMediaTimeListenerArr.length);
-                long[] jArr = this.mTimes;
-                System.arraycopy(jArr, 0, newTimes, 0, jArr.length);
+                System.arraycopy(this.mListeners, 0, newListeners, 0, this.mListeners.length);
+                System.arraycopy(this.mTimes, 0, newTimes, 0, this.mTimes.length);
                 this.mListeners = newListeners;
                 this.mTimes = newTimes;
             }
-            MediaTimeProvider.OnMediaTimeListener[] onMediaTimeListenerArr2 = this.mListeners;
-            if (onMediaTimeListenerArr2[i] == null) {
-                onMediaTimeListenerArr2[i] = listener;
+            if (this.mListeners[i] == null) {
+                this.mListeners[i] = listener;
                 this.mTimes[i] = -1;
             }
             return i;
@@ -1353,20 +1305,17 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             synchronized (this) {
                 int i = 0;
                 while (true) {
-                    MediaTimeProvider.OnMediaTimeListener[] onMediaTimeListenerArr = this.mListeners;
-                    if (i >= onMediaTimeListenerArr.length) {
+                    if (i >= this.mListeners.length) {
                         break;
                     }
-                    MediaTimeProvider.OnMediaTimeListener onMediaTimeListener = onMediaTimeListenerArr[i];
-                    if (onMediaTimeListener == listener) {
-                        System.arraycopy(onMediaTimeListenerArr, i + 1, onMediaTimeListenerArr, i, (onMediaTimeListenerArr.length - i) - 1);
-                        long[] jArr = this.mTimes;
-                        System.arraycopy(jArr, i + 1, jArr, i, (jArr.length - i) - 1);
-                        this.mListeners[r1.length - 1] = null;
-                        this.mTimes[r1.length - 1] = -1;
+                    if (this.mListeners[i] == listener) {
+                        System.arraycopy(this.mListeners, i + 1, this.mListeners, i, (this.mListeners.length - i) - 1);
+                        System.arraycopy(this.mTimes, i + 1, this.mTimes, i, (this.mTimes.length - i) - 1);
+                        this.mListeners[this.mListeners.length - 1] = null;
+                        this.mTimes[this.mTimes.length - 1] = -1;
                         break;
                     }
-                    if (onMediaTimeListener == null) {
+                    if (this.mListeners[i] == null) {
                         break;
                     } else {
                         i++;
@@ -1376,9 +1325,9 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifyTimedEvent(boolean refreshTime) {
             long nowUs;
-            MediaTimeProvider.OnMediaTimeListener onMediaTimeListener;
             try {
                 nowUs = getCurrentTimeUs(refreshTime, true);
             } catch (IllegalStateException e) {
@@ -1407,25 +1356,18 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                 Log.d(TAG, sb.toString());
             }
             Vector<MediaTimeProvider.OnMediaTimeListener> activatedListeners = new Vector<>();
-            int ix = 0;
-            while (true) {
-                long[] jArr = this.mTimes;
-                if (ix >= jArr.length || (onMediaTimeListener = this.mListeners[ix]) == null) {
-                    break;
-                }
-                long j = jArr[ix];
-                if (j > -1) {
-                    if (j <= 1000 + nowUs) {
-                        activatedListeners.add(onMediaTimeListener);
+            for (int ix = 0; ix < this.mTimes.length && this.mListeners[ix] != null; ix++) {
+                if (this.mTimes[ix] > -1) {
+                    if (this.mTimes[ix] <= 1000 + nowUs) {
+                        activatedListeners.add(this.mListeners[ix]);
                         if (this.DEBUG) {
                             Log.d(TAG, Environment.MEDIA_REMOVED);
                         }
                         this.mTimes[ix] = -1;
-                    } else if (nextTimeUs == nowUs || j < nextTimeUs) {
-                        nextTimeUs = j;
+                    } else if (nextTimeUs == nowUs || this.mTimes[ix] < nextTimeUs) {
+                        nextTimeUs = this.mTimes[ix];
                     }
                 }
-                ix++;
             }
             if (nextTimeUs > nowUs && !this.mPaused) {
                 if (this.DEBUG) {
@@ -1442,8 +1384,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             }
         }
 
-        /* JADX WARN: Removed duplicated region for block: B:20:0x002f A[Catch: IllegalStateException -> 0x007c, all -> 0x00b8, TryCatch #1 {IllegalStateException -> 0x007c, blocks: (B:12:0x000d, B:14:0x0021, B:18:0x0029, B:20:0x002f, B:23:0x0041), top: B:11:0x000d, outer: #0 }] */
-        /* JADX WARN: Removed duplicated region for block: B:27:0x005b A[Catch: all -> 0x00b8, TRY_ENTER, TryCatch #0 {, blocks: (B:3:0x0001, B:6:0x0007, B:7:0x0009, B:12:0x000d, B:14:0x0021, B:18:0x0029, B:20:0x002f, B:23:0x0041, B:27:0x005b, B:29:0x0063, B:31:0x006b, B:32:0x0078, B:33:0x007a, B:35:0x0074, B:38:0x007d, B:40:0x0081, B:42:0x0085, B:44:0x0091, B:46:0x0097, B:47:0x00b2, B:48:0x00b4, B:50:0x008d, B:51:0x00b7), top: B:2:0x0001, inners: #1 }] */
+        /* JADX WARN: Removed duplicated region for block: B:20:0x002f A[Catch: IllegalStateException -> 0x007e, all -> 0x00b9, TryCatch #0 {IllegalStateException -> 0x007e, blocks: (B:12:0x000d, B:14:0x0021, B:18:0x0029, B:20:0x002f, B:23:0x003f), top: B:11:0x000d, outer: #1 }] */
         @Override // android.media.MediaTimeProvider
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -1453,25 +1394,25 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             /*
                 r7 = this;
                 monitor-enter(r7)
-                boolean r0 = r7.mPaused     // Catch: java.lang.Throwable -> Lb8
+                boolean r0 = r7.mPaused     // Catch: java.lang.Throwable -> Lb9
                 if (r0 == 0) goto Lb
                 if (r8 != 0) goto Lb
-                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb8
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb8
+                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb9
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb9
                 return r0
             Lb:
                 r0 = 0
                 r1 = 1
-                com.samsung.android.media.SemMediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                int r2 = r2.getCurrentPosition()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                long r2 = (long) r2     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
+                com.samsung.android.media.SemMediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                int r2 = r2.getCurrentPosition()     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                long r2 = (long) r2     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
                 r4 = 1000(0x3e8, double:4.94E-321)
                 long r2 = r2 * r4
-                r7.mLastTimeUs = r2     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                com.samsung.android.media.SemMediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                boolean r2 = r2.isPlaying()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
+                r7.mLastTimeUs = r2     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                com.samsung.android.media.SemMediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                boolean r2 = r2.isPlaying()     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
                 if (r2 == 0) goto L28
-                boolean r2 = r7.mBuffering     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
+                boolean r2 = r7.mBuffering     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
                 if (r2 == 0) goto L26
                 goto L28
             L26:
@@ -1480,91 +1421,91 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             L28:
                 r2 = r1
             L29:
-                r7.mPaused = r2     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                boolean r2 = r7.DEBUG     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                if (r2 == 0) goto L58
+                r7.mPaused = r2     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                boolean r2 = r7.DEBUG     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                if (r2 == 0) goto L56
                 java.lang.String r2 = "MTP"
-                java.lang.StringBuilder r3 = new java.lang.StringBuilder     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                r3.<init>()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                boolean r4 = r7.mPaused     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                if (r4 == 0) goto L3e
+                java.lang.StringBuilder r3 = new java.lang.StringBuilder     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                r3.<init>()     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                boolean r4 = r7.mPaused     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                if (r4 == 0) goto L3d
                 java.lang.String r4 = "paused"
-                goto L41
-            L3e:
+                goto L3f
+            L3d:
                 java.lang.String r4 = "playing"
-            L41:
-                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
+            L3f:
+                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
                 java.lang.String r4 = " at "
-                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                long r4 = r7.mLastTimeUs     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                java.lang.String r3 = r3.toString()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-                android.util.Log.v(r2, r3)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb8
-            L58:
-                if (r9 == 0) goto L74
-                long r2 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb8
-                long r4 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb8
+                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                long r4 = r7.mLastTimeUs     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                java.lang.String r3 = r3.toString()     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+                android.util.Log.v(r2, r3)     // Catch: java.lang.IllegalStateException -> L7e java.lang.Throwable -> Lb9
+            L56:
+                if (r9 == 0) goto L76
+                long r2 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb9
+                long r4 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb9
                 int r0 = (r2 > r4 ? 1 : (r2 == r4 ? 0 : -1))
-                if (r0 >= 0) goto L74
-                long r4 = r4 - r2
-                r2 = 1000000(0xf4240, double:4.940656E-318)
-                int r0 = (r4 > r2 ? 1 : (r4 == r2 ? 0 : -1))
-                if (r0 <= 0) goto L78
-                r7.mSeeking = r1     // Catch: java.lang.Throwable -> Lb8
+                if (r0 >= 0) goto L76
+                long r2 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb9
+                long r4 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb9
+                long r2 = r2 - r4
+                r4 = 1000000(0xf4240, double:4.940656E-318)
+                int r0 = (r2 > r4 ? 1 : (r2 == r4 ? 0 : -1))
+                if (r0 <= 0) goto L7a
+                r7.mSeeking = r1     // Catch: java.lang.Throwable -> Lb9
                 r0 = 3
                 r1 = 0
-                r7.scheduleNotification(r0, r1)     // Catch: java.lang.Throwable -> Lb8
-                goto L78
-            L74:
-                long r0 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb8
-                r7.mLastReportedTime = r0     // Catch: java.lang.Throwable -> Lb8
-            L78:
-                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb8
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb8
+                r7.scheduleNotification(r0, r1)     // Catch: java.lang.Throwable -> Lb9
+                goto L7a
+            L76:
+                long r0 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb9
+                r7.mLastReportedTime = r0     // Catch: java.lang.Throwable -> Lb9
+            L7a:
+                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb9
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb9
                 return r0
-            L7c:
+            L7e:
                 r2 = move-exception
-                boolean r3 = r7.mPausing     // Catch: java.lang.Throwable -> Lb8
-                if (r3 == 0) goto Lb6
-                r7.mPausing = r0     // Catch: java.lang.Throwable -> Lb8
-                if (r9 == 0) goto L8d
-                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb8
-                long r5 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb8
+                boolean r3 = r7.mPausing     // Catch: java.lang.Throwable -> Lb9
+                if (r3 == 0) goto Lb7
+                r7.mPausing = r0     // Catch: java.lang.Throwable -> Lb9
+                if (r9 == 0) goto L8f
+                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb9
+                long r5 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb9
                 int r0 = (r3 > r5 ? 1 : (r3 == r5 ? 0 : -1))
-                if (r0 >= 0) goto L91
-            L8d:
-                long r3 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb8
-                r7.mLastReportedTime = r3     // Catch: java.lang.Throwable -> Lb8
-            L91:
-                r7.mPaused = r1     // Catch: java.lang.Throwable -> Lb8
-                boolean r0 = r7.DEBUG     // Catch: java.lang.Throwable -> Lb8
-                if (r0 == 0) goto Lb2
+                if (r0 >= 0) goto L93
+            L8f:
+                long r3 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb9
+                r7.mLastReportedTime = r3     // Catch: java.lang.Throwable -> Lb9
+            L93:
+                r7.mPaused = r1     // Catch: java.lang.Throwable -> Lb9
+                boolean r0 = r7.DEBUG     // Catch: java.lang.Throwable -> Lb9
+                if (r0 == 0) goto Lb3
                 java.lang.String r0 = "MTP"
-                java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lb8
-                r1.<init>()     // Catch: java.lang.Throwable -> Lb8
+                java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lb9
+                r1.<init>()     // Catch: java.lang.Throwable -> Lb9
                 java.lang.String r3 = "illegal state, but pausing: estimating at "
-                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lb8
-                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb8
-                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lb8
-                java.lang.String r1 = r1.toString()     // Catch: java.lang.Throwable -> Lb8
-                android.util.Log.d(r0, r1)     // Catch: java.lang.Throwable -> Lb8
-            Lb2:
-                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb8
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb8
+                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lb9
+                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb9
+                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lb9
+                java.lang.String r1 = r1.toString()     // Catch: java.lang.Throwable -> Lb9
+                android.util.Log.d(r0, r1)     // Catch: java.lang.Throwable -> Lb9
+            Lb3:
+                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb9
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb9
                 return r0
-            Lb6:
-                throw r2     // Catch: java.lang.Throwable -> Lb8
-            Lb8:
+            Lb7:
+                throw r2     // Catch: java.lang.Throwable -> Lb9
+            Lb9:
                 r0 = move-exception
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb8
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb9
                 throw r0
             */
             throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.SemMediaPlayer.TimeProvider.getCurrentTimeUs(boolean, boolean):long");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public class EventHandler extends Handler {
+        private class EventHandler extends Handler {
             public EventHandler(Looper looper) {
                 super(looper);
             }
@@ -1575,34 +1516,30 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                     switch (msg.arg1) {
                         case 0:
                             TimeProvider.this.notifyTimedEvent(true);
-                            return;
-                        case 1:
-                        default:
-                            return;
+                            break;
                         case 2:
                             TimeProvider.this.notifyStop();
-                            return;
+                            break;
                         case 3:
                             TimeProvider.this.notifySeek();
-                            return;
+                            break;
                     }
                 }
                 if (msg.what == 2) {
                     switch (msg.arg1) {
                         case 4:
-                            TimeProvider.this.notifyTrackData((Pair) msg.obj);
-                            return;
-                        default:
-                            return;
+                            if ((msg.obj instanceof Pair) && (((Pair) msg.obj).first instanceof SubtitleTrack) && (((Pair) msg.obj).second instanceof byte[])) {
+                                TimeProvider.this.notifyTrackData((Pair) msg.obj);
+                                break;
+                            }
+                            break;
                     }
                 }
             }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         private SemMediaPlayer mSemMediaPlayer;
 
         public EventHandler(SemMediaPlayer ep, Looper looper) {
@@ -1754,11 +1691,11 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                         if (SemMediaPlayer.this.mSubtitleDataListenerDisabled) {
                             return;
                         }
-                        OnSubtitleDataListener extSubtitleListener = SemMediaPlayer.this.mExtSubtitleDataListener;
+                        final OnSubtitleDataListener extSubtitleListener = SemMediaPlayer.this.mExtSubtitleDataListener;
                         Handler extSubtitleHandler = SemMediaPlayer.this.mExtSubtitleDataHandler;
                         if (msg.obj instanceof Parcel) {
                             Parcel parcel3 = (Parcel) msg.obj;
-                            SubtitleData data = new SubtitleData(parcel3);
+                            final SubtitleData data = new SubtitleData(parcel3);
                             parcel3.recycle();
                             SemMediaPlayer.this.mIntSubtitleDataListener.onSubtitleData(this.mSemMediaPlayer, data);
                             if (extSubtitleListener != null) {
@@ -1767,14 +1704,6 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                                     return;
                                 } else {
                                     extSubtitleHandler.post(new Runnable() { // from class: com.samsung.android.media.SemMediaPlayer.EventHandler.1
-                                        final /* synthetic */ SubtitleData val$data;
-                                        final /* synthetic */ OnSubtitleDataListener val$extSubtitleListener;
-
-                                        AnonymousClass1(OnSubtitleDataListener extSubtitleListener2, SubtitleData data2) {
-                                            extSubtitleListener = extSubtitleListener2;
-                                            data = data2;
-                                        }
-
                                         @Override // java.lang.Runnable
                                         public void run() {
                                             extSubtitleListener.onSubtitleData(EventHandler.this.mSemMediaPlayer, data);
@@ -1792,44 +1721,21 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                     return;
             }
         }
-
-        /* renamed from: com.samsung.android.media.SemMediaPlayer$EventHandler$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ SubtitleData val$data;
-            final /* synthetic */ OnSubtitleDataListener val$extSubtitleListener;
-
-            AnonymousClass1(OnSubtitleDataListener extSubtitleListener2, SubtitleData data2) {
-                extSubtitleListener = extSubtitleListener2;
-                data = data2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                extSubtitleListener.onSubtitleData(EventHandler.this.mSemMediaPlayer, data);
-            }
-        }
     }
 
     private static void postEventFromNative(Object ref, int what, int arg1, int arg2, Object obj) {
-        EventHandler eventHandler;
         SemMediaPlayer player = (SemMediaPlayer) ((WeakReference) ref).get();
-        if (player != null && (eventHandler = player.mEventHandler) != null) {
-            Message m = eventHandler.obtainMessage(what, arg1, arg2, obj);
+        if (player != null && player.mEventHandler != null) {
+            Message m = player.mEventHandler.obtainMessage(what, arg1, arg2, obj);
             player.mEventHandler.sendMessage(m);
         }
     }
 
-    /* loaded from: classes5.dex */
-    private class SpeedRegion {
+    private static class SpeedRegion {
         int audioEnd;
         int speedRate;
         int videoEnd;
         int videoStart;
-
-        /* synthetic */ SpeedRegion(SemMediaPlayer semMediaPlayer, SpeedRegionIA speedRegionIA) {
-            this();
-        }
 
         private SpeedRegion() {
         }
@@ -1884,28 +1790,26 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         return ret;
     }
 
-    /* loaded from: classes5.dex */
     public static class SuperSlowRegion implements Parcelable {
+        public static final int CANCELED_REGION = 0;
         static final Parcelable.Creator<SuperSlowRegion> CREATOR = new Parcelable.Creator<SuperSlowRegion>() { // from class: com.samsung.android.media.SemMediaPlayer.SuperSlowRegion.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SuperSlowRegion createFromParcel(Parcel in) {
                 return new SuperSlowRegion(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SuperSlowRegion[] newArray(int size) {
                 return new SuperSlowRegion[size];
             }
         };
+        public static final int NORMAL_REGION = 2;
+        public static final int TITLE_REGION = 1;
         int endTime;
         int startTime;
         int type;
-        public final int CANCELED_REGION = 0;
-        public final int TITLE_REGION = 1;
-        public final int NORMAL_REGION = 2;
 
         SuperSlowRegion(Parcel in) {
             this.type = in.readInt();
@@ -1936,23 +1840,6 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             dest.writeInt(this.startTime);
             dest.writeInt(this.endTime);
         }
-
-        /* renamed from: com.samsung.android.media.SemMediaPlayer$SuperSlowRegion$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SuperSlowRegion> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SuperSlowRegion createFromParcel(Parcel in) {
-                return new SuperSlowRegion(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SuperSlowRegion[] newArray(int size) {
-                return new SuperSlowRegion[size];
-            }
-        }
     }
 
     public SuperSlowRegion[] getSuperSlowRegions() {
@@ -1968,56 +1855,13 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         p.recycle();
     }
 
-    public void setVideoFilterLevel(int filterLevel) throws IllegalStateException, UnsupportedOperationException {
-        if (filterLevel < 0) {
-            throw new IllegalArgumentException("filterLevel(" + filterLevel + ") is smaller than 0");
+    public void setVideoFilter(String filterPath, int filterLevel) throws IllegalStateException, UnsupportedOperationException {
+        if (filterLevel < 0 || 100 < filterLevel) {
+            throw new IllegalArgumentException("filterLevel(" + filterLevel + ") is not in acceptable range");
         }
-        if (filterLevel > 100) {
-            throw new IllegalArgumentException("filterLevel(" + filterLevel + ") is greater than 100");
-        }
-        _setVideoFilterLevel(filterLevel);
+        _setVideoFilter(filterPath, filterLevel);
     }
 
-    /* loaded from: classes5.dex */
-    private static class StreamEventCallback extends AudioTrack.StreamEventCallback {
-        public long mAJavaAudioTrackPtr;
-        public long mNativeCallbackPtr;
-        public long mUserDataPtr;
-
-        StreamEventCallback(long jAudioTrackPtr, long nativeCallbackPtr, long userDataPtr) {
-            this.mAJavaAudioTrackPtr = jAudioTrackPtr;
-            this.mNativeCallbackPtr = nativeCallbackPtr;
-            this.mUserDataPtr = userDataPtr;
-        }
-
-        @Override // android.media.AudioTrack.StreamEventCallback
-        public void onTearDown(AudioTrack track) {
-            SemMediaPlayer.native_stream_event_onTearDown(this.mNativeCallbackPtr, this.mUserDataPtr);
-        }
-
-        @Override // android.media.AudioTrack.StreamEventCallback
-        public void onPresentationEnded(AudioTrack track) {
-            SemMediaPlayer.native_stream_event_onStreamPresentationEnd(this.mNativeCallbackPtr, this.mUserDataPtr);
-        }
-
-        @Override // android.media.AudioTrack.StreamEventCallback
-        public void onDataRequest(AudioTrack track, int size) {
-            SemMediaPlayer.native_stream_event_onStreamDataRequest(this.mAJavaAudioTrackPtr, this.mNativeCallbackPtr, this.mUserDataPtr, size);
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    private static class StreamEventExecutor implements Executor {
-        private StreamEventExecutor() {
-        }
-
-        @Override // java.util.concurrent.Executor
-        public void execute(Runnable command) {
-            command.run();
-        }
-    }
-
-    /* loaded from: classes5.dex */
     public static final class DynamicViewingConfiguration {
         private int mEndTimeMs;
         private float mSpeedRate;
@@ -2163,9 +2007,8 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
         populateInbandTracks();
         synchronized (this.mIndexTrackPairs) {
-            SubtitleController subtitleController = this.mSubtitleController;
-            if (subtitleController != null) {
-                SubtitleTrack[] subtitiletracks = subtitleController.getTracks();
+            if (this.mSubtitleController != null) {
+                SubtitleTrack[] subtitiletracks = this.mSubtitleController.getTracks();
                 for (int i = subtitiletracks.length - outOfBandSubtitleTrackNum; i < subtitiletracks.length && i >= 0; i++) {
                     this.mIndexTrackPairs.add(Pair.create(null, subtitiletracks[i]));
                 }
@@ -2180,32 +2023,21 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         controller.registerRenderer(new ClosedCaptionRenderer(context));
         controller.registerRenderer(new Cea708CaptionRenderer(context));
         this.mSubtitleController = controller;
-        controller.setAnchor(anchor);
+        this.mSubtitleController.setAnchor(anchor);
     }
 
     private synchronized void setSubtitleAnchor() {
         if (this.mSubtitleController == null && ActivityThread.currentApplication() != null) {
-            TimeProvider timeProvider = (TimeProvider) getMediaTimeProvider();
-            HandlerThread thread = new HandlerThread("SetSubtitleAnchorThread");
+            final TimeProvider timeProvider = (TimeProvider) getMediaTimeProvider();
+            final HandlerThread thread = new HandlerThread("SetSubtitleAnchorThread");
             thread.start();
             Handler handler = new Handler(thread.getLooper());
             handler.post(new Runnable() { // from class: com.samsung.android.media.SemMediaPlayer.1
-                final /* synthetic */ HandlerThread val$thread;
-                final /* synthetic */ TimeProvider val$timeProvider;
-
-                AnonymousClass1(TimeProvider timeProvider2, HandlerThread thread2) {
-                    timeProvider = timeProvider2;
-                    thread = thread2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     Context context = ActivityThread.currentApplication();
                     SemMediaPlayer.this.mSubtitleController = new SubtitleController(context, timeProvider, SemMediaPlayer.this);
                     SemMediaPlayer.this.mSubtitleController.setAnchor(new SubtitleController.Anchor() { // from class: com.samsung.android.media.SemMediaPlayer.1.1
-                        C00191() {
-                        }
-
                         @Override // android.media.SubtitleController.Anchor
                         public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
                         }
@@ -2217,25 +2049,9 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                     });
                     thread.getLooper().quitSafely();
                 }
-
-                /* renamed from: com.samsung.android.media.SemMediaPlayer$1$1 */
-                /* loaded from: classes5.dex */
-                class C00191 implements SubtitleController.Anchor {
-                    C00191() {
-                    }
-
-                    @Override // android.media.SubtitleController.Anchor
-                    public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
-                    }
-
-                    @Override // android.media.SubtitleController.Anchor
-                    public Looper getSubtitleLooper() {
-                        return timeProvider.mEventHandler.getLooper();
-                    }
-                }
             });
             try {
-                thread2.join();
+                thread.join();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 Log.w(TAG, "failed to join SetSubtitleAnchorThread");
@@ -2243,84 +2059,11 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
     }
 
-    /* renamed from: com.samsung.android.media.SemMediaPlayer$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ HandlerThread val$thread;
-        final /* synthetic */ TimeProvider val$timeProvider;
-
-        AnonymousClass1(TimeProvider timeProvider2, HandlerThread thread2) {
-            timeProvider = timeProvider2;
-            thread = thread2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Context context = ActivityThread.currentApplication();
-            SemMediaPlayer.this.mSubtitleController = new SubtitleController(context, timeProvider, SemMediaPlayer.this);
-            SemMediaPlayer.this.mSubtitleController.setAnchor(new SubtitleController.Anchor() { // from class: com.samsung.android.media.SemMediaPlayer.1.1
-                C00191() {
-                }
-
-                @Override // android.media.SubtitleController.Anchor
-                public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
-                }
-
-                @Override // android.media.SubtitleController.Anchor
-                public Looper getSubtitleLooper() {
-                    return timeProvider.mEventHandler.getLooper();
-                }
-            });
-            thread.getLooper().quitSafely();
-        }
-
-        /* renamed from: com.samsung.android.media.SemMediaPlayer$1$1 */
-        /* loaded from: classes5.dex */
-        class C00191 implements SubtitleController.Anchor {
-            C00191() {
-            }
-
-            @Override // android.media.SubtitleController.Anchor
-            public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
-            }
-
-            @Override // android.media.SubtitleController.Anchor
-            public Looper getSubtitleLooper() {
-                return timeProvider.mEventHandler.getLooper();
-            }
-        }
-    }
-
-    /* renamed from: com.samsung.android.media.SemMediaPlayer$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 implements OnSubtitleDataListener {
-        AnonymousClass2() {
-        }
-
-        @Override // com.samsung.android.media.SemMediaPlayer.OnSubtitleDataListener
-        public void onSubtitleData(SemMediaPlayer ep, SubtitleData data) {
-            int index = data.getTrackIndex();
-            synchronized (SemMediaPlayer.this.mIndexTrackPairs) {
-                Iterator it = SemMediaPlayer.this.mIndexTrackPairs.iterator();
-                while (it.hasNext()) {
-                    Pair<Integer, SubtitleTrack> p = (Pair) it.next();
-                    if (p.first != null && p.first.intValue() == index && p.second != null) {
-                        SubtitleTrack track = p.second;
-                        long runID = data.getStartTimeUs() + 1;
-                        track.onData(data.getData(), true, runID);
-                        track.setRunDiscardTimeMs(runID, (data.getStartTimeUs() + data.getDurationUs()) / 1000);
-                    }
-                }
-            }
-        }
-    }
-
     @Override // android.media.SubtitleController.Listener
     public void onSubtitleTrackSelected(SubtitleTrack track) {
-        int i = this.mSelectedSubtitleTrackIndex;
-        if (i >= 0) {
+        if (this.mSelectedSubtitleTrackIndex >= 0) {
             try {
-                selectOrDeselectInbandTrack(i, false);
+                selectOrDeselectInbandTrack(this.mSelectedSubtitleTrackIndex, false);
             } catch (IllegalStateException e) {
             }
             this.mSelectedSubtitleTrackIndex = -1;
@@ -2344,10 +2087,9 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                 }
             }
         }
-        int i2 = this.mSelectedSubtitleTrackIndex;
-        if (i2 >= 0) {
+        if (this.mSelectedSubtitleTrackIndex >= 0) {
             try {
-                selectOrDeselectInbandTrack(i2, true);
+                selectOrDeselectInbandTrack(this.mSelectedSubtitleTrackIndex, true);
             } catch (IllegalStateException e2) {
             }
             synchronized (this) {
@@ -2356,7 +2098,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         }
     }
 
-    public void addSubtitleSource(InputStream is, MediaFormat format) throws IllegalStateException, IllegalArgumentException {
+    public void addSubtitleSource(final InputStream is, final MediaFormat format) throws IllegalStateException, IllegalArgumentException {
         if (format == null) {
             throw new IllegalArgumentException("Illegal null format");
         }
@@ -2368,20 +2110,10 @@ public class SemMediaPlayer implements SubtitleController.Listener {
             Log.w(TAG, "addSubtitleSource called with null InputStream");
         }
         getMediaTimeProvider();
-        HandlerThread thread = new HandlerThread("SubtitleReadThread", -5);
+        final HandlerThread thread = new HandlerThread("SubtitleReadThread", -5);
         thread.start();
         Handler handler = new Handler(thread.getLooper());
         handler.post(new Runnable() { // from class: com.samsung.android.media.SemMediaPlayer.3
-            final /* synthetic */ MediaFormat val$fFormat;
-            final /* synthetic */ InputStream val$fIs;
-            final /* synthetic */ HandlerThread val$thread;
-
-            AnonymousClass3(InputStream is2, MediaFormat format2, HandlerThread thread2) {
-                is = is2;
-                format = format2;
-                thread = thread2;
-            }
-
             private int addTrack() {
                 SubtitleTrack track;
                 if (is == null || SemMediaPlayer.this.mSubtitleController == null || (track = SemMediaPlayer.this.mSubtitleController.addTrack(format)) == null) {
@@ -2455,91 +2187,6 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         });
     }
 
-    /* renamed from: com.samsung.android.media.SemMediaPlayer$3 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass3 implements Runnable {
-        final /* synthetic */ MediaFormat val$fFormat;
-        final /* synthetic */ InputStream val$fIs;
-        final /* synthetic */ HandlerThread val$thread;
-
-        AnonymousClass3(InputStream is2, MediaFormat format2, HandlerThread thread2) {
-            is = is2;
-            format = format2;
-            thread = thread2;
-        }
-
-        private int addTrack() {
-            SubtitleTrack track;
-            if (is == null || SemMediaPlayer.this.mSubtitleController == null || (track = SemMediaPlayer.this.mSubtitleController.addTrack(format)) == null) {
-                return 901;
-            }
-            try {
-                int availableSize = is.available();
-                if (availableSize > 20971520) {
-                    Log.e(SemMediaPlayer.TAG, "addTrack() unsupported size : " + availableSize);
-                    return 901;
-                }
-                Scanner scanner = null;
-                try {
-                    try {
-                        scanner = new Scanner(is, "UTF-8");
-                        String contents = scanner.useDelimiter("\\A").next();
-                        synchronized (SemMediaPlayer.this.mOpenSubtitleSources) {
-                            SemMediaPlayer.this.mOpenSubtitleSources.remove(is);
-                        }
-                        scanner.close();
-                        if (contents == null) {
-                            return 901;
-                        }
-                        synchronized (SemMediaPlayer.this.mIndexTrackPairs) {
-                            SemMediaPlayer.this.mIndexTrackPairs.add(Pair.create(null, track));
-                        }
-                        try {
-                            Handler h = SemMediaPlayer.this.mTimeProvider.mEventHandler;
-                            Pair<SubtitleTrack, byte[]> trackData = Pair.create(track, contents.getBytes());
-                            Message m = h.obtainMessage(2, 4, 0, trackData);
-                            h.sendMessage(m);
-                            return 803;
-                        } catch (NullPointerException e) {
-                            Log.e(SemMediaPlayer.TAG, "handleMessage is NullPointerException e : ", e);
-                            return 901;
-                        }
-                    } catch (Exception e2) {
-                        Log.e(SemMediaPlayer.TAG, e2.getMessage(), e2);
-                        synchronized (SemMediaPlayer.this.mOpenSubtitleSources) {
-                            SemMediaPlayer.this.mOpenSubtitleSources.remove(is);
-                            if (scanner != null) {
-                                scanner.close();
-                            }
-                            return 901;
-                        }
-                    }
-                } catch (Throwable th) {
-                    synchronized (SemMediaPlayer.this.mOpenSubtitleSources) {
-                        SemMediaPlayer.this.mOpenSubtitleSources.remove(is);
-                        if (scanner != null) {
-                            scanner.close();
-                        }
-                        throw th;
-                    }
-                }
-            } catch (IOException e3) {
-                Log.e(SemMediaPlayer.TAG, e3.getMessage(), e3);
-                return 901;
-            }
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            int res = addTrack();
-            if (SemMediaPlayer.this.mEventHandler != null) {
-                Message m = SemMediaPlayer.this.mEventHandler.obtainMessage(200, res, 0, null);
-                SemMediaPlayer.this.mEventHandler.sendMessage(m);
-            }
-            thread.getLooper().quitSafely();
-        }
-    }
-
     public void removeOutbandSubtitleSources() throws IllegalStateException {
         Log.d(TAG, "removeOutbandSubtitleSources");
         if (this.mSubtitleController == null) {
@@ -2560,9 +2207,8 @@ public class SemMediaPlayer implements SubtitleController.Listener {
                 this.mOpenSubtitleSources.clear();
             }
         }
-        SubtitleController subtitleController = this.mSubtitleController;
-        if (subtitleController != null) {
-            subtitleController.resetTracks();
+        if (this.mSubtitleController != null) {
+            this.mSubtitleController.resetTracks();
         }
         synchronized (this.mIndexTrackPairs) {
             this.mIndexTrackPairs.clear();
@@ -2571,12 +2217,12 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         populateInbandTracks();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void scanInternalSubtitleTracks() {
         setSubtitleAnchor();
         populateInbandTracks();
-        SubtitleController subtitleController = this.mSubtitleController;
-        if (subtitleController != null) {
-            subtitleController.selectDefaultTrack();
+        if (this.mSubtitleController != null) {
+            this.mSubtitleController.selectDefaultTrack();
         }
     }
 
@@ -2584,6 +2230,7 @@ public class SemMediaPlayer implements SubtitleController.Listener {
         populateInbandTracks(null);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void populateInbandTracks(TrackInfo[] trackInfo) {
         TrackInfo[] tracks;
         if (trackInfo == null) {
@@ -2611,5 +2258,9 @@ public class SemMediaPlayer implements SubtitleController.Listener {
 
     public void setTemporalZoom(int scaleUp) throws IllegalStateException, IllegalArgumentException, UnsupportedOperationException {
         _setTemporalZoom(scaleUp);
+    }
+
+    public void setVideoFrc(int scaleUp, float playbackRate, boolean enableLowLatency) throws IllegalStateException, IllegalArgumentException, UnsupportedOperationException {
+        _setVideoFrc(scaleUp, playbackRate, enableLowLatency);
     }
 }

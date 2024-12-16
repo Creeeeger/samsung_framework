@@ -12,7 +12,6 @@ public interface IHdmiCecSettingChangeListener extends IInterface {
 
     void onChange(String str) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiCecSettingChangeListener {
         @Override // android.hardware.hdmi.IHdmiCecSettingChangeListener
         public void onChange(String setting) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IHdmiCecSettingChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiCecSettingChangeListener {
         static final int TRANSACTION_onChange = 1;
 
@@ -67,25 +65,22 @@ public interface IHdmiCecSettingChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IHdmiCecSettingChangeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IHdmiCecSettingChangeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IHdmiCecSettingChangeListener.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onChange(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onChange(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiCecSettingChangeListener {
+        private static class Proxy implements IHdmiCecSettingChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

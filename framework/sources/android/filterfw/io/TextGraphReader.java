@@ -19,13 +19,11 @@ public class TextGraphReader extends GraphReader {
     private FilterFactory mFactory;
     private KeyValueMap mSettings;
 
-    /* loaded from: classes.dex */
-    public interface Command {
+    private interface Command {
         void execute(TextGraphReader textGraphReader) throws GraphIOException;
     }
 
-    /* loaded from: classes.dex */
-    public class ImportPackageCommand implements Command {
+    private class ImportPackageCommand implements Command {
         private String mPackageName;
 
         public ImportPackageCommand(String packageName) {
@@ -42,8 +40,7 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class AddLibraryCommand implements Command {
+    private class AddLibraryCommand implements Command {
         private String mLibraryName;
 
         public AddLibraryCommand(String libraryName) {
@@ -57,8 +54,7 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class AllocateFilterCommand implements Command {
+    private class AllocateFilterCommand implements Command {
         private String mClassName;
         private String mFilterName;
 
@@ -78,8 +74,7 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class InitFilterCommand implements Command {
+    private class InitFilterCommand implements Command {
         private KeyValueMap mParams;
 
         public InitFilterCommand(KeyValueMap params) {
@@ -98,8 +93,7 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class ConnectCommand implements Command {
+    private class ConnectCommand implements Command {
         private String mSourceFilter;
         private String mSourcePort;
         private String mTargetFilter;
@@ -470,29 +464,29 @@ public class TextGraphReader extends GraphReader {
         return readKeyValueAssignments(scanner, null);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x017c, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0183, code lost:
     
-        if (r15 != 3) goto L106;
+        if (r2 != 3) goto L47;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x01a1, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x01a8, code lost:
     
-        throw new android.filterfw.io.GraphIOException("Unexpected end of assignments on line " + r25.lineNo() + "!");
+        throw new android.filterfw.io.GraphIOException("Unexpected end of assignments on line " + r24.lineNo() + "!");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x01a2, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x01a9, code lost:
     
-        return r3;
+        return r5;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x0179, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0180, code lost:
     
-        if (r15 == 0) goto L108;
+        if (r2 == 0) goto L49;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private android.filterfw.core.KeyValueMap readKeyValueAssignments(android.filterfw.io.PatternScanner r25, java.util.regex.Pattern r26) throws android.filterfw.io.GraphIOException {
+    private android.filterfw.core.KeyValueMap readKeyValueAssignments(android.filterfw.io.PatternScanner r24, java.util.regex.Pattern r25) throws android.filterfw.io.GraphIOException {
         /*
-            Method dump skipped, instructions count: 432
+            Method dump skipped, instructions count: 438
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.filterfw.io.TextGraphReader.readKeyValueAssignments(android.filterfw.io.PatternScanner, java.util.regex.Pattern):android.filterfw.core.KeyValueMap");

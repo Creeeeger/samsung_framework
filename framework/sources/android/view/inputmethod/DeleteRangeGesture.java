@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DeleteRangeGesture extends PreviewableHandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<DeleteRangeGesture> CREATOR = new Parcelable.Creator<DeleteRangeGesture>() { // from class: android.view.inputmethod.DeleteRangeGesture.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeleteRangeGesture createFromParcel(Parcel source) {
             return new DeleteRangeGesture(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeleteRangeGesture[] newArray(int size) {
             return new DeleteRangeGesture[size];
@@ -24,14 +23,6 @@ public final class DeleteRangeGesture extends PreviewableHandwritingGesture impl
     private RectF mEndArea;
     private int mGranularity;
     private RectF mStartArea;
-
-    /* synthetic */ DeleteRangeGesture(int i, RectF rectF, RectF rectF2, String str, DeleteRangeGestureIA deleteRangeGestureIA) {
-        this(i, rectF, rectF2, str);
-    }
-
-    /* synthetic */ DeleteRangeGesture(Parcel parcel, DeleteRangeGestureIA deleteRangeGestureIA) {
-        this(parcel);
-    }
 
     private DeleteRangeGesture(int granularity, RectF startArea, RectF endArea, String fallbackText) {
         this.mType = 64;
@@ -61,7 +52,6 @@ public final class DeleteRangeGesture extends PreviewableHandwritingGesture impl
         return this.mEndArea;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private RectF mEndArea;
         private String mFallbackText;
@@ -89,32 +79,13 @@ public final class DeleteRangeGesture extends PreviewableHandwritingGesture impl
         }
 
         public DeleteRangeGesture build() {
-            RectF rectF;
-            RectF rectF2 = this.mStartArea;
-            if (rectF2 == null || rectF2.isEmpty() || (rectF = this.mEndArea) == null || rectF.isEmpty()) {
+            if (this.mStartArea == null || this.mStartArea.isEmpty() || this.mEndArea == null || this.mEndArea.isEmpty()) {
                 throw new IllegalArgumentException("Deletion area must be set.");
             }
             if (this.mGranularity <= 0) {
                 throw new IllegalArgumentException("Deletion granularity must be set.");
             }
             return new DeleteRangeGesture(this.mGranularity, this.mStartArea, this.mEndArea, this.mFallbackText);
-        }
-    }
-
-    /* renamed from: android.view.inputmethod.DeleteRangeGesture$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DeleteRangeGesture> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeleteRangeGesture createFromParcel(Parcel source) {
-            return new DeleteRangeGesture(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeleteRangeGesture[] newArray(int size) {
-            return new DeleteRangeGesture[size];
         }
     }
 

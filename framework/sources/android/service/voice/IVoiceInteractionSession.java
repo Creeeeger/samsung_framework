@@ -35,7 +35,6 @@ public interface IVoiceInteractionSession extends IInterface {
 
     void taskStarted(Intent intent, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IVoiceInteractionSession {
         @Override // android.service.voice.IVoiceInteractionSession
         public void show(Bundle sessionArgs, int flags, IVoiceInteractionSessionShowCallback showCallback) throws RemoteException {
@@ -83,7 +82,6 @@ public interface IVoiceInteractionSession extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractionSession {
         public static final String DESCRIPTOR = "android.service.voice.IVoiceInteractionSession";
         static final int TRANSACTION_closeSystemDialogs = 7;
@@ -154,73 +152,70 @@ public interface IVoiceInteractionSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg1 = data.readInt();
+                    IVoiceInteractionSessionShowCallback _arg2 = IVoiceInteractionSessionShowCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    show(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    hide();
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    IBinder _arg12 = data.readStrongBinder();
+                    Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    AssistStructure _arg3 = (AssistStructure) data.readTypedObject(AssistStructure.CREATOR);
+                    AssistContent _arg4 = (AssistContent) data.readTypedObject(AssistContent.CREATOR);
+                    int _arg5 = data.readInt();
+                    int _arg6 = data.readInt();
+                    data.enforceNoDataAvail();
+                    handleAssist(_arg02, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6);
+                    return true;
+                case 4:
+                    Bitmap _arg03 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleScreenshot(_arg03);
+                    return true;
+                case 5:
+                    Intent _arg04 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    taskStarted(_arg04, _arg13);
+                    return true;
+                case 6:
+                    Intent _arg05 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    taskFinished(_arg05, _arg14);
+                    return true;
+                case 7:
+                    closeSystemDialogs();
+                    return true;
+                case 8:
+                    onLockscreenShown();
+                    return true;
+                case 9:
+                    destroy();
+                    return true;
+                case 10:
+                    VisibleActivityInfo _arg06 = (VisibleActivityInfo) data.readTypedObject(VisibleActivityInfo.CREATOR);
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyVisibleActivityInfoChanged(_arg06, _arg15);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg1 = data.readInt();
-                            IVoiceInteractionSessionShowCallback _arg2 = IVoiceInteractionSessionShowCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            show(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            hide();
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            IBinder _arg12 = data.readStrongBinder();
-                            Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            AssistStructure _arg3 = (AssistStructure) data.readTypedObject(AssistStructure.CREATOR);
-                            AssistContent _arg4 = (AssistContent) data.readTypedObject(AssistContent.CREATOR);
-                            int _arg5 = data.readInt();
-                            int _arg6 = data.readInt();
-                            data.enforceNoDataAvail();
-                            handleAssist(_arg02, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6);
-                            return true;
-                        case 4:
-                            Bitmap _arg03 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleScreenshot(_arg03);
-                            return true;
-                        case 5:
-                            Intent _arg04 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            taskStarted(_arg04, _arg13);
-                            return true;
-                        case 6:
-                            Intent _arg05 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            taskFinished(_arg05, _arg14);
-                            return true;
-                        case 7:
-                            closeSystemDialogs();
-                            return true;
-                        case 8:
-                            onLockscreenShown();
-                            return true;
-                        case 9:
-                            destroy();
-                            return true;
-                        case 10:
-                            VisibleActivityInfo _arg06 = (VisibleActivityInfo) data.readTypedObject(VisibleActivityInfo.CREATOR);
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyVisibleActivityInfoChanged(_arg06, _arg15);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IVoiceInteractionSession {
+        private static class Proxy implements IVoiceInteractionSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

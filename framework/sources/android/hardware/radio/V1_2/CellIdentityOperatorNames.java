@@ -54,9 +54,9 @@ public final class CellIdentityOperatorNames {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.alphaLong = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.alphaLong.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.alphaShort = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.alphaShort.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

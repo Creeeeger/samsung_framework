@@ -18,17 +18,13 @@ public class SemWifiApRestoreHelper {
     public static final String WPA3_TRANSITION_INDEX = "wpa3_transition_index";
 
     public static void setSSID(Context context, String valueSSID) {
-        if (SemWifiManager.MHSDBG) {
-            Log.i(TAG, "setSSID() - Setting: " + valueSSID);
-        }
+        Log.i(TAG, "setSSID() - Setting: " + valueSSID);
         SemWifiApContentProviderHelper.insert(context, KEY_SSID, valueSSID);
     }
 
     public static String getSSID(Context context) {
         String valueSSID = SemWifiApContentProviderHelper.get(context, KEY_SSID);
-        if (SemWifiManager.MHSDBG) {
-            Log.i(TAG, "getSSID() - Getting: " + valueSSID);
-        }
+        Log.i(TAG, "getSSID() - Getting: " + valueSSID);
         return valueSSID;
     }
 

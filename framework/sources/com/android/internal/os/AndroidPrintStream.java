@@ -3,7 +3,7 @@ package com.android.internal.os;
 import android.util.Log;
 
 /* loaded from: classes5.dex */
-public class AndroidPrintStream extends LoggingPrintStream {
+class AndroidPrintStream extends LoggingPrintStream {
     private final int priority;
     private final String tag;
 

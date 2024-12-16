@@ -8,12 +8,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Process;
 import android.util.Log;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.knox.tima.attestation.IEnhancedAttestation;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class EnhancedAttestationPolicy {
     private static final String EA_BIND_ACTION = "com.samsung.android.knox.intent.action.BIND_KNOX_EA_SERVICE";
     private static final String EA_PACKAGE_CLASS = "com.samsung.android.knox.attestation.controller.SemEnhancedAttestation";
@@ -23,9 +22,6 @@ public class EnhancedAttestationPolicy {
     private Context mContext;
     private final HashMap<String, RequestInfo> mTrackOpsHash = new HashMap<>();
     private ServiceConnection conn = new ServiceConnection() { // from class: com.samsung.android.knox.tima.attestation.EnhancedAttestationPolicy.1
-        AnonymousClass1() {
-        }
-
         @Override // android.content.ServiceConnection
         public void onServiceDisconnected(ComponentName name) {
             synchronized (EnhancedAttestationPolicy.class) {
@@ -46,7 +42,7 @@ public class EnhancedAttestationPolicy {
     private IEnhancedAttestation mEnhancedAttestation = null;
     private boolean mProcessPendingRequest = false;
 
-    public static synchronized EnhancedAttestationPolicy getInstance(Context context) {
+    static synchronized EnhancedAttestationPolicy getInstance(Context context) {
         synchronized (EnhancedAttestationPolicy.class) {
             if (context == null) {
                 Log.e(TAG, "context is null");
@@ -59,7 +55,7 @@ public class EnhancedAttestationPolicy {
         }
     }
 
-    public static synchronized EnhancedAttestationPolicy getInstance() {
+    static synchronized EnhancedAttestationPolicy getInstance() {
         EnhancedAttestationPolicy enhancedAttestationPolicy;
         synchronized (EnhancedAttestationPolicy.class) {
             enhancedAttestationPolicy = mEaPolicy;
@@ -71,7 +67,7 @@ public class EnhancedAttestationPolicy {
         this.mContext = context.getApplicationContext();
     }
 
-    public boolean isSupported() {
+    boolean isSupported() {
         if (!isDongleDevice() && isKnoxVersionSupported()) {
             return !(isSepLiteDevice() || isJdmDevice()) || isEaSupportedFromSepLite();
         }
@@ -111,15 +107,15 @@ public class EnhancedAttestationPolicy {
     }
 
     static int getKnoxVersion() {
-        return Integer.parseInt("37") - 5;
+        return Integer.parseInt("38") - 5;
     }
 
-    public void startAttestation(String nonce, EnhancedAttestationPolicyCallback cb) {
+    void startAttestation(String nonce, EnhancedAttestationPolicyCallback cb) {
         Log.d(TAG, "startAttestation on-prem");
         startAttestation(null, nonce, cb, true);
     }
 
-    public void startAttestation(String auk, String nonce, EnhancedAttestationPolicyCallback cb) {
+    void startAttestation(String auk, String nonce, EnhancedAttestationPolicyCallback cb) {
         Log.d(TAG, "startAttestation");
         startAttestation(auk, nonce, cb, false);
     }
@@ -140,7 +136,7 @@ public class EnhancedAttestationPolicy {
             return;
         }
         if (nonce == null || nonce.getBytes().length < 16 || nonce.getBytes().length > 128) {
-            Log.e(TAG, "nonce len: " + (nonce == null ? SemCapabilities.FEATURE_TAG_NULL : Integer.valueOf(nonce.getBytes().length)));
+            Log.e(TAG, "nonce len: " + (nonce == null ? "null" : Integer.valueOf(nonce.getBytes().length)));
             cb.onAttestationFinished(getErrorResult(nonce, -5));
             return;
         }
@@ -155,9 +151,8 @@ public class EnhancedAttestationPolicy {
                 cb.onAttestationFinished(getErrorResult(nonce, -5));
                 return;
             }
-            IEnhancedAttestation iEnhancedAttestation = this.mEnhancedAttestation;
-            if (iEnhancedAttestation != null) {
-                iEnhancedAttestation.enhancedAttestation(requestInfo.mNonce, requestInfo.mAuk, requestInfo.mCb.getEaAttestationCb(nonce), requestInfo.mOnPrem);
+            if (this.mEnhancedAttestation != null) {
+                this.mEnhancedAttestation.enhancedAttestation(requestInfo.mNonce, requestInfo.mAuk, requestInfo.mCb.getEaAttestationCb(nonce), requestInfo.mOnPrem);
             }
             Log.d(TAG, "enhancedAttestation requested");
         } catch (Exception e) {
@@ -177,38 +172,12 @@ public class EnhancedAttestationPolicy {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.knox.tima.attestation.EnhancedAttestationPolicy$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ServiceConnection {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName name) {
-            synchronized (EnhancedAttestationPolicy.class) {
-                EnhancedAttestationPolicy.this.mEnhancedAttestation = null;
-                Log.i(EnhancedAttestationPolicy.TAG, "On onServiceDisconnected");
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            synchronized (EnhancedAttestationPolicy.class) {
-                EnhancedAttestationPolicy.this.mEnhancedAttestation = IEnhancedAttestation.Stub.asInterface(service);
-                Log.i(EnhancedAttestationPolicy.TAG, "On onServiceConnected");
-            }
-            EnhancedAttestationPolicy.this.handlePendingRequest();
-        }
-    }
-
     private boolean bindService() {
         synchronized (EnhancedAttestationPolicy.class) {
             Log.d(TAG, "bindService: " + this.mEnhancedAttestation);
             try {
-                IEnhancedAttestation iEnhancedAttestation = this.mEnhancedAttestation;
-                if (iEnhancedAttestation != null) {
-                    if (iEnhancedAttestation.asBinder().isBinderAlive()) {
+                if (this.mEnhancedAttestation != null) {
+                    if (this.mEnhancedAttestation.asBinder().isBinderAlive()) {
                         return true;
                     }
                 }
@@ -224,6 +193,7 @@ public class EnhancedAttestationPolicy {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handlePendingRequest() {
         HashMap<String, RequestInfo> trackOpsHash;
         if (getTrackMapSize() < 1) {
@@ -255,7 +225,7 @@ public class EnhancedAttestationPolicy {
         return true;
     }
 
-    public synchronized void removeFromTrackMap(String nonce) {
+    synchronized void removeFromTrackMap(String nonce) {
         this.mTrackOpsHash.remove(nonce);
         Log.d(TAG, "removeFromTrackMap: size: " + this.mTrackOpsHash.size() + ", pending: " + this.mProcessPendingRequest);
         if (this.mTrackOpsHash.isEmpty() && !this.mProcessPendingRequest) {
@@ -273,8 +243,7 @@ public class EnhancedAttestationPolicy {
         return this.mTrackOpsHash.size();
     }
 
-    /* loaded from: classes5.dex */
-    public static class RequestInfo {
+    private static class RequestInfo {
         private String mAuk;
         private EnhancedAttestationPolicyCallback mCb;
         private String mNonce;

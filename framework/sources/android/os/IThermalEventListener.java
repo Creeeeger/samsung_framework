@@ -4,7 +4,6 @@ package android.os;
 public interface IThermalEventListener extends IInterface {
     void notifyThrottling(Temperature temperature) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IThermalEventListener {
         @Override // android.os.IThermalEventListener
         public void notifyThrottling(Temperature temperature) throws RemoteException {
@@ -16,7 +15,6 @@ public interface IThermalEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IThermalEventListener {
         public static final String DESCRIPTOR = "android.os.IThermalEventListener";
         static final int TRANSACTION_notifyThrottling = 1;
@@ -60,25 +58,22 @@ public interface IThermalEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Temperature _arg0 = (Temperature) data.readTypedObject(Temperature.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyThrottling(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Temperature _arg0 = (Temperature) data.readTypedObject(Temperature.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyThrottling(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IThermalEventListener {
+        private static class Proxy implements IThermalEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

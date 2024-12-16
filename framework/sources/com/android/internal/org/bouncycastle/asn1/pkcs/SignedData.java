@@ -94,13 +94,11 @@ public class SignedData extends ASN1Object implements PKCSObjectIdentifiers {
         v.add(this.version);
         v.add(this.digestAlgorithms);
         v.add(this.contentInfo);
-        ASN1Set aSN1Set = this.certificates;
-        if (aSN1Set != null) {
-            v.add(new DERTaggedObject(false, 0, aSN1Set));
+        if (this.certificates != null) {
+            v.add(new DERTaggedObject(false, 0, this.certificates));
         }
-        ASN1Set aSN1Set2 = this.crls;
-        if (aSN1Set2 != null) {
-            v.add(new DERTaggedObject(false, 1, aSN1Set2));
+        if (this.crls != null) {
+            v.add(new DERTaggedObject(false, 1, this.crls));
         }
         v.add(this.signerInfos);
         return new BERSequence(v);

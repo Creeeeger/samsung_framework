@@ -16,7 +16,6 @@ public interface IDataShareCallback extends IInterface {
 
     void reject() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDataShareCallback {
         @Override // android.service.contentcapture.IDataShareCallback
         public void accept(IDataShareReadAdapter adapter) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IDataShareCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDataShareCallback {
         static final int TRANSACTION_accept = 1;
         static final int TRANSACTION_reject = 2;
@@ -78,29 +76,25 @@ public interface IDataShareCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDataShareCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDataShareCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDataShareCallback.DESCRIPTOR);
+                case 1:
+                    IDataShareReadAdapter _arg0 = IDataShareReadAdapter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    accept(_arg0);
+                    return true;
+                case 2:
+                    reject();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IDataShareReadAdapter _arg0 = IDataShareReadAdapter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            accept(_arg0);
-                            return true;
-                        case 2:
-                            reject();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDataShareCallback {
+        private static class Proxy implements IDataShareCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

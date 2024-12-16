@@ -4,7 +4,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.MacAddress;
 import java.util.StringJoiner;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class WakeupEvent {
     public MacAddress dstHwAddr;
     public String dstIp;
@@ -23,7 +23,7 @@ public class WakeupEvent {
         j.add(this.iface);
         j.add("uid: " + Integer.toString(this.uid));
         j.add("eth=0x" + Integer.toHexString(this.ethertype));
-        j.add("dstHw=" + this.dstHwAddr);
+        j.add("srcMac=" + this.dstHwAddr);
         if (this.ipNextHeader > 0) {
             j.add("ipNxtHdr=" + this.ipNextHeader);
             j.add("srcIp=" + this.srcIp);

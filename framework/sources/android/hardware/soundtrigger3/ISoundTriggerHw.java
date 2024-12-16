@@ -16,8 +16,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface ISoundTriggerHw extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$soundtrigger3$ISoundTriggerHw".replace('$', '.');
-    public static final String HASH = "7d8d63478cd50e766d2072140c8aa3457f9fb585";
-    public static final int VERSION = 1;
+    public static final String HASH = "6b24e60ad261e3ff56106efd86ce6aa7ef5621b0";
+    public static final int VERSION = 2;
 
     void forceRecognitionEvent(int i) throws RemoteException;
 
@@ -45,7 +45,6 @@ public interface ISoundTriggerHw extends IInterface {
 
     void unloadSoundModel(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISoundTriggerHw {
         @Override // android.hardware.soundtrigger3.ISoundTriggerHw
         public Properties getProperties() throws RemoteException {
@@ -112,7 +111,6 @@ public interface ISoundTriggerHw extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISoundTriggerHw {
         static final int TRANSACTION_forceRecognitionEvent = 8;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -155,105 +153,104 @@ public interface ISoundTriggerHw extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    Properties _result = getProperties();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeTypedObject(_result, 1);
                     return true;
-                case 16777215:
+                case 2:
+                    ISoundTriggerHwGlobalCallback _arg0 = ISoundTriggerHwGlobalCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerGlobalCallback(_arg0);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    SoundModel _arg02 = (SoundModel) data.readTypedObject(SoundModel.CREATOR);
+                    ISoundTriggerHwCallback _arg1 = ISoundTriggerHwCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result2 = loadSoundModel(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 4:
+                    PhraseSoundModel _arg03 = (PhraseSoundModel) data.readTypedObject(PhraseSoundModel.CREATOR);
+                    ISoundTriggerHwCallback _arg12 = ISoundTriggerHwCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result3 = loadPhraseSoundModel(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unloadSoundModel(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    int _arg13 = data.readInt();
+                    int _arg2 = data.readInt();
+                    RecognitionConfig _arg3 = (RecognitionConfig) data.readTypedObject(RecognitionConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    startRecognition(_arg05, _arg13, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopRecognition(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    forceRecognitionEvent(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg08 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ModelParameterRange _result4 = queryParameter(_arg08, _arg14);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = getParameter(_arg09, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 11:
+                    int _arg010 = data.readInt();
+                    int _arg16 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setParameter(_arg010, _arg16, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Properties _result = getProperties();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            ISoundTriggerHwGlobalCallback _arg0 = ISoundTriggerHwGlobalCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerGlobalCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            SoundModel _arg02 = (SoundModel) data.readTypedObject(SoundModel.CREATOR);
-                            ISoundTriggerHwCallback _arg1 = ISoundTriggerHwCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result2 = loadSoundModel(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 4:
-                            PhraseSoundModel _arg03 = (PhraseSoundModel) data.readTypedObject(PhraseSoundModel.CREATOR);
-                            ISoundTriggerHwCallback _arg12 = ISoundTriggerHwCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result3 = loadPhraseSoundModel(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unloadSoundModel(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            int _arg13 = data.readInt();
-                            int _arg2 = data.readInt();
-                            RecognitionConfig _arg3 = (RecognitionConfig) data.readTypedObject(RecognitionConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            startRecognition(_arg05, _arg13, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopRecognition(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            forceRecognitionEvent(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ModelParameterRange _result4 = queryParameter(_arg08, _arg14);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = getParameter(_arg09, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 11:
-                            int _arg010 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setParameter(_arg010, _arg16, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements ISoundTriggerHw {
             private IBinder mRemote;
             private int mCachedVersion = -1;

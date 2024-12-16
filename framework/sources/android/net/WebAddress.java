@@ -2,13 +2,12 @@ package android.net;
 
 import android.annotation.SystemApi;
 import android.content.IntentFilter;
-import com.android.internal.telephony.TelephonyStatsLog;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class WebAddress {
     static final int MATCH_GROUP_AUTHORITY = 2;
     static final int MATCH_GROUP_HOST = 3;
@@ -64,7 +63,7 @@ public class WebAddress {
             if (this.mPort != 443 || !this.mScheme.equals("")) {
                 if (this.mPort == -1) {
                     if (this.mScheme.equals(IntentFilter.SCHEME_HTTPS)) {
-                        this.mPort = TelephonyStatsLog.MMS_SMS_DATABASE_HELPER_ON_UPGRADE_FAILED;
+                        this.mPort = 443;
                     } else {
                         this.mPort = 80;
                     }

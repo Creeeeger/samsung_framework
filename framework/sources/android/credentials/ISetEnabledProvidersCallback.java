@@ -14,7 +14,6 @@ public interface ISetEnabledProvidersCallback extends IInterface {
 
     void onResponse() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISetEnabledProvidersCallback {
         @Override // android.credentials.ISetEnabledProvidersCallback
         public void onResponse() throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISetEnabledProvidersCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISetEnabledProvidersCallback {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onResponse = 1;
@@ -76,30 +74,26 @@ public interface ISetEnabledProvidersCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISetEnabledProvidersCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISetEnabledProvidersCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISetEnabledProvidersCallback.DESCRIPTOR);
+                case 1:
+                    onResponse();
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onResponse();
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISetEnabledProvidersCallback {
+        private static class Proxy implements ISetEnabledProvidersCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

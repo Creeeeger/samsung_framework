@@ -26,57 +26,47 @@ public class CompatibilityInfo implements Parcelable {
     private static final int NEVER_NEEDS_COMPAT = 4;
     private static final int SCALING_REQUIRED = 1;
     public final int applicationDensity;
+    public final float applicationDensityInvertedScale;
+    public final float applicationDensityScale;
     public final float applicationInvertedScale;
     public final float applicationScale;
     private final int mCompatibilityFlags;
     public static final CompatibilityInfo DEFAULT_COMPATIBILITY_INFO = new CompatibilityInfo() { // from class: android.content.res.CompatibilityInfo.1
-        AnonymousClass1() {
-        }
     };
     private static float sOverrideInvertedScale = 1.0f;
+    private static float sOverrideDensityInvertScale = 1.0f;
     public static final Parcelable.Creator<CompatibilityInfo> CREATOR = new Parcelable.Creator<CompatibilityInfo>() { // from class: android.content.res.CompatibilityInfo.2
-        AnonymousClass2() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityInfo createFromParcel(Parcel source) {
             return new CompatibilityInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityInfo[] newArray(int size) {
             return new CompatibilityInfo[size];
         }
     };
 
-    /* synthetic */ CompatibilityInfo(CompatibilityInfoIA compatibilityInfoIA) {
-        this();
-    }
-
-    /* synthetic */ CompatibilityInfo(Parcel parcel, CompatibilityInfoIA compatibilityInfoIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.content.res.CompatibilityInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends CompatibilityInfo {
-        AnonymousClass1() {
-        }
-    }
-
     @Deprecated
     public CompatibilityInfo(ApplicationInfo appInfo, int screenLayout, int sw, boolean forceCompat) {
         this(appInfo, screenLayout, sw, forceCompat, 1.0f);
     }
 
-    public CompatibilityInfo(ApplicationInfo appInfo, int screenLayout, int sw, boolean forceCompat, float overrideScale) {
+    public CompatibilityInfo(ApplicationInfo appInfo, int screenLayout, int sw, boolean forceCompat, float scaleFactor) {
+        this(appInfo, screenLayout, sw, forceCompat, scaleFactor, scaleFactor);
+    }
+
+    public CompatibilityInfo(ApplicationInfo appInfo, int screenLayout, int sw, boolean forceCompat, float scaleFactor, float densityScaleFactor) {
         int required;
         int compatFlags = appInfo.targetSdkVersion < 26 ? 0 | 16 : 0;
-        if (overrideScale != 1.0f) {
-            this.applicationScale = overrideScale;
-            float f = 1.0f / overrideScale;
-            this.applicationInvertedScale = f;
-            this.applicationDensity = (int) ((DisplayMetrics.DENSITY_DEVICE_STABLE * f) + 0.5f);
+        if (scaleFactor != 1.0f || densityScaleFactor != 1.0f) {
+            this.applicationScale = scaleFactor;
+            this.applicationInvertedScale = 1.0f / scaleFactor;
+            this.applicationDensityScale = densityScaleFactor;
+            this.applicationDensityInvertedScale = 1.0f / densityScaleFactor;
+            this.applicationDensity = (int) ((DisplayMetrics.DENSITY_DEVICE_STABLE * this.applicationDensityInvertedScale) + 0.5f);
             this.mCompatibilityFlags = 36;
             return;
         }
@@ -103,6 +93,8 @@ public class CompatibilityInfo implements Parcelable {
             this.applicationDensity = DisplayMetrics.DENSITY_DEVICE;
             this.applicationScale = 1.0f;
             this.applicationInvertedScale = 1.0f;
+            this.applicationDensityScale = 1.0f;
+            this.applicationDensityInvertedScale = 1.0f;
         } else {
             int sizeInfo = 0;
             boolean anyResizeable = false;
@@ -154,11 +146,14 @@ public class CompatibilityInfo implements Parcelable {
                 this.applicationDensity = DisplayMetrics.DENSITY_DEVICE;
                 this.applicationScale = 1.0f;
                 this.applicationInvertedScale = 1.0f;
+                this.applicationDensityScale = 1.0f;
+                this.applicationDensityInvertedScale = 1.0f;
             } else {
                 this.applicationDensity = 160;
-                float f2 = DisplayMetrics.DENSITY_DEVICE / 160.0f;
-                this.applicationScale = f2;
-                this.applicationInvertedScale = 1.0f / f2;
+                this.applicationScale = DisplayMetrics.DENSITY_DEVICE / 160.0f;
+                this.applicationInvertedScale = 1.0f / this.applicationScale;
+                this.applicationDensityScale = DisplayMetrics.DENSITY_DEVICE / 160.0f;
+                this.applicationDensityInvertedScale = 1.0f / this.applicationDensityScale;
                 compatFlags |= 1;
             }
         }
@@ -170,6 +165,8 @@ public class CompatibilityInfo implements Parcelable {
         this.applicationDensity = dens;
         this.applicationScale = scale;
         this.applicationInvertedScale = invertedScale;
+        this.applicationDensityScale = DisplayMetrics.DENSITY_DEVICE_STABLE / dens;
+        this.applicationDensityInvertedScale = 1.0f / this.applicationDensityScale;
     }
 
     private CompatibilityInfo() {
@@ -207,7 +204,6 @@ public class CompatibilityInfo implements Parcelable {
         return null;
     }
 
-    /* loaded from: classes.dex */
     public class Translator {
         public final float applicationInvertedScale;
         public final float applicationScale;
@@ -236,7 +232,7 @@ public class CompatibilityInfo implements Parcelable {
                 canvas.translate(0.0026143792f, 0.0026143792f);
             }
             float tinyOffset = this.applicationScale;
-            canvas.scale(tinyOffset, tinyOffset);
+            canvas.scale(tinyOffset, this.applicationScale);
         }
 
         public void translateEventInScreenToAppWindow(MotionEvent event) {
@@ -324,7 +320,7 @@ public class CompatibilityInfo implements Parcelable {
 
     public void applyDisplayMetricsIfNeeded(DisplayMetrics inoutDm, boolean applyToSize) {
         if (hasOverrideScale()) {
-            scaleDisplayMetrics(sOverrideInvertedScale, inoutDm, applyToSize);
+            scaleDisplayMetrics(sOverrideInvertedScale, sOverrideDensityInvertScale, inoutDm, applyToSize);
         } else if (!equals(DEFAULT_COMPATIBILITY_INFO)) {
             applyToDisplayMetrics(inoutDm);
         }
@@ -341,19 +337,19 @@ public class CompatibilityInfo implements Parcelable {
             inoutDm.heightPixels = inoutDm.noncompatHeightPixels;
         }
         if (isScalingRequired()) {
-            scaleDisplayMetrics(this.applicationInvertedScale, inoutDm, true);
+            scaleDisplayMetrics(this.applicationInvertedScale, this.applicationDensityInvertedScale, inoutDm, true);
         }
     }
 
-    private static void scaleDisplayMetrics(float invertedRatio, DisplayMetrics inoutDm, boolean applyToSize) {
-        inoutDm.density = inoutDm.noncompatDensity * invertedRatio;
-        inoutDm.densityDpi = (int) ((inoutDm.noncompatDensityDpi * invertedRatio) + 0.5f);
-        inoutDm.scaledDensity = inoutDm.noncompatScaledDensity * invertedRatio;
-        inoutDm.xdpi = inoutDm.noncompatXdpi * invertedRatio;
-        inoutDm.ydpi = inoutDm.noncompatYdpi * invertedRatio;
+    private static void scaleDisplayMetrics(float invertScale, float densityInvertScale, DisplayMetrics inoutDm, boolean applyToSize) {
+        inoutDm.density = inoutDm.noncompatDensity * densityInvertScale;
+        inoutDm.densityDpi = (int) ((inoutDm.noncompatDensityDpi * densityInvertScale) + 0.5f);
+        inoutDm.scaledDensity = inoutDm.noncompatScaledDensity * densityInvertScale;
+        inoutDm.xdpi = inoutDm.noncompatXdpi * densityInvertScale;
+        inoutDm.ydpi = inoutDm.noncompatYdpi * densityInvertScale;
         if (applyToSize) {
-            inoutDm.widthPixels = (int) ((inoutDm.widthPixels * invertedRatio) + 0.5f);
-            inoutDm.heightPixels = (int) ((inoutDm.heightPixels * invertedRatio) + 0.5f);
+            inoutDm.widthPixels = (int) ((inoutDm.widthPixels * invertScale) + 0.5f);
+            inoutDm.heightPixels = (int) ((inoutDm.heightPixels * invertScale) + 0.5f);
         }
     }
 
@@ -369,39 +365,52 @@ public class CompatibilityInfo implements Parcelable {
         }
         inoutConfig.densityDpi = displayDensity;
         if (isScalingRequired()) {
-            scaleConfiguration(this.applicationInvertedScale, inoutConfig);
+            scaleConfiguration(this.applicationInvertedScale, this.applicationDensityInvertedScale, inoutConfig);
         }
     }
 
-    public static void scaleConfiguration(float invertedRatio, Configuration inoutConfig) {
-        inoutConfig.densityDpi = (int) ((inoutConfig.densityDpi * invertedRatio) + 0.5f);
-        inoutConfig.windowConfiguration.scale(invertedRatio);
+    public static void scaleConfiguration(float invertScale, Configuration inoutConfig) {
+        scaleConfiguration(invertScale, invertScale, inoutConfig);
+    }
+
+    public static void scaleConfiguration(float invertScale, float densityInvertScale, Configuration inoutConfig) {
+        inoutConfig.densityDpi = (int) ((inoutConfig.densityDpi * densityInvertScale) + 0.5f);
+        inoutConfig.windowConfiguration.scale(invertScale);
     }
 
     public static void applyOverrideScaleIfNeeded(Configuration config) {
         if (hasOverrideScale()) {
-            scaleConfiguration(sOverrideInvertedScale, config);
+            scaleConfiguration(sOverrideInvertedScale, sOverrideDensityInvertScale, config);
         }
     }
 
     public static void applyOverrideScaleIfNeeded(MergedConfiguration mergedConfig) {
         if (hasOverrideScale()) {
-            scaleConfiguration(sOverrideInvertedScale, mergedConfig.getGlobalConfiguration());
-            scaleConfiguration(sOverrideInvertedScale, mergedConfig.getOverrideConfiguration());
-            scaleConfiguration(sOverrideInvertedScale, mergedConfig.getMergedConfiguration());
+            scaleConfiguration(sOverrideInvertedScale, sOverrideDensityInvertScale, mergedConfig.getGlobalConfiguration());
+            scaleConfiguration(sOverrideInvertedScale, sOverrideDensityInvertScale, mergedConfig.getOverrideConfiguration());
+            scaleConfiguration(sOverrideInvertedScale, sOverrideDensityInvertScale, mergedConfig.getMergedConfiguration());
         }
     }
 
     private static boolean hasOverrideScale() {
-        return sOverrideInvertedScale != 1.0f;
+        return (sOverrideInvertedScale == 1.0f && sOverrideDensityInvertScale == 1.0f) ? false : true;
     }
 
-    public static void setOverrideInvertedScale(float invertedRatio) {
-        sOverrideInvertedScale = invertedRatio;
+    public static void setOverrideInvertedScale(float invertScale) {
+        setOverrideInvertedScale(invertScale, invertScale);
+    }
+
+    public static void setOverrideInvertedScale(float invertScale, float densityInvertScale) {
+        sOverrideInvertedScale = invertScale;
+        sOverrideDensityInvertScale = densityInvertScale;
     }
 
     public static float getOverrideInvertedScale() {
         return sOverrideInvertedScale;
+    }
+
+    public static float getOverrideDensityInvertedScale() {
+        return sOverrideDensityInvertScale;
     }
 
     public static float computeCompatibleScaling(DisplayMetrics dm, DisplayMetrics outDm) {
@@ -450,10 +459,10 @@ public class CompatibilityInfo implements Parcelable {
         }
         try {
             CompatibilityInfo oc = (CompatibilityInfo) o;
-            if (this.mCompatibilityFlags != oc.mCompatibilityFlags || this.applicationDensity != oc.applicationDensity || this.applicationScale != oc.applicationScale) {
+            if (this.mCompatibilityFlags != oc.mCompatibilityFlags || this.applicationDensity != oc.applicationDensity || this.applicationScale != oc.applicationScale || this.applicationInvertedScale != oc.applicationInvertedScale || this.applicationDensityScale != oc.applicationDensityScale) {
                 return false;
             }
-            if (this.applicationInvertedScale == oc.applicationInvertedScale) {
+            if (this.applicationDensityInvertedScale == oc.applicationDensityInvertedScale) {
                 return true;
             }
             return false;
@@ -475,6 +484,8 @@ public class CompatibilityInfo implements Parcelable {
         if (hasOverrideScaling()) {
             sb.append(" overrideInvScale=");
             sb.append(this.applicationInvertedScale);
+            sb.append(" overrideDensityInvScale=");
+            sb.append(this.applicationDensityInvertedScale);
         }
         if (!supportsScreen()) {
             sb.append(" resizing");
@@ -491,7 +502,7 @@ public class CompatibilityInfo implements Parcelable {
 
     public int hashCode() {
         int result = (17 * 31) + this.mCompatibilityFlags;
-        return (((((result * 31) + this.applicationDensity) * 31) + Float.floatToIntBits(this.applicationScale)) * 31) + Float.floatToIntBits(this.applicationInvertedScale);
+        return (((((((((result * 31) + this.applicationDensity) * 31) + Float.floatToIntBits(this.applicationScale)) * 31) + Float.floatToIntBits(this.applicationInvertedScale)) * 31) + Float.floatToIntBits(this.applicationDensityScale)) * 31) + Float.floatToIntBits(this.applicationDensityInvertedScale);
     }
 
     @Override // android.os.Parcelable
@@ -505,23 +516,8 @@ public class CompatibilityInfo implements Parcelable {
         dest.writeInt(this.applicationDensity);
         dest.writeFloat(this.applicationScale);
         dest.writeFloat(this.applicationInvertedScale);
-    }
-
-    /* renamed from: android.content.res.CompatibilityInfo$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 implements Parcelable.Creator<CompatibilityInfo> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityInfo createFromParcel(Parcel source) {
-            return new CompatibilityInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityInfo[] newArray(int size) {
-            return new CompatibilityInfo[size];
-        }
+        dest.writeFloat(this.applicationDensityScale);
+        dest.writeFloat(this.applicationDensityInvertedScale);
     }
 
     private CompatibilityInfo(Parcel source) {
@@ -529,5 +525,53 @@ public class CompatibilityInfo implements Parcelable {
         this.applicationDensity = source.readInt();
         this.applicationScale = source.readFloat();
         this.applicationInvertedScale = source.readFloat();
+        this.applicationDensityScale = source.readFloat();
+        this.applicationDensityInvertedScale = source.readFloat();
+    }
+
+    public static final class CompatScale {
+        public final float mDensityScaleFactor;
+        public final float mScaleFactor;
+
+        public CompatScale(float scaleFactor) {
+            this(scaleFactor, scaleFactor);
+        }
+
+        public CompatScale(float scaleFactor, float densityScaleFactor) {
+            this.mScaleFactor = scaleFactor;
+            this.mDensityScaleFactor = densityScaleFactor;
+        }
+
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof CompatScale)) {
+                return false;
+            }
+            try {
+                CompatScale oc = (CompatScale) o;
+                if (this.mScaleFactor != oc.mScaleFactor) {
+                    return false;
+                }
+                return this.mDensityScaleFactor == oc.mDensityScaleFactor;
+            } catch (ClassCastException e) {
+                return false;
+            }
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder(128);
+            sb.append("mScaleFactor= ");
+            sb.append(this.mScaleFactor);
+            sb.append(" mDensityScaleFactor= ");
+            sb.append(this.mDensityScaleFactor);
+            return sb.toString();
+        }
+
+        public int hashCode() {
+            int result = (17 * 31) + Float.floatToIntBits(this.mScaleFactor);
+            return (result * 31) + Float.floatToIntBits(this.mDensityScaleFactor);
+        }
     }
 }

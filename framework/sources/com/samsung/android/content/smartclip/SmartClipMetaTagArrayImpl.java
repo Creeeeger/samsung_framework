@@ -1,19 +1,15 @@
 package com.samsung.android.content.smartclip;
 
-import android.graphics.Bitmap;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.Iterator;
 
 /* loaded from: classes5.dex */
 public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implements Parcelable {
     public static final Parcelable.Creator<SmartClipMetaTagArrayImpl> CREATOR = new Parcelable.Creator<SmartClipMetaTagArrayImpl>() { // from class: com.samsung.android.content.smartclip.SmartClipMetaTagArrayImpl.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartClipMetaTagArrayImpl createFromParcel(Parcel in) {
             Log.d(SmartClipMetaTagArrayImpl.TAG, "SmartClipMetaTagArrayImpl.createFromParcel called");
@@ -22,6 +18,7 @@ public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implemen
             return data;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartClipMetaTagArrayImpl[] newArray(int size) {
             return new SmartClipMetaTagArrayImpl[size];
@@ -107,7 +104,7 @@ public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implemen
             String value = tag.getValue();
             String extra = "";
             if (value == null) {
-                value = SemCapabilities.FEATURE_TAG_NULL;
+                value = "null";
             }
             if (tag instanceof SemSmartClipExtendedMetaTag) {
                 SemSmartClipExtendedMetaTag tagImpl = (SemSmartClipExtendedMetaTag) tag;
@@ -138,7 +135,6 @@ public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implemen
                 out.writeString("BasicMetaTag");
                 out.writeString(tag.getType());
                 out.writeString(tag.getValue());
-                out.writeParcelable(tag.getBitmap(), flags);
             }
         }
     }
@@ -151,8 +147,7 @@ public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implemen
             if (objId.equals("BasicMetaTag")) {
                 String type = in.readString();
                 String value = in.readString();
-                Bitmap bitmap = (Bitmap) in.readParcelable(Bitmap.class.getClassLoader());
-                tag = new SemSmartClipMetaTag(type, value, bitmap);
+                tag = new SemSmartClipMetaTag(type, value);
             } else if (objId.equals("ParcelableMetaTag")) {
                 tag = (SemSmartClipMetaTag) in.readParcelable(null);
             }
@@ -161,26 +156,6 @@ public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implemen
                 return;
             }
             add(tag);
-        }
-    }
-
-    /* renamed from: com.samsung.android.content.smartclip.SmartClipMetaTagArrayImpl$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SmartClipMetaTagArrayImpl> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmartClipMetaTagArrayImpl createFromParcel(Parcel in) {
-            Log.d(SmartClipMetaTagArrayImpl.TAG, "SmartClipMetaTagArrayImpl.createFromParcel called");
-            SmartClipMetaTagArrayImpl data = new SmartClipMetaTagArrayImpl();
-            data.readFromParcel(in);
-            return data;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmartClipMetaTagArrayImpl[] newArray(int size) {
-            return new SmartClipMetaTagArrayImpl[size];
         }
     }
 }

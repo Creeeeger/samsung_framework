@@ -16,7 +16,6 @@ public interface IAccessibilityEmbeddedConnection extends IInterface {
 
     void setWindowMatrix(float[] fArr) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAccessibilityEmbeddedConnection {
         @Override // android.view.accessibility.IAccessibilityEmbeddedConnection
         public IBinder associateEmbeddedHierarchy(IBinder hostToken, int sourceId) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IAccessibilityEmbeddedConnection extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAccessibilityEmbeddedConnection {
         static final int TRANSACTION_associateEmbeddedHierarchy = 1;
         static final int TRANSACTION_disassociateEmbeddedHierarchy = 2;
@@ -86,37 +84,34 @@ public interface IAccessibilityEmbeddedConnection extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAccessibilityEmbeddedConnection.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAccessibilityEmbeddedConnection.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAccessibilityEmbeddedConnection.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IBinder _result = associateEmbeddedHierarchy(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result);
+                    return true;
+                case 2:
+                    disassociateEmbeddedHierarchy();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    float[] _arg02 = data.createFloatArray();
+                    data.enforceNoDataAvail();
+                    setWindowMatrix(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IBinder _result = associateEmbeddedHierarchy(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result);
-                            return true;
-                        case 2:
-                            disassociateEmbeddedHierarchy();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            float[] _arg02 = data.createFloatArray();
-                            data.enforceNoDataAvail();
-                            setWindowMatrix(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAccessibilityEmbeddedConnection {
+        private static class Proxy implements IAccessibilityEmbeddedConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

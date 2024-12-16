@@ -8,21 +8,10 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SemBackgroundMusic {
     private static final String TAG = "SemBackgroundMusic";
     protected ArrayList<BGMInfo> mBGMInfos = new ArrayList<>();
-
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* loaded from: classes5.dex */
-    public static class BGMInfo {
-        int durationMs;
-        int endTimeMs;
-        FileDescriptor fd;
-        long length;
-        long offset;
-        int startTimeMs;
-    }
 
     public void clear() {
         this.mBGMInfos.clear();
@@ -55,7 +44,7 @@ public abstract class SemBackgroundMusic {
         return p;
     }
 
-    public BGMInfo addInfo(BGMInfo bgmInfo, FileDescriptor fd, int startTime, int endTime) {
+    protected BGMInfo addInfo(BGMInfo bgmInfo, FileDescriptor fd, int startTime, int endTime) {
         bgmInfo.fd = fd;
         bgmInfo.offset = 0L;
         bgmInfo.length = 576460752303423487L;
@@ -65,7 +54,7 @@ public abstract class SemBackgroundMusic {
         return bgmInfo;
     }
 
-    public BGMInfo addInfo(BGMInfo bgmInfo, AssetFileDescriptor afd, int startTime, int endTime) {
+    protected BGMInfo addInfo(BGMInfo bgmInfo, AssetFileDescriptor afd, int startTime, int endTime) {
         bgmInfo.fd = afd.getFileDescriptor();
         bgmInfo.offset = afd.getStartOffset();
         bgmInfo.length = afd.getLength();
@@ -73,5 +62,17 @@ public abstract class SemBackgroundMusic {
         bgmInfo.endTimeMs = endTime;
         bgmInfo.durationMs = endTime - startTime;
         return bgmInfo;
+    }
+
+    protected static class BGMInfo {
+        int durationMs;
+        int endTimeMs;
+        FileDescriptor fd;
+        long length;
+        long offset;
+        int startTimeMs;
+
+        protected BGMInfo() {
+        }
     }
 }

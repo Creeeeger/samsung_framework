@@ -79,14 +79,12 @@ public class BasicConstraints extends ASN1Object {
     }
 
     public boolean isCA() {
-        ASN1Boolean aSN1Boolean = this.cA;
-        return aSN1Boolean != null && aSN1Boolean.isTrue();
+        return this.cA != null && this.cA.isTrue();
     }
 
     public BigInteger getPathLenConstraint() {
-        ASN1Integer aSN1Integer = this.pathLenConstraint;
-        if (aSN1Integer != null) {
-            return aSN1Integer.getValue();
+        if (this.pathLenConstraint != null) {
+            return this.pathLenConstraint.getValue();
         }
         return null;
     }
@@ -94,13 +92,11 @@ public class BasicConstraints extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
-        ASN1Boolean aSN1Boolean = this.cA;
-        if (aSN1Boolean != null) {
-            v.add(aSN1Boolean);
+        if (this.cA != null) {
+            v.add(this.cA);
         }
-        ASN1Integer aSN1Integer = this.pathLenConstraint;
-        if (aSN1Integer != null) {
-            v.add(aSN1Integer);
+        if (this.pathLenConstraint != null) {
+            v.add(this.pathLenConstraint);
         }
         return new DERSequence(v);
     }

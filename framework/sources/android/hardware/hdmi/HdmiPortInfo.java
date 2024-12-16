@@ -11,9 +11,7 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class HdmiPortInfo implements Parcelable {
     public static final Parcelable.Creator<HdmiPortInfo> CREATOR = new Parcelable.Creator<HdmiPortInfo>() { // from class: android.hardware.hdmi.HdmiPortInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HdmiPortInfo createFromParcel(Parcel source) {
             int id = source.readInt();
@@ -26,6 +24,7 @@ public final class HdmiPortInfo implements Parcelable {
             return new Builder(id, type, address).setCecSupported(cec).setArcSupported(arc).setEarcSupported(earc).setMhlSupported(mhl).build();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HdmiPortInfo[] newArray(int size) {
             return new HdmiPortInfo[size];
@@ -42,12 +41,7 @@ public final class HdmiPortInfo implements Parcelable {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PortType {
-    }
-
-    /* synthetic */ HdmiPortInfo(Builder builder, HdmiPortInfoIA hdmiPortInfoIA) {
-        this(builder);
     }
 
     @Deprecated
@@ -108,30 +102,6 @@ public final class HdmiPortInfo implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiPortInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HdmiPortInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HdmiPortInfo createFromParcel(Parcel source) {
-            int id = source.readInt();
-            int type = source.readInt();
-            int address = source.readInt();
-            boolean cec = source.readInt() == 1;
-            boolean arc = source.readInt() == 1;
-            boolean mhl = source.readInt() == 1;
-            boolean earc = source.readInt() == 1;
-            return new Builder(id, type, address).setCecSupported(cec).setArcSupported(arc).setEarcSupported(earc).setMhlSupported(mhl).build();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HdmiPortInfo[] newArray(int size) {
-            return new HdmiPortInfo[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     @SystemApi
     public void writeToParcel(Parcel parcel, int i) {
@@ -168,7 +138,6 @@ public final class HdmiPortInfo implements Parcelable {
         return Objects.hash(Integer.valueOf(this.mId), Integer.valueOf(this.mType), Integer.valueOf(this.mAddress), Boolean.valueOf(this.mCecSupported), Boolean.valueOf(this.mArcSupported), Boolean.valueOf(this.mMhlSupported), Boolean.valueOf(this.mEarcSupported));
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mAddress;
         private boolean mArcSupported;
@@ -177,10 +146,6 @@ public final class HdmiPortInfo implements Parcelable {
         private int mId;
         private boolean mMhlSupported;
         private int mType;
-
-        /* synthetic */ Builder(HdmiPortInfo hdmiPortInfo, BuilderIA builderIA) {
-            this(hdmiPortInfo);
-        }
 
         public Builder(int id, int type, int address) {
             if (type != 0 && type != 1) {

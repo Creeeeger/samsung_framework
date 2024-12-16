@@ -28,7 +28,6 @@ public interface IIdmap2 extends IInterface {
 
     boolean verifyIdmap(String str, String str2, String str3, int i, boolean z, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IIdmap2 {
         @Override // android.os.IIdmap2
         public String getIdmapPath(String overlayApkPath, int userId) throws RemoteException {
@@ -90,7 +89,6 @@ public interface IIdmap2 extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IIdmap2 {
         static final int TRANSACTION_acquireFabricatedOverlayIterator = 8;
         static final int TRANSACTION_createFabricatedOverlay = 6;
@@ -163,105 +161,102 @@ public interface IIdmap2 extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIdmap2.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIdmap2.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIdmap2.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result = getIdmapPath(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = removeIdmap(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    String _arg2 = data.readString();
+                    int _arg3 = data.readInt();
+                    boolean _arg4 = data.readBoolean();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = verifyIdmap(_arg03, _arg13, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg14 = data.readString();
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    boolean _arg42 = data.readBoolean();
+                    int _arg52 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result4 = createIdmap(_arg04, _arg14, _arg22, _arg32, _arg42, _arg52);
+                    reply.writeNoException();
+                    reply.writeString(_result4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result5 = getTargetPath(_arg05);
+                    reply.writeNoException();
+                    reply.writeString(_result5);
+                    return true;
+                case 6:
+                    FabricatedOverlayInternal _arg06 = (FabricatedOverlayInternal) data.readTypedObject(FabricatedOverlayInternal.CREATOR);
+                    data.enforceNoDataAvail();
+                    FabricatedOverlayInfo _result6 = createFabricatedOverlay(_arg06);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = deleteFabricatedOverlay(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 8:
+                    int _result8 = acquireFabricatedOverlayIterator();
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 9:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    releaseFabricatedOverlayIterator(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<FabricatedOverlayInfo> _result9 = nextFabricatedOverlayInfos(_arg09);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result9, 1);
+                    return true;
+                case 11:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result10 = dumpIdmap(_arg010);
+                    reply.writeNoException();
+                    reply.writeString(_result10);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result = getIdmapPath(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = removeIdmap(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            String _arg2 = data.readString();
-                            int _arg3 = data.readInt();
-                            boolean _arg4 = data.readBoolean();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = verifyIdmap(_arg03, _arg13, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg14 = data.readString();
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            boolean _arg42 = data.readBoolean();
-                            int _arg52 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result4 = createIdmap(_arg04, _arg14, _arg22, _arg32, _arg42, _arg52);
-                            reply.writeNoException();
-                            reply.writeString(_result4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result5 = getTargetPath(_arg05);
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        case 6:
-                            FabricatedOverlayInternal _arg06 = (FabricatedOverlayInternal) data.readTypedObject(FabricatedOverlayInternal.CREATOR);
-                            data.enforceNoDataAvail();
-                            FabricatedOverlayInfo _result6 = createFabricatedOverlay(_arg06);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = deleteFabricatedOverlay(_arg07);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 8:
-                            int _result8 = acquireFabricatedOverlayIterator();
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            releaseFabricatedOverlayIterator(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<FabricatedOverlayInfo> _result9 = nextFabricatedOverlayInfos(_arg09);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 11:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result10 = dumpIdmap(_arg010);
-                            reply.writeNoException();
-                            reply.writeString(_result10);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IIdmap2 {
             private IBinder mRemote;
 

@@ -7,7 +7,7 @@ public class BERApplicationSpecificParser implements ASN1ApplicationSpecificPars
     private final ASN1StreamParser parser;
     private final int tag;
 
-    public BERApplicationSpecificParser(int tag, ASN1StreamParser parser) {
+    BERApplicationSpecificParser(int tag, ASN1StreamParser parser) {
         this.tag = tag;
         this.parser = parser;
     }

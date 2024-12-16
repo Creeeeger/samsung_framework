@@ -117,10 +117,8 @@ public final class InCallAdapter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.InCallAdapter$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends ResultReceiver {
+    /* renamed from: android.telecom.InCallAdapter$1, reason: invalid class name */
+    class AnonymousClass1 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
         final /* synthetic */ Executor val$executor;
 
@@ -132,7 +130,7 @@ public final class InCallAdapter {
         }
 
         @Override // android.os.ResultReceiver
-        public void onReceiveResult(int resultCode, final Bundle result) {
+        protected void onReceiveResult(int resultCode, final Bundle result) {
             super.onReceiveResult(resultCode, result);
             long identity = Binder.clearCallingIdentity();
             try {

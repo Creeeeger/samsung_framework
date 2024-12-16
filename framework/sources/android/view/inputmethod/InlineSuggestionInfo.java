@@ -14,14 +14,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InlineSuggestionInfo implements Parcelable {
     public static final Parcelable.Creator<InlineSuggestionInfo> CREATOR = new Parcelable.Creator<InlineSuggestionInfo>() { // from class: android.view.inputmethod.InlineSuggestionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionInfo[] newArray(int size) {
             return new InlineSuggestionInfo[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionInfo createFromParcel(Parcel in) {
             return new InlineSuggestionInfo(in);
@@ -39,12 +38,10 @@ public final class InlineSuggestionInfo implements Parcelable {
     private final String mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Source {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Type {
     }
 
@@ -58,18 +55,18 @@ public final class InlineSuggestionInfo implements Parcelable {
 
     public InlineSuggestionInfo(InlinePresentationSpec inlinePresentationSpec, String source, String[] autofillHints, String type, boolean pinned, InlineSuggestion tooltip) {
         this.mInlinePresentationSpec = inlinePresentationSpec;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlinePresentationSpec);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlinePresentationSpec);
         this.mSource = source;
-        if (!Objects.equals(source, SOURCE_AUTOFILL) && !Objects.equals(source, SOURCE_PLATFORM)) {
-            throw new IllegalArgumentException("source was " + source + " but must be one of: SOURCE_AUTOFILL(" + SOURCE_AUTOFILL + "), SOURCE_PLATFORM(" + SOURCE_PLATFORM + NavigationBarInflaterView.KEY_CODE_END);
+        if (!Objects.equals(this.mSource, SOURCE_AUTOFILL) && !Objects.equals(this.mSource, SOURCE_PLATFORM)) {
+            throw new IllegalArgumentException("source was " + this.mSource + " but must be one of: SOURCE_AUTOFILL(" + SOURCE_AUTOFILL + "), SOURCE_PLATFORM(" + SOURCE_PLATFORM + NavigationBarInflaterView.KEY_CODE_END);
         }
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) source);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSource);
         this.mAutofillHints = autofillHints;
         this.mType = type;
-        if (!Objects.equals(type, TYPE_SUGGESTION) && !Objects.equals(type, TYPE_ACTION)) {
-            throw new IllegalArgumentException("type was " + type + " but must be one of: TYPE_SUGGESTION(" + TYPE_SUGGESTION + "), TYPE_ACTION(" + TYPE_ACTION + NavigationBarInflaterView.KEY_CODE_END);
+        if (!Objects.equals(this.mType, TYPE_SUGGESTION) && !Objects.equals(this.mType, TYPE_ACTION)) {
+            throw new IllegalArgumentException("type was " + this.mType + " but must be one of: TYPE_SUGGESTION(" + TYPE_SUGGESTION + "), TYPE_ACTION(" + TYPE_ACTION + NavigationBarInflaterView.KEY_CODE_END);
         }
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mType);
         this.mPinned = pinned;
         this.mTooltip = tooltip;
     }
@@ -133,14 +130,12 @@ public final class InlineSuggestionInfo implements Parcelable {
         dest.writeByte(flg);
         dest.writeTypedObject(this.mInlinePresentationSpec, flags);
         dest.writeString(this.mSource);
-        String[] strArr = this.mAutofillHints;
-        if (strArr != null) {
-            dest.writeStringArray(strArr);
+        if (this.mAutofillHints != null) {
+            dest.writeStringArray(this.mAutofillHints);
         }
         dest.writeString(this.mType);
-        InlineSuggestion inlineSuggestion = this.mTooltip;
-        if (inlineSuggestion != null) {
-            dest.writeTypedObject(inlineSuggestion, flags);
+        if (this.mTooltip != null) {
+            dest.writeTypedObject(this.mTooltip, flags);
         }
     }
 
@@ -158,37 +153,20 @@ public final class InlineSuggestionInfo implements Parcelable {
         String type = in.readString();
         InlineSuggestion tooltip = (flg & 32) == 0 ? null : (InlineSuggestion) in.readTypedObject(InlineSuggestion.CREATOR);
         this.mInlinePresentationSpec = inlinePresentationSpec;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlinePresentationSpec);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlinePresentationSpec);
         this.mSource = source;
-        if (!Objects.equals(source, SOURCE_AUTOFILL) && !Objects.equals(source, SOURCE_PLATFORM)) {
-            throw new IllegalArgumentException("source was " + source + " but must be one of: SOURCE_AUTOFILL(" + SOURCE_AUTOFILL + "), SOURCE_PLATFORM(" + SOURCE_PLATFORM + NavigationBarInflaterView.KEY_CODE_END);
+        if (!Objects.equals(this.mSource, SOURCE_AUTOFILL) && !Objects.equals(this.mSource, SOURCE_PLATFORM)) {
+            throw new IllegalArgumentException("source was " + this.mSource + " but must be one of: SOURCE_AUTOFILL(" + SOURCE_AUTOFILL + "), SOURCE_PLATFORM(" + SOURCE_PLATFORM + NavigationBarInflaterView.KEY_CODE_END);
         }
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) source);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSource);
         this.mAutofillHints = autofillHints;
         this.mType = type;
-        if (!Objects.equals(type, TYPE_SUGGESTION) && !Objects.equals(type, TYPE_ACTION)) {
-            throw new IllegalArgumentException("type was " + type + " but must be one of: TYPE_SUGGESTION(" + TYPE_SUGGESTION + "), TYPE_ACTION(" + TYPE_ACTION + NavigationBarInflaterView.KEY_CODE_END);
+        if (!Objects.equals(this.mType, TYPE_SUGGESTION) && !Objects.equals(this.mType, TYPE_ACTION)) {
+            throw new IllegalArgumentException("type was " + this.mType + " but must be one of: TYPE_SUGGESTION(" + TYPE_SUGGESTION + "), TYPE_ACTION(" + TYPE_ACTION + NavigationBarInflaterView.KEY_CODE_END);
         }
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mType);
         this.mPinned = pinned;
         this.mTooltip = tooltip;
-    }
-
-    /* renamed from: android.view.inputmethod.InlineSuggestionInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionInfo[] newArray(int size) {
-            return new InlineSuggestionInfo[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionInfo createFromParcel(Parcel in) {
-            return new InlineSuggestionInfo(in);
-        }
     }
 
     @Deprecated

@@ -1,6 +1,5 @@
 package com.samsung.android.sdk.sfe.font;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -26,11 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class FontManager {
     private static final String DROIDSANS = "DroidSans.ttf";
-    private static final String DROIDSANS_BOLD = "DroidSans-Bold.ttf";
-    private static final String FONTS_XML = "system/etc/fonts.xml";
     private static final String FONT_DIRECTORY = "fonts/";
     private static final String FONT_PACKAGE = "com.monotype.android.font.";
     private static final String OVERRIDE_TB = "ThomBrowne";
@@ -41,7 +38,7 @@ public class FontManager {
     private static final String TAG = "SFFontManager";
     private static String mFlipFontPath;
     private static final boolean DEBUG = SFEffect.DEBUG;
-    private static String sOverrideFont = SemCscFeature.getInstance().getString("CscFeature_SetupWizard_ConfigStepSequenceType");
+    private static final String sOverrideFont = SemCscFeature.getInstance().getString("CscFeature_SetupWizard_ConfigStepSequenceType");
     private static FontConfig mParser = null;
     private static boolean mSetFontConfigFinished = false;
     private static long mLastSystemFontChangedTime = 0;
@@ -55,13 +52,12 @@ public class FontManager {
         synchronized (mMutex) {
             mSetFontConfigFinished = false;
             mParser = getFontConfig();
-            boolean z = DEBUG;
-            if (z) {
+            if (DEBUG) {
                 Log.d(TAG, "setFontConfig start");
             }
             setFontConfig(mParser);
             mSetFontConfigFinished = true;
-            if (z) {
+            if (DEBUG) {
                 Log.d(TAG, "setFontConfig done");
             }
         }
@@ -97,33 +93,29 @@ public class FontManager {
             }
             Log.d(TAG, "getSystemFontName fontFamily = " + fontFamily + ", isItalic = " + isItalic + ", isBold = " + isBold);
             int weight = isBold ? 700 : 400;
-            int italic = isItalic ? 1 : 0;
-            for (FontConfig.NamedFamilyList namedFamilyList : mParser.getNamedFamilyLists()) {
-                if (namedFamilyList.getName() != null) {
-                    if (fontFamily.equals(namedFamilyList.getName())) {
-                        for (FontConfig.FontFamily fontfamily : namedFamilyList.getFamilies()) {
-                            for (FontConfig.Font font : fontfamily.getFontList()) {
-                                if (font.getStyle().getWeight() == weight && font.getStyle().getSlant() == italic) {
-                                    return font.getFile().getAbsolutePath();
-                                }
+            for (FontConfig.FontFamily family : mParser.getFamilies()) {
+                if (family.getName() != null) {
+                    if (family.getName().equals(fontFamily)) {
+                        FontConfig.Font font = null;
+                        for (FontConfig.Font f : family.getFonts()) {
+                            font = f;
+                            if (f.getWeight() == weight && f.isItalic() == isItalic) {
+                                break;
                             }
                         }
+                        return font.getFile().getAbsolutePath();
                     }
-                } else if (DEBUG) {
+                } else {
                     Log.w(TAG, "getSystemFontName - family.getName() is NULL - Skip.");
                 }
             }
             for (FontConfig.Alias alias : mParser.getAliases()) {
-                if (alias.getName() != null && alias.getOriginal() != null) {
-                    if (alias.getWeight() != 0) {
-                        for (FontConfig.NamedFamilyList namedFamilyList2 : mParser.getNamedFamilyLists()) {
-                            if (alias.getName().equals(namedFamilyList2.getName())) {
-                                for (FontConfig.FontFamily fontfamily2 : namedFamilyList2.getFamilies()) {
-                                    for (FontConfig.Font font2 : fontfamily2.getFontList()) {
-                                        if (font2.getStyle().getWeight() == alias.getWeight() && font2.getStyle().getSlant() == italic) {
-                                            return font2.getFile().getAbsolutePath();
-                                        }
-                                    }
+                if (alias.getWeight() != 0) {
+                    for (FontConfig.FontFamily family2 : mParser.getFamilies()) {
+                        if (family2.getName() != null && family2.getName().equals(alias.getOriginal())) {
+                            for (FontConfig.Font font2 : family2.getFonts()) {
+                                if (font2.getWeight() == alias.getWeight() && font2.isItalic() == isItalic) {
+                                    return font2.getFile().getAbsolutePath();
                                 }
                             }
                         }
@@ -134,7 +126,6 @@ public class FontManager {
         }
     }
 
-    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:25:0x005a -> B:19:0x007b). Please report as a decompilation issue!!! */
     public String getFullFlipFont(Context context) {
         if (context == null) {
             return null;
@@ -143,48 +134,22 @@ public class FontManager {
         if (mtFontsDir.isDirectory() && mtFontsDir.list() != null && mtFontsDir.list().length == 0) {
             return "default";
         }
-        String systemFont = "empty";
-        if ("empty".equals("empty")) {
-            File file = new File(OWNER_SANS_LOC_PATH);
-            FileInputStream fis = null;
-            String string = null;
+        try {
+            FileInputStream fis = new FileInputStream(OWNER_SANS_LOC_PATH);
             try {
+                BufferedReader br = new BufferedReader(new InputStreamReader(fis));
                 try {
-                    try {
-                        try {
-                            fis = new FileInputStream(file);
-                            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-                            string = br.readLine();
-                            fis.close();
-                            br.close();
-                            fis.close();
-                        } catch (IOException e) {
-                            string = "default";
-                            e.printStackTrace();
-                            if (fis != null) {
-                                fis.close();
-                            }
-                        }
-                    } catch (FileNotFoundException e2) {
-                        string = "default";
-                        if (fis != null) {
-                            fis.close();
-                        }
-                    }
-                } catch (IOException e3) {
+                    String systemFont = br.readLine();
+                    br.close();
+                    fis.close();
+                    return systemFont;
+                } finally {
                 }
-                systemFont = string;
-            } catch (Throwable th) {
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException e4) {
-                    }
-                }
-                throw th;
+            } finally {
             }
+        } catch (IOException e) {
+            return "default";
         }
-        return systemFont == null ? "default" : systemFont;
     }
 
     public String getFontNameFlipFont(Context context) {
@@ -215,7 +180,7 @@ public class FontManager {
                 return null;
             }
             mFlipFontPath = "/system/fonts/ArialNarrow-Regular.ttf";
-            return "/system/fonts/ArialNarrow-Regular.ttf";
+            return mFlipFontPath;
         }
         long timeSansLocFile = file.lastModified();
         if (timeSansLocFile == mLastSystemFontChangedTime) {
@@ -236,38 +201,38 @@ public class FontManager {
             File fontFile = new File(strFontPath2);
             if (!fontFile.exists()) {
                 String strFontName = getFontNameFlipFont(context);
-                String flipFontPath = getFlipFontFromPakage(context, strPackageName2, strFontName);
+                String flipFontPath = getFlipFontFromPackage(context, strPackageName2, strFontName);
                 if (flipFontPath == null) {
                     return null;
                 }
                 mFlipFontPath = flipFontPath;
                 mLastSystemFontChangedTime = timeSansLocFile;
-                return flipFontPath;
+                return mFlipFontPath;
             }
             String fontName = strPackageName2.toLowerCase() + MediaMetrics.SEPARATOR + getFontNameFlipFont(context) + ".ttf";
             insertFontData(fontName, readFile(fontFile));
             mFlipFontPath = fontName;
             mLastSystemFontChangedTime = timeSansLocFile;
-            return fontName;
+            return mFlipFontPath;
         }
         if (!TextUtils.isEmpty(sOverrideFont) && sOverrideFont.contains(OVERRIDE_TB)) {
             mFlipFontPath = "/system/fonts/ArialNarrow-Regular.ttf";
-            return "/system/fonts/ArialNarrow-Regular.ttf";
+            return mFlipFontPath;
         }
         mFlipFontPath = null;
         return null;
     }
 
-    private String getFlipFontFromPakage(Context context, String strPackageName, String strFontName) {
-        String pakageName = strPackageName.toLowerCase();
+    private String getFlipFontFromPackage(Context context, String strPackageName, String strFontName) {
+        String packageName = strPackageName.toLowerCase();
         String assetFontPath = FONT_DIRECTORY + strFontName + ".ttf";
-        String fontName = pakageName + MediaMetrics.SEPARATOR + strFontName + ".ttf";
+        String fontName = packageName + MediaMetrics.SEPARATOR + strFontName + ".ttf";
         if (DEBUG) {
-            Log.d(TAG, "getFlipFontFromPakage : Application pakage name = " + pakageName + " , font name = " + strFontName);
+            Log.d(TAG, "getFlipFontFromPakage : Application pakage name = " + packageName + " , font name = " + strFontName);
         }
         try {
             PackageManager mPackageManager = context.getPackageManager();
-            ApplicationInfo appInfo = mPackageManager.getApplicationInfo(pakageName, 128);
+            ApplicationInfo appInfo = mPackageManager.getApplicationInfo(packageName, 128);
             appInfo.publicSourceDir = appInfo.sourceDir;
             Resources res = mPackageManager.getResourcesForApplication(appInfo);
             AssetManager assetManager = res.getAssets();
@@ -279,108 +244,71 @@ public class FontManager {
             return fontName;
         } catch (Exception ex) {
             ex.printStackTrace();
+            Uri uriFont = Uri.parse(SecContentProviderURI.CONTENT + packageName + "/fonts/" + strFontName + ".ttf");
             try {
-                ContentResolver cr = context.getContentResolver();
-                Uri uriFont = Uri.parse(SecContentProviderURI.CONTENT + pakageName + "/fonts/" + strFontName + ".ttf");
-                InputStream isFont = null;
+                InputStream isFont = context.getContentResolver().openInputStream(uriFont);
                 try {
-                    try {
-                        isFont = cr.openInputStream(uriFont);
-                        byte[] fileBytes2 = new byte[isFont.available()];
-                        isFont.read(fileBytes2);
-                        insertFontData(fontName, fileBytes2);
-                        if (isFont != null) {
-                            try {
-                                isFont.close();
-                            } catch (IOException e) {
-                            }
-                        }
-                        return fontName;
-                    } catch (Throwable th) {
-                        if (isFont != null) {
-                            try {
-                                isFont.close();
-                            } catch (IOException e2) {
-                            }
-                        }
-                        throw th;
-                    }
-                } catch (Exception e3) {
-                    e3.printStackTrace();
+                    byte[] fileBytes2 = new byte[isFont.available()];
+                    isFont.read(fileBytes2);
+                    insertFontData(fontName, fileBytes2);
                     if (isFont != null) {
-                        try {
-                            isFont.close();
-                        } catch (IOException e4) {
-                        }
+                        isFont.close();
                     }
-                    return null;
+                    return fontName;
+                } finally {
                 }
-            } catch (Exception e5) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }
     }
 
     private byte[] readFile(File file) {
-        FileInputStream fis = null;
         try {
+            FileInputStream fis = new FileInputStream(file);
             try {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
                 try {
-                    fis = new FileInputStream(file);
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
                     byte[] buffer = new byte[4096];
                     while (true) {
                         int read = fis.read(buffer);
-                        if (read == -1) {
-                            break;
+                        if (read != -1) {
+                            output.write(buffer, 0, read);
+                        } else {
+                            byte[] byteArray = output.toByteArray();
+                            output.close();
+                            fis.close();
+                            return byteArray;
                         }
-                        output.write(buffer, 0, read);
                     }
-                    byte[] byteArray = output.toByteArray();
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                    }
-                    return byteArray;
-                } catch (FileNotFoundException e2) {
-                    Log.d(TAG, "File not found: " + e2.toString());
-                    if (fis == null) {
-                        return null;
-                    }
-                    fis.close();
-                    return null;
-                } catch (IOException e3) {
-                    Log.d(TAG, "Exception reading file: " + e3.toString());
-                    if (fis == null) {
-                        return null;
-                    }
-                    fis.close();
-                    return null;
+                } finally {
                 }
-            } catch (IOException e4) {
-                return null;
-            }
-        } catch (Throwable th) {
-            if (fis != null) {
+            } catch (Throwable th) {
                 try {
                     fis.close();
-                } catch (IOException e5) {
+                } catch (Throwable th2) {
+                    th.addSuppressed(th2);
                 }
+                throw th;
             }
-            throw th;
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e);
+            return null;
+        } catch (IOException e2) {
+            Log.d(TAG, "Exception reading file: " + e2);
+            return null;
         }
     }
 
     private static void insertFontData(String path, byte[] buf) {
-        boolean rtn = SFFontManager_InsertFontData(path, buf);
-        if (!rtn) {
+        if (!SFFontManager_InsertFontData(path, buf)) {
             throwUncheckedException(SFError.getError());
         }
     }
 
     private static void setFontConfig(FontConfig fc) {
-        boolean rtn = SFFontManager_SetFontConfig(fc);
-        if (!rtn) {
+        if (!SFFontManager_SetFontConfig(fc)) {
             throwUncheckedException(SFError.getError());
         }
     }

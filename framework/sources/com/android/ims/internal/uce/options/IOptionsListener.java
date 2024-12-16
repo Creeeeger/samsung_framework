@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.ims.internal.uce.common.StatusCode;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IOptionsListener extends IInterface {
     void cmdStatus(OptionsCmdStatus optionsCmdStatus) throws RemoteException;
 
@@ -21,7 +21,6 @@ public interface IOptionsListener extends IInterface {
 
     void sipResponseReceived(String str, OptionsSipResponse optionsSipResponse, OptionsCapInfo optionsCapInfo) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IOptionsListener {
         @Override // com.android.ims.internal.uce.options.IOptionsListener
         public void getVersionCb(String version) throws RemoteException {
@@ -53,7 +52,6 @@ public interface IOptionsListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IOptionsListener {
         public static final String DESCRIPTOR = "com.android.ims.internal.uce.options.IOptionsListener";
         static final int TRANSACTION_cmdStatus = 5;
@@ -112,61 +110,57 @@ public interface IOptionsListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    getVersionCb(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    StatusCode _arg02 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
+                    data.enforceNoDataAvail();
+                    serviceAvailable(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    StatusCode _arg03 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
+                    data.enforceNoDataAvail();
+                    serviceUnavailable(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    OptionsSipResponse _arg1 = (OptionsSipResponse) data.readTypedObject(OptionsSipResponse.CREATOR);
+                    OptionsCapInfo _arg2 = (OptionsCapInfo) data.readTypedObject(OptionsCapInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    sipResponseReceived(_arg04, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    OptionsCmdStatus _arg05 = (OptionsCmdStatus) data.readTypedObject(OptionsCmdStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    cmdStatus(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    OptionsCapInfo _arg12 = (OptionsCapInfo) data.readTypedObject(OptionsCapInfo.CREATOR);
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    incomingOptions(_arg06, _arg12, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            getVersionCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            StatusCode _arg02 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
-                            data.enforceNoDataAvail();
-                            serviceAvailable(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            StatusCode _arg03 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
-                            data.enforceNoDataAvail();
-                            serviceUnavailable(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            OptionsSipResponse _arg1 = (OptionsSipResponse) data.readTypedObject(OptionsSipResponse.CREATOR);
-                            OptionsCapInfo _arg2 = (OptionsCapInfo) data.readTypedObject(OptionsCapInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            sipResponseReceived(_arg04, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            OptionsCmdStatus _arg05 = (OptionsCmdStatus) data.readTypedObject(OptionsCmdStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            cmdStatus(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            OptionsCapInfo _arg12 = (OptionsCapInfo) data.readTypedObject(OptionsCapInfo.CREATOR);
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            incomingOptions(_arg06, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IOptionsListener {
+        private static class Proxy implements IOptionsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

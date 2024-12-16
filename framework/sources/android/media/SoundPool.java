@@ -10,6 +10,7 @@ import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.util.AndroidRuntimeException;
 import android.util.Log;
+import com.samsung.android.audio.AudioManagerHelper;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -26,13 +27,8 @@ public class SoundPool extends PlayerBase {
     private boolean mHasAppOpsPlayAudio;
     private long mNativeContext;
 
-    /* loaded from: classes2.dex */
     public interface OnLoadCompleteListener {
         void onLoadComplete(SoundPool soundPool, int i, int i2);
-    }
-
-    /* synthetic */ SoundPool(Context context, int i, AudioAttributes audioAttributes, int i2, SoundPoolIA soundPoolIA) {
-        this(context, i, audioAttributes, i2);
     }
 
     private final native int _load(FileDescriptor fileDescriptor, long j, long j2, int i);
@@ -99,7 +95,7 @@ public class SoundPool extends PlayerBase {
     }
 
     public int load(String path, int priority) {
-        String path2 = convertStartingPathToSystem(path);
+        String path2 = AudioManagerHelper.convertStartingPathToSystem(path);
         int id = 0;
         try {
             File f = new File(path2);
@@ -155,12 +151,12 @@ public class SoundPool extends PlayerBase {
     }
 
     @Override // android.media.PlayerBase
-    public int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation) {
+    int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation) {
         return -1;
     }
 
     @Override // android.media.PlayerBase
-    public VolumeShaper.State playerGetVolumeShaperState(int id) {
+    VolumeShaper.State playerGetVolumeShaperState(int id) {
         return null;
     }
 
@@ -218,9 +214,7 @@ public class SoundPool extends PlayerBase {
         eventHandler.sendMessage(message);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public final class EventHandler extends Handler {
+    private final class EventHandler extends Handler {
         private final OnLoadCompleteListener mOnLoadCompleteListener;
 
         EventHandler(Looper looper, OnLoadCompleteListener onLoadCompleteListener) {
@@ -241,7 +235,6 @@ public class SoundPool extends PlayerBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private AudioAttributes mAudioAttributes;
         private Context mContext;
@@ -283,14 +276,5 @@ public class SoundPool extends PlayerBase {
             }
             return new SoundPool(this.mContext, this.mMaxStreams, this.mAudioAttributes, this.mSessionId);
         }
-    }
-
-    private String convertStartingPathToSystem(String path) {
-        if (path != null && path.startsWith("/product/media/audio/ui/")) {
-            String path2 = path.replaceFirst("/product", "/system");
-            Log.e(TAG, "convert starting path: " + path2);
-            return path2;
-        }
-        return path;
     }
 }

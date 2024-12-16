@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IOutputSurfaceConfiguration extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IOutputSurfaceConfiguration";
 
@@ -18,7 +18,6 @@ public interface IOutputSurfaceConfiguration extends IInterface {
 
     OutputSurface getPreviewOutputSurface() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IOutputSurfaceConfiguration {
         @Override // android.hardware.camera2.extension.IOutputSurfaceConfiguration
         public OutputSurface getPreviewOutputSurface() throws RemoteException {
@@ -46,7 +45,6 @@ public interface IOutputSurfaceConfiguration extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IOutputSurfaceConfiguration {
         static final int TRANSACTION_getImageAnalysisOutputSurface = 3;
         static final int TRANSACTION_getImageCaptureOutputSurface = 2;
@@ -98,39 +96,36 @@ public interface IOutputSurfaceConfiguration extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOutputSurfaceConfiguration.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOutputSurfaceConfiguration.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOutputSurfaceConfiguration.DESCRIPTOR);
+                case 1:
+                    OutputSurface _result = getPreviewOutputSurface();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    OutputSurface _result2 = getImageCaptureOutputSurface();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    OutputSurface _result3 = getImageAnalysisOutputSurface();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    OutputSurface _result4 = getPostviewOutputSurface();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            OutputSurface _result = getPreviewOutputSurface();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            OutputSurface _result2 = getImageCaptureOutputSurface();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            OutputSurface _result3 = getImageAnalysisOutputSurface();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            OutputSurface _result4 = getPostviewOutputSurface();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IOutputSurfaceConfiguration {
             private IBinder mRemote;
 

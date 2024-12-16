@@ -11,9 +11,8 @@ public class Matrix3f {
     }
 
     public Matrix3f(float[] dataArray) {
-        float[] fArr = new float[9];
-        this.mMat = fArr;
-        System.arraycopy(dataArray, 0, fArr, 0, fArr.length);
+        this.mMat = new float[9];
+        System.arraycopy(dataArray, 0, this.mMat, 0, this.mMat.length);
     }
 
     public float[] getArray() {
@@ -29,22 +28,19 @@ public class Matrix3f {
     }
 
     public void loadIdentity() {
-        float[] fArr = this.mMat;
-        fArr[0] = 1.0f;
-        fArr[1] = 0.0f;
-        fArr[2] = 0.0f;
-        fArr[3] = 0.0f;
-        fArr[4] = 1.0f;
-        fArr[5] = 0.0f;
-        fArr[6] = 0.0f;
-        fArr[7] = 0.0f;
-        fArr[8] = 1.0f;
+        this.mMat[0] = 1.0f;
+        this.mMat[1] = 0.0f;
+        this.mMat[2] = 0.0f;
+        this.mMat[3] = 0.0f;
+        this.mMat[4] = 1.0f;
+        this.mMat[5] = 0.0f;
+        this.mMat[6] = 0.0f;
+        this.mMat[7] = 0.0f;
+        this.mMat[8] = 1.0f;
     }
 
     public void load(Matrix3f src) {
-        float[] array = src.getArray();
-        float[] fArr = this.mMat;
-        System.arraycopy(array, 0, fArr, 0, fArr.length);
+        System.arraycopy(src.getArray(), 0, this.mMat, 0, this.mMat.length);
     }
 
     public void loadRotate(float rot, float x, float y, float z) {
@@ -72,16 +68,15 @@ public class Matrix3f {
         float xs = x2 * s;
         float ys = y2 * s;
         float zs = z2 * s;
-        float[] fArr = this.mMat;
-        fArr[0] = (x2 * x2 * nc) + c;
-        fArr[3] = (xy * nc) - zs;
-        fArr[6] = (zx * nc) + ys;
-        fArr[1] = (xy * nc) + zs;
-        fArr[4] = (y2 * y2 * nc) + c;
-        fArr[7] = (yz * nc) - xs;
-        fArr[2] = (zx * nc) - ys;
-        fArr[5] = (yz * nc) + xs;
-        fArr[8] = (z2 * z2 * nc) + c;
+        this.mMat[0] = (x2 * x2 * nc) + c;
+        this.mMat[3] = (xy * nc) - zs;
+        this.mMat[6] = (zx * nc) + ys;
+        this.mMat[1] = (xy * nc) + zs;
+        this.mMat[4] = (y2 * y2 * nc) + c;
+        this.mMat[7] = (yz * nc) - xs;
+        this.mMat[2] = (zx * nc) - ys;
+        this.mMat[5] = (yz * nc) + xs;
+        this.mMat[8] = (z2 * z2 * nc) + c;
     }
 
     public void loadRotate(float rot) {
@@ -89,33 +84,29 @@ public class Matrix3f {
         float rot2 = rot * 0.017453292f;
         float c = (float) Math.cos(rot2);
         float s = (float) Math.sin(rot2);
-        float[] fArr = this.mMat;
-        fArr[0] = c;
-        fArr[1] = -s;
-        fArr[3] = s;
-        fArr[4] = c;
+        this.mMat[0] = c;
+        this.mMat[1] = -s;
+        this.mMat[3] = s;
+        this.mMat[4] = c;
     }
 
     public void loadScale(float x, float y) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[0] = x;
-        fArr[4] = y;
+        this.mMat[0] = x;
+        this.mMat[4] = y;
     }
 
     public void loadScale(float x, float y, float z) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[0] = x;
-        fArr[4] = y;
-        fArr[8] = z;
+        this.mMat[0] = x;
+        this.mMat[4] = y;
+        this.mMat[8] = z;
     }
 
     public void loadTranslate(float x, float y) {
         loadIdentity();
-        float[] fArr = this.mMat;
-        fArr[6] = x;
-        fArr[7] = y;
+        this.mMat[6] = x;
+        this.mMat[7] = y;
     }
 
     public void loadMultiply(Matrix3f lhs, Matrix3f rhs) {
@@ -174,10 +165,9 @@ public class Matrix3f {
     public void transpose() {
         for (int i = 0; i < 2; i++) {
             for (int j = i + 1; j < 3; j++) {
-                float[] fArr = this.mMat;
-                float temp = fArr[(i * 3) + j];
-                fArr[(i * 3) + j] = fArr[(j * 3) + i];
-                fArr[(j * 3) + i] = temp;
+                float temp = this.mMat[(i * 3) + j];
+                this.mMat[(i * 3) + j] = this.mMat[(j * 3) + i];
+                this.mMat[(j * 3) + i] = temp;
             }
         }
     }

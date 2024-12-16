@@ -1,6 +1,6 @@
 package com.samsung.android.edge;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface OnEdgeLightingListener {
     void onEdgeLightingStarted();
 

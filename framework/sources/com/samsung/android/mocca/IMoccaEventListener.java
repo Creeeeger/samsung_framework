@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IMoccaEventListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.mocca.IMoccaEventListener";
 
@@ -18,7 +18,6 @@ public interface IMoccaEventListener extends IInterface {
 
     void onContextUnavailable(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IMoccaEventListener {
         @Override // com.samsung.android.mocca.IMoccaEventListener
         public void onContextChanged(ContextEvent event) throws RemoteException {
@@ -42,7 +41,6 @@ public interface IMoccaEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IMoccaEventListener {
         static final int TRANSACTION_onContextAvailable = 3;
         static final int TRANSACTION_onContextChanged = 1;
@@ -94,45 +92,37 @@ public interface IMoccaEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMoccaEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMoccaEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMoccaEventListener.DESCRIPTOR);
+                case 1:
+                    ContextEvent _arg0 = (ContextEvent) data.readTypedObject(ContextEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onContextChanged(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onContextStopped(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    onContextAvailable(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    onContextUnavailable(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ContextEvent _arg0 = (ContextEvent) data.readTypedObject(ContextEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onContextChanged(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onContextStopped(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            onContextAvailable(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            onContextUnavailable(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IMoccaEventListener {
+        private static class Proxy implements IMoccaEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -151,14 +141,11 @@ public interface IMoccaEventListener extends IInterface {
             @Override // com.samsung.android.mocca.IMoccaEventListener
             public void onContextChanged(ContextEvent event) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IMoccaEventListener.DESCRIPTOR);
                     _data.writeTypedObject(event, 0);
-                    this.mRemote.transact(1, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(1, _data, null, 1);
                 } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -166,14 +153,11 @@ public interface IMoccaEventListener extends IInterface {
             @Override // com.samsung.android.mocca.IMoccaEventListener
             public void onContextStopped(String contextType) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IMoccaEventListener.DESCRIPTOR);
                     _data.writeString(contextType);
-                    this.mRemote.transact(2, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(2, _data, null, 1);
                 } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -181,14 +165,11 @@ public interface IMoccaEventListener extends IInterface {
             @Override // com.samsung.android.mocca.IMoccaEventListener
             public void onContextAvailable(String contextType) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IMoccaEventListener.DESCRIPTOR);
                     _data.writeString(contextType);
-                    this.mRemote.transact(3, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(3, _data, null, 1);
                 } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -196,14 +177,11 @@ public interface IMoccaEventListener extends IInterface {
             @Override // com.samsung.android.mocca.IMoccaEventListener
             public void onContextUnavailable(String contextType) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IMoccaEventListener.DESCRIPTOR);
                     _data.writeString(contextType);
-                    this.mRemote.transact(4, _data, _reply, 0);
-                    _reply.readException();
+                    this.mRemote.transact(4, _data, null, 1);
                 } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }

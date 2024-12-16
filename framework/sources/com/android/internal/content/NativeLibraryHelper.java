@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class NativeLibraryHelper {
     private static final int BITCODE_PRESENT = 1;
     public static final String CLEAR_ABI_OVERRIDE = "-";
@@ -38,26 +38,28 @@ public class NativeLibraryHelper {
 
     private static native int hasRenderscriptBitcode(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeClose(long j);
 
     private static native int nativeCopyNativeBinaries(long j, String str, String str2, boolean z, boolean z2);
 
     private static native int nativeFindSupportedAbi(long j, String[] strArr, boolean z);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeOpenApk(String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeOpenApkFd(FileDescriptor fileDescriptor, String str);
 
     private static native long nativeSumNativeBinaries(long j, String str, boolean z);
 
-    /* loaded from: classes4.dex */
     public static class Handle implements Closeable {
         final long[] apkHandles;
         final String[] apkPaths;
         final boolean debuggable;
         final boolean extractNativeLibs;
         private volatile boolean mClosed;
-        private final CloseGuard mGuard;
+        private final CloseGuard mGuard = CloseGuard.get();
         final boolean multiArch;
 
         public static Handle create(File packageFile) throws IOException {
@@ -101,14 +103,12 @@ public class NativeLibraryHelper {
         }
 
         Handle(String[] apkPaths, long[] apkHandles, boolean multiArch, boolean extractNativeLibs, boolean debuggable) {
-            CloseGuard closeGuard = CloseGuard.get();
-            this.mGuard = closeGuard;
             this.apkPaths = apkPaths;
             this.apkHandles = apkHandles;
             this.multiArch = multiArch;
             this.extractNativeLibs = extractNativeLibs;
             this.debuggable = debuggable;
-            closeGuard.open("close");
+            this.mGuard.open("close");
         }
 
         @Override // java.io.Closeable, java.lang.AutoCloseable
@@ -121,9 +121,8 @@ public class NativeLibraryHelper {
         }
 
         protected void finalize() throws Throwable {
-            CloseGuard closeGuard = this.mGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mGuard != null) {
+                this.mGuard.warnIfOpen();
             }
             try {
                 if (!this.mClosed) {

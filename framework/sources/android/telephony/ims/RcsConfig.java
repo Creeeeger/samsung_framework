@@ -22,7 +22,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RcsConfig {
     private static final String ATTRIBUTE_NAME = "name";
     private static final String ATTRIBUTE_TYPE = "type";
@@ -36,16 +36,11 @@ public final class RcsConfig {
     private final byte[] mData;
     private final Characteristic mRoot;
 
-    /* loaded from: classes3.dex */
     public static class Characteristic {
         private final Characteristic mParent;
         private final Map<String, String> mParms;
         private final Set<Characteristic> mSubs;
         private String mType;
-
-        /* synthetic */ Characteristic(String str, Characteristic characteristic, CharacteristicIA characteristicIA) {
-            this(str, characteristic);
-        }
 
         private Characteristic(String type, Characteristic parent) {
             this.mParms = new ArrayMap();
@@ -58,18 +53,22 @@ public final class RcsConfig {
             return this.mType;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Map<String, String> getParms() {
             return this.mParms;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Set<Characteristic> getSubs() {
             return this.mSubs;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Characteristic getParent() {
             return this.mParent;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Characteristic getSubByType(String type) {
             if (TextUtils.equals(this.mType, type)) {
                 return this;
@@ -88,6 +87,7 @@ public final class RcsConfig {
             return getSubByType(type) != null;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public String getParmValue(String name) {
             String value = this.mParms.get(name);
             if (value == null) {
@@ -139,81 +139,81 @@ public final class RcsConfig {
         }
     }
 
-    public RcsConfig(byte[] data) throws IllegalArgumentException {
-        if (data == null || data.length == 0) {
-            throw new IllegalArgumentException("Empty data");
-        }
-        CharacteristicIA characteristicIA = null;
-        Characteristic characteristic = new Characteristic(null, null);
-        this.mRoot = characteristic;
-        this.mCurrent = characteristic;
-        this.mData = data;
-        Characteristic current = this.mRoot;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-        try {
+    public RcsConfig(byte[] bArr) throws IllegalArgumentException {
+        if (bArr != null && bArr.length != 0) {
+            CharacteristicIA characteristicIA = null;
+            this.mRoot = new Characteristic(0 == true ? 1 : 0, 0 == true ? 1 : 0);
+            this.mCurrent = this.mRoot;
+            this.mData = bArr;
+            Characteristic characteristic = this.mRoot;
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bArr);
             try {
-                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-                factory.setNamespaceAware(true);
-                XmlPullParser xpp = factory.newPullParser();
-                xpp.setInput(inputStream, null);
-                int eventType = xpp.getEventType();
-                for (int i = 1; eventType != i && current != null; i = 1) {
-                    if (eventType == 2) {
-                        String tag = xpp.getName().trim().toLowerCase(Locale.ROOT);
-                        if (TAG_CHARACTERISTIC.equals(tag)) {
-                            int count = xpp.getAttributeCount();
-                            String type = null;
-                            if (count > 0) {
-                                int i2 = 0;
-                                while (true) {
-                                    if (i2 >= count) {
-                                        break;
-                                    }
-                                    String name = xpp.getAttributeName(i2).trim().toLowerCase(Locale.ROOT);
-                                    if (!"type".equals(name)) {
-                                        i2++;
-                                    } else {
-                                        type = xpp.getAttributeValue(xpp.getAttributeNamespace(i2), name).trim().toLowerCase(Locale.ROOT);
-                                        break;
-                                    }
-                                }
-                            }
-                            Characteristic next = new Characteristic(type, current);
-                            current.getSubs().add(next);
-                            current = next;
-                        } else if (TAG_PARM.equals(tag)) {
-                            int count2 = xpp.getAttributeCount();
-                            String key = null;
-                            String value = null;
-                            if (count2 > 1) {
-                                for (int i3 = 0; i3 < count2; i3++) {
-                                    String name2 = xpp.getAttributeName(i3).trim().toLowerCase(Locale.ROOT);
-                                    if ("name".equals(name2)) {
-                                        key = xpp.getAttributeValue(xpp.getAttributeNamespace(i3), name2).trim().toLowerCase(Locale.ROOT);
-                                    } else if ("value".equals(name2)) {
-                                        value = xpp.getAttributeValue(xpp.getAttributeNamespace(i3), name2).trim();
-                                    }
-                                }
-                            }
-                            if (key != null && value != null) {
-                                current.getParms().put(key, value);
-                            }
-                        }
-                    } else if (eventType == 3) {
-                        current = TAG_CHARACTERISTIC.equals(xpp.getName().trim().toLowerCase(Locale.ROOT)) ? current.getParent() : current;
-                    }
-                    eventType = xpp.next();
-                    characteristicIA = null;
-                }
                 try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    loge("error to close input stream, skip.");
+                    XmlPullParserFactory newInstance = XmlPullParserFactory.newInstance();
+                    newInstance.setNamespaceAware(true);
+                    XmlPullParser newPullParser = newInstance.newPullParser();
+                    newPullParser.setInput(byteArrayInputStream, null);
+                    int eventType = newPullParser.getEventType();
+                    for (int i = 1; eventType != i && characteristic != null; i = 1) {
+                        if (eventType == 2) {
+                            String lowerCase = newPullParser.getName().trim().toLowerCase(Locale.ROOT);
+                            if (TAG_CHARACTERISTIC.equals(lowerCase)) {
+                                int attributeCount = newPullParser.getAttributeCount();
+                                String str = null;
+                                if (attributeCount > 0) {
+                                    int i2 = 0;
+                                    while (true) {
+                                        if (i2 >= attributeCount) {
+                                            break;
+                                        }
+                                        String lowerCase2 = newPullParser.getAttributeName(i2).trim().toLowerCase(Locale.ROOT);
+                                        if (!"type".equals(lowerCase2)) {
+                                            i2++;
+                                        } else {
+                                            str = newPullParser.getAttributeValue(newPullParser.getAttributeNamespace(i2), lowerCase2).trim().toLowerCase(Locale.ROOT);
+                                            break;
+                                        }
+                                    }
+                                }
+                                Characteristic characteristic2 = new Characteristic(str, characteristic);
+                                characteristic.getSubs().add(characteristic2);
+                                characteristic = characteristic2;
+                            } else if (TAG_PARM.equals(lowerCase)) {
+                                int attributeCount2 = newPullParser.getAttributeCount();
+                                String str2 = null;
+                                String str3 = null;
+                                if (attributeCount2 > 1) {
+                                    for (int i3 = 0; i3 < attributeCount2; i3++) {
+                                        String lowerCase3 = newPullParser.getAttributeName(i3).trim().toLowerCase(Locale.ROOT);
+                                        if ("name".equals(lowerCase3)) {
+                                            str2 = newPullParser.getAttributeValue(newPullParser.getAttributeNamespace(i3), lowerCase3).trim().toLowerCase(Locale.ROOT);
+                                        } else if ("value".equals(lowerCase3)) {
+                                            str3 = newPullParser.getAttributeValue(newPullParser.getAttributeNamespace(i3), lowerCase3).trim();
+                                        }
+                                    }
+                                }
+                                if (str2 != null && str3 != null) {
+                                    characteristic.getParms().put(str2, str3);
+                                }
+                            }
+                        } else if (eventType == 3) {
+                            characteristic = TAG_CHARACTERISTIC.equals(newPullParser.getName().trim().toLowerCase(Locale.ROOT)) ? characteristic.getParent() : characteristic;
+                        }
+                        eventType = newPullParser.next();
+                        characteristicIA = null;
+                    }
+                    try {
+                        byteArrayInputStream.close();
+                    } catch (IOException e) {
+                        loge("error to close input stream, skip.");
+                    }
+                } catch (IOException | XmlPullParserException e2) {
+                    throw new IllegalArgumentException(e2);
                 }
-            } catch (IOException | XmlPullParserException e2) {
-                throw new IllegalArgumentException(e2);
+            } finally {
             }
-        } finally {
+        } else {
+            throw new IllegalArgumentException("Empty data");
         }
     }
 
@@ -370,15 +370,15 @@ public final class RcsConfig {
      */
     /* JADX WARN: Code restructure failed: missing block: B:20:0x0059, code lost:
     
-        if (r1 == null) goto L46;
+        if (r1 == null) goto L19;
      */
     /* JADX WARN: Code restructure failed: missing block: B:4:0x0065, code lost:
     
-        if (r1 != null) goto L40;
+        if (r1 != null) goto L13;
      */
     /* JADX WARN: Code restructure failed: missing block: B:5:0x0068, code lost:
     
-        if (r9 == false) goto L48;
+        if (r9 == false) goto L21;
      */
     /* JADX WARN: Code restructure failed: missing block: B:7:?, code lost:
     
@@ -393,15 +393,15 @@ public final class RcsConfig {
             r0 = 0
             android.content.ContentResolver r1 = r7.getContentResolver()
             android.net.Uri r2 = android.provider.Telephony.SimInfo.CONTENT_URI
-            r3 = 0
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder
-            r4.<init>()
-            java.lang.String r5 = "_id="
-            java.lang.StringBuilder r4 = r4.append(r5)
-            java.lang.StringBuilder r4 = r4.append(r8)
-            java.lang.String r4 = r4.toString()
+            java.lang.StringBuilder r3 = new java.lang.StringBuilder
+            r3.<init>()
+            java.lang.String r4 = "_id="
+            java.lang.StringBuilder r3 = r3.append(r4)
+            java.lang.StringBuilder r3 = r3.append(r8)
+            java.lang.String r4 = r3.toString()
             r5 = 0
             r6 = 0
+            r3 = 0
             android.database.Cursor r1 = r1.query(r2, r3, r4, r5, r6)
             if (r1 == 0) goto L65
             boolean r2 = r1.moveToFirst()     // Catch: java.lang.Throwable -> L36 java.lang.Exception -> L38

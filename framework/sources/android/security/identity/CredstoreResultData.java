@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /* loaded from: classes3.dex */
-public class CredstoreResultData extends ResultData {
+class CredstoreResultData extends ResultData {
     int mFeatureVersion = 0;
     byte[] mStaticAuthenticationData = null;
     byte[] mAuthenticatedData = null;
@@ -15,8 +15,7 @@ public class CredstoreResultData extends ResultData {
     byte[] mSignature = null;
     private Map<String, Map<String, EntryData>> mData = new LinkedHashMap();
 
-    /* loaded from: classes3.dex */
-    public static class EntryData {
+    private static class EntryData {
         int mStatus;
         byte[] mValue;
 
@@ -40,7 +39,7 @@ public class CredstoreResultData extends ResultData {
     }
 
     @Override // android.security.identity.ResultData
-    public byte[] getSignature() {
+    byte[] getSignature() {
         if (this.mFeatureVersion < 202301) {
             throw new UnsupportedOperationException();
         }
@@ -107,15 +106,11 @@ public class CredstoreResultData extends ResultData {
         return value.mValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public static class Builder {
-        private CredstoreResultData mResultData;
+    static class Builder {
+        private CredstoreResultData mResultData = new CredstoreResultData();
 
-        public Builder(int featureVersion, byte[] staticAuthenticationData, byte[] authenticatedData, byte[] messageAuthenticationCode, byte[] signature) {
-            CredstoreResultData credstoreResultData = new CredstoreResultData();
-            this.mResultData = credstoreResultData;
-            credstoreResultData.mFeatureVersion = featureVersion;
+        Builder(int featureVersion, byte[] staticAuthenticationData, byte[] authenticatedData, byte[] messageAuthenticationCode, byte[] signature) {
+            this.mResultData.mFeatureVersion = featureVersion;
             this.mResultData.mStaticAuthenticationData = staticAuthenticationData;
             this.mResultData.mAuthenticatedData = authenticatedData;
             this.mResultData.mMessageAuthenticationCode = messageAuthenticationCode;
@@ -132,19 +127,19 @@ public class CredstoreResultData extends ResultData {
             return innerMap;
         }
 
-        public Builder addEntry(String namespaceName, String name, byte[] value) {
+        Builder addEntry(String namespaceName, String name, byte[] value) {
             Map<String, EntryData> innerMap = getOrCreateInnerMap(namespaceName);
             innerMap.put(name, new EntryData(value, 0));
             return this;
         }
 
-        public Builder addErrorStatus(String namespaceName, String name, int status) {
+        Builder addErrorStatus(String namespaceName, String name, int status) {
             Map<String, EntryData> innerMap = getOrCreateInnerMap(namespaceName);
             innerMap.put(name, new EntryData(null, status));
             return this;
         }
 
-        public CredstoreResultData build() {
+        CredstoreResultData build() {
             return this.mResultData;
         }
     }

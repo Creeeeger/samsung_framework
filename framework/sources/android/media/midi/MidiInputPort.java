@@ -24,10 +24,9 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
     private final IBinder mToken;
     private AtomicInteger mTotalBytes;
 
-    public MidiInputPort(IMidiDeviceServer server, IBinder token, FileDescriptor fd, int portNumber) {
+    MidiInputPort(IMidiDeviceServer server, IBinder token, FileDescriptor fd, int portNumber) {
         super(1015);
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mGuard = closeGuard;
+        this.mGuard = CloseGuard.get();
         this.mTotalBytes = new AtomicInteger();
         this.mBuffer = new byte[1024];
         this.mDeviceServer = server;
@@ -35,10 +34,10 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
         this.mFileDescriptor = fd;
         this.mPortNumber = portNumber;
         this.mOutputStream = new FileOutputStream(fd);
-        closeGuard.open("close");
+        this.mGuard.open("close");
     }
 
-    public MidiInputPort(FileDescriptor fd, int portNumber) {
+    MidiInputPort(FileDescriptor fd, int portNumber) {
         this(null, null, fd, portNumber);
     }
 
@@ -75,7 +74,7 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
         }
     }
 
-    public FileDescriptor claimFileDescriptor() {
+    FileDescriptor claimFileDescriptor() {
         synchronized (this.mGuard) {
             synchronized (this.mBuffer) {
                 FileDescriptor fd = this.mFileDescriptor;
@@ -91,11 +90,11 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
         }
     }
 
-    public IBinder getToken() {
+    IBinder getToken() {
         return this.mToken;
     }
 
-    public IMidiDeviceServer getDeviceServer() {
+    IMidiDeviceServer getDeviceServer() {
         return this.mDeviceServer;
     }
 
@@ -107,21 +106,18 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
             }
             this.mGuard.close();
             synchronized (this.mBuffer) {
-                FileDescriptor fileDescriptor = this.mFileDescriptor;
-                if (fileDescriptor != null) {
-                    IoUtils.closeQuietly(fileDescriptor);
+                if (this.mFileDescriptor != null) {
+                    IoUtils.closeQuietly(this.mFileDescriptor);
                     this.mFileDescriptor = null;
                 }
-                FileOutputStream fileOutputStream = this.mOutputStream;
-                if (fileOutputStream != null) {
-                    fileOutputStream.close();
+                if (this.mOutputStream != null) {
+                    this.mOutputStream.close();
                     this.mOutputStream = null;
                 }
             }
-            IMidiDeviceServer iMidiDeviceServer = this.mDeviceServer;
-            if (iMidiDeviceServer != null) {
+            if (this.mDeviceServer != null) {
                 try {
-                    iMidiDeviceServer.closePort(this.mToken);
+                    this.mDeviceServer.closePort(this.mToken);
                 } catch (RemoteException e) {
                     Log.e(TAG, "RemoteException in MidiInputPort.close()");
                 }
@@ -132,9 +128,8 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mGuard != null) {
+                this.mGuard.warnIfOpen();
             }
             this.mDeviceServer = null;
             close();

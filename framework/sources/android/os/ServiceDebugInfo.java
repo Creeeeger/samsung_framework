@@ -5,9 +5,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class ServiceDebugInfo implements Parcelable {
     public static final Parcelable.Creator<ServiceDebugInfo> CREATOR = new Parcelable.Creator<ServiceDebugInfo>() { // from class: android.os.ServiceDebugInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceDebugInfo createFromParcel(Parcel _aidl_source) {
             ServiceDebugInfo _aidl_out = new ServiceDebugInfo();
@@ -15,6 +13,7 @@ public class ServiceDebugInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceDebugInfo[] newArray(int _aidl_size) {
             return new ServiceDebugInfo[_aidl_size];
@@ -22,25 +21,6 @@ public class ServiceDebugInfo implements Parcelable {
     };
     public int debugPid = 0;
     public String name;
-
-    /* renamed from: android.os.ServiceDebugInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ServiceDebugInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ServiceDebugInfo createFromParcel(Parcel _aidl_source) {
-            ServiceDebugInfo _aidl_out = new ServiceDebugInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ServiceDebugInfo[] newArray(int _aidl_size) {
-            return new ServiceDebugInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

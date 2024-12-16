@@ -25,7 +25,7 @@ public class PreferenceCategory extends PreferenceGroup {
     }
 
     @Override // android.preference.PreferenceGroup
-    public boolean onPrepareAddPreference(Preference preference) {
+    protected boolean onPrepareAddPreference(Preference preference) {
         if (preference instanceof PreferenceCategory) {
             throw new IllegalArgumentException("Cannot add a PreferenceCategory directly to a PreferenceCategory");
         }

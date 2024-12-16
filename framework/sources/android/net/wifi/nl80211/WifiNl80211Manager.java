@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
 @SystemApi
@@ -55,7 +54,7 @@ public class WifiNl80211Manager {
     private HashMap<String, IClientInterface> mClientInterfaces;
     private Runnable mDeathEventHandler;
     private Handler mEventHandler;
-    private final AtomicLong mLastSingleScanTriggeredTime;
+    private Object mLock;
     private HashMap<String, IPnoScanEvent> mPnoScanEventHandlers;
     private HashMap<String, IScanEvent> mScanEventHandlers;
     private AtomicBoolean mSendMgmtFrameInProgress;
@@ -64,12 +63,10 @@ public class WifiNl80211Manager {
     private WificondEventHandler mWificondEventHandler;
     private HashMap<String, IWifiScannerImpl> mWificondScanners;
 
-    /* loaded from: classes3.dex */
     public interface CountryCodeChangedListener {
         void onCountryCodeChanged(String str);
     }
 
-    /* loaded from: classes3.dex */
     public interface PnoScanRequestCallback {
         void onPnoRequestFailed();
 
@@ -77,11 +74,9 @@ public class WifiNl80211Manager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ScanResultType {
     }
 
-    /* loaded from: classes3.dex */
     public interface SendMgmtFrameCallback {
         void onAck(int i);
 
@@ -89,12 +84,10 @@ public class WifiNl80211Manager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SendMgmtFrameError {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface SoftApCallback {
         void onConnectedClientsChanged(NativeWifiClient nativeWifiClient, boolean z);
 
@@ -103,7 +96,6 @@ public class WifiNl80211Manager {
         void onSoftApChannelSwitched(int i, int i2);
     }
 
-    /* loaded from: classes3.dex */
     public interface ScanEventCallback {
         void onScanFailed();
 
@@ -113,7 +105,6 @@ public class WifiNl80211Manager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public class WificondEventHandler extends IWificondEventCallback.Stub {
         private Map<CountryCodeChangedListener, Executor> mCountryCodeChangedListenerHolder = new HashMap();
 
@@ -151,8 +142,8 @@ public class WifiNl80211Manager {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class ScanEventHandler extends IScanEvent.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class ScanEventHandler extends IScanEvent.Stub {
         private ScanEventCallback mCallback;
         private Executor mExecutor;
 
@@ -165,7 +156,6 @@ public class WifiNl80211Manager {
         public void OnScanResultReady() {
             Log.d(WifiNl80211Manager.TAG, "Scan result ready event");
             long token = Binder.clearCallingIdentity();
-            WifiNl80211Manager.this.mLastSingleScanTriggeredTime.set(0L);
             try {
                 this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$ScanEventHandler$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
@@ -178,6 +168,7 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnScanResultReady$0() {
             this.mCallback.onScanResultReady();
         }
@@ -186,9 +177,8 @@ public class WifiNl80211Manager {
         public void OnScanFailed() {
             Log.d(WifiNl80211Manager.TAG, "Scan failed event");
             long token = Binder.clearCallingIdentity();
-            WifiNl80211Manager.this.mLastSingleScanTriggeredTime.set(0L);
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$ScanEventHandler$$ExternalSyntheticLambda2
+                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$ScanEventHandler$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.ScanEventHandler.this.lambda$OnScanFailed$1();
@@ -199,6 +189,7 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnScanFailed$1() {
             this.mCallback.onScanFailed();
         }
@@ -208,7 +199,7 @@ public class WifiNl80211Manager {
             Log.d(WifiNl80211Manager.TAG, "Scan failed event with error code: " + errorCode);
             long token = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$ScanEventHandler$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$ScanEventHandler$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.ScanEventHandler.this.lambda$OnScanRequestFailed$2(errorCode);
@@ -219,13 +210,13 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnScanRequestFailed$2(int errorCode) {
             this.mCallback.onScanFailed(WifiNl80211Manager.this.toFrameworkScanStatusCode(errorCode));
         }
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class SignalPollResult {
         public final int associationFrequencyMHz;
         public final int currentRssiDbm;
@@ -240,7 +231,6 @@ public class WifiNl80211Manager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class TxPacketCounters {
         public final int txPacketFailed;
         public final int txPacketSucceeded;
@@ -260,7 +250,7 @@ public class WifiNl80211Manager {
         this.mScanEventHandlers = new HashMap<>();
         this.mPnoScanEventHandlers = new HashMap<>();
         this.mApInterfaceListeners = new HashMap<>();
-        this.mLastSingleScanTriggeredTime = new AtomicLong(0L);
+        this.mLock = new Object();
         this.mSendMgmtFrameInProgress = new AtomicBoolean(false);
         this.mAlarmManager = (AlarmManager) context.getSystemService(AlarmManager.class);
         this.mEventHandler = new Handler(context.getMainLooper());
@@ -268,9 +258,8 @@ public class WifiNl80211Manager {
 
     public WifiNl80211Manager(Context context, IBinder binder) {
         this(context);
-        IWificond asInterface = IWificond.Stub.asInterface(binder);
-        this.mWificond = asInterface;
-        if (asInterface == null) {
+        this.mWificond = IWificond.Stub.asInterface(binder);
+        if (this.mWificond == null) {
             Log.e(TAG, "Failed to get reference to wificond");
         }
     }
@@ -284,8 +273,8 @@ public class WifiNl80211Manager {
         return this.mWificondEventHandler;
     }
 
-    /* loaded from: classes3.dex */
-    public class PnoScanEventHandler extends IPnoScanEvent.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class PnoScanEventHandler extends IPnoScanEvent.Stub {
         private ScanEventCallback mCallback;
         private Executor mExecutor;
 
@@ -310,6 +299,7 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnPnoNetworkFound$0() {
             this.mCallback.onScanResultReady();
         }
@@ -330,13 +320,14 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnPnoScanFailed$1() {
             this.mCallback.onScanFailed();
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class ApInterfaceEventCallback extends IApInterfaceEventCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class ApInterfaceEventCallback extends IApInterfaceEventCallback.Stub {
         private Executor mExecutor;
         private SoftApCallback mSoftApListener;
 
@@ -363,6 +354,7 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConnectedClientsChanged$0(NativeWifiClient client, boolean isConnected) {
             this.mSoftApListener.onConnectedClientsChanged(client, isConnected);
         }
@@ -382,39 +374,23 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSoftApChannelSwitched$1(int frequency, int bandwidth) {
             this.mSoftApListener.onSoftApChannelSwitched(frequency, toFrameworkBandwidth(bandwidth));
         }
 
         private int toFrameworkBandwidth(int bandwidth) {
             switch (bandwidth) {
-                case 0:
-                    return 0;
-                case 1:
-                    return 1;
-                case 2:
-                    return 2;
-                case 3:
-                    return 3;
-                case 4:
-                    return 4;
-                case 5:
-                    return 5;
-                case 6:
-                    return 6;
-                case 7:
-                    return 11;
-                default:
-                    return 0;
             }
+            return 0;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class SendMgmtFrameEvent extends ISendMgmtFrameEvent.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class SendMgmtFrameEvent extends ISendMgmtFrameEvent.Stub {
         private SendMgmtFrameCallback mCallback;
         private Executor mExecutor;
-        private AlarmManager.OnAlarmListener mTimeoutCallback = new AlarmManager.OnAlarmListener() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda5
+        private AlarmManager.OnAlarmListener mTimeoutCallback = new AlarmManager.OnAlarmListener() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda4
             @Override // android.app.AlarmManager.OnAlarmListener
             public final void onAlarm() {
                 WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$new$2();
@@ -437,8 +413,9 @@ public class WifiNl80211Manager {
             WifiNl80211Manager.this.mAlarmManager.set(2, SystemClock.elapsedRealtime() + 1000, WifiNl80211Manager.TIMEOUT_ALARM_TAG, this.mTimeoutCallback, WifiNl80211Manager.this.mEventHandler);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$2() {
-            runIfFirstCall(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda0
+            runIfFirstCall(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$new$1();
@@ -446,13 +423,14 @@ public class WifiNl80211Manager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$1() {
             if (WifiNl80211Manager.this.mVerboseLoggingEnabled) {
                 Log.e(WifiNl80211Manager.TAG, "Timed out waiting for ACK");
             }
             long token = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda4
+                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda5
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$new$0();
@@ -463,10 +441,12 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$0() {
             this.mCallback.onFailure(4);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnAck$5(final int elapsedTimeMs) {
             runIfFirstCall(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda8
                 @Override // java.lang.Runnable
@@ -478,7 +458,7 @@ public class WifiNl80211Manager {
 
         @Override // android.net.wifi.nl80211.ISendMgmtFrameEvent
         public void OnAck(final int elapsedTimeMs) {
-            WifiNl80211Manager.this.mEventHandler.post(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda6
+            WifiNl80211Manager.this.mEventHandler.post(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$OnAck$5(elapsedTimeMs);
@@ -486,11 +466,12 @@ public class WifiNl80211Manager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnAck$4(final int elapsedTimeMs) {
             WifiNl80211Manager.this.mAlarmManager.cancel(this.mTimeoutCallback);
             long token = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda2
+                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda6
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$OnAck$3(elapsedTimeMs);
@@ -501,12 +482,14 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnAck$3(int elapsedTimeMs) {
             this.mCallback.onAck(elapsedTimeMs);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnFailure$8(final int reason) {
-            runIfFirstCall(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda1
+            runIfFirstCall(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$OnFailure$7(reason);
@@ -516,7 +499,7 @@ public class WifiNl80211Manager {
 
         @Override // android.net.wifi.nl80211.ISendMgmtFrameEvent
         public void OnFailure(final int reason) {
-            WifiNl80211Manager.this.mEventHandler.post(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda3
+            WifiNl80211Manager.this.mEventHandler.post(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$OnFailure$8(reason);
@@ -524,11 +507,12 @@ public class WifiNl80211Manager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnFailure$7(final int reason) {
             WifiNl80211Manager.this.mAlarmManager.cancel(this.mTimeoutCallback);
             long token = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda7
+                this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$SendMgmtFrameEvent$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.SendMgmtFrameEvent.this.lambda$OnFailure$6(reason);
@@ -539,12 +523,13 @@ public class WifiNl80211Manager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$OnFailure$6(int reason) {
             this.mCallback.onFailure(reason);
         }
     }
 
-    /* renamed from: binderDied */
+    /* renamed from: binderDied, reason: merged with bridge method [inline-methods] */
     public void lambda$retrieveWificondAndRegisterForDeath$1() {
         this.mEventHandler.post(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable
@@ -554,13 +539,15 @@ public class WifiNl80211Manager {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$binderDied$0() {
-        Log.e(TAG, "Wificond died!");
-        clearState();
-        this.mWificond = null;
-        Runnable runnable = this.mDeathEventHandler;
-        if (runnable != null) {
-            runnable.run();
+        synchronized (this.mLock) {
+            Log.e(TAG, "Wificond died!");
+            clearState();
+            this.mWificond = null;
+            if (this.mDeathEventHandler != null) {
+                this.mDeathEventHandler.run();
+            }
         }
     }
 
@@ -583,25 +570,24 @@ public class WifiNl80211Manager {
             return true;
         }
         IBinder binder = ServiceManager.getService(Context.WIFI_NL80211_SERVICE);
-        IWificond asInterface = IWificond.Stub.asInterface(binder);
-        this.mWificond = asInterface;
-        if (asInterface != null) {
-            try {
-                asInterface.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda6
-                    @Override // android.os.IBinder.DeathRecipient
-                    public final void binderDied() {
-                        WifiNl80211Manager.this.lambda$retrieveWificondAndRegisterForDeath$1();
-                    }
-                }, 0);
-                this.mWificond.registerWificondEventCallback(this.mWificondEventHandler);
-                return true;
-            } catch (RemoteException e) {
-                Log.e(TAG, "Failed to register death notification for wificond");
-                return false;
-            }
+        this.mWificond = IWificond.Stub.asInterface(binder);
+        if (this.mWificond == null) {
+            Log.e(TAG, "Failed to get reference to wificond");
+            return false;
         }
-        Log.e(TAG, "Failed to get reference to wificond");
-        return false;
+        try {
+            this.mWificond.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda0
+                @Override // android.os.IBinder.DeathRecipient
+                public final void binderDied() {
+                    WifiNl80211Manager.this.lambda$retrieveWificondAndRegisterForDeath$1();
+                }
+            }, 0);
+            this.mWificond.registerWificondEventCallback(this.mWificondEventHandler);
+            return true;
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to register death notification for wificond");
+            return false;
+        }
     }
 
     public boolean semSetupInterface(String ifaceName) {
@@ -668,6 +654,9 @@ public class WifiNl80211Manager {
         } catch (RemoteException e2) {
             Log.e(TAG, "Failed to get IClientInterface due to remote exception");
             return false;
+        } catch (NullPointerException e3) {
+            Log.e(TAG, "setupInterfaceForClientMode NullPointerException");
+            return false;
         }
     }
 
@@ -682,13 +671,12 @@ public class WifiNl80211Manager {
                 scannerImpl.unsubscribeScanEvents();
                 scannerImpl.unsubscribePnoScanEvents();
             }
-            IWificond iWificond = this.mWificond;
-            if (iWificond == null) {
+            if (this.mWificond == null) {
                 Log.e(TAG, "tearDownClientInterface: mWificond binder is null! Did wificond die?");
                 return false;
             }
             try {
-                boolean success = iWificond.tearDownClientInterface(ifaceName);
+                boolean success = this.mWificond.tearDownClientInterface(ifaceName);
                 if (!success) {
                     Log.e(TAG, "Failed to teardown client interface");
                     return false;
@@ -701,8 +689,11 @@ public class WifiNl80211Manager {
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to teardown client interface due to remote exception");
                 return false;
+            } catch (NullPointerException e2) {
+                Log.e(TAG, "tearDownClientInterface NullPointerException");
+                return false;
             }
-        } catch (RemoteException e2) {
+        } catch (RemoteException e3) {
             Log.e(TAG, "Failed to unsubscribe wificond scanner due to remote exception");
             return false;
         }
@@ -725,6 +716,9 @@ public class WifiNl80211Manager {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to get IApInterface due to remote exception");
             return false;
+        } catch (NullPointerException e2) {
+            Log.e(TAG, "setupInterfaceForSoftApMode NullPointerException");
+            return false;
         }
     }
 
@@ -733,13 +727,12 @@ public class WifiNl80211Manager {
             Log.e(TAG, "No valid wificond ap interface handler for iface=" + ifaceName);
             return false;
         }
-        IWificond iWificond = this.mWificond;
-        if (iWificond == null) {
+        if (this.mWificond == null) {
             Log.e(TAG, "tearDownSoftApInterface: mWificond binder is null! Did wificond die?");
             return false;
         }
         try {
-            boolean success = iWificond.tearDownApInterface(ifaceName);
+            boolean success = this.mWificond.tearDownApInterface(ifaceName);
             if (!success) {
                 Log.e(TAG, "Failed to teardown AP interface");
                 return false;
@@ -750,25 +743,30 @@ public class WifiNl80211Manager {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to teardown AP interface due to remote exception");
             return false;
+        } catch (NullPointerException e2) {
+            Log.e(TAG, "tearDownSoftApInterface NullPointerException");
+            return false;
         }
     }
 
     public boolean tearDownInterfaces() {
-        Log.d(TAG, "tearing down interfaces in wificond");
-        if (!retrieveWificondAndRegisterForDeath()) {
-            return false;
-        }
-        try {
-            for (Map.Entry<String, IWifiScannerImpl> entry : this.mWificondScanners.entrySet()) {
-                entry.getValue().unsubscribeScanEvents();
-                entry.getValue().unsubscribePnoScanEvents();
+        synchronized (this.mLock) {
+            Log.d(TAG, "tearing down interfaces in wificond");
+            if (!retrieveWificondAndRegisterForDeath()) {
+                return false;
             }
-            this.mWificond.tearDownInterfaces();
-            clearState();
-            return true;
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to tear down interfaces due to remote exception");
-            return false;
+            try {
+                for (Map.Entry<String, IWifiScannerImpl> entry : this.mWificondScanners.entrySet()) {
+                    entry.getValue().unsubscribeScanEvents();
+                    entry.getValue().unsubscribePnoScanEvents();
+                }
+                this.mWificond.tearDownInterfaces();
+                clearState();
+                return true;
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to tear down interfaces due to remote exception");
+                return false;
+            }
         }
     }
 
@@ -888,14 +886,9 @@ public class WifiNl80211Manager {
             return false;
         }
         try {
-            boolean result = scannerImpl.scan(settings);
-            if (result) {
-                this.mLastSingleScanTriggeredTime.set(SystemClock.elapsedRealtime());
-            }
-            return result;
+            return scannerImpl.scan(settings);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to request scan due to remote exception");
-            this.mLastSingleScanTriggeredTime.set(0L);
             return false;
         }
     }
@@ -912,13 +905,9 @@ public class WifiNl80211Manager {
         }
         try {
             int status = scannerImpl.scanRequest(settings);
-            if (status == 0) {
-                this.mLastSingleScanTriggeredTime.set(SystemClock.elapsedRealtime());
-            }
             return toFrameworkScanStatusCode(status);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to request scan due to remote exception");
-            this.mLastSingleScanTriggeredTime.set(0L);
             return -1;
         }
     }
@@ -956,6 +945,7 @@ public class WifiNl80211Manager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int toFrameworkScanStatusCode(int scanStatus) {
         switch (scanStatus) {
             case 0:
@@ -988,7 +978,7 @@ public class WifiNl80211Manager {
             boolean success = scannerImpl.startPnoScan(pnoSettings);
             if (success) {
                 Objects.requireNonNull(callback);
-                executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda4
+                executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.PnoScanRequestCallback.this.onPnoRequestSucceeded();
@@ -996,7 +986,7 @@ public class WifiNl80211Manager {
                 });
             } else {
                 Objects.requireNonNull(callback);
-                executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda5
+                executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.PnoScanRequestCallback.this.onPnoRequestFailed();
@@ -1038,8 +1028,7 @@ public class WifiNl80211Manager {
     }
 
     public int[] getChannelsMhzForBand(int band) {
-        IWificond iWificond = this.mWificond;
-        if (iWificond == null) {
+        if (this.mWificond == null) {
             Log.e(TAG, "getChannelsMhzForBand: mWificond binder is null! Did wificond die?");
             return new int[0];
         }
@@ -1047,34 +1036,30 @@ public class WifiNl80211Manager {
         try {
             switch (band) {
                 case 1:
-                    int[] result2 = iWificond.getAvailable2gChannels();
-                    result = result2;
+                    result = this.mWificond.getAvailable2gChannels();
                     break;
                 case 2:
-                    int[] result3 = iWificond.getAvailable5gNonDFSChannels();
-                    result = result3;
+                    result = this.mWificond.getAvailable5gNonDFSChannels();
                     break;
                 case 4:
-                    int[] result4 = iWificond.getAvailableDFSChannels();
-                    result = result4;
+                    result = this.mWificond.getAvailableDFSChannels();
                     break;
                 case 8:
-                    int[] result5 = iWificond.getAvailable6gChannels();
-                    result = result5;
+                    result = this.mWificond.getAvailable6gChannels();
                     break;
                 case 16:
-                    int[] result6 = iWificond.getAvailable60gChannels();
-                    result = result6;
+                    result = this.mWificond.getAvailable60gChannels();
                     break;
                 default:
                     throw new IllegalArgumentException("unsupported band " + band);
             }
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to request getChannelsForBand due to remote exception");
+        } catch (NullPointerException e2) {
+            Log.e(TAG, "getChannelsMhzForBand NullPointerException");
         }
         if (result == null) {
-            int[] result7 = new int[0];
-            return result7;
+            return new int[0];
         }
         return result;
     }
@@ -1084,14 +1069,16 @@ public class WifiNl80211Manager {
     }
 
     public DeviceWiphyCapabilities getDeviceWiphyCapabilities(String ifaceName) {
-        IWificond iWificond = this.mWificond;
-        if (iWificond == null) {
+        if (this.mWificond == null) {
             Log.e(TAG, "getDeviceWiphyCapabilities: mWificond binder is null! Did wificond die?");
             return null;
         }
         try {
-            return iWificond.getDeviceWiphyCapabilities(ifaceName);
+            return this.mWificond.getDeviceWiphyCapabilities(ifaceName);
         } catch (RemoteException e) {
+            return null;
+        } catch (NullPointerException e2) {
+            Log.e(TAG, "getDeviceWiphyCapabilities NullPointerException");
             return null;
         }
     }
@@ -1119,6 +1106,8 @@ public class WifiNl80211Manager {
             Log.i(TAG, "Receive country code change to " + newCountryCode);
         } catch (RemoteException re) {
             re.rethrowFromSystemServer();
+        } catch (NullPointerException e) {
+            new RemoteException("Wificond service doesn't exist!").rethrowFromSystemServer();
         }
     }
 
@@ -1155,7 +1144,7 @@ public class WifiNl80211Manager {
         }
         if (frame == null) {
             Log.e(TAG, "frame cannot be null!");
-            executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     WifiNl80211Manager.SendMgmtFrameCallback.this.onFailure(1);
@@ -1166,7 +1155,7 @@ public class WifiNl80211Manager {
         IClientInterface clientInterface = getClientInterface(ifaceName);
         if (clientInterface == null) {
             Log.e(TAG, "No valid wificond client interface handler for iface=" + ifaceName);
-            executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda1
+            executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     WifiNl80211Manager.SendMgmtFrameCallback.this.onFailure(1);
@@ -1175,7 +1164,7 @@ public class WifiNl80211Manager {
         } else {
             if (!this.mSendMgmtFrameInProgress.compareAndSet(false, true)) {
                 Log.e(TAG, "An existing management frame transmission is in progress!");
-                executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda2
+                executor.execute(new Runnable() { // from class: android.net.wifi.nl80211.WifiNl80211Manager$$ExternalSyntheticLambda6
                     @Override // java.lang.Runnable
                     public final void run() {
                         WifiNl80211Manager.SendMgmtFrameCallback.this.onFailure(5);
@@ -1203,7 +1192,6 @@ public class WifiNl80211Manager {
         this.mSendMgmtFrameInProgress.set(false);
     }
 
-    /* loaded from: classes3.dex */
     public static class OemSecurityType {
         public final int groupCipher;
         public final List<Integer> keyManagement;
@@ -1233,18 +1221,5 @@ public class WifiNl80211Manager {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to request disable random mac due to remote exception");
         }
-    }
-
-    public boolean singleScanIsProgress() {
-        if (this.mLastSingleScanTriggeredTime.get() == 0) {
-            return false;
-        }
-        long elapsedTimeFromLastSingleScanTriggered = SystemClock.elapsedRealtime() - this.mLastSingleScanTriggeredTime.get();
-        if (elapsedTimeFromLastSingleScanTriggered > 0 && elapsedTimeFromLastSingleScanTriggered < 4000) {
-            Log.i(TAG, "single scan is in progress : elapsed=" + elapsedTimeFromLastSingleScanTriggered);
-            return true;
-        }
-        this.mLastSingleScanTriggeredTime.set(0L);
-        return false;
     }
 }

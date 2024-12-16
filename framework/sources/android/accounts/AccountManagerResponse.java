@@ -9,14 +9,13 @@ import android.os.RemoteException;
 /* loaded from: classes.dex */
 public class AccountManagerResponse implements Parcelable {
     public static final Parcelable.Creator<AccountManagerResponse> CREATOR = new Parcelable.Creator<AccountManagerResponse>() { // from class: android.accounts.AccountManagerResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccountManagerResponse createFromParcel(Parcel source) {
             return new AccountManagerResponse(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccountManagerResponse[] newArray(int size) {
             return new AccountManagerResponse[size];
@@ -54,22 +53,5 @@ public class AccountManagerResponse implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStrongBinder(this.mResponse.asBinder());
-    }
-
-    /* renamed from: android.accounts.AccountManagerResponse$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccountManagerResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccountManagerResponse createFromParcel(Parcel source) {
-            return new AccountManagerResponse(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccountManagerResponse[] newArray(int size) {
-            return new AccountManagerResponse[size];
-        }
     }
 }

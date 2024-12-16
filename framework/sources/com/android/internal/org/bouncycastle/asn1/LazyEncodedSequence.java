@@ -5,10 +5,10 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 /* loaded from: classes5.dex */
-public class LazyEncodedSequence extends ASN1Sequence {
+class LazyEncodedSequence extends ASN1Sequence {
     private byte[] encoded;
 
-    public LazyEncodedSequence(byte[] encoded) throws IOException {
+    LazyEncodedSequence(byte[] encoded) throws IOException {
         this.encoded = encoded;
     }
 
@@ -20,9 +20,8 @@ public class LazyEncodedSequence extends ASN1Sequence {
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence
     public synchronized Enumeration getObjects() {
-        byte[] bArr = this.encoded;
-        if (bArr != null) {
-            return new LazyConstructionEnumeration(bArr);
+        if (this.encoded != null) {
+            return new LazyConstructionEnumeration(this.encoded);
         }
         return super.getObjects();
     }
@@ -52,38 +51,36 @@ public class LazyEncodedSequence extends ASN1Sequence {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence
-    public ASN1Encodable[] toArrayInternal() {
+    ASN1Encodable[] toArrayInternal() {
         force();
         return super.toArrayInternal();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public synchronized int encodedLength() throws IOException {
-        byte[] bArr = this.encoded;
-        if (bArr != null) {
-            return StreamUtil.calculateBodyLength(bArr.length) + 1 + this.encoded.length;
+    synchronized int encodedLength() throws IOException {
+        if (this.encoded != null) {
+            return StreamUtil.calculateBodyLength(this.encoded.length) + 1 + this.encoded.length;
         }
         return super.toDLObject().encodedLength();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public synchronized void encode(ASN1OutputStream out, boolean withTag) throws IOException {
-        byte[] bArr = this.encoded;
-        if (bArr != null) {
-            out.writeEncoded(withTag, 48, bArr);
+    synchronized void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+        if (this.encoded != null) {
+            out.writeEncoded(withTag, 48, this.encoded);
         } else {
             super.toDLObject().encode(out, withTag);
         }
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public synchronized ASN1Primitive toDERObject() {
+    synchronized ASN1Primitive toDERObject() {
         force();
         return super.toDERObject();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public synchronized ASN1Primitive toDLObject() {
+    synchronized ASN1Primitive toDLObject() {
         force();
         return super.toDLObject();
     }

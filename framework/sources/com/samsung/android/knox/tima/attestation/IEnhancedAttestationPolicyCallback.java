@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEnhancedAttestationPolicyCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.tima.attestation.IEnhancedAttestationPolicyCallback";
 
     void onAttestationFinished(EnhancedAttestationResult enhancedAttestationResult) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEnhancedAttestationPolicyCallback {
         @Override // com.samsung.android.knox.tima.attestation.IEnhancedAttestationPolicyCallback
         public void onAttestationFinished(EnhancedAttestationResult result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IEnhancedAttestationPolicyCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEnhancedAttestationPolicyCallback {
         static final int TRANSACTION_onAttestationFinished = 1;
 
@@ -67,27 +65,23 @@ public interface IEnhancedAttestationPolicyCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEnhancedAttestationPolicyCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEnhancedAttestationPolicyCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEnhancedAttestationPolicyCallback.DESCRIPTOR);
+                case 1:
+                    EnhancedAttestationResult _arg0 = (EnhancedAttestationResult) data.readTypedObject(EnhancedAttestationResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAttestationFinished(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            EnhancedAttestationResult _arg0 = (EnhancedAttestationResult) data.readTypedObject(EnhancedAttestationResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAttestationFinished(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IEnhancedAttestationPolicyCallback {
+        private static class Proxy implements IEnhancedAttestationPolicyCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

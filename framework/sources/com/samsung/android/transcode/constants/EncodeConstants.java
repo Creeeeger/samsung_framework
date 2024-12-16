@@ -2,7 +2,7 @@ package com.samsung.android.transcode.constants;
 
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class EncodeConstants {
     public static final int Error_Codec_Config = -1003;
     public static final int Error_Invalid_File = -1001;
@@ -11,7 +11,6 @@ public class EncodeConstants {
     public static final int Error_Unsupported_Codec = -1002;
     public static final int FPS_120 = 120;
 
-    /* loaded from: classes5.dex */
     public static final class BitRate {
         public static final int AUDIO_AAC_BITRATE = 128;
         public static final int MID_AUDIO_AAC_BITRATE = 64;
@@ -43,7 +42,6 @@ public class EncodeConstants {
         public static final int MM_BITRATE_HEVC_FUHD_24 = 80000;
     }
 
-    /* loaded from: classes5.dex */
     public static final class CodecsMime {
         public static final String AUDIO_CODEC_AAC = "audio/mp4a-latm";
         public static final String AUDIO_CODEC_AMR = "audio/3gpp";
@@ -52,9 +50,9 @@ public class EncodeConstants {
         public static final String VIDEO_CODEC_H264 = "video/avc";
         public static final String VIDEO_CODEC_H265 = "video/hevc";
         public static final String VIDEO_CODEC_MPEG4 = "video/mp4v-es";
+        public static final String VIDEO_CODEC_MVHEVC = "video/x-mvhevc";
     }
 
-    /* loaded from: classes5.dex */
     public static final class EncodeResolution {
         public static final int D1 = 4;
         public static final int FULL_HD = 6;
@@ -66,7 +64,6 @@ public class EncodeConstants {
         public static final int VGA = 3;
     }
 
-    /* loaded from: classes5.dex */
     public static final class ExportRecordingMode {
         public static final int FAST_NORMAL = 121;
         public static final int HDR_10 = 11;
@@ -79,19 +76,20 @@ public class EncodeConstants {
         public static final int UNSUPPORT = -1;
     }
 
-    /* loaded from: classes5.dex */
     public static final class HDRType {
         public static final int HDR_10 = 1;
         public static final int HDR_10_PLUS = 2;
         public static final int NONE_HDR = 0;
     }
 
-    /* loaded from: classes5.dex */
     public static final class RecordingMode {
         public static final int FAST = 2;
         public static final int HDR_10 = 11;
         public static final int HDR_10_PLUS = 10;
         public static final int HYPERLAPSE = 5;
+        public static final int LOG_PRO_VIDEO_MODE = 27;
+        public static final int LOG_VIDEO_MODE = 26;
+        public static final int MV_HEVC = 29;
         public static final int NORMAL = 0;
         public static final int PRO_HDR_10_PLUS = 25;
         public static final int SLOW = 1;
@@ -107,7 +105,6 @@ public class EncodeConstants {
         public static final int SUPER_SLOW_SINGLE = 7;
     }
 
-    /* loaded from: classes5.dex */
     public static final class Resolution {
         public static final int MM_360_EXPORT_HEIGHT_1280 = 1280;
         public static final int MM_360_EXPORT_HEIGHT_1440 = 1440;
@@ -137,7 +134,6 @@ public class EncodeConstants {
         public static final int MM_VGA_WIDTH = 640;
     }
 
-    /* loaded from: classes5.dex */
     public static final class ContentType {
         public static final String VIDEO_3G2 = "video/3gpp2";
         public static final String VIDEO_3GP = "video/3gp";
@@ -153,25 +149,23 @@ public class EncodeConstants {
         public static final String VIDEO_MPEG2TS = "video/mp2ts";
         public static final String VIDEO_WEBM = "video/webm";
         public static final String VIDEO_WMV = "video/x-ms-wmv";
-        public static final ArrayList<String> sSupportedVideoTypes;
+        public static final ArrayList<String> sSupportedVideoTypes = new ArrayList<>();
 
         static {
-            ArrayList<String> arrayList = new ArrayList<>();
-            sSupportedVideoTypes = arrayList;
-            arrayList.add("video/3gpp");
-            arrayList.add("video/3gpp2");
-            arrayList.add("video/mp4");
-            arrayList.add("video/mp4v-es");
-            arrayList.add("video/3gp");
-            arrayList.add("video/avi");
-            arrayList.add("video/x-ms-wmv");
-            arrayList.add("video/x-ms-asf");
-            arrayList.add("video/divx");
-            arrayList.add("video/mpeg");
-            arrayList.add(VIDEO_MKV);
-            arrayList.add(VIDEO_FLV);
-            arrayList.add(VIDEO_MPEG2TS);
-            arrayList.add(VIDEO_WEBM);
+            sSupportedVideoTypes.add("video/3gpp");
+            sSupportedVideoTypes.add("video/3gpp2");
+            sSupportedVideoTypes.add("video/mp4");
+            sSupportedVideoTypes.add("video/mp4v-es");
+            sSupportedVideoTypes.add("video/3gp");
+            sSupportedVideoTypes.add("video/avi");
+            sSupportedVideoTypes.add("video/x-ms-wmv");
+            sSupportedVideoTypes.add("video/x-ms-asf");
+            sSupportedVideoTypes.add("video/divx");
+            sSupportedVideoTypes.add("video/mpeg");
+            sSupportedVideoTypes.add(VIDEO_MKV);
+            sSupportedVideoTypes.add(VIDEO_FLV);
+            sSupportedVideoTypes.add(VIDEO_MPEG2TS);
+            sSupportedVideoTypes.add(VIDEO_WEBM);
         }
     }
 }

@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDesktopModeBlocker extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.desktopmode.IDesktopModeBlocker";
 
     String onBlocked() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDesktopModeBlocker {
         @Override // com.samsung.android.desktopmode.IDesktopModeBlocker
         public String onBlocked() throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDesktopModeBlocker extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDesktopModeBlocker {
         static final int TRANSACTION_onBlocked = 1;
 
@@ -68,26 +66,22 @@ public interface IDesktopModeBlocker extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDesktopModeBlocker.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDesktopModeBlocker.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDesktopModeBlocker.DESCRIPTOR);
+                case 1:
+                    String _result = onBlocked();
+                    reply.writeNoException();
+                    reply.writeString(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _result = onBlocked();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDesktopModeBlocker {
+        private static class Proxy implements IDesktopModeBlocker {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

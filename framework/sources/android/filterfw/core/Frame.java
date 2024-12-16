@@ -27,9 +27,9 @@ public abstract class Frame {
 
     public abstract Object getObjectValue();
 
-    public abstract boolean hasNativeAllocation();
+    protected abstract boolean hasNativeAllocation();
 
-    public abstract void releaseNativeAllocation();
+    protected abstract void releaseNativeAllocation();
 
     public abstract void setBitmap(Bitmap bitmap);
 
@@ -39,7 +39,7 @@ public abstract class Frame {
 
     public abstract void setInts(int[] iArr);
 
-    public Frame(FrameFormat format, FrameManager frameManager) {
+    Frame(FrameFormat format, FrameManager frameManager) {
         this.mReadOnly = false;
         this.mReusable = false;
         this.mRefCount = 1;
@@ -50,7 +50,7 @@ public abstract class Frame {
         this.mFrameManager = frameManager;
     }
 
-    public Frame(FrameFormat format, FrameManager frameManager, int bindingType, long bindingId) {
+    Frame(FrameFormat format, FrameManager frameManager, int bindingType, long bindingId) {
         this.mReadOnly = false;
         this.mReusable = false;
         this.mRefCount = 1;
@@ -131,17 +131,15 @@ public abstract class Frame {
     }
 
     public Frame release() {
-        FrameManager frameManager = this.mFrameManager;
-        if (frameManager != null) {
-            return frameManager.releaseFrame(this);
+        if (this.mFrameManager != null) {
+            return this.mFrameManager.releaseFrame(this);
         }
         return this;
     }
 
     public Frame retain() {
-        FrameManager frameManager = this.mFrameManager;
-        if (frameManager != null) {
-            return frameManager.retainFrame(this);
+        if (this.mFrameManager != null) {
+            return this.mFrameManager.retainFrame(this);
         }
         return this;
     }
@@ -150,17 +148,17 @@ public abstract class Frame {
         return this.mFrameManager;
     }
 
-    public void assertFrameMutable() {
+    protected void assertFrameMutable() {
         if (isReadOnly()) {
             throw new RuntimeException("Attempting to modify read-only frame!");
         }
     }
 
-    public void setReusable(boolean reusable) {
+    protected void setReusable(boolean reusable) {
         this.mReusable = reusable;
     }
 
-    public void setFormat(FrameFormat format) {
+    protected void setFormat(FrameFormat format) {
         this.mFormat = format.mutableCopy();
     }
 
@@ -168,7 +166,7 @@ public abstract class Frame {
         throw new RuntimeException("Cannot set object value of unsupported type: " + value.getClass());
     }
 
-    public static Bitmap convertBitmapToRGBA(Bitmap bitmap) {
+    protected static Bitmap convertBitmapToRGBA(Bitmap bitmap) {
         if (bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
             return bitmap;
         }
@@ -182,35 +180,33 @@ public abstract class Frame {
         return result;
     }
 
-    public void reset(FrameFormat newFormat) {
+    protected void reset(FrameFormat newFormat) {
         this.mFormat = newFormat.mutableCopy();
         this.mReadOnly = false;
         this.mRefCount = 1;
     }
 
-    public void onFrameStore() {
+    protected void onFrameStore() {
     }
 
-    public void onFrameFetch() {
+    protected void onFrameFetch() {
     }
 
-    public final int incRefCount() {
-        int i = this.mRefCount + 1;
-        this.mRefCount = i;
-        return i;
+    final int incRefCount() {
+        this.mRefCount++;
+        return this.mRefCount;
     }
 
-    public final int decRefCount() {
-        int i = this.mRefCount - 1;
-        this.mRefCount = i;
-        return i;
+    final int decRefCount() {
+        this.mRefCount--;
+        return this.mRefCount;
     }
 
-    public final boolean isReusable() {
+    final boolean isReusable() {
         return this.mReusable;
     }
 
-    public final void markReadOnly() {
+    final void markReadOnly() {
         this.mReadOnly = true;
     }
 }

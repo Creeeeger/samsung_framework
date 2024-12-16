@@ -1,24 +1,27 @@
 package com.samsung.vekit.Content;
 
 import com.samsung.vekit.Common.Object.Element;
+import com.samsung.vekit.Common.Type.ContentColorType;
 import com.samsung.vekit.Common.Type.ContentType;
 import com.samsung.vekit.Common.Type.ElementType;
 import com.samsung.vekit.Common.VEContext;
 
 /* loaded from: classes6.dex */
 public class Content extends Element {
+    protected ContentColorType colorType;
     protected ContentType contentType;
     protected long duration;
     protected int height;
     protected int width;
 
-    public Content(VEContext context, ContentType type, int id, String name) {
+    protected Content(VEContext context, ContentType type, int id, String name) {
         super(context, ElementType.CONTENT, id, name);
         this.contentType = type;
         this.TAG = getClass().getSimpleName();
         this.width = 0;
         this.height = 0;
         this.duration = 0L;
+        this.colorType = ContentColorType.SDR;
     }
 
     public ContentType getContentType() {
@@ -50,5 +53,13 @@ public class Content extends Element {
     public Content setDuration(long duration) {
         this.duration = duration;
         return this;
+    }
+
+    public ContentColorType getColorType() {
+        return this.colorType;
+    }
+
+    public void setColorType(ContentColorType colorType) {
+        this.colorType = colorType;
     }
 }

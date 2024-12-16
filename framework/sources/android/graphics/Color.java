@@ -22,7 +22,7 @@ public class Color {
     public static final int TRANSPARENT = 0;
     public static final int WHITE = -1;
     public static final int YELLOW = -256;
-    private static final HashMap<String, Integer> sColorNameMap;
+    private static final HashMap<String, Integer> sColorNameMap = new HashMap<>();
     private final ColorSpace mColorSpace;
     private final float[] mComponents;
 
@@ -70,25 +70,21 @@ public class Color {
     }
 
     public long pack() {
-        float[] fArr = this.mComponents;
-        return pack(fArr[0], fArr[1], fArr[2], fArr[3], this.mColorSpace);
+        return pack(this.mComponents[0], this.mComponents[1], this.mComponents[2], this.mComponents[3], this.mColorSpace);
     }
 
     public Color convert(ColorSpace colorSpace) {
         ColorSpace.Connector connector = ColorSpace.connect(this.mColorSpace, colorSpace);
-        float[] fArr = this.mComponents;
-        float[] color = {fArr[0], fArr[1], fArr[2], fArr[3]};
+        float[] color = {this.mComponents[0], this.mComponents[1], this.mComponents[2], this.mComponents[3]};
         connector.transform(color);
         return new Color(color, colorSpace);
     }
 
     public int toArgb() {
         if (this.mColorSpace.isSrgb()) {
-            float[] fArr = this.mComponents;
-            return ((int) ((fArr[2] * 255.0f) + 0.5f)) | (((int) ((fArr[3] * 255.0f) + 0.5f)) << 24) | (((int) ((fArr[0] * 255.0f) + 0.5f)) << 16) | (((int) ((fArr[1] * 255.0f) + 0.5f)) << 8);
+            return (((int) ((this.mComponents[3] * 255.0f) + 0.5f)) << 24) | (((int) ((this.mComponents[0] * 255.0f) + 0.5f)) << 16) | (((int) ((this.mComponents[1] * 255.0f) + 0.5f)) << 8) | ((int) ((this.mComponents[2] * 255.0f) + 0.5f));
         }
-        float[] fArr2 = this.mComponents;
-        float[] color = {fArr2[0], fArr2[1], fArr2[2], fArr2[3]};
+        float[] color = {this.mComponents[0], this.mComponents[1], this.mComponents[2], this.mComponents[3]};
         ColorSpace.connect(this.mColorSpace).transform(color);
         return (((int) ((color[3] * 255.0f) + 0.5f)) << 24) | (((int) ((color[0] * 255.0f) + 0.5f)) << 16) | (((int) ((color[1] * 255.0f) + 0.5f)) << 8) | ((int) ((color[2] * 255.0f) + 0.5f));
     }
@@ -106,25 +102,21 @@ public class Color {
     }
 
     public float alpha() {
-        return this.mComponents[r0.length - 1];
+        return this.mComponents[this.mComponents.length - 1];
     }
 
     public float[] getComponents() {
-        float[] fArr = this.mComponents;
-        return Arrays.copyOf(fArr, fArr.length);
+        return Arrays.copyOf(this.mComponents, this.mComponents.length);
     }
 
     public float[] getComponents(float[] components) {
         if (components == null) {
-            float[] fArr = this.mComponents;
-            return Arrays.copyOf(fArr, fArr.length);
+            return Arrays.copyOf(this.mComponents, this.mComponents.length);
         }
-        int length = components.length;
-        float[] fArr2 = this.mComponents;
-        if (length < fArr2.length) {
+        if (components.length < this.mComponents.length) {
             throw new IllegalArgumentException("The specified array's length must be at least " + this.mComponents.length);
         }
-        System.arraycopy(fArr2, 0, components, 0, fArr2.length);
+        System.arraycopy(this.mComponents, 0, components, 0, this.mComponents.length);
         return components;
     }
 
@@ -177,19 +169,19 @@ public class Color {
     }
 
     public static float red(long color) {
-        return (63 & color) == 0 ? ((float) ((color >> 48) & 255)) / 255.0f : Half.toFloat((short) ((color >> 48) & 65535));
+        return (63 & color) == 0 ? ((color >> 48) & 255) / 255.0f : Half.toFloat((short) ((color >> 48) & 65535));
     }
 
     public static float green(long color) {
-        return (63 & color) == 0 ? ((float) ((color >> 40) & 255)) / 255.0f : Half.toFloat((short) ((color >> 32) & 65535));
+        return (63 & color) == 0 ? ((color >> 40) & 255) / 255.0f : Half.toFloat((short) ((color >> 32) & 65535));
     }
 
     public static float blue(long color) {
-        return (63 & color) == 0 ? ((float) ((color >> 32) & 255)) / 255.0f : Half.toFloat((short) ((color >> 16) & 65535));
+        return (63 & color) == 0 ? ((color >> 32) & 255) / 255.0f : Half.toFloat((short) ((color >> 16) & 65535));
     }
 
     public static float alpha(long color) {
-        return (63 & color) == 0 ? ((float) ((color >> 56) & 255)) / 255.0f : ((float) ((color >> 6) & 1023)) / 1023.0f;
+        return (63 & color) == 0 ? ((color >> 56) & 255) / 255.0f : ((color >> 6) & 1023) / 1023.0f;
     }
 
     public static boolean isSrgb(long color) {
@@ -420,35 +412,38 @@ public class Color {
     }
 
     static {
-        HashMap<String, Integer> hashMap = new HashMap<>();
-        sColorNameMap = hashMap;
-        hashMap.put("black", -16777216);
-        hashMap.put("darkgray", -12303292);
+        sColorNameMap.put("black", -16777216);
+        sColorNameMap.put("darkgray", -12303292);
+        HashMap<String, Integer> hashMap = sColorNameMap;
         Integer valueOf = Integer.valueOf(GRAY);
         hashMap.put("gray", valueOf);
+        HashMap<String, Integer> hashMap2 = sColorNameMap;
         Integer valueOf2 = Integer.valueOf(LTGRAY);
-        hashMap.put("lightgray", valueOf2);
-        hashMap.put("white", -1);
-        hashMap.put("red", -65536);
+        hashMap2.put("lightgray", valueOf2);
+        sColorNameMap.put("white", -1);
+        sColorNameMap.put("red", -65536);
+        HashMap<String, Integer> hashMap3 = sColorNameMap;
         Integer valueOf3 = Integer.valueOf(GREEN);
-        hashMap.put("green", valueOf3);
-        hashMap.put("blue", -16776961);
-        hashMap.put("yellow", -256);
+        hashMap3.put("green", valueOf3);
+        sColorNameMap.put("blue", -16776961);
+        sColorNameMap.put("yellow", -256);
+        HashMap<String, Integer> hashMap4 = sColorNameMap;
         Integer valueOf4 = Integer.valueOf(CYAN);
-        hashMap.put("cyan", valueOf4);
+        hashMap4.put("cyan", valueOf4);
+        HashMap<String, Integer> hashMap5 = sColorNameMap;
         Integer valueOf5 = Integer.valueOf(MAGENTA);
-        hashMap.put("magenta", valueOf5);
-        hashMap.put(Camera.Parameters.EFFECT_AQUA, valueOf4);
-        hashMap.put("fuchsia", valueOf5);
-        hashMap.put("darkgrey", -12303292);
-        hashMap.put("grey", valueOf);
-        hashMap.put("lightgrey", valueOf2);
-        hashMap.put("lime", valueOf3);
-        hashMap.put("maroon", -8388608);
-        hashMap.put("navy", -16777088);
-        hashMap.put("olive", -8355840);
-        hashMap.put("purple", -8388480);
-        hashMap.put("silver", -4144960);
-        hashMap.put("teal", -16744320);
+        hashMap5.put("magenta", valueOf5);
+        sColorNameMap.put(Camera.Parameters.EFFECT_AQUA, valueOf4);
+        sColorNameMap.put("fuchsia", valueOf5);
+        sColorNameMap.put("darkgrey", -12303292);
+        sColorNameMap.put("grey", valueOf);
+        sColorNameMap.put("lightgrey", valueOf2);
+        sColorNameMap.put("lime", valueOf3);
+        sColorNameMap.put("maroon", -8388608);
+        sColorNameMap.put("navy", -16777088);
+        sColorNameMap.put("olive", -8355840);
+        sColorNameMap.put("purple", -8388480);
+        sColorNameMap.put("silver", -4144960);
+        sColorNameMap.put("teal", -16744320);
     }
 }

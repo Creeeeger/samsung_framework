@@ -7,12 +7,10 @@ import android.view.Surface;
 import java.util.Collection;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraOutputConfig implements Parcelable {
     public static final Parcelable.Creator<CameraOutputConfig> CREATOR = new Parcelable.Creator<CameraOutputConfig>() { // from class: android.hardware.camera2.extension.CameraOutputConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraOutputConfig createFromParcel(Parcel _aidl_source) {
             CameraOutputConfig _aidl_out = new CameraOutputConfig();
@@ -20,6 +18,7 @@ public class CameraOutputConfig implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraOutputConfig[] newArray(int _aidl_size) {
             return new CameraOutputConfig[_aidl_size];
@@ -35,28 +34,11 @@ public class CameraOutputConfig implements Parcelable {
     public Surface surface;
     public int imageFormat = 0;
     public int capacity = 0;
+    public long usage = 0;
+    public long dynamicRangeProfile = 0;
     public int type = 0;
     public int surfaceGroupId = 0;
     public boolean isMultiResolutionOutput = false;
-
-    /* renamed from: android.hardware.camera2.extension.CameraOutputConfig$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CameraOutputConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraOutputConfig createFromParcel(Parcel _aidl_source) {
-            CameraOutputConfig _aidl_out = new CameraOutputConfig();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraOutputConfig[] newArray(int _aidl_size) {
-            return new CameraOutputConfig[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -66,6 +48,8 @@ public class CameraOutputConfig implements Parcelable {
         _aidl_parcel.writeTypedObject(this.surface, _aidl_flag);
         _aidl_parcel.writeInt(this.imageFormat);
         _aidl_parcel.writeInt(this.capacity);
+        _aidl_parcel.writeLong(this.usage);
+        _aidl_parcel.writeLong(this.dynamicRangeProfile);
         _aidl_parcel.writeInt(this.type);
         _aidl_parcel.writeTypedObject(this.outputId, _aidl_flag);
         _aidl_parcel.writeInt(this.surfaceGroupId);
@@ -117,6 +101,22 @@ public class CameraOutputConfig implements Parcelable {
                 return;
             }
             this.capacity = _aidl_parcel.readInt();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.usage = _aidl_parcel.readLong();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.dynamicRangeProfile = _aidl_parcel.readLong();
             if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");

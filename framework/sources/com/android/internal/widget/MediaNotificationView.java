@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class MediaNotificationView extends FrameLayout {
     private ArrayList<VisibilityChangeListener> mListeners;
 
-    /* loaded from: classes5.dex */
     public interface VisibilityChangeListener {
         void onAggregatedVisibilityChanged(boolean z);
     }
@@ -33,7 +32,7 @@ public class MediaNotificationView extends FrameLayout {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
     }
 
@@ -57,9 +56,8 @@ public class MediaNotificationView extends FrameLayout {
     }
 
     public void removeVisibilityListener(VisibilityChangeListener listener) {
-        ArrayList<VisibilityChangeListener> arrayList = this.mListeners;
-        if (arrayList != null) {
-            arrayList.remove(listener);
+        if (this.mListeners != null) {
+            this.mListeners.remove(listener);
         }
     }
 }

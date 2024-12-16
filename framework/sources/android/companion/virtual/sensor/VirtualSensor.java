@@ -11,14 +11,13 @@ import android.os.RemoteException;
 /* loaded from: classes.dex */
 public final class VirtualSensor implements Parcelable {
     public static final Parcelable.Creator<VirtualSensor> CREATOR = new Parcelable.Creator<VirtualSensor>() { // from class: android.companion.virtual.sensor.VirtualSensor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensor createFromParcel(Parcel in) {
             return new VirtualSensor(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensor[] newArray(int size) {
             return new VirtualSensor[size];
@@ -30,16 +29,16 @@ public final class VirtualSensor implements Parcelable {
     private final int mType;
     private final IVirtualDevice mVirtualDevice;
 
-    /* synthetic */ VirtualSensor(Parcel parcel, VirtualSensorIA virtualSensorIA) {
-        this(parcel);
-    }
-
     public VirtualSensor(int handle, int type, String name, IVirtualDevice virtualDevice, IBinder token) {
         this.mHandle = handle;
         this.mType = type;
         this.mName = name;
         this.mVirtualDevice = virtualDevice;
         this.mToken = token;
+    }
+
+    public VirtualSensor(int handle, int type, String name) {
+        this(handle, type, name, null, null);
     }
 
     private VirtualSensor(Parcel parcel) {
@@ -84,28 +83,15 @@ public final class VirtualSensor implements Parcelable {
         parcel.writeStrongBinder(this.mToken);
     }
 
+    public String toString() {
+        return "VirtualSensor{ mType=" + this.mType + ", mName='" + this.mName + "' }";
+    }
+
     public void sendEvent(VirtualSensorEvent event) {
         try {
             this.mVirtualDevice.sendSensorEvent(this.mToken, event);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
-        }
-    }
-
-    /* renamed from: android.companion.virtual.sensor.VirtualSensor$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VirtualSensor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualSensor createFromParcel(Parcel in) {
-            return new VirtualSensor(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualSensor[] newArray(int size) {
-            return new VirtualSensor[size];
         }
     }
 }

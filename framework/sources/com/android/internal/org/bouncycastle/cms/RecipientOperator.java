@@ -18,9 +18,8 @@ public class RecipientOperator {
     }
 
     public InputStream getInputStream(InputStream dataIn) {
-        Object obj = this.operator;
-        if (obj instanceof InputDecryptor) {
-            return ((InputDecryptor) obj).getInputStream(dataIn);
+        if (this.operator instanceof InputDecryptor) {
+            return ((InputDecryptor) this.operator).getInputStream(dataIn);
         }
         return new TeeInputStream(dataIn, ((MacCalculator) this.operator).getOutputStream());
     }

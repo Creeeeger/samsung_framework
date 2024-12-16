@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IGeofenceHardwareMonitorCallback extends IInterface {
     void onMonitoringSystemChange(GeofenceHardwareMonitorEvent geofenceHardwareMonitorEvent) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGeofenceHardwareMonitorCallback {
         @Override // android.hardware.location.IGeofenceHardwareMonitorCallback
         public void onMonitoringSystemChange(GeofenceHardwareMonitorEvent event) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IGeofenceHardwareMonitorCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGeofenceHardwareMonitorCallback {
         public static final String DESCRIPTOR = "android.hardware.location.IGeofenceHardwareMonitorCallback";
         static final int TRANSACTION_onMonitoringSystemChange = 1;
@@ -66,26 +64,22 @@ public interface IGeofenceHardwareMonitorCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    GeofenceHardwareMonitorEvent _arg0 = (GeofenceHardwareMonitorEvent) data.readTypedObject(GeofenceHardwareMonitorEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMonitoringSystemChange(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            GeofenceHardwareMonitorEvent _arg0 = (GeofenceHardwareMonitorEvent) data.readTypedObject(GeofenceHardwareMonitorEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMonitoringSystemChange(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGeofenceHardwareMonitorCallback {
+        private static class Proxy implements IGeofenceHardwareMonitorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

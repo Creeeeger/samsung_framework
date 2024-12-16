@@ -12,7 +12,6 @@ public interface IAudioRoutingCallback extends IInterface {
 
     void onAppsNeedingAudioRoutingChanged(int[] iArr) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAudioRoutingCallback {
         @Override // android.companion.virtual.audio.IAudioRoutingCallback
         public void onAppsNeedingAudioRoutingChanged(int[] appUids) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAudioRoutingCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAudioRoutingCallback {
         static final int TRANSACTION_onAppsNeedingAudioRoutingChanged = 1;
 
@@ -67,25 +65,22 @@ public interface IAudioRoutingCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAudioRoutingCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAudioRoutingCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAudioRoutingCallback.DESCRIPTOR);
+                case 1:
+                    int[] _arg0 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onAppsNeedingAudioRoutingChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _arg0 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onAppsNeedingAudioRoutingChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAudioRoutingCallback {
+        private static class Proxy implements IAudioRoutingCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

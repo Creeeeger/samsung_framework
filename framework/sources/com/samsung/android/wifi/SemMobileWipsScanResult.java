@@ -23,9 +23,7 @@ public final class SemMobileWipsScanResult implements Parcelable {
     public static final int CIPHER_SMS4 = 5;
     public static final int CIPHER_TKIP = 2;
     public static final Parcelable.Creator<SemMobileWipsScanResult> CREATOR = new Parcelable.Creator<SemMobileWipsScanResult>() { // from class: com.samsung.android.wifi.SemMobileWipsScanResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsScanResult createFromParcel(Parcel in) {
             SemMobileWipsWifiSsid wifiSsid = null;
@@ -74,6 +72,7 @@ public final class SemMobileWipsScanResult implements Parcelable {
             return sr;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsScanResult[] newArray(int size) {
             return new SemMobileWipsScanResult[size];
@@ -137,66 +136,6 @@ public final class SemMobileWipsScanResult implements Parcelable {
     public CharSequence venueName;
     public SemMobileWipsWifiSsid wifiSsid;
 
-    /* renamed from: com.samsung.android.wifi.SemMobileWipsScanResult$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemMobileWipsScanResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemMobileWipsScanResult createFromParcel(Parcel in) {
-            SemMobileWipsWifiSsid wifiSsid = null;
-            if (in.readInt() == 1) {
-                SemMobileWipsWifiSsid wifiSsid2 = SemMobileWipsWifiSsid.CREATOR.createFromParcel(in);
-                wifiSsid = wifiSsid2;
-            }
-            SemMobileWipsScanResult sr = new SemMobileWipsScanResult(wifiSsid, in.readString(), in.readString(), in.readLong(), in.readInt(), in.readString(), in.readInt(), in.readInt(), in.readLong(), in.readInt(), in.readInt(), in.readInt(), in.readInt(), in.readInt(), false);
-            sr.mWifiStandard = in.readInt();
-            sr.seen = in.readLong();
-            sr.untrusted = in.readInt() != 0;
-            sr.numUsage = in.readInt();
-            sr.venueName = in.readString();
-            sr.operatorFriendlyName = in.readString();
-            sr.flags = in.readLong();
-            sr.informationElements = (InformationElement[]) in.createTypedArray(InformationElement.CREATOR);
-            int n = in.readInt();
-            if (n != 0) {
-                sr.anqpLines = new ArrayList();
-                for (int i = 0; i < n; i++) {
-                    sr.anqpLines.add(in.readString());
-                }
-            }
-            int n2 = in.readInt();
-            if (n2 != 0) {
-                sr.anqpElements = new AnqpInformationElement[n2];
-                for (int i2 = 0; i2 < n2; i2++) {
-                    int vendorId = in.readInt();
-                    int elementId = in.readInt();
-                    int len = in.readInt();
-                    byte[] payload = new byte[len];
-                    in.readByteArray(payload);
-                    sr.anqpElements[i2] = new AnqpInformationElement(vendorId, elementId, payload);
-                }
-            }
-            int n3 = in.readInt();
-            if (n3 != 0) {
-                sr.radioChainInfos = new RadioChainInfo[n3];
-                for (int i3 = 0; i3 < n3; i3++) {
-                    sr.radioChainInfos[i3] = new RadioChainInfo();
-                    sr.radioChainInfos[i3].id = in.readInt();
-                    sr.radioChainInfos[i3].level = in.readInt();
-                }
-            }
-            sr.ifaceName = in.readString();
-            return sr;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemMobileWipsScanResult[] newArray(int size) {
-            return new SemMobileWipsScanResult[size];
-        }
-    }
-
     public SemMobileWipsScanResult(SemMobileWipsWifiSsid wifiSsid, String BSSID, long hessid, int anqpDomainId, byte[] osuProviders, String caps, int level, int frequency, long tsf) {
         this.wifiSsid = wifiSsid;
         this.SSID = wifiSsid != null ? wifiSsid.toString() : "<unknown ssid>";
@@ -204,8 +143,8 @@ public final class SemMobileWipsScanResult implements Parcelable {
         this.hessid = hessid;
         this.anqpDomainId = anqpDomainId;
         if (osuProviders != null) {
-            this.anqpElements = r8;
-            AnqpInformationElement[] anqpInformationElementArr = {new AnqpInformationElement(5271450, 8, osuProviders)};
+            this.anqpElements = new AnqpInformationElement[1];
+            this.anqpElements[0] = new AnqpInformationElement(5271450, 8, osuProviders);
         }
         this.capabilities = caps;
         this.level = level;
@@ -373,28 +312,9 @@ public final class SemMobileWipsScanResult implements Parcelable {
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        StringBuffer append = sb.append("SSID: ");
-        Object obj = this.wifiSsid;
-        if (obj == null) {
-            obj = "<unknown ssid>";
-        }
-        StringBuffer append2 = append.append(obj).append(", BSSID: ");
-        String str = this.BSSID;
-        if (str == null) {
-            str = "<none>";
-        }
-        StringBuffer append3 = append2.append(str).append(", capabilities: ");
-        String str2 = this.capabilities;
-        if (str2 == null) {
-            str2 = "<none>";
-        }
-        append3.append(str2).append(", level: ").append(this.level).append(", frequency: ").append(this.frequency).append(", timestamp: ").append(this.timestamp);
-        StringBuffer append4 = sb.append(", distance: ");
-        int i = this.distanceCm;
-        append4.append(i != -1 ? Integer.valueOf(i) : "?").append("(cm)");
-        StringBuffer append5 = sb.append(", distanceSd: ");
-        int i2 = this.distanceSdCm;
-        append5.append(i2 != -1 ? Integer.valueOf(i2) : "?").append("(cm)");
+        sb.append("SSID: ").append(this.wifiSsid == null ? "<unknown ssid>" : this.wifiSsid).append(", BSSID: ").append(this.BSSID == null ? "<none>" : this.BSSID).append(", capabilities: ").append(this.capabilities == null ? "<none>" : this.capabilities).append(", level: ").append(this.level).append(", frequency: ").append(this.frequency).append(", timestamp: ").append(this.timestamp);
+        sb.append(", distance: ").append(this.distanceCm != -1 ? Integer.valueOf(this.distanceCm) : "?").append("(cm)");
+        sb.append(", distanceSd: ").append(this.distanceSdCm != -1 ? Integer.valueOf(this.distanceSdCm) : "?").append("(cm)");
         sb.append(", passpoint: ");
         sb.append((this.flags & 1) != 0 ? "yes" : "no");
         sb.append(", ChannelBandwidth: ").append(this.channelWidth);
@@ -438,24 +358,20 @@ public final class SemMobileWipsScanResult implements Parcelable {
         parcel.writeLong(this.seen);
         parcel.writeInt(this.untrusted ? 1 : 0);
         parcel.writeInt(this.numUsage);
-        CharSequence charSequence = this.venueName;
-        parcel.writeString(charSequence != null ? charSequence.toString() : "");
-        CharSequence charSequence2 = this.operatorFriendlyName;
-        parcel.writeString(charSequence2 != null ? charSequence2.toString() : "");
+        parcel.writeString(this.venueName != null ? this.venueName.toString() : "");
+        parcel.writeString(this.operatorFriendlyName != null ? this.operatorFriendlyName.toString() : "");
         parcel.writeLong(this.flags);
         parcel.writeTypedArray(this.informationElements, i);
-        List<String> list = this.anqpLines;
-        if (list != null) {
-            parcel.writeInt(list.size());
+        if (this.anqpLines != null) {
+            parcel.writeInt(this.anqpLines.size());
             for (int i2 = 0; i2 < this.anqpLines.size(); i2++) {
                 parcel.writeString(this.anqpLines.get(i2));
             }
         } else {
             parcel.writeInt(0);
         }
-        AnqpInformationElement[] anqpInformationElementArr = this.anqpElements;
-        if (anqpInformationElementArr != null) {
-            parcel.writeInt(anqpInformationElementArr.length);
+        if (this.anqpElements != null) {
+            parcel.writeInt(this.anqpElements.length);
             for (AnqpInformationElement anqpInformationElement : this.anqpElements) {
                 parcel.writeInt(anqpInformationElement.getVendorId());
                 parcel.writeInt(anqpInformationElement.getElementId());
@@ -465,27 +381,18 @@ public final class SemMobileWipsScanResult implements Parcelable {
         } else {
             parcel.writeInt(0);
         }
-        RadioChainInfo[] radioChainInfoArr = this.radioChainInfos;
-        if (radioChainInfoArr != null) {
-            parcel.writeInt(radioChainInfoArr.length);
-            int i3 = 0;
-            while (true) {
-                RadioChainInfo[] radioChainInfoArr2 = this.radioChainInfos;
-                if (i3 >= radioChainInfoArr2.length) {
-                    break;
-                }
-                parcel.writeInt(radioChainInfoArr2[i3].id);
+        if (this.radioChainInfos != null) {
+            parcel.writeInt(this.radioChainInfos.length);
+            for (int i3 = 0; i3 < this.radioChainInfos.length; i3++) {
+                parcel.writeInt(this.radioChainInfos[i3].id);
                 parcel.writeInt(this.radioChainInfos[i3].level);
-                i3++;
             }
         } else {
             parcel.writeInt(0);
         }
-        String str = this.ifaceName;
-        parcel.writeString(str != null ? str.toString() : "");
+        parcel.writeString(this.ifaceName != null ? this.ifaceName.toString() : "");
     }
 
-    /* loaded from: classes6.dex */
     public static class RadioChainInfo {
         public int id;
         public int level;
@@ -510,7 +417,6 @@ public final class SemMobileWipsScanResult implements Parcelable {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class AnqpInformationElement {
         public static final int ANQP_3GPP_NETWORK = 264;
         public static final int ANQP_CAPABILITY_LIST = 257;
@@ -564,12 +470,9 @@ public final class SemMobileWipsScanResult implements Parcelable {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class InformationElement implements Parcelable {
         public static final Parcelable.Creator<InformationElement> CREATOR = new Parcelable.Creator<InformationElement>() { // from class: com.samsung.android.wifi.SemMobileWipsScanResult.InformationElement.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InformationElement createFromParcel(Parcel in) {
                 InformationElement informationElement = new InformationElement();
@@ -579,6 +482,7 @@ public final class SemMobileWipsScanResult implements Parcelable {
                 return informationElement;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InformationElement[] newArray(int size) {
                 return new InformationElement[size];
@@ -639,27 +543,6 @@ public final class SemMobileWipsScanResult implements Parcelable {
             dest.writeInt(this.id);
             dest.writeInt(this.idExt);
             dest.writeByteArray(this.bytes);
-        }
-
-        /* renamed from: com.samsung.android.wifi.SemMobileWipsScanResult$InformationElement$1 */
-        /* loaded from: classes6.dex */
-        class AnonymousClass1 implements Parcelable.Creator<InformationElement> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InformationElement createFromParcel(Parcel in) {
-                InformationElement informationElement = new InformationElement();
-                informationElement.id = in.readInt();
-                informationElement.idExt = in.readInt();
-                informationElement.bytes = in.createByteArray();
-                return informationElement;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public InformationElement[] newArray(int size) {
-                return new InformationElement[size];
-            }
         }
 
         public boolean equals(Object that) {

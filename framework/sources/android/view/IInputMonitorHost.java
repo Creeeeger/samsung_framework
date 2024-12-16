@@ -14,7 +14,6 @@ public interface IInputMonitorHost extends IInterface {
 
     void pilferPointers() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputMonitorHost {
         @Override // android.view.IInputMonitorHost
         public void pilferPointers() throws RemoteException {
@@ -30,7 +29,6 @@ public interface IInputMonitorHost extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputMonitorHost {
         static final int TRANSACTION_dispose = 2;
         static final int TRANSACTION_pilferPointers = 1;
@@ -76,27 +74,23 @@ public interface IInputMonitorHost extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputMonitorHost.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputMonitorHost.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputMonitorHost.DESCRIPTOR);
+                case 1:
+                    pilferPointers();
+                    return true;
+                case 2:
+                    dispose();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            pilferPointers();
-                            return true;
-                        case 2:
-                            dispose();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInputMonitorHost {
+        private static class Proxy implements IInputMonitorHost {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

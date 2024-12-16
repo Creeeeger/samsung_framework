@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class PictureInPictureParams implements Parcelable {
     public static final Parcelable.Creator<PictureInPictureParams> CREATOR = new Parcelable.Creator<PictureInPictureParams>() { // from class: android.app.PictureInPictureParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureParams createFromParcel(Parcel in) {
             return new PictureInPictureParams(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureParams[] newArray(int size) {
             return new PictureInPictureParams[size];
@@ -36,7 +35,6 @@ public final class PictureInPictureParams implements Parcelable {
     private CharSequence mTitle;
     private List<RemoteAction> mUserActions;
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private Rational mAspectRatio;
         private Boolean mAutoEnterEnabled;
@@ -118,7 +116,7 @@ public final class PictureInPictureParams implements Parcelable {
             return this;
         }
 
-        public Builder setIsLaunchIntoPip(boolean isLaunchIntoPip) {
+        Builder setIsLaunchIntoPip(boolean isLaunchIntoPip) {
             this.mIsLaunchIntoPip = Boolean.valueOf(isLaunchIntoPip);
             return this;
         }
@@ -136,9 +134,8 @@ public final class PictureInPictureParams implements Parcelable {
         this.mAspectRatio = readRationalFromParcel(in);
         this.mExpandedAspectRatio = readRationalFromParcel(in);
         if (in.readInt() != 0) {
-            ArrayList arrayList = new ArrayList();
-            this.mUserActions = arrayList;
-            in.readTypedList(arrayList, RemoteAction.CREATOR);
+            this.mUserActions = new ArrayList();
+            in.readTypedList(this.mUserActions, RemoteAction.CREATOR);
         }
         this.mCloseAction = (RemoteAction) in.readTypedObject(RemoteAction.CREATOR);
         if (in.readInt() != 0) {
@@ -192,13 +189,11 @@ public final class PictureInPictureParams implements Parcelable {
         if (otherArgs.hasSourceBoundsHint()) {
             this.mSourceRectHint = new Rect(otherArgs.getSourceRectHint());
         }
-        Boolean bool = otherArgs.mAutoEnterEnabled;
-        if (bool != null) {
-            this.mAutoEnterEnabled = bool;
+        if (otherArgs.mAutoEnterEnabled != null) {
+            this.mAutoEnterEnabled = otherArgs.mAutoEnterEnabled;
         }
-        Boolean bool2 = otherArgs.mSeamlessResizeEnabled;
-        if (bool2 != null) {
-            this.mSeamlessResizeEnabled = bool2;
+        if (otherArgs.mSeamlessResizeEnabled != null) {
+            this.mSeamlessResizeEnabled = otherArgs.mSeamlessResizeEnabled;
         }
         if (otherArgs.hasSetTitle()) {
             this.mTitle = otherArgs.mTitle;
@@ -206,16 +201,14 @@ public final class PictureInPictureParams implements Parcelable {
         if (otherArgs.hasSetSubtitle()) {
             this.mSubtitle = otherArgs.mSubtitle;
         }
-        Boolean bool3 = otherArgs.mIsLaunchIntoPip;
-        if (bool3 != null) {
-            this.mIsLaunchIntoPip = bool3;
+        if (otherArgs.mIsLaunchIntoPip != null) {
+            this.mIsLaunchIntoPip = otherArgs.mIsLaunchIntoPip;
         }
     }
 
     public float getAspectRatioFloat() {
-        Rational rational = this.mAspectRatio;
-        if (rational != null) {
-            return rational.floatValue();
+        if (this.mAspectRatio != null) {
+            return this.mAspectRatio.floatValue();
         }
         return 0.0f;
     }
@@ -229,9 +222,8 @@ public final class PictureInPictureParams implements Parcelable {
     }
 
     public float getExpandedAspectRatioFloat() {
-        Rational rational = this.mExpandedAspectRatio;
-        if (rational != null) {
-            return rational.floatValue();
+        if (this.mExpandedAspectRatio != null) {
+            return this.mExpandedAspectRatio.floatValue();
         }
         return 0.0f;
     }
@@ -245,11 +237,10 @@ public final class PictureInPictureParams implements Parcelable {
     }
 
     public List<RemoteAction> getActions() {
-        List<RemoteAction> list = this.mUserActions;
-        if (list == null) {
+        if (this.mUserActions == null) {
             return new ArrayList();
         }
-        return list;
+        return this.mUserActions;
     }
 
     public boolean hasSetActions() {
@@ -266,8 +257,7 @@ public final class PictureInPictureParams implements Parcelable {
 
     public void truncateActions(int size) {
         if (hasSetActions()) {
-            List<RemoteAction> list = this.mUserActions;
-            this.mUserActions = list.subList(0, Math.min(list.size(), size));
+            this.mUserActions = this.mUserActions.subList(0, Math.min(this.mUserActions.size(), size));
         }
     }
 
@@ -276,24 +266,21 @@ public final class PictureInPictureParams implements Parcelable {
     }
 
     public boolean hasSourceBoundsHint() {
-        Rect rect = this.mSourceRectHint;
-        return (rect == null || rect.isEmpty()) ? false : true;
+        return (this.mSourceRectHint == null || this.mSourceRectHint.isEmpty()) ? false : true;
     }
 
     public boolean isAutoEnterEnabled() {
-        Boolean bool = this.mAutoEnterEnabled;
-        if (bool == null) {
+        if (this.mAutoEnterEnabled == null) {
             return false;
         }
-        return bool.booleanValue();
+        return this.mAutoEnterEnabled.booleanValue();
     }
 
     public boolean isSeamlessResizeEnabled() {
-        Boolean bool = this.mSeamlessResizeEnabled;
-        if (bool == null) {
+        if (this.mSeamlessResizeEnabled == null) {
             return true;
         }
-        return bool.booleanValue();
+        return this.mSeamlessResizeEnabled.booleanValue();
     }
 
     public boolean hasSetTitle() {
@@ -313,11 +300,10 @@ public final class PictureInPictureParams implements Parcelable {
     }
 
     public boolean isLaunchIntoPip() {
-        Boolean bool = this.mIsLaunchIntoPip;
-        if (bool == null) {
+        if (this.mIsLaunchIntoPip == null) {
             return false;
         }
-        return bool.booleanValue();
+        return this.mIsLaunchIntoPip.booleanValue();
     }
 
     public boolean empty() {
@@ -412,22 +398,5 @@ public final class PictureInPictureParams implements Parcelable {
 
     public String toString() {
         return "PictureInPictureParams( aspectRatio=" + getAspectRatio() + " expandedAspectRatio=" + this.mExpandedAspectRatio + " sourceRectHint=" + getSourceRectHint() + " hasSetActions=" + hasSetActions() + " hasSetCloseAction=" + hasSetCloseAction() + " isAutoPipEnabled=" + isAutoEnterEnabled() + " isSeamlessResizeEnabled=" + isSeamlessResizeEnabled() + " title=" + ((Object) getTitle()) + " subtitle=" + ((Object) getSubtitle()) + " isLaunchIntoPip=" + isLaunchIntoPip() + NavigationBarInflaterView.KEY_CODE_END;
-    }
-
-    /* renamed from: android.app.PictureInPictureParams$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PictureInPictureParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PictureInPictureParams createFromParcel(Parcel in) {
-            return new PictureInPictureParams(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PictureInPictureParams[] newArray(int size) {
-            return new PictureInPictureParams[size];
-        }
     }
 }

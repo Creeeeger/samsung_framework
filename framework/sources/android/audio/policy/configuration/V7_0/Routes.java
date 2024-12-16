@@ -11,7 +11,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class Routes {
     private List<Route> route;
 
-    /* loaded from: classes.dex */
     public static class Route {
         private String sink;
         private String sources;
@@ -89,7 +88,7 @@ public class Routes {
         return this.route;
     }
 
-    public static Routes read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static Routes read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Routes _instance = new Routes();
         _parser.getDepth();

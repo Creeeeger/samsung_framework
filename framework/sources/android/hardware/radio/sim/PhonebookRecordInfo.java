@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhonebookRecordInfo implements Parcelable {
     public static final Parcelable.Creator<PhonebookRecordInfo> CREATOR = new Parcelable.Creator<PhonebookRecordInfo>() { // from class: android.hardware.radio.sim.PhonebookRecordInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhonebookRecordInfo createFromParcel(Parcel _aidl_source) {
             PhonebookRecordInfo _aidl_out = new PhonebookRecordInfo();
@@ -20,6 +18,7 @@ public class PhonebookRecordInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhonebookRecordInfo[] newArray(int _aidl_size) {
             return new PhonebookRecordInfo[_aidl_size];
@@ -30,25 +29,6 @@ public class PhonebookRecordInfo implements Parcelable {
     public String name;
     public String number;
     public int recordId = 0;
-
-    /* renamed from: android.hardware.radio.sim.PhonebookRecordInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhonebookRecordInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhonebookRecordInfo createFromParcel(Parcel _aidl_source) {
-            PhonebookRecordInfo _aidl_out = new PhonebookRecordInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhonebookRecordInfo[] newArray(int _aidl_size) {
-            return new PhonebookRecordInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -137,7 +117,7 @@ public class PhonebookRecordInfo implements Parcelable {
         _aidl_sj.add("number: " + Objects.toString(this.number));
         _aidl_sj.add("emails: " + Arrays.toString(this.emails));
         _aidl_sj.add("additionalNumbers: " + Arrays.toString(this.additionalNumbers));
-        return "android.hardware.radio.sim.PhonebookRecordInfo" + _aidl_sj.toString();
+        return "PhonebookRecordInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

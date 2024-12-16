@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SystemHistory {
     int mLogMaxCount;
     String mTag;

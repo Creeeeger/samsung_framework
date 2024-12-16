@@ -39,29 +39,23 @@ public abstract class OrientationEventListener {
     public OrientationEventListener(Context context, int rate) {
         this.mOrientation = -1;
         this.mEnabled = false;
-        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        this.mSensorManager = sensorManager;
+        this.mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.mRate = rate;
         this.mTableMode = false;
         this.mDeviceInfoSensor = null;
         this.mDeviceInfoListener = null;
-        Sensor defaultSensor = sensorManager.getDefaultSensor(1);
-        this.mSensor = defaultSensor;
+        this.mSensor = this.mSensorManager.getDefaultSensor(1);
         this.mNotSupportReversePortrait = false;
-        if (defaultSensor != null) {
+        if (this.mSensor != null) {
             this.mSensorEventListener = new SensorEventListenerImpl();
-            Sensor defaultSensor2 = this.mSensorManager.getDefaultSensor(Sensor.SEM_TYPE_DEVICE_COMMON_INFO);
-            this.mDeviceInfoSensor = defaultSensor2;
-            if (defaultSensor2 != null) {
+            this.mDeviceInfoSensor = this.mSensorManager.getDefaultSensor(Sensor.SEM_TYPE_DEVICE_COMMON_INFO);
+            if (this.mDeviceInfoSensor != null) {
                 Log.d(TAG, "supports device_common_info");
                 if (context.getPackageName().contains("whatsapp")) {
                     Log.d(TAG, "Package does not support reverse-portrait");
                     this.mNotSupportReversePortrait = true;
                 }
                 this.mDeviceInfoListener = new SensorEventListener() { // from class: android.view.OrientationEventListener.1
-                    AnonymousClass1() {
-                    }
-
                     @Override // android.hardware.SensorEventListener
                     public void onSensorChanged(SensorEvent event) {
                         if (event.values[0] == 3.0f) {
@@ -86,49 +80,20 @@ public abstract class OrientationEventListener {
         this.mContext = context;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.OrientationEventListener$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements SensorEventListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.hardware.SensorEventListener
-        public void onSensorChanged(SensorEvent event) {
-            if (event.values[0] == 3.0f) {
-                if (event.values[1] != 1.0f) {
-                    if (event.values[1] == 0.0f) {
-                        OrientationEventListener.this.mTableMode = false;
-                    }
-                } else if (OrientationEventListener.this.mNotSupportReversePortrait && !OrientationEventListener.this.mTableMode) {
-                    Log.d(OrientationEventListener.TAG, "onOrientationChanged 0");
-                    OrientationEventListener.this.onOrientationChanged(0);
-                    OrientationEventListener.this.mTableMode = true;
-                }
-            }
-        }
-
-        @Override // android.hardware.SensorEventListener
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    }
-
-    public void registerListener(OrientationListener lis) {
+    void registerListener(OrientationListener lis) {
         this.mOldListener = lis;
     }
 
     public void enable() {
-        Sensor sensor = this.mSensor;
-        if (sensor == null) {
+        if (this.mSensor == null) {
             Log.w(TAG, "Cannot detect sensors. Not enabled");
             return;
         }
         if (!this.mEnabled) {
             this.mTableMode = false;
-            this.mSensorManager.registerListener(this.mSensorEventListener, sensor, this.mRate);
-            Sensor sensor2 = this.mDeviceInfoSensor;
-            if (sensor2 != null) {
-                this.mSensorManager.registerListener(this.mDeviceInfoListener, sensor2, 3);
+            this.mSensorManager.registerListener(this.mSensorEventListener, this.mSensor, this.mRate);
+            if (this.mDeviceInfoSensor != null) {
+                this.mSensorManager.registerListener(this.mDeviceInfoListener, this.mDeviceInfoSensor, 3);
             }
             this.mEnabled = true;
         }
@@ -137,21 +102,16 @@ public abstract class OrientationEventListener {
     public void disable() {
         if (this.mSensor == null) {
             Log.w(TAG, "Cannot detect sensors. Invalid disable");
-            return;
-        }
-        if (this.mEnabled) {
+        } else if (this.mEnabled) {
             this.mSensorManager.unregisterListener(this.mSensorEventListener);
-            SensorEventListener sensorEventListener = this.mDeviceInfoListener;
-            if (sensorEventListener != null) {
-                this.mSensorManager.unregisterListener(sensorEventListener);
+            if (this.mDeviceInfoListener != null) {
+                this.mSensorManager.unregisterListener(this.mDeviceInfoListener);
             }
             this.mEnabled = false;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public class SensorEventListenerImpl implements SensorEventListener {
+    class SensorEventListenerImpl implements SensorEventListener {
         private static final int _DATA_X = 0;
         private static final int _DATA_Y = 1;
         private static final int _DATA_Z = 2;
@@ -202,13 +162,13 @@ public abstract class OrientationEventListener {
         }
     }
 
-    public boolean isInAppCastingDisplay() {
-        Display display;
-        Context context = this.mContext;
-        return (context == null || (display = context.getDisplayNoVerify()) == null || (display.getFlags() & 16384) == 0) ? false : true;
-    }
-
     public boolean canDetectOrientation() {
         return this.mSensor != null;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public boolean isInAppCastingDisplay() {
+        Display display;
+        return (this.mContext == null || (display = this.mContext.getDisplayNoVerify()) == null || (display.getFlags() & 33554432) == 0) ? false : true;
     }
 }

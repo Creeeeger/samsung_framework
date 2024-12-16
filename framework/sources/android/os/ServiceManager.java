@@ -7,6 +7,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Slog;
 import com.android.internal.os.BinderInternal;
+import com.android.internal.util.Preconditions;
 import com.android.internal.util.StatLogger;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public final class ServiceManager {
     private static final int SLOW_LOG_INTERVAL_MS = 5000;
     private static final int STATS_LOG_INTERVAL_MS = 5000;
     private static final String TAG = "ServiceManager";
+    private static Map<String, IBinder> sCache$ravenwood;
     private static int sGetServiceAccumulatedCallCount;
     private static int sGetServiceAccumulatedUs;
     private static long sLastSlowLogActualTime;
@@ -34,7 +36,6 @@ public final class ServiceManager {
     private static LazyService lazyServiceManager = null;
     private static Context _context = null;
 
-    /* loaded from: classes3.dex */
     interface Stats {
         public static final int COUNT = 1;
         public static final int GET_SERVICE = 0;
@@ -44,10 +45,9 @@ public final class ServiceManager {
 
     public void initLazyServiceManager(Context context) {
         _context = context;
-        LazyService lazyService = new LazyService(context);
-        lazyServiceManager = lazyService;
+        lazyServiceManager = new LazyService(context);
         try {
-            addService(LAZY_SERVICE_NAME, lazyService);
+            addService(LAZY_SERVICE_NAME, lazyServiceManager);
         } catch (Throwable e) {
             Slog.e(TAG, "Failure starting Lazy Service", e);
             lazyServiceManager = null;
@@ -78,14 +78,25 @@ public final class ServiceManager {
         }
     }
 
-    private static IServiceManager getIServiceManager() {
-        IServiceManager iServiceManager = sServiceManager;
-        if (iServiceManager != null) {
-            return iServiceManager;
+    public static void init$ravenwood() {
+        synchronized (ServiceManager.class) {
+            sCache$ravenwood = new ArrayMap();
         }
-        IServiceManager asInterface = ServiceManagerNative.asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));
-        sServiceManager = asInterface;
-        return asInterface;
+    }
+
+    public static void reset$ravenwood() {
+        synchronized (ServiceManager.class) {
+            sCache$ravenwood.clear();
+            sCache$ravenwood = null;
+        }
+    }
+
+    private static IServiceManager getIServiceManager() {
+        if (sServiceManager != null) {
+            return sServiceManager;
+        }
+        sServiceManager = ServiceManagerNative.asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));
+        return sServiceManager;
     }
 
     public static IBinder getService(String name) {
@@ -99,6 +110,14 @@ public final class ServiceManager {
             Log.e(TAG, "error in getService", e);
             return null;
         }
+    }
+
+    public static IBinder getService$ravenwood(String name) {
+        IBinder iBinder;
+        synchronized (ServiceManager.class) {
+            iBinder = (IBinder) ((Map) Preconditions.requireNonNullViaRavenwoodRule(sCache$ravenwood)).get(name);
+        }
+        return iBinder;
     }
 
     public static IBinder getServiceOrThrow(String name) throws ServiceNotFoundException {
@@ -125,6 +144,12 @@ public final class ServiceManager {
         }
     }
 
+    public static void addService$ravenwood(String name, IBinder service, boolean allowIsolated, int dumpPriority) {
+        synchronized (ServiceManager.class) {
+            ((Map) Preconditions.requireNonNullViaRavenwoodRule(sCache$ravenwood)).put(name, service);
+        }
+    }
+
     public static IBinder checkService(String name) {
         try {
             IBinder service = sCache.get(name);
@@ -141,7 +166,7 @@ public final class ServiceManager {
     public static boolean isDeclared(String name) {
         try {
             return getIServiceManager().isDeclared(name);
-        } catch (RemoteException e) {
+        } catch (RemoteException | SecurityException e) {
             Log.e(TAG, "error in isDeclared", e);
             return false;
         }
@@ -198,7 +223,6 @@ public final class ServiceManager {
         sCache.putAll(cache);
     }
 
-    /* loaded from: classes3.dex */
     public static class ServiceNotFoundException extends Exception {
         public ServiceNotFoundException(String name) {
             super("No service published for: " + name);
@@ -208,10 +232,9 @@ public final class ServiceManager {
     private static IBinder rawGetService(String name) throws RemoteException {
         long slowThreshold;
         int logInterval;
-        StatLogger statLogger = sStatLogger;
-        long start = statLogger.getTime();
+        long start = sStatLogger.getTime();
         IBinder binder = getIServiceManager().getService(name);
-        int time = (int) statLogger.logDurationStat(0, start);
+        int time = (int) sStatLogger.logDurationStat(0, start);
         int myUid = Process.myUid();
         boolean isCore = UserHandle.isCore(myUid);
         if (isCore) {
@@ -220,30 +243,41 @@ public final class ServiceManager {
             slowThreshold = GET_SERVICE_SLOW_THRESHOLD_US_NON_CORE;
         }
         synchronized (sLock) {
-            sGetServiceAccumulatedUs += time;
-            sGetServiceAccumulatedCallCount++;
-            long nowUptime = SystemClock.uptimeMillis();
-            if (time >= slowThreshold && (nowUptime > sLastSlowLogUptime + 5000 || sLastSlowLogActualTime < time)) {
-                EventLogTags.writeServiceManagerSlow(time / 1000, name);
-                sLastSlowLogUptime = nowUptime;
-                sLastSlowLogActualTime = time;
-            }
-            if (isCore) {
-                logInterval = GET_SERVICE_LOG_EVERY_CALLS_CORE;
-            } else {
-                logInterval = GET_SERVICE_LOG_EVERY_CALLS_NON_CORE;
-            }
-            int i = sGetServiceAccumulatedCallCount;
-            if (i >= logInterval) {
-                long j = sLastStatsLogUptime;
-                if (nowUptime >= j + 5000) {
-                    EventLogTags.writeServiceManagerStats(i, sGetServiceAccumulatedUs / 1000, (int) (nowUptime - j));
-                    sGetServiceAccumulatedCallCount = 0;
-                    sGetServiceAccumulatedUs = 0;
-                    sLastStatsLogUptime = nowUptime;
+            try {
+                try {
+                    sGetServiceAccumulatedUs += time;
+                    sGetServiceAccumulatedCallCount++;
+                    long nowUptime = SystemClock.uptimeMillis();
+                    if (time >= slowThreshold) {
+                        try {
+                            if (nowUptime > sLastSlowLogUptime + 5000 || sLastSlowLogActualTime < time) {
+                                EventLogTags.writeServiceManagerSlow(time / 1000, name);
+                                sLastSlowLogUptime = nowUptime;
+                                sLastSlowLogActualTime = time;
+                            }
+                        } catch (Throwable th) {
+                            th = th;
+                            throw th;
+                        }
+                    }
+                    if (isCore) {
+                        logInterval = GET_SERVICE_LOG_EVERY_CALLS_CORE;
+                    } else {
+                        logInterval = GET_SERVICE_LOG_EVERY_CALLS_NON_CORE;
+                    }
+                    if (sGetServiceAccumulatedCallCount >= logInterval && nowUptime >= sLastStatsLogUptime + 5000) {
+                        EventLogTags.writeServiceManagerStats(sGetServiceAccumulatedCallCount, sGetServiceAccumulatedUs / 1000, (int) (nowUptime - sLastStatsLogUptime));
+                        sGetServiceAccumulatedCallCount = 0;
+                        sGetServiceAccumulatedUs = 0;
+                        sLastStatsLogUptime = nowUptime;
+                    }
+                    return binder;
+                } catch (Throwable th2) {
+                    th = th2;
                 }
+            } catch (Throwable th3) {
+                th = th3;
             }
         }
-        return binder;
     }
 }

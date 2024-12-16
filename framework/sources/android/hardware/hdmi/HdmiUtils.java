@@ -18,7 +18,6 @@ public final class HdmiUtils {
     static final int TARGET_SAME_PHYSICAL_ADDRESS = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface HdmiAddressRelativePosition {
     }
 

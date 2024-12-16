@@ -63,16 +63,17 @@ public class AnimationSet extends Animation {
         init();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
     /* renamed from: clone */
-    public AnimationSet mo5539clone() throws CloneNotSupportedException {
-        AnimationSet animation = (AnimationSet) super.mo5539clone();
+    public AnimationSet mo5909clone() throws CloneNotSupportedException {
+        AnimationSet animation = (AnimationSet) super.mo5909clone();
         animation.mTempTransformation = new Transformation();
         animation.mAnimations = new ArrayList<>();
         int count = this.mAnimations.size();
         ArrayList<Animation> animations = this.mAnimations;
         for (int i = 0; i < count; i++) {
-            animation.mAnimations.add(animations.get(i).mo5539clone());
+            animation.mAnimations.add(animations.get(i).mo5909clone());
         }
         return animation;
     }
@@ -159,9 +160,8 @@ public class AnimationSet extends Animation {
             this.mDuration = a.getStartOffset() + a.getDuration();
             this.mLastEnd = this.mStartOffset + this.mDuration;
         } else {
-            long max = Math.max(this.mLastEnd, this.mStartOffset + a.getStartOffset() + a.getDuration());
-            this.mLastEnd = max;
-            this.mDuration = max - this.mStartOffset;
+            this.mLastEnd = Math.max(this.mLastEnd, this.mStartOffset + a.getStartOffset() + a.getDuration());
+            this.mDuration = this.mLastEnd - this.mStartOffset;
         }
         this.mDirty = true;
     }
@@ -257,7 +257,7 @@ public class AnimationSet extends Animation {
         for (int i = this.mAnimations.size() - 1; i >= 0; i--) {
             Animation a = this.mAnimations.get(i);
             temp.clear();
-            a.getTransformationAt(interpolatedTime, t);
+            a.getTransformationAt(interpolatedTime, temp);
             t.compose(temp);
         }
     }
@@ -312,16 +312,15 @@ public class AnimationSet extends Animation {
     public void initialize(int width, int height, int parentWidth, int parentHeight) {
         boolean durationSet;
         Interpolator interpolator;
-        boolean startOffsetSet;
         Interpolator interpolator2;
+        boolean fillAfterSet;
         super.initialize(width, height, parentWidth, parentHeight);
-        int i = this.mFlags;
-        boolean durationSet2 = (i & 32) == 32;
-        boolean fillAfterSet = (i & 1) == 1;
-        boolean fillBeforeSet = (i & 2) == 2;
-        boolean repeatModeSet = (i & 4) == 4;
-        boolean shareInterpolator = (i & 16) == 16;
-        boolean startOffsetSet2 = (i & 8) == 8;
+        boolean durationSet2 = (this.mFlags & 32) == 32;
+        boolean fillAfterSet2 = (this.mFlags & 1) == 1;
+        boolean fillBeforeSet = (this.mFlags & 2) == 2;
+        boolean repeatModeSet = (this.mFlags & 4) == 4;
+        boolean shareInterpolator = (this.mFlags & 16) == 16;
+        boolean startOffsetSet = (this.mFlags & 8) == 8;
         if (shareInterpolator) {
             ensureInterpolator();
         }
@@ -335,7 +334,7 @@ public class AnimationSet extends Animation {
         Interpolator interpolator4 = interpolator3;
         long startOffset = this.mStartOffset;
         long[] storedOffsets = this.mStoredOffsets;
-        if (startOffsetSet2) {
+        if (startOffsetSet) {
             if (storedOffsets == null || storedOffsets.length != count) {
                 long[] jArr = new long[count];
                 this.mStoredOffsets = jArr;
@@ -345,13 +344,13 @@ public class AnimationSet extends Animation {
             this.mStoredOffsets = null;
             storedOffsets = null;
         }
-        int i2 = 0;
-        while (i2 < count) {
-            Animation a = children.get(i2);
+        int i = 0;
+        while (i < count) {
+            Animation a = children.get(i);
             if (durationSet2) {
                 a.setDuration(duration);
             }
-            if (fillAfterSet) {
+            if (fillAfterSet2) {
                 a.setFillAfter(fillAfter);
             }
             if (fillBeforeSet) {
@@ -368,22 +367,22 @@ public class AnimationSet extends Animation {
                 interpolator = interpolator4;
                 a.setInterpolator(interpolator);
             }
-            if (!startOffsetSet2) {
-                startOffsetSet = startOffsetSet2;
+            if (!startOffsetSet) {
                 interpolator2 = interpolator;
+                fillAfterSet = fillAfterSet2;
             } else {
                 long offset = a.getStartOffset();
-                startOffsetSet = startOffsetSet2;
                 interpolator2 = interpolator;
+                fillAfterSet = fillAfterSet2;
                 a.setStartOffset(offset + startOffset);
-                storedOffsets[i2] = offset;
+                storedOffsets[i] = offset;
             }
             a.initialize(width, height, parentWidth, parentHeight);
-            i2++;
-            startOffsetSet2 = startOffsetSet;
+            i++;
+            fillAfterSet2 = fillAfterSet;
             durationSet2 = durationSet;
+            startOffsetSet = startOffsetSet;
             children = children;
-            count = count;
             interpolator4 = interpolator2;
         }
     }

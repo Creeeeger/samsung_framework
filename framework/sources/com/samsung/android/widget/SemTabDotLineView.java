@@ -18,7 +18,6 @@ public class SemTabDotLineView extends View {
     private static final int SEM_TAB_ANIM_PRESS_DURATION = 0;
     private int mDiameter;
     public boolean mDrawDot;
-    private int mInterval;
     private Paint mPaint;
 
     public SemTabDotLineView(Context context) {
@@ -27,15 +26,12 @@ public class SemTabDotLineView extends View {
 
     public SemTabDotLineView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mInterval = 2;
         this.mDiameter = 1;
         this.mDrawDot = true;
         this.mDiameter = (int) TypedValue.applyDimension(1, 2.5f, context.getResources().getDisplayMetrics());
-        this.mInterval = (int) TypedValue.applyDimension(1, 2.5f, context.getResources().getDisplayMetrics());
         int color = context.getResources().getColor(R.color.sem_maintab_indicator_color, context.getTheme());
-        Paint paint = new Paint();
-        this.mPaint = paint;
-        paint.setColor(color);
+        this.mPaint = new Paint();
+        this.mPaint.setColor(color);
         this.mPaint.setFlags(1);
     }
 
@@ -44,16 +40,15 @@ public class SemTabDotLineView extends View {
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (this.mDrawDot && (getBackground() instanceof ColorDrawable)) {
             if (isSelected() || isPressed()) {
                 int width = getWidth();
                 int height = getHeight();
                 float vCenter = height / 2.0f;
-                int i = this.mDiameter;
-                float vOffset = i / 2.0f;
-                canvas.drawRoundRect(0.0f, vCenter - vOffset, width, vCenter + vOffset, i, i, this.mPaint);
+                float vOffset = this.mDiameter / 2.0f;
+                canvas.drawRoundRect(0.0f, vCenter - vOffset, width, vCenter + vOffset, this.mDiameter, this.mDiameter, this.mPaint);
             }
         }
     }

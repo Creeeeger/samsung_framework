@@ -12,15 +12,6 @@ public abstract class Image implements AutoCloseable {
     protected boolean mIsImageValid = false;
     private int mDataSpace = 0;
 
-    /* loaded from: classes2.dex */
-    public static abstract class Plane {
-        public abstract ByteBuffer getBuffer();
-
-        public abstract int getPixelStride();
-
-        public abstract int getRowStride();
-    }
-
     @Override // java.lang.AutoCloseable
     public abstract void close();
 
@@ -38,7 +29,10 @@ public abstract class Image implements AutoCloseable {
 
     public abstract int getWidth();
 
-    public void throwISEIfImageIsInvalid() {
+    protected Image() {
+    }
+
+    protected void throwISEIfImageIsInvalid() {
         if (!this.mIsImageValid) {
             throw new IllegalStateException("Image is already closed");
         }
@@ -99,13 +93,24 @@ public abstract class Image implements AutoCloseable {
         return false;
     }
 
-    public Object getOwner() {
+    Object getOwner() {
         throwISEIfImageIsInvalid();
         return null;
     }
 
-    public long getNativeContext() {
+    long getNativeContext() {
         throwISEIfImageIsInvalid();
         return 0L;
+    }
+
+    public static abstract class Plane {
+        public abstract ByteBuffer getBuffer();
+
+        public abstract int getPixelStride();
+
+        public abstract int getRowStride();
+
+        protected Plane() {
+        }
     }
 }

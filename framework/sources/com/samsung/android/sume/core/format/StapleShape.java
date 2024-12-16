@@ -3,17 +3,16 @@ package com.samsung.android.sume.core.format;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
-public class StapleShape implements Shape {
+/* loaded from: classes6.dex */
+class StapleShape implements Shape {
     public static final Parcelable.Creator<StapleShape> CREATOR = new Parcelable.Creator<StapleShape>() { // from class: com.samsung.android.sume.core.format.StapleShape.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StapleShape createFromParcel(Parcel in) {
             return new StapleShape(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StapleShape[] newArray(int size) {
             return new StapleShape[size];
@@ -22,7 +21,7 @@ public class StapleShape implements Shape {
     public static final int NONE = -1;
     private final MutableShape impl;
 
-    public StapleShape(MutableShape impl) {
+    StapleShape(MutableShape impl) {
         this.impl = impl;
     }
 
@@ -65,23 +64,6 @@ public class StapleShape implements Shape {
         return this.impl.toArray(type);
     }
 
-    /* renamed from: com.samsung.android.sume.core.format.StapleShape$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StapleShape> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StapleShape createFromParcel(Parcel in) {
-            return new StapleShape(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StapleShape[] newArray(int size) {
-            return new StapleShape[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -92,11 +74,13 @@ public class StapleShape implements Shape {
         dest.writeParcelable(this.impl, flags);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     public Shape copy() {
         return new StapleShape((MutableShape) this.impl.copy());
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     /* renamed from: deepCopy */
     public Shape deepCopy2() {

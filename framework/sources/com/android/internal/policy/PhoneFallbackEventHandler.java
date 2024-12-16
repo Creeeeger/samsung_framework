@@ -1,6 +1,5 @@
 package com.android.internal.policy;
 
-import android.app.ActivityTaskManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
@@ -14,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
-import android.media.audio.Enums;
 import android.media.session.MediaSessionManager;
 import android.net.Uri;
 import android.os.FactoryTest;
@@ -35,7 +33,7 @@ import android.widget.Toast;
 import com.android.internal.R;
 import com.samsung.android.core.CoreSaConstant;
 import com.samsung.android.core.CoreSaLogger;
-import com.samsung.android.rune.CoreRune;
+import com.samsung.android.rune.InputRune;
 import com.samsung.android.view.SemWindowManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -65,7 +63,6 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
     private int mPressType = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface PressType {
         public static final int LONG_PRESS = 1;
         public static final int NONE = -1;
@@ -233,11 +230,11 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
                 return false;
             case 1015:
             case 1079:
-                if ((CoreRune.FW_ACTIVE_OR_XCOVER_KEY || CoreRune.FW_XCOVER_AND_TOP_KEY) && dispatcher != null && !isFactoryMode() && isUserSetupComplete()) {
+                if ((InputRune.PWM_ACTIVE_OR_XCOVER_KEY || InputRune.PWM_XCOVER_AND_TOP_KEY) && dispatcher != null && !isFactoryMode() && isUserSetupComplete()) {
                     int repeatCount = event.getRepeatCount();
                     boolean longPress = event.isLongPress();
                     boolean isTracking = dispatcher.isTracking(event);
-                    if (CoreRune.SAFE_DEBUG) {
+                    if (InputRune.SAFE_DEBUG) {
                         Log.d(TAG, "onKeyDown, keycode=" + keyCode + " repeatCount=" + repeatCount + " isLongPress=" + longPress + " isTracking=" + isTracking);
                     }
                     if (repeatCount == 0) {
@@ -261,9 +258,6 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
     }
 
     boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (CoreRune.SAFE_DEBUG) {
-            Log.d(TAG, "up " + keyCode);
-        }
         KeyEvent.DispatcherState dispatcher = this.mView.getKeyDispatcherState();
         if (dispatcher != null) {
             dispatcher.handleUpEvent(event);
@@ -274,32 +268,35 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
                     if (event.isTracking() && !event.isCanceled()) {
                         if (isUserSetupComplete()) {
                             startCallActivity();
+                            break;
                         } else {
                             Log.i(TAG, "Not starting call activity because user setup is in progress.");
+                            break;
                         }
                     }
-                    return true;
                 }
-                return false;
+                break;
             case 24:
             case 25:
             case 164:
                 if (!event.isCanceled()) {
                     handleVolumeKeyEvent(event);
+                    break;
                 }
-                return true;
+                break;
             case 27:
                 if (!isNotInstantAppAndKeyguardRestricted(dispatcher)) {
                     if (event.isTracking() && !event.isCanceled()) {
                         if (isUserSetupComplete()) {
                             launchCamera();
+                            break;
                         } else {
                             Log.i(TAG, "Not starting camera activity because user setup is in progress.");
+                            break;
                         }
                     }
-                    return true;
                 }
-                return false;
+                break;
             case 79:
             case 85:
             case 86:
@@ -312,12 +309,12 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
             case 130:
             case 222:
                 handleMediaKeyEvent(event);
-                return true;
+                break;
             case 1015:
             case 1079:
-                if (CoreRune.FW_ACTIVE_OR_XCOVER_KEY || CoreRune.FW_XCOVER_AND_TOP_KEY) {
+                if (InputRune.PWM_ACTIVE_OR_XCOVER_KEY || InputRune.PWM_XCOVER_AND_TOP_KEY) {
                     if (!isFactoryMode() && isUserSetupComplete()) {
-                        if (CoreRune.SAFE_DEBUG) {
+                        if (InputRune.SAFE_DEBUG) {
                             Log.d(TAG, "onKeyUp, keyCode=" + keyCode + " press=" + this.mPressType + " event.isCanceled()=" + event.isCanceled());
                         }
                         if (this.mPressType == 0) {
@@ -325,15 +322,13 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
                                 launchUserDefinedApp(this.mPressType, keyCode);
                             }
                             this.mPressType = -1;
+                            break;
                         }
-                    } else {
-                        return false;
                     }
                 }
-                return true;
-            default:
-                return false;
+                break;
         }
+        return true;
     }
 
     void startCallActivity() {
@@ -394,17 +389,9 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
     }
 
     private boolean isReserveBatteryMode() {
-        ContentResolver resolver = this.mContext.getContentResolver();
-        if (CoreRune.FW_SUPPORT_DOWNLOADABLE_RESERVE_BATTERY_MODE) {
-            return Settings.Secure.getInt(resolver, "reserve_battery_on", 0) == 1 && Settings.Secure.getInt(resolver, "enable_reserve_max_mode", 0) == 1;
-        }
-        if (CoreRune.FW_SUPPORT_RESERVE_BATTERY_MODE) {
-            return Settings.System.getInt(resolver, "reserve_battery_on", 0) == 1 && Settings.System.getInt(resolver, "enable_reserve_max_mode", 0) == 1;
-        }
         return false;
     }
 
-    /* loaded from: classes5.dex */
     private static class UndefinedSettingNames {
         static final String ENABLE_RESERVE_MAX_MODE = "enable_reserve_max_mode";
         static final String RESERVE_BATTERY_ON = "reserve_battery_on";
@@ -431,18 +418,13 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
         intent.setFlags(268435456);
         if (getKeyguardManager().semIsKeyguardShowingAndNotOccluded()) {
             intent.addFlags(32768);
-            try {
-                ActivityTaskManager.getService().requestWaitingForOccluding(this.mContext.getDisplayId());
-            } catch (RemoteException e) {
-                Log.d(TAG, "Can not requestWaitingForOccluding, " + e);
-            }
         } else {
             intent.addFlags(2097152);
         }
         try {
             this.mContext.startActivityAsUser(intent, UserHandle.CURRENT_OR_SELF);
-        } catch (ActivityNotFoundException e2) {
-            Log.w(TAG, "No activity to launch Camera.", e2);
+        } catch (ActivityNotFoundException e) {
+            Log.w(TAG, "No activity to launch Camera.", e);
         }
         InputMethodManager inputMethodManager = getInputMethodManager();
         if (inputMethodManager != null) {
@@ -485,20 +467,17 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
             if (!getKeyguardManager().isKeyguardLocked() || isXCoverKeyOnLockScreen(keyCode)) {
                 launchCamera();
             }
-            if (CoreRune.FW_KEY_SA_LOGGING) {
+            if (InputRune.PWM_KEY_SA_LOGGING) {
                 sendSaLogging(pressType, keyCode, CoreSaConstant.VALUE_CAMERA);
             }
             return true;
         }
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setComponent(componentName);
-        if (CoreRune.FW_SUPPORT_RESERVE_BATTERY_MODE && isReserveBatteryMode() && showToastIfNeeded(intent, componentName.getPackageName(), 1)) {
-            return true;
-        }
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.addFlags(270532608);
         startActivityForXCoverTopKey(intent, keyCode);
-        if (CoreRune.FW_KEY_SA_LOGGING) {
+        if (InputRune.PWM_KEY_SA_LOGGING) {
             sendSaLogging(pressType, keyCode, componentName.getPackageName());
         }
         return true;
@@ -553,7 +532,7 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
             if (isXCoverKeyOnLockScreen(keyCode)) {
                 Intent fillInIntent = new Intent();
                 fillInIntent.putExtra(AFTER_KEYGUARD_GONE, true);
-                PendingIntent pendingIntent = PendingIntent.getActivityAsUser(this.mContext, 0, intent, Enums.AUDIO_FORMAT_DTS_HD, null, UserHandle.CURRENT_OR_SELF);
+                PendingIntent pendingIntent = PendingIntent.getActivityAsUser(this.mContext, 0, intent, 201326592, null, UserHandle.CURRENT_OR_SELF);
                 getKeyguardManager().semSetPendingIntentAfterUnlock(pendingIntent, fillInIntent);
                 return;
             }
@@ -577,8 +556,8 @@ public class PhoneFallbackEventHandler implements FallbackEventHandler {
         return Settings.System.getIntForUser(contentResolver, str, 0, -3) == 1;
     }
 
-    boolean isFactoryMode() {
-        if (CoreRune.IS_FACTORY_BINARY || FactoryTest.isAutomaticTestMode(this.mContext) || FactoryTest.isRunningFactoryApp()) {
+    private boolean isFactoryMode() {
+        if (InputRune.PWM_KEY_FACTORY_MODE_POLICY || FactoryTest.isRunningFactoryApp() || FactoryTest.isAutomaticTestMode(this.mContext)) {
             Log.d(TAG, "Block launchUserDefinedApp because of Factory binary, test mode or Factory app.");
             return true;
         }

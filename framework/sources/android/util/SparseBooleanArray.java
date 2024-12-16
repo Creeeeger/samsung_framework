@@ -2,7 +2,6 @@ package android.util;
 
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class SparseBooleanArray implements Cloneable {
@@ -19,15 +18,14 @@ public class SparseBooleanArray implements Cloneable {
             this.mKeys = EmptyArray.INT;
             this.mValues = EmptyArray.BOOLEAN;
         } else {
-            int[] newUnpaddedIntArray = ArrayUtils.newUnpaddedIntArray(initialCapacity);
-            this.mKeys = newUnpaddedIntArray;
-            this.mValues = new boolean[newUnpaddedIntArray.length];
+            this.mKeys = ArrayUtils.newUnpaddedIntArray(initialCapacity);
+            this.mValues = new boolean[this.mKeys.length];
         }
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public SparseBooleanArray m4951clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SparseBooleanArray m5235clone() {
         SparseBooleanArray clone = null;
         try {
             clone = (SparseBooleanArray) super.clone();
@@ -54,19 +52,15 @@ public class SparseBooleanArray implements Cloneable {
     public void delete(int key) {
         int i = ContainerHelpers.binarySearch(this.mKeys, this.mSize, key);
         if (i >= 0) {
-            int[] iArr = this.mKeys;
-            System.arraycopy(iArr, i + 1, iArr, i, this.mSize - (i + 1));
-            boolean[] zArr = this.mValues;
-            System.arraycopy(zArr, i + 1, zArr, i, this.mSize - (i + 1));
+            System.arraycopy(this.mKeys, i + 1, this.mKeys, i, this.mSize - (i + 1));
+            System.arraycopy(this.mValues, i + 1, this.mValues, i, this.mSize - (i + 1));
             this.mSize--;
         }
     }
 
     public void removeAt(int index) {
-        int[] iArr = this.mKeys;
-        System.arraycopy(iArr, index + 1, iArr, index, this.mSize - (index + 1));
-        boolean[] zArr = this.mValues;
-        System.arraycopy(zArr, index + 1, zArr, index, this.mSize - (index + 1));
+        System.arraycopy(this.mKeys, index + 1, this.mKeys, index, this.mSize - (index + 1));
+        System.arraycopy(this.mValues, index + 1, this.mValues, index, this.mSize - (index + 1));
         this.mSize--;
     }
 
@@ -132,12 +126,11 @@ public class SparseBooleanArray implements Cloneable {
     }
 
     public void append(int key, boolean value) {
-        int i = this.mSize;
-        if (i != 0 && key <= this.mKeys[i - 1]) {
+        if (this.mSize != 0 && key <= this.mKeys[this.mSize - 1]) {
             put(key, value);
             return;
         }
-        this.mKeys = GrowingArrayUtils.append(this.mKeys, i, key);
+        this.mKeys = GrowingArrayUtils.append(this.mKeys, this.mSize, key);
         this.mValues = GrowingArrayUtils.append(this.mValues, this.mSize, value);
         this.mSize++;
     }

@@ -4,18 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellInfoWcdma extends CellInfo implements Parcelable {
     public static final Parcelable.Creator<CellInfoWcdma> CREATOR = new Parcelable.Creator<CellInfoWcdma>() { // from class: android.telephony.CellInfoWcdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoWcdma createFromParcel(Parcel in) {
             in.readInt();
             return CellInfoWcdma.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoWcdma[] newArray(int size) {
             return new CellInfoWcdma[size];
@@ -118,25 +117,7 @@ public final class CellInfoWcdma extends CellInfo implements Parcelable {
         this.mCellSignalStrengthWcdma = CellSignalStrengthWcdma.CREATOR.createFromParcel(in);
     }
 
-    /* renamed from: android.telephony.CellInfoWcdma$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellInfoWcdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoWcdma createFromParcel(Parcel in) {
-            in.readInt();
-            return CellInfoWcdma.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoWcdma[] newArray(int size) {
-            return new CellInfoWcdma[size];
-        }
-    }
-
-    public static CellInfoWcdma createFromParcelBody(Parcel in) {
+    protected static CellInfoWcdma createFromParcelBody(Parcel in) {
         return new CellInfoWcdma(in);
     }
 

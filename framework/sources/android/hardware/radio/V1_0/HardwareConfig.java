@@ -58,7 +58,7 @@ public final class HardwareConfig {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.type = _hidl_blob.getInt32(_hidl_offset + 0);
         this.uuid = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r1.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.uuid.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         this.state = _hidl_blob.getInt32(_hidl_offset + 24);
         int _hidl_vec_size = _hidl_blob.getInt32(_hidl_offset + 32 + 8);
         HwBlob childBlob = parcel.readEmbeddedBuffer(_hidl_vec_size * 20, _hidl_blob.handle(), _hidl_offset + 32 + 0, true);

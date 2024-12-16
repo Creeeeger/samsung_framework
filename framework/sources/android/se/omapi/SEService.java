@@ -28,20 +28,13 @@ public final class SEService {
     private final Object mLock = new Object();
     private final HashMap<String, Reader> mReaders = new HashMap<>();
 
-    /* loaded from: classes3.dex */
     public interface OnConnectedListener {
         void onConnected();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public class SEListener extends ISecureElementListener.Stub {
+    private class SEListener extends ISecureElementListener.Stub {
         public Executor mExecutor;
         public OnConnectedListener mListener;
-
-        /* synthetic */ SEListener(SEService sEService, SEListenerIA sEListenerIA) {
-            this();
-        }
 
         private SEListener() {
             this.mListener = null;
@@ -53,25 +46,9 @@ public final class SEService {
             return this;
         }
 
-        /* renamed from: android.se.omapi.SEService$SEListener$1 */
-        /* loaded from: classes3.dex */
-        public class AnonymousClass1 implements Runnable {
-            AnonymousClass1() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                SEListener.this.mListener.onConnected();
-            }
-        }
-
         public void onConnected() {
-            Executor executor;
-            if (this.mListener != null && (executor = this.mExecutor) != null) {
-                executor.execute(new Runnable() { // from class: android.se.omapi.SEService.SEListener.1
-                    AnonymousClass1() {
-                    }
-
+            if (this.mListener != null && this.mExecutor != null) {
+                this.mExecutor.execute(new Runnable() { // from class: android.se.omapi.SEService.SEListener.1
                     @Override // java.lang.Runnable
                     public void run() {
                         SEListener.this.mListener.onConnected();
@@ -99,9 +76,6 @@ public final class SEService {
         this.mSEListener.mListener = listener;
         this.mSEListener.mExecutor = executor;
         this.mConnection = new ServiceConnection() { // from class: android.se.omapi.SEService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.content.ServiceConnection
             public synchronized void onServiceConnected(ComponentName className, IBinder service) {
                 SEService.this.mSecureElementService = ISecureElementService.Stub.asInterface(service);
@@ -119,31 +93,9 @@ public final class SEService {
         };
         Intent intent = new Intent(ISecureElementService.class.getName());
         intent.setClassName("com.android.se", "com.android.se.SecureElementService");
-        boolean bindingSuccessful = context.bindService(intent, this.mConnection, 1);
+        boolean bindingSuccessful = this.mContext.bindService(intent, this.mConnection, 1);
         if (bindingSuccessful) {
             Log.i(TAG, "bindService successful");
-        }
-    }
-
-    /* renamed from: android.se.omapi.SEService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements ServiceConnection {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public synchronized void onServiceConnected(ComponentName className, IBinder service) {
-            SEService.this.mSecureElementService = ISecureElementService.Stub.asInterface(service);
-            if (SEService.this.mSEListener != null) {
-                SEService.this.mSEListener.onConnected();
-            }
-            Log.i(SEService.TAG, "Service onServiceConnected");
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName className) {
-            SEService.this.mSecureElementService = null;
-            Log.i(SEService.TAG, "Service onServiceDisconnected");
         }
     }
 
@@ -191,7 +143,7 @@ public final class SEService {
         return "3.3";
     }
 
-    public ISecureElementListener getListener() {
+    ISecureElementListener getListener() {
         return this.mSEListener;
     }
 

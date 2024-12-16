@@ -20,9 +20,8 @@ public class EncodedStringValue implements Cloneable {
             throw new NullPointerException("EncodedStringValue: Text-string is null.");
         }
         this.mCharacterSet = charset;
-        byte[] bArr = new byte[data.length];
-        this.mData = bArr;
-        System.arraycopy(data, 0, bArr, 0, data.length);
+        this.mData = new byte[data.length];
+        System.arraycopy(data, 0, this.mData, 0, data.length);
     }
 
     public EncodedStringValue(byte[] data) {
@@ -47,9 +46,8 @@ public class EncodedStringValue implements Cloneable {
     }
 
     public byte[] getTextString() {
-        byte[] bArr = this.mData;
-        byte[] byteArray = new byte[bArr.length];
-        System.arraycopy(bArr, 0, byteArray, 0, bArr.length);
+        byte[] byteArray = new byte[this.mData.length];
+        System.arraycopy(this.mData, 0, byteArray, 0, this.mData.length);
         return byteArray;
     }
 
@@ -57,18 +55,16 @@ public class EncodedStringValue implements Cloneable {
         if (textString == null) {
             throw new NullPointerException("EncodedStringValue: Text-string is null.");
         }
-        byte[] bArr = new byte[textString.length];
-        this.mData = bArr;
-        System.arraycopy(textString, 0, bArr, 0, textString.length);
+        this.mData = new byte[textString.length];
+        System.arraycopy(textString, 0, this.mData, 0, textString.length);
     }
 
     public String getString() {
-        int i = this.mCharacterSet;
-        if (i == 0) {
+        if (this.mCharacterSet == 0) {
             return new String(this.mData);
         }
         try {
-            String name = CharacterSets.getMimeName(i);
+            String name = CharacterSets.getMimeName(this.mCharacterSet);
             return new String(this.mData, name);
         } catch (UnsupportedEncodingException e) {
             try {
@@ -84,9 +80,8 @@ public class EncodedStringValue implements Cloneable {
             throw new NullPointerException("Text-string is null.");
         }
         if (this.mData == null) {
-            byte[] bArr = new byte[textString.length];
-            this.mData = bArr;
-            System.arraycopy(textString, 0, bArr, 0, textString.length);
+            this.mData = new byte[textString.length];
+            System.arraycopy(textString, 0, this.mData, 0, textString.length);
             return;
         }
         ByteArrayOutputStream newTextString = new ByteArrayOutputStream();
@@ -101,10 +96,9 @@ public class EncodedStringValue implements Cloneable {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        byte[] bArr = this.mData;
-        int len = bArr.length;
+        int len = this.mData.length;
         byte[] dstBytes = new byte[len];
-        System.arraycopy(bArr, 0, dstBytes, 0, len);
+        System.arraycopy(this.mData, 0, dstBytes, 0, len);
         try {
             return new EncodedStringValue(this.mCharacterSet, dstBytes);
         } catch (Exception e) {

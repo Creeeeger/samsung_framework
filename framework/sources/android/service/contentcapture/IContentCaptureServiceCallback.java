@@ -22,7 +22,6 @@ public interface IContentCaptureServiceCallback extends IInterface {
 
     void writeSessionFlush(int i, ComponentName componentName, FlushMetrics flushMetrics, ContentCaptureOptions contentCaptureOptions, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IContentCaptureServiceCallback {
         @Override // android.service.contentcapture.IContentCaptureServiceCallback
         public void setContentCaptureWhitelist(List<String> packages, List<ComponentName> activities) throws RemoteException {
@@ -46,7 +45,6 @@ public interface IContentCaptureServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IContentCaptureServiceCallback {
         static final int TRANSACTION_disableSelf = 3;
         static final int TRANSACTION_setContentCaptureConditions = 2;
@@ -98,45 +96,41 @@ public interface IContentCaptureServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContentCaptureServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContentCaptureServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContentCaptureServiceCallback.DESCRIPTOR);
+                case 1:
+                    List<String> _arg0 = data.createStringArrayList();
+                    List<ComponentName> _arg1 = data.createTypedArrayList(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    setContentCaptureWhitelist(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    List<ContentCaptureCondition> _arg12 = data.createTypedArrayList(ContentCaptureCondition.CREATOR);
+                    data.enforceNoDataAvail();
+                    setContentCaptureConditions(_arg02, _arg12);
+                    return true;
+                case 3:
+                    disableSelf();
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    ComponentName _arg13 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    FlushMetrics _arg2 = (FlushMetrics) data.readTypedObject(FlushMetrics.CREATOR);
+                    ContentCaptureOptions _arg3 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    writeSessionFlush(_arg03, _arg13, _arg2, _arg3, _arg4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<String> _arg0 = data.createStringArrayList();
-                            List<ComponentName> _arg1 = data.createTypedArrayList(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            setContentCaptureWhitelist(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            List<ContentCaptureCondition> _arg12 = data.createTypedArrayList(ContentCaptureCondition.CREATOR);
-                            data.enforceNoDataAvail();
-                            setContentCaptureConditions(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            disableSelf();
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            ComponentName _arg13 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            FlushMetrics _arg2 = (FlushMetrics) data.readTypedObject(FlushMetrics.CREATOR);
-                            ContentCaptureOptions _arg3 = (ContentCaptureOptions) data.readTypedObject(ContentCaptureOptions.CREATOR);
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            writeSessionFlush(_arg03, _arg13, _arg2, _arg3, _arg4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IContentCaptureServiceCallback {
+        private static class Proxy implements IContentCaptureServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

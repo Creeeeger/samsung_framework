@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DvrSettings {
     public static final int DATA_FORMAT_ES = 2;
     public static final int DATA_FORMAT_PES = 1;
@@ -18,12 +18,7 @@ public class DvrSettings {
     private final int mStatusMask;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DataFormat {
-    }
-
-    /* synthetic */ DvrSettings(int i, long j, long j2, long j3, int i2, DvrSettingsIA dvrSettingsIA) {
-        this(i, j, j2, j3, i2);
     }
 
     private DvrSettings(int statusMask, long lowThreshold, long highThreshold, long packetSize, int dataFormat) {
@@ -58,7 +53,6 @@ public class DvrSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mDataFormat;
         private long mHighThreshold;

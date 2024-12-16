@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IHdmiMhlVendorCommandListener extends IInterface {
     void onReceived(int i, int i2, int i3, byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiMhlVendorCommandListener {
         @Override // android.hardware.hdmi.IHdmiMhlVendorCommandListener
         public void onReceived(int portId, int offset, int length, byte[] data) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IHdmiMhlVendorCommandListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiMhlVendorCommandListener {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiMhlVendorCommandListener";
         static final int TRANSACTION_onReceived = 1;
@@ -66,28 +64,25 @@ public interface IHdmiMhlVendorCommandListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    byte[] _arg3 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onReceived(_arg0, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            byte[] _arg3 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onReceived(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiMhlVendorCommandListener {
+        private static class Proxy implements IHdmiMhlVendorCommandListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

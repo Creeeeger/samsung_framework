@@ -40,9 +40,8 @@ public class LooperStats implements Looper.Observer {
     }
 
     public void setDeviceState(CachedDeviceState.Readonly deviceState) {
-        CachedDeviceState.TimeInStateStopwatch timeInStateStopwatch = this.mBatteryStopwatch;
-        if (timeInStateStopwatch != null) {
-            timeInStateStopwatch.close();
+        if (this.mBatteryStopwatch != null) {
+            this.mBatteryStopwatch.close();
         }
         this.mDeviceState = deviceState;
         this.mBatteryStopwatch = deviceState.createTimeOnBatteryStopwatch();
@@ -114,8 +113,7 @@ public class LooperStats implements Looper.Observer {
         if (this.mIgnoreBatteryStatus) {
             return true;
         }
-        CachedDeviceState.Readonly readonly = this.mDeviceState;
-        return (readonly == null || readonly.isCharging()) ? false : true;
+        return (this.mDeviceState == null || this.mDeviceState.isCharging()) ? false : true;
     }
 
     public List<ExportedEntry> getEntries() {
@@ -158,9 +156,8 @@ public class LooperStats implements Looper.Observer {
     }
 
     public long getBatteryTimeMillis() {
-        CachedDeviceState.TimeInStateStopwatch timeInStateStopwatch = this.mBatteryStopwatch;
-        if (timeInStateStopwatch != null) {
-            return timeInStateStopwatch.getMillis();
+        if (this.mBatteryStopwatch != null) {
+            return this.mBatteryStopwatch.getMillis();
         }
         return 0L;
     }
@@ -185,9 +182,8 @@ public class LooperStats implements Looper.Observer {
         }
         this.mStartCurrentTime = System.currentTimeMillis();
         this.mStartElapsedTime = SystemClock.elapsedRealtime();
-        CachedDeviceState.TimeInStateStopwatch timeInStateStopwatch = this.mBatteryStopwatch;
-        if (timeInStateStopwatch != null) {
-            timeInStateStopwatch.reset();
+        if (this.mBatteryStopwatch != null) {
+            this.mBatteryStopwatch.reset();
         }
     }
 
@@ -252,23 +248,17 @@ public class LooperStats implements Looper.Observer {
         return ThreadLocalRandom.current().nextInt(this.mSamplingInterval) == 0;
     }
 
-    /* loaded from: classes5.dex */
-    public static class DispatchSession {
+    private static class DispatchSession {
         static final DispatchSession NOT_SAMPLED = new DispatchSession();
         public long cpuStartMicro;
         public long startTimeMicro;
         public long systemUptimeMillis;
 
-        /* synthetic */ DispatchSession(DispatchSessionIA dispatchSessionIA) {
-            this();
-        }
-
         private DispatchSession() {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class Entry {
+    private static class Entry {
         public long cpuUsageMicro;
         public long delayMillis;
         public long exceptionCount;
@@ -286,9 +276,8 @@ public class LooperStats implements Looper.Observer {
 
         Entry(Message msg, boolean isInteractive) {
             this.workSourceUid = msg.workSourceUid;
-            Handler target = msg.getTarget();
-            this.handler = target;
-            this.messageName = target.getMessageName(msg);
+            this.handler = msg.getTarget();
+            this.messageName = this.handler.getMessageName(msg);
             this.isInteractive = isInteractive;
         }
 
@@ -321,7 +310,6 @@ public class LooperStats implements Looper.Observer {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ExportedEntry {
         public final long cpuUsageMicros;
         public final long delayMillis;

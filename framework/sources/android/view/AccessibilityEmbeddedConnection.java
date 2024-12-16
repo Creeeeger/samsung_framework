@@ -7,11 +7,11 @@ import android.view.accessibility.IAccessibilityEmbeddedConnection;
 import java.lang.ref.WeakReference;
 
 /* loaded from: classes4.dex */
-public final class AccessibilityEmbeddedConnection extends IAccessibilityEmbeddedConnection.Stub {
+final class AccessibilityEmbeddedConnection extends IAccessibilityEmbeddedConnection.Stub {
     private final Matrix mTmpWindowMatrix = new Matrix();
     private final WeakReference<ViewRootImpl> mViewRootImpl;
 
-    public AccessibilityEmbeddedConnection(ViewRootImpl viewRootImpl) {
+    AccessibilityEmbeddedConnection(ViewRootImpl viewRootImpl) {
         this.mViewRootImpl = new WeakReference<>(viewRootImpl);
     }
 

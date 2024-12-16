@@ -14,12 +14,11 @@ public final class CursorToBulkCursorAdaptor extends BulkCursorNative implements
     private static final String TAG = "Cursor";
     private CrossProcessCursor mCursor;
     private CursorWindow mFilledWindow;
-    private final Object mLock;
+    private final Object mLock = new Object();
     private ContentObserverProxy mObserver;
     private final String mProviderName;
 
-    /* loaded from: classes.dex */
-    public static final class ContentObserverProxy extends ContentObserver {
+    private static final class ContentObserverProxy extends ContentObserver {
         protected IContentObserver mRemote;
 
         public ContentObserverProxy(IContentObserver remoteObserver, IBinder.DeathRecipient recipient) {
@@ -59,23 +58,20 @@ public final class CursorToBulkCursorAdaptor extends BulkCursorNative implements
     }
 
     public CursorToBulkCursorAdaptor(Cursor cursor, IContentObserver observer, String providerName) {
-        Object obj = new Object();
-        this.mLock = obj;
         if (cursor instanceof CrossProcessCursor) {
             this.mCursor = (CrossProcessCursor) cursor;
         } else {
             this.mCursor = new CrossProcessCursorWrapper(cursor);
         }
         this.mProviderName = providerName;
-        synchronized (obj) {
+        synchronized (this.mLock) {
             createAndRegisterObserverProxyLocked(observer);
         }
     }
 
     private void closeFilledWindowLocked() {
-        CursorWindow cursorWindow = this.mFilledWindow;
-        if (cursorWindow != null) {
-            cursorWindow.close();
+        if (this.mFilledWindow != null) {
+            this.mFilledWindow.close();
             this.mFilledWindow = null;
         }
     }
@@ -133,9 +129,8 @@ public final class CursorToBulkCursorAdaptor extends BulkCursorNative implements
             } else {
                 window = this.mFilledWindow;
                 if (window == null) {
-                    CursorWindow cursorWindow = new CursorWindow(this.mProviderName);
-                    this.mFilledWindow = cursorWindow;
-                    window = cursorWindow;
+                    this.mFilledWindow = new CursorWindow(this.mProviderName);
+                    window = this.mFilledWindow;
                 } else if (position < window.getStartPosition() || position >= window.getStartPosition() + window.getNumRows()) {
                     window.clear();
                 }
@@ -152,8 +147,7 @@ public final class CursorToBulkCursorAdaptor extends BulkCursorNative implements
     public void onMove(int position) {
         synchronized (this.mLock) {
             throwIfCursorIsClosed();
-            CrossProcessCursor crossProcessCursor = this.mCursor;
-            crossProcessCursor.onMove(crossProcessCursor.getPosition(), position);
+            this.mCursor.onMove(this.mCursor.getPosition(), position);
         }
     }
 
@@ -198,15 +192,13 @@ public final class CursorToBulkCursorAdaptor extends BulkCursorNative implements
         if (this.mObserver != null) {
             throw new IllegalStateException("an observer is already registered");
         }
-        ContentObserverProxy contentObserverProxy = new ContentObserverProxy(observer, this);
-        this.mObserver = contentObserverProxy;
-        this.mCursor.registerContentObserver(contentObserverProxy);
+        this.mObserver = new ContentObserverProxy(observer, this);
+        this.mCursor.registerContentObserver(this.mObserver);
     }
 
     private void unregisterObserverProxyLocked() {
-        ContentObserverProxy contentObserverProxy = this.mObserver;
-        if (contentObserverProxy != null) {
-            this.mCursor.unregisterContentObserver(contentObserverProxy);
+        if (this.mObserver != null) {
+            this.mCursor.unregisterContentObserver(this.mObserver);
             this.mObserver.unlinkToDeath(this);
             this.mObserver = null;
         }

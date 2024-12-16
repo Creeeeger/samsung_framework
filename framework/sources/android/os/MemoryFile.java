@@ -20,9 +20,8 @@ public class MemoryFile {
 
     public MemoryFile(String name, int length) throws IOException {
         try {
-            SharedMemory create = SharedMemory.create(name, length);
-            this.mSharedMemory = create;
-            this.mMapping = create.mapReadWrite();
+            this.mSharedMemory = SharedMemory.create(name, length);
+            this.mMapping = this.mSharedMemory.mapReadWrite();
         } catch (ErrnoException ex) {
             ex.rethrowAsIOException();
         }
@@ -33,10 +32,9 @@ public class MemoryFile {
         this.mSharedMemory.close();
     }
 
-    public void deactivate() {
-        ByteBuffer byteBuffer = this.mMapping;
-        if (byteBuffer != null) {
-            SharedMemory.unmap(byteBuffer);
+    void deactivate() {
+        if (this.mMapping != null) {
+            SharedMemory.unmap(this.mMapping);
             this.mMapping = null;
         }
     }
@@ -117,15 +115,10 @@ public class MemoryFile {
         return native_get_size(fd);
     }
 
-    /* loaded from: classes3.dex */
     private class MemoryInputStream extends InputStream {
         private int mMark;
         private int mOffset;
         private byte[] mSingleByte;
-
-        /* synthetic */ MemoryInputStream(MemoryFile memoryFile, MemoryInputStreamIA memoryInputStreamIA) {
-            this();
-        }
 
         private MemoryInputStream() {
             this.mMark = 0;
@@ -193,14 +186,9 @@ public class MemoryFile {
         }
     }
 
-    /* loaded from: classes3.dex */
     private class MemoryOutputStream extends OutputStream {
         private int mOffset;
         private byte[] mSingleByte;
-
-        /* synthetic */ MemoryOutputStream(MemoryFile memoryFile, MemoryOutputStreamIA memoryOutputStreamIA) {
-            this();
-        }
 
         private MemoryOutputStream() {
             this.mOffset = 0;
@@ -217,9 +205,8 @@ public class MemoryFile {
             if (this.mSingleByte == null) {
                 this.mSingleByte = new byte[1];
             }
-            byte[] bArr = this.mSingleByte;
-            bArr[0] = (byte) oneByte;
-            write(bArr, 0, 1);
+            this.mSingleByte[0] = (byte) oneByte;
+            write(this.mSingleByte, 0, 1);
         }
     }
 }

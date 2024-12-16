@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISatelliteCapabilitiesConsumer extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.satellite.stub.ISatelliteCapabilitiesConsumer";
 
     void accept(SatelliteCapabilities satelliteCapabilities) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISatelliteCapabilitiesConsumer {
         @Override // android.telephony.satellite.stub.ISatelliteCapabilitiesConsumer
         public void accept(SatelliteCapabilities result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISatelliteCapabilitiesConsumer extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISatelliteCapabilitiesConsumer {
         static final int TRANSACTION_accept = 1;
 
@@ -67,26 +65,22 @@ public interface ISatelliteCapabilitiesConsumer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISatelliteCapabilitiesConsumer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISatelliteCapabilitiesConsumer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISatelliteCapabilitiesConsumer.DESCRIPTOR);
+                case 1:
+                    SatelliteCapabilities _arg0 = (SatelliteCapabilities) data.readTypedObject(SatelliteCapabilities.CREATOR);
+                    data.enforceNoDataAvail();
+                    accept(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SatelliteCapabilities _arg0 = (SatelliteCapabilities) data.readTypedObject(SatelliteCapabilities.CREATOR);
-                            data.enforceNoDataAvail();
-                            accept(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISatelliteCapabilitiesConsumer {
+        private static class Proxy implements ISatelliteCapabilitiesConsumer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

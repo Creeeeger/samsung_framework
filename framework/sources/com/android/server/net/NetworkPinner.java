@@ -16,20 +16,14 @@ public class NetworkPinner extends ConnectivityManager.NetworkCallback {
 
     private static void maybeInitConnectivityManager(Context context) {
         if (sCM == null) {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            sCM = connectivityManager;
-            if (connectivityManager == null) {
+            sCM = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (sCM == null) {
                 throw new IllegalStateException("Bad luck, ConnectivityService not started.");
             }
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class Callback extends ConnectivityManager.NetworkCallback {
-        /* synthetic */ Callback(CallbackIA callbackIA) {
-            this();
-        }
-
+    private static class Callback extends ConnectivityManager.NetworkCallback {
         private Callback() {
         }
 
@@ -67,10 +61,9 @@ public class NetworkPinner extends ConnectivityManager.NetworkCallback {
         synchronized (sLock) {
             if (sCallback == null) {
                 maybeInitConnectivityManager(context);
-                Callback callback = new Callback();
-                sCallback = callback;
+                sCallback = new Callback();
                 try {
-                    sCM.registerNetworkCallback(request, callback);
+                    sCM.registerNetworkCallback(request, sCallback);
                 } catch (SecurityException e) {
                     Log.d(TAG, "Failed to register network callback", e);
                     sCallback = null;

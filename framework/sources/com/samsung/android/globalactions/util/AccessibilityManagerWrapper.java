@@ -3,7 +3,7 @@ package com.samsung.android.globalactions.util;
 import android.content.Context;
 import android.view.accessibility.AccessibilityManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class AccessibilityManagerWrapper {
     AccessibilityManager mAccessibilityManager;
 
@@ -12,7 +12,6 @@ public class AccessibilityManagerWrapper {
     }
 
     public boolean isVoiceAssistantMode() {
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager;
-        return accessibilityManager != null && (accessibilityManager.semIsAccessibilityServiceEnabled(32) || this.mAccessibilityManager.semIsAccessibilityServiceEnabled(16));
+        return this.mAccessibilityManager != null && (this.mAccessibilityManager.semIsAccessibilityServiceEnabled(32) || this.mAccessibilityManager.semIsAccessibilityServiceEnabled(16));
     }
 }

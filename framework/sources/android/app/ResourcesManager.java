@@ -12,7 +12,9 @@ import android.content.res.ResourcesImpl;
 import android.content.res.ResourcesKey;
 import android.content.res.loader.ResourcesLoader;
 import android.hardware.display.DisplayManagerGlobal;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.IBinder;
+import android.os.LocaleList;
 import android.os.Process;
 import android.os.Trace;
 import android.util.ArrayMap;
@@ -25,9 +27,10 @@ import android.util.Slog;
 import android.view.Display;
 import android.view.DisplayAdjustments;
 import android.view.DisplayInfo;
+import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.util.ArrayUtils;
+import com.samsung.android.core.CompatSandbox;
 import com.samsung.android.multiwindow.MultiWindowCoreState;
-import com.samsung.android.rune.CoreRune;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.ref.Reference;
@@ -46,6 +49,7 @@ import java.util.function.Predicate;
 
 /* loaded from: classes.dex */
 public class ResourcesManager {
+    private static final int ALL_RESOURCE_REFERENCES_LIMIT = 1000;
     private static final boolean DEBUG = false;
     static final String TAG = "ResourcesManager";
     private static ResourcesManager sResourcesManager;
@@ -57,18 +61,56 @@ public class ResourcesManager {
     private final ArrayMap<ResourcesKey, WeakReference<ResourcesImpl>> mResourceImpls = new ArrayMap<>();
     private final ArrayList<WeakReference<Resources>> mResourceReferences = new ArrayList<>();
     private final ReferenceQueue<Resources> mResourcesReferencesQueue = new ReferenceQueue<>();
+    private final ArrayList<WeakReference<Resources>> mAllResourceReferences = new ArrayList<>();
+    private final ReferenceQueue<Resources> mAllResourceReferencesQueue = new ReferenceQueue<>();
+    private int mAllResourceReferencesCount = 0;
+    private LocaleConfig mLocaleConfig = new LocaleConfig(LocaleList.getEmptyLocaleList());
+    private final ArrayMap<String, SharedLibraryAssets> mSharedLibAssetsMap = new ArrayMap<>();
     private final ArrayMap<ApkKey, WeakReference<ApkAssets>> mCachedApkAssets = new ArrayMap<>();
     private final WeakHashMap<IBinder, ActivityResources> mActivityResourceReferences = new WeakHashMap<>();
     private final UpdateHandler mUpdateCallbacks = new UpdateHandler();
     private final ArraySet<String> mApplicationOwnedApks = new ArraySet<>();
 
-    /* loaded from: classes.dex */
+    public ArrayMap<String, SharedLibraryAssets> getRegisteredResourcePaths() {
+        return this.mSharedLibAssetsMap;
+    }
+
+    public void registerResourcePaths(String uniqueId, ApplicationInfo appInfo) {
+        if (!android.content.res.Flags.registerResourcePaths()) {
+            return;
+        }
+        SharedLibraryAssets sharedLibAssets = new SharedLibraryAssets(appInfo);
+        synchronized (this.mLock) {
+            if (this.mSharedLibAssetsMap.containsKey(uniqueId)) {
+                Slog.v(TAG, "Package resources' paths for uniqueId: " + uniqueId + " has already been registered, this is a no-op.");
+                return;
+            }
+            this.mSharedLibAssetsMap.put(uniqueId, sharedLibAssets);
+            appendLibAssetsLocked(sharedLibAssets);
+            Slog.v(TAG, "The following library key has been added: " + sharedLibAssets.getResourcesKey());
+        }
+    }
+
+    public int updateResourceImplWithRegisteredLibs(ResourcesImpl impl) {
+        if (!android.content.res.Flags.registerResourcePaths()) {
+            return 0;
+        }
+        PathCollector collector = new PathCollector(null);
+        int size = this.mSharedLibAssetsMap.size();
+        for (int i = 0; i < size; i++) {
+            ResourcesKey libraryKey = this.mSharedLibAssetsMap.valueAt(i).getResourcesKey();
+            collector.appendKey(libraryKey);
+        }
+        impl.getAssets().addPresetApkKeys(extractApkKeys(collector.collectedKey()));
+        return size;
+    }
+
     public static class ApkKey {
         public final boolean overlay;
         public final String path;
         public final boolean sharedLib;
 
-        ApkKey(String path, boolean sharedLib, boolean overlay) {
+        public ApkKey(String path, boolean sharedLib, boolean overlay) {
             this.path = path;
             this.sharedLib = sharedLib;
             this.overlay = overlay;
@@ -86,18 +128,16 @@ public class ResourcesManager {
             ApkKey other = (ApkKey) obj;
             return this.path.equals(other.path) && this.sharedLib == other.sharedLib && this.overlay == other.overlay;
         }
+
+        public String toString() {
+            return "ApkKey[" + (this.sharedLib ? NativeLibraryHelper.LIB_DIR_NAME : "app") + (this.overlay ? ", overlay" : "") + ": " + this.path + NavigationBarInflaterView.SIZE_MOD_END;
+        }
     }
 
-    /* loaded from: classes.dex */
-    public class ApkAssetsSupplier {
-        final ArrayMap<ApkKey, ApkAssets> mLocalCache;
+    protected class ApkAssetsSupplier {
+        final ArrayMap<ApkKey, ApkAssets> mLocalCache = new ArrayMap<>();
 
-        /* synthetic */ ApkAssetsSupplier(ResourcesManager resourcesManager, ApkAssetsSupplierIA apkAssetsSupplierIA) {
-            this();
-        }
-
-        private ApkAssetsSupplier() {
-            this.mLocalCache = new ArrayMap<>();
+        protected ApkAssetsSupplier() {
         }
 
         ApkAssets load(ApkKey apkKey) throws IOException {
@@ -111,16 +151,11 @@ public class ResourcesManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ActivityResources {
+    private static class ActivityResources {
         public final ArrayList<ActivityResource> activityResources;
         public final ReferenceQueue<Resources> activityResourcesQueue;
         public final Configuration overrideConfig;
         public int overrideDisplayId;
-
-        /* synthetic */ ActivityResources(ActivityResourcesIA activityResourcesIA) {
-            this();
-        }
 
         private ActivityResources() {
             this.overrideConfig = new Configuration();
@@ -140,19 +175,24 @@ public class ResourcesManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ActivityResource {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ActivityResource {
         public final Configuration overrideConfig;
         public Integer overrideDisplayId;
         public WeakReference<Resources> resources;
 
-        /* synthetic */ ActivityResource(ActivityResourceIA activityResourceIA) {
-            this();
-        }
-
         private ActivityResource() {
             this.overrideConfig = new Configuration();
         }
+    }
+
+    public static ResourcesManager setInstance(ResourcesManager resourcesManager) {
+        ResourcesManager oldResourceManager;
+        synchronized (ResourcesManager.class) {
+            oldResourceManager = sResourcesManager;
+            sResourcesManager = resourcesManager;
+        }
+        return oldResourceManager;
     }
 
     public static ResourcesManager getInstance() {
@@ -204,9 +244,6 @@ public class ResourcesManager {
     }
 
     public DisplayMetrics getDisplayMetrics() {
-        if (ActivityThread.isInDexDisplay()) {
-            return getDisplayMetrics(ActivityThread.getProcessDisplayId(), DisplayAdjustments.DEFAULT_DISPLAY_ADJUSTMENTS);
-        }
         return getDisplayMetrics(this.mResDisplayId, DisplayAdjustments.DEFAULT_DISPLAY_ADJUSTMENTS);
     }
 
@@ -235,7 +272,7 @@ public class ResourcesManager {
     }
 
     private static void applyDisplayMetricsToConfiguration(DisplayMetrics dm, Configuration config) {
-        applyDisplayMetricsToConfiguration(dm, config, -1);
+        applyDisplayMetricsToConfiguration(dm, config, 0);
     }
 
     private static void applyDisplayMetricsToConfiguration(DisplayMetrics dm, Configuration config, int displayId) {
@@ -251,7 +288,7 @@ public class ResourcesManager {
             config.orientation = 1;
             config.screenLayout = Configuration.reduceScreenLayout(sl, config.screenHeightDp, config.screenWidthDp);
         }
-        if (displayId == 2) {
+        if (isOriginDisplayId(displayId)) {
             DisplayInfo info = DisplayManagerGlobal.getInstance().getDisplayInfo(displayId);
             if (info != null) {
                 config.smallestScreenWidthDp = (int) (info.smallestNominalAppWidth / dm.density);
@@ -273,8 +310,7 @@ public class ResourcesManager {
 
     public boolean applyCompatConfiguration(int displayDensity, Configuration compatConfiguration) {
         synchronized (this.mLock) {
-            CompatibilityInfo compatibilityInfo = this.mResCompatibilityInfo;
-            if (compatibilityInfo == null || compatibilityInfo.supportsScreen()) {
+            if (this.mResCompatibilityInfo == null || this.mResCompatibilityInfo.supportsScreen()) {
                 return false;
             }
             this.mResCompatibilityInfo.applyToConfiguration(displayDensity, compatConfiguration);
@@ -369,9 +405,9 @@ public class ResourcesManager {
         return createAssetManager(key, null);
     }
 
-    private AssetManager createAssetManager(ResourcesKey key, ApkAssetsSupplier apkSupplier) {
+    protected AssetManager createAssetManager(ResourcesKey key, ApkAssetsSupplier apkSupplier) {
         ApkAssets load;
-        AssetManager.Builder builder = new AssetManager.Builder();
+        AssetManager.Builder builder = new AssetManager.Builder().setNoInit();
         ArrayList<ApkKey> apkKeys = extractApkKeys(key);
         int n = apkKeys.size();
         for (int i = 0; i < n; i++) {
@@ -456,10 +492,10 @@ public class ResourcesManager {
         boolean hasOverrideConfig = key.hasOverrideConfiguration();
         if (shouldApplyDisplayMetricsForDex(key) && dm != null) {
             Configuration config = new Configuration(getConfiguration());
-            applyDisplayMetricsToConfiguration(dm, config, key.mDisplayId2);
+            applyDisplayMetricsToConfiguration(dm, config, key.mOriginDisplayId);
             config.updateFrom(key.mOverrideConfiguration);
             if (daj != null) {
-                adjustConfigForDexDisplayIfNeeded(config, key.mDisplayId2, daj);
+                adjustConfigForDexDisplayIfNeeded(config, key.mOriginDisplayId, daj);
                 return config;
             }
             return config;
@@ -467,23 +503,14 @@ public class ResourcesManager {
         if (hasOverrideConfig) {
             Configuration config2 = new Configuration(getConfiguration());
             config2.updateFrom(key.mOverrideConfiguration);
-            if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX && shouldResetCompatSandBoxValues(config2, key.mOverrideConfiguration)) {
-                config2.windowConfiguration.setCompatSandboxValues(0, -1.0f, null);
-                return config2;
-            }
+            CompatSandbox.resetCompatSandBoxValuesIfNeeded(config2, key.mOverrideConfiguration);
             return config2;
         }
         return getConfiguration();
     }
 
     private int generateDisplayId(ResourcesKey key) {
-        if (key.mDisplayId != -1) {
-            return key.mDisplayId;
-        }
-        if (key.mDisplayId2 != 0) {
-            return key.mDisplayId2;
-        }
-        return this.mResDisplayId;
+        return key.mDisplayId != -1 ? key.mDisplayId : key.mOriginDisplayId != 0 ? key.mOriginDisplayId : this.mResDisplayId;
     }
 
     private ResourcesImpl createResourcesImpl(ResourcesKey key, ApkAssetsSupplier apkSupplier) {
@@ -508,13 +535,14 @@ public class ResourcesManager {
         return impl;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public ResourcesImpl findOrCreateResourcesImplForKeyLocked(ResourcesKey key) {
         return findOrCreateResourcesImplForKeyLocked(key, null);
     }
 
     private ResourcesImpl findOrCreateResourcesImplForKeyLocked(ResourcesKey key, ApkAssetsSupplier apkSupplier) {
         ResourcesImpl impl = findResourcesImplForKeyLocked(key);
-        if (impl == null && (impl = createResourcesImpl(key, apkSupplier)) != null) {
+        if ((impl == null || impl.getAppliedSharedLibsHash() != this.mSharedLibAssetsMap.size()) && (impl = createResourcesImpl(key, apkSupplier)) != null) {
             WeakReference<ResourcesImpl> weakImplRef = this.mResourceImpls.get(key);
             ResourcesImpl oldImpl = weakImplRef != null ? weakImplRef.get() : null;
             if (oldImpl != null) {
@@ -533,7 +561,7 @@ public class ResourcesManager {
             }
         }
         String[] updatedResDirs = keyOverlayPaths.isEmpty() ? null : (String[]) keyOverlayPaths.toArray(new String[0]);
-        ResourcesKey newKey = new ResourcesKey(oldKey.mResDir, oldKey.mSplitResDirs, updatedResDirs, oldKey.mLibDirs, oldKey.mDisplayId, oldKey.mOverrideConfiguration, oldKey.mCompatInfo, oldKey.mLoaders, oldKey.mDisplayId2);
+        ResourcesKey newKey = new ResourcesKey(oldKey.mResDir, oldKey.mSplitResDirs, updatedResDirs, oldKey.mLibDirs, oldKey.mDisplayId, oldKey.mOverrideConfiguration, oldKey.mCompatInfo, oldKey.mLoaders, oldKey.mOriginDisplayId);
         ArrayMap<ResourcesImpl, ResourcesKey> updatedResourceKeys = new ArrayMap<>();
         updatedResourceKeys.put(oldImpl, newKey);
         int resourcesCount = this.mResourceReferences.size();
@@ -564,6 +592,7 @@ public class ResourcesManager {
         return newKey;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public ResourcesKey findKeyForResourceImplLocked(ResourcesImpl resourceImpl) {
         int refCount = this.mResourceImpls.size();
         for (int i = 0; i < refCount; i++) {
@@ -631,7 +660,7 @@ public class ResourcesManager {
 
     private Resources createResourcesForActivityLocked(IBinder activityToken, Configuration initialOverrideConfig, Integer overrideDisplayId, ClassLoader classLoader, ResourcesImpl impl, CompatibilityInfo compatInfo) {
         ActivityResources activityResources = getOrCreateActivityResourcesStructLocked(activityToken);
-        cleanupReferences(activityResources.activityResources, activityResources.activityResourcesQueue, new Function() { // from class: android.app.ResourcesManager$$ExternalSyntheticLambda1
+        cleanupReferences(activityResources.activityResources, activityResources.activityResourcesQueue, new Function() { // from class: android.app.ResourcesManager$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 WeakReference weakReference;
@@ -663,10 +692,10 @@ public class ResourcesManager {
         return createBaseTokenResources(token, resDir, splitResDirs, legacyOverlayDirs, overlayPaths, libDirs, displayId, overrideConfig, compatInfo, classLoader, loaders, 0);
     }
 
-    public Resources createBaseTokenResources(IBinder token, String resDir, String[] splitResDirs, String[] legacyOverlayDirs, String[] overlayPaths, String[] libDirs, int displayId, Configuration overrideConfig, CompatibilityInfo compatInfo, ClassLoader classLoader, List<ResourcesLoader> loaders, int displayId2) {
+    public Resources createBaseTokenResources(IBinder token, String resDir, String[] splitResDirs, String[] legacyOverlayDirs, String[] overlayPaths, String[] libDirs, int displayId, Configuration overrideConfig, CompatibilityInfo compatInfo, ClassLoader classLoader, List<ResourcesLoader> loaders, int originDisplayId) {
         try {
             Trace.traceBegin(8192L, "ResourcesManager#createBaseActivityResources");
-            ResourcesKey key = new ResourcesKey(resDir, splitResDirs, combinedOverlayPaths(legacyOverlayDirs, overlayPaths), libDirs, displayId, overrideConfig, compatInfo, loaders == null ? null : (ResourcesLoader[]) loaders.toArray(new ResourcesLoader[0]), displayId2);
+            ResourcesKey key = new ResourcesKey(resDir, splitResDirs, combinedOverlayPaths(legacyOverlayDirs, overlayPaths), libDirs, displayId, overrideConfig, compatInfo, loaders == null ? null : (ResourcesLoader[]) loaders.toArray(new ResourcesLoader[0]), originDisplayId);
             ClassLoader classLoader2 = classLoader != null ? classLoader : ClassLoader.getSystemClassLoader();
             try {
                 synchronized (this.mLock) {
@@ -677,12 +706,11 @@ public class ResourcesManager {
                             th = th;
                             while (true) {
                                 try {
-                                    break;
+                                    throw th;
                                 } catch (Throwable th2) {
                                     th = th2;
                                 }
                             }
-                            throw th;
                         }
                     } catch (Throwable th3) {
                         th = th3;
@@ -758,7 +786,7 @@ public class ResourcesManager {
             deadReferences.add(enqueuedRef);
             enqueuedRef = referenceQueue.poll();
         }
-        ArrayUtils.unstableRemoveIf(referenceContainers, new Predicate() { // from class: android.app.ResourcesManager$$ExternalSyntheticLambda0
+        ArrayUtils.unstableRemoveIf(referenceContainers, new Predicate() { // from class: android.app.ResourcesManager$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return ResourcesManager.lambda$cleanupReferences$1(unwrappingFunction, deadReferences, obj);
@@ -766,7 +794,7 @@ public class ResourcesManager {
         });
     }
 
-    public static /* synthetic */ boolean lambda$cleanupReferences$1(Function unwrappingFunction, HashSet deadReferences, Object refContainer) {
+    static /* synthetic */ boolean lambda$cleanupReferences$1(Function unwrappingFunction, HashSet deadReferences, Object refContainer) {
         WeakReference weakReference = (WeakReference) unwrappingFunction.apply(refContainer);
         return weakReference == null || deadReferences.contains(weakReference);
     }
@@ -815,8 +843,10 @@ public class ResourcesManager {
         return getResources(activityToken, resDir, splitResDirs, legacyOverlayDirs, overlayPaths, libDirs, overrideDisplayId, overrideConfig, compatInfo, classLoader, loaders, false, false);
     }
 
-    public Resources getResources(IBinder activityToken, String resDir, String[] splitResDirs, String[] legacyOverlayDirs, String[] overlayPaths, String[] libDirs, Integer overrideDisplayId, Configuration overrideConfig, CompatibilityInfo compatInfo, ClassLoader classLoader, List<ResourcesLoader> loaders, boolean creatingDisplayContext, boolean creatingDeXConfigContext) {
-        Configuration initialOverrideConfig;
+    public Resources getResources(IBinder activityToken, String resDir, String[] splitResDirs, String[] legacyOverlayDirs, String[] overlayPaths, String[] libDirs, Integer overrideDisplayId, Configuration overrideConfig, CompatibilityInfo compatInfo, ClassLoader classLoader, List<ResourcesLoader> loaders, boolean creatingDisplayContext, boolean creatingOriginConfigContext) {
+        ResourcesKey key;
+        ClassLoader classLoader2;
+        ApkAssetsSupplier assetsSupplier;
         Resources resources;
         try {
             Trace.traceBegin(8192L, "ResourcesManager#getResources");
@@ -824,11 +854,11 @@ public class ResourcesManager {
             th = th;
         }
         try {
-            int displayId2 = shouldApplyDexDisplayId(creatingDisplayContext, creatingDeXConfigContext, overrideDisplayId) ? 2 : 0;
-            ResourcesKey key = new ResourcesKey(resDir, splitResDirs, combinedOverlayPaths(legacyOverlayDirs, overlayPaths), libDirs, overrideDisplayId != null ? overrideDisplayId.intValue() : -1, overrideConfig, compatInfo, loaders == null ? null : (ResourcesLoader[]) loaders.toArray(new ResourcesLoader[0]), displayId2);
-            ClassLoader classLoader2 = classLoader != null ? classLoader : ClassLoader.getSystemClassLoader();
+            int originDisplayId = shouldApplyOriginDisplayId(creatingDisplayContext, creatingOriginConfigContext, overrideDisplayId);
+            key = new ResourcesKey(resDir, splitResDirs, combinedOverlayPaths(legacyOverlayDirs, overlayPaths), libDirs, overrideDisplayId != null ? overrideDisplayId.intValue() : -1, overrideConfig, compatInfo, loaders == null ? null : (ResourcesLoader[]) loaders.toArray(new ResourcesLoader[0]), originDisplayId);
+            classLoader2 = classLoader != null ? classLoader : ClassLoader.getSystemClassLoader();
             try {
-                ApkAssetsSupplier assetsSupplier = createApkAssetsSupplierNotLocked(key);
+                assetsSupplier = createApkAssetsSupplierNotLocked(key);
                 if (overrideDisplayId != null) {
                     try {
                         rebaseKeyForDisplay(key, overrideDisplayId.intValue());
@@ -838,45 +868,35 @@ public class ResourcesManager {
                         throw th;
                     }
                 }
-                if (activityToken != null) {
-                    try {
-                        initialOverrideConfig = new Configuration(key.mOverrideConfiguration);
-                        rebaseKeyForActivity(activityToken, key, overrideDisplayId != null);
-                    } catch (Throwable th3) {
-                        th = th3;
-                    }
-                    try {
-                        Resources resources2 = createResourcesForActivity(activityToken, key, initialOverrideConfig, overrideDisplayId, classLoader2, assetsSupplier);
-                        resources = resources2;
-                    } catch (Throwable th4) {
-                        th = th4;
-                        Trace.traceEnd(8192L);
-                        throw th;
-                    }
-                } else {
-                    try {
-                        resources = createResources(key, classLoader2, assetsSupplier);
-                        if (resources != null && ActivityThread.getProcessDisplayId() != key.mDisplayId && key.mDisplayId == 2) {
-                            DisplayAdjustments daj = resources.getImpl().getDisplayAdjustments();
-                            DisplayMetrics dm = getDisplayMetrics(key.mDisplayId, daj);
-                            Configuration config = generateConfig(key, dm, daj);
-                            if (resources.getConfiguration().diff(config) != 0) {
-                                resources.getImpl().updateConfiguration(config, dm, null);
-                            }
-                        }
-                    } catch (Throwable th5) {
-                        th = th5;
-                        Trace.traceEnd(8192L);
-                        throw th;
+            } catch (Throwable th3) {
+                th = th3;
+            }
+        } catch (Throwable th4) {
+            th = th4;
+            Trace.traceEnd(8192L);
+            throw th;
+        }
+        try {
+            if (activityToken == null) {
+                Resources resources2 = createResources(key, classLoader2, assetsSupplier);
+                if (resources2 != null && key.mDisplayId == 2) {
+                    DisplayAdjustments daj = resources2.getImpl().getDisplayAdjustments();
+                    DisplayMetrics dm = getDisplayMetrics(key.mDisplayId, daj);
+                    Configuration config = generateConfig(key, dm, daj);
+                    if (resources2.getConfiguration().diff(config) != 0) {
+                        resources2.getImpl().updateConfiguration(config, dm, null);
                     }
                 }
-                Trace.traceEnd(8192L);
-                return resources;
-            } catch (Throwable th6) {
-                th = th6;
+                resources = resources2;
+            } else {
+                Configuration initialOverrideConfig = new Configuration(key.mOverrideConfiguration);
+                rebaseKeyForActivity(activityToken, key, overrideDisplayId != null);
+                resources = createResourcesForActivity(activityToken, key, initialOverrideConfig, overrideDisplayId, classLoader2, assetsSupplier);
             }
-        } catch (Throwable th7) {
-            th = th7;
+            Trace.traceEnd(8192L);
+            return resources;
+        } catch (Throwable th5) {
+            th = th5;
             Trace.traceEnd(8192L);
             throw th;
         }
@@ -919,7 +939,6 @@ public class ResourcesManager {
     }
 
     private ResourcesKey rebaseActivityOverrideConfig(ActivityResource activityResource, Configuration newOverrideConfig, int displayId) {
-        int displayId2;
         Resources resources = activityResource.resources.get();
         if (resources != null) {
             ResourcesKey oldKey = findKeyForResourceImplLocked(resources.getImpl());
@@ -946,14 +965,8 @@ public class ResourcesManager {
             if (activityResource.overrideDisplayId != null && activityResource.overrideConfig.windowConfiguration.getAppBounds() == null) {
                 rebasedOverrideConfig.windowConfiguration.setAppBounds(null);
             }
-            int displayId3 = overrideDisplayId != null ? overrideDisplayId.intValue() : displayId;
-            if (displayId3 != 2) {
-                displayId2 = 0;
-            } else {
-                int displayId22 = displayId3;
-                displayId2 = displayId22;
-            }
-            ResourcesKey newKey = new ResourcesKey(oldKey.mResDir, oldKey.mSplitResDirs, oldKey.mOverlayPaths, oldKey.mLibDirs, displayId3, rebasedOverrideConfig, oldKey.mCompatInfo, oldKey.mLoaders, displayId2);
+            int displayId2 = overrideDisplayId != null ? overrideDisplayId.intValue() : displayId;
+            ResourcesKey newKey = new ResourcesKey(oldKey.mResDir, oldKey.mSplitResDirs, oldKey.mOverlayPaths, oldKey.mLibDirs, displayId2, rebasedOverrideConfig, oldKey.mCompatInfo, oldKey.mLoaders, displayId2);
             return newKey;
         }
         return null;
@@ -975,9 +988,8 @@ public class ResourcesManager {
 
     public final void applyAllPendingAppInfoUpdates() {
         synchronized (this.mLock) {
-            ArrayList<Pair<String[], ApplicationInfo>> arrayList = this.mPendingAppInfoUpdates;
-            if (arrayList != null) {
-                int n = arrayList.size();
+            if (this.mPendingAppInfoUpdates != null) {
+                int n = this.mPendingAppInfoUpdates.size();
                 for (int i = 0; i < n; i++) {
                     Pair<String[], ApplicationInfo> appInfo = this.mPendingAppInfoUpdates.get(i);
                     applyNewResourceDirsLocked(appInfo.first, appInfo.second);
@@ -989,7 +1001,6 @@ public class ResourcesManager {
 
     public final boolean applyConfigurationToResources(Configuration config, CompatibilityInfo compat) {
         int i;
-        CompatibilityInfo compatibilityInfo;
         synchronized (this.mLock) {
             try {
                 Trace.traceBegin(8192L, "ResourcesManager#applyConfigurationToResources");
@@ -997,7 +1008,7 @@ public class ResourcesManager {
                     return false;
                 }
                 int changes = this.mResConfiguration.updateFrom(config);
-                if (compat != null && ((compatibilityInfo = this.mResCompatibilityInfo) == null || !compatibilityInfo.equals(compat))) {
+                if (compat != null && (this.mResCompatibilityInfo == null || !this.mResCompatibilityInfo.equals(compat))) {
                     this.mResCompatibilityInfo = compat;
                     changes |= 3328;
                 }
@@ -1041,7 +1052,7 @@ public class ResourcesManager {
         }
         daj.setConfiguration(tmpConfig);
         DisplayMetrics dm = getDisplayMetrics(generateDisplayId(key), daj);
-        adjustConfigForDexDisplayIfNeeded(tmpConfig, key.mDisplayId2, daj);
+        adjustConfigForDexDisplayIfNeeded(tmpConfig, key.mOriginDisplayId, daj);
         resourcesImpl.updateConfiguration(tmpConfig, dm, compat);
     }
 
@@ -1071,7 +1082,7 @@ public class ResourcesManager {
                         implCount = implCount2;
                     } else {
                         implCount = implCount2;
-                        updatedResourceKeys.put(impl, new ResourcesKey(key.mResDir, key.mSplitResDirs, key.mOverlayPaths, newLibAssets, key.mDisplayId, key.mOverrideConfiguration, key.mCompatInfo, key.mLoaders, key.mDisplayId2));
+                        updatedResourceKeys.put(impl, new ResourcesKey(key.mResDir, key.mSplitResDirs, key.mOverlayPaths, newLibAssets, key.mDisplayId, key.mOverrideConfiguration, key.mCompatInfo, key.mLoaders, key.mOriginDisplayId));
                     }
                 }
                 i++;
@@ -1080,6 +1091,88 @@ public class ResourcesManager {
             }
             redirectResourcesToNewImplLocked(updatedResourceKeys);
         }
+    }
+
+    private static class PathCollector {
+        public final ResourcesKey originalKey;
+        public final ArrayList<String> orderedLibs = new ArrayList<>();
+        public final ArraySet<String> libsSet = new ArraySet<>();
+        public final ArrayList<String> orderedOverlays = new ArrayList<>();
+        public final ArraySet<String> overlaysSet = new ArraySet<>();
+
+        static void appendNewPath(String path, ArraySet<String> uniquePaths, ArrayList<String> orderedPaths) {
+            if (uniquePaths.add(path)) {
+                orderedPaths.add(path);
+            }
+        }
+
+        static void appendAllNewPaths(String[] paths, ArraySet<String> uniquePaths, ArrayList<String> orderedPaths) {
+            if (paths == null) {
+                return;
+            }
+            for (String str : paths) {
+                appendNewPath(str, uniquePaths, orderedPaths);
+            }
+        }
+
+        PathCollector(ResourcesKey original) {
+            this.originalKey = original;
+            if (this.originalKey != null) {
+                appendKey(this.originalKey);
+            }
+        }
+
+        public void appendKey(ResourcesKey key) {
+            appendAllNewPaths(key.mLibDirs, this.libsSet, this.orderedLibs);
+            appendAllNewPaths(key.mOverlayPaths, this.overlaysSet, this.orderedOverlays);
+        }
+
+        boolean isSameAsOriginal() {
+            if (this.originalKey == null) {
+                return this.orderedLibs.isEmpty() && this.orderedOverlays.isEmpty();
+            }
+            if ((this.originalKey.mLibDirs == null && this.orderedLibs.isEmpty()) || (this.originalKey.mLibDirs != null && this.originalKey.mLibDirs.length == this.orderedLibs.size())) {
+                if (this.originalKey.mOverlayPaths == null && this.orderedOverlays.isEmpty()) {
+                    return true;
+                }
+                if (this.originalKey.mOverlayPaths != null && this.originalKey.mOverlayPaths.length == this.orderedOverlays.size()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        ResourcesKey collectedKey() {
+            return new ResourcesKey(this.originalKey == null ? null : this.originalKey.mResDir, this.originalKey == null ? null : this.originalKey.mSplitResDirs, (String[]) this.orderedOverlays.toArray(new String[0]), (String[]) this.orderedLibs.toArray(new String[0]), this.originalKey == null ? 0 : this.originalKey.mDisplayId, this.originalKey == null ? null : this.originalKey.mOverrideConfiguration, this.originalKey == null ? null : this.originalKey.mCompatInfo, this.originalKey == null ? null : this.originalKey.mLoaders);
+        }
+    }
+
+    private ResourcesKey createNewResourceKeyIfNeeded(ResourcesKey original, ResourcesKey library) {
+        PathCollector collector = new PathCollector(original);
+        collector.appendKey(library);
+        if (collector.isSameAsOriginal()) {
+            return null;
+        }
+        return collector.collectedKey();
+    }
+
+    private void appendLibAssetsLocked(SharedLibraryAssets libAssets) {
+        ArrayMap<ResourcesImpl, ResourcesKey> updatedResourceKeys = new ArrayMap<>();
+        int implCount = this.mResourceImpls.size();
+        for (int i = 0; i < implCount; i++) {
+            ResourcesKey key = this.mResourceImpls.keyAt(i);
+            WeakReference<ResourcesImpl> weakImplRef = this.mResourceImpls.valueAt(i);
+            ResourcesImpl impl = weakImplRef != null ? weakImplRef.get() : null;
+            if (impl == null) {
+                Slog.w(TAG, "Found a null ResourcesImpl, skipped.");
+            } else {
+                ResourcesKey newKey = createNewResourceKeyIfNeeded(key, libAssets.getResourcesKey());
+                if (newKey != null) {
+                    updatedResourceKeys.put(impl, newKey);
+                }
+            }
+        }
+        redirectAllResourcesToNewImplLocked(updatedResourceKeys);
     }
 
     private void applyNewResourceDirsLocked(String[] oldSourceDirs, ApplicationInfo appInfo) {
@@ -1177,7 +1270,7 @@ public class ResourcesManager {
         if (overlayPaths == null) {
             return (String[]) ArrayUtils.cloneOrNull(resourceDirs);
         }
-        ArrayList<String> paths = new ArrayList<>();
+        ArrayList<String> paths = new ArrayList<>(overlayPaths.length + resourceDirs.length);
         for (String str : overlayPaths) {
             paths.add(str);
         }
@@ -1189,6 +1282,7 @@ public class ResourcesManager {
         return (String[]) paths.toArray(new String[0]);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void redirectResourcesToNewImplLocked(ArrayMap<ResourcesImpl, ResourcesKey> updatedResourceKeys) {
         ResourcesKey key;
         ResourcesKey key2;
@@ -1229,12 +1323,77 @@ public class ResourcesManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class UpdateHandler implements Resources.UpdateCallbacks {
-        /* synthetic */ UpdateHandler(ResourcesManager resourcesManager, UpdateHandlerIA updateHandlerIA) {
-            this();
+    private void redirectAllResourcesToNewImplLocked(ArrayMap<ResourcesImpl, ResourcesKey> updatedResourceKeys) {
+        cleanupReferences(this.mAllResourceReferences, this.mAllResourceReferencesQueue);
+        int resourcesCount = this.mAllResourceReferences.size();
+        for (int i = 0; i < resourcesCount; i++) {
+            WeakReference<Resources> ref = this.mAllResourceReferences.get(i);
+            Resources r = ref != null ? ref.get() : null;
+            if (r != null) {
+                ResourcesKey key = updatedResourceKeys.get(r.getImpl());
+                if (key != null) {
+                    ResourcesImpl impl = findOrCreateResourcesImplForKeyLocked(key);
+                    if (impl == null) {
+                        throw new Resources.NotFoundException("failed to redirect ResourcesImpl");
+                    }
+                    r.setImpl(impl);
+                } else if (r.getImpl() != null) {
+                    ResourcesImpl oldImpl = r.getImpl();
+                    AssetManager oldAssets = oldImpl.getAssets();
+                    if (oldAssets != AssetManager.getSystem() && oldAssets.isUpToDate()) {
+                        ResourcesImpl newImpl = new ResourcesImpl(oldAssets, oldImpl.getMetrics(), oldImpl.getConfiguration(), oldImpl.getDisplayAdjustments());
+                        r.setImpl(newImpl);
+                    } else {
+                        Slog.w(TAG, "Skip appending shared library asset paths for the Resource as its assets are not up to date.");
+                    }
+                }
+            }
         }
+    }
 
+    public LocaleConfig getLocaleConfig() {
+        return this.mLocaleConfig;
+    }
+
+    public void setLocaleConfig(LocaleConfig localeConfig) {
+        if (localeConfig != null && localeConfig.getSupportedLocales() != null && !localeConfig.getSupportedLocales().isEmpty()) {
+            this.mLocaleConfig = localeConfig;
+        }
+    }
+
+    private void adjustConfigForDexDisplayIfNeeded(Configuration outConfig, int displayId, DisplayAdjustments displayAdjustments) {
+        if (displayId != 2) {
+            return;
+        }
+        Display display = getAdjustedDisplay(displayId, displayAdjustments);
+        if (display != null) {
+            if (outConfig.semDesktopModeEnabled != 1) {
+                outConfig.semDesktopModeEnabled = 1;
+            }
+            if ((outConfig.uiMode & 2) == 0) {
+                outConfig.uiMode = 2 | (outConfig.uiMode & (-16));
+            }
+            if (outConfig.fontScale != MultiWindowCoreState.DEX_FONT_SCALE) {
+                outConfig.fontScale = MultiWindowCoreState.DEX_FONT_SCALE;
+            }
+        }
+    }
+
+    private Display getAdjustedDisplay(int displayId, DisplayAdjustments daj) {
+        synchronized (this.mLock) {
+            DisplayManagerGlobal dm = DisplayManagerGlobal.getInstance();
+            if (dm == null) {
+                return null;
+            }
+            return dm.getCompatibleDisplay(displayId, daj);
+        }
+    }
+
+    private boolean shouldApplyDisplayMetricsForDex(ResourcesKey key) {
+        return key.mOriginDisplayId == 2;
+    }
+
+    private class UpdateHandler implements Resources.UpdateCallbacks {
         private UpdateHandler() {
         }
 
@@ -1268,46 +1427,49 @@ public class ResourcesManager {
         }
     }
 
-    private void adjustConfigForDexDisplayIfNeeded(Configuration outConfig, int displayId, DisplayAdjustments displayAdjustments) {
-        if (displayId != 2) {
-            return;
+    public static class SharedLibraryAssets {
+        private final ResourcesKey mResourcesKey;
+
+        private SharedLibraryAssets(ApplicationInfo appInfo) {
+            PathCollector collector = new PathCollector(null);
+            PathCollector.appendNewPath(appInfo.sourceDir, collector.libsSet, collector.orderedLibs);
+            PathCollector.appendAllNewPaths(appInfo.splitSourceDirs, collector.libsSet, collector.orderedLibs);
+            PathCollector.appendAllNewPaths(appInfo.sharedLibraryFiles, collector.libsSet, collector.orderedLibs);
+            PathCollector.appendAllNewPaths(appInfo.resourceDirs, collector.overlaysSet, collector.orderedOverlays);
+            PathCollector.appendAllNewPaths(appInfo.overlayPaths, collector.overlaysSet, collector.orderedOverlays);
+            this.mResourcesKey = collector.collectedKey();
         }
-        Display display = getAdjustedDisplay(displayId, displayAdjustments);
-        if (display != null) {
-            if (outConfig.semDesktopModeEnabled != 1) {
-                outConfig.semDesktopModeEnabled = 1;
-            }
-            if ((outConfig.uiMode & 2) == 0) {
-                outConfig.uiMode = (outConfig.uiMode & (-16)) | 2;
-            }
-            if (ActivityThread.getProcessDisplayId() != 2 && outConfig.fontScale != MultiWindowCoreState.DEX_FONT_SCALE) {
-                outConfig.fontScale = MultiWindowCoreState.DEX_FONT_SCALE;
+
+        public ResourcesKey getResourcesKey() {
+            return this.mResourcesKey;
+        }
+    }
+
+    public void registerAllResourcesReference(Resources resources) {
+        if (android.content.res.Flags.registerResourcePaths()) {
+            synchronized (this.mLock) {
+                if (this.mAllResourceReferencesCount > 1000) {
+                    this.mAllResourceReferencesCount = 0;
+                    cleanupReferences(this.mAllResourceReferences, this.mAllResourceReferencesQueue);
+                } else {
+                    this.mAllResourceReferencesCount++;
+                }
+                this.mAllResourceReferences.add(new WeakReference<>(resources, this.mAllResourceReferencesQueue));
             }
         }
     }
 
-    private Display getAdjustedDisplay(int displayId, DisplayAdjustments daj) {
-        synchronized (this.mLock) {
-            DisplayManagerGlobal dm = DisplayManagerGlobal.getInstance();
-            if (dm == null) {
-                return null;
-            }
-            return dm.getCompatibleDisplay(displayId, daj);
-        }
-    }
-
-    private boolean shouldApplyDisplayMetricsForDex(ResourcesKey key) {
-        return ActivityThread.isInDexDisplay() ? key.mDisplayId2 != 2 : key.mDisplayId2 == 2;
-    }
-
-    boolean shouldApplyDexDisplayId(boolean creatingDisplayContext, boolean creatingDeXConfigContext, Integer overrideDisplayId) {
-        if (ActivityThread.isInDexDisplay() || creatingDeXConfigContext) {
+    public static boolean isOriginDisplayId(int displayId) {
+        if (displayId == 2) {
             return true;
         }
-        return creatingDisplayContext ? overrideDisplayId != null && overrideDisplayId.intValue() == 2 : this.mResConfiguration.isDexMode() && this.mResConfiguration.dexMode == 2;
+        return false;
     }
 
-    private boolean shouldResetCompatSandBoxValues(Configuration config, Configuration overrideConfig) {
-        return config.windowConfiguration.getCompatSandboxFlags() != 0 && overrideConfig.windowConfiguration.getCompatSandboxFlags() == 0;
+    private int shouldApplyOriginDisplayId(boolean creatingDisplayContext, boolean creatingOriginConfigContext, Integer overrideDisplayId) {
+        if (creatingOriginConfigContext || ((creatingDisplayContext && overrideDisplayId != null && overrideDisplayId.intValue() == 2) || (this.mResConfiguration.isDexMode() && this.mResConfiguration.dexMode == 2))) {
+            return 2;
+        }
+        return 0;
     }
 }

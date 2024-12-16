@@ -10,35 +10,29 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class StopActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<StopActivityItem> CREATOR = new Parcelable.Creator<StopActivityItem>() { // from class: android.app.servertransaction.StopActivityItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StopActivityItem createFromParcel(Parcel in) {
             return new StopActivityItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StopActivityItem[] newArray(int size) {
             return new StopActivityItem[size];
         }
     };
     private static final String TAG = "StopActivityItem";
-    private int mConfigChanges;
-
-    /* synthetic */ StopActivityItem(Parcel parcel, StopActivityItemIA stopActivityItemIA) {
-        this(parcel);
-    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
         Trace.traceBegin(64L, "activityStop");
-        client.handleStopActivity(r, this.mConfigChanges, pendingActions, true, "STOP_ACTIVITY_ITEM");
+        client.handleStopActivity(r, pendingActions, true, "STOP_ACTIVITY_ITEM");
         Trace.traceEnd(64L);
     }
 
     @Override // android.app.servertransaction.BaseClientRequest
-    public void postExecute(ClientTransactionHandler client, IBinder token, PendingTransactionActions pendingActions) {
+    public void postExecute(ClientTransactionHandler client, PendingTransactionActions pendingActions) {
         client.reportStop(pendingActions);
     }
 
@@ -50,68 +44,27 @@ public class StopActivityItem extends ActivityLifecycleItem {
     private StopActivityItem() {
     }
 
-    public static StopActivityItem obtain(int configChanges) {
+    public static StopActivityItem obtain(IBinder activityToken) {
         StopActivityItem instance = (StopActivityItem) ObjectPool.obtain(StopActivityItem.class);
         if (instance == null) {
             instance = new StopActivityItem();
         }
-        instance.mConfigChanges = configChanges;
+        instance.setActivityToken(activityToken);
         return instance;
     }
 
-    @Override // android.app.servertransaction.ActivityLifecycleItem, android.app.servertransaction.ObjectPoolItem
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.app.servertransaction.ObjectPoolItem
     public void recycle() {
         super.recycle();
-        this.mConfigChanges = 0;
         ObjectPool.recycle(this);
     }
 
-    @Override // android.os.Parcelable
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.mConfigChanges);
-    }
-
     private StopActivityItem(Parcel in) {
-        this.mConfigChanges = in.readInt();
+        super(in);
     }
 
-    /* renamed from: android.app.servertransaction.StopActivityItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StopActivityItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StopActivityItem createFromParcel(Parcel in) {
-            return new StopActivityItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StopActivityItem[] newArray(int size) {
-            return new StopActivityItem[size];
-        }
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        StopActivityItem other = (StopActivityItem) o;
-        if (this.mConfigChanges == other.mConfigChanges) {
-            return true;
-        }
-        return false;
-    }
-
-    public int hashCode() {
-        int result = (17 * 31) + this.mConfigChanges;
-        return result;
-    }
-
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public String toString() {
-        return "StopActivityItem{configChanges=" + this.mConfigChanges + "}";
+        return "StopActivityItem{" + super.toString() + "}";
     }
 }

@@ -33,17 +33,17 @@ import java.lang.ref.WeakReference;
 
 /* loaded from: classes4.dex */
 public class ToastPresenter {
-    public static final int DEVICE_DEFAULT_TEXT_TOAST_LAYOUT = 17367422;
+    public static final int DEVICE_DEFAULT_TEXT_TOAST_LAYOUT = 17367430;
     private static final long LONG_DURATION_TIMEOUT = 7000;
     private static final float MAX_FONT_SCALE = 1.3f;
     private static final long SHORT_DURATION_TIMEOUT = 4000;
     private static final String TAG = "ToastPresenter";
-    public static final int TEXT_TOAST_LAYOUT = 17367467;
-    public static final int TEXT_TOAST_LAYOUT_WITH_ICON = 17367468;
+    public static final int TEXT_TOAST_LAYOUT = 17367475;
+    public static final int TEXT_TOAST_LAYOUT_WITH_ICON = 17367476;
     private static final String WINDOW_TITLE = "Toast";
     static final boolean localLOGV = Debug.semIsProductDev();
-    private final WeakReference<AccessibilityManager> mAccessibilityManager;
-    private final Context mContext;
+    private final IAccessibilityManager mAccessibilityManagerService;
+    private final WeakReference<Context> mContext;
     private final String mContextPackageName;
     private final INotificationManager mNotificationManager;
     private final String mPackageName;
@@ -51,14 +51,13 @@ public class ToastPresenter {
     private final Resources mResources;
     private IBinder mToken;
     private View mView;
-    private final WeakReference<WindowManager> mWindowManager;
 
     public static View getTextToastView(Context context, CharSequence text) {
         TypedValue outValue = new TypedValue();
         boolean isDeviceDefault = context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, outValue, true) && outValue.data != 0;
-        View view = isDeviceDefault ? LayoutInflater.from(context).inflate(17367422, (ViewGroup) null) : LayoutInflater.from(context).inflate(17367467, (ViewGroup) null);
+        View view = isDeviceDefault ? LayoutInflater.from(context).inflate(17367430, (ViewGroup) null) : LayoutInflater.from(context).inflate(17367475, (ViewGroup) null);
         TextView textView = (TextView) view.findViewById(16908299);
-        textView.setText(text);
+        textView.lambda$setTextAsync$0(text);
         semCheckMaxFontScale(context, textView, context.getResources().getDimensionPixelSize(R.dimen.sem_toast_text_size));
         return view;
     }
@@ -67,24 +66,23 @@ public class ToastPresenter {
         if (icon == null) {
             return getTextToastView(context, text);
         }
-        View view = LayoutInflater.from(context).inflate(17367468, (ViewGroup) null);
+        View view = LayoutInflater.from(context).inflate(17367476, (ViewGroup) null);
         TextView textView = (TextView) view.findViewById(16908299);
-        textView.setText(text);
+        textView.lambda$setTextAsync$0(text);
         ImageView imageView = (ImageView) view.findViewById(16908294);
         if (imageView != null) {
-            imageView.lambda$setImageURIAsync$2(icon);
+            imageView.lambda$setImageURIAsync$0(icon);
         }
         return view;
     }
 
     public ToastPresenter(Context context, IAccessibilityManager accessibilityManager, INotificationManager notificationManager, String packageName) {
-        this.mContext = context;
+        this.mContext = new WeakReference<>(context);
         this.mResources = context.getResources();
-        this.mWindowManager = new WeakReference<>((WindowManager) context.getSystemService(WindowManager.class));
         this.mNotificationManager = notificationManager;
         this.mPackageName = packageName;
         this.mContextPackageName = context.getPackageName();
-        this.mAccessibilityManager = new WeakReference<>(new AccessibilityManager(context, accessibilityManager, context.getUserId()));
+        this.mAccessibilityManagerService = accessibilityManager;
     }
 
     public String getPackageName() {
@@ -175,7 +173,7 @@ public class ToastPresenter {
         Preconditions.checkState(this.mView == null, "Only one toast at a time is allowed, call hide() first.");
         this.mView = view;
         this.mToken = token;
-        SemDesktopModeManager desktopModeManager = (SemDesktopModeManager) this.mContext.getSystemService(Context.SEM_DESKTOP_MODE_SERVICE);
+        SemDesktopModeManager desktopModeManager = (SemDesktopModeManager) this.mContext.get().getSystemService(Context.SEM_DESKTOP_MODE_SERVICE);
         if (desktopModeManager == null) {
             isDeskTopMode = false;
         } else {
@@ -213,7 +211,7 @@ public class ToastPresenter {
 
     public void hide(ITransientNotificationCallback callback) {
         Preconditions.checkState(this.mView != null, "No toast to hide.");
-        WindowManager windowManager = this.mWindowManager.get();
+        WindowManager windowManager = getWindowManager(this.mView);
         if (this.mView.getParent() != null && windowManager != null) {
             windowManager.removeViewImmediate(this.mView);
         }
@@ -233,11 +231,23 @@ public class ToastPresenter {
         this.mToken = null;
     }
 
+    private WindowManager getWindowManager(View view) {
+        Context context = this.mContext.get();
+        if (context == null && view != null) {
+            context = view.getContext();
+        }
+        if (context != null) {
+            return (WindowManager) context.getSystemService(WindowManager.class);
+        }
+        return null;
+    }
+
     public void trySendAccessibilityEvent(View view, String packageName) {
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager.get();
-        if (accessibilityManager == null) {
+        Context context = this.mContext.get();
+        if (context == null) {
             return;
         }
+        AccessibilityManager accessibilityManager = new AccessibilityManager(context, this.mAccessibilityManagerService, context.getUserId());
         if (!accessibilityManager.isEnabled()) {
             accessibilityManager.removeClient();
             return;
@@ -251,7 +261,7 @@ public class ToastPresenter {
     }
 
     private void addToastView() {
-        WindowManager windowManager = this.mWindowManager.get();
+        WindowManager windowManager = getWindowManager(this.mView);
         if (windowManager == null) {
             return;
         }
@@ -268,6 +278,8 @@ public class ToastPresenter {
             windowManager.addView(this.mView, this.mParams);
         } catch (WindowManager.BadTokenException e) {
             Log.w(TAG, "Error while attempting to show toast from " + this.mPackageName, e);
+        } catch (WindowManager.InvalidDisplayException e2) {
+            Log.w(TAG, "Cannot show toast from " + this.mPackageName + " on display it was scheduled on.", e2);
         }
     }
 
@@ -286,10 +298,12 @@ public class ToastPresenter {
         if (this.mResources.getConfiguration().orientation == 2) {
             return yOffset;
         }
-        FingerprintManager fpm = (FingerprintManager) this.mContext.getSystemService(Context.FINGERPRINT_SERVICE);
+        Context context = this.mContext.get();
+        this.mContext.get();
+        FingerprintManager fpm = (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
         boolean isFingerPrintInDisplay = false;
         int fingerIconHeight = 0;
-        int mFingerOffsetY = this.mContext.getResources().getDimensionPixelSize(R.dimen.sem_toast_fingerPrint_y_offset);
+        int mFingerOffsetY = this.mContext.get().getResources().getDimensionPixelSize(R.dimen.sem_toast_fingerPrint_y_offset);
         if (fpm != null) {
             fingerIconHeight = fpm.semGetIconBottomMargin();
             isFingerPrintInDisplay = FingerprintManager.semGetSensorPosition() == 2;
@@ -317,7 +331,7 @@ public class ToastPresenter {
     }
 
     private int semGetSipHeight() {
-        WindowManager windowManager = this.mWindowManager.get();
+        WindowManager windowManager = getWindowManager(this.mView);
         if (windowManager == null) {
             return 0;
         }

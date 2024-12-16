@@ -11,7 +11,7 @@ import com.samsung.android.media.AudioParameter;
 import com.samsung.android.security.IDirEncryptService;
 import java.io.File;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemSdCardEncryption {
     public static final String ADMIN_START = "adminStart";
     public static final String CHECK_OTHER_DEVICE = "OtherDevice";
@@ -52,7 +52,6 @@ public class SemSdCardEncryption {
     public static int SECURITY_POLICY_NOTIFICATION_ID = -889275714;
     private static boolean mPolicyChanged = false;
 
-    /* loaded from: classes5.dex */
     public static final class Status {
         public static final int DECRYPTING = 3;
         public static final int ENCRYPTING = 2;
@@ -63,7 +62,6 @@ public class SemSdCardEncryption {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class EncryptionState {
         public static final int DECRYPTED = 3;
         public static final int DECRYPTING = 1;
@@ -75,7 +73,6 @@ public class SemSdCardEncryption {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class Error {
         public static final int DECRYPT = 6;
         public static final int ENCRYPT = 5;
@@ -99,9 +96,8 @@ public class SemSdCardEncryption {
         this.m_InstDirEncSvc = null;
         this.mContext = context;
         this.mDew = new DirEncryptionWrapper(this.mContext);
-        IDirEncryptService asInterface = IDirEncryptService.Stub.asInterface(ServiceManager.getService(NAME));
-        this.m_InstDirEncSvc = asInterface;
-        if (asInterface == null) {
+        this.m_InstDirEncSvc = IDirEncryptService.Stub.asInterface(ServiceManager.getService(NAME));
+        if (this.m_InstDirEncSvc == null) {
             Log.e(TAG, "Unable to get DirEncryptService instance.");
         }
         if (!IS_SUPPORT_SDCARD_SLOT) {
@@ -111,24 +107,22 @@ public class SemSdCardEncryption {
     }
 
     public void registerListener(IDirEncryptServiceListener listener) {
-        IDirEncryptService iDirEncryptService = this.m_InstDirEncSvc;
-        if (iDirEncryptService == null) {
+        if (this.m_InstDirEncSvc == null) {
             return;
         }
         try {
-            iDirEncryptService.registerListener(listener);
+            this.m_InstDirEncSvc.registerListener(listener);
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
         }
     }
 
     public void unregisterListener(IDirEncryptServiceListener listener) {
-        IDirEncryptService iDirEncryptService = this.m_InstDirEncSvc;
-        if (iDirEncryptService == null) {
+        if (this.m_InstDirEncSvc == null) {
             return;
         }
         try {
-            iDirEncryptService.unregisterListener(listener);
+            this.m_InstDirEncSvc.unregisterListener(listener);
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
         }
@@ -193,36 +187,33 @@ public class SemSdCardEncryption {
     }
 
     public void setNeedToCreateKey(boolean in) {
-        IDirEncryptService iDirEncryptService;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return;
         }
         try {
-            iDirEncryptService.setNeedToCreateKey(in);
+            this.m_InstDirEncSvc.setNeedToCreateKey(in);
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
         }
     }
 
     public void setMountSDcardToHelper(boolean in) {
-        IDirEncryptService iDirEncryptService;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return;
         }
         try {
-            iDirEncryptService.setMountSDcardToHelper(in);
+            this.m_InstDirEncSvc.setMountSDcardToHelper(in);
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
         }
     }
 
     public IVoldTaskListener getListener() {
-        IDirEncryptService iDirEncryptService;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return null;
         }
         try {
-            return iDirEncryptService.getListener();
+            return this.m_InstDirEncSvc.getListener();
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
             return null;
@@ -230,13 +221,12 @@ public class SemSdCardEncryption {
     }
 
     public int setStorageCardEncryptionPolicy(int encType) {
-        IDirEncryptService iDirEncryptService;
         int result = 200;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return 200;
         }
         try {
-            result = iDirEncryptService.setStorageCardEncryptionPolicy(encType, 4, 7);
+            result = this.m_InstDirEncSvc.setStorageCardEncryptionPolicy(encType, 4, 7);
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
         }
@@ -254,13 +244,12 @@ public class SemSdCardEncryption {
     }
 
     public int setSdCardEncryptionPolicy(int isPolicy, int status, String uuid) {
-        IDirEncryptService iDirEncryptService;
         int result = 200;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return 200;
         }
         try {
-            result = iDirEncryptService.setSdCardEncryptionPolicy(isPolicy, status, uuid);
+            result = this.m_InstDirEncSvc.setSdCardEncryptionPolicy(isPolicy, status, uuid);
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
         }
@@ -274,12 +263,11 @@ public class SemSdCardEncryption {
     }
 
     public boolean isStorageCardEncryptionPoliciesApplied() {
-        IDirEncryptService iDirEncryptService;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return false;
         }
         try {
-            boolean result = iDirEncryptService.isStorageCardEncryptionPoliciesApplied() == 1;
+            boolean result = this.m_InstDirEncSvc.isStorageCardEncryptionPoliciesApplied() == 1;
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
@@ -307,12 +295,11 @@ public class SemSdCardEncryption {
     }
 
     public int getCurrentStatus() {
-        IDirEncryptService iDirEncryptService;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return 200;
         }
         try {
-            int result = iDirEncryptService.getCurrentStatus();
+            int result = this.m_InstDirEncSvc.getCurrentStatus();
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
@@ -321,12 +308,11 @@ public class SemSdCardEncryption {
     }
 
     public int getLastError() {
-        IDirEncryptService iDirEncryptService;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return 200;
         }
         try {
-            int result = iDirEncryptService.getLastError();
+            int result = this.m_InstDirEncSvc.getLastError();
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
@@ -335,12 +321,11 @@ public class SemSdCardEncryption {
     }
 
     public int getAdditionalSpaceRequired() {
-        IDirEncryptService iDirEncryptService;
-        if (!isEncryptionSupported() || (iDirEncryptService = this.m_InstDirEncSvc) == null) {
+        if (!isEncryptionSupported() || this.m_InstDirEncSvc == null) {
             return 200;
         }
         try {
-            int result = iDirEncryptService.getAdditionalSpaceRequired();
+            int result = this.m_InstDirEncSvc.getAdditionalSpaceRequired();
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
@@ -349,12 +334,11 @@ public class SemSdCardEncryption {
     }
 
     public boolean isSdCardEncryped() {
-        IDirEncryptService iDirEncryptService = this.m_InstDirEncSvc;
-        if (iDirEncryptService == null) {
+        if (this.m_InstDirEncSvc == null) {
             return false;
         }
         try {
-            boolean result = iDirEncryptService.isSdCardEncryped();
+            boolean result = this.m_InstDirEncSvc.isSdCardEncryped();
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
@@ -363,12 +347,11 @@ public class SemSdCardEncryption {
     }
 
     public void unmountSDCardByAdmin() {
-        IDirEncryptService iDirEncryptService = this.m_InstDirEncSvc;
-        if (iDirEncryptService == null) {
+        if (this.m_InstDirEncSvc == null) {
             return;
         }
         try {
-            iDirEncryptService.unmountSDCardByAdmin();
+            this.m_InstDirEncSvc.unmountSDCardByAdmin();
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to communicate with DirEncryptService");
         }

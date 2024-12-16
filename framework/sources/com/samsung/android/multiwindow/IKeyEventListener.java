@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.view.KeyEvent;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IKeyEventListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multiwindow.IKeyEventListener";
 
     void sendShortcutKeyWithFocusedTask(int i, KeyEvent keyEvent) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKeyEventListener {
         @Override // com.samsung.android.multiwindow.IKeyEventListener
         public void sendShortcutKeyWithFocusedTask(int taskId, KeyEvent key) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IKeyEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKeyEventListener {
         static final int TRANSACTION_sendShortcutKeyWithFocusedTask = 1;
 
@@ -68,26 +66,23 @@ public interface IKeyEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKeyEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKeyEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKeyEventListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    KeyEvent _arg1 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendShortcutKeyWithFocusedTask(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            KeyEvent _arg1 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendShortcutKeyWithFocusedTask(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IKeyEventListener {
+        private static class Proxy implements IKeyEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,23 +1,26 @@
 package android.view;
 
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.Region;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.IBinder;
-import android.view.IWindow;
+import android.util.Size;
+import android.view.SurfaceControl;
+import com.android.window.flags.Flags;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
 /* loaded from: classes4.dex */
 public final class InputWindowHandle {
+    public float alpha;
+    public boolean canOccludePresentation;
+    public Size contentSize;
     public long dispatchingTimeoutMillis;
     public int displayId;
     public IBinder focusTransferTarget;
-    public int frameBottom;
-    public int frameLeft;
-    public int frameRight;
-    public int frameTop;
+    public final Rect frame;
     public InputApplicationHandle inputApplicationHandle;
     public int inputConfig;
     public int layoutParamsFlags;
@@ -40,17 +43,17 @@ public final class InputWindowHandle {
     public final Region touchableRegion;
     public WeakReference<SurfaceControl> touchableRegionSurfaceControl;
     public Matrix transform;
-    private IWindow window;
     private IBinder windowToken;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface InputConfigFlags {
     }
 
     private native void nativeDispose();
 
     public InputWindowHandle(InputApplicationHandle inputApplicationHandle, int displayId) {
+        this.frame = new Rect();
+        this.contentSize = new Size(0, 0);
         this.touchableRegion = new Region();
         this.pointerTouchableRegion = new Region();
         this.touchOcclusionMode = 0;
@@ -60,8 +63,9 @@ public final class InputWindowHandle {
     }
 
     public InputWindowHandle(InputWindowHandle other) {
-        Region region = new Region();
-        this.touchableRegion = region;
+        this.frame = new Rect();
+        this.contentSize = new Size(0, 0);
+        this.touchableRegion = new Region();
         this.pointerTouchableRegion = new Region();
         this.touchOcclusionMode = 0;
         this.touchableRegionSurfaceControl = new WeakReference<>(null);
@@ -69,18 +73,14 @@ public final class InputWindowHandle {
         this.inputApplicationHandle = new InputApplicationHandle(other.inputApplicationHandle);
         this.token = other.token;
         this.windowToken = other.windowToken;
-        this.window = other.window;
         this.name = other.name;
         this.layoutParamsFlags = other.layoutParamsFlags;
         this.layoutParamsType = other.layoutParamsType;
         this.dispatchingTimeoutMillis = other.dispatchingTimeoutMillis;
-        this.frameLeft = other.frameLeft;
-        this.frameTop = other.frameTop;
-        this.frameRight = other.frameRight;
-        this.frameBottom = other.frameBottom;
+        this.frame.set(other.frame);
         this.surfaceInset = other.surfaceInset;
         this.scaleFactor = other.scaleFactor;
-        region.set(other.touchableRegion);
+        this.touchableRegion.set(other.touchableRegion);
         this.inputConfig = other.inputConfig;
         this.touchOcclusionMode = other.touchOcclusionMode;
         this.ownerPid = other.ownerPid;
@@ -90,19 +90,17 @@ public final class InputWindowHandle {
         this.touchableRegionSurfaceControl = other.touchableRegionSurfaceControl;
         this.replaceTouchableRegionWithCrop = other.replaceTouchableRegionWithCrop;
         if (other.transform != null) {
-            Matrix matrix = new Matrix();
-            this.transform = matrix;
-            matrix.set(other.transform);
+            this.transform = new Matrix();
+            this.transform.set(other.transform);
         }
         this.focusTransferTarget = other.focusTransferTarget;
+        this.contentSize = new Size(other.contentSize.getWidth(), other.contentSize.getHeight());
+        this.alpha = other.alpha;
+        this.canOccludePresentation = other.canOccludePresentation;
     }
 
     public String toString() {
-        String str = this.name;
-        if (str == null) {
-            str = "";
-        }
-        return str + ", frame=[" + this.frameLeft + "," + this.frameTop + "," + this.frameRight + "," + this.frameBottom + NavigationBarInflaterView.SIZE_MOD_END + ", touchableRegion=" + this.touchableRegion + ", scaleFactor=" + this.scaleFactor + ", transform=" + this.transform + ", windowToken=" + this.windowToken + ", displayId=" + this.displayId + ", isClone=" + ((this.inputConfig & 65536) != 0);
+        return (this.name != null ? this.name : "") + ", frame=[" + this.frame + NavigationBarInflaterView.SIZE_MOD_END + ", touchableRegion=" + this.touchableRegion + ", scaleFactor=" + this.scaleFactor + ", transform=" + this.transform + ", windowToken=" + this.windowToken + ", displayId=" + this.displayId + ", isClone=" + ((this.inputConfig & 65536) != 0) + ", contentSize=" + this.contentSize + ", alpha=" + this.alpha + ", canOccludePresentation=" + this.canOccludePresentation;
     }
 
     protected void finalize() throws Throwable {
@@ -122,23 +120,12 @@ public final class InputWindowHandle {
         this.touchableRegionSurfaceControl = new WeakReference<>(bounds);
     }
 
-    public void setWindowToken(IWindow iwindow) {
-        this.windowToken = iwindow.asBinder();
-        this.window = iwindow;
+    public void setWindowToken(IBinder iwindow) {
+        this.windowToken = iwindow;
     }
 
     public IBinder getWindowToken() {
         return this.windowToken;
-    }
-
-    public IWindow getWindow() {
-        IWindow iWindow = this.window;
-        if (iWindow != null) {
-            return iWindow;
-        }
-        IWindow asInterface = IWindow.Stub.asInterface(this.windowToken);
-        this.window = asInterface;
-        return asInterface;
     }
 
     public void setInputConfig(int inputConfig, boolean value) {
@@ -146,6 +133,14 @@ public final class InputWindowHandle {
             this.inputConfig |= inputConfig;
         } else {
             this.inputConfig &= ~inputConfig;
+        }
+    }
+
+    public void setTrustedOverlay(SurfaceControl.Transaction t, SurfaceControl sc, boolean isTrusted) {
+        if (Flags.surfaceTrustedOverlay()) {
+            t.setTrustedOverlay(sc, isTrusted);
+        } else if (isTrusted) {
+            this.inputConfig |= 256;
         }
     }
 }

@@ -14,7 +14,7 @@ import com.samsung.android.wallpaper.legibilitycolors.utils.interpolater.EasingQ
 import java.util.Arrays;
 import java.util.Objects;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class LegibilityLogic extends ColorExtractor {
     private static final String TAG = "LegibilityLogic";
     static final float mBgBrightnessRangeBlackMax = 0.7f;
@@ -107,8 +107,7 @@ public class LegibilityLogic extends ColorExtractor {
     }
 
     public static float computeBrightnessComplexity(ColorExtractor.DominantColorResult[] dominantColorResults) {
-        float[][] hsvColors = new float[dominantColorResults.length];
-        float[] fArr = new float[3];
+        float[][] hsvColors = new float[dominantColorResults.length][];
         float avgBrightness = 0.0f;
         for (int i = 0; i < dominantColorResults.length; i++) {
             if (dominantColorResults[i].percentage == 0.0f) {
@@ -270,7 +269,6 @@ public class LegibilityLogic extends ColorExtractor {
         return calculateTotalLegibilityResult(pixels, avgHSV, width, height, majorLegibilityResult, contentColorType, userPredefinedColor);
     }
 
-    /* loaded from: classes5.dex */
     public static class AdaptiveShadowData implements Cloneable {
         private static final String TAG = "AdaptiveShadowData";
         public int contentColor;
@@ -305,21 +303,14 @@ public class LegibilityLogic extends ColorExtractor {
             return "\nAdaptiveShadowData{\ndominantColorResults=" + Arrays.toString(this.dominantColorResults) + "\nshadowOpacityNormalized=" + this.shadowOpacityNormalized + "\nshadowSizeNormalized=" + this.shadowSizeNormalized + "\ncontentOpacityNormalized=" + this.contentOpacityNormalized + "\ncontentColor=" + this.contentColor + "\nluminanceComplexity=" + this.luminanceComplexity + "\ncontentContrastDiff=" + this.contentContrastDiff + "\ncontentContrastDiffNormalized=" + this.contentContrastDiffNormalized + "\nshapeComplexity=" + this.shapeComplexity + "\nshapeComplexityNormalized=" + this.shapeComplexityNormalized + "\ntotalComplexity=" + this.totalComplexity + '}';
         }
 
-        /* renamed from: clone */
-        public AdaptiveShadowData m8837clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public AdaptiveShadowData m9225clone() {
             try {
                 AdaptiveShadowData clone = (AdaptiveShadowData) super.clone();
-                ColorExtractor.DominantColorResult[] dominantColorResultArr = this.dominantColorResults;
-                if (dominantColorResultArr != null) {
-                    clone.dominantColorResults = new ColorExtractor.DominantColorResult[dominantColorResultArr.length];
-                    int i = 0;
-                    while (true) {
-                        ColorExtractor.DominantColorResult[] dominantColorResultArr2 = this.dominantColorResults;
-                        if (i >= dominantColorResultArr2.length) {
-                            break;
-                        }
-                        clone.dominantColorResults[i] = dominantColorResultArr2[i].m8839clone();
-                        i++;
+                if (this.dominantColorResults != null) {
+                    clone.dominantColorResults = new ColorExtractor.DominantColorResult[this.dominantColorResults.length];
+                    for (int i = 0; i < this.dominantColorResults.length; i++) {
+                        clone.dominantColorResults[i] = this.dominantColorResults[i].m9227clone();
                     }
                 }
                 return clone;
@@ -330,7 +321,6 @@ public class LegibilityLogic extends ColorExtractor {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class LegibilityResult implements Cloneable {
         private static final String TAG = "LegibilityResult";
         public AdaptiveShadowData adaptiveShadowData;
@@ -351,9 +341,8 @@ public class LegibilityLogic extends ColorExtractor {
 
         public LegibilityResult(LegibilityResult legibilityResult) {
             this.adaptiveShadowData = legibilityResult.adaptiveShadowData;
-            LegibilityDefinition.ColorType colorType = legibilityResult.contentsColorType;
-            this.contentsColorType = colorType;
-            this.contentsColor = colorType == LegibilityDefinition.ColorType.LIGHT ? LegibilityDefinition.CONTENT_COLOR_LIGHT : -12303292;
+            this.contentsColorType = legibilityResult.contentsColorType;
+            this.contentsColor = this.contentsColorType == LegibilityDefinition.ColorType.LIGHT ? LegibilityDefinition.CONTENT_COLOR_LIGHT : -12303292;
             this.dominantColorResult = legibilityResult.dominantColorResult;
             this.avgHSV = legibilityResult.avgHSV;
             this.adjustedContentsColor = legibilityResult.adjustedContentsColor;
@@ -393,39 +382,24 @@ public class LegibilityLogic extends ColorExtractor {
             return "\nLegibilityResult{\n  contentsColorType=" + this.contentsColorType + "\n  contentsColor=" + this.contentsColor + "\n  adjustedContentsColor=" + this.adjustedContentsColor + "\n  dominantColorResult=" + Arrays.toString(this.dominantColorResult) + "\n  avgHSV=" + Arrays.toString(this.avgHSV) + "\n  adaptiveShadowData=" + this.adaptiveShadowData + '}';
         }
 
-        /* renamed from: clone */
-        public LegibilityResult m8838clone() {
+        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        public LegibilityResult m9226clone() {
             try {
                 LegibilityResult clone = (LegibilityResult) super.clone();
                 clone.contentsColorType = this.contentsColorType;
-                AdaptiveShadowData adaptiveShadowData = this.adaptiveShadowData;
-                if (adaptiveShadowData != null) {
-                    clone.adaptiveShadowData = adaptiveShadowData.m8837clone();
+                if (this.adaptiveShadowData != null) {
+                    clone.adaptiveShadowData = this.adaptiveShadowData.m9225clone();
                 }
-                ColorExtractor.DominantColorResult[] dominantColorResultArr = this.dominantColorResult;
-                if (dominantColorResultArr != null) {
-                    clone.dominantColorResult = new ColorExtractor.DominantColorResult[dominantColorResultArr.length];
-                    int i = 0;
-                    while (true) {
-                        ColorExtractor.DominantColorResult[] dominantColorResultArr2 = this.dominantColorResult;
-                        if (i >= dominantColorResultArr2.length) {
-                            break;
-                        }
-                        clone.dominantColorResult[i] = dominantColorResultArr2[i].m8839clone();
-                        i++;
+                if (this.dominantColorResult != null) {
+                    clone.dominantColorResult = new ColorExtractor.DominantColorResult[this.dominantColorResult.length];
+                    for (int i = 0; i < this.dominantColorResult.length; i++) {
+                        clone.dominantColorResult[i] = this.dominantColorResult[i].m9227clone();
                     }
                 }
-                float[] fArr = this.avgHSV;
-                if (fArr != null) {
-                    clone.avgHSV = new float[fArr.length];
-                    int i2 = 0;
-                    while (true) {
-                        float[] fArr2 = this.avgHSV;
-                        if (i2 >= fArr2.length) {
-                            break;
-                        }
-                        clone.avgHSV[i2] = fArr2[i2];
-                        i2++;
+                if (this.avgHSV != null) {
+                    clone.avgHSV = new float[this.avgHSV.length];
+                    for (int i2 = 0; i2 < this.avgHSV.length; i2++) {
+                        clone.avgHSV[i2] = this.avgHSV[i2];
                     }
                 }
                 return clone;

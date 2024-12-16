@@ -20,7 +20,6 @@ public interface IInterfaceEventCallback extends IInterface {
 
     void OnClientTorndownEvent(IClientInterface iClientInterface) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IInterfaceEventCallback {
         @Override // android.net.wifi.nl80211.IInterfaceEventCallback
         public void OnClientInterfaceReady(IClientInterface network_interface) throws RemoteException {
@@ -44,7 +43,6 @@ public interface IInterfaceEventCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IInterfaceEventCallback {
         static final int TRANSACTION_OnApInterfaceReady = 2;
         static final int TRANSACTION_OnApTorndownEvent = 4;
@@ -96,41 +94,37 @@ public interface IInterfaceEventCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInterfaceEventCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInterfaceEventCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInterfaceEventCallback.DESCRIPTOR);
+                case 1:
+                    IClientInterface _arg0 = IClientInterface.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    OnClientInterfaceReady(_arg0);
+                    return true;
+                case 2:
+                    IApInterface _arg02 = IApInterface.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    OnApInterfaceReady(_arg02);
+                    return true;
+                case 3:
+                    IClientInterface _arg03 = IClientInterface.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    OnClientTorndownEvent(_arg03);
+                    return true;
+                case 4:
+                    IApInterface _arg04 = IApInterface.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    OnApTorndownEvent(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IClientInterface _arg0 = IClientInterface.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            OnClientInterfaceReady(_arg0);
-                            return true;
-                        case 2:
-                            IApInterface _arg02 = IApInterface.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            OnApInterfaceReady(_arg02);
-                            return true;
-                        case 3:
-                            IClientInterface _arg03 = IClientInterface.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            OnClientTorndownEvent(_arg03);
-                            return true;
-                        case 4:
-                            IApInterface _arg04 = IApInterface.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            OnApTorndownEvent(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IInterfaceEventCallback {
+        private static class Proxy implements IInterfaceEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

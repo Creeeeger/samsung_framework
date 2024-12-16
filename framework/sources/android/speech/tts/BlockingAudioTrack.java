@@ -6,7 +6,7 @@ import android.speech.tts.TextToSpeechService;
 import android.util.Log;
 
 /* loaded from: classes3.dex */
-public class BlockingAudioTrack {
+class BlockingAudioTrack {
     private static final boolean DBG = false;
     private static final long MAX_PROGRESS_WAIT_MS = 2500;
     private static final long MAX_SLEEP_TIME_MS = 2500;
@@ -26,13 +26,13 @@ public class BlockingAudioTrack {
     private AudioTrack mAudioTrack = null;
     private volatile boolean mStopped = false;
 
-    public BlockingAudioTrack(TextToSpeechService.AudioOutputParams audioParams, int sampleRate, int audioFormat, int channelCount) {
+    BlockingAudioTrack(TextToSpeechService.AudioOutputParams audioParams, int sampleRate, int audioFormat, int channelCount) {
         this.mBytesWritten = 0;
         this.mAudioParams = audioParams;
         this.mSampleRateInHz = sampleRate;
         this.mAudioFormat = audioFormat;
         this.mChannelCount = channelCount;
-        this.mBytesPerFrame = AudioFormat.getBytesPerSample(audioFormat) * channelCount;
+        this.mBytesPerFrame = AudioFormat.getBytesPerSample(this.mAudioFormat) * this.mChannelCount;
         this.mBytesWritten = 0;
     }
 
@@ -49,9 +49,8 @@ public class BlockingAudioTrack {
 
     public void stop() {
         synchronized (this.mAudioTrackLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null) {
-                audioTrack.stop();
+            if (this.mAudioTrack != null) {
+                this.mAudioTrack.stop();
             }
             this.mStopped = true;
         }
@@ -91,7 +90,7 @@ public class BlockingAudioTrack {
         track.release();
     }
 
-    public static int getChannelConfig(int channelCount) {
+    static int getChannelConfig(int channelCount) {
         if (channelCount == 1) {
             return 4;
         }
@@ -101,22 +100,32 @@ public class BlockingAudioTrack {
         return 0;
     }
 
-    public long getAudioLengthMs(int numBytes) {
+    long getAudioLengthMs(int numBytes) {
         int unconsumedFrames = numBytes / this.mBytesPerFrame;
         long estimatedTimeMs = (unconsumedFrames * 1000) / this.mSampleRateInHz;
         return estimatedTimeMs;
     }
 
     private static int writeToAudioTrack(AudioTrack audioTrack, byte[] bytes) {
-        int written;
         if (audioTrack.getPlayState() != 3) {
             audioTrack.play();
         }
-        int count = 0;
-        while (count < bytes.length && (written = audioTrack.write(bytes, count, bytes.length)) > 0) {
-            count += written;
+        int offset = 0;
+        while (true) {
+            if (offset >= bytes.length) {
+                break;
+            }
+            int sizeToWrite = bytes.length - offset;
+            int written = audioTrack.write(bytes, offset, sizeToWrite);
+            if (written <= 0) {
+                if (written < 0) {
+                    Log.e(TAG, "An error occurred while writing to audio track: " + written);
+                }
+            } else {
+                offset += written;
+            }
         }
-        return count;
+        return offset;
     }
 
     private AudioTrack createStreamingAudioTrack() {
@@ -210,18 +219,16 @@ public class BlockingAudioTrack {
 
     public void setPlaybackPositionUpdateListener(AudioTrack.OnPlaybackPositionUpdateListener listener) {
         synchronized (this.mAudioTrackLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null) {
-                audioTrack.setPlaybackPositionUpdateListener(listener);
+            if (this.mAudioTrack != null) {
+                this.mAudioTrack.setPlaybackPositionUpdateListener(listener);
             }
         }
     }
 
     public void setNotificationMarkerPosition(int frames) {
         synchronized (this.mAudioTrackLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null) {
-                audioTrack.setNotificationMarkerPosition(frames);
+            if (this.mAudioTrack != null) {
+                this.mAudioTrack.setNotificationMarkerPosition(frames);
             }
         }
     }

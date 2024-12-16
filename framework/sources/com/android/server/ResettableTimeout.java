@@ -4,7 +4,7 @@ import android.os.ConditionVariable;
 import android.os.SystemClock;
 
 /* loaded from: classes5.dex */
-public abstract class ResettableTimeout {
+abstract class ResettableTimeout {
     private ConditionVariable mLock = new ConditionVariable();
     private volatile long mOffAt;
     private volatile boolean mOffCalled;
@@ -21,18 +21,16 @@ public abstract class ResettableTimeout {
         boolean alreadyOn;
         synchronized (this) {
             this.mOffAt = SystemClock.uptimeMillis() + milliseconds;
-            Thread thread = this.mThread;
-            if (thread == null) {
+            if (this.mThread == null) {
                 alreadyOn = false;
                 this.mLock.close();
-                T t = new T();
-                this.mThread = t;
-                t.start();
+                this.mThread = new T();
+                this.mThread.start();
                 this.mLock.block();
                 this.mOffCalled = false;
             } else {
-                thread.interrupt();
                 alreadyOn = true;
+                this.mThread.interrupt();
             }
             on(alreadyOn);
         }
@@ -41,9 +39,8 @@ public abstract class ResettableTimeout {
     public void cancel() {
         synchronized (this) {
             this.mOffAt = 0L;
-            Thread thread = this.mThread;
-            if (thread != null) {
-                thread.interrupt();
+            if (this.mThread != null) {
+                this.mThread.interrupt();
                 this.mThread = null;
             }
             if (!this.mOffCalled) {
@@ -53,12 +50,7 @@ public abstract class ResettableTimeout {
         }
     }
 
-    /* loaded from: classes5.dex */
     private class T extends Thread {
-        /* synthetic */ T(ResettableTimeout resettableTimeout, TIA tia) {
-            this();
-        }
-
         private T() {
         }
 

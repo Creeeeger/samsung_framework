@@ -8,7 +8,7 @@ class SilencePlaybackQueueItem extends PlaybackQueueItem {
     private final ConditionVariable mCondVar;
     private final long mSilenceDurationMs;
 
-    public SilencePlaybackQueueItem(TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, long silenceDurationMs) {
+    SilencePlaybackQueueItem(TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, long silenceDurationMs) {
         super(dispatcher, callerIdentity);
         this.mCondVar = new ConditionVariable();
         this.mSilenceDurationMs = silenceDurationMs;
@@ -18,9 +18,8 @@ class SilencePlaybackQueueItem extends PlaybackQueueItem {
     public void run() {
         getDispatcher().dispatchOnStart();
         boolean wasStopped = false;
-        long j = this.mSilenceDurationMs;
-        if (j > 0) {
-            wasStopped = this.mCondVar.block(j);
+        if (this.mSilenceDurationMs > 0) {
+            wasStopped = this.mCondVar.block(this.mSilenceDurationMs);
         }
         if (wasStopped) {
             getDispatcher().dispatchOnStop();
@@ -30,7 +29,7 @@ class SilencePlaybackQueueItem extends PlaybackQueueItem {
     }
 
     @Override // android.speech.tts.PlaybackQueueItem
-    public void stop(int errorCode) {
+    void stop(int errorCode) {
         this.mCondVar.open();
     }
 }

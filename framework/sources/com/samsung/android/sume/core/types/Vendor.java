@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public enum Vendor {
     NONE,
     QCOM,
@@ -24,11 +24,11 @@ public enum Vendor {
         });
     }
 
-    public static /* synthetic */ boolean lambda$all$0(Vendor e) {
+    static /* synthetic */ boolean lambda$all$0(Vendor e) {
         return e != NONE;
     }
 
-    public static /* synthetic */ Vendor[] lambda$all$1(int x$0) {
+    static /* synthetic */ Vendor[] lambda$all$1(int x$0) {
         return new Vendor[x$0];
     }
 }

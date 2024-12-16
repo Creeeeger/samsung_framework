@@ -15,10 +15,6 @@ public class LevelListDrawable extends DrawableContainer {
     private LevelListState mLevelListState;
     private boolean mMutated;
 
-    /* synthetic */ LevelListDrawable(LevelListState levelListState, Resources resources, LevelListDrawableIA levelListDrawableIA) {
-        this(levelListState, resources);
-    }
-
     public LevelListDrawable() {
         this(null, null);
     }
@@ -31,7 +27,7 @@ public class LevelListDrawable extends DrawableContainer {
     }
 
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         int idx = this.mLevelListState.indexOfLevel(level);
         if (selectDrawable(idx)) {
             return true;
@@ -67,15 +63,15 @@ public class LevelListDrawable extends DrawableContainer {
                 }
                 if (drawableRes != 0) {
                     dr = r.getDrawable(drawableRes, theme);
-                    this.mLevelListState.addLevel(low, high, dr);
+                } else {
+                    do {
+                        type = parser.next();
+                    } while (type == 4);
+                    if (type != 2) {
+                        throw new XmlPullParserException(parser.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+                    }
+                    dr = Drawable.createFromXmlInner(r, parser, attrs, theme);
                 }
-                do {
-                    type = parser.next();
-                } while (type == 4);
-                if (type != 2) {
-                    throw new XmlPullParserException(parser.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
-                }
-                dr = Drawable.createFromXmlInner(r, parser, attrs, theme);
                 this.mLevelListState.addLevel(low, high, dr);
             }
         }
@@ -91,6 +87,7 @@ public class LevelListDrawable extends DrawableContainer {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.DrawableContainer
     public LevelListState cloneConstantState() {
         return new LevelListState(this.mLevelListState, this, null);
@@ -102,8 +99,7 @@ public class LevelListDrawable extends DrawableContainer {
         this.mMutated = false;
     }
 
-    /* loaded from: classes.dex */
-    public static final class LevelListState extends DrawableContainer.DrawableContainerState {
+    private static final class LevelListState extends DrawableContainer.DrawableContainerState {
         private int[] mHighs;
         private int[] mLows;
 
@@ -118,6 +114,7 @@ public class LevelListDrawable extends DrawableContainer {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void mutate() {
             this.mLows = (int[]) this.mLows.clone();
             this.mHighs = (int[]) this.mHighs.clone();
@@ -164,7 +161,7 @@ public class LevelListDrawable extends DrawableContainer {
     }
 
     @Override // android.graphics.drawable.DrawableContainer
-    public void setConstantState(DrawableContainer.DrawableContainerState state) {
+    protected void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
         if (state instanceof LevelListState) {
             this.mLevelListState = (LevelListState) state;

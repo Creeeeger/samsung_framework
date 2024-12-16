@@ -16,14 +16,13 @@ import java.util.function.Predicate;
 /* loaded from: classes.dex */
 public final class CredentialDescription implements Parcelable {
     public static final Parcelable.Creator<CredentialDescription> CREATOR = new Parcelable.Creator<CredentialDescription>() { // from class: android.credentials.CredentialDescription.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialDescription createFromParcel(Parcel in) {
             return new CredentialDescription(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialDescription[] newArray(int size) {
             return new CredentialDescription[size];
@@ -33,10 +32,6 @@ public final class CredentialDescription implements Parcelable {
     private final List<CredentialEntry> mCredentialEntries;
     private final Set<String> mSupportedElementKeys;
     private final String mType;
-
-    /* synthetic */ CredentialDescription(Parcel parcel, CredentialDescriptionIA credentialDescriptionIA) {
-        this(parcel);
-    }
 
     public CredentialDescription(String type, Set<String> supportedElementKeys, List<CredentialEntry> credentialEntries) {
         this.mType = (String) Preconditions.checkStringNotEmpty(type, "type must not be empty");
@@ -52,12 +47,11 @@ public final class CredentialDescription implements Parcelable {
         ArrayList arrayList = new ArrayList();
         in.readTypedList(arrayList, CredentialEntry.CREATOR);
         this.mType = type;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
-        HashSet hashSet = new HashSet(descriptions);
-        this.mSupportedElementKeys = hashSet;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hashSet);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mType);
+        this.mSupportedElementKeys = new HashSet(descriptions);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSupportedElementKeys);
         this.mCredentialEntries = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mCredentialEntries);
     }
 
     private static int compareEntryTypes(final String type, List<CredentialEntry> credentialEntries) {
@@ -69,25 +63,8 @@ public final class CredentialDescription implements Parcelable {
         }).toList().size();
     }
 
-    public static /* synthetic */ boolean lambda$compareEntryTypes$0(String type, CredentialEntry credentialEntry) {
+    static /* synthetic */ boolean lambda$compareEntryTypes$0(String type, CredentialEntry credentialEntry) {
         return !credentialEntry.getType().equals(type);
-    }
-
-    /* renamed from: android.credentials.CredentialDescription$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CredentialDescription> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialDescription createFromParcel(Parcel in) {
-            return new CredentialDescription(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialDescription[] newArray(int size) {
-            return new CredentialDescription[size];
-        }
     }
 
     @Override // android.os.Parcelable

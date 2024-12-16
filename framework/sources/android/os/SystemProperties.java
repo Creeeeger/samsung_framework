@@ -11,6 +11,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
 import libcore.util.HexEncoding;
 
 @SystemApi
@@ -28,35 +30,62 @@ public class SystemProperties {
     @FastNative
     private static native long native_find(String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native String native_get(long j);
 
     @FastNative
     private static native String native_get(String str, String str2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native boolean native_get_boolean(long j, boolean z);
 
     @FastNative
     private static native boolean native_get_boolean(String str, boolean z);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native int native_get_int(long j, int i);
 
     @FastNative
     private static native int native_get_int(String str, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native long native_get_long(long j, long j2);
 
     @FastNative
     private static native long native_get_long(String str, long j);
 
+    private static native void native_init$ravenwood(Map<String, String> map, Predicate<String> predicate, Predicate<String> predicate2, Runnable runnable);
+
     private static native void native_report_sysprop_change();
+
+    private static native void native_reset$ravenwood();
 
     private static native void native_set(String str, String str2);
 
     private static void onKeyAccess(String key) {
+    }
+
+    public static void init$ravenwood(Map<String, String> values, Predicate<String> keyReadablePredicate, Predicate<String> keyWritablePredicate) {
+        native_init$ravenwood(values, keyReadablePredicate, keyWritablePredicate, new Runnable() { // from class: android.os.SystemProperties$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                SystemProperties.callChangeCallbacks();
+            }
+        });
+        synchronized (sChangeCallbacks) {
+            sChangeCallbacks.clear();
+        }
+    }
+
+    public static void reset$ravenwood() {
+        native_reset$ravenwood();
+        synchronized (sChangeCallbacks) {
+            sChangeCallbacks.clear();
+        }
     }
 
     private static String native_get(String key) {
@@ -96,31 +125,29 @@ public class SystemProperties {
     }
 
     public static void addChangeCallback(Runnable callback) {
-        ArrayList<Runnable> arrayList = sChangeCallbacks;
-        synchronized (arrayList) {
-            if (arrayList.size() == 0) {
+        synchronized (sChangeCallbacks) {
+            if (sChangeCallbacks.size() == 0) {
                 native_add_change_callback();
             }
-            arrayList.add(callback);
+            sChangeCallbacks.add(callback);
         }
     }
 
     public static void removeChangeCallback(Runnable callback) {
-        ArrayList<Runnable> arrayList = sChangeCallbacks;
-        synchronized (arrayList) {
-            if (arrayList.contains(callback)) {
-                arrayList.remove(callback);
+        synchronized (sChangeCallbacks) {
+            if (sChangeCallbacks.contains(callback)) {
+                sChangeCallbacks.remove(callback);
             }
         }
     }
 
-    private static void callChangeCallbacks() {
-        ArrayList<Runnable> arrayList = sChangeCallbacks;
-        synchronized (arrayList) {
-            if (arrayList.size() == 0) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void callChangeCallbacks() {
+        synchronized (sChangeCallbacks) {
+            if (sChangeCallbacks.size() == 0) {
                 return;
             }
-            ArrayList<Runnable> callbacks = new ArrayList<>(arrayList);
+            ArrayList<Runnable> callbacks = new ArrayList<>(sChangeCallbacks);
             long token = Binder.clearCallingIdentity();
             for (int i = 0; i < callbacks.size(); i++) {
                 try {
@@ -165,13 +192,8 @@ public class SystemProperties {
         return new Handle(nativeHandle);
     }
 
-    /* loaded from: classes3.dex */
     public static final class Handle {
         private final long mNativeHandle;
-
-        /* synthetic */ Handle(long j, HandleIA handleIA) {
-            this(j);
-        }
 
         public String get() {
             return SystemProperties.native_get(this.mNativeHandle);

@@ -22,7 +22,6 @@ public interface IBlockchainManager extends IInterface {
 
     int sspInit() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBlockchainManager {
         @Override // android.blockchain.IBlockchainManager
         public BlockchainTZServiceCommnInfo registerBlockchainFW(BlockchainTZServiceConfig config) throws RemoteException {
@@ -60,7 +59,6 @@ public interface IBlockchainManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBlockchainManager {
         static final int TRANSACTION_getCredential = 4;
         static final int TRANSACTION_getMeasurementFile = 2;
@@ -118,56 +116,53 @@ public interface IBlockchainManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBlockchainManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBlockchainManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBlockchainManager.DESCRIPTOR);
+                case 1:
+                    BlockchainTZServiceConfig _arg0 = (BlockchainTZServiceConfig) data.readTypedObject(BlockchainTZServiceConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    BlockchainTZServiceCommnInfo _result = registerBlockchainFW(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    byte[] _result2 = getMeasurementFile();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = putCredential(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result4 = getCredential(_arg03);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    return true;
+                case 5:
+                    int _result5 = sspInit();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    int _result6 = sspExit();
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            BlockchainTZServiceConfig _arg0 = (BlockchainTZServiceConfig) data.readTypedObject(BlockchainTZServiceConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            BlockchainTZServiceCommnInfo _result = registerBlockchainFW(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            byte[] _result2 = getMeasurementFile();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = putCredential(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result4 = getCredential(_arg03);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            return true;
-                        case 5:
-                            int _result5 = sspInit();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            int _result6 = sspExit();
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IBlockchainManager {
             private IBinder mRemote;
 
